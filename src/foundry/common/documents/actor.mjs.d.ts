@@ -46,7 +46,7 @@ declare class BaseActor<TypeName extends BaseActor.TypeNames = BaseActor.TypeNam
 
   protected override _initializeSource(
     data: fields.SchemaField.InnerAssignmentType<documents.BaseActor.Schema<TypeName>> | this,
-    options?: any
+    options?: any,
   ): fields.SchemaField.InnerPersistedType<documents.BaseActor.Schema<TypeName>>;
 
   static override canUserCreate(user: documents.BaseUser): boolean;
@@ -71,13 +71,13 @@ declare class BaseActor<TypeName extends BaseActor.TypeNames = BaseActor.TypeNam
   protected override _preCreate(
     data: fields.SchemaField.AssignmentType<documents.BaseActor.Schema<TypeName>, {}>,
     options: DocumentModificationOptions,
-    user: documents.BaseUser
+    user: documents.BaseUser,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: fields.SchemaField.AssignmentType<documents.BaseActor.Schema<TypeName>, {}>,
     options: DocumentModificationOptions,
-    user: documents.BaseUser
+    user: documents.BaseUser,
   ): Promise<void>;
 
   static override migrateData(source: object): object;
@@ -85,14 +85,14 @@ declare class BaseActor<TypeName extends BaseActor.TypeNames = BaseActor.TypeNam
   static override shimData(
     data: object,
     {
-      embedded
+      embedded,
     }?: {
       /**
        * Apply shims to embedded models?
        * @defaultValue `true`
        */
       embedded?: boolean;
-    }
+    },
   ): object;
 }
 export default BaseActor;

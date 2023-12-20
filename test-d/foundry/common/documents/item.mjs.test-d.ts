@@ -5,15 +5,15 @@ import type { BaseItem } from "../../../../src/foundry/common/documents/module.m
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface ArmorModel
-  extends foundry.data.fields.SchemaField.InnerInitializedType<ReturnType<typeof ArmorModel["defineSchema"]>> {}
+  extends foundry.data.fields.SchemaField.InnerInitializedType<ReturnType<(typeof ArmorModel)["defineSchema"]>> {}
 class ArmorModel extends foundry.abstract.DataModel<
-  foundry.data.fields.SchemaField<ReturnType<typeof ArmorModel["defineSchema"]>>,
+  foundry.data.fields.SchemaField<ReturnType<(typeof ArmorModel)["defineSchema"]>>,
   foundry.documents.BaseActor | null
 > {
   static override defineSchema() {
     return {
       /** The protective value of the armor */
-      armorValue: new foundry.data.fields.NumberField()
+      armorValue: new foundry.data.fields.NumberField(),
     };
   }
 
@@ -25,9 +25,9 @@ class ArmorModel extends foundry.abstract.DataModel<
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface WeaponModel
-  extends foundry.data.fields.SchemaField.InnerInitializedType<ReturnType<typeof WeaponModel["defineSchema"]>> {}
+  extends foundry.data.fields.SchemaField.InnerInitializedType<ReturnType<(typeof WeaponModel)["defineSchema"]>> {}
 class WeaponModel extends foundry.abstract.DataModel<
-  foundry.data.fields.SchemaField<ReturnType<typeof WeaponModel["defineSchema"]>>,
+  foundry.data.fields.SchemaField<ReturnType<(typeof WeaponModel)["defineSchema"]>>,
   foundry.documents.BaseActor | null
 > {
   static override defineSchema() {
@@ -35,7 +35,7 @@ class WeaponModel extends foundry.abstract.DataModel<
       /** The attack speed of the weapon */
       attackSpeed: new foundry.data.fields.NumberField({ nullable: false, required: true }),
       /** The damage per hit of the weapon */
-      damagePerHit: new foundry.data.fields.NumberField({ nullable: false, required: true })
+      damagePerHit: new foundry.data.fields.NumberField({ nullable: false, required: true }),
     };
   }
 
@@ -62,16 +62,16 @@ const armorModel = new ArmorModel();
 const weaponModel = new WeaponModel();
 
 expectType<foundry.documents.BaseItem<"armor">>(
-  new foundry.documents.BaseItem({ name: "Plate", type: "armor", system: { armorValue: 42 } })
+  new foundry.documents.BaseItem({ name: "Plate", type: "armor", system: { armorValue: 42 } }),
 );
 expectType<foundry.documents.BaseItem<"armor">>(
-  new foundry.documents.BaseItem({ name: "Plate", type: "armor", system: armorModel })
+  new foundry.documents.BaseItem({ name: "Plate", type: "armor", system: armorModel }),
 );
 expectType<foundry.documents.BaseItem<"weapon">>(
-  new foundry.documents.BaseItem({ name: "Sword", type: "weapon", system: { attackSpeed: 1, damagePerHit: 2 } })
+  new foundry.documents.BaseItem({ name: "Sword", type: "weapon", system: { attackSpeed: 1, damagePerHit: 2 } }),
 );
 expectType<foundry.documents.BaseItem<"weapon">>(
-  new foundry.documents.BaseItem({ name: "Sword", type: "weapon", system: weaponModel })
+  new foundry.documents.BaseItem({ name: "Sword", type: "weapon", system: weaponModel }),
 );
 expectError(new foundry.documents.BaseItem({ name: "Sword", type: "weapon", system: { damage: 34 } }));
 expectError(new foundry.documents.BaseItem({ name: "Sword", type: "weapon", system: { foo: "bar" } }));
@@ -82,7 +82,7 @@ const weaponItem = new foundry.documents.BaseItem({ name: "Sword", type: "weapon
 expectType<Promise<foundry.documents.BaseItem<"armor"> | undefined>>(armorItem.update({ system: { armorValue: 24 } }));
 expectType<Promise<foundry.documents.BaseItem<"armor"> | undefined>>(armorItem.update({ system: armorModel }));
 expectType<Promise<foundry.documents.BaseItem<"weapon"> | undefined>>(
-  weaponItem.update({ system: { attackSpeed: 1, damagePerHit: 2 } })
+  weaponItem.update({ system: { attackSpeed: 1, damagePerHit: 2 } }),
 );
 expectType<Promise<foundry.documents.BaseItem<"weapon"> | undefined>>(weaponItem.update({ system: weaponModel }));
 expectError(weaponItem.update({ system: { foo: "bar" } }));

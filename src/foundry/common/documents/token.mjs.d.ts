@@ -57,14 +57,14 @@ declare class BaseToken extends Document<
     user: documents.BaseUser,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
     {
-      exact
+      exact,
     }?: {
       /**
        * Require the exact permission level requested?
        * @defaultValue `false`
        */
       exact?: boolean;
-    }
+    },
   ): boolean;
 
   static override cleanData(source?: object | undefined, options?: fields.DataField.CleanOptions | undefined): object;
@@ -74,14 +74,14 @@ declare class BaseToken extends Document<
   static override shimData(
     data: object,
     {
-      embedded
+      embedded,
     }?: {
       /**
        * Apply shims to embedded models?
        * @defaultValue `true`
        */
       embedded?: boolean;
-    }
+    },
   ): object;
 }
 export default BaseToken;

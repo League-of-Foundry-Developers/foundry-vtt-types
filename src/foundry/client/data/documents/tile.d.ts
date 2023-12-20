@@ -29,6 +29,6 @@ declare class TileDocument extends CanvasDocumentMixin(BaseTile) {
   protected override _onUpdate(
     changed: BaseTile.UpdateData,
     options: DocumentModificationOptions,
-    userId: string
+    userId: string,
   ): void;
 }

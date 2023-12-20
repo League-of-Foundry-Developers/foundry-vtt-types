@@ -17,7 +17,7 @@ declare global {
     protected _onUpdate(
       changed: DeepPartial<fields.SchemaField.PersistedType<fields.SchemaField.AnyWithFlags["fields"], {}>>,
       options: DocumentModificationOptions,
-      userId: string
+      userId: string,
     ): foundry.documents.BaseAmbientLight["_onUpdate"];
 
     /**

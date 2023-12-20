@@ -148,6 +148,6 @@ declare class EffectsCanvasGroup extends PIXI.Container {
        * @defaultValue `10000`
        */
       duration: number;
-    }
+    },
   ): Promise<void>;
 }

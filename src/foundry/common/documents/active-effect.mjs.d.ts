@@ -39,20 +39,20 @@ declare class BaseActiveEffect<Parent extends Document.Any | null = null> extend
     user: documents.BaseUser,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
     {
-      exact
+      exact,
     }?: {
       /**
        * Require the exact permission level requested?
        * @defaultValue `false`
        */
       exact?: boolean;
-    }
+    },
   ): boolean;
 
   protected override _preCreate(
     data: fields.SchemaField.AssignmentType<BaseActiveEffect.Schema, {}>,
     options: DocumentModificationOptions,
-    user: documents.BaseUser
+    user: documents.BaseUser,
   ): Promise<void>;
 
   static override migrateData(source: object): object;

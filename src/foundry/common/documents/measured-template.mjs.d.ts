@@ -47,21 +47,21 @@ declare class BaseMeasuredTemplate extends Document<BaseMeasuredTemplate.SchemaF
   static #canModify(
     user: documents.BaseUser,
     doc: BaseMeasuredTemplate,
-    data?: BaseMeasuredTemplate.UpdateData
+    data?: BaseMeasuredTemplate.UpdateData,
   ): boolean;
 
   override testUserPermission(
     user: foundry.documents.BaseUser,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
     {
-      exact
+      exact,
     }?: {
       /**
        * Require the exact permission level requested?
        * @defaultValue `false`
        */
       exact?: boolean;
-    }
+    },
   ): boolean;
 }
 export default BaseMeasuredTemplate;

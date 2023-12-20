@@ -31,19 +31,19 @@ declare class BaseJournalEntry extends Document<BaseJournalEntry.SchemaField, Ba
   static shimData(
     data: object,
     {
-      embedded
+      embedded,
     }?: {
       /**
        * Apply shims to embedded models?
        * @defaultValue `true`
        */
       embedded?: boolean;
-    }
+    },
   ): object;
 
   protected override _initializeSource(
     data: this | BaseJournalEntry.UpdateData,
-    options?: any
+    options?: any,
   ): BaseJournalEntry.Source;
 
   /**

@@ -62,14 +62,14 @@ declare class BaseChatMessage<Parent extends Document.Any | null = null> extends
   static override shimData(
     data: object,
     {
-      embedded
+      embedded,
     }?: {
       /**
        * Apply shims to embedded models?
        * @defaultValue `true`
        */
       embedded?: boolean;
-    }
+    },
   ): object;
 }
 export default BaseChatMessage;

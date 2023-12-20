@@ -30,14 +30,14 @@ declare class BasePlaylistSound extends Document<BasePlaylistSound.SchemaField, 
     user: foundry.documents.BaseUser,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
     {
-      exact
+      exact,
     }?: {
       /**
        * Require the exact permission level requested?
        * @defaultValue `false`
        */
       exact?: boolean;
-    }
+    },
   ): boolean;
 }
 export default BasePlaylistSound;

@@ -51,7 +51,7 @@ declare class BaseCard<TypeName extends BaseCard.TypeNames = BaseCard.TypeNames>
   static #canCreate(
     user: documents.BaseUser,
     doc: BaseCard,
-    data: BaseCard.ConstructorData<BaseCard.TypeNames>
+    data: BaseCard.ConstructorData<BaseCard.TypeNames>,
   ): boolean;
 
   /**
@@ -63,14 +63,14 @@ declare class BaseCard<TypeName extends BaseCard.TypeNames = BaseCard.TypeNames>
     user: documents.BaseUser,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
     {
-      exact
+      exact,
     }?: {
       /**
        * Require the exact permission level requested?
        * @defaultValue `false`
        */
       exact?: boolean;
-    }
+    },
   ): boolean;
 
   static override migrateData(source: object): object;
@@ -78,14 +78,14 @@ declare class BaseCard<TypeName extends BaseCard.TypeNames = BaseCard.TypeNames>
   static override shimData(
     data: object,
     {
-      embedded
+      embedded,
     }?: {
       /**
        * Apply shims to embedded models?
        * @defaultValue `true`
        */
       embedded?: boolean;
-    }
+    },
   ): object;
 }
 export default BaseCard;
@@ -140,7 +140,7 @@ declare namespace BaseCard {
         required: true;
         label: "CARD.Type";
         choices: () => typeof BaseCard.TYPES;
-        initial: typeof BaseCard.TYPES[0];
+        initial: (typeof BaseCard.TYPES)[0];
       },
       TypeName,
       TypeName,

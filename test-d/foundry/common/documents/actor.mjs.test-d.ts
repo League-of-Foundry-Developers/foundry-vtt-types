@@ -5,14 +5,14 @@ import type { BaseActor, BaseItem } from "../../../../src/foundry/common/documen
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface CharacterModel
-  extends foundry.data.fields.SchemaField.InnerInitializedType<ReturnType<typeof CharacterModel["defineSchema"]>> {}
+  extends foundry.data.fields.SchemaField.InnerInitializedType<ReturnType<(typeof CharacterModel)["defineSchema"]>> {}
 class CharacterModel extends foundry.abstract.DataModel<
-  foundry.data.fields.SchemaField<ReturnType<typeof CharacterModel["defineSchema"]>>
+  foundry.data.fields.SchemaField<ReturnType<(typeof CharacterModel)["defineSchema"]>>
 > {
   static override defineSchema() {
     return {
       /** The current hit points of the character */
-      hitPoints: new foundry.data.fields.NumberField()
+      hitPoints: new foundry.data.fields.NumberField(),
     };
   }
 
@@ -24,14 +24,14 @@ class CharacterModel extends foundry.abstract.DataModel<
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface MonsterModel
-  extends foundry.data.fields.SchemaField.InnerInitializedType<ReturnType<typeof MonsterModel["defineSchema"]>> {}
+  extends foundry.data.fields.SchemaField.InnerInitializedType<ReturnType<(typeof MonsterModel)["defineSchema"]>> {}
 class MonsterModel extends foundry.abstract.DataModel<
-  foundry.data.fields.SchemaField<ReturnType<typeof MonsterModel["defineSchema"]>>
+  foundry.data.fields.SchemaField<ReturnType<(typeof MonsterModel)["defineSchema"]>>
 > {
   static override defineSchema() {
     return {
       /** The attack damage of the monster */
-      damage: new foundry.data.fields.NumberField({ nullable: false, required: true })
+      damage: new foundry.data.fields.NumberField({ nullable: false, required: true }),
     };
   }
 
@@ -51,10 +51,10 @@ declare global {
 }
 
 expectType<foundry.documents.BaseActor<"character">>(
-  new foundry.documents.BaseActor({ name: "Joe Diamond", type: "character" })
+  new foundry.documents.BaseActor({ name: "Joe Diamond", type: "character" }),
 );
 expectType<foundry.documents.BaseActor<"monster">>(
-  new foundry.documents.BaseActor({ name: "Cthulhu", type: "monster" })
+  new foundry.documents.BaseActor({ name: "Cthulhu", type: "monster" }),
 );
 expectError(new foundry.documents.BaseActor({ name: "Kittyfluff", type: "foo" }));
 
@@ -62,16 +62,16 @@ const characterModel = new CharacterModel();
 const monsterModel = new MonsterModel();
 
 expectType<foundry.documents.BaseActor<"character">>(
-  new foundry.documents.BaseActor({ name: "Joe Diamond", type: "character", system: { hitPoints: 30 } })
+  new foundry.documents.BaseActor({ name: "Joe Diamond", type: "character", system: { hitPoints: 30 } }),
 );
 expectType<foundry.documents.BaseActor<"character">>(
-  new foundry.documents.BaseActor({ name: "Joe Diamond", type: "character", system: characterModel })
+  new foundry.documents.BaseActor({ name: "Joe Diamond", type: "character", system: characterModel }),
 );
 expectType<foundry.documents.BaseActor<"monster">>(
-  new foundry.documents.BaseActor({ name: "Cthulhu", type: "monster", system: { damage: 60 } })
+  new foundry.documents.BaseActor({ name: "Cthulhu", type: "monster", system: { damage: 60 } }),
 );
 expectType<foundry.documents.BaseActor<"monster">>(
-  new foundry.documents.BaseActor({ name: "Cthulhu", type: "monster", system: monsterModel })
+  new foundry.documents.BaseActor({ name: "Cthulhu", type: "monster", system: monsterModel }),
 );
 expectError(new foundry.documents.BaseActor({ name: "Cthulhu", type: "monster", system: { threat: 300 } }));
 expectError(new foundry.documents.BaseActor({ name: "Cthulhu", type: "monster", system: { foo: "bar" } }));
@@ -80,13 +80,13 @@ const characterActor = new foundry.documents.BaseActor({ name: "Joe Diamond", ty
 const monsterActor = new foundry.documents.BaseActor({ name: "Cthulhu", type: "monster" });
 
 expectType<Promise<foundry.documents.BaseActor<"character"> | undefined>>(
-  characterActor.update({ system: { hitPoints: 42 } })
+  characterActor.update({ system: { hitPoints: 42 } }),
 );
 expectType<Promise<foundry.documents.BaseActor<"character"> | undefined>>(
-  characterActor.update({ system: characterModel })
+  characterActor.update({ system: characterModel }),
 );
 expectType<Promise<foundry.documents.BaseActor<"monster"> | undefined>>(
-  monsterActor.update({ system: { damage: 200 } })
+  monsterActor.update({ system: { damage: 200 } }),
 );
 expectType<Promise<foundry.documents.BaseActor<"monster"> | undefined>>(monsterActor.update({ system: monsterModel }));
 expectError(monsterActor.update({ system: { foo: "bar" } }));

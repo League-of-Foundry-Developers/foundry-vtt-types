@@ -27,7 +27,7 @@ declare global {
 interface BaseJournalEntryPage<TypeName extends BaseJournalEntryPage.TypeNames = BaseJournalEntryPage.TypeNames>
   extends BaseJournalEntryPage.Properties<TypeName> {}
 declare class BaseJournalEntryPage<
-  TypeName extends BaseJournalEntryPage.TypeNames = BaseJournalEntryPage.TypeNames
+  TypeName extends BaseJournalEntryPage.TypeNames = BaseJournalEntryPage.TypeNames,
 > extends Document<BaseJournalEntryPage.SchemaField<TypeName>, BaseJournalEntryPage.Metadata> {
   /**
    * @param data    - Initial data from which to construct the JournalEntryPage.

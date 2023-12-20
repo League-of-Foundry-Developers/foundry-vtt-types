@@ -31,7 +31,7 @@ declare class BaseFogExploration extends Document<BaseFogExploration.SchemaField
   protected override _preUpdate(
     changed: fields.SchemaField.AssignmentType<documents.BaseFogExploration.Schema, {}>,
     options: DocumentModificationOptions,
-    user: documents.BaseUser
+    user: documents.BaseUser,
   ): Promise<void>;
 }
 export default BaseFogExploration;

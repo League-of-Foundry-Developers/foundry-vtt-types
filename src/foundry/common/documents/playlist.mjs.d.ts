@@ -32,14 +32,14 @@ declare class BasePlaylist extends Document<BasePlaylist.SchemaField, BasePlayli
   static override shimData(
     data: object,
     {
-      embedded
+      embedded,
     }?: {
       /**
        * Apply shims to embedded models?
        * @defaultValue `true`
        */
       embedded?: boolean;
-    }
+    },
   ): object;
 }
 export default BasePlaylist;

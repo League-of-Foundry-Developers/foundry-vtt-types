@@ -63,7 +63,7 @@ export class PrototypeToken extends DataModel<PrototypeToken.SchemaField, docume
   testUserPermission(
     user: TestUserPermParams[0],
     permission: TestUserPermParams[1],
-    { exact }?: TestUserPermParams[2]
+    { exact }?: TestUserPermParams[2],
   ): ReturnType<documents.BaseActor["testUserPermission"]>;
 
   /**
@@ -81,7 +81,7 @@ declare namespace PrototypeToken {
 
   interface Schema
     extends Omit<
-      ReturnType<typeof documents.BaseToken["defineSchema"]>,
+      ReturnType<(typeof documents.BaseToken)["defineSchema"]>,
       "_id" | "actorId" | "actorData" | "x" | "y" | "elevation" | "effects" | "overlayEffect" | "hidden"
     > {
     /**

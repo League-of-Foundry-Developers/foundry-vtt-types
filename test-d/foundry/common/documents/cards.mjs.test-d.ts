@@ -3,14 +3,14 @@ import type { BaseCards } from "../../../../src/foundry/common/documents/module.
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface GermanDeckModel
-  extends foundry.data.fields.SchemaField.InnerInitializedType<ReturnType<typeof GermanDeckModel["defineSchema"]>> {}
+  extends foundry.data.fields.SchemaField.InnerInitializedType<ReturnType<(typeof GermanDeckModel)["defineSchema"]>> {}
 class GermanDeckModel extends foundry.abstract.DataModel<
-  foundry.data.fields.SchemaField<ReturnType<typeof GermanDeckModel["defineSchema"]>>
+  foundry.data.fields.SchemaField<ReturnType<(typeof GermanDeckModel)["defineSchema"]>>
 > {
   static override defineSchema() {
     return {
       /** The game these cards are most often used in */
-      mostUsedGame: new foundry.data.fields.StringField()
+      mostUsedGame: new foundry.data.fields.StringField(),
     };
   }
 
@@ -22,14 +22,14 @@ class GermanDeckModel extends foundry.abstract.DataModel<
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface FrenchDeckModel
-  extends foundry.data.fields.SchemaField.InnerInitializedType<ReturnType<typeof FrenchDeckModel["defineSchema"]>> {}
+  extends foundry.data.fields.SchemaField.InnerInitializedType<ReturnType<(typeof FrenchDeckModel)["defineSchema"]>> {}
 class FrenchDeckModel extends foundry.abstract.DataModel<
-  foundry.data.fields.SchemaField<ReturnType<typeof FrenchDeckModel["defineSchema"]>>
+  foundry.data.fields.SchemaField<ReturnType<(typeof FrenchDeckModel)["defineSchema"]>>
 > {
   static override defineSchema() {
     return {
       /** A cool use for this kind of cards */
-      coolUse: new foundry.data.fields.StringField()
+      coolUse: new foundry.data.fields.StringField(),
     };
   }
 
@@ -49,10 +49,10 @@ declare global {
 }
 
 expectType<foundry.documents.BaseCards<"german">>(
-  new foundry.documents.BaseCards({ name: "Schellen 4", type: "german" })
+  new foundry.documents.BaseCards({ name: "Schellen 4", type: "german" }),
 );
 expectType<foundry.documents.BaseCards<"french">>(
-  new foundry.documents.BaseCards({ name: "King of Hearts", type: "french" })
+  new foundry.documents.BaseCards({ name: "King of Hearts", type: "french" }),
 );
 expectError(new foundry.documents.BaseCards({ name: "Kittyfluff", type: "foo" }));
 
@@ -60,19 +60,19 @@ const oldCardModel = new GermanDeckModel();
 const unoCardModel = new FrenchDeckModel();
 
 expectType<foundry.documents.BaseCards<"german">>(
-  new foundry.documents.BaseCards({ name: "Schellen 4", type: "german", system: { mostUsedGame: "Skat" } })
+  new foundry.documents.BaseCards({ name: "Schellen 4", type: "german", system: { mostUsedGame: "Skat" } }),
 );
 expectType<foundry.documents.BaseCards<"german">>(
-  new foundry.documents.BaseCards({ name: "Schellen 4", type: "german", system: oldCardModel })
+  new foundry.documents.BaseCards({ name: "Schellen 4", type: "german", system: oldCardModel }),
 );
 expectType<foundry.documents.BaseCards<"french">>(
-  new foundry.documents.BaseCards({ name: "King of Hearts", type: "french", system: { coolUse: "throwing cards" } })
+  new foundry.documents.BaseCards({ name: "King of Hearts", type: "french", system: { coolUse: "throwing cards" } }),
 );
 expectType<foundry.documents.BaseCards<"french">>(
-  new foundry.documents.BaseCards({ name: "King of Hearts", type: "french", system: unoCardModel })
+  new foundry.documents.BaseCards({ name: "King of Hearts", type: "french", system: unoCardModel }),
 );
 expectError(
-  new foundry.documents.BaseCards({ name: "King of Hearts", type: "french", system: { mostUsedBy: "older players" } })
+  new foundry.documents.BaseCards({ name: "King of Hearts", type: "french", system: { mostUsedBy: "older players" } }),
 );
 expectError(new foundry.documents.BaseCards({ name: "King of Hearts", type: "french", system: { foo: "bar" } }));
 
@@ -80,11 +80,11 @@ const german = new foundry.documents.BaseCards({ name: "Schellen 4", type: "germ
 const french = new foundry.documents.BaseCards({ name: "King of Hearts", type: "french" });
 
 expectType<Promise<foundry.documents.BaseCards<"german"> | undefined>>(
-  german.update({ system: { mostUsedGame: "Skat" } })
+  german.update({ system: { mostUsedGame: "Skat" } }),
 );
 expectType<Promise<foundry.documents.BaseCards<"german"> | undefined>>(german.update({ system: oldCardModel }));
 expectType<Promise<foundry.documents.BaseCards<"french"> | undefined>>(
-  french.update({ system: { coolUse: "throwing cards" } })
+  french.update({ system: { coolUse: "throwing cards" } }),
 );
 expectType<Promise<foundry.documents.BaseCards<"french"> | undefined>>(french.update({ system: unoCardModel }));
 expectError(french.update({ system: { foo: "bar" } }));

@@ -73,14 +73,14 @@ declare class BaseUser extends Document<BaseUser.SchemaField, BaseUser.Metadata>
   hasRole(
     role: CONST.USER_ROLE_NAMES | CONST.USER_ROLES,
     {
-      exact
+      exact,
     }: {
       /**
        * Require the role match to be exact
        * @defaultValue `false`
        */
       exact?: boolean;
-    }
+    },
   ): boolean;
 
   /**

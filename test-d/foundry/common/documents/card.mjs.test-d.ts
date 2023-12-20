@@ -3,14 +3,14 @@ import type { BaseCard } from "../../../../src/foundry/common/documents/module.m
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface OldCardModel
-  extends foundry.data.fields.SchemaField.InnerInitializedType<ReturnType<typeof OldCardModel["defineSchema"]>> {}
+  extends foundry.data.fields.SchemaField.InnerInitializedType<ReturnType<(typeof OldCardModel)["defineSchema"]>> {}
 class OldCardModel extends foundry.abstract.DataModel<
-  foundry.data.fields.SchemaField<ReturnType<typeof OldCardModel["defineSchema"]>>
+  foundry.data.fields.SchemaField<ReturnType<(typeof OldCardModel)["defineSchema"]>>
 > {
   static override defineSchema() {
     return {
       /** The condition of the card */
-      condition: new foundry.data.fields.StringField()
+      condition: new foundry.data.fields.StringField(),
     };
   }
 
@@ -22,14 +22,14 @@ class OldCardModel extends foundry.abstract.DataModel<
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface UnoCardModel
-  extends foundry.data.fields.SchemaField.InnerInitializedType<ReturnType<typeof UnoCardModel["defineSchema"]>> {}
+  extends foundry.data.fields.SchemaField.InnerInitializedType<ReturnType<(typeof UnoCardModel)["defineSchema"]>> {}
 class UnoCardModel extends foundry.abstract.DataModel<
-  foundry.data.fields.SchemaField<ReturnType<typeof UnoCardModel["defineSchema"]>>
+  foundry.data.fields.SchemaField<ReturnType<(typeof UnoCardModel)["defineSchema"]>>
 > {
   static override defineSchema() {
     return {
       /** Whether the card is special */
-      special: new foundry.data.fields.BooleanField()
+      special: new foundry.data.fields.BooleanField(),
     };
   }
 
@@ -49,10 +49,10 @@ declare global {
 }
 
 expectType<foundry.documents.BaseCard<"oldCard">>(
-  new foundry.documents.BaseCard({ name: "Six of Spades", type: "oldCard" })
+  new foundry.documents.BaseCard({ name: "Six of Spades", type: "oldCard" }),
 );
 expectType<foundry.documents.BaseCard<"unoCard">>(
-  new foundry.documents.BaseCard({ name: "Green Skip", type: "unoCard" })
+  new foundry.documents.BaseCard({ name: "Green Skip", type: "unoCard" }),
 );
 expectError(new foundry.documents.BaseCard({ name: "Kittyfluff", type: "foo" }));
 
@@ -60,16 +60,16 @@ const oldCardModel = new OldCardModel();
 const unoCardModel = new UnoCardModel();
 
 expectType<foundry.documents.BaseCard<"oldCard">>(
-  new foundry.documents.BaseCard({ name: "Six of Spades", type: "oldCard", system: { condition: "grubby" } })
+  new foundry.documents.BaseCard({ name: "Six of Spades", type: "oldCard", system: { condition: "grubby" } }),
 );
 expectType<foundry.documents.BaseCard<"oldCard">>(
-  new foundry.documents.BaseCard({ name: "Six of Spades", type: "oldCard", system: oldCardModel })
+  new foundry.documents.BaseCard({ name: "Six of Spades", type: "oldCard", system: oldCardModel }),
 );
 expectType<foundry.documents.BaseCard<"unoCard">>(
-  new foundry.documents.BaseCard({ name: "Green Skip", type: "unoCard", system: { special: true } })
+  new foundry.documents.BaseCard({ name: "Green Skip", type: "unoCard", system: { special: true } }),
 );
 expectType<foundry.documents.BaseCard<"unoCard">>(
-  new foundry.documents.BaseCard({ name: "Green Skip", type: "unoCard", system: unoCardModel })
+  new foundry.documents.BaseCard({ name: "Green Skip", type: "unoCard", system: unoCardModel }),
 );
 expectError(new foundry.documents.BaseCard({ name: "Green Skip", type: "unoCard", system: { numbered: false } }));
 expectError(new foundry.documents.BaseCard({ name: "Green Skip", type: "unoCard", system: { foo: "bar" } }));
@@ -78,7 +78,7 @@ const oldCard = new foundry.documents.BaseCard({ name: "Six of Spades", type: "o
 const unoCard = new foundry.documents.BaseCard({ name: "Green Skip", type: "unoCard" });
 
 expectType<Promise<foundry.documents.BaseCard<"oldCard"> | undefined>>(
-  oldCard.update({ system: { condition: "pristine" } })
+  oldCard.update({ system: { condition: "pristine" } }),
 );
 expectType<Promise<foundry.documents.BaseCard<"oldCard"> | undefined>>(oldCard.update({ system: oldCardModel }));
 expectType<Promise<foundry.documents.BaseCard<"unoCard"> | undefined>>(unoCard.update({ system: { special: false } }));

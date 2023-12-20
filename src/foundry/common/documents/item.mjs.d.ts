@@ -48,21 +48,21 @@ declare class BaseItem<TypeName extends BaseItem.TypeNames = BaseItem.TypeNames>
   override canUserModify(
     user: documents.BaseUser,
     action: "create" | "delete" | "update",
-    data?: object | undefined
+    data?: object | undefined,
   ): boolean;
 
   override testUserPermission(
     user: documents.BaseUser,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
     {
-      exact
+      exact,
     }?: {
       /**
        * Require the exact permission level requested?
        * @defaultValue `false`
        */
       exact?: boolean;
-    }
+    },
   ): boolean;
 
   static override migrateData(source: object): object;
@@ -70,14 +70,14 @@ declare class BaseItem<TypeName extends BaseItem.TypeNames = BaseItem.TypeNames>
   static override shimData(
     data: object,
     {
-      embedded
+      embedded,
     }?: {
       /**
        * Apply shims to embedded models?
        * @defaultValue `true`
        */
       embedded?: boolean;
-    }
+    },
   ): object;
 }
 export default BaseItem;

@@ -48,14 +48,14 @@ declare class BaseCards<TypeName extends BaseCards.TypeNames = BaseCards.TypeNam
   static override shimData(
     data: object,
     {
-      embedded
+      embedded,
     }?: {
       /**
        * Apply shims to embedded models?
        * @defaultValue `true`
        */
       embedded?: boolean;
-    }
+    },
   ): object;
 }
 export default BaseCards;
@@ -103,7 +103,7 @@ declare namespace BaseCards {
         required: true;
         label: "CARDS.Type";
         choices: () => typeof BaseCards.TYPES;
-        initial: () => typeof BaseCards.TYPES[0];
+        initial: () => (typeof BaseCards.TYPES)[0];
         validationError: "The Cards type must be in the array of types supported by the game system";
       },
       TypeName,

@@ -48,7 +48,7 @@ declare class BaseAdventure extends Document<BaseAdventure.SchemaField, BaseAdve
        * @defaultValue `false`
        */
       strict?: boolean;
-    }
+    },
   ): DataModel<SchemaField, DataModel.Any | null>;
 
   static override migrateData(source: object): object;

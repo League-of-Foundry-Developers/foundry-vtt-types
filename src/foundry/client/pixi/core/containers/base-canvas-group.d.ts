@@ -6,7 +6,7 @@
  * @returns                 A ContainerClass subclass mixed with BaseCanvasMixin features.
  */
 declare function BaseCanvasMixin<TBase extends ConstructorOf<PIXI.Container>>(
-  ContainerClass: TBase
+  ContainerClass: TBase,
 ): TBase & {
   new (...args: any[]): BaseCanvasMixin;
 };

@@ -35,20 +35,20 @@ declare class BaseMacro extends Document<BaseMacro.SchemaField, BaseMacro.Metada
     user: documents.BaseUser,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
     {
-      exact
+      exact,
     }?: {
       /**
        * Require the exact permission level requested?
        * @defaultValue `false`
        */
       exact?: boolean;
-    }
+    },
   ): boolean;
 
   protected override _preCreate(
     data: BaseMacro.Properties,
     options: DocumentModificationOptions,
-    user: foundry.documents.BaseUser
+    user: foundry.documents.BaseUser,
   ): Promise<void>;
 
   static override migrateData(source: object): object;
@@ -56,14 +56,14 @@ declare class BaseMacro extends Document<BaseMacro.SchemaField, BaseMacro.Metada
   static override shimData(
     data: object,
     {
-      embedded
+      embedded,
     }?: {
       /**
        * Apply shims to embedded models?
        * @defaultValue `true`
        */
       embedded?: boolean;
-    }
+    },
   ): object;
 }
 export default BaseMacro;
@@ -146,7 +146,7 @@ declare namespace BaseMacro {
     scope: fields.StringField<{
       required: true;
       choices: CONST.MACRO_SCOPES[];
-      initial: typeof CONST.MACRO_SCOPES[0];
+      initial: (typeof CONST.MACRO_SCOPES)[0];
       validationError: "must be a value in CONST.MACRO_SCOPES";
       label: "Scope";
     }>;
