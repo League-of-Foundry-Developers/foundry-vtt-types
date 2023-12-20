@@ -2,6 +2,8 @@ import { ConfiguredDocumentClass } from "../../../types/helperTypes";
 import { DocumentModificationOptions } from "../../common/abstract/document.mjs";
 import { Document } from "../../common/abstract/module.mjs";
 
+export {};
+
 // TODO: Rework the data portions after the data model branch is merged
 // CAVEAT: That whole bit gets thrown out with v12 *anyways* as part of the decoupling
 
@@ -184,8 +186,9 @@ declare global {
     /**
      * Clear the display of the existing object
      * @returns The cleared object
+     * @remarks Some subclasses return void
      */
-    clear(): this;
+    clear(): this | null;
 
     override destroy(options?: Parameters<PIXI.Container["destroy"]>[0]): void;
 

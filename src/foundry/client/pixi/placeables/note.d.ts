@@ -1,5 +1,7 @@
 import type { ConfiguredDocumentClass, ConfiguredDocumentClassForName } from "../../../../types/helperTypes";
 
+export {};
+
 type JournalEntryPage = unknown;
 
 declare global {

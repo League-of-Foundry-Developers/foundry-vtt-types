@@ -5,6 +5,8 @@ import {
 } from "../../../../types/helperTypes";
 import { DocumentModificationOptions } from "../../../common/abstract/document.mjs";
 
+export {};
+
 declare global {
   /**
    * A Token is an implementation of PlaceableObject which represents an Actor within a viewed Scene on the game canvas.

@@ -1,6 +1,8 @@
 import { ConfiguredDocumentClass } from "../../../../types/helperTypes";
 import { DocumentModificationOptions } from "../../../common/abstract/document.mjs";
 
+export {};
+
 declare global {
   /**
    * A type of Placeable Object which highlights an area of the grid as covered by some area of effect.

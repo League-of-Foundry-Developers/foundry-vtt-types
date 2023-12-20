@@ -1,6 +1,8 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.mjs";
 
+export {};
+
 declare global {
   /**
    * An AmbientSound is an implementation of PlaceableObject which represents a dynamic audio source within the Scene.

@@ -1,6 +1,8 @@
 import { ConfiguredDocumentClass, ConfiguredDocumentClassForName } from "../../../../types/helperTypes";
 import { DocumentModificationOptions } from "../../../common/abstract/document.mjs";
 
+export {};
+
 declare global {
   /**
    * The Drawing object is an implementation of the PlaceableObject container.

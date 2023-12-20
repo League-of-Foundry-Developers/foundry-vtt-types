@@ -7,6 +7,8 @@ import type { DocumentModificationOptions } from "../../../common/abstract/docum
 import type { LineIntersection } from "../../../common/utils/geometry.mjs";
 import type { HoverInOptions } from "../placeable";
 
+export {};
+
 declare global {
   /**
    * A Wall is an implementation of PlaceableObject which represents a physical or visual barrier within the Scene.
@@ -15,20 +17,38 @@ declare global {
    *
    * @see {@link WallDocument}
    * @see {@link WallsLayer}
-   * @see {@link WallConfig}
    */
   class Wall extends PlaceableObject<ConcreteWallDocument> {
-    /**
-     * @remarks Not used for `Wall`
-     */
-    controlIcon: null;
+    static override embeddedName: "Wall";
+
+    static override RENDER_FLAGS: {
+      /** @defaultValue `{propagate: ["refresh"]}` */
+      redraw: RenderFlag<Wall.RenderFlags>;
+
+      /** @defaultValue `{propagate: ["refreshState", "refreshLine"], alias: true}` */
+      refresh: RenderFlag<Wall.RenderFlags>;
+
+      /** @defaultValue `{propagate: ["refreshEndpoints", "refreshHighlight"]}` */
+      refreshState: RenderFlag<Wall.RenderFlags>;
+
+      /** @defaultValue `{propagate: ["refreshEndpoints", "refreshHighlight", "refreshDirection"]}` */
+      refreshLine: RenderFlag<Wall.RenderFlags>;
+
+      /** @defaultValue `{}` */
+      refreshEndpoints: RenderFlag<Wall.RenderFlags>;
+
+      /** @defaultValue `{}` */
+      refreshDirection: RenderFlag<Wall.RenderFlags>;
+
+      /** @defaultValue `{}` */
+      refreshHighlight: RenderFlag<Wall.RenderFlags>;
+    };
 
     /**
-     * An reference the Door Control icon associated with this Wall, if any
-     * @internal
+     * A reference the Door Control icon associated with this Wall, if any
      * @defaultValue `undefined`
      */
-    doorControl: DoorControl | undefined | null;
+    protected doorControl: DoorControl | undefined | null;
 
     /**
      * A reference to an overhead Tile that is a roof, interior to which this wall is contained
@@ -37,30 +57,24 @@ declare global {
     roof: InstanceType<ConfiguredObjectClassForName<"Tile">> | undefined;
 
     /**
+     * A Graphics object used to highlight this wall segment. Only used when the wall is controlled.
+     */
+    highlight: PIXI.Graphics | undefined;
+
+    /**
      * A set which tracks other Wall instances that this Wall intersects with (excluding shared endpoints)
      */
     intersectsWith: Map<InstanceType<ConfiguredObjectClassForName<"Wall">>, LineIntersection>;
 
     /**
-     * Cached representation of this wall's endpoints as {@link PolygonVertex}es.
-     * @defaultValue `null`
-     * @internal
-     */
-    protected _vertices: { a: PolygonVertex; b: PolygonVertex } | null;
-
-    /**
-     * Cached representation of the set of this wall's vertices.
-     * @defaultValue `null`
-     * @internal
-     */
-    protected _wallKeys: Set<string> | null;
-
-    static override embeddedName: "Wall";
-
-    /**
      * A convenience reference to the coordinates Array for the Wall endpoints, [x0,y0,x1,y1].
      */
-    get coords(): Wall["data"]["c"];
+    get coords(): Wall["document"]["c"];
+
+    /**
+     * The endpoints of the wall expressed as {@link PolygonVertex} instances.
+     */
+    get vertices(): { a: PolygonVertex; b: PolygonVertex };
 
     /**
      * The initial endpoint of the Wall
@@ -73,14 +87,9 @@ declare global {
     get B(): Point;
 
     /**
-     * The endpoints of the wall as {@link PolygonVertex}es.
+     * A set of vertex sort keys which identify this Wall's endpoints.
      */
-    get vertices(): { a: PolygonVertex; b: PolygonVertex };
-
-    /**
-     * The set of keys for this wall's endpoints.
-     */
-    get wallKeys(): Set<string>;
+    get wallKeys(): Set<number>;
 
     override get bounds(): PIXI.Rectangle;
 
@@ -118,12 +127,22 @@ declare global {
      */
     toRay(): Ray;
 
-    override draw(): Promise<this>;
+    /**
+     * @param options - unused
+     */
+    protected override _draw(): Promise<void>;
+
+    override clear(): this;
 
     /**
      * Draw a control icon that is used to manipulate the door's open/closed state
      */
     createDoorControl(): DoorControl;
+
+    /**
+     * Clear the door control if it exists.
+     */
+    clearDoorControl(): void;
 
     /**
      * Determine the orientation of this wall with respect to a reference point
@@ -133,42 +152,29 @@ declare global {
      */
     orientPoint(point: Point): number;
 
-    protected override _createInteractionManager(): NonNullable<this["mouseInteractionManager"]>;
+    /**
+     * Test whether to apply a configured threshold of this wall.
+     * When the proximity threshold is met, this wall is excluded as an edge in perception calculations.
+     * @param sourceType     - Sense type for the source
+     * @param sourceOrigin   - The origin or position of the source on the canvas
+     * @param externalRadius - The external radius of the source
+     *                         (default: `0`)
+     * @returns True if the wall has a threshold greater than 0 for the source type, and the source type is within that distance.
+     */
+    applyThreshold(sourceType: string, sourceOrigin: Point, externalRadius: number): boolean;
 
-    override activateListeners(): void;
+    override control(options?: Wall.ControlOptions | undefined): boolean;
 
     /**
-     * Draw a directional prompt icon for one-way walls to illustrate their direction of effect.
-     * @returns The drawn icon
-     * @internal
+     * @param options - unused
      */
-    protected _drawDirection(): PIXI.Sprite | null;
-
-    override refresh(): this;
-
-    /**
-     * Compute an approximate Polygon which encloses the line segment providing a specific hitArea for the line
-     * @param coords - The original wall coordinates
-     * @param pad    - The amount of padding to apply
-     * @returns A constructed Polygon for the line
-     * @internal
-     */
-    protected _getWallHitPolygon(coords: [number, number, number, number], pad: number): PIXI.Polygon;
+    protected override _destroy(options?: PIXI.IDestroyOptions | boolean): void;
 
     /**
      * Given the properties of the wall - decide upon a color to render the wall for display on the WallsLayer
      * @internal
      */
     protected _getWallColor(): number;
-
-    /**
-     * @param chain - (default: `false`)
-     */
-    protected override _onControl({ chain }?: PlaceableObject.ControlOptions & { chain?: boolean }): void;
-
-    protected override _onRelease(options?: PlaceableObject.ReleaseOptions): void;
-
-    override destroy(options?: Parameters<PlaceableObject["destroy"]>[0]): void;
 
     /**
      * Test whether the Wall direction lies between two provided angles
@@ -211,11 +217,12 @@ declare global {
      */
     protected _identifyIntersectionsWith(other: InstanceType<ConfiguredDocumentClassForName<"Wall">>): void;
 
+    protected override _applyRenderFlags(flags: Wall.RenderFlags): void;
+
     /**
-     * Remove this wall's intersections.
-     * @internal
+     * Given the properties of the wall - decide upon a color to render the wall for display on the WallsLayer
      */
-    protected _removeIntersections(): void;
+    protected _getWallColor(): number;
 
     protected override _onCreate(
       data: foundry.data.WallData["_source"],
@@ -232,16 +239,20 @@ declare global {
     protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
 
     /**
-     * Callback actions when a wall that contains a door is moved or its state is changed
-     * @param doorChange - Update vision and sound restrictions
-     *                     (default: `false`)
+     * Play a door interaction sound.
+     * This plays locally, each client independently applies this workflow.
+     * @param interaction - The door interaction: "open", "close", "lock", "unlock", or "test".
      * @internal
      */
-    protected _onModifyWall(doorChange?: boolean): Promise<void>;
+    protected _playDoorSound(interaction: Wall.DoorInteraction): void;
+
+    protected override _createInteractionManager(): NonNullable<this["mouseInteractionManager"]>;
+
+    override activateListeners(): void;
 
     protected override _canControl(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
 
-    protected override _onHoverIn(event: PIXI.FederatedEvent, options?: HoverInOptions): false | void;
+    protected override _onHoverIn(event: PIXI.FederatedEvent, options?: PlaceableObject.HoverInOptions): false | void;
 
     protected override _onHoverOut(event: PIXI.FederatedEvent): false | void;
 
@@ -262,6 +273,30 @@ declare global {
     protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
     protected override _onDragLeftDrop(event: PIXI.FederatedEvent): Promise<any>;
+
+    /**
+     * @remarks Not used for `Wall`
+     */
+    controlIcon: null;
+  }
+
+  namespace Wall {
+    interface RenderFlags extends PlaceableObject.RenderFlags {
+      refreshLine: boolean;
+
+      refreshEndpoints: boolean;
+
+      refreshDirection: boolean;
+
+      refreshHighlight: boolean;
+    }
+
+    interface ControlOptions extends PlaceableObject.ControlOptions {
+      /** @defaultValue `false` */
+      chain: boolean;
+    }
+
+    type DoorInteraction = "open" | "close" | "lock" | "unlock" | "test";
   }
 }
 

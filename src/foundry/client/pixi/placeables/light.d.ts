@@ -1,6 +1,8 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes";
 import { DocumentModificationOptions } from "../../../common/abstract/document.mjs";
 
+export {};
+
 declare global {
   /**
    * An AmbientLight is an implementation of PlaceableObject which represents a dynamic light source within the Scene.

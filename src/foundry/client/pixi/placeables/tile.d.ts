@@ -2,6 +2,8 @@ import type { ConfiguredDocumentClass, ConfiguredObjectClassForName } from "../.
 import { DocumentModificationOptions } from "../../../common/abstract/document.mjs";
 import type { TileDataConstructorData } from "../../../common/data/data.mjs/tileData";
 
+export {};
+
 declare global {
   /**
    * A Tile is an implementation of PlaceableObject which represents a static piece of artwork or prop within the Scene.
