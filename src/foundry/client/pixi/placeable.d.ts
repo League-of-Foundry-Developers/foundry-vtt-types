@@ -188,7 +188,7 @@ declare global {
      * @returns The cleared object
      * @remarks Some subclasses return void
      */
-    clear(): this | null;
+    clear(): this | void;
 
     override destroy(options?: Parameters<PIXI.Container["destroy"]>[0]): void;
 
