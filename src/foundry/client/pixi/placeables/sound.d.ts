@@ -4,6 +4,8 @@ import type { DocumentModificationOptions } from "../../../common/abstract/docum
 declare global {
   /**
    * An AmbientSound is an implementation of PlaceableObject which represents a dynamic audio source within the Scene.
+   * @see {@link AmbientSoundDocument}
+   * @see {@link SoundsLayer}
    */
   class AmbientSound extends PlaceableObject<InstanceType<ConfiguredDocumentClassForName<"AmbientSound">>> {
     constructor(document: InstanceType<ConfiguredDocumentClassForName<"AmbientSound">>);
@@ -20,11 +22,22 @@ declare global {
 
     static override embeddedName: "AmbientSound";
 
-    /**
-     * Create a Sound used to play this AmbientSound object
-     * @internal
-     */
-    protected _createSound(): Sound | null;
+    static override RENDER_FLAGS: {
+      /** @defaultValue `{propagate: ["refresh"]}` */
+      redraw: RenderFlag<AmbientSound.RenderFlags>;
+
+      /** @defaultValue `{propagate: ["refreshField"], alias: true}` */
+      refresh: RenderFlag<AmbientSound.RenderFlags>;
+
+      /** @defaultValue `{propagate: ["refreshPosition", "refreshState"]}` */
+      refreshField: RenderFlag<AmbientSound.RenderFlags>;
+
+      /** @defaultValue `{}` */
+      refreshPosition: RenderFlag<AmbientSound.RenderFlags>;
+
+      /** @defaultValue `{}` */
+      refreshState: RenderFlag<AmbientSound.RenderFlags>;
+    };
 
     /**
      * Is this ambient sound is currently audible based on its hidden state and the darkness level of the Scene?
@@ -53,23 +66,14 @@ declare global {
 
     override clear(): this;
 
-    override draw(): Promise<this>;
-
-    override destroy(options?: Parameters<PlaceableObject["destroy"]>[0]): void;
+    protected override _draw(): Promise<void>;
 
     /**
-     * Draw the graphical preview of the audio source area of effect
-     * @internal
+     * @param options - unused
      */
-    drawField(): PIXI.Container;
+    protected override _destroy(options?: PIXI.IDestroyOptions | boolean): void;
 
-    /**
-     * Draw the ControlIcon for the AmbientLight
-     * @internal
-     */
-    protected _drawControlIcon(): ControlIcon;
-
-    override refresh(): this;
+    protected _applyRenderFlags(flags: AmbientSound.RenderFlags): void;
 
     /**
      * Refresh the display of the ControlIcon for this AmbientSound source
@@ -103,9 +107,17 @@ declare global {
     protected override _onClickRight(event: PIXI.FederatedEvent): void;
 
     protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
+
+    protected override _onDragEnd(): void;
   }
 
   namespace AmbientSound {
+    interface RenderFlags extends PlaceableObject.RenderFlags {
+      refreshField: boolean;
+
+      refreshPosition: boolean;
+    }
+
     interface SyncOptions {
       /**
        * A duration in milliseconds to fade volume transition

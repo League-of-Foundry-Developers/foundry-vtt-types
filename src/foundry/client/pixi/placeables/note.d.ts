@@ -6,28 +6,30 @@ declare global {
   /**
    * A Note is an implementation of PlaceableObject which represents an annotated location within the Scene.
    * Each Note links to a JournalEntry document and represents its location on the map.
+   * @see {@link NoteDocument}
+   * @see {@link NotesLayer}
    */
   class Note extends PlaceableObject<InstanceType<ConfiguredDocumentClass<typeof NoteDocument>>> {
     static override embeddedName: "Note";
 
     static override RENDER_FLAGS: {
       /** @defaultValue `{propagate: ["refresh"]}` */
-      redraw: RenderFlag<Note.NoteRenderFlags>;
+      redraw: RenderFlag<Note.RenderFlags>;
 
       /** @defaultValue `{propagate: ["refreshState", "refreshPosition", "refreshText"], alias: true}` */
-      refresh: RenderFlag<Note.NoteRenderFlags>;
+      refresh: RenderFlag<Note.RenderFlags>;
 
       /** @defaultValue `{propagate: ["refreshVisibility"]}` */
-      refreshPosition: RenderFlag<Note.NoteRenderFlags>;
+      refreshPosition: RenderFlag<Note.RenderFlags>;
 
       /** @defaultValue `{propagate: ["refreshVisibility"]}` */
-      refreshState: RenderFlag<Note.NoteRenderFlags>;
+      refreshState: RenderFlag<Note.RenderFlags>;
 
       /** @defaultValue `{}` */
-      refreshVisibility: RenderFlag<Note.NoteRenderFlags>;
+      refreshVisibility: RenderFlag<Note.RenderFlags>;
 
       /** @defaultValue `{}` */
-      refreshText: RenderFlag<Note.NoteRenderFlags>;
+      refreshText: RenderFlag<Note.RenderFlags>;
     };
 
     override get bounds(): Rectangle;
@@ -81,7 +83,7 @@ declare global {
      */
     protected _getTextStyle(): PIXI.TextStyle;
 
-    protected override _applyRenderFlags(flags: Note.NoteRenderFlags): void;
+    protected override _applyRenderFlags(flags: Note.RenderFlags): void;
 
     /**
      * Refresh the visibility.
@@ -100,7 +102,7 @@ declare global {
   }
 
   namespace Note {
-    interface NoteRenderFlags extends PlaceableObject.PlaceableObjectRenderFlags {
+    interface RenderFlags extends PlaceableObject.RenderFlags {
       refreshPosition: boolean;
 
       refreshVisibility: boolean;

@@ -4,6 +4,8 @@ import { DocumentModificationOptions } from "../../../common/abstract/document.m
 declare global {
   /**
    * An AmbientLight is an implementation of PlaceableObject which represents a dynamic light source within the Scene.
+   * @see {@link AmbientLightDocument}
+   * @see {@link LightingLayer}
    */
   class AmbientLight extends PlaceableObject<InstanceType<ConfiguredDocumentClassForName<"AmbientLight">>> {
     constructor(document: InstanceType<ConfiguredDocumentClassForName<"AmbientLight">>);
@@ -23,19 +25,19 @@ declare global {
 
     static override RENDER_FLAGS: {
       /** @defaultValue `{propagate: ["refresh"]}` */
-      redraw: RenderFlag<AmbientLight.AmbientLightRenderFlags>;
+      redraw: RenderFlag<AmbientLight.RenderFlags>;
 
       /** @defaultValue `{propagate: ["refreshField"], alias: true}` */
-      refresh: RenderFlag<AmbientLight.AmbientLightRenderFlags>;
+      refresh: RenderFlag<AmbientLight.RenderFlags>;
 
       /** @defaultValue `{propagate: ["refreshPosition", "refreshState"]}` */
-      refreshField: RenderFlag<AmbientLight.AmbientLightRenderFlags>;
+      refreshField: RenderFlag<AmbientLight.RenderFlags>;
 
       /** @defaultValue `{}` */
-      refreshPosition: RenderFlag<AmbientLight.AmbientLightRenderFlags>;
+      refreshPosition: RenderFlag<AmbientLight.RenderFlags>;
 
       /** @defaultValue `{}` */
-      refreshState: RenderFlag<PlaceableObject.PlaceableObjectRenderFlags>;
+      refreshState: RenderFlag<PlaceableObject.RenderFlags>;
     };
 
     override get bounds(): PIXI.Rectangle;
@@ -86,7 +88,7 @@ declare global {
      */
     protected override _draw(options?: Record<string, unknown>): Promise<void>;
 
-    protected override _applyRenderFlags(flags: AmbientLight.AmbientLightRenderFlags): void;
+    protected override _applyRenderFlags(flags: AmbientLight.RenderFlags): void;
 
     /**
      * Refresh the display of the ControlIcon for this AmbientLight source
@@ -139,7 +141,7 @@ declare global {
   }
 
   namespace AmbientLight {
-    interface AmbientLightRenderFlags extends PlaceableObject.PlaceableObjectRenderFlags {
+    interface RenderFlags extends PlaceableObject.RenderFlags {
       refreshField: boolean;
 
       refreshPosition: boolean;

@@ -41,25 +41,25 @@ declare global {
 
     static override RENDER_FLAGS: {
       /** @defaultValue `{propagate: ["refresh"]}` */
-      redraw: RenderFlag<Drawing.DrawingRenderFlags>;
+      redraw: RenderFlag<Drawing.RenderFlags>;
 
       /** @defaultValue `{propagate: ["refreshState", "refreshShape"], alias: true}` */
-      refresh: RenderFlag<Drawing.DrawingRenderFlags>;
+      refresh: RenderFlag<Drawing.RenderFlags>;
 
       /** @defaultValue `{propagate: ["refreshFrame"]}` */
-      refreshState: RenderFlag<Drawing.DrawingRenderFlags>;
+      refreshState: RenderFlag<Drawing.RenderFlags>;
 
       /** @defaultValue `{propagate: ["refreshFrame", "refreshText", "refreshMesh"]}` */
-      refreshShape: RenderFlag<Drawing.DrawingRenderFlags>;
+      refreshShape: RenderFlag<Drawing.RenderFlags>;
 
       /** @defaultValue `{}` */
-      refreshFrame: RenderFlag<Drawing.DrawingRenderFlags>;
+      refreshFrame: RenderFlag<Drawing.RenderFlags>;
 
       /** @defaultValue `{}` */
-      refreshText: RenderFlag<Drawing.DrawingRenderFlags>;
+      refreshText: RenderFlag<Drawing.RenderFlags>;
 
       /** @defaultValue `{}` */
-      refreshMesh: RenderFlag<Drawing.DrawingRenderFlags>;
+      refreshMesh: RenderFlag<Drawing.RenderFlags>;
     };
 
     /**
@@ -116,7 +116,7 @@ declare global {
      */
     protected _getTextStyle(): PIXI.TextStyle;
 
-    protected override _applyRenderFlags(flags: Drawing.DrawingRenderFlags): void;
+    protected override _applyRenderFlags(flags: Drawing.RenderFlags): void;
 
     /**
      * Add a new polygon point to the drawing, ensuring it differs from the last one
@@ -267,7 +267,7 @@ declare global {
   }
 
   namespace Drawing {
-    interface DrawingRenderFlags extends PlaceableObject.PlaceableObjectRenderFlags {
+    interface RenderFlags extends PlaceableObject.RenderFlags {
       refreshShape: boolean;
 
       refreshFrame: boolean;
