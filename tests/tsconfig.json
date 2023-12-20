@@ -1,7 +1,0 @@
-{
-  "extends": "../tsconfig.json",
-  "compilerOptions": {
-    "module": "esnext"
-  },
-  "include": ["../index.d.ts", "./foundry", "./types", "./custom"]
-}
