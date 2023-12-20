@@ -239,6 +239,11 @@ declare global {
      * @remarks "Tile#_getAlphaBounds has been deprecated in favor of PrimaryCanvasObject#_getAlphaBounds"
      */
     _getAlphaBounds(): unknown;
+
+    /**
+     * @remarks Not used
+     */
+    controlIcon: null;
   }
 
   namespace Tile {

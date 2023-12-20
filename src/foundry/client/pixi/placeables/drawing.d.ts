@@ -266,6 +266,11 @@ declare global {
     static normalizeShape(
       data: Pick<foundry.data.DrawingData["_source"], "x" | "y" | "width" | "height" | "points">,
     ): Pick<foundry.data.DrawingData["_source"], "x" | "y" | "width" | "height" | "points">;
+
+    /**
+     * @remarks Not used
+     */
+    controlIcon: null;
   }
 
   namespace Drawing {

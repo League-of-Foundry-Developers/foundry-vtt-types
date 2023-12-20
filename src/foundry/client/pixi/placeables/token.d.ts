@@ -595,7 +595,7 @@ declare global {
     protected override _onDragEnd(): void;
 
     /**
-     * @remarks This does not exist in foundry. It marks the controlIcon as not used because `Token` does never store a value here.
+     * @remarks Not used
      */
     controlIcon: null;
 

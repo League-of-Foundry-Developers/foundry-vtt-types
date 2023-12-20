@@ -32,7 +32,7 @@ declare global {
     /**
      * The template control icon
      */
-    controlIcon: ControlIcon;
+    controlIcon: ControlIcon | undefined;
 
     /**
      * The measurement ruler label

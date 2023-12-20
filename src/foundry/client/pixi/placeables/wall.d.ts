@@ -275,7 +275,7 @@ declare global {
     protected override _onDragLeftDrop(event: PIXI.FederatedEvent): Promise<any>;
 
     /**
-     * @remarks Not used for `Wall`
+     * @remarks Not used
      */
     controlIcon: null;
   }
