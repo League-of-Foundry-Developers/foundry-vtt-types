@@ -18,7 +18,7 @@ declare global {
     /**
      * The current global light source.
      */
-    globalLightSource: GlobalLightSource<any>;
+    globalLightSource: GlobalLightSource;
 
     /**
      * Whether to currently animate light sources.
@@ -33,12 +33,12 @@ declare global {
     /**
      * A mapping of light sources which are active within the rendered Scene.
      */
-    lightSources: Collection<LightSource<any>>;
+    lightSources: Collection<LightSource>;
 
     /**
      * A Collection of vision sources which are currently active within the rendered Scene.
      */
-    visionSources: Collection<VisionSource<any>>;
+    visionSources: Collection<VisionSource>;
 
     /**
      * A set of vision mask filters used in visual effects group
