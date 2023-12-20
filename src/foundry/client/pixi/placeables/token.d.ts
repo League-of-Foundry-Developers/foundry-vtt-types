@@ -99,18 +99,6 @@ declare global {
     protected _animation: Promise<number> | null;
 
     /**
-     * A linked ObjectHUD element which is synchronized with the location and visibility of this Token
-     * @defaultValue `new ObjectHUD(this);`
-     */
-    hud: Token.ObjectHUD;
-
-    /** @defaultValue `undefined` */
-    texture?: PIXI.Texture | null;
-
-    /** @defaultValue `undefined` */
-    icon?: PIXI.Sprite;
-
-    /**
      * A convenient reference to the Actor object associated with the Token embedded document.
      */
     get actor(): this["document"]["actor"];
@@ -274,7 +262,7 @@ declare global {
 
     /**
      * Render the bound mesh detection filter.
-     * Note: this method does not verify that the detection filter exists.\
+     * Note: this method does not verify that the detection filter exists.
      */
     protected _renderDetectionFilter(renderer: PIXI.Renderer): void;
 
@@ -509,39 +497,29 @@ declare global {
     ): Promise<boolean>;
 
     /**
-     * A helper function to toggle the overlay status icon on the Token
-     * @internal
-     */
-    protected _toggleOverlayEffect(texture: string, { active }?: { active: boolean }): Promise<this>;
-
-    /**
      * Toggle the visibility state of any Tokens in the currently selected set
      * @returns A Promise which resolves to the updated Token documents
      */
     toggleVisibility(): Promise<InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>[]>;
 
     /**
-     * Return the token's sight origin, tailored for the direction of their movement velocity to break ties with walls
+     * The external radius of the token in pixels.
      */
-    getSightOrigin(): {
-      x: number;
-      y: number;
-    };
+    get externalRadius(): number;
 
     /**
      * A generic transformation to turn a certain number of grid units into a radius in canvas pixels.
-     * This function adds additional padding to the light radius equal to half the token width.
+     * This function adds additional padding to the light radius equal to the external radius of the token.
      * This causes light to be measured from the outer token edge, rather than from the center-point.
      * @param units - The radius in grid units
-     * @returns The radius in canvas units
+     * @returns The radius in pixels
      */
     getLightRadius(units: number): number;
 
     protected override _getShiftedPosition(dx: number, dy: number): { x: number; y: number };
 
-    override rotate(...args: Parameters<PlaceableObject["rotate"]>): Promise<this>;
-
     protected override _onCreate(
+      data: unknown,
       options: InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>["data"]["_source"],
       userId: DocumentModificationOptions,
     ): void;
@@ -555,10 +533,14 @@ declare global {
     protected override _onDelete(options?: DocumentModificationOptions, userId?: string): void;
 
     /**
-     * @param releaseOthers - (default: `true`)
-     * @param pan           - (default: `false`)
+     * Handle changes to Token behavior when a significant status effect is applied
+     * @param statusId - The status effect ID being applied, from CONFIG.specialStatusEffects
+     * @param active   - Is the special status effect now active?
+     * @internal
      */
-    protected override _onControl({ releaseOthers, pan }?: { releaseOthers?: boolean; pan?: boolean }): void;
+    _onApplyStatusEffect(statusId: string, active: boolean): void;
+
+    protected override _onControl(options?: Token.ControlOptions): void;
 
     protected override _onRelease(
       options: PlaceableObject.ReleaseOptions,
@@ -608,11 +590,51 @@ declare global {
 
     protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
-    protected override _onDragLeftCancel(event: PIXI.FederatedEvent): void;
+    protected override _onDragEnd(): void;
+
     /**
      * @remarks This does not exist in foundry. It marks the controlIcon as not used because `Token` does never store a value here.
      */
     controlIcon: null;
+
+    /**
+     * @deprecated since v10, will be removed in v12
+     * @remarks `"Token#hasLimitedVisionAngle has been renamed to Token#hasLimitedSourceAngle"`
+     */
+    get hasLimitedVisionAngle(): boolean;
+
+    /**
+     * @deprecated since v10, will be removed in v12
+     * @remarks `"Token#getSightOrigin has been deprecated in favor of Token#getMovementAdjustedPoint"`
+     */
+    getSightOrigin(): {
+      x: number;
+      y: number;
+    };
+
+    /**
+     * @deprecated since v10, will be removed in v12
+     * @remarks `"Token#icon has been renamed to Token#mesh."`
+     */
+    get icon(): this["mesh"];
+
+    /**
+     * @deprecated since v11, will be removed in v13
+     * @remarks `"Token#updatePosition has been deprecated without replacement as it is no longer required."`
+     */
+    updatePosition(): void;
+
+    /**
+     * @deprecated since v11, will be removed in v13
+     * @remarks "Token#refreshHUD is deprecated in favor of token.renderFlags.set()"
+     */
+    refreshHUD(options?: Token.ObjectHUD): void;
+
+    /**
+     * @deprecated since 11, will be removed in v13
+     * @remarks `"Token#getDisplayAttributes is deprecated in favor of TokenMesh#getDisplayAttributes"`
+     */
+    getDisplayAttributes(): this["mesh"]["getDisplayAttributes"];
   }
 
   namespace Token {
@@ -818,6 +840,11 @@ declare global {
        * @defaultValue `Is this target being set as part of a group selection workflow?`
        */
       groupSelection?: boolean | undefined;
+    }
+
+    interface ControlOptions extends PlaceableObject.ControlOptions {
+      /** @defaultValue `false` */
+      pan?: boolean;
     }
   }
 
