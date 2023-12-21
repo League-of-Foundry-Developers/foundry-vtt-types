@@ -1900,5 +1900,6 @@ interface CanvasGroupConstructor extends PixiContainerConstructor {
   groupName?: string;
 }
 
+// TODO: Replace after https://github.com/microsoft/TypeScript/issues/17867 is resolved
 type ToSpriteConstructor<Class extends new (sprite?: SpriteMesh) => any> = Pick<Class, keyof Class> &
   (new (sprite: SpriteMesh) => InstanceType<Class>);
