@@ -1892,7 +1892,7 @@ interface CanvasGroup extends PIXI.Container {
 }
 
 interface CanvasGroupConstructor extends PixiContainerConstructor {
-  new (...args: any[]): CanvasGroup;
+  new (): CanvasGroup;
 
   /**
    * The name of this canvas group
