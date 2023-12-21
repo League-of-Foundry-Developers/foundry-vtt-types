@@ -34,8 +34,7 @@ declare global {
    * @param ContainerClass - The parent Container class being mixed.
    * @returns A ContainerClass subclass mixed with BaseCanvasMixin features.
    */
-  function BaseCanvasMixin<
-    BaseClass extends Pick<typeof PIXI.Container, keyof typeof PIXI.Container> &
-      (new (...args: any[]) => PIXI.Container),
-  >(ContainerClass: BaseClass): Mixin<typeof BaseCanvasMixinClass, BaseClass>;
+  function BaseCanvasMixin<BaseClass extends AnyConstructor<typeof PIXI.Container>>(
+    ContainerClass: BaseClass,
+  ): Mixin<typeof BaseCanvasMixinClass, BaseClass>;
 }

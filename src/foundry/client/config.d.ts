@@ -1789,10 +1789,7 @@ declare global {
         [key: string]: LayerDefinition;
       }
 
-      interface GroupDefinition<
-        GroupClass extends Pick<CanvasGroupConstructor, keyof CanvasGroupConstructor> &
-          (new (...args: any[]) => InstanceType<CanvasGroupConstructor>) = CanvasGroupConstructor,
-      > {
+      interface GroupDefinition<GroupClass extends AnyConstructor<CanvasGroupConstructor> = CanvasGroupConstructor> {
         groupClass: GroupClass;
         parent: string;
       }

@@ -142,6 +142,9 @@ type PropertyTypeOrFallback<T, Key extends string, Fallback> = Key extends keyof
  */
 type RequiredProps<T, K extends keyof T> = Required<Pick<T, K>> & Omit<T, K>;
 
+type AnyConstructor<Class extends new (...args: any[]) => any> = Pick<Class, keyof Class> &
+  (new (...args: any) => InstanceType<Class>);
+
 type Mixin<
   MixinClass extends new (...args: any[]) => any,
   BaseClass extends abstract new (...args: any[]) => any,
