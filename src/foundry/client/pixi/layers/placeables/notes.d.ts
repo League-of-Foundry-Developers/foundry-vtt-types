@@ -1,4 +1,4 @@
-import { DropData } from "../../data/abstract/client-document";
+import { DropData } from "../../../data/abstract/client-document";
 
 declare global {
   /**

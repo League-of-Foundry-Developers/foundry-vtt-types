@@ -4,8 +4,10 @@ import {
   ConfiguredDocumentClassForName,
   PlaceableDocumentType,
   ConstructorDataType,
-} from "../../../types/helperTypes";
-import EmbeddedCollection from "../../common/abstract/embedded-collection.mjs";
+} from "../../../../../types/helperTypes.js";
+import EmbeddedCollection from "../../../../common/abstract/embedded-collection.mjs.js";
+
+export {};
 
 type ConcretePlaceableOrPlaceableObject<T> = T extends PlaceableObject ? T : PlaceableObject;
 

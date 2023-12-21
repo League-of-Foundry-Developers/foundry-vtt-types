@@ -1,5 +1,5 @@
-import { ConfiguredDocumentClass, ConfiguredObjectClassForName } from "../../../../types/helperTypes";
-import { PasteOptions } from "../placeables";
+import { ConfiguredDocumentClass, ConfiguredObjectClassForName } from "../../../../../types/helperTypes";
+import { PasteOptions } from "../../placeables";
 
 declare global {
   /**

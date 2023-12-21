@@ -1,5 +1,3 @@
-type InteractionLayer = unknown; // FIXME: remove when created
-
 /**
  * A class responsible for managing defined game keybinding.
  * Each keybinding is a string key/value pair belonging to a certain namespace and a certain store scope.

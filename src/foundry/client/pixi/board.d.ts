@@ -2,20 +2,10 @@ import { ConfiguredDocumentClass } from "../../../types/helperTypes";
 import type { CANVAS_PERFORMANCE_MODES } from "../../common/constants.mjs";
 import type Color from "../../common/utils/color.mjs";
 
-type FogManager = unknown; // FIXME: Remove once FogManager is typed
-
 // FIXME: Remove once CanvasColorManager is typed
 type CanvasColorManager = {
   colors: Record<string, Color>;
 };
-
-type FramebufferSnapshot = unknown; // FIXME: Remove once FramebufferSnapshot is typed
-
-type HiddenCanvasGroup = unknown; // FIXME: Remove once HiddenCanvasGroup is typed
-type RenderedCanvasGroup = unknown; // FIXME: Remove once RenderedCanvasGroup is typed
-type EnvironmentCanvasGroup = unknown; // FIXME: Remove once EnvironmentCanvasGroup is typed
-
-type TilesLayer = unknown; // FIXME: Remove once TilesLayer is typed
 
 declare global {
   /**

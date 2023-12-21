@@ -1,5 +1,7 @@
-import { ConfiguredDocumentClass, ConfiguredObjectClassForName } from "../../../../types/helperTypes";
-import { SelectOptions } from "../placeables";
+import { ConfiguredDocumentClass, ConfiguredObjectClassForName } from "../../../../../types/helperTypes";
+// import { SelectOptions } from "../base/placeables-layer";
+
+type SelectOptions = unknown;
 
 declare global {
   /**
