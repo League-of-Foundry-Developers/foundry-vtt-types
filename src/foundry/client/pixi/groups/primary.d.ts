@@ -17,6 +17,11 @@ declare global {
     constructor(sprite: SpriteMesh);
 
     /**
+     * @defaultValue `"primary"`
+     */
+    static override groupName: string;
+
+    /**
      * @defaultValue `"none"`
      */
     override eventMode: PIXI.EventMode;

@@ -1789,7 +1789,10 @@ declare global {
         [key: string]: LayerDefinition;
       }
 
-      interface GroupDefinition<GroupClass extends CanvasGroupConstructor = CanvasGroupConstructor> {
+      interface GroupDefinition<
+        GroupClass extends Pick<CanvasGroupConstructor, keyof CanvasGroupConstructor> &
+          (new (...args: any[]) => InstanceType<CanvasGroupConstructor>) = CanvasGroupConstructor,
+      > {
         groupClass: GroupClass;
         parent: string;
       }
@@ -1889,10 +1892,11 @@ interface CanvasGroup extends PIXI.Container {
 }
 
 interface CanvasGroupConstructor extends PixiContainerConstructor {
-  new (): CanvasGroup;
+  new (...args: any[]): CanvasGroup;
 
   /**
    * The name of this canvas group
+   * @remarks Not used in EffectsCanvasGroup in v11
    */
-  groupName: string;
+  groupName?: string;
 }
