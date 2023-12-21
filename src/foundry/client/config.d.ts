@@ -1789,8 +1789,10 @@ declare global {
         [key: string]: LayerDefinition;
       }
 
-      interface GroupDefinition<GroupClass extends AnyConstructor<CanvasGroupConstructor> = CanvasGroupConstructor> {
-        groupClass: AnyConstructor<GroupClass>;
+      interface GroupDefinition<
+        GroupClass extends ToSpriteConstructor<CanvasGroupConstructor> = ToSpriteConstructor<CanvasGroupConstructor>,
+      > {
+        groupClass: GroupClass;
         parent: string;
       }
 
@@ -1889,7 +1891,7 @@ interface CanvasGroup extends PIXI.Container {
 }
 
 interface CanvasGroupConstructor extends PixiContainerConstructor {
-  new (sprite: SpriteMesh): CanvasGroup;
+  new (): CanvasGroup;
 
   /**
    * The name of this canvas group
@@ -1897,3 +1899,6 @@ interface CanvasGroupConstructor extends PixiContainerConstructor {
    */
   groupName?: string;
 }
+
+type ToSpriteConstructor<Class extends new (sprite?: SpriteMesh) => any> = Pick<Class, keyof Class> &
+  (new (sprite: SpriteMesh) => InstanceType<Class>);
