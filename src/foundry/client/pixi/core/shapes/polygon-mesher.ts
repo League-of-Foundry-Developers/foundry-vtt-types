@@ -7,8 +7,8 @@ declare global {
    */
   class PolygonMesher {
     /**
-     * @param poly   - Closed polygon to be processed and converted to a mesh
-     *                 (array of points or PIXI Polygon)
+     * @param poly    - Closed polygon to be processed and converted to a mesh
+     *                  (array of points or PIXI Polygon)
      * @param options - Various options : normalizing, offsetting, add depth, ...
      */
     constructor(poly: number[] | PIXI.Polygon, options?: InexactPartial<PolygonMesherOptions>);
