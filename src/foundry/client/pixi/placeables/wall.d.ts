@@ -68,7 +68,7 @@ declare global {
     /**
      * A convenience reference to the coordinates Array for the Wall endpoints, [x0,y0,x1,y1].
      */
-    get coords(): Wall["document"]["c"];
+    get coords(): [x0: number, y0: number, x1: number, y1: number]; // Wall["document"]["c"];
 
     /**
      * The endpoints of the wall expressed as {@link PolygonVertex} instances.

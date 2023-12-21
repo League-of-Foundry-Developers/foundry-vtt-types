@@ -520,12 +520,10 @@ declare global {
 
     protected override _getShiftedPosition(dx: number, dy: number): { x: number; y: number };
 
-    protected override _onCreate(
-      data: unknown,
-      options: InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>["data"]["_source"],
-      userId: DocumentModificationOptions,
-    ): void;
+    // TODO: Fix after Token is all cleaned up
+    protected override _onCreate(data: unknown, options: unknown, userId: string): void;
 
+    // TODO: Fix after Token is all cleaned up
     protected override _onUpdate(
       data?: DeepPartial<InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>["data"]["_source"]>,
       options?: DocumentModificationOptions & { animate?: boolean },
