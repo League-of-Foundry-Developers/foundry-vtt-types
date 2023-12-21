@@ -8,7 +8,7 @@ declare global {
    * The Drawing object is an implementation of the PlaceableObject container.
    * Each Drawing is a placeable object in the DrawingsLayer.
    */
-  class Drawing extends PlaceableObject<InstanceType<ConfiguredDocumentClass<typeof DrawingDocument>>> {
+  class Drawing extends PlaceableObject<any> {
     constructor(document: InstanceType<ConfiguredDocumentClass<typeof DrawingDocument>>);
 
     /**
