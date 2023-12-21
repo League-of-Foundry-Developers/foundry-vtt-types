@@ -5,7 +5,6 @@ import type {
 } from "../../../../types/helperTypes";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.mjs";
 import type { LineIntersection } from "../../../common/utils/geometry.mjs";
-import type { HoverInOptions } from "../placeable";
 
 export {};
 
