@@ -4,7 +4,7 @@ declare global {
   /**
    * A shader used to control channels intensity using an externally provided mask texture.
    */
-  //@ts-expect-error Foundry overrode the fragmentShader string property with a method that returns a string
+  // @ts-expect-error Foundry overrode the fragmentShader string property with a method that returns a string
   class InverseOcclusionSamplerShader extends BaseSamplerShader {
     /**
      * @defaultValue `null`

@@ -8,7 +8,6 @@ class TestShader extends AbstractBaseShader {
   defaults: AbstractBaseShader["_defaults"];
 }
 
-// const testShader = TestShader.create();
 expectTypeOf(TestShader.defaultUniforms.foo).toEqualTypeOf<AbstractBaseShader.UniformValue>();
 expectTypeOf(TestShader.defaultUniforms.bar).toEqualTypeOf<AbstractBaseShader.UniformValue>();
 

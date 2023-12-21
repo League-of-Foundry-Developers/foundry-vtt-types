@@ -160,8 +160,7 @@ declare global {
    * A subclass of Quadtree specifically intended for classifying the location of objects on the game canvas.
    */
   class CanvasQuadtree extends Quadtree<object> {
-    // @ts-expect-error Override monkeypatch executed in class constructor
-    get bounds(): SceneDimensions["rect"];
+    readonly bounds: SceneDimensions["rect"];
   }
 
   namespace Quadtree {

@@ -8,13 +8,13 @@ declare global {
     /**
      * @param horizontal - If the pass is horizontal (true) or vertical (false).
      * @param strength   - Strength of the blur (distance of sampling).
-     *                     (default: 8)
+     *                     (default: `8`)
      * @param quality    - Number of passes to generate the blur. More passes = Higher quality = Lower Perf.
-     *                     (default: 4)
+     *                     (default: `4`)
      * @param resolution - Resolution of the filter.
      *                     (default: PIXI.Filter.defaultResolution)
      * @param kernelSize - Number of kernels to use. More kernels = Higher quality = Lower Perf.
-     *                     (default: 5)
+     *                     (default: `5`)
      */
     constructor(horizontal: boolean, strength?: number, quality?: number, resolution?: number, kernelSize?: number);
 
@@ -98,13 +98,13 @@ declare global {
      *
      * @param horizontal - If the pass is horizontal (true) or vertical (false).
      * @param strength   - Strength of the blur (distance of sampling).
-     *                     (default: 8)
+     *                     (default: `8`)
      * @param quality    - Number of passes to generate the blur. More passes = Higher quality = Lower Perf.
-     *                     (default: 4)
+     *                     (default: `4`)
      * @param resolution - Resolution of the filter.
      *                     (default: PIXI.Filter.defaultResolution)
      * @param kernelSize - Number of kernels to use. More kernels = Higher quality = Lower Perf.
-     *                     (default: 5)
+     *                     (default: `5`)
      */
     constructor(strength?: number, quality?: number, resolution?: number, kernelSize?: number);
 
