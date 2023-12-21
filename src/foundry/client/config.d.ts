@@ -1790,7 +1790,7 @@ declare global {
       }
 
       interface GroupDefinition<GroupClass extends AnyConstructor<CanvasGroupConstructor> = CanvasGroupConstructor> {
-        groupClass: GroupClass;
+        groupClass: AnyConstructor<GroupClass>;
         parent: string;
       }
 
@@ -1889,7 +1889,7 @@ interface CanvasGroup extends PIXI.Container {
 }
 
 interface CanvasGroupConstructor extends PixiContainerConstructor {
-  new (): CanvasGroup;
+  new (sprite: SpriteMesh): CanvasGroup;
 
   /**
    * The name of this canvas group
