@@ -1,3 +1,5 @@
+export {};
+
 declare global {
   namespace PIXI {
     interface Graphics {
@@ -5,5 +7,3 @@ declare global {
     }
   }
 }
-
-export {};

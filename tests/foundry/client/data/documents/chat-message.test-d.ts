@@ -1,7 +1,6 @@
-import type { ChatSpeakerData } from "../../../../../src/foundry/common/data/data.mjs/chatSpeakerData";
-import type { ConstructorDataType } from "../../../../../src/types/helperTypes";
-
 import { expectTypeOf } from "vitest";
+import type { ChatSpeakerData } from "../../../../../src/foundry/common/data/data.mjs/chatSpeakerData.mts";
+import type { ConstructorDataType } from "../../../../../src/types/helperTypes.d.ts";
 
 expectTypeOf(new ChatMessage()).toEqualTypeOf<ChatMessage>();
 expectTypeOf(new ChatMessage({})).toEqualTypeOf<ChatMessage>();
@@ -24,9 +23,7 @@ expectTypeOf(ChatMessage.applyRollMode(new foundry.data.ChatMessageData(), "roll
 >();
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace CONFIG {
-    // eslint-disable-next-line @typescript-eslint/no-namespace
     namespace Dice {
       interface RollModes {
         "custom-roll-mode": "Some Custom Roll Mode";

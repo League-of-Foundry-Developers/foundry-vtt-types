@@ -1,4 +1,4 @@
-import * as _SimplePeer from "simple-peer";
+import type * as _SimplePeer from "simple-peer";
 
 declare global {
   namespace SimplePeer {

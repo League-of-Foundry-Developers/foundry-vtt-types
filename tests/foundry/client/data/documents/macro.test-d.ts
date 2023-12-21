@@ -1,5 +1,4 @@
 import { expectTypeOf } from "vitest";
-import "../../../index";
 
 const macro = new Macro({ name: "my macro", scope: "global", type: "script" });
 

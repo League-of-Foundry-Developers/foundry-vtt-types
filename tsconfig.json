@@ -1,6 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig.json",
   "compilerOptions": {
+    "allowImportingTsExtensions": true,
     "allowSyntheticDefaultImports": true,
     "exactOptionalPropertyTypes": true,
     "lib": ["DOM", "ES2020"],
@@ -11,5 +12,5 @@
     "target": "ES2020",
     "verbatimModuleSyntax": true
   },
-  "include": ["index.d.ts"]
+  "include": ["index.mts"]
 }

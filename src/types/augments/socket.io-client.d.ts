@@ -1,4 +1,4 @@
-import * as _io from "socket.io-client";
+import type * as _io from "socket.io-client";
 
 declare global {
   // eslint-disable-next-line no-var

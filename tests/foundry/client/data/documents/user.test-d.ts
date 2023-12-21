@@ -1,6 +1,5 @@
-import type { ConfiguredDocumentClass } from "../../../../../src/types/helperTypes";
-
 import { assertType, expectTypeOf } from "vitest";
+import type { ConfiguredDocumentClass } from "../../../../../src/types/helperTypes.d.ts";
 
 const user = new User({ name: "Test" });
 

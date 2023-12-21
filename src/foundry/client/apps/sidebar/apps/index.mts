@@ -1,0 +1,11 @@
+import "./chat-popout.mts";
+import "./client-settings.mts";
+import "./compendium.mts";
+import "./controls-reference.mts";
+import "./invitation-links.mts";
+import "./keybindings-config.mts";
+import "./module-management.mts";
+import "./permission-config.mts";
+import "./support-details.mts";
+import "./tours-management.mts";
+import "./world-config.mts";

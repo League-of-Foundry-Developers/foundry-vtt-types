@@ -1,3 +1,5 @@
+export {};
+
 declare global {
   /**
    * Some global variables (such as {@link game}) are only initialized after certain events have happened during the
@@ -210,5 +212,3 @@ declare global {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface RequiredModules {}
 }
-
-export {};
