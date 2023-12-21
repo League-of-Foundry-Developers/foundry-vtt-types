@@ -1,12 +1,5 @@
 export {};
 
-/**
- * Add RenderFlags functionality to some other object.
- * This mixin standardizes the interface for such functionality.
- * @remarks Actually a function `RenderFlagsMixin(Base)`
- * @param Base - The base class being mixed
- * @returns The mixed class definition
- */
 declare class RenderFlagObject {
   constructor(...args: any[]);
 
@@ -92,6 +85,12 @@ declare global {
     set(changes: Record<string, boolean>): void;
   }
 
+  /**
+   * Add RenderFlags functionality to some other object.
+   * This mixin standardizes the interface for such functionality.
+   * @param Base - The base class being mixed
+   * @returns The mixed class definition
+   */
   function RenderFlagsMixin<BaseClass extends abstract new (...args: any[]) => any>(
     Base: BaseClass,
   ): Mixin<typeof RenderFlagObject, BaseClass>;

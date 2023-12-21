@@ -43,10 +43,40 @@ declare global {
     ccwEdges: EdgeSet;
 
     /**
+     * The set of vertices collinear to this vertex
+     */
+    collinearVertices: Set<PolygonVertex>;
+
+    /**
      * The maximum restriction type of this vertex
      * @defaultValue `null`
      */
     type: number | null;
+
+    /**
+     * Is this vertex an endpoint of one or more edges?
+     */
+    isEndpoint: boolean | undefined;
+
+    /**
+     * Does this vertex have a single counterclockwise limiting edge?
+     */
+    isLimitingCCW: boolean | undefined;
+
+    /**
+     * Does this vertex have a single clockwise limiting edge?
+     */
+    isLimitingCW: boolean | undefined;
+
+    /**
+     * Does this vertex have non-limited edges or 2+ limited edges counterclockwise?
+     */
+    isBlockingCCW: boolean | undefined;
+
+    /**
+     * Does this vertex have non-limited edges or 2+ limited edges clockwise?
+     */
+    isBlockingCW: boolean | undefined;
 
     /**
      * Associate an edge with this vertex.
@@ -64,11 +94,6 @@ declare global {
      * Is this vertex terminal (at the maximum radius)
      */
     get isTerminal(): boolean;
-
-    /**
-     * Does this vertex have a limited edge connected to it?
-     */
-    get hasLimitedEdge(): boolean;
 
     /**declareme point?
      */
@@ -94,6 +119,11 @@ declare global {
    */
   class PolygonEdge {
     constructor(a: Point, b: Point, type: foundry.CONST.WALL_SENSE_TYPES, wall: Wall);
+
+    /**
+     * An internal flag used to record whether an Edge represents a canvas boundary.
+     */
+    protected _isBoundary: boolean;
 
     /**
      * Is this edge limited in type?
@@ -123,7 +153,6 @@ declare global {
       ccwEdges?: EdgeSet;
       isBehind?: boolean;
       isLimited?: boolean;
-      isRequired?: boolean;
       wasLimited?: boolean;
     });
 
@@ -162,102 +191,44 @@ declare global {
     isLimited: boolean | undefined;
 
     /**
-     * Is this result required due to a limited angle?
-     */
-    isRequired: boolean | undefined;
-
-    /**
      * Has the set of collisions for this result encountered a limited edge?
      */
     wasLimited: boolean | undefined;
-  }
-
-  /**
-   * A special subclass of PIXI.Point which is used for modeling Wall endpoints.
-   * A wall endpoint must have integer coordinates.
-   *
-   * This was used for the RadialSweepPolygon but can now be deleted once that is
-   * @deprecated since v9d2
-   */
-  class WallEndpoint extends PIXI.Point {
-    /**
-     * @param x - The integer x-coordinate
-     * @param y - The integer y-coordinate
-     */
-    constructor(x: number, y: number);
 
     /**
-     * Express the point as a 32-bit integer with 16 bits allocated to x and 16 bits allocated to y
-     */
-    key: number;
-
-    /**
-     * The angle between this point and the polygon origin
-     * @defaultValue `undefined`
-     */
-    angle: number | undefined;
-
-    /**
-     * Record the set of walls which connect to this Endpoint
-     */
-    walls: Set<ConfiguredObjectClassForName<"Wall">>;
-
-    /**
-     * Record whether this point is the endpoint of any Wall
+     * Is this result limited in the clockwise direction?
      * @defaultValue `false`
      */
-    isEndpoint: boolean;
+    limitedCW: boolean;
 
     /**
-     * Record whether this point is a midpoint of any wall?
+     * Is this result limited in the counter-clockwise direction?
      * @defaultValue `false`
      */
-    isMidpoint: boolean;
+    limitedCCW: boolean;
 
     /**
-     * Record whether this point is the termination of the Ray
+     * Is this result blocking in the clockwise direction?
      * @defaultValue `false`
      */
-    isTerminal: boolean;
+    blockedCW: boolean;
 
     /**
-     * Aggregate the maximum of each wall restriction type
+     * Is this result blocking in the counter-clockwise direction?
+     * @defaultValue `false`
      */
-    types: Record<foundry.CONST.WALL_RESTRICTION_TYPES, number>;
+    blockedCCW: boolean;
 
     /**
-     * An intermediate variable used to store the proportional distance of this point from a SightRay origin
-     * @defaultValue `undefined`
+     * Previously blocking in the clockwise direction?
+     * @defaultValue `false`
      */
-    protected _r: number | undefined;
+    blockedCWPrev: boolean;
 
     /**
-     * An intermediate variable used to cache the continuation attributes for a certain point
-     * @defaultValue `undefined`
+     * Previously blocking in the counter-clockwise direction?
+     * @defaultValue `false`
      */
-    protected _c: { left: boolean; right: boolean } | undefined;
-
-    attachWall(wall: ConfiguredObjectClassForName<"Wall">): this;
-
-    /**
-     * Does this endpoint equal some other endpoint?
-     * @param other - Some other point with x and y coordinates
-     * @returns Are the points equal?
-     */
-    equals(other: Point): boolean;
-
-    /**
-     * Is this point one that provides only limited perspective?
-     * @param type - The perspective type being tested
-     * @returns Is perspective limited?
-     */
-    isLimited(type: foundry.CONST.WALL_RESTRICTION_TYPES): boolean;
-
-    /**
-     * Encode a x/y coordinate as a 32-bit integer
-     * @param x - The x-coordinate
-     * @param y - The y-coordinate
-     */
-    static getKey(x: number, y: number): number;
+    blockedCCWPrev: boolean;
   }
 }

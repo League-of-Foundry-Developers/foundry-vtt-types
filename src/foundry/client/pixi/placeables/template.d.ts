@@ -99,7 +99,7 @@ declare global {
      * Get a Rectangular area of effect given a width and height
      * @internal
      */
-    protected _getRectShape(direction: number, distance: number): NormalizedRectangle;
+    protected _getRectShape(direction: number, distance: number): PIXI.Rectangle;
 
     /**
      * Get a rotated Rectangular area of effect given a width, height, and direction

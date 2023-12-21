@@ -188,7 +188,7 @@ declare global {
      * Compute the alpha-based bounding box for the tile, including an angle of rotation.
      * @internal
      */
-    protected _getAlphaBounds(): NormalizedRectangle;
+    protected _getAlphaBounds(): PIXI.Rectangle;
 
     /**
      * Create the filter instance used to reverse-mask overhead tiles using radial or vision-based occlusion.
