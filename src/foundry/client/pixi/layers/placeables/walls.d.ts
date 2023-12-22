@@ -1,5 +1,4 @@
 import { ConfiguredDocumentClass, ConfiguredObjectClassForName } from "../../../../../types/helperTypes";
-import { PasteOptions } from "../../placeables";
 
 declare global {
   /**
@@ -140,7 +139,7 @@ declare global {
 
     override pasteObjects(
       position: Point,
-      options?: PasteOptions,
+      options?: Record<string, unknown>,
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseWall>>[]>;
 
     /**
