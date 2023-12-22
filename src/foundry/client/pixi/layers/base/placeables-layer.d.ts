@@ -56,9 +56,12 @@ declare global {
       ConcretePlaceableOrPlaceableObject<InstanceType<ConfiguredObjectClassForName<DocumentName>>>
     > | null;
 
-    static override get layerOptions(): PlaceablesLayer.LayerOptions<any> & {
-      baseClass: typeof PlaceablesLayer;
-    };
+    /**
+     * @remarks Override not in foundry docs but implicit from function call
+     */
+    override options: PlaceablesLayer.LayerOptions<any>;
+
+    static override get layerOptions(): PlaceablesLayer.LayerOptions<any>;
 
     /**
      * A reference to the named Document type which is contained within this Canvas Layer.
@@ -112,8 +115,9 @@ declare global {
 
     /**
      * Iterates over placeable objects that are eligible for control/select.
-     * @yields A placeable object
+     * @remarks yields A placeable object
      */
+    // TODO: Update remark with proper @yields tag https://github.com/microsoft/tsdoc/issues/234
     controllableObjects(): Generator<PlaceableObject>;
 
     /**
@@ -440,7 +444,7 @@ declare global {
     /**
      * @typeParam DocumentName - The key of the configuration which defines the object and document class.
      */
-    interface LayerOptions<DocumentName extends PlaceableDocumentType> extends CanvasLayer.LayerOptions {
+    interface LayerOptions<DocumentName extends PlaceableDocumentType> extends InteractionLayer.LayerOptions {
       baseClass: typeof PlaceablesLayer;
 
       /**

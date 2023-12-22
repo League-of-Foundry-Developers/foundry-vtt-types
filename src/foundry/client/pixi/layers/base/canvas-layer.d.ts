@@ -5,16 +5,14 @@ declare global {
    * An abstract pattern for primary layers of the game canvas to implement
    * @typeParam Options - The type of the options in this layer.
    */
-  abstract class CanvasLayer<
-    Options extends CanvasLayer.LayerOptions = CanvasLayer.LayerOptions,
-  > extends PIXI.Container {
+  abstract class CanvasLayer extends PIXI.Container {
     constructor();
 
     /**
      * Options for this layer instance.
      * @defaultValue `this.constructor.layerOptions`
      */
-    options: Options;
+    options: CanvasLayer.LayerOptions;
 
     /**
      * @defaultValue `false`

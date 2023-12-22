@@ -4,11 +4,16 @@ declare global {
   /**
    * A subclass of CanvasLayer which provides support for user interaction with its contained objects.
    */
-  class InteractionLayer extends CanvasLayer<InteractionLayer.LayerOptions> {
+  class InteractionLayer extends CanvasLayer {
     /**
      * Is this layer currently active
      */
     get active(): boolean;
+
+    /**
+     * @remarks Override not in foundry docs but implicit from function call
+     */
+    override options: InteractionLayer.LayerOptions;
 
     /**
      * Customize behaviors of this CanvasLayer by modifying some behaviors at a class level.
