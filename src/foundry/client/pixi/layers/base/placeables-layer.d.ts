@@ -18,10 +18,10 @@ declare global {
    * @typeParam DocumentName - The key of the configuration which defines the object and document class.
    * @typeParam Options      - The type of the options in this layer.
    */
-  abstract class PlaceablesLayer<
+  class PlaceablesLayer<
     DocumentName extends PlaceableDocumentType,
-    Options extends PlaceablesLayer.LayerOptions<DocumentName> = PlaceablesLayer.LayerOptions<DocumentName>,
-  > extends CanvasLayer<Options> {
+    // Options extends PlaceablesLayer.LayerOptions<DocumentName> = PlaceablesLayer.LayerOptions<DocumentName>,
+  > extends InteractionLayer {
     constructor();
 
     /**
@@ -44,21 +44,6 @@ declare global {
     >;
 
     /**
-     * Track the PlaceableObject on this layer which is currently being hovered upon
-     * @defaultValue `null`
-     */
-    protected _hover: ConcretePlaceableOrPlaceableObject<
-      InstanceType<ConfiguredObjectClassForName<DocumentName>>
-    > | null;
-
-    /**
-     * Track the set of PlaceableObjects on this layer which are currently controlled by their id
-     * @defaultValue `{}`
-     * @remarks This is public because it's used from externally by foundry and modules might need to do the same.
-     */
-    _controlled: Record<string, InstanceType<ConfiguredObjectClassForName<DocumentName>>>;
-
-    /**
      * Keep track of an object copied with CTRL+C which can be pasted later
      * @defaultValue `[]`
      */
@@ -71,7 +56,9 @@ declare global {
       ConcretePlaceableOrPlaceableObject<InstanceType<ConfiguredObjectClassForName<DocumentName>>>
     > | null;
 
-    static override get layerOptions(): PlaceablesLayer.LayerOptions<any>;
+    static override get layerOptions(): PlaceablesLayer.LayerOptions<any> & {
+      baseClass: typeof PlaceablesLayer;
+    };
 
     /**
      * A reference to the named Document type which is contained within this Canvas Layer.
@@ -124,6 +111,30 @@ declare global {
     get controlled(): InstanceType<ConfiguredObjectClassForName<DocumentName>>[];
 
     /**
+     * Iterates over placeable objects that are eligible for control/select.
+     * @yields A placeable object
+     */
+    controllableObjects(): Generator<PlaceableObject>;
+
+    /**
+     * Track the set of PlaceableObjects on this layer which are currently controlled.
+     */
+    get controlledObjects(): Map<string, PlaceableObject>;
+
+    /**
+     * Track the PlaceableObject on this layer which is currently hovered upon.
+     */
+    get hover(): PlaceableObject | null;
+
+    set hover(object);
+
+    /**
+     * Track whether "highlight all objects" is currently active
+     * @defaultValue `false`
+     */
+    highlightObjects: boolean;
+
+    /**
      * Obtain an iterable of objects which should be added to this PlaceableLayer
      */
     getDocuments():
@@ -131,22 +142,34 @@ declare global {
       | InstanceType<ConfiguredDocumentClassForName<DocumentName>>[];
 
     /**
-     * @remarks It returns Promise<this> but is overridden by a subclass in this way.
+     *
+     * @param options - Unused
      */
-    override draw(): Promise<this | undefined>;
+    override _draw(options?: Record<string, unknown>): Promise<void>;
 
     /**
      * Draw a single placeable object
+     * @param document - The Document instance used to create the placeable object
      */
     createObject(
-      data: InstanceType<ConfiguredDocumentClassForName<DocumentName>>,
+      document: InstanceType<ConfiguredDocumentClassForName<DocumentName>>,
     ): InstanceType<ConfiguredObjectClassForName<DocumentName>> | null;
 
-    override tearDown(): Promise<this>;
+    /**
+     *
+     * @param options - Unused
+     */
+    override _tearDown(options?: Record<string, unknown>): Promise<void>;
 
-    override activate(): this;
+    /**
+     * Override the default PIXI.Container behavior for how objects in this container are sorted.
+     * @internal
+     */
+    protected _sortObjectsByElevation(): void;
 
-    override deactivate(): this;
+    override _activate(): void;
+
+    override _deactivate(): void;
 
     /**
      * Clear the contents of the preview container, restoring visibility of original (non-preview) objects.
@@ -154,8 +177,8 @@ declare global {
     clearPreviewContainer(): void;
 
     /**
-     * Get a PlaceableObject contained in this layer by it's ID
-     *
+     * Get a PlaceableObject contained in this layer by its ID.
+     * Returns undefined if the object doesn't exist or if the canvas is not rendering a Scene.
      * @param objectId - The ID of the contained object to retrieve
      * @returns The object instance, or undefined
      */
@@ -237,12 +260,24 @@ declare global {
     /**
      * Paste currently copied PlaceableObjects back to the layer by creating new copies
      * @param position - The destination position for the copied data.
-     * @param options  - (default: `{}`);
+     * @param options  - Options which modify the paste operation
      * @returns An Array of created PlaceableObject instances
      */
     pasteObjects(
       position: Point,
-      options?: PasteOptions,
+      options?: {
+        /**
+         * Paste data in a hidden state, if applicable. Default is false.
+         * @defaultValue `false`
+         */
+        hidden?: boolean;
+
+        /**
+         * Snap the resulting objects to the grid. Default is true.
+         * @defaultValue `true`
+         */
+        snap?: boolean;
+      },
     ): Promise<InstanceType<ConfiguredDocumentClassForName<DocumentName>>[]>;
 
     /**
@@ -250,7 +285,39 @@ declare global {
      * @param options        - (default: `{}`)
      * @returns A boolean for whether the controlled set was changed in the operation
      */
-    selectObjects(options?: SelectOptions): boolean;
+    selectObjects(options?: {
+      /**
+       * The top-left x-coordinate of the selection rectangle
+       */
+      x?: number;
+
+      /**
+       * The top-left y-coordinate of the selection rectangle
+       */
+      y?: number;
+
+      /**
+       * The width of the selection rectangle
+       */
+      width?: number;
+
+      /**
+       * The height of the selection rectangle
+       */
+      height?: number;
+
+      /**
+       * Optional arguments provided to any called release() method
+       * @defaultValue `{}`
+       */
+      releaseOptions?: PlaceableObject.ReleaseOptions;
+
+      /**
+       * Optional arguments provided to any called control() method
+       * @defaultValue `{ releaseOthers: false }`
+       */
+      controlOptions?: PlaceableObject.ControlOptions;
+    }): boolean;
 
     /**
      * Update all objects in this layer with a provided transformation.
@@ -286,83 +353,71 @@ declare global {
      */
     protected _canvasCoordinatesFromDrop(
       event: DragEvent,
-      {
-        center,
-      }?:
-        | {
-            /**
-             * Return the co-ordinates of the center of the nearest grid element.
-             * @defaultValue `true`
-             */
-            center?: boolean | undefined;
-          }
-        | undefined,
+      options?: {
+        /**
+         * Return the co-ordinates of the center of the nearest grid element.
+         * @defaultValue `true`
+         */
+        center?: boolean | undefined;
+      },
     ): [tx: number, ty: number] | false;
 
     /**
-     * Create a preview of this layer's object type from a world document and show its sheet so it can be finalized.
+     * Create a preview of this layer's object type from a world document and show its sheet to be finalized.
      * @param createData - The data to create the object with.
-     * @param position   - The position to render the sheet at.
+     * @param options    - Options which configure preview creation
+     * @returns The created preview object
      */
     protected _createPreview(
       createData: ConstructorDataType<InstanceType<ConfiguredDocumentClassForName<DocumentName>>["data"]>,
-      { top, left }: { top: number; left: number },
-    ): Promise<void>;
+      options: {
+        /**
+         * Render the preview object config sheet?
+         * @defaultValue `true`
+         */
+        renderSheet: boolean;
+
+        /**
+         * The offset-top position where the sheet should be rendered
+         * @defaultValue `0`
+         */
+        top: number;
+
+        /**
+         * The offset-left position where the sheet should be rendered
+         * @defaultValue `0`
+         */
+        left: number;
+      },
+    ): Promise<DocumentName>;
+
+    protected override _onClickLeft(event: PIXI.FederatedEvent): void;
+
+    protected override _onDragLeftStart(event: PIXI.FederatedEvent): Promise<void>;
+
+    protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
+
+    protected override _onDragLeftDrop(event: PIXI.FederatedEvent): Promise<void>;
+
+    protected override _onDragLeftCancel(event: PointerEvent): void;
+
+    protected override _onClickRight(event: PIXI.FederatedEvent): void;
+
+    protected override _onMouseWheel(event: WheelEvent): void;
+
+    protected override _onDeleteKey(event?: any): Promise<void>;
 
     /**
-     * Handle left mouse-click events which originate from the Canvas stage and are dispatched to this Layer.
-     * @see {@link Canvas#_onClickLeft}
+     * @deprecated since v11, will be removed in v11
+     * @remarks `"PlaceableLayer#_highlight is deprecated. Use PlaceableLayer#highlightObjects instead."`
      */
-    protected _onClickLeft(event: PIXI.FederatedEvent): void;
+    get _highlight(): this["highlightObjects"];
 
     /**
-     * Handle double left-click events which originate from the Canvas stage and are dispatched to this Layer.
-     * @see {@link Canvas#_onClickLeft2}
+     * @deprecated since v11, will be removed in v11
+     * @remarks `"PlaceableLayer#_highlight is deprecated. Use PlaceableLayer#highlightObjects instead."`
      */
-    protected _onClickLeft2(event: PIXI.FederatedEvent): void;
-
-    /**
-     * Start a left-click drag workflow originating from the Canvas stage.
-     * @see {@link Canvas#_onDragLeftStart}
-     */
-    protected _onDragLeftStart(event: PIXI.FederatedEvent): void;
-
-    /**
-     * Continue a left-click drag workflow originating from the Canvas stage.
-     * @see {@link Canvas#_onDragLeftMove}
-     */
-    protected _onDragLeftMove(event: PIXI.FederatedEvent): void;
-
-    /**
-     * Conclude a left-click drag workflow originating from the Canvas stage.
-     * @see {@link Canvas#_onDragLeftDrop}
-     */
-    protected _onDragLeftDrop(event: PIXI.FederatedEvent): void;
-
-    /**
-     * Cancel a left-click drag workflow originating from the Canvas stage.
-     * @see {@link Canvas#_onDragLeftDrop}
-     */
-    protected _onDragLeftCancel(event: PointerEvent): void;
-
-    /**
-     * Handle right mouse-click events which originate from the Canvas stage and are dispatched to this Layer.
-     * @see {@link Canvas#_onClickRight}
-     */
-    protected _onClickRight(event: PIXI.FederatedEvent): void;
-
-    /**
-     * Handle mouse-wheel events at the PlaceableObjects layer level to rotate multiple objects at once.
-     * This handler will rotate all controlled objects by some incremental angle.
-     * @param event - The mousewheel event which originated the request
-     */
-    protected _onMouseWheel(event: WheelEvent): void;
-
-    /**
-     * Handle a DELETE keypress while a placeable object is hovered
-     * @param event - The delete key press event which triggered the request
-     */
-    protected _onDeleteKey(event?: any): void;
+    set _highlight(state);
   }
 
   interface CanvasHistory<Placeable extends PlaceableObject> {
@@ -386,6 +441,8 @@ declare global {
      * @typeParam DocumentName - The key of the configuration which defines the object and document class.
      */
     interface LayerOptions<DocumentName extends PlaceableDocumentType> extends CanvasLayer.LayerOptions {
+      baseClass: typeof PlaceablesLayer;
+
       /**
        * Does this layer support a mouse-drag workflow to create new objects?
        * @defaultValue `game.user.isGM`
@@ -421,6 +478,12 @@ declare global {
        * @defaultValue `true`
        */
       quadtree: boolean;
+
+      /**
+       * Are contained objects sorted based on elevation instead of zIndex
+       * @defaultValue `false`
+       */
+      elevationSorting: boolean;
     }
   }
 }
@@ -471,52 +534,4 @@ interface MovementOptions {
    * @defaultValue `this.controlled.filter(o => !o.data.locked).map(o => o.id)`
    */
   ids?: string[];
-}
-
-interface PasteOptions {
-  /**
-   * Paste data in a hidden state, if applicable. Default is false.
-   * @defaultValue `false`
-   */
-  hidden?: boolean;
-
-  /**
-   * Snap the resulting objects to the grid. Default is true.
-   * @defaultValue `true`
-   */
-  snap?: boolean;
-}
-
-interface SelectOptions {
-  /**
-   * The top-left x-coordinate of the selection rectangle
-   */
-  x?: number;
-
-  /**
-   * The top-left y-coordinate of the selection rectangle
-   */
-  y?: number;
-
-  /**
-   * The width of the selection rectangle
-   */
-  width?: number;
-
-  /**
-   * The height of the selection rectangle
-   */
-  height?: number;
-
-  /**
-   * Optional arguments provided to any called release() method
-   * @defaultValue `{}`
-   */
-  releaseOptions?: PlaceableObject.ReleaseOptions;
-
-  /**
-   * Optional arguments provided to any called control() method
-   * @defaultValue `{ releaseOthers: false }`
-   */
-  controlOptions?: PlaceableObject.ControlOptions;
 }

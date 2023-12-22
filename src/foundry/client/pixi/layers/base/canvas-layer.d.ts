@@ -5,7 +5,9 @@ declare global {
    * An abstract pattern for primary layers of the game canvas to implement
    * @typeParam Options - The type of the options in this layer.
    */
-  abstract class CanvasLayer<Options extends CanvasLayerOptions = CanvasLayerOptions> extends PIXI.Container {
+  abstract class CanvasLayer<
+    Options extends CanvasLayer.LayerOptions = CanvasLayer.LayerOptions,
+  > extends PIXI.Container {
     constructor();
 
     /**
@@ -17,27 +19,20 @@ declare global {
     /**
      * @defaultValue `false`
      */
-    interactive: boolean;
-
-    /**
-     * @defaultValue `false`
-     */
     interactiveChildren: boolean;
-
-    /**
-     * Track whether the canvas layer is currently active for interaction
-     * @defaultValue `false`
-     * @remarks This is public because it's checked from outside in foundry and modules sometimes need to do the same.
-     */
-    _active: boolean;
 
     /**
      * Customize behaviors of this CanvasLayer by modifying some behaviors at a class level.
      */
-    static get layerOptions(): CanvasLayerOptions;
+    static get layerOptions(): CanvasLayer.LayerOptions;
 
     /**
-     * Return a reference to the active instance of this canvas layer
+     * The canonical name of the CanvasLayer is the name of the constructor that is the immediate child of the
+     * defined baseClass for the layer type.
+     *
+     * @example
+     * canvas.lighting.name -\> "LightingLayer"
+     * canvas.grid.name -\> "GridLayer"
      */
     static get instance(): CanvasLayer | undefined;
 
@@ -48,62 +43,46 @@ declare global {
     readonly name: string;
 
     /**
+     * The name used by hooks to construct their hook string.
+     * Note: You should override this getter if hookName should not return the class constructor name.
+     */
+    get hookName(): string;
+
+    /**
      * Draw the canvas layer, rendering its internal components and returning a Promise
      * The Promise resolves to the drawn layer once its contents are successfully rendered.
+     * @param options - Options which configure how the layer is drawn
      * @remarks It returns Promise<this> but is overridden by a subclass in this way.
      */
-    draw(): Promise<this | undefined> | this;
+    draw(options?: Record<string, unknown>): Promise<this | undefined> | this;
+
+    /**
+     * The inner _draw method which must be defined by each CanvasLayer subclass.
+     * @param options - Options which configure how the layer is drawn
+     */
+    protected abstract _draw(options?: Record<string, unknown>): Promise<void>;
 
     /**
      * Deconstruct data used in the current layer in preparation to re-draw the canvas
+     * @param options - Options which configure how the layer is deconstructed
      * @remarks ControlsLayer returns void. See https://gitlab.com/foundrynet/foundryvtt/-/issues/6939
      */
-    tearDown(): Promise<this | void>;
+    tearDown(options?: Record<string, unknown>): Promise<this | void>;
 
     /**
-     * Activate the CanvasLayer, deactivating other layers and marking this layer's children as interactive.
-     * @returns The layer instance, now activated
+     * The inner _tearDown method which may be customized by each CanvasLayer subclass.
+     * @param options - Options which configure how the layer is deconstructed
      */
-    activate(): this;
-
-    /**
-     * Deactivate the CanvasLayer, removing interactivity from its children.
-     * @returns The layer instance, now inactive
-     * @remarks It returns Promise<this> but is overridden by a subclass returning void.
-     */
-    deactivate(): this | void;
-
-    /**
-     * Get the zIndex that should be used for ordering this layer vertically relative to others in the same Container.
-     */
-    getZIndex(): number;
+    protected _tearDown(options?: Record<string, unknown>): Promise<void>;
   }
-
-  /**
-   * Options which configure the behavior of a Canvas Layer.
-   */
-  interface CanvasLayerOptions {
-    /**
-     * The layer name by which the instance is referenced within the Canvas
-     */
-    name: string;
-
-    /**
-     * The zIndex sorting of this layer relative to other layers
-     */
-    zIndex: number;
-
-    /**
-     * Should this layer be sorted to the top when it is active?
-     */
-    sortActiveTop: boolean;
-  }
-
   namespace CanvasLayer {
-    /**
-     * Options which configure the behavior of a Canvas Layer.
-     * @remarks This type exists for consistency
-     */
-    type LayerOptions = CanvasLayerOptions;
+    interface LayerOptions {
+      /**
+       * The layer name by which the instance is referenced within the Canvas
+       */
+      name: string;
+
+      baseClass: typeof CanvasLayer;
+    }
   }
 }
