@@ -1,3 +1,5 @@
+import type { MaybePromise } from "../../../../../types/utils.mts";
+
 declare global {
   /**
    * The Module Management Application.

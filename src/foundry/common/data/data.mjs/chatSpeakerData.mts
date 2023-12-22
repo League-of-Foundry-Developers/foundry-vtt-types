@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClass, FieldReturnType, PropertiesToSource } from "../../../../types/helperTypes.d.ts";
+import type { ConfiguredDocumentClass, FieldReturnType, PropertiesToSource } from "../../../../types/helperTypes.mts";
 import type { DocumentData } from "../../abstract/module.mts";
 import type { BaseActor, BaseChatMessage, BaseScene } from "../../documents.mjs/index.mts";
 import type * as fields from "../fields.mts";

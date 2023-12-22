@@ -1,4 +1,4 @@
-import type { ConfiguredFlags, PropertiesToSource } from "../../../../types/helperTypes.d.ts";
+import type { ConfiguredFlags, PropertiesToSource } from "../../../../types/helperTypes.mts";
 import type DocumentData from "../../abstract/data.mts";
 import type { BaseTableResult } from "../../documents.mjs/index.mts";
 import type { fields } from "../module.mts";

@@ -1,4 +1,5 @@
-import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.ts";
+import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.mts";
+import type { MaybePromise } from "../../../../types/utils.mts";
 import type { AmbientSoundDataConstructorData } from "../../../common/data/data.mjs/ambientSoundData.mts";
 
 declare global {

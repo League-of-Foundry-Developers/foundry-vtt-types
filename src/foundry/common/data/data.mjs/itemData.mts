@@ -5,7 +5,8 @@ import type {
   ConfiguredSource,
   FieldReturnType,
   PropertiesToSource,
-} from "../../../../types/helperTypes.d.ts";
+} from "../../../../types/helperTypes.mts";
+import type { DeepPartial } from "../../../../types/utils.mts";
 import type EmbeddedCollection from "../../abstract/embedded-collection.mts";
 import type { DocumentData } from "../../abstract/module.mts";
 import type * as documents from "../../documents.mjs/index.mts";

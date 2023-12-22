@@ -1,3 +1,5 @@
+import type { ValueOf } from "../../types/utils.mts";
+
 declare global {
   namespace ClipperLib {
     let version: "6.4.2.2";

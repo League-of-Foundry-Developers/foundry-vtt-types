@@ -1,3 +1,5 @@
+import type { ValueOf } from "../../../types/utils.mts";
+
 declare global {
   type InteractionLayer = unknown; // FIXME: remove when created
 

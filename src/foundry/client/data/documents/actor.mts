@@ -2,7 +2,8 @@ import type {
   ConfiguredDocumentClass,
   ConfiguredObjectClassForName,
   DocumentConstructor,
-} from "../../../../types/helperTypes.d.ts";
+} from "../../../../types/helperTypes.mts";
+import type { DeepPartial } from "../../../../types/utils.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.mts";
 import type EmbeddedCollection from "../../../common/abstract/embedded-collection.mts";
 import type { ActorDataConstructorData } from "../../../common/data/data.mjs/actorData.mts";

@@ -1,4 +1,5 @@
-import type { DocumentConstructor, DocumentType } from "../../../../types/helperTypes.d.ts";
+import type { DocumentConstructor, DocumentType } from "../../../../types/helperTypes.mts";
+import type { ConstructorOf, MaybePromise } from "../../../../types/utils.mts";
 
 declare global {
   /**

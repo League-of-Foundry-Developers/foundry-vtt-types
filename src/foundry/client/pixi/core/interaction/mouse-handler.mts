@@ -1,3 +1,5 @@
+import type { ValueOf } from "../../../../../types/utils.mts";
+
 declare global {
   /**
    * Handle mouse interaction events for a Canvas object.

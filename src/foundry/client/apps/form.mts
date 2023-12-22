@@ -1,5 +1,6 @@
 import type { EditorView } from "prosemirror-view";
 import type { Editor } from "tinymce";
+import type { MaybePromise } from "../../../types/utils.mts";
 import type { ProseMirrorKeyMaps, ProseMirrorMenu } from "../../prosemirror/prosemirror.mts";
 
 declare global {

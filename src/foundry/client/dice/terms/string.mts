@@ -1,3 +1,5 @@
+import type { InexactPartial } from "../../../../types/utils.mts";
+
 declare global {
   /**
    * A type of RollTerm used to represent strings which have not yet been matched.

@@ -1,4 +1,5 @@
-import type { ConfiguredDocumentClass, ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.ts";
+import type { ConfiguredDocumentClass, ConfiguredDocumentClassForName } from "../../../../types/helperTypes.mts";
+import type { ConstructorOf, MaybePromise } from "../../../../types/utils.mts";
 import type { DropData } from "../../data/abstract/client-document.mts";
 
 declare global {

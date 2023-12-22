@@ -1,3 +1,4 @@
+import type { DeepPartial } from "../../../../types/utils.mts";
 import type { DropData } from "../../data/abstract/client-document.mts";
 
 declare global {

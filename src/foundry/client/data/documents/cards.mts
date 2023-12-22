@@ -3,7 +3,8 @@ import type {
   ConfiguredDocumentClassForName,
   ConstructorDataType,
   DocumentConstructor,
-} from "../../../../types/helperTypes.d.ts";
+} from "../../../../types/helperTypes.mts";
+import type { DeepPartial, StoredDocument } from "../../../../types/utils.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.mts";
 
 declare global {

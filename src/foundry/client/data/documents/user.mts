@@ -1,4 +1,5 @@
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.ts";
+import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.mts";
+import type { ConstructorOf, DeepPartial } from "../../../../types/utils.mts";
 import type { DocumentDataType, DocumentModificationOptions } from "../../../common/abstract/document.mts";
 
 declare global {

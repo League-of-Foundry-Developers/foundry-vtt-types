@@ -1,3 +1,4 @@
+import type { DeepPartial } from "../../../../types/utils.mts";
 import type { DocumentDataType, DocumentModificationOptions } from "../../../common/abstract/document.mts";
 
 declare global {
@@ -67,5 +68,3 @@ interface PanToNoteOptions {
    */
   scale?: number;
 }
-
-export {};

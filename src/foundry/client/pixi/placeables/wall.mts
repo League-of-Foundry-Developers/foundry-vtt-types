@@ -2,7 +2,8 @@ import type {
   ConfiguredDocumentClass,
   ConfiguredDocumentClassForName,
   ConfiguredObjectClassForName,
-} from "../../../../types/helperTypes.d.ts";
+} from "../../../../types/helperTypes.mts";
+import type { DeepPartial } from "../../../../types/utils.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.mts";
 import type { LineIntersection } from "../../../common/utils/geometry.mts";
 import type { HoverInOptions } from "../placeable.mts";

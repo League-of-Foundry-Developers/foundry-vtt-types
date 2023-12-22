@@ -1,6 +1,7 @@
-import type { DocumentConstructor, PlaceableObjectConstructor } from "../../types/helperTypes.d.ts";
-import type { StatusEffect } from "./data/documents/token.mts";
+import type { DocumentConstructor, PlaceableObjectConstructor } from "../../types/helperTypes.mts";
+import type { ConstructorOf, PropertyTypeOrFallback } from "../../types/utils.mts";
 import type * as CONST from "../common/constants.mts";
+import type { StatusEffect } from "./data/documents/token.mts";
 
 // FIXME: Replace with imports for for the right things or remove when implemented
 type VisionMode = unknown;

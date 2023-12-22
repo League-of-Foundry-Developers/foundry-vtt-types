@@ -1,4 +1,5 @@
-import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.ts";
+import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.mts";
+import type { MaybePromise } from "../../../../types/utils.mts";
 import type { AmbientLightDataConstructorData } from "../../../common/data/data.mjs/ambientLightData.mts";
 import type { AnimationDataConstructorData } from "../../../common/data/data.mjs/animationData.mts";
 import type { DarknessActivationConstructorData } from "../../../common/data/data.mjs/darknessActivation.mts";

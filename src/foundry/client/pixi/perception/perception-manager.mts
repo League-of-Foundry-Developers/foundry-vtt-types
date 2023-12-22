@@ -1,3 +1,5 @@
+import type { DeepPartial } from "../../../../types/utils.mts";
+
 declare global {
   /**
    * A helper class which manages the refresh workflow for perception layers on the canvas.

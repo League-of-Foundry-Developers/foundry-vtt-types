@@ -4,7 +4,8 @@ import type {
   DocumentConstructor,
   DocumentType,
   ToObjectFalseType,
-} from "../../../types/helperTypes.d.ts";
+} from "../../../types/helperTypes.mts";
+import type { ConstructorOf, DeepPartial, StoredDocument, TemporaryDocument } from "../../../types/utils.mts";
 import type { BaseUser } from "../documents.mjs/index.mts";
 import type { AnyDocumentData } from "./data.mts";
 import type EmbeddedCollection from "./embedded-collection.mts";

@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.ts";
+import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.mts";
 
 declare global {
   /**

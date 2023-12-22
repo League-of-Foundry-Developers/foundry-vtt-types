@@ -1,4 +1,5 @@
-import type { ConfiguredDocumentClass, ConfiguredFlags, PropertiesToSource } from "../../../../types/helperTypes.d.ts";
+import type { ConfiguredDocumentClass, ConfiguredFlags, PropertiesToSource } from "../../../../types/helperTypes.mts";
+import type { ValueOf } from "../../../../types/utils.mts";
 import type DocumentData from "../../abstract/data.mts";
 import type * as documents from "../../documents.mjs/index.mts";
 import type * as fields from "../fields.mts";

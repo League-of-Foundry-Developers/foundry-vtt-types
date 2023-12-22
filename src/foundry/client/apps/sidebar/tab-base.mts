@@ -1,3 +1,5 @@
+import type { MaybePromise } from "../../../../types/utils.mts";
+
 declare global {
   /**
    * An abstract pattern followed by the different tabs of the sidebar

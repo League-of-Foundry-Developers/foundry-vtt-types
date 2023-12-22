@@ -1,4 +1,5 @@
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.ts";
+import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.mts";
+import type { ConstructorOf, StoredDocument } from "../../../../types/utils.mts";
 import type { RequestOptions } from "../../../common/abstract/backend.mts";
 
 declare global {
@@ -60,5 +61,3 @@ declare global {
     protected static _onResetFog(sceneId: string): void | Promise<void>;
   }
 }
-
-export {};

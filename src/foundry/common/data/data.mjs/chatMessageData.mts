@@ -3,7 +3,7 @@ import type {
   ConfiguredFlags,
   FieldReturnType,
   PropertiesToSource,
-} from "../../../../types/helperTypes.d.ts";
+} from "../../../../types/helperTypes.mts";
 import type { DocumentData } from "../../abstract/module.mts";
 import type { documents } from "../../module.mts";
 import type * as fields from "../fields.mts";

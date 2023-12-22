@@ -1,6 +1,7 @@
 import { expectTypeOf } from "vitest";
 import type { ChatSpeakerData } from "../../../../../src/foundry/common/data/data.mjs/chatSpeakerData.mts";
-import type { ConstructorDataType } from "../../../../../src/types/helperTypes.d.ts";
+import type { ConstructorDataType } from "../../../../../src/types/helperTypes.mts";
+import type { StoredDocument } from "../../../../../src/types/utils.mts";
 
 expectTypeOf(new ChatMessage()).toEqualTypeOf<ChatMessage>();
 expectTypeOf(new ChatMessage({})).toEqualTypeOf<ChatMessage>();

@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { ConfiguredDocumentClass } from "../../../../../src/types/helperTypes.d.ts";
+import type { ConfiguredDocumentClass } from "../../../../../src/types/helperTypes.mts";
 
 const token = new Token(new TokenDocument());
 expectTypeOf(token.id).toEqualTypeOf<string>();

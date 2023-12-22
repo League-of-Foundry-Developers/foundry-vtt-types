@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.ts";
+import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.mts";
 
 declare global {
   /**
@@ -101,4 +101,3 @@ declare global {
     get isVisible(): boolean;
   }
 }
-export {};

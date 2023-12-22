@@ -1,4 +1,5 @@
-import type { DocumentSubTypes, DocumentType } from "../../../types/helperTypes.d.ts";
+import type { DocumentSubTypes, DocumentType } from "../../../types/helperTypes.mts";
+import type { DeepPartial, InexactPartial } from "../../../types/utils.mts";
 import type { TokenDataSource } from "../../common/data/data.mjs/tokenData.mts";
 
 declare global {

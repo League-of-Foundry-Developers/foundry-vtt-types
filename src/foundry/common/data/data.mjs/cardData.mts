@@ -4,7 +4,8 @@ import type {
   ConfiguredSource,
   FieldReturnType,
   PropertiesToSource,
-} from "../../../../types/helperTypes.d.ts";
+} from "../../../../types/helperTypes.mts";
+import type { DeepPartial } from "../../../../types/utils.mts";
 import type DocumentData from "../../abstract/data.mts";
 import type * as documents from "../../documents.mjs/index.mts";
 import type * as fields from "../fields.mts";

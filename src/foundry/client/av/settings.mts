@@ -1,3 +1,5 @@
+import type { PropertyTypeOrFallback, ValueOf } from "../../../types/utils.mts";
+
 declare global {
   interface AVSettingsData {
     /** Whether this user has muted themselves. */

@@ -1,3 +1,5 @@
+import type { MaybePromise } from "../../../../types/utils.mts";
+
 declare global {
   /**
    * A generic application for configuring permissions for various Document types

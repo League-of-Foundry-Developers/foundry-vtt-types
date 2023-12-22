@@ -1,3 +1,4 @@
+import type { Merge } from "../../../types/utils.mts";
 import type { DocumentMetadata, DocumentModificationOptions } from "../abstract/document.mts";
 import type { Document } from "../abstract/module.mts";
 import type * as CONST from "../constants.mts";

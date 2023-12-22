@@ -1,7 +1,7 @@
 import type {
   ConfiguredDocumentClassForName,
   ConfiguredObjectClassForName,
-} from "../../../../../types/helperTypes.d.ts";
+} from "../../../../../types/helperTypes.mts";
 
 declare global {
   /**

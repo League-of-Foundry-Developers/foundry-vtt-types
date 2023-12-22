@@ -1,3 +1,5 @@
+import type { ValueOf } from "../../../types/utils.mts";
+
 declare global {
   /**
    * An AudioSourceNode container which handles the strategy of node type to use for playback.

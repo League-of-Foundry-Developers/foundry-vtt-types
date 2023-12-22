@@ -1,3 +1,5 @@
+import type { MaybePromise } from "../../../../types/utils.mts";
+
 declare global {
   /**
    * An abstract base class for displaying a heads-up-display interface bound to a Placeable Object on the canvas

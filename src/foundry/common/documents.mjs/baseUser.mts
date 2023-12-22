@@ -1,3 +1,4 @@
+import type { ConstructorOf, DeepPartial, Merge, ValueOf } from "../../../types/utils.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
 import type { Document } from "../abstract/module.mts";
 import type * as data from "../data/data.mjs/index.mts";

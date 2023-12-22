@@ -1,3 +1,5 @@
+import type { MaybePromise } from "../../../../types/utils.mts";
+
 declare global {
   /**
    * Render the Sidebar container, and after rendering insert Sidebar tabs.

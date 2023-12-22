@@ -1,3 +1,5 @@
+import type { ValueOf } from "../../../types/utils.mts";
+
 declare global {
   /**
    * A singleton Tooltip Manager class responsible for rendering and positioning a dynamic tooltip element which is

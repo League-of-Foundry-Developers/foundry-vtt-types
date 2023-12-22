@@ -1,6 +1,7 @@
+import type { DocumentConstructor, ToObjectFalseType } from "../../../types/helperTypes.mts";
+import type { DeepPartial } from "../../../types/utils.mts";
 import _Collection from "../utils/collection.mts";
 import type { AnyDocumentData } from "./data.mts";
-import type { DocumentConstructor, ToObjectFalseType } from "../../../types/helperTypes.d.ts";
 
 type Collection<T> = Omit<_Collection<T>, "set" | "delete">;
 

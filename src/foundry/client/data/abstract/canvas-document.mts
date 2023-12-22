@@ -1,4 +1,5 @@
-import type { ConstructorDataType } from "../../../../types/helperTypes.d.ts";
+import type { ConstructorDataType } from "../../../../types/helperTypes.mts";
+import type { ConstructorOf, DeepPartial } from "../../../../types/utils.mts";
 import type { ContextType, DocumentModificationOptions } from "../../../common/abstract/document.mts";
 import { ClientDocumentMixin } from "./client-document.mts";
 

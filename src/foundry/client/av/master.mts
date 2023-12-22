@@ -1,3 +1,5 @@
+import type { DeepPartial } from "../../../types/utils.mts";
+
 declare global {
   /**
    * The master Audio/Video controller instance.

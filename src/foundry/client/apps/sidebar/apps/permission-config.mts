@@ -1,3 +1,5 @@
+import type { MaybePromise } from "../../../../../types/utils.mts";
+
 declare global {
   /**
    * An application for configuring the permissions which are available to each User role.

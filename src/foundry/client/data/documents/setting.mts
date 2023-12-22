@@ -1,3 +1,4 @@
+import type { DeepPartial } from "../../../../types/utils.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.mts";
 
 declare global {

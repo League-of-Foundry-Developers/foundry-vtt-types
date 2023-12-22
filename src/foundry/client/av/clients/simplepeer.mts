@@ -1,3 +1,5 @@
+import type { DeepPartial } from "../../../../types/utils.mts";
+
 declare global {
   /**
    * An implementation of the AVClient which uses the simple-peer library and the Foundry socket server for signaling.

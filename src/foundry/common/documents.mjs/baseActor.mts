@@ -1,4 +1,5 @@
-import type { ConfiguredDocumentClass } from "../../../types/helperTypes.d.ts";
+import type { ConfiguredDocumentClass } from "../../../types/helperTypes.mts";
+import type { DeepPartial, Merge } from "../../../types/utils.mts";
 import type { DocumentMetadata, DocumentModificationOptions } from "../abstract/document.mts";
 import type { Document } from "../abstract/module.mts";
 import type { ActorDataConstructorData } from "../data/data.mjs/actorData.mts";

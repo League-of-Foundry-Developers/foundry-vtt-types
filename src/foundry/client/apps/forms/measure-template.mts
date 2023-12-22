@@ -1,4 +1,5 @@
-import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.ts";
+import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.mts";
+import type { MaybePromise, ValueOf } from "../../../../types/utils.mts";
 
 declare global {
   /**

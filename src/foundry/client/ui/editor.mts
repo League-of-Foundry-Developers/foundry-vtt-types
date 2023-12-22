@@ -1,4 +1,5 @@
 import type { EditorView } from "prosemirror-view";
+import type { MaybePromise } from "../../../types/utils.mts";
 import type { ClientDocumentMixin } from "../data/abstract/client-document.mts";
 
 declare global {

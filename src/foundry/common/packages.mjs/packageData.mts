@@ -1,4 +1,5 @@
-import type { FieldReturnType, PropertiesToSource } from "../../../types/helperTypes.d.ts";
+import type { FieldReturnType, PropertiesToSource } from "../../../types/helperTypes.mts";
+import type { ConstructorOf } from "../../../types/utils.mts";
 import type { DocumentData } from "../abstract/module.mts";
 import type { PACKAGE_AVAILABILITY_CODES } from "../constants.mts";
 import type * as fields from "../data/fields.mts";

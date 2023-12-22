@@ -1,4 +1,4 @@
-import type { FieldReturnType } from "../../../types/helperTypes.d.ts";
+import type { FieldReturnType } from "../../../types/helperTypes.mts";
 import type * as fields from "../data/fields.mts";
 import type {
   PackageData,

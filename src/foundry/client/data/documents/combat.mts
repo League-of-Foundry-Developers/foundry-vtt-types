@@ -1,4 +1,5 @@
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.ts";
+import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.mts";
+import type { ConstructorOf, DeepPartial } from "../../../../types/utils.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.mts";
 import type { ChatMessageDataConstructorData } from "../../../common/data/data.mjs/chatMessageData.mts";
 import type { CombatantDataSource } from "../../../common/data/data.mjs/combatantData.mts";

@@ -1,4 +1,5 @@
-import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.ts";
+import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.mts";
+import type { MaybePromise } from "../../../../types/utils.mts";
 import type { TableResultDataConstructorData } from "../../../common/data/data.mjs/tableResultData.mts";
 
 declare global {

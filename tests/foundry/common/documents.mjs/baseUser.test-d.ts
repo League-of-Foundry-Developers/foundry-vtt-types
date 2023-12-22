@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
-import type { ConfiguredDocumentClass } from "../../../../src/types/helperTypes.d.ts";
+import type { ConfiguredDocumentClass } from "../../../../src/types/helperTypes.mts";
+import type { StoredDocument } from "../../../../src/types/utils.mts";
 
 expectTypeOf(foundry.documents.BaseUser.create({ name: "SomeUser" })).toEqualTypeOf<
   Promise<StoredDocument<User> | undefined>

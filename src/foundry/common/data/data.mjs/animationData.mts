@@ -1,4 +1,4 @@
-import type { PropertiesToSource } from "../../../../types/helperTypes.d.ts";
+import type { PropertiesToSource } from "../../../../types/helperTypes.mts";
 import type { DocumentData } from "../../abstract/module.mts";
 import type { BaseAmbientLight } from "../../documents.mjs/index.mts";
 import type * as fields from "../fields.mts";

@@ -1,3 +1,5 @@
+import type { ConstructorOf } from "../../../../types/utils.mts";
+
 declare global {
   /**
    * A helper class used by the Sight Layer to represent a source of vision or illumination.

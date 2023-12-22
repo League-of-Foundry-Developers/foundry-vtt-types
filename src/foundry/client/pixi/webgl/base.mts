@@ -1,3 +1,5 @@
+import type { ConstructorOf } from "../../../../types/utils.mts";
+
 declare global {
   /**
    * This class defines an interface which all shaders utilize

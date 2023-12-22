@@ -1,7 +1,8 @@
+import type { FieldReturnType } from "../../../types/helperTypes.mts";
+import type { ConstructorOf } from "../../../types/utils.mts";
+import type { Document } from "../abstract/module.mts";
 import { DOCUMENT_PERMISSION_LEVELS } from "../constants.mts";
 import { isColorString, isJSON } from "./validators.mts";
-import type { Document } from "../abstract/module.mts";
-import type { FieldReturnType } from "../../../types/helperTypes.d.ts";
 
 /**
  * A required boolean field which may be used in a Document.

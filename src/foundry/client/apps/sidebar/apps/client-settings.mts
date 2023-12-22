@@ -1,3 +1,5 @@
+import type { MaybePromise } from "../../../../../types/utils.mts";
+
 declare global {
   /**
    * The Application responsible for displaying and editing the client and world settings for this world.

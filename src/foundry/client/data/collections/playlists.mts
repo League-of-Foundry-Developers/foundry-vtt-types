@@ -1,4 +1,5 @@
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.ts";
+import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.mts";
+import type { DeepPartial, StoredDocument } from "../../../../types/utils.mts";
 import type { SceneDataConstructorData } from "../../../common/data/data.mjs/sceneData.mts";
 
 declare global {

@@ -2,7 +2,7 @@ import type {
   ConfiguredDocumentClassForName,
   ConfiguredObjectClassForName,
   DataSourceForPlaceable,
-} from "../../../../types/helperTypes.d.ts";
+} from "../../../../types/helperTypes.mts";
 
 declare global {
   /**

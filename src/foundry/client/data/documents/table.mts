@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.ts";
+import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.mts";
 
 declare global {
@@ -217,4 +217,3 @@ declare global {
     results: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseTableResult>>[];
   }
 }
-export {};

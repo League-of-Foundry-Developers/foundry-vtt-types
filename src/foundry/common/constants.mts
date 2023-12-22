@@ -1,3 +1,5 @@
+import type { ValueOf } from "../../types/utils.mts";
+
 /**
  * The shortened software name
  */

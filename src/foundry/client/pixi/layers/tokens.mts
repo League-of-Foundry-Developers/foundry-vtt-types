@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClass, ConfiguredObjectClassForName } from "../../../../types/helperTypes.d.ts";
+import type { ConfiguredDocumentClass, ConfiguredObjectClassForName } from "../../../../types/helperTypes.mts";
 import type { SelectOptions } from "../placeables.mts";
 
 declare global {

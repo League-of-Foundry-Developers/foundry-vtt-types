@@ -5,7 +5,8 @@ import type {
   ConfiguredModule,
   DocumentConstructor,
   ModuleRequiredOrOptional,
-} from "../../types/helperTypes.d.ts";
+} from "../../types/helperTypes.mts";
+import type { StoredDocument, ValueOf } from "../../types/utils.mts";
 
 declare global {
   /**

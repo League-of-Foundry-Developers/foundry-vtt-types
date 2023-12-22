@@ -1,3 +1,4 @@
+import type { DeepPartial, Merge } from "../../../types/utils.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
 import type { Document } from "../abstract/module.mts";
 import type { ChatMessageDataConstructorData } from "../data/data.mjs/chatMessageData.mts";

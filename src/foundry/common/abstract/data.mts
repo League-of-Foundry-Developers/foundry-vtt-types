@@ -3,7 +3,8 @@ import type {
   PropertiesToSource,
   PropertyTypeToSourceParameterType,
   ToObjectFalseType,
-} from "../../../types/helperTypes.d.ts";
+} from "../../../types/helperTypes.mts";
+import type { ConstructorOf, DeepPartial, Expanded } from "../../../types/utils.mts";
 import type Document from "./document.mts";
 import type EmbeddedCollection from "./embedded-collection.mts";
 

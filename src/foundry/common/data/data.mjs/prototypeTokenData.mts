@@ -1,4 +1,4 @@
-import type { FieldReturnType, PropertiesToSource, ToObjectFalseType } from "../../../../types/helperTypes.d.ts";
+import type { FieldReturnType, PropertiesToSource, ToObjectFalseType } from "../../../../types/helperTypes.mts";
 import type DocumentData from "../../abstract/data.mts";
 import type { documents } from "../../module.mts";
 import type * as fields from "../fields.mts";

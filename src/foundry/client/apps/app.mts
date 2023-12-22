@@ -1,3 +1,5 @@
+import type { MaybePromise, ValueOf } from "../../../types/utils.mts";
+
 declare global {
   /**
    * @defaultValue `0`

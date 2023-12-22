@@ -1,4 +1,5 @@
-import type { ConfiguredDocumentClass, ToObjectFalseType } from "../../../../../types/helperTypes.d.ts";
+import type { ConfiguredDocumentClass, ToObjectFalseType } from "../../../../../types/helperTypes.mts";
+import type { MaybePromise } from "../../../../../types/utils.mts";
 
 declare global {
   /**

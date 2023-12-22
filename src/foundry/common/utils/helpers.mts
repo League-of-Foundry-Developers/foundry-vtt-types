@@ -1,3 +1,12 @@
+import type {
+  ConstructorOf,
+  DeepPartial,
+  MapTypeToType,
+  OmitAssignableFromType,
+  OmitNotAssignableFromType,
+  OmitOfType,
+} from "../../../types/utils.mts";
+
 /**
  * Benchmark the performance of a function, calling it a requested number of iterations.
  * @param func       - The function to benchmark

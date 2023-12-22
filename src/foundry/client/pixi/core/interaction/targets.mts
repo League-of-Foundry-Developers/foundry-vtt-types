@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClass, ObjectClass } from "../../../../../types/helperTypes.d.ts";
+import type { ConfiguredDocumentClass, ObjectClass } from "../../../../../types/helperTypes.mts";
 
 interface SetReplacementMembers<T> {
   add(value: T): void;

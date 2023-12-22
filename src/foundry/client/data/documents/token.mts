@@ -1,4 +1,5 @@
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.ts";
+import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.mts";
+import type { ConstructorOf, DeepPartial, TemporaryDocument } from "../../../../types/utils.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.mts";
 import type { ActiveEffectDataConstructorData } from "../../../common/data/data.mjs/activeEffectData.mts";
 import type * as data from "../../../common/data/data.mjs/index.mts";

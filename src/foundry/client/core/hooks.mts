@@ -5,7 +5,8 @@ import type {
   ConfiguredObjectClassForName,
   DocumentConstructor,
   ToObjectFalseType,
-} from "../../../types/helperTypes.d.ts";
+} from "../../../types/helperTypes.mts";
+import type { DeepPartial, ValueOf } from "../../../types/utils.mts";
 import type { DocumentModificationOptions } from "../../common/abstract/document.mts";
 import type { EffectChangeData } from "../../common/data/data.mjs/effectChangeData.mts";
 import type { DropData } from "../data/abstract/client-document.mts";

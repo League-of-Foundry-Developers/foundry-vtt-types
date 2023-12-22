@@ -4,7 +4,8 @@ import type {
   ConstructorDataType,
   DataSourceForPlaceable,
   PlaceableDocumentType,
-} from "../../../types/helperTypes.d.ts";
+} from "../../../types/helperTypes.mts";
+import type { ConstructorOf, ValueOf } from "../../../types/utils.mts";
 import type EmbeddedCollection from "../../common/abstract/embedded-collection.mts";
 
 type ConcretePlaceableOrPlaceableObject<T> = T extends PlaceableObject ? T : PlaceableObject;

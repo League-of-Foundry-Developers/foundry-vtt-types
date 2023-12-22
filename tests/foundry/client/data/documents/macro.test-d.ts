@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import type { StoredDocument } from "../../../../../src/types/utils.mts";
 
 const macro = new Macro({ name: "my macro", scope: "global", type: "script" });
 

@@ -1,4 +1,5 @@
-import type { ConfiguredDocumentClass } from "../../../../../types/helperTypes.d.ts";
+import type { ConfiguredDocumentClass } from "../../../../../types/helperTypes.mts";
+import type { MaybePromise } from "../../../../../types/utils.mts";
 import type { ChatMessageDataConstructorData } from "../../../../common/data/data.mjs/chatMessageData.mts";
 
 declare global {

@@ -1,3 +1,5 @@
+import type { MaybePromise } from "../../../../types/utils.mts";
+
 declare global {
   /** An application for configuring data across all installed and active packages. */
   abstract class PackageConfiguration<

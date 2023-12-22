@@ -1,4 +1,5 @@
-import type { PropertiesToSource } from "../../../../types/helperTypes.d.ts";
+import type { PropertiesToSource } from "../../../../types/helperTypes.mts";
+import type { ConstructorOf } from "../../../../types/utils.mts";
 import type DocumentData from "../../abstract/data.mts";
 import type { AnyDocumentData } from "../../abstract/data.mts";
 import type * as fields from "../fields.mts";

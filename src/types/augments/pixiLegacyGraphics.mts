@@ -1,9 +1,7 @@
-export {};
-
 declare global {
   namespace PIXI {
-    interface Graphics {
+    export const LegacyGraphics: typeof PIXI.Graphics & {
       nextRoundedRectBehavior: boolean;
-    }
+    };
   }
 }

@@ -1,3 +1,5 @@
+import type { ConstructorOf, InexactPartial } from "../../../types/utils.mts";
+
 declare global {
   /**
    * An abstract class which represents a single token that can be used as part of a Roll formula.

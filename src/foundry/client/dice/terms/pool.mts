@@ -1,3 +1,5 @@
+import type { ConstructorOf } from "../../../../types/utils.mts";
+
 declare global {
   /**
    * A type of RollTerm which encloses a pool of multiple inner Rolls which are evaluated jointly.

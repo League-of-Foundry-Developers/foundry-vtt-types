@@ -1,3 +1,5 @@
+import type { MaybePromise, ValueOf } from "../../../types/utils.mts";
+
 declare global {
   interface FilePickerOptions extends ApplicationOptions {
     /** A type of file to target, in "audio", "image", "video", "imagevideo", "folder", "font", "graphics", "text", or "any" */

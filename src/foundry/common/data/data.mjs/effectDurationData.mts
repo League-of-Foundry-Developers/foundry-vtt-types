@@ -1,4 +1,4 @@
-import type { FieldReturnType, PropertiesToSource } from "../../../../types/helperTypes.d.ts";
+import type { FieldReturnType, PropertiesToSource } from "../../../../types/helperTypes.mts";
 import type { DocumentData } from "../../abstract/module.mts";
 import type { BaseActiveEffect } from "../../documents.mjs/index.mts";
 import type * as fields from "../fields.mts";

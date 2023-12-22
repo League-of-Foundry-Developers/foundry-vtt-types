@@ -1,3 +1,5 @@
+import type { DeepPartial } from "../../../types/utils.mts";
+
 declare global {
   /**
    * An interface for an Audio/Video client which is extended to provide broadcasting functionality.

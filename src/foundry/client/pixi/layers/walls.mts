@@ -1,4 +1,5 @@
-import type { ConfiguredDocumentClass, ConfiguredObjectClassForName } from "../../../../types/helperTypes.d.ts";
+import type { ConfiguredDocumentClass, ConfiguredObjectClassForName } from "../../../../types/helperTypes.mts";
+import type { ConstructorOf } from "../../../../types/utils.mts";
 import type { PasteOptions } from "../placeables.mts";
 
 declare global {

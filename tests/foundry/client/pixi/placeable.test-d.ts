@@ -1,6 +1,6 @@
 import { assertType, expectTypeOf } from "vitest";
 import { Document } from "../../../../src/foundry/common/abstract/module.mjs";
-import type { ConfiguredDocumentClass } from "../../../../src/types/helperTypes.d.ts";
+import type { ConfiguredDocumentClass } from "../../../../src/types/helperTypes.mts";
 
 type EmbeddedInSceneDocumentSheetOptions = DocumentSheetOptions<
   Document<any, InstanceType<ConfiguredDocumentClass<typeof Scene>>>

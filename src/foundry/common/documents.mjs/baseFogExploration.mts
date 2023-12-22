@@ -1,3 +1,4 @@
+import type { DeepPartial, Merge } from "../../../types/utils.mts";
 import type { DocumentMetadata, DocumentModificationOptions } from "../abstract/document.mts";
 import type { Document } from "../abstract/module.mts";
 import type { FogExplorationDataConstructorData } from "../data/data.mjs/fogExplorationData.mts";

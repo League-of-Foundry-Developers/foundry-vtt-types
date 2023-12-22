@@ -3,7 +3,7 @@ import type {
   ConfiguredFlags,
   FieldReturnType,
   PropertiesToSource,
-} from "../../../../types/helperTypes.d.ts";
+} from "../../../../types/helperTypes.mts";
 import type DocumentData from "../../abstract/data.mts";
 import type * as documents from "../../documents.mjs/index.mts";
 import type { BaseUser } from "../../documents.mjs/index.mts";

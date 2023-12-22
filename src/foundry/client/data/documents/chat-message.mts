@@ -2,7 +2,8 @@ import type {
   ConfiguredDocumentClass,
   ConfiguredObjectClassForName,
   ToObjectFalseType,
-} from "../../../../types/helperTypes.d.ts";
+} from "../../../../types/helperTypes.mts";
+import type { DeepPartial, StoredDocument } from "../../../../types/utils.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.mts";
 import type { ChatMessageDataConstructorData } from "../../../common/data/data.mjs/chatMessageData.mts";
 

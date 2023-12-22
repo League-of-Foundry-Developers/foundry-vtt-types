@@ -1,4 +1,5 @@
-import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.ts";
+import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.mts";
+import type { ConstructorOf } from "../../../../types/utils.mts";
 import type { Request } from "../../../common/abstract/backend.mts";
 import type Document from "../../../common/abstract/document.mts";
 

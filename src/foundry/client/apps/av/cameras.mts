@@ -1,3 +1,5 @@
+import type { MaybePromise, StoredDocument } from "../../../../types/utils.mts";
+
 declare global {
   /**
    * The Camera UI View that displays all the camera feeds as individual video elements.

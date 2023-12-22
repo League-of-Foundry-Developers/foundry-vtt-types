@@ -1,3 +1,5 @@
+import type { Titlecase } from "../../../types/utils.mts";
+
 declare global {
   interface String {
     /**

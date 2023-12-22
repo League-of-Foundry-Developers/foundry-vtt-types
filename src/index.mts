@@ -1,2 +1,2 @@
 import "./foundry/index.mts";
-import "./types/index.d.ts";
+import "./types/index.mts";

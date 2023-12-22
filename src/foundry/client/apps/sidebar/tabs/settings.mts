@@ -1,3 +1,5 @@
+import type { MaybePromise } from "../../../../../types/utils.mts";
+
 declare global {
   /**
    * The sidebar tab which displays various game settings, help messages, and configuration options.

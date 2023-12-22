@@ -1,4 +1,5 @@
-import type { ConfiguredDocumentClass } from "../../../types/helperTypes.d.ts";
+import type { ConfiguredDocumentClass } from "../../../types/helperTypes.mts";
+import type { StoredDocument } from "../../../types/utils.mts";
 import type { CANVAS_PERFORMANCE_MODES } from "../../common/constants.mts";
 import type Color from "../../common/utils/color.mts";
 

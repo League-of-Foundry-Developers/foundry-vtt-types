@@ -1,4 +1,5 @@
-import type { ConfiguredDocumentClass, ConfiguredObjectClassForName } from "../../../../../types/helperTypes.d.ts";
+import type { ConfiguredDocumentClass, ConfiguredObjectClassForName } from "../../../../../types/helperTypes.mts";
+import type { ValueOf } from "../../../../../types/utils.mts";
 
 declare global {
   interface RulerData {

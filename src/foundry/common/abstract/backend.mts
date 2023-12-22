@@ -1,3 +1,4 @@
+import type { ConstructorOf } from "../../../types/utils.mts";
 import type { BaseUser } from "../documents.mjs/index.mts";
 import type { AnyDocumentData } from "./data.mts";
 import type Document from "./document.mts";

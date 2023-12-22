@@ -1,3 +1,5 @@
+import type { ValueOf } from "../../../types/utils.mts";
+
 // TODO: smarter types for named functions
 declare global {
   interface WorkerTask {
