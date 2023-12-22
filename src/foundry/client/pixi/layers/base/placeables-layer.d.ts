@@ -57,7 +57,7 @@ declare global {
     > | null;
 
     /**
-     * @remarks Override not in foundry docs but implicit from function call
+     * @remarks Override not in foundry docs but implicit from layerOptions
      */
     override options: PlaceablesLayer.LayerOptions<any>;
 

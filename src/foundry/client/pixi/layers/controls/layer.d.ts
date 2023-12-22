@@ -1,4 +1,5 @@
 import { ConfiguredDocumentClass } from "../../../../../types/helperTypes";
+import type { LineIntersection } from "../../../../common/utils/geometry.mjs";
 
 declare global {
   /**
@@ -9,7 +10,7 @@ declare global {
    * 2) Ruler measurement
    * 3) Map pings
    */
-  class ControlsLayer extends CanvasLayer<ControlsLayer.LayerOptions> {
+  class ControlsLayer extends InteractionLayer {
     constructor();
 
     /**
@@ -63,14 +64,13 @@ declare global {
     protected _rulers: Record<string, Ruler>;
 
     /**
-     * @defaultValue
-     * ```typescript
-     * foundry.utils.mergeObject(super.layerOptions, {
-     *   name: "controls",
-     *   zIndex: 1000
-     * })
-     * ```
+     * The positions of any offscreen pings we are tracking.
+     * @internal
      */
+    protected _offscreenPings: Record<string, Point>;
+
+    override options: ControlsLayer.LayerOptions;
+
     static override get layerOptions(): ControlsLayer.LayerOptions;
 
     /**
@@ -83,12 +83,9 @@ declare global {
      */
     getRulerForUser(userId: string): Ruler | null;
 
-    override draw(): Promise<this>;
+    override _draw(): Promise<void>;
 
-    /**
-     * @remarks This breaks polymorphism. See https://gitlab.com/foundrynet/foundryvtt/-/issues/6939
-     */
-    override tearDown(): Promise<void>;
+    override _tearDown(): Promise<void>;
 
     /**
      * Draw the cursors container
@@ -96,22 +93,39 @@ declare global {
     drawCursors(): void;
 
     /**
-     * Draw Ruler tools
+     * Create and add Ruler graphics instances for every game User.
      */
     drawRulers(): void;
+
+    /**
+     * Draw door control icons to the doors container.
+     */
+    drawDoors(): void;
 
     /**
      * Draw the select rectangle given an event originated within the base canvas layer
      * @param coords - The rectangle coordinates of the form `{x, y, width, height}`
      */
-    drawSelect({ x, y, width, height }: { x: number; y: number; width: number; height: number }): void;
+    drawSelect(coords: { x: number; y: number; width: number; height: number }): void;
 
-    override deactivate(): void;
+    override _deactivate(): void;
 
     /**
      * Handle mousemove events on the game canvas to broadcast activity of the user's cursor position
      */
-    protected _onMoveCursor(event: PIXI.FederatedEvent): void;
+    protected _onMouseMove(event: PIXI.FederatedEvent): void;
+
+    /**
+     * Handle pinging the canvas.
+     * @param event   - The triggering canvas interaction event.
+     * @param origin  - The local canvas coordinates of the mousepress.
+     */
+    protected _onLongPress(event: PIXI.FederatedEvent, origin: PIXI.Point): void;
+
+    /**
+     * Handle the canvas panning to a new view.
+     */
+    protected _onCanvasPan(): void;
 
     /**
      * Create and draw the Cursor object for a given User
@@ -133,12 +147,98 @@ declare global {
       user: InstanceType<ConfiguredDocumentClass<typeof User>>,
       rulerData: Parameters<Ruler["update"]>[0] | null,
     ): void;
+
+    /**
+     * Handle a broadcast ping.
+     * @param user     - The user who pinged.
+     * @param position - The position on the canvas that was pinged.
+     * @param data     - The broadcast ping data.
+     * @returns @see Ping#animate
+     */
+    handlePing(
+      user: InstanceType<ConfiguredDocumentClass<typeof User>>,
+      position: PIXI.Point,
+      data?: User.PingData,
+    ): Promise<boolean>;
+
+    /**
+     * Draw a ping at the edge of the viewport, pointing to the location of an off-screen ping.
+     * @param position - The co-ordinates of the off-screen ping.
+     * @param options  - Additional options to configure how the ping is drawn.
+     * @returns @see {@link Ping#animate}
+     */
+    drawOffscreenPing(
+      position: PIXI.Point,
+      options?: PingOptions & {
+        /**
+         * The style of ping to draw, from CONFIG.Canvas.pings.
+         * @defaultValue `"arrow"`
+         */
+        style?: string;
+
+        /**
+         * The user who pinged.
+         */
+        user?: InstanceType<ConfiguredDocumentClass<typeof User>>;
+      },
+    ): Promise<boolean>;
+
+    /**
+     * Draw a ping on the canvas
+     * @param position - The position on the canvas that was pinged.
+     * @param options  - Additional options to configure how the ping is drawn.
+     * @returns @see {@link Ping#animate}
+     */
+    drawPing(
+      position: PIXI.Point,
+      options?: PingOptions & {
+        /**
+         * The style of ping to draw, from CONFIG.Canvas.pings.
+         * @defaultValue `"pulse"`
+         */
+        style?: string;
+
+        /**
+         * The user who pinged.
+         */
+        user?: InstanceType<ConfiguredDocumentClass<typeof User>>;
+      },
+    ): Promise<boolean>;
+
+    /**
+     * Given an off-screen co-ordinate, determine the closest point at the edge of the viewport to that co-ordinate.
+     * @param position - The off-screen co-ordinate.
+     * @returns The closest point at the edge of the viewport to that
+     *          co-ordinate and a ray cast from the centre of the
+     *          screen towards it.
+     * @internal
+     */
+    protected _findViewportIntersection(position: Point): {
+      ray: Ray;
+
+      intersection: LineIntersection | null;
+    };
   }
 
   namespace ControlsLayer {
-    interface LayerOptions extends CanvasLayer.LayerOptions {
+    interface LayerOptions extends InteractionLayer.LayerOptions {
       name: "controls";
       zIndex: 1000;
     }
   }
+}
+
+declare namespace User {
+  /**
+   * TODO: Should be declared in client/data/documents/user
+   */
+  type PingData = {
+    pull: boolean;
+
+    style: string;
+
+    scene: string;
+
+    zoom: number;
+  };
 }

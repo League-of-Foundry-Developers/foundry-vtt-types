@@ -10,7 +10,12 @@ declare global {
     wall: InstanceType<ConfiguredObjectClassForName<"Wall">>;
 
     /**
-     * Draw the DoorControl icon, displaying it's icon texture and border
+     * The center of the wall which contains the door.
+     */
+    get center(): PIXI.Point;
+
+    /**
+     * Draw the DoorControl icon, displaying its icon texture and border
      */
     draw(): Promise<this>;
 
@@ -30,7 +35,7 @@ declare global {
     /**
      * Determine whether the DoorControl is visible to the calling user's perspective.
      * The control is always visible if the user is a GM and no Tokens are controlled.
-     * @see {@link SightLayer#testVisibility}
+     * @see {@link CanvasVisibility#testVisibility}
      */
     get isVisible(): boolean;
 

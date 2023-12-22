@@ -11,7 +11,7 @@ declare global {
     get active(): boolean;
 
     /**
-     * @remarks Override not in foundry docs but implicit from function call
+     * @privateRemarks Override not in foundry docs but implicit from layerOptions
      */
     override options: InteractionLayer.LayerOptions;
 
