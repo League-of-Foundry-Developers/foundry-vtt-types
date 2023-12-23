@@ -14,6 +14,7 @@ declare global {
     export import particles = pixiParticles;
 
     export const LegacyGraphics: typeof PIXI.Graphics;
+    export type LegacyGraphics = PIXI.Graphics;
     export class Graphics extends PIXI.smooth.SmoothGraphics {}
 
     enum UPDATE_PRIORITY {
