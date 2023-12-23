@@ -171,27 +171,27 @@ export declare abstract class DataField<
    */
   protected static get _defaults(): DataField.DefaultOptions<unknown>;
 
-  //   /**
-  //    * Apply a function to this DataField which propagates through recursively to any contained data schema.
-  //    * @param fn - The function to apply
-  //    * @param value - The current value of this field
-  //    * @returns The results object
-  //    */
-  //   apply<Result extends Record<string, never>>(
-  //     fn: DataField.ApplyableProperties<this, {}, Result> | ((options: {}) => Result),
-  //     value: DataField.InternalInitializedTypeFor<this, ExtendsOptions>
-  //   ): Result;
+  /**
+   * Apply a function to this DataField which propagates through recursively to any contained data schema.
+   * @param fn - The function to apply
+   * @param value - The current value of this field
+   * @returns The results object
+   */
+  apply<Result extends Record<string, never>>(
+    fn: DataField.ApplyableProperties<this, {}, Result> | ((options: {}) => Result),
+    value: DataField.InternalInitializedTypeFor<this, ExtendsOptions>
+  ): Result;
 
-  //   /**
-  //    * {@inheritdoc}
-  //    *
-  //    * @param options - Additional options passed to the applied function
-  //    */
-  //   apply<Result extends Record<string, unknown>, Options extends Record<string, unknown>>(
-  //     fn: DataField.ApplyableProperties<this, Options, Result> | ((options: Options) => Result),
-  //     value: DataField.InternalSourceTypeFor<this, ExtendsOptions>,
-  //     options: Options
-  //   ): Result;
+  /**
+   * {@inheritdoc}
+   *
+   * @param options - Additional options passed to the applied function
+   */
+  apply<Result extends Record<string, unknown>, Options extends Record<string, unknown>>(
+    fn: DataField.ApplyableProperties<this, Options, Result> | ((options: Options) => Result),
+    value: DataField.InternalSourceTypeFor<this, ExtendsOptions>,
+    options: Options
+  ): Result;
 
   // Data has the same type as DataModel.cleanData's source
   /**
@@ -209,7 +209,7 @@ export declare abstract class DataField<
     options: Record<string, unknown>
   ): DataField.InternalSourceTypeFor<this, ExtendsOptions>;
 
-  //   abstract _cast(value: unknown): DataField.SourceTypeFor<this>;
+  abstract _cast(value: unknown): DataField.SourceTypeFor<this>;
 
   /**
    * Attempt to retrieve a valid initial value for the DataField.
@@ -249,18 +249,18 @@ export declare abstract class DataField<
    */
   protected _validateType(value: DataField.InternalInitializedTypeFor<this, ExtendsOptions>): boolean | void;
 
-  //   /**
-  //    * Initialize the original source data into a mutable copy for the DataModel instance.
-  //    * @param model - The DataModel instance that this field belongs to
-  //    * @param name - The field name of this instance within the model
-  //    * @param value - The source value of the field
-  //    * @returns - An initialized copy of the source data
-  //    */
-  //   initialize(
-  //     model: DataModel.Any,
-  //     name: string,
-  //     value: DataField.SourceTypeFor<this>
-  //   ): DataField.InternalInitializedTypeFor<this, ExtendsOptions>;
+  /**
+   * Initialize the original source data into a mutable copy for the DataModel instance.
+   * @param model - The DataModel instance that this field belongs to
+   * @param name - The field name of this instance within the model
+   * @param value - The source value of the field
+   * @returns - An initialized copy of the source data
+   */
+  initialize(
+    model: DataModel.Any,
+    name: string,
+    value: DataField.SourceTypeFor<this>
+  ): DataField.InternalInitializedTypeFor<this, ExtendsOptions>;
 
   /**
    * Export the current value of the field into a serializable object.
@@ -619,18 +619,18 @@ export declare class ArrayField<
   protected _validateElements(value: ExtendsOptions['InputElement'][], options: Record<string, unknown>): Error[];
 
   /** @override */
-  //   override initialize(
-  //     model: DataModel.Any,
-  //     name: string,
-  //     value: DataField.SourceTypeFor<this>
-  //   ): ExtendsOptions['InitializedType'];
+  override initialize(
+    model: DataModel.Any,
+    name: string,
+    value: DataField.SourceTypeFor<this>
+  ): ExtendsOptions['InitializedType'];
 
   /** @override */
-  //   override toObject(
-  //     model: DataModel.Any,
-  //     name: string,
-  //     value: ExtendsOptions['InitializedType']
-  //   ): DataField.InternalSourceTypeFor<this, ExtendsOptions>;
+  override toObject(
+    model: DataModel.Any,
+    name: string,
+    value: ExtendsOptions['InitializedType']
+  ): DataField.InternalSourceTypeFor<this, ExtendsOptions>;
 }
 
 export declare namespace SetField {
@@ -714,9 +714,9 @@ declare class SchemaField<
   Options extends DataField.Options<ExtendsOptions>,
   ExtendsOptions extends DataField.AnyExtendsOptions = SchemaField.ExtendsOptions<ConcreteSchema>
 > extends ObjectField<Options, ExtendsOptions> {
-  //   initial: 'initial' extends RequiredProperties<Options>
-  //     ? Extract<ObjectField<Options, ExtendsOptions>, { initial: unknown }>['initial']
-  //     : () => ReturnType<any>; // typeof SchemaField.cleanSchema
+  initial: 'initial' extends RequiredProperties<Options>
+    ? Extract<ObjectField<Options, ExtendsOptions>, { initial: unknown }>['initial']
+    : () => ReturnType<any>; // typeof SchemaField.cleanSchema
 
   /* -------------------------------------------- */
 

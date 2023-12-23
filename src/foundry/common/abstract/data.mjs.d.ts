@@ -115,9 +115,12 @@ declare namespace DataModel {
     ? SchemaToData<ConcreteDataSchema>
     : never;
 
-  export type SchemaToSourceInputSimple<ConcreteDataSchema extends DataSchema> = FlattenSystem<
-    GetSchemaValue<ConstructReadonly<RemoveIndex<ConcreteDataSchema>>, 'SourceType'>
-  >;
+  //   export type SchemaToSourceInputSimple<ConcreteDataSchema extends DataSchema> = FlattenSystem<
+  //     GetSchemaValue<ConstructReadonly<RemoveIndex<ConcreteDataSchema>>, 'SourceType'>
+  //   >;
+
+  export type SchemaToSourceInputSimple<ConcreteDataSchema extends DataSchema> =
+    SchemaToSourceInput<ConcreteDataSchema>;
 
   export type SchemaToSourceInput<ConcreteDataSchema extends DataSchema> = FlattenSystem<
     GetSchemaValue<ConstructPartial<ConstructReadonly<RemoveIndex<ConcreteDataSchema>>, 'SourceType'>, 'SourceType'>

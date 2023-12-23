@@ -1,8 +1,6 @@
 import { ConfiguredDocumentClass } from '../../../../../types/helperTypes';
 import type DataModel from '../../../../common/abstract/data.mjs';
 
-type Foo = ConfiguredDocumentClass<typeof ChatMessage>;
-
 declare global {
   interface ChatLogOptions extends ApplicationOptions {
     /**

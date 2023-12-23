@@ -31,10 +31,10 @@ interface BaseMacroSchema extends DataSchema {
   /**
    * The _id of a User document which created this Macro *
    */
-  //   author: fields.ForeignDocumentField<
-  //     typeof documents.BaseUser,
-  //     { initial: () => OptionalChaining<OptionalChaining<typeof game, 'user'>, 'id'> }
-  //   >;
+  author: fields.ForeignDocumentField<
+    typeof documents.BaseUser,
+    { initial: () => OptionalChaining<OptionalChaining<typeof game, 'user'>, 'id'> }
+  >;
 
   /**
    * An image file path which provides the thumbnail artwork for this Macro

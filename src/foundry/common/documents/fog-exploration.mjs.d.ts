@@ -18,10 +18,10 @@ interface BaseFogExplorationSchema extends DataSchema {
   /**
    * The _id of the User document to which this fog applies
    */
-  //   user: fields.ForeignDocumentField<
-  //     typeof documents.BaseUser,
-  //     { initial: () => OptionalChaining<OptionalChaining<typeof game, 'user'>, 'id'> }
-  //   >;
+  user: fields.ForeignDocumentField<
+    typeof documents.BaseUser,
+    { initial: () => OptionalChaining<OptionalChaining<typeof game, 'user'>, 'id'> }
+  >;
 
   /**
    * The base64 image/jpeg of the explored fog polygon

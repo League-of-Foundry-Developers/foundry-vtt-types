@@ -43,11 +43,10 @@ interface BaseActorSchema extends DataSchema {
    */
   prototypeToken: fields.EmbeddedDataField<typeof PrototypeToken, {}>;
 
-  // TODO causes circularly references
   /**
    * A Collection of Item embedded Documents
    */
-  //   items: fields.EmbeddedCollectionField<typeof documents.BaseItem, {}>;
+  items: fields.EmbeddedCollectionField<typeof documents.BaseItem, {}>;
 
   /**
    * A Collection of ActiveEffect embedded Documents
