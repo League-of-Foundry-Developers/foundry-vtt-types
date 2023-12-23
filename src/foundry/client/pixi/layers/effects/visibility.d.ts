@@ -1,7 +1,5 @@
 export {};
 
-type CanvasVisionContainer = unknown;
-
 declare global {
   /**
    * The visibility Layer which implements dynamic vision, lighting, and fog of war
