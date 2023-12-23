@@ -4,62 +4,164 @@ declare global {
   /**
    * A CanvasLayer for displaying visual effects like weather, transitions, flashes, or more
    */
-  class WeatherLayer extends CanvasLayer<WeatherLayer.LayerOptions> {
+  class WeatherEffects extends FullCanvasObjectMixin(CanvasLayer) {
     /**
-     * The weather overlay container
-     * @defaultValue `undefined`
+     * @defaultValue `true`
      */
-    weather: PIXI.Container | undefined;
-
-    /**
-     * The currently active weather effect
-     * @defaultValue `undefined`
-     */
-    weatherEffect: SpecialEffect | undefined;
+    override sortableChildren: boolean;
 
     /**
-     * Track the set of particle Emitter instances which are active within this Scene.
-     * @defaultValue `[]`
+     * @defaultValue `"none"`
      */
-    emitters: PIXI.particles.Emitter[];
+    override eventMode: PIXI.EventMode;
 
     /**
-     * An occlusion filter that prevents weather from being displayed in certain regions
-     * @defaultValue `undefined`
+     * Sorting values to deal with ties.
+     * @defaultValue `1000`
      */
-    weatherOcclusionFilter: AbstractBaseMaskFilter | undefined;
+    static PRIMARY_SORT_ORDER: number;
 
     /**
-     * @remarks This is not overridden in foundry but reflects the real behavior.
+     * @defaultValue `foundry.utils.mergeObject(super.layerOptions, {name: "effects"})`
      */
-    static get instance(): Canvas["weather"];
+    static override get layerOptions(): CanvasLayer.LayerOptions;
 
     /**
-     * @defaultValue
-     * ```typescript
-     * foundry.utils.mergeObject(super.layerOptions, {
-     *   name: "effects",
-     *   zIndex: 700
-     * })
-     * ```
+     * Array of weather effects linked to this weather container.
      */
-    static get layerOptions(): WeatherLayer.LayerOptions;
-
-    override tearDown(): Promise<this>;
-
-    override draw(): Promise<undefined>;
+    effects: Map<string, (ParticleEffect | WeatherShaderEffect)[]>;
 
     /**
-     * Draw the weather container.
-     * @returns The weather container, or null if no effect is present
+     * A default configuration of the terrain mask that is automatically applied to any shader-based weather effects.
+     * This configuration is automatically passed to WeatherShaderEffect#configureTerrainMask upon construction.
      */
-    drawWeather(): Exclude<this["weather"], undefined> | null;
+    terrainMaskConfig: WeatherLayer.WeatherTerrainMaskConfiguration;
+
+    /**
+     * A default configuration of the terrain mask that is automatically applied to any shader-based weather effects.
+     * This configuration is automatically passed to WeatherShaderEffect#configureTerrainMask upon construction.
+     */
+    occlusionMaskConfig: WeatherLayer.WeatherOcclusionMaskConfiguration;
+
+    /**
+     * The inverse occlusion mask filter bound to this container.
+     */
+    occlusionFilter: WeatherOcclusionMaskFilter;
+
+    /**
+     * Define an elevation property on the WeatherEffects layer.
+     * This approach is used for now until the weather elevation property is formally added to the Scene data schema.
+     */
+    get elevation(): number;
+
+    set elevation(value);
+
+    /**
+     * @param options - Unused
+     */
+    protected override _draw(options?: Record<string, unknown> | undefined): Promise<void>;
+
+    /**
+     * @param options - Unused
+     */
+    protected override _tearDown(options?: Record<string, unknown> | undefined): Promise<void>;
+
+    /**
+     * Initialize the weather container from a weather config object.
+     * @param weatherEffectsConfig - Weather config object (or null/undefined to clear the container).
+     */
+    initializeEffects(weatherEffectsConfig?: null | undefined | WeatherLayer.WeatherEffectsConfig): void;
+
+    /**
+     * Clear the weather container.
+     */
+    clearEffects(): void;
+
+    /**
+     * Set the occlusion uniforms for this weather shader.
+     * @param context - The shader context
+     * @param config  - Occlusion masking options
+     */
+    protected static configureOcclusionMask(
+      context: PIXI.Shader,
+      config: WeatherLayer.WeatherOcclusionMaskConfiguration,
+    ): void;
+
+    /**
+     * Set the terrain uniforms for this weather shader.
+     * @param context - The shader context
+     * @param config  - Terrain masking options
+     */
+    protected static configureTerrainMask(
+      context: PIXI.Shader,
+      config: WeatherLayer.WeatherTerrainMaskConfiguration,
+    ): void;
+
+    /**
+     * @deprecated since v11, will be removed in v13
+     * @remarks `"The WeatherContainer at canvas.weather.weather is deprecated and combined with the layer itself."`
+     */
+    get weather(): this;
   }
 
   namespace WeatherLayer {
-    interface LayerOptions extends CanvasLayer.LayerOptions {
-      name: "effects";
-      zIndex: 700;
+    interface WeatherTerrainMaskConfiguration {
+      /**
+       * Enable or disable this mask.
+       * @defaultValue `false`
+       */
+      enabled: boolean;
+
+      /**
+       * An RGBA array of channel weights applied to the mask texture.
+       * @defaultValue `[1, 0, 0, 0]`
+       */
+      channelWeights: [r: number, b: number, g: number, a: number];
+
+      /**
+       * If the mask should be reversed.
+       * @defaultValue `false`
+       */
+      reverse: boolean;
+
+      /**
+       * A texture which defines the mask region.
+       */
+      texture: PIXI.Texture | PIXI.RenderTexture;
+    }
+
+    interface WeatherOcclusionMaskConfiguration {
+      /**
+       * Enable or disable this mask.
+       * @defaultValue `false`
+       */
+      enabled: boolean;
+
+      /**
+       * An RGBA array of channel weights applied to the mask texture.
+       * @defaultValue `[0, 0, 1, 0]`
+       */
+      channelWeights: [r: number, b: number, g: number, a: number];
+
+      /**
+       * If the mask should be reversed.
+       * @defaultValue `false`
+       */
+      reverse: boolean;
+
+      /**
+       * A texture which defines the mask region.
+       */
+      texture: PIXI.Texture | PIXI.RenderTexture;
+    }
+
+    /**
+     * @privateRemarks types inferred from usage
+     */
+    interface WeatherEffectsConfig {
+      effects: WeatherEffects[];
+
+      filter: PIXI.Filter;
     }
   }
 }
