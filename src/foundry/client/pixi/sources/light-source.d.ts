@@ -1,8 +1,5 @@
 export {};
 
-// TODO: Define in client/pixi/layers/effects/visibility.js
-type CanvasVisibilityTest = unknown;
-
 declare global {
   interface LightSourceData extends RenderedPointSourceData {
     /**
