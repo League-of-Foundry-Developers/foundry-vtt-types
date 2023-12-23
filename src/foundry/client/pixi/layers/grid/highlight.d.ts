@@ -1,28 +1,32 @@
-/**
- * A special Graphics class which handles Grid layer highlighting
- */
-declare class GridHighlight extends PIXI.Graphics {
-  constructor(name: string, ...args: ConstructorParameters<typeof PIXI.Graphics>);
+export {};
 
+declare global {
   /**
-   * Track the Grid Highlight name
+   * A special Graphics class which handles Grid layer highlighting
    */
-  name: string;
+  class GridHighlight extends PIXI.Graphics {
+    constructor(name: string, ...args: ConstructorParameters<typeof PIXI.Graphics>);
 
-  /**
-   * Track distinct positions which have already been highlighted
-   */
-  positions: Set<string>;
+    /**
+     * Track the Grid Highlight name
+     */
+    name: string;
 
-  /**
-   * Record a position that is highlighted and return whether or not it should be rendered
-   * @param x - The x-coordinate to highlight
-   * @param y - The y-coordinate to highlight
-   * @returns Whether or not to draw the highlight for this location
-   */
-  highlight(x: number, y: number): boolean;
+    /**
+     * Track distinct positions which have already been highlighted
+     */
+    positions: Set<string>;
 
-  override clear(): this;
+    /**
+     * Record a position that is highlighted and return whether or not it should be rendered
+     * @param x - The x-coordinate to highlight
+     * @param y - The y-coordinate to highlight
+     * @returns Whether or not to draw the highlight for this location
+     */
+    highlight(x: number, y: number): boolean;
 
-  override destroy(...args: Parameters<PIXI.Graphics["destroy"]>): void;
+    override clear(): this;
+
+    override destroy(...args: Parameters<PIXI.Graphics["destroy"]>): void;
+  }
 }
