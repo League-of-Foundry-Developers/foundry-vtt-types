@@ -1,54 +1,48 @@
-/**
- * An interface for defining particle-based weather effects
- */
-declare class ParticleEffect {
+export {};
+
+declare global {
   /**
-   * @param parent  - The parent container within which the effect is rendered
-   * @param options - Options passed to the getParticleEmitters method which can be used to customize
-   *                  values of the emitter configuration. (default: `{}`)
+   * An interface for defining particle-based weather effects
    */
+  class ParticleEffect extends FullCanvasObjectMixin(PIXI.Container) {
+    /**
+     * @param options - Options passed to the getParticleEmitters method which can be used to customize
+     *                  values of the emitter configuration. (default: `{}`)
+     */
 
-  constructor(parent: FullCanvasContainer, options?: object);
+    constructor(options?: Record<string, unknown>);
 
-  parent: FullCanvasContainer;
+    parent: PIXI.Container;
 
-  emitters: PIXI.particles.Emitter[];
+    emitters: PIXI.particles.Emitter[];
 
-  /**
-   * A human-readable label for the weather effect. This can be a localization string.
-   * @defaultValue `"Particle Effect"`
-   */
-  static label: string;
+    /**
+     * Create an emitter instance which automatically updates using the shared PIXI.Ticker
+     * @param config - The emitter configuration
+     * @returns The created Emitter instance
+     */
+    createEmitter(config: PIXI.particles.EmitterConfigV3): PIXI.particles.Emitter;
 
-  /**
-   * Create an emitter instance which automatically updates using the shared PIXI.Ticker
-   * @param config - The emitter configuration
-   * @returns The created Emitter instance
-   */
-  createEmitter(config: PIXI.particles.EmitterConfigV3): PIXI.particles.Emitter;
+    /**
+     * Get the particle emitters which should be active for this particle effect.
+     * @param options - Options provided to the ParticleEffect constructor which can be used to customize
+     *                  configuration values for created emitters. (default: `{}`)
+     */
+    getParticleEmitters(options?: Record<string, unknown>): PIXI.particles.Emitter[];
 
-  /**
-   * Get the particle emitters which should be active for this particle effect.
-   * @param options - Options provided to the ParticleEffect constructor which can be used to customize
-   *                  configuration values for created emitters. (default: `{}`)
-   */
-  getParticleEmitters(options?: object): PIXI.particles.Emitter[];
+    override destroy(options?: boolean | PIXI.IDestroyOptions | undefined): void;
 
-  /**
-   * Destroy all emitters related to this ParticleEffect
-   */
-  destroy(): void;
+    /**
+     * Begin animation for the configured emitters.
+     */
+    play(): void;
 
-  /**
-   * Begin animation for the configured emitters.
-   */
-  play(): void;
+    /**
+     * Stop animation for the configured emitters.
+     */
+    stop(): void;
+  }
 
-  /**
-   * Stop animation for the configured emitters.
-   */
-  stop(): void;
+  /** @deprecated since v10 */
+  class SpecialEffect extends ParticleEffect {}
 }
-
-/** @deprecated since v10 */
-declare class SpecialEffect extends ParticleEffect {}
