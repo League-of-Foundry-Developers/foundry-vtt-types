@@ -4,7 +4,7 @@ declare global {
   /**
    * The Notes Layer which contains Note canvas objects
    */
-  class NotesLayer extends PlaceablesLayer<"Note", NotesLayer.LayerOptions> {
+  class NotesLayer extends PlaceablesLayer<"Note"> {
     /**
      * @remarks This is not overridden in foundry but reflects the real behavior.
      */

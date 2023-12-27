@@ -397,7 +397,7 @@ declare global {
 
     protected override _onClickLeft(event: PIXI.FederatedEvent): void;
 
-    protected override _onDragLeftStart(event: PIXI.FederatedEvent): Promise<void>;
+    protected override _onDragLeftStart(event: PIXI.FederatedEvent): Promise<unknown>;
 
     protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 

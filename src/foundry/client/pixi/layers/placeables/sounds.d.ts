@@ -2,7 +2,7 @@
  * This Canvas Layer provides a container for AmbientSound objects.
  * @see {@link AmbientSound}
  */
-declare class SoundsLayer extends PlaceablesLayer<"AmbientSound", SoundsLayer.LayerOptions> {
+declare class SoundsLayer extends PlaceablesLayer<"AmbientSound"> {
   /**
    * Track whether to actively preview ambient sounds with mouse cursor movements
    * @defaultValue `false`
@@ -92,7 +92,7 @@ declare class SoundsLayer extends PlaceablesLayer<"AmbientSound", SoundsLayer.La
 
   protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
-  protected override _onDragLeftDrop(event: PIXI.FederatedEvent): void;
+  protected override _onDragLeftDrop(event: PIXI.FederatedEvent): Promise<void>;
 
   protected override _onDragLeftCancel(event: PointerEvent): void;
 

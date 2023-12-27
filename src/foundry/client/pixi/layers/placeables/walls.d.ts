@@ -6,7 +6,7 @@ declare global {
    * @see {@link WallDocument}
    * @see {@link Wall}
    */
-  class WallsLayer extends PlaceablesLayer<"Wall", WallsLayer.LayerOptions> {
+  class WallsLayer extends PlaceablesLayer<"Wall"> {
     constructor();
 
     /**
@@ -181,11 +181,11 @@ declare global {
         }
       | this["_cloneType"];
 
-    protected override _onDragLeftStart(event: PIXI.FederatedEvent): void;
+    protected override _onDragLeftStart(event: PIXI.FederatedEvent): Promise<void>;
 
     protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
-    protected override _onDragLeftDrop(event: PIXI.FederatedEvent): void;
+    protected override _onDragLeftDrop(event: PIXI.FederatedEvent): Promise<void>;
 
     protected override _onDragLeftCancel(event: PointerEvent): void;
 

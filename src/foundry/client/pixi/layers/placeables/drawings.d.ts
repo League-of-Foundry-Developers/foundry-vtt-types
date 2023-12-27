@@ -1,8 +1,7 @@
 /**
  * The DrawingsLayer subclass of PlaceablesLayer.
- * This layer implements a container for drawings which are rendered immediately above the BackgroundLayer.
  */
-declare class DrawingsLayer extends PlaceablesLayer<"Drawing", DrawingsLayer.LayerOptions> {
+declare class DrawingsLayer extends PlaceablesLayer<"Drawing"> {
   /**
    * @remarks This is not overridden in foundry but reflects the real behavior.
    */
@@ -36,16 +35,14 @@ declare class DrawingsLayer extends PlaceablesLayer<"Drawing", DrawingsLayer.Lay
 
   override get hud(): Exclude<Canvas["hud"], undefined>["drawing"];
 
+  override get hookName(): (typeof DrawingsLayer)["name"];
+
   /**
    * Render a configuration sheet to configure the default Drawing settings
    */
   configureDefault(): void;
 
-  /**
-   * Override the deactivation behavior of this layer.
-   * Placeables on this layer remain visible even when the layer is inactive.
-   */
-  deactivate(): this;
+  override _deactivate(): this;
 
   /**
    * Get initial data for a new drawing.
@@ -80,6 +77,7 @@ declare namespace DrawingsLayer {
     canDragCreate: true;
     controllableObjects: true;
     rotatableObjects: true;
+    elevationSorting: true;
     zIndex: 20;
   }
 }

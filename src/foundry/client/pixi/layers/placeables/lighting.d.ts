@@ -14,7 +14,7 @@
  * Hooks.on("lightingRefresh", layer => {});
  * ```
  */
-declare class LightingLayer extends PlaceablesLayer<"AmbientLight", LightingLayer.LayerOptions> {
+declare class LightingLayer extends PlaceablesLayer<"AmbientLight"> {
   constructor();
 
   /**

@@ -76,8 +76,9 @@ declare global {
      * Start a left-click drag workflow originating from the Canvas stage.
      * @see {@link Canvas._onDragLeftStart}
      * @param event - The PIXI InteractionEvent which wraps a PointerEvent
+     * @remarks Current implementation always returns undefined
      */
-    protected _onDragLeftStart(event: PIXI.FederatedEvent): Promise<void>;
+    protected _onDragLeftStart(event: PIXI.FederatedEvent): Promise<unknown>;
 
     /**
      * Continue a left-click drag workflow originating from the Canvas stage.

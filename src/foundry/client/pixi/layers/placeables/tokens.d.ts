@@ -7,7 +7,7 @@ declare global {
   /**
    * The Tokens Container
    */
-  class TokenLayer extends PlaceablesLayer<"Token", TokenLayer.LayerOptions> {
+  class TokenLayer extends PlaceablesLayer<"Token"> {
     constructor();
 
     /**

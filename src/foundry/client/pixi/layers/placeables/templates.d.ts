@@ -2,7 +2,7 @@
  * This Canvas Layer provides a container for MeasuredTemplate objects.
  * @see {@link MeasuredTemplate}
  */
-declare class TemplateLayer extends PlaceablesLayer<"MeasuredTemplate", TemplateLayer.LayerOptions> {
+declare class TemplateLayer extends PlaceablesLayer<"MeasuredTemplate"> {
   /**
    * @remarks This is not overridden in foundry but reflects the real behavior.
    */
