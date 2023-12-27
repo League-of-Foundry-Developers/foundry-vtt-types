@@ -138,8 +138,20 @@ declare global {
      * @param y  - The starting y-coordinate in pixels
      * @param dx - The number of grid positions to shift horizontally
      * @param dy - The number of grid positions to shift vertically
+     * @param options - Additional options to configure shift behaviour.
      */
-    shiftPosition(x: number, y: number, dx: number, dy: number): PointArray;
+    shiftPosition(
+      x: number,
+      y: number,
+      dx: number,
+      dy: number,
+      options?: {
+        /**
+         * The token that is being shifted.
+         */
+        token?: Token;
+      },
+    ): PointArray;
 
     /**
      * Measure the distance traversed over an array of measured segments
