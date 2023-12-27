@@ -5,8 +5,6 @@ declare global {
    * A CanvasLayer responsible for drawing a square grid
    */
   class GridLayer extends CanvasLayer {
-    constructor();
-
     /**
      * The Grid container
      * @defaultValue `undefined`
@@ -32,11 +30,8 @@ declare global {
 
     /**
      * @defaultValue
-     * ```typescript
-     * mergeObject(super.layerOptions, {
-     *   name: "grid",
-     *   zIndex: 30
-     * }
+     * ```js
+     * foundry.utils.mergeObject(super.layerOptions, {name: "grid"});
      * ```
      */
     static override get layerOptions(): GridLayer.LayerOptions;
@@ -70,25 +65,40 @@ declare global {
      * Draw the grid
      * @param preview - Override settings used in place of those saved to the Scene data
      */
-    draw(preview?: DrawOptions): Promise<this>;
+    _draw(preview?: GridLayer.DrawOptions): Promise<void>;
 
     /**
      * Given a pair of coordinates (x1,y1), return the grid coordinates (x2,y2) which represent the snapped position
      * @param x        - The exact target location x
      * @param y        - The exact target location y
-     * @param interval - An interval of grid spaces at which to snap, default is 1. If the interval is zero, no snapping occurs.
+     * @param interval - An interval of grid spaces at which to snap, default is 1.
      *                   (defaultValue: `1`)
+     * @param options  - Additional options to configure snapping behaviour.
      */
-    getSnappedPosition(x: number, y: number, interval?: number): { x: number; y: number };
+    getSnappedPosition(
+      x: number,
+      y: number,
+      interval?: number,
+      options?: {
+        /**
+         * The token
+         */
+        token: Token;
+      },
+    ): { x: number; y: number };
 
     /**
      * Given a pair of coordinates (x, y) - return the top-left of the grid square which contains that point
+     * @param x - Coordinate X.
+     * @param y - Coordinate Y.
      * @returns An Array [x, y] of the top-left coordinate of the square which contains (x, y)
      */
     getTopLeft(x: number, y: number): PointArray;
 
     /**
      * Given a pair of coordinates (x, y), return the center of the grid square which contains that point
+     * @param x - Coordinate X.
+     * @param y - Coordinate Y.
      * @returns An Array [x, y] of the central point of the square which contains (x, y)
      */
     getCenter(x: number, y: number): PointArray;
@@ -102,7 +112,7 @@ declare global {
      * @returns The measured distance between these points
      *
      * @example
-     * ```typescript
+     * ```js
      * let distance = canvas.grid.measureDistance({x: 1000, y: 1000}, {x: 2000, y: 2000});
      * ```
      */
@@ -170,35 +180,40 @@ declare global {
   namespace GridLayer {
     interface LayerOptions extends CanvasLayer.LayerOptions {
       name: "grid";
-      zIndex: 30;
     }
 
     interface Segment {
       ray: Ray;
       label?: Ruler["labels"]["children"][number];
     }
-  }
 
-  interface DrawOptions {
-    /**
-     * @defaultValue `null`
-     */
-    type?: foundry.CONST.GRID_TYPES | null;
+    interface DrawOptions {
+      /**
+       * @defaultValue `null`
+       */
+      type?: foundry.CONST.GRID_TYPES | null;
 
-    /**
-     * @defaultValue `null`
-     */
-    dimensions?: Canvas["dimensions"] | null;
+      /**
+       * @defaultValue `null`
+       */
+      dimensions?: Canvas["dimensions"] | null;
 
-    /**
-     * @defaultValue `null`
-     */
-    gridColor?: number | string | null;
+      color?: number | string | null;
 
-    /**
-     * @defaultValue `null`
-     */
-    gridAlpha?: number | null;
+      alpha?: number | null;
+
+      /**
+       * @deprecated since v10, will be removed in v12
+       * @remarks "You are passing the gridColor parameter to GridLayer#draw which is deprecated in favor of the color parameter."
+       */
+      gridColor?: number | string | null;
+
+      /**
+       * @deprecated since v10, will be removed in v12
+       * @remarks "You are passing the gridAlpha parameter to GridLayer#draw which is deprecated in favor of the alpha parameter."
+       */
+      gridAlpha?: number | null;
+    }
   }
 
   interface MeasureDistancesOptions {
