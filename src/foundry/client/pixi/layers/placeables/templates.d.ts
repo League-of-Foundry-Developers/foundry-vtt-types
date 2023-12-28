@@ -9,6 +9,11 @@ declare class TemplateLayer extends PlaceablesLayer<"MeasuredTemplate"> {
   static get instance(): Canvas["templates"];
 
   /**
+   * @remarks This is not overridden in foundry but reflects the real behavior.
+   */
+  override options: TemplateLayer.LayerOptions;
+
+  /**
    * @defaultValue
    * ```
    * mergeObject(super.layerOptions, {
@@ -24,9 +29,9 @@ declare class TemplateLayer extends PlaceablesLayer<"MeasuredTemplate"> {
 
   static override documentName: "MeasuredTemplate";
 
-  override activate(): this;
+  override get hookName(): string;
 
-  override deactivate(): this;
+  override _deactivate(): void;
 
   /**
    * Register game settings used by the TemplatesLayer

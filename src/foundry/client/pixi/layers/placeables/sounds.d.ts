@@ -20,6 +20,11 @@ declare class SoundsLayer extends PlaceablesLayer<"AmbientSound"> {
   sources: foundry.utils.Collection<SoundSource>;
 
   /**
+   * @remarks This is not overridden in foundry but reflects the real behavior.
+   */
+  override options: SoundsLayer.LayerOptions;
+
+  /**
    * @defaultValue
    * ```
    * foundry.utils.mergeObject(super.layerOptions, {
