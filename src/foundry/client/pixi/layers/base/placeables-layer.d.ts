@@ -18,10 +18,7 @@ declare global {
    * @typeParam DocumentName - The key of the configuration which defines the object and document class.
    * @typeParam Options      - The type of the options in this layer.
    */
-  class PlaceablesLayer<
-    DocumentName extends PlaceableDocumentType,
-    // Options extends PlaceablesLayer.LayerOptions<DocumentName> = PlaceablesLayer.LayerOptions<DocumentName>,
-  > extends InteractionLayer {
+  class PlaceablesLayer<DocumentName extends PlaceableDocumentType> extends InteractionLayer {
     constructor();
 
     /**

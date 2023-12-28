@@ -1,229 +1,141 @@
+export {};
+
 /**
- * The Lighting Layer which displays darkness and light within the rendered Scene.
- * Lighting Layer (Container)
- *   Illumination Container [MULTIPLY]
- *     Background (Graphics)
- *     Light (Container) [LOS Mask]
- *       Source 1, ..., Source N (Container)
- *     Darkness (Container)
- *       Source 1, ..., Source N (Container)
- *   Coloration Container [ADD_NPM]
- *
- * @example <caption>The lightingRefresh hook</caption>
- * ```typescript
- * Hooks.on("lightingRefresh", layer => {});
- * ```
+ * The Lighting Layer which ambient light sources as part of the CanvasEffectsGroup.
  */
-declare class LightingLayer extends PlaceablesLayer<"AmbientLight"> {
-  constructor();
-
-  /**
-   * A mapping of light sources which are active within the rendered Scene
-   */
-  sources: foundry.utils.Collection<LightSource>;
-
-  /**
-   * Increment this whenever lighting channels are re-configured.
-   * This informs lighting and vision sources whether they need to re-render.
-   * @defaultValue `0`
-   */
-  version: number;
-
-  /**
-   * The currently displayed darkness level, which may override the saved Scene value
-   * @defaultValue `0`
-   */
-  darknessLevel: number;
-
-  /**
-   * The current client setting for whether global illumination is used or not
-   * @defaultValue `false`
-   */
-  globalLight: boolean;
-
-  /**
-   * The coloration container which visualizes the effect of light sources
-   * @defaultValue `null`
-   */
-  coloration: PIXI.Container | null;
-
-  /**
-   * The illumination container which visualizes darkness and light
-   * @defaultValue `null`
-   */
-  illumination: PIXI.Container | null;
-
-  /**
-   * The background container which visualizes the background
-   * @defaultValue `null`
-   */
-  background: PIXI.Container | null;
-
-  /**
-   * An array of light sources which are currently animated
-   * @internal
-   */
-  protected _animatedSources: LightSource[];
-
-  /**
-   * A mapping of different light level channels
-   * @defaultValue `undefined`
-   */
-  channels: ChannelConfig | undefined;
-
-  static override documentName: "AmbientLight";
-
-  /**
-   * @remarks This is not overridden in foundry but reflects the real behavior.
-   */
-  static get instance(): Canvas["lighting"];
-
-  /**
-   * @defaultValue
-   * ```
-   * foundry.utils.mergeObject(super.layerOptions, {
-   *  name: "lighting",
-   *  rotatableObjects: true,
-   *  zIndex: 300
-   * })
-   * ```
-   */
-  static override get layerOptions(): LightingLayer.LayerOptions;
-
-  /**
-   * TODO: Significant portions of this method may no longer be needed
-   * Configure the lighting channels which are inputs to the ShadowMap
-   * @internal
-   */
-  protected _configureChannels({
-    darkness,
-    backgroundColor,
-  }?: {
-    /** Darkness level override. */
-    darkness?: number;
-
-    /** Canvas background color override. */
-    backgroundColor?: number;
-  }): ChannelConfig;
-
-  override draw(): Promise<this>;
-
-  masks?: PIXI.Container;
-
-  /**
-   * Draw the coloration container which is responsible for rendering the visible hue of a light source.
-   * Apply an additive blend to the entire container after each individual light source is blended via screen.
-   * @internal
-   */
-  protected _drawColorationContainer(): PIXI.Container;
-
-  /**
-   * Draw the illumination container which is responsible for displaying darkness and light.
-   * @internal
-   */
-  protected _drawIlluminationContainer(): PIXI.Container;
-
-  /**
-   * Draw the background container which is responsible for displaying altered background.
-   * @internal
-   */
-  protected _drawBackgroundContainer(): PIXI.Container;
-
-  /**
-   * Does this scene currently benefit from global illumination?
-   */
-  hasGlobalIllumination(): boolean;
-
-  /**
-   * Initialize all AmbientLight sources which are present on this layer
-   */
-  initializeSources(): void;
-
-  /**
-   * Refresh the active display of the LightingLayer.
-   * Update the scene background color, light sources, and darkness sources
-   */
-  refresh({
-    darkness,
-    backgroundColor,
-  }?: {
+declare global {
+  class LightingLayer extends PlaceablesLayer<"AmbientLight"> {
     /**
-     * An override darkness level to which the layer should be temporarily
-     * rendered.
+     * @remarks This is not overridden in foundry but reflects the real behavior.
      */
-    darkness?: number;
+    static get instance(): Canvas["lighting"];
 
-    /** An override canvas background color. */
-    backgroundColor?: number;
-  }): void;
+    static override documentName: "AmbientLight";
 
-  override tearDown(): Promise<this>;
+    /**
+     * @remarks This is not overridden in foundry but reflects the real behavior.
+     */
+    override options: LightingLayer.LayerOptions;
 
-  /**
-   * Activate light source animation for AmbientLight objects within this layer
-   */
-  activateAnimation(): void;
+    /**
+     * @defaultValue
+     * ```
+     * foundry.utils.mergeObject(super.layerOptions, {
+     *  name: "lighting",
+     *  rotatableObjects: true,
+     *  zIndex: 300
+     * })
+     * ```
+     */
+    static override get layerOptions(): LightingLayer.LayerOptions;
 
-  /**
-   * Deactivate light source animation for AmbientLight objects within this layer
-   */
-  deactivateAnimation(): void;
+    override get hookName(): string;
 
-  /**
-   * The ticker handler which manages animation delegation
-   * @param dt - Delta time
-   * @internal
-   */
-  protected _animateSource(dt: number): void;
+    override _activate(): void;
 
-  /**
-   * Animate a smooth transition of the darkness overlay to a target value.
-   * Only begin animating if another animation is not already in progress.
-   * @param target   - The target darkness level between 0 and 1
-   *                   (default: `1.0`)
-   * @returns A Promise which resolves once the animation is complete
-   */
-  animateDarkness(
-    target?: number,
-    {
-      duration,
-    }?: {
-      /**
-       * The desired animation time in milliseconds. Default is 10 seconds
-       * @defaultValue `10000`
-       */
-      duration?: number;
-    },
-  ): Promise<void>;
+    protected override _onDragLeftStart(event: PIXI.FederatedEvent): ReturnType<AmbientLight["draw"]>;
 
-  /**
-   * Actions to take when the darkness level of the Scene is changed
-   * @param darkness - The new darkness level
-   * @param prior    - The prior darkness level
-   * @internal
-   */
-  protected _onDarknessChange(darkness: number, prior: number): void;
+    protected override _onDragLeftMove(event: PIXI.FederatedEvent): Promise<void>;
 
-  protected override _onDragLeftStart(event: PIXI.FederatedEvent): Promise<AmbientLight>;
+    protected override _onDragLeftCancel(event: PointerEvent): Promise<void>;
 
-  protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
+    protected _onMouseWheel(event: WheelEvent): void;
 
-  protected override _onDragLeftCancel(event: PointerEvent): void;
+    /**
+     * Actions to take when the darkness level of the Scene is changed
+     * @param darkness - The new darkness level
+     * @param prior    - The prior darkness level
+     */
+    protected _onDarknessChange(darkness: number, prior: number): void;
 
-  protected override _onMouseWheel(event: WheelEvent): void | ReturnType<AmbientLight["rotate"]>;
-}
+    /**
+     * @deprecated since v10, will be removed in v12
+     * @remarks "LightingLayer#background has been refactored to EffectsCanvasGroup#background"
+     */
+    get background(): EffectsCanvasGroup["background"];
 
-declare namespace LightingLayer {
-  interface LayerOptions extends PlaceablesLayer.LayerOptions<"AmbientLight"> {
-    name: "lighting";
+    /**
+     * @deprecated since v10, will be removed in v12
+     * @remarks "LightingLayer#illumination has been refactored to EffectsCanvasGroup#illumination"
+     */
+    get illumination(): EffectsCanvasGroup["illumination"];
+
+    /**
+     * @deprecated since v10, will be removed in v12
+     * @remarks "LightingLayer#channels has been refactored to EffectsCanvasGroup#lightingChannelColors"
+     * @remarks lightingChannelColors was removed in v11 without this deprecation being updated
+     */
+    get channels(): undefined;
+
+    /**
+     * @deprecated since v10, will be removed in v12
+     * @remarks "LightingLayer#coloration has been refactored to EffectsCanvasGroup#coloration"
+     */
+    get coloration(): EffectsCanvasGroup["coloration"];
+
+    /**
+     * @deprecated since v10, will be removed in v12
+     * @remarks "LightingLayer#darknessLevel has been refactored to Canvas#darknessLevel"
+     */
+    get darknessLevel(): Canvas["darknessLevel"];
+
+    /**
+     * @deprecated since v10, will be removed in v12
+     * @remarks "LightingLayer#globalLight has been refactored to CanvasIlluminationEffects#globalLight"
+     */
+    get globalLight(): CanvasIlluminationEffects["globalLight"];
+
+    /**
+     * @deprecated since v10, will be removed in v12
+     * @remarks "LightingLayer#sources has been refactored to EffectsCanvasGroup#lightSources"
+     */
+    get sources(): EffectsCanvasGroup["lightSources"];
+
+    /**
+     * @deprecated since v10, will be removed in v12
+     * @remarks "LightingLayer#version has been refactored to EffectsCanvasGroup#lightingVersion"
+     * @remarks lightingVersion was removed in v11 without this deprecation being updated
+     */
+    get version(): undefined;
+
+    /**
+     * @deprecated since v10, will be removed in v12
+     * @remarks "LightingLayer#activateAnimation has been refactored to EffectsCanvasGroup#activateAnimation"
+     */
+    activateAnimation(): void;
+
+    /**
+     * @deprecated since v10, will be removed in v12
+     * @remarks "LightingLayer#deactivateAnimation has been refactored to EffectsCanvasGroup#deactivateAnimation"
+     */
+    deactivateAnimation(): void;
+
+    /**
+     * @deprecated since v10, will be removed in v12
+     * @remarks "LightingLayer#animateDarkness has been refactored to EffectsCanvasGroup#animateDarkness"
+     */
+    animateDarkness(
+      ...args: Parameters<EffectsCanvasGroup["animateDarkness"]>
+    ): ReturnType<EffectsCanvasGroup["animateDarkness"]>;
+
+    /**
+     * @deprecated since v10, will be removed in v12
+     * @remarks "LightingLayer#initializeSources has been refactored to EffectsCanvasGroup#initializeLightSources"
+     */
+    initializeSources(): ReturnType<EffectsCanvasGroup["initializeLightSources"]>;
+
+    /**
+     * @deprecated since v10, will be removed in v12
+     * @remarks "LightingLayer#refresh has been refactored to EffectsCanvasGroup#refreshLighting"
+     */
+    refresh(
+      options?: Parameters<EffectsCanvasGroup["refreshLighting"]>,
+    ): ReturnType<EffectsCanvasGroup["refreshLighting"]>;
   }
-}
 
-type ChannelConfig = Record<"canvas" | "background" | "black" | "bright" | "dark" | "dim", LightChannel> & {
-  darkness: { level: number; rgb: [r: number, g: number, b: number] };
-};
-
-interface LightChannel {
-  hex: number;
-  rgb: [r: number, g: number, b: number];
+  namespace LightingLayer {
+    interface LayerOptions extends PlaceablesLayer.LayerOptions<"AmbientLight"> {
+      name: "lighting";
+    }
+  }
 }

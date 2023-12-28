@@ -1,114 +1,123 @@
-/**
- * The DrawingsLayer subclass of PlaceablesLayer.
- */
-declare class DrawingsLayer extends PlaceablesLayer<"Drawing"> {
+export {};
+
+declare global {
   /**
-   * @remarks This is not overridden in foundry but reflects the real behavior.
+   * The DrawingsLayer subclass of PlaceablesLayer.
    */
-  static get instance(): Canvas["drawings"];
+  class DrawingsLayer extends PlaceablesLayer<"Drawing"> {
+    /**
+     * @remarks This is not overridden in foundry but reflects the real behavior.
+     */
+    static get instance(): Canvas["drawings"];
 
-  /**
-   * @defaultValue
-   * ```
-   * mergeObject(super.layerOptions, {
-   *   name: "drawings"
-   *   canDragCreate: true,
-   *   controllableObjects: true,
-   *   rotatableObjects: true,
-   *   zIndex: 20
-   * })
-   * ```
-   */
-  static override get layerOptions(): DrawingsLayer.LayerOptions;
+    /**
+     * @remarks This is not overridden in foundry but reflects the real behavior.
+     */
+    override options: DrawingsLayer.LayerOptions;
 
-  static override documentName: "Drawing";
+    /**
+     * @defaultValue
+     * ```
+     * mergeObject(super.layerOptions, {
+     *   name: "drawings"
+     *   canDragCreate: true,
+     *   controllableObjects: true,
+     *   rotatableObjects: true,
+     *   zIndex: 20
+     * })
+     * ```
+     */
+    static override get layerOptions(): DrawingsLayer.LayerOptions;
 
-  /**
-   * The named game setting which persists default drawing configuration for the User
-   */
-  static DEFAULT_CONFIG_SETTING: "defaultDrawingConfig";
+    static override documentName: "Drawing";
 
-  /**
-   * Use an adaptive precision depending on the size of the grid
-   */
-  get gridPrecision(): 0 | 8 | 16;
+    /**
+     * The named game setting which persists default drawing configuration for the User
+     */
+    static DEFAULT_CONFIG_SETTING: "defaultDrawingConfig";
 
-  override get hud(): Exclude<Canvas["hud"], undefined>["drawing"];
+    /**
+     * Use an adaptive precision depending on the size of the grid
+     */
+    get gridPrecision(): 0 | 8 | 16;
 
-  override get hookName(): (typeof DrawingsLayer)["name"];
+    override get hud(): Exclude<Canvas["hud"], undefined>["drawing"];
 
-  /**
-   * Render a configuration sheet to configure the default Drawing settings
-   */
-  configureDefault(): void;
+    override get hookName(): (typeof DrawingsLayer)["name"];
 
-  override _deactivate(): this;
+    /**
+     * Render a configuration sheet to configure the default Drawing settings
+     */
+    configureDefault(): void;
 
-  /**
-   * Get initial data for a new drawing.
-   * Start with some global defaults, apply user default config, then apply mandatory overrides per tool.
-   * @param origin - The initial coordinate
-   * @returns The new drawing data
-   * @remarks This is used from DrawingConfig and hence public on purpose.
-   */
-  _getNewDrawingData(origin: Point | {}): NewDrawingData;
+    override _deactivate(): this;
 
-  protected override _onClickLeft(event: PIXI.FederatedEvent): void;
+    /**
+     * Get initial data for a new drawing.
+     * Start with some global defaults, apply user default config, then apply mandatory overrides per tool.
+     * @param origin - The initial coordinate
+     * @returns The new drawing data
+     * @remarks This is used from DrawingConfig and hence public on purpose.
+     */
+    _getNewDrawingData(origin: Point | {}): NewDrawingData;
 
-  protected override _onClickLeft2(event: PIXI.FederatedEvent): void | Promise<void>;
+    protected override _onClickLeft(event: PIXI.FederatedEvent): void;
 
-  protected override _onDragLeftStart(event: PIXI.FederatedEvent): ReturnType<Drawing["draw"]>;
+    protected override _onClickLeft2(event: PIXI.FederatedEvent): void | Promise<void>;
 
-  protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
+    protected override _onDragLeftStart(event: PIXI.FederatedEvent): ReturnType<Drawing["draw"]>;
 
-  /**
-   * Handling of mouse-up events which conclude a new object creation after dragging
-   */
-  protected _onDragLeftDrop(event: PIXI.FederatedEvent): Promise<void>;
+    protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
-  protected override _onDragLeftCancel(event: PointerEvent): void;
+    /**
+     * Handling of mouse-up events which conclude a new object creation after dragging
+     */
+    protected _onDragLeftDrop(event: PIXI.FederatedEvent): Promise<void>;
 
-  protected override _onClickRight(event: PIXI.FederatedEvent): void;
-}
+    protected override _onDragLeftCancel(event: PointerEvent): void;
 
-declare namespace DrawingsLayer {
-  interface LayerOptions extends PlaceablesLayer.LayerOptions<"Drawing"> {
-    name: "drawings";
-    canDragCreate: true;
-    controllableObjects: true;
-    rotatableObjects: true;
-    elevationSorting: true;
-    zIndex: 20;
+    protected override _onClickRight(event: PIXI.FederatedEvent): void;
   }
-}
 
-type NewDrawingData = ClientSettings.Values["core.defaultDrawingConfig"] &
-  (
-    | {
-        type: typeof foundry.CONST.DRAWING_TYPES.RECTANGLE | typeof foundry.CONST.DRAWING_TYPES.ELLIPSE;
-        points: [];
-      }
-    | {
-        type: typeof foundry.CONST.DRAWING_TYPES.POLYGON;
-        points: PointArray[];
-      }
-    | {
-        type: typeof foundry.CONST.DRAWING_TYPES.FREEHAND;
-        points: PointArray[];
-        bezierFactor: number;
-      }
-    | {
-        type: typeof foundry.CONST.DRAWING_TYPES.TEXT;
-        fillColor: string;
-        fillAlpha: number;
-        strokeColor: string;
-        text: string;
-      }
-  ) & {
-    author: string;
-    fillColor: string;
-    strokeColor: string;
-    fontFamily: typeof CONFIG.defaultFontFamily;
-    x: number | undefined;
-    y: number | undefined;
-  };
+  namespace DrawingsLayer {
+    interface LayerOptions extends PlaceablesLayer.LayerOptions<"Drawing"> {
+      name: "drawings";
+      canDragCreate: true;
+      controllableObjects: true;
+      rotatableObjects: true;
+      elevationSorting: true;
+      zIndex: 20;
+    }
+  }
+
+  type NewDrawingData = ClientSettings.Values["core.defaultDrawingConfig"] &
+    (
+      | {
+          type: typeof foundry.CONST.DRAWING_TYPES.RECTANGLE | typeof foundry.CONST.DRAWING_TYPES.ELLIPSE;
+          points: [];
+        }
+      | {
+          type: typeof foundry.CONST.DRAWING_TYPES.POLYGON;
+          points: PointArray[];
+        }
+      | {
+          type: typeof foundry.CONST.DRAWING_TYPES.FREEHAND;
+          points: PointArray[];
+          bezierFactor: number;
+        }
+      | {
+          type: typeof foundry.CONST.DRAWING_TYPES.TEXT;
+          fillColor: string;
+          fillAlpha: number;
+          strokeColor: string;
+          text: string;
+        }
+    ) & {
+      author: string;
+      fillColor: string;
+      strokeColor: string;
+      fontFamily: typeof CONFIG.defaultFontFamily;
+      x: number | undefined;
+      y: number | undefined;
+    };
+}
