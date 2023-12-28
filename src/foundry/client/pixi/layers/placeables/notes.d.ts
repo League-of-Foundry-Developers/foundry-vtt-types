@@ -16,8 +16,8 @@ declare global {
      * foundry.utils.mergeObject(super.layerOptions, {
      *  name: "notes",
      *  canDragCreate: false,
-     *  sortActiveTop: true,
-     *  zIndex: 60
+     *  sortActiveTop: true, // TODO this needs to be removed
+     *  zIndex: 200
      * })
      * ```
      */
@@ -30,17 +30,44 @@ declare global {
      */
     static TOGGLE_SETTING: "notesDisplayToggle";
 
-    override activate(): this;
+    override get hookName(): string;
 
-    override deactivate(): this;
+    override _deactivate(): void;
 
     /**
      * Register game settings used by the NotesLayer
      */
     static registerSettings(): void;
 
-    /** @remarks this method seems to be unused, see https://gitlab.com/foundrynet/foundryvtt/-/issues/7004 */
-    protected _onMouseDown(event: PIXI.FederatedEvent): void;
+    /**
+     * Visually indicate in the Scene Controls that there are visible map notes present in the Scene.
+     */
+    hintMapNotes(): void;
+
+    /**
+     * Pan to a given note on the layer.
+     * @param note    - The note to pan to.
+     * @param options - Options which modify the pan operation.
+     * @returns A Promise which resolves once the pan animation has concluded.
+     */
+    panToNote(
+      note: Note,
+      options?: {
+        /**
+         * The resulting zoom level.
+         * @defaultValue `1.5`
+         */
+        scale: number;
+
+        /**
+         * The speed of the pan animation in milliseconds.
+         * @defaultValue `250`
+         */
+        duration: number;
+      },
+    ): Promise<void>;
+
+    protected override _onClickLeft(event: PIXI.FederatedEvent): void;
 
     /**
      * Handle JournalEntry document drop data
