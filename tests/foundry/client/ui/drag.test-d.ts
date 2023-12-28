@@ -1,5 +1,4 @@
 import { expectTypeOf } from "vitest";
-import "../../index";
 
 const App = class extends Application {};
 const resizableUndefined = new Draggable(new App(), $(), new HTMLElement());

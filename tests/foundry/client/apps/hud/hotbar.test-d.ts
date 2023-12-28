@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import type { MaybePromise } from "../../../../../src/types/utils.mts";
 
 const hotbar = new Hotbar();
 expectTypeOf(hotbar.page).toEqualTypeOf<number>();

@@ -1,5 +1,4 @@
 import { expectTypeOf } from "vitest";
-import "../../index";
 
 expectTypeOf([["testing"], "test"].deepFlatten()).toEqualTypeOf<string[]>();
 

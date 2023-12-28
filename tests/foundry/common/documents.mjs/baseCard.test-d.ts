@@ -1,6 +1,5 @@
 import { expectTypeOf } from "vitest";
-
-import type { CardFaceDataSource } from "../../../../src/foundry/common/data/data.mjs/cardFaceData";
+import type { CardFaceDataSource } from "../../../../src/foundry/common/data/data.mjs/cardFaceData.mts";
 
 const baseCard = new foundry.documents.BaseCard();
 expectTypeOf(baseCard.data._source.faces[0]).toEqualTypeOf<CardFaceDataSource>();

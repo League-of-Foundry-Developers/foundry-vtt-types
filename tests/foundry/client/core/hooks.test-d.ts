@@ -1,5 +1,4 @@
 import { expectTypeOf } from "vitest";
-import "../../../../index";
 
 Hooks.on("canvasInit", (canvas) => {
   expectTypeOf(canvas).toEqualTypeOf<Canvas>();

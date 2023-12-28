@@ -1,8 +1,7 @@
 import { expectTypeOf } from "vitest";
-
-import type EmbeddedCollection from "../../../../src/foundry/common/abstract/embedded-collection.mjs.js";
-import type { CardDataSource } from "../../../../src/foundry/common/data/data.mjs/cardData.js";
-import type { CardFaceDataSource } from "../../../../src/foundry/common/data/data.mjs/cardFaceData.js";
+import type EmbeddedCollection from "../../../../src/foundry/common/abstract/embedded-collection.mts";
+import type { CardDataSource } from "../../../../src/foundry/common/data/data.mjs/cardData.mts";
+import type { CardFaceDataSource } from "../../../../src/foundry/common/data/data.mjs/cardFaceData.mts";
 
 const baseCards = new foundry.documents.BaseCards();
 expectTypeOf(baseCards.cards).toEqualTypeOf<EmbeddedCollection<typeof Card, foundry.data.CardsData>>();

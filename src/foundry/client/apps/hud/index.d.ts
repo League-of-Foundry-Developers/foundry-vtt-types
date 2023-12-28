@@ -1,9 +1,0 @@
-import "./chatbubble";
-import "./container";
-import "./controls";
-import "./hotbar";
-import "./hud";
-import "./menu";
-import "./navigation";
-import "./pause";
-import "./players";

@@ -1,5 +1,4 @@
 import { expectTypeOf } from "vitest";
-import "../../index";
 
 expectTypeOf(new Set<number | string>().filter((value): value is string => typeof value === "string")).toEqualTypeOf<
   Set<string>
