@@ -14,7 +14,21 @@ declare global {
 
     static override documentName: "Tile";
 
-    override options: PlaceablesLayer.LayerOptions<any>;
+    override options: TilesLayer.LayerOptions;
+
+    /**
+     * @defaultValue
+     * ```js
+     * foundry.utils.mergeObject(super.layerOptions, {
+     *    name: "tiles",
+     *    zIndex: 0,
+     *    controllableObjects: true,
+     *    rotatableObjects: true,
+     *    elevationSorting: true
+     * })
+     * ```
+     */
+    static override get layerOptions(): TilesLayer.LayerOptions;
 
     override get hookName(): string;
 

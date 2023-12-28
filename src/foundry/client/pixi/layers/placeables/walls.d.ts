@@ -3,17 +3,17 @@ import { ConfiguredDocumentClass, ConfiguredObjectClassForName } from "../../../
 declare global {
   /**
    * The Walls canvas layer which provides a container for Wall objects within the rendered Scene.
-   * @see {@link WallDocument}
-   * @see {@link Wall}
    */
   class WallsLayer extends PlaceablesLayer<"Wall"> {
-    constructor();
+    /**
+     * Synthetic Wall instances which represent the outer boundaries of the game canvas.
+     */
+    outerBounds: Wall[];
 
     /**
-     * An array of Wall objects which represent the boundaries of the canvas.
-     * @defaultValue `new Set()`
+     * Synthetic Wall instances which represent the inner boundaries of the scene rectangle.
      */
-    boundaries: Set<Wall>;
+    innerBounds: Wall[];
 
     /**
      * A graphics layer used to display chained Wall selection
@@ -60,11 +60,11 @@ declare global {
 
     /**
      * @defaultValue
-     * ```
+     * ```js
      * mergeObject(super.layerOptions, {
      *  name: "walls"
      *  controllableObjects: true,
-     *  sortActiveTop: true,
+     *  sortActiveTop: true, // TODO this needs to be removed
      *  zIndex: 40
      * })
      * ```
@@ -72,6 +72,8 @@ declare global {
     static override get layerOptions(): WallsLayer.LayerOptions;
 
     static override documentName: "Wall";
+
+    override get hookName(): string;
 
     /**
      * An Array of Wall instances in the current Scene which act as Doors.
@@ -84,9 +86,13 @@ declare global {
      */
     get gridPrecision(): number;
 
-    override draw(): Promise<this>;
+    /**
+     *
+     * @param options - Unused
+     */
+    override _draw(options?: Record<string, unknown>): Promise<void>;
 
-    override deactivate(): this;
+    override _deactivate(): void;
 
     /**
      * Perform initialization steps for the WallsLayer whenever the composition of walls in the Scene is changed.
@@ -113,40 +119,12 @@ declare global {
      */
     static getClosestEndpoint(point: Point, wall: InstanceType<ConfiguredObjectClassForName<"Wall">>): PointArray;
 
-    /**
-     * Test whether movement along a given Ray collides with a Wall.
-     * @param ray     - The attempted movement
-     * @param options - Options which customize how collision is tested
-     * @returns False if there are no Walls
-     *          True if the Ray is outside the Canvas
-     *          Whether any collision occurred if mode is "any"
-     *          An array of collisions, if mode is "all"
-     *          The closest collision, if mode is "closest"
-     */
-    checkCollision(ray: Ray, options: CollisionOptions & { mode: "all" }): boolean | PolygonVertex[];
-    checkCollision(ray: Ray, options: CollisionOptions & { mode: "closest" }): boolean | PolygonVertex;
-    checkCollision(ray: Ray, options: CollisionOptions & { mode: "any" }): boolean;
-    checkCollision(ray: Ray, options: Omit<CollisionOptions, "mode">): boolean;
-    checkCollision(ray: Ray, options: CollisionOptions): boolean | PolygonVertex;
-    checkCollision(ray: Ray, options?: CollisionOptions): boolean;
-
-    /**
-     * Highlight the endpoints of Wall segments which are currently group-controlled on the Walls layer
-     */
-    highlightControlledSegments(): void;
-
     override releaseAll(options?: PlaceableObject.ReleaseOptions): number;
 
     override pasteObjects(
       position: Point,
       options?: Record<string, unknown>,
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseWall>>[]>;
-
-    /**
-     * Create temporary WallDocument instances which represent the rectangular boundaries of the canvas.
-     * @internal
-     */
-    protected _createBoundaries(): void;
 
     /**
      * Pan the canvas view when the cursor position gets close to the edge of the frame
@@ -157,14 +135,20 @@ declare global {
     protected _panCanvasEdge(event: MouseEvent, x: number, y: number): void | ReturnType<Canvas["animatePan"]>;
 
     /**
-     * Get the endpoint coordinates for a wall placement, snapping to grid at a specified precision
-     * Require snap-to-grid until a redesign of the wall chaining system can occur.
-     * @param  point - The initial candidate point
-     * @param  snap  - Whether to snap to grid
-     *                 (default: `true`)
-     * @returns The endpoint coordinates [x,y]
+     * Get the wall endpoint coordinates for a given point.
+     * @param  point - The candidate wall endpoint.
+     * @returns The wall endpoint coordinates.
      */
-    protected _getWallEndpointCoordinates(point: Point, { snap }?: { snap?: boolean }): PointArray;
+    protected _getWallEndpointCoordinates(
+      point: Point,
+      options?: {
+        /**
+         * Snap to the grid?
+         * @defaultValue `true`
+         */
+        snap?: boolean;
+      },
+    ): PointArray;
 
     /**
      * The Scene Controls tools provide several different types of prototypical Walls to choose from
@@ -191,41 +175,23 @@ declare global {
 
     protected override _onClickRight(event: PIXI.FederatedEvent): void;
 
-    /** @deprecated since v9 */
-    computePolygon(
-      origin: Point,
-      radius: number,
-      options?: ComputePolygonOptions,
-    ): { rays: Ray[]; los: PIXI.Polygon; fov: PIXI.Polygon };
-
-    /** @deprecated since v9 */
-    getRayCollisions(ray: Ray, options: RayCollisionsOptions & { mode: "all" }): RayIntersection[];
-    getRayCollisions(ray: Ray, options: RayCollisionsOptions & { mode: "closest" }): RayIntersection | null;
-    getRayCollisions(ray: Ray, options: RayCollisionsOptions & { mode: "any" }): boolean;
-    getRayCollisions(ray: Ray, options?: Partial<Omit<RayCollisionsOptions, "mode">>): RayIntersection[];
-    getRayCollisions(ray: Ray, options?: RayCollisionsOptions): RayIntersection[] | RayIntersection | boolean | null;
+    /**
+     * @deprecated since v10, will be removed in v12
+     * @remarks "WallsLayer#boundaries is deprecated in favor of WallsLayer#outerBounds and WallsLayer#innerBounds"
+     */
+    get boundaries(): Set<Wall>;
 
     /**
-     * An array of all the unique perception-blocking endpoints which are present in the layer
-     * We keep this array cached for faster sight polygon computations
-     * @deprecated since v9
+     * @deprecated since v11, will be removed in v13
+     * @remarks "WallsLayer#checkCollision is obsolete. Prefer calls to testCollision from CONFIG.Canvas.polygonBackends[type]"
      */
-    get endpoints(): PointArray[];
+    checkCollision(ray: Ray, options: Parameters<(typeof PointSourcePolygon)["testCollision"]>[2]): boolean;
 
     /**
-     * Given an array of Wall instances, identify the unique endpoints across all walls.
-     * @param walls   - An array of Wall instances
-     * @param options - Additional options which modify the set of endpoints identified
-     *                  (defaultValue: `{}`)
-     * @returns An array of endpoints
-     * @deprecated since v9
+     * @deprecated since v11, will be removed in v13
+     * @remarks "The WallsLayer#highlightControlledSegments function is deprecated in favor of calling wall.renderFlags.set(\"refreshHighlight\") on individual Wall objects"
      */
-    static getUniqueEndpoints(
-      walls:
-        | InstanceType<ConfiguredObjectClassForName<"Wall">>[]
-        | Set<InstanceType<ConfiguredObjectClassForName<"Wall">>>,
-      options?: EndpointOptions,
-    ): PointArray[];
+    highlightControlledSegments(): void;
   }
 
   namespace WallsLayer {
