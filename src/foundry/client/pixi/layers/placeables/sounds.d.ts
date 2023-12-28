@@ -1,8 +1,12 @@
 /**
  * This Canvas Layer provides a container for AmbientSound objects.
- * @see {@link AmbientSound}
  */
 declare class SoundsLayer extends PlaceablesLayer<"AmbientSound"> {
+  /**
+   * @remarks This is not overridden in foundry but reflects the real behavior.
+   */
+  static get instance(): Canvas["sounds"];
+
   /**
    * Track whether to actively preview ambient sounds with mouse cursor movements
    * @defaultValue `false`
@@ -14,11 +18,6 @@ declare class SoundsLayer extends PlaceablesLayer<"AmbientSound"> {
    * @defaultValue `new foundry.utils.Collection()`
    */
   sources: foundry.utils.Collection<SoundSource>;
-
-  /**
-   * @remarks This is not overridden in foundry but reflects the real behavior.
-   */
-  static get instance(): Canvas["sounds"];
 
   /**
    * @defaultValue
@@ -34,7 +33,15 @@ declare class SoundsLayer extends PlaceablesLayer<"AmbientSound"> {
 
   static override documentName: "AmbientSound";
 
-  override tearDown(): Promise<this>;
+  override get hookName(): string;
+
+  override _activate(): void;
+
+  /**
+   *
+   * @param options - Unused
+   */
+  override _tearDown(options?: Record<string, unknown>): Promise<void>;
 
   /**
    * Initialize all AmbientSound sources which are present on this layer
