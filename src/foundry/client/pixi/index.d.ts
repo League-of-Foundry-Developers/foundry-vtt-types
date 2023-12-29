@@ -8,3 +8,4 @@ import "./placeables";
 import "./placeables/index";
 import "./sources";
 import "./webgl";
+import "./workers";
