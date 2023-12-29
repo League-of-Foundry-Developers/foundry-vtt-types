@@ -19,7 +19,7 @@ declare global {
     /**
      * The preRender function provided by the sampler and that is called just before a flush.
      */
-    protected _preRenderBatch: (...args: any[]) => void;
+    protected _preRenderBatch: (batchRenderer: typeof BatchRenderer) => void;
 
     get uniforms(): AbstractBaseShader.Uniforms;
 

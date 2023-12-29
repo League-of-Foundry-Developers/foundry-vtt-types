@@ -615,7 +615,7 @@ declare global {
     /**
      * A prerender function happening just before the batch renderer is flushed.
      */
-    protected static _preRenderBatch(): (...args: any[]) => void;
+    protected static _preRenderBatch(): (batchRenderer: typeof BatchRenderer) => void;
 
     /**
      * A function that returns default uniforms associated with the batched version of this sampler.

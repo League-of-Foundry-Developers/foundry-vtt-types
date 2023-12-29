@@ -79,7 +79,7 @@ declare class PrimaryCanvasObject {
    */
   protected _initializeSorting(sort: number): void;
 
-  destroy(...args: any[]): void;
+  destroy(...args: Parameters<PIXI.DisplayObject["destroy"]>): void;
 
   /**
    * Synchronize the appearance of this ObjectMesh with the properties of its represented Document.

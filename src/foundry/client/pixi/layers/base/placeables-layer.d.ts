@@ -406,7 +406,10 @@ declare global {
 
     protected override _onMouseWheel(event: WheelEvent): void;
 
-    protected override _onDeleteKey(event?: any): Promise<void>;
+    /**
+     * @param event - Unused
+     */
+    protected override _onDeleteKey(event?: KeyboardEvent): Promise<void>;
 
     /**
      * @deprecated since v11, will be removed in v11
