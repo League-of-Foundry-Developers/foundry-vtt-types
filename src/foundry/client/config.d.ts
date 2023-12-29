@@ -6,12 +6,7 @@ import * as CONST from "../common/constants.mjs";
 type DetectInvisibilityVisionMode = VisionMode;
 type TremorSenseVisionMode = VisionMode;
 type DataModel = unknown;
-declare const FogManager: unknown;
 declare const ColorManager: unknown;
-declare const TilesLayer: ConstructorOf<CanvasLayer>;
-declare const HiddenCanvasGroup: CanvasGroupConstructor;
-declare const RenderedCanvasGroup: CanvasGroupConstructor;
-declare const EnvironmentCanvasGroup: CanvasGroupConstructor;
 
 declare global {
   /**
@@ -1754,7 +1749,7 @@ declare global {
 
       interface Layers {
         /** @defaultValue `{ layerClass: WeatherLayer, group: "primary" }` */
-        weather: LayerDefinition<typeof WeatherLayer>;
+        weather: LayerDefinition<typeof WeatherEffects>;
 
         /** @defaultValue `{ layerClass: GridLayer, group: "interface" }` */
         grid: LayerDefinition<typeof GridLayer>;
