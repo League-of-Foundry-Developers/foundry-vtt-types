@@ -1,5 +1,4 @@
 import { expectTypeOf, assertType } from "vitest";
-import "../../../global";
 
 // benchmark
 

@@ -12,6 +12,7 @@ module.exports = {
   rules: {
     "@typescript-eslint/ban-types": "off",
     "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-namespace": ["error", { allowDeclarations: true }],
     "@typescript-eslint/no-unsafe-declaration-merging": "off", // TODO: reenable in V10
     "tsdoc/syntax": "warn",
   },

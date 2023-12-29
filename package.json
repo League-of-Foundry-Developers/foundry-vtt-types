@@ -6,10 +6,10 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./index.d.ts"
+      "types": "./index.mts"
     },
     "./lenient": {
-      "types": "./index-lenient.d.ts"
+      "types": "./index-lenient.mts"
     }
   },
   "types": "./index.d.ts",

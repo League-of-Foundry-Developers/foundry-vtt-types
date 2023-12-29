@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import type { StoredDocument } from "../../../../../src/types/utils.mts";
 
 const worldSettings = new WorldSettings();
 expectTypeOf(worldSettings.get("", { strict: true })).toEqualTypeOf<StoredDocument<Setting>>();

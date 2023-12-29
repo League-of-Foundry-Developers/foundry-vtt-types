@@ -1,4 +1,5 @@
 import { assertType, expectTypeOf } from "vitest";
+import type { ConstructorOf } from "../../../../src/types/utils.mts";
 
 type TilesLayer = unknown; // FIXME: remove when TilesLayer is typed
 

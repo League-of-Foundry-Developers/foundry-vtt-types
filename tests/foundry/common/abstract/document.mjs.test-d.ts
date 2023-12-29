@@ -1,9 +1,10 @@
-import type { ActiveEffectDataSource } from "../../../../src/foundry/common/data/data.mjs/activeEffectData";
+import { expectTypeOf } from "vitest";
+import type { ActiveEffectDataSource } from "../../../../src/foundry/common/data/data.mjs/activeEffectData.mts";
 import type {
   EffectChangeData,
   EffectChangeDataProperties,
-} from "../../../../src/foundry/common/data/data.mjs/effectChangeData";
-import { expectTypeOf } from "vitest";
+} from "../../../../src/foundry/common/data/data.mjs/effectChangeData.mts";
+import type { StoredDocument } from "../../../../src/types/utils.mts";
 
 const baseActiveEffect = new foundry.documents.BaseActiveEffect();
 

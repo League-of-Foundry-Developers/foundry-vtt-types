@@ -1,5 +1,12 @@
 import { assertType, expectTypeOf } from "vitest";
-import "../../index";
+import type {
+  DeepPartial,
+  Expanded,
+  MaybePromise,
+  RequiredProps,
+  StoredDocument,
+  Titlecase,
+} from "../../src/types/utils.mts";
 
 const membersBecomeOptional: DeepPartial<{ a: string }> = {};
 expectTypeOf(membersBecomeOptional).toEqualTypeOf<{ a?: string }>();
