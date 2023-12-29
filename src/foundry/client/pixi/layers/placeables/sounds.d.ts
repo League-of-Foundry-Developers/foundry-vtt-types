@@ -43,7 +43,6 @@ declare class SoundsLayer extends PlaceablesLayer<"AmbientSound"> {
   override _activate(): void;
 
   /**
-   *
    * @param options - Unused
    */
   override _tearDown(options?: Record<string, unknown>): Promise<void>;

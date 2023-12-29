@@ -1,7 +1,5 @@
 export {};
 
-type SpriteMesh = unknown;
-type FogTextureConfiguration = unknown;
 declare global {
   /**
    * A fog of war management class which is the singleton canvas.fog instance.
@@ -81,13 +79,13 @@ declare global {
      * @deprecated since v11, will be removed in v13
      * @remarks pending is deprecated and redirected to the exploration container
      */
-    get pending(): unknown;
+    get pending(): CanvasVisibility["explored"];
 
     /**
      * @deprecated since v11, will be removed in v13
      * @remarks revealed is deprecated and redirected to the exploration container
      */
-    get revealed(): unknown;
+    get revealed(): CanvasVisibility["explored"];
 
     /**
      * @deprecated since v11, will be removed in v13
@@ -99,6 +97,6 @@ declare global {
      * @deprecated since v11, will be removed in v13
      * @remarks resolution is deprecated and redirected to CanvasVisibility#textureConfiguration
      */
-    get resolution(): unknown;
+    get resolution(): CanvasVisibility["textureConfiguration"];
   }
 }

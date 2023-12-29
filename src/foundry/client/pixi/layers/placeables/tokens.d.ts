@@ -4,9 +4,6 @@ import {
   type PropertiesToSource,
 } from "../../../../../types/helperTypes";
 import type { TokenDataProperties } from "../../../../common/data/data.mjs/tokenData";
-// import { SelectOptions } from "../base/placeables-layer";
-
-type SelectOptions = unknown;
 
 declare global {
   /**
