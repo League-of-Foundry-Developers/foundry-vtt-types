@@ -81,8 +81,8 @@ declare class BaseShaderMixinClass {
    * uniform sampler2D primaryTexture;
    * uniform sampler2D framebufferTexture;
    * uniform sampler2D depthTexture;
-
-// Shared uniforms with vertex shader
+   *
+   * // Shared uniforms with vertex shader
    * uniform ${PIXI.settings.PRECISION_VERTEX} float rotation;
    * uniform ${PIXI.settings.PRECISION_VERTEX} float angle;
    * uniform ${PIXI.settings.PRECISION_VERTEX} float radius;
@@ -120,21 +120,21 @@ declare class BaseShaderMixinClass {
    * @defaultValue
    * ```js
    * `float perceivedBrightness(in vec3 color) {
-  return sqrt( BT709.x * color.r * color.r +
-                BT709.y * color.g * color.g +
-                BT709.z * color.b * color.b );
+   * return sqrt( BT709.x * color.r * color.r +
+   *              BT709.y * color.g * color.g +
+   *              BT709.z * color.b * color.b );
    * }
-
+   *
    * float perceivedBrightness(in vec4 color) {
-  return perceivedBrightness(color.rgb);
+   * return perceivedBrightness(color.rgb);
    * }
-
+   *
    * float reversePerceivedBrightness(in vec3 color) {
-  return 1.0 - perceivedBrightness(color);
+   * return 1.0 - perceivedBrightness(color);
    * }
-
+   *
    * float reversePerceivedBrightness(in vec4 color) {
-  return 1.0 - perceivedBrightness(color.rgb);
+   * return 1.0 - perceivedBrightness(color.rgb);
    * }`
    * ```
    */
