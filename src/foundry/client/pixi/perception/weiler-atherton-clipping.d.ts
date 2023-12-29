@@ -147,6 +147,6 @@ declare global {
   }
 
   namespace WeilerAthertonClipper {
-    type ClipOpts = PIXI.Circle.PointsForArcOptions;
+    type ClipOpts = Record<string, unknown>; // PIXI.Circle.PointsForArcOptions;
   }
 }
