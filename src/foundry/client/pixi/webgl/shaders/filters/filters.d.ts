@@ -81,6 +81,7 @@ declare global {
     /**
      * @privateRemarks Implementation taken from https://stackoverflow.com/a/61434547
      */
+    // TODO: Replace when https://github.com/microsoft/TypeScript/issues/17867 is resolved
     type CreateOptionsIntersection = {
       filterMode?: FilterMode;
       postProcessModes?: PostProcessModes;
@@ -109,6 +110,7 @@ declare global {
      * @remarks This method has been overloaded to accurately type the object input.
      * The input cannot be separately typed, it must be fed directly into this method
      */
+    // TODO: Replace when https://github.com/microsoft/TypeScript/issues/17867 is resolved
     static create<T1 extends VisualEffectsMaskingFilter, T2 extends VisualEffectsMaskingFilter.CreateOptions<T2>>(
       this: ConstructorOf<T1>,
       { filterMode, postProcessModes, ...uniforms }?: T2,

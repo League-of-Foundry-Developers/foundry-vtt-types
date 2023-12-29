@@ -8,9 +8,8 @@ class TestShader extends AbstractBaseShader {
   defaults: AbstractBaseShader["_defaults"];
 }
 
-const testShader = TestShader.create();
-expectTypeOf(testShader.defaults.foo).toEqualTypeOf<AbstractBaseShader.UniformValue>();
-expectTypeOf(testShader.defaults.bar).toEqualTypeOf<AbstractBaseShader.UniformValue>();
+expectTypeOf(TestShader.defaultUniforms.foo).toEqualTypeOf<AbstractBaseShader.UniformValue>();
+expectTypeOf(TestShader.defaultUniforms.bar).toEqualTypeOf<AbstractBaseShader.UniformValue>();
 
 const testShader2 = TestShader.create({
   alpha: 1.0,
@@ -20,7 +19,7 @@ const testShader2 = TestShader.create({
   time: 0,
   intensity: 5,
 });
-testShader2.defaults.darkness = false;
+testShader2.uniforms.darkness = false;
 
 // @ts-expect-error - create requires a constructor for TestShader
 TestShader.create({ foo: "bar" });

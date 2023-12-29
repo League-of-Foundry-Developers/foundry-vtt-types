@@ -36,6 +36,7 @@ declare global {
      */
     generate(x: number): number;
   }
+
   namespace SmoothNoise {
     interface ConstructorOptions {
       /**
