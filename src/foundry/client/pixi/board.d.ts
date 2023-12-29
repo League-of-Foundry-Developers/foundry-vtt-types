@@ -38,12 +38,6 @@ declare global {
     constructor();
 
     /**
-     * An Array of pending canvas operations which should trigger on the next re-paint
-     * @defaultValue `[]`
-     */
-    pendingOperations: Array<[fn: (args: any[]) => void, scope: any, args: any[]]>;
-
-    /**
      * A perception manager interface for batching lighting, sight, and sound updates
      */
     perception: PerceptionManager;
@@ -66,12 +60,7 @@ declare global {
     protected _panTime: number;
 
     /**
-     * A Set of unique pending operation names to ensure operations are only performed once
-     */
-    protected _pendingOperationNames: Set<string>;
-
-    /**
-     * An set of blur filter instances which are modified by the zoom level and the "soft shadows" setting
+     * A set of blur filter instances which are modified by the zoom level and the "soft shadows" setting
      * @defaultValue `[]`
      */
     blurFilters: Set<PIXI.BlurFilter>;
@@ -85,6 +74,39 @@ declare global {
      * The current pixel dimensions of the displayed Scene, or null if the Canvas is blank.
      */
     readonly dimensions: SceneDimensions | Record<string, never>;
+
+    /**
+     * Configure options passed to the texture loaded for the Scene.
+     * This object can be configured during the canvasInit hook before textures have been loaded.
+     */
+    loadTexturesOptions: { expireCache: boolean; additionalSources: string[] };
+
+    /**
+     * Configure options used by the visibility framework for special effects
+     * This object can be configured during the canvasInit hook before visibility is initialized.
+     */
+    visibilityOptions: { persistentVision: boolean };
+
+    /**
+     * Configure options passed to initialize blur for the Scene and override normal behavior.
+     * This object can be configured during the canvasInit hook before blur is initialized.
+     */
+    blurOptions:
+      | {
+          enabled: boolean;
+          blurClass: typeof PIXI.BlurFilter;
+          strength: number;
+          passes: number;
+          kernels: number;
+        }
+      | undefined;
+
+    /**
+     * Configure the Textures to apply to the Scene.
+     * Textures registered here will be automatically loaded as part of the TextureLoader.loadSceneTextures workflow.
+     * Textures which need to be loaded should be configured during the "canvasInit" hook.
+     */
+    sceneTextures: { background?: PIXI.Texture; foreground?: PIXI.Texture; fogOverlay?: PIXI.Texture };
 
     /**
      * Record framerate performance data
@@ -113,6 +135,17 @@ declare global {
      * @defaultValue `undefined`
      */
     performance: CanvasPerformanceSettings | undefined;
+
+    /**
+     * A list of supported webGL capabilities and limitations.
+     */
+    supported: CanvasSupportedComponents;
+
+    /**
+     * Is the photosensitive mode enabled?
+     * @remarks Cached from core settings
+     */
+    readonly photosensitiveMode: boolean;
 
     /**
      * The renderer screen dimensions.
@@ -201,10 +234,20 @@ declare global {
     readonly interface: InterfaceCanvasGroup | undefined;
 
     /**
+     * The overlay Canvas group which is rendered above other groups and contains elements not bound to stage transform.
+     */
+    readonly overlay: OverlayCanvasGroup;
+
+    /**
      * The singleton HeadsUpDisplay container which overlays HTML rendering on top of this Canvas.
      * @defaultValue `undefined`
      */
     readonly hud: HeadsUpDisplay | undefined;
+
+    /**
+     * Position of the mouse on stage.
+     */
+    mousePosition: PIXI.Point;
 
     /**
      * A flag for whether the game Canvas is fully initialized and ready for additional content to be drawn.
@@ -320,11 +363,6 @@ declare global {
     #mapPremultipliedBlendModes(): void;
 
     /**
-     * Display warnings for known performance issues which may occur due to the user's hardware or browser configuration.
-     */
-    #displayPerformanceWarnings(): void;
-
-    /**
      * Initialize the group containers of the game Canvas.
      */
     #createGroups(parentName: string, parent: PIXI.DisplayObject): void;
@@ -340,9 +378,30 @@ declare global {
     /**
      * TODO: Add a quality parameter
      * Compute the blur parameters according to grid size and performance mode.
-     * @internal
+     * @param options - Blur options.
      */
-    protected _initializeBlur(): void;
+    protected _initializeBlur(options?: {
+      enabled: boolean;
+
+      /**
+       * @defaultValue `AlphaBlurFilter`
+       */
+      blurClass: typeof PIXI.Filter;
+
+      /**
+       * @defaultValue `AlphaBlurFilterPass`
+       */
+      blurPassClass: typeof PIXI.Filter;
+
+      /**
+       * @defaultValue `this.grid.size / 25`
+       */
+      strength: number;
+
+      passes: number;
+
+      kernels: number;
+    }): void;
 
     /**
      * Configure performance settings for hte canvas application based on the selected performance mode.
@@ -399,7 +458,7 @@ declare global {
 
     // Layers are added to the global `canvas` object via `BaseCanvasMixin##createLayers()`
 
-    readonly weather?: WeatherLayer;
+    readonly weather?: WeatherEffects;
 
     readonly grid?: GridLayer;
 
@@ -427,6 +486,15 @@ declare global {
     getLayerByEmbeddedName<T extends string>(
       embeddedName: T,
     ): T extends keyof EmbeddedEntityNameToLayerMap ? Exclude<EmbeddedEntityNameToLayerMap[T], undefined> | null : null;
+
+    /**
+     * Get the InteractionLayer of the canvas which manages Documents of a certain collection within the Scene.
+     * @param collectionName - The collection name
+     * @returns The canvas layer
+     */
+    getCollectionLayer<T extends string>(
+      collectionName: T,
+    ): T extends keyof CollectionNameToLayerMap ? CollectionNameToLayerMap[T] : undefined;
 
     /**
      * Activate framerate tracking by adding an HTML element to the display and refreshing it every frame.
@@ -556,6 +624,21 @@ declare global {
     static clearContainer(displayObject: PIXI.DisplayObject, destroy?: boolean): void;
 
     /**
+     * Get a texture with the required configuration and clear color.
+     */
+    static getRenderTexture(options?: {
+      /**
+       * The clear color to use for this texture. Transparent by default.
+       */
+      clearColor?: number[];
+
+      /**
+       * The render texture configuration.
+       */
+      textureConfiguration?: Parameters<(typeof PIXI.RenderTexture)["create"]>[0];
+    }): PIXI.RenderTexture;
+
+    /**
      * Attach event listeners to the game canvas to handle click and interaction events
      */
     #addListeners(): void;
@@ -568,19 +651,16 @@ declare global {
 
     /**
      * Handle left mouse-click events occurring on the Canvas.
-     * @see {@link MouseInteractionManager#_handleClickLeft}
      */
     protected _onClickLeft(event: PIXI.FederatedEvent): void;
 
     /**
      * Handle double left-click events occurring on the Canvas stage.
-     * @see {@link MouseInteractionManager#_handleClickLeft2}
      */
     protected _onClickLeft2(event: PIXI.FederatedEvent): void;
 
     /**
      * Handle long press events occurring on the Canvas.
-     * @see {@link MouseInteractionManager#_handleLongPress}
      * @param event  - The triggering canvas interaction event.
      * @param origin - The local canvas coordinates of the mousepress.
      */
@@ -588,21 +668,18 @@ declare global {
 
     /**
      * Handle the beginning of a left-mouse drag workflow on the Canvas stage or its active Layer.
-     * @see {@link MouseInteractionManager#_handleDragStart}
      * @internal
      */
     protected _onDragLeftStart(event: PIXI.FederatedEvent): void;
 
     /**
      * Handle mouse movement events occurring on the Canvas.
-     * @see {@link MouseInteractionManager#_handleDragMove}
      * @internal
      */
     protected _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
     /**
      * Handle the conclusion of a left-mouse drag workflow when the mouse button is released.
-     * @see {@link MouseInteractionManager#_handleDragDrop}
      * @internal
      */
     protected _onDragLeftDrop(
@@ -611,33 +688,28 @@ declare global {
 
     /**
      * Handle the cancellation of a left-mouse drag workflow
-     * @see {@link MouseInteractionManager#_handleDragCancel}
      * @internal
      */
     protected _onDragLeftCancel(event: PointerEvent): PIXI.Graphics | void;
 
     /**
      * Handle right mouse-click events occurring on the Canvas stage or it's active layer
-     * @see {@link MouseInteractionManager#_handleClickRight}
      */
     protected _onClickRight(event: PIXI.FederatedEvent): void;
 
     /**
      * Handle double right-click events occurring on the Canvas.
-     * @see {@link MouseInteractionManager#_handleClickRight}
      * @internal
      */
     protected _onClickRight2(event: PIXI.FederatedEvent): void;
 
     /**
      * Handle right-mouse drag events occurring on the Canvas.
-     * @see {@link MouseInteractionManager#_handleDragMove}
      */
     protected _onDragRightMove(event: PIXI.FederatedEvent): void;
 
     /**
      * Handle the conclusion of a right-mouse drag workflow the Canvas stage.
-     * @see {@link MouseInteractionManager#_handleDragDrop}
      */
     protected _onDragRightDrop(event: PIXI.FederatedEvent): void;
 
@@ -672,35 +744,28 @@ declare global {
     protected _onDrop(event: DragEvent): void;
 
     /**
-     * Add a pending canvas operation that should fire once the socket handling workflow concludes.
-     * This registers operations by a unique string name into a queue - avoiding repeating the same work multiple times.
-     * This is especially helpful for multi-object updates to avoid costly and redundant refresh operations.
-     * TODO: this should be deprecated
-     * @param name  - A unique name for the pending operation, conventionally Class.method
-     * @param fn    - The unbound function to execute later
-     * @param scope - The scope to which the method should be bound when called
-     * @param args  - Arbitrary arguments to pass to the method when called
+     * Track objects which have pending render flags.
      */
-    addPendingOperation<S, A>(name: string, fn: (this: S, args: A) => void, scope: S, args: A): void;
+    readonly pendingRenderFlags: {
+      OBJECTS: Set<ReturnType<typeof RenderFlagsMixin>>;
+      PERCEPTION: Set<ReturnType<typeof RenderFlagsMixin>>;
+    };
 
     /**
-     * Fire all pending functions that are registered in the pending operations queue and empty it.
-     * TODO: this should be deprecated
-     */
-    triggerPendingOperations(): void;
-
-    /**
-     * @deprecated since v10 in favor of canvas.blur.strength
+     * @deprecated since v10, will be removed in v12
+     * @remarks "canvas.blurDistance is deprecated in favor of canvas.blur.strength"
      */
     get blurDistance(): number;
 
     /**
-     * @deprecated since v10 in favor of canvas.blur.strength
+     * @deprecated since v10, will be removed in v12
+     * @remarks "Setting canvas.blurDistance is replaced by setting canvas.blur.strength"
      */
     set blurDistance(value: number);
 
     /**
-     * @deprecated since v10 in favor of CanvasLayer#activate
+     * @deprecated since v10, will be removed in v12
+     * @remarks "Canvas#activateLayer is deprecated in favor of CanvasLayer#activate"
      */
     activateLayer(
       layerName:
@@ -720,7 +785,8 @@ declare global {
     ): void;
 
     /**
-     * @deprecated since v10 in favor of Scene#getDimensions
+     * @deprecated since v10, will be removed in v12
+     * @remarks "Canvas.getDimensions is deprecated in favor of Scene#getDimensions"
      */
     static getDimensions(data: {
       width?: number;
@@ -733,9 +799,24 @@ declare global {
     }): ReturnType<Scene["getDimensions"]>;
 
     /**
-     * @deprecated since v10 in favor of Canvas#colorManager#initialize
+     * @deprecated since v10, will be removed in v12
+     * @remarks "Canvas#setBackgroundColor is deprecated in favor of Canvas#colorManager#initialize"
      */
     setBackgroundColor(color: string): void;
+
+    /**
+     * @deprecated since v11, will be removed in v13
+     * @remarks "Canvas#addPendingOperation is deprecated without replacement in v11.
+     * The callback that you have passed as a pending operation has been executed immediately.
+     * We recommend switching your code to use a debounce operation or RenderFlags to de-duplicate overlapping requests."
+     */
+    addPendingOperation<S, A>(name: string, fn: (this: S, args: A) => void, scope: S, args: A): void;
+
+    /**
+     * @deprecated since v11, will be removed in v13
+     * @remarks "Canvas#triggerPendingOperations is deprecated without replacement in v11 and performs no action."
+     */
+    triggerPendingOperations(): void;
   }
 
   interface CanvasPerformanceSettings {
@@ -779,6 +860,17 @@ declare global {
     };
   }
 
+  interface CanvasSupportedComponents {
+    /** Is WebGL2 supported? */
+    webGL2: boolean;
+
+    /** Is reading pixels in RED format supported? */
+    readPixelsRED: boolean;
+
+    /** Is the OffscreenCanvas supported? */
+    offscreenCanvas: boolean;
+  }
+
   interface CanvasViewPosition {
     /**
      * The x-coordinate which becomes stage.pivot.x
@@ -813,4 +905,15 @@ interface EmbeddedEntityNameToLayerMap {
   Tile: Canvas["tiles"];
   Token: Canvas["tokens"];
   Wall: Canvas["walls"];
+}
+
+interface CollectionNameToLayerMap {
+  lights: Canvas["lighting"];
+  sounds: Canvas["sounds"];
+  drawings: Canvas["drawings"];
+  notes: Canvas["notes"];
+  templates: Canvas["templates"];
+  tiles: Canvas["tiles"];
+  tokens: Canvas["tokens"];
+  walls: Canvas["walls"];
 }
