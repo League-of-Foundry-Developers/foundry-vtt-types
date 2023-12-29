@@ -349,10 +349,7 @@ declare global {
        * @remarks An explicit return value of `false` prevents the Document being created.
        * @see {@link Canvas#_onDrop}
        */
-      dropCanvasData: (
-        canvas: Canvas,
-        data: TokenLayer.DropData | NotesLayer.DropData | MapLayer.DropData,
-      ) => boolean | void;
+      dropCanvasData: (canvas: Canvas, data: TokenLayer.DropData | NotesLayer.DropData) => boolean | void;
 
       /**
        * A hook event that fires when some useful data is dropped onto a RollTableConfig.
@@ -564,12 +561,12 @@ declare global {
       setup: () => void;
 
       /**
-       * A hook event that fires when the SightLayer has been refreshed.
-       * @param layer - The SightLayer
+       * A hook event that fires when the CanvasVisibility layer has been refreshed.
+       * @param visibility - The CanvasVisibility layer
        * @remarks This is called by {@link Hooks.callAll}.
-       * @see {@link SightLayer#restrictVisibility}
+       * @see {@link CanvasVisibility#restrictVisibility}
        */
-      sightRefresh: (layer: SightLayer) => void;
+      sightRefresh: (visibility: CanvasVisibility) => void;
 
       /**
        * A hook event that fires when a token is targeted or un-targeted.

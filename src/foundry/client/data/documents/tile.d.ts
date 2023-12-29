@@ -8,6 +8,4 @@
  */
 declare class TileDocument extends CanvasDocumentMixin(foundry.documents.BaseTile) {
   override prepareDerivedData(): void;
-
-  override get layer(): ForegroundLayer | BackgroundLayer;
 }
