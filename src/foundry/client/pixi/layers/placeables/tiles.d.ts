@@ -32,7 +32,7 @@ declare global {
 
     override get hookName(): string;
 
-    override get hud(): Canvas["hud"]["tile"];
+    override get hud(): TileHUD;
 
     /**
      * An array of Tile objects which are rendered within the objects container
