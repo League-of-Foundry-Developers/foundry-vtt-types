@@ -147,13 +147,6 @@ declare global {
   }
 
   namespace WeilerAthertonClipper {
-    // Copied from the PIXI.Circle extension
-    type ClipOpts = {
-      /** The number of points which defines the density of approximation */
-      density: number;
-
-      /** Whether to include points at the circle where the arc starts and ends */
-      includeEndpoints: boolean;
-    };
+    type ClipOpts = PIXI.Circle.PointsForArcOptions;
   }
 }

@@ -1,15 +1,3 @@
-import {
-  ALPHA_MODES,
-  BaseTexture,
-  ExtensionType,
-  GLTexture,
-  ICanvas,
-  LoadVideoConfig,
-  LoaderParserPriority,
-  Renderer,
-  Texture,
-} from "pixi.js";
-
 export {};
 
 // Foundry adjustments to PIXI for video
@@ -18,27 +6,27 @@ declare global {
   namespace PIXI {
     interface BaseImageResource {
       upload(
-        renderer: Renderer,
-        baseTexture: BaseTexture,
-        glTexture: GLTexture,
-        source?: HTMLImageElement | HTMLVideoElement | ImageBitmap | ICanvas,
+        renderer: PIXI.Renderer,
+        baseTexture: PIXI.BaseTexture,
+        glTexture: PIXI.GLTexture,
+        source?: HTMLImageElement | HTMLVideoElement | ImageBitmap | PIXI.ICanvas,
       ): boolean;
     }
 
     namespace utils {
-      function detectVideoAlphaMode(): Promise<ALPHA_MODES>;
+      function detectVideoAlphaMode(): Promise<PIXI.ALPHA_MODES>;
     }
 
     const loadVideo: {
       name: "loadVideo";
       extension: {
-        type: ExtensionType;
-        priority: LoaderParserPriority;
+        type: PIXI.ExtensionType;
+        priority: PIXI.LoaderParserPriority;
       };
-      config: LoadVideoConfig;
+      config: PIXI.LoadVideoConfig;
       test(url: string): void;
-      load(url: string, asset: unknown, loader: unknown): Promise<Texture>;
-      unload(texture): Promise<void>;
+      load(url: string, asset: unknown, loader: unknown): Promise<PIXI.Texture>;
+      unload(texture: PIXI.Texture): Promise<void>;
     };
 
     interface VideoResource {

@@ -1,5 +1,3 @@
-import type { MeshMaterial } from "pixi.js";
-
 export {};
 
 declare global {
@@ -39,7 +37,7 @@ declare global {
      */
     override get shouldRenderDepth(): boolean;
 
-    override shader: MeshMaterial;
+    override shader: PIXI.MeshMaterial;
 
     /**
      * @remarks Monkey patch copied from TileMesh.refresh()
