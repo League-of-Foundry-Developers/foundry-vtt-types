@@ -1,5 +1,4 @@
 import { expectTypeOf } from "vitest";
-import "../../../index";
 
 const c = new Collection<string>();
 

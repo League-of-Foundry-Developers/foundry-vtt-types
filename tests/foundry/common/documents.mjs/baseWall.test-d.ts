@@ -1,5 +1,3 @@
-export {};
-
 declare const scene: Scene;
 
 // @ts-expect-error - A BaseWall requires data.

@@ -74,7 +74,8 @@ Add foundry-vtt-types to your types section in your `tsconfig.json`:
 {
   "compilerOptions": {
     "types": ["@league-of-foundry-developers/foundry-vtt-types"],
-    "moduleResolution": "node",
+    "module": "Node16",
+    "moduleResolution": "Node16",
     "strictNullChecks": true
   }
 }
@@ -82,8 +83,8 @@ Add foundry-vtt-types to your types section in your `tsconfig.json`:
 
 This will make the type definitions available globally in your project.
 
-Make sure you are using `"moduleResolution": "node"`, too. It is required for some dependencies to be resolved
-correctly.
+Make sure you are using `"module": "Node16"` and `"moduleResolution": "Node16"`, too. It is required for some
+dependencies to be resolved correctly.
 
 Also make sure to set `"strictNullChecks": true` because otherwise, some conditional types used in the type definitions
 resolve incorrectly, and you will see a lot of errors. Alternatively, you can just set `"strict": true`, which

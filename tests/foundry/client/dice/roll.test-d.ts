@@ -1,7 +1,5 @@
-import type { Evaluated, MessageData } from "../../../../src/foundry/client/dice/roll";
-
 import { expectTypeOf } from "vitest";
-import "../../index";
+import type { Evaluated, MessageData } from "../../../../src/foundry/client/dice/roll.mts";
 
 class CustomRoll<D extends object = {}> extends Roll<D> {}
 

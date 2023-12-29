@@ -1,5 +1,4 @@
 import { expectTypeOf } from "vitest";
-import "../../index";
 
 class CustomRollTerm extends RollTerm {
   someProperty = 42;
