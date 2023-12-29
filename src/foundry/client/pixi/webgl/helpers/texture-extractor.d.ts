@@ -50,7 +50,7 @@ declare global {
 
       controlHash: boolean;
 
-      /** @defaultValue PIXI.FORMATS.RED */
+      /** @defaultValue `PIXI.FORMATS.RED` */
       format: PIXI.FORMATS;
     }
 
