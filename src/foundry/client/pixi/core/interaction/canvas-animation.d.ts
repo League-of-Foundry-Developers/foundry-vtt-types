@@ -67,7 +67,7 @@ declare global {
     resolve: (value: boolean) => void;
 
     /** The rejection function, allowing animation to be ended early */
-    reject: (err: unknown) => void;
+    reject: (err: Error) => void;
   }
 
   /**

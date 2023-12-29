@@ -529,7 +529,7 @@ declare global {
      * @see MouseInteractionManager##handleDragDrop
      * @param event - The triggering canvas interaction event
      */
-    protected _onDragLeftDrop(event: PIXI.FederatedEvent): unknown;
+    protected _onDragLeftDrop(event: PIXI.FederatedEvent): Promise<unknown>;
 
     /**
      * Callback actions which occur on a mouse-move operation.

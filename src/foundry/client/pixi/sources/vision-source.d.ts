@@ -1,8 +1,5 @@
 export {};
 
-// TODO: Define in client/pixi/webgl/shaders/effects/vision
-type AdaptiveVisionShader = unknown;
-
 declare global {
   /**
    * A specialized subclass of the PointSource abstraction which is used to control the rendering of vision sources.
