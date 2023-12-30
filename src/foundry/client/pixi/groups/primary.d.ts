@@ -1,10 +1,6 @@
 export {};
 
 type PrimaryDrawingContainer = unknown;
-type TokenMesh = unknown;
-type TileMesh = unknown;
-type TileSprite = unknown;
-type DrawingShape = unknown;
 type PrimaryCanvasObject = unknown;
 
 declare global {
