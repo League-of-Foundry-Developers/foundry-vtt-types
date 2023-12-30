@@ -8,7 +8,7 @@ declare global {
   class TextureCompressor extends AsyncWorker {
     /**
      * @param name   - The worker name to be initialized
-     *                 (default: "Texture Compressor")
+     *                 (default: `"Texture Compressor"`)
      * @param config - Worker initialization options
      */
     constructor(name?: string, config?: TextureCompressor.ConstructorOptions);
@@ -113,7 +113,7 @@ declare global {
        * The debug option
        * @defaultValue `false`
        */
-      debug: boolean;
+      debug?: boolean;
 
       compression: (typeof TextureExtractor)["COMPRESSION_MODES"];
 
