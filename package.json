@@ -16,7 +16,7 @@
     "lint:fix": "eslint --fix --ext .d.ts,.test-d.ts .",
     "lint:ci": "eslint --ext .d.ts,.test-d.ts .",
     "eslint:report": "eslint --output-file eslint_report.json --format json --ext .d.ts,.test-d.ts .",
-    "test": "vitest typecheck",
+    "test": "vitest --typecheck",
     "typecheck": "./node_modules/typescript/bin/tsc",
     "prepare": "is-ci || husky install"
   },
