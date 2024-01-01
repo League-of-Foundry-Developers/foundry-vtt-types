@@ -7,7 +7,7 @@ declare class Coin extends DiceTerm {
   faces: 2;
 
   /**
-   * @defaultValue `c`
+   * @defaultValue `"c"`
    */
   static DENOMINATION: string;
 

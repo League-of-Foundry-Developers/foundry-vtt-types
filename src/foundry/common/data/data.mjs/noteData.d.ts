@@ -117,7 +117,7 @@ interface NoteDataProperties {
 
   /**
    * The string that defines the color with which the note text is rendered
-   * @defaultValue `#FFFFFF`
+   * @defaultValue `"#FFFFFF"`
    */
   textColor: string | null;
 
@@ -196,7 +196,7 @@ interface NoteDataConstructorData {
 
   /**
    * The string that defines the color with which the note text is rendered
-   * @defaultValue `#FFFFFF`
+   * @defaultValue `"#FFFFFF"`
    */
   textColor?: string | null | undefined;
 

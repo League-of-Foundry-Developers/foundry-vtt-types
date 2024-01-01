@@ -164,7 +164,7 @@ declare namespace ContextMenu {
   interface ConstructorOptions {
     /**
      * The name of the hook to call
-     * @defaultValue `EntryContext`
+     * @defaultValue `"EntryContext"`
      */
     hookName?: string;
 

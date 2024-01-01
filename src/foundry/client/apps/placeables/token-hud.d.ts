@@ -112,7 +112,7 @@ declare global {
       {
         overlay,
       }?: {
-        /** @defaultValue `@false` */
+        /** @defaultValue `false` */
         overlay?: boolean;
       },
     ): Promise<boolean>;
