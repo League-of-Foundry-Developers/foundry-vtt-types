@@ -16,16 +16,16 @@ declare global {
     static override embeddedName: "Tile";
 
     static override RENDER_FLAGS: {
-      /** @defaultValue `{propagate: ["refresh"]}` */
+      /** @defaultValue `{ propagate: ["refresh"] }` */
       redraw: RenderFlag<Partial<Tile.RenderFlags>>;
 
-      /** @defaultValue `{propagate: ["refreshState", "refreshShape", "refreshElevation", "refreshVideo"], alias: true}` */
+      /** @defaultValue `{ propagate: ["refreshState", "refreshShape", "refreshElevation", "refreshVideo"], alias: true }` */
       refresh: RenderFlag<Partial<Tile.RenderFlags>>;
 
-      /** @defaultValue `{propagate: ["refreshFrame"]}` */
+      /** @defaultValue `{ propagate: ["refreshFrame"] }` */
       refreshState: RenderFlag<Partial<Tile.RenderFlags>>;
 
-      /** @defaultValue `{propagate: ["refreshMesh", "refreshPerception", "refreshFrame"]}` */
+      /** @defaultValue `{ propagate: ["refreshMesh", "refreshPerception", "refreshFrame"] }` */
       refreshShape: RenderFlag<Partial<Tile.RenderFlags>>;
 
       /** @defaultValue `{}` */
@@ -34,7 +34,7 @@ declare global {
       /** @defaultValue `{}` */
       refreshFrame: RenderFlag<Partial<Tile.RenderFlags>>;
 
-      /** @defaultValue `{propagate: ["refreshMesh"]}` */
+      /** @defaultValue `{ propagate: ["refreshMesh"] }` */
       refreshElevation: RenderFlag<Partial<Tile.RenderFlags>>;
 
       /** @defaultValue `{}` */

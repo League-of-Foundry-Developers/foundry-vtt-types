@@ -25,13 +25,13 @@ declare global {
     static override embeddedName: "AmbientSound";
 
     static override RENDER_FLAGS: {
-      /** @defaultValue `{propagate: ["refresh"]}` */
+      /** @defaultValue `{ propagate: ["refresh"] }` */
       redraw: RenderFlag<Partial<AmbientSound.RenderFlags>>;
 
-      /** @defaultValue `{propagate: ["refreshField"], alias: true}` */
+      /** @defaultValue `{ propagate: ["refreshField"], alias: true }` */
       refresh: RenderFlag<Partial<AmbientSound.RenderFlags>>;
 
-      /** @defaultValue `{propagate: ["refreshPosition", "refreshState"]}` */
+      /** @defaultValue `{ propagate: ["refreshPosition", "refreshState"] }` */
       refreshField: RenderFlag<Partial<AmbientSound.RenderFlags>>;
 
       /** @defaultValue `{}` */

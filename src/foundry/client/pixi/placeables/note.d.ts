@@ -15,16 +15,16 @@ declare global {
     static override embeddedName: "Note";
 
     static override RENDER_FLAGS: {
-      /** @defaultValue `{propagate: ["refresh"]}` */
+      /** @defaultValue `{ propagate: ["refresh"] }` */
       redraw: RenderFlag<Partial<Note.RenderFlags>>;
 
-      /** @defaultValue `{propagate: ["refreshState", "refreshPosition", "refreshText"], alias: true}` */
+      /** @defaultValue `{ propagate: ["refreshState", "refreshPosition", "refreshText"], alias: true }` */
       refresh: RenderFlag<Partial<Note.RenderFlags>>;
 
-      /** @defaultValue `{propagate: ["refreshVisibility"]}` */
+      /** @defaultValue `{ propagate: ["refreshVisibility"] }` */
       refreshPosition: RenderFlag<Partial<Note.RenderFlags>>;
 
-      /** @defaultValue `{propagate: ["refreshVisibility"]}` */
+      /** @defaultValue `{ propagate: ["refreshVisibility"] }` */
       refreshState: RenderFlag<Partial<Note.RenderFlags>>;
 
       /** @defaultValue `{}` */

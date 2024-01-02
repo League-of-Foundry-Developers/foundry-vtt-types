@@ -42,16 +42,16 @@ declare global {
     static override embeddedName: "Drawing";
 
     static override RENDER_FLAGS: {
-      /** @defaultValue `{propagate: ["refresh"]}` */
+      /** @defaultValue `{ propagate: ["refresh"] }` */
       redraw: RenderFlag<Partial<Drawing.RenderFlags>>;
 
-      /** @defaultValue `{propagate: ["refreshState", "refreshShape"], alias: true}` */
+      /** @defaultValue `{ propagate: ["refreshState", "refreshShape"], alias: true }` */
       refresh: RenderFlag<Partial<Drawing.RenderFlags>>;
 
-      /** @defaultValue `{propagate: ["refreshFrame"]}` */
+      /** @defaultValue `{ propagate: ["refreshFrame"] }` */
       refreshState: RenderFlag<Partial<Drawing.RenderFlags>>;
 
-      /** @defaultValue `{propagate: ["refreshFrame", "refreshText", "refreshMesh"]}` */
+      /** @defaultValue `{ propagate: ["refreshFrame", "refreshText", "refreshMesh"] }` */
       refreshShape: RenderFlag<Partial<Drawing.RenderFlags>>;
 
       /** @defaultValue `{}` */
@@ -74,7 +74,7 @@ declare global {
      * A convenience reference to the possible shape types.
      * TODO: Replace post-data model with the static enum reference
      */
-    static readonly SHAPE_TYPES: string;
+    static readonly SHAPE_TYPES: string; // ValueOf<(typeof foundry.data.ShapeData)["TYPES"]>
 
     override get bounds(): Rectangle;
 

@@ -44,10 +44,10 @@ declare global {
    */
   class PerceptionManager extends RenderFlagsMixin(Object) {
     static RENDER_FLAGS: {
-      /** @defaultValue `{propagate: ["refreshLighting", "refreshVision"]}` */
+      /** @defaultValue `{ propagate: ["refreshLighting", "refreshVision"] }` */
       initializeLighting: RenderFlag<PerceptionManagerFlags>;
 
-      /** @defaultValue `{propagate: ["refreshLightSources"]}` */
+      /** @defaultValue `{ propagate: ["refreshLightSources"] }` */
       refreshLighting: RenderFlag<PerceptionManagerFlags>;
 
       /** @defaultValue `{}` */
@@ -59,28 +59,28 @@ declare global {
       /** @defaultValue `{}` */
       refreshPrimary: RenderFlag<PerceptionManagerFlags>;
 
-      /** @defaultValue `{propagate: ["refreshVision", "refreshTiles", "refreshLighting", "refreshLightSources", "refreshPrimary"]}` */
+      /** @defaultValue `{ propagate: ["refreshVision", "refreshTiles", "refreshLighting", "refreshLightSources", "refreshPrimary"] }` */
       initializeVision: RenderFlag<PerceptionManagerFlags>;
 
-      /** @defaultValue `{propagate: ["refreshVisionSources"]}` */
+      /** @defaultValue `{ propagate: ["refreshVisionSources"] }` */
       refreshVision: RenderFlag<PerceptionManagerFlags>;
 
-      /** @defaultValue `{propagate: ["refreshSounds"]}` */
+      /** @defaultValue `{ propagate: ["refreshSounds"] }` */
       initializeSounds: RenderFlag<PerceptionManagerFlags>;
 
       /** @defaultValue `{}` */
       refreshSounds: RenderFlag<PerceptionManagerFlags>;
 
-      /** @defaultValue `{propagate: ["refreshLightSources", "refreshVisionSources"]}` */
+      /** @defaultValue `{ propagate: ["refreshLightSources", "refreshVisionSources"] }` */
       refreshTiles: RenderFlag<PerceptionManagerFlags>;
 
       /** @defaultValue `{}` */
       soundFadeDuration: RenderFlag<PerceptionManagerFlags>;
 
-      /** @defaultValue `{propagate: ["initializeLighting", "initializeVision"]}` */
+      /** @defaultValue `{ propagate: ["initializeLighting", "initializeVision"] }` */
       identifyInteriorWalls: RenderFlag<PerceptionManagerFlags>;
 
-      /** @defaultValue `{propagate: ["refreshVision"]}` */
+      /** @defaultValue `{ propagate: ["refreshVision"] }` */
       forceUpdateFog: RenderFlag<PerceptionManagerFlags>;
     };
 
