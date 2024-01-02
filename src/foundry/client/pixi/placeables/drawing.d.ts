@@ -1,63 +1,69 @@
 import { ConfiguredDocumentClass, ConfiguredDocumentClassForName } from "../../../../types/helperTypes";
 import { DocumentModificationOptions } from "../../../common/abstract/document.mjs";
 
+export {};
+
 declare global {
   /**
    * The Drawing object is an implementation of the PlaceableObject container.
    * Each Drawing is a placeable object in the DrawingsLayer.
    */
-  class Drawing extends PlaceableObject<InstanceType<ConfiguredDocumentClass<typeof DrawingDocument>>> {
+  // TODO: Replace `any` with `InstanceType<ConfiguredDocumentClass<typeof DrawingDocument>>`
+  class Drawing extends PlaceableObject<any> {
     constructor(document: InstanceType<ConfiguredDocumentClass<typeof DrawingDocument>>);
-    /**
-     * @remarks Not used for `Drawing`
-     */
-    controlIcon: null;
 
     /**
-     * The inner drawing container
+     * Each Drawing object belongs to the DrawingsLayer
+     * @remarks it's possible this shouldn't be here and is some data model thing
+     */
+    get layer(): DrawingsLayer;
+
+    /**
+     * Each Drawing object provides an interface for a DrawingDocument
+     */
+    document: DrawingDocument;
+
+    /**
+     * The border frame and resizing handles for the drawing.
+     */
+    frame: PIXI.Container;
+
+    /**
+     * A text label that may be displayed as part of the interface layer for the Drawing.
      * @defaultValue `null`
      */
-    drawing: PIXI.Container | null;
+    text: PreciseText | null;
 
     /**
      * The primary drawing shape
      * @defaultValue `null`
      */
-    shape: PIXI.Graphics | null;
-
-    /**
-     * Text content, if included
-     * @defaultValue `null`
-     */
-    text: PIXI.Text | null;
-
-    /**
-     * The Graphics outer frame and handles
-     * @defaultValue `null`
-     */
-    frame: PIXI.Container | null;
-
-    /**
-     * Internal timestamp for the previous freehand draw time, to limit sampling
-     * @defaultValue `0`
-     * @internal
-     */
-    protected _drawTime: number;
-
-    /**
-     * @defaultValue `0`
-     * @internal
-     */
-    protected _sampleTime: number;
-
-    /**
-     * Internal flag for the permanent points of the polygon
-     * @defaultValue `foundry.utils.deepClone(this.data.points || [])`
-     * @internal
-     */
-    protected _fixedPoints: Array<[x: number, y: number]>;
+    shape: DrawingShape;
 
     static override embeddedName: "Drawing";
+
+    static override RENDER_FLAGS: {
+      /** @defaultValue `{ propagate: ["refresh"] }` */
+      redraw: RenderFlag<Partial<Drawing.RenderFlags>>;
+
+      /** @defaultValue `{ propagate: ["refreshState", "refreshShape"], alias: true }` */
+      refresh: RenderFlag<Partial<Drawing.RenderFlags>>;
+
+      /** @defaultValue `{ propagate: ["refreshFrame"] }` */
+      refreshState: RenderFlag<Partial<Drawing.RenderFlags>>;
+
+      /** @defaultValue `{ propagate: ["refreshFrame", "refreshText", "refreshMesh"] }` */
+      refreshShape: RenderFlag<Partial<Drawing.RenderFlags>>;
+
+      /** @defaultValue `{}` */
+      refreshFrame: RenderFlag<Partial<Drawing.RenderFlags>>;
+
+      /** @defaultValue `{}` */
+      refreshText: RenderFlag<Partial<Drawing.RenderFlags>>;
+
+      /** @defaultValue `{}` */
+      refreshMesh: RenderFlag<Partial<Drawing.RenderFlags>>;
+    };
 
     /**
      * The rate at which points are sampled (in milliseconds) during a freehand drawing workflow
@@ -65,106 +71,84 @@ declare global {
      */
     static FREEHAND_SAMPLE_RATE: number;
 
+    /**
+     * A convenience reference to the possible shape types.
+     * TODO: Replace post-data model with the static enum reference
+     */
+    static readonly SHAPE_TYPES: string; // ValueOf<(typeof foundry.data.ShapeData)["TYPES"]>
+
     override get bounds(): Rectangle;
 
+    override get center(): PIXI.Point;
+
     /**
-     * A Boolean flag for whether or not the Drawing utilizes a tiled texture background
+     * A Boolean flag for whether the Drawing utilizes a tiled texture background
      */
     get isTiled(): boolean;
 
     /**
-     * A Boolean flag for whether or not the Drawing is a Polygon type (either linear or freehand)
+     * A Boolean flag for whether the Drawing is a Polygon type (either linear or freehand)?
      */
     get isPolygon(): boolean;
 
-    override draw(): Promise<this>;
+    /**
+     * Does the Drawing have text that is displayed?
+     */
+    get hasText(): boolean;
 
     /**
-     * Clean the drawing data to constrain its allowed position
-     * @internal
+     * The shape type that this Drawing represents. A value in Drawing.SHAPE_TYPES.
+     * TODO: Replace post-data model with the static enum reference
      */
-    protected _cleanData(): void;
+    get type(): string; // // ValueOf<(typeof foundry.data.ShapeData)["TYPES"]>
+
+    override clear(): this;
 
     /**
-     * Create the components of the drawing element, the drawing container, the drawn shape, and the overlay text
+     * @param options - unused
      */
-    protected _createDrawing(): void;
+    protected override _destroy(options?: PIXI.IDestroyOptions | boolean): void;
 
     /**
-     * Create elements for the foreground text
-     * @internal
+     * @param options - unused
      */
-    protected _createText(): PreciseText;
+    protected override _draw(options?: Record<string, unknown>): Promise<void>;
 
     /**
-     * Create elements for the Drawing border and handles
-     * @internal
+     * Prepare the text style used to instantiate a PIXI.Text or PreciseText instance for this Drawing document.
      */
-    protected _createFrame(): void;
+    protected _getTextStyle(): PIXI.TextStyle;
 
-    override refresh(): void;
-
-    /**
-     * Draw rectangular shapes
-     * @internal
-     */
-    protected _drawRectangle(): void;
-
-    /**
-     * Draw ellipsoid shapes
-     * @internal
-     */
-    protected _drawEllipse(): void;
-
-    /**
-     * Draw polygonal shapes
-     * @internal
-     */
-    protected _drawPolygon(): void;
-
-    /**
-     * Draw freehand shapes with bezier spline smoothing
-     * @internal
-     */
-    protected _drawFreehand(): void;
-
-    /**
-     * Attribution: The equations for how to calculate the bezier control points are derived from Rob Spencer's article:
-     * http://scaledinnovation.com/analytics/splines/aboutSplines.html
-     * @param factor   - The smoothing factor
-     * @param previous - The prior point
-     * @param point    - The current point
-     * @param next     - The next point
-     * @internal
-     */
-    protected _getBezierControlPoints(
-      factor: number,
-      previous: [number, number],
-      point: [number, number],
-      next: [number, number],
-    ): {
-      cp1: {
-        x: number;
-        y: number;
-      };
-      next_cp0: {
-        x: number;
-        y: number;
-      };
-    };
-
-    /**
-     * Refresh the boundary frame which outlines the Drawing shape
-     * @internal
-     */
-    protected _refreshFrame({ x, y, width, height }: Rectangle): void;
+    protected override _applyRenderFlags(flags: Drawing.RenderFlags): void;
 
     /**
      * Add a new polygon point to the drawing, ensuring it differs from the last one
-     * @param temporary - (default: `true`)
+     * @param position - The drawing point to add
+     * @param options  - Options which configure how the point is added
      * @internal
      */
-    protected _addPoint(position: Point, temporary?: boolean): void;
+    protected _addPoint(
+      position: Point,
+      options?: {
+        /**
+         * Should the point be rounded to integer coordinates?
+         * @defaultValue `false`
+         */
+        round?: boolean;
+
+        /**
+         * Should the point be snapped to grid precision?
+         * @defaultValue `false`
+         */
+        snap?: boolean;
+
+        /**
+         * Is this a temporary control point?
+         * @defaultValue `false`
+         */
+        temporary?: boolean;
+      },
+    ): void;
 
     /**
      * Remove the last fixed point from the polygon
@@ -172,19 +156,16 @@ declare global {
      */
     protected _removePoint(): void;
 
-    protected override _onControl(options: PlaceableObject.ControlOptions & { isNew?: boolean }): void;
+    protected override _onControl(options: PlaceableObject.ControlOptions & Drawing.TextEditingOptions): void;
 
     protected override _onRelease(options: PlaceableObject.ReleaseOptions): void;
 
     protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
 
-    /**
-     * Handle text entry in an active text tool
-     * @internal
-     */
-    protected _onDrawingTextKeydown(event: KeyboardEvent): void;
-
+    // TODO: Replace after data model
     protected override _onUpdate(data: DeepPartial<foundry.data.DrawingData["_source"]>): void;
+
+    override activateListeners(): void;
 
     /**
      * @param event - unused
@@ -195,9 +176,8 @@ declare global {
      * @param user  - unused
      * @param event - unused
      */
+    // TODO: Replace User reference after data model
     protected override _canConfigure(user: InstanceType<ConfiguredDocumentClassForName<"User">>, event?: any): boolean;
-
-    override activateListeners(): void;
 
     /**
      * Handle mouse movement which modifies the dimensions of the drawn shape
@@ -211,7 +191,7 @@ declare global {
 
     protected override _onDragLeftDrop(event: PIXI.FederatedEvent): Promise<unknown>;
 
-    protected override _onDragLeftCancel(event: MouseEvent): void;
+    protected override _onDragLeftCancel(event: PIXI.FederatedEvent): void;
 
     /**
      * Handle mouse-over event on a control handle
@@ -228,14 +208,14 @@ declare global {
     protected _onHandleHoverOut(event: PIXI.FederatedEvent): void;
 
     /**
-     * When we start a drag event - create a preview copy of the Tile for re-positioning
+     * When clicking the resize handle, initialize the drag property.
      * @param event - The mousedown event
      * @internal
      */
     protected _onHandleMouseDown(event: PIXI.FederatedEvent): void;
 
     /**
-     * Handle the beginning of a drag event on a resize handle
+     * Starting the resize handle drag event, initialize the original data.
      * @internal
      */
     protected _onHandleDragStart(event: PIXI.FederatedEvent): void;
@@ -263,10 +243,11 @@ declare global {
     protected _onHandleDragCancel(event: PIXI.FederatedEvent): void;
 
     /**
-     * Apply a vectorized rescaling transformation for the drawing data
+     * Get a vectorized rescaling transformation for drawing data and dimensions passed in parameter
      * @param original - The original drawing data
      * @param dx       - The pixel distance dragged in the horizontal direction
      * @param dy       - The pixel distance dragged in the vertical direction
+     * @returns The adjusted shape data
      * @internal
      */
     protected _rescaleDimensions(
@@ -277,7 +258,7 @@ declare global {
 
     /**
      * Adjust the location, dimensions, and points of the Drawing before committing the change
-     * @param data - The Drawing data pending update
+     * @param data - The DrawingData pending update
      * @returns The adjusted data
      * @remarks This is intentionally public because it is called by the DrawingsLayer
      * @internal
@@ -285,5 +266,28 @@ declare global {
     static normalizeShape(
       data: Pick<foundry.data.DrawingData["_source"], "x" | "y" | "width" | "height" | "points">,
     ): Pick<foundry.data.DrawingData["_source"], "x" | "y" | "width" | "height" | "points">;
+
+    /**
+     * @remarks Not used
+     */
+    controlIcon: null;
+  }
+
+  namespace Drawing {
+    interface RenderFlags extends PlaceableObject.RenderFlags {
+      refreshShape: boolean;
+
+      refreshFrame: boolean;
+
+      refreshText: boolean;
+
+      refreshMesh: boolean;
+    }
+
+    interface TextEditingOptions {
+      forceTextEditing?: boolean;
+
+      isNew?: boolean;
+    }
   }
 }

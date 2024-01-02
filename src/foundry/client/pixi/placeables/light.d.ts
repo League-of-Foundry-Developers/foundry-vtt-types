@@ -1,9 +1,13 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes";
 import { DocumentModificationOptions } from "../../../common/abstract/document.mjs";
 
+export {};
+
 declare global {
   /**
    * An AmbientLight is an implementation of PlaceableObject which represents a dynamic light source within the Scene.
+   * @see {@link AmbientLightDocument}
+   * @see {@link LightingLayer}
    */
   class AmbientLight extends PlaceableObject<InstanceType<ConfiguredDocumentClassForName<"AmbientLight">>> {
     constructor(document: InstanceType<ConfiguredDocumentClassForName<"AmbientLight">>);
@@ -20,6 +24,23 @@ declare global {
     controlIcon: ControlIcon | undefined;
 
     static override embeddedName: "AmbientLight";
+
+    static override RENDER_FLAGS: {
+      /** @defaultValue `{ propagate: ["refresh"] }` */
+      redraw: RenderFlag<Partial<AmbientLight.RenderFlags>>;
+
+      /** @defaultValue `{ propagate: ["refreshField"], alias: true }` */
+      refresh: RenderFlag<Partial<AmbientLight.RenderFlags>>;
+
+      /** @defaultValue `{ propagate: ["refreshPosition", "refreshState"] }` */
+      refreshField: RenderFlag<Partial<AmbientLight.RenderFlags>>;
+
+      /** @defaultValue `{}` */
+      refreshPosition: RenderFlag<Partial<AmbientLight.RenderFlags>>;
+
+      /** @defaultValue `{}` */
+      refreshState: RenderFlag<Partial<AmbientLight.RenderFlags>>;
+    };
 
     override get bounds(): PIXI.Rectangle;
 
@@ -49,21 +70,27 @@ declare global {
     get brightRadius(): number;
 
     /**
-     * Return whether the light source is currently visible in the scene
+     * Is this Ambient Light currently visible? By default, true only if the source actively emits light.
+     * @remarks Backwards-compatible wrapper for this.emitsLight
      */
     get isVisible(): boolean;
 
-    override draw(): Promise<this>;
-
-    override destroy(options?: Parameters<PlaceableObject["destroy"]>[0]): void;
+    /**
+     * Does this Ambient Light actively emit light given its properties and the current darkness level of the Scene?
+     */
+    get emitsLight(): boolean;
 
     /**
-     * Draw the ControlIcon for the AmbientLight
-     * @internal
+     * @param options - unused
      */
-    protected _drawControlIcon(): ControlIcon;
+    protected override _destroy(options?: PIXI.IDestroyOptions | boolean): void;
 
-    override refresh(): this;
+    /**
+     * @param options - unused
+     */
+    protected override _draw(options?: Record<string, unknown>): Promise<void>;
+
+    protected override _applyRenderFlags(flags: AmbientLight.RenderFlags): void;
 
     /**
      * Refresh the display of the ControlIcon for this AmbientLight source
@@ -71,15 +98,22 @@ declare global {
     refreshControl(): void;
 
     /**
-     * The named identified for the source object associated with this light
-     */
-    get sourceId(): string;
-
-    /**
      * Update the source object associated with this light
-     * @param options - (default: `{}}`)
+     * @param options - Options which modify how the source is updated
      */
-    updateSource(options?: AmbientLight.UpdateSourceOptions | undefined): void;
+    updateSource(options?: {
+      /**
+       * Defer updating perception to manually update it later
+       * @defaultValue `false`
+       */
+      defer?: boolean;
+
+      /**
+       * Indicate that this light source has been deleted
+       * @defaultValue `false`
+       */
+      deleted?: boolean;
+    }): void;
 
     protected override _onCreate(
       data: foundry.data.AmbientLightData["_source"],
@@ -105,22 +139,14 @@ declare global {
 
     protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
-    protected override _onDragLeftCancel(event: MouseEvent): void;
+    protected override _onDragLeftCancel(event: PIXI.FederatedEvent): void;
   }
 
   namespace AmbientLight {
-    interface UpdateSourceOptions {
-      /**
-       * Defer refreshing the LightingLayer to manually call that refresh later.
-       * @defaultValue `false`
-       */
-      defer?: boolean | undefined;
+    interface RenderFlags extends PlaceableObject.RenderFlags {
+      refreshField: boolean;
 
-      /**
-       * Indicate that this light source has been deleted.
-       * @defaultValue `false`
-       */
-      deleted?: boolean | undefined;
+      refreshPosition: boolean;
     }
   }
 }

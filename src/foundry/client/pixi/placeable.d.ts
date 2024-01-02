@@ -2,6 +2,11 @@ import { ConfiguredDocumentClass } from "../../../types/helperTypes";
 import { DocumentModificationOptions } from "../../common/abstract/document.mjs";
 import { Document } from "../../common/abstract/module.mjs";
 
+export {};
+
+// TODO: Rework the data portions after the data model branch is merged
+// CAVEAT: That whole bit gets thrown out with v12 *anyways* as part of the decoupling
+
 declare global {
   /**
    * An Abstract Base Class which defines a Placeable Object which represents a Document placed on the Canvas
@@ -11,7 +16,7 @@ declare global {
       any,
       InstanceType<ConfiguredDocumentClass<typeof Scene>>
     >,
-  > extends PIXI.Container {
+  > extends RenderFlagsMixin(PIXI.Container) {
     /**
      * @param document - The Document instance which is represented by this object
      */
@@ -32,6 +37,7 @@ declare global {
 
     /**
      * The underlying data object which provides the basis for this placeable object
+     * @deprecated since v10, will be removed in v12
      */
     data: D["data"];
 
@@ -56,22 +62,47 @@ declare global {
     mouseInteractionManager: MouseInteractionManager<this> | null;
 
     /**
-     * An indicator for whether the object is currently controlled
+     * Allow objects to be culled when off-screen
      * @defaultValue `false`
      */
-    protected _controlled: boolean;
-
-    /**
-     * An indicator for whether the object is currently a hover target
-     * @defaultValue `false`
-     */
-    protected _hover: boolean;
+    cullable: boolean;
 
     /**
      * Identify the official Document name for this PlaceableObject class
      * @remarks This is abstract in {@link PlaceableObject}.
      */
     static embeddedName: string;
+
+    /**
+     * The flags declared here are required for all PlaceableObject subclasses to also support.
+     */
+    static override RENDER_FLAGS: {
+      /** @defaultValue `{ propagate: ["refresh"] }` */
+      redraw: RenderFlag<PlaceableObject.RenderFlags>;
+
+      /** @defaultValue `{ propagate: ["refreshState"], alias: true }` */
+      refresh: RenderFlag<PlaceableObject.RenderFlags>;
+
+      /** @defaultValue `{}` */
+      refreshState: RenderFlag<PlaceableObject.RenderFlags>;
+    };
+
+    /**
+     * Passthrough certain drag operations on locked objects.
+     * @defaultValue `false`
+     */
+    protected _dragPassthrough: boolean;
+
+    /**
+     * Know if a placeable is in the hover-in state.
+     * @defaultValue `false`
+     */
+    protected _isHoverIn: boolean;
+
+    /**
+     * The mouse interaction state of this placeable.
+     */
+    get interactionState(): ValueOf<typeof MouseInteractionManager.INTERACTION_STATES> | undefined;
 
     /**
      * The bounding box for this PlaceableObject.
@@ -89,6 +120,27 @@ declare global {
      * The id of the corresponding Document which this PlaceableObject represents.
      */
     get id(): string;
+
+    /**
+     * A unique identifier which is used to uniquely identify elements on the canvas related to this object.
+     */
+    get objectId(): string;
+
+    /**
+     * The named identified for the source object associated with this PlaceableObject.
+     * This differs from the objectId because the sourceId is the same for preview objects as for the original.
+     */
+    get sourceId(): string;
+
+    /**
+     * Is this placeable object a temporary preview?
+     */
+    get isPreview(): boolean;
+
+    /**
+     * Does there exist a temporary preview of this placeable object?
+     */
+    get hasPreview(): boolean;
 
     /**
      * The field-of-vision polygon for the object, if it has been computed
@@ -112,90 +164,71 @@ declare global {
     get sheet(): "sheet" extends keyof D ? D["sheet"] : FormApplication | null;
 
     /**
-     * Test whether a user can perform a certain interaction with regards to a Placeable Object
-     * @param user   - The User performing the action
-     * @param action - The named action being attempted
-     * @returns Does the User have rights to perform the action?
+     * An indicator for whether the object is currently controlled
      */
-    can(
-      user: InstanceType<ConfiguredDocumentClass<typeof User>>,
-      action: "HUD" | "configure" | "control" | "view" | "create" | "drag" | "hover" | "update" | "delete" | string,
-    ): boolean;
+    get controlled(): boolean;
 
     /**
-     * Can the User access the HUD for this Placeable Object?
+     * An indicator for whether the object is currently a hover target
      */
-    protected _canHUD(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
+    get hover(): boolean;
+
+    set hover(state);
+
+    override applyRenderFlags(): void;
 
     /**
-     * Does the User have permission to configure the Placeable Object?
+     * Apply render flags before a render occurs.
+     * @param flags - The render flags which must be applied
      */
-    protected _canConfigure(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
-
-    /**
-     * Does the User have permission to control the Placeable Object?
-     */
-    protected _canControl(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
-
-    /**
-     * Does the User have permission to view details of the Placeable Object?
-     */
-    protected _canView(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
-
-    /**
-     * Does the User have permission to create the underlying Document?
-     */
-    protected _canCreate(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
-
-    /**
-     * Does the User have permission to drag this Placeable Object?
-     */
-    protected _canDrag(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
-
-    /**
-     * Does the User have permission to hover on this Placeable Object?
-     */
-    protected _canHover(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
-
-    /**
-     * Does the User have permission to update the underlying Document?
-     */
-    protected _canUpdate(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
-
-    /**
-     * Does the User have permission to delete the underlying Document?
-     */
-    protected _canDelete(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
+    protected _applyRenderFlags(flags: PlaceableObject.RenderFlags): void;
 
     /**
      * Clear the display of the existing object
      * @returns The cleared object
+     * @remarks Some subclasses return void
      */
-    clear(): this;
-
-    /**
-     * Clone the placeable object, returning a new object with identical attributes
-     * The returned object is non-interactive, and has no assigned ID
-     * If you plan to use it permanently you should call the create method
-     *
-     * @returns A new object with identical data
-     */
-    clone(): this;
+    clear(): this | void;
 
     override destroy(options?: Parameters<PIXI.Container["destroy"]>[0]): void;
+
+    /**
+     * The inner _destroy method which may optionally be defined by each PlaceableObject subclass.
+     * @param options - Options passed to the initial destroy call
+     */
+    protected _destroy(options?: PIXI.IDestroyOptions | boolean): void;
 
     /**
      * Draw the placeable object into its parent container
      * @returns The drawn object
      */
-    abstract draw(): Promise<this>;
+    draw(options: Record<string, unknown>): Promise<this>;
 
     /**
-     * Refresh the current display state of the Placeable Object
-     * @returns The refreshed object
-     * @remarks `void` has been added because of `Drawing.refresh`
+     * The inner _draw method which must be defined by each PlaceableObject subclass.
+     * @param options - Options which may modify the draw workflow
      */
-    abstract refresh(): this | void;
+    protected abstract _draw(options?: Record<string, unknown>): Promise<void>;
+
+    /**
+     * Refresh all incremental render flags for the PlaceableObject.
+     * This method is no longer used by the core software but provided for backwards compatibility.
+     * @param options - Options which may modify the refresh workflow
+     * @returns The refreshed object
+     */
+    refresh(options: Record<string, unknown>): this;
+
+    /**
+     * Update the quadtree.
+     */
+    protected _updateQuadtree(): void;
+
+    /* -------------------------------------------- */
+
+    /**
+     * Get the target opacity that should be used for a Placeable Object depending on its preview state.
+     */
+    protected _getTargetAlpha(): number;
 
     /**
      * Register pending canvas operations which should occur after a new PlaceableObject of this type is created
@@ -204,7 +237,7 @@ declare global {
 
     /**
      * Define additional steps taken when an existing placeable object of this type is updated with new data
-     * @remarks Called without options and userId in Drowing._onUpdate
+     * @remarks Called without options and userId in Drawing._onUpdate
      */
     protected _onUpdate(
       changed: DeepPartial<D["data"]["_source"]>,
@@ -221,7 +254,7 @@ declare global {
      * Assume control over a PlaceableObject, flagging it as controlled and enabling downstream behaviors
      * @param options - Additional options which modify the control request
      *                  (default: `{}`)
-     * @returns A flag denoting whether or not control was successful
+     * @returns A flag denoting whether control was successful
      */
     control(options?: PlaceableObject.ControlOptions): boolean;
 
@@ -246,6 +279,14 @@ declare global {
     protected _onRelease(options?: PlaceableObject.ReleaseOptions): void;
 
     /**
+     * Clone the placeable object, returning a new object with identical attributes.
+     * The returned object is non-interactive, and has no assigned ID.
+     * If you plan to use it permanently you should call the create method.
+     * @returns A new object with identical data
+     */
+    clone(): PlaceableObject;
+
+    /**
      * Rotate the PlaceableObject to a certain angle of facing
      * @param angle - The desired angle of rotation
      * @param snap  - Snap the angle of rotation to a certain target degree increment
@@ -264,7 +305,29 @@ declare global {
      *                (default: `0`)
      * @returns The new rotation angle for the object
      */
-    protected _updateRotation({ angle, delta, snap }?: RotationOptions): number;
+    protected _updateRotation({
+      angle,
+      delta,
+      snap,
+    }?: {
+      /**
+       * An explicit angle, either this or delta must be provided
+       * @defaultValue `undefined`
+       */
+      angle?: number;
+
+      /**
+       * A relative angle delta, either this or the angle must be provided
+       * @defaultValue `0`
+       */
+      delta?: number;
+
+      /**
+       * A precision (in degrees) to which the resulting angle should snap. Default is 0.
+       * @defaultValue `0`
+       */
+      snap?: number;
+    }): number;
 
     /**
      * Obtain a shifted position for the Placeable Object
@@ -285,78 +348,214 @@ declare global {
     protected _createInteractionManager(): NonNullable<this["mouseInteractionManager"]>;
 
     /**
-     * Actions that should be taken for this Placeable Object when a mouseover event occurs
-     * @see MouseInteractionManager#_handleMouseOver
+     * Test whether a user can perform a certain interaction regarding a Placeable Object
+     * @param user   - The User performing the action
+     * @param action - The named action being attempted
+     * @returns Does the User have rights to perform the action?
+     */
+    can(
+      user: InstanceType<ConfiguredDocumentClass<typeof User>>,
+      action: "HUD" | "configure" | "control" | "view" | "create" | "drag" | "hover" | "update" | "delete" | string,
+    ): boolean;
+
+    /**
+     * Can the User access the HUD for this Placeable Object?
+     * @param user  - The User performing the action.
+     * @param event - The event object.
+     * @returns The returned status.
+     */
+    protected _canHUD(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: PIXI.FederatedEvent): boolean;
+
+    /**
+     * Does the User have permission to configure the Placeable Object?
+     * @param user  - The User performing the action.
+     * @param event - The event object.
+     * @returns The returned status.
+     */
+    protected _canConfigure(
+      user: InstanceType<ConfiguredDocumentClass<typeof User>>,
+      event?: PIXI.FederatedEvent,
+    ): boolean;
+
+    /**
+     * Does the User have permission to control the Placeable Object?
+     * @param user  - The User performing the action.
+     * @param event - The event object.
+     * @returns The returned status.
+     */
+    protected _canControl(
+      user: InstanceType<ConfiguredDocumentClass<typeof User>>,
+      event?: PIXI.FederatedEvent,
+    ): boolean;
+
+    /**
+     * Does the User have permission to view details of the Placeable Object?
+     * @param user  - The User performing the action.
+     * @param event - The event object.
+     * @returns The returned status.
+     */
+    protected _canView(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: PIXI.FederatedEvent): boolean;
+
+    /**
+     * Does the User have permission to create the underlying Document?
+     * @param user  - The User performing the action.
+     * @param event - The event object.
+     * @returns The returned status.
+     */
+    protected _canCreate(
+      user: InstanceType<ConfiguredDocumentClass<typeof User>>,
+      event?: PIXI.FederatedEvent,
+    ): boolean;
+
+    /**
+     * Does the User have permission to drag this Placeable Object?
+     * @param user  - The User performing the action.
+     * @param event - The event object.
+     * @returns The returned status.
+     */
+    protected _canDrag(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: PIXI.FederatedEvent): boolean;
+
+    /**
+     * Does the User have permission to hover on this Placeable Object?
+     * @param user  - The User performing the action.
+     * @param event - The event object.
+     * @returns The returned status.
+     */
+    protected _canHover(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: PIXI.FederatedEvent): boolean;
+
+    /**
+     * Does the User have permission to update the underlying Document?
+     * @param user  - The User performing the action.
+     * @param event - The event object.
+     * @returns The returned status.
+     */
+    protected _canUpdate(
+      user: InstanceType<ConfiguredDocumentClass<typeof User>>,
+      event?: PIXI.FederatedEvent,
+    ): boolean;
+
+    /**
+     * Does the User have permission to delete the underlying Document?
+     * @param user  - The User performing the action.
+     * @param event - The event object.
+     * @returns The returned status.
+     */
+    protected _canDelete(
+      user: InstanceType<ConfiguredDocumentClass<typeof User>>,
+      event?: PIXI.FederatedEvent,
+    ): boolean;
+
+    /**
+     * Actions that should be taken for this Placeable Object when a mouseover event occurs.
+     * Hover events on PlaceableObject instances allow event propagation by default.
+     * @see MouseInteractionManager##handleMouseOver
      * @param event   - The triggering canvas interaction event
      * @param options - Options which customize event handling
      *                  (default: `{}`)
+     * @returns True if the event was handled, otherwise false
      */
-    protected _onHoverIn(event: PIXI.FederatedEvent, options?: HoverInOptions): false | void;
+    protected _onHoverIn(event: PIXI.FederatedEvent, options?: PlaceableObject.HoverInOptions): false | void;
 
     /**
      * Actions that should be taken for this Placeable Object when a mouseout event occurs
+     * @see MouseInteractionManager##handleMouseOut
      * @param event - The triggering canvas interaction event
+     * @returns True if the event was handled, otherwise false
      */
-    protected _onHoverOut(event: PIXI.FederatedEvent): false | void;
+    protected _onHoverOut(event: PIXI.FederatedEvent): boolean | void;
+
+    /**
+     * Should the placeable propagate left click downstream?
+     * @defaultValue `false`
+     */
+    protected _propagateLeftClick(event: PIXI.FederatedEvent): boolean;
 
     /**
      * Callback actions which occur on a single left-click event to assume control of the object
-     * @see MouseInteractionManager#_handleClickLeft
+     * @see MouseInteractionManager##handleClickLeft
      * @param event - The triggering canvas interaction event
      */
-    protected _onClickLeft(event: PIXI.FederatedEvent): boolean | void;
+    protected _onClickLeft(event: PIXI.FederatedEvent): void;
 
     /**
      * Callback actions which occur on a double left-click event to activate
-     * @see MouseInteractionManager#_handleClickLeft2
+     * @see MouseInteractionManager##handleClickLeft2
      * @param event - The triggering canvas interaction event
      */
     protected _onClickLeft2(event: PIXI.FederatedEvent): void;
 
     /**
      * Callback actions which occur on a single right-click event to configure properties of the object
-     * @see MouseInteractionManager#_handleClickRight
+     * @see MouseInteractionManager##handleClickRight
      * @param event - The triggering canvas interaction event
      */
     protected _onClickRight(event: PIXI.FederatedEvent): void;
 
     /**
      * Callback actions which occur on a double right-click event to configure properties of the object
-     * @see MouseInteractionManager#_handleClickRight2
+     * @see MouseInteractionManager##handleClickRight2
      * @param event - The triggering canvas interaction event
      */
     protected _onClickRight2(event: PIXI.FederatedEvent): void;
 
     /**
      * Callback actions which occur when a mouse-drag action is first begun.
-     * @see MouseInteractionManager#_handleDragStart
+     * @see MouseInteractionManager##handleDragStart
      * @param event - The triggering canvas interaction event
      */
     protected _onDragLeftStart(event: PIXI.FederatedEvent): void;
 
     /**
+     * Begin a drag operation from the perspective of the preview clone.
+     * Modify the appearance of both the clone (this) and the original (_original) object.
+     */
+    protected _onDragStart(): void;
+
+    /**
+     * Conclude a drag operation from the perspective of the preview clone.
+     * Modify the appearance of both the clone (this) and the original (_original) object.
+     */
+    protected _onDragEnd(): void;
+
+    /**
      * Callback actions which occur on a mouse-move operation.
-     * @see MouseInteractionManager#_handleDragMove
+     * @see MouseInteractionManager##handleDragMove
      * @param event - The triggering canvas interaction event
      */
     protected _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
     /**
      * Callback actions which occur on a mouse-move operation.
-     * @see MouseInteractionManager#_handleDragDrop
+     * @see MouseInteractionManager##handleDragDrop
      * @param event - The triggering canvas interaction event
      */
     protected _onDragLeftDrop(event: PIXI.FederatedEvent): unknown;
 
     /**
      * Callback actions which occur on a mouse-move operation.
-     * @see MouseInteractionManager#_handleDragCancel
+     * @see MouseInteractionManager##handleDragCancel
      * @param event - The triggering mouse click event
      */
-    protected _onDragLeftCancel(event: MouseEvent): void;
+    protected _onDragLeftCancel(event: PIXI.FederatedEvent): void;
+
+    /**
+     * Callback action which occurs on a long press.
+     * @see MouseInteractionManager##handleLongPress
+     * @param event  - The triggering canvas interaction event
+     * @param origin - The local canvas coordinates of the mousepress.
+     */
+    protected _onLongPress(event: PIXI.FederatedEvent, origin: PIXI.Point): void;
   }
 
   namespace PlaceableObject {
+    interface RenderFlags {
+      redraw: boolean;
+
+      refresh: boolean;
+
+      refreshState: boolean;
+    }
+
     interface ControlOptions {
       /**
        * Release any other controlled objects first
@@ -366,6 +565,14 @@ declare global {
 
     interface ReleaseOptions {
       trigger?: boolean;
+    }
+
+    interface HoverInOptions {
+      /**
+       * Trigger hover-out behavior on sibling objects
+       * @defaultValue `false`
+       */
+      hoverOutOthers: boolean;
     }
   }
 }
@@ -382,33 +589,4 @@ interface Vision {
    * This is required but has been set to optional because of PointSource
    */
   los?: PointSourcePolygon | undefined;
-}
-
-interface RotationOptions {
-  /**
-   * An explicit angle, either this or delta must be provided
-   * @defaultValue `undefined`
-   */
-  angle?: number;
-
-  /**
-   * A relative angle delta, either this or the angle must be provided
-   * @defaultValue `0`
-   */
-  delta?: number;
-
-  /**
-   * A precision (in degrees) to which the resulting angle should snap. Default is 0.
-   * @defaultValue `0`
-   */
-  snap?: number;
-}
-
-interface HoverInOptions {
-  /**
-   * Trigger hover-out behavior on sibling objects
-   *
-   * @defaultValue `true`
-   */
-  hoverOutOthers: boolean;
 }

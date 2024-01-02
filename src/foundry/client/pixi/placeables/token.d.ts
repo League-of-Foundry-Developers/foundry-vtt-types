@@ -5,6 +5,8 @@ import {
 } from "../../../../types/helperTypes";
 import { DocumentModificationOptions } from "../../../common/abstract/document.mjs";
 
+export {};
+
 declare global {
   /**
    * A Token is an implementation of PlaceableObject which represents an Actor within a viewed Scene on the game canvas.
@@ -12,26 +14,75 @@ declare global {
    * @see TokenLayer
    */
   class Token extends PlaceableObject<InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>> {
-    /**
-     * A Ray which represents the Token's current movement path
-     */
-    protected _movement: Ray | null;
+    static override embeddedName: "Token";
+
+    static override RENDER_FLAGS: {
+      /** @defaultValue `{ propagate: ["refresh"] }` */
+      redraw: RenderFlag<Partial<Token.RenderFlags>>;
+
+      /** @defaultValue `{}` */
+      redrawEffects: RenderFlag<Partial<Token.RenderFlags>>;
+
+      /** @defaultValue `{ propagate: ["refreshState", "refreshSize", "refreshPosition", "refreshElevation", "refreshBars", "refreshNameplate", "refreshBorder", "refreshShader"], alias: true }` */
+      refresh: RenderFlag<Partial<Token.RenderFlags>>;
+
+      /** @defaultValue `{ propagate: ["refreshVisibility", "refreshBorder"] }` */
+      refreshState: RenderFlag<Partial<Token.RenderFlags>>;
+
+      /** @defaultValue `{ propagate: ["refreshMesh", "refreshBorder", "refreshBars", "refreshPosition", "refreshTarget", "refreshEffects"] }` */
+      refreshSize: RenderFlag<Partial<Token.RenderFlags>>;
+
+      /** @defaultValue `{ propagate: ["refreshMesh", "refreshVisibility"] }` */
+      refreshPosition: RenderFlag<Partial<Token.RenderFlags>>;
+
+      /** @defaultValue `{ propagate: ["refreshMesh"] }` */
+      refreshElevation: RenderFlag<Partial<Token.RenderFlags>>;
+
+      /** @defaultValue `{}` */
+      refreshVisibility: RenderFlag<Partial<Token.RenderFlags>>;
+
+      /** @defaultValue `{}` */
+      refreshEffects: RenderFlag<Partial<Token.RenderFlags>>;
+
+      /** @defaultValue `{}` */
+      refreshMesh: RenderFlag<Partial<Token.RenderFlags>>;
+
+      /** @defaultValue `{}` */
+      refreshShader: RenderFlag<Partial<Token.RenderFlags>>;
+
+      /** @defaultValue `{}` */
+      refreshBars: RenderFlag<Partial<Token.RenderFlags>>;
+
+      /** @defaultValue `{}` */
+      refreshNameplate: RenderFlag<Partial<Token.RenderFlags>>;
+
+      /** @defaultValue `{}` */
+      refreshBorder: RenderFlag<Partial<Token.RenderFlags>>;
+
+      /** @defaultValue `{}` */
+      refreshTarget: RenderFlag<Partial<Token.RenderFlags>>;
+    };
 
     /**
-     * An Object which records the Token's prior velocity dx and dy
-     * This can be used to determine which direction a Token was previously moving
+     * Defines the filter to use for detection.
      */
-    protected _velocity: Token.Velocity;
+    detectionFilter?: PIXI.Filter | null;
 
     /**
-     * The Token's most recent valid position
-     */
-    protected _validPosition: { x: number; y: number };
+     * A Graphics instance which renders the border frame for this Token inside the GridLayer.
+     * @defaultValue `undefined`
+     * */
+    border?: PIXI.Graphics;
 
     /**
      * Track the set of User documents which are currently targeting this Token
      */
     targeted: Set<User>;
+
+    /**
+     * A reference to the SpriteMesh which displays this Token in the PrimaryCanvasGroup.
+     */
+    mesh: TokenMesh;
 
     /**
      * A reference to the VisionSource object which defines this vision source area of effect
@@ -44,27 +95,10 @@ declare global {
     light: LightSource;
 
     /**
-     * A linked ObjectHUD element which is synchronized with the location and visibility of this Token
-     * @defaultValue `new ObjectHUD(this);`
+     * A reference to an animation that is currently in progress for this Token, if any
+     * @internal
      */
-    hud: Token.ObjectHUD;
-
-    /** @defaultValue `undefined` */
-    texture?: PIXI.Texture | null;
-
-    /** @defaultValue `undefined` */
-    border?: PIXI.Graphics;
-
-    /** @defaultValue `undefined` */
-    icon?: PIXI.Sprite;
-
-    static override embeddedName: "Token";
-
-    /**
-     * Establish an initial velocity of the token based on it's direction of facing.
-     * Assume the Token made some prior movement towards the direction that it is currently facing.
-     */
-    protected _getInitialVelocity(): Token.Velocity;
+    protected _animation: Promise<number> | null;
 
     /**
      * A convenient reference to the Actor object associated with the Token embedded document.
@@ -110,12 +144,19 @@ declare global {
     /**
      * The Token's current central position
      */
-    get center(): ReturnType<this["getCenter"]>;
+    get center(): Point;
+
+    /**
+     * The Token's central position, adjusted in each direction by one or zero pixels to offset it relative to walls.
+     */
+    getMovementAdjustedPoint(point: Point, offset?: { offsetX: number; offsetY: number }): Point;
 
     /**
      * The HTML source element for the primary Tile texture
      */
     get sourceElement(): HTMLImageElement | HTMLVideoElement | undefined;
+
+    override get sourceId(): string;
 
     /**
      * Does this Tile depict an animated video texture?
@@ -138,20 +179,25 @@ declare global {
     get isTargeted(): boolean;
 
     /**
+     * Return a reference to the detection modes array.
+     */
+    get detectionModes(): Array<DetectionMode>;
+
+    /**
      * Determine whether the Token is visible to the calling user's perspective.
      * Hidden Tokens are only displayed to GM Users.
      * Non-hidden Tokens are always visible if Token Vision is not required.
      * Controlled tokens are always visible.
      * All Tokens are visible to a GM user if no Token is controlled.
      *
-     * @see {@link SightLayer#testVisibility}
+     * @see {@link CanvasVisibility#testVisibility}
      */
     get isVisible(): boolean;
 
     /**
      * The animation name used for Token movement
      */
-    get movementAnimationName(): string;
+    get animationName(): string;
 
     /**
      * Test whether the Token has sight (or blindness) at any radius
@@ -164,30 +210,35 @@ declare global {
     get emitsLight(): boolean;
 
     /**
-     * Test whether the Token has a limited angle of vision or light emission which would require sight to update on Token rotation
+     * Test whether the Token uses a limited angle of vision or light emission.
      */
-    get hasLimitedVisionAngle(): boolean;
+    get hasLimitedSourceAngle(): boolean;
 
     /**
-     * Translate the token's sight distance in units into a radius in pixels.
-     * @returns The sight radius in pixels
+     * Translate the token's dim light distance in units into a radius in pixels.
      */
     get dimRadius(): number;
 
     /**
      * Translate the token's bright light distance in units into a radius in pixels.
-     * @returns The bright radius in pixels
      */
     get brightRadius(): number;
 
     /**
-     * The named identified for the source object associated with this Token
+     * Translate the token's vision range in units into a radius in pixels.
      */
-    get sourceId(): string;
+    get sightRange(): number;
+
+    /**
+     * Translate the token's maximum vision range that takes into account lights.
+     */
+    get optimalSightRange(): number;
+
+    override clone(): Token;
 
     /**
      * Update the light and vision source objects associated with this Token
-     * @param options - (default: `{}}`)
+     * @param options - Options which configure how perception sources are updated
      */
     updateSource(options?: Token.UpdateSourceOptions | undefined): void;
 
@@ -199,7 +250,8 @@ declare global {
 
     /**
      * Update an Token vision source associated for this token.
-     * @param options - (default `{}`)
+     * @param options - Options which affect how the vision source is updated
+     *                  (default: `{}`)
      */
     updateVisionSource(options?: Token.UpdateVisionSourceOptions | undefined): void;
 
@@ -209,59 +261,47 @@ declare global {
      */
     protected _isVisionSource(): boolean;
 
-    override clear(): this;
-
-    override draw(): Promise<this>;
+    override render(renderer: PIXI.Renderer): void;
 
     /**
-     * Draw the HUD container which provides an interface for managing this Token
-     * @internal
+     * Render the bound mesh detection filter.
+     * Note: this method does not verify that the detection filter exists.
      */
-    protected _drawHUD(): Token.InitializedObjectHUD;
+    protected _renderDetectionFilter(renderer: PIXI.Renderer): void;
 
-    override destroy(options?: Parameters<PlaceableObject["destroy"]>[0]): void;
-
-    /**
-     * Apply initial sanitizations to the provided input data to ensure that a Token has valid required attributes.
-     */
-    protected _cleanData(): void;
+    override clear(): void;
 
     /**
-     * Draw resource bars for the Token
+     * @param options - unused
      */
-    protected _drawAttributeBars(): PIXI.Container;
+    protected override _destroy(options?: PIXI.IDestroyOptions | boolean): void;
 
     /**
-     * Draw the Sprite icon for the Token
+     * @param options - unused
      */
-    protected _drawIcon(): Promise<PIXI.Sprite>;
+    protected override _draw(options?: Record<string, unknown>): Promise<void>;
+
+    protected override _applyRenderFlags(flags: Token.RenderFlags): void;
 
     /**
-     * Play video for this Token (if applicable).
-     * @param playing - Should the Token video be playing?
-     *                  (default: `true`)
-     * @param options - Additional options for modifying video playback
-     *                  (default: `{}`)
+     * Refresh the visibility.
      */
-    play(playing?: boolean | undefined, options?: Token.PlayOptions | undefined): void;
+    protected _refreshVisibility(): void;
 
     /**
-     * Unlink the playback of this video token from the playback of other tokens which are using the same base texture.
-     * @param source - The video element source
-     * @internal
+     * Refresh the text content, position, and visibility of the Token nameplate.
      */
-    protected _unlinkVideoPlayback(source: HTMLVideoElement): Promise<void>;
+    protected _refreshNameplate(): void;
 
     /**
-     * Update display of the Token, pulling latest data and re-rendering the display of Token components
+     * Refresh the token mesh.
      */
-    refresh(): this;
+    protected _refreshMesh(): void;
 
     /**
-     * Size and display the Token Icon
-     * @internal
+     * Refresh the token mesh shader.
      */
-    protected _refreshIcon(): void;
+    protected _refreshShader(): void;
 
     /**
      * Draw the Token border, taking into consideration the grid type and border color
@@ -274,24 +314,29 @@ declare global {
      * @returns The hex color used to depict the border color
      * @internal
      */
-    protected _getBorderColor(): number | null;
-
-    /**
-     * Refresh the display of the Token HUD interface.
-     */
-    refreshHUD(): void;
+    protected _getBorderColor(options?: {
+      /**
+       * Return a border color for this hover state, otherwise use the token's current state.
+       */
+      hover?: boolean;
+    }): number | null;
 
     /**
      * Refresh the target indicators for the Token.
-     * Draw both target arrows for the primary User as well as indicator pips for other Users targeting the same Token.
-     * @internal
+     * Draw both target arrows for the primary User and indicator pips for other Users targeting the same Token.
+     * @param reticule - Additional parameters to configure how the targeting reticule is drawn.
      */
-    protected _refreshTarget(): void;
+    protected _refreshTarget(reticule?: Token.ReticuleOptions): void;
 
     /**
-     * Refresh the display of Token attribute bars, rendering latest resource data
+     * Draw the targeting arrows around this token.
+     * @param reticule - Additional parameters to configure how the targeting reticule is drawn.
+     */
+    protected _drawTarget(reticule?: Token.ReticuleOptions): void;
+
+    /**
+     * Refresh the display of Token attribute bars, rendering its latest resource data.
      * If the bar attribute is valid (has a value and max), draw the bar. Otherwise hide it.
-     * @internal
      */
     drawBars(): void;
 
@@ -304,25 +349,13 @@ declare global {
     protected _drawBar(number: number, bar: PIXI.Graphics, data: ReturnType<TokenDocument["getBarAttribute"]>): void;
 
     /**
-     * Draw the token's nameplate as a text object
-     * @returns The Text object for the Token nameplate
-     */
-    protected _drawNameplate(): PreciseText;
-
-    /**
-     * Draw a text tooltip for the token which can be used to display Elevation or a resource value
-     * @returns The text object used to render the tooltip
-     * @internal
-     */
-    protected _drawTooltip(): PreciseText;
-
-    /**
      * Return the text which should be displayed in a token's tooltip field
-     * @internal
      */
     protected _getTooltipText(): string;
 
-    /** @internal */
+    /**
+     * Get the text style that should be used for this Token's tooltip.
+     */
     protected _getTextStyle(): PIXI.TextStyle;
 
     /**
@@ -331,71 +364,77 @@ declare global {
     drawEffects(): Promise<void>;
 
     /**
-     * Draw the overlay effect icon
-     * @param options - (default: `{}`)
-     * @internal
+     * Draw a status effect icon
      */
-    protected _drawOverlay(options?: Token.DrawOverlayOptions | undefined): Promise<void>;
+    protected _drawEffect(src: string, tint: number | null): Promise<PIXI.Sprite | undefined>;
 
     /**
-     * Draw a status effect icon
-     * @internal
+     * Draw the overlay effect icon
      */
-    protected _drawEffect(src: string, i: number, bg: PIXI.Graphics, w: number, tint: number): Promise<void>;
+    protected _drawOverlay(src: string, tint: number | null): Promise<PIXI.Sprite>;
+
+    /**
+     * Refresh the display of status effects, adjusting their position for the token width and height.
+     */
+    protected _refreshEffects(): void;
 
     /**
      * Helper method to determine whether a token attribute is viewable under a certain mode
      * @param mode - The mode from CONST.TOKEN_DISPLAY_MODES
      * @returns Is the attribute viewable?
-     * @internal
      */
     protected _canViewMode(mode: foundry.CONST.TOKEN_DISPLAY_MODES): boolean;
 
     /**
-     * Animate Token movement along a certain path which is defined by a Ray object
-     * @param ray - The path along which to animate Token movement
+     * Animate changes to the appearance of the Token.
+     * Animations are performed over differences between the TokenDocument and the current Token and TokenMesh appearance.
+     * @param updateData - A record of the differential data which changed, for reference only
+     * @param options    - Options which configure the animation behavior
+     * @returns A promise which resolves once the animation is complete
      */
-    animateMovement(ray: Ray): Promise<void>;
+    animate(
+      updateData: unknown,
+      options: {
+        /** An optional function called each animation frame */
+        ontick: (dt: number, data: CanvasAnimationData) => number;
+
+        /**
+         * A desired token movement speed in grid spaces per second
+         * @defaultValue `6`
+         */
+        movementSpeed: number;
+
+        /** The animation starting attributes if different from those cached. */
+        a0: TokenMeshDisplayAttributes;
+
+        /** The placeable need hover/un-hover emulation. */
+        hoverInOut: TokenMeshDisplayAttributes;
+      },
+    ): Promise<void>;
 
     /**
-     * Update perception each frame depending on the animation configuration
-     * @param source - (default: `false`)
-     * @param sound  - (default: `false`)
-     * @param fog    - (default: `false`)
-     * @internal
-     */
-    protected _animatePerceptionFrame({
-      source,
-      sound,
-      fog,
-    }?: {
-      source?: boolean;
-      sound?: boolean;
-      fog?: boolean;
-    }): void;
-
-    /**
-     * Terminate animation of this particular Token
+     * Terminate animation of this particular Token.
      */
     stopAnimation(): void;
 
     /**
      * Check for collision when attempting a move to a new position
-     * @param destination - The destination point of the attempted movement
-     * @returns A true/false indicator for whether the attempted movement caused a collision
+     * @param destination - The central destination point of the attempted movement
+     * @param options     - Additional options forwarded to WallsLayer#checkCollision
+     * @returns The result of the WallsLayer#checkCollision test
      */
-    checkCollision(destination: Point): boolean;
+    checkCollision(
+      destination: Point,
+      options: {
+        origin: Point;
 
-    /**
-     * @param releaseOthers - (default: `true`)
-     * @param pan           - (default: `false`)
-     */
-    protected override _onControl({ releaseOthers, pan }?: { releaseOthers?: boolean; pan?: boolean }): void;
+        /** @defaultValue `"move"` */
+        type: Token.SourceType;
 
-    protected override _onRelease(
-      options: PlaceableObject.ReleaseOptions,
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>> | undefined;
-
+        /** @defaultValue `"any"` */
+        mode: PointSourcePolygon.CollisionModes;
+      },
+    ): boolean;
     /**
      * Get the center-point coordinate for a given grid position
      * @param x - The grid x-coordinate that represents the top-left of the Token
@@ -461,43 +500,31 @@ declare global {
     ): Promise<boolean>;
 
     /**
-     * A helper function to toggle the overlay status icon on the Token
-     * @internal
-     */
-    protected _toggleOverlayEffect(texture: string, { active }?: { active: boolean }): Promise<this>;
-
-    /**
      * Toggle the visibility state of any Tokens in the currently selected set
      * @returns A Promise which resolves to the updated Token documents
      */
     toggleVisibility(): Promise<InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>[]>;
 
     /**
-     * Return the token's sight origin, tailored for the direction of their movement velocity to break ties with walls
+     * The external radius of the token in pixels.
      */
-    getSightOrigin(): {
-      x: number;
-      y: number;
-    };
+    get externalRadius(): number;
 
     /**
      * A generic transformation to turn a certain number of grid units into a radius in canvas pixels.
-     * This function adds additional padding to the light radius equal to half the token width.
+     * This function adds additional padding to the light radius equal to the external radius of the token.
      * This causes light to be measured from the outer token edge, rather than from the center-point.
      * @param units - The radius in grid units
-     * @returns The radius in canvas units
+     * @returns The radius in pixels
      */
     getLightRadius(units: number): number;
 
     protected override _getShiftedPosition(dx: number, dy: number): { x: number; y: number };
 
-    override rotate(...args: Parameters<PlaceableObject["rotate"]>): Promise<this>;
+    // TODO: Fix after Token is all cleaned up
+    protected override _onCreate(data: unknown, options: unknown, userId: string): void;
 
-    protected override _onCreate(
-      options: InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>["data"]["_source"],
-      userId: DocumentModificationOptions,
-    ): void;
-
+    // TODO: Fix after Token is all cleaned up
     protected override _onUpdate(
       data?: DeepPartial<InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>["data"]["_source"]>,
       options?: DocumentModificationOptions & { animate?: boolean },
@@ -505,6 +532,20 @@ declare global {
     ): void;
 
     protected override _onDelete(options?: DocumentModificationOptions, userId?: string): void;
+
+    /**
+     * Handle changes to Token behavior when a significant status effect is applied
+     * @param statusId - The status effect ID being applied, from CONFIG.specialStatusEffects
+     * @param active   - Is the special status effect now active?
+     * @internal
+     */
+    _onApplyStatusEffect(statusId: string, active: boolean): void;
+
+    protected override _onControl(options?: Token.ControlOptions): void;
+
+    protected override _onRelease(
+      options: PlaceableObject.ReleaseOptions,
+    ): Promise<InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>> | undefined;
 
     protected override _canControl(
       user?: InstanceType<ConfiguredDocumentClass<typeof User>>,
@@ -550,14 +591,124 @@ declare global {
 
     protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
-    protected override _onDragLeftCancel(event: MouseEvent): void;
+    protected override _onDragEnd(): void;
+
     /**
-     * @remarks This does not exist in foundry. It marks the controlIcon as not used because `Token` does never store a value here.
+     * @remarks Not used
      */
     controlIcon: null;
+
+    /**
+     * @deprecated since v10, will be removed in v12
+     * @remarks `"Token#hasLimitedVisionAngle has been renamed to Token#hasLimitedSourceAngle"`
+     */
+    get hasLimitedVisionAngle(): boolean;
+
+    /**
+     * @deprecated since v10, will be removed in v12
+     * @remarks `"Token#getSightOrigin has been deprecated in favor of Token#getMovementAdjustedPoint"`
+     */
+    getSightOrigin(): {
+      x: number;
+      y: number;
+    };
+
+    /**
+     * @deprecated since v10, will be removed in v12
+     * @remarks `"Token#icon has been renamed to Token#mesh."`
+     */
+    get icon(): this["mesh"];
+
+    /**
+     * @deprecated since v11, will be removed in v13
+     * @remarks `"Token#updatePosition has been deprecated without replacement as it is no longer required."`
+     */
+    updatePosition(): void;
+
+    /**
+     * @deprecated since v11, will be removed in v13
+     * @remarks "Token#refreshHUD is deprecated in favor of token.renderFlags.set()"
+     */
+    refreshHUD(options?: Token.ObjectHUD): void;
+
+    /**
+     * @deprecated since 11, will be removed in v13
+     * @remarks `"Token#getDisplayAttributes is deprecated in favor of TokenMesh#getDisplayAttributes"`
+     */
+    getDisplayAttributes(): this["mesh"]["getDisplayAttributes"];
   }
 
   namespace Token {
+    interface RenderFlags extends PlaceableObject.RenderFlags {
+      redrawEffects: boolean;
+
+      refreshSize: boolean;
+
+      refreshPosition: boolean;
+
+      refreshElevation: boolean;
+
+      refreshVisibility: boolean;
+
+      refreshEffects: boolean;
+
+      refreshMesh: boolean;
+
+      refreshShader: boolean;
+
+      refreshBars: boolean;
+
+      refreshNameplate: boolean;
+
+      refreshBorder: boolean;
+
+      refreshTarget: boolean;
+    }
+
+    type ReticuleOptions = {
+      /**
+       * The amount of margin between the targeting arrows and the token's bounding box, expressed as a fraction of an arrow's size.
+       * @defaultValue `0`
+       */
+      margin?: number;
+
+      /**
+       * The alpha value of the arrows.
+       * @defaultValue `1`
+       */
+      alpha?: number;
+
+      /**
+       * The size of the arrows as a proportion of grid size.
+       * @defaultValue `0.15`
+       */
+      size?: number;
+
+      /**
+       * The color of the arrows.
+       * @defaultValue `0xFF6400`
+       */
+      color?: number;
+
+      /** The arrows' border style configuration. */
+      border?: {
+        /**
+         * The border color.
+         * @defaultValue `0`
+         */
+        color?: number;
+
+        /**
+         * The border width.
+         * @defaultValue `2`
+         */
+        width?: number;
+      };
+    };
+
+    // TODO: Determine if there are other source types
+    type SourceType = "move" | "sight" | "light" | "sound";
+
     interface Bar {
       attribute: string;
     }
@@ -591,7 +742,7 @@ declare global {
 
     interface UpdateLightSourceOptions {
       /**
-       * Defer refreshing the LightingLayer to manually call that refresh later.
+       * Defer updating perception to manually update it later.
        * @defaultValue `false`
        */
       defer?: boolean | undefined;
@@ -605,7 +756,7 @@ declare global {
 
     interface UpdateVisionSourceOptions {
       /**
-       * Defer refreshing the SightLayer to manually call that refresh later.
+       * Defer updating perception to manually update it later.
        * @defaultValue `false`
        */
       defer?: boolean | undefined;
@@ -615,12 +766,6 @@ declare global {
        * @defaultValue `false`
        */
       deleted?: boolean | undefined;
-
-      /**
-       * Never update the Fog exploration progress for this update.
-       * @defaultValue `false`
-       */
-      skipUpdateFog?: boolean | undefined;
     }
 
     type UpdateSourceOptions = UpdateLightSourceOptions & UpdateVisionSourceOptions;
@@ -696,6 +841,11 @@ declare global {
        * @defaultValue `Is this target being set as part of a group selection workflow?`
        */
       groupSelection?: boolean | undefined;
+    }
+
+    interface ControlOptions extends PlaceableObject.ControlOptions {
+      /** @defaultValue `false` */
+      pan?: boolean;
     }
   }
 

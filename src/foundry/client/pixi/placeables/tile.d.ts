@@ -2,27 +2,57 @@ import type { ConfiguredDocumentClass, ConfiguredObjectClassForName } from "../.
 import { DocumentModificationOptions } from "../../../common/abstract/document.mjs";
 import type { TileDataConstructorData } from "../../../common/data/data.mjs/tileData";
 
+export {};
+
 declare global {
   /**
    * A Tile is an implementation of PlaceableObject which represents a static piece of artwork or prop within the Scene.
-   * Tiles are drawn inside a {@link BackgroundLayer} container.
+   * Tiles are drawn inside the {@link TilesLayer} container.
    *
    * @see {@link TileDocument}
-   * @see {@link BackgroundLayer}
-   * @see {@link TileSheet}
-   * @see {@link TileHUD}
+   * @see {@link TilesLayer}
    */
   class Tile extends PlaceableObject<InstanceType<ConfiguredDocumentClass<typeof TileDocument>>> {
-    /**
-     * @remarks Not used for `Tile`
-     */
-    controlIcon: null;
+    static override embeddedName: "Tile";
+
+    static override RENDER_FLAGS: {
+      /** @defaultValue `{ propagate: ["refresh"] }` */
+      redraw: RenderFlag<Partial<Tile.RenderFlags>>;
+
+      /** @defaultValue `{ propagate: ["refreshState", "refreshShape", "refreshElevation", "refreshVideo"], alias: true }` */
+      refresh: RenderFlag<Partial<Tile.RenderFlags>>;
+
+      /** @defaultValue `{ propagate: ["refreshFrame"] }` */
+      refreshState: RenderFlag<Partial<Tile.RenderFlags>>;
+
+      /** @defaultValue `{ propagate: ["refreshMesh", "refreshPerception", "refreshFrame"] }` */
+      refreshShape: RenderFlag<Partial<Tile.RenderFlags>>;
+
+      /** @defaultValue `{}` */
+      refreshMesh: RenderFlag<Partial<Tile.RenderFlags>>;
+
+      /** @defaultValue `{}` */
+      refreshFrame: RenderFlag<Partial<Tile.RenderFlags>>;
+
+      /** @defaultValue `{ propagate: ["refreshMesh"] }` */
+      refreshElevation: RenderFlag<Partial<Tile.RenderFlags>>;
+
+      /** @defaultValue `{}` */
+      refreshPerception: RenderFlag<Partial<Tile.RenderFlags>>;
+
+      /** @defaultValue `{}` */
+      refreshVideo: RenderFlag<Partial<Tile.RenderFlags>>;
+    };
 
     /**
      * The Tile border frame
-     * @defaultValue `undefined`
      */
-    frame: PIXI.Container | undefined;
+    frame:
+      | (PIXI.Container & {
+          border: PIXI.Graphics;
+          handle: ResizeHandle;
+        })
+      | undefined;
 
     /**
      * The primary tile image texture
@@ -37,46 +67,16 @@ declare global {
     tile: PIXI.Sprite | undefined;
 
     /**
-     * The occlusion image sprite
-     * @defaultValue `undefined`
-     */
-    occlusionTile: PIXI.Sprite | undefined;
-
-    /**
      * A Tile background which is displayed if no valid image texture is present
      * @defaultValue `undefined`
      */
     bg: PIXI.Graphics | undefined;
 
     /**
-     * A cached mapping of non-transparent pixels
-     * @defaultValue `undefined`
-     * @internal
-     */
-    protected _alphaMap:
-      | {
-          minX: number;
-          minY: number;
-          maxX: number;
-          maxY: number;
-          pixels: Uint8Array | undefined;
-          texture: PIXI.RenderTexture | undefined;
-        }
-      | undefined;
-
-    /**
-     * A flag which tracks whether the overhead tile is currently in an occluded state
-     * @defaultValue `false`
-     */
-    occluded: boolean;
-
-    /**
      * A flag which tracks if the Tile is currently playing
      * @defaultValue `false`
      */
     playing: boolean;
-
-    static override embeddedName: "Tile";
 
     /**
      * Get the native aspect ratio of the base texture for the Tile sprite
@@ -96,105 +96,51 @@ declare global {
     get isVideo(): boolean;
 
     /**
-     * Is this tile a roof
+     * Is this tile a roof?
      */
     get isRoof(): boolean;
+
+    /**
+     * Is this tile occluded?
+     * @defaultValue `false`
+     */
+    get occluded(): boolean;
 
     /**
      * The effective volume at which this Tile should be playing, including the global ambient volume modifier
      */
     get volume(): number;
 
-    override draw(): Promise<this>;
-
-    override destroy(options?: Parameters<PlaceableObject["destroy"]>[0]): void;
-
     /**
-     * @param options - (default: `{}`) */
-
-    override refresh(options?: Tile.RefreshOptions | undefined): this;
-
-    /**
-     * Refresh the display of the Tile border
-     * @internal
+     * Debounce assignment of the Tile occluded state to avoid cases like animated token movement which can rapidly
      */
-    protected _refreshBorder(b: Rectangle): void;
+    debounceSetOcclusion(occluded: boolean): void;
 
     /**
-     * Refresh the display of the Tile resizing handle
-     * @internal
+     * Create a preview tile with a background texture instead of an image
+     * @param data - Initial data with which to create the preview Tile
+     */
+    static createPreview(data: unknown): Tile;
+
+    /**
+     * @param options - unused
+     */
+    protected override _draw(options?: Record<string, unknown>): Promise<void>;
+
+    override clear(): void;
+
+    /**
+     * @param options - unused
+     */
+    protected override _destroy(options?: PIXI.IDestroyOptions | boolean): void;
+
+    protected override _applyRenderFlags(flags: Tile.RenderFlags): void;
+
+    /**
+     * Refresh the display of the Tile resizing handle.
+     * Shift the position of the drag handle from the bottom-right (default) depending on which way we are dragging.
      */
     protected _refreshHandle(b: Rectangle): void;
-
-    /**
-     * Play video for this Tile (if applicable).
-     * @param playing - Should the Tile video be playing?
-     * @param options - Additional options for modifying video playback
-     *                  (default: `{}`)
-     */
-    play(playing: boolean, options?: Tile.PlayOptions | undefined): void;
-
-    /**
-     * Unlink the playback of this video tile from the playback of other tokens which are using the same base texture.
-     * @param source - The video element source
-     * @internal
-     */
-    protected _unlinkVideoPlayback(source: HTMLVideoElement): Promise<void>;
-
-    /**
-     * Update the occlusion rendering for this overhead Tile for a given controlled Token.
-     * @param tokens - The set of currently controlled Token objects
-     */
-    updateOcclusion(tokens: Array<InstanceType<ConfiguredObjectClassForName<"Token">>>): void;
-
-    /**
-     * Test whether a specific Token occludes this overhead tile.
-     * Occlusion is tested against 9 points, the center, the four corners-, and the four cardinal directions
-     * @param token   - The Token to test
-     * @param options - Additional options that affect testing
-     * @returns Is the Token occluded by the Tile?
-     */
-    testOcclusion(
-      token: InstanceType<ConfiguredObjectClassForName<"Token">>,
-      options?: Tile.OcclusionOptions | undefined,
-    ): boolean;
-
-    /**
-     * Test whether the Tile pixel data contains a specific point in canvas space
-     */
-    containsPixel(x: number, y: number): boolean;
-
-    /**
-     * Draw a sprite for the Roof which can be deducted from the fog exploration container
-     */
-    getRoofSprite(): PIXI.Sprite | undefined;
-
-    /**
-     * Swap a Tile from the background to the foreground - or vice versa
-     * TODO: Refactor to private _onSwapLayer
-     */
-    swapLayer(): void;
-
-    /**
-     * Created a cached mapping of pixel alpha for this Tile.
-     * Cache the bounding box of non-transparent pixels for the un-rotated shape.
-     * Store an array of booleans for whether each pixel has a non-transparent value.
-     * @param options - Options which customize the return value
-     * @internal
-     */
-    protected _createAlphaMap(options: Tile.AlphaMapOptions): Exclude<Tile["_alphaMap"], undefined>;
-
-    /**
-     * Compute the alpha-based bounding box for the tile, including an angle of rotation.
-     * @internal
-     */
-    protected _getAlphaBounds(): PIXI.Rectangle;
-
-    /**
-     * Create the filter instance used to reverse-mask overhead tiles using radial or vision-based occlusion.
-     * @internal
-     */
-    protected _createOcclusionFilter(): AbstractBaseMaskFilter;
 
     protected override _onUpdate(
       changed: DeepPartial<foundry.data.TileData["_source"]>,
@@ -206,7 +152,9 @@ declare global {
 
     override activateListeners(): void;
 
-    protected override _canConfigure(user: User, event?: any): boolean;
+    protected override _canConfigure(user: User, event?: PIXI.FederatedEvent): boolean;
+
+    protected override _onClickLeft(event: PIXI.FederatedEvent): void;
 
     protected override _onClickLeft2(event: PIXI.FederatedEvent): void;
 
@@ -216,7 +164,7 @@ declare global {
 
     protected override _onDragLeftDrop(event: PIXI.FederatedEvent): Promise<unknown>;
 
-    protected override _onDragLeftCancel(event: MouseEvent): void;
+    protected override _onDragLeftCancel(event: PIXI.FederatedEvent): void;
 
     /**
      * Handle mouse-over event on a control handle
@@ -255,24 +203,64 @@ declare global {
     protected _onHandleDragDrop(event: PIXI.FederatedEvent): Promise<this>;
 
     /**
-     * Get resized Tile dimensions
-     * @internal
-     */
-    protected _getResizedDimensions(event: MouseEvent, origin: Point, destination: Point): Rectangle;
-
-    /**
      * Handle cancellation of a drag event for one of the resizing handles
      */
-    protected _onHandleDragCancel(): void;
+    protected _onHandleDragCancel(event: PIXI.FederatedEvent): void;
 
     /**
      * Create a preview tile with a background texture instead of an image
      * @param data - Initial data with which to create the preview Tile
      */
     static createPreview(data: TileDataConstructorData): InstanceType<ConfiguredObjectClassForName<"Tile">>;
+
+    /**
+     * @deprecated since v11, will be removed in v13
+     * @remarks "Tile#testOcclusion has been deprecated in favor of PrimaryCanvasObject#testOcclusion"
+     */
+    testOcclusion(
+      token: InstanceType<ConfiguredObjectClassForName<"Token">>,
+      options?: Tile.OcclusionOptions | undefined,
+    ): boolean;
+
+    /**
+     * @deprecated since v11, will be removed in v13
+     * @remarks "Tile#containsPixel has been deprecated in favor of PrimaryCanvasObject#containsPixel"
+     */
+    containsPixel(x: number, y: number): boolean;
+
+    /**
+     * @deprecated since v11, will be removed in v13
+     * @remarks "Tile#getPixelAlpha has been deprecated in favor of PrimaryCanvasObject#getPixelAlpha"
+     */
+    getPixelAlpha(...args: any[]): unknown;
+
+    /**
+     * @deprecated since v11, will be removed in v13
+     * @remarks "Tile#_getAlphaBounds has been deprecated in favor of PrimaryCanvasObject#_getAlphaBounds"
+     */
+    _getAlphaBounds(): unknown;
+
+    /**
+     * @remarks Not used
+     */
+    controlIcon: null;
   }
 
   namespace Tile {
+    interface RenderFlags extends PlaceableObject.RenderFlags {
+      refreshShape: boolean;
+
+      refreshMesh: boolean;
+
+      refreshFrame: boolean;
+
+      refreshElevation: boolean;
+
+      refreshPerception: boolean;
+
+      refreshVideo: boolean;
+    }
+
     interface RefreshOptions {
       /**
        * Also refresh the perception layer.

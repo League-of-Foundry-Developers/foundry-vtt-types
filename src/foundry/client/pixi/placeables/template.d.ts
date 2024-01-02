@@ -1,6 +1,8 @@
 import { ConfiguredDocumentClass } from "../../../../types/helperTypes";
 import { DocumentModificationOptions } from "../../../common/abstract/document.mjs";
 
+export {};
+
 declare global {
   /**
    * A type of Placeable Object which highlights an area of the grid as covered by some area of effect.
@@ -28,19 +30,48 @@ declare global {
     template: PIXI.Graphics | undefined;
 
     /**
-     * The UI frame container which depicts Token metadata and status, displayed in the ControlsLayer.
-     * @defaultValue `new ObjectHUD(this)`
+     * The template control icon
      */
-    hud: MeasuredTemplate.ObjectHUD;
+    controlIcon: ControlIcon | undefined;
+
+    /**
+     * The measurement ruler label
+     */
+    ruler: PreciseText;
 
     /**
      * Internal property used to configure the control border thickness
      * @defaultValue `3`
-     * @internal
      */
     protected _borderThickness: number;
 
     static override embeddedName: "MeasuredTemplate";
+
+    static override RENDER_FLAGS: {
+      /** @defaultValue `{ propagate: ["refresh"] }` */
+      redraw: RenderFlag<Partial<MeasuredTemplate.RenderFlags>>;
+
+      /** @defaultValue `{ propagate: ["refreshState", "refreshShape"], alias: true }` */
+      refresh: RenderFlag<Partial<MeasuredTemplate.RenderFlags>>;
+
+      /** @defaultValue `{}` */
+      refreshState: RenderFlag<Partial<MeasuredTemplate.RenderFlags>>;
+
+      /** @defaultValue `{ propagate: ["refreshPosition", "refreshGrid", "refreshText", "refreshTemplate"] }` */
+      refreshShape: RenderFlag<Partial<MeasuredTemplate.RenderFlags>>;
+
+      /** @defaultValue `{}` */
+      refreshTemplate: RenderFlag<Partial<MeasuredTemplate.RenderFlags>>;
+
+      /** @defaultValue `{ propagate: ["refreshGrid"] }` */
+      refreshPosition: RenderFlag<Partial<MeasuredTemplate.RenderFlags>>;
+
+      /** @defaultValue `{}` */
+      refreshGrid: RenderFlag<Partial<MeasuredTemplate.RenderFlags>>;
+
+      /** @defaultValue `{}` */
+      refreshText: RenderFlag<Partial<MeasuredTemplate.RenderFlags>>;
+    };
 
     override get bounds(): Rectangle;
 
@@ -59,57 +90,65 @@ declare global {
      */
     get owner(): boolean;
 
-    override draw(): Promise<this>;
-
-    override destroy(options?: Parameters<PlaceableObject["destroy"]>[0]): void;
+    /**
+     * Is this MeasuredTemplate currently visible on the Canvas?
+     */
+    get isVisible(): boolean;
 
     /**
-     * Draw the HUD container which provides an interface for managing this template
-     * @internal
+     * A unique identifier which is used to uniquely identify related objects like a template effect or grid highlight.
      */
-    protected _drawHUD(): MeasuredTemplate.InitializedObjectHUD;
+    get highlightId(): string;
+
+    protected override _draw(): Promise<void>;
 
     /**
-     * Draw the ControlIcon for the MeasuredTemplate
-     * @internal
+     * @param options - unused
      */
-    protected _drawControlIcon(): ControlIcon;
+    protected override _destroy(options?: PIXI.IDestroyOptions | boolean): void;
+
+    protected _applyRenderFlags(flags: MeasuredTemplate.RenderFlags): void;
+
+    protected override _getTargetAlpha(): number;
 
     /**
-     * Draw the Text label used for the MeasuredTemplate
-     * @internal
+     * Compute the geometry for the template using its document data.
+     * Subclasses can override this method to take control over how different shapes are rendered.
      */
-    protected _drawRulerText(): PreciseText;
+    protected _computeShape(): PIXI.Circle | PIXI.Rectangle | PIXI.Polygon;
 
-    override refresh(): this;
+    /**
+     * Refresh the display of the template outline and shape.
+     * Subclasses may override this method to take control over how the template is visually rendered.
+     */
+    protected _refreshTemplate(): void;
 
     /**
      * Get a Circular area of effect given a radius of effect
      * @internal
      */
-    protected _getCircleShape(distance: number): PIXI.Circle;
+    static getCircleShape(distance: number): PIXI.Circle;
 
     /**
      * Get a Conical area of effect given a direction, angle, and distance
      * @internal
      */
-    protected _getConeShape(direction: number, angle: number, distance: number): PIXI.Polygon;
+    static getConeShape(direction: number, angle: number, distance: number): PIXI.Polygon;
 
     /**
      * Get a Rectangular area of effect given a width and height
      * @internal
      */
-    protected _getRectShape(direction: number, distance: number): PIXI.Rectangle;
+    static getRectShape(direction: number, distance: number): PIXI.Rectangle;
 
     /**
      * Get a rotated Rectangular area of effect given a width, height, and direction
      * @internal
      */
-    protected _getRayShape(direction: number, distance: number, width: number): PIXI.Polygon;
+    static getRayShape(direction: number, distance: number, width: number): PIXI.Polygon;
 
     /**
      * Update the displayed ruler tooltip text
-     * @internal
      */
     protected _refreshRulerText(): void;
 
@@ -117,6 +156,16 @@ declare global {
      * Highlight the grid squares which should be shown under the area of effect
      */
     highlightGrid(): void;
+
+    /**
+     * Get the shape to highlight on a Scene which uses grid-less mode.
+     */
+    protected _getGridHighlightShape(): PIXI.Polygon | PIXI.Circle | PIXI.Rectangle;
+
+    /**
+     * Get an array of points which define top-left grid spaces to highlight for square or hexagonal grids.
+     */
+    protected _getGridHighlightPositions(): Point[];
 
     override rotate(angle: number, snap: number): Promise<this>;
 
@@ -132,10 +181,42 @@ declare global {
       userId?: string,
     ): void;
 
-    protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
+    protected override _canControl(
+      user: InstanceType<ConfiguredDocumentClass<typeof User>>,
+      event: PIXI.FederatedEvent,
+    ): boolean;
+
+    protected override _canHUD(
+      user: InstanceType<ConfiguredDocumentClass<typeof User>>,
+      event?: PIXI.FederatedEvent,
+    ): boolean;
+
+    protected override _canConfigure(
+      user: InstanceType<ConfiguredDocumentClass<typeof User>>,
+      event?: PIXI.FederatedEvent,
+    ): boolean;
+
+    protected override _canView(
+      user: InstanceType<ConfiguredDocumentClass<typeof User>>,
+      event?: PIXI.FederatedEvent,
+    ): boolean;
+
+    protected override _onClickRight(event: PIXI.FederatedEvent): void;
   }
 
   namespace MeasuredTemplate {
+    interface RenderFlags extends PlaceableObject.RenderFlags {
+      refreshShape: boolean;
+
+      refreshTemplate: boolean;
+
+      refreshPosition: boolean;
+
+      refreshGrid: boolean;
+
+      refreshText: boolean;
+    }
+
     interface ObjectHUD extends globalThis.ObjectHUD {
       /**
        * Template control icon

@@ -4,6 +4,7 @@ import "./groups";
 import "./layer";
 import "./layers";
 import "./perception";
+import "./placeable";
 import "./placeables";
 import "./placeables/index";
 import "./sources";
