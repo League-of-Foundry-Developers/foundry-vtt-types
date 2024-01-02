@@ -1,3 +1,5 @@
+import type { MeshMaterial } from "pixi.js";
+
 export {};
 
 declare global {
@@ -19,7 +21,7 @@ declare global {
    * This should eventually be refactored in favor of a more generalized TilingMesh.
    * FIXME: Workaround until we have our custom TilingMesh class.
    */
-  //@ts-expect-error There's some property mismatches on Foundry's end but this class is going away in v12 anyways
+  // @ts-expect-error There's some property mismatches on Foundry's end but this class is going away in v12 anyways
   class TileSprite extends OccludableObjectMixin(PIXI.TilingSprite) {
     constructor(...args: any[]);
 
@@ -37,7 +39,7 @@ declare global {
      */
     override get shouldRenderDepth(): boolean;
 
-    override shader: PIXI.MeshMaterial;
+    override shader: MeshMaterial;
 
     /**
      * @remarks Monkey patch copied from TileMesh.refresh()

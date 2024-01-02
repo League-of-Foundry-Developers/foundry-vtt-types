@@ -163,5 +163,5 @@ declare global {
    */
   function OccludableObjectMixin<BaseClass extends typeof SpriteMesh>(
     DisplayObject: BaseClass,
-  ): Mixin<typeof OccludableObject, BaseClass> & ReturnType<typeof PrimaryCanvasObjectMixin<BaseClass>>;
+  ): Mixin<typeof OccludableObject, ReturnType<typeof PrimaryCanvasObjectMixin<BaseClass>>>;
 }

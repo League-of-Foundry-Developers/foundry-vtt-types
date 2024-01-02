@@ -8,6 +8,7 @@ declare global {
    * The Drawing object is an implementation of the PlaceableObject container.
    * Each Drawing is a placeable object in the DrawingsLayer.
    */
+  // TODO: Replace `any` with `InstanceType<ConfiguredDocumentClass<typeof DrawingDocument>>`
   class Drawing extends PlaceableObject<any> {
     constructor(document: InstanceType<ConfiguredDocumentClass<typeof DrawingDocument>>);
 
@@ -42,16 +43,16 @@ declare global {
     static override embeddedName: "Drawing";
 
     static override RENDER_FLAGS: {
-      /** @defaultValue `{propagate: ["refresh"]}` */
+      /** @defaultValue `{ propagate: ["refresh"] }` */
       redraw: RenderFlag<Partial<Drawing.RenderFlags>>;
 
-      /** @defaultValue `{propagate: ["refreshState", "refreshShape"], alias: true}` */
+      /** @defaultValue `{ propagate: ["refreshState", "refreshShape"], alias: true }` */
       refresh: RenderFlag<Partial<Drawing.RenderFlags>>;
 
-      /** @defaultValue `{propagate: ["refreshFrame"]}` */
+      /** @defaultValue `{ propagate: ["refreshFrame"] }` */
       refreshState: RenderFlag<Partial<Drawing.RenderFlags>>;
 
-      /** @defaultValue `{propagate: ["refreshFrame", "refreshText", "refreshMesh"]}` */
+      /** @defaultValue `{ propagate: ["refreshFrame", "refreshText", "refreshMesh"] }` */
       refreshShape: RenderFlag<Partial<Drawing.RenderFlags>>;
 
       /** @defaultValue `{}` */
@@ -74,7 +75,7 @@ declare global {
      * A convenience reference to the possible shape types.
      * TODO: Replace post-data model with the static enum reference
      */
-    static readonly SHAPE_TYPES: string;
+    static readonly SHAPE_TYPES: string; // ValueOf<(typeof foundry.data.ShapeData)["TYPES"]>
 
     override get bounds(): Rectangle;
 
@@ -99,7 +100,7 @@ declare global {
      * The shape type that this Drawing represents. A value in Drawing.SHAPE_TYPES.
      * TODO: Replace post-data model with the static enum reference
      */
-    get type(): string;
+    get type(): string; // // ValueOf<(typeof foundry.data.ShapeData)["TYPES"]>
 
     override clear(): this;
 
@@ -119,6 +120,12 @@ declare global {
     protected _getTextStyle(): PIXI.TextStyle;
 
     protected override _applyRenderFlags(flags: Drawing.RenderFlags): void;
+
+    /**
+     * Draw ellipsoid shapes
+     * @internal
+     */
+    protected _drawEllipse(): void;
 
     /**
      * Add a new polygon point to the drawing, ensuring it differs from the last one
@@ -169,7 +176,6 @@ declare global {
     /**
      * @param event - unused
      */
-    // TODO: Replace User reference after data model
     protected override _canControl(user: InstanceType<ConfiguredDocumentClassForName<"User">>, event?: any): boolean;
 
     /**

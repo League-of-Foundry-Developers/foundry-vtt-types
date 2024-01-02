@@ -77,10 +77,10 @@ declare global {
      * The flags declared here are required for all PlaceableObject subclasses to also support.
      */
     static override RENDER_FLAGS: {
-      /** @defaultValue `{propagate: ["refresh"]}` */
+      /** @defaultValue `{ propagate: ["refresh"] }` */
       redraw: RenderFlag<PlaceableObject.RenderFlags>;
 
-      /** @defaultValue `{propagate: ["refreshState"], alias: true}` */
+      /** @defaultValue `{ propagate: ["refreshState"], alias: true }` */
       refresh: RenderFlag<PlaceableObject.RenderFlags>;
 
       /** @defaultValue `{}` */
@@ -284,7 +284,7 @@ declare global {
      * If you plan to use it permanently you should call the create method.
      * @returns A new object with identical data
      */
-    clone(): ThisType<PlaceableObject>;
+    clone(): PlaceableObject;
 
     /**
      * Rotate the PlaceableObject to a certain angle of facing

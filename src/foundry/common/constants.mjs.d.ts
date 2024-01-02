@@ -372,11 +372,34 @@ export const TEXT_ANCHOR_POINTS: Readonly<{
 }>;
 export type TEXT_ANCHOR_POINTS = ValueOf<typeof TEXT_ANCHOR_POINTS>;
 
+/**
+ * Define the valid occlusion modes which an overhead tile can use
+ * @defaultValue `1`
+ * @see https://foundryvtt.com/article/tiles/
+ */
 export const OCCLUSION_MODES: Readonly<{
+  /**
+   * Turns off occlusion, making the tile never fade while tokens are under it.
+   */
   NONE: 0;
+
+  /**
+   * Causes the whole tile to fade when an actor token moves under it.
+   * @defaultValue
+   */
   FADE: 1;
-  // ROOF: 2,  This mode is no longer supported so we don't use 2 for any other mode
+
+  // ROOF: 2;  This mode is no longer supported so we don't use 2 for any other mode
+
+  /**
+   * Causes the tile to reveal the background in the vicinity of an actor token under it. The radius is determined by the token's size.
+   */
   RADIAL: 3;
+
+  /**
+   * Causes the tile to be partially revealed based on the vision of the actor, which does not need to be under the tile to see what's beneath it.
+   * @remarks (by Foundry) This is useful for rooves on buildings where players could see through a window or door, viewing only a portion of what is obscured by the roof itself.
+   */
   VISION: 4;
 }>;
 export type OCCLUSION_MODES = ValueOf<typeof OCCLUSION_MODES>;

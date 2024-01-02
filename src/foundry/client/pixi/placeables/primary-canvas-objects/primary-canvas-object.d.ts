@@ -79,7 +79,7 @@ declare class PrimaryCanvasObject {
    */
   protected _initializeSorting(sort: number): void;
 
-  destroy(...args: Parameters<PIXI.DisplayObject["destroy"]>): void;
+  destroy(...args: any[]): void;
 
   /**
    * Synchronize the appearance of this ObjectMesh with the properties of its represented Document.
@@ -141,8 +141,7 @@ declare global {
    * @param DisplayObject - The parent DisplayObject class being mixed
    * @returns A DisplayObject subclass mixed with PrimaryCanvasObject features
    */
-  function PrimaryCanvasObjectMixin<
-    BaseClass extends Pick<typeof PIXI.DisplayObject, keyof typeof PIXI.DisplayObject> &
-      (new (...args: any[]) => PIXI.DisplayObject),
-  >(DisplayObject: BaseClass): Mixin<typeof PrimaryCanvasObject, BaseClass>;
+  function PrimaryCanvasObjectMixin<BaseClass extends AnyConstructor<typeof PIXI.DisplayObject>>(
+    DisplayObject: BaseClass,
+  ): Mixin<typeof PrimaryCanvasObject, BaseClass>;
 }

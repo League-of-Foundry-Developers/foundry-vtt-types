@@ -48,22 +48,22 @@ declare global {
     static override embeddedName: "MeasuredTemplate";
 
     static override RENDER_FLAGS: {
-      /** @defaultValue `{propagate: ["refresh"]}` */
+      /** @defaultValue `{ propagate: ["refresh"] }` */
       redraw: RenderFlag<Partial<MeasuredTemplate.RenderFlags>>;
 
-      /** @defaultValue `{propagate: ["refreshState", "refreshShape"], alias: true}` */
+      /** @defaultValue `{ propagate: ["refreshState", "refreshShape"], alias: true }` */
       refresh: RenderFlag<Partial<MeasuredTemplate.RenderFlags>>;
 
       /** @defaultValue `{}` */
       refreshState: RenderFlag<Partial<MeasuredTemplate.RenderFlags>>;
 
-      /** @defaultValue `{propagate: ["refreshPosition", "refreshGrid", "refreshText", "refreshTemplate"]}` */
+      /** @defaultValue `{ propagate: ["refreshPosition", "refreshGrid", "refreshText", "refreshTemplate"] }` */
       refreshShape: RenderFlag<Partial<MeasuredTemplate.RenderFlags>>;
 
       /** @defaultValue `{}` */
       refreshTemplate: RenderFlag<Partial<MeasuredTemplate.RenderFlags>>;
 
-      /** @defaultValue `{propagate: ["refreshGrid"]}` */
+      /** @defaultValue `{ propagate: ["refreshGrid"] }` */
       refreshPosition: RenderFlag<Partial<MeasuredTemplate.RenderFlags>>;
 
       /** @defaultValue `{}` */

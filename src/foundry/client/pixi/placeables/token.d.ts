@@ -17,25 +17,25 @@ declare global {
     static override embeddedName: "Token";
 
     static override RENDER_FLAGS: {
-      /** @defaultValue `{propagate: ["refresh"]}` */
+      /** @defaultValue `{ propagate: ["refresh"] }` */
       redraw: RenderFlag<Partial<Token.RenderFlags>>;
 
       /** @defaultValue `{}` */
       redrawEffects: RenderFlag<Partial<Token.RenderFlags>>;
 
-      /** @defaultValue `{propagate: ["refreshState", "refreshSize", "refreshPosition", "refreshElevation", "refreshBars", "refreshNameplate", "refreshBorder", "refreshShader"], alias: true}` */
+      /** @defaultValue `{ propagate: ["refreshState", "refreshSize", "refreshPosition", "refreshElevation", "refreshBars", "refreshNameplate", "refreshBorder", "refreshShader"], alias: true }` */
       refresh: RenderFlag<Partial<Token.RenderFlags>>;
 
-      /** @defaultValue `{propagate: ["refreshVisibility", "refreshBorder"]}` */
+      /** @defaultValue `{ propagate: ["refreshVisibility", "refreshBorder"] }` */
       refreshState: RenderFlag<Partial<Token.RenderFlags>>;
 
-      /** @defaultValue `{propagate: ["refreshMesh", "refreshBorder", "refreshBars", "refreshPosition", "refreshTarget", "refreshEffects"]}` */
+      /** @defaultValue `{ propagate: ["refreshMesh", "refreshBorder", "refreshBars", "refreshPosition", "refreshTarget", "refreshEffects"] }` */
       refreshSize: RenderFlag<Partial<Token.RenderFlags>>;
 
-      /** @defaultValue `{propagate: ["refreshMesh", "refreshVisibility"]}` */
+      /** @defaultValue `{ propagate: ["refreshMesh", "refreshVisibility"] }` */
       refreshPosition: RenderFlag<Partial<Token.RenderFlags>>;
 
-      /** @defaultValue `{propagate: ["refreshMesh"]}` */
+      /** @defaultValue `{ propagate: ["refreshMesh"] }` */
       refreshElevation: RenderFlag<Partial<Token.RenderFlags>>;
 
       /** @defaultValue `{}` */
@@ -234,7 +234,7 @@ declare global {
      */
     get optimalSightRange(): number;
 
-    override clone(): ThisType<Token>;
+    override clone(): Token;
 
     /**
      * Update the light and vision source objects associated with this Token
@@ -251,6 +251,7 @@ declare global {
     /**
      * Update an Token vision source associated for this token.
      * @param options - Options which affect how the vision source is updated
+     *                  (default: `{}`)
      */
     updateVisionSource(options?: Token.UpdateVisionSourceOptions | undefined): void;
 

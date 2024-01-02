@@ -21,16 +21,16 @@ declare global {
     static override embeddedName: "Wall";
 
     static override RENDER_FLAGS: {
-      /** @defaultValue `{propagate: ["refresh"]}` */
+      /** @defaultValue `{ propagate: ["refresh"] }` */
       redraw: RenderFlag<Partial<Wall.RenderFlags>>;
 
-      /** @defaultValue `{propagate: ["refreshState", "refreshLine"], alias: true}` */
+      /** @defaultValue `{ propagate: ["refreshState", "refreshLine"], alias: true }` */
       refresh: RenderFlag<Partial<Wall.RenderFlags>>;
 
-      /** @defaultValue `{propagate: ["refreshEndpoints", "refreshHighlight"]}` */
+      /** @defaultValue `{ propagate: ["refreshEndpoints", "refreshHighlight"] }` */
       refreshState: RenderFlag<Partial<Wall.RenderFlags>>;
 
-      /** @defaultValue `{propagate: ["refreshEndpoints", "refreshHighlight", "refreshDirection"]}` */
+      /** @defaultValue `{ propagate: ["refreshEndpoints", "refreshHighlight", "refreshDirection"] }` */
       refreshLine: RenderFlag<Partial<Wall.RenderFlags>>;
 
       /** @defaultValue `{}` */
