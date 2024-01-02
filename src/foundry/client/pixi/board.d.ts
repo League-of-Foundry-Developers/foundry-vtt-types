@@ -1,11 +1,5 @@
 import { ConfiguredDocumentClass } from "../../../types/helperTypes";
 import type { CANVAS_PERFORMANCE_MODES } from "../../common/constants.mjs";
-import type Color from "../../common/utils/color.mjs";
-
-// FIXME: Remove once CanvasColorManager is typed
-type CanvasColorManager = {
-  colors: Record<string, Color>;
-};
 
 declare global {
   /**
