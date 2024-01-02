@@ -1,5 +1,6 @@
 export {};
 
+// Included to match Foundry's documented types
 type PrimaryCanvasObject = ReturnType<typeof PrimaryCanvasObjectMixin>;
 
 declare global {
