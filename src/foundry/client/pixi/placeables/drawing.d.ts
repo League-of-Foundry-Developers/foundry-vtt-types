@@ -8,6 +8,7 @@ declare global {
    * The Drawing object is an implementation of the PlaceableObject container.
    * Each Drawing is a placeable object in the DrawingsLayer.
    */
+  // TODO: Replace `any` with `InstanceType<ConfiguredDocumentClass<typeof DrawingDocument>>`
   class Drawing extends PlaceableObject<any> {
     constructor(document: InstanceType<ConfiguredDocumentClass<typeof DrawingDocument>>);
 
@@ -99,7 +100,7 @@ declare global {
      * The shape type that this Drawing represents. A value in Drawing.SHAPE_TYPES.
      * TODO: Replace post-data model with the static enum reference
      */
-    get type(): string;
+    get type(): string; // // ValueOf<(typeof foundry.data.ShapeData)["TYPES"]>
 
     override clear(): this;
 
@@ -169,7 +170,6 @@ declare global {
     /**
      * @param event - unused
      */
-    // TODO: Replace User reference after data model
     protected override _canControl(user: InstanceType<ConfiguredDocumentClassForName<"User">>, event?: any): boolean;
 
     /**

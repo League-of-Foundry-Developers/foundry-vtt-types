@@ -251,6 +251,7 @@ declare global {
     /**
      * Update an Token vision source associated for this token.
      * @param options - Options which affect how the vision source is updated
+     *                  (default: `{}`)
      */
     updateVisionSource(options?: Token.UpdateVisionSourceOptions | undefined): void;
 
