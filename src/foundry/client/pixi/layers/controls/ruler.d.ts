@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass, ConfiguredObjectClassForName } from '../../../../../types/helperTypes';
+import { ConfiguredObjectClassForName } from '../../../../../types/helperTypes';
 
 declare global {
   interface RulerData {
@@ -26,16 +26,13 @@ declare global {
      * @param user  - The User for whom to construct the Ruler instance
      * @param color - (default: `null`)
      */
-    constructor(
-      user?: InstanceType<ConfiguredDocumentClass<typeof User>> | null,
-      { color }?: { color?: number | null }
-    );
+    constructor(user?: InstanceType<ConfiguredUser> | null, { color }?: { color?: number | null });
 
     /**
      * Record the User which this Ruler references
      * @defaultValue `game.user`
      */
-    user: InstanceType<ConfiguredDocumentClass<typeof User>>;
+    user: InstanceType<ConfiguredUser>;
 
     /**
      * The ruler name - used to differentiate between players

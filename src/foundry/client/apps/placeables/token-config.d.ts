@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClass, ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
+export {};
 
 declare global {
   /**
@@ -11,19 +11,10 @@ declare global {
   class TokenConfig<
     Options extends FormApplicationOptions = FormApplicationOptions,
     Data extends object = TokenConfig.Data<Options>
-  > extends FormApplication<
-    Options,
-    Data,
-    InstanceType<ConfiguredDocumentClassForName<'Token'>> | InstanceType<ConfiguredDocumentClassForName<'Actor'>>
-  > {
-    constructor(
-      object:
-        | InstanceType<ConfiguredDocumentClassForName<'Token'>>
-        | InstanceType<ConfiguredDocumentClassForName<'Actor'>>,
-      options?: Partial<Options>
-    );
+  > extends FormApplication<Options, Data, InstanceType<ConfiguredToken> | InstanceType<ConfiguredActor>> {
+    constructor(object: InstanceType<ConfiguredToken> | InstanceType<ConfiguredActor>, options?: Partial<Options>);
 
-    token: InstanceType<ConfiguredDocumentClassForName<'Token'>> | PrototypeTokenDocument;
+    token: InstanceType<ConfiguredToken>;
 
     /**
      * @defaultValue
@@ -53,7 +44,7 @@ declare global {
     /**
      * Convenience access to the Actor document that this Token represents
      */
-    get actor(): InstanceType<ConfiguredDocumentClassForName<'Actor'>>;
+    get actor(): InstanceType<ConfiguredActor>;
 
     override get title(): string;
 
@@ -169,9 +160,9 @@ declare global {
 
     data: foundry.documents.BaseToken['data'];
 
-    object: InstanceType<ConfiguredDocumentClassForName<'Token'>>;
+    object: InstanceType<ConfiguredToken>;
 
-    token: InstanceType<ConfiguredDocumentClassForName<'Token'>>;
+    token: InstanceType<ConfiguredToken>;
 
     /**
      * The named world setting that stores the default Token configuration
@@ -217,7 +208,7 @@ declare global {
       extends Omit<TokenConfig.Data<Options>, 'object' | 'bar1' | 'bar2'> {
       object: foundry.documents.BaseToken['_source'];
       isDefault: true;
-      barAttributes: ReturnType<ConfiguredDocumentClass<typeof TokenDocument>['getTrackedAttributeChoices']>;
+      barAttributes: ReturnType<ConfiguredTokenDocument['getTrackedAttributeChoices']>;
       bar1: foundry.documents.BaseToken['bar1'];
       bar2: foundry.documents.BaseToken['bar2'];
     }

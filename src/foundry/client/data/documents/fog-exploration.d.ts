@@ -1,4 +1,3 @@
-import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
 import { RequestOptions } from '../../../common/abstract/backend.mjs';
 
 declare global {
@@ -36,11 +35,11 @@ declare global {
         scene,
         user
       }?: {
-        scene?: InstanceType<ConfiguredDocumentClass<typeof Scene>>;
-        user?: InstanceType<ConfiguredDocumentClass<typeof User>>;
+        scene?: InstanceType<ConfiguredScene>;
+        user?: InstanceType<ConfiguredUser>;
       },
       options?: RequestOptions
-    ): Promise<StoredDocument<InstanceType<ConfiguredDocumentClass<typeof FogExploration>>> | null>;
+    ): Promise<StoredDocument<InstanceType<ConfiguredFogExploration>> | null>;
 
     /**
      * Transform the explored base64 data into a PIXI.Texture object

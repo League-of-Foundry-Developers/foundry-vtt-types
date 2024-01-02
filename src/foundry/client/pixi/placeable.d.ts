@@ -1,4 +1,3 @@
-import { ConfiguredDocumentClass } from '../../../types/helperTypes';
 import { DocumentModificationOptions } from '../../common/abstract/document.mjs';
 import { Document } from '../../common/abstract/module.mjs';
 
@@ -7,9 +6,9 @@ declare global {
    * An Abstract Base Class which defines a Placeable Object which represents a Document placed on the Canvas
    */
   abstract class PlaceableObject<
-    D extends Document<any, InstanceType<ConfiguredDocumentClass<typeof Scene>>, any, any> = Document<
+    out D extends Document<any, InstanceType<ConfiguredScene>, any, any> = Document<
       any,
-      InstanceType<ConfiguredDocumentClass<typeof Scene>>,
+      InstanceType<ConfiguredScene>,
       any,
       any
     >
@@ -25,7 +24,7 @@ declare global {
     /**
      * Retain a reference to the Scene within which this Placeable Object resides
      */
-    scene: InstanceType<ConfiguredDocumentClass<typeof Scene>>;
+    scene: InstanceType<ConfiguredScene>;
 
     /**
      * A reference to the Scene embedded Document instance which this object represents
@@ -100,7 +99,7 @@ declare global {
     /**
      * Provide a reference to the CanvasLayer which contains this PlaceableObject.
      */
-    get layer(): 'layer' extends keyof D ? D['layer'] : PIXI.Container;
+    get layer(): GetKey<D, 'layer', PIXI.Container>;
 
     /**
      * The line-of-sight polygon for the object, if it has been computed
@@ -111,7 +110,7 @@ declare global {
      * A Form Application which is used to configure the properties of this Placeable Object or the Document it
      * represents.
      */
-    get sheet(): 'sheet' extends keyof D ? D['sheet'] : FormApplication | null;
+    get sheet(): GetKey<D, 'sheet', FormApplication | null>;
 
     /**
      * Test whether a user can perform a certain interaction with regards to a Placeable Object
@@ -120,54 +119,54 @@ declare global {
      * @returns Does the User have rights to perform the action?
      */
     can(
-      user: InstanceType<ConfiguredDocumentClass<typeof User>>,
+      user: InstanceType<ConfiguredUser>,
       action: 'HUD' | 'configure' | 'control' | 'view' | 'create' | 'drag' | 'hover' | 'update' | 'delete' | string
     ): boolean;
 
     /**
      * Can the User access the HUD for this Placeable Object?
      */
-    protected _canHUD(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
+    protected _canHUD(user: InstanceType<ConfiguredUser>, event?: any): boolean;
 
     /**
      * Does the User have permission to configure the Placeable Object?
      */
-    protected _canConfigure(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
+    protected _canConfigure(user: InstanceType<ConfiguredUser>, event?: any): boolean;
 
     /**
      * Does the User have permission to control the Placeable Object?
      */
-    protected _canControl(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
+    protected _canControl(user: InstanceType<ConfiguredUser>, event?: any): boolean;
 
     /**
      * Does the User have permission to view details of the Placeable Object?
      */
-    protected _canView(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
+    protected _canView(user: InstanceType<ConfiguredUser>, event?: any): boolean;
 
     /**
      * Does the User have permission to create the underlying Document?
      */
-    protected _canCreate(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
+    protected _canCreate(user: InstanceType<ConfiguredUser>, event?: any): boolean;
 
     /**
      * Does the User have permission to drag this Placeable Object?
      */
-    protected _canDrag(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
+    protected _canDrag(user: InstanceType<ConfiguredUser>, event?: any): boolean;
 
     /**
      * Does the User have permission to hover on this Placeable Object?
      */
-    protected _canHover(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
+    protected _canHover(user: InstanceType<ConfiguredUser>, event?: any): boolean;
 
     /**
      * Does the User have permission to update the underlying Document?
      */
-    protected _canUpdate(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
+    protected _canUpdate(user: InstanceType<ConfiguredUser>, event?: any): boolean;
 
     /**
      * Does the User have permission to delete the underlying Document?
      */
-    protected _canDelete(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
+    protected _canDelete(user: InstanceType<ConfiguredUser>, event?: any): boolean;
 
     /**
      * Clear the display of the existing object

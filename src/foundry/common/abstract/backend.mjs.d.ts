@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentClassForName } from '../../../types/helperTypes.js';
 import type { BaseUser } from '../documents/module.mjs';
 import DataModel from './data.mjs';
 import Document from './document.mjs';
@@ -36,7 +35,7 @@ declare abstract class DatabaseBackend {
   protected abstract _getDocuments<T extends AnyDocument>(
     documentClass: ConstructorOf<T>,
     request: Request,
-    user: InstanceType<ConfiguredDocumentClassForName<'User'>>
+    user: InstanceType<ConfiguredUser>
   ): Promise<T[]>;
 
   /**
@@ -50,7 +49,7 @@ declare abstract class DatabaseBackend {
     documentClass: ConstructorOf<T>,
     parent: Document.ParentTypeFor<T>,
     request: Request,
-    user: InstanceType<ConfiguredDocumentClassForName<'User'>>
+    user: InstanceType<ConfiguredUser>
   ): Promise<T[]>;
 
   /**
@@ -91,7 +90,7 @@ declare abstract class DatabaseBackend {
   protected abstract _createDocuments<T extends AnyDocument>(
     documentClass: ConstructorOf<T>,
     request: Request,
-    user: InstanceType<ConfiguredDocumentClassForName<'User'>>
+    user: InstanceType<ConfiguredUser>
   ): Promise<T[]>;
 
   /**
@@ -101,7 +100,7 @@ declare abstract class DatabaseBackend {
     documentClass: ConstructorOf<T>,
     parent: Document.ParentTypeFor<T>,
     request: Request,
-    user: InstanceType<ConfiguredDocumentClassForName<'User'>>
+    user: InstanceType<ConfiguredUser>
   ): Promise<T[]>;
 
   /**
@@ -133,7 +132,7 @@ declare abstract class DatabaseBackend {
   protected abstract _updateDocuments<T extends AnyDocument>(
     documentClass: ConstructorOf<T>,
     request: Request,
-    user: InstanceType<ConfiguredDocumentClassForName<'User'>>
+    user: InstanceType<ConfiguredUser>
   ): Promise<T[]>;
 
   /**
@@ -143,7 +142,7 @@ declare abstract class DatabaseBackend {
     documentClass: ConstructorOf<T>,
     parent: Document.ParentTypeFor<T>,
     request: Request,
-    user: InstanceType<ConfiguredDocumentClassForName<'User'>>
+    user: InstanceType<ConfiguredUser>
   ): Promise<T[]>;
 
   /**
@@ -172,7 +171,7 @@ declare abstract class DatabaseBackend {
   protected abstract _deleteDocuments<T extends AnyDocument>(
     documentClass: ConstructorOf<T>,
     request: Request,
-    user: InstanceType<ConfiguredDocumentClassForName<'User'>>
+    user: InstanceType<ConfiguredUser>
   ): Promise<T[]>;
 
   /**
@@ -182,7 +181,7 @@ declare abstract class DatabaseBackend {
     documentClass: ConstructorOf<T>,
     parent: Document.ParentTypeFor<T>,
     request: Request,
-    user: InstanceType<ConfiguredDocumentClassForName<'User'>>
+    user: InstanceType<ConfiguredUser>
   ): Promise<T[]>;
 
   /**

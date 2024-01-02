@@ -1,8 +1,4 @@
-import {
-  ConfiguredDocumentClass,
-  ConfiguredObjectClassForName,
-  ToObjectFalseType
-} from '../../../../types/helperTypes';
+import { ToObjectFalseType, type ConfiguredObjectClassForName } from '../../../../types/helperTypes';
 import type DataModel from '../../../common/abstract/data.mjs';
 import { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
 
@@ -113,11 +109,12 @@ declare global {
       alias
     }: {
       /** The TokenDocument of the speaker */
-      token: InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>;
+      token: InstanceType<ConfiguredTokenDocument>;
 
       /** The name of the speaker to display */
       alias?: string | undefined;
     }): foundry.documents.BaseChatMessage['speaker'];
+
     /**
      * A helper to prepare the speaker object based on a target TokenDocument
      *
@@ -146,10 +143,10 @@ declare global {
       alias
     }: {
       /** The Scene is which the speaker resides */
-      scene?: InstanceType<ConfiguredDocumentClass<typeof Scene>> | undefined;
+      scene?: InstanceType<ConfiguredScene> | undefined;
 
       /** The Actor that is speaking */
-      actor: InstanceType<ConfiguredDocumentClass<typeof Actor>>;
+      actor: InstanceType<ConfiguredActor>;
 
       /** The name of the speaker to display */
       alias?: string | undefined;
@@ -166,10 +163,10 @@ declare global {
       alias
     }: {
       /** The Scene in which the speaker resides */
-      scene?: InstanceType<ConfiguredDocumentClass<typeof Scene>> | undefined;
+      scene?: InstanceType<ConfiguredScene> | undefined;
 
       /** The User who is speaking */
-      user: InstanceType<ConfiguredDocumentClass<typeof User>>;
+      user: InstanceType<ConfiguredUser>;
 
       /** The name of the speaker to display */
       alias?: string | undefined;
@@ -179,9 +176,9 @@ declare global {
      * Obtain an Actor instance which represents the speaker of this message (if any)
      * @param speaker - The speaker data object
      */
-    static getSpeakerActor(
-      speaker: foundry.documents.BaseChatMessage['speaker']
-    ): InstanceType<ConfiguredDocumentClass<typeof Actor>> | null;
+    // static getSpeakerActor(
+    //   speaker: foundry.documents.BaseChatMessage['speaker']
+    // ): InstanceType<ConfiguredActor> | null;
 
     /**
      * Obtain a data object used to evaluate any dice rolls associated with this particular chat message
@@ -194,7 +191,7 @@ declare global {
      * @param name - The target name of the whisper target
      * @returns An array of User instances
      */
-    static getWhisperRecipients(name: string): StoredDocument<InstanceType<ConfiguredDocumentClass<typeof User>>>[];
+    static getWhisperRecipients(name: string): StoredDocument<InstanceType<ConfiguredUser>>[];
 
     /**
      * Render the HTML for the ChatMessage which should be added to the log
@@ -208,20 +205,16 @@ declare global {
      */
     protected _renderRollContent(messageData: ChatMessage.MessageData): Promise<void>;
 
-    // protected override _preCreate(
-    //   data: DataModel.SchemaToSourceInput<foundry.documents.BaseChatMessage['schema']>,
-    //   options: DocumentModificationOptions,
-    //   user: foundry.documents.BaseUser
-    // ): Promise<void>;
-
-    protected override _onCreate(
-      data: foundry.documents.BaseChatMessage['_source'],
+    protected override _preCreate(
+      data: DataModel.SchemaToSourceInput<this['schema']>,
       options: DocumentModificationOptions,
-      userId: string
-    ): void;
+      user: foundry.documents.BaseUser
+    ): Promise<void>;
+
+    protected override _onCreate(data: this['_source'], options: DocumentModificationOptions, userId: string): void;
 
     protected override _onUpdate(
-      data: DeepPartial<foundry.documents.BaseChatMessage['_source']>,
+      data: DeepPartial<this['_source']>,
       options: DocumentModificationOptions,
       userId: string
     ): void;
@@ -237,13 +230,13 @@ declare global {
   namespace ChatMessage {
     interface GetSpeakerOptions {
       /** The Scene in which the speaker resides */
-      scene?: InstanceType<ConfiguredDocumentClass<typeof Scene>> | undefined;
+      scene?: InstanceType<ConfiguredScene> | undefined;
 
       /** The Actor whom is speaking */
-      actor?: InstanceType<ConfiguredDocumentClass<typeof Actor>> | undefined;
+      actor?: InstanceType<ConfiguredActor> | undefined;
 
       /** The Token whom is speaking */
-      token?: InstanceType<ConfiguredDocumentClass<typeof TokenDocument>> | undefined;
+      token?: InstanceType<ConfiguredTokenDocument> | undefined;
 
       /** The name of the speaker to display */
       alias?: string | undefined;
@@ -251,8 +244,8 @@ declare global {
 
     interface MessageData {
       message: ToObjectFalseType<ChatMessage>;
-      user: StoredDocument<InstanceType<ConfiguredDocumentClass<typeof User>>>;
-      author: InstanceType<ConfiguredDocumentClass<typeof User>> | undefined;
+      user: StoredDocument<InstanceType<ConfiguredUser>>;
+      author: InstanceType<ConfiguredUser> | undefined;
       alias: string;
       cssClass: string;
       isWhisper: boolean;

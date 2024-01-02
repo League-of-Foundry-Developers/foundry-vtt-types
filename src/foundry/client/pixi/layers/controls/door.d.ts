@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClassForName, ConfiguredObjectClassForName } from '../../../../../types/helperTypes';
+import type { ConfiguredObjectClassForName } from '../../../../../types/helperTypes';
 
 declare global {
   /**
@@ -53,15 +53,13 @@ declare global {
      */
     protected _onMouseDown(
       event: PIXI.InteractionEvent
-    ): false | void | Promise<InstanceType<ConfiguredDocumentClassForName<'Wall'>> | undefined>;
+    ): false | void | Promise<InstanceType<ConfiguredWall> | undefined>;
 
     /**
      * Handle right mouse down events on the door control icon
      * This should toggle whether the door is LOCKED or CLOSED
      * @param event - The originating interaction event
      */
-    protected _onRightDown(
-      event: PIXI.InteractionEvent
-    ): void | Promise<InstanceType<ConfiguredDocumentClassForName<'Wall'>> | undefined>;
+    protected _onRightDown(event: PIXI.InteractionEvent): void | Promise<InstanceType<ConfiguredWall> | undefined>;
   }
 }

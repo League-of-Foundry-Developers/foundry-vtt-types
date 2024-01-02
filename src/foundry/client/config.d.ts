@@ -1096,7 +1096,7 @@ declare global {
       /** @defaultValue `AmbientLightDocument` */
       objectClass: ConfiguredObjectClassOrDefault<typeof AmbientLight>;
 
-      /** @defaultValue `AmbientLightDocument` */
+      /** @defaultValue `LightingLayer` */
       layerClass: typeof LightingLayer;
     };
 

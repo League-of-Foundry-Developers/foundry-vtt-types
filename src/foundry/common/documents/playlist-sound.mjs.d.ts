@@ -2,7 +2,6 @@ import Document, { DocumentMetadata } from '../abstract/document.mjs';
 import * as documents from './module.mjs';
 import * as fields from '../data/fields.mjs';
 import { DataSchema } from '../abstract/module.mjs.js';
-import type { ConfiguredDocumentClass } from '../../../types/helperTypes.js';
 import type { FlagsField } from '../data/flagsField.js';
 
 interface BasePlaylistSoundSchema extends DataSchema {
@@ -79,7 +78,7 @@ type BasePlaylistSoundMetadata = Merge<
  */
 declare class BasePlaylistSound extends Document<
   BasePlaylistSoundSchema,
-  InstanceType<ConfiguredDocumentClass<typeof documents.BasePlaylist>>,
+  InstanceType<ConfiguredBasePlaylist>,
   BasePlaylistSoundMetadata
 > {
   /* -------------------------------------------- */

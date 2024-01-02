@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+export {};
 
 declare global {
   /**
@@ -10,7 +10,7 @@ declare global {
   class ActiveEffectConfig<
     Options extends DocumentSheetOptions = ActiveEffectConfig.Options,
     Data extends object = ActiveEffectConfig.Data
-  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClass<typeof ActiveEffect>>> {
+  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredActiveEffect>> {
     /**
      * @defaultValue
      * ```typescript

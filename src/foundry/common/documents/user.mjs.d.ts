@@ -1,5 +1,5 @@
 import { DocumentMetadata } from '../abstract/document.mjs';
-import { DataModel, Document } from '../abstract/module.mjs';
+import { DataModel, DataSchema, Document } from '../abstract/module.mjs';
 import type { DocumentStatsSchema } from '../data/data.mjs';
 import type * as fields from '../data/fields.mjs';
 import type { FlagsField } from '../data/flagsField.js';
@@ -16,7 +16,7 @@ type RGB = `#${HexadecimalCharacter}${HexadecimalCharacter}${HexadecimalCharacte
 type ValidateHotbar = (bar: Record<string, string>) => boolean;
 type ValidatePermissions = (perms: Record<string, boolean>) => boolean;
 
-type BaseUserSchema = {
+interface BaseUserSchema extends DataSchema {
   /**
    * The _id which uniquely identifies this User document.
    */
@@ -95,7 +95,7 @@ type BaseUserSchema = {
    * An object of creation and access information
    */
   _stats: typeof DocumentStatsSchema;
-};
+}
 
 type CanCreate = (user: BaseUser, doc: BaseUser, data: DataModel.SchemaToSource<BaseUser['schema']>) => boolean;
 type CanUpdate = (

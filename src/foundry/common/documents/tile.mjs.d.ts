@@ -3,7 +3,6 @@ import * as CONST from '../constants.mjs';
 import * as fields from '../data/fields.mjs';
 import { TextureData } from '../data/data.mjs';
 import type { DataModel, DataSchema } from '../abstract/data.mjs.js';
-import type { ConfiguredDocumentClass } from '../../../types/helperTypes.js';
 import type { FlagsField } from '../data/flagsField.js';
 
 interface BaseTileSchema extends DataSchema {
@@ -164,7 +163,7 @@ type BaseTileShims = {
  */
 declare class BaseTile extends Document<
   BaseTileSchema,
-  InstanceType<ConfiguredDocumentClass<typeof Scene>>,
+  InstanceType<ConfiguredScene>,
   BaseTileMetadata,
   BaseTileShims
 > {

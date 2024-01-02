@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+export {};
 
 declare global {
   /**
@@ -14,10 +14,8 @@ declare global {
     override get directory(): typeof ui.macros;
 
     override fromCompendium(
-      document:
-        | InstanceType<ConfiguredDocumentClass<typeof Macro>>
-        | InstanceType<ConfiguredDocumentClass<typeof Macro>>['_source'],
+      document: InstanceType<ConfiguredMacro> | InstanceType<ConfiguredMacro>['_source'],
       options?: WorldCollection.FromCompendiumOptions | undefined
-    ): Omit<InstanceType<ConfiguredDocumentClass<typeof Macro>>['_source'], '_id' | 'folder'>;
+    ): Omit<InstanceType<ConfiguredMacro>['_source'], '_id' | 'folder'>;
   }
 }

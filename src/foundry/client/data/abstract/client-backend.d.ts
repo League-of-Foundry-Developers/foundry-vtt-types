@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
 import type { Request } from '../../../common/abstract/backend.mjs';
 import type Document from '../../../common/abstract/document.mjs';
 
@@ -16,7 +15,7 @@ declare global {
     protected override _getDocuments<T extends AnyDocument>(
       documentClass: ConstructorOf<T>,
       request: Request,
-      user: InstanceType<ConfiguredDocumentClassForName<'User'>>
+      user: InstanceType<ConfiguredUser>
     ): Promise<T[]>;
 
     /**
@@ -28,20 +27,20 @@ declare global {
       documentClass: ConstructorOf<T>,
       parent: Document.ParentTypeFor<T>,
       request: Request,
-      user: InstanceType<ConfiguredDocumentClassForName<'User'>>
+      user: InstanceType<ConfiguredUser>
     ): Promise<never>;
 
     protected override _createDocuments<T extends AnyDocument>(
       documentClass: ConstructorOf<T>,
       request: Request,
-      user: InstanceType<ConfiguredDocumentClassForName<'User'>>
+      user: InstanceType<ConfiguredUser>
     ): Promise<T[]>;
 
     protected override _createEmbeddedDocuments<T extends AnyDocument>(
       documentClass: ConstructorOf<T>,
       parent: Document.ParentTypeFor<T>,
       request: Request,
-      user: InstanceType<ConfiguredDocumentClassForName<'User'>>
+      user: InstanceType<ConfiguredUser>
     ): Promise<T[]>;
 
     /**
@@ -57,7 +56,7 @@ declare global {
         parent,
         user
       }: Pick<Request, 'data' | 'pack' | 'parent' | 'options'> & {
-        user: InstanceType<ConfiguredDocumentClassForName<'User'>>;
+        user: InstanceType<ConfiguredUser>;
       }
     ): Promise<T[]>;
 
@@ -92,14 +91,14 @@ declare global {
     protected override _updateDocuments<T extends AnyDocument>(
       documentClass: ConstructorOf<T>,
       request: Request,
-      user: InstanceType<ConfiguredDocumentClassForName<'User'>>
+      user: InstanceType<ConfiguredUser>
     ): Promise<T[]>;
 
     protected override _updateEmbeddedDocuments<T extends AnyDocument>(
       documentClass: ConstructorOf<T>,
       parent: Document.ParentTypeFor<T>,
       request: Request,
-      user: InstanceType<ConfiguredDocumentClassForName<'User'>>
+      user: InstanceType<ConfiguredUser>
     ): Promise<T[]>;
 
     /**
@@ -113,7 +112,7 @@ declare global {
         options,
         user
       }: Pick<Request, 'updates' | 'options'> & {
-        user: InstanceType<ConfiguredDocumentClassForName<'User'>>;
+        user: InstanceType<ConfiguredUser>;
       }
     ): Promise<T[]>;
 
@@ -147,14 +146,14 @@ declare global {
     protected override _deleteDocuments<T extends AnyDocument>(
       documentClass: ConstructorOf<T>,
       request: Request,
-      user: InstanceType<ConfiguredDocumentClassForName<'User'>>
+      user: InstanceType<ConfiguredUser>
     ): Promise<T[]>;
 
     protected override _deleteEmbeddedDocuments<T extends AnyDocument>(
       documentClass: ConstructorOf<T>,
       parent: Document.ParentTypeFor<T>,
       request: Request,
-      user: InstanceType<ConfiguredDocumentClassForName<'User'>>
+      user: InstanceType<ConfiguredUser>
     ): Promise<T[]>;
 
     /**
@@ -163,11 +162,7 @@ declare global {
      */
     protected _preDeleteDocumentArray<T extends AnyDocument>(
       collection: Collection<T>,
-      {
-        ids,
-        options,
-        user
-      }: Pick<Request, 'ids' | 'options'> & { user: InstanceType<ConfiguredDocumentClassForName<'User'>> }
+      { ids, options, user }: Pick<Request, 'ids' | 'options'> & { user: InstanceType<ConfiguredUser> }
     ): Promise<T[]>;
 
     /**

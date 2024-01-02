@@ -37,17 +37,17 @@ declare class BaseSystem extends BasePackage<BaseSystem.Schema, 'system'> {
   /**
    * An alias for the document types available in the currently active World.
    */
-  //   get documentTypes(): GetKey<typeof game, 'documentTypes'>;
+  get documentTypes(): GetKey<typeof game, 'documentTypes'>;
 
   /**
    * An alias for the raw template JSON loaded from the game System.
    */
-  //   get template(): GetKey<typeof game, 'template'>;
+  get template(): GetKey<typeof game, 'template'>;
 
   /**
    * An alias for the structured data model organized by document class and type.
    */
-  //   get model(): GetKey<typeof game, 'model'>;
+  get model(): GetKey<typeof game, 'model'>;
 }
 
 export default BaseSystem;

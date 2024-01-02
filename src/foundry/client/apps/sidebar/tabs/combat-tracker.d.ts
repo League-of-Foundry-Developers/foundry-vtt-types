@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass, ConfiguredObjectClassForName } from '../../../../../types/helperTypes';
+import { ConfiguredObjectClassForName } from '../../../../../types/helperTypes';
 
 declare global {
   /**
@@ -18,7 +18,7 @@ declare global {
      * Record the currently tracked Combat encounter
      * @defaultValue `null`
      */
-    viewed: StoredDocument<InstanceType<ConfiguredDocumentClass<typeof Combat>>> | null;
+    viewed: StoredDocument<InstanceType<ConfiguredCombat>> | null;
 
     /**
      * @defaultValue
@@ -36,7 +36,7 @@ declare global {
     /**
      * Return an array of Combat encounters which occur within the current Scene.
      */
-    get combats(): StoredDocument<InstanceType<ConfiguredDocumentClass<typeof Combat>>>[];
+    get combats(): StoredDocument<InstanceType<ConfiguredCombat>>[];
 
     override createPopout(): this;
 
@@ -98,9 +98,7 @@ declare global {
      * @returns A Promise that resolves after all operations are complete
      * @internal
      */
-    protected _onToggleDefeatedStatus(
-      combatant: InstanceType<ConfiguredDocumentClass<typeof Combatant>>
-    ): Promise<void>;
+    protected _onToggleDefeatedStatus(combatant: InstanceType<ConfiguredCombatant>): Promise<void>;
 
     /**
      * Handle mouse-down event on a combatant name in the tracker
@@ -127,7 +125,7 @@ declare global {
      * @param combatant - The Combatant
      * @param hover     - Whether they are being hovered in or out.
      */
-    hoverCombatant(combatant: InstanceType<ConfiguredDocumentClass<typeof Combatant>>, hover: boolean): void;
+    hoverCombatant(combatant: InstanceType<ConfiguredCombatant>, hover: boolean): void;
     /**
      * Attach context menu options to elements in the tracker
      * @param html - The HTML element to which context options are attached
@@ -177,7 +175,7 @@ declare global {
           labels: { scoped: string };
           currentIndex: number;
           hasCombat: true;
-          combat: StoredDocument<InstanceType<ConfiguredDocumentClass<typeof Combat>>>;
+          combat: StoredDocument<InstanceType<ConfiguredCombat>>;
           turns: Turn[];
           previousId: string | null;
           nextId: string | null;

@@ -1,4 +1,3 @@
-import { ConfiguredDocumentClass, ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
 import { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
 
 declare global {
@@ -6,8 +5,8 @@ declare global {
    * The Drawing object is an implementation of the PlaceableObject container.
    * Each Drawing is a placeable object in the DrawingsLayer.
    */
-  class Drawing extends PlaceableObject<InstanceType<ConfiguredDocumentClass<typeof DrawingDocument>>> {
-    constructor(document: InstanceType<ConfiguredDocumentClass<typeof DrawingDocument>>);
+  class Drawing extends PlaceableObject<InstanceType<ConfiguredDrawingDocument>> {
+    constructor(document: InstanceType<ConfiguredDrawingDocument>);
     /**
      * @remarks Not used for `Drawing`
      */
@@ -189,13 +188,13 @@ declare global {
     /**
      * @param event - unused
      */
-    protected override _canControl(user: InstanceType<ConfiguredDocumentClassForName<'User'>>, event?: any): boolean;
+    protected override _canControl(user: InstanceType<ConfiguredUser>, event?: any): boolean;
 
     /**
      * @param user  - unused
      * @param event - unused
      */
-    protected override _canConfigure(user: InstanceType<ConfiguredDocumentClassForName<'User'>>, event?: any): boolean;
+    protected override _canConfigure(user: InstanceType<ConfiguredUser>, event?: any): boolean;
 
     override activateListeners(): void;
 
@@ -254,7 +253,7 @@ declare global {
      */
     protected _onHandleDragDrop(
       event: PIXI.InteractionEvent
-    ): ReturnType<InstanceType<ConfiguredDocumentClass<typeof DrawingDocument>>['update']>;
+    ): ReturnType<InstanceType<ConfiguredDrawingDocument>['update']>;
 
     /**
      * Handle cancellation of a drag event for one of the resizing handles

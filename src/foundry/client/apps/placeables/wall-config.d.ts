@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClassForName, ConfiguredObjectClassForName } from '../../../../types/helperTypes';
+import type { ConfiguredObjectClassForName } from '../../../../types/helperTypes';
 
 declare global {
   /**
@@ -9,7 +9,7 @@ declare global {
   class WallConfig<
     Options extends DocumentSheetOptions = DocumentSheetOptions,
     Data extends object = WallConfig.Data<Options>
-  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClassForName<'Wall'>>> {
+  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredWall>> {
     /**
      * @defaultValue
      * ```typescript
@@ -42,8 +42,8 @@ declare global {
 
   namespace WallConfig {
     interface Data<Options extends DocumentSheetOptions = DocumentSheetOptions>
-      extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClassForName<'Wall'>>, Options> {
-      object: DocumentSheet.Data<InstanceType<ConfiguredDocumentClassForName<'Wall'>>, Options>['data'];
+      extends DocumentSheet.Data<InstanceType<ConfiguredWall>, Options> {
+      object: DocumentSheet.Data<InstanceType<ConfiguredWall>, Options>['data'];
       moveTypes: {
         [Key in keyof typeof foundry.CONST.WALL_MOVEMENT_TYPES as typeof foundry.CONST.WALL_MOVEMENT_TYPES[Key]]: Titlecase<Key>;
       };

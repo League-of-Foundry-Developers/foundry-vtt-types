@@ -1,4 +1,3 @@
-import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
 import { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
 
 declare global {
@@ -41,10 +40,7 @@ declare global {
      * @param data - Initial data provided to construct the User document
      *               (default: `{}`)
      */
-    constructor(
-      data?: ConstructorParameters<ConstructorOf<foundry.documents.BaseUser>>[0],
-      context?: ConstructorParameters<ConstructorOf<foundry.documents.BaseUser>>[1]
-    );
+    constructor(...args: ConstructorParameters<ConstructorOf<foundry.documents.BaseUser>>);
 
     /**
      * Track whether the user is currently active in the game
@@ -81,7 +77,7 @@ declare global {
      * @returns A Promise which resolves once the User update is complete
      */
     assignHotbarMacro(
-      macro: InstanceType<ConfiguredDocumentClass<typeof Macro>> | null,
+      macro: InstanceType<ConfiguredMacro> | null,
       slot: string | number,
       { fromSlot }?: { fromSlot: number }
     ): Promise<this>;
@@ -109,9 +105,7 @@ declare global {
      * @param page - The hotbar page number
      *               (default: `1`)
      */
-    getHotbarMacros(
-      page?: number
-    ): Array<{ slot: number; macro: InstanceType<ConfiguredDocumentClass<typeof Macro>> | null }>;
+    getHotbarMacros(page?: number): Array<{ slot: number; macro: InstanceType<ConfiguredMacro> | null }>;
 
     /**
      * Update the set of Token targets for the user given an array of provided Token ids.
@@ -120,11 +114,11 @@ declare global {
      */
     updateTokenTargets(targetIds?: string[]): void;
 
-    // override _onUpdate(
-    //   data: DeepPartial<foundry.documents.BaseUser['data']>,
-    //   options: DocumentModificationOptions,
-    //   userId: string
-    // ): void;
+    override _onUpdate(
+      data: DeepPartial<foundry.documents.BaseUser['data']>,
+      options: DocumentModificationOptions,
+      userId: string
+    ): void;
 
     override _onDelete(options: DocumentModificationOptions, userId: string): void;
 

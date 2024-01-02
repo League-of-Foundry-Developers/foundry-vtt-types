@@ -1,5 +1,3 @@
-import type { ConfiguredDocumentClass } from '../../../../../src/types/helperTypes';
-
 import { expectAssignable, expectType } from 'tsd';
 
 const user = new User({ name: 'Test' });
@@ -9,13 +7,11 @@ expectType<UserTargets>(user.targets);
 expectType<string | null>(user.id);
 expectType<string | null>(user.viewedScene);
 expectType<string | undefined | null>(user.avatar);
-expectType<StoredDocument<InstanceType<ConfiguredDocumentClass<typeof Actor>>> | undefined>(user.character);
+expectType<StoredDocument<InstanceType<ConfiguredActor>> | undefined>(user.character);
 expectType<StoredDocument<Actor> | undefined>(user.character);
 expectAssignable<Partial<Record<string, boolean>>>(user.permissions);
 expectType<Array<Macro | null>>(user.getHotbarMacros().map((each) => each.macro));
-expectType<Array<InstanceType<ConfiguredDocumentClass<typeof Macro>> | null>>(
-  user.getHotbarMacros().map((each) => each.macro)
-);
+expectType<Array<InstanceType<ConfiguredMacro> | null>>(user.getHotbarMacros().map((each) => each.macro));
 
 user.assignHotbarMacro(new Macro(), 1);
 

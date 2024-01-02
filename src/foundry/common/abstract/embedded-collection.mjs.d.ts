@@ -19,8 +19,8 @@ declare const Collection: CollectionConstructor;
  * Used for the specific task of containing embedded Document instances within a parent Document.
  */
 declare class EmbeddedCollection<
-  DocumentClass extends foundry.abstract.Document.AnyConstructor,
-  ConcreteDataModel extends DataModel.Any
+  out DocumentClass extends foundry.abstract.Document.AnyConstructor,
+  out ConcreteDataModel extends DataModel.Any
 > extends Collection<InstanceType<DocumentClass>> {
   /**
    * @param model         - The parent DataModel instance to which this collection belongs

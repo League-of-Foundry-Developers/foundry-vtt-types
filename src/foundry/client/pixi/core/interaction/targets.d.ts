@@ -1,4 +1,3 @@
-import { ConfiguredDocumentClass } from '../../../../../types/helperTypes';
 import { ObjectClass } from '../../../../../types/helperTypes';
 
 interface SetReplacementMembers<T> {
@@ -24,7 +23,7 @@ declare global {
   class UserTargets extends Set<InstanceType<ObjectClass<typeof TokenDocument>>> {
     constructor(user: UserTargets['user']);
 
-    user: InstanceType<ConfiguredDocumentClass<typeof User>>;
+    user: InstanceType<ConfiguredUser>;
 
     /**
      * Return the Token IDs which are user targets

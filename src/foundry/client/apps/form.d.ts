@@ -265,7 +265,7 @@ declare global {
       target: string;
       button: HTMLElement;
       hasButton: boolean;
-      //   mce: tinyMCE.Editor | null;
+      mce: tinyMCE.Editor | null;
       active: boolean;
       changed: boolean;
       options: TextEditor.Options;

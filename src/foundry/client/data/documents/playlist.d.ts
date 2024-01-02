@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentClass } from '../../../../types/helperTypes';
 import type { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
 
 declare global {
@@ -40,7 +39,7 @@ declare global {
      * Begin simultaneous playback for all sounds in the Playlist.
      * @returns The updated Playlist document
      */
-    playAll(): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>> | undefined>;
+    playAll(): Promise<InstanceType<ConfiguredPlaylist> | undefined>;
 
     /**
      * Play the next Sound within the sequential or shuffled Playlist.
@@ -51,7 +50,7 @@ declare global {
     playNext(
       soundId?: string,
       options?: Partial<Playlist.PlayNextOptions>
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>> | undefined | null>;
+    ): Promise<InstanceType<ConfiguredPlaylist> | undefined | null>;
 
     /**
      * Begin playback of a specific Sound within this Playlist.
@@ -59,9 +58,7 @@ declare global {
      * @param sound - The desired sound that should play
      * @returns The updated Playlist
      */
-    playSound(
-      sound: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>> | undefined>;
+    playSound(sound: InstanceType<ConfiguredPlaylistSound>): Promise<InstanceType<ConfiguredPlaylist> | undefined>;
 
     /**
      * Stop playback of a specific Sound within this Playlist.
@@ -69,44 +66,37 @@ declare global {
      * @param sound - The desired sound that should play
      * @returns The updated Playlist
      */
-    stopSound(
-      sound: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>> | undefined>;
+    stopSound(sound: InstanceType<ConfiguredPlaylistSound>): Promise<InstanceType<ConfiguredPlaylist> | undefined>;
 
     /**
      * End playback for any/all currently playing sounds within the Playlist.
      * @returns The updated Playlist document
      */
-    stopAll(): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>> | undefined>;
+    stopAll(): Promise<InstanceType<ConfiguredPlaylist> | undefined>;
 
     /**
      * Cycle the playlist mode
      * @returns A promise which resolves to the updated Playlist instance
      */
-    cycleMode(): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>> | undefined>;
+    cycleMode(): Promise<InstanceType<ConfiguredPlaylist> | undefined>;
 
     /**
      * Get the next sound in the cached playback order. For internal use.
      * @internal
      */
-    protected _getNextSound(soundId: string): InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>> | undefined;
+    protected _getNextSound(soundId: string): InstanceType<ConfiguredPlaylistSound> | undefined;
 
     /**
      * Get the previous sound in the cached playback order. For internal use.
      * @internal
      */
-    protected _getPreviousSound(
-      soundId: string
-    ): InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>> | undefined;
+    protected _getPreviousSound(soundId: string): InstanceType<ConfiguredPlaylistSound> | undefined;
 
     /**
      * Define the sorting order for the Sounds within this Playlist. For internal use.
      * @internal
      */
-    protected _sortSounds(
-      a: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>,
-      b: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>
-    ): number;
+    protected _sortSounds(a: InstanceType<ConfiguredPlaylistSound>, b: InstanceType<ConfiguredPlaylistSound>): number;
 
     protected override _preUpdate(
       changed: DeepPartial<foundry.documents.BasePlaylist['_source']>,
@@ -150,16 +140,14 @@ declare global {
      * Handle callback logic when an individual sound within the Playlist concludes playback naturally
      * @internal
      */
-    _onSoundEnd(
-      sound: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>> | undefined>;
+    _onSoundEnd(sound: InstanceType<ConfiguredPlaylistSound>): Promise<InstanceType<ConfiguredPlaylist> | undefined>;
 
     /**
      * Handle callback logic when playback for an individual sound within the Playlist is started.
      * Schedule auto-preload of next track
      * @internal
      */
-    _onSoundStart(sound: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>): Promise<void>;
+    _onSoundStart(sound: InstanceType<ConfiguredPlaylistSound>): Promise<void>;
 
     override toCompendium(
       pack?: CompendiumCollection<CompendiumCollection.Metadata> | null | undefined,

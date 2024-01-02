@@ -1,5 +1,3 @@
-import type { ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
-
 export {};
 
 declare global {
@@ -86,7 +84,7 @@ declare global {
 
     /* -------------------------------------------- */
 
-    /** @inheritdoc */
+    /** {@inheritdoc} */
     protected _onDragLeftMove(event: PIXI.InteractionEvent): void;
 
     /* -------------------------------------------- */
@@ -111,7 +109,7 @@ declare global {
       data:
         | { type: 'Tile'; img: string; tileSize?: number; x: number; y: number }
         | ({ type: string } & Partial<Record<string, unknown>>)
-    ): Promise<InstanceType<ConfiguredDocumentClassForName<'Tile'>> | undefined>;
+    ): Promise<InstanceType<ConfiguredTile> | undefined>;
 
     /* -------------------------------------------- */
 

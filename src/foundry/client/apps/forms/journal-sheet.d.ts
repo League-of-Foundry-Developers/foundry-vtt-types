@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+export {};
 
 declare global {
   interface JournalSheetOptions extends DocumentSheetOptions {
@@ -104,4 +104,4 @@ declare global {
   }
 }
 
-type ConcreteJournalEntry = InstanceType<ConfiguredDocumentClass<typeof JournalEntry>>;
+type ConcreteJournalEntry = InstanceType<ConfiguredJournalEntry>;

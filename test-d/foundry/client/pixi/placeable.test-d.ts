@@ -1,10 +1,8 @@
-import type { ConfiguredDocumentClass } from '../../../../src/types/helperTypes';
-
 import { expectAssignable, expectType } from 'tsd';
 import '../../../../index';
 import { Document } from '../../../../src/foundry/common/abstract/module.mjs';
 
-class EmbeddedOfSceneDocument extends Document<any, InstanceType<ConfiguredDocumentClass<typeof Scene>>> {
+class EmbeddedOfSceneDocument extends Document<any, InstanceType<ConfiguredScene>> {
   get sheet(): DocumentSheet {
     return null as unknown as DocumentSheet;
   }

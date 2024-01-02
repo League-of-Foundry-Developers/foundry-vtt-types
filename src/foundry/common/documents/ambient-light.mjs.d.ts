@@ -1,7 +1,6 @@
 import Document, { DocumentMetadata } from '../abstract/document.mjs';
 import * as fields from '../data/fields.mjs';
 import { DataSchema } from '../abstract/data.mjs';
-import { ConfiguredDocumentClass } from '../../../types/helperTypes.js';
 import type { LightData } from '../data/data.mjs';
 import { FlagsField } from '../data/flagsField';
 
@@ -74,7 +73,7 @@ type BaseAmbientLightMetadata = Merge<
  */
 declare class BaseAmbientLight extends Document<
   BaseAmbientLightSchema,
-  InstanceType<ConfiguredDocumentClass<typeof Scene>>,
+  InstanceType<ConfiguredScene>,
   BaseAmbientLightMetadata
 > {
   /* -------------------------------------------- */

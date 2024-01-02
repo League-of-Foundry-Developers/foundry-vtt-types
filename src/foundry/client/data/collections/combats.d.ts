@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+export {};
 
 declare global {
   /**
@@ -31,7 +31,7 @@ declare global {
     /**
      * The currently viewed Combat encounter
      */
-    get viewed(): StoredDocument<InstanceType<ConfiguredDocumentClass<typeof Combat>>> | null;
+    get viewed(): StoredDocument<InstanceType<ConfiguredCombat>> | null;
 
     /**
      * When a Token is deleted, remove it as a combatant from any combat encounters which included the Token

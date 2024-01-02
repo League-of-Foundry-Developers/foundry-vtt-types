@@ -1,8 +1,4 @@
-import {
-  ConfiguredDocumentClass,
-  ConfiguredObjectClassForName,
-  DocumentConstructor
-} from '../../../../types/helperTypes';
+import { ConfiguredObjectClassForName, DocumentConstructor } from '../../../../types/helperTypes';
 import type DataModel from '../../../common/abstract/data.mjs';
 import { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
 import EmbeddedCollection from '../../../common/abstract/embedded-collection.mjs';
@@ -65,10 +61,8 @@ declare global {
     /**
      * Provide an object which organizes all embedded Item instances by their type
      */
-    get itemTypes(): Record<
-      foundry.documents.BaseItem['type'],
-      Array<InstanceType<ConfiguredDocumentClass<typeof Item>>>
-    >;
+    get itemTypes(): Record<foundry.documents.BaseItem['type'], Array<InstanceType<ConfiguredItem>>>;
+
     /**
      * Test whether an Actor document is a synthetic representation of a Token (if true) or a full Document (if false)
      */
@@ -82,7 +76,7 @@ declare global {
     /**
      * Return a reference to the TokenDocument which owns this Actor as a synthetic override
      */
-    get token(): InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseToken>> | null;
+    get token(): InstanceType<ConfiguredBaseToken> | null;
 
     override get uuid(): string;
 
@@ -100,17 +94,12 @@ declare global {
      * @param document - Return the Document instance rather than the PlaceableObject (default: `false`)
      * @returns An array of Token instances in the current Scene which reference this Actor.
      */
-    getActiveTokens(
-      linked: boolean,
-      document: true
-    ): InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseToken>>[];
+    getActiveTokens(linked: boolean, document: true): InstanceType<ConfiguredBaseToken>[];
     getActiveTokens(linked?: boolean, document?: false): InstanceType<ConfiguredObjectClassForName<'Token'>>[];
     getActiveTokens(
       linked: boolean,
       document: boolean
-    ):
-      | InstanceType<ConfiguredObjectClassForName<'Token'>>[]
-      | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseToken>>[];
+    ): InstanceType<ConfiguredObjectClassForName<'Token'>>[] | InstanceType<ConfiguredBaseToken>[];
 
     /**
      * Prepare a data object which defines the data schema used by dice roll commands against this Actor

@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+export {};
 
 declare global {
   /**
@@ -38,17 +38,5 @@ declare global {
      * Prepare a data object which defines the data schema used by dice roll commands against this Item
      */
     getRollData(): object;
-
-    // @ts-expect-error For some reason, proctected static methods from Document are lost, so ts complains that this isn't actually an override
-    protected static override _onCreateDocuments(
-      items: Array<InstanceType<ConfiguredDocumentClass<typeof Item>>>,
-      context: DocumentModificationContext
-    ): Promise<unknown>;
-
-    // @ts-expect-error For some reason, proctected static methods from Document are lost, so ts complains that this isn't actually an override
-    protected static override _onDeleteDocuments(
-      items: Array<InstanceType<ConfiguredDocumentClass<typeof Item>>>,
-      context: DocumentModificationContext
-    ): Promise<unknown>;
   }
 }

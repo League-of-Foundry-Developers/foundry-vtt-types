@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentClass } from '../../../../types/helperTypes';
 import type DataModel from '../../../common/abstract/data.mjs';
 import type { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
 
@@ -129,8 +128,8 @@ declare global {
      */
     override clone(
       createData?: DeepPartial<
-        | DataModel.SchemaToSourceInput<foundry.documents.BaseScene['schema']>
-        | (DataModel.SchemaToSourceInput<foundry.documents.BaseScene['schema']> & Record<string, unknown>)
+        | DataModel.SchemaToSourceInput<this['schema']>
+        | (DataModel.SchemaToSourceInput<this['schema']> & Record<string, unknown>)
       >,
       options?: { save?: boolean; keepId?: boolean }
     ): TemporaryDocument<this> | Promise<TemporaryDocument<this | undefined>>;
@@ -228,56 +227,56 @@ declare global {
 
     override _onCreateEmbeddedDocuments(
       embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof DrawingDocument>>[],
+      documents: InstanceType<ConfiguredDrawingDocument>[],
       result: DeepPartial<foundry.documents.BaseDrawing['_source']>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onCreateEmbeddedDocuments(
       embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>[],
+      documents: InstanceType<ConfiguredTokenDocument>[],
       result: DeepPartial<foundry.documents.BaseToken['_source']>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onCreateEmbeddedDocuments(
       embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof AmbientLightDocument>>[],
+      documents: InstanceType<ConfiguredAmbientLightDocument>[],
       result: DeepPartial<foundry.documents.BaseAmbientLight['_source']>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onCreateEmbeddedDocuments(
       embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof NoteDocument>>[],
+      documents: InstanceType<ConfiguredNoteDocument>[],
       result: DeepPartial<foundry.documents.BaseNote['_source']>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onCreateEmbeddedDocuments(
       embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof AmbientSoundDocument>>[],
+      documents: InstanceType<ConfiguredAmbientSoundDocument>[],
       result: DeepPartial<foundry.documents.BaseAmbientSound['_source']>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onCreateEmbeddedDocuments(
       embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof MeasuredTemplateDocument>>[],
+      documents: InstanceType<ConfiguredMeasuredTemplateDocument>[],
       result: DeepPartial<foundry.documents.BaseMeasuredTemplate['_source']>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onCreateEmbeddedDocuments(
       embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof TileDocument>>[],
+      documents: InstanceType<ConfiguredTileDocument>[],
       result: DeepPartial<foundry.documents.BaseTile['_source']>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onCreateEmbeddedDocuments(
       embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof WallDocument>>[],
+      documents: InstanceType<ConfiguredWallDocument>[],
       result: DeepPartial<foundry.documents.BaseWall['_source']>[],
       options: DocumentModificationContext,
       userId: string
@@ -334,56 +333,56 @@ declare global {
 
     override _onUpdateEmbeddedDocuments(
       embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof DrawingDocument>>[],
+      documents: InstanceType<ConfiguredDrawingDocument>[],
       result: DeepPartial<foundry.documents.BaseDrawing['_source']>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onUpdateEmbeddedDocuments(
       embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>[],
+      documents: InstanceType<ConfiguredTokenDocument>[],
       result: DeepPartial<foundry.documents.BaseToken['_source']>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onUpdateEmbeddedDocuments(
       embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof AmbientLightDocument>>[],
+      documents: InstanceType<ConfiguredAmbientLightDocument>[],
       result: DeepPartial<foundry.documents.BaseAmbientLight['_source']>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onUpdateEmbeddedDocuments(
       embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof NoteDocument>>[],
+      documents: InstanceType<ConfiguredNoteDocument>[],
       result: DeepPartial<foundry.documents.BaseNote['_source']>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onUpdateEmbeddedDocuments(
       embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof AmbientSoundDocument>>[],
+      documents: InstanceType<ConfiguredAmbientSoundDocument>[],
       result: DeepPartial<foundry.documents.BaseAmbientSound['_source']>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onUpdateEmbeddedDocuments(
       embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof MeasuredTemplateDocument>>[],
+      documents: InstanceType<ConfiguredMeasuredTemplateDocument>[],
       result: DeepPartial<foundry.documents.BaseMeasuredTemplate['_source']>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onUpdateEmbeddedDocuments(
       embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof TileDocument>>[],
+      documents: InstanceType<ConfiguredTileDocument>[],
       result: DeepPartial<foundry.documents.BaseTile['_source']>[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onUpdateEmbeddedDocuments(
       embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof WallDocument>>[],
+      documents: InstanceType<ConfiguredWallDocument>[],
       result: DeepPartial<foundry.documents.BaseWall['_source']>[],
       options: DocumentModificationContext,
       userId: string
@@ -398,56 +397,56 @@ declare global {
 
     override _onDeleteEmbeddedDocuments(
       embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof DrawingDocument>>[],
+      documents: InstanceType<ConfiguredDrawingDocument>[],
       result: string[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onDeleteEmbeddedDocuments(
       embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>[],
+      documents: InstanceType<ConfiguredTokenDocument>[],
       result: string[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onDeleteEmbeddedDocuments(
       embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof AmbientLightDocument>>[],
+      documents: InstanceType<ConfiguredAmbientLightDocument>[],
       result: string[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onDeleteEmbeddedDocuments(
       embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof NoteDocument>>[],
+      documents: InstanceType<ConfiguredNoteDocument>[],
       result: string[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onDeleteEmbeddedDocuments(
       embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof AmbientSoundDocument>>[],
+      documents: InstanceType<ConfiguredAmbientSoundDocument>[],
       result: string[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onDeleteEmbeddedDocuments(
       embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof MeasuredTemplateDocument>>[],
+      documents: InstanceType<ConfiguredMeasuredTemplateDocument>[],
       result: string[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onDeleteEmbeddedDocuments(
       embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof TileDocument>>[],
+      documents: InstanceType<ConfiguredTileDocument>[],
       result: string[],
       options: DocumentModificationContext,
       userId: string
     ): void;
     _onDeleteEmbeddedDocuments(
       embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof WallDocument>>[],
+      documents: InstanceType<ConfiguredWallDocument>[],
       result: string[],
       options: DocumentModificationContext,
       userId: string

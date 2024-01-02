@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+export {};
 
 declare global {
   /**
@@ -117,22 +117,19 @@ declare global {
      * Create and draw the Cursor object for a given User
      * @param user - The User document for whom to draw the cursor Container
      */
-    drawCursor(user: InstanceType<ConfiguredDocumentClass<typeof User>>): Cursor;
+    drawCursor(user: InstanceType<ConfiguredUser>): Cursor;
 
     /**
      * Update the cursor when the user moves to a new position
      * @param user     - The User for whom to update the cursor
      * @param position - The new cursor position
      */
-    updateCursor(user: InstanceType<ConfiguredDocumentClass<typeof User>>, position: Point | null): void;
+    updateCursor(user: InstanceType<ConfiguredUser>, position: Point | null): void;
 
     /**
      * Update display of an active Ruler object for a user given provided data
      */
-    updateRuler(
-      user: InstanceType<ConfiguredDocumentClass<typeof User>>,
-      rulerData: Parameters<Ruler['update']>[0] | null
-    ): void;
+    updateRuler(user: InstanceType<ConfiguredUser>, rulerData: Parameters<Ruler['update']>[0] | null): void;
   }
 
   namespace ControlsLayer {

@@ -1,8 +1,4 @@
-import type {
-  ConfiguredDocumentClass,
-  ConfiguredDocumentClassForName,
-  ConfiguredObjectClassForName
-} from '../../../../types/helperTypes';
+import type { ConfiguredObjectClassForName } from '../../../../types/helperTypes';
 import type { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
 import type { LineIntersection } from '../../../common/utils/geometry.mjs';
 import type { HoverInOptions } from '../placeable';
@@ -209,7 +205,7 @@ declare global {
      * Record the intersection points between this wall and another, if any.
      * @param other - The other wall.
      */
-    protected _identifyIntersectionsWith(other: InstanceType<ConfiguredDocumentClassForName<'Wall'>>): void;
+    protected _identifyIntersectionsWith(other: InstanceType<ConfiguredWall>): void;
 
     /**
      * Remove this wall's intersections.
@@ -239,7 +235,7 @@ declare global {
      */
     protected _onModifyWall(doorChange?: boolean): Promise<void>;
 
-    protected override _canControl(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
+    protected override _canControl(user: InstanceType<ConfiguredUser>, event?: any): boolean;
 
     protected override _onHoverIn(event: PIXI.InteractionEvent, options?: HoverInOptions): false | void;
 
@@ -265,4 +261,4 @@ declare global {
   }
 }
 
-type ConcreteWallDocument = InstanceType<ConfiguredDocumentClass<typeof WallDocument>>;
+type ConcreteWallDocument = InstanceType<ConfiguredWallDocument>;

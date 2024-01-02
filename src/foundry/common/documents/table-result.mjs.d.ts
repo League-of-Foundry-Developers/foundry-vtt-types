@@ -1,4 +1,3 @@
-import { ConfiguredDocumentClass } from './../../../types/helperTypes.d';
 import Document, { DocumentMetadata } from '../abstract/document.mjs';
 import * as CONST from '../constants.mjs';
 import * as fields from '../data/fields.mjs';
@@ -118,7 +117,7 @@ type BaseTableResultShims = {
  */
 declare class BaseTableResult extends Document<
   BaseTableResultSchema,
-  InstanceType<ConfiguredDocumentClass<typeof RollTable>>,
+  InstanceType<ConfiguredRollTable>,
   BaseTableResultMetadata,
   BaseTableResultShims
 > {

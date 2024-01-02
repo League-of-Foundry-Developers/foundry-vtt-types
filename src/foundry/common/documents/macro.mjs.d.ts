@@ -33,7 +33,9 @@ interface BaseMacroSchema extends DataSchema {
    */
   author: fields.ForeignDocumentField<
     typeof documents.BaseUser,
-    { initial: () => OptionalChaining<OptionalChaining<typeof game, 'user'>, 'id'> }
+    {
+      initial: () => OptionalChaining<OptionalChaining<typeof game, 'user'>, 'id'>;
+    }
   >;
 
   /**

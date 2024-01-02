@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass } from '../../../types/helperTypes';
+export {};
 
 declare global {
   /**
@@ -27,7 +27,7 @@ declare global {
      * A reference to the currently displayed Scene document, or null if the Canvas is currently blank.
      * @defaultValue `null`
      */
-    scene: StoredDocument<InstanceType<ConfiguredDocumentClass<typeof Scene>>> | null;
+    scene: StoredDocument<InstanceType<ConfiguredScene>> | null;
 
     /**
      * The current pixel dimensions of the displayed Scene, or null if the Canvas is blank.
@@ -234,7 +234,7 @@ declare global {
      * @param scene - A specific Scene document to render on the Canvas
      * @returns A Promise which resolves once the Canvas is fully drawn
      */
-    draw(scene?: InstanceType<ConfiguredDocumentClass<typeof Scene>>): Promise<this>;
+    draw(scene?: InstanceType<ConfiguredScene>): Promise<this>;
 
     performance?: PerformanceSettings;
 

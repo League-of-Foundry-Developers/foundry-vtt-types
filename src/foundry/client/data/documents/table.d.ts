@@ -1,4 +1,3 @@
-import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
 import { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
 
 declare global {
@@ -33,9 +32,9 @@ declare global {
      * @param options - Additional options which modify message creation
      */
     toMessage(
-      results: InstanceType<ConfiguredDocumentClass<typeof TableResult>>[],
+      results: InstanceType<ConfiguredTableResult>[],
       options?: Partial<RollTable.ToMessageOptions>
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof ChatMessage>> | undefined>;
+    ): Promise<InstanceType<ConfiguredChatMessage> | undefined>;
 
     /**
      * Draw a result from the RollTable based on the table formula or a provided Roll instance
@@ -62,7 +61,7 @@ declare global {
      * @remarks Actually, returns list of TableEntries updated, not the RollTable.
      * As written, it force updates all records, not just the ones already drawn.
      */
-    reset(): Promise<InstanceType<ConfiguredDocumentClass<typeof TableResult>>[]>;
+    reset(): Promise<InstanceType<ConfiguredTableResult>[]>;
 
     /**
      * Evaluate a RollTable by rolling its formula and retrieving a drawn result.
@@ -90,7 +89,7 @@ declare global {
      * @param value - The rolled value
      * @returns An Array of results
      */
-    getResultsForRoll(value: number): InstanceType<ConfiguredDocumentClass<typeof TableResult>>[];
+    getResultsForRoll(value: number): InstanceType<ConfiguredTableResult>[];
 
     protected override _onCreateEmbeddedDocuments(
       embeddedName: string,
@@ -102,7 +101,7 @@ declare global {
 
     override _onDeleteEmbeddedDocuments(
       embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof TableResult>>[],
+      documents: InstanceType<ConfiguredTableResult>[],
       result: string[],
       options: DocumentModificationContext,
       userId: string
@@ -121,9 +120,9 @@ declare global {
      * @param options - Additional options passed to the RollTable.create method
      */
     static fromFolder(
-      folder: InstanceType<ConfiguredDocumentClass<typeof Folder>>,
+      folder: InstanceType<ConfiguredFolder>,
       options?: DocumentModificationOptions
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof RollTable>> | undefined>;
+    ): Promise<InstanceType<ConfiguredRollTable> | undefined>;
   }
 
   namespace RollTable {
@@ -214,7 +213,7 @@ declare global {
     /**
      * An array of drawn TableResult documents
      */
-    results: InstanceType<ConfiguredDocumentClass<typeof TableResult>>[];
+    results: InstanceType<ConfiguredTableResult>[];
   }
 }
 export {};

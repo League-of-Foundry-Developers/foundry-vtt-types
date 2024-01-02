@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
+export {};
 
 declare global {
   interface DrawingConfigOptions extends FormApplicationOptions {
@@ -17,7 +17,7 @@ declare global {
   class DrawingConfig<
     Options extends DrawingConfigOptions = DrawingConfigOptions,
     Data extends object = DrawingConfig.Data<Options>
-  > extends FormApplication<Options, Data, InstanceType<ConfiguredDocumentClassForName<'Drawing'>>> {
+  > extends FormApplication<Options, Data, InstanceType<ConfiguredDrawing>> {
     /**
      * @defaultValue
      * ```typescript

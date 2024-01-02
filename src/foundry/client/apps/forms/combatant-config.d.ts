@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+export {};
 
 declare global {
   /**
@@ -10,7 +10,7 @@ declare global {
   class CombatantConfig<
     Options extends DocumentSheetOptions = CombatantConfig.Options,
     Data extends CombatantConfig.Data<Options> = CombatantConfig.Data<Options>
-  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClass<typeof Combatant>>> {
+  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredCombatant>> {
     /**
      * @defaultValue
      * ```typescript
@@ -39,10 +39,7 @@ declare global {
       width: number;
     }
 
-    type Data<Options extends DocumentSheetOptions> = DocumentSheet.Data<
-      InstanceType<ConfiguredDocumentClass<typeof Combatant>>,
-      Options
-    >;
+    type Data<Options extends DocumentSheetOptions> = DocumentSheet.Data<InstanceType<ConfiguredCombatant>, Options>;
 
     type FormData = Pick<Combatant['_source'], 'defeated' | 'hidden' | 'img' | 'initiative' | 'name'>;
   }

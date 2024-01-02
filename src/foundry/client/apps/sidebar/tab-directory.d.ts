@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass, ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
+import { ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
 import { DropData } from '../../data/abstract/client-document';
 
 declare global {
@@ -21,7 +21,7 @@ declare global {
     /**
      * Reference the set of Folders which exist in this Sidebar
      */
-    folders: InstanceType<ConfiguredDocumentClass<typeof Folder>>[];
+    folders: InstanceType<ConfiguredFolder>[];
 
     /**
      * A reference to the named Document type that this Sidebar Directory instance displays
@@ -180,8 +180,8 @@ declare global {
      */
     protected _handleDroppedFolder(
       target: HTMLElement,
-      data: DropData<InstanceType<ConfiguredDocumentClass<typeof Folder>>>
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof Folder>> | undefined>;
+      data: DropData<InstanceType<ConfiguredFolder>>
+    ): Promise<InstanceType<ConfiguredFolder> | undefined>;
 
     /**
      * Default folder context actions
@@ -209,7 +209,7 @@ declare global {
 
   namespace SidebarDirectory {
     interface Data<ConcreteTree extends Tree<AnyDocument>> {
-      user: InstanceType<ConfiguredDocumentClass<typeof User>>;
+      user: InstanceType<ConfiguredUser>;
       tree: ConcreteTree;
       canCreate: boolean;
       sidebarIcon: string;

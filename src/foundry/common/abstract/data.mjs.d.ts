@@ -1,5 +1,4 @@
 import { StructuralClass } from './../../../types/helperTypes.d';
-import { ToObjectType } from '../../../types/helperTypes';
 import type { DataField, EmbeddedCollectionField } from '../data/fields.mjs';
 
 declare namespace DataModel {
@@ -115,18 +114,23 @@ declare namespace DataModel {
     ? SchemaToData<ConcreteDataSchema>
     : never;
 
-  //   export type SchemaToSourceInputSimple<ConcreteDataSchema extends DataSchema> = FlattenSystem<
-  //     GetSchemaValue<ConstructReadonly<RemoveIndex<ConcreteDataSchema>>, 'SourceType'>
-  //   >;
-
-  export type SchemaToSourceInputSimple<ConcreteDataSchema extends DataSchema> =
-    SchemaToSourceInput<ConcreteDataSchema>;
-
-  export type SchemaToSourceInput<ConcreteDataSchema extends DataSchema> = FlattenSystem<
-    GetSchemaValue<ConstructPartial<ConstructReadonly<RemoveIndex<ConcreteDataSchema>>, 'SourceType'>, 'SourceType'>
+  export type SchemaToSourceInput<ConcreteDataSchema extends DataSchema> = ExpandDeep<
+    FlattenSystem<
+      GetSchemaValue<ConstructPartial<ConstructReadonly<RemoveIndex<ConcreteDataSchema>>, 'SourceType'>, 'SourceType'>
+    >
   >;
 
   type ConstructPartial<
+    out ConcreteDataSchema extends DataSchema,
+    out ExtendsOptionsKey extends keyof DataField.AnyExtendsOptions,
+    out Computed = {
+      [K in keyof ConcreteDataSchema]: ConcreteDataSchema[K]['initial'] extends '' ? true : false;
+    }
+  > = {
+    [K in keyof ConcreteDataSchema]: ConcreteDataSchema[K];
+  };
+
+  type ConstructPartialInner<
     ConcreteDataSchema extends DataSchema,
     ExtendsOptionsKey extends keyof DataField.AnyExtendsOptions
   > = PartialProps<
@@ -141,7 +145,7 @@ declare namespace DataModel {
         Not<
           ItemExtends<
             DataField.InitialTypeFor<ConcreteDataSchema[K]>,
-            FieldType<ConcreteDataSchema[K], ExtendsOptionsKey>
+            FieldType<ConcreteDataSchema[K], ExtendsOptionsKey, true>
           >
         >,
         'blank' extends keyof ConcreteDataSchema[K]
@@ -153,34 +157,34 @@ declare namespace DataModel {
     }[keyof ConcreteDataSchema]
   >;
 
-  export type SchemaToSource<ConcreteDataSchema extends DataSchema> = FlattenSystem<
-    GetSchemaValue<ConstructReadonly<RemoveIndex<ConcreteDataSchema>>, 'SourceType'>
-  >;
-
-  export type FieldType<Field extends DataField.Any, Key extends keyof DataField.AnyExtendsOptions> =
-    | DataField.ExtendsOptionsFor<Field>[Key]
-    | DataField.ExtraTypes<Field>;
-
-  export type GetSchemaValue<
-    ConcreteDataSchema extends DataSchema,
-    ExtendsOptionsKey extends keyof DataField.AnyExtendsOptions
-  > = {
-    [K in keyof ConcreteDataSchema]: GetFieldType<ConcreteDataSchema[K], ExtendsOptionsKey>;
+  export type SchemaToSource<ConcreteDataSchema extends DataSchema> = {
+    [K in keyof ConcreteDataSchema]?: any;
   };
 
-  export type GetFieldType<T, ExtendsOptionsKey extends keyof DataField.AnyExtendsOptions> = T extends DataField<
-    infer Options,
-    infer ExtendsOptions
-  >
-    ? FieldType<T, ExtendsOptionsKey>
-    : T;
+  export type FieldType<
+    Field extends DataField.Any,
+    Key extends keyof DataField.AnyExtendsOptions,
+    IsInput extends true | false
+  > = DataField.ExtendsOptionsFor<Field>[Key] | DataField.ExtraTypes<Field, IsInput>;
 
-  export type ConstructReadonly<ConcreteDataSchema extends DataSchema> = ReadonlyProps<
-    ConcreteDataSchema,
-    {
-      [K in keyof ConcreteDataSchema]: ConcreteDataSchema[K]['readonly'] extends true ? K : never;
-    }[keyof ConcreteDataSchema]
-  >;
+  export type GetSchemaValue<
+    // `Partial` is applied because of `ConstructPartial`.
+    out ConcreteDataSchema extends Partial<DataSchema>,
+    out ExtendsOptionsKey extends keyof DataField.AnyExtendsOptions
+  > = {
+    [K in keyof ConcreteDataSchema]: FieldType<Exclude<ConcreteDataSchema[K], undefined>, ExtendsOptionsKey, true>;
+  };
+
+  export type ConstructReadonly<ConcreteDataSchema extends DataSchema> = ConcreteDataSchema;
+  //   export type ConstructReadonly<
+  //     out ConcreteDataSchema extends DataSchema,
+  //     out Computed = ReadonlyProps<
+  //       ConcreteDataSchema,
+  //       {
+  //         [K in keyof ConcreteDataSchema]: ConcreteDataSchema[K]['readonly'] extends true ? K : never;
+  //       }[keyof ConcreteDataSchema]
+  //     >
+  //   > = { [K in keyof Computed]: Computed[K] };
 
   // The given source and data type of system is a lie. It's a union that looks like `{ type: SubType1, system: SystemData1 } | ...`, when in reality it's just `SystemData1 | SystemData2 | ...`
   // However, it keeps these types extraordinarily simple compared to alternatives.
@@ -190,15 +194,21 @@ declare namespace DataModel {
     ? ConstructedSchema
     : ConstructedSchema['system'] & Omit<ConstructedSchema, 'type' | 'system'>;
 
-  type FlattenSystem<ConstructedSchema extends Record<string, unknown>> = [unknown] extends ConstructedSchema['system']
-    ? ConstructedSchema
-    : {
-        system: GetKey<ConstructedSchema['system'], 'system', never>;
-      } & Omit<ConstructedSchema, 'system'>;
+  // Flatten the system. Be careful about changes here.
+  // Variance MUST be correct.
+  type FlattenSystem<out ConstructedSchema extends Record<string, unknown>> = {
+    [K in keyof ConstructedSchema]: ['system'] extends [K]
+      ? GetKey<ConstructedSchema['system'], 'system', never>
+      : ConstructedSchema[K];
+  };
 
-  export type SchemaToData<ConcreteDataSchema extends DataSchema> = FlattenSystem<
-    GetSchemaValue<ConstructReadonly<RemoveIndex<ConcreteDataSchema>>, 'InitializedType'>
-  >;
+  //   export type SchemaToData<ConcreteDataSchema extends DataSchema> = FlattenSystem<
+  //     GetSchemaValue<ConstructReadonly<RemoveIndex<ConcreteDataSchema>>, 'InitializedType'>
+  //   >;
+
+  type SchemaToData<ConcreteDataSchema extends DataSchema> = {
+    [K in keyof ConcreteDataSchema]?: any;
+  };
 
   export type Any = DataModel<any, any, any>;
 
@@ -216,7 +226,7 @@ type DataModelConstructorParameters<ConcreteDataSchema extends DataSchema> = Par
      * Initial data used to construct the data object
      * (default: `{}`)
      */
-    data: DataModel.SchemaToSourceInputSimple<ConcreteDataSchema>,
+    data: DataModel.SchemaToSourceInput<ConcreteDataSchema>,
 
     /**
      * Options which affect DataModel construction
@@ -224,14 +234,15 @@ type DataModelConstructorParameters<ConcreteDataSchema extends DataSchema> = Par
      */
     options?: DataModel.ConstructorOptions
   ],
-  Equals<DataModel.SchemaToSourceInputSimple<ConcreteDataSchema>, {}>
+  Equals<DataModel.SchemaToSourceInput<ConcreteDataSchema>, {}>
 >;
 
 // @ts-expect-error subclassing StructuralClass gives an error
 declare abstract class _InternalDataModel<
-  ConcreteDataSchema extends DataSchema,
-  ConstructorParameters extends any[] = DataModelConstructorParameters<ConcreteDataSchema>,
-  _ComputedDataModel extends object = RemoveIndex<DataModel.SchemaToData<ConcreteDataSchema>>
+  // These variance annotations are required to make sure tsserver doesn't get tripped up, see https://github.com/microsoft/TypeScript/issues/52813.
+  out ConcreteDataSchema extends DataSchema,
+  out ConstructorParameters extends any[] = DataModelConstructorParameters<ConcreteDataSchema>,
+  out _ComputedDataModel extends object = RemoveIndex<DataModel.SchemaToData<ConcreteDataSchema>>
 > extends StructuralClass<_ComputedDataModel, ConstructorParameters> {}
 
 type DataModelShims = {
@@ -245,10 +256,10 @@ type DataModelShims = {
  * The abstract base class which defines the data schema contained within a Document.
  */
 declare abstract class DataModel<
-  Parent extends AnyDocument | null,
-  ConcreteDataSchema extends DataSchema,
-  ConcreteDataModelShims extends Record<string, unknown> = {},
-  ConstructorParameters extends any[] = DataModelConstructorParameters<ConcreteDataSchema>
+  out Parent extends AnyDocument | null,
+  out ConcreteDataSchema extends DataSchema,
+  out ConcreteDataModelShims extends Record<string, unknown> = {},
+  out ConstructorParameters extends any[] = DataModelConstructorParameters<ConcreteDataSchema>
 > extends _InternalDataModel<ConcreteDataSchema, ConstructorParameters> {
   /**
    * The source data object for this DataModel instance.
@@ -264,11 +275,11 @@ declare abstract class DataModel<
   /**
    * A mapping of EmbeddedCollection instances which correspond to fields of this model.
    */
-  #collections: {
-    [K in keyof ConcreteDataSchema as ConcreteDataSchema[K] extends EmbeddedCollectionField<any, any>
-      ? K
-      : never]: ConcreteDataSchema[K];
-  };
+  //   #collections: {
+  //     [K in keyof ConcreteDataSchema as ConcreteDataSchema[K] extends EmbeddedCollectionField<any, any>
+  //       ? K
+  //       : never]: ConcreteDataSchema[K];
+  //   };
 
   /**
    * An immutable reverse-reference to a parent DataModel to which this model belongs.
@@ -289,7 +300,7 @@ declare abstract class DataModel<
    * The schema is populated the first time it is accessed and cached for future reuse.
    * @virtual
    *
-   * @remarks This method MUST be defined in subclasses as to not is a runtime error. To get runtime and compile time characteristics synced up the return type of `defineSchema` must be the same as `ConcreteDataSchema`. Unfortunately neither of these acn be ensured at compile-time.
+   * @remarks This method MUST be defined in subclasses as to not is a runtime error. To get runtime and compile time characteristics synced up the return type of `defineSchema` must be the same as `ConcreteDataSchema`. Unfortunately neither of these can be ensured at compile-time.
    */
   static defineSchema(): DataSchema;
 
@@ -486,7 +497,7 @@ declare abstract class DataModel<
    * Extract the source data for the DataModel into a simple object format that can be serialized.
    * @returns - The document source data expressed as a plain object
    */
-  toJSON(): ToObjectType<this, true>;
+  toJSON(): Record<string, unknown>;
 
   /* -------------------------------------------- */
 

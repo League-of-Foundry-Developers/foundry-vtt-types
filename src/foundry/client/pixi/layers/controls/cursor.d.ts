@@ -1,11 +1,11 @@
-import { ConfiguredDocumentClass } from '../../../../../types/helperTypes';
+export {};
 
 declare global {
   /**
    * A single Mouse Cursor
    */
   class Cursor extends PIXI.Container {
-    constructor(user: InstanceType<ConfiguredDocumentClass<typeof User>>);
+    constructor(user: InstanceType<ConfiguredUser>);
 
     /**
      * @defaultValue `{x: 0, y: 0}`
@@ -15,7 +15,7 @@ declare global {
     /**
      * Draw the user's cursor as a small dot with their user name attached as text
      */
-    draw(user: InstanceType<ConfiguredDocumentClass<typeof User>>): void;
+    draw(user: InstanceType<ConfiguredUser>): void;
 
     /**
      * Move an existing cursor to a new position smoothly along the animation loop

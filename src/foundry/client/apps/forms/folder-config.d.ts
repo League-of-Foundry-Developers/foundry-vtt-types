@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentClass } from '../../../../types/helperTypes';
 import type BaseFolder from '../../../common/documents/folder.mjs';
 
 declare global {
@@ -11,7 +10,7 @@ declare global {
   class FolderConfig<
     Options extends FolderConfig.Options = FolderConfig.Options,
     Data extends object = FolderConfig.Data
-  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClass<typeof Folder>>> {
+  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredFolder>> {
     /**
      * @defaultValue
      * ```typescript
@@ -37,7 +36,7 @@ declare global {
 
   namespace FolderConfig {
     interface Options extends DocumentSheetOptions {
-      resolve?: (doc: InstanceType<ConfiguredDocumentClass<typeof Folder>>) => void;
+      resolve?: (doc: InstanceType<ConfiguredFolder>) => void;
     }
 
     interface Data {

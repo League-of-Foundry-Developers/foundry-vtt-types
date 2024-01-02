@@ -1,12 +1,11 @@
-import type { ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
 import { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
 
 declare global {
   /**
    * An AmbientLight is an implementation of PlaceableObject which represents a dynamic light source within the Scene.
    */
-  class AmbientLight extends PlaceableObject<InstanceType<ConfiguredDocumentClassForName<'AmbientLight'>>> {
-    constructor(document: InstanceType<ConfiguredDocumentClassForName<'AmbientLight'>>);
+  class AmbientLight extends PlaceableObject<InstanceType<ConfiguredAmbientLight>> {
+    constructor(document: InstanceType<ConfiguredAmbientLight>);
 
     /**
      * A reference to the PointSource object which defines this light source area of effect
@@ -95,9 +94,9 @@ declare global {
 
     protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
 
-    protected override _canHUD(user: InstanceType<ConfiguredDocumentClassForName<'User'>>, event?: any): boolean;
+    protected override _canHUD(user: InstanceType<ConfiguredUser>, event?: any): boolean;
 
-    protected override _canConfigure(user: InstanceType<ConfiguredDocumentClassForName<'User'>>, event?: any): boolean;
+    protected override _canConfigure(user: InstanceType<ConfiguredUser>, event?: any): boolean;
 
     protected override _onClickRight(event: PIXI.InteractionEvent): Promise<this>;
 

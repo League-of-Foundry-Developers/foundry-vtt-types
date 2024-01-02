@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClass } from '../../../../../types/helperTypes';
+export {};
 
 declare global {
   /**
@@ -6,12 +6,12 @@ declare global {
    * @typeParam Options - the type of the options object
    */
   class ChatPopout<Options extends ApplicationOptions = ApplicationOptions> extends Application<Options> {
-    constructor(message: InstanceType<ConfiguredDocumentClass<typeof ChatMessage>>, options?: Partial<Options>);
+    constructor(message: InstanceType<ConfiguredChatMessage>, options?: Partial<Options>);
 
     /**
      * The displayed Chat Message document
      */
-    message: InstanceType<ConfiguredDocumentClass<typeof ChatMessage>>;
+    message: InstanceType<ConfiguredChatMessage>;
 
     /**
      * @defaultValue

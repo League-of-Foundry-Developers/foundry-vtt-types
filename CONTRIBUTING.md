@@ -124,7 +124,7 @@ Example:
 declare class ActorSheet<
   Options extends ActorSheet.Options = ActorSheet.Options,
   Data extends object = ActorSheet.Data<Options>
-> extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClass<typeof Actor>>> {
+> extends DocumentSheet<Options, Data, InstanceType<ConfiguredActor>> {
   /**
    * @defaultValue
    * ```typescript
@@ -156,20 +156,20 @@ may be assigned, no deriving classes), `typeof NameOfTheClass` can be used.
 Example (`documentClass` is configurable, `collection` is not):
 
 ```typescript
-    /**
-     * Configuration for the Actor document
-     */
-    Actor: {
-      /**
-       * @defaultValue `Actor`
-       */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof Actor>;
+/**
+ * Configuration for the Actor document
+ */
+Actor: {
+  /**
+   * @defaultValue `Actor`
+   */
+  documentClass: ConfiguredDocumentClassOrDefault<typeof Actor>;
 
-      /**
-       * @defaultValue `Actors`
-       */
-      collection: ConstructorOf<Actors>;
-    };
+  /**
+   * @defaultValue `Actors`
+   */
+  collection: ConstructorOf<Actors>;
+}
 ```
 
 #### A property in `SCREAMING_SNAKE_CASE` is being assigned to a class after its definition in Foundry VTT

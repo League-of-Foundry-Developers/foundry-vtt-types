@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentClass } from '../../../../types/helperTypes';
 import type DataModel from '../../../common/abstract/data.mjs';
 import type { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
 
@@ -22,7 +21,7 @@ declare global {
     );
 
     /** Track the sorted turn order of this combat encounter */
-    turns: InstanceType<ConfiguredDocumentClass<typeof Combatant>>[];
+    turns: InstanceType<ConfiguredCombatant>[];
 
     /** Record the current round, turn, and tokenId to understand changes in the encounter state */
     current: RoundData;
@@ -61,22 +60,22 @@ declare global {
      */
     activate(
       options?: DocumentModificationContext & foundry.utils.MergeObjectOptions
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof Combat>>[]>;
+    ): Promise<InstanceType<ConfiguredCombat>[]>;
 
     /** Display a dialog querying the GM whether they wish to end the combat encounter and empty the tracker */
-    endCombat(): Promise<InstanceType<ConfiguredDocumentClass<typeof Combat>> | undefined>;
+    endCombat(): Promise<InstanceType<ConfiguredCombat> | undefined>;
 
     /**
      * Get a Combatant using its Token id
      * @param tokenId - The id of the Token for which to acquire the combatant
      */
-    getCombatantByToken(tokenId: string): InstanceType<ConfiguredDocumentClass<typeof Combatant>> | undefined;
+    getCombatantByToken(tokenId: string): InstanceType<ConfiguredCombatant> | undefined;
 
     /**
      * Get a Combatant using its Actor id
      * @param actorId - The id of the Actor for which to acquire the combatant
      */
-    getCombatantByActor(actorId: string): InstanceType<ConfiguredDocumentClass<typeof Combatant>> | undefined;
+    getCombatantByActor(actorId: string): InstanceType<ConfiguredCombatant> | undefined;
 
     /** Advance the combat to the next round */
     nextRound(): Promise<this | undefined>;
@@ -141,10 +140,7 @@ declare global {
      * By default sort by initiative, next falling back to name, lastly tie-breaking by combatant id.
      * @internal
      */
-    protected _sortCombatants(
-      a: InstanceType<ConfiguredDocumentClass<typeof Combatant>>,
-      b: InstanceType<ConfiguredDocumentClass<typeof Combatant>>
-    ): number;
+    protected _sortCombatants(a: InstanceType<ConfiguredCombatant>, b: InstanceType<ConfiguredCombatant>): number;
 
     protected override _onCreate(data: this['_source'], options: DocumentModificationOptions, userId: string): void;
 
@@ -158,7 +154,7 @@ declare global {
 
     protected override _onCreateEmbeddedDocuments(
       type: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof Combatant>>[],
+      documents: InstanceType<ConfiguredCombatant>[],
       result: foundry.documents.BaseCombatant['_source'][],
       options: DocumentModificationOptions,
       userId: string
@@ -166,7 +162,7 @@ declare global {
 
     protected override _onUpdateEmbeddedDocuments(
       embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof Combatant>>[],
+      documents: InstanceType<ConfiguredCombatant>[],
       result: foundry.documents.BaseCombatant['_source'][],
       options: DocumentModificationOptions,
       userId: string
@@ -174,7 +170,7 @@ declare global {
 
     protected override _onDeleteEmbeddedDocuments(
       embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof Combatant>>[],
+      documents: InstanceType<ConfiguredCombatant>[],
       result: string[],
       options: DocumentModificationContext,
       userId: string

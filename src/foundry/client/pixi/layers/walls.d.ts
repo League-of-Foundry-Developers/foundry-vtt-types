@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass, ConfiguredObjectClassForName } from '../../../../types/helperTypes';
+import { ConfiguredObjectClassForName } from '../../../../types/helperTypes';
 import { PasteOptions } from '../placeables';
 
 declare global {
@@ -138,10 +138,7 @@ declare global {
 
     override releaseAll(options?: PlaceableObject.ReleaseOptions): number;
 
-    override pasteObjects(
-      position: Point,
-      options?: PasteOptions
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseWall>>[]>;
+    override pasteObjects(position: Point, options?: PasteOptions): Promise<InstanceType<ConfiguredBaseWall>[]>;
 
     /**
      * Create temporary WallDocument instances which represent the rectangular boundaries of the canvas.

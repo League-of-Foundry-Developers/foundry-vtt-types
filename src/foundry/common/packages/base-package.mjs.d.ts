@@ -1,6 +1,6 @@
 import DataModel, { DataSchema } from '../abstract/data.mjs';
 import * as fields from '../data/fields.mjs';
-import { COMPENDIUM_DOCUMENT_TYPES, PACKAGE_TYPES } from '../constants.mjs';
+import { COMPENDIUM_DOCUMENT_TYPES, PACKAGE_AVAILABILITY_CODES, PACKAGE_TYPES } from '../constants.mjs';
 import { CONST } from '../module.mjs';
 import { CompatibilitySchema } from '../data/data.mjs';
 import type { FlagsField } from '../data/flagsField.js';
@@ -77,6 +77,7 @@ declare namespace BasePackage {
           lang: fields.StringField<{
             required: true;
             blank: false;
+            // TODO: LUKE, update the lib to have getCanonicalLocales.
             // validate: typeof Intl.getCanonicalLocales;
             validationError: 'must be supported by the Intl.getCanonicalLocales function';
           }>;
@@ -134,6 +135,44 @@ declare namespace BasePackage {
     since: number;
     until: number;
   };
+
+  type Data = {
+    /**
+     * An availability code in PACKAGE_AVAILABILITY_CODES which defines whether this package can be used.
+     * @defaultValue `this._testAvailability()` (called in the constructor)
+     */
+    availability: PACKAGE_AVAILABILITY_CODES;
+
+    /**
+     * A flag which tracks whether this package is currently locked.
+     * @defaultValue `false`
+     */
+    locked: boolean;
+
+    /**
+     * A flag which tracks whether this package is a free Exclusive pack
+     * @defaultValue `false`
+     */
+    exclusive: boolean;
+
+    /**
+     * A flag which tracks whether this package is owned, if it is protected.
+     * @defaultValue `false`
+     */
+    owned: boolean;
+
+    /**
+     * A set of Tags that indicate what kind of Package this is, provided by the Website
+     * @defaultValue `[]`
+     */
+    tags: string[];
+
+    /**
+     * A flag which tracks if this package has files stored in the persistent storage folder
+     * @defaultValue `false`
+     */
+    hasStorage: boolean;
+  };
 }
 
 /**
@@ -141,50 +180,48 @@ declare namespace BasePackage {
  * Specific types of packages extend this schema with additional fields.
  */
 declare class BasePackage<
-  Schema extends BasePackage.Schema = BasePackage.Schema,
-  Type extends ValueOf<typeof CONST.PACKAGE_TYPES> | 'package' = 'package'
+  out Schema extends BasePackage.Schema = BasePackage.Schema,
+  out Type extends ValueOf<typeof CONST.PACKAGE_TYPES> | 'package' = 'package'
 > extends DataModel<null, Schema> {
   /**
    * @param data    - Source data for the package
    * @param options - Options which affect DataModel construction
    *                  (default: `{}`)
    */
-  //   constructor(data: DataModel.SchemaToSourceInput<Schema>, options?: DataModel.ConstructorOptions);
+  constructor(
+    data: DataModel.SchemaToSourceInput<Schema> & InexactPartial<BasePackage.Data>,
+    options?: DataModel.ConstructorOptions
+  );
 
-  //   /**
-  //    * An availability code in PACKAGE_AVAILABILITY_CODES which defines whether this package can be used.
-  //    */
-  //   availability: NullishCoalesce<this['availability'], typeof PACKAGE_AVAILABILITY_CODES.UNKNOWN>;
+  /**
+   * An availability code in PACKAGE_AVAILABILITY_CODES which defines whether this package can be used.
+   */
+  availability: BasePackage.Data['availability'];
 
-  //   /**
-  //    * A flag which defines whether this package is unavailable to be used.
-  //    */
-  //   unavailable: NullishCoalesce<
-  //     this['unavailable'],
-  //     this['availability'] extends typeof PACKAGE_AVAILABILITY_CODES.UNKNOWN | typeof PACKAGE_AVAILABILITY_CODES.AVAILABLE
-  //       ? false
-  //       : true
-  //   >;
+  /**
+   * A flag which defines whether this package is unavailable to be used.
+   */
+  get unavailable(): boolean;
 
-  //   /**
-  //    * A flag which tracks whether this package is currently locked.
-  //    */
-  //   locked: NullishCoalesce<this['locked'], false>;
+  /**
+   * A flag which tracks whether this package is currently locked.
+   */
+  locked: BasePackage.Data['locked'];
 
-  //   /**
-  //    * A flag which tracks whether this package is a free Exclusive pack
-  //    */
-  //   exclusive: NullishCoalesce<this['exclusive'], false>;
+  /**
+   * A flag which tracks whether this package is a free Exclusive pack
+   */
+  exclusive: BasePackage.Data['exclusive'];
 
-  //   /**
-  //    * A flag which tracks whether this package is owned, if it is protected.
-  //    */
-  //   owned: NullishCoalesce<this['owned'], false>;
+  /**
+   * A flag which tracks whether this package is owned, if it is protected.
+   */
+  owned: BasePackage.Data['owned'];
 
-  //   /**
-  //    * A set of Tags that indicate what kind of Package this is, provided by the Website
-  //    */
-  //   tags: NullishCoalesce<this['tags'], []>;
+  /**
+   * A set of Tags that indicate what kind of Package this is, provided by the Website
+   */
+  tags: BasePackage.Data['tags'];
 
   /**
    * Define the package type in CONST.PACKAGE_TYPES that this class represents.

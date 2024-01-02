@@ -1,12 +1,11 @@
-import type { ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
 import type { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
 
 declare global {
   /**
    * An AmbientSound is an implementation of PlaceableObject which represents a dynamic audio source within the Scene.
    */
-  class AmbientSound extends PlaceableObject<InstanceType<ConfiguredDocumentClassForName<'AmbientSound'>>> {
-    constructor(document: InstanceType<ConfiguredDocumentClassForName<'AmbientSound'>>);
+  class AmbientSound extends PlaceableObject<InstanceType<ConfiguredAmbientSound>> {
+    constructor(document: InstanceType<ConfiguredAmbientSound>);
 
     /**
      * The Sound which manages playback for this AmbientSound effect
@@ -96,9 +95,9 @@ declare global {
 
     protected override _onDelete(...args: Parameters<PlaceableObject['_onDelete']>): void;
 
-    protected override _canHUD(user: InstanceType<ConfiguredDocumentClassForName<'User'>>, event?: any): boolean;
+    protected override _canHUD(user: InstanceType<ConfiguredUser>, event?: any): boolean;
 
-    protected override _canConfigure(user: InstanceType<ConfiguredDocumentClassForName<'User'>>, event?: any): boolean;
+    protected override _canConfigure(user: InstanceType<ConfiguredUser>, event?: any): boolean;
 
     protected override _onClickRight(event: PIXI.InteractionEvent): void;
 

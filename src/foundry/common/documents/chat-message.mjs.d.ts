@@ -28,7 +28,7 @@ interface BaseChatMessageSchema extends DataSchema {
   user: fields.ForeignDocumentField<
     typeof documents.BaseUser,
     {
-      initial: () => string; // OptionalChaining<OptionalChaining<typeof game, 'user'>, 'id'>;
+      initial: () => OptionalChaining<OptionalChaining<typeof game, 'user'>, 'id'>;
     }
   >;
 

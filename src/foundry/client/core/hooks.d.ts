@@ -1,6 +1,5 @@
 import {
   ConfiguredDocumentClass,
-  ConfiguredDocumentClassForName,
   ConfiguredObjectClassForName,
   DocumentConstructor,
   ToObjectFalseType
@@ -205,10 +204,7 @@ declare global {
        * @remarks This is called by {@link Hooks.call}.
        * @see {@link ActiveEffect#_applyCustom}
        */
-      applyActiveEffect: (
-        actor: InstanceType<ConfiguredDocumentClass<typeof Actor>>,
-        change: EffectChangeData
-      ) => boolean | void;
+      applyActiveEffect: (actor: InstanceType<ConfiguredActor>, change: EffectChangeData) => boolean | void;
 
       /**
        * A hook event that fires immediately prior to PIXI Application construction with the configuration parameters.
@@ -300,7 +296,7 @@ declare global {
           user: string;
 
           /** The identified speaker data, see {@link ChatMessage.getSpeaker} */
-          speaker: ReturnType<ConfiguredDocumentClass<typeof ChatMessage>['getSpeaker']>;
+          speaker: ReturnType<ConfiguredChatMessage['getSpeaker']>;
         }
       ) => boolean | void;
 
@@ -333,8 +329,8 @@ declare global {
        * @remarks An explicit return value of `false` prevents the operation.
        */
       dealCards: (
-        origin: InstanceType<ConfiguredDocumentClassForName<'Cards'>>,
-        destinations: InstanceType<ConfiguredDocumentClassForName<'Cards'>>[],
+        origin: InstanceType<ConfiguredCards>,
+        destinations: InstanceType<ConfiguredCards>[],
         context: Cards.DealContext
       ) => boolean | void;
 
@@ -348,7 +344,7 @@ declare global {
        * @see {@link ActorSheet#_onDrop}
        */
       dropActorSheetData: (
-        actor: InstanceType<ConfiguredDocumentClass<typeof Actor>>,
+        actor: InstanceType<ConfiguredActor>,
         sheet: ActorSheet,
         data: ActorSheet.DropData
       ) => boolean | void;
@@ -376,7 +372,7 @@ declare global {
        * @see {@link RollTableConfig#_onDrop}
        */
       dropRollTableSheetData: (
-        table: InstanceType<ConfiguredDocumentClass<typeof RollTable>>,
+        table: InstanceType<ConfiguredRollTable>,
         config: RollTableConfig,
         data: object
       ) => boolean | void;
@@ -430,11 +426,7 @@ declare global {
        * @remarks An explicit return value of `false` prevents the Document being created.
        * @see {@link Hotbar#_onDrop}
        */
-      hotbarDrop: (
-        hotbar: Hotbar,
-        data: DropData<InstanceType<ConfiguredDocumentClass<typeof Macro>>>,
-        slot: number
-      ) => boolean | void;
+      hotbarDrop: (hotbar: Hotbar, data: DropData<InstanceType<ConfiguredMacro>>, slot: number) => boolean | void;
 
       /**
        * A hook event that fires once Localization translations have been loaded and are ready for use.
@@ -501,8 +493,8 @@ declare global {
        * @remarks An explicit return value of `false` prevents the operation.
        */
       passCards: (
-        origin: InstanceType<ConfiguredDocumentClassForName<'Cards'>>,
-        destination: InstanceType<ConfiguredDocumentClassForName<'Cards'>>,
+        origin: InstanceType<ConfiguredCards>,
+        destination: InstanceType<ConfiguredCards>,
         context: Cards.DealContext
       ) => boolean | void;
 
@@ -534,10 +526,10 @@ declare global {
         message: ChatMessage,
         html: JQuery,
         data: {
-          message: ToObjectFalseType<InstanceType<ConfiguredDocumentClass<typeof ChatMessage>>>;
+          message: ToObjectFalseType<InstanceType<ConfiguredChatMessage>>;
           user: Game['user'];
-          author: InstanceType<ConfiguredDocumentClass<typeof ChatMessage>>['user'];
-          alias: InstanceType<ConfiguredDocumentClass<typeof ChatMessage>>['alias'];
+          author: InstanceType<ConfiguredChatMessage>['user'];
+          alias: InstanceType<ConfiguredChatMessage>['alias'];
           cssClass: string;
           isWhisper: boolean;
           whisperTo: string;
@@ -552,8 +544,8 @@ declare global {
        * @param context  - Additional context which describes the operation.
        */
       returnCards: (
-        origin: InstanceType<ConfiguredDocumentClassForName<'Cards'>>,
-        returned: InstanceType<ConfiguredDocumentClassForName<'Card'>>[],
+        origin: InstanceType<ConfiguredCards>,
+        returned: InstanceType<ConfiguredCard>[],
         context: Cards.ReturnContext
       ) => boolean | void;
 
@@ -592,7 +584,7 @@ declare global {
        * @see {@link UserTargets#_hook}
        */
       targetToken: (
-        user: InstanceType<ConfiguredDocumentClass<typeof User>>,
+        user: InstanceType<ConfiguredUser>,
         token: ConfiguredObjectClassForName<'Token'>,
         targeted: boolean
       ) => void;

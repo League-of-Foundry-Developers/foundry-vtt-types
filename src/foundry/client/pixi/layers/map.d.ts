@@ -1,8 +1,4 @@
-import {
-  ConfiguredDocumentClassForName,
-  ConfiguredObjectClassForName,
-  DataSourceForPlaceable
-} from '../../../../types/helperTypes';
+import { ConfiguredObjectClassForName, DataSourceForPlaceable } from '../../../../types/helperTypes';
 
 declare global {
   /**
@@ -104,7 +100,7 @@ declare global {
       data:
         | { type: 'Tile'; img: string; tileSize?: number; x: number; y: number }
         | ({ type: string } & Partial<Record<string, unknown>>)
-    ): Promise<InstanceType<ConfiguredDocumentClassForName<'Tile'>> | undefined>;
+    ): Promise<InstanceType<ConfiguredTile> | undefined>;
 
     /**
      * Prepare the data object when a new Tile is dropped onto the canvas
@@ -155,7 +151,7 @@ declare global {
      */
     drawOutline(outline: PIXI.Graphics): void;
 
-    getDocuments(): Exclude<this['documentCollection'], null> | InstanceType<ConfiguredDocumentClassForName<'Tile'>>[];
+    getDocuments(): Exclude<this['documentCollection'], null> | InstanceType<ConfiguredTile>[];
 
     getZIndex(): number;
 
@@ -215,7 +211,7 @@ declare global {
 
     getZIndex(): number;
 
-    getDocuments(): Exclude<this['documentCollection'], null> | InstanceType<ConfiguredDocumentClassForName<'Tile'>>[];
+    getDocuments(): Exclude<this['documentCollection'], null> | InstanceType<ConfiguredTile>[];
 
     /**
      * Refresh the display of tiles on the Foreground Layer depending on Token occlusion.

@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass, DocumentConstructor } from '../../../../types/helperTypes';
+import type { ConfiguredDocumentClass, DocumentConstructor } from '../../../../types/helperTypes';
 import { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
 
 declare global {
@@ -98,7 +98,7 @@ declare global {
      *                    (default: `false`)
      * @returns An array of Folder documents which are subfolders of this one
      */
-    getSubfolders(recursive?: boolean): InstanceType<ConfiguredDocumentClass<typeof Folder>>[];
+    getSubfolders(recursive?: boolean): InstanceType<ConfiguredFolder>[];
 
     protected _onDelete(options: DocumentModificationOptions, userId: string): void;
   }

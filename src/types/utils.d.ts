@@ -119,19 +119,17 @@ type Merge<T, U> = T extends object
     : U
   : U;
 
-/**
- * If `T` is `Promise<TResult>` then `TResult`; otherwise `T`.
- * @typeParam T - the type which, if a Promise, will be unwrapped.
- */
-type PromisedType<T> = T extends Promise<infer TResult> ? TResult : T;
+// `SimpleMerge` being used here as opposed to `D & { ... }` prevents a bug with type instantiation. Be careful when modifying.
+type StoredDocument<D extends { _source: unknown; data: { _source: unknown } }> = SimpleMerge<
+  D,
+  {
+    id: string;
+    data: D['data'] & { _id: string; _source: D['data']['_source'] & { _id: string } };
+    _source: D['_source'] & { readonly _id: string };
 
-type StoredDocument<D extends { _source: unknown; data: { _source: unknown } }> = D & {
-  id: string;
-  data: D['data'] & { _id: string; _source: D['data']['_source'] & { _id: string } };
-  _source: D['_source'] & { readonly _id: string };
-
-  toJSON(): D['_source'] & { readonly _id: string };
-};
+    toJSON(): D['_source'] & { readonly _id: string };
+  }
+>;
 
 type TemporaryDocument<D> = D extends StoredDocument<infer U> ? U : D;
 
@@ -167,7 +165,7 @@ type LooseEquals<T, U> = [T] extends [U] ? ([U] extends [T] ? true : false) : fa
 /**
  * Built as a analog to `&&`. Returns whether both `T` and `U` are true.
  */
-type And<T extends boolean, U extends boolean> = LooseEquals<T, true> extends true ? LooseEquals<U, true> : false;
+type And<T extends boolean, U extends boolean> = [T] extends [true] ? ([U] extends [true] ? true : false) : false;
 
 /**
  * @see {@link And}
@@ -222,10 +220,9 @@ type PartialIf<T, B extends boolean> = Extends<B, true> extends true ? Partial<T
 
 type AllKeysOf<T> = T extends unknown ? keyof T : never;
 
+// The implementation here purposefully avoids using `keyof` because structurally `keyof` is contravariant. This is an nearly equivalent way of writing `K extends keyof T ? T[K] : D` that is covariant.
 type GetKey<T, K extends string | number | symbol, D = undefined> = T extends unknown
-  ? K extends keyof T
-    ? T[K]
-    : D
+  ? (Record<string | number | symbol, D> & T)[K]
   : never;
 
 type NullishCoalesce<T, D> = T extends unknown ? (T extends undefined | null ? D : T) : never;
@@ -254,18 +251,20 @@ type RequiredProperties<T> = keyof T extends unknown
     : keyof T
   : never;
 
-type ExpandDeep<T> = T extends object ? (T extends infer O ? { [K in keyof O]: ExpandDeep<O[K]> } : never) : T;
+// type ExpandDeep<T> = T extends object ? (T extends infer O ? { [K in keyof O]: ExpandDeep<O[K]> } : never) : T;
+type ExpandDeep<T> = T;
 
 /**
  * Expands the type representation of a complex type such that the final result is computed and displayed, e.g. `{ foo: 123 } | { bar: 456 }` instead of `ComplexOperation<T>`.
  *
  * @privateRemarks the type representation of Typescript is undefined so it is possible at any moment that this method becomes unreliable.
  */
-type Expand<T> = T extends unknown
+type Expand<T> = T extends infer U
   ? {
-      [K in keyof T]: T[K];
+      [K in keyof U]: U[K];
     }
   : never;
+// type Expand<T> = T;
 
 type ItemExtends<T, U> = T extends unknown ? Extends<T, U> : never;
 

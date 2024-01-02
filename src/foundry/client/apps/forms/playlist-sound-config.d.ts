@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+export {};
 
 declare global {
   /**
@@ -12,7 +12,7 @@ declare global {
   class PlaylistSoundConfig<
     Options extends DocumentSheetOptions = DocumentSheetOptions,
     Data extends object = PlaylistSoundConfig.Data<Options>
-  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>> {
+  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredPlaylistSound>> {
     /**
      * @defaultValue
      * ```typescript
@@ -45,7 +45,7 @@ declare global {
      * @typeParam Options - the type of the options object
      */
     interface Data<Options extends DocumentSheetOptions = DocumentSheetOptions>
-      extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>, Options> {
+      extends DocumentSheet.Data<InstanceType<ConfiguredPlaylistSound>, Options> {
       lvolume: number;
     }
 

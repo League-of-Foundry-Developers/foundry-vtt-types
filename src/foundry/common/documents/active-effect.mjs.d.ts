@@ -4,7 +4,6 @@ import * as documents from './module.mjs';
 import * as fields from '../data/fields.mjs';
 import { FlagsField } from '../data/flagsField';
 import DataModel, { DataSchema } from '../abstract/data.mjs';
-import { ConfiguredDocumentClass } from '../../../types/helperTypes.js';
 
 interface BaseActiveEffectSchema extends DataSchema {
   /**
@@ -131,8 +130,7 @@ type BaseActiveEffectMetadata = Merge<
  */
 export default class BaseActiveEffect extends Document<
   BaseActiveEffectSchema,
-  //   InstanceType<ConfiguredDocumentClass<typeof Actor>> | InstanceType<ConfiguredDocumentClass<typeof Item>>,
-  null,
+  InstanceType<ConfiguredActor> | InstanceType<ConfiguredItem>,
   BaseActiveEffectMetadata
 > {
   /* -------------------------------------------- */

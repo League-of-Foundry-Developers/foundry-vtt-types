@@ -2,7 +2,6 @@ import Document, { DocumentMetadata } from '../abstract/document.mjs';
 import * as documents from './module.mjs';
 import * as fields from '../data/fields.mjs';
 import { DataModel, DataSchema } from '../abstract/data.mjs';
-import { ConfiguredDocumentClass } from '../../../types/helperTypes.js';
 import { FlagsField } from '../data/flagsField';
 
 export interface BaseCardFaceSchema<
@@ -157,12 +156,7 @@ type BaseCardShims = {
  * The Document definition for a Card.
  * Defines the DataSchema and common behaviors for a Card which are shared between both client and server.
  */
-declare class BaseCard extends Document<
-  BaseCardSchema,
-  InstanceType<ConfiguredDocumentClass<typeof Cards>>,
-  BaseCardMetadata,
-  BaseCardShims
-> {
+declare class BaseCard extends Document<BaseCardSchema, null, BaseCardMetadata, BaseCardShims> {
   /* -------------------------------------------- */
   /*  Model Configuration                         */
   /* -------------------------------------------- */

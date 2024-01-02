@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+export {};
 
 declare global {
   /**
@@ -50,10 +50,8 @@ declare global {
     protected static _pullToScene(sceneId: string): void;
 
     override fromCompendium(
-      document:
-        | InstanceType<ConfiguredDocumentClass<typeof Scene>>
-        | InstanceType<ConfiguredDocumentClass<typeof Scene>>['_source'],
+      document: InstanceType<ConfiguredScene> | InstanceType<ConfiguredScene>['_source'],
       options?: WorldCollection.FromCompendiumOptions | undefined
-    ): Omit<InstanceType<ConfiguredDocumentClass<typeof Scene>>['_source'], '_id' | 'folder'>;
+    ): Omit<InstanceType<ConfiguredScene>['_source'], '_id' | 'folder'>;
   }
 }

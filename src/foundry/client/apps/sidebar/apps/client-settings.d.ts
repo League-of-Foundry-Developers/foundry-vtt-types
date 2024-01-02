@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClass } from '../../../../../types/helperTypes';
+export {};
 
 declare global {
   /**
@@ -60,7 +60,7 @@ declare global {
 
   namespace SettingsConfig {
     interface Data {
-      user: StoredDocument<InstanceType<ConfiguredDocumentClass<typeof User>>>;
+      user: StoredDocument<InstanceType<ConfiguredUser>>;
       canConfigure: boolean;
       systemTitle: Game['system']['data']['title'];
       data: Data.Data;

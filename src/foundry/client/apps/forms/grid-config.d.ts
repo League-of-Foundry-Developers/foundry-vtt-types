@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+export {};
 
 declare global {
   /**
@@ -8,13 +8,9 @@ declare global {
   class GridConfig<Options extends FormApplicationOptions = FormApplicationOptions> extends FormApplication<
     Options,
     GridConfig.Data,
-    InstanceType<ConfiguredDocumentClass<typeof Scene>>
+    InstanceType<ConfiguredScene>
   > {
-    constructor(
-      scene: InstanceType<ConfiguredDocumentClass<typeof Scene>>,
-      sheet: GridConfig['sheet'],
-      options?: Partial<Options>
-    );
+    constructor(scene: InstanceType<ConfiguredScene>, sheet: GridConfig['sheet'], options?: Partial<Options>);
 
     /**
      * Track the Scene Configuration sheet reference

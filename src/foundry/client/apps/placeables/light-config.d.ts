@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
 import type DataModel from '../../../common/abstract/data.mjs';
 
 declare global {
@@ -10,7 +9,7 @@ declare global {
   class AmbientLightConfig<
     Options extends DocumentSheetOptions = DocumentSheetOptions,
     Data extends object = AmbientLightConfig.Data<Options>
-  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClassForName<'AmbientLight'>>> {
+  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredAmbientLight>> {
     /**
      * @defaultValue
      * ```typescript
@@ -53,7 +52,7 @@ declare global {
 
   namespace AmbientLightConfig {
     interface Data<Options extends DocumentSheetOptions>
-      extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClassForName<'AmbientLight'>>, Options> {
+      extends DocumentSheet.Data<InstanceType<ConfiguredAmbientLight>, Options> {
       isAdvanced: boolean;
       colorationTechniques: typeof AdaptiveLightingShader.COLORATION_TECHNIQUES;
       lightAnimations: Record<string, string> & {

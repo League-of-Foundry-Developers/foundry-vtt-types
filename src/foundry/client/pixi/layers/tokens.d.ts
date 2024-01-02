@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass, ConfiguredObjectClassForName } from '../../../../types/helperTypes';
+import { ConfiguredObjectClassForName } from '../../../../types/helperTypes';
 import { SelectOptions } from '../placeables';
 
 declare global {
@@ -118,7 +118,7 @@ declare global {
      */
     toggleCombat(
       state?: boolean,
-      combat?: InstanceType<ConfiguredDocumentClass<typeof Combat>> | null,
+      combat?: InstanceType<ConfiguredCombat> | null,
       {
         token
       }?: {
@@ -128,7 +128,7 @@ declare global {
          */
         token?: InstanceType<ConfiguredObjectClassForName<'Token'>> | null;
       }
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof Combatant>>[]>;
+    ): Promise<InstanceType<ConfiguredCombatant>[]>;
 
     /**
      * Get the tab cycle order for tokens by sorting observable tokens based on their distance from top-left.

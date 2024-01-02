@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+export {};
 
 declare global {
   /**
@@ -19,7 +19,7 @@ declare global {
      * If requested, dispatch a Chat Bubble UI for the newly created message
      * @param message - The ChatMessage document to say
      */
-    sayBubble(message: InstanceType<ConfiguredDocumentClass<typeof ChatMessage>>): void;
+    sayBubble(message: InstanceType<ConfiguredChatMessage>): void;
 
     /**
      * Handle export of the chat log to a text file
@@ -30,8 +30,6 @@ declare global {
      * Allow for bulk deletion of all chat messages, confirm first with a yes/no dialog.
      * @see {@link Dialog.confirm}
      */
-    flush(): Promise<
-      Promise<StoredDocument<InstanceType<ConfiguredDocumentClass<typeof ChatMessage>>>[]> | false | null
-    >;
+    flush(): Promise<Promise<StoredDocument<InstanceType<ConfiguredChatMessage>>[]> | false | null>;
   }
 }

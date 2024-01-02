@@ -1,4 +1,3 @@
-import { ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
 import type DataModel from '../../../common/abstract/data.mjs';
 
 declare global {
@@ -10,7 +9,7 @@ declare global {
   class TileConfig<
     Options extends TileConfig.Options = TileConfig.Options,
     Data extends object = TileConfig.Data<Options>
-  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClassForName<'Tile'>>> {
+  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredTile>> {
     /**
      * @defaultValue
      * ```typescript
@@ -38,7 +37,7 @@ declare global {
 
   namespace TileConfig {
     interface Data<Options extends DocumentSheetOptions>
-      extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClassForName<'Tile'>>, Options> {
+      extends DocumentSheet.Data<InstanceType<ConfiguredTile>, Options> {
       submitText: string;
       occlusionModes: Record<foundry.CONST.TILE_OCCLUSION_MODES, string>;
     }

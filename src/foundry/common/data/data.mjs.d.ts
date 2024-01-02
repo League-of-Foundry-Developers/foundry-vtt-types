@@ -6,7 +6,6 @@
 import { DataModel, DataSchema } from '../abstract/module.mjs';
 import * as fields from './fields.mjs';
 import * as documents from '../documents/module.mjs';
-import type { ConfiguredDocumentClass } from '../../../types/helperTypes.js';
 
 interface LightDataSchema extends DataSchema {
   /**
@@ -234,7 +233,7 @@ declare class ShapeData extends DataModel<null, ShapeDataSchema> {
 
 /* ---------------------------------------- */
 
-type BaseOptions = Pick<fields.DataField.OptionsFor<typeof fields.FilePathField>, 'categories' | 'initial' | 'label'>;
+type BaseOptions = Pick<fields.DataField.OptionsFor<fields.FilePathField<any>>, 'categories' | 'initial' | 'label'>;
 
 export type TextureDataOptions = {
   /** (default: `["IMAGE", "VIDEO"]`) */
@@ -336,10 +335,7 @@ type PrototypeTokenToObject<Token extends PrototypeToken> = {
 /**
  * Extend the base TokenData to define a PrototypeToken which exists within a parent Actor.
  */
-declare class PrototypeToken extends DataModel<
-  InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseToken>>,
-  PrototypeTokenSchema
-> {
+declare class PrototypeToken extends DataModel<InstanceType<ConfiguredBaseToken>, PrototypeTokenSchema> {
   static override defineSchema(): PrototypeTokenSchema;
 
   /**

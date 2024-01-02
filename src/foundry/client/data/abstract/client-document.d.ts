@@ -55,7 +55,7 @@ type ClientDocumentConstructor<T extends ConstructorOf<foundry.abstract.Document
     new (...args: ConstructorParameters<T>): InstanceType<T> & ClientDocumentMixin<InstanceType<T>>;
   };
 
-export declare class ClientDocumentMixin<T extends AnyDocument> {
+export declare class ClientDocumentMixin<out T extends AnyDocument> {
   constructor(data?: DataModel.SchemaToSourceInput<T['schema']>, context?: ContextType<T>);
 
   /**

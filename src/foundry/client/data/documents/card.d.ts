@@ -1,7 +1,4 @@
-import type { ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
 import type DataModel from '../../../common/abstract/data.mjs';
-
-export {};
 
 declare global {
   /**
@@ -25,7 +22,7 @@ declare global {
     /**
      * A reference to the source Cards document which defines this Card.
      */
-    get source(): InstanceType<ConfiguredDocumentClassForName<'Cards'>> | null;
+    get source(): InstanceType<ConfiguredCards> | null;
 
     /**
      * A convenience property for whether or not the Card is within its source Cards stack. Cards in decks are always
@@ -57,7 +54,7 @@ declare global {
      * @param face - A specific face to flip the card to
      * @returns A reference to this card after the flip operation is complete
      */
-    flip(face?: number | null | undefined): Promise<InstanceType<ConfiguredDocumentClassForName<'Card'>> | undefined>;
+    flip(face?: number | null | undefined): Promise<InstanceType<ConfiguredCard> | undefined>;
 
     /**
      * Pass this Card to some other Cards document.
@@ -66,9 +63,9 @@ declare global {
      * @returns A reference to this card after the it has been passed to another parent document
      */
     pass(
-      to: InstanceType<ConfiguredDocumentClassForName<'Cards'>>,
+      to: InstanceType<ConfiguredCards>,
       options?: Cards.PassOptions | undefined
-    ): Promise<InstanceType<ConfiguredDocumentClassForName<'Card'>> | undefined>;
+    ): Promise<InstanceType<ConfiguredCard> | undefined>;
 
     /**
      * Play a specific card to some other Cards document.
@@ -76,9 +73,9 @@ declare global {
      * @see Card#pass
      */
     play(
-      to: InstanceType<ConfiguredDocumentClassForName<'Cards'>>,
+      to: InstanceType<ConfiguredCards>,
       options?: Cards.PassOptions | undefined
-    ): Promise<InstanceType<ConfiguredDocumentClassForName<'Card'>> | undefined>;
+    ): Promise<InstanceType<ConfiguredCard> | undefined>;
 
     /**
      * Discard a specific card to some other Cards document.
@@ -86,9 +83,9 @@ declare global {
      * @see Card#pass
      */
     discard(
-      to: InstanceType<ConfiguredDocumentClassForName<'Cards'>>,
+      to: InstanceType<ConfiguredCards>,
       options?: Cards.PassOptions | undefined
-    ): Promise<InstanceType<ConfiguredDocumentClassForName<'Card'>> | undefined>;
+    ): Promise<InstanceType<ConfiguredCard> | undefined>;
 
     /**
      * Reset this Card to its original Cards parent.
@@ -96,7 +93,7 @@ declare global {
      *                  (default: `{}`)
      * @returns A reference to the reset card belonging to its original parent
      */
-    reset(options?: Cards.ResetOptions | undefined): Promise<InstanceType<ConfiguredDocumentClassForName<'Card'>>>;
+    reset(options?: Cards.ResetOptions | undefined): Promise<InstanceType<ConfiguredCard>>;
 
     /**
      * Create a chat message which displays this Card.
@@ -109,6 +106,6 @@ declare global {
     toMessage(
       messageData?: DataModel.SchemaToSourceInput<foundry.documents.BaseChatMessage['schema']> | undefined,
       options?: DocumentModificationContext | undefined
-    ): Promise<InstanceType<ConfiguredDocumentClassForName<'ChatMessage'>> | undefined>;
+    ): Promise<InstanceType<ConfiguredChatMessage> | undefined>;
   }
 }

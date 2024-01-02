@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+export {};
 
 declare global {
   /**
@@ -14,7 +14,7 @@ declare global {
      * The User document of the currently connected user
      * @defaultValue `null`
      */
-    current: StoredDocument<InstanceType<ConfiguredDocumentClass<typeof User>>> | null;
+    current: StoredDocument<InstanceType<ConfiguredUser>> | null;
 
     /**
      * Initialize the Map object and all its contained documents

@@ -3,7 +3,6 @@ import * as CONST from '../constants.mjs';
 import * as documents from './module.mjs';
 import * as fields from '../data/fields.mjs';
 import DataModel, { DataSchema } from '../abstract/data.mjs';
-import { ConfiguredDocumentClass } from '../../../types/helperTypes.js';
 import type { FlagsField } from '../data/flagsField.js';
 
 interface BaseMeasuredTemplateSchema extends DataSchema {
@@ -112,7 +111,7 @@ type BaseMeasuredTemplateMetadata = Merge<
  */
 declare class BaseMeasuredTemplate extends Document<
   BaseMeasuredTemplateSchema,
-  InstanceType<ConfiguredDocumentClass<typeof documents.BaseScene>>,
+  InstanceType<ConfiguredScene>,
   BaseMeasuredTemplateMetadata
 > {
   /* -------------------------------------------- */

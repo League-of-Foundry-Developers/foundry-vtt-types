@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClassForName } from '../../../../types/helperTypes.js';
+export {};
 
 declare global {
   /**
@@ -10,7 +10,7 @@ declare global {
   class CardConfig<
     Options extends DocumentSheetOptions = DocumentSheetOptions,
     Data extends CardConfig.Data<Options> = CardConfig.Data<Options>
-  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClassForName<'Card'>>> {
+  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredCard>> {
     /**
      * @defaultValue
      * ```typescript
@@ -39,7 +39,7 @@ declare global {
 
   namespace CardConfig {
     interface Data<Options extends DocumentSheetOptions>
-      extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClassForName<'Card'>>, Options> {
+      extends DocumentSheet.Data<InstanceType<ConfiguredCard>, Options> {
       types: Record<string, string>;
     }
   }

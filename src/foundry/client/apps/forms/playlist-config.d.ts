@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+export {};
 
 declare global {
   /**
@@ -9,7 +9,7 @@ declare global {
   class PlaylistConfig<
     Options extends DocumentSheetOptions = DocumentSheetOptions,
     Data extends object = PlaylistConfig.Data<Options>
-  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClass<typeof Playlist>>> {
+  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredPlaylist>> {
     /**
      * @defaultValue
      * ```typescript
@@ -35,7 +35,7 @@ declare global {
 
   namespace PlaylistConfig {
     interface Data<Options extends DocumentSheetOptions = DocumentSheetOptions>
-      extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClass<typeof Playlist>>, Options> {
+      extends DocumentSheet.Data<InstanceType<ConfiguredPlaylist>, Options> {
       modes: Record<foundry.CONST.PLAYLIST_MODES, string>;
       sorting: Record<foundry.CONST.PLAYLIST_SORT_MODES, string>;
     }

@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
+export {};
 
 declare global {
   /**
@@ -9,7 +9,7 @@ declare global {
   class MeasuredTemplateConfig<
     Options extends DocumentSheetOptions = DocumentSheetOptions,
     Data extends object = MeasuredTemplateConfig.Data
-  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClassForName<'MeasuredTemplate'>>> {
+  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredMeasuredTemplate>> {
     /**
      * @defaultValue
      * ```typescript
@@ -31,7 +31,7 @@ declare global {
 
   namespace MeasuredTemplateConfig {
     interface Data<Options extends DocumentSheetOptions = DocumentSheetOptions>
-      extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClassForName<'MeasuredTemplate'>>, Options> {
+      extends DocumentSheet.Data<InstanceType<ConfiguredMeasuredTemplate>, Options> {
       templateTypes: typeof CONFIG.MeasuredTemplate.types;
       gridUnits: string;
       submitText: string;

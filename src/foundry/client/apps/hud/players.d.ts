@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+export {};
 
 declare global {
   /**
@@ -47,7 +47,7 @@ declare global {
 
   namespace PlayerList {
     interface Data {
-      users: StoredDocument<InstanceType<ConfiguredDocumentClass<typeof User>>>[];
+      users: StoredDocument<InstanceType<ConfiguredUser>>[];
       showOffline: boolean;
       hide: boolean;
     }

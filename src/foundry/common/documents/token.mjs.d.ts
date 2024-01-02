@@ -4,7 +4,6 @@ import * as fields from '../data/fields.mjs';
 import { DocumentMetadata } from '../abstract/document.mjs';
 import type DataModel from '../abstract/data.mjs';
 import type { LightData } from '../data/data.mjs';
-import type { ConfiguredDocumentClass } from '../../../types/helperTypes.js';
 import type { FlagsField } from '../data/flagsField.js';
 import type { DataSchema } from '../abstract/data.mjs';
 
@@ -20,7 +19,7 @@ export interface BaseTokenBarSchema extends DataSchema {
     required: true;
     nullable: true;
     blank: false;
-    initial: () => null; // Exclude<GetKey<GetKey<typeof game, 'system'>, 'primaryTokenAttribute'>, undefined> | null;
+    initial: () => Exclude<GetKey<GetKey<typeof game, 'system'>, 'primaryTokenAttribute'>, undefined> | null;
   }>;
 }
 
@@ -254,7 +253,7 @@ export type BaseTokenMetadata = Merge<
  */
 declare class BaseToken extends foundry.abstract.Document<
   BaseTokenSchema,
-  InstanceType<ConfiguredDocumentClass<typeof Scene>>,
+  InstanceType<ConfiguredScene>,
   BaseTokenMetadata
 > {
   /* -------------------------------------------- */

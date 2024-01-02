@@ -20,7 +20,9 @@ interface BaseFogExplorationSchema extends DataSchema {
    */
   user: fields.ForeignDocumentField<
     typeof documents.BaseUser,
-    { initial: () => OptionalChaining<OptionalChaining<typeof game, 'user'>, 'id'> }
+    {
+      initial: () => OptionalChaining<OptionalChaining<typeof game, 'user'>, 'id'>;
+    }
   >;
 
   /**
@@ -87,11 +89,11 @@ declare class BaseFogExploration extends Document<BaseFogExplorationSchema, null
   /* ---------------------------------------- */
 
   /** {@inheritdoc} */
-  //   protected override _preUpdate(
-  //     changed: DeepPartial<DataModel.SchemaToSource<this['schema']>>,
-  //     options: DocumentModificationOptions,
-  //     user: documents.BaseUser
-  //   ): Promise<void>;
+  protected override _preUpdate(
+    changed: DeepPartial<DataModel.SchemaToSource<this['schema']>>,
+    options: DocumentModificationOptions,
+    user: documents.BaseUser
+  ): Promise<void>;
 }
 
 export default BaseFogExploration;

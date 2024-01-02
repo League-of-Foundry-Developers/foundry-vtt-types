@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
+export {};
 
 declare global {
   /**
@@ -9,7 +9,7 @@ declare global {
   class NoteConfig<
     Options extends DocumentSheetOptions = DocumentSheetOptions,
     Data extends object = NoteConfig.Data<Options>
-  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClassForName<'Note'>>> {
+  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredNote>> {
     /**
      * @defaultValue
      * ```typescript
@@ -31,8 +31,8 @@ declare global {
 
   namespace NoteConfig {
     interface Data<Options extends DocumentSheetOptions>
-      extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClassForName<'Note'>>, Options> {
-      entry: ConfiguredDocumentClassForName<'JournalEntry'> | {};
+      extends DocumentSheet.Data<InstanceType<ConfiguredNote>, Options> {
+      entry: ConfiguredJournalEntry | {};
       entries: Journal['contents'];
       icons: CONFIG['JournalEntry']['noteIcons'];
       fontFamilies: Record<string, string>;

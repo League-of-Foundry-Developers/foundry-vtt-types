@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClassForName, DocumentConstructor } from '../../../../types/helperTypes';
+import type { DocumentConstructor } from '../../../../types/helperTypes';
 
 declare global {
   /**
@@ -9,7 +9,7 @@ declare global {
   class SceneConfig<
     Options extends DocumentSheetOptions = DocumentSheetOptions,
     Data extends object = SceneConfig.Data<Options>
-  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClassForName<'Scene'>>> {
+  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredScene>> {
     /**
      * @defaultValue
      * ```typescript
@@ -97,14 +97,14 @@ declare global {
 
   namespace SceneConfig {
     interface Data<Options extends DocumentSheetOptions = DocumentSheetOptions>
-      extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClassForName<'Scene'>>, Options> {
+      extends DocumentSheet.Data<InstanceType<ConfiguredScene>, Options> {
       gridTypes: ReturnType<typeof SceneConfig['_getGridTypes']>;
       weatherTypes: ReturnType<SceneConfig['_getWeatherTypes']>;
       playlists: ReturnType<SceneConfig['_getDocuments']>;
       sounds: ReturnType<SceneConfig['_getDocuments']>;
       journals: ReturnType<SceneConfig['_getDocuments']>;
       hasGlobalThreshold: boolean;
-      data: DocumentSheet.Data<InstanceType<ConfiguredDocumentClassForName<'Scene'>>, Options>['data'] & {
+      data: DocumentSheet.Data<InstanceType<ConfiguredScene>, Options>['data'] & {
         /**
          * @defaultValue `0`
          */

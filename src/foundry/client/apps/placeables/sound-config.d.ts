@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
 import type DataModel from '../../../common/abstract/data.mjs';
 
 declare global {
@@ -10,7 +9,7 @@ declare global {
   class AmbientSoundConfig<
     Options extends DocumentSheetOptions = AmbientSoundConfig.Options,
     Data extends object = AmbientSoundConfig.Data<Options>
-  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClassForName<'AmbientSound'>>> {
+  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredAmbientSound>> {
     /**
      * @defaultValue
      * ```typescript
@@ -34,7 +33,7 @@ declare global {
 
   namespace AmbientSoundConfig {
     interface Data<Options extends DocumentSheetOptions>
-      extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClassForName<'AmbientSound'>>, Options> {
+      extends DocumentSheet.Data<InstanceType<ConfiguredAmbientSound>, Options> {
       submitText: string;
       gridUnits: string;
     }

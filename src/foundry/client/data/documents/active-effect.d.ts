@@ -1,4 +1,3 @@
-import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
 import type DataModel from '../../../common/abstract/data.mjs';
 import { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
 import type BaseActiveEffect from '../../../common/documents/active-effect.mjs';
@@ -65,7 +64,7 @@ declare global {
      * @param change - The change data being applied
      * @returns The resulting applied value
      */
-    apply(actor: ConfiguredActor, change: DataModel.SchemaToSource<EffectChangeData>): unknown;
+    apply(actor: InstanceType<ConfiguredActor>, change: DataModel.SchemaToSource<EffectChangeData>): unknown;
 
     /**
      * Apply an ActiveEffect that uses an ADD application mode.
@@ -80,7 +79,10 @@ declare global {
      * @param change - The change data being applied
      * @returns The resulting applied value
      */
-    protected _applyAdd(actor: ConfiguredActor, change: DataModel.SchemaToSource<EffectChangeData>): unknown;
+    protected _applyAdd(
+      actor: InstanceType<ConfiguredActor>,
+      change: DataModel.SchemaToSource<EffectChangeData>
+    ): unknown;
 
     /**
      * Apply an ActiveEffect that uses a MULTIPLY application mode.
@@ -89,7 +91,10 @@ declare global {
      * @param change - The change data being applied
      * @returns The resulting applied value
      */
-    protected _applyMultiply(actor: ConfiguredActor, change: DataModel.SchemaToSource<EffectChangeData>): unknown;
+    protected _applyMultiply(
+      actor: InstanceType<ConfiguredActor>,
+      change: DataModel.SchemaToSource<EffectChangeData>
+    ): unknown;
 
     /**
      * Apply an ActiveEffect that uses an OVERRIDE application mode.
@@ -98,7 +103,10 @@ declare global {
      * @param change - The change data being applied
      * @returns The resulting applied value
      */
-    protected _applyOverride(actor: ConfiguredActor, change: DataModel.SchemaToSource<EffectChangeData>): unknown;
+    protected _applyOverride(
+      actor: InstanceType<ConfiguredActor>,
+      change: DataModel.SchemaToSource<EffectChangeData>
+    ): unknown;
 
     /**
      * Apply an ActiveEffect that uses an UPGRADE, or DOWNGRADE application mode.
@@ -107,7 +115,10 @@ declare global {
      * @param change - The change data being applied
      * @returns The resulting applied value
      */
-    protected _applyUpgrade(actor: ConfiguredActor, change: DataModel.SchemaToSource<EffectChangeData>): unknown;
+    protected _applyUpgrade(
+      actor: InstanceType<ConfiguredActor>,
+      change: DataModel.SchemaToSource<EffectChangeData>
+    ): unknown;
 
     /**
      * Apply an ActiveEffect that uses a CUSTOM application mode.
@@ -116,7 +127,10 @@ declare global {
      * @param change - The change data being applied
      * @returns The resulting applied value
      */
-    protected _applyCustom(actor: ConfiguredActor, change: DataModel.SchemaToSource<EffectChangeData>): unknown;
+    protected _applyCustom(
+      actor: InstanceType<ConfiguredActor>,
+      change: DataModel.SchemaToSource<EffectChangeData>
+    ): unknown;
 
     /**
      * Get the name of the source of the Active Effect
@@ -157,7 +171,5 @@ interface DurationSummary {
   remaining: number | null;
   label: string;
 }
-
-type ConfiguredActor = InstanceType<ConfiguredDocumentClass<typeof Actor>>;
 
 export {};

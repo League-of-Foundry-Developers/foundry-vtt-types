@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClassForName } from '../../../types/helperTypes';
+export {};
 
 declare global {
   /**
@@ -12,7 +12,7 @@ declare global {
      *                  (default: `""`)
      * @returns The editor instance.
      */
-    // static create(options: TextEditor.Options, content: string): Promise<tinyMCE.Editor>;
+    static create(options: TextEditor.Options, content: string): Promise<tinyMCE.Editor>;
 
     /**
      * A list of elements that are retained when truncating HTML.
@@ -148,16 +148,14 @@ declare global {
      * @param doc - The PlaylistSound document to play/stop.
      * @internal
      */
-    protected static _onPlaySound(doc: InstanceType<ConfiguredDocumentClassForName<'PlaylistSound'>>): void;
+    protected static _onPlaySound(doc: InstanceType<ConfiguredPlaylistSound>): void;
 
     /**
      * Find all content links belonging to a given {@link PlaylistSound}.
      * @param doc - The PlaylistSound.
      * @internal
      */
-    protected static _getSoundContentLinks(
-      doc: InstanceType<ConfiguredDocumentClassForName<'PlaylistSound'>>
-    ): NodeListOf<Element>;
+    protected static _getSoundContentLinks(doc: InstanceType<ConfiguredPlaylistSound>): NodeListOf<Element>;
 
     /**
      * Begin a Drag+Drop workflow for a dynamic content link
@@ -172,7 +170,7 @@ declare global {
      * @param editor - The TinyMCE editor instance being dropped on
      * @internal
      */
-    // protected static _onDropEditorData(event: DragEvent, editor: tinyMCE.Editor): void;
+    protected static _onDropEditorData(event: DragEvent, editor: tinyMCE.Editor): void;
 
     /**
      * Extract JSON data from a drag/drop event.

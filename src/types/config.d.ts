@@ -3,8 +3,8 @@ import type { SystemDocumentType } from './helperTypes.js';
 
 export type SubTypeShape = Expand<
   { derived: Record<string, unknown> } & (
-    | { source?: undefined; data?: undefined; model: DataModel.Any }
-    | { source: Record<string, unknown>; data: Record<string, unknown>; model?: undefined }
+    | { model: DataModel.Any }
+    | { source: Record<string, unknown>; data: Record<string, unknown> }
   )
 >;
 

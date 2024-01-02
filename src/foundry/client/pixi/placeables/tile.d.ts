@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClass, ConfiguredObjectClassForName } from '../../../../types/helperTypes';
+import type { ConfiguredObjectClassForName } from '../../../../types/helperTypes';
 import type DataModel from '../../../common/abstract/data.mjs';
 import { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
 
@@ -12,7 +12,7 @@ declare global {
    * @see {@link TileSheet}
    * @see {@link TileHUD}
    */
-  class Tile extends PlaceableObject<InstanceType<ConfiguredDocumentClass<typeof TileDocument>>> {
+  class Tile extends PlaceableObject<InstanceType<ConfiguredTileDocument>> {
     /**
      * @remarks Not used for `Tile`
      */

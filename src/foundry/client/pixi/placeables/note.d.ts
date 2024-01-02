@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentClass, ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
 import { HoverInOptions } from '../placeable';
 
 declare global {
@@ -6,7 +5,7 @@ declare global {
    * A Note is an implementation of PlaceableObject which represents an annotated location within the Scene.
    * Each Note links to a JournalEntry document and represents its location on the map.
    */
-  class Note extends PlaceableObject<InstanceType<ConfiguredDocumentClass<typeof NoteDocument>>> {
+  class Note extends PlaceableObject<InstanceType<ConfiguredNoteDocument>> {
     static override embeddedName: 'Note';
 
     override get bounds(): Rectangle;
@@ -14,7 +13,7 @@ declare global {
     /**
      * The associated JournalEntry which is described by this note
      */
-    get entry(): InstanceType<ConfiguredDocumentClassForName<'JournalEntry'>>;
+    get entry(): InstanceType<ConfiguredJournalEntry>;
 
     /**
      * The text label used to annotate this Note
@@ -54,9 +53,9 @@ declare global {
 
     protected override _onUpdate(changed: DeepPartial<foundry.documents.BaseNote['_source']>): void;
 
-    protected override _canHover(user: InstanceType<ConfiguredDocumentClassForName<'User'>>): true;
+    protected override _canHover(user: InstanceType<ConfiguredUser>): true;
 
-    protected override _canView(user: InstanceType<ConfiguredDocumentClassForName<'User'>>): boolean;
+    protected override _canView(user: InstanceType<ConfiguredUser>): boolean;
 
     protected override _onHoverIn(event: PIXI.InteractionEvent, options?: HoverInOptions): false | void;
 

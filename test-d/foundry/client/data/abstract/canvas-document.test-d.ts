@@ -1,5 +1,3 @@
-import type * as data from '../../../../../src/foundry/common/data/data.mjs';
-
 import { expectAssignable, expectType } from 'tsd';
 
 const doc = new AmbientLightDocument();

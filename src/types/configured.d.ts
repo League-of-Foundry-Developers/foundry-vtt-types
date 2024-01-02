@@ -1,0 +1,73 @@
+import { type ConfiguredDocumentClass, type ConfiguredDocumentClassForName } from './helperTypes.d';
+
+declare global {
+  type ConfiguredActiveEffect = ConfiguredDocumentClass<typeof ActiveEffect>;
+  type ConfiguredActor = ConfiguredDocumentClass<typeof Actor>;
+  type ConfiguredAdventure = ConfiguredDocumentClass<typeof Adventure>;
+  type ConfiguredAmbientLight = ConfiguredDocumentClassForName<'AmbientLight'>;
+
+  type ConfiguredAmbientSound = ConfiguredDocumentClassForName<'AmbientSound'>;
+  type ConfiguredCard = ConfiguredDocumentClass<typeof Card>;
+  type ConfiguredCards = ConfiguredDocumentClass<typeof Cards>;
+  type ConfiguredChatMessage = ConfiguredDocumentClass<typeof ChatMessage>;
+  type ConfiguredCombat = ConfiguredDocumentClass<typeof Combat>;
+  type ConfiguredCombatant = ConfiguredDocumentClass<typeof Combatant>;
+  type ConfiguredDrawing = ConfiguredDocumentClassForName<'Drawing'>;
+  type ConfiguredFogExploration = ConfiguredDocumentClass<typeof FogExploration>;
+  type ConfiguredFolder = ConfiguredDocumentClass<typeof Folder>;
+  type ConfiguredItem = ConfiguredDocumentClass<typeof Item>;
+  type ConfiguredJournalEntryPage = ConfiguredDocumentClass<typeof JournalEntryPage>;
+  type ConfiguredJournalEntry = ConfiguredDocumentClass<typeof JournalEntry>;
+  type ConfiguredMacro = ConfiguredDocumentClass<typeof Macro>;
+  type ConfiguredMeasuredTemplate = ConfiguredDocumentClassForName<'MeasuredTemplate'>;
+  type ConfiguredNote = ConfiguredDocumentClassForName<'Note'>;
+  type ConfiguredPlaylistSound = ConfiguredDocumentClass<typeof PlaylistSound>;
+  type ConfiguredPlaylist = ConfiguredDocumentClass<typeof Playlist>;
+  type ConfiguredScene = ConfiguredDocumentClass<typeof Scene>;
+  type ConfiguredSetting = ConfiguredDocumentClass<typeof Setting>;
+  type ConfiguredTableResult = ConfiguredDocumentClass<typeof TableResult>;
+  type ConfiguredRollTable = ConfiguredDocumentClass<typeof RollTable>;
+  type ConfiguredTile = ConfiguredDocumentClassForName<'Tile'>;
+  type ConfiguredToken = ConfiguredDocumentClassForName<'Token'>;
+  type ConfiguredUser = ConfiguredDocumentClass<typeof User>;
+  type ConfiguredWall = ConfiguredDocumentClassForName<'Wall'>;
+
+  type ConfiguredDrawingDocument = ConfiguredDocumentClass<typeof DrawingDocument>;
+  type ConfiguredTokenDocument = ConfiguredDocumentClass<typeof TokenDocument>;
+  type ConfiguredAmbientLightDocument = ConfiguredDocumentClass<typeof AmbientLightDocument>;
+  type ConfiguredNoteDocument = ConfiguredDocumentClass<typeof NoteDocument>;
+  type ConfiguredAmbientSoundDocument = ConfiguredDocumentClass<typeof AmbientSoundDocument>;
+  type ConfiguredTileDocument = ConfiguredDocumentClass<typeof TileDocument>;
+  type ConfiguredWallDocument = ConfiguredDocumentClass<typeof WallDocument>;
+  type ConfiguredMeasuredTemplateDocument = ConfiguredDocumentClass<typeof MeasuredTemplateDocument>;
+
+  type ConfiguredBaseActiveEffect = ConfiguredDocumentClass<typeof foundry.documents.BaseActiveEffect>;
+  type ConfiguredBaseActor = ConfiguredDocumentClass<typeof foundry.documents.BaseActor>;
+  type ConfiguredBaseAdventure = ConfiguredDocumentClass<typeof foundry.documents.BaseAdventure>;
+  type ConfiguredBaseAmbientLight = ConfiguredDocumentClass<typeof foundry.documents.BaseAmbientLight>;
+  type ConfiguredBaseAmbientSound = ConfiguredDocumentClass<typeof foundry.documents.BaseAmbientSound>;
+  type ConfiguredBaseCard = ConfiguredDocumentClass<typeof foundry.documents.BaseCard>;
+  type ConfiguredBaseCards = ConfiguredDocumentClass<typeof foundry.documents.BaseCards>;
+  type ConfiguredBaseChatMessage = ConfiguredDocumentClass<typeof foundry.documents.BaseChatMessage>;
+  type ConfiguredBaseCombat = ConfiguredDocumentClass<typeof foundry.documents.BaseCombat>;
+  type ConfiguredBaseCombatant = ConfiguredDocumentClass<typeof foundry.documents.BaseCombatant>;
+  type ConfiguredBaseDrawing = ConfiguredDocumentClass<typeof foundry.documents.BaseDrawing>;
+  type ConfiguredBaseFogExploration = ConfiguredDocumentClass<typeof foundry.documents.BaseFogExploration>;
+  type ConfiguredBaseFolder = ConfiguredDocumentClass<typeof foundry.documents.BaseFolder>;
+  type ConfiguredBaseItem = ConfiguredDocumentClass<typeof foundry.documents.BaseItem>;
+  type ConfiguredBaseJournalEntryPage = ConfiguredDocumentClass<typeof foundry.documents.BaseJournalEntryPage>;
+  type ConfiguredBaseJournalEntry = ConfiguredDocumentClass<typeof foundry.documents.BaseJournalEntry>;
+  type ConfiguredBaseMacro = ConfiguredDocumentClass<typeof foundry.documents.BaseMacro>;
+  type ConfiguredBaseMeasuredTemplate = ConfiguredDocumentClass<typeof foundry.documents.BaseMeasuredTemplate>;
+  type ConfiguredBaseNote = ConfiguredDocumentClass<typeof foundry.documents.BaseNote>;
+  type ConfiguredBasePlaylistSound = ConfiguredDocumentClass<typeof foundry.documents.BasePlaylistSound>;
+  type ConfiguredBasePlaylist = ConfiguredDocumentClass<typeof foundry.documents.BasePlaylist>;
+  type ConfiguredBaseScene = ConfiguredDocumentClass<typeof foundry.documents.BaseScene>;
+  type ConfiguredBaseSetting = ConfiguredDocumentClass<typeof foundry.documents.BaseSetting>;
+  type ConfiguredBaseTableResult = ConfiguredDocumentClass<typeof foundry.documents.BaseTableResult>;
+  type ConfiguredBaseRollTable = ConfiguredDocumentClass<typeof foundry.documents.BaseRollTable>;
+  type ConfiguredBaseTile = ConfiguredDocumentClass<typeof foundry.documents.BaseTile>;
+  type ConfiguredBaseToken = ConfiguredDocumentClass<typeof foundry.documents.BaseToken>;
+  type ConfiguredBaseUser = ConfiguredDocumentClass<typeof foundry.documents.BaseUser>;
+  type ConfiguredBaseWall = ConfiguredDocumentClass<typeof foundry.documents.BaseWall>;
+}

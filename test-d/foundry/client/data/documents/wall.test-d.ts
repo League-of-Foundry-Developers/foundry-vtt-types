@@ -1,5 +1,4 @@
 import { expectError } from 'tsd';
-import type DataModel from '../../../../../src/foundry/common/abstract/data.mjs';
 
 declare const scene: Scene;
 

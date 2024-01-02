@@ -1,6 +1,6 @@
-import { ConfiguredDocumentClass, ToObjectFalseType } from '../../../../types/helperTypes';
 import { DropData as ClientDocumentMixinDropData } from '../../data/abstract/client-document';
 import * as documents from '../../../common/documents/module.mjs';
+import type { ToObjectFalseType } from '../../../../types/helperTypes';
 
 declare global {
   /**
@@ -15,7 +15,7 @@ declare global {
   class ActorSheet<
     Options extends ActorSheet.Options = ActorSheet.Options,
     Data extends object = ActorSheet.Data<Options>
-  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClass<typeof Actor>>> {
+  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredActor>> {
     /**
      * @defaultValue
      * ```typescript
@@ -127,7 +127,7 @@ declare global {
      */
     protected _onDropItemCreate(
       itemData: documents.BaseItem['_source'][] | documents.BaseItem['_source']
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof Item>>[]>;
+    ): Promise<InstanceType<ConfiguredItem>[]>;
 
     /**
      * Handle a drop event for an existing embedded Item to sort that Item relative to its siblings
@@ -135,7 +135,7 @@ declare global {
     protected _onSortItem(
       event: DragEvent,
       itemData: documents.BaseItem['_source']
-    ): undefined | Promise<InstanceType<ConfiguredDocumentClass<typeof Item>>[]>;
+    ): undefined | Promise<InstanceType<ConfiguredItem>[]>;
 
     /**
      * Is the drop data coming from the same actor?
@@ -150,7 +150,7 @@ declare global {
      * @typeParam Options - the type of the options object
      */
     interface Data<Options extends ActorSheet.Options = ActorSheet.Options>
-      extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClass<typeof Actor>>, Options> {
+      extends DocumentSheet.Data<InstanceType<ConfiguredActor>, Options> {
       actor: this['document'];
       items: ToObjectFalseType<documents.BaseActor>['items'];
       effects: ToObjectFalseType<documents.BaseActor>['effects'];
@@ -175,7 +175,7 @@ declare global {
         type: 'Actor';
       }
 
-      type Item = ClientDocumentMixinDropData<InstanceType<ConfiguredDocumentClass<typeof Item>>> & {
+      type Item = ClientDocumentMixinDropData<InstanceType<ConfiguredItem>> & {
         type: 'Item';
       };
 
@@ -187,7 +187,7 @@ declare global {
     }
 
     interface Options extends DocumentSheetOptions {
-      token?: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseToken>> | null;
+      token?: InstanceType<ConfiguredBaseToken> | null;
     }
   }
 }

@@ -158,13 +158,13 @@ declare global {
     namespace Data {
       interface User {
         user: StoredDocument<globalThis.User>;
-        // id: StoredDocument<globalThis.User>['id'];
-        // local: StoredDocument<globalThis.User>['isSelf'];
-        // name: StoredDocument<globalThis.User>['name'];
-        // color: StoredDocument<globalThis.User>['color'];
+        id: StoredDocument<globalThis.User>['id'];
+        local: StoredDocument<globalThis.User>['isSelf'];
+        name: StoredDocument<globalThis.User>['name'];
+        color: StoredDocument<globalThis.User>['color'];
         colorAlpha: `rgba(${number}, ${number}, ${number})`;
         charname: string;
-        // avatar: StoredDocument<globalThis.User>['avatar'];
+        avatar: StoredDocument<globalThis.User>['avatar'];
         settings: AVSettings.UserSettings;
         volume: number;
         cameraViewClass: string;

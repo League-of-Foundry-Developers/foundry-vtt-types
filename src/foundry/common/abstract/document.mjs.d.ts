@@ -1,10 +1,7 @@
-import { BaseActiveEffectSchema } from './../documents/active-effect.mjs.d';
 import DataModel, { DataSchema } from './data.mjs';
 import { ConfiguredDocumentClass, DocumentConstructor, DocumentType } from '../../../types/helperTypes';
 import EmbeddedCollection from './embedded-collection.mjs';
 import type BaseUser from '../documents/user.mjs';
-import type { DataField } from '../data/fields.mjs.js';
-import { ToObjectFalseType } from '../../../types/helperTypes';
 
 export type ContextType<T extends AnyDocument> = Context<Document.ParentTypeFor<T>>;
 
@@ -41,12 +38,12 @@ declare namespace Document {
      */
     [
       /** Initial data provided to construct the Document */
-      data: DataModel.SchemaToSourceInputSimple<ConcreteDataSchema>,
+      data: DataModel.SchemaToSourceInput<ConcreteDataSchema>,
 
       /** Additional parameters which define Document context */
       context?: Context<Parent>
     ],
-    Equals<DataModel.SchemaToSourceInputSimple<ConcreteDataSchema>, {}>
+    Equals<DataModel.SchemaToSourceInput<ConcreteDataSchema>, {}>
   >;
 }
 
@@ -56,27 +53,17 @@ type GetFlags<T extends AnyDocument> = GetKey<T, 'flags', Record<string, unknown
  * The abstract base class shared by both client and server-side which defines the model for a single document type.
  */
 declare abstract class Document<
-  ConcreteDataSchema extends DataSchema = {},
-  Parent extends AnyDocument | null = null,
-  ConcreteMetadata extends Metadata<any> = Metadata<any>,
-  ConcreteDocumentShims extends Record<string, unknown> = {}
+  out ConcreteDataSchema extends DataSchema = {},
+  out Parent extends AnyDocument | null = null,
+  out ConcreteMetadata extends Metadata<any> = Metadata<any>,
+  out ConcreteDocumentShims extends Record<string, unknown> = {}
 > extends DataModel<Parent, ConcreteDataSchema, ConcreteDocumentShims> {
   /**
    * Create a new Document by providing an initial data object.
    * @param data    - Initial data provided to construct the Document
    * @param context - Additional parameters which define Document context
    */
-  //   constructor(data: DataModel.ConstructPartial<RemoveIndex<ConcreteDataSchema>, 'SourceType'>);
   constructor(...args: Document.ConstructorParameters<ConcreteDataSchema, Parent>);
-  //   //   constructor(data: {
-  //   //     [K in keyof ConcreteDataSchema]: ConcreteDataSchema[K] extends DataField<infer A, infer ExtendsOptions>
-  //   //       ? ExtendsOptions
-  //   //       : never;
-  //   //   });
-  //   constructor(data: DataModel.GetSchemaValue<ConcreteDataSchema, 'SourceType'>);
-  //   //   constructor(data: {
-  //   //     [K in keyof ConcreteDataSchema]: DataModel.GetFieldType<ConcreteDataSchema[K], 'SourceType'>;
-  //   //   });
 
   // Allow the generic parameter to be inferred.
   #metadata: ConcreteMetadata;
@@ -470,31 +457,31 @@ declare abstract class Document<
     { strict }?: { strict?: boolean }
   ): Document<any, this, any, any> | undefined;
 
-  //   /**
-  //    * Create multiple embedded Document instances within this parent Document using provided input data.
-  //    * @see {@link Document.createDocuments}
-  //    * @param embeddedName - The name of the embedded Document type
-  //    * @param data         - An array of data objects used to create multiple documents
-  //    *                       (default: `[]`)
-  //    * @param context      - Additional context which customizes the creation workflow
-  //    *                       (default: `{}`)
-  //    * @returns An array of created Document instances
-  //    */
-  //   createEmbeddedDocuments(
-  //     embeddedName: string,
-  //     data: Array<Record<string, unknown>>,
-  //     context: DocumentModificationContext & { temporary: false }
-  //   ): Promise<Array<StoredDocument<Document<any, this, any, any>>>>;
-  //   createEmbeddedDocuments(
-  //     embeddedName: string,
-  //     data: Array<Record<string, unknown>>,
-  //     context: DocumentModificationContext & { temporary: boolean }
-  //   ): Promise<Array<Document<any, this, any, any>>>;
-  //   createEmbeddedDocuments(
-  //     embeddedName: string,
-  //     data: Array<Record<string, unknown>>,
-  //     context?: DocumentModificationContext
-  //   ): Promise<Array<StoredDocument<Document<any, this, any, any>>>>;
+  /**
+   * Create multiple embedded Document instances within this parent Document using provided input data.
+   * @see {@link Document.createDocuments}
+   * @param embeddedName - The name of the embedded Document type
+   * @param data         - An array of data objects used to create multiple documents
+   *                       (default: `[]`)
+   * @param context      - Additional context which customizes the creation workflow
+   *                       (default: `{}`)
+   * @returns An array of created Document instances
+   */
+  createEmbeddedDocuments(
+    embeddedName: string,
+    data: Array<Record<string, unknown>>,
+    context: DocumentModificationContext & { temporary: false }
+  ): Promise<Array<StoredDocument<Document<any, this, any, any>>>>;
+  createEmbeddedDocuments(
+    embeddedName: string,
+    data: Array<Record<string, unknown>>,
+    context: DocumentModificationContext & { temporary: boolean }
+  ): Promise<Array<Document<any, this, any, any>>>;
+  createEmbeddedDocuments(
+    embeddedName: string,
+    data: Array<Record<string, unknown>>,
+    context?: DocumentModificationContext
+  ): Promise<Array<StoredDocument<Document<any, this, any, any>>>>;
 
   /**
    * Update multiple embedded Document instances within a parent Document using provided differential data.
@@ -698,7 +685,6 @@ declare abstract class Document<
   /**
    * @deprecated since v10
    */
-  //   get data(): any;
   get data(): Document.DataType<this, ConcreteDocumentShims>;
 
   // TODO basically just calls super
@@ -720,14 +706,13 @@ declare abstract class Document<
   //     ? ToObjectFalseType<ConcreteDataSchema> & { _id: string }
   //     : ToObjectFalseType<ConcreteDataSchema>;
 
-  //   /**
-  //    * Convert the Document instance to a primitive object which can be serialized.
-  //    * See DocumentData#toJSON
-  //    * @returns The document data expressed as a plain object
-  //    */
-  //   toJSON(): this['id'] extends string
-  //     ? ReturnType<this['data']['toJSON']> & { _id: string }
-  //     : ReturnType<this['data']['toJSON']>;
+  /**
+   * Convert the Document instance to a primitive object which can be serialized.
+   * See DocumentData#toJSON
+   * @returns The document data expressed as a plain object
+   */
+  // TODO: LUKE
+  //   toJSON(): ToObjectType<this, true>;
 
   /**
    * For Documents which include game system data, migrate the system data object to conform to its latest data model.

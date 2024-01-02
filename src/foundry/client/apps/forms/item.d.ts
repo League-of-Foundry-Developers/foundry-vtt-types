@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+export {};
 
 declare global {
   /**
@@ -13,7 +13,7 @@ declare global {
   class ItemSheet<
     Options extends ItemSheet.Options = ItemSheet.Options,
     Data extends object = ItemSheet.Data<Options>
-  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClass<typeof Item>>> {
+  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredItem>> {
     /**
      * @defaultValue
      * ```typescript
@@ -62,7 +62,7 @@ declare global {
      * @typeParam Options - the type of the options object
      */
     interface Data<Options extends ItemSheet.Options = ItemSheet.Options>
-      extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClass<typeof Item>>, Options> {
+      extends DocumentSheet.Data<InstanceType<ConfiguredItem>, Options> {
       item: this['document'];
     }
 

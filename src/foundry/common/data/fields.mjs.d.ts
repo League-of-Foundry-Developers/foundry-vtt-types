@@ -26,15 +26,18 @@ export declare namespace DataField {
   > &
     ExtendsOptions['ExtraOptions'];
 
+  // DO NOT substitute `true | false` with `boolean` here. It will break inference.
+  // By explicitly using `true | false` the type opts into inference of exactly `true` and exactly `false` rather than always `boolean`.
+  // Strictly speaking only one usage of `true | false` is necessary but it is used everywhere for consistency.
   export type DefaultOptions<T> = {
     /** Is this field required to be populated? */
-    required: boolean;
+    required: true | false;
 
     /** Can this field have null values? */
-    nullable: boolean;
+    nullable: true | false;
 
     /** Should the prepared value of the field be read-only, preventing it from being changed unless a change to the _source data is applied. */
-    readonly: boolean;
+    readonly: true | false;
 
     /** The initial value of a field, or a function which assigns that initial value. */
     initial: InitialType<T>;
@@ -81,35 +84,44 @@ export declare namespace DataField {
 
   type InternalInitializedTypeFor<Field extends Any, ExtendsOptions extends AnyExtendsOptions> =
     | ExtendsOptions['InitializedType']
-    | ExtraTypes<Field>;
+    | ExtraTypes<Field, false>;
 
   export type SourceTypeFor<Field extends Any> = InternalSourceTypeFor<Field, ExtendsOptionsFor<Field>>;
 
+  // This helper type is necessary to stop some circular type errors.
+  // It seems like Typescript runs into issues with `ExtendsOptionsFor<Field>` when it is used in the definition of a class.
   type InternalSourceTypeFor<Field extends Any, ExtendsOptions extends AnyExtendsOptions> =
     | Exclude<ExtendsOptions['SourceType'], undefined | null>
-    | ExtraTypes<Field>;
+    | ExtraTypes<Field, false>;
 
-  export type ExtraTypes<Field extends Any> =
-    | (false extends Field['required'] ? undefined : never)
-    | (true extends Field['nullable'] ? null : never);
+  // Choosing whether to include types like `null` is straightforward in the case of `nullable: true` and `nullable: false`.
+  // However in the case of `nullable: boolean` whether an extra type like `null` should be included depends on what's safer at runtime.
+  // When setting a field (i.e. an input) it is safer to assume a type like `null` is not allowed because if it isn't then it'll be an error.
+  // However when getting a value from a field (i.e. an output) there's the possibility that `null` is a valid value and should be handled.
+  export type ExtraTypes<Field extends Any, IsInput extends true | false> =
+    | ExtraType<Not<Field['required']>, undefined, IsInput>
+    | ExtraType<Field['nullable'], null, IsInput>;
 
-  export type OptionsFor<Field extends typeof DataField> = Field extends abstract new (...args: any[]) => DataField<
-    infer Options,
-    any
-  >
-    ? Options
+  // In pseudo code this is saying `if (b === true || (couldBeTrue(b) && isInput)) { return v }`
+  type ExtraType<B extends boolean, V, IsInput extends boolean> = Or<
+    Equals<B, true>,
+    And<CouldBeTrue<B>, IsInput>
+  > extends true
+    ? V
     : never;
 
-  // `infer Options` is required here as opposed to `any`.
-  // The reason why is probably immensely cursed and related to structurally defining the class.
-  export type ExtendsOptionsFor<Field extends Any> = Field extends DataField<infer Options, infer ExtendsOptions>
+  type CouldBeTrue<B extends boolean> = [true] extends [B] ? true : false;
+
+  export type OptionsFor<Field extends Any> = Field extends DataField<infer Options, any> ? Options : never;
+
+  export type ExtendsOptionsFor<Field extends Any> = Field extends DataField<any, infer ExtendsOptions>
     ? ExtendsOptions
     : never;
 
-  export type OptionalExtendsOptions = {
-    InitializedType?: any;
-    ValidateType?: any;
-  };
+  export type OptionalExtendsOptions = InexactPartial<{
+    InitializedType: any;
+    ValidateType: any;
+  }>;
 
   export type ExtendsOptions<
     SourceType extends JSONValue,
@@ -120,7 +132,12 @@ export declare namespace DataField {
     SourceType: SourceType;
     ExtraOptions: ExtraOptions;
 
-    DefaultOptionsValue: IsAny<DefaultOptionsValue> extends true ? DataField.DefaultOptions<any> : DefaultOptionsValue;
+    DefaultOptionsValue: DefaultOptionsValue;
+
+    // In the simplest case when `DefaultOptionsValue` is not assignable to `SourceType`, a field is required to have a value provided.
+    // Only when `Required` is exactly `false`, i.e. not `boolean` will a field be optional.
+    // Be careful in the presence of `any`.
+    // Required: ItemExtends<DefaultOptionsValue, SourceType>;
   } & SimpleMerge<
     {
       InitializedType: SourceType;
@@ -130,13 +147,19 @@ export declare namespace DataField {
   >;
 
   export type AnyExtendsOptions = ExtendsOptions<any, any, any, any>;
+
+  type ConstructorParameters<
+    Options extends DataField.Options<ExtendsOptions>,
+    ExtendsOptions extends AnyExtendsOptions,
+    _Options = Options & DataField.Options<ExtendsOptions>
+  > = [{}] extends [_Options] ? [options?: _Options] : [options: _Options];
 }
 
 export declare abstract class DataField<
-  Options extends DataField.Options<ExtendsOptions>,
-  ExtendsOptions extends DataField.AnyExtendsOptions
+  out Options extends DataField.Options<ExtendsOptions>,
+  out ExtendsOptions extends DataField.AnyExtendsOptions
 > extends _InternalDataField<Options, ExtendsOptions> {
-  constructor(options: Options);
+  constructor(...args: DataField.ConstructorParameters<Options, ExtendsOptions>);
 
   // This private property is added so that statements such as `X extends DataField<any, infer ExtendsOptions> ? ... : ...` can function correctly.
   // Essentially Typescript will infer the type parameter structurally by looking properties and because we're only using transforms of the type parameter it can't figure it out.
@@ -209,7 +232,7 @@ export declare abstract class DataField<
     options: Record<string, unknown>
   ): DataField.InternalSourceTypeFor<this, ExtendsOptions>;
 
-  abstract _cast(value: unknown): DataField.SourceTypeFor<this>;
+  abstract _cast(value: unknown): DataField.InternalSourceTypeFor<this, ExtendsOptions>;
 
   /**
    * Attempt to retrieve a valid initial value for the DataField.
@@ -259,7 +282,7 @@ export declare abstract class DataField<
   initialize(
     model: DataModel.Any,
     name: string,
-    value: DataField.SourceTypeFor<this>
+    value: DataField.InternalSourceTypeFor<this, ExtendsOptions>
   ): DataField.InternalInitializedTypeFor<this, ExtendsOptions>;
 
   /**
@@ -278,9 +301,9 @@ export declare abstract class DataField<
 
 type JSONValue =
   | {
-      [K: string]: JSONValue;
+      readonly [K: string]: JSONValue;
     }
-  | JSONValue[]
+  | readonly JSONValue[]
   | number
   | string
   | boolean
@@ -294,22 +317,15 @@ type JSONValue =
 
 // @ts-expect-error subclassing StructuralClass gives an error
 declare class _InternalDataField<
-  Options extends DataField.Options<ExtendsOptions>,
-  ExtendsOptions extends DataField.AnyExtendsOptions,
-  // any should be eliminated because `RemoveIndex<any>` will not add the base properties and merging in `any` would make it too generic.
-  _Options extends DataField.Options<ExtendsOptions> = RemoveIndex<
-    IsAny<Options> extends true ? DataField.Options<ExtendsOptions> : Options
-  >,
-  DefaultOptionsValue extends DataField.DefaultOptions<any> = RemoveIndex<
-    IsAny<ExtendsOptions['DefaultOptionsValue']> extends true
-      ? DataField.DefaultOptions<any>
-      : ExtendsOptions['DefaultOptionsValue']
-  >,
-  // Merging in `DataField.DefaultOptions<any>` shouldn't have any effect on the final type as `DefaultOptionsValue` is a subtype.
-  // It's here to remind inference that properties like `nullable` exist on ANY `DataField`, it seems to disallow it on `this` if not reminded.
-  _ComputedDataField extends Record<string, unknown> = {
-    options: _Options;
-  } & SimpleMerge<DefaultOptionsValue, Pick<_Options, RequiredProperties<_Options>>> &
+  out Options extends DataField.Options<ExtendsOptions>,
+  out ExtendsOptions extends DataField.AnyExtendsOptions,
+  // In the case of types like `any`, `RemoveIndex<any>` will be `{}` so `DataField.Options<ExtendsOptions>` is merged back in brings it back to being more specific. In all other cases it should be a no-op.
+  // Do not use something like `IsAny` as this will break variance.
+  out DefaultOptionsValue extends DataField.DefaultOptions<any> = RemoveIndex<ExtendsOptions['DefaultOptionsValue']> &
+    DataField.DefaultOptions<any>,
+  out _ComputedDataField extends Record<string, unknown> = {
+    options: Options;
+  } & SimpleMerge<DefaultOptionsValue, Pick<Options, RequiredProperties<Options>>> &
     DataField.DefaultOptions<any>
 > extends StructuralClass<_ComputedDataField> {}
 
@@ -334,8 +350,8 @@ export namespace BooleanField {
 export declare class BooleanField<
   Options extends DataField.Options<ExtendsOptions>,
   ExtendsOptions extends DataField.AnyExtendsOptions = BooleanField.ExtendsOptions
-> extends DataField<Options, BooleanField.ExtendsOptions> {
-  _cast(value: string | object | any): DataField.SourceTypeFor<this>;
+> extends DataField<Options, ExtendsOptions> {
+  _cast(value: string | object | any): DataField.InternalSourceTypeFor<this, ExtendsOptions>;
 }
 
 export type DataFieldChoices<T> =
@@ -419,7 +435,7 @@ export namespace NumberField {
       any,
       NumberField.ExtraOptions
     >,
-    // We are purposefully violating an invariant here which is that DefaultOptionsValue.initial should be assignable to SourceType.
+    // We are purposefully violating an invariant here which is that `DefaultOptionsValue['initial']` should be assignable to `SourceType`.
     // When `choices` is defined this is not always true.
     {
       // If choices are provided, the field should not be null by default
@@ -448,14 +464,14 @@ export declare class NumberField<
 > extends DataField<Options, ExtendsOptions> {
   constructor(options: Options & { choices?: Choices });
 
-  _cast(value: any): DataField.SourceTypeFor<this>;
+  _cast(value: any): DataField.InternalSourceTypeFor<this, ExtendsOptions>;
 
   /**
    * Test whether a provided value is a valid choice from the allowed choice set
    * @param value - The provided value
    * @returns - Is the choice valid?
    */
-  #isValidChoice(value: DataField.SourceTypeFor<this>): boolean;
+  #isValidChoice(value: DataField.InternalSourceTypeFor<this, ExtendsOptions>): boolean;
 }
 
 export namespace StringField {
@@ -554,7 +570,7 @@ export declare class ObjectField<
   Options extends DataField.Options<ExtendsOptions>,
   ExtendsOptions extends DataField.AnyExtendsOptions = ObjectField.ExtendsOptions
 > extends DataField<Options, ExtendsOptions> {
-  _cast(value: ObjectField.Type): DataField.SourceTypeFor<this>;
+  _cast(value: ObjectField.Type): DataField.InternalSourceTypeFor<this, ExtendsOptions>;
 }
 
 export declare namespace ArrayField {
@@ -607,8 +623,10 @@ export declare class ArrayField<
   protected static _validateElementType(element: unknown): void;
 
   _cast(
-    value: ArrayElement<DataField.SourceTypeFor<this>> | DataField.SourceTypeFor<this>
-  ): DataField.SourceTypeFor<this>;
+    value:
+      | ArrayElement<DataField.InternalSourceTypeFor<this, ExtendsOptions>>
+      | DataField.InternalSourceTypeFor<this, ExtendsOptions>
+  ): DataField.InternalSourceTypeFor<this, ExtendsOptions>;
 
   /**
    * Validate every element of the ArrayField
@@ -622,7 +640,7 @@ export declare class ArrayField<
   override initialize(
     model: DataModel.Any,
     name: string,
-    value: DataField.SourceTypeFor<this>
+    value: DataField.InternalSourceTypeFor<this, ExtendsOptions>
   ): ExtendsOptions['InitializedType'];
 
   /** @override */
@@ -734,7 +752,7 @@ declare class SchemaField<
    */
   schema: ConcreteSchema;
 
-  //   /* -------------------------------------------- */
+  /* -------------------------------------------- */
 
   //   /** {@inheritdoc} */
   //   _cleanType(value, data, options) {
@@ -822,7 +840,7 @@ declare class SchemaField<
   //     return source;
   //   }
 
-  //   /* ---------------------------------------- */
+  /* ---------------------------------------- */
 
   /**
    * Validate an object of data against its provided schema.
@@ -846,7 +864,7 @@ export declare namespace EmbeddedDataField {
   export type ExtraOptions = SchemaField.ExtraOptions;
 
   export type DataModelConstructor = Pick<typeof DataModel, keyof typeof DataModel> &
-    (new <Parent extends AnyDocument | null>(data?: any, context?: Context<any>) => DataModel.Any);
+    (new (data?: any, context?: Context<any>) => DataModel.Any);
 
   export type ExtendsOptions<Model extends DataModelConstructor> = SchemaField.ExtendsOptions<
     ReturnType<Model['defineSchema']>
@@ -936,7 +954,7 @@ export declare class DocumentIdField<
 
 export declare namespace ForeignDocumentField {
   export type Type = Pick<typeof DataModel, keyof typeof DataModel> &
-    (abstract new <Parent extends DataModel.Any>(data?: any, context?: Context<any>) => DataModel.Any);
+    (abstract new (data?: any, context?: Context<any>) => DataModel.Any);
 
   export type DefaultOptionsValue = SimpleMerge<
     DocumentIdField.DefaultOptionsValue,
@@ -989,10 +1007,8 @@ export declare namespace SystemDataField {
   > = SimpleMerge<
     ObjectField.ExtendsOptions,
     {
-      //   SourceType: SystemSourceByType<ConcreteDocument['metadata']['name']>;
-      //   InitializedType: SystemDataByType<ConcreteDocument['metadata']['name']>;
-      SourceType: {};
-      InitializedType: {};
+      SourceType: SystemSourceByType<ConcreteDocument['metadata']['name']>;
+      InitializedType: SystemDataByType<ConcreteDocument['metadata']['name']>;
     }
   >;
 }

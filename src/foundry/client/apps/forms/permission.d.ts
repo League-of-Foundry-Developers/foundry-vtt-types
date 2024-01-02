@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
+export {};
 
 declare global {
   /**
@@ -39,7 +39,7 @@ declare global {
       playerLevels: Record<foundry.CONST.DOCUMENT_PERMISSION_LEVELS | '-1', string> & { '-2'?: string };
       isFolder: boolean;
       users: {
-        user: InstanceType<ConfiguredDocumentClassForName<'User'>>;
+        user: InstanceType<ConfiguredUser>;
         level: foundry.CONST.DOCUMENT_PERMISSION_LEVELS | '-1';
       }[];
     }

@@ -21,7 +21,7 @@
  * Hooks.on("sightRefresh", layer => {});
  * ```
  */
-import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+export {};
 
 declare global {
   class SightLayer extends CanvasLayer<SightLayer.LayerOptions> {
@@ -46,7 +46,7 @@ declare global {
      * The FogExploration document which applies to this canvas view
      * @defaultValue `null`
      */
-    exploration: InstanceType<ConfiguredDocumentClass<typeof FogExploration>> | null;
+    exploration: InstanceType<ConfiguredFogExploration> | null;
 
     /**
      * A Collection of vision sources which are currently active within the rendered Scene.

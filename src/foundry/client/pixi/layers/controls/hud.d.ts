@@ -54,14 +54,6 @@ declare class ObjectHUD extends PIXI.Container {
    */
   transform: PIXI.Transform;
 
-  // @ts-expect-error this is a property in `PIXI.Container` but foundry overrides it as an accessor.
-  override get visible(): boolean;
-  override set visible(value: boolean);
-
-  // @ts-expect-error this is a property in `PIXI.Container` but foundry overrides it as an accessor.
-  override get renderable(): boolean;
-  override set renderable(value: boolean);
-
   /**
    * Display scrolling status text originating from this ObjectHUD container.
    * @param content - The text content to display

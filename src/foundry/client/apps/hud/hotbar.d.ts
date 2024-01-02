@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+export {};
 
 declare global {
   /**
@@ -29,7 +29,7 @@ declare global {
      * The currently displayed set of macros
      * @defaultValue `[]`
      */
-    macros: InstanceType<ConfiguredDocumentClass<typeof Macro>>[];
+    macros: InstanceType<ConfiguredMacro>[];
 
     /**
      * Track collapsed state
@@ -62,7 +62,7 @@ declare global {
      * Get the Array of Macro (or null) values that should be displayed on a numbered page of the bar
      * @param page -
      */
-    protected _getMacrosByPage(page: number): InstanceType<ConfiguredDocumentClass<typeof Macro>>[];
+    protected _getMacrosByPage(page: number): InstanceType<ConfiguredMacro>[];
 
     /**
      * Collapse the Hotbar, minimizing its display.

@@ -4,7 +4,6 @@ import * as documents from './module.mjs';
 import * as fields from '../data/fields.mjs';
 import { DocumentStatsSchema } from '../data/data.mjs';
 import type BaseUser from './user.mjs';
-import type { ConfiguredDocumentClass } from '../../../types/helperTypes.js';
 import type { FlagsField } from '../data/flagsField.js';
 
 interface BaseItemSchema extends DataSchema {
@@ -80,7 +79,7 @@ type BaseItemShims = {
  */
 declare class BaseItem extends Document<
   BaseItemSchema,
-  InstanceType<ConfiguredDocumentClass<typeof documents.BaseActor>>,
+  InstanceType<ConfiguredBaseActor>,
   BaseItemMetadata,
   BaseItemShims
 > {

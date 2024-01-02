@@ -3,7 +3,7 @@ import * as fields from '../data/fields.mjs';
 import * as documents from './module.mjs';
 import * as CONST from '../constants.mjs';
 import { ShapeData } from '../data/data.mjs';
-import { ConfiguredDocumentClass, JSOr } from '../../../types/helperTypes.js';
+import { JSOr } from '../../../types/helperTypes.js';
 import { DataModel, DataSchema } from '../abstract/data.mjs';
 import type { FlagsField } from '../data/flagsField.js';
 
@@ -223,7 +223,7 @@ type BaseDrawingShims = {
  */
 declare class BaseDrawing extends Document<
   BaseDrawingSchema,
-  InstanceType<ConfiguredDocumentClass<typeof documents.BaseScene>>,
+  InstanceType<ConfiguredBaseScene>,
   BaseDrawingMetadata,
   BaseDrawingShims
 > {

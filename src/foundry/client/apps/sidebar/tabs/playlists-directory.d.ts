@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClass, ToObjectFalseType } from '../../../../../types/helperTypes';
+import type { ToObjectFalseType } from '../../../../../types/helperTypes';
 
 declare global {
   /**
@@ -29,14 +29,14 @@ declare global {
      * @defaultValue `[]`
      * @internal
      */
-    protected _playingPlaylists: InstanceType<ConfiguredDocumentClass<typeof Playlist>>[];
+    protected _playingPlaylists: InstanceType<ConfiguredPlaylist>[];
 
     /**
      * Cache the set of PlaylistSound documents that are displayed as playing when the directory is rendered
      * @defaultValue `[]`
      * @internal
      */
-    protected _playingSounds: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>[];
+    protected _playingSounds: InstanceType<ConfiguredPlaylistSound>[];
 
     /**
      * @internal
@@ -74,7 +74,7 @@ declare global {
     /**
      * Return an Array of the Playlist documents which are currently playing
      */
-    get playing(): InstanceType<ConfiguredDocumentClass<typeof Playlist>>[];
+    get playing(): InstanceType<ConfiguredPlaylist>[];
 
     /**
      * Whether the 'currently playing' element is pinned to the top or bottom of the display.
@@ -89,9 +89,7 @@ declare global {
      * @param leaf - The tree leaf node being prepared
      * @internal
      */
-    protected _prepareTreeData(
-      leaf: SidebarDirectory.Tree<InstanceType<ConfiguredDocumentClass<typeof Playlist>>>
-    ): void;
+    protected _prepareTreeData(leaf: SidebarDirectory.Tree<InstanceType<ConfiguredPlaylist>>): void;
 
     /**
      * Create an object of rendering data for each Playlist document being displayed
@@ -99,9 +97,7 @@ declare global {
      * @returns The data for rendering
      * @internal
      */
-    protected _preparePlaylistData(
-      playlist: InstanceType<ConfiguredDocumentClass<typeof Playlist>>
-    ): PlaylistDirectory.Data.Playlist;
+    protected _preparePlaylistData(playlist: InstanceType<ConfiguredPlaylist>): PlaylistDirectory.Data.Playlist;
 
     /**
      * Get the icon used to represent the "play/stop" icon for the PlaylistSound
@@ -109,7 +105,7 @@ declare global {
      * @returns The icon that should be used
      * @internal
      */
-    protected _getPlayIcon(sound: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>): string;
+    protected _getPlayIcon(sound: InstanceType<ConfiguredPlaylistSound>): string;
 
     /**
      * Get the icon used to represent the pause/loading icon for the PlaylistSound
@@ -117,7 +113,7 @@ declare global {
      * @returns The icon that should be used
      * @internal
      */
-    protected _getPauseIcon(sound: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>): string;
+    protected _getPauseIcon(sound: InstanceType<ConfiguredPlaylistSound>): string;
 
     /**
      * Given a constant playback mode, provide the FontAwesome icon used to display it
@@ -275,7 +271,7 @@ declare global {
     }
 
     namespace Data {
-      interface Tree extends SidebarDirectory.Tree<InstanceType<ConfiguredDocumentClass<typeof Playlist>>> {
+      interface Tree extends SidebarDirectory.Tree<InstanceType<ConfiguredPlaylist>> {
         playlists: PlaylistDirectory.Data.Playlist[];
       }
 

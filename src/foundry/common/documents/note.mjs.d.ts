@@ -4,7 +4,7 @@ import * as documents from './module.mjs';
 import * as CONST from '../constants.mjs';
 import { TextureDataField } from '../data/data.mjs';
 import { DataModel, DataSchema } from '../abstract/data.mjs';
-import { ConfiguredDocumentClass, JSOr } from '../../../types/helperTypes.js';
+import { JSOr } from '../../../types/helperTypes.js';
 import type { FlagsField } from '../data/flagsField.js';
 
 interface BaseNoteSchema extends DataSchema {
@@ -141,7 +141,7 @@ type BaseNoteShims = {
  */
 declare class BaseNote extends Document<
   BaseNoteSchema,
-  InstanceType<ConfiguredDocumentClass<typeof documents.BaseScene>>,
+  InstanceType<ConfiguredBaseScene>,
   BaseNoteMetadata,
   BaseNoteShims
 > {

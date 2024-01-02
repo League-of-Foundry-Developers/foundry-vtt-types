@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass } from '../../../types/helperTypes';
+export {};
 
 declare global {
   /**
@@ -390,18 +390,18 @@ declare global {
      * @returns A promise which resolves to the created ChatMessage entity, if create is true
      *          or the Object of prepared chatData otherwise.
      */
-    toMessage<T extends DeepPartial<ConstructorParameters<ConfiguredDocumentClass<typeof ChatMessage>>[0]> = {}>(
+    toMessage<T extends DeepPartial<ConstructorParameters<ConfiguredChatMessage>[0]> = {}>(
       messageData?: T,
       { rollMode, create }?: { rollMode?: keyof CONFIG.Dice.RollModes | 'roll'; create?: true }
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof ChatMessage>> | undefined>;
-    toMessage<T extends DeepPartial<ConstructorParameters<ConfiguredDocumentClass<typeof ChatMessage>>[0]> = {}>(
+    ): Promise<InstanceType<ConfiguredChatMessage> | undefined>;
+    toMessage<T extends DeepPartial<ConstructorParameters<ConfiguredChatMessage>[0]> = {}>(
       messageData: T,
       { rollMode, create }: { rollMode?: keyof CONFIG.Dice.RollModes | 'roll'; create: false }
     ): MessageData<T>;
-    toMessage<T extends DeepPartial<ConstructorParameters<ConfiguredDocumentClass<typeof ChatMessage>>[0]> = {}>(
+    toMessage<T extends DeepPartial<ConstructorParameters<ConfiguredChatMessage>[0]> = {}>(
       messageData: T,
       { rollMode, create }: { rollMode?: keyof CONFIG.Dice.RollModes | 'roll'; create: boolean }
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof ChatMessage>> | undefined> | MessageData<T>;
+    ): Promise<InstanceType<ConfiguredChatMessage> | undefined> | MessageData<T>;
 
     /**
      * Expand an inline roll element to display it's contained dice result as a tooltip

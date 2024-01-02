@@ -1,4 +1,3 @@
-import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
 import { DocumentModificationOptions } from '../../../common/abstract/document.mjs';
 
 declare global {
@@ -7,9 +6,7 @@ declare global {
    * @see {@link MeasuredTemplateDocument}
    * @see {@link TemplateLayer}
    */
-  class MeasuredTemplate extends PlaceableObject<
-    InstanceType<ConfiguredDocumentClass<typeof MeasuredTemplateDocument>>
-  > {
+  class MeasuredTemplate extends PlaceableObject<InstanceType<ConfiguredMeasuredTemplateDocument>> {
     /**
      * The geometry shape used for testing point intersection
      * @defaultValue `undefined`
@@ -120,14 +117,14 @@ declare global {
 
     override rotate(angle: number, snap: number): Promise<this>;
 
-    protected override _canControl(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
+    protected override _canControl(user: InstanceType<ConfiguredUser>, event?: any): boolean;
 
-    protected override _canConfigure(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
+    protected override _canConfigure(user: InstanceType<ConfiguredUser>, event?: any): boolean;
 
-    protected override _canView(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
+    protected override _canView(user: InstanceType<ConfiguredUser>, event?: any): boolean;
 
     protected override _onUpdate(
-      data: DeepPartial<InstanceType<ConfiguredDocumentClass<typeof MeasuredTemplateDocument>>['_source']>,
+      data: DeepPartial<InstanceType<ConfiguredMeasuredTemplateDocument>['_source']>,
       options?: DocumentModificationOptions,
       userId?: string
     ): void;

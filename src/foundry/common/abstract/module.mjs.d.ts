@@ -9,7 +9,7 @@ export { default as EmbeddedCollection } from './embedded-collection.mjs';
  * @deprecated since v10
  * @see DataModel
  */
-export class DocumentData<Parent extends AnyDocument | null, ConcreteDataSchema extends DataSchema> extends DataModel<
-  Parent,
-  ConcreteDataSchema
-> {}
+export class DocumentData<
+  out Parent extends AnyDocument | null,
+  out ConcreteDataSchema extends DataSchema
+> extends DataModel<Parent, ConcreteDataSchema> {}

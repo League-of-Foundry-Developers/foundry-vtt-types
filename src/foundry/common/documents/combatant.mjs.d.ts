@@ -1,11 +1,10 @@
 import { DocumentMetadata } from '../abstract/document.mjs';
-import { DataModel, Document } from '../abstract/module.mjs';
+import { DataModel, DataSchema, Document } from '../abstract/module.mjs';
 import * as documents from './module.mjs';
 import * as fields from '../data/fields.mjs';
-import type { ConfiguredDocumentClass } from '../../../types/helperTypes.js';
 import { FlagsField } from '../data/flagsField';
 
-type BaseCombatantSchema = {
+interface BaseCombatantSchema extends DataSchema {
   /**
    * The _id which uniquely identifies this Combatant embedded document
    */
@@ -54,7 +53,7 @@ type BaseCombatantSchema = {
    * An object of optional key/value flags
    */
   flags: FlagsField<'Combatant', {}>;
-};
+}
 
 type BaseCombatantMetadata = Merge<
   DocumentMetadata,
@@ -88,7 +87,7 @@ type CanCreate = (
  */
 declare class BaseCombatant extends Document<
   BaseCombatantSchema,
-  InstanceType<ConfiguredDocumentClass<typeof documents.BaseCombat>>,
+  InstanceType<ConfiguredBaseCombat>,
   BaseCombatantMetadata
 > {
   /* -------------------------------------------- */

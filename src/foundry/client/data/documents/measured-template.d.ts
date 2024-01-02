@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+export {};
 
 declare global {
   /**
@@ -14,7 +14,7 @@ declare global {
      * A reference to the User who created the MeasuredTemplate document.
      * @remarks Will return undefined if the user has been deleted
      */
-    get author(): InstanceType<ConfiguredDocumentClass<typeof User>> | undefined;
+    get author(): InstanceType<ConfiguredUser> | undefined;
   }
 }
 

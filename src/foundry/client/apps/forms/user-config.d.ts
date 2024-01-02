@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+export {};
 
 declare global {
   /**
@@ -9,7 +9,7 @@ declare global {
   class UserConfig<
     Options extends DocumentSheetOptions = UserConfig.Options,
     Data extends object = UserConfig.Data<Options>
-  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClass<typeof User>>> {
+  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredUser>> {
     /**
      * @defaultValue
      * ```typescript
@@ -42,8 +42,8 @@ declare global {
 
   namespace UserConfig {
     interface Data<Options extends DocumentSheetOptions> {
-      user: InstanceType<ConfiguredDocumentClass<typeof User>>;
-      actors: InstanceType<ConfiguredDocumentClass<typeof Actor>>[];
+      user: InstanceType<ConfiguredUser>;
+      actors: InstanceType<ConfiguredActor>[];
       options: Options;
     }
 

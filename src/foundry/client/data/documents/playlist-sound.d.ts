@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
 import type { DocumentModificationOptions } from '../../../common/abstract/document.mjs.js';
 
 declare global {
@@ -71,7 +70,7 @@ declare global {
      * Special handling that occurs when a PlaylistSound reaches the natural conclusion of its playback.
      * @internal
      */
-    protected _onEnd(): Promise<void | InstanceType<ConfiguredDocumentClassForName<'Playlist'>> | undefined>;
+    protected _onEnd(): Promise<void | InstanceType<ConfiguredPlaylist> | undefined>;
 
     /**
      * Special handling that occurs when playback of a PlaylistSound is started.

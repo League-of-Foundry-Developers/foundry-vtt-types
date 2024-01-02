@@ -1,4 +1,4 @@
-import { ConfiguredDocumentClass } from '../../../../../types/helperTypes';
+export {};
 
 declare global {
   /**
@@ -65,7 +65,7 @@ declare global {
 
   namespace CompendiumDirectory {
     interface Data {
-      user: InstanceType<ConfiguredDocumentClass<typeof User>>;
+      user: InstanceType<ConfiguredUser>;
       packs: { [DocumentName in foundry.CONST.COMPENDIUM_DOCUMENT_TYPES]?: PackData<DocumentName> };
     }
 

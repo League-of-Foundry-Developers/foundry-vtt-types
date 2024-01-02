@@ -1,5 +1,5 @@
 import type { Socket } from 'socket.io-client';
-import { ConfiguredDocumentClass, ConfiguredDocumentClassForName, DocumentConstructor } from '../../types/helperTypes';
+import { ConfiguredDocumentClassForName, DocumentConstructor } from '../../types/helperTypes';
 
 declare global {
   /**
@@ -362,7 +362,7 @@ declare global {
     /**
      * The currently connected User entity, or null if Users is not yet initialized
      */
-    get user(): StoredDocument<InstanceType<ConfiguredDocumentClass<typeof User>>> | null;
+    get user(): StoredDocument<InstanceType<ConfiguredUser>> | null;
 
     /**
      * A convenience accessor for the currently viewed Combat encounter

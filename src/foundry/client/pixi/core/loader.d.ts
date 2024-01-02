@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClassForName } from '../../../../types/helperTypes';
+export {};
 
 declare global {
   /**
@@ -23,7 +23,7 @@ declare global {
      *                  (default: `{}`)
      */
     static loadSceneTextures(
-      scene: InstanceType<ConfiguredDocumentClassForName<'Scene'>>,
+      scene: InstanceType<ConfiguredScene>,
       options?: Partial<TextureLoader.LoadSceneTextureOptions>
     ): Promise<void[]>;
 

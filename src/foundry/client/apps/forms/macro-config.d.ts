@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClass } from '../../../../types/helperTypes';
+export {};
 
 declare global {
   /**
@@ -10,7 +10,7 @@ declare global {
   class MacroConfig<
     Options extends DocumentSheetOptions = MacroConfig.Options,
     Data extends object = MacroConfig.Data<Options>
-  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredDocumentClass<typeof Macro>>> {
+  > extends DocumentSheet<Options, Data, InstanceType<ConfiguredMacro>> {
     /**
      * @defaultValue
      * ```typescript
@@ -56,7 +56,7 @@ declare global {
      * @typeParam Options - the type of the options object
      */
     interface Data<Options extends DocumentSheetOptions>
-      extends DocumentSheet.Data<InstanceType<ConfiguredDocumentClass<typeof Macro>>, Options> {
+      extends DocumentSheet.Data<InstanceType<ConfiguredMacro>, Options> {
       macroTypes: Array<ValueOf<typeof CONST.MACRO_TYPES>>;
       macroScopes: typeof foundry.CONST['MACRO_SCOPES'];
     }

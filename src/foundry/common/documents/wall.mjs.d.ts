@@ -3,7 +3,6 @@ import * as CONST from '../constants.mjs';
 import * as fields from '../data/fields.mjs';
 import { DataModel, DataSchema } from '../abstract/module.mjs';
 import BaseUser from './user.mjs.js';
-import { ConfiguredDocumentClass } from '../../../types/helperTypes.js';
 import type { FlagsField } from '../data/flagsField.js';
 
 interface BaseWallSchema extends DataSchema {
@@ -21,7 +20,7 @@ interface BaseWallSchema extends DataSchema {
       validate: (c: [number, number, number, number]) => boolean;
       validationError: 'must be a length-4 array of integer coordinates';
     },
-    // Specialize the type to be a tuple of four elements.
+    // Specialize the type to be a tuple of four elements rather than any array.
     SimpleMerge<
       fields.ArrayField.ExtendsOptions<fields.DataField.Any, any>,
       {
@@ -137,11 +136,7 @@ type BaseWallMetadata = Merge<
  * The Document definition for a Wall.
  * Defines the DataSchema and common behaviors for a Wall which are shared between both client and server.
  */
-declare class BaseWall extends Document<
-  BaseWallSchema,
-  InstanceType<ConfiguredDocumentClass<typeof Scene>>,
-  BaseWallMetadata
-> {
+declare class BaseWall extends Document<BaseWallSchema, InstanceType<ConfiguredScene>, BaseWallMetadata> {
   /* -------------------------------------------- */
   /*  Model Configuration                         */
   /* -------------------------------------------- */
