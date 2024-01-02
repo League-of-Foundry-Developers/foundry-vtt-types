@@ -1,7 +1,7 @@
+import Color from "../../../common/utils/color.mjs";
+
 export {};
 
-// TODO: Define Color in common/utils/color.mjs
-type Color = number;
 declare global {
   /**
    * A singleton class dedicated to manage the color spaces associated with the scene and the canvas.
