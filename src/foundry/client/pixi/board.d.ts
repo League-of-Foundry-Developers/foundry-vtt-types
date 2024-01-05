@@ -745,8 +745,8 @@ declare global {
      * Track objects which have pending render flags.
      */
     readonly pendingRenderFlags: {
-      OBJECTS: Set<ReturnType<typeof RenderFlagsMixin>>;
-      PERCEPTION: Set<ReturnType<typeof RenderFlagsMixin>>;
+      OBJECTS: Set<InstanceType<ReturnType<typeof RenderFlagsMixin>>>;
+      PERCEPTION: Set<InstanceType<ReturnType<typeof RenderFlagsMixin>>>;
     };
 
     /**
