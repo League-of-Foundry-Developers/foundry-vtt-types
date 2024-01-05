@@ -75,7 +75,7 @@ declare global {
      * A convenience reference to the possible shape types.
      * TODO: Replace post-data model with the static enum reference
      */
-    static readonly SHAPE_TYPES: string; // ValueOf<(typeof foundry.data.ShapeData)["TYPES"]>
+    static readonly SHAPE_TYPES: Record<string, string>; // (typeof foundry.data.ShapeData)["TYPES"]
 
     override get bounds(): Rectangle;
 
