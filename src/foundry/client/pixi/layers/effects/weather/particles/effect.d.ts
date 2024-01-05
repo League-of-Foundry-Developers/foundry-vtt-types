@@ -6,8 +6,8 @@ declare global {
    */
   class ParticleEffect extends FullCanvasObjectMixin(PIXI.Container) {
     /**
-     * @param options - Options passed to the getParticleEmitters method which can be used to customize
-     *                  values of the emitter configuration. (default: `{}`)
+     * @param options - Options passed to the getParticleEmitters method which can be used to customize values of the emitter configuration.
+     *                  (default: `{}`)
      */
 
     constructor(options?: Record<string, unknown>);

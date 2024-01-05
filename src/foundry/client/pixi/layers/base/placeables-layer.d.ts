@@ -4,8 +4,8 @@ import {
   ConfiguredDocumentClassForName,
   PlaceableDocumentType,
   ConstructorDataType,
-} from "../../../../../types/helperTypes.js";
-import EmbeddedCollection from "../../../../common/abstract/embedded-collection.mjs.js";
+} from "../../../../../types/helperTypes";
+import EmbeddedCollection from "../../../../common/abstract/embedded-collection.mjs";
 
 export {};
 
@@ -266,19 +266,19 @@ declare global {
      */
     pasteObjects(
       position: Point,
-      options?: {
+      options?: InexactPartial<{
         /**
          * Paste data in a hidden state, if applicable. Default is false.
          * @defaultValue `false`
          */
-        hidden?: boolean;
+        hidden: boolean;
 
         /**
          * Snap the resulting objects to the grid. Default is true.
          * @defaultValue `true`
          */
-        snap?: boolean;
-      },
+        snap: boolean;
+      }>,
     ): Promise<InstanceType<ConfiguredDocumentClassForName<DocumentName>>[]>;
 
     /**
@@ -286,39 +286,41 @@ declare global {
      * @param options        - (default: `{}`)
      * @returns A boolean for whether the controlled set was changed in the operation
      */
-    selectObjects(options?: {
-      /**
-       * The top-left x-coordinate of the selection rectangle
-       */
-      x?: number;
+    selectObjects(
+      options?: InexactPartial<{
+        /**
+         * The top-left x-coordinate of the selection rectangle
+         */
+        x: number;
 
-      /**
-       * The top-left y-coordinate of the selection rectangle
-       */
-      y?: number;
+        /**
+         * The top-left y-coordinate of the selection rectangle
+         */
+        y: number;
 
-      /**
-       * The width of the selection rectangle
-       */
-      width?: number;
+        /**
+         * The width of the selection rectangle
+         */
+        width: number;
 
-      /**
-       * The height of the selection rectangle
-       */
-      height?: number;
+        /**
+         * The height of the selection rectangle
+         */
+        height: number;
 
-      /**
-       * Optional arguments provided to any called release() method
-       * @defaultValue `{}`
-       */
-      releaseOptions?: PlaceableObject.ReleaseOptions;
+        /**
+         * Optional arguments provided to any called release() method
+         * @defaultValue `{}`
+         */
+        releaseOptions: PlaceableObject.ReleaseOptions;
 
-      /**
-       * Optional arguments provided to any called control() method
-       * @defaultValue `{ releaseOthers: false }`
-       */
-      controlOptions?: PlaceableObject.ControlOptions;
-    }): boolean;
+        /**
+         * Optional arguments provided to any called control() method
+         * @defaultValue `{ releaseOthers: false }`
+         */
+        controlOptions: PlaceableObject.ControlOptions;
+      }>,
+    ): boolean;
 
     /**
      * Update all objects in this layer with a provided transformation.
@@ -354,13 +356,13 @@ declare global {
      */
     protected _canvasCoordinatesFromDrop(
       event: DragEvent,
-      options?: {
+      options?: InexactPartial<{
         /**
          * Return the co-ordinates of the center of the nearest grid element.
          * @defaultValue `true`
          */
-        center?: boolean | undefined;
-      },
+        center: boolean;
+      }>,
     ): [tx: number, ty: number] | false;
 
     /**

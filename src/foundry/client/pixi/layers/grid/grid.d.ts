@@ -45,12 +45,12 @@ declare global {
       height: number,
       size: number,
       padding: number,
-      options?: {
+      options?: InexactPartial<{
         /**
          * Are we computing padding for a legacy scene?
          */
-        legacy?: boolean;
-      },
+        legacy: boolean;
+      }>,
     ): { width: number; height: number; x: number; y: number };
 
     /**
@@ -108,10 +108,10 @@ declare global {
       x: number,
       y: number,
       interval?: number | null,
-      options?: {
+      options?: InexactPartial<{
         /** The token that is being moved. */
         token?: Token;
-      },
+      }>,
     ): { x: number; y: number };
 
     /**
@@ -145,12 +145,12 @@ declare global {
       y: number,
       dx: number,
       dy: number,
-      options?: {
+      options?: InexactPartial<{
         /**
          * The token that is being shifted.
          */
         token?: Token;
-      },
+      }>,
     ): PointArray;
 
     /**
@@ -160,7 +160,7 @@ declare global {
      *                   (default: `{}`)
      * @returns An Array of distance measurements for each segment
      */
-    measureDistances(segments: GridLayer.Segment[], options?: MeasureDistancesOptions | undefined): number[];
+    measureDistances(segments: GridLayer.Segment[], options?: GridLayer.MeasureDistancesOptions | undefined): number[];
 
     /**
      * Get the grid row and column positions which are neighbors of a certain position
@@ -196,19 +196,19 @@ declare global {
       even?: boolean;
     }
 
-    interface DrawOptions {
+    type DrawOptions = InexactPartial<{
       /**
        * The grid color.
        * @defaultValue `null`
        */
-      color?: string | null | undefined;
+      color?: string | null;
 
       /**
        * The grid transparency.
        * @defaultValue `null`
        */
-      alpha?: number | null | undefined;
-    }
+      alpha?: number | null;
+    }>;
 
     interface HighlightGridPositionOptions {
       /**

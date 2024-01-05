@@ -374,28 +374,30 @@ declare global {
      * Compute the blur parameters according to grid size and performance mode.
      * @param options - Blur options.
      */
-    protected _initializeBlur(options?: {
-      enabled: boolean;
+    protected _initializeBlur(
+      options?: InexactPartial<{
+        enabled: boolean;
 
-      /**
-       * @defaultValue `AlphaBlurFilter`
-       */
-      blurClass: typeof PIXI.Filter;
+        /**
+         * @defaultValue `AlphaBlurFilter`
+         */
+        blurClass: typeof PIXI.Filter;
 
-      /**
-       * @defaultValue `AlphaBlurFilterPass`
-       */
-      blurPassClass: typeof PIXI.Filter;
+        /**
+         * @defaultValue `AlphaBlurFilterPass`
+         */
+        blurPassClass: typeof PIXI.Filter;
 
-      /**
-       * @defaultValue `this.grid.size / 25`
-       */
-      strength: number;
+        /**
+         * @defaultValue `this.grid.size / 25`
+         */
+        strength: number;
 
-      passes: number;
+        passes: number;
 
-      kernels: number;
-    }): void;
+        kernels: number;
+      }>,
+    ): void;
 
     /**
      * Configure performance settings for hte canvas application based on the selected performance mode.
@@ -620,17 +622,19 @@ declare global {
     /**
      * Get a texture with the required configuration and clear color.
      */
-    static getRenderTexture(options?: {
-      /**
-       * The clear color to use for this texture. Transparent by default.
-       */
-      clearColor?: number[];
+    static getRenderTexture(
+      options?: InexactPartial<{
+        /**
+         * The clear color to use for this texture. Transparent by default.
+         */
+        clearColor: number[];
 
-      /**
-       * The render texture configuration.
-       */
-      textureConfiguration?: Parameters<(typeof PIXI.RenderTexture)["create"]>[0];
-    }): PIXI.RenderTexture;
+        /**
+         * The render texture configuration.
+         */
+        textureConfiguration: Parameters<(typeof PIXI.RenderTexture)["create"]>[0];
+      }>,
+    ): PIXI.RenderTexture;
 
     /**
      * Attach event listeners to the game canvas to handle click and interaction events

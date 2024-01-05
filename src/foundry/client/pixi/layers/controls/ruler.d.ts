@@ -147,18 +147,18 @@ declare global {
       {
         gridSpaces,
         force,
-      }?: {
+      }?: InexactPartial<{
         /**
          * Restrict measurement only to grid spaces
          * @defaultValue `true`
          */
-        gridSpaces?: boolean;
+        gridSpaces: boolean;
         /**
          * Do the measure whatever is the destination point?
          * @defaultValue `false`
          */
-        force?: boolean;
-      },
+        force: boolean;
+      }>,
     ): Ruler.Segment[];
 
     /**
@@ -217,7 +217,7 @@ declare global {
      * Test whether a Token is allowed to execute a measured movement path.
      * @param token - The Token being tested
      * @returns Whether the movement is allowed
-     * @throws                    A specific Error message used instead of returning false
+     * @throws  A specific Error message used instead of returning false
      */
     protected _canMove(token: Token): true | never;
 

@@ -55,7 +55,8 @@ declare global {
 
     set filter(f);
   }
-  type CanvasVisionContainer = {
+
+  interface CanvasVisionContainer {
     /**
      * LOS polygons
      */
@@ -80,5 +81,5 @@ declare global {
      * Does this vision point represent an explored position?
      */
     _explored: boolean;
-  };
+  }
 }

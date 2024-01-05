@@ -79,12 +79,12 @@ declare global {
       x: number,
       y: number,
       interval?: number,
-      options?: {
+      options?: InexactPartial<{
         /**
          * The token
          */
         token: Token;
-      },
+      }>,
     ): { x: number; y: number };
 
     /**
@@ -125,7 +125,7 @@ declare global {
         x: number;
         y: number;
       },
-      options?: MeasureDistancesOptions | undefined,
+      options?: GridLayer.MeasureDistancesOptions,
     ): number;
 
     /**
@@ -134,7 +134,7 @@ declare global {
      * @param options  - Additional options which modify the measurement
      *                   (default: `{}`)
      */
-    measureDistances(segments: GridLayer.Segment[], options?: MeasureDistancesOptions | undefined): number[];
+    measureDistances(segments: GridLayer.Segment[], options?: GridLayer.MeasureDistancesOptions): number[];
 
     /**
      * Define a new Highlight graphic
@@ -187,7 +187,7 @@ declare global {
       label?: Ruler["labels"]["children"][number];
     }
 
-    interface DrawOptions {
+    type DrawOptions = InexactPartial<{
       /**
        * @defaultValue `null`
        */
@@ -213,11 +213,11 @@ declare global {
        * @remarks "You are passing the gridAlpha parameter to GridLayer#draw which is deprecated in favor of the alpha parameter."
        */
       gridAlpha?: number | null;
-    }
-  }
+    }>;
 
-  interface MeasureDistancesOptions {
-    /** Return the distance in grid increments rather than the co-ordinate distance. */
-    gridSpaces?: boolean;
+    type MeasureDistancesOptions = InexactPartial<{
+      /** Return the distance in grid increments rather than the co-ordinate distance. */
+      gridSpaces?: boolean;
+    }>;
   }
 }

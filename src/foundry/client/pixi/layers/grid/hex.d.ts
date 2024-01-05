@@ -25,17 +25,17 @@ declare global {
     /**
      * Hex width in pixels
      */
-    width?: number;
+    width?: number | undefined;
 
     /**
      * Hex height in pixels
      */
-    height?: number;
+    height?: number | undefined;
 
     /**
      * Legacy hex grid computation (not recommended)
      */
-    legacy?: boolean;
+    legacy?: boolean | undefined;
   };
 
   type HexCubeCoordinate = {
@@ -192,7 +192,7 @@ declare global {
      * @param preview - Override settings used in place of those saved to the scene data.
      * @internal
      */
-    protected _drawGrid(options?: BaseGrid.DrawOptions | undefined): PIXI.Graphics;
+    protected _drawGrid(options?: BaseGrid.DrawOptions): PIXI.Graphics;
 
     /** @internal */
     protected _drawRows(grid: PIXI.Graphics, nrows: number, ncols: number): void;
@@ -228,9 +228,9 @@ declare global {
       x: number,
       y: number,
       interval?: number | null,
-      options?: {
+      options?: InexactPartial<{
         token: Token;
-      },
+      }>,
     ): { x: number; y: number };
 
     /** @internal */
@@ -241,9 +241,9 @@ declare global {
       y: number,
       dx: number,
       dy: number,
-      options?: {
+      options?: InexactPartial<{
         token: Token;
-      },
+      }>,
     ): PointArray;
 
     protected override _getRulerDestination(ray: Ray, offset: Point, token: Token): { x: number; y: number };
@@ -273,7 +273,7 @@ declare global {
       height: number,
       size: number,
       padding: number,
-      options?: { legacy?: boolean } | undefined,
+      options?: InexactPartial<{ legacy?: boolean }>,
     ): { width: number; height: number; x: number; y: number };
 
     /**
@@ -283,7 +283,7 @@ declare global {
 
     override getNeighbors(row: number, col: number): PointArray[];
 
-    override measureDistances(segments: GridLayer.Segment[], options?: MeasureDistancesOptions): number[];
+    override measureDistances(segments: GridLayer.Segment[], options?: GridLayer.MeasureDistancesOptions): number[];
 
     /**
      * Measure the distance in grid units between two pixel-based coordinates.
@@ -311,10 +311,10 @@ declare global {
      */
     static offsetToCube(
       offset: HexOffsetCoordinate,
-      config?: {
+      config?: InexactPartial<{
         columns: boolean;
         even: boolean;
-      },
+      }>,
     ): HexCubeCoordinate;
 
     /**

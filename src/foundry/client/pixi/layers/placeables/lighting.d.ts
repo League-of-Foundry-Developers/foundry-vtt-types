@@ -114,9 +114,7 @@ declare global {
      * @deprecated since v10, will be removed in v12
      * @remarks "LightingLayer#animateDarkness has been refactored to EffectsCanvasGroup#animateDarkness"
      */
-    animateDarkness(
-      ...args: Parameters<EffectsCanvasGroup["animateDarkness"]>
-    ): ReturnType<EffectsCanvasGroup["animateDarkness"]>;
+    animateDarkness: EffectsCanvasGroup["animateDarkness"];
 
     /**
      * @deprecated since v10, will be removed in v12
@@ -128,9 +126,7 @@ declare global {
      * @deprecated since v10, will be removed in v12
      * @remarks "LightingLayer#refresh has been refactored to EffectsCanvasGroup#refreshLighting"
      */
-    refresh(
-      options?: Parameters<EffectsCanvasGroup["refreshLighting"]>,
-    ): ReturnType<EffectsCanvasGroup["refreshLighting"]>;
+    refresh: EffectsCanvasGroup["refreshLighting"];
   }
 
   namespace LightingLayer {

@@ -25,12 +25,14 @@ declare global {
      * @param options - Options which configure layer activation
      * @returns - The layer instance, now activated
      */
-    activate(options?: {
-      /**
-       * A specific tool in the control palette to set as active
-       */
-      tool?: string;
-    }): this;
+    activate(
+      options?: InexactPartial<{
+        /**
+         * A specific tool in the control palette to set as active
+         */
+        tool: string;
+      }>,
+    ): this;
 
     /**
      * The inner _activate method which may be defined by each InteractionLayer subclass.

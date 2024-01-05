@@ -141,13 +141,13 @@ declare global {
      */
     protected _getWallEndpointCoordinates(
       point: Point,
-      options?: {
+      options?: InexactPartial<{
         /**
          * Snap to the grid?
          * @defaultValue `true`
          */
-        snap?: boolean;
-      },
+        snap: boolean;
+      }>,
     ): PointArray;
 
     /**

@@ -5,7 +5,7 @@ declare global {
    * Construct a square grid container
    */
   class SquareGrid extends BaseGrid {
-    override draw(options?: BaseGrid.DrawOptions | undefined): this;
+    override draw(options?: BaseGrid.DrawOptions): this;
 
     override getCenter(x: number, y: number): PointArray;
 
@@ -36,7 +36,7 @@ declare global {
     /**
      * @param options - (default: `{}`)
      */
-    override measureDistances(segments: GridLayer.Segment[], options?: MeasureDistancesOptions): number[];
+    override measureDistances(segments: GridLayer.Segment[], options?: GridLayer.MeasureDistancesOptions): number[];
 
     override getNeighbors(row: number, col: number): PointArray[];
   }

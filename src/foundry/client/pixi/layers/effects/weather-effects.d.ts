@@ -22,14 +22,14 @@ declare global {
     static PRIMARY_SORT_ORDER: number;
 
     /**
-     * @defaultValue `foundry.utils.mergeObject(super.layerOptions, {name: "effects"})`
+     * @defaultValue `foundry.utils.mergeObject(super.layerOptions, { name: "effects" })`
      */
     static override get layerOptions(): CanvasLayer.LayerOptions;
 
     /**
      * Array of weather effects linked to this weather container.
      */
-    effects: Map<string, (ParticleEffect | WeatherShaderEffect)[]>;
+    effects: Map<string, Array<ParticleEffect | WeatherShaderEffect>>;
 
     /**
      * A default configuration of the terrain mask that is automatically applied to any shader-based weather effects.

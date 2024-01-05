@@ -108,23 +108,23 @@ declare global {
     static combine(
       polygon: PIXI.Polygon,
       clipObject: PIXI.Rectangle | PIXI.Circle,
-      options?: {
+      options?: InexactPartial<{
         /**
          * One of CLIP_TYPES
          * @defaultValue `0`
          */
-        clipType?: ValueOf<typeof WeilerAthertonClipper.CLIP_TYPES>;
+        clipType: ValueOf<typeof WeilerAthertonClipper.CLIP_TYPES>;
 
         /**
          * If the WeilerAtherton constructor could mutate or not the subject polygon points
          */
-        canMutate?: boolean;
+        canMutate: boolean;
 
         /**
          * Options passed to the WeilerAthertonClipper constructor
          */
-        clipOpts?: WeilerAthertonClipper.ClipOpts;
-      },
+        clipOpts: WeilerAthertonClipper.ClipOpts;
+      }>,
     ): PIXI.Polygon[];
 
     /**

@@ -169,18 +169,20 @@ declare global {
      */
     drawOffscreenPing(
       position: PIXI.Point,
-      options?: PingOptions & {
-        /**
-         * The style of ping to draw, from CONFIG.Canvas.pings.
-         * @defaultValue `"arrow"`
-         */
-        style?: string;
+      options?: InexactPartial<
+        PingOptions & {
+          /**
+           * The style of ping to draw, from CONFIG.Canvas.pings.
+           * @defaultValue `"arrow"`
+           */
+          style?: string;
 
-        /**
-         * The user who pinged.
-         */
-        user?: InstanceType<ConfiguredDocumentClass<typeof User>>;
-      },
+          /**
+           * The user who pinged.
+           */
+          user?: InstanceType<ConfiguredDocumentClass<typeof User>>;
+        }
+      >,
     ): Promise<boolean>;
 
     /**
