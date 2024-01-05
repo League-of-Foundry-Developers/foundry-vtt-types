@@ -27,7 +27,7 @@ declare global {
      * @param gridType - The grid type.
      * @returns (typeof BaseGrid) A constructor for a grid of the given type.
      */
-    static implementationFor(gridType: CONST.GRID_TYPES): new (...args: any[]) => typeof BaseGrid;
+    static implementationFor(gridType: CONST.GRID_TYPES): typeof BaseGrid;
 
     /**
      * Calculate the total size of the canvas with padding applied, as well as the top-left co-ordinates of the inner

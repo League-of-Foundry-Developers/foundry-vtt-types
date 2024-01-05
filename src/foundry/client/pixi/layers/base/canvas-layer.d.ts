@@ -3,7 +3,6 @@ export {};
 declare global {
   /**
    * An abstract pattern for primary layers of the game canvas to implement
-   * @typeParam Options - The type of the options in this layer.
    */
   abstract class CanvasLayer extends PIXI.Container {
     constructor();
