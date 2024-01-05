@@ -6,6 +6,11 @@ declare global {
    */
   class WeatherEffects extends FullCanvasObjectMixin(CanvasLayer) {
     /**
+     * @remarks This is not overridden in foundry but reflects the real behavior.
+     */
+    static get instance(): Canvas["effects"];
+
+    /**
      * @defaultValue `true`
      */
     override sortableChildren: boolean;
@@ -24,7 +29,7 @@ declare global {
     /**
      * @defaultValue `foundry.utils.mergeObject(super.layerOptions, { name: "effects" })`
      */
-    static override get layerOptions(): CanvasLayer.LayerOptions;
+    static override get layerOptions(): CanvasLayer.LayerOptions & { name: "effects" };
 
     /**
      * Array of weather effects linked to this weather container.

@@ -14,6 +14,11 @@ declare global {
     constructor();
 
     /**
+     * @remarks This is not overridden in foundry but reflects the real behavior.
+     */
+    static get instance(): Canvas["controls"];
+
+    /**
      * A container of DoorControl instances
      * @defaultValue `this.addChild(new PIXI.Container())`
      */

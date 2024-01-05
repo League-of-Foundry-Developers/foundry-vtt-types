@@ -24,17 +24,12 @@ declare global {
     static get layerOptions(): CanvasLayer.LayerOptions;
 
     /**
-     * The canonical name of the CanvasLayer is the name of the constructor that is the immediate child of the
-     * defined baseClass for the layer type.
-     *
-     * @example
-     * canvas.lighting.name -\> "LightingLayer"
-     * canvas.grid.name -\> "GridLayer"
+     * Return a reference to the active instance of this canvas layer
      */
-    static get instance(): CanvasLayer | undefined;
+    static get instance(): CanvasLayer | PIXI.Container | undefined;
 
     /**
-     * The canonical name of the CanvasLayer
+     * The canonical name of the CanvasLayer is the name of the constructor that is the immediate child of the defined baseClass for the layer type.
      * @remarks Foundry defines this as a getter, but since CanvasLayer extends PIXI.Container, it has to be a property.
      */
     readonly name: string;
