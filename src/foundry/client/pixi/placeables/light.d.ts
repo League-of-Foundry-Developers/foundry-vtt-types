@@ -80,14 +80,8 @@ declare global {
      */
     get emitsLight(): boolean;
 
-    /**
-     * @param options - unused
-     */
     protected override _destroy(options?: PIXI.IDestroyOptions | boolean): void;
 
-    /**
-     * @param options - unused
-     */
     protected override _draw(options?: Record<string, unknown>): Promise<void>;
 
     protected override _applyRenderFlags(flags: AmbientLight.RenderFlags): void;

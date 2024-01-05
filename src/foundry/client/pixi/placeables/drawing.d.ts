@@ -104,14 +104,8 @@ declare global {
 
     override clear(): this;
 
-    /**
-     * @param options - unused
-     */
     protected override _destroy(options?: PIXI.IDestroyOptions | boolean): void;
 
-    /**
-     * @param options - unused
-     */
     protected override _draw(options?: Record<string, unknown>): Promise<void>;
 
     /**

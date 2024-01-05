@@ -50,9 +50,6 @@ declare global {
      */
     protected _deactivate(): void;
 
-    /**
-     * @param options - Unused
-     */
     protected override _draw(options?: Record<string, unknown> | undefined): Promise<void>;
 
     /**

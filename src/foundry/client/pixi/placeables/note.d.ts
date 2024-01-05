@@ -63,9 +63,6 @@ declare global {
      */
     get isVisible(): boolean;
 
-    /**
-     * @param options - unused
-     */
     protected override _draw(options?: Record<string, unknown>): Promise<void>;
 
     /**

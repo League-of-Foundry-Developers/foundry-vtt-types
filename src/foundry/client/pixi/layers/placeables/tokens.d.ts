@@ -59,10 +59,6 @@ declare global {
 
     override _draw(options?: Record<string, unknown> | undefined): Promise<void>;
 
-    /**
-     *
-     * @param options - Unused
-     */
     override _tearDown(options?: Record<string, unknown>): Promise<void>;
 
     override _activate(): void;

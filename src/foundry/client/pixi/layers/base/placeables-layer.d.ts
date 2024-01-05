@@ -142,10 +142,6 @@ declare global {
       | Exclude<this["documentCollection"], null>
       | InstanceType<ConfiguredDocumentClassForName<DocumentName>>[];
 
-    /**
-     *
-     * @param options - Unused
-     */
     override _draw(options?: Record<string, unknown>): Promise<void>;
 
     /**
@@ -156,10 +152,6 @@ declare global {
       document: InstanceType<ConfiguredDocumentClassForName<DocumentName>>,
     ): InstanceType<ConfiguredObjectClassForName<DocumentName>> | null;
 
-    /**
-     *
-     * @param options - Unused
-     */
     override _tearDown(options?: Record<string, unknown>): Promise<void>;
 
     /**

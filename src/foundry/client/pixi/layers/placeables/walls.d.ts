@@ -86,10 +86,6 @@ declare global {
      */
     get gridPrecision(): number;
 
-    /**
-     *
-     * @param options - Unused
-     */
     override _draw(options?: Record<string, unknown>): Promise<void>;
 
     override _deactivate(): void;

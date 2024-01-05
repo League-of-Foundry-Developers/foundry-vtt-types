@@ -78,14 +78,8 @@ declare global {
      */
     initializeSources(): void;
 
-    /**
-     * @param options - Unused
-     */
     protected override _draw(options?: Record<string, unknown> | undefined): Promise<void>;
 
-    /**
-     * @param options - Unused
-     */
     protected override _tearDown(options?: Record<string, unknown> | undefined): Promise<void>;
 
     /**
