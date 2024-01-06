@@ -490,7 +490,7 @@ declare global {
      */
     getCollectionLayer<T extends string>(
       collectionName: T,
-    ): T extends keyof CollectionNameToLayerMap ? CollectionNameToLayerMap[T] : undefined;
+    ): T extends keyof CollectionNameToLayerMap ? Exclude<CollectionNameToLayerMap[T], undefined> : undefined;
 
     /**
      * Activate framerate tracking by adding an HTML element to the display and refreshing it every frame.

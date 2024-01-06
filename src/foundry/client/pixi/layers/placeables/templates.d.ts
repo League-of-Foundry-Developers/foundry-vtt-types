@@ -4,12 +4,12 @@
  */
 declare class TemplateLayer extends PlaceablesLayer<"MeasuredTemplate"> {
   /**
-   * @remarks This is not overridden in foundry but reflects the real behavior.
+   * @privateRemarks This is not overridden in foundry but reflects the real behavior.
    */
   static get instance(): Canvas["templates"];
 
   /**
-   * @remarks This is not overridden in foundry but reflects the real behavior.
+   * @privateRemarks This is not overridden in foundry but reflects the real behavior.
    */
   override options: TemplateLayer.LayerOptions;
 

@@ -8,7 +8,7 @@ declare global {
    */
   class TilesLayer extends PlaceablesLayer<"Tile"> {
     /**
-     * @remarks This is not overridden in foundry but reflects the real behavior.
+     * @privateRemarks This is not overridden in foundry but reflects the real behavior.
      */
     static get instance(): Canvas["tiles"];
 

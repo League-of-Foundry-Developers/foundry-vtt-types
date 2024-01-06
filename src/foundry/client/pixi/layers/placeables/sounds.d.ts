@@ -3,7 +3,7 @@
  */
 declare class SoundsLayer extends PlaceablesLayer<"AmbientSound"> {
   /**
-   * @remarks This is not overridden in foundry but reflects the real behavior.
+   * @privateRemarks This is not overridden in foundry but reflects the real behavior.
    */
   static get instance(): Canvas["sounds"];
 
@@ -20,7 +20,7 @@ declare class SoundsLayer extends PlaceablesLayer<"AmbientSound"> {
   sources: foundry.utils.Collection<SoundSource>;
 
   /**
-   * @remarks This is not overridden in foundry but reflects the real behavior.
+   * @privateRemarks This is not overridden in foundry but reflects the real behavior.
    */
   override options: SoundsLayer.LayerOptions;
 

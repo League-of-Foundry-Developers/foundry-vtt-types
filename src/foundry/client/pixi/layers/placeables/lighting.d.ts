@@ -6,14 +6,14 @@ export {};
 declare global {
   class LightingLayer extends PlaceablesLayer<"AmbientLight"> {
     /**
-     * @remarks This is not overridden in foundry but reflects the real behavior.
+     * @privateRemarks This is not overridden in foundry but reflects the real behavior.
      */
     static get instance(): Canvas["lighting"];
 
     static override documentName: "AmbientLight";
 
     /**
-     * @remarks This is not overridden in foundry but reflects the real behavior.
+     * @privateRemarks This is not overridden in foundry but reflects the real behavior.
      */
     override options: LightingLayer.LayerOptions;
 

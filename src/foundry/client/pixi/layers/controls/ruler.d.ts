@@ -219,7 +219,7 @@ declare global {
      * @returns Whether the movement is allowed
      * @throws  A specific Error message used instead of returning false
      */
-    protected _canMove(token: Token): true | never;
+    protected _canMove(token: Token): true;
 
     /**
      * Animate piecewise Token movement along the measured segment path.

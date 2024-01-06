@@ -6,12 +6,12 @@ declare global {
    */
   class DrawingsLayer extends PlaceablesLayer<"Drawing"> {
     /**
-     * @remarks This is not overridden in foundry but reflects the real behavior.
+     * @privateRemarks This is not overridden in foundry but reflects the real behavior.
      */
     static get instance(): Canvas["drawings"];
 
     /**
-     * @remarks This is not overridden in foundry but reflects the real behavior.
+     * @privateRemarks This is not overridden in foundry but reflects the real behavior.
      */
     override options: DrawingsLayer.LayerOptions;
 
@@ -144,5 +144,5 @@ declare global {
           /** @defaultValue `"New Text"` */
           text: string;
         }
-    ) & {};
+    );
 }
