@@ -1,3 +1,3 @@
-import "./circle";
-import "./polygon";
-import "./rectangle";
+// import "./circle";
+// import "./polygon";
+// import "./rectangle";

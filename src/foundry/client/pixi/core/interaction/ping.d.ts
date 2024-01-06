@@ -1,9 +1,7 @@
 import type { IDestroyOptions } from "pixi.js";
+import Color from "../../../../common/utils/color.mjs";
 
 export {};
-
-// TODO: Remove once color export is fixed
-type Color = number;
 
 declare global {
   interface PingOptions {

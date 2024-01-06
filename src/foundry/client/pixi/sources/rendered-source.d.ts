@@ -1,8 +1,5 @@
 export {};
 
-/** TODO: Declared in client/pixi/core/containers/point-source-mesh */
-type PointSourceMesh = unknown;
-
 declare global {
   interface RenderedPointSourceData extends PointSourceData {
     /** A color applied to the rendered effect */

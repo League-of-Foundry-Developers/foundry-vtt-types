@@ -1,7 +1,5 @@
 import { assertType, expectTypeOf } from "vitest";
 
-type TilesLayer = unknown; // FIXME: remove when TilesLayer is typed
-
 const myCanvas = new Canvas();
 assertType<Record<string, CONFIG.Canvas.LayerDefinition<ConstructorOf<CanvasLayer>>>>(Canvas.layers);
 expectTypeOf(myCanvas.draw(new Scene({ name: "My Scene" }))).toEqualTypeOf<Promise<Canvas>>();
@@ -27,6 +25,4 @@ expectTypeOf(myCanvas.recenter({})).toEqualTypeOf<Promise<boolean | void>>();
 expectTypeOf(myCanvas.recenter({ x: null, y: null, scale: null })).toEqualTypeOf<Promise<boolean | void>>();
 expectTypeOf(myCanvas.recenter({ x: 100, y: 100, scale: 1 })).toEqualTypeOf<Promise<boolean | void>>();
 
-expectTypeOf(
-  myCanvas.addPendingOperation("Canvas.recenter", myCanvas.recenter, myCanvas, { x: 100, y: 100, scale: 1 }),
-).toEqualTypeOf<void>();
+myCanvas.pendingRenderFlags.OBJECTS.add(myCanvas.perception);

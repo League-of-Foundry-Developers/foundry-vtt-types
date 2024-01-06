@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import type Color from "../../../../../../src/foundry/common/utils/color.mjs";
 
 if (game instanceof Game) {
   expectTypeOf(new Ruler(undefined)).toEqualTypeOf<Ruler>();
@@ -9,7 +10,7 @@ if (game instanceof Game) {
 const ruler = new Ruler();
 expectTypeOf(ruler.user).toEqualTypeOf<User>();
 expectTypeOf(ruler.name).toEqualTypeOf<string>();
-expectTypeOf(ruler.color).toEqualTypeOf<number>();
+expectTypeOf(ruler.color).toEqualTypeOf<Color>();
 expectTypeOf(ruler.waypoints).toEqualTypeOf<PIXI.Point[]>();
 expectTypeOf(ruler.destination).toEqualTypeOf<PIXI.Point | null>();
 expectTypeOf(ruler.ruler).toEqualTypeOf<PIXI.Graphics>();

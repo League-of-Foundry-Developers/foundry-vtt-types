@@ -75,7 +75,7 @@ declare global {
      * A convenience reference to the possible shape types.
      * TODO: Replace post-data model with the static enum reference
      */
-    static readonly SHAPE_TYPES: string; // ValueOf<(typeof foundry.data.ShapeData)["TYPES"]>
+    static readonly SHAPE_TYPES: Record<string, string>; // (typeof foundry.data.ShapeData)["TYPES"]
 
     override get bounds(): Rectangle;
 
@@ -100,18 +100,12 @@ declare global {
      * The shape type that this Drawing represents. A value in Drawing.SHAPE_TYPES.
      * TODO: Replace post-data model with the static enum reference
      */
-    get type(): string; // // ValueOf<(typeof foundry.data.ShapeData)["TYPES"]>
+    get type(): string; // ValueOf<(typeof foundry.data.ShapeData)["TYPES"]>
 
     override clear(): this;
 
-    /**
-     * @param options - unused
-     */
     protected override _destroy(options?: PIXI.IDestroyOptions | boolean): void;
 
-    /**
-     * @param options - unused
-     */
     protected override _draw(options?: Record<string, unknown>): Promise<void>;
 
     /**
@@ -120,6 +114,12 @@ declare global {
     protected _getTextStyle(): PIXI.TextStyle;
 
     protected override _applyRenderFlags(flags: Drawing.RenderFlags): void;
+
+    /**
+     * Draw ellipsoid shapes
+     * @internal
+     */
+    protected _drawEllipse(): void;
 
     /**
      * Add a new polygon point to the drawing, ensuring it differs from the last one
@@ -176,7 +176,6 @@ declare global {
      * @param user  - unused
      * @param event - unused
      */
-    // TODO: Replace User reference after data model
     protected override _canConfigure(user: InstanceType<ConfiguredDocumentClassForName<"User">>, event?: any): boolean;
 
     /**

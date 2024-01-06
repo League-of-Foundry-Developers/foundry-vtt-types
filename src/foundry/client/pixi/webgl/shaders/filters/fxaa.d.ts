@@ -20,7 +20,7 @@ declare global {
     constructor(
       vertex: string,
       fragment: string,
-      uniforms: Record<string, unknown>,
+      uniforms: AbstractBaseShader.Uniforms,
       options: AdaptiveFXAAFilterOptions,
     );
 

@@ -1,13 +1,5 @@
 export {};
 
-type CanvasBackgroundAlterationEffects = unknown;
-
-type CanvasIlluminationEffects = unknown;
-
-type CanvasColorationEffects = unknown;
-
-type CanvasVisibility = unknown;
-
 declare global {
   /**
    * A container group which contains visual effects rendered above the primary group.

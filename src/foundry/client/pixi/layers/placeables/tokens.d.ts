@@ -1,13 +1,15 @@
-import { ConfiguredDocumentClass, ConfiguredObjectClassForName } from "../../../../types/helperTypes";
-import { SelectOptions } from "../placeables";
+import {
+  ConfiguredDocumentClass,
+  ConfiguredObjectClassForName,
+  type PropertiesToSource,
+} from "../../../../../types/helperTypes";
+import type { TokenDataProperties } from "../../../../common/data/data.mjs/tokenData";
 
 declare global {
   /**
    * The Tokens Container
    */
-  class TokenLayer extends PlaceablesLayer<"Token", TokenLayer.LayerOptions> {
-    constructor();
-
+  class TokenLayer extends PlaceablesLayer<"Token"> {
     /**
      * The current index position in the tab cycle
      * @defaultValue `null`
@@ -15,24 +17,24 @@ declare global {
     protected _tabIndex: number | null;
 
     /**
-     * Remember the last drawn wildcard token image to avoid repetitions
-     * @defaultValue `null`
-     */
-    protected _lastWildcard: string | null;
-
-    /**
-     * @remarks This is not overridden in foundry but reflects the real behavior.
+     * @privateRemarks This is not overridden in foundry but reflects the real behavior.
      */
     static get instance(): Canvas["tokens"];
 
     /**
+     * @privateRemarks This is not overridden in foundry but reflects the real behavior.
+     */
+    override options: TokenLayer.LayerOptions;
+
+    /**
      * @defaultValue
-     * ```typescript
+     * ```js
      * foundry.utils.mergeObject(super.layerOptions, {
      *  name: "tokens",
      *  canDragCreate: false,
      *  controllableObjects: true,
      *  rotatableObjects: true,
+     *  elevationSorting: true,
      *  zIndex: 100
      * })
      * ```
@@ -40,6 +42,8 @@ declare global {
     static override get layerOptions(): TokenLayer.LayerOptions;
 
     static override documentName: "Token";
+
+    override get hookName(): string;
 
     override get gridPrecision(): 1;
 
@@ -53,28 +57,22 @@ declare global {
      */
     get ownedTokens(): ReturnType<this["placeables"]["filter"]>;
 
-    override tearDown(): Promise<this>;
+    override _draw(options?: Record<string, unknown> | undefined): Promise<void>;
 
-    override activate(): this;
+    override _tearDown(options?: Record<string, unknown>): Promise<void>;
 
-    override deactivate(): this;
+    override _activate(): void;
 
-    /**
-     * @param options - (default: `{}`)
-     */
-    override selectObjects(options?: SelectOptions): boolean;
+    override _deactivate(): void;
 
     /**
      * Target all Token instances which fall within a coordinate rectangle.
+     * @param rectangle - The selection rectangle.
+     * @param options   - Additional options to configure targeting behaviour.
      * @returns The number of Token instances which were targeted.
      */
     targetObjects(
-      {
-        x,
-        y,
-        width,
-        height,
-      }: {
+      rectangle: {
         /** The top-left x-coordinate of the selection rectangle */
         x: number;
 
@@ -87,9 +85,7 @@ declare global {
         /** The height of the selection rectangle */
         height: number;
       },
-      {
-        releaseOthers,
-      }?: {
+      options?: {
         /**
          * Whether or not to release other targeted tokens
          * @defaultValue `true`
@@ -141,6 +137,19 @@ declare global {
     concludeAnimation(): void;
 
     /**
+     * Animate targeting arrows on targeted tokens.
+     */
+    protected _animateTargets(): void;
+
+    /**
+     * Provide an array of Tokens which are eligible subjects for overhead tile occlusion.
+     * By default, only tokens which are currently controlled or owned by a player are included as subjects.
+     */
+    _getOccludableTokens(): Token[];
+
+    override storeHistory(type: PlaceablesLayer.HistoryEventType, data: PropertiesToSource<TokenDataProperties>): void;
+
+    /**
      * Handle dropping of Actor data onto the Scene canvas
      */
     protected _onDropActorData(
@@ -149,6 +158,11 @@ declare global {
     ): Promise<void | false | InstanceType<ConfiguredObjectClassForName<"Token">>>;
 
     protected override _onClickLeft(event: PIXI.FederatedEvent): void;
+
+    /**
+     * Reset canvas and tokens mouse manager.
+     */
+    onClickTokenTools(): void;
   }
 
   namespace TokenLayer {
@@ -157,6 +171,7 @@ declare global {
       canDragCreate: false;
       controllableObjects: true;
       rotatableObjects: true;
+      elevationSorting: true;
       zIndex: 100;
     }
 

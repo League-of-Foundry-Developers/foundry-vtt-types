@@ -1,11 +1,7 @@
 export {};
 
-type PrimaryDrawingContainer = unknown;
-type TokenMesh = unknown;
-type TileMesh = unknown;
-type TileSprite = unknown;
-type DrawingShape = unknown;
-type PrimaryCanvasObject = unknown;
+// Included to match Foundry's documented types
+type PrimaryCanvasObject = ReturnType<typeof PrimaryCanvasObjectMixin>;
 
 declare global {
   /**
@@ -60,7 +56,7 @@ declare global {
     /**
      * The collection of PrimaryDrawingContainer objects which are rendered in the Scene.
      */
-    drawings: Collection<PrimaryDrawingContainer>;
+    drawings: Collection<DrawingShape>;
 
     /**
      * The collection of SpriteMesh objects which are rendered in the Scene.

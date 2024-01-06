@@ -2,11 +2,16 @@
  * This Canvas Layer provides a container for MeasuredTemplate objects.
  * @see {@link MeasuredTemplate}
  */
-declare class TemplateLayer extends PlaceablesLayer<"MeasuredTemplate", TemplateLayer.LayerOptions> {
+declare class TemplateLayer extends PlaceablesLayer<"MeasuredTemplate"> {
   /**
-   * @remarks This is not overridden in foundry but reflects the real behavior.
+   * @privateRemarks This is not overridden in foundry but reflects the real behavior.
    */
   static get instance(): Canvas["templates"];
+
+  /**
+   * @privateRemarks This is not overridden in foundry but reflects the real behavior.
+   */
+  override options: TemplateLayer.LayerOptions;
 
   /**
    * @defaultValue
@@ -24,9 +29,9 @@ declare class TemplateLayer extends PlaceablesLayer<"MeasuredTemplate", Template
 
   static override documentName: "MeasuredTemplate";
 
-  override activate(): this;
+  override get hookName(): string;
 
-  override deactivate(): this;
+  override _deactivate(): void;
 
   /**
    * Register game settings used by the TemplatesLayer

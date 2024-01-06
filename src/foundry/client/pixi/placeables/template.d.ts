@@ -102,9 +102,6 @@ declare global {
 
     protected override _draw(): Promise<void>;
 
-    /**
-     * @param options - unused
-     */
     protected override _destroy(options?: PIXI.IDestroyOptions | boolean): void;
 
     protected _applyRenderFlags(flags: MeasuredTemplate.RenderFlags): void;

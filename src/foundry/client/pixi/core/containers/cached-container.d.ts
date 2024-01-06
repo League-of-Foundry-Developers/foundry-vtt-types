@@ -16,7 +16,11 @@ declare global {
      * The texture configuration to use for this cached container
      * @remarks Foundry marked as abstract
      */
-    static textureConfiguration: { multisample: PIXI.MSAA_QUALITY; scaleMode: PIXI.SCALE_MODES; format: PIXI.FORMATS };
+    static textureConfiguration: {
+      multisample?: PIXI.MSAA_QUALITY;
+      scaleMode?: PIXI.SCALE_MODES;
+      format?: PIXI.FORMATS;
+    };
 
     /**
      * An map of render textures, linked to their render function and an optional RGBA clear color.
@@ -71,8 +75,9 @@ declare global {
      * Clear the cached container, removing its current contents.
      * @param destroy - Tell children that we should destroy texture as well.
      * @returns A reference to the cleared container for chaining.
+     * @remarks Added possibility of void return due to child classes
      */
-    clear(destroy?: boolean): CachedContainer;
+    clear(destroy?: boolean): CachedContainer | void;
 
     override destroy(options?: boolean | PIXI.IDestroyOptions): void;
 

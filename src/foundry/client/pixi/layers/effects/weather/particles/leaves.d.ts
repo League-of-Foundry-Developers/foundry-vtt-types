@@ -5,7 +5,7 @@ declare class AutumnLeavesWeatherEffect extends ParticleEffect {
   /**
    * @defaultValue `"WEATHER.AutumnLeaves"`
    */
-  static override label: string;
+  static label: string;
 
   /**
    * Configuration for the particle emitter for falling leaves

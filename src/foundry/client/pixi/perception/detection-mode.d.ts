@@ -9,15 +9,6 @@ type TokenDetectionMode = {
   /** The maximum range in distance units at which this mode can detect targets */
   range: number;
 };
-// TODO: Move to client/pixi/layers/effects/visibility.js
-type CanvasVisibilityTest = {
-  point: PIXI.Point;
-  los: Map<VisionSource, boolean>;
-};
-type CanvasVisibilityTestConfig = {
-  object: PlaceableObject;
-  tests: CanvasVisibilityTest[];
-};
 
 // TODO: Remove after foundry.abstract.DataModel is defined
 // Currently that is in PR #2331 (branch v10/non-inferring-data-fields)

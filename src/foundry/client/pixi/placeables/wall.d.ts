@@ -126,9 +126,6 @@ declare global {
      */
     toRay(): Ray;
 
-    /**
-     * @param options - unused
-     */
     protected override _draw(): Promise<void>;
 
     override clear(): this;
@@ -164,9 +161,6 @@ declare global {
 
     override control(options?: Wall.ControlOptions | undefined): boolean;
 
-    /**
-     * @param options - unused
-     */
     protected override _destroy(options?: PIXI.IDestroyOptions | boolean): void;
 
     /**
@@ -271,7 +265,7 @@ declare global {
 
     protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
-    protected override _onDragLeftDrop(event: PIXI.FederatedEvent): Promise<any>;
+    protected override _onDragLeftDrop(event: PIXI.FederatedEvent): Promise<unknown>;
 
     /**
      * @remarks Not used

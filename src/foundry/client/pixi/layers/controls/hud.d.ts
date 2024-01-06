@@ -1,6 +1,6 @@
 /**
- * An extension of PIXI.Transform.
- * This uses a different DisplayObject than the current parent as the reference for the worldTransform.
+ * @deprecated since v10, will be removed in v12
+ * @remarks `"The SynchronizedTransform class is deprecated and should no longer be used."`
  */
 declare class SynchronizedTransform extends PIXI.Transform {
   constructor(transform: PIXI.Transform);
@@ -36,10 +36,8 @@ declare class SynchronizedTransform extends PIXI.Transform {
 }
 
 /**
- * An extension of PIXI.Container used as the interface frame for a PlaceableObject on the ControlsLayer
- *
- * @see {@link PlaceableObject}
- * @see {@link ControlsLayer}
+ * @deprecated since v10, will be removed in v12
+ * @remarks `"The ObjectHUD class is deprecated and should no longer be used."`
  */
 declare class ObjectHUD extends PIXI.Container {
   constructor(object: PIXI.DisplayObject);
@@ -63,10 +61,8 @@ declare class ObjectHUD extends PIXI.Container {
   override set renderable(value: boolean);
 
   /**
-   * Display scrolling status text originating from this ObjectHUD container.
-   * @param content - The text content to display
-   * @param options - (default: `{}`)
-   * @returns The created PreciseText object which is scrolling
+   * @deprecated since v10, will be removed in v12
+   * @remarks `"You are calling ObjectHUD#createScrollingText which has been migrated and refactored to CanvasInterfaceGroup#createScrollingText"`
    */
   createScrollingText(
     content: string,

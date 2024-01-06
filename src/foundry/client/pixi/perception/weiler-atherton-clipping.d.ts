@@ -22,9 +22,16 @@ declare global {
      * @param polygon       - Polygon to clip
      * @param clipObject    - Object used to clip the polygon
      * @param clipType      - Type of clip to use
+     *                        (default: `0`)
      * @param clipOpts      - Object passed to the clippingObject methods toPolygon and pointsBetween
+     *                        (default: `{}`)
      */
-    constructor(polygon: PIXI.Polygon, clipObject: PIXI.Rectangle | PIXI.Circle, clipType: number, clipOpts: object);
+    constructor(
+      polygon: PIXI.Polygon,
+      clipObject: PIXI.Rectangle | PIXI.Circle,
+      clipType: ValueOf<(typeof WeilerAthertonClipper)["CLIP_TYPES"]>,
+      clipOpts: WeilerAthertonClipper.ClipOpts,
+    );
 
     /**
      * The supported clip types.
@@ -57,7 +64,7 @@ declare global {
      */
     config: {
       clipType?: typeof WeilerAthertonClipper.CLIP_TYPES;
-      clipOpts?: Record<string, unknown>;
+      clipOpts?: WeilerAthertonClipper.ClipOpts;
     };
 
     /**
@@ -70,7 +77,7 @@ declare global {
     static union(
       polygon: PIXI.Polygon,
       clipObject: PIXI.Rectangle | PIXI.Circle,
-      clipOpts: Record<string, unknown>,
+      clipOpts: WeilerAthertonClipper.ClipOpts,
     ): PIXI.Polygon[];
 
     /**
@@ -83,7 +90,7 @@ declare global {
     static intersect(
       polygon: PIXI.Polygon,
       clipObject: PIXI.Rectangle | PIXI.Circle,
-      clipOpts: Record<string, unknown>,
+      clipOpts: WeilerAthertonClipper.ClipOpts,
     ): PIXI.Polygon[];
 
     /**
@@ -93,21 +100,31 @@ declare global {
      * and clipObject do not overlap, in which case the [polygon, clipObject.toPolygon()] array will be returned.
      * If this algorithm is expanded in the future to handle holes, an array of polygons may be returned.
      *
-     * @param polygon       - Polygon to clip
-     * @param clipObject    - Object to clip against the polygon
-     * @param clipType      - One of CLIP_TYPES
-     * @param canMutate     - If the WeilerAtherton constructor could mutate or not the subject polygon points
-     * @param clipOpts      - Options passed to the WeilerAthertonClipper constructor
+     * @param polygon    - Polygon to clip
+     * @param clipObject - Object to clip against the polygon
+     * @param options    - Options which configure how the union or intersection is computed
      * @returns Array of polygons and clipObjects
      */
     static combine(
       polygon: PIXI.Polygon,
       clipObject: PIXI.Rectangle | PIXI.Circle,
-      {
-        clipType,
-        canMutate,
-        ...clipOpts
-      }?: { clipType: typeof WeilerAthertonClipper.CLIP_TYPES; canMutate: boolean; clipOpts: Record<string, unknown> },
+      options?: InexactPartial<{
+        /**
+         * One of CLIP_TYPES
+         * @defaultValue `0`
+         */
+        clipType: ValueOf<typeof WeilerAthertonClipper.CLIP_TYPES>;
+
+        /**
+         * If the WeilerAtherton constructor could mutate or not the subject polygon points
+         */
+        canMutate: boolean;
+
+        /**
+         * Options passed to the WeilerAthertonClipper constructor
+         */
+        clipOpts: WeilerAthertonClipper.ClipOpts;
+      }>,
     ): PIXI.Polygon[];
 
     /**
@@ -125,7 +142,11 @@ declare global {
       polygon: PIXI.Polygon,
       clipObject: PIXI.Rectangle | PIXI.Circle,
       clipType: typeof WeilerAthertonClipper.CLIP_TYPES,
-      clipOpts: Record<string, unknown>,
+      clipOpts: WeilerAthertonClipper.ClipOpts,
     ): PIXI.Polygon[];
+  }
+
+  namespace WeilerAthertonClipper {
+    type ClipOpts = Record<string, unknown>; // PIXI.Circle.PointsForArcOptions;
   }
 }

@@ -122,16 +122,10 @@ declare global {
      */
     static createPreview(data: unknown): Tile;
 
-    /**
-     * @param options - unused
-     */
     protected override _draw(options?: Record<string, unknown>): Promise<void>;
 
     override clear(): void;
 
-    /**
-     * @param options - unused
-     */
     protected override _destroy(options?: PIXI.IDestroyOptions | boolean): void;
 
     protected override _applyRenderFlags(flags: Tile.RenderFlags): void;

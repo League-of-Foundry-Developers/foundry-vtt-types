@@ -17,7 +17,7 @@ declare global {
       input: PIXI.RenderTexture,
       output: PIXI.RenderTexture,
       clear: PIXI.CLEAR_MODES,
-      currentState: any,
+      currentState: PIXI.FilterState,
     ): void;
   }
 
