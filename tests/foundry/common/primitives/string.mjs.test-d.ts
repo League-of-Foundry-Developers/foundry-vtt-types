@@ -1,5 +1,4 @@
 import { expectTypeOf } from "vitest";
-import "../../index";
 
 expectTypeOf("foo".capitalize()).toEqualTypeOf<"Foo">();
 expectTypeOf("FOO".capitalize()).toEqualTypeOf<"FOO">();

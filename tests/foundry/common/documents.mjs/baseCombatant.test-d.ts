@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import type { StoredDocument } from "../../../../src/types/utils.mts";
 
 expectTypeOf(foundry.documents.BaseCombatant.create({ actorId: "someID", tokenId: "someOtherId" })).toEqualTypeOf<
   Promise<StoredDocument<Combatant> | undefined>

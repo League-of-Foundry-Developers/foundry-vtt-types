@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import type { StoredDocument } from "../../../../../src/types/utils.mts";
 
 const items = new Items();
 expectTypeOf(items.get("", { strict: true })).toEqualTypeOf<StoredDocument<Item>>();

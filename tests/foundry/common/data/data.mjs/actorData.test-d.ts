@@ -1,5 +1,4 @@
 import { expectTypeOf } from "vitest";
-import "../../../../../index";
 
 interface CharacterDataSourceData {
   health: number;

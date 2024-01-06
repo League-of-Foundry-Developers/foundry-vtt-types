@@ -1,5 +1,4 @@
 import { expectTypeOf } from "vitest";
-import "../../index";
 
 const clientSettings = new ClientSettings([]);
 

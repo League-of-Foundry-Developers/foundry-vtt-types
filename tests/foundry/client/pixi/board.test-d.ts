@@ -1,4 +1,5 @@
 import { assertType, expectTypeOf } from "vitest";
+import type { ConstructorOf } from "../../../../src/types/utils.mts";
 
 const myCanvas = new Canvas();
 assertType<Record<string, CONFIG.Canvas.LayerDefinition<ConstructorOf<CanvasLayer>>>>(Canvas.layers);

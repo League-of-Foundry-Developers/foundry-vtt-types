@@ -1,7 +1,4 @@
-import "../../../index";
-
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Coin {
     interface Modifiers {
       testModifier1: (this: DiceTerm) => void;

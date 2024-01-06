@@ -5,7 +5,6 @@ interface CustomVoiceModes {
 }
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace AVSettings {
     interface Overrides {
       VoiceModes: CustomVoiceModes;

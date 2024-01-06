@@ -1,5 +1,4 @@
 import { expectTypeOf } from "vitest";
-import "../../../index";
 
 const title = "title";
 const content = "content";

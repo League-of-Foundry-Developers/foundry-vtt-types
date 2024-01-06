@@ -1,22 +1,24 @@
 {
+  "$schema": "https://json.schemastore.org/package.json",
   "name": "@league-of-foundry-developers/foundry-vtt-types",
   "version": "9.269.0",
   "description": "TypeScript type definitions for Foundry VTT",
+  "type": "module",
   "exports": {
     ".": {
-      "types": "./index.d.ts"
+      "types": "./index.mts"
     },
     "./lenient": {
-      "types": "./index-lenient.d.ts"
+      "types": "./index-lenient.mts"
     }
   },
-  "types": "./index.d.ts",
+  "types": "./index.mts",
   "scripts": {
-    "lint": "./node_modules/typescript/bin/tsc; eslint --ext .d.ts,.test-d.ts .",
-    "lint:fix": "eslint --fix --ext .d.ts,.test-d.ts .",
-    "lint:ci": "eslint --ext .d.ts,.test-d.ts .",
-    "eslint:report": "eslint --output-file eslint_report.json --format json --ext .d.ts,.test-d.ts .",
-    "test": "vitest typecheck",
+    "lint": "./node_modules/typescript/bin/tsc; eslint .",
+    "lint:fix": "eslint --fix .",
+    "lint:ci": "eslint .",
+    "eslint:report": "eslint --output-file eslint_report.json --format json .",
+    "test": "vitest --typecheck",
     "typecheck": "./node_modules/typescript/bin/tsc",
     "prepare": "is-ci || husky install"
   },
@@ -92,7 +94,7 @@
     "lint-staged": "^15.0.1",
     "prettier": "^3.0.3",
     "typescript": "~5.3",
-    "vitest": "^0.34.6"
+    "vitest": "^1.1.0"
   },
   "overrides": {
     "@types/css-font-loading-module": "^0.0.12s"
@@ -103,12 +105,12 @@
     }
   },
   "lint-staged": {
-    "*.(d.ts|test-d.ts)": "eslint --fix",
+    "*.(mts|test-d.ts)": "eslint --fix",
     "*.(js|json|yml)": "prettier --write"
   },
   "files": [
-    "index.d.ts",
-    "index-lenient.d.ts",
+    "index.mts",
+    "index-lenient.mts",
     "src"
   ],
   "publishConfig": {
