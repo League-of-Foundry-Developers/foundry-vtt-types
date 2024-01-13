@@ -1,11 +1,10 @@
-import * as PIXI from "pixi.js";
+export * from "pixi.js";
 import * as pixiParticles from "@pixi/particle-emitter";
 import * as graphicsSmooth from "@pixi/graphics-smooth";
 
 /**
  * Foundry exports PIXI into the global namespace
  */
-export = PIXI;
 export as namespace PIXI;
 
 declare global {
