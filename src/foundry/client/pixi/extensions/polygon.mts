@@ -1,4 +1,11 @@
 declare module "pixi.js" {
+  namespace Polygon {
+    type ClipperPoint = {
+      X: number;
+      Y: number;
+    };
+  }
+
   interface Polygon {
     /**
      * Test whether the polygon is has a positive signed area.
@@ -53,7 +60,7 @@ declare module "pixi.js" {
      * @returns The resulting PIXI.Polygon
      */
     fromClipperPoints(
-      points: ClipperPoint[],
+      points: PIXI.Polygon.ClipperPoint[],
       options?: {
         /**
          * A scaling factor used to preserve floating point precision
@@ -74,7 +81,7 @@ declare module "pixi.js" {
       /** A scaling factor used to preserve floating point precision
        *  (default: `1`) */
       scalingFactor: number;
-    }): ClipperPoint[];
+    }): PIXI.Polygon.ClipperPoint[];
 
     /**
      * Determine whether the PIXI.Polygon is closed, defined by having the same starting and ending point.
@@ -104,7 +111,7 @@ declare module "pixi.js" {
      * @param options       - Options which configure how the intersection is computed
      */
     intersectClipper(
-      clipperPoints: ClipperPoint[],
+      clipperPoints: PIXI.Polygon.ClipperPoint[],
       options?: {
         /** The clipper clip type */
         clipType?: number;
@@ -112,7 +119,7 @@ declare module "pixi.js" {
         /** A scaling factor passed to Polygon#toClipperPoints to preserve precision */
         scalingFactor?: number;
       },
-    ): ClipperPoint[];
+    ): PIXI.Polygon.ClipperPoint[];
 
     /**
      * Intersect this PIXI.Polygon with a PIXI.Circle.
@@ -141,8 +148,3 @@ declare module "pixi.js" {
     intersectRectangle(rect: PIXI.Rectangle, options?: Record<string, unknown>): PIXI.Polygon;
   }
 }
-
-type ClipperPoint = {
-  X: number;
-  Y: number;
-};

@@ -175,7 +175,7 @@ declare module "pixi.js" {
      * @returns The intersected polygon
      */
     intersectClipper(
-      clipperPoints: ClipperPoint[],
+      clipperPoints: PIXI.Polygon.ClipperPoint[],
       options?: {
         /** The number of points which defines the density of approximation */
         density: number;
