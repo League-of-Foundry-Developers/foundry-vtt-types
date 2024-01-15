@@ -2,7 +2,7 @@ import { expectTypeOf } from "vitest";
 import type {
   EffectChangeData,
   EffectChangeDataProperties,
-} from "../../../../src/foundry/common/data/data.mjs/effectChangeData.mts";
+} from "../../../../src/foundry/common/data/data.mjs/effectChangeData.d.mts";
 
 // @ts-expect-error - ActorData requires data.
 new foundry.data.ActorData();

@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { StoredDocument } from "../../../../../src/types/utils.mts";
+import type { StoredDocument } from "../../../../../src/types/utils.d.mts";
 
 const messages = new Messages();
 expectTypeOf(messages.get("", { strict: true })).toEqualTypeOf<StoredDocument<ChatMessage>>();

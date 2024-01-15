@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type EmbeddedCollection from "../../../../../src/foundry/common/abstract/embedded-collection.mts";
+import type EmbeddedCollection from "../../../../../src/foundry/common/abstract/embedded-collection.d.mts";
 
 expectTypeOf(MapLayer.documentName).toEqualTypeOf<"Tile">();
 expectTypeOf(MapLayer.layerOptions).toEqualTypeOf<MapLayer.LayerOptions>();
