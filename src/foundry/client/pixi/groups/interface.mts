@@ -1,3 +1,5 @@
+import type { InexactPartial } from "../../../../types/utils.mts";
+
 declare global {
   /**
    * A container group which displays interface elements rendered above other canvas groups.

@@ -1,5 +1,3 @@
-import type { InexactPartial } from "../../../../../types/utils.mts";
-
 declare global {
   interface CanvasAnimationAttribute {
     /** The attribute name being animated */

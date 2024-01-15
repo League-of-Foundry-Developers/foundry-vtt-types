@@ -1,4 +1,5 @@
 import type { ConfiguredDocumentClass } from "../../../../../types/helperTypes.mts";
+import type { InexactPartial } from "../../../../../types/utils.mts";
 import type { LineIntersection } from "../../../../common/utils/geometry.mts";
 
 declare global {

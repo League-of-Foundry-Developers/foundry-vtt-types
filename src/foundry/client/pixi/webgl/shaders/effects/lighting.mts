@@ -1,3 +1,5 @@
+import type { ConstructorOf } from "../../../../../../types/utils.mts";
+
 export {};
 
 declare global {

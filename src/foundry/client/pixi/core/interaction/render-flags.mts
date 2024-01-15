@@ -1,3 +1,5 @@
+import type { Mixin } from "../../../../../types/utils.mts";
+
 declare class RenderFlagObject {
   constructor(...args: any[]);
 

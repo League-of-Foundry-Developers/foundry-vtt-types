@@ -1,3 +1,5 @@
+import type { ConstructorOf } from "../../../../../../../types/utils.mts";
+
 declare global {
   /**
    * The base shader class for weather shaders.

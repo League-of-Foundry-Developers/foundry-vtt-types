@@ -1,3 +1,4 @@
+import type { InexactPartial } from "../../../../../types/utils.mts";
 import type { CONST } from "../../../../common/module.mts";
 
 declare global {

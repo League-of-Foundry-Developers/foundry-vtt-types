@@ -1,3 +1,5 @@
+import type { InexactPartial } from "../../../../../types/utils.mts";
+
 declare global {
   /**
    * A CanvasLayer responsible for drawing a square grid

@@ -1,3 +1,5 @@
+import type { ConstructorOf } from "../../../../../../types/utils.mts";
+
 declare global {
   /**
    * A shader used to control channels intensity using an externally provided mask texture.

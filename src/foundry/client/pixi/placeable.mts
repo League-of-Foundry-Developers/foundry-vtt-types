@@ -1,5 +1,5 @@
 import type { ConfiguredDocumentClass } from "../../../types/helperTypes.mts";
-import type { DeepPartial } from "../../../types/utils.mts";
+import type { DeepPartial, ValueOf } from "../../../types/utils.mts";
 import type { DocumentModificationOptions } from "../../common/abstract/document.mts";
 import type { Document } from "../../common/abstract/module.mts";
 

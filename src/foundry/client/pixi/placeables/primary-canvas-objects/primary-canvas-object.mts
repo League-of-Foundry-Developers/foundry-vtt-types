@@ -1,8 +1,8 @@
-type ClientDocument = unknown;
+import type { AnyConstructor, Mixin } from "../../../../../types/utils.mts";
 
 declare class PrimaryCanvasObject {
   constructor(
-    placeableObjectOrData: Document | PrimaryCanvasObject.Data,
+    placeableObjectOrData: Document | PrimaryCanvasObjectData,
     ...args: ConstructorParameters<typeof PIXI.DisplayObject>
   );
 
@@ -14,7 +14,7 @@ declare class PrimaryCanvasObject {
   /**
    * Universal data object for this mesh.
    */
-  data: PrimaryCanvasObject.Data;
+  data: PrimaryCanvasObjectData;
 
   /**
    * @defaultValue
@@ -39,7 +39,7 @@ declare class PrimaryCanvasObject {
    * };
    * ```
    */
-  static defaultData: PrimaryCanvasObject.Data;
+  static defaultData: PrimaryCanvasObjectData;
 
   /**
    * An elevation in distance units which defines how this Object is sorted relative to its siblings.
@@ -54,13 +54,13 @@ declare class PrimaryCanvasObject {
   /**
    * A convenient reference to a Document associated with this display object, if any.
    */
-  get document(): ClientDocument | null;
+  get document(): InstanceType<ReturnType<typeof ClientDocumentMixin>> | null;
 
   /**
    * Initialize data using an explicitly provided data object or a canvas document.
    * @param data - Provided data or canvas document.
    */
-  initialize(data?: PrimaryCanvasObject.Data | Document): void;
+  initialize(data?: PrimaryCanvasObjectData | Document): void;
 
   /**
    * Map the document data to an object and process some properties.
@@ -96,42 +96,41 @@ declare class PrimaryCanvasObject {
 }
 
 declare global {
-  namespace PrimaryCanvasObject {
-    type Data = {
-      /** The x-coordinate of the PCO location */
-      x: number;
+  interface PrimaryCanvasObjectData {
+    /** The x-coordinate of the PCO location */
+    x: number;
 
-      /** The y-coordinate of the PCO location */
-      y: number;
+    /** The y-coordinate of the PCO location */
+    y: number;
 
-      /** The z-index of the PCO */
-      z: number;
+    /** The z-index of the PCO */
+    z: number;
 
-      /** The width of the PCO */
-      width: number;
+    /** The width of the PCO */
+    width: number;
 
-      /** The height of the PCO */
-      height: number;
+    /** The height of the PCO */
+    height: number;
 
-      /** The alpha of this PCO */
-      alpha: number;
+    /** The alpha of this PCO */
+    alpha: number;
 
-      /** The rotation of this PCO */
-      rotation: number;
+    /** The rotation of this PCO */
+    rotation: number;
 
-      /** The PCO is hidden? */
-      hidden: boolean;
+    /** The PCO is hidden? */
+    hidden: boolean;
 
-      /** The elevation of the PCO */
-      elevation: number;
+    /** The elevation of the PCO */
+    elevation: number;
 
-      /** The sort key that resolves ties among the same elevation */
-      sort: number;
+    /** The sort key that resolves ties among the same elevation */
+    sort: number;
 
-      /** The data texture values */
-      texture: PIXI.RenderTexture;
-    };
+    /** The data texture values */
+    texture: PIXI.RenderTexture;
   }
+
   /**
    * A mixin which decorates a DisplayObject with additional properties expected for rendering in the PrimaryCanvasGroup.
    * @param DisplayObject - The parent DisplayObject class being mixed

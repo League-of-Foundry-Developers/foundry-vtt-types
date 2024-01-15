@@ -1,3 +1,5 @@
+import type { AnyConstructor, InexactPartial, Mixin } from "../../../../../types/utils.mts";
+
 declare class BaseCanvasMixinClass {
   /** @defaultValue `true` */
   sortableChildren: boolean;

@@ -1,4 +1,4 @@
-export {}
+export {};
 
 // Foundry adjustments to PIXI for video
 // Temporary workaround until PIXI 7.3.0 (pixijs/pixijs#9441)

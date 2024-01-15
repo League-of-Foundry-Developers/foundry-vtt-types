@@ -1,3 +1,5 @@
+import type { Mixin } from "../../../../../types/utils.mts";
+
 declare class FullCanvasObject {
   /** @remarks Overrides the mixed in class */
   calculateBounds(): void;

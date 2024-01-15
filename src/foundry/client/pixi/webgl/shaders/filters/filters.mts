@@ -1,3 +1,5 @@
+import type { ConstructorOf, ValueOf } from "../../../../../../types/utils.mts";
+
 declare global {
   /**
    * This class defines an interface for masked custom filters

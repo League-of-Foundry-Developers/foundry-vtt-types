@@ -1,3 +1,5 @@
+import type { ConstructorOf } from "../../../../../../types/utils.mts";
+
 declare global {
   /**
    * A FXAA filter based on PIXI.FXAA and slightly improved.

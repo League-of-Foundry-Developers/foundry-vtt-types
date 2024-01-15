@@ -1,3 +1,5 @@
+import type { InexactPartial } from "../../../../../types/utils.mts";
+
 declare global {
   /**
    * A subclass of CanvasLayer which provides support for user interaction with its contained objects.

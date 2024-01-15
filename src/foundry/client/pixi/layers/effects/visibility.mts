@@ -1,3 +1,5 @@
+import type { ValueOf } from "../../../../../types/utils.mts";
+
 declare global {
   /**
    * The visibility Layer which implements dynamic vision, lighting, and fog of war

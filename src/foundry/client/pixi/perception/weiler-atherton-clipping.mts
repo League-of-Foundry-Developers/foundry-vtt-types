@@ -1,3 +1,5 @@
+import type { InexactPartial, ValueOf } from "../../../../types/utils.mts";
+
 declare global {
   /**
    * An implementation of the Weiler Atherton algorithm for clipping polygons.

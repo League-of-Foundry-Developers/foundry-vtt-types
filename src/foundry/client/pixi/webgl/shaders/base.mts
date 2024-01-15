@@ -1,3 +1,5 @@
+import type { ConstructorOf, Mixin } from "../../../../../types/utils.mts";
+
 /** @remarks Class name adjusted to avoid name collision with function */
 declare class BaseShaderMixinClass {
   /**

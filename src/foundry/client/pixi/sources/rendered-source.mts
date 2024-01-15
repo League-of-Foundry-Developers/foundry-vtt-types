@@ -1,3 +1,5 @@
+import type { InexactPartial } from "../../../../types/utils.mts";
+
 declare global {
   interface RenderedPointSourceData extends PointSourceData {
     /** A color applied to the rendered effect */

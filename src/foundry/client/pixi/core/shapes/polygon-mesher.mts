@@ -1,3 +1,5 @@
+import type { InexactPartial } from "../../../../../types/utils.mts";
+
 export {};
 
 declare global {

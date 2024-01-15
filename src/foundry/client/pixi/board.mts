@@ -1,5 +1,5 @@
 import type { ConfiguredDocumentClass } from "../../../types/helperTypes.mts";
-import type { StoredDocument } from "../../../types/utils.mts";
+import type { InexactPartial, StoredDocument } from "../../../types/utils.mts";
 import type { CANVAS_PERFORMANCE_MODES } from "../../common/constants.mts";
 
 declare global {

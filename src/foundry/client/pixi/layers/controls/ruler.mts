@@ -1,5 +1,5 @@
 import type { ConfiguredDocumentClass, ConfiguredObjectClassForName } from "../../../../../types/helperTypes.mts";
-import type { ValueOf } from "../../../../../types/utils.mts";
+import type { InexactPartial, ValueOf } from "../../../../../types/utils.mts";
 import type Color from "../../../../common/utils/color.mts";
 
 declare global {
