@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
-import type EmbeddedCollection from "../../../../../src/foundry/common/abstract/embedded-collection.mts";
-import type { ConfiguredDocumentClass } from "../../../../../src/types/helperTypes.mts";
+import type EmbeddedCollection from "../../../../../src/foundry/common/abstract/embedded-collection.d.mts";
+import type { ConfiguredDocumentClass } from "../../../../../src/types/helperTypes.d.mts";
 
 const doc = new TokenDocument({}, { parent: new foundry.documents.BaseScene() });
 expectTypeOf(doc.actor).toEqualTypeOf<InstanceType<ConfiguredDocumentClass<typeof Actor>> | null>();

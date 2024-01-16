@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { StoredDocument } from "../../../../../src/types/utils.mts";
+import type { StoredDocument } from "../../../../../src/types/utils.d.mts";
 
 const folders = new Folders();
 expectTypeOf(folders.get("", { strict: true })).toEqualTypeOf<StoredDocument<Folder>>();

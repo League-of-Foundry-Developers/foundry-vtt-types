@@ -1,6 +1,6 @@
 import { assertType, expectTypeOf } from "vitest";
-import type { ConfiguredDocumentClass } from "../../../../../src/types/helperTypes.mts";
-import type { StoredDocument } from "../../../../../src/types/utils.mts";
+import type { ConfiguredDocumentClass } from "../../../../../src/types/helperTypes.d.mts";
+import type { StoredDocument } from "../../../../../src/types/utils.d.mts";
 
 const user = new User({ name: "Test" });
 

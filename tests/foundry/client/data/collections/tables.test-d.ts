@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
-import type { RollTableDataSource } from "../../../../../src/foundry/common/data/data.mjs/rollTableData.mts";
-import type { StoredDocument } from "../../../../../src/types/utils.mts";
+import type { RollTableDataSource } from "../../../../../src/foundry/common/data/data.mjs/rollTableData.d.mts";
+import type { StoredDocument } from "../../../../../src/types/utils.d.mts";
 
 const rollTables = new RollTables();
 expectTypeOf(rollTables.get("", { strict: true })).toEqualTypeOf<StoredDocument<RollTable>>();

@@ -1,5 +1,5 @@
 import { assertType, expectTypeOf } from "vitest";
-import { BaseAmbientLight } from "../../../../src/foundry/common/documents.mjs/index.mts";
+import { BaseAmbientLight } from "../../../../src/foundry/common/documents.mjs/index.d.mts";
 
 const app = new (class extends FormApplication<FormApplicationOptions, { foo: string }> {
   protected _updateObject(): Promise<unknown> {

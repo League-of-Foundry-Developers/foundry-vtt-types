@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { MaybePromise } from "../../../../../src/types/utils.mts";
+import type { MaybePromise } from "../../../../../src/types/utils.d.mts";
 
 const display = new HeadsUpDisplay();
 expectTypeOf(display.token).toEqualTypeOf<TokenHUD>();

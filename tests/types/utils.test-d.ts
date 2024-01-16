@@ -6,7 +6,7 @@ import type {
   RequiredProps,
   StoredDocument,
   Titlecase,
-} from "../../src/types/utils.mts";
+} from "../../src/types/utils.d.mts";
 
 const membersBecomeOptional: DeepPartial<{ a: string }> = {};
 expectTypeOf(membersBecomeOptional).toEqualTypeOf<{ a?: string }>();

@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { StoredDocument } from "../../../../src/types/utils.mts";
+import type { StoredDocument } from "../../../../src/types/utils.d.mts";
 
 expectTypeOf(foundry.documents.BaseFolder.create({ name: "Some Folder", type: "Item" })).toEqualTypeOf<
   Promise<StoredDocument<Folder> | undefined>

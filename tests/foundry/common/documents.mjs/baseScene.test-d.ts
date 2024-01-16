@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
-import type EmbeddedCollection from "../../../../src/foundry/common/abstract/embedded-collection.mts";
-import type { StoredDocument } from "../../../../src/types/utils.mts";
+import type EmbeddedCollection from "../../../../src/foundry/common/abstract/embedded-collection.d.mts";
+import type { StoredDocument } from "../../../../src/types/utils.d.mts";
 
 expectTypeOf(foundry.documents.BaseScene.getDimensions()).toEqualTypeOf<{
   distance: number;

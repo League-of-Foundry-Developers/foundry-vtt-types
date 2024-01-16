@@ -1,9 +1,0 @@
-import "./app.mts";
-import "./av/index.mts";
-import "./form.mts";
-import "./forms/index.mts";
-import "./hud/index.mts";
-import "./i18n.mts";
-import "./placeables/index.mts";
-import "./sidebar/index.mts";
-import "./templates.mts";

@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { StoredDocument } from "../../../../src/types/utils.mts";
+import type { StoredDocument } from "../../../../src/types/utils.d.mts";
 
 expectTypeOf(foundry.documents.BaseJournalEntry.create({ name: "Some JournalEntry" })).toEqualTypeOf<
   Promise<StoredDocument<JournalEntry> | undefined>
