@@ -1,4 +1,4 @@
-import type { AnyConstructor, Mixin } from "../../../../../types/utils.d.mts";
+import type { AnyConstructorFor, Mixin } from "../../../../../types/utils.d.mts";
 
 type ClientDocument = unknown;
 
@@ -139,7 +139,7 @@ declare global {
    * @param DisplayObject - The parent DisplayObject class being mixed
    * @returns A DisplayObject subclass mixed with PrimaryCanvasObject features
    */
-  function PrimaryCanvasObjectMixin<BaseClass extends AnyConstructor<typeof PIXI.DisplayObject>>(
+  function PrimaryCanvasObjectMixin<BaseClass extends AnyConstructorFor<typeof PIXI.DisplayObject>>(
     DisplayObject: BaseClass,
   ): Mixin<typeof PrimaryCanvasObject, BaseClass>;
 }

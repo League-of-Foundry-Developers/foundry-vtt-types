@@ -1,4 +1,4 @@
-import type { AnyConstructor, InexactPartial, Mixin } from "../../../../../types/utils.d.mts";
+import type { AnyConstructorFor, InexactPartial, Mixin } from "../../../../../types/utils.d.mts";
 
 declare class BaseCanvasMixinClass {
   /** @defaultValue `true` */
@@ -34,7 +34,7 @@ declare global {
    * @param ContainerClass - The parent Container class being mixed.
    * @returns A ContainerClass subclass mixed with BaseCanvasMixin features.
    */
-  function BaseCanvasMixin<BaseClass extends AnyConstructor<typeof PIXI.Container>>(
+  function BaseCanvasMixin<BaseClass extends AnyConstructorFor<typeof PIXI.Container>>(
     ContainerClass: BaseClass,
   ): Mixin<typeof BaseCanvasMixinClass, BaseClass>;
 }
