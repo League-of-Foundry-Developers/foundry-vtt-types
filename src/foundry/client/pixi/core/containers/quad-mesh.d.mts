@@ -9,7 +9,7 @@ declare global {
     /**
      * @param shaderCls - The shader class to use.
      */
-    constructor(shaderCls: AbstractBaseShader);
+    constructor(shaderCls: typeof AbstractBaseShader);
 
     /**
      * The shader.
