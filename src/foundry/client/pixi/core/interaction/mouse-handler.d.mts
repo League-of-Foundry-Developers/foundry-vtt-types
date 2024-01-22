@@ -43,7 +43,7 @@ declare global {
      * @param options     - (default: `{}`)
      */
     constructor(
-      object: Object,
+      object: PIXI.Container,
       layer: MouseInteractionManager["layer"],
       permissions?: MouseInteractionManager["permissions"],
       callbacks?: MouseInteractionManager["callbacks"],
