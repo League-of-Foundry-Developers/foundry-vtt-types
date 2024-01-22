@@ -29,8 +29,8 @@ declare global {
     constructor(
       polygon: PIXI.Polygon,
       clipObject: PIXI.Rectangle | PIXI.Circle,
-      clipType: ValueOf<(typeof WeilerAthertonClipper)["CLIP_TYPES"]>,
-      clipOpts: WeilerAthertonClipper.ClipOpts,
+      clipType?: ValueOf<(typeof WeilerAthertonClipper)["CLIP_TYPES"]>,
+      clipOpts?: WeilerAthertonClipper.ClipOpts,
     );
 
     /**
@@ -147,6 +147,6 @@ declare global {
   }
 
   namespace WeilerAthertonClipper {
-    type ClipOpts = Record<string, unknown>; // PIXI.Circle.PointsForArcOptions;
+    type ClipOpts = PIXI.Circle.PointsForArcOptions;
   }
 }
