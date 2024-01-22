@@ -1,7 +1,5 @@
 import type { InexactPartial } from "../../../../../types/utils.mts";
 
-export {};
-
 declare global {
   /**
    * A helper class used to construct triangulated polygon meshes
