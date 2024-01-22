@@ -155,7 +155,7 @@ declare global {
   };
 
   type CanvasVisibilityTestConfig = {
-    object: PlaceableObject;
+    object: PlaceableObject | null;
     tests: CanvasVisibilityTest[];
   };
 }
