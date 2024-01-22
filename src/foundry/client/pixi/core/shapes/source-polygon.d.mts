@@ -105,7 +105,7 @@ declare global {
      * This overrides the default PIXI.Polygon#clone behavior.
      * @returns A cloned instance
      */
-    override clone(): PointSourcePolygon;
+    override clone(): this;
 
     /**
      * Compute the polygon using the origin and configuration options.

@@ -1,3 +1,7 @@
+import { expectTypeOf } from "vitest";
+
 const myVision = new VisionSource();
 
-myVision._updateVisionModeUniforms({}, [["myUniform", 3]]);
+const myShader = AdaptiveLightingShader.create();
+
+expectTypeOf(myVision._updateVisionModeUniforms(myShader, [["myUniform", 3]])).toEqualTypeOf<void>();

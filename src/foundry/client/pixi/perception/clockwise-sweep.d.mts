@@ -33,7 +33,7 @@ declare global {
 
     override initialize(origin: Point, config: PointSourcePolygonConfig): void;
 
-    clone(): ClockwiseSweepPolygon;
+    clone(): this;
 
     protected override _compute(): void;
 
