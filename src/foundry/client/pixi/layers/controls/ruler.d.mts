@@ -1,6 +1,5 @@
 import type { ConfiguredDocumentClass, ConfiguredObjectClassForName } from "../../../../../types/helperTypes.d.mts";
 import type { InexactPartial, ValueOf } from "../../../../../types/utils.d.mts";
-import type Color from "../../../../common/utils/color.d.mts";
 
 declare global {
   type RulerMeasurementSegment = {

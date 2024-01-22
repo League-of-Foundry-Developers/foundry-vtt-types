@@ -8,3 +8,5 @@ expectTypeOf(ClockwiseSweepPolygon.testCollision(pointA, pointB, { mode: "closes
 expectTypeOf(ClockwiseSweepPolygon.testCollision(pointA, pointB, { mode: "all" })).toEqualTypeOf<
   PolygonVertex[] | null
 >();
+
+expectTypeOf(ClockwiseSweepPolygon.create({ x: 0, y: 0 })).toEqualTypeOf<ClockwiseSweepPolygon>();
