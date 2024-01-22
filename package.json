@@ -105,7 +105,7 @@
     }
   },
   "lint-staged": {
-    "*..d.mts|test-d.ts)": "eslint --fix",
+    "*.(d.mts|test-d.ts)": "eslint --fix",
     "*.(js|json|yml)": "prettier --write"
   },
   "files": [

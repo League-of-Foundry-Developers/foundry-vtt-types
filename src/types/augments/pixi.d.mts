@@ -1,4 +1,5 @@
 export * from "pixi.js";
+import * as _PIXI from "pixi.js";
 import * as pixiParticles from "@pixi/particle-emitter";
 import * as graphicsSmooth from "@pixi/graphics-smooth";
 
@@ -11,13 +12,14 @@ declare global {
   namespace PIXI {
     export import smooth = graphicsSmooth;
     export import particles = pixiParticles;
+
+    export class Graphics extends PIXI.smooth.SmoothGraphics {}
   }
 }
 
 declare module "pixi.js" {
-  export const LegacyGraphics: typeof PIXI.Graphics;
-  export type LegacyGraphics = PIXI.Graphics;
-  export interface Graphics extends PIXI.smooth.SmoothGraphics {}
+  export const LegacyGraphics: typeof _PIXI.Graphics;
+  export type LegacyGraphics = _PIXI.Graphics;
 
   export enum UPDATE_PRIORITY {
     /**
