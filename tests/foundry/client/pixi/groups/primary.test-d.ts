@@ -2,7 +2,7 @@ import { expectTypeOf } from "vitest";
 
 expectTypeOf(PrimaryCanvasGroup.groupName).toEqualTypeOf<string>();
 
-const myMesh = new SpriteMesh(undefined, BaseSamplerShader);
+const myMesh = new SpriteMesh();
 
 const myPrimaryGroup = new PrimaryCanvasGroup(myMesh);
 
