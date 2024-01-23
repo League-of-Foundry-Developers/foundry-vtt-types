@@ -72,6 +72,11 @@ declare global {
      */
     static override get layerOptions(): WallsLayer.LayerOptions;
 
+    /**
+     * @privateRemarks This is not overridden in foundry but reflects the real behavior.
+     */
+    override options: WallsLayer.LayerOptions;
+
     static override documentName: "Wall";
 
     override get hookName(): string;

@@ -41,7 +41,7 @@ expectTypeOf(layer.controlled).toEqualTypeOf<AmbientLight[]>();
 expectTypeOf(layer.getDocuments()).toEqualTypeOf<
   EmbeddedCollection<typeof AmbientLightDocument, foundry.data.SceneData> | AmbientLightDocument[]
 >();
-expectTypeOf(layer.draw()).toEqualTypeOf<Promise<SomeLightLayer | undefined>>();
+expectTypeOf(layer.draw()).toEqualTypeOf<Promise<SomeLightLayer>>();
 expectTypeOf(layer.createObject(new AmbientLightDocument())).toEqualTypeOf<AmbientLight | null>();
 
 // @ts-expect-error - A LightLayer needs an AmbientLightDocument.

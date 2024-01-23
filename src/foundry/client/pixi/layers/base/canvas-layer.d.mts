@@ -45,7 +45,7 @@ declare global {
      * The Promise resolves to the drawn layer once its contents are successfully rendered.
      * @param options - Options which configure how the layer is drawn
      */
-    draw(options?: Record<string, unknown>): Promise<this | undefined>;
+    draw(options?: Record<string, unknown>): Promise<this>;
 
     /**
      * The inner _draw method which must be defined by each CanvasLayer subclass.

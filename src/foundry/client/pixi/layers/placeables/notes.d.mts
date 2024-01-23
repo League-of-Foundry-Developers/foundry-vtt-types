@@ -24,6 +24,11 @@ declare global {
      */
     static override get layerOptions(): NotesLayer.LayerOptions;
 
+    /**
+     * @privateRemarks This is not overridden in foundry but reflects the real behavior.
+     */
+    override options: NotesLayer.LayerOptions;
+
     static override documentName: "Note";
 
     /**
