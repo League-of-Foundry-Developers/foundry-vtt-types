@@ -1,3 +1,5 @@
+import type { InexactPartial } from "../../../../../../../types/utils.d.mts";
+
 export {};
 
 declare global {
@@ -33,6 +35,6 @@ declare global {
   }
 
   namespace WeatherShaderEffect {
-    type WeatherShaderEffectConfig = AbstractBaseShader.Uniforms & WeatherShaderEffect["shader"];
+    type WeatherShaderEffectConfig = InexactPartial<AbstractBaseShader.Uniforms & WeatherShaderEffect["shader"]>;
   }
 }
