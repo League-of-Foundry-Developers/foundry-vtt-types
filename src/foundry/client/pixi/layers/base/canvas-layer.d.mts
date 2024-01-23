@@ -46,7 +46,7 @@ declare global {
      * @param options - Options which configure how the layer is drawn
      * @remarks It returns Promise<this> but is overridden by a subclass in this way.
      */
-    draw(options?: Record<string, unknown>): Promise<this | undefined> | this;
+    draw(options?: Record<string, unknown>): Promise<this | undefined>;
 
     /**
      * The inner _draw method which must be defined by each CanvasLayer subclass.

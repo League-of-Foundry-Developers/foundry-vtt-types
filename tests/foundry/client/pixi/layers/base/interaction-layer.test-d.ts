@@ -1,3 +1,3 @@
 import { expectTypeOf } from "vitest";
 
-expectTypeOf(InteractionLayer.layerOptions.baseClass).toEqualTypeOf<InteractionLayer>;
+expectTypeOf(InteractionLayer.layerOptions.baseClass).toEqualTypeOf<typeof InteractionLayer>;
