@@ -44,7 +44,6 @@ declare global {
      * Draw the canvas layer, rendering its internal components and returning a Promise
      * The Promise resolves to the drawn layer once its contents are successfully rendered.
      * @param options - Options which configure how the layer is drawn
-     * @remarks It returns Promise<this> but is overridden by a subclass in this way.
      */
     draw(options?: Record<string, unknown>): Promise<this | undefined>;
 
