@@ -6,4 +6,4 @@ class MyCanvasLayer extends CanvasLayer {
 
 const layer = new MyCanvasLayer();
 
-expectTypeOf(layer.options).toEqualTypeOf(CanvasLayer.layerOptions);
+expectTypeOf(layer.options.baseClass).toEqualTypeOf<typeof CanvasLayer>();
