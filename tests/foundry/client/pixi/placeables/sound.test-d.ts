@@ -16,7 +16,6 @@ expectTypeOf(sound.sync(true, 10, {})).toEqualTypeOf<void>();
 expectTypeOf(sound.sync(true, 10, { fade: 250 })).toEqualTypeOf<void>();
 expectTypeOf(sound.clear()).toEqualTypeOf<AmbientSound>();
 expectTypeOf(sound.draw()).toEqualTypeOf<Promise<AmbientSound>>();
-expectTypeOf(sound.drawField()).toEqualTypeOf<PIXI.Container>();
 expectTypeOf(sound.refresh()).toEqualTypeOf<AmbientSound>();
 expectTypeOf(sound.refreshControl()).toEqualTypeOf<void>();
 expectTypeOf(sound.updateSource()).toEqualTypeOf<void>();

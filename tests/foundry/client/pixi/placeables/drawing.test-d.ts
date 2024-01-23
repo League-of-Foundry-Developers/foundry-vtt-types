@@ -4,16 +4,15 @@ expectTypeOf(Drawing.embeddedName).toEqualTypeOf<"Drawing">();
 
 const drawing = new Drawing(new DrawingDocument());
 
-expectTypeOf(drawing.drawing).toEqualTypeOf<PIXI.Container | null>();
-expectTypeOf(drawing.shape).toEqualTypeOf<PIXI.Graphics | null>();
+expectTypeOf(drawing.shape).toEqualTypeOf<DrawingShape>();
 expectTypeOf(drawing.text).toEqualTypeOf<PIXI.Text | null>();
-expectTypeOf(drawing.frame).toEqualTypeOf<PIXI.Container | null>();
+expectTypeOf(drawing.frame).toEqualTypeOf<PIXI.Container>();
 
 expectTypeOf(drawing.isTiled).toEqualTypeOf<boolean>();
 expectTypeOf(drawing.isPolygon).toEqualTypeOf<boolean>();
 
 expectTypeOf(drawing.draw()).toEqualTypeOf<Promise<Drawing>>();
 
-expectTypeOf(drawing.refresh()).toEqualTypeOf<void>();
+expectTypeOf(drawing.refresh()).toEqualTypeOf<Drawing>();
 
 expectTypeOf(drawing.activateListeners()).toEqualTypeOf<void>();
