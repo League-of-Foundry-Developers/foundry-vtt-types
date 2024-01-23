@@ -68,7 +68,7 @@ declare global {
     /**
      * The current pixel dimensions of the displayed Scene, or null if the Canvas is blank.
      */
-    readonly dimensions: SceneDimensions | Record<string, never>;
+    readonly dimensions: SceneDimensions | null;
 
     /**
      * Configure options passed to the texture loaded for the Scene.
