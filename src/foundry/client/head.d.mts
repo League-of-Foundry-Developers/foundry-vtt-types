@@ -58,7 +58,7 @@ declare global {
   /**
    * The Color management and manipulation class
    */
-  let Color: foundry.utils.Color;
+  class Color extends foundry.utils.Color {}
 }
 
 type UiApplications = {
