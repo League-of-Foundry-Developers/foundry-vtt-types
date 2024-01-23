@@ -37,7 +37,7 @@ declare global {
      * }
      * ```
      */
-    static override defaultUniforms: AbstractBaseShader.Uniforms | undefined;
+    static override defaultUniforms: AbstractBaseShader.Uniforms;
 
     static override vertexShader: string;
 
