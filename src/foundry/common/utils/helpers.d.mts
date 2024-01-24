@@ -571,22 +571,23 @@ type RemoveDeletingObjectKeys<T, M extends MergeObjectOptions> = M["performDelet
     }>
   : T;
 
-type MergeObjectProperty<T, U, M extends MergeObjectOptions> = T extends Array<any>
-  ? U
-  : T extends Record<string, any>
-    ? U extends Record<string, any>
-      ? M extends { recursive: false }
-        ? U
-        : MergeObject<
-            T,
-            U,
-            Omit<M, "insertKeys" | "performDeletions"> & {
-              insertKeys: M["insertValues"];
-              performDeletions: M["performDeletions"] extends true ? true : false;
-            }
-          >
-      : U
-    : U;
+type MergeObjectProperty<T, U, M extends MergeObjectOptions> =
+  T extends Array<any>
+    ? U
+    : T extends Record<string, any>
+      ? U extends Record<string, any>
+        ? M extends { recursive: false }
+          ? U
+          : MergeObject<
+              T,
+              U,
+              Omit<M, "insertKeys" | "performDeletions"> & {
+                insertKeys: M["insertValues"];
+                performDeletions: M["performDeletions"] extends true ? true : false;
+              }
+            >
+        : U
+      : U;
 type UpdateKeys<T, U, M extends MergeObjectOptions> = M extends { overwrite: false }
   ? T
   : { [K in keyof T]: K extends keyof U ? MergeObjectProperty<T[K], U[K], M> : T[K] };
@@ -595,8 +596,9 @@ type UpdateInsert<T, U, M extends MergeObjectOptions> = M extends { insertKeys: 
   ? UpdateKeys<T, U, M>
   : InsertKeys<UpdateKeys<T, U, M>, U>;
 
-type WithWidenedArrayTypes<T> = T extends Array<any>
-  ? Array<any>
-  : T extends Record<string, any>
-    ? { [K in keyof T]: WithWidenedArrayTypes<T[K]> }
-    : T;
+type WithWidenedArrayTypes<T> =
+  T extends Array<any>
+    ? Array<any>
+    : T extends Record<string, any>
+      ? { [K in keyof T]: WithWidenedArrayTypes<T[K]> }
+      : T;
