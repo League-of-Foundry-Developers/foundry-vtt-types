@@ -1,4 +1,4 @@
-import type { ValueOf } from "../../../../../types/utils.d.mts";
+import type { InexactPartial, ValueOf } from "../../../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -112,7 +112,7 @@ declare global {
      */
     testVisibility(
       point: Point,
-      options: {
+      options?: InexactPartial<{
         /**
          * A numeric radial offset which allows for a non-exact match.
          * For example, if tolerance is 2 then the test will pass if the point
@@ -124,7 +124,7 @@ declare global {
          * An optional reference to the object whose visibility is being tested
          */
         object: PlaceableObject | null;
-      },
+      }>,
     ): boolean;
 
     /**
@@ -155,7 +155,7 @@ declare global {
   };
 
   type CanvasVisibilityTestConfig = {
-    object: PlaceableObject;
+    object: PlaceableObject | null;
     tests: CanvasVisibilityTest[];
   };
 }

@@ -1,6 +1,8 @@
 import { assertType, expectTypeOf } from "vitest";
 
-const container = new CachedContainer();
+const mySprite = new PIXI.Sprite();
+
+const container = new CachedContainer(mySprite);
 assertType<PIXI.Container>(container);
 expectTypeOf(container.renderTexture).toEqualTypeOf<PIXI.RenderTexture>();
 expectTypeOf(container.clearColor).toEqualTypeOf<[number, number, number, number]>();

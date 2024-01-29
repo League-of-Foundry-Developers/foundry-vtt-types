@@ -10,7 +10,10 @@ declare global {
    * This allows the rendered result of the Primary Canvas Group to be affected by a {@link BaseSamplerShader}.
    */
   class PrimaryCanvasGroup extends BaseCanvasMixin(CachedContainer) {
-    constructor(sprite: SpriteMesh);
+    /**
+     * @param sprite - (default: `new SpriteMesh(undefined, BaseSamplerShader)`)
+     */
+    constructor(sprite?: SpriteMesh);
 
     /**
      * @defaultValue `"primary"`

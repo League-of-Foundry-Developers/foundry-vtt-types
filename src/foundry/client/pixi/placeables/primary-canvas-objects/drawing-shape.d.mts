@@ -36,7 +36,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultData(): DrawingShape.PrimaryCanvasObjectDrawingShapeData & PrimaryCanvasObject.Data;
+    static override get defaultData(): DrawingShape.PrimaryCanvasObjectDrawingShapeData;
 
     override refresh(): void;
 
@@ -66,7 +66,7 @@ declare global {
   }
 
   namespace DrawingShape {
-    type PrimaryCanvasObjectDrawingShapeData = {
+    interface PrimaryCanvasObjectDrawingShapeData extends PrimaryCanvasObjectData {
       /** The shape */
       shape: object;
 
@@ -137,7 +137,7 @@ declare global {
       occlusion: object;
 
       /** The data texture values */
-      texture: object;
-    };
+      texture: PIXI.RenderTexture;
+    }
   }
 }

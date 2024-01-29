@@ -9,12 +9,7 @@ declare global {
     /**
      * @param options - Additional options merged with the default TextStyle
      */
-    constructor(
-      options: {
-        /** A text anchor point from CONST.TEXT_ANCHOR_POINTS */
-        anchor: foundry.CONST.TEXT_ANCHOR_POINTS;
-      } & ConstructorParameters<typeof PIXI.Text>,
-    );
+    constructor(...args: ConstructorParameters<typeof PIXI.Text>);
 
     /**
      * Prepare a TextStyle object which merges the canvas defaults with user-provided options

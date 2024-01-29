@@ -30,13 +30,14 @@ export type ConstructorOf<T> = new (...args: any) => T;
  * Expand an object that contains keys in dotted notation
  * @internal
  */
-export type Expanded<O> = O extends Record<string, unknown>
-  ? {
-      [KO in keyof O as KO extends `${infer A}.${string}` ? A : KO]: KO extends `${string}.${infer B}`
-        ? Expanded<{ [EB in B]: O[KO] }>
-        : Expanded<O[KO]>;
-    }
-  : O;
+export type Expanded<O> =
+  O extends Record<string, unknown>
+    ? {
+        [KO in keyof O as KO extends `${infer A}.${string}` ? A : KO]: KO extends `${string}.${infer B}`
+          ? Expanded<{ [EB in B]: O[KO] }>
+          : Expanded<O[KO]>;
+      }
+    : O;
 
 /**
  * Union type of the types of the values in `T`

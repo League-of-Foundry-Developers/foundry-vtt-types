@@ -1,4 +1,4 @@
-import type Color from "../../../common/utils/color.d.mts";
+export {};
 
 declare global {
   /**

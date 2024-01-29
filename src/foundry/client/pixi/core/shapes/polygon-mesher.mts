@@ -1,4 +1,4 @@
-export {};
+import type { InexactPartial } from "../../../../../types/utils.mts";
 
 declare global {
   /**

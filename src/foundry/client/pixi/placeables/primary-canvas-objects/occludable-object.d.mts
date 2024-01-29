@@ -17,7 +17,7 @@ declare class OccludableObject {
    * })
    * ```
    */
-  static get defaultData(): OccludableObject.Data;
+  static get defaultData(): OccludableObjectData;
 
   /**
    * Contains :
@@ -135,24 +135,22 @@ declare class OccludableObject {
 }
 
 declare global {
-  namespace OccludableObject {
-    type Data = {
-      /**
-       * The PCO is considered as a roof?
-       * @defaultValue false
-       */
-      roof: boolean;
+  interface OccludableObjectData extends PrimaryCanvasObjectData {
+    /**
+     * The PCO is considered as a roof?
+     * @defaultValue false
+     */
+    roof: boolean;
 
-      /** The occlusion object for this PCO */
-      occlusion: {
-        /** @defaultValue `CONST.OCCLUSION_MODES.NONE` */
-        mode: OCCLUSION_MODES;
-        /** @defaultValue `0` */
-        alpha: number;
-        /** @defaultValue `null` */
-        radius: number | null;
-      };
-    } & PrimaryCanvasObject.Data;
+    /** The occlusion object for this PCO */
+    occlusion: {
+      /** @defaultValue `CONST.OCCLUSION_MODES.NONE` */
+      mode: OCCLUSION_MODES;
+      /** @defaultValue `0` */
+      alpha: number;
+      /** @defaultValue `null` */
+      radius: number | null;
+    };
   }
 
   /**

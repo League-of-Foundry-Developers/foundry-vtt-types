@@ -29,7 +29,9 @@ declare global {
     /**
      * @defaultValue `foundry.utils.mergeObject(super.layerOptions, { name: "effects" })`
      */
-    static override get layerOptions(): CanvasLayer.LayerOptions & { name: "effects" };
+    static override get layerOptions(): WeatherLayer.LayerOptions;
+
+    override options: WeatherLayer.LayerOptions;
 
     /**
      * Array of weather effects linked to this weather container.
@@ -104,6 +106,10 @@ declare global {
   }
 
   namespace WeatherLayer {
+    interface LayerOptions extends CanvasLayer.LayerOptions {
+      name: "effects";
+    }
+
     interface WeatherTerrainMaskConfiguration {
       /**
        * Enable or disable this mask.

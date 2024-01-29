@@ -149,10 +149,20 @@ declare global {
     /**
      * Animate a smooth transition of the darkness overlay to a target value.
      * Only begin animating if another animation is not already in progress.
-     * @param target   - The target darkness level between 0 and 1
-     * @param duration - The desired animation time in milliseconds. Default is 10 seconds
+     * @param target - The target darkness level between 0 and 1
      * @returns A Promise which resolves once the animation is complete
      */
-    animateDarkness(target: number, duration: number): Promise<unknown>;
+    animateDarkness(
+      target?: number,
+      {
+        duration,
+      }?: {
+        /**
+         * The desired animation time in milliseconds. Default is 10 seconds
+         * @defaultValue 10000
+         */
+        duration?: number;
+      },
+    ): ReturnType<(typeof CanvasAnimation)["animate"]>;
   }
 }

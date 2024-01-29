@@ -1,4 +1,4 @@
-import type { InexactPartial } from "../../../../../types/utils.d.mts";
+export {};
 
 declare global {
   interface CanvasAnimationAttribute {

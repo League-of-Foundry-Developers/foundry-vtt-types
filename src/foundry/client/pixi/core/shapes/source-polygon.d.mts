@@ -86,11 +86,7 @@ declare global {
      * @param origin     - The origin point to benchmark
      * @param config     - The polygon configuration to benchmark
      */
-    static benchmark(
-      iterations: number,
-      origin: Point,
-      config: PointSourcePolygonConfig,
-    ): ReturnType<typeof foundry.utils.benchmark>;
+    static benchmark(iterations: number, origin: Point, config: PointSourcePolygonConfig): Promise<void>;
 
     /**
      * Compute the polygon given a point origin and radius
@@ -109,7 +105,7 @@ declare global {
      * This overrides the default PIXI.Polygon#clone behavior.
      * @returns A cloned instance
      */
-    override clone(): PointSourcePolygon;
+    override clone(): this;
 
     /**
      * Compute the polygon using the origin and configuration options.

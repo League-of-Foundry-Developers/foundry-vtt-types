@@ -201,7 +201,7 @@ declare global {
      * Draw the placeable object into its parent container
      * @returns The drawn object
      */
-    draw(options: Record<string, unknown>): Promise<this>;
+    draw(options?: Record<string, unknown>): Promise<this>;
 
     /**
      * The inner _draw method which must be defined by each PlaceableObject subclass.
@@ -215,7 +215,7 @@ declare global {
      * @param options - Options which may modify the refresh workflow
      * @returns The refreshed object
      */
-    refresh(options: Record<string, unknown>): this;
+    refresh(options?: Record<string, unknown>): this;
 
     /**
      * Update the quadtree.

@@ -1,5 +1,4 @@
 import type { IDestroyOptions } from "pixi.js";
-import type Color from "../../../../common/utils/color.d.mts";
 
 declare global {
   interface PingOptions {

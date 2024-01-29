@@ -6,7 +6,6 @@ declare const doc: WallDocument;
 declare const ray: Ray;
 
 const wall = new Wall(doc);
-expectTypeOf(wall.doorControl).toEqualTypeOf<DoorControl | undefined | null>();
 expectTypeOf(wall.mouseInteractionManager).toEqualTypeOf<MouseInteractionManager<Wall> | null>();
 expectTypeOf(wall.roof).toEqualTypeOf<Tile | undefined>();
 expectTypeOf(wall.coords).toEqualTypeOf<[number, number, number, number]>();

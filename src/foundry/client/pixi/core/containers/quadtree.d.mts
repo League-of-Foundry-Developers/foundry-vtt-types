@@ -160,6 +160,8 @@ declare global {
    * A subclass of Quadtree specifically intended for classifying the location of objects on the game canvas.
    */
   class CanvasQuadtree extends Quadtree<object> {
+    constructor(options?: Quadtree.Options<object>);
+
     readonly bounds: SceneDimensions["rect"];
   }
 

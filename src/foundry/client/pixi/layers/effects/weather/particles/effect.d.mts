@@ -9,7 +9,6 @@ declare global {
      * @param options - Options passed to the getParticleEmitters method which can be used to customize values of the emitter configuration.
      *                  (default: `{}`)
      */
-
     constructor(options?: Record<string, unknown>);
 
     parent: PIXI.Container;

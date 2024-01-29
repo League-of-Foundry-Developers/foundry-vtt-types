@@ -95,8 +95,6 @@ declare global {
    */
   class AlphaBlurFilter extends PIXI.Filter {
     /**
-     *
-     * @param horizontal - If the pass is horizontal (true) or vertical (false).
      * @param strength   - Strength of the blur (distance of sampling).
      *                     (default: `8`)
      * @param quality    - Number of passes to generate the blur. More passes = Higher quality = Lower Perf.

@@ -72,6 +72,11 @@ declare global {
      */
     static override get layerOptions(): WallsLayer.LayerOptions;
 
+    /**
+     * @privateRemarks This is not overridden in foundry but reflects the real behavior.
+     */
+    override options: WallsLayer.LayerOptions;
+
     static override documentName: "Wall";
 
     override get hookName(): string;
@@ -202,82 +207,4 @@ declare global {
       zIndex: number;
     }
   }
-}
-
-interface EndpointOptions {
-  /**
-   * An optional bounding rectangle within which the endpoint must lie.
-   */
-  bounds?: PIXI.Rectangle;
-
-  /**
-   * The type of polygon being computed: "movement", "sight", or "sound"
-   * @defaultValue `"movement"`
-   */
-  type?: "movement" | "sight" | "sound";
-}
-
-interface CollisionOptions {
-  /**
-   * Which collision type to check: movement, sight, sound
-   * @defaultValue `"move"`
-   */
-  type?: "move" | "sight" | "sound";
-
-  /**
-   * Which type of collisions are returned: any, closest, all
-   * @defaultValue `"any"`
-   */
-  mode?: "any" | "closest" | "all";
-}
-
-interface ComputePolygonOptions {
-  /**
-   * The type of polygon being computed: "movement", "sight", or "sound"
-   * @defaultValue `"sight"`
-   */
-  type?: "movement" | "sight" | "sound";
-
-  /**
-   * An optional limited angle of emission with which to restrict polygons
-   * @defaultValue `360`
-   */
-  angle?: number;
-
-  /**
-   * The desired radial density of emission for rays, in degrees
-   * @defaultValue `6`
-   */
-  density?: number;
-
-  /**
-   * The current angle of rotation, used when the angle is limited
-   * @defaultValue `0`
-   */
-  rotation?: number;
-
-  /**
-   * Compute sight that is fully unrestricted by walls
-   * @defaultValue `false`
-   */
-  unrestricted?: boolean;
-}
-
-interface RayCollisionsOptions {
-  /**
-   * Which collision type to check: movement, sight, sound
-   * @defaultValue `"movement"`
-   */
-  type?: "movement" | "sight" | "sound";
-
-  /**
-   * Which type of collisions are returned: any, closest, all
-   * @defaultValue `"all"`
-   */
-  mode?: `any` | `closest` | `all`;
-
-  /**
-   * Internal performance tracking
-   */
-  _performance?: { tests: number };
 }

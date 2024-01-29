@@ -36,6 +36,8 @@ declare global {
      */
     static override get layerOptions(): GridLayer.LayerOptions;
 
+    options: GridLayer.LayerOptions;
+
     /**
      * The grid type rendered in this Scene
      */

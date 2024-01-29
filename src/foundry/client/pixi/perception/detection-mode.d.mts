@@ -1,4 +1,4 @@
-export {};
+import type { InexactPartial, ValueOf } from "../../../../types/utils.d.mts";
 
 // TODO: Move to common/documents/token
 type TokenDetectionMode = {
@@ -14,7 +14,14 @@ type TokenDetectionMode = {
 // Currently that is in PR #2331 (branch v10/non-inferring-data-fields)
 declare namespace foundry {
   namespace abstract {
-    class DataModel {}
+    class DataModel {
+      constructor(
+        data?: Record<string, unknown>,
+        { parent, strict, ...options }?: { parent: unknown; strict?: boolean; options: Record<string, unknown> },
+      );
+
+      static defineSchema(): Record<string, unknown>;
+    }
   }
 }
 
@@ -24,7 +31,15 @@ declare global {
    * A token could have multiple detection modes.
    */
   class DetectionMode extends foundry.abstract.DataModel {
-    static defineSchema(): any;
+    // TODO: Redo return type later
+    static override defineSchema(): {
+      id: string;
+      label: string;
+      tokenConfig: boolean;
+      walls?: boolean;
+      angle?: boolean;
+      type?: ValueOf<(typeof DetectionMode)["DETECTION_TYPES"]>;
+    };
 
     /**
      * Get the detection filter pertaining to this mode.
@@ -67,7 +82,7 @@ declare global {
     testVisibility(
       visionSource: VisionSource,
       mode: TokenDetectionMode,
-      { object, tests }: CanvasVisibilityTestConfig,
+      { object, tests }: InexactPartial<CanvasVisibilityTestConfig>,
     ): boolean;
 
     /**

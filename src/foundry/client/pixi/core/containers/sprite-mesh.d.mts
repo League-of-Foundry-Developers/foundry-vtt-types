@@ -8,9 +8,11 @@ declare global {
   class SpriteMesh extends PIXI.Mesh {
     /**
      * @param texture   - Texture bound to this sprite mesh.
+     *                    (default: `PIXI.Texture.EMPTY`)
      * @param shaderCls - Shader class used by this sprite mesh.
+     *                    (default: `BaseSamplerShader`)
      */
-    constructor(texture: PIXI.Texture, shaderCls: BaseSamplerShader);
+    constructor(texture?: PIXI.Texture, shaderCls?: typeof BaseSamplerShader);
 
     /**
      * Snapshot of some parameters of this display object to render in batched mode.

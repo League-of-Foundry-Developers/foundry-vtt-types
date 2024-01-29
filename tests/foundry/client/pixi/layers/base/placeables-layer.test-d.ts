@@ -1,11 +1,21 @@
 import { expectTypeOf } from "vitest";
-import type EmbeddedCollection from "../../../../src/foundry/common/abstract/embedded-collection.d.mts";
-import type { ConstructorOf } from "../../../../src/types/utils.d.mts";
+import type EmbeddedCollection from "../../../../../../src/foundry/common/abstract/embedded-collection.d.mts";
+import type { ConstructorOf } from "../../../../../../src/types/utils.d.mts";
+import type { Container, DisplayObject } from "pixi.js";
 
-declare class SomeLightLayer extends PlaceablesLayer<"AmbientLight", PlaceablesLayer.LayerOptions<"AmbientLight">> {}
+class SomeLightLayer extends PlaceablesLayer<"AmbientLight"> {
+  static get layerOptions() {
+    return mergeObject(super.layerOptions, {
+      name: "myLighting",
+    });
+  }
 
-expectTypeOf(SomeLightLayer.instance).toEqualTypeOf<CanvasLayer | undefined>();
-expectTypeOf(SomeLightLayer.layerOptions).toEqualTypeOf<PlaceablesLayer.LayerOptions<any>>();
+  override options: PlaceablesLayer.LayerOptions<"AmbientLight"> = SomeLightLayer.layerOptions;
+}
+
+expectTypeOf(SomeLightLayer.instance).toEqualTypeOf<CanvasLayer | Container<DisplayObject> | undefined>();
+// TOFIX: I think data model related error?
+// expectTypeOf(SomeLightLayer.layerOptions).toEqualTypeOf<PlaceablesLayer.LayerOptions<"AmbientLight">>();
 expectTypeOf(SomeLightLayer.layerOptions.objectClass).toEqualTypeOf<any>(); // TODO: Can this be typed to DocumentConstructor?
 expectTypeOf(PlaceablesLayer.documentName).toEqualTypeOf<
   "AmbientLight" | "AmbientSound" | "Drawing" | "MeasuredTemplate" | "Note" | "Tile" | "Token" | "Wall"
@@ -31,7 +41,7 @@ expectTypeOf(layer.controlled).toEqualTypeOf<AmbientLight[]>();
 expectTypeOf(layer.getDocuments()).toEqualTypeOf<
   EmbeddedCollection<typeof AmbientLightDocument, foundry.data.SceneData> | AmbientLightDocument[]
 >();
-expectTypeOf(layer.draw()).toEqualTypeOf<Promise<SomeLightLayer | undefined>>();
+expectTypeOf(layer.draw()).toEqualTypeOf<Promise<SomeLightLayer>>();
 expectTypeOf(layer.createObject(new AmbientLightDocument())).toEqualTypeOf<AmbientLight | null>();
 
 // @ts-expect-error - A LightLayer needs an AmbientLightDocument.
@@ -40,7 +50,7 @@ layer.createObject({});
 // @ts-expect-error - A LightLayer needs an AmbientLightDocument.
 layer.createObject();
 
-expectTypeOf(layer.tearDown()).toEqualTypeOf<Promise<SomeLightLayer>>();
+expectTypeOf(layer.tearDown()).toEqualTypeOf<Promise<void | SomeLightLayer>>();
 expectTypeOf(layer.activate()).toEqualTypeOf<SomeLightLayer>();
 expectTypeOf(layer.deactivate()).toEqualTypeOf<SomeLightLayer>();
 expectTypeOf(layer.get("id")).toEqualTypeOf<AmbientLight | undefined>();

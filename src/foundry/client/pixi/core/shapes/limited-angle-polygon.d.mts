@@ -95,25 +95,25 @@ declare global {
        * The angle of the Polygon in degrees.
        * @defaultValue `360`
        */
-      angle: number;
+      angle?: number;
 
       /**
        * The direction of rotation at the center of the emitted angle in degrees.
        * @defaultValue `0`
        */
-      rotation: number;
+      rotation?: number;
 
       /**
        * The density of rays which approximate the cone, defined as rays per PI.
        * @defaultValue `PIXI.Circle.approximateVertexDensity(this.radius)`
        */
-      density: number;
+      density?: number;
 
       /**
        * An optional "external radius" which is included in the polygon for the supplementary area outside the cone.
        * @defaultValue `0`
        */
-      externalRadius: number;
+      externalRadius?: number;
     };
   }
 }

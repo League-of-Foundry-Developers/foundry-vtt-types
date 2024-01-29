@@ -39,7 +39,7 @@ declare global {
      */
     static create<T extends InverseOcclusionSamplerShader>(
       this: ConstructorOf<T>,
-      defaultUniforms: AbstractBaseShader.Uniforms,
+      defaultUniforms?: AbstractBaseShader.Uniforms,
     ): T;
 
     protected override _preRender(mesh: SpriteMesh): void;
