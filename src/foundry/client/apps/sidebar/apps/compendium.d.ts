@@ -51,6 +51,12 @@ declare class Compendium<
    */
   protected _onClickEntry(event: JQuery.ClickEvent): void;
 
+  /**
+   * Handle clicks on a footer button
+   * @param event - The originating pointer event
+   */
+  private _onclickFooterButton(event: JQuery.ClickEvent): AdventureExporter; // FIXME: AdventureExporter and related types need to be created
+
   protected override _onSearchFilter(event: KeyboardEvent, query: string, rgx: RegExp, html: HTMLElement): void;
 
   protected override _canDragStart(selector: string): boolean;
