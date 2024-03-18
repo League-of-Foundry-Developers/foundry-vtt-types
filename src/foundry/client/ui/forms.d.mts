@@ -15,15 +15,9 @@ declare global {
   class FormDataExtended extends FormData {
     /**
      * @param form    - The form being processed
-     * @param editors - A record of TinyMCE editor metadata objects, indexed by their update key
-     *                  (default: `{}`)
-     * @param dtypes  - A mapping of data types for form fields
-     *                  (default: `{}`)
+     * @param options - Options which configure form processing
      */
-    constructor(
-      form: HTMLFormElement,
-      { editors, dtypes }?: { editors?: FormDataExtended["editors"]; dtypes?: FormDataExtended["dtypes"] },
-    );
+    constructor(form: HTMLFormElement, options?: FormDataExtended.Options);
 
     /**
      * A mapping of data types requested for each form field.
@@ -44,14 +38,54 @@ declare global {
 
     /**
      * Process the HTML form element to populate the FormData instance.
-     * @param form - The HTML form being processed
+     * @param form    - The HTML form being processed
+     * @param options - Options forwarded from the constructor
      */
-    process(form: HTMLFormElement): void;
+    process(form: HTMLFormElement, options: FormDataExtended.Options): void;
+
+    /**
+     * Assign a value to the FormData instance which always contains JSON strings.
+     * Also assign the cast value in its preferred data type to the parsed object representation of the form data.
+     * @param name - The field name
+     * @param value - The raw extracted value from the field
+     */
+    override set(name: string, value: any): void;
+
+    /**
+     * Append values to the form data, adding them to an array.
+     * @param name - The field name to append to the form
+     * @param value - The value to append to the form data
+     */
+    override append(name: string, value: any): void;
 
     /**
      * Export the FormData as an object
      * @deprecated since v10, use `FormDataExtended#object` instead.
      */
     toObject(): FormDataExtended["object"];
+  }
+}
+
+declare namespace FormDataExtended {
+  interface Options {
+    /**
+     * A record of TinyMCE editor metadata objects, indexed by their update key
+     * (default: `{}`)
+     */
+    editors?: FormDataExtended["editors"];
+    /**
+     * A mapping of data types for form fields
+     * (default: `{}`)
+     */
+    dtypes?: FormDataExtended["dtypes"];
+    /**
+     * Include disabled fields?
+     * (default: `false`)
+     */
+    disabled?: boolean;
+    /** Include readonly fields?
+     * (default: `false`)
+     */
+    readonly?: boolean;
   }
 }
