@@ -11,7 +11,7 @@ declare global {
    * @example Keep the highest of the 3 roll expressions
    * ```typescript
    * let pool = new PoolTerm({
-   *   rolls: ["4d6", "3d8 - 1", "2d10 + 3"],
+   *   terms: ["4d6", "3d8 - 1", "2d10 + 3"],
    *   modifiers: ["kh"]
    * });
    * pool.evaluate();
