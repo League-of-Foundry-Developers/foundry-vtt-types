@@ -13,6 +13,11 @@ declare global {
     icon: string;
 
     /**
+     * An identifier for a group this entry belongs to.
+     */
+    group: string;
+
+    /**
      * The function to call when the menu item is clicked. Receives the HTML element of the SidebarTab entry that this context menu is for.
      */
     callback: (target: JQuery) => void;

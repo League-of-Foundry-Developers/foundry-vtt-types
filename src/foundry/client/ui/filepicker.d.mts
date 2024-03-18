@@ -24,10 +24,16 @@ declare global {
     button?: HTMLElement | undefined;
 
     /** The picker display mode in FilePicker.DISPLAY_MODES */
+    favorites?: Record<string, FilePicker.FavoriteFolder>;
+
+    /** The picker display mode in FilePicker.DISPLAY_MODES */
     displayMode?: FilePicker.DisplayMode | undefined;
 
     /** Display the tile size configuration. */
     tileSize?: boolean | undefined;
+
+    /** Redirect to the root directory rather than starting in the source directory of one of these files. */
+    redirectToRoot?: string[];
   }
 
   /**
@@ -126,6 +132,30 @@ declare global {
     static S3_BUCKETS: string[] | null;
 
     /**
+     * Get favorite folders for quick access
+     */
+    static get favorites(): Record<string, FilePicker.FavoriteFolder>;
+
+    /**
+     * Set favorite folders for quick access
+     */
+    static set favorites(favorites: Record<string, FilePicker.FavoriteFolder>);
+
+    /**
+     * Add the given path for the source to the favorites
+     * @param source - The source of the folder (e.g. "data", "public")
+     * @param path   - The path to a folder
+     */
+    static setFavorite(source: string, path: string): Promise<void>;
+
+    /**
+     * Remove the given path from to the favorites
+     * @param source - The source of the folder (e.g. "data", "public")
+     * @param path   - The path to a folder
+     */
+    static removeFavorite(source: string, path: string): Promise<void>;
+
+    /**
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.defaultOptions, {
@@ -192,6 +222,10 @@ declare global {
     static get uploadURL(): string;
 
     override getData(options?: Partial<Options> | undefined): MaybePromise<object>;
+
+    override setPosition(
+      position?: Partial<Omit<Application.Position, "zIndex">> | undefined,
+    ): void | (Application.Position & { height: number });
 
     /**
      * Browse to a specific location for this FilePicker instance
@@ -281,6 +315,25 @@ declare global {
     ): Promise<FilePicker.UploadResult | false | void | {}>;
 
     /**
+     * A convenience function that uploads a file to a given package's persistent /storage/ directory
+     * @param packageId  - The id of the package to which the file should be uploaded. Only supports Systems and Modules.
+     * @param path       - The relative path in the package's storage directory the file should be uploaded to
+     * @param file       - The File object to upload
+     * @param body       - Additional file upload options sent in the POST body
+     *                     (default: `{}`)
+     * @param options    - Additional options to configure how the method behaves
+     *                     (default `{}`)
+     * @returns The response object
+     */
+    static uploadPersistent(
+      packageId: string,
+      path: string,
+      file: File,
+      body?: FilePicker.UploadBody | undefined,
+      options?: FilePicker.UploadOptions | undefined,
+    ): Promise<FilePicker.UploadResult | false | void | {}>;
+
+    /**
      * Additional actions performed when the file-picker UI is rendered
      */
     override render(force?: boolean | undefined, options?: Application.RenderOptions<Options> | undefined): this;
@@ -313,6 +366,12 @@ declare global {
      * @internal
      */
     protected _onRequestTarget(event: KeyboardEvent): void;
+
+    /**
+     * Handle user interaction with the favorites
+     * @param event - The originating click event
+     */
+    protected _onClickFavorites(event: MouseEvent): Promise<void>;
 
     /**
      * Handle requests from the IntersectionObserver to lazily load an image file
@@ -348,7 +407,11 @@ declare global {
      */
     protected _onChangeBucket(event: Event): void;
 
-    /** */
+    /**
+     * Handle changes to the tile size.
+     * @param event - The triggering event.
+     */
+    _onChangeTileSize(event: Event): void;
 
     protected override _onSearchFilter(event: KeyboardEvent, query: string, rgx: RegExp, html: HTMLElement): void;
 
@@ -403,6 +466,15 @@ declare global {
     }
 
     type Callback = (path: string) => void;
+
+    interface FavoriteFolder {
+      /** The source of the folder (e.g. "data", "public") */
+      source: string;
+      /** The full path to the folder */
+      path: string;
+      /** The label for the path */
+      label: string;
+    }
 
     interface ConfigurePathOptions {
       bucket?: string | undefined | null;

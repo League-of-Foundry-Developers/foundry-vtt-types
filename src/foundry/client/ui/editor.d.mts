@@ -36,7 +36,7 @@ declare global {
      *                   (default: `{}`)
      * @returns The enriched HTML content
      */
-    static enrichHTML(content: string, options?: Partial<TextEditor.EnrichOptions>): MaybePromise<string>;
+    static enrichHTML(content: string, options?: Partial<TextEditor.EnrichmentOptions>): MaybePromise<string>;
 
     /**
      * Convert text of the form `@UUID[uuid]{name}` to anchor elements.
@@ -46,7 +46,7 @@ declare global {
      */
     protected static _enrichContentLinks(
       text: Text[],
-      options?: Partial<TextEditor.EnrichOptions>,
+      options?: Partial<TextEditor.EnrichmentOptions>,
     ): MaybePromise<boolean>;
 
     /**
@@ -55,7 +55,7 @@ declare global {
      * @param options - Options provided to customize text enrichment
      * @returns Whether any hyperlinks were replaced and the text nodes need to be updated
      */
-    protected static _enrichHyperlinks(text: Text[], options?: Partial<TextEditor.EnrichOptions>): boolean;
+    protected static _enrichHyperlinks(text: Text[], options?: Partial<TextEditor.EnrichmentOptions>): boolean;
 
     /**
      * Convert text of the form [[roll]] to anchor elements.
@@ -65,9 +65,9 @@ declare global {
      * @returns Whether any inline rolls were replaced and the text nodes need to be updated.
      */
     protected static _enrichInlineRolls(
-      rollData: TextEditor.EnrichOptions["rollData"],
+      rollData: TextEditor.EnrichmentOptions["rollData"],
       text: Text[],
-      options?: Partial<TextEditor.EnrichOptions>,
+      options?: Partial<TextEditor.EnrichmentOptions>,
     ): MaybePromise<boolean>;
 
     /**
@@ -82,7 +82,7 @@ declare global {
       pattern: RegExp,
       enricher: CONFIG.TextEditor.Enricher,
       text: Text[],
-      options?: Partial<TextEditor.EnrichOptions>,
+      options?: Partial<TextEditor.EnrichmentOptions>,
     ): Promise<boolean>;
 
     /**
@@ -339,7 +339,7 @@ declare global {
       height?: number;
     }
 
-    interface EnrichOptions {
+    interface EnrichmentOptions {
       /**
        * Include secret tags in the final HTML? If false secret blocks will be removed.
        * @defaultValue `false`
@@ -370,9 +370,8 @@ declare global {
       rollData: object | (() => object);
 
       /**
-       * Perform the operation asynchronously, receiving a Promise as the returned
-       * value. This will become the default behaviour in v11.
-       * @defaultValue `false`
+       * Perform the operation asynchronously returning a Promise
+       * @defaultValue `true`
        */
       async: boolean;
 

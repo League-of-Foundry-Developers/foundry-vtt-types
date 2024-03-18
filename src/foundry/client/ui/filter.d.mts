@@ -1,3 +1,5 @@
+import type { ValueOf } from "../../../types/utils.d.mts";
+
 export {};
 
 declare global {
@@ -31,11 +33,41 @@ declare global {
     delay?: number;
   }
 
+  interface FieldFilter {
+    /** The dot-delimited path to the field being filtered */
+    field: string;
+
+    /**
+     * The search operator, from CONST.OPERATORS
+     * @defaultValue `SearchFilter.OPERATORS.EQUALS`
+     */
+    operator: ValueOf<typeof SearchFilter.OPERATORS>;
+
+    /** Negate the filter, returning results which do NOT match the filter criteria */
+    negate: boolean;
+
+    /** The value against which to test */
+    value: any;
+  }
+
   /**
    * A controller class for managing a text input widget that filters the contents of some other UI element
    * @see {@link Application}
    */
   class SearchFilter {
+    static readonly OPERATORS: {
+      EQUALS: "equals";
+      CONTAINS: "contains";
+      STARTS_WITH: "starts_with";
+      ENDS_WITH: "ends_with";
+      LESS_THAN: "lt";
+      LESS_THAN_EQUAL: "lte";
+      GREATER_THAN: "gt";
+      GREATER_THAN_EQUAL: "gte";
+      BETWEEN: "between";
+      IS_EMPTY: "is_empty";
+    };
+
     /**
      * @param options - Options which customize the behavior of the filter
      */
@@ -86,6 +118,14 @@ declare global {
      * @internal
      */
     protected _filter: (...args: Parameters<this["callback"]>) => void;
+
+    /**
+     * Test whether a given object matches a provided filter
+     * @param obj    - An object to test against
+     * @param filter - The filter to test
+     * @returns Whether the object matches the filter
+     */
+    static evaluateFilter(obj: Record<string, any>, filter: FieldFilter): boolean;
 
     /**
      * Bind the SearchFilter controller to an HTML application

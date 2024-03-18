@@ -29,7 +29,7 @@ declare global {
      * Duplicate the application's starting position to track differences
      * @defaultValue `null`
      */
-    position: foundry.utils.Duplicated<Application.Position> | null;
+    position: Duplicated<Application.Position> | null;
 
     /**
      * Remember event handlers associated with this Draggable class so they may be later unregistered
@@ -112,17 +112,17 @@ declare global {
     }
 
     interface Handlers {
-      click: ["click", (e: Event) => void, { capture: boolean; passive: boolean }];
+      click: ["click", (e: MouseEvent) => void, { capture: boolean; passive: boolean }];
 
-      dragDown: ["mousedown", (e: Event) => void, false];
-      dragMove: ["mousemove", (e: Event) => void, false];
-      dragUp: ["mouseup", (e: Event) => void, false];
+      dragDown: ["pointerdown", (e: Event) => void, false];
+      dragMove: ["pointermove", (e: Event) => void, false];
+      dragUp: ["pointerup", (e: Event) => void, false];
     }
 
     interface ResizableHandlers extends Handlers {
-      resizeDown: ["mousedown", (e: Event) => void, false];
-      resizeMove: ["mousemove", (e: Event) => void, false];
-      resizeUp: ["mouseup", (e: Event) => void, false];
+      resizeDown: ["pointerdown", (e: Event) => void, false];
+      resizeMove: ["pointermove", (e: Event) => void, false];
+      resizeUp: ["pointerup", (e: Event) => void, false];
     }
   }
 }
