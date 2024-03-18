@@ -111,8 +111,7 @@ declare global {
       minimize: boolean;
 
       /**
-       * Evaluate the roll asynchronously, receiving a Promise as the returned value.
-       * This will become the default behavior in version 10.x
+       * Evaluate the roll asynchronously. false is deprecated
        * @defaultValue `true`
        */
       async: boolean;
