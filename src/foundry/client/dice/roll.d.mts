@@ -191,6 +191,12 @@ declare global {
     reroll(options?: InexactPartial<Options>): Evaluated<this> | Promise<Evaluated<this>>;
 
     /**
+     * Recompile the formula string that represents this Roll instance from its component terms.
+     * @returns The re-compiled formula
+     */
+    resetFormula(): string;
+
+    /**
      * A factory method which constructs a Roll instance using the default configured Roll class.
      * @typeParam D - the type of data object against which to parse attributes within the formula
      * @param formula - The formula used to create the Roll instance
@@ -261,19 +267,21 @@ declare global {
      *
      * @param formula - The original formula within which to replace
      * @param data    - The data object which provides replacements
-     * @param missing - The value that should be assigned to any unmatched keys.
-     *                  If null, the unmatched key is left as-is.
-     * @param warn    - Display a warning notification when encountering an un-matched key.
-     *                  (default: `false`)
+     * @param options - Options which modify formula replacement
      */
     static replaceFormulaData<D>(
       formula: string,
       data: D,
-      {
-        missing,
-        warn,
-      }?: {
+      options?: {
+        /**
+         * The value that should be assigned to any unmatched keys.
+         * If null, the unmatched key is left as-is.
+         */
         missing?: string;
+        /**
+         * Display a warning notification when encountering an un-matched key.
+         * (default: `false`)
+         */
         warn?: boolean;
       },
     ): string;
@@ -298,14 +306,14 @@ declare global {
     protected static _splitMathArgs(expression: string): MathTerm[];
 
     /**
-     * Split a formula by identifying its outer-most dice pool terms
+     * Split a formula by identifying its outermost dice pool terms.
      * @param _formula - The raw formula to split
      * @returns An array of terms, split on parenthetical terms
      */
     protected _splitPools(_formula: string): string[];
 
     /**
-     * Split a formula by identifying its outer-most groups using a certain group symbol like parentheses or brackets.
+     * Split a formula by identifying its outermost groups using a certain group symbol like parentheses or brackets.
      * @param _formula - The raw formula to split
      * @param options  - Options that configure how groups are split
      *                   (default: `{}`)
@@ -412,13 +420,13 @@ declare global {
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof ChatMessage>> | undefined> | MessageData<T>;
 
     /**
-     * Expand an inline roll element to display it's contained dice result as a tooltip
+     * Expand an inline roll element to display its contained dice result as a tooltip.
      * @param a - The inline-roll button
      */
     static expandInlineResult(a: HTMLAnchorElement): Promise<void>;
 
     /**
-     * Collapse an expanded inline roll to conceal it's tooltip
+     * Collapse an expanded inline roll to conceal its tooltip.
      * @param a - The inline-roll button
      */
     static collapseInlineResult(a: HTMLAnchorElement): void;
@@ -499,10 +507,13 @@ interface ToAnchorOptions {
   /** Attributes to set on the link. (default: `{}`) */
   attrs: Record<string, string>;
 
-  /** Custom data- attributes to set on the link. (default: `{}`) */
+  /** Custom data attributes to set on the link. (default: `{}`) */
   dataset: Record<string, string | undefined>;
 
-  /** Classes to add to the link. (default: `[]`) */
+  /**
+   * Additional Classes to add to the link. (default: `[]`)
+   * The classes `inline-roll` and `inline-result` are added by default.
+   */
   classes: string[];
 
   /** A font-awesome icon class to use as the icon instead of a d20. */
