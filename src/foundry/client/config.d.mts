@@ -1848,7 +1848,7 @@ declare global {
        */
       type Enricher = (
         match: RegExpMatchArray,
-        options?: globalThis.TextEditor.EnrichOptions,
+        options?: globalThis.TextEditor.EnrichmentOptions,
       ) => Promise<HTMLElement | null>;
 
       interface EnricherConfig {
