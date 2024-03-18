@@ -55,33 +55,48 @@ declare global {
     /**
      * Push a new notification into the queue
      * @param message   - The content of the notification message
-     * @param type      - The type of notification, currently "info", "warning", and "error" are supported
+     * @param type      - The type of notification, "info", "warning", and "error" are supported
      *                    (default: `"info"`)
      * @param options   - Additional options which affect the notification
      *                    (default: `{}`)
+     * @returns The ID of the notification
      */
-    notify(message: string, type?: "info" | "warning" | "error", options?: Notifications.NotifyOptions): void;
+    notify(message: string, type?: "info" | "warning" | "error", options?: Notifications.NotifyOptions): number;
 
     /**
      * Display a notification with the "info" type
      * @param message - The content of the notification message
      * @param options - Notification options passed to the notify function
+     * @returns The ID of the notification
      */
-    info(message: string, options?: Notifications.NotifyOptions): void;
+    info(message: string, options?: Notifications.NotifyOptions): number;
 
     /**
      * Display a notification with the "warning" type
      * @param message - The content of the notification message
      * @param options - Notification options passed to the notify function
+     * @returns The ID of the notification
      */
-    warn(message: string, options?: Notifications.NotifyOptions): void;
+    warn(message: string, options?: Notifications.NotifyOptions): number;
 
     /**
      * Display a notification with the "error" type
      * @param message - The content of the notification message
      * @param options - Notification options passed to the notify function
+     * @returns The ID of the notification
      */
-    error(message: string, options?: Notifications.NotifyOptions): void;
+    error(message: string, options?: Notifications.NotifyOptions): number;
+
+    /**
+     * Remove the notification linked to the ID.
+     * @param id - The ID of the notification
+     */
+    remove(id: number): void;
+
+    /**
+     * Clear all notifications.
+     */
+    clear(): void;
 
     /**
      * Retrieve a pending notification from the queue and display it
@@ -92,7 +107,7 @@ declare global {
   namespace Notifications {
     interface NotifyOptions {
       /**
-       * Whether the notification should be permanently displayed unless otherwise dismissed
+       * Should the notification be permanently displayed until dismissed
        * @defaultValue `false`
        */
       permanent?: boolean;
