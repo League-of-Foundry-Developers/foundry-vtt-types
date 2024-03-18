@@ -189,9 +189,9 @@ declare global {
      * Play a one-off sound effect which is not part of a Playlist
      *
      * @param data - An object configuring the audio data to play
-     * @param push - Push the audio sound effect to other connected clients?
-     *               (default: `false`)
-     *
+     * @param socketOptions - Options which only apply when emitting playback over websocket.
+     *                        As a boolean, emits (true) or does not emit (false) playback to all other clients
+     *                        As an object, can configure which recipients should receive the event.
      * @returns A Sound instance which controls audio playback.
      *
      * @example Play the sound of a locked door for all players
@@ -199,7 +199,15 @@ declare global {
      * AudioHelper.play({src: "sounds/lock.wav", volume: 0.8, loop: false}, true);
      * ```
      */
-    static play(data: AudioHelper.PlayData, push?: boolean): Promise<Sound>;
+    static play(
+      data: AudioHelper.PlayData,
+      socketOptions?:
+        | boolean
+        | {
+            /** An array of user IDs to push audio playback to. All users by default. */
+            recipients: string[];
+          },
+    ): Promise<Sound>;
 
     /**
      * Begin loading the sound for a provided source URL adding its
