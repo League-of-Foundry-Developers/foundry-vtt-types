@@ -116,9 +116,10 @@ declare global {
 
     /**
      * Create an Audio source node using a buffered array.
-     * @internal
+     * @param src - The source URL from which to create the buffer
+     * @returns The created and decoded buffer
      */
-    protected _createAudioBuffer(): Promise<AudioBuffer>;
+    createAudioBuffer(src: string): Promise<AudioBuffer>;
 
     /**
      * Create a AudioBufferSourceNode using a provided AudioBuffer
@@ -141,9 +142,11 @@ declare global {
     /**
      * Begin playback for the source node.
      * @param offset  - The desired start time
+     *                  (default: `0`)
      * @param onended - A callback function for when playback concludes naturally
+     *                  (default: `undefined`)
      */
-    play(offset: number, onended: () => void): void;
+    play(offset?: number, onended?: () => void): void;
 
     /**
      * Terminate playback for the source node.
