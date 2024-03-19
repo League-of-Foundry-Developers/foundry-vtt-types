@@ -243,7 +243,7 @@ declare global {
 
     override update(
       data?: DeepPartial<PrototypeTokenDataConstructorData> | undefined,
-      context?: (DocumentModificationContext & foundry.utils.MergeObjectOptions) | undefined,
+      context?: (DocumentModificationContext & MergeObjectOptions) | undefined,
     ): Promise<this | undefined>;
   }
 }

@@ -284,7 +284,7 @@ declare abstract class Document<
         | (ConstructorDataType<InstanceType<T>["data"]> & Record<string, unknown>)
       >
     >,
-    context?: DocumentModificationContext & foundry.utils.MergeObjectOptions,
+    context?: DocumentModificationContext & MergeObjectOptions,
   ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
 
   /**
@@ -396,7 +396,7 @@ declare abstract class Document<
     data?: DeepPartial<
       ConstructorDataType<ConcreteDocumentData> | (ConstructorDataType<ConcreteDocumentData> & Record<string, unknown>)
     >,
-    context?: DocumentModificationContext & foundry.utils.MergeObjectOptions,
+    context?: DocumentModificationContext & MergeObjectOptions,
   ): Promise<this | undefined>;
 
   /**
