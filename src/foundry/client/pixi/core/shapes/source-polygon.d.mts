@@ -95,10 +95,7 @@ declare global {
      *                 (default: `{}`)
      * @returns The computed polygon instance
      */
-    static create(
-      origin: Point,
-      config?: Parameters<PointSourcePolygon["initialize"]>[1] | undefined,
-    ): ReturnType<typeof PointSourcePolygon.applyThresholdAttenuation>;
+    static create<T extends PointSourcePolygon>(origin: Point, config?: Parameters<T["initialize"]>[1] | undefined): T;
 
     /**
      * Create a clone of this polygon.
