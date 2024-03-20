@@ -14,8 +14,9 @@ declare global {
 
     /**
      * An identifier for a group this entry belongs to.
+     * @defaultValue `_none`
      */
-    group: string;
+    group?: string;
 
     /**
      * The function to call when the menu item is clicked. Receives the HTML element of the SidebarTab entry that this context menu is for.
