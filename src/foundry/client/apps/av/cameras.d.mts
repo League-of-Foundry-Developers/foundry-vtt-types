@@ -8,6 +8,9 @@ declare global {
   class CameraViews<Options extends ApplicationOptions = ApplicationOptions> extends Application<Options> {
     constructor(options: Options);
 
+    /** @defaultValue `undefined` */
+    maxZ?: number;
+
     /**
      * @defaultValue
      * ```typescript
@@ -57,18 +60,21 @@ declare global {
      * Extend the render logic to first check whether a render is necessary based on the context
      * If a specific context was provided, make sure an update to the navigation is necessary before rendering
      */
-    render(force?: boolean, context?: Application.RenderOptions<Options>): this | void;
+    render(force?: boolean, context?: Application.RenderOptions<Options>): this;
 
+    /**
+     * @param force   - Render and display the application even if it is not currently displayed.
+     *                  (default: `false`)
+     * @param options - Additional options which update the current values of the @see Application#options object
+     * @internal
+     */
     protected override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
     override setPosition(
       position?: Partial<Omit<Application.Position, "zIndex">> | undefined,
     ): void | (Application.Position & { height: number });
 
-    override getData(options?: Partial<Options>): MaybePromise<object>;
-
-    /** @defaultValue `undefined` */
-    maxZ?: number;
+    override getData(options?: Partial<Options>): MaybePromise<CameraViews.CameraViewsData>;
 
     /**
      * Prepare rendering data for a single user
@@ -161,6 +167,20 @@ declare global {
       charname: string;
       volume: number;
       cameraViewClass: string;
+    }
+
+    interface CameraViewsData {
+      self: Game["user"];
+      muteAll: boolean;
+      borderColors: boolean;
+      dockClass: string;
+      hidden: boolean;
+      users: CameraViews.User[];
+      nameplates: {
+        cssClass: string;
+        playerName: boolean;
+        charname: boolean;
+      };
     }
   }
 }
