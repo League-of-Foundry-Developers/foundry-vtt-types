@@ -1,3 +1,5 @@
+import type { ConstructorOf } from "../../../../../types/utils.d.mts";
+
 export {};
 
 declare global {
@@ -95,7 +97,11 @@ declare global {
      *                 (default: `{}`)
      * @returns The computed polygon instance
      */
-    static create<T extends PointSourcePolygon>(origin: Point, config?: Parameters<T["initialize"]>[1] | undefined): T;
+    static create<T extends ConstructorOf<PointSourcePolygon>>(
+      this: T,
+      origin: Point,
+      config?: Parameters<InstanceType<T>["initialize"]>[1] | undefined,
+    ): InstanceType<T>;
 
     /**
      * Create a clone of this polygon.
