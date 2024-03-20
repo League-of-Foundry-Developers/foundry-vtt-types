@@ -74,17 +74,25 @@ declare global {
   }
 
   /**
-   * Deprecated global namespace dump; done programatically by fvtt
-   */
-
-  /**
    * Constant definitions used throughout the Foundry Virtual Tabletop framework.
    */
   const CONST: typeof _CONST;
 
+  // Color is currently handled in src/foundry/client/head.d.mts
+
   type Collection<T> = _utils.Collection<T>;
   var Collection: typeof _utils.Collection; // eslint-disable-line no-var
 
+  // Sorta deprecated global namespace dump; done programatically by fvtt
+  // will begin proper deprecation process in v12
   type Semaphore = _utils.Semaphore;
   var Semaphore: typeof _utils.Semaphore; // eslint-disable-line no-var
+
+  type IterableWeakMap = _utils.IterableWeakMap;
+  var IterableWeakMap: typeof _utils.IterableWeakMap; // eslint-disable-line no-var
+
+  type IterableWeakSet = _utils.IterableWeakSet;
+  var IterableWeakSet: typeof _utils.IterableWeakSet; // eslint-disable-line no-var
+
+  // TODO: All of the functions from utils/geometry, utils/helpers, utils/http, and utils/logging
 }
