@@ -1,4 +1,4 @@
-import type { MaybePromise, StoredDocument } from "../../../../types/utils.d.mts";
+import type { GetDataReturnType, MaybePromise, StoredDocument } from "../../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -74,7 +74,7 @@ declare global {
       position?: Partial<Omit<Application.Position, "zIndex">> | undefined,
     ): void | (Application.Position & { height: number });
 
-    override getData(options?: Partial<Options>): MaybePromise<CameraViews.CameraViewsData>;
+    override getData(options?: Partial<Options>): MaybePromise<GetDataReturnType<CameraViews.CameraViewsData>>;
 
     /**
      * Prepare rendering data for a single user
