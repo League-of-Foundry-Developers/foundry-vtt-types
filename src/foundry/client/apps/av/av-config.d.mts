@@ -32,7 +32,7 @@ declare global {
      */
     static override get defaultOptions(): FormApplicationOptions;
 
-    override getData(options: Partial<Options>): MaybePromise<AVConfigData>;
+    override getData(options: Partial<Options>): MaybePromise<AVConfig.AVConfigData>;
 
     override activateListeners(html: JQuery): void;
 
@@ -64,26 +64,28 @@ declare global {
 
     protected override _updateObject(event: Event, formData?: object): Promise<void>;
   }
-}
 
-interface AVConfigData {
-  user: User;
-  modes: Record<AVSettings.AV_MODES, string>;
-  voiceModes: Record<AVSettings.VOICE_MODES, string>;
-  serverTypes: { FVTT: "WEBRTC.FVTTSignalingServer"; custom: "WEBRTC.CustomSignalingServer" };
-  turnTypes: { server: "WEBRTC.TURNServerProvisioned"; custom: "WEBRTC.CustomTURNServer" };
-  settings: AVSettings;
-  canSelectMode: boolean;
-  noSSL: boolean;
-  videoSources: Record<string, string>;
-  audioSources: Record<string, string>;
-  audioSinks: false | Record<string, string>;
-  videoSrcUnavailable: boolean;
-  audioSrcUnavailable: boolean;
-  audioSinkUnavailable: boolean;
-  audioDisabled: boolean;
-  videoDisabled: boolean;
-  nameplates: Record<AVSettings.NAMEPLATE_MODES, string>;
-  nameplateSetting: AVSettings.NAMEPLATE_MODES;
-  dockPositions: Record<AVSettings.DOCK_POSITIONS, string>;
+  namespace AVConfig {
+    interface AVConfigData {
+      user: User;
+      modes: Record<AVSettings.AV_MODES, string>;
+      voiceModes: Record<AVSettings.VOICE_MODES, string>;
+      serverTypes: { FVTT: "WEBRTC.FVTTSignalingServer"; custom: "WEBRTC.CustomSignalingServer" };
+      turnTypes: { server: "WEBRTC.TURNServerProvisioned"; custom: "WEBRTC.CustomTURNServer" };
+      settings: AVSettings;
+      canSelectMode: boolean;
+      noSSL: boolean;
+      videoSources: Record<string, string>;
+      audioSources: Record<string, string>;
+      audioSinks: false | Record<string, string>;
+      videoSrcUnavailable: boolean;
+      audioSrcUnavailable: boolean;
+      audioSinkUnavailable: boolean;
+      audioDisabled: boolean;
+      videoDisabled: boolean;
+      nameplates: Record<AVSettings.NAMEPLATE_MODES, string>;
+      nameplateSetting: AVSettings.NAMEPLATE_MODES;
+      dockPositions: Record<AVSettings.DOCK_POSITIONS, string>;
+    }
+  }
 }
