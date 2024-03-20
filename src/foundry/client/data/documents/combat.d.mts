@@ -74,7 +74,7 @@ declare global {
      * @param options - Additional context to customize the update workflow
      */
     activate(
-      options?: DocumentModificationContext & MergeObjectOptions,
+      options?: DocumentModificationContext & foundry.utils.MergeObjectOptions,
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof Combat>>[]>;
 
     /** Display a dialog querying the GM whether they wish to end the combat encounter and empty the tracker */

@@ -74,6 +74,10 @@ declare global {
   }
 
   /**
+   * Deprecated global namespace dump; done programatically by fvtt
+   */
+
+  /**
    * Constant definitions used throughout the Foundry Virtual Tabletop framework.
    */
   const CONST: typeof _CONST;
