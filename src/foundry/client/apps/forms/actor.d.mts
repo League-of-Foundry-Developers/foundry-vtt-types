@@ -1,5 +1,5 @@
 import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
-import type { MaybePromise } from "../../../../types/utils.d.mts";
+import type { GetDataReturnType, MaybePromise } from "../../../../types/utils.d.mts";
 import type { DropData as ClientDocumentMixinDropData } from "../../data/abstract/client-document.d.mts";
 
 declare global {
@@ -34,8 +34,6 @@ declare global {
      */
     static get defaultOptions(): ActorSheet.Options;
 
-    override get id(): string;
-
     override get title(): string;
 
     /**
@@ -50,23 +48,16 @@ declare global {
 
     override close(options?: FormApplication.CloseOptions): Promise<void>;
 
-    override getData(options?: Partial<Options>): MaybePromise<object>;
+    override getData(options?: Partial<Options>): MaybePromise<GetDataReturnType<ActorSheet.ActorSheetData>>;
 
     protected override _getHeaderButtons(): Application.HeaderButton[];
 
     protected override _getSubmitData(updateData?: object | null): Partial<Record<string, unknown>>;
 
-    override activateListeners(html: JQuery): void;
-
     /**
      * Handle requests to configure the Token for the Actor
      */
     protected _onConfigureToken(event: JQuery.ClickEvent): void;
-
-    /**
-     * Handle changing the actor profile image by opening a FilePicker
-     */
-    protected _onEditImage(event: JQuery.ClickEvent): ReturnType<FilePicker["browse"]>;
 
     protected override _canDragStart(selector: string): boolean;
 
@@ -177,6 +168,20 @@ declare global {
 
     interface Options extends DocumentSheetOptions<Actor> {
       token?: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseToken>> | null;
+    }
+
+    interface ActorSheetData {
+      cssClass: string;
+      editable: boolean;
+      data: ReturnType<ActorSheet["document"]["toObject"]>;
+      limited: boolean;
+      options: ActorSheet["options"];
+      owner: boolean;
+      title: ActorSheet["title"];
+      document: ActorSheet["document"];
+      actor: ActorSheet["actor"];
+      items: this["data"]["items"];
+      effects: this["data"]["effects"];
     }
   }
 }
