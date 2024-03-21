@@ -1,5 +1,5 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
-import type { MaybePromise } from "../../../../types/utils.d.mts";
+import type { GetDataReturnType, MaybePromise } from "../../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -40,7 +40,7 @@ declare global {
      */
     static override get defaultOptions(): CardsConfig.Options;
 
-    override getData(options?: Partial<Options>): MaybePromise<object>;
+    override getData(options?: Partial<Options>): MaybePromise<GetDataReturnType<CardsConfig.CardsConfigData>>;
 
     override activateListeners(html: JQuery): void;
 
@@ -116,6 +116,20 @@ declare global {
   namespace CardsConfig {
     interface Options extends DocumentSheetOptions<Cards> {
       sort: string;
+    }
+
+    interface CardsConfigData {
+      cssClass: string;
+      editable: boolean;
+      data: ReturnType<ActorSheet["document"]["toObject"]>;
+      limited: boolean;
+      options: ActorSheet["options"];
+      owner: boolean;
+      title: ActorSheet["title"];
+      cards: InstanceType<ConfiguredDocumentClassForName<"Card">>[];
+      //TODO: Find if we can better type this
+      types: Record<string, string>;
+      inCompendium: boolean;
     }
   }
 }
