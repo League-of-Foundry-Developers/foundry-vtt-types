@@ -29,7 +29,7 @@ declare global {
      * Duplicate the application's starting position to track differences
      * @defaultValue `null`
      */
-    position: Duplicated<Application.Position> | null;
+    position: foundry.utils.Duplicated<Application.Position> | null;
 
     /**
      * Remember event handlers associated with this Draggable class so they may be later unregistered

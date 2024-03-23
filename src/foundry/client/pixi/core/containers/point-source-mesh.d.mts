@@ -6,6 +6,13 @@ declare global {
    */
   class PointSourceMesh extends PIXI.Mesh {
     /**
+     * @remarks This override is not in the actual Foundry code, this is reflecting actual usage.
+     * PIXI.Mesh asks for a PIXI.MeshMaterial for its second argument, a subclass of PIXI.Shader.
+     * But foundry doesn't use those additional properties, so in actual practice it just needs PIXI.Shader.
+     */
+    constructor(geometry: PIXI.Geometry, shader: PIXI.Shader, state?: PIXI.State, drawMode?: PIXI.DRAW_MODES);
+
+    /**
      * To store the previous blend mode of the last renderer PointSourceMesh.
      */
     protected static _priorBlendMode: PIXI.BLEND_MODES;

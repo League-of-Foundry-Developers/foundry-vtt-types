@@ -5,7 +5,7 @@ import type { Container, DisplayObject } from "pixi.js";
 
 class SomeLightLayer extends PlaceablesLayer<"AmbientLight"> {
   static get layerOptions() {
-    return mergeObject(super.layerOptions, {
+    return foundry.utils.mergeObject(super.layerOptions, {
       name: "myLighting",
     });
   }
