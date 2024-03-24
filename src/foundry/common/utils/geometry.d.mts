@@ -91,7 +91,7 @@ export declare function lineSegmentIntersection(
   epsilon?: number,
 ): LineIntersection | null;
 
-interface LineCircleIntersection {
+export interface LineCircleIntersection {
   /** Is point A inside the circle? */
   aInside: boolean;
 
@@ -108,7 +108,7 @@ interface LineCircleIntersection {
   tangent: boolean;
 
   /** Intersection points: zero, one, or two */
-  intersections: [number] | [number, number] | [number, number, number];
+  intersections: [] | [{ x: number; y: number }] | [{ x: number; y: number }, { x: number; y: number }];
 }
 
 /**
