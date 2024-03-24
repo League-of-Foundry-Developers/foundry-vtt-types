@@ -74,7 +74,7 @@ declare class Color extends Number {
 
   /**
    * Mix this Color with some other Color using a provided interpolation weight.
-   * @param other - Some other Color to mix with
+   * @param other  - Some other Color to mix with
    * @param weight - The mixing weight placed on this color where weight is placed on the other color
    * @returns The resulting mixed Color
    */
@@ -119,6 +119,100 @@ declare class Color extends Number {
    * Iterating over a Color is equivalent to iterating over its [r,g,b] color channels.
    */
   [Symbol.iterator](): Generator<number>;
+
+  /**
+   * Set an rgb array with the rgb values contained in this Color class.
+   * @param vec3 - Receive the result. Must be an array with at least a length of 3.
+   */
+  applyRGB(vec: number[]): void;
+
+  /**
+   * Apply a linear interpolation between two colors, according to the weight.
+   * @param color1 - The first color to mix.
+   * @param color2 - The second color to mix.
+   * @param weight - Weight of the linear interpolation.
+   * @returns The resulting mixed color
+   */
+  static mix(color1: number, color2: number, weight: number): number;
+
+  /**
+   * Multiply a color by a scalar
+   * @param color  - The color to multiply.
+   * @param scalar - A static scalar to multiply with.
+   * @returns The resulting color as a number.
+   */
+  static multiplyScalar(color: number, scalar: number): number;
+
+  /**
+   * Maximize two colors.
+   * @param color1 - The first color.
+   * @param color2 - The second color.
+   * @returns The resulting color as a number.
+   */
+  static maximize(color1: number, color2: number): number;
+
+  /**
+   * Maximize a color by a static scalar.
+   * @param color  - The color to maximize.
+   * @param scalar - Scalar to maximize with (normalized).
+   * @returns The resulting color as a number.
+   */
+  static maximizeScalar(color: number, scalar: number): number;
+
+  /**
+   * Add two colors.
+   * @param color1 - The first color.
+   * @param color2 - The second color.
+   * @returns The resulting color as a number.
+   */
+  static add(color1: number, color2: number): number;
+
+  /**
+   * Add a static scalar to a color.
+   * @param color  - The color.
+   * @param scalar - Scalar to add with (normalized).
+   * @returns The resulting color as a number.
+   */
+  static addScalar(color: number, scalar: number): number;
+
+  /**
+   * Subtract two colors.
+   * @param color1 - The first color.
+   * @param color2 - The second color.
+   * @returns The resulting color as a number.
+   */
+  static subtract(color1: number, color2: number): number;
+
+  /**
+   * Subtract a color by a static scalar.
+   * @param color  - The color.
+   * @param scalar - Scalar to subtract with (normalized).
+   * @returns The resulting color as a number.
+   */
+  static subtractScalar(color: number, scalar: number): number;
+
+  /**
+   * Minimize two colors.
+   * @param color1 - The first color.
+   * @param color2 - The second color.
+   * @returns The resulting color as a number.
+   */
+  static minimize(color1: number, color2: number): number;
+
+  /**
+   * Minimize a color by a static scalar.
+   * @param color  - The color.
+   * @param scalar - Scalar to minimize with (normalized).
+   * @returns The resulting color as a number.
+   */
+  static minimizeScalar(color: number, scalar: number): number;
+
+  /**
+   * Convert a color to RGB and assign values to a passed array.
+   * @param {number} color   The color to convert to RGB values.
+   * @param {number[]} vec3  Receive the result. Must be an array with at least a length of 3.
+   */
+  static applyRGB(color: number, vec3: number[]): void;
 
   /**
    * Create a Color instance from an RGB array.
