@@ -1,5 +1,5 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
-import type { MaybePromise } from "../../../../types/utils.d.mts";
+import type { GetDataReturnType, MaybePromise } from "../../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -25,7 +25,7 @@ declare global {
      */
     static override get defaultOptions(): DocumentSheetOptions<Card>;
 
-    override getData(options?: Partial<Options>): MaybePromise<object>;
+    override getData(options?: Partial<Options>): MaybePromise<GetDataReturnType<CardConfig.CardConfigData>>;
 
     override activateListeners(html: JQuery): void;
 
@@ -35,5 +35,13 @@ declare global {
      * @returns A Promise which resolves once the handler has completed
      */
     protected _onFaceControl(event: JQuery.ClickEvent): Promise<unknown>;
+  }
+
+  namespace CardConfig {
+    interface CardConfigData<Options extends DocumentSheetOptions<Card> = DocumentSheetOptions<Card>>
+      extends DocumentSheet.DocumentSheetData<Options, InstanceType<ConfiguredDocumentClassForName<"Card">>> {
+      //TODO: Find if we can better type this
+      types: Record<string, string>;
+    }
   }
 }

@@ -118,14 +118,8 @@ declare global {
       sort: string;
     }
 
-    interface CardsConfigData {
-      cssClass: string;
-      editable: boolean;
-      data: ReturnType<ActorSheet["document"]["toObject"]>;
-      limited: boolean;
-      options: ActorSheet["options"];
-      owner: boolean;
-      title: ActorSheet["title"];
+    interface CardsConfigData<Options extends CardsConfig.Options = CardsConfig.Options>
+      extends DocumentSheet.DocumentSheetData<Options, InstanceType<ConfiguredDocumentClassForName<"Cards">>> {
       cards: InstanceType<ConfiguredDocumentClassForName<"Card">>[];
       //TODO: Find if we can better type this
       types: Record<string, string>;

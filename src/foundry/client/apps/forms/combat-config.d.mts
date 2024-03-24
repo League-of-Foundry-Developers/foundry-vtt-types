@@ -38,7 +38,7 @@ declare global {
   }
 
   namespace CombatTrackerConfig {
-    interface CombatTrackerConfigData {
+    interface CombatTrackerConfigData extends FormApplication.FormApplicationData {
       settings: ClientSettings.Values["core.combatTrackerConfig"];
       attributeChoices: ReturnType<(typeof TokenDocument)["getTrackedAttributeChoices"]>;
       combatTheme: SettingConfig<string>;

@@ -170,15 +170,8 @@ declare global {
       token?: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseToken>> | null;
     }
 
-    interface ActorSheetData {
-      cssClass: string;
-      editable: boolean;
-      data: ReturnType<ActorSheet["document"]["toObject"]>;
-      limited: boolean;
-      options: ActorSheet["options"];
-      owner: boolean;
-      title: ActorSheet["title"];
-      document: ActorSheet["document"];
+    interface ActorSheetData<Options extends ActorSheet.Options = ActorSheet.Options>
+      extends DocumentSheet.DocumentSheetData<Options, InstanceType<ConfiguredDocumentClass<typeof Actor>>> {
       actor: ActorSheet["actor"];
       items: this["data"]["items"];
       effects: this["data"]["effects"];

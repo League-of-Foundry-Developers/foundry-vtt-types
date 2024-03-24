@@ -1,5 +1,5 @@
 import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
-import type { MaybePromise } from "../../../../types/utils.d.mts";
+import type { GetDataReturnType, MaybePromise, ValueOf } from "../../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -24,9 +24,9 @@ declare global {
      */
     static override get defaultOptions(): DocumentSheetOptions<ActiveEffect>;
 
-    override get title(): string;
-
-    override getData(options?: Partial<Options>): MaybePromise<object>;
+    override getData(
+      options?: Partial<Options>,
+    ): MaybePromise<GetDataReturnType<ActiveEffectConfig.ActiveEffectConfigData>>;
 
     override activateListeners(html: JQuery): void;
 
@@ -35,7 +35,7 @@ declare global {
      * Delegate responsibility out to action-specific handlers depending on the button action.
      * @param event - The originating click event
      */
-    protected _onEffectControl(event: MouseEvent): Promise<this> | void;
+    protected _onEffectControl(event: MouseEvent): Promise<this>;
 
     /**
      * Handle adding a new change to the changes array.
@@ -47,5 +47,26 @@ declare global {
      */
     override _getSubmitData(updateData?: FormApplication.OnSubmitOptions["updateData"]): Record<string, unknown>;
     // TODO: Can we type this better?
+  }
+
+  namespace ActiveEffectConfig {
+    //@ts-expect-error - Fake polymorphism override
+    interface ActiveEffectConfigData<
+      Options extends DocumentSheetOptions<ActiveEffect> = DocumentSheetOptions<ActiveEffect>,
+    > extends DocumentSheet.DocumentSheetData<Options, InstanceType<ConfiguredDocumentClass<typeof ActiveEffect>>> {
+      labels: {
+        transfer: {
+          name: string;
+          hint: string;
+        };
+      };
+      effect: ActiveEffectConfig["object"]; // Backwards compatibility
+      data: ActiveEffectConfig["object"];
+      isActorEffect: boolean;
+      isItemEffect: boolean;
+      submitText: string;
+      modes: Record<ValueOf<typeof CONST.ACTIVE_EFFECT_MODES>, string>;
+      descriptionHTML: string;
+    }
   }
 }
