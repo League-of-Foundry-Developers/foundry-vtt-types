@@ -88,10 +88,10 @@ declare global {
   type Semaphore = _utils.Semaphore;
   var Semaphore: typeof _utils.Semaphore; // eslint-disable-line no-var
 
-  type IterableWeakMap = _utils.IterableWeakMap;
+  type IterableWeakMap<K extends WeakKey, V extends object> = _utils.IterableWeakMap<K, V>;
   var IterableWeakMap: typeof _utils.IterableWeakMap; // eslint-disable-line no-var
 
-  type IterableWeakSet = _utils.IterableWeakSet;
+  type IterableWeakSet<T extends WeakKey> = _utils.IterableWeakSet<T>;
   var IterableWeakSet: typeof _utils.IterableWeakSet; // eslint-disable-line no-var
 
   // TODO: All of the functions from utils/geometry, utils/helpers, utils/http, and utils/logging
