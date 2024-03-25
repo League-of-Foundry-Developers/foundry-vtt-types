@@ -39,7 +39,7 @@ export interface LineIntersection {
   t0: number;
 
   /** The vector distance from C to D on segment CD */
-  t1?: number;
+  t1?: number | undefined;
 }
 
 interface LineIntersectionOptions {
@@ -67,7 +67,7 @@ export declare function lineLineIntersection(
   b: Point,
   c: Point,
   d: Point,
-  options: LineIntersectionOptions,
+  options?: LineIntersectionOptions,
 ): LineIntersection | null;
 
 /**
@@ -140,7 +140,7 @@ export declare function lineCircleIntersection(
  *
  * @returns The closest point to C on segment AB
  */
-export declare function closestPointToSegment(c: Point, a: Point, b: Point): Point;
+export declare function closestPointToSegment(c: Point, a: Point, b: Point): { x: number; y: number };
 
 /**
  * Determine the points of intersection between a line segment (p0,p1) and a circle.
