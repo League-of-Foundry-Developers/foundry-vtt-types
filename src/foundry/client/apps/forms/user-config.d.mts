@@ -58,7 +58,7 @@ declare global {
       width: DocumentSheetOptions["width"];
 
       /**
-       * @defaultValue `auto`
+       * @defaultValue `"auto"`
        */
       height: DocumentSheetOptions["height"];
     }

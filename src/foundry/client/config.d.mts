@@ -1476,7 +1476,7 @@ declare global {
       /** @defaultValue `AmbientLightDocument` */
       objectClass: ConfiguredObjectClassOrDefault<typeof AmbientLight>;
 
-      /** @defaultValue `AmbientLightDocument` */
+      /** @defaultValue `LightingLayer` */
       layerClass: typeof LightingLayer;
     };
 
@@ -1632,7 +1632,7 @@ declare global {
      */
     WebRTC: {
       /** @defaultValue `SimplePeerAVClient` */
-      clientClass: PropertyTypeOrFallback<WebRTCConfig, "clientClass", typeof AVClient>;
+      clientClass: PropertyTypeOrFallback<WebRTCConfig, "clientClass", typeof SimplePeerAVClient>;
 
       /** @defaultValue `50` */
       detectPeerVolumeInterval: number;

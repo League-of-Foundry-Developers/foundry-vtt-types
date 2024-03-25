@@ -57,7 +57,7 @@ declare global {
 
     /**
      * The ruler name - used to differentiate between players
-     * @defaultValue `Ruler.${user.id}`
+     * @defaultValue `"Ruler." + user.id`
      */
     name: string;
 
