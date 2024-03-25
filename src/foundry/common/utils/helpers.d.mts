@@ -1,4 +1,7 @@
-import type { AnyClass, DeepPartial, InexactPartial } from "../../../types/utils.d.mts";
+import type { DocumentType } from "../../../types/helperTypes.d.mts";
+import type { AnyClass, ConstructorOf, DeepPartial, InexactPartial } from "../../../types/utils.d.mts";
+import Document from "../abstract/document.mjs";
+import type { DocumentId } from "../data/fields.d.mts";
 
 /**
  * Benchmark the performance of a function, calling it a requested number of iterations.
@@ -14,7 +17,7 @@ export function benchmark<F extends (...args: any[]) => unknown>(
 
 /**
  * A debugging function to test latency or timeouts by forcibly locking the thread for an amount of time.
- * @param ms - A number of milliseconds to lock
+ * @param ms    - A number of milliseconds to lock
  * @param debug - (default: `false`)
  * @returns
  */
@@ -115,6 +118,14 @@ export type Duplicated<T> = T extends NonStringifiable ? never : InnerDuplicated
 export function isSubclass<Parent extends AnyClass>(cls: AnyClass, parent: Parent): cls is Parent;
 
 /**
+ * Search up the prototype chain and return the class that defines the given property.
+ * @param cls      - The starting class.
+ * @param property - The property name.
+ * @returns The class that defines the property.
+ */
+export function getDefiningClass(cls: new (...args: any[]) => unknown, property: string): ConstructorOf<any>;
+
+/**
  * Encode a url-like string by replacing any characters which need encoding
  * @param path - A fully-qualified URL or url component (like a relative path)
  * @returns An encoded URL string
@@ -126,11 +137,11 @@ export function encodeURL(path: string): string;
  * inner objects.
  *
  * @param obj - The object to expand
- * @param _d  - Track the recursion depth to prevent overflow
- *              (default: `0`)
  * @returns An expanded object
+ *
+ * @remarks contrary to the official documentation, this can also expand an array of nested `Object`s.
  */
-export function expandObject(obj: object, _d?: number): object;
+export function expandObject(obj: object): any;
 
 /**
  * Filter the contents of some source object using the structure of a template object.
@@ -168,7 +179,7 @@ export interface FilterObjectOptions {
 /**
  * Flatten a possibly multi-dimensional object to a one-dimensional one by converting all nested keys to dot notation
  * @param obj - The object to flatten
- * @param d   - Track the recursion depth to prevent overflow
+ * @param _d  - Track the recursion depth to prevent overflow. (default: `0`)
  * @returns A flattened object
  */
 export function flattenObject(obj: object, _d?: number): object;
@@ -272,7 +283,7 @@ export function isNewerVersion(v1: number | string, v0: number | string): boolea
  * A simple function to test whether an Object is empty
  * @param obj - The object to test
  * @returns Is the object empty?
- * @deprecated since v10 until v12, will be removed in v11 - Use isEmpty instead.
+ * @deprecated since v10, will be removed in v12 - Use isEmpty instead.
  */
 export function isObjectEmpty(obj: object): boolean;
 
@@ -317,13 +328,13 @@ export type MergeObject<T, U, M extends MergeObjectOptions> = UpdateInsert<
  *
  * @example Control whether merges are performed recursively
  * ```typescript
- * mergeObject({k1: {i1: "v1"}}, {k1: {i2: "v2"}}, {recursive: false}); // {k1: {i1: "v2"}}
+ * mergeObject({k1: {i1: "v1"}}, {k1: {i2: "v2"}}, {recursive: false}); // {k1: {i2: "v2"}}
  * mergeObject({k1: {i1: "v1"}}, {k1: {i2: "v2"}}, {recursive: true}); // {k1: {i1: "v1", i2: "v2"}}
  * ```
  *
  * @example Deleting an existing object key
  * ```typescript
- * mergeObject({k1: "v1", k2: "v2"}, {"-=k1": null});   // {k2: "v2"}
+ * mergeObject({k1: "v1", k2: "v2"}, {"-=k1": null}, {performDeletions: true});   // {k2: "v2"}
  * ```
  */
 export function mergeObject<
@@ -394,6 +405,33 @@ export interface MergeObjectOptions {
 }
 
 /**
+ * A helper function for merging objects when the target key does not exist in the original
+ * @internal
+ */
+declare function _mergeInsert(
+  original: object,
+  k: string | number | symbol,
+  v: any,
+  options?: Pick<MergeObjectOptions, "insertKeys" | "insertValues" | "performDeletions">,
+  _d?: number,
+): void;
+
+/**
+ * A helper function for merging objects when the target key exists in the original
+ * @internal
+ */
+declare function _mergeUpdate<T extends object, K extends keyof T>(
+  original: T,
+  k: K,
+  v: any,
+  options?: Pick<
+    MergeObjectOptions,
+    "insertKeys" | "insertValues" | "enforceTypes" | "overwrite" | "recursive" | "performDeletions"
+  >,
+  _d?: number,
+): void;
+
+/**
  * Parse an S3 key to learn the bucket and the key prefix used for the request.
  * @param key - A fully qualified key name or prefix path.
  */
@@ -413,6 +451,82 @@ export function randomID(length?: number): string;
  * @returns A string expression for the relative time
  */
 export function timeSince(timeStamp: Date | string): string;
+
+/**
+ * Format a file size to an appropriate order of magnitude.
+ * @param size    - The size in bytes.
+ * @param options - Additional options. (default: `{}`)
+ * @returns
+ */
+export function formatFileSize(size: number, options: FormatFileSizeOptions): string;
+
+interface FormatFileSizeOptions {
+  /**
+   * The number of decimal places to round to.
+   * @defaultValue `2`
+   */
+  decimalPlaces?: number | undefined;
+
+  /**
+   * The base to use. In base 10 a kilobyte is 1000 bytes. In base 2 it is 1024 bytes.
+   * @defaultValue `10`
+   */
+  base?: 2 | 10 | undefined;
+}
+
+interface ResolvedUUID {
+  /**
+   * The original UUID.
+   */
+  uuid: string;
+
+  /**
+   * The parent collection.
+   */
+  collection?: DocumentCollection<any, any> | undefined;
+
+  /**
+   * The parent document.
+   */
+  documentId?: DocumentId | undefined;
+
+  /**
+   * The parent document type.
+   */
+  documentType?: DocumentType | undefined;
+
+  /**
+   * An already-resolved document.
+   */
+  doc?: Document<any, any>;
+
+  /**
+   * Any remaining Embedded Document parts.
+   */
+  embedded: string[];
+}
+
+export function parseUuid(uuid: string, options: ParseUUIDOptions): ResolvedUUID;
+
+interface ParseUUIDOptions {
+  /**
+   * A document to resolve relative UUIDs against.
+   */
+  relative?: Document<any, any> | undefined;
+}
+
+/**
+ * Resolve a UUID relative to another document.
+ * The general-purpose algorithm for resolving relative UUIDs is as follows:
+ * 1. If the number of parts is odd, remove the first part and resolve it against the current document and update the
+ *    current document.
+ * 2. If the number of parts is even, resolve embedded documents against the current document.
+ * @param uuid     - The UUID to resolve.
+ * @param relative - The document to resolve against.
+ * @returns
+ * @internal
+ */
+declare function _resolveRelativeUuid(uuid: string, relative: Document<any, any>): ResolvedUUID;
 
 /**
  * Converts an RGB color value to HSV. Conversion formula adapted from http://en.wikipedia.org/wiki/HSV_color_space.
