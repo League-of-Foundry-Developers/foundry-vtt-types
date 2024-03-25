@@ -1,6 +1,7 @@
+---
 name: checks
 
-on:
+on: # yamllint disable-line rule:truthy
   - push
   - pull_request
 
@@ -29,6 +30,7 @@ jobs:
       - run: npm ci
       - name: compile typescript
         run: npm run typecheck
+
   lint:
     name: lint code base
     runs-on: ubuntu-latest
@@ -49,6 +51,7 @@ jobs:
       - run: npm ci
       - name: run eslint
         run: npm run lint:ci
+
   test:
     name: test code base
     runs-on: ubuntu-latest
