@@ -1,4 +1,4 @@
-declare const scene: Scene;
+const scene = new Scene({ name: "foobar" });
 
 // @ts-expect-error - A BaseWall requires data.
 new foundry.documents.BaseWall();
