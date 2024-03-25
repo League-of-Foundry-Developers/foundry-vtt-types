@@ -7,11 +7,11 @@
     "exactOptionalPropertyTypes": true,
     "lib": ["DOM", "ES2021"],
     "module": "ES2022",
-    "moduleResolution": "Node",
+    "moduleResolution": "Bundler",
     "noEmit": true,
     "strict": true,
     "target": "ES2021",
-    "verbatimModuleSyntax": true,
+    "verbatimModuleSyntax": true
   },
-  "include": ["index.d.mts"],
+  "include": ["index.d.mts"]
 }
