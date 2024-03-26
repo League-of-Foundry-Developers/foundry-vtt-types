@@ -16,7 +16,7 @@ interface IterableWeakMapHeldValue<K extends WeakKey> {
  * @typeParam K - the type of the keys contained in the IterableWeakMap
  * @typeParam V - The type of the values contained in the IterableWeakMap
  */
-declare class IterableWeakMap<K extends WeakKey, V extends object> extends WeakMap<K, V> {
+declare class IterableWeakMap<K extends WeakKey, V> extends WeakMap<K, V> {
   /**
    * A set of weak refs to the map's keys, allowing enumeration.
    */
@@ -64,22 +64,22 @@ declare class IterableWeakMap<K extends WeakKey, V extends object> extends WeakM
    * Enumerate the entries.
    * @returns
    */
-  [Symbol.iterator](): Generator<[K, V], void, any>;
+  [Symbol.iterator](): Generator<[K, V], void, never>;
 
   /**
    * Enumerate the entries.
    */
-  entries(): Generator<[K, V], void, any>;
+  entries(): Generator<[K, V], void, never>;
 
   /**
    * Enumerate the keys.
    */
-  keys(): Generator<K, void, any>;
+  keys(): Generator<K, void, never>;
 
   /**
    * Enumerate the values.
    */
-  values(): Generator<V, void, any>;
+  values(): Generator<V, void, never>;
 }
 
 export default IterableWeakMap;

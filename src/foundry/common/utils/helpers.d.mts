@@ -123,7 +123,7 @@ export function isSubclass<Parent extends AnyClass>(cls: AnyClass, parent: Paren
  * @param property - The property name.
  * @returns The class that defines the property.
  */
-export function getDefiningClass(cls: new (...args: any[]) => unknown, property: string): ConstructorOf<any>;
+export function getDefiningClass(cls: ConstructorOf<any>, property: string): ConstructorOf<any>;
 
 /**
  * Encode a url-like string by replacing any characters which need encoding
@@ -139,9 +139,8 @@ export function encodeURL(path: string): string;
  * @param obj - The object to expand
  * @returns An expanded object
  *
- * @remarks contrary to the official documentation, this can also expand an array of nested `Object`s.
  */
-export function expandObject(obj: object): any;
+export function expandObject(obj: object): object;
 
 /**
  * Filter the contents of some source object using the structure of a template object.
