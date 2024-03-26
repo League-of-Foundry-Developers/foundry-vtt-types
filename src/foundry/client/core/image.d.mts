@@ -1,3 +1,5 @@
+import type { InexactPartial } from "../../../types/utils.d.mts";
+
 export {};
 
 declare global {
@@ -33,7 +35,7 @@ declare global {
      * @param options - (default: `{}`)
      * @returns A base64 png string of the texture
      */
-    static textureToImage(texture: PIXI.Texture, { format, quality }?: ImageHelper.TextureToImageOptions): string;
+    static textureToImage(texture: PIXI.Texture, options?: ImageHelper.TextureToImageOptions): Promise<string>;
 
     /**
      * Asynchronously convert a DisplayObject container to base64 using Canvas#toBlob and FileReader
@@ -43,6 +45,13 @@ declare global {
      * @returns A processed base64 string
      */
     static pixiToBase64(target: PIXI.DisplayObject, type: string, quality: number): Promise<string>;
+
+    /**
+     * Asynchronously convert a canvas element to base64.
+     * @param type    - (default: `"image/png"]`)
+     * @returns The base64 string of the canvas.
+     */
+    static canvasToBase64(canvas: HTMLCanvasElement, type?: string, quality?: number): Promise<string>;
 
     /**
      * Upload a base64 image string to a persisted data storage location
@@ -61,8 +70,23 @@ declare global {
         storage: string;
         /** The MIME type of the file being uploaded */
         type?: string;
+        /** Display a UI notification when the upload is processed. (default: `true`)  */
+        notify: boolean;
       },
     ): Promise<ReturnType<(typeof FilePicker)["upload"]>>;
+
+    /**
+     * Create a canvas element containing the pixel data.
+     * @param pixels - Buffer used to create the image data.
+     * @param width  - Buffered image width.
+     * @param height - Buffered image height.
+     */
+    static pixelsToCanvas(
+      pixels: Uint8ClampedArray,
+      width: number,
+      height: number,
+      options: InexactPartial<ImageHelper.PixelsToCanvasOptions>,
+    ): HTMLCanvasElement;
   }
 
   namespace ImageHelper {
@@ -144,6 +168,15 @@ declare global {
        * The width of the {@link PIXI.Sprite}, created by {@link ImageHelper.createThumbnail}
        */
       width: number;
+    }
+
+    interface PixelsToCanvasOptions {
+      /** The element to use. */
+      element: HTMLCanvasElement;
+      /** Specified width for the element (default to buffer image width). */
+      ew: number;
+      /** Specified height for the element (default to buffer image height). */
+      eh: number;
     }
   }
 }
