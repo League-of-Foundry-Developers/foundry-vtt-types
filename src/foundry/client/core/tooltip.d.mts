@@ -58,6 +58,12 @@ declare global {
     };
 
     /**
+     * The number of pixels buffer around a locked tooltip zone before they should be dismissed.
+     * @defaultValue `50`
+     */
+    static LOCKED_TOOLTIP_BUFFER_PX: number;
+
+    /**
      * Activate interactivity by listening for hover events on HTML elements which have a data-tooltip defined.
      */
     activateEventListeners(): void;
@@ -81,8 +87,16 @@ declare global {
          * from the data-tooltip-direction attribute of the element or one of its parents.
          */
         direction?: TooltipManager.TOOLTIP_DIRECTIONS;
-        /** An optional CSS class to apply to the activated tooltip. */
+        /**
+         * An optional, space-separated list of CSS classes to apply to the activated
+         * tooltip. If this is not provided, the CSS classes are acquired from the
+         * data-tooltip-class attribute of the element or one of its parents.
+         */
         cssClass?: string;
+        /** An optional boolean to lock the tooltip after creation. Defaults to false. */
+        locked: boolean;
+        /** Explicit HTML content to inject into the tooltip rather than using tooltip text. */
+        content: HTMLElement;
       },
     ): void;
 
@@ -99,23 +113,72 @@ declare global {
     clearPending(): void;
 
     /**
+     * Lock the current tooltip.
+     */
+    lockTooltip(): HTMLElement;
+
+    /**
+     * Handle a request to lock the current tooltip.
+     * @param event - The click event.
+     */
+    protected _onLockTooltip(event: MouseEvent): void;
+
+    /**
+     * Handle dismissing a locked tooltip.
+     * @param event - The click event.
+     */
+    protected _onLockedTooltipDismiss(event: MouseEvent): void;
+
+    /**
+     * Dismiss a given locked tooltip.
+     * @param element - The locked tooltip to dismiss.
+     */
+    dismissLockedTooltip(element: HTMLElement): void;
+
+    /**
+     * Dismiss the set of active locked tooltips.
+     */
+    dismissLockedTooltips(): void;
+
+    /**
+     * Create a locked tooltip at the given position.
+     * @param position - A position object with coordinates for where the tooltip should be placed
+     * @param text     - Explicit tooltip text or HTML to display.
+     * @param options  - Additional options which can override tooltip behavior.
+     */
+    createLockedTooltip(
+      position: {
+        /** Explicit top position for the tooltip */
+        top?: string;
+        /** Explicit right position for the tooltip */
+        right?: string;
+        /** Explicit bottom position for the tooltip */
+        bottom?: string;
+        /** Explicit left position for the tooltip */
+        left?: string;
+      },
+      text: string,
+      options?: {
+        /** An optional, space-separated list of CSS classes to apply to the activated  tooltip. */
+        cssClass: string;
+      },
+    ): HTMLElement;
+
+    /**
      * If an explicit tooltip expansion direction was not specified, figure out a valid direction based on the bounds
      * of the target element and the screen.
-     * @internal
      */
     protected _determineDirection(): ValueOf<Pick<typeof TooltipManager.TOOLTIP_DIRECTIONS, "UP" | "DOWN">>;
 
     /**
      * Set tooltip position relative to an HTML element using an explicitly provided data-tooltip-direction.
      * @param direction - The tooltip expansion direction specified by the element or a parent element.
-     * @internal
      */
     protected _setAnchor(direction: TooltipManager.TOOLTIP_DIRECTIONS): void;
 
     /**
      * Apply inline styling rules to the tooltip for positioning and text alignment.
      * @param position - An object of positioning data, supporting top, right, bottom, left, and textAlign
-     * @internal
      */
     protected _setStyle(position?: {
       top?: null | number;
