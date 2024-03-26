@@ -108,7 +108,7 @@ export interface LineCircleIntersection {
   tangent: boolean;
 
   /** Intersection points: zero, one, or two */
-  intersections: [] | [{ x: number; y: number }] | [{ x: number; y: number }, { x: number; y: number }];
+  intersections: Point[];
 }
 
 /**
@@ -140,7 +140,7 @@ export function lineCircleIntersection(
  *
  * @returns The closest point to C on segment AB
  */
-export function closestPointToSegment(c: Point, a: Point, b: Point): { x: number; y: number };
+export function closestPointToSegment(c: Point, a: Point, b: Point): Point;
 
 /**
  * Determine the points of intersection between a line segment (p0,p1) and a circle.
@@ -154,10 +154,4 @@ export function closestPointToSegment(c: Point, a: Point, b: Point): { x: number
  * @param epsilon - A small tolerance for floating point precision
  *                  (default: `0`)
  */
-export function quadraticIntersection(
-  p0: Point,
-  p1: Point,
-  center: Point,
-  radius: number,
-  epsilon?: number,
-): { x: number; y: number }[];
+export function quadraticIntersection(p0: Point, p1: Point, center: Point, radius: number, epsilon?: number): Point[];
