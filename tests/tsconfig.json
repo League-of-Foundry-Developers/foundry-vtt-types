@@ -1,7 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/tsconfig.json",
   "extends": "../tsconfig.json",
-  "compilerOptions": {
-    "module": "esnext"
-  },
-  "include": ["../index.d.ts", "./foundry", "./types", "./custom"]
+  "include": ["**/*.test-d.ts"]
 }

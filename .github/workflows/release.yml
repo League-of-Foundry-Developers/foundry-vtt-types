@@ -1,11 +1,12 @@
+---
 name: publish
 
-on:
+on: # yamllint disable-line rule:truthy
   release:
     types: [created]
 
 env:
-  node_version: 16
+  node_version: 18
 
 jobs:
   verify:

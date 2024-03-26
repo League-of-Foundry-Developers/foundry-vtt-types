@@ -1,11 +1,12 @@
+---
 name: checks
 
-on:
+on: # yamllint disable-line rule:truthy
   - push
   - pull_request
 
 env:
-  node_version: 16
+  node_version: 18
 
 jobs:
   typecheck:
@@ -26,9 +27,10 @@ jobs:
           restore-keys: |
             ${{ runner.OS }}-node-
             ${{ runner.OS }}-
-      - run: npm ci --cache .npm --prefer-offline
+      - run: npm ci
       - name: compile typescript
         run: npm run typecheck
+
   lint:
     name: lint code base
     runs-on: ubuntu-latest
@@ -46,9 +48,10 @@ jobs:
           restore-keys: |
             ${{ runner.OS }}-node-
             ${{ runner.OS }}-
-      - run: npm ci --cache .npm --prefer-offline
+      - run: npm ci
       - name: run eslint
         run: npm run lint:ci
+
   test:
     name: test code base
     runs-on: ubuntu-latest
@@ -66,6 +69,6 @@ jobs:
           restore-keys: |
             ${{ runner.OS }}-node-
             ${{ runner.OS }}-
-      - run: npm ci --cache .npm --prefer-offline
+      - run: npm ci
       - name: execute tests
         run: npm test

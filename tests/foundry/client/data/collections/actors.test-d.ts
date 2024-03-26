@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import type { StoredDocument } from "../../../../../src/types/utils.d.mts";
 
 const actors = new Actors();
 expectTypeOf(actors.get("", { strict: true })).toEqualTypeOf<StoredDocument<Actor>>();

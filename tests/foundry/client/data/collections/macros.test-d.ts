@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import type { StoredDocument } from "../../../../../src/types/utils.d.mts";
 
 const macros = new Macros();
 expectTypeOf(macros.get("", { strict: true })).toEqualTypeOf<StoredDocument<Macro>>();

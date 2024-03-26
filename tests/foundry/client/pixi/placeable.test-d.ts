@@ -1,8 +1,6 @@
-import type { ConfiguredDocumentClass } from "../../../../src/types/helperTypes";
-
 import { assertType, expectTypeOf } from "vitest";
-import "../../../../index";
-import { Document } from "../../../../src/foundry/common/abstract/module.mjs.js";
+import { Document } from "../../../../src/foundry/common/abstract/module.mts";
+import type { ConfiguredDocumentClass } from "../../../../src/types/helperTypes.d.mts";
 
 type EmbeddedInSceneDocumentSheetOptions = DocumentSheetOptions<
   Document<any, InstanceType<ConfiguredDocumentClass<typeof Scene>>>
@@ -23,13 +21,7 @@ class OnePlaceable extends PlaceableObject<EmbeddedInSceneDocument> {
     return null as unknown as Rectangle;
   }
 
-  draw(): Promise<this> {
-    return Promise.resolve(this);
-  }
-
-  refresh(): this | void {
-    return undefined;
-  }
+  protected async _draw(): Promise<void> {}
 }
 
 const placeable = new OnePlaceable(new EmbeddedInSceneDocument());
@@ -38,16 +30,19 @@ expectTypeOf(placeable.document).toEqualTypeOf<EmbeddedInSceneDocument>();
 expectTypeOf(placeable.sheet).toEqualTypeOf<EmbeddedInSceneDocumentSheet>();
 
 class ConcretePlaceableObject extends PlaceableObject<EmbeddedInSceneDocument> {
-  get bounds(): NormalizedRectangle {
+  get bounds(): PIXI.Rectangle {
     throw new Error("Not implemented");
   }
-  async draw() {
-    return this;
-  }
-  refresh() {
-    return this;
-  }
+  protected async _draw() {}
 }
 expectTypeOf(
   new ConcretePlaceableObject(new EmbeddedInSceneDocument()).mouseInteractionManager,
 ).toEqualTypeOf<MouseInteractionManager<ConcretePlaceableObject> | null>();
+
+expectTypeOf(PlaceableObject.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
+  Array<keyof PlaceableObject.RenderFlags> | undefined
+>();
+
+expectTypeOf(AmbientLight.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
+  Array<keyof AmbientLight.RenderFlags> | undefined
+>();

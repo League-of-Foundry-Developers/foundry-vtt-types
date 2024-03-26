@@ -1,0 +1,13 @@
+import "./apps/index.d.mts";
+import "./audio/index.d.mts";
+import "./av/index.d.mts";
+import "./config.d.mts";
+import "./core/index.d.mts";
+import "./data/index.d.mts";
+import "./dice/index.d.mts";
+import "./game.d.mts";
+import "./head.mts";
+import "./pixi/index.d.mts";
+import "./tail.d.mts";
+import "./tours/index.d.mts";
+import "./ui/index.d.mts";

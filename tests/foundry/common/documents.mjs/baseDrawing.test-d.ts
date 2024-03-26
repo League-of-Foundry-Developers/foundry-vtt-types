@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import type { StoredDocument } from "../../../../src/types/utils.d.mts";
 
 expectTypeOf(foundry.documents.BaseDrawing.create({})).toEqualTypeOf<
   Promise<StoredDocument<DrawingDocument> | undefined>

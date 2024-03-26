@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import type { MaybePromise } from "../../../../../src/types/utils.d.mts";
 
 declare const token: Token;
 

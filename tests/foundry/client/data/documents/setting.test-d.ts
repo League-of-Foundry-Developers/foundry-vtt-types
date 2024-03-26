@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import type { StoredDocument } from "../../../../../src/types/utils.d.mts";
 
 const setting = new Setting({ key: "foo.bar", value: "bar" });
 

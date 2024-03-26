@@ -1,0 +1,7 @@
+import { expectTypeOf } from "vitest";
+
+const myPoint = new PIXI.Point(2, 2);
+
+const myPing = new ChevronPing(myPoint);
+
+expectTypeOf(myPing.animate()).toEqualTypeOf<Promise<boolean>>();

@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import type { StoredDocument } from "../../../../src/types/utils.d.mts";
 
 expectTypeOf(foundry.documents.BaseChatMessage.create({})).toEqualTypeOf<
   Promise<StoredDocument<ChatMessage> | undefined>

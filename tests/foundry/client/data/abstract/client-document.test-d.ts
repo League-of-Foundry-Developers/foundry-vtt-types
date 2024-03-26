@@ -1,6 +1,5 @@
-import type * as data from "../../../../../src/foundry/common/data/data.mjs/index.js";
-
 import { expectTypeOf } from "vitest";
+import type * as data from "../../../../../src/foundry/common/data/data.mjs/index.d.mts";
 
 const doc = new Item();
 
