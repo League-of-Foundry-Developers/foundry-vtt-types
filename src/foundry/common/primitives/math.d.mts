@@ -48,7 +48,8 @@ declare global {
      * @param number - A finite number
      * @returns The rounded number
      *
-     * @deprecated since v10 in favor of `Math.round`
+     * @deprecated since v10, will be removed in v12
+     * @remarks roundFast is deprecated in favor of {@link Math.round}
      */
     roundFast(number: number): number;
 

@@ -31,19 +31,19 @@ declare global {
        * The replacement character to separate terms
        * @defaultValue `"-"`
        */
-      replacement?: string;
+      replacement?: string | undefined;
 
       /**
        * Replace all non-alphanumeric characters, or allow them?
        * @defaultValue `false`
        */
-      strict?: boolean;
+      strict?: boolean | undefined;
 
       /**
        * Lowercase the string.
        * @defaultValue `true`
        */
-      lowercase?: boolean;
+      lowercase?: boolean | undefined;
     }
   }
 }
