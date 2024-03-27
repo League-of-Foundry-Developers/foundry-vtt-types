@@ -43,11 +43,12 @@ declare global {
     roundDecimals(number: number, places: number): number;
 
     /**
-     * Round a floating-point number using the fastest available method.
-     * This should be used instead of Math.round in cases where performance matters.
-     * A key limitation is this method returns zero if the input is NaN or undefined.
+     * To keep compatibility with previous implementation.
+     * roundFast was bugged and the performance advantage was not there.
      * @param number - A finite number
      * @returns The rounded number
+     *
+     * @deprecated since v10 in favor of `Math.round`
      */
     roundFast(number: number): number;
 

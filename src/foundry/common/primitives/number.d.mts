@@ -72,7 +72,7 @@ declare global {
     between(num: number, a: number, b: number, inclusive?: boolean): boolean;
 
     /**
-     * Test whether a value is numeric
+     * Test whether a value is numeric.
      * This is the highest performing algorithm currently available, per https://jsperf.com/isnan-vs-typeof/5
      * @param n - A value to test
      * @returns Is it a number?

@@ -38,6 +38,12 @@ declare global {
        * @defaultValue `false`
        */
       strict?: boolean;
+
+      /**
+       * Lowercase the string.
+       * @defaultValue `true`
+       */
+      lowercase?: boolean;
     }
   }
 }
