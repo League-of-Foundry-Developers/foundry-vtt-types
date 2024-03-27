@@ -24,6 +24,11 @@ declare global {
     static GAMEPAD_POLLER_INTERVAL_MS: number;
 
     /**
+     * Begin listening to gamepad events.
+     */
+    protected _activateListeners(): void;
+
+    /**
      * Handles a Gamepad Connection event, adding its info to the poll list
      * @param event - The originating Event
      * @internal

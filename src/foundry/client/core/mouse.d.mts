@@ -14,6 +14,11 @@ declare global {
     static MOUSE_WHEEL_RATE_LIMIT: number;
 
     /**
+     * Begin listening to mouse events.
+     */
+    protected _activateListeners(): void;
+
+    /**
      * Master mouse-wheel event handler
      * @param event - The mouse wheel event
      * @internal

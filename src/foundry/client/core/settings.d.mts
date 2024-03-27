@@ -35,19 +35,6 @@ declare global {
     storage: Map<string, Storage | WorldSettings>;
 
     /**
-     * The types of settings which should be constructed as a function call rather than as a class constructor.
-     * @internal
-     */
-    protected static PRIMITIVE_TYPES: [
-      typeof String,
-      typeof Number,
-      typeof Boolean,
-      typeof Array,
-      typeof Symbol,
-      typeof BigInt,
-    ];
-
-    /**
      * Return a singleton instance of the Game Settings Configuration app
      */
     get sheet(): SettingsConfig;
@@ -161,6 +148,7 @@ declare global {
      * @typeParam N     - The namespace under which the setting is registered, as a type
      * @typeParam K     - The setting key to retrieve, as a type
      * @typeParam V     - The type of the value being set
+     * @returns         - The assigned setting value
      *
      * @example
      * ```typescript

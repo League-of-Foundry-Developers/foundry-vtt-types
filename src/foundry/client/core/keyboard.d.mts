@@ -9,6 +9,11 @@ declare global {
     constructor();
 
     /**
+     * Begin listening to keyboard events.
+     */
+    protected _activateListeners(): void;
+
+    /**
      * The set of key codes which are currently depressed (down)
      */
     downKeys: Set<string>;
@@ -75,7 +80,8 @@ declare global {
     };
 
     /**
-     * Test whether a Form Element currently has focus
+     * Test whether an HTMLElement currently has focus.
+     * If so we normally don't want to process keybinding actions.
      */
     get hasFocus(): boolean;
 
