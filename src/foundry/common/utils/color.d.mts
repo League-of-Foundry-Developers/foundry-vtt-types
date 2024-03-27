@@ -209,8 +209,8 @@ declare class Color extends Number {
 
   /**
    * Convert a color to RGB and assign values to a passed array.
-   * @param {number} color   The color to convert to RGB values.
-   * @param {number[]} vec3  Receive the result. Must be an array with at least a length of 3.
+   * @param color - The color to convert to RGB values.
+   * @param vec3  - Receive the result. Must be an array with at least a length of 3.
    */
   static applyRGB(color: number, vec3: number[]): void;
 
