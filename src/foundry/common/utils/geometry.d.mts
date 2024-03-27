@@ -108,7 +108,7 @@ export interface LineCircleIntersection {
   tangent: boolean;
 
   /** Intersection points: zero, one, or two */
-  intersections: Point[];
+  intersections: [Point?, Point?];
 }
 
 /**
@@ -154,4 +154,10 @@ export function closestPointToSegment(c: Point, a: Point, b: Point): Point;
  * @param epsilon - A small tolerance for floating point precision
  *                  (default: `0`)
  */
-export function quadraticIntersection(p0: Point, p1: Point, center: Point, radius: number, epsilon?: number): Point[];
+export function quadraticIntersection(
+  p0: Point,
+  p1: Point,
+  center: Point,
+  radius: number,
+  epsilon?: number,
+): [Point?, Point?];

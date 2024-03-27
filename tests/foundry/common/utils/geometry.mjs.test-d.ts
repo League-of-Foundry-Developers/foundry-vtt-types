@@ -1,5 +1,12 @@
 import { expectTypeOf } from "vitest";
 
+// Global export test
+expectTypeOf(orient2dFast).toEqualTypeOf(foundry.utils.orient2dFast);
+expectTypeOf(lineSegmentIntersects).toEqualTypeOf(lineSegmentIntersects);
+expectTypeOf(lineLineIntersection).toEqualTypeOf(foundry.utils.lineLineIntersection);
+expectTypeOf(lineSegmentIntersects).toEqualTypeOf(foundry.utils.lineSegmentIntersects);
+// ---
+
 const a = { x: 0, y: 0 };
 const b = new PIXI.Point(0, 0);
 const c = { x: 0, y: 0 };
