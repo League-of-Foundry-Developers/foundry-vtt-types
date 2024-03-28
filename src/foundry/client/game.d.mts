@@ -682,14 +682,15 @@ declare global {
         type: foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
       }[];
       paused: boolean;
+      // TODO: Update after DataModels to use ReleaseData
       release: {
         build: number;
         channel: "Stable" | "Testing" | "Development" | "Prototype";
         download: string | undefined;
         generation: number;
-        maxGeneration: number;
-        maxStableGeneration: number;
-        node_version: number;
+        maxGeneration?: number;
+        maxStableGeneration?: number;
+        node_version?: number;
         notes: string | undefined;
         time: number;
       };
