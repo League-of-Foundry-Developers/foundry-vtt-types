@@ -587,8 +587,10 @@ declare global {
       };
       model: {
         Actor: Record<string, Record<string, unknown>>;
+        Card: Record<string, Record<string, unknown>>;
         Cards: Record<string, Record<string, unknown>>;
         Item: Record<string, Record<string, unknown>>;
+        JournalEntryPage: Record<string, Record<string, unknown>>;
       };
       path: string;
       template: {
@@ -630,13 +632,14 @@ declare global {
         remoteIsAccessible: boolean | null;
       };
       coreUpdate: {
-        channel: unknown | null;
+        channel: string | null;
         couldReachWebsite: boolean;
         hasUpdate: boolean;
         slowResponse: boolean;
-        version: unknown | null;
+        version: string | null;
         willDisableModules: boolean;
       };
+      demoMode: boolean;
       files: {
         s3?: {
           endpoint: {
@@ -652,27 +655,29 @@ declare global {
         } | null;
         storages: ("public" | "data" | "s3")[];
       };
+      // Todo: Update after data models
       modules: ModuleData<foundry.packages.ModuleData>[];
       options: {
-        demo: boolean;
         language: string;
         port: number;
         routePrefix: string | null;
         updateChannel: string;
       };
+      packageWarnings: Record<string, unknown>;
       packs: {
-        /** @deprecated since V9 */
-        entity: foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
-        index: {
-          _id: string;
-          name: string;
-          type: string;
-        }[];
+        flags: Record<string, unknown>;
+        id: string;
         label: string;
         name: string;
-        package: string;
+        ownership: Record<
+          ValueOf<typeof foundry.CONST.USER_ROLE_NAMES>,
+          keyof typeof foundry.CONST.DOCUMENT_PERMISSION_LEVELS
+        >;
+        packageName: string;
+        packageType: foundry.CONST.PACKAGE_TYPES;
         path: string;
-        private: boolean;
+        /** @deprecated since v11 */
+        private?: boolean;
         system?: string;
         type: foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
       }[];
@@ -680,16 +685,24 @@ declare global {
       release: {
         build: number;
         channel: "Stable" | "Testing" | "Development" | "Prototype";
-        download: string;
-        generation: string;
-        notes: string;
+        download: string | undefined;
+        generation: number;
+        maxGeneration: number;
+        maxStableGeneration: number;
+        node_version: number;
+        notes: string | undefined;
         time: number;
       };
+      // TODO: Update after data models
       system: SystemData<foundry.packages.SystemData>;
-      systemUpdate: string | null;
+      systemUpdate: {
+        hasUpdate: boolean;
+        version: string;
+      };
+      // TODO: I think this is only for configurable types
+      template: Record<foundry.CONST.DOCUMENT_TYPES, DocumentTemplate>;
       userId: string;
-      /** @deprecated since V9 */
-      version?: string;
+      // TODO: Update after data models
       world: WorldData<foundry.packages.WorldData>;
     } & {
       [DocumentType in
@@ -722,3 +735,8 @@ declare global {
 type ConfiguredCollectionClassForName<Name extends foundry.CONST.DOCUMENT_TYPES> = InstanceType<
   CONFIG[Name]["collection"]
 >;
+
+type DocumentTemplate = {
+  htmlFields: string[];
+  types: string[];
+};
