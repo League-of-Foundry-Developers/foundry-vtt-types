@@ -324,7 +324,7 @@ declare global {
        * @defaultValue `MersenneTwister.random`
        */
       randomUniform: () => number;
-    };
+    } & Record<string, ConstructorOf<Roll>>; // Common pattern
 
     /**
      * Configuration for the FogExploration document
