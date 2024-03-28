@@ -4,10 +4,11 @@ import type * as CONST from "../common/constants.d.mts";
 import type { StatusEffect } from "./data/documents/token.d.mts";
 
 // FIXME: Replace with imports for for the right things or remove when implemented
-type DetectInvisibilityVisionMode = VisionMode;
-type TremorSenseVisionMode = VisionMode;
 type DataModel = unknown;
-declare const ColorManager: unknown;
+// @ts-expect-error Class isn't implemented yet
+declare class ActorDelta extends ClientDocumentMixin() {}
+// @ts-expect-error Class isn't implemented yet
+declare class JournalEntryPage extends ClientDocumentMixin() {}
 
 declare global {
   /**
@@ -28,8 +29,13 @@ declare global {
       /** @defaultValue `false` */
       documents: boolean;
 
-      /** @defaultValue `false` */
-      fog: boolean;
+      fog: {
+        /** @defaultValue `false` */
+        extractor: false;
+
+        /** @defaultValue `false` */
+        manager: false;
+      };
 
       /** @defaultValue `false` */
       hooks: boolean;
@@ -116,14 +122,23 @@ declare global {
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
 
+      /** @defaultValue `"ui/banners/actor-banner.webp"` */
+      compendiumBanner: string;
+
       /** @defaultValue `"fas fa-user"` */
       sidebarIcon: string;
 
       /** @defaultValue `{}` */
-      systemDataModels: Record<string, DataModel>;
+      dataModels: Record<string, DataModel>;
 
       /** @defaultValue `{}` */
       typeLabels: Record<string, string>;
+
+      /** @defaultValue `{}` */
+      typeIcons: Record<string, string>;
+
+      /** @defaultValue `{}` */
+      trackableAttributes: Record<string, string>;
     };
 
     /**
@@ -138,7 +153,10 @@ declare global {
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
 
-      /** @defaultValue `"fa-solid fa-folder-tree"` */
+      /** @defaultValue `"ui/banners/adventure-banner.webp"` */
+      compendiumBanner: string;
+
+      /** @defaultValue `"fa-solid fa-treasure-chest"` */
       sidebarIcon: string;
     };
 
@@ -159,7 +177,7 @@ declare global {
       sidebarIcon: string;
 
       /** @defaultValue `{}` */
-      systemDataModels: Record<string, DataModel>;
+      dataModels: Record<string, DataModel>;
 
       /**
        * @defaultValue
@@ -179,6 +197,19 @@ declare global {
        * ```
        */
       presets: Record<string, CONFIG.Cards.Preset>;
+
+      /** @defaultValue `{}` */
+      typeLabels: Record<string, string>;
+
+      typeIcons: {
+        /** @defaultValue `"fas fa-cards"` */
+        deck: string;
+        /** @defaultValue `"fa-duotone fa-cards"` */
+        hand: string;
+        /** @defaultValue `"fa-duotone fa-layer-group"` */
+        pile: string;
+        [x: string]: string;
+      };
     };
 
     /**
@@ -245,18 +276,25 @@ declare global {
     };
 
     /**
-     * Configuration for dice rolling behaviors in the Foundry VTT client
+     * Configuration for dice rolling behaviors in the Foundry Virtual Tabletop client
      */
     Dice: {
-      /** @defaultValue `[Die, FateDie]` */
+      /**
+       * The Dice types which are supported.
+       * @defaultValue `[Die, FateDie]`
+       */
       types: Array<ConstructorOf<DiceTerm>>;
 
       rollModes: CONFIG.Dice.RollModes;
 
-      /** @defaultValue `[Roll]` */
+      /**
+       * Configured Roll class definitions
+       * @defaultValue `[Roll]`
+       */
       rolls: Array<ConstructorOf<Roll>>;
 
       /**
+       * Configured DiceTerm class definitions
        * @defaultValue
        * ```typescript
        * {
@@ -272,13 +310,19 @@ declare global {
        */
       termTypes: Record<string, ConstructorOf<RollTerm>>;
 
+      /**
+       * Configured roll terms and the classes they map to.
+       */
       terms: {
         c: typeof Coin;
         d: typeof Die;
         f: typeof FateDie;
       } & Record<string, ConstructorOf<DiceTerm>>;
 
-      /** @defaultValue `MersenneTwister.random` */
+      /**
+       * A function used to provide random uniform values.
+       * @defaultValue `MersenneTwister.random`
+       */
       randomUniform: () => number;
     };
 
@@ -320,11 +364,14 @@ declare global {
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
 
+      /** @defaultValue `"ui/banners/item-banner.webp"` */
+      compendiumBanner: string;
+
       /** @defaultValue `"fas fa-suitcase"` */
       sidebarIcon: string;
 
       /** @defaultValue `{}` */
-      systemDataModels: Record<string, DataModel>;
+      dataModels: Record<string, DataModel>;
 
       /** @defaultValue `{}` */
       typeLabels: Record<string, string>;
@@ -339,6 +386,12 @@ declare global {
 
       /** @defaultValue `Journal` */
       collection: ConstructorOf<Journal>;
+
+      /** @defaultValue `[]` */
+      compendiumIndexFields: string[];
+
+      /** @defaultValue `"ui/banners/journalentry-banner.webp"` */
+      compendiumBanner: string;
 
       noteIcons: {
         /** @defaultValue `"icons/svg/anchor.svg"` */
@@ -440,6 +493,9 @@ declare global {
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
 
+      /** @defaultValue `"ui/banners/macro-banner.webp"` */
+      compendiumBanner: string;
+
       /** @defaultValue `"fas fa-code"` */
       sidebarIcon: string;
     };
@@ -456,6 +512,9 @@ declare global {
 
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
+
+      /** @defaultValue `"ui/banners/playlist-banner.webp"` */
+      compendiumBanner: string;
 
       /** @defaultValue `"fas fa-music"` */
       sidebarIcon: string;
@@ -474,8 +533,11 @@ declare global {
       /** @defaultValue `RollTables` */
       collection: ConstructorOf<RollTables>;
 
-      /** @defaultValue `[]` */
+      /** @defaultValue `["formula"]` */
       compendiumIndexFields: string[];
+
+      /** @defaultValue `"ui/banners/rolltable-banner.webp"` */
+      compendiumBanner: string;
 
       /** @defaultValue `"fas fa-th-list"` */
       sidebarIcon: string;
@@ -499,6 +561,9 @@ declare global {
 
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
+
+      /** @defaultValue `"ui/banners/scene-banner.webp"` */
+      compendiumBanner: string;
 
       /** @defaultValue `"fas fa-map"` */
       sidebarIcon: string;
@@ -542,6 +607,9 @@ declare global {
       /** @defaultValue `0.25` */
       darknessLightPenalty: number;
 
+      /** @defaultValue `/Edg|Firefox|Electron/` */
+      videoPremultiplyRgx: RegExp;
+
       dispositionColors: {
         /** @defaultValue `0xe72124` */
         HOSTILE: number;
@@ -560,6 +628,9 @@ declare global {
 
         /** @defaultValue `0xff9829` */
         CONTROLLED: number;
+
+        /** @defaultValue `0xA612D4` */
+        SECRET: number;
       };
 
       /** @defaultValue `0x000000` */
@@ -590,10 +661,19 @@ declare global {
       fogManager: typeof FogManager;
 
       /** @defaultValue `ColorManager` */
-      colorManager: typeof ColorManager;
+      colorManager: typeof CanvasColorManager;
 
-      /** @defaultValue `ClockwiseSweepPolygon` */
-      losBackend: typeof PointSourcePolygon;
+      polygonBackends: {
+        /** @defaultValue `typeof ClockwiseSweepPolygon` */
+        sight: typeof PointSourcePolygon;
+        /** @defaultValue `typeof ClockwiseSweepPolygon` */
+        light: typeof PointSourcePolygon;
+        /** @defaultValue `typeof ClockwiseSweepPolygon` */
+        sound: typeof PointSourcePolygon;
+        /** @defaultValue `typeof ClockwiseSweepPolygon` */
+        move: typeof PointSourcePolygon;
+      };
+      visibilityFilter: typeof VisibilityFilter;
 
       /** @defaultValue `Ruler` */
       rulerClass: typeof Ruler;
@@ -602,6 +682,9 @@ declare global {
         /** @defaultValue `0` */
         luminosity: number;
       };
+
+      /** @defaultValue `0.8` */
+      dragSpeedModifier: number;
 
       /** @defaultValue `3.0` */
       maxZoom: number;
@@ -635,6 +718,31 @@ declare global {
           illuminationShader: ConstructorOf<AbstractBaseShader>;
 
           /** @defaultValue `TorchColorationShader` */
+          colorationShader: ConstructorOf<AbstractBaseShader>;
+        };
+
+        revolving: {
+          /** @defaultValue `"LIGHT.AnimationRevolving"` */
+          label: string;
+
+          /** @defaultValue `LightSource.prototype.animateTime` */
+          animation: CONFIG.Canvas.LightAnimationFunction;
+
+          /** @defaultValue `RevolvingColorationShader` */
+          colorationShader: ConstructorOf<AbstractBaseShader>;
+        };
+
+        siren: {
+          /** @defaultValue `"LIGHT.AnimationSiren"` */
+          label: string;
+
+          /** @defaultValue `LightSource.prototype.animateTorch` */
+          animation: CONFIG.Canvas.LightAnimationFunction;
+
+          /** @defaultValue `SirenIlluminationShader` */
+          illuminationShader: ConstructorOf<AbstractBaseShader>;
+
+          /** @defaultValue `SirenIlluminationShader` */
           colorationShader: ConstructorOf<AbstractBaseShader>;
         };
 
@@ -908,27 +1016,12 @@ declare global {
          *   label: "VISION.ModeBasicVision",
          *   vision: {
          *     defaults: { attenuation: 0, contrast: 0, saturation: 0, brightness: 0 }
+         *     preferred: true // Takes priority over other vision modes
          *   }
          * })
          * ```
          */
         basic: VisionMode;
-
-        /**
-         * Detect Invisibility
-         * @defaultValue
-         * ```typescript
-         * new DetectInvisibilityVisionMode({
-         *   id: "detectInvisibility",
-         *   label: "VISION.ModeDetectInvisibility",
-         *   vision: {
-         *     darkness: { adaptive: false },
-         *     defaults: { attenuation: 0, contrast: 0, saturation: 0, brightness: 0 }
-         *   }
-         * })
-         * ```
-         */
-        detectInvisibility: DetectInvisibilityVisionMode;
 
         /**
          * Darkvision
@@ -939,7 +1032,7 @@ declare global {
          *   label: "VISION.ModeDarkvision",
          *     canvas: {
          *       shader: ColorAdjustmentsSamplerShader,
-         *       uniforms: { enable: true, contrast: 0, saturation: -1.0, brightness: 0 }
+         *       uniforms: { contrast: 0, saturation: -1.0, brightness: 0 }
          *   },
          *   lighting: {
          *     levels: {
@@ -948,6 +1041,7 @@ declare global {
          *   background: { visibility: VisionMode.LIGHTING_VISIBILITY.REQUIRED }
          *   },
          *   vision: {
+         *     darkness: { adaptive: false },
          *     defaults: { attenuation: 0, contrast: 0, saturation: -1.0, brightness: 0 }
          *   }
          * })
@@ -964,20 +1058,20 @@ declare global {
          *   label: "VISION.ModeMonochromatic",
          *   canvas: {
          *     shader: ColorAdjustmentsSamplerShader,
-         *     uniforms: { enable: true, contrast: 0, saturation: -1.0, brightness: 0 }
+         *     uniforms: { contrast: 0, saturation: -1.0, brightness: 0 }
          *   },
          *   lighting: {
          *     background: {
          *       postProcessingModes: ["SATURATION"],
-         *       uniforms: { saturation: -1.0 }
+         *       uniforms: { saturation: -1.0, tint: [1, 1, 1] }
          *     },
          *     illumination: {
          *       postProcessingModes: ["SATURATION"],
-         *       uniforms: { saturation: -1.0 }
+         *       uniforms: { saturation: -1.0, tint: [1, 1, 1] }
          *     },
          *     coloration: {
          *       postProcessingModes: ["SATURATION"],
-         *       uniforms: { saturation: -1.0 }
+         *       uniforms: { saturation: -1.0, tint: [1, 1, 1] }
          *     }
          *   },
          *   vision: {
@@ -999,7 +1093,7 @@ declare global {
          *   tokenConfig: false,
          *   canvas: {
          *     shader: ColorAdjustmentsSamplerShader,
-         *     uniforms: { enable: true, contrast: -0.75, saturation: -1, exposure: -0.3 }
+         *     uniforms: { contrast: -0.75, saturation: -1, exposure: -0.3 }
          *   },
          *   lighting: {
          *     background: { visibility: VisionMode.LIGHTING_VISIBILITY.DISABLED },
@@ -1019,12 +1113,12 @@ declare global {
          * Tremorsense
          * @defaultValue
          * ```typescript
-         * new TremorSenseVisionMode({
+         * new VisionMode({
          *   id: "tremorsense",
          *   label: "VISION.ModeTremorsense",
          *   canvas: {
          *     shader: ColorAdjustmentsSamplerShader,
-         *     uniforms: { enable: true, contrast: 0, saturation: -0.8, exposure: -0.65 }
+         *     uniforms: { contrast: 0, saturation: -0.8, exposure: -0.65 }
          *   },
          *   lighting: {
          *     background: { visibility: VisionMode.LIGHTING_VISIBILITY.DISABLED },
@@ -1037,10 +1131,10 @@ declare global {
          *     background: { shader: WaveBackgroundVisionShader },
          *     coloration: { shader: WaveColorationVisionShader }
          *   }
-         * })
+         * }, {animated: true})
          * ```
          */
-        tremorsense: TremorSenseVisionMode;
+        tremorsense: VisionMode;
 
         /**
          * Light Amplification
@@ -1051,17 +1145,21 @@ declare global {
          *   label: "VISION.ModeLightAmplification",
          *   canvas: {
          *     shader: AmplificationSamplerShader,
-         *     uniforms: { enable: true, contrast: 0, saturation: -0.5, exposure: -0.25, tint: [0.48, 1.0, 0.48] }
+         *     uniforms: { saturation: -0.5, tint: [0.38, 0.8, 0.38] }
          *   },
          *   lighting: {
-         *     background: { visibility: VisionMode.LIGHTING_VISIBILITY.DISABLED },
+         *     background: {
+         *       visibility: VisionMode.LIGHTING_VISIBILITY.REQUIRED,
+         *       postProcessingModes: ["SATURATION", "EXPOSURE"],
+         *       uniforms: { saturation: -0.5, exposure: 1.5, tint: [0.38, 0.8, 0.38] }
+         *     },
          *     illumination: {
-         *       postProcessingModes: ["EXPOSURE"],
-         *       uniforms: { exposure: 0.8 }
+         *       postProcessingModes: ["SATURATION"],
+         *       uniforms: { saturation: -0.5 }
          *     },
          *     coloration: {
-         *       postProcessingModes: ["SATURATION", "TINT", "EXPOSURE"],
-         *       uniforms: { saturation: -0.75, exposure: 8.0, tint: [0.48, 1.0, 0.48] }
+         *       postProcessingModes: ["SATURATION", "EXPOSURE"],
+         *       uniforms: { saturation: -0.5, exposure: 1.5, tint: [0.38, 0.8, 0.38] }
          *     },
          *     levels: {
          *       [VisionMode.LIGHTING_LEVELS.DIM]: VisionMode.LIGHTING_LEVELS.BRIGHT,
@@ -1078,6 +1176,25 @@ declare global {
          */
         lightAmplification: VisionMode;
       };
+    };
+
+    /**
+     * The set of DetectionMode definitions which are available to be used for visibility detection.
+     */
+    detectionModes: {
+      [key: string]: DetectionMode;
+
+      basicSight: DetectionModeBasicSight;
+
+      seeInvisibility: DetectionModeInvisibility;
+
+      senseInvisibility: DetectionModeInvisibility;
+
+      feelTremor: DetectionModeTremor;
+
+      seeAll: DetectionModeAll;
+
+      senseAll: DetectionModeAll;
     };
 
     /**
@@ -1107,15 +1224,181 @@ declare global {
      * Available Weather Effects implementations
      */
     weatherEffects: {
-      /** @defaultValue `AutumnLeavesWeatherEffect` */
-      leaves: ConstructorOf<SpecialEffect>;
+      [key: string]: CONFIG.WeatherAmbienceConfiguration;
 
-      /** @defaultValue `RainWeatherEffect` */
-      rain: ConstructorOf<SpecialEffect>;
+      /**
+       * @defaultValue
+       * ```ts
+       * {
+       *   id: "leaves",
+       *   label: "WEATHER.AutumnLeaves",
+       *   effects: [{
+       *     id: "leavesParticles",
+       *     effectClass: AutumnLeavesWeatherEffect
+       *   }]
+       * }
+       * ```
+       */
+      leaves: CONFIG.WeatherAmbienceConfiguration;
 
-      /** @defaultValue `SnowWeatherEffect` */
-      snow: ConstructorOf<SpecialEffect>;
-    } & Record<string, ConstructorOf<SpecialEffect>>;
+      /**
+       * @defaultValue
+       * ```ts
+       * {
+       *   id: "rain",
+       *   label: "WEATHER.Rain",
+       *   filter: {
+       *     enabled: false
+       *   },
+       *   effects: [{
+       *     id: "rainShader",
+       *     effectClass: WeatherShaderEffect,
+       *     shaderClass: RainShader,
+       *     blendMode: PIXI.BLEND_MODES.SCREEN,
+       *     config: {
+       *       opacity: 0.25,
+       *       tint: [0.7, 0.9, 1.0],
+       *       intensity: 1,
+       *       strength: 1,
+       *       rotation: 0.2618,
+       *       speed: 0.2,
+       *     }
+       *   }]
+       * }
+       * ```
+       */
+      rain: CONFIG.WeatherAmbienceConfiguration;
+
+      /**
+       * @defaultValue
+       * ```
+       * {
+       *   id: "rainStorm",
+       *   label: "WEATHER.RainStorm",
+       *   filter: {
+       *     enabled: false
+       *   },
+       *   effects: [{
+       *     id: "fogShader",
+       *     effectClass: WeatherShaderEffect,
+       *     shaderClass: FogShader,
+       *     blendMode: PIXI.BLEND_MODES.SCREEN,
+       *     performanceLevel: 2,
+       *     config: {
+       *       slope: 1.5,
+       *       intensity: 0.050,
+       *       speed: -55.0,
+       *       scale: 25,
+       *     }
+       *   },
+       *   {
+       *     id: "rainShader",
+       *     effectClass: WeatherShaderEffect,
+       *     shaderClass: RainShader,
+       *     blendMode: PIXI.BLEND_MODES.SCREEN,
+       *     config: {
+       *       opacity: 0.45,
+       *       tint: [0.7, 0.9, 1.0],
+       *       intensity: 1.5,
+       *       strength: 1.5,
+       *       rotation: 0.5236,
+       *       speed: 0.30,
+       *     }
+       *   }]
+       * }
+       * ```
+       */
+      rainStorm: CONFIG.WeatherAmbienceConfiguration;
+
+      /**
+       * @defaultValue
+       * ```
+       * {
+       *   id: "fog",
+       *   label: "WEATHER.Fog",
+       *   filter: {
+       *     enabled: false
+       *   },
+       *   effects: [{
+       *     id: "fogShader",
+       *     effectClass: WeatherShaderEffect,
+       *     shaderClass: FogShader,
+       *     blendMode: PIXI.BLEND_MODES.SCREEN,
+       *     config: {
+       *       slope: 0.45,
+       *       intensity: 0.4,
+       *       speed: 0.4,
+       *     }
+       *   }]
+       * }
+       * ```
+       */
+      fog: CONFIG.WeatherAmbienceConfiguration;
+
+      /**
+       * @defaultValue
+       * ```
+       * {
+       *   id: "snow",
+       *   label: "WEATHER.Snow",
+       *   filter: {
+       *     enabled: false
+       *   },
+       *   effects: [{
+       *     id: "snowShader",
+       *     effectClass: WeatherShaderEffect,
+       *     shaderClass: SnowShader,
+       *     blendMode: PIXI.BLEND_MODES.SCREEN,
+       *     config: {
+       *       tint: [0.85, 0.95, 1],
+       *       direction: 0.5,
+       *       speed: 2,
+       *       scale: 2.5,
+       *     }
+       *   }]
+       * }
+       * ```
+       * */
+      snow: CONFIG.WeatherAmbienceConfiguration;
+
+      /**
+       * @defaultValue
+       * ```
+       * {
+       *   id: "blizzard",
+       *   label: "WEATHER.Blizzard",
+       *   filter: {
+       *     enabled: false
+       *   },
+       *   effects: [{
+       *     id: "snowShader",
+       *     effectClass: WeatherShaderEffect,
+       *     shaderClass: SnowShader,
+       *     blendMode: PIXI.BLEND_MODES.SCREEN,
+       *     config: {
+       *       tint: [0.95, 1, 1],
+       *       direction: 0.80,
+       *       speed: 8,
+       *       scale: 2.5,
+       *     }
+       *   },
+       *   {
+       *     id: "fogShader",
+       *     effectClass: WeatherShaderEffect,
+       *     shaderClass: FogShader,
+       *     blendMode: PIXI.BLEND_MODES.SCREEN,
+       *     performanceLevel: 2,
+       *     config: {
+       *       slope: 1.0,
+       *       intensity: 0.15,
+       *       speed: -4.0,
+       *     }
+       *   }]
+       * }
+       * ```
+       */
+      blizzard: CONFIG.WeatherAmbienceConfiguration;
+    };
 
     /**
      * The control icons used for rendering common HUD operations
@@ -1168,6 +1451,9 @@ declare global {
 
       /** @defaultValue `"icons/svg/door-locked-outline.svg"` */
       doorLocked: string;
+
+      /** @defaultValue `"icons/svg/wall-direction.svg"` */
+      wallDirection: string;
     } & Record<string, string>;
 
     /**
@@ -1176,6 +1462,16 @@ declare global {
      * ```typescript
      * {
      *   Arial: { editor: true; fonts: [] };
+     *   Amiri: {
+     *     editor: true,
+     *     fonts: [
+     *       {urls: ["fonts/amiri/amiri-regular.woff2"]},
+     *       {urls: ["fonts/amiri/amiri-bold.woff2"], weight: 700}
+     *     ]
+     *   },
+     *   "Bruno Ace": {editor: true, fonts: [
+     *     {urls: ["fonts/bruno-ace/bruno-ace.woff2"]}
+     *   ]},
      *   Courier: { editor: true; fonts: [] };
      *   "Courier New": { editor: true; fonts: [] };
      *   "Modesto Condensed": {
@@ -1226,162 +1522,162 @@ declare global {
      * [
      *   {
      *     id: "dead";
-     *     label: "EFFECT.StatusDead";
+     *     name: "EFFECT.StatusDead";
      *     icon: "icons/svg/skull.svg";
      *   },
      *   {
      *     id: "unconscious";
-     *     label: "EFFECT.StatusUnconscious";
+     *     name: "EFFECT.StatusUnconscious";
      *     icon: "icons/svg/unconscious.svg";
      *   },
      *   {
      *     id: "sleep";
-     *     label: "EFFECT.StatusAsleep";
+     *     name: "EFFECT.StatusAsleep";
      *     icon: "icons/svg/sleep.svg";
      *   },
      *   {
      *     id: "stun";
-     *     label: "EFFECT.StatusStunned";
+     *     name: "EFFECT.StatusStunned";
      *     icon: "icons/svg/daze.svg";
      *   },
      *   {
      *     id: "prone";
-     *     label: "EFFECT.StatusProne";
+     *     name: "EFFECT.StatusProne";
      *     icon: "icons/svg/falling.svg";
      *   },
      *   {
      *     id: "restrain";
-     *     label: "EFFECT.StatusRestrained";
+     *     name: "EFFECT.StatusRestrained";
      *     icon: "icons/svg/net.svg";
      *   },
      *   {
      *     id: "paralysis";
-     *     label: "EFFECT.StatusParalysis";
+     *     name: "EFFECT.StatusParalysis";
      *     icon: "icons/svg/paralysis.svg";
      *   },
      *   {
      *     id: "fly";
-     *     label: "EFFECT.StatusFlying";
+     *     name: "EFFECT.StatusFlying";
      *     icon: "icons/svg/wing.svg";
      *   },
      *   {
      *     id: "blind";
-     *     label: "EFFECT.StatusBlind";
+     *     name: "EFFECT.StatusBlind";
      *     icon: "icons/svg/blind.svg";
      *   },
      *   {
      *     id: "deaf";
-     *     label: "EFFECT.StatusDeaf";
+     *     name: "EFFECT.StatusDeaf";
      *     icon: "icons/svg/deaf.svg";
      *   },
      *   {
      *     id: "silence";
-     *     label: "EFFECT.StatusSilenced";
+     *     name: "EFFECT.StatusSilenced";
      *     icon: "icons/svg/silenced.svg";
      *   },
      *   {
      *     id: "fear";
-     *     label: "EFFECT.StatusFear";
+     *     name: "EFFECT.StatusFear";
      *     icon: "icons/svg/terror.svg";
      *   },
      *   {
      *     id: "burning";
-     *     label: "EFFECT.StatusBurning";
+     *     name: "EFFECT.StatusBurning";
      *     icon: "icons/svg/fire.svg";
      *   },
      *   {
      *     id: "frozen";
-     *     label: "EFFECT.StatusFrozen";
+     *     name: "EFFECT.StatusFrozen";
      *     icon: "icons/svg/frozen.svg";
      *   },
      *   {
      *     id: "shock";
-     *     label: "EFFECT.StatusShocked";
+     *     name: "EFFECT.StatusShocked";
      *     icon: "icons/svg/lightning.svg";
      *   },
      *   {
      *     id: "corrode";
-     *     label: "EFFECT.StatusCorrode";
+     *     name: "EFFECT.StatusCorrode";
      *     icon: "icons/svg/acid.svg";
      *   },
      *   {
      *     id: "bleeding";
-     *     label: "EFFECT.StatusBleeding";
+     *     name: "EFFECT.StatusBleeding";
      *     icon: "icons/svg/blood.svg";
      *   },
      *   {
      *     id: "disease";
-     *     label: "EFFECT.StatusDisease";
+     *     name: "EFFECT.StatusDisease";
      *     icon: "icons/svg/biohazard.svg";
      *   },
      *   {
      *     id: "poison";
-     *     label: "EFFECT.StatusPoison";
+     *     name: "EFFECT.StatusPoison";
      *     icon: "icons/svg/poison.svg";
      *   },
      *   {
      *     id: "curse";
-     *     label: "EFFECT.StatusCursed";
+     *     name: "EFFECT.StatusCursed";
      *     icon: "icons/svg/sun.svg";
      *   },
      *   {
      *     id: "regen";
-     *     label: "EFFECT.StatusRegen";
+     *     name: "EFFECT.StatusRegen";
      *     icon: "icons/svg/regen.svg";
      *   },
      *   {
      *     id: "degen";
-     *     label: "EFFECT.StatusDegen";
+     *     name: "EFFECT.StatusDegen";
      *     icon: "icons/svg/degen.svg";
      *   },
      *   {
      *     id: "upgrade";
-     *     label: "EFFECT.StatusUpgrade";
+     *     name: "EFFECT.StatusUpgrade";
      *     icon: "icons/svg/upgrade.svg";
      *   },
      *   {
      *     id: "downgrade";
-     *     label: "EFFECT.StatusDowngrade";
+     *     name: "EFFECT.StatusDowngrade";
      *     icon: "icons/svg/downgrade.svg";
      *   },
      *   {
      *     id: "invisible",
-     *     label: "EFFECT.StatusInvisible",
+     *     name: "EFFECT.StatusInvisible",
      *     icon: "icons/svg/invisible.svg"
      *   },
      *   {
      *     id: "target";
-     *     label: "EFFECT.StatusTarget";
+     *     name: "EFFECT.StatusTarget";
      *     icon: "icons/svg/target.svg";
      *   },
      *   {
      *     id: "eye";
-     *     label: "EFFECT.StatusMarked";
+     *     name: "EFFECT.StatusMarked";
      *     icon: "icons/svg/eye.svg";
      *   },
      *   {
      *     id: "bless";
-     *     label: "EFFECT.StatusBlessed";
+     *     name: "EFFECT.StatusBlessed";
      *     icon: "icons/svg/angel.svg";
      *   },
      *   {
      *     id: "fireShield";
-     *     label: "EFFECT.StatusFireShield";
+     *     name: "EFFECT.StatusFireShield";
      *     icon: "icons/svg/fire-shield.svg";
      *   },
      *   {
      *     id: "coldShield";
-     *     label: "EFFECT.StatusIceShield";
+     *     name: "EFFECT.StatusIceShield";
      *     icon: "icons/svg/ice-shield.svg";
      *   },
      *   {
      *     id: "magicShield";
-     *     label: "EFFECT.StatusMagicShield";
+     *     name: "EFFECT.StatusMagicShield";
      *     icon: "icons/svg/mage-shield.svg";
      *   },
      *   {
      *     id: "holyShield";
-     *     label: "EFFECT.StatusHolyShield";
+     *     name: "EFFECT.StatusHolyShield";
      *     icon: "icons/svg/holy-shield.svg";
      *   }
      * ]
@@ -1421,6 +1717,19 @@ declare global {
     } & Record<string, string>;
 
     /**
+     * Localization constants.
+     */
+    i18n: {
+      /**
+       * In operations involving the document index, search prefixes must have at least this many characters to avoid too
+       * large a search space. Languages that have hundreds or thousands of characters will typically have very shallow
+       * search trees, so it should be safe to lower this number in those cases.
+       * @defaultValue `4`
+       */
+      searchMinimumCharacterLength: number;
+    };
+
+    /**
      * Configuration for time tracking
      */
     time: {
@@ -1437,6 +1746,24 @@ declare global {
     ActiveEffect: {
       /** @defaultValue `ActiveEffect` */
       documentClass: ConfiguredDocumentClassOrDefault<typeof ActiveEffect>;
+
+      /**
+       * If true, Active Effects on Items will be copied to the Actor when the Item is created on the Actor if the
+       * Active Effect's transfer property is true, and will be deleted when that Item is deleted from the Actor.
+       * If false, Active Effects are never copied to the Actor, but will still apply to the Actor from within the Item
+       * if the transfer property on the Active Effect is true.
+       * @deprecated since v11
+       */
+      legacyTransferral: boolean;
+    };
+
+    /**
+     * Configuration for the ActorDelta embedded document type.
+     */
+    ActorDelta: {
+      /** @defaultValue `ActorDelta` */
+      // @ts-expect-error Class isn't implemented yet
+      documentClass: ConfiguredDocumentClassOrDefault<typeof ActorDelta>;
     };
 
     /**
@@ -1447,7 +1774,7 @@ declare global {
       documentClass: ConfiguredDocumentClassOrDefault<typeof Card>;
 
       /** @defaultValue `{}` */
-      systemDataModels: Record<string, DataModel>;
+      dataModels: Record<string, DataModel>;
     };
 
     /**
@@ -1456,6 +1783,35 @@ declare global {
     TableResult: {
       /** @defaultValue `TableResult` */
       documentClass: ConfiguredDocumentClassOrDefault<typeof TableResult>;
+    };
+
+    JournalEntryPage: {
+      /** @defaultValue `JournalEntryPage` */
+      // @ts-expect-error Class isn't implemented yet
+      documentClass: ConfiguredDocumentClassOrDefault<typeof JournalEntryPage>;
+
+      dataModels: Record<string, DataModel>;
+
+      typeLabels: Record<string, string>;
+
+      typeIcons: {
+        [type: string]: string;
+
+        /** @defaultValue `"fas fa-file-image"` */
+        image: string;
+        /** @defaultValue `"fas fa-file-pdf"` */
+        pdf: string;
+        /** @defaultValue `"fas fa-file-lines"` */
+        text: string;
+        /** @defaultValue `"fas fa-file-video"` */
+        video: string;
+      };
+
+      /** @defaultValue `"text"` */
+      defaultType: string;
+
+      /** @defaultValue `"fas fa-book-open"` */
+      sidebarIcon: string;
     };
 
     /**
@@ -1595,6 +1951,9 @@ declare global {
 
       /** @defaultValue `TokenConfig` */
       prototypeSheetClass: ConstructorOf<TokenConfig>;
+
+      /** @defaultValue `"TOKEN.Adjectives"` */
+      adjectivesPrefix: string;
     };
 
     /**
@@ -1609,6 +1968,45 @@ declare global {
 
       /** @defaultValue `WallsLayer` */
       layerClass: typeof WallsLayer;
+
+      /** @defaultValue `1` */
+      thresholdAttenuationMultiplier: number;
+
+      doorSounds: {
+        [sound: string]: CONFIG.WallDoorSound;
+
+        futuristicFast: CONFIG.WallDoorSound;
+
+        futuristicHydraulic: CONFIG.WallDoorSound;
+
+        futuristicForcefield: CONFIG.WallDoorSound;
+
+        industrial: CONFIG.WallDoorSound;
+
+        industrialCreaky: CONFIG.WallDoorSound;
+
+        jail: CONFIG.WallDoorSound;
+
+        metal: CONFIG.WallDoorSound;
+
+        slidingMetal: CONFIG.WallDoorSound;
+
+        slidingModern: CONFIG.WallDoorSound;
+
+        slidingWood: CONFIG.WallDoorSound;
+
+        stoneBasic: CONFIG.WallDoorSound;
+
+        stoneRocky: CONFIG.WallDoorSound;
+
+        stoneSandy: CONFIG.WallDoorSound;
+
+        woodBasic: CONFIG.WallDoorSound;
+
+        woodCreaky: CONFIG.WallDoorSound;
+
+        woodHeavy: CONFIG.WallDoorSound;
+      };
     };
 
     /**
@@ -1745,6 +2143,9 @@ declare global {
         /** @defaultValue `{ groupClass: InterfaceCanvasGroup, parent: "rendered" }` */
         interface: CONFIG.Canvas.GroupDefinition<typeof InterfaceCanvasGroup>;
 
+        /** @defaultValue `{ groupClass: OverlayCanvasGroup, parent: "stage" }` */
+        overlay: CONFIG.Canvas.GroupDefinition<typeof OverlayCanvasGroup>;
+
         [key: string]: CONFIG.Canvas.GroupDefinition;
       }
 
@@ -1813,6 +2214,23 @@ declare global {
       }
     }
 
+    interface WeatherAmbienceConfiguration {
+      id: string;
+      label: string;
+      filter: {
+        enabled: boolean;
+        blendMode: PIXI.BLEND_MODES;
+      };
+      effects: WeatherEffectConfiguration;
+    }
+
+    interface WeatherEffectConfiguration {
+      id: string;
+      effectClass: typeof ParticleEffect | typeof WeatherShaderEffect;
+      blendMode: PIXI.BLEND_MODES;
+      config: Record<string, unknown>;
+    }
+
     namespace Cards {
       interface Preset {
         type: string;
@@ -1837,6 +2255,26 @@ declare global {
         editor: boolean;
         fonts: Definition[];
       }
+    }
+
+    interface WallDoorSound {
+      /** A localization string label */
+      label: string;
+
+      /** A sound path when the door is closed */
+      close: string;
+
+      /** A sound path when the door becomes locked */
+      lock: string;
+
+      /** A sound path when opening the door */
+      open: string;
+
+      /** A sound path when attempting to open a locked door */
+      test: string;
+
+      /** A sound path when the door becomes unlocked */
+      unlock: string;
     }
 
     namespace TextEditor {
