@@ -42,7 +42,7 @@ export interface FolderDataProperties {
   /**
    * The document type which this Folder contains, from CONST.FOLDER_DOCUMENT_TYPES
    */
-  type: foundry.CONST.FOLDER_DOCUMENT_TYPES;
+  type: Exclude<foundry.CONST.FOLDER_DOCUMENT_TYPES, "Compendium">;
 
   /**
    * An HTML description of the contents of this folder
