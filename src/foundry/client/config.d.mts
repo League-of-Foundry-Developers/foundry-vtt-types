@@ -31,10 +31,10 @@ declare global {
 
       fog: {
         /** @defaultValue `false` */
-        extractor: false;
+        extractor: boolean;
 
         /** @defaultValue `false` */
-        manager: false;
+        manager: boolean;
       };
 
       /** @defaultValue `false` */
@@ -1975,36 +1975,228 @@ declare global {
       doorSounds: {
         [sound: string]: CONFIG.WallDoorSound;
 
+        /**
+         * ```ts
+         * {
+         *   label: "WALLS.DoorSound.FuturisticFast",
+         *   close: "sounds/doors/futuristic/close-fast.ogg",
+         *   lock: "sounds/doors/futuristic/lock.ogg",
+         *   open: "sounds/doors/futuristic/open-fast.ogg",
+         *   test: "sounds/doors/futuristic/test.ogg",
+         *   unlock: "sounds/doors/futuristic/unlock.ogg"
+         * }
+         * ```
+         */
         futuristicFast: CONFIG.WallDoorSound;
 
+        /**
+         * ```ts
+         * {
+         *   label: "WALLS.DoorSound.FuturisticHydraulic",
+         *   close: "sounds/doors/futuristic/close-hydraulic.ogg",
+         *   lock: "sounds/doors/futuristic/lock.ogg",
+         *   open: "sounds/doors/futuristic/open-hydraulic.ogg",
+         *   test: "sounds/doors/futuristic/test.ogg",
+         *   unlock: "sounds/doors/futuristic/unlock.ogg"
+         * }
+         * ```
+         */
         futuristicHydraulic: CONFIG.WallDoorSound;
 
+        /**
+         * ```ts
+         * {
+         *   label: "WALLS.DoorSound.FuturisticForcefield",
+         *   close: "sounds/doors/futuristic/close-forcefield.ogg",
+         *   lock: "sounds/doors/futuristic/lock.ogg",
+         *   open: "sounds/doors/futuristic/open-forcefield.ogg",
+         *   test: "sounds/doors/futuristic/test-forcefield.ogg",
+         *   unlock: "sounds/doors/futuristic/unlock.ogg"
+         * }
+         * ```
+         */
         futuristicForcefield: CONFIG.WallDoorSound;
 
+        /**
+         * ```ts
+         * {
+         *   label: "WALLS.DoorSound.Industrial",
+         *   close: "sounds/doors/industrial/close.ogg",
+         *   lock: "sounds/doors/industrial/lock.ogg",
+         *   open: "sounds/doors/industrial/open.ogg",
+         *   test: "sounds/doors/industrial/test.ogg",
+         *   unlock: "sounds/doors/industrial/unlock.ogg"
+         * }
+         * ```
+         */
         industrial: CONFIG.WallDoorSound;
 
+        /**
+         * ```ts
+         * {
+         *   label: "WALLS.DoorSound.IndustrialCreaky",
+         *   close: "sounds/doors/industrial/close-creaky.ogg",
+         *   lock: "sounds/doors/industrial/lock.ogg",
+         *   open: "sounds/doors/industrial/open-creaky.ogg",
+         *   test: "sounds/doors/industrial/test.ogg",
+         *   unlock: "sounds/doors/industrial/unlock.ogg"
+         * }
+         * ```
+         */
         industrialCreaky: CONFIG.WallDoorSound;
 
+        /**
+         * ```ts
+         * {
+         *   label: "WALLS.DoorSound.Jail",
+         *   close: "sounds/doors/jail/close.ogg",
+         *   lock: "sounds/doors/jail/lock.ogg",
+         *   open: "sounds/doors/jail/open.ogg",
+         *   test: "sounds/doors/jail/test.ogg",
+         *   unlock: "sounds/doors/jail/unlock.ogg"
+         * }
+         * ```
+         */
         jail: CONFIG.WallDoorSound;
 
+        /**
+         * ```ts
+         * {
+         *   label: "WALLS.DoorSound.Metal",
+         *   close: "sounds/doors/metal/close.ogg",
+         *   lock: "sounds/doors/metal/lock.ogg",
+         *   open: "sounds/doors/metal/open.ogg",
+         *   test: "sounds/doors/metal/test.ogg",
+         *   unlock: "sounds/doors/metal/unlock.ogg"
+         * }
+         * ```
+         */
         metal: CONFIG.WallDoorSound;
 
+        /**
+         * ```ts
+         * {
+         *   label: "WALLS.DoorSound.SlidingMetal",
+         *   close: "sounds/doors/shutter/close.ogg",
+         *   lock: "sounds/doors/shutter/lock.ogg",
+         *   open: "sounds/doors/shutter/open.ogg",
+         *   test: "sounds/doors/shutter/test.ogg",
+         *   unlock: "sounds/doors/shutter/unlock.ogg"
+         * }
+         * ```
+         */
         slidingMetal: CONFIG.WallDoorSound;
 
+        /**
+         * ```ts
+         * {
+         *   label: "WALLS.DoorSound.SlidingModern",
+         *   close: "sounds/doors/sliding/close.ogg",
+         *   lock: "sounds/doors/sliding/lock.ogg",
+         *   open: "sounds/doors/sliding/open.ogg",
+         *   test: "sounds/doors/sliding/test.ogg",
+         *   unlock: "sounds/doors/sliding/unlock.ogg"
+         * }
+         * ```
+         */
         slidingModern: CONFIG.WallDoorSound;
 
+        /**
+         * ```ts
+         * {
+         *   label: "WALLS.DoorSound.SlidingWood",
+         *   close: "sounds/doors/sliding/close-wood.ogg",
+         *   lock: "sounds/doors/sliding/lock.ogg",
+         *   open: "sounds/doors/sliding/open-wood.ogg",
+         *   test: "sounds/doors/sliding/test.ogg",
+         *   unlock: "sounds/doors/sliding/unlock.ogg"
+         * }
+         * ```
+         */
         slidingWood: CONFIG.WallDoorSound;
 
+        /**
+         * ```ts
+         * {
+         *   label: "WALLS.DoorSound.StoneBasic",
+         *   close: "sounds/doors/stone/close.ogg",
+         *   lock: "sounds/doors/stone/lock.ogg",
+         *   open: "sounds/doors/stone/open.ogg",
+         *   test: "sounds/doors/stone/test.ogg",
+         *   unlock: "sounds/doors/stone/unlock.ogg"
+         * }
+         * ```
+         */
         stoneBasic: CONFIG.WallDoorSound;
 
+        /**
+         * ```ts
+         * {
+         *   label: "WALLS.DoorSound.StoneRocky",
+         *   close: "sounds/doors/stone/close-rocky.ogg",
+         *   lock: "sounds/doors/stone/lock.ogg",
+         *   open: "sounds/doors/stone/open-rocky.ogg",
+         *   test: "sounds/doors/stone/test.ogg",
+         *   unlock: "sounds/doors/stone/unlock.ogg"
+         * }
+         * ```
+         */
         stoneRocky: CONFIG.WallDoorSound;
 
+        /**
+         * ```ts
+         * {
+         *   label: "WALLS.DoorSound.StoneSandy",
+         *   close: "sounds/doors/stone/close-sandy.ogg",
+         *   lock: "sounds/doors/stone/lock.ogg",
+         *   open: "sounds/doors/stone/open-sandy.ogg",
+         *   test: "sounds/doors/stone/test.ogg",
+         *   unlock: "sounds/doors/stone/unlock.ogg"
+         * }
+         * ```
+         */
         stoneSandy: CONFIG.WallDoorSound;
 
+        /**
+         * ```ts
+         * {
+         *   label: "WALLS.DoorSound.WoodBasic",
+         *   close: "sounds/doors/wood/close.ogg",
+         *   lock: "sounds/doors/wood/lock.ogg",
+         *   open: "sounds/doors/wood/open.ogg",
+         *   test: "sounds/doors/wood/test.ogg",
+         *   unlock: "sounds/doors/wood/unlock.ogg"
+         * }
+         * ```
+         */
         woodBasic: CONFIG.WallDoorSound;
 
+        /**
+         * ```ts
+         * {
+         *   label: "WALLS.DoorSound.WoodCreaky",
+         *   close: "sounds/doors/wood/close-creaky.ogg",
+         *   lock: "sounds/doors/wood/lock.ogg",
+         *   open: "sounds/doors/wood/open-creaky.ogg",
+         *   test: "sounds/doors/wood/test.ogg",
+         *   unlock: "sounds/doors/wood/unlock.ogg"
+         * }
+         * ```
+         */
         woodCreaky: CONFIG.WallDoorSound;
 
+        /**
+         * ```ts
+         * {
+         *   label: "WALLS.DoorSound.WoodHeavy",
+         *   close: "sounds/doors/wood/close-heavy.ogg",
+         *   lock: "sounds/doors/wood/lock.ogg",
+         *   open: "sounds/doors/wood/open-heavy.ogg",
+         *   test: "sounds/doors/wood/test.ogg",
+         *   unlock: "sounds/doors/wood/unlock.ogg"
+         * }
+         * ```
+         */
         woodHeavy: CONFIG.WallDoorSound;
       };
     };
