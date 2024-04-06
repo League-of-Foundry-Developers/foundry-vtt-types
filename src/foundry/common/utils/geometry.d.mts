@@ -13,7 +13,7 @@
  *          A negative value if the points are in clockwise order (C lies to the right of AB)
  *          Zero if the points A, B, and C are collinear.
  */
-export declare function orient2dFast(a: Point, b: Point, c: Point): number;
+export function orient2dFast(a: Point, b: Point, c: Point): number;
 
 /**
  * Quickly test whether the line segment AB intersects with the line segment CD.
@@ -26,7 +26,7 @@ export declare function orient2dFast(a: Point, b: Point, c: Point): number;
  *
  * @returns Do the line segments intersect?
  */
-export declare function lineSegmentIntersects(a: Point, b: Point, c: Point, d: Point): boolean;
+export function lineSegmentIntersects(a: Point, b: Point, c: Point, d: Point): boolean;
 
 export interface LineIntersection {
   /** The x-coordinate of intersection */
@@ -39,7 +39,7 @@ export interface LineIntersection {
   t0: number;
 
   /** The vector distance from C to D on segment CD */
-  t1?: number;
+  t1?: number | undefined;
 }
 
 interface LineIntersectionOptions {
@@ -62,12 +62,12 @@ interface LineIntersectionOptions {
  *
  * @returns An intersection point, or null if no intersection occurred
  */
-export declare function lineLineIntersection(
+export function lineLineIntersection(
   a: Point,
   b: Point,
   c: Point,
   d: Point,
-  options: LineIntersectionOptions,
+  options?: LineIntersectionOptions,
 ): LineIntersection | null;
 
 /**
@@ -83,7 +83,7 @@ export declare function lineLineIntersection(
  *
  * @returns An intersection point, or null if no intersection occurred
  */
-export declare function lineSegmentIntersection(
+export function lineSegmentIntersection(
   a: Point,
   b: Point,
   c: Point,
@@ -91,7 +91,7 @@ export declare function lineSegmentIntersection(
   epsilon?: number,
 ): LineIntersection | null;
 
-interface LineCircleIntersection {
+export interface LineCircleIntersection {
   /** Is point A inside the circle? */
   aInside: boolean;
 
@@ -108,7 +108,7 @@ interface LineCircleIntersection {
   tangent: boolean;
 
   /** Intersection points: zero, one, or two */
-  intersections: [number] | [number, number] | [number, number, number];
+  intersections: [Point?, Point?];
 }
 
 /**
@@ -123,7 +123,7 @@ interface LineCircleIntersection {
  *
  * @returns The intersection of the segment AB with the circle
  */
-export declare function lineCircleIntersection(
+export function lineCircleIntersection(
   a: Point,
   b: Point,
   center: Point,
@@ -140,7 +140,7 @@ export declare function lineCircleIntersection(
  *
  * @returns The closest point to C on segment AB
  */
-export declare function closestPointToSegment(c: Point, a: Point, b: Point): Point;
+export function closestPointToSegment(c: Point, a: Point, b: Point): Point;
 
 /**
  * Determine the points of intersection between a line segment (p0,p1) and a circle.
@@ -154,10 +154,10 @@ export declare function closestPointToSegment(c: Point, a: Point, b: Point): Poi
  * @param epsilon - A small tolerance for floating point precision
  *                  (default: `0`)
  */
-export declare function quadraticIntersection(
+export function quadraticIntersection(
   p0: Point,
   p1: Point,
   center: Point,
   radius: number,
   epsilon?: number,
-): { x: number; y: number }[];
+): [Point?, Point?];

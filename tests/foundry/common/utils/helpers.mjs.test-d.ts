@@ -1,5 +1,12 @@
 import { expectTypeOf, assertType } from "vitest";
 
+// Global export test
+expectTypeOf(benchmark).toEqualTypeOf(foundry.utils.benchmark);
+expectTypeOf(deepClone).toEqualTypeOf(foundry.utils.deepClone);
+expectTypeOf(duplicate).toEqualTypeOf(foundry.utils.duplicate);
+expectTypeOf(mergeObject).toEqualTypeOf(foundry.utils.mergeObject);
+// ---
+
 // benchmark
 
 declare function functionWithoutParameters(): void;

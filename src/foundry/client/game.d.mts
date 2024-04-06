@@ -8,6 +8,12 @@ import type {
 } from "../../types/helperTypes.d.mts";
 import type { StoredDocument, ValueOf } from "../../types/utils.d.mts";
 
+// TODO: DataModels
+type World = unknown;
+type System = unknown;
+// TODO: Apps
+type ClientIssues = unknown;
+
 declare global {
   /**
    * The core Game instance which encapsulates the data, settings, and states relevant for managing the game experience.
@@ -26,144 +32,157 @@ declare global {
      * The named view which is currently active.
      * Game views include: join, setup, players, license, game, stream
      */
-    view: Game.View;
+    readonly view: Game.View;
 
     /**
      * The object of world data passed from the server
      */
-    data: Game.Data;
+    readonly data: Game.Data;
 
-    /** The Release data for this version of Foundry */
-    release: foundry.config.ReleaseData;
+    /**
+     * The Release data for this version of Foundry
+     */
+    readonly release: foundry.config.ReleaseData;
 
     /**
      * The id of the active World user, if any
      */
-    userId: string | null;
+    readonly userId: string | null;
 
     /**
      * The game World which is currently active.
      */
-    world: this["data"]["world"];
+    readonly world: World;
 
     /**
      * The System which is used to power this game World.
      */
-    system: this["data"]["system"];
+    readonly system: System;
 
     /**
      * A Map of active Modules which are currently eligible to be enabled in this World.
      * The subset of Modules which are designated as active are currently enabled.
      */
-    modules: Game.ModuleMap;
+    readonly modules: Game.ModuleMap;
 
     /**
      * A mapping of WorldCollection instances, one per primary Document type.
+     * @remarks Initialized between the `"i18nInit"` and `"setup"` hook events
      */
-    collections: foundry.utils.Collection<WorldCollection<DocumentConstructor, string>>;
+    readonly collections: foundry.utils.Collection<WorldCollection<DocumentConstructor, string>>;
 
     /**
      * A mapping of CompendiumCollection instances, one per Compendium pack.
+     * @remarks Initialized between the `"i18nInit"` and `"setup"` hook events
      */
-    packs: foundry.utils.Collection<CompendiumCollection<CompendiumCollection.Metadata>>;
+    readonly packs: foundry.utils.Collection<CompendiumCollection<CompendiumCollection.Metadata>>;
 
     /**
      * A singleton web Worker manager.
      */
-    workers: WorkerManager;
+    readonly workers: WorkerManager;
 
     /**
      * Localization support
+     * @remarks Initialized between the `"init"` and `"i18nInit"` hook events.
      */
-    i18n: Localization;
+    readonly i18n: Localization;
 
     /**
      * The Keyboard Manager
      * @remarks Initialized between the `"setup"` and `"ready"` hook events.
-     * @defaultValue `null`
      */
-    keyboard: KeyboardManager | null;
+    readonly keyboard: KeyboardManager;
 
     /**
      * The Mouse Manager
      * @remarks Initialized between the `"setup"` and `"ready"` hook events.
-     * @defaultValue `null`
      */
-    mouse: MouseManager | null;
+    readonly mouse: MouseManager;
 
     /**
      * The Gamepad Manager
      * @remarks Initialized between the `"setup"` and `"ready"` hook events.
-     * @defaultValue `null`
      */
-    gamepad: GamepadManager | null;
+    readonly gamepad: GamepadManager;
 
     /**
      * The New User Experience manager.
      */
-    nue: NewUserExperience;
+    readonly nue: NewUserExperience;
 
     /**
      * The user role permissions setting
      * @remarks Initialized between the `"setup"` and `"ready"` hook events.
-     * @defaultValue `null`
      */
-    permissions: Game.Permissions | null;
+    readonly permissions: Game.Permissions;
 
     /**
      * The client session id which is currently active
      */
-    sessionId: string;
+    readonly sessionId: string;
 
     /**
      * Client settings which are used to configure application behavior
+     * @remarks Settings are registered between `"init"` and `"i18nInit"` hook events.
      */
-    settings: ClientSettings;
+    readonly settings: ClientSettings;
 
     /**
      * Client keybindings which are used to configure application behavior
+     * @remarks Initialized between the `"setup"` and `"ready"` hook events.
      */
-    keybindings: ClientKeybindings;
+    readonly keybindings: ClientKeybindings;
 
     /**
      * A reference to the open Socket.io connection
      */
-    socket: io.Socket | null;
+    readonly socket: io.Socket;
 
     /**
      * A singleton GameTime instance which manages the progression of time within the game world.
      */
-    time: GameTime;
+    readonly time: GameTime;
 
     /**
      * A singleton reference to the Canvas object which may be used.
+     * @remarks Initialized between the `"setup"` and `"ready"` hook events.
      */
-    canvas: Canvas;
+    readonly canvas: Canvas;
 
     /**
      * A singleton instance of the Audio Helper class
      */
-    audio: AudioHelper;
+    readonly audio: AudioHelper;
 
     /**
      * A singleton instance of the Video Helper class
+     * @remarks Initialized between the `"i18nInit"` and `"setup"` hook events.
      */
-    video: VideoHelper;
+    readonly video: VideoHelper;
 
     /**
      * A singleton instance of the TooltipManager class
+     * @remarks Initialized between the `"i18nInit"` and `"setup"` hook events.
      */
-    tooltip: TooltipManager;
+    readonly tooltip: TooltipManager;
 
     /**
      * A singleton instance of the Tour collection class
+     * @remarks Initialized between the `"i18nInit"` and `"setup"` hook events.
      */
-    tours: Tours;
+    readonly tours: Tours;
 
     /**
      * The global document index.
+     * @remarks Initialized between the `"i18nInit"` and `"setup"` hook events.
      */
-    documentIndex: DocumentIndex;
+    readonly documentIndex: DocumentIndex;
+
+    /**
+     * The singleton instance of the ClientIssues manager.
+     */
+    readonly issues: ClientIssues;
 
     /**
      * Whether the Game is running in debug mode
@@ -237,11 +256,6 @@ declare global {
      * Initialize the Game for the current window location
      */
     initialize(): void;
-
-    /**
-     * Display certain usability error messages which are likely to result in the player having a bad experience.
-     */
-    protected _displayUsabilityErrors(): void;
 
     /**
      * Shut down the currently active Game. Requires GameMaster user permission.
@@ -573,8 +587,10 @@ declare global {
       };
       model: {
         Actor: Record<string, Record<string, unknown>>;
+        Card: Record<string, Record<string, unknown>>;
         Cards: Record<string, Record<string, unknown>>;
         Item: Record<string, Record<string, unknown>>;
+        JournalEntryPage: Record<string, Record<string, unknown>>;
       };
       path: string;
       template: {
@@ -595,6 +611,7 @@ declare global {
       type: "world";
     }
 
+    // TODO: Rework after Module class is defined
     interface ModuleMap extends Map<string, Game["data"]["modules"][number]> {
       /**
        * Gets the module requested for by ID
@@ -615,13 +632,14 @@ declare global {
         remoteIsAccessible: boolean | null;
       };
       coreUpdate: {
-        channel: unknown | null;
+        channel: string | null;
         couldReachWebsite: boolean;
         hasUpdate: boolean;
         slowResponse: boolean;
-        version: unknown | null;
+        version: string | null;
         willDisableModules: boolean;
       };
+      demoMode: boolean;
       files: {
         s3?: {
           endpoint: {
@@ -637,44 +655,55 @@ declare global {
         } | null;
         storages: ("public" | "data" | "s3")[];
       };
+      // Todo: Update after data models
       modules: ModuleData<foundry.packages.ModuleData>[];
       options: {
-        demo: boolean;
         language: string;
         port: number;
         routePrefix: string | null;
         updateChannel: string;
       };
+      packageWarnings: Record<string, unknown>;
       packs: {
-        /** @deprecated since V9 */
-        entity: foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
-        index: {
-          _id: string;
-          name: string;
-          type: string;
-        }[];
+        flags: Record<string, unknown>;
+        id: string;
         label: string;
         name: string;
-        package: string;
+        ownership: Record<
+          ValueOf<typeof foundry.CONST.USER_ROLE_NAMES>,
+          keyof typeof foundry.CONST.DOCUMENT_PERMISSION_LEVELS
+        >;
+        packageName: string;
+        packageType: foundry.CONST.PACKAGE_TYPES;
         path: string;
-        private: boolean;
+        /** @deprecated since v11 */
+        private?: boolean;
         system?: string;
         type: foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
       }[];
       paused: boolean;
+      // TODO: Update after DataModels to use ReleaseData
       release: {
         build: number;
         channel: "Stable" | "Testing" | "Development" | "Prototype";
-        download: string;
-        generation: string;
-        notes: string;
+        download: string | undefined;
+        generation: number;
+        maxGeneration?: number;
+        maxStableGeneration?: number;
+        node_version?: number;
+        notes: string | undefined;
         time: number;
       };
+      // TODO: Update after data models
       system: SystemData<foundry.packages.SystemData>;
-      systemUpdate: string | null;
+      systemUpdate: {
+        hasUpdate: boolean;
+        version: string;
+      };
+      // TODO: I think this is only for configurable types
+      template: Record<foundry.CONST.DOCUMENT_TYPES, DocumentTemplate>;
       userId: string;
-      /** @deprecated since V9 */
-      version?: string;
+      // TODO: Update after data models
       world: WorldData<foundry.packages.WorldData>;
     } & {
       [DocumentType in
@@ -707,3 +736,8 @@ declare global {
 type ConfiguredCollectionClassForName<Name extends foundry.CONST.DOCUMENT_TYPES> = InstanceType<
   CONFIG[Name]["collection"]
 >;
+
+type DocumentTemplate = {
+  htmlFields: string[];
+  types: string[];
+};
