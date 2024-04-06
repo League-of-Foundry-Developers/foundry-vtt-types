@@ -27,5 +27,5 @@ export declare class BaseFolder extends Document<data.FolderData, BaseFolder, Fo
   /**
    * The type of Document contained within this Folder.
    */
-  get type(): CONST.FOLDER_DOCUMENT_TYPES;
+  get type(): Exclude<CONST.FOLDER_DOCUMENT_TYPES, "Compendium">;
 }
