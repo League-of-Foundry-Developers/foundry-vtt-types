@@ -42,7 +42,6 @@ declare global {
      * @param mesh - The rendered mesh
      * @returns The source HTML element
      */
-    // FIXME: mesh can also be `SpriteMesh` (not typed yet)
     getSourceElement(mesh: PIXI.Sprite | SpriteMesh): HTMLImageElement | HTMLVideoElement | null;
 
     /**

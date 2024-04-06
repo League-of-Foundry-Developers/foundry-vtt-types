@@ -86,7 +86,7 @@ declare global {
    * This interface is accessed as a singleton instance via game.workers.
    * @see Game#workers
    */
-  class WorkerManager extends Map {
+  class WorkerManager extends Map<string, AsyncWorker> {
     constructor();
 
     /**
@@ -119,6 +119,7 @@ declare global {
      * @returns The AsyncWorker instance
      * @deprecated since v11, will be removed in v13
      * @remarks `"WorkerManager#getWorker is deprecated in favor of WorkerManager#get"`
+     * @remarks Throws an error if the name is not in the internal map, while `get` does not.
      */
     getWorker(name: string): AsyncWorker;
   }
