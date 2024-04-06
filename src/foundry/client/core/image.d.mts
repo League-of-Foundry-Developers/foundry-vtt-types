@@ -48,7 +48,7 @@ declare global {
 
     /**
      * Asynchronously convert a canvas element to base64.
-     * @param type    - (default: `"image/png"]`)
+     * @param type    - (default: `["image/png"]`)
      * @returns The base64 string of the canvas.
      */
     static canvasToBase64(canvas: HTMLCanvasElement, type?: string, quality?: number): Promise<string>;
