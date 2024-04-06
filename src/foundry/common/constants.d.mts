@@ -1598,8 +1598,8 @@ export declare const SETUP_PACKAGE_PROGRESS: Readonly<{
   };
 }>;
 export namespace SETUP_PACKAGE_PROGRESS {
-  type ACTIONS = ValueOf<typeof SETUP_PACKAGE_PROGRESS.ACTIONS>; // eslint-disable-line @typescript-eslint/no-unused-vars
-  type STEPS = ValueOf<typeof SETUP_PACKAGE_PROGRESS.STEPS>; // eslint-disable-line @typescript-eslint/no-unused-vars
+  export type ACTIONS = ValueOf<typeof SETUP_PACKAGE_PROGRESS.ACTIONS>;
+  export type STEPS = ValueOf<typeof SETUP_PACKAGE_PROGRESS.STEPS>;
 }
 
 /**
