@@ -441,7 +441,7 @@ export interface SceneDataConstructorData {
 
   /**
    * The color of the canvas which is displayed behind the scene background
-   * @defaultValue `#999999`
+   * @defaultValue `"#999999"`
    */
   backgroundColor?: string | null | undefined;
 
@@ -471,7 +471,7 @@ export interface SceneDataConstructorData {
 
   /**
    * A string representing the color used to render the grid lines
-   * @defaultValue `#000000`
+   * @defaultValue `"#000000"`
    */
   gridColor?: string | null | undefined;
 

@@ -6,6 +6,7 @@ declare global {
    * @see {@link Game.tours}
    */
   class Tours extends foundry.utils.Collection<Tour> {
+    /** @throws `"You can only have one TourManager instance"` */
     constructor();
 
     /**

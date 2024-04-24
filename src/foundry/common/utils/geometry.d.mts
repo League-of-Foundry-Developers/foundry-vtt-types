@@ -39,7 +39,7 @@ export interface LineIntersection {
   t0: number;
 
   /** The vector distance from C to D on segment CD */
-  t1?: number;
+  t1?: number | undefined;
 }
 
 interface LineIntersectionOptions {
@@ -67,7 +67,7 @@ export declare function lineLineIntersection(
   b: Point,
   c: Point,
   d: Point,
-  options: LineIntersectionOptions,
+  options?: LineIntersectionOptions,
 ): LineIntersection | null;
 
 /**
@@ -91,7 +91,7 @@ export declare function lineSegmentIntersection(
   epsilon?: number,
 ): LineIntersection | null;
 
-interface LineCircleIntersection {
+export interface LineCircleIntersection {
   /** Is point A inside the circle? */
   aInside: boolean;
 
@@ -108,7 +108,7 @@ interface LineCircleIntersection {
   tangent: boolean;
 
   /** Intersection points: zero, one, or two */
-  intersections: [number] | [number, number] | [number, number, number];
+  intersections: [Point?, Point?];
 }
 
 /**
@@ -160,4 +160,4 @@ export declare function quadraticIntersection(
   center: Point,
   radius: number,
   epsilon?: number,
-): { x: number; y: number }[];
+): [Point?, Point?];

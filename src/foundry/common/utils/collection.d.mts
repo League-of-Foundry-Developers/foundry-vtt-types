@@ -83,8 +83,8 @@ declare class Collection<T> extends Map<string, T> {
   /**
    * Get an element from the Collection by its key.
    * @param key     - The key of the entry to retrieve
-   * @param strict  - Throw an Error if the requested id does not exist, otherwise
-   *                  (default: `false`)
+   * @param strict  - Throw an Error if the requested key does not exist,
+   *                  otherwise return undefined. (default: `false`)
    * @returns The retrieved entry value, if the key exists, otherwise undefined
    *
    * @example Get an element from the Collection by key
@@ -102,9 +102,8 @@ declare class Collection<T> extends Map<string, T> {
    * Get an entry from the Collection by name.
    * Use of this method assumes that the objects stored in the collection have a "name" attribute.
    * @param name    - The name of the entry to retrieve
-   * @param strict  - Throw an Error if the requested id does not exist,
-   *                  otherwise return null.
-   *                  (default: `false`)
+   * @param strict  - Throw an Error if the requested name does not exist,
+   *                  otherwise return undefined. (default: `false`)
    * @returns The retrieved Entity, if one was found, otherwise undefined
    *
    * @example Get an element from the Collection by name (if applicable)

@@ -7,10 +7,6 @@
 TypeScript type definitions for [Foundry Virtual Tabletop](https://foundryvtt.com/) (unofficial)
 
 [![League Discord Server](https://img.shields.io/discord/732325252788387980?label=League%20of%20Extraordinary%20Foundry%20VTT%20Developers)](https://discord.gg/52DNPzqm2Z)
-![GitHub V9 issues by-label](https://img.shields.io/github/issues-raw/League-of-Foundry-Developers/foundry-vtt-types/foundry%20V9?color=%23fe631d)
-![GitHub closed V9 issues by-label](https://img.shields.io/github/issues-closed-raw/League-of-Foundry-Developers/foundry-vtt-types/foundry%20V9?color=%23fe631d)
-![GitHub V10 issues by-label](https://img.shields.io/github/issues-raw/League-of-Foundry-Developers/foundry-vtt-types/foundry%20V10?color=%23fe631d)
-![GitHub closed V10 issues by-label](https://img.shields.io/github/issues-closed-raw/League-of-Foundry-Developers/foundry-vtt-types/foundry%20V10?color=%23fe631d)
 [![npm (tag)](https://img.shields.io/npm/v/@league-of-foundry-developers/foundry-vtt-types/latest)](https://www.npmjs.com/package/@league-of-foundry-developers/foundry-vtt-types)
 
 </div>
@@ -19,7 +15,7 @@ TypeScript type definitions for [Foundry Virtual Tabletop](https://foundryvtt.co
 
 We aim to support the latest release of each Foundry VTT version (0.7, 0.8, 9, etc.), starting with 0.7.
 
-At the moment, versions 0.7, 0.8, and 9 are fully supported. Work on support for version 10 is just starting out. See the [open foundry V10 issues](https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues?q=is%3Aopen+is%3Aissue+label%3A%22foundry+V10%22) to keep track of the progress.
+At the moment, versions 0.7, 0.8, and 9 are fully supported. Work on support for version 11 is well underway, but involves some catchup on Version 11. See the [open foundry V10 issues](https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues?q=is%3Aopen+is%3Aissue+label%3A%22foundry+V10%22) as well as the [Version 11 tracking issue](https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues/2461) to view the current progress
 
 ## Installation
 
@@ -74,8 +70,8 @@ Add foundry-vtt-types to your types section in your `tsconfig.json`:
 {
   "compilerOptions": {
     "types": ["@league-of-foundry-developers/foundry-vtt-types"],
-    "module": "Node16",
-    "moduleResolution": "Node16",
+    "module": "ES2022",
+    "moduleResolution": "Bundler",
     "esModuleInterop": true,
     "strictNullChecks": true
   }
@@ -84,7 +80,7 @@ Add foundry-vtt-types to your types section in your `tsconfig.json`:
 
 This will make the type definitions available globally in your project.
 
-Make sure you are using `"module": "Node16"` and `"moduleResolution": "Node16"`, too. It is required for some
+Make sure you are using `"module": "ES2022"` and `"moduleResolution": "Bundler"`, too. It is required for some
 dependencies to be resolved correctly.
 
 Also make sure to set `"strictNullChecks": true` because otherwise, some conditional types used in the type definitions

@@ -1,10 +1,8 @@
-declare global {
-  namespace FateDie {
-    interface Modifiers {
-      testModifier1: (this: DiceTerm) => void;
-      testModifier2: (this: DiceTerm) => DiceTerm;
-      testModifier3: (this: DiceTerm, modifier: string) => undefined | DiceTerm;
-    }
+declare module FateDie {
+  interface Modifiers {
+    testModifier1: (this: DiceTerm) => void;
+    testModifier2: (this: DiceTerm) => DiceTerm;
+    testModifier3: (this: DiceTerm, modifier: string) => undefined | DiceTerm;
   }
 }
 

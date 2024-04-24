@@ -63,32 +63,22 @@ declare global {
     /**
      * Execute a task on a specific Worker.
      * @param functionName - The named function to execute on the worker. This function must first have been loaded.
-     * @param params       - An array of parameters with which to call the requested function
+     * @param args         - An array of parameters with which to call the requested function (default: `[]`)
+     * @param transfer     - An array of transferable objects which are transferred to the worker thread.
+     *                       See https://developer.mozilla.org/en-US/docs/Glossary/Transferable_objects
+     *                       (default: `[]`)
      * @returns A Promise which resolves with the returned result of the function once complete.
      */
-    executeFunction(functionName: string, ...params: any[]): Promise<unknown>;
+    executeFunction(functionName: string, args?: any[], transfer?: any[]): Promise<unknown>;
 
     /**
      * Dispatch a task to a named Worker, awaiting confirmation of the result.
      * @param taskData - Data to dispatch to the Worker as part of the task.
+     * @param transfer - An array of transferable objects which are transferred to the worker thread. (default: `[]`)
      * @returns A Promise which wraps the task transaction.
      * @internal
      */
-    protected _dispatchTask(taskData?: WorkerTask): Promise<unknown>;
-
-    /**
-     * Handle messages emitted by the Worker thread.
-     * @param event - The dispatched message event
-     * @internal
-     */
-    protected _onMessage(event: MessageEvent): void;
-
-    /**
-     * Handle errors emitted by the Worker thread.
-     * @param error - The dispatched error event
-     * @internal
-     */
-    protected _onError(error: ErrorEvent): void;
+    protected _dispatchTask(taskData?: WorkerTask, transfer?: any[]): Promise<unknown>;
   }
 
   /**
@@ -96,14 +86,8 @@ declare global {
    * This interface is accessed as a singleton instance via game.workers.
    * @see Game#workers
    */
-  class WorkerManager {
+  class WorkerManager extends Map<string, AsyncWorker> {
     constructor();
-
-    /**
-     * The currently active workforce.
-     * @internal
-     */
-    protected workforce: Map<string, AsyncWorker>;
 
     /**
      * Supported worker task actions
@@ -123,18 +107,21 @@ declare global {
     createWorker(name: string, config?: AsyncWorker.Options): Promise<AsyncWorker>;
 
     /**
-     * Get a currently active Worker by name.
-     * @param name - The named Worker to retrieve
-     * @returns The AsyncWorker instance
-     */
-    getWorker(name: string): AsyncWorker;
-
-    /**
      * Retire a current Worker, terminating it immediately.
      * @see {@link Worker#terminate}
      * @param name - The named worker to terminate
      */
     retireWorker(name: string): void;
+
+    /**
+     * Get a currently active Worker by name.
+     * @param name - The named Worker to retrieve
+     * @returns The AsyncWorker instance
+     * @deprecated since v11, will be removed in v13
+     * @remarks `"WorkerManager#getWorker is deprecated in favor of WorkerManager#get"`
+     * @remarks Throws an error if the name is not in the internal map, while `get` does not.
+     */
+    getWorker(name: string): AsyncWorker;
   }
 
   namespace AsyncWorker {
@@ -150,6 +137,11 @@ declare global {
        * @defaultValue `false`
        */
       loadPrimitives: boolean;
+
+      /**
+       * Should the worker operates in script modes? Optional scripts.
+       */
+      scripts: string[];
     }
   }
 }

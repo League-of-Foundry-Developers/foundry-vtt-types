@@ -6,6 +6,7 @@ declare global {
    * A singleton instance of this class is available as `game.video`
    */
   class VideoHelper {
+    /** @throws `"You may not re-initialize the singleton VideoHelper. Use game.video instead."` */
     constructor();
 
     /**
@@ -41,16 +42,14 @@ declare global {
      * @param mesh - The rendered mesh
      * @returns The source HTML element
      */
-    // FIXME: mesh can also be `SpriteMesh` (not typed yet)
-    getSourceElement(mesh: PIXI.Sprite): HTMLImageElement | HTMLVideoElement | null;
+    getSourceElement(mesh: PIXI.Sprite | SpriteMesh): HTMLImageElement | HTMLVideoElement | null;
 
     /**
      * Get the video element source corresponding to a Sprite or SpriteMesh.
      * @param object - The PIXI source
      * @returns The source video element or null
      */
-    // FIXME: mesh can also be `SpriteMesh` (not typed yet)
-    getVideoSource(object: PIXI.Sprite | PIXI.Texture): HTMLVideoElement | null;
+    getVideoSource(object: PIXI.Sprite | PIXI.Texture | SpriteMesh): HTMLVideoElement | null;
 
     /**
      * Clone a video texture so that it can be played independently of the original base texture.
@@ -59,6 +58,11 @@ declare global {
      */
     cloneTexture(source: HTMLVideoElement): Promise<PIXI.Texture>;
 
+    /**
+     * Check if a source has a video extension.
+     * @param src - The source.
+     * @returns If the source has a video extension or not.
+     */
     static hasVideoExtension(src: string): boolean;
 
     /**

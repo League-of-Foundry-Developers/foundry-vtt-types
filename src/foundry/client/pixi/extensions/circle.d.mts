@@ -24,7 +24,7 @@ declare module "pixi.js" {
      * @param b - The second endpoint on segment A|B
      * @returns Points where the segment A|B intersects the circle
      */
-    segmentIntersections(a: Point, b: Point): Point[];
+    segmentIntersections(a: Point, b: Point): [Point?, Point?];
 
     /**
      * Calculate an x,y point on this circle's circumference given an angle
