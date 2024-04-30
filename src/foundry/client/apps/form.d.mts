@@ -168,7 +168,7 @@ declare global {
      * Do not preventDefault in this handler as other interactions on the form may also be occurring.
      * @param event - The initial change event
      */
-    protected _onChangeInput(event: JQuery.ChangeEvent): void;
+    protected _onChangeInput(event: JQuery.ChangeEvent): Promise<void | object>;
 
     /**
      * Handle the change of a color picker input which enters it's chosen value into a related input field
@@ -307,6 +307,8 @@ declare global {
        */
       preventRender?: boolean;
     }
+
+    interface FormApplicationData {}
   }
 
   interface DocumentSheetOptions<
@@ -425,5 +427,21 @@ declare global {
     protected _onConfigureSheet(event: JQuery.ClickEvent): void;
 
     protected override _updateObject(event: Event, formData: object): Promise<unknown>;
+  }
+
+  namespace DocumentSheet {
+    interface DocumentSheetData<
+      Options extends DocumentSheetOptions<ConcreteDocument>,
+      ConcreteDocument extends foundry.abstract.Document<any, any> = foundry.abstract.Document<any, any>,
+    > extends FormApplication.FormApplicationData {
+      cssClass: string;
+      editable: boolean;
+      data: ReturnType<ConcreteDocument["toObject"]>;
+      limited: boolean;
+      options: DocumentSheet<Options, ConcreteDocument>["options"];
+      owner: boolean;
+      title: DocumentSheet<Options, ConcreteDocument>["title"];
+      document: DocumentSheet<Options, ConcreteDocument>["document"];
+    }
   }
 }

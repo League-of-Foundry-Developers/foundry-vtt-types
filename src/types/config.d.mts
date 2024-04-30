@@ -171,6 +171,17 @@ declare global {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface DataConfig {}
 
+  /**
+   * Configure the return type of the `getData` method for AppV1 Applications.
+   *
+   * mode - The mode of the return type.
+   * - if mode is "partial", the return type is a partial of the data object, and will allow for any Record\<string,unknown\> to be returned, regardless of the actual data object.
+   * - if mode is "exact", the return type is the exact data object, and will not allow for any additional properties to be returned.
+   * - if mode is "object", the return type is a generic object, and will allow for any object to be returned, regardless of the actual data object.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface GetDataConfig {}
+
   /** @see {@link DataConfig} */
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface SourceConfig {}
