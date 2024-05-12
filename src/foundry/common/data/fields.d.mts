@@ -741,6 +741,182 @@ declare namespace BooleanField {
   type InitializedType<Opts extends Options> = DataField.DerivedInitializedType<boolean, MergedOptions<Opts>>;
 }
 
+declare global {
+  interface NumberFieldOptions extends DataFieldOptions<number> {
+    /**
+     * A minimum allowed value
+     * @defaultValue `undefined`
+     */
+    min?: number | undefined;
+
+    /**
+     * A maximum allowed value
+     * @defaultValue `undefined`
+     */
+    max?: number | undefined;
+
+    /**
+     * A permitted step size
+     * @defaultValue `undefined`
+     */
+    step?: number | undefined;
+
+    /**
+     * Must the number be an integer?
+     * @defaultValue `false`
+     */
+    integer?: boolean;
+
+    /**
+     * Must the number be positive?
+     * @defaultValue `false`
+     */
+    positive?: boolean;
+
+    /**
+     * An array of values or an object of values/labels which represent
+     * allowed choices for the field. A function may be provided which dynamically
+     * returns the array of choices.
+     * @defaultValue `undefined`
+     */
+    choices?: number[] | Record<number, string> | (() => number[] | Record<number, string>) | undefined;
+  }
+}
+
+/**
+ * A subclass of [DataField]{@link DataField} which deals with number-typed data.
+ * @typeParam Options         - the options of the NumberField instance
+ * @typeParam AssignmentType  - the type of the allowed assignment values of the NumberField
+ * @typeParam InitializedType - the type of the initialized values of the NumberField
+ * @typeParam PersistedType   - the type of the persisted values of the NumberField
+ * @remarks
+ * Defaults:
+ * AssignmentType: `number | null | undefined`
+ * InitializedType: `number | null`
+ * PersistedType: `number | null`
+ * InitialValue: `null`
+ */
+declare class NumberField<
+  Options extends NumberFieldOptions = NumberField.DefaultOptions,
+  AssignmentType = NumberField.AssignmentType<Options>,
+  InitializedType = NumberField.InitializedType<Options>,
+  PersistedType extends number | null | undefined = NumberField.InitializedType<Options>,
+> extends DataField<Options, AssignmentType, InitializedType, PersistedType> {
+  /**
+   * @param options - Options which configure the behavior of the field
+   */
+  constructor(options?: Options);
+
+  /** @defaultValue `null` */
+  override initial: DataFieldOptions.InitialType<InitializedType>;
+
+  /** @defaultValue `true` */
+  override nullable: boolean;
+
+  /**
+   * A minimum allowed value
+   * @defaultValue `undefined`
+   */
+  min: number | undefined;
+
+  /**
+   * A maximum allowed value
+   * @defaultValue `undefined`
+   */
+  max: number | undefined;
+
+  /**
+   * A permitted step size
+   * @defaultValue `undefined`
+   */
+  step: number | undefined;
+
+  /**
+   * Must the number be an integer?
+   * @defaultValue `false`
+   */
+  integer: boolean;
+
+  /**
+   * Must the number be positive?
+   * @defaultValue `false`
+   */
+  positive: boolean;
+
+  /**
+   * An array of values or an object of values/labels which represent
+   * allowed choices for the field. A function may be provided which dynamically
+   * returns the array of choices.
+   * @defaultValue `undefined`
+   */
+  choices: number[] | Record<number, string> | (() => number[] | Record<number, string>) | undefined;
+
+  protected static override get _defaults(): NumberFieldOptions;
+
+  protected override _cast(value: AssignmentType): InitializedType;
+
+  protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions | undefined): InitializedType;
+
+  protected override _validateType(
+    value: InitializedType,
+    options?: DataField.ValidationOptions<DataField.Any> | undefined,
+  ): boolean | void;
+
+  /**
+   * Test whether a provided value is a valid choice from the allowed choice set
+   * @param value - The provided value
+   * @returns Is the choice valid?
+   */
+  #isValidChoice(value: AssignmentType): boolean;
+}
+
+declare namespace NumberField {
+  /** The type of the default options for the {@link NumberField} class. */
+  type DefaultOptions = SimpleMerge<
+    DataField.DefaultOptions,
+    {
+      initial: null;
+      nullable: true;
+      min: undefined;
+      max: undefined;
+      step: undefined;
+      integer: false;
+      positive: false;
+      choices: undefined;
+    }
+  >;
+
+  /** The type of the default options for the {@link NumberField} class when choices are provided. */
+  type DefaultOptionsWhenChoicesProvided = SimpleMerge<DefaultOptions, { nullable: false }>;
+
+  /**
+   * A helper type for the given options type merged into the default options of the NumberField class.
+   * @typeParam Options - the options that override the default options
+   */
+  type MergedOptions<Options extends NumberFieldOptions> = SimpleMerge<
+    undefined extends Options["choices"] ? DefaultOptions : DefaultOptionsWhenChoicesProvided,
+    Options
+  >;
+
+  /**
+   * A shorthand for the assignment type of a NumberField class.
+   * @typeParam Options - the options that override the default options
+   */
+  type AssignmentType<Options extends NumberFieldOptions> = DataField.DerivedAssignmentType<
+    number,
+    MergedOptions<Options>
+  >;
+
+  /**
+   * A shorthand for the initialized type of a NumberField class.
+   * @typeParam Options - the options that override the default options
+   */
+  type InitializedType<Options extends NumberFieldOptions> = DataField.DerivedInitializedType<
+    number,
+    MergedOptions<Options>
+  >;
+}
+
 /**
  * A subclass of [DataField]{@link DataField} which deals with object-typed data.
  * @typeParam Options         - the options of the ObjectField instance
@@ -866,4 +1042,4 @@ declare namespace ModelValidationError {
   type Errors = Record<number | string | symbol, Error> | Error[] | string;
 }
 
-export { BooleanField, DataField, ObjectField, SchemaField, ModelValidationError };
+export { BooleanField, DataField, NumberField, ObjectField, SchemaField, ModelValidationError };
