@@ -917,6 +917,170 @@ declare namespace NumberField {
   >;
 }
 
+declare global {
+  interface StringFieldOptions extends DataFieldOptions<string> {
+    /**
+     * Is the string allowed to be blank (empty)?
+     * @defaultValue `true`
+     */
+    blank?: boolean;
+
+    /**
+     * Should any provided string be trimmed as part of cleaning?
+     * @defaultValue `true`
+     */
+    trim?: boolean;
+
+    /**
+     * An array of values or an object of values/labels which represent
+     * allowed choices for the field. A function may be provided which dynamically
+     * returns the array of choices.
+     * @defaultValue `undefined`
+     */
+    choices?: string[] | Record<string, string> | (() => string[] | Record<string, string>) | undefined;
+
+    /**
+     * @defaultValue `false`
+     */
+    textSearch?: boolean;
+  }
+}
+
+/**
+ * A subclass of [DataField]{@link DataField} which deals with string-typed data.
+ * @typeParam Options         - the options of the StringField instance
+ * @typeParam AssignmentType  - the type of the allowed assignment values of the StringField
+ * @typeParam InitializedType - the type of the initialized values of the StringField
+ * @typeParam PersistedType   - the type of the persisted values of the StringField
+ * @remarks
+ * Defaults:
+ * AssignmentType: `string | null | undefined`
+ * InitializedType: `string`
+ * PersistedType: `string`
+ * InitialValue: `""`
+ */
+declare class StringField<
+  Options extends StringFieldOptions = StringField.DefaultOptions,
+  AssignmentType = StringField.AssignmentType<Options>,
+  InitializedType = StringField.InitializedType<Options>,
+  PersistedType extends string | null | undefined = StringField.InitializedType<Options>,
+> extends DataField<Options, AssignmentType, InitializedType, PersistedType> {
+  /**
+   * @param options - Options which configure the behavior of the field
+   */
+  constructor(options?: Options);
+
+  /** @defaultValue `undefined` */
+  override initial: DataFieldOptions.InitialType<InitializedType>;
+
+  /**
+   * Is the string allowed to be blank (empty)?
+   * @defaultValue `true`
+   */
+  blank: boolean;
+
+  /**
+   * Should any provided string be trimmed as part of cleaning?
+   * @defaultValue `true`
+   */
+  trim: boolean;
+
+  /** @defaultValue `false` */
+  override nullable: boolean;
+
+  /**
+   * An array of values or an object of values/labels which represent
+   * allowed choices for the field. A function may be provided which dynamically
+   * returns the array of choices.
+   * @defaultValue `undefined`
+   */
+  choices: string[] | Record<string, string> | (() => string[] | Record<string, string>) | undefined;
+
+  /** @defaultValue `false` */
+  textSearch: boolean;
+
+  protected static override get _defaults(): StringFieldOptions;
+
+  override clean(value: AssignmentType, options?: DataField.CleanOptions | undefined): InitializedType;
+
+  protected override _cast(value: AssignmentType): InitializedType;
+
+  protected override _validateSpecial(value: AssignmentType): boolean | void;
+
+  protected override _validateType(
+    value: InitializedType,
+    options?: DataField.ValidationOptions<DataField.Any> | undefined,
+  ): boolean | void;
+
+  /**
+   * Test whether a provided value is a valid choice from the allowed choice set
+   * @param value - The provided value
+   * @returns Is the choice valid?
+   */
+  protected _isValidChoice(value: AssignmentType): boolean;
+}
+
+declare namespace StringField {
+  /** The type of the default options for the {@link StringField} class. */
+  type DefaultOptions = SimpleMerge<
+    DataField.DefaultOptions,
+    {
+      initial: string;
+      blank: true;
+      trim: true;
+      nullable: false;
+      choices: undefined;
+    }
+  >;
+
+  /** The type of the default options for the {@link StringField} class when choices are provided. */
+  type DefaultOptionsWhenChoicesProvided = SimpleMerge<DefaultOptions, { nullable: false; blank: false }>;
+
+  /**
+   * A helper type for the given options type merged into the default options of the StringField class.
+   * @typeParam Options - the options that override the default options
+   */
+  type MergedOptions<Options extends StringFieldOptions> = SimpleMerge<
+    _OptionsForInitial<_OptionsForChoices<Options["choices"]>>,
+    Options
+  >;
+
+  type _OptionsForChoices<Choices extends StringFieldOptions["choices"]> = undefined extends Choices
+    ? DefaultOptions
+    : DefaultOptionsWhenChoicesProvided;
+
+  // FIXME: `"initial" extends keyof Options` does not work for modeling `"initial" in options`.
+  type _OptionsForInitial<Options extends StringFieldOptions> = "initial" extends keyof Options
+    ? Options
+    : SimpleMerge<Options, { initial: _InitialForOptions<Options> }>;
+
+  type _InitialForOptions<Options extends StringFieldOptions> = Options["required"] extends false | undefined
+    ? undefined
+    : Options["blank"] extends true
+      ? string
+      : Options["nullable"] extends true
+        ? null
+        : undefined;
+
+  /**
+   * A shorthand for the assignment type of a StringField class.
+   * @typeParam Options - the options that override the default options
+   */
+  type AssignmentType<Options extends StringFieldOptions> = DataField.DerivedAssignmentType<
+    string,
+    MergedOptions<Options>
+  >;
+
+  /**
+   * A shorthand for the initialized type of a StringField class.
+   * @typeParam Options - the options that override the default options
+   */
+  type InitializedType<Options extends StringFieldOptions> = DataField.DerivedInitializedType<
+    string,
+    MergedOptions<Options>
+  >;
+}
+
 /**
  * A subclass of [DataField]{@link DataField} which deals with object-typed data.
  * @typeParam Options         - the options of the ObjectField instance
@@ -1042,4 +1206,4 @@ declare namespace ModelValidationError {
   type Errors = Record<number | string | symbol, Error> | Error[] | string;
 }
 
-export { BooleanField, DataField, NumberField, ObjectField, SchemaField, ModelValidationError };
+export { BooleanField, DataField, NumberField, ObjectField, SchemaField, StringField, ModelValidationError };
