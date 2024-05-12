@@ -1,6 +1,6 @@
 import type { ConfiguredFlags, PropertiesToSource } from "../../../../types/helperTypes.d.mts";
 import type DocumentData from "../../abstract/data.d.mts";
-import type { BaseTableResult } from "../../documents.mjs/index.d.mts";
+import type { BaseTableResult } from "../../documents.mjs/module.d.mts";
 import type { fields } from "../module.d.mts";
 
 export interface TableResultDataSchema extends DocumentSchema {

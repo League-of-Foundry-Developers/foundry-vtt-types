@@ -4,9 +4,9 @@ import type { DocumentMetadata, DocumentModificationOptions } from "../abstract/
 import type { Document } from "../abstract/module.d.mts";
 import type { ActiveEffectDataConstructorData } from "../data/data.mjs/activeEffectData.d.mts";
 import type * as data from "../data/data.mjs/index.d.mts";
-import type { BaseActor } from "./baseActor.d.mts";
-import type { BaseItem } from "./baseItem.d.mts";
-import type { BaseUser } from "./baseUser.d.mts";
+import type { BaseActor } from "./actor.d.mts";
+import type { BaseItem } from "./item.d.mts";
+import type { BaseUser } from "./user.d.mts";
 
 type ActiveEffectMetadata = Merge<
   DocumentMetadata,

@@ -1,7 +1,7 @@
 import type { ConfiguredDocumentClass, ConfiguredFlags, PropertiesToSource } from "../../../../types/helperTypes.d.mts";
 import type DocumentData from "../../abstract/data.d.mts";
 import type EmbeddedCollection from "../../abstract/embedded-collection.d.mts";
-import type * as documents from "../../documents.mjs/index.d.mts";
+import type * as documents from "../../documents.mjs/module.d.mts";
 import type * as fields from "../fields.d.mts";
 
 export interface PlaylistDataSchema extends DocumentSchema {

@@ -2,7 +2,7 @@ import type { Merge } from "../../../types/utils.d.mts";
 import type { DocumentMetadata } from "../abstract/document.d.mts";
 import type { Document } from "../abstract/module.d.mts";
 import type * as data from "../data/data.mjs/index.d.mts";
-import type { BaseCard } from "./baseCard.d.mts";
+import type { BaseCard } from "./card.d.mts";
 
 type CardsMetadata = Merge<
   DocumentMetadata,

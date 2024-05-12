@@ -3,7 +3,7 @@ import type { DocumentMetadata, DocumentModificationOptions } from "../abstract/
 import type { Document } from "../abstract/module.d.mts";
 import type { FogExplorationDataConstructorData } from "../data/data.mjs/fogExplorationData.d.mts";
 import type * as data from "../data/data.mjs/index.d.mts";
-import type { BaseUser } from "./baseUser.d.mts";
+import type { BaseUser } from "./user.d.mts";
 
 type FogExplorationMetadata = Merge<
   DocumentMetadata,

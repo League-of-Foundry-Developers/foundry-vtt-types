@@ -7,7 +7,7 @@ import type {
 } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial } from "../../../../types/utils.d.mts";
 import type DocumentData from "../../abstract/data.d.mts";
-import type * as documents from "../../documents.mjs/index.d.mts";
+import type * as documents from "../../documents.mjs/module.d.mts";
 import type * as fields from "../fields.d.mts";
 import type { CardFaceData, CardFaceDataConstructorData } from "./cardFaceData.d.mts";
 

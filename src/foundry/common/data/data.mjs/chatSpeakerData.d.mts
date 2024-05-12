@@ -1,6 +1,6 @@
 import type { ConfiguredDocumentClass, FieldReturnType, PropertiesToSource } from "../../../../types/helperTypes.d.mts";
 import type { DocumentData } from "../../abstract/module.d.mts";
-import type { BaseActor, BaseChatMessage, BaseScene } from "../../documents.mjs/index.d.mts";
+import type { BaseActor, BaseChatMessage, BaseScene } from "../../documents.mjs/module.d.mts";
 import type * as fields from "../fields.d.mts";
 import type { ForeignDocumentField } from "../fields.d.mts";
 

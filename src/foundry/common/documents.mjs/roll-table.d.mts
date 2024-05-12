@@ -1,7 +1,7 @@
 import type { Merge } from "../../../types/utils.d.mts";
 import type { DocumentMetadata } from "../abstract/document.d.mts";
 import type { Document } from "../abstract/module.d.mts";
-import type { BaseTableResult } from "./baseTableResult.d.mts";
+import type { BaseTableResult } from "./table-result.d.mts";
 
 type RollTableMetadata = Merge<
   DocumentMetadata,

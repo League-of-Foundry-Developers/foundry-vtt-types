@@ -4,8 +4,8 @@ import type { DocumentMetadata } from "../abstract/document.d.mts";
 import type { Document } from "../abstract/module.d.mts";
 import type * as data from "../data/data.mjs/index.d.mts";
 import type { MeasuredTemplateDataConstructorData } from "../data/data.mjs/measuredTemplateData.d.mts";
-import type { BaseScene } from "./baseScene.d.mts";
-import type { BaseUser } from "./baseUser.d.mts";
+import type { BaseScene } from "./scene.d.mts";
+import type { BaseUser } from "./user.d.mts";
 
 type MeasuredTemplateMetadata = Merge<
   DocumentMetadata,

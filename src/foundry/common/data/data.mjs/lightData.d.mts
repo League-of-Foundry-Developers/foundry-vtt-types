@@ -1,6 +1,6 @@
 import type { FieldReturnType, PropertiesToSource } from "../../../../types/helperTypes.d.mts";
 import type { DocumentData } from "../../abstract/module.d.mts";
-import type * as documents from "../../documents.mjs/index.d.mts";
+import type * as documents from "../../documents.mjs/module.d.mts";
 import type * as fields from "../fields.d.mts";
 import type { AnimationData, AnimationDataConstructorData } from "./animationData.d.mts";
 import type { DarknessActivation, DarknessActivationConstructorData } from "./darknessActivation.d.mts";

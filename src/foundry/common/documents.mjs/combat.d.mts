@@ -3,8 +3,8 @@ import type { DocumentMetadata } from "../abstract/document.d.mts";
 import type { Document } from "../abstract/module.d.mts";
 import type { CombatDataConstructorData } from "../data/data.mjs/combatData.d.mts";
 import type { data } from "../module.d.mts";
-import type { BaseCombatant } from "./baseCombatant.d.mts";
-import type { BaseUser } from "./baseUser.d.mts";
+import type { BaseCombatant } from "./combatant.d.mts";
+import type { BaseUser } from "./user.d.mts";
 
 type CombatMetadata = Merge<
   DocumentMetadata,

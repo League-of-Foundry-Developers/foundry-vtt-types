@@ -1,6 +1,6 @@
 import type { FieldReturnType, PropertiesToSource } from "../../../../types/helperTypes.d.mts";
 import type { DocumentData } from "../../abstract/module.d.mts";
-import type { BaseActiveEffect } from "../../documents.mjs/index.d.mts";
+import type { BaseActiveEffect } from "../../documents.mjs/module.d.mts";
 import type * as fields from "../fields.d.mts";
 
 export interface EffectDurationDataSchema extends DocumentSchema {

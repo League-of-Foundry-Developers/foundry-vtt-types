@@ -2,14 +2,14 @@ import type { Merge } from "../../../types/utils.d.mts";
 import type { DocumentMetadata } from "../abstract/document.d.mts";
 import type { Document } from "../abstract/module.d.mts";
 import type * as data from "../data/data.mjs/index.d.mts";
-import type { BaseAmbientLight } from "./baseAmbientLight.d.mts";
-import type { BaseAmbientSound } from "./baseAmbientSound.d.mts";
-import type { BaseDrawing } from "./baseDrawing.d.mts";
-import type { BaseMeasuredTemplate } from "./baseMeasuredTemplate.d.mts";
-import type { BaseNote } from "./baseNote.d.mts";
-import type { BaseTile } from "./baseTile.d.mts";
-import type { BaseToken } from "./baseToken.d.mts";
-import type { BaseWall } from "./baseWall.d.mts";
+import type { BaseAmbientLight } from "./ambient-light.d.mts";
+import type { BaseAmbientSound } from "./ambient-sound.d.mts";
+import type { BaseDrawing } from "./drawing.d.mts";
+import type { BaseMeasuredTemplate } from "./measured-template.d.mts";
+import type { BaseNote } from "./note.d.mts";
+import type { BaseTile } from "./tile.d.mts";
+import type { BaseToken } from "./token.d.mts";
+import type { BaseWall } from "./wall.d.mts";
 
 type SceneMetadata = Merge<
   DocumentMetadata,

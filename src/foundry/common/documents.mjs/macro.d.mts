@@ -4,7 +4,7 @@ import type { Document } from "../abstract/module.d.mts";
 import type * as CONST from "../constants.d.mts";
 import type * as data from "../data/data.mjs/index.d.mts";
 import type { MacroDataConstructorData } from "../data/data.mjs/macroData.d.mts";
-import type { BaseUser } from "./baseUser.d.mts";
+import type { BaseUser } from "./user.d.mts";
 
 type MacroMetadata = Merge<
   DocumentMetadata,

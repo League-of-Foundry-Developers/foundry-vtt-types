@@ -1,7 +1,7 @@
 import type { ConfiguredDocumentClass, ConfiguredFlags, PropertiesToSource } from "../../../../types/helperTypes.d.mts";
 import type { ValueOf } from "../../../../types/utils.d.mts";
 import type DocumentData from "../../abstract/data.d.mts";
-import type * as documents from "../../documents.mjs/index.d.mts";
+import type * as documents from "../../documents.mjs/module.d.mts";
 import type * as fields from "../fields.d.mts";
 
 export interface FolderDataSchema extends DocumentSchema {

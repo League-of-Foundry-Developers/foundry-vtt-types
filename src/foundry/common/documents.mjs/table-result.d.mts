@@ -3,8 +3,8 @@ import type { DeepPartial, Merge } from "../../../types/utils.d.mts";
 import type { DocumentMetadata } from "../abstract/document.d.mts";
 import type { Document } from "../abstract/module.d.mts";
 import type { TableResultDataConstructorData } from "../data/data.mjs/tableResultData.d.mts";
-import type { BaseRollTable } from "./baseRollTable.d.mts";
-import type { BaseUser } from "./baseUser.d.mts";
+import type { BaseRollTable } from "./roll-table.d.mts";
+import type { BaseUser } from "./user.d.mts";
 
 type TableResultMetadata = Merge<
   DocumentMetadata,

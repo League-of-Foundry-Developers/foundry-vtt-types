@@ -6,7 +6,7 @@ import type {
   ToObjectFalseType,
 } from "../../../types/helperTypes.d.mts";
 import type { ConstructorOf, DeepPartial, StoredDocument, TemporaryDocument } from "../../../types/utils.d.mts";
-import type { BaseUser } from "../documents.mjs/index.d.mts";
+import type { BaseUser } from "../documents.mjs/module.d.mts";
 import type { AnyDocumentData } from "./data.d.mts";
 import type EmbeddedCollection from "./embedded-collection.d.mts";
 
