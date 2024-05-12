@@ -671,6 +671,77 @@ declare namespace SchemaField {
 }
 
 /**
+ * A subclass of [DataField]{@link DataField} which deals with boolean-typed data.
+ * @typeParam Options         - the options of the BooleanField instance
+ * @typeParam AssignmentType  - the type of the allowed assignment values of the BooleanField
+ * @typeParam InitializedType - the type of the initialized values of the BooleanField
+ * @typeParam PersistedType   - the type of the persisted values of the BooleanField
+ * @remarks
+ * Defaults:
+ * AssignmentType: `boolean | null | undefined`
+ * InitializedType: `boolean`
+ * PersistedType: `boolean`
+ * InitialValue: `false`
+ */
+declare class BooleanField<
+  Options extends BooleanField.Options = BooleanField.DefaultOptions,
+  AssignmentType = BooleanField.AssignmentType<Options>,
+  InitializedType = BooleanField.InitializedType<Options>,
+  PersistedType extends boolean | null | undefined = BooleanField.InitializedType<Options>,
+> extends DataField<Options, AssignmentType, InitializedType, PersistedType> {
+  /** @defaultValue `true` */
+  override required: boolean;
+
+  /** @defaultValue `false` */
+  override nullable: boolean;
+
+  /** @defaultValue `false` */
+  override initial: DataFieldOptions.InitialType<InitializedType>;
+
+  protected static override get _defaults(): BooleanField.Options;
+
+  protected override _cast(value: AssignmentType): InitializedType;
+
+  protected override _validateType(
+    value: InitializedType,
+    options?: DataField.ValidationOptions<DataField.Any> | undefined,
+  ): boolean | void;
+}
+
+declare namespace BooleanField {
+  /** A shorthand for the options of a BooleanField class. */
+  type Options = DataFieldOptions<boolean>;
+
+  /** The type of the default options for the {@link BooleanField} class. */
+  type DefaultOptions = SimpleMerge<
+    DataField.DefaultOptions,
+    {
+      required: true;
+      nullable: false;
+      initial: boolean;
+    }
+  >;
+
+  /**
+   * A helper type for the given options type merged into the default options of the BooleanField class.
+   * @typeParam Opts - the options that override the default options
+   */
+  type MergedOptions<Opts extends Options> = SimpleMerge<DefaultOptions, Opts>;
+
+  /**
+   * A shorthand for the assignment type of a BooleanField class.
+   * @typeParam Opts - the options that override the default options
+   */
+  type AssignmentType<Opts extends Options> = DataField.DerivedAssignmentType<boolean, MergedOptions<Opts>>;
+
+  /**
+   * A shorthand for the initialized type of a BooleanField class.
+   * @typeParam Opts - the options that override the default options
+   */
+  type InitializedType<Opts extends Options> = DataField.DerivedInitializedType<boolean, MergedOptions<Opts>>;
+}
+
+/**
  * A subclass of [DataField]{@link DataField} which deals with object-typed data.
  * @typeParam Options         - the options of the ObjectField instance
  * @typeParam AssignmentType  - the type of the allowed assignment values of the ObjectField
@@ -795,4 +866,4 @@ declare namespace ModelValidationError {
   type Errors = Record<number | string | symbol, Error> | Error[] | string;
 }
 
-export { DataField, ObjectField, SchemaField, ModelValidationError };
+export { BooleanField, DataField, ObjectField, SchemaField, ModelValidationError };
