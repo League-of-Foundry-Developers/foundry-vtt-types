@@ -1604,7 +1604,7 @@ export namespace SETUP_PACKAGE_PROGRESS {
 
 /**
  * @deprecated since v10, will be removed in v12
- * @see data.ShapeData.TYPES // TODO: make a real link
+ * @see {@link foundry.data.ShapeData.TYPES}
  */
 export declare const DRAWING_TYPES: Readonly<{
   RECTANGLE: "r";

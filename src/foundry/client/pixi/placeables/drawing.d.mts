@@ -1,9 +1,8 @@
 import type { ConfiguredDocumentClass, ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
-import type { DeepPartial } from "../../../../types/utils.d.mts";
+import type { DeepPartial, ValueOf } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 export {};
-
 declare global {
   /**
    * The Drawing object is an implementation of the PlaceableObject container.
@@ -74,9 +73,8 @@ declare global {
 
     /**
      * A convenience reference to the possible shape types.
-     * TODO: Replace post-data model with the static enum reference
      */
-    static readonly SHAPE_TYPES: Record<string, string>; // (typeof foundry.data.ShapeData)["TYPES"]
+    static readonly SHAPE_TYPES: (typeof foundry.data.ShapeData)["TYPES"];
 
     override get bounds(): Rectangle;
 
@@ -99,9 +97,8 @@ declare global {
 
     /**
      * The shape type that this Drawing represents. A value in Drawing.SHAPE_TYPES.
-     * TODO: Replace post-data model with the static enum reference
      */
-    get type(): string; // ValueOf<(typeof foundry.data.ShapeData)["TYPES"]>
+    get type(): ValueOf<(typeof foundry.data.ShapeData)["TYPES"]>;
 
     override clear(): this;
 
