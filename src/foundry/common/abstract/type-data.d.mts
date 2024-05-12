@@ -1,5 +1,6 @@
-// TODO: Import DataModel
-declare class DataModel {}
+import type { SchemaField } from "../data/fields.d.mts";
+import type DataModel from "./data.d.mts";
+import type Document from "./document.d.mts";
 
 /**
  * A specialized subclass of DataModel, intended to represent a Document's type-specific data.
@@ -57,7 +58,10 @@ declare class DataModel {}
  * }
  * ```
  */
-export default abstract class TypeDataModel extends DataModel {
+export default abstract class TypeDataModel<Schema extends SchemaField.Any, Parent extends Document> extends DataModel<
+  Schema,
+  Parent
+> {
   // TODO: Returns System | Module | null;
   modelProvider: unknown;
 
