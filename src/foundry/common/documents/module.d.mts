@@ -13,6 +13,7 @@ export { BaseFogExploration } from "./fog-exploration.mts";
 export { BaseFolder } from "./folder.mts";
 export { BaseItem } from "./item.mts";
 export { BaseJournalEntry } from "./journal-entry.mts";
+export { default as BaseJournalEntryPage } from "./journal-entry-page.mts";
 export { BaseMacro } from "./macro.mts";
 export { BaseMeasuredTemplate } from "./measured-template.mts";
 export { BaseNote } from "./note.mts";
