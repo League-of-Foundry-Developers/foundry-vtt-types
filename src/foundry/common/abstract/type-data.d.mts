@@ -62,8 +62,7 @@ export default abstract class TypeDataModel<Schema extends SchemaField.Any, Pare
   Schema,
   Parent
 > {
-  // TODO: Returns System | Module | null;
-  modelProvider: unknown;
+  modelProvider: System | Module | null;
 
   /**
    * Prepare data related to this DataModel itself, before any derived data is computed.

@@ -2,13 +2,11 @@ import type { DocumentConstructor, PlaceableObjectConstructor } from "../../type
 import type { ConstructorOf, PropertyTypeOrFallback } from "../../types/utils.d.mts";
 import type * as CONST from "../common/constants.d.mts";
 import type { StatusEffect } from "./data/documents/token.d.mts";
+import type { DataModel } from "../common/abstract/module.d.mts";
+import type { SchemaField } from "../common/data/fields.d.mts";
 
-// FIXME: Replace with imports for for the right things or remove when implemented
-type DataModel = unknown;
 // @ts-expect-error Class isn't implemented yet
 declare class ActorDelta extends ClientDocumentMixin() {}
-// @ts-expect-error Class isn't implemented yet
-declare class JournalEntryPage extends ClientDocumentMixin() {}
 
 declare global {
   /**
@@ -129,7 +127,7 @@ declare global {
       sidebarIcon: string;
 
       /** @defaultValue `{}` */
-      dataModels: Record<string, DataModel>;
+      dataModels: Record<string, DataModel<SchemaField.Any, Actor>>;
 
       /** @defaultValue `{}` */
       typeLabels: Record<string, string>;
@@ -177,7 +175,7 @@ declare global {
       sidebarIcon: string;
 
       /** @defaultValue `{}` */
-      dataModels: Record<string, DataModel>;
+      dataModels: Record<string, DataModel<SchemaField.Any, Cards>>;
 
       /**
        * @defaultValue
@@ -371,7 +369,7 @@ declare global {
       sidebarIcon: string;
 
       /** @defaultValue `{}` */
-      dataModels: Record<string, DataModel>;
+      dataModels: Record<string, DataModel<SchemaField.Any, Item>>;
 
       /** @defaultValue `{}` */
       typeLabels: Record<string, string>;
@@ -1774,7 +1772,7 @@ declare global {
       documentClass: ConfiguredDocumentClassOrDefault<typeof Card>;
 
       /** @defaultValue `{}` */
-      dataModels: Record<string, DataModel>;
+      dataModels: Record<string, DataModel<SchemaField.Any, Card>>;
     };
 
     /**
@@ -1787,10 +1785,9 @@ declare global {
 
     JournalEntryPage: {
       /** @defaultValue `JournalEntryPage` */
-      // @ts-expect-error Class isn't implemented yet
       documentClass: ConfiguredDocumentClassOrDefault<typeof JournalEntryPage>;
 
-      dataModels: Record<string, DataModel>;
+      dataModels: Record<string, DataModel<SchemaField.Any, JournalEntryPage>>;
 
       typeLabels: Record<string, string>;
 

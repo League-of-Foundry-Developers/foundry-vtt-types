@@ -8,9 +8,6 @@ import type {
 } from "../../types/helperTypes.d.mts";
 import type { StoredDocument, ValueOf } from "../../types/utils.d.mts";
 
-// TODO: DataModels
-type World = unknown;
-type System = unknown;
 // TODO: Apps
 type ClientIssues = unknown;
 
@@ -63,7 +60,7 @@ declare global {
      * A Map of active Modules which are currently eligible to be enabled in this World.
      * The subset of Modules which are designated as active are currently enabled.
      */
-    readonly modules: Game.ModuleMap;
+    readonly modules: Game.ModuleCollection;
 
     /**
      * A mapping of WorldCollection instances, one per primary Document type.
@@ -611,17 +608,15 @@ declare global {
       type: "world";
     }
 
-    // TODO: Rework after Module class is defined
-    interface ModuleMap extends Map<string, Game["data"]["modules"][number]> {
+    // TODO: Revisit functionality and how it works with data models
+    interface ModuleCollection extends Collection<Module> {
       /**
        * Gets the module requested for by ID
        * @see {@link ModuleConfig} to add custom properties to modules like APIs.
        * @see {@link RequiredModules} to remove `undefined` from the return type for a given module
        * @param id - The module ID to look up
        */
-      get<T extends string>(
-        id: T,
-      ): (Game["data"]["modules"][number] & ConfiguredModule<T>) | ModuleRequiredOrOptional<T>;
+      get<T extends string>(id: T): (Module & ConfiguredModule<T>) | ModuleRequiredOrOptional<T>;
     }
 
     type Data = {
