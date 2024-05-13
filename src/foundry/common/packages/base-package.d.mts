@@ -1,11 +1,55 @@
 import type { InexactPartial } from "../../../types/utils.d.mts";
 import type DataModel from "../abstract/data.mjs";
 import type { ReleaseData } from "../config.mjs/releaseData.d.mts";
+import type { DOCUMENT_OWNERSHIP_LEVELS, USER_ROLES } from "../constants.d.mts";
 import * as fields from "../data/fields.mjs";
 import type { CONST } from "../module.d.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
 declare namespace BasePackage {
+  type optionalString = fields.StringField<{
+    required: false;
+    blank: false;
+    initial: undefined;
+  }>;
+
+  type PackageAuthorSchema = {
+    name: fields.StringField;
+    email: optionalString;
+    url: optionalString;
+    discord: optionalString;
+    flags: fields.ObjectField;
+  };
+
+  type PackageMediaSchema = {
+    type: optionalString;
+    url: optionalString;
+    caption: optionalString;
+    loop: fields.BooleanField;
+    thumbnail: optionalString;
+    flags: fields.ObjectField;
+  };
+
+  type PackageCompendiumSchema = {
+    name: fields.StringField;
+    label: fields.StringField;
+    banner: optionalString;
+    path: fields.StringField;
+    type: fields.StringField;
+    system: fields.StringField;
+    ownership: CompendiumOwnershipField;
+    flags: fields.ObjectField;
+  };
+
+  type PackageLanguageSchema = {
+    lang: fields.StringField;
+    name: fields.StringField;
+    path: fields.StringField;
+    system: optionalString;
+    module: optionalString;
+    flags: fields.ObjectField;
+  };
+
   type PackageCompatibilitySchema = {
     minimum: fields.StringField;
     verified: fields.StringField;
@@ -43,15 +87,19 @@ declare namespace BasePackage {
     : { folders: fields.SetField };
 
   type Schema = {
-    id: fields.StringField;
+    id: fields.StringField<{
+      required: true;
+      blank: false;
+      validate: typeof BasePackage.validateId;
+    }>;
     title: fields.StringField;
     description: fields.StringField;
     authors: fields.SetField;
-    url: fields.StringField;
-    license: fields.StringField;
-    readme: fields.StringField;
-    bugs: fields.StringField;
-    changelog: fields.StringField;
+    url: optionalString;
+    license: optionalString;
+    readme: optionalString;
+    bugs: optionalString;
+    changelog: optionalString;
     flags: fields.ObjectField;
     media: fields.SetField;
     version: fields.StringField;
@@ -84,28 +132,67 @@ declare namespace BasePackage {
 /**
  * A custom SchemaField for defining package compatibility versions.
  */
-export class PackageCompatibility extends fields.SchemaField<BasePackage.PackageCompatibilitySchema> {}
+export class PackageCompatibility extends fields.SchemaField<BasePackage.PackageCompatibilitySchema> {
+  constructor(options: fields.SchemaField.Options<BasePackage.PackageCompatibilitySchema>);
+}
 
 /**
  * A custom SchemaField for defining package relationships.
  */
-export class PackageRelationships extends fields.SchemaField<BasePackage.PackageRelationshipsSchema> {}
+export class PackageRelationships extends fields.SchemaField<BasePackage.PackageRelationshipsSchema> {
+  constructor(options: fields.SchemaField.Options<BasePackage.PackageRelationshipsSchema>);
+}
 
 /**
  * A custom SchemaField for defining a related Package.
  * It may be required to be a specific type of package, by passing the packageType option to the constructor.
  */
-export class RelatedPackage extends fields.SchemaField<BasePackage.RelatedPackageSchema> {}
+export class RelatedPackage extends fields.SchemaField<BasePackage.RelatedPackageSchema> {
+  constructor({
+    packageType,
+    ...options
+  }: InexactPartial<{
+    /** @defaultValue `"module"` */
+    packageType: CONST.PACKAGE_TYPES;
+    options: fields.SchemaField.Options<BasePackage.RelatedPackageSchema>;
+  }>);
+}
 
 /**
  * A custom SchemaField for defining the folder structure of the included compendium packs.
  */
-export class PackageCompendiumFolder extends fields.SchemaField<BasePackage.PackageCompendiumFolderSchema<4>> {}
+export class PackageCompendiumFolder<Depth extends number> extends fields.SchemaField<
+  BasePackage.PackageCompendiumFolderSchema<Depth>
+> {
+  constructor({
+    depth,
+    ...options
+  }: InexactPartial<{
+    /** @defaultValue `1` */
+    depth: Depth;
+    options: fields.SchemaField.DefaultOptions;
+  }>);
+}
 
 /**
  * A special ObjectField which captures a mapping of USER_ROLES to DOCUMENT_OWNERSHIP_LEVELS.
  */
-export class CompendiumOwnershipField extends fields.ObjectField {}
+// TODO: Validate the value implementation
+export class CompendiumOwnershipField extends fields.ObjectField {
+  static override get _defaults(): {
+    /** @defaultValue `{PLAYER: "OBSERVER", ASSISTANT: "OWNER"}` */
+    initial: Record<keyof typeof foundry.CONST.USER_ROLES, keyof typeof foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS>;
+    /**
+     * @defaultValue `"is not a mapping of USER_ROLES to DOCUMENT_OWNERSHIP_LEVELS"`
+     */
+    validationError: string;
+  };
+
+  protected override _validateType(
+    value: Record<keyof typeof foundry.CONST.USER_ROLES, keyof typeof foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS>,
+    options?: any,
+  ): boolean | void;
+}
 
 /**
  * A special SetField which provides additional validation and initialization behavior specific to compendium packs.
@@ -160,7 +247,8 @@ export default class BasePackage extends DataModel<fields.SchemaField<BasePackag
 
   /**
    * The canonical identifier for this package
-   * @deprecated "You are accessing BasePackage#name which is now deprecated in favor of id."
+   * @deprecated since v10, will be removed in v13
+   * @remarks `"You are accessing BasePackage#name which is now deprecated in favor of id."`
    */
   get name(): this["id"];
 

@@ -126,7 +126,10 @@ declare global {
       /** @defaultValue `"fas fa-user"` */
       sidebarIcon: string;
 
-      /** @defaultValue `{}` */
+      /**
+       * @defaultValue `{}`
+       * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
+       */
       dataModels: Record<string, DataModel<SchemaField.Any, Actor>>;
 
       /** @defaultValue `{}` */
@@ -174,7 +177,10 @@ declare global {
       /** @defaultValue `"fa-solid fa-cards"` */
       sidebarIcon: string;
 
-      /** @defaultValue `{}` */
+      /**
+       * @defaultValue `{}`
+       * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
+       */
       dataModels: Record<string, DataModel<SchemaField.Any, Cards>>;
 
       /**
@@ -368,7 +374,10 @@ declare global {
       /** @defaultValue `"fas fa-suitcase"` */
       sidebarIcon: string;
 
-      /** @defaultValue `{}` */
+      /**
+       * @defaultValue `{}`
+       * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
+       */
       dataModels: Record<string, DataModel<SchemaField.Any, Item>>;
 
       /** @defaultValue `{}` */
@@ -1771,7 +1780,10 @@ declare global {
       /** @defaultValue `Card` */
       documentClass: ConfiguredDocumentClassOrDefault<typeof Card>;
 
-      /** @defaultValue `{}` */
+      /**
+       * @defaultValue `{}`
+       * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
+       */
       dataModels: Record<string, DataModel<SchemaField.Any, Card>>;
     };
 
@@ -1787,6 +1799,10 @@ declare global {
       /** @defaultValue `JournalEntryPage` */
       documentClass: ConfiguredDocumentClassOrDefault<typeof JournalEntryPage>;
 
+      /**
+       * @defaultValue `{}`
+       * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
+       */
       dataModels: Record<string, DataModel<SchemaField.Any, JournalEntryPage>>;
 
       typeLabels: Record<string, string>;
