@@ -1,7 +1,6 @@
 import type { InexactPartial } from "../../../types/utils.d.mts";
 import type DataModel from "../abstract/data.mjs";
 import type { ReleaseData } from "../config.mjs/releaseData.d.mts";
-import type { DOCUMENT_OWNERSHIP_LEVELS, USER_ROLES } from "../constants.d.mts";
 import * as fields from "../data/fields.mjs";
 import type { CONST } from "../module.d.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";

@@ -4,7 +4,9 @@ import type { CompendiumOwnershipField } from "../../../../src/foundry/common/pa
 // TODO: Rework after data model properties work correctly
 const myPackage: foundry.data.fields.SchemaField.InnerInitializedType<
   ReturnType<typeof foundry.packages.BasePackage.defineSchema>
-> = new foundry.packages.BasePackage();
+> = new foundry.packages.BasePackage({
+  id: "foobar",
+});
 
 const packageCompendia: foundry.data.fields.SchemaField.InnerInitializedType<{ ownership: CompendiumOwnershipField }> =
   {

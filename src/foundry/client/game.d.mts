@@ -23,7 +23,7 @@ declare global {
      * @param sessionId - The ID of the currently active client session retrieved from the browser cookie
      * @param socket    - The open web-socket which should be used to transact game-state data
      */
-    constructor(view: Game["view"], data: Game.ConstructorData, sessionId: Game["sessionId"], socket: Game["socket"]);
+    constructor(view: Game["view"], data: Game.Data, sessionId: Game["sessionId"], socket: Game["socket"]);
 
     /**
      * The named view which is currently active.
@@ -651,7 +651,7 @@ declare global {
         storages: ("public" | "data" | "s3")[];
       };
       // Todo: Update after data models
-      modules: ModuleData<foundry.packages.ModuleData>[];
+      modules: foundry.data.fields.SchemaField.AssignmentType<ReturnType<(typeof Module)["defineSchema"]>>[];
       options: {
         language: string;
         port: number;
@@ -677,20 +677,11 @@ declare global {
         type: foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
       }[];
       paused: boolean;
-      // TODO: Update after DataModels to use ReleaseData
-      release: {
-        build: number;
-        channel: "Stable" | "Testing" | "Development" | "Prototype";
-        download: string | undefined;
-        generation: number;
-        maxGeneration?: number;
-        maxStableGeneration?: number;
-        node_version?: number;
-        notes: string | undefined;
-        time: number;
-      };
+      release: foundry.data.fields.SchemaField.AssignmentType<
+        ReturnType<(typeof foundry.config.ReleaseData)["defineSchema"]>
+      >;
       // TODO: Update after data models
-      system: SystemData<foundry.packages.SystemData>;
+      system: foundry.data.fields.SchemaField.AssignmentType<ReturnType<(typeof System)["defineSchema"]>>;
       systemUpdate: {
         hasUpdate: boolean;
         version: string;
@@ -699,19 +690,13 @@ declare global {
       template: Record<foundry.CONST.DOCUMENT_TYPES, DocumentTemplate>;
       userId: string;
       // TODO: Update after data models
-      world: WorldData<foundry.packages.WorldData>;
+      world: foundry.data.fields.SchemaField.AssignmentType<ReturnType<(typeof World)["defineSchema"]>>;
     } & {
       [DocumentType in
         | foundry.CONST.DOCUMENT_TYPES
         | "Setting" as ConfiguredDocumentClassForName<DocumentType>["metadata"]["collection"]]?: InstanceType<
         ConfiguredDocumentClassForName<DocumentType>
       >["data"]["_source"][];
-    };
-
-    type ConstructorData = Omit<Data, "world" | "system" | "modules"> & {
-      world: WorldData<foundry.packages.WorldData["_source"]>;
-      system: SystemData<foundry.packages.SystemData["_source"]>;
-      modules: ModuleData<foundry.packages.ModuleData["_source"]>[];
     };
 
     type Permissions = {
