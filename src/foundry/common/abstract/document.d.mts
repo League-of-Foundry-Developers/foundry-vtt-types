@@ -187,20 +187,23 @@ declare abstract class Document<
     data?: fields.SchemaField.AssignmentType<SchemaField["fields"], {}>,
     {
       save,
+      keepId,
       ...context
-    }?: {
-      /**
-       * Save the clone to the World database?
-       * @defaultValue `false`
-       */
-      save?: boolean;
+    }?: InexactPartial<
+      {
+        /**
+         * Save the clone to the World database?
+         * @defaultValue `false`
+         */
+        save?: boolean;
 
-      /**
-       * Keep the same ID of the original document
-       * @defaultValue `false`
-       */
-      keepId?: boolean;
-    } & DocumentConstructionContext,
+        /**
+         * Keep the same ID of the original document
+         * @defaultValue `false`
+         */
+        keepId?: boolean;
+      } & DocumentConstructionContext
+    >,
   ): this | Promise<this>;
 
   /**
