@@ -24,7 +24,7 @@ declare namespace ReleaseData {
       min: 1;
       // initial: () => fields.SchemaField.InitializedType<Schema["generation"]>;
     }>;
-    channel: fields.NumberField<{ choices: SOFTWARE_UPDATE_CHANNELS; blank: false }>;
+    channel: fields.StringField<{ choices: typeof SOFTWARE_UPDATE_CHANNELS; blank: false }>;
     suffix: fields.StringField;
     build: fields.NumberField<{ required: true; nullable: false; integer: true }>;
     time: fields.NumberField<{ nullable: false; initial: typeof Date.now }>;
