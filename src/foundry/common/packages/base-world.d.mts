@@ -5,28 +5,26 @@ import type { ReleaseData } from "../config.mjs/releaseData.d.mts";
 import type { CONST } from "../module.d.mts";
 
 declare namespace BaseWorld {
-  type Schema =
-    | ReturnType<typeof BasePackage.defineSchema>
-    | {
-        system: fields.StringField;
-        background: fields.StringField;
-        joinTheme: fields.StringField;
-        coreVersion: fields.StringField;
-        systemVersion: fields.StringField;
-        lastPlayed: fields.StringField;
-        playtime: fields.NumberField;
-        nextSession: fields.StringField;
-        resetKeys: fields.BooleanField;
-        safeMode: fields.BooleanField;
-        version: fields.StringField;
-      };
+  type Schema = ReturnType<typeof BasePackage.defineSchema> & {
+    system: fields.StringField;
+    background: fields.StringField;
+    joinTheme: fields.StringField;
+    coreVersion: fields.StringField;
+    systemVersion: fields.StringField;
+    lastPlayed: fields.StringField;
+    playtime: fields.NumberField;
+    nextSession: fields.StringField;
+    resetKeys: fields.BooleanField;
+    safeMode: fields.BooleanField;
+    version: fields.StringField;
+  };
 }
 
 /**
  * The data schema used to define World manifest files.
  * Extends the basic PackageData schema with some additional world-specific fields.
  */
-export default class BaseWorld extends BasePackage {
+export default class BaseWorld extends BasePackage<BaseWorld.Schema> {
   static defineSchema(): BaseWorld.Schema;
 
   static type: "world";
@@ -40,7 +38,7 @@ export default class BaseWorld extends BasePackage {
   static migrateData(data: object): object;
 
   static testAvailability(
-    data: Partial<BasePackage.PackageManifestData>,
+    data: Partial<PackageManifestData>,
     options: InexactPartial<{
       /**
        * A specific software release for which to test availability.

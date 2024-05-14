@@ -2,23 +2,21 @@ import type BasePackage from "./base-package.d.mts";
 import * as fields from "../data/fields.mjs";
 
 declare namespace BaseSystem {
-  type Schema =
-    | ReturnType<typeof BasePackage.defineSchema>
-    | {
-        background: fields.StringField;
-        initiative: fields.StringField;
-        gridDistance: fields.NumberField;
-        gridUnits: fields.StringField;
-        primaryTokenAttribute: fields.StringField;
-        secondaryTokenAttribute: fields.StringField;
-      };
+  type Schema = ReturnType<typeof BasePackage.defineSchema> & {
+    background: fields.StringField;
+    initiative: fields.StringField;
+    gridDistance: fields.NumberField;
+    gridUnits: fields.StringField;
+    primaryTokenAttribute: fields.StringField;
+    secondaryTokenAttribute: fields.StringField;
+  };
 }
 
 /**
  * The data schema used to define System manifest files.
  * Extends the basic PackageData schema with some additional system-specific fields.
  */
-export default class BaseSystem extends BasePackage {
+export default class BaseSystem extends BasePackage<BaseSystem.Schema> {
   static defineSchema(): BaseSystem.Schema;
 
   static type: "system";

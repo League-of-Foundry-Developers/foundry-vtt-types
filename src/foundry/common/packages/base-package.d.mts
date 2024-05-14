@@ -30,6 +30,11 @@ declare namespace BasePackage {
     flags: fields.ObjectField;
   };
 
+  type OwnershipRecord = Record<
+    keyof typeof foundry.CONST.USER_ROLES,
+    keyof typeof foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | undefined
+  >;
+
   type PackageCompendiumSchema = {
     name: fields.StringField;
     label: fields.StringField;
@@ -75,14 +80,12 @@ declare namespace BasePackage {
   // TODO: Figure out proper recursion here
   type RecursiveDepth = [never, 0, 1, 2, 3];
 
-  type PackageCompendiumFolderSchema<Depth extends number> =
-    | {
-        name: fields.StringField;
-        sorting: fields.StringField;
-        color: fields.ColorField;
-        packs: fields.SetField;
-      }
-    | Depth extends 0
+  type PackageCompendiumFolderSchema<Depth extends number> = {
+    name: fields.StringField;
+    sorting: fields.StringField;
+    color: fields.ColorField;
+    packs: fields.SetField;
+  } & Depth extends 0
     ? {}
     : { folders: fields.SetField };
 
@@ -177,11 +180,15 @@ export class PackageCompendiumFolder<Depth extends number> extends fields.Schema
 /**
  * A special ObjectField which captures a mapping of USER_ROLES to DOCUMENT_OWNERSHIP_LEVELS.
  */
-// TODO: Validate the value implementation
-export class CompendiumOwnershipField extends fields.ObjectField {
+export class CompendiumOwnershipField extends fields.ObjectField<
+  fields.ObjectField.DefaultOptions,
+  BasePackage.OwnershipRecord,
+  BasePackage.OwnershipRecord,
+  BasePackage.OwnershipRecord
+> {
   static override get _defaults(): {
     /** @defaultValue `{PLAYER: "OBSERVER", ASSISTANT: "OWNER"}` */
-    initial: Record<keyof typeof foundry.CONST.USER_ROLES, keyof typeof foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS>;
+    initial: BasePackage.OwnershipRecord;
     /**
      * @defaultValue `"is not a mapping of USER_ROLES to DOCUMENT_OWNERSHIP_LEVELS"`
      */
@@ -203,7 +210,10 @@ export class PackageCompendiumPacks extends fields.SetField {}
  * The data schema used to define a Package manifest.
  * Specific types of packages extend this schema with additional fields.
  */
-export default class BasePackage extends DataModel<fields.SchemaField<BasePackage.Schema>, null> {
+export default class BasePackage<PackageSchema extends BasePackage.Schema = BasePackage.Schema> extends DataModel<
+  fields.SchemaField<PackageSchema>,
+  null
+> {
   /**
    * An availability code in PACKAGE_AVAILABILITY_CODES which defines whether this package can be used.
    */
@@ -325,11 +335,10 @@ export default class BasePackage extends DataModel<fields.SchemaField<BasePackag
     packageId: string,
     message: string,
     options: InexactPartial<
-      | {
-          /** Is the package installed? */
-          installed: unknown;
-        }
-      | LogCompatibilityWarningOptions
+      {
+        /** Is the package installed? */
+        installed: unknown;
+      } & LogCompatibilityWarningOptions
     >,
   ): void;
 
