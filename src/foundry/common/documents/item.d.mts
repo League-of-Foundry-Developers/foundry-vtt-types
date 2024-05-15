@@ -41,7 +41,7 @@ declare class BaseItem<TypeName extends BaseItem.TypeNames = BaseItem.TypeNames>
 
   /**
    * Determine default artwork based on the provided item data.
-   * @param itemData The source item data
+   * @param itemData - The source item data
    * @returns Candidate item image
    */
   static getDefaultArtwork(itemData: BaseItem.ConstructorData<BaseItem.TypeNames>): { img: string };

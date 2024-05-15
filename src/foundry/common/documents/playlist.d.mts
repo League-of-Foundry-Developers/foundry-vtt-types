@@ -1,5 +1,3 @@
-// FOUNDRY_VERSION: 10.291
-
 import type { Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
@@ -52,7 +50,7 @@ declare namespace BasePlaylist {
       name: "Playlist";
       collection: "playlists";
       indexed: true;
-      compendiumIndexFields: ["_id", "name", "sort"];
+      compendiumIndexFields: ["_id", "name", "sort", "folder"];
       embedded: { PlaylistSound: "sounds" };
       label: "DOCUMENT.Playlist";
       labelPlural: "DOCUMENT.Playlists";
@@ -75,13 +73,13 @@ declare namespace BasePlaylist {
     /**
      * The name of this playlist
      */
-    name: fields.StringField<{ required: true; blank: false }>;
+    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
     /**
      * The description of this playlist
      * @defaultValue `""`
      */
-    description: fields.StringField;
+    description: fields.StringField<{ textSearch: true }>;
 
     /**
      * A Collection of PlaylistSounds embedded documents which belong to this playlist

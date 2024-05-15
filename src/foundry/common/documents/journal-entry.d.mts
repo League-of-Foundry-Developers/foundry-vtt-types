@@ -67,7 +67,7 @@ declare namespace BaseJournalEntry {
       name: "JournalEntry";
       collection: "journal";
       indexed: true;
-      compendiumIndexFields: ["_id", "name", "sort"];
+      compendiumIndexFields: ["_id", "name", "sort", "folder"];
       embedded: { JournalEntryPage: "pages" };
       label: "DOCUMENT.JournalEntry";
       labelPlural: "DOCUMENT.JournalEntries";
@@ -93,7 +93,7 @@ declare namespace BaseJournalEntry {
     /**
      * The name of this JournalEntry
      */
-    name: fields.StringField<{ required: true; blank: false }>;
+    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
     /**
      * The pages contained within this JournalEntry document

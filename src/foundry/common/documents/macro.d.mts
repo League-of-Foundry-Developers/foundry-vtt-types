@@ -77,7 +77,7 @@ declare namespace BaseMacro {
       name: "Macro";
       collection: "macros";
       indexed: true;
-      compendiumIndexFields: ["_id", "name", "img", "sort"];
+      compendiumIndexFields: ["_id", "name", "img", "sort", "folder"];
       label: "DOCUMENT.Macro";
       labelPlural: "DOCUMENT.Macros";
       coreTypes: CONST.MACRO_TYPES[];
@@ -106,6 +106,7 @@ declare namespace BaseMacro {
       required: true;
       blank: false;
       label: "Name";
+      textSearch: true;
     }>;
 
     /**

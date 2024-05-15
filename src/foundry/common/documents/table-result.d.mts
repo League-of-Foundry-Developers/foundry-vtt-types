@@ -1,5 +1,3 @@
-// FOUNDRY_VERSION: 10.291
-
 import type { Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
@@ -102,7 +100,7 @@ declare namespace BaseTableResult {
      * The text which describes the table result
      * @defaultValue `""`
      */
-    text: fields.HTMLField;
+    text: fields.HTMLField<{ textSearch: true }>;
 
     /**
      * An image file url that represents the table result
@@ -126,7 +124,7 @@ declare namespace BaseTableResult {
      * The probabilistic weight of this result relative to other results
      * @defaultValue `null`
      */
-    weight: fields.NumberField<{ required: true; integer: true; positive: true }>;
+    weight: fields.NumberField<{ required: true; integer: true; positive: true; nullable: false; initial: 1 }>;
 
     /**
      * A length 2 array of ascending integers which defines the range of dice roll

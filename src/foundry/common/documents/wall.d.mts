@@ -1,5 +1,3 @@
-// FOUNDRY_VERSION: 10.291
-
 import type { Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
@@ -7,6 +5,8 @@ import type * as CONST from "../constants.mts";
 import type * as fields from "../data/fields.mts";
 
 declare global {
+  type WallThresholdData = fields.SchemaField.InnerInitializedType<BaseWall.ThresholdSchema>;
+
   type WallData = BaseWall.Properties;
 }
 
@@ -50,6 +50,28 @@ declare namespace BaseWall {
   type UpdateData = fields.SchemaField.InnerAssignmentType<Schema>;
   type Properties = fields.SchemaField.InnerInitializedType<Schema>;
   type Source = fields.SchemaField.InnerPersistedType<Schema>;
+
+  interface ThresholdSchema extends DataSchema {
+    /**
+     * Minimum distance from a light source for which this wall blocks light
+     */
+    light: fields.NumberField<{ required: true; nullable: true; initial: null; positive: true }>;
+
+    /**
+     * Minimum distance from a vision source for which this wall blocks vision
+     */
+    sight: fields.NumberField<{ required: true; nullable: true; initial: null; positive: true }>;
+
+    /**
+     * Minimum distance from a sound source for which this wall blocks sound
+     */
+    sound: fields.NumberField<{ required: true; nullable: true; initial: null; positive: true }>;
+
+    /**
+     * Whether to attenuate the source radius when passing through the wall
+     */
+    attenuation: fields.BooleanField;
+  }
 
   interface Schema extends DataSchema {
     /**
@@ -147,6 +169,13 @@ declare namespace BaseWall {
       initial: typeof CONST.WALL_DOOR_STATES.CLOSED;
       validationError: "must be a value in CONST.WALL_DOOR_STATES";
     }>;
+
+    doorSound: fields.StringField<{ required: false; blank: true; initial: undefined }>;
+
+    /**
+     * Configuration of threshold data for this wall
+     */
+    threshold: fields.SchemaField<ThresholdSchema>;
 
     /**
      * An object of optional key/value flags

@@ -1,5 +1,3 @@
-// FOUNDRY_VERSION: 10.291
-
 import type { Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
@@ -27,8 +25,6 @@ declare class BaseMeasuredTemplate extends Document<BaseMeasuredTemplate.SchemaF
   static override metadata: Readonly<BaseMeasuredTemplate.Metadata>;
 
   static override defineSchema(): BaseMeasuredTemplate.Schema;
-
-  protected override _validateModel(data: BaseMeasuredTemplate.UpdateData): void;
 
   /**
    * Is a user able to create a new MeasuredTemplate?

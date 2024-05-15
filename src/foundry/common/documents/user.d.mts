@@ -1,5 +1,3 @@
-// FOUNDRY_VERSION: 10.291
-
 import type { Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
@@ -148,7 +146,7 @@ declare namespace BaseUser {
     /**
      * The user's name.
      */
-    name: fields.StringField<{ required: true; blank: false }, string>;
+    name: fields.StringField<{ required: true; blank: false; textSearch: true }, string>;
 
     /**
      * The user's role, see CONST.USER_ROLES.
@@ -170,7 +168,7 @@ declare namespace BaseUser {
      * The user's password. Available only on the Server side for security.
      * @defaultValue `""`
      */
-    password: fields.StringField;
+    password: fields.StringField<{ required: true; blank: true }>;
 
     /**
      * The user's password salt. Available only on the Server side for security.
@@ -195,6 +193,11 @@ declare namespace BaseUser {
      * @defaultValue a randomly chosen color string
      */
     color: fields.ColorField<{ required: true; nullable: false; initial: () => string }>;
+
+    /**
+     *
+     */
+    pronouns: fields.StringField<{ required: true }>;
 
     /**
      * A mapping of hotbar slot number to Macro id for the user.

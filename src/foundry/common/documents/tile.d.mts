@@ -1,10 +1,8 @@
-// FOUNDRY_VERSION: 10.291
-
 import type { Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
-import type { TextureData } from "../data/data.mjs/index.mts";
+import type { TextureData } from "../data/data.mts";
 import type * as fields from "../data/fields.mts";
 
 declare global {
@@ -153,8 +151,8 @@ declare namespace BaseTile {
        * @defaultValue `1`
        */
       mode: fields.NumberField<{
-        choices: CONST.TILE_OCCLUSION_MODES[];
-        initial: typeof CONST.TILE_OCCLUSION_MODES.FADE;
+        choices: CONST.OCCLUSION_MODES[];
+        initial: typeof CONST.OCCLUSION_MODES.FADE;
         validationError: "must be a value in CONST.TILE_OCCLUSION_MODES";
       }>;
 

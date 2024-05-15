@@ -1,5 +1,3 @@
-// FOUNDRY_VERSION: 10.291
-
 import type { Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
@@ -143,7 +141,7 @@ declare namespace BaseNote {
      * Optional text which overrides the title of the linked Journal Entry
      * @defaultValue `""`
      */
-    text: fields.StringField<{ label: "NOTE.TextLabel" }>;
+    text: fields.StringField<{ label: "NOTE.TextLabel"; textSearch: true }>;
 
     /**
      * The font family used to display the text label on this note, defaults to CONFIG.defaultFontFamily

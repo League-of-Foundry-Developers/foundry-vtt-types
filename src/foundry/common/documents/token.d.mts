@@ -1,11 +1,9 @@
-// FOUNDRY_VERSION: 10.291
-
 import type { ConfiguredDocumentClass } from "../../../types/helperTypes.mts";
-import type { Merge } from "../../../types/utils.mts";
+import type { InexactPartial, Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
-import type { LightData, TextureData } from "../data/data.mjs/index.mts";
+import type { LightData, TextureData } from "../data/data.mts";
 import type * as fields from "../data/fields.mts";
 import type * as documents from "./module.mts";
 
@@ -68,7 +66,10 @@ declare class BaseToken extends Document<
     },
   ): boolean;
 
-  static override cleanData(source?: object | undefined, options?: fields.DataField.CleanOptions | undefined): object;
+  updateSource(
+    changes?: BaseToken.ConstructorData | undefined,
+    options?: { dryRun?: boolean; fallback?: boolean; recursive?: boolean } | undefined,
+  ): object;
 
   static override migrateData(source: object): object;
 
@@ -84,7 +85,20 @@ declare class BaseToken extends Document<
       embedded?: boolean;
     },
   ): object;
+
+  //TODO: Update with the Delta conditionality
+  toObject(source: true): this["_source"];
+  toObject(source?: boolean | undefined): ReturnType<this["schema"]["toObject"]>;
 }
+
+/**
+ * A special subclass of EmbeddedDocumentField which allows construction of the ActorDelta to be lazily evaluated.
+ */
+// TODO: After EmbeddedDocumentField
+export class ActorDeltaField extends fields.EmbeddedDocumentField {
+  override initialize(value: unknown, model: unknown, options: InexactPartial<unknown>): unknown;
+}
+
 export default BaseToken;
 
 declare namespace BaseToken {
@@ -96,6 +110,9 @@ declare namespace BaseToken {
       label: "DOCUMENT.Token";
       labelPlural: "DOCUMENT.Tokens";
       isEmbedded: true;
+      embedded: {
+        ActorDelta: "delta";
+      };
       permissions: {
         create: "TOKEN_CREATE";
         update: (user: documents.BaseUser, doc: Document.Any, data: UpdateData) => boolean;
@@ -152,15 +169,14 @@ declare namespace BaseToken {
     actorLink: fields.BooleanField;
 
     /**
-     * Token-level data which overrides the base data of the associated Actor
-     * @defaultValue see {@link documents.BaseActor}, excluding `prototypeToken` and `token`
+     * The ActorDelta embedded document which stores the differences between this
+     * token and the base actor it represents.
      */
-    actorData: fields.ObjectField<
-      {},
-      Exclude<documents.BaseActor.ConstructorData<documents.BaseActor.TypeNames>, "prototypeToken" | "token">,
-      Exclude<documents.BaseActor.Properties<documents.BaseActor.TypeNames>, "prototypeToken" | "token">,
-      Exclude<documents.BaseActor.Source<documents.BaseActor.TypeNames>, "prototypeToken" | "token">
-    >;
+    delta: ActorDeltaField<documents.BaseActor>;
+
+    appendNumber: fields.BooleanField;
+
+    prependAdjective: fields.BooleanField;
 
     /**
      * The token's texture on the canvas.
@@ -317,7 +333,7 @@ declare namespace BaseToken {
        * How far in distance units the Token can see without the aid of a light source
        * @defaultValue `null`
        */
-      range: fields.NumberField<{ required: true; min: 0; step: 0.01 }>;
+      range: fields.NumberField<{ required: true; nullable: false; min: 0; step: 0.01; initial: 0 }>;
 
       /**
        * An angle at which the Token can see relative to their direction of facing
@@ -418,7 +434,7 @@ declare namespace BaseToken {
          * The maximum range in distance units at which this mode can detect targets
          * @defaultValue `0`
          */
-        range: fields.NumberField<{ required: true; min: 0; step: 0.01; initial: 0 }>;
+        range: fields.NumberField<{ required: true; nullable: false; min: 0; step: 0.01; initial: 0 }>;
       }>,
       {
         validate: () => void;
@@ -432,3 +448,5 @@ declare namespace BaseToken {
     flags: fields.ObjectField.FlagsField<"Token">;
   }
 }
+
+declare namespace ActorDeltaField {}

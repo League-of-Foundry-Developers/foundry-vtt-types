@@ -1,10 +1,8 @@
-// FOUNDRY_VERSION: 10.291
-
 import type { Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
-import type { TextureData } from "../data/data.mjs/index.mts";
+import type { TextureData } from "../data/data.mts";
 import type * as fields from "../data/fields.mts";
 import type * as documents from "./module.mts";
 
@@ -53,7 +51,7 @@ declare namespace BaseScene {
       name: "Scene";
       collection: "scenes";
       indexed: true;
-      compendiumIndexFields: ["_id", "name", "thumb", "sort"];
+      compendiumIndexFields: ["_id", "name", "thumb", "sort", "folder"];
       embedded: {
         AmbientLight: "lights";
         AmbientSound: "sounds";
@@ -87,7 +85,7 @@ declare namespace BaseScene {
      * The name of this scene
      * @defaultValue `""`
      */
-    name: fields.StringField<{ required: true; blank: false }>;
+    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
     /**
      * Is this scene currently active? Only one scene may be active at a given time
@@ -111,7 +109,7 @@ declare namespace BaseScene {
      * A string which overrides Scene name for display in the navigation bar
      * @defaultValue `""`
      */
-    navName: fields.HTMLField;
+    navName: fields.HTMLField<{ textSearch: true }>;
 
     /**
      * An image or video file that provides the background texture for the scene.

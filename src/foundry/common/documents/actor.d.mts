@@ -1,7 +1,7 @@
 import type { Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata, DocumentModificationOptions } from "../abstract/document.mts";
-import type { PrototypeToken } from "../data/data.mjs/index.mts";
+import type { PrototypeToken } from "../data/data.mts";
 import type * as fields from "../data/fields.mts";
 import type * as documents from "./module.mts";
 

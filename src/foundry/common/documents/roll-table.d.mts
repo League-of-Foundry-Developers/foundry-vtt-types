@@ -56,7 +56,7 @@ declare namespace BaseRollTable {
       name: "RollTable";
       collection: "tables";
       indexed: true;
-      compendiumIndexFields: ["_id", "name", "img", "sort"];
+      compendiumIndexFields: ["_id", "name", "img", "sort", "folder"];
       embedded: { TableResult: "results" };
       label: "DOCUMENT.RollTable";
       labelPlural: "DOCUMENT.RollTables";
@@ -80,7 +80,7 @@ declare namespace BaseRollTable {
      * The name of this RollTable
      * @defaultValue `""`
      */
-    name: fields.StringField<{ required: true; blank: false }>;
+    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
     /**
      * An image file path which provides the thumbnail artwork for this RollTable
@@ -95,7 +95,7 @@ declare namespace BaseRollTable {
      * The HTML text description for this RollTable document
      * @defaultValue `""`
      */
-    description: fields.StringField;
+    description: fields.StringField<{ textSearch: true }>;
 
     /**
      * A Collection of TableResult embedded documents which belong to this RollTable
