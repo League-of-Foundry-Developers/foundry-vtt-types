@@ -1,6 +1,8 @@
 import type { ConfiguredFlags } from "../../../types/helperTypes.mts";
-import type { SimpleMerge, ValueOf } from "../../../types/utils.d.mts";
+import type { ConstructorOf, SimpleMerge, ValueOf } from "../../../types/utils.d.mts";
 import type { DataModel } from "../abstract/data.mts";
+import type Document from "../abstract/document.mts";
+import type { EmbeddedCollection } from "../abstract/module.d.mts";
 import type { DataModelValidationFailure } from "./validation-failure.mts";
 
 declare global {
@@ -1177,6 +1179,669 @@ declare namespace ObjectField {
 }
 
 /**
+ * A subclass of [DataField]{@link DataField} which deals with array-typed data.
+ * @typeParam ElementFieldType       - the field type for the elements in the ArrayField
+ * @typeParam AssignmentElementType  - the assignment type for the elements in the array
+ * @typeParam InitializedElementType - the initialized type for the elements in the array
+ * @typeParam Options                - the options of the ArrayField instance
+ * @typeParam AssignmentType         - the type of the allowed assignment values of the ArrayField
+ * @typeParam InitializedType        - the type of the initialized values of the ArrayField
+ * @typeParam PersistedElementType   - the persisted type for the elements in the array
+ * @typeParam PersistedType          - the type of the persisted values of the ArrayField
+ * @remarks
+ * Defaults:
+ * AssignmentType: `ArrayField.BaseAssignmentType<AssignmentElementType> | null | undefined`
+ * InitializedType: `InitializedElementType[]`
+ * PersistedType: `PersistedElementType[]`
+ * InitialValue: `[]`
+ */
+declare class ArrayField<
+  ElementFieldType extends DataField.Any | Document.Constructor,
+  AssignmentElementType = ArrayField.AssignmentElementType<ElementFieldType>,
+  InitializedElementType = ArrayField.InitializedElementType<ElementFieldType>,
+  Options extends ArrayField.Options<AssignmentElementType> = ArrayField.DefaultOptions<AssignmentElementType>,
+  AssignmentType = ArrayField.AssignmentType<AssignmentElementType, Options>,
+  InitializedType = ArrayField.InitializedType<AssignmentElementType, InitializedElementType, Options>,
+  PersistedElementType = ArrayField.PersistedElementType<ElementFieldType>,
+  PersistedType extends PersistedElementType[] | null | undefined = ArrayField.PersistedType<
+    AssignmentElementType,
+    PersistedElementType,
+    Options
+  >,
+> extends DataField<Options, AssignmentType, InitializedType, PersistedType> {
+  /**
+   * @param element - A DataField instance which defines the type of element contained in the Array.
+   * @param options - Options which configure the behavior of the field
+   */
+  constructor(element: ElementFieldType, options?: Options);
+
+  /** @defaultValue `true` */
+  override required: boolean;
+
+  /** @defaultValue `false` */
+  override nullable: boolean;
+
+  /** @defaultValue `() => []` */
+  override initial: DataFieldOptions.InitialType<InitializedType>;
+
+  /**
+   * The data type of each element in this array
+   */
+  element: ElementFieldType;
+
+  protected static override get _defaults(): ArrayField.Options<
+    ArrayField.AssignmentElementType<DataField.Any | Document.Constructor>
+  >;
+
+  /** @defaultValue `true` */
+  static override recursive: boolean;
+
+  /**
+   * Validate the contained element type of the ArrayField
+   * @param element - The type of Array element
+   * @returns The validated element type
+   * @throws An error if the element is not a valid type
+   */
+  protected static _validateElementType<T extends DataField.Any>(element: T): T;
+
+  protected override _validateModel(data: object, options?: object | undefined): void;
+
+  protected override _cast(value: AssignmentType): InitializedType;
+
+  protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions | undefined): InitializedType;
+
+  protected override _validateType(
+    value: InitializedType,
+    options?: DataField.ValidationOptions<DataField.Any> | undefined,
+  ): boolean | void;
+
+  /**
+   * Validate every element of the ArrayField
+   * @param value   - The array to validate
+   * @param options - Validation options
+   * @returns An array of element-specific errors
+   */
+  protected _validateElements(
+    value: any[],
+    options?: DataField.ValidationOptions<DataField.Any>,
+  ): DataModelValidationFailure | void;
+
+  /**
+   * Validate a single element of the ArrayField.
+   * @param value   - The value of the array element
+   * @param options - Validation options
+   * @returns A validation failure if the element failed validation
+   */
+  protected _validateElement(
+    value: any,
+    options: DataField.ValidationOptions<DataField.Any>,
+  ): DataModelValidationFailure | void;
+
+  override initialize(value: PersistedType, model: DataModel.Any): InitializedType | (() => InitializedType | null);
+
+  override toObject(value: InitializedType): PersistedType;
+
+  override apply<Value, Options, Return>(
+    fn: keyof this | ((this: this, value: Value, options: Options) => Return),
+    value: Value,
+    options?: Options | undefined,
+  ): Return;
+
+  protected override _getField(path: string[]): unknown;
+
+  /**
+   * Migrate this field's candidate source data.
+   * @param sourceData - Candidate source data of the root model
+   * @param fieldData  - The value of this field within the source data
+   */
+  migrateSource(sourceData: object, fieldData: unknown): unknown;
+}
+
+declare namespace ArrayField {
+  /**
+   * A shorthand for the options of an ArrayField class.
+   * @typeParam AssignmentElementType - the assignment type of the elements in the array
+   */
+  type Options<AssignmentElementType> = DataFieldOptions<BaseAssignmentType<AssignmentElementType>>;
+
+  /**
+   * The base assignment type for the {@link ArrayField} class.
+   * @typeParam AssignmentElementType - the assignment type of the elements in the array
+   */
+  type BaseAssignmentType<AssignmentElementType> =
+    | Record<number | string, AssignmentElementType>
+    | Iterable<AssignmentElementType>
+    | AssignmentElementType[]
+    | AssignmentElementType;
+
+  /**
+   * The type of the default options for the {@link ArrayField} class.
+   * @typeParam AssignmentElementType - the assignment type of the elements in the array
+   */
+  type DefaultOptions<AssignmentElementType> = SimpleMerge<
+    DataField.DefaultOptions,
+    {
+      required: true;
+      nullable: false;
+      initial: () => AssignmentElementType[];
+    }
+  >;
+
+  /**
+   * A helper type for the given options type merged into the default options of the ArrayField class.
+   * @typeParam AssignmentElementType - the assignment type of the elements of the ArrayField
+   * @typeParam Opts                  - the options that override the default options
+   */
+  type MergedOptions<AssignmentElementType, Opts extends Options<AssignmentElementType>> = SimpleMerge<
+    DefaultOptions<AssignmentElementType>,
+    Opts
+  >;
+
+  /**
+   * A type to infer the assignment element type of an ArrayField from its ElementFieldType.
+   * @typeParam ElementFieldType - the DataField type of the elements in the ArrayField
+   */
+  type AssignmentElementType<ElementFieldType extends DataField.Any | Document.Constructor> =
+    ElementFieldType extends DataField<any, infer Assign, any, any>
+      ? Assign
+      : ElementFieldType extends new (...args: any[]) => Document<infer Schema extends SchemaField.Any, any, any>
+        ? SchemaField.InnerAssignmentType<Schema["fields"]>
+        : never;
+
+  /**
+   * A type to infer the initialized element type of an ArrayField from its ElementFieldType.
+   * @typeParam ElementFieldType - the DataField type of the elements in the ArrayField
+   */
+  type InitializedElementType<ElementFieldType extends DataField.Any | Document.Constructor> =
+    ElementFieldType extends DataField<any, any, infer Init, any>
+      ? Init
+      : ElementFieldType extends new (...args: any[]) => Document<infer Schema extends SchemaField.Any, any, any>
+        ? SchemaField.InnerInitializedType<Schema["fields"]>
+        : never;
+
+  /**
+   * A type to infer the initialized element type of an ArrayField from its ElementFieldType.
+   * @typeParam ElementFieldType - the DataField type of the elements in the ArrayField
+   */
+  type PersistedElementType<ElementFieldType extends DataField.Any | Document.Constructor> =
+    ElementFieldType extends DataField<any, any, any, infer Persist>
+      ? Persist
+      : ElementFieldType extends new (...args: any[]) => Document<infer Schema extends SchemaField.Any, any, any>
+        ? SchemaField.InnerPersistedType<Schema["fields"]>
+        : never;
+
+  /**
+   * A shorthand for the assignment type of an ArrayField class.
+   * @typeParam AssignmentElementType - the assignment type of the elements of the ArrayField
+   * @typeParam Opts                  - the options that override the default options
+   */
+  type AssignmentType<
+    AssignmentElementType,
+    Opts extends Options<AssignmentElementType>,
+  > = DataField.DerivedAssignmentType<
+    BaseAssignmentType<AssignmentElementType>,
+    MergedOptions<AssignmentElementType, Opts>
+  >;
+
+  /**
+   * A shorthand for the initialized type of an ArrayField class.
+   * @typeParam AssignmentElementType  - the assignment type of the elements of the ArrayField
+   * @typeParam InitializedElementType - the initialized type of the elements of the ArrayField
+   * @typeParam Opts                   - the options that override the default options
+   */
+  type InitializedType<
+    AssignmentElementType,
+    InitializedElementType,
+    Opts extends Options<AssignmentElementType>,
+  > = DataField.DerivedInitializedType<InitializedElementType[], MergedOptions<AssignmentElementType, Opts>>;
+
+  /**
+   * A shorthand for the persisted type of an ArrayField class.
+   * @typeParam AssignmentElementType - the assignment type of the elements of the ArrayField
+   * @typeParam PersistedElementType  - the perssited type of the elements of the ArrayField
+   * @typeParam Opts                  - the options that override the default options
+   */
+  type PersistedType<
+    AssignmentElementType,
+    PersistedElementType,
+    Opts extends Options<AssignmentElementType>,
+  > = DataField.DerivedInitializedType<PersistedElementType[], MergedOptions<AssignmentElementType, Opts>>;
+}
+
+/**
+ * A subclass of [ArrayField]{@link ArrayField} which supports a set of contained elements.
+ * Elements in this set are treated as fungible and may be represented in any order or discarded if invalid.
+ * @typeParam ElementFieldType       - the field type for the elements in the SetField
+ * @typeParam AssignmentElementType  - the assignment type for the elements in the set
+ * @typeParam InitializedElementType - the initialized type for the elements in the set
+ * @typeParam Options                - the options of the SetField instance
+ * @typeParam AssignmentType         - the type of the allowed assignment values of the SetField
+ * @typeParam InitializedType        - the type of the initialized values of the SetField
+ * @typeParam PersistedElementType   - the persisted type for the elements in the set
+ * @typeParam PersistedType          - the type of the persisted values of the SetField
+ * @remarks
+ * Defaults:
+ * AssignmentType: `SetField.BaseAssignmentType<AssignmentElementType> | null | undefined`
+ * InitializedType: `Set<InitializedElementType>`
+ * PersistedType: `PersistedElementType[]`
+ * InitialValue: `new Set()`
+ */
+declare class SetField<
+  ElementFieldType extends DataField.Any,
+  AssignmentElementType = ArrayField.AssignmentElementType<ElementFieldType>,
+  InitializedElementType = ArrayField.InitializedElementType<ElementFieldType>,
+  Options extends SetField.Options<AssignmentElementType> = SetField.DefaultOptions<AssignmentElementType>,
+  AssignmentType = SetField.AssignmentType<AssignmentElementType, Options>,
+  InitializedType = SetField.InitializedType<AssignmentElementType, InitializedElementType, Options>,
+  PersistedElementType = ArrayField.PersistedElementType<ElementFieldType>,
+  PersistedType extends PersistedElementType[] | null | undefined = SetField.PersistedType<
+    AssignmentElementType,
+    PersistedElementType,
+    Options
+  >,
+> extends ArrayField<
+  ElementFieldType,
+  AssignmentElementType,
+  InitializedElementType,
+  Options,
+  AssignmentType,
+  InitializedType,
+  PersistedElementType,
+  PersistedType
+> {
+  protected override _validateElements(
+    value: any[],
+    options?: DataField.ValidationOptions<DataField.Any> | undefined,
+  ): void | DataModelValidationFailure;
+
+  override initialize(value: PersistedType, model: DataModel.Any): InitializedType | (() => InitializedType | null);
+
+  override toObject(value: InitializedType): PersistedType;
+}
+
+declare namespace SetField {
+  /** Any SetField */
+  type Any = SetField<any, any, any, any, any, any, any, any>;
+
+  /**
+   * A shorthand for the options of a SetField class.
+   * @typeParam AssignmentElementType - the assignment type of the elements in the array
+   */
+  type Options<AssignmentElementType> = DataFieldOptions<SetField.BaseAssignmentType<AssignmentElementType>>;
+
+  /**
+   * The base assignment type for the {@link SetField} class.
+   * @typeParam AssignmentElementType - the assignment type of the elements in the array
+   */
+  type BaseAssignmentType<AssignmentElementType> = ArrayField.BaseAssignmentType<AssignmentElementType>;
+
+  /**
+   * The type of the default options for the {@link SetField} class.
+   * @typeParam AssignmentElementType - the assignment type of the elements in the array
+   */
+  type DefaultOptions<AssignmentElementType> = ArrayField.DefaultOptions<AssignmentElementType>;
+
+  /**
+   * A helper type for the given options type merged into the default options of the SetField class.
+   * @typeParam AssignmentElementType - the assignment type of the elements of the SetField
+   * @typeParam Opts                  - the options that override the default options
+   */
+  type MergedOptions<AssignmentElementType, Opts extends Options<AssignmentElementType>> = SimpleMerge<
+    DefaultOptions<AssignmentElementType>,
+    Opts
+  >;
+
+  /**
+   * A shorthand for the assignment type of a SetField class.
+   * @typeParam AssignmentElementType - the assignment type of the elements of the SetField
+   * @typeParam Opts                  - the options that override the default options
+   */
+  type AssignmentType<
+    AssignmentElementType,
+    Opts extends Options<AssignmentElementType>,
+  > = DataField.DerivedAssignmentType<
+    BaseAssignmentType<AssignmentElementType>,
+    MergedOptions<AssignmentElementType, Opts>
+  >;
+
+  /**
+   * A shorthand for the initialized type of a SetField class.
+   * @typeParam AssignmentElementType - the assignment type of the elements of the SetField
+   * @typeParam InitializedElementType - the initialized type of the elements of the SetField
+   * @typeParam Opts                  - the options that override the default options
+   */
+  type InitializedType<
+    AssignmentElementType,
+    InitializedElementType,
+    Opts extends Options<AssignmentElementType>,
+  > = DataField.DerivedInitializedType<Set<InitializedElementType>, MergedOptions<AssignmentElementType, Opts>>;
+
+  /**
+   * A shorthand for the persisted type of a SetField class.
+   * @typeParam AssignmentElementType - the assignment type of the elements of the SetField
+   * @typeParam PersistedElementType  - the perssited type of the elements of the SetField
+   * @typeParam Opts                  - the options that override the default options
+   */
+  type PersistedType<
+    AssignmentElementType,
+    PersistedElementType,
+    Opts extends Options<AssignmentElementType>,
+  > = DataField.DerivedInitializedType<PersistedElementType[], MergedOptions<AssignmentElementType, Opts>>;
+}
+
+/**
+ * A subclass of [ObjectField]{@link ObjectField} which embeds some other DataModel definition as an inner object.
+ * @typeParam ModelType       - the DataModel for the embedded data
+ * @typeParam Options         - the options of the EmbeddedDataField instance
+ * @typeParam AssignmentType  - the type of the allowed assignment values of the EmbeddedDataField
+ * @typeParam InitializedType - the type of the initialized values of the EmbeddedDataField
+ * @typeParam PersistedType   - the type of the persisted values of the EmbeddedDataField
+ * @remarks
+ * Defaults:
+ * AssignmentType: `SchemaField.AssignmentType<ModelType["schema"]["fields"]> | null | undefined`
+ * InitializedType: `SchemaField.InitializedType<ModelType["schema"]["fields"]>`
+ * PersistedType: `SchemaField.PersistedType<ModelType["schema"]["fields"]>`
+ * InitialValue: `{}`
+ */
+declare class EmbeddedDataField<
+  ModelType extends DataModel.Any,
+  Options extends EmbeddedDataField.Options<ModelType> = EmbeddedDataField.DefaultOptions,
+  AssignmentType = EmbeddedDataField.AssignmentType<ModelType, Options>,
+  InitializedType = EmbeddedDataField.InitializedType<ModelType, Options>,
+  PersistedType extends object | null | undefined = EmbeddedDataField.PersistedType<ModelType, Options>,
+> extends SchemaField<
+  EmbeddedDataField.DataSchema<ModelType>,
+  Options,
+  AssignmentType,
+  InitializedType,
+  PersistedType
+> {
+  /**
+   * @param model   - The class of DataModel which should be embedded in this field
+   * @param options - Options which configure the behavior of the field
+   */
+  constructor(model: ConstructorOf<ModelType>, options?: Options);
+
+  /**
+   * The embedded DataModel definition which is contained in this field.
+   */
+  model: ConstructorOf<ModelType>;
+
+  protected override _initialize(fields: DataSchema): DataSchema;
+
+  override initialize(value: PersistedType, model: DataModel.Any): InitializedType | (() => InitializedType | null);
+
+  override toObject(value: InitializedType): PersistedType;
+
+  /**
+   * Migrate this field's candidate source data.
+   * @param sourceData - Candidate source data of the root model
+   * @param fieldData  - The value of this field within the source data
+   */
+  migrateSource(sourceData: object, fieldData: unknown): unknown;
+
+  protected override _validateModel(data: object, options?: object | undefined): void;
+}
+
+declare namespace EmbeddedDataField {
+  /**
+   * A shorthand for the options of an EmbeddedDataField class.
+   * @typeParam ModelType - the DataModel for the embedded data
+   */
+  type Options<ModelType extends DataModel.Any> = DataFieldOptions<
+    SchemaField.InnerAssignmentType<DataSchema<ModelType>>
+  >;
+
+  /** The type of the default options for the {@link EmbeddedDataField} class. */
+  type DefaultOptions = SchemaField.DefaultOptions;
+
+  /**
+   * A helper type for the given options type merged into the default options of the EmbeddedDataField class.
+   * @typeParam ModelType - the DataModel for the embedded data
+   * @typeParam Opts      - the options that override the default options
+   */
+  type MergedOptions<ModelType extends DataModel.Any, Opts extends Options<ModelType>> = SimpleMerge<
+    DefaultOptions,
+    Opts
+  >;
+
+  /**
+   * A helper type to extract the {@link DataSchema} from a {@link DataModel}.
+   * @typeParam ModelType - the DataModel for the embedded data
+   */
+  type DataSchema<ModelType extends DataModel.Any> = ModelType["schema"]["fields"];
+
+  /**
+   * A shorthand for the assignment type of an EmbeddedDataField class.
+   * @typeParam ModelType - the DataModel for the embedded data
+   * @typeParam Opts      - the options that override the default options
+   */
+  type AssignmentType<
+    ModelType extends DataModel.Any,
+    Opts extends Options<ModelType>,
+  > = DataField.DerivedAssignmentType<
+    SchemaField.InnerAssignmentType<DataSchema<ModelType>>,
+    MergedOptions<ModelType, Opts>
+  >;
+
+  /**
+   * A shorthand for the initialized type of an EmbeddedDataField class.
+   * @typeParam ModelType - the DataModel for the embedded data
+   * @typeParam Opts      - the options that override the default options
+   */
+  type InitializedType<
+    ModelType extends DataModel.Any,
+    Opts extends Options<ModelType>,
+  > = DataField.DerivedInitializedType<
+    SchemaField.InnerInitializedType<DataSchema<ModelType>>,
+    MergedOptions<ModelType, Opts>
+  >;
+
+  /**
+   * A shorthand for the persisted type of an EmbeddedDataField class.
+   * @typeParam ModelType - the DataModel for the embedded data
+   * @typeParam Opts      - the options that override the default options
+   */
+  type PersistedType<
+    ModelType extends DataModel.Any,
+    Opts extends Options<ModelType>,
+  > = DataField.DerivedInitializedType<
+    SchemaField.InnerPersistedType<DataSchema<ModelType>>,
+    MergedOptions<ModelType, Opts>
+  >;
+}
+
+/**
+ * A subclass of [ArrayField]{@link ArrayField} which supports an embedded Document collection.
+ * Invalid elements will be dropped from the collection during validation rather than failing for the field entirely.
+ * @typeParam ElementFieldType       - the field type for the elements in the EmbeddedCollectionField
+ * @typeParam AssignmentElementType  - the assignment type for the elements in the collection
+ * @typeParam InitializedElementType - the initialized type for the elements in the collection
+ * @typeParam Options                - the options of the EmbeddedCollectionField instance
+ * @typeParam AssignmentType         - the type of the allowed assignment values of the EmbeddedCollectionField
+ * @typeParam InitializedType        - the type of the initialized values of the EmbeddedCollectionField
+ * @typeParam PersistedElementType   - the persisted type for the elements in the collection
+ * @typeParam PersistedType          - the type of the persisted values of the EmbeddedCollectionField
+ * @remarks
+ * Defaults:
+ * AssignmentType: `ArrayField.BaseAssignmentType<AssignmentElementType> | null | undefined`
+ * InitializedType: `Collection<InitializedElementType>`
+ * PersistedType: `PersistedElementType[]`
+ * InitialValue: `[]`
+ */
+declare class EmbeddedCollectionField<
+  ElementFieldType extends Document.Constructor,
+  AssignmentElementType = EmbeddedCollectionField.AssignmentElementType<ElementFieldType>,
+  InitializedElementType = EmbeddedCollectionField.InitializedElementType<ElementFieldType>,
+  Options extends
+    EmbeddedCollectionField.Options<AssignmentElementType> = EmbeddedCollectionField.DefaultOptions<AssignmentElementType>,
+  AssignmentType = EmbeddedCollectionField.AssignmentType<AssignmentElementType, Options>,
+  InitializedType = EmbeddedCollectionField.InitializedType<AssignmentElementType, InitializedElementType, Options>,
+  PersistedElementType = EmbeddedCollectionField.PersistedElementType<ElementFieldType>,
+  PersistedType extends PersistedElementType[] | null | undefined = EmbeddedCollectionField.PersistedType<
+    AssignmentElementType,
+    PersistedElementType,
+    Options
+  >,
+> extends ArrayField<
+  ElementFieldType,
+  AssignmentElementType,
+  InitializedElementType,
+  Options,
+  AssignmentType,
+  InitializedType,
+  PersistedElementType,
+  PersistedType
+> {
+  /**
+   * @param element - The type of Document which belongs to this embedded collection
+   * @param options - Options which configure the behavior of the field
+   */
+  constructor(element: ElementFieldType, options?: Options);
+
+  /** @defaultValue `true` */
+  override readonly: true;
+
+  protected static override _validateElementType<T extends DataField.Any | Document.Constructor>(element: T): T;
+
+  /**
+   * The Collection implementation to use when initializing the collection.
+   */
+  static get implementation(): ConstructorOf<EmbeddedCollection<any, any>>; // TODO: Type this better.
+
+  // HACK: This is wrong in foundry. See: https://github.com/foundryvtt/foundryvtt/issues/10926
+  // @ts-expect-error There is no `hierarchical` in the inheritance chain.
+  override hierarchical: boolean;
+
+  /**
+   * A reference to the DataModel subclass of the embedded document element
+   */
+  get model(): typeof DataModel; // TODO: Maybe this could be more strict.
+
+  /**
+   * The DataSchema of the contained Document model.
+   */
+  get schema(): this["model"]["schema"];
+
+  protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions | undefined): InitializedType;
+
+  protected override _validateElements(
+    value: any[],
+    options?: DataField.ValidationOptions<DataField.Any> | undefined,
+  ): DataModelValidationFailure | void;
+
+  override initialize(value: PersistedType, model: DataModel.Any): InitializedType | (() => InitializedType | null);
+
+  override toObject(value: InitializedType): PersistedType;
+
+  override apply<Value, Options, Return>(
+    fn: keyof this | ((this: this, value: Value, options: Options) => Return),
+    value: Value,
+    options?: Options | undefined,
+  ): Return;
+
+  /**
+   * Migrate this field's candidate source data.
+   * @param sourceData - Candidate source data of the root model
+   * @param fieldData  - The value of this field within the source data
+   */
+  migrateSource(sourceData: object, fieldData: unknown): unknown;
+
+  /**
+   * Return the embedded document(s) as a Collection.
+   * @param parent - The parent document.
+   */
+  getCollection<P extends Document.Any>(parent: P): Collection<P>;
+}
+
+declare namespace EmbeddedCollectionField {
+  /**
+   * A shorthand for the options of an EmbeddedCollectionField class.
+   * @typeParam AssignmentElementType - the assignment type of the elements of the EmbeddedCollectionField
+   */
+  type Options<AssignmentElementType> = DataFieldOptions<ArrayField.BaseAssignmentType<AssignmentElementType>>;
+
+  /**
+   * The type of the default options for the {@link EmbeddedCollectionField} class.
+   * @typeParam AssignmentElementType - the assignment type of the elements of the EmbeddedCollectionField
+   */
+  type DefaultOptions<AssignmentElementType> = ArrayField.DefaultOptions<AssignmentElementType>;
+
+  /**
+   * A helper type for the given options type merged into the default options of the EmbeddedCollectionField class.
+   * @typeParam AssignmentElementType - the assignment type of the elements of the EmbeddedCollectionField
+   * @typeParam Opts                  - the options that override the default options
+   */
+  type MergedOptions<AssignmentElementType, Opts extends Options<AssignmentElementType>> = SimpleMerge<
+    DefaultOptions<AssignmentElementType>,
+    Opts
+  >;
+
+  /**
+   * A type to infer the assignment element type of an EmbeddedCollectionField from its ElementFieldType.
+   * @typeParam ElementFieldType - the DataField type of the elements in the EmbeddedCollectionField
+   */
+  type AssignmentElementType<ElementFieldType extends Document.Constructor> = ElementFieldType extends new (
+    ...args: any[]
+  ) => Document<infer Schema extends SchemaField.Any, any, any>
+    ? SchemaField.InnerAssignmentType<Schema["fields"]>
+    : never;
+
+  /**
+   * A type to infer the initialized element type of an EmbeddedCollectionField from its ElementFieldType.
+   * @typeParam ElementFieldType - the DataField type of the elements in the EmbeddedCollectionField
+   */
+  type InitializedElementType<ElementFieldType extends Document.Constructor> = InstanceType<ElementFieldType>;
+
+  /**
+   * A type to infer the initialized element type of an EmbeddedCollectionField from its ElementFieldType.
+   * @typeParam ElementFieldType - the DataField type of the elements in the EmbeddedCollectionField
+   */
+  type PersistedElementType<ElementFieldType extends Document.Constructor> = ElementFieldType extends new (
+    ...args: any[]
+  ) => Document<infer Schema extends SchemaField.Any, any, any>
+    ? SchemaField.InnerPersistedType<Schema["fields"]>
+    : never;
+
+  /**
+   * A shorthand for the assignment type of an ArrayField class.
+   * @typeParam AssignmentElementType - the assignment type of the elements of the EmbeddedCollectionField
+   * @typeParam Opts                  - the options that override the default options
+   */
+  type AssignmentType<
+    AssignmentElementType,
+    Opts extends Options<AssignmentElementType>,
+  > = DataField.DerivedAssignmentType<
+    ArrayField.BaseAssignmentType<AssignmentElementType>,
+    MergedOptions<AssignmentElementType, Opts>
+  >;
+
+  /**
+   * A shorthand for the initialized type of an ArrayField class.
+   * @typeParam AssignmentElementType  - the assignment type of the elements of the EmbeddedCollectionField
+   * @typeParam InitializedElementType - the initialized type of the elements of the EmbeddedCollectionField
+   * @typeParam Opts                   - the options that override the default options
+   */
+  type InitializedType<
+    AssignmentElementType,
+    InitializedElementType,
+    Opts extends Options<AssignmentElementType>,
+  > = DataField.DerivedInitializedType<Collection<InitializedElementType>, MergedOptions<AssignmentElementType, Opts>>;
+
+  /**
+   * A shorthand for the persisted type of an ArrayField class.
+   * @typeParam AssignmentElementType - the assignment type of the elements of the EmbeddedCollectionField
+   * @typeParam PersistedElementType  - the perssited type of the elements of the EmbeddedCollectionField
+   * @typeParam Opts                  - the options that override the default options
+   */
+  type PersistedType<
+    AssignmentElementType,
+    PersistedElementType,
+    Opts extends Options<AssignmentElementType>,
+  > = DataField.DerivedInitializedType<PersistedElementType[], MergedOptions<AssignmentElementType, Opts>>;
+}
+
+/**
  * @deprecated since v11; ModelValidationError is deprecated. Please use DataModelValidationError instead.
  * @typeParam Errors - the type of the errors contained in this error
  */
@@ -1206,4 +1871,16 @@ declare namespace ModelValidationError {
   type Errors = Record<number | string | symbol, Error> | Error[] | string;
 }
 
-export { BooleanField, DataField, NumberField, ObjectField, SchemaField, StringField, ModelValidationError };
+export {
+  ArrayField,
+  BooleanField,
+  DataField,
+  EmbeddedCollectionField,
+  EmbeddedDataField,
+  NumberField,
+  ObjectField,
+  SchemaField,
+  SetField,
+  StringField,
+  ModelValidationError,
+};
