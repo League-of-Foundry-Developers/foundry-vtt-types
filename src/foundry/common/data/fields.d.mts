@@ -1408,6 +1408,127 @@ declare namespace ArrayField {
 }
 
 /**
+ * A subclass of [ArrayField]{@link ArrayField} which supports a set of contained elements.
+ * Elements in this set are treated as fungible and may be represented in any order or discarded if invalid.
+ * @typeParam ElementFieldType       - the field type for the elements in the SetField
+ * @typeParam AssignmentElementType  - the assignment type for the elements in the set
+ * @typeParam InitializedElementType - the initialized type for the elements in the set
+ * @typeParam Options                - the options of the SetField instance
+ * @typeParam AssignmentType         - the type of the allowed assignment values of the SetField
+ * @typeParam InitializedType        - the type of the initialized values of the SetField
+ * @typeParam PersistedElementType   - the persisted type for the elements in the set
+ * @typeParam PersistedType          - the type of the persisted values of the SetField
+ * @remarks
+ * Defaults:
+ * AssignmentType: `SetField.BaseAssignmentType<AssignmentElementType> | null | undefined`
+ * InitializedType: `Set<InitializedElementType>`
+ * PersistedType: `PersistedElementType[]`
+ * InitialValue: `new Set()`
+ */
+declare class SetField<
+  ElementFieldType extends DataField.Any,
+  AssignmentElementType = ArrayField.AssignmentElementType<ElementFieldType>,
+  InitializedElementType = ArrayField.InitializedElementType<ElementFieldType>,
+  Options extends SetField.Options<AssignmentElementType> = SetField.DefaultOptions<AssignmentElementType>,
+  AssignmentType = SetField.AssignmentType<AssignmentElementType, Options>,
+  InitializedType = SetField.InitializedType<AssignmentElementType, InitializedElementType, Options>,
+  PersistedElementType = ArrayField.PersistedElementType<ElementFieldType>,
+  PersistedType extends PersistedElementType[] | null | undefined = SetField.PersistedType<
+    AssignmentElementType,
+    PersistedElementType,
+    Options
+  >,
+> extends ArrayField<
+  ElementFieldType,
+  AssignmentElementType,
+  InitializedElementType,
+  Options,
+  AssignmentType,
+  InitializedType,
+  PersistedElementType,
+  PersistedType
+> {
+  protected override _validateElements(
+    value: any[],
+    options?: DataField.ValidationOptions<DataField.Any> | undefined,
+  ): void | DataModelValidationFailure;
+
+  override initialize(value: PersistedType, model: DataModel.Any): InitializedType | (() => InitializedType | null);
+
+  override toObject(value: InitializedType): PersistedType;
+}
+
+declare namespace SetField {
+  /** Any SetField */
+  type Any = SetField<any, any, any, any, any, any, any, any>;
+
+  /**
+   * A shorthand for the options of a SetField class.
+   * @typeParam AssignmentElementType - the assignment type of the elements in the array
+   */
+  type Options<AssignmentElementType> = DataFieldOptions<SetField.BaseAssignmentType<AssignmentElementType>>;
+
+  /**
+   * The base assignment type for the {@link SetField} class.
+   * @typeParam AssignmentElementType - the assignment type of the elements in the array
+   */
+  type BaseAssignmentType<AssignmentElementType> = ArrayField.BaseAssignmentType<AssignmentElementType>;
+
+  /**
+   * The type of the default options for the {@link SetField} class.
+   * @typeParam AssignmentElementType - the assignment type of the elements in the array
+   */
+  type DefaultOptions<AssignmentElementType> = ArrayField.DefaultOptions<AssignmentElementType>;
+
+  /**
+   * A helper type for the given options type merged into the default options of the SetField class.
+   * @typeParam AssignmentElementType - the assignment type of the elements of the SetField
+   * @typeParam Opts                  - the options that override the default options
+   */
+  type MergedOptions<AssignmentElementType, Opts extends Options<AssignmentElementType>> = SimpleMerge<
+    DefaultOptions<AssignmentElementType>,
+    Opts
+  >;
+
+  /**
+   * A shorthand for the assignment type of a SetField class.
+   * @typeParam AssignmentElementType - the assignment type of the elements of the SetField
+   * @typeParam Opts                  - the options that override the default options
+   */
+  type AssignmentType<
+    AssignmentElementType,
+    Opts extends Options<AssignmentElementType>,
+  > = DataField.DerivedAssignmentType<
+    BaseAssignmentType<AssignmentElementType>,
+    MergedOptions<AssignmentElementType, Opts>
+  >;
+
+  /**
+   * A shorthand for the initialized type of a SetField class.
+   * @typeParam AssignmentElementType - the assignment type of the elements of the SetField
+   * @typeParam InitializedElementType - the initialized type of the elements of the SetField
+   * @typeParam Opts                  - the options that override the default options
+   */
+  type InitializedType<
+    AssignmentElementType,
+    InitializedElementType,
+    Opts extends Options<AssignmentElementType>,
+  > = DataField.DerivedInitializedType<Set<InitializedElementType>, MergedOptions<AssignmentElementType, Opts>>;
+
+  /**
+   * A shorthand for the persisted type of a SetField class.
+   * @typeParam AssignmentElementType - the assignment type of the elements of the SetField
+   * @typeParam PersistedElementType  - the perssited type of the elements of the SetField
+   * @typeParam Opts                  - the options that override the default options
+   */
+  type PersistedType<
+    AssignmentElementType,
+    PersistedElementType,
+    Opts extends Options<AssignmentElementType>,
+  > = DataField.DerivedInitializedType<PersistedElementType[], MergedOptions<AssignmentElementType, Opts>>;
+}
+
+/**
  * @deprecated since v11; ModelValidationError is deprecated. Please use DataModelValidationError instead.
  * @typeParam Errors - the type of the errors contained in this error
  */
@@ -1444,6 +1565,7 @@ export {
   NumberField,
   ObjectField,
   SchemaField,
+  SetField,
   StringField,
   ModelValidationError,
 };
