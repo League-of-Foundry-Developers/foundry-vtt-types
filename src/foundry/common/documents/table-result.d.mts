@@ -1,53 +1,155 @@
-import type { ConfiguredDocumentClass } from "../../../types/helperTypes.d.mts";
-import type { DeepPartial, Merge } from "../../../types/utils.d.mts";
-import type { DocumentMetadata } from "../abstract/document.d.mts";
-import type { Document } from "../abstract/module.d.mts";
-import type { TableResultDataConstructorData } from "../data/data.mjs/tableResultData.d.mts";
-import type { BaseRollTable } from "./roll-table.d.mts";
-import type { BaseUser } from "./user.d.mts";
+// FOUNDRY_VERSION: 10.291
 
-type TableResultMetadata = Merge<
-  DocumentMetadata,
-  {
-    name: "TableResult";
-    collection: "results";
-    label: "DOCUMENT.TableResult";
-    labelPlural: "DOCUMENT.TableResults";
-    types: [
-      `${typeof CONST.TABLE_RESULT_TYPES.TEXT}`,
-      `${typeof CONST.TABLE_RESULT_TYPES.DOCUMENT}`,
-      `${typeof CONST.TABLE_RESULT_TYPES.COMPENDIUM}`,
-    ];
-    permissions: {
-      update: (user: BaseUser, doc: BaseTableResult, data: DeepPartial<TableResultDataConstructorData>) => boolean;
-    };
-  }
->;
+import type { Merge } from "../../../types/utils.mts";
+import type Document from "../abstract/document.mts";
+import type { DocumentMetadata } from "../abstract/document.mts";
+import type * as CONST from "../constants.mts";
+import type * as fields from "../data/fields.mts";
+import type { documents } from "../module.mts";
+
+declare global {
+  type TableResultData = BaseTableResult.Properties;
+}
 
 /**
- * The base TableResult model definition which defines common behavior of an TableResult document between both client and server.
+ * The Document definition for a TableResult.
+ * Defines the DataSchema and common behaviors for a TableResult which are shared between both client and server.
  */
-export declare class BaseTableResult extends Document<
-  foundry.data.TableResultData,
-  InstanceType<ConfiguredDocumentClass<typeof BaseRollTable>>,
-  TableResultMetadata
-> {
-  static override get schema(): typeof foundry.data.TableResultData;
-
-  static override get metadata(): TableResultMetadata;
-
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface BaseTableResult extends BaseTableResult.Properties {}
+declare class BaseTableResult extends Document<BaseTableResult.SchemaField, BaseTableResult.Metadata> {
   /**
-   * Is a user able to update an existing TableResult?
+   * @param data    - Initial data from which to construct the Table Result
+   * @param context - Construction context options
    */
-  protected static _canUpdate(
-    user: BaseUser,
-    doc: BaseTableResult,
-    data: DeepPartial<TableResultDataConstructorData>,
-  ): boolean;
+  constructor(data: BaseTableResult.ConstructorData, context?: DocumentConstructionContext);
+
+  static override metadata: Readonly<BaseTableResult.Metadata>;
+
+  static override defineSchema(): BaseTableResult.Schema;
 
   override testUserPermission(
-    user: BaseUser,
-    permission: keyof typeof foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS,
-    { exact }?: { exact?: boolean },
+    user: foundry.documents.BaseUser,
+    permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
+    {
+      exact,
+    }?: {
+      /**
+       * Require the exact permission level requested?
+       * @defaultValue `false`
+       */
+      exact?: boolean;
+    },
   ): boolean;
+
+  static override migrateData(source: object): object;
+
+  static override shimData(
+    data: object,
+    {
+      embedded,
+    }?: {
+      /**
+       * Apply shims to embedded models?
+       * @defaultValue `true`
+       */
+      embedded?: boolean;
+    },
+  ): object;
+}
+export default BaseTableResult;
+
+declare namespace BaseTableResult {
+  type Metadata = Merge<
+    DocumentMetadata,
+    {
+      name: "TableResult";
+      collection: "results";
+      label: "DOCUMENT.TableResult";
+      labelPlural: "DOCUMENT.TableResults";
+      coreTypes: ["0", "1", "2"];
+      permissions: {
+        update: (user: documents.BaseUser, doc: Document.Any, data: UpdateData) => boolean;
+      };
+    }
+  >;
+
+  type SchemaField = fields.SchemaField<Schema>;
+  type ConstructorData = UpdateData & Required<Pick<UpdateData, "range">>;
+  type UpdateData = fields.SchemaField.InnerAssignmentType<Schema>;
+  type Properties = fields.SchemaField.InnerInitializedType<Schema>;
+  type Source = fields.SchemaField.InnerPersistedType<Schema>;
+
+  interface Schema extends DataSchema {
+    /**
+     * The _id which uniquely identifies this TableResult embedded document
+     * @defaultValue `null`
+     */
+    _id: fields.DocumentIdField;
+
+    /**
+     * A result subtype from CONST.TABLE_RESULT_TYPES
+     * @defaultValue `CONST.TABLE_RESULT_TYPES.TEXT`
+     */
+    type: fields.NumberField<{
+      required: true;
+      choices: CONST.TABLE_RESULT_TYPES[];
+      initial: typeof CONST.TABLE_RESULT_TYPES.TEXT;
+      validationError: "must be a value in CONST.TABLE_RESULT_TYPES";
+    }>;
+
+    /**
+     * The text which describes the table result
+     * @defaultValue `""`
+     */
+    text: fields.HTMLField;
+
+    /**
+     * An image file url that represents the table result
+     * @defaultValue `null`
+     */
+    img: fields.FilePathField<{ categories: ["IMAGE"] }>;
+
+    /**
+     * A named collection from which this result is drawn
+     * @defaultValue `""`
+     */
+    documentCollection: fields.StringField;
+
+    /**
+     * The _id of a Document within the collection this result references
+     * @defaultValue `null`
+     */
+    documentId: fields.ForeignDocumentField<Document, { idOnly: true }>;
+
+    /**
+     * The probabilistic weight of this result relative to other results
+     * @defaultValue `null`
+     */
+    weight: fields.NumberField<{ required: true; integer: true; positive: true }>;
+
+    /**
+     * A length 2 array of ascending integers which defines the range of dice roll
+     * @defaultValue `[]`
+     */
+    range: fields.ArrayField<
+      fields.NumberField<{ integer: true }>,
+      {
+        validate: (r: [start: number, end: number]) => boolean;
+        validationError: "must be a length-2 array of ascending integers";
+      }
+    >;
+
+    /**
+     * Has this result already been drawn (without replacement)
+     * @defaultValue `false`
+     */
+    drawn: fields.BooleanField;
+
+    /**
+     * An object of optional key/value flags
+     * @defaultValue `{}`
+     */
+    flags: fields.ObjectField.FlagsField<"TableResult">;
+  }
 }

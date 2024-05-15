@@ -1,41 +1,127 @@
-import type { DeepPartial, Merge } from "../../../types/utils.d.mts";
-import type { DocumentMetadata } from "../abstract/document.d.mts";
-import type { Document } from "../abstract/module.d.mts";
-import type { CombatDataConstructorData } from "../data/data.mjs/combatData.d.mts";
-import type { data } from "../module.d.mts";
-import type { BaseCombatant } from "./combatant.d.mts";
-import type { BaseUser } from "./user.d.mts";
+// FOUNDRY_VERSION: 10.291
 
-type CombatMetadata = Merge<
-  DocumentMetadata,
-  {
-    name: "Combat";
-    collection: "combats";
-    label: "DOCUMENT.Combat";
-    labelPlural: "DOCUMENT.Combats";
-    embedded: {
-      Combatant: typeof BaseCombatant;
-    };
-    isPrimary: true;
-    permissions: {
-      update: (user: BaseUser, doc: BaseCombat, data: DeepPartial<CombatDataConstructorData>) => boolean;
-    };
-  }
->;
+import type { Merge } from "../../../types/utils.mts";
+import type Document from "../abstract/document.mts";
+import type { DocumentMetadata } from "../abstract/document.mts";
+import type * as fields from "../data/fields.mts";
+import type * as documents from "./module.mts";
+
+declare global {
+  type CombatData = BaseCombat.Properties;
+}
 
 /**
- * The base Combat model definition which defines common behavior of an Combat document between both client and server.
+ * The Document definition for a Combat.
+ * Defines the DataSchema and common behaviors for a Combat which are shared between both client and server.
  */
-export declare class BaseCombat extends Document<data.CombatData, null, CombatMetadata> {
-  static override get schema(): typeof data.CombatData;
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface BaseCombat extends BaseCombat.Properties {}
+declare class BaseCombat<Parent extends Document.Any | null = null> extends Document<
+  BaseCombat.SchemaField,
+  BaseCombat.Metadata,
+  Parent
+> {
+  /**
+   * @param data    - Initial data from which to construct the Combat
+   * @param context - Construction context options
+   */
+  constructor(data?: BaseCombat.ConstructorData, context?: DocumentConstructionContext);
 
-  static override get metadata(): CombatMetadata;
+  static override metadata: Readonly<BaseCombat.Metadata>;
 
-  /** A reference to the Collection of Combatant instances in the Combat document, indexed by id. */
-  get combatants(): this["data"]["combatants"];
+  static override defineSchema(): BaseCombat.Schema;
 
   /**
    * Is a user able to update an existing Combat?
+   * @internal
    */
-  protected static _canUpdate(user: BaseUser, doc: BaseCombat, data: DeepPartial<CombatDataConstructorData>): boolean;
+  static #canUpdate(user: documents.BaseUser, doc: BaseCombat, data: BaseCombat.UpdateData): boolean;
+}
+export default BaseCombat;
+
+declare namespace BaseCombat {
+  type Metadata = Merge<
+    DocumentMetadata,
+    {
+      name: "Combat";
+      collection: "combats";
+      label: "DOCUMENT.Combat";
+      labelPlural: "DOCUMENT.Combats";
+      embedded: {
+        Combatant: "combatants";
+      };
+      permissions: {
+        update: (user: documents.BaseUser, doc: Document.Any, data: UpdateData) => boolean;
+      };
+    }
+  >;
+
+  type SchemaField = fields.SchemaField<Schema>;
+  type ConstructorData = UpdateData;
+  type UpdateData = fields.SchemaField.InnerAssignmentType<Schema>;
+  type Properties = fields.SchemaField.InnerInitializedType<Schema>;
+  type Source = fields.SchemaField.InnerPersistedType<Schema>;
+
+  interface Schema extends DataSchema {
+    /**
+     * The _id which uniquely identifies this Combat document
+     * @defaultValue `null`
+     */
+    _id: fields.DocumentIdField;
+
+    /**
+     * The _id of a Scene within which this Combat occurs
+     * @defaultValue `null`
+     */
+    scene: fields.ForeignDocumentField<typeof documents.BaseScene>;
+
+    /**
+     * A Collection of Combatant embedded Documents
+     * @defaultValue `[]`
+     */
+    combatants: fields.EmbeddedCollectionField<typeof documents.BaseCombatant>;
+
+    /**
+     * Is the Combat encounter currently active?
+     * @defaultValue `false`
+     */
+    active: fields.BooleanField;
+
+    /**
+     * The current round of the Combat encounter
+     * @defaultValue `0`
+     */
+    round: fields.NumberField<{
+      required: true;
+      nullable: false;
+      integer: true;
+      min: 0;
+      initial: 0;
+      label: "COMBAT.Round";
+    }>;
+
+    /**
+     * The current turn in the Combat round
+     * @defaultValue `null`
+     */
+    turn: fields.NumberField<{ required: true; integer: true; min: 0; initial: null; label: "COMBAT.Turn" }>;
+
+    /**
+     * The current sort order of this Combat relative to others in the same Scene
+     * @defaultValue `0`
+     */
+    sort: fields.IntegerSortField;
+
+    /**
+     * An object of optional key/value flags
+     * @defaultValue `{}`
+     */
+    flags: fields.ObjectField.FlagsField<"Combat">;
+
+    /**
+     * An object of creation and access information
+     * @defaultValue see {@link fields.DocumentStatsField}
+     */
+    _stats: fields.DocumentStatsField;
+  }
 }

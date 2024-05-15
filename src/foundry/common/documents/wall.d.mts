@@ -1,44 +1,157 @@
-import type { ConfiguredDocumentClass } from "../../../types/helperTypes.d.mts";
-import type { DeepPartial, Merge } from "../../../types/utils.d.mts";
-import type { Context, DocumentMetadata } from "../abstract/document.d.mts";
-import type { Document } from "../abstract/module.d.mts";
-import type * as data from "../data/data.mjs/index.d.mts";
-import type { WallDataConstructorData } from "../data/data.mjs/wallData.d.mts";
-import type { BaseScene } from "./scene.d.mts";
-import type { BaseUser } from "./user.d.mts";
+// FOUNDRY_VERSION: 10.291
 
-type WallMetadata = Merge<
-  DocumentMetadata,
-  {
-    name: "Wall";
-    collection: "walls";
-    label: "DOCUMENT.Wall";
-    labelPlural: "DOCUMENT.Walls";
-    isEmbedded: true;
-    permissions: {
-      update: (user: BaseUser, doc: BaseWall, data: DeepPartial<WallDataConstructorData>) => boolean;
-    };
-  }
->;
+import type { Merge } from "../../../types/utils.mts";
+import type Document from "../abstract/document.mts";
+import type { DocumentMetadata } from "../abstract/document.mts";
+import type * as CONST from "../constants.mts";
+import type * as fields from "../data/fields.mts";
+
+declare global {
+  type WallData = BaseWall.Properties;
+}
 
 /**
- * The base Wall model definition which defines common behavior of an Wall document between both client and server.
+ * The Document definition for a Wall.
+ * Defines the DataSchema and common behaviors for a Wall which are shared between both client and server.
  */
-export declare class BaseWall extends Document<data.WallData, InstanceType<ConfiguredDocumentClass<typeof BaseScene>>> {
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface BaseWall extends BaseWall.Properties {}
+declare class BaseWall extends Document<BaseWall.SchemaField, BaseWall.Metadata> {
   /**
-   * @remarks This is not overridden in foundry but reflects the real behavior.
+   * @param data    - Initial data from which to construct the Wall
+   * @param context - Construction context options
    */
-  constructor(
-    data: WallDataConstructorData,
-    context?: Context<InstanceType<ConfiguredDocumentClass<typeof BaseScene>>>,
-  );
+  constructor(data: BaseWall.ConstructorData, context?: DocumentConstructionContext);
 
-  static override get schema(): typeof data.WallData;
+  static override metadata: Readonly<BaseWall.Metadata>;
 
-  static override get metadata(): WallMetadata;
+  static override defineSchema(): BaseWall.Schema;
 
-  /**
-   * Is a user able to update an existing Wall?
-   */
-  protected static _canUpdate(user: BaseUser, doc: BaseWall, data: DeepPartial<WallDataConstructorData>): boolean;
+  static override migrateData(source: object): object;
+}
+export default BaseWall;
+
+declare namespace BaseWall {
+  type Metadata = Merge<
+    DocumentMetadata,
+    {
+      name: "Wall";
+      collection: "walls";
+      label: "DOCUMENT.Wall";
+      labelPlural: "DOCUMENT.Walls";
+      permissions: {
+        update: (user: foundry.documents.BaseUser, doc: Document.Any, data: UpdateData) => boolean;
+      };
+    }
+  >;
+
+  type SchemaField = fields.SchemaField<Schema>;
+  type ConstructorData = UpdateData & Required<Pick<UpdateData, "c">>;
+  type UpdateData = fields.SchemaField.InnerAssignmentType<Schema>;
+  type Properties = fields.SchemaField.InnerInitializedType<Schema>;
+  type Source = fields.SchemaField.InnerPersistedType<Schema>;
+
+  interface Schema extends DataSchema {
+    /**
+     * The _id which uniquely identifies this BaseWall embedded document
+     * @defaultValue `null`
+     */
+    _id: fields.DocumentIdField;
+
+    /**
+     * The wall coordinates, a length-4 array of finite numbers [x0,y0,x1,y1]
+     */
+    c: fields.ArrayField<
+      fields.NumberField<{
+        required: true;
+        integer: true;
+        nullable: false;
+        validate: (c: [x0: number, y0: number, x1: number, y1: number]) => boolean;
+        validationError: "must be a length-4 array of integer coordinates";
+      }>
+    >;
+
+    /**
+     * The illumination restriction type of this wall
+     * @defaultValue `CONST.WALL_SENSE_TYPES.NORMAL`
+     */
+    light: fields.NumberField<{
+      required: true;
+      choices: CONST.WALL_SENSE_TYPES[];
+      initial: typeof CONST.WALL_SENSE_TYPES.NORMAL;
+      validationError: "must be a value in CONST.WALL_SENSE_TYPES";
+    }>;
+
+    /**
+     * The movement restriction type of this wall
+     * @defaultValue `CONST.WALL_MOVEMENT_TYPES.NORMAL`
+     */
+    move: fields.NumberField<{
+      required: true;
+      choices: CONST.WALL_MOVEMENT_TYPES[];
+      initial: typeof CONST.WALL_MOVEMENT_TYPES.NORMAL;
+      validationError: "must be a value in CONST.WALL_MOVEMENT_TYPES";
+    }>;
+
+    /**
+     * The visual restriction type of this wall
+     * @defaultValue `CONST.WALL_SENSE_TYPES.NORMAL`
+     */
+    sight: fields.NumberField<{
+      required: true;
+      choices: CONST.WALL_SENSE_TYPES[];
+      initial: typeof CONST.WALL_SENSE_TYPES.NORMAL;
+      validationError: "must be a value in CONST.WALL_SENSE_TYPES";
+    }>;
+
+    /**
+     * The auditory restriction type of this wall
+     * @defaultValue `CONST.WALL_SENSE_TYPES.NORMAL`
+     */
+    sound: fields.NumberField<{
+      required: true;
+      choices: CONST.WALL_SENSE_TYPES[];
+      initial: typeof CONST.WALL_SENSE_TYPES.NORMAL;
+      validationError: "must be a value in CONST.WALL_SENSE_TYPES";
+    }>;
+
+    /**
+     * The direction of effect imposed by this wall
+     * @defaultValue `CONST.WALL_DIRECTIONS.BOTH`
+     */
+    dir: fields.NumberField<{
+      required: true;
+      choices: CONST.WALL_DIRECTIONS[];
+      initial: typeof CONST.WALL_DIRECTIONS.BOTH;
+      validationError: "must be a value in CONST.WALL_DIRECTIONS";
+    }>;
+
+    /**
+     * The type of door which this wall contains, if any
+     * @defaultValue `CONST.WALL_DOOR_TYPES.NONE`
+     */
+    door: fields.NumberField<{
+      required: true;
+      choices: CONST.WALL_DOOR_TYPES[];
+      initial: typeof CONST.WALL_DOOR_TYPES.NONE;
+      validationError: "must be a value in CONST.WALL_DOOR_TYPES";
+    }>;
+
+    /**
+     * The state of the door this wall contains, if any
+     * @defaultValue `CONST.WALL_DOOR_STATES.CLOSED`
+     */
+    ds: fields.NumberField<{
+      required: true;
+      choices: CONST.WALL_DOOR_STATES[];
+      initial: typeof CONST.WALL_DOOR_STATES.CLOSED;
+      validationError: "must be a value in CONST.WALL_DOOR_STATES";
+    }>;
+
+    /**
+     * An object of optional key/value flags
+     * @defaultValue `{}`
+     */
+    flags: fields.ObjectField.FlagsField<"Wall">;
+  }
 }

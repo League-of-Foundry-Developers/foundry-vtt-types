@@ -1,49 +1,130 @@
-import type { ConfiguredDocumentClass } from "../../../types/helperTypes.d.mts";
-import type { DeepPartial, Merge } from "../../../types/utils.d.mts";
-import type { DocumentMetadata } from "../abstract/document.d.mts";
-import type { Document } from "../abstract/module.d.mts";
-import type { CombatantDataConstructorData, CombatantDataSource } from "../data/data.mjs/combatantData.d.mts";
-import type { data } from "../module.d.mts";
-import type { BaseCombat } from "./combat.d.mts";
-import type { BaseUser } from "./user.d.mts";
+// FOUNDRY_VERSION: 10.291
 
-type CombatantMetadata = Merge<
-  DocumentMetadata,
-  {
-    name: "Combatant";
-    collection: "combatants";
-    label: "DOCUMENT.Combatant";
-    isEmbedded: true;
-    labelPlural: "DOCUMENT.Combatants";
-    permissions: {
-      create: (user: BaseUser, doc: BaseCombatant, data: CombatantDataSource) => boolean;
-      update: (user: BaseUser, doc: BaseCombatant, data: DeepPartial<CombatantDataConstructorData>) => boolean;
-    };
-  }
->;
+import type { Merge } from "../../../types/utils.mts";
+import type Document from "../abstract/document.mts";
+import type { DocumentMetadata } from "../abstract/document.mts";
+import type * as fields from "../data/fields.mts";
+import type * as documents from "./module.mts";
+
+declare global {
+  type CombatantData = BaseCombatant.Properties;
+}
 
 /**
- * The base Combatant model definition which defines common behavior of an Combatant document between both client and server.
+ * The Document definition for a Combatant.
+ * Defines the DataSchema and common behaviors for a Combatant which are shared between both client and server.
  */
-export declare class BaseCombatant extends Document<
-  data.CombatantData,
-  InstanceType<ConfiguredDocumentClass<typeof BaseCombat>>,
-  CombatantMetadata
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface BaseCombatant extends BaseCombatant.Properties {}
+declare class BaseCombatant<Parent extends Document.Any | null = null> extends Document<
+  BaseCombatant.SchemaField,
+  BaseCombatant.Metadata,
+  Parent
 > {
-  static override get schema(): typeof data.CombatantData;
+  /**
+   * @param data    - Initial data from which to construct the Combatant
+   * @param context - Construction context options
+   */
+  constructor(data?: BaseCombatant.ConstructorData, context?: DocumentConstructionContext);
 
-  static override get metadata(): CombatantMetadata;
+  static override metadata: Readonly<BaseCombatant.Metadata>;
+
+  static override defineSchema(): BaseCombatant.Schema;
 
   /**
    * Is a user able to update an existing Combatant?
-   * @remarks doc seems unused
+   * @internal
    */
-  protected static _canUpdate(
-    user: BaseUser,
-    doc: BaseCombatant,
-    data: DeepPartial<CombatantDataConstructorData>,
-  ): boolean;
+  static #canUpdate(user: documents.BaseUser, doc: BaseCombatant, data: BaseCombatant.UpdateData): boolean;
 
-  /** Is a user able to create this Combatant? */
-  protected static _canCreate(user: BaseUser, doc: BaseCombatant, data: CombatantDataSource): boolean;
+  /**
+   * Is a user able to create this Combatant?
+   * @internal
+   */
+  static #canCreate(user: documents.BaseUser, doc: BaseCombatant, data: BaseCombatant.ConstructorData): boolean;
+}
+export default BaseCombatant;
+
+declare namespace BaseCombatant {
+  type Metadata = Merge<
+    DocumentMetadata,
+    {
+      name: "Combatant";
+      collection: "combatants";
+      label: "DOCUMENT.Combatant";
+      labelPlural: "DOCUMENT.Combatants";
+      isEmbedded: true;
+      permissions: {
+        create: (user: documents.BaseUser, doc: Document.Any) => boolean;
+        update: (user: documents.BaseUser, doc: Document.Any, data: UpdateData) => boolean;
+      };
+    }
+  >;
+
+  type SchemaField = fields.SchemaField<Schema>;
+  type ConstructorData = UpdateData;
+  type UpdateData = fields.SchemaField.InnerAssignmentType<Schema>;
+  type Properties = fields.SchemaField.InnerInitializedType<Schema>;
+  type Source = fields.SchemaField.InnerPersistedType<Schema>;
+
+  interface Schema extends DataSchema {
+    /**
+     * The _id which uniquely identifies this Combatant embedded document
+     * @defaultValue `null`
+     */
+    _id: fields.DocumentIdField;
+
+    /**
+     * The _id of an Actor associated with this Combatant
+     * @defaultValue `null`
+     */
+    actorId: fields.ForeignDocumentField<typeof documents.BaseActor, { label: "COMBAT.CombatantActor"; idOnly: true }>;
+
+    /**
+     * The _id of a Token associated with this Combatant
+     * @defaultValue `null`
+     */
+    tokenId: fields.ForeignDocumentField<typeof documents.BaseToken, { label: "COMBAT.CombatantToken"; idOnly: true }>;
+
+    /**
+     * @defaultValue `null`
+     */
+    sceneId: fields.ForeignDocumentField<typeof documents.BaseScene, { label: "COMBAT.CombatantScene"; idOnly: true }>;
+
+    /**
+     * A customized name which replaces the name of the Token in the tracker
+     * @defaultValue `""`
+     */
+    name: fields.StringField<{ label: "COMBAT.CombatantName" }>;
+
+    /**
+     * A customized image which replaces the Token image in the tracker
+     * @defaultValue `null`
+     */
+    img: fields.FilePathField<{ categories: "IMAGE"[]; label: "COMBAT.CombatantImage" }>;
+
+    /**
+     * The initiative score for the Combatant which determines its turn order
+     * @defaultValue `null`
+     */
+    initiative: fields.NumberField<{ label: "COMBAT.CombatantInitiative" }>;
+
+    /**
+     * Is this Combatant currently hidden?
+     * @defaultValue `false`
+     */
+    hidden: fields.BooleanField<{ label: "COMBAT.CombatantHidden" }>;
+
+    /**
+     * Has this Combatant been defeated?
+     * @defaultValue `false`
+     */
+    defeated: fields.BooleanField<{ label: "COMBAT.CombatantDefeated" }>;
+
+    /**
+     * An object of optional key/value flags
+     * @defaultValue `{}`
+     */
+    flags: fields.ObjectField.FlagsField<"Combatant">;
+  }
 }

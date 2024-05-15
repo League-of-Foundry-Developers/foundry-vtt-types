@@ -1,32 +1,154 @@
-import type { Merge } from "../../../types/utils.d.mts";
-import type { DocumentMetadata } from "../abstract/document.d.mts";
-import type { Document } from "../abstract/module.d.mts";
-import type { BaseTableResult } from "./table-result.d.mts";
+// FOUNDRY_VERSION: 10.291
 
-type RollTableMetadata = Merge<
-  DocumentMetadata,
-  {
-    name: "RollTable";
-    collection: "tables";
-    label: "DOCUMENT.RollTable";
-    labelPlural: "DOCUMENT.RollTables";
-    embedded: {
-      TableResult: typeof BaseTableResult;
-    };
-    isPrimary: true;
-  }
->;
+import type { Merge } from "../../../types/utils.mts";
+import type Document from "../abstract/document.mts";
+import type { DocumentMetadata } from "../abstract/document.mts";
+import type * as fields from "../data/fields.mts";
+import type * as documents from "./module.mts";
+
+declare global {
+  type RollTableData = BaseRollTable.Properties;
+}
 
 /**
- * The base RollTable model definition which defines common behavior of an RollTable document between both client and server.
+ * The Document definition for a RollTable.
+ * Defines the DataSchema and common behaviors for a RollTable which are shared between both client and server.
  */
-export declare class BaseRollTable extends Document<foundry.data.RollTableData, null, RollTableMetadata> {
-  static override get schema(): typeof foundry.data.RollTableData;
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface BaseRollTable extends BaseRollTable.Properties {}
+declare class BaseRollTable extends Document<BaseRollTable.SchemaField, BaseRollTable.Metadata> {
+  /**
+   * @param data    - Initial data from which to construct the Roll Table
+   * @param context - Construction context options
+   */
+  constructor(data: BaseRollTable.ConstructorData, context?: DocumentConstructionContext);
 
-  static override get metadata(): RollTableMetadata;
+  static override metadata: Readonly<BaseRollTable.Metadata>;
+
+  static override defineSchema(): BaseRollTable.Schema;
 
   /**
-   * A reference to the Collection of TableResult instances in this document, indexed by _id.
+   * The default icon used for newly created Macro documents
    */
-  get results(): this["data"]["results"];
+  static DEFAULT_ICON: "icons/svg/d20-grey.svg";
+
+  static override migrateData(source: object): object;
+
+  static override shimData(
+    data: object,
+    {
+      embedded,
+    }?: {
+      /**
+       * Apply shims to embedded models?
+       * @defaultValue `true`
+       */
+      embedded?: boolean;
+    },
+  ): object;
+}
+export default BaseRollTable;
+
+declare namespace BaseRollTable {
+  type Metadata = Merge<
+    DocumentMetadata,
+    {
+      name: "RollTable";
+      collection: "tables";
+      indexed: true;
+      compendiumIndexFields: ["_id", "name", "img", "sort"];
+      embedded: { TableResult: "results" };
+      label: "DOCUMENT.RollTable";
+      labelPlural: "DOCUMENT.RollTables";
+    }
+  >;
+
+  type SchemaField = fields.SchemaField<Schema>;
+  type ConstructorData = UpdateData & Required<Pick<UpdateData, "name">>;
+  type UpdateData = fields.SchemaField.InnerAssignmentType<Schema>;
+  type Properties = fields.SchemaField.InnerInitializedType<Schema>;
+  type Source = fields.SchemaField.InnerPersistedType<Schema>;
+
+  interface Schema extends DataSchema {
+    /**
+     * The _id which uniquely identifies this RollTable document
+     * @defaultValue `null`
+     */
+    _id: fields.DocumentIdField;
+
+    /**
+     * The name of this RollTable
+     * @defaultValue `""`
+     */
+    name: fields.StringField<{ required: true; blank: false }>;
+
+    /**
+     * An image file path which provides the thumbnail artwork for this RollTable
+     * @defaultValue `BaseRollTable.DEFAULT_ICON`
+     */
+    img: fields.FilePathField<{
+      categories: ["IMAGE"];
+      initial: () => typeof BaseRollTable.DEFAULT_ICON;
+    }>;
+
+    /**
+     * The HTML text description for this RollTable document
+     * @defaultValue `""`
+     */
+    description: fields.StringField;
+
+    /**
+     * A Collection of TableResult embedded documents which belong to this RollTable
+     * @defaultValue `[]`
+     */
+    results: fields.EmbeddedCollectionField<documents.BaseTableResult>;
+
+    /**
+     * The Roll formula which determines the results chosen from the table
+     * @defaultValue `""`
+     */
+    formula: fields.StringField;
+
+    /**
+     * Are results from this table drawn with replacement?
+     * @defaultValue `true`
+     */
+    replacement: fields.BooleanField<{ initial: true }>;
+
+    /**
+     * Is the Roll result used to draw from this RollTable displayed in chat?
+     * @defaultValue `true`
+     */
+    displayRoll: fields.BooleanField<{ initial: true }>;
+
+    /**
+     * The _id of a Folder which contains this RollTable
+     * @defaultValue `null`
+     */
+    folder: fields.ForeignDocumentField<typeof documents.BaseFolder>;
+
+    /**
+     * The numeric sort value which orders this RollTable relative to its siblings
+     * @defaultValue `0`
+     */
+    sort: fields.IntegerSortField;
+
+    /**
+     * An object which configures ownership of this RollTable
+     * @defaultValue see {@link fields.DocumentOwnershipField}
+     */
+    ownership: fields.DocumentOwnershipField;
+
+    /**
+     * An object of optional key/value flags
+     * @defaultValue `{}`
+     */
+    flags: fields.ObjectField.FlagsField<"RollTable">;
+
+    /**
+     * An object of creation and access information
+     * @defaultValue see {@link fields.DocumentStatsField}
+     */
+    _stats: fields.DocumentStatsField;
+  }
 }
