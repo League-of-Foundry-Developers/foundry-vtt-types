@@ -34,8 +34,10 @@ declare namespace ReleaseData {
   };
 }
 
+interface ReleaseData extends fields.SchemaField.InnerInitializedType<ReleaseData.Schema> {}
+
 /** A data object which represents the details of this Release of Foundry VTT */
-export declare class ReleaseData extends DataModel<fields.SchemaField<ReleaseData.Schema>> {
+declare class ReleaseData extends DataModel<fields.SchemaField<ReleaseData.Schema>> {
   static defineSchema(): ReleaseData.Schema;
 
   /** A formatted string for shortened display, such as "Version 9" */
@@ -63,3 +65,5 @@ export declare class ReleaseData extends DataModel<fields.SchemaField<ReleaseDat
    */
   isGenerationalChange(other: string | ReleaseData): boolean;
 }
+
+export { ReleaseData };

@@ -12,11 +12,13 @@ declare namespace BaseSystem {
   };
 }
 
+interface BaseSystem extends fields.SchemaField.InnerInitializedType<BaseSystem.Schema> {}
+
 /**
  * The data schema used to define System manifest files.
  * Extends the basic PackageData schema with some additional system-specific fields.
  */
-export default class BaseSystem extends BasePackage<BaseSystem.Schema> {
+declare class BaseSystem extends BasePackage<BaseSystem.Schema> {
   static defineSchema(): BaseSystem.Schema;
 
   static type: "system";
@@ -42,3 +44,5 @@ export default class BaseSystem extends BasePackage<BaseSystem.Schema> {
    */
   get model(): Game["model"];
 }
+
+export default BaseSystem;

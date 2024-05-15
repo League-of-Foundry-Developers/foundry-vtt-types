@@ -205,11 +205,13 @@ export class CompendiumOwnershipField extends fields.ObjectField<
  */
 export class PackageCompendiumPacks extends fields.SetField {}
 
+interface BasePackage extends fields.SchemaField.InnerInitializedType<BasePackage.Schema> {}
+
 /**
  * The data schema used to define a Package manifest.
  * Specific types of packages extend this schema with additional fields.
  */
-export default class BasePackage<PackageSchema extends BasePackage.Schema = BasePackage.Schema> extends DataModel<
+declare class BasePackage<PackageSchema extends BasePackage.Schema = BasePackage.Schema> extends DataModel<
   fields.SchemaField<PackageSchema>,
   null
 > {
@@ -384,3 +386,5 @@ export default class BasePackage<PackageSchema extends BasePackage.Schema = Base
     },
   ): Promise<never>;
 }
+
+export default BasePackage;

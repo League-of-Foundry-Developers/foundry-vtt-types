@@ -5,4 +5,8 @@ declare namespace ApplicationConfiguration {
   type Schema = {};
 }
 
-export class ApplicationConfiguration extends DataModel<fields.SchemaField<ApplicationConfiguration.Schema>> {}
+interface ApplicationConfiguration extends fields.SchemaField.InnerInitializedType<ApplicationConfiguration.Schema> {}
+
+declare class ApplicationConfiguration extends DataModel<fields.SchemaField<ApplicationConfiguration.Schema>> {}
+
+export { ApplicationConfiguration };

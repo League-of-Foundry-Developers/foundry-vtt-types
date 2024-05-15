@@ -20,11 +20,13 @@ declare namespace BaseWorld {
   };
 }
 
+interface BaseWorld extends fields.SchemaField.InnerInitializedType<BaseWorld.Schema> {}
+
 /**
  * The data schema used to define World manifest files.
  * Extends the basic PackageData schema with some additional world-specific fields.
  */
-export default class BaseWorld extends BasePackage<BaseWorld.Schema> {
+declare class BaseWorld extends BasePackage<BaseWorld.Schema> {
   static defineSchema(): BaseWorld.Schema;
 
   static type: "world";
@@ -67,3 +69,5 @@ export default class BaseWorld extends BasePackage<BaseWorld.Schema> {
     }>,
   ): CONST.PACKAGE_AVAILABILITY_CODES;
 }
+
+export default BaseWorld;

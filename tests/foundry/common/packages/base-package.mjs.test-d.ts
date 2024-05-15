@@ -1,10 +1,7 @@
 import { expectTypeOf } from "vitest";
 import type { CompendiumOwnershipField } from "../../../../src/foundry/common/packages/base-package.d.mts";
 
-// TODO: Rework after data model properties work correctly
-const myPackage: foundry.data.fields.SchemaField.InnerInitializedType<
-  ReturnType<typeof foundry.packages.BasePackage.defineSchema>
-> = new foundry.packages.BasePackage({
+const myPackage = new foundry.packages.BasePackage({
   id: "foobar",
 });
 
@@ -23,3 +20,5 @@ expectTypeOf(packageCompendia.ownership.ASSISTANT).toEqualTypeOf<
 
 expectTypeOf(myPackage.id).toEqualTypeOf<string>();
 expectTypeOf(myPackage.changelog).toEqualTypeOf<string | undefined>();
+
+// TODO: Write tests for all of the sets
