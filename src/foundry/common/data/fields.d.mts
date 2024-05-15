@@ -1142,6 +1142,7 @@ declare namespace ObjectField {
    */
   type MergedOptions<Options extends DataFieldOptions<object>> = SimpleMerge<DefaultOptions, Options>;
 
+  // TODO: ObjectField#_cast prevents the end result from *actually* being null or undefined.
   /**
    * A shorthand for the assignment type of a ObjectField class.
    * @typeParam Options - the options that override the default options

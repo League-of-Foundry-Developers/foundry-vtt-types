@@ -242,6 +242,14 @@ declare global {
      */
     setupPackages(data: Game.Data): void;
 
+    // Following three fields are initialized in setupPackages
+
+    documentTypes: Game.Data["documentTypes"];
+
+    template: Game.Data["template"];
+
+    model: Game.Data["model"];
+
     /**
      * Return the named scopes which can exist for packages.
      * Scopes are returned in the prioritization order that their content is loaded.
@@ -523,91 +531,6 @@ declare global {
   }
 
   namespace Game {
-    interface Language {
-      lang: string;
-      name: string;
-      path: string;
-    }
-
-    interface PackageData<T> {
-      availability: number;
-      data: T;
-      esmodules: string[];
-      id: string;
-      languages: Language[];
-      locked: boolean;
-      packs: {
-        absPath: string;
-        /** @deprecated since V9 */
-        entity: foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
-        label: string;
-        name: string;
-        package: string;
-        path: string;
-        private: boolean;
-        system?: string;
-        type: foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
-      }[];
-      scripts: string[];
-      styles: string[];
-      type: "world" | "system" | "module";
-      unavailable: boolean;
-    }
-
-    interface ModuleData<T> extends PackageData<T> {
-      active: boolean;
-      path: string;
-      type: "module";
-    }
-
-    interface SystemData<T> extends PackageData<T> {
-      _systemUpdateCheckTime: number;
-      documentTypes: {
-        [Key in
-          | foundry.CONST.DOCUMENT_TYPES
-          | "ActiveEffect"
-          | "Adventure"
-          | "AmbientLight"
-          | "AmbientSound"
-          | "Card"
-          | "Combatant"
-          | "Drawing"
-          | "FogExploration"
-          | "MeasuredTemplate"
-          | "Note"
-          | "PlaylistSound"
-          | "Setting"
-          | "TableResult"
-          | "Tile"
-          | "Token"
-          | "Wall"]: string[];
-      };
-      model: {
-        Actor: Record<string, Record<string, unknown>>;
-        Card: Record<string, Record<string, unknown>>;
-        Cards: Record<string, Record<string, unknown>>;
-        Item: Record<string, Record<string, unknown>>;
-        JournalEntryPage: Record<string, Record<string, unknown>>;
-      };
-      path: string;
-      template: {
-        Actor?: {
-          types: string[];
-          templates?: Record<string, unknown>;
-        } & Record<string, unknown>;
-        Item?: {
-          types: string[];
-          templates?: Record<string, unknown>;
-        } & Record<string, unknown>;
-      };
-      type: "system";
-    }
-
-    interface WorldData<T> extends PackageData<T> {
-      _systemUpdateCheckTime: number;
-      type: "world";
-    }
-
     // TODO: Revisit functionality and how it works with data models
     interface ModuleCollection extends Collection<Module> {
       /**
@@ -617,7 +540,19 @@ declare global {
        * @param id - The module ID to look up
        */
       get<T extends string>(id: T): (Module & ConfiguredModule<T>) | ModuleRequiredOrOptional<T>;
+      // Attempt to copy the handling
+      // get<T extends string>(
+      //   id: T,
+      //   { strict }: { strict: true },
+      // ): (Module & ConfiguredModule<T>) | ModuleRequiredOrOptional<T>;
+      // get<T extends string>(
+      //   id: T,
+      //   { strict }?: { strict?: false },
+      // ): (Module & ConfiguredModule<T>) | ModuleRequiredOrOptional<T> | undefined;
     }
+
+    type SourceData<SourceDataModel extends foundry.abstract.DataModel<any, any>> =
+      foundry.data.fields.SchemaField.AssignmentType<ReturnType<SourceDataModel["schema"]>>;
 
     type Data = {
       activeUsers: string[];
@@ -659,44 +594,36 @@ declare global {
         updateChannel: string;
       };
       packageWarnings: Record<string, unknown>;
-      packs: {
-        flags: Record<string, unknown>;
-        id: string;
-        label: string;
-        name: string;
-        ownership: Record<
-          ValueOf<typeof foundry.CONST.USER_ROLE_NAMES>,
-          keyof typeof foundry.CONST.DOCUMENT_PERMISSION_LEVELS
-        >;
-        packageName: string;
-        packageType: foundry.CONST.PACKAGE_TYPES;
-        path: string;
-        /** @deprecated since v11 */
-        private?: boolean;
-        system?: string;
-        type: foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
-      }[];
-      paused: boolean;
-      release: foundry.data.fields.SchemaField.AssignmentType<
-        ReturnType<(typeof foundry.config.ReleaseData)["defineSchema"]>
+      packs: Array<
+        PackageCompendiumData & {
+          /** @deprecated since v11 */
+          private?: boolean;
+          system?: string;
+          type: foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
+        }
       >;
-      // TODO: Update after data models
-      system: foundry.data.fields.SchemaField.AssignmentType<ReturnType<(typeof System)["defineSchema"]>>;
+      paused: boolean;
+      release: SourceData<foundry.config.ReleaseData>;
+      system: SourceData<System>;
       systemUpdate: {
         hasUpdate: boolean;
         version: string;
       };
       // TODO: I think this is only for configurable types
       template: Record<foundry.CONST.DOCUMENT_TYPES, DocumentTemplate>;
+      // TODO: Some of these are fixed and this could be improved
+      documentTypes: Record<foundry.CONST.DOCUMENT_TYPES, string[]>;
+      // TODO: This is also inheriting the configured types,
+      // but is only filled in if there's `template.json`
+      model: Record<foundry.CONST.DOCUMENT_TYPES, Record<string, object>>;
       userId: string;
-      // TODO: Update after data models
-      world: foundry.data.fields.SchemaField.AssignmentType<ReturnType<(typeof World)["defineSchema"]>>;
+      world: SourceData<World>;
     } & {
       [DocumentType in
         | foundry.CONST.DOCUMENT_TYPES
         | "Setting" as ConfiguredDocumentClassForName<DocumentType>["metadata"]["collection"]]?: InstanceType<
         ConfiguredDocumentClassForName<DocumentType>
-      >["data"]["_source"][];
+      >["_source"][];
     };
 
     type Permissions = {
