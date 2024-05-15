@@ -62,7 +62,7 @@ declare namespace BaseAdventure {
     {
       name: "Adventure";
       collection: "adventures";
-      compendiumIndexFields: ["_id", "name", "img", "sort"];
+      compendiumIndexFields: ["_id", "name", "img", "sort", "folder"];
       label: "DOCUMENT.Adventure";
       labelPlural: "DOCUMENT.Adventures";
     }
@@ -84,7 +84,13 @@ declare namespace BaseAdventure {
     /**
      * The human-readable name of the Adventure
      */
-    name: fields.StringField<{ required: true; blank: false; label: "ADVENTURE.Name"; hint: "ADVENTURE.NameHint" }>;
+    name: fields.StringField<{
+      required: true;
+      blank: false;
+      label: "ADVENTURE.Name";
+      hint: "ADVENTURE.NameHint";
+      textSearch: true;
+    }>;
 
     /**
      * The file path for the primary image of the adventure
@@ -102,7 +108,11 @@ declare namespace BaseAdventure {
      * An HTML text description for the adventure
      * @defaultValue `""`
      */
-    description: fields.HTMLField<{ label: "ADVENTURE.Description"; hint: "ADVENTURE.DescriptionHint" }>;
+    description: fields.HTMLField<{
+      label: "ADVENTURE.Description";
+      hint: "ADVENTURE.DescriptionHint";
+      textSearch: true;
+    }>;
 
     /**
      * An array of Actor documents which are included in the adventure
@@ -163,6 +173,8 @@ declare namespace BaseAdventure {
      * @defaultValue `new Set()`
      */
     folders: fields.SetField<fields.EmbeddedDataField<documents.BaseFolder>>;
+
+    folder: fields.ForeignDocumentField<documents.BaseFolder>;
 
     /**
      * The sort order of this adventure relative to its siblings
