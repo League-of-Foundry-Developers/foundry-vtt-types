@@ -1,5 +1,5 @@
 import type { ConfiguredFlags } from "../../../types/helperTypes.mts";
-import type { SimpleMerge, ValueOf } from "../../../types/utils.d.mts";
+import type { ConstructorOf, SimpleMerge, ValueOf } from "../../../types/utils.d.mts";
 import type { DataModel } from "../abstract/data.mts";
 import type Document from "../abstract/document.mts";
 import type { DataModelValidationFailure } from "./validation-failure.mts";
@@ -1529,6 +1529,128 @@ declare namespace SetField {
 }
 
 /**
+ * A subclass of [ObjectField]{@link ObjectField} which embeds some other DataModel definition as an inner object.
+ * @typeParam ModelType       - the DataModel for the embedded data
+ * @typeParam Options         - the options of the EmbeddedDataField instance
+ * @typeParam AssignmentType  - the type of the allowed assignment values of the EmbeddedDataField
+ * @typeParam InitializedType - the type of the initialized values of the EmbeddedDataField
+ * @typeParam PersistedType   - the type of the persisted values of the EmbeddedDataField
+ * @remarks
+ * Defaults:
+ * AssignmentType: `SchemaField.AssignmentType<ModelType["schema"]["fields"]> | null | undefined`
+ * InitializedType: `SchemaField.InitializedType<ModelType["schema"]["fields"]>`
+ * PersistedType: `SchemaField.PersistedType<ModelType["schema"]["fields"]>`
+ * InitialValue: `{}`
+ */
+declare class EmbeddedDataField<
+  ModelType extends DataModel.Any,
+  Options extends EmbeddedDataField.Options<ModelType> = EmbeddedDataField.DefaultOptions,
+  AssignmentType = EmbeddedDataField.AssignmentType<ModelType, Options>,
+  InitializedType = EmbeddedDataField.InitializedType<ModelType, Options>,
+  PersistedType extends object | null | undefined = EmbeddedDataField.PersistedType<ModelType, Options>,
+> extends SchemaField<
+  EmbeddedDataField.DataSchema<ModelType>,
+  Options,
+  AssignmentType,
+  InitializedType,
+  PersistedType
+> {
+  /**
+   * @param model   - The class of DataModel which should be embedded in this field
+   * @param options - Options which configure the behavior of the field
+   */
+  constructor(model: ConstructorOf<ModelType>, options?: Options);
+
+  /**
+   * The embedded DataModel definition which is contained in this field.
+   */
+  model: ConstructorOf<ModelType>;
+
+  protected override _initialize(fields: DataSchema): DataSchema;
+
+  override initialize(value: PersistedType, model: DataModel.Any): InitializedType | (() => InitializedType | null);
+
+  override toObject(value: InitializedType): PersistedType;
+
+  /**
+   * Migrate this field's candidate source data.
+   * @param sourceData - Candidate source data of the root model
+   * @param fieldData  - The value of this field within the source data
+   */
+  migrateSource(sourceData: object, fieldData: unknown): unknown;
+
+  protected override _validateModel(data: object, options?: object | undefined): void;
+}
+
+declare namespace EmbeddedDataField {
+  /**
+   * A shorthand for the options of an EmbeddedDataField class.
+   * @typeParam ModelType - the DataModel for the embedded data
+   */
+  type Options<ModelType extends DataModel.Any> = DataFieldOptions<
+    SchemaField.InnerAssignmentType<DataSchema<ModelType>>
+  >;
+
+  /** The type of the default options for the {@link EmbeddedDataField} class. */
+  type DefaultOptions = SchemaField.DefaultOptions;
+
+  /**
+   * A helper type for the given options type merged into the default options of the EmbeddedDataField class.
+   * @typeParam ModelType - the DataModel for the embedded data
+   * @typeParam Opts      - the options that override the default options
+   */
+  type MergedOptions<ModelType extends DataModel.Any, Opts extends Options<ModelType>> = SimpleMerge<
+    DefaultOptions,
+    Opts
+  >;
+
+  /**
+   * A helper type to extract the {@link DataSchema} from a {@link DataModel}.
+   * @typeParam ModelType - the DataModel for the embedded data
+   */
+  type DataSchema<ModelType extends DataModel.Any> = ModelType["schema"]["fields"];
+
+  /**
+   * A shorthand for the assignment type of an EmbeddedDataField class.
+   * @typeParam ModelType - the DataModel for the embedded data
+   * @typeParam Opts      - the options that override the default options
+   */
+  type AssignmentType<
+    ModelType extends DataModel.Any,
+    Opts extends Options<ModelType>,
+  > = DataField.DerivedAssignmentType<
+    SchemaField.InnerAssignmentType<DataSchema<ModelType>>,
+    MergedOptions<ModelType, Opts>
+  >;
+
+  /**
+   * A shorthand for the initialized type of an EmbeddedDataField class.
+   * @typeParam ModelType - the DataModel for the embedded data
+   * @typeParam Opts      - the options that override the default options
+   */
+  type InitializedType<
+    ModelType extends DataModel.Any,
+    Opts extends Options<ModelType>,
+  > = DataField.DerivedInitializedType<
+    SchemaField.InnerInitializedType<DataSchema<ModelType>>,
+    MergedOptions<ModelType, Opts>
+  >;
+
+  /**
+   * A shorthand for the persisted type of an EmbeddedDataField class.
+   * @typeParam ModelType - the DataModel for the embedded data
+   * @typeParam Opts      - the options that override the default options
+   */
+  type PersistedType<
+    ModelType extends DataModel.Any,
+    Opts extends Options<ModelType>,
+  > = DataField.DerivedInitializedType<
+    SchemaField.InnerPersistedType<DataSchema<ModelType>>,
+    MergedOptions<ModelType, Opts>
+  >;
+}
+
+/**
  * @deprecated since v11; ModelValidationError is deprecated. Please use DataModelValidationError instead.
  * @typeParam Errors - the type of the errors contained in this error
  */
@@ -1562,6 +1684,7 @@ export {
   ArrayField,
   BooleanField,
   DataField,
+  EmbeddedDataField,
   NumberField,
   ObjectField,
   SchemaField,
