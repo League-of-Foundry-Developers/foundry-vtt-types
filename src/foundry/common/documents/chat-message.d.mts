@@ -1,5 +1,3 @@
-// FOUNDRY_VERSION: 10.291
-
 import type { Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
@@ -138,7 +136,7 @@ declare namespace BaseChatMessage {
      * The HTML content of this chat message
      * @defaultValue `""`
      */
-    content: fields.HTMLField;
+    content: fields.HTMLField<{ textSearch: true }>;
 
     /**
      * A ChatSpeakerData object which describes the origin of the ChatMessage

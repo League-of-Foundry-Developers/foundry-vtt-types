@@ -54,7 +54,7 @@ declare class BaseActorDelta<
 export default BaseActorDelta;
 
 declare namespace BaseActorDelta {
-  type TypeNames = fields.SystemDataField.TypeNames<typeof documents.BaseActor>;
+  type TypeNames = fields.TypeDataField.TypeNames<typeof documents.BaseActor>;
   type ConstructorData<TypeName extends TypeNames> = UpdateData<TypeName> &
     Required<Pick<UpdateData<TypeName>, "name" | "type">>;
   type UpdateData<TypeName extends TypeNames> = fields.SchemaField.InnerAssignmentType<Schema<TypeName>>;

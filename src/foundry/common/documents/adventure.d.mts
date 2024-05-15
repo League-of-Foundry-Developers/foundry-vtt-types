@@ -1,5 +1,3 @@
-// FOUNDRY_VERSION: 10.291
-
 import type { Merge } from "../../../types/utils.mts";
 import type DataModel from "../abstract/data.mts";
 import type Document from "../abstract/document.mts";

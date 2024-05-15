@@ -1,6 +1,4 @@
-// FOUNDRY_VERSION: 10.291
-
-import type { Merge } from "../../../types/utils.mts";
+import type { InexactPartial, Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
 import type * as fields from "../data/fields.mts";
@@ -27,7 +25,7 @@ declare class BaseFolder extends Document<BaseFolder.SchemaField, BaseFolder.Met
 
   static override defineSchema(): BaseFolder.Schema;
 
-  protected override _validateModel(data: fields.SchemaField.InnerAssignmentType<BaseFolder.Schema>): void;
+  static override validateJoint(data: fields.SchemaField.InnerAssignmentType<BaseFolder.Schema>): void;
 
   /**
    * Allow folder sorting modes
@@ -49,6 +47,8 @@ declare class BaseFolder extends Document<BaseFolder.SchemaField, BaseFolder.Met
       embedded?: boolean;
     },
   ): object;
+
+  static override get(documentId: string, options: InexactPartial<{ pack: string }>): Folder | null;
 }
 export default BaseFolder;
 
@@ -78,7 +78,7 @@ declare namespace BaseFolder {
     _id: fields.DocumentIdField;
 
     /** The name of this Folder */
-    name: fields.StringField<{ required: true; blank: false }>;
+    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
     /** The document type which this Folder contains, from CONST.FOLDER_DOCUMENT_TYPES */
     type: fields.StringField<{ required: true; choices: CONST.FOLDER_DOCUMENT_TYPES[] }>;
@@ -87,7 +87,7 @@ declare namespace BaseFolder {
      * An HTML description of the contents of this folder
      * @defaultValue `""`
      */
-    description: fields.StringField;
+    description: fields.StringField<{ textSearch: true }>;
 
     /**
      * The _id of a parent Folder which contains this Folder

@@ -1,5 +1,3 @@
-// FOUNDRY_VERSION: 10.291
-
 import type { Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
@@ -92,7 +90,7 @@ declare class BaseCard<TypeName extends BaseCard.TypeNames = BaseCard.TypeNames>
 export default BaseCard;
 
 declare namespace BaseCard {
-  type TypeNames = fields.SystemDataField.TypeNames<typeof BaseCard>;
+  type TypeNames = fields.TypeDataField.TypeNames<typeof BaseCard>;
 
   type Metadata = Merge<
     DocumentMetadata,
@@ -141,7 +139,7 @@ declare namespace BaseCard {
         required: true;
         label: "CARD.Type";
         choices: () => typeof BaseCard.TYPES;
-        initial: (typeof BaseCard.TYPES)[0];
+        initial: () => (typeof BaseCard.TYPES)[0];
       },
       TypeName,
       TypeName,
@@ -152,7 +150,7 @@ declare namespace BaseCard {
      * Game system data which is defined by the system template.json model
      * @defaultValue `{}`
      */
-    system: fields.SystemDataField<typeof BaseCard, TypeName>;
+    system: fields.TypeDataField<typeof BaseCard, TypeName>;
 
     /**
      * An optional suit designation which is used by default sorting

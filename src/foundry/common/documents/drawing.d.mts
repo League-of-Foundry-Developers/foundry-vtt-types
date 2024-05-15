@@ -1,5 +1,3 @@
-// FOUNDRY_VERSION: 10.291
-
 import type { Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
@@ -38,7 +36,7 @@ declare class BaseDrawing<Parent extends Document.Any | null = null> extends Doc
    */
   static #validateVisibleContent(data: BaseDrawing.UpdateData): boolean;
 
-  protected override _validateModel(data: fields.SchemaField.InnerAssignmentType<documents.BaseDrawing.Schema>): void;
+  static override validateJoint(data: fields.SchemaField.InnerAssignmentType<documents.BaseDrawing.Schema>): void;
 
   /**
    * Is a user able to update or delete an existing Drawing document??

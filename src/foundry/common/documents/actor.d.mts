@@ -106,7 +106,7 @@ declare class BaseActor<TypeName extends BaseActor.TypeNames = BaseActor.TypeNam
 export default BaseActor;
 
 declare namespace BaseActor {
-  type TypeNames = fields.SystemDataField.TypeNames<typeof BaseActor>;
+  type TypeNames = fields.TypeDataField.TypeNames<typeof BaseActor>;
 
   type Metadata = Merge<
     DocumentMetadata,
@@ -169,7 +169,7 @@ declare namespace BaseActor {
      * The system data object which is defined by the system template.json model
      * @defaultValue `{}`
      */
-    system: fields.SystemDataField<typeof BaseActor, TypeName>;
+    system: fields.TypeDataField<typeof BaseActor, TypeName>;
 
     /**
      * Default Token settings which are used for Tokens created from this Actor

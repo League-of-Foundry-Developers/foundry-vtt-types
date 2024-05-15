@@ -1,5 +1,3 @@
-// FOUNDRY_VERSION: 10.291
-
 import type { Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
@@ -62,7 +60,7 @@ declare class BaseCards<TypeName extends BaseCards.TypeNames = BaseCards.TypeNam
 export default BaseCards;
 
 declare namespace BaseCards {
-  type TypeNames = fields.SystemDataField.TypeNames<typeof BaseCards>;
+  type TypeNames = fields.TypeDataField.TypeNames<typeof BaseCards>;
 
   type Metadata = Merge<
     DocumentMetadata,
@@ -70,7 +68,7 @@ declare namespace BaseCards {
       name: "Cards";
       collection: "cards";
       indexed: true;
-      compendiumIndexFields: ["_id", "name", "img", "type", "sort"];
+      compendiumIndexFields: ["_id", "name", "description", "img", "type", "sort", "folder"];
       embedded: { Card: "cards" };
       label: "DOCUMENT.Cards";
       labelPlural: "DOCUMENT.CardsPlural";
@@ -93,7 +91,7 @@ declare namespace BaseCards {
     _id: fields.DocumentIdField;
 
     /** The text name of this stack */
-    name: fields.StringField<{ required: true; blank: false; label: "CARDS.Name" }>;
+    name: fields.StringField<{ required: true; blank: false; label: "CARDS.Name"; textSearch: true }>;
 
     /**
      * The type of this stack, in BaseCards.metadata.types
@@ -116,7 +114,7 @@ declare namespace BaseCards {
      * A text description of this stack
      * @defaultValue `""`
      */
-    description: fields.HTMLField<{ label: "CARDS.Description" }>;
+    description: fields.HTMLField<{ label: "CARDS.Description"; textSearch: true }>;
 
     /**
      * An image or video which is used to represent the stack of cards
@@ -132,7 +130,7 @@ declare namespace BaseCards {
      * Game system data which is defined by the system template.json model
      * @defaultValue `{}`
      */
-    system: fields.SystemDataField<typeof BaseCards, TypeName>;
+    system: fields.TypeDataField<typeof BaseCards, TypeName>;
 
     /**
      * A collection of Card documents which currently belong to this stack

@@ -1,5 +1,3 @@
-// FOUNDRY_VERSION: 10.291
-
 import type { Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
@@ -52,7 +50,7 @@ declare class BaseJournalEntryPage<
 export default BaseJournalEntryPage;
 
 declare namespace BaseJournalEntryPage {
-  type TypeNames = fields.SystemDataField.TypeNames<typeof BaseJournalEntryPage>;
+  type TypeNames = fields.TypeDataField.TypeNames<typeof BaseJournalEntryPage>;
 
   type Metadata = Merge<
     DocumentMetadata,
@@ -83,7 +81,7 @@ declare namespace BaseJournalEntryPage {
     /**
      * The text name of this page.
      */
-    name: fields.StringField<{ required: true; blank: false; label: "JOURNALENTRYPAGE.PageTitle" }>;
+    name: fields.StringField<{ required: true; blank: false; label: "JOURNALENTRYPAGE.PageTitle"; textSearch: true }>;
 
     /**
      * The type of this page, in {@link BaseJournalEntryPage.TYPES}.
@@ -138,7 +136,7 @@ declare namespace BaseJournalEntryPage {
        * The content of the JournalEntryPage in a format appropriate for its type.
        * @defaultValue `undefined`
        */
-      content: fields.HTMLField<{ required: false; initial: undefined }>;
+      content: fields.HTMLField<{ required: false; initial: undefined; textSearch: true }>;
 
       /**
        * The original markdown source, if applicable.
@@ -217,7 +215,7 @@ declare namespace BaseJournalEntryPage {
      * System-specific data.
      * @defaultValue `{}`
      */
-    system: fields.SystemDataField<typeof BaseJournalEntryPage, TypeName>;
+    system: fields.TypeDataField<typeof BaseJournalEntryPage, TypeName>;
 
     /**
      * The numeric sort value which orders this page relative to its siblings.
@@ -236,5 +234,7 @@ declare namespace BaseJournalEntryPage {
      * @defaultValue `{}`
      */
     flags: fields.ObjectField.FlagsField<"JournalEntryPage">;
+
+    _stats: fields.DocumentStatsField;
   }
 }

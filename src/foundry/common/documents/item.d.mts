@@ -1,5 +1,3 @@
-// FOUNDRY_VERSION: 10.291
-
 import type { ConfiguredDocumentClass } from "../../../types/helperTypes.mts";
 import type { Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
@@ -40,6 +38,13 @@ declare class BaseItem<TypeName extends BaseItem.TypeNames = BaseItem.TypeNames>
    * @defaultValue `"icons/svg/item-bag.svg"`
    */
   static DEFAULT_ICON: string;
+
+  /**
+   * Determine default artwork based on the provided item data.
+   * @param itemData The source item data
+   * @returns Candidate item image
+   */
+  static getDefaultArtwork(itemData: BaseItem.ConstructorData<BaseItem.TypeNames>): { img: string };
 
   /**
    * The allowed set of Item types which may exist.
@@ -84,7 +89,7 @@ declare class BaseItem<TypeName extends BaseItem.TypeNames = BaseItem.TypeNames>
 export default BaseItem;
 
 declare namespace BaseItem {
-  type TypeNames = fields.SystemDataField.TypeNames<typeof BaseItem>;
+  type TypeNames = fields.TypeDataField.TypeNames<typeof BaseItem>;
 
   type Metadata = Merge<
     DocumentMetadata,
@@ -92,7 +97,7 @@ declare namespace BaseItem {
       name: "Item";
       collection: "items";
       indexed: true;
-      compendiumIndexFields: ["_id", "name", "img", "type", "sort"];
+      compendiumIndexFields: ["_id", "name", "img", "type", "sort", "folder"];
       embedded: { ActiveEffect: "effects" };
       label: "DOCUMENT.Item";
       labelPlural: "DOCUMENT.Items";
@@ -120,7 +125,7 @@ declare namespace BaseItem {
     _id: fields.DocumentIdField;
 
     /** The name of this Item */
-    name: fields.StringField<{ required: true; blank: false }>;
+    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
     /** An Item subtype which configures the system data model applied */
     type: fields.StringField<
@@ -138,13 +143,16 @@ declare namespace BaseItem {
      * An image file path which provides the artwork for this Item
      * @defaultValue `null`
      */
-    img: fields.FilePathField<{ categories: "IMAGE"[]; initial: () => typeof BaseItem.DEFAULT_ICON }>;
+    img: fields.FilePathField<{
+      categories: "IMAGE"[];
+      initial: (data: ConstructorData<TypeNames>) => string;
+    }>;
 
     /**
      * The system data object which is defined by the system template.json model
      * @defaultValue `{}`
      */
-    system: fields.SystemDataField<typeof BaseItem, TypeName>;
+    system: fields.TypeDataField<typeof BaseItem, TypeName>;
 
     /**
      * A collection of ActiveEffect embedded Documents
