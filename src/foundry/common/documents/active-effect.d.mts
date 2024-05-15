@@ -1,5 +1,3 @@
-// FOUNDRY_VERSION: 10.291
-
 import type { Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata, DocumentModificationOptions } from "../abstract/document.mts";
@@ -32,6 +30,12 @@ declare class BaseActiveEffect<Parent extends Document.Any | null = null> extend
    */
   constructor(data?: BaseActiveEffect.ConstructorData, context?: DocumentConstructionContext);
 
+  override canUserModify(
+    user: documents.BaseUser,
+    action: "create" | "update" | "delete",
+    data?: object | undefined,
+  ): boolean;
+
   static override metadata: Readonly<BaseActiveEffect.Metadata>;
 
   static override defineSchema(): BaseActiveEffect.Schema;
@@ -56,7 +60,15 @@ declare class BaseActiveEffect<Parent extends Document.Any | null = null> extend
     user: documents.BaseUser,
   ): Promise<void>;
 
+  protected override _initialize(options?: any): void;
+
   static override migrateData(source: object): object;
+
+  /**
+   * @deprecated since v11, will be removed in v13
+   * @remarks Replaced by name
+   */
+  get label(): string;
 }
 
 declare namespace BaseActiveEffect {
@@ -174,16 +186,22 @@ declare namespace BaseActiveEffect {
     }>;
 
     /**
+     * The HTML text description for this ActiveEffect document.
+     * @defaultValue `""`
+     */
+    description: fields.HTMLField<{ label: "EFFECT.Description"; textSearch: true }>;
+
+    /**
      * An icon image path used to depict the ActiveEffect
      * @defaultValue `null`
      */
     icon: fields.FilePathField<{ categories: "IMAGE"[]; label: "EFFECT.Icon" }>;
 
     /**
-     * A text label which describes the name of the ActiveEffect
+     * The name of the ActiveEffect
      * @defaultValue `""`
      */
-    label: fields.StringField<{ required: true; label: "EFFECT.Label" }>;
+    name: fields.StringField<{ required: true; label: "EFFECT.Label" }>;
 
     /**
      * A UUID reference to the document from which this ActiveEffect originated
@@ -202,6 +220,12 @@ declare namespace BaseActiveEffect {
      * @defaultValue `false`
      */
     transfer: fields.BooleanField<{ initial: true; label: "EFFECT.Transfer" }>;
+
+    /**
+     * Special status IDs that pertain to this effect
+     * @defaultValue `[]`
+     */
+    statuses: fields.SetField<fields.StringField<{ required: true; blank: false }>>;
 
     /**
      * An object of optional key/value flags

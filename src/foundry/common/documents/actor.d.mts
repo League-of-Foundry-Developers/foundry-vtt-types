@@ -1,5 +1,3 @@
-// FOUNDRY_VERSION: 10.291
-
 import type { Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata, DocumentModificationOptions } from "../abstract/document.mts";
@@ -39,6 +37,15 @@ declare class BaseActor<TypeName extends BaseActor.TypeNames = BaseActor.TypeNam
    * @defaultValue `CONST.DEFAULT_TOKEN`
    */
   static DEFAULT_ICON: string;
+
+  /**
+   * Determine default artwork based on the provided actor data
+   * @param actorData The source actor data
+   */
+  static getDefaultArtwork(actorData: BaseActor.ConstructorData<BaseActor.TypeNames>): {
+    img: string;
+    texture: { src: string };
+  };
 
   /**
    * The allowed set of Actor types which may exist.
@@ -107,7 +114,7 @@ declare namespace BaseActor {
       name: "Actor";
       collection: "actors";
       indexed: true;
-      compendiumIndexFields: ["_id", "name", "img", "type", "sort"];
+      compendiumIndexFields: ["_id", "name", "img", "type", "sort", "folder"];
       embedded: { ActiveEffect: "effects"; Item: "items" };
       label: "DOCUMENT.Actor";
       labelPlural: "DOCUMENT.Actors";
@@ -138,7 +145,7 @@ declare namespace BaseActor {
     _id: fields.DocumentIdField;
 
     /** The name of this Actor */
-    name: fields.StringField<{ required: true; blank: false }>;
+    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
     /** An Actor subtype which configures the system data model applied */
     type: fields.StringField<
