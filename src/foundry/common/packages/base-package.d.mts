@@ -2,30 +2,52 @@ import type { InexactPartial } from "../../../types/utils.d.mts";
 import type DataModel from "../abstract/data.mjs";
 import type { ReleaseData } from "../config.mjs/releaseData.d.mts";
 import * as fields from "../data/fields.mjs";
+import type { DataModelValidationFailure } from "../data/validation-failure.d.mts";
 import type { CONST } from "../module.d.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
 declare namespace BasePackage {
-  type optionalString = fields.StringField<{
+  type optionalString = {
     required: false;
     blank: false;
     initial: undefined;
-  }>;
+  };
 
   type PackageAuthorSchema = {
-    name: fields.StringField;
-    email: optionalString;
-    url: optionalString;
-    discord: optionalString;
+    /**
+     * The author name
+     */
+    name: fields.StringField<{ required: true; blank: false }>;
+
+    /**
+     * The author email address
+     */
+    email: fields.StringField<optionalString>;
+
+    /**
+     * A website url for the author
+     */
+    url: fields.StringField<optionalString>;
+
+    /**
+     * A Discord username for the author
+     */
+    discord: fields.StringField<optionalString>;
+
     flags: fields.ObjectField;
   };
 
   type PackageMediaSchema = {
-    type: optionalString;
-    url: optionalString;
-    caption: optionalString;
-    loop: fields.BooleanField;
-    thumbnail: optionalString;
+    type: fields.StringField<optionalString>;
+
+    url: fields.StringField<optionalString>;
+
+    caption: fields.StringField<optionalString>;
+
+    loop: fields.BooleanField<{ required: false; blank: false; initial: false }>;
+
+    thumbnail: fields.StringField<optionalString>;
+
     flags: fields.ObjectField;
   };
 
@@ -35,45 +57,130 @@ declare namespace BasePackage {
   >;
 
   type PackageCompendiumSchema = {
+    /**
+     * The canonical compendium name. This should contain no spaces or special characters
+     */
     name: fields.StringField;
+
+    /**
+     * The human-readable compendium name
+     */
     label: fields.StringField;
-    banner: optionalString;
+
+    banner: fields.StringField<optionalString>;
+
+    /**
+     * The local relative path to the compendium source directory. The filename should match the name attribute
+     */
     path: fields.StringField;
+
+    /**
+     * The specific document type that is contained within this compendium pack
+     */
     type: fields.StringField;
+
+    /**
+     * Denote that this compendium pack requires a specific game system to function properly
+     */
     system: fields.StringField;
+
     ownership: CompendiumOwnershipField;
+
     flags: fields.ObjectField;
   };
 
   type PackageLanguageSchema = {
+    /**
+     * A string language code which is validated by Intl.getCanonicalLocales
+     */
     lang: fields.StringField;
+
+    /**
+     * The human-readable language name
+     */
     name: fields.StringField;
+
+    /**
+     * The relative path to included JSON translation strings
+     */
     path: fields.StringField;
-    system: optionalString;
-    module: optionalString;
+
+    /**
+     * Only apply this set of translations when a specific system is being used
+     */
+    system: fields.StringField<optionalString>;
+
+    /**
+     * Only apply this set of translations when a specific module is active
+     */
+    module: fields.StringField<optionalString>;
+
     flags: fields.ObjectField;
   };
 
   type PackageCompatibilitySchema = {
+    /**
+     * The Package will not function before this version
+     */
     minimum: fields.StringField;
+
+    /**
+     * Verified compatible up to this version
+     */
     verified: fields.StringField;
+
+    /**
+     * The Package will not function after this version
+     */
     maximum: fields.StringField;
   };
 
   type PackageRelationshipsSchema = {
-    systems: fields.SetField;
-    requires: fields.SetField;
-    recommends: fields.SetField;
-    conflicts: fields.SetField;
+    /**
+     * Systems that this Package supports
+     */
+    systems: fields.SetField<RelatedPackage<"system">>;
+
+    /**
+     * Packages that are required for base functionality
+     */
+    requires: fields.SetField<RelatedPackage>;
+
+    /**
+     * Packages that are recommended for optimal functionality
+     */
+    recommends: fields.SetField<RelatedPackage>;
+
+    conflicts: fields.SetField<RelatedPackage>;
+
     flags: fields.ObjectField;
   };
 
-  type RelatedPackageSchema = {
-    id: fields.StringField;
-    type: fields.StringField;
-    manifest: fields.StringField;
+  type RelatedPackageSchema<PackageType extends CONST.PACKAGE_TYPES = CONST.PACKAGE_TYPES> = {
+    /**
+     * The id of the related package
+     */
+    id: fields.StringField<{ required: true; blank: false }>;
+
+    /**
+     * The type of the related package
+     */
+    type: fields.StringField<{ choices: PackageType[]; initial: "module" }>;
+
+    /**
+     * An explicit manifest URL, otherwise learned from the Foundry web server
+     */
+    manifest: fields.StringField<{ required: false; blank: false; initial: undefined }>;
+
+    /**
+     * The compatibility data with this related Package
+     */
     compatibility: PackageCompatibility;
-    reason: fields.StringField;
+
+    /**
+     * The reason for this relationship
+     */
+    reason: fields.StringField<{ required: false; blank: false; initial: undefined }>;
   };
 
   // TODO: Figure out proper recursion here
@@ -83,41 +190,129 @@ declare namespace BasePackage {
     name: fields.StringField;
     sorting: fields.StringField;
     color: fields.ColorField;
-    packs: fields.SetField;
+    packs: fields.SetField<fields.StringField<{ required: true; blank: false }>>;
   } & Depth extends 0
     ? {}
-    : { folders: fields.SetField };
+    : { folders: fields.SetField<fields.SchemaField<PackageCompendiumFolderSchema<Depth>>> };
 
   type Schema = {
+    /**
+     * The machine-readable unique package id, should be lower-case with no spaces or special characters
+     */
     id: fields.StringField<{
       required: true;
       blank: false;
       validate: typeof BasePackage.validateId;
     }>;
+
+    /**
+     * The human-readable package title, containing spaces and special characters
+     */
     title: fields.StringField;
+
+    /**
+     * An optional package description, may contain HTML
+     */
     description: fields.StringField;
-    authors: fields.SetField;
-    url: optionalString;
-    license: optionalString;
-    readme: optionalString;
-    bugs: optionalString;
-    changelog: optionalString;
+
+    /**
+     * An array of author objects who are co-authors of this package. Preferred to the singular author field.
+     */
+    authors: fields.SetField<fields.SchemaField<PackageAuthorSchema>>;
+
+    /**
+     * A web url where more details about the package may be found
+     */
+    url: fields.StringField<optionalString>;
+
+    /**
+     * A web url or relative file path where license details may be found
+     */
+    license: fields.StringField<optionalString>;
+
+    /**
+     * A web url or relative file path where readme instructions may be found
+     */
+    readme: fields.StringField<optionalString>;
+
+    /**
+     *  A web url where bug reports may be submitted and tracked
+     */
+    bugs: fields.StringField<optionalString>;
+
+    /**
+     * A web url where notes detailing package updates are available
+     */
+    changelog: fields.StringField<optionalString>;
+
     flags: fields.ObjectField;
-    media: fields.SetField;
-    version: fields.StringField;
+
+    media: fields.SetField<fields.SchemaField<PackageMediaSchema>>;
+
+    /**
+     * The current package version
+     */
+    version: fields.StringField<{ required: true; blank: false; initial: "0" }>;
+
+    /**
+     * The compatibility of this version with the core Foundry software
+     */
     compatibility: PackageCompatibility;
-    scripts: fields.SetField;
-    esmodules: fields.SetField;
-    styles: fields.SetField;
-    languages: fields.SetField;
-    packs: PackageCompendiumPacks;
-    packFolders: fields.SetField;
+
+    /**
+     * An array of urls or relative file paths for JavaScript files which should be included
+     */
+    scripts: fields.SetField<fields.StringField<{ required: true; blank: false }>>;
+
+    /***
+     * An array of urls or relative file paths for ESModule files which should be included
+     */
+    esmodules: fields.SetField<fields.StringField<{ required: true; blank: false }>>;
+
+    /**
+     * An array of urls or relative file paths for CSS stylesheet files which should be included
+     */
+    styles: fields.SetField<fields.StringField<{ required: true; blank: false }>>;
+
+    /**
+     * An array of language data objects which are included by this package
+     */
+    languages: fields.SetField<fields.SchemaField<PackageLanguageSchema>>;
+
+    /**
+     * An array of compendium packs which are included by this package
+     */
+    packs: PackageCompendiumPacks<fields.SchemaField<PackageCompendiumSchema>>;
+
+    packFolders: fields.SetField<fields.SchemaField<PackageCompendiumFolderSchema<4>>>;
+
+    /**
+     * An organized object of relationships to other Packages
+     */
     relationships: PackageRelationships;
+
+    /**
+     * Whether to require a package-specific socket namespace for this package
+     */
     socket: fields.BooleanField;
+
+    /**
+     * A publicly accessible web URL which provides the latest available package manifest file. Required in order to support module updates.
+     */
     manifest: fields.StringField;
+
+    /**
+     * A publicly accessible web URL where the source files for this package may be downloaded. Required in order to support module installation.
+     */
     download: fields.StringField;
+
+    /**
+     * Whether this package uses the protected content access system.
+     */
     protected: fields.BooleanField;
+
     exclusive: fields.BooleanField;
+
     persistentStorage: fields.BooleanField;
   };
 
@@ -149,14 +344,16 @@ export class PackageRelationships extends fields.SchemaField<BasePackage.Package
  * A custom SchemaField for defining a related Package.
  * It may be required to be a specific type of package, by passing the packageType option to the constructor.
  */
-export class RelatedPackage extends fields.SchemaField<BasePackage.RelatedPackageSchema> {
+export class RelatedPackage<PackageType extends CONST.PACKAGE_TYPES = CONST.PACKAGE_TYPES> extends fields.SchemaField<
+  BasePackage.RelatedPackageSchema<PackageType>
+> {
   constructor({
     packageType,
     ...options
   }: InexactPartial<{
     /** @defaultValue `"module"` */
-    packageType: CONST.PACKAGE_TYPES;
-    options: fields.SchemaField.Options<BasePackage.RelatedPackageSchema>;
+    packageType: PackageType;
+    options: fields.SchemaField.Options<BasePackage.RelatedPackageSchema<PackageType>>;
   }>);
 }
 
@@ -203,7 +400,31 @@ export class CompendiumOwnershipField extends fields.ObjectField<
 /**
  * A special SetField which provides additional validation and initialization behavior specific to compendium packs.
  */
-export class PackageCompendiumPacks extends fields.SetField {}
+export class PackageCompendiumPacks<
+  ElementFieldType extends fields.DataField.Any,
+> extends fields.SetField<ElementFieldType> {
+  protected override _cleanType(
+    value: Set<fields.ArrayField.InitializedElementType<ElementFieldType>>,
+    options?: fields.DataField.CleanOptions | undefined,
+  ): Set<fields.ArrayField.InitializedElementType<ElementFieldType>>;
+
+  override initialize(
+    value: fields.ArrayField.PersistedElementType<ElementFieldType>[],
+    model: BasePackage,
+  ):
+    | Set<fields.ArrayField.InitializedElementType<ElementFieldType>>
+    | (() => Set<fields.ArrayField.InitializedElementType<ElementFieldType>> | null);
+
+  protected override _validateElements(
+    value: any[],
+    options?: fields.DataField.ValidationOptions<fields.DataField.Any> | undefined,
+  ): void | DataModelValidationFailure;
+
+  protected override _validateElement(
+    value: any,
+    options: fields.DataField.ValidationOptions<fields.DataField.Any>,
+  ): void | DataModelValidationFailure;
+}
 
 interface BasePackage extends fields.SchemaField.InnerInitializedType<BasePackage.Schema> {}
 

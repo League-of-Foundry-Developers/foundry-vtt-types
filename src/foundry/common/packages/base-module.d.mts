@@ -4,8 +4,19 @@ import type AdditionalTypesField from "./sub-types.mjs";
 
 declare namespace BaseModule {
   type Schema = ReturnType<typeof BasePackage.defineSchema> & {
+    /**
+     * Does this module provide a translation for the core software?
+     */
     coreTranslation: fields.BooleanField;
+
+    /**
+     * A library module provides no user-facing functionality and is solely for use by other modules. Loaded before any system or module scripts.
+     */
     library: fields.BooleanField;
+
+    /**
+     * Additional document sub-types provided by this module.
+     */
     documentTypes: AdditionalTypesField;
   };
 }

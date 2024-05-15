@@ -3,11 +3,34 @@ import * as fields from "../data/fields.mjs";
 
 declare namespace BaseSystem {
   type Schema = ReturnType<typeof BasePackage.defineSchema> & {
-    background: fields.StringField;
+    /**
+     * A web URL or local file path which provides a default background banner for worlds which are created using this system
+     */
+    background: fields.StringField<{ required: false; blank: false }>;
+
+    /**
+     * A default initiative formula used for this system
+     */
     initiative: fields.StringField;
+
+    /**
+     * A default distance measurement to use for Scenes in this system
+     */
     gridDistance: fields.NumberField;
+
+    /**
+     * A default unit of measure to use for distance measurement in this system
+     */
     gridUnits: fields.StringField;
+
+    /**
+     * An Actor data attribute path to use for Token primary resource bars
+     */
     primaryTokenAttribute: fields.StringField;
+
+    /**
+     * An Actor data attribute path to use for Token secondary resource bars
+     */
     secondaryTokenAttribute: fields.StringField;
   };
 }
