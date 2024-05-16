@@ -1,29 +1,15 @@
-import type { ConstructorDataType } from "../../../../types/helperTypes.d.mts";
-import type { ConstructorOf, DeepPartial } from "../../../../types/utils.d.mts";
-import type { ContextType, DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
-import type { ClientDocumentMixin } from "./client-document.d.mts";
+import type { AnyConstructorFor, ConstructorOf, DeepPartial, Mixin } from "../../../../types/utils.d.mts";
+import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
-declare global {
-  // TODO: Replace ConstructorOf<…> with DocumentConstructor once the problem with circular reference has been solved
+declare class CanvasDocument<T extends foundry.abstract.Document<any, any>> {
   /**
-   * A specialized sub-class of the ClientDocumentMixin which is used for document types that are intended to be represented upon the game Canvas.
+   * A lazily constructed PlaceableObject instance which can represent this Document on the game canvas.
    */
-  const CanvasDocumentMixin: <T extends ConstructorOf<foundry.abstract.Document<any, any>>>(
-    Base: T,
-  ) => CanvasDocumentConstructor<T>;
-}
-
-type CanvasDocumentConstructor<T extends ConstructorOf<foundry.abstract.Document<any, any>>> = Pick<T, keyof T> &
-  Pick<typeof CanvasDocumentMixin, keyof typeof CanvasDocumentMixin> &
-  Pick<typeof ClientDocumentMixin, keyof typeof ClientDocumentMixin> & {
-    new (...args: ConstructorParameters<T>): InstanceType<T> & CanvasDocumentMixin<InstanceType<T>>;
-  };
-
-declare class CanvasDocumentMixin<T extends foundry.abstract.Document<any, any>> extends ClientDocumentMixin<T> {
-  constructor(data?: ConstructorDataType<T["data"]>, context?: ContextType<T>);
+  get object(): PlaceableObject | null; // TODO: Replace with InstanceType<ObjectClass<T>> | null once the circular reference problem has been solved
 
   /**
    * A reference to the PlaceableObject instance which represents this Embedded Document.
+   * @internal
    * @defaultValue `null`
    */
   protected _object: PlaceableObject | null; // TODO: Replace with InstanceType<ObjectClass<T>> | null once the circular reference problem has been solved
@@ -36,11 +22,6 @@ declare class CanvasDocumentMixin<T extends foundry.abstract.Document<any, any>>
   protected _destroyed: boolean;
 
   /**
-   * A lazily constructed PlaceableObject instance which can represent this Document on the game canvas.
-   */
-  get object(): PlaceableObject | null; // TODO: Replace with InstanceType<ObjectClass<T>> | null once the circular reference problem has been solved
-
-  /**
    * A reference to the CanvasLayer which contains Document objects of this type.
    */
   get layer(): PlaceablesLayer<any>; // TODO: Replace with InstanceType<LayerClass<T>> | null once the circular reference problem has been solved
@@ -50,22 +31,27 @@ declare class CanvasDocumentMixin<T extends foundry.abstract.Document<any, any>>
    */
   get rendered(): boolean;
 
-  /**
-   * @see abstract.Document#_onCreate
-   */
-  protected _onCreate(data: T["data"]["_source"], options: DocumentModificationOptions, userId: string): void;
+  protected _onCreate(data: T["_source"], options: DocumentModificationOptions, userId: string): void;
 
-  /**
-   * @see abstract.Document#_onUpdate
-   */
-  protected _onUpdate(
-    data: DeepPartial<T["data"]["_source"]>,
-    options: DocumentModificationOptions,
-    userId: string,
-  ): void;
+  protected _onUpdate(changed: DeepPartial<T["_source"]>, options: DocumentModificationOptions, userId: string): void;
 
-  /**
-   * @see abstract.Document#_onDelete
-   */
   protected _onDelete(options: DocumentModificationOptions, userId: string): void;
 }
+
+declare global {
+  type CanvasDocument = ReturnType<typeof CanvasDocumentMixin>;
+
+  // TODO: Replace ConstructorOf<…> with DocumentConstructor once the problem with circular reference has been solved
+  /**
+   * A specialized sub-class of the ClientDocumentMixin which is used for document types that are intended to be represented upon the game Canvas.
+   */
+  function CanvasDocumentMixin<BaseClass extends AnyConstructorFor<ClientDocument>>(
+    Base: BaseClass,
+  ): Mixin<typeof CanvasDocument, BaseClass>;
+}
+
+type CanvasDocumentConstructor<T extends ConstructorOf<foundry.abstract.Document<any, any>>> = Pick<T, keyof T> &
+  Pick<typeof CanvasDocument, keyof typeof CanvasDocument> &
+  Pick<typeof ClientDocumentMixin, keyof typeof ClientDocumentMixin> & {
+    new (...args: ConstructorParameters<T>): InstanceType<T> & CanvasDocument<InstanceType<T>>;
+  };

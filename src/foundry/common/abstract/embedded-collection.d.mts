@@ -124,20 +124,18 @@ declare class EmbeddedCollection<
    */
   get(
     key: string,
-    options?:
-      | {
-          /**
-           * Throw an Error if the requested Embedded Document does not exist.
-           * @defaultValue `false`
-           */
-          strict?: false;
-          /**
-           * Allow retrieving an invalid Embedded Document.
-           * @defaultValue `false`
-           */
-          invalid?: false;
-        }
-      | undefined,
+    options?: InexactPartial<{
+      /**
+       * Throw an Error if the requested Embedded Document does not exist.
+       * @defaultValue `false`
+       */
+      strict: false;
+      /**
+       * Allow retrieving an invalid Embedded Document.
+       * @defaultValue `false`
+       */
+      invalid: false;
+    }>,
   ): InstanceType<ContainedDocumentConstructor> | undefined;
   /**
    * Get an element from the EmbeddedCollection by its ID.
