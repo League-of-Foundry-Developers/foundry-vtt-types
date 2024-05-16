@@ -22,7 +22,6 @@ declare global {
  * The Document definition for a JournalEntryPage.
  * Defines the data schema and common behaviours for a JournalEntryPage which are shared between both client and server.
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface BaseJournalEntryPage<TypeName extends BaseJournalEntryPage.TypeNames = BaseJournalEntryPage.TypeNames>
   extends BaseJournalEntryPage.Properties<TypeName> {}
 declare class BaseJournalEntryPage<

@@ -1,5 +1,5 @@
 import type { ConfiguredDocumentClass } from "../../../types/helperTypes.mts";
-import type { Merge } from "../../../types/utils.mts";
+import type { InexactPartial, Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
 import type * as fields from "../data/fields.mts";
@@ -60,15 +60,13 @@ declare class BaseItem<TypeName extends BaseItem.TypeNames = BaseItem.TypeNames>
   override testUserPermission(
     user: documents.BaseUser,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
-    {
-      exact,
-    }?: {
+    options?: InexactPartial<{
       /**
        * Require the exact permission level requested?
        * @defaultValue `false`
        */
-      exact?: boolean;
-    },
+      exact: boolean;
+    }>,
   ): boolean;
 
   static override migrateData(source: object): object;

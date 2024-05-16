@@ -40,7 +40,7 @@ declare class BaseActor<TypeName extends BaseActor.TypeNames = BaseActor.TypeNam
 
   /**
    * Determine default artwork based on the provided actor data
-   * @param actorData The source actor data
+   * @param actorData - The source actor data
    */
   static getDefaultArtwork(actorData: BaseActor.ConstructorData<BaseActor.TypeNames>): {
     img: string;

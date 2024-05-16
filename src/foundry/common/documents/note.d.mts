@@ -1,7 +1,7 @@
-import type { Merge } from "../../../types/utils.mts";
+import type { InexactPartial, Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
-import type { TextureData } from "../data/data.mjs/index.mts";
+import type { TextureData } from "../data/data.mts";
 import type * as fields from "../data/fields.mts";
 import type { CONST } from "../module.mts";
 import type * as documents from "./module.mts";
@@ -36,15 +36,13 @@ declare class BaseNote extends Document<BaseNote.SchemaField, BaseNote.Metadata>
   override testUserPermission(
     user: foundry.documents.BaseUser,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
-    {
-      exact,
-    }?: {
+    options?: InexactPartial<{
       /**
        * Require the exact permission level requested?
        * @defaultValue `false`
        */
-      exact?: boolean;
-    },
+      exact: boolean;
+    }>,
   ): boolean;
 
   static override migrateData(source: object): object;
@@ -119,10 +117,11 @@ declare namespace BaseNote {
      * An image icon used to represent this note
      * @defaultValue `BaseNote.DEFAULT_ICON`
      */
-    texture: TextureData<
-      {},
-      { categories: ["IMAGE"]; initial: () => typeof BaseNote.DEFAULT_ICON; label: "NOTE.EntryIcon" }
-    >;
+    texture: TextureData<{
+      categories: ["IMAGE"];
+      initial: () => typeof BaseNote.DEFAULT_ICON;
+      label: "NOTE.EntryIcon";
+    }>;
 
     /**
      * The pixel size of the map note icon

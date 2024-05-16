@@ -1,4 +1,4 @@
-import type { Merge } from "../../../types/utils.mts";
+import type { InexactPartial, Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
@@ -47,15 +47,13 @@ declare class BaseDrawing<Parent extends Document.Any | null = null> extends Doc
   override testUserPermission(
     user: documents.BaseUser,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
-    {
-      exact,
-    }?: {
+    options?: InexactPartial<{
       /**
        * Require the exact permission level requested?
        * @defaultValue `false`
        */
-      exact?: boolean;
-    },
+      exact: boolean;
+    }>,
   ): boolean;
 
   static override cleanData(source?: object | undefined, options?: fields.DataField.CleanOptions | undefined): object;

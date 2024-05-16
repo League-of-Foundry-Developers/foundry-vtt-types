@@ -55,15 +55,13 @@ declare class BaseToken extends Document<
   override testUserPermission(
     user: documents.BaseUser,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
-    {
-      exact,
-    }?: {
+    options?: InexactPartial<{
       /**
        * Require the exact permission level requested?
        * @defaultValue `false`
        */
-      exact?: boolean;
-    },
+      exact: boolean;
+    }>,
   ): boolean;
 
   updateSource(

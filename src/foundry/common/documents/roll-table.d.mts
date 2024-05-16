@@ -101,7 +101,7 @@ declare namespace BaseRollTable {
      * A Collection of TableResult embedded documents which belong to this RollTable
      * @defaultValue `[]`
      */
-    results: fields.EmbeddedCollectionField<documents.BaseTableResult>;
+    results: fields.EmbeddedCollectionField<typeof documents.BaseTableResult>;
 
     /**
      * The Roll formula which determines the results chosen from the table

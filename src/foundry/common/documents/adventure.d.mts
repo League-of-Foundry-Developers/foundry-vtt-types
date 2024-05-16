@@ -1,5 +1,5 @@
 import type { Merge } from "../../../types/utils.mts";
-import type DataModel from "../abstract/data.mts";
+import type { DataModel } from "../abstract/data.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
 import type * as fields from "../data/fields.mts";
@@ -48,7 +48,7 @@ declare class BaseAdventure extends Document<BaseAdventure.SchemaField, BaseAdve
        */
       strict?: boolean;
     },
-  ): DataModel<SchemaField, DataModel.Any | null>;
+  ): foundry.abstract.DataModel<SchemaField, DataModel.Any | null>;
 
   static override migrateData(source: object): object;
 }

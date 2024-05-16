@@ -1,4 +1,4 @@
-import type { Merge } from "../../../types/utils.mts";
+import type { InexactPartial, Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
 import type * as fields from "../data/fields.mts";
@@ -28,15 +28,13 @@ declare class BasePlaylistSound extends Document<BasePlaylistSound.SchemaField, 
   override testUserPermission(
     user: foundry.documents.BaseUser,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
-    {
-      exact,
-    }?: {
+    options?: InexactPartial<{
       /**
        * Require the exact permission level requested?
        * @defaultValue `false`
        */
-      exact?: boolean;
-    },
+      exact: boolean;
+    }>,
   ): boolean;
 }
 export default BasePlaylistSound;

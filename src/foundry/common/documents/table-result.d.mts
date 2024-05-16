@@ -1,4 +1,4 @@
-import type { Merge } from "../../../types/utils.mts";
+import type { InexactPartial, Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
@@ -29,15 +29,13 @@ declare class BaseTableResult extends Document<BaseTableResult.SchemaField, Base
   override testUserPermission(
     user: foundry.documents.BaseUser,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
-    {
-      exact,
-    }?: {
+    options?: InexactPartial<{
       /**
        * Require the exact permission level requested?
        * @defaultValue `false`
        */
-      exact?: boolean;
-    },
+      exact: boolean;
+    }>,
   ): boolean;
 
   static override migrateData(source: object): object;
@@ -118,7 +116,7 @@ declare namespace BaseTableResult {
      * The _id of a Document within the collection this result references
      * @defaultValue `null`
      */
-    documentId: fields.ForeignDocumentField<Document, { idOnly: true }>;
+    documentId: fields.ForeignDocumentField<Document<fields.SchemaField.AnyWithFlags, any>, { idOnly: true }>;
 
     /**
      * The probabilistic weight of this result relative to other results
