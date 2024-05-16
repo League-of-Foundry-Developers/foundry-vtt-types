@@ -14,8 +14,6 @@ interface CollectionConstructor {
 
 declare const Collection: CollectionConstructor;
 
-// TODO: Check if the ContainedDocumentConstructor stuff is still correct
-
 /**
  * An extension of the Collection.
  * Used for the specific task of containing embedded Document instances within a parent Document.
@@ -163,13 +161,13 @@ declare class EmbeddedCollection<
   set(
     key: string,
     value: InstanceType<ContainedDocumentConstructor>,
-    options?: {
+    options?: InexactPartial<{
       /**
        * Whether to modify the collection's source as part of the operation.
        * @defaultValue `true`
        */
-      modifySource?: boolean;
-    },
+      modifySource: boolean;
+    }>,
   ): this;
 
   /**

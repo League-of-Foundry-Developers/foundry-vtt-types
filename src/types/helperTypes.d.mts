@@ -54,6 +54,7 @@ export type ConfiguredDocumentClass<T extends DocumentConstructor> = ConfiguredD
 
 export type DocumentType =
   | "Actor"
+  | "ActorDelta"
   | "Adventure"
   | "Cards"
   | "ChatMessage"
@@ -62,6 +63,7 @@ export type DocumentType =
   | "Folder"
   | "Item"
   | "JournalEntry"
+  | "JournalEntryPage"
   | "Macro"
   | "Playlist"
   | "RollTable"
