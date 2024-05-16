@@ -551,9 +551,6 @@ declare global {
       // ): (Module & ConfiguredModule<T>) | ModuleRequiredOrOptional<T> | undefined;
     }
 
-    type SourceData<SourceDataModel extends foundry.abstract.DataModel<any, any>> =
-      foundry.data.fields.SchemaField.AssignmentType<ReturnType<SourceDataModel["schema"]>>;
-
     type Data = {
       activeUsers: string[];
       addresses: {
@@ -585,8 +582,7 @@ declare global {
         } | null;
         storages: ("public" | "data" | "s3")[];
       };
-      // Todo: Update after data models
-      modules: foundry.data.fields.SchemaField.AssignmentType<ReturnType<(typeof Module)["defineSchema"]>>[];
+      modules: Module["_source"][];
       options: {
         language: string;
         port: number;
@@ -603,8 +599,8 @@ declare global {
         }
       >;
       paused: boolean;
-      release: SourceData<foundry.config.ReleaseData>;
-      system: SourceData<System>;
+      release: foundry.config.ReleaseData["_source"];
+      system: System["_source"];
       systemUpdate: {
         hasUpdate: boolean;
         version: string;
@@ -617,7 +613,7 @@ declare global {
       // but is only filled in if there's `template.json`
       model: Record<foundry.CONST.DOCUMENT_TYPES, Record<string, object>>;
       userId: string;
-      world: SourceData<World>;
+      world: World["_source"];
     } & {
       [DocumentType in
         | foundry.CONST.DOCUMENT_TYPES
