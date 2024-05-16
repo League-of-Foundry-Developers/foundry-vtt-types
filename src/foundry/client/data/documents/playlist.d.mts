@@ -175,7 +175,7 @@ declare global {
 
     override toCompendium(
       pack?: CompendiumCollection<CompendiumCollection.Metadata> | null | undefined,
-      options?: ClientDocumentMixin.CompendiumExportOptions | undefined,
+      options?: ClientDocument.CompendiumExportOptions | undefined,
     ): Omit<foundry.data.PlaylistData["_source"], "_id" | "folder" | "permission"> & {
       permission?: foundry.data.PlaylistData["_source"]["permission"];
     };

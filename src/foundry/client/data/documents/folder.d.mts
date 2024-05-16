@@ -58,7 +58,7 @@ declare global {
 
     /**
      * Present a Dialog form to create a new Folder.
-     * @see {@link ClientDocumentMixin.createDialog}
+     * @see {@link ClientDocument.createDialog}
      * @param data    - Initial data with which to populate the creation form
      *                  (default: `{}`)
      * @param context - Additional context options or dialog positioning options
@@ -82,7 +82,7 @@ declare global {
      * Export all Documents contained in this Folder to a given Compendium pack.
      * Optionally update existing Documents within the Pack by name, otherwise append all new entries.
      * @param pack    - A Compendium pack to which the documents will be exported
-     * @param options - Additional options which customize how content is exported. See {@link ClientDocumentMixin#toCompendium}
+     * @param options - Additional options which customize how content is exported. See {@link ClientDocument#toCompendium}
      *                  (default: `{}`)
      * @returns The updated Compendium Collection instance
      */
