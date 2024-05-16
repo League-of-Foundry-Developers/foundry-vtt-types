@@ -4,19 +4,30 @@ import type * as fields from "../data/fields.d.mts";
 
 declare namespace ReleaseData {
   type Schema = {
+    /**
+     * The major generation of the Release
+     */
     generation: fields.NumberField<{
       required: true;
       nullable: false;
       integer: true;
       min: 1;
     }>;
+
+    /**
+     * The maximum available generation of the software.
+     */
     maxGeneration: fields.NumberField<{
       required: false;
       nullable: false;
       integer: true;
       min: 1;
-      // initial: () => fields.SchemaField.InitializedType<Schema["generation"]>;
+      // initial: () => fields.SchemaField.InnerInitializedType<Schema["generation"]>;
     }>;
+
+    /**
+     * The maximum available stable generation of the software.
+     */
     maxStableGeneration: fields.NumberField<{
       required: false;
       nullable: false;
@@ -25,11 +36,35 @@ declare namespace ReleaseData {
       // initial: () => fields.SchemaField.InitializedType<Schema["generation"]>;
     }>;
     channel: fields.StringField<{ choices: typeof SOFTWARE_UPDATE_CHANNELS; blank: false }>;
+
+    /**
+     * An optional appended string display for the Release
+     */
     suffix: fields.StringField;
+
+    /**
+     * The internal build number for the Release
+     */
     build: fields.NumberField<{ required: true; nullable: false; integer: true }>;
+
+    /**
+     * When the Release was released
+     */
     time: fields.NumberField<{ nullable: false; initial: typeof Date.now }>;
+
+    /**
+     * The minimum required Node.js major version
+     */
     node_version: fields.NumberField<{ required: true; nullable: false; integer: true; min: 10 }>;
+
+    /**
+     * Release notes for the update version
+     */
     notes: fields.StringField;
+
+    /**
+     * A temporary download URL where this version may be obtained
+     */
     download: fields.StringField;
   };
 }
