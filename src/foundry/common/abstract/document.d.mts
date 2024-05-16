@@ -193,13 +193,13 @@ declare abstract class Document<
          * Save the clone to the World database?
          * @defaultValue `false`
          */
-        save?: boolean;
+        save: boolean;
 
         /**
          * Keep the same ID of the original document
          * @defaultValue `false`
          */
-        keepId?: boolean;
+        keepId: boolean;
       } & DocumentConstructionContext
     >,
   ): this | Promise<this>;
