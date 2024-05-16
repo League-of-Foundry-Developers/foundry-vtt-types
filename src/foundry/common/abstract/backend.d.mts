@@ -1,6 +1,5 @@
 import type { ConstructorOf } from "../../../types/utils.d.mts";
-import type { BaseUser } from "../documents.mjs/module.d.mts";
-import type { AnyDocumentData } from "./data.d.mts";
+import type BaseUser from "../documents/user.d.mts";
 import type Document from "./document.d.mts";
 
 /**
@@ -10,16 +9,29 @@ declare abstract class DatabaseBackend {
   /**
    * Retrieve Documents based on provided query parameters
    * @param documentClass - The Document definition
-   * @param request       - The requested operation
+   * @param context       - Context for the requested operation
    * @param user          - The requesting User
    * @returns The created Document instances
    */
-  get<T extends Document<any, any>>(documentClass: ConstructorOf<T>, request: Request, user?: BaseUser): Promise<T>[];
+  get<T extends Document<any, any>>(
+    documentClass: ConstructorOf<T>,
+    context: RequestContext<T>,
+    user?: BaseUser,
+  ): Promise<T>[];
 
   /**
    * Validate the arguments passed to the get operation
+   * @param context - The requested operation
    */
-  protected _getArgs({ query, options, pack }?: Request): { query: object; options: RequestOptions; pack?: string };
+  protected _getArgs<T extends Document<any, any>>(
+    context?: RequestContext<T>,
+  ): {
+    query: object;
+    options: RequestOptions;
+    pack?: string;
+    parent: ReturnType<DatabaseBackend["_getParent"]>;
+    parentUuid: string | undefined;
+  };
 
   /**
    * Get primary Document instances
@@ -30,53 +42,47 @@ declare abstract class DatabaseBackend {
    */
   protected abstract _getDocuments<T extends Document<any, any>>(
     documentClass: ConstructorOf<T>,
-    request: Request,
-    user: BaseUser,
-  ): Promise<T[]>;
-
-  /**
-   * Get embedded Document instances
-   * @remarks
-   * foundry actually declares this function to take parameters `documentClass`, `parent`, `query`, `options`, and
-   * `user` but that's not how it is called and also not how the subclasses implement it.
-   * See https://gitlab.com/foundrynet/foundryvtt/-/issues/6177
-   */
-  protected abstract _getEmbeddedDocuments<T extends Document<any, any>>(
-    documentClass: ConstructorOf<T>,
-    parent: T extends Document<any, infer U> ? U : never,
-    request: Request,
+    request: RequestContext<T>,
     user: BaseUser,
   ): Promise<T[]>;
 
   /**
    * Get the parent Document (if any) associated with a request
-   * @param request - The requested operation
+   * @param context - The requested operation
    * @returns The parent Document, or null
-   *
-   * @remarks Actually, this returns `undefined` if  there is no parent, the JSDoc is incorrect.
    */
-  protected _getParent(request: Request): Promise<Document<any, any> | undefined>;
+  protected _getParent<T extends Document<any, any>>(
+    context: RequestContext<T>,
+  ): Promise<Document<any, any> | undefined>;
 
   /**
    * Perform document creation operations
    * @param documentClass - The Document definition
-   * @param request       - The requested operation
+   * @param context       - Context for the requested operation
    * @param user          - The requesting User
    * @returns The created Document instances
    */
   create<T extends Document<any, any>>(
     documentClass: ConstructorOf<T>,
-    request: Request,
+    context: RequestContext<T>,
     user?: BaseUser,
   ): Promise<T[]>;
 
   /**
    * Validate the arguments passed to the create operation
+   * @param context - The requested operation
    */
-  protected _createArgs({ data, options, pack }?: Request): {
-    data: AnyDocumentData[];
+  protected _createArgs<T extends Document<any, any>>({
+    data,
+    options,
+    pack,
+    parentUuid,
+  }?: RequestContext<T>): {
+    data: T["_source"][];
     options: RequestOptions;
     pack?: string;
+    parent: ReturnType<DatabaseBackend["_getParent"]>;
+    parentUuid: string | undefined;
   };
 
   /**
@@ -84,40 +90,37 @@ declare abstract class DatabaseBackend {
    */
   protected abstract _createDocuments<T extends Document<any, any>>(
     documentClass: ConstructorOf<T>,
-    request: Request,
-    user: BaseUser,
-  ): Promise<T[]>;
-
-  /**
-   * Create embedded Document instances
-   */
-  protected abstract _createEmbeddedDocuments<T extends Document<any, any>>(
-    documentClass: ConstructorOf<T>,
-    parent: T extends Document<any, infer U> ? U : never,
-    request: Request,
+    context: RequestContext<T>,
     user: BaseUser,
   ): Promise<T[]>;
 
   /**
    * Perform document update operations
    * @param documentClass - The Document definition
-   * @param request       - The requested operation
+   * @param context       - Context for the requested operation
    * @param user          - The requesting User
    * @returns The updated Document instances
    */
   update<T extends Document<any, any>>(
     documentClass: ConstructorOf<T>,
-    request: Request,
+    context: RequestContext<T>,
     user?: BaseUser,
   ): Promise<T[]>;
 
   /**
    * Validate the arguments passed to the update operation
    */
-  protected _updateArgs({ updates, options, pack }?: Request): {
-    updates: AnyDocumentData[];
+  protected _updateArgs<T extends Document<any, any>>({
+    updates,
+    options,
+    pack,
+    parentUuid,
+  }?: RequestContext<T>): {
+    updates: T["_source"][];
     options: RequestOptions;
     pack?: string;
+    parent: ReturnType<DatabaseBackend["_getParent"]>;
+    parentUuid: string | undefined;
   };
 
   /**
@@ -125,30 +128,20 @@ declare abstract class DatabaseBackend {
    */
   protected abstract _updateDocuments<T extends Document<any, any>>(
     documentClass: ConstructorOf<T>,
-    request: Request,
-    user: BaseUser,
-  ): Promise<T[]>;
-
-  /**
-   * Update embedded Document instances
-   */
-  protected abstract _updateEmbeddedDocuments<T extends Document<any, any>>(
-    documentClass: ConstructorOf<T>,
-    parent: T extends Document<any, infer U> ? U : never,
-    request: Request,
+    request: RequestContext<T>,
     user: BaseUser,
   ): Promise<T[]>;
 
   /**
    * Perform document deletion operations
    * @param documentClass - The Document definition
-   * @param request       - The requested operation
+   * @param context       - Context for the requested operation
    * @param user          - The requesting User
    * @returns The deleted Document instances
    */
   delete<T extends Document<any, any>>(
     documentClass: ConstructorOf<T>,
-    request: Request,
+    context: RequestContext<T>,
     user?: BaseUser,
   ): Promise<T[]>;
 
@@ -156,24 +149,22 @@ declare abstract class DatabaseBackend {
    * Validate the arguments passed to the delete operation
    * @param request - The requested operation
    */
-  protected _deleteArgs({ ids, options, pack }?: Request): { ids: string[]; options: RequestOptions; pack?: string };
+  protected _deleteArgs<T extends Document<any, any>>(
+    context?: RequestContext<T>,
+  ): {
+    ids: string[];
+    options: RequestOptions;
+    pack?: string;
+    parent: ReturnType<DatabaseBackend["_getParent"]>;
+    parentUuid: string | undefined;
+  };
 
   /**
    * Delete primary Document instances
    */
   protected abstract _deleteDocuments<T extends Document<any, any>>(
     documentClass: ConstructorOf<T>,
-    request: Request,
-    user: BaseUser,
-  ): Promise<T[]>;
-
-  /**
-   * Delete embedded Document instances
-   */
-  protected abstract _deleteEmbeddedDocuments<T extends Document<any, any>>(
-    documentClass: ConstructorOf<T>,
-    parent: T extends Document<any, infer U> ? U : never,
-    request: Request,
+    request: RequestContext<T>,
     user: BaseUser,
   ): Promise<T[]>;
 
@@ -237,17 +228,20 @@ declare abstract class DatabaseBackend {
   protected _logContext({ parent, pack }?: { parent?: Document<any, any>; pack?: string }): string;
 }
 
-export interface Request {
+//TODO: Can improve the typing even further here by specifying the parent bit
+export interface RequestContext<T extends Document<any, any>> {
   /** An array of document data */
-  data?: AnyDocumentData[];
+  data?: T["_source"][];
 
   /** An array of document data */
-  updates?: AnyDocumentData[];
+  updates?: T["_source"][];
 
   /** An array of document ids */
   ids?: string[];
 
   parent?: Document<any, any>;
+
+  parentUuid: string;
 
   /**
    * A document search query to execute
