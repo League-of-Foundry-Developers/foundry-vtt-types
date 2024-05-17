@@ -96,8 +96,8 @@ export type PlaceableDocumentType =
 
 export type DocumentSubTypes<T extends DocumentType> = "type" extends keyof InstanceType<
   ConfiguredDocumentClassForName<T>
->["data"]
-  ? InstanceType<ConfiguredDocumentClassForName<T>>["data"]["type"]
+>
+  ? InstanceType<ConfiguredDocumentClassForName<T>>["type"]
   : typeof foundry.CONST.BASE_DOCUMENT_TYPE;
 
 export type ConfiguredDocumentClassForName<Name extends DocumentType> = CONFIG[Name]["documentClass"];
