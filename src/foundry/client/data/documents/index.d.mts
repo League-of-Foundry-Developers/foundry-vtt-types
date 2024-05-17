@@ -1,5 +1,7 @@
 import "./active-effect.d.mts";
+import "./actor-delta.d.mts";
 import "./actor.d.mts";
+import "./adventure.d.mts";
 import "./ambient-light.d.mts";
 import "./ambient-sound.d.mts";
 import "./card.mts";
