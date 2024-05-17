@@ -11,10 +11,11 @@ import type {
   Mixin,
   ValueOf,
 } from "../../../../types/utils.d.mts";
-import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
+import type { AnyMetadata, DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 declare class ClientDocument<
-  BaseDocument extends foundry.abstract.Document<any, any> = foundry.abstract.Document<any, any>,
+  BaseDocument extends foundry.abstract.Document<any, ConcreteMetadata> = foundry.abstract.Document<any, AnyMetadata>,
+  ConcreteMetadata extends AnyMetadata = AnyMetadata,
 > {
   constructor(data?: BaseDocument["_source"], context?: DocumentConstructionContext);
 
@@ -48,7 +49,7 @@ declare class ClientDocument<
   /**
    * A reference to the Compendium Collection which contains this Document, if any, otherwise undefined.
    */
-  get compendium(): CompendiumCollection<this> | undefined;
+  get compendium(): CompendiumCollection<ConcreteMetadata> | undefined;
 
   /**
    * A boolean indicator for whether or not the current game User has ownership rights for this Document.
