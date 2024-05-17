@@ -561,12 +561,12 @@ declare class ClientDocument<
 declare global {
   type ClientDocument = ReturnType<typeof ClientDocumentMixin>;
 
-  // TODO: Replace ConstructorOf<…> with DocumentConstructor once the problem with circular reference has been solved
   /**
    * A mixin which extends each Document definition with specialized client-side behaviors.
    * This mixin defines the client-side interface for database operations and common document behaviors.
    */
   // TODO: Include handling for TypeNames
+  // TODO: Improve Parent handling
   function ClientDocumentMixin<BaseClass extends AnyConstructorFor<typeof foundry.abstract.Document<any, any>>>(
     Base: BaseClass,
   ): Mixin<typeof ClientDocument, BaseClass>;
