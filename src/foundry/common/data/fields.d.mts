@@ -1022,6 +1022,7 @@ declare class StringField<
   protected _isValidChoice(value: AssignmentType): boolean;
 }
 
+//FIXME: Choices are not working correctly
 declare namespace StringField {
   /** The type of the default options for the {@link StringField} class. */
   type DefaultOptions = SimpleMerge<

@@ -48,7 +48,8 @@ declare class BaseFolder extends Document<BaseFolder.SchemaField, BaseFolder.Met
     },
   ): object;
 
-  static override get(documentId: string, options: InexactPartial<{ pack: string }>): Folder | null;
+  // TODO: Figure out if the upstream version can be returned
+  static override get(documentId: string, options: InexactPartial<{ pack: string }>): BaseFolder | null;
 }
 export default BaseFolder;
 
