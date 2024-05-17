@@ -14,6 +14,7 @@ declare global {
    * @see {@link data.CardsData}                     The Cards data schema
    * @see {@link CardStacks}                         The world-level collection of Cards documents
    */
+  // TODO: TypeName handling.
   class Cards extends ClientDocumentMixin(foundry.documents.BaseCards) {
     /**
      * Provide a thumbnail image path used to represent this document.
@@ -189,18 +190,23 @@ declare global {
       context: Record<string, unknown>,
     ): Promise<InstanceType<ConfiguredDocumentClassForName<"ChatMessage">> | undefined>;
 
-    protected override _onUpdate(data: DeepPartial<Cards>, options: DocumentModificationOptions, userId: string): void;
+    protected override _onUpdate(
+      data: DeepPartial<Cards["_source"]>,
+      options: DocumentModificationOptions,
+      userId: string,
+    ): void;
 
     protected override _preDelete(
       options: DocumentModificationOptions,
       user: foundry.documents.BaseUser,
     ): Promise<void>;
 
-    // TODO: There's maybe some recursive bug here?
-    static override deleteDocuments(
+    // TODO: It's a bit weird that we have to do it in this generic way but otherwise there is an error overriding this. Investigate later.
+    static override deleteDocuments<T extends DocumentConstructor>(
+      this: T,
       ids?: string[] | undefined,
       context?: DocumentModificationContext | undefined,
-    ): Promise<InstanceType<ConfiguredDocumentClassForName<"Cards">>[]>;
+    ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
 
     /**
      * Display a dialog which prompts the user to deal cards to some number of hand-type Cards documents.

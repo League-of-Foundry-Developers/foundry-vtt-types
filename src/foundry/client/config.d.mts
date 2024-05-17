@@ -149,7 +149,7 @@ declare global {
      */
     Adventure: {
       /** @defaultValue `foundry.documents.BaseAdventure` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof foundry.documents.BaseAdventure>;
+      documentClass: ConfiguredDocumentClassOrDefault<typeof Adventure>;
 
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];

@@ -232,13 +232,13 @@ declare global {
     // getFlag(scope: string, key: string): unknown;
 
     protected _preCreate(
-      data: foundry.data.fields.SchemaField.InnerAssignmentType<ReturnType<(typeof ActiveEffect)["defineSchema"]>>,
+      data: foundry.documents.BaseActiveEffect.ConstructorData,
       options: DocumentModificationOptions,
       user: foundry.documents.BaseUser,
     ): Promise<void>;
 
     protected override _onCreate(
-      data: ActiveEffect["_source"],
+      data: foundry.documents.BaseActiveEffect.ConstructorData,
       options: DocumentModificationOptions,
       userId: string,
     ): void;
