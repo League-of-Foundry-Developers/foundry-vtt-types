@@ -1,22 +1,22 @@
 import type { DeepPartial } from "../../../../types/utils.d.mts";
-import type { DocumentDataType, DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
+import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
+import type { SchemaField } from "../../../common/data/fields.d.mts";
+import type { BaseJournalEntry, BaseUser } from "../../../common/documents/module.d.mts";
 
 declare global {
   /**
    * The client-side JournalEntry document which extends the common BaseJournalEntry model.
-   * Each JournalEntry document contains JournalEntryData which defines its data schema.
    *
-   * @see {@link data.JournalEntryData}              The JournalEntry data schema
-   * @see {@link documents.Journal}                  The world-level collection of JournalEntry documents
-   * @see {@link applications.JournalSheet}          The JournalEntry configuration application
-   *
-   * @param data - Initial data provided to construct the JournalEntry document
+   * @see {@link Journal}                  The world-level collection of JournalEntry documents
+   * @see {@link JournalSheet}          The JournalEntry configuration application
    */
   class JournalEntry extends ClientDocumentMixin(foundry.documents.BaseJournalEntry) {
     /**
      * A boolean indicator for whether or not the JournalEntry is visible to the current user in the directory sidebar
      */
     get visible(): boolean;
+
+    getUserLevel(user: BaseUser): foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
 
     /**
      * Return a reference to the Note instance for this Journal Entry in the current Scene, if any.
@@ -29,13 +29,11 @@ declare global {
      * By default the entry will only be shown to players who have permission to observe it.
      * If the parameter force is passed, the entry will be shown to all players regardless of normal permission.
      *
-     * @param mode  - Which JournalEntry mode to display? Default is text.
-     *                (default: `"text"`)
      * @param force - Display the entry to all players regardless of normal permissions
      *                (default: `false`)
      * @returns A Promise that resolves back to the shown entry once the request is processed
      */
-    show(mode?: "text" | "image", force?: boolean): Promise<this>;
+    show(force?: boolean): Promise<this>;
 
     /**
      * If the JournalEntry has a pinned note on the canvas, this method will animate to that note
@@ -45,8 +43,20 @@ declare global {
      */
     panToNote(options?: PanToNoteOptions): Promise<void>;
 
+    protected _preCreate(
+      data: BaseJournalEntry.ConstructorData,
+      options: DocumentModificationOptions,
+      user: BaseUser,
+    ): Promise<boolean | void>;
+
+    protected _preUpdate(
+      changed: SchemaField.AssignmentType<BaseJournalEntry.Schema, {}>,
+      options: DocumentModificationOptions,
+      user: BaseUser,
+    ): Promise<boolean | void>;
+
     protected override _onUpdate(
-      data: DeepPartial<DocumentDataType<foundry.documents.BaseJournalEntry>>,
+      data: DeepPartial<JournalEntry["_source"]>,
       options: DocumentModificationOptions,
       userId: string,
     ): void;
