@@ -1,29 +1,21 @@
 import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
+import type { InexactPartial } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
+import type { ClientDocument } from "../abstract/client-document.d.mts";
 
 declare global {
   /**
    * The client-side RollTable document which extends the common BaseRollTable model.
-   * Each RollTable document contains RollTableData which defines its data schema.
    *
-   * @see {@link data.RollTableData}              The RollTable data schema
-   * @see {@link documents.RollTables}            The world-level collection of RollTable documents
-   * @see {@link applications.RollTableConfig}    The RollTable configuration application
+   * @see {@link RollTables}         The world-level collection of RollTable documents
+   * @see {@link TableResult}        The embedded TableResult document
+   * @see {@link RollTableConfig}    The RollTable configuration application
    */
   class RollTable extends ClientDocumentMixin(foundry.documents.BaseRollTable) {
     /**
-     * @param data    - Initial data provided to construct the RollTable document
-     * @param context - The document context, see {@link foundry.abstract.Document}
-     */
-    constructor(
-      data: ConstructorParameters<typeof foundry.documents.BaseRollTable>[0],
-      context?: ConstructorParameters<typeof foundry.documents.BaseRollTable>[1],
-    );
-
-    /**
      * Provide a thumbnail image path used to represent this document.
      */
-    get thumbnail(): this["data"]["img"];
+    get thumbnail(): this["img"];
 
     /**
      * Display a result drawn from a RollTable in the Chat Log along.
@@ -34,7 +26,7 @@ declare global {
      */
     toMessage(
       results: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseTableResult>>[],
-      options?: Partial<RollTable.ToMessageOptions>,
+      options?: InexactPartial<RollTable.ToMessageOptions>,
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseChatMessage>> | undefined>;
 
     /**
@@ -50,7 +42,7 @@ declare global {
      * @param options - Optional arguments which customize the draw
      * @returns The drawn results
      */
-    drawMany(number: number, options?: Partial<RollTable.DrawOptions>): Promise<RollTableDraw>;
+    drawMany(number: number, options?: InexactPartial<RollTable.DrawOptions>): Promise<RollTableDraw>;
 
     /**
      * Normalize the probabilities of rolling each item in the RollTable based on their assigned weights
@@ -62,7 +54,7 @@ declare global {
      * @remarks Actually, returns list of TableEntries updated, not the RollTable.
      * As written, it force updates all records, not just the ones already drawn.
      */
-    reset(): Promise<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseTableResult>>[]>;
+    resetResults(): Promise<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseTableResult>>[]>;
 
     /**
      * Evaluate a RollTable by rolling its formula and retrieving a drawn result.
@@ -70,7 +62,8 @@ declare global {
      * Note that this function only performs the roll and identifies the result, the RollTable#draw function should be
      * called to formalize the draw from the table.
      *
-     * @param options - (default: `{}`)
+     * @param options - Options which modify rolling behavior
+     *                  (default: `{}`)
      * @returns The Roll and results drawn by that Roll
      *
      * @example
@@ -92,10 +85,11 @@ declare global {
      */
     getResultsForRoll(value: number): InstanceType<ConfiguredDocumentClass<typeof TableResult>>[];
 
-    protected override _onCreateEmbeddedDocuments(
-      embeddedName: string,
-      documents: foundry.abstract.Document<any, any>[],
-      result: Record<string, unknown>[],
+    override _onCreateDescendantDocuments(
+      parent: ClientDocument,
+      collection: string,
+      documents: ClientDocument[],
+      data: unknown[],
       options: DocumentModificationOptions,
       userId: string,
     ): void;
@@ -111,8 +105,8 @@ declare global {
     override toCompendium(
       pack?: CompendiumCollection<CompendiumCollection.Metadata> | null | undefined,
       options?: ClientDocument.CompendiumExportOptions | undefined,
-    ): Omit<foundry.data.RollTableData["_source"], "_id" | "folder" | "permission"> & {
-      permission?: foundry.data.RollTableData extends { toObject(): infer U } ? U : never;
+    ): Omit<RollTable["_source"], "_id" | "folder" | "permission"> & {
+      permission?: RollTable extends { toObject(): infer U } ? U : never;
     };
 
     /**
@@ -146,7 +140,7 @@ declare global {
        * One or more table results which have been drawn
        * @defaultValue `[]`
        */
-      results: foundry.data.TableResultData[];
+      results: TableResult[];
 
       /**
        * Whether to automatically display the results in chat
@@ -184,7 +178,7 @@ declare global {
 
     interface RollOptions {
       /**
-       * An alternative dice Roll to use instead of the default formula for the table
+       * An alternative dice Roll to use instead of the default table formula
        */
       roll?: Roll;
 

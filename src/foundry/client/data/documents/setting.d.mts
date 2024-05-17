@@ -4,10 +4,8 @@ import type { DocumentModificationOptions } from "../../../common/abstract/docum
 declare global {
   /**
    * The client-side Setting document which extends the common BaseSetting model.
-   * Each Setting document contains SettingData which defines its data schema.
-
-   * @see {@link data.SettingData}              The Setting data schema
-   * @see {@link documents.WorldSettings}       The world-level collection of Setting documents
+   *
+   * @see {@link WorldSettings}       The world-level collection of Setting documents
    */
   class Setting extends ClientDocumentMixin(foundry.documents.BaseSetting) {
     /**
