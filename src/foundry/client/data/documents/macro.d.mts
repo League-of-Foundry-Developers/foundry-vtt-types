@@ -1,13 +1,13 @@
+import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
+
 export {};
 
 declare global {
   /**
    * The client-side Macro document which extends the common BaseMacro model.
-   * Each Macro document contains MacroData which defines its data schema.
    *
-   * @see {@link data.MacroData}              The Macro data schema
-   * @see {@link documents.Macros}            The world-level collection of Macro documents
-   * @see {@link applications.MacroConfig}    The Macro configuration application
+   * @see {@link Macros}            The world-level collection of Macro documents
+   * @see {@link MacroConfig}       The Macro configuration application
    *
    * @param data - Initial data provided to construct the Macro document
    */
@@ -29,24 +29,18 @@ declare global {
 
     /**
      * Execute the Macro command.
-     * @param scope - Provide some additional scope configuration for the Macro
+     * @param scope - Macro execution scope which is passed to script macros
+     * @returns A created ChatMessage from chat macros or returned value from script macros
      */
-    execute(scope?: Scope): void;
 
-    /**
-     * Execute the command as a chat macro.
-     * Chat macros simulate the process of the command being entered into the Chat Log input textarea.
-     */
-    protected _executeChat({ actor, token }?: Scope): void;
+    // TODO: Test if additional scope can be passed
+    execute(
+      scope?: Scope,
+    ): this["type"] extends "chat" ? InstanceType<ConfiguredDocumentClassForName<"ChatMessage">> : any;
 
-    /**
-     * Execute the command as a script macro.
-     * Script Macros are wrapped in an async IIFE to allow the use of asynchronous commands and await statements.
-     */
-    protected _executeScript({ actor, token }?: Scope): void;
+    _onClickDocumentLink(event: MouseEvent): ReturnType<this["execute"]>;
   }
 }
-
 interface Scope {
   /**
    * An Actor who is the protagonist of the executed action
