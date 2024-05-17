@@ -14,7 +14,6 @@ declare global {
  * The Document definition for an Item.
  * Defines the DataSchema and common behaviors for an Item which are shared between both client and server.
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface BaseItem<TypeName extends BaseItem.TypeNames = BaseItem.TypeNames> extends BaseItem.Properties<TypeName> {}
 declare class BaseItem<TypeName extends BaseItem.TypeNames = BaseItem.TypeNames> extends Document<
   BaseItem.SchemaField<TypeName>,

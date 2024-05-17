@@ -1,4 +1,6 @@
 import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
+import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
+import type { BaseUser } from "../../../common/documents/module.d.mts";
 
 declare global {
   /**
@@ -12,21 +14,18 @@ declare global {
    * @param data    - Initial data provided to construct the Item document
    * @param context - The document context, see {@link foundry.abstract.Document}
    */
-  class Item extends ClientDocumentMixin(foundry.documents.BaseItem) {
+  class Item<
+    TypeName extends foundry.data.fields.TypeDataField.TypeNames<typeof foundry.documents.BaseItem>,
+  > extends ClientDocumentMixin(foundry.documents.BaseItem) {
     /**
      * A convenience alias of Item#parent which is more semantically intuitive
      */
     get actor(): this["parent"];
 
     /**
-     * A convenience reference to the image path (data.img) used to represent this Item
-     */
-    get img(): this["data"]["img"];
-
-    /**
      * Provide a thumbnail image path used to represent this document.
      */
-    get thumbnail(): this["data"]["img"];
+    get thumbnail(): this["img"];
 
     /**
      * A convenience alias of Item#isEmbedded which is preserves legacy support
@@ -43,6 +42,12 @@ declare global {
      * Prepare a data object which defines the data schema used by dice roll commands against this Item
      */
     getRollData(): object;
+
+    protected _preCreate(
+      data: foundry.documents.BaseItem.ConstructorData<TypeName>,
+      options: DocumentModificationOptions,
+      user: BaseUser,
+    ): Promise<boolean | void>;
 
     // @ts-expect-error For some reason, proctected static methods from Document are lost, so ts complains that this isn't actually an override
     protected static override _onCreateDocuments(
