@@ -1,5 +1,5 @@
 import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
-import type { StoredDocument } from "../../../../types/utils.d.mts";
+import type { InexactPartial, StoredDocument } from "../../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -39,6 +39,6 @@ declare global {
      * @param activityData - The object of activity data
      *                       (default: `{}`)
      */
-    protected static _handleUserActivity(userId: string, activityData?: ActivityData | undefined): void;
+    protected static _handleUserActivity(userId: string, activityData?: InexactPartial<ActivityData> | undefined): void;
   }
 }
