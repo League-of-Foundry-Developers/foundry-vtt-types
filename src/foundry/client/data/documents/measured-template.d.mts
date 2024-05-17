@@ -2,12 +2,10 @@ import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mt
 
 declare global {
   /**
-   * The client-side MeasuredTemplate embedded document which extends the common BaseMeasuredTemplate abstraction.
-   * Each MeasuredTemplate document contains MeasuredTemplateData which defines its data schema.
+   * The client-side MeasuredTemplate document which extends the common BaseMeasuredTemplate document model.
    *
-   * @see {@link data.MeasuredTemplateData}              The MeasuredTemplate data schema
-   * @see {@link documents.Scene}               The Scene document type which contains MeasuredTemplate embedded documents
-   * @see {@link applications.MeasuredTemplateConfig}    The MeasuredTemplate configuration application
+   * @see {@link Scene}                     The Scene document type which contains MeasuredTemplate documents
+   * @see {@link MeasuredTemplateConfig}    The MeasuredTemplate configuration application
    */
   class MeasuredTemplateDocument extends CanvasDocumentMixin(foundry.documents.BaseMeasuredTemplate) {
     /**
@@ -15,5 +13,10 @@ declare global {
      * @remarks Will return undefined if the user has been deleted
      */
     get author(): InstanceType<ConfiguredDocumentClass<typeof User>> | undefined;
+
+    /**
+     * Rotation is an alias for direction
+     */
+    get rotation(): this["direction"];
   }
 }
