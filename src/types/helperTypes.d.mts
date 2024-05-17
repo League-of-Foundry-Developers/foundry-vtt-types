@@ -38,10 +38,6 @@ type ObjectToDeepPartial<T> = T extends object ? DeepPartial<T> : T;
 
 export type PropertyTypeToSourceParameterType<T> = ObjectToDeepPartial<PropertyTypeToSourceType<T>>;
 
-// TODO: Find a way to avoid this helper
-export type FieldReturnType<T extends DocumentField<any>, U extends Partial<DocumentField<any>>> = Omit<T, keyof U> &
-  Exclude<U, "undefined">;
-
 export type DocumentConstructor = Pick<typeof Document, keyof typeof Document> &
   (new (...args: any[]) => Document<any, any>);
 
@@ -93,6 +89,10 @@ export type PlaceableDocumentType =
   | "Tile"
   | "Token"
   | "Wall";
+/**
+ * Actual document types that go in folders
+ */
+export type FolderDocumentTypes = Exclude<foundry.CONST.FOLDER_DOCUMENT_TYPES, "Compendium">;
 
 export type DocumentSubTypes<T extends DocumentType> = "type" extends keyof InstanceType<
   ConfiguredDocumentClassForName<T>
