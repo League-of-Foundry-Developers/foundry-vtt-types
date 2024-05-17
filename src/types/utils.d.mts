@@ -92,12 +92,10 @@ export type SimpleMerge<Target, Override> = Omit<Target, keyof Override> & Overr
  */
 export type MaybePromise<T> = T | Promise<T>;
 
-export type StoredDocument<D extends { data: { _source: unknown } }> = D & {
+export type StoredDocument<D extends { _source: unknown }> = D & {
   id: string;
-  data: D["data"] & {
-    _id: string;
-    _source: D["data"]["_source"] & { _id: string };
-  };
+  _id: string;
+  _source: D["_source"] & { _id: string };
 };
 
 export type TemporaryDocument<D> = D extends StoredDocument<infer U> ? U : D;

@@ -241,7 +241,7 @@ export interface RequestContext<T extends Document<any, any>> {
 
   parent?: Document<any, any>;
 
-  parentUuid: string;
+  parentUuid?: string;
 
   /**
    * A document search query to execute
