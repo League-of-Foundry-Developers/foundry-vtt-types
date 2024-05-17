@@ -1,15 +1,29 @@
+import type { DeepPartial } from "../../../../types/utils.d.mts";
+import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
+import type { SchemaField } from "../../../common/data/fields.d.mts";
+import type BaseAmbientLight from "../../../common/documents/ambient-light.d.mts";
+
 export {};
 
 declare global {
   /**
    * The client-side AmbientLight document which extends the common BaseAmbientLight model.
-   * Each AmbientLight document contains AmbientLightData which defines its data schema.
    *
-   * @see {@link data.AmbientLightData}             The AmbientLight data schema
-   * @see {@link documents.Scene}                   The Scene document type which contains AmbientLight embedded documents
-   * @see {@link applications.LightConfig}          The AmbientLight configuration application
+   * @see {@link Scene}                     The Scene document type which contains AmbientLight documents
+   * @see {@link AmbientLightConfig}        The AmbientLight configuration application
    */
   class AmbientLightDocument extends CanvasDocumentMixin(foundry.documents.BaseAmbientLight) {
+    protected _onUpdate(
+      changed: DeepPartial<SchemaField.InnerPersistedType<BaseAmbientLight.Schema>>,
+      options: DocumentModificationOptions,
+      userId: string,
+    ): void;
+    protected _onUpdate(
+      changed: DeepPartial<Readonly<SchemaField.InnerPersistedType<any>>>,
+      options: DocumentModificationOptions,
+      userId: string,
+    ): void;
+
     /**
      * Is this ambient light source global in nature?
      */
