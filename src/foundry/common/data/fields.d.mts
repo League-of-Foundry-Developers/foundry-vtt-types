@@ -3,6 +3,7 @@ import type { ConstructorOf, SimpleMerge, ValueOf } from "../../../types/utils.d
 import type { DataModel } from "../abstract/data.mts";
 import type Document from "../abstract/document.mts";
 import type { EmbeddedCollection } from "../abstract/module.d.mts";
+import type { CONST } from "../module.d.mts";
 import type { DataModelValidationFailure } from "./validation-failure.mts";
 
 declare global {
@@ -2119,6 +2120,131 @@ declare namespace ColorField {
   >;
 }
 
+declare global {
+  /**
+   * @typeParam Value  - the type of the value of the field
+   */
+  interface FilePathFieldOptions extends StringFieldOptions {
+    /**
+     * A set of categories in CONST.FILE_CATEGORIES which this field supports
+     * @defaultValue `[]`
+     */
+    categories?: (keyof typeof CONST.FILE_CATEGORIES)[];
+
+    /**
+     * Is embedded base64 data supported in lieu of a file path?
+     * @defaultValue `false`
+     */
+    base64?: boolean;
+
+    /**
+     * Does this file path field allow wildcard characters?
+     * @defaultValue `false`
+     */
+    wildcard?: boolean;
+  }
+}
+
+/**
+ * A special [StringField]{@link StringField} which records a file path or inline base64 data.
+ * @typeParam Options         - the options of the FilePathField instance
+ * @typeParam AssignmentType  - the type of the allowed assignment values of the FilePathField
+ * @typeParam InitializedType - the type of the initialized values of the FilePathField
+ * @typeParam PersistedType   - the type of the persisted values of the FilePathField
+ * @remarks
+ * Defaults:
+ * AssignmentType: `string | null | undefined`
+ * InitializedType: `string | null`
+ * PersistedType: `string | null`
+ * InitialValue: `null`
+ */
+declare class FilePathField<
+  Options extends FilePathFieldOptions = FilePathField.DefaultOptions,
+  AssignmentType = FilePathField.AssignmentType<Options>,
+  InitializedType = FilePathField.InitializedType<Options>,
+  PersistedType extends string | null | undefined = FilePathField.InitializedType<Options>,
+> extends StringField<Options, AssignmentType, InitializedType, PersistedType> {
+  /**
+   * @param options - Options which configure the behavior of the field
+   */
+  constructor(options?: Options);
+
+  /**
+   * A set of categories in CONST.FILE_CATEGORIES which this field supports
+   * @defaultValue `[]`
+   */
+  categories: (keyof typeof CONST.FILE_CATEGORIES)[];
+
+  /**
+   * Is embedded base64 data supported in lieu of a file path?
+   * @defaultValue `false`
+   */
+  base64: boolean;
+
+  /**
+   * Does this file path field allow wildcard characters?
+   * @defaultValue `false`
+   */
+  wildcard: boolean;
+
+  /** @defaultValue `true` */
+  override nullable: boolean;
+
+  /** @defaultValue `false` */
+  override blank: boolean;
+
+  /** @defaultValue `null` */
+  override initial: DataFieldOptions.InitialType<InitializedType>;
+
+  protected static override get _defaults(): FilePathFieldOptions;
+
+  override clean(value: AssignmentType, options?: DataField.CleanOptions | undefined): InitializedType;
+
+  protected override _validateType(
+    value: InitializedType,
+    options?: DataField.ValidationOptions<DataField.Any> | undefined,
+  ): boolean | void;
+}
+
+declare namespace FilePathField {
+  /** The type of the default options for the {@link FilePathField} class. */
+  type DefaultOptions = SimpleMerge<
+    StringField.DefaultOptions,
+    {
+      categories: (keyof typeof CONST.FILE_CATEGORIES)[];
+      base64: false;
+      wildcard: false;
+      nullable: true;
+      blank: false;
+      initial: null;
+    }
+  >;
+
+  /**
+   * A helper type for the given options type merged into the default options of the FilePathField class.
+   * @typeParam Options - the options that override the default options
+   */
+  type MergedOptions<Options extends StringFieldOptions> = SimpleMerge<DefaultOptions, Options>;
+
+  /**
+   * A shorthand for the assignment type of a FilePathField class.
+   * @typeParam Options - the options that override the default options
+   */
+  type AssignmentType<Options extends StringFieldOptions> = DataField.DerivedAssignmentType<
+    string,
+    MergedOptions<Options>
+  >;
+
+  /**
+   * A shorthand for the initialized type of a FilePathField class.
+   * @typeParam Options - the options that override the default options
+   */
+  type InitializedType<Options extends StringFieldOptions> = DataField.DerivedInitializedType<
+    string,
+    MergedOptions<Options>
+  >;
+}
+
 declare class TypeDataField {
   // TODO: Type this.
 }
@@ -2167,16 +2293,17 @@ export {
   ColorField,
   DataField,
   DocumentIdField,
-  EmbeddedCollectionField,
   EmbeddedCollectionDeltaField,
+  EmbeddedCollectionField,
   EmbeddedDataField,
   EmbeddedDocumentField,
+  FilePathField,
   ForeignDocumentField,
+  ModelValidationError,
   NumberField,
   ObjectField,
   SchemaField,
   SetField,
   StringField,
   TypeDataField,
-  ModelValidationError,
 };
