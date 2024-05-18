@@ -1938,6 +1938,109 @@ declare namespace DocumentIdField {
   >;
 }
 
+/**
+ * A special class of [StringField]{@link StringField} field which references another DataModel by its id.
+ * This field may also be null to indicate that no foreign model is linked.
+ * @typeParam DocumentType    - the type of the foreign document constructor
+ * @typeParam Options         - the options for the ForeignDocumentField
+ * @typeParam AssignmentType  - the type of the allowed assignment values of the ForeignDocumentField
+ * @typeParam InitializedType - the type of the initialized values of the ForeignDocumentField
+ * @typeParam PersistedType   - the type of the persisted values of the ForeignDocumentField
+ * @remarks
+ * Defaults:
+ * AssignmentType: `string | InstanceType<DocumentType> | null | undefined`
+ * InitializedType: `InstanceType<DocumentType> | null`
+ * PersistedType: `string | null`
+ * InitialValue: `null`
+ */
+declare class ForeignDocumentField<
+  DocumentType extends Document.Constructor,
+  Options extends ForeignDocumentField.Options = ForeignDocumentField.DefaultOptions,
+  AssignmentType = ForeignDocumentField.AssignmentType<DocumentType, Options>,
+  InitializedType = ForeignDocumentField.InitializedType<DocumentType, Options>,
+  PersistedType extends string | null | undefined = ForeignDocumentField.PersistedType<Options>,
+> extends DocumentIdField<Options, AssignmentType, InitializedType, PersistedType> {
+  /**
+   * @param model   - The foreign DataModel class definition which this field should link to.
+   * @param options - Options which configure the behavior of the field
+   */
+  constructor(model: DocumentType, options?: Options);
+
+  /** @defaultValue `true` */
+  override nullable: boolean;
+
+  /** @defaultValue `false` */
+  override readonly: boolean;
+
+  /** @defaultValue `false` */
+  idOnly: boolean;
+
+  /**
+   * A reference to the model class which is stored in this field
+   */
+  model: DocumentType;
+
+  protected static override get _defaults(): ForeignDocumentField.Options;
+
+  protected override _cast(value: AssignmentType): InitializedType;
+
+  override initialize(value: PersistedType, model: DataModel.Any): InitializedType | (() => InitializedType | null);
+
+  override toObject(value: InitializedType): PersistedType;
+}
+
+declare namespace ForeignDocumentField {
+  /** The options for the ForeignDocumentField class. */
+  type Options = StringFieldOptions &
+    DataFieldOptions<string | Document.Any> & {
+      // Making this ---------^ more concrete leads to excessively deep instantiation
+      idOnly?: boolean;
+    };
+
+  /** The type of the default options for the {@link ForeignDocumentField} class. */
+  type DefaultOptions = SimpleMerge<
+    DocumentIdField.DefaultOptions,
+    {
+      nullable: true;
+      readonly: false;
+      idOnly: false;
+    }
+  >;
+
+  /**
+   * A helper type for the given options type merged into the default options of the ForeignDocumentField class.
+   * @typeParam Opts - the options that override the default options
+   */
+  type MergedOptions<Opts extends Options> = SimpleMerge<DefaultOptions, Opts>;
+
+  /**
+   * A shorthand for the assignment type of a ForeignDocumentField class.
+   * @typeParam Opts - the options that override the default options
+   */
+  type AssignmentType<
+    DocumentType extends Document.Constructor,
+    Opts extends Options,
+  > = DataField.DerivedAssignmentType<string | InstanceType<DocumentType>, MergedOptions<Opts>>;
+
+  /**
+   * A shorthand for the initialized type of a ForeignDocumentField class.
+   * @typeParam Opts - the options that override the default options
+   */
+  type InitializedType<
+    DocumentType extends Document.Constructor,
+    Opts extends Options,
+  > = DataField.DerivedInitializedType<
+    Opts["idOnly"] extends true ? string : InstanceType<DocumentType>,
+    MergedOptions<Opts>
+  >;
+
+  /**
+   * A shorthand for the persisted type of a ForeignDocumentField class.
+   * @typeParam Opts - the options that override the default options
+   */
+  type PersistedType<Opts extends Options> = DataField.DerivedInitializedType<string, MergedOptions<Opts>>;
+}
+
 declare class TypeDataField {
   // TODO: Type this.
 }
@@ -1989,6 +2092,7 @@ export {
   EmbeddedCollectionDeltaField,
   EmbeddedDataField,
   EmbeddedDocumentField,
+  ForeignDocumentField,
   NumberField,
   ObjectField,
   SchemaField,
