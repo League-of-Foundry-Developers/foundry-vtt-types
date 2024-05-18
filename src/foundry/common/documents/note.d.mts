@@ -117,11 +117,14 @@ declare namespace BaseNote {
      * An image icon used to represent this note
      * @defaultValue `BaseNote.DEFAULT_ICON`
      */
-    texture: TextureData<{
-      categories: ["IMAGE"];
-      initial: () => typeof BaseNote.DEFAULT_ICON;
-      label: "NOTE.EntryIcon";
-    }>;
+    texture: TextureData<
+      {},
+      {
+        categories: ["IMAGE"];
+        initial: () => typeof BaseNote.DEFAULT_ICON;
+        label: "NOTE.EntryIcon";
+      }
+    >;
 
     /**
      * The pixel size of the map note icon

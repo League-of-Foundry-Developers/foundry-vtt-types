@@ -70,7 +70,7 @@ declare namespace BaseTile {
      * An image or video texture which this tile displays.
      * @defaultValue `null`
      */
-    texture: TextureData<{ categories: ("IMAGE" | "VIDEO")[]; initial: null; wildcard: false }>;
+    texture: TextureData<{}, { categories: ("IMAGE" | "VIDEO")[]; initial: null; wildcard: false }>;
 
     /**
      * The pixel width of the tile

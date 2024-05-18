@@ -224,10 +224,10 @@ export class ShapeData extends DataModel<fields.SchemaField<ShapeData.Schema>> {
 
 declare namespace TextureData {
   type DefaultOptions = {
-    categories: string[];
+    categories: ["IMAGE", "VIDEO"];
     initial: null;
     wildcard: false;
-    label: string;
+    label: "";
   };
 
   type Schema<SrcOptions extends fields.FilePathField.Options = DefaultOptions> = {
@@ -268,11 +268,17 @@ declare namespace TextureData {
   };
 }
 
-interface TextureData extends fields.SchemaField.InnerInitializedType<TextureData.Schema> {}
+interface TextureData<
+  SchemaOptions extends fields.SchemaField.Options<TextureData.Schema> = fields.SchemaField.DefaultOptions,
+  // SrcOptions extends fields.FilePathField.Options = TextureData.DefaultOptions,
+> extends fields.SchemaField.InnerInitializedType<TextureData.Schema, SchemaOptions> {}
 
-export class TextureData<SrcOptions> extends fields.SchemaField<TextureData.Schema<SrcOptions>> {
+export class TextureData<
+  SchemaOptions extends fields.SchemaField.Options<TextureData.Schema> = fields.SchemaField.DefaultOptions,
+  SrcOptions extends fields.FilePathField.Options = TextureData.DefaultOptions,
+> extends fields.SchemaField<TextureData.Schema<SrcOptions>, SchemaOptions> {
   constructor(
-    options?: DataFieldOptions<fields.SchemaField.AssignmentType<TextureData.Schema>>,
+    options?: SchemaOptions,
     // TODO: Figure out this configuration after FilePathField is defined
     srcOptions?: SrcOptions,
   );

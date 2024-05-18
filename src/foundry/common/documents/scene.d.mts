@@ -14,7 +14,6 @@ declare global {
  * The Document definition for a Scene.
  * Defines the DataSchema and common behaviors for a Scene which are shared between both client and server.
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface BaseScene extends BaseScene.Properties {}
 declare class BaseScene extends Document<BaseScene.SchemaField, BaseScene.Metadata> {
   /**
