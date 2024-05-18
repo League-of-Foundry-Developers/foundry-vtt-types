@@ -2636,6 +2636,83 @@ declare namespace HTMLField {
   >;
 }
 
+/**
+ * A subclass of {@link NumberField} which is used for storing integer sort keys.
+ * @typeParam Options         - the options of the IntegerSortField instance
+ * @typeParam AssignmentType  - the type of the allowed assignment values of the IntegerSortField
+ * @typeParam InitializedType - the type of the initialized values of the IntegerSortField
+ * @typeParam PersistedType   - the type of the persisted values of the IntegerSortField
+ * @remarks
+ * Defaults:
+ * AssignmentType: `number | null | undefined`
+ * InitializedType: `number`
+ * PersistedType: `number`
+ * InitialValue: `0`
+ */
+declare class IntegerSortField<
+  Options extends NumberFieldOptions = IntegerSortField.DefaultOptions,
+  AssignmentType = IntegerSortField.AssignmentType<Options>,
+  InitializedType = IntegerSortField.InitializedType<Options>,
+  PersistedType extends number | null | undefined = IntegerSortField.InitializedType<Options>,
+> extends NumberField<Options, AssignmentType, InitializedType, PersistedType> {
+  /** @defaultValue `true` */
+  override required: boolean;
+
+  /** @defaultValue `false` */
+  override nullable: boolean;
+
+  /** @defaultValue `true` */
+  override integer: boolean;
+
+  /** @defaultValue `0` */
+  override initial: DataFieldOptions.InitialType<InitializedType>;
+
+  /** @defaultValue `"FOLDER.DocumentSort"` */
+  override label: string;
+
+  /** @defaultValue `"FOLDER.DocumentSortHint"` */
+  override hint: string;
+}
+
+declare namespace IntegerSortField {
+  /** The type of the default options for the {@link IntegerSortField} class. */
+  type DefaultOptions = SimpleMerge<
+    DataField.DefaultOptions,
+    {
+      required: true;
+      nullable: false;
+      integer: true;
+      initial: 0;
+      label: "FOLDER.DocumentSort";
+      hint: "FOLDER.DocumentSortHint";
+    }
+  >;
+
+  /**
+   * A helper type for the given options type merged into the default options of the IntegerSortField class.
+   * @typeParam Options - the options that override the default options
+   */
+  type MergedOptions<Options extends NumberFieldOptions> = SimpleMerge<DefaultOptions, Options>;
+
+  /**
+   * A shorthand for the assignment type of a IntegerSortField class.
+   * @typeParam Options - the options that override the default options
+   */
+  type AssignmentType<Options extends NumberFieldOptions> = DataField.DerivedAssignmentType<
+    number,
+    MergedOptions<Options>
+  >;
+
+  /**
+   * A shorthand for the initialized type of a IntegerSortField class.
+   * @typeParam Options - the options that override the default options
+   */
+  type InitializedType<Options extends NumberFieldOptions> = DataField.DerivedInitializedType<
+    number,
+    MergedOptions<Options>
+  >;
+}
+
 declare class TypeDataField {
   // TODO: Type this.
 }
@@ -2694,6 +2771,7 @@ export {
   FilePathField,
   ForeignDocumentField,
   HTMLField,
+  IntegerSortField,
   JSONField,
   ModelValidationError,
   NumberField,
