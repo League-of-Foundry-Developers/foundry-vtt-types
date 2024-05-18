@@ -1843,6 +1843,18 @@ declare namespace EmbeddedCollectionField {
   > = DataField.DerivedInitializedType<PersistedElementType[], MergedOptions<AssignmentElementType, Opts>>;
 }
 
+declare class EmbeddedCollectionDeltaField {
+  // TODO: Type this.
+}
+
+declare class EmbeddedDocumentField {
+  // TODO: Type this.
+}
+
+declare class TypeDataField {
+  // TODO: Type this.
+}
+
 /**
  * @deprecated since v11; ModelValidationError is deprecated. Please use DataModelValidationError instead.
  * @typeParam Errors - the type of the errors contained in this error
@@ -1873,16 +1885,27 @@ declare namespace ModelValidationError {
   type Errors = Record<number | string | symbol, Error> | Error[] | string;
 }
 
+export function systemDataField(document);
+
+export function foreignDocumentField(options);
+
+export function embeddedCollectionField(document, options?);
+
+export function field(field, options?);
+
 export {
   ArrayField,
   BooleanField,
   DataField,
   EmbeddedCollectionField,
+  EmbeddedCollectionDeltaField,
   EmbeddedDataField,
+  EmbeddedDocumentField,
   NumberField,
   ObjectField,
   SchemaField,
   SetField,
   StringField,
+  TypeDataField,
   ModelValidationError,
 };
