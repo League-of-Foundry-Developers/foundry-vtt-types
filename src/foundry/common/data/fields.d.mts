@@ -2713,6 +2713,125 @@ declare namespace IntegerSortField {
   >;
 }
 
+declare global {
+  type DocumentStats = DocumentStatsField.Properties;
+}
+
+/**
+ * A subclass of {@link SchemaField} which stores document metadata in the _stats field.
+ * @typeParam Options         - the options of the DocumentStatsField instance
+ * @typeParam AssignmentType  - the type of the allowed assignment values of the DocumentStatsField
+ * @typeParam InitializedType - the type of the initialized values of the DocumentStatsField
+ * @typeParam PersistedType   - the type of the persisted values of the DocumentStatsField
+ * @remarks
+ * Defaults:
+ * AssignmentType: `Partial<DocumentStats> | null | undefined`
+ * InitializedType: `DocumentStats`
+ * PersistedType: `object`
+ * InitialValue:
+ * ```typescript
+ * {
+ *   systemId: null,
+ *   systemVersion: null,
+ *   coreVersion: null,
+ *   createdTime: null,
+ *   modifiedTime: null,
+ *   lastModifiedBy: null
+ * }
+ * ```
+ */
+declare class DocumentStatsField<
+  Options extends DocumentStatsField.Options = DocumentStatsField.DefaultOptions,
+  AssignmentType = DocumentStatsField.AssignmentType<Options>,
+  InitializedType = DocumentStatsField.InitializedType<Options>,
+  PersistedType extends object | null | undefined = DocumentStatsField.PersistedType<Options>,
+> extends SchemaField<DocumentStatsField.Schema, Options, AssignmentType, InitializedType, PersistedType> {
+  constructor(options?: Options);
+}
+
+declare namespace DocumentStatsField {
+  /** A shorthand for the options of a DocumentStatsField class. */
+  type Options = DataFieldOptions<SchemaField.InnerAssignmentType<Schema>>;
+
+  /** The type of the default options for the {@link DocumentStatsField} class. */
+  type DefaultOptions = SimpleMerge<SchemaField.DefaultOptions, { initial: SchemaField.InnerAssignmentType<Schema> }>;
+
+  /**
+   * A helper type for the given options type merged into the default options of the {@link DocumentStatsField} class.
+   * @typeParam Opts - the options that override the default options
+   */
+  type MergedOptions<Opts extends Options> = SimpleMerge<DefaultOptions, Opts>;
+
+  /**
+   * A shorthand for the assignment type of a DocumentStatsField class.
+   * @typeParam Opts - the options that override the default options
+   */
+  type AssignmentType<Opts extends Options = DefaultOptions> = DataField.DerivedAssignmentType<
+    SchemaField.InnerAssignmentType<Schema>,
+    MergedOptions<Opts>
+  >;
+
+  /**
+   * A shorthand for the assignment type of a DocumentStatsField class.
+   * @typeParam Opts - the options that override the default options
+   */
+  type InitializedType<Opts extends Options = DefaultOptions> = DataField.DerivedInitializedType<
+    SchemaField.InnerInitializedType<Schema>,
+    MergedOptions<Opts>
+  >;
+
+  /**
+   * A shorthand for the assignment type of a DocumentStatsField class.
+   * @typeParam Opts - the options that override the default options
+   */
+  type PersistedType<Opts extends Options = DefaultOptions> = DataField.DerivedInitializedType<
+    SchemaField.InnerPersistedType<Schema>,
+    MergedOptions<Opts>
+  >;
+
+  type ConstructorData = SchemaField.InnerAssignmentType<Schema>;
+  type Properties = SchemaField.InnerInitializedType<Schema>;
+  type Source = SchemaField.InnerPersistedType<Schema>;
+
+  interface Schema extends DataSchema {
+    /**
+     * The package name of the system the Document was created in.
+     * @defaultValue `null`
+     */
+    systemId: StringField<{ required: true; blank: false; nullable: true; initial: null }>;
+
+    /**
+     * The version of the system the Document was created in.
+     * @defaultValue `null`
+     */
+    systemVersion: StringField<{ required: true; blank: false; nullable: true; initial: null }>;
+
+    /**
+     * The core version the Document was created in.
+     * @defaultValue `null`
+     */
+    coreVersion: StringField<{ required: true; blank: false; nullable: true; initial: null }>;
+
+    /**
+     * A timestamp of when the Document was created.
+     * @defaultValue `null`
+     */
+    createdTime: NumberField;
+
+    /**
+     * A timestamp of when the Document was last modified.
+     * @defaultValue `null`
+     */
+    modifiedTime: NumberField;
+
+    /**
+     * The ID of the user who last modified the Document.
+     * @defaultValue `null`
+     */
+    lastModifiedBy: ForeignDocumentField<typeof foundry.documents.BaseUser, { idOnly: true }>;
+  }
+}
+
 declare class TypeDataField {
   // TODO: Type this.
 }
@@ -2764,6 +2883,7 @@ export {
   DataField,
   DocumentIdField,
   DocumentOwnershipField,
+  DocumentStatsField,
   EmbeddedCollectionDeltaField,
   EmbeddedCollectionField,
   EmbeddedDataField,
