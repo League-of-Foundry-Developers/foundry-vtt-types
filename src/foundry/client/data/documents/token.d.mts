@@ -1,40 +1,24 @@
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
-import type { ConstructorOf, DeepPartial, TemporaryDocument } from "../../../../types/utils.d.mts";
+import type { ConfiguredDocumentClass, ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
+import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
-import type { ActiveEffectDataConstructorData } from "../../../common/data/data.mjs/activeEffectData.d.mts";
-import type * as data from "../../../common/data/data.mjs/index.d.mts";
-import type { PrototypeTokenDataConstructorData } from "../../../common/data/data.mjs/prototypeTokenData.d.mts";
 
 declare global {
   /**
    * The client-side Token document which extends the common BaseToken model.
-   * Each Token document contains TokenData which defines its data schema.
    *
-   * @see {@link data.TokenData}                The Token data schema
-   * @see {@link documents.Scene}               The Scene document type which contains Token embedded documents
-   * @see {@link applications.TokenConfig}      The Token configuration application
+   * @see {@link Scene}               The Scene document type which contains Token embedded documents
+   * @see {@link TokenConfig}      The Token configuration application
    */
   class TokenDocument extends CanvasDocumentMixin(foundry.documents.BaseToken) {
     /**
-     * @param data    - Initial data provided to construct the Token document
-     *                  (default: `{}`)
-     * @param context - The parent Scene document to which this Token belongs
+     * A singleton collection which holds a reference to the synthetic token actor by its base actor's ID.
      */
-    constructor(
-      data?: ConstructorParameters<ConstructorOf<foundry.documents.BaseToken>>[0],
-      context?: ConstructorParameters<ConstructorOf<foundry.documents.BaseToken>>[1],
-    );
-
-    /**
-     * A cached reference to the Actor document that this Token modifies.
-     * This may be a "synthetic" unlinked Token Actor which does not exist in the World.
-     */
-    protected _actor: InstanceType<ConfiguredDocumentClass<typeof Actor>> | null;
+    actors: () => Collection<InstanceType<ConfiguredDocumentClassForName<"Actor">>>;
 
     /**
      * A lazily evaluated reference to the Actor this Token modifies.
      * If actorLink is true, then the document is the primary Actor document.
-     * Otherwise the Actor document is a synthetic (ephemeral) document constructed using the Token's actorData.
+     * Otherwise the Actor document is a synthetic (ephemeral) document constructed using the Token's ActorDelta.
      */
     get actor(): InstanceType<ConfiguredDocumentClass<typeof Actor>> | null;
 
@@ -59,35 +43,41 @@ declare global {
     get inCombat(): boolean;
 
     /**
-     * Is the Token currently hidden from player view?
+     * Define a sort order for this TokenDocument.
+     * This controls its rendering order in the PrimaryCanvasGroup relative to siblings at the same elevation.
+     * In the future this will be replaced with a persisted database field for permanent adjustment of token stacking.
+     * In case of ties, Tokens will be sorted above other types of objects.
      */
-    get hidden(): boolean;
+    get sort(): number;
+
+    set sort(value);
+
+    protected override _initialize(options?: any): void;
+    protected override _initialize(): void;
+
+    override prepareBaseData(): void;
+
+    override prepareEmbeddedDocuments(): void;
 
     /**
-     * @param data    - (default: `{}`, unused)
-     * @param options - (default: `{}`, unused)
+     * Prepare detection modes which are available to the Token.
+     * Ensure that every Token has the basic sight detection mode configured.
      */
-    override clone(
-      data?: Parameters<foundry.documents.BaseToken["clone"]>[0],
-      options?: Parameters<foundry.documents.BaseToken["clone"]>[1],
-    ): TemporaryDocument<this>;
-
-    /**
-     * Create a synthetic Actor using a provided Token instance
-     * If the Token data is linked, return the true Actor document
-     * If the Token data is not linked, create a synthetic Actor using the Token's actorData override
-     */
-    getActor(): InstanceType<ConfiguredDocumentClass<typeof Actor>> | null;
+    _prepareDetectionModes(): void;
 
     /**
      * A helper method to retrieve the underlying data behind one of the Token's attribute bars
      * @param barName     - The named bar to retrieve the attribute for
-     * @param alternative - An alternative attribute path to get instead of the default one
      * @returns The attribute displayed on the Token bar, if any
      */
     getBarAttribute(
       barName: string,
-      { alternative }?: { alternative?: string },
+      options?: {
+        /**
+         * An alternative attribute path to get instead of the default one
+         */
+        alternative?: string;
+      },
     ): SingleAttributeBar | ObjectAttributeBar | null;
 
     /**
@@ -97,7 +87,26 @@ declare global {
      *                     (default: `{}`)
      * @returns Whether the Active Effect is now on or off
      */
-    toggleActiveEffect(effectData: StatusEffect, options?: ToggleActiveEffectOptions | undefined): Promise<boolean>;
+    toggleActiveEffect(
+      effectData: StatusEffect,
+      options?: InexactPartial<ToggleActiveEffectOptions> | undefined,
+    ): Promise<boolean>;
+
+    /**
+     * The status effect ID as defined in CONFIG.statusEffects
+     * @param statusId - Does the Token have this status effect?
+     */
+    hasStatusEffect(statusId: string): boolean;
+
+    /**
+     * Convenience method to change a token vision mode.
+     * @param visionMode - The vision mode to apply to this token.
+     * @param defaults   - If the vision mode should be updated with its defaults.
+     */
+    updateVisionMode(
+      visionMode: typeof CONFIG.Canvas.visionModes,
+      defaults?: boolean,
+    ): Promise<ReturnType<this["update"]>>;
 
     /**
      * Redirect updates to a synthetic Token Actor to instead update the tokenData override object.
@@ -112,75 +121,12 @@ declare global {
       options: Parameters<this["update"]>[1],
     ): Promise<[this["actor"]]>;
 
-    override getEmbeddedCollection(embeddedName: "Item"): data.ActorData["items"];
-    getEmbeddedCollection(embeddedName: "ActiveEffect"): data.ActorData["effects"];
-
-    /**
-     * Redirect creation of Documents within a synthetic Token Actor to instead update the tokenData override object.
-     * @param embeddedName - The named embedded Document type being modified
-     * @param data         - The provided initial data with which to create the embedded Documents
-     * @param options      - Provided options which modify the creation request
-     * @returns The created Embedded Document instances
-     */
-    createActorEmbeddedDocuments(
-      embeddedName: "Item",
-      data: Array<ConstructorParameters<ConfiguredDocumentClass<typeof Item>>[0] | Record<string, unknown>>,
-      options: Parameters<this["update"]>[1],
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof Item>>[]>;
-    createActorEmbeddedDocuments(
-      embeddedName: "ActiveEffect",
-      data: Array<ConstructorParameters<ConfiguredDocumentClass<typeof ActiveEffect>>[0] | Record<string, unknown>>,
-      options: Parameters<this["update"]>[1],
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof ActiveEffect>>[]>;
-
-    /**
-     * Redirect updating of Documents within a synthetic Token Actor to instead update the tokenData override object.
-     * @param embeddedName - The named embedded Document type being modified
-     * @param updates      - The provided differential data with which to update the embedded Documents
-     * @param options      - Provided options which modify the update request
-     * @returns The updated Embedded Document instances
-     */
-    updateActorEmbeddedDocuments(
-      embeddedName: "Item",
-      updates: Array<ConstructorParameters<ConfiguredDocumentClass<typeof Item>>[0] | Record<string, unknown>>,
-      options: Parameters<this["update"]>[1],
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof Item>>[]>;
-    updateActorEmbeddedDocuments(
-      embeddedName: "ActiveEffect",
-      updates: Array<ConstructorParameters<ConfiguredDocumentClass<typeof ActiveEffect>>[0] | Record<string, unknown>>,
-      options: Parameters<this["update"]>[1],
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof ActiveEffect>>[]>;
-
-    /**
-     * Redirect deletion of Documents within a synthetic Token Actor to instead update the tokenData override object.
-     * @param embeddedName - The named embedded Document type being deleted
-     * @param ids          - The IDs of Documents to delete
-     * @param options      - Provided options which modify the deletion request
-     * @returns The deleted Embedded Document instances
-     */
-    deleteActorEmbeddedDocuments(
-      embeddedName: "Item",
-      ids: string[],
-      options: Parameters<this["update"]>[1],
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof Item>>[]>;
-    deleteActorEmbeddedDocuments(
-      embeddedName: "ActiveEffect",
-      ids: string[],
-      options: Parameters<this["update"]>[1],
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof ActiveEffect>>[]>;
+    override getEmbeddedCollection(embeddedName: "Actor"): this["actors"];
+    getEmbeddedCollection(embeddedName: "Item"): this["items"];
+    getEmbeddedCollection(embeddedName: "ActiveEffect"): this["effects"];
 
     protected override _preUpdate(
       data: Parameters<foundry.documents.BaseToken["_preUpdate"]>[0],
-      options: DocumentModificationOptions,
-      user: InstanceType<ConfiguredDocumentClass<typeof User>>,
-    ): Promise<void>;
-
-    /**
-     * When the Actor data overrides change for an un-linked Token Actor, simulate the pre-update process.
-     * @internal
-     */
-    protected _preUpdateTokenActor(
-      data: Parameters<foundry.documents.BaseActor["_preUpdate"]>[0],
       options: DocumentModificationOptions,
       user: InstanceType<ConfiguredDocumentClass<typeof User>>,
     ): Promise<void>;
@@ -191,62 +137,152 @@ declare global {
       userId: string,
     ): void;
 
-    /**
-     * When the base Actor for a TokenDocument changes, we may need to update its Actor instance
-     * @param update - (default: `{}`)
-     * @internal
-     */
-    protected _onUpdateBaseActor(
-      update?: Parameters<foundry.documents.BaseActor["_onUpdate"]>[0],
-      options?: Parameters<foundry.data.ActorData["update"]>[1],
+    protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
+
+    protected override _preCreateDescendantDocuments(
+      parent: ClientDocument,
+      collection: string,
+      data: unknown[],
+      options: DocumentModificationOptions,
+      userId: string,
+    ): void;
+
+    protected override _preUpdateDescendantDocuments(
+      parent: ClientDocument,
+      collection: string,
+      changes: unknown[],
+      options: DocumentModificationOptions,
+      userId: string,
+    ): void;
+
+    protected override _preDeleteDescendantDocuments(
+      parent: ClientDocument,
+      collection: string,
+      ids: string[],
+      options: DocumentModificationOptions,
+      userId: string,
+    ): void;
+
+    protected override _onCreateDescendantDocuments(
+      parent: ClientDocument,
+      collection: string,
+      documents: ClientDocument[],
+      data: unknown[],
+      options: DocumentModificationOptions,
+      userId: string,
+    ): void;
+
+    protected override _onUpdateDescendantDocuments(
+      parent: ClientDocument,
+      collection: string,
+      documents: ClientDocument[],
+      changes: unknown[],
+      options: DocumentModificationOptions,
+      userId: string,
+    ): void;
+
+    protected override _onDeleteDescendantDocuments(
+      parent: ClientDocument,
+      collection: string,
+      documents: ClientDocument[],
+      ids: string,
+      options: DocumentModificationOptions,
+      userId: string,
     ): void;
 
     /**
-     * When the Actor data overrides change for an un-linked Token Actor, simulate the post-update process.
-     * @internal
+     * When the base Actor for a TokenDocument changes, we may need to update its Actor instance
      */
-    protected _onUpdateTokenActor(
-      data: Parameters<foundry.documents.BaseActor["_onUpdate"]>[0],
-      options: DocumentModificationOptions,
-      userId: string,
+    protected _onUpdateBaseActor(
+      update?: DeepPartial<ConfiguredActor["_source"]>,
+      options?: DocumentModificationContext,
+    ): void;
+
+    /**
+     * Whenever the token's actor delta changes, or the base actor changes, perform associated refreshes.
+     * @param update  - The update delta.
+     * @param options - The options provided to the update.
+     */
+    protected _onRelatedUpdate(
+      update?: DeepPartial<ConfiguredActor["_source"]>,
+      options?: DocumentModificationContext,
     ): void;
 
     /**
      * Get an Array of attribute choices which could be tracked for Actors in the Combat Tracker
      * @param _path - (default: `[]`)
      */
+    // TODO: There's some very complex handling for non-datamodel Actor system implementations if we want
     static getTrackedAttributes(
-      data?: InstanceType<ConfiguredDocumentClass<typeof Actor>>["data"]["data"],
+      data?: InstanceType<ConfiguredDocumentClass<typeof Actor>>["system"],
       _path?: string[],
-    ): TrackedAttributes;
+    ): TrackedAttributesDescription;
+
+    /**
+     * Retrieve an Array of attribute choices from a plain object.
+     * @param schema - The schema to explore for attributes.
+     */
+    protected static _getTrackedAttributesFromObject(data: object, _path?: string[]): TrackedAttributesDescription;
+
+    /**
+     * Retrieve an Array of attribute choices from a SchemaField.
+     * @param schema - The schema to explore for attributes.
+     */
+    protected static _getTrackedAttributesFromSchema(
+      schema: foundry.data.fields.SchemaField<any>,
+      _path?: string[],
+    ): TrackedAttributesDescription;
+
+    /**
+     * Retrieve any configured attributes for a given Actor type.
+     * @param type - The Actor type.
+     */
+    static _getConfiguredTrackedAttributes(type: string): TrackedAttributesDescription | void;
 
     /**
      * Inspect the Actor data model and identify the set of attributes which could be used for a Token Bar
+     * @param attributes - The tracked attributes which can be chosen from
+     * @returns A nested object of attribute choices to display
      */
-    static getTrackedAttributeChoices(attributes?: TrackedAttributes): Record<string, string[]>;
+    static getTrackedAttributeChoices(attributes?: TrackedAttributesDescription): Record<string, string[]>;
+
+    /**
+     * @deprecated since v11
+     * @remarks `"TokenDocument#getActor has been deprecated. Please use the`
+     * `TokenDocument#actor getter to retrieve the Actor instance that the TokenDocument represents, or use`
+     * `TokenDocument#delta#apply to generate a new synthetic Actor instance."`
+     */
+    getActor(): ConfiguredActor;
+
+    /**
+     * @deprecated since v11
+     */
+    get actorData(): this["delta"]["_source"];
+
+    /**
+     * @deprecated since v11
+     */
+    set actorData(actorData);
   }
 
-  /**
-   * An extended Document definition used specifically
-   * This ensures that the PrototypeTokenData schema is used instead of the standard TokenData.
-   * This exists specifically for prototype Token configuration in the TokenConfig app and should not be used otherwise.
-   * @internal
-   * @remarks The types for this are incorrect, in particular everything related to the data should use
-   * {@link foundry.data.PrototypeTokenData} instead of {@link foundry.data.TokenData}. However, with the current approach
-   * to type documents, we don't see a way to do this. This class is just added for reference. As the documentation above
-   * says, don't use it (there really shouldn't be a need to do so).
-   */
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  class PrototypeTokenDocument extends TokenDocument {
-    static get schema(): typeof foundry.data.PrototypeTokenData;
+  type TrackedAttributesDescription = {
+    /** A list of property path arrays to attributes with both a value and a max property. */
+    bar: string[][];
+    /** A list of property path arrays to attributes that have only a value property. */
+    value: string[][];
+  };
 
-    override update(
-      data?: DeepPartial<PrototypeTokenDataConstructorData> | undefined,
-      context?: (DocumentModificationContext & foundry.utils.MergeObjectOptions) | undefined,
-    ): Promise<this | undefined>;
+  namespace foundry {
+    namespace data {
+      interface PrototypeToken {
+        getBarAttribute: TokenDocument["getBarAttribute"];
+      }
+    }
   }
 }
+
+type ConfiguredActor = InstanceType<ConfiguredDocumentClassForName<"Actor">>;
+type ConfiguredActorDelta = InstanceType<ConfiguredDocumentClassForName<"ActorDelta">>;
 
 interface SingleAttributeBar {
   type: "value";
@@ -263,20 +299,15 @@ interface ObjectAttributeBar {
   editable: boolean;
 }
 
-interface TrackedAttributes {
-  bar: string[][];
-  value: string[][];
-}
-
 interface ToggleActiveEffectOptions {
   /**
    * Should the Active Effect icon be displayed as an overlay on the token?
    * @defaultValue `false`
    */
-  overlay?: boolean | undefined;
+  overlay: boolean;
 
   /** Force a certain active state for the effect. */
-  active?: boolean | undefined;
+  active: boolean;
 }
 
 export type StatusEffect = ActiveEffectDataConstructorData & { id: string };
