@@ -1851,6 +1851,93 @@ declare class EmbeddedDocumentField {
   // TODO: Type this.
 }
 
+/**
+ * A subclass of [StringField]{@link StringField} which provides the primary _id for a Document.
+ * The field may be initially null, but it must be non-null when it is saved to the database.
+ * @typeParam Options         - the options of the DocumentIdField instance
+ * @typeParam AssignmentType  - the type of the allowed assignment values of the DocumentIdField
+ * @typeParam InitializedType - the type of the initialized values of the DocumentIdField
+ * @typeParam PersistedType   - the type of the persisted values of the DocumentIdField
+ * @remarks
+ * Defaults:
+ * AssignmentType: `string | Document.Any | null | undefined`
+ * InitializedType: `string | null`
+ * PersistedType: `string | null`
+ * InitialValue: `null`
+ */
+declare class DocumentIdField<
+  Options extends StringFieldOptions = DocumentIdField.DefaultOptions,
+  AssignmentType = DocumentIdField.AssignmentType<Options>,
+  InitializedType = DocumentIdField.InitializedType<Options>,
+  PersistedType extends string | null | undefined = DocumentIdField.InitializedType<Options>,
+> extends StringField<Options, AssignmentType, InitializedType, PersistedType> {
+  /** @defaultValue `true` */
+  override required: boolean;
+
+  /** @defaultValue `false` */
+  override blank: boolean;
+
+  /** @defaultValue `true` */
+  override nullable: boolean;
+
+  /** @defaultValue `null` */
+  override initial: DataFieldOptions.InitialType<InitializedType>;
+
+  /** @defaultValue `true` */
+  override readonly: boolean;
+
+  /** @defaultValue `"is not a valid Document ID string"` */
+  override validationError: string;
+
+  protected static override get _defaults(): StringFieldOptions;
+
+  protected override _cast(value: AssignmentType): InitializedType;
+
+  protected override _validateType(
+    value: InitializedType,
+    options?: DataField.ValidationOptions<DataField.Any> | undefined,
+  ): boolean | void;
+}
+
+declare namespace DocumentIdField {
+  /** The type of the default options for the {@link DocumentIdField} class. */
+  type DefaultOptions = SimpleMerge<
+    StringField.DefaultOptions,
+    {
+      required: true;
+      blank: false;
+      nullable: true;
+      initial: null;
+      readonly: true;
+      validationError: "is not a valid Document ID string";
+    }
+  >;
+
+  /**
+   * A helper type for the given options type merged into the default options of the DocumentIdField class.
+   * @typeParam Options - the options that override the default options
+   */
+  type MergedOptions<Options extends StringFieldOptions> = SimpleMerge<DefaultOptions, Options>;
+
+  /**
+   * A shorthand for the assignment type of a StringField class.
+   * @typeParam Options - the options that override the default options
+   */
+  type AssignmentType<Options extends StringFieldOptions> = DataField.DerivedAssignmentType<
+    string | Document.Any,
+    MergedOptions<Options>
+  >;
+
+  /**
+   * A shorthand for the initialized type of a StringField class.
+   * @typeParam Options - the options that override the default options
+   */
+  type InitializedType<Options extends StringFieldOptions> = DataField.DerivedInitializedType<
+    string,
+    MergedOptions<Options>
+  >;
+}
+
 declare class TypeDataField {
   // TODO: Type this.
 }
@@ -1897,6 +1984,7 @@ export {
   ArrayField,
   BooleanField,
   DataField,
+  DocumentIdField,
   EmbeddedCollectionField,
   EmbeddedCollectionDeltaField,
   EmbeddedDataField,
