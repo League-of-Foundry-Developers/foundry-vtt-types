@@ -111,21 +111,21 @@ declare global {
      *                  default `{}`
      * @returns A promise which resolves to the updated Combat document once updates are complete.
      */
-    rollInitiative(ids: string | string[], options?: InitiativeOptions): Promise<this>;
+    rollInitiative(ids: string | string[], options?: Combat.InitiativeOptions): Promise<this>;
 
     /**
      * Roll initiative for all combatants which have not already rolled
      * @param options - Additional options forwarded to the Combat.rollInitiative method
      *                  default `{}`
      */
-    rollAll(options?: InitiativeOptions): Promise<this>;
+    rollAll(options?: Combat.InitiativeOptions): Promise<this>;
 
     /**
      * Roll initiative for all non-player actors who have not already rolled
      * @param options - Additional options forwarded to the Combat.rollInitiative method
      *                  default `{}`
      */
-    rollNPC(options?: InitiativeOptions): Promise<this>;
+    rollNPC(options?: Combat.InitiativeOptions): Promise<this>;
 
     /**
      * Assign initiative for a single Combatant within the Combat encounter.
@@ -258,24 +258,25 @@ declare global {
      */
     protected _onStartTurn(combatant: Combatant): Promise<void>;
   }
-}
+  namespace Combat {
+    interface InitiativeOptions {
+      /**
+       * A non-default initiative formula to roll. Otherwise the system default is used.
+       * @defaultValue `null`
+       */
+      formula?: string | null;
 
-interface InitiativeOptions {
-  /**
-   * A non-default initiative formula to roll. Otherwise the system default is used.
-   * @defaultValue `null`
-   */
-  formula?: string | null;
+      /**
+       * Update the Combat turn after adding new initiative scores to keep the turn on the same Combatant.
+       * @defaultValue `true`
+       */
+      updateTurn?: boolean;
 
-  /**
-   * Update the Combat turn after adding new initiative scores to keep the turn on the same Combatant.
-   * @defaultValue `true`
-   */
-  updateTurn?: boolean;
-
-  /**
-   * Additional options with which to customize created Chat Messages
-   * @defaultValue `{}`
-   */
-  messageOptions?: foundry.documents.BaseChatMessage.ConstructorData;
+      /**
+       * Additional options with which to customize created Chat Messages
+       * @defaultValue `{}`
+       */
+      messageOptions?: foundry.documents.BaseChatMessage.ConstructorData;
+    }
+  }
 }
