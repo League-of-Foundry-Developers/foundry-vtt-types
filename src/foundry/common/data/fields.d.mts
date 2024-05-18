@@ -2571,6 +2571,71 @@ declare namespace JSONField {
   >;
 }
 
+/**
+ * A subclass of [StringField]{@link StringField} which contains a sanitized HTML string.
+ * This class does not override any StringField behaviors, but is used by the server-side to identify fields which
+ * require sanitization of user input.
+ * @typeParam Options         - the options of the HTMLField instance
+ * @typeParam AssignmentType  - the type of the allowed assignment values of the HTMLField
+ * @typeParam InitializedType - the type of the initialized values of the HTMLField
+ * @typeParam PersistedType   - the type of the persisted values of the HTMLField
+ * @remarks
+ * Defaults:
+ * AssignmentType: `string | null | undefined`
+ * InitializedType: `string`
+ * PersistedType: `string`
+ * InitialValue: `""`
+ */
+declare class HTMLField<
+  Options extends StringFieldOptions = HTMLField.DefaultOptions,
+  AssignmentType = HTMLField.AssignmentType<Options>,
+  InitializedType = HTMLField.InitializedType<Options>,
+  PersistedType extends string | null | undefined = HTMLField.InitializedType<Options>,
+> extends StringField<Options, AssignmentType, InitializedType, PersistedType> {
+  /** @defaultValue `true` */
+  override required: boolean;
+
+  /** @defaultValue `true` */
+  override blank: boolean;
+
+  protected static override get _defaults(): StringFieldOptions;
+}
+
+declare namespace HTMLField {
+  /** The type of the default options for the {@link HTMLField} class. */
+  type DefaultOptions = SimpleMerge<
+    StringField.DefaultOptions,
+    {
+      required: true;
+      blank: true;
+    }
+  >;
+
+  /**
+   * A helper type for the given options type merged into the default options of the HTMLField class.
+   * @typeParam Options - the options that override the default options
+   */
+  type MergedOptions<Options extends StringFieldOptions> = SimpleMerge<DefaultOptions, Options>;
+
+  /**
+   * A shorthand for the assignment type of a HTMLField class.
+   * @typeParam Options - the options that override the default options
+   */
+  type AssignmentType<Options extends StringFieldOptions> = DataField.DerivedAssignmentType<
+    string,
+    MergedOptions<Options>
+  >;
+
+  /**
+   * A shorthand for the initialized type of a HTMLField class.
+   * @typeParam Options - the options that override the default options
+   */
+  type InitializedType<Options extends StringFieldOptions> = DataField.DerivedInitializedType<
+    string,
+    MergedOptions<Options>
+  >;
+}
+
 declare class TypeDataField {
   // TODO: Type this.
 }
@@ -2628,6 +2693,7 @@ export {
   EmbeddedDocumentField,
   FilePathField,
   ForeignDocumentField,
+  HTMLField,
   JSONField,
   ModelValidationError,
   NumberField,
