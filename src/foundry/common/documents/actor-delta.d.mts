@@ -13,7 +13,7 @@ interface BaseActorDelta<TypeName extends documents.BaseActor.TypeNames = docume
   extends BaseActorDelta.Properties<TypeName> {}
 declare class BaseActorDelta<
   TypeName extends documents.BaseActor.TypeNames = documents.BaseActor.TypeNames,
-> extends Document<documents.BaseActor.SchemaField<TypeName>, documents.BaseActor.Metadata> {
+> extends Document<documents.BaseActor.SchemaField<TypeName>, documents.BaseActorDelta.Metadata> {
   constructor(data: BaseActorDelta.ConstructorData<TypeName>, context?: DocumentConstructionContext);
 
   override _source: BaseActorDelta.Source<TypeName>;

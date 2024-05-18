@@ -810,6 +810,7 @@ declare namespace Document {
 
   type TypeName =
     | "Actor"
+    | "ActorDelta"
     | "Adventure"
     | "Cards"
     | "ChatMessage"
