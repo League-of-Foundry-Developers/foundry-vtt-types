@@ -2484,6 +2484,93 @@ declare namespace DocumentOwnershipField {
   >;
 }
 
+/**
+ * A special [StringField]{@link StringField} which contains serialized JSON data.
+ * @typeParam Options         - the options of the JSONField instance
+ * @typeParam AssignmentType  - the type of the allowed assignment values of the JSONField
+ * @typeParam InitializedType - the type of the initialized values of the JSONField
+ * @typeParam PersistedType   - the type of the persisted values of the JSONField
+ * @remarks
+ * Defaults:
+ * AssignmentType: `string | null | undefined`
+ * InitializedType: `object | undefined`
+ * PersistedType: `string | undefined`
+ * InitialValue: `undefined`
+ */
+declare class JSONField<
+  Options extends StringFieldOptions = JSONField.DefaultOptions,
+  AssignmentType = JSONField.AssignmentType<Options>,
+  InitializedType = JSONField.InitializedType<Options>,
+  PersistedType extends string | null | undefined = JSONField.PersistedType<Options>,
+> extends StringField<Options, AssignmentType, InitializedType, PersistedType> {
+  /** @defaultValue `false` */
+  override blank: boolean;
+
+  /** @defaultValue `undefined` */
+  override initial: DataFieldOptions.InitialType<InitializedType>;
+
+  /** @defaultValue `"is not a valid JSON string"` */
+  override validationError: string;
+
+  protected static override get _defaults(): StringFieldOptions;
+
+  override clean(value: AssignmentType, options?: DataField.CleanOptions | undefined): InitializedType;
+
+  protected override _validateType(
+    value: InitializedType,
+    options?: DataField.ValidationOptions<DataField.Any> | undefined,
+  ): boolean | void;
+
+  override initialize(value: PersistedType, model: DataModel.Any): InitializedType | (() => InitializedType | null);
+
+  override toObject(value: InitializedType): PersistedType;
+}
+
+declare namespace JSONField {
+  /** The type of the default options for the {@link JSONField} class. */
+  type DefaultOptions = SimpleMerge<
+    StringField.DefaultOptions,
+    {
+      blank: false;
+      initial: undefined;
+      validationError: "is not a valid JSON string";
+    }
+  >;
+
+  /**
+   * A helper type for the given options type merged into the default options of the JSONField class.
+   * @typeParam Options - the options that override the default options
+   */
+  type MergedOptions<Options extends StringFieldOptions> = SimpleMerge<DefaultOptions, Options>;
+
+  /**
+   * A shorthand for the assignment type of a JSONField class.
+   * @typeParam Options - the options that override the default options
+   */
+  type AssignmentType<Options extends StringFieldOptions> = DataField.DerivedAssignmentType<
+    string,
+    MergedOptions<Options>
+  >;
+
+  /**
+   * A shorthand for the initialized type of a JSONField class.
+   * @typeParam Options - the options that override the default options
+   */
+  type InitializedType<Options extends StringFieldOptions> = DataField.DerivedInitializedType<
+    object,
+    MergedOptions<Options>
+  >;
+
+  /**
+   * A shorthand for the persisted type of a JSONField class.
+   * @typeParam Options - the options that override the default options
+   */
+  type PersistedType<Options extends StringFieldOptions> = DataField.DerivedInitializedType<
+    string,
+    MergedOptions<Options>
+  >;
+}
+
 declare class TypeDataField {
   // TODO: Type this.
 }
@@ -2541,6 +2628,7 @@ export {
   EmbeddedDocumentField,
   FilePathField,
   ForeignDocumentField,
+  JSONField,
   ModelValidationError,
   NumberField,
   ObjectField,
