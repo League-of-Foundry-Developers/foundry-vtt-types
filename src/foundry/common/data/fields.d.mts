@@ -3,6 +3,7 @@ import type { ConstructorOf, SimpleMerge, ValueOf } from "../../../types/utils.d
 import type { DataModel } from "../abstract/data.mts";
 import type Document from "../abstract/document.mts";
 import type { EmbeddedCollection } from "../abstract/module.d.mts";
+import type { DOCUMENT_OWNERSHIP_LEVELS } from "../constants.d.mts";
 import type { CONST } from "../module.d.mts";
 import type { DataModelValidationFailure } from "./validation-failure.mts";
 
@@ -2409,6 +2410,80 @@ declare namespace AlphaField {
   >;
 }
 
+/**
+ * A special [ObjectField]{@link ObjectField} which captures a mapping of User IDs to Document permission levels.
+ * @typeParam Options         - the options of the DocumentOwnershipField instance
+ * @typeParam AssignmentType  - the type of the allowed assignment values of the DocumentOwnershipField
+ * @typeParam InitializedType - the type of the initialized values of the DocumentOwnershipField
+ * @typeParam PersistedType   - the type of the persisted values of the DocumentOwnershipField
+ * @remarks
+ * Defaults:
+ * AssignmentType: `Record<string, DOCUMENT_OWNERSHIP_LEVELS> | null | undefined`
+ * InitializedType: `Record<string, DOCUMENT_OWNERSHIP_LEVELS>`
+ * PersistedType: `Record<string, DOCUMENT_OWNERSHIP_LEVELS>`
+ * InitialValue: `{ default: DOCUMENT_OWNERSHIP_LEVELS.NONE }`
+ */
+declare class DocumentOwnershipField<
+  Options extends DocumentOwnershipField.Options = DocumentOwnershipField.DefaultOptions,
+  AssignmentType = DocumentOwnershipField.AssignmentType<Options>,
+  InitializedType = DocumentOwnershipField.InitializedType<Options>,
+  PersistedType extends
+    | Record<string, DOCUMENT_OWNERSHIP_LEVELS>
+    | null
+    | undefined = DocumentOwnershipField.InitializedType<Options>,
+> extends ObjectField<Options, AssignmentType, InitializedType, PersistedType> {
+  /** @defaultValue `{"default": DOCUMENT_OWNERSHIP_LEVELS.NONE}` */
+  override initial: DataFieldOptions.InitialType<InitializedType>;
+
+  /** @defaultValue `"is not a mapping of user IDs and document permission levels"` */
+  override validationError: string;
+
+  protected static override get _defaults(): DocumentOwnershipField.Options;
+
+  protected override _validateType(
+    value: InitializedType,
+    options?: DataField.ValidationOptions<DataField.Any> | undefined,
+  ): boolean | void;
+}
+
+declare namespace DocumentOwnershipField {
+  /** A shorthand for the options of a DocumentOwnershipField class. */
+  type Options = DataFieldOptions<Record<string, DOCUMENT_OWNERSHIP_LEVELS>>;
+
+  /** The type of the default options for the {@link DocumentOwnershipField} class. */
+  type DefaultOptions = SimpleMerge<
+    ObjectField.DefaultOptions,
+    {
+      initial: Record<string, DOCUMENT_OWNERSHIP_LEVELS>;
+      validationError: "is not a mapping of user IDs and document permission levels";
+    }
+  >;
+
+  /**
+   * A helper type for the given options type merged into the default options of the ObjectField class.
+   * @typeParam Opts - the options that override the default options
+   */
+  type MergedOptions<Opts extends Options> = SimpleMerge<DefaultOptions, Opts>;
+
+  /**
+   * A shorthand for the assignment type of a ObjectField class.
+   * @typeParam Opts - the options that override the default options
+   */
+  type AssignmentType<Opts extends Options> = DataField.DerivedAssignmentType<
+    Record<string, DOCUMENT_OWNERSHIP_LEVELS>,
+    MergedOptions<Opts>
+  >;
+
+  /**
+   * A shorthand for the initialized type of a ObjectField class.
+   * @typeParam Opts - the options that override the default options
+   */
+  type InitializedType<Opts extends Options> = DataField.DerivedInitializedType<
+    Record<string, DOCUMENT_OWNERSHIP_LEVELS>,
+    MergedOptions<Opts>
+  >;
+}
+
 declare class TypeDataField {
   // TODO: Type this.
 }
@@ -2459,6 +2534,7 @@ export {
   ColorField,
   DataField,
   DocumentIdField,
+  DocumentOwnershipField,
   EmbeddedCollectionDeltaField,
   EmbeddedCollectionField,
   EmbeddedDataField,
