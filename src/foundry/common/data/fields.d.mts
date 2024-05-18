@@ -2330,6 +2330,85 @@ declare namespace AngleField {
   >;
 }
 
+/**
+ * A special [NumberField]{@link NumberField} represents a number between 0 and 1.
+ * @typeParam Options         - the options of the AlphaField instance
+ * @typeParam AssignmentType  - the type of the allowed assignment values of the AlphaField
+ * @typeParam InitializedType - the type of the initialized values of the AlphaField
+ * @typeParam PersistedType   - the type of the persisted values of the AlphaField
+ * @remarks
+ * Defaults:
+ * AssignmentType: `number | null | undefined`
+ * InitializedType: `number`
+ * PersistedType: `number`
+ * InitialValue: `1`
+ */
+declare class AlphaField<
+  Options extends NumberFieldOptions = AlphaField.DefaultOptions,
+  AssignmentType = AlphaField.AssignmentType<Options>,
+  InitializedType = AlphaField.InitializedType<Options>,
+  PersistedType extends number | null | undefined = AlphaField.InitializedType<Options>,
+> extends NumberField<Options, AssignmentType, InitializedType, PersistedType> {
+  /** @defaultValue `true` */
+  override required: boolean;
+
+  /** @defaultValue `false` */
+  override nullable: boolean;
+
+  /** @defaultValue `1` */
+  override initial: DataFieldOptions.InitialType<InitializedType>;
+
+  /** @defaultValue `0` */
+  override min: number | undefined;
+
+  /** @defaultValue `1` */
+  override max: number | undefined;
+
+  /** @defaultValue `"is not a number between 0 and 1"` */
+  override validationError: string;
+
+  protected static override get _defaults(): NumberFieldOptions;
+}
+
+declare namespace AlphaField {
+  /** The type of the default options for the {@link AlphaField} class. */
+  type DefaultOptions = SimpleMerge<
+    NumberField.DefaultOptions,
+    {
+      required: true;
+      nullable: false;
+      initial: 1;
+      min: 0;
+      max: 1;
+      validationError: "is not a number between 0 and 1";
+    }
+  >;
+
+  /**
+   * A helper type for the given options type merged into the default options of the AlphaField class.
+   * @typeParam Options - the options that override the default options
+   */
+  type MergedOptions<Options extends NumberFieldOptions> = SimpleMerge<DefaultOptions, Options>;
+
+  /**
+   * A shorthand for the assignment type of a AlphaField class.
+   * @typeParam Options - the options that override the default options
+   */
+  type AssignmentType<Options extends NumberFieldOptions> = DataField.DerivedAssignmentType<
+    number,
+    MergedOptions<Options>
+  >;
+
+  /**
+   * A shorthand for the initialized type of a AlphaField class.
+   * @typeParam Options - the options that override the default options
+   */
+  type InitializedType<Options extends NumberFieldOptions> = DataField.DerivedInitializedType<
+    number,
+    MergedOptions<Options>
+  >;
+}
+
 declare class TypeDataField {
   // TODO: Type this.
 }
@@ -2373,6 +2452,7 @@ export function embeddedCollectionField(document, options?);
 export function field(field, options?);
 
 export {
+  AlphaField,
   AngleField,
   ArrayField,
   BooleanField,
