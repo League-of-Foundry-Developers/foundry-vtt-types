@@ -181,6 +181,7 @@ declare abstract class Document<
    * @param context - Additional context options passed to the create method
    * @returns The cloned Document instance
    */
+  // TODO: Use Save as part of generic to decide if it returns a promise or not
   override clone(
     data?: fields.SchemaField.AssignmentType<SchemaField["fields"], {}>,
     {

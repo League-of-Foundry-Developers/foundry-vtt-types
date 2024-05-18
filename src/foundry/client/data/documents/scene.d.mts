@@ -1,97 +1,43 @@
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
-import type { DeepPartial, TemporaryDocument } from "../../../../types/utils.d.mts";
+import type { DeepPartial, InexactPartial, TemporaryDocument } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
-import type {
-  AmbientLightDataConstructorData,
-  AmbientLightDataSource,
-} from "../../../common/data/data.mjs/ambientLightData.d.mts";
-import type {
-  AmbientSoundDataConstructorData,
-  AmbientSoundDataSource,
-} from "../../../common/data/data.mjs/ambientSoundData.d.mts";
-import type { DrawingDataConstructorData, DrawingDataSource } from "../../../common/data/data.mjs/drawingData.d.mts";
-import type {
-  MeasuredTemplateDataConstructorData,
-  MeasuredTemplateDataSource,
-} from "../../../common/data/data.mjs/measuredTemplateData.d.mts";
-import type { NoteDataConstructorData, NoteDataSource } from "../../../common/data/data.mjs/noteData.d.mts";
-import type { SceneDataConstructorData } from "../../../common/data/data.mjs/sceneData.d.mts";
-import type { TileDataConstructorData, TileDataSource } from "../../../common/data/data.mjs/tileData.d.mts";
-import type { TokenDataConstructorData, TokenDataSource } from "../../../common/data/data.mjs/tokenData.d.mts";
-import type { WallDataConstructorData, WallDataSource } from "../../../common/data/data.mjs/wallData.d.mts";
 
 declare global {
   /**
-   * The client-side Scene document which extends the common BaseScene abstraction.
-   * Each Scene document contains SceneData which defines its data schema.
+   * The client-side Scene document which extends the common BaseScene model.
    *
-   * @see {@link data.SceneData}              The Scene data schema
    * @see {@link documents.Scenes}            The world-level collection of Scene documents
    * @see {@link applications.SceneConfig}    The Scene configuration application
    *
    */
   class Scene extends ClientDocumentMixin(foundry.documents.BaseScene) {
     /**
-     * @param data - Initial data provided to construct the Scene document
-     */
-    constructor(
-      data: ConstructorParameters<typeof foundry.documents.BaseScene>[0],
-      context?: ConstructorParameters<typeof foundry.documents.BaseScene>[1],
-    );
-
-    /**
-     * Determine the canvas dimensions this Scene would occupy, if rendered
-     * @defaultValue `{}`
-     */
-    dimensions: ReturnType<this["getDimensions"]> | Record<string, never>;
-
-    /**
-     * Track whether the scene is the active view
-     */
-    protected _view: this["data"]["active"];
-
-    /**
      * Track the viewed position of each scene (while in memory only, not persisted)
      * When switching back to a previously viewed scene, we can automatically pan to the previous position.
      * @defaultValue `{}`
      * @remarks This is intentionally public because it is used in Canvas._initializeCanvasPosition() and Canvas.pan()
      */
-    _viewPosition: { x: number; y: number; scale: number } | {};
+    _viewPosition: CanvasViewPosition;
 
     /**
-     * A convenience accessor for whether the Scene is currently active
+     * Track whether the scene is the active view
      */
-    get active(): this["data"]["active"];
+    protected _view: this["active"];
 
     /**
-     * A convenience accessor for the background image of the Scene
+     * Determine the canvas dimensions this Scene would occupy, if rendered
+     * @defaultValue `{}`
      */
-    get img(): this["data"]["img"];
+    dimensions: this["dimensions"];
 
     /**
      * Provide a thumbnail image path used to represent this document.
      */
-    get thumbnail(): this["data"]["thumb"];
+    get thumbnail(): this["thumb"];
 
     /**
      * A convenience accessor for whether the Scene is currently viewed
      */
     get isView(): boolean;
-
-    /**
-     * A reference to the JournalEntry document associated with this Scene, or null
-     */
-    get journal(): InstanceType<ConfiguredDocumentClass<typeof JournalEntry>> | null;
-
-    /**
-     * A reference to the Playlist document for this Scene, or null
-     */
-    get playlist(): InstanceType<ConfiguredDocumentClass<typeof Playlist>> | null;
-
-    /**
-     * A reference to the PlaylistSound document which should automatically play for this Scene, if any
-     */
-    get playlistSound(): InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BasePlaylistSound>> | null;
 
     /**
      * Set this scene as currently active
@@ -109,9 +55,11 @@ declare global {
      * @param options    - (default: `{}`)
      */
     override clone(
-      createData?: DeepPartial<SceneDataConstructorData | (SceneDataConstructorData & Record<string, unknown>)>,
+      createData?: foundry.documents.BaseScene.ConstructorData,
       options?: { save?: boolean; keepId?: boolean },
     ): TemporaryDocument<this> | Promise<TemporaryDocument<this | undefined>>;
+
+    override reset(): void;
 
     override prepareBaseData(): void;
 
@@ -122,26 +70,31 @@ declare global {
      */
     getDimensions(): SceneDimensions;
 
+    override _onClickDocumentLink(event: MouseEvent): unknown;
+
     protected override _preCreate(
-      data: SceneDataConstructorData,
+      data: foundry.documents.BaseScene.ConstructorData,
       options: DocumentModificationOptions,
       user: foundry.documents.BaseUser,
     ): Promise<void>;
 
-    protected override _onCreate(
-      data: foundry.data.SceneData["_source"],
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
+    protected override _onCreate(data: Scene["_source"], options: DocumentModificationOptions, userId: string): void;
 
     protected override _preUpdate(
-      changed: DeepPartial<SceneDataConstructorData>,
+      changed: foundry.documents.BaseScene.ConstructorData,
       options: DocumentModificationOptions,
       user: foundry.documents.BaseUser,
     ): Promise<void>;
 
+    /**
+     * Handle repositioning of placed objects when the Scene dimensions change
+     */
+    protected _repositionObject(
+      sceneUpdateData: foundry.documents.BaseScene.ConstructorData,
+    ): foundry.documents.BaseScene.ConstructorData;
+
     protected override _onUpdate(
-      changed: DeepPartial<foundry.data.SceneData["_source"]> & Record<string, unknown>,
+      changed: DeepPartial<Scene["_source"]> & Record<string, unknown>,
       options: DocumentModificationOptions,
       userId: string,
     ): void;
@@ -157,289 +110,46 @@ declare global {
      * Handle Scene activation workflow if the active state is changed to true
      * @param active - Is the scene now active?
      */
-    protected _onActivate(active: boolean): ReturnType<this["view"]> | ReturnType<Canvas["draw"]> | void;
+    protected _onActivate(active: boolean): ReturnType<this["view"]> | ReturnType<Canvas["draw"]>;
 
-    override _preCreateEmbeddedDocuments(
-      embeddedName: string,
-      result: DrawingDataConstructorData[],
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-    _preCreateEmbeddedDocuments(
-      embeddedName: string,
-      result: TokenDataConstructorData[],
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-    _preCreateEmbeddedDocuments(
-      embeddedName: string,
-      result: AmbientLightDataConstructorData[],
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-    _preCreateEmbeddedDocuments(
-      embeddedName: string,
-      result: NoteDataConstructorData[],
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-    _preCreateEmbeddedDocuments(
-      embeddedName: string,
-      result: AmbientSoundDataConstructorData[],
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-    _preCreateEmbeddedDocuments(
-      embeddedName: string,
-      result: MeasuredTemplateDataConstructorData[],
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-    _preCreateEmbeddedDocuments(
-      embeddedName: string,
-      result: TileDataConstructorData[],
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-    _preCreateEmbeddedDocuments(
-      embeddedName: string,
-      result: WallDataConstructorData[],
+    override _preCreateDescendantDocuments(
+      parent: ClientDocument,
+      collection: string,
+      data: unknown[],
       options: DocumentModificationOptions,
       userId: string,
     ): void;
 
-    override _onCreateEmbeddedDocuments(
-      embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof DrawingDocument>>[],
-      result: DeepPartial<DrawingDataSource>[],
-      options: DocumentModificationContext,
-      userId: string,
-    ): void;
-    _onCreateEmbeddedDocuments(
-      embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>[],
-      result: DeepPartial<TokenDataSource>[],
-      options: DocumentModificationContext,
-      userId: string,
-    ): void;
-    _onCreateEmbeddedDocuments(
-      embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof AmbientLightDocument>>[],
-      result: DeepPartial<AmbientLightDataSource>[],
-      options: DocumentModificationContext,
-      userId: string,
-    ): void;
-    _onCreateEmbeddedDocuments(
-      embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof NoteDocument>>[],
-      result: DeepPartial<NoteDataSource>[],
-      options: DocumentModificationContext,
-      userId: string,
-    ): void;
-    _onCreateEmbeddedDocuments(
-      embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof AmbientSoundDocument>>[],
-      result: DeepPartial<AmbientSoundDataSource>[],
-      options: DocumentModificationContext,
-      userId: string,
-    ): void;
-    _onCreateEmbeddedDocuments(
-      embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof MeasuredTemplateDocument>>[],
-      result: DeepPartial<MeasuredTemplateDataSource>[],
-      options: DocumentModificationContext,
-      userId: string,
-    ): void;
-    _onCreateEmbeddedDocuments(
-      embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof TileDocument>>[],
-      result: DeepPartial<TileDataSource>[],
-      options: DocumentModificationContext,
-      userId: string,
-    ): void;
-    _onCreateEmbeddedDocuments(
-      embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof WallDocument>>[],
-      result: DeepPartial<WallDataSource>[],
-      options: DocumentModificationContext,
+    override _preUpdateDescendantDocuments(
+      parent: ClientDocument,
+      collection: string,
+      changes: unknown[],
+      options: DocumentModificationOptions,
       userId: string,
     ): void;
 
-    override _preUpdateEmbeddedDocuments(
-      embeddedName: string,
-      result: DeepPartial<DrawingDataSource>[],
-      options: DocumentModificationContext,
-      userId: string,
-    ): void;
-    _preUpdateEmbeddedDocuments(
-      embeddedName: string,
-      result: DeepPartial<TokenDataSource>[],
-      options: DocumentModificationContext,
-      userId: string,
-    ): void;
-    _preUpdateEmbeddedDocuments(
-      embeddedName: string,
-      result: DeepPartial<AmbientLightDataSource>[],
-      options: DocumentModificationContext,
-      userId: string,
-    ): void;
-    _preUpdateEmbeddedDocuments(
-      embeddedName: string,
-      result: DeepPartial<NoteDataSource>[],
-      options: DocumentModificationContext,
-      userId: string,
-    ): void;
-    _preUpdateEmbeddedDocuments(
-      embeddedName: string,
-      result: DeepPartial<AmbientSoundDataSource>[],
-      options: DocumentModificationContext,
-      userId: string,
-    ): void;
-    _preUpdateEmbeddedDocuments(
-      embeddedName: string,
-      result: DeepPartial<MeasuredTemplateDataSource>[],
-      options: DocumentModificationContext,
-      userId: string,
-    ): void;
-    _preUpdateEmbeddedDocuments(
-      embeddedName: string,
-      result: DeepPartial<TileDataSource>[],
-      options: DocumentModificationContext,
-      userId: string,
-    ): void;
-    _preUpdateEmbeddedDocuments(
-      embeddedName: string,
-      result: DeepPartial<WallDataSource>[],
-      options: DocumentModificationContext,
+    override _preDeleteDescendantDocuments(
+      parent: ClientDocument,
+      collection: string,
+      ids: string[],
+      options: DocumentModificationOptions,
       userId: string,
     ): void;
 
-    override _onUpdateEmbeddedDocuments(
-      embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof DrawingDocument>>[],
-      result: DeepPartial<DrawingDataSource>[],
-      options: DocumentModificationContext,
-      userId: string,
-    ): void;
-    _onUpdateEmbeddedDocuments(
-      embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>[],
-      result: DeepPartial<TokenDataSource>[],
-      options: DocumentModificationContext,
-      userId: string,
-    ): void;
-    _onUpdateEmbeddedDocuments(
-      embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof AmbientLightDocument>>[],
-      result: DeepPartial<AmbientLightDataSource>[],
-      options: DocumentModificationContext,
-      userId: string,
-    ): void;
-    _onUpdateEmbeddedDocuments(
-      embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof NoteDocument>>[],
-      result: DeepPartial<NoteDataSource>[],
-      options: DocumentModificationContext,
-      userId: string,
-    ): void;
-    _onUpdateEmbeddedDocuments(
-      embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof AmbientSoundDocument>>[],
-      result: DeepPartial<AmbientSoundDataSource>[],
-      options: DocumentModificationContext,
-      userId: string,
-    ): void;
-    _onUpdateEmbeddedDocuments(
-      embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof MeasuredTemplateDocument>>[],
-      result: DeepPartial<MeasuredTemplateDataSource>[],
-      options: DocumentModificationContext,
-      userId: string,
-    ): void;
-    _onUpdateEmbeddedDocuments(
-      embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof TileDocument>>[],
-      result: DeepPartial<TileDataSource>[],
-      options: DocumentModificationContext,
-      userId: string,
-    ): void;
-    _onUpdateEmbeddedDocuments(
-      embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof WallDocument>>[],
-      result: DeepPartial<WallDataSource>[],
-      options: DocumentModificationContext,
-      userId: string,
-    ): void;
-
-    override _preDeleteEmbeddedDocuments(
-      embeddedName: string,
-      result: string[],
-      options: DocumentModificationContext,
-      userId: string,
-    ): void;
-
-    override _onDeleteEmbeddedDocuments(
-      embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof DrawingDocument>>[],
-      result: string[],
-      options: DocumentModificationContext,
-      userId: string,
-    ): void;
-    _onDeleteEmbeddedDocuments(
-      embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>[],
-      result: string[],
-      options: DocumentModificationContext,
-      userId: string,
-    ): void;
-    _onDeleteEmbeddedDocuments(
-      embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof AmbientLightDocument>>[],
-      result: string[],
-      options: DocumentModificationContext,
-      userId: string,
-    ): void;
-    _onDeleteEmbeddedDocuments(
-      embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof NoteDocument>>[],
-      result: string[],
-      options: DocumentModificationContext,
-      userId: string,
-    ): void;
-    _onDeleteEmbeddedDocuments(
-      embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof AmbientSoundDocument>>[],
-      result: string[],
-      options: DocumentModificationContext,
-      userId: string,
-    ): void;
-    _onDeleteEmbeddedDocuments(
-      embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof MeasuredTemplateDocument>>[],
-      result: string[],
-      options: DocumentModificationContext,
-      userId: string,
-    ): void;
-    _onDeleteEmbeddedDocuments(
-      embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof TileDocument>>[],
-      result: string[],
-      options: DocumentModificationContext,
-      userId: string,
-    ): void;
-    _onDeleteEmbeddedDocuments(
-      embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof WallDocument>>[],
-      result: string[],
-      options: DocumentModificationContext,
+    override _onUpdateDescendantDocuments(
+      parent: ClientDocument,
+      collection: string,
+      documents: ClientDocument[],
+      changes: unknown[],
+      options: DocumentModificationOptions,
       userId: string,
     ): void;
 
     override toCompendium(
       pack?: CompendiumCollection<CompendiumCollection.Metadata> | null | undefined,
       options?: ClientDocument.CompendiumExportOptions | undefined,
-    ): Omit<foundry.data.SceneData["_source"], "_id" | "folder" | "permission"> & {
-      permission?: foundry.data.SceneData extends { toObject(): infer U } ? U : never;
+    ): Omit<Scene["_source"], "_id" | "folder" | "permission"> & {
+      permission?: Scene extends { toObject(): infer U } ? U : never;
     };
 
     /**
@@ -447,7 +157,7 @@ declare global {
      * @param data - (default: `{}`)
      * @returns The created thumbnail data.
      */
-    createThumbnail(data?: Partial<ThumbnailCreationData>): ReturnType<(typeof ImageHelper)["createThumbnail"]>;
+    createThumbnail(data?: InexactPartial<ThumbnailCreationData>): ReturnType<(typeof ImageHelper)["createThumbnail"]>;
   }
 
   interface SceneDimensions {
@@ -507,4 +217,16 @@ interface ThumbnailCreationData extends ImageHelper.TextureToImageOptions {
    * @defaultValue `100`
    */
   height: number;
+
+  /**
+   * Which image format should be used? image/png, image/jpg, or image/webp
+   * @defaultValue `"image/webp"`
+   */
+  format: "image/png" | "image/jpg" | "image/webp";
+
+  /**
+   * What compression quality should be used for jpeg or webp, between 0 and 1
+   * @defaultValue `0.8`
+   */
+  quality: number;
 }
