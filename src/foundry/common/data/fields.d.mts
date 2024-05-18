@@ -2041,6 +2041,84 @@ declare namespace ForeignDocumentField {
   type PersistedType<Opts extends Options> = DataField.DerivedInitializedType<string, MergedOptions<Opts>>;
 }
 
+/**
+ * A special [StringField]{@link StringField} which records a standardized CSS color string.
+ * @typeParam Options         - the options of the ColorField instance
+ * @typeParam AssignmentType  - the type of the allowed assignment values of the ColorField
+ * @typeParam InitializedType - the type of the initialized values of the ColorField
+ * @typeParam PersistedType   - the type of the persisted values of the ColorField
+ * @remarks
+ * Defaults:
+ * AssignmentType: `string | null | undefined`
+ * InitializedType: `string | null`
+ * PersistedType: `string | null`
+ * InitialValue: `null`
+ */
+declare class ColorField<
+  Options extends StringFieldOptions = ColorField.DefaultOptions,
+  AssignmentType = ColorField.AssignmentType<Options>,
+  InitializedType = ColorField.InitializedType<Options>,
+  PersistedType extends string | null | undefined = ColorField.InitializedType<Options>,
+> extends StringField<Options, AssignmentType, InitializedType, PersistedType> {
+  /** @defaultValue `true` */
+  override nullable: boolean;
+
+  /** @defaultValue `null` */
+  override initial: DataFieldOptions.InitialType<InitializedType>;
+
+  /** @defaultValue `false` */
+  override blank: boolean;
+
+  /** @defaultValue `"is not a valid hexadecimal color string"` */
+  override validationError: string;
+
+  protected static override get _defaults(): StringFieldOptions;
+
+  override clean(value: AssignmentType, options?: DataField.CleanOptions | undefined): InitializedType;
+
+  protected override _validateType(
+    value: InitializedType,
+    options?: DataField.ValidationOptions<DataField.Any> | undefined,
+  ): boolean | void;
+}
+
+declare namespace ColorField {
+  /** The type of the default options for the {@link ColorField} class. */
+  type DefaultOptions = SimpleMerge<
+    StringField.DefaultOptions,
+    {
+      nullable: true;
+      initial: null;
+      blank: false;
+      validationError: "is not a valid hexadecimal color string";
+    }
+  >;
+
+  /**
+   * A helper type for the given options type merged into the default options of the ColorField class.
+   * @typeParam Options - the options that override the default options
+   */
+  type MergedOptions<Options extends StringFieldOptions> = SimpleMerge<DefaultOptions, Options>;
+
+  /**
+   * A shorthand for the assignment type of a ColorField class.
+   * @typeParam Options - the options that override the default options
+   */
+  type AssignmentType<Options extends StringFieldOptions> = DataField.DerivedAssignmentType<
+    string,
+    MergedOptions<Options>
+  >;
+
+  /**
+   * A shorthand for the initialized type of a ColorField class.
+   * @typeParam Options - the options that override the default options
+   */
+  type InitializedType<Options extends StringFieldOptions> = DataField.DerivedInitializedType<
+    string,
+    MergedOptions<Options>
+  >;
+}
+
 declare class TypeDataField {
   // TODO: Type this.
 }
@@ -2086,6 +2164,7 @@ export function field(field, options?);
 export {
   ArrayField,
   BooleanField,
+  ColorField,
   DataField,
   DocumentIdField,
   EmbeddedCollectionField,
