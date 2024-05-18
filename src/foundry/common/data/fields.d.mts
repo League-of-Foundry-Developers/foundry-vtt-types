@@ -2245,6 +2245,91 @@ declare namespace FilePathField {
   >;
 }
 
+/**
+ * A special [NumberField]{@link NumberField} which represents an angle of rotation in degrees between 0 and 360.
+ * @typeParam Options         - the options of the AngleField instance
+ * @typeParam AssignmentType  - the type of the allowed assignment values of the AngleField
+ * @typeParam InitializedType - the type of the initialized values of the AngleField
+ * @typeParam PersistedType   - the type of the persisted values of the AngleField
+ * @remarks
+ * Defaults:
+ * AssignmentType: `number | null | undefined`
+ * InitializedType: `number`
+ * PersistedType: `number`
+ * InitialValue: `0`
+ */
+declare class AngleField<
+  Options extends NumberFieldOptions = AngleField.DefaultOptions,
+  AssignmentType = AngleField.AssignmentType<Options>,
+  InitializedType = AngleField.InitializedType<Options>,
+  PersistedType extends number | null | undefined = AngleField.InitializedType<Options>,
+> extends NumberField<Options, AssignmentType, InitializedType, PersistedType> {
+  /** @defaultValue `true` */
+  override required: boolean;
+
+  /** @defaultValue `false` */
+  override nullable: boolean;
+
+  /** @defaultValue `0` */
+  override initial: DataFieldOptions.InitialType<InitializedType>;
+
+  /** @defaultValue `0` */
+  base: number;
+
+  /** @defaultValue `0` */
+  override min: number | undefined;
+
+  /** @defaultValue `360` */
+  override max: number | undefined;
+
+  /** @defaultValue `"is not a number between 0 and 360"` */
+  override validationError: string;
+
+  protected static override get _defaults(): NumberFieldOptions;
+
+  protected override _cast(value: AssignmentType): InitializedType;
+}
+
+declare namespace AngleField {
+  /** The type of the default options for the {@link AngleField} class. */
+  type DefaultOptions = SimpleMerge<
+    NumberField.DefaultOptions,
+    {
+      required: true;
+      nullable: false;
+      initial: 0;
+      base: 0;
+      min: 0;
+      max: 360;
+      validationError: "is not a number between 0 and 360";
+    }
+  >;
+
+  /**
+   * A helper type for the given options type merged into the default options of the AngleField class.
+   * @typeParam Options - the options that override the default options
+   */
+  type MergedOptions<Options extends NumberFieldOptions> = SimpleMerge<DefaultOptions, Options>;
+
+  /**
+   * A shorthand for the assignment type of a AngleField class.
+   * @typeParam Options - the options that override the default options
+   */
+  type AssignmentType<Options extends NumberFieldOptions> = DataField.DerivedAssignmentType<
+    number,
+    MergedOptions<Options>
+  >;
+
+  /**
+   * A shorthand for the initialized type of a AngleField class.
+   * @typeParam Options - the options that override the default options
+   */
+  type InitializedType<Options extends NumberFieldOptions> = DataField.DerivedInitializedType<
+    number,
+    MergedOptions<Options>
+  >;
+}
+
 declare class TypeDataField {
   // TODO: Type this.
 }
@@ -2288,6 +2373,7 @@ export function embeddedCollectionField(document, options?);
 export function field(field, options?);
 
 export {
+  AngleField,
   ArrayField,
   BooleanField,
   ColorField,
