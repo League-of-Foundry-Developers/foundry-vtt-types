@@ -10,7 +10,7 @@ declare global {
    * @see {@link SceneDirectory} The SceneDirectory sidebar directory
    */
   class Scenes extends WorldCollection<typeof foundry.documents.BaseScene, "Scenes"> {
-    static override documentName: "Scene";
+    static documentName: "Scene";
 
     /**
      * Return a reference to the Scene which is currently active
@@ -41,11 +41,6 @@ declare global {
     static _activateSocketListeners(socket: io.Socket): void;
 
     /**
-     * Augment the standard modifyDocument listener to flush fog exploration
-     */
-    protected static _resetFog(response: { scene: Scene; reset: boolean }): Promise<Canvas | undefined> | undefined;
-
-    /**
      * Handle requests pulling the current User to a specific Scene
      */
     protected static _pullToScene(sceneId: string): void;
@@ -53,11 +48,8 @@ declare global {
     override fromCompendium(
       document:
         | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseScene>>
-        | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseScene>>["data"]["_source"],
+        | foundry.documents.BaseScene.ConstructorData,
       options?: WorldCollection.FromCompendiumOptions | undefined,
-    ): Omit<
-      InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseScene>>["data"]["_source"],
-      "_id" | "folder"
-    >;
+    ): Omit<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseScene>>, "_id" | "folder">;
   }
 }

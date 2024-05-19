@@ -1,4 +1,8 @@
-import type { ConfiguredDocumentClass, DocumentConstructor } from "../../../../types/helperTypes.d.mts";
+import type {
+  ConfiguredDocumentClass,
+  ConstructorDataType,
+  DocumentConstructor,
+} from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial, StoredDocument } from "../../../../types/utils.d.mts";
 import type { DOCUMENT_TYPES } from "../../../common/constants.d.mts";
 
@@ -30,7 +34,8 @@ declare global {
               ? SidebarDirectory<ConfiguredDocumentClass<T>["metadata"]["name"]>
               : never)
           | SidebarTab
-          | undefined;
+          | undefined
+          | null;
 
     /**
      * Return a reference to the singleton instance of this WorldCollection, or null if it has not yet been created.
@@ -65,8 +70,9 @@ declare global {
      *                   (default: `{}`)
      * @returns The processed data ready for world Document creation
      */
+    // TODO: The return type should be refined by the compendium options
     fromCompendium(
-      document: InstanceType<ConfiguredDocumentClass<T>> | InstanceType<ConfiguredDocumentClass<T>>["_source"],
+      document: InstanceType<ConfiguredDocumentClass<T>> | ConstructorDataType<T>,
       options?: InexactPartial<WorldCollection.FromCompendiumOptions> | undefined,
     ): Omit<InstanceType<ConfiguredDocumentClass<T>>["_source"], "_id">;
 
@@ -102,6 +108,7 @@ declare global {
   }
 
   namespace WorldCollection {
+    // TODO: This probably needs to become a generic to properly type the return on fromCompendium
     interface FromCompendiumOptions {
       /**
        * Add flags which track the import source

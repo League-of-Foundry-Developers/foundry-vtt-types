@@ -9,18 +9,15 @@ declare global {
    * @see {@link MacroDirectory} The MacroDirectory sidebar directory
    */
   class Macros extends WorldCollection<typeof foundry.documents.BaseMacro, "Macros"> {
-    static override documentName: "Macro";
+    static documentName: "Macro";
 
     override get directory(): typeof ui.macros;
 
     override fromCompendium(
       document:
         | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseMacro>>
-        | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseMacro>>["data"]["_source"],
+        | foundry.documents.BaseMacro.ConstructorData,
       options?: WorldCollection.FromCompendiumOptions | undefined,
-    ): Omit<
-      InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseMacro>>["data"]["_source"],
-      "_id" | "folder"
-    >;
+    ): Omit<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseMacro>>, "_id" | "folder">;
   }
 }

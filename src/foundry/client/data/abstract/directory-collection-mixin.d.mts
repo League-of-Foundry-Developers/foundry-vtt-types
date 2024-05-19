@@ -92,21 +92,21 @@ declare global {
     T extends DirectoryCollection.DirectoryTypes,
     BaseCollection extends AnyConstructorFor<typeof foundry.utils.Collection>,
   >(BaseCollection: BaseCollection): Mixin<typeof DirectoryCollection<T>, BaseCollection>;
-}
 
-declare namespace DirectoryCollection {
-  // TODO: Refine type based on CONST.FOLDER_DOCUMENT_TYPES
-  type DirectoryTypes = object;
+  namespace DirectoryCollection {
+    // TODO: Refine type based on CONST.FOLDER_DOCUMENT_TYPES
+    type DirectoryTypes = object;
 
-  type TreeNode<T> = {
-    children: TreeNode<T>[];
-    depth: number;
-    entries: T[];
-    folder: Folder;
-    root: boolean;
-    visible: boolean;
-  };
+    type TreeNode<T> = {
+      children: TreeNode<T>[];
+      depth: number;
+      entries: T[];
+      folder: Folder;
+      root: boolean;
+      visible: boolean;
+    };
 
-  type AlphabeticalSortEntry = { name: string } & object;
-  type StandardSortEntry = { sort: number } & object;
+    type AlphabeticalSortEntry = { name: string } & object;
+    type StandardSortEntry = { sort: number } & object;
+  }
 }

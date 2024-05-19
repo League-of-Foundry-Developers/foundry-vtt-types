@@ -9,7 +9,7 @@ declare global {
    * @see {@link RollTableDirectory} The RollTableDirectory sidebar directory
    */
   class RollTables extends WorldCollection<typeof foundry.documents.BaseRollTable, "RollTables"> {
-    static override documentName: "RollTable";
+    static documentName: "RollTable";
 
     override get directory(): (typeof ui)["tables"];
 
