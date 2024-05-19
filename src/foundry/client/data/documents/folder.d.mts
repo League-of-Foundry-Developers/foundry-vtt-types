@@ -85,12 +85,7 @@ declare global {
      */
     static createDialog<T extends DocumentConstructor>(
       this: T,
-      data?:
-        | DeepPartial<
-            | ConstructorDataType<InstanceType<T>["data"]>
-            | (ConstructorDataType<InstanceType<T>["data"]> & Record<string, unknown>)
-          >
-        | undefined,
+      data?: DeepPartial<ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>)> | undefined,
       context?: Partial<Omit<FolderConfig.Options, "resolve">>,
     ): Promise<InstanceType<ConfiguredDocumentClass<T>> | null | undefined>;
 

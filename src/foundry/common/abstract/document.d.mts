@@ -309,11 +309,7 @@ declare abstract class Document<
    */
   static updateDocuments<T extends Document.Constructor>(
     this: T,
-    updates?: Array<
-      DeepPartial<
-        ConstructorDataType<InstanceType<T>> | (ConstructorDataType<InstanceType<T>> & Record<string, unknown>)
-      >
-    >,
+    updates?: Array<DeepPartial<ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>)>>,
     context?: DocumentModificationContext & foundry.utils.MergeObjectOptions,
   ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
 
@@ -391,17 +387,17 @@ declare abstract class Document<
    */
   static create<T extends Document.Constructor>(
     this: T,
-    data: ConstructorDataType<InstanceType<T>> | (ConstructorDataType<InstanceType<T>> & Record<string, unknown>),
+    data: ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>),
     context: DocumentModificationContext & { temporary: false },
   ): Promise<StoredDocument<InstanceType<ConfiguredDocumentClass<T>>> | undefined>;
   static create<T extends Document.Constructor>(
     this: T,
-    data: ConstructorDataType<InstanceType<T>> | (ConstructorDataType<InstanceType<T>> & Record<string, unknown>),
+    data: ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>),
     context: DocumentModificationContext & { temporary: boolean },
   ): Promise<InstanceType<ConfiguredDocumentClass<T>> | undefined>;
   static create<T extends Document.Constructor>(
     this: T,
-    data: ConstructorDataType<InstanceType<T>> | (ConstructorDataType<InstanceType<T>> & Record<string, unknown>),
+    data: ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>),
     context?: DocumentModificationContext,
   ): Promise<StoredDocument<InstanceType<ConfiguredDocumentClass<T>>> | undefined>;
 

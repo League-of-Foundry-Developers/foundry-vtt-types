@@ -1,4 +1,4 @@
-import type { AnyDocumentData } from "../../common/abstract/data.d.mts";
+export {};
 
 declare global {
   /**
@@ -165,7 +165,7 @@ declare global {
      * @internal
      */
     protected _addLeaf(
-      doc: foundry.abstract.Document<any, any> | AnyDocumentData,
+      doc: foundry.abstract.Document<any, any>,
       options?: {
         /** The compendium that the index belongs to. */
         pack?: CompendiumCollection<any>;

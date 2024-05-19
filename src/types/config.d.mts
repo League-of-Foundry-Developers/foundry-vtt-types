@@ -171,6 +171,44 @@ declare global {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface DataConfig {}
 
+  // TODO: Investigate how this can be tied to Game["documentTypes"]
+  interface DataModelConfig {
+    ActiveEffect: {
+      base: {};
+    };
+    Actor: {
+      base: {};
+    };
+    Card: {
+      base: {};
+    };
+    Cards: {
+      base: {};
+      deck: {};
+      hand: {};
+      pile: {};
+    };
+    ChatMessage: {
+      base: {};
+    };
+    Combat: {
+      base: {};
+    };
+    Combatant: {
+      base: {};
+    };
+    Item: {
+      base: {};
+    };
+    JournalEntryPage: {
+      base: {};
+      image: {};
+      pdf: {};
+      text: {};
+      video: {};
+    };
+  }
+
   /** @see {@link DataConfig} */
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface SourceConfig {}

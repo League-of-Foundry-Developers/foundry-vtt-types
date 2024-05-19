@@ -1,42 +1,14 @@
-import type DocumentData from "../foundry/common/abstract/data.d.mts";
-import type { AnyDocumentData } from "../foundry/common/abstract/data.d.mts";
 import type Document from "../foundry/common/abstract/document.d.mts";
-import type EmbeddedCollection from "../foundry/common/abstract/embedded-collection.d.mts";
 import type { DeepPartial } from "./utils.d.mts";
-
-export type PropertiesDataType<T extends Document<any, any> | AnyDocumentData> =
-  T extends DocumentData<any, infer U, any, any> ? U : T extends Document<infer U, any> ? PropertiesDataType<U> : never;
-
-type PropertyTypeToSourceType<T> =
-  T extends EmbeddedCollection<infer U, any>
-    ? SourceDataType<InstanceType<U>>[]
-    : T extends Array<infer U>
-      ? Array<PropertyTypeToSourceType<U>>
-      : T extends AnyDocumentData
-        ? SourceDataType<T>
-        : T;
-
-export type PropertiesToSource<T extends object> = {
-  [Key in keyof T]: PropertyTypeToSourceType<T[Key]>;
-};
-
-type SourceDataType<T extends Document<any, any> | AnyDocumentData> =
-  T extends DocumentData<any, any, infer U, any, any>
-    ? U
-    : T extends Document<infer U, any>
-      ? SourceDataType<U>
-      : never;
 
 /**
  * Returns the type of the constructor data for the given {@link DocumentData}.
  */
-export type ConstructorDataType<T extends AnyDocumentData> = T["_initializeSource"] extends (data: infer U) => any
-  ? U
-  : never;
+export type ConstructorDataType<T extends DocumentConstructor> = foundry.data.fields.SchemaField.InnerAssignmentType<
+  ReturnType<T["defineSchema"]>
+>;
 
 type ObjectToDeepPartial<T> = T extends object ? DeepPartial<T> : T;
-
-export type PropertyTypeToSourceParameterType<T> = ObjectToDeepPartial<PropertyTypeToSourceType<T>>;
 
 export type DocumentConstructor = Pick<typeof Document, keyof typeof Document> &
   (new (...args: any[]) => Document<any, any>);
@@ -89,6 +61,11 @@ export type PlaceableDocumentType =
   | "Tile"
   | "Token"
   | "Wall";
+
+type TypeNamesForDocument<D extends DocumentType> = DataModelConfig extends { [K in D]: infer ConfigData }
+  ? keyof ConfigData
+  : never;
+
 /**
  * Actual document types that go in folders
  */

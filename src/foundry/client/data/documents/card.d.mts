@@ -1,4 +1,5 @@
-import type { ConfiguredDocumentClassForName, ConstructorDataType } from "../../../../types/helperTypes.d.mts";
+import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
+import type { DeepPartial } from "../../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -108,7 +109,7 @@ declare global {
      * @returns The created chat message
      */
     toMessage(
-      messageData?: ConstructorDataType<foundry.documents.BaseChatMessage> | undefined,
+      messageData?: DeepPartial<foundry.documents.BaseChatMessage.ConstructorData>,
       options?: DocumentModificationContext | undefined,
     ): Promise<InstanceType<ConfiguredDocumentClassForName<"ChatMessage">> | undefined>;
   }

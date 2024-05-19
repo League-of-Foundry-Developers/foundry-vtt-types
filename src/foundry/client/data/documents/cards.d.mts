@@ -1,9 +1,10 @@
 import type {
   ConfiguredDocumentClass,
   ConfiguredDocumentClassForName,
+  ConstructorDataType,
   DocumentConstructor,
 } from "../../../../types/helperTypes.d.mts";
-import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
+import type { DeepPartial, InexactPartial, StoredDocument } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 declare global {
@@ -42,27 +43,18 @@ declare global {
     get canClone(): boolean;
 
     // TODO: Figure out the typing here
-    // static override createDocuments(
-    //   data: Array<
-    //     | ConstructorDataType<foundry.data.CardsData>
-    //     | (ConstructorDataType<foundry.data.CardsData> & Record<string, unknown>)
-    //   >,
-    //   context: DocumentModificationContext & { temporary: false },
-    // ): Promise<StoredDocument<InstanceType<ConfiguredDocumentClassForName<"Cards">>>[]>;
-    // static createDocuments(
-    //   data: Array<
-    //     | ConstructorDataType<foundry.data.CardsData>
-    //     | (ConstructorDataType<foundry.data.CardsData> & Record<string, unknown>)
-    //   >,
-    //   context: DocumentModificationContext & { temporary: boolean },
-    // ): Promise<InstanceType<ConfiguredDocumentClassForName<"Cards">>[]>;
-    // static createDocuments(
-    //   data: Array<
-    //     | ConstructorDataType<foundry.data.CardsData>
-    //     | (ConstructorDataType<foundry.data.CardsData> & Record<string, unknown>)
-    //   >,
-    //   context?: DocumentModificationContext,
-    // ): Promise<StoredDocument<InstanceType<ConfiguredDocumentClassForName<"Cards">>>[]>;
+    static override createDocuments(
+      data: Array<ConstructorDataType<typeof Cards> | (ConstructorDataType<typeof Cards> & Record<string, unknown>)>,
+      context: DocumentModificationContext & { temporary: false },
+    ): Promise<StoredDocument<InstanceType<ConfiguredDocumentClassForName<"Cards">>>[]>;
+    static createDocuments(
+      data: Array<ConstructorDataType<typeof Cards> | (ConstructorDataType<typeof Cards> & Record<string, unknown>)>,
+      context: DocumentModificationContext & { temporary: boolean },
+    ): Promise<InstanceType<ConfiguredDocumentClassForName<"Cards">>[]>;
+    static createDocuments(
+      data: Array<ConstructorDataType<typeof Cards> | (ConstructorDataType<typeof Cards> & Record<string, unknown>)>,
+      context?: DocumentModificationContext,
+    ): Promise<StoredDocument<InstanceType<ConfiguredDocumentClassForName<"Cards">>>[]>;
 
     /**
      * Deal one or more cards from this Cards document to each of a provided array of Cards destinations.

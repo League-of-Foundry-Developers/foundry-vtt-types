@@ -49,7 +49,9 @@ declare class ClientDocument<
   /**
    * A reference to the Compendium Collection which contains this Document, if any, otherwise undefined.
    */
-  get compendium(): CompendiumCollection<ConcreteMetadata> | undefined;
+  get compendium(): ConcreteMetadata extends CompendiumCollection.Metadata
+    ? CompendiumCollection<ConcreteMetadata>
+    : undefined;
 
   /**
    * A boolean indicator for whether or not the current game User has ownership rights for this Document.
@@ -352,12 +354,7 @@ declare class ClientDocument<
    */
   static createDialog<T extends DocumentConstructor>(
     this: T,
-    data?:
-      | DeepPartial<
-          | ConstructorDataType<InstanceType<T>["data"]>
-          | (ConstructorDataType<InstanceType<T>["data"]> & Record<string, unknown>)
-        >
-      | undefined,
+    data?: DeepPartial<ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>)> | undefined,
     context?: (Pick<DocumentModificationContext, "parent" | "pack"> & Partial<DialogOptions>) | undefined,
   ): Promise<InstanceType<ConfiguredDocumentClass<T>> | null | undefined>;
 

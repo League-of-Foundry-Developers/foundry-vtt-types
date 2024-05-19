@@ -3,7 +3,6 @@ import type {
   ConfiguredObjectClassForName,
   PropertiesToSource,
 } from "../../../../../types/helperTypes.d.mts";
-import type { TokenDataProperties } from "../../../../common/data/data.mjs/tokenData.d.mts";
 
 declare global {
   /**
