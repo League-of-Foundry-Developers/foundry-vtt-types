@@ -1,4 +1,4 @@
-import type { ConfiguredFlags } from "../../../types/helperTypes.mts";
+import type { ConfiguredFlags, ConstructorDataType } from "../../../types/helperTypes.mts";
 import type { ConstructorOf, SimpleMerge, ValueOf } from "../../../types/utils.d.mts";
 import type { DataModel } from "../abstract/data.mts";
 import type Document from "../abstract/document.mts";
@@ -2866,13 +2866,33 @@ declare namespace ModelValidationError {
   type Errors = Record<number | string | symbol, Error> | Error[] | string;
 }
 
-export function systemDataField(document);
+/**
+ * @deprecated since v10, will be removed in v12
+ */
+export function systemDataField(document: Document.Any): TypeDataField;
 
-export function foreignDocumentField(options);
+/**
+ * @deprecated since v10, will be removed in v12
+ */
+export function foreignDocumentField<Model extends typeof Document>(
+  options: ForeignDocumentField.Options & { type: { model: Model } },
+): ForeignDocumentField<Model>;
 
-export function embeddedCollectionField(document, options?);
+/**
+ * @deprecated since v10, will be removed in v12
+ */
+export function embeddedCollectionField<Embedded extends typeof Document>(
+  document: Embedded,
+  options?: EmbeddedCollectionField.Options<Embedded>,
+): EmbeddedCollectionField<ConstructorDataType<Embedded>>;
 
-export function field(field, options?);
+/**
+ * @deprecated since v10, will be removed in v12
+ */
+export function field(
+  field: { type: typeof String | typeof Number | typeof Boolean | typeof Object },
+  options?: DataFieldOptions.Any,
+): DataField;
 
 export {
   AlphaField,
