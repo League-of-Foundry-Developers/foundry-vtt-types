@@ -28,7 +28,8 @@ expectTypeOf(myPackage.languages.first()!.lang).toEqualTypeOf<string>();
 
 // Checking packFolders
 expectTypeOf(myPackage.packFolders.first()!.name).toEqualTypeOf<string>();
-// This end result is weird but best option that could be found
-expectTypeOf(myPackage.packFolders.first()!.folders.first()!.folders.first()!.folders.first()!.folders).toEqualTypeOf<
-  Record<string, unknown>
->();
+expectTypeOf(
+  myPackage.packFolders.first()!.folders.first()!.folders.first()!.folders.first()!.name,
+).toEqualTypeOf<string>();
+//@ts-expect-error Folders property does not exist this deep
+myPackage.packFolders.first()!.folders.first()!.folders.first()!.folders.first()!.folders;

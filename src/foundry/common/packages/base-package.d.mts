@@ -200,10 +200,7 @@ declare namespace BasePackage {
     reason: fields.StringField<{ required: false; blank: false; initial: undefined }>;
   };
 
-  // TODO: Figure out proper recursion here
-  type RecursiveDepth = [1, 2, 3, never];
-
-  type PackageCompendiumFolderSchema<Depth extends number> = {
+  type PackageCompendiumFolderSchemaHelper = {
     name: fields.StringField<{ required: true; blank: false }>;
     sorting: fields.StringField<{
       required: false;
@@ -213,10 +210,16 @@ declare namespace BasePackage {
     }>;
     color: fields.ColorField;
     packs: fields.SetField<fields.StringField<{ required: true; blank: false }>>;
-    folders: Depth extends number
-      ? fields.SetField<fields.SchemaField<PackageCompendiumFolderSchema<RecursiveDepth[Depth]>>>
-      : never;
   };
+
+  // Foundry starts Depth at 1 and increments from there
+  type FolderRecursion = [never, 2, 3];
+
+  type PackageCompendiumFolderSchema<Depth> = Depth extends number
+    ? PackageCompendiumFolderSchemaHelper & {
+        folders: fields.SetField<fields.SchemaField<PackageCompendiumFolderSchema<FolderRecursion[Depth]>>>;
+      }
+    : PackageCompendiumFolderSchemaHelper;
 
   type Schema = {
     /**

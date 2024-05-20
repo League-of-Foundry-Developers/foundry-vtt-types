@@ -627,7 +627,9 @@ declare global {
 }
 
 // TODO: Only add UUID if T has an ID property (non-setting)
-export type DropData<T extends foundry.abstract.Document<any, any>> = DropData.Data<T> & DropData.UUID;
+export type DropData<T extends foundry.abstract.Document<any, any>> = T extends { id: string | undefined }
+  ? DropData.Data<T> & DropData.UUID
+  : DropData.Data<T>;
 
 declare namespace DropData {
   interface Data<T extends foundry.abstract.Document<any, any>> {
