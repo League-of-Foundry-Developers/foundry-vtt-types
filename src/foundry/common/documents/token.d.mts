@@ -180,7 +180,7 @@ declare namespace BaseToken {
      * The token's texture on the canvas.
      * @defaultValue `BaseToken.DEFAULT_ICON`
      */
-    texture: TextureData<{}, { initial: () => typeof BaseToken.DEFAULT_ICON; wildcard: true }>;
+    texture: TextureData<{ initial: () => typeof BaseToken.DEFAULT_ICON; wildcard: true }>;
 
     /**
      * The width of the Token in grid units

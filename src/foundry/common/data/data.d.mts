@@ -225,12 +225,12 @@ export class ShapeData extends DataModel<fields.SchemaField<ShapeData.Schema>> {
 declare namespace TextureData {
   type DefaultOptions = {
     categories: ["IMAGE", "VIDEO"];
-    initial: null;
+    // initial: null;
     wildcard: false;
     label: "";
   };
 
-  type Schema<SrcOptions extends fields.FilePathField.Options = DefaultOptions> = {
+  type Schema<SrcOptions extends FilePathFieldOptions> = {
     /**
      * The URL of the texture source.
      */
@@ -268,20 +268,14 @@ declare namespace TextureData {
   };
 }
 
-interface TextureData<
-  SchemaOptions extends fields.SchemaField.Options<TextureData.Schema> = fields.SchemaField.DefaultOptions,
-  // SrcOptions extends fields.FilePathField.Options = TextureData.DefaultOptions,
-> extends fields.SchemaField.InnerInitializedType<TextureData.Schema, SchemaOptions> {}
+interface TextureData<SrcOptions extends FilePathFieldOptions = TextureData.DefaultOptions>
+  extends fields.SchemaField.InnerInitializedType<TextureData.Schema<SrcOptions>> {}
 
 export class TextureData<
-  SchemaOptions extends fields.SchemaField.Options<TextureData.Schema> = fields.SchemaField.DefaultOptions,
-  SrcOptions extends fields.FilePathField.Options = TextureData.DefaultOptions,
+  SrcOptions extends FilePathFieldOptions = TextureData.DefaultOptions,
+  SchemaOptions extends fields.SchemaField.Options<TextureData.Schema<SrcOptions>> = {},
 > extends fields.SchemaField<TextureData.Schema<SrcOptions>, SchemaOptions> {
-  constructor(
-    options?: SchemaOptions,
-    // TODO: Figure out this configuration after FilePathField is defined
-    srcOptions?: SrcOptions,
-  );
+  constructor(options?: SchemaOptions, srcOptions?: SrcOptions);
 }
 
 declare namespace PrototypeToken {

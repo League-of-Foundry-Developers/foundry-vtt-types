@@ -114,7 +114,7 @@ declare namespace BaseScene {
      * An image or video file that provides the background texture for the scene.
      * @defaultValue see {@link TextureData}
      */
-    background: TextureData<{}, { categories: ["IMAGE", "VIDEO"]; initial: null; wildcard: false }>;
+    background: TextureData<{ categories: ["IMAGE", "VIDEO"]; initial: null; wildcard: false }>;
 
     /**
      * An image or video file path providing foreground media for the scene

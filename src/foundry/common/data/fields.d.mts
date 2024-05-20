@@ -1,4 +1,4 @@
-import type { ConfiguredFlags, ConstructorDataType } from "../../../types/helperTypes.mts";
+import type { ConfiguredFlags } from "../../../types/helperTypes.mts";
 import type { ConstructorOf, SimpleMerge, ValueOf } from "../../../types/utils.d.mts";
 import type { DataModel } from "../abstract/data.mts";
 import type Document from "../abstract/document.mts";
@@ -3286,7 +3286,7 @@ export function foreignDocumentField<Model extends Document.Any>(
 export function embeddedCollectionField<Embedded extends typeof Document>(
   document: Embedded,
   options?: EmbeddedCollectionField.Options<Embedded>,
-): EmbeddedCollectionField<ConstructorDataType<Embedded>>;
+): EmbeddedCollectionField<Embedded>;
 
 /**
  * @deprecated since v10, will be removed in v12
