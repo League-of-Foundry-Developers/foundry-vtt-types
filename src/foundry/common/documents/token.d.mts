@@ -1,5 +1,6 @@
 import type { ConfiguredDocumentClass } from "../../../types/helperTypes.mts";
 import type { InexactPartial, Merge } from "../../../types/utils.mts";
+import type { DataModel } from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
@@ -92,9 +93,17 @@ declare class BaseToken extends Document<
 /**
  * A special subclass of EmbeddedDocumentField which allows construction of the ActorDelta to be lazily evaluated.
  */
-// TODO: After EmbeddedDocumentField
-export class ActorDeltaField extends fields.EmbeddedDocumentField {
-  override initialize(value: unknown, model: unknown, options: InexactPartial<unknown>): unknown;
+export class ActorDeltaField<
+  DocumentType extends Document.Any,
+  Options extends fields.EmbeddedDocumentField.Options<DocumentType> = fields.EmbeddedDocumentField.DefaultOptions,
+> extends fields.EmbeddedDocumentField<DocumentType, Options> {
+  override initialize(
+    value: fields.EmbeddedDocumentField.PersistedType<DocumentType, Options>,
+    model: DataModel.Any,
+    options?: InexactPartial<DataModel.ConstructorOptions>,
+  ):
+    | fields.EmbeddedDocumentField.InitializedType<DocumentType, Options>
+    | (() => fields.EmbeddedDocumentField.InitializedType<DocumentType, Options> | null);
 }
 
 export default BaseToken;
