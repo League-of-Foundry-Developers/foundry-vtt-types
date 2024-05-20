@@ -405,6 +405,12 @@ export declare namespace DataModel {
   /** Any DataModel. */
   type Any = DataModel<any, any>;
 
+  /**
+   * A helper type to extract the {@link DataSchema} from a {@link DataModel}.
+   * @typeParam ModelType - the DataModel for the embedded data
+   */
+  type DataSchema<ModelType extends DataModel.Any> = ModelType["schema"]["fields"];
+
   interface UpdateOptions {
     dryRun?: boolean;
     fallback?: boolean;
