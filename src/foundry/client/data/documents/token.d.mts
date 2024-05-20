@@ -13,14 +13,14 @@ declare global {
     /**
      * A singleton collection which holds a reference to the synthetic token actor by its base actor's ID.
      */
-    actors: () => Collection<InstanceType<ConfiguredDocumentClassForName<"Actor">>>;
+    actors(): Collection<InstanceType<ConfiguredDocumentClassForName<"Actor">>>;
 
     /**
      * A lazily evaluated reference to the Actor this Token modifies.
      * If actorLink is true, then the document is the primary Actor document.
      * Otherwise the Actor document is a synthetic (ephemeral) document constructed using the Token's ActorDelta.
      */
-    get actor(): InstanceType<ConfiguredDocumentClass<typeof Actor>> | null;
+    get actor(): InstanceType<ConfiguredDocumentClassForName<"Actor">> | null;
 
     /**
      * An indicator for whether or not the current User has full control over this Token document.
@@ -35,7 +35,7 @@ declare global {
     /**
      * Return a reference to a Combatant that represents this Token, if one is present in the current encounter.
      */
-    get combatant(): InstanceType<ConfiguredDocumentClass<typeof Combatant>> | null;
+    get combatant(): InstanceType<ConfiguredDocumentClassForName<"Combatant">> | null;
 
     /**
      * An indicator for whether or not this Token is currently involved in the active combat encounter.
@@ -117,7 +117,7 @@ declare global {
      * @returns The updated un-linked Actor instance
      */
     modifyActorDocument(
-      update: Parameters<InstanceType<ConfiguredDocumentClass<typeof Actor>>["update"]>[0],
+      update: Parameters<InstanceType<ConfiguredDocumentClassForName<"Actor">>["update"]>[0],
       options: Parameters<this["update"]>[1],
     ): Promise<[this["actor"]]>;
 
@@ -214,7 +214,7 @@ declare global {
      */
     // TODO: There's some very complex handling for non-datamodel Actor system implementations if we want
     static getTrackedAttributes(
-      data?: InstanceType<ConfiguredDocumentClass<typeof Actor>>["system"],
+      data?: InstanceType<ConfiguredDocumentClassForName<"Actor">>["system"],
       _path?: string[],
     ): TrackedAttributesDescription;
 
@@ -304,4 +304,4 @@ interface ToggleActiveEffectOptions {
   active: boolean;
 }
 
-export type StatusEffect = ActiveEffectDataConstructorData & { id: string };
+export type StatusEffect = foundry.documents.BaseActiveEffect.ConstructorData & { id: string };

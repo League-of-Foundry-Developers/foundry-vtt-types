@@ -1,4 +1,8 @@
-import type { ConfiguredDocumentClass, ToObjectFalseType } from "../../../../types/helperTypes.d.mts";
+import type {
+  ConfiguredDocumentClass,
+  ConfiguredDocumentClassForName,
+  ToObjectFalseType,
+} from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial, StoredDocument } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
@@ -91,7 +95,7 @@ declare global {
      */
     protected static _getSpeakerFromToken(options: {
       /** The TokenDocument of the speaker */
-      token: InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>;
+      token: InstanceType<ConfiguredDocumentClassForName<"Token">>;
 
       /** The name of the speaker to display */
       alias?: string | undefined;
@@ -198,13 +202,13 @@ declare global {
   namespace ChatMessage {
     interface GetSpeakerOptions {
       /** The Scene in which the speaker resides */
-      scene: InstanceType<ConfiguredDocumentClass<typeof Scene>>;
+      scene: InstanceType<ConfiguredDocumentClassForName<"Scene">>;
 
       /** The Actor whom is speaking */
-      actor: InstanceType<ConfiguredDocumentClass<typeof Actor>>;
+      actor: InstanceType<ConfiguredDocumentClassForName<"Actor">>;
 
       /** The Token whom is speaking */
-      token: InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>;
+      token: InstanceType<ConfiguredDocumentClassForName<"Token">>;
 
       /** The name of the speaker to display */
       alias: string | undefined;

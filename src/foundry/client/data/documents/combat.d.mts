@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
+import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { ConstructorOf, DeepPartial } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
@@ -27,7 +27,7 @@ declare global {
     );
 
     /** Track the sorted turn order of this combat encounter */
-    turns: InstanceType<ConfiguredDocumentClass<typeof Combatant>>[];
+    turns: ConfiguredCombatant[];
 
     /** Record the current round, turn, and tokenId to understand changes in the encounter state */
     current: CombatHistoryData;
@@ -44,7 +44,7 @@ declare global {
     /**
      * Get the Combatant who has the next turn.
      */
-    get nextCombatant(): Combatant | undefined;
+    get nextCombatant(): ConfiguredCombatant | undefined;
 
     /** Return the object of settings which modify the Combat Tracker behavior */
     get settings(): (typeof CombatEncounters)["settings"];
@@ -62,9 +62,7 @@ declare global {
      * Deactivate all other Combat encounters within the viewed Scene and set this one as active
      * @param options - Additional context to customize the update workflow
      */
-    activate(
-      options?: DocumentModificationContext & foundry.utils.MergeObjectOptions,
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof Combat>>[]>;
+    activate(options?: DocumentModificationContext & foundry.utils.MergeObjectOptions): Promise<ConfiguredCombat[]>;
 
     override prepareDerivedData(): void;
 
@@ -72,13 +70,13 @@ declare global {
      * Get a Combatant using its Token id
      * @param tokenId - The id of the Token for which to acquire the combatant
      */
-    getCombatantByToken(tokenId: string): InstanceType<ConfiguredDocumentClass<typeof Combatant>> | undefined;
+    getCombatantByToken(tokenId: string): ConfiguredCombatant | undefined;
 
     /**
      * Get a Combatant that represents the given Actor or Actor ID.
      * @param actorOrId - An Actor ID or an Actor instance.
      */
-    getCombatantByActor(actorOrId: string | Actor): InstanceType<ConfiguredDocumentClass<typeof Combatant>> | undefined;
+    getCombatantByActor(actorOrId: string | Actor): ConfiguredCombatant | undefined;
 
     /** Begin the combat encounter, advancing to round 1 and turn 1 */
     startCombat(): Promise<this>;
@@ -163,10 +161,7 @@ declare global {
      * By default sort by initiative, next falling back to name, lastly tie-breaking by combatant id.
      * @internal
      */
-    protected _sortCombatants(
-      a: InstanceType<ConfiguredDocumentClass<typeof Combatant>>,
-      b: InstanceType<ConfiguredDocumentClass<typeof Combatant>>,
-    ): number;
+    protected _sortCombatants(a: ConfiguredCombatant, b: ConfiguredCombatant): number;
 
     /**
      * Refresh the Token HUD under certain circumstances.
@@ -280,3 +275,6 @@ declare global {
     }
   }
 }
+
+type ConfiguredCombat = InstanceType<ConfiguredDocumentClassForName<"Combat">>;
+type ConfiguredCombatant = InstanceType<ConfiguredDocumentClassForName<"Combatant">>;

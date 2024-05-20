@@ -1,8 +1,4 @@
-import type {
-  ConfiguredDocumentClass,
-  ConfiguredDocumentClassForName,
-  ConfiguredObjectClassForName,
-} from "../../../../types/helperTypes.d.mts";
+import type { ConfiguredDocumentClassForName, ConfiguredObjectClassForName } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
@@ -33,10 +29,7 @@ declare global {
     /**
      * Maintain a list of Token Documents that represent this Actor, stored by Scene.
      */
-    protected _dependentTokens: foundry.utils.IterableWeakMap<
-      InstanceType<ConfiguredDocumentClassForName<"Scene">>,
-      InstanceType<ConfiguredDocumentClassForName<"Token">>
-    >;
+    protected _dependentTokens: foundry.utils.IterableWeakMap<ConfiguredScene, ConfiguredTokenDocument>;
 
     /**
      * An object that tracks which tracks the changes to the data model which were applied by active effects
@@ -71,10 +64,7 @@ declare global {
      * Provide an object which organizes all embedded Item instances by their type
      */
     // TODO: Rework to use the mappings
-    get itemTypes(): Record<
-      foundry.documents.BaseItem["type"],
-      Array<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseItem>>>
-    >;
+    get itemTypes(): Record<foundry.documents.BaseItem["type"], ConfiguredItem>;
     /**
      * Test whether an Actor document is a synthetic representation of a Token (if true) or a full Document (if false)
      */
@@ -83,7 +73,7 @@ declare global {
     /**
      * Retrieve the list of ActiveEffects that are currently applied to this Actor.
      */
-    get appliedEffects(): InstanceType<ConfiguredDocumentClassForName<"ActiveEffect">>[];
+    get appliedEffects(): ConfiguredActiveEffect[];
 
     /**
      * An array of ActiveEffect instances which are present on the Actor which have a limited duration.
@@ -93,7 +83,7 @@ declare global {
     /**
      * Return a reference to the TokenDocument which owns this Actor as a synthetic override
      */
-    get token(): InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseToken>> | null;
+    get token(): ConfiguredTokenDocument | null;
 
     /**
      * Whether the Actor has at least one Combatant in the active Combat that represents it.
@@ -115,17 +105,10 @@ declare global {
      * @param document - Return the Document instance rather than the PlaceableObject (default: `false`)
      * @returns An array of Token instances in the current Scene which reference this Actor.
      */
-    getActiveTokens(
-      linked: boolean,
-      document: true,
-    ): InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseToken>>[];
-    getActiveTokens(linked?: boolean, document?: false): InstanceType<ConfiguredObjectClassForName<"Token">>[];
-    getActiveTokens(
-      linked: boolean,
-      document: boolean,
-    ):
-      | InstanceType<ConfiguredObjectClassForName<"Token">>[]
-      | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseToken>>[];
+    getActiveToken<ReturnDocument extends boolean = false>(
+      linked?: boolean,
+      document?: ReturnDocument,
+    ): ReturnDocument extends true ? ConfiguredTokenDocument[] : InstanceType<ConfiguredObjectClassForName<"Token">>[];
 
     /**
      * Get all ActiveEffects that may apply to this Actor.
@@ -133,7 +116,7 @@ declare global {
      * If CONFIG.ActiveEffect.legacyTransferral is false, this will also return all the transferred ActiveEffects on any
      * of the Actor's owned Items.
      */
-    allApplicableEffects(): Generator<InstanceType<ConfiguredDocumentClassForName<"ActiveEffect">>>;
+    allApplicableEffects(): Generator<ConfiguredActiveEffect>;
 
     /**
      * Prepare a data object which defines the data schema used by dice roll commands against this Actor
@@ -145,9 +128,7 @@ declare global {
      * @param data - Additional data, such as x, y, rotation, etc. for the created token data (default: `{}`)
      * @returns The created TokenData instance
      */
-    getTokenDocument(
-      data?: foundry.documents.BaseToken.ConstructorData,
-    ): Promise<InstanceType<ConfiguredDocumentClassForName<"Token">>>;
+    getTokenDocument(data?: foundry.documents.BaseToken.ConstructorData): Promise<ConfiguredTokenDocument>;
 
     /**
      * Get an Array of Token images which could represent this Actor
@@ -206,7 +187,7 @@ declare global {
          */
         linked: boolean;
       }>,
-    ): InstanceType<ConfiguredDocumentClassForName<"Token">>[];
+    ): ConfiguredTokenDocument[];
 
     /**
      * Register a token as a dependent of this actor.
@@ -316,3 +297,10 @@ declare global {
     }
   }
 }
+
+type ConfiguredScene = InstanceType<ConfiguredDocumentClassForName<"Scene">>;
+type ConfiguredTokenDocument = InstanceType<ConfiguredDocumentClassForName<"Token">>;
+
+// TODO: Figure out the type names handling
+type ConfiguredItem = InstanceType<ConfiguredDocumentClassForName<"Item">>;
+type ConfiguredActiveEffect = InstanceType<ConfiguredDocumentClassForName<"ActiveEffect">>;

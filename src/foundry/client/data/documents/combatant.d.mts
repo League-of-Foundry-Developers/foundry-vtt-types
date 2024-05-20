@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
+import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 
 declare global {
   /**
@@ -19,7 +19,7 @@ declare global {
     /**
      * A convenience alias of Combatant#parent which is more semantically intuitive
      */
-    get combat(): InstanceType<ConfiguredDocumentClass<typeof Combat>> | null;
+    get combat(): InstanceType<ConfiguredDocumentClassForName<"Combat">> | null;
 
     /** This is treated as a non-player combatant if it has no associated actor and no player users who can control it */
     get isNPC(): boolean;
@@ -27,13 +27,13 @@ declare global {
     override get visible(): boolean;
 
     /** A reference to the Actor document which this Combatant represents, if any */
-    get actor(): InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseActor>> | null;
+    get actor(): InstanceType<ConfiguredDocumentClassForName<"Actor">> | null;
 
     /** A reference to the Token document which this Combatant represents, if any */
-    get token(): InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseToken>> | null;
+    get token(): InstanceType<ConfiguredDocumentClassForName<"Token">> | null;
 
     /** An array of User documents who have ownership of this Document */
-    get players(): InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseUser>>[];
+    get players(): InstanceType<ConfiguredDocumentClassForName<"User">>[];
 
     /**
      * Has this combatant been marked as defeated?
