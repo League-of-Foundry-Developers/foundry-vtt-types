@@ -21,6 +21,14 @@ expectTypeOf(packageCompendia.ownership.ASSISTANT).toEqualTypeOf<
 expectTypeOf(myPackage.id).toEqualTypeOf<string>();
 expectTypeOf(myPackage.changelog).toEqualTypeOf<string | undefined>();
 
+// Checking the sets
 expectTypeOf(myPackage._source.packs[0].banner).toEqualTypeOf<string | undefined>();
 expectTypeOf(myPackage._source.authors[0].discord).toEqualTypeOf<string | undefined>();
 expectTypeOf(myPackage.languages.first()!.lang).toEqualTypeOf<string>();
+
+// Checking packFolders
+expectTypeOf(myPackage.packFolders.first()!.name).toEqualTypeOf<string>();
+// This end result is weird but best option that could be found
+expectTypeOf(myPackage.packFolders.first()!.folders.first()!.folders.first()!.folders.first()!.folders).toEqualTypeOf<
+  Record<string, unknown>
+>();

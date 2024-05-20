@@ -3,6 +3,7 @@ import type DataModel from "../abstract/data.mjs";
 import type { ReleaseData } from "../config.mjs/releaseData.d.mts";
 import * as fields from "../data/fields.mjs";
 import type { DataModelValidationFailure } from "../data/validation-failure.d.mts";
+import type { BaseFolder } from "../documents/module.d.mts";
 import type { CONST } from "../module.d.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
@@ -200,16 +201,22 @@ declare namespace BasePackage {
   };
 
   // TODO: Figure out proper recursion here
-  type RecursiveDepth = [never, 0, 1, 2, 3];
+  type RecursiveDepth = [1, 2, 3, never];
 
   type PackageCompendiumFolderSchema<Depth extends number> = {
-    name: fields.StringField;
-    sorting: fields.StringField;
+    name: fields.StringField<{ required: true; blank: false }>;
+    sorting: fields.StringField<{
+      required: false;
+      blank: false;
+      initial: undefined;
+      choices: typeof BaseFolder.SORTING_MODES;
+    }>;
     color: fields.ColorField;
     packs: fields.SetField<fields.StringField<{ required: true; blank: false }>>;
-  } & Depth extends 0
-    ? {}
-    : { folders: fields.SetField<fields.SchemaField<PackageCompendiumFolderSchema<Depth>>> };
+    folders: Depth extends number
+      ? fields.SetField<fields.SchemaField<PackageCompendiumFolderSchema<RecursiveDepth[Depth]>>>
+      : never;
+  };
 
   type Schema = {
     /**
@@ -300,7 +307,7 @@ declare namespace BasePackage {
      */
     packs: PackageCompendiumPacks<fields.SchemaField<PackageCompendiumSchema>>;
 
-    packFolders: fields.SetField<fields.SchemaField<PackageCompendiumFolderSchema<4>>>;
+    packFolders: fields.SetField<fields.SchemaField<PackageCompendiumFolderSchema<1>>>;
 
     /**
      * An organized object of relationships to other Packages
@@ -385,7 +392,7 @@ export class PackageCompendiumFolder<Depth extends number> extends fields.Schema
   }: InexactPartial<{
     /** @defaultValue `1` */
     depth: Depth;
-    options: fields.SchemaField.DefaultOptions;
+    options: fields.SchemaField.Options<BasePackage.PackageCompendiumFolderSchema<Depth>>;
   }>);
 }
 
