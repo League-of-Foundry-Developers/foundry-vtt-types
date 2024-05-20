@@ -21,7 +21,6 @@ expectTypeOf(packageCompendia.ownership.ASSISTANT).toEqualTypeOf<
 expectTypeOf(myPackage.id).toEqualTypeOf<string>();
 expectTypeOf(myPackage.changelog).toEqualTypeOf<string | undefined>();
 
-// TODO: Figure out if it's just a bad test or if there's underlying issues
 expectTypeOf(myPackage._source.packs[0].banner).toEqualTypeOf<string | undefined>();
-expectTypeOf(myPackage._source.authors).toEqualTypeOf<Array<PackageAuthorData> | undefined>();
-expectTypeOf(myPackage.languages).toEqualTypeOf<Set<PackageLanguageData> | undefined>();
+expectTypeOf(myPackage._source.authors[0].discord).toEqualTypeOf<string | undefined>();
+expectTypeOf(myPackage.languages.first()!.lang).toEqualTypeOf<string>();

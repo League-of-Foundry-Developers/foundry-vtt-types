@@ -60,29 +60,39 @@ declare namespace BasePackage {
     /**
      * The canonical compendium name. This should contain no spaces or special characters
      */
-    name: fields.StringField;
+    name: fields.StringField<{
+      required: true;
+      blank: false;
+      validate: (n: string) => boolean;
+      validationError: "may not contain periods";
+    }>;
 
     /**
      * The human-readable compendium name
      */
-    label: fields.StringField;
+    label: fields.StringField<{ required: true; blank: false }>;
 
     banner: fields.StringField<optionalString>;
 
     /**
      * The local relative path to the compendium source directory. The filename should match the name attribute
      */
-    path: fields.StringField;
+    path: fields.StringField<{ required: false }>;
 
     /**
      * The specific document type that is contained within this compendium pack
      */
-    type: fields.StringField;
+    type: fields.StringField<{
+      required: true;
+      blank: false;
+      choices: foundry.CONST.COMPENDIUM_DOCUMENT_TYPES[];
+      validationError: "must be a value in CONST.COMPENDIUM_DOCUMENT_TYPES";
+    }>;
 
     /**
      * Denote that this compendium pack requires a specific game system to function properly
      */
-    system: fields.StringField;
+    system: fields.StringField<optionalString>;
 
     ownership: CompendiumOwnershipField;
 
@@ -93,17 +103,23 @@ declare namespace BasePackage {
     /**
      * A string language code which is validated by Intl.getCanonicalLocales
      */
-    lang: fields.StringField;
+    lang: fields.StringField<{
+      required: true;
+      blank: false;
+      // Foundry is using the truthiness of this function
+      // validate: typeof Intl.getCanonicalLocales;
+      validationError: "must be supported by the Intl.getCanonicalLocales function";
+    }>;
 
     /**
      * The human-readable language name
      */
-    name: fields.StringField;
+    name: fields.StringField<{ required: false }>;
 
     /**
      * The relative path to included JSON translation strings
      */
-    path: fields.StringField;
+    path: fields.StringField<{ required: true; blank: false }>;
 
     /**
      * Only apply this set of translations when a specific system is being used
@@ -122,17 +138,17 @@ declare namespace BasePackage {
     /**
      * The Package will not function before this version
      */
-    minimum: fields.StringField;
+    minimum: fields.StringField<{ required: false; blank: false; initial: undefined }>;
 
     /**
      * Verified compatible up to this version
      */
-    verified: fields.StringField;
+    verified: fields.StringField<{ required: false; blank: false; initial: undefined }>;
 
     /**
      * The Package will not function after this version
      */
-    maximum: fields.StringField;
+    maximum: fields.StringField<{ required: false; blank: false; initial: undefined }>;
   };
 
   type PackageRelationshipsSchema = {
@@ -304,7 +320,7 @@ declare namespace BasePackage {
     /**
      * A publicly accessible web URL where the source files for this package may be downloaded. Required in order to support module installation.
      */
-    download: fields.StringField;
+    download: fields.StringField<{ required: false; blank: false; initial: undefined }>;
 
     /**
      * Whether this package uses the protected content access system.
@@ -556,7 +572,7 @@ declare class BasePackage<PackageSchema extends BasePackage.Schema = BasePackage
   protected static _logWarning(
     packageId: string,
     message: string,
-    options: InexactPartial<
+    options?: InexactPartial<
       {
         /** Is the package installed? */
         installed: unknown;
@@ -566,7 +582,7 @@ declare class BasePackage<PackageSchema extends BasePackage.Schema = BasePackage
 
   static migrateData(
     data: object,
-    logOptions: InexactPartial<{
+    logOptions?: InexactPartial<{
       installed: boolean;
     }>,
   ): object;
