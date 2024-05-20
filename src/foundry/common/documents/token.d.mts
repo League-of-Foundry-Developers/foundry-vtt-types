@@ -134,13 +134,8 @@ declare namespace BaseToken {
   type Properties = fields.SchemaField.InnerInitializedType<Schema>;
   type Source = fields.SchemaField.InnerPersistedType<Schema>;
 
-  interface Schema extends DataSchema {
-    /**
-     * The Token _id which uniquely identifies it within its parent Scene
-     * @defaultValue `null`
-     */
-    _id: fields.DocumentIdField;
-
+  // Needed because Omit wasn't working with schemas
+  interface SharedProtoSchema extends DataSchema {
     /**
      * The name used to describe the Token
      * @defaultValue `""`
@@ -164,22 +159,10 @@ declare namespace BaseToken {
     >;
 
     /**
-     * The _id of an Actor document which this Token represents
-     * @defaultValue `null`
-     */
-    actorId: fields.ForeignDocumentField<documents.BaseActor, { idOnly: true }>;
-
-    /**
      * Does this Token uniquely represent a singular Actor, or is it one of many?
      * @defaultValue `false`
      */
     actorLink: fields.BooleanField;
-
-    /**
-     * The ActorDelta embedded document which stores the differences between this
-     * token and the base actor it represents.
-     */
-    delta: ActorDeltaField<documents.BaseActor>;
 
     appendNumber: fields.BooleanField;
 
@@ -204,24 +187,6 @@ declare namespace BaseToken {
     height: fields.NumberField<{ positive: true; initial: 1; label: "Height" }>;
 
     /**
-     * The x-coordinate of the top-left corner of the Token
-     * @defaultValue `0`
-     */
-    x: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0; label: "XCoord" }>;
-
-    /**
-     * The y-coordinate of the top-left corner of the Token
-     * @defaultValue `0`
-     */
-    y: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0; label: "YCoord" }>;
-
-    /**
-     * The vertical elevation of the Token, in distance units
-     * @defaultValue `0`
-     */
-    elevation: fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
-
-    /**
      * Prevent the Token image from visually rotating?
      * @defaultValue `false`
      */
@@ -234,28 +199,10 @@ declare namespace BaseToken {
     rotation: fields.AngleField;
 
     /**
-     * An array of effect icon paths which are displayed on the Token
-     * @defaultValue `[]`
-     */
-    effects: fields.ArrayField<fields.StringField>;
-
-    /**
-     * A single icon path which is displayed as an overlay on the Token
-     * @defaultValue `""`
-     */
-    overlayEffect: fields.StringField;
-
-    /**
      * The opacity of the token image
      * @defaultValue `1`
      */
     alpha: fields.AlphaField;
-
-    /**
-     * Is the Token currently hidden from player view?
-     * @defaultValue `false`
-     */
-    hidden: fields.BooleanField;
 
     /**
      * A displayed Token disposition from CONST.TOKEN_DISPOSITIONS
@@ -453,6 +400,62 @@ declare namespace BaseToken {
      * @defaultValue `{}`
      */
     flags: fields.ObjectField.FlagsField<"Token">;
+  }
+
+  interface Schema extends SharedProtoSchema {
+    /**
+     * The Token _id which uniquely identifies it within its parent Scene
+     * @defaultValue `null`
+     */
+    _id: fields.DocumentIdField;
+
+    /**
+     * The _id of an Actor document which this Token represents
+     * @defaultValue `null`
+     */
+    actorId: fields.ForeignDocumentField<documents.BaseActor, { idOnly: true }>;
+
+    /**
+     * The ActorDelta embedded document which stores the differences between this
+     * token and the base actor it represents.
+     */
+    delta: ActorDeltaField<documents.BaseActor>;
+
+    /**
+     * The x-coordinate of the top-left corner of the Token
+     * @defaultValue `0`
+     */
+    x: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0; label: "XCoord" }>;
+
+    /**
+     * The y-coordinate of the top-left corner of the Token
+     * @defaultValue `0`
+     */
+    y: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0; label: "YCoord" }>;
+
+    /**
+     * The vertical elevation of the Token, in distance units
+     * @defaultValue `0`
+     */
+    elevation: fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
+
+    /**
+     * An array of effect icon paths which are displayed on the Token
+     * @defaultValue `[]`
+     */
+    effects: fields.ArrayField<fields.StringField>;
+
+    /**
+     * A single icon path which is displayed as an overlay on the Token
+     * @defaultValue `""`
+     */
+    overlayEffect: fields.StringField;
+
+    /**
+     * Is the Token currently hidden from player view?
+     * @defaultValue `false`
+     */
+    hidden: fields.BooleanField;
   }
 }
 

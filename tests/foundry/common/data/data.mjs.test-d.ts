@@ -8,8 +8,15 @@ const myShape = new foundry.data.ShapeData();
 
 expectTypeOf(myShape.type).toEqualTypeOf<string>();
 
-const myProtoToken = new foundry.data.PrototypeToken();
+// Using token here for comparison
+declare const baseToken: foundry.documents.BaseToken;
+expectTypeOf(baseToken.displayName).toEqualTypeOf<foundry.CONST.TOKEN_DISPLAY_MODES>();
+expectTypeOf(baseToken.light.alpha).toEqualTypeOf<number>();
 
+const myProtoToken = new foundry.data.PrototypeToken();
+expectTypeOf(myProtoToken.name).toEqualTypeOf<string>();
+expectTypeOf(myProtoToken.displayName).toEqualTypeOf<foundry.CONST.TOKEN_DISPLAY_MODES>();
+expectTypeOf(myProtoToken.light.alpha).toEqualTypeOf<number>();
 expectTypeOf(myProtoToken.isOwner).toEqualTypeOf<boolean>();
 expectTypeOf(myProtoToken.getBarAttribute("foo")?.attribute).toEqualTypeOf<string | undefined>();
 

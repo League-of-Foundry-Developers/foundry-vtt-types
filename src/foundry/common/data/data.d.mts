@@ -280,6 +280,7 @@ declare class TextureData<
 }
 
 declare namespace PrototypeToken {
+  // Not otherwise used
   type ExcludedProperties =
     | "_id"
     | "actorId"
@@ -291,14 +292,15 @@ declare namespace PrototypeToken {
     | "overlayEffect"
     | "hidden";
 
-  type Schema = Omit<documents.BaseToken.Schema, ExcludedProperties> & {
-    name: fields.StringField<{ required: true; blank: true }>;
+  interface Schema extends foundry.documents.BaseToken.SharedProtoSchema {
+    // Name is technically redefined but with the same options so it's ignored here
+    // name: fields.StringField<{ required: true; blank: true }>;
 
     /**
      * Does the prototype token use a random wildcard image?
      */
     randomImg: fields.BooleanField;
-  };
+  }
 
   type ConstructorData = fields.SchemaField.InnerAssignmentType<Schema>;
 }
