@@ -361,7 +361,7 @@ declare namespace DataField {
   type MergedOptions<Options extends DataFieldOptions.Any> = SimpleMerge<DefaultOptions, Options>;
 
   /** Any DataField. */
-  type Any = DataField<any, any, any, any>;
+  type Any = DataField<DataFieldOptions.Any, any, any, any>;
 
   /** A DataField with unknown inner types. */
   type Unknown = DataField<any, unknown, unknown, unknown>;
@@ -1465,7 +1465,7 @@ declare class SetField<
 
 declare namespace SetField {
   /** Any SetField */
-  type Any = SetField<any, any, any, any, any, any, any, any>;
+  type Any = SetField<DataField.Any, any, any, any, any, any, any, any>;
 
   /**
    * A shorthand for the options of a SetField class.

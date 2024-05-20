@@ -789,10 +789,10 @@ declare abstract class Document<
 
 declare namespace Document {
   /** Any Document */
-  type Any = Document<fields.SchemaField.AnyWithFlags, any, any>;
+  type Any = Document<fields.SchemaField.AnyWithFlags, AnyMetadata, any>;
 
   /** Any Document, that is a child of the given parent Document. */
-  type AnyChild<Parent extends Any | null> = Document<any, any, Parent>;
+  type AnyChild<Parent extends Any | null> = Document<fields.SchemaField.AnyWithFlags, AnyMetadata, Parent>;
 
   type Constructor = Pick<typeof Document, keyof typeof Document> & (new (...args: any[]) => Document.Any);
 

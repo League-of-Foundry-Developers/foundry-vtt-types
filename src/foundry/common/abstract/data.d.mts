@@ -403,7 +403,7 @@ export declare namespace DataModel {
   }
 
   /** Any DataModel. */
-  type Any = DataModel<any, any>;
+  type Any = DataModel<SchemaField.Any, any>;
 
   /**
    * A helper type to extract the {@link DataSchema} from a {@link DataModel}.
