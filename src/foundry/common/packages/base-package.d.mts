@@ -448,10 +448,10 @@ interface BasePackage extends fields.SchemaField.InnerInitializedType<BasePackag
  * The data schema used to define a Package manifest.
  * Specific types of packages extend this schema with additional fields.
  */
-declare class BasePackage<PackageSchema extends BasePackage.Schema = BasePackage.Schema> extends DataModel<
-  fields.SchemaField<PackageSchema>,
-  null
-> {
+declare class BasePackage<
+  // BaseWorld alters the definition of `version`
+  PackageSchema extends Omit<BasePackage.Schema, "version"> = BasePackage.Schema,
+> extends DataModel<fields.SchemaField<PackageSchema>, null> {
   /**
    * An availability code in PACKAGE_AVAILABILITY_CODES which defines whether this package can be used.
    */
