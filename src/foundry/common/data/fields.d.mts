@@ -3174,8 +3174,7 @@ declare namespace TypeDataField {
    * Get the system DataModel configuration for a specific document type.
    * @typeParam DocumentType - the type of the Document this system data is for
    */
-  // TODO: Type SystemConfig
-  type Config<DocumentType extends Document.SystemConstructor> = SystemConfig[DocumentType["metadata"]["name"]];
+  type Config<DocumentType extends Document.SystemConstructor> = DataModelConfig[DocumentType["metadata"]["name"]];
 
   /**
    * Get the configured core and system type names for a specific document type.

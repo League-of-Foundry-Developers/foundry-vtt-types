@@ -7,6 +7,7 @@ import type {
   StoredDocument,
   Titlecase,
 } from "../../src/types/utils.d.mts";
+import type { TypeNamesForDocument } from "../../src/types/helperTypes.d.mts";
 
 const membersBecomeOptional: DeepPartial<{ a: string }> = {};
 expectTypeOf(membersBecomeOptional).toEqualTypeOf<{ a?: string }>();
@@ -53,49 +54,52 @@ expectTypeOf(titlecaseWithThreeWords).toEqualTypeOf<"Foo Bar Baz">();
 const numberMaybePromise: MaybePromise<number> = 0;
 expectTypeOf(await numberMaybePromise).toEqualTypeOf<number>();
 
+declare const JournalEntryPageTypes: TypeNamesForDocument<"JournalEntryPage">;
+expectTypeOf(JournalEntryPageTypes).toEqualTypeOf<"base" | "image" | "pdf" | "text" | "video">();
+
 declare const user: User;
 expectTypeOf(user.id).toEqualTypeOf<string | null>();
-expectTypeOf(user.data._id).toEqualTypeOf<string | null>();
-expectTypeOf(user.data._source._id).toEqualTypeOf<string | null>();
+expectTypeOf(user._id).toEqualTypeOf<string | null>();
+expectTypeOf(user._source._id).toEqualTypeOf<string | null>();
 expectTypeOf(user.toJSON()._id).toEqualTypeOf<string | null>();
-expectTypeOf(user.data.toJSON()._id).toEqualTypeOf<string | null>();
+expectTypeOf(user.toJSON()._id).toEqualTypeOf<string | null>();
 expectTypeOf(user.toObject()._id).toEqualTypeOf<string | null>();
-expectTypeOf(user.data.toObject()._id).toEqualTypeOf<string | null>();
+expectTypeOf(user.toObject()._id).toEqualTypeOf<string | null>();
 expectTypeOf(user.toObject(false)._id).toEqualTypeOf<string | null>();
-expectTypeOf(user.data.toObject(false)._id).toEqualTypeOf<string | null>();
+expectTypeOf(user.toObject(false)._id).toEqualTypeOf<string | null>();
 expectTypeOf(user.clone()).toEqualTypeOf<User | Promise<User | undefined>>();
 
 declare const storedUser: StoredDocument<User>;
 expectTypeOf(storedUser.id).toEqualTypeOf<string>();
-expectTypeOf(storedUser.data._id).toEqualTypeOf<string>();
-expectTypeOf(storedUser.data._source._id).toEqualTypeOf<string>();
+expectTypeOf(storedUser._id).toEqualTypeOf<string>();
+expectTypeOf(storedUser._source._id).toEqualTypeOf<string>();
 expectTypeOf(storedUser.toJSON()._id).toEqualTypeOf<string>();
-expectTypeOf(storedUser.data.toJSON()._id).toEqualTypeOf<string>();
+expectTypeOf(storedUser.toJSON()._id).toEqualTypeOf<string>();
 expectTypeOf(storedUser.toObject()._id).toEqualTypeOf<string>();
-expectTypeOf(storedUser.data.toObject()._id).toEqualTypeOf<string>();
+expectTypeOf(storedUser.toObject()._id).toEqualTypeOf<string>();
 expectTypeOf(storedUser.toObject(false)._id).toEqualTypeOf<string>();
-expectTypeOf(storedUser.data.toObject(false)._id).toEqualTypeOf<string>();
+expectTypeOf(storedUser.toObject(false)._id).toEqualTypeOf<string>();
 expectTypeOf(storedUser.clone()).toEqualTypeOf<User | Promise<User | undefined>>();
 
 declare const actor: StoredDocument<Actor>;
 expectTypeOf(actor.id).toEqualTypeOf<string>();
-expectTypeOf(actor.data._id).toEqualTypeOf<string>();
-expectTypeOf(actor.data._source._id).toEqualTypeOf<string>();
+expectTypeOf(actor._id).toEqualTypeOf<string>();
+expectTypeOf(actor._source._id).toEqualTypeOf<string>();
 expectTypeOf(actor.toJSON()._id).toEqualTypeOf<string>();
-expectTypeOf(actor.data.toJSON()._id).toEqualTypeOf<string>();
+expectTypeOf(actor.toJSON()._id).toEqualTypeOf<string>();
 expectTypeOf(actor.toObject()._id).toEqualTypeOf<string>();
-expectTypeOf(actor.data.toObject()._id).toEqualTypeOf<string>();
+expectTypeOf(actor.toObject()._id).toEqualTypeOf<string>();
 expectTypeOf(actor.toObject(false)._id).toEqualTypeOf<string>();
-expectTypeOf(actor.data.toObject(false)._id).toEqualTypeOf<string>();
+expectTypeOf(actor.toObject(false)._id).toEqualTypeOf<string>();
 expectTypeOf(actor.clone()).toEqualTypeOf<Actor | Promise<Actor | undefined>>();
 
-if (actor.data.type === "character") {
-  expectTypeOf(actor.data.data.health).toEqualTypeOf<number>();
-  expectTypeOf(actor.data.data.movement).toEqualTypeOf<number>();
+if (actor.type === "character") {
+  expectTypeOf(actor.system.health).toEqualTypeOf<number>();
+  expectTypeOf(actor.system.movement).toEqualTypeOf<number>();
 } else {
-  expectTypeOf(actor.data.data.faction).toEqualTypeOf<string>();
-  expectTypeOf(actor.data.data.challenge).toEqualTypeOf<number>();
-  expectTypeOf(actor.data.data.damage).toEqualTypeOf<number>();
+  expectTypeOf(actor.system.faction).toEqualTypeOf<string>();
+  expectTypeOf(actor.system.challenge).toEqualTypeOf<number>();
+  expectTypeOf(actor.system.damage).toEqualTypeOf<number>();
 }
 
 // we need to test with `assertType` because the types are not considered equal, even though they are structurally the same
