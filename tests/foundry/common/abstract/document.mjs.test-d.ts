@@ -1,16 +1,11 @@
 import { expectTypeOf } from "vitest";
-import type { ActiveEffectDataSource } from "../../../../src/foundry/common/data/data.mjs/activeEffectData.d.mts";
-import type {
-  EffectChangeData,
-  EffectChangeDataProperties,
-} from "../../../../src/foundry/common/data/data.mjs/effectChangeData.d.mts";
 import type { StoredDocument } from "../../../../src/types/utils.d.mts";
 
 const baseActiveEffect = new foundry.documents.BaseActiveEffect();
 
-expectTypeOf(baseActiveEffect.toJSON().changes).toEqualTypeOf<EffectChangeDataProperties[]>();
-expectTypeOf(baseActiveEffect.toObject().changes).toEqualTypeOf<EffectChangeDataProperties[]>();
-expectTypeOf(baseActiveEffect.toObject(true).changes).toEqualTypeOf<EffectChangeDataProperties[]>();
+expectTypeOf(baseActiveEffect.toJSON().changes).toEqualTypeOf<EffectChangeData[]>();
+expectTypeOf(baseActiveEffect.toObject().changes).toEqualTypeOf<EffectChangeData[]>();
+expectTypeOf(baseActiveEffect.toObject(true).changes).toEqualTypeOf<EffectChangeData[]>();
 expectTypeOf(baseActiveEffect.toObject(false).changes).toEqualTypeOf<EffectChangeData[]>();
 
 const item = await Item.create({ name: "Some Item", type: "weapon" });
@@ -91,8 +86,8 @@ declare global {
 }
 
 const combatant = new Combatant({}, {});
-expectTypeOf(combatant.data.flags["my-system"]).toEqualTypeOf<{ value: boolean; value2: number }>();
-expectTypeOf(combatant.data.flags["my-optional-system"]).toEqualTypeOf<{ value: boolean } | undefined>();
+expectTypeOf(combatant.flags["my-system"]).toEqualTypeOf<{ value: boolean; value2: number }>();
+expectTypeOf(combatant.flags["my-optional-system"]).toEqualTypeOf<{ value: boolean } | undefined>();
 
 expectTypeOf(combatant.getFlag("my-system", "value")).toEqualTypeOf<boolean>();
 expectTypeOf(combatant.getFlag("my-system", "value2")).toEqualTypeOf<number>();
@@ -122,8 +117,8 @@ expectTypeOf(combatant.unsetFlag("another-system", "value")).toEqualTypeOf<Promi
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 class MyCombatant extends Combatant {
   setSomeFlag() {
-    expectTypeOf(this.data.flags["my-system"]).toEqualTypeOf<{ value: boolean; value2: number }>();
-    expectTypeOf(this.data.flags["my-optional-system"]).toEqualTypeOf<{ value: boolean } | undefined>();
+    expectTypeOf(this.flags["my-system"]).toEqualTypeOf<{ value: boolean; value2: number }>();
+    expectTypeOf(this.flags["my-optional-system"]).toEqualTypeOf<{ value: boolean } | undefined>();
 
     expectTypeOf(this.getFlag("my-system", "value")).toEqualTypeOf<boolean>();
     expectTypeOf(this.getFlag("another-system", "value")).toEqualTypeOf<unknown>();

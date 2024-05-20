@@ -13,7 +13,6 @@ declare global {
  * The Document definition for a Setting.
  * Defines the DataSchema and common behaviors for a Setting which are shared between both client and server.
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface BaseSetting extends BaseSetting.Properties {}
 declare class BaseSetting extends Document<BaseSetting.SchemaField, BaseSetting.Metadata> {
   /**

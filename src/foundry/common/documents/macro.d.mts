@@ -123,7 +123,7 @@ declare namespace BaseMacro {
      * The _id of a User document which created this Macro *
      * @defaultValue `game?.user?.id`
      */
-    author: fields.ForeignDocumentField<documents.BaseUser, { initial: () => string | undefined }>;
+    author: fields.ForeignDocumentField<documents.BaseUser, { initial: () => string }>;
 
     /**
      * An image file path which provides the thumbnail artwork for this Macro

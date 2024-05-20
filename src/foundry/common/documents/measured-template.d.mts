@@ -95,7 +95,7 @@ declare namespace BaseMeasuredTemplate {
      * The _id of the user who created this measured template
      * @defaultValue `game?.user?.id`
      */
-    user: fields.ForeignDocumentField<documents.BaseUser, { initial: () => string | null | undefined }>;
+    user: fields.ForeignDocumentField<documents.BaseUser, { initial: () => string }>;
 
     /**
      * The value in CONST.MEASURED_TEMPLATE_TYPES which defines the geometry type of this template

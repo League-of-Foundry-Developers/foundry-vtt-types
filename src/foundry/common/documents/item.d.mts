@@ -142,7 +142,7 @@ declare namespace BaseItem {
      */
     img: fields.FilePathField<{
       categories: "IMAGE"[];
-      initial: (data: ConstructorData<TypeNames>) => string;
+      initial: (data: unknown) => string;
     }>;
 
     /**

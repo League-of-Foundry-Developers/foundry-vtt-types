@@ -118,7 +118,7 @@ declare namespace BaseChatMessage {
      * The _id of the User document who generated this message
      * @defaultValue `game?.user?.id`
      */
-    user: fields.ForeignDocumentField<documents.BaseUser, { nullable: false; initial: () => string | null }>;
+    user: fields.ForeignDocumentField<documents.BaseUser, { nullable: false; initial: () => string }>;
 
     /**
      * The timestamp at which point this message was generated
@@ -172,7 +172,8 @@ declare namespace BaseChatMessage {
      * An array of User _id values to whom this message is privately whispered
      * @defaultValue `[]`
      */
-    whisper: fields.ArrayField<fields.ForeignDocumentField<typeof documents.BaseUser, { idOnly: true }>>;
+    // FIXME: This causes errors
+    // whisper: fields.ArrayField<fields.ForeignDocumentField<typeof documents.BaseUser, { idOnly: true }>>;
 
     /**
      * Is this message sent blindly where the creating User cannot see it?

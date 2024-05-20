@@ -3282,10 +3282,11 @@ export function foreignDocumentField<Model extends Document.Any>(
 /**
  * @deprecated since v10, will be removed in v12
  */
-export function embeddedCollectionField<Embedded extends typeof Document>(
-  document: Embedded,
-  options?: EmbeddedCollectionField.Options<Embedded>,
-): EmbeddedCollectionField<Embedded>;
+// TODO: Fix the typing on Embedded
+// export function embeddedCollectionField<Embedded extends typeof Document>(
+//   document: Embedded,
+//   options?: EmbeddedCollectionField.Options<Embedded>,
+// ): EmbeddedCollectionField<Embedded>;
 
 /**
  * @deprecated since v10, will be removed in v12
