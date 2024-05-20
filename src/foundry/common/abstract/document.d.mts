@@ -181,20 +181,15 @@ declare abstract class Document<
    * @param context - Additional context options passed to the create method
    * @returns The cloned Document instance
    */
-  // TODO: Use Save as part of generic to decide if it returns a promise or not
-  override clone(
+  override clone<Save extends boolean = false>(
     data?: fields.SchemaField.AssignmentType<SchemaField["fields"], {}>,
-    {
-      save,
-      keepId,
-      ...context
-    }?: InexactPartial<
+    context?: InexactPartial<
       {
         /**
          * Save the clone to the World database?
          * @defaultValue `false`
          */
-        save: boolean;
+        save: Save;
 
         /**
          * Keep the same ID of the original document
@@ -202,8 +197,8 @@ declare abstract class Document<
          */
         keepId: boolean;
       } & DocumentConstructionContext
-    >,
-  ): this | Promise<this>;
+    >, // Adding StoredDocument to the return causes a recursive type error in Scene
+  ): Save extends true ? Promise<this> : this;
 
   /**
    * For Documents which include game system data, migrate the system data object to conform to its latest data model.

@@ -1,4 +1,4 @@
-import type { DeepPartial, InexactPartial, TemporaryDocument } from "../../../../types/utils.d.mts";
+import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 declare global {
@@ -54,10 +54,24 @@ declare global {
      * @param createData - (default: `{}`)
      * @param options    - (default: `{}`)
      */
-    override clone(
+    override clone<Save extends boolean = false>(
       createData?: foundry.documents.BaseScene.ConstructorData,
-      options?: { save?: boolean; keepId?: boolean },
-    ): TemporaryDocument<this> | Promise<TemporaryDocument<this | undefined>>;
+      context?: InexactPartial<
+        {
+          /**
+           * Save the clone to the World database?
+           * @defaultValue `false`
+           */
+          save: Save;
+
+          /**
+           * Keep the same ID of the original document
+           * @defaultValue `false`
+           */
+          keepId: boolean;
+        } & DocumentConstructionContext
+      >,
+    ): Save extends true ? Promise<this> : this;
 
     override reset(): void;
 
