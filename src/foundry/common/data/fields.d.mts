@@ -1987,8 +1987,121 @@ declare namespace EmbeddedCollectionDeltaField {
   > = DataField.DerivedInitializedType<PersistedElementType[], MergedOptions<AssignmentElementType, Opts>>;
 }
 
-declare class EmbeddedDocumentField {
-  // TODO: Type this.
+/**
+ * A subclass of {@link EmbeddedDataField} which supports a single embedded Document.
+ * @typeParam DocumentType    - the type of the embedded Document
+ * @typeParam Options         - the options of the EmbeddedDocumentField instance
+ * @typeParam AssignmentType  - the type of the allowed assignment values of the EmbeddedDocumentField
+ * @typeParam InitializedType - the type of the initialized values of the EmbeddedDocumentField
+ * @typeParam PersistedType   - the type of the persisted values of the EmbeddedDocumentField
+ * @remarks
+ * Defaults:
+ * AssignmentType: `SchemaField.AssignmentType<DocumentType["schema"]["fields"]> | null | undefined`
+ * InitializedType: `SchemaField.InitializedType<DocumentType["schema"]["fields"]> | null`
+ * PersistedType: `SchemaField.PersistedType<DocumentType["schema"]["fields"]> | null`
+ * InitialValue: `{}`
+ */
+declare class EmbeddedDocumentField<
+  DocumentType extends Document.Any,
+  Options extends EmbeddedDocumentField.Options<DocumentType> = EmbeddedDocumentField.DefaultOptions,
+  AssignmentType = EmbeddedDocumentField.AssignmentType<DocumentType, Options>,
+  InitializedType = EmbeddedDocumentField.InitializedType<DocumentType, Options>,
+  PersistedType extends object | null | undefined = EmbeddedDocumentField.PersistedType<DocumentType, Options>,
+> extends EmbeddedDataField<DocumentType, Options, AssignmentType, InitializedType, PersistedType> {
+  /**
+   * @param model   - The type of Document which is embedded.
+   * @param options - Options which configure the behavior of the field.
+   */
+  constructor(model: ConstructorOf<DocumentType>, options?: Options);
+
+  /** @defaultValue `true` */
+  override nullable: boolean;
+
+  protected static override get _defaults(): EmbeddedDocumentField.Options<Document.Any>;
+
+  /** @defaultValue `true` */
+  static override hierarchical: boolean;
+
+  override initialize(value: PersistedType, model: DataModel.Any): InitializedType | (() => InitializedType | null);
+
+  /**
+   * Return the embedded document(s) as a Collection.
+   * @param parent - The parent document.
+   */
+  getCollection<P extends Document.Any>(parent: P): Collection<P>;
+}
+
+declare namespace EmbeddedDocumentField {
+  /**
+   * A shorthand for the options of an EmbeddedDocumentField class.
+   * @typeParam DocumentType - the type of the embedded Document
+   */
+  type Options<DocumentType extends Document.Any> = DataFieldOptions<
+    SchemaField.InnerAssignmentType<DataSchema<DocumentType>>
+  >;
+
+  /** The type of the default options for the {@link EmbeddedDocumentField} class. */
+  type DefaultOptions = SimpleMerge<
+    EmbeddedDataField.DefaultOptions,
+    {
+      nullable: true;
+    }
+  >;
+
+  /**
+   * A helper type for the given options type merged into the default options of the EmbeddedDocumentField class.
+   * @typeParam DocumentType - the type of the embedded Document
+   * @typeParam Opts         - the options that override the default options
+   */
+  type MergedOptions<DocumentType extends Document.Any, Opts extends Options<DocumentType>> = SimpleMerge<
+    DefaultOptions,
+    Opts
+  >;
+
+  /**
+   * A helper type to extract the {@link DataSchema} from a {@link DataModel}.
+   * @typeParam DocumentType - the type of the embedded Document
+   */
+  type DataSchema<DocumentType extends Document.Any> = DocumentType["schema"]["fields"];
+
+  /**
+   * A shorthand for the assignment type of an EmbeddedDocumentField class.
+   * @typeParam DocumentType - the type of the embedded Document
+   * @typeParam Opts         - the options that override the default options
+   */
+  type AssignmentType<
+    DocumentType extends Document.Any,
+    Opts extends Options<DocumentType>,
+  > = DataField.DerivedAssignmentType<
+    SchemaField.InnerAssignmentType<DataSchema<DocumentType>>,
+    MergedOptions<DocumentType, Opts>
+  >;
+
+  /**
+   * A shorthand for the initialized type of an EmbeddedDocumentField class.
+   * @typeParam DocumentType - the type of the embedded Document
+   * @typeParam Opts         - the options that override the default options
+   */
+  type InitializedType<
+    DocumentType extends Document.Any,
+    Opts extends Options<DocumentType>,
+  > = DataField.DerivedInitializedType<
+    SchemaField.InnerInitializedType<DataSchema<DocumentType>>,
+    MergedOptions<DocumentType, Opts>
+  >;
+
+  /**
+   * A shorthand for the persisted type of an EmbeddedDocumentField class.
+   * @typeParam DocumentType - the type of the embedded Document
+   * @typeParam Opts         - the options that override the default options
+   */
+  type PersistedType<
+    DocumentType extends Document.Any,
+    Opts extends Options<DocumentType>,
+  > = DataField.DerivedInitializedType<
+    SchemaField.InnerPersistedType<DataSchema<DocumentType>>,
+    MergedOptions<DocumentType, Opts>
+  >;
 }
 
 /**
