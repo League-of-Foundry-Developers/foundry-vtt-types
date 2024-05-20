@@ -2,7 +2,7 @@ import type { ConfiguredFlags, ConstructorDataType } from "../../../types/helper
 import type { ConstructorOf, SimpleMerge, ValueOf } from "../../../types/utils.d.mts";
 import type { DataModel } from "../abstract/data.mts";
 import type Document from "../abstract/document.mts";
-import type { EmbeddedCollection } from "../abstract/module.d.mts";
+import type { EmbeddedCollection, EmbeddedCollectionDelta } from "../abstract/module.d.mts";
 import type { DOCUMENT_OWNERSHIP_LEVELS } from "../constants.d.mts";
 import type { CONST } from "../module.d.mts";
 import type { DataModelValidationFailure } from "./validation-failure.mts";
@@ -1845,8 +1845,147 @@ declare namespace EmbeddedCollectionField {
   > = DataField.DerivedInitializedType<PersistedElementType[], MergedOptions<AssignmentElementType, Opts>>;
 }
 
-declare class EmbeddedCollectionDeltaField {
-  // TODO: Type this.
+/**
+ * A subclass of {@link EmbeddedCollectionField} which manages a collection of delta objects relative to another
+ * collection.
+ * @typeParam ElementFieldType       - the field type for the elements in the EmbeddedCollectionDeltaField
+ * @typeParam AssignmentElementType  - the assignment type for the elements in the collection
+ * @typeParam InitializedElementType - the initialized type for the elements in the collection
+ * @typeParam Options                - the options of the EmbeddedCollectionDeltaField instance
+ * @typeParam AssignmentType         - the type of the allowed assignment values of the EmbeddedCollectionDeltaField
+ * @typeParam InitializedType        - the type of the initialized values of the EmbeddedCollectionDeltaField
+ * @typeParam PersistedElementType   - the persisted type for the elements in the collection
+ * @typeParam PersistedType          - the type of the persisted values of the EmbeddedCollectionDeltaField
+ * @remarks
+ * Defaults:
+ * AssignmentType: `ArrayField.BaseAssignmentType<AssignmentElementType> | null | undefined`
+ * InitializedType: `Collection<InitializedElementType>`
+ * PersistedType: `PersistedElementType[]`
+ * InitialValue: `[]`
+ */
+declare class EmbeddedCollectionDeltaField<
+  ElementFieldType extends Document.Constructor,
+  AssignmentElementType = EmbeddedCollectionDeltaField.AssignmentElementType<ElementFieldType>,
+  InitializedElementType = EmbeddedCollectionDeltaField.InitializedElementType<ElementFieldType>,
+  Options extends
+    EmbeddedCollectionDeltaField.Options<AssignmentElementType> = EmbeddedCollectionDeltaField.DefaultOptions<AssignmentElementType>,
+  AssignmentType = EmbeddedCollectionDeltaField.AssignmentType<AssignmentElementType, Options>,
+  InitializedType = EmbeddedCollectionDeltaField.InitializedType<
+    AssignmentElementType,
+    InitializedElementType,
+    Options
+  >,
+  PersistedElementType = EmbeddedCollectionDeltaField.PersistedElementType<ElementFieldType>,
+  PersistedType extends PersistedElementType[] | null | undefined = EmbeddedCollectionDeltaField.PersistedType<
+    AssignmentElementType,
+    PersistedElementType,
+    Options
+  >,
+> extends EmbeddedCollectionField<
+  ElementFieldType,
+  AssignmentElementType,
+  InitializedElementType,
+  Options,
+  AssignmentType,
+  InitializedType,
+  PersistedElementType,
+  PersistedType
+> {
+  static override get implementation(): ConstructorOf<EmbeddedCollectionDelta<any, any>>; // TODO: Type this better.
+
+  protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions | undefined): InitializedType;
+
+  protected override _validateElements(
+    value: any[],
+    options?: DataField.ValidationOptions<DataField.Any> | undefined,
+  ): void | DataModelValidationFailure;
+}
+
+declare namespace EmbeddedCollectionDeltaField {
+  /**
+   * A shorthand for the options of an EmbeddedCollectionDeltaField class.
+   * @typeParam AssignmentElementType - the assignment type of the elements of the EmbeddedCollectionDeltaField
+   */
+  type Options<AssignmentElementType> = DataFieldOptions<ArrayField.BaseAssignmentType<AssignmentElementType>>;
+
+  /**
+   * The type of the default options for the {@link EmbeddedCollectionDeltaField} class.
+   * @typeParam AssignmentElementType - the assignment type of the elements of the EmbeddedCollectionDeltaField
+   */
+  type DefaultOptions<AssignmentElementType> = ArrayField.DefaultOptions<AssignmentElementType>;
+
+  /**
+   * A helper type for the given options type merged into the default options of the EmbeddedCollectionDeltaField class.
+   * @typeParam AssignmentElementType - the assignment type of the elements of the EmbeddedCollectionDeltaField
+   * @typeParam Opts                  - the options that override the default options
+   */
+  type MergedOptions<AssignmentElementType, Opts extends Options<AssignmentElementType>> = SimpleMerge<
+    DefaultOptions<AssignmentElementType>,
+    Opts
+  >;
+
+  /**
+   * A type to infer the assignment element type of an EmbeddedCollectionDeltaField from its ElementFieldType.
+   * @typeParam ElementFieldType - the DataField type of the elements in the EmbeddedCollectionDeltaField
+   */
+  type AssignmentElementType<ElementFieldType extends Document.Constructor> = ElementFieldType extends new (
+    ...args: any[]
+  ) => Document<infer Schema extends SchemaField.Any, any, any>
+    ? SchemaField.InnerAssignmentType<Schema["fields"]>
+    : never;
+
+  /**
+   * A type to infer the initialized element type of an EmbeddedCollectionDeltaField from its ElementFieldType.
+   * @typeParam ElementFieldType - the DataField type of the elements in the EmbeddedCollectionDeltaField
+   */
+  type InitializedElementType<ElementFieldType extends Document.Constructor> = InstanceType<ElementFieldType>;
+
+  /**
+   * A type to infer the initialized element type of an EmbeddedCollectionDeltaField from its ElementFieldType.
+   * @typeParam ElementFieldType - the DataField type of the elements in the EmbeddedCollectionDeltaField
+   */
+  type PersistedElementType<ElementFieldType extends Document.Constructor> = ElementFieldType extends new (
+    ...args: any[]
+  ) => Document<infer Schema extends SchemaField.Any, any, any>
+    ? SchemaField.InnerPersistedType<Schema["fields"]>
+    : never;
+
+  /**
+   * A shorthand for the assignment type of an ArrayField class.
+   * @typeParam AssignmentElementType - the assignment type of the elements of the EmbeddedCollectionDeltaField
+   * @typeParam Opts                  - the options that override the default options
+   */
+  type AssignmentType<
+    AssignmentElementType,
+    Opts extends Options<AssignmentElementType>,
+  > = DataField.DerivedAssignmentType<
+    ArrayField.BaseAssignmentType<AssignmentElementType>,
+    MergedOptions<AssignmentElementType, Opts>
+  >;
+
+  /**
+   * A shorthand for the initialized type of an ArrayField class.
+   * @typeParam AssignmentElementType  - the assignment type of the elements of the EmbeddedCollectionDeltaField
+   * @typeParam InitializedElementType - the initialized type of the elements of the EmbeddedCollectionDeltaField
+   * @typeParam Opts                   - the options that override the default options
+   */
+  type InitializedType<
+    AssignmentElementType,
+    InitializedElementType,
+    Opts extends Options<AssignmentElementType>,
+  > = DataField.DerivedInitializedType<Collection<InitializedElementType>, MergedOptions<AssignmentElementType, Opts>>;
+
+  /**
+   * A shorthand for the persisted type of an ArrayField class.
+   * @typeParam AssignmentElementType - the assignment type of the elements of the EmbeddedCollectionDeltaField
+   * @typeParam PersistedElementType  - the perssited type of the elements of the EmbeddedCollectionDeltaField
+   * @typeParam Opts                  - the options that override the default options
+   */
+  type PersistedType<
+    AssignmentElementType,
+    PersistedElementType,
+    Opts extends Options<AssignmentElementType>,
+  > = DataField.DerivedInitializedType<PersistedElementType[], MergedOptions<AssignmentElementType, Opts>>;
 }
 
 declare class EmbeddedDocumentField {
