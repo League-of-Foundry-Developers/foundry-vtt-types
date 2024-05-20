@@ -69,13 +69,13 @@ declare namespace BaseFogExploration {
      * The _id of the Scene document to which this fog applies
      * @defaultValue `null`
      */
-    scene: fields.ForeignDocumentField<typeof documents.BaseScene, { initial: () => string | null | undefined }>;
+    scene: fields.ForeignDocumentField<documents.BaseScene, { initial: () => string | null | undefined }>;
 
     /**
      * The _id of the User document to which this fog applies
      * @defaultValue `null`
      */
-    user: fields.ForeignDocumentField<typeof documents.BaseUser, { initial: () => string | null | undefined }>;
+    user: fields.ForeignDocumentField<documents.BaseUser, { initial: () => string | null | undefined }>;
 
     /**
      * The base64 image/jpeg of the explored fog polygon

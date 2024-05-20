@@ -2189,7 +2189,7 @@ declare namespace DocumentIdField {
  * InitialValue: `null`
  */
 declare class ForeignDocumentField<
-  DocumentType extends Document.Constructor,
+  DocumentType extends Document.Any,
   Options extends ForeignDocumentField.Options = ForeignDocumentField.DefaultOptions,
   AssignmentType = ForeignDocumentField.AssignmentType<DocumentType, Options>,
   InitializedType = ForeignDocumentField.InitializedType<DocumentType, Options>,
@@ -2199,7 +2199,7 @@ declare class ForeignDocumentField<
    * @param model   - The foreign DataModel class definition which this field should link to.
    * @param options - Options which configure the behavior of the field
    */
-  constructor(model: DocumentType, options?: Options);
+  constructor(model: ConstructorOf<DocumentType>, options?: Options);
 
   /** @defaultValue `true` */
   override nullable: boolean;
@@ -2213,7 +2213,7 @@ declare class ForeignDocumentField<
   /**
    * A reference to the model class which is stored in this field
    */
-  model: DocumentType;
+  model: ConstructorOf<DocumentType>;
 
   protected static override get _defaults(): ForeignDocumentField.Options;
 
@@ -2252,20 +2252,17 @@ declare namespace ForeignDocumentField {
    * A shorthand for the assignment type of a ForeignDocumentField class.
    * @typeParam Opts - the options that override the default options
    */
-  type AssignmentType<
-    DocumentType extends Document.Constructor,
-    Opts extends Options,
-  > = DataField.DerivedAssignmentType<string | InstanceType<DocumentType>, MergedOptions<Opts>>;
+  type AssignmentType<DocumentType extends Document.Any, Opts extends Options> = DataField.DerivedAssignmentType<
+    string | DocumentType,
+    MergedOptions<Opts>
+  >;
 
   /**
    * A shorthand for the initialized type of a ForeignDocumentField class.
    * @typeParam Opts - the options that override the default options
    */
-  type InitializedType<
-    DocumentType extends Document.Constructor,
-    Opts extends Options,
-  > = DataField.DerivedInitializedType<
-    Opts["idOnly"] extends true ? string : InstanceType<DocumentType>,
+  type InitializedType<DocumentType extends Document.Any, Opts extends Options> = DataField.DerivedInitializedType<
+    Opts["idOnly"] extends true ? string : DocumentType,
     MergedOptions<Opts>
   >;
 
@@ -3061,7 +3058,7 @@ declare namespace DocumentStatsField {
      * The ID of the user who last modified the Document.
      * @defaultValue `null`
      */
-    lastModifiedBy: ForeignDocumentField<typeof foundry.documents.BaseUser, { idOnly: true }>;
+    lastModifiedBy: ForeignDocumentField<foundry.documents.BaseUser, { idOnly: true }>;
   }
 }
 
@@ -3279,7 +3276,7 @@ export function systemDataField<D extends Document.Any>(document: D): TypeDataFi
 /**
  * @deprecated since v10, will be removed in v12
  */
-export function foreignDocumentField<Model extends typeof Document>(
+export function foreignDocumentField<Model extends Document.Any>(
   options: ForeignDocumentField.Options & { type: { model: Model } },
 ): ForeignDocumentField<Model>;
 

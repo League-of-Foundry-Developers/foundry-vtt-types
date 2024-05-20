@@ -158,7 +158,7 @@ declare namespace BaseToken {
      * The _id of an Actor document which this Token represents
      * @defaultValue `null`
      */
-    actorId: fields.ForeignDocumentField<typeof documents.BaseActor, { idOnly: true }>;
+    actorId: fields.ForeignDocumentField<documents.BaseActor, { idOnly: true }>;
 
     /**
      * Does this Token uniquely represent a singular Actor, or is it one of many?

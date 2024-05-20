@@ -123,12 +123,7 @@ declare namespace BaseMacro {
      * The _id of a User document which created this Macro *
      * @defaultValue `game?.user?.id`
      */
-    author: fields.ForeignDocumentField<
-      typeof documents.BaseUser,
-      {
-        initial: () => string | undefined;
-      }
-    >;
+    author: fields.ForeignDocumentField<documents.BaseUser, { initial: () => string | undefined }>;
 
     /**
      * An image file path which provides the thumbnail artwork for this Macro
@@ -166,7 +161,7 @@ declare namespace BaseMacro {
      * The _id of a Folder which contains this Macro
      * @defaultValue `null`
      */
-    folder: fields.ForeignDocumentField<typeof documents.BaseFolder>;
+    folder: fields.ForeignDocumentField<documents.BaseFolder>;
 
     /**
      * The numeric sort value which orders this Macro relative to its siblings

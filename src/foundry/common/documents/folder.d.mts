@@ -94,7 +94,7 @@ declare namespace BaseFolder {
      * The _id of a parent Folder which contains this Folder
      * @defaultValue `null`
      */
-    folder: fields.ForeignDocumentField<typeof BaseFolder>;
+    folder: fields.ForeignDocumentField<BaseFolder>;
 
     /**
      * The sorting mode used to organize documents within this Folder, in ["a", "m"]

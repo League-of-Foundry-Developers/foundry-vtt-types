@@ -228,7 +228,7 @@ declare namespace BaseCard {
      * The document ID of the origin deck to which this card belongs
      * @defaultValue `null`
      */
-    origin: fields.ForeignDocumentField<typeof documents.BaseCards>;
+    origin: fields.ForeignDocumentField<documents.BaseCards>;
 
     /**
      * The visible width of this card

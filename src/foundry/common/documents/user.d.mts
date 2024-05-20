@@ -186,7 +186,7 @@ declare namespace BaseUser {
      * A linked Actor document that is this user's impersonated character.
      * @defaultValue `null`
      */
-    character: fields.ForeignDocumentField<typeof BaseActor>;
+    character: fields.ForeignDocumentField<BaseActor>;
 
     /**
      * A color to represent this user.

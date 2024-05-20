@@ -118,7 +118,7 @@ declare namespace BaseChatMessage {
      * The _id of the User document who generated this message
      * @defaultValue `game?.user?.id`
      */
-    user: fields.ForeignDocumentField<typeof documents.BaseUser, { nullable: false; initial: () => string | null }>;
+    user: fields.ForeignDocumentField<documents.BaseUser, { nullable: false; initial: () => string | null }>;
 
     /**
      * The timestamp at which point this message was generated
@@ -147,19 +147,19 @@ declare namespace BaseChatMessage {
        * The _id of the Scene where this message was created
        * @defaultValue `null`
        */
-      scene: fields.ForeignDocumentField<typeof documents.BaseScene, { idOnly: true }>;
+      scene: fields.ForeignDocumentField<documents.BaseScene, { idOnly: true }>;
 
       /**
        * The _id of the Actor who generated this message
        * @defaultValue `null`
        */
-      actor: fields.ForeignDocumentField<typeof documents.BaseActor, { idOnly: true }>;
+      actor: fields.ForeignDocumentField<documents.BaseActor, { idOnly: true }>;
 
       /**
        * The _id of the Token who generated this message
        * @defaultValue `null`
        */
-      token: fields.ForeignDocumentField<typeof documents.BaseToken, { idOnly: true }>;
+      token: fields.ForeignDocumentField<documents.BaseToken, { idOnly: true }>;
 
       /**
        * An overridden alias name used instead of the Actor or Token name

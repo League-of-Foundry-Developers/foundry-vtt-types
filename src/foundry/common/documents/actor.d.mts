@@ -193,7 +193,7 @@ declare namespace BaseActor {
      * The _id of a Folder which contains this Actor
      * @defaultValue `null`
      */
-    folder: fields.ForeignDocumentField<typeof documents.BaseFolder>;
+    folder: fields.ForeignDocumentField<documents.BaseFolder>;
 
     /**
      * The numeric sort value which orders this Actor relative to its siblings

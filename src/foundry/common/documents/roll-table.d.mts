@@ -125,7 +125,7 @@ declare namespace BaseRollTable {
      * The _id of a Folder which contains this RollTable
      * @defaultValue `null`
      */
-    folder: fields.ForeignDocumentField<typeof documents.BaseFolder>;
+    folder: fields.ForeignDocumentField<documents.BaseFolder>;
 
     /**
      * The numeric sort value which orders this RollTable relative to its siblings
