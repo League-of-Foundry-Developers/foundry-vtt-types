@@ -1713,9 +1713,8 @@ declare class EmbeddedCollectionField<
    */
   static get implementation(): ConstructorOf<EmbeddedCollection<any, any>>; // TODO: Type this better.
 
-  // HACK: This is wrong in foundry. See: https://github.com/foundryvtt/foundryvtt/issues/10926
-  // @ts-expect-error There is no `hierarchical` in the inheritance chain.
-  override hierarchical: boolean;
+  /** @defaultValue `true` */
+  static override hierarchical: boolean;
 
   /**
    * A reference to the DataModel subclass of the embedded document element
