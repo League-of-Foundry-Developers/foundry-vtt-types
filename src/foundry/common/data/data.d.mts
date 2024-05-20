@@ -1,4 +1,5 @@
-import type { DataModel, DatabaseBackend } from "../abstract/module.d.mts";
+import type { DatabaseBackend } from "../abstract/module.d.mts";
+import type { DataModel } from "../abstract/data.d.mts";
 import type { fields } from "./module.d.mts";
 import type * as documents from "../documents/module.mjs";
 import type { ValueOf } from "../../../types/utils.d.mts";
@@ -169,7 +170,7 @@ declare namespace LightData {
 
 interface LightData extends fields.SchemaField.InnerInitializedType<LightData.Schema> {}
 
-export class LightData extends DataModel<fields.SchemaField<LightData.Schema>> {
+declare class LightData extends DataModel<fields.SchemaField<LightData.Schema>> {
   static defineSchema(): LightData.Schema;
 
   static migrateData(source: object): object;
@@ -216,7 +217,7 @@ declare namespace ShapeData {
 
 interface ShapeData extends fields.SchemaField.InnerInitializedType<ShapeData.Schema> {}
 
-export class ShapeData extends DataModel<fields.SchemaField<ShapeData.Schema>> {
+declare class ShapeData extends DataModel<fields.SchemaField<ShapeData.Schema>> {
   static defineSchema(): ShapeData.Schema;
 
   static TYPES: ShapeData.TYPES;
@@ -271,7 +272,7 @@ declare namespace TextureData {
 interface TextureData<SrcOptions extends FilePathFieldOptions = TextureData.DefaultOptions>
   extends fields.SchemaField.InnerInitializedType<TextureData.Schema<SrcOptions>> {}
 
-export class TextureData<
+declare class TextureData<
   SrcOptions extends FilePathFieldOptions = TextureData.DefaultOptions,
   SchemaOptions extends fields.SchemaField.Options<TextureData.Schema<SrcOptions>> = {},
 > extends fields.SchemaField<TextureData.Schema<SrcOptions>, SchemaOptions> {
@@ -298,12 +299,14 @@ declare namespace PrototypeToken {
      */
     randomImg: fields.BooleanField;
   };
+
+  type ConstructorData = fields.SchemaField.InnerAssignmentType<Schema>;
 }
 
 interface PrototypeToken extends fields.SchemaField.InnerInitializedType<PrototypeToken.Schema> {}
 
-export class PrototypeToken extends DataModel<fields.SchemaField<PrototypeToken.Schema>, documents.BaseActor> {
-  constructor(data: unknown, options: unknown);
+declare class PrototypeToken extends DataModel<fields.SchemaField<PrototypeToken.Schema>, documents.BaseActor> {
+  constructor(data?: PrototypeToken.ConstructorData, options?: DataModel.ConstructorOptions);
 
   /** @defaultValue `{}` */
   apps: Record<string, Application>;
@@ -334,6 +337,9 @@ export class PrototypeToken extends DataModel<fields.SchemaField<PrototypeToken.
   ): ReturnType<this["actor"]["testUserPermission"]>;
 
   get isOwner(): boolean;
+
+  // Monkey patched in from `token.js`, put here due to issues with the merge process
+  getBarAttribute: TokenDocument["getBarAttribute"];
 }
 
 declare namespace TombstoneData {
@@ -357,6 +363,15 @@ declare namespace TombstoneData {
 
 interface TombstoneData extends fields.SchemaField.InnerInitializedType<TombstoneData.Schema> {}
 
-export class TombstoneData extends DataModel<fields.SchemaField<TombstoneData.Schema>> {
+declare class TombstoneData extends DataModel<fields.SchemaField<TombstoneData.Schema>> {
   static defineSchema(): TombstoneData.Schema;
 }
+
+export {
+  LightData,
+  PrototypeToken,
+  // PrototypeTokenData,
+  ShapeData,
+  TextureData,
+  TombstoneData,
+};

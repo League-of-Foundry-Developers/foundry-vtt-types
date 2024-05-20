@@ -67,7 +67,8 @@ expectTypeOf(user.toObject()._id).toEqualTypeOf<string | null>();
 expectTypeOf(user.toObject()._id).toEqualTypeOf<string | null>();
 expectTypeOf(user.toObject(false)._id).toEqualTypeOf<string | null>();
 expectTypeOf(user.toObject(false)._id).toEqualTypeOf<string | null>();
-expectTypeOf(user.clone()).toEqualTypeOf<User | Promise<User | undefined>>();
+expectTypeOf(user.clone()).toEqualTypeOf<User>();
+expectTypeOf(user.clone({ save: true })).toEqualTypeOf<Promise<User>>();
 
 declare const storedUser: StoredDocument<User>;
 expectTypeOf(storedUser.id).toEqualTypeOf<string>();
