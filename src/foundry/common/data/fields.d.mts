@@ -3065,8 +3065,180 @@ declare namespace DocumentStatsField {
   }
 }
 
-declare class TypeDataField {
-  // TODO: Type this.
+/**
+ * A subclass of [ObjectField]{@link ObjectField} which supports a type-specific data object.
+ * @typeParam DocumentType    - the type of the embedded Document
+ * @typeParam Options         - the options of the TypeDataField instance
+ * @typeParam AssignmentType  - the type of the allowed assignment values of the TypeDataField
+ * @typeParam InitializedType - the type of the initialized values of the TypeDataField
+ * @typeParam PersistedType   - the type of the persisted values of the TypeDataField
+ * @remarks
+ * Defaults:
+ * AssignmentType: `SchemaField.AssignmentType<DocumentType["schema"]["fields"]> | null | undefined`
+ * InitializedType: `SchemaField.InitializedType<DocumentType["schema"]["fields"]>`
+ * PersistedType: `SchemaField.PersistedType<DocumentType["schema"]["fields"]>`
+ * InitialValue: `{}`
+ */
+declare class TypeDataField<
+  DocumentType extends Document.Any,
+  Options extends TypeDataField.Options<DocumentType> = TypeDataField.DefaultOptions,
+  AssignmentType = TypeDataField.AssignmentType<DocumentType, Options>,
+  InitializedType = TypeDataField.InitializedType<DocumentType, Options>,
+  PersistedType extends object | null | undefined = TypeDataField.PersistedType<DocumentType, Options>,
+> extends ObjectField<Options, AssignmentType, InitializedType, PersistedType> {
+  /**
+   * @param document - The base document class which belongs in this field
+   * @param options  - Options which configure the behavior of the field
+   */
+  constructor(document: ConstructorOf<DocumentType>, options?: Options);
+
+  /** @defaultValue `true` */
+  override required: boolean;
+
+  /**
+   * The canonical document name of the document type which belongs in this field
+   */
+  document: ConstructorOf<DocumentType>;
+
+  protected static override get _defaults(): TypeDataField.Options<Document.Any>;
+
+  /** @defaultValue `true` */
+  static override recursive: boolean;
+
+  /**
+   * Return the package that provides the sub-type for the given model.
+   * @param model - The model instance created for this sub-type.
+   */
+  static getModelProvider(model: DataModel.Any): System | Module | null;
+
+  /**
+   * A convenience accessor for the name of the document type associated with this TypeDataField
+   */
+  get documentName(): string;
+
+  /**
+   * Get the DataModel definition that should be used for this type of document.
+   * @param type - The Document instance type
+   * @returns The DataModel class or null
+   */
+  getModelForType(type: string): ConstructorOf<DataModel.Any> | null;
+
+  override getInitialValue(data: { type?: string } | undefined): InitializedType;
+
+  protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions | undefined): InitializedType;
+
+  override initialize(value: PersistedType, model: DataModel.Any): InitializedType | (() => InitializedType | null);
+
+  protected override _validateType(
+    value: InitializedType,
+    options?: DataField.ValidationOptions<DataField.Any> | undefined,
+  ): boolean | void;
+
+  protected override _validateModel(data: object, options?: object | undefined): void;
+
+  override toObject(value: InitializedType): PersistedType;
+
+  /**
+   * Migrate this field's candidate source data.
+   * @param sourceData - Candidate source data of the root model
+   * @param fieldData  - The value of this field within the source data
+   */
+  migrateSource(sourceData: object, fieldData: unknown): unknown;
+}
+
+declare namespace TypeDataField {
+  /**
+   * A shorthand for the options of a TypeDataField class.
+   * @typeParam DocumentType - the type of the embedded Document
+   */
+  type Options<DocumentType extends Document.Any> = DataFieldOptions<
+    SchemaField.InnerAssignmentType<DataModel.DataSchema<DocumentType>>
+  >;
+
+  /** The type of the default options for the {@link TypeDataField} class. */
+  type DefaultOptions = SimpleMerge<
+    ObjectField.DefaultOptions,
+    {
+      required: true;
+    }
+  >;
+
+  /**
+   * A helper type for the given options type merged into the default options of the TypeDataField class.
+   * @typeParam DocumentType - the type of the embedded Document
+   * @typeParam Options - the options that override the default options
+   */
+  type MergedOptions<DocumentType extends Document.Any, Opts extends Options<DocumentType>> = SimpleMerge<
+    DefaultOptions,
+    Opts
+  >;
+
+  /**
+   * Get the system DataModel configuration for a specific document type.
+   * @typeParam DocumentType - the type of the Document this system data is for
+   */
+  // TODO: Type SystemConfig
+  type Config<DocumentType extends Document.SystemConstructor> = SystemConfig[DocumentType["metadata"]["name"]];
+
+  /**
+   * Get the configured core and system type names for a specific document type.
+   * @typeParam DocumentType - the type of the Document this data is for
+   */
+  type TypeNames<DocumentType extends Document.SystemConstructor> =
+    | CoreTypeNames<DocumentType>
+    | SystemTypeNames<DocumentType>;
+
+  /**
+   * Get the core type names for a specific document type.
+   * @typeParam DocumentType - the type of the Document this data is for
+   */
+  type CoreTypeNames<DocumentType extends Document.SystemConstructor> =
+    DocumentType["metadata"]["coreTypes"] extends string[] ? DocumentType["metadata"]["coreTypes"][number] : never;
+
+  /**
+   * Get the configured system type names for a specific document type.
+   * @typeParam DocumentType - the type of the Document this system data is for
+   */
+  type SystemTypeNames<DocumentType extends Document.SystemConstructor> = keyof Config<DocumentType>;
+
+  /**
+   * A shorthand for the assignment type of a TypeDataField class.
+   * @typeParam DocumentType - the type of the embedded Document
+   * @typeParam Options - the options that override the default options
+   */
+  type AssignmentType<
+    DocumentType extends Document.Any,
+    Opts extends Options<DocumentType>,
+  > = DataField.DerivedAssignmentType<
+    SchemaField.InnerAssignmentType<DataModel.DataSchema<DocumentType>>,
+    MergedOptions<DocumentType, Opts>
+  >;
+
+  /**
+   * A shorthand for the initialized type of a TypeDataField class.
+   * @typeParam DocumentType - the type of the embedded Document
+   * @typeParam Options - the options that override the default options
+   */
+  type InitializedType<
+    DocumentType extends Document.Any,
+    Opts extends Options<DocumentType>,
+  > = DataField.DerivedInitializedType<
+    SchemaField.InnerInitializedType<DataModel.DataSchema<DocumentType>>,
+    MergedOptions<DocumentType, Opts>
+  >;
+
+  /**
+   * A shorthand for the persisted type of a TypeDataField class.
+   * @typeParam DocumentType - the type of the embedded Document
+   * @typeParam Opts         - the options that override the default options
+   */
+  type PersistedType<
+    DocumentType extends Document.Any,
+    Opts extends Options<DocumentType>,
+  > = DataField.DerivedInitializedType<
+    SchemaField.InnerPersistedType<DataModel.DataSchema<DocumentType>>,
+    MergedOptions<DocumentType, Opts>
+  >;
 }
 
 /**
@@ -3102,7 +3274,7 @@ declare namespace ModelValidationError {
 /**
  * @deprecated since v10, will be removed in v12
  */
-export function systemDataField(document: Document.Any): TypeDataField;
+export function systemDataField<D extends Document.Any>(document: D): TypeDataField<D>;
 
 /**
  * @deprecated since v10, will be removed in v12

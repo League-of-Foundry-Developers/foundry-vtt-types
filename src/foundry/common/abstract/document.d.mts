@@ -789,7 +789,7 @@ declare abstract class Document<
 
 declare namespace Document {
   /** Any Document */
-  type Any = Document<any, any, any>;
+  type Any = Document<fields.SchemaField.AnyWithFlags, any, any>;
 
   /** Any Document, that is a child of the given parent Document. */
   type AnyChild<Parent extends Any | null> = Document<any, any, Parent>;

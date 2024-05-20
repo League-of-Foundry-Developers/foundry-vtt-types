@@ -130,7 +130,7 @@ declare namespace BaseCards {
      * Game system data which is defined by the system template.json model
      * @defaultValue `{}`
      */
-    system: fields.TypeDataField<typeof BaseCards, TypeName>;
+    system: fields.TypeDataField<BaseCards, TypeName>;
 
     /**
      * A collection of Card documents which currently belong to this stack

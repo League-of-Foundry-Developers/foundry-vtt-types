@@ -148,7 +148,7 @@ declare namespace BaseCard {
      * Game system data which is defined by the system template.json model
      * @defaultValue `{}`
      */
-    system: fields.TypeDataField<typeof BaseCard, TypeName>;
+    system: fields.TypeDataField<BaseCard, TypeName>;
 
     /**
      * An optional suit designation which is used by default sorting

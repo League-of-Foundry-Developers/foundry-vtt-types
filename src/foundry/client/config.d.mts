@@ -130,7 +130,7 @@ declare global {
        * @defaultValue `{}`
        * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
        */
-      dataModels: Record<string, DataModel<SchemaField.Any, Actor>>;
+      dataModels: Record<string, ConstructorOf<DataModel<SchemaField.Any, Actor>>>;
 
       /** @defaultValue `{}` */
       typeLabels: Record<string, string>;
@@ -181,7 +181,7 @@ declare global {
        * @defaultValue `{}`
        * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
        */
-      dataModels: Record<string, DataModel<SchemaField.Any, Cards>>;
+      dataModels: Record<string, ConstructorOf<DataModel<SchemaField.Any, Cards>>>;
 
       /**
        * @defaultValue
@@ -378,7 +378,7 @@ declare global {
        * @defaultValue `{}`
        * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
        */
-      dataModels: Record<string, DataModel<SchemaField.Any, Item>>;
+      dataModels: Record<string, ConstructorOf<DataModel<SchemaField.Any, Item>>>;
 
       /** @defaultValue `{}` */
       typeLabels: Record<string, string>;
@@ -1784,7 +1784,7 @@ declare global {
        * @defaultValue `{}`
        * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
        */
-      dataModels: Record<string, DataModel<SchemaField.Any, Card>>;
+      dataModels: Record<string, ConstructorOf<DataModel<SchemaField.Any, Card>>>;
     };
 
     /**
@@ -1803,7 +1803,7 @@ declare global {
        * @defaultValue `{}`
        * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
        */
-      dataModels: Record<string, DataModel<SchemaField.Any, JournalEntryPage>>;
+      dataModels: Record<string, ConstructorOf<DataModel<SchemaField.Any, JournalEntryPage>>>;
 
       typeLabels: Record<string, string>;
 
