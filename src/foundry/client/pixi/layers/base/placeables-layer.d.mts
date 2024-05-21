@@ -1,7 +1,6 @@
 import type {
   ConfiguredDocumentClassForName,
   ConfiguredObjectClassForName,
-  ConstructorDataType,
   DataSourceForPlaceable,
   PlaceableDocumentType,
 } from "../../../../../types/helperTypes.d.mts";
@@ -80,7 +79,7 @@ declare global {
      */
     get documentCollection(): EmbeddedCollection<
       ConfiguredDocumentClassForName<DocumentName>,
-      foundry.data.SceneData
+      ConfiguredDocumentClassForName<"Scene">
     > | null;
 
     /**
@@ -363,7 +362,7 @@ declare global {
      * @returns The created preview object
      */
     protected _createPreview(
-      createData: ConstructorDataType<InstanceType<ConfiguredDocumentClassForName<DocumentName>>["data"]>,
+      createData: InstanceType<ConfiguredDocumentClassForName<DocumentName>>["_source"],
       options: {
         /**
          * Render the preview object config sheet?

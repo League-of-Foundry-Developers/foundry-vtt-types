@@ -1,21 +1,7 @@
+import type { ValueOf } from "../../../../types/utils.d.mts";
+import type { fields } from "../../../common/data/module.d.mts";
+
 export {};
-
-// TODO: Remove after foundry.abstract.DataModel is defined
-// Currently that is in PR #2331 (branch v10/non-inferring-data-fields
-declare namespace foundry {
-  namespace data {
-    namespace fields {
-      class DataField {
-        static get _defaults(): Record<string, unknown>;
-
-        _cast(value: any): any;
-      }
-    }
-  }
-  namespace abstract {
-    class DataModel {}
-  }
-}
 
 declare global {
   class ShaderField extends foundry.data.fields.DataField {
@@ -38,7 +24,7 @@ declare global {
    * A Vision Mode which can be selected for use by a Token.
    * The selected Vision Mode alters the appearance of various aspects of the canvas while that Token is the POV.
    */
-  abstract class VisionMode extends foundry.abstract.DataModel {
+  abstract class VisionMode extends foundry.abstract.DataModel<fields.SchemaField<VisionMode.Schema>> {
     /**
      * Construct a Vision Mode using provided configuration parameters and callback functions.
      * @param data    - Data which fulfills the model defined by the VisionMode schema.
@@ -46,7 +32,7 @@ declare global {
      */
     constructor(data: Partial<any>, options?: object);
 
-    static defineSchema(): any;
+    static defineSchema(): VisionMode.Schema;
 
     /** The lighting illumination levels which are supported. */
     static LIGHTING_LEVELS: {
@@ -105,5 +91,67 @@ declare global {
      * @param dt - The deltaTime passed by the PIXI Ticker
      */
     animate(dt: number): void;
+  }
+
+  namespace VisionMode {
+    type ShaderSchema = fields.SchemaField<{
+      shader: ShaderField;
+      uniforms: fields.ObjectField;
+    }>;
+
+    type LightingSchema = fields.SchemaField<{
+      visibility: fields.NumberField;
+      postProcessingModes: fields.ArrayField<fields.StringField>;
+      uniforms: fields.ObjectField;
+    }>;
+
+    type LightingLevels = Record<
+      ValueOf<typeof VisionMode.LIGHTING_LEVELS>,
+      ValueOf<typeof VisionMode.LIGHTING_LEVELS>
+    >;
+    type LightingMultipliers = Record<ValueOf<typeof VisionMode.LIGHTING_LEVELS>, number>;
+
+    interface Schema extends DataSchema {
+      id: fields.StringField;
+      label: fields.StringField;
+      tokenConfig: fields.BooleanField;
+      canvas: fields.SchemaField<{
+        shader: ShaderField;
+        uniforms: fields.ObjectField;
+      }>;
+      lighting: fields.SchemaField<{
+        background: LightingSchema;
+        coloration: LightingSchema;
+        illumination: LightingSchema;
+        levels: fields.ObjectField<
+          {
+            validate: (o: unknown) => boolean;
+            validationError: "may only contain a mapping of keys from VisionMode.LIGHTING_LEVELS";
+          },
+          LightingLevels,
+          LightingLevels,
+          LightingLevels
+        >;
+        multipliers: fields.ObjectField<
+          {
+            validate: (o: unknown) => boolean;
+            validationError: "must provide a mapping of keys from VisionMode.LIGHTING_LEVELS to numeric multiplier values";
+          },
+          LightingMultipliers,
+          LightingMultipliers,
+          LightingMultipliers
+        >;
+      }>;
+      vision: fields.SchemaField<{
+        background: ShaderSchema;
+        coloration: ShaderSchema;
+        illumination: ShaderSchema;
+        darkness: fields.SchemaField<{
+          adaptive: fields.BooleanField<{ initial: true }>;
+        }>;
+        defaults: fields.ObjectField;
+        preferred: fields.BooleanField<{ initial: false }>;
+      }>;
+    }
   }
 }

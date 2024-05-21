@@ -374,6 +374,7 @@ declare global {
      * TODO: Add a quality parameter
      * Compute the blur parameters according to grid size and performance mode.
      * @param options - Blur options.
+     * @remarks The TODO is foundry internal
      */
     protected _initializeBlur(
       options?: InexactPartial<{

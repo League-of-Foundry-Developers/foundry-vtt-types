@@ -1,19 +1,17 @@
-import type { ConfiguredDocumentClass } from "../../../types/helperTypes.d.mts";
+import type { ConfiguredDocumentClass, ConfiguredDocumentClassForName } from "../../../types/helperTypes.d.mts";
 import type { DeepPartial, ValueOf } from "../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../common/abstract/document.d.mts";
 import type { Document } from "../../common/abstract/module.d.mts";
-
-// TODO: Rework the data portions after the data model branch is merged
-// CAVEAT: That whole bit gets thrown out with v12 *anyways* as part of the decoupling
 
 declare global {
   /**
    * An Abstract Base Class which defines a Placeable Object which represents a Document placed on the Canvas
    */
   abstract class PlaceableObject<
-    D extends Document<any, InstanceType<ConfiguredDocumentClass<typeof Scene>>> = Document<
+    D extends Document<any, any, InstanceType<ConfiguredDocumentClassForName<"Scene">> | null> = Document<
       any,
-      InstanceType<ConfiguredDocumentClass<typeof Scene>>
+      any,
+      InstanceType<ConfiguredDocumentClassForName<"Scene">> | null
     >,
   > extends RenderFlagsMixin(PIXI.Container) {
     /**
@@ -37,8 +35,9 @@ declare global {
     /**
      * The underlying data object which provides the basis for this placeable object
      * @deprecated since v10, will be removed in v12
+     * @remarks `"You are accessing PlaceableObject#data which is no longer used and instead the Document class should be referenced directly as PlaceableObject#document."`
      */
-    data: D["data"];
+    data: D;
 
     /**
      * Track the field of vision for the placeable object.
@@ -232,14 +231,14 @@ declare global {
     /**
      * Register pending canvas operations which should occur after a new PlaceableObject of this type is created
      */
-    protected _onCreate(data: D["data"]["_source"], options: DocumentModificationOptions, userId: string): void;
+    protected _onCreate(data: D["_source"], options: DocumentModificationOptions, userId: string): void;
 
     /**
      * Define additional steps taken when an existing placeable object of this type is updated with new data
      * @remarks Called without options and userId in Drawing._onUpdate
      */
     protected _onUpdate(
-      changed: DeepPartial<D["data"]["_source"]>,
+      changed: DeepPartial<D["_source"]>,
       options?: DocumentModificationOptions,
       userId?: string,
     ): void;

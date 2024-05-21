@@ -1,45 +1,27 @@
 import type { InexactPartial, ValueOf } from "../../../../types/utils.d.mts";
-
-// TODO: Move to common/documents/token
-type TokenDetectionMode = {
-  /** The id of the detection mode, a key from CONFIG.Canvas.detectionModes */
-  id: string;
-  /** Whether or not this detection mode is presently enabled */
-  enabled: boolean;
-  /** The maximum range in distance units at which this mode can detect targets */
-  range: number;
-};
-
-// TODO: Remove after foundry.abstract.DataModel is defined
-// Currently that is in PR #2331 (branch v10/non-inferring-data-fields)
-declare namespace foundry {
-  namespace abstract {
-    class DataModel {
-      constructor(
-        data?: Record<string, unknown>,
-        { parent, strict, ...options }?: { parent: unknown; strict?: boolean; options: Record<string, unknown> },
-      );
-
-      static defineSchema(): Record<string, unknown>;
-    }
-  }
-}
+import type { fields } from "../../../common/data/module.d.mts";
 
 declare global {
+  namespace DetectionMode {
+    interface Schema extends DataSchema {
+      id: fields.StringField<{ blank: false }>;
+      label: fields.StringField<{ blank: false }>;
+      tokenConfig: fields.BooleanField<{ initial: true }>;
+      walls: fields.BooleanField<{ initial: true }>;
+      angle: fields.BooleanField<{ initial: true }>;
+      type: fields.NumberField<{
+        initial: typeof DetectionMode.DETECTION_TYPES.SIGHT;
+        choices: ValueOf<typeof DetectionMode.DETECTION_TYPES>[];
+      }>;
+    }
+  }
+
   /**
    * A Detection Mode which can be associated with any kind of sense/vision/perception.
    * A token could have multiple detection modes.
    */
-  class DetectionMode extends foundry.abstract.DataModel {
-    // TODO: Redo return type later
-    static override defineSchema(): {
-      id: string;
-      label: string;
-      tokenConfig: boolean;
-      walls?: boolean;
-      angle?: boolean;
-      type?: ValueOf<(typeof DetectionMode)["DETECTION_TYPES"]>;
-    };
+  class DetectionMode extends foundry.abstract.DataModel<fields.SchemaField<DetectionMode.Schema>> {
+    static override defineSchema(): DetectionMode.Schema;
 
     /**
      * Get the detection filter pertaining to this mode.
