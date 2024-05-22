@@ -362,13 +362,7 @@ declare global {
      */
     #createGroups(parentName: string, parent: PIXI.DisplayObject): void;
 
-    // TODO: Find a way to make these group properties dynamic
-
-    readonly hidden?: HiddenCanvasGroup;
-
-    readonly rendered?: RenderedCanvasGroup;
-
-    readonly environment?: EnvironmentCanvasGroup;
+    // Group properties are determined by the CanvasGroups type
 
     /**
      * TODO: Add a quality parameter
@@ -819,6 +813,9 @@ declare global {
     triggerPendingOperations(): void;
   }
 
+  // Most canvas group properties have explicit type definitions, but some are left off
+  interface Canvas extends CanvasGroups {}
+
   interface CanvasPerformanceSettings {
     /** The performance mode in CONST.CANVAS_PERFORMANCE_MODES */
     mode: CANVAS_PERFORMANCE_MODES;
@@ -917,3 +914,14 @@ interface CollectionNameToLayerMap {
   tokens: Canvas["tokens"];
   walls: Canvas["walls"];
 }
+
+// TODO: Find a way to make this more dynamic
+type CanvasGroups = {
+  // readonly [GroupName in keyof CONFIG.Canvas.Groups]?: CONFIG.Canvas.Groups[GroupName]["groupClass"];
+
+  readonly hidden?: HiddenCanvasGroup;
+
+  readonly rendered?: RenderedCanvasGroup;
+
+  readonly environment?: EnvironmentCanvasGroup;
+};

@@ -1,6 +1,7 @@
 import type { EditorView } from "prosemirror-view";
 import type { MaybePromise } from "../../../types/utils.d.mts";
-import type { ClientDocumentMixin } from "../data/abstract/client-document.d.mts";
+import type { ClientDocument } from "../data/abstract/client-document.d.mts";
+import type { ConfiguredDocumentClassForName } from "../../../types/helperTypes.d.mts";
 
 declare global {
   /**
@@ -224,8 +225,12 @@ declare global {
      * @param event - The drag event which contains JSON data.
      * @returns The extracted JSON data. The object will be empty if the DragEvent did not contain
      *          JSON-parseable data.
+     * @remarks `TokensLayer#_onDropActorData` returns a number - a notification ID - the  if the user lacks permissions
+     * @remarks `User#assignHotbarMacro` returns a promise to a user document
      */
-    protected static getDragEventData(event: DragEvent): object;
+    protected static getDragEventData(
+      event: DragEvent,
+    ): PlaceableObject | number | Promise<ConfiguredDocumentClassForName<"User">>;
 
     /**
      * Given a Drop event, returns a Content link if possible such as `@Actor[ABC123]`, else null
@@ -378,12 +383,12 @@ declare global {
       /**
        * A document to resolve relative UUIDs against.
        */
-      relativeTo: ClientDocumentMixin<foundry.abstract.Document<any, any>>;
+      relativeTo: ClientDocument<foundry.abstract.Document<any, any>>;
     }
 
     interface GetContentLinkOptions {
       /** A document to generate the link relative to. */
-      relativeTo?: ClientDocumentMixin<foundry.abstract.Document<any, any>>;
+      relativeTo?: ClientDocument<foundry.abstract.Document<any, any>>;
 
       /** A custom label to use instead of the document's name. */
       label?: string;
@@ -397,7 +402,7 @@ declare global {
       async?: boolean;
 
       /** A document to resolve relative UUIDs against.*/
-      relativeTo?: ClientDocumentMixin<foundry.abstract.Document<any, any>>;
+      relativeTo?: ClientDocument<foundry.abstract.Document<any, any>>;
     }
 
     interface CreateInlineRollOptions {

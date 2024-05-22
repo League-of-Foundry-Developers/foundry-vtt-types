@@ -1,5 +1,5 @@
 import type {
-  ConfiguredDocumentClass,
+  ConfiguredDocumentClassForName,
   ConfiguredObjectClassForName,
   PropertiesToSource,
 } from "../../../../../types/helperTypes.d.mts";
@@ -113,7 +113,7 @@ declare global {
      */
     toggleCombat(
       state?: boolean,
-      combat?: InstanceType<ConfiguredDocumentClass<typeof Combat>> | null,
+      combat?: InstanceType<ConfiguredDocumentClassForName<"Combat">> | null,
       {
         token,
       }?: {
@@ -123,7 +123,7 @@ declare global {
          */
         token?: InstanceType<ConfiguredObjectClassForName<"Token">> | null;
       },
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof Combatant>>[]>;
+    ): Promise<InstanceType<ConfiguredDocumentClassForName<"Combatant">>[]>;
 
     /**
      * Get the tab cycle order for tokens by sorting observable tokens based on their distance from top-left.
@@ -175,9 +175,8 @@ declare global {
     }
 
     interface DropData extends Canvas.DropPosition {
-      id?: string;
-      type?: "Actor";
-      pack?: string;
+      type: "Actor";
+      uuid: string;
     }
   }
 }
