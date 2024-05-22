@@ -16,6 +16,8 @@ declare global {
     }
   }
 
+  interface DetectionMode extends fields.SchemaField.InnerInitializedType<DetectionMode.Schema> {}
+
   /**
    * A Detection Mode which can be associated with any kind of sense/vision/perception.
    * A token could have multiple detection modes.

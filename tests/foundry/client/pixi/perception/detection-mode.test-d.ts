@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import type { ValueOf } from "../../../../../src/types/utils.d.mts";
 
 class MyDetectionMode extends DetectionMode {}
 
@@ -13,3 +14,6 @@ expectTypeOf(
     { object: null, tests: [] },
   ),
 ).toEqualTypeOf<boolean>();
+
+expectTypeOf(myDetectionMode.angle).toEqualTypeOf<boolean>();
+expectTypeOf(myDetectionMode.type).toEqualTypeOf<ValueOf<typeof DetectionMode.DETECTION_TYPES>>();

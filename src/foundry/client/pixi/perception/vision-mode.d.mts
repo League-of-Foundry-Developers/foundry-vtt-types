@@ -1,10 +1,15 @@
-import type { ValueOf } from "../../../../types/utils.d.mts";
+import type { SimpleMerge, ValueOf } from "../../../../types/utils.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
 
 export {};
 
 declare global {
-  class ShaderField extends foundry.data.fields.DataField {
+  class ShaderField<
+    Options extends ShaderField.Options = ShaderField.DefaultOptions,
+    AssignmentType = ShaderField.AssignmentType<Options>,
+    InitializedType = ShaderField.InitializedType<Options>,
+    PersistedType extends typeof AbstractBaseShader | null | undefined = ShaderField.InitializedType<Options>,
+  > extends foundry.data.fields.DataField<Options, AssignmentType, InitializedType, PersistedType> {
     /**
      * @defaultValue
      * ```typescript
@@ -14,11 +19,13 @@ declare global {
      * return defaults;
      * ```
      */
-    static override get _defaults(): Record<string, unknown>;
+    static override get _defaults(): ShaderField.DefaultOptions;
 
     /** @remarks The value provided to a ShaderField must be an AbstractBaseShader subclass. */
-    override _cast(value: any): AbstractBaseShader | Error;
+    override _cast(value: any): typeof AbstractBaseShader;
   }
+
+  interface VisionMode extends fields.SchemaField.InnerInitializedType<VisionMode.Schema> {}
 
   /**
    * A Vision Mode which can be selected for use by a Token.
@@ -93,6 +100,42 @@ declare global {
     animate(dt: number): void;
   }
 
+  namespace ShaderField {
+    type Options = DataFieldOptions<typeof AbstractBaseShader>;
+
+    type DefaultOptions = SimpleMerge<
+      foundry.data.fields.DataField.DefaultOptions,
+      {
+        nullable: true;
+        initial: undefined;
+      }
+    >;
+
+    /**
+     * A helper type for the given options type merged into the default options of the BooleanField class.
+     * @typeParam Opts - the options that override the default options
+     */
+    type MergedOptions<Opts extends Options> = SimpleMerge<DefaultOptions, Opts>;
+
+    /**
+     * A shorthand for the assignment type of a BooleanField class.
+     * @typeParam Opts - the options that override the default options
+     */
+    type AssignmentType<Opts extends Options> = foundry.data.fields.DataField.DerivedAssignmentType<
+      typeof AbstractBaseShader,
+      MergedOptions<Opts>
+    >;
+
+    /**
+     * A shorthand for the initialized type of a BooleanField class.
+     * @typeParam Opts - the options that override the default options
+     */
+    type InitializedType<Opts extends Options> = foundry.data.fields.DataField.DerivedInitializedType<
+      typeof AbstractBaseShader,
+      MergedOptions<Opts>
+    >;
+  }
+
   namespace VisionMode {
     type ShaderSchema = fields.SchemaField<{
       shader: ShaderField;
@@ -112,9 +155,9 @@ declare global {
     type LightingMultipliers = Record<ValueOf<typeof VisionMode.LIGHTING_LEVELS>, number>;
 
     interface Schema extends DataSchema {
-      id: fields.StringField;
-      label: fields.StringField;
-      tokenConfig: fields.BooleanField;
+      id: fields.StringField<{ blank: false }>;
+      label: fields.StringField<{ blank: false }>;
+      tokenConfig: fields.BooleanField<{ initial: true }>;
       canvas: fields.SchemaField<{
         shader: ShaderField;
         uniforms: fields.ObjectField;
