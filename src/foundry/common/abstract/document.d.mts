@@ -1,4 +1,9 @@
-import type { ConfiguredDocumentClass, ConstructorDataType } from "../../../types/helperTypes.mts";
+import type {
+  ConfiguredDocumentClass,
+  ConfiguredDocumentClassForName,
+  ConstructorDataType,
+  DocumentType,
+} from "../../../types/helperTypes.mts";
 import type { ConstructorOf, DeepPartial, InexactPartial, StoredDocument } from "../../../types/utils.mts";
 import type * as CONST from "../constants.mts";
 import type { DataField } from "../data/fields.d.mts";
@@ -499,21 +504,11 @@ declare abstract class Document<
    *                       (default: `{}`)
    * @returns An array of created Document instances
    */
-  createEmbeddedDocuments(
-    embeddedName: string,
-    data: Array<Record<string, unknown>>,
-    context: DocumentModificationContext & { temporary: false },
-  ): Promise<Array<StoredDocument<Document.AnyChild<this>>>>;
-  createEmbeddedDocuments(
-    embeddedName: string,
-    data: Array<Record<string, unknown>>,
-    context: DocumentModificationContext & { temporary: boolean },
-  ): Promise<Array<Document.AnyChild<this>>>;
-  createEmbeddedDocuments(
-    embeddedName: string,
-    data: Array<Record<string, unknown>>,
-    context?: DocumentModificationContext,
-  ): Promise<Array<StoredDocument<Document.AnyChild<this>>>>;
+  createEmbeddedDocuments<EmbeddedName extends DocumentType>(
+    embeddedName: EmbeddedName,
+    data?: Array<ConstructorDataType<ConfiguredDocumentClassForName<EmbeddedName>>>,
+    context?: DocumentModificationContext, // Possibly a way to specify the parent here, but seems less relevant?
+  ): Promise<Array<InstanceType<ConfiguredDocumentClassForName<EmbeddedName>>>>;
 
   /**
    * Update multiple embedded Document instances within a parent Document using provided differential data.

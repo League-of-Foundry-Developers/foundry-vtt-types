@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
+import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 import type { BaseUser } from "../../../common/documents/module.d.mts";
 
@@ -14,9 +14,7 @@ declare global {
    * @param data    - Initial data provided to construct the Item document
    * @param context - The document context, see {@link foundry.abstract.Document}
    */
-  class Item<
-    TypeName extends foundry.data.fields.TypeDataField.TypeNames<typeof foundry.documents.BaseItem>,
-  > extends ClientDocumentMixin(foundry.documents.BaseItem) {
+  class Item<TypeName extends Item.TypeNames = Item.TypeNames> extends ClientDocumentMixin(foundry.documents.BaseItem) {
     /**
      * A convenience alias of Item#parent which is more semantically intuitive
      */
@@ -51,14 +49,18 @@ declare global {
 
     // @ts-expect-error For some reason, proctected static methods from Document are lost, so ts complains that this isn't actually an override
     protected static override _onCreateDocuments(
-      items: Array<InstanceType<ConfiguredDocumentClass<typeof Item>>>,
+      items: Array<InstanceType<ConfiguredDocumentClassForName<"Item">>>,
       context: DocumentModificationContext,
     ): Promise<unknown>;
 
     // @ts-expect-error For some reason, proctected static methods from Document are lost, so ts complains that this isn't actually an override
     protected static override _onDeleteDocuments(
-      items: Array<InstanceType<ConfiguredDocumentClass<typeof Item>>>,
+      items: Array<InstanceType<ConfiguredDocumentClassForName<"Item">>>,
       context: DocumentModificationContext,
     ): Promise<unknown>;
+  }
+
+  namespace Item {
+    type TypeNames = foundry.data.fields.TypeDataField.TypeNames<typeof foundry.documents.BaseItem>;
   }
 }

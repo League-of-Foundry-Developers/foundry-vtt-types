@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
 import type { StoredDocument } from "../../../../src/types/utils.d.mts";
+import type BaseActiveEffect from "../../../../src/foundry/common/documents/active-effect.d.mts";
 
 const baseActiveEffect = new foundry.documents.BaseActiveEffect();
 
@@ -11,7 +12,7 @@ expectTypeOf(baseActiveEffect.toObject(false).changes).toEqualTypeOf<EffectChang
 const item = await Item.create({ name: "Some Item", type: "weapon" });
 if (item) {
   expectTypeOf(item.toObject(false).effects[0].changes).toEqualTypeOf<EffectChangeData[]>();
-  expectTypeOf(item.toObject().effects).toEqualTypeOf<ActiveEffectDataSource[]>();
+  expectTypeOf(item.toObject().effects).toEqualTypeOf<BaseActiveEffect["_source"][]>();
 }
 
 declare const bool: boolean;
