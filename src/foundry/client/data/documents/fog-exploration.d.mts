@@ -9,7 +9,7 @@ declare global {
   /**
    * The client-side FogExploration document which extends the common BaseFogExploration model.
    */
-  //@ts-expect-error Foundry turned a synchronous static function into async
+  //@ts-expect-error Foundry turned a synchronous static function into async, fixed in v12
   class FogExploration extends ClientDocumentMixin(foundry.documents.BaseFogExploration) {
     // TODO: Foundry converting a sync function to async has TS unhappy
     /**

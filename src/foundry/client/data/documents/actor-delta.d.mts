@@ -5,6 +5,10 @@ import type { SchemaField } from "../../../common/data/fields.d.mts";
 import type { BaseActor } from "../../../common/documents/module.d.mts";
 
 declare global {
+  /**
+   * The client-side ActorDelta embedded document which extends the common BaseActorDelta document model.
+   * @see {@link TokenDocument}  The TokenDocument document type which contains ActorDelta embedded documents.
+   */
   class ActorDelta extends ClientDocumentMixin(foundry.documents.BaseActorDelta) {
     protected override _configure(options?: { pack?: string | null } | undefined): void;
 

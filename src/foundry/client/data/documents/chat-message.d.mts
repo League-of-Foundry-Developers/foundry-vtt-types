@@ -11,7 +11,7 @@ declare global {
    * The client-side ChatMessage document which extends the common BaseChatMessage abstraction.
    * Each ChatMessage document contains ChatMessageData which defines its data schema.
    *
-   * @see {@link documents.Messages}                The world-level collection of ChatMessage documents
+   * @see {@link Messages}                The world-level collection of ChatMessage documents
    *
    */
   class ChatMessage extends ClientDocumentMixin(foundry.documents.BaseChatMessage) {

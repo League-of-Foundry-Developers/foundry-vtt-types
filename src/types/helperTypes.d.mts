@@ -62,6 +62,9 @@ export type PlaceableDocumentType =
   | "Token"
   | "Wall";
 
+// TODO: Probably a way to auto-determine this
+type DocumentTypeWithTypeData = "Actor" | "Card" | "Cards" | "Item" | "JournalEntryPage";
+
 /**
  * Actual document types that go in folders
  */

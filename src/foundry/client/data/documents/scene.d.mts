@@ -5,8 +5,8 @@ declare global {
   /**
    * The client-side Scene document which extends the common BaseScene model.
    *
-   * @see {@link documents.Scenes}            The world-level collection of Scene documents
-   * @see {@link applications.SceneConfig}    The Scene configuration application
+   * @see {@link Scenes}            The world-level collection of Scene documents
+   * @see {@link SceneConfig}       The Scene configuration application
    *
    */
   class Scene extends ClientDocumentMixin(foundry.documents.BaseScene) {

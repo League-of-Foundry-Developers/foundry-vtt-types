@@ -5,7 +5,7 @@ declare global {
   /**
    * The client-side Card document which extends the common BaseCard document model.
    *
-   * @see {@link documents.Cards}                    The Cards document type which contains Card embedded documents
+   * @see {@link Cards}                    The Cards document type which contains Card embedded documents
    */
   class Card extends ClientDocumentMixin(foundry.documents.BaseCard) {
     /**

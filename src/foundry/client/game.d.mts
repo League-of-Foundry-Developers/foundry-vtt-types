@@ -531,7 +531,6 @@ declare global {
   }
 
   namespace Game {
-    // TODO: Revisit functionality and how it works with data models
     interface ModuleCollection extends Collection<Module> {
       /**
        * Gets the module requested for by ID
@@ -539,16 +538,7 @@ declare global {
        * @see {@link RequiredModules} to remove `undefined` from the return type for a given module
        * @param id - The module ID to look up
        */
-      get<T extends string>(id: T): (Module & ConfiguredModule<T>) | ModuleRequiredOrOptional<T>;
-      // Attempt to copy the handling
-      // get<T extends string>(
-      //   id: T,
-      //   { strict }: { strict: true },
-      // ): (Module & ConfiguredModule<T>) | ModuleRequiredOrOptional<T>;
-      // get<T extends string>(
-      //   id: T,
-      //   { strict }?: { strict?: false },
-      // ): (Module & ConfiguredModule<T>) | ModuleRequiredOrOptional<T> | undefined;
+      get<T extends string>(id: T): (Module & ConfiguredModule<T>) | Exclude<ModuleRequiredOrOptional<T>, undefined>;
     }
 
     type Data = {
@@ -607,7 +597,6 @@ declare global {
       };
       // TODO: I think this is only for configurable types
       template: Record<foundry.CONST.DOCUMENT_TYPES, DocumentTemplate>;
-      // TODO: Some of these are fixed and this could be improved
       documentTypes: Record<foundry.CONST.DOCUMENT_TYPES, string[]>;
       // TODO: This is also inheriting the configured types,
       // but is only filled in if there's `template.json`

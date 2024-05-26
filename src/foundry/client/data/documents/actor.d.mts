@@ -6,8 +6,8 @@ declare global {
   /**
    * The client-side Actor document which extends the common BaseActor model.
    *
-   * @see {@link documents.Actors}            The world-level collection of Actor documents
-   * @see {@link applications.ActorSheet}     The Actor configuration application
+   * @see {@link Actors}            The world-level collection of Actor documents
+   * @see {@link ActorSheet}     The Actor configuration application
    *
    * @example <caption>Create a new Actor</caption>
    * ```typescript

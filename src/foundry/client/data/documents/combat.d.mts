@@ -13,7 +13,7 @@ declare global {
   /**
    * The client-side Combat document which extends the common BaseCombat model.
    *
-   * @see {@link documents.Combats}             The world-level collection of Combat documents
+   * @see {@link Combats}                       The world-level collection of Combat documents
    * @see {@link Combatant}                     The Combatant embedded document which exists within a Combat document
    * @see {@link CombatConfig}                  The Combat configuration application
    */

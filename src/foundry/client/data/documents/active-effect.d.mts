@@ -8,9 +8,9 @@ declare global {
    * Each ActiveEffect belongs to the effects collection of its parent Document.
    * Each ActiveEffect contains a ActiveEffectData object which provides its source data.
    *
-   * @see {@link data.ActiveEffectData}               The ActiveEffect data schema
-   * @see {@link documents.Actor}                     The Actor document which contains ActiveEffect embedded documents
-   * @see {@link documents.Item}                      The Item document which contains ActiveEffect embedded documents
+   * @see {@link ActiveEffectData}               The ActiveEffect data schema
+   * @see {@link Actor}                     The Actor document which contains ActiveEffect embedded documents
+   * @see {@link Item}                      The Item document which contains ActiveEffect embedded documents
    */
   class ActiveEffect extends ClientDocumentMixin(foundry.documents.BaseActiveEffect) {
     /**

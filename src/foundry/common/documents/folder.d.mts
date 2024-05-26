@@ -1,3 +1,4 @@
+import type { ConfiguredDocumentClassForName } from "../../../types/helperTypes.d.mts";
 import type { InexactPartial, Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
@@ -48,8 +49,10 @@ declare class BaseFolder extends Document<BaseFolder.SchemaField, BaseFolder.Met
     },
   ): object;
 
-  // TODO: Figure out if the upstream version can be returned
-  static override get(documentId: string, options: InexactPartial<{ pack: string }>): BaseFolder | null;
+  static override get(
+    documentId: string,
+    options: InexactPartial<{ pack: string }>,
+  ): InstanceType<ConfiguredDocumentClassForName<"Folder">> | null;
 }
 export default BaseFolder;
 

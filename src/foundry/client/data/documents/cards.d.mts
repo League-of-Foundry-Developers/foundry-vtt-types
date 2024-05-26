@@ -12,8 +12,8 @@ declare global {
    * The client-side Cards document which extends the common BaseCards model.
    * Each Cards document contains CardsData which defines its data schema.
    *
-   * @see {@link data.CardsData}                     The Cards data schema
-   * @see {@link CardStacks}                         The world-level collection of Cards documents
+   * @see {@link CardStacks}                        The world-level collection of Cards documents
+   * @see {@link CardsConfig}                       The Cards configuration application
    */
   class Cards extends ClientDocumentMixin(foundry.documents.BaseCards) {
     /**
