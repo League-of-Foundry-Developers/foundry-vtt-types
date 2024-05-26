@@ -6,28 +6,24 @@ import type * as fields from "../data/fields.mts";
 import type * as documents from "./module.mts";
 
 declare global {
-  type CardData<TypeName extends BaseCard.TypeNames = BaseCard.TypeNames> = BaseCard.Properties<TypeName>;
+  type CardData = BaseCard.Properties;
 
-  type CardFaceData = BaseCard.Properties<BaseCard.TypeNames>["faces"][number];
+  type CardFaceData = BaseCard.Properties["faces"][number];
 }
 
 /**
  * The Document definition for a Card.
  * Defines the DataSchema and common behaviors for a Card which are shared between both client and server.
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface BaseCard<TypeName extends BaseCard.TypeNames = BaseCard.TypeNames> extends BaseCard.Properties<TypeName> {}
-declare class BaseCard<TypeName extends BaseCard.TypeNames = BaseCard.TypeNames> extends Document<
-  BaseCard.SchemaField<TypeName>,
-  BaseCard.Metadata
-> {
+interface BaseCard extends BaseCard.Properties {}
+declare class BaseCard extends Document<BaseCard.SchemaField, BaseCard.Metadata> {
   /**
    * @param data    - Initial data from which to construct the Card
    * @param context - Construction context options
    */
-  constructor(data: BaseCard.ConstructorData<TypeName>, context?: DocumentConstructionContext);
+  constructor(data: BaseCard.ConstructorData, context?: DocumentConstructionContext);
 
-  override _source: BaseCard.Source<TypeName>;
+  override _source: BaseCard.Source;
 
   static override metadata: Readonly<BaseCard.Metadata>;
 
@@ -47,16 +43,12 @@ declare class BaseCard<TypeName extends BaseCard.TypeNames = BaseCard.TypeNames>
   /**
    * Is a User able to create a new Card within this parent?
    */
-  static #canCreate(
-    user: documents.BaseUser,
-    doc: BaseCard,
-    data: BaseCard.ConstructorData<BaseCard.TypeNames>,
-  ): boolean;
+  static #canCreate(user: documents.BaseUser, doc: BaseCard, data: BaseCard.ConstructorData): boolean;
 
   /**
    * Is a user able to update an existing Card?
    */
-  static #canUpdate(user: documents.BaseUser, doc: BaseCard, data: BaseCard.UpdateData<BaseCard.TypeNames>): boolean;
+  static #canUpdate(user: documents.BaseUser, doc: BaseCard, data: BaseCard.UpdateData): boolean;
 
   override testUserPermission(
     user: documents.BaseUser,
@@ -105,12 +97,11 @@ declare namespace BaseCard {
     }
   >;
 
-  type SchemaField<TypeName extends TypeNames> = fields.SchemaField<Schema<TypeName>>;
-  type ConstructorData<TypeName extends TypeNames> = UpdateData<TypeName> &
-    Required<Pick<UpdateData<TypeName>, "name">>;
-  type UpdateData<TypeName extends TypeNames> = fields.SchemaField.InnerAssignmentType<Schema<TypeName>>;
-  type Properties<TypeName extends TypeNames> = fields.SchemaField.InnerInitializedType<Schema<TypeName>>;
-  type Source<TypeName extends TypeNames> = fields.SchemaField.InnerPersistedType<Schema<TypeName>>;
+  type SchemaField = fields.SchemaField<Schema>;
+  type ConstructorData = UpdateData & Required<Pick<UpdateData, "name">>;
+  type UpdateData = fields.SchemaField.InnerAssignmentType<Schema>;
+  type Properties = fields.SchemaField.InnerInitializedType<Schema>;
+  type Source = fields.SchemaField.InnerPersistedType<Schema>;
 
   interface Schema<TypeName extends TypeNames = TypeNames> extends DataSchema {
     /**
@@ -148,7 +139,7 @@ declare namespace BaseCard {
      * Game system data which is defined by the system template.json model
      * @defaultValue `{}`
      */
-    system: fields.TypeDataField<BaseCard, TypeName>;
+    system: fields.TypeDataField<BaseCard>;
 
     /**
      * An optional suit designation which is used by default sorting

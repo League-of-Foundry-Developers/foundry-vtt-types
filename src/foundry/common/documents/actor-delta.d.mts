@@ -6,17 +6,13 @@ import type { fields } from "../data/module.d.mts";
 import type { CONST, documents } from "../module.d.mts";
 
 declare global {
-  type ActorDeltaData<TypeName extends documents.BaseActor.TypeNames = documents.BaseActor.TypeNames> =
-    documents.BaseActor.Properties<TypeName>;
+  type ActorDeltaData = documents.BaseActorDelta.Properties;
 }
-interface BaseActorDelta<TypeName extends documents.BaseActor.TypeNames = documents.BaseActor.TypeNames>
-  extends BaseActorDelta.Properties<TypeName> {}
-declare class BaseActorDelta<
-  TypeName extends documents.BaseActor.TypeNames = documents.BaseActor.TypeNames,
-> extends Document<documents.BaseActor.SchemaField<TypeName>, documents.BaseActorDelta.Metadata> {
-  constructor(data: BaseActorDelta.ConstructorData<TypeName>, context?: DocumentConstructionContext);
+interface BaseActorDelta extends BaseActorDelta.Properties {}
+declare class BaseActorDelta extends Document<documents.BaseActorDelta.SchemaField, documents.BaseActorDelta.Metadata> {
+  constructor(data: BaseActorDelta.ConstructorData, context?: DocumentConstructionContext);
 
-  override _source: BaseActorDelta.Source<TypeName>;
+  override _source: BaseActorDelta.Source;
 
   static override metadata: Readonly<BaseActorDelta.Metadata>;
 
@@ -61,11 +57,11 @@ export default BaseActorDelta;
 
 declare namespace BaseActorDelta {
   type TypeNames = fields.TypeDataField.TypeNames<typeof documents.BaseActor>;
-  type ConstructorData<TypeName extends TypeNames> = UpdateData<TypeName> &
-    Required<Pick<UpdateData<TypeName>, "name" | "type">>;
-  type UpdateData<TypeName extends TypeNames> = fields.SchemaField.InnerAssignmentType<Schema<TypeName>>;
-  type Properties<TypeName extends TypeNames> = fields.SchemaField.InnerInitializedType<Schema<TypeName>>;
-  type Source<TypeName extends TypeNames> = fields.SchemaField.InnerPersistedType<Schema<TypeName>>;
+  type SchemaField = fields.SchemaField<Schema>;
+  type ConstructorData = UpdateData & Required<Pick<UpdateData, "name" | "type">>;
+  type UpdateData = fields.SchemaField.InnerAssignmentType<Schema>;
+  type Properties = fields.SchemaField.InnerInitializedType<Schema>;
+  type Source = fields.SchemaField.InnerPersistedType<Schema>;
 
   type Metadata = Merge<
     DocumentMetadata,

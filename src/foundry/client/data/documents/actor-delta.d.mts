@@ -2,7 +2,6 @@ import type { ConfiguredDocumentClassForName } from "../../../../types/helperTyp
 import type { DeepPartial } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 import type { SchemaField } from "../../../common/data/fields.d.mts";
-import type { fields } from "../../../common/data/module.d.mts";
 import type { BaseActor } from "../../../common/documents/module.d.mts";
 
 declare global {
@@ -22,9 +21,7 @@ declare global {
     override prepareEmbeddedDocuments(): void;
 
     override updateSource(
-      changes?:
-        | SchemaField.InnerAssignmentType<BaseActor.Schema<fields.TypeDataField.TypeNames<BaseActor>>>
-        | undefined,
+      changes?: SchemaField.InnerAssignmentType<BaseActor.Schema> | undefined,
       options?: { dryRun?: boolean; fallback?: boolean; recursive?: boolean } | undefined,
     ): object;
 
@@ -60,7 +57,7 @@ declare global {
     _handleDeltaCollectionUpdates(doc: Document): void;
 
     protected override _onUpdate(
-      changed: BaseActor.ConstructorData<fields.TypeDataField.TypeNames<typeof BaseActor>>,
+      changed: BaseActor.ConstructorData,
       options: DocumentModificationOptions,
       userId: string,
     ): void;

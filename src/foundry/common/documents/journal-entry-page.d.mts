@@ -14,26 +14,22 @@ declare global {
 
   type JournalEntryPageTitleData = JournalEntryPageData["title"];
 
-  type JournalEntryPageData<TypeName extends BaseJournalEntryPage.TypeNames = BaseJournalEntryPage.TypeNames> =
-    BaseJournalEntryPage.Properties<TypeName>;
+  type JournalEntryPageData = BaseJournalEntryPage.Properties;
 }
 
 /**
  * The Document definition for a JournalEntryPage.
  * Defines the data schema and common behaviours for a JournalEntryPage which are shared between both client and server.
  */
-interface BaseJournalEntryPage<TypeName extends BaseJournalEntryPage.TypeNames = BaseJournalEntryPage.TypeNames>
-  extends BaseJournalEntryPage.Properties<TypeName> {}
-declare class BaseJournalEntryPage<
-  TypeName extends BaseJournalEntryPage.TypeNames = BaseJournalEntryPage.TypeNames,
-> extends Document<BaseJournalEntryPage.SchemaField<TypeName>, BaseJournalEntryPage.Metadata> {
+interface BaseJournalEntryPage extends BaseJournalEntryPage.Properties {}
+declare class BaseJournalEntryPage extends Document<BaseJournalEntryPage.SchemaField, BaseJournalEntryPage.Metadata> {
   /**
    * @param data    - Initial data from which to construct the JournalEntryPage.
    * @param context - Construction context options.
    */
-  constructor(data: BaseJournalEntryPage.ConstructorData<TypeName>, context?: DocumentConstructionContext);
+  constructor(data: BaseJournalEntryPage.ConstructorData, context?: DocumentConstructionContext);
 
-  _source: BaseJournalEntryPage.Source<TypeName>;
+  _source: BaseJournalEntryPage.Source;
 
   static override metadata: Readonly<BaseJournalEntryPage.Metadata>;
 
@@ -63,12 +59,11 @@ declare namespace BaseJournalEntryPage {
     }
   >;
 
-  type SchemaField<TypeName extends TypeNames> = fields.SchemaField<Schema<TypeName>>;
-  type ConstructorData<TypeName extends TypeNames> = UpdateData<TypeName> &
-    Required<Pick<UpdateData<TypeName>, "name">>;
-  type UpdateData<TypeName extends TypeNames> = fields.SchemaField.InnerAssignmentType<Schema<TypeName>>;
-  type Properties<TypeName extends TypeNames> = fields.SchemaField.InnerInitializedType<Schema<TypeName>>;
-  type Source<TypeName extends TypeNames> = fields.SchemaField.InnerPersistedType<Schema<TypeName>>;
+  type SchemaField = fields.SchemaField<Schema>;
+  type ConstructorData = UpdateData & Required<Pick<UpdateData, "name">>;
+  type UpdateData = fields.SchemaField.InnerAssignmentType<Schema>;
+  type Properties = fields.SchemaField.InnerInitializedType<Schema>;
+  type Source = fields.SchemaField.InnerPersistedType<Schema>;
 
   interface Schema<TypeName extends TypeNames = TypeNames> extends DataSchema {
     /**
@@ -214,7 +209,7 @@ declare namespace BaseJournalEntryPage {
      * System-specific data.
      * @defaultValue `{}`
      */
-    system: fields.TypeDataField<BaseJournalEntryPage, TypeName>;
+    system: fields.TypeDataField<BaseJournalEntryPage>;
 
     /**
      * The numeric sort value which orders this page relative to its siblings.

@@ -7,7 +7,6 @@ declare global {
    *
    * @see {@link documents.Cards}                    The Cards document type which contains Card embedded documents
    */
-  // TODO: TypeName handling.
   class Card extends ClientDocumentMixin(foundry.documents.BaseCard) {
     /**
      * The current card face

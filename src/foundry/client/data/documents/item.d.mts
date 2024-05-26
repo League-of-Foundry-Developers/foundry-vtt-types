@@ -14,7 +14,7 @@ declare global {
    * @param data    - Initial data provided to construct the Item document
    * @param context - The document context, see {@link foundry.abstract.Document}
    */
-  class Item<TypeName extends Item.TypeNames = Item.TypeNames> extends ClientDocumentMixin(foundry.documents.BaseItem) {
+  class Item extends ClientDocumentMixin(foundry.documents.BaseItem) {
     /**
      * A convenience alias of Item#parent which is more semantically intuitive
      */
@@ -42,7 +42,7 @@ declare global {
     getRollData(): object;
 
     protected _preCreate(
-      data: foundry.documents.BaseItem.ConstructorData<TypeName>,
+      data: foundry.documents.BaseItem.ConstructorData,
       options: DocumentModificationOptions,
       user: BaseUser,
     ): Promise<boolean | void>;
@@ -58,9 +58,5 @@ declare global {
       items: Array<InstanceType<ConfiguredDocumentClassForName<"Item">>>,
       context: DocumentModificationContext,
     ): Promise<unknown>;
-  }
-
-  namespace Item {
-    type TypeNames = foundry.data.fields.TypeDataField.TypeNames<typeof foundry.documents.BaseItem>;
   }
 }

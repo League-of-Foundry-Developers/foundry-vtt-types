@@ -5,7 +5,7 @@ import type * as fields from "../data/fields.mts";
 import type * as documents from "./module.mts";
 
 declare global {
-  type CardsData<TypeName extends BaseCards.TypeNames = BaseCards.TypeNames> = BaseCards.Properties<TypeName>;
+  type CardsData = BaseCards.Properties;
 }
 
 /**
@@ -13,19 +13,15 @@ declare global {
  * Defines the DataSchema and common behaviors for Cards which are shared between both client and server.
  */
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface BaseCards<TypeName extends BaseCards.TypeNames = BaseCards.TypeNames>
-  extends BaseCards.Properties<TypeName> {}
-declare class BaseCards<TypeName extends BaseCards.TypeNames = BaseCards.TypeNames> extends Document<
-  BaseCards.SchemaField<TypeName>,
-  BaseCards.Metadata
-> {
+interface BaseCards extends BaseCards.Properties {}
+declare class BaseCards extends Document<BaseCards.SchemaField, BaseCards.Metadata> {
   /**
    * @param data    - Initial data from which to construct the Cards
    * @param context - Construction context options
    */
-  constructor(data: BaseCards.ConstructorData<TypeName>, context?: DocumentConstructionContext);
+  constructor(data: BaseCards.ConstructorData, context?: DocumentConstructionContext);
 
-  override _source: BaseCards.Source<TypeName>;
+  override _source: BaseCards.Source;
 
   static override metadata: Readonly<BaseCards.Metadata>;
 
@@ -76,12 +72,11 @@ declare namespace BaseCards {
     }
   >;
 
-  type SchemaField<TypeName extends TypeNames> = fields.SchemaField<Schema<TypeName>>;
-  type ConstructorData<TypeName extends TypeNames> = UpdateData<TypeName> &
-    Required<Pick<UpdateData<TypeName>, "name">>;
-  type UpdateData<TypeName extends TypeNames> = fields.SchemaField.InnerAssignmentType<Schema<TypeName>>;
-  type Properties<TypeName extends TypeNames> = fields.SchemaField.InnerInitializedType<Schema<TypeName>>;
-  type Source<TypeName extends TypeNames> = fields.SchemaField.InnerPersistedType<Schema<TypeName>>;
+  type SchemaField = fields.SchemaField<Schema>;
+  type ConstructorData = UpdateData & Required<Pick<UpdateData, "name">>;
+  type UpdateData = fields.SchemaField.InnerAssignmentType<Schema>;
+  type Properties = fields.SchemaField.InnerInitializedType<Schema>;
+  type Source = fields.SchemaField.InnerPersistedType<Schema>;
 
   interface Schema<TypeName extends TypeNames = TypeNames> extends DataSchema {
     /**
@@ -130,7 +125,7 @@ declare namespace BaseCards {
      * Game system data which is defined by the system template.json model
      * @defaultValue `{}`
      */
-    system: fields.TypeDataField<BaseCards, TypeName>;
+    system: fields.TypeDataField<BaseCards>;
 
     /**
      * A collection of Card documents which currently belong to this stack

@@ -208,7 +208,7 @@ declare global {
     protected _unregisterDependentScene(scene: Scene): void;
 
     protected override _preCreate(
-      data: foundry.documents.BaseActor.ConstructorData<foundry.documents.BaseActor.TypeNames>,
+      data: foundry.documents.BaseActor.ConstructorData,
       options: DocumentModificationOptions,
       user: foundry.documents.BaseUser,
     ): Promise<void>;
@@ -219,7 +219,7 @@ declare global {
      * @param options - Options which configure creation
      */
     protected _applyDefaultTokenSettings(
-      data: foundry.documents.BaseActor.ConstructorData<foundry.documents.BaseActor.TypeNames>,
+      data: foundry.documents.BaseActor.ConstructorData,
       options: InexactPartial<{
         /**
          * Does this creation workflow originate via compendium import?

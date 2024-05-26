@@ -6,7 +6,7 @@ import type * as fields from "../data/fields.mts";
 import type * as documents from "./module.mts";
 
 declare global {
-  type ActorData<TypeName extends BaseActor.TypeNames = BaseActor.TypeNames> = BaseActor.Properties<TypeName>;
+  type ActorData = BaseActor.Properties;
 }
 
 /**
@@ -14,19 +14,13 @@ declare global {
  * Defines the DataSchema and common behaviors for an Actor which are shared between both client and server.
  */
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface BaseActor<TypeName extends BaseActor.TypeNames = BaseActor.TypeNames>
-  extends BaseActor.Properties<TypeName> {}
-declare class BaseActor<TypeName extends BaseActor.TypeNames = BaseActor.TypeNames> extends Document<
-  BaseActor.SchemaField<TypeName>,
-  BaseActor.Metadata
-> {
+interface BaseActor extends BaseActor.Properties {}
+declare class BaseActor extends Document<BaseActor.SchemaField, BaseActor.Metadata> {
   /**
    * @param data    - Initial data from which to construct the Actor
    * @param context - Construction context options
    */
-  constructor(data: BaseActor.ConstructorData<TypeName>, context?: DocumentConstructionContext);
-
-  override _source: BaseActor.Source<TypeName>;
+  constructor(data: BaseActor.ConstructorData, context?: DocumentConstructionContext);
 
   static override metadata: Readonly<BaseActor.Metadata>;
 
@@ -42,7 +36,7 @@ declare class BaseActor<TypeName extends BaseActor.TypeNames = BaseActor.TypeNam
    * Determine default artwork based on the provided actor data
    * @param actorData - The source actor data
    */
-  static getDefaultArtwork(actorData: BaseActor.ConstructorData<BaseActor.TypeNames>): {
+  static getDefaultArtwork(actorData: BaseActor.ConstructorData): {
     img: string;
     texture: { src: string };
   };
@@ -53,9 +47,9 @@ declare class BaseActor<TypeName extends BaseActor.TypeNames = BaseActor.TypeNam
   static get TYPES(): BaseActor.TypeNames[];
 
   protected override _initializeSource(
-    data: fields.SchemaField.InnerAssignmentType<documents.BaseActor.Schema<TypeName>> | this,
+    data: fields.SchemaField.InnerAssignmentType<documents.BaseActor.Schema> | this,
     options?: any,
-  ): fields.SchemaField.InnerPersistedType<documents.BaseActor.Schema<TypeName>>;
+  ): fields.SchemaField.InnerPersistedType<documents.BaseActor.Schema>;
 
   static override canUserCreate(user: documents.BaseUser): boolean;
 
@@ -74,16 +68,16 @@ declare class BaseActor<TypeName extends BaseActor.TypeNames = BaseActor.TypeNam
    * @param data - The update delta being applied.
    * @internal
    */
-  static #canUpdate(user: documents.BaseUser, doc: BaseActor, data: BaseActor.UpdateData<BaseActor.TypeNames>): boolean;
+  static #canUpdate(user: documents.BaseUser, doc: BaseActor, data: BaseActor.UpdateData): boolean;
 
   protected override _preCreate(
-    data: fields.SchemaField.AssignmentType<documents.BaseActor.Schema<TypeName>, {}>,
+    data: fields.SchemaField.AssignmentType<documents.BaseActor.Schema, {}>,
     options: DocumentModificationOptions,
     user: documents.BaseUser,
   ): Promise<void>;
 
   protected override _preUpdate(
-    changed: fields.SchemaField.AssignmentType<documents.BaseActor.Schema<TypeName>, {}>,
+    changed: fields.SchemaField.AssignmentType<documents.BaseActor.Schema, {}>,
     options: DocumentModificationOptions,
     user: documents.BaseUser,
   ): Promise<void>;
@@ -120,7 +114,7 @@ declare namespace BaseActor {
       labelPlural: "DOCUMENT.Actors";
       permissions: {
         create: (user: documents.BaseUser, doc: Document.Any) => boolean;
-        update: (user: documents.BaseUser, doc: Document.Any, data: UpdateData<TypeNames>) => boolean;
+        update: (user: documents.BaseUser, doc: Document.Any, data: UpdateData) => boolean;
       };
 
       /**
@@ -130,12 +124,11 @@ declare namespace BaseActor {
     }
   >;
 
-  type SchemaField<TypeName extends TypeNames> = fields.SchemaField<Schema<TypeName>>;
-  type ConstructorData<TypeName extends TypeNames> = UpdateData<TypeName> &
-    Required<Pick<UpdateData<TypeName>, "name" | "type">>;
-  type UpdateData<TypeName extends TypeNames> = fields.SchemaField.InnerAssignmentType<Schema<TypeName>>;
-  type Properties<TypeName extends TypeNames> = fields.SchemaField.InnerInitializedType<Schema<TypeName>>;
-  type Source<TypeName extends TypeNames> = fields.SchemaField.InnerPersistedType<Schema<TypeName>>;
+  type SchemaField = fields.SchemaField<Schema>;
+  type ConstructorData = UpdateData & Required<Pick<UpdateData, "name" | "type">>;
+  type UpdateData = fields.SchemaField.InnerAssignmentType<Schema>;
+  type Properties = fields.SchemaField.InnerInitializedType<Schema>;
+  type Source = fields.SchemaField.InnerPersistedType<Schema>;
 
   interface Schema<TypeName extends TypeNames = TypeNames> extends DataSchema {
     /**
@@ -169,7 +162,7 @@ declare namespace BaseActor {
      * The system data object which is defined by the system template.json model
      * @defaultValue `{}`
      */
-    system: fields.TypeDataField<BaseActor, TypeName>;
+    system: fields.TypeDataField<BaseActor>;
 
     /**
      * Default Token settings which are used for Tokens created from this Actor

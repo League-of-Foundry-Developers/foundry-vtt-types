@@ -1,3 +1,5 @@
+import type { DataModel } from "../foundry/common/abstract/module.mts";
+
 export {};
 
 declare global {
@@ -171,42 +173,15 @@ declare global {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface DataConfig {}
 
-  // TODO: Investigate how this can be tied to Game["documentTypes"]
   interface DataModelConfig {
-    ActiveEffect: {
-      base: {};
-    };
-    Actor: {
-      base: {};
-    };
-    Card: {
-      base: {};
-    };
-    Cards: {
-      base: {};
-      deck: {};
-      hand: {};
-      pile: {};
-    };
-    ChatMessage: {
-      base: {};
-    };
-    Combat: {
-      base: {};
-    };
-    Combatant: {
-      base: {};
-    };
-    Item: {
-      base: {};
-    };
-    JournalEntryPage: {
-      base: {};
-      image: {};
-      pdf: {};
-      text: {};
-      video: {};
-    };
+    Actor: Record<string, DataModel<any, Actor>>;
+    Card: Record<string, DataModel<any, Card>>;
+    Cards: Record<string, DataModel<any, Cards>>;
+    Item: Record<string, DataModel<any, Item>>;
+    JournalEntryPage: Record<string, DataModel<any, JournalEntryPage>>;
+    // {
+    //   [type: string]: DataModel<any, JournalEntryPage>;
+    // };
   }
 
   /** @see {@link DataConfig} */

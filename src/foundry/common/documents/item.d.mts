@@ -7,16 +7,16 @@ import type { CONST } from "../module.mts";
 import type * as documents from "./module.mts";
 
 declare global {
-  type ItemData<TypeName extends BaseItem.TypeNames = BaseItem.TypeNames> = BaseItem.Properties<TypeName>;
+  type ItemData = BaseItem.Properties;
 }
 
 /**
  * The Document definition for an Item.
  * Defines the DataSchema and common behaviors for an Item which are shared between both client and server.
  */
-interface BaseItem<TypeName extends BaseItem.TypeNames = BaseItem.TypeNames> extends BaseItem.Properties<TypeName> {}
-declare class BaseItem<TypeName extends BaseItem.TypeNames = BaseItem.TypeNames> extends Document<
-  BaseItem.SchemaField<TypeName>,
+interface BaseItem extends BaseItem.Properties {}
+declare class BaseItem extends Document<
+  BaseItem.SchemaField,
   BaseItem.Metadata,
   InstanceType<ConfiguredDocumentClass<typeof documents.BaseActor>> | null
 > {
@@ -24,9 +24,9 @@ declare class BaseItem<TypeName extends BaseItem.TypeNames = BaseItem.TypeNames>
    * @param data    - Initial data from which to construct the Item
    * @param context - Construction context options
    */
-  constructor(data: BaseItem.ConstructorData<TypeName>, context?: DocumentConstructionContext);
+  constructor(data: BaseItem.ConstructorData, context?: DocumentConstructionContext);
 
-  override _source: BaseItem.Source<TypeName>;
+  override _source: BaseItem.Source;
 
   static override metadata: Readonly<BaseItem.Metadata>;
 
@@ -43,7 +43,7 @@ declare class BaseItem<TypeName extends BaseItem.TypeNames = BaseItem.TypeNames>
    * @param itemData - The source item data
    * @returns Candidate item image
    */
-  static getDefaultArtwork(itemData: BaseItem.ConstructorData<BaseItem.TypeNames>): { img: string };
+  static getDefaultArtwork(itemData: BaseItem.ConstructorData): { img: string };
 
   /**
    * The allowed set of Item types which may exist.
@@ -107,12 +107,11 @@ declare namespace BaseItem {
     }
   >;
 
-  type SchemaField<TypeName extends TypeNames> = fields.SchemaField<Schema<TypeName>>;
-  type ConstructorData<TypeName extends TypeNames> = UpdateData<TypeName> &
-    Required<Pick<UpdateData<TypeName>, "name" | "type">>;
-  type UpdateData<TypeName extends TypeNames> = fields.SchemaField.InnerAssignmentType<Schema<TypeName>>;
-  type Properties<TypeName extends TypeNames> = fields.SchemaField.InnerInitializedType<Schema<TypeName>>;
-  type Source<TypeName extends TypeNames> = fields.SchemaField.InnerPersistedType<Schema<TypeName>>;
+  type SchemaField = fields.SchemaField<Schema>;
+  type ConstructorData = UpdateData & Required<Pick<UpdateData, "name" | "type">>;
+  type UpdateData = fields.SchemaField.InnerAssignmentType<Schema>;
+  type Properties = fields.SchemaField.InnerInitializedType<Schema>;
+  type Source = fields.SchemaField.InnerPersistedType<Schema>;
 
   interface Schema<TypeName extends TypeNames = TypeNames> extends DataSchema {
     /**
@@ -149,7 +148,7 @@ declare namespace BaseItem {
      * The system data object which is defined by the system template.json model
      * @defaultValue `{}`
      */
-    system: fields.TypeDataField<BaseItem, TypeName>;
+    system: fields.TypeDataField<BaseItem>;
 
     /**
      * A collection of ActiveEffect embedded Documents

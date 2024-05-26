@@ -15,7 +15,6 @@ declare global {
    * @see {@link data.CardsData}                     The Cards data schema
    * @see {@link CardStacks}                         The world-level collection of Cards documents
    */
-  // TODO: TypeName handling.
   class Cards extends ClientDocumentMixin(foundry.documents.BaseCards) {
     /**
      * Provide a thumbnail image path used to represent this document.
