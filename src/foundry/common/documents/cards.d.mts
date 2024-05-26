@@ -12,7 +12,6 @@ declare global {
  * The Document definition for Cards.
  * Defines the DataSchema and common behaviors for Cards which are shared between both client and server.
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface BaseCards extends BaseCards.Properties {}
 declare class BaseCards extends Document<BaseCards.SchemaField, BaseCards.Metadata> {
   /**

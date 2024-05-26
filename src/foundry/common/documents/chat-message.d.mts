@@ -15,7 +15,6 @@ declare global {
  * The Document definition for a ChatMessage.
  * Defines the DataSchema and common behaviors for a ChatMessage which are shared between both client and server.
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface BaseChatMessage extends BaseChatMessage.Properties {}
 declare class BaseChatMessage<Parent extends Document.Any | null = null> extends Document<
   BaseChatMessage.SchemaField,

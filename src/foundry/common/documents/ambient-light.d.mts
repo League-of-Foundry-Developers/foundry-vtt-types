@@ -12,7 +12,6 @@ declare global {
  * The Document definition for an AmbientLight.
  * Defines the DataSchema and common behaviors for an AmbientLight which are shared between both client and server.
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface BaseAmbientLight extends BaseAmbientLight.Properties {}
 declare class BaseAmbientLight extends Document<BaseAmbientLight.SchemaField, BaseAmbientLight.Metadata> {
   /**

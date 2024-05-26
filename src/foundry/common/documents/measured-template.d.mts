@@ -13,7 +13,6 @@ declare global {
  * The Document definition for a MeasuredTemplate.
  * Defines the DataSchema and common behaviors for a MeasuredTemplate which are shared between both client and server.
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface BaseMeasuredTemplate extends BaseMeasuredTemplate.Properties {}
 declare class BaseMeasuredTemplate extends Document<BaseMeasuredTemplate.SchemaField, BaseMeasuredTemplate.Metadata> {
   /**

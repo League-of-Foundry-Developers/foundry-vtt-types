@@ -13,7 +13,7 @@ declare global {
  * The Document definition for a TableResult.
  * Defines the DataSchema and common behaviors for a TableResult which are shared between both client and server.
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
+
 interface BaseTableResult extends BaseTableResult.Properties {}
 declare class BaseTableResult extends Document<BaseTableResult.SchemaField, BaseTableResult.Metadata> {
   /**

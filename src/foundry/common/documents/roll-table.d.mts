@@ -14,7 +14,7 @@ declare global {
  * The Document definition for a RollTable.
  * Defines the DataSchema and common behaviors for a RollTable which are shared between both client and server.
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
+
 interface BaseRollTable extends BaseRollTable.Properties {}
 declare class BaseRollTable extends Document<BaseRollTable.SchemaField, BaseRollTable.Metadata> {
   /**

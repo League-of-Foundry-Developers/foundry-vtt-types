@@ -14,7 +14,6 @@ declare global {
  * The Document definition for a JournalEntry.
  * Defines the DataSchema and common behaviors for a JournalEntry which are shared between both client and server.
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface BaseJournalEntry extends BaseJournalEntry.Properties {}
 declare class BaseJournalEntry extends Document<BaseJournalEntry.SchemaField, BaseJournalEntry.Metadata> {
   /**
@@ -56,7 +55,7 @@ declare class BaseJournalEntry extends Document<BaseJournalEntry.SchemaField, Ba
   static migrateContentToPages(source: {
     img?: string;
     content?: string;
-  }): documents.BaseJournalEntryPage.ConstructorData<"image" | "text">[];
+  }): documents.BaseJournalEntryPage.ConstructorData[];
 }
 export default BaseJournalEntry;
 

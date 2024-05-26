@@ -15,7 +15,6 @@ declare global {
  * The Document definition for a Macro.
  * Defines the DataSchema and common behaviors for a Macro which are shared between both client and server.
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface BaseMacro extends BaseMacro.Properties {}
 declare class BaseMacro extends Document<BaseMacro.SchemaField, BaseMacro.Metadata> {
   /**

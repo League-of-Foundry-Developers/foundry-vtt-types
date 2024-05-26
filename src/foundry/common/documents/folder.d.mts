@@ -13,7 +13,6 @@ declare global {
  * The Document definition for a Folder.
  * Defines the DataSchema and common behaviors for a Folder which are shared between both client and server.
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface BaseFolder extends BaseFolder.Properties {}
 declare class BaseFolder extends Document<BaseFolder.SchemaField, BaseFolder.Metadata> {
   /**

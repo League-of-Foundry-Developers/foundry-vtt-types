@@ -12,7 +12,6 @@ declare global {
  * The Document definition for FogExploration.
  * Defines the DataSchema and common behaviors for FogExploration which are shared between both client and server.
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface BaseFogExploration extends BaseFogExploration.Properties {}
 declare class BaseFogExploration extends Document<BaseFogExploration.SchemaField, BaseFogExploration.Metadata> {
   /**

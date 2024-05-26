@@ -14,7 +14,6 @@ declare global {
  * The Document definition for a Wall.
  * Defines the DataSchema and common behaviors for a Wall which are shared between both client and server.
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface BaseWall extends BaseWall.Properties {}
 declare class BaseWall extends Document<BaseWall.SchemaField, BaseWall.Metadata> {
   /**

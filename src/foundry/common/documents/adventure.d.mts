@@ -13,7 +13,6 @@ declare global {
  * The Document definition for an Adventure.
  * Defines the DataSchema and common behaviors for an Adventure which are shared between both client and server.
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface BaseAdventure extends BaseAdventure.Properties {}
 declare class BaseAdventure extends Document<BaseAdventure.SchemaField, BaseAdventure.Metadata> {
   /**

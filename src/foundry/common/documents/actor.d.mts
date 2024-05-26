@@ -13,7 +13,6 @@ declare global {
  * The Document definition for an Actor.
  * Defines the DataSchema and common behaviors for an Actor which are shared between both client and server.
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface BaseActor extends BaseActor.Properties {}
 declare class BaseActor extends Document<BaseActor.SchemaField, BaseActor.Metadata> {
   /**

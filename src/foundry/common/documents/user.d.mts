@@ -13,7 +13,6 @@ declare global {
  * The Document definition for a User.
  * Defines the DataSchema and common behaviors for a User which are shared between both client and server.
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface BaseUser extends BaseUser.Properties {}
 declare class BaseUser extends Document<BaseUser.SchemaField, BaseUser.Metadata> {
   /**

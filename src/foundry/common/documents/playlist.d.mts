@@ -13,7 +13,7 @@ declare global {
  * The Document definition for a Playlist.
  * Defines the DataSchema and common behaviors for a Playlist which are shared between both client and server.
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
+
 interface BasePlaylist extends BasePlaylist.Properties {}
 declare class BasePlaylist extends Document<BasePlaylist.SchemaField, BasePlaylist.Metadata> {
   /**

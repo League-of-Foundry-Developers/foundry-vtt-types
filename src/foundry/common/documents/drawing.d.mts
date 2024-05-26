@@ -14,7 +14,6 @@ declare global {
  * The Document definition for a Drawing.
  * Defines the DataSchema and common behaviors for a Drawing which are shared between both client and server.
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface BaseDrawing extends BaseDrawing.Properties {}
 declare class BaseDrawing<Parent extends Document.Any | null = null> extends Document<
   BaseDrawing.SchemaField,

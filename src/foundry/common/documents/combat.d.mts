@@ -12,7 +12,6 @@ declare global {
  * The Document definition for a Combat.
  * Defines the DataSchema and common behaviors for a Combat which are shared between both client and server.
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface BaseCombat extends BaseCombat.Properties {}
 declare class BaseCombat<Parent extends Document.Any | null = null> extends Document<
   BaseCombat.SchemaField,
