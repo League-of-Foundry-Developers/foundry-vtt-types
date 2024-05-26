@@ -214,3 +214,17 @@ declare global {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface RequiredModules {}
 }
+
+type ValidDataModel = {
+  [DocumentName in foundry.abstract.Document.SystemType]?: {
+    [DocumentType in string]?: {
+      instance: foundry.abstract.Document.Any;
+      // Recommended to be a TypeDataModel subclass but DataModel is also technically valid.
+      model: foundry.abstract.DataModel<any, any>;
+    };
+  };
+};
+
+type MustBeValid<T extends ValidDataModel> = T;
+
+type _TestValidDataModelConfig = MustBeValid<DataModelConfig>;
