@@ -1,5 +1,3 @@
-import type { DataModel } from "../foundry/common/abstract/module.mts";
-
 export {};
 
 declare global {
@@ -173,16 +171,7 @@ declare global {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface DataConfig {}
 
-  interface DataModelConfig {
-    Actor: Record<string, DataModel<any, Actor>>;
-    Card: Record<string, DataModel<any, Card>>;
-    Cards: Record<string, DataModel<any, Cards>>;
-    Item: Record<string, DataModel<any, Item>>;
-    JournalEntryPage: Record<string, DataModel<any, JournalEntryPage>>;
-    // {
-    //   [type: string]: DataModel<any, JournalEntryPage>;
-    // };
-  }
+  interface DataModelConfig {}
 
   /** @see {@link DataConfig} */
   // eslint-disable-next-line @typescript-eslint/no-empty-interface

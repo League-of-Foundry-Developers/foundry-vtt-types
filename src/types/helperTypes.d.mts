@@ -62,10 +62,6 @@ export type PlaceableDocumentType =
   | "Token"
   | "Wall";
 
-type TypeNamesForDocument<D extends DocumentType> = DataModelConfig extends { [K in D]: infer ConfigData }
-  ? keyof ConfigData
-  : never;
-
 /**
  * Actual document types that go in folders
  */
@@ -125,22 +121,6 @@ export type LayerClass<T extends DocumentConstructor> = T["metadata"]["name"] ex
     ? CONFIG[T["metadata"]["name"]]["layerClass"]
     : never
   : T;
-
-type DocumentTypes<ConcreteDocument extends DocumentConstructor> =
-  | Exclude<ConcreteDocument["metadata"]["coreTypes"], undefined>
-  | keyof DataModelConfig[ConcreteDocument["metadata"]["name"]];
-
-type DocumentModelForType<
-  ConcreteDocument extends DocumentConstructor,
-  DocumentType extends DocumentTypes<ConcreteDocument>,
-> = DocumentType extends ConcreteDocument["metadata"]["coreTypes"]
-  ? {}
-  : DataModelConfig[ConcreteDocument["metadata"]["name"]][DocumentType];
-
-type DocumentOfType<
-  ConcreteDocument extends DocumentConstructor,
-  DocumentType extends DocumentTypes<ConcreteDocument>,
-> = ConcreteDocument & { system: DocumentModelForType<ConcreteDocument, DocumentType> };
 
 export type DataSourceForPlaceable<P extends PlaceableObject> =
   P extends PlaceableObject<infer Doc> ? (Doc extends Document<infer D, any> ? D["_source"] : never) : never;

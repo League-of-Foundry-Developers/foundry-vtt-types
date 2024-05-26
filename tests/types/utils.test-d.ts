@@ -7,7 +7,6 @@ import type {
   StoredDocument,
   Titlecase,
 } from "../../src/types/utils.d.mts";
-import type { TypeNamesForDocument } from "../../src/types/helperTypes.d.mts";
 
 const membersBecomeOptional: DeepPartial<{ a: string }> = {};
 expectTypeOf(membersBecomeOptional).toEqualTypeOf<{ a?: string }>();
@@ -53,9 +52,6 @@ expectTypeOf(titlecaseWithThreeWords).toEqualTypeOf<"Foo Bar Baz">();
 
 const numberMaybePromise: MaybePromise<number> = 0;
 expectTypeOf(await numberMaybePromise).toEqualTypeOf<number>();
-
-declare const JournalEntryPageTypes: TypeNamesForDocument<"JournalEntryPage">;
-expectTypeOf(JournalEntryPageTypes).toEqualTypeOf<"base" | "image" | "pdf" | "text" | "video">();
 
 declare const user: User;
 expectTypeOf(user.id).toEqualTypeOf<string | null>();
