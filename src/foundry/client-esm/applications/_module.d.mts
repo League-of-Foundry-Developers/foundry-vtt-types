@@ -1,5 +1,5 @@
 export * as types from "./_types.mts";
-export * as api from "./api/module.mts";
+export * as api from "./api/_module.mts";
 export * as dice from "./dice/_module.mts";
 export * as elements from "./elements/_module.mts";
 export * as fields from "./forms/fields.mts";
