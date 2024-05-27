@@ -1,7 +1,6 @@
 import type { ConfiguredDocumentClass, ConfiguredObjectClassForName } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
-import type { TileDataConstructorData } from "../../../common/data/data.mjs/tileData.d.mts";
 
 export {};
 
@@ -138,7 +137,7 @@ declare global {
     protected _refreshHandle(b: Rectangle): void;
 
     protected override _onUpdate(
-      changed: DeepPartial<foundry.data.TileData["_source"]>,
+      changed: DeepPartial<foundry.documents.BaseTile["_source"]>,
       options?: DocumentModificationOptions,
       userId?: string,
     ): Promise<this> | void;
@@ -206,7 +205,9 @@ declare global {
      * Create a preview tile with a background texture instead of an image
      * @param data - Initial data with which to create the preview Tile
      */
-    static createPreview(data: TileDataConstructorData): InstanceType<ConfiguredObjectClassForName<"Tile">>;
+    static createPreview(
+      data: foundry.documents.BaseTile.ConstructorData,
+    ): InstanceType<ConfiguredObjectClassForName<"Tile">>;
 
     /**
      * @deprecated since v11, will be removed in v13

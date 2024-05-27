@@ -87,13 +87,13 @@ declare global {
     updateSource(options?: AmbientSound.UpdateSourceOptions | undefined): void;
 
     protected override _onCreate(
-      data: foundry.data.AmbientSoundData["_source"],
+      data: foundry.documents.BaseAmbientSound["_source"],
       options: DocumentModificationOptions,
       userId: string,
     ): void;
 
     protected override _onUpdate(
-      changed: DeepPartial<foundry.data.AmbientSoundData["_source"]>,
+      changed: DeepPartial<foundry.documents.BaseAmbientSound["_source"]>,
       options?: DocumentModificationOptions,
       userId?: string,
     ): void;
