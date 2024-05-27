@@ -1,13 +1,11 @@
 import { expectTypeOf } from "vitest";
 import type EmbeddedCollection from "../../../../src/foundry/common/abstract/embedded-collection.d.mts";
-import type { ActiveEffectDataSource } from "../../../../src/foundry/common/data/data.mjs/activeEffectData.d.mts";
-import type { EffectDurationDataProperties } from "../../../../src/foundry/common/data/data.mjs/effectDurationData.d.mts";
 
-const baseActor = new foundry.documents.BaseActor();
-expectTypeOf(baseActor.effects).toEqualTypeOf<EmbeddedCollection<typeof ActiveEffect, foundry.data.ActorData>>();
+const baseActor = new foundry.documents.BaseActor({ name: "foo", type: "base" });
+expectTypeOf(baseActor.effects).toEqualTypeOf<EmbeddedCollection<typeof ActiveEffect>>();
 expectTypeOf(baseActor.items).toEqualTypeOf<EmbeddedCollection<typeof Item, foundry.data.ActorData>>();
-expectTypeOf(baseActor.data._source.effects[0]).toEqualTypeOf<ActiveEffectDataSource>();
-expectTypeOf(baseActor.data._source.effects[0].duration).toEqualTypeOf<EffectDurationDataProperties>();
+expectTypeOf(baseActor._source.effects[0]!).toEqualTypeOf<ActiveEffectData>();
+expectTypeOf(baseActor._source.effects[0]!.duration).toEqualTypeOf<EffectDurationData>();
 
 interface CharacterDataSourceData {
   health: number;
@@ -94,12 +92,12 @@ if (baseActor.data._source.type === "character") {
 }
 
 if (baseActor.data.type === "character") {
-  expectTypeOf(baseActor.data.data.health).toEqualTypeOf<number>();
-  expectTypeOf(baseActor.data.data.movement).toEqualTypeOf<number>();
+  expectTypeOf(baseActor.system.health).toEqualTypeOf<number>();
+  expectTypeOf(baseActor.system.movement).toEqualTypeOf<number>();
 } else {
-  expectTypeOf(baseActor.data.data.faction).toEqualTypeOf<string>();
-  expectTypeOf(baseActor.data.data.challenge).toEqualTypeOf<number>();
-  expectTypeOf(baseActor.data.data.damage).toEqualTypeOf<number>();
+  expectTypeOf(baseActor.system.faction).toEqualTypeOf<string>();
+  expectTypeOf(baseActor.system.challenge).toEqualTypeOf<number>();
+  expectTypeOf(baseActor.system.damage).toEqualTypeOf<number>();
 }
 
 // Flags for Actor, Items, Card, and Cards documents can be configured via the SourceConfig. This is tested here.

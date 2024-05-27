@@ -13,5 +13,5 @@ const settingData = await foundry.documents.BaseSetting.create(
   { temporary: true },
 );
 if (settingData) {
-  expectTypeOf(settingData.data).toEqualTypeOf<foundry.data.SettingData>();
+  expectTypeOf(settingData).toEqualTypeOf<foundry.SettingData>();
 }

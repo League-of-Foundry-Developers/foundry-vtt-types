@@ -12,6 +12,5 @@ expectTypeOf(foundry.documents.BaseActiveEffect.deleteDocuments([])).toEqualType
 
 const activeEffect = await foundry.documents.BaseActiveEffect.create({}, { temporary: true });
 if (activeEffect) {
-  expectTypeOf(activeEffect.data).toEqualTypeOf<foundry.data.ActiveEffectData>();
   expectTypeOf(activeEffect.parent).toEqualTypeOf<Actor | Item | null>();
 }

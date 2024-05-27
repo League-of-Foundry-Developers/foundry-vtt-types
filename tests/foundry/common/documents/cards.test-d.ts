@@ -4,9 +4,9 @@ import type { CardDataSource } from "../../../../src/foundry/common/data/data.mj
 import type { CardFaceDataSource } from "../../../../src/foundry/common/data/data.mjs/cardFaceData.d.mts";
 
 const baseCards = new foundry.documents.BaseCards();
-expectTypeOf(baseCards.cards).toEqualTypeOf<EmbeddedCollection<typeof Card, foundry.data.CardsData>>();
-expectTypeOf(baseCards.data._source.cards[0]).toEqualTypeOf<CardDataSource>();
-expectTypeOf(baseCards.data._source.cards[0].faces[0]).toEqualTypeOf<CardFaceDataSource>();
+expectTypeOf(baseCards.cards).toEqualTypeOf<EmbeddedCollection<typeof Card, foundry.CardsData>>();
+expectTypeOf(baseCards._source.cards[0]).toEqualTypeOf<CardDataSource>();
+expectTypeOf(baseCards._source.cards[0].faces[0]).toEqualTypeOf<CardFaceDataSource>();
 
 interface GermanDeckDataSourceData {
   mostUsedGame: "Skat";
@@ -57,26 +57,26 @@ declare global {
   }
 }
 
-expectTypeOf(baseCards.data.type).toEqualTypeOf<"french" | "german">();
+expectTypeOf(baseCards.type).toEqualTypeOf<"french" | "german">();
 expectTypeOf(baseCards.type).toEqualTypeOf<"french" | "german">();
 expectTypeOf(baseCards.parent).toEqualTypeOf<null>();
 
-if (baseCards.data._source.type === "french") {
-  expectTypeOf(baseCards.data._source.data.coolUse).toEqualTypeOf<"throwing cards">();
+if (baseCards._source.type === "french") {
+  expectTypeOf(baseCards._source.coolUse).toEqualTypeOf<"throwing cards">();
 
   // @ts-expect-error - "possibleInjuries" is not a property of FrenchDeckDataSourceData.
-  baseCards.data._source.data.possibleInjuries;
+  baseCards._source.possibleInjuries;
 } else {
-  expectTypeOf(baseCards.data._source.data.mostUsedGame).toEqualTypeOf<"Skat">();
+  expectTypeOf(baseCards._source.mostUsedGame).toEqualTypeOf<"Skat">();
 
   // @ts-expect-error - "mostUsedBy" is not a property of GermanDeckDataSourceData.
-  baseCards.data._source.data.mostUsedBy;
+  baseCards._source.mostUsedBy;
 }
 
-if (baseCards.data.type === "french") {
-  expectTypeOf(baseCards.data.data.coolUse).toEqualTypeOf<"throwing cards">();
-  expectTypeOf(baseCards.data.data.possibleInjuries).toEqualTypeOf<"card stuck in eye">();
+if (baseCards.type === "french") {
+  expectTypeOf(baseCards.system.coolUse).toEqualTypeOf<"throwing cards">();
+  expectTypeOf(baseCards.system.possibleInjuries).toEqualTypeOf<"card stuck in eye">();
 } else {
-  expectTypeOf(baseCards.data.data.mostUsedGame).toEqualTypeOf<"Skat">();
-  expectTypeOf(baseCards.data.data.mostUsedBy).toEqualTypeOf<"older players">();
+  expectTypeOf(baseCards.system.mostUsedGame).toEqualTypeOf<"Skat">();
+  expectTypeOf(baseCards.system.mostUsedBy).toEqualTypeOf<"older players">();
 }

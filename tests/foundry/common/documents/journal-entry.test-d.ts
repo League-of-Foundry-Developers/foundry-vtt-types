@@ -15,5 +15,5 @@ const journalEntry = await foundry.documents.BaseJournalEntry.create(
   { temporary: true },
 );
 if (journalEntry) {
-  expectTypeOf(journalEntry.data).toEqualTypeOf<foundry.data.JournalEntryData>();
+  expectTypeOf(journalEntry).toEqualTypeOf<foundry.JournalEntryData>();
 }

@@ -5,9 +5,9 @@ import type { EffectDurationDataProperties } from "../../../../src/foundry/commo
 import type { BaseItem } from "../../../../src/foundry/common/documents.mjs/index.d.mts";
 
 const baseItem = new foundry.documents.BaseItem();
-expectTypeOf(baseItem.effects).toEqualTypeOf<EmbeddedCollection<typeof ActiveEffect, foundry.data.ItemData>>();
-expectTypeOf(baseItem.data._source.effects[0]).toEqualTypeOf<ActiveEffectDataSource>();
-expectTypeOf(baseItem.data._source.effects[0].duration).toEqualTypeOf<EffectDurationDataProperties>();
+expectTypeOf(baseItem.effects).toEqualTypeOf<EmbeddedCollection<typeof ActiveEffect, foundry.ItemData>>();
+expectTypeOf(baseItem._source.effects[0]).toEqualTypeOf<ActiveEffectDataSource>();
+expectTypeOf(baseItem._source.effects[0].duration).toEqualTypeOf<EffectDurationDataProperties>();
 
 interface ArmorDataSourceData {
   armorValue: number;
@@ -59,29 +59,29 @@ declare global {
   }
 }
 
-expectTypeOf(baseItem.data.type).toEqualTypeOf<"weapon" | "armor">();
+expectTypeOf(baseItem.type).toEqualTypeOf<"weapon" | "armor">();
 expectTypeOf(baseItem.parent?.items.get("", { strict: true })).toEqualTypeOf<Item | undefined>();
 
-if (baseItem.data._source.type === "armor") {
-  expectTypeOf(baseItem.data._source.data.armorValue).toEqualTypeOf<number>();
+if (baseItem._source.type === "armor") {
+  expectTypeOf(baseItem._source.armorValue).toEqualTypeOf<number>();
 
   // @ts-expect-error - "weight" is not a valid property of ArmorDataSourceData
-  baseItem.data._source.data.weight;
+  baseItem._source.weight;
 } else {
-  expectTypeOf(baseItem.data._source.data.attackSpeed).toEqualTypeOf<number>();
-  expectTypeOf(baseItem.data._source.data.damagePerHit).toEqualTypeOf<number>();
+  expectTypeOf(baseItem._source.attackSpeed).toEqualTypeOf<number>();
+  expectTypeOf(baseItem._source.damagePerHit).toEqualTypeOf<number>();
 
   // @ts-expect-error - "damage" is not a valid property of WeaponDataSourceData
-  baseItem.data._source.data.damage;
+  baseItem._source.damage;
 }
 
-if (baseItem.data.type === "armor") {
-  expectTypeOf(baseItem.data.data.armorValue).toEqualTypeOf<number>();
-  expectTypeOf(baseItem.data.data.weight).toEqualTypeOf<number>();
+if (baseItem.type === "armor") {
+  expectTypeOf(baseItem.system.armorValue).toEqualTypeOf<number>();
+  expectTypeOf(baseItem.system.weight).toEqualTypeOf<number>();
 } else {
-  expectTypeOf(baseItem.data.data.attackSpeed).toEqualTypeOf<number>();
-  expectTypeOf(baseItem.data.data.damagePerHit).toEqualTypeOf<number>();
-  expectTypeOf(baseItem.data.data.damage).toEqualTypeOf<number>();
+  expectTypeOf(baseItem.system.attackSpeed).toEqualTypeOf<number>();
+  expectTypeOf(baseItem.system.damagePerHit).toEqualTypeOf<number>();
+  expectTypeOf(baseItem.system.damage).toEqualTypeOf<number>();
 }
 
 // Flags for Actor, Item, Card, and Cards documents can be configured via the FlagConfig. This is tested here.
@@ -95,7 +95,7 @@ declare global {
     };
   }
 }
-expectTypeOf(baseItem.data.flags["my-system"]).toEqualTypeOf<{ countable: boolean }>();
+expectTypeOf(baseItem.flags["my-system"]).toEqualTypeOf<{ countable: boolean }>();
 
 expectTypeOf(baseItem.getFlag("my-system", "countable")).toEqualTypeOf<boolean>();
 expectTypeOf(baseItem.getFlag("my-system", "unknown-key")).toEqualTypeOf<never>();

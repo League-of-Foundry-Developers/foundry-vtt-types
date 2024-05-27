@@ -12,5 +12,5 @@ expectTypeOf(foundry.documents.BaseChatMessage.deleteDocuments([])).toEqualTypeO
 
 const chat = await foundry.documents.BaseChatMessage.create({}, { temporary: true });
 if (chat) {
-  expectTypeOf(chat.data).toEqualTypeOf<foundry.data.ChatMessageData>();
+  expectTypeOf(chat).toEqualTypeOf<foundry.ChatMessageData>();
 }

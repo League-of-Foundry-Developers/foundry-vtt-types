@@ -65,7 +65,7 @@ expectTypeOf(foundry.documents.BaseScene.create({ name: "My scene" })).toEqualTy
 
 const myScene = await foundry.documents.BaseScene.create({ name: "My second scene" }, { temporary: true });
 if (myScene) {
-  expectTypeOf(myScene.data).toEqualTypeOf<foundry.data.SceneData>();
+  expectTypeOf(myScene).toEqualTypeOf<foundry.SceneData>();
 }
 
 // @ts-expect-error - A BaseScene requires a name.
@@ -74,13 +74,11 @@ new foundry.documents.BaseScene({});
 const scene = new foundry.documents.BaseScene({ name: "My third scene" });
 expectTypeOf(scene).toEqualTypeOf<foundry.documents.BaseScene>();
 
-expectTypeOf(scene.drawings).toEqualTypeOf<EmbeddedCollection<typeof DrawingDocument, foundry.data.SceneData>>();
-expectTypeOf(scene.lights).toEqualTypeOf<EmbeddedCollection<typeof AmbientLightDocument, foundry.data.SceneData>>();
-expectTypeOf(scene.notes).toEqualTypeOf<EmbeddedCollection<typeof NoteDocument, foundry.data.SceneData>>();
-expectTypeOf(scene.sounds).toEqualTypeOf<EmbeddedCollection<typeof AmbientSoundDocument, foundry.data.SceneData>>();
-expectTypeOf(scene.templates).toEqualTypeOf<
-  EmbeddedCollection<typeof MeasuredTemplateDocument, foundry.data.SceneData>
->();
-expectTypeOf(scene.tokens).toEqualTypeOf<EmbeddedCollection<typeof TokenDocument, foundry.data.SceneData>>();
-expectTypeOf(scene.tiles).toEqualTypeOf<EmbeddedCollection<typeof TileDocument, foundry.data.SceneData>>();
-expectTypeOf(scene.walls).toEqualTypeOf<EmbeddedCollection<typeof WallDocument, foundry.data.SceneData>>();
+expectTypeOf(scene.drawings).toEqualTypeOf<EmbeddedCollection<typeof DrawingDocument, foundry.SceneData>>();
+expectTypeOf(scene.lights).toEqualTypeOf<EmbeddedCollection<typeof AmbientLightDocument, foundry.SceneData>>();
+expectTypeOf(scene.notes).toEqualTypeOf<EmbeddedCollection<typeof NoteDocument, foundry.SceneData>>();
+expectTypeOf(scene.sounds).toEqualTypeOf<EmbeddedCollection<typeof AmbientSoundDocument, foundry.SceneData>>();
+expectTypeOf(scene.templates).toEqualTypeOf<EmbeddedCollection<typeof MeasuredTemplateDocument, foundry.SceneData>>();
+expectTypeOf(scene.tokens).toEqualTypeOf<EmbeddedCollection<typeof TokenDocument, foundry.SceneData>>();
+expectTypeOf(scene.tiles).toEqualTypeOf<EmbeddedCollection<typeof TileDocument, foundry.SceneData>>();
+expectTypeOf(scene.walls).toEqualTypeOf<EmbeddedCollection<typeof WallDocument, foundry.SceneData>>();

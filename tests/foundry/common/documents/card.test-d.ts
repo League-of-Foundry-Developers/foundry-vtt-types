@@ -2,7 +2,7 @@ import { expectTypeOf } from "vitest";
 import type { CardFaceDataSource } from "../../../../src/foundry/common/data/data.mjs/cardFaceData.d.mts";
 
 const baseCard = new foundry.documents.BaseCard();
-expectTypeOf(baseCard.data._source.faces[0]).toEqualTypeOf<CardFaceDataSource>();
+expectTypeOf(baseCard._source.faces[0]).toEqualTypeOf<CardFaceDataSource>();
 
 interface OldCardDataSourceData {
   condition: "grubby";
@@ -71,27 +71,27 @@ declare global {
   }
 }
 
-expectTypeOf(baseCard.data.type).toEqualTypeOf<"old" | "uno">();
+expectTypeOf(baseCard.type).toEqualTypeOf<"old" | "uno">();
 expectTypeOf(baseCard.parent).toEqualTypeOf<Cards | null>();
 
-if (baseCard.data._source.type === "old") {
-  expectTypeOf(baseCard.data._source.data.condition).toEqualTypeOf<"grubby">();
+if (baseCard._source.type === "old") {
+  expectTypeOf(baseCard._source.condition).toEqualTypeOf<"grubby">();
 
   // @ts-expect-error - "age" is not a property of OldCardDataSourceData.
-  baseCard.data._source.data.age;
+  baseCard._source.age;
 } else {
-  expectTypeOf(baseCard.data._source.data.special).toEqualTypeOf<boolean>();
+  expectTypeOf(baseCard._source.special).toEqualTypeOf<boolean>();
 
   // @ts-expect-error - "color" is not a property of UnoCardDataSourceData.
-  baseCard.data._source.data.color;
+  baseCard._source.color;
 }
 
-if (baseCard.data.type === "old") {
-  expectTypeOf(baseCard.data.data.condition).toEqualTypeOf<"grubby">();
-  expectTypeOf(baseCard.data.data.age).toEqualTypeOf<number>();
+if (baseCard.type === "old") {
+  expectTypeOf(baseCard.system.condition).toEqualTypeOf<"grubby">();
+  expectTypeOf(baseCard.system.age).toEqualTypeOf<number>();
 } else {
-  expectTypeOf(baseCard.data.data.special).toEqualTypeOf<boolean>();
-  expectTypeOf(baseCard.data.data.color).toEqualTypeOf<string>();
+  expectTypeOf(baseCard.system.special).toEqualTypeOf<boolean>();
+  expectTypeOf(baseCard.system.color).toEqualTypeOf<string>();
 }
 
 // Flags for Actor, Items, Card, and Cards documents can be configured via the SourceConfig. This is tested here.
@@ -102,9 +102,9 @@ expectTypeOf(baseCard.getFlag("my-module", "someProp")).toEqualTypeOf<boolean>()
 expectTypeOf(baseCard.getFlag("my-module", "marked")).toEqualTypeOf<never>();
 expectTypeOf(baseCard.getFlag("my-module", "folded")).toEqualTypeOf<never>();
 // non shared flags are also not available if the type is known
-if (baseCard.data._source.type === "old") {
+if (baseCard._source.type === "old") {
   expectTypeOf(baseCard.getFlag("my-module", "marked")).toEqualTypeOf<never>();
 }
-if (baseCard.data.type === "uno") {
+if (baseCard.type === "uno") {
   expectTypeOf(baseCard.getFlag("my-module", "folded")).toEqualTypeOf<never>();
 }

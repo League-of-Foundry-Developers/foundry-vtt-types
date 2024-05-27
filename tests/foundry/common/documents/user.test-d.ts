@@ -15,7 +15,7 @@ expectTypeOf(foundry.documents.BaseUser.deleteDocuments([])).toEqualTypeOf<
 
 const user = await foundry.documents.BaseUser.create({ name: "Another User" }, { temporary: true });
 if (user) {
-  expectTypeOf(user.data).toEqualTypeOf<foundry.data.UserData>();
+  expectTypeOf(user).toEqualTypeOf<foundry.UserData>();
 }
 
 const baseUser = new foundry.documents.BaseUser();
