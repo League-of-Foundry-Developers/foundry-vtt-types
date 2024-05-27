@@ -59,7 +59,7 @@ export type PlaceableDocumentType =
   | "MeasuredTemplate"
   | "Note"
   | "Tile"
-  // | "Token"
+  | "Token"
   | "Wall";
 
 // TODO: Probably a way to auto-determine this

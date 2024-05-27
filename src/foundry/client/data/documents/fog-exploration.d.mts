@@ -11,7 +11,6 @@ declare global {
    */
   //@ts-expect-error Foundry turned a synchronous static function into async, fixed in v12
   class FogExploration extends ClientDocumentMixin(foundry.documents.BaseFogExploration) {
-    // TODO: Foundry converting a sync function to async has TS unhappy
     /**
      * Obtain the fog of war exploration progress for a specific Scene and User.
      * @param options - (default: `{}`)
