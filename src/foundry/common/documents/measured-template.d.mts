@@ -1,3 +1,4 @@
+import type { ConfiguredDocumentClass } from "../../../types/helperTypes.d.mts";
 import type { InexactPartial, Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
@@ -14,7 +15,11 @@ declare global {
  * Defines the DataSchema and common behaviors for a MeasuredTemplate which are shared between both client and server.
  */
 interface BaseMeasuredTemplate extends BaseMeasuredTemplate.Properties {}
-declare class BaseMeasuredTemplate extends Document<BaseMeasuredTemplate.SchemaField, BaseMeasuredTemplate.Metadata> {
+declare class BaseMeasuredTemplate extends Document<
+  BaseMeasuredTemplate.SchemaField,
+  BaseMeasuredTemplate.Metadata,
+  InstanceType<ConfiguredDocumentClass<typeof documents.BaseScene>> | null
+> {
   /**
    * @param data    - Initial data from which to construct the MeasuredTemplate
    * @param context - Construction context options

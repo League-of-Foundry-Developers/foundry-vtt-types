@@ -1,3 +1,4 @@
+import type { ConfiguredDocumentClass } from "../../../types/helperTypes.d.mts";
 import type { Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
@@ -13,10 +14,10 @@ declare global {
  * Defines the DataSchema and common behaviors for a Combatant which are shared between both client and server.
  */
 interface BaseCombatant extends BaseCombatant.Properties {}
-declare class BaseCombatant<Parent extends Document.Any | null = null> extends Document<
+declare class BaseCombatant extends Document<
   BaseCombatant.SchemaField,
   BaseCombatant.Metadata,
-  Parent
+  InstanceType<ConfiguredDocumentClass<typeof documents.BaseCombat>> | null
 > {
   /**
    * @param data    - Initial data from which to construct the Combatant

@@ -1,3 +1,4 @@
+import type { ConfiguredDocumentClassForName } from "../../../types/helperTypes.d.mts";
 import type { InexactPartial, Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
@@ -15,10 +16,10 @@ declare global {
  * Defines the DataSchema and common behaviors for a Drawing which are shared between both client and server.
  */
 interface BaseDrawing extends BaseDrawing.Properties {}
-declare class BaseDrawing<Parent extends Document.Any | null = null> extends Document<
+declare class BaseDrawing extends Document<
   BaseDrawing.SchemaField,
   BaseDrawing.Metadata,
-  Parent
+  InstanceType<ConfiguredDocumentClassForName<"Scene">> | null
 > {
   /**
    * @param data    - Initial data from which to construct the Drawing

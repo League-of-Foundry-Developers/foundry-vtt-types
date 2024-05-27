@@ -16,11 +16,7 @@ declare global {
  * Defines the DataSchema and common behaviors for a ChatMessage which are shared between both client and server.
  */
 interface BaseChatMessage extends BaseChatMessage.Properties {}
-declare class BaseChatMessage<Parent extends Document.Any | null = null> extends Document<
-  BaseChatMessage.SchemaField,
-  BaseChatMessage.Metadata,
-  Parent
-> {
+declare class BaseChatMessage extends Document<BaseChatMessage.SchemaField, BaseChatMessage.Metadata> {
   /**
    * @param data    - Initial data from which to construct the ChatMessage
    * @param context - Construction context options

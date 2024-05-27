@@ -335,6 +335,7 @@ declare global {
      */
     FogExploration: {
       /** @defaultValue `FogExploration` */
+      //@ts-expect-error Fog Exploration breaks inheritance
       documentClass: ConfiguredDocumentClassOrDefault<typeof FogExploration>;
 
       /** @defaultValue `FogExplorations` */
@@ -1769,8 +1770,11 @@ declare global {
      */
     ActorDelta: {
       /** @defaultValue `ActorDelta` */
-      // @ts-expect-error Class isn't implemented yet
       documentClass: ConfiguredDocumentClassOrDefault<typeof ActorDelta>;
+
+      sheetClasses?: Record<string, Record<string, SheetClassConfig>>;
+
+      typeLabels?: Record<string, string>;
     };
 
     /**
@@ -2523,6 +2527,20 @@ type ConfiguredObjectClassOrDefault<Fallback extends PlaceableObjectConstructor>
   Fallback["embeddedName"] extends keyof PlaceableObjectClassConfig
     ? PlaceableObjectClassConfig[Fallback["embeddedName"]]
     : Fallback;
+
+interface SheetClassConfig {
+  canBeDefault: boolean;
+
+  canConfigure: boolean;
+
+  cls: typeof DocumentSheet;
+
+  default: boolean;
+
+  id: string;
+
+  label: string;
+}
 
 type PixiContainerConstructor = typeof PIXI.Container;
 interface CanvasGroup extends PIXI.Container {

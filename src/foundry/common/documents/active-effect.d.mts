@@ -18,11 +18,9 @@ export default BaseActiveEffect;
  * The data schema for an ActiveEffect document.
  */
 interface BaseActiveEffect extends BaseActiveEffect.Properties {}
-declare class BaseActiveEffect<Parent extends Document.Any | null = null> extends Document<
-  BaseActiveEffect.SchemaField,
-  BaseActiveEffect.Metadata,
-  Parent
-> {
+declare class BaseActiveEffect<
+  Parent extends (documents.BaseActor | documents.BaseItem) | null = null,
+> extends Document<BaseActiveEffect.SchemaField, BaseActiveEffect.Metadata, Parent> {
   /**
    * @param data    - Initial data from which to construct the ActiveEffect
    * @param context - Construction context options
