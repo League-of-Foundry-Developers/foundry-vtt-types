@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClass } from "../../../types/helperTypes.mts";
+import type { ConfiguredDocumentClassForName } from "../../../types/helperTypes.mts";
 import type { InexactPartial, Merge } from "../../../types/utils.mts";
 import type { DataModel } from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
@@ -25,7 +25,7 @@ interface BaseToken extends BaseToken.Properties {}
 declare class BaseToken extends Document<
   BaseToken.SchemaField,
   BaseToken.Metadata,
-  InstanceType<ConfiguredDocumentClass<typeof documents.BaseScene>> | null
+  InstanceType<ConfiguredDocumentClassForName<"Scene">> | null
 > {
   constructor(data: BaseToken.ConstructorData, context?: DocumentConstructionContext);
 

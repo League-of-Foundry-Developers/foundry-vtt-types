@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClass } from "../../../types/helperTypes.mts";
+import type { ConfiguredDocumentClassForName } from "../../../types/helperTypes.mts";
 import type { InexactPartial, Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
@@ -18,7 +18,7 @@ interface BaseItem extends BaseItem.Properties {}
 declare class BaseItem extends Document<
   BaseItem.SchemaField,
   BaseItem.Metadata,
-  InstanceType<ConfiguredDocumentClass<typeof documents.BaseActor>> | null
+  InstanceType<ConfiguredDocumentClassForName<"Actor">> | null
 > {
   /**
    * @param data    - Initial data from which to construct the Item
@@ -154,7 +154,7 @@ declare namespace BaseItem {
      * A collection of ActiveEffect embedded Documents
      * @defaultValue `[]`
      */
-    effects: fields.EmbeddedCollectionField<typeof documents.BaseActiveEffect<documents.BaseItem>>;
+    effects: fields.EmbeddedCollectionField<typeof documents.BaseActiveEffect>;
 
     /**
      * The _id of a Folder which contains this Item

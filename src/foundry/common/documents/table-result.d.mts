@@ -1,3 +1,4 @@
+import type { ConfiguredDocumentClassForName } from "../../../types/helperTypes.d.mts";
 import type { InexactPartial, Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
@@ -15,7 +16,11 @@ declare global {
  */
 
 interface BaseTableResult extends BaseTableResult.Properties {}
-declare class BaseTableResult extends Document<BaseTableResult.SchemaField, BaseTableResult.Metadata> {
+declare class BaseTableResult extends Document<
+  BaseTableResult.SchemaField,
+  BaseTableResult.Metadata,
+  InstanceType<ConfiguredDocumentClassForName<"RollTable">> | null
+> {
   /**
    * @param data    - Initial data from which to construct the Table Result
    * @param context - Construction context options

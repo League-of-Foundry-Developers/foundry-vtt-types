@@ -1,3 +1,4 @@
+import type { ConfiguredDocumentClassForName } from "../../../types/helperTypes.d.mts";
 import type { InexactPartial, Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata, DocumentModificationOptions } from "../abstract/document.mts";
@@ -18,9 +19,11 @@ export default BaseActiveEffect;
  * The data schema for an ActiveEffect document.
  */
 interface BaseActiveEffect extends BaseActiveEffect.Properties {}
-declare class BaseActiveEffect<
-  Parent extends (documents.BaseActor | documents.BaseItem) | null = null,
-> extends Document<BaseActiveEffect.SchemaField, BaseActiveEffect.Metadata, Parent> {
+declare class BaseActiveEffect extends Document<
+  BaseActiveEffect.SchemaField,
+  BaseActiveEffect.Metadata,
+  InstanceType<ConfiguredDocumentClassForName<"Actor">> | InstanceType<ConfiguredDocumentClassForName<"Item">> | null
+> {
   /**
    * @param data    - Initial data from which to construct the ActiveEffect
    * @param context - Construction context options

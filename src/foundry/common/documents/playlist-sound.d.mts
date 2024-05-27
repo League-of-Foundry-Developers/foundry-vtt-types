@@ -1,3 +1,4 @@
+import type { ConfiguredDocumentClassForName } from "../../../types/helperTypes.d.mts";
 import type { InexactPartial, Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
@@ -14,7 +15,11 @@ declare global {
  */
 
 interface BasePlaylistSound extends BasePlaylistSound.Properties {}
-declare class BasePlaylistSound extends Document<BasePlaylistSound.SchemaField, BasePlaylistSound.Metadata> {
+declare class BasePlaylistSound extends Document<
+  BasePlaylistSound.SchemaField,
+  BasePlaylistSound.Metadata,
+  InstanceType<ConfiguredDocumentClassForName<"Playlist">> | null
+> {
   /**
    * @param data    - Initial data from which to construct the PlaylistSound
    * @param context - Construction context options

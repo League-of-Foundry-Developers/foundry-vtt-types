@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClass } from "../../../types/helperTypes.d.mts";
+import type { ConfiguredDocumentClassForName } from "../../../types/helperTypes.d.mts";
 import type { InexactPartial, Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
@@ -18,7 +18,7 @@ interface BaseMeasuredTemplate extends BaseMeasuredTemplate.Properties {}
 declare class BaseMeasuredTemplate extends Document<
   BaseMeasuredTemplate.SchemaField,
   BaseMeasuredTemplate.Metadata,
-  InstanceType<ConfiguredDocumentClass<typeof documents.BaseScene>> | null
+  InstanceType<ConfiguredDocumentClassForName<"Scene">> | null
 > {
   /**
    * @param data    - Initial data from which to construct the MeasuredTemplate

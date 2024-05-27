@@ -1,3 +1,4 @@
+import type { ConfiguredDocumentClassForName } from "../../../types/helperTypes.d.mts";
 import type { Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
@@ -22,7 +23,11 @@ declare global {
  * Defines the data schema and common behaviours for a JournalEntryPage which are shared between both client and server.
  */
 interface BaseJournalEntryPage extends BaseJournalEntryPage.Properties {}
-declare class BaseJournalEntryPage extends Document<BaseJournalEntryPage.SchemaField, BaseJournalEntryPage.Metadata> {
+declare class BaseJournalEntryPage extends Document<
+  BaseJournalEntryPage.SchemaField,
+  BaseJournalEntryPage.Metadata,
+  InstanceType<ConfiguredDocumentClassForName<"Scene">> | null
+> {
   /**
    * @param data    - Initial data from which to construct the JournalEntryPage.
    * @param context - Construction context options.

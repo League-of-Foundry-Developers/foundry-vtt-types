@@ -11,7 +11,7 @@ export type ConstructorDataType<T extends DocumentConstructor> = foundry.data.fi
 type ObjectToDeepPartial<T> = T extends object ? DeepPartial<T> : T;
 
 export type DocumentConstructor = Pick<typeof Document, keyof typeof Document> &
-  (new (...args: any[]) => Document<any, any>);
+  (new (...args: any[]) => Document<any, any, any>);
 
 export type PlaceableObjectConstructor = Pick<typeof PlaceableObject, keyof typeof PlaceableObject> &
   (new (...args: any[]) => PlaceableObject<any>);

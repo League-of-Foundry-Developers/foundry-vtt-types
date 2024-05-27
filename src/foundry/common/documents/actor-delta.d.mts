@@ -15,7 +15,11 @@ declare global {
  * ActorDeltas store a delta that can be applied to a particular Actor in order to produce a new Actor.
  */
 interface BaseActorDelta extends BaseActorDelta.Properties {}
-declare class BaseActorDelta extends Document<documents.BaseActorDelta.SchemaField, documents.BaseActorDelta.Metadata> {
+declare class BaseActorDelta extends Document<
+  documents.BaseActorDelta.SchemaField,
+  documents.BaseActorDelta.Metadata,
+  InstanceType<ConfiguredDocumentClassForName<"Token">> | null
+> {
   constructor(data: BaseActorDelta.ConstructorData, context?: DocumentConstructionContext);
 
   override _source: BaseActorDelta.Source;

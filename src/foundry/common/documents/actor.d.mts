@@ -179,7 +179,7 @@ declare namespace BaseActor {
      * A Collection of ActiveEffect embedded Documents
      * @defaultValue `[]`
      */
-    effects: fields.EmbeddedCollectionField<typeof documents.BaseActiveEffect<documents.BaseActor>>;
+    effects: fields.EmbeddedCollectionField<typeof documents.BaseActiveEffect>;
 
     /**
      * The _id of a Folder which contains this Actor

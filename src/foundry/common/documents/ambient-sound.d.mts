@@ -1,3 +1,4 @@
+import type { ConfiguredDocumentClassForName } from "../../../types/helperTypes.d.mts";
 import type { Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
@@ -12,7 +13,11 @@ declare global {
  * Defines the DataSchema and common behaviors for an AmbientSound which are shared between both client and server.
  */
 interface BaseAmbientSound extends BaseAmbientSound.Properties {}
-declare class BaseAmbientSound extends Document<BaseAmbientSound.SchemaField, BaseAmbientSound.Metadata> {
+declare class BaseAmbientSound extends Document<
+  BaseAmbientSound.SchemaField,
+  BaseAmbientSound.Metadata,
+  InstanceType<ConfiguredDocumentClassForName<"Scene">> | null
+> {
   /**
    * @param data    - Initial data from which to construct the AmbientSound
    * @param context - Construction context options
