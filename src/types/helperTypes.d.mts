@@ -59,7 +59,7 @@ export type PlaceableDocumentType =
   | "MeasuredTemplate"
   | "Note"
   | "Tile"
-  | "Token"
+  // | "Token"
   | "Wall";
 
 // TODO: Probably a way to auto-determine this
@@ -126,4 +126,4 @@ export type LayerClass<T extends DocumentConstructor> = T["metadata"]["name"] ex
   : T;
 
 export type DataSourceForPlaceable<P extends PlaceableObject> =
-  P extends PlaceableObject<infer Doc> ? (Doc extends Document<infer D, any> ? D["_source"] : never) : never;
+  P extends PlaceableObject<infer Doc> ? (Doc extends Document<any, any, any> ? Doc["_source"] : never) : never;
