@@ -3,14 +3,7 @@ import type {
   ConstructorDataType,
   DocumentConstructor,
 } from "../../../../types/helperTypes.d.mts";
-import type {
-  AnyConstructorFor,
-  ConstructorOf,
-  DeepPartial,
-  InexactPartial,
-  Mixin,
-  ValueOf,
-} from "../../../../types/utils.d.mts";
+import type { ConstructorOf, DeepPartial, InexactPartial, Mixin, ValueOf } from "../../../../types/utils.d.mts";
 import type { AnyMetadata, DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 declare class ClientDocument<
@@ -562,9 +555,7 @@ declare global {
    * A mixin which extends each Document definition with specialized client-side behaviors.
    * This mixin defines the client-side interface for database operations and common document behaviors.
    */
-  // TODO: Include handling for TypeNames
-  // TODO: Improve Parent handling
-  function ClientDocumentMixin<BaseClass extends AnyConstructorFor<typeof foundry.abstract.Document<any, any>>>(
+  function ClientDocumentMixin<BaseClass extends DocumentConstructor>(
     Base: BaseClass,
   ): Mixin<typeof ClientDocument, BaseClass>;
 
