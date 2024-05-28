@@ -3,6 +3,7 @@ import type EmbeddedCollection from "../../../../src/foundry/common/abstract/emb
 import type { CardDataSource } from "../../../../src/foundry/common/data/data.mjs/cardData.d.mts";
 import type { CardFaceDataSource } from "../../../../src/foundry/common/data/data.mjs/cardFaceData.d.mts";
 
+// @ts-expect-error data argument is non-optional
 const baseCards = new foundry.documents.BaseCards();
 expectTypeOf(baseCards.cards).toEqualTypeOf<EmbeddedCollection<typeof Card, foundry.CardsData>>();
 expectTypeOf(baseCards._source.cards[0]).toEqualTypeOf<CardDataSource>();

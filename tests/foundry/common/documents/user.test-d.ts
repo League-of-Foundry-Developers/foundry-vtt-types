@@ -15,9 +15,10 @@ expectTypeOf(foundry.documents.BaseUser.deleteDocuments([])).toEqualTypeOf<
 
 const user = await foundry.documents.BaseUser.create({ name: "Another User" }, { temporary: true });
 if (user) {
-  expectTypeOf(user).toEqualTypeOf<foundry.UserData>();
+  expectTypeOf(user.character).toEqualTypeOf<Actor | null>();
 }
 
+// @ts-expect-error name may not be undefined
 const baseUser = new foundry.documents.BaseUser();
 expectTypeOf(baseUser.hasRole("NONE")).toEqualTypeOf<boolean>();
 expectTypeOf(baseUser.hasRole("PLAYER")).toEqualTypeOf<boolean>();

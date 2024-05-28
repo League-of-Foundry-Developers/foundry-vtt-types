@@ -12,5 +12,7 @@ expectTypeOf(foundry.documents.BaseDrawing.deleteDocuments([])).toEqualTypeOf<Pr
 
 const drawing = await foundry.documents.BaseDrawing.create({}, { temporary: true });
 if (drawing) {
-  expectTypeOf(drawing).toEqualTypeOf<foundry.DrawingData>();
+  expectTypeOf(drawing).toEqualTypeOf<DrawingDocument>();
+  // @ts-expect-error Drawing is distinct from the DrawingDocument
+  expectTypeOf(drawing).toEqualTypeOf<Drawing>();
 }

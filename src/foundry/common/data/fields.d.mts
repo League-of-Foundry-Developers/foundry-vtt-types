@@ -1145,7 +1145,6 @@ declare namespace ObjectField {
    */
   type MergedOptions<Options extends DataFieldOptions<object>> = SimpleMerge<DefaultOptions, Options>;
 
-  // TODO: ObjectField#_cast prevents the end result from *actually* being null or undefined.
   /**
    * A shorthand for the assignment type of a ObjectField class.
    * @typeParam Options - the options that override the default options
@@ -1621,6 +1620,7 @@ declare namespace EmbeddedDataField {
    * @typeParam ModelType - the DataModel for the embedded data
    * @typeParam Opts      - the options that override the default options
    */
+  // FIXME: Schema is unsure in src\foundry\common\data\data.d.mts
   type InitializedType<
     ModelType extends DataModel.Any,
     Opts extends Options<ModelType>,
@@ -2188,6 +2188,7 @@ declare namespace DocumentIdField {
  * PersistedType: `string | null`
  * InitialValue: `null`
  */
+// FIXME: Either the definitions or this field need to specify the initialized document is the ConfiguredDocumentClass
 declare class ForeignDocumentField<
   DocumentType extends Document.Any,
   Options extends ForeignDocumentField.Options = ForeignDocumentField.DefaultOptions,

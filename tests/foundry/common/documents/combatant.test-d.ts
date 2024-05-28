@@ -13,5 +13,5 @@ const combatant = await foundry.documents.BaseCombatant.create(
   { temporary: true },
 );
 if (combatant) {
-  expectTypeOf(combatant).toEqualTypeOf<foundry.CombatantData>();
+  expectTypeOf(combatant).toEqualTypeOf<Combatant>();
 }

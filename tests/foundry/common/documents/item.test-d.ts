@@ -1,8 +1,5 @@
 import { expectTypeOf } from "vitest";
 import type EmbeddedCollection from "../../../../src/foundry/common/abstract/embedded-collection.d.mts";
-import type { ActiveEffectDataSource } from "../../../../src/foundry/common/data/data.mjs/activeEffectData.d.mts";
-import type { EffectDurationDataProperties } from "../../../../src/foundry/common/data/data.mjs/effectDurationData.d.mts";
-import type { BaseItem } from "../../../../src/foundry/common/documents.mjs/index.d.mts";
 
 const baseItem = new foundry.documents.BaseItem();
 expectTypeOf(baseItem.effects).toEqualTypeOf<EmbeddedCollection<typeof ActiveEffect, foundry.ItemData>>();

@@ -12,5 +12,5 @@ expectTypeOf(foundry.documents.BaseFogExploration.createDocuments()).toEqualType
 expectTypeOf(foundry.documents.BaseFogExploration.updateDocuments()).toEqualTypeOf<Promise<FogExploration[]>>();
 expectTypeOf(foundry.documents.BaseFogExploration.deleteDocuments()).toEqualTypeOf<Promise<FogExploration[]>>();
 
-const folder = new foundry.documents.BaseFogExploration();
-expectTypeOf(folder).toEqualTypeOf<foundry.FogExplorationData>();
+const fog = new foundry.documents.BaseFogExploration();
+expectTypeOf(fog.explored).toEqualTypeOf<string | null>();

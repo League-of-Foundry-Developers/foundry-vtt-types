@@ -10,5 +10,5 @@ expectTypeOf(foundry.documents.BaseCombat.deleteDocuments([])).toEqualTypeOf<Pro
 
 const combat = await foundry.documents.BaseCombat.create({ scene: "foo", active: true }, { temporary: true });
 if (combat) {
-  expectTypeOf(combat).toEqualTypeOf<foundry.CombatData>();
+  expectTypeOf(combat).toEqualTypeOf<Combat>();
 }

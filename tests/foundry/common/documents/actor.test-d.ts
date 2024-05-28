@@ -3,7 +3,7 @@ import type EmbeddedCollection from "../../../../src/foundry/common/abstract/emb
 
 const baseActor = new foundry.documents.BaseActor({ name: "foo", type: "base" });
 expectTypeOf(baseActor.effects).toEqualTypeOf<EmbeddedCollection<typeof ActiveEffect>>();
-expectTypeOf(baseActor.items).toEqualTypeOf<EmbeddedCollection<typeof Item, foundry.data.ActorData>>();
+expectTypeOf(baseActor.items).toEqualTypeOf<EmbeddedCollection<typeof Item, foundry.ActorData>>();
 expectTypeOf(baseActor._source.effects[0]!).toEqualTypeOf<ActiveEffectData>();
 expectTypeOf(baseActor._source.effects[0]!.duration).toEqualTypeOf<EffectDurationData>();
 
@@ -75,23 +75,23 @@ declare global {
   }
 }
 
-expectTypeOf(baseActor.data.type).toEqualTypeOf<"character" | "npc">();
+expectTypeOf(baseActor.type).toEqualTypeOf<"character" | "npc">();
 expectTypeOf(baseActor.items.get("", { strict: true }).parent).toEqualTypeOf<Actor | null>();
 
-if (baseActor.data._source.type === "character") {
-  expectTypeOf(baseActor.data._source.data.health).toEqualTypeOf<number>();
+if (baseActor._source.type === "character") {
+  expectTypeOf(baseActor._source.health).toEqualTypeOf<number>();
 
   // @ts-expect-error "movement" is not a valid property of CharacterDataSourceData.
-  baseActor.data._source.data.movement;
+  baseActor._source.movement;
 } else {
-  expectTypeOf(baseActor.data._source.data.faction).toEqualTypeOf<string>();
-  expectTypeOf(baseActor.data._source.data.challenge).toEqualTypeOf<number>();
+  expectTypeOf(baseActor._source.faction).toEqualTypeOf<string>();
+  expectTypeOf(baseActor._source.challenge).toEqualTypeOf<number>();
 
   // @ts-expect-error "damage" is not a valid property of NPCDataSourceData.
-  baseActor.data._source.data.damage;
+  baseActor._source.damage;
 }
 
-if (baseActor.data.type === "character") {
+if (baseActor.type === "character") {
   expectTypeOf(baseActor.system.health).toEqualTypeOf<number>();
   expectTypeOf(baseActor.system.movement).toEqualTypeOf<number>();
 } else {
@@ -108,10 +108,10 @@ expectTypeOf(baseActor.getFlag("my-module", "known")).toEqualTypeOf<boolean>();
 expectTypeOf(baseActor.getFlag("my-module", "xp")).toEqualTypeOf<never>();
 expectTypeOf(baseActor.getFlag("my-module", "hidden-name")).toEqualTypeOf<never>();
 // non shared flags are also not available if the type is known
-if (baseActor.data._source.type === "character") {
+if (baseActor._source.type === "character") {
   expectTypeOf(baseActor.getFlag("my-module", "xp")).toEqualTypeOf<never>();
 }
-if (baseActor.data.type === "character") {
+if (baseActor.type === "character") {
   expectTypeOf(baseActor.getFlag("my-module", "xp")).toEqualTypeOf<never>();
 }
 expectTypeOf(baseActor.documentName).toEqualTypeOf<"Actor">();
