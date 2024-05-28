@@ -8,7 +8,7 @@ export type AppplicationWindowConfiguration = {};
 
 export type ApplicationFormConfiguration = {};
 
-export type ApplicationHeadersControlEntry = {};
+export type ApplicationHeaderControlsEntry = {};
 
 export type ApplicationConstructionParams = {
   position: ApplicationPosition;
@@ -21,7 +21,7 @@ export type ApplicationWindowRenderOptions = {};
 /**
  * Context data provided to the renderer
  */
-export type ApplicationRenderContext = {};
+export interface ApplicationRenderContext extends Record<string, any> {}
 
 export type ApplicationClosingOptions = {};
 
