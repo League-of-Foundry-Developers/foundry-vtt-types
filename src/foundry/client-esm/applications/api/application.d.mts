@@ -183,7 +183,12 @@ export default class ApplicationV2 extends EventEmitterMixin(Object) {
    * @param content - The content element into which the rendered result must be inserted
    * @param options - Options which configure application rendering behavior
    */
-  protected _replaceHTML(result: any, content: HTMLElement, options: DeepPartial<ApplicationRenderOptions>): void;
+  protected _replaceHTML(
+    // TODO: Ignore warning?
+    result: Awaited<ReturnType<this["_renderHTML"]>>,
+    content: HTMLElement,
+    options: DeepPartial<ApplicationRenderOptions>,
+  ): void;
 
   /**
    * Render the outer framing HTMLElement which wraps the inner HTML of the Application.
