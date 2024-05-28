@@ -124,6 +124,3 @@ export type LayerClass<T extends DocumentConstructor> = T["metadata"]["name"] ex
     ? CONFIG[T["metadata"]["name"]]["layerClass"]
     : never
   : T;
-
-export type DataSourceForPlaceable<P extends PlaceableObject> =
-  P extends PlaceableObject<infer Doc> ? (Doc extends Document<any, any, any> ? Doc["_source"] : never) : never;

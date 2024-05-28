@@ -1,8 +1,4 @@
-import type {
-  ConfiguredDocumentClassForName,
-  ConfiguredObjectClassForName,
-  DataSourceForPlaceable,
-} from "../../../../../types/helperTypes.d.mts";
+import type { ConfiguredDocumentClassForName } from "../../../../../types/helperTypes.d.mts";
 
 declare global {
   /**
@@ -146,10 +142,7 @@ declare global {
      */
     _getOccludableTokens(): Token[];
 
-    override storeHistory(
-      type: PlaceablesLayer.HistoryEventType,
-      data: DataSourceForPlaceable<ConfiguredTokenDocument>,
-    ): void;
+    override storeHistory(type: PlaceablesLayer.HistoryEventType, data: ConfiguredTokenDocument["_source"]): void;
 
     /**
      * Handle dropping of Actor data onto the Scene canvas
@@ -184,4 +177,4 @@ declare global {
   }
 }
 
-type ConfiguredTokenDocument = InstanceType<ConfiguredObjectClassForName<"Token">>;
+type ConfiguredTokenDocument = InstanceType<ConfiguredDocumentClassForName<"Token">>;

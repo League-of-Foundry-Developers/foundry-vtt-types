@@ -121,9 +121,10 @@ declare global {
       options: Parameters<this["update"]>[1],
     ): Promise<[this["actor"]]>;
 
-    override getEmbeddedCollection(embeddedName: "Actor"): this["actors"];
-    getEmbeddedCollection(embeddedName: "Item"): this["items"];
-    getEmbeddedCollection(embeddedName: "ActiveEffect"): this["effects"];
+    // TODO: Re-enable after embedded Collection is fixed
+    // override getEmbeddedCollection(embeddedName: "Actor"): this["actors"];
+    // getEmbeddedCollection(embeddedName: "Item"): this["items"];
+    // getEmbeddedCollection(embeddedName: "ActiveEffect"): this["effects"];
 
     protected override _preUpdate(
       data: Parameters<foundry.documents.BaseToken["_preUpdate"]>[0],
