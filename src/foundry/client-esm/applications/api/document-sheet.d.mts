@@ -34,8 +34,11 @@ interface DocumentSheetRenderOptions extends ApplicationRenderOptions {
 /**
  * The Application class is responsible for rendering an HTMLElement into the Foundry Virtual Tabletop user interface.
  */
-export default class DocumentSheetV2 extends ApplicationV2 {
-  constructor(options: DeepPartial<DocumentSheetConfiguration>);
+export default class DocumentSheetV2<
+  Configuration extends DocumentSheetConfiguration = DocumentSheetConfiguration,
+  RenderOptions extends DocumentSheetRenderOptions = DocumentSheetRenderOptions,
+> extends ApplicationV2<Configuration, RenderOptions> {
+  constructor(options: DeepPartial<Configuration>);
 
   static DEFAULT_OPTIONS: DeepPartial<DocumentSheetConfiguration>;
 
@@ -56,21 +59,21 @@ export default class DocumentSheetV2 extends ApplicationV2 {
   get isEditable(): boolean;
 
   protected _initializeApplicationOptions(
-    options: DeepPartial<DocumentSheetConfiguration>,
-  ): DeepPartial<DocumentSheetConfiguration> & Record<string, unknown>;
+    options: DeepPartial<Configuration>,
+  ): DeepPartial<Configuration> & Record<string, unknown>;
 
   protected override _headerControlsButtons(): Generator<ApplicationHeaderControlsEntry>;
 
-  protected override _renderFrame(options: DeepPartial<DocumentSheetRenderOptions>): Promise<HTMLElement>;
+  protected override _renderFrame(options: DeepPartial<RenderOptions>): Promise<HTMLElement>;
 
-  protected override _canRender(options: DeepPartial<DocumentSheetRenderOptions>): false | void;
+  protected override _canRender(options: DeepPartial<RenderOptions>): false | void;
 
   protected override _onFirstRender(
     context: DeepPartial<ApplicationRenderContext>,
-    options: DeepPartial<DocumentSheetRenderOptions>,
+    options: DeepPartial<RenderOptions>,
   ): void;
 
-  protected override _onClose(options: DeepPartial<DocumentSheetRenderOptions>): void;
+  protected override _onClose(options: DeepPartial<RenderOptions>): void;
 
   /**
    * Prepare data used to update the Item upon form submission.

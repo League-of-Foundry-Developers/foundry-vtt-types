@@ -11,12 +11,16 @@ import type {
 } from "../_types.d.mts";
 
 // TODO: Investigate use of DeepPartial vs Partial vs InexactPartial
+// TODO: Should
 
 /**
  * The Application class is responsible for rendering an HTMLElement into the Foundry Virtual Tabletop user interface.
  */
-export default class ApplicationV2 extends EventEmitterMixin(Object) {
-  constructor(options: DeepPartial<ApplicationConfiguration>);
+export default class ApplicationV2<
+  Configuration extends ApplicationConfiguration = ApplicationConfiguration,
+  RenderOptions extends ApplicationRenderOptions = ApplicationRenderOptions,
+> extends EventEmitterMixin(Object) {
+  constructor(options: DeepPartial<Configuration>);
 
   static BASE_APPLICATION: typeof ApplicationV2;
 
@@ -36,7 +40,7 @@ export default class ApplicationV2 extends EventEmitterMixin(Object) {
   /**
    * Application instance configuration options.
    */
-  options: DeepPartial<ApplicationConfiguration>;
+  options: DeepPartial<Configuration>;
 
   /**
    * Convenience references to window header elements.
@@ -123,8 +127,8 @@ export default class ApplicationV2 extends EventEmitterMixin(Object) {
    * @returns Configured options for the application instance
    */
   protected _initializeApplicationOptions(
-    options: DeepPartial<ApplicationConfiguration>,
-  ): DeepPartial<ApplicationConfiguration> & Record<string, unknown>;
+    options: DeepPartial<Configuration>,
+  ): DeepPartial<Configuration> & Record<string, unknown>;
 
   /**
    * Render the Application, creating its HTMLElement and replacing its innerHTML.
@@ -135,23 +139,20 @@ export default class ApplicationV2 extends EventEmitterMixin(Object) {
    *                   ApplicationV1#render signature.
    * @returns A Promise which resolves to the rendered Application instance
    */
-  render(
-    options?: DeepPartial<ApplicationConfiguration> | boolean,
-    _options?: DeepPartial<ApplicationRenderOptions>,
-  ): Promise<this>;
+  render(options?: DeepPartial<Configuration> | boolean, _options?: DeepPartial<RenderOptions>): Promise<this>;
 
   /**
    * Modify the provided options passed to a render request.
    * @param options - Options which configure application rendering behavior
    */
-  protected _configureRenderOptions(options: DeepPartial<ApplicationRenderOptions>): void;
+  protected _configureRenderOptions(options: DeepPartial<RenderOptions>): void;
 
   /**
    * Prepare application rendering context data for a given render request.
    * @param options - Options which configure application rendering behavior
    * @returns Context data for the render operation
    */
-  protected _prepareContext(options: DeepPartial<ApplicationRenderOptions>): Promise<ApplicationRenderContext>;
+  protected _prepareContext(options: DeepPartial<RenderOptions>): Promise<ApplicationRenderContext>;
 
   /**
    * Configure the array of header control menu options
@@ -171,10 +172,7 @@ export default class ApplicationV2 extends EventEmitterMixin(Object) {
    * @returns The result of HTML rendering may be implementation specific.
    *          Whatever value is returned here is passed to _replaceHTML
    */
-  protected _renderHTML(
-    context: ApplicationRenderContext,
-    options: DeepPartial<ApplicationRenderOptions>,
-  ): Promise<any>; //TODO: Might be the subject of a generic?
+  protected _renderHTML(context: ApplicationRenderContext, options: DeepPartial<RenderOptions>): Promise<any>; //TODO: Might be the subject of a generic?
 
   /**
    * Replace the HTML of the application with the result provided by the rendering backend.
@@ -187,14 +185,14 @@ export default class ApplicationV2 extends EventEmitterMixin(Object) {
     // TODO: Ignore warning?
     result: Awaited<ReturnType<this["_renderHTML"]>>,
     content: HTMLElement,
-    options: DeepPartial<ApplicationRenderOptions>,
+    options: DeepPartial<RenderOptions>,
   ): void;
 
   /**
    * Render the outer framing HTMLElement which wraps the inner HTML of the Application.
    * @param options - Options which configure application rendering behavior
    */
-  protected _renderFrame(options: DeepPartial<ApplicationRenderOptions>): Promise<HTMLElement>;
+  protected _renderFrame(options: DeepPartial<RenderOptions>): Promise<HTMLElement>;
 
   /**
    * Render a header control button.
@@ -205,7 +203,7 @@ export default class ApplicationV2 extends EventEmitterMixin(Object) {
    * When the Application is rendered, optionally update aspects of the window frame.
    * @param options - Options provided at render-time
    */
-  protected _updateFrame(options: DeepPartial<ApplicationRenderOptions>): void;
+  protected _updateFrame(options: DeepPartial<RenderOptions>): void;
 
   /**
    * Insert the application HTML element into the DOM.
@@ -306,7 +304,7 @@ export default class ApplicationV2 extends EventEmitterMixin(Object) {
    * @returns Return false to prevent rendering
    * @throws An Error to display a warning message
    */
-  protected _canRender(options: DeepPartial<ApplicationRenderOptions>): false | void;
+  protected _canRender(options: DeepPartial<RenderOptions>): false | void;
 
   /**
    * Actions performed before a first render of the Application.
@@ -315,7 +313,7 @@ export default class ApplicationV2 extends EventEmitterMixin(Object) {
    */
   protected _preFirstRender(
     context: DeepPartial<ApplicationRenderContext>,
-    options: DeepPartial<ApplicationRenderOptions>,
+    options: DeepPartial<RenderOptions>,
   ): Promise<void>;
 
   /**
@@ -324,10 +322,7 @@ export default class ApplicationV2 extends EventEmitterMixin(Object) {
    * @param context - Prepared context data
    * @param options - Provided render options
    */
-  protected _onFirstRender(
-    context: DeepPartial<ApplicationRenderContext>,
-    options: DeepPartial<ApplicationRenderOptions>,
-  ): void;
+  protected _onFirstRender(context: DeepPartial<ApplicationRenderContext>, options: DeepPartial<RenderOptions>): void;
 
   /**
    * Actions performed before any render of the Application.
@@ -337,7 +332,7 @@ export default class ApplicationV2 extends EventEmitterMixin(Object) {
    */
   protected _preRender(
     context: DeepPartial<ApplicationRenderContext>,
-    options: DeepPartial<ApplicationRenderOptions>,
+    options: DeepPartial<RenderOptions>,
   ): Promise<void>;
 
   /**
@@ -346,37 +341,34 @@ export default class ApplicationV2 extends EventEmitterMixin(Object) {
    * @param context - Prepared context data
    * @param options - Provided render options
    */
-  protected _onRender(
-    context: DeepPartial<ApplicationRenderContext>,
-    options: DeepPartial<ApplicationRenderOptions>,
-  ): void;
+  protected _onRender(context: DeepPartial<ApplicationRenderContext>, options: DeepPartial<RenderOptions>): void;
 
   /**
    * Actions performed before closing the Application.
    * Pre-close steps are awaited by the close process.
    * @param options - Provided render options
    */
-  protected _preClose(options: DeepPartial<ApplicationRenderOptions>): Promise<void>;
+  protected _preClose(options: DeepPartial<RenderOptions>): Promise<void>;
 
   /**
    * Actions performed after closing the Application.
    * Post-close steps are not awaited by the close process.
    * @param options - Provided render options
    */
-  protected _onClose(options: DeepPartial<ApplicationRenderOptions>): void;
+  protected _onClose(options: DeepPartial<RenderOptions>): void;
 
   /**
    * Actions performed before the Application is re-positioned.
    * Pre-position steps are not awaited because setPosition is synchronous.
    * @param options - Provided render options
    */
-  protected _prePosition(options: DeepPartial<ApplicationRenderOptions>): void;
+  protected _prePosition(options: DeepPartial<RenderOptions>): void;
 
   /**
    * Actions performed after the Application is re-positioned.
    * @param options - Provided render options
    */
-  protected _onPosition(options: DeepPartial<ApplicationRenderOptions>): void;
+  protected _onPosition(options: DeepPartial<RenderOptions>): void;
 
   /**
    * Attach event listeners to the Application frame.

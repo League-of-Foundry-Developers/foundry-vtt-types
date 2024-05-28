@@ -2,6 +2,7 @@ import type { DeepPartial, Mixin } from "../../../../types/utils.d.mts";
 import type { ApplicationFormConfiguration, ApplicationRenderContext, ApplicationRenderOptions } from "../_types.d.mts";
 import type ApplicationV2 from "./application.d.mts";
 
+// TODO: How does this merge with DocumentSheetRenderOptions?
 interface HandlebarsRenderOptions extends ApplicationRenderOptions {
   parts: string[];
 }
@@ -114,7 +115,7 @@ declare class HandlebarsApplication {
     partId: string,
     newElement: HTMLElement,
     priorElement: HTMLElement,
-    state: HandlebarsApplication.partState,
+    state: HandlebarsApplicationMixin.partState,
   ): void;
 
   /**
@@ -128,7 +129,7 @@ declare class HandlebarsApplication {
     partId: string,
     newElement: HTMLElement,
     priorElement: HTMLElement,
-    state: HandlebarsApplication.partState,
+    state: HandlebarsApplicationMixin.partState,
   ): void;
 
   /**
@@ -151,7 +152,7 @@ export default function HandlebarsApplicationMixin<BaseClass extends typeof Appl
   BaseApplication: BaseClass,
 ): Mixin<typeof HandlebarsApplication, BaseClass>;
 
-declare namespace HandlebarsApplication {
+declare namespace HandlebarsApplicationMixin {
   interface partState {
     scrollPositions: Array<[el1: HTMLElement, scrollTop: number, scrollLeft: number]>;
     focus?: string | undefined;
