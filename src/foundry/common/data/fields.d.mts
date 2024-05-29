@@ -1,4 +1,4 @@
-import type { ConfiguredFlags } from "../../../types/helperTypes.mts";
+import type { ConfiguredDocumentClassForName, ConfiguredFlags } from "../../../types/helperTypes.mts";
 import type { ConstructorOf, SimpleMerge, ValueOf } from "../../../types/utils.d.mts";
 import type { DataModel } from "../abstract/data.mts";
 import type Document from "../abstract/document.mts";
@@ -2188,7 +2188,6 @@ declare namespace DocumentIdField {
  * PersistedType: `string | null`
  * InitialValue: `null`
  */
-// FIXME: Either the definitions or this field need to specify the initialized document is the ConfiguredDocumentClass
 declare class ForeignDocumentField<
   DocumentType extends Document.Any,
   Options extends ForeignDocumentField.Options = ForeignDocumentField.DefaultOptions,
@@ -2263,7 +2262,7 @@ declare namespace ForeignDocumentField {
    * @typeParam Opts - the options that override the default options
    */
   type InitializedType<DocumentType extends Document.Any, Opts extends Options> = DataField.DerivedInitializedType<
-    Opts["idOnly"] extends true ? string : DocumentType,
+    Opts["idOnly"] extends true ? string : InstanceType<ConfiguredDocumentClassForName<DocumentType["documentName"]>>,
     MergedOptions<Opts>
   >;
 
