@@ -1024,7 +1024,6 @@ declare class StringField<
   protected _isValidChoice(value: AssignmentType): boolean;
 }
 
-//FIXME: Choices are not working correctly
 declare namespace StringField {
   /** The type of the default options for the {@link StringField} class. */
   type DefaultOptions = SimpleMerge<
@@ -1067,12 +1066,22 @@ declare namespace StringField {
         ? null
         : undefined;
 
+  // choices?: string[] | Record<string, string> | (() => string[] | Record<string, string>) | undefined;
+
+  type ValidChoice<Options extends StringFieldOptions> = Options["choices"] extends undefined
+    ? string
+    : Options["choices"] extends (...args: any) => infer Choices
+      ? FixedChoice<Choices>
+      : FixedChoice<Options["choices"]>;
+
+  type FixedChoice<Choices> = Choices extends Array<infer U> ? U : Choices extends Record<infer K, any> ? K : string;
+
   /**
    * A shorthand for the assignment type of a StringField class.
    * @typeParam Options - the options that override the default options
    */
   type AssignmentType<Options extends StringFieldOptions> = DataField.DerivedAssignmentType<
-    string,
+    ValidChoice<Options>,
     MergedOptions<Options>
   >;
 
@@ -1081,7 +1090,7 @@ declare namespace StringField {
    * @typeParam Options - the options that override the default options
    */
   type InitializedType<Options extends StringFieldOptions> = DataField.DerivedInitializedType<
-    string,
+    ValidChoice<Options>,
     MergedOptions<Options>
   >;
 }

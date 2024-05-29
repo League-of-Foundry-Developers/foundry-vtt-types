@@ -1,7 +1,9 @@
 import type {
   ConfiguredDocumentClass,
+  ConfiguredDocumentClassForName,
   ConstructorDataType,
   DocumentConstructor,
+  DocumentType,
 } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
@@ -40,21 +42,23 @@ declare global {
      * unless it's a Folder inside a Compendium pack, in which case it's the array
      * of objects inside the index of the pack that are contained in this Folder.
      */
-    get contents(): InstanceType<(typeof CONFIG)[this["type"]]["documentClass"]>[];
+    get contents(): this["type"] extends DocumentType
+      ? InstanceType<ConfiguredDocumentClassForName<this["type"]>>[]
+      : never;
 
     set contents(value);
 
     /**
      * The reference to the Document type which is contained within this Folder.
      */
-    get documentClass(): (typeof CONFIG)[this["type"]]["documentClass"];
+    get documentClass(): this["type"] extends DocumentType ? ConfiguredDocumentClassForName<this["type"]> : never;
 
     /**
      * Return a reference to the WorldCollection instance which provides Documents to this Folder,
      * unless it's a Folder inside a Compendium pack, in which case it's the index of the pack.
      */
     // TODO: Compendium Pack index
-    get documentCollection(): Collection<InstanceType<(typeof CONFIG)[this["type"]]["documentClass"]>>;
+    get documentCollection(): this["pack"] extends string ? unknown : undefined;
 
     /**
      * Return whether the folder is currently expanded within the sidebar interface.

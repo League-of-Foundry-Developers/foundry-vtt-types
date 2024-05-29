@@ -13,5 +13,6 @@ const folder = await foundry.documents.BaseFolder.create(
   { temporary: true },
 );
 if (folder) {
+  expectTypeOf(folder.name).toEqualTypeOf<string>();
   expectTypeOf(folder.type).toEqualTypeOf<foundry.CONST.FOLDER_DOCUMENT_TYPES>();
 }
