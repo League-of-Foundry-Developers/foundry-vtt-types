@@ -38,8 +38,9 @@ declare class DirectoryCollection<T extends DirectoryCollection.DirectoryTypes> 
 
   /**
    * The maximum depth of folder nesting which is allowed in this collection
+   * @defaultValue `CONST.FOLDER_MAX_DEPTH`
    */
-  get maxFolderDepth(): typeof foundry.CONST.FOLDER_MAX_DEPTH;
+  get maxFolderDepth(): number;
 
   /**
    * Return a reference to list of entries which are visible to the User in this tree

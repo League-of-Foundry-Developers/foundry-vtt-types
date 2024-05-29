@@ -1,18 +1,47 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
-import type { DeepPartial, StoredDocument } from "../../../../types/utils.d.mts";
+import type { DeepPartial, InexactPartial, StoredDocument } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 declare global {
+  interface ManageCompendiumRequest extends SocketRequest {
+    /**
+     * The request action.
+     */
+    action: string;
+
+    /**
+     * The compendium creation data, or the ID of the compendium to delete.
+     */
+    data: PackageCompendiumData | string;
+
+    /**
+     * Additional options.
+     */
+    options?: Record<string, unknown>;
+  }
+
+  // @ts-expect-error Bad inheritance
+  interface ManageCompendiumResponse extends SocketResponse {
+    /**
+     * The original request.
+     */
+    request: ManageCompendiumRequest;
+
+    /**
+     * The compendium creation data, or the collection name of the deleted compendium.
+     */
+    result: PackageCompendiumData | string;
+  }
+
   /**
    * A collection of Document objects contained within a specific compendium pack.
    * Each Compendium pack has its own associated instance of the CompendiumCollection class which contains its contents.
    *
    * @see {@link Game#packs}
    */
-  class CompendiumCollection<T extends CompendiumCollection.Metadata> extends DocumentCollection<
-    DocumentClassForCompendiumMetadata<T>,
-    "CompendiumCollection"
-  > {
+  class CompendiumCollection<T extends CompendiumCollection.Metadata> extends DirectoryCollectionMixin(
+    DocumentCollection,
+  ) {
     /** @param metadata - The compendium metadata, an object provided by game.data */
     constructor(metadata: T);
 
@@ -32,12 +61,6 @@ declare global {
     _flush: () => void;
 
     /**
-     * Has this Compendium pack been fully indexed?
-     * @defaultValue `false`
-     */
-    indexed: boolean;
-
-    /**
      * The amount of time that Document instances within this CompendiumCollection are held in memory.
      * Accessing the contents of the Compendium pack extends the duration of this lifetime.
      * @defaultValue `300`
@@ -49,41 +72,49 @@ declare global {
      */
     static CONFIG_SETTING: "compendiumConfiguration";
 
-    /**
-     * The default index fields which should be retrieved for each Compendium document type
-     * @remarks TODO: We should also allow nested paths
-     */
-    static INDEX_FIELDS: {
-      /** @defaultValue `["name", "img", "type"]` */
-      Actor: (keyof foundry.data.ActorData["_source"])[];
-
-      /** @defaultValue `["name", "img"]` */
-      Adventure: (keyof foundry.data.AdventureData["_source"])[];
-
-      /** @defaultValue `["name", "img", "type"]` */
-      Item: (keyof foundry.data.ItemData["_source"])[];
-
-      /** @defaultValue `["name", "img", "type"]` */
-      Cards: (keyof foundry.data.CardsData["_source"])[];
-
-      /** @defaultValue `["name", "thumb"]` */
-      Scene: (keyof foundry.data.SceneData["_source"])[];
-
-      /** @defaultValue `["name", "img"]` */
-      JournalEntry: (keyof foundry.data.JournalEntryData["_source"])[];
-
-      /** @defaultValue `["name", "img"]` */
-      Macro: (keyof foundry.data.MacroData["_source"])[];
-
-      /** @defaultValue `["name", "img"]` */
-      RollTable: (keyof foundry.data.RollTableData["_source"])[];
-
-      /** @defaultValue `["name"]` */
-      Playlist: (keyof foundry.data.PlaylistData["_source"])[];
-    };
-
     /** The canonical Compendium name - comprised of the originating package and the pack name */
-    get collection(): string;
+    get collection(): this["metadata"]["id"];
+
+    /** The banner image for this Compendium pack, or the default image for the pack type if no image is set. */
+    get banner(): string;
+
+    /**
+     * A reference to the Application class which provides an interface to interact with this compendium content.
+     * @defaultValue `Compendium`
+     */
+    applicationClass: typeof Application;
+
+    /**
+     * A subsidiary collection which contains the folders within the pack
+     */
+    get folders(): CompendiumFolderCollection;
+
+    /**
+     * @remarks 1 less than in-world
+     * @defaultValue `CONST.FOLDER_MAX_DEPTH - 1`
+     */
+    get maxFolderDepth(): number;
+
+    /**
+     * Get the Folder that this Compendium is displayed within
+     */
+    get folder(): (InstanceType<ConfiguredDocumentClassForName<"Folder">> & { type: "Compendium" }) | null;
+
+    /**
+     * Assign this CompendiumCollection to be organized within a specific Folder.
+     * @param folder - The desired Folder within the World or null to clear the folder
+     * @returns A promise which resolves once the transaction is complete
+     */
+    setFolder(folder: Folder | string | null): Promise<void>;
+
+    /**
+     * Get the sort order for this Compendium
+     */
+    get sort(): number;
+
+    protected override _getVisibleTreeContents(): object[];
+
+    static _sortStandard(a: number, b: number): number;
 
     /** Access the compendium configuration data for this pack */
     get config(): CompendiumCollection.Configuration | {};
@@ -93,11 +124,29 @@ declare global {
     /** Track whether the Compendium Collection is locked for editing */
     get locked(): boolean;
 
-    /** Track whether the Compendium Collection is private */
-    get private(): boolean;
+    /**
+     * The visibility configuration of this compendium pack.
+     * A value in CONST.USER_ROLES
+     * */
+    get ownership(): foundry.packages.BasePackage.OwnershipRecord;
+
+    /** Is this Compendium pack visible to the current game User? */
+    get visible(): boolean;
 
     /** A convenience reference to the label which should be used as the title for the Compendium pack. */
     get title(): string;
+
+    /**
+     * The index fields which should be loaded for this compendium pack
+     * @remarks Contained elements are a concatenation of the document's `metadata.compendiumIndexFields` as well as CONFIG
+     */
+    get indexFields(): Set<string>;
+
+    /**
+     * Has this Compendium pack been fully indexed?
+     * @defaultValue `false`
+     */
+    get indexed(): boolean;
 
     get(key: string, { strict }: { strict: true }): StoredDocument<DocumentInstanceForCompendiumMetadata<T>>;
     get(
@@ -128,10 +177,51 @@ declare global {
      * @param query - A database query used to retrieve documents from the underlying database
      *                default: `{}`
      * @returns The retrieved Document instances
+     *
+     * @example Get Documents that match the given value only.
+     * ```js
+     * await pack.getDocuments({ type: "weapon" });
+     * ```
+     *
+     * @example Get several Documents by their IDs.
+     * ```js
+     * await pack.getDocuments({ _id__in: arrayOfIds });
+     * ```
+     *
+     * @example Get Documents by their sub-types.
+     * ```js
+     * await pack.getDocuments({ type__in: ["weapon", "armor"] });
+     * ```
      */
     getDocuments(
       query?: Record<string, unknown> | undefined,
     ): Promise<StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[]>;
+
+    /**
+     * Get the ownership level that a User has for this Compendium pack.
+     * @param user - The user being tested
+     * @returns The ownership level in CONST.DOCUMENT_OWNERSHIP_LEVELS
+     */
+    getUserLevel(user?: User): foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
+    /**
+     * Test whether a certain User has a requested permission level (or greater) over the Compendium pack
+     * @param user       - The User being tested
+     * @param permission - The permission level from DOCUMENT_OWNERSHIP_LEVELS to test
+     * @param options    - Additional options involved in the permission test
+     * @returns Does the user have this permission level over the Compendium pack?
+     */
+    testUserPermission(
+      user: User,
+      permission: string | number,
+      options?: InexactPartial<{
+        /**
+         * Require the exact permission level requested?
+         * @defaultValue `false`
+         */
+        exact: boolean;
+      }>,
+    ): boolean;
 
     /**
      * Import a Document into this Compendium Collection.
@@ -146,20 +236,61 @@ declare global {
     ): Promise<StoredDocument<DocumentInstanceForCompendiumMetadata<T>> | undefined>;
 
     /**
+     * Import a Folder into this Compendium Collection.
+     * @param folder  - The existing Folder you wish to import
+     * @param options - Additional options which modify how the data is imported.
+     */
+    importFolder(
+      folder: Folder,
+      options?: InexactPartial<{
+        /**
+         * Import any parent folders which are not already present in the Compendium
+         * @defaultValue `true`
+         */
+        importParents: boolean;
+      }>,
+    ): Promise<void>;
+
+    /**
+     * Import an array of Folders into this Compendium Collection.
+     * @param folders - The existing Folders you wish to import
+     * @param options - Additional options which modify how the data is imported.
+     */
+    importFolders(
+      folders: Folder[],
+      options?: InexactPartial<{
+        /**
+         * Import any parent folders which are not already present in the Compendium
+         * @defaultValue `true`
+         */
+        importParents: boolean;
+      }>,
+    ): Promise<void>;
+
+    /**
      * Fully import the contents of a Compendium pack into a World folder.
-     * @param folderId   - An existing Folder _id to use.
-     *                     (default: `null`)
-     * @param folderName - A new Folder name to create.
-     *                     (default: `""`)
-     * @param options    - Additional options forwarded to {@link WorldCollection#fromCompendium} and {@link Document.createDocuments}
+     * @param options    - Options which modify the import operation. Additional options are forwarded to
+     *                     {@link WorldCollection#fromCompendium} and {@link Document.createDocuments}
      *                     (default: `{}`)
      * @returns The imported Documents, now existing within the World
      */
-    importAll({
-      folderId,
-      folderName,
-      options,
-    }?: ImportAllOptions | undefined): Promise<StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[]>;
+    importAll(
+      options?: InexactPartial<
+        {
+          /**
+           * An existing Folder _id to use.
+           * @defaultValue `null`
+           * */
+          folderId: string | null;
+          /**
+           * A new Folder name to create.
+           * @defaultValue `""`
+           * */
+          folderName: string;
+        } & DocumentModificationContext &
+          WorldCollection.FromCompendiumOptions
+      >,
+    ): Promise<StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[]>;
 
     /**
      * Provide a dialog form that prompts the user to import the full contents of a Compendium pack into the World.
@@ -180,6 +311,19 @@ declare global {
     indexDocument(document: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>): void;
 
     /**
+     * Prompt the gamemaster with a dialog to configure ownership of this Compendium pack.
+     * @returns The configured ownership for the pack
+     */
+    configureOwnershipDialog(): Promise<foundry.packages.BasePackage.OwnershipRecord>;
+
+    /**
+     * Activate the Socket event listeners used to receive responses to compendium management events.
+     * @param socket - The active game socket.
+     * @internal
+     */
+    protected static _activateSocketListeners(socket: Game["socket"]): void;
+
+    /**
      * Create a new Compendium Collection using provided metadata.
      * @param metadata - The compendium metadata used to create the new pack
      * @param options - Additional options which modify the Compendium creation request
@@ -191,13 +335,20 @@ declare global {
     ): Promise<CompendiumCollection<T>>;
 
     /**
+     * Generate a UUID for a given primary document ID within this Compendium pack
+     * @param id - The document ID to generate a UUID for
+     * @returns The generated UUID, in the form of "Compendium.<collection>.<documentName>.<id>"
+     */
+    getUuid(id: string): string;
+
+    /**
      * Assign configuration metadata settings to the compendium pack
-     * @param settings - The object of compendium settings to define
-     *                   default: `{}`
+     * @param configuration - The object of compendium settings to define
+     *                        (default: `{}`)
      * @returns A Promise which resolves once the setting is updated
      */
     configure(
-      settings?: Partial<CompendiumCollection.Configuration> | undefined,
+      configuration?: InexactPartial<CompendiumCollection.Configuration>,
     ): Promise<CompendiumCollection.Configuration>;
 
     /**
@@ -213,40 +364,32 @@ declare global {
     duplicateCompendium({ label }?: { label?: string | undefined }): Promise<this>;
 
     /**
-     * Validate that the current user is able to modify content of this Compendium pack
-     * @param requireUnlocked - `(default: true)`
-     * @internal
+     * Migrate a compendium pack.
+     * This operation re-saves all documents within the compendium pack to disk, applying the current data model.
+     * If the document type has system data, the latest system data template will also be applied to all documents.
      */
-    protected _assertUserCanModify({ requireUnlocked }?: { requireUnlocked?: boolean | undefined } | undefined): true;
-
-    /**
-     * Request that a Compendium pack be migrated to the latest System data template
-     * @remarks
-     * Currently, there are no options that are being considered by foundry when migrating a
-     * a compendium pack.
-     */
-    migrate(options?: Record<string, unknown> | undefined): Promise<this>;
+    migrate(): Promise<this>;
 
     override updateAll(
       transformation:
-        | DeepPartial<DocumentInstanceForCompendiumMetadata<T>["data"]["_source"]>
+        | DeepPartial<DocumentInstanceForCompendiumMetadata<T>["_source"]>
         | ((
             doc: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>,
-          ) => DeepPartial<DocumentInstanceForCompendiumMetadata<T>["data"]["_source"]>),
+          ) => DeepPartial<DocumentInstanceForCompendiumMetadata<T>["_source"]>),
       condition?: ((obj: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>) => boolean) | null,
       options?: DocumentModificationContext,
     ): ReturnType<this["documentClass"]["updateDocuments"]>;
 
     protected _onCreateDocuments(
       documents: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[],
-      result: (DocumentInstanceForCompendiumMetadata<T>["data"]["_source"] & { _id: string })[],
+      result: (DocumentInstanceForCompendiumMetadata<T>["_source"] & { _id: string })[],
       options: DocumentModificationOptions,
       userId: string,
     ): void;
 
     protected _onUpdateDocuments(
       documents: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[],
-      result: (DeepPartial<DocumentInstanceForCompendiumMetadata<T>["data"]["_source"]> & { _id: string })[],
+      result: (DeepPartial<DocumentInstanceForCompendiumMetadata<T>["_source"]> & { _id: string })[],
       options: DocumentModificationOptions,
       userId: string,
     ): void;
@@ -258,6 +401,12 @@ declare global {
       userId: string,
     ): void;
 
+    protected _onDeleteFolder(
+      parentFolder: Folder,
+      deleteFolderId: string,
+      deleteContents?: boolean | undefined,
+    ): string[];
+
     /**
      * Follow-up actions taken when Documents within this Compendium pack are modified
      * @internal
@@ -267,15 +416,28 @@ declare global {
       options: DocumentModificationOptions,
       userId: string,
     ): void;
+
+    /**
+     * @deprecated since v11, will be removed in v13
+     * @remarks `"CompendiumCollection#private is deprecated in favor of the new CompendiumCollection#ownership, CompendiumCollection#getUserLevel, CompendiumCollection#visible properties"`
+     */
+    get private(): boolean;
+
+    /**
+     * @deprecated since v11, will be removed in v13
+     * @remarks `"CompendiumCollection#isOpen is deprecated and will be removed in V13"`
+     */
+    get isOpen(): boolean;
   }
 
   namespace CompendiumCollection {
     interface Configuration {
-      private: boolean;
+      ownership: foundry.packages.BasePackage.OwnershipRecord;
       locked: boolean;
     }
     interface Metadata {
       type: foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
+      id: string;
       name: string;
       label: string;
       path: string;
@@ -285,8 +447,11 @@ declare global {
     }
 
     interface GetIndexOptions<T extends CompendiumCollection.Metadata> {
-      /** An array of fields to return as part of the index */
-      fields?: (keyof DocumentInstanceForCompendiumMetadata<T>["data"]["_source"])[];
+      /**
+       * An array of fields to return as part of the index
+       * @defaultValue `[]`
+       */
+      fields?: (keyof DocumentInstanceForCompendiumMetadata<T>["_source"])[];
     }
   }
 }
@@ -318,5 +483,5 @@ type DocumentInstanceForCompendiumMetadata<T extends CompendiumCollection.Metada
 >;
 
 type IndexTypeForMetadata<T extends CompendiumCollection.Metadata> = foundry.utils.Collection<
-  { _id: string } & Partial<DocumentInstanceForCompendiumMetadata<T>["data"]["_source"]>
+  { _id: string } & Partial<DocumentInstanceForCompendiumMetadata<T>["_source"]>
 >;

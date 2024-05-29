@@ -6,8 +6,9 @@ declare global {
   /**
    * An abstract subclass of the Collection container which defines a collection of Document instances.
    */
-  abstract class DocumentCollection<T extends DocumentConstructor, Name extends string> extends foundry.utils
-    .Collection<StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>> {
+  class DocumentCollection<T extends DocumentConstructor, Name extends string> extends foundry.utils.Collection<
+    StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>
+  > {
     constructor(data: InstanceType<T>["_source"][]);
 
     /**
@@ -107,8 +108,8 @@ declare global {
      */
     set(id: string, document: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>): this;
 
-    //@ts-expect-error This is an error in Foundry itself
-    delete(id: string): void;
+    /** @remarks Actually returns void */
+    delete(id: string): boolean;
 
     /**
      * Render any Applications associated with this DocumentCollection.
