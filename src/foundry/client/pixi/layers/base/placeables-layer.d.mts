@@ -75,7 +75,7 @@ declare global {
      * Obtain a reference to the Collection of embedded Document instances within the currently viewed Scene
      */
     get documentCollection(): EmbeddedCollection<
-      ConfiguredDocumentClassForName<DocumentName>,
+      InstanceType<ConfiguredDocumentClassForName<DocumentName>>,
       InstanceType<ConfiguredDocumentClassForName<"Scene">>
     > | null;
 

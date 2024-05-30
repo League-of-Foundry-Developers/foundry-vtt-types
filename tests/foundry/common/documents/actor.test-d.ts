@@ -2,8 +2,10 @@ import { expectTypeOf } from "vitest";
 import type EmbeddedCollection from "../../../../src/foundry/common/abstract/embedded-collection.d.mts";
 
 const baseActor = new foundry.documents.BaseActor({ name: "foo", type: "base" });
-expectTypeOf(baseActor.effects).toEqualTypeOf<EmbeddedCollection<typeof ActiveEffect>>();
-expectTypeOf(baseActor.items).toEqualTypeOf<EmbeddedCollection<typeof Item, foundry.ActorData>>();
+expectTypeOf(baseActor.effects).toEqualTypeOf<EmbeddedCollection<ActiveEffect, Actor>>();
+expectTypeOf(baseActor.effects.get("")).toEqualTypeOf<ActiveEffect | undefined>();
+expectTypeOf(baseActor.items).toEqualTypeOf<EmbeddedCollection<Item, Actor>>();
+expectTypeOf(baseActor.items.get("")).toEqualTypeOf<Item | undefined>();
 expectTypeOf(baseActor._source.effects[0]!).toEqualTypeOf<ActiveEffectData>();
 expectTypeOf(baseActor._source.effects[0]!.duration).toEqualTypeOf<EffectDurationData>();
 

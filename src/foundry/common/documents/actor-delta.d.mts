@@ -117,12 +117,18 @@ declare namespace BaseActorDelta {
     /**
      * An array of embedded item data overrides.
      */
-    items: fields.EmbeddedCollectionDeltaField<typeof documents.BaseItem>;
+    items: fields.EmbeddedCollectionDeltaField<
+      typeof documents.BaseItem,
+      InstanceType<ConfiguredDocumentClassForName<"ActorDelta">>
+    >;
 
     /**
      * An array of embedded active effect data overrides.
      */
-    effects: fields.EmbeddedCollectionDeltaField<typeof documents.BaseActiveEffect>;
+    effects: fields.EmbeddedCollectionDeltaField<
+      typeof documents.BaseActiveEffect,
+      InstanceType<ConfiguredDocumentClassForName<"ActorDelta">>
+    >;
 
     /**
      * Ownership overrides.

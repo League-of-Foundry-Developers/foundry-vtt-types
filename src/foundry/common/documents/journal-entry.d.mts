@@ -1,5 +1,6 @@
 // FOUNDRY_VERSION: 10.291
 
+import type { ConfiguredDocumentClassForName } from "../../../types/helperTypes.d.mts";
 import type { Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
@@ -98,7 +99,10 @@ declare namespace BaseJournalEntry {
      * The pages contained within this JournalEntry document
      * @defaultValue `[]`
      */
-    pages: fields.EmbeddedCollectionField<typeof documents.BaseJournalEntryPage>;
+    pages: fields.EmbeddedCollectionField<
+      typeof documents.BaseJournalEntryPage,
+      InstanceType<ConfiguredDocumentClassForName<"JournalEntry">>
+    >;
 
     /**
      * The _id of a Folder which contains this JournalEntry

@@ -1,3 +1,4 @@
+import type { ConfiguredDocumentClassForName } from "../../../types/helperTypes.d.mts";
 import type { Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
@@ -284,49 +285,73 @@ declare namespace BaseScene {
      * A collection of embedded Drawing objects.
      * @defaultValue `[]`
      */
-    drawings: fields.EmbeddedCollectionField<typeof documents.BaseDrawing>;
+    drawings: fields.EmbeddedCollectionField<
+      typeof documents.BaseDrawing,
+      InstanceType<ConfiguredDocumentClassForName<"Scene">>
+    >;
 
     /**
      * A collection of embedded Tile objects.
      * @defaultValue `[]`
      */
-    tokens: fields.EmbeddedCollectionField<typeof documents.BaseToken>;
+    tokens: fields.EmbeddedCollectionField<
+      typeof documents.BaseToken,
+      InstanceType<ConfiguredDocumentClassForName<"Scene">>
+    >;
 
     /**
      * A collection of embedded Token objects.
      * @defaultValue `[]`
      */
-    lights: fields.EmbeddedCollectionField<typeof documents.BaseAmbientLight>;
+    lights: fields.EmbeddedCollectionField<
+      typeof documents.BaseAmbientLight,
+      InstanceType<ConfiguredDocumentClassForName<"Scene">>
+    >;
 
     /**
      * A collection of embedded AmbientLight objects.
      * @defaultValue `[]`
      */
-    notes: fields.EmbeddedCollectionField<typeof documents.BaseNote>;
+    notes: fields.EmbeddedCollectionField<
+      typeof documents.BaseNote,
+      InstanceType<ConfiguredDocumentClassForName<"Scene">>
+    >;
 
     /**
      * A collection of embedded Note objects.
      * @defaultValue `[]`
      */
-    sounds: fields.EmbeddedCollectionField<typeof documents.BaseAmbientSound>;
+    sounds: fields.EmbeddedCollectionField<
+      typeof documents.BaseAmbientSound,
+      InstanceType<ConfiguredDocumentClassForName<"Scene">>
+    >;
 
     /**
      * A collection of embedded AmbientSound objects.
      * @defaultValue `[]`
      */
-    templates: fields.EmbeddedCollectionField<typeof documents.BaseMeasuredTemplate>;
+    templates: fields.EmbeddedCollectionField<
+      typeof documents.BaseMeasuredTemplate,
+      InstanceType<ConfiguredDocumentClassForName<"Scene">>
+    >;
 
     /**
      * A collection of embedded MeasuredTemplate objects.
      * @defaultValue `[]`
      */
-    tiles: fields.EmbeddedCollectionField<typeof documents.BaseTile>;
+    tiles: fields.EmbeddedCollectionField<
+      typeof documents.BaseTile,
+      InstanceType<ConfiguredDocumentClassForName<"Scene">>
+    >;
 
     /**
      * A collection of embedded Wall objects
      * @defaultValue `[]`
      */
-    walls: fields.EmbeddedCollectionField<typeof documents.BaseWall>;
+    walls: fields.EmbeddedCollectionField<
+      typeof documents.BaseWall,
+      InstanceType<ConfiguredDocumentClassForName<"Scene">>
+    >;
 
     /**
      * A linked Playlist document which should begin automatically playing when this

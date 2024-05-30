@@ -42,7 +42,7 @@ declare abstract class Document<
    */
   readonly pack: string | null;
 
-  readonly collections: Record<string, EmbeddedCollection<Document.Constructor, this>>;
+  readonly collections: Record<string, EmbeddedCollection<Document<any, any, this>, this>>;
 
   protected _initialize(options?: any): void;
 

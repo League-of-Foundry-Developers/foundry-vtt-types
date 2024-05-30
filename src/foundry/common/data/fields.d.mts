@@ -1,4 +1,8 @@
-import type { ConfiguredDocumentClassForName, ConfiguredFlags } from "../../../types/helperTypes.mts";
+import type {
+  ConfiguredDocumentClass,
+  ConfiguredDocumentClassForName,
+  ConfiguredFlags,
+} from "../../../types/helperTypes.mts";
 import type { ConstructorOf, SimpleMerge, ValueOf } from "../../../types/utils.d.mts";
 import type { DataModel } from "../abstract/data.mts";
 import type Document from "../abstract/document.mts";
@@ -1672,12 +1676,18 @@ declare namespace EmbeddedDataField {
  */
 declare class EmbeddedCollectionField<
   ElementFieldType extends Document.Constructor,
+  ParentDataModel extends foundry.abstract.Document<any, any, any>,
   AssignmentElementType = EmbeddedCollectionField.AssignmentElementType<ElementFieldType>,
-  InitializedElementType = EmbeddedCollectionField.InitializedElementType<ElementFieldType>,
+  InitializedElementType extends Document.Any = EmbeddedCollectionField.InitializedElementType<ElementFieldType>,
   Options extends
     EmbeddedCollectionField.Options<AssignmentElementType> = EmbeddedCollectionField.DefaultOptions<AssignmentElementType>,
   AssignmentType = EmbeddedCollectionField.AssignmentType<AssignmentElementType, Options>,
-  InitializedType = EmbeddedCollectionField.InitializedType<AssignmentElementType, InitializedElementType, Options>,
+  InitializedType = EmbeddedCollectionField.InitializedType<
+    AssignmentElementType,
+    InitializedElementType,
+    ParentDataModel,
+    Options
+  >,
   PersistedElementType = EmbeddedCollectionField.PersistedElementType<ElementFieldType>,
   PersistedType extends PersistedElementType[] | null | undefined = EmbeddedCollectionField.PersistedType<
     AssignmentElementType,
@@ -1708,7 +1718,7 @@ declare class EmbeddedCollectionField<
   /**
    * The Collection implementation to use when initializing the collection.
    */
-  static get implementation(): ConstructorOf<EmbeddedCollection<any, any>>; // TODO: Type this better.
+  static get implementation(): typeof EmbeddedCollection;
 
   /** @defaultValue `true` */
   static override hierarchical: boolean;
@@ -1716,7 +1726,7 @@ declare class EmbeddedCollectionField<
   /**
    * A reference to the DataModel subclass of the embedded document element
    */
-  get model(): typeof DataModel; // TODO: Maybe this could be more strict.
+  get model(): typeof Document;
 
   /**
    * The DataSchema of the contained Document model.
@@ -1791,7 +1801,9 @@ declare namespace EmbeddedCollectionField {
    * A type to infer the initialized element type of an EmbeddedCollectionField from its ElementFieldType.
    * @typeParam ElementFieldType - the DataField type of the elements in the EmbeddedCollectionField
    */
-  type InitializedElementType<ElementFieldType extends Document.Constructor> = InstanceType<ElementFieldType>;
+  type InitializedElementType<ElementFieldType extends Document.Constructor> = InstanceType<
+    ConfiguredDocumentClass<ElementFieldType>
+  >;
 
   /**
    * A type to infer the initialized element type of an EmbeddedCollectionField from its ElementFieldType.
@@ -1824,9 +1836,13 @@ declare namespace EmbeddedCollectionField {
    */
   type InitializedType<
     AssignmentElementType,
-    InitializedElementType,
+    InitializedElementType extends foundry.abstract.Document<any, any, any>,
+    ParentDataModel extends foundry.abstract.Document<any, any, any>,
     Opts extends Options<AssignmentElementType>,
-  > = DataField.DerivedInitializedType<Collection<InitializedElementType>, MergedOptions<AssignmentElementType, Opts>>;
+  > = DataField.DerivedInitializedType<
+    EmbeddedCollection<InitializedElementType, ParentDataModel>,
+    MergedOptions<AssignmentElementType, Opts>
+  >;
 
   /**
    * A shorthand for the persisted type of an ArrayField class.
@@ -1861,8 +1877,9 @@ declare namespace EmbeddedCollectionField {
  */
 declare class EmbeddedCollectionDeltaField<
   ElementFieldType extends Document.Constructor,
+  ParentDataModel extends foundry.abstract.Document<any, any, any>,
   AssignmentElementType = EmbeddedCollectionDeltaField.AssignmentElementType<ElementFieldType>,
-  InitializedElementType = EmbeddedCollectionDeltaField.InitializedElementType<ElementFieldType>,
+  InitializedElementType extends Document.Any = EmbeddedCollectionDeltaField.InitializedElementType<ElementFieldType>,
   Options extends
     EmbeddedCollectionDeltaField.Options<AssignmentElementType> = EmbeddedCollectionDeltaField.DefaultOptions<AssignmentElementType>,
   AssignmentType = EmbeddedCollectionDeltaField.AssignmentType<AssignmentElementType, Options>,
@@ -1879,6 +1896,7 @@ declare class EmbeddedCollectionDeltaField<
   >,
 > extends EmbeddedCollectionField<
   ElementFieldType,
+  ParentDataModel,
   AssignmentElementType,
   InitializedElementType,
   Options,
@@ -1887,7 +1905,7 @@ declare class EmbeddedCollectionDeltaField<
   PersistedElementType,
   PersistedType
 > {
-  static override get implementation(): ConstructorOf<EmbeddedCollectionDelta<any, any>>; // TODO: Type this better.
+  static override get implementation(): typeof EmbeddedCollectionDelta;
 
   protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions | undefined): InitializedType;
 

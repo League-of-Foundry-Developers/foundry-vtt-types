@@ -1,8 +1,9 @@
-import type { DocumentConstructor } from "../../../types/helperTypes.d.mts";
-import type { InexactPartial } from "../../../types/utils.d.mts";
+import type { ConstructorOf, InexactPartial } from "../../../types/utils.d.mts";
 import type _Collection from "../utils/collection.d.mts";
 
-type Collection<T> = Omit<_Collection<T>, "set" | "delete">;
+// Fix for "Class 'Collection<ContainedDocument>' defines instance member property 'get',
+// but extended class 'EmbeddedCollection<ContainedDocument, ParentDataModel>' defines it as instance member function."
+type Collection<T> = Omit<_Collection<T>, "set" | "delete" | "get">;
 
 interface CollectionConstructor {
   new (): Collection<any>;
@@ -19,24 +20,20 @@ declare const Collection: CollectionConstructor;
  * Used for the specific task of containing embedded Document instances within a parent Document.
  */
 declare class EmbeddedCollection<
-  ContainedDocumentConstructor extends DocumentConstructor,
+  ContainedDocument extends foundry.abstract.Document<any, any, any>,
   ParentDataModel extends foundry.abstract.Document<any, any, any>,
-> extends Collection<InstanceType<ContainedDocumentConstructor>> {
+> extends Collection<ContainedDocument> {
   /**
    * @param name          - The name of this collection in the parent Document.
    * @param parent        - The parent DataModel instance to which this collection belongs
    * @param sourceArray   - The source data array for the collection in the parent Document data
    */
-  constructor(
-    name: string,
-    parent: ParentDataModel,
-    sourceArray: ConstructorParameters<ContainedDocumentConstructor>[0][],
-  );
+  constructor(name: string, parent: ParentDataModel, sourceArray: ContainedDocument["_source"][]);
 
   /**
    * The Document implementation used to construct instances within this collection
    */
-  readonly documentClass: ContainedDocumentConstructor;
+  readonly documentClass: ConstructorOf<ContainedDocument>;
 
   /**
    * The name of this collection in the parent Document.
@@ -57,7 +54,7 @@ declare class EmbeddedCollection<
   /**
    * The source data array from which the embedded collection is created
    */
-  protected readonly _source: ConstructorParameters<ContainedDocumentConstructor>[0][];
+  protected readonly _source: ContainedDocument["_source"][];
 
   /**
    * Record the set of document ids where the Document was not initialized because of invalid source data
@@ -67,10 +64,7 @@ declare class EmbeddedCollection<
   /**
    * Instantiate a Document for inclusion in the Collection
    */
-  createDocument(
-    data: ConstructorParameters<ContainedDocumentConstructor>[0],
-    context: DocumentConstructionContext,
-  ): InstanceType<ContainedDocumentConstructor>;
+  createDocument(data: ContainedDocument["_source"][], context: DocumentConstructionContext): ContainedDocument;
 
   /**
    * Initialize the EmbeddedCollection object by constructing its contained Document instances
@@ -91,7 +85,7 @@ declare class EmbeddedCollection<
    * @param options - Options to configure Document initialization.
    */
   protected _initializeDocument(
-    data: ConstructorParameters<ContainedDocumentConstructor>[0],
+    data: ContainedDocument["_source"][],
     options: InexactPartial<{
       /**
        * Whether to log an error or warning if the Document fails to initialize.
@@ -136,13 +130,13 @@ declare class EmbeddedCollection<
        */
       invalid: false;
     }>,
-  ): InstanceType<ContainedDocumentConstructor> | undefined;
+  ): ContainedDocument | undefined;
   /**
    * Get an element from the EmbeddedCollection by its ID.
    * @param id      - The ID of the Embedded Document to retrieve.
    * @param options - Additional options to configure retrieval.
    */
-  get(id: string, options: { strict: true; invalid?: false }): InstanceType<ContainedDocumentConstructor>;
+  get(id: string, options: { strict: true; invalid?: false }): ContainedDocument;
   /**
    * Get an element from the EmbeddedCollection by its ID.
    * @param id      - The ID of the Embedded Document to retrieve.
@@ -158,7 +152,7 @@ declare class EmbeddedCollection<
    */
   set(
     key: string,
-    value: InstanceType<ContainedDocumentConstructor>,
+    value: ContainedDocument,
     options?: InexactPartial<{
       /**
        * Whether to modify the collection's source as part of the operation.
@@ -173,7 +167,7 @@ declare class EmbeddedCollection<
    * @param key   - The Document ID Key
    * @param value - The Document
    */
-  protected _set(key: string, value: InstanceType<ContainedDocumentConstructor>): void;
+  protected _set(key: string, value: ContainedDocument): void;
 
   /**
    * @param key     - The embedded Document ID.
@@ -201,11 +195,11 @@ declare class EmbeddedCollection<
    * @param changes - An array of provided Document data
    * @param options - Additional options which modify how the collection is updated
    */
-  update(changes: ConstructorParameters<ContainedDocumentConstructor>[0][], options?: Record<string, unknown>): void;
+  update(changes: ContainedDocument["_source"][][], options?: Record<string, unknown>): void;
 
   protected _createOrUpdate(
-    data: ConstructorParameters<ContainedDocumentConstructor>[0][],
-    options?: Parameters<InstanceType<ContainedDocumentConstructor>["updateSource"]>[1],
+    data: ContainedDocument["_source"][][],
+    options?: Parameters<ContainedDocument["updateSource"]>[1],
   ): void;
 
   // TODO: Improve typing on invalid documents
@@ -241,8 +235,8 @@ declare class EmbeddedCollection<
    *                 (default: `true`)
    * @returns The extracted array of primitive objects
    */
-  toObject(source?: true): InstanceType<ContainedDocumentConstructor>["_source"][];
-  toObject(source: false): ReturnType<InstanceType<ContainedDocumentConstructor>["schema"]["toObject"]>[];
+  toObject(source?: true): ContainedDocument["_source"][];
+  toObject(source: false): ReturnType<ContainedDocument["schema"]["toObject"]>[];
 }
 
 export default EmbeddedCollection;

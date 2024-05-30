@@ -1,5 +1,6 @@
 // FOUNDRY_VERSION: 10.291
 
+import type { ConfiguredDocumentClassForName } from "../../../types/helperTypes.d.mts";
 import type { Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
@@ -101,7 +102,10 @@ declare namespace BaseRollTable {
      * A Collection of TableResult embedded documents which belong to this RollTable
      * @defaultValue `[]`
      */
-    results: fields.EmbeddedCollectionField<typeof documents.BaseTableResult>;
+    results: fields.EmbeddedCollectionField<
+      typeof documents.BaseTableResult,
+      InstanceType<ConfiguredDocumentClassForName<"RollTable">>
+    >;
 
     /**
      * The Roll formula which determines the results chosen from the table

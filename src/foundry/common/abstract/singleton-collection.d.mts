@@ -1,4 +1,3 @@
-import type { DocumentConstructor } from "../../../types/helperTypes.d.mts";
 import EmbeddedCollection from "./embedded-collection.mjs";
 
 /**
@@ -6,15 +5,15 @@ import EmbeddedCollection from "./embedded-collection.mjs";
  * with via a common interface.
  */
 export default class SingletonEmbeddedCollection<
-  ContainedDocumentConstructor extends DocumentConstructor,
-  ParentDataModel extends foundry.abstract.Document<any, any, any>,
-> extends EmbeddedCollection<ContainedDocumentConstructor, ParentDataModel> {
+  ContainedDocument extends foundry.abstract.Document.Any,
+  ParentDataModel extends foundry.abstract.Document.Any,
+> extends EmbeddedCollection<ContainedDocument, ParentDataModel> {
   /**
    * @throws `Cannot create singleton embedded ${embeddedName} [${key}] in parent ${parentName} `  + `[${this.model.id}] as it already has one assigned.`
    */
-  override set(key: string, value: InstanceType<ContainedDocumentConstructor>): this;
+  override set(key: string, value: ContainedDocument): this;
 
-  protected override _set(key: string, value: InstanceType<ContainedDocumentConstructor>): void;
+  protected override _set(key: string, value: ContainedDocument): void;
 
   protected override _delete(key: string, options: Record<string, unknown>): void;
 }

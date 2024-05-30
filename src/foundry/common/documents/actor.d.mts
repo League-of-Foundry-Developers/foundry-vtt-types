@@ -1,3 +1,4 @@
+import type { ConfiguredDocumentClassForName } from "../../../types/helperTypes.d.mts";
 import type { Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata, DocumentModificationOptions } from "../abstract/document.mts";
@@ -173,13 +174,19 @@ declare namespace BaseActor {
      * A Collection of Item embedded Documents
      * @defaultValue `[]`
      */
-    items: fields.EmbeddedCollectionField<typeof documents.BaseItem>;
+    items: fields.EmbeddedCollectionField<
+      typeof documents.BaseItem,
+      InstanceType<ConfiguredDocumentClassForName<"Actor">>
+    >;
 
     /**
      * A Collection of ActiveEffect embedded Documents
      * @defaultValue `[]`
      */
-    effects: fields.EmbeddedCollectionField<typeof documents.BaseActiveEffect>;
+    effects: fields.EmbeddedCollectionField<
+      typeof documents.BaseActiveEffect,
+      InstanceType<ConfiguredDocumentClassForName<"Actor">>
+    >;
 
     /**
      * The _id of a Folder which contains this Actor

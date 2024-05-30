@@ -1,3 +1,4 @@
+import type { ConfiguredDocumentClassForName } from "../../../types/helperTypes.d.mts";
 import type { Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
@@ -72,7 +73,10 @@ declare namespace BaseCombat {
      * A Collection of Combatant embedded Documents
      * @defaultValue `[]`
      */
-    combatants: fields.EmbeddedCollectionField<typeof documents.BaseCombatant>;
+    combatants: fields.EmbeddedCollectionField<
+      typeof documents.BaseCombatant,
+      InstanceType<ConfiguredDocumentClassForName<"Combat">>
+    >;
 
     /**
      * Is the Combat encounter currently active?

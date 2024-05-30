@@ -1,3 +1,4 @@
+import type { ConfiguredDocumentClassForName } from "../../../types/helperTypes.d.mts";
 import type { Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
@@ -130,7 +131,10 @@ declare namespace BaseCards {
      * A collection of Card documents which currently belong to this stack
      * @defaultValue `[]`
      */
-    cards: fields.EmbeddedCollectionField<typeof documents.BaseCard>;
+    cards: fields.EmbeddedCollectionField<
+      typeof documents.BaseCard,
+      InstanceType<ConfiguredDocumentClassForName<"Cards">>
+    >;
 
     /**
      * The visible width of this stack

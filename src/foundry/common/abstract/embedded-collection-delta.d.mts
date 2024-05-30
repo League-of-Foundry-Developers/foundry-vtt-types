@@ -1,4 +1,3 @@
-import type { DocumentConstructor } from "../../../types/helperTypes.d.mts";
 import type { InexactPartial } from "../../../types/utils.d.mts";
 import EmbeddedCollection from "./embedded-collection.mjs";
 
@@ -7,23 +6,23 @@ import EmbeddedCollection from "./embedded-collection.mjs";
  * embedded collection, and generate new embedded Documents by combining them.
  */
 export default class EmbeddedCollectionDelta<
-  ContainedDocumentConstructor extends DocumentConstructor,
+  ContainedDocument extends foundry.abstract.Document<any, any, any>,
   ParentDataModel extends foundry.abstract.Document<any, any, any>,
-> extends EmbeddedCollection<ContainedDocumentConstructor, ParentDataModel> {
+> extends EmbeddedCollection<ContainedDocument, ParentDataModel> {
   /**
    * A convenience getter to return the corresponding base collection.
    */
-  get baseCollection(): EmbeddedCollection<ContainedDocumentConstructor, ParentDataModel>;
+  get baseCollection(): EmbeddedCollection<ContainedDocument, ParentDataModel>;
 
   /**
    * A convenience getter to return the corresponding synthetic collection.
    */
-  get syntheticCollection(): EmbeddedCollection<ContainedDocumentConstructor, ParentDataModel>;
+  get syntheticCollection(): EmbeddedCollection<ContainedDocument, ParentDataModel>;
 
   override createDocument(
-    data: ConstructorParameters<ContainedDocumentConstructor>[0],
+    data: ContainedDocument["_source"][],
     context: DocumentConstructionContext,
-  ): InstanceType<ContainedDocumentConstructor>;
+  ): ContainedDocument;
 
   protected override initialize(
     options: InexactPartial<{
@@ -39,13 +38,13 @@ export default class EmbeddedCollectionDelta<
   ): void;
 
   protected override _initializeDocument(
-    data: ConstructorParameters<ContainedDocumentConstructor>[0],
+    data: ContainedDocument["_source"][],
     options: InexactPartial<{ strict: boolean }>,
   ): void;
 
   protected override _createOrUpdate(
-    data: ConstructorParameters<ContainedDocumentConstructor>[0][],
-    options?: Parameters<InstanceType<ContainedDocumentConstructor>["updateSource"]>[1],
+    data: ContainedDocument["_source"][][],
+    options?: Parameters<ContainedDocument["updateSource"]>[1],
   ): void;
 
   /**
@@ -65,7 +64,7 @@ export default class EmbeddedCollectionDelta<
    * @param id - The Document ID
    * @returns The restored Document
    */
-  restoreDocument(id: string): Promise<InstanceType<ContainedDocumentConstructor>>;
+  restoreDocument(id: string): Promise<ContainedDocument>;
 
   /**
    * Restore the given Documents so that they are no longer managed by the collection delta and instead inherit directly
@@ -73,17 +72,17 @@ export default class EmbeddedCollectionDelta<
    * @param ids - The IDs of the Documents to restore.
    * @returns An array of updated Document instances.
    */
-  restoreDocuments(ids: string[]): Promise<InstanceType<ContainedDocumentConstructor>[]>;
+  restoreDocuments(ids: string[]): Promise<ContainedDocument[]>;
 
   override set(
     key: string,
-    value: InstanceType<ContainedDocumentConstructor>,
+    value: ContainedDocument,
     options?: InexactPartial<{ modifySource: boolean; restoreDelta: boolean }>,
   ): this;
 
   protected override _set(
     key: string,
-    value: InstanceType<ContainedDocumentConstructor>,
+    value: ContainedDocument,
     options?: InexactPartial<{
       /**
        * @defaultValue `false`
