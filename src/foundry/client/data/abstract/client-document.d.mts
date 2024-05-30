@@ -7,7 +7,11 @@ import type { ConstructorOf, DeepPartial, InexactPartial, Mixin, ValueOf } from 
 import type { AnyMetadata, DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 declare class ClientDocument<
-  BaseDocument extends foundry.abstract.Document<any, ConcreteMetadata> = foundry.abstract.Document<any, AnyMetadata>,
+  BaseDocument extends foundry.abstract.Document<any, ConcreteMetadata, any> = foundry.abstract.Document<
+    any,
+    AnyMetadata,
+    any
+  >,
   ConcreteMetadata extends AnyMetadata = AnyMetadata,
 > {
   constructor(data?: BaseDocument["_source"], context?: DocumentConstructionContext);
