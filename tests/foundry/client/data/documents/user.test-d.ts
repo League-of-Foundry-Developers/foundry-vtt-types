@@ -21,9 +21,9 @@ expectTypeOf(user.getHotbarMacros().map((each) => each.macro)).toEqualTypeOf<
 
 user.assignHotbarMacro(new Macro(), 1);
 
-expectTypeOf(user.data._id).toEqualTypeOf<string | null>();
-expectTypeOf(user.data.character).toEqualTypeOf<string | null>();
-expectTypeOf(user.data.avatar).toEqualTypeOf<string | null | undefined>();
+expectTypeOf(user._id).toEqualTypeOf<string | null>();
+expectTypeOf(user.character).toEqualTypeOf<string | null>();
+expectTypeOf(user.avatar).toEqualTypeOf<string | null | undefined>();
 
 // TODO: Modify to ConfiguredDocumentSheet<typeof User> | null once data can be grabbed from CONFIG
 expectTypeOf(user.sheet).toEqualTypeOf<FormApplication | null>();

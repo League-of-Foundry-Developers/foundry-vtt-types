@@ -1,7 +1,6 @@
 import { expectTypeOf } from "vitest";
 import type { StoredDocument } from "../../../../../src/types/utils.d.mts";
 
-declare const pointSource: PointSource;
 declare const scene: Scene;
 declare const user: User;
 
@@ -15,8 +14,5 @@ expectTypeOf(FogExploration.get({}, { temporary: true })).toEqualTypeOf<
 >();
 
 const fogExploration = new FogExploration();
-
-expectTypeOf(fogExploration.explore(pointSource)).toEqualTypeOf<boolean>();
-expectTypeOf(fogExploration.explore(pointSource, true)).toEqualTypeOf<boolean>();
 
 expectTypeOf(fogExploration.getTexture()).toEqualTypeOf<PIXI.Texture | null>();

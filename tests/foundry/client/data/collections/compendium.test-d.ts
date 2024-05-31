@@ -13,11 +13,11 @@ const metadata = {
 const compendiumCollection = new CompendiumCollection(metadata);
 expectTypeOf(compendiumCollection.get("", { strict: true })).toEqualTypeOf<StoredDocument<JournalEntry>>();
 expectTypeOf(compendiumCollection.toJSON()).toEqualTypeOf<
-  Array<StoredDocument<foundry.documents.BaseJournalEntry>["data"]["_source"]>
+  Array<StoredDocument<foundry.documents.BaseJournalEntry>["_source"]>
 >();
 
 expectTypeOf((await compendiumCollection.getIndex()).get("some id", { strict: true })).toEqualTypeOf<
-  { _id: string } & Partial<foundry.data.JournalEntryData["_source"]>
+  { _id: string } & Partial<foundry.documents.BaseJournalEntry["_source"]>
 >();
 
 const itemCollection = new CompendiumCollection({

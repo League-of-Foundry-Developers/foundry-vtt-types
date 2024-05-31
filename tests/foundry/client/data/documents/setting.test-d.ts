@@ -3,7 +3,6 @@ import type { StoredDocument } from "../../../../../src/types/utils.d.mts";
 
 const setting = new Setting({ key: "foo.bar", value: "bar" });
 
-expectTypeOf(Setting.schema).toEqualTypeOf<typeof foundry.data.SettingData>();
 expectTypeOf(setting.key).toEqualTypeOf<string>();
 expectTypeOf(setting.value).toEqualTypeOf<unknown>();
 expectTypeOf(Setting.create({ key: "foo.bar", value: "bar" })).toEqualTypeOf<

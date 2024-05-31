@@ -9,7 +9,7 @@ expectTypeOf(table.results.get("testing")).toEqualTypeOf<TableResult | undefined
 
 expectTypeOf(await table.draw()).toEqualTypeOf<RollTableDraw>();
 expectTypeOf((await table.roll()).results[0]).toEqualTypeOf<TableResult>();
-expectTypeOf(table.data.displayRoll).toEqualTypeOf<boolean>();
+expectTypeOf(table.displayRoll).toEqualTypeOf<boolean>();
 
 declare const folder: Folder;
 expectTypeOf(await RollTable.fromFolder(folder)).toEqualTypeOf<RollTable | undefined>();
