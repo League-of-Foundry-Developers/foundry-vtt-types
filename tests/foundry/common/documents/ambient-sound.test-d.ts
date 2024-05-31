@@ -1,9 +1,9 @@
 import { expectTypeOf } from "vitest";
 
-expectTypeOf(new foundry.data.AmbientSoundData()).toEqualTypeOf<foundry.data.AmbientSoundData>();
-expectTypeOf(new foundry.data.AmbientSoundData({})).toEqualTypeOf<foundry.data.AmbientSoundData>();
+expectTypeOf(new foundry.documents.BaseAmbientSound()).toEqualTypeOf<foundry.documents.BaseAmbientSound>();
+expectTypeOf(new foundry.documents.BaseAmbientSound({})).toEqualTypeOf<foundry.documents.BaseAmbientSound>();
 expectTypeOf(
-  new foundry.data.AmbientSoundData({
+  new foundry.documents.BaseAmbientSound({
     _id: null,
     x: 10,
     y: 10,
@@ -15,32 +15,32 @@ expectTypeOf(
     repeat: true,
     volume: 100,
   }),
-).toEqualTypeOf<foundry.data.AmbientSoundData>();
+).toEqualTypeOf<foundry.documents.BaseAmbientSound>();
 expectTypeOf(
-  new foundry.data.AmbientSoundData({
+  new foundry.documents.BaseAmbientSound({
     _id: null,
     x: null,
     y: null,
     hidden: null,
     radius: null,
-    darkness: null,
+    darkness: null, // FIXME: This is valid
     easing: null,
     path: null,
     repeat: null,
     volume: null,
   }),
-).toEqualTypeOf<foundry.data.AmbientSoundData>();
+).toEqualTypeOf<foundry.documents.BaseAmbientSound>();
 expectTypeOf(
-  new foundry.data.AmbientSoundData({
+  new foundry.documents.BaseAmbientSound({
     _id: undefined,
     x: undefined,
     y: undefined,
     hidden: undefined,
     radius: undefined,
-    darkness: undefined,
+    darkness: undefined, // FIXME: This is valid
     easing: undefined,
     path: undefined,
     repeat: undefined,
     volume: undefined,
   }),
-).toEqualTypeOf<foundry.data.AmbientSoundData>();
+).toEqualTypeOf<foundry.documents.BaseAmbientSound>();

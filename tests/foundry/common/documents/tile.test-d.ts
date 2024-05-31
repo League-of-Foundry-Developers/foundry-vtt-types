@@ -1,15 +1,17 @@
 import { expectTypeOf } from "vitest";
 
-expectTypeOf(new foundry.data.TileData()).toEqualTypeOf<foundry.data.TileData>();
+//@ts-expect-error Width and height must be provided
+expectTypeOf(new foundry.documents.BaseTile()).toEqualTypeOf<foundry.documents.BaseTile>();
 
-expectTypeOf(new foundry.data.TileData({})).toEqualTypeOf<foundry.data.TileData>();
+//@ts-expect-error Width and height must be provided
+expectTypeOf(new foundry.documents.BaseTile({})).toEqualTypeOf<foundry.documents.BaseTile>();
 
 expectTypeOf(
-  new foundry.data.TileData({
+  new foundry.documents.BaseTile({
     _id: undefined,
     img: undefined,
-    width: undefined,
-    height: undefined,
+    width: 100,
+    height: 100,
     x: undefined,
     y: undefined,
     z: undefined,
@@ -23,14 +25,14 @@ expectTypeOf(
     video: undefined,
     flags: undefined,
   }),
-).toEqualTypeOf<foundry.data.TileData>();
+).toEqualTypeOf<foundry.documents.BaseTile>();
 
 expectTypeOf(
-  new foundry.data.TileData({
+  new foundry.documents.BaseTile({
     _id: null,
     img: null,
-    width: null,
-    height: null,
+    width: 100,
+    height: 100,
     x: null,
     y: null,
     z: null,
@@ -44,10 +46,10 @@ expectTypeOf(
     video: null,
     flags: null,
   }),
-).toEqualTypeOf<foundry.data.TileData>();
+).toEqualTypeOf<foundry.documents.BaseTile>();
 
 expectTypeOf(
-  new foundry.data.TileData({
+  new foundry.documents.BaseTile({
     _id: "BGBEITBTEIGE",
     img: "path/to/some/image.png",
     width: 100,
@@ -72,21 +74,21 @@ expectTypeOf(
     },
     flags: {},
   }),
-).toEqualTypeOf<foundry.data.TileData>();
+).toEqualTypeOf<foundry.documents.BaseTile>();
 
 expectTypeOf(
-  new foundry.data.TileData({
+  new foundry.documents.BaseTile({
     occlusion: {},
   }),
-).toEqualTypeOf<foundry.data.TileData>();
+).toEqualTypeOf<foundry.documents.BaseTile>();
 
-new foundry.data.TileData({
+new foundry.documents.BaseTile({
   // @ts-expect-error mode cannot be an arbitrary number.
   occlusion: { mode: 999 },
 });
 
 expectTypeOf(
-  new foundry.data.TileData({
+  new foundry.documents.BaseTile({
     video: {},
   }),
-).toEqualTypeOf<foundry.data.TileData>();
+).toEqualTypeOf<foundry.documents.BaseTile>();

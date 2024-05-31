@@ -1,11 +1,11 @@
 import { expectTypeOf } from "vitest";
 
-expectTypeOf(new foundry.data.NoteData()).toEqualTypeOf<foundry.data.NoteData>();
+expectTypeOf(new foundry.documents.BaseNote()).toEqualTypeOf<foundry.documents.BaseNote>();
 
-expectTypeOf(new foundry.data.NoteData({})).toEqualTypeOf<foundry.data.NoteData>();
+expectTypeOf(new foundry.documents.BaseNote({})).toEqualTypeOf<foundry.documents.BaseNote>();
 
 expectTypeOf(
-  new foundry.data.NoteData({
+  new foundry.documents.BaseNote({
     _id: undefined,
     entryId: undefined,
     x: undefined,
@@ -20,10 +20,10 @@ expectTypeOf(
     textColor: undefined,
     flags: undefined,
   }),
-).toEqualTypeOf<foundry.data.NoteData>();
+).toEqualTypeOf<foundry.documents.BaseNote>();
 
 expectTypeOf(
-  new foundry.data.NoteData({
+  new foundry.documents.BaseNote({
     _id: null,
     entryId: null,
     x: null,
@@ -38,10 +38,10 @@ expectTypeOf(
     textColor: null,
     flags: null,
   }),
-).toEqualTypeOf<foundry.data.NoteData>();
+).toEqualTypeOf<foundry.documents.BaseNote>();
 
 expectTypeOf(
-  new foundry.data.NoteData({
+  new foundry.documents.BaseNote({
     _id: "bfeabfiea",
     entryId: "bebfegibefaei",
     x: 100,
@@ -56,7 +56,7 @@ expectTypeOf(
     textColor: "#FF0000",
     flags: {},
   }),
-).toEqualTypeOf<foundry.data.NoteData>();
+).toEqualTypeOf<foundry.documents.BaseNote>();
 
 // @ts-expect-error - A textAnchor cannot be an arbitrary number.
-new foundry.data.NoteData({ textAnchor: 999 });
+new foundry.documents.BaseNote({ textAnchor: 999 });
