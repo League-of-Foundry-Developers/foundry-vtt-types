@@ -20,7 +20,7 @@ declare class BaseActorDelta extends Document<
   documents.BaseActorDelta.Metadata,
   InstanceType<ConfiguredDocumentClassForName<"Token">> | null
 > {
-  constructor(data: BaseActorDelta.ConstructorData, context?: DocumentConstructionContext);
+  constructor(data?: BaseActorDelta.ConstructorData, context?: DocumentConstructionContext);
 
   override _source: BaseActorDelta.Source;
 

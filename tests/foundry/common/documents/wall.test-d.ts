@@ -1,3 +1,5 @@
+import { expectTypeOf } from "vitest";
+
 const myScene = new Scene({ name: "foobar" });
 
 // @ts-expect-error - A BaseWall requires data.

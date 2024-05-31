@@ -647,6 +647,7 @@ declare namespace SchemaField {
    */
   type MergedOptions<Fields extends DataSchema, Opts extends Options<Fields>> = SimpleMerge<DefaultOptions, Opts>;
 
+  // FIXME: null or undefined should be permissible, cast as the initialized type
   /**
    * A shorthand for the assignment type of a SchemaField class.
    * @typeParam Fields - the DataSchema fields of the SchemaField

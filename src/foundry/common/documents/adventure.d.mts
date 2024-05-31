@@ -200,7 +200,9 @@ declare namespace BaseAdventure {
       ? Key
       : never]: BaseAdventure.Schema[Key] extends fields.SetField<infer ElementType, any, any, any, any, any, any, any>
       ? ElementType extends fields.EmbeddedDataField<infer ModelType, any, any, any, any>
-        ? ModelType
+        ? ModelType extends typeof Document // TODO: This doesn't seem to quite work to ensure it's the configured class
+          ? ModelType["implementation"]
+          : ModelType
         : never
       : never;
   };

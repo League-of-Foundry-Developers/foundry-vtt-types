@@ -27,7 +27,7 @@ declare class BaseToken extends Document<
   BaseToken.Metadata,
   InstanceType<ConfiguredDocumentClassForName<"Scene">> | null
 > {
-  constructor(data: BaseToken.ConstructorData, context?: DocumentConstructionContext);
+  constructor(data?: BaseToken.ConstructorData, context?: DocumentConstructionContext);
 
   static override metadata: Readonly<BaseToken.Metadata>;
 
