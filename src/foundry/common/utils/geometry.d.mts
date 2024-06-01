@@ -13,7 +13,7 @@
  *          A negative value if the points are in clockwise order (C lies to the right of AB)
  *          Zero if the points A, B, and C are collinear.
  */
-export function orient2dFast(a: Point, b: Point, c: Point): number;
+export declare function orient2dFast(a: Point, b: Point, c: Point): number;
 
 /**
  * Quickly test whether the line segment AB intersects with the line segment CD.
@@ -26,7 +26,7 @@ export function orient2dFast(a: Point, b: Point, c: Point): number;
  *
  * @returns Do the line segments intersect?
  */
-export function lineSegmentIntersects(a: Point, b: Point, c: Point, d: Point): boolean;
+export declare function lineSegmentIntersects(a: Point, b: Point, c: Point, d: Point): boolean;
 
 export interface LineIntersection {
   /** The x-coordinate of intersection */
@@ -62,7 +62,7 @@ interface LineIntersectionOptions {
  *
  * @returns An intersection point, or null if no intersection occurred
  */
-export function lineLineIntersection(
+export declare function lineLineIntersection(
   a: Point,
   b: Point,
   c: Point,
@@ -83,7 +83,7 @@ export function lineLineIntersection(
  *
  * @returns An intersection point, or null if no intersection occurred
  */
-export function lineSegmentIntersection(
+export declare function lineSegmentIntersection(
   a: Point,
   b: Point,
   c: Point,
@@ -123,7 +123,7 @@ export interface LineCircleIntersection {
  *
  * @returns The intersection of the segment AB with the circle
  */
-export function lineCircleIntersection(
+export declare function lineCircleIntersection(
   a: Point,
   b: Point,
   center: Point,
@@ -140,7 +140,7 @@ export function lineCircleIntersection(
  *
  * @returns The closest point to C on segment AB
  */
-export function closestPointToSegment(c: Point, a: Point, b: Point): Point;
+export declare function closestPointToSegment(c: Point, a: Point, b: Point): Point;
 
 /**
  * Determine the points of intersection between a line segment (p0,p1) and a circle.
@@ -154,7 +154,7 @@ export function closestPointToSegment(c: Point, a: Point, b: Point): Point;
  * @param epsilon - A small tolerance for floating point precision
  *                  (default: `0`)
  */
-export function quadraticIntersection(
+export declare function quadraticIntersection(
   p0: Point,
   p1: Point,
   center: Point,

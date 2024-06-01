@@ -1,4 +1,4 @@
-import type { MaybePromise } from "../../../../types/utils.d.mts";
+import type { GetDataReturnType, MaybePromise } from "../../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -23,11 +23,27 @@ declare global {
      */
     static override get defaultOptions(): FormApplicationOptions;
 
-    override getData(options?: Partial<Options>): MaybePromise<object>;
+    override getData(
+      options?: Partial<Options>,
+    ): MaybePromise<GetDataReturnType<CombatTrackerConfig.CombatTrackerConfigData>>;
 
     protected override _updateObject(
       event: Event,
       formData: ClientSettings.Values["core.combatTrackerConfig"],
     ): Promise<unknown>;
+
+    override activateListeners(html: JQuery<HTMLElement>): void;
+
+    protected override _onChangeInput(event: JQuery.ChangeEvent<any, any, any, any>): Promise<void | object>;
+  }
+
+  namespace CombatTrackerConfig {
+    interface CombatTrackerConfigData extends FormApplication.FormApplicationData {
+      settings: ClientSettings.Values["core.combatTrackerConfig"];
+      attributeChoices: ReturnType<(typeof TokenDocument)["getTrackedAttributeChoices"]>;
+      combatTheme: SettingConfig<string>;
+      selectedTheme: ClientSettings.Values["core.combatTheme"];
+      user: User;
+    }
   }
 }

@@ -1,4 +1,4 @@
-import type { MaybePromise } from "../../../../types/utils.d.mts";
+import type { GetDataReturnType, MaybePromise } from "../../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -24,7 +24,9 @@ declare global {
 
     override get title(): string;
 
-    override getData(options?: Partial<Options> | undefined): MaybePromise<object>;
+    override getData(
+      options?: Partial<Options> | undefined,
+    ): MaybePromise<GetDataReturnType<DocumentOwnershipConfig.DocumentOwnershipConfigData>>;
 
     protected override _updateObject(event: Event, formData: DocumentOwnershipConfig.FormData): Promise<unknown>;
   }
@@ -42,6 +44,19 @@ declare global {
 
     namespace FormData {
       type InputPermissionLevel = foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | -1 | -2;
+    }
+
+    interface DocumentOwnershipConfigData {
+      currentDefault: { level: number; label: string };
+      instructions: string;
+      defaultLevels: { level: number; label: string }[];
+      playerLevels: { level: number; label: string }[];
+      isFolder: boolean;
+      users: {
+        user: User;
+        level: number;
+        isAuthor: boolean;
+      }[];
     }
   }
 }

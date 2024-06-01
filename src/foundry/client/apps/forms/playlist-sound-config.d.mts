@@ -1,5 +1,5 @@
 import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
-import type { MaybePromise } from "../../../../types/utils.d.mts";
+import type { GetDataReturnType, MaybePromise } from "../../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -26,7 +26,9 @@ declare global {
 
     override get title(): string;
 
-    override getData(options?: Partial<Options>): MaybePromise<object>;
+    override getData(
+      options?: Partial<Options>,
+    ): MaybePromise<GetDataReturnType<PlaylistSoundConfig.PlaylistSoundConfigData>>;
 
     override activateListeners(html: JQuery): void;
 
@@ -47,6 +49,12 @@ declare global {
       name: string;
       path: string;
       repeat: boolean;
+    }
+
+    interface PlaylistSoundConfigData<
+      Options extends DocumentSheetOptions<PlaylistSound> = DocumentSheetOptions<PlaylistSound>,
+    > extends DocumentSheet.DocumentSheetData<Options, InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>> {
+      lvolume: number;
     }
   }
 }

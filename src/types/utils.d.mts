@@ -119,3 +119,17 @@ export type Mixin<
   Pick<MixinClass, keyof MixinClass> & {
     new (...args: ConstructorParameters<MixinClass>): InstanceType<BaseClass> & InstanceType<MixinClass>;
   };
+
+type GetDataConfigOptions<T> = {
+  partial: Partial<T> & Record<string, unknown>;
+  exact: T;
+  object: object;
+};
+
+type GetDataConfigOption = GetDataConfig extends {
+  mode: keyof GetDataConfigOptions<unknown> & infer Mode;
+}
+  ? Mode
+  : "object";
+
+export type GetDataReturnType<T extends object> = GetDataConfigOptions<T>[GetDataConfigOption];
