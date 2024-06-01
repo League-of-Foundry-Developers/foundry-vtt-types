@@ -1,4 +1,8 @@
-import type { ConfiguredDocumentClass, ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
+import type {
+  ConfiguredDocumentClass,
+  ConfiguredDocumentClassForName,
+  DocumentType,
+} from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
@@ -121,10 +125,9 @@ declare global {
       options: Parameters<this["update"]>[1],
     ): Promise<[this["actor"]]>;
 
-    // TODO: Re-enable after embedded Collection is fixed
-    // override getEmbeddedCollection(embeddedName: "Actor"): this["actors"];
-    // getEmbeddedCollection(embeddedName: "Item"): this["items"];
-    // getEmbeddedCollection(embeddedName: "ActiveEffect"): this["effects"];
+    override getEmbeddedCollection<DocType extends DocumentType>(
+      embeddedName: DocType,
+    ): Collection<InstanceType<ConfiguredDocumentClassForName<DocType>>>;
 
     protected override _preUpdate(
       data: Parameters<foundry.documents.BaseToken["_preUpdate"]>[0],

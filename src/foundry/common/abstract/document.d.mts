@@ -3,6 +3,8 @@ import type {
   ConfiguredDocumentClassForName,
   ConstructorDataType,
   DocumentType,
+  DocumentTypeWithTypeData,
+  PlaceableDocumentType,
 } from "../../../types/helperTypes.mts";
 import type { ConstructorOf, DeepPartial, InexactPartial, StoredDocument } from "../../../types/utils.mts";
 import type * as CONST from "../constants.mts";
@@ -466,8 +468,11 @@ declare abstract class Document<
    * Obtain a reference to the Array of source data within the data object for a certain embedded Document name
    * @param embeddedName - The name of the embedded Document type
    * @returns The Collection instance of embedded Documents of the requested type
+   * @remarks Usually returns some form of DocumentCollection, but not always (e.g. Token["actors"])
    */
-  getEmbeddedCollection(embeddedName: string): EmbeddedCollection<Document.Constructor, this>; // TODO: Improve
+  getEmbeddedCollection<DocType extends Document.TypeName>(
+    embeddedName: DocType,
+  ): Collection<InstanceType<Document.ConfiguredClassForName<DocType>>>;
 
   /**
    * Get an embedded document by its id from a named collection in the parent document.
@@ -778,7 +783,7 @@ declare abstract class Document<
 }
 
 declare namespace Document {
-  /** Any Document */
+  /** Any Document, except for Settings */
   type Any = Document<fields.SchemaField.AnyWithFlags, AnyMetadata, any>;
 
   /** Any Document, that is a child of the given parent Document. */
@@ -792,49 +797,12 @@ declare namespace Document {
 
   type ConfiguredClassForName<Name extends TypeName> = CONFIG[Name]["documentClass"];
 
-  type SystemType = "Actor" | "Card" | "Cards" | "Item" | "JournalEntryPage";
+  // Doubled references are useful but shouldn't store the lists separately
+  type SystemType = DocumentTypeWithTypeData;
 
-  type TypeName =
-    | "Actor"
-    | "ActorDelta"
-    | "Adventure"
-    | "Cards"
-    | "ChatMessage"
-    | "Combat"
-    | "FogExploration"
-    | "Folder"
-    | "Item"
-    | "JournalEntry"
-    | "JournalEntryPage"
-    | "Macro"
-    | "Playlist"
-    | "RollTable"
-    | "Scene"
-    | "Setting"
-    | "User"
-    | "ActiveEffect"
-    | "Card"
-    | "TableResult"
-    | "PlaylistSound"
-    | "AmbientLight"
-    | "AmbientSound"
-    | "Combatant"
-    | "Drawing"
-    | "MeasuredTemplate"
-    | "Note"
-    | "Tile"
-    | "Token"
-    | "Wall";
+  type TypeName = DocumentType;
 
-  type PlaceableTypeName =
-    | "AmbientLight"
-    | "AmbientSound"
-    | "Drawing"
-    | "MeasuredTemplate"
-    | "Note"
-    | "Tile"
-    | "Token"
-    | "Wall";
+  type PlaceableTypeName = PlaceableDocumentType;
 }
 
 export type DocumentModificationOptions = Omit<DocumentModificationContext, "parent" | "pack">;

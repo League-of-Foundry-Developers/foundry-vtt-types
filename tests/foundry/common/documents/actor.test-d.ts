@@ -4,8 +4,10 @@ import type EmbeddedCollection from "../../../../src/foundry/common/abstract/emb
 const baseActor = new foundry.documents.BaseActor({ name: "foo", type: "base" });
 expectTypeOf(baseActor.effects).toEqualTypeOf<EmbeddedCollection<ActiveEffect, Actor>>();
 expectTypeOf(baseActor.effects.get("")).toEqualTypeOf<ActiveEffect | undefined>();
+expectTypeOf(baseActor.effects.get("")!.name).toEqualTypeOf<string>();
 expectTypeOf(baseActor.items).toEqualTypeOf<EmbeddedCollection<Item, Actor>>();
 expectTypeOf(baseActor.items.get("")).toEqualTypeOf<Item | undefined>();
+expectTypeOf(baseActor.items.get("")!.img).toEqualTypeOf<string | undefined>();
 expectTypeOf(baseActor._source.effects[0]!).toEqualTypeOf<ActiveEffectData>();
 expectTypeOf(baseActor._source.effects[0]!.duration).toEqualTypeOf<EffectDurationData>();
 
