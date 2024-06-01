@@ -3,75 +3,35 @@ import type {
   ConstructorDataType,
   DocumentConstructor,
 } from "../../../../types/helperTypes.d.mts";
-import type { ConstructorOf, DeepPartial, ValueOf } from "../../../../types/utils.d.mts";
-import type { ContextType, DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
+import type { ConstructorOf, DeepPartial, InexactPartial, Mixin, ValueOf } from "../../../../types/utils.d.mts";
+import type { AnyMetadata, DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
-declare global {
-  // TODO: Replace ConstructorOf<…> with DocumentConstructor once the problem with circular reference has been solved
-  /**
-   * A mixin which extends each Document definition with specialized client-side behaviors.
-   * This mixin defines the client-side interface for database operations and common document behaviors.
-   */
-  const ClientDocumentMixin: <T extends ConstructorOf<foundry.abstract.Document<any, any>>>(
-    Base: T,
-  ) => ClientDocumentConstructor<T>;
-
-  namespace ClientDocumentMixin {
-    interface CompendiumExportOptions {
-      /**
-       * Clear the flags object
-       * @defaultValue `false`
-       */
-      clearFlags?: boolean | undefined;
-
-      /**
-       * Clear the currently assigned folder and sort order
-       * @defaultValue `true`
-       */
-      clearSort?: boolean | undefined;
-
-      /**
-       * Clear document permissions
-       * @defaultValue `true`
-       */
-      clearPermissions?: boolean | undefined;
-
-      /**
-       * Clear fields which store document state
-       * @defaultValue `true`
-       */
-      clearState?: boolean | undefined;
-
-      /**
-       * Retain the current Document id
-       * @defaultValue `false`
-       */
-      keepId?: boolean | undefined;
-    }
-  }
-}
-
-type ClientDocumentConstructor<T extends ConstructorOf<foundry.abstract.Document<any, any>>> = Pick<T, keyof T> &
-  Pick<typeof ClientDocumentMixin, keyof typeof ClientDocumentMixin> & {
-    new (...args: ConstructorParameters<T>): InstanceType<T> & ClientDocumentMixin<InstanceType<T>>;
-  };
-
-export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any, any>> {
-  constructor(data?: ConstructorDataType<T["data"]>, context?: ContextType<T>);
+declare class ClientDocument<
+  BaseDocument extends foundry.abstract.Document<any, ConcreteMetadata, any> = foundry.abstract.Document<
+    any,
+    AnyMetadata,
+    any
+  >,
+  ConcreteMetadata extends AnyMetadata = AnyMetadata,
+> {
+  constructor(data?: BaseDocument["_source"], context?: DocumentConstructionContext);
 
   /**
    * A collection of Application instances which should be re-rendered whenever this document is updated.
    * The keys of this object are the application ids and the values are Application instances. Each
    * Application in this object will have its render method called by {@link Document#render}.
    * @see {@link Document#render}
+   * @defaultValue `{}`
    */
-  apps: Record<string, Application>;
+  readonly apps: Record<string, Application>;
 
   /**
    * A cached reference to the FormApplication instance used to configure this Document.
    * @defaultValue `null`
    */
-  protected _sheet: FormApplication | null; // TODO: Replace with InstanceType<ConfiguredSheetClass<T>> once the circular reference problem has been solved
+  protected readonly _sheet: FormApplication | null; // TODO: Replace with InstanceType<ConfiguredSheetClass<T>> once the circular reference problem has been solved
+
+  static name: "ClientDocumentMixin";
 
   /**
    * @see abstract.Document#_initialize
@@ -86,20 +46,9 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
   /**
    * A reference to the Compendium Collection which contains this Document, if any, otherwise undefined.
    */
-  get compendium(): any; // TODO: CompendiumCollection<this>
-
-  /**
-   * Return a reference to the Folder to which this Document belongs, if any.
-   *
-   * @example <caption>A Document may belong to a Folder</caption>
-   * ```typescript
-   * let folder = game.folders.contents[0];
-   * let actor = await Actor.create({name: "New Actor", folder: folder.id});
-   * console.log(actor.data.folder); // folder.id;
-   * console.log(actor.folder); // folder;
-   * ```
-   */
-  get folder(): Folder | null;
+  get compendium(): ConcreteMetadata extends CompendiumCollection.Metadata
+    ? CompendiumCollection<ConcreteMetadata>
+    : undefined;
 
   /**
    * A boolean indicator for whether or not the current game User has ownership rights for this Document.
@@ -157,9 +106,15 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
   protected _getSheetClass(): ConstructorOf<FormApplication> | null; // TODO: Replace with ConfiguredSheetClass<T> once the circular reference problem has been solved
 
   /**
-   * Prepare data for the Document.
-   * Begin by resetting the prepared data back to its source state.
-   * Next prepare any embedded Documents and compute any derived data elements.
+   * Safely prepare data for a Document, catching any errors.
+   */
+  protected _safePrepareData(): void;
+
+  /**
+   * Prepare data for the Document. This method is called automatically by the DataModel#_initialize workflow.
+   * This method provides an opportunity for Document classes to define special data preparation logic.
+   * The work done by this method should be idempotent. There are situations in which prepareData may be called more
+   * than once.
    */
   prepareData(): void;
 
@@ -195,18 +150,50 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
    * @param options - Sorting options provided to SortingHelper.performIntegerSort
    * @returns The Document after it has been re-sorted
    */
-  sortRelative(options: SortOptions<this>): Promise<this>;
+  sortRelative(options?: InexactPartial<ClientDocument.SortOptions<this>>): Promise<this>;
+
+  /**
+   * Construct a UUID relative to another document.
+   * @param doc - The document to compare against.
+   */
+  getRelativeUuid(doc: ClientDocument): string;
+
+  /**
+   * Createa  content link for this document
+   * @param eventData - The parsed object of data provided by the drop transfer event.
+   * @param options   - Additional options to configure link generation.
+   */
+  protected _createDocumentLink(
+    eventData: unknown,
+    options?: InexactPartial<{
+      /**
+       * A document to generate a link relative to.
+       */
+      relativeTo: ClientDocument;
+
+      /**
+       * A custom label to use instead of the document's name.
+       */
+      label: string;
+    }>,
+  ): string;
+
+  /**
+   * Handle clicking on a content link for this document.
+   * @param event - The triggering click event.
+   */
+  _onClickDocumentLink(event: MouseEvent): unknown;
 
   /**
    * @see abstract.Document#_onCreate
    */
-  protected _onCreate(data: T["data"]["_source"], options: DocumentModificationOptions, userId: string): void;
+  protected _onCreate(data: BaseDocument["_source"], options: DocumentModificationOptions, userId: string): void;
 
   /**
    * @see abstract.Document#_onUpdate
    */
   protected _onUpdate(
-    data: DeepPartial<T["data"]["_source"]>,
+    data: DeepPartial<BaseDocument["_source"]>,
     options: DocumentModificationOptions,
     userId: string,
   ): void;
@@ -217,11 +204,264 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
   protected _onDelete(options: DocumentModificationOptions, userId: string): void;
 
   /**
+   * Orchestrate dispatching descendant document events to parent documents when embedded children are modified.
+   * @param event      - The event name, preCreate, onCreate, etc...
+   * @param collection - The collection name being modified within this parent document
+   * @param args       - Arguments passed to each dispatched function
+   * @param _parent    - The document with directly modified embedded documents.
+   *                     Either this document or a descendant of this one.
+   * @internal
+   */
+  protected _dispatchDescendantDocumentEvents(
+    event: ClientDocument.lifeCycleEventName,
+    collection: string,
+    args: unknown[],
+    _parent: ClientDocument,
+  ): void;
+
+  // TODO: Improve the data typing
+  /**
+   * Actions taken after descendant documents have been created, but before changes are applied to the client data.
+   * @param parent     - The direct parent of the created Documents, may be this Document or a child
+   * @param collection - The collection within which documents are being created
+   * @param data       - The source data for new documents that are being created
+   * @param options    - Options which modified the creation operation
+   * @param userId     - The ID of the User who triggered the operation
+   */
+  protected _preCreateDescendantDocuments(
+    parent: ClientDocument,
+    collection: string,
+    data: unknown[],
+    options: DocumentModificationOptions,
+    userId: string,
+  ): void;
+
+  /**
+   * Actions taken after descendant documents have been created and changes have been applied to client data.
+   * @param parent     - The direct parent of the created Documents, may be this Document or a child
+   * @param collection - The collection within which documents were created
+   * @param documents  - The array of created Documents
+   * @param data       - The source data for new documents that were created
+   * @param options    - Options which modified the creation operation
+   * @param userId     - The ID of the User who triggered the operation
+   */
+  protected _onCreateDescendantDocuments(
+    parent: ClientDocument,
+    collection: string,
+    documents: ClientDocument[],
+    data: unknown[],
+    options: DocumentModificationOptions,
+    userId: string,
+  ): void;
+  /**
+   * Actions taken after descendant documents have been updated, but before changes are applied to the client data.
+   * @param parent - The direct parent of the updated Documents, may be this Document or a child
+   * @param collection - The collection within which documents are being updated
+   * @param changes - The array of differential Document updates to be applied
+   * @param options - Options which modified the update operation
+   * @param userId - The ID of the User who triggered the operation
+   */
+  protected _preUpdateDescendantDocuments(
+    parent: ClientDocument,
+    collection: string,
+    changes: unknown[],
+    options: DocumentModificationOptions,
+    userId: string,
+  ): void;
+
+  /**
+   * Actions taken after descendant documents have been updated and changes have been applied to client data.
+   * @param parent - The direct parent of the updated Documents, may be this Document or a child
+   * @param collection - The collection within which documents were updated
+   * @param documents - The array of updated Documents
+   * @param changes - The array of differential Document updates which were applied
+   * @param options - Options which modified the update operation
+   * @param userId - The ID of the User who triggered the operation
+   */
+  protected _onUpdateDescendantDocuments(
+    parent: ClientDocument,
+    collection: string,
+    documents: ClientDocument[],
+    changes: unknown[],
+    options: DocumentModificationOptions,
+    userId: string,
+  ): void;
+
+  /**
+   * Actions taken after descendant documents have been deleted, but before deletions are applied to the client data.
+   * @param parent - The direct parent of the deleted Documents, may be this Document or a child
+   * @param collection - The collection within which documents were deleted
+   * @param ids - The array of document IDs which were deleted
+   * @param options - Options which modified the deletion operation
+   * @param userId - The ID of the User who triggered the operation
+   */
+  protected _preDeleteDescendantDocuments(
+    parent: ClientDocument,
+    collection: string,
+    ids: string[],
+    options: DocumentModificationOptions,
+    userId: string,
+  ): void;
+
+  /**
+   * Actions taken after descendant documents have been deleted and those deletions have been applied to client data.
+   * @param parent - The direct parent of the deleted Documents, may be this Document or a child
+   * @param collection - The collection within which documents were deleted
+   * @param documents - The array of Documents which were deleted
+   * @param ids - The array of document IDs which were deleted
+   * @param options - Options which modified the deletion operation
+   * @param userId - The ID of the User who triggered the operation
+   */
+  protected _onDeleteDescendantDocuments(
+    parent: ClientDocument,
+    collection: string,
+    documents: ClientDocument[],
+    ids: string,
+    options: DocumentModificationOptions,
+    userId: string,
+  ): void;
+
+  /**
+   * Whenever the Document's sheet changes, close any existing applications for this Document, and re-render the new
+   * sheet if one was already open.
+   */
+  protected _onSheetChange(
+    options?: InexactPartial<{
+      /**
+       * Whether the sheet was originally open and needs to be re-opened.
+       */
+      sheetOpen: boolean;
+    }>,
+  ): Promise<void>;
+
+  /**
+   * Gets the default new name for a Document
+   */
+  static defaultName(): string;
+
+  /**
+   * Present a Dialog form to create a new Document of this type.
+   * Choose a name and a type from a select menu of types.
+   * @param data    - Initial data with which to populate the creation form
+   *                  (default: `{}`)
+   * @param context - Additional context options or dialog positioning options
+   *                  (default: `{}`)
+   * @returns A Promise which resolves to the created Document, or null if the dialog was
+   *          closed.
+   */
+  static createDialog<T extends DocumentConstructor>(
+    this: T,
+    data?: DeepPartial<ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>)> | undefined,
+    context?: (Pick<DocumentModificationContext, "parent" | "pack"> & Partial<DialogOptions>) | undefined,
+  ): Promise<InstanceType<ConfiguredDocumentClass<T>> | null | undefined>;
+
+  /**
+   * Present a Dialog form to confirm deletion of this Document.
+   * @param options - Positioning and sizing options for the resulting dialog
+   *                  (default: `{}`)
+   * @returns A Promise which resolves to the deleted Document
+   */
+  deleteDialog(options?: Partial<DialogOptions> | undefined): Promise<this | false | null | undefined>;
+
+  /**
+   * Export document data to a JSON file which can be saved by the client and later imported into a different session.
+   * @param options - Additional options passed to the {@link ClientDocument#toCompendium} method
+   */
+  exportToJSON(options?: InexactPartial<ClientDocument.CompendiumExportOptions>): void;
+
+  /**
+   * Create a content link for this Document.
+   * @param options - Additional options to configure how the link is constructed.
+   */
+  toAnchor(
+    options?: InexactPartial<{
+      /**
+       * Attributes to set on the link.
+       * @defaultValue `{}`
+       */
+      attrs: Record<string, string>;
+
+      /**
+       * Custom data- attributes to set on the link.
+       * @defaultValue `{}`
+       */
+      dataset: Record<string, string>;
+
+      /**
+       * Additional classes to add to the link.
+       * The `content-link` class is added by default.
+       * @defaultValue `[]`
+       */
+      classes: string[];
+
+      /**
+       * A name to use for the Document, if different from the Document's name.
+       */
+      name: string;
+
+      /**
+       * A font-awesome icon class to use as the icon, if different to the Document's configured sidebarIcon.
+       */
+      icon: string;
+    }>,
+  ): HTMLAnchorElement;
+
+  /**
+   * Serialize salient information about this Document when dragging it.
+   */
+  toDragData(): DropData<BaseDocument>;
+
+  /**
+   * A helper function to handle obtaining the relevant Document from dropped data provided via a DataTransfer event.
+   * The dropped data could have:
+   * 1. A data object explicitly provided
+   * 2. A UUID
+   *
+   * @param data    - The data object extracted from a DataTransfer event
+   * @param options - Additional options which affect drop data behavior
+   * @returns The resolved Document
+   * @throws If a Document could not be retrieved from the provided data.
+   */
+  static fromDropData<T extends DocumentConstructor>(
+    this: T,
+    data: DropData<InstanceType<T>>,
+    options?: FromDropDataOptions,
+  ): Promise<InstanceType<ConfiguredDocumentClass<T>> | undefined>;
+
+  /**
+   * Update this Document using a provided JSON string.
+   * @param json - JSON data string
+   * @returns The updated Document instance
+   */
+  importFromJSON(json: string): Promise<this>;
+
+  /**
+   * Render an import dialog for updating the data related to this Document through an exported JSON file
+   */
+  importFromJSONDialog(): Promise<void>;
+
+  /**
+   * Transform the Document data to be stored in a Compendium pack.
+   * Remove any features of the data which are world-specific.
+   * @param pack    - A specific pack being exported to
+   * @param options - Additional options which modify how the document is converted
+   *                  (default: `{}`)
+   * @returns A data object of cleaned data suitable for compendium import
+   */
+  toCompendium(
+    pack?: CompendiumCollection<CompendiumCollection.Metadata> | null | undefined,
+    options?: InexactPartial<ClientDocument.CompendiumExportOptions>,
+  ): Omit<BaseDocument["_source"], "_id" | "folder" | "permission"> & {
+    permission?: BaseDocument["_source"]["permission"];
+  };
+
+  /**
    * Preliminary actions taken before a set of embedded Documents in this parent Document are created.
    * @param embeddedName - The name of the embedded Document type
    * @param result       - An Array of created data objects
    * @param options      - Options which modified the creation operation
    * @param userId       - The ID of the User who triggered the operation
+   * @deprecated since v11
    */
   protected _preCreateEmbeddedDocuments(
     embeddedName: string,
@@ -237,6 +477,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
    * @param result       - An Array of created data objects
    * @param options      - Options which modified the creation operation
    * @param userId       - The ID of the User who triggered the operation
+   * @deprecated since v11
    */
   protected _onCreateEmbeddedDocuments(
     embeddedName: string,
@@ -252,6 +493,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
    * @param result       - An Array of incremental data objects
    * @param options      - Options which modified the update operation
    * @param userId       - The ID of the User who triggered the operation
+   * @deprecated since v11
    */
   protected _preUpdateEmbeddedDocuments(
     embeddedName: string,
@@ -267,6 +509,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
    * @param result       - An Array of incremental data objects
    * @param options      - Options which modified the update operation
    * @param userId       - The ID of the User who triggered the operation
+   * @deprecated since v11
    */
   protected _onUpdateEmbeddedDocuments(
     embeddedName: string,
@@ -282,6 +525,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
    * @param result       - An Array of document IDs being deleted
    * @param options      - Options which modified the deletion operation
    * @param userId       - The ID of the User who triggered the operation
+   * @deprecated since v11
    */
   protected _preDeleteEmbeddedDocuments(
     embeddedName: string,
@@ -297,6 +541,7 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
    * @param result       - An Array of document IDs being deleted
    * @param options      - Options which modified the deletion operation
    * @param userId       - The ID of the User who triggered the operation
+   * @deprecated since v11
    */
   protected _onDeleteEmbeddedDocuments(
     embeddedName: string,
@@ -305,133 +550,89 @@ export declare class ClientDocumentMixin<T extends foundry.abstract.Document<any
     options: DocumentModificationContext,
     userId: string,
   ): void;
-
-  /**
-   * Present a Dialog form to create a new Document of this type.
-   * Choose a name and a type from a select menu of types.
-   * @param data    - Initial data with which to populate the creation form
-   *                  (default: `{}`)
-   * @param context - Additional context options or dialog positioning options
-   *                  (default: `{}`)
-   * @returns A Promise which resolves to the created Document, or null if the dialog was
-   *          closed.
-   */
-  static createDialog<T extends DocumentConstructor>(
-    this: T,
-    data?:
-      | DeepPartial<
-          | ConstructorDataType<InstanceType<T>["data"]>
-          | (ConstructorDataType<InstanceType<T>["data"]> & Record<string, unknown>)
-        >
-      | undefined,
-    context?: (Pick<DocumentModificationContext, "parent" | "pack"> & Partial<DialogOptions>) | undefined,
-  ): Promise<InstanceType<ConfiguredDocumentClass<T>> | null | undefined>;
-
-  /**
-   * Present a Dialog form to confirm deletion of this Document.
-   * @param options - Positioning and sizing options for the resulting dialog
-   *                  (default: `{}`)
-   * @returns A Promise which resolves to the deleted Document
-   */
-  deleteDialog(options?: Partial<DialogOptions> | undefined): Promise<this | false | null | undefined>;
-
-  /**
-   * Export document data to a JSON file which can be saved by the client and later imported into a different session.
-   * @param options - Additional options passed to the {@link ClientDocumentMixin#toCompendium} method
-   */
-  exportToJSON(options?: ClientDocumentMixin.CompendiumExportOptions): void;
-
-  /**
-   * A helper function to handle obtaining the relevant Document from dropped data provided via a DataTransfer event.
-   * The dropped data could have:
-   * 1. A compendium pack and entry id
-   * 2. A World Document _id
-   * 3. A data object explicitly provided
-   *
-   * @param data    - The data object extracted from a DataTransfer event
-   * @param options - Additional options which configure data retrieval
-   * @returns The Document data that should be handled by the drop handler
-   */
-  static fromDropData<T extends DocumentConstructor>(
-    this: T,
-    data: DropData<InstanceType<T>>,
-    options?: FromDropDataOptions,
-  ): Promise<InstanceType<ConfiguredDocumentClass<T>> | undefined>;
-
-  /**
-   * Update this Document using a provided JSON string.
-   * @param json - JSON data string
-   * @returns The updated Document
-   */
-  importFromJSON(json: string): Promise<this>;
-
-  /**
-   * Render an import dialog for updating the data related to this Document through an exported JSON file
-   */
-  importFromJSONDialog(): Promise<void>;
-
-  /**
-   * Transform the Document data to be stored in a Compendium pack.
-   * Remove any features of the data which are world-specific.
-   * This function is asynchronous in case any complex operations are required prior to exporting.
-   * @param pack    - A specific pack being exported to
-   * @param options - Additional options which modify how the document is converted
-   *                  (default: `{}`)
-   * @returns A data object of cleaned data suitable for compendium import
-   */
-  toCompendium(
-    pack?: CompendiumCollection<CompendiumCollection.Metadata> | null | undefined,
-    options?: ClientDocumentMixin.CompendiumExportOptions | undefined,
-  ): Omit<T["data"]["_source"], "_id" | "folder" | "permission"> & {
-    permission?: T["data"]["_source"]["permission"];
-  };
-
-  /**
-   * @deprecated since v9 - Use prepareEmbeddedDocuments instead.
-   */
-  prepareEmbeddedEntities(): void;
 }
 
-interface SortOptions<T> {
-  /**
-   * @defaultValue `[]`
-   */
-  siblings?: T[];
+declare global {
+  type ClientDocument = ReturnType<typeof ClientDocumentMixin>;
 
   /**
-   * @defaultValue `true`
+   * A mixin which extends each Document definition with specialized client-side behaviors.
+   * This mixin defines the client-side interface for database operations and common document behaviors.
    */
-  sortBefore?: boolean;
+  function ClientDocumentMixin<BaseClass extends DocumentConstructor>(
+    Base: BaseClass,
+  ): Mixin<typeof ClientDocument, BaseClass>;
 
-  /**
-   * @defaultValue `"sort"`
-   */
-  sortKey?: string;
+  namespace ClientDocument {
+    interface SortOptions<T, SortKey extends string = "sort"> extends SortingHelpers.SortOptions<T, SortKey> {
+      /**
+       * Additional data changes which are applied to each sorted document
+       * @defaultValue `{}`
+       */
+      updateData?: any;
+    }
 
-  /**
-   * @defaultValue `null`
-   */
-  target?: T | null;
+    // TODO: This may be better defined elsewhere
+    type lifeCycleEventName = "preCreate" | "onCreate" | "preUpdate" | "onUpdate" | "preDelete" | "onDelete";
 
-  /**
-   * @defaultValue `{}`
-   */
-  updateData?: any;
+    interface CompendiumExportOptions {
+      /**
+       * Clear the flags object
+       * @defaultValue `false`
+       */
+      clearFlags: boolean;
+
+      /**
+       * Clear any prior sourceId flag
+       * @defaultValue `true`
+       */
+      clearSource: boolean;
+
+      /**
+       * Clear the currently assigned folder and sort order
+       * @defaultValue `true`
+       */
+      clearSort: boolean;
+
+      /**
+       * Clear the currently assigned folder
+       * @defaultValue `false`
+       */
+      clearFolder: boolean;
+
+      /**
+       * Clear document ownership
+       * @defaultValue `true`
+       */
+      clearOwnership: boolean;
+
+      /**
+       * Clear fields which store document state
+       * @defaultValue `true`
+       */
+      clearState: boolean;
+
+      /**
+       * Retain the current Document id
+       * @defaultValue `false`
+       */
+      keepId: boolean;
+    }
+  }
 }
 
-export type DropData<T extends foundry.abstract.Document<any, any>> = DropData.Data<T> | DropData.Pack | DropData.Id;
+export type DropData<T extends foundry.abstract.Document<any, any>> = T extends { id: string | undefined }
+  ? DropData.Data<T> & DropData.UUID
+  : DropData.Data<T>;
 
 declare namespace DropData {
   interface Data<T extends foundry.abstract.Document<any, any>> {
-    data: T["data"]["_source"];
+    type: T["documentName"];
+    data: T["_source"];
   }
 
-  interface Pack {
-    pack: string;
-  }
-
-  interface Id {
-    id: string;
+  interface UUID {
+    uuid: string;
   }
 }
 

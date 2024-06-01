@@ -164,7 +164,7 @@ declare global {
     handlePing(
       user: InstanceType<ConfiguredDocumentClass<typeof User>>,
       position: PIXI.Point,
-      data?: User.PingData,
+      data?: PingData,
     ): Promise<boolean>;
 
     /**
@@ -234,19 +234,4 @@ declare global {
       zIndex: 1000;
     }
   }
-}
-
-declare namespace User {
-  /**
-   * TODO: Should be declared in client/data/documents/user
-   */
-  type PingData = {
-    pull: boolean;
-
-    style: string;
-
-    scene: string;
-
-    zoom: number;
-  };
 }

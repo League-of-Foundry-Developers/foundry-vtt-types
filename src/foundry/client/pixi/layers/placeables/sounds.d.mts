@@ -112,13 +112,18 @@ declare global {
      * @param event - The drag drop event
      * @param data  - The dropped transfer data.
      */
-    protected _onDropData(event: DragEvent, data: unknown): Promise<void>;
+    protected _onDropData(event: DragEvent, data: SoundsLayer.DropData): Promise<void>;
   }
 
   namespace SoundsLayer {
     interface LayerOptions extends PlaceablesLayer.LayerOptions<"AmbientSound"> {
       name: "sounds";
       zIndex: 300;
+    }
+
+    interface DropData extends Canvas.DropPosition {
+      type: "PlaylistSound";
+      uuid: string;
     }
   }
 }

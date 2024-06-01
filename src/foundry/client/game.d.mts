@@ -8,9 +8,6 @@ import type {
 } from "../../types/helperTypes.d.mts";
 import type { StoredDocument, ValueOf } from "../../types/utils.d.mts";
 
-// TODO: DataModels
-type World = unknown;
-type System = unknown;
 // TODO: Apps
 type ClientIssues = unknown;
 
@@ -26,7 +23,7 @@ declare global {
      * @param sessionId - The ID of the currently active client session retrieved from the browser cookie
      * @param socket    - The open web-socket which should be used to transact game-state data
      */
-    constructor(view: Game["view"], data: Game.ConstructorData, sessionId: Game["sessionId"], socket: Game["socket"]);
+    constructor(view: Game["view"], data: Game.Data, sessionId: Game["sessionId"], socket: Game["socket"]);
 
     /**
      * The named view which is currently active.
@@ -63,7 +60,7 @@ declare global {
      * A Map of active Modules which are currently eligible to be enabled in this World.
      * The subset of Modules which are designated as active are currently enabled.
      */
-    readonly modules: Game.ModuleMap;
+    readonly modules: Game.ModuleCollection;
 
     /**
      * A mapping of WorldCollection instances, one per primary Document type.
@@ -244,6 +241,14 @@ declare global {
      * Configure package data that is currently enabled for this world
      */
     setupPackages(data: Game.Data): void;
+
+    // Following three fields are initialized in setupPackages
+
+    documentTypes: Game.Data["documentTypes"];
+
+    template: Game.Data["template"];
+
+    model: Game.Data["model"];
 
     /**
      * Return the named scopes which can exist for packages.
@@ -526,102 +531,14 @@ declare global {
   }
 
   namespace Game {
-    interface Language {
-      lang: string;
-      name: string;
-      path: string;
-    }
-
-    interface PackageData<T> {
-      availability: number;
-      data: T;
-      esmodules: string[];
-      id: string;
-      languages: Language[];
-      locked: boolean;
-      packs: {
-        absPath: string;
-        /** @deprecated since V9 */
-        entity: foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
-        label: string;
-        name: string;
-        package: string;
-        path: string;
-        private: boolean;
-        system?: string;
-        type: foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
-      }[];
-      scripts: string[];
-      styles: string[];
-      type: "world" | "system" | "module";
-      unavailable: boolean;
-    }
-
-    interface ModuleData<T> extends PackageData<T> {
-      active: boolean;
-      path: string;
-      type: "module";
-    }
-
-    interface SystemData<T> extends PackageData<T> {
-      _systemUpdateCheckTime: number;
-      documentTypes: {
-        [Key in
-          | foundry.CONST.DOCUMENT_TYPES
-          | "ActiveEffect"
-          | "Adventure"
-          | "AmbientLight"
-          | "AmbientSound"
-          | "Card"
-          | "Combatant"
-          | "Drawing"
-          | "FogExploration"
-          | "MeasuredTemplate"
-          | "Note"
-          | "PlaylistSound"
-          | "Setting"
-          | "TableResult"
-          | "Tile"
-          | "Token"
-          | "Wall"]: string[];
-      };
-      model: {
-        Actor: Record<string, Record<string, unknown>>;
-        Card: Record<string, Record<string, unknown>>;
-        Cards: Record<string, Record<string, unknown>>;
-        Item: Record<string, Record<string, unknown>>;
-        JournalEntryPage: Record<string, Record<string, unknown>>;
-      };
-      path: string;
-      template: {
-        Actor?: {
-          types: string[];
-          templates?: Record<string, unknown>;
-        } & Record<string, unknown>;
-        Item?: {
-          types: string[];
-          templates?: Record<string, unknown>;
-        } & Record<string, unknown>;
-      };
-      type: "system";
-    }
-
-    interface WorldData<T> extends PackageData<T> {
-      _systemUpdateCheckTime: number;
-      type: "world";
-    }
-
-    // TODO: Rework after Module class is defined
-    interface ModuleMap extends Map<string, Game["data"]["modules"][number]> {
+    interface ModuleCollection extends Collection<Module> {
       /**
        * Gets the module requested for by ID
        * @see {@link ModuleConfig} to add custom properties to modules like APIs.
        * @see {@link RequiredModules} to remove `undefined` from the return type for a given module
        * @param id - The module ID to look up
        */
-      get<T extends string>(
-        id: T,
-      ): (Game["data"]["modules"][number] & ConfiguredModule<T>) | ModuleRequiredOrOptional<T>;
+      get<T extends string>(id: T): (Module & ConfiguredModule<T>) | Exclude<ModuleRequiredOrOptional<T>, undefined>;
     }
 
     type Data = {
@@ -655,8 +572,7 @@ declare global {
         } | null;
         storages: ("public" | "data" | "s3")[];
       };
-      // Todo: Update after data models
-      modules: ModuleData<foundry.packages.ModuleData>[];
+      modules: Module["_source"][];
       options: {
         language: string;
         port: number;
@@ -664,59 +580,35 @@ declare global {
         updateChannel: string;
       };
       packageWarnings: Record<string, unknown>;
-      packs: {
-        flags: Record<string, unknown>;
-        id: string;
-        label: string;
-        name: string;
-        ownership: Record<
-          ValueOf<typeof foundry.CONST.USER_ROLE_NAMES>,
-          keyof typeof foundry.CONST.DOCUMENT_PERMISSION_LEVELS
-        >;
-        packageName: string;
-        packageType: foundry.CONST.PACKAGE_TYPES;
-        path: string;
-        /** @deprecated since v11 */
-        private?: boolean;
-        system?: string;
-        type: foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
-      }[];
+      packs: Array<
+        PackageCompendiumData & {
+          /** @deprecated since v11 */
+          private?: boolean;
+          system?: string;
+          type: foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
+        }
+      >;
       paused: boolean;
-      // TODO: Update after DataModels to use ReleaseData
-      release: {
-        build: number;
-        channel: "Stable" | "Testing" | "Development" | "Prototype";
-        download: string | undefined;
-        generation: number;
-        maxGeneration?: number;
-        maxStableGeneration?: number;
-        node_version?: number;
-        notes: string | undefined;
-        time: number;
-      };
-      // TODO: Update after data models
-      system: SystemData<foundry.packages.SystemData>;
+      release: foundry.config.ReleaseData["_source"];
+      system: System["_source"];
       systemUpdate: {
         hasUpdate: boolean;
         version: string;
       };
       // TODO: I think this is only for configurable types
       template: Record<foundry.CONST.DOCUMENT_TYPES, DocumentTemplate>;
+      documentTypes: Record<foundry.CONST.DOCUMENT_TYPES, string[]>;
+      // TODO: This is also inheriting the configured types,
+      // but is only filled in if there's `template.json`
+      model: Record<foundry.CONST.DOCUMENT_TYPES, Record<string, object>>;
       userId: string;
-      // TODO: Update after data models
-      world: WorldData<foundry.packages.WorldData>;
+      world: World["_source"];
     } & {
       [DocumentType in
         | foundry.CONST.DOCUMENT_TYPES
         | "Setting" as ConfiguredDocumentClassForName<DocumentType>["metadata"]["collection"]]?: InstanceType<
         ConfiguredDocumentClassForName<DocumentType>
-      >["data"]["_source"][];
-    };
-
-    type ConstructorData = Omit<Data, "world" | "system" | "modules"> & {
-      world: WorldData<foundry.packages.WorldData["_source"]>;
-      system: SystemData<foundry.packages.SystemData["_source"]>;
-      modules: ModuleData<foundry.packages.ModuleData["_source"]>[];
+      >["_source"][];
     };
 
     type Permissions = {

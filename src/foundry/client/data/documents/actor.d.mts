@@ -1,21 +1,13 @@
-import type {
-  ConfiguredDocumentClass,
-  ConfiguredObjectClassForName,
-  DocumentConstructor,
-} from "../../../../types/helperTypes.d.mts";
-import type { DeepPartial } from "../../../../types/utils.d.mts";
+import type { ConfiguredDocumentClassForName, ConfiguredObjectClassForName } from "../../../../types/helperTypes.d.mts";
+import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
-import type EmbeddedCollection from "../../../common/abstract/embedded-collection.d.mts";
-import type { ActorDataConstructorData } from "../../../common/data/data.mjs/actorData.d.mts";
 
 declare global {
   /**
    * The client-side Actor document which extends the common BaseActor model.
-   * Each Actor document contains ActorData which defines its data schema.
    *
-   * @see {@link data.ActorData}              The Actor data schema
-   * @see {@link documents.Actors}            The world-level collection of Actor documents
-   * @see {@link applications.ActorSheet}     The Actor configuration application
+   * @see {@link Actors}            The world-level collection of Actor documents
+   * @see {@link ActorSheet}     The Actor configuration application
    *
    * @example <caption>Create a new Actor</caption>
    * ```typescript
@@ -32,20 +24,23 @@ declare global {
    * ```
    */
   class Actor extends ClientDocumentMixin(foundry.documents.BaseActor) {
+    protected override _configure(options?: { pack?: string | null } | undefined): void;
+
     /**
-     * @param data    - Initial data provided to construct the Actor document
-     * @param context - The document context, see {@link foundry.abstract.Document}
+     * Maintain a list of Token Documents that represent this Actor, stored by Scene.
      */
-    constructor(
-      data: ConstructorParameters<typeof foundry.documents.BaseActor>[0],
-      context?: ConstructorParameters<typeof foundry.documents.BaseActor>[1],
-    );
+    protected _dependentTokens: foundry.utils.IterableWeakMap<ConfiguredScene, ConfiguredTokenDocument>;
 
     /**
      * An object that tracks which tracks the changes to the data model which were applied by active effects
      * @defaultValue `{}`
      */
     overrides: Record<string, unknown>;
+
+    /**
+     * The statuses that are applied to this actor by active effects
+     */
+    statuses: Set<string>;
 
     /**
      * A cached array of image paths which can be used for this Actor's token.
@@ -61,26 +56,24 @@ declare global {
     protected _lastWildcard: string | null;
 
     /**
-     * A convenient reference to the file path of the Actor's profile image
-     */
-    get img(): this["data"]["img"];
-
-    /**
      * Provide a thumbnail image path used to represent this document.
      */
-    get thumbnail(): this["data"]["img"];
+    get thumbnail(): this["img"];
 
     /**
      * Provide an object which organizes all embedded Item instances by their type
      */
-    get itemTypes(): Record<
-      foundry.documents.BaseItem["data"]["type"],
-      Array<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseItem>>>
-    >;
+    // TODO: Rework to use the mappings
+    get itemTypes(): Record<foundry.documents.BaseItem["type"], ConfiguredItem>;
     /**
      * Test whether an Actor document is a synthetic representation of a Token (if true) or a full Document (if false)
      */
     get isToken(): boolean;
+
+    /**
+     * Retrieve the list of ActiveEffects that are currently applied to this Actor.
+     */
+    get appliedEffects(): ConfiguredActiveEffect[];
 
     /**
      * An array of ActiveEffect instances which are present on the Actor which have a limited duration.
@@ -90,9 +83,12 @@ declare global {
     /**
      * Return a reference to the TokenDocument which owns this Actor as a synthetic override
      */
-    get token(): InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseToken>> | null;
+    get token(): ConfiguredTokenDocument | null;
 
-    override get uuid(): string;
+    /**
+     * Whether the Actor has at least one Combatant in the active Combat that represents it.
+     */
+    get inCombat(): boolean;
 
     /**
      * Apply any transformations to the Actor data which are caused by ActiveEffects.
@@ -104,21 +100,23 @@ declare global {
      * If the canvas is not currently active, or there are no linked actors, the returned Array will be empty.
      * If the Actor is a synthetic token actor, only the exact Token which it represents will be returned.
      *
-     * @param linked   - Limit results to Tokens which are linked to the Actor. Otherwise return all Tokens even those which are not linked. (default: `false`)
+     * @param linked   - Limit results to Tokens which are linked to the Actor. Otherwise return all
+     *                   Tokens even those which are not linked. (default: `false`)
      * @param document - Return the Document instance rather than the PlaceableObject (default: `false`)
      * @returns An array of Token instances in the current Scene which reference this Actor.
      */
-    getActiveTokens(
-      linked: boolean,
-      document: true,
-    ): InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseToken>>[];
-    getActiveTokens(linked?: boolean, document?: false): InstanceType<ConfiguredObjectClassForName<"Token">>[];
-    getActiveTokens(
-      linked: boolean,
-      document: boolean,
-    ):
-      | InstanceType<ConfiguredObjectClassForName<"Token">>[]
-      | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseToken>>[];
+    getActiveToken<ReturnDocument extends boolean = false>(
+      linked?: boolean,
+      document?: ReturnDocument,
+    ): ReturnDocument extends true ? ConfiguredTokenDocument[] : InstanceType<ConfiguredObjectClassForName<"Token">>[];
+
+    /**
+     * Get all ActiveEffects that may apply to this Actor.
+     * If CONFIG.ActiveEffect.legacyTransferral is true, this is equivalent to actor.effects.contents.
+     * If CONFIG.ActiveEffect.legacyTransferral is false, this will also return all the transferred ActiveEffects on any
+     * of the Actor's owned Items.
+     */
+    allApplicableEffects(): Generator<ConfiguredActiveEffect>;
 
     /**
      * Prepare a data object which defines the data schema used by dice roll commands against this Actor
@@ -130,7 +128,7 @@ declare global {
      * @param data - Additional data, such as x, y, rotation, etc. for the created token data (default: `{}`)
      * @returns The created TokenData instance
      */
-    getTokenData(data?: object): Promise<foundry.data.TokenData>;
+    getTokenDocument(data?: foundry.documents.BaseToken.ConstructorData): Promise<ConfiguredTokenDocument>;
 
     /**
      * Get an Array of Token images which could represent this Actor
@@ -160,52 +158,122 @@ declare global {
      */
     rollInitiative(options?: Actor.RollInitiativeOptions): Promise<void>;
 
-    override getEmbeddedCollection(
-      embeddedName: string,
-    ): EmbeddedCollection<DocumentConstructor, foundry.data.ActorData>;
+    /**
+     * Request wildcard token images from the server and return them.
+     * @param actorId - The actor whose prototype token contains the wildcard image path.
+     * @internal
+     */
+    protected static _requestTokenImages(
+      actorId: string,
+      options?: {
+        /** The name of the compendium the actor is in. */
+        pack: string;
+      },
+    ): Promise<string[]>;
+
+    /**
+     * Get this actor's dependent tokens.
+     * If the actor is a synthetic token actor, only the exact Token which it represents will be returned.
+     */
+    getDependentTokens(
+      options?: InexactPartial<{
+        /**
+         * A single Scene, or list of Scenes to filter by.
+         */
+        scenes: Scene | Scene[];
+        /**
+         * Limit the results to tokens that are linked to the actor.
+         * @defaultValue `false`
+         */
+        linked: boolean;
+      }>,
+    ): ConfiguredTokenDocument[];
+
+    /**
+     * Register a token as a dependent of this actor.
+     * @param token - The Token
+     */
+    protected _registerDependantToken(token: TokenDocument): void;
+
+    /**
+     * Remove a token from this actor's dependents.
+     * @param token - The Token
+     */
+    protected _unregisterDependentToken(token: TokenDocument): void;
+
+    /**
+     * Prune a whole scene from this actor's dependent tokens.
+     * @param scene - The scene
+     */
+    protected _unregisterDependentScene(scene: Scene): void;
 
     protected override _preCreate(
-      data: ActorDataConstructorData,
+      data: foundry.documents.BaseActor.ConstructorData,
       options: DocumentModificationOptions,
       user: foundry.documents.BaseUser,
     ): Promise<void>;
 
+    /**
+     * When an Actor is being created, apply default token configuration settings to its prototype token.
+     * @param data    - Data explicitly provided to the creation workflow
+     * @param options - Options which configure creation
+     */
+    protected _applyDefaultTokenSettings(
+      data: foundry.documents.BaseActor.ConstructorData,
+      options: InexactPartial<{
+        /**
+         * Does this creation workflow originate via compendium import?
+         * @defaultValue `false`
+         */
+        fromCompendium: boolean;
+      }>,
+    ): ReturnType<this["updateSource"]>;
+
     protected override _onUpdate(
-      changed: DeepPartial<foundry.data.ActorData["_source"]>,
+      changed: DeepPartial<Actor["_source"]>,
       options: DocumentModificationOptions,
       user: string,
     ): void;
 
-    protected override _onCreateEmbeddedDocuments(
-      embeddedName: string,
-      documents: foundry.abstract.Document<any, any>[],
-      result: Record<string, unknown>[],
+    protected override _onCreateDescendantDocuments(
+      parent: ClientDocument,
+      collection: string,
+      documents: ClientDocument[],
+      data: unknown[],
       options: DocumentModificationOptions,
       userId: string,
     ): void;
 
-    protected override _onUpdateEmbeddedDocuments(
-      embeddedName: string,
-      documents: foundry.abstract.Document<any, any>[],
-      result: Record<string, unknown>[],
+    protected override _onUpdateDescendantDocuments(
+      parent: ClientDocument,
+      collection: string,
+      documents: ClientDocument[],
+      changes: unknown[],
       options: DocumentModificationOptions,
       userId: string,
     ): void;
 
-    protected override _onDeleteEmbeddedDocuments(
-      embeddedName: string,
-      documents: foundry.abstract.Document<any, any>[],
-      result: string[],
-      options: DocumentModificationContext,
+    protected override _onDeleteDescendantDocuments(
+      parent: ClientDocument,
+      collection: string,
+      documents: ClientDocument[],
+      ids: string,
+      options: DocumentModificationOptions,
       userId: string,
     ): void;
 
     /**
-     * Perform various actions on active tokens if embedded documents were changed.
-     * @param embeddedName - The type of embedded document that was modified.
+     * Additional workflows to perform when any descendant document within this Actor changes.
      * @internal
      */
-    protected _onEmbeddedDocumentChange(embeddedName: string): void;
+    protected _onEmbeddedDocumentChange(): void;
+
+    /**
+     * Update the active TokenDocument instances which represent this Actor.
+     * @param update  - The update delta.
+     * @param options - The update context.
+     */
+    _updateDependentTokens(update: DeepPartial<TokenDocument["_source"]>, options: DocumentModificationContext): void;
   }
   namespace Actor {
     interface RollInitiativeOptions {
@@ -224,9 +292,15 @@ declare global {
       /**
        * Additional options passed to the Combat#rollInitiative method.
        * @defaultValue `{}`
-       * TODO: Solve once Combat is more fleshed out. @see Combat#rollInitiative
        */
-      initiativeOptions?: object;
+      initiativeOptions?: Combat.InitiativeOptions;
     }
   }
 }
+
+type ConfiguredScene = InstanceType<ConfiguredDocumentClassForName<"Scene">>;
+type ConfiguredTokenDocument = InstanceType<ConfiguredDocumentClassForName<"Token">>;
+
+// TODO: Figure out the type names handling
+type ConfiguredItem = InstanceType<ConfiguredDocumentClassForName<"Item">>;
+type ConfiguredActiveEffect = InstanceType<ConfiguredDocumentClassForName<"ActiveEffect">>;

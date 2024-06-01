@@ -4,32 +4,35 @@ import type { DocumentModificationOptions } from "../../../common/abstract/docum
 declare global {
   /**
    * The client-side Setting document which extends the common BaseSetting model.
-   * Each Setting document contains SettingData which defines its data schema.
-
-   * @see {@link data.SettingData}              The Setting data schema
-   * @see {@link documents.WorldSettings}       The world-level collection of Setting documents
+   *
+   * @see {@link WorldSettings}       The world-level collection of Setting documents
    */
   class Setting extends ClientDocumentMixin(foundry.documents.BaseSetting) {
     /**
-     * A convenient alias to the key attribute of the setting data
+     * The setting configuration for this setting document.
      */
-    get key(): string;
+    get config(): SettingsConfig | undefined;
 
-    /**
-     * A convenient alias to the parsed value attribute of the setting data.
-     */
-    get value(): unknown;
+    protected _initialize(options?: any): void;
+    protected _initialize(): void;
 
     protected override _onCreate(
-      data: foundry.data.SettingData["_source"],
+      data: foundry.documents.BaseSetting.ConstructorData,
       options: DocumentModificationOptions,
       userId: string,
     ): void;
 
     protected _onUpdate(
-      changed: DeepPartial<foundry.data.SettingData["_source"]>,
+      changed: DeepPartial<Setting["_source"]>,
       options: DocumentModificationOptions,
       userId: string,
     ): void;
+
+    /**
+     * Cast the value of the Setting into its defined type.
+     * @returns The initialized type of the Setting document.
+     */
+    // TODO: This could probably be derived
+    _castType(): any;
   }
 }

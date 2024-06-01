@@ -10,7 +10,7 @@ declare global {
    * @see {@link CombatTracker} The CombatTracker sidebar directory
    */
   class CombatEncounters extends WorldCollection<typeof foundry.documents.BaseCombat, "CombatEncounters"> {
-    static override documentName: "Combat";
+    static documentName: "Combat";
 
     /**
      * Provide the settings object which configures the Combat document

@@ -2,8 +2,8 @@ import * as _abstract from "./abstract/module.mts";
 import * as _config from "./config.mjs/index.mts";
 import * as _CONST from "./constants.mts";
 import * as _data from "./data/module.mts";
-import * as _documents from "./documents.mjs/index.mts";
-import * as _packages from "./packages.mjs/index.mts";
+import * as _documents from "./documents/module.mts";
+import * as _packages from "./packages/module";
 import "./primitives/module.d.mts";
 import "./types.d.mts";
 import * as _utils from "./utils/module.mts";
@@ -26,12 +26,12 @@ export type * as data from "./data/module.d.mts";
 /**
  * Document definitions used throughout the Foundry Virtual Tabletop framework.
  */
-export type * as documents from "./documents.mjs/index.d.mts";
+export type * as documents from "./documents/module.d.mts";
 
 /**
  * Package data definitions, validations, and schema
  */
-export type * as packages from "./packages.mjs/index.d.mts";
+export type * as packages from "./packages/module";
 
 /**
  * Utility functions providing helpful functionality.

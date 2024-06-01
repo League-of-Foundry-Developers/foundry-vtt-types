@@ -1,6 +1,5 @@
 import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, StoredDocument } from "../../../../types/utils.d.mts";
-import type { SceneDataConstructorData } from "../../../common/data/data.mjs/sceneData.d.mts";
 
 declare global {
   /**
@@ -12,12 +11,10 @@ declare global {
    */
   class Playlists extends WorldCollection<typeof foundry.documents.BasePlaylist, "Playlists"> {
     constructor(
-      data?: StoredDocument<
-        InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BasePlaylist>>
-      >["data"]["_source"][],
+      data?: StoredDocument<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BasePlaylist>>>["_source"][],
     );
 
-    static override documentName: "Playlist";
+    static documentName: "Playlist";
 
     /**
      * Return the subset of Playlist documents which are currently playing
@@ -36,7 +33,7 @@ declare global {
      */
     protected _onChangeScene(
       scene: StoredDocument<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseScene>>>,
-      data: DeepPartial<SceneDataConstructorData>,
+      data: DeepPartial<Scene["_source"]>,
     ): Promise<void>;
   }
 }

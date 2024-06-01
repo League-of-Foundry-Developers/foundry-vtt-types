@@ -1,5 +1,4 @@
 import { assertType, expectTypeOf } from "vitest";
-import type * as data from "../../../../../src/foundry/common/data/data.mjs/index.d.mts";
 
 const doc = new AmbientLightDocument();
 
@@ -12,7 +11,6 @@ expectTypeOf(doc.isGlobal).toEqualTypeOf<boolean>(); // class itself
 
 // Test the inheritance of static members
 expectTypeOf(AmbientLightDocument.documentName).toEqualTypeOf<string>(); // Document
-expectTypeOf(AmbientLightDocument.schema).toEqualTypeOf<typeof data.AmbientLightData>(); // Base-Document
 expectTypeOf(AmbientLightDocument.createDialog()).toEqualTypeOf<Promise<AmbientLightDocument | null | undefined>>(); // ClientDocumentMixin
 
 // Test the props

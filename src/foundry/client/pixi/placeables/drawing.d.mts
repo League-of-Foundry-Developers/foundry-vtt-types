@@ -1,17 +1,15 @@
-import type { ConfiguredDocumentClass, ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
-import type { DeepPartial } from "../../../../types/utils.d.mts";
+import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
+import type { DeepPartial, ValueOf } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 export {};
-
 declare global {
   /**
    * The Drawing object is an implementation of the PlaceableObject container.
    * Each Drawing is a placeable object in the DrawingsLayer.
    */
-  // TODO: Replace `any` with `InstanceType<ConfiguredDocumentClass<typeof DrawingDocument>>`
-  class Drawing extends PlaceableObject<any> {
-    constructor(document: InstanceType<ConfiguredDocumentClass<typeof DrawingDocument>>);
+  class Drawing extends PlaceableObject<InstanceType<ConfiguredDocumentClassForName<"Drawing">>> {
+    constructor(document: InstanceType<ConfiguredDocumentClassForName<"Drawing">>);
 
     /**
      * Each Drawing object belongs to the DrawingsLayer
@@ -74,9 +72,8 @@ declare global {
 
     /**
      * A convenience reference to the possible shape types.
-     * TODO: Replace post-data model with the static enum reference
      */
-    static readonly SHAPE_TYPES: Record<string, string>; // (typeof foundry.data.ShapeData)["TYPES"]
+    static readonly SHAPE_TYPES: (typeof foundry.data.ShapeData)["TYPES"];
 
     override get bounds(): Rectangle;
 
@@ -99,9 +96,8 @@ declare global {
 
     /**
      * The shape type that this Drawing represents. A value in Drawing.SHAPE_TYPES.
-     * TODO: Replace post-data model with the static enum reference
      */
-    get type(): string; // ValueOf<(typeof foundry.data.ShapeData)["TYPES"]>
+    get type(): ValueOf<(typeof foundry.data.ShapeData)["TYPES"]>;
 
     override clear(): this;
 
@@ -163,8 +159,7 @@ declare global {
 
     protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
 
-    // TODO: Replace after data model
-    protected override _onUpdate(data: DeepPartial<foundry.data.DrawingData["_source"]>): void;
+    protected override _onUpdate(data: DeepPartial<foundry.documents.BaseDrawing["_source"]>): void;
 
     override activateListeners(): void;
 
@@ -234,7 +229,7 @@ declare global {
      */
     protected _onHandleDragDrop(
       event: PIXI.FederatedEvent,
-    ): ReturnType<InstanceType<ConfiguredDocumentClass<typeof DrawingDocument>>["update"]>;
+    ): ReturnType<InstanceType<ConfiguredDocumentClassForName<"Drawing">>["update"]>;
 
     /**
      * Handle cancellation of a drag event for one of the resizing handles
@@ -250,11 +245,7 @@ declare global {
      * @returns The adjusted shape data
      * @internal
      */
-    protected _rescaleDimensions(
-      original: Pick<foundry.data.DrawingData["_source"], "x" | "y" | "points" | "width" | "height">,
-      dx: number,
-      dy: number,
-    ): Pick<foundry.data.DrawingData["_source"], "x" | "y" | "width" | "height" | "points">;
+    static rescaleDimensions(original: Drawing.AdjustableShape, dx: number, dy: number): Drawing.AdjustableShape;
 
     /**
      * Adjust the location, dimensions, and points of the Drawing before committing the change
@@ -263,9 +254,7 @@ declare global {
      * @remarks This is intentionally public because it is called by the DrawingsLayer
      * @internal
      */
-    static normalizeShape(
-      data: Pick<foundry.data.DrawingData["_source"], "x" | "y" | "width" | "height" | "points">,
-    ): Pick<foundry.data.DrawingData["_source"], "x" | "y" | "width" | "height" | "points">;
+    static normalizeShape(data: Drawing.AdjustableShape): Drawing.AdjustableShape;
 
     /**
      * @remarks Not used
@@ -288,6 +277,16 @@ declare global {
       forceTextEditing?: boolean;
 
       isNew?: boolean;
+    }
+
+    interface AdjustableShape {
+      shape: {
+        width: number;
+        height: number;
+        points: Point[];
+      };
+      x: number;
+      y: number;
     }
   }
 }

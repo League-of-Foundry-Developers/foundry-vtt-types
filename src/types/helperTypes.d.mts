@@ -1,49 +1,17 @@
-import type DocumentData from "../foundry/common/abstract/data.d.mts";
-import type { AnyDocumentData } from "../foundry/common/abstract/data.d.mts";
 import type Document from "../foundry/common/abstract/document.d.mts";
-import type EmbeddedCollection from "../foundry/common/abstract/embedded-collection.d.mts";
 import type { DeepPartial } from "./utils.d.mts";
-
-export type PropertiesDataType<T extends Document<any, any> | AnyDocumentData> =
-  T extends DocumentData<any, infer U, any, any> ? U : T extends Document<infer U, any> ? PropertiesDataType<U> : never;
-
-type PropertyTypeToSourceType<T> =
-  T extends EmbeddedCollection<infer U, any>
-    ? SourceDataType<InstanceType<U>>[]
-    : T extends Array<infer U>
-      ? Array<PropertyTypeToSourceType<U>>
-      : T extends AnyDocumentData
-        ? SourceDataType<T>
-        : T;
-
-export type PropertiesToSource<T extends object> = {
-  [Key in keyof T]: PropertyTypeToSourceType<T[Key]>;
-};
-
-type SourceDataType<T extends Document<any, any> | AnyDocumentData> =
-  T extends DocumentData<any, any, infer U, any, any>
-    ? U
-    : T extends Document<infer U, any>
-      ? SourceDataType<U>
-      : never;
 
 /**
  * Returns the type of the constructor data for the given {@link DocumentData}.
  */
-export type ConstructorDataType<T extends AnyDocumentData> = T["_initializeSource"] extends (data: infer U) => any
-  ? U
-  : never;
+export type ConstructorDataType<T extends DocumentConstructor> = foundry.data.fields.SchemaField.InnerAssignmentType<
+  ReturnType<T["defineSchema"]>
+>;
 
 type ObjectToDeepPartial<T> = T extends object ? DeepPartial<T> : T;
 
-export type PropertyTypeToSourceParameterType<T> = ObjectToDeepPartial<PropertyTypeToSourceType<T>>;
-
-// TODO: Find a way to avoid this helper
-export type FieldReturnType<T extends DocumentField<any>, U extends Partial<DocumentField<any>>> = Omit<T, keyof U> &
-  Exclude<U, "undefined">;
-
 export type DocumentConstructor = Pick<typeof Document, keyof typeof Document> &
-  (new (...args: any[]) => Document<any, any>);
+  (new (...args: any[]) => Document<any, any, any>);
 
 export type PlaceableObjectConstructor = Pick<typeof PlaceableObject, keyof typeof PlaceableObject> &
   (new (...args: any[]) => PlaceableObject<any>);
@@ -54,6 +22,7 @@ export type ConfiguredDocumentClass<T extends DocumentConstructor> = ConfiguredD
 
 export type DocumentType =
   | "Actor"
+  | "ActorDelta"
   | "Adventure"
   | "Cards"
   | "ChatMessage"
@@ -62,6 +31,7 @@ export type DocumentType =
   | "Folder"
   | "Item"
   | "JournalEntry"
+  | "JournalEntryPage"
   | "Macro"
   | "Playlist"
   | "RollTable"
@@ -92,10 +62,18 @@ export type PlaceableDocumentType =
   | "Token"
   | "Wall";
 
+// TODO: Probably a way to auto-determine this
+type DocumentTypeWithTypeData = "Actor" | "Card" | "Cards" | "Item" | "JournalEntryPage";
+
+/**
+ * Actual document types that go in folders
+ */
+export type FolderDocumentTypes = Exclude<foundry.CONST.FOLDER_DOCUMENT_TYPES, "Compendium">;
+
 export type DocumentSubTypes<T extends DocumentType> = "type" extends keyof InstanceType<
   ConfiguredDocumentClassForName<T>
->["data"]
-  ? InstanceType<ConfiguredDocumentClassForName<T>>["data"]["type"]
+>
+  ? InstanceType<ConfiguredDocumentClassForName<T>>["type"]
   : typeof foundry.CONST.BASE_DOCUMENT_TYPE;
 
 export type ConfiguredDocumentClassForName<Name extends DocumentType> = CONFIG[Name]["documentClass"];
@@ -146,6 +124,3 @@ export type LayerClass<T extends DocumentConstructor> = T["metadata"]["name"] ex
     ? CONFIG[T["metadata"]["name"]]["layerClass"]
     : never
   : T;
-
-export type DataSourceForPlaceable<P extends PlaceableObject> =
-  P extends PlaceableObject<infer Doc> ? (Doc extends Document<infer D, any> ? D["_source"] : never) : never;

@@ -14,7 +14,7 @@ declare global {
    * @see TokenDocument
    * @see TokenLayer
    */
-  class Token extends PlaceableObject<InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>> {
+  class Token extends PlaceableObject<ConfiguredTokenDocument> {
     static override embeddedName: "Token";
 
     static override RENDER_FLAGS: {
@@ -172,7 +172,7 @@ declare global {
     /**
      * Return a reference to a Combatant that represents this Token, if one is present in the current encounter.
      */
-    get combatant(): InstanceType<ConfiguredDocumentClass<typeof Combatant>> | null;
+    get combatant(): InstanceType<ConfiguredDocumentClassForName<"Combatant">> | null;
 
     /**
      * An indicator for whether the Token is currently targeted by the active game User
@@ -424,7 +424,7 @@ declare global {
         origin: Point;
 
         /** @defaultValue `"move"` */
-        type: Token.SourceType;
+        type: Exclude<Token.SourceType, "Sound">;
 
         /** @defaultValue `"any"` */
         mode: PointSourcePolygon.CollisionModes;
@@ -478,7 +478,7 @@ declare global {
      * @param combat - A specific combat encounter to which this Token should be added
      * @returns The Token which initiated the toggle
      */
-    toggleCombat(combat?: InstanceType<ConfiguredDocumentClass<typeof Combat>>): Promise<this>;
+    toggleCombat(combat?: InstanceType<ConfiguredDocumentClassForName<"Combat">>): Promise<this>;
 
     /**
      * Toggle an active effect by its texture path.
@@ -498,7 +498,7 @@ declare global {
      * Toggle the visibility state of any Tokens in the currently selected set
      * @returns A Promise which resolves to the updated Token documents
      */
-    toggleVisibility(): Promise<InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>[]>;
+    toggleVisibility(): Promise<ConfiguredTokenDocument[]>;
 
     /**
      * The external radius of the token in pixels.
@@ -516,12 +516,14 @@ declare global {
 
     protected override _getShiftedPosition(dx: number, dy: number): { x: number; y: number };
 
-    // TODO: Fix after Token is all cleaned up
-    protected override _onCreate(data: unknown, options: unknown, userId: string): void;
+    protected override _onCreate(
+      data: ConfiguredTokenDocument["_source"],
+      options: DocumentModificationOptions,
+      userId: string,
+    ): void;
 
-    // TODO: Fix after Token is all cleaned up
     protected override _onUpdate(
-      data?: DeepPartial<InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>["data"]["_source"]>,
+      data?: DeepPartial<ConfiguredTokenDocument["_source"]>,
       options?: DocumentModificationOptions & { animate?: boolean },
       userId?: string,
     ): void;
@@ -540,7 +542,7 @@ declare global {
 
     protected override _onRelease(
       options: PlaceableObject.ReleaseOptions,
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>> | undefined;
+    ): Promise<ConfiguredTokenDocument> | undefined;
 
     protected override _canControl(
       user?: InstanceType<ConfiguredDocumentClass<typeof User>>,
@@ -701,7 +703,6 @@ declare global {
       };
     };
 
-    // TODO: Determine if there are other source types
     type SourceType = "move" | "sight" | "light" | "sound";
 
     interface Bar {
@@ -850,3 +851,5 @@ declare global {
    */
   let _token: InstanceType<ConfiguredObjectClassForName<"Token">> | null;
 }
+
+type ConfiguredTokenDocument = InstanceType<ConfiguredDocumentClassForName<"Token">>;

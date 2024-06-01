@@ -217,13 +217,13 @@ declare global {
     protected _getWallColor(): number;
 
     protected override _onCreate(
-      data: foundry.data.WallData["_source"],
+      data: foundry.documents.BaseWall["_source"],
       options: DocumentModificationOptions,
       userId: string,
     ): void;
 
     protected override _onUpdate(
-      changed: DeepPartial<foundry.data.WallData["_source"]>,
+      changed: DeepPartial<foundry.documents.BaseWall["_source"]>,
       options?: DocumentModificationOptions,
       userId?: string,
     ): void;

@@ -1,46 +1,27 @@
 import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
-import type { ConstructorOf, StoredDocument } from "../../../../types/utils.d.mts";
-import type { RequestOptions } from "../../../common/abstract/backend.d.mts";
+import type { DeepPartial, StoredDocument } from "../../../../types/utils.d.mts";
+import type { RequestContext, RequestOptions } from "../../../common/abstract/backend.d.mts";
+import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
+import type { SchemaField } from "../../../common/data/fields.d.mts";
+import type BaseFogExploration from "../../../common/documents/fog-exploration.d.mts";
 
 declare global {
   /**
    * The client-side FogExploration document which extends the common BaseFogExploration model.
-   * Each FogExploration document contains FogExplorationData which defines its data schema.
-   *
-   * @see {@link data.FogExplorationData} The FogExploration data schema
    */
+  //@ts-expect-error Foundry turned a synchronous static function into async, fixed in v12
   class FogExploration extends ClientDocumentMixin(foundry.documents.BaseFogExploration) {
-    /**
-     * @param data - Initial data provided to construct the FogExploration document
-     *               (default: `{}`)
-     */
-    constructor(
-      data?: ConstructorParameters<ConstructorOf<foundry.documents.BaseFogExploration>>[0],
-      context?: ConstructorParameters<ConstructorOf<foundry.documents.BaseFogExploration>>[1],
-    );
-
-    /**
-     * Explore fog of war for a new point source position.
-     * @param source - The candidate source of exploration
-     * @param force  - Force the position to be re-explored
-     *                 (default: `false`)
-     * @returns Is the source position newly explored?
-     */
-    explore(source: PointSource, force?: boolean): boolean;
-
     /**
      * Obtain the fog of war exploration progress for a specific Scene and User.
      * @param options - (default: `{}`)
      */
     static get(
-      {
-        scene,
-        user,
-      }?: {
-        scene?: InstanceType<ConfiguredDocumentClass<typeof Scene>>;
-        user?: InstanceType<ConfiguredDocumentClass<typeof User>>;
+      query?: {
+        scene?: Scene;
+        user?: User;
+        options?: RequestContext<FogExploration>;
       },
-      options?: RequestOptions,
+      options?: RequestOptions, //@ts-expect-error Foundry turned a synchronous static function into async
     ): Promise<StoredDocument<InstanceType<ConfiguredDocumentClass<typeof FogExploration>>> | null>;
 
     /**
@@ -48,16 +29,29 @@ declare global {
      */
     getTexture(): PIXI.Texture | null;
 
-    /**
-     * Open Socket listeners which transact JournalEntry data
-     * @internal
-     */
-    static _activateSocketListeners(socket: io.Socket): void;
+    // TODO: Unsure if still need the any
+    protected _onCreate(
+      data: SchemaField.InnerPersistedType<BaseFogExploration.Schema>,
+      options: DocumentModificationOptions,
+      userId: string,
+    ): void;
+    protected _onCreate(
+      data: Readonly<SchemaField.InnerPersistedType<any>>,
+      options: DocumentModificationOptions,
+      userId: string,
+    ): void;
 
-    /**
-     * Handle a request from the server to reset fog of war for a particular scene.
-     * @internal
-     */
-    protected static _onResetFog(sceneId: string): void | Promise<void>;
+    protected _onUpdate(
+      changed: DeepPartial<SchemaField.InnerPersistedType<BaseFogExploration.Schema>>,
+      options: DocumentModificationOptions,
+      userId: string,
+    ): void;
+    protected _onUpdate(
+      data: DeepPartial<Readonly<SchemaField.InnerPersistedType<any>>>,
+      options: DocumentModificationOptions,
+      userId: string,
+    ): void;
+
+    protected _onDelete(options: DocumentModificationOptions, userId: string): void;
   }
 }

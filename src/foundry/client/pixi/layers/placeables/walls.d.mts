@@ -69,6 +69,7 @@ declare global {
      *  zIndex: 40
      * })
      * ```
+     * @remarks The TODO is foundry internal
      */
     static override get layerOptions(): WallsLayer.LayerOptions;
 

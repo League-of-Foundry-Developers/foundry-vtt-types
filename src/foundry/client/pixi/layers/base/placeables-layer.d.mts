@@ -1,8 +1,6 @@
 import type {
   ConfiguredDocumentClassForName,
   ConfiguredObjectClassForName,
-  ConstructorDataType,
-  DataSourceForPlaceable,
   PlaceableDocumentType,
 } from "../../../../../types/helperTypes.d.mts";
 import type { ConstructorOf, InexactPartial, ValueOf } from "../../../../../types/utils.d.mts";
@@ -35,9 +33,7 @@ declare global {
     /**
      * Keep track of history so that CTRL+Z can undo changes
      */
-    history: Array<
-      CanvasHistory<ConcretePlaceableOrPlaceableObject<InstanceType<ConfiguredObjectClassForName<DocumentName>>>>
-    >;
+    history: Array<CanvasHistory<DocumentName>>;
 
     /**
      * Keep track of an object copied with CTRL+C which can be pasted later
@@ -79,8 +75,8 @@ declare global {
      * Obtain a reference to the Collection of embedded Document instances within the currently viewed Scene
      */
     get documentCollection(): EmbeddedCollection<
-      ConfiguredDocumentClassForName<DocumentName>,
-      foundry.data.SceneData
+      InstanceType<ConfiguredDocumentClassForName<DocumentName>>,
+      InstanceType<ConfiguredDocumentClassForName<"Scene">>
     > | null;
 
     /**
@@ -238,9 +234,7 @@ declare global {
      */
     storeHistory(
       type: PlaceablesLayer.HistoryEventType,
-      data: DataSourceForPlaceable<
-        ConcretePlaceableOrPlaceableObject<InstanceType<ConfiguredObjectClassForName<DocumentName>>>
-      >,
+      data: InstanceType<ConfiguredDocumentClassForName<DocumentName>>["_source"],
     ): void;
 
     /**
@@ -327,16 +321,8 @@ declare global {
       transformation:
         | ((
             placeable: InstanceType<ConfiguredObjectClassForName<DocumentName>>,
-          ) => Partial<
-            DataSourceForPlaceable<
-              ConcretePlaceableOrPlaceableObject<InstanceType<ConfiguredObjectClassForName<DocumentName>>>
-            >
-          >)
-        | Partial<
-            DataSourceForPlaceable<
-              ConcretePlaceableOrPlaceableObject<InstanceType<ConfiguredObjectClassForName<DocumentName>>>
-            >
-          >,
+          ) => Partial<InstanceType<ConfiguredDocumentClassForName<DocumentName>>["_source"]>)
+        | Partial<InstanceType<ConfiguredDocumentClassForName<DocumentName>>["_source"]>,
       condition?: ((placeable: InstanceType<ConfiguredObjectClassForName<DocumentName>>) => boolean) | null,
       options?: DocumentModificationContext,
     ): Promise<Array<InstanceType<ConfiguredDocumentClassForName<DocumentName>>>>;
@@ -363,7 +349,7 @@ declare global {
      * @returns The created preview object
      */
     protected _createPreview(
-      createData: ConstructorDataType<InstanceType<ConfiguredDocumentClassForName<DocumentName>>["data"]>,
+      createData: InstanceType<ConfiguredDocumentClassForName<DocumentName>>["_source"],
       options: {
         /**
          * Render the preview object config sheet?
@@ -417,7 +403,7 @@ declare global {
     set _highlight(state);
   }
 
-  interface CanvasHistory<Placeable extends PlaceableObject> {
+  interface CanvasHistory<DocumentName extends PlaceableDocumentType> {
     /**
      * The type of operation stored as history (create, update, delete)
      */
@@ -426,7 +412,7 @@ declare global {
     /**
      * The data corresponding to the action which may later be un-done
      */
-    data: DataSourceForPlaceable<Placeable>[];
+    data: InstanceType<ConfiguredDocumentClassForName<DocumentName>>["_source"][];
   }
 
   namespace PlaceablesLayer {

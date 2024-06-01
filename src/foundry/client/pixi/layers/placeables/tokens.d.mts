@@ -1,9 +1,4 @@
-import type {
-  ConfiguredDocumentClass,
-  ConfiguredObjectClassForName,
-  PropertiesToSource,
-} from "../../../../../types/helperTypes.d.mts";
-import type { TokenDataProperties } from "../../../../common/data/data.mjs/tokenData.d.mts";
+import type { ConfiguredDocumentClassForName } from "../../../../../types/helperTypes.d.mts";
 
 declare global {
   /**
@@ -102,7 +97,7 @@ declare global {
      * @param reset    - Restart the cycle order back at the beginning?
      * @returns The Token object which was cycled to, or null
      */
-    cycleTokens(forwards: boolean, reset: boolean): InstanceType<ConfiguredObjectClassForName<"Token">> | null;
+    cycleTokens(forwards: boolean, reset: boolean): ConfiguredTokenDocument | null;
 
     /**
      * Add or remove the set of currently controlled Tokens from the active combat encounter
@@ -114,7 +109,7 @@ declare global {
      */
     toggleCombat(
       state?: boolean,
-      combat?: InstanceType<ConfiguredDocumentClass<typeof Combat>> | null,
+      combat?: InstanceType<ConfiguredDocumentClassForName<"Combat">> | null,
       {
         token,
       }?: {
@@ -122,14 +117,14 @@ declare global {
          * A specific Token which is the origin of the group toggle request
          * @defaultValue `null`
          */
-        token?: InstanceType<ConfiguredObjectClassForName<"Token">> | null;
+        token?: ConfiguredTokenDocument | null;
       },
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof Combatant>>[]>;
+    ): Promise<InstanceType<ConfiguredDocumentClassForName<"Combatant">>[]>;
 
     /**
      * Get the tab cycle order for tokens by sorting observable tokens based on their distance from top-left.
      */
-    protected _getCycleOrder(): InstanceType<ConfiguredObjectClassForName<"Token">>[];
+    protected _getCycleOrder(): ConfiguredTokenDocument[];
 
     /**
      * Immediately conclude the animation of any/all tokens
@@ -147,7 +142,7 @@ declare global {
      */
     _getOccludableTokens(): Token[];
 
-    override storeHistory(type: PlaceablesLayer.HistoryEventType, data: PropertiesToSource<TokenDataProperties>): void;
+    override storeHistory(type: PlaceablesLayer.HistoryEventType, data: ConfiguredTokenDocument["_source"]): void;
 
     /**
      * Handle dropping of Actor data onto the Scene canvas
@@ -155,7 +150,7 @@ declare global {
     protected _onDropActorData(
       event: DragEvent,
       data: TokenLayer.DropData,
-    ): Promise<void | false | InstanceType<ConfiguredObjectClassForName<"Token">>>;
+    ): Promise<void | false | ConfiguredTokenDocument>;
 
     protected override _onClickLeft(event: PIXI.FederatedEvent): void;
 
@@ -176,9 +171,10 @@ declare global {
     }
 
     interface DropData extends Canvas.DropPosition {
-      id?: string;
-      type?: "Actor";
-      pack?: string;
+      type: "Actor";
+      uuid: string;
     }
   }
 }
+
+type ConfiguredTokenDocument = InstanceType<ConfiguredDocumentClassForName<"Token">>;

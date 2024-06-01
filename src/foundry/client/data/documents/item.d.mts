@@ -1,13 +1,14 @@
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
+import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
+import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
+import type { BaseUser } from "../../../common/documents/module.d.mts";
 
 declare global {
   /**
    * The client-side Item document which extends the common BaseItem abstraction.
    * Each Item document contains ItemData which defines its data schema.
    *
-   * @see {@link data.ItemData}              The Item data schema
-   * @see {@link documents.Items}            The world-level collection of Item documents
-   * @see {@link applications.ItemSheet}     The Item configuration application
+   * @see {@link Items}            The world-level collection of Item documents
+   * @see {@link ItemSheet}     The Item configuration application
    *
    * @param data    - Initial data provided to construct the Item document
    * @param context - The document context, see {@link foundry.abstract.Document}
@@ -19,14 +20,9 @@ declare global {
     get actor(): this["parent"];
 
     /**
-     * A convenience reference to the image path (data.img) used to represent this Item
-     */
-    get img(): this["data"]["img"];
-
-    /**
      * Provide a thumbnail image path used to represent this document.
      */
-    get thumbnail(): this["data"]["img"];
+    get thumbnail(): this["img"];
 
     /**
      * A convenience alias of Item#isEmbedded which is preserves legacy support
@@ -44,15 +40,21 @@ declare global {
      */
     getRollData(): object;
 
+    protected _preCreate(
+      data: foundry.documents.BaseItem.ConstructorData,
+      options: DocumentModificationOptions,
+      user: BaseUser,
+    ): Promise<boolean | void>;
+
     // @ts-expect-error For some reason, proctected static methods from Document are lost, so ts complains that this isn't actually an override
     protected static override _onCreateDocuments(
-      items: Array<InstanceType<ConfiguredDocumentClass<typeof Item>>>,
+      items: Array<InstanceType<ConfiguredDocumentClassForName<"Item">>>,
       context: DocumentModificationContext,
     ): Promise<unknown>;
 
     // @ts-expect-error For some reason, proctected static methods from Document are lost, so ts complains that this isn't actually an override
     protected static override _onDeleteDocuments(
-      items: Array<InstanceType<ConfiguredDocumentClass<typeof Item>>>,
+      items: Array<InstanceType<ConfiguredDocumentClassForName<"Item">>>,
       context: DocumentModificationContext,
     ): Promise<unknown>;
   }

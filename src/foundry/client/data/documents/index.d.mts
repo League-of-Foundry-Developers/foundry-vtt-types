@@ -1,5 +1,7 @@
 import "./active-effect.d.mts";
+import "./actor-delta.d.mts";
 import "./actor.d.mts";
+import "./adventure.d.mts";
 import "./ambient-light.d.mts";
 import "./ambient-sound.d.mts";
 import "./card.mts";
@@ -12,6 +14,7 @@ import "./fog-exploration.d.mts";
 import "./folder.d.mts";
 import "./item.d.mts";
 import "./journal-entry.d.mts";
+import "./journal-entry-page.d.mts";
 import "./macro.d.mts";
 import "./measured-template.d.mts";
 import "./note.d.mts";

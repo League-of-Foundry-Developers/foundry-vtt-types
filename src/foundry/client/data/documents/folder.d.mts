@@ -1,22 +1,21 @@
 import type {
   ConfiguredDocumentClass,
+  ConfiguredDocumentClassForName,
   ConstructorDataType,
   DocumentConstructor,
+  DocumentType,
 } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
+import type BaseFolder from "../../../common/documents/folder.d.mts";
+import type { BaseUser } from "../../../common/documents/module.d.mts";
 
 declare global {
   /**
    * The client-side Folder document which extends the common BaseFolder model.
-   * Each Folder document contains FolderData which defines its data schema.
    *
-   * @see {@link data.FolderData}              The Folder data schema
-   * @see {@link documents.Folders}            The world-level collection of Folder documents
-   * @see {@link embedded.FolderSound}         The FolderSound embedded document within a parent Folder
-   * @see {@link applications.FolderConfig}    The Folder configuration application
-   *
-   * @param data - Initial data provided to construct the Folder document
+   * @see {@link Folders}            The world-level collection of Folder documents
+   * @see {@link FolderConfig}       The Folder configuration application
    */
   class Folder extends ClientDocumentMixin(foundry.documents.BaseFolder) {
     /**
@@ -27,24 +26,39 @@ declare global {
     depth?: number;
 
     /**
-     * Return an array of the Document instances which are contained within this Folder.
+     * An array of other Folders which are the displayed children of this one. This differs from the results of
+     * {@link Folder.getSubfolders} because reports the subset of child folders which  are displayed to the current User
+     * in the UI.
      */
-    get contents(): InstanceType<(typeof CONFIG)[this["data"]["type"]]["documentClass"]>[];
+    children: ConfiguredFolder[];
 
     /**
-     * Return whether the folder is displayed in the sidebar to the current user
+     * Return whether the folder is displayed in the sidebar to the current User.
      */
-    get displayed(): boolean;
+    displayed: boolean;
 
     /**
-     * Return a reference to the Document type which is contained within this Folder.
+     * The array of the Document instances which are contained within this Folder,
+     * unless it's a Folder inside a Compendium pack, in which case it's the array
+     * of objects inside the index of the pack that are contained in this Folder.
      */
-    get documentClass(): (typeof CONFIG)[this["data"]["type"]]["documentClass"];
+    get contents(): this["type"] extends DocumentType
+      ? InstanceType<ConfiguredDocumentClassForName<this["type"]>>[]
+      : never;
+
+    set contents(value);
 
     /**
-     * Return a reference to the WorldCollection instance which provides Documents to this Folder.
+     * The reference to the Document type which is contained within this Folder.
      */
-    get documentCollection(): Collection<InstanceType<(typeof CONFIG)[this["data"]["type"]]["documentClass"]>>; // TODO: WorldCollection or ReturnType<Game["collections"]["get"]>
+    get documentClass(): this["type"] extends DocumentType ? ConfiguredDocumentClassForName<this["type"]> : never;
+
+    /**
+     * Return a reference to the WorldCollection instance which provides Documents to this Folder,
+     * unless it's a Folder inside a Compendium pack, in which case it's the index of the pack.
+     */
+    // TODO: Compendium Pack index
+    get documentCollection(): this["pack"] extends string ? unknown : undefined;
 
     /**
      * Return whether the folder is currently expanded within the sidebar interface.
@@ -52,13 +66,19 @@ declare global {
     get expanded(): boolean;
 
     /**
-     * A reference to the parent Folder if one is set, otherwise null.
+     * Return the list of ancestors of this folder, starting with the parent.
      */
-    get parentFolder(): Folder | null;
+    get ancestors(): ConfiguredFolder[];
+
+    protected _preCreate(
+      data: BaseFolder.ConstructorData,
+      options: DocumentModificationOptions,
+      user: BaseUser,
+    ): Promise<boolean | void>;
 
     /**
      * Present a Dialog form to create a new Folder.
-     * @see {@link ClientDocumentMixin.createDialog}
+     * @see {@link ClientDocument.createDialog}
      * @param data    - Initial data with which to populate the creation form
      *                  (default: `{}`)
      * @param context - Additional context options or dialog positioning options
@@ -69,12 +89,7 @@ declare global {
      */
     static createDialog<T extends DocumentConstructor>(
       this: T,
-      data?:
-        | DeepPartial<
-            | ConstructorDataType<InstanceType<T>["data"]>
-            | (ConstructorDataType<InstanceType<T>["data"]> & Record<string, unknown>)
-          >
-        | undefined,
+      data?: DeepPartial<ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>)> | undefined,
       context?: Partial<Omit<FolderConfig.Options, "resolve">>,
     ): Promise<InstanceType<ConfiguredDocumentClass<T>> | null | undefined>;
 
@@ -82,7 +97,7 @@ declare global {
      * Export all Documents contained in this Folder to a given Compendium pack.
      * Optionally update existing Documents within the Pack by name, otherwise append all new entries.
      * @param pack    - A Compendium pack to which the documents will be exported
-     * @param options - Additional options which customize how content is exported. See {@link ClientDocumentMixin#toCompendium}
+     * @param options - Additional options which customize how content is exported. See {@link ClientDocument#toCompendium}
      *                  (default: `{}`)
      * @returns The updated Compendium Collection instance
      */
@@ -106,9 +121,13 @@ declare global {
      *                    (default: `false`)
      * @returns An array of Folder documents which are subfolders of this one
      */
-    getSubfolders(recursive?: boolean): InstanceType<ConfiguredDocumentClass<typeof Folder>>[];
+    getSubfolders(recursive?: boolean): ConfiguredFolder[];
 
-    protected _onDelete(options: DocumentModificationOptions, userId: string): void;
+    /**
+     * Get the Folder documents which are parent folders of the current folder or any if its parents.
+     * @returns An array of Folder documents which are parent folders of this one
+     */
+    getParentFolders(): ConfiguredFolder[];
   }
 
   namespace Folder {
@@ -118,3 +137,5 @@ declare global {
     }
   }
 }
+
+type ConfiguredFolder = InstanceType<ConfiguredDocumentClass<typeof Folder>>;

@@ -16,10 +16,10 @@ expectTypeOf(doc.modifyActorDocument({ actorLink: true, "lightAnimation.speed": 
 >();
 
 expectTypeOf(doc.getEmbeddedCollection("Item")).toEqualTypeOf<
-  EmbeddedCollection<ConfiguredDocumentClass<typeof foundry.documents.BaseItem>, foundry.data.ActorData>
+  EmbeddedCollection<ConfiguredDocumentClass<typeof foundry.documents.BaseItem>, foundry.documents.BaseActor>
 >();
 expectTypeOf(doc.getEmbeddedCollection("ActiveEffect")).toEqualTypeOf<
-  EmbeddedCollection<ConfiguredDocumentClass<typeof foundry.documents.BaseActiveEffect>, foundry.data.ActorData>
+  EmbeddedCollection<ConfiguredDocumentClass<typeof foundry.documents.BaseActiveEffect>, foundry.documents.BaseActor>
 >();
 
 expectTypeOf(

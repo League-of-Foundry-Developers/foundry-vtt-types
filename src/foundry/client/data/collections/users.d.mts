@@ -1,5 +1,5 @@
 import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
-import type { StoredDocument } from "../../../../types/utils.d.mts";
+import type { InexactPartial, StoredDocument } from "../../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -9,26 +9,32 @@ declare global {
    * @see {@link User} The User document
    */
   class Users extends WorldCollection<typeof foundry.documents.BaseUser, "Users"> {
-    constructor(data?: foundry.data.UserData["_source"][]);
+    constructor(data?: User["_source"][]);
 
     /**
      * The User document of the currently connected user
      * @defaultValue `null`
      */
-    current: StoredDocument<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseUser>>> | null;
+    current: StoredDocument<ConfiguredUser> | null;
 
     /**
      * Initialize the Map object and all its contained documents
      * @internal
      */
-    protected override _initialize(): void;
+    protected _initialize(): void;
 
-    static override documentName: "User";
+    static documentName: "User";
 
     /**
      * Get the users with player roles
      */
     get players(): ReturnType<this["filter"]>;
+
+    /**
+     * Get one User who is an active Gamemaster, or null if no active GM is available.
+     * This can be useful for workflows which occur on all clients, but where only one user should take action.
+     */
+    get activeGM(): ConfiguredUser | null;
 
     /** @remarks This is not marked as protected because it is used in {@link Game#activateSocketListeners} */
     static _activateSocketListeners(socket: io.Socket): void;
@@ -39,6 +45,8 @@ declare global {
      * @param activityData - The object of activity data
      *                       (default: `{}`)
      */
-    protected static _handleUserActivity(userId: string, activityData?: ActivityData | undefined): void;
+    protected static _handleUserActivity(userId: string, activityData?: InexactPartial<ActivityData> | undefined): void;
   }
 }
+
+type ConfiguredUser = InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseUser>>;

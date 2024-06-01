@@ -20,16 +20,13 @@ declare global {
      */
     get tokens(): Partial<Record<string, InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseActor>>>>;
 
-    static override documentName: "Actor";
+    static documentName: "Actor";
 
     override fromCompendium(
       document:
         | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseActor>>
-        | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseActor>>["data"]["_source"],
+        | foundry.documents.BaseActor.ConstructorData<any>,
       options?: WorldCollection.FromCompendiumOptions | undefined,
-    ): Omit<
-      InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseActor>>["data"]["_source"],
-      "_id" | "folder"
-    >;
+    ): Omit<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseActor>>, "_id" | "folder">;
   }
 }

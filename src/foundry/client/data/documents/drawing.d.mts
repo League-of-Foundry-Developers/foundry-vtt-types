@@ -1,19 +1,22 @@
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
-
 declare global {
   /**
    * The client-side Drawing document which extends the common BaseDrawing model.
-   * Each Drawing document contains DrawingData which defines its data schema.
    *
-   * @see {@link data.DrawingData}              The Drawing data schema
-   * @see {@link documents.Scene}               The Scene document type which contains Drawing embedded documents
-   * @see {@link applications.DrawingConfig}    The Drawing configuration application
+   * @see {@link Scene}               The Scene document type which contains Drawing embedded documents
+   * @see {@link DrawingConfig}       The Drawing configuration application
    */
   class DrawingDocument extends CanvasDocumentMixin(foundry.documents.BaseDrawing) {
     /**
-     * A reference to the User who created the Drawing document.
-     * @remarks Will return undefined if the user has been deleted
+     * Define an elevation property on the Drawing Document which in the future will become a part of its data schema.
      */
-    get author(): InstanceType<ConfiguredDocumentClass<typeof User>> | undefined;
+    get elevation(): number;
+
+    set elevation(value);
+    /**
+     * Define a sort property on the Drawing Document which in the future will become a core part of its data schema.
+     */
+    get sort(): this["z"];
   }
 }
+
+export {};
