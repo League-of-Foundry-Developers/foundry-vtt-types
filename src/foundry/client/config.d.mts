@@ -5,9 +5,6 @@ import type { StatusEffect } from "./data/documents/token.d.mts";
 import type { DataModel } from "../common/abstract/module.d.mts";
 import type { SchemaField } from "../common/data/fields.d.mts";
 
-// @ts-expect-error Class isn't implemented yet
-declare class ActorDelta extends ClientDocumentMixin() {}
-
 declare global {
   /**
    * Runtime configuration settings for Foundry VTT which exposes a large number of variables which determine how

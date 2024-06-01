@@ -25,7 +25,7 @@ declare global {
     override fromCompendium(
       document:
         | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseActor>>
-        | foundry.documents.BaseActor.ConstructorData<any>,
+        | foundry.documents.BaseActor.ConstructorData,
       options?: WorldCollection.FromCompendiumOptions | undefined,
     ): Omit<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseActor>>, "_id" | "folder">;
   }

@@ -27,7 +27,7 @@ declare global {
      * Determine the canvas dimensions this Scene would occupy, if rendered
      * @defaultValue `{}`
      */
-    dimensions: this["dimensions"];
+    dimensions: ReturnType<this["getDimensions"]>;
 
     /**
      * Provide a thumbnail image path used to represent this document.

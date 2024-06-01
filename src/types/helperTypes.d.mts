@@ -1,8 +1,8 @@
-import type Document from "../foundry/common/abstract/document.d.mts";
+// import type Document from "../foundry/common/abstract/document.d.mts";
 import type { DeepPartial } from "./utils.d.mts";
 
 /**
- * Returns the type of the constructor data for the given {@link DocumentData}.
+ * Returns the type of the constructor data for the given {@link foundry.abstract.Document}.
  */
 export type ConstructorDataType<T extends DocumentConstructor> = foundry.data.fields.SchemaField.InnerAssignmentType<
   ReturnType<T["defineSchema"]>
@@ -10,8 +10,9 @@ export type ConstructorDataType<T extends DocumentConstructor> = foundry.data.fi
 
 type ObjectToDeepPartial<T> = T extends object ? DeepPartial<T> : T;
 
-export type DocumentConstructor = Pick<typeof Document, keyof typeof Document> &
-  (new (...args: any[]) => Document<any, any, any>);
+export type DocumentConstructor = foundry.abstract.Document.Constructor;
+// Pick<typeof Document, keyof typeof Document> &
+//  (new (...args: any[]) => Document<any, any, any>);
 
 export type PlaceableObjectConstructor = Pick<typeof PlaceableObject, keyof typeof PlaceableObject> &
   (new (...args: any[]) => PlaceableObject<any>);

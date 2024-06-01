@@ -1,6 +1,5 @@
 import type { DocumentSubTypes, DocumentType } from "../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial } from "../../../types/utils.d.mts";
-import type { TokenDataSource } from "../../common/data/data.mjs/tokenData.d.mts";
 
 declare global {
   /**
@@ -15,7 +14,7 @@ declare global {
    * @see {@link SettingsConfig}
    */
   class ClientSettings {
-    constructor(worldSettings?: Setting["data"]["_source"][]);
+    constructor(worldSettings?: Setting["_source"][]);
 
     /**
      * A object of registered game settings for this scope
@@ -176,8 +175,8 @@ declare global {
       "core.combatTrackerConfig": { resource: string; skipDefeated: boolean } | {};
       "core.compendiumConfiguration": Partial<Record<string, CompendiumCollection.Configuration>>;
       "core.coneTemplateType": "round" | "flat";
-      "core.defaultDrawingConfig": foundry.data.DrawingData["_source"] | {};
-      "core.defaultToken": DeepPartial<TokenDataSource>;
+      "core.defaultDrawingConfig": foundry.documents.BaseDrawing["_source"] | {};
+      "core.defaultToken": DeepPartial<foundry.documents.BaseToken>;
       "core.disableResolutionScaling": boolean;
       "core.fontSize": number;
       "core.fpsMeter": boolean;

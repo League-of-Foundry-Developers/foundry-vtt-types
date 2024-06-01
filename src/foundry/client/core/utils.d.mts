@@ -1,4 +1,4 @@
-import type { ClientDocumentMixin } from "../data/abstract/client-document.d.mts";
+export {};
 
 declare global {
   /**
@@ -25,7 +25,7 @@ declare global {
     uuid: string,
     options?: {
       /** A Document to resolve relative UUIDs against. */
-      relative?: ClientDocumentMixin<foundry.abstract.Document<any, any>>;
+      relative?: ClientDocument;
       /** Allow retrieving an invalid Document. (default: `false`) */
       invalid?: boolean;
     },
@@ -43,7 +43,7 @@ declare global {
     uuid: string,
     options?: {
       /** A Document to resolve relative UUIDs against. */
-      relative?: ClientDocumentMixin<foundry.abstract.Document<any, any>>;
+      relative?: ClientDocument;
       /** Allow retrieving an invalid Document. (default: `false`) */
       invalid?: boolean;
       /** Throw an error if the UUID cannot be resolved synchronously. (default: `true`) */

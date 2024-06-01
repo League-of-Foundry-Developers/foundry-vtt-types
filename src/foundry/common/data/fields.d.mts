@@ -1677,7 +1677,7 @@ declare namespace EmbeddedDataField {
  */
 declare class EmbeddedCollectionField<
   ElementFieldType extends Document.Constructor,
-  ParentDataModel extends foundry.abstract.Document<any, any, any>,
+  ParentDataModel extends Document.Any,
   AssignmentElementType = EmbeddedCollectionField.AssignmentElementType<ElementFieldType>,
   InitializedElementType extends Document.Any = EmbeddedCollectionField.InitializedElementType<ElementFieldType>,
   Options extends

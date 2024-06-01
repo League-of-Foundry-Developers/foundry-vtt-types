@@ -1,7 +1,6 @@
 import type { DocumentType } from "../../../types/helperTypes.d.mts";
 import type { AnyClass, ConstructorOf, DeepPartial, InexactPartial } from "../../../types/utils.d.mts";
 import Document from "../abstract/document.mjs";
-import type { DocumentId } from "../data/fields.d.mts";
 
 /**
  * Benchmark the performance of a function, calling it a requested number of iterations.
@@ -487,7 +486,7 @@ interface ResolvedUUID {
   /**
    * The parent document.
    */
-  documentId?: DocumentId | undefined;
+  documentId?: string | undefined;
 
   /**
    * The parent document type.
