@@ -1837,8 +1837,8 @@ declare namespace EmbeddedCollectionField {
    */
   type InitializedType<
     AssignmentElementType,
-    InitializedElementType extends foundry.abstract.Document<any, any, any>,
-    ParentDataModel extends foundry.abstract.Document<any, any, any>,
+    InitializedElementType extends foundry.abstract.Document.Any,
+    ParentDataModel extends foundry.abstract.Document.Any,
     Opts extends Options<AssignmentElementType>,
   > = DataField.DerivedInitializedType<
     EmbeddedCollection<InitializedElementType, ParentDataModel>,

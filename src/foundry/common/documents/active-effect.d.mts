@@ -1,4 +1,4 @@
-// import type { ConfiguredDocumentClassForName } from "../../../types/helperTypes.d.mts";
+import type { ConfiguredDocumentClassForName } from "../../../types/helperTypes.d.mts";
 import type { InexactPartial, Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata, DocumentModificationOptions } from "../abstract/document.mts";
@@ -22,8 +22,7 @@ interface BaseActiveEffect extends BaseActiveEffect.Properties {}
 declare class BaseActiveEffect extends Document<
   BaseActiveEffect.SchemaField,
   BaseActiveEffect.Metadata,
-  foundry.documents.BaseActor | foundry.documents.BaseItem | null
-  // InstanceType<ConfiguredDocumentClassForName<"Actor">> | InstanceType<ConfiguredDocumentClassForName<"Item">> | null
+  InstanceType<ConfiguredDocumentClassForName<"Actor">> | InstanceType<ConfiguredDocumentClassForName<"Item">> | null
 > {
   /**
    * @param data    - Initial data from which to construct the ActiveEffect
