@@ -2,8 +2,6 @@ import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mt
 import type { DeepPartial, StoredDocument } from "../../../../types/utils.d.mts";
 import type { RequestContext, RequestOptions } from "../../../common/abstract/backend.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
-import type { SchemaField } from "../../../common/data/fields.d.mts";
-import type BaseFogExploration from "../../../common/documents/fog-exploration.d.mts";
 
 declare global {
   /**
@@ -29,25 +27,10 @@ declare global {
      */
     getTexture(): PIXI.Texture | null;
 
-    // TODO: Unsure if still need the any
-    protected _onCreate(
-      data: SchemaField.InnerPersistedType<BaseFogExploration.Schema>,
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-    protected _onCreate(
-      data: Readonly<SchemaField.InnerPersistedType<any>>,
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
+    protected _onCreate(data: this["_source"], options: DocumentModificationOptions, userId: string): void;
 
     protected _onUpdate(
-      changed: DeepPartial<SchemaField.InnerPersistedType<BaseFogExploration.Schema>>,
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-    protected _onUpdate(
-      data: DeepPartial<Readonly<SchemaField.InnerPersistedType<any>>>,
+      changed: DeepPartial<this["_source"]>,
       options: DocumentModificationOptions,
       userId: string,
     ): void;

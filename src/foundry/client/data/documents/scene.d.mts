@@ -92,7 +92,7 @@ declare global {
       user: foundry.documents.BaseUser,
     ): Promise<void>;
 
-    protected override _onCreate(data: Scene["_source"], options: DocumentModificationOptions, userId: string): void;
+    protected override _onCreate(data: this["_source"], options: DocumentModificationOptions, userId: string): void;
 
     protected override _preUpdate(
       changed: foundry.documents.BaseScene.ConstructorData,

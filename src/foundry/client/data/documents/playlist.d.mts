@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
+import type { ConfiguredDocumentClass, ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { AnyMetadata, DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
@@ -41,7 +41,7 @@ declare global {
      * Begin simultaneous playback for all sounds in the Playlist.
      * @returns The updated Playlist document
      */
-    playAll(): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>> | undefined>;
+    playAll(): Promise<this | undefined>;
 
     /**
      * Play the next Sound within the sequential or shuffled Playlist.
@@ -49,10 +49,7 @@ declare global {
      * @param options - Additional options which configure the next track
      * @returns The updated Playlist document
      */
-    playNext(
-      soundId?: string,
-      options?: Partial<Playlist.PlayNextOptions>,
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>> | undefined | null>;
+    playNext(soundId?: string, options?: Partial<Playlist.PlayNextOptions>): Promise<this | undefined | null>;
 
     /**
      * Begin playback of a specific Sound within this Playlist.
@@ -60,9 +57,7 @@ declare global {
      * @param sound - The desired sound that should play
      * @returns The updated Playlist
      */
-    playSound(
-      sound: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>,
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>> | undefined>;
+    playSound(sound: InstanceType<ConfiguredDocumentClassForName<"PlaylistSound">>): Promise<this | undefined>;
 
     /**
      * Stop playback of a specific Sound within this Playlist.
@@ -70,27 +65,25 @@ declare global {
      * @param sound - The desired sound that should play
      * @returns The updated Playlist
      */
-    stopSound(
-      sound: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>,
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>> | undefined>;
+    stopSound(sound: InstanceType<ConfiguredDocumentClassForName<"PlaylistSound">>): Promise<this | undefined>;
 
     /**
      * End playback for any/all currently playing sounds within the Playlist.
      * @returns The updated Playlist document
      */
-    stopAll(): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>> | undefined>;
+    stopAll(): Promise<this | undefined>;
 
     /**
      * Cycle the playlist mode
      * @returns A promise which resolves to the updated Playlist instance
      */
-    cycleMode(): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>> | undefined>;
+    cycleMode(): Promise<this | undefined>;
 
     /**
      * Get the next sound in the cached playback order. For internal use.
      * @internal
      */
-    protected _getNextSound(soundId: string): InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>> | undefined;
+    protected _getNextSound(soundId: string): InstanceType<ConfiguredDocumentClassForName<"PlaylistSound">> | undefined;
 
     /**
      * Get the previous sound in the cached playback order. For internal use.
@@ -98,15 +91,15 @@ declare global {
      */
     protected _getPreviousSound(
       soundId: string,
-    ): InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>> | undefined;
+    ): InstanceType<ConfiguredDocumentClassForName<"PlaylistSound">> | undefined;
 
     /**
      * Define the sorting order for the Sounds within this Playlist. For internal use.
      * @internal
      */
     protected _sortSounds(
-      a: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>,
-      b: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>,
+      a: InstanceType<ConfiguredDocumentClassForName<"PlaylistSound">>,
+      b: InstanceType<ConfiguredDocumentClassForName<"PlaylistSound">>,
     ): number;
 
     override toAnchor(
@@ -169,7 +162,7 @@ declare global {
      * @internal
      */
     _onSoundEnd(
-      sound: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>,
+      sound: InstanceType<ConfiguredDocumentClassForName<"PlaylistSound">>,
     ): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>> | undefined>;
 
     /**
@@ -177,7 +170,7 @@ declare global {
      * Schedule auto-preload of next track
      * @internal
      */
-    _onSoundStart(sound: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>): Promise<void>;
+    _onSoundStart(sound: InstanceType<ConfiguredDocumentClassForName<"PlaylistSound">>): Promise<void>;
 
     /**
      * UPdate the playing status of this Playlist in content links.

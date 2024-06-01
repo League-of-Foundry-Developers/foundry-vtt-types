@@ -1,4 +1,3 @@
-// import type Document from "../foundry/common/abstract/document.d.mts";
 import type { DeepPartial } from "./utils.d.mts";
 
 /**
@@ -11,8 +10,6 @@ export type ConstructorDataType<T extends DocumentConstructor> = foundry.data.fi
 type ObjectToDeepPartial<T> = T extends object ? DeepPartial<T> : T;
 
 export type DocumentConstructor = foundry.abstract.Document.Constructor;
-// Pick<typeof Document, keyof typeof Document> &
-//  (new (...args: any[]) => Document<any, any, any>);
 
 export type PlaceableObjectConstructor = Pick<typeof PlaceableObject, keyof typeof PlaceableObject> &
   (new (...args: any[]) => PlaceableObject<any>);
@@ -22,35 +19,35 @@ export type ConfiguredDocumentClass<T extends DocumentConstructor> = ConfiguredD
 >;
 
 export type DocumentType =
-  | "Actor"
+  | "ActiveEffect"
   | "ActorDelta"
+  | "Actor"
   | "Adventure"
+  | "AmbientLight"
+  | "AmbientSound"
+  | "Card"
   | "Cards"
   | "ChatMessage"
   | "Combat"
+  | "Combatant"
   | "FogExploration"
   | "Folder"
   | "Item"
-  | "JournalEntry"
   | "JournalEntryPage"
+  | "JournalEntry"
   | "Macro"
+  | "MeasuredTemplate"
+  | "Note"
+  | "PlaylistSound"
   | "Playlist"
   | "RollTable"
   | "Scene"
   | "Setting"
-  | "User"
-  | "ActiveEffect"
-  | "Card"
   | "TableResult"
-  | "PlaylistSound"
-  | "AmbientLight"
-  | "AmbientSound"
-  | "Combatant"
   | "Drawing"
-  | "MeasuredTemplate"
-  | "Note"
   | "Tile"
   | "Token"
+  | "User"
   | "Wall";
 
 export type PlaceableDocumentType =

@@ -72,11 +72,7 @@ declare global {
       event: MouseEvent,
     ): ReturnType<InstanceType<ConfiguredDocumentClassForName<"Playlist">>["stopSound" | "playSound"]>;
 
-    override _onCreate(
-      data: foundry.documents.BasePlaylistSound.ConstructorData,
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
+    protected override _onCreate(data: this["_source"], options: DocumentModificationOptions, userId: string): void;
 
     protected override _onUpdate(
       changed: DeepPartial<PlaylistSound["_source"]>,

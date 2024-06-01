@@ -179,11 +179,7 @@ declare global {
       user: foundry.documents.BaseUser,
     ): Promise<void>;
 
-    protected override _onCreate(
-      data: ChatMessage["_source"],
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
+    protected override _onCreate(data: this["_source"], options: DocumentModificationOptions, userId: string): void;
 
     protected override _onUpdate(
       data: DeepPartial<ChatMessage["_source"]>,

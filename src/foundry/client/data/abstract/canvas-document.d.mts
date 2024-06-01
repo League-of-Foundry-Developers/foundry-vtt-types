@@ -3,7 +3,9 @@ import type { DeepPartial, Mixin } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 import type { ClientDocument } from "./client-document.d.mts";
 
-declare class CanvasDocument<T extends foundry.abstract.Document<any, any, any>> extends ClientDocument<T> {
+declare class CanvasDocumentClass<
+  BaseDocument extends foundry.abstract.Document.Any,
+> extends ClientDocument<BaseDocument> {
   /**
    * A lazily constructed PlaceableObject instance which can represent this Document on the game canvas.
    */
@@ -33,9 +35,13 @@ declare class CanvasDocument<T extends foundry.abstract.Document<any, any, any>>
    */
   get rendered(): boolean;
 
-  protected _onCreate(data: T["_source"], options: DocumentModificationOptions, userId: string): void;
+  protected _onCreate(data: BaseDocument["_source"], options: DocumentModificationOptions, userId: string): void;
 
-  protected _onUpdate(changed: DeepPartial<T["_source"]>, options: DocumentModificationOptions, userId: string): void;
+  protected _onUpdate(
+    changed: DeepPartial<BaseDocument["_source"]>,
+    options: DocumentModificationOptions,
+    userId: string,
+  ): void;
 
   protected _onDelete(options: DocumentModificationOptions, userId: string): void;
 }
@@ -48,5 +54,5 @@ declare global {
    */
   function CanvasDocumentMixin<BaseClass extends DocumentConstructor>(
     Base: BaseClass,
-  ): Mixin<typeof CanvasDocument, BaseClass>;
+  ): Mixin<typeof CanvasDocumentClass, BaseClass>;
 }

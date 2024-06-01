@@ -237,11 +237,7 @@ declare global {
       user: foundry.documents.BaseUser,
     ): Promise<void>;
 
-    protected override _onCreate(
-      data: foundry.documents.BaseActiveEffect.ConstructorData,
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
+    protected override _onCreate(data: this["_source"], options: DocumentModificationOptions, userId: string): void;
 
     protected override _onUpdate(
       data: DeepPartial<ActiveEffect["_source"]>,
