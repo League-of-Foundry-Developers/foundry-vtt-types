@@ -2,7 +2,6 @@ import type { EditorState, Plugin } from "prosemirror-state";
 import type { Step } from "prosemirror-transform";
 import type { EditorView } from "prosemirror-view";
 import type { Socket } from "socket.io-client";
-import type { ClientDocumentMixin } from "../data/abstract/client-document.d.mts";
 
 declare global {
   interface ProseMirrorHistory {
@@ -13,13 +12,13 @@ declare global {
   }
   namespace ProseMirrorEditor {
     interface Options {
-      document?: ClientDocumentMixin<foundry.abstract.Document<any, any>>;
+      document?: ClientDocument;
     }
     interface CreateOptions {
       /** A string to uniquely identify this ProseMirror instance. Ignored for a collaborative editor. */
       uuid: string;
       /** A Document whose content is being edited. Required for collaborative editing. */
-      document: ClientDocumentMixin<foundry.abstract.Document<any, any>>;
+      document: ClientDocument;
       /** The field within the Document that is being edited. Required for collaborative editing. */
       fieldName: string;
       /** Plugins to include with the editor. */
