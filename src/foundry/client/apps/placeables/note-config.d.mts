@@ -21,11 +21,11 @@ declare global {
      */
     static override get defaultOptions(): DocumentSheetOptions<NoteDocument>;
 
-    override getData(options?: Partial<Options>): MaybePromise<object>;
+    override getData(options?: Partial<Options>): MaybePromise<object>; // TODO: Implement GetDataReturnType
 
     activateListeners(html: JQuery<HTMLElement>): void;
 
-    protected _onChangeInput(event: JQuery.ChangeEvent<any, any, any, any>): void;
+    protected _onChangeInput(event: JQuery.ChangeEvent): Promise<void>;
 
     /**
      * Update disabled state of the custom icon field.
@@ -46,17 +46,17 @@ declare global {
 
   namespace NoteConfig {
     interface FormData {
-      entryId: string;
-      fontFamily: string;
-      fontSize: number | null;
-      icon: string;
-      iconSize: number | null;
-      iconTint: string;
-      text: string;
-      textAnchor: foundry.CONST.TEXT_ANCHOR_POINTS;
-      textColor: string;
-      x: number | null;
-      y: number | null;
+      entryId: NoteDocument["entryId"];
+      fontFamily: NoteDocument["fontFamily"];
+      fontSize: NoteDocument["fontSize"];
+      icon: NoteDocument["icon"];
+      iconSize: NoteDocument["iconSize"];
+      iconTint: NoteDocument["texture"]["tint"];
+      text: NoteDocument["text"];
+      textAnchor: NoteDocument["textAnchor"];
+      textColor: NoteDocument["textColor"];
+      x: NoteDocument["x"];
+      y: NoteDocument["y"];
     }
   }
 }
