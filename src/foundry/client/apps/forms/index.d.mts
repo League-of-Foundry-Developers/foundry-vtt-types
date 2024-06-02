@@ -1,4 +1,6 @@
 import "./actor.d.mts";
+import "./adventure-exporter.mjs";
+import "./adventure-importer.mjs";
 import "./card-config.d.mts";
 import "./cards-config.d.mts";
 import "./combat-config.d.mts";
