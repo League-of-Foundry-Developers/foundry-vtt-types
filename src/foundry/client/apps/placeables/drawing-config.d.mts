@@ -1,5 +1,4 @@
-import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
-import type { MaybePromise, Titlecase } from "../../../../types/utils.d.mts";
+import type { MaybePromise } from "../../../../types/utils.d.mts";
 
 declare global {
   interface DrawingConfigOptions extends FormApplicationOptions {
@@ -16,14 +15,13 @@ declare global {
    */
   class DrawingConfig<Options extends DrawingConfigOptions = DrawingConfigOptions> extends FormApplication<
     Options,
-    InstanceType<ConfiguredDocumentClassForName<"Drawing">>
+    DrawingDocument.ConfiguredInstance
   > {
     /**
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.defaultOptions, {
      *   id: "drawing-config",
-     *   classes: ["sheet"],
      *   template: "templates/scene/drawing-config.html",
      *   width: 480,
      *   height: "auto",
@@ -38,13 +36,7 @@ declare global {
 
     override get id(): string;
 
-    override getData(options?: Partial<Options>): MaybePromise<object>;
-
-    /**
-     * Get the names and labels of fill type choices which can be applied
-     * @internal
-     */
-    protected static _getFillTypes(): DrawingConfig.FillTypes;
+    override getData(options?: Partial<Options>): MaybePromise<object>; // TODO: Implement GetDataReturnType
 
     protected override _updateObject(event: Event, formData: DrawingConfig.FormData): Promise<unknown>;
 
@@ -60,30 +52,27 @@ declare global {
   }
 
   namespace DrawingConfig {
-    type FillTypes = {
-      [Key in keyof (typeof foundry.CONST)["DRAWING_FILL_TYPES"] as (typeof foundry.CONST)["DRAWING_FILL_TYPES"][Key]]: `DRAWING.FillType${Titlecase<Key>}`;
-    };
-
     interface FormData {
-      bezierFactor: number;
-      fillAlpha: number;
-      fillColor: string;
-      fillType: foundry.CONST.DRAWING_FILL_TYPES;
-      fontFamily: string;
-      fontSize: number | null;
-      height: number | null;
-      rotation: number | null;
-      strokeAlpha: number;
-      strokeColor: string;
-      strokeWidth: number | null;
-      text: string;
-      textAlpha: number;
-      textColor: string;
-      texture: string;
-      width: number | null;
-      x: number | null;
-      y: number | null;
-      z: number | null;
+      author: string;
+      bezierFactor: DrawingDocument["bezierFactor"];
+      fillAlpha: DrawingDocument["fillAlpha"];
+      fillColor: DrawingDocument["fillColor"];
+      fillType: DrawingDocument["fillType"];
+      fontFamily: DrawingDocument["fontFamily"];
+      fontSize: DrawingDocument["fontSize"];
+      "shape.height": DrawingDocument["shape"]["height"];
+      rotation: DrawingDocument["rotation"];
+      strokeAlpha: DrawingDocument["strokeAlpha"];
+      strokeColor: DrawingDocument["strokeColor"];
+      strokeWidth: DrawingDocument["strokeWidth"];
+      text: DrawingDocument["text"];
+      textAlpha: DrawingDocument["textAlpha"];
+      textColor: DrawingDocument["textColor"];
+      texture: DrawingDocument["texture"];
+      "shape.width": DrawingDocument["shape"]["width"];
+      x: DrawingDocument["x"];
+      y: DrawingDocument["y"];
+      z: DrawingDocument["z"];
     }
   }
 }
