@@ -114,17 +114,12 @@ declare global {
      * This method is factored out to allow downstream classes the opportunity to override item creation behavior.
      * @param itemData - The item data requested for creation
      */
-    protected _onDropItemCreate(
-      itemData: foundry.data.ItemData["_source"][] | foundry.data.ItemData["_source"],
-    ): Promise<Item.ConfiguredInstance[]>;
+    protected _onDropItemCreate(itemData: Item["_source"][] | Item["_source"]): Promise<Item.ConfiguredInstance[]>;
 
     /**
      * Handle a drop event for an existing embedded Item to sort that Item relative to its siblings
      */
-    protected _onSortItem(
-      event: DragEvent,
-      itemData: foundry.data.ItemData["_source"],
-    ): undefined | Promise<Item.ConfiguredInstance[]>;
+    protected _onSortItem(event: DragEvent, itemData: Item["_source"]): undefined | Promise<Item.ConfiguredInstance[]>;
 
     /**
      * Is the drop data coming from the same actor?
@@ -147,7 +142,7 @@ declare global {
         type: "ActiveEffect";
         tokenId?: string;
         actorId?: string;
-        data: foundry.data.ActiveEffectData["_source"];
+        data: foundry.documents.BaseActiveEffect["_source"];
       }
 
       interface Actor {

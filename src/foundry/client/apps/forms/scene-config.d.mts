@@ -60,7 +60,7 @@ declare global {
      */
     protected _onCapturePosition(event: JQuery.ClickEvent): void;
 
-    protected override _onChangeInput(event: JQuery.ChangeEvent): void;
+    protected override _onChangeInput(event: JQuery.ChangeEvent): Promise<void>;
 
     protected override _onChangeColorPicker(event: JQuery.ChangeEvent): void;
 

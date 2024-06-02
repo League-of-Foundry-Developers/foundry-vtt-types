@@ -1,6 +1,5 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { MaybePromise } from "../../../../types/utils.d.mts";
-import type { TableResultDataConstructorData } from "../../../common/data/data.mjs/tableResultData.d.mts";
 
 declare global {
   /**
@@ -41,7 +40,7 @@ declare global {
      */
     protected _onCreateResult(
       event: JQuery.ClickEvent | DragEvent,
-      resultData?: TableResultDataConstructorData,
+      resultData?: foundry.documents.BaseTableResult.ConstructorData,
     ): Promise<ConfiguredDocumentClassForName<"TableResult">[]>;
 
     /**

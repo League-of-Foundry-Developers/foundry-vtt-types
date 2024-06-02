@@ -144,7 +144,7 @@ declare global {
       grid?: boolean;
     }): void;
 
-    protected override _onChangeInput(event: JQuery.ChangeEvent): void;
+    protected override _onChangeInput(event: JQuery.ChangeEvent): Promise<void>;
 
     protected override _updateObject(event: Event, formData: GridConfig.FormData): Promise<unknown>;
   }

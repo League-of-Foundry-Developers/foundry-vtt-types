@@ -1,6 +1,5 @@
 import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
-import type { GetDataReturnType, MaybePromise } from "../../../../types/utils.d.mts";
-import type { SortingModes } from "../../../common/data/data.mjs/folderData.d.mts";
+import type { GetDataReturnType, MaybePromise, ValueOf } from "../../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -44,7 +43,7 @@ declare global {
       color: string;
       name: string;
       parent: string;
-      sorting: SortingModes;
+      sorting: ValueOf<typeof Folder.SORTING_MODES>;
       type: foundry.CONST.FOLDER_DOCUMENT_TYPES;
     }
 
