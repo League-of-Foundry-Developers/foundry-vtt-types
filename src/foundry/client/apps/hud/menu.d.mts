@@ -2,18 +2,17 @@ import type { MaybePromise } from "../../../../types/utils.d.mts";
 
 declare global {
   /**
-   * A simple main menu application
+   * The main menu application which is toggled via the ESC key.
    */
   class MainMenu extends Application {
     /**
      * @defaultValue
      * ```typescript
-     * {
-     *   ...super.defaultOptions,
+     * return foundry.utils.mergeObject(super.defaultOptions, {
      *   id: "menu",
      *   template: "templates/hud/menu.html",
      *   popOut: false
-     * }
+     * });
      * ```
      * */
     static override get defaultOptions(): ApplicationOptions;
@@ -38,14 +37,17 @@ declare global {
      *   players: {
      *     label: "MENU.Players",
      *     icon: "<i class="fas fa-users"></i>",
-     *     enabled: game.user.isGM && !game.data.options.demo,
+     *     enabled: game.user.isGM && !game.data.demoMode,
      *     onClick: () => (window.location.href = "./players")
      *   },
      *   world: {
-     *     label: "MENU.Setup",
+     *     label: "GAME.ReturnSetup",
      *     icon: "<i class="fas fa-globe"></i>",
-     *     enabled: game.user.hasRole("GAMEMASTER")  && !game.data.options.demo,
-     *     onClick: () => game.shutDown()
+     *     enabled: game.user.hasRole("GAMEMASTER")  && !game.data.demoMode,
+     *     onClick: () => {
+     *       this.close();
+     *       game.shutDown();
+     *     }
      *   }
      * }
      * ```
