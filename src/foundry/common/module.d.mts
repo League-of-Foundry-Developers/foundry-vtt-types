@@ -1,5 +1,5 @@
 import * as _abstract from "./abstract/module.mts";
-import * as _config from "./config.mjs/index.mts";
+import * as _config from "./config.mts";
 import * as _CONST from "./constants.mts";
 import * as _data from "./data/module.mts";
 import * as _documents from "./documents/module.mts";
