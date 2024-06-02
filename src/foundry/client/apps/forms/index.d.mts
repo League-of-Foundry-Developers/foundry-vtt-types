@@ -6,6 +6,7 @@ import "./card-config.d.mts";
 import "./cards-config.d.mts";
 import "./combat-config.d.mts";
 import "./combatant-config.d.mts";
+import "./default-sheets-config.mjs";
 import "./effect-config.d.mts";
 import "./folder-config.d.mts";
 import "./grid-config.d.mts";
