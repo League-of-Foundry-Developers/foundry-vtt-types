@@ -578,22 +578,6 @@ declare namespace SchemaField {
   /** Any SchemaField. */
   type Any = SchemaField<any, any, any, any, any>;
 
-  /** Any SchemaField with flags. */
-  type AnyWithFlags = SchemaField<
-    {
-      flags: ObjectField<
-        {},
-        Record<string, unknown> | null | undefined,
-        Record<string, unknown>,
-        Record<string, unknown>
-      >;
-    },
-    any,
-    any,
-    any,
-    any
-  >;
-
   /**
    * Get the inner assignment type for the given DataSchema.
    * @typeParam Fields - the DataSchema fields of the SchemaField

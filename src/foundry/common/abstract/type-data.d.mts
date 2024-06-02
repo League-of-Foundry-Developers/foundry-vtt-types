@@ -60,7 +60,7 @@ import type Document from "./document.d.mts";
  */
 export default abstract class TypeDataModel<
   Schema extends SchemaField.Any,
-  Parent extends Document<SchemaField.AnyWithFlags, any, any>,
+  Parent extends Document<SchemaField.Any, any, any>,
 > extends DataModel<Schema, Parent> {
   modelProvider: System | Module | null;
 

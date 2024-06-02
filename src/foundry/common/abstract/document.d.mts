@@ -21,7 +21,7 @@ export default Document;
  * Documents are special in that they are persisted to the database and referenced by _id.
  */
 declare abstract class Document<
-  SchemaField extends fields.SchemaField.AnyWithFlags,
+  SchemaField extends fields.SchemaField.Any,
   ConcreteMetadata extends AnyMetadata = AnyMetadata,
   Parent extends Document.Any | null = null,
 > extends DataModel<SchemaField, Parent> {
@@ -786,10 +786,10 @@ declare abstract class Document<
 
 declare namespace Document {
   /** Any Document, except for Settings */
-  type Any = Document<fields.SchemaField.AnyWithFlags, AnyMetadata, any>;
+  type Any = Document<fields.SchemaField.Any, AnyMetadata, any>;
 
   /** Any Document, that is a child of the given parent Document. */
-  type AnyChild<Parent extends Any | null> = Document<fields.SchemaField.AnyWithFlags, AnyMetadata, Parent>;
+  type AnyChild<Parent extends Any | null> = Document<fields.SchemaField.Any, AnyMetadata, Parent>;
 
   type Constructor = Pick<typeof Document, keyof typeof Document> & (new (...args: any[]) => Document.Any);
 
