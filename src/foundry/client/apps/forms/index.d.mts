@@ -9,6 +9,7 @@ import "./combatant-config.d.mts";
 import "./default-sheets-config.mjs";
 import "./effect-config.d.mts";
 import "./folder-config.d.mts";
+import "./fonts.mjs";
 import "./grid-config.d.mts";
 import "./image-popout.d.mts";
 import "./item.d.mts";
