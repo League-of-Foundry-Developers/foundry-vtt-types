@@ -36,7 +36,7 @@ declare global {
 
     override render(force?: boolean, options?: Application.RenderOptions<Options>): this;
 
-    override getData(options?: Partial<Options>): MaybePromise<object>;
+    override getData(options?: Partial<Options>): MaybePromise<object>; // TODO: implement GetDataReturnType
 
     /**
      * Get an enumeration of the available grid types which can be applied to this Scene

@@ -27,7 +27,7 @@ declare global {
 
     override get title(): string;
 
-    override getData(options?: Partial<Options>): MaybePromise<object>;
+    override getData(options?: Partial<Options>): MaybePromise<object>; // TODO: implement GetDataReturnType
 
     override activateListeners(html: JQuery): void;
 
