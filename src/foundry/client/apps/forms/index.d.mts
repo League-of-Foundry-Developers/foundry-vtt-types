@@ -13,6 +13,7 @@ import "./fonts.mjs";
 import "./grid-config.d.mts";
 import "./image-popout.d.mts";
 import "./item.d.mts";
+import "./journal-page-sheet.mjs";
 import "./journal-sheet.d.mts";
 import "./macro-config.d.mts";
 import "./measure-template.d.mts";
