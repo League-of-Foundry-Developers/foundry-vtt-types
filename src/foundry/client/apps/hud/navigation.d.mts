@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { MaybePromise } from "../../../../types/utils.d.mts";
 
 declare global {
@@ -32,7 +31,7 @@ declare global {
     /**
      * Return an Array of Scenes which are displayed in the Navigation bar
      */
-    get scenes(): InstanceType<ConfiguredDocumentClassForName<"Scene">>[];
+    get scenes(): Scene.ConfiguredInstance[];
 
     override render(force?: boolean, context?: Application.RenderOptions<Options>): this | void;
 

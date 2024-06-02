@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentClassForName } from "../../../types/helperTypes.mts";
 import type { InexactPartial, Merge } from "../../../types/utils.mts";
 import type { DataModel } from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
@@ -22,11 +21,7 @@ declare global {
  * The base Token model definition which defines common behavior of an Token document between both client and server.
  */
 interface BaseToken extends BaseToken.Properties {}
-declare class BaseToken extends Document<
-  BaseToken.SchemaField,
-  BaseToken.Metadata,
-  InstanceType<ConfiguredDocumentClassForName<"Scene">> | null
-> {
+declare class BaseToken extends Document<BaseToken.SchemaField, BaseToken.Metadata, Scene.ConfiguredInstance | null> {
   constructor(data?: BaseToken.ConstructorData, context?: DocumentConstructionContext);
 
   static override metadata: Readonly<BaseToken.Metadata>;

@@ -30,7 +30,7 @@ declare global {
      * {@link Folder.getSubfolders} because reports the subset of child folders which  are displayed to the current User
      * in the UI.
      */
-    children: ConfiguredFolder[];
+    children: Folder.ConfiguredInstance[];
 
     /**
      * Return whether the folder is displayed in the sidebar to the current User.
@@ -68,7 +68,7 @@ declare global {
     /**
      * Return the list of ancestors of this folder, starting with the parent.
      */
-    get ancestors(): ConfiguredFolder[];
+    get ancestors(): Folder.ConfiguredInstance[];
 
     protected _preCreate(
       data: BaseFolder.ConstructorData,
@@ -121,21 +121,21 @@ declare global {
      *                    (default: `false`)
      * @returns An array of Folder documents which are subfolders of this one
      */
-    getSubfolders(recursive?: boolean): ConfiguredFolder[];
+    getSubfolders(recursive?: boolean): Folder.ConfiguredInstance[];
 
     /**
      * Get the Folder documents which are parent folders of the current folder or any if its parents.
      * @returns An array of Folder documents which are parent folders of this one
      */
-    getParentFolders(): ConfiguredFolder[];
+    getParentFolders(): Folder.ConfiguredInstance[];
   }
 
   namespace Folder {
+    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"Folder">>;
+
     interface ExportToCompendiumOptions {
       /** Update existing entries in the Compendium pack, matching by name */
       updateByName?: boolean | undefined;
     }
   }
 }
-
-type ConfiguredFolder = InstanceType<ConfiguredDocumentClass<typeof Folder>>;

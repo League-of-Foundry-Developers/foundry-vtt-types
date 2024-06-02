@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
 import type { InexactPartial, StoredDocument } from "../../../../types/utils.d.mts";
 
 declare global {
@@ -15,7 +14,7 @@ declare global {
      * The User document of the currently connected user
      * @defaultValue `null`
      */
-    current: StoredDocument<ConfiguredUser> | null;
+    current: StoredDocument<User.ConfiguredInstance> | null;
 
     /**
      * Initialize the Map object and all its contained documents
@@ -34,7 +33,7 @@ declare global {
      * Get one User who is an active Gamemaster, or null if no active GM is available.
      * This can be useful for workflows which occur on all clients, but where only one user should take action.
      */
-    get activeGM(): ConfiguredUser | null;
+    get activeGM(): User.ConfiguredInstance | null;
 
     /** @remarks This is not marked as protected because it is used in {@link Game#activateSocketListeners} */
     static _activateSocketListeners(socket: io.Socket): void;
@@ -48,5 +47,3 @@ declare global {
     protected static _handleUserActivity(userId: string, activityData?: InexactPartial<ActivityData> | undefined): void;
   }
 }
-
-type ConfiguredUser = InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseUser>>;

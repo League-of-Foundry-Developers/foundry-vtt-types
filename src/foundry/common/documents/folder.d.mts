@@ -1,4 +1,3 @@
-// import type { ConfiguredDocumentClassForName } from "../../../types/helperTypes.d.mts";
 import type { Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
@@ -48,11 +47,8 @@ declare class BaseFolder extends Document<BaseFolder.SchemaField, BaseFolder.Met
     },
   ): object;
 
-  // TODO: `'Folder' is referenced directly or indirectly in its own base expression.`
-  // static override get(
-  //   documentId: string,
-  //   options: InexactPartial<{ pack: string }>,
-  // ): InstanceType<ConfiguredDocumentClassForName<"Folder">> | null;
+  // TODO: `Return type annotation circularly references itself.`
+  // static override get(documentId: string, options: InexactPartial<{ pack: string }>): Folder.ConfiguredInstance | null;
 }
 export default BaseFolder;
 

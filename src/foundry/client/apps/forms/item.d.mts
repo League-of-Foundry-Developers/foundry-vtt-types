@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
 import type { GetDataReturnType, MaybePromise } from "../../../../types/utils.d.mts";
 
 declare global {
@@ -12,7 +11,7 @@ declare global {
    */
   class ItemSheet<Options extends DocumentSheetOptions<Item> = DocumentSheetOptions<Item>> extends DocumentSheet<
     Options,
-    InstanceType<ConfiguredDocumentClass<typeof Item>>
+    Item.ConfiguredInstance
   > {
     /**
      * @defaultValue
@@ -50,7 +49,7 @@ declare global {
 
   namespace ItemSheet {
     interface ItemSheetData<Options extends DocumentSheetOptions<Item> = DocumentSheetOptions<Item>>
-      extends DocumentSheet.DocumentSheetData<Options, InstanceType<ConfiguredDocumentClass<typeof Item>>> {
+      extends DocumentSheet.DocumentSheetData<Options, Item.ConfiguredInstance> {
       item: this["document"];
     }
   }

@@ -1,8 +1,4 @@
-import type {
-  ConfiguredDocumentClass,
-  ConfiguredDocumentClassForName,
-  ConfiguredObjectClassForName,
-} from "../../../../types/helperTypes.d.mts";
+import type { ConfiguredObjectClassForName } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, RequiredProps } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
@@ -14,7 +10,7 @@ declare global {
    * @see TokenDocument
    * @see TokenLayer
    */
-  class Token extends PlaceableObject<ConfiguredTokenDocument> {
+  class Token extends PlaceableObject<TokenDocument.ConfiguredInstance> {
     static override embeddedName: "Token";
 
     static override RENDER_FLAGS: {
@@ -172,7 +168,7 @@ declare global {
     /**
      * Return a reference to a Combatant that represents this Token, if one is present in the current encounter.
      */
-    get combatant(): InstanceType<ConfiguredDocumentClassForName<"Combatant">> | null;
+    get combatant(): Combatant.ConfiguredInstance | null;
 
     /**
      * An indicator for whether the Token is currently targeted by the active game User
@@ -478,7 +474,7 @@ declare global {
      * @param combat - A specific combat encounter to which this Token should be added
      * @returns The Token which initiated the toggle
      */
-    toggleCombat(combat?: InstanceType<ConfiguredDocumentClassForName<"Combat">>): Promise<this>;
+    toggleCombat(combat?: Combat.ConfiguredInstance): Promise<this>;
 
     /**
      * Toggle an active effect by its texture path.
@@ -490,7 +486,7 @@ declare global {
      * @returns Was the texture applied (true) or removed (false)
      */
     toggleEffect(
-      effect: string | ConstructorParameters<ConfiguredDocumentClassForName<"ActiveEffect">>[0],
+      effect: string | Parameters<TokenDocument["toggleActiveEffect"]>[0],
       options?: Token.EffectToggleOptions | undefined,
     ): Promise<boolean>;
 
@@ -498,7 +494,7 @@ declare global {
      * Toggle the visibility state of any Tokens in the currently selected set
      * @returns A Promise which resolves to the updated Token documents
      */
-    toggleVisibility(): Promise<ConfiguredTokenDocument[]>;
+    toggleVisibility(): Promise<TokenDocument.ConfiguredInstance[]>;
 
     /**
      * The external radius of the token in pixels.
@@ -517,13 +513,13 @@ declare global {
     protected override _getShiftedPosition(dx: number, dy: number): { x: number; y: number };
 
     protected override _onCreate(
-      data: ConfiguredTokenDocument["_source"],
+      data: TokenDocument.ConfiguredInstance["_source"],
       options: DocumentModificationOptions,
       userId: string,
     ): void;
 
     protected override _onUpdate(
-      data?: DeepPartial<ConfiguredTokenDocument["_source"]>,
+      data?: DeepPartial<TokenDocument.ConfiguredInstance["_source"]>,
       options?: DocumentModificationOptions & { animate?: boolean },
       userId?: string,
     ): void;
@@ -542,37 +538,19 @@ declare global {
 
     protected override _onRelease(
       options: PlaceableObject.ReleaseOptions,
-    ): Promise<ConfiguredTokenDocument> | undefined;
+    ): Promise<TokenDocument.ConfiguredInstance> | undefined;
 
-    protected override _canControl(
-      user?: InstanceType<ConfiguredDocumentClass<typeof User>>,
-      event?: PIXI.FederatedEvent,
-    ): boolean;
+    protected override _canControl(user?: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
 
-    protected override _canHUD(
-      user: InstanceType<ConfiguredDocumentClass<typeof User>>,
-      event?: PIXI.FederatedEvent,
-    ): boolean;
+    protected override _canHUD(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
 
-    protected override _canConfigure(
-      user?: InstanceType<ConfiguredDocumentClass<typeof User>>,
-      event?: PIXI.FederatedEvent,
-    ): true;
+    protected override _canConfigure(user?: User.ConfiguredInstance, event?: PIXI.FederatedEvent): true;
 
-    protected override _canHover(
-      user?: InstanceType<ConfiguredDocumentClass<typeof User>>,
-      event?: PIXI.FederatedEvent,
-    ): true;
+    protected override _canHover(user?: User.ConfiguredInstance, event?: PIXI.FederatedEvent): true;
 
-    protected override _canView(
-      user?: InstanceType<ConfiguredDocumentClass<typeof User>>,
-      event?: PIXI.FederatedEvent,
-    ): boolean;
+    protected override _canView(user?: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
 
-    protected override _canDrag(
-      user: InstanceType<ConfiguredDocumentClass<typeof User>>,
-      event: PIXI.FederatedEvent,
-    ): boolean;
+    protected override _canDrag(user: User.ConfiguredInstance, event: PIXI.FederatedEvent): boolean;
 
     protected override _onHoverIn(event: PIXI.FederatedEvent, options?: { hoverOutOthers?: boolean }): void;
 
@@ -824,7 +802,7 @@ declare global {
        * Assign the token as a target for a specific User
        * @defaultValue `null`
        */
-      user?: InstanceType<ConfiguredDocumentClass<typeof User>> | null | undefined;
+      user?: User.ConfiguredInstance | null | undefined;
 
       /**
        * Release other active targets for the same player?
@@ -851,5 +829,3 @@ declare global {
    */
   let _token: InstanceType<ConfiguredObjectClassForName<"Token">> | null;
 }
-
-type ConfiguredTokenDocument = InstanceType<ConfiguredDocumentClassForName<"Token">>;

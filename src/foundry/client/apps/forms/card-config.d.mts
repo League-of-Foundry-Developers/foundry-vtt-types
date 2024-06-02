@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { GetDataReturnType, MaybePromise } from "../../../../types/utils.d.mts";
 
 declare global {
@@ -9,7 +8,7 @@ declare global {
    */
   class CardConfig<Options extends DocumentSheetOptions<Card> = DocumentSheetOptions<Card>> extends DocumentSheet<
     Options,
-    InstanceType<ConfiguredDocumentClassForName<"Card">>
+    Card.ConfiguredInstance
   > {
     /**
      * @defaultValue
@@ -39,7 +38,7 @@ declare global {
 
   namespace CardConfig {
     interface CardConfigData<Options extends DocumentSheetOptions<Card> = DocumentSheetOptions<Card>>
-      extends DocumentSheet.DocumentSheetData<Options, InstanceType<ConfiguredDocumentClassForName<"Card">>> {
+      extends DocumentSheet.DocumentSheetData<Options, Card.ConfiguredInstance> {
       //TODO: Find if we can better type this
       types: Record<string, string>;
     }

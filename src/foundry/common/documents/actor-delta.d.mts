@@ -18,7 +18,7 @@ interface BaseActorDelta extends BaseActorDelta.Properties {}
 declare class BaseActorDelta extends Document<
   documents.BaseActorDelta.SchemaField,
   documents.BaseActorDelta.Metadata,
-  InstanceType<ConfiguredDocumentClassForName<"Token">> | null
+  TokenDocument.ConfiguredInstance | null
 > {
   constructor(data?: BaseActorDelta.ConstructorData, context?: DocumentConstructionContext);
 
@@ -117,18 +117,12 @@ declare namespace BaseActorDelta {
     /**
      * An array of embedded item data overrides.
      */
-    items: fields.EmbeddedCollectionDeltaField<
-      typeof documents.BaseItem,
-      InstanceType<ConfiguredDocumentClassForName<"ActorDelta">>
-    >;
+    items: fields.EmbeddedCollectionDeltaField<typeof documents.BaseItem, ActorDelta.ConfiguredInstance>;
 
     /**
      * An array of embedded active effect data overrides.
      */
-    effects: fields.EmbeddedCollectionDeltaField<
-      typeof documents.BaseActiveEffect,
-      InstanceType<ConfiguredDocumentClassForName<"ActorDelta">>
-    >;
+    effects: fields.EmbeddedCollectionDeltaField<typeof documents.BaseActiveEffect, ActorDelta.ConfiguredInstance>;
 
     /**
      * Ownership overrides.

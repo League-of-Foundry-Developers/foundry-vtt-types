@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClass, ConfiguredObjectClassForName } from "../../../../../types/helperTypes.d.mts";
+import type { ConfiguredObjectClassForName } from "../../../../../types/helperTypes.d.mts";
 import type { ConstructorOf, InexactPartial } from "../../../../../types/utils.d.mts";
 
 declare global {
@@ -127,7 +127,7 @@ declare global {
     override pasteObjects(
       position: Point,
       options?: Record<string, unknown>,
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseWall>>[]>;
+    ): Promise<WallDocument.ConfiguredInstance[]>;
 
     /**
      * Pan the canvas view when the cursor position gets close to the edge of the frame

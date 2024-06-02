@@ -9,7 +9,7 @@ declare global {
    */
   class CardsConfig<Options extends CardsConfig.Options = CardsConfig.Options> extends DocumentSheet<
     Options,
-    InstanceType<ConfiguredDocumentClassForName<"Cards">>
+    Cards.ConfiguredInstance
   > {
     constructor(object: ConfiguredDocumentClassForName<"Cards">, options: Options);
 
@@ -75,8 +75,8 @@ declare global {
      */
     protected _onSortCard(
       event: DragEvent,
-      card: InstanceType<ConfiguredDocumentClassForName<"Card">>,
-    ): ReturnType<InstanceType<ConfiguredDocumentClassForName<"Cards">>["updateEmbeddedDocuments"]>;
+      card: Card.ConfiguredInstance,
+    ): ReturnType<Cards.ConfiguredInstance["updateEmbeddedDocuments"]>;
   }
 
   /**
@@ -119,8 +119,8 @@ declare global {
     }
 
     interface CardsConfigData<Options extends CardsConfig.Options = CardsConfig.Options>
-      extends DocumentSheet.DocumentSheetData<Options, InstanceType<ConfiguredDocumentClassForName<"Cards">>> {
-      cards: InstanceType<ConfiguredDocumentClassForName<"Card">>[];
+      extends DocumentSheet.DocumentSheetData<Options, Cards.ConfiguredInstance> {
+      cards: Card.ConfiguredInstance[];
       //TODO: Find if we can better type this
       types: Record<string, string>;
       inCompendium: boolean;

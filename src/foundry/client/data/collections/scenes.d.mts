@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
 import type { StoredDocument } from "../../../../types/utils.d.mts";
 
 declare global {
@@ -46,10 +45,8 @@ declare global {
     protected static _pullToScene(sceneId: string): void;
 
     override fromCompendium(
-      document:
-        | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseScene>>
-        | foundry.documents.BaseScene.ConstructorData,
+      document: Scene | foundry.documents.BaseScene.ConstructorData,
       options?: WorldCollection.FromCompendiumOptions | undefined,
-    ): Omit<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseScene>>, "_id" | "folder">;
+    ): Omit<Scene.ConfiguredInstance, "_id" | "folder">;
   }
 }

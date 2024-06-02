@@ -1,3 +1,4 @@
+import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 import type { SchemaField } from "../../../common/data/fields.d.mts";
@@ -62,6 +63,10 @@ declare global {
     ): void;
 
     protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
+  }
+
+  namespace JournalEntry {
+    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"JournalEntry">>;
   }
 }
 

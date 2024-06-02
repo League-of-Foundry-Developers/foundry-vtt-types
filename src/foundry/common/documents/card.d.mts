@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentClassForName } from "../../../types/helperTypes.d.mts";
 import type { InexactPartial, Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
@@ -17,11 +16,7 @@ declare global {
  * Defines the DataSchema and common behaviors for a Card which are shared between both client and server.
  */
 interface BaseCard extends BaseCard.Properties {}
-declare class BaseCard extends Document<
-  BaseCard.SchemaField,
-  BaseCard.Metadata,
-  InstanceType<ConfiguredDocumentClassForName<"Cards">> | null
-> {
+declare class BaseCard extends Document<BaseCard.SchemaField, BaseCard.Metadata, Cards.ConfiguredInstance | null> {
   /**
    * @param data    - Initial data from which to construct the Card
    * @param context - Construction context options

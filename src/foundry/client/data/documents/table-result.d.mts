@@ -1,3 +1,5 @@
+import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
+
 export {};
 
 declare global {
@@ -17,5 +19,9 @@ declare global {
      * @returns The text to display
      */
     getChatText(): string;
+  }
+
+  namespace TableResult {
+    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"TableResult">>;
   }
 }

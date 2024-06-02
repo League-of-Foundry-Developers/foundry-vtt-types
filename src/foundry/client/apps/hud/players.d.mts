@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
 import type { MaybePromise, StoredDocument } from "../../../../types/utils.d.mts";
 
 declare global {
@@ -48,7 +47,7 @@ declare global {
 
   namespace PlayerList {
     interface Data {
-      users: StoredDocument<InstanceType<ConfiguredDocumentClass<typeof User>>>[];
+      users: StoredDocument<User.ConfiguredInstance>[];
       showOffline: boolean;
       hide: boolean;
     }

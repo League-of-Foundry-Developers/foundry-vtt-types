@@ -19,7 +19,7 @@ declare global {
     /**
      * A convenience alias of Combatant#parent which is more semantically intuitive
      */
-    get combat(): InstanceType<ConfiguredDocumentClassForName<"Combat">> | null;
+    get combat(): Combat.ConfiguredInstance | null;
 
     /** This is treated as a non-player combatant if it has no associated actor and no player users who can control it */
     get isNPC(): boolean;
@@ -27,13 +27,13 @@ declare global {
     override get visible(): boolean;
 
     /** A reference to the Actor document which this Combatant represents, if any */
-    get actor(): InstanceType<ConfiguredDocumentClassForName<"Actor">> | null;
+    get actor(): Actor.ConfiguredInstance | null;
 
     /** A reference to the Token document which this Combatant represents, if any */
-    get token(): InstanceType<ConfiguredDocumentClassForName<"Token">> | null;
+    get token(): TokenDocument.ConfiguredInstance | null;
 
     /** An array of User documents who have ownership of this Document */
-    get players(): InstanceType<ConfiguredDocumentClassForName<"User">>[];
+    get players(): User.ConfiguredInstance[];
 
     /**
      * Has this combatant been marked as defeated?
@@ -78,5 +78,9 @@ declare global {
      * @deprecated since v9
      */
     get isVisible(): boolean;
+  }
+
+  namespace Combatant {
+    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"Combatant">>;
   }
 }

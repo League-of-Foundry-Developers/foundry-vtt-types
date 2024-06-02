@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClassForName, ConfiguredObjectClassForName } from "../../../../types/helperTypes.d.mts";
+import type { ConfiguredObjectClassForName } from "../../../../types/helperTypes.d.mts";
 import type { MaybePromise } from "../../../../types/utils.d.mts";
 
 declare global {
@@ -8,7 +8,7 @@ declare global {
    */
   class WallConfig<
     Options extends DocumentSheetOptions<WallDocument> = DocumentSheetOptions<WallDocument>,
-  > extends DocumentSheet<Options, InstanceType<ConfiguredDocumentClassForName<"Wall">>> {
+  > extends DocumentSheet<Options, WallDocument.ConfiguredInstance> {
     /**
      * @defaultValue
      * ```typescript

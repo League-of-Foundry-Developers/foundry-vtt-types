@@ -68,9 +68,7 @@ declare global {
         | undefined,
     ): HTMLAnchorElement;
 
-    _onClickDocumentLink(
-      event: MouseEvent,
-    ): ReturnType<InstanceType<ConfiguredDocumentClassForName<"Playlist">>["stopSound" | "playSound"]>;
+    _onClickDocumentLink(event: MouseEvent): ReturnType<Playlist.ConfiguredInstance["stopSound" | "playSound"]>;
 
     protected override _onCreate(data: this["_source"], options: DocumentModificationOptions, userId: string): void;
 
@@ -86,7 +84,7 @@ declare global {
      * Special handling that occurs when a PlaylistSound reaches the natural conclusion of its playback.
      * @internal
      */
-    protected _onEnd(): Promise<void | InstanceType<ConfiguredDocumentClassForName<"Playlist">> | undefined>;
+    protected _onEnd(): Promise<void | Playlist.ConfiguredInstance | undefined>;
 
     /**
      * Special handling that occurs when playback of a PlaylistSound is started.
@@ -111,5 +109,9 @@ declare global {
      * @internal
      */
     protected _fadeOut(sound: Sound): void;
+  }
+
+  namespace PlaylistSound {
+    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"PlaylistSound">>;
   }
 }

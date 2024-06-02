@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, RequiredProps } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
@@ -10,9 +9,7 @@ declare global {
    * @see {@link MeasuredTemplateDocument}
    * @see {@link TemplateLayer}
    */
-  class MeasuredTemplate extends PlaceableObject<
-    InstanceType<ConfiguredDocumentClass<typeof MeasuredTemplateDocument>>
-  > {
+  class MeasuredTemplate extends PlaceableObject<MeasuredTemplateDocument.ConfiguredInstance> {
     /**
      * The geometry shape used for testing point intersection
      * @defaultValue `undefined`
@@ -167,11 +164,11 @@ declare global {
 
     override rotate(angle: number, snap: number): Promise<this>;
 
-    protected override _canControl(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
+    protected override _canControl(user: User.ConfiguredInstance, event?: any): boolean;
 
-    protected override _canConfigure(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
+    protected override _canConfigure(user: User.ConfiguredInstance, event?: any): boolean;
 
-    protected override _canView(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
+    protected override _canView(user: User.ConfiguredInstance, event?: any): boolean;
 
     protected override _onUpdate(
       data: DeepPartial<foundry.documents.BaseMeasuredTemplate["_source"]>,
@@ -179,25 +176,13 @@ declare global {
       userId?: string,
     ): void;
 
-    protected override _canControl(
-      user: InstanceType<ConfiguredDocumentClass<typeof User>>,
-      event: PIXI.FederatedEvent,
-    ): boolean;
+    protected override _canControl(user: User.ConfiguredInstance, event: PIXI.FederatedEvent): boolean;
 
-    protected override _canHUD(
-      user: InstanceType<ConfiguredDocumentClass<typeof User>>,
-      event?: PIXI.FederatedEvent,
-    ): boolean;
+    protected override _canHUD(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
 
-    protected override _canConfigure(
-      user: InstanceType<ConfiguredDocumentClass<typeof User>>,
-      event?: PIXI.FederatedEvent,
-    ): boolean;
+    protected override _canConfigure(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
 
-    protected override _canView(
-      user: InstanceType<ConfiguredDocumentClass<typeof User>>,
-      event?: PIXI.FederatedEvent,
-    ): boolean;
+    protected override _canView(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
 
     protected override _onClickRight(event: PIXI.FederatedEvent): void;
   }

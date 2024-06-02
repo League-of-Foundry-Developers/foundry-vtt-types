@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
+import type { ConfiguredDocumentClass, ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { InexactPartial } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 import type { ClientDocument } from "../abstract/client-document.d.mts";
@@ -25,9 +25,9 @@ declare global {
      * @param options - Additional options which modify message creation
      */
     toMessage(
-      results: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseTableResult>>[],
+      results: TableResult.ConfiguredInstance[],
       options?: InexactPartial<RollTable.ToMessageOptions>,
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseChatMessage>> | undefined>;
+    ): Promise<ChatMessage.ConfiguredInstance | undefined>;
 
     /**
      * Draw a result from the RollTable based on the table formula or a provided Roll instance
@@ -54,7 +54,7 @@ declare global {
      * @remarks Actually, returns list of TableEntries updated, not the RollTable.
      * As written, it force updates all records, not just the ones already drawn.
      */
-    resetResults(): Promise<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseTableResult>>[]>;
+    resetResults(): Promise<TableResult.ConfiguredInstance[]>;
 
     /**
      * Evaluate a RollTable by rolling its formula and retrieving a drawn result.
@@ -83,9 +83,9 @@ declare global {
      * @param value - The rolled value
      * @returns An Array of results
      */
-    getResultsForRoll(value: number): InstanceType<ConfiguredDocumentClass<typeof TableResult>>[];
+    getResultsForRoll(value: number): TableResult.ConfiguredInstance[];
 
-    override _onCreateDescendantDocuments(
+    protected override _onCreateDescendantDocuments(
       parent: ClientDocument,
       collection: string,
       documents: ClientDocument[],
@@ -94,11 +94,12 @@ declare global {
       userId: string,
     ): void;
 
-    override _onDeleteEmbeddedDocuments(
-      embeddedName: string,
-      documents: InstanceType<ConfiguredDocumentClass<typeof TableResult>>[],
-      result: string[],
-      options: DocumentModificationContext,
+    protected override _onDeleteDescendantDocuments(
+      parent: ClientDocument,
+      collection: string,
+      documents: ClientDocument[],
+      ids: string,
+      options: DocumentModificationOptions,
       userId: string,
     ): void;
 
@@ -115,12 +116,14 @@ declare global {
      * @param options - Additional options passed to the RollTable.create method
      */
     static fromFolder(
-      folder: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseFolder>>,
+      folder: Folder,
       options?: DocumentModificationOptions,
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseRollTable>> | undefined>;
+    ): Promise<RollTable.ConfiguredInstance | undefined>;
   }
 
   namespace RollTable {
+    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"RollTable">>;
+
     /**
      * Optional arguments which customize the draw
      */

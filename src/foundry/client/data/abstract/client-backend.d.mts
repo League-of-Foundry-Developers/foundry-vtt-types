@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { ConstructorOf } from "../../../../types/utils.d.mts";
 import type { RequestContext } from "../../../common/abstract/backend.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
@@ -11,25 +10,25 @@ declare global {
     protected override _getDocuments<T extends Document<any, any>>(
       documentClass: ConstructorOf<T>,
       request: RequestContext<T>,
-      user: InstanceType<ConfiguredDocumentClassForName<"User">>,
+      user: User.ConfiguredInstance,
     ): Promise<T[]>;
 
     protected override _createDocuments<T extends Document<any, any>>(
       documentClass: ConstructorOf<T>,
       request: RequestContext<T>,
-      user: InstanceType<ConfiguredDocumentClassForName<"User">>,
+      user: User.ConfiguredInstance,
     ): Promise<T[]>;
 
     protected override _updateDocuments<T extends Document<any, any>>(
       documentClass: ConstructorOf<T>,
       request: RequestContext<T>,
-      user: InstanceType<ConfiguredDocumentClassForName<"User">>,
+      user: User.ConfiguredInstance,
     ): Promise<T[]>;
 
     protected override _deleteDocuments<T extends Document<any, any>>(
       documentClass: ConstructorOf<T>,
       request: RequestContext<T>,
-      user: InstanceType<ConfiguredDocumentClassForName<"User">>,
+      user: User.ConfiguredInstance,
     ): Promise<T[]>;
 
     /**

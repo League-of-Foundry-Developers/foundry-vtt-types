@@ -40,22 +40,26 @@ declare global {
      */
     getRollData(): object;
 
-    protected _preCreate(
+    protected override _preCreate(
       data: foundry.documents.BaseItem.ConstructorData,
       options: DocumentModificationOptions,
       user: BaseUser,
     ): Promise<boolean | void>;
 
-    // @ts-expect-error For some reason, proctected static methods from Document are lost, so ts complains that this isn't actually an override
+    // @ts-expect-error For some reason, protected static methods from Document are lost, so ts complains that this isn't actually an override
     protected static override _onCreateDocuments(
-      items: Array<InstanceType<ConfiguredDocumentClassForName<"Item">>>,
+      items: Array<Item.ConfiguredInstance>,
       context: DocumentModificationContext,
     ): Promise<unknown>;
 
-    // @ts-expect-error For some reason, proctected static methods from Document are lost, so ts complains that this isn't actually an override
+    // @ts-expect-error For some reason, protected static methods from Document are lost, so ts complains that this isn't actually an override
     protected static override _onDeleteDocuments(
-      items: Array<InstanceType<ConfiguredDocumentClassForName<"Item">>>,
+      items: Array<Item.ConfiguredInstance>,
       context: DocumentModificationContext,
     ): Promise<unknown>;
+  }
+
+  namespace Item {
+    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"Item">>;
   }
 }

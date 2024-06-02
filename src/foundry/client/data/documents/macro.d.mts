@@ -34,11 +34,13 @@ declare global {
      */
 
     // TODO: Test if additional scope can be passed
-    execute(
-      scope?: Scope,
-    ): this["type"] extends "chat" ? InstanceType<ConfiguredDocumentClassForName<"ChatMessage">> : any;
+    execute(scope?: Scope): this["type"] extends "chat" ? ChatMessage.ConfiguredInstance : any;
 
     _onClickDocumentLink(event: MouseEvent): ReturnType<this["execute"]>;
+  }
+
+  namespace Macro {
+    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"Macro">>;
   }
 }
 interface Scope {

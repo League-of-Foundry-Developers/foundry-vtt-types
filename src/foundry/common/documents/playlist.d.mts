@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentClassForName } from "../../../types/helperTypes.d.mts";
 import type { Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
@@ -86,10 +85,7 @@ declare namespace BasePlaylist {
      * A Collection of PlaylistSounds embedded documents which belong to this playlist
      * @defaultValue `[]`
      */
-    sounds: fields.EmbeddedCollectionField<
-      typeof documents.BasePlaylistSound,
-      InstanceType<ConfiguredDocumentClassForName<"Playlist">>
-    >;
+    sounds: fields.EmbeddedCollectionField<typeof documents.BasePlaylistSound, Playlist.ConfiguredInstance>;
 
     /**
      * The playback mode for sounds in this playlist

@@ -76,7 +76,7 @@ declare global {
      */
     get documentCollection(): EmbeddedCollection<
       InstanceType<ConfiguredDocumentClassForName<DocumentName>>,
-      InstanceType<ConfiguredDocumentClassForName<"Scene">>
+      Scene.ConfiguredInstance
     > | null;
 
     /**

@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
+import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 
 declare global {
   /**
@@ -12,11 +12,15 @@ declare global {
      * A reference to the User who created the MeasuredTemplate document.
      * @remarks Will return undefined if the user has been deleted
      */
-    get author(): InstanceType<ConfiguredDocumentClass<typeof User>> | undefined;
+    get author(): User.ConfiguredInstance | undefined;
 
     /**
      * Rotation is an alias for direction
      */
     get rotation(): this["direction"];
+  }
+
+  namespace MeasuredTemplateDocument {
+    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"MeasuredTemplate">>;
   }
 }

@@ -1,3 +1,5 @@
+import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
+
 export {};
 
 declare global {
@@ -21,5 +23,9 @@ declare global {
     get sort(): this["z"];
 
     override prepareDerivedData(): void;
+  }
+
+  namespace TileDocument {
+    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"Tile">>;
   }
 }

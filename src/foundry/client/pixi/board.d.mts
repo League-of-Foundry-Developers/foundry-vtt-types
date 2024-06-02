@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentClass } from "../../../types/helperTypes.d.mts";
 import type { InexactPartial, StoredDocument } from "../../../types/utils.d.mts";
 import type { CANVAS_PERFORMANCE_MODES } from "../../common/constants.d.mts";
 
@@ -406,7 +405,7 @@ declare global {
      * @param scene - A specific Scene document to render on the Canvas
      * @returns A Promise which resolves once the Canvas is fully drawn
      */
-    draw(scene?: InstanceType<ConfiguredDocumentClass<typeof Scene>>): Promise<this>;
+    draw(scene?: Scene.ConfiguredInstance): Promise<this>;
 
     /**
      * When re-drawing the canvas, first tear down or discontinue some existing processes

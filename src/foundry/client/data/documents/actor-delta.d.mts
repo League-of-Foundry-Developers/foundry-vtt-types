@@ -19,7 +19,7 @@ declare global {
      * Apply this ActorDelta to the base Actor and return a synthetic Actor.
      * @param context - Context to supply to synthetic Actor instantiation.
      */
-    apply(context: unknown): ConfiguredActor;
+    apply(context: unknown): Actor.ConfiguredInstance;
 
     /** @remarks `"The synthetic actor prepares its items in the appropriate context of an actor. The actor delta does not need to prepare its items, and would do so in the incorrect context."` */
     override prepareEmbeddedDocuments(): void;
@@ -52,7 +52,7 @@ declare global {
      * Restore this delta to empty, inheriting all its properties from the base actor.
      * @returns The restored synthetic Actor.
      */
-    restore(): Promise<ConfiguredActor>;
+    restore(): Promise<Actor.ConfiguredInstance>;
 
     /**
      * Ensure that the embedded collection delta is managing any entries that have had their descendants updated.
@@ -80,8 +80,10 @@ declare global {
       _parent: ClientDocument,
     ): void;
   }
-}
 
-type ConfiguredActor = InstanceType<ConfiguredDocumentClassForName<"Actor">>;
+  namespace ActorDelta {
+    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"ActorDelta">>;
+  }
+}
 
 export {};

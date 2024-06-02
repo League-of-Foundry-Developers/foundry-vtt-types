@@ -1,3 +1,4 @@
+import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
@@ -30,5 +31,9 @@ declare global {
      */
     // TODO: This could probably be derived
     _castType(): any;
+  }
+
+  namespace Setting {
+    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"Setting">>;
   }
 }

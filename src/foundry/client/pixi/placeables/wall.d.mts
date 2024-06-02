@@ -1,8 +1,4 @@
-import type {
-  ConfiguredDocumentClass,
-  ConfiguredDocumentClassForName,
-  ConfiguredObjectClassForName,
-} from "../../../../types/helperTypes.d.mts";
+import type { ConfiguredObjectClassForName } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 import type { LineIntersection } from "../../../common/utils/geometry.d.mts";
@@ -16,7 +12,7 @@ declare global {
    * @see {@link WallDocument}
    * @see {@link WallsLayer}
    */
-  class Wall extends PlaceableObject<ConcreteWallDocument> {
+  class Wall extends PlaceableObject<WallDocument.ConfiguredInstance> {
     static override embeddedName: "Wall";
 
     static override RENDER_FLAGS: {
@@ -207,7 +203,7 @@ declare global {
      * Record the intersection points between this wall and another, if any.
      * @param other - The other wall.
      */
-    protected _identifyIntersectionsWith(other: InstanceType<ConfiguredDocumentClassForName<"Wall">>): void;
+    protected _identifyIntersectionsWith(other: WallDocument.ConfiguredInstance): void;
 
     protected override _applyRenderFlags(flags: Wall.RenderFlags): void;
 
@@ -242,7 +238,7 @@ declare global {
 
     override activateListeners(): void;
 
-    protected override _canControl(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
+    protected override _canControl(user: User, event?: any): boolean;
 
     protected override _onHoverIn(event: PIXI.FederatedEvent, options?: PlaceableObject.HoverInOptions): false | void;
 
@@ -291,5 +287,3 @@ declare global {
     type DoorInteraction = "open" | "close" | "lock" | "unlock" | "test";
   }
 }
-
-type ConcreteWallDocument = InstanceType<ConfiguredDocumentClass<typeof WallDocument>>;

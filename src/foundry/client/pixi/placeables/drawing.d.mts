@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, ValueOf } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
@@ -8,8 +7,8 @@ declare global {
    * The Drawing object is an implementation of the PlaceableObject container.
    * Each Drawing is a placeable object in the DrawingsLayer.
    */
-  class Drawing extends PlaceableObject<InstanceType<ConfiguredDocumentClassForName<"Drawing">>> {
-    constructor(document: InstanceType<ConfiguredDocumentClassForName<"Drawing">>);
+  class Drawing extends PlaceableObject<DrawingDocument.ConfiguredInstance> {
+    constructor(document: DrawingDocument.ConfiguredInstance);
 
     /**
      * Each Drawing object belongs to the DrawingsLayer
@@ -166,13 +165,13 @@ declare global {
     /**
      * @param event - unused
      */
-    protected override _canControl(user: InstanceType<ConfiguredDocumentClassForName<"User">>, event?: any): boolean;
+    protected override _canControl(user: User.ConfiguredInstance, event?: any): boolean;
 
     /**
      * @param user  - unused
      * @param event - unused
      */
-    protected override _canConfigure(user: InstanceType<ConfiguredDocumentClassForName<"User">>, event?: any): boolean;
+    protected override _canConfigure(user: User.ConfiguredInstance, event?: any): boolean;
 
     /**
      * Handle mouse movement which modifies the dimensions of the drawn shape
@@ -227,9 +226,7 @@ declare global {
      * @param event - The mouseup event
      * @internal
      */
-    protected _onHandleDragDrop(
-      event: PIXI.FederatedEvent,
-    ): ReturnType<InstanceType<ConfiguredDocumentClassForName<"Drawing">>["update"]>;
+    protected _onHandleDragDrop(event: PIXI.FederatedEvent): ReturnType<DrawingDocument.ConfiguredInstance["update"]>;
 
     /**
      * Handle cancellation of a drag event for one of the resizing handles

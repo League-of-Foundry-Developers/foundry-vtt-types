@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentClassForName } from "../../../types/helperTypes.d.mts";
 import type { Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
@@ -17,7 +16,7 @@ interface BaseAmbientLight extends BaseAmbientLight.Properties {}
 declare class BaseAmbientLight extends Document<
   BaseAmbientLight.SchemaField,
   BaseAmbientLight.Metadata,
-  InstanceType<ConfiguredDocumentClassForName<"Scene">> | null
+  Scene.ConfiguredInstance | null
 > {
   /**
    * @param data    - Initial data from which to construct the AmbientLight

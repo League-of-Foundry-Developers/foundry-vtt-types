@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentClassForName } from "../../../types/helperTypes.d.mts";
 import type { Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
@@ -16,11 +15,7 @@ declare global {
  * Defines the DataSchema and common behaviors for a Wall which are shared between both client and server.
  */
 interface BaseWall extends BaseWall.Properties {}
-declare class BaseWall extends Document<
-  BaseWall.SchemaField,
-  BaseWall.Metadata,
-  InstanceType<ConfiguredDocumentClassForName<"Scene">> | null
-> {
+declare class BaseWall extends Document<BaseWall.SchemaField, BaseWall.Metadata, Scene.ConfiguredInstance | null> {
   /**
    * @param data    - Initial data from which to construct the Wall
    * @param context - Construction context options

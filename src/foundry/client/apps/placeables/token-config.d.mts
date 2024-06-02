@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { MaybePromise } from "../../../../types/utils.d.mts";
 
 declare global {
@@ -10,16 +9,11 @@ declare global {
    */
   class TokenConfig<Options extends FormApplicationOptions = FormApplicationOptions> extends FormApplication<
     Options,
-    InstanceType<ConfiguredDocumentClassForName<"Token">> | InstanceType<ConfiguredDocumentClassForName<"Actor">>
+    TokenDocument.ConfiguredInstance | Actor.ConfiguredInstance
   > {
-    constructor(
-      object:
-        | InstanceType<ConfiguredDocumentClassForName<"Token">>
-        | InstanceType<ConfiguredDocumentClassForName<"Actor">>,
-      options?: Partial<Options>,
-    );
+    constructor(object: TokenDocument.ConfiguredInstance | Actor.ConfiguredInstance, options?: Partial<Options>);
 
-    token: InstanceType<ConfiguredDocumentClassForName<"Token">> | PrototypeTokenDocument;
+    token: TokenDocument.ConfiguredInstance | PrototypeTokenDocument;
 
     /**
      * @defaultValue
@@ -49,7 +43,7 @@ declare global {
     /**
      * Convenience access to the Actor document that this Token represents
      */
-    get actor(): InstanceType<ConfiguredDocumentClassForName<"Actor">>;
+    get actor(): Actor.ConfiguredInstance;
 
     override get title(): string;
 
@@ -140,9 +134,9 @@ declare global {
 
     data: foundry.data.TokenData;
 
-    object: InstanceType<ConfiguredDocumentClassForName<"Token">>;
+    object: TokenDocument.ConfiguredInstance;
 
-    token: InstanceType<ConfiguredDocumentClassForName<"Token">>;
+    token: TokenDocument.ConfiguredInstance;
 
     /**
      * The named world setting that stores the default Token configuration

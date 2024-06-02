@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
+import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
@@ -97,7 +97,7 @@ declare global {
      * @param change - The change data being applied
      * @returns The resulting applied value
      */
-    apply(actor: ConfiguredActor, change: EffectChangeData): unknown;
+    apply(actor: Actor.ConfiguredInstance, change: EffectChangeData): unknown;
 
     /**
      * Cast a raw EffectChangeData change string to the desired data type.
@@ -139,7 +139,7 @@ declare global {
      * @returns The resulting applied value
      */
     protected _applyAdd(
-      actor: ConfiguredActor,
+      actor: Actor.ConfiguredInstance,
       change: EffectChangeData,
       current: any,
       delta: any,
@@ -157,7 +157,7 @@ declare global {
      * @returns The resulting applied value
      */
     protected _applyMultiply(
-      actor: ConfiguredActor,
+      actor: Actor.ConfiguredInstance,
       change: EffectChangeData,
       current: any,
       delta: any,
@@ -175,7 +175,7 @@ declare global {
      * @returns The resulting applied value
      */
     protected _applyOverride(
-      actor: ConfiguredActor,
+      actor: Actor.ConfiguredInstance,
       change: EffectChangeData,
       current: any,
       delta: any,
@@ -193,7 +193,7 @@ declare global {
      * @returns The resulting applied value
      */
     protected _applyUpgrade(
-      actor: ConfiguredActor,
+      actor: Actor.ConfiguredInstance,
       change: EffectChangeData,
       current: any,
       delta: any,
@@ -210,7 +210,7 @@ declare global {
      * @returns The resulting applied value
      */
     protected _applyCustom(
-      actor: ConfiguredActor,
+      actor: Actor.ConfiguredInstance,
       change: EffectChangeData,
       current: any,
       delta: any,
@@ -295,8 +295,10 @@ declare global {
      */
     _combatTime: number;
   }
-}
 
-type ConfiguredActor = InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseActor>>;
+  namespace ActiveEffect {
+    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"ActiveEffect">>;
+  }
+}
 
 export {};

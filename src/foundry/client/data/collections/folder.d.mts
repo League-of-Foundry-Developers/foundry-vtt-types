@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
 import type { StoredDocument } from "../../../../types/utils.d.mts";
 
 declare global {
@@ -9,7 +8,7 @@ declare global {
    * @see {@link Folder} The Folder document
    */
   class Folders extends WorldCollection<typeof foundry.documents.BaseFolder, "Folders"> {
-    constructor(data?: StoredDocument<InstanceType<ConfiguredDocumentClass<typeof Folder>>>["_source"][]);
+    constructor(data?: StoredDocument<Folder.ConfiguredInstance>["_source"][]);
 
     /**
      * Track which Folders are currently expanded in the UI

@@ -98,7 +98,7 @@ declare global {
     /**
      * Get the Folder that this Compendium is displayed within
      */
-    get folder(): (InstanceType<ConfiguredDocumentClassForName<"Folder">> & { type: "Compendium" }) | null;
+    get folder(): (Folder.ConfiguredInstance & { type: "Compendium" }) | null;
 
     /**
      * Assign this CompendiumCollection to be organized within a specific Folder.

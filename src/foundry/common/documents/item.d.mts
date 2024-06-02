@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentClassForName } from "../../../types/helperTypes.mts";
 import type { InexactPartial, Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
@@ -15,11 +14,7 @@ declare global {
  * Defines the DataSchema and common behaviors for an Item which are shared between both client and server.
  */
 interface BaseItem extends BaseItem.Properties {}
-declare class BaseItem extends Document<
-  BaseItem.SchemaField,
-  BaseItem.Metadata,
-  InstanceType<ConfiguredDocumentClassForName<"Actor">> | null
-> {
+declare class BaseItem extends Document<BaseItem.SchemaField, BaseItem.Metadata, Actor.ConfiguredInstance | null> {
   /**
    * @param data    - Initial data from which to construct the Item
    * @param context - Construction context options
@@ -154,10 +149,7 @@ declare namespace BaseItem {
      * A collection of ActiveEffect embedded Documents
      * @defaultValue `[]`
      */
-    effects: fields.EmbeddedCollectionField<
-      typeof documents.BaseActiveEffect,
-      InstanceType<ConfiguredDocumentClassForName<"Item">>
-    >;
+    effects: fields.EmbeddedCollectionField<typeof documents.BaseActiveEffect, Item.ConfiguredInstance>;
 
     /**
      * The _id of a Folder which contains this Item

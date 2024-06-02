@@ -9,7 +9,7 @@ declare global {
    */
   class RollTableConfig<
     Options extends DocumentSheetOptions<RollTable> = DocumentSheetOptions<RollTable>,
-  > extends DocumentSheet<Options, InstanceType<ConfiguredDocumentClassForName<"RollTable">>> {
+  > extends DocumentSheet<Options, RollTable.ConfiguredInstance> {
     /**
      * @defaultValue
      * ```typescript
@@ -56,9 +56,7 @@ declare global {
      * @returns The deleted TableResult document
      * @internal
      */
-    protected _onDeleteResult(
-      event: JQuery.ClickEvent,
-    ): Promise<InstanceType<ConfiguredDocumentClassForName<"TableResult">> | undefined>;
+    protected _onDeleteResult(event: JQuery.ClickEvent): Promise<TableResult.ConfiguredInstance | undefined>;
 
     protected override _onDrop(event: DragEvent): Promise<ConfiguredDocumentClassForName<"TableResult">[]> | void;
 
@@ -106,7 +104,7 @@ declare global {
      * @param results - An Array of drawn table results to highlight
      * @returns A Promise which resolves once the animation is complete
      */
-    protected _animateRoll(results: InstanceType<ConfiguredDocumentClassForName<"TableResult">>[]): Promise<void[]>;
+    protected _animateRoll(results: TableResult.ConfiguredInstance[]): Promise<void[]>;
 
     /**
      * Animate a "roulette" through the table until arriving at the final loop and a drawn result

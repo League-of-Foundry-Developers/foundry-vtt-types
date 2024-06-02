@@ -27,7 +27,7 @@ declare global {
     );
 
     /** Track the sorted turn order of this combat encounter */
-    turns: ConfiguredCombatant[];
+    turns: Combatant.ConfiguredInstance[];
 
     /** Record the current round, turn, and tokenId to understand changes in the encounter state */
     current: CombatHistoryData;
@@ -44,10 +44,11 @@ declare global {
     /**
      * Get the Combatant who has the next turn.
      */
-    get nextCombatant(): ConfiguredCombatant | undefined;
+    get nextCombatant(): Combatant.ConfiguredInstance | undefined;
 
     /** Return the object of settings which modify the Combat Tracker behavior */
-    get settings(): (typeof CombatEncounters)["settings"];
+    // Type is copied here to avoid recursion issue
+    get settings(): ClientSettings.Values[`core.${(typeof Combat)["CONFIG_SETTING"]}`];
 
     /** Has this combat encounter been started? */
     get started(): boolean;
@@ -62,7 +63,9 @@ declare global {
      * Deactivate all other Combat encounters within the viewed Scene and set this one as active
      * @param options - Additional context to customize the update workflow
      */
-    activate(options?: DocumentModificationContext & foundry.utils.MergeObjectOptions): Promise<ConfiguredCombat[]>;
+    activate(
+      options?: DocumentModificationContext & foundry.utils.MergeObjectOptions,
+    ): Promise<Combat.ConfiguredInstance[]>;
 
     override prepareDerivedData(): void;
 
@@ -70,13 +73,13 @@ declare global {
      * Get a Combatant using its Token id
      * @param tokenId - The id of the Token for which to acquire the combatant
      */
-    getCombatantByToken(tokenId: string): ConfiguredCombatant | undefined;
+    getCombatantByToken(tokenId: string): Combatant.ConfiguredInstance | undefined;
 
     /**
      * Get a Combatant that represents the given Actor or Actor ID.
      * @param actorOrId - An Actor ID or an Actor instance.
      */
-    getCombatantByActor(actorOrId: string | Actor): ConfiguredCombatant | undefined;
+    getCombatantByActor(actorOrId: string | Actor): Combatant.ConfiguredInstance | undefined;
 
     /** Begin the combat encounter, advancing to round 1 and turn 1 */
     startCombat(): Promise<this>;
@@ -161,7 +164,7 @@ declare global {
      * By default sort by initiative, next falling back to name, lastly tie-breaking by combatant id.
      * @internal
      */
-    protected _sortCombatants(a: ConfiguredCombatant, b: ConfiguredCombatant): number;
+    protected _sortCombatants(a: Combatant.ConfiguredInstance, b: Combatant.ConfiguredInstance): number;
 
     /**
      * Refresh the Token HUD under certain circumstances.
@@ -254,6 +257,8 @@ declare global {
     protected _onStartTurn(combatant: Combatant): Promise<void>;
   }
   namespace Combat {
+    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"Combat">>;
+
     interface InitiativeOptions {
       /**
        * A non-default initiative formula to roll. Otherwise the system default is used.
@@ -275,6 +280,3 @@ declare global {
     }
   }
 }
-
-type ConfiguredCombat = InstanceType<ConfiguredDocumentClassForName<"Combat">>;
-type ConfiguredCombatant = InstanceType<ConfiguredDocumentClassForName<"Combatant">>;

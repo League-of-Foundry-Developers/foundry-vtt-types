@@ -1,3 +1,4 @@
+import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { InexactPartial } from "../../../../types/utils.d.mts";
 import type { CONST } from "../../../common/module.d.mts";
 
@@ -80,6 +81,8 @@ declare global {
   }
 
   namespace JournalEntryPage {
+    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"JournalEntryPage">>;
+
     type JournalEntryPageHeading = {
       /** The heading level, 1-6. */
       level: number;

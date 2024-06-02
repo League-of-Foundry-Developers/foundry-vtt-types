@@ -29,7 +29,10 @@ declare global {
     /**
      * Maintain a list of Token Documents that represent this Actor, stored by Scene.
      */
-    protected _dependentTokens: foundry.utils.IterableWeakMap<ConfiguredScene, ConfiguredTokenDocument>;
+    protected _dependentTokens: foundry.utils.IterableWeakMap<
+      Scene.ConfiguredInstance,
+      TokenDocument.ConfiguredInstance
+    >;
 
     /**
      * An object that tracks which tracks the changes to the data model which were applied by active effects
@@ -65,7 +68,7 @@ declare global {
      */
     // TODO: It's the "extends cannot be used to replicate in problem" again
     get itemTypes(): {
-      [K in foundry.documents.BaseItem["type"]]: ConfiguredItem & {
+      [K in foundry.documents.BaseItem["type"]]: Item.ConfiguredInstance & {
         type: K;
         // system: "Item" extends keyof DataModelConfig ? DataModelConfig["Item"][K] : never;
       };
@@ -78,7 +81,7 @@ declare global {
     /**
      * Retrieve the list of ActiveEffects that are currently applied to this Actor.
      */
-    get appliedEffects(): ConfiguredActiveEffect[];
+    get appliedEffects(): ActiveEffect.ConfiguredInstance[];
 
     /**
      * An array of ActiveEffect instances which are present on the Actor which have a limited duration.
@@ -88,7 +91,7 @@ declare global {
     /**
      * Return a reference to the TokenDocument which owns this Actor as a synthetic override
      */
-    get token(): ConfiguredTokenDocument | null;
+    get token(): TokenDocument.ConfiguredInstance | null;
 
     /**
      * Whether the Actor has at least one Combatant in the active Combat that represents it.
@@ -113,7 +116,9 @@ declare global {
     getActiveToken<ReturnDocument extends boolean = false>(
       linked?: boolean,
       document?: ReturnDocument,
-    ): ReturnDocument extends true ? ConfiguredTokenDocument[] : InstanceType<ConfiguredObjectClassForName<"Token">>[];
+    ): ReturnDocument extends true
+      ? TokenDocument.ConfiguredInstance[]
+      : InstanceType<ConfiguredObjectClassForName<"Token">>[];
 
     /**
      * Get all ActiveEffects that may apply to this Actor.
@@ -121,7 +126,7 @@ declare global {
      * If CONFIG.ActiveEffect.legacyTransferral is false, this will also return all the transferred ActiveEffects on any
      * of the Actor's owned Items.
      */
-    allApplicableEffects(): Generator<ConfiguredActiveEffect>;
+    allApplicableEffects(): Generator<ActiveEffect.ConfiguredInstance>;
 
     /**
      * Prepare a data object which defines the data schema used by dice roll commands against this Actor
@@ -133,7 +138,7 @@ declare global {
      * @param data - Additional data, such as x, y, rotation, etc. for the created token data (default: `{}`)
      * @returns The created TokenData instance
      */
-    getTokenDocument(data?: foundry.documents.BaseToken.ConstructorData): Promise<ConfiguredTokenDocument>;
+    getTokenDocument(data?: foundry.documents.BaseToken.ConstructorData): Promise<TokenDocument.ConfiguredInstance>;
 
     /**
      * Get an Array of Token images which could represent this Actor
@@ -192,7 +197,7 @@ declare global {
          */
         linked: boolean;
       }>,
-    ): ConfiguredTokenDocument[];
+    ): TokenDocument.ConfiguredInstance[];
 
     /**
      * Register a token as a dependent of this actor.
@@ -281,6 +286,8 @@ declare global {
     _updateDependentTokens(update: DeepPartial<TokenDocument["_source"]>, options: DocumentModificationContext): void;
   }
   namespace Actor {
+    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"Actor">>;
+
     interface RollInitiativeOptions {
       /**
        * Create new Combatant entries for Tokens associated with this actor.
@@ -302,10 +309,3 @@ declare global {
     }
   }
 }
-
-type ConfiguredScene = InstanceType<ConfiguredDocumentClassForName<"Scene">>;
-type ConfiguredTokenDocument = InstanceType<ConfiguredDocumentClassForName<"Token">>;
-
-// TODO: Figure out the type names handling
-type ConfiguredItem = InstanceType<ConfiguredDocumentClassForName<"Item">>;
-type ConfiguredActiveEffect = InstanceType<ConfiguredDocumentClassForName<"ActiveEffect">>;

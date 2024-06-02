@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
 import type { GetDataReturnType, MaybePromise } from "../../../../types/utils.d.mts";
 import type { DropData as ClientDocumentMixinDropData } from "../../data/abstract/client-document.d.mts";
 
@@ -13,7 +12,7 @@ declare global {
    */
   class ActorSheet<Options extends ActorSheet.Options = ActorSheet.Options> extends DocumentSheet<
     Options,
-    InstanceType<ConfiguredDocumentClass<typeof Actor>>
+    Actor.ConfiguredInstance
   > {
     /**
      * @defaultValue
@@ -117,7 +116,7 @@ declare global {
      */
     protected _onDropItemCreate(
       itemData: foundry.data.ItemData["_source"][] | foundry.data.ItemData["_source"],
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof Item>>[]>;
+    ): Promise<Item.ConfiguredInstance[]>;
 
     /**
      * Handle a drop event for an existing embedded Item to sort that Item relative to its siblings
@@ -125,7 +124,7 @@ declare global {
     protected _onSortItem(
       event: DragEvent,
       itemData: foundry.data.ItemData["_source"],
-    ): undefined | Promise<InstanceType<ConfiguredDocumentClass<typeof Item>>[]>;
+    ): undefined | Promise<Item.ConfiguredInstance[]>;
 
     /**
      * Is the drop data coming from the same actor?
@@ -155,7 +154,7 @@ declare global {
         type: "Actor";
       }
 
-      type Item = ClientDocumentMixinDropData<InstanceType<ConfiguredDocumentClass<typeof Item>>> & {
+      type Item = ClientDocumentMixinDropData<Item.ConfiguredInstance> & {
         type: "Item";
       };
 
@@ -167,11 +166,11 @@ declare global {
     }
 
     interface Options extends DocumentSheetOptions<Actor> {
-      token?: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseToken>> | null;
+      token?: TokenDocument.ConfiguredInstance | null;
     }
 
     interface ActorSheetData<Options extends ActorSheet.Options = ActorSheet.Options>
-      extends DocumentSheet.DocumentSheetData<Options, InstanceType<ConfiguredDocumentClass<typeof Actor>>> {
+      extends DocumentSheet.DocumentSheetData<Options, Actor.ConfiguredInstance> {
       actor: ActorSheet["actor"];
       items: this["data"]["items"];
       effects: this["data"]["effects"];

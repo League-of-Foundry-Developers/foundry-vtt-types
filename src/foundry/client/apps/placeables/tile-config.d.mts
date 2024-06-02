@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { MaybePromise } from "../../../../types/utils.d.mts";
 import type { TileDataConstructorData } from "../../../common/data/data.mjs/tileData.d.mts";
 
@@ -9,7 +8,7 @@ declare global {
    */
   class TileConfig<Options extends TileConfig.Options = TileConfig.Options> extends DocumentSheet<
     Options,
-    InstanceType<ConfiguredDocumentClassForName<"Tile">>
+    TileDocument.ConfiguredInstance
   > {
     /**
      * @defaultValue

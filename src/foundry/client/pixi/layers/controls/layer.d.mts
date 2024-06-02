@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentClass } from "../../../../../types/helperTypes.d.mts";
 import type { InexactPartial } from "../../../../../types/utils.d.mts";
 import type { LineIntersection } from "../../../../common/utils/geometry.d.mts";
 
@@ -137,22 +136,19 @@ declare global {
      * Create and draw the Cursor object for a given User
      * @param user - The User document for whom to draw the cursor Container
      */
-    drawCursor(user: InstanceType<ConfiguredDocumentClass<typeof User>>): Cursor;
+    drawCursor(user: User.ConfiguredInstance): Cursor;
 
     /**
      * Update the cursor when the user moves to a new position
      * @param user     - The User for whom to update the cursor
      * @param position - The new cursor position
      */
-    updateCursor(user: InstanceType<ConfiguredDocumentClass<typeof User>>, position: Point | null): void;
+    updateCursor(user: User.ConfiguredInstance, position: Point | null): void;
 
     /**
      * Update display of an active Ruler object for a user given provided data
      */
-    updateRuler(
-      user: InstanceType<ConfiguredDocumentClass<typeof User>>,
-      rulerData: Parameters<Ruler["update"]>[0] | null,
-    ): void;
+    updateRuler(user: User.ConfiguredInstance, rulerData: Parameters<Ruler["update"]>[0] | null): void;
 
     /**
      * Handle a broadcast ping.
@@ -161,11 +157,7 @@ declare global {
      * @param data     - The broadcast ping data.
      * @returns @see Ping#animate
      */
-    handlePing(
-      user: InstanceType<ConfiguredDocumentClass<typeof User>>,
-      position: PIXI.Point,
-      data?: PingData,
-    ): Promise<boolean>;
+    handlePing(user: User.ConfiguredInstance, position: PIXI.Point, data?: PingData): Promise<boolean>;
 
     /**
      * Draw a ping at the edge of the viewport, pointing to the location of an off-screen ping.
@@ -186,7 +178,7 @@ declare global {
           /**
            * The user who pinged.
            */
-          user?: InstanceType<ConfiguredDocumentClass<typeof User>>;
+          user?: User.ConfiguredInstance;
         }
       >,
     ): Promise<boolean>;
@@ -209,7 +201,7 @@ declare global {
         /**
          * The user who pinged.
          */
-        user?: InstanceType<ConfiguredDocumentClass<typeof User>>;
+        user?: User.ConfiguredInstance;
       },
     ): Promise<boolean>;
 

@@ -1,7 +1,6 @@
 import type { EditorState, Plugin } from "prosemirror-state";
 import type {
   ConfiguredDocumentClass,
-  ConfiguredDocumentClassForName,
   ConfiguredObjectClassForName,
   DocumentConstructor,
   ToObjectFalseType,
@@ -189,10 +188,7 @@ declare global {
        * @remarks This is called by {@link Hooks.call}.
        * @see {@link ActiveEffect#_applyCustom}
        */
-      applyActiveEffect: (
-        actor: InstanceType<ConfiguredDocumentClass<typeof Actor>>,
-        change: EffectChangeData,
-      ) => boolean | void;
+      applyActiveEffect: (actor: Actor.ConfiguredInstance, change: EffectChangeData) => boolean | void;
 
       /**
        * A hook event that fires immediately prior to PIXI Application construction with the configuration parameters.
@@ -322,8 +318,8 @@ declare global {
        * @remarks An explicit return value of `false` prevents the operation.
        */
       dealCards: (
-        origin: InstanceType<ConfiguredDocumentClassForName<"Cards">>,
-        destinations: InstanceType<ConfiguredDocumentClassForName<"Cards">>[],
+        origin: Cards.ConfiguredInstance,
+        destinations: Cards.ConfiguredInstance[],
         context: Cards.DealContext,
       ) => boolean | void;
 
@@ -337,7 +333,7 @@ declare global {
        * @see {@link ActorSheet#_onDrop}
        */
       dropActorSheetData: (
-        actor: InstanceType<ConfiguredDocumentClass<typeof Actor>>,
+        actor: Actor.ConfiguredInstance,
         sheet: ActorSheet,
         data: ActorSheet.DropData,
       ) => boolean | void;
@@ -362,7 +358,7 @@ declare global {
        * @see {@link RollTableConfig#_onDrop}
        */
       dropRollTableSheetData: (
-        table: InstanceType<ConfiguredDocumentClass<typeof RollTable>>,
+        table: RollTable.ConfiguredInstance,
         config: RollTableConfig,
         data: object,
       ) => boolean | void;
@@ -416,11 +412,7 @@ declare global {
        * @remarks An explicit return value of `false` prevents the Document being created.
        * @see {@link Hotbar#_onDrop}
        */
-      hotbarDrop: (
-        hotbar: Hotbar,
-        data: DropData<InstanceType<ConfiguredDocumentClass<typeof Macro>>>,
-        slot: number,
-      ) => boolean | void;
+      hotbarDrop: (hotbar: Hotbar, data: DropData<Macro.ConfiguredInstance>, slot: number) => boolean | void;
 
       /**
        * A hook event that fires once Localization translations have been loaded and are ready for use.
@@ -487,8 +479,8 @@ declare global {
        * @remarks An explicit return value of `false` prevents the operation.
        */
       passCards: (
-        origin: InstanceType<ConfiguredDocumentClassForName<"Cards">>,
-        destination: InstanceType<ConfiguredDocumentClassForName<"Cards">>,
+        origin: Cards.ConfiguredInstance,
+        destination: Cards.ConfiguredInstance,
         context: Cards.DealContext,
       ) => boolean | void;
 
@@ -520,10 +512,10 @@ declare global {
         message: ChatMessage,
         html: JQuery,
         data: {
-          message: ToObjectFalseType<InstanceType<ConfiguredDocumentClass<typeof ChatMessage>>>;
+          message: ToObjectFalseType<ChatMessage.ConfiguredInstance>;
           user: Game["user"];
-          author: InstanceType<ConfiguredDocumentClass<typeof ChatMessage>>["user"];
-          alias: InstanceType<ConfiguredDocumentClass<typeof ChatMessage>>["alias"];
+          author: ChatMessage.ConfiguredInstance["user"];
+          alias: ChatMessage.ConfiguredInstance["alias"];
           cssClass: string;
           isWhisper: boolean;
           whisperTo: string;
@@ -538,8 +530,8 @@ declare global {
        * @param context  - Additional context which describes the operation.
        */
       returnCards: (
-        origin: InstanceType<ConfiguredDocumentClassForName<"Cards">>,
-        returned: InstanceType<ConfiguredDocumentClassForName<"Card">>[],
+        origin: Cards.ConfiguredInstance,
+        returned: Card.ConfiguredInstance[],
         context: Cards.ReturnContext,
       ) => boolean | void;
 
@@ -578,7 +570,7 @@ declare global {
        * @see {@link UserTargets#_hook}
        */
       targetToken: (
-        user: InstanceType<ConfiguredDocumentClass<typeof User>>,
+        user: User.ConfiguredInstance,
         token: ConfiguredObjectClassForName<"Token">,
         targeted: boolean,
       ) => void;

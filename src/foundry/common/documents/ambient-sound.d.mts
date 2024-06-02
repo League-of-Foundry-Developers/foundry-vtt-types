@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentClassForName } from "../../../types/helperTypes.d.mts";
 import type { Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
@@ -16,7 +15,7 @@ interface BaseAmbientSound extends BaseAmbientSound.Properties {}
 declare class BaseAmbientSound extends Document<
   BaseAmbientSound.SchemaField,
   BaseAmbientSound.Metadata,
-  InstanceType<ConfiguredDocumentClassForName<"Scene">> | null
+  Scene.ConfiguredInstance | null
 > {
   /**
    * @param data    - Initial data from which to construct the AmbientSound

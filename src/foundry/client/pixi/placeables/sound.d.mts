@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
@@ -10,8 +9,8 @@ declare global {
    * @see {@link AmbientSoundDocument}
    * @see {@link SoundsLayer}
    */
-  class AmbientSound extends PlaceableObject<InstanceType<ConfiguredDocumentClassForName<"AmbientSound">>> {
-    constructor(document: InstanceType<ConfiguredDocumentClassForName<"AmbientSound">>);
+  class AmbientSound extends PlaceableObject<AmbientSoundDocument.ConfiguredInstance> {
+    constructor(document: AmbientSoundDocument.ConfiguredInstance);
 
     /**
      * The Sound which manages playback for this AmbientSound effect
@@ -100,9 +99,9 @@ declare global {
 
     protected override _onDelete(...args: Parameters<PlaceableObject["_onDelete"]>): void;
 
-    protected override _canHUD(user: InstanceType<ConfiguredDocumentClassForName<"User">>, event?: any): boolean;
+    protected override _canHUD(user: User.ConfiguredInstance, event?: any): boolean;
 
-    protected override _canConfigure(user: InstanceType<ConfiguredDocumentClassForName<"User">>, event?: any): boolean;
+    protected override _canConfigure(user: User.ConfiguredInstance, event?: any): boolean;
 
     protected override _onClickRight(event: PIXI.FederatedEvent): void;
 

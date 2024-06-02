@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
+export {};
 
 declare global {
   /**
@@ -18,15 +18,13 @@ declare global {
      * A mapping of synthetic Token Actors which are currently active within the viewed Scene.
      * Each Actor is referenced by the Token.id.
      */
-    get tokens(): Partial<Record<string, InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseActor>>>>;
+    get tokens(): Partial<Record<string, Actor.ConfiguredInstance>>;
 
     static documentName: "Actor";
 
     override fromCompendium(
-      document:
-        | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseActor>>
-        | foundry.documents.BaseActor.ConstructorData,
+      document: Actor.ConfiguredInstance | foundry.documents.BaseActor.ConstructorData,
       options?: WorldCollection.FromCompendiumOptions | undefined,
-    ): Omit<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseActor>>, "_id" | "folder">;
+    ): Omit<Actor.ConfiguredInstance, "_id" | "folder">;
   }
 }

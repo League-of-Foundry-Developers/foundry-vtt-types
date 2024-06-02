@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClass, ConfiguredObjectClassForName } from "../../../../../types/helperTypes.d.mts";
+import type { ConfiguredObjectClassForName } from "../../../../../types/helperTypes.d.mts";
 import type { InexactPartial, ValueOf } from "../../../../../types/utils.d.mts";
 
 declare global {
@@ -44,16 +44,13 @@ declare global {
      * @param user  - The User for whom to construct the Ruler instance
      * @param color - (default: `null`)
      */
-    constructor(
-      user?: InstanceType<ConfiguredDocumentClass<typeof User>> | null,
-      { color }?: { color?: number | null },
-    );
+    constructor(user?: User.ConfiguredInstance | null, { color }?: { color?: number | null });
 
     /**
      * Record the User which this Ruler references
      * @defaultValue `game.user`
      */
-    user: InstanceType<ConfiguredDocumentClass<typeof User>>;
+    user: User.ConfiguredInstance;
 
     /**
      * The ruler name - used to differentiate between players

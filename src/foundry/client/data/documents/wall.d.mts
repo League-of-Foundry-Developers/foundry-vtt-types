@@ -1,3 +1,5 @@
+import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
+
 export {};
 
 declare global {
@@ -8,4 +10,8 @@ declare global {
    * @see {@link WallConfig}       The Wall configuration application
    */
   class WallDocument extends CanvasDocumentMixin(foundry.documents.BaseWall) {}
+
+  namespace WallDocument {
+    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"Wall">>;
+  }
 }

@@ -6,7 +6,8 @@ import type {
   DocumentTypeWithTypeData,
   PlaceableDocumentType,
 } from "../../../types/helperTypes.mts";
-import type { ConstructorOf, DeepPartial, InexactPartial, StoredDocument } from "../../../types/utils.mts";
+import type { DeepPartial, InexactPartial, StoredDocument } from "../../../types/utils.mts";
+import type { ClientDocument } from "../../client/data/abstract/client-document.d.mts";
 import type * as CONST from "../constants.mts";
 import type { DataField } from "../data/fields.d.mts";
 import type { fields } from "../data/module.mts";
@@ -44,14 +45,14 @@ declare abstract class Document<
    */
   readonly pack: string | null;
 
-  readonly collections: Record<string, EmbeddedCollection<Document<any, any, this>, this>>;
+  readonly collections: Record<string, EmbeddedCollection<Document.AnyChild<this | null>, this>>;
 
   protected _initialize(options?: any): void;
 
   /**
    * A mapping of singleton embedded Documents which exist in this model.
    */
-  readonly singletons: Record<string, Document<fields.SchemaField.Any, AnyMetadata, this>>;
+  readonly singletons: Record<string, Document.AnyChild<this>>;
 
   protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
 
@@ -88,7 +89,7 @@ declare abstract class Document<
    */
   // Referencing the concrete class the config is not possible because accessors cannot be generic and there is not
   // static polymorphic this type
-  static get implementation(): ConstructorOf<Document.Any>;
+  static get implementation(): typeof ClientDocument;
 
   /**
    * The named collection to which this Document belongs.
@@ -509,7 +510,8 @@ declare abstract class Document<
    *                       (default: `{}`)
    * @returns An array of created Document instances
    */
-  createEmbeddedDocuments<EmbeddedName extends DocumentType>(
+  // Excluding FogExploration because it broke polymorphism and is never embedded
+  createEmbeddedDocuments<EmbeddedName extends Exclude<DocumentType, "FogExploration">>(
     embeddedName: EmbeddedName,
     data?: Array<ConstructorDataType<ConfiguredDocumentClassForName<EmbeddedName>>>,
     context?: DocumentModificationContext, // Possibly a way to specify the parent here, but seems less relevant?

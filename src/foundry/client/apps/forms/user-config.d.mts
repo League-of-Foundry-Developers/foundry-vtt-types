@@ -8,7 +8,7 @@ declare global {
    */
   class UserConfig<Options extends UserConfig.Options = UserConfig.Options> extends DocumentSheet<
     Options,
-    InstanceType<ConfiguredDocumentClass<typeof User>>
+    User.ConfiguredInstance
   > {
     /**
      * @defaultValue

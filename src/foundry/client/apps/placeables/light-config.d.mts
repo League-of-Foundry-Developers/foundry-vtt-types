@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { MaybePromise } from "../../../../types/utils.d.mts";
 import type { AmbientLightDataConstructorData } from "../../../common/data/data.mjs/ambientLightData.d.mts";
 import type { AnimationDataConstructorData } from "../../../common/data/data.mjs/animationData.d.mts";
@@ -12,7 +11,7 @@ declare global {
    */
   class AmbientLightConfig<
     Options extends DocumentSheetOptions<AmbientLightDocument> = DocumentSheetOptions<AmbientLightDocument>,
-  > extends DocumentSheet<Options, InstanceType<ConfiguredDocumentClassForName<"AmbientLight">>> {
+  > extends DocumentSheet<Options, AmbientLightDocument.ConfiguredInstance> {
     /**
      * @defaultValue
      * ```typescript

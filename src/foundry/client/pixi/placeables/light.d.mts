@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
@@ -10,8 +9,8 @@ declare global {
    * @see {@link AmbientLightDocument}
    * @see {@link LightingLayer}
    */
-  class AmbientLight extends PlaceableObject<InstanceType<ConfiguredDocumentClassForName<"AmbientLight">>> {
-    constructor(document: InstanceType<ConfiguredDocumentClassForName<"AmbientLight">>);
+  class AmbientLight extends PlaceableObject<AmbientLightDocument.ConfiguredInstance> {
+    constructor(document: AmbientLightDocument.ConfiguredInstance);
 
     /**
      * A reference to the PointSource object which defines this light source area of effect
@@ -124,9 +123,9 @@ declare global {
 
     protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
 
-    protected override _canHUD(user: InstanceType<ConfiguredDocumentClassForName<"User">>, event?: any): boolean;
+    protected override _canHUD(user: User.ConfiguredInstance, event?: any): boolean;
 
-    protected override _canConfigure(user: InstanceType<ConfiguredDocumentClassForName<"User">>, event?: any): boolean;
+    protected override _canConfigure(user: User.ConfiguredInstance, event?: any): boolean;
 
     protected override _onClickRight(event: PIXI.FederatedEvent): Promise<this>;
 

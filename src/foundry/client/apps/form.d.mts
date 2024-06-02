@@ -312,7 +312,7 @@ declare global {
   }
 
   interface DocumentSheetOptions<
-    ConcreteDocument extends foundry.abstract.Document<any, any> = foundry.abstract.Document<any, any>,
+    ConcreteDocument extends foundry.abstract.Document<any, any, any> = foundry.abstract.Document<any, any, any>,
   > extends FormApplicationOptions {
     /**
      * The default permissions required to view this Document sheet.

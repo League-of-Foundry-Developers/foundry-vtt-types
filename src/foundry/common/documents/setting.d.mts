@@ -1,5 +1,3 @@
-// FOUNDRY_VERSION: 10.291
-
 import type { Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";

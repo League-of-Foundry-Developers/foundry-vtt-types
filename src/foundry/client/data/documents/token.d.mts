@@ -1,8 +1,4 @@
-import type {
-  ConfiguredDocumentClass,
-  ConfiguredDocumentClassForName,
-  DocumentType,
-} from "../../../../types/helperTypes.d.mts";
+import type { ConfiguredDocumentClassForName, DocumentType } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
@@ -17,14 +13,14 @@ declare global {
     /**
      * A singleton collection which holds a reference to the synthetic token actor by its base actor's ID.
      */
-    actors(): Collection<InstanceType<ConfiguredDocumentClassForName<"Actor">>>;
+    actors(): Collection<Actor.ConfiguredInstance>;
 
     /**
      * A lazily evaluated reference to the Actor this Token modifies.
      * If actorLink is true, then the document is the primary Actor document.
      * Otherwise the Actor document is a synthetic (ephemeral) document constructed using the Token's ActorDelta.
      */
-    get actor(): InstanceType<ConfiguredDocumentClassForName<"Actor">> | null;
+    get actor(): Actor.ConfiguredInstance | null;
 
     /**
      * An indicator for whether or not the current User has full control over this Token document.
@@ -39,7 +35,7 @@ declare global {
     /**
      * Return a reference to a Combatant that represents this Token, if one is present in the current encounter.
      */
-    get combatant(): InstanceType<ConfiguredDocumentClassForName<"Combatant">> | null;
+    get combatant(): Combatant.ConfiguredInstance | null;
 
     /**
      * An indicator for whether or not this Token is currently involved in the active combat encounter.
@@ -121,7 +117,7 @@ declare global {
      * @returns The updated un-linked Actor instance
      */
     modifyActorDocument(
-      update: Parameters<InstanceType<ConfiguredDocumentClassForName<"Actor">>["update"]>[0],
+      update: Parameters<Actor.ConfiguredInstance["update"]>[0],
       options: Parameters<this["update"]>[1],
     ): Promise<[this["actor"]]>;
 
@@ -132,7 +128,7 @@ declare global {
     protected override _preUpdate(
       data: Parameters<foundry.documents.BaseToken["_preUpdate"]>[0],
       options: DocumentModificationOptions,
-      user: InstanceType<ConfiguredDocumentClass<typeof User>>,
+      user: User.ConfiguredInstance,
     ): Promise<void>;
 
     protected override _onUpdate(
@@ -198,7 +194,7 @@ declare global {
      * When the base Actor for a TokenDocument changes, we may need to update its Actor instance
      */
     protected _onUpdateBaseActor(
-      update?: DeepPartial<ConfiguredActor["_source"]>,
+      update?: DeepPartial<Actor.ConfiguredInstance["_source"]>,
       options?: DocumentModificationContext,
     ): void;
 
@@ -208,7 +204,7 @@ declare global {
      * @param options - The options provided to the update.
      */
     protected _onRelatedUpdate(
-      update?: DeepPartial<ConfiguredActor["_source"]>,
+      update?: DeepPartial<Actor.ConfiguredInstance["_source"]>,
       options?: DocumentModificationContext,
     ): void;
 
@@ -218,7 +214,7 @@ declare global {
      */
     // TODO: There's some very complex handling for non-datamodel Actor system implementations if we want
     static getTrackedAttributes(
-      data?: InstanceType<ConfiguredDocumentClassForName<"Actor">>["system"],
+      data?: Actor.ConfiguredInstance["system"],
       _path?: string[],
     ): TrackedAttributesDescription;
 
@@ -256,7 +252,7 @@ declare global {
      * `TokenDocument#actor getter to retrieve the Actor instance that the TokenDocument represents, or use`
      * `TokenDocument#delta#apply to generate a new synthetic Actor instance."`
      */
-    getActor(): ConfiguredActor;
+    getActor(): Actor.ConfiguredInstance;
 
     /**
      * @deprecated since v11
@@ -277,10 +273,11 @@ declare global {
     /** A list of property path arrays to attributes that have only a value property. */
     value: string[][];
   };
-}
 
-type ConfiguredActor = InstanceType<ConfiguredDocumentClassForName<"Actor">>;
-type ConfiguredActorDelta = InstanceType<ConfiguredDocumentClassForName<"ActorDelta">>;
+  namespace TokenDocument {
+    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"Token">>;
+  }
+}
 
 interface SingleAttributeBar {
   type: "value";

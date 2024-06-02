@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClassForName, DocumentConstructor } from "../../../../types/helperTypes.d.mts";
+import type { DocumentConstructor } from "../../../../types/helperTypes.d.mts";
 import type { MaybePromise } from "../../../../types/utils.d.mts";
 
 declare global {
@@ -8,7 +8,7 @@ declare global {
    */
   class SceneConfig<Options extends DocumentSheetOptions<Scene> = DocumentSheetOptions<Scene>> extends DocumentSheet<
     Options,
-    InstanceType<ConfiguredDocumentClassForName<"Scene">>
+    Scene.ConfiguredInstance
   > {
     /**
      * @defaultValue

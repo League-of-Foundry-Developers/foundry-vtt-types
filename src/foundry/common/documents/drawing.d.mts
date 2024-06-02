@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentClassForName } from "../../../types/helperTypes.d.mts";
 import type { InexactPartial, Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
@@ -19,7 +18,7 @@ interface BaseDrawing extends BaseDrawing.Properties {}
 declare class BaseDrawing extends Document<
   BaseDrawing.SchemaField,
   BaseDrawing.Metadata,
-  InstanceType<ConfiguredDocumentClassForName<"Scene">> | null
+  Scene.ConfiguredInstance | null
 > {
   /**
    * @param data    - Initial data from which to construct the Drawing

@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
+import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
@@ -89,7 +89,7 @@ declare global {
      * @returns A Promise which resolves once the User update is complete
      */
     assignHotbarMacro(
-      macro: InstanceType<ConfiguredDocumentClass<typeof Macro>> | null,
+      macro: Macro.ConfiguredInstance | null,
       slot: string | number,
       { fromSlot }?: { fromSlot: number },
     ): Promise<this>;
@@ -125,9 +125,7 @@ declare global {
      * @param page - The hotbar page number
      *               (default: `1`)
      */
-    getHotbarMacros(
-      page?: number,
-    ): Array<{ slot: number; macro: InstanceType<ConfiguredDocumentClass<typeof Macro>> | null }>;
+    getHotbarMacros(page?: number): Array<{ slot: number; macro: Macro.ConfiguredInstance | null }>;
 
     /**
      * Update the set of Token targets for the user given an array of provided Token ids.
@@ -143,5 +141,9 @@ declare global {
     ): void;
 
     override _onDelete(options: DocumentModificationOptions, userId: string): void;
+  }
+
+  namespace User {
+    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"User">>;
   }
 }

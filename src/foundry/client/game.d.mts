@@ -1,6 +1,5 @@
 import type { Socket } from "socket.io-client";
 import type {
-  ConfiguredDocumentClass,
   ConfiguredDocumentClassForName,
   ConfiguredModule,
   DocumentConstructor,
@@ -396,7 +395,7 @@ declare global {
     /**
      * The currently connected User entity, or null if Users is not yet initialized
      */
-    get user(): StoredDocument<InstanceType<ConfiguredDocumentClass<typeof User>>> | null;
+    get user(): StoredDocument<User.ConfiguredInstance> | null;
 
     /**
      * A convenience accessor for the currently viewed Combat encounter

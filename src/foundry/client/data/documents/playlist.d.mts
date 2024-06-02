@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClass, ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
+import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { AnyMetadata, DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
@@ -57,7 +57,7 @@ declare global {
      * @param sound - The desired sound that should play
      * @returns The updated Playlist
      */
-    playSound(sound: InstanceType<ConfiguredDocumentClassForName<"PlaylistSound">>): Promise<this | undefined>;
+    playSound(sound: PlaylistSound.ConfiguredInstance): Promise<this | undefined>;
 
     /**
      * Stop playback of a specific Sound within this Playlist.
@@ -65,7 +65,7 @@ declare global {
      * @param sound - The desired sound that should play
      * @returns The updated Playlist
      */
-    stopSound(sound: InstanceType<ConfiguredDocumentClassForName<"PlaylistSound">>): Promise<this | undefined>;
+    stopSound(sound: PlaylistSound.ConfiguredInstance): Promise<this | undefined>;
 
     /**
      * End playback for any/all currently playing sounds within the Playlist.
@@ -83,24 +83,19 @@ declare global {
      * Get the next sound in the cached playback order. For internal use.
      * @internal
      */
-    protected _getNextSound(soundId: string): InstanceType<ConfiguredDocumentClassForName<"PlaylistSound">> | undefined;
+    protected _getNextSound(soundId: string): PlaylistSound.ConfiguredInstance | undefined;
 
     /**
      * Get the previous sound in the cached playback order. For internal use.
      * @internal
      */
-    protected _getPreviousSound(
-      soundId: string,
-    ): InstanceType<ConfiguredDocumentClassForName<"PlaylistSound">> | undefined;
+    protected _getPreviousSound(soundId: string): PlaylistSound.ConfiguredInstance | undefined;
 
     /**
      * Define the sorting order for the Sounds within this Playlist. For internal use.
      * @internal
      */
-    protected _sortSounds(
-      a: InstanceType<ConfiguredDocumentClassForName<"PlaylistSound">>,
-      b: InstanceType<ConfiguredDocumentClassForName<"PlaylistSound">>,
-    ): number;
+    protected _sortSounds(a: PlaylistSound.ConfiguredInstance, b: PlaylistSound.ConfiguredInstance): number;
 
     override toAnchor(
       options?:
@@ -161,16 +156,14 @@ declare global {
      * Handle callback logic when an individual sound within the Playlist concludes playback naturally
      * @internal
      */
-    _onSoundEnd(
-      sound: InstanceType<ConfiguredDocumentClassForName<"PlaylistSound">>,
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>> | undefined>;
+    _onSoundEnd(sound: PlaylistSound.ConfiguredInstance): Promise<this | undefined>;
 
     /**
      * Handle callback logic when playback for an individual sound within the Playlist is started.
      * Schedule auto-preload of next track
      * @internal
      */
-    _onSoundStart(sound: InstanceType<ConfiguredDocumentClassForName<"PlaylistSound">>): Promise<void>;
+    _onSoundStart(sound: PlaylistSound.ConfiguredInstance): Promise<void>;
 
     /**
      * UPdate the playing status of this Playlist in content links.
@@ -187,6 +180,8 @@ declare global {
   }
 
   namespace Playlist {
+    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"Playlist">>;
+
     interface PlayNextOptions {
       /**
        * Whether to advance forward (if 1) or backwards (if -1)

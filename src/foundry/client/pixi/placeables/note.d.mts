@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentClass, ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial } from "../../../../types/utils.d.mts";
 
 type JournalEntryPage = unknown;
@@ -10,7 +9,7 @@ declare global {
    * @see {@link NoteDocument}
    * @see {@link NotesLayer}
    */
-  class Note extends PlaceableObject<InstanceType<ConfiguredDocumentClass<typeof NoteDocument>>> {
+  class Note extends PlaceableObject<NoteDocument.ConfiguredInstance> {
     static override embeddedName: "Note";
 
     static override RENDER_FLAGS: {
@@ -38,7 +37,7 @@ declare global {
     /**
      * The associated JournalEntry which is described by this note
      */
-    get entry(): InstanceType<ConfiguredDocumentClassForName<"JournalEntry">>;
+    get entry(): JournalEntry.ConfiguredInstance;
 
     /**
      * The specific JournalEntryPage within the associated JournalEntry referenced by this Note.
@@ -90,9 +89,9 @@ declare global {
 
     protected override _onUpdate(changed: DeepPartial<foundry.documents.BaseNote["_source"]>): void;
 
-    protected override _canHover(user: InstanceType<ConfiguredDocumentClassForName<"User">>): true;
+    protected override _canHover(user: User.ConfiguredInstance): true;
 
-    protected override _canView(user: InstanceType<ConfiguredDocumentClassForName<"User">>): boolean;
+    protected override _canView(user: User.ConfiguredInstance): boolean;
 
     protected override _onHoverIn(event: PIXI.FederatedEvent, options?: PlaceableObject.HoverInOptions): false | void;
 

@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
+export {};
 
 declare global {
   /**
@@ -14,10 +14,8 @@ declare global {
     override get directory(): typeof ui.macros;
 
     override fromCompendium(
-      document:
-        | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseMacro>>
-        | foundry.documents.BaseMacro.ConstructorData,
+      document: Macro.ConfiguredInstance | foundry.documents.BaseMacro.ConstructorData,
       options?: WorldCollection.FromCompendiumOptions | undefined,
-    ): Omit<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseMacro>>, "_id" | "folder">;
+    ): Omit<Macro.ConfiguredInstance, "_id" | "folder">;
   }
 }

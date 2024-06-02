@@ -409,7 +409,7 @@ declare global {
     toMessage<T extends DeepPartial<ConstructorParameters<ConfiguredDocumentClass<typeof ChatMessage>>[0]> = {}>(
       messageData?: T,
       { rollMode, create }?: { rollMode?: keyof CONFIG.Dice.RollModes | "roll"; create?: true },
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof ChatMessage>> | undefined>;
+    ): Promise<ChatMessage.ConfiguredInstance | undefined>;
     toMessage<T extends DeepPartial<ConstructorParameters<ConfiguredDocumentClass<typeof ChatMessage>>[0]> = {}>(
       messageData: T,
       { rollMode, create }: { rollMode?: keyof CONFIG.Dice.RollModes | "roll"; create: false },
@@ -417,7 +417,7 @@ declare global {
     toMessage<T extends DeepPartial<ConstructorParameters<ConfiguredDocumentClass<typeof ChatMessage>>[0]> = {}>(
       messageData: T,
       { rollMode, create }: { rollMode?: keyof CONFIG.Dice.RollModes | "roll"; create: boolean },
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof ChatMessage>> | undefined> | MessageData<T>;
+    ): Promise<ChatMessage.ConfiguredInstance | undefined> | MessageData<T>;
 
     /**
      * Expand an inline roll element to display its contained dice result as a tooltip.

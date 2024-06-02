@@ -1,5 +1,3 @@
-import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
-
 export {};
 
 declare global {
@@ -14,12 +12,12 @@ declare global {
     /**
      * The associated JournalEntry which is referenced by this Note
      */
-    get entry(): ReturnType<Journal["get"]>;
+    get entry(): JournalEntry.ConfiguredInstance | undefined;
 
     /**
      * The specific JournalEntryPage within the associated JournalEntry referenced by this Note.
      */
-    get page(): InstanceType<ConfiguredDocumentClassForName<"JournalEntryPage">> | undefined;
+    get page(): JournalEntryPage.ConfiguredInstance | undefined;
 
     /**
      * The text label used to annotate this Note

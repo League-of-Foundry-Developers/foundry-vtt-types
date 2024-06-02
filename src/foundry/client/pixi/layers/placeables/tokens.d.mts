@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClassForName } from "../../../../../types/helperTypes.d.mts";
+export {};
 
 declare global {
   /**
@@ -109,7 +109,7 @@ declare global {
      */
     toggleCombat(
       state?: boolean,
-      combat?: InstanceType<ConfiguredDocumentClassForName<"Combat">> | null,
+      combat?: Combat.ConfiguredInstance | null,
       {
         token,
       }?: {
@@ -119,7 +119,7 @@ declare global {
          */
         token?: ConfiguredTokenDocument | null;
       },
-    ): Promise<InstanceType<ConfiguredDocumentClassForName<"Combatant">>[]>;
+    ): Promise<Combatant.ConfiguredInstance[]>;
 
     /**
      * Get the tab cycle order for tokens by sorting observable tokens based on their distance from top-left.
@@ -177,4 +177,4 @@ declare global {
   }
 }
 
-type ConfiguredTokenDocument = InstanceType<ConfiguredDocumentClassForName<"Token">>;
+type ConfiguredTokenDocument = TokenDocument.ConfiguredInstance;

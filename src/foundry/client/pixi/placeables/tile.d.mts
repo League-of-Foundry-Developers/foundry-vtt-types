@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClass, ConfiguredObjectClassForName } from "../../../../types/helperTypes.d.mts";
+import type { ConfiguredObjectClassForName } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
@@ -12,7 +12,7 @@ declare global {
    * @see {@link TileDocument}
    * @see {@link TilesLayer}
    */
-  class Tile extends PlaceableObject<InstanceType<ConfiguredDocumentClass<typeof TileDocument>>> {
+  class Tile extends PlaceableObject<TileDocument.ConfiguredInstance> {
     static override embeddedName: "Tile";
 
     static override RENDER_FLAGS: {
