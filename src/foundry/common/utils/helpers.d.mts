@@ -496,7 +496,7 @@ interface ResolvedUUID {
   /**
    * An already-resolved document.
    */
-  doc?: Document<any, any>;
+  doc?: Document<any, any, any>;
 
   /**
    * Any remaining Embedded Document parts.
@@ -510,7 +510,7 @@ interface ParseUUIDOptions {
   /**
    * A document to resolve relative UUIDs against.
    */
-  relative?: Document<any, any> | undefined;
+  relative?: Document<any, any, any> | undefined;
 }
 
 /**
@@ -524,7 +524,7 @@ interface ParseUUIDOptions {
  * @returns
  * @internal
  */
-declare function _resolveRelativeUuid(uuid: string, relative: Document<any, any>): ResolvedUUID;
+declare function _resolveRelativeUuid(uuid: string, relative: Document<any, any, any>): ResolvedUUID;
 
 /**
  * Converts an RGB color value to HSV. Conversion formula adapted from http://en.wikipedia.org/wiki/HSV_color_space.

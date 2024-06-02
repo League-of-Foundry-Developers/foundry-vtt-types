@@ -219,7 +219,7 @@ declare global {
         entityType?: string;
       };
 
-    interface Tree<ConcreteDocument extends foundry.abstract.Document<any, any>> {
+    interface Tree<ConcreteDocument extends foundry.abstract.Document<any, any, any>> {
       root?: boolean;
       content: ConcreteDocument[];
       children: (Folder & Tree<ConcreteDocument>)[];

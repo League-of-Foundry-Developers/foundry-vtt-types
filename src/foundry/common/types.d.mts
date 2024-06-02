@@ -25,7 +25,7 @@ declare global {
     /**
      * A parent Document within which these Documents should be embedded
      */
-    parent?: foundry.abstract.Document<any, any>;
+    parent?: foundry.abstract.Document<any, any, any>;
 
     /**
      * A Compendium pack identifier within which the Documents should be modified

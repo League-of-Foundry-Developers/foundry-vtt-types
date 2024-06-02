@@ -13,7 +13,7 @@ declare abstract class DatabaseBackend {
    * @param user          - The requesting User
    * @returns The created Document instances
    */
-  get<T extends Document<any, any>>(
+  get<T extends Document<any, any, any>>(
     documentClass: ConstructorOf<T>,
     context: RequestContext<T>,
     user?: BaseUser,
@@ -23,7 +23,7 @@ declare abstract class DatabaseBackend {
    * Validate the arguments passed to the get operation
    * @param context - The requested operation
    */
-  protected _getArgs<T extends Document<any, any>>(
+  protected _getArgs<T extends Document<any, any, any>>(
     context?: RequestContext<T>,
   ): {
     query: object;
@@ -40,7 +40,7 @@ declare abstract class DatabaseBackend {
    * that's not how it is called and also not how the subclasses implement it.
    * See https://gitlab.com/foundrynet/foundryvtt/-/issues/6177
    */
-  protected abstract _getDocuments<T extends Document<any, any>>(
+  protected abstract _getDocuments<T extends Document<any, any, any>>(
     documentClass: ConstructorOf<T>,
     request: RequestContext<T>,
     user: BaseUser,
@@ -51,9 +51,9 @@ declare abstract class DatabaseBackend {
    * @param context - The requested operation
    * @returns The parent Document, or null
    */
-  protected _getParent<T extends Document<any, any>>(
+  protected _getParent<T extends Document<any, any, any>>(
     context: RequestContext<T>,
-  ): Promise<Document<any, any> | undefined>;
+  ): Promise<Document<any, any, any> | undefined>;
 
   /**
    * Perform document creation operations
@@ -62,7 +62,7 @@ declare abstract class DatabaseBackend {
    * @param user          - The requesting User
    * @returns The created Document instances
    */
-  create<T extends Document<any, any>>(
+  create<T extends Document<any, any, any>>(
     documentClass: ConstructorOf<T>,
     context: RequestContext<T>,
     user?: BaseUser,
@@ -72,7 +72,7 @@ declare abstract class DatabaseBackend {
    * Validate the arguments passed to the create operation
    * @param context - The requested operation
    */
-  protected _createArgs<T extends Document<any, any>>({
+  protected _createArgs<T extends Document<any, any, any>>({
     data,
     options,
     pack,
@@ -88,7 +88,7 @@ declare abstract class DatabaseBackend {
   /**
    * Create primary Document instances
    */
-  protected abstract _createDocuments<T extends Document<any, any>>(
+  protected abstract _createDocuments<T extends Document<any, any, any>>(
     documentClass: ConstructorOf<T>,
     context: RequestContext<T>,
     user: BaseUser,
@@ -101,7 +101,7 @@ declare abstract class DatabaseBackend {
    * @param user          - The requesting User
    * @returns The updated Document instances
    */
-  update<T extends Document<any, any>>(
+  update<T extends Document<any, any, any>>(
     documentClass: ConstructorOf<T>,
     context: RequestContext<T>,
     user?: BaseUser,
@@ -110,7 +110,7 @@ declare abstract class DatabaseBackend {
   /**
    * Validate the arguments passed to the update operation
    */
-  protected _updateArgs<T extends Document<any, any>>({
+  protected _updateArgs<T extends Document<any, any, any>>({
     updates,
     options,
     pack,
@@ -126,7 +126,7 @@ declare abstract class DatabaseBackend {
   /**
    * Update primary Document instances
    */
-  protected abstract _updateDocuments<T extends Document<any, any>>(
+  protected abstract _updateDocuments<T extends Document<any, any, any>>(
     documentClass: ConstructorOf<T>,
     request: RequestContext<T>,
     user: BaseUser,
@@ -139,7 +139,7 @@ declare abstract class DatabaseBackend {
    * @param user          - The requesting User
    * @returns The deleted Document instances
    */
-  delete<T extends Document<any, any>>(
+  delete<T extends Document<any, any, any>>(
     documentClass: ConstructorOf<T>,
     context: RequestContext<T>,
     user?: BaseUser,
@@ -149,7 +149,7 @@ declare abstract class DatabaseBackend {
    * Validate the arguments passed to the delete operation
    * @param request - The requested operation
    */
-  protected _deleteArgs<T extends Document<any, any>>(
+  protected _deleteArgs<T extends Document<any, any, any>>(
     context?: RequestContext<T>,
   ): {
     ids: string[];
@@ -162,7 +162,7 @@ declare abstract class DatabaseBackend {
   /**
    * Delete primary Document instances
    */
-  protected abstract _deleteDocuments<T extends Document<any, any>>(
+  protected abstract _deleteDocuments<T extends Document<any, any, any>>(
     documentClass: ConstructorOf<T>,
     request: RequestContext<T>,
     user: BaseUser,
@@ -192,14 +192,14 @@ declare abstract class DatabaseBackend {
   protected _logOperation(
     action: string,
     type: string,
-    documents: Document<any, any>[],
+    documents: Document<any, any, any>[],
     {
       parent,
       pack,
       level,
     }?: {
       /** A parent document */
-      parent?: Document<any, any>;
+      parent?: Document<any, any, any>;
 
       /** A compendium pack within which the operation occurred */
       pack?: string;
@@ -218,18 +218,18 @@ declare abstract class DatabaseBackend {
   protected _logError(
     user: BaseUser,
     action: string,
-    subject: Document<any, any> | string,
-    { parent, pack }?: { parent?: Document<any, any>; pack?: string },
+    subject: Document<any, any, any> | string,
+    { parent, pack }?: { parent?: Document<any, any, any>; pack?: string },
   ): string;
 
   /**
    * Determine a string suffix for a log message based on the parent and/or compendium context.
    */
-  protected _logContext({ parent, pack }?: { parent?: Document<any, any>; pack?: string }): string;
+  protected _logContext({ parent, pack }?: { parent?: Document<any, any, any>; pack?: string }): string;
 }
 
 //TODO: Can improve the typing even further here by specifying the parent bit
-export interface RequestContext<T extends Document<any, any>> {
+export interface RequestContext<T extends Document<any, any, any>> {
   /** An array of document data */
   data?: T["_source"][];
 
@@ -239,7 +239,7 @@ export interface RequestContext<T extends Document<any, any>> {
   /** An array of document ids */
   ids?: string[];
 
-  parent?: Document<any, any>;
+  parent?: Document<any, any, any>;
 
   parentUuid?: string;
 

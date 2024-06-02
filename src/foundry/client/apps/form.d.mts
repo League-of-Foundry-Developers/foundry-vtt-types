@@ -333,7 +333,7 @@ declare global {
    */
   abstract class DocumentSheet<
     Options extends DocumentSheetOptions<ConcreteDocument>,
-    ConcreteDocument extends foundry.abstract.Document<any, any> = foundry.abstract.Document<any, any>,
+    ConcreteDocument extends foundry.abstract.Document<any, any, any> = foundry.abstract.Document<any, any, any>,
   > extends FormApplication<Options, ConcreteDocument> {
     /**
      * @param object  - A Document instance which should be managed by this form.
@@ -432,7 +432,7 @@ declare global {
   namespace DocumentSheet {
     interface DocumentSheetData<
       Options extends DocumentSheetOptions<ConcreteDocument>,
-      ConcreteDocument extends foundry.abstract.Document<any, any> = foundry.abstract.Document<any, any>,
+      ConcreteDocument extends foundry.abstract.Document<any, any, any> = foundry.abstract.Document<any, any, any>,
     > extends FormApplication.FormApplicationData {
       cssClass: string;
       editable: boolean;

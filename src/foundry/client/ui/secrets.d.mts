@@ -13,11 +13,11 @@ declare global {
    * @returns The updated Document.
    */
   type HTMLSecretUpdateCallback<
-    ConcreteDocument extends foundry.abstract.Document<any, any> = foundry.abstract.Document<any, any>,
+    ConcreteDocument extends foundry.abstract.Document<any, any, any> = foundry.abstract.Document<any, any, any>,
   > = (secret: HTMLElement, content: string) => Promise<ConcreteDocument>;
 
   interface HTMLSecretConfiguration<
-    ConcreteDocument extends foundry.abstract.Document<any, any> = foundry.abstract.Document<any, any>,
+    ConcreteDocument extends foundry.abstract.Document<any, any, any> = foundry.abstract.Document<any, any, any>,
   > {
     /** The CSS selector used to target content that contains secret blocks. */
     parentSelector: string;
@@ -44,7 +44,9 @@ declare global {
    * secrets.bind(html);
    * ```
    */
-  class HTMLSecret<ConcreteDocument extends foundry.abstract.Document<any, any> = foundry.abstract.Document<any, any>> {
+  class HTMLSecret<
+    ConcreteDocument extends foundry.abstract.Document<any, any, any> = foundry.abstract.Document<any, any, any>,
+  > {
     /**
      * @param config - Configuration options.
      */

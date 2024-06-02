@@ -9,7 +9,7 @@ declare global {
    */
   class DocumentSheetConfig<
     Options extends FormApplicationOptions = FormApplicationOptions,
-    ConcreteDocument extends foundry.abstract.Document<any, any> = foundry.abstract.Document<any, any>,
+    ConcreteDocument extends foundry.abstract.Document<any, any, any> = foundry.abstract.Document<any, any, any>,
   > extends FormApplication<Options, ConcreteDocument> {
     /**
      * @defaultValue

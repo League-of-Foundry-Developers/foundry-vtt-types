@@ -383,12 +383,12 @@ declare global {
       /**
        * A document to resolve relative UUIDs against.
        */
-      relativeTo: ClientDocument<foundry.abstract.Document<any, any>>;
+      relativeTo: ClientDocument<foundry.abstract.Document<any, any, any>>;
     }
 
     interface GetContentLinkOptions {
       /** A document to generate the link relative to. */
-      relativeTo?: ClientDocument<foundry.abstract.Document<any, any>>;
+      relativeTo?: ClientDocument<foundry.abstract.Document<any, any, any>>;
 
       /** A custom label to use instead of the document's name. */
       label?: string;
@@ -402,7 +402,7 @@ declare global {
       async?: boolean;
 
       /** A document to resolve relative UUIDs against.*/
-      relativeTo?: ClientDocument<foundry.abstract.Document<any, any>>;
+      relativeTo?: ClientDocument<foundry.abstract.Document<any, any, any>>;
     }
 
     interface CreateInlineRollOptions {

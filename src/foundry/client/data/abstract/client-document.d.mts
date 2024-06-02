@@ -481,7 +481,7 @@ declare class ClientDocument<
    */
   protected _onCreateEmbeddedDocuments(
     embeddedName: string,
-    documents: foundry.abstract.Document<any, any>[],
+    documents: foundry.abstract.Document<any, any, any>[],
     result: Record<string, unknown>[],
     options: DocumentModificationOptions,
     userId: string,
@@ -513,7 +513,7 @@ declare class ClientDocument<
    */
   protected _onUpdateEmbeddedDocuments(
     embeddedName: string,
-    documents: foundry.abstract.Document<any, any>[],
+    documents: foundry.abstract.Document<any, any, any>[],
     result: Record<string, unknown>[],
     options: DocumentModificationContext,
     userId: string,
@@ -545,7 +545,7 @@ declare class ClientDocument<
    */
   protected _onDeleteEmbeddedDocuments(
     embeddedName: string,
-    documents: foundry.abstract.Document<any, any>[],
+    documents: foundry.abstract.Document<any, any, any>[],
     result: string[],
     options: DocumentModificationContext,
     userId: string,
@@ -621,12 +621,12 @@ declare global {
   }
 }
 
-export type DropData<T extends foundry.abstract.Document<any, any>> = T extends { id: string | undefined }
+export type DropData<T extends foundry.abstract.Document<any, any, any>> = T extends { id: string | undefined }
   ? DropData.Data<T> & DropData.UUID
   : DropData.Data<T>;
 
 declare namespace DropData {
-  interface Data<T extends foundry.abstract.Document<any, any>> {
+  interface Data<T extends foundry.abstract.Document<any, any, any>> {
     type: T["documentName"];
     data: T["_source"];
   }
