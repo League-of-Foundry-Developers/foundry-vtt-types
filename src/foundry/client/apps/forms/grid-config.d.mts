@@ -126,15 +126,11 @@ declare global {
 
   namespace GridConfig {
     type FormData = {
-      grid: {
-        type: Scene["grid"]["type"];
-        size: Scene["grid"]["size"];
-      };
+      "grid.type": Scene["grid"]["type"];
+      "grid.size": Scene["grid"]["size"];
       scale: Scene["scale"];
-      background: {
-        offsetX: Scene["background"]["offsetX"];
-        offsetY: Scene["background"]["offsetY"];
-      };
+      "background.offsetX": Scene["background"]["offsetX"];
+      "background.offsetY": Scene["background"]["offsetY"];
     };
   }
 }
