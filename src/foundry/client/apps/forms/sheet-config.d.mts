@@ -1,5 +1,5 @@
 import type { DocumentConstructor, DocumentType } from "../../../../types/helperTypes.d.mts";
-import type { ConstructorOf, MaybePromise } from "../../../../types/utils.d.mts";
+import type { ConstructorOf, GetDataReturnType, MaybePromise } from "../../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -31,9 +31,21 @@ declare global {
 
     override get title(): string;
 
-    override getData(options?: Partial<Options>): MaybePromise<object>;
+    override getData(
+      options?: Partial<Options>,
+    ): MaybePromise<GetDataReturnType<DocumentSheetConfig.DocumentSheetConfigData>>;
 
     protected override _updateObject(event: Event, formData: DocumentSheetConfig.FormData): Promise<unknown>;
+
+    /**
+     * Marshal information on the available sheet classes for a given document type and sub-type, and format it for
+     * @param documentName - The Document type.
+     * @param subType      - The Document sub-type. // TODO: Generic to specify string options?
+     */
+    static getSheetClassesForSubType(
+      documentName: DocumentType,
+      subType: string,
+    ): DocumentSheetConfig.SheetClassesForSubType;
 
     /**
      * Initialize the configured Sheet preferences for Documents which support dynamic Sheet assignment
@@ -53,13 +65,13 @@ declare global {
      * @param documentClass - The Document class for which to register a new Sheet option
      * @param scope         - Provide a unique namespace scope for this sheet
      * @param sheetClass    - A defined Application class used to render the sheet
-     * @param options       - Additional options used for sheet registration
+     * @param config        - Additional options used for sheet registration
      */
     static registerSheet(
       documentClass: DocumentConstructor,
       scope: string,
-      sheetClass: ConstructorOf<FormApplication<FormApplicationOptions, any>>,
-      { label, types, makeDefault }?: DocumentSheetConfig.RegisterSheetOptions | undefined,
+      sheetClass: typeof FormApplication,
+      config?: DocumentSheetConfig.RegisterSheetOptions | undefined,
     ): void;
 
     /**
@@ -157,6 +169,32 @@ declare global {
        * @defaultValue `false`
        */
       makeDefault?: boolean;
+
+      /**
+       * Whether this sheet is available to be selected as a default sheet for all Documents of that type.
+       * @defaultValue `true`
+       */
+      canBeDefault?: boolean;
+
+      /**
+       * Whether this sheet appears in the sheet configuration UI for users.
+       * @defaultValue `true`
+       */
+      canConfigure?: boolean;
+    }
+
+    interface SheetClassesForSubType {
+      sheetClasses: Record<string, string>;
+      defaultClass: string;
+      defaultClasses: Record<string, string>;
+    }
+
+    interface DocumentSheetConfigData extends SheetClassesForSubType {
+      isGM: boolean;
+      object: foundry.abstract.Document.Any;
+      options: FormApplicationOptions;
+      sheetClass: string;
+      blankLabel: string;
     }
   }
 }
