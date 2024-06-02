@@ -1,8 +1,4 @@
-import type { MaybePromise } from "../../../../types/utils.d.mts";
-import type { AmbientLightDataConstructorData } from "../../../common/data/data.mjs/ambientLightData.d.mts";
-import type { AnimationDataConstructorData } from "../../../common/data/data.mjs/animationData.d.mts";
-import type { DarknessActivationConstructorData } from "../../../common/data/data.mjs/darknessActivation.d.mts";
-import type { LightDataConstructorData } from "../../../common/data/data.mjs/lightData.d.mts";
+import type { DeepPartial, MaybePromise } from "../../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -12,6 +8,11 @@ declare global {
   class AmbientLightConfig<
     Options extends DocumentSheetOptions<AmbientLightDocument> = DocumentSheetOptions<AmbientLightDocument>,
   > extends DocumentSheet<Options, AmbientLightDocument.ConfiguredInstance> {
+    /**
+     * Maintain a copy of the original to show a real-time preview of changes.
+     */
+    preview: AmbientLightDocument.ConfiguredInstance;
+
     /**
      * @defaultValue
      * ```typescript
@@ -28,6 +29,11 @@ declare global {
      */
     static override get defaultOptions(): DocumentSheetOptions<AmbientLightDocument>;
 
+    protected override _render(
+      force?: boolean | undefined,
+      options?: Application.RenderOptions<Options> | undefined,
+    ): Promise<void>;
+
     override getData(options?: Partial<Options>): MaybePromise<object>;
 
     override close(options?: Application.CloseOptions): Promise<void>;
@@ -41,7 +47,20 @@ declare global {
 
     protected _onResetForm(event: PointerEvent): void;
 
+    /**
+     * Preview changes to the AmbientLight document as if they were true document updates.
+     * @param change - A change to preview
+     */
+    protected _previewChanges(change: DeepPartial<AmbientLightDocument["_source"]>): void;
+
+    /**
+     * Restore the true data for the AmbientLight document when the form is submitted or closed.
+     */
+    protected _resetPreview(): void;
+
     protected override _onChangeTab(event: MouseEvent | null, tabs: Tabs, active: string): void;
+
+    protected override _getSubmitData(updateData?: object | null | undefined): AmbientLightConfig.FormData;
 
     protected override _updateObject(event: Event, formData: AmbientLightConfig.FormData): Promise<unknown>;
 
@@ -53,31 +72,29 @@ declare global {
   }
 
   namespace AmbientLightConfig {
-    interface FormData extends Pick<AmbientLightDataConstructorData, "x" | "y" | "rotation" | "walls" | "vision"> {
-      "config.dim": LightDataConstructorData["dim"];
-      "config.bright": LightDataConstructorData["bright"];
-      "config.angle": LightDataConstructorData["angle"];
-      "config.color": LightDataConstructorData["color"];
-      "config.alpha": LightDataConstructorData["alpha"];
-      "config.darkness.min": DarknessActivationConstructorData["min"];
-      "config.darkness.max": DarknessActivationConstructorData["max"];
-      "config.animation.type": AnimationDataConstructorData["type"];
-      "config.animation.speed": AnimationDataConstructorData["speed"];
-      "config.animation.reverse": AnimationDataConstructorData["reverse"];
-      "config.animation.intensity": AnimationDataConstructorData["intensity"];
-      "config.coloration": LightDataConstructorData["coloration"];
-      "config.luminosity": LightDataConstructorData["luminosity"];
-      "config.gradual": LightDataConstructorData["gradual"];
-      "config.saturation": LightDataConstructorData["saturation"];
-      "config.contrast": LightDataConstructorData["contrast"];
-      "config.shadows": LightDataConstructorData["shadows"];
-    }
-  }
-
-  /**
-   * @deprecated since v9
-   */
-  class LightConfig extends AmbientLightConfig {
-    constructor(...args: ConstructorParameters<typeof AmbientLightConfig>);
+    type FormData = {
+      x: AmbientLightDocument["x"];
+      y: AmbientLightDocument["y"];
+      rotation: AmbientLightDocument["rotation"];
+      walls: AmbientLightDocument["walls"];
+      vision: AmbientLightDocument["vision"];
+      "config.dim": AmbientLightDocument["config"]["dim"];
+      "config.bright": AmbientLightDocument["config"]["bright"];
+      "config.angle": AmbientLightDocument["config"]["angle"];
+      "config.color": AmbientLightDocument["config"]["color"];
+      "config.alpha": AmbientLightDocument["config"]["alpha"];
+      "config.darkness.min": AmbientLightDocument["config"]["darkness"]["min"];
+      "config.darkness.max": AmbientLightDocument["config"]["darkness"]["max"];
+      "config.animation.type": AmbientLightDocument["config"]["animation"]["type"];
+      "config.animation.speed": AmbientLightDocument["config"]["animation"]["speed"];
+      "config.animation.reverse": AmbientLightDocument["config"]["animation"]["reverse"];
+      "config.animation.intensity": AmbientLightDocument["config"]["animation"]["intensity"];
+      "config.coloration": AmbientLightDocument["config"]["coloration"];
+      "config.luminosity": AmbientLightDocument["config"]["luminosity"];
+      "config.attenuation": AmbientLightDocument["config"]["attenuation"];
+      "config.saturation": AmbientLightDocument["config"]["saturation"];
+      "config.contrast": AmbientLightDocument["config"]["contrast"];
+      "config.shadows": AmbientLightDocument["config"]["shadows"];
+    };
   }
 }
