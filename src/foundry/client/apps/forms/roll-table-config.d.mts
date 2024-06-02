@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { MaybePromise } from "../../../../types/utils.d.mts";
 
 declare global {
@@ -19,7 +18,7 @@ declare global {
      *   height: "auto",
      *   closeOnSubmit: false,
      *   viewPermission: CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER,
-     *   scrollY: ["ol.table-results"],
+     *   scrollY: ["table.table-results"],
      *   dragDrop: [{ dragSelector: null, dropSelector: null }],
      * })
      * ```
@@ -41,7 +40,7 @@ declare global {
     protected _onCreateResult(
       event: JQuery.ClickEvent | DragEvent,
       resultData?: foundry.documents.BaseTableResult.ConstructorData,
-    ): Promise<ConfiguredDocumentClassForName<"TableResult">[]>;
+    ): Promise<TableResult.ConfiguredInstance[]>;
 
     /**
      * Submit the entire form when a table result type is changed, in case there are other active changes
@@ -57,7 +56,7 @@ declare global {
      */
     protected _onDeleteResult(event: JQuery.ClickEvent): Promise<TableResult.ConfiguredInstance | undefined>;
 
-    protected override _onDrop(event: DragEvent): Promise<ConfiguredDocumentClassForName<"TableResult">[]> | void;
+    protected override _onDrop(event: DragEvent): Promise<TableResult.ConfiguredInstance[]> | void;
 
     /**
      * Handle changing the actor profile image by opening a FilePicker
