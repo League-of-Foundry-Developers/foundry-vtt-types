@@ -66,4 +66,4 @@ declare global {
   }
 }
 
-type FormData = Pick<foundry.data.UserData, "avatar" | "character" | "color">;
+type FormData = Pick<User["_source"], "avatar" | "character" | "color">;
