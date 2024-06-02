@@ -6,8 +6,9 @@ const doc = new AmbientLightDocument();
 expectTypeOf(doc.documentName).toEqualTypeOf<"AmbientLight">(); // Document
 expectTypeOf(doc.uuid).toEqualTypeOf<string>(); // clientDocumentMixin
 // TODO: change to <InstanceType<ObjectClass<AmbientLightDocument>> | null>  once the circular reference problem has been solved
-expectTypeOf(doc.object).toEqualTypeOf<PlaceableObject | null>(); // canvasDocumentMixin
+expectTypeOf(doc.object).toEqualTypeOf<PlaceableObject>(); // canvasDocumentMixin
 expectTypeOf(doc.isGlobal).toEqualTypeOf<boolean>(); // class itself
+expectTypeOf(doc.compendium).toEqualTypeOf<undefined>(); // TODO: Determine if embedded documents can have this metadata
 
 // Test the inheritance of static members
 expectTypeOf(AmbientLightDocument.documentName).toEqualTypeOf<string>(); // Document

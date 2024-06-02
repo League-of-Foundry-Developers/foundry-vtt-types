@@ -148,11 +148,26 @@ declare global {
      */
     get indexed(): boolean;
 
-    get(key: string, { strict }: { strict: true }): StoredDocument<DocumentInstanceForCompendiumMetadata<T>>;
     get(
       key: string,
-      { strict }?: { strict?: false | undefined } | undefined,
+      options?: InexactPartial<{
+        /**
+         * Throw an Error if the requested Embedded Document does not exist.
+         * @defaultValue `false`
+         */
+        strict: false;
+        /**
+         * Allow retrieving an invalid Embedded Document.
+         * @defaultValue `false`
+         */
+        invalid: false;
+      }>,
     ): StoredDocument<DocumentInstanceForCompendiumMetadata<T>> | undefined;
+    get(
+      key: string,
+      options: { strict: true; invalid?: false },
+    ): StoredDocument<DocumentInstanceForCompendiumMetadata<T>>;
+    get(key: string, options: { strict?: boolean; invalid: true }): unknown;
 
     set(id: string, document: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>): this;
 

@@ -1,6 +1,11 @@
 import type { ConfiguredDocumentClass, DocumentConstructor } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial, StoredDocument } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
+// import type _Collection from "../../../common/utils/collection.d.mts";
+
+// Fix for "Class 'Collection<StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>>' defines instance member property 'delete',
+// but extended class 'DocumentCollection<T, Name>' defines it as instance member function."
+// type Collection<T> = Omit<_Collection<T>, "set" | "delete" | "get">;
 
 declare global {
   /**
@@ -103,13 +108,34 @@ declare global {
     ): StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>;
     get(key: string, options: { strict?: boolean; invalid: true }): unknown;
 
+    // Attempt at making get use generics instead of overload TODO: Remove later
+    // get<Strict extends boolean | undefined, Invalid extends boolean | undefined>(
+    //   key: string,
+    //   options?: {
+    //     /**
+    //      * Throw an Error if the requested Embedded Document does not exist.
+    //      * @defaultValue `false`
+    //      */
+    //     strict?: Strict;
+    //     /**
+    //      * Allow retrieving an invalid Embedded Document.
+    //      * @defaultValue `false`
+    //      */
+    //     invalid?: Invalid;
+    //   },
+    // ): Invalid extends true
+    //   ? unknown
+    //   : Strict extends true
+    //     ? StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>
+    //     : StoredDocument<InstanceType<ConfiguredDocumentClass<T>>> | undefined;
+
     /**
      * @remarks The parameter `id` is ignored, instead `document.id` is used as the key.
      */
     set(id: string, document: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>): this;
 
     /** @remarks Actually returns void */
-    delete(id: string): boolean;
+    delete: (id: string) => boolean;
 
     /**
      * Render any Applications associated with this DocumentCollection.

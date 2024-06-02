@@ -14,9 +14,9 @@ expectTypeOf(baseActor.effects.get("")).toEqualTypeOf<ActiveEffect | undefined>(
 expectTypeOf(baseActor.effects.get("")!.name).toEqualTypeOf<string>();
 expectTypeOf(baseActor.items).toEqualTypeOf<EmbeddedCollection<Item, Actor>>();
 expectTypeOf(baseActor.items.get("")).toEqualTypeOf<Item | undefined>();
-expectTypeOf(baseActor.items.get("")!.img).toEqualTypeOf<string | undefined>();
+expectTypeOf(baseActor.items.get("")!.img).toEqualTypeOf<string | null | undefined>();
 expectTypeOf(baseActor._source.effects[0]!).toEqualTypeOf<ActiveEffectData>();
-expectTypeOf(baseActor._source.effects[0]!.duration).toEqualTypeOf<EffectDurationData>();
+expectTypeOf(baseActor._source.effects[0]!.duration.seconds).toEqualTypeOf<number | null | undefined>();
 
 interface CharacterDataSourceData {
   health: number;

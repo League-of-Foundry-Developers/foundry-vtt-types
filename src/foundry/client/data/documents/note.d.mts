@@ -1,3 +1,5 @@
+import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
+
 export {};
 
 declare global {
@@ -23,5 +25,9 @@ declare global {
      * The text label used to annotate this Note
      */
     get label(): string;
+  }
+
+  namespace NoteDocument {
+    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"Note">>;
   }
 }

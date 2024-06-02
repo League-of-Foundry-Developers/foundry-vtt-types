@@ -190,7 +190,7 @@ declare global {
     interface GridOptions {
       dimensions: Canvas["dimensions"];
       color: string;
-      alpha: Scene["data"]["gridAlpha"];
+      alpha: Scene["gridAlpha"];
       columns?: boolean;
       even?: boolean;
     }

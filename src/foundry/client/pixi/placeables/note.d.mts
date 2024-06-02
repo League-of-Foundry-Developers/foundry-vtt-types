@@ -1,7 +1,5 @@
 import type { DeepPartial } from "../../../../types/utils.d.mts";
 
-type JournalEntryPage = unknown;
-
 declare global {
   /**
    * A Note is an implementation of PlaceableObject which represents an annotated location within the Scene.

@@ -2,12 +2,12 @@ import type {
   ConfiguredDocumentClass,
   ConfiguredDocumentClassForName,
   ConstructorDataType,
+  DocumentConstructor,
   DocumentType,
   DocumentTypeWithTypeData,
   PlaceableDocumentType,
 } from "../../../types/helperTypes.mts";
 import type { DeepPartial, InexactPartial, StoredDocument } from "../../../types/utils.mts";
-import type { ClientDocument } from "../../client/data/abstract/client-document.d.mts";
 import type * as CONST from "../constants.mts";
 import type { DataField } from "../data/fields.d.mts";
 import type { fields } from "../data/module.mts";
@@ -89,7 +89,7 @@ declare abstract class Document<
    */
   // Referencing the concrete class the config is not possible because accessors cannot be generic and there is not
   // static polymorphic this type
-  static get implementation(): typeof ClientDocument;
+  static get implementation(): DocumentConstructor;
 
   /**
    * The named collection to which this Document belongs.

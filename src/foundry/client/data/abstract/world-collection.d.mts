@@ -13,7 +13,6 @@ declare global {
    * @see {@link Game#collections}
    */
   abstract class WorldCollection<T extends DocumentConstructor, Name extends string> extends DirectoryCollectionMixin(
-    // @ts-expect-error Foundry type error on delete return type
     DocumentCollection,
   ) {
     /**
@@ -90,7 +89,7 @@ declare global {
 
     /**
      * Unregister a Document sheet class, removing it from the list of available sheet Applications to use.
-     * See {@link DocumentSheetConfig.unregisterSheet} for detauls.
+     * See {@link DocumentSheetConfig.unregisterSheet} for details.
      * @see DocumentSheetConfig.unregisterSheet
      *
      * @example <caption>Deregister the default ActorSheet subclass to replace it with others.</caption>

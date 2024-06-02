@@ -758,7 +758,7 @@ declare global {
      */
     type PastePlaceableObject<P extends PlaceableObject = PlaceableObject> = (
       copied: P[],
-      createData: Array<P["document"]["data"]["_source"]>,
+      createData: Array<P["document"]["_source"]>,
     ) => boolean | void;
 
     /**
