@@ -22,27 +22,6 @@ declare global {
     sheet: SceneConfig;
 
     /**
-     * The counter-factual dimensions being evaluated
-     * @defaultValue `{}`
-     * @internal
-     */
-    protected _dimensions: ReturnType<Scene["getDimensions"]> | Record<string, never>;
-
-    /**
-     * A reference to the bound key handler function so it can be removed
-     * @defaultValue `null`
-     * @internal
-     */
-    protected _keyHandler: ((event: KeyboardEvent) => void) | null;
-
-    /**
-     * A reference to the bound mousewheel handler function so it can be removed
-     * @defaultValue `null`
-     * @internal
-     */
-    protected _wheelHandler: ((event: WheelEvent) => void) | null;
-
-    /**
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.defaultOptions, {
@@ -52,19 +31,20 @@ declare global {
      *   width: 480,
      *   height: "auto",
      *   closeOnSubmit: true,
-     *   submitOnChange: true
      * })
      * ```
      */
     static override get defaultOptions(): (typeof FormApplication)["defaultOptions"];
 
-    override getData(options?: Partial<Options>): MaybePromise<object>;
-
     protected override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
-    override activateListeners(html: JQuery): void;
+    override getData(options?: Partial<Options>): MaybePromise<object>;
+
+    protected override _getSubmitData(updateData?: object | null | undefined): GridConfig.FormData;
 
     override close(options?: FormApplication.CloseOptions): ReturnType<FormApplication["close"]>;
+
+    override activateListeners(html: JQuery): void;
 
     /**
      * Handle keyboard events.
@@ -80,12 +60,34 @@ declare global {
      */
     protected _onWheel(event: WheelEvent): void;
 
+    protected override _onChangeInput(event: JQuery.ChangeEvent): Promise<void>;
+
+    protected override _updateObject(event: Event, formData: GridConfig.FormData): Promise<void>;
+
     /**
-     * Handle resetting the form and re-drawing back to the original dimensions
-     * @param event - The original click event
+     * Temporarily refresh the display of the BackgroundLayer and GridLayer for the new pending dimensions
+     * @param options - Options which define how the refresh is performed
      * @internal
      */
-    protected _onReset(event: JQuery.ClickEvent): void;
+    protected _refresh(options?: {
+      /**
+       * Refresh the background display?
+       * @defaultValue `false`
+       */
+      background?: boolean;
+
+      /**
+       * Refresh the grid display?
+       * @defaultValue `false`
+       */
+      grid?: boolean;
+    }): void;
+
+    /**
+     * Reset the scene back to its original settings
+     * @internal
+     */
+    protected _reset(): Promise<void>;
 
     /**
      * Scale the background size relative to the grid size
@@ -104,12 +106,10 @@ declare global {
 
     /**
      * Shift the background image relative to the grid layer
+     * @param position - The position configuration to preview
      * @internal
      */
-    protected _shiftBackground({
-      deltaX,
-      deltaY,
-    }?: {
+    protected _shiftBackground(position?: {
       /**
        * The number of pixels to shift in the x-direction
        * @defaultValue `0`
@@ -121,41 +121,20 @@ declare global {
        * @defaultValue `0`
        */
       deltaY?: number;
-    }): ReturnType<GridConfig["_refresh"]>;
-
-    /**
-     * Temporarily refresh the display of the BackgroundLayer and GridLayer for the new pending dimensions
-     * @internal
-     */
-    protected _refresh({
-      background,
-      grid,
-    }?: {
-      /**
-       * Refresh the background display?
-       * @defaultValue `false`
-       */
-      background?: boolean;
-
-      /**
-       * Refresh the grid display?
-       * @defaultValue `false`
-       */
-      grid?: boolean;
     }): void;
-
-    protected override _onChangeInput(event: JQuery.ChangeEvent): Promise<void>;
-
-    protected override _updateObject(event: Event, formData: GridConfig.FormData): Promise<unknown>;
   }
 
   namespace GridConfig {
     type FormData = {
-      gridType: foundry.CONST.GRID_TYPES;
-      grid: number | null;
-      scale: number | null;
-      shiftX: number | null;
-      shiftY: number | null;
+      grid: {
+        type: Scene["grid"]["type"];
+        size: Scene["grid"]["size"];
+      };
+      scale: Scene["scale"];
+      background: {
+        offsetX: Scene["background"]["offsetX"];
+        offsetY: Scene["background"]["offsetY"];
+      };
     };
   }
 }
