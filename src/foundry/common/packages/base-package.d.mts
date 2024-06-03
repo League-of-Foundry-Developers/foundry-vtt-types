@@ -1,6 +1,6 @@
 import type { InexactPartial } from "../../../types/utils.d.mts";
 import type DataModel from "../abstract/data.mjs";
-import type { ReleaseData } from "../config.mjs/releaseData.d.mts";
+import type { ReleaseData } from "../config.d.mts";
 import * as fields from "../data/fields.mjs";
 import type { DataModelValidationFailure } from "../data/validation-failure.d.mts";
 import type { BaseFolder } from "../documents/module.d.mts";
@@ -275,10 +275,11 @@ declare namespace BasePackage {
 
     media: fields.SetField<fields.SchemaField<PackageMediaSchema>>;
 
+    // Moved to base-module and base-system to avoid conflict with base-world
     /**
      * The current package version
      */
-    version: fields.StringField<{ required: true; blank: false; initial: "0" }>;
+    // version: fields.StringField<{ required: true; blank: false; initial: "0" }>;
 
     /**
      * The compatibility of this version with the core Foundry software

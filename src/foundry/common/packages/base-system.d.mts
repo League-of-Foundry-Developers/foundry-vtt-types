@@ -4,6 +4,12 @@ import * as fields from "../data/fields.mjs";
 declare namespace BaseSystem {
   type Schema = ReturnType<typeof BasePackage.defineSchema> & {
     /**
+     * The current package version
+     * @remarks Actually defined in BasePackage but defined here to avoid conflict with BaseWorld
+     */
+    version: fields.StringField<{ required: true; blank: false; initial: "0" }>;
+
+    /**
      * A web URL or local file path which provides a default background banner for worlds which are created using this system
      */
     background: fields.StringField<{ required: false; blank: false }>;

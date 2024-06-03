@@ -5,6 +5,12 @@ import type AdditionalTypesField from "./sub-types.mjs";
 declare namespace BaseModule {
   type Schema = ReturnType<typeof BasePackage.defineSchema> & {
     /**
+     * The current package version
+     * @remarks Actually defined in BasePackage but defined here to avoid conflict with BaseWorld
+     */
+    version: fields.StringField<{ required: true; blank: false; initial: "0" }>;
+
+    /**
      * Does this module provide a translation for the core software?
      */
     coreTranslation: fields.BooleanField;

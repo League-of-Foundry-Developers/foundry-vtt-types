@@ -1,7 +1,7 @@
 import type BasePackage from "./base-package.d.mts";
 import * as fields from "../data/fields.mjs";
 import type { InexactPartial, Merge } from "../../../types/utils.d.mts";
-import type { ReleaseData } from "../config.mjs/releaseData.d.mts";
+import type { ReleaseData } from "../config.d.mts";
 import type { CONST } from "../module.d.mts";
 
 declare namespace BaseWorld {
