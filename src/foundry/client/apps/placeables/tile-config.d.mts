@@ -27,7 +27,7 @@ declare global {
 
     override close(options?: Application.CloseOptions | undefined): Promise<void>;
 
-    override getData(options?: Partial<Options> | undefined): MaybePromise<object>;
+    override getData(options?: Partial<Options> | undefined): MaybePromise<object>; // TODO: Implement GetDataReturnType
 
     protected override _onChangeInput(event: JQuery.ChangeEvent): Promise<void>;
 

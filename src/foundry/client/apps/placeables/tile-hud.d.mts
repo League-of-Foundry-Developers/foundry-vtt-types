@@ -21,9 +21,15 @@ declare global {
      */
     static override get defaultOptions(): ApplicationOptions;
 
-    override getData(options?: Partial<Options>): MaybePromise<object>;
+    override getData(options?: Partial<Options>): MaybePromise<object>; // TODO: Implement GetDataReturnType
 
     override setPosition(options?: Partial<Application.Position>): void;
+
+    protected override _onClickControl(event: JQuery.ClickEvent): void | this;
+
+    protected _onToggleOverhead(event: PointerEvent, overhead: boolean): Promise<ReturnType<this["render"]>>;
+
+    protected _onControlVideo(event: PointerEvent): this;
   }
 }
 
