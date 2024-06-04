@@ -76,19 +76,26 @@ expectTypeOf(
   }),
 ).toEqualTypeOf<foundry.documents.BaseTile>();
 
-expectTypeOf(
-  new foundry.documents.BaseTile({
-    occlusion: {},
-  }),
-).toEqualTypeOf<foundry.documents.BaseTile>();
-
+// @ts-expect-error width and height may not be null
 new foundry.documents.BaseTile({
-  // @ts-expect-error mode cannot be an arbitrary number.
+  occlusion: {},
+});
+
+// @ts-expect-error mode cannot be an arbitrary number.
+new foundry.documents.BaseTile({
+  width: 300,
+  height: 300,
   occlusion: { mode: 999 },
 });
 
 expectTypeOf(
   new foundry.documents.BaseTile({
     video: {},
+    width: 300,
+    height: 300,
   }),
 ).toEqualTypeOf<foundry.documents.BaseTile>();
+
+declare const myTile: foundry.documents.BaseTile;
+
+expectTypeOf(myTile.overhead).toEqualTypeOf<boolean>();
