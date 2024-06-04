@@ -1,19 +1,29 @@
-import type { MaybePromise } from "../../../../types/utils.d.mts";
+export {};
 
 declare global {
   /**
    * The Application responsible for configuring a single Token document within a parent Scene.
-   * Note that due to an oversight, this class does not inherit from {@link DocumentSheet} as it was intended to, and will
-   * be changed in v10.
-   * @typeParam Options - The type of the options object
    */
-  class TokenConfig<Options extends FormApplicationOptions = FormApplicationOptions> extends FormApplication<
-    Options,
-    TokenDocument.ConfiguredInstance | Actor.ConfiguredInstance
-  > {
+  class TokenConfig<
+    Options extends
+      DocumentSheetOptions<TokenDocument.ConfiguredInstance> = DocumentSheetOptions<TokenDocument.ConfiguredInstance>,
+  > extends DocumentSheet<Options, TokenDocument.ConfiguredInstance | Actor.ConfiguredInstance> {
     constructor(object: TokenDocument.ConfiguredInstance | Actor.ConfiguredInstance, options?: Partial<Options>);
 
-    token: TokenDocument.ConfiguredInstance | PrototypeTokenDocument;
+    /**
+     * The placed Token object in the Scene
+     */
+    token: TokenDocument.ConfiguredInstance | foundry.data.PrototypeToken;
+
+    /**
+     * A reference to the Actor which the token depicts
+     */
+    actor: Actor.ConfiguredInstance;
+
+    /**
+     * Maintain a copy of the original to show a real-time preview of changes.
+     */
+    preview: TokenDocument.ConfiguredInstance | foundry.data.PrototypeToken;
 
     /**
      * @defaultValue
@@ -26,32 +36,38 @@ declare global {
      *   tabs: [
      *     {navSelector: '.tabs[data-group="main"]', contentSelector: "form", initial: "character"},
      *     {navSelector: '.tabs[data-group="light"]', contentSelector: '.tab[data-tab="light"]', initial: "basic"}
+     *     {navSelector: '.tabs[data-group="vision"]', contentSelector: '.tab[data-tab="vision"]', initial: "basic"}
      *   ],
+     *   viewPermission: CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER,
      *   sheetConfig: true
      * })
      * ```
      */
-    static override get defaultOptions(): FormApplicationOptions;
-
-    override get id(): string;
+    static override get defaultOptions(): DocumentSheetOptions<TokenDocument.ConfiguredInstance>;
 
     /**
      * A convenience accessor to test whether we are configuring the prototype Token for an Actor.
      */
     get isPrototype(): boolean;
 
-    /**
-     * Convenience access to the Actor document that this Token represents
-     */
-    get actor(): Actor.ConfiguredInstance;
+    override get id(): string;
 
     override get title(): string;
 
-    override getData(options?: Partial<Options>): MaybePromise<object>;
+    override render(force?: boolean, options?: Application.RenderOptions<Options>): this;
 
-    override render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<this>;
+    protected override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
-    protected override _renderInner(args: object): Promise<JQuery>;
+    /**
+     * Handle preview with a token.
+     */
+    protected _handleTokenPreview(force: boolean, options?: Options): Promise<void>;
+
+    protected override _canUserView(user: User): boolean;
+
+    override getData(options?: Partial<Options>): Promise<object>; // TODO: Implement GetDataReturnType
+
+    protected _renderInner(data: object): Promise<JQuery<HTMLElement>>;
 
     /**
      * Get an Object of image paths and filenames to display in the Token sheet
@@ -59,15 +75,24 @@ declare global {
      */
     protected _getAlternateTokenImages(): Promise<Record<string, string>>;
 
-    protected override _getHeaderButtons(): Application.HeaderButton[];
+    override activateListeners(html: JQuery): void;
+
+    override close(options?: FormApplication.CloseOptions | undefined): Promise<void>;
+
+    protected override _getSubmitData(updateData?: object | null | undefined): TokenConfig.FormData;
+
+    protected override _onChangeInput(event: JQuery.ChangeEvent): Promise<void>;
 
     /**
-     * Shim for {@link DocumentSheet#_onConfigureSheet} that will be replaced in v10 when this class subclasses it.
-     * @internal
+     * Mimic changes to the Token document as if they were true document updates.
+     * @param change - The change to preview.
      */
-    protected _onConfigureSheet(event: JQuery.ClickEvent): void;
+    protected _previewChanges(change?: object): void;
 
-    override activateListeners(html: JQuery): void;
+    /**
+     * Reset the temporary preview of the Token when the form is submitted or closed.
+     */
+    protected _resetPreview(): void;
 
     protected override _updateObject(event: Event, formData: TokenConfig.FormData): Promise<unknown>;
 
@@ -83,10 +108,37 @@ declare global {
      * @internal
      */
     protected _onBarChange(ev: JQuery.ChangeEvent): void;
+
+    /**
+     * Handle click events on a token configuration sheet action button
+     * @param event - The originating click event
+     */
+    protected _onClickActionButton(event: PointerEvent): void;
+
+    /**
+     * Handle adding a detection mode.
+     * @param modes - The existing detection modes
+     */
+    protected _onAddDetectionMode(modes: TokenDocument["detectionModes"]): void;
+
+    /**
+     * Handle removing a detection mode.
+     * @param index - The index of the detection mode to remove.
+     * @param modes - The existing detection modes.
+     */
+    protected _onRemoveDetectionMode(index: number, modes: TokenDocument["detectionModes"]): void;
+
+    /**
+     * Disable the user's ability to edit the token image field if wildcard images are enabled and that user does not have
+     * file browser permissions.
+     * @internal
+     */
+    protected _disableEditImage(): void;
   }
 
   namespace TokenConfig {
-    interface FormData {
+    type FormData = {
+      // TODO: Update
       actorId: string;
       actorLink: boolean;
       alternateImages?: string;
@@ -121,22 +173,19 @@ declare global {
       width: number | null;
       x: number | null;
       y: number | null;
-    }
+    };
   }
 
   /**
    * A sheet that alters the values of the default Token configuration used when new Token documents are created.
    */
   class DefaultTokenConfig<
-    Options extends FormApplicationOptions = FormApplicationOptions,
+    Options extends
+      DocumentSheetOptions<TokenDocument.ConfiguredInstance> = DocumentSheetOptions<TokenDocument.ConfiguredInstance>,
   > extends TokenConfig<Options> {
-    constructor(object: unknown, options?: Partial<Options> | undefined);
-
-    data: foundry.data.TokenData;
+    constructor(object?: unknown, options?: Partial<Options> | undefined);
 
     object: TokenDocument.ConfiguredInstance;
-
-    token: TokenDocument.ConfiguredInstance;
 
     /**
      * The named world setting that stores the default Token configuration
@@ -153,13 +202,17 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): FormApplicationOptions;
+    static override get defaultOptions(): DocumentSheetOptions<TokenDocument.ConfiguredInstance>;
 
     override get id(): string;
 
     override get title(): string;
 
-    override getData(options: unknown): MaybePromise<object>;
+    override get isEditable(): boolean;
+
+    protected override _canUserView(user: User): boolean;
+
+    override getData(options: unknown): Promise<object>; // TODO: Implement GetDataReturnType
 
     override _getSubmitData(
       updateData?: Parameters<TokenConfig["_getSubmitData"]>[0],
@@ -175,5 +228,9 @@ declare global {
     reset(): void;
 
     protected override _onBarChange(): Promise<void>;
+
+    protected override _onAddDetectionMode(modes: TokenDocument["detectionModes"]): void;
+
+    protected override _onRemoveDetectionMode(index: number, modes: TokenDocument["detectionModes"]): void;
   }
 }
