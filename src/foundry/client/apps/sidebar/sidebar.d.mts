@@ -42,7 +42,7 @@ declare global {
      */
     get popouts(): Partial<Record<string, SidebarTab>>;
 
-    override getData(options?: Partial<Options>): MaybePromise<object>;
+    override getData(options?: Partial<Options>): MaybePromise<object>; // TODO: Implement GetDataReturnType
 
     /**
      * @internal
