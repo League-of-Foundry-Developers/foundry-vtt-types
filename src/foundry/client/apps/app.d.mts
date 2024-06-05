@@ -264,6 +264,11 @@ declare global {
     get rendered(): boolean;
 
     /**
+     * Whether the Application is currently closing.
+     */
+    get closing(): boolean;
+
+    /**
      * An Application window should define its own title definition logic which may be dynamic depending on its data
      */
     get title(): string;
@@ -490,6 +495,12 @@ declare global {
      * Additional actions to take when the application window is resized
      */
     protected _onResize(event: Event): void;
+
+    /**
+     * Wait for any images present in the Application to load.
+     * @returns A Promise that resolves when all images have loaded.
+     */
+    _waitForImages(): Promise<void>;
   }
 
   namespace Application {
