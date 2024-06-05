@@ -38,7 +38,7 @@ declare global {
 
     override setPosition(_position?: Partial<Application.Position>): void;
 
-    override getData(options?: Partial<ApplicationOptions>): MaybePromise<object>;
+    override getData(options?: Partial<ApplicationOptions>): MaybePromise<object>; // TODO: Implement GetDataReturnType
 
     /**
      * Get an array of icon paths which represent valid status effect choices
@@ -106,20 +106,24 @@ declare global {
 
     /**
      * Handle toggling a token status effect icon
+     * @param event  - The click event to toggle the effect
+     * @param options - Options which modify the toggle
      * @internal
      */
     protected _onToggleEffect(
       event: JQuery.ClickEvent | JQuery.ContextMenuEvent,
-      {
-        overlay,
-      }?: {
-        /** @defaultValue `false` */
+      options?: {
+        /**
+         * Toggle the overlay effect?
+         * @defaultValue `false`
+         */
         overlay?: boolean;
       },
     ): Promise<boolean>;
 
     /**
      * Handle toggling the target state for this Token
+     * @param event - The click event to toggle the target
      * @internal
      */
     protected _onToggleTarget(event: JQuery.ClickEvent): void;
