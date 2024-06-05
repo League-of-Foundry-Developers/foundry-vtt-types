@@ -13,8 +13,11 @@ declare global {
      * @defaultValue
      * ```typescript
      * const options = super.defaultOptions;
+     * options.classes.push("wall-config");
      * options.template = "templates/scene/wall-config.html";
      * options.width = 400;
+     * options.height = "auto";
+     * return options;
      * ```
      */
     static get defaultOptions(): DocumentSheetOptions<WallDocument>;
@@ -34,20 +37,26 @@ declare global {
       },
     ): this;
 
-    override getData(): MaybePromise<object>;
+    override getData(): MaybePromise<object>; // TODO: Implement GetDataReturnType
+
+    override activateListeners(html: JQuery<HTMLElement>): void;
+
+    protected _onChangeInput(event: JQuery.ChangeEvent<any, any, any, any>): Promise<void | object>;
+
+    protected _getSubmitData(updateData?: object | null | undefined): WallConfig.FormData;
 
     protected override _updateObject(event: Event, formData: WallConfig.FormData): Promise<unknown>;
   }
 
   namespace WallConfig {
-    interface FormData {
-      dir: foundry.CONST.WALL_DIRECTIONS;
-      door: foundry.CONST.WALL_DOOR_TYPES;
-      light: foundry.CONST.WALL_SENSE_TYPES;
-      ds?: foundry.CONST.WALL_DOOR_STATES;
-      move: foundry.CONST.WALL_MOVEMENT_TYPES;
-      sight: foundry.CONST.WALL_SENSE_TYPES;
-      sound: foundry.CONST.WALL_SENSE_TYPES;
-    }
+    type FormData = Pick<
+      WallDocument["_source"],
+      "move" | "light" | "sight" | "sound" | "dir" | "door" | "ds" | "doorSound"
+    > & {
+      "threshold.light": WallDocument["_source"]["threshold"]["light"];
+      "threshold.sight": WallDocument["_source"]["threshold"]["sight"];
+      "threshold.sound": WallDocument["_source"]["threshold"]["sound"];
+      "threshold.attenuation": WallDocument["_source"]["threshold"]["attenuation"];
+    };
   }
 }
