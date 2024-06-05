@@ -1,4 +1,4 @@
-import type { MaybePromise } from "../../../../types/utils.d.mts";
+export {};
 
 declare global {
   /**
@@ -7,11 +7,6 @@ declare global {
    */
   abstract class SidebarTab<Options extends ApplicationOptions = ApplicationOptions> extends Application<Options> {
     constructor(...args: ConstructorParameters<typeof Application>);
-    /**
-     * The base name of this sidebar tab
-     * @defaultValue `""`
-     */
-    tabName: string;
 
     /**
      * A reference to the pop-out variant of this SidebarTab, if one exists
@@ -29,9 +24,11 @@ declare global {
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.defaultOptions, {
+     *   id: null,
      *   popOut: false,
      *   width: 300,
      *   height: "auto",
+     *   classes: ["tab", "sidebar-tab"],
      *   baseApplication: "SidebarTab"
      * });
      * ```
@@ -40,7 +37,12 @@ declare global {
 
     override get id(): string;
 
-    override getData(options?: Partial<Options> | undefined): MaybePromise<object>;
+    /**
+     * The base name of this sidebar tab
+     */
+    get tabName(): string;
+
+    override getData(options?: Partial<Options> | undefined): Promise<object>; // TODO: implement GetDataReturnType
 
     protected override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
