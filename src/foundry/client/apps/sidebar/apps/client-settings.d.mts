@@ -1,4 +1,4 @@
-import type { MaybePromise } from "../../../../../types/utils.d.mts";
+export {};
 
 declare global {
   /**
@@ -8,7 +8,7 @@ declare global {
    */
   class SettingsConfig<
     Options extends FormApplicationOptions = FormApplicationOptions,
-  > extends FormApplication<Options> {
+  > extends PackageConfiguration<Options> {
     /**
      * @defaultValue
      * ```typescript
@@ -16,17 +16,13 @@ declare global {
      *   title: game.i18n.localize("SETTINGS.Title"),
      *   id: "client-settings",
      *   template: "templates/sidebar/apps/settings-config.html",
-     *   width: 600,
-     *   height: "auto",
-     *   tabs: [
-     *     {navSelector: ".tabs", contentSelector: ".content", initial: "core"}
-     *   ]
+     *   submitButton: true
      * })
      * ```
      */
     static override get defaultOptions(): (typeof FormApplication)["defaultOptions"];
 
-    override getData(options?: Partial<Options>): MaybePromise<object>;
+    override _prepareCategoryData(): PackageConfiguration.Category;
 
     override activateListeners(html: JQuery): void;
 
@@ -54,6 +50,24 @@ declare global {
     override close(options?: Application.CloseOptions | undefined): Promise<void>;
 
     protected override _updateObject(event: Event, formData: SettingsConfig.FormData): Promise<unknown>;
+
+    /**
+     * Handle button click to reset default settings
+     * @param event - THe initial button click event
+     */
+    protected _onResetDefaults(event: Event): void;
+
+    /**
+     * Confirm if the user wishes to reload the application
+     * @param options - Additional options to configure the prompt
+     */
+    static reloadConfirm(options?: {
+      /**
+       * Whether to reload all connected clients as well.
+       * @defaultValue `false`
+       */
+      world: boolean;
+    }): Promise<void>;
   }
 
   namespace SettingsConfig {
