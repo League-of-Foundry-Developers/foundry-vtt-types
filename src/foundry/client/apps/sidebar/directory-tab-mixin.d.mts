@@ -158,6 +158,13 @@ declare class DirectoryApplication {
   ): Promise<{ folder: Folder.ConfiguredInstance; sortNeeded: boolean } | null>;
 
   /**
+   * Handle Entry data being dropped into the directory.
+   * @param target - The target element
+   * @param data   - The data being dropped // TODO: DragData improvements
+   */
+  protected _handleDroppedEntry(target: HTMLElement, data: object): Promise<void>;
+
+  /**
    * Determine if an Entry is being compared to itself
    * @param entry      - The Entry
    * @param otherEntry - The other Entry
