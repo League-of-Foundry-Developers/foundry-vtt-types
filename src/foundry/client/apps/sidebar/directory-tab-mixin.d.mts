@@ -118,6 +118,12 @@ declare class DirectoryApplication {
    */
   protected _getEntryDragData(entryId: string): object; // TODO: DragData improvements
 
+  /**
+   * Get the data transfer object for a Folder being dragged from this SidebarDirectory
+   * @param folderId - The Folder _id being dragged
+   */
+  protected _getFolderDragData(folderId: string): object;
+
   protected _canDragStart(selector: string): boolean;
 
   /**
@@ -233,6 +239,12 @@ declare class DirectoryApplication {
    * @returns The Array of context options passed to the ContextMenu instance
    */
   protected _getFolderContextOptions(): ContextMenuEntry[];
+
+  /**
+   * Get the set of ContextMenu options which should be used for Entries in a SidebarDirectory
+   * @returns The array of context options passed to the ContextMenu instance
+   */
+  protected _getEntryContextOptions(): ContextMenuEntry[];
 }
 
 declare global {

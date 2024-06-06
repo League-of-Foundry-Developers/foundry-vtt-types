@@ -1,4 +1,4 @@
-import type { MaybePromise } from "../../../../../types/utils.d.mts";
+export {};
 
 declare global {
   /**
@@ -9,7 +9,7 @@ declare global {
   class Compendium<
     Metadata extends CompendiumCollection.Metadata,
     Options extends ApplicationOptions = ApplicationOptions,
-  > extends Application<Options> {
+  > extends DocumentDirectory<Options> {
     /**
      * @param collection - The {@link CompendiumCollection} object represented by this interface.
      * @param options    - Application configuration options.
@@ -17,6 +17,10 @@ declare global {
     constructor(collection: CompendiumCollection<Metadata>, options?: Partial<Options> | undefined);
 
     collection: CompendiumCollection<Metadata>;
+
+    override get entryType(): foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
+
+    static override entryPartial: string;
 
     /**
      * @defaultValue
@@ -27,53 +31,60 @@ declare global {
      *   height: window.innerHeight - 100,
      *   top: 70,
      *   left: 120,
-     *   scrollY: [".directory-list"],
-     *   dragDrop: [{ dragSelector: ".directory-item", dropSelector: ".directory-list" }],
-     *   filters: [{inputSelector: 'input[name="search"]', contentSelector: ".directory-list"}]
+     *   popOut: true
      * });
      * ```
      */
     static override get defaultOptions(): ApplicationOptions;
 
+    override get id(): string;
+
     override get title(): string;
+
+    override get tabName(): string;
+
+    override get canCreateEntry(): boolean;
+
+    override get canCreateFolder(): boolean;
 
     /**
      * A convenience redirection back to the metadata object of the associated CompendiumCollection
      */
     get metadata(): this["collection"]["metadata"];
 
-    override getData(options?: Partial<Options>): MaybePromise<object>;
+    override initialize(): void;
 
-    override close(options?: Application.CloseOptions): Promise<void>;
+    override render(
+      force?: boolean | undefined,
+      options?: Application.RenderOptions<ApplicationOptions> | undefined,
+    ): unknown;
 
-    override activateListeners(html: JQuery): void;
+    override getData(options?: Partial<Options>): Promise<object>;
+
+    protected override _entryAlreadyExists(entry: DirectoryMixinEntry): boolean;
+
+    protected override _createDroppedEntry(
+      entry: DirectoryMixinEntry,
+      folderId?: string | undefined,
+    ): Promise<DirectoryMixinEntry>;
+
+    protected override _getEntryDragData(entryId: string): object;
+
+    protected override _onCreateEntry(event: PointerEvent): Promise<void>;
 
     /**
-     * Handle opening a single compendium entry by invoking the configured document class and its sheet
-     * @param event - The originating click event
-     */
-    protected _onClickEntry(event: JQuery.ClickEvent): void;
-
-    protected override _onSearchFilter(event: KeyboardEvent, query: string, rgx: RegExp, html: HTMLElement): void;
-
-    protected override _canDragStart(selector: string): boolean;
-
-    protected override _canDragDrop(selector: string): boolean;
-
-    protected override _onDragStart(event: DragEvent): void;
-
-    /**
+     * Handle clicks on a footer button
+     * @param event - The originating pointer event
      * @internal
      */
-    protected override _onDrop(event: DragEvent): void;
+    _onClickFooterButton(event: PointerEvent): AdventureExporter | void;
 
-    protected override _contextMenu(html: JQuery): void;
+    protected _getDocumentDragData(documentId: string): object;
 
-    /**
-     * Get Compendium entry context options
-     * @returns The Compendium entry context options
-     * @internal
-     */
-    protected _getEntryContextOptions(): ContextMenuEntry;
+    protected override _getFolderDragData(folderId: string): object;
+
+    protected override _getFolderContextOptions(): ContextMenuEntry[];
+
+    protected override _getEntryContextOptions(): ContextMenuEntry[];
   }
 }
