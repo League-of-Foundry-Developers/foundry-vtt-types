@@ -1,3 +1,5 @@
+import type { InexactPartial } from "../../../types/utils.d.mts";
+
 export {};
 
 declare global {
@@ -128,6 +130,30 @@ declare global {
      * ```
      */
     format(stringId: string, data?: Record<string, unknown>): string;
+
+    /**
+     * Retreive list formatter configured to the world's language setting.
+     * @see [Intl.ListFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/ListFormat/ListFormat)
+     */
+    getListFormatter(
+      options?: InexactPartial<{
+        /**
+         * The list formatter style, either "long", "short", or "narrow".
+         */
+        style: Intl.ListFormatStyle;
+        /**
+         * The list formatter type, either "conjunction", "disjunction", or "unit".
+         */
+        type: Intl.ListFormatType;
+      }>,
+    ): Intl.ListFormat;
+
+    /**
+     * Sort an array of objects by a given key in a localization-aware manner.
+     * @param objects - The objects to sort, this array will be mutated
+     * @param key     - The key to sort the objects by. This can be provided in dot-notation.
+     */
+    sortObjects<T extends object>(objects: Array<T>, key: string): T[];
   }
 
   namespace Localization {
