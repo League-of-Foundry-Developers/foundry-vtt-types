@@ -529,6 +529,23 @@ declare global {
     protected _initializeStreamView(): Promise<void>;
   }
 
+  interface HotReloadData {
+    /** The type of package which was modified */
+    packageType: string;
+
+    /** The id of the package which was modified */
+    packageId: string;
+
+    /** The updated stringified file content */
+    content: string;
+
+    /** The relative file path which was modified */
+    path: string;
+
+    /** The file extension which was modified, e.g. "js", "css", "html" */
+    extension: string;
+  }
+
   namespace Game {
     interface ModuleCollection extends Collection<Module> {
       /**
