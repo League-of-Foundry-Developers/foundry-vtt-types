@@ -1,6 +1,6 @@
 import type { EditorView } from "prosemirror-view";
 import type { Editor } from "tinymce";
-import type { MaybePromise } from "../../../types/utils.d.mts";
+import type { GetDataReturnType, MaybePromise } from "../../../types/utils.d.mts";
 import type { ProseMirrorKeyMaps, ProseMirrorMenu } from "../../prosemirror/prosemirror.d.mts";
 
 declare global {
@@ -120,7 +120,9 @@ declare global {
     /**
      * @param options - (default: `{}`)
      */
-    override getData(options?: Partial<Options>): MaybePromise<object>;
+    override getData(
+      options?: Partial<Options>,
+    ): MaybePromise<GetDataReturnType<FormApplication.FormApplicationData<Options, ConcreteObject>>>;
 
     protected override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
@@ -308,7 +310,14 @@ declare global {
       preventRender?: boolean;
     }
 
-    interface FormApplicationData {}
+    interface FormApplicationData<
+      Options extends FormApplicationOptions = FormApplicationOptions,
+      ConcreteObject = unknown,
+    > {
+      object: ConcreteObject;
+      options: Options;
+      title: string;
+    }
   }
 
   interface DocumentSheetOptions<
@@ -373,7 +382,9 @@ declare global {
 
     override close(options?: FormApplication.CloseOptions): Promise<void>;
 
-    override getData(options?: Partial<Options>): MaybePromise<object>;
+    override getData(
+      options?: Partial<Options>,
+    ): MaybePromise<GetDataReturnType<DocumentSheet.DocumentSheetData<Options, ConcreteDocument>>>;
 
     protected override _activateCoreListeners(html: JQuery<HTMLElement>): void;
 
@@ -425,6 +436,12 @@ declare global {
      * @internal
      */
     protected _onConfigureSheet(event: JQuery.ClickEvent): void;
+
+    /**
+     * Handle changing a Document's image.
+     * @param event - The click event.
+     */
+    protected _onEditImage(event: MouseEvent): Promise<void>;
 
     protected override _updateObject(event: Event, formData: object): Promise<unknown>;
   }
