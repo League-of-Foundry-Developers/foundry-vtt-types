@@ -8,17 +8,16 @@ declare global {
    */
   class Compendium<
     Metadata extends CompendiumCollection.Metadata,
-    Options extends ApplicationOptions = ApplicationOptions,
+    Options extends Compendium.Options<Metadata> = Compendium.Options<Metadata>,
   > extends DocumentDirectory<Options> {
     /**
-     * @param collection - The {@link CompendiumCollection} object represented by this interface.
-     * @param options    - Application configuration options.
+     * @param options    - Compendium configuration options.
      */
-    constructor(collection: CompendiumCollection<Metadata>, options?: Partial<Options> | undefined);
+    constructor(options: Partial<Options>);
 
     collection: CompendiumCollection<Metadata>;
 
-    override get entryType(): foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
+    override get entryType(): Metadata["type"];
 
     static override entryPartial: string;
 
@@ -59,6 +58,7 @@ declare global {
       options?: Application.RenderOptions<ApplicationOptions> | undefined,
     ): unknown;
 
+    // TODO: Implement GetDataReturnType
     override getData(options?: Partial<Options>): Promise<object>;
 
     protected override _entryAlreadyExists(entry: DirectoryMixinEntry): boolean;
@@ -68,7 +68,7 @@ declare global {
       folderId?: string | undefined,
     ): Promise<DirectoryMixinEntry>;
 
-    protected override _getEntryDragData(entryId: string): object;
+    protected override _getEntryDragData(entryId: string): { type: string; uuid: string };
 
     protected override _onCreateEntry(event: PointerEvent): Promise<void>;
 
@@ -79,12 +79,19 @@ declare global {
      */
     _onClickFooterButton(event: PointerEvent): AdventureExporter | void;
 
-    protected _getDocumentDragData(documentId: string): object;
+    protected _getDocumentDragData(documentId: string): { type: string; uuid: string };
 
-    protected override _getFolderDragData(folderId: string): object;
+    protected override _getFolderDragData(folderId: string): { type: "Folder"; uuid: string };
 
     protected override _getFolderContextOptions(): ContextMenuEntry[];
 
     protected override _getEntryContextOptions(): ContextMenuEntry[];
+  }
+
+  namespace Compendium {
+    interface Options<Metadata extends CompendiumCollection.Metadata = CompendiumCollection.Metadata>
+      extends DocumentDirectoryOptions {
+      collection: CompendiumCollection<Metadata>;
+    }
   }
 }
