@@ -147,7 +147,7 @@ declare global {
      * Get the set of ContextMenu options which should be used for Documents in a SidebarDirectory
      * @returns The Array of context options passed to the ContextMenu instance
      */
-    protected _getEntrContextOptions(): ContextMenuEntry[];
+    protected _getEntryContextOptions(): ContextMenuEntry[];
 
     /**
      * @deprecated since v11, will be removed in v13
