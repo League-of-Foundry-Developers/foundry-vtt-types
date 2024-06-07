@@ -11,6 +11,11 @@ declare global {
     Options,
     undefined
   > {
+    /**
+     * @param options - Module Management application options.
+     */
+    constructor(options: Partial<Options>);
+
     /** @internal */
     protected _filter: ModuleManagement.FilterName;
 
@@ -28,7 +33,7 @@ declare global {
     /**
      * @defaultValue
      * ```typescript
-     * mergeObject(super.defaultOptions, {
+     * foundry.utils.mergeObject(super.defaultOptions, {
      *   title: game.i18n.localize("MODMANAGE.Title"),
      *   id: "module-management",
      *   template: "templates/sidebar/apps/module-management.html",
@@ -45,11 +50,28 @@ declare global {
 
     override get isEditable(): boolean;
 
+    // TODO: Implement GetDataReturnType
     override getData(options?: Partial<Options>): MaybePromise<object>;
+
+    /**
+     * Given a module, determines if it meets minimum and maximum compatibility requirements of its dependencies.
+     * If not, it is marked as being unable to be activated.
+     * If the package does not meet verified requirements, it is marked with a warning instead.
+     * @param module  The module.
+     */
+    protected _evaluateDependencies(module: Module): void;
+
+    /**
+     * Given a module, determine if it meets the minimum and maximum system compatibility requirements.
+     * @param module  The module.
+     */
+    protected _evaluateSystemCompatibility(module: Module): void;
 
     override activateListeners(html: JQuery): void;
 
     protected override _renderInner(data: object): Promise<JQuery>;
+
+    protected override _getSubmitData(updateData?: object | null): ModuleManagement.FormData;
 
     protected override _updateObject(event: Event, formData: ModuleManagement.FormData): Promise<unknown>;
 
@@ -57,7 +79,18 @@ declare global {
      * Handle changes to a module checkbox to prompt for whether or not to enable dependencies
      * @internal
      */
-    protected _onChangeCheckbox(event: JQuery.ChangeEvent): unknown;
+    protected _onChangeCheckbox(event: JQuery.ChangeEvent): Promise<unknown>;
+
+    // #checkImpactedDependency
+    // #checkUpstreamPackages
+
+    /**
+     * Indicate if any Documents would become unavailable if the module were disabled, and confirm if the user wishes to
+     * proceed.
+     * @param module The module being disabled.
+     * @returns A Promise which resolves to true if disabling should continue.
+     */
+    protected _confirmDocumentsUnavailable(module: Module): Promise<boolean>;
 
     /**
      * Handle a button-click to deactivate all modules
@@ -78,6 +111,13 @@ declare global {
     protected _onFilterList(event: JQuery.ClickEvent): void;
 
     protected override _onSearchFilter(event: KeyboardEvent, query: string, rgx: RegExp, html: HTMLElement): void;
+
+    /**
+     * Format a document count collection for display.
+     * @param counts  An object of sub-type counts.
+     * @param isActive Whether the module is active.
+     */
+    protected _formatDocumentSummary(counts: ModuleSubTypeCounts, isActive: boolean): string;
   }
 
   namespace ModuleManagement {
@@ -87,4 +127,6 @@ declare global {
       search: string;
     };
   }
+
+  interface ModuleSubTypeCounts extends Record<string, Record<string, number>> {}
 }
