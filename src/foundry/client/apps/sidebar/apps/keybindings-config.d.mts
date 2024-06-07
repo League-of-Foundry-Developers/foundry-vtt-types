@@ -1,4 +1,4 @@
-export {};
+import type { MaybePromise } from "../../../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -13,20 +13,18 @@ declare global {
      * foundry.utils.mergeObject(super.defaultOptions, {
      *   title: game.i18n.localize("SETTINGS.Keybindings"),
      *   id: "keybindings",
-     *   categoryTemplate: "templates/sidebar/apps/keybindings-config-category.html"
-     * })
+     *   categoryTemplate: "templates/sidebar/apps/keybindings-config-category.html",
+     *   scrollY: [".scrollable"]
+     * });
      * ```
      */
     static override get defaultOptions(): FormApplicationOptions;
 
-    /** {@inheritdoc} */
     static override get categoryOrder(): string[];
 
-    /** {@inheritdoc} */
-    protected _categorizeEntry(namespace: string): PackageConfiguration.Category;
+    protected override _categorizeEntry(namespace: string): PackageConfiguration.Category;
 
-    /** {@inheritdoc} */
-    _prepareCategoryData(): PackageConfiguration.Category;
+    protected override _prepareCategoryData(): PackageConfiguration.CategoryData;
 
     /**
      * Add faux-keybind actions that represent the possible Mouse Controls
@@ -65,7 +63,7 @@ declare global {
      * Handle Control clicks
      * @internal
      */
-    protected _onClickBindingControl(event: MouseEvent): void;
+    protected _onClickBindingControl(event: MouseEvent): MaybePromise<void>;
 
     /**
      * Handle left-click events to show / hide a certain category

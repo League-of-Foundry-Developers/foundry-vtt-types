@@ -33,7 +33,7 @@ declare global {
     override getData(): MaybePromise<object>; // TODO: Implement GetDataReturnType
 
     /** Prepare the structure of category data which is rendered in this configuration form. */
-    abstract _prepareCategoryData(): PackageConfiguration.Category;
+    protected abstract _prepareCategoryData(): PackageConfiguration.CategoryData;
 
     /**
      * Classify what Category an Action belongs to
@@ -74,6 +74,11 @@ declare global {
     interface Category {
       id: string;
       title: string;
+    }
+
+    interface CategoryData {
+      categories: Category[];
+      total: number;
     }
   }
 }
