@@ -52,9 +52,6 @@ declare global {
   }
 
   namespace WorldConfig {
-    type FormData = Record<string, boolean> & {
-      id: string;
-      nextSession: string | null;
-    };
+    type FormData = Partial<World["_source"]>;
   }
 }
