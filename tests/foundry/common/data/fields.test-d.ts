@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { ConfiguredDocumentClassForName } from "../../../../src/types/helperTypes.d.mts";
+import type { ConstructorOf } from "../../../../src/types/utils.d.mts";
 
 // TypeDataField
 declare const JEPCoreTypes: foundry.data.fields.TypeDataField.CoreTypeNames<typeof JournalEntryPage>;
@@ -8,15 +8,60 @@ declare const JEPSystemTypes: foundry.data.fields.TypeDataField.SystemTypeNames<
 expectTypeOf(JEPCoreTypes).toEqualTypeOf<"image" | "pdf" | "text" | "video">();
 expectTypeOf(JEPSystemTypes).toEqualTypeOf<string>();
 
+/** EmbeddedDataField */
+
+declare const embeddedModel: foundry.data.LightData;
+declare const embeddedOptions: foundry.data.fields.EmbeddedDataField.Options<typeof embeddedModel>;
+declare const embeddedAssignment: foundry.data.fields.EmbeddedDataField.AssignmentType<
+  typeof embeddedModel,
+  typeof embeddedOptions
+>;
+declare const embeddedInitialized: foundry.data.fields.EmbeddedDataField.InitializedType<
+  typeof embeddedModel,
+  typeof embeddedOptions
+>;
+declare const embeddedPersisted: foundry.data.fields.EmbeddedDataField.PersistedType<
+  typeof embeddedModel,
+  typeof embeddedOptions
+>;
+
+expectTypeOf(embeddedAssignment?.alpha).toEqualTypeOf<number | undefined | null>();
+expectTypeOf(embeddedInitialized?.alpha).toEqualTypeOf<number | undefined>();
+expectTypeOf(embeddedPersisted?.alpha).toEqualTypeOf<number | undefined>();
+expectTypeOf(embeddedModel["schema"]["fields"]["color"]).toEqualTypeOf<
+  foundry.data.fields.ColorField<{ label: "LIGHT.Color" }>
+>();
+
+declare const embeddedLightField: foundry.data.fields.EmbeddedDataField<foundry.data.LightData>;
+expectTypeOf(embeddedLightField.model).toEqualTypeOf<ConstructorOf<foundry.data.LightData>>();
+
+declare const schemaWithLight: foundry.data.fields.SchemaField.InnerInitializedType<{
+  light: typeof embeddedLightField;
+}>;
+expectTypeOf(schemaWithLight.light).toEqualTypeOf<foundry.data.LightData>();
+
+declare const innerType: typeof embeddedLightField extends foundry.data.fields.SchemaField<
+  infer SubSchema,
+  any,
+  any,
+  any,
+  any
+>
+  ? SubSchema
+  : false;
+expectTypeOf(innerType).toEqualTypeOf<foundry.data.LightData.Schema>();
+
+/** EmbeddedCollectionField */
+
 declare const effectsField: foundry.data.fields.EmbeddedCollectionField<
   typeof foundry.documents.BaseActiveEffect,
-  InstanceType<ConfiguredDocumentClassForName<"Actor">>
+  Actor.ConfiguredInstance
 >;
 
 expectTypeOf(effectsField.hint).toEqualTypeOf<string>();
 
 declare const ElementFieldType: typeof foundry.documents.BaseActiveEffect;
-declare const ParentDataModel: InstanceType<ConfiguredDocumentClassForName<"Actor">>;
+declare const ParentDataModel: Actor.ConfiguredInstance;
 declare const AssignmentElementType: foundry.data.fields.EmbeddedCollectionField.InitializedElementType<
   typeof ElementFieldType
 >;

@@ -6,7 +6,7 @@ expectTypeOf(myLight.alpha).toEqualTypeOf<number>();
 
 const myShape = new foundry.data.ShapeData();
 
-expectTypeOf(myShape.type).toEqualTypeOf<string>();
+expectTypeOf(myShape.type).toEqualTypeOf<"c" | "r" | "e" | "p">();
 
 // Using token here for comparison
 declare const baseToken: foundry.documents.BaseToken;

@@ -137,3 +137,5 @@ class MyCombatant extends Combatant {
     expectTypeOf(this.setFlag("another-system", "value", true)).toEqualTypeOf<Promise<this>>();
   }
 }
+
+expectTypeOf(typeof foundry.abstract.Document).toEqualTypeOf<foundry.abstract.Document.Constructor>();
