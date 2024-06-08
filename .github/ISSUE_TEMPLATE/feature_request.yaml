@@ -14,7 +14,7 @@ body:
   - type: textarea
     id: problem
     attributes:
-      label: Related Poblem
+      label: Related Problem
       description: Is your feature request related to a problem? If so, please describe it here in a clear and concise way.
       placeholder: E.g., I'm always frustrated when…
     validations:
