@@ -8,7 +8,7 @@ body:
     attributes:
       label: Foundry VTT Version
       description: The version(s) of Foundry VTT that this feature should be added for
-      placeholder: E.g., 0.8.x, v9
+      placeholder: E.g., v11, v12
     validations:
       required: true
   - type: textarea

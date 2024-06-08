@@ -16,7 +16,7 @@ body:
     attributes:
       label: Foundry VTT Version
       description: For which version of Foundry VTT should the class be updated?
-      placeholder: E.g., v9
+      placeholder: E.g., v12
     validations:
       required: true
   - type: textarea

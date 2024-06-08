@@ -8,7 +8,7 @@ body:
     attributes:
       label: Foundry VTT Version
       description: For which version of Foundry VTT does the problem occur?
-      placeholder: E.g., v9
+      placeholder: E.g., v11
     validations:
       required: true
   - type: textarea
