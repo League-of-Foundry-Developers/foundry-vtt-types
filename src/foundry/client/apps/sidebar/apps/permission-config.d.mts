@@ -1,10 +1,13 @@
-import type { MaybePromise } from "../../../../../types/utils.d.mts";
+export {};
 
 declare global {
   /**
    * An application for configuring the permissions which are available to each User role.
    */
-  class PermissionConfig extends FormApplication<FormApplicationOptions, undefined> {
+  class PermissionConfig<Options extends FormApplicationOptions = FormApplicationOptions> extends FormApplication<
+    Options,
+    undefined
+  > {
     /**
      * @defaultValue
      * ```typescript
@@ -19,12 +22,16 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): (typeof FormApplication)["defaultOptions"];
+    static override get defaultOptions(): FormApplicationOptions;
 
-    override getData(options?: Partial<FormApplicationOptions>): MaybePromise<object>;
+    // TODO: Implement GetDataReturnType
+    override getData(options?: Partial<FormApplicationOptions>): Promise<object>;
 
     /**
      * Prepare the permissions object used to render the configuration template
+     * @param current - The current permission configuration
+     * @returns Permission data for sheet rendering
+     * @internal
      */
     protected _getPermissions(current: Game.Permissions): PermissionConfig.Permission[];
 
@@ -34,14 +41,14 @@ declare global {
      * Handle button click to reset default settings
      * @param event - The initial button click event
      */
-    protected _onResetDefaults(event: JQuery.ClickEvent): void;
+    protected _onResetDefaults(event: JQuery.ClickEvent): Promise<Application>;
 
     protected override _onSubmit(
       event: Event,
       options?: FormApplication.OnSubmitOptions,
     ): ReturnType<FormApplication["_onSubmit"]>;
 
-    protected override _updateObject(event: Event, formData: PermissionConfig.FormData): Promise<unknown>;
+    protected override _updateObject(event: Event, formData: PermissionConfig.FormData): Promise<void>;
   }
 
   namespace PermissionConfig {

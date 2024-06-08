@@ -13,8 +13,11 @@ declare global {
      * options.title = "SUPPORT.Title";
      * options.id = "support-details";
      * options.template = "templates/sidebar/apps/support-details.html";
-     * options.width = 620;
-     * options.height = "auto";
+     * options.width = 780;
+     * options.height = 680;
+     * options.resizable = true;
+     * options.classes = ["sheet"];
+     * options.tabs = [{navSelector: ".tabs", contentSelector: "article", initial: "support"}];
      * return options;
      * ```
      */
@@ -23,12 +26,56 @@ declare global {
     /**
      * Returns the support report data
      */
+    // TODO: Implement GetDataReturnType
     getData(options?: Partial<Options> | undefined): MaybePromise<object>;
 
     /**
      * Binds the Support Report copy button
      */
     override activateListeners(html: JQuery): void;
+
+    protected override _render(force?: boolean, options?: Application.RenderOptions): Promise<void>;
+
+    /**
+     * @internal
+     */
+    protected override _renderInner(data: ReturnType<this["getData"]>): Promise<JQuery>;
+
+    /**
+     * Handle a button click action.
+     * @param event - The click event
+     */
+    protected _onClickAction(event: MouseEvent): void;
+
+    /**
+     * Copy the support details report to clipboard.
+     */
+    protected _copyReport(): void;
+
+    /**
+     * Marshal information on Documents that failed validation and format it for display.
+     */
+    protected _getDocumentValidationErrors(): {
+      label: string;
+      documents: {
+        name: string;
+        validationError: string;
+      };
+    }[];
+
+    /**
+     * Marshal package-related warnings and errors and format it for display.
+     */
+    protected _getModuleIssues(): {
+      label: string;
+      issues: {
+        label: string;
+        issues: {
+          severity: "error" | "warning";
+          message: string;
+        }[];
+      }[];
+    }[];
 
     /**
      * Collects a number of metrics that is useful for Support
@@ -53,7 +100,7 @@ declare global {
     maxTextureSize: number | string;
     sceneDimensions: string;
     grid: number;
-    padding: number;
+    padding: number; // note: float in actual code
     walls: number;
     lights: number;
     sounds: number;
