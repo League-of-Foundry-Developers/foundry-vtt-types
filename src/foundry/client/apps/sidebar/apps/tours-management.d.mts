@@ -1,4 +1,4 @@
-export {};
+import type { MaybePromise } from "../../../../../types/utils.d.mts";
 
 declare global {
   /** A management app for configuring which Tours are available or have been completed. */
@@ -18,23 +18,20 @@ declare global {
      */
     static override get defaultOptions(): PackageConfiguration.Options;
 
-    override _prepareCategoryData(): ToursManagement.TourCategory;
+    override _prepareCategoryData(): PackageConfiguration.CategoryData;
 
     override activateListeners(html: JQuery<HTMLElement>): void;
+
+    protected override _onResetDefaults(event: JQuery.ClickEvent): void;
 
     /**
      * Handle Control clicks
      * @internal
      */
-    protected _onClickControl(event: JQuery.ClickEvent): void;
+    protected _onClickControl(event: JQuery.ClickEvent): MaybePromise<unknown>;
   }
 
   namespace ToursManagement {
-    interface TourCategory extends PackageConfiguration.Category {
-      tours: TourData[];
-      count: number;
-    }
-
     interface TourData {
       category: string;
       id: string;
