@@ -5,7 +5,7 @@ declare global {
    * Allows for viewing and editing of Keybinding Actions
    */
   class KeybindingsConfig<
-    Options extends FormApplicationOptions = FormApplicationOptions,
+    Options extends PackageConfiguration.Options = PackageConfiguration.Options,
   > extends PackageConfiguration<Options> {
     /**
      * @defaultValue
@@ -18,8 +18,11 @@ declare global {
      * });
      * ```
      */
-    static override get defaultOptions(): FormApplicationOptions;
+    static override get defaultOptions(): PackageConfiguration.Options;
 
+    /**
+     * @returns ["all", "core", "core-mouse", "system", "module", "unmapped"]
+     */
     static override get categoryOrder(): string[];
 
     protected override _categorizeEntry(namespace: string): PackageConfiguration.Category;
@@ -57,7 +60,7 @@ declare global {
 
     override activateListeners(html: JQuery): void;
 
-    protected override _onResetDefaults(event: JQuery.ClickEvent<any, any, any, any>): Promise<any>;
+    protected override _onResetDefaults(event: JQuery.ClickEvent): Promise<void>;
 
     /**
      * Handle Control clicks

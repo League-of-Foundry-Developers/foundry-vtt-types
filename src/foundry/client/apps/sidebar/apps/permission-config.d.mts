@@ -4,7 +4,10 @@ declare global {
   /**
    * An application for configuring the permissions which are available to each User role.
    */
-  class PermissionConfig extends FormApplication<FormApplicationOptions, undefined> {
+  class PermissionConfig<Options extends FormApplicationOptions = FormApplicationOptions> extends FormApplication<
+    Options,
+    undefined
+  > {
     /**
      * @defaultValue
      * ```typescript
@@ -19,14 +22,14 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): (typeof FormApplication)["defaultOptions"];
+    static override get defaultOptions(): FormApplicationOptions;
 
     // TODO: Implement GetDataReturnType
     override getData(options?: Partial<FormApplicationOptions>): Promise<object>;
 
     /**
      * Prepare the permissions object used to render the configuration template
-     * @param current The current permission configuration
+     * @param current - The current permission configuration
      * @returns Permission data for sheet rendering
      * @internal
      */

@@ -39,11 +39,11 @@ declare global {
     /**
      * @internal
      */
-    protected override _renderInner(data: object): Promise<JQuery>;
+    protected override _renderInner(data: ReturnType<this["getData"]>): Promise<JQuery>;
 
     /**
      * Handle a button click action.
-     * @param event The click event
+     * @param event - The click event
      */
     protected _onClickAction(event: MouseEvent): void;
 

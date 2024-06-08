@@ -18,7 +18,7 @@ declare global {
      */
     static override get defaultOptions(): PackageConfiguration.Options;
 
-    override _prepareCategoryData(): PackageConfiguration.CategoryData;
+    override _prepareCategoryData(): ToursManagement.TourCategoryData;
 
     override activateListeners(html: JQuery<HTMLElement>): void;
 
@@ -32,6 +32,11 @@ declare global {
   }
 
   namespace ToursManagement {
+    interface TourCategory extends PackageConfiguration.Category {
+      tours: TourData[];
+      count: number;
+    }
+
     interface TourData {
       category: string;
       id: string;
@@ -42,6 +47,10 @@ declare global {
       status: string;
       canBePlayed?: boolean;
       startOrResume?: string;
+    }
+
+    interface TourCategoryData extends PackageConfiguration.CategoryData {
+      categories: TourCategory[];
     }
   }
 }

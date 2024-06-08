@@ -57,23 +57,26 @@ declare global {
      * Given a module, determines if it meets minimum and maximum compatibility requirements of its dependencies.
      * If not, it is marked as being unable to be activated.
      * If the package does not meet verified requirements, it is marked with a warning instead.
-     * @param module  The module.
+     * @param module - The module.
      */
     protected _evaluateDependencies(module: Module): void;
 
     /**
      * Given a module, determine if it meets the minimum and maximum system compatibility requirements.
-     * @param module  The module.
+     * @param module - The module.
      */
     protected _evaluateSystemCompatibility(module: Module): void;
 
     override activateListeners(html: JQuery): void;
 
-    protected override _renderInner(data: object): Promise<JQuery>;
+    protected override _renderInner(data: ReturnType<this["getData"]>): Promise<JQuery>;
 
     protected override _getSubmitData(updateData?: object | null): ModuleManagement.FormData;
 
-    protected override _updateObject(event: Event, formData: ModuleManagement.FormData): Promise<unknown>;
+    protected override _updateObject(
+      event: Event,
+      formData: ModuleManagement.FormData,
+    ): Promise<Record<string, boolean> | number>;
 
     /**
      * Handle changes to a module checkbox to prompt for whether or not to enable dependencies
@@ -87,7 +90,7 @@ declare global {
     /**
      * Indicate if any Documents would become unavailable if the module were disabled, and confirm if the user wishes to
      * proceed.
-     * @param module The module being disabled.
+     * @param module - The module being disabled.
      * @returns A Promise which resolves to true if disabling should continue.
      */
     protected _confirmDocumentsUnavailable(module: Module): Promise<boolean>;
@@ -114,8 +117,8 @@ declare global {
 
     /**
      * Format a document count collection for display.
-     * @param counts  An object of sub-type counts.
-     * @param isActive Whether the module is active.
+     * @param counts   - An object of sub-type counts.
+     * @param isActive - Whether the module is active.
      */
     protected _formatDocumentSummary(counts: ModuleSubTypeCounts, isActive: boolean): string;
   }
