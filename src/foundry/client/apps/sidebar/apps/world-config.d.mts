@@ -7,25 +7,20 @@ declare global {
      * @defaultValue `false`
      */
     create: boolean;
-
-    inWorld?: boolean | undefined;
   }
 
   /**
    * The World Management setup application
    * @typeParam Options - The type of the options object
    */
-  class WorldConfig<Options extends WorldConfigOptions = WorldConfigOptions> extends FormApplication<
-    Options,
-    Game.WorldData<foundry.packages.WorldData>
-  > {
+  class WorldConfig<Options extends WorldConfigOptions = WorldConfigOptions> extends FormApplication<Options, World> {
     /**
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.defaultOptions, {
      *   id: "world-config",
      *   template: "templates/sidebar/apps/world-config.html",
-     *   width: 600,
+     *   width: 620,
      *   height: "auto",
      *   create: false,
      * })
@@ -33,34 +28,33 @@ declare global {
      */
     static override get defaultOptions(): WorldConfigOptions;
 
-    static WORLD_KB_URL: "https://foundryvtt.com/article/game-worlds/";
+    /**
+     * A semantic alias for the World object which is being configured by this form.
+     */
+    get world(): World;
 
     override get title(): string;
 
     override activateListeners(html: JQuery): void;
 
+    // TODO: Implement GetDataReturnType
     override getData(options?: Partial<Options>): MaybePromise<object>;
 
-    /**
-     * @remarks This method returns `Promise<void>`.
-     */
-    protected override _onSubmit(event: Event): Promise<any>;
+    protected override _getSubmitData(updateData?: object | null): WorldConfig.FormData;
 
-    /**
-     * @remarks This method does not exist on WorldConfig and only exists to make the typescript compile!
-     */
-    protected _updateObject(...args: unknown[]): Promise<unknown>;
-
-    /**
-     * Update the world name placeholder when the title is changed.
-     * @internal
-     */
-    protected _onTitleChange(event: JQuery.TriggeredEvent): void;
+    protected override _updateObject(event: Event, formData: WorldConfig.FormData): Promise<number | void>;
 
     override activateEditor(
       name: string,
       options?: TextEditor.Options | undefined,
       initialContent?: string | undefined,
     ): ReturnType<FormApplication["activateEditor"]>;
+  }
+
+  namespace WorldConfig {
+    type FormData = Record<string, boolean> & {
+      id: string;
+      nextSession: string | null;
+    };
   }
 }
