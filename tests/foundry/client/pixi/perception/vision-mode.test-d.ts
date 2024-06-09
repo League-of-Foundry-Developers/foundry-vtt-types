@@ -37,11 +37,16 @@ const monochromatic = new MyVisionMode({
   },
 });
 
-declare const ShaderType: ShaderField.AssignmentType<ShaderField.DefaultOptions>;
-expectTypeOf(ShaderType).toEqualTypeOf<typeof AbstractBaseShader | undefined | null>;
+declare const ShaderAssType: ShaderField.AssignmentType<ShaderField.DefaultOptions>;
+expectTypeOf(ShaderAssType).toEqualTypeOf<typeof AbstractBaseShader | undefined | null>;
+
+declare const ShaderInitType: ShaderField.InitializedType<ShaderField.DefaultOptions>;
+expectTypeOf(ShaderInitType).toEqualTypeOf<typeof AbstractBaseShader | undefined | null>;
 
 const myVisionSource = new VisionSource();
 
+// Next line could possibly be a `never` instead, but not sure the generic usage is worth the headache
+expectTypeOf(monochromatic.schema.fields.canvas.fields.shader._cast("foo")).toEqualTypeOf<typeof AbstractBaseShader>;
 expectTypeOf(monochromatic.activate(myVisionSource)).toEqualTypeOf<void>();
 expectTypeOf(monochromatic.id).toEqualTypeOf<string | undefined>();
 expectTypeOf(monochromatic.canvas.shader).toEqualTypeOf<typeof AbstractBaseShader | undefined | null>();

@@ -21,8 +21,9 @@ declare global {
      */
     static override get _defaults(): ShaderField.DefaultOptions;
 
+    // TODO: _cast blatantly breaks inheritance so this is difficult to work with
     /** @remarks The value provided to a ShaderField must be an AbstractBaseShader subclass. */
-    override _cast(value: any): typeof AbstractBaseShader;
+    override _cast(value: any): Exclude<InitializedType, undefined | null>; // typeof AbstractBaseShader;
   }
 
   interface VisionMode extends fields.SchemaField.InnerInitializedType<VisionMode.Schema> {}
