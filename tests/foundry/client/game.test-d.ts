@@ -28,8 +28,6 @@ declare global {
     "required-api-module": true;
   }
 }
-/** Convenance type for test, might be worth while moving inside the types */
-type Module = Game.ModuleData<foundry.packages.ModuleData>;
 
 assertType<undefined | Module>(aGame.modules.get("optional-module"));
 

@@ -1665,6 +1665,7 @@ declare class EmbeddedCollectionField<
   ElementFieldType extends Document.Constructor,
   ParentDataModel extends Document.Any,
   AssignmentElementType = EmbeddedCollectionField.AssignmentElementType<ElementFieldType>,
+  // @ts-expect-error most likely a depth error
   InitializedElementType extends Document.Any = EmbeddedCollectionField.InitializedElementType<ElementFieldType>,
   Options extends
     EmbeddedCollectionField.Options<AssignmentElementType> = EmbeddedCollectionField.DefaultOptions<AssignmentElementType>,
@@ -1823,8 +1824,8 @@ declare namespace EmbeddedCollectionField {
    */
   type InitializedType<
     AssignmentElementType,
-    InitializedElementType extends foundry.abstract.Document.Any,
-    ParentDataModel extends foundry.abstract.Document.Any,
+    InitializedElementType extends Document.Any,
+    ParentDataModel extends Document.Any,
     Opts extends Options<AssignmentElementType>,
   > = DataField.DerivedInitializedType<
     EmbeddedCollection<InitializedElementType, ParentDataModel>,
@@ -1864,8 +1865,9 @@ declare namespace EmbeddedCollectionField {
  */
 declare class EmbeddedCollectionDeltaField<
   ElementFieldType extends Document.Constructor,
-  ParentDataModel extends foundry.abstract.Document<any, any, any>,
+  ParentDataModel extends Document.Any,
   AssignmentElementType = EmbeddedCollectionDeltaField.AssignmentElementType<ElementFieldType>,
+  // @ts-expect-error most likely a depth error
   InitializedElementType extends Document.Any = EmbeddedCollectionDeltaField.InitializedElementType<ElementFieldType>,
   Options extends
     EmbeddedCollectionDeltaField.Options<AssignmentElementType> = EmbeddedCollectionDeltaField.DefaultOptions<AssignmentElementType>,
@@ -1873,6 +1875,7 @@ declare class EmbeddedCollectionDeltaField<
   InitializedType = EmbeddedCollectionDeltaField.InitializedType<
     AssignmentElementType,
     InitializedElementType,
+    ParentDataModel,
     Options
   >,
   PersistedElementType = EmbeddedCollectionDeltaField.PersistedElementType<ElementFieldType>,
@@ -1939,7 +1942,9 @@ declare namespace EmbeddedCollectionDeltaField {
    * A type to infer the initialized element type of an EmbeddedCollectionDeltaField from its ElementFieldType.
    * @typeParam ElementFieldType - the DataField type of the elements in the EmbeddedCollectionDeltaField
    */
-  type InitializedElementType<ElementFieldType extends Document.Constructor> = InstanceType<ElementFieldType>;
+  type InitializedElementType<ElementFieldType extends Document.Constructor> = InstanceType<
+    ConfiguredDocumentClass<ElementFieldType>
+  >;
 
   /**
    * A type to infer the initialized element type of an EmbeddedCollectionDeltaField from its ElementFieldType.
@@ -1972,9 +1977,13 @@ declare namespace EmbeddedCollectionDeltaField {
    */
   type InitializedType<
     AssignmentElementType,
-    InitializedElementType,
+    InitializedElementType extends Document.Any,
+    ParentDataModel extends Document.Any,
     Opts extends Options<AssignmentElementType>,
-  > = DataField.DerivedInitializedType<Collection<InitializedElementType>, MergedOptions<AssignmentElementType, Opts>>;
+  > = DataField.DerivedInitializedType<
+    EmbeddedCollectionDelta<InitializedElementType, ParentDataModel>,
+    MergedOptions<AssignmentElementType, Opts>
+  >;
 
   /**
    * A shorthand for the persisted type of an ArrayField class.
