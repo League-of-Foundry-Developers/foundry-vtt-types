@@ -41,7 +41,7 @@ declare global {
       options?: Partial<Options> | undefined,
     ): MaybePromise<GetDataReturnType<JournalPageSheet.JournalPageSheetData>>;
 
-    protected override _renderInner(data: object): Promise<JQuery<HTMLElement>>;
+    protected override _renderInner(data: ReturnType<this["getData"]>): Promise<JQuery<HTMLElement>>;
 
     protected override _getSecretContent(secret: HTMLElement): string;
 
@@ -228,7 +228,7 @@ declare global {
       options?: Partial<JournalPageSheet.Options> | undefined,
     ): MaybePromise<GetDataReturnType<JournalPDFPageSheet.PDFData>>;
 
-    protected override _renderInner(data: object): Promise<JQuery<HTMLElement>>;
+    protected override _renderInner(data: ReturnType<this["getData"]>): Promise<JQuery<HTMLElement>>;
 
     /**
      * Handle a request to load a PDF.

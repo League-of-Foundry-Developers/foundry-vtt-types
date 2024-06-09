@@ -67,7 +67,7 @@ declare global {
 
     override getData(options?: Partial<Options>): Promise<object>; // TODO: Implement GetDataReturnType
 
-    protected _renderInner(data: object): Promise<JQuery<HTMLElement>>;
+    protected _renderInner(data: ReturnType<this["getData"]>): Promise<JQuery<HTMLElement>>;
 
     /**
      * Get an Object of image paths and filenames to display in the Token sheet

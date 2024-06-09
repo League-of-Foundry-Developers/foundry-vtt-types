@@ -29,6 +29,6 @@ declare global {
 
     override get title(): string;
 
-    protected override _renderInner(data: object, options?: unknown): Promise<JQuery>;
+    protected override _renderInner(data: ReturnType<this["getData"]>, options?: unknown): Promise<JQuery>;
   }
 }

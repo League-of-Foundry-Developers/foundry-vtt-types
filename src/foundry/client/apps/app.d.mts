@@ -337,7 +337,7 @@ declare global {
      * @remarks Some subclasses do not return a promise but the jQuery object directly.
      * @internal
      */
-    protected _renderInner(data: object): Promise<JQuery>;
+    protected _renderInner(data: ReturnType<this["getData"]>): Promise<JQuery>;
 
     /**
      * Customize how inner HTML is replaced when the application is refreshed

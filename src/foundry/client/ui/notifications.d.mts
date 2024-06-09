@@ -48,7 +48,7 @@ declare global {
      */
     initialize(): void;
 
-    protected override _renderInner(data: object): Promise<JQuery>;
+    protected override _renderInner(data: ReturnType<this["getData"]>): Promise<JQuery>;
 
     protected override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
