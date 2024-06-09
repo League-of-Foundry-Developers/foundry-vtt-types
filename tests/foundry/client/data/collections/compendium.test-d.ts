@@ -16,6 +16,17 @@ expectTypeOf(compendiumCollection.toJSON()).toEqualTypeOf<
   Array<StoredDocument<foundry.documents.BaseJournalEntry>["_source"]>
 >();
 
+// @ts-expect-error - "_initialize" is a protected method.
+// This is interesting to check because `CompendiumCollection` uses a novel approach for its mixin and comparable strategies strip away visibility modifiers.
+compendiumCollection._initialize();
+
+type CompendiumCollectionType = typeof compendiumCollection;
+
+if (compendiumCollection instanceof DocumentCollection) {
+  // This test makes sure the mixin doesn't destroy the inheritance chain.
+  expectTypeOf(compendiumCollection).toMatchTypeOf<CompendiumCollectionType>();
+}
+
 expectTypeOf((await compendiumCollection.getIndex()).get("some id", { strict: true })).toEqualTypeOf<
   { _id: string } & Partial<foundry.documents.BaseJournalEntry["_source"]>
 >();
