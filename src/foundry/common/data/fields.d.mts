@@ -596,9 +596,11 @@ declare namespace SchemaField {
    */
   type InnerInitializedType<Fields extends DataSchema> = {
     [Key in keyof Fields]: Fields[Key] extends DataField<any, any, infer InitType, any>
-      ? Fields[Key] extends SchemaField<infer SubSchema, any, any, any, any>
-        ? InnerInitializedType<SubSchema>
-        : InitType
+      ? Fields[Key] extends EmbeddedDataField<infer Model, any, any, any, any>
+        ? Model
+        : Fields[Key] extends SchemaField<infer SubSchema, any, any, any, any>
+          ? InnerInitializedType<SubSchema>
+          : InitType
       : never;
   };
 

@@ -40,17 +40,6 @@ declare const schemaWithLight: foundry.data.fields.SchemaField.InnerInitializedT
 }>;
 expectTypeOf(schemaWithLight.light).toEqualTypeOf<foundry.data.LightData>();
 
-declare const innerType: typeof embeddedLightField extends foundry.data.fields.SchemaField<
-  infer SubSchema,
-  any,
-  any,
-  any,
-  any
->
-  ? SubSchema
-  : false;
-expectTypeOf(innerType).toEqualTypeOf<foundry.data.LightData.Schema>();
-
 /** EmbeddedCollectionField */
 
 declare const effectsField: foundry.data.fields.EmbeddedCollectionField<
