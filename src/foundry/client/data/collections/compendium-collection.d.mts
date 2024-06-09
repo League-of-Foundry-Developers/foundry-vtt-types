@@ -46,10 +46,7 @@ declare global {
     constructor(metadata: T);
 
     /** The compendium metadata which defines the compendium content and location */
-    metadata: T & {
-      /** @deprecated "The "entity" field of compendium metadata is deprecated. Please use CompendiumCollection#documentName instead." */
-      get entity(): T["type"];
-    };
+    metadata: T;
 
     /**  A subsidiary collection which contains the more minimal index of the pack */
     index: IndexTypeForMetadata<T>;
@@ -468,6 +465,10 @@ declare global {
        */
       fields?: (keyof DocumentInstanceForCompendiumMetadata<T>["_source"])[];
     }
+
+    type IndexEntry<T extends CompendiumCollection.Metadata> = { _id: string; uuid: string } & DeepPartial<
+      DocumentInstanceForCompendiumMetadata<T>["_source"]
+    >;
   }
 }
 
@@ -498,5 +499,5 @@ type DocumentInstanceForCompendiumMetadata<T extends CompendiumCollection.Metada
 >;
 
 type IndexTypeForMetadata<T extends CompendiumCollection.Metadata> = foundry.utils.Collection<
-  { _id: string } & Partial<DocumentInstanceForCompendiumMetadata<T>["_source"]>
+  CompendiumCollection.IndexEntry<T>
 >;
