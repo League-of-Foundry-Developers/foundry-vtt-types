@@ -34,13 +34,6 @@ declare global {
     protected _onClickSubmenu(event: JQuery.ClickEvent): void;
 
     /**
-     * Handle button click to reset default settings
-     * @param event - The initial button click event
-     * @internal
-     */
-    protected _onResetDefaults(event: JQuery.ClickEvent): void;
-
-    /**
      * Preview font scaling as the setting is changed.
      * @param event - The triggering event.
      * @internal
@@ -53,9 +46,10 @@ declare global {
 
     /**
      * Handle button click to reset default settings
-     * @param event - THe initial button click event
+     * @param event - The initial button click event
+     * @internal
      */
-    protected _onResetDefaults(event: Event): void;
+    protected _onResetDefaults(event: JQuery.ClickEvent): void;
 
     /**
      * Confirm if the user wishes to reload the application
