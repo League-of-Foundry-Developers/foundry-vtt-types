@@ -133,7 +133,8 @@ declare namespace BaseTableResult {
      * @defaultValue `[]`
      */
     range: fields.ArrayField<
-      fields.NumberField<{ integer: true }>,
+      // Nullable: true is the default, and necessary here to fix a type error
+      fields.NumberField<{ integer: true; nullable: true }>,
       {
         validate: (r: [start: number, end: number]) => boolean;
         validationError: "must be a length-2 array of ascending integers";
