@@ -29,6 +29,7 @@ declare global {
 
     override get title(): string;
 
-    protected override _renderInner(data: ReturnType<this["getData"]>, options?: unknown): Promise<JQuery>;
+    /** @remarks Foundry references an options object as a second argument, but this is never used nor provided in the invocation */
+    protected override _renderInner(data: ReturnType<this["getData"]>): Promise<JQuery>;
   }
 }
