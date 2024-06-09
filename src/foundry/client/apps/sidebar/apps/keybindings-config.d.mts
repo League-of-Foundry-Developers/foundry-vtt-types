@@ -144,20 +144,12 @@ declare global {
   }
 
   namespace KeybindingsConfig {
-    interface CategoryData {
-      categories: Category[];
-      totalActions: number;
-    }
-
-    interface BaseCategory {
-      id: string;
-      title: string;
-    }
-
-    interface Category extends BaseCategory {
+    interface Category extends PackageConfiguration.Category {
       actions: ActionData[];
       count: number;
     }
+
+    interface CategoryData extends PackageConfiguration.CategoryData<Category> {}
 
     interface ActionData extends KeybindingActionConfig {
       category: string;

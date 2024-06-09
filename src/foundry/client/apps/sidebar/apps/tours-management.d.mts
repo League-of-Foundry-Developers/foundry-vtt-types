@@ -32,11 +32,6 @@ declare global {
   }
 
   namespace ToursManagement {
-    interface TourCategory extends PackageConfiguration.Category {
-      tours: TourData[];
-      count: number;
-    }
-
     interface TourData {
       category: string;
       id: string;
@@ -49,8 +44,11 @@ declare global {
       startOrResume?: string;
     }
 
-    interface TourCategoryData extends PackageConfiguration.CategoryData {
-      categories: TourCategory[];
+    interface Category extends PackageConfiguration.Category {
+      tours: TourData[];
+      count: number;
     }
+
+    interface TourCategoryData extends PackageConfiguration.CategoryData<Category> {}
   }
 }

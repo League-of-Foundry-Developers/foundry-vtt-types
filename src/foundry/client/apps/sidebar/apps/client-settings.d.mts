@@ -22,7 +22,7 @@ declare global {
      */
     static override get defaultOptions(): (typeof FormApplication)["defaultOptions"];
 
-    override _prepareCategoryData(): PackageConfiguration.Category;
+    override _prepareCategoryData(): SettingsConfig.CategoryData;
 
     override activateListeners(html: JQuery): void;
 
@@ -71,6 +71,17 @@ declare global {
   }
 
   namespace SettingsConfig {
+    interface Category extends PackageConfiguration.Category {
+      menus: SettingSubmenuConfig[];
+      settings: SettingConfig[];
+      count: number;
+    }
+
+    interface CategoryData extends PackageConfiguration.CategoryData<Category> {
+      user: Game["user"];
+      canConfigure: boolean;
+    }
+
     interface FormData {
       "core.animateRollTable": boolean;
       "core.chatBubbles": boolean;

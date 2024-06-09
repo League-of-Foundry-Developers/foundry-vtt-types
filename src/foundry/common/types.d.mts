@@ -147,6 +147,7 @@ declare global {
     /** Indicates if this Setting should render in the Config application */
     config?: boolean | undefined;
 
+    // TODO: This can take data models and data fields now
     /** The JS Type that the Setting is storing */
     type?: T extends string
       ? typeof String

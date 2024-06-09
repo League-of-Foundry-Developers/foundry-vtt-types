@@ -62,7 +62,7 @@ declare global {
      * Handle changing the actor profile image by opening a FilePicker
      * @internal
      */
-    protected _onEditImage(event: JQuery.ClickEvent): void;
+    protected _onEditImage(event: MouseEvent): Promise<void>;
 
     /**
      * Handle a button click to re-normalize dice result ranges across all RollTable results

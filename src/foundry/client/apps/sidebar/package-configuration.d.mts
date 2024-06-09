@@ -76,8 +76,8 @@ declare global {
       title: string;
     }
 
-    interface CategoryData {
-      categories: Category[];
+    interface CategoryData<PackageCategory extends Category = Category> {
+      categories: PackageCategory[];
       total: number;
     }
   }

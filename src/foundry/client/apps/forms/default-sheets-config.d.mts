@@ -17,7 +17,7 @@ declare global {
      */
     static override get defaultOptions(): DefaultSheetsConfig.Options;
 
-    override _prepareCategoryData(): PackageConfiguration.Category;
+    override _prepareCategoryData(): PackageConfiguration.CategoryData;
 
     protected _updateObject(event: Event, formData?: object | undefined): Promise<unknown>;
 
@@ -26,5 +26,19 @@ declare global {
 
   namespace DefaultSheetsConfig {
     interface Options extends PackageConfiguration.Options {}
+
+    type CategorySubType = {
+      type: string;
+      name: string;
+      defaultClasses: Record<string, string>;
+      defaultClass: string;
+    };
+
+    interface Category extends PackageConfiguration.Category {
+      count: number;
+      subtypes: CategorySubType[];
+    }
+
+    interface CategoryData extends PackageConfiguration.CategoryData<Category> {}
   }
 }
