@@ -9,7 +9,7 @@ declare global {
   class Compendium<
     Metadata extends CompendiumCollection.Metadata,
     Options extends Compendium.Options<Metadata> = Compendium.Options<Metadata>,
-  > extends DocumentDirectory<Options> {
+  > extends DocumentDirectory<"Compendium", Options> {
     /**
      * @param options    - Compendium configuration options.
      */

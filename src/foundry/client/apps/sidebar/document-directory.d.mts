@@ -1,3 +1,5 @@
+import type { ConfiguredDocumentClassForName, DocumentType } from "../../../../types/helperTypes.d.mts";
+
 export {};
 
 declare global {
@@ -20,6 +22,7 @@ declare global {
   }
 
   class DocumentDirectory<
+    FolderType extends foundry.CONST.FOLDER_DOCUMENT_TYPES,
     Options extends DocumentDirectoryOptions = DocumentDirectoryOptions,
   > extends DirectoryApplicationMixin(SidebarTab) {
     constructor(options: Options);
@@ -27,12 +30,12 @@ declare global {
     /**
      * References to the set of Documents which are displayed in the Sidebar
      */
-    documents: ClientDocument[] | null;
+    documents: FolderType extends DocumentType ? InstanceType<ConfiguredDocumentClassForName<FolderType>> : undefined;
 
     /**
      * Reference the set of Folders which exist in this Sidebar
      */
-    folders: Folder.ConfiguredInstance[] | null;
+    folders: (Folder.ConfiguredInstance & { type: FolderType })[] | null;
 
     /**
      * A reference to the named Document type that this Sidebar Directory instance displays

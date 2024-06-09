@@ -4,7 +4,6 @@ import type {
   DocumentConstructor,
 } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial, StoredDocument } from "../../../../types/utils.d.mts";
-import type { DOCUMENT_TYPES } from "../../../common/constants.d.mts";
 
 declare global {
   /**
@@ -29,8 +28,8 @@ declare global {
     get directory(): Lowercase<Name> extends keyof typeof ui
       ? (typeof ui)[Lowercase<Name>]
       :
-          | (ConfiguredDocumentClass<T>["metadata"]["name"] extends DOCUMENT_TYPES
-              ? SidebarDirectory<ConfiguredDocumentClass<T>["metadata"]["name"]>
+          | (ConfiguredDocumentClass<T>["metadata"]["name"] extends foundry.CONST.FOLDER_DOCUMENT_TYPES
+              ? DocumentDirectory<ConfiguredDocumentClass<T>["metadata"]["name"]>
               : never)
           | SidebarTab
           | undefined
@@ -41,7 +40,7 @@ declare global {
      */
     static get instance(): WorldCollection<DocumentConstructor, any>; // TODO: Find a way to type this more concretely. One option would be to separate the static and non static side of this class, which allows accessing the the static this type to use the `documentName`.
 
-    protected override _getVisibleTreeContents(): InstanceType<T>[];
+    protected override _getVisibleTreeContents(): InstanceType<ConfiguredDocumentClass<T>>[];
 
     /**
      * Import a Document from a Compendium collection, adding it to the current World.

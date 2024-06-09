@@ -108,27 +108,6 @@ declare global {
     ): StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>;
     get(key: string, options: { strict?: boolean; invalid: true }): unknown;
 
-    // Attempt at making get use generics instead of overload TODO: Remove later
-    // get<Strict extends boolean | undefined, Invalid extends boolean | undefined>(
-    //   key: string,
-    //   options?: {
-    //     /**
-    //      * Throw an Error if the requested Embedded Document does not exist.
-    //      * @defaultValue `false`
-    //      */
-    //     strict?: Strict;
-    //     /**
-    //      * Allow retrieving an invalid Embedded Document.
-    //      * @defaultValue `false`
-    //      */
-    //     invalid?: Invalid;
-    //   },
-    // ): Invalid extends true
-    //   ? unknown
-    //   : Strict extends true
-    //     ? StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>
-    //     : StoredDocument<InstanceType<ConfiguredDocumentClass<T>>> | undefined;
-
     /**
      * @remarks The parameter `id` is ignored, instead `document.id` is used as the key.
      */

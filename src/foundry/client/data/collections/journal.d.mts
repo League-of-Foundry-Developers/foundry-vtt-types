@@ -1,8 +1,5 @@
 import type { InexactPartial } from "../../../../types/utils.d.mts";
 
-// TODO: Remove after ShareImageConfig is typed in ImagePopout
-type ShareImageConfig = unknown;
-
 export {};
 
 declare global {
@@ -48,7 +45,7 @@ declare global {
      * @param src    - The image URL to share.
      * @param config - Image sharing configuration.
      */
-    static showImage(src: string, config?: InexactPartial<ShareImageConfig>): void;
+    static showImage(src: string, config?: InexactPartial<ImagePopout.ShareImageConfig>): void;
 
     /**
      * Open Socket listeners which transact JournalEntry data
