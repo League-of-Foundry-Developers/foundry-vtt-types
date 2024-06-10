@@ -23,13 +23,11 @@ expectTypeOf(baseActor._source.effects[0]!.duration.seconds).toEqualTypeOf<numbe
  * Data Model Integration
  */
 
-interface MyCharacter
-  extends foundry.data.fields.SchemaField.InnerInitializedType<ReturnType<(typeof MyCharacter)["defineSchema"]>> {}
+type MyCharacterSchema = ReturnType<(typeof MyCharacter)["defineSchema"]>;
 
-class MyCharacter extends foundry.abstract.TypeDataModel<
-  foundry.data.fields.SchemaField<ReturnType<(typeof MyCharacter)["defineSchema"]>>,
-  Actor.ConfiguredInstance
-> {
+interface MyCharacter extends foundry.data.fields.SchemaField.InnerInitializedType<MyCharacterSchema> {}
+
+class MyCharacter extends foundry.abstract.TypeDataModel<MyCharacterSchema, Actor.ConfiguredInstance> {
   static defineSchema() {
     const { SchemaField, NumberField } = foundry.data.fields;
     return {
@@ -79,7 +77,7 @@ interface BoilerplateActorBaseSchema extends DataSchema {
 }
 
 class BoilerplateActorBase<Schema extends BoilerplateActorBaseSchema = BoilerplateActorBaseSchema> extends foundry
-  .abstract.TypeDataModel<foundry.data.fields.SchemaField<Schema>, Actor.ConfiguredInstance> {
+  .abstract.TypeDataModel<Schema, Actor.ConfiguredInstance> {
   static defineSchema(): BoilerplateActorBaseSchema {
     const fields = foundry.data.fields;
     const requiredInteger = { required: true, nullable: false, integer: true };

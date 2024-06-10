@@ -39,14 +39,14 @@ declare global {
 /**
  * The abstract base class which defines the data schema contained within a Document.
  */
-export default abstract class DataModel<Schema extends SchemaField.Any, Parent extends DataModel.Any | null = null> {
+export default abstract class DataModel<Schema extends DataSchema, Parent extends DataModel.Any | null = null> {
   /**
    * @param data    - Initial data used to construct the data object. The provided object
    *                  will be owned by the constructed model instance and may be mutated.
    * @param options - Options which affect DataModel construction
    */
   constructor(
-    data?: fields.SchemaField.InnerAssignmentType<Schema["fields"]>,
+    data?: fields.SchemaField.InnerAssignmentType<Schema>,
     { parent, strict, ...options }?: DataModel.ConstructorOptions<Parent>,
   );
 
@@ -59,7 +59,7 @@ export default abstract class DataModel<Schema extends SchemaField.Any, Parent e
    * The source data object for this DataModel instance.
    * Once constructed, the source object is sealed such that no keys may be added nor removed.
    */
-  readonly _source: Readonly<fields.SchemaField.InnerPersistedType<Schema["fields"]>>;
+  readonly _source: Readonly<fields.SchemaField.InnerPersistedType<Schema>>;
 
   /**
    * The defined and cached Data Schema for all instances of this DataModel.
@@ -75,7 +75,7 @@ export default abstract class DataModel<Schema extends SchemaField.Any, Parent e
   /**
    * Define the data schema for documents of this type.
    * The schema is populated the first time it is accessed and cached for future reuse.
-   * @remarks This is abstract on DataModel.
+   * @remarks The returned value MUST be kept up to sync with the `Schema` type parameter.
    */
   static defineSchema(): DataSchema;
 
@@ -87,7 +87,7 @@ export default abstract class DataModel<Schema extends SchemaField.Any, Parent e
   /**
    * Define the data schema for this document instance.
    */
-  get schema(): Schema;
+  get schema(): SchemaField<Schema, {}>;
 
   /**
    * Is the current state of this DataModel invalid?
@@ -112,9 +112,9 @@ export default abstract class DataModel<Schema extends SchemaField.Any, Parent e
    * @returns Migrated and cleaned source data which will be stored to the model instance
    */
   protected _initializeSource(
-    data: fields.SchemaField.InnerAssignmentType<Schema["fields"]> | this,
+    data: fields.SchemaField.InnerAssignmentType<Schema> | this,
     options?: any,
-  ): fields.SchemaField.InnerPersistedType<Schema["fields"]>;
+  ): fields.SchemaField.InnerPersistedType<Schema>;
 
   /**
    * Clean a data source object to conform to a specific provided schema.
@@ -149,7 +149,7 @@ export default abstract class DataModel<Schema extends SchemaField.Any, Parent e
    * @returns The cloned Document instance
    */
   clone(
-    data?: fields.SchemaField.InnerAssignmentType<Schema["fields"]>,
+    data?: fields.SchemaField.InnerAssignmentType<Schema>,
     context?: DataModel.ConstructorOptions,
   ): this | Promise<this>;
 
@@ -171,7 +171,7 @@ export default abstract class DataModel<Schema extends SchemaField.Any, Parent e
     /**
      * A specific set of proposed changes to validate, rather than the full source data of the model.
      */
-    changes?: fields.SchemaField.InnerAssignmentType<Schema["fields"]>;
+    changes?: fields.SchemaField.InnerAssignmentType<Schema>;
 
     /**
      * If changes are provided, attempt to clean the changes before validating them?
@@ -244,7 +244,7 @@ export default abstract class DataModel<Schema extends SchemaField.Any, Parent e
   /**
    * @deprecated since v11; Use the validateJoint static method instead.
    */
-  protected _validateModel(data: fields.SchemaField.InnerAssignmentType<Schema["fields"]>): void;
+  protected _validateModel(data: fields.SchemaField.InnerAssignmentType<Schema>): void;
 
   /**
    * Update the DataModel locally by applying an object of changes to its source data.
@@ -257,7 +257,7 @@ export default abstract class DataModel<Schema extends SchemaField.Any, Parent e
    * @returns An object containing the changed keys and values
    */
   updateSource(
-    changes?: fields.SchemaField.InnerAssignmentType<Schema["fields"]>,
+    changes?: fields.SchemaField.InnerAssignmentType<Schema>,
     options?: { dryRun?: boolean; fallback?: boolean; recursive?: boolean },
   ): object;
 
