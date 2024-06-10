@@ -1,6 +1,5 @@
 import { expectTypeOf } from "vitest";
 import type EmbeddedCollection from "../../../../src/foundry/common/abstract/embedded-collection.d.mts";
-import type { Merge } from "../../../../src/types/utils.d.mts";
 
 // @ts-expect-error name and type are required
 new foundry.documents.BaseActor();
@@ -24,7 +23,9 @@ expectTypeOf(baseActor._source.effects[0]!.duration.seconds).toEqualTypeOf<numbe
  */
 
 interface MyCharacter
-  extends foundry.data.fields.SchemaField.InnerInitializedType<ReturnType<(typeof MyCharacter)["defineSchema"]>> {}
+  extends foundry.data.fields.SchemaField.InnerInitializedType<ReturnType<(typeof MyCharacter)["defineSchema"]>> {
+  // Derived data: abilities.strength.mod, abilities.dexterity.mod
+}
 
 class MyCharacter extends foundry.abstract.TypeDataModel<
   foundry.data.fields.SchemaField<ReturnType<(typeof MyCharacter)["defineSchema"]>>,
@@ -116,23 +117,21 @@ interface BoilerplateCharacterSchema extends BoilerplateActorBaseSchema {
   }>;
   abilities: foundry.data.fields.SchemaField<{
     strength: foundry.data.fields.SchemaField<{
-      value: foundry.data.fields.NumberField<{}>;
+      value: foundry.data.fields.NumberField<RequiredInteger>;
     }>;
   }>;
 }
 
-interface BoilerplateCharacter
-  extends Merge<
-    foundry.data.fields.SchemaField.InnerInitializedType<BoilerplateCharacterSchema>,
-    {
-      abilities: {
-        strength: {
-          mod?: number;
-          label?: string;
-        };
-      };
-    }
-  > {}
+type BoilerplateCharacterProperties = foundry.data.fields.SchemaField.InnerInitializedType<BoilerplateCharacterSchema>;
+
+interface BoilerplateCharacter extends BoilerplateCharacterProperties {
+  abilities: {
+    strength: BoilerplateCharacterProperties["abilities"]["strength"] & {
+      mod?: number;
+      label?: string;
+    };
+  };
+}
 
 class BoilerplateCharacter extends BoilerplateActorBase<BoilerplateCharacterSchema> {
   static defineSchema() {
@@ -171,7 +170,7 @@ class BoilerplateCharacter extends BoilerplateActorBase<BoilerplateCharacterSche
   }
 
   getRollData() {
-    const data: object = {};
+    const data: Record<string, unknown> = {};
 
     // Copy the ability scores to the top level, so that rolls can use
     // formulas like `@str.mod + 4`.
