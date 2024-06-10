@@ -8,7 +8,7 @@ new foundry.documents.BaseActor();
 // @ts-expect-error name and type are required
 new foundry.documents.BaseActor({});
 
-const baseActor = new foundry.documents.BaseActor({ name: "foo", type: "base" });
+const baseActor = new foundry.documents.BaseActor({ name: "foo", type: "character" });
 expectTypeOf(baseActor.name).toEqualTypeOf<string>();
 expectTypeOf(baseActor.effects).toEqualTypeOf<EmbeddedCollection<ActiveEffect, Actor>>();
 expectTypeOf(baseActor.effects.get("")).toEqualTypeOf<ActiveEffect | undefined>();
@@ -247,7 +247,9 @@ declare global {
   // }
 
   interface DataModelConfig {
-    character: BoilerplateCharacter;
+    Actor: {
+      character: BoilerplateCharacter;
+    };
   }
 
   // interface SourceConfig {
