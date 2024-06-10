@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
 import type EmbeddedCollection from "../../../../src/foundry/common/abstract/embedded-collection.d.mts";
+import type { DeepMerge } from "../../../../src/types/utils.d.mts";
 
 // @ts-expect-error name and type are required
 new foundry.documents.BaseActor();
@@ -23,9 +24,19 @@ expectTypeOf(baseActor._source.effects[0]!.duration.seconds).toEqualTypeOf<numbe
  */
 
 interface MyCharacter
-  extends foundry.data.fields.SchemaField.InnerInitializedType<ReturnType<(typeof MyCharacter)["defineSchema"]>> {
-  // Derived data: abilities.strength.mod, abilities.dexterity.mod
-}
+  extends DeepMerge<
+    foundry.data.fields.SchemaField.InnerInitializedType<ReturnType<(typeof MyCharacter)["defineSchema"]>>,
+    {
+      abilities: {
+        strength: {
+          modifier?: number;
+        };
+        dexterity: {
+          modifier?: number;
+        };
+      };
+    }
+  > {}
 
 class MyCharacter extends foundry.abstract.TypeDataModel<
   foundry.data.fields.SchemaField<ReturnType<(typeof MyCharacter)["defineSchema"]>>,
@@ -124,14 +135,18 @@ interface BoilerplateCharacterSchema extends BoilerplateActorBaseSchema {
 
 type BoilerplateCharacterProperties = foundry.data.fields.SchemaField.InnerInitializedType<BoilerplateCharacterSchema>;
 
-interface BoilerplateCharacter extends BoilerplateCharacterProperties {
-  abilities: {
-    strength: BoilerplateCharacterProperties["abilities"]["strength"] & {
-      mod?: number;
-      label?: string;
-    };
-  };
-}
+interface BoilerplateCharacter
+  extends DeepMerge<
+    BoilerplateCharacterProperties,
+    {
+      abilities: {
+        strength: {
+          mod?: number;
+          label?: string;
+        };
+      };
+    }
+  > {}
 
 class BoilerplateCharacter extends BoilerplateActorBase<BoilerplateCharacterSchema> {
   static defineSchema() {

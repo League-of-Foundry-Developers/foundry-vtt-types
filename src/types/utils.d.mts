@@ -86,6 +86,14 @@ export type Merge<T, U> = T extends object
  */
 export type SimpleMerge<Target, Override> = Omit<Target, keyof Override> & Override;
 
+export type DeepMerge<T, U> = {
+  [K in keyof T]: T[K] extends Record<string, any>
+    ? U extends { readonly [_ in K]?: Record<string, any> & infer V }
+      ? DeepMerge<T[K], V>
+      : false
+    : T[K];
+} & Omit<U, keyof T>;
+
 /**
  * Instance of `T`, which may or may not be in a promise.
  * @typeParam T - the type which might be wrapped in a promise.
