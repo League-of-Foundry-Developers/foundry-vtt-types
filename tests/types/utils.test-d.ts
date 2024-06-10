@@ -8,29 +8,37 @@ import type {
   Titlecase,
 } from "../../src/types/utils.d.mts";
 
-const membersBecomeOptional: DeepPartial<{ a: string }> = {};
+declare const membersBecomeOptional: DeepPartial<{ a: string }>;
 expectTypeOf(membersBecomeOptional).toEqualTypeOf<{ a?: string }>();
 
-const nestedMembersBecomeOptional: DeepPartial<{ a: { b: string } }> = { a: {} };
+declare const nestedMembersBecomeOptional: DeepPartial<{ a: { b: string } }>;
 expectTypeOf(nestedMembersBecomeOptional).toEqualTypeOf<{ a?: { b?: string } }>();
 
-const expanded1: Expanded<{ foo: string }> = { foo: "" };
+declare const expanded1: Expanded<{ foo: string }>;
 expectTypeOf(expanded1).toEqualTypeOf<{ foo: string }>();
-const expanded2: Expanded<{ "foo.bar": string }> = { foo: { bar: "" } };
+
+declare const expanded2: Expanded<{ "foo.bar": string }>;
 expectTypeOf(expanded2).toEqualTypeOf<{ foo: { bar: string } }>();
-const expanded3: Expanded<{ "foo.bar": string[] }> = { foo: { bar: [""] } };
+
+declare const expanded3: Expanded<{ "foo.bar": string[] }>;
 expectTypeOf(expanded3).toEqualTypeOf<{ foo: { bar: string[] } }>();
-const expanded4: Expanded<{ foo: { "bar.baz": string } }> = { foo: { bar: { baz: "" } } };
+
+declare const expanded4: Expanded<{ foo: { "bar.baz": string } }>;
 expectTypeOf(expanded4).toEqualTypeOf<{ foo: { bar: { baz: string } } }>();
-const expanded5: Expanded<{ "foo.bar": string; "baz.qux": string }> = { foo: { bar: "" }, baz: { qux: "" } };
+
+declare const expanded5: Expanded<{ "foo.bar": string; "baz.qux": string }>;
 expectTypeOf(expanded5).toEqualTypeOf<{ foo: { bar: string }; baz: { qux: string } }>();
-const expanded6: Expanded<{ "foo.bar": string; baz: { qux: string } }> = { foo: { bar: "" }, baz: { qux: "" } };
+
+declare const expanded6: Expanded<{ "foo.bar": string; baz: { qux: string } }>;
 expectTypeOf(expanded6).toEqualTypeOf<{ foo: { bar: string }; baz: { qux: string } }>();
-const expanded7: Expanded<{ "foo.bar": string | number }> = { foo: { bar: 0 } };
+
+declare const expanded7: Expanded<{ "foo.bar": string | number }>;
 expectTypeOf(expanded7).toEqualTypeOf<{ foo: { bar: string | number } }>();
-const expanded8: Expanded<{ foo: { bar: string } | { baz: number } }> = { foo: { bar: "" } };
+
+declare const expanded8: Expanded<{ foo: { bar: string } | { baz: number } }>;
 expectTypeOf(expanded8).toEqualTypeOf<{ foo: { bar: string } | { baz: number } }>();
-const expanded9: Expanded<{ "foo.bar"?: string }> = {};
+
+declare const expanded9: Expanded<{ "foo.bar"?: string }>;
 expectTypeOf(expanded9).toEqualTypeOf<{ foo?: { bar: string | undefined } }>();
 
 declare const titlecaseEmpty: Titlecase<"">;

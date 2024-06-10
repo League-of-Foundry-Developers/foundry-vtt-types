@@ -63,21 +63,17 @@ export type Titlecase<S extends string> = S extends `${infer A} ${infer B}`
  * @typeParam T - The base type that `U` will be merged into.
  * @typeParam U - The type that will be merged into `T`.
  */
-export type Merge<T, U> = T extends object
-  ? U extends ReadonlyArray<any>
-    ? U
-    : U extends object
-      ? {
-          [Key in keyof T | keyof U]: Key extends keyof T
-            ? Key extends keyof U
-              ? Merge<T[Key], U[Key]>
-              : T[Key]
-            : Key extends keyof U
-              ? U[Key]
-              : never;
-        }
+export type Merge<T, U> =
+  U extends Record<string, unknown>
+    ? T extends Record<string, unknown>
+      ? SimpleMerge<
+          T,
+          {
+            [K in keyof U]: U[K];
+          }
+        >
       : U
-  : U;
+    : U;
 
 /**
  * A simple, non-recursive merge type.
