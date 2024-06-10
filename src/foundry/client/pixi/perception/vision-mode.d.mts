@@ -5,10 +5,10 @@ export {};
 
 declare global {
   class ShaderField<
-    Options extends ShaderField.Options = ShaderField.DefaultOptions,
-    AssignmentType = ShaderField.AssignmentType<Options>,
-    InitializedType = ShaderField.InitializedType<Options>,
-    PersistedType extends typeof AbstractBaseShader | null | undefined = ShaderField.InitializedType<Options>,
+    const Options extends ShaderField.Options = ShaderField.DefaultOptions,
+    const AssignmentType = ShaderField.AssignmentType<Options>,
+    const InitializedType = ShaderField.InitializedType<Options>,
+    const PersistedType extends typeof AbstractBaseShader | null | undefined = ShaderField.InitializedType<Options>,
   > extends foundry.data.fields.DataField<Options, AssignmentType, InitializedType, PersistedType> {
     /**
      * @defaultValue

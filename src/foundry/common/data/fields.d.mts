@@ -128,10 +128,10 @@ declare global {
  * InitialValue: `undefined`
  */
 declare abstract class DataField<
-  Options extends DataFieldOptions.Any = DataField.DefaultOptions,
-  AssignmentType = DataField.AssignmentType<Options>,
-  InitializedType = DataField.InitializedType<Options>,
-  PersistedType extends unknown | null | undefined = InitializedType,
+  const Options extends DataFieldOptions.Any = DataField.DefaultOptions,
+  const AssignmentType = DataField.AssignmentType<Options>,
+  const InitializedType = DataField.InitializedType<Options>,
+  const PersistedType extends unknown | null | undefined = InitializedType,
 > {
   /**
    * @param options - Options which configure the behavior of the field
@@ -680,10 +680,10 @@ declare namespace SchemaField {
  * InitialValue: `false`
  */
 declare class BooleanField<
-  Options extends BooleanField.Options = BooleanField.DefaultOptions,
-  AssignmentType = BooleanField.AssignmentType<Options>,
-  InitializedType = BooleanField.InitializedType<Options>,
-  PersistedType extends boolean | null | undefined = BooleanField.InitializedType<Options>,
+  const Options extends BooleanField.Options = BooleanField.DefaultOptions,
+  const AssignmentType = BooleanField.AssignmentType<Options>,
+  const InitializedType = BooleanField.InitializedType<Options>,
+  const PersistedType extends boolean | null | undefined = BooleanField.InitializedType<Options>,
 > extends DataField<Options, AssignmentType, InitializedType, PersistedType> {
   /** @defaultValue `true` */
   override required: boolean;
@@ -793,10 +793,10 @@ declare global {
  * InitialValue: `null`
  */
 declare class NumberField<
-  Options extends NumberFieldOptions = NumberField.DefaultOptions,
-  AssignmentType = NumberField.AssignmentType<Options>,
-  InitializedType = NumberField.InitializedType<Options>,
-  PersistedType extends number | null | undefined = NumberField.InitializedType<Options>,
+  const Options extends NumberFieldOptions = NumberField.DefaultOptions,
+  const AssignmentType = NumberField.AssignmentType<Options>,
+  const InitializedType = NumberField.InitializedType<Options>,
+  const PersistedType extends number | null | undefined = NumberField.InitializedType<Options>,
 > extends DataField<Options, AssignmentType, InitializedType, PersistedType> {
   /**
    * @param options - Options which configure the behavior of the field
@@ -956,10 +956,10 @@ declare global {
  * InitialValue: `""`
  */
 declare class StringField<
-  Options extends StringFieldOptions = StringField.DefaultOptions,
-  AssignmentType = StringField.AssignmentType<Options>,
-  InitializedType = StringField.InitializedType<Options>,
-  PersistedType extends string | null | undefined = StringField.InitializedType<Options>,
+  const Options extends StringFieldOptions = StringField.DefaultOptions,
+  const AssignmentType = StringField.AssignmentType<Options>,
+  const InitializedType = StringField.InitializedType<Options>,
+  const PersistedType extends string | null | undefined = StringField.InitializedType<Options>,
 > extends DataField<Options, AssignmentType, InitializedType, PersistedType> {
   /**
    * @param options - Options which configure the behavior of the field
@@ -1101,10 +1101,10 @@ declare namespace StringField {
  * InitialValue: `{}`
  */
 declare class ObjectField<
-  Options extends DataFieldOptions<object> = ObjectField.DefaultOptions,
-  AssignmentType = ObjectField.AssignmentType<Options>,
-  InitializedType = ObjectField.InitializedType<Options>,
-  PersistedType extends object | null | undefined = ObjectField.InitializedType<Options>,
+  const Options extends DataFieldOptions<object> = ObjectField.DefaultOptions,
+  const AssignmentType = ObjectField.AssignmentType<Options>,
+  const InitializedType = ObjectField.InitializedType<Options>,
+  const PersistedType extends object | null | undefined = ObjectField.InitializedType<Options>,
 > extends DataField<Options, AssignmentType, InitializedType, PersistedType> {
   /** @defaultValue `true` */
   override required: boolean;
@@ -1200,14 +1200,14 @@ declare namespace ObjectField {
  * InitialValue: `[]`
  */
 declare class ArrayField<
-  ElementFieldType extends DataField.Any | Document.Constructor,
-  AssignmentElementType = ArrayField.AssignmentElementType<ElementFieldType>,
-  InitializedElementType = ArrayField.InitializedElementType<ElementFieldType>,
-  Options extends ArrayField.Options<AssignmentElementType> = ArrayField.DefaultOptions<AssignmentElementType>,
-  AssignmentType = ArrayField.AssignmentType<AssignmentElementType, Options>,
-  InitializedType = ArrayField.InitializedType<AssignmentElementType, InitializedElementType, Options>,
-  PersistedElementType = ArrayField.PersistedElementType<ElementFieldType>,
-  PersistedType extends PersistedElementType[] | null | undefined = ArrayField.PersistedType<
+  const ElementFieldType extends DataField.Any | Document.Constructor,
+  const AssignmentElementType = ArrayField.AssignmentElementType<ElementFieldType>,
+  const InitializedElementType = ArrayField.InitializedElementType<ElementFieldType>,
+  const Options extends ArrayField.Options<AssignmentElementType> = ArrayField.DefaultOptions<AssignmentElementType>,
+  const AssignmentType = ArrayField.AssignmentType<AssignmentElementType, Options>,
+  const InitializedType = ArrayField.InitializedType<AssignmentElementType, InitializedElementType, Options>,
+  const PersistedElementType = ArrayField.PersistedElementType<ElementFieldType>,
+  const PersistedType extends PersistedElementType[] | null | undefined = ArrayField.PersistedType<
     AssignmentElementType,
     PersistedElementType,
     Options
@@ -1548,11 +1548,11 @@ declare namespace SetField {
  * InitialValue: `{}`
  */
 declare class EmbeddedDataField<
-  ModelType extends DataModel.Any,
-  Options extends EmbeddedDataField.Options<ModelType> = EmbeddedDataField.DefaultOptions,
-  AssignmentType = EmbeddedDataField.AssignmentType<ModelType, Options>,
-  InitializedType = EmbeddedDataField.InitializedType<ModelType, Options>,
-  PersistedType extends object | null | undefined = EmbeddedDataField.PersistedType<ModelType, Options>,
+  const ModelType extends DataModel.Any,
+  const Options extends EmbeddedDataField.Options<ModelType> = EmbeddedDataField.DefaultOptions,
+  const AssignmentType = EmbeddedDataField.AssignmentType<ModelType, Options>,
+  const InitializedType = EmbeddedDataField.InitializedType<ModelType, Options>,
+  const PersistedType extends object | null | undefined = EmbeddedDataField.PersistedType<ModelType, Options>,
 > extends SchemaField<DataModel.DataSchema<ModelType>, Options, AssignmentType, InitializedType, PersistedType> {
   /**
    * @param model   - The class of DataModel which should be embedded in this field
@@ -2014,11 +2014,11 @@ declare namespace EmbeddedCollectionDeltaField {
  * InitialValue: `{}`
  */
 declare class EmbeddedDocumentField<
-  DocumentType extends Document.Any,
-  Options extends EmbeddedDocumentField.Options<DocumentType> = EmbeddedDocumentField.DefaultOptions,
-  AssignmentType = EmbeddedDocumentField.AssignmentType<DocumentType, Options>,
-  InitializedType = EmbeddedDocumentField.InitializedType<DocumentType, Options>,
-  PersistedType extends object | null | undefined = EmbeddedDocumentField.PersistedType<DocumentType, Options>,
+  const DocumentType extends Document.Any,
+  const Options extends EmbeddedDocumentField.Options<DocumentType> = EmbeddedDocumentField.DefaultOptions,
+  const AssignmentType = EmbeddedDocumentField.AssignmentType<DocumentType, Options>,
+  const InitializedType = EmbeddedDocumentField.InitializedType<DocumentType, Options>,
+  const PersistedType extends object | null | undefined = EmbeddedDocumentField.PersistedType<DocumentType, Options>,
 > extends EmbeddedDataField<DocumentType, Options, AssignmentType, InitializedType, PersistedType> {
   /**
    * @param model   - The type of Document which is embedded.
@@ -3101,11 +3101,11 @@ declare namespace DocumentStatsField {
  * InitialValue: `{}`
  */
 declare class TypeDataField<
-  DocumentType extends Document.Any,
-  Options extends TypeDataField.Options<DocumentType> = TypeDataField.DefaultOptions,
-  AssignmentType = TypeDataField.AssignmentType<DocumentType, Options>,
-  InitializedType = TypeDataField.InitializedType<DocumentType, Options>,
-  PersistedType extends object | null | undefined = TypeDataField.PersistedType<DocumentType, Options>,
+  const DocumentType extends Document.Any,
+  const Options extends TypeDataField.Options<DocumentType> = TypeDataField.DefaultOptions,
+  const AssignmentType = TypeDataField.AssignmentType<DocumentType, Options>,
+  const InitializedType = TypeDataField.InitializedType<DocumentType, Options>,
+  const PersistedType extends object | null | undefined = TypeDataField.PersistedType<DocumentType, Options>,
 > extends ObjectField<Options, AssignmentType, InitializedType, PersistedType> {
   /**
    * @param document - The base document class which belongs in this field
@@ -3297,7 +3297,7 @@ declare namespace ModelValidationError {
 /**
  * @deprecated since v10, will be removed in v12
  */
-export function systemDataField<D extends Document.Any>(document: D): TypeDataField<D>;
+export function systemDataField<const D extends Document.Any>(document: D): TypeDataField<D>;
 
 /**
  * @deprecated since v10, will be removed in v12
