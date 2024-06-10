@@ -365,7 +365,7 @@ declare namespace DataField {
   type MergedOptions<Options extends DataFieldOptions.Any> = SimpleMerge<DefaultOptions, Options>;
 
   /** Any DataField. */
-  type Any = DataField<DataFieldOptions.Any, any, any, any>;
+  type Any = DataField<any, any, any, any>;
 
   /** A DataField with unknown inner types. */
   type Unknown = DataField<any, unknown, unknown, unknown>;
@@ -468,7 +468,8 @@ declare class SchemaField<
    * @param fields  - The contained field definitions
    * @param options - Options which configure the behavior of the field
    */
-  constructor(fields: Fields, options?: Options);
+  // Saying `fields: Fields` here causes the inference for the fields to be unnecessarily widened. This might effectively be a no-op but it fixes the inference.
+  constructor(fields: { [K in keyof Fields]: Fields[K] }, options?: Options);
 
   /** @defaultValue `true` */
   override required: boolean;
