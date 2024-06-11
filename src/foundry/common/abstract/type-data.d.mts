@@ -1,4 +1,3 @@
-import type { SchemaField } from "../data/fields.d.mts";
 import type DataModel from "./data.d.mts";
 import type Document from "./document.d.mts";
 
@@ -60,7 +59,7 @@ import type Document from "./document.d.mts";
  */
 export default abstract class TypeDataModel<
   Schema extends DataSchema,
-  Parent extends Document<SchemaField.Any, any, any>,
+  Parent extends Document<DataSchema, any, any>,
 > extends DataModel<Schema, Parent> {
   modelProvider: System | Module | null;
 

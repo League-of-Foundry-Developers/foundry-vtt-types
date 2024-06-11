@@ -52,6 +52,7 @@ class MyCharacter extends foundry.abstract.TypeDataModel<MyCharacterSchema, Acto
   prepareDerivedData(): void {
     this.abilities.strength.value + 2;
     for (const ability of Object.values(this.abilities)) {
+      // @ts-expect-error Derived data must be declared
       ability.modifier = (ability.value - 10) / 2;
     }
   }
@@ -130,6 +131,7 @@ interface BoilerplateCharacter
           label?: string;
         };
       };
+      // attributes: {};
     }
   > {}
 
@@ -179,7 +181,6 @@ class BoilerplateCharacter extends BoilerplateActorBase<BoilerplateCharacterSche
         data[k] = foundry.utils.deepClone(v);
       }
     }
-
     data.lvl = this.attributes.level.value;
 
     return data;

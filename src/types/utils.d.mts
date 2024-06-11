@@ -69,7 +69,7 @@ export type Merge<T, U> =
       ? SimpleMerge<
           T,
           {
-            [K in keyof U]: Merge<T extends { readonly [_ in K]: infer V } ? V : never, U[K]>;
+            [K in keyof U]: Merge<T extends { readonly [_ in K]?: infer V } ? V : never, U[K]>;
           }
         >
       : U
