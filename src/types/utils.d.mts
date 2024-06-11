@@ -64,8 +64,8 @@ export type Titlecase<S extends string> = S extends `${infer A} ${infer B}`
  * @typeParam U - The type that will be merged into `T`.
  */
 export type Merge<T, U> =
-  U extends Record<string, unknown>
-    ? T extends Record<string, unknown>
+  U extends Record<string, any>
+    ? T extends Record<string, any>
       ? SimpleMerge<
           T,
           {
