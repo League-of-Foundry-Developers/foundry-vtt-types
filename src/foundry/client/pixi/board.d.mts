@@ -254,10 +254,10 @@ declare global {
     /**
      * A reference to the currently displayed Scene document, or null if the Canvas is currently blank.
      */
-    get scene(): StoredDocument<Scene> | null;
+    get scene(): StoredDocument<Scene.ConfiguredInstance> | null;
 
     /** @defaultValue `null` */
-    #scene: StoredDocument<Scene> | null;
+    #scene: StoredDocument<Scene.ConfiguredInstance> | null;
 
     /**
      * A flag for whether the game Canvas is ready to be used. False if the canvas is not yet drawn, true otherwise.
