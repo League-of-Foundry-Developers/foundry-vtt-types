@@ -46,6 +46,18 @@ export type Expanded<O> =
 export type ValueOf<T> = T extends ReadonlyArray<unknown> ? T[number] : T[keyof T];
 
 /**
+ * Gets the keys of `T` but excluding index signatures unlike `keyof T`. For example `Record<string, any> & { foo: number }` will produce `string` with `keyof` but `foo` with `ConcreteKeys`.
+ */
+export type ConcreteKeys<T> = keyof {
+  [K in keyof T as string extends K ? never : number extends K ? never : symbol extends K ? never : K]: never;
+};
+
+/**
+ * Removes all index signatures from an object. Use this instead of `[K in keyof ConcreteKeys<T>]` to preserve modifiers e.g. readonly, or optional.
+ */
+export type RemoveIndexSignatures<T> = Pick<T, ConcreteKeys<T>>;
+
+/**
  * Transforms a string to lowercase and the first character to uppercase.
  * @internal
  */

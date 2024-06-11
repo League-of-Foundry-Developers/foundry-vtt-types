@@ -3,7 +3,7 @@ import type {
   ConfiguredDocumentClassForName,
   ConfiguredFlags,
 } from "../../../types/helperTypes.mts";
-import type { ConstructorOf, SimpleMerge, ValueOf } from "../../../types/utils.d.mts";
+import type { RemoveIndexSignatures, ConstructorOf, SimpleMerge, ValueOf } from "../../../types/utils.d.mts";
 import type { DataModel } from "../abstract/data.mts";
 import type Document from "../abstract/document.mts";
 import type { EmbeddedCollection, EmbeddedCollectionDelta } from "../abstract/module.d.mts";
@@ -583,19 +583,19 @@ declare namespace SchemaField {
    * Get the inner assignment type for the given DataSchema.
    * @typeParam Fields - the DataSchema fields of the SchemaField
    */
-  type InnerAssignmentType<Fields extends DataSchema> = {
+  type InnerAssignmentType<Fields extends DataSchema> = RemoveIndexSignatures<{
     [Key in keyof Fields]?: Fields[Key] extends DataField<any, infer AssignType, any, any>
       ? Fields[Key] extends SchemaField<infer SubSchema, any, any, any, any>
         ? InnerAssignmentType<SubSchema>
         : AssignType
       : never;
-  };
+  }>;
 
   /**
    * Get the inner initialized type for the given DataSchema.
    * @typeParam Fields - the DataSchema fields of the SchemaField
    */
-  type InnerInitializedType<Fields extends DataSchema> = {
+  type InnerInitializedType<Fields extends DataSchema> = RemoveIndexSignatures<{
     [Key in keyof Fields]: Fields[Key] extends DataField<any, any, infer InitType, any>
       ? Fields[Key] extends EmbeddedDataField<infer Model, any, any, any, any>
         ? Model
@@ -603,19 +603,19 @@ declare namespace SchemaField {
           ? InnerInitializedType<SubSchema>
           : InitType
       : never;
-  };
+  }>;
 
   /**
    * Get the inner persisted type for the given DataSchema.
    * @typeParam Fields - the DataSchema fields of the SchemaField
    */
-  type InnerPersistedType<Fields extends DataSchema> = {
+  type InnerPersistedType<Fields extends DataSchema> = RemoveIndexSignatures<{
     [Key in keyof Fields]: Fields[Key] extends DataField<any, any, any, infer PersistType>
       ? Fields[Key] extends SchemaField<infer SubSchema, any, any, any, any>
         ? InnerPersistedType<SubSchema>
         : PersistType
       : never;
-  };
+  }>;
 
   /** The type of the default options for the {@link SchemaField} class. */
   type DefaultOptions = SimpleMerge<
