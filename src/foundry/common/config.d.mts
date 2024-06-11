@@ -189,7 +189,7 @@ interface ApplicationConfiguration extends fields.SchemaField.InnerInitializedTy
  * The server-side software extends this class and provides additional validations and
  * @remarks yes the description really does cut off
  */
-declare class ApplicationConfiguration extends DataModel<fields.SchemaField<ApplicationConfiguration.Schema>> {
+declare class ApplicationConfiguration extends DataModel<ApplicationConfiguration.Schema> {
   static defineSchema(): ApplicationConfiguration.Schema;
 
   static override migrateData(source: object): object;
@@ -273,7 +273,7 @@ declare namespace ReleaseData {
 interface ReleaseData extends fields.SchemaField.InnerInitializedType<ReleaseData.Schema> {}
 
 /** A data object which represents the details of this Release of Foundry VTT */
-declare class ReleaseData extends DataModel<fields.SchemaField<ReleaseData.Schema>> {
+declare class ReleaseData extends DataModel<ReleaseData.Schema> {
   static defineSchema(): ReleaseData.Schema;
 
   /** A formatted string for shortened display, such as "Version 9" */

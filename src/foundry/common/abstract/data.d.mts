@@ -318,8 +318,8 @@ export default abstract class DataModel<Schema extends DataSchema, Parent extend
    * @param context - Model construction context
    * @remarks The generic parameters should fit the DataModel implementation that this method is called on.
    */
-  static fromSource<SchemaField extends SchemaField.Any>(
-    source: fields.SchemaField.InnerAssignmentType<SchemaField["fields"]>,
+  static fromSource<Schema extends DataSchema>(
+    source: fields.SchemaField.InnerAssignmentType<Schema>,
     {
       strict,
       ...context
@@ -330,7 +330,7 @@ export default abstract class DataModel<Schema extends DataSchema, Parent extend
        */
       strict?: boolean;
     },
-  ): DataModel<SchemaField, DataModel.Any | null>;
+  ): DataModel<Schema, DataModel.Any | null>;
 
   /**
    * Create a DataModel instance using a provided serialized JSON string.
@@ -403,13 +403,13 @@ export declare namespace DataModel {
   }
 
   /** Any DataModel. */
-  type Any = DataModel<SchemaField.Any, any>;
+  type Any = DataModel<DataSchema, any>;
 
   /**
-   * A helper type to extract the {@link DataSchema} from a {@link DataModel}.
+   * A helper type to extract the {@link SchemaFor} from a {@link DataModel}.
    * @typeParam ModelType - the DataModel for the embedded data
    */
-  type DataSchema<ModelType extends DataModel.Any> = ModelType["schema"]["fields"];
+  type SchemaFor<ModelType extends DataModel.Any> = ModelType["schema"]["fields"];
 
   interface UpdateOptions {
     dryRun?: boolean;

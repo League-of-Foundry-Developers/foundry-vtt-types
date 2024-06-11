@@ -15,7 +15,7 @@ declare global {
 
 interface BasePlaylistSound extends BasePlaylistSound.Properties {}
 declare class BasePlaylistSound extends Document<
-  BasePlaylistSound.SchemaField,
+  BasePlaylistSound.Schema,
   BasePlaylistSound.Metadata,
   Playlist.ConfiguredInstance | null
 > {

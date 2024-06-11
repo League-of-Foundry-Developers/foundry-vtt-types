@@ -464,7 +464,7 @@ interface BasePackage extends fields.SchemaField.InnerInitializedType<BasePackag
 declare class BasePackage<
   // BaseWorld alters the definition of `version`
   PackageSchema extends Omit<BasePackage.Schema, "version"> = BasePackage.Schema,
-> extends DataModel<fields.SchemaField<PackageSchema>, null> {
+> extends DataModel<PackageSchema, null> {
   /**
    * An availability code in PACKAGE_AVAILABILITY_CODES which defines whether this package can be used.
    */

@@ -170,7 +170,7 @@ declare namespace LightData {
 
 interface LightData extends fields.SchemaField.InnerInitializedType<LightData.Schema> {}
 
-declare class LightData extends DataModel<fields.SchemaField<LightData.Schema>> {
+declare class LightData extends DataModel<LightData.Schema> {
   static defineSchema(): LightData.Schema;
 
   static migrateData(source: object): object;
@@ -217,7 +217,7 @@ declare namespace ShapeData {
 
 interface ShapeData extends fields.SchemaField.InnerInitializedType<ShapeData.Schema> {}
 
-declare class ShapeData extends DataModel<fields.SchemaField<ShapeData.Schema>> {
+declare class ShapeData extends DataModel<ShapeData.Schema> {
   static defineSchema(): ShapeData.Schema;
 
   static TYPES: ShapeData.TYPES;
@@ -307,7 +307,7 @@ declare namespace PrototypeToken {
 
 interface PrototypeToken extends fields.SchemaField.InnerInitializedType<PrototypeToken.Schema> {}
 
-declare class PrototypeToken extends DataModel<fields.SchemaField<PrototypeToken.Schema>, documents.BaseActor> {
+declare class PrototypeToken extends DataModel<PrototypeToken.Schema, documents.BaseActor> {
   constructor(data?: PrototypeToken.ConstructorData, options?: DataModel.ConstructorOptions);
 
   /** @defaultValue `{}` */
@@ -365,7 +365,7 @@ declare namespace TombstoneData {
 
 interface TombstoneData extends fields.SchemaField.InnerInitializedType<TombstoneData.Schema> {}
 
-declare class TombstoneData extends DataModel<fields.SchemaField<TombstoneData.Schema>> {
+declare class TombstoneData extends DataModel<TombstoneData.Schema> {
   static defineSchema(): TombstoneData.Schema;
 }
 

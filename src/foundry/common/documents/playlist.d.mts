@@ -15,7 +15,7 @@ declare global {
  */
 
 interface BasePlaylist extends BasePlaylist.Properties {}
-declare class BasePlaylist extends Document<BasePlaylist.SchemaField, BasePlaylist.Metadata> {
+declare class BasePlaylist extends Document<BasePlaylist.Schema, BasePlaylist.Metadata> {
   /**
    * @param data    - Initial data from which to construct the Playlist
    * @param context - Construction context options

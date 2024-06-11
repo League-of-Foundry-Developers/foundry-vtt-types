@@ -16,7 +16,7 @@ declare global {
  */
 interface BaseActorDelta extends BaseActorDelta.Properties {}
 declare class BaseActorDelta extends Document<
-  documents.BaseActorDelta.SchemaField,
+  documents.BaseActorDelta.Schema,
   documents.BaseActorDelta.Metadata,
   TokenDocument.ConfiguredInstance | null
 > {

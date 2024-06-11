@@ -13,7 +13,7 @@ declare global {
  */
 interface BaseAmbientSound extends BaseAmbientSound.Properties {}
 declare class BaseAmbientSound extends Document<
-  BaseAmbientSound.SchemaField,
+  BaseAmbientSound.Schema,
   BaseAmbientSound.Metadata,
   Scene.ConfiguredInstance | null
 > {

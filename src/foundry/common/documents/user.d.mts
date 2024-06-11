@@ -14,7 +14,7 @@ declare global {
  * Defines the DataSchema and common behaviors for a User which are shared between both client and server.
  */
 interface BaseUser extends BaseUser.Properties {}
-declare class BaseUser extends Document<BaseUser.SchemaField, BaseUser.Metadata> {
+declare class BaseUser extends Document<BaseUser.Schema, BaseUser.Metadata> {
   /**
    * @param data    - Initial data from which to construct the User
    * @param context - Construction context options

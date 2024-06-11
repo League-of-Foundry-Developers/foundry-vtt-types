@@ -21,15 +21,15 @@ export default Document;
  * Documents are special in that they are persisted to the database and referenced by _id.
  */
 declare abstract class Document<
-  SchemaField extends fields.SchemaField.Any,
+  Schema extends DataSchema,
   ConcreteMetadata extends AnyMetadata = AnyMetadata,
   Parent extends Document.Any | null = null,
-> extends DataModel<SchemaField, Parent> {
+> extends DataModel<Schema, Parent> {
   /**
    * @param data    - Initial data provided to construct the Document
    * @param context - Construction context options
    */
-  constructor(data?: fields.SchemaField.AssignmentType<SchemaField["fields"]>, context?: DocumentConstructionContext);
+  constructor(data?: fields.SchemaField.AssignmentType<Schema>, context?: DocumentConstructionContext);
 
   override parent: Parent;
 
@@ -190,7 +190,7 @@ declare abstract class Document<
    * @returns The cloned Document instance
    */
   override clone<Save extends boolean = false>(
-    data?: fields.SchemaField.AssignmentType<SchemaField["fields"], {}>,
+    data?: fields.SchemaField.AssignmentType<Schema, {}>,
     context?: InexactPartial<
       {
         /**
@@ -417,8 +417,8 @@ declare abstract class Document<
    */
   override update(
     data?:
-      | fields.SchemaField.AssignmentType<SchemaField["fields"], {}>
-      | (fields.SchemaField.AssignmentType<SchemaField["fields"], {}> & Record<string, unknown>),
+      | fields.SchemaField.AssignmentType<Schema, {}>
+      | (fields.SchemaField.AssignmentType<Schema, {}> & Record<string, unknown>),
     context?: DocumentModificationContext & foundry.utils.MergeObjectOptions,
   ): Promise<this | undefined>;
 
@@ -557,17 +557,17 @@ declare abstract class Document<
    * @returns The flag value
    */
   getFlag<
-    S extends keyof fields.SchemaField.PersistedType<SchemaField["fields"], {}>["flags"],
-    K extends keyof fields.SchemaField.PersistedType<SchemaField["fields"], {}>["flags"][S],
-  >(scope: S, key: K): fields.SchemaField.PersistedType<SchemaField["fields"], {}>["flags"][S][K];
+    S extends keyof fields.SchemaField.PersistedType<Schema, {}>["flags"],
+    K extends keyof fields.SchemaField.PersistedType<Schema, {}>["flags"][S],
+  >(scope: S, key: K): fields.SchemaField.PersistedType<Schema, {}>["flags"][S][K];
   getFlag<
-    S extends keyof fields.SchemaField.PersistedType<SchemaField["fields"], {}>["flags"],
-    K extends keyof Required<fields.SchemaField.PersistedType<SchemaField["fields"], {}>["flags"]>[S],
-  >(scope: S, key: K): Required<fields.SchemaField.PersistedType<SchemaField["fields"], {}>["flags"]>[S][K] | undefined;
-  getFlag<S extends keyof fields.SchemaField.PersistedType<SchemaField["fields"], {}>["flags"]>(
+    S extends keyof fields.SchemaField.PersistedType<Schema, {}>["flags"],
+    K extends keyof Required<fields.SchemaField.PersistedType<Schema, {}>["flags"]>[S],
+  >(scope: S, key: K): Required<fields.SchemaField.PersistedType<Schema, {}>["flags"]>[S][K] | undefined;
+  getFlag<S extends keyof fields.SchemaField.PersistedType<Schema, {}>["flags"]>(
     scope: S,
     key: string,
-  ): unknown extends fields.SchemaField.PersistedType<SchemaField["fields"], {}>["flags"][S] ? unknown : never;
+  ): unknown extends fields.SchemaField.PersistedType<Schema, {}>["flags"][S] ? unknown : never;
   getFlag(scope: string, key: string): unknown;
 
   /**
@@ -589,14 +589,14 @@ declare abstract class Document<
    * @returns A Promise resolving to the updated document
    */
   setFlag<
-    S extends keyof fields.SchemaField.PersistedType<SchemaField["fields"], {}>["flags"],
-    K extends keyof Required<fields.SchemaField.PersistedType<SchemaField["fields"], {}>["flags"]>[S],
-    V extends Required<fields.SchemaField.PersistedType<SchemaField["fields"], {}>["flags"]>[S][K],
+    S extends keyof fields.SchemaField.PersistedType<Schema, {}>["flags"],
+    K extends keyof Required<fields.SchemaField.PersistedType<Schema, {}>["flags"]>[S],
+    V extends Required<fields.SchemaField.PersistedType<Schema, {}>["flags"]>[S][K],
   >(scope: S, key: K, value: V): Promise<this>;
-  setFlag<S extends keyof fields.SchemaField.PersistedType<SchemaField["fields"], {}>["flags"], K extends string>(
+  setFlag<S extends keyof fields.SchemaField.PersistedType<Schema, {}>["flags"], K extends string>(
     scope: S,
     key: K,
-    v: unknown extends fields.SchemaField.PersistedType<SchemaField["fields"], {}>["flags"][S] ? unknown : never,
+    v: unknown extends fields.SchemaField.PersistedType<Schema, {}>["flags"][S] ? unknown : never,
   ): Promise<this>;
 
   /**
@@ -617,7 +617,7 @@ declare abstract class Document<
    * @returns A return value of false indicates the creation operation should be cancelled
    */
   protected _preCreate(
-    data: fields.SchemaField.AssignmentType<SchemaField["fields"], {}>,
+    data: fields.SchemaField.AssignmentType<Schema, {}>,
     options: DocumentModificationOptions,
     user: foundry.documents.BaseUser,
   ): Promise<boolean | void>;
@@ -631,7 +631,7 @@ declare abstract class Document<
    * @returns A return value of false indicates the update operation should be cancelled
    */
   protected _preUpdate(
-    changed: fields.SchemaField.AssignmentType<SchemaField["fields"], {}>,
+    changed: fields.SchemaField.AssignmentType<Schema, {}>,
     options: DocumentModificationOptions,
     user: foundry.documents.BaseUser,
   ): Promise<boolean | void>;
@@ -653,7 +653,7 @@ declare abstract class Document<
    * @param userId  - The id of the User requesting the document update
    */
   protected _onCreate(
-    data: fields.SchemaField.PersistedType<SchemaField["fields"], {}>,
+    data: fields.SchemaField.PersistedType<Schema, {}>,
     options: DocumentModificationOptions,
     userId: string,
   ): void;
@@ -666,7 +666,7 @@ declare abstract class Document<
    * @param userId  - The id of the User requesting the document update
    */
   protected _onUpdate(
-    changed: DeepPartial<fields.SchemaField.PersistedType<SchemaField["fields"], {}>>,
+    changed: DeepPartial<fields.SchemaField.PersistedType<Schema, {}>>,
     options: DocumentModificationOptions,
     userId: string,
   ): void;
@@ -786,10 +786,10 @@ declare abstract class Document<
 
 declare namespace Document {
   /** Any Document, except for Settings */
-  type Any = Document<fields.SchemaField.Any, AnyMetadata, any>;
+  type Any = Document<DataSchema, AnyMetadata, any>;
 
   /** Any Document, that is a child of the given parent Document. */
-  type AnyChild<Parent extends Any | null> = Document<fields.SchemaField.Any, AnyMetadata, Parent>;
+  type AnyChild<Parent extends Any | null> = Document<DataSchema, AnyMetadata, Parent>;
 
   type Constructor = Pick<typeof Document, keyof typeof Document> & (new (...args: any[]) => Document.Any);
 

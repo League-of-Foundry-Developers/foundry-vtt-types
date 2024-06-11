@@ -15,7 +15,7 @@ declare global {
  * Defines the DataSchema and common behaviors for a Wall which are shared between both client and server.
  */
 interface BaseWall extends BaseWall.Properties {}
-declare class BaseWall extends Document<BaseWall.SchemaField, BaseWall.Metadata, Scene.ConfiguredInstance | null> {
+declare class BaseWall extends Document<BaseWall.Schema, BaseWall.Metadata, Scene.ConfiguredInstance | null> {
   /**
    * @param data    - Initial data from which to construct the Wall
    * @param context - Construction context options

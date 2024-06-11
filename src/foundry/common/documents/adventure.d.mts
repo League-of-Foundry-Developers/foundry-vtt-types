@@ -14,7 +14,7 @@ declare global {
  * Defines the DataSchema and common behaviors for an Adventure which are shared between both client and server.
  */
 interface BaseAdventure extends BaseAdventure.Properties {}
-declare class BaseAdventure extends Document<BaseAdventure.SchemaField, BaseAdventure.Metadata> {
+declare class BaseAdventure extends Document<BaseAdventure.Schema, BaseAdventure.Metadata> {
   /**
    * @param data    - Initial data from which to construct the Actor
    * @param context - Construction context options
@@ -35,8 +35,8 @@ declare class BaseAdventure extends Document<BaseAdventure.SchemaField, BaseAdve
    */
   get thumbnail(): string;
 
-  static override fromSource<SchemaField extends fields.SchemaField.Any>(
-    source: fields.SchemaField.InnerAssignmentType<SchemaField["fields"]>,
+  static override fromSource<Schema extends DataSchema>(
+    source: fields.SchemaField.InnerAssignmentType<Schema>,
     {
       strict,
       ...context
@@ -47,7 +47,7 @@ declare class BaseAdventure extends Document<BaseAdventure.SchemaField, BaseAdve
        */
       strict?: boolean;
     },
-  ): foundry.abstract.DataModel<SchemaField, DataModel.Any | null>;
+  ): foundry.abstract.DataModel<Schema, DataModel.Any | null>;
 
   static override migrateData(source: object): object;
 }

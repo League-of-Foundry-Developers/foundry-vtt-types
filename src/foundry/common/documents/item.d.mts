@@ -14,7 +14,7 @@ declare global {
  * Defines the DataSchema and common behaviors for an Item which are shared between both client and server.
  */
 interface BaseItem extends BaseItem.Properties {}
-declare class BaseItem extends Document<BaseItem.SchemaField, BaseItem.Metadata, Actor.ConfiguredInstance | null> {
+declare class BaseItem extends Document<BaseItem.Schema, BaseItem.Metadata, Actor.ConfiguredInstance | null> {
   /**
    * @param data    - Initial data from which to construct the Item
    * @param context - Construction context options

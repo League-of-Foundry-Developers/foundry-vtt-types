@@ -16,7 +16,7 @@ declare global {
 
 interface BaseTableResult extends BaseTableResult.Properties {}
 declare class BaseTableResult extends Document<
-  BaseTableResult.SchemaField,
+  BaseTableResult.Schema,
   BaseTableResult.Metadata,
   RollTable.ConfiguredInstance | null
 > {

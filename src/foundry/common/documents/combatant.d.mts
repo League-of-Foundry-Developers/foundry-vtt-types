@@ -14,7 +14,7 @@ declare global {
  */
 interface BaseCombatant extends BaseCombatant.Properties {}
 declare class BaseCombatant extends Document<
-  BaseCombatant.SchemaField,
+  BaseCombatant.Schema,
   BaseCombatant.Metadata,
   Combat.ConfiguredInstance | null
 > {

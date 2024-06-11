@@ -23,7 +23,7 @@ declare global {
  */
 interface BaseJournalEntryPage extends BaseJournalEntryPage.Properties {}
 declare class BaseJournalEntryPage extends Document<
-  BaseJournalEntryPage.SchemaField,
+  BaseJournalEntryPage.Schema,
   BaseJournalEntryPage.Metadata,
   Scene.ConfiguredInstance | null
 > {

@@ -1348,8 +1348,8 @@ declare namespace ArrayField {
   type AssignmentElementType<ElementFieldType extends DataField.Any | Document.Constructor> =
     ElementFieldType extends DataField<any, infer Assign, any, any>
       ? Assign
-      : ElementFieldType extends new (...args: any[]) => Document<infer Schema extends SchemaField.Any, any, any>
-        ? SchemaField.InnerAssignmentType<Schema["fields"]>
+      : ElementFieldType extends new (...args: any[]) => Document<infer Schema extends DataSchema, any, any>
+        ? SchemaField.InnerAssignmentType<Schema>
         : never;
 
   /**
@@ -1359,8 +1359,8 @@ declare namespace ArrayField {
   type InitializedElementType<ElementFieldType extends DataField.Any | Document.Constructor> =
     ElementFieldType extends DataField<any, any, infer Init, any>
       ? Init
-      : ElementFieldType extends new (...args: any[]) => Document<infer Schema extends SchemaField.Any, any, any>
-        ? SchemaField.InnerInitializedType<Schema["fields"]>
+      : ElementFieldType extends new (...args: any[]) => Document<infer Schema extends DataSchema, any, any>
+        ? SchemaField.InnerInitializedType<Schema>
         : never;
 
   /**
@@ -1370,8 +1370,8 @@ declare namespace ArrayField {
   type PersistedElementType<ElementFieldType extends DataField.Any | Document.Constructor> =
     ElementFieldType extends DataField<any, any, any, infer Persist>
       ? Persist
-      : ElementFieldType extends new (...args: any[]) => Document<infer Schema extends SchemaField.Any, any, any>
-        ? SchemaField.InnerPersistedType<Schema["fields"]>
+      : ElementFieldType extends new (...args: any[]) => Document<infer Schema extends DataSchema, any, any>
+        ? SchemaField.InnerPersistedType<Schema>
         : never;
 
   /**
@@ -1553,7 +1553,7 @@ declare class EmbeddedDataField<
   const AssignmentType = EmbeddedDataField.AssignmentType<ModelType, Options>,
   const InitializedType = EmbeddedDataField.InitializedType<ModelType, Options>,
   const PersistedType extends object | null | undefined = EmbeddedDataField.PersistedType<ModelType, Options>,
-> extends SchemaField<DataModel.DataSchema<ModelType>, Options, AssignmentType, InitializedType, PersistedType> {
+> extends SchemaField<DataModel.SchemaFor<ModelType>, Options, AssignmentType, InitializedType, PersistedType> {
   /**
    * @param model   - The class of DataModel which should be embedded in this field
    * @param options - Options which configure the behavior of the field
@@ -1587,7 +1587,7 @@ declare namespace EmbeddedDataField {
    * @typeParam ModelType - the DataModel for the embedded data
    */
   type Options<ModelType extends DataModel.Any> = DataFieldOptions<
-    SchemaField.InnerAssignmentType<DataModel.DataSchema<ModelType>>
+    SchemaField.InnerAssignmentType<DataModel.SchemaFor<ModelType>>
   >;
 
   /** The type of the default options for the {@link EmbeddedDataField} class. */
@@ -1612,7 +1612,7 @@ declare namespace EmbeddedDataField {
     ModelType extends DataModel.Any,
     Opts extends Options<ModelType>,
   > = DataField.DerivedAssignmentType<
-    SchemaField.InnerAssignmentType<DataModel.DataSchema<ModelType>>,
+    SchemaField.InnerAssignmentType<DataModel.SchemaFor<ModelType>>,
     MergedOptions<ModelType, Opts>
   >;
 
@@ -1626,7 +1626,7 @@ declare namespace EmbeddedDataField {
     ModelType extends DataModel.Any,
     Opts extends Options<ModelType>,
   > = DataField.DerivedInitializedType<
-    SchemaField.InnerInitializedType<DataModel.DataSchema<ModelType>>,
+    SchemaField.InnerInitializedType<DataModel.SchemaFor<ModelType>>,
     MergedOptions<ModelType, Opts>
   >;
 
@@ -1639,7 +1639,7 @@ declare namespace EmbeddedDataField {
     ModelType extends DataModel.Any,
     Opts extends Options<ModelType>,
   > = DataField.DerivedInitializedType<
-    SchemaField.InnerPersistedType<DataModel.DataSchema<ModelType>>,
+    SchemaField.InnerPersistedType<DataModel.SchemaFor<ModelType>>,
     MergedOptions<ModelType, Opts>
   >;
 }
@@ -1782,8 +1782,8 @@ declare namespace EmbeddedCollectionField {
    */
   type AssignmentElementType<ElementFieldType extends Document.Constructor> = ElementFieldType extends new (
     ...args: any[]
-  ) => Document<infer Schema extends SchemaField.Any, any, any>
-    ? SchemaField.InnerAssignmentType<Schema["fields"]>
+  ) => Document<infer Schema extends DataSchema, any, any>
+    ? SchemaField.InnerAssignmentType<Schema>
     : never;
 
   /**
@@ -1800,8 +1800,8 @@ declare namespace EmbeddedCollectionField {
    */
   type PersistedElementType<ElementFieldType extends Document.Constructor> = ElementFieldType extends new (
     ...args: any[]
-  ) => Document<infer Schema extends SchemaField.Any, any, any>
-    ? SchemaField.InnerPersistedType<Schema["fields"]>
+  ) => Document<infer Schema extends DataSchema, any, any>
+    ? SchemaField.InnerPersistedType<Schema>
     : never;
 
   /**
@@ -1935,8 +1935,8 @@ declare namespace EmbeddedCollectionDeltaField {
    */
   type AssignmentElementType<ElementFieldType extends Document.Constructor> = ElementFieldType extends new (
     ...args: any[]
-  ) => Document<infer Schema extends SchemaField.Any, any, any>
-    ? SchemaField.InnerAssignmentType<Schema["fields"]>
+  ) => Document<infer Schema extends DataSchema, any, any>
+    ? SchemaField.InnerAssignmentType<Schema>
     : never;
 
   /**
@@ -1953,8 +1953,8 @@ declare namespace EmbeddedCollectionDeltaField {
    */
   type PersistedElementType<ElementFieldType extends Document.Constructor> = ElementFieldType extends new (
     ...args: any[]
-  ) => Document<infer Schema extends SchemaField.Any, any, any>
-    ? SchemaField.InnerPersistedType<Schema["fields"]>
+  ) => Document<infer Schema extends DataSchema, any, any>
+    ? SchemaField.InnerPersistedType<Schema>
     : never;
 
   /**
@@ -2049,7 +2049,7 @@ declare namespace EmbeddedDocumentField {
    * @typeParam DocumentType - the type of the embedded Document
    */
   type Options<DocumentType extends Document.Any> = DataFieldOptions<
-    SchemaField.InnerAssignmentType<DataModel.DataSchema<DocumentType>>
+    SchemaField.InnerAssignmentType<DataModel.SchemaFor<DocumentType>>
   >;
 
   /** The type of the default options for the {@link EmbeddedDocumentField} class. */
@@ -2079,7 +2079,7 @@ declare namespace EmbeddedDocumentField {
     DocumentType extends Document.Any,
     Opts extends Options<DocumentType>,
   > = DataField.DerivedAssignmentType<
-    SchemaField.InnerAssignmentType<DataModel.DataSchema<DocumentType>>,
+    SchemaField.InnerAssignmentType<DataModel.SchemaFor<DocumentType>>,
     MergedOptions<DocumentType, Opts>
   >;
 
@@ -2092,7 +2092,7 @@ declare namespace EmbeddedDocumentField {
     DocumentType extends Document.Any,
     Opts extends Options<DocumentType>,
   > = DataField.DerivedInitializedType<
-    SchemaField.InnerInitializedType<DataModel.DataSchema<DocumentType>>,
+    SchemaField.InnerInitializedType<DataModel.SchemaFor<DocumentType>>,
     MergedOptions<DocumentType, Opts>
   >;
 
@@ -2105,7 +2105,7 @@ declare namespace EmbeddedDocumentField {
     DocumentType extends Document.Any,
     Opts extends Options<DocumentType>,
   > = DataField.DerivedInitializedType<
-    SchemaField.InnerPersistedType<DataModel.DataSchema<DocumentType>>,
+    SchemaField.InnerPersistedType<DataModel.SchemaFor<DocumentType>>,
     MergedOptions<DocumentType, Opts>
   >;
 }
@@ -3173,7 +3173,7 @@ declare namespace TypeDataField {
    * @typeParam DocumentType - the type of the embedded Document
    */
   type Options<DocumentType extends Document.Any> = DataFieldOptions<
-    SchemaField.InnerAssignmentType<DataModel.DataSchema<DocumentType>>
+    SchemaField.InnerAssignmentType<DataModel.SchemaFor<DocumentType>>
   >;
 
   /** The type of the default options for the {@link TypeDataField} class. */
@@ -3233,7 +3233,7 @@ declare namespace TypeDataField {
     DocumentType extends Document.Any,
     Opts extends Options<DocumentType>,
   > = DataField.DerivedAssignmentType<
-    SchemaField.InnerAssignmentType<DataModel.DataSchema<DocumentType>>,
+    SchemaField.InnerAssignmentType<DataModel.SchemaFor<DocumentType>>,
     MergedOptions<DocumentType, Opts>
   >;
 
@@ -3246,7 +3246,7 @@ declare namespace TypeDataField {
     DocumentType extends Document.Any,
     Opts extends Options<DocumentType>,
   > = DataField.DerivedInitializedType<
-    SchemaField.InnerInitializedType<DataModel.DataSchema<DocumentType>>,
+    SchemaField.InnerInitializedType<DataModel.SchemaFor<DocumentType>>,
     MergedOptions<DocumentType, Opts>
   >;
 
@@ -3259,7 +3259,7 @@ declare namespace TypeDataField {
     DocumentType extends Document.Any,
     Opts extends Options<DocumentType>,
   > = DataField.DerivedInitializedType<
-    SchemaField.InnerPersistedType<DataModel.DataSchema<DocumentType>>,
+    SchemaField.InnerPersistedType<DataModel.SchemaFor<DocumentType>>,
     MergedOptions<DocumentType, Opts>
   >;
 }

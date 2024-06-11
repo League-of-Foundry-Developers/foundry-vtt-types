@@ -14,7 +14,7 @@ declare global {
  * Defines the DataSchema and common behaviors for an Actor which are shared between both client and server.
  */
 interface BaseActor extends BaseActor.Properties {}
-declare class BaseActor extends Document<BaseActor.SchemaField, BaseActor.Metadata> {
+declare class BaseActor extends Document<BaseActor.Schema, BaseActor.Metadata> {
   /**
    * @param data    - Initial data from which to construct the Actor
    * @param context - Construction context options

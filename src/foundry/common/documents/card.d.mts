@@ -16,7 +16,7 @@ declare global {
  * Defines the DataSchema and common behaviors for a Card which are shared between both client and server.
  */
 interface BaseCard extends BaseCard.Properties {}
-declare class BaseCard extends Document<BaseCard.SchemaField, BaseCard.Metadata, Cards.ConfiguredInstance | null> {
+declare class BaseCard extends Document<BaseCard.Schema, BaseCard.Metadata, Cards.ConfiguredInstance | null> {
   /**
    * @param data    - Initial data from which to construct the Card
    * @param context - Construction context options

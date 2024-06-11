@@ -15,7 +15,7 @@ declare global {
  */
 interface BaseMeasuredTemplate extends BaseMeasuredTemplate.Properties {}
 declare class BaseMeasuredTemplate extends Document<
-  BaseMeasuredTemplate.SchemaField,
+  BaseMeasuredTemplate.Schema,
   BaseMeasuredTemplate.Metadata,
   Scene.ConfiguredInstance | null
 > {

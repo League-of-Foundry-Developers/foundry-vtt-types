@@ -14,7 +14,7 @@ declare global {
  */
 interface BaseAmbientLight extends BaseAmbientLight.Properties {}
 declare class BaseAmbientLight extends Document<
-  BaseAmbientLight.SchemaField,
+  BaseAmbientLight.Schema,
   BaseAmbientLight.Metadata,
   Scene.ConfiguredInstance | null
 > {

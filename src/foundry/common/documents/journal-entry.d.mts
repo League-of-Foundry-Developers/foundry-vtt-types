@@ -13,7 +13,7 @@ declare global {
  * Defines the DataSchema and common behaviors for a JournalEntry which are shared between both client and server.
  */
 interface BaseJournalEntry extends BaseJournalEntry.Properties {}
-declare class BaseJournalEntry extends Document<BaseJournalEntry.SchemaField, BaseJournalEntry.Metadata> {
+declare class BaseJournalEntry extends Document<BaseJournalEntry.Schema, BaseJournalEntry.Metadata> {
   /**
    * @param data    - Initial data from which to construct the JournalEntry
    * @param context - Construction context options

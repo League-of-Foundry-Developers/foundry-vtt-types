@@ -19,7 +19,7 @@ export default BaseActiveEffect;
  */
 interface BaseActiveEffect extends BaseActiveEffect.Properties {}
 declare class BaseActiveEffect extends Document<
-  BaseActiveEffect.SchemaField,
+  BaseActiveEffect.Schema,
   BaseActiveEffect.Metadata,
   Actor.ConfiguredInstance | Item.ConfiguredInstance | null
 > {

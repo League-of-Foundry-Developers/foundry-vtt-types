@@ -22,7 +22,7 @@ declare global {
    * A Detection Mode which can be associated with any kind of sense/vision/perception.
    * A token could have multiple detection modes.
    */
-  class DetectionMode extends foundry.abstract.DataModel<fields.SchemaField<DetectionMode.Schema>> {
+  class DetectionMode extends foundry.abstract.DataModel<DetectionMode.Schema> {
     static override defineSchema(): DetectionMode.Schema;
 
     /**

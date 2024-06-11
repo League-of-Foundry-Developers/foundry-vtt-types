@@ -13,7 +13,7 @@ declare global {
  * Defines the DataSchema and common behaviors for a Folder which are shared between both client and server.
  */
 interface BaseFolder extends BaseFolder.Properties {}
-declare class BaseFolder extends Document<BaseFolder.SchemaField, BaseFolder.Metadata> {
+declare class BaseFolder extends Document<BaseFolder.Schema, BaseFolder.Metadata> {
   /**
    * @param data    - Initial data from which to construct the Folder
    * @param context - Construction context options
