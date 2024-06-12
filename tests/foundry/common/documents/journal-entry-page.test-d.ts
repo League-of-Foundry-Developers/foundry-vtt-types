@@ -15,5 +15,5 @@ declare const JEPTypes: foundry.data.fields.TypeDataField.CoreTypeNames<typeof f
 
 expectTypeOf(coreTypeMetadata).toEqualTypeOf<"image" | "pdf" | "text" | "video">();
 expectTypeOf(coreTypes).toEqualTypeOf<"image" | "pdf" | "text" | "video">();
-expectTypeOf(JEPTypes).toEqualTypeOf<"image" | "pdf" | "text" | "video">();
-expectTypeOf(myJournalEntryPage.type).toEqualTypeOf<"image" | "pdf" | "text" | "video">();
+expectTypeOf(JEPTypes).toEqualTypeOf<"base" | "image" | "pdf" | "text" | "video">();
+expectTypeOf(myJournalEntryPage.type).toEqualTypeOf<"base" | "image" | "pdf" | "text" | "video">();

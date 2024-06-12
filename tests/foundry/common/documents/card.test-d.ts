@@ -3,7 +3,7 @@ import { expectTypeOf } from "vitest";
 // @ts-expect-error Name is required
 new foundry.documents.BaseCard();
 
-const baseCard = new foundry.documents.BaseCard({ name: "foo" });
+const baseCard = new foundry.documents.BaseCard({ name: "foo", type: "base" });
 expectTypeOf(baseCard._source.faces[0]).toEqualTypeOf<CardFaceData>();
 
 interface OldCardDataSourceData {

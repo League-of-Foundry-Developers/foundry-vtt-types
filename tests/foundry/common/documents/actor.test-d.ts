@@ -10,10 +10,12 @@ new foundry.documents.BaseActor({});
 
 const baseActor = new foundry.documents.BaseActor({ name: "foo", type: "character" });
 expectTypeOf(baseActor.name).toEqualTypeOf<string>();
-expectTypeOf(baseActor.effects).toEqualTypeOf<EmbeddedCollection<ActiveEffect, Actor>>();
-expectTypeOf(baseActor.effects.get("")).toEqualTypeOf<ActiveEffect | undefined>();
+expectTypeOf(baseActor.effects).toEqualTypeOf<
+  EmbeddedCollection<ActiveEffect.ConfiguredInstance, Actor.ConfiguredInstance>
+>();
+expectTypeOf(baseActor.effects.get("")).toEqualTypeOf<ActiveEffect.ConfiguredInstance | undefined>();
 expectTypeOf(baseActor.effects.get("")!.name).toEqualTypeOf<string>();
-expectTypeOf(baseActor.items).toEqualTypeOf<EmbeddedCollection<Item, Actor>>();
+expectTypeOf(baseActor.items).toEqualTypeOf<EmbeddedCollection<Item.ConfiguredInstance, Actor.ConfiguredInstance>>();
 expectTypeOf(baseActor.items.get("")).toEqualTypeOf<Item | undefined>();
 expectTypeOf(baseActor.items.get("")!.img).toEqualTypeOf<string | null | undefined>();
 expectTypeOf(baseActor._source.effects[0]!.duration.seconds).toEqualTypeOf<number | null | undefined>();
