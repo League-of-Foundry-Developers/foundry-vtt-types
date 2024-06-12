@@ -3216,7 +3216,9 @@ declare namespace TypeDataField {
    * @typeParam DocumentType - the type of the Document this data is for
    */
   type CoreTypeNames<DocumentType extends Document.SystemConstructor> =
-    DocumentType["metadata"]["coreTypes"] extends string[] ? DocumentType["metadata"]["coreTypes"][number] : never;
+    DocumentType["metadata"]["coreTypes"] extends string[]
+      ? DocumentType["metadata"]["coreTypes"][number] | "base"
+      : "base";
 
   /**
    * Get the configured system type names for a specific document type.
