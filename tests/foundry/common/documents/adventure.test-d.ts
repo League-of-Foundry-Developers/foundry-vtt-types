@@ -7,7 +7,7 @@ new foundry.documents.BaseAdventure({});
 
 const myAdventure = new foundry.documents.BaseAdventure({ name: "foo" });
 
-expectTypeOf(myAdventure.img).toEqualTypeOf<string | null>();
+expectTypeOf(myAdventure.img).toEqualTypeOf<string | null | undefined>();
 expectTypeOf(myAdventure.macros.first()!.command).toEqualTypeOf<string>();
 
 // Static Methods

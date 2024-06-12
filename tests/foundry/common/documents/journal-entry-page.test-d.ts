@@ -7,6 +7,13 @@ new foundry.documents.BaseJournalEntryPage({});
 
 const myJournalEntryPage = new foundry.documents.BaseJournalEntryPage({ name: "foo" });
 
-expectTypeOf(myJournalEntryPage.type).toEqualTypeOf<"image" | "pdf" | "text" | "video">();
+// Testing Core types
 
-// TODO: DataModelConfig
+declare const coreTypeMetadata: foundry.documents.BaseJournalEntryPage.Metadata["coreTypes"][number];
+declare const coreTypes: (typeof foundry.documents.BaseJournalEntryPage)["metadata"]["coreTypes"][number];
+declare const JEPTypes: foundry.data.fields.TypeDataField.CoreTypeNames<typeof foundry.documents.BaseJournalEntryPage>;
+
+expectTypeOf(coreTypeMetadata).toEqualTypeOf<"image" | "pdf" | "text" | "video">();
+expectTypeOf(coreTypes).toEqualTypeOf<"image" | "pdf" | "text" | "video">();
+expectTypeOf(JEPTypes).toEqualTypeOf<"image" | "pdf" | "text" | "video">();
+expectTypeOf(myJournalEntryPage.type).toEqualTypeOf<"image" | "pdf" | "text" | "video">();

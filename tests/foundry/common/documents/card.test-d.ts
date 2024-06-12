@@ -1,8 +1,10 @@
 import { expectTypeOf } from "vitest";
-import type { CardFaceDataSource } from "../../../../src/foundry/common/data/data.mjs/cardFaceData.d.mts";
 
-const baseCard = new foundry.documents.BaseCard();
-expectTypeOf(baseCard._source.faces[0]).toEqualTypeOf<CardFaceDataSource>();
+// @ts-expect-error Name is required
+new foundry.documents.BaseCard();
+
+const baseCard = new foundry.documents.BaseCard({ name: "foo" });
+expectTypeOf(baseCard._source.faces[0]).toEqualTypeOf<CardFaceData>();
 
 interface OldCardDataSourceData {
   condition: "grubby";

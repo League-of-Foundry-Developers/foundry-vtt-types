@@ -3,7 +3,6 @@ import type { DataModel } from "../abstract/data.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
 import type * as fields from "../data/fields.mts";
-import type * as documents from "./module.mts";
 
 declare global {
   type AdventureData = BaseAdventure.Properties;
@@ -115,63 +114,63 @@ declare namespace BaseAdventure {
      * An array of Actor documents which are included in the adventure
      * @defaultValue `new Set()`
      */
-    actors: fields.SetField<fields.EmbeddedDataField<documents.BaseActor>>;
+    actors: fields.SetField<fields.EmbeddedDataField<Actor.ConfiguredInstance>>;
 
     /**
      * An array of Combat documents which are included in the adventure
      * @defaultValue `new Set()`
      */
-    combats: fields.SetField<fields.EmbeddedDataField<documents.BaseCombat>>;
+    combats: fields.SetField<fields.EmbeddedDataField<Combat.ConfiguredInstance>>;
 
     /**
      * An array of Item documents which are included in the adventure
      * @defaultValue `new Set()`
      */
-    items: fields.SetField<fields.EmbeddedDataField<documents.BaseItem>>;
+    items: fields.SetField<fields.EmbeddedDataField<Item.ConfiguredInstance>>;
 
     /**
      * An array of JournalEntry documents which are included in the adventure
      * @defaultValue `new Set()`
      */
-    journal: fields.SetField<fields.EmbeddedDataField<documents.BaseJournalEntry>>;
+    journal: fields.SetField<fields.EmbeddedDataField<JournalEntry.ConfiguredInstance>>;
 
     /**
      * An array of Scene documents which are included in the adventure
      * @defaultValue `new Set()`
      */
-    scenes: fields.SetField<fields.EmbeddedDataField<documents.BaseScene>>;
+    scenes: fields.SetField<fields.EmbeddedDataField<Scene.ConfiguredInstance>>;
 
     /**
      * An array of RollTable documents which are included in the adventure
      * @defaultValue `new Set()`
      */
-    tables: fields.SetField<fields.EmbeddedDataField<documents.BaseRollTable>>;
+    tables: fields.SetField<fields.EmbeddedDataField<RollTable.ConfiguredInstance>>;
 
     /**
      * An array of Macro documents which are included in the adventure
      * @defaultValue `new Set()`
      */
-    macros: fields.SetField<fields.EmbeddedDataField<documents.BaseMacro>>;
+    macros: fields.SetField<fields.EmbeddedDataField<Macro.ConfiguredInstance>>;
 
     /**
      * An array of Cards documents which are included in the adventure
      * @defaultValue `new Set()`
      */
-    cards: fields.SetField<fields.EmbeddedDataField<documents.BaseCards>>;
+    cards: fields.SetField<fields.EmbeddedDataField<Cards.ConfiguredInstance>>;
 
     /**
      * An array of Playlist documents which are included in the adventure
      * @defaultValue `new Set()`
      */
-    playlists: fields.SetField<fields.EmbeddedDataField<documents.BasePlaylist>>;
+    playlists: fields.SetField<fields.EmbeddedDataField<Playlist.ConfiguredInstance>>;
 
     /**
      * An array of Folder documents which are included in the adventure
      * @defaultValue `new Set()`
      */
-    folders: fields.SetField<fields.EmbeddedDataField<documents.BaseFolder>>;
+    folders: fields.SetField<fields.EmbeddedDataField<Folder.ConfiguredInstance>>;
 
-    folder: fields.ForeignDocumentField<documents.BaseFolder>;
+    folder: fields.ForeignDocumentField<Folder.ConfiguredInstance>;
 
     /**
      * The sort order of this adventure relative to its siblings
