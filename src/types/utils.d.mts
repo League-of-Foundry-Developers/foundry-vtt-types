@@ -1,3 +1,5 @@
+import type { Expand } from "./helperTypes.d.mts";
+
 /**
  * Recursively sets keys of an object to optional. Used primarily for update methods
  * @internal
@@ -75,17 +77,18 @@ export type Titlecase<S extends string> = S extends `${infer A} ${infer B}`
  * @typeParam T - The base type that `U` will be merged into.
  * @typeParam U - The type that will be merged into `T`.
  */
-export type Merge<T, U> =
+export type Merge<T, U> = Expand<
   U extends Record<string, any>
     ? T extends Record<string, any>
       ? SimpleMerge<
           T,
           {
-            [K in keyof U]: Merge<T extends { readonly [_ in K]?: infer V } ? V : never, U[K]>;
+            [K in keyof U]: T extends { readonly [_ in K]?: infer V } ? Merge<V, U[K]> : U[K];
           }
         >
       : U
-    : U;
+    : U
+>;
 
 /**
  * A simple, non-recursive merge type.
