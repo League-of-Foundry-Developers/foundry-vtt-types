@@ -1,5 +1,5 @@
-import type { ConfiguredDocumentClass, ConfiguredObjectClassForName } from "../../../../../types/helperTypes.d.mts";
-import type { MaybePromise, StoredDocument } from "../../../../../types/utils.d.mts";
+import type { ConfiguredObjectClassForName } from "../../../../../types/helperTypes.d.mts";
+import type { StoredDocument } from "../../../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -13,13 +13,13 @@ declare global {
      * @defaultValue `null`
      * @internal
      */
-    protected _highlighted: ConfiguredObjectClassForName<"Token"> | null;
+    protected _highlighted: InstanceType<ConfiguredObjectClassForName<"Token">> | null;
 
     /**
      * Record the currently tracked Combat encounter
      * @defaultValue `null`
      */
-    viewed: StoredDocument<InstanceType<ConfiguredDocumentClass<typeof Combat>>> | null;
+    viewed: StoredDocument<Combat.ConfiguredInstance> | null;
 
     /**
      * @defaultValue
@@ -37,7 +37,7 @@ declare global {
     /**
      * Return an array of Combat encounters which occur within the current Scene.
      */
-    get combats(): StoredDocument<InstanceType<ConfiguredDocumentClass<typeof Combat>>>[];
+    get combats(): StoredDocument<Combat.ConfiguredInstance>[];
 
     override createPopout(): this;
 
@@ -56,7 +56,15 @@ declare global {
      */
     scrollToTurn(): void;
 
-    override getData(options?: Partial<Options>): MaybePromise<object>;
+    // TODO: Implement GetDataReturnType
+    override getData(options?: Partial<Options>): Promise<object>;
+
+    /**
+     * Retrieve a source image for a combatant.
+     * @param combatant - The combatant queried for image.
+     * @returns The source image attributed for this combatant.
+     */
+    protected _getCombatantThumbnail(combatant: Combatant.ConfiguredInstance): Promise<string>;
 
     override activateListeners(html: JQuery): void;
 
@@ -65,13 +73,6 @@ declare global {
      * @internal
      */
     protected _onCombatCreate(event: JQuery.ClickEvent): Promise<void>;
-
-    /**
-     * Handle a Combat deletion request
-     * @internal
-     * @remarks This is never called
-     */
-    protected _onCombatDelete(event: Event): Promise<void>;
 
     /**
      * Handle a Combat cycle request
@@ -99,9 +100,13 @@ declare global {
      * @returns A Promise that resolves after all operations are complete
      * @internal
      */
-    protected _onToggleDefeatedStatus(
-      combatant: InstanceType<ConfiguredDocumentClass<typeof Combatant>>,
-    ): Promise<void>;
+    protected _onToggleDefeatedStatus(combatant: Combatant.ConfiguredInstance): Promise<void>;
+
+    /**
+     * Handle pinging a combatant Token
+     * @param combatant - The combatant data
+     */
+    protected _onPingCombatant(combatant: Combatant.ConfiguredInstance): Promise<number | undefined>;
 
     /**
      * Handle mouse-down event on a combatant name in the tracker
@@ -128,7 +133,7 @@ declare global {
      * @param combatant - The Combatant
      * @param hover     - Whether they are being hovered in or out.
      */
-    hoverCombatant(combatant: InstanceType<ConfiguredDocumentClass<typeof Combatant>>, hover: boolean): void;
+    hoverCombatant(combatant: Combatant.ConfiguredInstance, hover: boolean): void;
     /**
      * Attach context menu options to elements in the tracker
      * @param html - The HTML element to which context options are attached
