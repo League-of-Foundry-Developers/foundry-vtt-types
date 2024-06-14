@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentClass } from "../../../../../types/helperTypes.d.mts";
 import type { ChatMessageDataConstructorData } from "../../../../common/data/data.mjs/chatMessageData.d.mts";
 
 declare global {
@@ -56,7 +55,7 @@ declare global {
      * @defaultValue `null`
      * @internal
      */
-    protected _lastWhisper: InstanceType<ConfiguredDocumentClass<typeof ChatMessage>> | null;
+    protected _lastWhisper: ChatMessage.ConfiguredInstance | null;
 
     /**
      * A reference to the chat text entry bound key method
@@ -126,7 +125,7 @@ declare global {
     /**
      * Trigger a notification that alerts the user visually and audibly that a new chat log message has been posted
      */
-    notify(message: InstanceType<ConfiguredDocumentClass<typeof ChatMessage>>): void;
+    notify(message: ChatMessage.ConfiguredInstance): void;
 
     /**
      * Parse a chat string to identify the chat command (if any) which was used
@@ -146,10 +145,7 @@ declare global {
      *                          (default: `{}`)
      * @returns A Promise which resolves once the message is posted
      */
-    postOne(
-      message: InstanceType<ConfiguredDocumentClass<typeof ChatMessage>>,
-      options?: ChatLog.PostOneOptions | undefined,
-    ): Promise<void>;
+    postOne(message: ChatMessage.ConfiguredInstance, options?: ChatLog.PostOneOptions | undefined): Promise<void>;
 
     /**
      * Scroll the chat log to the bottom
@@ -163,7 +159,7 @@ declare global {
      * @param notify  - Trigger a notification which shows the log as having a new unread message
      *                  (default: `false`)
      */
-    updateMessage(message: InstanceType<ConfiguredDocumentClass<typeof ChatMessage>>, notify?: boolean): Promise<void>;
+    updateMessage(message: ChatMessage.ConfiguredInstance, notify?: boolean): Promise<void>;
 
     /**
      * Update the displayed timestamps for every displayed message in the chat log.
@@ -186,9 +182,7 @@ declare global {
      * @returns A Promise resolving to the prepared chat data object, or void if we were executing
      *          a macro instead.
      */
-    protected processMessage(
-      message: string,
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof ChatMessage>> | undefined | void>;
+    protected processMessage(message: string): Promise<ChatMessage.ConfiguredInstance | undefined | void>;
 
     /**
      * Process messages which are posted using a dice-roll command
@@ -284,9 +278,7 @@ declare global {
      * Handle single message deletion workflow
      * @internal
      */
-    protected _onDeleteMessage(
-      event: JQuery.ClickEvent,
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof ChatMessage>> | undefined>;
+    protected _onDeleteMessage(event: JQuery.ClickEvent): Promise<ChatMessage.ConfiguredInstance | undefined>;
 
     /**
      * Handle clicking of dice tooltip buttons

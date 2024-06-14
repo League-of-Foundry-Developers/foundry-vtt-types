@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClass, ToObjectFalseType } from "../../../../../types/helperTypes.d.mts";
+import type { ToObjectFalseType } from "../../../../../types/helperTypes.d.mts";
 
 declare global {
   /**
@@ -27,13 +27,13 @@ declare global {
      * Cache the set of Playlist documents that are displayed as playing when the directory is rendered
      * @defaultValue `[]`
      */
-    protected _playingPlaylists: InstanceType<ConfiguredDocumentClass<typeof Playlist>>[];
+    protected _playingPlaylists: Playlist.ConfiguredInstance[];
 
     /**
      * Cache the set of PlaylistSound documents that are displayed as playing when the directory is rendered
      * @defaultValue `[]`
      */
-    protected _playingSounds: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>[];
+    protected _playingSounds: PlaylistSound.ConfiguredInstance[];
 
     /**
      * @internal
@@ -71,7 +71,7 @@ declare global {
     /**
      * Return an Array of the Playlist documents which are currently playing
      */
-    get playing(): InstanceType<ConfiguredDocumentClass<typeof Playlist>>[];
+    get playing(): Playlist.ConfiguredInstance[];
 
     /**
      * Whether the "currently playing" element is pinned to the top or bottom of the display.
@@ -93,9 +93,7 @@ declare global {
      * @param node - The tree leaf node being prepared
      * @internal
      */
-    protected _prepareTreeData(
-      node: DirectoryCollection.TreeNode<InstanceType<ConfiguredDocumentClass<typeof Playlist>>>,
-    ): void;
+    protected _prepareTreeData(node: DirectoryCollection.TreeNode<Playlist.ConfiguredInstance>): void;
 
     /**
      * Create an object of rendering data for each Playlist document being displayed
@@ -103,9 +101,7 @@ declare global {
      * @returns The data for rendering
      * @internal
      */
-    protected _preparePlaylistData(
-      playlist: InstanceType<ConfiguredDocumentClass<typeof Playlist>>,
-    ): PlaylistDirectory.PlaylistData;
+    protected _preparePlaylistData(playlist: Playlist.ConfiguredInstance): PlaylistDirectory.PlaylistData;
 
     /**
      * Get the icon used to represent the "play/stop" icon for the PlaylistSound
@@ -113,7 +109,7 @@ declare global {
      * @returns The icon that should be used
      * @internal
      */
-    protected _getPlayIcon(sound: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>): string;
+    protected _getPlayIcon(sound: PlaylistSound.ConfiguredInstance): string;
 
     /**
      * Get the icon used to represent the pause/loading icon for the PlaylistSound
@@ -121,7 +117,7 @@ declare global {
      * @returns The icon that should be used
      * @internal
      */
-    protected _getPauseIcon(sound: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>): string;
+    protected _getPauseIcon(sound: PlaylistSound.ConfiguredInstance): string;
 
     /**
      * Given a constant playback mode, provide the FontAwesome icon used to display it
@@ -168,10 +164,7 @@ declare global {
      * @param playing - Is the playlist now playing?
      * @internal
      */
-    protected _onPlaylistPlay(
-      event: JQuery.ClickEvent,
-      playing: boolean,
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>>>;
+    protected _onPlaylistPlay(event: JQuery.ClickEvent, playing: boolean): Promise<Playlist.ConfiguredInstance>;
 
     /**
      * Handle advancing the playlist to the next (or previous) sound
@@ -179,19 +172,14 @@ declare global {
      * @param action - The control action requested
      * @internal
      */
-    protected _onPlaylistSkip(
-      event: JQuery.ClickEvent,
-      action: string,
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>>>;
+    protected _onPlaylistSkip(event: JQuery.ClickEvent, action: string): Promise<Playlist.ConfiguredInstance>;
 
     /**
      * Handle cycling the playback mode for a Playlist
      * @param event - The initial click event
      * @internal
      */
-    protected _onPlaylistToggleMode(
-      event: JQuery.ClickEvent,
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>>>;
+    protected _onPlaylistToggleMode(event: JQuery.ClickEvent): Promise<Playlist.ConfiguredInstance>;
 
     /**
      * Handle Playlist track addition request
@@ -206,10 +194,7 @@ declare global {
      * @param action - The sound control action performed
      * @internal
      */
-    protected _onSoundPlay(
-      event: JQuery.ClickEvent,
-      action: string,
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>> | undefined>;
+    protected _onSoundPlay(event: JQuery.ClickEvent, action: string): Promise<Playlist.ConfiguredInstance | undefined>;
 
     /**
      * Handle volume adjustments to sounds within a Playlist
@@ -260,9 +245,7 @@ declare global {
 
     protected override _onDragStart(event: DragEvent): void;
 
-    protected override _onDrop(
-      event: DragEvent,
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>> | boolean>;
+    protected override _onDrop(event: DragEvent): Promise<Playlist.ConfiguredInstance | boolean>;
   }
 
   namespace PlaylistDirectory {
