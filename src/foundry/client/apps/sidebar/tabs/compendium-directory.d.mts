@@ -1,46 +1,100 @@
-import type { MaybePromise } from "../../../../../types/utils.d.mts";
+export {};
 
 declare global {
   /**
    * A compendium of knowledge arcane and mystical!
+   * Renders the sidebar directory of compendium packs
    * @typeParam Options - The type of the options object
    */
-  class CompendiumDirectory<Options extends ApplicationOptions = ApplicationOptions> extends SidebarTab<Options> {
+  class CompendiumDirectory<Options extends ApplicationOptions = ApplicationOptions> extends DirectoryApplicationMixin(
+    SidebarTab,
+  ) {
     /**
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.defaultOptions, {
      *   id: "compendium",
      *   template: "templates/sidebar/compendium-directory.html",
-     *   title: "COMPENDIUM.SidebarTitle"
+     *   title: "COMPENDIUM.SidebarTitle",
+     *   contextMenuSelector: ".directory-item.compendium",
+     *   entryClickSelector: ".compendium"
      * });
      * ```
      */
     static override get defaultOptions(): ApplicationOptions;
 
-    override getData(options?: Partial<Options>): MaybePromise<object>;
+    get activeFilters(): string[];
+
+    // NOTE: It seems in source this is erroneously defined as a property, not a getter
+    override get entryType(): "Compendium";
+
+    static override entryPartial: "templates/sidebar/partials/pack-partial.html";
+
+    protected override _entryAlreadyExists(entry: DirectoryMixinEntry): boolean;
+
+    protected override _getEntryDragData(entryId: string): object;
+
+    protected override _entryIsSelf(entry: DirectoryMixinEntry, otherEntry: DirectoryMixinEntry): boolean;
+
+    protected override _sortRelative(
+      entry: DirectoryMixinEntry,
+      sortData: { sortKey: string; sortBefore: boolean; updateData: object },
+    ): Promise<object>;
 
     override activateListeners(html: JQuery): void;
 
     /**
-     * Compendium sidebar Context Menu creation
-     * @param html - The HTML being rendered for the compendium directory
+     * Display a menu of compendium types to filter by
+     * @param event - The originating pointer event
      */
-    protected _contextMenu(html: JQuery): void;
+    protected _displayFilterCompendiumMenu(event: PointerEvent): Promise<void>;
+
+    /**
+     * Handle toggling a compendium type filter
+     * @param event - The originating pointer event
+     * @param type  - The compendium type to filter by. If null, clear all filters.
+     */
+    protected _onToggleCompendiumFilterType(event: PointerEvent, type: string | null): void;
+
+    /**
+     * The collection of Compendium Packs which are displayed in this Directory
+     */
+    get collection(): CompendiumPacks;
+
+    /**
+     * Get the dropped Entry from the drop data
+     * @param data - The data being dropped
+     * @returns The dropped Entry
+     */
+    protected _getDroppedEntryFromData(data: object): Promise<DirectoryMixinEntry>;
+
+    protected override _createDroppedEntry(
+      entry: DirectoryMixinEntry,
+      folderId?: string | undefined,
+    ): Promise<DirectoryMixinEntry>;
+
+    protected override _getEntryName(entry: object): string;
+
+    protected override _getEntryId(entry: object): string;
+
+    // TODO: Implement GetDataReturnType
+    override getData(options?: Partial<Options>): Promise<object>;
+
+    override render(
+      force?: boolean | undefined,
+      options?: Application.RenderOptions<ApplicationOptions> | undefined,
+    ): Promise<unknown>;
 
     /**
      * Get the sidebar directory entry context options
      * @returns The sidebar entry context options
      * @internal
      */
-    protected _getEntryContextOptions(): ContextMenuEntry[];
+    protected override _getEntryContextOptions(): ContextMenuEntry[];
 
-    /**
-     * Handle a Compendium Pack creation request
-     * @param event - The originating click event
-     * @internal
-     */
-    protected _onCreateCompendium(event: JQuery.ClickEvent): Promise<void>;
+    protected override _onClickEntryName(event: PointerEvent): Promise<void>;
+
+    protected override _onCreateEntry(event: PointerEvent): Promise<void>;
 
     /**
      * Handle a Compendium Pack deletion request
@@ -50,12 +104,5 @@ declare global {
     protected _onDeleteCompendium(
       pack: CompendiumCollection<CompendiumCollection.Metadata>,
     ): Promise<CompendiumCollection<CompendiumCollection.Metadata> | void>;
-
-    /**
-     * Toggle the compendium entry open/closed state in the sidebar.
-     * @param pack - The name of the compendium pack.
-     * @internal
-     */
-    protected _toggleOpenState(pack: string): void;
   }
 }

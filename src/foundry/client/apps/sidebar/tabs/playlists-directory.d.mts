@@ -1,15 +1,13 @@
 import type { ConfiguredDocumentClass, ToObjectFalseType } from "../../../../../types/helperTypes.d.mts";
-import type { MaybePromise } from "../../../../../types/utils.d.mts";
 
 declare global {
   /**
    * The sidebar directory which organizes and displays world-level Playlist documents.
    * @typeParam Options - The type of the options object
    */
-  class PlaylistDirectory<Options extends SidebarDirectory.Options = SidebarDirectory.Options> extends SidebarDirectory<
-    "Playlist",
-    Options
-  > {
+  class PlaylistDirectory<
+    Options extends DocumentDirectoryOptions = DocumentDirectoryOptions,
+  > extends DocumentDirectory<"Playlist", Options> {
     constructor(options?: Partial<Options>);
 
     /**
@@ -28,14 +26,12 @@ declare global {
     /**
      * Cache the set of Playlist documents that are displayed as playing when the directory is rendered
      * @defaultValue `[]`
-     * @internal
      */
     protected _playingPlaylists: InstanceType<ConfiguredDocumentClass<typeof Playlist>>[];
 
     /**
      * Cache the set of PlaylistSound documents that are displayed as playing when the directory is rendered
      * @defaultValue `[]`
-     * @internal
      */
     protected _playingSounds: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>[];
 
@@ -49,22 +45,22 @@ declare global {
     static override documentName: "Playlist";
 
     /**
-     * @defaultValue `"templates/sidebar/playlist-partial.html"`
+     * @defaultValue `"templates/sidebar/partials/playlist-partial.html"`
      */
-    static override documentPartial: string;
+    static override entryPartial: string;
 
     /**
      * @defaultValue
      * ```typescript
      * const options = super.defaultOptions;
      * options.template = "templates/sidebar/playlists-directory.html";
-     * options.dragDrop[0].dragSelector = ".playlist-name, .sound-name";
+     * options.dragDrop[0].dragSelector = ".folder, .playlist-name, .sound-name";
      * options.renderUpdateKeys = ["name", "playing", "mode", "sounds", "sort", "sorting", "folder"];
      * options.contextMenuSelector = ".document .playlist-header";
      * return options;
      * ```
      */
-    static override get defaultOptions(): SidebarDirectory.Options;
+    static override get defaultOptions(): DocumentDirectoryOptions;
 
     /**
      * Initialize the set of Playlists which should be displayed in an expanded form
@@ -83,15 +79,22 @@ declare global {
      */
     protected get _playingLocation(): "top" | "bottom";
 
-    override getData(options?: Partial<Options>): MaybePromise<object>;
+    // TODO: Implement GetDataReturnType
+    override getData(options?: Partial<Options>): Promise<object>;
+
+    /**
+     * Converts a volume level to a human-friendly % value
+     * @param volume - Value between [0, 1] of the volume level
+     */
+    static volumeToTooltip(volume: number): string;
 
     /**
      * Augment the tree directory structure with playlist-level data objects for rendering
-     * @param leaf - The tree leaf node being prepared
+     * @param node - The tree leaf node being prepared
      * @internal
      */
     protected _prepareTreeData(
-      leaf: SidebarDirectory.Tree<InstanceType<ConfiguredDocumentClass<typeof Playlist>>>,
+      node: DirectoryCollection.TreeNode<InstanceType<ConfiguredDocumentClass<typeof Playlist>>>,
     ): void;
 
     /**
@@ -136,19 +139,14 @@ declare global {
 
     /**
      * Handle global volume change for the playlist sidebar
-     * @param event - The initial change event
-     * @internal
-     */
-    protected _onGlobalVolume(event: JQuery.ChangeEvent): unknown;
-
-    override collapseAll(): void;
-
-    /**
-     * Handle Playlist collapse toggle
      * @param event - The initial click event
      * @internal
      */
-    protected _onPlaylistCollapse(event: JQuery.ClickEvent): void;
+    protected _onGlobalVolume(event: JQuery.ClickEvent): unknown;
+
+    override collapseAll(): void;
+
+    protected override _onClickEntryName(event: PointerEvent): Promise<void>;
 
     /**
      * Handle global volume control collapse toggle
@@ -170,7 +168,10 @@ declare global {
      * @param playing - Is the playlist now playing?
      * @internal
      */
-    protected _onPlaylistPlay(event: JQuery.ClickEvent, playing: boolean): unknown;
+    protected _onPlaylistPlay(
+      event: JQuery.ClickEvent,
+      playing: boolean,
+    ): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>>>;
 
     /**
      * Handle advancing the playlist to the next (or previous) sound
@@ -178,14 +179,19 @@ declare global {
      * @param action - The control action requested
      * @internal
      */
-    protected _onPlaylistSkip(event: JQuery.ClickEvent, action: string): unknown;
+    protected _onPlaylistSkip(
+      event: JQuery.ClickEvent,
+      action: string,
+    ): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>>>;
 
     /**
      * Handle cycling the playback mode for a Playlist
      * @param event - The initial click event
      * @internal
      */
-    protected _onPlaylistToggleMode(event: JQuery.ClickEvent): unknown;
+    protected _onPlaylistToggleMode(
+      event: JQuery.ClickEvent,
+    ): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>>>;
 
     /**
      * Handle Playlist track addition request
@@ -200,7 +206,10 @@ declare global {
      * @param action - The sound control action performed
      * @internal
      */
-    protected _onSoundPlay(event: JQuery.ClickEvent, action: string): unknown;
+    protected _onSoundPlay(
+      event: JQuery.ClickEvent,
+      action: string,
+    ): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>> | undefined>;
 
     /**
      * Handle volume adjustments to sounds within a Playlist
@@ -214,7 +223,7 @@ declare global {
      * @param event - The initial click event
      * @internal
      */
-    protected _onSoundToggleMode(event: JQuery.ClickEvent): void;
+    protected _onSoundToggleMode(event: JQuery.ClickEvent): Promise<void>;
 
     /** @internal */
     protected _onPlayingPin(): void;
@@ -251,11 +260,13 @@ declare global {
 
     protected override _onDragStart(event: DragEvent): void;
 
-    protected override _onDrop(event: DragEvent): void;
+    protected override _onDrop(
+      event: DragEvent,
+    ): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>> | boolean>;
   }
 
   namespace PlaylistDirectory {
-    type PlaylistData = ToObjectFalseType<foundry.data.PlaylistData> & {
+    type PlaylistData = ToObjectFalseType<globalThis.PlaylistData> & {
       modeTooltip: string;
       modeIcon: string;
       disabled: boolean;
@@ -265,7 +276,7 @@ declare global {
       sounds: SoundData[];
     };
 
-    type SoundData = ToObjectFalseType<foundry.data.PlaylistSoundData> & {
+    type SoundData = ToObjectFalseType<globalThis.PlaylistSoundData> & {
       playlistId: string | null;
       css: string;
       controlCSS: string;

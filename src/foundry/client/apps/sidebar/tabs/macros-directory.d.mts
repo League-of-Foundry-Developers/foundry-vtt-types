@@ -8,8 +8,8 @@ declare global {
    * @see {@link Macro}         The Macro Document
    * @see {@link MacroConfig}   The Macro Configuration Sheet
    */
-  class MacroDirectory extends SidebarDirectory<"Macro"> {
-    constructor(options?: Partial<SidebarDirectory.Options>);
+  class MacroDirectory extends DocumentDirectory<"Macro"> {
+    constructor(options?: Partial<DocumentDirectoryOptions>);
 
     static override documentName: "Macro";
   }

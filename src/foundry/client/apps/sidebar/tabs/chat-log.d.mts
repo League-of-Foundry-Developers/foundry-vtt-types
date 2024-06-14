@@ -1,5 +1,4 @@
 import type { ConfiguredDocumentClass } from "../../../../../types/helperTypes.d.mts";
-import type { MaybePromise } from "../../../../../types/utils.d.mts";
 import type { ChatMessageDataConstructorData } from "../../../../common/data/data.mjs/chatMessageData.d.mts";
 
 declare global {
@@ -67,24 +66,41 @@ declare global {
     _onChatKeyDownBinding: ((event: JQuery.KeyDownEvent) => void) | null;
 
     /**
+     * Returns if the chat log is currently scrolled to the bottom
+     */
+    get isAtBottom(): boolean;
+
+    /**
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.defaultOptions, {
      *   id: "chat",
      *   template: "templates/sidebar/chat-log.html",
      *   title: game.i18n.localize("CHAT.Title"),
-     *   stream: false
-     * })
+     *   stream: false,
+     *   scrollY: ["#chat-log"]
+     * });
      * ```
      */
     static override get defaultOptions(): ChatLogOptions;
+
+    /**
+     * An enumeration of regular expression patterns used to match chat messages.
+     */
+    static MESSAGE_PATTERNS: Record<ChatLog.Command, RegExp>;
+
+    /**
+     * The set of commands that can be processed over multiple lines.
+     */
+    static MULTILINE_COMMANDS: Set<string>;
 
     /**
      * A reference to the Messages collection that the chat log displays
      */
     get collection(): Messages;
 
-    override getData(options?: Partial<ChatLogOptions>): MaybePromise<object>;
+    // TODO: Implement GetDataReturnType
+    override getData(options?: Partial<ChatLogOptions>): Promise<object>;
 
     protected override _render(force?: boolean, options?: Application.RenderOptions<ChatLogOptions>): Promise<void>;
 
@@ -125,16 +141,13 @@ declare global {
 
     /**
      * Post a single chat message to the log
-     * @param message - A ChatMessage document instance to post to the log
-     * @param notify  - Trigger a notification which shows the log as having a new unread message
-     *                  (default: `false`)
-     * @param options - Additional options for how the message is posted to the log
-     *                  (default: `{}`)
+     * @param message         - A ChatMessage document instance to post to the log
+     * @param options         - Additional options for how the message is posted to the log
+     *                          (default: `{}`)
      * @returns A Promise which resolves once the message is posted
      */
     postOne(
       message: InstanceType<ConfiguredDocumentClass<typeof ChatMessage>>,
-      notify?: boolean | undefined,
       options?: ChatLog.PostOneOptions | undefined,
     ): Promise<void>;
 
@@ -142,7 +155,7 @@ declare global {
      * Scroll the chat log to the bottom
      * @param options - (default: `{}`)
      */
-    protected scrollBottom(options?: ChatLog.ScrollBottomOptions): void;
+    protected scrollBottom(options?: ChatLog.ScrollBottomOptions): Promise<void>;
 
     /**
      * Update the content of a previously posted message after its data has been replaced
@@ -150,7 +163,7 @@ declare global {
      * @param notify  - Trigger a notification which shows the log as having a new unread message
      *                  (default: `false`)
      */
-    updateMessage(message: InstanceType<ConfiguredDocumentClass<typeof ChatMessage>>, notify?: boolean): void;
+    updateMessage(message: InstanceType<ConfiguredDocumentClass<typeof ChatMessage>>, notify?: boolean): Promise<void>;
 
     /**
      * Update the displayed timestamps for every displayed message in the chat log.
@@ -165,7 +178,7 @@ declare global {
      * @param event - The originating drop event which triggered the data transfer
      * @internal
      */
-    protected static _onDropTextAreaData(event: DragEvent): void;
+    protected static _onDropTextAreaData(event: DragEvent): Promise<void>;
 
     /**
      * Prepare the data object of chat message data depending on the type of message being posted
@@ -180,17 +193,17 @@ declare global {
     /**
      * Process messages which are posted using a dice-roll command
      * @param command       - The chat command type
-     * @param match         - The matched RegExp expressions
+     * @param matches       - Multi-line matched roll expressions
      * @param chatData      - The initial chat data
      * @param createOptions - Options used to create the message
      * @internal
      */
     protected _processDiceCommand(
       command: string,
-      match: RegExpMatchArray,
+      match: RegExpMatchArray[],
       chatData: ChatMessageDataConstructorData,
       createOptions: DocumentModificationContext,
-    ): void;
+    ): Promise<void>;
 
     /**
      * Process messages which are posted using a chat whisper command
@@ -259,7 +272,7 @@ declare global {
      * Handle keydown events in the chat entry textarea
      * @internal
      */
-    protected _onChatKeyDown(event: JQuery.KeyDownEvent): void;
+    protected _onChatKeyDown(event: JQuery.KeyDownEvent): Promise<void> | undefined;
 
     /**
      * Handle setting the preferred roll mode
@@ -298,7 +311,7 @@ declare global {
      * @param event - The initial scroll event
      * @internal
      */
-    protected _onScrollLog(event: JQuery.ScrollEvent): void;
+    protected _onScrollLog(event: JQuery.ScrollEvent): Promise<void> | undefined;
 
     /**
      * Update roll mode select dropdowns when the setting is changed
@@ -332,6 +345,16 @@ declare global {
        * @defaultValue `undefined`
        */
       popout?: boolean;
+
+      /**
+       * Wait for any images embedded in the chat log to load first before scrolling?
+       */
+      waitImages?: boolean;
+
+      /**
+       * Options to configure scrolling behaviour.
+       */
+      scrollOptions?: ScrollIntoViewOptions;
     }
 
     interface PostOneOptions {
@@ -340,6 +363,10 @@ declare global {
        * appended to the end of the log.
        */
       before?: string | undefined;
+      /**
+       * Trigger a notification which shows the log as having a new unread message.
+       */
+      notify?: boolean | undefined;
     }
   }
 }

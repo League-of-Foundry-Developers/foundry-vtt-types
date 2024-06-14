@@ -1,4 +1,4 @@
-import type { MaybePromise } from "../../../../../types/utils.d.mts";
+export {};
 
 declare global {
   /**
@@ -10,20 +10,23 @@ declare global {
     /**
      * @defaultValue
      * ```typescript
-     * const options = super.defaultOptions;
-     * options.id = "settings";
-     * options.template = "templates/sidebar/settings.html";
-     * options.title = "Settings";
+     * foundry.utils.mergeObject(super.defaultOptions, {
+     *   id: "settings",
+     *   template: "templates/sidebar/settings.html",
+     *   title: "Settings"
+     * });
      * ```
      */
     static override get defaultOptions(): ApplicationOptions;
 
-    override getData(options?: Partial<Options>): MaybePromise<object>;
+    // TODO: Implement GetDataReturnType
+    override getData(options?: Partial<Options>): Promise<object>;
 
     override activateListeners(html: JQuery): void;
 
     /**
      * Delegate different actions for different settings buttons
+     * @param event - The originating click event
      * @internal
      */
     protected _onSettingsButton(event: JQuery.ClickEvent): void;
@@ -48,19 +51,21 @@ declare global {
     /**
      * @defaultValue
      * ```
-     * mergeObject(super.defaultOptions, {
-     *   height: window.innerHeight * 0.9,
-     *   width: Math.min(window.innerWidth * 0.9, 1200),
-     *   top: (window.innerHeight - height) / 2,
-     *   left: (window.innerWidth - width) / 2,
-     *   id: "documentation",
-     *   template: "templates/apps/documentation.html",
-     * })
+     * const options = super.defaultOptions;
+     * const h = window.innerHeight * 0.9;
+     * const w = Math.min(window.innerWidth * 0.9, 1200);
+     * options.height = h;
+     * options.width = w;
+     * options.top = (window.innerHeight - h) / 2;
+     * options.left = (window.innerWidth - w) / 2;
+     * options.id = "documentation";
+     * options.template = "templates/apps/documentation.html";
+     * return options;
      * ```
      */
     static override get defaultOptions(): (typeof Application)["defaultOptions"];
 
-    override getData(options?: Partial<Options>): MaybePromise<object>;
+    override getData(options?: Partial<Options>): Promise<{ src: string }>;
 
     override close(options?: Application.CloseOptions): ReturnType<Application["close"]>;
   }
