@@ -1,9 +1,5 @@
 import type { DeepPartial } from "./utils.d.mts";
 
-export type Expand<T> = T extends infer O ? { [K in keyof O]: O[K] } : never;
-
-export type ExpandDeep<T> = T extends object ? (T extends infer O ? { [K in keyof O]: ExpandDeep<O[K]> } : never) : T;
-
 /**
  * Returns the type of the constructor data for the given {@link foundry.abstract.Document}.
  */

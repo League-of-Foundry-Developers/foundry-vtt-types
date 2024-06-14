@@ -2,8 +2,6 @@ import type {
   ConfiguredDocumentClass,
   ConfiguredDocumentClassForName,
   ConfiguredFlags,
-  Expand,
-  ExpandDeep,
 } from "../../../types/helperTypes.mts";
 import type { RemoveIndexSignatures, ConstructorOf, SimpleMerge, ValueOf } from "../../../types/utils.d.mts";
 import type { DataModel } from "../abstract/data.mts";
@@ -407,11 +405,10 @@ declare namespace DataField {
    * @typeParam BaseInitializedType - the base initialized type of the DataField, without null or undefined
    * @typeParam Options             - the options of the DataField
    */
-  type DerivedInitializedType<BaseInitializedType, Options extends DataFieldOptions.Any> = Expand<
+  type DerivedInitializedType<BaseInitializedType, Options extends DataFieldOptions.Any> =
     | Exclude<BaseInitializedType, null | undefined>
     | (Options["nullable"] extends true ? null : never)
-    | (Options["required"] extends true ? never : undefined)
-  >;
+    | (Options["required"] extends true ? never : undefined);
 
   /**
    * A shorthand for the assignment type of a DataField class.
@@ -586,45 +583,39 @@ declare namespace SchemaField {
    * Get the inner assignment type for the given DataSchema.
    * @typeParam Fields - the DataSchema fields of the SchemaField
    */
-  type InnerAssignmentType<Fields extends DataSchema> = ExpandDeep<
-    RemoveIndexSignatures<{
-      [Key in keyof Fields]?: Fields[Key] extends DataField<any, infer AssignType, any, any>
-        ? Fields[Key] extends SchemaField<infer SubSchema, any, any, any, any>
-          ? InnerAssignmentType<SubSchema>
-          : AssignType
-        : never;
-    }>
-  >;
+  type InnerAssignmentType<Fields extends DataSchema> = RemoveIndexSignatures<{
+    [Key in keyof Fields]?: Fields[Key] extends DataField<any, infer AssignType, any, any>
+      ? Fields[Key] extends SchemaField<infer SubSchema, any, any, any, any>
+        ? InnerAssignmentType<SubSchema>
+        : AssignType
+      : never;
+  }>;
 
   /**
    * Get the inner initialized type for the given DataSchema.
    * @typeParam Fields - the DataSchema fields of the SchemaField
    */
-  type InnerInitializedType<Fields extends DataSchema> = RemoveIndexSignatures<
-    ExpandDeep<{
-      [Key in keyof Fields]: Fields[Key] extends DataField<any, any, infer InitType, any>
-        ? Fields[Key] extends EmbeddedDataField<infer Model, any, any, any, any>
-          ? Model
-          : Fields[Key] extends SchemaField<infer SubSchema, any, any, any, any>
-            ? InnerInitializedType<SubSchema>
-            : InitType
-        : never;
-    }>
-  >;
+  type InnerInitializedType<Fields extends DataSchema> = RemoveIndexSignatures<{
+    [Key in keyof Fields]: Fields[Key] extends DataField<any, any, infer InitType, any>
+      ? Fields[Key] extends EmbeddedDataField<infer Model, any, any, any, any>
+        ? Model
+        : Fields[Key] extends SchemaField<infer SubSchema, any, any, any, any>
+          ? InnerInitializedType<SubSchema>
+          : InitType
+      : never;
+  }>;
 
   /**
    * Get the inner persisted type for the given DataSchema.
    * @typeParam Fields - the DataSchema fields of the SchemaField
    */
-  type InnerPersistedType<Fields extends DataSchema> = ExpandDeep<
-    RemoveIndexSignatures<{
-      [Key in keyof Fields]: Fields[Key] extends DataField<any, any, any, infer PersistType>
-        ? Fields[Key] extends SchemaField<infer SubSchema, any, any, any, any>
-          ? InnerPersistedType<SubSchema>
-          : PersistType
-        : never;
-    }>
-  >;
+  type InnerPersistedType<Fields extends DataSchema> = RemoveIndexSignatures<{
+    [Key in keyof Fields]: Fields[Key] extends DataField<any, any, any, infer PersistType>
+      ? Fields[Key] extends SchemaField<infer SubSchema, any, any, any, any>
+        ? InnerPersistedType<SubSchema>
+        : PersistType
+      : never;
+  }>;
 
   /** The type of the default options for the {@link SchemaField} class. */
   type DefaultOptions = SimpleMerge<
@@ -632,7 +623,7 @@ declare namespace SchemaField {
     {
       required: true;
       nullable: false;
-      initial: object;
+      initial: Record<string, never>;
     }
   >;
 
