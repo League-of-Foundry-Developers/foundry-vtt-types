@@ -510,12 +510,21 @@ declare abstract class Document<
    *                       (default: `{}`)
    * @returns An array of created Document instances
    */
-  // Excluding FogExploration because it broke polymorphism and is never embedded
-  createEmbeddedDocuments<EmbeddedName extends Exclude<DocumentType, "FogExploration">>(
+  // Excluding FogExploration because it broke polymorphism and is never embedded. Can be removed in v12
+  createEmbeddedDocuments<
+    EmbeddedName extends Exclude<DocumentType, "FogExploration">,
+    Temporary extends boolean = false,
+  >(
     embeddedName: EmbeddedName,
     data?: Array<ConstructorDataType<ConfiguredDocumentClassForName<EmbeddedName>>>,
-    context?: DocumentModificationContext, // Possibly a way to specify the parent here, but seems less relevant?
-  ): Promise<Array<InstanceType<ConfiguredDocumentClassForName<EmbeddedName>>>>;
+    context?: Omit<DocumentModificationContext, "temporary"> & { temporary?: Temporary }, // Possibly a way to specify the parent here, but seems less relevant?
+  ): Promise<
+    Array<
+      Temporary extends true
+        ? InstanceType<ConfiguredDocumentClassForName<EmbeddedName>>
+        : StoredDocument<InstanceType<ConfiguredDocumentClassForName<EmbeddedName>>>
+    >
+  >;
 
   /**
    * Update multiple embedded Document instances within a parent Document using provided differential data.
@@ -527,11 +536,11 @@ declare abstract class Document<
    *                       (default: `{}`)
    * @returns An array of updated Document instances
    */
-  updateEmbeddedDocuments(
-    embeddedName: string,
+  updateEmbeddedDocuments<EmbeddedName extends Exclude<DocumentType, "FogExploration">>(
+    embeddedName: EmbeddedName,
     updates?: Array<Record<string, unknown>>,
     context?: DocumentModificationContext,
-  ): Promise<Array<Document.AnyChild<this>>>;
+  ): Promise<Array<StoredDocument<InstanceType<ConfiguredDocumentClassForName<EmbeddedName>>>>>;
 
   /**
    * Delete multiple embedded Document instances within a parent Document using provided string ids.
@@ -542,11 +551,11 @@ declare abstract class Document<
    *                       (default: `{}`)
    * @returns An array of deleted Document instances
    */
-  deleteEmbeddedDocuments(
-    embeddedName: string,
+  deleteEmbeddedDocuments<EmbeddedName extends Exclude<DocumentType, "FogExploration">>(
+    embeddedName: EmbeddedName,
     ids: Array<string>,
     context?: DocumentModificationContext,
-  ): Promise<Array<Document.AnyChild<this>>>;
+  ): Promise<Array<StoredDocument<InstanceType<ConfiguredDocumentClassForName<EmbeddedName>>>>>;
 
   /**
    * Get the value of a "flag" for this document
