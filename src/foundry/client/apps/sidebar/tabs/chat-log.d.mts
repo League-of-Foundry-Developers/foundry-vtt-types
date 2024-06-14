@@ -1,4 +1,4 @@
-import type { ChatMessageDataConstructorData } from "../../../../common/data/data.mjs/chatMessageData.d.mts";
+export {};
 
 declare global {
   interface ChatLogOptions extends ApplicationOptions {
@@ -195,7 +195,7 @@ declare global {
     protected _processDiceCommand(
       command: string,
       match: RegExpMatchArray[],
-      chatData: ChatMessageDataConstructorData,
+      chatData: foundry.documents.BaseChatMessage.ConstructorData,
       createOptions: DocumentModificationContext,
     ): Promise<void>;
 
@@ -211,7 +211,7 @@ declare global {
     protected _processWhisperCommand(
       command: string,
       match: RegExpMatchArray,
-      chatData: ChatMessageDataConstructorData,
+      chatData: foundry.documents.BaseChatMessage.ConstructorData,
       createOptions: DocumentModificationContext,
     ): void;
 
@@ -226,7 +226,7 @@ declare global {
     protected _processChatCommand(
       command: string,
       match: RegExpMatchArray,
-      chatData: ChatMessageDataConstructorData,
+      chatData: foundry.documents.BaseChatMessage.ConstructorData,
       createOptions: DocumentModificationContext,
     ): void;
 

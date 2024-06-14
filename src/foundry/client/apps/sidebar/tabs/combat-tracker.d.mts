@@ -13,7 +13,7 @@ declare global {
      * @defaultValue `null`
      * @internal
      */
-    protected _highlighted: ConfiguredObjectClassForName<"Token"> | null;
+    protected _highlighted: InstanceType<ConfiguredObjectClassForName<"Token">> | null;
 
     /**
      * Record the currently tracked Combat encounter
