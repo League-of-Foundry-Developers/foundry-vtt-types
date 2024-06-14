@@ -77,9 +77,9 @@ export type Titlecase<S extends string> = S extends `${infer A} ${infer B}`
  * @typeParam T - The base type that `U` will be merged into.
  * @typeParam U - The type that will be merged into `T`.
  */
-export type Merge<T, U> = Expand<
-  U extends Record<string, any>
-    ? T extends Record<string, any>
+export type Merge<T, U> =
+  IsObject<U> extends true
+    ? IsObject<T> extends true
       ? SimpleMerge<
           T,
           {
@@ -87,8 +87,20 @@ export type Merge<T, U> = Expand<
           }
         >
       : U
-    : U
->;
+    : U;
+
+/**
+ * Returns whether the type is a plain object. Excludes functions and arrays while still being friendly to interfaces.
+ */
+export type IsObject<T> =
+  // `Record<string, any>` can be a function or an array, so we need to exclude those
+  T extends Record<string, any>
+    ? T extends readonly any[]
+      ? false
+      : T extends (...args: any[]) => any
+        ? false
+        : true
+    : false;
 
 /**
  * A simple, non-recursive merge type.
