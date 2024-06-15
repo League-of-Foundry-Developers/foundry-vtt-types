@@ -7,7 +7,7 @@ import type {
   DocumentTypeWithTypeData,
   PlaceableDocumentType,
 } from "../../../types/helperTypes.mts";
-import type { DeepPartial, InexactPartial, StoredDocument } from "../../../types/utils.mts";
+import type { DeepPartial, InexactPartial, RemoveIndexSignatures, StoredDocument } from "../../../types/utils.mts";
 import type * as CONST from "../constants.mts";
 import type { DataField } from "../data/fields.d.mts";
 import type { fields } from "../data/module.mts";
@@ -16,6 +16,7 @@ import type DataModel from "./data.mts";
 import type EmbeddedCollection from "./embedded-collection.mts";
 
 export default Document;
+
 /**
  * An extension of the base DataModel which defines a Document.
  * Documents are special in that they are persisted to the database and referenced by _id.
@@ -557,18 +558,9 @@ declare abstract class Document<
    * @returns The flag value
    */
   getFlag<
-    S extends keyof fields.SchemaField.PersistedType<Schema, {}>["flags"],
-    K extends keyof fields.SchemaField.PersistedType<Schema, {}>["flags"][S],
-  >(scope: S, key: K): fields.SchemaField.PersistedType<Schema, {}>["flags"][S][K];
-  getFlag<
-    S extends keyof fields.SchemaField.PersistedType<Schema, {}>["flags"],
-    K extends keyof Required<fields.SchemaField.PersistedType<Schema, {}>["flags"]>[S],
-  >(scope: S, key: K): Required<fields.SchemaField.PersistedType<Schema, {}>["flags"]>[S][K] | undefined;
-  getFlag<S extends keyof fields.SchemaField.PersistedType<Schema, {}>["flags"]>(
-    scope: S,
-    key: string,
-  ): unknown extends fields.SchemaField.PersistedType<Schema, {}>["flags"][S] ? unknown : never;
-  getFlag(scope: string, key: string): unknown;
+    S extends Document.FlagKeyOf<Document.OptionsForSchema<Schema>>,
+    K extends Document.FlagKeyOf<Document.OptionsForSchema<Schema>[S]>,
+  >(scope: S, key: K): Document.GetFlagForSchema<Schema, S, K>;
 
   /**
    * Assign a "flag" to this document.
@@ -589,14 +581,14 @@ declare abstract class Document<
    * @returns A Promise resolving to the updated document
    */
   setFlag<
-    S extends keyof fields.SchemaField.PersistedType<Schema, {}>["flags"],
-    K extends keyof Required<fields.SchemaField.PersistedType<Schema, {}>["flags"]>[S],
-    V extends Required<fields.SchemaField.PersistedType<Schema, {}>["flags"]>[S][K],
+    S extends keyof Document.OptionsForSchema<Schema>,
+    K extends keyof Required<Document.OptionsForSchema<Schema>>[S],
+    V extends Required<Document.OptionsForSchema<Schema>>[S][K],
   >(scope: S, key: K, value: V): Promise<this>;
-  setFlag<S extends keyof fields.SchemaField.PersistedType<Schema, {}>["flags"], K extends string>(
+  setFlag<S extends keyof Document.OptionsForSchema<Schema>, K extends string>(
     scope: S,
     key: K,
-    v: unknown extends fields.SchemaField.PersistedType<Schema, {}>["flags"][S] ? unknown : never,
+    v: unknown extends Document.OptionsForSchema<Schema>[S] ? unknown : never,
   ): Promise<this>;
 
   /**
@@ -786,12 +778,12 @@ declare abstract class Document<
 
 declare namespace Document {
   /** Any Document, except for Settings */
-  type Any = Document<DataSchema, AnyMetadata, any>;
+  export type Any = Document<DataSchema, AnyMetadata, any>;
 
   /** Any Document, that is a child of the given parent Document. */
-  type AnyChild<Parent extends Any | null> = Document<DataSchema, AnyMetadata, Parent>;
+  export type AnyChild<Parent extends Any | null> = Document<DataSchema, AnyMetadata, Parent>;
 
-  type Constructor = Pick<typeof Document, keyof typeof Document> & (new (...args: any[]) => Document.Any);
+  export type Constructor = Pick<typeof Document, keyof typeof Document> & (new (...args: any[]) => Document.Any);
 
   type SystemConstructor = Constructor & { metadata: { name: SystemType; coreTypes?: string[] } };
 
@@ -805,6 +797,42 @@ declare namespace Document {
   type TypeName = DocumentType;
 
   type PlaceableTypeName = PlaceableDocumentType;
+
+  export type SchemaFor<ConcreteDocument extends Any> =
+    ConcreteDocument extends Document<infer Schema, any, any> ? Schema : never;
+
+  export type Flags<ConcreteDocument extends Any> = OptionsForSchema<SchemaFor<ConcreteDocument>>;
+
+  interface OptionsInFlags<Options extends DataFieldOptions.Any> {
+    readonly flags?: DataField<Options, any, any, any>;
+  }
+
+  // These  types only exists to simplify solving the `Document` type. Using `Document.Flags<this>` means the constraint `this extends Document.Any` has to be proved.
+  // This is much more complex than proving the constraint for `Document.FlagsInternal<Schema>` that `Schema extends DataSchema`.
+
+  // TODO: This needs to use the derived flags not just how they're initialized.
+  type OptionsForSchema<Schema extends DataSchema> =
+    RemoveIndexSignatures<Schema> extends OptionsInFlags<infer Options> ? DataField.InitializedType<Options> : never;
+
+  // Returns only string keys and returns `never` if `T` is never.
+  type FlagKeyOf<T> = T extends never ? never : keyof T & string;
+
+  export type GetFlag<ConcreteDocument extends Any, S extends string, K extends string> = GetFlagForSchema<
+    SchemaFor<ConcreteDocument>,
+    S,
+    K
+  >;
+
+  export type FlagInSchema<S extends string, K extends string, Options extends DataFieldOptions.Any> = {
+    readonly [_ in S]?: {
+      readonly [_ in K]?: DataField<Options, any, any, any>;
+    };
+  };
+
+  // Looks for flags in the schema.
+  // If a flag can't be found `undefined` is returned.
+  type GetFlagForSchema<Schema extends DataSchema, S extends string, K extends string> =
+    OptionsForSchema<Schema> extends FlagInSchema<S, K, infer Options> ? DataField.InitializedType<Options> : undefined;
 }
 
 export type DocumentModificationOptions = Omit<DocumentModificationContext, "parent" | "pack">;

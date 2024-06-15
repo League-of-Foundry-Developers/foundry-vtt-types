@@ -12,6 +12,7 @@ declare global {
  * Defines the DataSchema and common behaviors for a Setting which are shared between both client and server.
  */
 interface BaseSetting extends BaseSetting.Properties {}
+
 declare class BaseSetting extends Document<BaseSetting.Schema, BaseSetting.Metadata> {
   /**
    * @param data    - Initial data from which to construct the Setting
@@ -23,6 +24,7 @@ declare class BaseSetting extends Document<BaseSetting.Schema, BaseSetting.Metad
 
   static override defineSchema(): BaseSetting.Schema;
 }
+
 export default BaseSetting;
 
 declare namespace BaseSetting {

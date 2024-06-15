@@ -1,5 +1,3 @@
-import type { Expand } from "./helperTypes.d.mts";
-
 /**
  * Recursively sets keys of an object to optional. Used primarily for update methods
  * @internal
@@ -50,9 +48,11 @@ export type ValueOf<T> = T extends ReadonlyArray<unknown> ? T[number] : T[keyof 
 /**
  * Gets the keys of `T` but excluding index signatures unlike `keyof T`. For example `Record<string, any> & { foo: number }` will produce `string` with `keyof` but `foo` with `ConcreteKeys`.
  */
-export type ConcreteKeys<T> = keyof {
-  [K in keyof T as string extends K ? never : number extends K ? never : symbol extends K ? never : K]: never;
-};
+export type ConcreteKeys<T> = T extends never
+  ? never
+  : keyof {
+      [K in keyof T as string extends K ? never : number extends K ? never : symbol extends K ? never : K]: never;
+    };
 
 /**
  * Removes all index signatures from an object. Use this instead of `[K in keyof ConcreteKeys<T>]` to preserve modifiers e.g. readonly, or optional.
