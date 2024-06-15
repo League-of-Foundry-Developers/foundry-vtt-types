@@ -128,7 +128,7 @@ declare global {
     type FormData = {
       "grid.type": Scene["grid"]["type"];
       "grid.size": Scene["grid"]["size"];
-      scale: Scene["scale"];
+      scale: Scene["width"];
       "background.offsetX": Scene["background"]["offsetX"];
       "background.offsetY": Scene["background"]["offsetY"];
     };

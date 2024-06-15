@@ -49,7 +49,8 @@ declare global {
       entryId: NoteDocument["entryId"];
       fontFamily: NoteDocument["fontFamily"];
       fontSize: NoteDocument["fontSize"];
-      icon: NoteDocument["icon"];
+      "icon.selected": NoteDocument["texture"]["src"];
+      "icon.custom": NoteDocument["texture"]["src"] | "";
       iconSize: NoteDocument["iconSize"];
       iconTint: NoteDocument["texture"]["tint"];
       text: NoteDocument["text"];

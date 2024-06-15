@@ -131,9 +131,8 @@ declare global {
       "grid.distance": Scene["grid"]["distance"];
       "grid.type": Scene["grid"]["type"];
       "grid.units": Scene["grid"]["units"];
-      hasGlobalThreshold: Scene["hasGlobalThreshold"];
+      hasGlobalThreshold: boolean;
       height: Scene["height"];
-      img: Scene["img"];
       "initial.scale": Scene["initial"]["scale"];
       "initial.x": Scene["initial"]["x"];
       "initial.y": Scene["initial"]["y"];
@@ -146,8 +145,6 @@ declare global {
       "ownership.default": Scene["ownership"]["default"];
       playlist: Scene["playlist"];
       playlistSound: Scene["playlistSound"];
-      shiftX: Scene["shiftX"];
-      shiftY: Scene["shiftY"];
       tokenVision: Scene["tokenVision"];
       weather: Scene["weather"];
       width: Scene["width"];
