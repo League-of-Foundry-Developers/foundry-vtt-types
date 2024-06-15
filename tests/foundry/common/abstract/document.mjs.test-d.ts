@@ -18,7 +18,7 @@ expectTypeOf(baseActiveEffect.toObject().changes).toEqualTypeOf<EffectChangeData
 expectTypeOf(baseActiveEffect.toObject(true).changes).toEqualTypeOf<EffectChangeData[]>();
 expectTypeOf(baseActiveEffect.toObject(false).changes).toEqualTypeOf<EffectChangeData[]>();
 
-const item = await Item.create({ name: "Some Item", type: "weapon" });
+const item = await Item.create({ name: "Some Item", type: "base" });
 if (item) {
   expectTypeOf(item.toObject(false).effects[0].changes).toEqualTypeOf<EffectChangeData[]>();
   expectTypeOf(item.toObject().effects).toEqualTypeOf<BaseActiveEffect["_source"][]>();
@@ -59,16 +59,16 @@ if (user) {
 // test creation of embedded documents
 declare const actor: Actor;
 expectTypeOf(actor.createEmbeddedDocuments("ActiveEffect", [], { temporary: true })).toEqualTypeOf<
-  Promise<foundry.abstract.Document<any, Actor>[]>
+  Promise<ActiveEffect[]>
 >();
 expectTypeOf(actor.createEmbeddedDocuments("ActiveEffect", [], { temporary: bool })).toEqualTypeOf<
-  Promise<foundry.abstract.Document<any, Actor>[]>
+  Promise<ActiveEffect[] | StoredDocument<ActiveEffect>[]>
 >();
 expectTypeOf(actor.createEmbeddedDocuments("ActiveEffect", [], { temporary: false })).toEqualTypeOf<
-  Promise<StoredDocument<foundry.abstract.Document<any, Actor>>[]>
+  Promise<StoredDocument<ActiveEffect>[]>
 >();
 expectTypeOf(actor.createEmbeddedDocuments("ActiveEffect", [])).toEqualTypeOf<
-  Promise<StoredDocument<foundry.abstract.Document<any, Actor>>[]>
+  Promise<StoredDocument<ActiveEffect>[]>
 >();
 
 // verify that document lifecycle methods work with source data is possible

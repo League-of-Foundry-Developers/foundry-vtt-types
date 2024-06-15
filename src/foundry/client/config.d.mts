@@ -3,7 +3,6 @@ import type { ConstructorOf, PropertyTypeOrFallback } from "../../types/utils.d.
 import type * as CONST from "../common/constants.d.mts";
 import type { StatusEffect } from "./data/documents/token.d.mts";
 import type { DataModel } from "../common/abstract/module.d.mts";
-import type { SchemaField } from "../common/data/fields.d.mts";
 
 declare global {
   /**
