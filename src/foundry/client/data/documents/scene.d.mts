@@ -160,12 +160,38 @@ declare global {
       userId: string,
     ): void;
 
-    override toCompendium(
+    override toCompendium<
+      FlagsOpt extends boolean = false,
+      SourceOpt extends boolean = true,
+      SortOpt extends boolean = true,
+      FolderOpt extends boolean = false,
+      OwnershipOpt extends boolean = false,
+      StateOpt extends boolean = true,
+      IdOpt extends boolean = false,
+    >(
       pack?: CompendiumCollection<CompendiumCollection.Metadata> | null | undefined,
-      options?: ClientDocument.CompendiumExportOptions | undefined,
-    ): Omit<Scene["_source"], "_id" | "folder" | "permission"> & {
-      permission?: Scene extends { toObject(): infer U } ? U : never;
-    };
+      options?:
+        | InexactPartial<
+            ClientDocument.CompendiumExportOptions<
+              FlagsOpt,
+              SourceOpt,
+              SortOpt,
+              FolderOpt,
+              OwnershipOpt,
+              StateOpt,
+              IdOpt
+            >
+          >
+        | undefined,
+    ): Omit<
+      this["_source"],
+      | (IdOpt extends false ? "_id" : never)
+      | ClientDocument.OmitProperty<SortOpt, "sort" | "navigation" | "navOrder">
+      | ClientDocument.OmitProperty<FolderOpt, "folder">
+      | ClientDocument.OmitProperty<FlagsOpt, "flags">
+      | ClientDocument.OmitProperty<OwnershipOpt, "ownership">
+      | ClientDocument.OmitProperty<StateOpt, "active" | "fogReset" | "playing">
+    >;
 
     /**
      * Create a 300px by 100px thumbnail image for this scene background

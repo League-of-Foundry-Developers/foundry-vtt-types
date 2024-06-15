@@ -257,7 +257,7 @@ declare global {
      */
     importDocument(
       document: DocumentInstanceForCompendiumMetadata<T>,
-      options?: ClientDocument.CompendiumExportOptions | undefined,
+      options?: InexactPartial<ClientDocument.CompendiumExportOptions> | undefined,
     ): Promise<StoredDocument<DocumentInstanceForCompendiumMetadata<T>> | undefined>;
 
     /**

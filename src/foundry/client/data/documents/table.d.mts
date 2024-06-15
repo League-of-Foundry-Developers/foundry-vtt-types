@@ -103,12 +103,38 @@ declare global {
       userId: string,
     ): void;
 
-    override toCompendium(
+    override toCompendium<
+      FlagsOpt extends boolean = false,
+      SourceOpt extends boolean = true,
+      SortOpt extends boolean = true,
+      FolderOpt extends boolean = false,
+      OwnershipOpt extends boolean = false,
+      StateOpt extends boolean = true,
+      IdOpt extends boolean = false,
+    >(
       pack?: CompendiumCollection<CompendiumCollection.Metadata> | null | undefined,
-      options?: ClientDocument.CompendiumExportOptions | undefined,
-    ): Omit<RollTable["_source"], "_id" | "folder" | "permission"> & {
-      permission?: RollTable extends { toObject(): infer U } ? U : never;
-    };
+      options?:
+        | InexactPartial<
+            ClientDocument.CompendiumExportOptions<
+              FlagsOpt,
+              SourceOpt,
+              SortOpt,
+              FolderOpt,
+              OwnershipOpt,
+              StateOpt,
+              IdOpt
+            >
+          >
+        | undefined,
+    ): Omit<
+      this["_source"],
+      | (IdOpt extends false ? "_id" : never)
+      | ClientDocument.OmitProperty<SortOpt, "sort" | "navigation" | "navOrder">
+      | ClientDocument.OmitProperty<FolderOpt, "folder">
+      | ClientDocument.OmitProperty<FlagsOpt, "flags">
+      | ClientDocument.OmitProperty<OwnershipOpt, "ownership">
+      | ClientDocument.OmitProperty<StateOpt, "active" | "fogReset" | "playing"> // does not model the results.drawn = false
+    >;
 
     /**
      * Create a new RollTable document using all of the Documents from a specific Folder as new results.

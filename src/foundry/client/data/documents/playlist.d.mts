@@ -171,12 +171,38 @@ declare global {
      */
     _updateContentLinkPlaying(changed: DeepPartial<Playlist["_source"]>): void;
 
-    override toCompendium(
+    override toCompendium<
+      FlagsOpt extends boolean = false,
+      SourceOpt extends boolean = true,
+      SortOpt extends boolean = true,
+      FolderOpt extends boolean = false,
+      OwnershipOpt extends boolean = false,
+      StateOpt extends boolean = true,
+      IdOpt extends boolean = false,
+    >(
       pack?: CompendiumCollection<CompendiumCollection.Metadata> | null | undefined,
-      options?: ClientDocument.CompendiumExportOptions | undefined,
-    ): Omit<Playlist["_source"], "_id" | "folder" | "permission"> & {
-      permission?: Playlist["_source"]["permission"];
-    };
+      options?:
+        | InexactPartial<
+            ClientDocument.CompendiumExportOptions<
+              FlagsOpt,
+              SourceOpt,
+              SortOpt,
+              FolderOpt,
+              OwnershipOpt,
+              StateOpt,
+              IdOpt
+            >
+          >
+        | undefined,
+    ): Omit<
+      this["_source"],
+      | (IdOpt extends false ? "_id" : never)
+      | ClientDocument.OmitProperty<SortOpt, "sort" | "navigation" | "navOrder">
+      | ClientDocument.OmitProperty<FolderOpt, "folder">
+      | ClientDocument.OmitProperty<FlagsOpt, "flags">
+      | ClientDocument.OmitProperty<OwnershipOpt, "ownership">
+      | ClientDocument.OmitProperty<StateOpt, "active" | "fogReset" | "playing"> // does not model the sounds.playing = false
+    >;
   }
 
   namespace Playlist {

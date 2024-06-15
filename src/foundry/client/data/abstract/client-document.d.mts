@@ -367,7 +367,7 @@ declare class ClientDocument<
    * Export document data to a JSON file which can be saved by the client and later imported into a different session.
    * @param options - Additional options passed to the {@link ClientDocument#toCompendium} method
    */
-  exportToJSON(options?: InexactPartial<ClientDocument.CompendiumExportOptions>): void;
+  exportToJSON(options?: InexactPartial<ClientDocument.CompendiumExportOptions> | undefined): void;
 
   /**
    * Create a content link for this Document.
@@ -448,12 +448,30 @@ declare class ClientDocument<
    *                  (default: `{}`)
    * @returns A data object of cleaned data suitable for compendium import
    */
-  toCompendium(
+  toCompendium<
+    FlagsOpt extends boolean = false,
+    SourceOpt extends boolean = true,
+    SortOpt extends boolean = true,
+    FolderOpt extends boolean = false,
+    OwnershipOpt extends boolean = false,
+    StateOpt extends boolean = true,
+    IdOpt extends boolean = false,
+  >(
     pack?: CompendiumCollection<CompendiumCollection.Metadata> | null | undefined,
-    options?: InexactPartial<ClientDocument.CompendiumExportOptions>,
-  ): Omit<BaseDocument["_source"], "_id" | "folder" | "permission"> & {
-    permission?: BaseDocument["_source"]["permission"];
-  };
+    options?:
+      | InexactPartial<
+          ClientDocument.CompendiumExportOptions<FlagsOpt, SourceOpt, SortOpt, FolderOpt, OwnershipOpt, StateOpt, IdOpt>
+        >
+      | undefined,
+  ): Omit<
+    BaseDocument["_source"],
+    | (IdOpt extends false ? "_id" : never)
+    | ClientDocument.OmitProperty<SortOpt, "sort" | "navigation" | "navOrder"> // helping out Scene
+    | ClientDocument.OmitProperty<FolderOpt, "folder">
+    | ClientDocument.OmitProperty<FlagsOpt, "flags">
+    | ClientDocument.OmitProperty<OwnershipOpt, "ownership">
+    | ClientDocument.OmitProperty<StateOpt, "active" | "fogReset" | "playing"> // helping out Playlist, Scene
+  >;
 
   /**
    * Preliminary actions taken before a set of embedded Documents in this parent Document are created.
@@ -575,48 +593,58 @@ declare global {
     // TODO: This may be better defined elsewhere
     type lifeCycleEventName = "preCreate" | "onCreate" | "preUpdate" | "onUpdate" | "preDelete" | "onDelete";
 
-    interface CompendiumExportOptions {
+    type OmitProperty<T extends boolean, Property extends string> = T extends true ? Property : never;
+
+    interface CompendiumExportOptions<
+      FlagsOpt extends boolean = false,
+      SourceOpt extends boolean = true,
+      SortOpt extends boolean = true,
+      FolderOpt extends boolean = false,
+      OwnershipOpt extends boolean = false,
+      StateOpt extends boolean = true,
+      IdOpt extends boolean = false,
+    > {
       /**
        * Clear the flags object
        * @defaultValue `false`
        */
-      clearFlags: boolean;
+      clearFlags: FlagsOpt;
 
       /**
        * Clear any prior sourceId flag
        * @defaultValue `true`
        */
-      clearSource: boolean;
+      clearSource: SourceOpt;
 
       /**
        * Clear the currently assigned folder and sort order
        * @defaultValue `true`
        */
-      clearSort: boolean;
+      clearSort: SortOpt;
 
       /**
        * Clear the currently assigned folder
        * @defaultValue `false`
        */
-      clearFolder: boolean;
+      clearFolder: FolderOpt;
 
       /**
        * Clear document ownership
        * @defaultValue `true`
        */
-      clearOwnership: boolean;
+      clearOwnership: OwnershipOpt;
 
       /**
        * Clear fields which store document state
        * @defaultValue `true`
        */
-      clearState: boolean;
+      clearState: StateOpt;
 
       /**
        * Retain the current Document id
        * @defaultValue `false`
        */
-      keepId: boolean;
+      keepId: IdOpt;
     }
   }
 }

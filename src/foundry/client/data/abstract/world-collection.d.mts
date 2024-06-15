@@ -72,7 +72,7 @@ declare global {
     fromCompendium(
       document: InstanceType<ConfiguredDocumentClass<T>> | ConstructorDataType<T>,
       options?: InexactPartial<WorldCollection.FromCompendiumOptions> | undefined,
-    ): Omit<InstanceType<ConfiguredDocumentClass<T>>["_source"], "_id">;
+    ): Omit<InstanceType<ConfiguredDocumentClass<T>>["_source"], "_id" | "folder">;
 
     /**
      * Register a Document sheet class as a candidate which can be used to display Documents of a given type.
