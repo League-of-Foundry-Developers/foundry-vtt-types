@@ -367,7 +367,7 @@ declare class ClientDocument<
    * Export document data to a JSON file which can be saved by the client and later imported into a different session.
    * @param options - Additional options passed to the {@link ClientDocument#toCompendium} method
    */
-  exportToJSON(options?: InexactPartial<ClientDocument.ToCompendiumOptions>): void;
+  exportToJSON(options?: InexactPartial<ClientDocument.CompendiumExportOptions>): void;
 
   /**
    * Create a content link for this Document.
