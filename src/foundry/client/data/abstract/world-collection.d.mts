@@ -67,12 +67,25 @@ declare global {
      * @param options  - Additional options which modify how the document is imported
      *                   (default: `{}`)
      * @returns The processed data ready for world Document creation
+     * @remarks FromCompendiumOptions is inflated to account for expanded downstream use
      */
-    // TODO: The return type should be refined by the compendium options
-    fromCompendium(
+    fromCompendium<
+      FolderOpt extends boolean = false,
+      SortOpt extends boolean = true,
+      OwnershipOpt extends boolean = false,
+      IdOpt extends boolean = false,
+    >(
       document: InstanceType<ConfiguredDocumentClass<T>> | ConstructorDataType<T>,
-      options?: InexactPartial<WorldCollection.FromCompendiumOptions> | undefined,
-    ): Omit<InstanceType<ConfiguredDocumentClass<T>>["_source"], "_id" | "folder">;
+      options?:
+        | InexactPartial<WorldCollection.FromCompendiumOptions<FolderOpt, SortOpt, OwnershipOpt, IdOpt>>
+        | undefined,
+    ): Omit<
+      InstanceType<ConfiguredDocumentClass<T>>["_source"],
+      | ClientDocument.OmitProperty<FolderOpt, "folder">
+      | ClientDocument.OmitProperty<SortOpt, "sort" | "navigation" | "navOrder">
+      | ClientDocument.OmitProperty<OwnershipOpt, "ownership">
+      | (IdOpt extends false ? "_id" : never)
+    >;
 
     /**
      * Register a Document sheet class as a candidate which can be used to display Documents of a given type.
@@ -106,8 +119,13 @@ declare global {
   }
 
   namespace WorldCollection {
-    // TODO: This probably needs to become a generic to properly type the return on fromCompendium
-    interface FromCompendiumOptions {
+    interface FromCompendiumOptions<
+      FolderOpt extends boolean = false,
+      SortOpt extends boolean = true,
+      OwnershipOpt extends boolean = false,
+      IdOpt extends boolean = false,
+      StateOpt extends boolean = false,
+    > {
       /**
        * Add flags which track the import source
        * @defaultValue `false`
@@ -118,25 +136,28 @@ declare global {
        * Clear the currently assigned folder
        * @defaultValue
        */
-      clearFolder: boolean;
+      clearFolder: FolderOpt;
 
       /**
        * Clear the currently assigned folder and sort order
        * @defaultValue `true`
        */
-      clearSort: boolean;
+      clearSort: SortOpt;
 
       /**
        * Clear document permissions
        * @defaultValue `true`
        */
-      clearOwnership: boolean;
+      clearOwnership: OwnershipOpt;
 
       /**
        * Retain the Document id from the source Compendium
        * @defaultValue `false`
        */
-      keepId: boolean;
+      keepId: IdOpt;
+
+      /** @remarks used by Scene#fromCompendium */
+      clearState: StateOpt;
     }
   }
 }

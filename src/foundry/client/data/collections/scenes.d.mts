@@ -1,4 +1,4 @@
-import type { StoredDocument } from "../../../../types/utils.d.mts";
+import type { InexactPartial, StoredDocument } from "../../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -44,9 +44,24 @@ declare global {
      */
     protected static _pullToScene(sceneId: string): void;
 
-    override fromCompendium(
-      document: Scene | foundry.documents.BaseScene.ConstructorData,
-      options?: WorldCollection.FromCompendiumOptions | undefined,
-    ): Omit<Scene.ConfiguredInstance, "_id" | "folder">;
+    override fromCompendium<
+      FolderOpt extends boolean = false,
+      SortOpt extends boolean = true,
+      OwnershipOpt extends boolean = false,
+      IdOpt extends boolean = false,
+      StateOpt extends boolean = false,
+    >(
+      document: Scene.ConfiguredInstance | foundry.documents.BaseScene.ConstructorData,
+      options?:
+        | InexactPartial<WorldCollection.FromCompendiumOptions<FolderOpt, SortOpt, OwnershipOpt, IdOpt, StateOpt>>
+        | undefined,
+    ): Omit<
+      Scene["_source"],
+      | ClientDocument.OmitProperty<FolderOpt, "folder">
+      | ClientDocument.OmitProperty<SortOpt, "sort" | "navigation" | "navOrder">
+      | ClientDocument.OmitProperty<OwnershipOpt, "ownership">
+      | (IdOpt extends false ? "_id" : never)
+      | ClientDocument.OmitProperty<StateOpt, "active">
+    >;
   }
 }

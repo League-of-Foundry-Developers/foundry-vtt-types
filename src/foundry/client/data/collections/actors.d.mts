@@ -1,3 +1,5 @@
+import type { InexactPartial } from "../../../../types/utils.d.mts";
+
 export {};
 
 declare global {
@@ -22,9 +24,22 @@ declare global {
 
     static documentName: "Actor";
 
-    override fromCompendium(
+    override fromCompendium<
+      FolderOpt extends boolean = false,
+      SortOpt extends boolean = true,
+      OwnershipOpt extends boolean = false,
+      IdOpt extends boolean = false,
+    >(
       document: Actor.ConfiguredInstance | foundry.documents.BaseActor.ConstructorData,
-      options?: WorldCollection.FromCompendiumOptions | undefined,
-    ): Omit<Actor.ConfiguredInstance, "_id" | "folder">;
+      options?:
+        | InexactPartial<WorldCollection.FromCompendiumOptions<FolderOpt, SortOpt, OwnershipOpt, IdOpt>>
+        | undefined,
+    ): Omit<
+      Actor["_source"],
+      | ClientDocument.OmitProperty<FolderOpt, "folder">
+      | ClientDocument.OmitProperty<SortOpt, "sort" | "navigation" | "navOrder">
+      | ClientDocument.OmitProperty<OwnershipOpt, "ownership">
+      | (IdOpt extends false ? "_id" : never)
+    >;
   }
 }
