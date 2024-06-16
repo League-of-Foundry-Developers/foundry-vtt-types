@@ -25,9 +25,9 @@ declare global {
      */
     static override get defaultOptions(): TileConfig.Options;
 
-    override close(options?: Application.CloseOptions | undefined): Promise<void>;
+    override close(options?: Application.CloseOptions): Promise<void>;
 
-    override getData(options?: Partial<Options> | undefined): MaybePromise<object>; // TODO: Implement GetDataReturnType
+    override getData(options?: Partial<Options>): MaybePromise<object>; // TODO: Implement GetDataReturnType
 
     protected override _onChangeInput(event: JQuery.ChangeEvent): Promise<void>;
 

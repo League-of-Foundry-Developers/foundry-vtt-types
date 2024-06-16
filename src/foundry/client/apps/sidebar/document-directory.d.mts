@@ -71,16 +71,13 @@ declare global {
      */
     initialize(): void;
 
-    protected override _render(
-      force?: boolean | undefined,
-      options?: Application.RenderOptions<Options> | undefined,
-    ): Promise<void>;
+    protected override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
     override get canCreateEntry(): boolean;
 
     override get canCreateFolder(): boolean;
 
-    override getData(options?: Partial<Options> | undefined): Promise<object>;
+    override getData(options?: Partial<Options>): Promise<object>;
 
     override activateListeners(html: JQuery<HTMLElement>): void;
 
@@ -99,10 +96,7 @@ declare global {
       sortData: { sortKey: string; sortBefore: boolean; updateData: object },
     ): Promise<object>;
 
-    protected override _createDroppedEntry(
-      entry: DirectoryMixinEntry,
-      folderId?: string | undefined,
-    ): Promise<DirectoryMixinEntry>;
+    protected override _createDroppedEntry(entry: DirectoryMixinEntry, folderId?: string): Promise<DirectoryMixinEntry>;
 
     protected override _handleDroppedForeignFolder(
       folder: Folder.ConfiguredInstance,

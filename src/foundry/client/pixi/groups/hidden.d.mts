@@ -26,7 +26,7 @@ declare global {
      * @param displayObject - Display object to add.
      * @param position      - Position of the mask.
      */
-    addMask(name: string, displayObject: PIXI.DisplayObject, position?: number | undefined): void;
+    addMask(name: string, displayObject: PIXI.DisplayObject, position?: number): void;
 
     override draw(): Promise<void>;
 

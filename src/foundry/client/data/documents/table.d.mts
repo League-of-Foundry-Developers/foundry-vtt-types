@@ -76,7 +76,7 @@ declare global {
      * const customResults = await table.roll({roll});
      * ```
      */
-    roll(options?: RollTable.RollOptions | undefined): Promise<RollTableDraw>;
+    roll(options?: RollTable.RollOptions): Promise<RollTableDraw>;
 
     /**
      * Get an Array of valid results for a given rolled total
@@ -112,20 +112,10 @@ declare global {
       StateOpt extends boolean = true,
       IdOpt extends boolean = false,
     >(
-      pack?: CompendiumCollection<CompendiumCollection.Metadata> | null | undefined,
-      options?:
-        | InexactPartial<
-            ClientDocument.CompendiumExportOptions<
-              FlagsOpt,
-              SourceOpt,
-              SortOpt,
-              FolderOpt,
-              OwnershipOpt,
-              StateOpt,
-              IdOpt
-            >
-          >
-        | undefined,
+      pack?: CompendiumCollection<CompendiumCollection.Metadata> | null,
+      options?: InexactPartial<
+        ClientDocument.CompendiumExportOptions<FlagsOpt, SourceOpt, SortOpt, FolderOpt, OwnershipOpt, StateOpt, IdOpt>
+      >,
     ): Omit<
       this["_source"],
       | (IdOpt extends false ? "_id" : never)

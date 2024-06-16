@@ -40,7 +40,7 @@ declare global {
 
     override getData(options?: Partial<Options>): MaybePromise<object>;
 
-    protected override _getSubmitData(updateData?: object | null | undefined): GridConfig.FormData;
+    protected override _getSubmitData(updateData?: object | null): GridConfig.FormData;
 
     override close(options?: FormApplication.CloseOptions): ReturnType<FormApplication["close"]>;
 

@@ -27,7 +27,7 @@ declare global {
      * Returns the support report data
      */
     // TODO: Implement GetDataReturnType
-    getData(options?: Partial<Options> | undefined): MaybePromise<object>;
+    getData(options?: Partial<Options>): MaybePromise<object>;
 
     /**
      * Binds the Support Report copy button

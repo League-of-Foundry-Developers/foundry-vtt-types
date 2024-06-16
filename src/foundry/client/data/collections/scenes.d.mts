@@ -52,9 +52,9 @@ declare global {
       StateOpt extends boolean = false,
     >(
       document: Scene.ConfiguredInstance | foundry.documents.BaseScene.ConstructorData,
-      options?:
-        | InexactPartial<WorldCollection.FromCompendiumOptions<FolderOpt, SortOpt, OwnershipOpt, IdOpt, StateOpt>>
-        | undefined,
+      options?: InexactPartial<
+        WorldCollection.FromCompendiumOptions<FolderOpt, SortOpt, OwnershipOpt, IdOpt, StateOpt>
+      >,
     ): Omit<
       Scene["_source"],
       | ClientDocument.OmitProperty<FolderOpt, "folder">

@@ -53,20 +53,14 @@ declare global {
 
     override initialize(): void;
 
-    override render(
-      force?: boolean | undefined,
-      options?: Application.RenderOptions<ApplicationOptions> | undefined,
-    ): unknown;
+    override render(force?: boolean, options?: Application.RenderOptions<ApplicationOptions>): unknown;
 
     // TODO: Implement GetDataReturnType
     override getData(options?: Partial<Options>): Promise<object>;
 
     protected override _entryAlreadyExists(entry: DirectoryMixinEntry): boolean;
 
-    protected override _createDroppedEntry(
-      entry: DirectoryMixinEntry,
-      folderId?: string | undefined,
-    ): Promise<DirectoryMixinEntry>;
+    protected override _createDroppedEntry(entry: DirectoryMixinEntry, folderId?: string): Promise<DirectoryMixinEntry>;
 
     protected override _getEntryDragData(entryId: string): { type: string; uuid: string };
 

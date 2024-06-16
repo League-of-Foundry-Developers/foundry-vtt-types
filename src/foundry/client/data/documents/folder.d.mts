@@ -89,7 +89,7 @@ declare global {
      */
     static createDialog<T extends DocumentConstructor>(
       this: T,
-      data?: DeepPartial<ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>)> | undefined,
+      data?: DeepPartial<ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>)>,
       context?: Partial<Omit<FolderConfig.Options, "resolve">>,
     ): Promise<InstanceType<ConfiguredDocumentClass<T>> | null | undefined>;
 
@@ -103,7 +103,7 @@ declare global {
      */
     exportToCompendium<Metadata extends CompendiumCollection.Metadata>(
       pack: CompendiumCollection<Metadata>,
-      options?: Folder.ExportToCompendiumOptions | undefined,
+      options?: Folder.ExportToCompendiumOptions,
     ): Promise<CompendiumCollection<Metadata>>;
 
     /**

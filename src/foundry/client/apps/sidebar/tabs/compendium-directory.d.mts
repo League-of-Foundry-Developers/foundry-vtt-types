@@ -68,10 +68,7 @@ declare global {
      */
     protected _getDroppedEntryFromData(data: object): Promise<DirectoryMixinEntry>;
 
-    protected override _createDroppedEntry(
-      entry: DirectoryMixinEntry,
-      folderId?: string | undefined,
-    ): Promise<DirectoryMixinEntry>;
+    protected override _createDroppedEntry(entry: DirectoryMixinEntry, folderId?: string): Promise<DirectoryMixinEntry>;
 
     protected override _getEntryName(entry: object): string;
 
@@ -81,7 +78,7 @@ declare global {
     override getData(options?: Partial<Options>): Promise<object>;
 
     override render(
-      force?: boolean | undefined,
+      force?: boolean,
       options?: Application.RenderOptions<ApplicationOptions> | undefined,
     ): Promise<unknown>;
 

@@ -20,8 +20,8 @@ declare global {
      */
     clear(): void;
 
-    protected override _draw(options?: Record<string, unknown> | undefined): Promise<void>;
+    protected override _draw(options?: Record<string, unknown>): Promise<void>;
 
-    protected override _tearDown(options?: Record<string, unknown> | undefined): Promise<void>;
+    protected override _tearDown(options?: Record<string, unknown>): Promise<void>;
   }
 }

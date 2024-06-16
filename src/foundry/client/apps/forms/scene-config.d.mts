@@ -32,7 +32,7 @@ declare global {
 
     override get title(): string;
 
-    override close(options?: Application.CloseOptions | undefined): Promise<void>;
+    override close(options?: Application.CloseOptions): Promise<void>;
 
     override render(force?: boolean, options?: Application.RenderOptions<Options>): this;
 

@@ -31,9 +31,7 @@ declare global {
      */
     static FONT_TYPES: { FILE: "file"; SYSTEM: "system" };
 
-    override getData(
-      options?: Partial<Options> | undefined,
-    ): MaybePromise<GetDataReturnType<FontConfig.FontConfigData>>;
+    override getData(options?: Partial<Options>): MaybePromise<GetDataReturnType<FontConfig.FontConfigData>>;
 
     /**
      * Template data for a given font definition.
@@ -47,9 +45,9 @@ declare global {
 
     override activateListeners(html: JQuery<HTMLElement>): void;
 
-    protected override _updateObject(event: Event, formData?: object | undefined): Promise<void>;
+    protected override _updateObject(event: Event, formData?: object): Promise<void>;
 
-    close(options?: FormApplication.CloseOptions | undefined): Promise<void>;
+    close(options?: FormApplication.CloseOptions): Promise<void>;
 
     /**
      * Handle application controls.

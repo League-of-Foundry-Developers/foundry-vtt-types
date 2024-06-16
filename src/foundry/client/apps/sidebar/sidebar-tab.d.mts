@@ -42,7 +42,7 @@ declare global {
      */
     get tabName(): string;
 
-    override getData(options?: Partial<Options> | undefined): Promise<object>; // TODO: implement GetDataReturnType
+    override getData(options?: Partial<Options>): Promise<object>; // TODO: implement GetDataReturnType
 
     protected override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 

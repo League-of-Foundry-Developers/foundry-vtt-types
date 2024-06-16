@@ -67,7 +67,7 @@ declare global {
      * @param nTurns - The maximum number of turns in the encounter
      * @returns The decimal representation
      */
-    protected _getCombatTime(round: number, turn: number, nTurns?: number | undefined): number;
+    protected _getCombatTime(round: number, turn: number, nTurns?: number): number;
 
     /**
      * Format a number of rounds and turns into a human-readable duration label

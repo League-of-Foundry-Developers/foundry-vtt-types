@@ -213,10 +213,7 @@ declare global {
      * @deprecated since v11, will be removed in v13
      * @remarks "Tile#testOcclusion has been deprecated in favor of PrimaryCanvasObject#testOcclusion"
      */
-    testOcclusion(
-      token: InstanceType<ConfiguredObjectClassForName<"Token">>,
-      options?: Tile.OcclusionOptions | undefined,
-    ): boolean;
+    testOcclusion(token: InstanceType<ConfiguredObjectClassForName<"Token">>, options?: Tile.OcclusionOptions): boolean;
 
     /**
      * @deprecated since v11, will be removed in v13

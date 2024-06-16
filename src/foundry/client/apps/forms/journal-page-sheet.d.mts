@@ -38,7 +38,7 @@ declare global {
     toc: Record<string, JournalEntryPage.JournalEntryPageHeading>;
 
     override getData(
-      options?: Partial<Options> | undefined,
+      options?: Partial<Options>,
     ): MaybePromise<GetDataReturnType<JournalPageSheet.JournalPageSheetData>>;
 
     protected override _renderInner(data: ReturnType<this["getData"]>): Promise<JQuery<HTMLElement>>;
@@ -49,8 +49,8 @@ declare global {
 
     override activateEditor(
       name: string,
-      options?: TextEditor.Options | undefined,
-      initialContent?: string | undefined,
+      options?: TextEditor.Options,
+      initialContent?: string,
     ): Promise<Editor | EditorView>;
 
     /**
@@ -101,14 +101,14 @@ declare global {
     static override get defaultOptions(): JournalPageSheet.Options;
 
     override getData(
-      options?: Partial<JournalPageSheet.Options> | undefined,
+      options?: Partial<JournalPageSheet.Options>,
     ): Promise<GetDataReturnType<JournalTextPageSheet.TextData>>;
 
-    override close(options?: FormApplication.CloseOptions | undefined): Promise<void>;
+    override close(options?: FormApplication.CloseOptions): Promise<void>;
 
     protected override _render(
-      force?: boolean | undefined,
-      options?: Application.RenderOptions<JournalPageSheet.Options> | undefined,
+      force?: boolean,
+      options?: Application.RenderOptions<JournalPageSheet.Options>,
     ): Promise<void>;
 
     /**
@@ -164,7 +164,7 @@ declare global {
     static override get defaultOptions(): JournalPageSheet.Options;
 
     override getData(
-      options?: Partial<JournalPageSheet.Options> | undefined,
+      options?: Partial<JournalPageSheet.Options>,
     ): MaybePromise<GetDataReturnType<JournalVideoPageSheet.VideoData>>;
 
     override activateListeners(html: JQuery<HTMLElement>): void;
@@ -181,7 +181,7 @@ declare global {
       start?: number;
     };
 
-    protected override _getSubmitData(updateData?: object | null | undefined): Record<string, unknown>;
+    protected override _getSubmitData(updateData?: object | null): Record<string, unknown>;
 
     /**
      * Convert time components to a timestamp in seconds.
@@ -225,7 +225,7 @@ declare global {
     override activateListeners(html: JQuery<HTMLElement>): void;
 
     override getData(
-      options?: Partial<JournalPageSheet.Options> | undefined,
+      options?: Partial<JournalPageSheet.Options>,
     ): MaybePromise<GetDataReturnType<JournalPDFPageSheet.PDFData>>;
 
     protected override _renderInner(data: ReturnType<this["getData"]>): Promise<JQuery<HTMLElement>>;
@@ -267,7 +267,7 @@ declare global {
     override get template(): string;
 
     override getData(
-      options?: Partial<JournalPageSheet.Options> | undefined,
+      options?: Partial<JournalPageSheet.Options>,
     ): Promise<GetDataReturnType<MarkdownJournalPageSheet.MarkdownData>>;
 
     override activateListeners(html: JQuery<HTMLElement>): void;
@@ -296,14 +296,14 @@ declare global {
    */
   class JournalTextTinyMCESheet extends JournalTextPageSheet {
     override getData(
-      options?: Partial<JournalPageSheet.Options> | undefined,
+      options?: Partial<JournalPageSheet.Options>,
     ): Promise<GetDataReturnType<JournalTextTinyMCESheet.MCEData>>;
 
-    override close(options?: FormApplication.CloseOptions | undefined): Promise<void>;
+    override close(options?: FormApplication.CloseOptions): Promise<void>;
 
     protected override _render(
-      force?: boolean | undefined,
-      options?: Application.RenderOptions<JournalPageSheet.Options> | undefined,
+      force?: boolean,
+      options?: Application.RenderOptions<JournalPageSheet.Options>,
     ): Promise<void>;
   }
 

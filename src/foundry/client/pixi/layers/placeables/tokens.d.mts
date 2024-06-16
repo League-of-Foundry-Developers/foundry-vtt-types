@@ -52,7 +52,7 @@ declare global {
      */
     get ownedTokens(): ReturnType<this["placeables"]["filter"]>;
 
-    override _draw(options?: Record<string, unknown> | undefined): Promise<void>;
+    override _draw(options?: Record<string, unknown>): Promise<void>;
 
     override _tearDown(options?: Record<string, unknown>): Promise<void>;
 

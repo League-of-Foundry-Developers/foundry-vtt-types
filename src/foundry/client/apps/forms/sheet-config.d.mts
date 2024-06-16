@@ -71,7 +71,7 @@ declare global {
       documentClass: DocumentConstructor,
       scope: string,
       sheetClass: typeof FormApplication,
-      config?: DocumentSheetConfig.RegisterSheetOptions | undefined,
+      config?: DocumentSheetConfig.RegisterSheetOptions,
     ): void;
 
     /**

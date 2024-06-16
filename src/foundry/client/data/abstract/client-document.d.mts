@@ -351,8 +351,8 @@ declare class ClientDocument<
    */
   static createDialog<T extends DocumentConstructor>(
     this: T,
-    data?: DeepPartial<ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>)> | undefined,
-    context?: (Pick<DocumentModificationContext, "parent" | "pack"> & Partial<DialogOptions>) | undefined,
+    data?: DeepPartial<ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>)>,
+    context?: Pick<DocumentModificationContext, "parent" | "pack"> & Partial<DialogOptions>,
   ): Promise<InstanceType<ConfiguredDocumentClass<T>> | null | undefined>;
 
   /**
@@ -361,13 +361,13 @@ declare class ClientDocument<
    *                  (default: `{}`)
    * @returns A Promise which resolves to the deleted Document
    */
-  deleteDialog(options?: Partial<DialogOptions> | undefined): Promise<this | false | null | undefined>;
+  deleteDialog(options?: Partial<DialogOptions>): Promise<this | false | null | undefined>;
 
   /**
    * Export document data to a JSON file which can be saved by the client and later imported into a different session.
    * @param options - Additional options passed to the {@link ClientDocument#toCompendium} method
    */
-  exportToJSON(options?: InexactPartial<ClientDocument.CompendiumExportOptions> | undefined): void;
+  exportToJSON(options?: InexactPartial<ClientDocument.ToCompendiumOptions>): void;
 
   /**
    * Create a content link for this Document.
@@ -457,12 +457,10 @@ declare class ClientDocument<
     StateOpt extends boolean = true,
     IdOpt extends boolean = false,
   >(
-    pack?: CompendiumCollection<CompendiumCollection.Metadata> | null | undefined,
-    options?:
-      | InexactPartial<
-          ClientDocument.CompendiumExportOptions<FlagsOpt, SourceOpt, SortOpt, FolderOpt, OwnershipOpt, StateOpt, IdOpt>
-        >
-      | undefined,
+    pack?: CompendiumCollection<CompendiumCollection.Metadata> | null,
+    options?: InexactPartial<
+      ClientDocument.CompendiumExportOptions<FlagsOpt, SourceOpt, SortOpt, FolderOpt, OwnershipOpt, StateOpt, IdOpt>
+    >,
   ): Omit<
     BaseDocument["_source"],
     | (IdOpt extends false ? "_id" : never)

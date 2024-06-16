@@ -154,7 +154,7 @@ declare global {
      */
     applyThreshold(sourceType: string, sourceOrigin: Point, externalRadius: number): boolean;
 
-    override control(options?: Wall.ControlOptions | undefined): boolean;
+    override control(options?: Wall.ControlOptions): boolean;
 
     protected override _destroy(options?: PIXI.IDestroyOptions | boolean): void;
 

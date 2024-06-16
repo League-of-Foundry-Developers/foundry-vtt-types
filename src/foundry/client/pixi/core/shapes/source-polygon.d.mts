@@ -100,7 +100,7 @@ declare global {
     static create<T extends ConstructorOf<PointSourcePolygon>>(
       this: T,
       origin: Point,
-      config?: Parameters<InstanceType<T>["initialize"]>[1] | undefined,
+      config?: Parameters<InstanceType<T>["initialize"]>[1],
     ): InstanceType<T>;
 
     /**

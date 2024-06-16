@@ -29,10 +29,7 @@ declare global {
      */
     static override get defaultOptions(): DocumentSheetOptions<AmbientLightDocument>;
 
-    protected override _render(
-      force?: boolean | undefined,
-      options?: Application.RenderOptions<Options> | undefined,
-    ): Promise<void>;
+    protected override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
     override getData(options?: Partial<Options>): MaybePromise<object>;
 
@@ -60,7 +57,7 @@ declare global {
 
     protected override _onChangeTab(event: MouseEvent | null, tabs: Tabs, active: string): void;
 
-    protected override _getSubmitData(updateData?: object | null | undefined): AmbientLightConfig.FormData;
+    protected override _getSubmitData(updateData?: object | null): AmbientLightConfig.FormData;
 
     protected override _updateObject(event: Event, formData: AmbientLightConfig.FormData): Promise<unknown>;
 

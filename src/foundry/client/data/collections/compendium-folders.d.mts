@@ -6,7 +6,7 @@ declare global {
 
     get documentName(): "Folder";
 
-    override render(force?: boolean | undefined, options?: ApplicationOptions | undefined): void;
+    override render(force?: boolean, options?: ApplicationOptions): void;
   }
 }
 

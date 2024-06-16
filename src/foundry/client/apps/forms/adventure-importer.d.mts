@@ -33,9 +33,7 @@ declare global {
      */
     static override get defaultOptions(): AdventureImporter.Options;
 
-    override getData(
-      options?: Partial<Options> | undefined,
-    ): Promise<GetDataReturnType<AdventureImporter.AdventureImporterData>>;
+    override getData(options?: Partial<Options>): Promise<GetDataReturnType<AdventureImporter.AdventureImporterData>>;
 
     override activateListeners(html: JQuery<HTMLElement>): void;
 

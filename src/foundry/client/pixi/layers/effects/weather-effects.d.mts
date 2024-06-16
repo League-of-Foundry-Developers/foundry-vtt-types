@@ -63,15 +63,15 @@ declare global {
 
     set elevation(value);
 
-    protected override _draw(options?: Record<string, unknown> | undefined): Promise<void>;
+    protected override _draw(options?: Record<string, unknown>): Promise<void>;
 
-    protected override _tearDown(options?: Record<string, unknown> | undefined): Promise<void>;
+    protected override _tearDown(options?: Record<string, unknown>): Promise<void>;
 
     /**
      * Initialize the weather container from a weather config object.
      * @param weatherEffectsConfig - Weather config object (or null/undefined to clear the container).
      */
-    initializeEffects(weatherEffectsConfig?: null | undefined | WeatherLayer.WeatherEffectsConfig): void;
+    initializeEffects(weatherEffectsConfig?: WeatherLayer.WeatherEffectsConfig | null): void;
 
     /**
      * Clear the weather container.

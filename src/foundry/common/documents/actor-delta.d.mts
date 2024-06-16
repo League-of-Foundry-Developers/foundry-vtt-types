@@ -28,11 +28,7 @@ declare class BaseActorDelta extends Document<
 
   static override defineSchema(): BaseActorDelta.Schema;
 
-  override canUserModify(
-    user: documents.BaseUser,
-    action: "create" | "update" | "delete",
-    data?: object | undefined,
-  ): boolean;
+  override canUserModify(user: documents.BaseUser, action: "create" | "update" | "delete", data?: object): boolean;
 
   override testUserPermission(
     user: documents.BaseUser,
@@ -60,7 +56,7 @@ declare class BaseActorDelta extends Document<
 
   //TODO: Figure out if this override still applies
   toObject(source: true): this["_source"];
-  toObject(source?: boolean | undefined): ReturnType<this["schema"]["toObject"]>;
+  toObject(source?: boolean): ReturnType<this["schema"]["toObject"]>;
 }
 
 export default BaseActorDelta;

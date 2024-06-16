@@ -46,8 +46,8 @@ declare global {
 
     override activateEditor(
       name: string,
-      options?: TextEditor.Options | undefined,
-      initialContent?: string | undefined,
+      options?: TextEditor.Options,
+      initialContent?: string,
     ): ReturnType<FormApplication["activateEditor"]>;
   }
 

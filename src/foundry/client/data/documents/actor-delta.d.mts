@@ -10,7 +10,7 @@ declare global {
    * @see {@link TokenDocument}  The TokenDocument document type which contains ActorDelta embedded documents.
    */
   class ActorDelta extends ClientDocumentMixin(foundry.documents.BaseActorDelta) {
-    protected override _configure(options?: { pack?: string | null } | undefined): void;
+    protected override _configure(options?: { pack?: string | null }): void;
 
     protected override _initialize(options?: any): void;
     protected override _initialize(): void;
@@ -25,8 +25,8 @@ declare global {
     override prepareEmbeddedDocuments(): void;
 
     override updateSource(
-      changes?: SchemaField.InnerAssignmentType<BaseActor.Schema> | undefined,
-      options?: { dryRun?: boolean; fallback?: boolean; recursive?: boolean } | undefined,
+      changes?: SchemaField.InnerAssignmentType<BaseActor.Schema>,
+      options?: { dryRun?: boolean; fallback?: boolean; recursive?: boolean },
     ): object;
 
     override reset(): void;

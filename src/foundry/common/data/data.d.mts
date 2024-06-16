@@ -316,13 +316,13 @@ declare class PrototypeToken extends DataModel<PrototypeToken.Schema, documents.
   get actor(): this["parent"];
 
   toObject(source: true): this["_source"] & { actorId: string | undefined };
-  toObject(source?: boolean | undefined): ReturnType<this["schema"]["toObject"]>;
+  toObject(source?: boolean): ReturnType<this["schema"]["toObject"]>;
 
   static get database(): DatabaseBackend;
 
   static migrateData(source: object): object;
 
-  static shimData(data: object, options?: { embedded?: boolean } | undefined): object;
+  static shimData(data: object, options?: { embedded?: boolean }): object;
 
   update(data: unknown, options: unknown): unknown;
 

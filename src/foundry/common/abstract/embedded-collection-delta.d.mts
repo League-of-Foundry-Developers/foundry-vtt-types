@@ -91,7 +91,7 @@ export default class EmbeddedCollectionDelta<
     }>,
   ): void;
 
-  delete(key: string, options?: { modifySource?: boolean } | undefined): boolean;
+  delete(key: string, options?: { modifySource?: boolean }): boolean;
 
   protected override _delete(key: string, options: Record<string, unknown>): void;
 }

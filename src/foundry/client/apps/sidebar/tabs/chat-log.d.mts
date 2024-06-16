@@ -145,7 +145,7 @@ declare global {
      *                          (default: `{}`)
      * @returns A Promise which resolves once the message is posted
      */
-    postOne(message: ChatMessage.ConfiguredInstance, options?: ChatLog.PostOneOptions | undefined): Promise<void>;
+    postOne(message: ChatMessage.ConfiguredInstance, options?: ChatLog.PostOneOptions): Promise<void>;
 
     /**
      * Scroll the chat log to the bottom

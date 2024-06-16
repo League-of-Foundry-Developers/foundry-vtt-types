@@ -22,9 +22,7 @@ declare global {
       IdOpt extends boolean = false,
     >(
       document: Macro.ConfiguredInstance | foundry.documents.BaseMacro.ConstructorData,
-      options?:
-        | InexactPartial<WorldCollection.FromCompendiumOptions<FolderOpt, SortOpt, OwnershipOpt, IdOpt>>
-        | undefined,
+      options?: InexactPartial<WorldCollection.FromCompendiumOptions<FolderOpt, SortOpt, OwnershipOpt, IdOpt>>,
     ): Omit<
       Macro["_source"],
       | ClientDocument.OmitProperty<FolderOpt, "folder">

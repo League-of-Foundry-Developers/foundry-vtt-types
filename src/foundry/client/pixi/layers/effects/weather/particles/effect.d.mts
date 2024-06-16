@@ -29,7 +29,7 @@ declare global {
      */
     getParticleEmitters(options?: Record<string, unknown>): PIXI.particles.Emitter[];
 
-    override destroy(options?: boolean | PIXI.IDestroyOptions | undefined): void;
+    override destroy(options?: boolean | PIXI.IDestroyOptions): void;
 
     /**
      * Begin animation for the configured emitters.
