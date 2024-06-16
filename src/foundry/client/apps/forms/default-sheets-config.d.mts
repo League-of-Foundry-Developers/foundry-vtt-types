@@ -19,7 +19,7 @@ declare global {
 
     override _prepareCategoryData(): PackageConfiguration.CategoryData;
 
-    protected _updateObject(event: Event, formData?: object | undefined): Promise<unknown>;
+    protected _updateObject(event: Event, formData?: object): Promise<unknown>;
 
     protected _onResetDefaults(event: JQuery.ClickEvent): void;
   }

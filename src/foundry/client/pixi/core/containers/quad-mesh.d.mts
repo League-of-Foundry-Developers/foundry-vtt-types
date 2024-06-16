@@ -61,6 +61,6 @@ declare global {
      */
     containsPoint(point: PIXI.IPointData): boolean;
 
-    override destroy(options?: boolean | PIXI.IDestroyOptions | undefined): void;
+    override destroy(options?: boolean | PIXI.IDestroyOptions): void;
   }
 }

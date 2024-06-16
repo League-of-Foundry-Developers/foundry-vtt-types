@@ -83,7 +83,7 @@ declare global {
      * Compute the field-of-vision for an object, determining its effective line-of-sight and field-of-vision polygons
      * @param options - (default: `{}`)
      */
-    updateSource(options?: AmbientSound.UpdateSourceOptions | undefined): void;
+    updateSource(options?: AmbientSound.UpdateSourceOptions): void;
 
     protected override _onCreate(
       data: foundry.documents.BaseAmbientSound["_source"],

@@ -58,7 +58,7 @@ declare global {
      * @param face - A specific face to flip the card to
      * @returns A reference to this card after the flip operation is complete
      */
-    flip(face?: number | null | undefined): Promise<Card.ConfiguredInstance | undefined>;
+    flip(face?: number | null): Promise<Card.ConfiguredInstance | undefined>;
 
     /**
      * Pass this Card to some other Cards document.
@@ -66,30 +66,21 @@ declare global {
      * @param options - (default: `{}`)
      * @returns A reference to this card after the it has been passed to another parent document
      */
-    pass(
-      to: Cards.ConfiguredInstance,
-      options?: Cards.PassOptions | undefined,
-    ): Promise<Card.ConfiguredInstance | undefined>;
+    pass(to: Cards.ConfiguredInstance, options?: Cards.PassOptions): Promise<Card.ConfiguredInstance | undefined>;
 
     /**
      * Play a specific card to some other Cards document.
      * This method is currently a more semantic alias for Card#pass.
      * @see Card#pass
      */
-    play(
-      to: Cards.ConfiguredInstance,
-      options?: Cards.PassOptions | undefined,
-    ): Promise<Card.ConfiguredInstance | undefined>;
+    play(to: Cards.ConfiguredInstance, options?: Cards.PassOptions): Promise<Card.ConfiguredInstance | undefined>;
 
     /**
      * Discard a specific card to some other Cards document.
      * This method is currently a more semantic alias for Card#pass.
      * @see Card#pass
      */
-    discard(
-      to: Cards.ConfiguredInstance,
-      options?: Cards.PassOptions | undefined,
-    ): Promise<Card.ConfiguredInstance | undefined>;
+    discard(to: Cards.ConfiguredInstance, options?: Cards.PassOptions): Promise<Card.ConfiguredInstance | undefined>;
 
     /**
      * Recall this Card to its original Cards parent.
@@ -97,7 +88,7 @@ declare global {
      *                  (default: `{}`)
      * @returns A reference to the reset card belonging to its original parent
      */
-    recall(options?: Cards.ResetOptions | undefined): Promise<Card.ConfiguredInstance>;
+    recall(options?: Cards.ResetOptions): Promise<Card.ConfiguredInstance>;
 
     /**
      * Create a chat message which displays this Card.
@@ -109,7 +100,7 @@ declare global {
      */
     toMessage(
       messageData?: DeepPartial<foundry.documents.BaseChatMessage.ConstructorData>,
-      options?: DocumentModificationContext | undefined,
+      options?: DocumentModificationContext,
     ): Promise<ChatMessage.ConfiguredInstance | undefined>;
   }
 

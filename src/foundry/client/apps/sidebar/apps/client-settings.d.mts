@@ -40,7 +40,7 @@ declare global {
      */
     protected _previewFontScaling(event: JQuery.ChangeEvent): void;
 
-    override close(options?: Application.CloseOptions | undefined): Promise<void>;
+    override close(options?: Application.CloseOptions): Promise<void>;
 
     protected override _updateObject(event: Event, formData: SettingsConfig.FormData): Promise<unknown>;
 

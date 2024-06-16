@@ -66,8 +66,8 @@ declare global {
      */
     deal(
       to: Cards.ConfiguredInstance[],
-      number?: number | undefined,
-      options?: InexactPartial<Cards.DealOptions> | undefined,
+      number?: number,
+      options?: InexactPartial<Cards.DealOptions>,
     ): Promise<Cards.ConfiguredInstance>;
 
     /**
@@ -81,7 +81,7 @@ declare global {
     pass(
       to: Cards.ConfiguredInstance,
       ids: string[],
-      options?: InexactPartial<Cards.PassOptions> | undefined,
+      options?: InexactPartial<Cards.PassOptions>,
     ): Promise<Card.ConfiguredInstance[]>;
 
     /**
@@ -94,8 +94,8 @@ declare global {
      */
     draw(
       from: Cards.ConfiguredInstance,
-      number?: number | undefined,
-      options?: InexactPartial<Cards.DrawOptions> | undefined,
+      number?: number,
+      options?: InexactPartial<Cards.DrawOptions>,
     ): Promise<Card.ConfiguredInstance[]>;
 
     /**
@@ -103,7 +103,7 @@ declare global {
      * @param options - (default: `{}`)
      * @returns The Cards document after the shuffle operation has completed
      */
-    shuffle(options?: InexactPartial<Cards.ShuffleOptions> | undefined): Promise<Cards.ConfiguredInstance>;
+    shuffle(options?: InexactPartial<Cards.ShuffleOptions>): Promise<Cards.ConfiguredInstance>;
 
     /**
      * Reset the Cards stack, retrieving all original cards from other stacks where they may have been drawn if this is a
@@ -112,7 +112,7 @@ declare global {
      *                  (default: `{}`)
      * @returns The Cards document after the reset operation has completed
      */
-    reset(options?: InexactPartial<Cards.ResetOptions> | undefined): Promise<Cards.ConfiguredInstance>;
+    reset(options?: InexactPartial<Cards.ResetOptions>): Promise<Cards.ConfiguredInstance>;
 
     /**
      * Perform a reset operation for a deck, retrieving all original cards from other stacks where they may have been
@@ -122,7 +122,7 @@ declare global {
      * @returns The Cards document after the reset operation has completed.
      * @internal
      */
-    protected _resetDeck(options?: InexactPartial<Cards.ResetOptions> | undefined): Promise<Cards.ConfiguredInstance>;
+    protected _resetDeck(options?: InexactPartial<Cards.ResetOptions>): Promise<Cards.ConfiguredInstance>;
 
     /**
      * Return all cards in this stack to their original decks.
@@ -131,7 +131,7 @@ declare global {
      * @returns The Cards document after the return operation has completed.
      * @internal
      */
-    protected _resetStack(options?: InexactPartial<Cards.ResetOptions> | undefined): Promise<Cards.ConfiguredInstance>;
+    protected _resetStack(options?: InexactPartial<Cards.ResetOptions>): Promise<Cards.ConfiguredInstance>;
 
     /**
      * A sorting function that is used to determine the standard order of Card documents within an un-shuffled stack.
@@ -184,8 +184,8 @@ declare global {
     // TODO: It's a bit weird that we have to do it in this generic way but otherwise there is an error overriding this. Investigate later.
     static override deleteDocuments<T extends DocumentConstructor>(
       this: T,
-      ids?: string[] | undefined,
-      context?: DocumentModificationContext | undefined,
+      ids?: string[],
+      context?: DocumentModificationContext,
     ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
 
     /**
@@ -219,13 +219,13 @@ declare global {
      */
     resetDialog(): Promise<Cards.ConfiguredInstance | false | null>;
 
-    override deleteDialog(options?: Partial<DialogOptions> | undefined): Promise<this | false | null | undefined>;
+    override deleteDialog(options?: Partial<DialogOptions>): Promise<this | false | null | undefined>;
 
     // TODO: It's a bit weird that we have to do it in this generic way but otherwise there is an error overriding this. Investigate later.
     static override createDialog<T extends DocumentConstructor>(
       this: T,
-      data?: DeepPartial<Cards["_source"] | (Cards["_source"] & Record<string, unknown>)> | undefined,
-      context?: (Pick<DocumentModificationContext, "parent" | "pack"> & Partial<DialogOptions>) | undefined,
+      data?: DeepPartial<Cards["_source"] | (Cards["_source"] & Record<string, unknown>)>,
+      context?: Pick<DocumentModificationContext, "parent" | "pack"> & Partial<DialogOptions>,
     ): Promise<InstanceType<ConfiguredDocumentClass<T>> | null | undefined>;
   }
 

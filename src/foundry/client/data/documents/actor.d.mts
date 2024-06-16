@@ -24,7 +24,7 @@ declare global {
    * ```
    */
   class Actor extends ClientDocumentMixin(foundry.documents.BaseActor) {
-    protected override _configure(options?: { pack?: string | null } | undefined): void;
+    protected override _configure(options?: { pack?: string | null }): void;
 
     /**
      * Maintain a list of Token Documents that represent this Actor, stored by Scene.

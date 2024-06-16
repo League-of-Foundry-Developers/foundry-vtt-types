@@ -31,9 +31,7 @@ declare global {
       IdOpt extends boolean = false,
     >(
       document: Actor.ConfiguredInstance | foundry.documents.BaseActor.ConstructorData,
-      options?:
-        | InexactPartial<WorldCollection.FromCompendiumOptions<FolderOpt, SortOpt, OwnershipOpt, IdOpt>>
-        | undefined,
+      options?: InexactPartial<WorldCollection.FromCompendiumOptions<FolderOpt, SortOpt, OwnershipOpt, IdOpt>>,
     ): Omit<
       Actor["_source"],
       | ClientDocument.OmitProperty<FolderOpt, "folder">

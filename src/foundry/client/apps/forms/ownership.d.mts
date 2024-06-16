@@ -25,7 +25,7 @@ declare global {
     override get title(): string;
 
     override getData(
-      options?: Partial<Options> | undefined,
+      options?: Partial<Options>,
     ): MaybePromise<GetDataReturnType<DocumentOwnershipConfig.DocumentOwnershipConfigData>>;
 
     protected override _updateObject(event: Event, formData: DocumentOwnershipConfig.FormData): Promise<unknown>;

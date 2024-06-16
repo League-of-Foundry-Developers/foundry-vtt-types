@@ -57,15 +57,13 @@ declare global {
     sync(): void | Promise<void> | Promise<Sound>;
 
     toAnchor(
-      options?:
-        | InexactPartial<{
-            attrs: Record<string, string>;
-            dataset: Record<string, string>;
-            classes: string[];
-            name: string;
-            icon: string;
-          }>
-        | undefined,
+      options?: InexactPartial<{
+        attrs: Record<string, string>;
+        dataset: Record<string, string>;
+        classes: string[];
+        name: string;
+        icon: string;
+      }>,
     ): HTMLAnchorElement;
 
     _onClickDocumentLink(event: MouseEvent): ReturnType<Playlist.ConfiguredInstance["stopSound" | "playSound"]>;

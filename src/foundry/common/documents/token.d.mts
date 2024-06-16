@@ -81,7 +81,7 @@ declare class BaseToken extends Document<BaseToken.Schema, BaseToken.Metadata, S
 
   //TODO: Update with the Delta conditionality
   toObject(source: true): this["_source"];
-  toObject(source?: boolean | undefined): ReturnType<this["schema"]["toObject"]>;
+  toObject(source?: boolean): ReturnType<this["schema"]["toObject"]>;
 }
 
 /**

@@ -34,7 +34,7 @@ declare abstract class Document<
 
   override parent: Parent;
 
-  protected override _configure(options?: { pack?: string | null } | undefined): void;
+  protected override _configure(options?: { pack?: string | null }): void;
 
   /**
    * An immutable reverse-reference to the name of the collection that this Document exists in on its parent, if any.
@@ -748,7 +748,7 @@ declare abstract class Document<
   static get hasSystemData(): boolean;
 
   override toObject(source: true): this["_source"];
-  override toObject(source?: boolean | undefined): ReturnType<this["schema"]["toObject"]>;
+  override toObject(source?: boolean): ReturnType<this["schema"]["toObject"]>;
 
   /**
    * A reusable helper for adding migration shims.

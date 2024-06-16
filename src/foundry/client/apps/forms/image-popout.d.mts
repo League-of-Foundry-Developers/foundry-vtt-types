@@ -68,7 +68,7 @@ declare global {
 
     override get title(): string;
 
-    override getData(options?: Partial<Options> | undefined): MaybePromise<object>;
+    override getData(options?: Partial<Options>): MaybePromise<object>;
 
     /**
      * Test whether the title of the image popout should be visible to the user
@@ -80,10 +80,7 @@ declare global {
      */
     getRelatedObject(): Promise<foundry.abstract.Document<any, any, any> | null>;
 
-    protected override _render(
-      force?: boolean,
-      options?: Application.RenderOptions<Options> | undefined,
-    ): Promise<void>;
+    protected override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
     override activateListeners(html: JQuery<HTMLElement>): void;
 

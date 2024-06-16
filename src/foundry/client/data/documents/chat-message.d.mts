@@ -80,9 +80,7 @@ declare global {
      *
      * @returns The identified speaker data
      */
-    static getSpeaker(
-      options?: InexactPartial<ChatMessage.GetSpeakerOptions> | undefined,
-    ): ChatMessage["_source"]["speaker"];
+    static getSpeaker(options?: InexactPartial<ChatMessage.GetSpeakerOptions>): ChatMessage["_source"]["speaker"];
 
     /**
      * A helper to prepare the speaker object based on a target TokenDocument

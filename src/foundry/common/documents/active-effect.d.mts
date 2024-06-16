@@ -29,11 +29,7 @@ declare class BaseActiveEffect extends Document<
    */
   constructor(data?: BaseActiveEffect.ConstructorData, context?: DocumentConstructionContext);
 
-  override canUserModify(
-    user: documents.BaseUser,
-    action: "create" | "update" | "delete",
-    data?: object | undefined,
-  ): boolean;
+  override canUserModify(user: documents.BaseUser, action: "create" | "update" | "delete", data?: object): boolean;
 
   static override metadata: Readonly<BaseActiveEffect.Metadata>;
 

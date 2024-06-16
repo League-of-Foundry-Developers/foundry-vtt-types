@@ -51,11 +51,11 @@ declare class BaseDrawing extends Document<BaseDrawing.Schema, BaseDrawing.Metad
     }>,
   ): boolean;
 
-  static override cleanData(source?: object | undefined, options?: fields.DataField.CleanOptions | undefined): object;
+  static override cleanData(source?: object, options?: fields.DataField.CleanOptions): object;
 
   static override migrateData(source: object): object;
 
-  static override shimData(data: object, { embedded }?: { embedded?: boolean } | undefined): object;
+  static override shimData(data: object, { embedded }?: { embedded?: boolean }): object;
 }
 export default BaseDrawing;
 

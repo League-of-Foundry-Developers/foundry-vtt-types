@@ -27,16 +27,9 @@ declare global {
 
     override getData(): Promise<GetDataReturnType<BaseSheet.BaseSheetData>>;
 
-    protected _render(
-      force?: boolean | undefined,
-      options?: Application.RenderOptions<Options> | undefined,
-    ): Promise<void>;
+    protected _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
-    activateEditor(
-      name: string,
-      options?: TextEditor.Options | undefined,
-      initialContent?: string | undefined,
-    ): Promise<Editor | EditorView>;
+    activateEditor(name: string, options?: TextEditor.Options, initialContent?: string): Promise<Editor | EditorView>;
   }
 
   namespace BaseSheet {

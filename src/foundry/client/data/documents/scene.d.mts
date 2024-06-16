@@ -169,20 +169,10 @@ declare global {
       StateOpt extends boolean = true,
       IdOpt extends boolean = false,
     >(
-      pack?: CompendiumCollection<CompendiumCollection.Metadata> | null | undefined,
-      options?:
-        | InexactPartial<
-            ClientDocument.CompendiumExportOptions<
-              FlagsOpt,
-              SourceOpt,
-              SortOpt,
-              FolderOpt,
-              OwnershipOpt,
-              StateOpt,
-              IdOpt
-            >
-          >
-        | undefined,
+      pack?: CompendiumCollection<CompendiumCollection.Metadata> | null,
+      options?: InexactPartial<
+        ClientDocument.CompendiumExportOptions<FlagsOpt, SourceOpt, SortOpt, FolderOpt, OwnershipOpt, StateOpt, IdOpt>
+      >,
     ): Omit<
       this["_source"],
       | (IdOpt extends false ? "_id" : never)

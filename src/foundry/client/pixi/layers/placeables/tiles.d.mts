@@ -65,7 +65,7 @@ declare global {
      */
     protected _activateSubLayer(foreground?: boolean): void;
 
-    _tearDown(options?: Record<string, unknown> | undefined): Promise<void>;
+    _tearDown(options?: Record<string, unknown>): Promise<void>;
 
     protected _onDragLeftStart(event: PIXI.FederatedEvent): Promise<unknown>;
 

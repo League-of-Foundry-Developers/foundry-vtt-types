@@ -57,7 +57,7 @@ declare global {
      * @param options - Override settings used in place of those saved to the scene data.
      *                  (default: `{}`)
      */
-    draw(options?: BaseGrid.DrawOptions | undefined): this;
+    draw(options?: BaseGrid.DrawOptions): this;
 
     /**
      * Highlight a grid position for a certain coordinates
@@ -159,7 +159,7 @@ declare global {
      *                   (default: `{}`)
      * @returns An Array of distance measurements for each segment
      */
-    measureDistances(segments: GridLayer.Segment[], options?: GridLayer.MeasureDistancesOptions | undefined): number[];
+    measureDistances(segments: GridLayer.Segment[], options?: GridLayer.MeasureDistancesOptions): number[];
 
     /**
      * Get the grid row and column positions which are neighbors of a certain position

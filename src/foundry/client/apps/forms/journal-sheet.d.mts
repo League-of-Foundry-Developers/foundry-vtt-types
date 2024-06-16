@@ -152,7 +152,7 @@ declare global {
      */
     protected _observeHeadings(): void;
 
-    override close(options?: FormApplication.CloseOptions | undefined): Promise<void>;
+    override close(options?: FormApplication.CloseOptions): Promise<void>;
 
     /**
      * Handle clicking the previous and next page buttons.

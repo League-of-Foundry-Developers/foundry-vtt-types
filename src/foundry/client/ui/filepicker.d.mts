@@ -45,7 +45,7 @@ declare global {
     /**
      * @param options - Options that configure the behavior of the FilePicker
      */
-    constructor(options?: Partial<Options> | undefined);
+    constructor(options?: Partial<Options>);
 
     /**
      * The full requested path given by the user
@@ -177,7 +177,7 @@ declare global {
      * @returns An array of the inferred source and target directory path
      * @internal
      */
-    protected _inferCurrentDirectory(target: string | undefined): [string, string];
+    protected _inferCurrentDirectory(target: string): [string, string];
 
     /**
      * Get the valid file extensions for a given named file picker type
@@ -221,10 +221,10 @@ declare global {
      */
     static get uploadURL(): string;
 
-    override getData(options?: Partial<Options> | undefined): MaybePromise<object>;
+    override getData(options?: Partial<Options>): MaybePromise<object>;
 
     override setPosition(
-      position?: Partial<Omit<Application.Position, "zIndex">> | undefined,
+      position?: Partial<Omit<Application.Position, "zIndex">>,
     ): void | (Application.Position & { height: number });
 
     /**
@@ -232,10 +232,7 @@ declare global {
      * @param target - The target within the currently active source location.
      * @param options - Browsing options (default: `{}`)
      */
-    browse(
-      target: string,
-      options?: FilePicker.BrowseOptions | undefined,
-    ): Promise<FilePicker.BrowseResult | undefined>;
+    browse(target: string, options?: FilePicker.BrowseOptions): Promise<FilePicker.BrowseResult>;
 
     /**
      * Browse files for a certain directory location
@@ -248,7 +245,7 @@ declare global {
     static browse(
       source: FilePicker.SourceType,
       target: string,
-      options?: FilePicker.BrowseOptions | undefined,
+      options?: FilePicker.BrowseOptions,
     ): Promise<FilePicker.BrowseResult>;
 
     /**
@@ -260,7 +257,7 @@ declare global {
     static configurePath(
       source: FilePicker.SourceType,
       target: string,
-      options?: FilePicker.ConfigurePathOptions | undefined,
+      options?: FilePicker.ConfigurePathOptions,
     ): Promise<FilePicker.ConfigurePathResult>;
 
     /**
@@ -272,7 +269,7 @@ declare global {
     static createDirectory(
       source: FilePicker.SourceType,
       target: string,
-      options?: FilePicker.CreateDirectoryOptions | undefined,
+      options?: FilePicker.CreateDirectoryOptions,
     ): Promise<string>;
 
     /**
@@ -284,15 +281,15 @@ declare global {
      */
     protected static _manageFiles(
       data: FilePicker.BrowseFilesData,
-      options?: FilePicker.BrowseOptions | undefined,
+      options?: FilePicker.BrowseOptions,
     ): Promise<FilePicker.BrowseResult>;
     protected static _manageFiles(
       data: FilePicker.ConfigurePathData,
-      options?: FilePicker.ConfigurePathOptions | undefined,
+      options?: FilePicker.ConfigurePathOptions,
     ): Promise<FilePicker.ConfigurePathResult>;
     protected static _manageFiles(
       data: FilePicker.CreateDirectoryData,
-      options?: FilePicker.CreateDirectoryOptions | undefined,
+      options?: FilePicker.CreateDirectoryOptions,
     ): Promise<string>;
 
     /**
@@ -310,8 +307,8 @@ declare global {
       source: FilePicker.SourceType,
       path: string,
       file: File,
-      body?: FilePicker.UploadBody | undefined,
-      options?: FilePicker.UploadOptions | undefined,
+      body?: FilePicker.UploadBody,
+      options?: FilePicker.UploadOptions,
     ): Promise<FilePicker.UploadResult | false | void | {}>;
 
     /**
@@ -329,14 +326,14 @@ declare global {
       packageId: string,
       path: string,
       file: File,
-      body?: FilePicker.UploadBody | undefined,
-      options?: FilePicker.UploadOptions | undefined,
+      body?: FilePicker.UploadBody,
+      options?: FilePicker.UploadOptions,
     ): Promise<FilePicker.UploadResult | false | void | {}>;
 
     /**
      * Additional actions performed when the file-picker UI is rendered
      */
-    override render(force?: boolean | undefined, options?: Application.RenderOptions<Options> | undefined): this;
+    override render(force?: boolean, options?: Application.RenderOptions<Options>): this;
 
     override activateListeners(html: JQuery): void;
 

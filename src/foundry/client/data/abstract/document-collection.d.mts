@@ -260,11 +260,7 @@ declare global {
      * @param deleteFolderId - The ID of the folder being deleted
      * @param deleteContents - Whether to delete the contents of the folder
      */
-    protected _onDeleteFolder(
-      parentFolder: Folder,
-      deleteFolderId: string,
-      deleteContents?: boolean | undefined,
-    ): string[];
+    protected _onDeleteFolder(parentFolder: Folder, deleteFolderId: string, deleteContents?: boolean): string[];
 
     /**
      * Generate the render context information provided for CRUD operations.

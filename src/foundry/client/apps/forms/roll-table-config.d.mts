@@ -54,7 +54,7 @@ declare global {
      * @returns The deleted TableResult document
      * @internal
      */
-    protected _onDeleteResult(event: JQuery.ClickEvent): Promise<TableResult.ConfiguredInstance | undefined>;
+    protected _onDeleteResult(event: JQuery.ClickEvent): Promise<TableResult.ConfiguredInstance>;
 
     protected override _onDrop(event: DragEvent): Promise<TableResult.ConfiguredInstance[]> | void;
 

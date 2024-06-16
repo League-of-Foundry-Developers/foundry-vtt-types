@@ -77,9 +77,9 @@ declare global {
 
     override activateListeners(html: JQuery): void;
 
-    override close(options?: FormApplication.CloseOptions | undefined): Promise<void>;
+    override close(options?: FormApplication.CloseOptions): Promise<void>;
 
-    protected override _getSubmitData(updateData?: object | null | undefined): TokenConfig.FormData;
+    protected override _getSubmitData(updateData?: object | null): TokenConfig.FormData;
 
     protected override _onChangeInput(event: JQuery.ChangeEvent): Promise<void>;
 
@@ -183,7 +183,7 @@ declare global {
     Options extends
       DocumentSheetOptions<TokenDocument.ConfiguredInstance> = DocumentSheetOptions<TokenDocument.ConfiguredInstance>,
   > extends TokenConfig<Options> {
-    constructor(object?: unknown, options?: Partial<Options> | undefined);
+    constructor(object?: unknown, options?: Partial<Options>);
 
     object: TokenDocument.ConfiguredInstance;
 

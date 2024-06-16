@@ -43,7 +43,7 @@ declare global {
 
     protected _onChangeInput(event: JQuery.ChangeEvent<any, any, any, any>): Promise<void | object>;
 
-    protected _getSubmitData(updateData?: object | null | undefined): WallConfig.FormData;
+    protected _getSubmitData(updateData?: object | null): WallConfig.FormData;
 
     protected override _updateObject(event: Event, formData: WallConfig.FormData): Promise<unknown>;
   }

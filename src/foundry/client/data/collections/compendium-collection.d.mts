@@ -187,7 +187,7 @@ declare global {
      * Load the Compendium index and cache it as the keys and values of the Collection.
      * @param options - Options which customize how the index is created
      */
-    getIndex(options?: CompendiumCollection.GetIndexOptions<T> | undefined): Promise<this["index"]>;
+    getIndex(options?: CompendiumCollection.GetIndexOptions<T>): Promise<this["index"]>;
 
     /**
      * Get a single Document from this Compendium by ID.
@@ -218,9 +218,7 @@ declare global {
      * await pack.getDocuments({ type__in: ["weapon", "armor"] });
      * ```
      */
-    getDocuments(
-      query?: Record<string, unknown> | undefined,
-    ): Promise<StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[]>;
+    getDocuments(query?: Record<string, unknown>): Promise<StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[]>;
 
     /**
      * Get the ownership level that a User has for this Compendium pack.
@@ -257,7 +255,7 @@ declare global {
      */
     importDocument(
       document: DocumentInstanceForCompendiumMetadata<T>,
-      options?: InexactPartial<ClientDocument.CompendiumExportOptions> | undefined,
+      options?: InexactPartial<ClientDocument.CompendiumExportOptions>,
     ): Promise<StoredDocument<DocumentInstanceForCompendiumMetadata<T>> | undefined>;
 
     /**
@@ -326,7 +324,7 @@ declare global {
      *          null if the dialog was closed without making a choice.
      */
     importDialog(
-      options?: DialogOptions | undefined,
+      options?: DialogOptions,
     ): Promise<StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[] | null | false>;
 
     /**
@@ -356,7 +354,7 @@ declare global {
      */
     static createCompendium<T extends CompendiumCollection.Metadata>(
       metadata: T,
-      options?: Partial<DocumentModificationOptions> | undefined,
+      options?: Partial<DocumentModificationOptions>,
     ): Promise<CompendiumCollection<T>>;
 
     /**
@@ -426,11 +424,7 @@ declare global {
       userId: string,
     ): void;
 
-    protected _onDeleteFolder(
-      parentFolder: Folder,
-      deleteFolderId: string,
-      deleteContents?: boolean | undefined,
-    ): string[];
+    protected _onDeleteFolder(parentFolder: Folder, deleteFolderId: string, deleteContents?: boolean): string[];
 
     /**
      * Follow-up actions taken when Documents within this Compendium pack are modified

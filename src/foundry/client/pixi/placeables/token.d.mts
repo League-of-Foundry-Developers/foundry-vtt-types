@@ -237,20 +237,20 @@ declare global {
      * Update the light and vision source objects associated with this Token
      * @param options - Options which configure how perception sources are updated
      */
-    updateSource(options?: Token.UpdateSourceOptions | undefined): void;
+    updateSource(options?: Token.UpdateSourceOptions): void;
 
     /**
      * Update an emitted light source associated with this Token.
      * @param options - (default `{}`)
      */
-    updateLightSource(options?: Token.UpdateLightSourceOptions | undefined): void;
+    updateLightSource(options?: Token.UpdateLightSourceOptions): void;
 
     /**
      * Update an Token vision source associated for this token.
      * @param options - Options which affect how the vision source is updated
      *                  (default: `{}`)
      */
-    updateVisionSource(options?: Token.UpdateVisionSourceOptions | undefined): void;
+    updateVisionSource(options?: Token.UpdateVisionSourceOptions): void;
 
     /**
      * Test whether this Token is a viable vision source for the current User
@@ -467,7 +467,7 @@ declare global {
      * @param context  - Additional context options
      *                   (default `{}`)
      */
-    setTarget(targeted?: boolean, context?: Token.SetTargetContext | undefined): void;
+    setTarget(targeted?: boolean, context?: Token.SetTargetContext): void;
 
     /**
      * Add or remove the currently controlled Tokens from the active combat encounter
@@ -487,7 +487,7 @@ declare global {
      */
     toggleEffect(
       effect: string | Parameters<TokenDocument["toggleActiveEffect"]>[0],
-      options?: Token.EffectToggleOptions | undefined,
+      options?: Token.EffectToggleOptions,
     ): Promise<boolean>;
 
     /**

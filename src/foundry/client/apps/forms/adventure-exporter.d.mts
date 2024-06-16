@@ -42,19 +42,17 @@ declare global {
 
     override get isEditable(): boolean;
 
-    override getData(
-      options?: Partial<Options> | undefined,
-    ): Promise<GetDataReturnType<AdventureExporter.AdventureExporterData>>;
+    override getData(options?: Partial<Options>): Promise<GetDataReturnType<AdventureExporter.AdventureExporterData>>;
 
     override activateEditor(
       name: string,
-      options?: TextEditor.Options | undefined,
-      initialContent?: string | undefined,
+      options?: TextEditor.Options,
+      initialContent?: string,
     ): Promise<Editor | EditorView>;
 
     protected override _getHeaderButtons(): Application.HeaderButton[];
 
-    override close(options?: FormApplication.CloseOptions | undefined): Promise<void>;
+    override close(options?: FormApplication.CloseOptions): Promise<void>;
 
     override activateListeners(html: JQuery<HTMLElement>): void;
 

@@ -390,8 +390,8 @@ declare global {
 
     override activateEditor(
       name: string,
-      options?: TextEditor.Options | undefined,
-      initialContent?: string | undefined,
+      options?: TextEditor.Options,
+      initialContent?: string,
     ): Promise<Editor | EditorView>;
 
     override render(force?: boolean, options?: Application.RenderOptions<Options>): this;

@@ -434,7 +434,7 @@ export class PackageCompendiumPacks<
 > extends fields.SetField<ElementFieldType> {
   protected override _cleanType(
     value: Set<fields.ArrayField.InitializedElementType<ElementFieldType>>,
-    options?: fields.DataField.CleanOptions | undefined,
+    options?: fields.DataField.CleanOptions,
   ): Set<fields.ArrayField.InitializedElementType<ElementFieldType>>;
 
   override initialize(
@@ -446,7 +446,7 @@ export class PackageCompendiumPacks<
 
   protected override _validateElements(
     value: any[],
-    options?: fields.DataField.ValidationOptions<fields.DataField.Any> | undefined,
+    options?: fields.DataField.ValidationOptions<fields.DataField.Any>,
   ): void | DataModelValidationFailure;
 
   protected override _validateElement(
@@ -567,7 +567,7 @@ declare class BasePackage<
    */
   static testDependencyCompatibility(compatibility: PackageCompatibility, dependency: BasePackage): boolean;
 
-  static cleanData(source?: object | undefined, options?: fields.DataField.CleanOptions | undefined): object;
+  static cleanData(source?: object, options?: fields.DataField.CleanOptions): object;
 
   /**
    * Validate that a Package ID is allowed.

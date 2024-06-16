@@ -37,7 +37,7 @@ declare global {
      */
     protected _updatePageList(): void;
 
-    protected _getSubmitData(updateData?: object | null | undefined): Record<string, unknown>;
+    protected _getSubmitData(updateData?: object | null): Record<string, unknown>;
 
     protected override _updateObject(event: Event, formData: NoteConfig.FormData): Promise<unknown>;
 

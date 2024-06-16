@@ -542,23 +542,23 @@ declare class SchemaField<
 
   protected override _cast(value: AssignmentType): InitializedType;
 
-  protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions | undefined): InitializedType;
+  protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions): InitializedType;
 
   override initialize(value: PersistedType, model: DataModel.Any): InitializedType | (() => InitializedType | null);
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidationOptions<DataField.Any> | undefined,
+    options?: DataField.ValidationOptions<DataField.Any>,
   ): boolean | void;
 
-  protected override _validateModel(data: object, options?: object | undefined): void;
+  protected override _validateModel(data: object, options?: object): void;
 
   override toObject(value: InitializedType): PersistedType;
 
   override apply<Value, Options, Return>(
     fn: keyof this | ((this: this, value: Value, options: Options) => Return),
     value: Value,
-    options?: Options | undefined,
+    options?: Options,
   ): Return;
 
   /**
@@ -700,7 +700,7 @@ declare class BooleanField<
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidationOptions<DataField.Any> | undefined,
+    options?: DataField.ValidationOptions<DataField.Any>,
   ): boolean | void;
 }
 
@@ -851,11 +851,11 @@ declare class NumberField<
 
   protected override _cast(value: AssignmentType): InitializedType;
 
-  protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions | undefined): InitializedType;
+  protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions): InitializedType;
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidationOptions<DataField.Any> | undefined,
+    options?: DataField.ValidationOptions<DataField.Any>,
   ): boolean | void;
 
   /**
@@ -997,7 +997,7 @@ declare class StringField<
 
   protected static override get _defaults(): StringFieldOptions;
 
-  override clean(value: AssignmentType, options?: DataField.CleanOptions | undefined): InitializedType;
+  override clean(value: AssignmentType, options?: DataField.CleanOptions): InitializedType;
 
   protected override _cast(value: AssignmentType): InitializedType;
 
@@ -1005,7 +1005,7 @@ declare class StringField<
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidationOptions<DataField.Any> | undefined,
+    options?: DataField.ValidationOptions<DataField.Any>,
   ): boolean | void;
 
   /**
@@ -1125,7 +1125,7 @@ declare class ObjectField<
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidationOptions<DataField.Any> | undefined,
+    options?: DataField.ValidationOptions<DataField.Any>,
   ): boolean | void;
 }
 
@@ -1248,15 +1248,15 @@ declare class ArrayField<
    */
   protected static _validateElementType<T extends DataField.Any>(element: T): T;
 
-  protected override _validateModel(data: object, options?: object | undefined): void;
+  protected override _validateModel(data: object, options?: object): void;
 
   protected override _cast(value: AssignmentType): InitializedType;
 
-  protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions | undefined): InitializedType;
+  protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions): InitializedType;
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidationOptions<DataField.Any> | undefined,
+    options?: DataField.ValidationOptions<DataField.Any>,
   ): boolean | void;
 
   /**
@@ -1285,10 +1285,11 @@ declare class ArrayField<
 
   override toObject(value: InitializedType): PersistedType;
 
+  // TODO: Limit to the keys of `this` that are actually callable.
   override apply<Value, Options, Return>(
     fn: keyof this | ((this: this, value: Value, options: Options) => Return),
     value: Value,
-    options?: Options | undefined,
+    options?: Options,
   ): Return;
 
   protected override _getField(path: string[]): unknown;
@@ -1455,7 +1456,7 @@ declare class SetField<
 > {
   protected override _validateElements(
     value: any[],
-    options?: DataField.ValidationOptions<DataField.Any> | undefined,
+    options?: DataField.ValidationOptions<DataField.Any>,
   ): void | DataModelValidationFailure;
 
   override initialize(value: PersistedType, model: DataModel.Any): InitializedType | (() => InitializedType | null);
@@ -1578,7 +1579,7 @@ declare class EmbeddedDataField<
    */
   migrateSource(sourceData: object, fieldData: unknown): unknown;
 
-  protected override _validateModel(data: object, options?: object | undefined): void;
+  protected override _validateModel(data: object, options?: object): void;
 }
 
 declare namespace EmbeddedDataField {
@@ -1722,11 +1723,11 @@ declare class EmbeddedCollectionField<
    */
   get schema(): this["model"]["schema"];
 
-  protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions | undefined): InitializedType;
+  protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions): InitializedType;
 
   protected override _validateElements(
     value: any[],
-    options?: DataField.ValidationOptions<DataField.Any> | undefined,
+    options?: DataField.ValidationOptions<DataField.Any>,
   ): DataModelValidationFailure | void;
 
   override initialize(value: PersistedType, model: DataModel.Any): InitializedType | (() => InitializedType | null);
@@ -1736,7 +1737,7 @@ declare class EmbeddedCollectionField<
   override apply<Value, Options, Return>(
     fn: keyof this | ((this: this, value: Value, options: Options) => Return),
     value: Value,
-    options?: Options | undefined,
+    options?: Options,
   ): Return;
 
   /**
@@ -1898,11 +1899,11 @@ declare class EmbeddedCollectionDeltaField<
 > {
   static override get implementation(): typeof EmbeddedCollectionDelta;
 
-  protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions | undefined): InitializedType;
+  protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions): InitializedType;
 
   protected override _validateElements(
     value: any[],
-    options?: DataField.ValidationOptions<DataField.Any> | undefined,
+    options?: DataField.ValidationOptions<DataField.Any>,
   ): void | DataModelValidationFailure;
 }
 
@@ -2154,7 +2155,7 @@ declare class DocumentIdField<
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidationOptions<DataField.Any> | undefined,
+    options?: DataField.ValidationOptions<DataField.Any>,
   ): boolean | void;
 }
 
@@ -2330,11 +2331,11 @@ declare class ColorField<
 
   protected static override get _defaults(): StringFieldOptions;
 
-  override clean(value: AssignmentType, options?: DataField.CleanOptions | undefined): InitializedType;
+  override clean(value: AssignmentType, options?: DataField.CleanOptions): InitializedType;
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidationOptions<DataField.Any> | undefined,
+    options?: DataField.ValidationOptions<DataField.Any>,
   ): boolean | void;
 }
 
@@ -2453,11 +2454,11 @@ declare class FilePathField<
 
   protected static override get _defaults(): FilePathFieldOptions;
 
-  override clean(value: AssignmentType, options?: DataField.CleanOptions | undefined): InitializedType;
+  override clean(value: AssignmentType, options?: DataField.CleanOptions): InitializedType;
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidationOptions<DataField.Any> | undefined,
+    options?: DataField.ValidationOptions<DataField.Any>,
   ): boolean | void;
 }
 
@@ -2768,11 +2769,11 @@ declare class JSONField<
 
   protected static override get _defaults(): StringFieldOptions;
 
-  override clean(value: AssignmentType, options?: DataField.CleanOptions | undefined): InitializedType;
+  override clean(value: AssignmentType, options?: DataField.CleanOptions): InitializedType;
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidationOptions<DataField.Any> | undefined,
+    options?: DataField.ValidationOptions<DataField.Any>,
   ): boolean | void;
 
   override initialize(value: PersistedType, model: DataModel.Any): InitializedType | (() => InitializedType | null);
@@ -3144,18 +3145,18 @@ declare class TypeDataField<
    */
   getModelForType(type: string): ConstructorOf<DataModel.Any> | null;
 
-  override getInitialValue(data: { type?: string } | undefined): InitializedType;
+  override getInitialValue(data: { type?: string }): InitializedType;
 
-  protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions | undefined): InitializedType;
+  protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions): InitializedType;
 
   override initialize(value: PersistedType, model: DataModel.Any): InitializedType | (() => InitializedType | null);
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidationOptions<DataField.Any> | undefined,
+    options?: DataField.ValidationOptions<DataField.Any>,
   ): boolean | void;
 
-  protected override _validateModel(data: object, options?: object | undefined): void;
+  protected override _validateModel(data: object, options?: object): void;
 
   override toObject(value: InitializedType): PersistedType;
 

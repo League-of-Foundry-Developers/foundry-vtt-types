@@ -24,7 +24,7 @@ declare global {
   class AdaptiveLightingShader extends AbstractBaseShader {
     static override create<T extends AdaptiveLightingShader>(
       this: ConstructorOf<T>,
-      defaultUniforms?: AbstractBaseShader.Uniforms | undefined,
+      defaultUniforms?: AbstractBaseShader.Uniforms,
     ): T;
 
     static override vertexShader: string;

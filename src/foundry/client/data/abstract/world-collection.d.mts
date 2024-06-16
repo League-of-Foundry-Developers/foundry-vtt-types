@@ -57,7 +57,7 @@ declare global {
         CompendiumCollection.Metadata & { type: ConfiguredDocumentClass<T>["metadata"]["name"] }
       >,
       id: string,
-      updateData?: DeepPartial<InstanceType<ConfiguredDocumentClass<T>>["_source"]> | undefined,
+      updateData?: DeepPartial<InstanceType<ConfiguredDocumentClass<T>>["_source"]>,
       options?: InexactPartial<DocumentModificationContext & WorldCollection.FromCompendiumOptions>,
     ): Promise<StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>>;
 
@@ -76,9 +76,7 @@ declare global {
       IdOpt extends boolean = false,
     >(
       document: InstanceType<ConfiguredDocumentClass<T>> | ConstructorDataType<T>,
-      options?:
-        | InexactPartial<WorldCollection.FromCompendiumOptions<FolderOpt, SortOpt, OwnershipOpt, IdOpt>>
-        | undefined,
+      options?: InexactPartial<WorldCollection.FromCompendiumOptions<FolderOpt, SortOpt, OwnershipOpt, IdOpt>>,
     ): Omit<
       InstanceType<ConfiguredDocumentClass<T>>["_source"],
       | ClientDocument.OmitProperty<FolderOpt, "folder">

@@ -45,11 +45,7 @@ declare class BaseItem extends Document<BaseItem.Schema, BaseItem.Metadata, Acto
    */
   static get TYPES(): BaseItem.TypeNames[];
 
-  override canUserModify(
-    user: documents.BaseUser,
-    action: "create" | "delete" | "update",
-    data?: object | undefined,
-  ): boolean;
+  override canUserModify(user: documents.BaseUser, action: "create" | "delete" | "update", data?: object): boolean;
 
   override testUserPermission(
     user: documents.BaseUser,
