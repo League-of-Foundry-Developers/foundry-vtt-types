@@ -30,9 +30,7 @@ declare class BaseScene extends Document<BaseScene.Schema, BaseScene.Metadata> {
 
   static override shimData(
     data: object,
-    {
-      embedded,
-    }?: {
+    options?: {
       /**
        * Apply shims to embedded models?
        * @defaultValue `true`

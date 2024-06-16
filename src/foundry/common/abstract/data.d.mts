@@ -362,9 +362,7 @@ export default abstract class DataModel<Schema extends DataSchema, Parent extend
    */
   static shimData(
     data: object,
-    {
-      embedded,
-    }?: {
+    options?: {
       /**
        * Apply shims to embedded models?
        * @defaultValue `true`

@@ -34,9 +34,7 @@ declare class BaseRollTable extends Document<BaseRollTable.Schema, BaseRollTable
 
   static override shimData(
     data: object,
-    {
-      embedded,
-    }?: {
+    options?: {
       /**
        * Apply shims to embedded models?
        * @defaultValue `true`

@@ -46,9 +46,7 @@ declare class BaseTableResult extends Document<
 
   static override shimData(
     data: object,
-    {
-      embedded,
-    }?: {
+    options?: {
       /**
        * Apply shims to embedded models?
        * @defaultValue `true`

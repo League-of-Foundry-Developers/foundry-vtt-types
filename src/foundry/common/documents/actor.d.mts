@@ -85,9 +85,7 @@ declare class BaseActor extends Document<BaseActor.Schema, BaseActor.Metadata> {
 
   static override shimData(
     data: object,
-    {
-      embedded,
-    }?: {
+    options?: {
       /**
        * Apply shims to embedded models?
        * @defaultValue `true`

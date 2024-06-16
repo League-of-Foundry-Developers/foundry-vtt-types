@@ -55,7 +55,16 @@ declare class BaseDrawing extends Document<BaseDrawing.Schema, BaseDrawing.Metad
 
   static override migrateData(source: object): object;
 
-  static override shimData(data: object, { embedded }?: { embedded?: boolean }): object;
+  static override shimData(
+    data: object,
+    options?: {
+      /**
+       * Apply shims to embedded models?
+       * @defaultValue `true`
+       */
+      embedded?: boolean;
+    },
+  ): object;
 }
 export default BaseDrawing;
 

@@ -66,9 +66,7 @@ declare class BaseCard extends Document<BaseCard.Schema, BaseCard.Metadata, Card
 
   static override shimData(
     data: object,
-    {
-      embedded,
-    }?: {
+    options?: {
       /**
        * Apply shims to embedded models?
        * @defaultValue `true`

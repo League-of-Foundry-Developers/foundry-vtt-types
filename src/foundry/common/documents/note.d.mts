@@ -48,9 +48,7 @@ declare class BaseNote extends Document<BaseNote.Schema, BaseNote.Metadata, Scen
 
   static override shimData(
     data: object,
-    {
-      embedded,
-    }?: {
+    options?: {
       /**
        * Apply shims to embedded models?
        * @defaultValue `true`

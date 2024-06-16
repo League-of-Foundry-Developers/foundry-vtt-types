@@ -33,9 +33,7 @@ declare class BaseTile extends Document<BaseTile.Schema, BaseTile.Metadata, Scen
 
   static override shimData(
     data: object,
-    {
-      embedded,
-    }?: {
+    options?: {
       /**
        * Apply shims to embedded models?
        * @defaultValue `true`

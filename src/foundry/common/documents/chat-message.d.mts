@@ -55,9 +55,7 @@ declare class BaseChatMessage extends Document<BaseChatMessage.Schema, BaseChatM
 
   static override shimData(
     data: object,
-    {
-      embedded,
-    }?: {
+    options?: {
       /**
        * Apply shims to embedded models?
        * @defaultValue `true`

@@ -52,9 +52,7 @@ declare class BaseMacro extends Document<BaseMacro.Schema, BaseMacro.Metadata> {
 
   static override shimData(
     data: object,
-    {
-      embedded,
-    }?: {
+    options?: {
       /**
        * Apply shims to embedded models?
        * @defaultValue `true`

@@ -26,11 +26,9 @@ declare class BaseJournalEntry extends Document<BaseJournalEntry.Schema, BaseJou
 
   static override migrateData(source: object): object;
 
-  static shimData(
+  static override shimData(
     data: object,
-    {
-      embedded,
-    }?: {
+    options?: {
       /**
        * Apply shims to embedded models?
        * @defaultValue `true`

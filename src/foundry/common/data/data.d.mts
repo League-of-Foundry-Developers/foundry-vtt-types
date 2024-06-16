@@ -313,34 +313,67 @@ declare class PrototypeToken extends DataModel<PrototypeToken.Schema, documents.
   /** @defaultValue `{}` */
   apps: Record<string, Application>;
 
+  /**
+   * The Actor which owns this Prototype Token
+   */
   get actor(): this["parent"];
 
-  toObject(source: true): this["_source"] & { actorId: string | undefined };
-  toObject(source?: boolean): ReturnType<this["schema"]["toObject"]>;
+  override toObject(source: true): this["_source"] & { actorId: string | undefined };
+  override toObject(source?: boolean): ReturnType<this["schema"]["toObject"]>;
 
   static get database(): DatabaseBackend;
 
-  static migrateData(source: object): object;
+  static override migrateData(source: object): object;
 
-  static shimData(data: object, options?: { embedded?: boolean }): object;
+  static override shimData(
+    data: object,
+    options?: {
+      /**
+       * Apply shims to embedded models?
+       * @defaultValue `true`
+       */
+      embedded?: boolean;
+    },
+  ): object;
 
+  /**
+   * @see foundry.abstract.Document#update
+   */
   update(data: unknown, options: unknown): unknown;
 
+  /**
+   * @see foundry.abstract.Document#getFlag
+   */
   getFlag(args: unknown): unknown;
 
+  /**
+   * @see foundry.abstract.Document#setFlag
+   */
   setFlag(args: unknown): unknown;
 
+  /**
+   * @see foundry.abstract.Document#unsetFlag
+   */
   unsetFlag(args: unknown): Promise<unknown>;
 
+  /**
+   * @see foundry.abstract.Document#testUserPermission
+   */
   testUserPermission(
     user: documents.BaseUser,
     permission: unknown,
     { exact }: { exact: boolean },
   ): ReturnType<this["actor"]["testUserPermission"]>;
 
+  /**
+   * @see foundry.abstract.Document#isOwner
+   */
   get isOwner(): boolean;
 
   // Monkey patched in from `token.js`, put here due to issues with the merge process
+  /**
+   * @see TokenDocument#getBarAttribute
+   */
   getBarAttribute: TokenDocument["getBarAttribute"];
 }
 

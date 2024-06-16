@@ -63,9 +63,7 @@ declare class BaseItem extends Document<BaseItem.Schema, BaseItem.Metadata, Acto
 
   static override shimData(
     data: object,
-    {
-      embedded,
-    }?: {
+    options: {
       /**
        * Apply shims to embedded models?
        * @defaultValue `true`

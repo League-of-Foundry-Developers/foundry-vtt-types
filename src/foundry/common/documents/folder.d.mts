@@ -36,9 +36,7 @@ declare class BaseFolder extends Document<BaseFolder.Schema, BaseFolder.Metadata
 
   static override shimData(
     data: object,
-    {
-      embedded,
-    }?: {
+    options?: {
       /**
        * Apply shims to embedded models?
        * @defaultValue `true`
