@@ -184,7 +184,7 @@ declare class ProseMirrorMenu extends ProseMirrorPlugin {
   /**
    * Handle requests to save the editor contents
    */
-  protected _handleSave(): void | undefined;
+  protected _handleSave(): void;
 
   /**
    * Display the insert image prompt.
