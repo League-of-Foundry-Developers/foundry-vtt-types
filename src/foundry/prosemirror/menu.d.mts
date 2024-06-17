@@ -7,7 +7,7 @@ import type ProseMirrorPlugin from "./plugin.d.mts";
 export declare namespace ProseMirrorMenu {
   export interface Options {
     /** A function to call when the save button is pressed. */
-    onSave?: (...args: any) => any;
+    onSave?: () => void;
     /** Whether this editor instance is intended to be destroyed when saved. */
     destroyOnSave?: boolean;
     /** Whether to display a more compact version of the menu. */
@@ -184,7 +184,7 @@ declare class ProseMirrorMenu extends ProseMirrorPlugin {
   /**
    * Handle requests to save the editor contents
    */
-  protected _handleSave(): ReturnType<Exclude<ProseMirrorMenu.Options["onSave"], undefined>> | undefined;
+  protected _handleSave(): void | undefined;
 
   /**
    * Display the insert image prompt.
