@@ -2,6 +2,7 @@ import type { Schema, Slice } from "prosemirror-model";
 import type { Plugin } from "prosemirror-state";
 import type { EditorView } from "prosemirror-view";
 import type ProseMirrorPlugin from "./plugin.d.mts";
+import type { ClientDocumentMixin } from "../client/data/abstract/client-document.d.mts";
 
 export default ProseMirrorImagePlugin;
 /**
@@ -9,8 +10,18 @@ export default ProseMirrorImagePlugin;
  * directly into the journal content and it is instead uploaded to the user's data directory.
  */
 declare class ProseMirrorImagePlugin extends ProseMirrorPlugin {
-  /** {@inheritdoc} */
-  static build(schema: Schema, options?: Record<string, never>): Plugin;
+  /**
+   * @param schema   - The ProseMirror schema.
+   * @param document - A related Document to store extract base64 images for.
+   */
+  constructor(schema: Schema, { document }?: { document?: ClientDocumentMixin<foundry.abstract.Document<any, any>> });
+
+  /**
+   * The related Document to store extracted base64 images for.
+   */
+  readonly document: ClientDocumentMixin<foundry.abstract.Document<any, any>>;
+
+  static override build(schema: Schema, options?: Record<string, never>): Plugin;
 
   /**
    * Handle a drop onto the editor.
@@ -39,10 +50,21 @@ declare class ProseMirrorImagePlugin extends ProseMirrorPlugin {
 
   /**
    * Capture any base64-encoded images embedded in the rich text paste and upload them.
-   * @param view - The ProseMirror editor view.
-   * @param html - The HTML data as a string.
+   * @param view   - The ProseMirror editor view.
+   * @param html   - The HTML data as a string.
+   * @param images - An array of extracted base64 image data.
    */
-  protected _replaceBase64Images(view: EditorView, html: string): Promise<void>;
+  protected _replaceBase64Images(
+    view: EditorView,
+    html: string,
+    images: [full: string, mime: string, data: string][],
+  ): Promise<void>;
+
+  /**
+   * Detect base64 image data embedded in an HTML string and extract it.
+   * @param html The HTML data as a string.
+   */
+  protected _extractBase64Images(html: string): [full: string, mime: string, data: string][];
 
   /**
    * Convert a base64 string into a File object.

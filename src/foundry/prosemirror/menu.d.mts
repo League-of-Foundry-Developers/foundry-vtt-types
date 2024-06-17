@@ -6,8 +6,12 @@ import type ProseMirrorPlugin from "./plugin.d.mts";
 
 export declare namespace ProseMirrorMenu {
   export interface Options {
-    /** The parent sheet that's housing the ProseMirror instance. */
-    sheet?: FormApplication;
+    /** A function to call when the save button is pressed. */
+    onSave?: (...args: any) => any;
+    /** Whether this editor instance is intended to be destroyed when saved. */
+    destroyOnSave?: boolean;
+    /** Whether to display a more compact version of the menu. */
+    compact?: boolean;
   }
 
   export interface Item {
@@ -87,6 +91,15 @@ declare class ProseMirrorMenu extends ProseMirrorPlugin {
   readonly id: `prosemirror-menu-${string}`;
 
   /**
+   * An enumeration of editor scopes in which a menu item can appear
+   */
+  protected static _MENU_ITEM_SCOPES: {
+    BOTH: "";
+    TEXT: "text";
+    HTML: "html";
+  };
+
+  /**
    * Additional options to configure the plugin's behaviour.
    */
   options: ProseMirrorMenu.Options;
@@ -96,8 +109,7 @@ declare class ProseMirrorMenu extends ProseMirrorPlugin {
    */
   dropdowns: ProseMirrorDropDown.Entry[];
 
-  /** {@inheritdoc} */
-  static build(schema: Schema, options?: ProseMirrorMenu.Options): Plugin;
+  static override build(schema: Schema, options?: ProseMirrorMenu.Options): Plugin;
 
   /**
    * Render the menu's HTML.
@@ -172,7 +184,7 @@ declare class ProseMirrorMenu extends ProseMirrorPlugin {
   /**
    * Handle requests to save the editor contents
    */
-  protected _handleSave(): ReturnType<FormApplication["_onSubmit"]>;
+  protected _handleSave(): ReturnType<Exclude<ProseMirrorMenu.Options["onSave"], undefined>> | undefined;
 
   /**
    * Display the insert image prompt.
@@ -183,6 +195,11 @@ declare class ProseMirrorMenu extends ProseMirrorPlugin {
    * Display the insert link prompt.
    */
   protected _insertLinkPrompt(): Promise<void>;
+
+  /**
+   * Display the insert table prompt.
+   */
+  protected _insertTablePrompt(): Promise<void>;
 
   /**
    * Create a dialog for a menu button.
@@ -203,4 +220,24 @@ declare class ProseMirrorMenu extends ProseMirrorPlugin {
    * Clear any marks from the current selection.
    */
   protected _clearFormatting(): void;
+
+  /**
+   * Toggle link recommendations
+   */
+  protected _toggleMatches(): Promise<void>;
+
+  /**
+   * Toggle the given selection by wrapping it in a given block or lifting it out of one.
+   * @param node  - The type of node being interacted with.
+   * @param wrap  - The wrap command specific to the given node.
+   * @param attrs - Attributes for the node.
+   */
+  protected _toggleBlock(node: NodeType, wrap: MenuToggleBlockWrapCommand, { attrs }?: { attrs?: object }): void;
+
+  /**
+   * Toggle the given selection by wrapping it in a given text block, or reverting to a paragraph block.
+   * @param node  - The type of node being interacted with.
+   * @param attrs - Attributes for the node.
+   */
+  protected _togglTextBlock(node: NodeType, { attrs }?: { attrs?: object }): void;
 }
