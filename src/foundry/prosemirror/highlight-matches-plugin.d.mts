@@ -10,7 +10,7 @@ import { EditorView } from "prosemirror-view";
  */
 declare class PossibleMatchesTooltip {
   /**
-   * @param view The editor view
+   * @param view - The editor view
    */
   constructor(view: EditorView);
 
@@ -47,7 +47,7 @@ declare class PossibleMatchesTooltip {
 
   /**
    * Update the tooltip with new HTML
-   * @param html The HTML to be included in the tooltip
+   * @param html - The HTML to be included in the tooltip
    */
   _updateTooltip(html: string): void;
 
@@ -58,7 +58,7 @@ declare class PossibleMatchesTooltip {
 
   /**
    * Find all Documents in the world/compendia with names that match the selection insensitive to case.
-   * @param text A string which will be matched against document names
+   * @param text - A string which will be matched against document names
    */
   _findMatches(text: string): string;
 }

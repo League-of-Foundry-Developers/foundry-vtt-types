@@ -1,7 +1,7 @@
 import type { EditorView } from "prosemirror-view";
 import type { Plugin } from "prosemirror-state";
 import type ProseMirrorPlugin from "./plugin.d.mts";
-import type { Schema } from "prosemirror-model";
+import type { Node, Schema } from "prosemirror-model";
 
 export default ProseMirrorClickHandler;
 /**

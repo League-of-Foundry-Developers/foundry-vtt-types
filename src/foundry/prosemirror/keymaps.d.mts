@@ -30,7 +30,7 @@ declare class ProseMirrorKeyMaps extends ProseMirrorPlugin {
    * @param schema  - The ProseMirror schema to build keymaps for.
    * @param options - Additional options to configure the plugin's behaviour.
    */
-  constructor(schema: Schema, { onSave }?: ProseMirrorKeyMaps.Options);
+  constructor(schema: Schema, options?: ProseMirrorKeyMaps.Options);
 
   /**
    * A function to call when Ctrl+S is pressed.

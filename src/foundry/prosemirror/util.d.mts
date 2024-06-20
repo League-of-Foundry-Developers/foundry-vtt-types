@@ -32,6 +32,6 @@ export declare function serializeHTMLString(
  * Apply a transformation to some nodes in a slice, and return the new slice.
  * @param slice       - The slice to transform.
  * @param transformer - The transformation function.
- * @ returns Either the original slice if no changes were made, or the newly-transformed slice.
+ * @returns Either the original slice if no changes were made, or the newly-transformed slice.
  */
 export declare function transformSlice(slice: Slice, transformer: Function): Slice;

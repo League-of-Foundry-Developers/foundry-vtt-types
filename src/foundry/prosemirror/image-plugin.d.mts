@@ -12,13 +12,21 @@ export default ProseMirrorImagePlugin;
 declare class ProseMirrorImagePlugin extends ProseMirrorPlugin {
   /**
    * @param schema   - The ProseMirror schema.
-   * @param document - A related Document to store extract base64 images for.
+   * @param options  - Additional options to configure the plugin's behaviour.
    */
-  constructor(schema: Schema, { document }?: { document?: ClientDocumentMixin<foundry.abstract.Document<any, any>> });
+  constructor(
+    schema: Schema,
+    options?: {
+      /** A related Document to store extract base64 images for. */
+      // TODO: Actual document typing
+      document?: ClientDocumentMixin<foundry.abstract.Document<any, any>>;
+    },
+  );
 
   /**
    * The related Document to store extracted base64 images for.
    */
+  // TODO: Rewrite class to use generic
   readonly document: ClientDocumentMixin<foundry.abstract.Document<any, any>>;
 
   static override build(schema: Schema, options?: Record<string, never>): Plugin;
@@ -62,7 +70,7 @@ declare class ProseMirrorImagePlugin extends ProseMirrorPlugin {
 
   /**
    * Detect base64 image data embedded in an HTML string and extract it.
-   * @param html The HTML data as a string.
+   * @param html - The HTML data as a string.
    */
   protected _extractBase64Images(html: string): [full: string, mime: string, data: string][];
 
