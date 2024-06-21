@@ -228,16 +228,20 @@ declare class ProseMirrorMenu extends ProseMirrorPlugin {
 
   /**
    * Toggle the given selection by wrapping it in a given block or lifting it out of one.
-   * @param node  - The type of node being interacted with.
-   * @param wrap  - The wrap command specific to the given node.
-   * @param attrs - Attributes for the node.
+   * @param node    - The type of node being interacted with.
+   * @param wrap    - The wrap command specific to the given node.
+   * @param options - Additional options to configure behaviour.
    */
-  protected _toggleBlock(node: NodeType, wrap: MenuToggleBlockWrapCommand, { attrs }?: { attrs?: object }): void;
+  protected _toggleBlock(
+    node: NodeType,
+    wrap: MenuToggleBlockWrapCommand,
+    options?: { /** Attributes for the node. */ attrs?: object },
+  ): void;
 
   /**
    * Toggle the given selection by wrapping it in a given text block, or reverting to a paragraph block.
-   * @param node  - The type of node being interacted with.
-   * @param attrs - Attributes for the node.
+   * @param node    - The type of node being interacted with.
+   * @param options - Additional options to configure behaviour.
    */
-  protected _togglTextBlock(node: NodeType, { attrs }?: { attrs?: object }): void;
+  protected _toggleTextBlock(node: NodeType, options?: { /** Attributes for the node. */ attrs?: object }): void;
 }
