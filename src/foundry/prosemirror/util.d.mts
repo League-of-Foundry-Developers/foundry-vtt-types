@@ -1,4 +1,4 @@
-import type { Node, Schema } from "prosemirror-model";
+import type { Node, Schema, Slice } from "prosemirror-model";
 // Fixes VSC not finding it for the @link TSDoc directive.
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { StringNode } from "./string-serializer.d.mts";
@@ -27,3 +27,11 @@ export declare function serializeHTMLString(
     spaces?: string | number;
   },
 ): string;
+
+/**
+ * Apply a transformation to some nodes in a slice, and return the new slice.
+ * @param slice       - The slice to transform.
+ * @param transformer - The transformation function.
+ * @returns Either the original slice if no changes were made, or the newly-transformed slice.
+ */
+export declare function transformSlice(slice: Slice, transformer: Function): Slice;

@@ -1,8 +1,8 @@
 import * as collab from "prosemirror-collab";
 import { keymap } from "prosemirror-keymap";
 import { DOMParser, DOMSerializer, Schema } from "prosemirror-model";
-import type { Plugin } from "prosemirror-state";
-import { AllSelection, EditorState } from "prosemirror-state";
+import type { Plugin, PluginKey } from "prosemirror-state";
+import { AllSelection, TextSelection, EditorState } from "prosemirror-state";
 import { Step } from "prosemirror-transform";
 import { EditorView } from "prosemirror-view";
 import ProseMirrorContentLinkPlugin from "./content-link-plugin.mts";
@@ -14,6 +14,9 @@ import ProseMirrorKeyMaps from "./keymaps.mts";
 import ProseMirrorMenu from "./menu.mts";
 import { schema as defaultSchema } from "./schema.mts";
 import type { parseHTMLString, serializeHTMLString } from "./util.d.mts";
+import type ProseMirrorPlugin from "./plugin.d.mts";
+import type ProseMirrorHighlightMatchesPlugin from "./highlight-matches-plugin.d.mts";
+import type ProseMirrorClickHandler from "./click-handler.d.mts";
 
 declare const dom: {
   parser: DOMParser;
@@ -23,28 +26,49 @@ declare const dom: {
 };
 
 declare const defaultPlugins: Record<
-  "inputRules" | "keyMaps" | "images" | "menu" | "isDirty" | "baseKeyMap" | "dropCursor" | "gapCursor" | "history",
+  | "inputRules"
+  | "keyMaps"
+  | "images"
+  | "menu"
+  | "isDirty"
+  | "clickHandler"
+  | "pasteTransformer"
+  | "baseKeyMap"
+  | "dropCursor"
+  | "gapCursor"
+  | "history"
+  | "columnResizing"
+  | "tables",
   Plugin
 >;
 
 export * as commands from "prosemirror-commands";
-export * as list from "prosemirror-schema-list";
 export * as transform from "prosemirror-transform";
+export * as list from "prosemirror-schema-list";
+export * as tables from "prosemirror-tables";
+export * as input from "prosemirror-inputrules";
+export * as state from "prosemirror-state";
 
 export {
   AllSelection,
+  TextSelection,
   DOMParser,
   DOMSerializer,
   EditorState,
   EditorView,
+  Schema,
+  Step,
+  Plugin,
+  PluginKey,
+  ProseMirrorPlugin,
   ProseMirrorContentLinkPlugin,
+  ProseMirrorHighlightMatchesPlugin,
   ProseMirrorDirtyPlugin,
   ProseMirrorImagePlugin,
+  ProseMirrorClickHandler,
   ProseMirrorInputRules,
   ProseMirrorKeyMaps,
   ProseMirrorMenu,
-  Schema,
-  Step,
   collab,
   defaultPlugins,
   defaultSchema,

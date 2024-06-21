@@ -15,6 +15,9 @@ export type ProseMirrorNodeOutput = (node: Node) => DOMOutputSpec;
 export type ProseMirrorMarkOutput = (mark: Mark, inline: boolean) => DOMOutputSpec;
 
 export default StringSerializer;
+/**
+ * A class responsible for serializing a ProseMirror document into a string of HTML.
+ */
 declare class StringSerializer {
   /**
    * @param nodes - The node output specs.
