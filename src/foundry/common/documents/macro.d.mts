@@ -13,7 +13,6 @@ declare global {
  * The Document definition for a Macro.
  * Defines the DataSchema and common behaviors for a Macro which are shared between both client and server.
  */
-interface BaseMacro extends BaseMacro.Properties {}
 declare class BaseMacro extends Document<BaseMacro.Schema, BaseMacro.Metadata> {
   /**
    * @param data    - Initial data from which to construct the Macro

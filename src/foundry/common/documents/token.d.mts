@@ -20,7 +20,6 @@ declare global {
 /**
  * The base Token model definition which defines common behavior of an Token document between both client and server.
  */
-interface BaseToken extends BaseToken.Properties {}
 declare class BaseToken extends Document<BaseToken.Schema, BaseToken.Metadata, Scene.ConfiguredInstance | null> {
   constructor(data?: BaseToken.ConstructorData, context?: DocumentConstructionContext);
 

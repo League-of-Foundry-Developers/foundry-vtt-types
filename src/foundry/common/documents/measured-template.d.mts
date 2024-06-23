@@ -13,7 +13,6 @@ declare global {
  * The Document definition for a MeasuredTemplate.
  * Defines the DataSchema and common behaviors for a MeasuredTemplate which are shared between both client and server.
  */
-interface BaseMeasuredTemplate extends BaseMeasuredTemplate.Properties {}
 declare class BaseMeasuredTemplate extends Document<
   BaseMeasuredTemplate.Schema,
   BaseMeasuredTemplate.Metadata,

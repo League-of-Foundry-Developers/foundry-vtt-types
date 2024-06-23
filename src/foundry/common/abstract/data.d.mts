@@ -36,10 +36,22 @@ declare global {
   }
 }
 
+declare const DynamicClass: new <_Computed extends object>(...args: any[]) => _Computed;
+
+// @ts-expect-error - This is a workaround to allow for dynamic top level properties in a class.
+declare class _InternalDataModel<
+  Schema extends DataSchema,
+  // Do not inline. Being a type parameter is an important part of the circumvention of TypeScript's detection of dynamic classes.
+  _Computed extends object = SchemaField.InnerInitializedType<Schema>,
+> extends DynamicClass<_Computed> {}
+
 /**
  * The abstract base class which defines the data schema contained within a Document.
  */
-export default abstract class DataModel<Schema extends DataSchema, Parent extends DataModel.Any | null = null> {
+export default abstract class DataModel<
+  Schema extends DataSchema,
+  Parent extends DataModel.Any | null = null,
+> extends _InternalDataModel<Schema> {
   /**
    * @param data    - Initial data used to construct the data object. The provided object
    *                  will be owned by the constructed model instance and may be mutated.

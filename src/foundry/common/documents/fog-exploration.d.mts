@@ -12,7 +12,6 @@ declare global {
  * The Document definition for FogExploration.
  * Defines the DataSchema and common behaviors for FogExploration which are shared between both client and server.
  */
-interface BaseFogExploration extends BaseFogExploration.Properties {}
 declare class BaseFogExploration extends Document<BaseFogExploration.Schema, BaseFogExploration.Metadata> {
   /**
    * @param data    - Initial data from which to construct the FogExploration

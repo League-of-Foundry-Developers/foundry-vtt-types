@@ -12,7 +12,6 @@ declare global {
  * The Document definition for an Adventure.
  * Defines the DataSchema and common behaviors for an Adventure which are shared between both client and server.
  */
-interface BaseAdventure extends BaseAdventure.Properties {}
 declare class BaseAdventure extends Document<BaseAdventure.Schema, BaseAdventure.Metadata> {
   /**
    * @param data    - Initial data from which to construct the Actor

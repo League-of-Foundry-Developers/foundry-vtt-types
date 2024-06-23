@@ -12,7 +12,6 @@ declare global {
  * The Document definition for a Combat.
  * Defines the DataSchema and common behaviors for a Combat which are shared between both client and server.
  */
-interface BaseCombat extends BaseCombat.Properties {}
 declare class BaseCombat extends Document<BaseCombat.Schema, BaseCombat.Metadata> {
   /**
    * @param data    - Initial data from which to construct the Combat

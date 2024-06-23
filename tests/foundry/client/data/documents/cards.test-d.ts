@@ -2,7 +2,7 @@ import { expectTypeOf } from "vitest";
 
 const cards = new Cards({ name: "Just a deck of cards", type: "german" });
 
-expectTypeOf(cards.thumbnail).toEqualTypeOf<string | null>();
+expectTypeOf(cards.img).toEqualTypeOf<string | null>();
 expectTypeOf(cards.availableCards).toEqualTypeOf<Card[]>();
 expectTypeOf(cards.drawnCards).toEqualTypeOf<Card[]>();
 

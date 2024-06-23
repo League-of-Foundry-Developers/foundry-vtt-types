@@ -12,8 +12,6 @@ declare global {
  * The Document definition for a RollTable.
  * Defines the DataSchema and common behaviors for a RollTable which are shared between both client and server.
  */
-
-interface BaseRollTable extends BaseRollTable.Properties {}
 declare class BaseRollTable extends Document<BaseRollTable.Schema, BaseRollTable.Metadata> {
   /**
    * @param data    - Initial data from which to construct the Roll Table

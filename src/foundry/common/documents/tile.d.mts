@@ -17,7 +17,6 @@ declare global {
  * The Document definition for a Tile.
  * Defines the DataSchema and common behaviors for a Tile which are shared between both client and server.
  */
-interface BaseTile extends BaseTile.Properties {}
 declare class BaseTile extends Document<BaseTile.Schema, BaseTile.Metadata, Scene.ConfiguredInstance | null> {
   /**
    * @param data    - Initial data from which to construct the Tile

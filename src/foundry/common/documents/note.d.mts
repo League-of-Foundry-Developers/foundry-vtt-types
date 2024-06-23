@@ -14,7 +14,6 @@ declare global {
  * The Document definition for a Note.
  * Defines the DataSchema and common behaviors for a Note which are shared between both client and server.
  */
-interface BaseNote extends BaseNote.Properties {}
 declare class BaseNote extends Document<BaseNote.Schema, BaseNote.Metadata, Scene.ConfiguredInstance | null> {
   /**
    * @param data    - Initial data from which to construct the Note

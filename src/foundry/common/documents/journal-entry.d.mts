@@ -12,7 +12,6 @@ declare global {
  * The Document definition for a JournalEntry.
  * Defines the DataSchema and common behaviors for a JournalEntry which are shared between both client and server.
  */
-interface BaseJournalEntry extends BaseJournalEntry.Properties {}
 declare class BaseJournalEntry extends Document<BaseJournalEntry.Schema, BaseJournalEntry.Metadata> {
   /**
    * @param data    - Initial data from which to construct the JournalEntry

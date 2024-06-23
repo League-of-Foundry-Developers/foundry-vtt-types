@@ -11,7 +11,6 @@ declare global {
  * The Document definition for an AmbientSound.
  * Defines the DataSchema and common behaviors for an AmbientSound which are shared between both client and server.
  */
-interface BaseAmbientSound extends BaseAmbientSound.Properties {}
 declare class BaseAmbientSound extends Document<
   BaseAmbientSound.Schema,
   BaseAmbientSound.Metadata,

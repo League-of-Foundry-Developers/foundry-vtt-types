@@ -14,7 +14,6 @@ declare global {
  * The Document definition for a Drawing.
  * Defines the DataSchema and common behaviors for a Drawing which are shared between both client and server.
  */
-interface BaseDrawing extends BaseDrawing.Properties {}
 declare class BaseDrawing extends Document<BaseDrawing.Schema, BaseDrawing.Metadata, Scene.ConfiguredInstance | null> {
   /**
    * @param data    - Initial data from which to construct the Drawing

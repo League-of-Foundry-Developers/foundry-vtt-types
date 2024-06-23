@@ -12,7 +12,6 @@ declare global {
  * The Document definition for a Combatant.
  * Defines the DataSchema and common behaviors for a Combatant which are shared between both client and server.
  */
-interface BaseCombatant extends BaseCombatant.Properties {}
 declare class BaseCombatant extends Document<
   BaseCombatant.Schema,
   BaseCombatant.Metadata,

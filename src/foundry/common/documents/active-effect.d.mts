@@ -17,7 +17,6 @@ export default BaseActiveEffect;
 /**
  * The data schema for an ActiveEffect document.
  */
-interface BaseActiveEffect extends BaseActiveEffect.Properties {}
 declare class BaseActiveEffect extends Document<
   BaseActiveEffect.Schema,
   BaseActiveEffect.Metadata,

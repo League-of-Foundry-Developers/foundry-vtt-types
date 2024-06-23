@@ -14,7 +14,6 @@ declare global {
  * The Document definition for a Scene.
  * Defines the DataSchema and common behaviors for a Scene which are shared between both client and server.
  */
-interface BaseScene extends BaseScene.Properties {}
 declare class BaseScene extends Document<BaseScene.Schema, BaseScene.Metadata> {
   /**
    * @param data    - Initial data from which to construct the Scene

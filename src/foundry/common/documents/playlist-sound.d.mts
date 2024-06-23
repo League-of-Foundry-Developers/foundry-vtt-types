@@ -12,8 +12,6 @@ declare global {
  * The Document definition for a PlaylistSound.
  * Defines the DataSchema and common behaviors for a PlaylistSound which are shared between both client and server.
  */
-
-interface BasePlaylistSound extends BasePlaylistSound.Properties {}
 declare class BasePlaylistSound extends Document<
   BasePlaylistSound.Schema,
   BasePlaylistSound.Metadata,

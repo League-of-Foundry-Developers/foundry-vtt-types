@@ -13,8 +13,6 @@ declare global {
  * The Document definition for a Playlist.
  * Defines the DataSchema and common behaviors for a Playlist which are shared between both client and server.
  */
-
-interface BasePlaylist extends BasePlaylist.Properties {}
 declare class BasePlaylist extends Document<BasePlaylist.Schema, BasePlaylist.Metadata> {
   /**
    * @param data    - Initial data from which to construct the Playlist

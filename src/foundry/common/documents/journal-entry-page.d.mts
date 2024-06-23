@@ -21,7 +21,6 @@ declare global {
  * The Document definition for a JournalEntryPage.
  * Defines the data schema and common behaviours for a JournalEntryPage which are shared between both client and server.
  */
-interface BaseJournalEntryPage extends BaseJournalEntryPage.Properties {}
 declare class BaseJournalEntryPage extends Document<
   BaseJournalEntryPage.Schema,
   BaseJournalEntryPage.Metadata,

@@ -13,8 +13,6 @@ declare global {
  * The Document definition for a TableResult.
  * Defines the DataSchema and common behaviors for a TableResult which are shared between both client and server.
  */
-
-interface BaseTableResult extends BaseTableResult.Properties {}
 declare class BaseTableResult extends Document<
   BaseTableResult.Schema,
   BaseTableResult.Metadata,
