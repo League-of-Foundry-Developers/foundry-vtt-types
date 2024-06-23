@@ -1,6 +1,32 @@
 import { expectTypeOf } from "vitest";
 import type { ConstructorOf } from "../../../../src/types/utils.d.mts";
 
+// #2554 Null and undefined for SchemaField and EmbeddedDataField
+
+new foundry.documents.BaseAmbientSound({
+  darkness: null,
+});
+
+new foundry.documents.BaseAmbientSound({
+  darkness: undefined,
+});
+
+new foundry.documents.BaseNote({
+  texture: null,
+});
+
+new foundry.documents.BaseNote({
+  texture: undefined,
+});
+
+// #2555 NumberField Choices
+
+// @ts-expect-error - A textAnchor cannot be an arbitrary number.
+new foundry.documents.BaseNote({ textAnchor: 999 });
+
+// @ts-expect-error - t cannot be an arbitrary string.
+new foundry.documents.BaseMeasuredTemplate({ t: "foobar" });
+
 // TypeDataField
 declare const JEPCoreTypes: foundry.data.fields.TypeDataField.CoreTypeNames<typeof JournalEntryPage>;
 declare const JEPSystemTypes: foundry.data.fields.TypeDataField.SystemTypeNames<typeof JournalEntryPage>;
