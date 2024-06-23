@@ -71,6 +71,14 @@ declare namespace BaseWall {
     attenuation: fields.BooleanField;
   }
 
+  type CoordinateOptions = {
+    required: true;
+    integer: true;
+    nullable: false;
+    validate: (c: [x0: number, y0: number, x1: number, y1: number]) => boolean;
+    validationError: "must be a length-4 array of integer coordinates";
+  };
+
   interface Schema extends DataSchema {
     /**
      * The _id which uniquely identifies this BaseWall embedded document
@@ -82,13 +90,14 @@ declare namespace BaseWall {
      * The wall coordinates, a length-4 array of finite numbers [x0,y0,x1,y1]
      */
     c: fields.ArrayField<
-      fields.NumberField<{
-        required: true;
-        integer: true;
-        nullable: false;
-        validate: (c: [x0: number, y0: number, x1: number, y1: number]) => boolean;
-        validationError: "must be a length-4 array of integer coordinates";
-      }>
+      fields.NumberField<CoordinateOptions>,
+      fields.ArrayField.AssignmentElementType<fields.NumberField<CoordinateOptions>>,
+      fields.ArrayField.InitializedElementType<fields.NumberField<CoordinateOptions>>,
+      fields.ArrayField.DefaultOptions<fields.ArrayField.AssignmentElementType<fields.NumberField<CoordinateOptions>>>,
+      [x0: number, y0: number, x1: number, y1: number],
+      [x0: number, y0: number, x1: number, y1: number],
+      fields.ArrayField.PersistedElementType<fields.NumberField<CoordinateOptions>>,
+      [x0: number, y0: number, x1: number, y1: number]
     >;
 
     /**
