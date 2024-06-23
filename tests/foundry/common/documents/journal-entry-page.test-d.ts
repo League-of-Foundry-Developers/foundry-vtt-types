@@ -16,4 +16,5 @@ declare const JEPTypes: foundry.data.fields.TypeDataField.CoreTypeNames<typeof f
 expectTypeOf(coreTypeMetadata).toEqualTypeOf<"image" | "pdf" | "text" | "video">();
 expectTypeOf(coreTypes).toEqualTypeOf<"image" | "pdf" | "text" | "video">();
 expectTypeOf(JEPTypes).toEqualTypeOf<"base" | "image" | "pdf" | "text" | "video">();
-expectTypeOf(myJournalEntryPage.type).toEqualTypeOf<"base" | "image" | "pdf" | "text" | "video">();
+// headquarters is added in tests/foundry/common/data/fields.test-d.ts
+expectTypeOf(myJournalEntryPage.type).toEqualTypeOf<"base" | "image" | "pdf" | "text" | "video" | "headquarters">();
