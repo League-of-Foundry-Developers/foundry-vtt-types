@@ -1,5 +1,4 @@
 import type { ConfiguredObjectClassForName } from "../../../../types/helperTypes.d.mts";
-import type { DeepPartial } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 export {};
@@ -137,9 +136,9 @@ declare global {
     protected _refreshHandle(b: Rectangle): void;
 
     protected override _onUpdate(
-      changed: DeepPartial<foundry.documents.BaseTile["_source"]>,
-      options?: DocumentModificationOptions,
-      userId?: string,
+      changed: foundry.documents.BaseTile.UpdateData,
+      options: DocumentModificationOptions,
+      userId: string,
     ): Promise<this> | void;
 
     protected override _onDelete(options: DocumentModificationOptions, userId: string): void;

@@ -1,4 +1,4 @@
-import type { DeepPartial, ValueOf } from "../../../../types/utils.d.mts";
+import type { ValueOf } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 export {};
@@ -158,7 +158,11 @@ declare global {
 
     protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
 
-    protected override _onUpdate(data: DeepPartial<foundry.documents.BaseDrawing["_source"]>): void;
+    protected override _onUpdate(
+      data: foundry.documents.BaseDrawing.UpdateData,
+      options: DocumentModificationOptions,
+      userId: string,
+    ): void;
 
     override activateListeners(): void;
 

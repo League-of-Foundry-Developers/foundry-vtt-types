@@ -1,5 +1,5 @@
 import type { ConfiguredDocumentClassForName, ToObjectFalseType } from "../../../../types/helperTypes.d.mts";
-import type { DeepPartial, InexactPartial, StoredDocument } from "../../../../types/utils.d.mts";
+import type { InexactPartial, StoredDocument } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 declare global {
@@ -174,7 +174,7 @@ declare global {
     protected override _onCreate(data: this["_source"], options: DocumentModificationOptions, userId: string): void;
 
     protected override _onUpdate(
-      data: DeepPartial<ChatMessage["_source"]>,
+      data: foundry.documents.BaseChatMessage.UpdateData,
       options: DocumentModificationOptions,
       userId: string,
     ): void;

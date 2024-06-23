@@ -1,5 +1,5 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
-import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
+import type { InexactPartial } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 declare global {
@@ -134,13 +134,13 @@ declare global {
      */
     updateTokenTargets(targetIds?: string[]): void;
 
-    override _onUpdate(
-      data: DeepPartial<foundry.documents.BaseUser["_source"]>,
+    protected override _onUpdate(
+      data: foundry.documents.BaseUser.UpdateData,
       options: DocumentModificationOptions,
       userId: string,
     ): void;
 
-    override _onDelete(options: DocumentModificationOptions, userId: string): void;
+    protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
   }
 
   namespace User {

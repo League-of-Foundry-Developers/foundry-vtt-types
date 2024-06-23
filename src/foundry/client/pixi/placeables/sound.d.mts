@@ -1,4 +1,3 @@
-import type { DeepPartial } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 export {};
@@ -86,13 +85,13 @@ declare global {
     updateSource(options?: AmbientSound.UpdateSourceOptions): void;
 
     protected override _onCreate(
-      data: foundry.documents.BaseAmbientSound["_source"],
+      data: foundry.documents.BaseAmbientSound.ConstructorData,
       options: DocumentModificationOptions,
       userId: string,
     ): void;
 
     protected override _onUpdate(
-      changed: DeepPartial<foundry.documents.BaseAmbientSound["_source"]>,
+      data: foundry.documents.BaseAmbientSound.UpdateData,
       options?: DocumentModificationOptions,
       userId?: string,
     ): void;

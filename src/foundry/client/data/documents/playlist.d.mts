@@ -116,7 +116,7 @@ declare global {
     ): Promise<void>;
 
     protected override _onUpdate(
-      changed: DeepPartial<Playlist["_source"]>,
+      changed: foundry.documents.BasePlaylist.UpdateData,
       options: DocumentModificationOptions,
       userId: string,
     ): void;

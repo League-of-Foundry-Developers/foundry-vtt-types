@@ -171,7 +171,7 @@ declare global {
     ): Promise<ChatMessage.ConfiguredInstance | undefined>;
 
     protected override _onUpdate(
-      data: DeepPartial<Cards["_source"]>,
+      data: foundry.documents.BaseCards.UpdateData,
       options: DocumentModificationOptions,
       userId: string,
     ): void;

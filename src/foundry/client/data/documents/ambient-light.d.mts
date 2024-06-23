@@ -1,7 +1,5 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
-import type { DeepPartial } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
-import type { SchemaField } from "../../../common/data/fields.d.mts";
 
 export {};
 
@@ -13,13 +11,8 @@ declare global {
    * @see {@link AmbientLightConfig}        The AmbientLight configuration application
    */
   class AmbientLightDocument extends CanvasDocumentMixin(foundry.documents.BaseAmbientLight) {
-    protected _onUpdate(
-      changed: DeepPartial<AmbientLightDocument["_source"]>,
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-    protected _onUpdate(
-      changed: DeepPartial<Readonly<SchemaField.InnerPersistedType<any>>>,
+    protected override _onUpdate(
+      changed: foundry.documents.BaseAmbientLight.UpdateData,
       options: DocumentModificationOptions,
       userId: string,
     ): void;

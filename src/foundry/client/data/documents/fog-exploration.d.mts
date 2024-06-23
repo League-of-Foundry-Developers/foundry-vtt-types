@@ -1,5 +1,5 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
-import type { DeepPartial, StoredDocument } from "../../../../types/utils.d.mts";
+import type { StoredDocument } from "../../../../types/utils.d.mts";
 import type { RequestContext, RequestOptions } from "../../../common/abstract/backend.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
@@ -27,15 +27,15 @@ declare global {
      */
     getTexture(): PIXI.Texture | null;
 
-    protected _onCreate(data: this["_source"], options: DocumentModificationOptions, userId: string): void;
+    protected override _onCreate(data: this["_source"], options: DocumentModificationOptions, userId: string): void;
 
-    protected _onUpdate(
-      changed: DeepPartial<this["_source"]>,
+    protected override _onUpdate(
+      changed: foundry.documents.BaseFogExploration.UpdateData,
       options: DocumentModificationOptions,
       userId: string,
     ): void;
 
-    protected _onDelete(options: DocumentModificationOptions, userId: string): void;
+    protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
   }
 
   namespace FogExploration {

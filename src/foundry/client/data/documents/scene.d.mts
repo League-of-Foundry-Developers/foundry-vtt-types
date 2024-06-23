@@ -1,5 +1,5 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
-import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
+import type { InexactPartial } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 declare global {
@@ -93,10 +93,14 @@ declare global {
       user: foundry.documents.BaseUser,
     ): Promise<void>;
 
-    protected override _onCreate(data: this["_source"], options: DocumentModificationOptions, userId: string): void;
+    protected override _onCreate(
+      data: foundry.documents.BaseScene.ConstructorData,
+      options: DocumentModificationOptions,
+      userId: string,
+    ): void;
 
     protected override _preUpdate(
-      changed: foundry.documents.BaseScene.ConstructorData,
+      changed: foundry.documents.BaseScene.UpdateData,
       options: DocumentModificationOptions,
       user: foundry.documents.BaseUser,
     ): Promise<void>;
@@ -109,7 +113,7 @@ declare global {
     ): foundry.documents.BaseScene.ConstructorData;
 
     protected override _onUpdate(
-      changed: DeepPartial<Scene["_source"]> & Record<string, unknown>,
+      changed: foundry.documents.BaseScene.UpdateData,
       options: DocumentModificationOptions,
       userId: string,
     ): void;
@@ -127,7 +131,7 @@ declare global {
      */
     protected _onActivate(active: boolean): ReturnType<this["view"]> | ReturnType<Canvas["draw"]>;
 
-    override _preCreateDescendantDocuments(
+    protected override _preCreateDescendantDocuments(
       parent: ClientDocument,
       collection: string,
       data: unknown[],
@@ -135,7 +139,7 @@ declare global {
       userId: string,
     ): void;
 
-    override _preUpdateDescendantDocuments(
+    protected override _preUpdateDescendantDocuments(
       parent: ClientDocument,
       collection: string,
       changes: unknown[],
@@ -143,7 +147,7 @@ declare global {
       userId: string,
     ): void;
 
-    override _preDeleteDescendantDocuments(
+    protected override _preDeleteDescendantDocuments(
       parent: ClientDocument,
       collection: string,
       ids: string[],
@@ -151,7 +155,7 @@ declare global {
       userId: string,
     ): void;
 
-    override _onUpdateDescendantDocuments(
+    protected override _onUpdateDescendantDocuments(
       parent: ClientDocument,
       collection: string,
       documents: ClientDocument[],

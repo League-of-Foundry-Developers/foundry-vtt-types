@@ -1,7 +1,4 @@
-import type { DeepPartial } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
-
-export {};
 
 declare global {
   /**
@@ -116,9 +113,9 @@ declare global {
     ): void;
 
     protected override _onUpdate(
-      changed: DeepPartial<foundry.documents.BaseAmbientLight["_source"]>,
-      options?: DocumentModificationOptions,
-      userId?: string,
+      data: foundry.documents.BaseAmbientLight.UpdateData,
+      options: DocumentModificationOptions,
+      userId: string,
     ): void;
 
     protected override _onDelete(options: DocumentModificationOptions, userId: string): void;

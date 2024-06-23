@@ -126,13 +126,13 @@ declare global {
     ): Collection<InstanceType<ConfiguredDocumentClassForName<DocType>>>;
 
     protected override _preUpdate(
-      data: Parameters<foundry.documents.BaseToken["_preUpdate"]>[0],
+      data: foundry.documents.BaseToken.UpdateData,
       options: DocumentModificationOptions,
       user: User.ConfiguredInstance,
     ): Promise<void>;
 
     protected override _onUpdate(
-      data: Parameters<foundry.documents.BaseToken["_onUpdate"]>[0],
+      data: foundry.documents.BaseToken.UpdateData,
       options: DocumentModificationOptions,
       userId: string,
     ): void;

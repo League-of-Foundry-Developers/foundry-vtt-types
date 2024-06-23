@@ -1,5 +1,4 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
-import type { DeepPartial } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 declare global {
@@ -17,10 +16,14 @@ declare global {
     protected _initialize(options?: any): void;
     protected _initialize(): void;
 
-    protected override _onCreate(data: this["_source"], options: DocumentModificationOptions, userId: string): void;
+    protected override _onCreate(
+      data: foundry.documents.BaseSetting.ConstructorData,
+      options: DocumentModificationOptions,
+      userId: string,
+    ): void;
 
     protected _onUpdate(
-      changed: DeepPartial<Setting["_source"]>,
+      changed: foundry.documents.BaseSetting.UpdateData,
       options: DocumentModificationOptions,
       userId: string,
     ): void;

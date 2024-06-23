@@ -193,7 +193,7 @@ declare class ClientDocument<
    * @see abstract.Document#_onUpdate
    */
   protected _onUpdate(
-    data: DeepPartial<BaseDocument["_source"]>,
+    data: foundry.data.fields.SchemaField.InnerAssignmentType<BaseDocument["schema"]["fields"]>,
     options: DocumentModificationOptions,
     userId: string,
   ): void;

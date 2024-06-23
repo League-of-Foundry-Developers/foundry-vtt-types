@@ -618,7 +618,7 @@ declare abstract class Document<
    * @returns A return value of false indicates the creation operation should be cancelled
    */
   protected _preCreate(
-    data: fields.SchemaField.AssignmentType<Schema, {}>,
+    data: fields.SchemaField.AssignmentType<Schema>,
     options: DocumentModificationOptions,
     user: foundry.documents.BaseUser,
   ): Promise<boolean | void>;
@@ -632,7 +632,7 @@ declare abstract class Document<
    * @returns A return value of false indicates the update operation should be cancelled
    */
   protected _preUpdate(
-    changed: fields.SchemaField.AssignmentType<Schema, {}>,
+    changed: fields.SchemaField.AssignmentType<Schema>,
     options: DocumentModificationOptions,
     user: foundry.documents.BaseUser,
   ): Promise<boolean | void>;
@@ -654,7 +654,7 @@ declare abstract class Document<
    * @param userId  - The id of the User requesting the document update
    */
   protected _onCreate(
-    data: fields.SchemaField.PersistedType<Schema, {}>,
+    data: fields.SchemaField.InnerAssignmentType<Schema>,
     options: DocumentModificationOptions,
     userId: string,
   ): void;
@@ -667,7 +667,7 @@ declare abstract class Document<
    * @param userId  - The id of the User requesting the document update
    */
   protected _onUpdate(
-    changed: DeepPartial<fields.SchemaField.PersistedType<Schema, {}>>,
+    changed: fields.SchemaField.InnerAssignmentType<Schema>,
     options: DocumentModificationOptions,
     userId: string,
   ): void;

@@ -1,4 +1,6 @@
-import type { DeepPartial } from "../../../../types/utils.d.mts";
+import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
+
+export {};
 
 declare global {
   /**
@@ -85,7 +87,11 @@ declare global {
      */
     protected _refreshVisibility(): void;
 
-    protected override _onUpdate(changed: DeepPartial<foundry.documents.BaseNote["_source"]>): void;
+    protected override _onUpdate(
+      data: foundry.documents.BaseNote.UpdateData,
+      options: DocumentModificationOptions,
+      userId: string,
+    ): void;
 
     protected override _canHover(user: User.ConfiguredInstance): true;
 

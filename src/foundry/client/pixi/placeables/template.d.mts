@@ -1,4 +1,4 @@
-import type { DeepPartial, RequiredProps } from "../../../../types/utils.d.mts";
+import type { RequiredProps } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 export {};
@@ -171,9 +171,9 @@ declare global {
     protected override _canView(user: User.ConfiguredInstance, event?: any): boolean;
 
     protected override _onUpdate(
-      data: DeepPartial<foundry.documents.BaseMeasuredTemplate["_source"]>,
-      options?: DocumentModificationOptions,
-      userId?: string,
+      data: foundry.documents.BaseMeasuredTemplate.UpdateData,
+      options: DocumentModificationOptions,
+      userId: string,
     ): void;
 
     protected override _canControl(user: User.ConfiguredInstance, event: PIXI.FederatedEvent): boolean;

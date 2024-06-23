@@ -1,5 +1,4 @@
 import type { ConfiguredObjectClassForName } from "../../../../types/helperTypes.d.mts";
-import type { DeepPartial } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 import type { LineIntersection } from "../../../common/utils/geometry.d.mts";
 
@@ -213,15 +212,15 @@ declare global {
     protected _getWallColor(): number;
 
     protected override _onCreate(
-      data: foundry.documents.BaseWall["_source"],
+      data: foundry.documents.BaseWall.ConstructorData,
       options: DocumentModificationOptions,
       userId: string,
     ): void;
 
     protected override _onUpdate(
-      changed: DeepPartial<foundry.documents.BaseWall["_source"]>,
-      options?: DocumentModificationOptions,
-      userId?: string,
+      changed: foundry.documents.BaseWall.UpdateData,
+      options: DocumentModificationOptions,
+      userId: string,
     ): void;
 
     protected override _onDelete(options: DocumentModificationOptions, userId: string): void;

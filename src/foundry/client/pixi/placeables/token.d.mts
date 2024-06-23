@@ -1,5 +1,5 @@
 import type { ConfiguredObjectClassForName } from "../../../../types/helperTypes.d.mts";
-import type { DeepPartial, RequiredProps } from "../../../../types/utils.d.mts";
+import type { RequiredProps } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 export {};
@@ -513,15 +513,15 @@ declare global {
     protected override _getShiftedPosition(dx: number, dy: number): { x: number; y: number };
 
     protected override _onCreate(
-      data: TokenDocument.ConfiguredInstance["_source"],
+      data: foundry.documents.BaseToken.ConstructorData,
       options: DocumentModificationOptions,
       userId: string,
     ): void;
 
     protected override _onUpdate(
-      data?: DeepPartial<TokenDocument.ConfiguredInstance["_source"]>,
-      options?: DocumentModificationOptions & { animate?: boolean },
-      userId?: string,
+      data: foundry.documents.BaseToken.UpdateData,
+      options: DocumentModificationOptions & { animate?: boolean },
+      userId: string,
     ): void;
 
     protected override _onDelete(options?: DocumentModificationOptions, userId?: string): void;

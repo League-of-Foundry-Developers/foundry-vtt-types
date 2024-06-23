@@ -1,5 +1,5 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
-import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
+import type { InexactPartial } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 declare global {
@@ -71,7 +71,7 @@ declare global {
     protected override _onCreate(data: this["_source"], options: DocumentModificationOptions, userId: string): void;
 
     protected override _onUpdate(
-      changed: DeepPartial<PlaylistSound["_source"]>,
+      changed: foundry.documents.BaseAmbientSound.UpdateData,
       options: DocumentModificationOptions,
       userId: string,
     ): void;

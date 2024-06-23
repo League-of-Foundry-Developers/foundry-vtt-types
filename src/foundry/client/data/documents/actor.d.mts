@@ -240,7 +240,7 @@ declare global {
     ): ReturnType<this["updateSource"]>;
 
     protected override _onUpdate(
-      changed: DeepPartial<Actor["_source"]>,
+      changed: foundry.documents.BaseActor.UpdateData,
       options: DocumentModificationOptions,
       user: string,
     ): void;
