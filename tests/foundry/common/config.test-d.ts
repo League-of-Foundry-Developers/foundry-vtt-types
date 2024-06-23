@@ -2,7 +2,7 @@ import { expectTypeOf } from "vitest";
 
 const myRelease = new foundry.config.ReleaseData({
   build: 315,
-  //@ts-expect-error "foobar" is not a valid release channel
+  // @ts-expect-error "foobar" is not a valid release channel
   channel: "foobar",
   download: undefined,
   generation: 11,

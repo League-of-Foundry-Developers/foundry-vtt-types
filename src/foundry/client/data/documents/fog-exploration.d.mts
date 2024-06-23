@@ -7,7 +7,7 @@ declare global {
   /**
    * The client-side FogExploration document which extends the common BaseFogExploration model.
    */
-  //@ts-expect-error Foundry turned a synchronous static function into async, fixed in v12
+  // @ts-expect-error Foundry turned a synchronous static function into async, fixed in v12
   class FogExploration extends ClientDocumentMixin(foundry.documents.BaseFogExploration) {
     /**
      * Obtain the fog of war exploration progress for a specific Scene and User.

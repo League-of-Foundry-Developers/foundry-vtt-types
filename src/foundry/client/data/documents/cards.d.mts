@@ -6,8 +6,6 @@ import type {
 } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial, StoredDocument } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
-import type { fields } from "../../../common/data/module.d.mts";
-import type BaseCards from "../../../common/documents/cards.d.mts";
 
 declare global {
   /**
@@ -173,7 +171,7 @@ declare global {
     ): Promise<ChatMessage.ConfiguredInstance | undefined>;
 
     protected override _onUpdate(
-      data: fields.SchemaField.InnerAssignmentType<BaseCards.Schema>,
+      data: foundry.documents.BaseCards.UpdateData,
       options: DocumentModificationOptions,
       userId: string,
     ): void;
