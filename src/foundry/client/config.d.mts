@@ -331,7 +331,7 @@ declare global {
      */
     FogExploration: {
       /** @defaultValue `FogExploration` */
-      //@ts-expect-error Fog Exploration breaks inheritance
+      // @ts-expect-error Fog Exploration breaks inheritance
       documentClass: ConfiguredDocumentClassOrDefault<typeof FogExploration>;
 
       /** @defaultValue `FogExplorations` */

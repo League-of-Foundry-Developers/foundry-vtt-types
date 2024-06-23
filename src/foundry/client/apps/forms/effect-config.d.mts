@@ -50,7 +50,7 @@ declare global {
   }
 
   namespace ActiveEffectConfig {
-    //@ts-expect-error - Fake polymorphism override
+    // @ts-expect-error - Fake polymorphism override
     interface ActiveEffectConfigData<
       Options extends DocumentSheetOptions<ActiveEffect> = DocumentSheetOptions<ActiveEffect>,
     > extends DocumentSheet.DocumentSheetData<Options, InstanceType<ConfiguredDocumentClass<typeof ActiveEffect>>> {
