@@ -6,7 +6,7 @@ declare global {
      * The parent Document of this one, if this one is embedded
      * @defaultValue `null`
      */
-    parent?: Document | null;
+    parent?: foundry.abstract.Document<any, any, any> | null;
 
     /**
      * The compendium collection ID which contains this Document, if any

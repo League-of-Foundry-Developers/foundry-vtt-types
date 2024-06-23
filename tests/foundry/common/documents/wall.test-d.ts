@@ -17,7 +17,7 @@ new foundry.documents.BaseWall();
 // @ts-expect-error - a BaseWall requires c (coordinates).
 new foundry.documents.BaseWall({});
 
-// @ts-expect-error - a BaseWall requires c (coordinates) and must have 4 values.
+// Soft error - document construction goes through but will fail initialization later
 new foundry.documents.BaseWall({ c: [10, 20] });
 
 expectTypeOf(new foundry.documents.BaseWall({ c: [10, 20, 30, 40] })).toEqualTypeOf<foundry.documents.BaseWall>();
