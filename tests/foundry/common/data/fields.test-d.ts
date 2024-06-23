@@ -5,8 +5,16 @@ import type { ConstructorOf } from "../../../../src/types/utils.d.mts";
 declare const JEPCoreTypes: foundry.data.fields.TypeDataField.CoreTypeNames<typeof JournalEntryPage>;
 declare const JEPSystemTypes: foundry.data.fields.TypeDataField.SystemTypeNames<typeof JournalEntryPage>;
 
-expectTypeOf(JEPCoreTypes).toEqualTypeOf<"image" | "pdf" | "text" | "video">();
-expectTypeOf(JEPSystemTypes).toEqualTypeOf<string>();
+declare global {
+  interface DataModelConfig {
+    JournalEntryPage: {
+      headquarters: foundry.abstract.TypeDataModel<DataSchema, JournalEntryPage>;
+    };
+  }
+}
+
+expectTypeOf(JEPCoreTypes).toEqualTypeOf<"base" | "image" | "pdf" | "text" | "video">();
+expectTypeOf(JEPSystemTypes).toEqualTypeOf<"headquarters">();
 
 /** EmbeddedDataField */
 

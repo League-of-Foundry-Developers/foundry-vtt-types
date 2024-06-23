@@ -21,7 +21,9 @@ expectTypeOf(baseActiveEffect.toObject(false).changes).toEqualTypeOf<EffectChang
 const item = await Item.create({ name: "Some Item", type: "base" });
 if (item) {
   expectTypeOf(item.toObject(false).effects[0].changes).toEqualTypeOf<EffectChangeData[]>();
-  expectTypeOf(item.toObject().effects).toEqualTypeOf<BaseActiveEffect["_source"][]>();
+  expectTypeOf(item.toObject().effects).toEqualTypeOf<
+    foundry.data.fields.SchemaField.InnerPersistedType<BaseActiveEffect["schema"]["fields"]>[]
+  >();
 }
 
 declare const bool: boolean;
@@ -78,7 +80,7 @@ if (item) {
   expectTypeOf(Item.create(item.toObject())).toEqualTypeOf<Promise<StoredDocument<Item> | undefined>>();
   expectTypeOf(Item.updateDocuments([item.toObject()])).toEqualTypeOf<Promise<Item[]>>();
   expectTypeOf(item.update(item.toObject())).toEqualTypeOf<Promise<StoredDocument<Item> | undefined>>();
-  expectTypeOf(item.clone(item.toObject())).toEqualTypeOf<Item | Promise<Item | undefined>>();
+  expectTypeOf(item.clone(item.toObject())).toEqualTypeOf<Item>();
 }
 
 declare global {
