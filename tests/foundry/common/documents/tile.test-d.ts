@@ -1,9 +1,9 @@
 import { expectTypeOf } from "vitest";
 
-//@ts-expect-error Width and height must be provided
+// @ts-expect-error Width and height must be provided
 expectTypeOf(new foundry.documents.BaseTile()).toEqualTypeOf<foundry.documents.BaseTile>();
 
-//@ts-expect-error Width and height must be provided
+// @ts-expect-error Width and height must be provided
 expectTypeOf(new foundry.documents.BaseTile({})).toEqualTypeOf<foundry.documents.BaseTile>();
 
 expectTypeOf(

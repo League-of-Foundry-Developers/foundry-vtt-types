@@ -28,5 +28,5 @@ expectTypeOf(scene.createThumbnail({ img: "path/to/my/img.png" })).toEqualTypeOf
 expectTypeOf(scene.createThumbnail({ width: 300 })).toEqualTypeOf<Promise<ImageHelper.ThumbnailReturn>>();
 expectTypeOf(scene.createThumbnail({ height: 100 })).toEqualTypeOf<Promise<ImageHelper.ThumbnailReturn>>();
 expectTypeOf(scene.toCompendium(null, { keepId: true })._id).toEqualTypeOf<string | null>();
-//@ts-expect-error _id does not exist if keepId isn't true
+// @ts-expect-error _id does not exist if keepId isn't true
 scene.toCompendium(null)._id;

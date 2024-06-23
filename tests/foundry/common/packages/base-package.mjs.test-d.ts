@@ -9,7 +9,7 @@ const packageCompendia: foundry.data.fields.SchemaField.InnerInitializedType<{ o
   {
     ownership: {
       ASSISTANT: "OBSERVER",
-      //@ts-expect-error Foobar is not a valid value
+      // @ts-expect-error Foobar is not a valid value
       PLAYER: "foobar",
     },
   };
@@ -31,5 +31,5 @@ expectTypeOf(myPackage.packFolders.first()!.name).toEqualTypeOf<string>();
 expectTypeOf(
   myPackage.packFolders.first()!.folders.first()!.folders.first()!.folders.first()!.name,
 ).toEqualTypeOf<string>();
-//@ts-expect-error Folders property does not exist this deep
+// @ts-expect-error Folders property does not exist this deep
 myPackage.packFolders.first()!.folders.first()!.folders.first()!.folders.first()!.folders;
