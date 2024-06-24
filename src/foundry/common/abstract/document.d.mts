@@ -46,7 +46,11 @@ declare abstract class Document<
    */
   readonly pack: string | null;
 
+  /**
+   * A mapping of embedded Document collections which exist in this model.
+   */
   readonly collections: Record<string, EmbeddedCollection<Document.AnyChild<this | null>, this>>;
+  // Document.CollectionRecord<this>;
 
   protected _initialize(options?: any): void;
 
@@ -809,6 +813,12 @@ declare namespace Document {
 
   export type SchemaFor<ConcreteDocument extends Any> =
     ConcreteDocument extends Document<infer Schema, any, any> ? Schema : never;
+
+  // TODO: Further specificity seems to cause circularity errors. See #2556
+  type CollectionRecord<Doc extends Document<any, any, any>> = {
+    [Key: string]: EmbeddedCollection<Document.AnyChild<Doc | null>, Doc>;
+    // [Key in keyof Doc]: Doc[Key] extends EmbeddedCollection<Document.AnyChild<Doc | null>, Doc> ? Doc[Key] : never;
+  };
 
   export type Flags<ConcreteDocument extends Any> = OptionsForSchema<SchemaFor<ConcreteDocument>>;
 
