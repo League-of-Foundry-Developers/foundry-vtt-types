@@ -1,10 +1,8 @@
-import type { SchemaDefinitionTypes } from "./schema-definition.d.mts";
-
 export declare const ol: {
   content: string;
   managed: Record<any, any>;
   group: string;
-  attrs: SchemaDefinitionTypes.SchemaAttrs;
+  attrs: Record<string, any>;
   parseDOM: Record<any, any>[];
   toDOM: (node: Node) => [string, number] | [string, Record<string, any>, number];
 };

@@ -1,8 +1,7 @@
 import { Node } from "prosemirror-model";
-import type { SchemaDefinitionTypes } from "./schema-definition.d.mts";
 
 export declare const paragraph: {
-  attrs: SchemaDefinitionTypes.SchemaAttrs;
+  attrs: Record<string, any>;
   managed: Record<any, any>;
   content: string;
   group: string;
@@ -25,7 +24,7 @@ export declare const hr: {
 };
 
 export declare const heading: {
-  attrs: SchemaDefinitionTypes.SchemaAttrs;
+  attrs: Record<string, any>;
   content: string;
   group: string;
   defining: boolean;

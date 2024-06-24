@@ -1,6 +1,5 @@
 import { MarkSpec, Node, NodeSpec } from "prosemirror-model";
 import type SchemaDefinition from "./schema-definition.d.mts";
-import type { SchemaDefinitionTypes } from "./schema-definition.d.mts";
 import { EditorView } from "prosemirror-view";
 
 export default ImageLinkNode;
@@ -11,9 +10,9 @@ export default ImageLinkNode;
 declare class ImageLinkNode extends SchemaDefinition {
   static override tag: "a";
 
-  static override get attrs(): SchemaDefinitionTypes.SchemaAttrs;
+  static override get attrs(): Record<string, any>;
 
-  static override getAttrs(el: HTMLElement): boolean | SchemaDefinitionTypes.SchemaAttrs;
+  static override getAttrs(el: HTMLElement): boolean | Record<string, any>;
 
   static override toDOM(node: Node): [string, any];
 
