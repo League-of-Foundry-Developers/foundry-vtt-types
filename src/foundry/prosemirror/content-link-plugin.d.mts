@@ -5,7 +5,9 @@ import type ProseMirrorPlugin from "./plugin.d.mts";
 
 interface ProseMirrorContentLinkOptions {
   /** The parent document housing this editor. */
-  document?: ClientDocument;
+  document?: foundry.abstract.Document<any, any, any>;
+  /** @defaultValue `false` */
+  relativeLinks?: boolean;
 }
 
 export default ProseMirrorContentLinkPlugin;
@@ -22,10 +24,14 @@ declare class ProseMirrorContentLinkPlugin extends ProseMirrorPlugin {
   /**
    * The parent document housing this editor.
    */
-  readonly document: ClientDocument;
+  readonly document: foundry.abstract.Document<any, any, any>;
 
-  /** {@inheritdoc} */
-  static build(schema: Schema, options?: ProseMirrorContentLinkOptions): Plugin;
+  /**
+   * Whether to generate links relative to the parent document.
+   */
+  readonly relativeLinks: boolean;
+
+  static override build(schema: Schema, options?: ProseMirrorContentLinkOptions): Plugin;
 
   /**
    * Handle a drop onto the editor.
