@@ -13,7 +13,6 @@ import type { DataField } from "../data/fields.d.mts";
 import type { fields } from "../data/module.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.mts";
 import type DataModel from "./data.mts";
-import type EmbeddedCollection from "./embedded-collection.mts";
 
 export default Document;
 
@@ -49,7 +48,7 @@ declare abstract class Document<
   /**
    * A mapping of embedded Document collections which exist in this model.
    */
-  readonly collections: Record<string, EmbeddedCollection<Document.AnyChild<this | null>, this>>;
+  readonly collections: Document.CollectionRecord<this>; // Record<string, EmbeddedCollection<Document.AnyChild<this | null>, this>>;
   // Document.CollectionRecord<this>;
 
   protected _initialize(options?: any): void;
@@ -816,8 +815,10 @@ declare namespace Document {
 
   // TODO: Further specificity seems to cause circularity errors. See #2556
   type CollectionRecord<Doc extends Document<any, any, any>> = {
-    [Key: string]: EmbeddedCollection<Document.AnyChild<Doc | null>, Doc>;
-    // [Key in keyof Doc]: Doc[Key] extends EmbeddedCollection<Document.AnyChild<Doc | null>, Doc> ? Doc[Key] : never;
+    // [Key: string]: EmbeddedCollection<Document.AnyChild<Doc | null>, Doc>;
+    [Key in keyof Doc]: Doc["schema"]["fields"][Key] extends fields.EmbeddedCollectionField<any, any>
+      ? Doc[Key]
+      : never;
   };
 
   export type Flags<ConcreteDocument extends Any> = OptionsForSchema<SchemaFor<ConcreteDocument>>;
