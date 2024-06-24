@@ -1,0 +1,12 @@
+import "./attribute-capture.d.mts";
+import "./core.d.mts";
+import "./image-link-node.d.mts";
+import "./image-node.d.mts";
+import "./link-mark.d.mts";
+import "./lists.d.mts";
+import "./marks.d.mts";
+import "./other.d.mts";
+import "./schema-definition.d.mts";
+import "./secret-node.d.mts";
+import "./tables.d.mts";
+import "./utils.d.mts";
