@@ -17,8 +17,10 @@ new foundry.documents.BaseWall();
 // @ts-expect-error - a BaseWall requires c (coordinates).
 new foundry.documents.BaseWall({});
 
-// @ts-expect-error - a BaseWall requires c (coordinates) and must have 4 values.
+// @ts-expect-error - c must be a length-4 array of integer coordinates
 new foundry.documents.BaseWall({ c: [10, 20] });
+// @ts-expect-error - c must be a length-4 array of integer coordinates
+new foundry.documents.BaseWall({ c: [10, 20, 30, 40, 50] });
 
 expectTypeOf(new foundry.documents.BaseWall({ c: [10, 20, 30, 40] })).toEqualTypeOf<foundry.documents.BaseWall>();
 expectTypeOf(

@@ -16,8 +16,8 @@ export type ProseMirrorCommand = (
 ) => boolean;
 export declare namespace ProseMirrorKeyMaps {
   export interface Options {
-    /** The parent sheet that houses the ProseMirror instance. */
-    sheet?: FormApplication;
+    /** A function to call when Ctrl+S is pressed. */
+    onSave?: Function;
   }
 }
 
@@ -33,12 +33,11 @@ declare class ProseMirrorKeyMaps extends ProseMirrorPlugin {
   constructor(schema: Schema, options?: ProseMirrorKeyMaps.Options);
 
   /**
-   * The parent sheet that houses the ProseMirror instance.
+   * A function to call when Ctrl+S is pressed.
    */
-  readonly sheet: FormApplication;
+  readonly onSave: Function;
 
-  /** {@inheritdoc} */
-  static build(schema: Schema): Plugin;
+  static override build(schema: Schema, options?: ProseMirrorKeyMaps.Options): Plugin;
 
   /**
    * Build keyboard commands for nodes and marks present in the schema.

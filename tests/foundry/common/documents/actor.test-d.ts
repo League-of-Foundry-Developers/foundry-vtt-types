@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
 import type EmbeddedCollection from "../../../../src/foundry/common/abstract/embedded-collection.d.mts";
-import type { Merge } from "../../../../src/types/utils.d.mts";
+import type { NumberField, SchemaField } from "../../../../src/foundry/common/data/fields.d.mts";
 
 // @ts-expect-error name and type are required
 new foundry.documents.BaseActor();
@@ -24,9 +24,26 @@ expectTypeOf(baseActor._source.effects[0]!.duration.seconds).toEqualTypeOf<numbe
  * Data Model Integration
  */
 
-type MyCharacterSchema = ReturnType<(typeof MyCharacter)["defineSchema"]>;
+// type MyCharacterSchema = ReturnType<(typeof MyCharacter)["defineSchema"]>;
 
-interface MyCharacter extends foundry.data.fields.SchemaField.InnerInitializedType<MyCharacterSchema> {}
+type MyCharacterSchema = {
+  abilities: SchemaField<{
+    strength: SchemaField<{
+      value: NumberField<{
+        required: true;
+        nullable: false;
+        integer: true;
+      }>;
+    }>;
+    dexterity: SchemaField<{
+      value: NumberField<{
+        required: true;
+        nullable: false;
+        integer: true;
+      }>;
+    }>;
+  }>;
+};
 
 class MyCharacter extends foundry.abstract.TypeDataModel<MyCharacterSchema, Actor.ConfiguredInstance> {
   static defineSchema() {
@@ -59,6 +76,8 @@ class MyCharacter extends foundry.abstract.TypeDataModel<MyCharacterSchema, Acto
     }
   }
 }
+
+// interface MyCharacter extends foundry.data.fields.SchemaField.InnerInitializedType<MyCharacterSchema> {}
 
 declare const MyCharacterSystem: MyCharacter;
 
@@ -121,21 +140,15 @@ interface BoilerplateCharacterSchema extends BoilerplateActorBaseSchema {
   }>;
 }
 
-type BoilerplateCharacterProperties = foundry.data.fields.SchemaField.InnerInitializedType<BoilerplateCharacterSchema>;
-
-interface BoilerplateCharacter
-  extends Merge<
-    BoilerplateCharacterProperties,
-    {
-      abilities: {
-        strength: {
-          mod?: number;
-          label?: string;
-        };
-      };
-      // attributes: {};
-    }
-  > {}
+// FIXME: Add generic prop to TypeDataModel to handle derived props
+// interface BoilerplateCharacterDerivedProps {
+//   abilities: {
+//     strength: {
+//       mod: number;
+//       label: string;
+//     };
+//   };
+// }
 
 class BoilerplateCharacter extends BoilerplateActorBase<BoilerplateCharacterSchema> {
   static defineSchema() {

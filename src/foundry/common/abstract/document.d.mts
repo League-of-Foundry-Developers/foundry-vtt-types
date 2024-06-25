@@ -13,7 +13,6 @@ import type { DataField } from "../data/fields.d.mts";
 import type { fields } from "../data/module.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.mts";
 import type DataModel from "./data.mts";
-import type EmbeddedCollection from "./embedded-collection.mts";
 
 export default Document;
 
@@ -46,7 +45,10 @@ declare abstract class Document<
    */
   readonly pack: string | null;
 
-  readonly collections: Record<string, EmbeddedCollection<Document.AnyChild<this | null>, this>>;
+  /**
+   * A mapping of embedded Document collections which exist in this model.
+   */
+  readonly collections: Document.CollectionRecord<this>;
 
   protected _initialize(options?: any): void;
 
@@ -809,6 +811,12 @@ declare namespace Document {
 
   export type SchemaFor<ConcreteDocument extends Any> =
     ConcreteDocument extends Document<infer Schema, any, any> ? Schema : never;
+
+  type CollectionRecord<Doc extends Document<any, any, any>> = {
+    [Key in keyof Doc]: Doc["schema"]["fields"][Key] extends fields.EmbeddedCollectionField<any, any>
+      ? Doc[Key]
+      : never;
+  };
 
   export type Flags<ConcreteDocument extends Any> = OptionsForSchema<SchemaFor<ConcreteDocument>>;
 

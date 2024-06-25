@@ -8,9 +8,27 @@ export default ProseMirrorImagePlugin;
  * A class responsible for handle drag-and-drop and pasting of image content. Ensuring no base64 data is injected
  * directly into the journal content and it is instead uploaded to the user's data directory.
  */
-declare class ProseMirrorImagePlugin extends ProseMirrorPlugin {
-  /** {@inheritdoc} */
-  static build(schema: Schema, options?: Record<string, never>): Plugin;
+declare class ProseMirrorImagePlugin<
+  RelatedDocument extends foundry.abstract.Document<any, any, any>,
+> extends ProseMirrorPlugin {
+  /**
+   * @param schema   - The ProseMirror schema.
+   * @param options  - Additional options to configure the plugin's behaviour.
+   */
+  constructor(
+    schema: Schema,
+    options?: {
+      /** A related Document to store extract base64 images for. */
+      document?: RelatedDocument;
+    },
+  );
+
+  /**
+   * The related Document to store extracted base64 images for.
+   */
+  readonly document: RelatedDocument;
+
+  static override build(schema: Schema, options?: Record<string, never>): Plugin;
 
   /**
    * Handle a drop onto the editor.
@@ -39,10 +57,21 @@ declare class ProseMirrorImagePlugin extends ProseMirrorPlugin {
 
   /**
    * Capture any base64-encoded images embedded in the rich text paste and upload them.
-   * @param view - The ProseMirror editor view.
+   * @param view   - The ProseMirror editor view.
+   * @param html   - The HTML data as a string.
+   * @param images - An array of extracted base64 image data.
+   */
+  protected _replaceBase64Images(
+    view: EditorView,
+    html: string,
+    images: [full: string, mime: string, data: string][],
+  ): Promise<void>;
+
+  /**
+   * Detect base64 image data embedded in an HTML string and extract it.
    * @param html - The HTML data as a string.
    */
-  protected _replaceBase64Images(view: EditorView, html: string): Promise<void>;
+  protected _extractBase64Images(html: string): [full: string, mime: string, data: string][];
 
   /**
    * Convert a base64 string into a File object.

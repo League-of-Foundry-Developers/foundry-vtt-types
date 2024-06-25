@@ -9,7 +9,7 @@ expectTypeOf(new foundry.documents.BaseTile({})).toEqualTypeOf<foundry.documents
 expectTypeOf(
   new foundry.documents.BaseTile({
     _id: undefined,
-    img: undefined,
+    texture: undefined,
     width: 100,
     height: 100,
     x: undefined,
@@ -17,7 +17,6 @@ expectTypeOf(
     z: undefined,
     rotation: undefined,
     alpha: undefined,
-    tint: undefined,
     hidden: undefined,
     locked: undefined,
     overhead: undefined,
@@ -30,7 +29,7 @@ expectTypeOf(
 expectTypeOf(
   new foundry.documents.BaseTile({
     _id: null,
-    img: null,
+    texture: null,
     width: 100,
     height: 100,
     x: null,
@@ -38,7 +37,6 @@ expectTypeOf(
     z: null,
     rotation: null,
     alpha: null,
-    tint: null,
     hidden: null,
     locked: null,
     overhead: null,
@@ -51,7 +49,10 @@ expectTypeOf(
 expectTypeOf(
   new foundry.documents.BaseTile({
     _id: "BGBEITBTEIGE",
-    img: "path/to/some/image.png",
+    texture: {
+      src: "path/to/some/image.png",
+      tint: "#FF0000",
+    },
     width: 100,
     height: 200,
     x: 300,
@@ -59,7 +60,6 @@ expectTypeOf(
     z: 100,
     rotation: 0,
     alpha: 0,
-    tint: "#FF0000",
     hidden: true,
     locked: false,
     overhead: true,

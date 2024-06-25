@@ -24,7 +24,7 @@ expectTypeOf(
     emote: null,
     flags: null,
     flavor: null,
-    roll: null,
+    rolls: null,
     sound: null,
     speaker: null, // FIXME: This is valid
     timestamp: null,
@@ -41,7 +41,7 @@ expectTypeOf(
     emote: undefined,
     flags: undefined,
     flavor: undefined,
-    roll: undefined,
+    rolls: undefined,
     sound: undefined,
     speaker: undefined, // FIXME: This is valid
     timestamp: undefined,
@@ -90,6 +90,6 @@ expectTypeOf(
 ).toEqualTypeOf<foundry.documents.BaseChatMessage>();
 expectTypeOf(
   new foundry.documents.BaseChatMessage({
-    whisper: [{ id: "someId" }],
+    whisper: [new foundry.documents.BaseUser({ name: "foo" })],
   }),
 ).toEqualTypeOf<foundry.documents.BaseChatMessage>();

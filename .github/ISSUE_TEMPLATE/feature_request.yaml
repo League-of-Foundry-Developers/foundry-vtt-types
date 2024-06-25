@@ -8,13 +8,13 @@ body:
     attributes:
       label: Foundry VTT Version
       description: The version(s) of Foundry VTT that this feature should be added for
-      placeholder: E.g., 0.8.x, v9
+      placeholder: E.g., v11, v12
     validations:
       required: true
   - type: textarea
     id: problem
     attributes:
-      label: Related Poblem
+      label: Related Problem
       description: Is your feature request related to a problem? If so, please describe it here in a clear and concise way.
       placeholder: E.g., I'm always frustrated when…
     validations:

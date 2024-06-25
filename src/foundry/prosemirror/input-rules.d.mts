@@ -10,6 +10,7 @@ export declare namespace ProseMirrorInputRules {
      * The minimum heading level to start from when generating heading input rules.
      * The resulting heading level for a heading rule is equal to the number of
      * leading hashes minus this number.
+     * @defaultValue `0`
      */
     minHeadingLevel?: number;
   }
@@ -20,13 +21,6 @@ export default ProseMirrorInputRules;
  * A class responsible for building the input rules for the ProseMirror editor.
  */
 declare class ProseMirrorInputRules extends ProseMirrorPlugin {
-  /**
-   * @param schema  - The ProseMirror schema to build the plugin against.
-   * @param options - Additional options to configure the plugin's behaviour.
-   */
-  constructor(schema: Schema, options?: ProseMirrorInputRules.Options);
-  readonly options: Options;
-
   /**
    * Build the plugin.
    * @param schema  - The ProseMirror schema to build the plugin against.

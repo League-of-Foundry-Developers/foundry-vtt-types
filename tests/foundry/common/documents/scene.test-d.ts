@@ -2,62 +2,11 @@ import { expectTypeOf } from "vitest";
 import type EmbeddedCollection from "../../../../src/foundry/common/abstract/embedded-collection.d.mts";
 import type { StoredDocument } from "../../../../src/types/utils.d.mts";
 
-expectTypeOf(foundry.documents.BaseScene.getDimensions()).toEqualTypeOf<{
-  distance: number;
-  height: number;
-  paddingX: number;
-  paddingY: number;
-  ratio: number;
-  sceneHeight: number;
-  sceneWidth: number;
-  shiftX: number;
-  shiftY: number;
-  size: number;
-  width: number;
-}>();
-
-expectTypeOf(foundry.documents.BaseScene.getDimensions({})).toEqualTypeOf<{
-  distance: number;
-  height: number;
-  paddingX: number;
-  paddingY: number;
-  ratio: number;
-  sceneHeight: number;
-  sceneWidth: number;
-  shiftX: number;
-  shiftY: number;
-  size: number;
-  width: number;
-}>();
-
-expectTypeOf(
-  foundry.documents.BaseScene.getDimensions({
-    width: 100,
-    height: 200,
-    gridDistance: 100,
-    padding: 10,
-    shiftX: 0,
-    shiftY: 0,
-  }),
-).toEqualTypeOf<{
-  distance: number;
-  height: number;
-  paddingX: number;
-  paddingY: number;
-  ratio: number;
-  sceneHeight: number;
-  sceneWidth: number;
-  shiftX: number;
-  shiftY: number;
-  size: number;
-  width: number;
-}>();
-
 // @ts-expect-error - A BaseScene requires data.
 foundry.documents.BaseScene.create();
 
 // @ts-expect-error - A BaseScene requires a name.
-foundry.documents.BaseScene.create({});
+new foundry.documents.BaseScene({});
 
 expectTypeOf(foundry.documents.BaseScene.create({ name: "My scene" })).toEqualTypeOf<
   Promise<StoredDocument<Scene> | undefined>
@@ -65,7 +14,7 @@ expectTypeOf(foundry.documents.BaseScene.create({ name: "My scene" })).toEqualTy
 
 const myScene = await foundry.documents.BaseScene.create({ name: "My second scene" }, { temporary: true });
 if (myScene) {
-  expectTypeOf(myScene).toEqualTypeOf<foundry.SceneData>();
+  expectTypeOf(myScene).toEqualTypeOf<Scene>();
 }
 
 // @ts-expect-error - A BaseScene requires a name.
@@ -74,14 +23,14 @@ new foundry.documents.BaseScene({});
 const scene = new foundry.documents.BaseScene({ name: "My third scene" });
 expectTypeOf(scene).toEqualTypeOf<foundry.documents.BaseScene>();
 
-expectTypeOf(scene.drawings).toEqualTypeOf<EmbeddedCollection<typeof DrawingDocument, foundry.SceneData>>();
-expectTypeOf(scene.lights).toEqualTypeOf<EmbeddedCollection<typeof AmbientLightDocument, foundry.SceneData>>();
-expectTypeOf(scene.notes).toEqualTypeOf<EmbeddedCollection<typeof NoteDocument, foundry.SceneData>>();
-expectTypeOf(scene.sounds).toEqualTypeOf<EmbeddedCollection<typeof AmbientSoundDocument, foundry.SceneData>>();
-expectTypeOf(scene.templates).toEqualTypeOf<EmbeddedCollection<typeof MeasuredTemplateDocument, foundry.SceneData>>();
-expectTypeOf(scene.tokens).toEqualTypeOf<EmbeddedCollection<typeof TokenDocument, foundry.SceneData>>();
-expectTypeOf(scene.tiles).toEqualTypeOf<EmbeddedCollection<typeof TileDocument, foundry.SceneData>>();
-expectTypeOf(scene.walls).toEqualTypeOf<EmbeddedCollection<typeof WallDocument, foundry.SceneData>>();
+expectTypeOf(scene.drawings).toEqualTypeOf<EmbeddedCollection<DrawingDocument, Scene>>();
+expectTypeOf(scene.lights).toEqualTypeOf<EmbeddedCollection<AmbientLightDocument, Scene>>();
+expectTypeOf(scene.notes).toEqualTypeOf<EmbeddedCollection<NoteDocument, Scene>>();
+expectTypeOf(scene.sounds).toEqualTypeOf<EmbeddedCollection<AmbientSoundDocument, Scene>>();
+expectTypeOf(scene.templates).toEqualTypeOf<EmbeddedCollection<MeasuredTemplateDocument, Scene>>();
+expectTypeOf(scene.tokens).toEqualTypeOf<EmbeddedCollection<TokenDocument, Scene>>();
+expectTypeOf(scene.tiles).toEqualTypeOf<EmbeddedCollection<TileDocument, Scene>>();
+expectTypeOf(scene.walls).toEqualTypeOf<EmbeddedCollection<WallDocument, Scene>>();
 
 // @ts-expect-error A SceneData requires data.
 new foundry.documents.BaseScene();
@@ -100,7 +49,7 @@ expectTypeOf(
     navigation: undefined,
     navOrder: undefined,
     navName: undefined,
-    img: undefined,
+    background: undefined,
     foreground: undefined,
     thumb: undefined,
     width: undefined,
@@ -108,14 +57,7 @@ expectTypeOf(
     padding: undefined,
     initial: undefined,
     backgroundColor: undefined,
-    gridType: undefined,
     grid: undefined,
-    shiftX: undefined,
-    shiftY: undefined,
-    gridColor: undefined,
-    gridAlpha: undefined,
-    gridDistance: undefined,
-    gridUnits: undefined,
     tokenVision: undefined,
     fogExploration: undefined,
     fogReset: undefined,
@@ -136,7 +78,7 @@ expectTypeOf(
     weather: undefined,
     folder: undefined,
     sort: undefined,
-    permission: undefined,
+    ownership: undefined,
     flags: undefined,
   }),
 ).toEqualTypeOf<foundry.documents.BaseScene>();
@@ -148,7 +90,7 @@ expectTypeOf(
     navigation: null,
     navOrder: null,
     navName: null,
-    img: null,
+    background: null,
     foreground: null,
     thumb: null,
     width: null,
@@ -156,14 +98,7 @@ expectTypeOf(
     padding: null,
     initial: null,
     backgroundColor: null,
-    gridType: null,
     grid: null,
-    shiftX: null,
-    shiftY: null,
-    gridColor: null,
-    gridAlpha: null,
-    gridDistance: null,
-    gridUnits: null,
     tokenVision: null,
     fogExploration: null,
     fogReset: null,
@@ -184,7 +119,7 @@ expectTypeOf(
     weather: null,
     folder: null,
     sort: null,
-    permission: null,
+    ownership: null,
     flags: null,
   }),
 ).toEqualTypeOf<foundry.documents.BaseScene>();
