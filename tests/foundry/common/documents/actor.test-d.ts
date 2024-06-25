@@ -85,21 +85,26 @@ expectTypeOf(MyCharacterSystem.abilities.strength.value).toEqualTypeOf<number>()
 
 type RequiredInteger = { required: true; nullable: false; integer: true };
 
-interface BoilerplateActorBaseSchema extends DataSchema {
-  health: foundry.data.fields.SchemaField<{
-    value: foundry.data.fields.NumberField<RequiredInteger>;
-    max: foundry.data.fields.NumberField<RequiredInteger>;
-  }>;
-  power: foundry.data.fields.SchemaField<{
-    value: foundry.data.fields.NumberField<RequiredInteger>;
-    max: foundry.data.fields.NumberField<RequiredInteger>;
-  }>;
-  biography: foundry.data.fields.HTMLField;
+declare namespace BoilerplateActorBase {
+  interface Schema extends DataSchema {
+    health: foundry.data.fields.SchemaField<{
+      value: foundry.data.fields.NumberField<RequiredInteger>;
+      max: foundry.data.fields.NumberField<RequiredInteger>;
+    }>;
+    power: foundry.data.fields.SchemaField<{
+      value: foundry.data.fields.NumberField<RequiredInteger>;
+      max: foundry.data.fields.NumberField<RequiredInteger>;
+    }>;
+    biography: foundry.data.fields.HTMLField;
+  }
 }
 
-class BoilerplateActorBase<Schema extends BoilerplateActorBaseSchema = BoilerplateActorBaseSchema> extends foundry
-  .abstract.TypeDataModel<Schema, Actor.ConfiguredInstance> {
-  static defineSchema(): BoilerplateActorBaseSchema {
+class BoilerplateActorBase<
+  Schema extends BoilerplateActorBase.Schema = BoilerplateActorBase.Schema,
+  BaseData extends Record<string, any> = Record<never, never>,
+  DerivedData extends Record<string, any> = Record<never, never>,
+> extends foundry.abstract.TypeDataModel<Schema, Actor.ConfiguredInstance, BaseData, DerivedData> {
+  static defineSchema(): BoilerplateActorBase.Schema {
     const fields = foundry.data.fields;
     const requiredInteger = { required: true, nullable: false, integer: true };
     const schema: DataSchema = {};
@@ -114,7 +119,7 @@ class BoilerplateActorBase<Schema extends BoilerplateActorBaseSchema = Boilerpla
     });
     schema.biography = new fields.HTMLField();
 
-    return schema as BoilerplateActorBaseSchema;
+    return schema as BoilerplateActorBase.Schema;
   }
 }
 
@@ -127,30 +132,35 @@ declare global {
   }
 }
 
-interface BoilerplateCharacterSchema extends BoilerplateActorBaseSchema {
-  attributes: foundry.data.fields.SchemaField<{
-    level: foundry.data.fields.SchemaField<{
-      value: foundry.data.fields.NumberField<RequiredInteger>;
+declare namespace BoilerplateCharacter {
+  interface Schema extends BoilerplateActorBase.Schema {
+    attributes: foundry.data.fields.SchemaField<{
+      level: foundry.data.fields.SchemaField<{
+        value: foundry.data.fields.NumberField<RequiredInteger>;
+      }>;
     }>;
-  }>;
-  abilities: foundry.data.fields.SchemaField<{
-    strength: foundry.data.fields.SchemaField<{
-      value: foundry.data.fields.NumberField<RequiredInteger>;
+    abilities: foundry.data.fields.SchemaField<{
+      strength: foundry.data.fields.SchemaField<{
+        value: foundry.data.fields.NumberField<RequiredInteger>;
+      }>;
     }>;
-  }>;
+  }
+
+  interface DerivedProps {
+    abilities: {
+      strength: {
+        mod: number;
+        label: string;
+      };
+    };
+  }
 }
 
-// FIXME: Add generic prop to TypeDataModel to handle derived props
-// interface BoilerplateCharacterDerivedProps {
-//   abilities: {
-//     strength: {
-//       mod: number;
-//       label: string;
-//     };
-//   };
-// }
-
-class BoilerplateCharacter extends BoilerplateActorBase<BoilerplateCharacterSchema> {
+class BoilerplateCharacter extends BoilerplateActorBase<
+  BoilerplateCharacter.Schema,
+  Record<never, never>,
+  BoilerplateCharacter.DerivedProps
+> {
   static defineSchema() {
     const fields = foundry.data.fields;
     const requiredInteger = { required: true, nullable: false, integer: true };
