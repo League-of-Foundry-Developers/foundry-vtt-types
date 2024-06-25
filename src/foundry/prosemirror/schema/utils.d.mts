@@ -14,7 +14,7 @@ export declare function isElementEmpty(element: HTMLElement): boolean;
  * Convert an element's style attribute string into an object.
  * @param str - The style string.
  */
-export declare function stylesFromString(str: string): Record<any, any>;
+export declare function stylesFromString(str: string): Record<string, unknown>;
 
 /**
  * Merge two style attribute strings.
