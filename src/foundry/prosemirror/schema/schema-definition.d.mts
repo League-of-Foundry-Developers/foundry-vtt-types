@@ -13,7 +13,7 @@ declare abstract class SchemaDefinition {
 
   /**
    * Schema attributes
-   * @remark SchemaDefinition subclasses must implement the attrs getter.
+   * @remarks SchemaDefinition subclasses must implement the attrs getter.
    */
   static get attrs(): Record<string, unknown>;
 
@@ -21,14 +21,14 @@ declare abstract class SchemaDefinition {
    * Check if an HTML element is appropriate to represent as this node, and if so, extract its schema attributes.
    * @param el - The HTML element
    * @returns Returns false if the HTML element is not appropriate for this schema node, otherwise returns its attributes.
-   * @remark SchemaDefinition subclasses must implement the getAttrs method.
+   * @remarks SchemaDefinition subclasses must implement the getAttrs method.
    */
   static getAttrs(el: HTMLElement): Record<string, unknown> | boolean;
 
   /**
    * Convert a ProseMirror Node back into an HTML element.
    * @param node - The ProseMirror node.
-   * @remark SchemaDefinition subclasses must implement the toDOM method.
+   * @remarks SchemaDefinition subclasses must implement the toDOM method.
    */
   static toDOM(node: Node): unknown[];
 
