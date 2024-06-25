@@ -74,25 +74,7 @@ declare global {
       | (NullableOption extends true ? null : never)
       | (RequiredOption extends true ? never : undefined);
 
-    /**
-     * A helper type to extract the allowed choices out of options for a NumberField or StringField.
-     * @typeParam ChoicesOpt - the type of the choices option
-     */
-    type Choices<
-      ChoicesOpt extends
-        | number[]
-        | string[]
-        | Record<number, string>
-        | Record<string, string>
-        | (() => number[] | Record<number, string>)
-        | (() => string[] | Record<string, string>),
-    > = ChoicesOpt extends () => any
-      ? Choices<ReturnType<ChoicesOpt>>
-      : ChoicesOpt extends number[] | string[]
-        ? ValueOf<ChoicesOpt>
-        : ChoicesOpt extends Record<number, string> | Record<string, string>
-          ? keyof ChoicesOpt
-          : never;
+    type Choices<T> = T[] | Record<string, T> | (() => T[] | Record<string, T>);
   }
 
   interface DataFieldValidationOptions {
@@ -761,13 +743,13 @@ declare global {
      * Must the number be an integer?
      * @defaultValue `false`
      */
-    integer?: boolean;
+    integer?: boolean | undefined;
 
     /**
      * Must the number be positive?
      * @defaultValue `false`
      */
-    positive?: boolean;
+    positive?: boolean | undefined;
 
     /**
      * An array of values or an object of values/labels which represent
@@ -775,7 +757,7 @@ declare global {
      * returns the array of choices.
      * @defaultValue `undefined`
      */
-    choices?: number[] | Record<number, string> | (() => number[] | Record<number, string>) | undefined;
+    choices?: DataFieldOptions.Choices<number> | undefined;
   }
 }
 
@@ -919,13 +901,13 @@ declare global {
      * Is the string allowed to be blank (empty)?
      * @defaultValue `true`
      */
-    blank?: boolean;
+    blank?: boolean | undefined;
 
     /**
      * Should any provided string be trimmed as part of cleaning?
      * @defaultValue `true`
      */
-    trim?: boolean;
+    trim?: boolean | undefined;
 
     /**
      * An array of values or an object of values/labels which represent
@@ -933,12 +915,12 @@ declare global {
      * returns the array of choices.
      * @defaultValue `undefined`
      */
-    choices?: string[] | Record<string, string> | (() => string[] | Record<string, string>) | undefined;
+    choices?: DataFieldOptions.Choices<string> | undefined;
 
     /**
      * @defaultValue `false`
      */
-    textSearch?: boolean;
+    textSearch?: boolean | undefined;
   }
 }
 
