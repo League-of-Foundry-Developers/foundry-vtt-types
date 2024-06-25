@@ -78,6 +78,8 @@ export type ConfiguredDocumentClassForName<Name extends DocumentType> = CONFIG[N
 
 export type ConfiguredObjectClassForName<Name extends PlaceableDocumentType> = CONFIG[Name]["objectClass"];
 
+export type ConfiguredLayerClassForName<Name extends PlaceableDocumentType> = CONFIG[Name]["layerClass"];
+
 export type ConfiguredData<Name extends string> = Name extends keyof DataConfig ? DataConfig[Name] : {};
 
 export type ConfiguredSource<Name extends string> = Name extends keyof SourceConfig ? SourceConfig[Name] : {};

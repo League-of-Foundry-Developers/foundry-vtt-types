@@ -1,7 +1,7 @@
 import type {
+  ConfiguredLayerClassForName,
   ConfiguredObjectClassForName,
   DocumentConstructor,
-  ObjectClass,
 } from "../../../../types/helperTypes.d.mts";
 import type { Mixin } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
@@ -13,14 +13,14 @@ declare class CanvasDocument<
   /**
    * A lazily constructed PlaceableObject instance which can represent this Document on the game canvas.
    */
-  get object(): InstanceType<ConfiguredObjectClassForName<BaseDocument["documentName"]>> | null; // TODO: Replace with InstanceType<ObjectClass<BaseDocument>> | null once the circular reference problem has been solved
+  get object(): InstanceType<ConfiguredObjectClassForName<BaseDocument["documentName"]>> | null;
 
   /**
    * A reference to the PlaceableObject instance which represents this Embedded Document.
    * @internal
    * @defaultValue `null`
    */
-  protected _object: InstanceType<ObjectClass<BaseDocument["documentName"]>> | null; // TODO: Replace with InstanceType<ObjectClass<BaseDocument>> | null once the circular reference problem has been solved
+  protected _object: InstanceType<ConfiguredObjectClassForName<BaseDocument["documentName"]>> | null;
 
   /**
    * Has this object been deliberately destroyed as part of the deletion workflow?
@@ -32,7 +32,7 @@ declare class CanvasDocument<
   /**
    * A reference to the CanvasLayer which contains Document objects of this type.
    */
-  get layer(): PlaceablesLayer<any>; // TODO: Replace once the circular reference problem has been solved
+  get layer(): InstanceType<ConfiguredLayerClassForName<BaseDocument["documentName"]>>; // PlaceablesLayer<any>; // TODO: Replace once the circular reference problem has been solved
 
   /**
    * An indicator for whether this document is currently rendered on the game canvas.
