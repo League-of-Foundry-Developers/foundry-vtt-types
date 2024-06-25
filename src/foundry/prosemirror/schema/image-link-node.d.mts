@@ -10,11 +10,11 @@ export default ImageLinkNode;
 declare class ImageLinkNode extends SchemaDefinition {
   static override tag: "a";
 
-  static override get attrs(): Record<string, any>;
+  static override get attrs(): Record<string, unknown>;
 
-  static override getAttrs(el: HTMLElement): boolean | Record<string, any>;
+  static override getAttrs(el: HTMLLinkElement): boolean | Record<string, unknown>;
 
-  static override toDOM(node: Node): [string, any];
+  static override toDOM(node: Node): [string, unknown];
 
   static override make(): NodeSpec | MarkSpec;
 

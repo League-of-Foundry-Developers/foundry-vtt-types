@@ -9,11 +9,11 @@ export default ImageNode;
 declare class ImageNode extends SchemaDefinition {
   static override tag: "img[src]";
 
-  static override get attrs(): Record<string, any>;
+  static override get attrs(): Record<string, unknown>;
 
-  static override getAttrs(el: HTMLElement): boolean | Record<string, any>;
+  static override getAttrs(el: HTMLImageElement): boolean | Record<string, unknown>;
 
-  static override toDOM(node: Node): [string, any];
+  static override toDOM(node: Node): [string, unknown];
 
   static override make(): NodeSpec | MarkSpec;
 }

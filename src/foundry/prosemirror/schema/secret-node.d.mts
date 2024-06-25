@@ -10,11 +10,11 @@ export default SecretNode;
 declare class SecretNode extends SchemaDefinition {
   static override tag: "section";
 
-  static override get attrs(): Record<string, any>;
+  static override get attrs(): Record<string, unknown>;
 
-  static override getAttrs(el: HTMLElement): boolean | Record<string, any>;
+  static override getAttrs(el: HTMLElement): boolean | Record<string, unknown>;
 
-  static override toDOM(node: Node): [string, Record<any, any>, number];
+  static override toDOM(node: Node): [string, Record<string, unknown>, number];
 
   static override make(): NodeSpec | MarkSpec;
 

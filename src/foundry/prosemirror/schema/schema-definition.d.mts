@@ -13,21 +13,24 @@ declare abstract class SchemaDefinition {
 
   /**
    * Schema attributes
+   * @abstract
    */
-  static get attrs(): Record<string, any>;
+  static get attrs(): Record<string, unknown>;
 
   /**
    * Check if an HTML element is appropriate to represent as this node, and if so, extract its schema attributes.
    * @param el - The HTML element
    * @returns Returns false if the HTML element is not appropriate for this schema node, otherwise returns its attributes.
+   * @abstract
    */
-  static getAttrs(el: HTMLElement): Record<string, any> | boolean;
+  static getAttrs(el: HTMLElement): Record<string, unknown> | boolean;
 
   /**
    * Convert a ProseMirror Node back into an HTML element.
    * @param node - The ProseMirror node.
+   * @abstract
    */
-  static toDOM(node: Node): any[];
+  static toDOM(node: Node): unknown[];
 
   /**
    * Create the ProseMirror schema specification.

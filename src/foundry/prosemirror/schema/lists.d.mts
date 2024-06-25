@@ -1,16 +1,16 @@
 export declare const ol: {
   content: string;
-  managed: Record<any, any>;
+  managed: Record<string, unknown>;
   group: string;
-  attrs: Record<string, any>;
-  parseDOM: Record<any, any>[];
-  toDOM: (node: Node) => [string, number] | [string, Record<string, any>, number];
+  attrs: Record<string, unknown>;
+  parseDOM: Record<string, unknown>[];
+  toDOM: (node: Node) => [string, number] | [string, Record<string, unknown>, number];
 };
 
 export declare const ul: {
   content: string;
   group: string;
-  parseDOM: Record<any, any>[];
+  parseDOM: Record<string, unknown>[];
   toDOM: () => [string, number];
 };
 
@@ -43,13 +43,13 @@ export declare const ul: {
 export declare const li: {
   content: string;
   defining: boolean;
-  parseDOM: Record<any, any>[];
+  parseDOM: Record<string, unknown>[];
   toDOM: () => [string, number];
 };
 
 export declare const liText: {
   content: string;
   defining: boolean;
-  parseDOM: Record<any, any>[];
+  parseDOM: Record<string, unknown>[];
   toDOM: () => [string, number];
 };
