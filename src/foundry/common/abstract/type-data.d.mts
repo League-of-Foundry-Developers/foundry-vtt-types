@@ -1,6 +1,28 @@
 import type DataModel from "./data.d.mts";
 import type Document from "./document.d.mts";
 
+interface _InternalTypeDataModelInterface extends DataModel<DataSchema, Document<DataSchema, any, any>> {
+  new <
+    Schema extends DataSchema,
+    Parent extends Document<DataSchema, any, any>,
+    BaseData extends Record<string, unknown> = Record<never, never>,
+    DerivedData extends Record<string, unknown> = Record<never, never>,
+  >(
+    data: any,
+    parent: Parent,
+  ): DataModel<Schema, Parent> & BaseData & DerivedData;
+}
+
+declare const _InternalTypeDataModelConst: _InternalTypeDataModelInterface;
+
+// @ts-expect-error Ignore the error, this is a workaround for a dynamic class.
+declare class _InternalTypeDataModel<
+  Schema extends DataSchema,
+  Parent extends Document<DataSchema, any, any>,
+  BaseData extends Record<string, unknown> = Record<never, never>,
+  DerivedData extends Record<string, unknown> = Record<never, never>,
+> extends _InternalTypeDataModelConst<Schema, Parent, BaseData, DerivedData> {}
+
 /**
  * A specialized subclass of DataModel, intended to represent a Document's type-specific data.
  * Systems or Modules that provide DataModel implementations for sub-types of Documents (such as Actors or Items)
@@ -60,13 +82,15 @@ import type Document from "./document.d.mts";
 export default abstract class TypeDataModel<
   Schema extends DataSchema,
   Parent extends Document<DataSchema, any, any>,
-> extends DataModel<Schema, Parent> {
+  BaseData extends Record<string, any> = Record<never, never>,
+  DerivedData extends Record<string, any> = Record<never, never>,
+> extends _InternalTypeDataModel<Schema, Parent, BaseData, DerivedData> {
   modelProvider: System | Module | null;
 
   /**
    * Prepare data related to this DataModel itself, before any derived data is computed.
    */
-  prepareBaseData(): void;
+  prepareBaseData(this: DataModel<Schema, Parent> & Partial<DerivedData>): void;
 
   /* -------------------------------------------- */
 
@@ -74,5 +98,5 @@ export default abstract class TypeDataModel<
    * Apply transformations of derivations to the values of the source data object.
    * Compute data fields whose values are not stored to the database.
    */
-  prepareDerivedData(): void;
+  prepareDerivedData(this: DataModel<Schema, Parent> & BaseData & Partial<DerivedData>): void;
 }
