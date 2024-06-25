@@ -47,7 +47,7 @@ expectTypeOf((await itemCollection.getIndex()).get("some id", { strict: true }))
   { _id: string; uuid: string } & DeepPartial<foundry.documents.BaseItem["_source"]>
 >();
 expectTypeOf(
-  (await itemCollection.getIndex({ fields: ["name", "effects", "data"] })).get("some id", { strict: true }),
+  (await itemCollection.getIndex({ fields: ["name", "effects", "system"] })).get("some id", { strict: true }),
 ).toEqualTypeOf<{ _id: string; uuid: string } & DeepPartial<foundry.documents.BaseItem["_source"]>>();
 
 expectTypeOf(await itemCollection.getDocuments()).toEqualTypeOf<StoredDocument<Item>[]>(); // get all items
