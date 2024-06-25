@@ -1,16 +1,9 @@
+import type { Merge } from "../../../types/utils.d.mts";
 import type DataModel from "./data.d.mts";
 import type Document from "./document.d.mts";
 
 interface _InternalTypeDataModelInterface extends DataModel<DataSchema, Document<DataSchema, any, any>> {
-  new <
-    Schema extends DataSchema,
-    Parent extends Document<DataSchema, any, any>,
-    BaseData extends Record<string, unknown> = Record<never, never>,
-    DerivedData extends Record<string, unknown> = Record<never, never>,
-  >(
-    data: any,
-    parent: Parent,
-  ): DataModel<Schema, Parent> & BaseData & DerivedData;
+  new <_ComputedInstance extends object>(...args: ConstructorParameters<typeof DataModel>): _ComputedInstance;
 }
 
 declare const _InternalTypeDataModelConst: _InternalTypeDataModelInterface;
@@ -21,7 +14,9 @@ declare class _InternalTypeDataModel<
   Parent extends Document<DataSchema, any, any>,
   BaseData extends Record<string, unknown> = Record<never, never>,
   DerivedData extends Record<string, unknown> = Record<never, never>,
-> extends _InternalTypeDataModelConst<Schema, Parent, BaseData, DerivedData> {}
+  // This does not work if inlined. It's weird to put it here but it works.
+  _ComputedInstance extends object = Merge<Merge<DataModel<Schema, Parent>, BaseData>, DerivedData>,
+> extends _InternalTypeDataModelConst<_ComputedInstance> {}
 
 /**
  * A specialized subclass of DataModel, intended to represent a Document's type-specific data.
@@ -90,7 +85,7 @@ export default abstract class TypeDataModel<
   /**
    * Prepare data related to this DataModel itself, before any derived data is computed.
    */
-  prepareBaseData(this: DataModel<Schema, Parent> & Partial<DerivedData>): void;
+  prepareBaseData(this: Merge<DataModel<Schema, Parent>, Partial<DerivedData>>): void;
 
   /* -------------------------------------------- */
 
@@ -98,5 +93,5 @@ export default abstract class TypeDataModel<
    * Apply transformations of derivations to the values of the source data object.
    * Compute data fields whose values are not stored to the database.
    */
-  prepareDerivedData(this: DataModel<Schema, Parent> & BaseData & Partial<DerivedData>): void;
+  prepareDerivedData(this: Merge<Merge<DataModel<Schema, Parent>, BaseData>, Partial<DerivedData>>): void;
 }
