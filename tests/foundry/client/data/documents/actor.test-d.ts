@@ -1,7 +1,7 @@
 import { expectTypeOf } from "vitest";
 import type { ArmorData, WeaponData } from "./item.test-d";
 
-const actor = new Actor({ name: "Beren", type: "npc" });
+const actor = new Actor({ name: "Beren", type: "base" });
 
 expectTypeOf(actor.token).toEqualTypeOf<TokenDocument | null>();
 expectTypeOf(actor.getActiveTokens(true, true)).toEqualTypeOf<TokenDocument[]>();

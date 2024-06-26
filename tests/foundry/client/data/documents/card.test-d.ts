@@ -1,8 +1,8 @@
 import { expectTypeOf } from "vitest";
 
 // TODO: Investigate why this isn't complaining about specific types
-const card = new Card({ name: "Just a deck of cards", type: "foobar" });
-const cards = new Cards({ name: "Some Card Deck", type: "german" });
+const card = new Card({ name: "Just a single card", type: "base" });
+const cards = new Cards({ name: "Some Card Deck", type: "deck" });
 
 expectTypeOf(card.back).toEqualTypeOf<CardFaceData>();
 expectTypeOf(card.face).toEqualTypeOf<number | null>();

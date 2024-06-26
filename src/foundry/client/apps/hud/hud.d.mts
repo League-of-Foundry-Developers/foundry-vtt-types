@@ -29,6 +29,7 @@ declare global {
 
     /**
      * Convenience access for the canvas layer which this HUD modifies
+     * @remarks Returns undefined only if there's no object
      */
     get layer(): Object["layer"] | undefined;
 

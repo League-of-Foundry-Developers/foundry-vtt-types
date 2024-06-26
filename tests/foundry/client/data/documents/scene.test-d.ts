@@ -6,7 +6,7 @@ new Scene();
 // @ts-expect-error - A Scene requires name.
 new Scene({});
 
-const scene = new Scene({ name: "My scene", gridDistance: 100, gridUnits: "in" });
+const scene = new Scene({ name: "My scene" });
 expectTypeOf(scene).toEqualTypeOf<Scene>();
 
 expectTypeOf(scene.dimensions).toEqualTypeOf<SceneDimensions>();

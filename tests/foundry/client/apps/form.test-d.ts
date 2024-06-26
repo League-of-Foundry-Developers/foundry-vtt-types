@@ -1,5 +1,4 @@
 import { assertType, expectTypeOf } from "vitest";
-import { BaseAmbientLight } from "../../../../src/foundry/common/documents.mjs/index.mts";
 
 const app = new (class extends FormApplication<FormApplicationOptions, { foo: string }> {
   protected _updateObject(): Promise<unknown> {
@@ -11,9 +10,11 @@ assertType<Application>(app);
 expectTypeOf(app.isEditable).toEqualTypeOf<boolean>();
 expectTypeOf(app.object).toEqualTypeOf<{ foo: string }>();
 
-const doc = new BaseAmbientLight();
-const sheet = new (class extends DocumentSheet<DocumentSheetOptions<BaseAmbientLight>, BaseAmbientLight> {})(doc);
+const doc = new AmbientLightDocument();
+const sheet = new (class extends DocumentSheet<DocumentSheetOptions<AmbientLightDocument>, AmbientLightDocument> {})(
+  doc,
+);
 
-assertType<FormApplication<DocumentSheetOptions, BaseAmbientLight>>(sheet);
+assertType<FormApplication<DocumentSheetOptions, AmbientLightDocument>>(sheet);
 expectTypeOf(sheet.isEditable).toEqualTypeOf<boolean>();
-expectTypeOf(sheet.document).toEqualTypeOf<BaseAmbientLight>();
+expectTypeOf(sheet.document).toEqualTypeOf<AmbientLightDocument>();
