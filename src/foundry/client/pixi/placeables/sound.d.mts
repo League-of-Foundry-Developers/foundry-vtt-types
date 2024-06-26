@@ -1,3 +1,4 @@
+import type { ConfiguredObjectClassForName } from "../../../../types/helperTypes.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 export {};
@@ -110,6 +111,8 @@ declare global {
   }
 
   namespace AmbientSound {
+    type ConfiguredInstance = InstanceType<ConfiguredObjectClassForName<"AmbientSound">>;
+
     interface RenderFlags extends PlaceableObject.RenderFlags {
       refreshField: boolean;
 

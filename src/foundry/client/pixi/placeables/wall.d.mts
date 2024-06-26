@@ -57,7 +57,7 @@ declare global {
     /**
      * A set which tracks other Wall instances that this Wall intersects with (excluding shared endpoints)
      */
-    intersectsWith: Map<InstanceType<ConfiguredObjectClassForName<"Wall">>, LineIntersection>;
+    intersectsWith: Map<Wall.ConfiguredInstance, LineIntersection>;
 
     /**
      * A convenience reference to the coordinates Array for the Wall endpoints, [x0,y0,x1,y1].
@@ -268,6 +268,8 @@ declare global {
   }
 
   namespace Wall {
+    type ConfiguredInstance = InstanceType<ConfiguredObjectClassForName<"Wall">>;
+
     interface RenderFlags extends PlaceableObject.RenderFlags {
       refreshLine: boolean;
 

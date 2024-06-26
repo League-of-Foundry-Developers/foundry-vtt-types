@@ -1,13 +1,13 @@
-import type { ConfiguredObjectClassForName } from "../../../../../types/helperTypes.d.mts";
+export {};
 
 declare global {
   /**
    * An icon representing a Door Control
    */
   class DoorControl extends PIXI.Container {
-    constructor(wall: InstanceType<ConfiguredObjectClassForName<"Wall">>);
+    constructor(wall: Wall.ConfiguredInstance);
 
-    wall: InstanceType<ConfiguredObjectClassForName<"Wall">>;
+    wall: Wall.ConfiguredInstance;
 
     /**
      * The center of the wall which contains the door.

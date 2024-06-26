@@ -1,4 +1,3 @@
-import type { ConfiguredObjectClassForName } from "../../../../../types/helperTypes.d.mts";
 import type { ConstructorOf, InexactPartial } from "../../../../../types/utils.d.mts";
 
 declare global {
@@ -85,7 +84,7 @@ declare global {
     /**
      * An Array of Wall instances in the current Scene which act as Doors.
      */
-    get doors(): InstanceType<ConfiguredObjectClassForName<"Wall">>[];
+    get doors(): Wall.ConfiguredInstance[];
 
     /**
      * Gate the precision of wall snapping to become less precise for small scale maps.
@@ -120,7 +119,7 @@ declare global {
      * @param wall  - The existing Wall object being chained to
      * @returns The [x,y] coordinates of the starting endpoint
      */
-    static getClosestEndpoint(point: Point, wall: InstanceType<ConfiguredObjectClassForName<"Wall">>): PointArray;
+    static getClosestEndpoint(point: Point, wall: Wall.ConfiguredInstance): PointArray;
 
     override releaseAll(options?: PlaceableObject.ReleaseOptions): number;
 

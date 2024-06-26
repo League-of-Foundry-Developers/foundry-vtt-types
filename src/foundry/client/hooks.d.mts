@@ -377,10 +377,7 @@ declare global {
        * @param options - Options for rendering the associated {@link JournalSheet}
        * @remarks This is called by {@link Hooks.call}.
        */
-      activateNote: (
-        note: InstanceType<ConfiguredObjectClassForName<"Note">>,
-        options: JournalSheet.RenderOptions,
-      ) => boolean | false;
+      activateNote: (note: Note.ConfiguredInstance, options: JournalSheet.RenderOptions) => boolean | false;
 
       /** Cards */
 
