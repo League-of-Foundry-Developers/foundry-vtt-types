@@ -176,7 +176,13 @@ declare namespace BaseChatMessage {
      * Serialized content of any Roll instances attached to the ChatMessage
      * @defaultValue `[]`
      */
-    rolls: fields.ArrayField<fields.JSONField<{ validate: (rollJson: string) => void }>>;
+    rolls: fields.ArrayField<
+      fields.JSONField<
+        { validate: (rollJson: string) => void },
+        fields.JSONField.AssignmentType<{ validate: (rollJson: string) => void }>,
+        Roll // TODO: If initialization fails can this possibly be not-roll?
+      >
+    >;
 
     /**
      * The URL of an audio file which plays when this message is received

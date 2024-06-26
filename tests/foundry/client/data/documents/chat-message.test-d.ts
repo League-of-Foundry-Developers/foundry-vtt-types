@@ -59,7 +59,7 @@ expectTypeOf(chat.alias).toEqualTypeOf<string>();
 expectTypeOf(chat.isAuthor).toEqualTypeOf<boolean>();
 expectTypeOf(chat.isContentVisible).toEqualTypeOf<boolean>();
 expectTypeOf(chat.isRoll).toEqualTypeOf<boolean>();
-expectTypeOf(chat.rolls).toEqualTypeOf<Array<Roll>>();
+expectTypeOf(chat.rolls).toEqualTypeOf<Roll[]>();
 expectTypeOf(chat.visible).toEqualTypeOf<boolean>();
 expectTypeOf(chat.user).toEqualTypeOf<User>(); // TODO: This seems off? Possible issue with ForeignDocumentField
 expectTypeOf(chat.prepareData()).toEqualTypeOf<void>();
