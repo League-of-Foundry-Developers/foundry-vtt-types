@@ -15,7 +15,7 @@ declare class _InternalTypeDataModel<
   BaseData extends Record<string, unknown> = Record<never, never>,
   DerivedData extends Record<string, unknown> = Record<never, never>,
   // This does not work if inlined. It's weird to put it here but it works.
-  _ComputedInstance extends object = Merge<Merge<DataModel<Schema, Parent>, BaseData>, DerivedData>,
+  _ComputedInstance extends object = DataModel<Schema, Parent> & Merge<BaseData, DerivedData>,
 > extends _InternalTypeDataModelConst<_ComputedInstance> {}
 
 /**
