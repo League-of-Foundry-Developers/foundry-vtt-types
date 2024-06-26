@@ -1,14 +1,14 @@
 import { expectTypeOf } from "vitest";
 import type EmbeddedCollection from "../../../../../src/foundry/common/abstract/embedded-collection.d.mts";
 
-const doc = new TokenDocument({}, { parent: new foundry.documents.BaseScene() });
+const doc = new TokenDocument({}, { parent: new foundry.documents.BaseScene({ name: "foo" }) });
 expectTypeOf(doc.actor).toEqualTypeOf<Actor.ConfiguredInstance | null>();
 expectTypeOf(doc.isOwner).toEqualTypeOf<boolean>();
 expectTypeOf(doc.isLinked).toEqualTypeOf<boolean>();
 expectTypeOf(doc.combatant).toEqualTypeOf<Combatant.ConfiguredInstance | null>();
 expectTypeOf(doc.inCombat).toEqualTypeOf<boolean>();
 expectTypeOf(doc.clone()).toEqualTypeOf<TokenDocument>();
-expectTypeOf(doc.clone({}, { save: true })).toEqualTypeOf<TokenDocument>();
+expectTypeOf(doc.clone({}, { save: true })).toEqualTypeOf<Promise<TokenDocument>>();
 expectTypeOf(doc.actor).toEqualTypeOf<Actor.ConfiguredInstance | null>();
 expectTypeOf(doc.modifyActorDocument({ actorLink: true, "lightAnimation.speed": 5 }, {})).toEqualTypeOf<
   Promise<[Actor.ConfiguredInstance | null]>

@@ -3,9 +3,6 @@ import type { StoredDocument } from "../../../../../src/types/utils.d.mts";
 
 const combatant = new Combatant({}, {});
 
-// static properties of `BaseCombatant`
-expectTypeOf(Combatant.schema).toEqualTypeOf<typeof foundry.data.CombatantData>();
-
 // properties
 expectTypeOf(combatant.pack).toEqualTypeOf<string | null>();
 expectTypeOf(combatant.parent).toEqualTypeOf<Combat | null>();

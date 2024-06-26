@@ -1,9 +1,12 @@
 import { expectTypeOf } from "vitest";
 
-const table = new RollTable({ name: "" });
+// @ts-expect-error - A RollTable requires data.
+new RollTable();
 
 // @ts-expect-error - A RollTable requires a name.
 new RollTable({});
+
+const table = new RollTable({ name: "" });
 
 expectTypeOf(table.results.get("testing")).toEqualTypeOf<TableResult | undefined>();
 
