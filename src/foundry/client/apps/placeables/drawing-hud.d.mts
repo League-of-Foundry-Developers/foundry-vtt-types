@@ -1,4 +1,3 @@
-import type { ConfiguredObjectClassForName } from "../../../../types/helperTypes.d.mts";
 import type { MaybePromise } from "../../../../types/utils.d.mts";
 
 declare global {
@@ -7,7 +6,7 @@ declare global {
    * @typeParam Options - the type of the options object
    */
   class DrawingHUD<Options extends ApplicationOptions = ApplicationOptions> extends BasePlaceableHUD<
-    ConcreteDrawing,
+    Drawing.ConfiguredInstance,
     Options
   > {
     /**
@@ -26,5 +25,3 @@ declare global {
     override setPosition(options?: Partial<Application.Position>): void;
   }
 }
-
-type ConcreteDrawing = InstanceType<ConfiguredObjectClassForName<"Drawing">>;

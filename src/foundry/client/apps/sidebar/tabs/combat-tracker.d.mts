@@ -1,4 +1,3 @@
-import type { ConfiguredObjectClassForName } from "../../../../../types/helperTypes.d.mts";
 import type { StoredDocument } from "../../../../../types/utils.d.mts";
 
 declare global {
@@ -13,7 +12,7 @@ declare global {
      * @defaultValue `null`
      * @internal
      */
-    protected _highlighted: InstanceType<ConfiguredObjectClassForName<"Token">> | null;
+    protected _highlighted: Token.ConfiguredInstance | null;
 
     /**
      * Record the currently tracked Combat encounter

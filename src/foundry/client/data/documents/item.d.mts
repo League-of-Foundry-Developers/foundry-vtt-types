@@ -37,6 +37,7 @@ declare global {
 
     /**
      * Prepare a data object which defines the data schema used by dice roll commands against this Item
+     * @remarks defaults to this.system, but provided as object for flexible overrides
      */
     getRollData(): object;
 

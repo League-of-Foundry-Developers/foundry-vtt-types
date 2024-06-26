@@ -47,7 +47,7 @@ declare global {
      * A reference to an overhead Tile that is a roof, interior to which this wall is contained
      * @defaultValue `undefined`
      */
-    roof: InstanceType<ConfiguredObjectClassForName<"Tile">> | undefined;
+    roof: Tile.ConfiguredInstance | undefined;
 
     /**
      * A Graphics object used to highlight this wall segment. Only used when the wall is controlled.
@@ -57,7 +57,7 @@ declare global {
     /**
      * A set which tracks other Wall instances that this Wall intersects with (excluding shared endpoints)
      */
-    intersectsWith: Map<InstanceType<ConfiguredObjectClassForName<"Wall">>, LineIntersection>;
+    intersectsWith: Map<Wall.ConfiguredInstance, LineIntersection>;
 
     /**
      * A convenience reference to the coordinates Array for the Wall endpoints, [x0,y0,x1,y1].
@@ -268,6 +268,8 @@ declare global {
   }
 
   namespace Wall {
+    type ConfiguredInstance = InstanceType<ConfiguredObjectClassForName<"Wall">>;
+
     interface RenderFlags extends PlaceableObject.RenderFlags {
       refreshLine: boolean;
 

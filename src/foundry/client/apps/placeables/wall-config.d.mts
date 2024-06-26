@@ -1,4 +1,3 @@
-import type { ConfiguredObjectClassForName } from "../../../../types/helperTypes.d.mts";
 import type { MaybePromise } from "../../../../types/utils.d.mts";
 
 declare global {
@@ -33,7 +32,7 @@ declare global {
     override render(
       force?: boolean,
       options?: Application.RenderOptions<Options> & {
-        walls?: InstanceType<ConfiguredObjectClassForName<"Wall">>[] | undefined;
+        walls?: Wall.ConfiguredInstance[] | undefined;
       },
     ): this;
 

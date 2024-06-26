@@ -304,11 +304,7 @@ declare global {
        * @param statusId - The status effect ID being applied, from CONFIG.specialStatusEffects.
        * @param active   - Is the special status effect now active?
        */
-      applyTokenStatusEffect: (
-        token: InstanceType<ConfiguredObjectClassForName<"Token">>,
-        statusId: string,
-        active: boolean,
-      ) => void;
+      applyTokenStatusEffect: (token: Token.ConfiguredInstance, statusId: string, active: boolean) => void;
 
       /**
        * A hook event that fires when a chat bubble is rendered.
@@ -381,10 +377,7 @@ declare global {
        * @param options - Options for rendering the associated {@link JournalSheet}
        * @remarks This is called by {@link Hooks.call}.
        */
-      activateNote: (
-        note: InstanceType<ConfiguredObjectClassForName<"Note">>,
-        options: JournalSheet.RenderOptions,
-      ) => boolean | false;
+      activateNote: (note: Note.ConfiguredInstance, options: JournalSheet.RenderOptions) => boolean | false;
 
       /** Cards */
 

@@ -1,4 +1,3 @@
-import type { ConfiguredObjectClassForName } from "../../../../types/helperTypes.d.mts";
 import type { MaybePromise } from "../../../../types/utils.d.mts";
 
 declare global {
@@ -7,7 +6,7 @@ declare global {
    * @typeParam Options - the type of the options object
    */
   class TileHUD<Options extends ApplicationOptions = ApplicationOptions> extends BasePlaceableHUD<
-    ConcreteTile,
+    Tile.ConfiguredInstance,
     Options
   > {
     /**
@@ -32,5 +31,3 @@ declare global {
     protected _onControlVideo(event: PointerEvent): this;
   }
 }
-
-type ConcreteTile = InstanceType<ConfiguredObjectClassForName<"Tile">>;

@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClassForName, ConfiguredObjectClassForName } from "../../../../types/helperTypes.d.mts";
+import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
@@ -66,12 +66,14 @@ declare global {
     /**
      * Provide an object which organizes all embedded Item instances by their type
      */
-    // TODO: It's the "extends cannot be used to replicate in problem" again
     get itemTypes(): {
-      [K in foundry.documents.BaseItem["type"]]: Item.ConfiguredInstance & {
-        type: K;
-        // system: "Item" extends keyof DataModelConfig ? DataModelConfig["Item"][K] : never;
-      };
+      [K in foundry.documents.BaseItem["type"]]: Array<
+        Item.ConfiguredInstance & {
+          type: K;
+          // TODO: It's the "extends cannot be used to replicate in problem" again
+          // system: "Item" extends keyof DataModelConfig ? DataModelConfig["Item"][K] : never;
+        }
+      >;
     };
     /**
      * Test whether an Actor document is a synthetic representation of a Token (if true) or a full Document (if false)
@@ -113,12 +115,10 @@ declare global {
      * @param document - Return the Document instance rather than the PlaceableObject (default: `false`)
      * @returns An array of Token instances in the current Scene which reference this Actor.
      */
-    getActiveToken<ReturnDocument extends boolean = false>(
+    getActiveTokens<ReturnDocument extends boolean = false>(
       linked?: boolean,
       document?: ReturnDocument,
-    ): ReturnDocument extends true
-      ? TokenDocument.ConfiguredInstance[]
-      : InstanceType<ConfiguredObjectClassForName<"Token">>[];
+    ): ReturnDocument extends true ? TokenDocument.ConfiguredInstance[] : Token.ConfiguredInstance[];
 
     /**
      * Get all ActiveEffects that may apply to this Actor.
@@ -130,6 +130,7 @@ declare global {
 
     /**
      * Prepare a data object which defines the data schema used by dice roll commands against this Actor
+     * @remarks defaults to this.system, but provided as object for flexible overrides
      */
     getRollData(): object;
 

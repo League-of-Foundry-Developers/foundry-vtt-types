@@ -1,3 +1,4 @@
+import type { ConfiguredObjectClassForName } from "../../../../types/helperTypes.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 export {};
@@ -103,6 +104,8 @@ declare global {
   }
 
   namespace Note {
+    type ConfiguredInstance = InstanceType<ConfiguredObjectClassForName<"Note">>;
+
     interface RenderFlags extends PlaceableObject.RenderFlags {
       refreshPosition: boolean;
 

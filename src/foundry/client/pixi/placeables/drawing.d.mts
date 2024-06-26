@@ -1,3 +1,4 @@
+import type { ConfiguredObjectClassForName } from "../../../../types/helperTypes.d.mts";
 import type { ValueOf } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
@@ -264,6 +265,8 @@ declare global {
   }
 
   namespace Drawing {
+    type ConfiguredInstance = InstanceType<ConfiguredObjectClassForName<"Drawing">>;
+
     interface RenderFlags extends PlaceableObject.RenderFlags {
       refreshShape: boolean;
 

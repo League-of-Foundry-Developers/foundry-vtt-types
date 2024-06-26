@@ -1,3 +1,4 @@
+import type { ConfiguredObjectClassForName } from "../../../../types/helperTypes.d.mts";
 import type { RequiredProps } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
@@ -188,6 +189,8 @@ declare global {
   }
 
   namespace MeasuredTemplate {
+    type ConfiguredInstance = InstanceType<ConfiguredObjectClassForName<"MeasuredTemplate">>;
+
     interface RenderFlags extends PlaceableObject.RenderFlags {
       refreshShape: boolean;
 

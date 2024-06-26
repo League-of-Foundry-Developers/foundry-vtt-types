@@ -3,7 +3,7 @@ import type {
   ConfiguredDocumentClassForName,
   ConfiguredFlags,
 } from "../../../types/helperTypes.mts";
-import type { RemoveIndexSignatures, ConstructorOf, SimpleMerge, ValueOf } from "../../../types/utils.d.mts";
+import type { RemoveIndexSignatures, ConstructorOf, SimpleMerge } from "../../../types/utils.d.mts";
 import type { DataModel } from "../abstract/data.mts";
 import type Document from "../abstract/document.mts";
 import type { EmbeddedCollection, EmbeddedCollectionDelta } from "../abstract/module.d.mts";

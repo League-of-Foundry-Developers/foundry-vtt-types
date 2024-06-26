@@ -204,15 +204,13 @@ declare global {
      * Create a preview tile with a background texture instead of an image
      * @param data - Initial data with which to create the preview Tile
      */
-    static createPreview(
-      data: foundry.documents.BaseTile.ConstructorData,
-    ): InstanceType<ConfiguredObjectClassForName<"Tile">>;
+    static createPreview(data: foundry.documents.BaseTile.ConstructorData): Tile.ConfiguredInstance;
 
     /**
      * @deprecated since v11, will be removed in v13
      * @remarks "Tile#testOcclusion has been deprecated in favor of PrimaryCanvasObject#testOcclusion"
      */
-    testOcclusion(token: InstanceType<ConfiguredObjectClassForName<"Token">>, options?: Tile.OcclusionOptions): boolean;
+    testOcclusion(token: Token.ConfiguredInstance, options?: Tile.OcclusionOptions): boolean;
 
     /**
      * @deprecated since v11, will be removed in v13
@@ -239,6 +237,8 @@ declare global {
   }
 
   namespace Tile {
+    type ConfiguredInstance = InstanceType<ConfiguredObjectClassForName<"Tile">>;
+
     interface RenderFlags extends PlaceableObject.RenderFlags {
       refreshShape: boolean;
 
