@@ -167,6 +167,7 @@ declare namespace BoilerplateCharacter {
         };
       };
     };
+    derivedString: string;
   }
 }
 
@@ -210,6 +211,8 @@ class BoilerplateCharacter extends BoilerplateActorBase<
     }
     this.extra.deep.check.propA;
     this.extra.deep.check.propB;
+    // FIXME: This should be an optional property
+    this.derivedString.includes("foo");
   }
 
   getRollData() {
