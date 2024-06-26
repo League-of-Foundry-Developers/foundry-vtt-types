@@ -1,27 +1,21 @@
 import { expectTypeOf } from "vitest";
-import type { ChatSpeakerData } from "../../../../../src/foundry/common/data/data.mjs/chatSpeakerData.d.mts";
-import type { ConstructorDataType } from "../../../../../src/types/helperTypes.d.mts";
 import type { StoredDocument } from "../../../../../src/types/utils.d.mts";
 
 expectTypeOf(new ChatMessage()).toEqualTypeOf<ChatMessage>();
 expectTypeOf(new ChatMessage({})).toEqualTypeOf<ChatMessage>();
 
-expectTypeOf(ChatMessage.applyRollMode({}, CONST.DICE_ROLL_MODES.BLIND)).toEqualTypeOf<
-  ConstructorDataType<foundry.data.ChatMessageData>
->();
-expectTypeOf(ChatMessage.applyRollMode({}, CONST.DICE_ROLL_MODES.PRIVATE)).toEqualTypeOf<
-  ConstructorDataType<foundry.data.ChatMessageData>
->();
-expectTypeOf(ChatMessage.applyRollMode({}, CONST.DICE_ROLL_MODES.PUBLIC)).toEqualTypeOf<
-  ConstructorDataType<foundry.data.ChatMessageData>
->();
-expectTypeOf(ChatMessage.applyRollMode({}, CONST.DICE_ROLL_MODES.SELF)).toEqualTypeOf<
-  ConstructorDataType<foundry.data.ChatMessageData>
->();
-
-expectTypeOf(ChatMessage.applyRollMode(new foundry.data.ChatMessageData(), "roll")).toEqualTypeOf<
-  ConstructorDataType<foundry.data.ChatMessageData>
->();
+expectTypeOf(
+  ChatMessage.applyRollMode({}, CONST.DICE_ROLL_MODES.BLIND),
+).toEqualTypeOf<foundry.documents.BaseChatMessage.ConstructorData>();
+expectTypeOf(
+  ChatMessage.applyRollMode({}, CONST.DICE_ROLL_MODES.PRIVATE),
+).toEqualTypeOf<foundry.documents.BaseChatMessage.ConstructorData>();
+expectTypeOf(
+  ChatMessage.applyRollMode({}, CONST.DICE_ROLL_MODES.PUBLIC),
+).toEqualTypeOf<foundry.documents.BaseChatMessage.ConstructorData>();
+expectTypeOf(
+  ChatMessage.applyRollMode({}, CONST.DICE_ROLL_MODES.SELF),
+).toEqualTypeOf<foundry.documents.BaseChatMessage.ConstructorData>();
 
 declare global {
   namespace CONFIG {
@@ -33,18 +27,18 @@ declare global {
   }
 }
 
-expectTypeOf(ChatMessage.applyRollMode(new foundry.data.ChatMessageData(), "custom-roll-mode")).toEqualTypeOf<
-  ConstructorDataType<foundry.data.ChatMessageData>
->();
+expectTypeOf(
+  ChatMessage.applyRollMode({}, "custom-roll-mode"),
+).toEqualTypeOf<foundry.documents.BaseChatMessage.ConstructorData>();
 
 // @ts-expect-error - "unknown-roll-mode" is not a valid roll mode
-ChatMessage.applyRollMode(new foundry.data.ChatMessageData(), "unknown-roll-mode");
+ChatMessage.applyRollMode({}, "unknown-roll-mode");
 
-expectTypeOf(ChatMessage.getSpeaker()).toEqualTypeOf<ChatSpeakerData["_source"]>();
-expectTypeOf(ChatMessage.getSpeaker({})).toEqualTypeOf<ChatSpeakerData["_source"]>();
+expectTypeOf(ChatMessage.getSpeaker()).toEqualTypeOf<ChatSpeakerData>();
+expectTypeOf(ChatMessage.getSpeaker({})).toEqualTypeOf<ChatSpeakerData>();
 if (game instanceof Game) {
-  expectTypeOf(ChatMessage.getSpeaker({ scene: game.scenes?.active })).toEqualTypeOf<ChatSpeakerData["_source"]>();
-  expectTypeOf(ChatMessage.getSpeaker({ actor: game.user?.character })).toEqualTypeOf<ChatSpeakerData["_source"]>();
+  expectTypeOf(ChatMessage.getSpeaker({ scene: game.scenes?.active })).toEqualTypeOf<ChatSpeakerData>();
+  expectTypeOf(ChatMessage.getSpeaker({ actor: game.user?.character })).toEqualTypeOf<ChatSpeakerData>();
   expectTypeOf(
     ChatMessage.getSpeaker({
       scene: game.scenes?.active,
@@ -52,10 +46,10 @@ if (game instanceof Game) {
       token: new TokenDocument(),
       alias: "Mario",
     }),
-  ).toEqualTypeOf<ChatSpeakerData["_source"]>();
+  ).toEqualTypeOf<ChatSpeakerData>();
 }
-expectTypeOf(ChatMessage.getSpeaker({ token: new TokenDocument() })).toEqualTypeOf<ChatSpeakerData["_source"]>();
-expectTypeOf(ChatMessage.getSpeaker({ alias: "Mario" })).toEqualTypeOf<ChatSpeakerData["_source"]>();
+expectTypeOf(ChatMessage.getSpeaker({ token: new TokenDocument() })).toEqualTypeOf<ChatSpeakerData>();
+expectTypeOf(ChatMessage.getSpeaker({ alias: "Mario" })).toEqualTypeOf<ChatSpeakerData>();
 
 expectTypeOf(ChatMessage.getSpeakerActor(ChatMessage.getSpeaker())).toEqualTypeOf<Actor | null>();
 expectTypeOf(ChatMessage.getWhisperRecipients("Mario")).toEqualTypeOf<StoredDocument<User>[]>();
@@ -65,9 +59,9 @@ expectTypeOf(chat.alias).toEqualTypeOf<string>();
 expectTypeOf(chat.isAuthor).toEqualTypeOf<boolean>();
 expectTypeOf(chat.isContentVisible).toEqualTypeOf<boolean>();
 expectTypeOf(chat.isRoll).toEqualTypeOf<boolean>();
-expectTypeOf(chat.roll).toEqualTypeOf<Roll | null>();
+expectTypeOf(chat.rolls).toEqualTypeOf<Array<Roll>>();
 expectTypeOf(chat.visible).toEqualTypeOf<boolean>();
-expectTypeOf(chat.user).toEqualTypeOf<User | undefined>();
+expectTypeOf(chat.user).toEqualTypeOf<User>(); // TODO: This seems off? Possible issue with ForeignDocumentField
 expectTypeOf(chat.prepareData()).toEqualTypeOf<void>();
 expectTypeOf(chat.applyRollMode(CONST.DICE_ROLL_MODES.BLIND)).toEqualTypeOf<void>();
 expectTypeOf(chat.applyRollMode(CONST.DICE_ROLL_MODES.PRIVATE)).toEqualTypeOf<void>();

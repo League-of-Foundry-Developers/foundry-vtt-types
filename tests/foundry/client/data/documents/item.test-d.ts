@@ -1,14 +1,26 @@
 import { expectTypeOf } from "vitest";
 
-export class ArmorDataModel extends foundry.abstract.TypeDataModel<DataSchema, Item> {}
+declare namespace ArmorData {
+  interface Schema extends DataSchema {
+    defense: foundry.data.fields.NumberField;
+  }
+}
 
-export class WeaponDataModel extends foundry.abstract.TypeDataModel<DataSchema, Item> {}
+declare namespace WeaponData {
+  interface Schema extends DataSchema {
+    attack: foundry.data.fields.NumberField;
+  }
+}
+
+export class ArmorData extends foundry.abstract.TypeDataModel<ArmorData.Schema, Item> {}
+
+export class WeaponData extends foundry.abstract.TypeDataModel<WeaponData.Schema, Item> {}
 
 declare global {
   interface DataModelConfig {
     Item: {
-      armor: ArmorDataModel;
-      weapon: WeaponDataModel;
+      armor: ArmorData;
+      weapon: WeaponData;
     };
   }
 }
@@ -21,4 +33,8 @@ if (item) {
   expectTypeOf(item.transferredEffects).toEqualTypeOf<ActiveEffect[]>();
   expectTypeOf(item.type).toEqualTypeOf<"weapon" | "armor" | "base">();
   expectTypeOf(item.getRollData()).toEqualTypeOf<object>();
+
+  if (item.system instanceof WeaponData) {
+    expectTypeOf(item.system.attack).toEqualTypeOf<number | null | undefined>();
+  }
 }
