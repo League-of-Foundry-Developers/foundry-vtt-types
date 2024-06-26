@@ -304,11 +304,7 @@ declare global {
        * @param statusId - The status effect ID being applied, from CONFIG.specialStatusEffects.
        * @param active   - Is the special status effect now active?
        */
-      applyTokenStatusEffect: (
-        token: InstanceType<ConfiguredObjectClassForName<"Token">>,
-        statusId: string,
-        active: boolean,
-      ) => void;
+      applyTokenStatusEffect: (token: Token.ConfiguredInstance, statusId: string, active: boolean) => void;
 
       /**
        * A hook event that fires when a chat bubble is rendered.

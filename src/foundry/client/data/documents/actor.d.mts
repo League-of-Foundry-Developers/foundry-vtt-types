@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClassForName, ConfiguredObjectClassForName } from "../../../../types/helperTypes.d.mts";
+import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
@@ -118,9 +118,7 @@ declare global {
     getActiveTokens<ReturnDocument extends boolean = false>(
       linked?: boolean,
       document?: ReturnDocument,
-    ): ReturnDocument extends true
-      ? TokenDocument.ConfiguredInstance[]
-      : InstanceType<ConfiguredObjectClassForName<"Token">>[];
+    ): ReturnDocument extends true ? TokenDocument.ConfiguredInstance[] : Token.ConfiguredInstance[];
 
     /**
      * Get all ActiveEffects that may apply to this Actor.

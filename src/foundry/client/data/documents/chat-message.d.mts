@@ -192,13 +192,13 @@ declare global {
 
     interface GetSpeakerOptions {
       /** The Scene in which the speaker resides */
-      scene: Scene.ConfiguredInstance;
+      scene: Scene.ConfiguredInstance | null;
 
       /** The Actor whom is speaking */
-      actor: Actor.ConfiguredInstance;
+      actor: Actor.ConfiguredInstance | null;
 
       /** The Token whom is speaking */
-      token: TokenDocument.ConfiguredInstance;
+      token: TokenDocument.ConfiguredInstance | Token.ConfiguredInstance | null;
 
       /** The name of the speaker to display */
       alias: string | undefined;

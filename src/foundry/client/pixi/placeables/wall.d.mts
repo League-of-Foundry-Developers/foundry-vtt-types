@@ -47,7 +47,7 @@ declare global {
      * A reference to an overhead Tile that is a roof, interior to which this wall is contained
      * @defaultValue `undefined`
      */
-    roof: InstanceType<ConfiguredObjectClassForName<"Tile">> | undefined;
+    roof: Tile.ConfiguredInstance | undefined;
 
     /**
      * A Graphics object used to highlight this wall segment. Only used when the wall is controlled.

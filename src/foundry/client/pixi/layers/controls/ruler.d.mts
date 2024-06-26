@@ -1,4 +1,3 @@
-import type { ConfiguredObjectClassForName } from "../../../../../types/helperTypes.d.mts";
 import type { InexactPartial, ValueOf } from "../../../../../types/utils.d.mts";
 
 declare global {
@@ -206,7 +205,7 @@ declare global {
     /**
      * Acquire a Token, if any, which is eligible to perform a movement based on the starting point of the Ruler
      */
-    protected _getMovementToken(): InstanceType<ConfiguredObjectClassForName<"Token">> | null | undefined;
+    protected _getMovementToken(): Token.ConfiguredInstance | null | undefined;
 
     /**
      * Test whether a Token is allowed to execute a measured movement path.
