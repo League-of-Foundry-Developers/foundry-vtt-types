@@ -144,6 +144,13 @@ declare namespace BoilerplateCharacter {
         value: foundry.data.fields.NumberField<RequiredInteger>;
       }>;
     }>;
+    extra: foundry.data.fields.SchemaField<{
+      deep: foundry.data.fields.SchemaField<{
+        check: foundry.data.fields.SchemaField<{
+          propA: foundry.data.fields.StringField;
+        }>;
+      }>;
+    }>;
   }
 
   interface DerivedProps {
@@ -151,6 +158,13 @@ declare namespace BoilerplateCharacter {
       strength: {
         mod: number;
         label: string;
+      };
+    };
+    extra: {
+      deep: {
+        check: {
+          propB: number;
+        };
       };
     };
   }
@@ -194,6 +208,8 @@ class BoilerplateCharacter extends BoilerplateActorBase<
       // Handle ability label localization.
       abil.label = (game as Game).i18n.localize(CONFIG.BOILERPLATE.abilities[key]) ?? key;
     }
+    this.extra.deep.check.propA;
+    this.extra.deep.check.propB;
   }
 
   getRollData() {
