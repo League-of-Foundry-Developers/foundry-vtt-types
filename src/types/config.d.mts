@@ -10,21 +10,22 @@ declare global {
    * variables everywhere. Some users might prefer the convenience over the 100% correctness in type checking.
    *
    * For this reason, this interface provides a way for users to configure certain global variables to be typed more
-   * leniently, i.e., as the types of their initialized state. This is done via declaration merging. To configure a
-   * specific global variable to be typed leniently, the user simply needs to merge a property with the name of the
-   * variable into this interface (the type doesn't matter).
+   * leniently, i.e., as the types of their initialized state. This is done via declaration merging. To do so merge in
+   * a property with the name of the event that should be assumed to have been run.
    *
-   * The currently supported variables are:
-   * - {@link game}
-   * - {@link socket}
-   * - {@link ui}
-   * - {@link canvas}
+   * The currently supported hooks are:
+   * - init
+   * - i18nReady
+   * - setup
+   * - ready
+   *
+   * You can also set the special key "none" to make the default behavior set the variable to `undefined` instead of a union.
    *
    * @example
    * ```typescript
    * declare global {
-   *   interface LenientGlobalVariableTypes {
-   *     game: never; // the type doesn't matter
+   *   interface AssumeHookRan {
+   *     setup: never; // the type doesn't matter
    *   }
    * }
    *
@@ -32,7 +33,7 @@ declare global {
    * ```
    */
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  interface LenientGlobalVariableTypes {}
+  interface AssumeHookRan {}
 
   /**
    * This interface is used to configure the used document classes at a type

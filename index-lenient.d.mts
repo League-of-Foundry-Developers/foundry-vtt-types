@@ -1,10 +1,7 @@
 import "./index.d.mts";
 
 declare global {
-  interface LenientGlobalVariableTypes {
-    canvas: never;
-    game: never;
-    socket: never;
-    ui: never;
+  interface AssumeHookRan {
+    ready: never;
   }
 }
