@@ -14,7 +14,7 @@ class SomeLightLayer extends PlaceablesLayer<"AmbientLight"> {
 }
 
 expectTypeOf(SomeLightLayer.instance).toEqualTypeOf<CanvasLayer | Container<DisplayObject> | undefined>();
-// TOFIX: I think data model related error?
+// FIXME: I think data model related error?
 // expectTypeOf(SomeLightLayer.layerOptions).toEqualTypeOf<PlaceablesLayer.LayerOptions<"AmbientLight">>();
 expectTypeOf(SomeLightLayer.layerOptions.objectClass).toEqualTypeOf<any>(); // TODO: Can this be typed to DocumentConstructor?
 expectTypeOf(PlaceablesLayer.documentName).toEqualTypeOf<
@@ -27,19 +27,16 @@ expectTypeOf(layer.options.objectClass).toEqualTypeOf<typeof AmbientLight>();
 expectTypeOf(layer.objects).toEqualTypeOf<PIXI.Container | null>();
 expectTypeOf(layer.preview).toEqualTypeOf<PIXI.Container | null>();
 expectTypeOf(layer.history).toEqualTypeOf<
-  Array<{ type: "create" | "update" | "delete"; data: Array<foundry.data.AmbientLightData["_source"]> }>
+  Array<{ type: "create" | "update" | "delete"; data: Array<AmbientLightDocument["_source"]> }>
 >();
 expectTypeOf(layer.quadtree).toEqualTypeOf<Quadtree<AmbientLight> | null>();
-expectTypeOf(layer.documentCollection).toEqualTypeOf<EmbeddedCollection<
-  typeof AmbientLightDocument,
-  foundry.data.SceneData
-> | null>();
+expectTypeOf(layer.documentCollection).toEqualTypeOf<EmbeddedCollection<AmbientLightDocument, Scene> | null>();
 expectTypeOf(layer.gridPrecision).toEqualTypeOf<number>();
 expectTypeOf(layer.hud).toEqualTypeOf<BasePlaceableHUD<AmbientLight> | null>();
 expectTypeOf(layer.placeables).toEqualTypeOf<AmbientLight[]>();
 expectTypeOf(layer.controlled).toEqualTypeOf<AmbientLight[]>();
 expectTypeOf(layer.getDocuments()).toEqualTypeOf<
-  EmbeddedCollection<typeof AmbientLightDocument, foundry.data.SceneData> | AmbientLightDocument[]
+  EmbeddedCollection<AmbientLightDocument, Scene> | AmbientLightDocument[]
 >();
 expectTypeOf(layer.draw()).toEqualTypeOf<Promise<SomeLightLayer>>();
 expectTypeOf(layer.createObject(new AmbientLightDocument())).toEqualTypeOf<AmbientLight | null>();
@@ -72,12 +69,12 @@ expectTypeOf(layer.moveMany({ dx: 100, dy: 100, rotate: true, ids: ["abc", "def"
 >();
 expectTypeOf(layer.undoHistory()).toEqualTypeOf<Promise<AmbientLightDocument[]>>();
 expectTypeOf(layer.deleteAll()).toEqualTypeOf<Promise<AmbientLightDocument[] | false | null>>();
-expectTypeOf(layer.storeHistory("create", new AmbientLightDocument().data)).toEqualTypeOf<void>();
-expectTypeOf(layer.storeHistory("update", new AmbientLightDocument().data)).toEqualTypeOf<void>();
-expectTypeOf(layer.storeHistory("delete", new AmbientLightDocument().data)).toEqualTypeOf<void>();
+expectTypeOf(layer.storeHistory("create", new AmbientLightDocument()["_source"])).toEqualTypeOf<void>();
+expectTypeOf(layer.storeHistory("update", new AmbientLightDocument()["_source"])).toEqualTypeOf<void>();
+expectTypeOf(layer.storeHistory("delete", new AmbientLightDocument()["_source"])).toEqualTypeOf<void>();
 
 // @ts-expect-error - "new" is not a valid history type.
-layer.storeHistory("new", new AmbientLightDocument().data);
+layer.storeHistory("new", new AmbientLightDocument());
 
 expectTypeOf(layer.copyObjects()).toEqualTypeOf<AmbientLight[]>();
 expectTypeOf(layer.pasteObjects({ x: 10, y: 10 })).toEqualTypeOf<Promise<AmbientLightDocument[]>>();
@@ -99,7 +96,7 @@ expectTypeOf(
   }),
 ).toEqualTypeOf<boolean>();
 
-declare function transformer(doc: AmbientLight): Partial<foundry.data.AmbientLightData>;
+declare function transformer(doc: AmbientLight): Partial<AmbientLightDocument>;
 declare function filter(doc: AmbientLight): boolean;
 expectTypeOf(layer.updateAll({ x: 10, y: 20 })).toEqualTypeOf<Promise<AmbientLightDocument[]>>();
 expectTypeOf(layer.updateAll({ x: 10, y: 20 }, null, {})).toEqualTypeOf<Promise<AmbientLightDocument[]>>();
