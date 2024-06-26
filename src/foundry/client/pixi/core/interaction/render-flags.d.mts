@@ -3,6 +3,7 @@ import type { Mixin } from "../../../../../types/utils.d.mts";
 export {};
 
 declare class RenderFlagObject {
+  /** @privateRemarks All mixin classses should accept anything for its constructor. */
   constructor(...args: any[]);
 
   /**

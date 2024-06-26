@@ -138,10 +138,7 @@ export type AnyConstructorFor<Class extends abstract new (...args: any[]) => any
 export type Mixin<
   MixinClass extends new (...args: any[]) => any,
   BaseClass extends abstract new (...args: any[]) => any,
-> = Pick<BaseClass, keyof BaseClass> &
-  Pick<MixinClass, keyof MixinClass> & {
-    new (...args: ConstructorParameters<MixinClass>): InstanceType<BaseClass> & InstanceType<MixinClass>;
-  };
+> = MixinClass & BaseClass;
 
 type GetDataConfigOptions<T> = {
   partial: Partial<T> & Record<string, unknown>;

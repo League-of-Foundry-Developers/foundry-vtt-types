@@ -1,19 +1,7 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial, StoredDocument } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
-
-type MixedDocumentCollectionType<T extends CompendiumCollection.Metadata = CompendiumCollection.Metadata> = ReturnType<
-  typeof DirectoryCollectionMixin<
-    DirectoryCollection.DirectoryTypes,
-    typeof DocumentCollection<DocumentClassForCompendiumMetadata<T>, string>
-  >
->;
-
-interface MixedDocumentCollectionInterface extends MixedDocumentCollectionType {
-  new <T extends CompendiumCollection.Metadata>(
-    ...args: ConstructorParameters<MixedDocumentCollectionType>
-  ): InstanceType<MixedDocumentCollectionType<T>>;
-}
+import type { MixedDocumentCollectionInterface } from "../abstract/directory-collection-mixin.d.mts";
 
 declare const MixedDocumentCollection: MixedDocumentCollectionInterface;
 
@@ -54,7 +42,10 @@ declare global {
    *
    * @see {@link Game#packs}
    */
-  class CompendiumCollection<T extends CompendiumCollection.Metadata> extends MixedDocumentCollection<T> {
+  class CompendiumCollection<T extends CompendiumCollection.Metadata> extends MixedDocumentCollection<
+    DocumentClassForCompendiumMetadata<T>,
+    T["name"]
+  > {
     /** @param metadata - The compendium metadata, an object provided by game.data */
     constructor(metadata: T);
 
@@ -122,7 +113,7 @@ declare global {
      */
     get sort(): number;
 
-    protected override _getVisibleTreeContents(): object[];
+    protected override _getVisibleTreeContents(): DocumentInstanceForCompendiumMetadata<T>[];
 
     static _sortStandard(a: number, b: number): number;
 

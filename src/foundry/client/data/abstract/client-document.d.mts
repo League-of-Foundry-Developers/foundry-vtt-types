@@ -4,17 +4,18 @@ import type {
   DocumentConstructor,
 } from "../../../../types/helperTypes.d.mts";
 import type { ConstructorOf, DeepPartial, InexactPartial, Mixin, ValueOf } from "../../../../types/utils.d.mts";
+import type Document from "../../../common/abstract/document.d.mts";
 import type { AnyMetadata, DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 declare class ClientDocument<
-  BaseDocument extends foundry.abstract.Document<any, ConcreteMetadata, any> = foundry.abstract.Document<
+  BaseDocument extends foundry.abstract.Document<any, AnyMetadata, any> = foundry.abstract.Document<
     any,
     AnyMetadata,
     any
   >,
-  ConcreteMetadata extends AnyMetadata = AnyMetadata,
 > {
-  constructor(data?: BaseDocument["_source"], context?: DocumentConstructionContext);
+  /** @privateRemarks All mixin classses should accept anything for its constructor. */
+  constructor(...args: any[]);
 
   /**
    * A collection of Application instances which should be re-rendered whenever this document is updated.
@@ -46,8 +47,8 @@ declare class ClientDocument<
   /**
    * A reference to the Compendium Collection which contains this Document, if any, otherwise undefined.
    */
-  get compendium(): ConcreteMetadata extends CompendiumCollection.Metadata
-    ? CompendiumCollection<ConcreteMetadata>
+  get compendium(): Document.MetadataFor<BaseDocument> extends CompendiumCollection.Metadata
+    ? CompendiumCollection<Document.MetadataFor<BaseDocument>>
     : undefined;
 
   /**
@@ -185,23 +186,9 @@ declare class ClientDocument<
   _onClickDocumentLink(event: MouseEvent): unknown;
 
   /**
-   * @see abstract.Document#_onCreate
+   * @privateRemarks _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
+   * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
    */
-  protected _onCreate(data: BaseDocument["_source"], options: DocumentModificationOptions, userId: string): void;
-
-  /**
-   * @see abstract.Document#_onUpdate
-   */
-  protected _onUpdate(
-    data: foundry.data.fields.SchemaField.InnerAssignmentType<BaseDocument["schema"]["fields"]>,
-    options: DocumentModificationOptions,
-    userId: string,
-  ): void;
-
-  /**
-   * @see abstract.Document#_onDelete
-   */
-  protected _onDelete(options: DocumentModificationOptions, userId: string): void;
 
   /**
    * Orchestrate dispatching descendant document events to parent documents when embedded children are modified.
@@ -568,8 +555,10 @@ declare class ClientDocument<
   ): void;
 }
 
+declare const _ClientDocument: ClientDocument;
+
 declare global {
-  type ClientDocument = ReturnType<typeof ClientDocumentMixin>;
+  type ClientDocument = typeof _ClientDocument;
 
   /**
    * A mixin which extends each Document definition with specialized client-side behaviors.
@@ -577,7 +566,7 @@ declare global {
    */
   function ClientDocumentMixin<BaseClass extends DocumentConstructor>(
     Base: BaseClass,
-  ): Mixin<typeof ClientDocument, BaseClass>;
+  ): Mixin<typeof ClientDocument<InstanceType<BaseClass>>, BaseClass>;
 
   namespace ClientDocument {
     interface SortOptions<T, SortKey extends string = "sort"> extends SortingHelpers.SortOptions<T, SortKey> {

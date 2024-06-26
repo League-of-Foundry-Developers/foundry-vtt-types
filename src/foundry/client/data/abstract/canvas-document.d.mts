@@ -10,6 +10,9 @@ import type { ClientDocument } from "./client-document.d.mts";
 declare class CanvasDocument<
   BaseDocument extends foundry.abstract.Document<any, any, Scene.ConfiguredInstance | null>,
 > extends ClientDocument<BaseDocument> {
+  /** @privateRemarks All mixin classses should accept anything for its constructor. */
+  constructor(...args: any[]);
+
   /**
    * A lazily constructed PlaceableObject instance which can represent this Document on the game canvas.
    */
@@ -62,5 +65,5 @@ declare global {
    */
   function CanvasDocumentMixin<BaseClass extends DocumentConstructor>(
     Base: BaseClass,
-  ): Mixin<typeof CanvasDocument, BaseClass>;
+  ): Mixin<typeof CanvasDocument<InstanceType<BaseClass>>, BaseClass>;
 }

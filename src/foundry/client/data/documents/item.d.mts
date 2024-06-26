@@ -47,17 +47,9 @@ declare global {
       user: BaseUser,
     ): Promise<boolean | void>;
 
-    // @ts-expect-error For some reason, protected static methods from Document are lost, so ts complains that this isn't actually an override
-    protected static override _onCreateDocuments(
-      items: Array<Item.ConfiguredInstance>,
-      context: DocumentModificationContext,
-    ): Promise<unknown>;
-
-    // @ts-expect-error For some reason, protected static methods from Document are lost, so ts complains that this isn't actually an override
-    protected static override _onDeleteDocuments(
-      items: Array<Item.ConfiguredInstance>,
-      context: DocumentModificationContext,
-    ): Promise<unknown>;
+    /**
+     * @privateRemarks _onCreateDocuments and _onDeleteDocuments are overridden but left off because the signature doesn't change and unnecessarily adds to the type complexity.
+     */
   }
 
   namespace Item {

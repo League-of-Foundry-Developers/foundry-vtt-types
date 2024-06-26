@@ -4,6 +4,9 @@ export {};
 
 /** @remarks Class name adjusted to avoid name collision with function */
 declare class BaseShaderMixinClass {
+  /** @privateRemarks All mixin classses should accept anything for its constructor. */
+  constructor(...args: any[]);
+
   /**
    * Common attributes for vertex shaders.
    * @defaultValue
@@ -330,6 +333,9 @@ declare class BaseShaderMixinClass {
 
 /** @remarks Class name adjusted to avoid name collision with function */
 declare class AdaptiveFragmentChannelMixinClass {
+  /** @privateRemarks All mixin classses should accept anything for its constructor. */
+  constructor(...args: any[]);
+
   /**
    * The fragment shader which renders this filter.
    * A subclass of AdaptiveFragmentChannelMixin must implement the fragmentShader static field.

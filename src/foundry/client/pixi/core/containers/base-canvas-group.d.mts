@@ -1,6 +1,9 @@
 import type { AnyConstructorFor, InexactPartial, Mixin } from "../../../../../types/utils.d.mts";
 
 declare class BaseCanvasMixinClass {
+  /** @privateRemarks All mixin classses should accept anything for its constructor. */
+  constructor(...args: any[]);
+
   /** @defaultValue `true` */
   sortableChildren: boolean;
 

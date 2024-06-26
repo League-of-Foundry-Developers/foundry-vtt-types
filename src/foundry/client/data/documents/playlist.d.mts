@@ -124,27 +124,27 @@ declare global {
     protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
 
     protected override _onCreateDescendantDocuments(
-      parent: ClientDocument<Document<any, AnyMetadata, null>, AnyMetadata>,
+      parent: ClientDocument<Document<any, AnyMetadata, null>>,
       collection: string,
-      documents: ClientDocument<Document<any, AnyMetadata, null>, AnyMetadata>[],
+      documents: ClientDocument<Document<any, AnyMetadata, null>>[],
       data: unknown[],
       options: DocumentModificationOptions,
       userId: string,
     ): void;
 
     protected override _onUpdateDescendantDocuments(
-      parent: ClientDocument<Document<any, AnyMetadata, null>, AnyMetadata>,
+      parent: ClientDocument<Document<any, AnyMetadata, null>>,
       collection: string,
-      documents: ClientDocument<Document<any, AnyMetadata, null>, AnyMetadata>[],
+      documents: ClientDocument<Document<any, AnyMetadata, null>>[],
       changes: unknown[],
       options: DocumentModificationOptions,
       userId: string,
     ): void;
 
     protected override _onDeleteDescendantDocuments(
-      parent: ClientDocument<Document<any, AnyMetadata, null>, AnyMetadata>,
+      parent: ClientDocument<Document<any, AnyMetadata, null>>,
       collection: string,
-      documents: ClientDocument<Document<any, AnyMetadata, null>, AnyMetadata>[],
+      documents: ClientDocument<Document<any, AnyMetadata, null>>[],
       ids: string,
       options: DocumentModificationOptions,
       userId: string,

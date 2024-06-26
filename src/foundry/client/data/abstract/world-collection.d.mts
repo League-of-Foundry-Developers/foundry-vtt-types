@@ -4,6 +4,9 @@ import type {
   DocumentConstructor,
 } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial, StoredDocument } from "../../../../types/utils.d.mts";
+import type { MixedDocumentCollectionInterface } from "./directory-collection-mixin.d.mts";
+
+declare const MixedDocumentCollection: MixedDocumentCollectionInterface;
 
 declare global {
   /**
@@ -11,9 +14,10 @@ declare global {
    * Each primary Document type has an associated subclass of WorldCollection which contains them.
    * @see {@link Game#collections}
    */
-  abstract class WorldCollection<T extends DocumentConstructor, Name extends string> extends DirectoryCollectionMixin(
-    DocumentCollection,
-  ) {
+  abstract class WorldCollection<T extends DocumentConstructor, Name extends string> extends MixedDocumentCollection<
+    T,
+    Name
+  > {
     /**
      * Reference the set of Folders which contain documents in this collection
      */

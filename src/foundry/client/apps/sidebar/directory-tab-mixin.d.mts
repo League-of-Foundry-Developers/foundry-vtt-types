@@ -1,6 +1,9 @@
 import type { Mixin } from "../../../../types/utils.d.mts";
 
 declare class DirectoryApplication {
+  /** @privateRemarks All mixin classses should accept anything for its constructor. */
+  constructor(...args: any[]);
+
   /**
    * The path to the template partial which renders a single Entry within this directory
    */

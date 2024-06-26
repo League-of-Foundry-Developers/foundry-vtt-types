@@ -1,10 +1,34 @@
+import type { ConfiguredDocumentClass, DocumentConstructor } from "../../../../types/helperTypes.d.mts";
 import type { AnyConstructorFor, Mixin } from "../../../../types/utils.d.mts";
+
+type DocumentCollectionBase = DirectoryCollection<DirectoryCollection.DirectoryTypes> &
+  DocumentCollection<DocumentConstructor, string>;
+
+export interface MixedDocumentCollectionInterface extends DocumentCollectionBase {
+  new <T extends DocumentConstructor, Name extends string>(
+    ...args: ConstructorParameters<typeof DocumentCollection>
+  ): DirectoryCollection<InstanceType<ConfiguredDocumentClass<T>>> &
+    DocumentCollection<ConfiguredDocumentClass<T>, Name>;
+}
+
+type CollectionBase = DirectoryCollection<DirectoryCollection.DirectoryTypes> &
+  Collection<CompendiumCollection<CompendiumCollection.Metadata>>;
+
+export interface MixedCollectionInterface extends CollectionBase {
+  new (
+    ...args: ConstructorParameters<typeof Collection>
+  ): DirectoryCollection<CompendiumCollection<CompendiumCollection.Metadata>> &
+    Collection<CompendiumCollection<CompendiumCollection.Metadata>>;
+}
 
 /**
  * An extension of the Collection class which adds behaviors specific to tree-based collections of entries and folders.
  */
-// TODO: T should probably extend a subset of documents | Compendium
+// TODO: T should probably extend a subset of documents | CompendiumCollection
 declare class DirectoryCollection<T extends DirectoryCollection.DirectoryTypes> {
+  /** @privateRemarks All mixin classses need a constructor like this */
+  constructor(...args: any[]);
+
   /**
    * Reference the set of Folders which contain documents in this collection
    */
@@ -82,8 +106,6 @@ declare class DirectoryCollection<T extends DirectoryCollection.DirectoryTypes> 
 }
 
 declare global {
-  type DirectoryCollection = ReturnType<typeof DirectoryCollectionMixin>;
-
   /**
    * A mixin which adds directory functionality to a DocumentCollection, such as folders, tree structures, and sorting.
    * @param BaseCollection - The base collection class to extend

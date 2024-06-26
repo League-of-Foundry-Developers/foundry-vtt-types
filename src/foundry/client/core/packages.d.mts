@@ -2,6 +2,9 @@ import type { AnyConstructorFor, InexactPartial, Mixin } from "../../../types/ut
 import type { CONST } from "../../common/module.d.mts";
 
 declare class ClientPackage {
+  /** @privateRemarks All mixin classses should accept anything for its constructor. */
+  constructor(...args: any[]);
+
   /**
    * Is this package marked as a favorite?
    * This boolean is currently only populated as true in the /setup view of the software.
