@@ -115,7 +115,7 @@ declare global {
      * @param document - Return the Document instance rather than the PlaceableObject (default: `false`)
      * @returns An array of Token instances in the current Scene which reference this Actor.
      */
-    getActiveToken<ReturnDocument extends boolean = false>(
+    getActiveTokens<ReturnDocument extends boolean = false>(
       linked?: boolean,
       document?: ReturnDocument,
     ): ReturnDocument extends true
@@ -132,6 +132,7 @@ declare global {
 
     /**
      * Prepare a data object which defines the data schema used by dice roll commands against this Actor
+     * @remarks defaults to this.system, but provided as object for flexible overrides
      */
     getRollData(): object;
 

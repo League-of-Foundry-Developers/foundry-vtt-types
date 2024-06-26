@@ -3,8 +3,15 @@ import type { ArmorDataModel, WeaponDataModel } from "./item.test-d";
 
 const actor = new Actor({ name: "Beren", type: "npc" });
 
+expectTypeOf(actor.token).toEqualTypeOf<TokenDocument | null>();
+expectTypeOf(actor.getActiveTokens(true, true)).toEqualTypeOf<TokenDocument[]>();
+expectTypeOf(actor.getActiveTokens(true, false)).toEqualTypeOf<Token[]>();
+
 expectTypeOf(actor.itemTypes.weapon[0]!.system).toEqualTypeOf<WeaponDataModel>();
 expectTypeOf(actor.itemTypes.armor[0]!.system).toEqualTypeOf<ArmorDataModel>();
+for (const effect of actor.allApplicableEffects()) {
+  expectTypeOf(effect).toEqualTypeOf<ActiveEffect>();
+}
 
 // expectTypeOf(actor.getActiveTokens()).toEqualTypeOf<Token[]>();
 // expectTypeOf(actor.getActiveTokens(false, false)).toEqualTypeOf<Token[]>();
