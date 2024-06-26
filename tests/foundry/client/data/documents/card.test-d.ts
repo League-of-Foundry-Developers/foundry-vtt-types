@@ -1,11 +1,11 @@
 import { expectTypeOf } from "vitest";
 
-const card = new Card({ name: "Just a deck of cards" });
+// TODO: Investigate why this isn't complaining about specific types
+const card = new Card({ name: "Just a deck of cards", type: "foobar" });
 const cards = new Cards({ name: "Some Card Deck", type: "german" });
 
-expectTypeOf(card.back).toEqualTypeOf<foundry.data.CardFaceData>();
-expectTypeOf(card.face).toEqualTypeOf<foundry.data.CardFaceData | null>();
-expectTypeOf(card.backImg).toEqualTypeOf<string>();
+expectTypeOf(card.back).toEqualTypeOf<CardFaceData>();
+expectTypeOf(card.face).toEqualTypeOf<number | null>();
 expectTypeOf(card.img).toEqualTypeOf<string>();
 expectTypeOf(card.name).toEqualTypeOf<string>();
 expectTypeOf(card.source).toEqualTypeOf<Cards | undefined | null>();
@@ -69,9 +69,9 @@ card.discard(cards, { unknownProp: 0 });
 card.discard(cards, { updateData: { unknownProp: 0 } });
 
 // discard
-expectTypeOf(card.reset()).toEqualTypeOf<Promise<Card>>();
+expectTypeOf(card.recall()).toEqualTypeOf<Promise<Card>>();
 expectTypeOf(
-  card.reset({
+  card.recall({
     updateData: { value: 3 },
     chatNotification: true,
   }),
