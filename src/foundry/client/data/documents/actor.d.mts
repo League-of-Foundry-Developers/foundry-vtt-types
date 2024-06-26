@@ -66,12 +66,14 @@ declare global {
     /**
      * Provide an object which organizes all embedded Item instances by their type
      */
-    // TODO: It's the "extends cannot be used to replicate in problem" again
     get itemTypes(): {
-      [K in foundry.documents.BaseItem["type"]]: Item.ConfiguredInstance & {
-        type: K;
-        // system: "Item" extends keyof DataModelConfig ? DataModelConfig["Item"][K] : never;
-      };
+      [K in foundry.documents.BaseItem["type"]]: Array<
+        Item.ConfiguredInstance & {
+          type: K;
+          // TODO: It's the "extends cannot be used to replicate in problem" again
+          // system: "Item" extends keyof DataModelConfig ? DataModelConfig["Item"][K] : never;
+        }
+      >;
     };
     /**
      * Test whether an Actor document is a synthetic representation of a Token (if true) or a full Document (if false)
