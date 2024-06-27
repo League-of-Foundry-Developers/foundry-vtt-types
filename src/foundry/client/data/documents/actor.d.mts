@@ -3,6 +3,31 @@ import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts"
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 declare global {
+  namespace Actor {
+    type ConfiguredClass = ConfiguredDocumentClassForName<"Actor">;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    interface RollInitiativeOptions {
+      /**
+       * Create new Combatant entries for Tokens associated with this actor.
+       * @defaultValue `false`
+       */
+      createCombatants?: boolean;
+
+      /**
+       * Re-roll the initiative for this Actor if it has already been rolled.
+       * @defaultValue `false`
+       */
+      rerollInitiative?: boolean;
+
+      /**
+       * Additional options passed to the Combat#rollInitiative method.
+       * @defaultValue `{}`
+       */
+      initiativeOptions?: Combat.InitiativeOptions;
+    }
+  }
+
   /**
    * The client-side Actor document which extends the common BaseActor model.
    *
@@ -285,28 +310,5 @@ declare global {
      * @param options - The update context.
      */
     _updateDependentTokens(update: DeepPartial<TokenDocument["_source"]>, options: DocumentModificationContext): void;
-  }
-  namespace Actor {
-    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"Actor">>;
-
-    interface RollInitiativeOptions {
-      /**
-       * Create new Combatant entries for Tokens associated with this actor.
-       * @defaultValue `false`
-       */
-      createCombatants?: boolean;
-
-      /**
-       * Re-roll the initiative for this Actor if it has already been rolled.
-       * @defaultValue `false`
-       */
-      rerollInitiative?: boolean;
-
-      /**
-       * Additional options passed to the Combat#rollInitiative method.
-       * @defaultValue `{}`
-       */
-      initiativeOptions?: Combat.InitiativeOptions;
-    }
   }
 }

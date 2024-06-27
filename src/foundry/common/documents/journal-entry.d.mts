@@ -72,7 +72,7 @@ declare namespace BaseJournalEntry {
   >;
 
   type SchemaField = fields.SchemaField<Schema>;
-  type ConstructorData = UpdateData & Required<Pick<UpdateData, "name">>;
+  type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;
   type UpdateData = fields.SchemaField.InnerAssignmentType<Schema>;
   type Properties = fields.SchemaField.InnerInitializedType<Schema>;
   type Source = fields.SchemaField.InnerPersistedType<Schema>;

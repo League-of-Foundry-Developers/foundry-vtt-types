@@ -1,9 +1,40 @@
-import type { ConfiguredObjectClassForName } from "../../../../types/helperTypes.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
-
-export {};
+import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
+  namespace AmbientSound {
+    type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof AmbientSound>;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    interface RenderFlags extends PlaceableObject.RenderFlags {
+      refreshField: boolean;
+
+      refreshPosition: boolean;
+    }
+
+    interface SyncOptions {
+      /**
+       * A duration in milliseconds to fade volume transition
+       * @defaultValue `250`
+       */
+      fade: number;
+    }
+
+    interface UpdateSourceOptions {
+      /**
+       * Defer refreshing the SoundsLayer to manually call that refresh later.
+       * @defaultValue `false`
+       */
+      defer?: boolean | undefined;
+
+      /**
+       * Indicate that this SoundSource has been deleted.
+       * @defaultValue `false`
+       */
+      deleted?: boolean | undefined;
+    }
+  }
+
   /**
    * An AmbientSound is an implementation of PlaceableObject which represents a dynamic audio source within the Scene.
    * @see {@link AmbientSoundDocument}
@@ -108,37 +139,5 @@ declare global {
     protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
     protected override _onDragEnd(): void;
-  }
-
-  namespace AmbientSound {
-    type ConfiguredInstance = InstanceType<ConfiguredObjectClassForName<"AmbientSound">>;
-
-    interface RenderFlags extends PlaceableObject.RenderFlags {
-      refreshField: boolean;
-
-      refreshPosition: boolean;
-    }
-
-    interface SyncOptions {
-      /**
-       * A duration in milliseconds to fade volume transition
-       * @defaultValue `250`
-       */
-      fade: number;
-    }
-
-    interface UpdateSourceOptions {
-      /**
-       * Defer refreshing the SoundsLayer to manually call that refresh later.
-       * @defaultValue `false`
-       */
-      defer?: boolean | undefined;
-
-      /**
-       * Indicate that this SoundSource has been deleted.
-       * @defaultValue `false`
-       */
-      deleted?: boolean | undefined;
-    }
   }
 }

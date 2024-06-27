@@ -2,6 +2,11 @@ import type { ConfiguredDocumentClassForName } from "../../../../types/helperTyp
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 declare global {
+  namespace FogExploration {
+    type ConfiguredClass = ConfiguredDocumentClassForName<"FogExploration">;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+  }
+
   /**
    * The client-side FogExploration document which extends the common BaseFogExploration model.
    */
@@ -20,9 +25,5 @@ declare global {
     ): void;
 
     protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
-  }
-
-  namespace FogExploration {
-    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"FogExploration">>;
   }
 }

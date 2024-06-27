@@ -11,6 +11,16 @@ import type BaseFolder from "../../../common/documents/folder.d.mts";
 import type { BaseUser } from "../../../common/documents/module.d.mts";
 
 declare global {
+  namespace Folder {
+    type ConfiguredClass = ConfiguredDocumentClassForName<"Folder">;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    interface ExportToCompendiumOptions {
+      /** Update existing entries in the Compendium pack, matching by name */
+      updateByName?: boolean | undefined;
+    }
+  }
+
   /**
    * The client-side Folder document which extends the common BaseFolder model.
    *
@@ -128,14 +138,5 @@ declare global {
      * @returns An array of Folder documents which are parent folders of this one
      */
     getParentFolders(): Folder.ConfiguredInstance[];
-  }
-
-  namespace Folder {
-    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"Folder">>;
-
-    interface ExportToCompendiumOptions {
-      /** Update existing entries in the Compendium pack, matching by name */
-      updateByName?: boolean | undefined;
-    }
   }
 }

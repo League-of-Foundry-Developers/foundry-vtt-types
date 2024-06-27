@@ -1,9 +1,65 @@
-import type { ConfiguredObjectClassForName } from "../../../../types/helperTypes.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
-
-export {};
+import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
+  namespace Tile {
+    type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof Tile>;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    interface RenderFlags extends PlaceableObject.RenderFlags {
+      refreshShape: boolean;
+
+      refreshMesh: boolean;
+
+      refreshFrame: boolean;
+
+      refreshElevation: boolean;
+
+      refreshPerception: boolean;
+
+      refreshVideo: boolean;
+    }
+
+    interface RefreshOptions {
+      /**
+       * Also refresh the perception layer.
+       * @defaultValue `false`
+       */
+      refreshPerception?: boolean | undefined;
+    }
+
+    interface PlayOptions {
+      /** Should the video loop? */
+      loop?: boolean | undefined;
+      /** A specific timestamp between 0 and the video duration to begin playback */
+      offset?: number | undefined;
+      /** Desired volume level of the video's audio channel (if any) */
+      volume?: number | undefined;
+    }
+
+    interface OcclusionOptions {
+      /**
+       * Test corners of the hit-box in addition to the token center?
+       * @defaultValue `true`
+       */
+      corners?: boolean | undefined;
+    }
+
+    interface AlphaMapOptions {
+      /**
+       * Keep the Uint8Array of pixel alphas?
+       * @defaultValue `false`
+       */
+      keepPixels?: boolean | undefined;
+
+      /**
+       * Keep the pure white RenderTexture?
+       * @defaultValue `false`
+       */
+      keepTexture?: boolean | undefined;
+    }
+  }
+
   /**
    * A Tile is an implementation of PlaceableObject which represents a static piece of artwork or prop within the Scene.
    * Tiles are drawn inside the {@link TilesLayer} container.
@@ -234,62 +290,5 @@ declare global {
      * @remarks Not used
      */
     controlIcon: null;
-  }
-
-  namespace Tile {
-    type ConfiguredInstance = InstanceType<ConfiguredObjectClassForName<"Tile">>;
-
-    interface RenderFlags extends PlaceableObject.RenderFlags {
-      refreshShape: boolean;
-
-      refreshMesh: boolean;
-
-      refreshFrame: boolean;
-
-      refreshElevation: boolean;
-
-      refreshPerception: boolean;
-
-      refreshVideo: boolean;
-    }
-
-    interface RefreshOptions {
-      /**
-       * Also refresh the perception layer.
-       * @defaultValue `false`
-       */
-      refreshPerception?: boolean | undefined;
-    }
-
-    interface PlayOptions {
-      /** Should the video loop? */
-      loop?: boolean | undefined;
-      /** A specific timestamp between 0 and the video duration to begin playback */
-      offset?: number | undefined;
-      /** Desired volume level of the video's audio channel (if any) */
-      volume?: number | undefined;
-    }
-
-    interface OcclusionOptions {
-      /**
-       * Test corners of the hit-box in addition to the token center?
-       * @defaultValue `true`
-       */
-      corners?: boolean | undefined;
-    }
-
-    interface AlphaMapOptions {
-      /**
-       * Keep the Uint8Array of pixel alphas?
-       * @defaultValue `false`
-       */
-      keepPixels?: boolean | undefined;
-
-      /**
-       * Keep the pure white RenderTexture?
-       * @defaultValue `false`
-       */
-      keepTexture?: boolean | undefined;
-    }
   }
 }

@@ -1,8 +1,11 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 
-export {};
-
 declare global {
+  namespace NoteDocument {
+    type ConfiguredClass = ConfiguredDocumentClassForName<"Note">;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+  }
+
   /**
    * The client-side Note document which extends the common BaseNote model.
    * Each Note document contains NoteData which defines its data schema.
@@ -25,9 +28,5 @@ declare global {
      * The text label used to annotate this Note
      */
     get label(): string;
-  }
-
-  namespace NoteDocument {
-    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"Note">>;
   }
 }

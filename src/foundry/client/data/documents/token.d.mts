@@ -3,6 +3,11 @@ import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts"
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 declare global {
+  namespace TokenDocument {
+    type ConfiguredClass = ConfiguredDocumentClassForName<"Token">;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+  }
+
   /**
    * The client-side Token document which extends the common BaseToken model.
    *
@@ -273,10 +278,6 @@ declare global {
     /** A list of property path arrays to attributes that have only a value property. */
     value: string[][];
   };
-
-  namespace TokenDocument {
-    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"Token">>;
-  }
 }
 
 interface SingleAttributeBar {

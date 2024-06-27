@@ -3,6 +3,31 @@ import type { ConstructorOf } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 declare global {
+  namespace Combat {
+    type ConfiguredClass = ConfiguredDocumentClassForName<"Combat">;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    interface InitiativeOptions {
+      /**
+       * A non-default initiative formula to roll. Otherwise the system default is used.
+       * @defaultValue `null`
+       */
+      formula?: string | null;
+
+      /**
+       * Update the Combat turn after adding new initiative scores to keep the turn on the same Combatant.
+       * @defaultValue `true`
+       */
+      updateTurn?: boolean;
+
+      /**
+       * Additional options with which to customize created Chat Messages
+       * @defaultValue `{}`
+       */
+      messageOptions?: foundry.documents.BaseChatMessage.ConstructorData;
+    }
+  }
+
   type CombatHistoryData = {
     round: number | null;
     turn: number | null;
@@ -255,28 +280,5 @@ declare global {
      * @param combatant - The Combatant whose turn just started
      */
     protected _onStartTurn(combatant: Combatant): Promise<void>;
-  }
-  namespace Combat {
-    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"Combat">>;
-
-    interface InitiativeOptions {
-      /**
-       * A non-default initiative formula to roll. Otherwise the system default is used.
-       * @defaultValue `null`
-       */
-      formula?: string | null;
-
-      /**
-       * Update the Combat turn after adding new initiative scores to keep the turn on the same Combatant.
-       * @defaultValue `true`
-       */
-      updateTurn?: boolean;
-
-      /**
-       * Additional options with which to customize created Chat Messages
-       * @defaultValue `{}`
-       */
-      messageOptions?: foundry.documents.BaseChatMessage.ConstructorData;
-    }
   }
 }

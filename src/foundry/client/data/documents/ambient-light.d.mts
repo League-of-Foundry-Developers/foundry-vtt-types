@@ -1,9 +1,12 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
-export {};
-
 declare global {
+  namespace AmbientLightDocument {
+    type ConfiguredClass = ConfiguredDocumentClassForName<"AmbientLight">;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+  }
+
   /**
    * The client-side AmbientLight document which extends the common BaseAmbientLight model.
    *
@@ -21,9 +24,5 @@ declare global {
      * Is this ambient light source global in nature?
      */
     get isGlobal(): boolean;
-  }
-
-  namespace AmbientLightDocument {
-    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"AmbientLight">>;
   }
 }

@@ -1,6 +1,11 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 
 declare global {
+  namespace MeasuredTemplateDocument {
+    type ConfiguredClass = ConfiguredDocumentClassForName<"MeasuredTemplate">;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+  }
+
   /**
    * The client-side MeasuredTemplate document which extends the common BaseMeasuredTemplate document model.
    *
@@ -18,9 +23,5 @@ declare global {
      * Rotation is an alias for direction
      */
     get rotation(): this["direction"];
-  }
-
-  namespace MeasuredTemplateDocument {
-    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"MeasuredTemplate">>;
   }
 }

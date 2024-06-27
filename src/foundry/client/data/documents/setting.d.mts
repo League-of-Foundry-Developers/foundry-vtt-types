@@ -2,6 +2,11 @@ import type { ConfiguredDocumentClassForName } from "../../../../types/helperTyp
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 declare global {
+  namespace Setting {
+    type ConfiguredClass = ConfiguredDocumentClassForName<"Setting">;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+  }
+
   /**
    * The client-side Setting document which extends the common BaseSetting model.
    *
@@ -34,9 +39,5 @@ declare global {
      */
     // TODO: This could probably be derived
     _castType(): any;
-  }
-
-  namespace Setting {
-    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"Setting">>;
   }
 }

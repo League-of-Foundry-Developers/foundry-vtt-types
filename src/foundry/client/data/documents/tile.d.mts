@@ -1,8 +1,11 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 
-export {};
-
 declare global {
+  namespace TileDocument {
+    type ConfiguredClass = ConfiguredDocumentClassForName<"Tile">;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+  }
+
   /**
    * The client-side Tile document which extends the common BaseTile model.
    *
@@ -23,9 +26,5 @@ declare global {
     get sort(): this["z"];
 
     override prepareDerivedData(): void;
-  }
-
-  namespace TileDocument {
-    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"Tile">>;
   }
 }

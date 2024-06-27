@@ -1,9 +1,88 @@
-import type { ConfiguredDocumentClass, ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
+import type { ConfiguredDocumentClassForName, ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
 import type { InexactPartial } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 import type { ClientDocument } from "../abstract/client-document.d.mts";
 
 declare global {
+  namespace RollTable {
+    type ConfiguredClass = ConfiguredDocumentClassForName<"RollTable">;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    /**
+     * Optional arguments which customize the draw
+     */
+    interface DrawOptions {
+      /**
+       * An existing Roll instance to use for drawing from the table
+       */
+      roll: Roll;
+
+      /**
+       * Allow drawing recursively from inner RollTable results
+       * @defaultValue `true`
+       */
+      recursive: boolean;
+
+      /**
+       * One or more table results which have been drawn
+       * @defaultValue `[]`
+       */
+      results: TableResult[];
+
+      /**
+       * Whether to automatically display the results in chat
+       * @defaultValue `true`
+       */
+      displayChat: boolean;
+
+      /**
+       * The chat roll mode to use when displaying the result
+       */
+      rollMode: keyof CONFIG.Dice.RollModes | "roll";
+    }
+
+    /**
+     * Additional options which modify message creation
+     */
+    interface ToMessageOptions {
+      /**
+       * An optional Roll instance which produced the drawn results
+       */
+      roll: Roll | null;
+
+      /**
+       * Additional data which customizes the created messages
+       * @defaultValue `{}`
+       */
+      messageData: ConstructorParameters<typeof foundry.documents.BaseChatMessage>[0];
+
+      /**
+       * Additional options which customize the created messages
+       * @defaultValue `{}`
+       */
+      messageOptions: DocumentModificationContext & { rollMode: keyof CONFIG.Dice.RollModes | "roll" };
+    }
+
+    interface RollOptions {
+      /**
+       * An alternative dice Roll to use instead of the default table formula
+       */
+      roll?: Roll;
+
+      /**
+       * If a RollTable document is drawn as a result, recursively roll it
+       * @defaultValue `true`
+       */
+      recursive?: boolean;
+
+      /**
+       * An internal flag used to track recursion depth
+       * @defaultValue `0`
+       */
+      _depth?: number;
+    }
+  }
+
   /**
    * The client-side RollTable document which extends the common BaseRollTable model.
    *
@@ -135,84 +214,6 @@ declare global {
       folder: Folder,
       options?: DocumentModificationOptions,
     ): Promise<RollTable.ConfiguredInstance | undefined>;
-  }
-
-  namespace RollTable {
-    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"RollTable">>;
-
-    /**
-     * Optional arguments which customize the draw
-     */
-    interface DrawOptions {
-      /**
-       * An existing Roll instance to use for drawing from the table
-       */
-      roll: Roll;
-
-      /**
-       * Allow drawing recursively from inner RollTable results
-       * @defaultValue `true`
-       */
-      recursive: boolean;
-
-      /**
-       * One or more table results which have been drawn
-       * @defaultValue `[]`
-       */
-      results: TableResult[];
-
-      /**
-       * Whether to automatically display the results in chat
-       * @defaultValue `true`
-       */
-      displayChat: boolean;
-
-      /**
-       * The chat roll mode to use when displaying the result
-       */
-      rollMode: keyof CONFIG.Dice.RollModes | "roll";
-    }
-
-    /**
-     * Additional options which modify message creation
-     */
-    interface ToMessageOptions {
-      /**
-       * An optional Roll instance which produced the drawn results
-       */
-      roll: Roll | null;
-
-      /**
-       * Additional data which customizes the created messages
-       * @defaultValue `{}`
-       */
-      messageData: ConstructorParameters<typeof foundry.documents.BaseChatMessage>[0];
-
-      /**
-       * Additional options which customize the created messages
-       * @defaultValue `{}`
-       */
-      messageOptions: DocumentModificationContext & { rollMode: keyof CONFIG.Dice.RollModes | "roll" };
-    }
-
-    interface RollOptions {
-      /**
-       * An alternative dice Roll to use instead of the default table formula
-       */
-      roll?: Roll;
-
-      /**
-       * If a RollTable document is drawn as a result, recursively roll it
-       * @defaultValue `true`
-       */
-      recursive?: boolean;
-
-      /**
-       * An internal flag used to track recursion depth
-       * @defaultValue `0`
-       */
-      _depth?: number;
-    }
   }
 
   /**

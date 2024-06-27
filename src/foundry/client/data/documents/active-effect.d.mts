@@ -2,6 +2,11 @@ import type { ConfiguredDocumentClassForName } from "../../../../types/helperTyp
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 declare global {
+  namespace ActiveEffect {
+    type ConfiguredClass = ConfiguredDocumentClassForName<"ActiveEffect">;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+  }
+
   /**
    * The client-side ActiveEffect document which extends the common BaseActiveEffect model.
    * Each ActiveEffect belongs to the effects collection of its parent Document.
@@ -293,10 +298,6 @@ declare global {
      * An internal flag used determine when to recompute turns-based duration
      */
     _combatTime: number;
-  }
-
-  namespace ActiveEffect {
-    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"ActiveEffect">>;
   }
 }
 

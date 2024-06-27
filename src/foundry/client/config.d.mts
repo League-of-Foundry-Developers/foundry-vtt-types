@@ -1,4 +1,4 @@
-import type { DocumentConstructor, PlaceableObjectConstructor } from "../../types/helperTypes.d.mts";
+import type { ConfiguredDocumentClassForName, PlaceableObjectConstructor } from "../../types/helperTypes.d.mts";
 import type { ConstructorOf, PropertyTypeOrFallback } from "../../types/utils.d.mts";
 import type * as CONST from "../common/constants.d.mts";
 import type { StatusEffect } from "./data/documents/token.d.mts";
@@ -108,7 +108,7 @@ declare global {
      */
     Actor: {
       /** @defaultValue `Actor` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof Actor>;
+      documentClass: ConfiguredDocumentClassForName<"Actor">;
 
       /** @defaultValue `Actors` */
       collection: ConstructorOf<Actors>;
@@ -145,7 +145,7 @@ declare global {
      */
     Adventure: {
       /** @defaultValue `foundry.documents.BaseAdventure` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof Adventure>;
+      documentClass: ConfiguredDocumentClassForName<"Adventure">;
 
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
@@ -168,7 +168,7 @@ declare global {
       compendiumIndexFields: string[];
 
       /** @defaultValue `Cards` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof Cards>;
+      documentClass: ConfiguredDocumentClassForName<"Cards">;
 
       /** @defaultValue `"fa-solid fa-cards"` */
       sidebarIcon: string;
@@ -217,7 +217,7 @@ declare global {
      */
     ChatMessage: {
       /** @defaultValue `ChatMessage` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof ChatMessage>;
+      documentClass: ConfiguredDocumentClassForName<"ChatMessage">;
 
       /** @defaultValue `Messages` */
       collection: ConstructorOf<Messages>;
@@ -237,7 +237,7 @@ declare global {
      */
     Combat: {
       /** @defaultValue `Combat` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof Combat>;
+      documentClass: ConfiguredDocumentClassForName<"Combat">;
 
       /** @defaultValue `CombatEncounters` */
       collection: ConstructorOf<CombatEncounters>;
@@ -331,7 +331,7 @@ declare global {
      */
     FogExploration: {
       /** @defaultValue `FogExploration` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof FogExploration>;
+      documentClass: ConfiguredDocumentClassForName<"FogExploration">;
 
       /** @defaultValue `FogExplorations` */
       collection: ConstructorOf<FogExplorations>;
@@ -342,7 +342,7 @@ declare global {
      */
     Folder: {
       /** @defaultValue `Folder` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof Folder>;
+      documentClass: ConfiguredDocumentClassForName<"Folder">;
 
       /** @defaultValue `Folders` */
       collection: ConstructorOf<Folders>;
@@ -356,7 +356,7 @@ declare global {
      */
     Item: {
       /** @defaultValue `Item` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof Item>;
+      documentClass: ConfiguredDocumentClassForName<"Item">;
 
       /** @defaultValue `Items` */
       collection: ConstructorOf<Items>;
@@ -385,7 +385,7 @@ declare global {
      */
     JournalEntry: {
       /** @defaultValue `JournalEntry` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof JournalEntry>;
+      documentClass: ConfiguredDocumentClassForName<"JournalEntry">;
 
       /** @defaultValue `Journal` */
       collection: ConstructorOf<Journal>;
@@ -488,7 +488,7 @@ declare global {
      */
     Macro: {
       /** @defaultValue `Macro` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof Macro>;
+      documentClass: ConfiguredDocumentClassForName<"Macro">;
 
       /** @defaultValue `Macros` */
       collection: ConstructorOf<Macros>;
@@ -508,7 +508,7 @@ declare global {
      */
     Playlist: {
       /** @defaultValue `Playlist` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof Playlist>;
+      documentClass: ConfiguredDocumentClassForName<"Playlist">;
 
       /** @defaultValue `Playlists` */
       collection: ConstructorOf<Playlists>;
@@ -531,7 +531,7 @@ declare global {
      */
     RollTable: {
       /** @defaultValue `RollTable` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof RollTable>;
+      documentClass: ConfiguredDocumentClassForName<"RollTable">;
 
       /** @defaultValue `RollTables` */
       collection: ConstructorOf<RollTables>;
@@ -557,7 +557,7 @@ declare global {
      */
     Scene: {
       /** @defaultValue `Scene` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof Scene>;
+      documentClass: ConfiguredDocumentClassForName<"Scene">;
 
       /** @defaultValue `Scenes` */
       collection: ConstructorOf<Scenes>;
@@ -574,7 +574,7 @@ declare global {
 
     Setting: {
       /** @defaultValue `Setting` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof Setting>;
+      documentClass: ConfiguredDocumentClassForName<"Setting">;
 
       /** @defaultValue `WorldSettings` */
       collection: ConstructorOf<WorldSettings>;
@@ -585,7 +585,7 @@ declare global {
      */
     User: {
       /** @defaultValue `User` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof User>;
+      documentClass: ConfiguredDocumentClassForName<"User">;
 
       /** @defaultValue `Users` */
       collection: ConstructorOf<Users>;
@@ -1748,7 +1748,7 @@ declare global {
      */
     ActiveEffect: {
       /** @defaultValue `ActiveEffect` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof ActiveEffect>;
+      documentClass: ConfiguredDocumentClassForName<"ActiveEffect">;
 
       /**
        * If true, Active Effects on Items will be copied to the Actor when the Item is created on the Actor if the
@@ -1765,7 +1765,7 @@ declare global {
      */
     ActorDelta: {
       /** @defaultValue `ActorDelta` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof ActorDelta>;
+      documentClass: ConfiguredDocumentClassForName<"ActorDelta">;
 
       sheetClasses?: Record<string, Record<string, SheetClassConfig>>;
 
@@ -1777,7 +1777,7 @@ declare global {
      */
     Card: {
       /** @defaultValue `Card` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof Card>;
+      documentClass: ConfiguredDocumentClassForName<"Card">;
 
       /**
        * @defaultValue `{}`
@@ -1791,12 +1791,12 @@ declare global {
      */
     TableResult: {
       /** @defaultValue `TableResult` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof TableResult>;
+      documentClass: ConfiguredDocumentClassForName<"TableResult">;
     };
 
     JournalEntryPage: {
       /** @defaultValue `JournalEntryPage` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof JournalEntryPage>;
+      documentClass: ConfiguredDocumentClassForName<"JournalEntryPage">;
 
       /**
        * @defaultValue `{}`
@@ -1831,7 +1831,7 @@ declare global {
      */
     PlaylistSound: {
       /** @defaultValue `PlaylistSound` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof PlaylistSound>;
+      documentClass: ConfiguredDocumentClassForName<"PlaylistSound">;
     };
 
     /**
@@ -1839,7 +1839,7 @@ declare global {
      */
     AmbientLight: {
       /** @defaultValue `AmbientLightDocument` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof AmbientLightDocument>;
+      documentClass: ConfiguredDocumentClassForName<"AmbientLight">;
 
       /** @defaultValue `AmbientLightDocument` */
       objectClass: ConfiguredObjectClassOrDefault<typeof AmbientLight>;
@@ -1853,7 +1853,7 @@ declare global {
      */
     AmbientSound: {
       /** @defaultValue `AmbientSoundDocument` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof AmbientSoundDocument>;
+      documentClass: ConfiguredDocumentClassForName<"AmbientSound">;
 
       /** @defaultValue `AmbientSound` */
       objectClass: ConfiguredObjectClassOrDefault<typeof AmbientSound>;
@@ -1867,7 +1867,7 @@ declare global {
      */
     Combatant: {
       /** @defaultValue `Combatant` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof Combatant>;
+      documentClass: ConfiguredDocumentClassForName<"Combatant">;
     };
 
     /**
@@ -1875,7 +1875,7 @@ declare global {
      */
     Drawing: {
       /** @defaultValue `DrawingDocument` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof DrawingDocument>;
+      documentClass: ConfiguredDocumentClassForName<"Drawing">;
 
       /** @defaultValue `Drawing` */
       objectClass: ConfiguredObjectClassOrDefault<typeof Drawing>;
@@ -1911,7 +1911,7 @@ declare global {
       };
 
       /** @defaultValue `MeasuredTemplateDocument` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof MeasuredTemplateDocument>;
+      documentClass: ConfiguredDocumentClassForName<"MeasuredTemplate">;
 
       /** @defaultValue `MeasuredTemplate` */
       objectClass: ConfiguredObjectClassOrDefault<typeof MeasuredTemplate>;
@@ -1925,7 +1925,7 @@ declare global {
      */
     Note: {
       /** @defaultValue `NoteDocument` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof NoteDocument>;
+      documentClass: ConfiguredDocumentClassForName<"Note">;
 
       /** @defaultValue `Note` */
       objectClass: ConfiguredObjectClassOrDefault<typeof Note>;
@@ -1939,7 +1939,7 @@ declare global {
      */
     Tile: {
       /** @defaultValue `TileDocument` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof TileDocument>;
+      documentClass: ConfiguredDocumentClassForName<"Tile">;
 
       /** @defaultValue `Tile` */
       objectClass: ConfiguredObjectClassOrDefault<typeof Tile>;
@@ -1953,7 +1953,7 @@ declare global {
      */
     Token: {
       /** @defaultValue `TokenDocument` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof TokenDocument>;
+      documentClass: ConfiguredDocumentClassForName<"Token">;
 
       /** @defaultValue `Token` */
       objectClass: ConfiguredObjectClassOrDefault<typeof Token>;
@@ -1973,7 +1973,7 @@ declare global {
      */
     Wall: {
       /** @defaultValue `WallDocument` */
-      documentClass: ConfiguredDocumentClassOrDefault<typeof WallDocument>;
+      documentClass: ConfiguredDocumentClassForName<"Wall">;
 
       /** @defaultValue `Wall` */
       objectClass: ConfiguredObjectClassOrDefault<typeof Wall>;
@@ -2512,11 +2512,6 @@ declare global {
 
   const CONFIG: CONFIG;
 }
-
-type ConfiguredDocumentClassOrDefault<Fallback extends DocumentConstructor> =
-  Fallback["metadata"]["name"] extends keyof DocumentClassConfig
-    ? DocumentClassConfig[Fallback["metadata"]["name"]]
-    : Fallback;
 
 type ConfiguredObjectClassOrDefault<Fallback extends PlaceableObjectConstructor> =
   Fallback["embeddedName"] extends keyof PlaceableObjectClassConfig

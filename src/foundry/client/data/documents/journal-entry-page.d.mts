@@ -3,6 +3,28 @@ import type { InexactPartial } from "../../../../types/utils.d.mts";
 import type { CONST } from "../../../common/module.d.mts";
 
 declare global {
+  namespace JournalEntryPage {
+    type ConfiguredClass = ConfiguredDocumentClassForName<"JournalEntryPage">;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    interface JournalEntryPageHeading {
+      /** The heading level, 1-6. */
+      level: number;
+
+      /** The raw heading text with any internal tags omitted. */
+      text: string;
+
+      /** The generated slug for this heading. */
+      slug: string;
+
+      /** The currently rendered element for this heading, if it exists. */
+      element?: HTMLHeadingElement;
+
+      /** Any child headings of this one. */
+      children: string[];
+    }
+  }
+
   /**
    * The client-side JournalEntryPage document which extends the common BaseJournalEntryPage document model.
    *
@@ -78,22 +100,5 @@ declare global {
     ): JournalEntryPage.JournalEntryPageHeading;
 
     // TODO: More method overrides
-  }
-
-  namespace JournalEntryPage {
-    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"JournalEntryPage">>;
-
-    type JournalEntryPageHeading = {
-      /** The heading level, 1-6. */
-      level: number;
-      /** The raw heading text with any internal tags omitted. */
-      text: string;
-      /** The generated slug for this heading. */
-      slug: string;
-      /** The currently rendered element for this heading, if it exists. */
-      element?: HTMLHeadingElement;
-      /** Any child headings of this one. */
-      children: string[];
-    };
   }
 }

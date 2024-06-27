@@ -1,10 +1,221 @@
-import type { ConfiguredObjectClassForName } from "../../../../types/helperTypes.d.mts";
 import type { RequiredProps } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
-
-export {};
+import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
+  namespace Token {
+    type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof Token>;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    interface RenderFlags extends PlaceableObject.RenderFlags {
+      redrawEffects: boolean;
+
+      refreshSize: boolean;
+
+      refreshPosition: boolean;
+
+      refreshElevation: boolean;
+
+      refreshVisibility: boolean;
+
+      refreshEffects: boolean;
+
+      refreshMesh: boolean;
+
+      refreshShader: boolean;
+
+      refreshBars: boolean;
+
+      refreshNameplate: boolean;
+
+      refreshBorder: boolean;
+
+      refreshTarget: boolean;
+    }
+
+    interface ReticuleOptions {
+      /**
+       * The amount of margin between the targeting arrows and the token's bounding box, expressed as a fraction of an arrow's size.
+       * @defaultValue `0`
+       */
+      margin?: number;
+
+      /**
+       * The alpha value of the arrows.
+       * @defaultValue `1`
+       */
+      alpha?: number;
+
+      /**
+       * The size of the arrows as a proportion of grid size.
+       * @defaultValue `0.15`
+       */
+      size?: number;
+
+      /**
+       * The color of the arrows.
+       * @defaultValue `0xFF6400`
+       */
+      color?: number;
+
+      /** The arrows' border style configuration. */
+      border?: {
+        /**
+         * The border color.
+         * @defaultValue `0`
+         */
+        color?: number;
+
+        /**
+         * The border width.
+         * @defaultValue `2`
+         */
+        width?: number;
+      };
+    }
+
+    type SourceType = "move" | "sight" | "light" | "sound";
+
+    interface Bar {
+      attribute: string;
+    }
+
+    interface Velocity {
+      dx: number;
+      sx: number;
+      dy: number;
+      sy: number;
+    }
+
+    /** The UI frame container which depicts Token metadata and status, displayed in the ControlsLayer. */
+    interface ObjectHUD extends globalThis.ObjectHUD {
+      /** Token health bars */
+      bars?: PIXI.Container;
+
+      /** Token nameplate */
+      nameplate?: PreciseText;
+
+      /** Token elevation tooltip */
+      tooltip?: PreciseText;
+
+      /** Token status effects */
+      effects?: PIXI.Container;
+
+      /** Token target marker */
+      target?: PIXI.Graphics;
+    }
+
+    type InitializedObjectHUD = RequiredProps<ObjectHUD, "bars" | "nameplate" | "tooltip" | "effects" | "target">;
+
+    interface UpdateLightSourceOptions {
+      /**
+       * Defer updating perception to manually update it later.
+       * @defaultValue `false`
+       */
+      defer?: boolean | undefined;
+
+      /**
+       * Indicate that this light source has been deleted.
+       * @defaultValue `false`
+       */
+      deleted?: boolean | undefined;
+    }
+
+    interface UpdateVisionSourceOptions {
+      /**
+       * Defer updating perception to manually update it later.
+       * @defaultValue `false`
+       */
+      defer?: boolean | undefined;
+
+      /**
+       * Indicate that this vision source has been deleted.
+       * @defaultValue `false`
+       */
+      deleted?: boolean | undefined;
+    }
+
+    type UpdateSourceOptions = UpdateLightSourceOptions & UpdateVisionSourceOptions;
+
+    interface PlayOptions {
+      /**
+       * Should the video loop?
+       * @defaultValue `true`
+       */
+      loop?: boolean | undefined;
+
+      /**
+       * A specific timestamp between 0 and the video duration to begin playback
+       * @defaultValue `0`
+       */
+      offset?: number | undefined;
+
+      /**
+       * Desired volume level of the video's audio channel (if any)
+       * @defaultValue `0`
+       */
+      volume?: number | undefined;
+    }
+
+    interface DrawOverlayOptions {
+      src?: string | undefined;
+      tint?: number | undefined;
+    }
+
+    interface PositionOptions {
+      /**
+       * Animate the movement path
+       * @defaultValue `true`
+       */
+      animate?: boolean;
+
+      /**
+       * Automatically re-center the view if token movement goes off-screen
+       * @defaultValue `true`
+       */
+      recenter?: boolean | undefined;
+    }
+
+    interface EffectToggleOptions {
+      /**
+       * Force a certain active state for the effect
+       * @defaultValue `false`
+       */
+      active?: boolean | undefined;
+
+      /**
+       * Whether to set the effect as the overlay effect?
+       * @defaultValue `false`
+       */
+      overlay?: boolean | undefined;
+    }
+
+    interface SetTargetContext {
+      /**
+       * Assign the token as a target for a specific User
+       * @defaultValue `null`
+       */
+      user?: User.ConfiguredInstance | null | undefined;
+
+      /**
+       * Release other active targets for the same player?
+       * @defaultValue `true`
+       */
+      releaseOthers?: boolean | undefined;
+
+      /**
+       * Is this target being set as part of a group selection workflow?
+       * @defaultValue `Is this target being set as part of a group selection workflow?`
+       */
+      groupSelection?: boolean | undefined;
+    }
+
+    interface ControlOptions extends PlaceableObject.ControlOptions {
+      /** @defaultValue `false` */
+      pan?: boolean;
+    }
+  }
+
   /**
    * A Token is an implementation of PlaceableObject which represents an Actor within a viewed Scene on the game canvas.
    * @see TokenDocument
@@ -611,218 +822,6 @@ declare global {
      * @remarks `"Token#getDisplayAttributes is deprecated in favor of TokenMesh#getDisplayAttributes"`
      */
     getDisplayAttributes(): this["mesh"]["getDisplayAttributes"];
-  }
-
-  namespace Token {
-    type ConfiguredInstance = InstanceType<ConfiguredObjectClassForName<"Token">>;
-
-    interface RenderFlags extends PlaceableObject.RenderFlags {
-      redrawEffects: boolean;
-
-      refreshSize: boolean;
-
-      refreshPosition: boolean;
-
-      refreshElevation: boolean;
-
-      refreshVisibility: boolean;
-
-      refreshEffects: boolean;
-
-      refreshMesh: boolean;
-
-      refreshShader: boolean;
-
-      refreshBars: boolean;
-
-      refreshNameplate: boolean;
-
-      refreshBorder: boolean;
-
-      refreshTarget: boolean;
-    }
-
-    type ReticuleOptions = {
-      /**
-       * The amount of margin between the targeting arrows and the token's bounding box, expressed as a fraction of an arrow's size.
-       * @defaultValue `0`
-       */
-      margin?: number;
-
-      /**
-       * The alpha value of the arrows.
-       * @defaultValue `1`
-       */
-      alpha?: number;
-
-      /**
-       * The size of the arrows as a proportion of grid size.
-       * @defaultValue `0.15`
-       */
-      size?: number;
-
-      /**
-       * The color of the arrows.
-       * @defaultValue `0xFF6400`
-       */
-      color?: number;
-
-      /** The arrows' border style configuration. */
-      border?: {
-        /**
-         * The border color.
-         * @defaultValue `0`
-         */
-        color?: number;
-
-        /**
-         * The border width.
-         * @defaultValue `2`
-         */
-        width?: number;
-      };
-    };
-
-    type SourceType = "move" | "sight" | "light" | "sound";
-
-    interface Bar {
-      attribute: string;
-    }
-
-    interface Velocity {
-      dx: number;
-      sx: number;
-      dy: number;
-      sy: number;
-    }
-
-    /** The UI frame container which depicts Token metadata and status, displayed in the ControlsLayer. */
-    interface ObjectHUD extends globalThis.ObjectHUD {
-      /** Token health bars */
-      bars?: PIXI.Container;
-
-      /** Token nameplate */
-      nameplate?: PreciseText;
-
-      /** Token elevation tooltip */
-      tooltip?: PreciseText;
-
-      /** Token status effects */
-      effects?: PIXI.Container;
-
-      /** Token target marker */
-      target?: PIXI.Graphics;
-    }
-
-    type InitializedObjectHUD = RequiredProps<ObjectHUD, "bars" | "nameplate" | "tooltip" | "effects" | "target">;
-
-    interface UpdateLightSourceOptions {
-      /**
-       * Defer updating perception to manually update it later.
-       * @defaultValue `false`
-       */
-      defer?: boolean | undefined;
-
-      /**
-       * Indicate that this light source has been deleted.
-       * @defaultValue `false`
-       */
-      deleted?: boolean | undefined;
-    }
-
-    interface UpdateVisionSourceOptions {
-      /**
-       * Defer updating perception to manually update it later.
-       * @defaultValue `false`
-       */
-      defer?: boolean | undefined;
-
-      /**
-       * Indicate that this vision source has been deleted.
-       * @defaultValue `false`
-       */
-      deleted?: boolean | undefined;
-    }
-
-    type UpdateSourceOptions = UpdateLightSourceOptions & UpdateVisionSourceOptions;
-
-    interface PlayOptions {
-      /**
-       * Should the video loop?
-       * @defaultValue `true`
-       */
-      loop?: boolean | undefined;
-
-      /**
-       * A specific timestamp between 0 and the video duration to begin playback
-       * @defaultValue `0`
-       */
-      offset?: number | undefined;
-
-      /**
-       * Desired volume level of the video's audio channel (if any)
-       * @defaultValue `0`
-       */
-      volume?: number | undefined;
-    }
-
-    interface DrawOverlayOptions {
-      src?: string | undefined;
-      tint?: number | undefined;
-    }
-
-    interface PositionOptions {
-      /**
-       * Animate the movement path
-       * @defaultValue `true`
-       */
-      animate?: boolean;
-
-      /**
-       * Automatically re-center the view if token movement goes off-screen
-       * @defaultValue `true`
-       */
-      recenter?: boolean | undefined;
-    }
-
-    interface EffectToggleOptions {
-      /**
-       * Force a certain active state for the effect
-       * @defaultValue `false`
-       */
-      active?: boolean | undefined;
-
-      /**
-       * Whether to set the effect as the overlay effect?
-       * @defaultValue `false`
-       */
-      overlay?: boolean | undefined;
-    }
-
-    interface SetTargetContext {
-      /**
-       * Assign the token as a target for a specific User
-       * @defaultValue `null`
-       */
-      user?: User.ConfiguredInstance | null | undefined;
-
-      /**
-       * Release other active targets for the same player?
-       * @defaultValue `true`
-       */
-      releaseOthers?: boolean | undefined;
-
-      /**
-       * Is this target being set as part of a group selection workflow?
-       * @defaultValue `Is this target being set as part of a group selection workflow?`
-       */
-      groupSelection?: boolean | undefined;
-    }
-
-    interface ControlOptions extends PlaceableObject.ControlOptions {
-      /** @defaultValue `false` */
-      pan?: boolean;
-    }
   }
 
   /**

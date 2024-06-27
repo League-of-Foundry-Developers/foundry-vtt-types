@@ -1,3 +1,4 @@
+import type { ConfiguredDocuments } from "./configuredDocuments.d.mts";
 import type { DeepPartial } from "./utils.d.mts";
 
 /**
@@ -9,46 +10,39 @@ export type ConstructorDataType<T extends DocumentConstructor> = foundry.data.fi
 
 type ObjectToDeepPartial<T> = T extends object ? DeepPartial<T> : T;
 
-export type DocumentConstructor = foundry.abstract.Document.Constructor;
+export type DocumentConstructor = foundry.abstract.Document.AnyConstructor;
 
 export type PlaceableObjectConstructor = Pick<typeof PlaceableObject, keyof typeof PlaceableObject> &
   (new (...args: any[]) => PlaceableObject<any>);
 
-export type ConfiguredDocumentClass<T extends DocumentConstructor> = ConfiguredDocumentClassForName<
-  T["metadata"]["name"]
->;
+export type ConfiguredDocumentClass<ConcreteDocument extends DocumentConstructor> =
+  ConfiguredDocuments[ConcreteDocument["metadata"]["name"]];
 
 export type DocumentType =
   | "ActiveEffect"
   | "ActorDelta"
   | "Actor"
   | "Adventure"
-  | "AmbientLight"
-  | "AmbientSound"
   | "Card"
   | "Cards"
   | "ChatMessage"
   | "Combat"
   | "Combatant"
-  | "Drawing"
   | "FogExploration"
   | "Folder"
   | "Item"
   | "JournalEntryPage"
   | "JournalEntry"
   | "Macro"
-  | "MeasuredTemplate"
-  | "Note"
   | "PlaylistSound"
   | "Playlist"
   | "RollTable"
   | "Scene"
   | "Setting"
   | "TableResult"
-  | "Tile"
-  | "Token"
   | "User"
-  | "Wall";
+  // All placeables also have a corresponding document class.
+  | PlaceableDocumentType;
 
 export type PlaceableDocumentType =
   | "AmbientLight"
@@ -74,7 +68,7 @@ export type DocumentSubTypes<T extends DocumentType> = "type" extends keyof Inst
   ? InstanceType<ConfiguredDocumentClassForName<T>>["type"]
   : typeof foundry.CONST.BASE_DOCUMENT_TYPE;
 
-export type ConfiguredDocumentClassForName<Name extends DocumentType> = CONFIG[Name]["documentClass"];
+export type ConfiguredDocumentClassForName<Name extends DocumentType> = ConfiguredDocuments[Name];
 
 export type ConfiguredObjectClassForName<Name extends PlaceableDocumentType> = CONFIG[Name]["objectClass"];
 

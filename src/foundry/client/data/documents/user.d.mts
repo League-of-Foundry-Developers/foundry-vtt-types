@@ -3,46 +3,54 @@ import type { InexactPartial } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 declare global {
-  type PingData = {
-    /**
-     * Pulls all connected clients' views to the pinged co-ordinates.
-     */
-    pull?: false;
-    /**
-     * The ping style, see CONFIG.Canvas.pings.
-     */
-    style: string;
-    /**
-     * The ID of the scene that was pinged.
-     */
-    scene: string;
-    /**
-     * The zoom level at which the ping was made.
-     */
-    zoom: number;
-  };
+  namespace User {
+    type ConfiguredClass = ConfiguredDocumentClassForName<"User">;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-  interface ActivityData {
-    /** The ID of the scene that the user is viewing. */
-    sceneId: string | null;
+    interface PingData {
+      /**
+       * Pulls all connected clients' views to the pinged co-ordinates.
+       */
+      pull?: false | undefined;
 
-    /** The position of the user's cursor. */
-    cursor: { x: number; y: number } | null;
+      /**
+       * The ping style, see CONFIG.Canvas.pings.
+       */
+      style: string;
 
-    /** The state of the user's ruler, if they are currently using one. */
-    ruler: RulerData | null;
+      /**
+       * The ID of the scene that was pinged.
+       */
+      scene: string;
 
-    /** The IDs of the tokens the user has targeted in the currently viewed */
-    targets: string[];
+      /**
+       * The zoom level at which the ping was made.
+       */
+      zoom: number;
+    }
 
-    /** Whether the user has an open WS connection to the server or not. */
-    active: boolean;
+    interface ActivityData {
+      /** The ID of the scene that the user is viewing. */
+      sceneId: string | null;
 
-    /** Is the user emitting a ping at the cursor coordinates? */
-    ping: PingData;
+      /** The position of the user's cursor. */
+      cursor: { x: number; y: number } | null;
 
-    /** The state of the user's AV settings. */
-    av: AVSettingsData;
+      /** The state of the user's ruler, if they are currently using one. */
+      ruler: RulerData | null;
+
+      /** The IDs of the tokens the user has targeted in the currently viewed */
+      targets: string[];
+
+      /** Whether the user has an open WS connection to the server or not. */
+      active: boolean;
+
+      /** Is the user emitting a ping at the cursor coordinates? */
+      ping: PingData;
+
+      /** The state of the user's AV settings. */
+      av: AVSettingsData;
+    }
   }
 
   /**
@@ -111,7 +119,7 @@ declare global {
      *                       (default: `{}`)
      */
     broadcastActivity(
-      activityData?: InexactPartial<ActivityData>,
+      activityData?: InexactPartial<User.ActivityData>,
       options?: InexactPartial<{
         /**
          * If undefined, volatile is inferred from the activity data
@@ -141,9 +149,5 @@ declare global {
     ): void;
 
     protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
-  }
-
-  namespace User {
-    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"User">>;
   }
 }

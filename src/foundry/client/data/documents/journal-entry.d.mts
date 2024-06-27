@@ -4,6 +4,11 @@ import type { SchemaField } from "../../../common/data/fields.d.mts";
 import type { BaseJournalEntry, BaseUser } from "../../../common/documents/module.d.mts";
 
 declare global {
+  namespace JournalEntry {
+    type ConfiguredClass = ConfiguredDocumentClassForName<"JournalEntry">;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+  }
+
   /**
    * The client-side JournalEntry document which extends the common BaseJournalEntry model.
    *
@@ -62,10 +67,6 @@ declare global {
     ): void;
 
     protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
-  }
-
-  namespace JournalEntry {
-    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"JournalEntry">>;
   }
 }
 

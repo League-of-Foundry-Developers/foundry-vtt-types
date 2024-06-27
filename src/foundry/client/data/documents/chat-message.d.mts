@@ -3,6 +3,36 @@ import type { InexactPartial, StoredDocument } from "../../../../types/utils.d.m
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 declare global {
+  namespace ChatMessage {
+    type ConfiguredClass = ConfiguredDocumentClassForName<"ChatMessage">;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    interface GetSpeakerOptions {
+      /** The Scene in which the speaker resides */
+      scene: Scene | null;
+
+      /** The Actor whom is speaking */
+      actor: Actor | null;
+
+      /** The Token whom is speaking */
+      token: TokenDocument | Token | null;
+
+      /** The name of the speaker to display */
+      alias: string | undefined;
+    }
+
+    interface MessageData {
+      message: ToObjectFalseType<ChatMessage>;
+      user: StoredDocument<User.ConfiguredInstance>;
+      author: User.ConfiguredInstance | undefined;
+      alias: string;
+      cssClass: string;
+      isWhisper: boolean;
+      canDelete: boolean;
+      whisperTo: string;
+    }
+  }
+
   /**
    * The client-side ChatMessage document which extends the common BaseChatMessage abstraction.
    * Each ChatMessage document contains ChatMessageData which defines its data schema.
@@ -185,34 +215,5 @@ declare global {
      * Export the content of the chat message into a standardized log format
      */
     export(): string;
-  }
-
-  namespace ChatMessage {
-    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"ChatMessage">>;
-
-    interface GetSpeakerOptions {
-      /** The Scene in which the speaker resides */
-      scene: Scene | null;
-
-      /** The Actor whom is speaking */
-      actor: Actor | null;
-
-      /** The Token whom is speaking */
-      token: TokenDocument | Token | null;
-
-      /** The name of the speaker to display */
-      alias: string | undefined;
-    }
-
-    interface MessageData {
-      message: ToObjectFalseType<ChatMessage>;
-      user: StoredDocument<User.ConfiguredInstance>;
-      author: User.ConfiguredInstance | undefined;
-      alias: string;
-      cssClass: string;
-      isWhisper: boolean;
-      canDelete: boolean;
-      whisperTo: string;
-    }
   }
 }

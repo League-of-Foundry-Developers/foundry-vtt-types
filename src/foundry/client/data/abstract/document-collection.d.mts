@@ -1,9 +1,9 @@
 import type { ConfiguredDocumentClass, DocumentConstructor } from "../../../../types/helperTypes.d.mts";
-import type { DeepPartial, InexactPartial, StoredDocument } from "../../../../types/utils.d.mts";
+import type { DeepPartial, InexactPartial, ConfiguredStoredDocument } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 // import type _Collection from "../../../common/utils/collection.d.mts";
 
-// Fix for "Class 'Collection<StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>>' defines instance member property 'delete',
+// Fix for "Class 'Collection<ConfiguredStoredDocument<T>>' defines instance member property 'delete',
 // but extended class 'DocumentCollection<T, Name>' defines it as instance member function."
 // type Collection<T> = Omit<_Collection<T>, "set" | "delete" | "get">;
 
@@ -12,7 +12,7 @@ declare global {
    * An abstract subclass of the Collection container which defines a collection of Document instances.
    */
   class DocumentCollection<T extends DocumentConstructor, Name extends string> extends foundry.utils.Collection<
-    StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>
+    ConfiguredStoredDocument<T>
   > {
     constructor(data: InstanceType<T>["_source"][]);
 
@@ -101,17 +101,14 @@ declare global {
          */
         invalid: false;
       }>,
-    ): StoredDocument<InstanceType<ConfiguredDocumentClass<T>>> | undefined;
-    get(
-      key: string,
-      options: { strict: true; invalid?: false },
-    ): StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>;
+    ): ConfiguredStoredDocument<T> | undefined;
+    get(key: string, options: { strict: true; invalid?: false }): ConfiguredStoredDocument<T>;
     get(key: string, options: { strict?: boolean; invalid: true }): unknown;
 
     /**
      * @remarks The parameter `id` is ignored, instead `document.id` is used as the key.
      */
-    set(id: string, document: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>): this;
+    set(id: string, document: ConfiguredStoredDocument<T>): this;
 
     /** @remarks Actually returns void */
     delete: (id: string) => boolean;
@@ -173,10 +170,8 @@ declare global {
     updateAll(
       transformation:
         | DeepPartial<InstanceType<ConfiguredDocumentClass<T>>["_source"]>
-        | ((
-            doc: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>,
-          ) => DeepPartial<InstanceType<ConfiguredDocumentClass<T>>["_source"]>),
-      condition?: ((obj: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>) => boolean) | null,
+        | ((doc: ConfiguredStoredDocument<T>) => DeepPartial<InstanceType<ConfiguredDocumentClass<T>>["_source"]>),
+      condition?: ((obj: ConfiguredStoredDocument<T>) => boolean) | null,
       options?: DocumentModificationContext,
     ): ReturnType<this["documentClass"]["updateDocuments"]>;
 
@@ -200,7 +195,7 @@ declare global {
      * @param userId    - The ID of the User who triggered the operation
      */
     protected _onCreateDocuments(
-      documents: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>[],
+      documents: ConfiguredStoredDocument<T>[],
       result: (InstanceType<T>["_source"] & { _id: string })[],
       options: DocumentModificationOptions,
       userId: string,
@@ -226,7 +221,7 @@ declare global {
      * @param userId    - The ID of the User who triggered the operation
      */
     protected _onUpdateDocuments(
-      documents: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>[],
+      documents: ConfiguredStoredDocument<T>[],
       result: (DeepPartial<InstanceType<T>["_source"]> & { _id: string })[],
       options: DocumentModificationOptions,
       userId: string,
@@ -248,7 +243,7 @@ declare global {
      * @param userId    - The ID of the User who triggered the operation
      */
     protected _onDeleteDocuments(
-      documents: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>[],
+      documents: ConfiguredStoredDocument<T>[],
       result: string[],
       options: DocumentModificationOptions,
       userId: string,
@@ -272,17 +267,17 @@ declare global {
      */
     protected _getRenderContext(
       action: DocumentCollection.RenderContext.Create<T>["action"],
-      documents: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>[],
+      documents: ConfiguredStoredDocument<T>[],
       data: (InstanceType<T>["_source"] & { _id: string })[],
     ): DocumentCollection.RenderContext.Create<T>;
     protected _getRenderContext(
       action: DocumentCollection.RenderContext.Update<T>["action"],
-      documents: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>[],
+      documents: ConfiguredStoredDocument<T>[],
       data: (DeepPartial<InstanceType<T>["_source"]> & { _id: string })[],
     ): DocumentCollection.RenderContext.Update<T>;
     protected _getRenderContext(
       action: DocumentCollection.RenderContext.Delete<T>["action"],
-      documents: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>[],
+      documents: ConfiguredStoredDocument<T>[],
       data: string[],
     ): DocumentCollection.RenderContext.Delete<T>;
   }
@@ -291,7 +286,7 @@ declare global {
     namespace RenderContext {
       interface Base<T extends DocumentConstructor> {
         documentType: T["metadata"]["name"];
-        documents: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>[];
+        documents: ConfiguredStoredDocument<T>[];
 
         /** @deprecated The "entities" render context is deprecated. Please use "documents" instead. */
         get entities(): this["documents"];

@@ -3,6 +3,11 @@ import type { InexactPartial } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 declare global {
+  namespace PlaylistSound {
+    type ConfiguredClass = ConfiguredDocumentClassForName<"PlaylistSound">;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+  }
+
   /**
    * The client-side PlaylistSound document which extends the common BasePlaylistSound model.
    * Each PlaylistSound belongs to the sounds collection of a Playlist document.
@@ -107,9 +112,5 @@ declare global {
      * @internal
      */
     protected _fadeOut(sound: Sound): void;
-  }
-
-  namespace PlaylistSound {
-    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"PlaylistSound">>;
   }
 }

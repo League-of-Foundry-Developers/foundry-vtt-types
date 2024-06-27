@@ -3,6 +3,11 @@ import type { DocumentModificationOptions } from "../../../common/abstract/docum
 import type { BaseUser } from "../../../common/documents/module.d.mts";
 
 declare global {
+  namespace Item {
+    type ConfiguredClass = ConfiguredDocumentClassForName<"Item">;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+  }
+
   /**
    * The client-side Item document which extends the common BaseItem abstraction.
    * Each Item document contains ItemData which defines its data schema.
@@ -50,9 +55,5 @@ declare global {
     /**
      * @privateRemarks _onCreateDocuments and _onDeleteDocuments are overridden but left off because the signature doesn't change and unnecessarily adds to the type complexity.
      */
-  }
-
-  namespace Item {
-    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"Item">>;
   }
 }

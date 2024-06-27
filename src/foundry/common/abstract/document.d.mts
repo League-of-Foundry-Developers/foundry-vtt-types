@@ -7,7 +7,13 @@ import type {
   DocumentTypeWithTypeData,
   PlaceableDocumentType,
 } from "../../../types/helperTypes.mts";
-import type { DeepPartial, InexactPartial, RemoveIndexSignatures, StoredDocument } from "../../../types/utils.mts";
+import type {
+  ConfiguredStoredDocument,
+  DeepPartial,
+  InexactPartial,
+  RemoveIndexSignatures,
+  StoredDocument,
+} from "../../../types/utils.mts";
 import type * as CONST from "../constants.mts";
 import type { DataField } from "../data/fields.d.mts";
 import type { fields } from "../data/module.mts";
@@ -29,7 +35,7 @@ declare abstract class Document<
    * @param data    - Initial data provided to construct the Document
    * @param context - Construction context options
    */
-  constructor(data?: fields.SchemaField.AssignmentType<Schema>, context?: DocumentConstructionContext);
+  constructor(data?: fields.SchemaField.InnerConstructorType<Schema>, context?: DocumentConstructionContext);
 
   override parent: Parent;
 
@@ -48,7 +54,7 @@ declare abstract class Document<
   /**
    * A mapping of embedded Document collections which exist in this model.
    */
-  readonly collections: Document.CollectionRecord<this>;
+  readonly collections: Document.CollectionRecord<Schema>;
 
   protected _initialize(options?: any): void;
 
@@ -253,7 +259,7 @@ declare abstract class Document<
    * const created = await Actor.createDocuments(data, {pack: "mymodule.mypack"});
    * ```
    */
-  static createDocuments<T extends Document.Constructor>(
+  static createDocuments<T extends Document.AnyConstructor>(
     this: T,
     data: Array<
       | fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]>
@@ -261,7 +267,7 @@ declare abstract class Document<
     >,
     context: DocumentModificationContext & { temporary: false },
   ): Promise<StoredDocument<InstanceType<Document.ConfiguredClass<T>>>[]>;
-  static createDocuments<T extends Document.Constructor>(
+  static createDocuments<T extends Document.AnyConstructor>(
     this: T,
     data: Array<
       | fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]>
@@ -269,7 +275,7 @@ declare abstract class Document<
     >,
     context: DocumentModificationContext & { temporary: boolean },
   ): Promise<InstanceType<Document.ConfiguredClass<T>>[]>;
-  static createDocuments<T extends Document.Constructor>(
+  static createDocuments<T extends Document.AnyConstructor>(
     this: T,
     data?: Array<
       | fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]>
@@ -313,7 +319,7 @@ declare abstract class Document<
    * const updated = await Actor.updateDocuments([{_id: actor.id, name: "New Name"}], {pack: "mymodule.mypack"});
    * ```
    */
-  static updateDocuments<T extends Document.Constructor>(
+  static updateDocuments<T extends Document.AnyConstructor>(
     this: T,
     updates?: Array<DeepPartial<ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>)>>,
     context?: DocumentModificationContext & foundry.utils.MergeObjectOptions,
@@ -356,7 +362,7 @@ declare abstract class Document<
    * const deleted = await Actor.deleteDocuments([actor.id], {pack: "mymodule.mypack"});
    * ```
    */
-  static deleteDocuments<T extends Document.Constructor>(
+  static deleteDocuments<T extends Document.AnyConstructor>(
     this: T,
     ids?: string[],
     context?: DocumentModificationContext,
@@ -391,21 +397,21 @@ declare abstract class Document<
    *
    * @remarks If no document has actually been created, the returned {@link Promise} resolves to `undefined`.
    */
-  static create<T extends Document.Constructor>(
+  static create<T extends Document.AnyConstructor>(
     this: T,
     data: ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>),
     context: DocumentModificationContext & { temporary: false },
-  ): Promise<StoredDocument<InstanceType<ConfiguredDocumentClass<T>>> | undefined>;
-  static create<T extends Document.Constructor>(
+  ): Promise<ConfiguredStoredDocument<T> | undefined>;
+  static create<T extends Document.AnyConstructor>(
     this: T,
     data: ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>),
     context: DocumentModificationContext & { temporary: boolean },
   ): Promise<InstanceType<ConfiguredDocumentClass<T>> | undefined>;
-  static create<T extends Document.Constructor>(
+  static create<T extends Document.AnyConstructor>(
     this: T,
     data: ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>),
     context?: DocumentModificationContext,
-  ): Promise<StoredDocument<InstanceType<ConfiguredDocumentClass<T>>> | undefined>;
+  ): Promise<ConfiguredStoredDocument<T> | undefined>;
 
   /**
    * Update this Document using incremental data, saving it to the database.
@@ -689,7 +695,7 @@ declare abstract class Document<
    * @param documents - The Document instances which were created
    * @param context   - The context for the modification operation
    */
-  protected static _onCreateDocuments<T extends Document.Constructor>(
+  protected static _onCreateDocuments<T extends Document.AnyConstructor>(
     this: T,
     documents: Array<InstanceType<ConfiguredDocumentClass<T>>>,
     context: DocumentModificationContext,
@@ -706,7 +712,7 @@ declare abstract class Document<
    * `unknown` to allow deriving classes to return whatever they want. The
    * return type is not meant to be used.
    */
-  protected static _onUpdateDocuments<T extends Document.Constructor>(
+  protected static _onUpdateDocuments<T extends Document.AnyConstructor>(
     this: T,
     documents: Array<InstanceType<ConfiguredDocumentClass<T>>>,
     context: DocumentModificationContext,
@@ -723,7 +729,7 @@ declare abstract class Document<
    * `unknown` to allow deriving classes to return whatever they want. The
    * return type is not meant to be used.
    */
-  protected static _onDeleteDocuments<T extends Document.Constructor>(
+  protected static _onDeleteDocuments<T extends Document.AnyConstructor>(
     this: T,
     documents: Array<InstanceType<ConfiguredDocumentClass<T>>>,
     context: DocumentModificationContext,
@@ -790,9 +796,11 @@ declare namespace Document {
   /** Any Document, that is a child of the given parent Document. */
   export type AnyChild<Parent extends Any | null> = Document<DataSchema, AnyMetadata, Parent>;
 
-  export type Constructor = Pick<typeof Document, keyof typeof Document> & (new (...args: any[]) => Document.Any);
+  export type Constructor = typeof Document<DataSchema, AnyMetadata, any>;
 
-  type SystemConstructor = Constructor & { metadata: { name: SystemType; coreTypes?: string[] } };
+  export type AnyConstructor = Pick<typeof Document, keyof typeof Document> & (new (...args: any[]) => Document.Any);
+
+  type SystemConstructor = AnyConstructor & { metadata: { name: SystemType; coreTypes?: string[] } };
 
   type ConfiguredClass<T extends { metadata: AnyMetadata }> = ConfiguredClassForName<T["metadata"]["name"]>;
 
@@ -811,10 +819,8 @@ declare namespace Document {
   export type MetadataFor<ConcreteDocument extends Any> =
     ConcreteDocument extends Document<any, infer ConcreteMetadata, any> ? ConcreteMetadata : never;
 
-  type CollectionRecord<Doc extends Document<any, any, any>> = {
-    [Key in keyof Doc]: Doc["schema"]["fields"][Key] extends fields.EmbeddedCollectionField<any, any>
-      ? Doc[Key]
-      : never;
+  type CollectionRecord<Schema extends DataSchema> = {
+    [Key in keyof Schema]: Schema[Key] extends fields.EmbeddedCollectionField<any, any> ? Schema[Key] : never;
   };
 
   export type Flags<ConcreteDocument extends Any> = OptionsForSchema<SchemaFor<ConcreteDocument>>;

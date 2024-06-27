@@ -157,7 +157,7 @@ declare global {
      * @param data     - The broadcast ping data.
      * @returns @see Ping#animate
      */
-    handlePing(user: User.ConfiguredInstance, position: PIXI.Point, data?: PingData): Promise<boolean>;
+    handlePing(user: User.ConfiguredInstance, position: PIXI.Point, data?: User.PingData): Promise<boolean>;
 
     /**
      * Draw a ping at the edge of the viewport, pointing to the location of an off-screen ping.

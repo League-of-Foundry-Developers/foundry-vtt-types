@@ -64,7 +64,7 @@ declare global {
 
     override get tabName(): string;
 
-    static get collection(): WorldCollection<foundry.abstract.Document.Constructor, string>;
+    static get collection(): WorldCollection<foundry.abstract.Document.AnyConstructor, string>;
 
     /**
      * Initialize the content of the directory by categorizing folders and documents into a hierarchical tree structure.

@@ -1,10 +1,39 @@
-import type { ConfiguredObjectClassForName } from "../../../../types/helperTypes.d.mts";
 import type { RequiredProps } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
-
-export {};
+import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
+  namespace MeasuredTemplate {
+    type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof MeasuredTemplate>;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    interface RenderFlags extends PlaceableObject.RenderFlags {
+      refreshShape: boolean;
+
+      refreshTemplate: boolean;
+
+      refreshPosition: boolean;
+
+      refreshGrid: boolean;
+
+      refreshText: boolean;
+    }
+
+    interface ObjectHUD extends globalThis.ObjectHUD {
+      /**
+       * Template control icon
+       */
+      icon?: ControlIcon;
+
+      /**
+       * Ruler text tooltip
+       */
+      ruler?: PreciseText;
+    }
+
+    type InitializedObjectHUD = RequiredProps<ObjectHUD, "icon" | "ruler">;
+  }
+
   /**
    * A type of Placeable Object which highlights an area of the grid as covered by some area of effect.
    * @see {@link MeasuredTemplateDocument}
@@ -186,35 +215,5 @@ declare global {
     protected override _canView(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
 
     protected override _onClickRight(event: PIXI.FederatedEvent): void;
-  }
-
-  namespace MeasuredTemplate {
-    type ConfiguredInstance = InstanceType<ConfiguredObjectClassForName<"MeasuredTemplate">>;
-
-    interface RenderFlags extends PlaceableObject.RenderFlags {
-      refreshShape: boolean;
-
-      refreshTemplate: boolean;
-
-      refreshPosition: boolean;
-
-      refreshGrid: boolean;
-
-      refreshText: boolean;
-    }
-
-    interface ObjectHUD extends globalThis.ObjectHUD {
-      /**
-       * Template control icon
-       */
-      icon?: ControlIcon;
-
-      /**
-       * Ruler text tooltip
-       */
-      ruler?: PreciseText;
-    }
-
-    type InitializedObjectHUD = RequiredProps<ObjectHUD, "icon" | "ruler">;
   }
 }

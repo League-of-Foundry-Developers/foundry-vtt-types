@@ -4,6 +4,11 @@ import type { SchemaField } from "../../../common/data/fields.d.mts";
 import type { BaseActor } from "../../../common/documents/module.d.mts";
 
 declare global {
+  namespace ActorDelta {
+    type ConfiguredClass = ConfiguredDocumentClassForName<"ActorDelta">;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+  }
+
   /**
    * The client-side ActorDelta embedded document which extends the common BaseActorDelta document model.
    * @see {@link TokenDocument}  The TokenDocument document type which contains ActorDelta embedded documents.
@@ -73,10 +78,6 @@ declare global {
       args: unknown[],
       _parent: ClientDocument,
     ): void;
-  }
-
-  namespace ActorDelta {
-    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"ActorDelta">>;
   }
 }
 

@@ -1,6 +1,6 @@
 import type {
-  ConfiguredDocumentClass,
   ConfiguredDocumentClassForName,
+  ConfiguredDocumentClass,
   ConstructorDataType,
   DocumentConstructor,
 } from "../../../../types/helperTypes.d.mts";
@@ -10,6 +10,122 @@ import type { fields } from "../../../common/data/module.d.mts";
 import type BaseCards from "../../../common/documents/cards.d.mts";
 
 declare global {
+  namespace Cards {
+    type ConfiguredClass = ConfiguredDocumentClassForName<"Cards">;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    type CardsAction = "deal" | "pass";
+
+    interface BaseOperationOptions {
+      /**
+       * Create a ChatMessage which notifies that this action has occurred
+       * @defaultValue `true`
+       */
+      chatNotification: boolean;
+    }
+
+    interface DealOptions extends BaseOperationOptions {
+      /**
+       * How to draw, a value from CONST.CARD_DRAW_MODES
+       * @defaultValue `foundry.CONST.CARD_DRAW_MODES.FIRST`
+       */
+      how: foundry.CONST.CARD_DRAW_MODES;
+
+      /**
+       * Modifications to make to each Card as part of the deal operation,
+       * for example the displayed face
+       * @defaultValue `{}`
+       */
+      updateData: DeepPartial<Cards["_source"]>;
+
+      /**
+       * The name of the action being performed, used as part of the dispatched Hook event
+       * @defaultValue `"deal"`
+       */
+      action: CardsAction;
+    }
+
+    /** Additional context which describes the operation */
+    interface DealContext {
+      /** The action name being performed, i.e. "deal", "pass" */
+      action: CardsAction;
+
+      /** An array of Card creation operations to be performed in each destination Cards document */
+      toCreate: Card["_source"][][];
+
+      /** Card update operations to be performed in the origin Cards document */
+      fromUpdate: { _id: string; drawn: true }[];
+
+      /** Card deletion operations to be performed in the origin Cards document */
+      fromDelete: string[];
+    }
+
+    interface PassOptions extends BaseOperationOptions {
+      /**
+       * Modifications to make to each Card as part of the pass operation,
+       * for example the displayed face
+       * @defaultValue `{}`
+       */
+      updateData: DeepPartial<Card["_source"]> | undefined;
+
+      /**
+       * The name of the action being performed, used as part of the dispatched Hook event
+       * @defaultValue `"pass"`
+       */
+      action: string | undefined;
+    }
+
+    interface DrawOptions extends PassOptions {
+      /**
+       * How to draw, a value from CONST.CARD_DRAW_MODES
+       * @defaultValue `foundry.CONST.CARD_DRAW_MODES.FIRST`
+       */
+      how: foundry.CONST.CARD_DRAW_MODES;
+
+      /**
+       * Modifications to make to each Card as part of the draw operation,
+       * for example the displayed face
+       * @defaultValue `{}`
+       */
+      updateData: DeepPartial<Card["_source"]>;
+    }
+
+    interface ShuffleOptions extends BaseOperationOptions {
+      /**
+       * Modifications to make to each Card as part of the shuffle operation,
+       * for example the displayed face
+       * @defaultValue `{}`
+       * @remarks This is not actually used by {@link Cards.shuffle}.
+       */
+      updateData: DeepPartial<Card["_source"]>;
+    }
+
+    /** Options which modify the reset operation */
+    interface ResetOptions extends BaseOperationOptions {
+      /**
+       * Modifications to make to each Card as part of the reset operation,
+       * for example the displayed face
+       * @defaultValue `{}`
+       */
+      updateData: DeepPartial<Card["_source"]>;
+    }
+
+    /** Additional context which describes the operation. */
+    interface ReturnContext {
+      /**
+       * A mapping of Card deck IDs to the update operations that
+       * will be performed on them.
+       */
+      toUpdate: Record<string, DeepPartial<Card["_source"]>[]>;
+
+      /**
+       * Card deletion operations to be performed on the origin Cards
+       * document.
+       */
+      fromDelete: string[];
+    }
+  }
+
   /**
    * The client-side Cards document which extends the common BaseCards model.
    * Each Cards document contains CardsData which defines its data schema.
@@ -229,120 +345,5 @@ declare global {
       data?: DeepPartial<Cards["_source"] | (Cards["_source"] & Record<string, unknown>)>,
       context?: Pick<DocumentModificationContext, "parent" | "pack"> & Partial<DialogOptions>,
     ): Promise<InstanceType<ConfiguredDocumentClass<T>> | null | undefined>;
-  }
-
-  namespace Cards {
-    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"Cards">>;
-
-    type CardsAction = "deal" | "pass";
-
-    interface BaseOperationOptions {
-      /**
-       * Create a ChatMessage which notifies that this action has occurred
-       * @defaultValue `true`
-       */
-      chatNotification: boolean;
-    }
-
-    interface DealOptions extends BaseOperationOptions {
-      /**
-       * How to draw, a value from CONST.CARD_DRAW_MODES
-       * @defaultValue `foundry.CONST.CARD_DRAW_MODES.FIRST`
-       */
-      how: foundry.CONST.CARD_DRAW_MODES;
-
-      /**
-       * Modifications to make to each Card as part of the deal operation,
-       * for example the displayed face
-       * @defaultValue `{}`
-       */
-      updateData: DeepPartial<Cards["_source"]>;
-
-      /**
-       * The name of the action being performed, used as part of the dispatched Hook event
-       * @defaultValue `"deal"`
-       */
-      action: CardsAction;
-    }
-
-    /** Additional context which describes the operation */
-    interface DealContext {
-      /** The action name being performed, i.e. "deal", "pass" */
-      action: CardsAction;
-
-      /** An array of Card creation operations to be performed in each destination Cards document */
-      toCreate: Card["_source"][][];
-
-      /** Card update operations to be performed in the origin Cards document */
-      fromUpdate: { _id: string; drawn: true }[];
-
-      /** Card deletion operations to be performed in the origin Cards document */
-      fromDelete: string[];
-    }
-
-    interface PassOptions extends BaseOperationOptions {
-      /**
-       * Modifications to make to each Card as part of the pass operation,
-       * for example the displayed face
-       * @defaultValue `{}`
-       */
-      updateData: DeepPartial<Card["_source"]> | undefined;
-
-      /**
-       * The name of the action being performed, used as part of the dispatched Hook event
-       * @defaultValue `"pass"`
-       */
-      action: string | undefined;
-    }
-
-    interface DrawOptions extends PassOptions {
-      /**
-       * How to draw, a value from CONST.CARD_DRAW_MODES
-       * @defaultValue `foundry.CONST.CARD_DRAW_MODES.FIRST`
-       */
-      how: foundry.CONST.CARD_DRAW_MODES;
-
-      /**
-       * Modifications to make to each Card as part of the draw operation,
-       * for example the displayed face
-       * @defaultValue `{}`
-       */
-      updateData: DeepPartial<Card["_source"]>;
-    }
-
-    interface ShuffleOptions extends BaseOperationOptions {
-      /**
-       * Modifications to make to each Card as part of the shuffle operation,
-       * for example the displayed face
-       * @defaultValue `{}`
-       * @remarks This is not actually used by {@link Cards.shuffle}.
-       */
-      updateData: DeepPartial<Card["_source"]>;
-    }
-
-    /** Options which modify the reset operation */
-    interface ResetOptions extends BaseOperationOptions {
-      /**
-       * Modifications to make to each Card as part of the reset operation,
-       * for example the displayed face
-       * @defaultValue `{}`
-       */
-      updateData: DeepPartial<Card["_source"]>;
-    }
-
-    /** Additional context which describes the operation. */
-    interface ReturnContext {
-      /**
-       * A mapping of Card deck IDs to the update operations that
-       * will be performed on them.
-       */
-      toUpdate: Record<string, DeepPartial<Card["_source"]>[]>;
-
-      /**
-       * Card deletion operations to be performed on the origin Cards
-       * document.
-       */
-      fromDelete: string[];
-    }
   }
 }

@@ -1,3 +1,5 @@
+import type { ConfiguredDocumentClass, DocumentConstructor } from "./helperTypes.d.mts";
+
 /**
  * Recursively sets keys of an object to optional. Used primarily for update methods
  * @internal
@@ -120,6 +122,10 @@ export type StoredDocument<D extends { _source: unknown }> = D & {
   _id: string;
   _source: D["_source"] & { _id: string };
 };
+
+export type ConfiguredStoredDocument<T extends DocumentConstructor> = StoredDocument<
+  InstanceType<ConfiguredDocumentClass<T>>
+>;
 
 export type TemporaryDocument<D> = D extends StoredDocument<infer U> ? U : D;
 

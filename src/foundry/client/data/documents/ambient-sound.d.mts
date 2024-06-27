@@ -1,8 +1,11 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 
-export {};
-
 declare global {
+  namespace AmbientSoundDocument {
+    type ConfiguredClass = ConfiguredDocumentClassForName<"AmbientSound">;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+  }
+
   /**
    * The client-side AmbientSound document which extends the common BaseAmbientSound document model.
    *
@@ -10,8 +13,4 @@ declare global {
    * @see {@link AmbientSoundConfig}      The AmbientSound configuration application
    */
   class AmbientSoundDocument extends CanvasDocumentMixin(foundry.documents.BaseAmbientSound) {}
-
-  namespace AmbientSoundDocument {
-    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"AmbientSound">>;
-  }
 }

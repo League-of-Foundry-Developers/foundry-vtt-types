@@ -3,6 +3,11 @@ import type { InexactPartial } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 declare global {
+  namespace Scene {
+    type ConfiguredClass = ConfiguredDocumentClassForName<"Scene">;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+  }
+
   /**
    * The client-side Scene document which extends the common BaseScene model.
    *
@@ -231,10 +236,6 @@ declare global {
 
     /** The length of the longest line that can be drawn on the canvas. */
     maxR: number;
-  }
-
-  namespace Scene {
-    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"Scene">>;
   }
 }
 

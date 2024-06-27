@@ -1,6 +1,28 @@
 import type { ConfiguredDocumentClassForName, FolderDocumentTypes } from "../../../../types/helperTypes.d.mts";
 import type { InexactPartial } from "../../../../types/utils.d.mts";
+
 declare global {
+  namespace Adventure {
+    type ConfiguredClass = ConfiguredDocumentClassForName<"Adventure">;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    interface PrepareImportOptions {
+      /**
+       * A subset of adventure fields to import.
+       */
+      // TODO: This isn't *quite* right as the keyof is including all the nevers.
+      importFields: Array<keyof typeof foundry.documents.BaseAdventure.contentFields | "all">;
+    }
+
+    interface ImportOptions extends PrepareImportOptions {
+      /**
+       * Display a warning dialog if existing documents would be overwritten
+       * @defaultValue `true`
+       */
+      dialog: boolean;
+    }
+  }
+
   /**
    * The client-side Adventure document which extends the common {@link foundry.documents.BaseAdventure} model.
    */
@@ -36,26 +58,6 @@ declare global {
     created: DocumentResult;
     updated: DocumentResult;
   };
-
-  namespace Adventure {
-    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"Adventure">>;
-
-    interface PrepareImportOptions {
-      /**
-       * A subset of adventure fields to import.
-       */
-      // TODO: This isn't *quite* right as the keyof is including all the nevers.
-      importFields: Array<keyof typeof foundry.documents.BaseAdventure.contentFields | "all">;
-    }
-
-    interface ImportOptions extends PrepareImportOptions {
-      /**
-       * Display a warning dialog if existing documents would be overwritten
-       * @defaultValue `true`
-       */
-      dialog: boolean;
-    }
-  }
 }
 
 type DocumentDataRecord = {

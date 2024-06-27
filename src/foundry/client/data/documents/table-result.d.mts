@@ -1,8 +1,11 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 
-export {};
-
 declare global {
+  namespace TableResult {
+    type ConfiguredClass = ConfiguredDocumentClassForName<"TableResult">;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+  }
+
   /**
    * The client-side TableResult document which extends the common BaseTableResult model.
    *
@@ -19,9 +22,5 @@ declare global {
      * @returns The text to display
      */
     getChatText(): string;
-  }
-
-  namespace TableResult {
-    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"TableResult">>;
   }
 }

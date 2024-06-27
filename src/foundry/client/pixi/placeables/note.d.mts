@@ -1,9 +1,20 @@
-import type { ConfiguredObjectClassForName } from "../../../../types/helperTypes.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
-
-export {};
+import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
+  namespace Note {
+    type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof Note>;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    interface RenderFlags extends PlaceableObject.RenderFlags {
+      refreshPosition: boolean;
+
+      refreshVisibility: boolean;
+
+      refreshText: boolean;
+    }
+  }
+
   /**
    * A Note is an implementation of PlaceableObject which represents an annotated location within the Scene.
    * Each Note links to a JournalEntry document and represents its location on the map.
@@ -101,17 +112,5 @@ declare global {
     protected override _onHoverIn(event: PIXI.FederatedEvent, options?: PlaceableObject.HoverInOptions): false | void;
 
     protected override _onClickLeft2(event: PIXI.FederatedEvent): void;
-  }
-
-  namespace Note {
-    type ConfiguredInstance = InstanceType<ConfiguredObjectClassForName<"Note">>;
-
-    interface RenderFlags extends PlaceableObject.RenderFlags {
-      refreshPosition: boolean;
-
-      refreshVisibility: boolean;
-
-      refreshText: boolean;
-    }
   }
 }

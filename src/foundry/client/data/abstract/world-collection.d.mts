@@ -3,7 +3,7 @@ import type {
   ConstructorDataType,
   DocumentConstructor,
 } from "../../../../types/helperTypes.d.mts";
-import type { DeepPartial, InexactPartial, StoredDocument } from "../../../../types/utils.d.mts";
+import type { ConfiguredStoredDocument, DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
 import type { MixedDocumentCollectionInterface } from "./directory-collection-mixin.d.mts";
 
 declare const MixedDocumentCollection: MixedDocumentCollectionInterface;
@@ -63,7 +63,7 @@ declare global {
       id: string,
       updateData?: DeepPartial<InstanceType<ConfiguredDocumentClass<T>>["_source"]>,
       options?: InexactPartial<DocumentModificationContext & WorldCollection.FromCompendiumOptions>,
-    ): Promise<StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>>;
+    ): Promise<ConfiguredStoredDocument<T>>;
 
     /**
      * Apply data transformations when importing a Document from a Compendium pack

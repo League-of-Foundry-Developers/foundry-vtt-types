@@ -1,6 +1,11 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 
 declare global {
+  namespace Combatant {
+    type ConfiguredClass = ConfiguredDocumentClassForName<"Combatant">;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+  }
+
   /**
    * The client-side Combatant document which extends the common BaseCombatant model.
    *
@@ -78,9 +83,5 @@ declare global {
      * @deprecated since v9
      */
     get isVisible(): boolean;
-  }
-
-  namespace Combatant {
-    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"Combatant">>;
   }
 }

@@ -2,6 +2,11 @@ import type { ConfiguredDocumentClassForName } from "../../../../types/helperTyp
 import type { DeepPartial } from "../../../../types/utils.d.mts";
 
 declare global {
+  namespace Card {
+    type ConfiguredClass = ConfiguredDocumentClassForName<"Card">;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+  }
+
   /**
    * The client-side Card document which extends the common BaseCard document model.
    *
@@ -102,9 +107,5 @@ declare global {
       messageData?: DeepPartial<foundry.documents.BaseChatMessage.ConstructorData>,
       options?: DocumentModificationContext,
     ): Promise<ChatMessage.ConfiguredInstance | undefined>;
-  }
-
-  namespace Card {
-    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"Card">>;
   }
 }

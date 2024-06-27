@@ -1,9 +1,39 @@
-import type { ConfiguredObjectClassForName } from "../../../../types/helperTypes.d.mts";
 import type { ValueOf } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
+import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
-export {};
 declare global {
+  namespace Drawing {
+    type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof Drawing>;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    interface RenderFlags extends PlaceableObject.RenderFlags {
+      refreshShape: boolean;
+
+      refreshFrame: boolean;
+
+      refreshText: boolean;
+
+      refreshMesh: boolean;
+    }
+
+    interface TextEditingOptions {
+      forceTextEditing?: boolean;
+
+      isNew?: boolean;
+    }
+
+    interface AdjustableShape {
+      shape: {
+        width: number;
+        height: number;
+        points: Point[];
+      };
+      x: number;
+      y: number;
+    }
+  }
+
   /**
    * The Drawing object is an implementation of the PlaceableObject container.
    * Each Drawing is a placeable object in the DrawingsLayer.
@@ -262,35 +292,5 @@ declare global {
      * @remarks Not used
      */
     controlIcon: null;
-  }
-
-  namespace Drawing {
-    type ConfiguredInstance = InstanceType<ConfiguredObjectClassForName<"Drawing">>;
-
-    interface RenderFlags extends PlaceableObject.RenderFlags {
-      refreshShape: boolean;
-
-      refreshFrame: boolean;
-
-      refreshText: boolean;
-
-      refreshMesh: boolean;
-    }
-
-    interface TextEditingOptions {
-      forceTextEditing?: boolean;
-
-      isNew?: boolean;
-    }
-
-    interface AdjustableShape {
-      shape: {
-        width: number;
-        height: number;
-        points: Point[];
-      };
-      x: number;
-      y: number;
-    }
   }
 }

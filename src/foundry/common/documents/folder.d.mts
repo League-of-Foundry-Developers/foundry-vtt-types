@@ -62,7 +62,7 @@ declare namespace BaseFolder {
   >;
 
   type SchemaField = fields.SchemaField<Schema>;
-  type ConstructorData = UpdateData & Required<Pick<UpdateData, "name" | "type">>;
+  type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;
   type UpdateData = fields.SchemaField.InnerAssignmentType<Schema>;
   type Properties = fields.SchemaField.InnerInitializedType<Schema>;
   type Source = fields.SchemaField.InnerPersistedType<Schema>;

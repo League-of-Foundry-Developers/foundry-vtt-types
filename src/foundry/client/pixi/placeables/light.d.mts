@@ -1,7 +1,18 @@
-import type { ConfiguredObjectClassForName } from "../../../../types/helperTypes.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
+import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
+  namespace AmbientLight {
+    type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof AmbientLight>;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    interface RenderFlags extends PlaceableObject.RenderFlags {
+      refreshField: boolean;
+
+      refreshPosition: boolean;
+    }
+  }
+
   /**
    * An AmbientLight is an implementation of PlaceableObject which represents a dynamic light source within the Scene.
    * @see {@link AmbientLightDocument}
@@ -132,15 +143,5 @@ declare global {
     protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
     protected override _onDragLeftCancel(event: PIXI.FederatedEvent): void;
-  }
-
-  namespace AmbientLight {
-    type ConfiguredInstance = InstanceType<ConfiguredObjectClassForName<"AmbientLight">>;
-
-    interface RenderFlags extends PlaceableObject.RenderFlags {
-      refreshField: boolean;
-
-      refreshPosition: boolean;
-    }
   }
 }

@@ -5,6 +5,19 @@ import type { AnyMetadata, DocumentModificationOptions } from "../../../common/a
 import type { ClientDocument } from "../abstract/client-document.d.mts";
 
 declare global {
+  namespace Playlist {
+    type ConfiguredClass = ConfiguredDocumentClassForName<"Playlist">;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    interface PlayNextOptions {
+      /**
+       * Whether to advance forward (if 1) or backwards (if -1)
+       * @defaultValue `1`
+       */
+      direction: 1 | -1;
+    }
+  }
+
   /**
    * The client-side Playlist document which extends the common BasePlaylist model.
    *
@@ -191,17 +204,5 @@ declare global {
       | ClientDocument.OmitProperty<OwnershipOpt, "ownership">
       | ClientDocument.OmitProperty<StateOpt, "active" | "fogReset" | "playing"> // does not model the sounds.playing = false
     >;
-  }
-
-  namespace Playlist {
-    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"Playlist">>;
-
-    interface PlayNextOptions {
-      /**
-       * Whether to advance forward (if 1) or backwards (if -1)
-       * @defaultValue `1`
-       */
-      direction: 1 | -1;
-    }
   }
 }

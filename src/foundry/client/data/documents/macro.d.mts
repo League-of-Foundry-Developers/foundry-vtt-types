@@ -1,8 +1,11 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 
-export {};
-
 declare global {
+  namespace Macro {
+    type ConfiguredClass = ConfiguredDocumentClassForName<"Macro">;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+  }
+
   /**
    * The client-side Macro document which extends the common BaseMacro model.
    *
@@ -38,11 +41,8 @@ declare global {
 
     _onClickDocumentLink(event: MouseEvent): ReturnType<this["execute"]>;
   }
-
-  namespace Macro {
-    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"Macro">>;
-  }
 }
+
 interface Scope {
   /**
    * An Actor who is the protagonist of the executed action

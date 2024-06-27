@@ -44,6 +44,6 @@ declare global {
      * @param activityData - The object of activity data
      *                       (default: `{}`)
      */
-    protected static _handleUserActivity(userId: string, activityData?: InexactPartial<ActivityData>): void;
+    protected static _handleUserActivity(userId: string, activityData?: InexactPartial<User.ActivityData>): void;
   }
 }

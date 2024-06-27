@@ -562,6 +562,12 @@ declare namespace SchemaField {
   type Any = SchemaField<any, any, any, any, any>;
 
   /**
+   * Get the constructor type for the given DataSchema.
+   * @typeParam Fields - the DataSchema fields of the SchemaField
+   */
+  type InnerConstructorType<Fields extends DataSchema> = InnerAssignmentType<Fields>;
+
+  /**
    * Get the inner assignment type for the given DataSchema.
    * @typeParam Fields - the DataSchema fields of the SchemaField
    */
@@ -1182,7 +1188,7 @@ declare namespace ObjectField {
  * InitialValue: `[]`
  */
 declare class ArrayField<
-  const ElementFieldType extends DataField.Any | Document.Constructor,
+  const ElementFieldType extends DataField.Any | Document.AnyConstructor,
   const AssignmentElementType = ArrayField.AssignmentElementType<ElementFieldType>,
   const InitializedElementType = ArrayField.InitializedElementType<ElementFieldType>,
   const Options extends ArrayField.Options<AssignmentElementType> = ArrayField.DefaultOptions<AssignmentElementType>,
@@ -1216,7 +1222,7 @@ declare class ArrayField<
   element: ElementFieldType;
 
   protected static override get _defaults(): ArrayField.Options<
-    ArrayField.AssignmentElementType<DataField.Any | Document.Constructor>
+    ArrayField.AssignmentElementType<DataField.Any | Document.AnyConstructor>
   >;
 
   /** @defaultValue `true` */
@@ -1328,7 +1334,7 @@ declare namespace ArrayField {
    * A type to infer the assignment element type of an ArrayField from its ElementFieldType.
    * @typeParam ElementFieldType - the DataField type of the elements in the ArrayField
    */
-  type AssignmentElementType<ElementFieldType extends DataField.Any | Document.Constructor> =
+  type AssignmentElementType<ElementFieldType extends DataField.Any | Document.AnyConstructor> =
     ElementFieldType extends DataField<any, infer Assign, any, any>
       ? Assign
       : ElementFieldType extends new (...args: any[]) => Document<infer Schema extends DataSchema, any, any>
@@ -1339,7 +1345,7 @@ declare namespace ArrayField {
    * A type to infer the initialized element type of an ArrayField from its ElementFieldType.
    * @typeParam ElementFieldType - the DataField type of the elements in the ArrayField
    */
-  type InitializedElementType<ElementFieldType extends DataField.Any | Document.Constructor> =
+  type InitializedElementType<ElementFieldType extends DataField.Any | Document.AnyConstructor> =
     ElementFieldType extends DataField<any, any, infer Init, any>
       ? Init
       : ElementFieldType extends new (...args: any[]) => Document<infer Schema extends DataSchema, any, any>
@@ -1350,7 +1356,7 @@ declare namespace ArrayField {
    * A type to infer the initialized element type of an ArrayField from its ElementFieldType.
    * @typeParam ElementFieldType - the DataField type of the elements in the ArrayField
    */
-  type PersistedElementType<ElementFieldType extends DataField.Any | Document.Constructor> =
+  type PersistedElementType<ElementFieldType extends DataField.Any | Document.AnyConstructor> =
     ElementFieldType extends DataField<any, any, any, infer Persist>
       ? Persist
       : ElementFieldType extends new (...args: any[]) => Document<infer Schema extends DataSchema, any, any>
@@ -1646,10 +1652,9 @@ declare namespace EmbeddedDataField {
  * InitialValue: `[]`
  */
 declare class EmbeddedCollectionField<
-  ElementFieldType extends Document.Constructor,
+  ElementFieldType extends Document.AnyConstructor,
   ParentDataModel extends Document.Any,
   AssignmentElementType = EmbeddedCollectionField.AssignmentElementType<ElementFieldType>,
-  // @ts-expect-error most likely a depth error
   InitializedElementType extends Document.Any = EmbeddedCollectionField.InitializedElementType<ElementFieldType>,
   Options extends
     EmbeddedCollectionField.Options<AssignmentElementType> = EmbeddedCollectionField.DefaultOptions<AssignmentElementType>,
@@ -1685,7 +1690,7 @@ declare class EmbeddedCollectionField<
   /** @defaultValue `true` */
   override readonly: true;
 
-  protected static override _validateElementType<T extends DataField.Any | Document.Constructor>(element: T): T;
+  protected static override _validateElementType<T extends DataField.Any | Document.AnyConstructor>(element: T): T;
 
   /**
    * The Collection implementation to use when initializing the collection.
@@ -1763,7 +1768,7 @@ declare namespace EmbeddedCollectionField {
    * A type to infer the assignment element type of an EmbeddedCollectionField from its ElementFieldType.
    * @typeParam ElementFieldType - the DataField type of the elements in the EmbeddedCollectionField
    */
-  type AssignmentElementType<ElementFieldType extends Document.Constructor> = ElementFieldType extends new (
+  type AssignmentElementType<ElementFieldType extends Document.AnyConstructor> = ElementFieldType extends new (
     ...args: any[]
   ) => Document<infer Schema extends DataSchema, any, any>
     ? SchemaField.InnerAssignmentType<Schema>
@@ -1773,7 +1778,7 @@ declare namespace EmbeddedCollectionField {
    * A type to infer the initialized element type of an EmbeddedCollectionField from its ElementFieldType.
    * @typeParam ElementFieldType - the DataField type of the elements in the EmbeddedCollectionField
    */
-  type InitializedElementType<ElementFieldType extends Document.Constructor> = InstanceType<
+  type InitializedElementType<ElementFieldType extends Document.AnyConstructor> = InstanceType<
     ConfiguredDocumentClass<ElementFieldType>
   >;
 
@@ -1781,7 +1786,7 @@ declare namespace EmbeddedCollectionField {
    * A type to infer the initialized element type of an EmbeddedCollectionField from its ElementFieldType.
    * @typeParam ElementFieldType - the DataField type of the elements in the EmbeddedCollectionField
    */
-  type PersistedElementType<ElementFieldType extends Document.Constructor> = ElementFieldType extends new (
+  type PersistedElementType<ElementFieldType extends Document.AnyConstructor> = ElementFieldType extends new (
     ...args: any[]
   ) => Document<infer Schema extends DataSchema, any, any>
     ? SchemaField.InnerPersistedType<Schema>
@@ -1848,10 +1853,9 @@ declare namespace EmbeddedCollectionField {
  * InitialValue: `[]`
  */
 declare class EmbeddedCollectionDeltaField<
-  ElementFieldType extends Document.Constructor,
+  ElementFieldType extends Document.AnyConstructor,
   ParentDataModel extends Document.Any,
   AssignmentElementType = EmbeddedCollectionDeltaField.AssignmentElementType<ElementFieldType>,
-  // @ts-expect-error most likely a depth error
   InitializedElementType extends Document.Any = EmbeddedCollectionDeltaField.InitializedElementType<ElementFieldType>,
   Options extends
     EmbeddedCollectionDeltaField.Options<AssignmentElementType> = EmbeddedCollectionDeltaField.DefaultOptions<AssignmentElementType>,
@@ -1916,7 +1920,7 @@ declare namespace EmbeddedCollectionDeltaField {
    * A type to infer the assignment element type of an EmbeddedCollectionDeltaField from its ElementFieldType.
    * @typeParam ElementFieldType - the DataField type of the elements in the EmbeddedCollectionDeltaField
    */
-  type AssignmentElementType<ElementFieldType extends Document.Constructor> = ElementFieldType extends new (
+  type AssignmentElementType<ElementFieldType extends Document.AnyConstructor> = ElementFieldType extends new (
     ...args: any[]
   ) => Document<infer Schema extends DataSchema, any, any>
     ? SchemaField.InnerAssignmentType<Schema>
@@ -1926,7 +1930,7 @@ declare namespace EmbeddedCollectionDeltaField {
    * A type to infer the initialized element type of an EmbeddedCollectionDeltaField from its ElementFieldType.
    * @typeParam ElementFieldType - the DataField type of the elements in the EmbeddedCollectionDeltaField
    */
-  type InitializedElementType<ElementFieldType extends Document.Constructor> = InstanceType<
+  type InitializedElementType<ElementFieldType extends Document.AnyConstructor> = InstanceType<
     ConfiguredDocumentClass<ElementFieldType>
   >;
 
@@ -1934,7 +1938,7 @@ declare namespace EmbeddedCollectionDeltaField {
    * A type to infer the initialized element type of an EmbeddedCollectionDeltaField from its ElementFieldType.
    * @typeParam ElementFieldType - the DataField type of the elements in the EmbeddedCollectionDeltaField
    */
-  type PersistedElementType<ElementFieldType extends Document.Constructor> = ElementFieldType extends new (
+  type PersistedElementType<ElementFieldType extends Document.AnyConstructor> = ElementFieldType extends new (
     ...args: any[]
   ) => Document<infer Schema extends DataSchema, any, any>
     ? SchemaField.InnerPersistedType<Schema>
@@ -3026,7 +3030,7 @@ declare namespace DocumentStatsField {
     MergedOptions<Opts>
   >;
 
-  type ConstructorData = SchemaField.InnerAssignmentType<Schema>;
+  type ConstructorData = SchemaField.InnerConstructorType<Schema>;
   type Properties = SchemaField.InnerInitializedType<Schema>;
   type Source = SchemaField.InnerPersistedType<Schema>;
 

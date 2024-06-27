@@ -1,6 +1,11 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 
 declare global {
+  namespace DrawingDocument {
+    type ConfiguredClass = ConfiguredDocumentClassForName<"Drawing">;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+  }
+
   /**
    * The client-side Drawing document which extends the common BaseDrawing model.
    *
@@ -18,10 +23,6 @@ declare global {
      * Define a sort property on the Drawing Document which in the future will become a core part of its data schema.
      */
     get sort(): this["z"];
-  }
-
-  namespace DrawingDocument {
-    type ConfiguredInstance = InstanceType<ConfiguredDocumentClassForName<"Drawing">>;
   }
 }
 

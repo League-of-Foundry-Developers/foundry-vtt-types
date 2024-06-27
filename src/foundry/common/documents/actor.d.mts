@@ -9,92 +9,6 @@ declare global {
   type ActorData = BaseActor.Properties;
 }
 
-/**
- * The Document definition for an Actor.
- * Defines the DataSchema and common behaviors for an Actor which are shared between both client and server.
- */
-declare class BaseActor extends Document<BaseActor.Schema, BaseActor.Metadata> {
-  /**
-   * @param data    - Initial data from which to construct the Actor
-   * @param context - Construction context options
-   */
-  constructor(data: BaseActor.ConstructorData, context?: DocumentConstructionContext);
-
-  static override metadata: Readonly<BaseActor.Metadata>;
-
-  static override defineSchema(): BaseActor.Schema;
-
-  /**
-   * The default icon used for newly created Actor documents.
-   * @defaultValue `CONST.DEFAULT_TOKEN`
-   */
-  static DEFAULT_ICON: string;
-
-  /**
-   * Determine default artwork based on the provided actor data
-   * @param actorData - The source actor data
-   */
-  static getDefaultArtwork(actorData: BaseActor.ConstructorData): {
-    img: string;
-    texture: { src: string };
-  };
-
-  /**
-   * The allowed set of Actor types which may exist.
-   */
-  static get TYPES(): BaseActor.TypeNames[];
-
-  protected override _initializeSource(
-    data: fields.SchemaField.InnerAssignmentType<documents.BaseActor.Schema> | this,
-    options?: any,
-  ): fields.SchemaField.InnerPersistedType<documents.BaseActor.Schema>;
-
-  static override canUserCreate(user: documents.BaseUser): boolean;
-
-  /**
-   * Is a user able to create this actor?
-   * @param user - The user attempting the creation operation.
-   * @param doc  - The Actor being created.
-   * @internal
-   */
-  static #canCreate(user: documents.BaseUser, doc: BaseActor): boolean;
-
-  /**
-   * Is a user able to update an existing actor?
-   * @param user - The user attempting the update operation.
-   * @param doc  - The Actor being updated.
-   * @param data - The update delta being applied.
-   * @internal
-   */
-  static #canUpdate(user: documents.BaseUser, doc: BaseActor, data: BaseActor.UpdateData): boolean;
-
-  protected override _preCreate(
-    data: fields.SchemaField.AssignmentType<documents.BaseActor.Schema, {}>,
-    options: DocumentModificationOptions,
-    user: documents.BaseUser,
-  ): Promise<void>;
-
-  protected override _preUpdate(
-    changed: fields.SchemaField.AssignmentType<documents.BaseActor.Schema, {}>,
-    options: DocumentModificationOptions,
-    user: documents.BaseUser,
-  ): Promise<void>;
-
-  static override migrateData(source: object): object;
-
-  static override shimData(
-    data: object,
-    options?: {
-      /**
-       * Apply shims to embedded models?
-       * @defaultValue `true`
-       */
-      embedded?: boolean;
-    },
-  ): object;
-}
-export default BaseActor;
-
 declare namespace BaseActor {
   type TypeNames = fields.TypeDataField.TypeNames<typeof BaseActor>;
 
@@ -121,7 +35,7 @@ declare namespace BaseActor {
   >;
 
   type SchemaField = fields.SchemaField<Schema>;
-  type ConstructorData = UpdateData & Required<Pick<UpdateData, "name" | "type">>;
+  type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;
   type UpdateData = fields.SchemaField.InnerAssignmentType<Schema>;
   type Properties = fields.SchemaField.InnerInitializedType<Schema>;
   type Source = fields.SchemaField.InnerPersistedType<Schema>;
@@ -209,3 +123,90 @@ declare namespace BaseActor {
     _stats: fields.DocumentStatsField;
   }
 }
+
+/**
+ * The Document definition for an Actor.
+ * Defines the DataSchema and common behaviors for an Actor which are shared between both client and server.
+ */
+declare class BaseActor extends Document<BaseActor.Schema, BaseActor.Metadata> {
+  /**
+   * @param data    - Initial data from which to construct the Actor
+   * @param context - Construction context options
+   */
+  constructor(data: BaseActor.ConstructorData, context?: DocumentConstructionContext);
+
+  static override metadata: Readonly<BaseActor.Metadata>;
+
+  static override defineSchema(): BaseActor.Schema;
+
+  /**
+   * The default icon used for newly created Actor documents.
+   * @defaultValue `CONST.DEFAULT_TOKEN`
+   */
+  static DEFAULT_ICON: string;
+
+  /**
+   * Determine default artwork based on the provided actor data
+   * @param actorData - The source actor data
+   */
+  static getDefaultArtwork(actorData: BaseActor.ConstructorData): {
+    img: string;
+    texture: { src: string };
+  };
+
+  /**
+   * The allowed set of Actor types which may exist.
+   */
+  static get TYPES(): BaseActor.TypeNames[];
+
+  protected override _initializeSource(
+    data: fields.SchemaField.InnerAssignmentType<documents.BaseActor.Schema> | this,
+    options?: any,
+  ): fields.SchemaField.InnerPersistedType<documents.BaseActor.Schema>;
+
+  static override canUserCreate(user: documents.BaseUser): boolean;
+
+  /**
+   * Is a user able to create this actor?
+   * @param user - The user attempting the creation operation.
+   * @param doc  - The Actor being created.
+   * @internal
+   */
+  static #canCreate(user: documents.BaseUser, doc: BaseActor): boolean;
+
+  /**
+   * Is a user able to update an existing actor?
+   * @param user - The user attempting the update operation.
+   * @param doc  - The Actor being updated.
+   * @param data - The update delta being applied.
+   * @internal
+   */
+  static #canUpdate(user: documents.BaseUser, doc: BaseActor, data: BaseActor.UpdateData): boolean;
+
+  protected override _preCreate(
+    data: fields.SchemaField.AssignmentType<documents.BaseActor.Schema, {}>,
+    options: DocumentModificationOptions,
+    user: documents.BaseUser,
+  ): Promise<void>;
+
+  protected override _preUpdate(
+    changed: fields.SchemaField.AssignmentType<documents.BaseActor.Schema, {}>,
+    options: DocumentModificationOptions,
+    user: documents.BaseUser,
+  ): Promise<void>;
+
+  static override migrateData(source: object): object;
+
+  static override shimData(
+    data: object,
+    options?: {
+      /**
+       * Apply shims to embedded models?
+       * @defaultValue `true`
+       */
+      embedded?: boolean;
+    },
+  ): object;
+}
+
+export default BaseActor;

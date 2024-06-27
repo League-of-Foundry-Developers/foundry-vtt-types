@@ -1,8 +1,30 @@
-import type { ConfiguredObjectClassForName } from "../../../../types/helperTypes.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 import type { LineIntersection } from "../../../common/utils/geometry.d.mts";
+import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
+  namespace Wall {
+    type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof Wall>;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    interface RenderFlags extends PlaceableObject.RenderFlags {
+      refreshLine: boolean;
+
+      refreshEndpoints: boolean;
+
+      refreshDirection: boolean;
+
+      refreshHighlight: boolean;
+    }
+
+    interface ControlOptions extends PlaceableObject.ControlOptions {
+      /** @defaultValue `false` */
+      chain: boolean;
+    }
+
+    type DoorInteraction = "open" | "close" | "lock" | "unlock" | "test";
+  }
+
   /**
    * A Wall is an implementation of PlaceableObject which represents a physical or visual barrier within the Scene.
    * Walls are used to restrict Token movement or visibility as well as to define the areas of effect for ambient lights
@@ -265,26 +287,5 @@ declare global {
      * @remarks Not used
      */
     controlIcon: null;
-  }
-
-  namespace Wall {
-    type ConfiguredInstance = InstanceType<ConfiguredObjectClassForName<"Wall">>;
-
-    interface RenderFlags extends PlaceableObject.RenderFlags {
-      refreshLine: boolean;
-
-      refreshEndpoints: boolean;
-
-      refreshDirection: boolean;
-
-      refreshHighlight: boolean;
-    }
-
-    interface ControlOptions extends PlaceableObject.ControlOptions {
-      /** @defaultValue `false` */
-      chain: boolean;
-    }
-
-    type DoorInteraction = "open" | "close" | "lock" | "unlock" | "test";
   }
 }
