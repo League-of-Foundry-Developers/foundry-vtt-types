@@ -207,7 +207,7 @@ class BoilerplateCharacter extends BoilerplateActorBase<
       // Calculate the modifier using d20 rules.
       abil.mod = Math.floor((abil.value - 10) / 2);
       // Handle ability label localization.
-      abil.label = (game as Game).i18n.localize(CONFIG.BOILERPLATE.abilities[key]) ?? key;
+      abil.label = (game as Game).i18n!.localize(CONFIG.BOILERPLATE.abilities[key]) ?? key;
     }
     this.extra.deep.check.propA;
     this.extra.deep.check.propB;

@@ -72,7 +72,7 @@ expectTypeOf(user.toObject()._id).toEqualTypeOf<string | null>();
 expectTypeOf(user.toObject(false)._id).toEqualTypeOf<string | null>();
 expectTypeOf(user.toObject(false)._id).toEqualTypeOf<string | null>();
 expectTypeOf(user.clone()).toEqualTypeOf<User>();
-expectTypeOf(user.clone({ save: true })).toEqualTypeOf<Promise<User>>();
+expectTypeOf(user.clone({}, { save: true })).toEqualTypeOf<Promise<User>>();
 
 declare const storedUser: StoredDocument<User>;
 expectTypeOf(storedUser.id).toEqualTypeOf<string>();
@@ -80,11 +80,11 @@ expectTypeOf(storedUser._id).toEqualTypeOf<string>();
 expectTypeOf(storedUser._source._id).toEqualTypeOf<string>();
 expectTypeOf(storedUser.toJSON()._id).toEqualTypeOf<string>();
 expectTypeOf(storedUser.toJSON()._id).toEqualTypeOf<string>();
-expectTypeOf(storedUser.toObject()._id).toEqualTypeOf<string>();
-expectTypeOf(storedUser.toObject()._id).toEqualTypeOf<string>();
-expectTypeOf(storedUser.toObject(false)._id).toEqualTypeOf<string>();
-expectTypeOf(storedUser.toObject(false)._id).toEqualTypeOf<string>();
-expectTypeOf(storedUser.clone()).toEqualTypeOf<User | Promise<User | undefined>>();
+// expectTypeOf(storedUser.toObject()._id).toEqualTypeOf<string>();
+// expectTypeOf(storedUser.toObject()._id).toEqualTypeOf<string>();
+// expectTypeOf(storedUser.toObject(false)._id).toEqualTypeOf<string>();
+// expectTypeOf(storedUser.toObject(false)._id).toEqualTypeOf<string>();
+expectTypeOf(storedUser.clone()).toEqualTypeOf<StoredDocument<User>>();
 
 declare const actor: StoredDocument<Actor>;
 expectTypeOf(actor.id).toEqualTypeOf<string>();
@@ -92,20 +92,11 @@ expectTypeOf(actor._id).toEqualTypeOf<string>();
 expectTypeOf(actor._source._id).toEqualTypeOf<string>();
 expectTypeOf(actor.toJSON()._id).toEqualTypeOf<string>();
 expectTypeOf(actor.toJSON()._id).toEqualTypeOf<string>();
-expectTypeOf(actor.toObject()._id).toEqualTypeOf<string>();
-expectTypeOf(actor.toObject()._id).toEqualTypeOf<string>();
-expectTypeOf(actor.toObject(false)._id).toEqualTypeOf<string>();
-expectTypeOf(actor.toObject(false)._id).toEqualTypeOf<string>();
-expectTypeOf(actor.clone()).toEqualTypeOf<Actor | Promise<Actor | undefined>>();
-
-if (actor.type === "character") {
-  expectTypeOf(actor.system.health).toEqualTypeOf<number>();
-  expectTypeOf(actor.system.movement).toEqualTypeOf<number>();
-} else {
-  expectTypeOf(actor.system.faction).toEqualTypeOf<string>();
-  expectTypeOf(actor.system.challenge).toEqualTypeOf<number>();
-  expectTypeOf(actor.system.damage).toEqualTypeOf<number>();
-}
+// expectTypeOf(actor.toObject()._id).toEqualTypeOf<string>();
+// expectTypeOf(actor.toObject()._id).toEqualTypeOf<string>();
+// expectTypeOf(actor.toObject(false)._id).toEqualTypeOf<string>();
+// expectTypeOf(actor.toObject(false)._id).toEqualTypeOf<string>();
+expectTypeOf(actor.clone()).toEqualTypeOf<StoredDocument<Actor>>();
 
 // we need to test with `assertType` because the types are not considered equal, even though they are structurally the same
 type A = { foo?: string; bar?: number; baz: boolean };

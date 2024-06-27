@@ -3,7 +3,7 @@ import { expectTypeOf, assertType } from "vitest";
 declare const aGame: Game;
 
 expectTypeOf(aGame.combats).toEqualTypeOf<CombatEncounters | undefined>();
-expectTypeOf(aGame.i18n).toEqualTypeOf<Localization>();
+expectTypeOf(aGame.i18n).toEqualTypeOf<Localization | undefined>();
 expectTypeOf(aGame.settings).toEqualTypeOf<ClientSettings>();
 
 declare global {

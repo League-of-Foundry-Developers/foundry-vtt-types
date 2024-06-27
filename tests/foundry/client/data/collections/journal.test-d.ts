@@ -1,7 +1,7 @@
 import { expectTypeOf } from "vitest";
 import type { StoredDocument } from "../../../../../src/types/utils.d.mts";
 
-const journal = new Journal();
+const journal = new Journal([]);
 expectTypeOf(journal.get("", { strict: true })).toEqualTypeOf<StoredDocument<JournalEntry>>();
 expectTypeOf(journal.toJSON()).toEqualTypeOf<StoredDocument<JournalEntry>["_source"][]>();
-expectTypeOf(journal.directory).toEqualTypeOf<JournalDirectory | undefined>();
+expectTypeOf(journal.directory).toEqualTypeOf<JournalDirectory>();

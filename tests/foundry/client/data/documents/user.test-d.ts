@@ -13,7 +13,7 @@ expectTypeOf(user.getHotbarMacros().map((each) => each.macro)).toEqualTypeOf<
   Array<InstanceType<ConfiguredDocumentClass<typeof Macro>> | null>
 >();
 
-user.assignHotbarMacro(new Macro(), 1);
+user.assignHotbarMacro(new Macro({ name: "Foo" }), 1);
 
 expectTypeOf(user._id).toEqualTypeOf<string | null>();
 expectTypeOf(user.avatar).toEqualTypeOf<string | null | undefined>();

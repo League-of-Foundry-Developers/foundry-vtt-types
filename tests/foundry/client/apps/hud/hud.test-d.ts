@@ -8,7 +8,7 @@ declare const token: Token;
 const hud = new MyPlaceableHud();
 expectTypeOf(hud.object).toEqualTypeOf<Token | undefined>();
 
-expectTypeOf(hud.layer).toEqualTypeOf<PlaceablesLayer<any> | undefined>();
+expectTypeOf(hud.layer).toEqualTypeOf<TokenLayer | undefined>();
 expectTypeOf(hud.bind(token)).toEqualTypeOf<void>();
 expectTypeOf(hud.clear()).toEqualTypeOf<void>();
 
