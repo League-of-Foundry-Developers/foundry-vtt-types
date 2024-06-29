@@ -56,6 +56,9 @@ declare class BaseTableResult extends Document<
 export default BaseTableResult;
 
 declare namespace BaseTableResult {
+  // TODO: Remove "base" in v12
+  type TypeNames = (typeof foundry.documents.BaseMacro)["metadata"]["coreTypes"][number] | "base";
+
   type Metadata = Merge<
     DocumentMetadata,
     {

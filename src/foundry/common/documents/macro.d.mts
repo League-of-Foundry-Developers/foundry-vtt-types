@@ -63,6 +63,9 @@ declare class BaseMacro extends Document<BaseMacro.Schema, BaseMacro.Metadata> {
 export default BaseMacro;
 
 declare namespace BaseMacro {
+  // TODO: Remove "base" in v12
+  type TypeNames = (typeof foundry.documents.BaseMacro)["metadata"]["coreTypes"][number] | "base";
+
   type Metadata = Merge<
     DocumentMetadata,
     {
