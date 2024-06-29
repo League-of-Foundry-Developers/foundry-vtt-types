@@ -110,6 +110,8 @@ declare global {
       /** @defaultValue `Actor` */
       documentClass: ConfiguredDocumentClassForName<"Actor">;
 
+      sheetClasses: Record<foundry.documents.BaseActor.TypeNames, Record<string, SheetClassConfig>>;
+
       /** @defaultValue `Actors` */
       collection: ConstructorOf<Actors>;
 
@@ -147,6 +149,8 @@ declare global {
       /** @defaultValue `foundry.documents.BaseAdventure` */
       documentClass: ConfiguredDocumentClassForName<"Adventure">;
 
+      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
 
@@ -169,6 +173,8 @@ declare global {
 
       /** @defaultValue `Cards` */
       documentClass: ConfiguredDocumentClassForName<"Cards">;
+
+      sheetClasses: Record<foundry.documents.BaseCards.TypeNames, Record<string, SheetClassConfig>>;
 
       /** @defaultValue `"fa-solid fa-cards"` */
       sidebarIcon: string;
@@ -219,6 +225,9 @@ declare global {
       /** @defaultValue `ChatMessage` */
       documentClass: ConfiguredDocumentClassForName<"ChatMessage">;
 
+      // TODO: Update in v12
+      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+
       /** @defaultValue `Messages` */
       collection: ConstructorOf<Messages>;
 
@@ -238,6 +247,9 @@ declare global {
     Combat: {
       /** @defaultValue `Combat` */
       documentClass: ConfiguredDocumentClassForName<"Combat">;
+
+      // TODO: Update in v12
+      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
 
       /** @defaultValue `CombatEncounters` */
       collection: ConstructorOf<CombatEncounters>;
@@ -333,6 +345,8 @@ declare global {
       /** @defaultValue `FogExploration` */
       documentClass: ConfiguredDocumentClassForName<"FogExploration">;
 
+      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+
       /** @defaultValue `FogExplorations` */
       collection: ConstructorOf<FogExplorations>;
     };
@@ -349,6 +363,8 @@ declare global {
 
       /** @defaultValue `"fas fa-folder"` */
       sidebarIcon: string;
+
+      sheetClasses: Record<foundry.CONST.FOLDER_DOCUMENT_TYPES, Record<string, SheetClassConfig>>;
     };
 
     /**
@@ -378,6 +394,8 @@ declare global {
 
       /** @defaultValue `{}` */
       typeLabels: Record<string, string>;
+
+      sheetClasses: Record<foundry.documents.BaseItem.TypeNames, Record<string, SheetClassConfig>>;
     };
 
     /**
@@ -386,6 +404,8 @@ declare global {
     JournalEntry: {
       /** @defaultValue `JournalEntry` */
       documentClass: ConfiguredDocumentClassForName<"JournalEntry">;
+
+      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
 
       /** @defaultValue `Journal` */
       collection: ConstructorOf<Journal>;
@@ -490,6 +510,11 @@ declare global {
       /** @defaultValue `Macro` */
       documentClass: ConfiguredDocumentClassForName<"Macro">;
 
+      sheetClasses: Record<
+        (typeof foundry.documents.BaseMacro)["metadata"]["coreTypes"][number],
+        Record<string, SheetClassConfig>
+      >;
+
       /** @defaultValue `Macros` */
       collection: ConstructorOf<Macros>;
 
@@ -509,6 +534,8 @@ declare global {
     Playlist: {
       /** @defaultValue `Playlist` */
       documentClass: ConfiguredDocumentClassForName<"Playlist">;
+
+      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
 
       /** @defaultValue `Playlists` */
       collection: ConstructorOf<Playlists>;
@@ -532,6 +559,8 @@ declare global {
     RollTable: {
       /** @defaultValue `RollTable` */
       documentClass: ConfiguredDocumentClassForName<"RollTable">;
+
+      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
 
       /** @defaultValue `RollTables` */
       collection: ConstructorOf<RollTables>;
@@ -559,6 +588,8 @@ declare global {
       /** @defaultValue `Scene` */
       documentClass: ConfiguredDocumentClassForName<"Scene">;
 
+      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+
       /** @defaultValue `Scenes` */
       collection: ConstructorOf<Scenes>;
 
@@ -576,6 +607,8 @@ declare global {
       /** @defaultValue `Setting` */
       documentClass: ConfiguredDocumentClassForName<"Setting">;
 
+      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+
       /** @defaultValue `WorldSettings` */
       collection: ConstructorOf<WorldSettings>;
     };
@@ -586,6 +619,8 @@ declare global {
     User: {
       /** @defaultValue `User` */
       documentClass: ConfiguredDocumentClassForName<"User">;
+
+      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
 
       /** @defaultValue `Users` */
       collection: ConstructorOf<Users>;
@@ -1750,6 +1785,9 @@ declare global {
       /** @defaultValue `ActiveEffect` */
       documentClass: ConfiguredDocumentClassForName<"ActiveEffect">;
 
+      // TODO: Update in v12
+      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+
       /**
        * If true, Active Effects on Items will be copied to the Actor when the Item is created on the Actor if the
        * Active Effect's transfer property is true, and will be deleted when that Item is deleted from the Actor.
@@ -1767,7 +1805,7 @@ declare global {
       /** @defaultValue `ActorDelta` */
       documentClass: ConfiguredDocumentClassForName<"ActorDelta">;
 
-      sheetClasses?: Record<string, Record<string, SheetClassConfig>>;
+      sheetClasses: Record<foundry.documents.BaseActorDelta.TypeNames, Record<string, SheetClassConfig>>;
 
       typeLabels?: Record<string, string>;
     };
@@ -1784,6 +1822,8 @@ declare global {
        * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
        */
       dataModels: Record<string, ConstructorOf<DataModel<any, Card>>>;
+
+      sheetClasses: Record<foundry.documents.BaseCard.TypeNames, Record<string, SheetClassConfig>>;
     };
 
     /**
@@ -1792,6 +1832,11 @@ declare global {
     TableResult: {
       /** @defaultValue `TableResult` */
       documentClass: ConfiguredDocumentClassForName<"TableResult">;
+
+      sheetClasses: Record<
+        (typeof foundry.documents.BaseTableResult)["metadata"]["coreTypes"][number] | "base",
+        Record<string, SheetClassConfig>
+      >;
     };
 
     JournalEntryPage: {
@@ -1803,6 +1848,8 @@ declare global {
        * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
        */
       dataModels: Record<string, ConstructorOf<DataModel<any, JournalEntryPage>>>;
+
+      sheetClasses: Record<foundry.documents.BaseJournalEntryPage.TypeNames, Record<string, SheetClassConfig>>;
 
       typeLabels: Record<string, string>;
 
@@ -1832,6 +1879,8 @@ declare global {
     PlaylistSound: {
       /** @defaultValue `PlaylistSound` */
       documentClass: ConfiguredDocumentClassForName<"PlaylistSound">;
+
+      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
     };
 
     /**
@@ -1840,6 +1889,8 @@ declare global {
     AmbientLight: {
       /** @defaultValue `AmbientLightDocument` */
       documentClass: ConfiguredDocumentClassForName<"AmbientLight">;
+
+      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
 
       /** @defaultValue `AmbientLightDocument` */
       objectClass: ConfiguredObjectClassOrDefault<typeof AmbientLight>;
@@ -1855,6 +1906,8 @@ declare global {
       /** @defaultValue `AmbientSoundDocument` */
       documentClass: ConfiguredDocumentClassForName<"AmbientSound">;
 
+      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+
       /** @defaultValue `AmbientSound` */
       objectClass: ConfiguredObjectClassOrDefault<typeof AmbientSound>;
 
@@ -1868,6 +1921,9 @@ declare global {
     Combatant: {
       /** @defaultValue `Combatant` */
       documentClass: ConfiguredDocumentClassForName<"Combatant">;
+
+      // TODO: Update in v12
+      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
     };
 
     /**
@@ -1876,6 +1932,8 @@ declare global {
     Drawing: {
       /** @defaultValue `DrawingDocument` */
       documentClass: ConfiguredDocumentClassForName<"Drawing">;
+
+      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
 
       /** @defaultValue `Drawing` */
       objectClass: ConfiguredObjectClassOrDefault<typeof Drawing>;
@@ -1913,6 +1971,8 @@ declare global {
       /** @defaultValue `MeasuredTemplateDocument` */
       documentClass: ConfiguredDocumentClassForName<"MeasuredTemplate">;
 
+      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+
       /** @defaultValue `MeasuredTemplate` */
       objectClass: ConfiguredObjectClassOrDefault<typeof MeasuredTemplate>;
 
@@ -1926,6 +1986,8 @@ declare global {
     Note: {
       /** @defaultValue `NoteDocument` */
       documentClass: ConfiguredDocumentClassForName<"Note">;
+
+      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
 
       /** @defaultValue `Note` */
       objectClass: ConfiguredObjectClassOrDefault<typeof Note>;
@@ -1941,6 +2003,8 @@ declare global {
       /** @defaultValue `TileDocument` */
       documentClass: ConfiguredDocumentClassForName<"Tile">;
 
+      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+
       /** @defaultValue `Tile` */
       objectClass: ConfiguredObjectClassOrDefault<typeof Tile>;
 
@@ -1954,6 +2018,8 @@ declare global {
     Token: {
       /** @defaultValue `TokenDocument` */
       documentClass: ConfiguredDocumentClassForName<"Token">;
+
+      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
 
       /** @defaultValue `Token` */
       objectClass: ConfiguredObjectClassOrDefault<typeof Token>;
@@ -1974,6 +2040,8 @@ declare global {
     Wall: {
       /** @defaultValue `WallDocument` */
       documentClass: ConfiguredDocumentClassForName<"Wall">;
+
+      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
 
       /** @defaultValue `Wall` */
       objectClass: ConfiguredObjectClassOrDefault<typeof Wall>;
