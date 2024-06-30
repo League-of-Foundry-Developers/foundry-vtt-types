@@ -42,7 +42,7 @@ declare class BaseMacro extends Document<BaseMacro.Schema, BaseMacro.Metadata> {
   ): boolean;
 
   protected override _preCreate(
-    data: BaseMacro.Properties,
+    data: fields.SchemaField.AssignmentType<documents.BaseMacro.Schema, {}>,
     options: DocumentModificationOptions,
     user: foundry.documents.BaseUser,
   ): Promise<void>;
