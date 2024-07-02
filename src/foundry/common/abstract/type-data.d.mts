@@ -2,7 +2,9 @@ import type { Merge } from "../../../types/utils.d.mts";
 import type DataModel from "./data.d.mts";
 import type Document from "./document.d.mts";
 
-interface _InternalTypeDataModelInterface extends DataModel<DataSchema, Document<DataSchema, any, any>> {
+type StaticDataModel = typeof DataModel<DataSchema, Document<DataSchema, any, any>>;
+
+interface _InternalTypeDataModelInterface extends StaticDataModel {
   new <_ComputedInstance extends object>(...args: ConstructorParameters<typeof DataModel>): _ComputedInstance;
 }
 
