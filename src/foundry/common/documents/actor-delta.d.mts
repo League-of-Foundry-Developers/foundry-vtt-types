@@ -61,6 +61,7 @@ declare class BaseActorDelta extends Document<
 export default BaseActorDelta;
 
 declare namespace BaseActorDelta {
+  // Note that in places like CONFIG the only eligible type is "base"
   type TypeNames = fields.TypeDataField.TypeNames<typeof documents.BaseActor>;
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;

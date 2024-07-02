@@ -128,8 +128,16 @@ declare global {
        */
       dataModels: Record<string, ConstructorOf<DataModel<any, Actor>>>;
 
-      /** @defaultValue `{}` */
-      typeLabels: Record<string, string>;
+      /**
+       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       */
+      sheetClasses: Record<foundry.documents.BaseActor.TypeNames, Record<string, SheetClassConfig>>;
+
+      /**
+       * @defaultValue `{}`
+       * @remarks Initialized by `Localization#initialize`, is an empty object until `i18nInit`
+       */
+      typeLabels: Record<foundry.documents.BaseActor.TypeNames, string>;
 
       /** @defaultValue `{}` */
       typeIcons: Record<string, string>;
@@ -146,6 +154,16 @@ declare global {
     Adventure: {
       /** @defaultValue `foundry.documents.BaseAdventure` */
       documentClass: ConfiguredDocumentClassForName<"Adventure">;
+
+      /**
+       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       */
+      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+
+      /**
+       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
+       */
+      typeLabels?: Record<"base", string>;
 
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
@@ -198,8 +216,16 @@ declare global {
        */
       presets: Record<string, CONFIG.Cards.Preset>;
 
-      /** @defaultValue `{}` */
-      typeLabels: Record<string, string>;
+      /**
+       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       */
+      sheetClasses: Record<foundry.documents.BaseCards.TypeNames, Record<string, SheetClassConfig>>;
+
+      /**
+       * @defaultValue `{}`
+       * @remarks Initialized by `Localization#initialize`, is an empty object until `i18nInit`
+       */
+      typeLabels: Record<foundry.documents.BaseCards.TypeNames, string>;
 
       typeIcons: {
         /** @defaultValue `"fas fa-cards"` */
@@ -218,6 +244,17 @@ declare global {
     ChatMessage: {
       /** @defaultValue `ChatMessage` */
       documentClass: ConfiguredDocumentClassForName<"ChatMessage">;
+
+      /**
+       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       */
+      // TODO: Update in v12
+      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+
+      /**
+       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
+       */
+      typeLabels?: Record<"base", string>;
 
       /** @defaultValue `Messages` */
       collection: ConstructorOf<Messages>;
@@ -238,6 +275,17 @@ declare global {
     Combat: {
       /** @defaultValue `Combat` */
       documentClass: ConfiguredDocumentClassForName<"Combat">;
+
+      /**
+       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       */
+      // TODO: Update in v12
+      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+
+      /**
+       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
+       */
+      typeLabels?: Record<"base", string>;
 
       /** @defaultValue `CombatEncounters` */
       collection: ConstructorOf<CombatEncounters>;
@@ -333,6 +381,16 @@ declare global {
       /** @defaultValue `FogExploration` */
       documentClass: ConfiguredDocumentClassForName<"FogExploration">;
 
+      /**
+       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       */
+      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+
+      /**
+       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
+       */
+      typeLabels?: Record<"base", string>;
+
       /** @defaultValue `FogExplorations` */
       collection: ConstructorOf<FogExplorations>;
     };
@@ -349,6 +407,16 @@ declare global {
 
       /** @defaultValue `"fas fa-folder"` */
       sidebarIcon: string;
+
+      /**
+       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       */
+      sheetClasses: Record<foundry.CONST.FOLDER_DOCUMENT_TYPES, Record<string, SheetClassConfig>>;
+
+      /**
+       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
+       */
+      typeLabels?: Record<foundry.CONST.FOLDER_DOCUMENT_TYPES, string>;
     };
 
     /**
@@ -376,8 +444,16 @@ declare global {
        */
       dataModels: Record<string, ConstructorOf<DataModel<any, Item>>>;
 
-      /** @defaultValue `{}` */
-      typeLabels: Record<string, string>;
+      /**
+       * @defaultValue `{}`
+       * @remarks Initialized by `Localization#initialize`, is an empty object until `i18nInit`
+       */
+      typeLabels: Record<foundry.documents.BaseItem.TypeNames, string>;
+
+      /**
+       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       */
+      sheetClasses: Record<foundry.documents.BaseItem.TypeNames, Record<string, SheetClassConfig>>;
     };
 
     /**
@@ -386,6 +462,16 @@ declare global {
     JournalEntry: {
       /** @defaultValue `JournalEntry` */
       documentClass: ConfiguredDocumentClassForName<"JournalEntry">;
+
+      /**
+       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       */
+      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+
+      /**
+       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
+       */
+      typeLabels?: Record<"base", string>;
 
       /** @defaultValue `Journal` */
       collection: ConstructorOf<Journal>;
@@ -490,6 +576,16 @@ declare global {
       /** @defaultValue `Macro` */
       documentClass: ConfiguredDocumentClassForName<"Macro">;
 
+      /**
+       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       */
+      sheetClasses: Record<foundry.documents.BaseMacro.TypeNames, Record<string, SheetClassConfig>>;
+
+      /**
+       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
+       */
+      typeLabels?: Record<foundry.documents.BaseMacro.TypeNames, string>;
+
       /** @defaultValue `Macros` */
       collection: ConstructorOf<Macros>;
 
@@ -509,6 +605,16 @@ declare global {
     Playlist: {
       /** @defaultValue `Playlist` */
       documentClass: ConfiguredDocumentClassForName<"Playlist">;
+
+      /**
+       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       */
+      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+
+      /**
+       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
+       */
+      typeLabels?: Record<"base", string>;
 
       /** @defaultValue `Playlists` */
       collection: ConstructorOf<Playlists>;
@@ -532,6 +638,16 @@ declare global {
     RollTable: {
       /** @defaultValue `RollTable` */
       documentClass: ConfiguredDocumentClassForName<"RollTable">;
+
+      /**
+       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       */
+      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+
+      /**
+       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
+       */
+      typeLabels?: Record<"base", string>;
 
       /** @defaultValue `RollTables` */
       collection: ConstructorOf<RollTables>;
@@ -559,6 +675,16 @@ declare global {
       /** @defaultValue `Scene` */
       documentClass: ConfiguredDocumentClassForName<"Scene">;
 
+      /**
+       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       */
+      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+
+      /**
+       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
+       */
+      typeLabels?: Record<"base", string>;
+
       /** @defaultValue `Scenes` */
       collection: ConstructorOf<Scenes>;
 
@@ -576,6 +702,16 @@ declare global {
       /** @defaultValue `Setting` */
       documentClass: ConfiguredDocumentClassForName<"Setting">;
 
+      /**
+       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       */
+      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+
+      /**
+       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
+       */
+      typeLabels?: Record<"base", string>;
+
       /** @defaultValue `WorldSettings` */
       collection: ConstructorOf<WorldSettings>;
     };
@@ -586,6 +722,16 @@ declare global {
     User: {
       /** @defaultValue `User` */
       documentClass: ConfiguredDocumentClassForName<"User">;
+
+      /**
+       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       */
+      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+
+      /**
+       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
+       */
+      typeLabels?: Record<"base", string>;
 
       /** @defaultValue `Users` */
       collection: ConstructorOf<Users>;
@@ -1751,6 +1897,17 @@ declare global {
       documentClass: ConfiguredDocumentClassForName<"ActiveEffect">;
 
       /**
+       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       */
+      // TODO: Update in v12
+      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+
+      /**
+       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
+       */
+      typeLabels?: Record<"base", string>;
+
+      /**
        * If true, Active Effects on Items will be copied to the Actor when the Item is created on the Actor if the
        * Active Effect's transfer property is true, and will be deleted when that Item is deleted from the Actor.
        * If false, Active Effects are never copied to the Actor, but will still apply to the Actor from within the Item
@@ -1767,9 +1924,15 @@ declare global {
       /** @defaultValue `ActorDelta` */
       documentClass: ConfiguredDocumentClassForName<"ActorDelta">;
 
-      sheetClasses?: Record<string, Record<string, SheetClassConfig>>;
+      /**
+       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       */
+      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
 
-      typeLabels?: Record<string, string>;
+      /**
+       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
+       */
+      typeLabels?: Record<"base", string>;
     };
 
     /**
@@ -1784,6 +1947,16 @@ declare global {
        * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
        */
       dataModels: Record<string, ConstructorOf<DataModel<any, Card>>>;
+
+      /**
+       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       */
+      sheetClasses: Record<foundry.documents.BaseCard.TypeNames, Record<string, SheetClassConfig>>;
+
+      /**
+       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
+       */
+      typeLabels?: Record<foundry.documents.BaseCard.TypeNames, string>;
     };
 
     /**
@@ -1792,6 +1965,16 @@ declare global {
     TableResult: {
       /** @defaultValue `TableResult` */
       documentClass: ConfiguredDocumentClassForName<"TableResult">;
+
+      /**
+       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       */
+      sheetClasses: Record<foundry.documents.BaseTableResult.TypeNames, Record<string, SheetClassConfig>>;
+
+      /**
+       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
+       */
+      typeLabels?: Record<foundry.documents.BaseTableResult.TypeNames, string>;
     };
 
     JournalEntryPage: {
@@ -1804,7 +1987,16 @@ declare global {
        */
       dataModels: Record<string, ConstructorOf<DataModel<any, JournalEntryPage>>>;
 
-      typeLabels: Record<string, string>;
+      /**
+       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       */
+      sheetClasses: Record<foundry.documents.BaseJournalEntryPage.TypeNames, Record<string, SheetClassConfig>>;
+
+      /**
+       * @defaultValue `{}`
+       * @remarks Initialized by `Localization#initialize`, is an empty object until `i18nInit`
+       */
+      typeLabels: Record<foundry.documents.BaseJournalEntryPage.TypeNames, string>;
 
       typeIcons: {
         [type: string]: string;
@@ -1832,6 +2024,16 @@ declare global {
     PlaylistSound: {
       /** @defaultValue `PlaylistSound` */
       documentClass: ConfiguredDocumentClassForName<"PlaylistSound">;
+
+      /**
+       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       */
+      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+
+      /**
+       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
+       */
+      typeLabels?: Record<"base", string>;
     };
 
     /**
@@ -1840,6 +2042,16 @@ declare global {
     AmbientLight: {
       /** @defaultValue `AmbientLightDocument` */
       documentClass: ConfiguredDocumentClassForName<"AmbientLight">;
+
+      /**
+       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       */
+      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+
+      /**
+       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
+       */
+      typeLabels?: Record<"base", string>;
 
       /** @defaultValue `AmbientLightDocument` */
       objectClass: ConfiguredObjectClassOrDefault<typeof AmbientLight>;
@@ -1855,6 +2067,16 @@ declare global {
       /** @defaultValue `AmbientSoundDocument` */
       documentClass: ConfiguredDocumentClassForName<"AmbientSound">;
 
+      /**
+       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       */
+      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+
+      /**
+       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
+       */
+      typeLabels?: Record<"base", string>;
+
       /** @defaultValue `AmbientSound` */
       objectClass: ConfiguredObjectClassOrDefault<typeof AmbientSound>;
 
@@ -1868,6 +2090,17 @@ declare global {
     Combatant: {
       /** @defaultValue `Combatant` */
       documentClass: ConfiguredDocumentClassForName<"Combatant">;
+
+      /**
+       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       */
+      // TODO: Update in v12
+      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+
+      /**
+       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
+       */
+      typeLabels?: Record<"base", string>;
     };
 
     /**
@@ -1876,6 +2109,16 @@ declare global {
     Drawing: {
       /** @defaultValue `DrawingDocument` */
       documentClass: ConfiguredDocumentClassForName<"Drawing">;
+
+      /**
+       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       */
+      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+
+      /**
+       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
+       */
+      typeLabels?: Record<"base", string>;
 
       /** @defaultValue `Drawing` */
       objectClass: ConfiguredObjectClassOrDefault<typeof Drawing>;
@@ -1913,6 +2156,16 @@ declare global {
       /** @defaultValue `MeasuredTemplateDocument` */
       documentClass: ConfiguredDocumentClassForName<"MeasuredTemplate">;
 
+      /**
+       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       */
+      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+
+      /**
+       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
+       */
+      typeLabels?: Record<"base", string>;
+
       /** @defaultValue `MeasuredTemplate` */
       objectClass: ConfiguredObjectClassOrDefault<typeof MeasuredTemplate>;
 
@@ -1926,6 +2179,16 @@ declare global {
     Note: {
       /** @defaultValue `NoteDocument` */
       documentClass: ConfiguredDocumentClassForName<"Note">;
+
+      /**
+       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       */
+      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+
+      /**
+       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
+       */
+      typeLabels?: Record<"base", string>;
 
       /** @defaultValue `Note` */
       objectClass: ConfiguredObjectClassOrDefault<typeof Note>;
@@ -1941,6 +2204,16 @@ declare global {
       /** @defaultValue `TileDocument` */
       documentClass: ConfiguredDocumentClassForName<"Tile">;
 
+      /**
+       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       */
+      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+
+      /**
+       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
+       */
+      typeLabels?: Record<"base", string>;
+
       /** @defaultValue `Tile` */
       objectClass: ConfiguredObjectClassOrDefault<typeof Tile>;
 
@@ -1954,6 +2227,16 @@ declare global {
     Token: {
       /** @defaultValue `TokenDocument` */
       documentClass: ConfiguredDocumentClassForName<"Token">;
+
+      /**
+       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       */
+      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+
+      /**
+       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
+       */
+      typeLabels?: Record<"base", string>;
 
       /** @defaultValue `Token` */
       objectClass: ConfiguredObjectClassOrDefault<typeof Token>;
@@ -1974,6 +2257,16 @@ declare global {
     Wall: {
       /** @defaultValue `WallDocument` */
       documentClass: ConfiguredDocumentClassForName<"Wall">;
+
+      /**
+       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       */
+      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+
+      /**
+       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
+       */
+      typeLabels?: Record<"base", string>;
 
       /** @defaultValue `Wall` */
       objectClass: ConfiguredObjectClassOrDefault<typeof Wall>;

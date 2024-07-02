@@ -42,7 +42,7 @@ declare class BaseMacro extends Document<BaseMacro.Schema, BaseMacro.Metadata> {
   ): boolean;
 
   protected override _preCreate(
-    data: BaseMacro.Properties,
+    data: fields.SchemaField.AssignmentType<documents.BaseMacro.Schema, {}>,
     options: DocumentModificationOptions,
     user: foundry.documents.BaseUser,
   ): Promise<void>;
@@ -63,6 +63,9 @@ declare class BaseMacro extends Document<BaseMacro.Schema, BaseMacro.Metadata> {
 export default BaseMacro;
 
 declare namespace BaseMacro {
+  // TODO: Remove "base" in v12
+  type TypeNames = (typeof foundry.documents.BaseMacro)["metadata"]["coreTypes"][number] | "base";
+
   type Metadata = Merge<
     DocumentMetadata,
     {
