@@ -118,7 +118,7 @@ declare global {
      * ```
      * @remarks Passing `undefined` or nothing as `bindings` resets to the default.
      */
-    set(namespace: string, action: string, bindings?: KeybindingActionBinding[] | undefined): Promise<void>;
+    set(namespace: string, action: string, bindings?: KeybindingActionBinding[]): Promise<void>;
 
     /** Reset all client keybindings back to their default configuration. */
     resetDefaults(): Promise<void>;

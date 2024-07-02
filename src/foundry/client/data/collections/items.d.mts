@@ -9,6 +9,6 @@ declare global {
    * @see {@link ItemDirectory} The ItemDirectory sidebar directory
    */
   class Items extends WorldCollection<typeof foundry.documents.BaseItem, "Items"> {
-    static override documentName: "Item";
+    static documentName: "Item";
   }
 }

@@ -1,13 +1,30 @@
-import type {
-  ConfiguredDocumentClass,
-  ConfiguredDocumentClassForName,
-  ConfiguredObjectClassForName,
-} from "../../../../types/helperTypes.d.mts";
-import type { DeepPartial } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 import type { LineIntersection } from "../../../common/utils/geometry.d.mts";
+import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
+  namespace Wall {
+    type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof Wall>;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    interface RenderFlags extends PlaceableObject.RenderFlags {
+      refreshLine: boolean;
+
+      refreshEndpoints: boolean;
+
+      refreshDirection: boolean;
+
+      refreshHighlight: boolean;
+    }
+
+    interface ControlOptions extends PlaceableObject.ControlOptions {
+      /** @defaultValue `false` */
+      chain: boolean;
+    }
+
+    type DoorInteraction = "open" | "close" | "lock" | "unlock" | "test";
+  }
+
   /**
    * A Wall is an implementation of PlaceableObject which represents a physical or visual barrier within the Scene.
    * Walls are used to restrict Token movement or visibility as well as to define the areas of effect for ambient lights
@@ -16,7 +33,7 @@ declare global {
    * @see {@link WallDocument}
    * @see {@link WallsLayer}
    */
-  class Wall extends PlaceableObject<ConcreteWallDocument> {
+  class Wall extends PlaceableObject<WallDocument.ConfiguredInstance> {
     static override embeddedName: "Wall";
 
     static override RENDER_FLAGS: {
@@ -52,7 +69,7 @@ declare global {
      * A reference to an overhead Tile that is a roof, interior to which this wall is contained
      * @defaultValue `undefined`
      */
-    roof: InstanceType<ConfiguredObjectClassForName<"Tile">> | undefined;
+    roof: Tile.ConfiguredInstance | undefined;
 
     /**
      * A Graphics object used to highlight this wall segment. Only used when the wall is controlled.
@@ -62,7 +79,7 @@ declare global {
     /**
      * A set which tracks other Wall instances that this Wall intersects with (excluding shared endpoints)
      */
-    intersectsWith: Map<InstanceType<ConfiguredObjectClassForName<"Wall">>, LineIntersection>;
+    intersectsWith: Map<Wall.ConfiguredInstance, LineIntersection>;
 
     /**
      * A convenience reference to the coordinates Array for the Wall endpoints, [x0,y0,x1,y1].
@@ -158,7 +175,7 @@ declare global {
      */
     applyThreshold(sourceType: string, sourceOrigin: Point, externalRadius: number): boolean;
 
-    override control(options?: Wall.ControlOptions | undefined): boolean;
+    override control(options?: Wall.ControlOptions): boolean;
 
     protected override _destroy(options?: PIXI.IDestroyOptions | boolean): void;
 
@@ -207,7 +224,7 @@ declare global {
      * Record the intersection points between this wall and another, if any.
      * @param other - The other wall.
      */
-    protected _identifyIntersectionsWith(other: InstanceType<ConfiguredDocumentClassForName<"Wall">>): void;
+    protected _identifyIntersectionsWith(other: WallDocument.ConfiguredInstance): void;
 
     protected override _applyRenderFlags(flags: Wall.RenderFlags): void;
 
@@ -217,15 +234,15 @@ declare global {
     protected _getWallColor(): number;
 
     protected override _onCreate(
-      data: foundry.data.WallData["_source"],
+      data: foundry.documents.BaseWall.ConstructorData,
       options: DocumentModificationOptions,
       userId: string,
     ): void;
 
     protected override _onUpdate(
-      changed: DeepPartial<foundry.data.WallData["_source"]>,
-      options?: DocumentModificationOptions,
-      userId?: string,
+      changed: foundry.documents.BaseWall.UpdateData,
+      options: DocumentModificationOptions,
+      userId: string,
     ): void;
 
     protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
@@ -242,7 +259,7 @@ declare global {
 
     override activateListeners(): void;
 
-    protected override _canControl(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
+    protected override _canControl(user: User, event?: any): boolean;
 
     protected override _onHoverIn(event: PIXI.FederatedEvent, options?: PlaceableObject.HoverInOptions): false | void;
 
@@ -271,25 +288,4 @@ declare global {
      */
     controlIcon: null;
   }
-
-  namespace Wall {
-    interface RenderFlags extends PlaceableObject.RenderFlags {
-      refreshLine: boolean;
-
-      refreshEndpoints: boolean;
-
-      refreshDirection: boolean;
-
-      refreshHighlight: boolean;
-    }
-
-    interface ControlOptions extends PlaceableObject.ControlOptions {
-      /** @defaultValue `false` */
-      chain: boolean;
-    }
-
-    type DoorInteraction = "open" | "close" | "lock" | "unlock" | "test";
-  }
 }
-
-type ConcreteWallDocument = InstanceType<ConfiguredDocumentClass<typeof WallDocument>>;

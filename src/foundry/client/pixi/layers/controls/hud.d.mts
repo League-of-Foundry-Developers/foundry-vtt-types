@@ -67,10 +67,7 @@ declare global {
      * @deprecated since v10, will be removed in v12
      * @remarks `"You are calling ObjectHUD#createScrollingText which has been migrated and refactored to CanvasInterfaceGroup#createScrollingText"`
      */
-    createScrollingText(
-      content: string,
-      options?: ObjectHUD.CreateScrollingTextOptions | undefined,
-    ): Promise<PreciseText | null>;
+    createScrollingText(content: string, options?: ObjectHUD.CreateScrollingTextOptions): Promise<PreciseText | null>;
 
     /**
      * Orchestrate the animation of the scrolling text in this HUD

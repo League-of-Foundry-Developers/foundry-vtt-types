@@ -1,62 +1,177 @@
 import type {
-  ConfiguredDocumentClass,
   ConfiguredDocumentClassForName,
+  ConfiguredDocumentClass,
   ConstructorDataType,
   DocumentConstructor,
 } from "../../../../types/helperTypes.d.mts";
-import type { DeepPartial, StoredDocument } from "../../../../types/utils.d.mts";
+import type { DeepPartial, InexactPartial, StoredDocument } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
+import type { fields } from "../../../common/data/module.d.mts";
+import type BaseCards from "../../../common/documents/cards.d.mts";
 
 declare global {
+  namespace Cards {
+    type ConfiguredClass = ConfiguredDocumentClassForName<"Cards">;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    type CardsAction = "deal" | "pass";
+
+    interface BaseOperationOptions {
+      /**
+       * Create a ChatMessage which notifies that this action has occurred
+       * @defaultValue `true`
+       */
+      chatNotification: boolean;
+    }
+
+    interface DealOptions extends BaseOperationOptions {
+      /**
+       * How to draw, a value from CONST.CARD_DRAW_MODES
+       * @defaultValue `foundry.CONST.CARD_DRAW_MODES.FIRST`
+       */
+      how: foundry.CONST.CARD_DRAW_MODES;
+
+      /**
+       * Modifications to make to each Card as part of the deal operation,
+       * for example the displayed face
+       * @defaultValue `{}`
+       */
+      updateData: DeepPartial<Cards["_source"]>;
+
+      /**
+       * The name of the action being performed, used as part of the dispatched Hook event
+       * @defaultValue `"deal"`
+       */
+      action: CardsAction;
+    }
+
+    /** Additional context which describes the operation */
+    interface DealContext {
+      /** The action name being performed, i.e. "deal", "pass" */
+      action: CardsAction;
+
+      /** An array of Card creation operations to be performed in each destination Cards document */
+      toCreate: Card["_source"][][];
+
+      /** Card update operations to be performed in the origin Cards document */
+      fromUpdate: { _id: string; drawn: true }[];
+
+      /** Card deletion operations to be performed in the origin Cards document */
+      fromDelete: string[];
+    }
+
+    interface PassOptions extends BaseOperationOptions {
+      /**
+       * Modifications to make to each Card as part of the pass operation,
+       * for example the displayed face
+       * @defaultValue `{}`
+       */
+      updateData: DeepPartial<Card["_source"]> | undefined;
+
+      /**
+       * The name of the action being performed, used as part of the dispatched Hook event
+       * @defaultValue `"pass"`
+       */
+      action: string | undefined;
+    }
+
+    interface DrawOptions extends PassOptions {
+      /**
+       * How to draw, a value from CONST.CARD_DRAW_MODES
+       * @defaultValue `foundry.CONST.CARD_DRAW_MODES.FIRST`
+       */
+      how: foundry.CONST.CARD_DRAW_MODES;
+
+      /**
+       * Modifications to make to each Card as part of the draw operation,
+       * for example the displayed face
+       * @defaultValue `{}`
+       */
+      updateData: DeepPartial<Card["_source"]>;
+    }
+
+    interface ShuffleOptions extends BaseOperationOptions {
+      /**
+       * Modifications to make to each Card as part of the shuffle operation,
+       * for example the displayed face
+       * @defaultValue `{}`
+       * @remarks This is not actually used by {@link Cards.shuffle}.
+       */
+      updateData: DeepPartial<Card["_source"]>;
+    }
+
+    /** Options which modify the reset operation */
+    interface ResetOptions extends BaseOperationOptions {
+      /**
+       * Modifications to make to each Card as part of the reset operation,
+       * for example the displayed face
+       * @defaultValue `{}`
+       */
+      updateData: DeepPartial<Card["_source"]>;
+    }
+
+    /** Additional context which describes the operation. */
+    interface ReturnContext {
+      /**
+       * A mapping of Card deck IDs to the update operations that
+       * will be performed on them.
+       */
+      toUpdate: Record<string, DeepPartial<Card["_source"]>[]>;
+
+      /**
+       * Card deletion operations to be performed on the origin Cards
+       * document.
+       */
+      fromDelete: string[];
+    }
+  }
+
   /**
    * The client-side Cards document which extends the common BaseCards model.
    * Each Cards document contains CardsData which defines its data schema.
    *
-   * @see {@link data.CardsData}                     The Cards data schema
-   * @see {@link CardStacks}                         The world-level collection of Cards documents
+   * @see {@link CardStacks}                        The world-level collection of Cards documents
+   * @see {@link CardsConfig}                       The Cards configuration application
    */
   class Cards extends ClientDocumentMixin(foundry.documents.BaseCards) {
     /**
      * Provide a thumbnail image path used to represent this document.
      */
-    get thumbnail(): string | null;
+    get thumbnail(): this["img"];
 
     /**
      * The Card documents within this stack which are able to be drawn.
      */
-    get availableCards(): InstanceType<ConfiguredDocumentClassForName<"Card">>[];
+    get availableCards(): Card.ConfiguredInstance[];
 
     /**
      * The Card documents which belong to this stack but have already been drawn.
      */
-    get drawnCards(): InstanceType<ConfiguredDocumentClassForName<"Card">>[];
+    get drawnCards(): Card.ConfiguredInstance[];
 
     /**
      * Returns the localized Label for the type of Card Stack this is
      */
     get typeLabel(): string;
 
+    /**
+     * Can this Cards document be cloned in a duplicate workflow?
+     */
+    get canClone(): boolean;
+
+    // TODO: Figure out the typing here
     static override createDocuments(
-      data: Array<
-        | ConstructorDataType<foundry.data.CardsData>
-        | (ConstructorDataType<foundry.data.CardsData> & Record<string, unknown>)
-      >,
+      data: Array<ConstructorDataType<typeof Cards> | (ConstructorDataType<typeof Cards> & Record<string, unknown>)>,
       context: DocumentModificationContext & { temporary: false },
-    ): Promise<StoredDocument<InstanceType<ConfiguredDocumentClassForName<"Cards">>>[]>;
+    ): Promise<StoredDocument<Cards.ConfiguredInstance>[]>;
     static createDocuments(
-      data: Array<
-        | ConstructorDataType<foundry.data.CardsData>
-        | (ConstructorDataType<foundry.data.CardsData> & Record<string, unknown>)
-      >,
+      data: Array<ConstructorDataType<typeof Cards> | (ConstructorDataType<typeof Cards> & Record<string, unknown>)>,
       context: DocumentModificationContext & { temporary: boolean },
-    ): Promise<InstanceType<ConfiguredDocumentClassForName<"Cards">>[]>;
+    ): Promise<Cards.ConfiguredInstance[]>;
     static createDocuments(
-      data: Array<
-        | ConstructorDataType<foundry.data.CardsData>
-        | (ConstructorDataType<foundry.data.CardsData> & Record<string, unknown>)
-      >,
+      data: Array<ConstructorDataType<typeof Cards> | (ConstructorDataType<typeof Cards> & Record<string, unknown>)>,
       context?: DocumentModificationContext,
-    ): Promise<StoredDocument<InstanceType<ConfiguredDocumentClassForName<"Cards">>>[]>;
+    ): Promise<StoredDocument<Cards.ConfiguredInstance>[]>;
 
     /**
      * Deal one or more cards from this Cards document to each of a provided array of Cards destinations.
@@ -68,10 +183,10 @@ declare global {
      * @returns This Cards document after the deal operation has completed
      */
     deal(
-      to: InstanceType<ConfiguredDocumentClassForName<"Cards">>[],
-      number?: number | undefined,
-      options?: Cards.DealOptions | undefined,
-    ): Promise<InstanceType<ConfiguredDocumentClassForName<"Cards">>>;
+      to: Cards.ConfiguredInstance[],
+      number?: number,
+      options?: InexactPartial<Cards.DealOptions>,
+    ): Promise<Cards.ConfiguredInstance>;
 
     /**
      * Pass an array of specific Card documents from this document to some other Cards stack.
@@ -82,10 +197,10 @@ declare global {
      * @returns An array of the Card embedded documents created within the destination stack
      */
     pass(
-      to: InstanceType<ConfiguredDocumentClassForName<"Cards">>,
+      to: Cards.ConfiguredInstance,
       ids: string[],
-      options?: Cards.PassOptions | undefined,
-    ): Promise<InstanceType<ConfiguredDocumentClassForName<"Card">>[]>;
+      options?: InexactPartial<Cards.PassOptions>,
+    ): Promise<Card.ConfiguredInstance[]>;
 
     /**
      * Draw one or more cards from some other Cards document.
@@ -96,17 +211,17 @@ declare global {
      * @returns An array of the Card documents which were drawn
      */
     draw(
-      from: InstanceType<ConfiguredDocumentClassForName<"Cards">>,
-      number?: number | undefined,
-      options?: Cards.DrawOptions | undefined,
-    ): Promise<InstanceType<ConfiguredDocumentClassForName<"Card">>[]>;
+      from: Cards.ConfiguredInstance,
+      number?: number,
+      options?: InexactPartial<Cards.DrawOptions>,
+    ): Promise<Card.ConfiguredInstance[]>;
 
     /**
      * Shuffle this Cards stack, randomizing the sort order of all the cards it contains.
      * @param options - (default: `{}`)
      * @returns The Cards document after the shuffle operation has completed
      */
-    shuffle(options?: Cards.ShuffleOptions | undefined): Promise<InstanceType<ConfiguredDocumentClassForName<"Cards">>>;
+    shuffle(options?: InexactPartial<Cards.ShuffleOptions>): Promise<Cards.ConfiguredInstance>;
 
     /**
      * Reset the Cards stack, retrieving all original cards from other stacks where they may have been drawn if this is a
@@ -115,7 +230,7 @@ declare global {
      *                  (default: `{}`)
      * @returns The Cards document after the reset operation has completed
      */
-    reset(options?: Cards.ResetOptions | undefined): Promise<InstanceType<ConfiguredDocumentClassForName<"Cards">>>;
+    reset(options?: InexactPartial<Cards.ResetOptions>): Promise<Cards.ConfiguredInstance>;
 
     /**
      * Perform a reset operation for a deck, retrieving all original cards from other stacks where they may have been
@@ -125,9 +240,7 @@ declare global {
      * @returns The Cards document after the reset operation has completed.
      * @internal
      */
-    protected _resetDeck(
-      options?: Cards.ResetOptions | undefined,
-    ): Promise<InstanceType<ConfiguredDocumentClassForName<"Cards">>>;
+    protected _resetDeck(options?: InexactPartial<Cards.ResetOptions>): Promise<Cards.ConfiguredInstance>;
 
     /**
      * Return all cards in this stack to their original decks.
@@ -136,23 +249,21 @@ declare global {
      * @returns The Cards document after the return operation has completed.
      * @internal
      */
-    protected _resetStack(
-      options?: Cards.ResetOptions | undefined,
-    ): Promise<InstanceType<ConfiguredDocumentClassForName<"Cards">>>;
+    protected _resetStack(options?: InexactPartial<Cards.ResetOptions>): Promise<Cards.ConfiguredInstance>;
 
     /**
      * A sorting function that is used to determine the standard order of Card documents within an un-shuffled stack.
      * @param a - The card being sorted
      * @param b - Another card being sorted against
      */
-    protected sortStandard(a: foundry.data.CardData, b: foundry.data.CardData): number;
+    protected sortStandard(a: Card, b: Card): number;
 
     /**
      * A sorting function that is used to determine the order of Card documents within a shuffled stack.
      * @param a - The card being sorted
      * @param b - Another card being sorted against
      */
-    protected sortShuffled(a: foundry.data.CardData, b: foundry.data.CardData): number;
+    protected sortShuffled(a: Card, b: Card): number;
 
     /**
      * An internal helper method for drawing a certain number of Card documents from this Cards stack.
@@ -160,10 +271,7 @@ declare global {
      * @param how    - A draw mode from CONST.CARD_DRAW_MODES
      * @returns An array of drawn Card documents
      */
-    protected _drawCards(
-      number: number,
-      how: foundry.CONST.CARD_DRAW_MODES,
-    ): InstanceType<ConfiguredDocumentClassForName<"Card">>[];
+    protected _drawCards(number: number, how: foundry.CONST.CARD_DRAW_MODES): Card.ConfiguredInstance[];
 
     /**
      * Create a ChatMessage which provides a notification of the cards operation which was just performed.
@@ -175,13 +283,13 @@ declare global {
      * @internal
      */
     protected _postChatNotification(
-      source: InstanceType<ConfiguredDocumentClassForName<"Cards">>,
+      source: Cards.ConfiguredInstance,
       action: string,
       context: Record<string, unknown>,
-    ): Promise<InstanceType<ConfiguredDocumentClassForName<"ChatMessage">> | undefined>;
+    ): Promise<ChatMessage.ConfiguredInstance | undefined>;
 
     protected override _onUpdate(
-      data: DeepPartial<foundry.data.CardsData>,
+      data: fields.SchemaField.InnerAssignmentType<BaseCards.Schema>,
       options: DocumentModificationOptions,
       userId: string,
     ): void;
@@ -194,184 +302,48 @@ declare global {
     // TODO: It's a bit weird that we have to do it in this generic way but otherwise there is an error overriding this. Investigate later.
     static override deleteDocuments<T extends DocumentConstructor>(
       this: T,
-      ids?: string[] | undefined,
-      context?: DocumentModificationContext | undefined,
+      ids?: string[],
+      context?: DocumentModificationContext,
     ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
 
     /**
      * Display a dialog which prompts the user to deal cards to some number of hand-type Cards documents.
      * @see {@link Cards#deal}
      */
-    dealDialog(): Promise<InstanceType<ConfiguredDocumentClassForName<"Cards">> | null>;
+    dealDialog(): Promise<Cards.ConfiguredInstance | null>;
 
     /**
      * Display a dialog which prompts the user to draw cards from some other deck-type Cards documents.
      * @see {@link Cards#draw}
      */
-    drawDialog(): Promise<InstanceType<ConfiguredDocumentClassForName<"Card">>[] | null>;
+    drawDialog(): Promise<Card.ConfiguredInstance[] | null>;
 
     /**
      * Display a dialog which prompts the user to pass cards from this document to some other other Cards document.
      * @see {@link Cards#deal}
      */
-    passDialog(): Promise<InstanceType<ConfiguredDocumentClassForName<"Cards">> | null>;
+    passDialog(): Promise<Cards.ConfiguredInstance | null>;
 
     /**
      * Display a dialog which prompts the user to play a specific Card to some other Cards document
      * @see {@link Cards#pass}
      * @param card - The specific card being played as part of this dialog
      */
-    playDialog(
-      card: InstanceType<ConfiguredDocumentClassForName<"Card">>,
-    ): Promise<InstanceType<ConfiguredDocumentClassForName<"Card">>[] | void | null>;
+    playDialog(card: Card.ConfiguredInstance): Promise<Card.ConfiguredInstance[] | void | null>;
 
     /**
      * Display a confirmation dialog for whether or not the user wishes to reset a Cards stack
      * @see {@link Cards#reset}
      */
-    resetDialog(): Promise<InstanceType<ConfiguredDocumentClassForName<"Cards">> | false | null>;
+    resetDialog(): Promise<Cards.ConfiguredInstance | false | null>;
 
-    override deleteDialog(options?: Partial<DialogOptions> | undefined): Promise<this | false | null | undefined>;
+    override deleteDialog(options?: Partial<DialogOptions>): Promise<this | false | null | undefined>;
 
     // TODO: It's a bit weird that we have to do it in this generic way but otherwise there is an error overriding this. Investigate later.
     static override createDialog<T extends DocumentConstructor>(
       this: T,
-      data?:
-        | DeepPartial<
-            | ConstructorDataType<foundry.data.CardsData>
-            | (ConstructorDataType<foundry.data.CardsData> & Record<string, unknown>)
-          >
-        | undefined,
-      context?: (Pick<DocumentModificationContext, "parent" | "pack"> & Partial<DialogOptions>) | undefined,
+      data?: DeepPartial<Cards["_source"] | (Cards["_source"] & Record<string, unknown>)>,
+      context?: Pick<DocumentModificationContext, "parent" | "pack"> & Partial<DialogOptions>,
     ): Promise<InstanceType<ConfiguredDocumentClass<T>> | null | undefined>;
-  }
-
-  namespace Cards {
-    interface BaseOperationOptions {
-      /**
-       * Create a ChatMessage which notifies that this action has occurred
-       * @defaultValue `true`
-       */
-      chatNotification?: boolean | undefined;
-    }
-
-    interface DealOptions extends BaseOperationOptions {
-      /**
-       * How to draw, a value from CONST.CARD_DRAW_MODES
-       * @defaultValue `foundry.CONST.CARD_DRAW_MODES.FIRST`
-       */
-      how?: foundry.CONST.CARD_DRAW_MODES | undefined;
-
-      /**
-       * Modifications to make to each Card as part of the deal operation,
-       * for example the displayed face
-       * @defaultValue `{}`
-       */
-      updateData?: DeepPartial<ConstructorDataType<foundry.data.CardData>> | undefined;
-
-      /**
-       * The name of the action being performed, used as part of the dispatched Hook event
-       * @defaultValue `"deal"`
-       */
-      action?: string | undefined;
-    }
-
-    /** Additional context which describes the operation */
-    interface DealContext {
-      /** The action name being performed, i.e. "deal", "pass" */
-      action: string;
-
-      /** An array of Card creation operations to be performed in each destination Cards document */
-      toCreate: ConstructorDataType<foundry.data.CardData>[][];
-
-      /** Card update operations to be performed in the origin Cards document */
-      fromUpdate: DeepPartial<ConstructorDataType<foundry.data.CardData>>[];
-
-      /** Card deletion operations to be performed in the origin Cards document */
-      fromDelete: string[];
-    }
-
-    interface PassOptions extends BaseOperationOptions {
-      /**
-       * Modifications to make to each Card as part of the pass operation,
-       * for example the displayed face
-       * @defaultValue `{}`
-       */
-      updateData?: DeepPartial<ConstructorDataType<foundry.data.CardData>> | undefined;
-
-      /**
-       * The name of the action being performed, used as part of the dispatched Hook event
-       * @defaultValue `"pass"`
-       */
-      action?: string | undefined;
-    }
-
-    /** Additional context which describes the operation */
-    interface PassContext {
-      /** The action name being performed, i.e. "pass", "play", "discard", "draw" */
-      action: string;
-
-      /** Card creation operations to be performed in the destination Cards document */
-      toCreate: ConstructorDataType<foundry.data.CardData>[];
-
-      /** Card update operations to be performed in the destination Cards document */
-      toUpdate: DeepPartial<ConstructorDataType<foundry.data.CardData>>[];
-
-      /** Card update operations to be performed in the origin Cards document */
-      fromUpdate: DeepPartial<ConstructorDataType<foundry.data.CardData>>[];
-
-      /** Card deletion operations to be performed in the origin Cards document */
-      fromDelete: string[];
-    }
-
-    interface DrawOptions extends PassOptions {
-      /**
-       * How to draw, a value from CONST.CARD_DRAW_MODES
-       * @defaultValue `foundry.CONST.CARD_DRAW_MODES.FIRST`
-       */
-      how?: foundry.CONST.CARD_DRAW_MODES | undefined;
-
-      /**
-       * Modifications to make to each Card as part of the draw operation,
-       * for example the displayed face
-       * @defaultValue `{}`
-       */
-      updateData?: DeepPartial<ConstructorDataType<foundry.data.CardData>> | undefined;
-    }
-
-    interface ShuffleOptions extends BaseOperationOptions {
-      /**
-       * Modifications to make to each Card as part of the shuffle operation,
-       * for example the displayed face
-       * @defaultValue `{}`
-       * @remarks This is not actually used by {@link Cards.shuffle}.
-       */
-      updateData?: DeepPartial<ConstructorDataType<foundry.data.CardData>> | undefined;
-    }
-
-    /** Options which modify the reset operation */
-    interface ResetOptions extends BaseOperationOptions {
-      /**
-       * Modifications to make to each Card as part of the reset operation,
-       * for example the displayed face
-       * @defaultValue `{}`
-       */
-      updateData?: DeepPartial<ConstructorDataType<foundry.data.CardData>> | undefined;
-    }
-
-    /** Additional context which describes the operation. */
-    interface ReturnContext {
-      /**
-       * A mapping of Card deck IDs to the update operations that
-       * will be performed on them.
-       */
-      toUpdate: Record<string, DeepPartial<ConstructorDataType<foundry.data.CardData>>[]>;
-
-      /**
-       * Card deletion operations to be performed on the origin Cards
-       * document.
-       */
-      fromDelete: string[];
-    }
   }
 }

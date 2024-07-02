@@ -1,4 +1,3 @@
-import type { ConfiguredObjectClassForName } from "../../../../types/helperTypes.d.mts";
 import type { MaybePromise } from "../../../../types/utils.d.mts";
 
 declare global {
@@ -8,7 +7,7 @@ declare global {
    * @typeParam Options - the type of the options object
    */
   class TokenHUD<Options extends ApplicationOptions = ApplicationOptions> extends BasePlaceableHUD<
-    ConcreteToken,
+    Token.ConfiguredInstance,
     Options
   > {
     /**
@@ -29,7 +28,7 @@ declare global {
      */
     static override get defaultOptions(): ApplicationOptions;
 
-    override bind(object: ConcreteToken): void;
+    override bind(object: Token.ConfiguredInstance): void;
 
     /**
      * Refresh the currently active state of all status effect icons in the Token HUD selector.
@@ -38,7 +37,7 @@ declare global {
 
     override setPosition(_position?: Partial<Application.Position>): void;
 
-    override getData(options?: Partial<ApplicationOptions>): MaybePromise<object>;
+    override getData(options?: Partial<ApplicationOptions>): MaybePromise<object>; // TODO: Implement GetDataReturnType
 
     /**
      * Get an array of icon paths which represent valid status effect choices
@@ -106,24 +105,26 @@ declare global {
 
     /**
      * Handle toggling a token status effect icon
+     * @param event  - The click event to toggle the effect
+     * @param options - Options which modify the toggle
      * @internal
      */
     protected _onToggleEffect(
       event: JQuery.ClickEvent | JQuery.ContextMenuEvent,
-      {
-        overlay,
-      }?: {
-        /** @defaultValue `false` */
+      options?: {
+        /**
+         * Toggle the overlay effect?
+         * @defaultValue `false`
+         */
         overlay?: boolean;
       },
     ): Promise<boolean>;
 
     /**
      * Handle toggling the target state for this Token
+     * @param event - The click event to toggle the target
      * @internal
      */
     protected _onToggleTarget(event: JQuery.ClickEvent): void;
   }
 }
-
-type ConcreteToken = InstanceType<ConfiguredObjectClassForName<"Token">>;

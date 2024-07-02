@@ -174,7 +174,7 @@ declare global {
      */
     get hexPoints(): PointArray[];
 
-    override draw(options?: BaseGrid.DrawOptions | undefined): this;
+    override draw(options?: BaseGrid.DrawOptions): this;
 
     /**
      * A convenience method for getting all the polygon points relative to a top-left [x,y] coordinate pair

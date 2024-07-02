@@ -1,17 +1,25 @@
-import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
-import type { DeepPartial } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
-
-export {};
+import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
+  namespace AmbientLight {
+    type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof AmbientLight>;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    interface RenderFlags extends PlaceableObject.RenderFlags {
+      refreshField: boolean;
+
+      refreshPosition: boolean;
+    }
+  }
+
   /**
    * An AmbientLight is an implementation of PlaceableObject which represents a dynamic light source within the Scene.
    * @see {@link AmbientLightDocument}
    * @see {@link LightingLayer}
    */
-  class AmbientLight extends PlaceableObject<InstanceType<ConfiguredDocumentClassForName<"AmbientLight">>> {
-    constructor(document: InstanceType<ConfiguredDocumentClassForName<"AmbientLight">>);
+  class AmbientLight extends PlaceableObject<AmbientLightDocument.ConfiguredInstance> {
+    constructor(document: AmbientLightDocument.ConfiguredInstance);
 
     /**
      * A reference to the PointSource object which defines this light source area of effect
@@ -111,22 +119,22 @@ declare global {
     }): void;
 
     protected override _onCreate(
-      data: foundry.data.AmbientLightData["_source"],
+      data: foundry.documents.BaseAmbientLight["_source"],
       options: DocumentModificationOptions,
       userId: string,
     ): void;
 
     protected override _onUpdate(
-      changed: DeepPartial<foundry.data.AmbientLightData["_source"]>,
-      options?: DocumentModificationOptions,
-      userId?: string,
+      data: foundry.documents.BaseAmbientLight.UpdateData,
+      options: DocumentModificationOptions,
+      userId: string,
     ): void;
 
     protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
 
-    protected override _canHUD(user: InstanceType<ConfiguredDocumentClassForName<"User">>, event?: any): boolean;
+    protected override _canHUD(user: User.ConfiguredInstance, event?: any): boolean;
 
-    protected override _canConfigure(user: InstanceType<ConfiguredDocumentClassForName<"User">>, event?: any): boolean;
+    protected override _canConfigure(user: User.ConfiguredInstance, event?: any): boolean;
 
     protected override _onClickRight(event: PIXI.FederatedEvent): Promise<this>;
 
@@ -135,13 +143,5 @@ declare global {
     protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
     protected override _onDragLeftCancel(event: PIXI.FederatedEvent): void;
-  }
-
-  namespace AmbientLight {
-    interface RenderFlags extends PlaceableObject.RenderFlags {
-      refreshField: boolean;
-
-      refreshPosition: boolean;
-    }
   }
 }

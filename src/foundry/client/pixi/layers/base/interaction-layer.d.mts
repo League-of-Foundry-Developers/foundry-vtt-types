@@ -52,7 +52,7 @@ declare global {
      */
     protected _deactivate(): void;
 
-    protected override _draw(options?: Record<string, unknown> | undefined): Promise<void>;
+    protected override _draw(options?: Record<string, unknown>): Promise<void>;
 
     /**
      * Get the zIndex that should be used for ordering this layer vertically relative to others in the same Container.

@@ -11,7 +11,7 @@
     "noEmit": true,
     "strict": true,
     "target": "ES2021",
-    "verbatimModuleSyntax": true
+    "verbatimModuleSyntax": true,
   },
-  "include": ["index.d.mts"]
+  "include": ["index.d.mts"],
 }

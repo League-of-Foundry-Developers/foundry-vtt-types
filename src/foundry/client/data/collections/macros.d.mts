@@ -1,4 +1,6 @@
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
+import type { InexactPartial } from "../../../../types/utils.d.mts";
+
+export {};
 
 declare global {
   /**
@@ -9,18 +11,24 @@ declare global {
    * @see {@link MacroDirectory} The MacroDirectory sidebar directory
    */
   class Macros extends WorldCollection<typeof foundry.documents.BaseMacro, "Macros"> {
-    static override documentName: "Macro";
+    static documentName: "Macro";
 
     override get directory(): typeof ui.macros;
 
-    override fromCompendium(
-      document:
-        | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseMacro>>
-        | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseMacro>>["data"]["_source"],
-      options?: WorldCollection.FromCompendiumOptions | undefined,
+    override fromCompendium<
+      FolderOpt extends boolean = false,
+      SortOpt extends boolean = true,
+      OwnershipOpt extends boolean = false,
+      IdOpt extends boolean = false,
+    >(
+      document: Macro.ConfiguredInstance | foundry.documents.BaseMacro.ConstructorData,
+      options?: InexactPartial<WorldCollection.FromCompendiumOptions<FolderOpt, SortOpt, OwnershipOpt, IdOpt>>,
     ): Omit<
-      InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseMacro>>["data"]["_source"],
-      "_id" | "folder"
+      Macro["_source"],
+      | ClientDocument.OmitProperty<FolderOpt, "folder">
+      | ClientDocument.OmitProperty<SortOpt, "sort" | "navigation" | "navOrder">
+      | ClientDocument.OmitProperty<OwnershipOpt, "ownership">
+      | (IdOpt extends false ? "_id" : never)
     >;
   }
 }

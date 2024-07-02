@@ -1,6 +1,4 @@
-import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { MaybePromise } from "../../../../types/utils.d.mts";
-import type { TileDataConstructorData } from "../../../common/data/data.mjs/tileData.d.mts";
 
 declare global {
   /**
@@ -9,7 +7,7 @@ declare global {
    */
   class TileConfig<Options extends TileConfig.Options = TileConfig.Options> extends DocumentSheet<
     Options,
-    InstanceType<ConfiguredDocumentClassForName<"Tile">>
+    TileDocument.ConfiguredInstance
   > {
     /**
      * @defaultValue
@@ -27,17 +25,22 @@ declare global {
      */
     static override get defaultOptions(): TileConfig.Options;
 
-    override close(options?: Application.CloseOptions | undefined): Promise<void>;
+    override close(options?: Application.CloseOptions): Promise<void>;
 
-    override getData(options?: Partial<Options> | undefined): MaybePromise<object>;
+    override getData(options?: Partial<Options>): MaybePromise<object>; // TODO: Implement GetDataReturnType
 
-    protected override _onChangeInput(event: JQuery.ChangeEvent): void;
+    protected override _onChangeInput(event: JQuery.ChangeEvent): Promise<void>;
 
     protected override _updateObject(event: Event, formData: TileConfig.FormData): Promise<unknown>;
   }
 
   namespace TileConfig {
-    type FormData = Pick<TileDataConstructorData, "height" | "img" | "rotation" | "width" | "x" | "y">;
+    type FormData = Pick<TileDocument, "alpha" | "height" | "rotation" | "width" | "x" | "y" | "overhead" | "roof"> & {
+      "texture.src": string | null;
+      "texture.scaleX": number | null;
+      "texture.scaleY": number | null;
+      "texture.tint": string;
+    };
 
     interface Options extends DocumentSheetOptions<TileDocument> {
       /**

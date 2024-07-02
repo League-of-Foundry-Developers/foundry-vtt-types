@@ -52,7 +52,7 @@ declare global {
     /**
      * The name of the default button which should be triggered on Enter keypress
      */
-    default?: string | undefined;
+    default?: string;
 
     /**
      * A callback function invoked when the dialog is rendered

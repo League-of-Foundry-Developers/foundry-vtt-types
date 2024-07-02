@@ -1,5 +1,4 @@
-import type { DeepPartial } from "../../../../../types/utils.d.mts";
-import type { DropData } from "../../../data/abstract/client-document.d.mts";
+export {};
 
 declare global {
   /**
@@ -21,6 +20,7 @@ declare global {
      *  zIndex: 200
      * })
      * ```
+     * @remarks The TODO is foundry internal
      */
     static override get layerOptions(): NotesLayer.LayerOptions;
 
@@ -78,7 +78,7 @@ declare global {
     /**
      * Handle JournalEntry document drop data
      */
-    protected _onDropData(event: DragEvent, data: DropData<JournalEntry>): Promise<false | void>;
+    protected _onDropData(event: DragEvent, data: NotesLayer.DropData): Promise<false | void>;
   }
 
   namespace NotesLayer {
@@ -89,9 +89,11 @@ declare global {
       zIndex: 60;
     }
 
-    type DropData = {
-      type?: "JournalEntry";
-    } & Canvas.DropPosition &
-      DeepPartial<any>; // TODO: Update this
+    interface DropData<DocType extends "JournalEntry" | "JournalEntryPage" = "JournalEntry" | "JournalEntryPage">
+      extends Canvas.DropPosition {
+      type: DocType;
+      uuid: string;
+      anchor: DocType extends "JournalEntryPage" ? { name: string } : undefined;
+    }
   }
 }

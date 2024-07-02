@@ -1,6 +1,4 @@
-import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { MaybePromise } from "../../../../types/utils.d.mts";
-import type { TableResultDataConstructorData } from "../../../common/data/data.mjs/tableResultData.d.mts";
 
 declare global {
   /**
@@ -9,7 +7,7 @@ declare global {
    */
   class RollTableConfig<
     Options extends DocumentSheetOptions<RollTable> = DocumentSheetOptions<RollTable>,
-  > extends DocumentSheet<Options, InstanceType<ConfiguredDocumentClassForName<"RollTable">>> {
+  > extends DocumentSheet<Options, RollTable.ConfiguredInstance> {
     /**
      * @defaultValue
      * ```typescript
@@ -20,7 +18,7 @@ declare global {
      *   height: "auto",
      *   closeOnSubmit: false,
      *   viewPermission: CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER,
-     *   scrollY: ["ol.table-results"],
+     *   scrollY: ["table.table-results"],
      *   dragDrop: [{ dragSelector: null, dropSelector: null }],
      * })
      * ```
@@ -29,7 +27,7 @@ declare global {
 
     override get title(): string;
 
-    override getData(options?: Partial<Options>): MaybePromise<object>;
+    override getData(options?: Partial<Options>): MaybePromise<object>; // TODO: implement GetDataReturnType
 
     override activateListeners(html: JQuery): void;
 
@@ -41,8 +39,8 @@ declare global {
      */
     protected _onCreateResult(
       event: JQuery.ClickEvent | DragEvent,
-      resultData?: TableResultDataConstructorData,
-    ): Promise<ConfiguredDocumentClassForName<"TableResult">[]>;
+      resultData?: foundry.documents.BaseTableResult.ConstructorData,
+    ): Promise<TableResult.ConfiguredInstance[]>;
 
     /**
      * Submit the entire form when a table result type is changed, in case there are other active changes
@@ -56,17 +54,15 @@ declare global {
      * @returns The deleted TableResult document
      * @internal
      */
-    protected _onDeleteResult(
-      event: JQuery.ClickEvent,
-    ): Promise<InstanceType<ConfiguredDocumentClassForName<"TableResult">> | undefined>;
+    protected _onDeleteResult(event: JQuery.ClickEvent): Promise<TableResult.ConfiguredInstance>;
 
-    protected override _onDrop(event: DragEvent): Promise<ConfiguredDocumentClassForName<"TableResult">[]> | void;
+    protected override _onDrop(event: DragEvent): Promise<TableResult.ConfiguredInstance[]> | void;
 
     /**
      * Handle changing the actor profile image by opening a FilePicker
      * @internal
      */
-    protected _onEditImage(event: JQuery.ClickEvent): void;
+    protected _onEditImage(event: MouseEvent): Promise<void>;
 
     /**
      * Handle a button click to re-normalize dice result ranges across all RollTable results
@@ -106,7 +102,7 @@ declare global {
      * @param results - An Array of drawn table results to highlight
      * @returns A Promise which resolves once the animation is complete
      */
-    protected _animateRoll(results: InstanceType<ConfiguredDocumentClassForName<"TableResult">>[]): Promise<void[]>;
+    protected _animateRoll(results: TableResult.ConfiguredInstance[]): Promise<void[]>;
 
     /**
      * Animate a "roulette" through the table until arriving at the final loop and a drawn result

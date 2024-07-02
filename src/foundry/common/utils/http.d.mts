@@ -9,8 +9,8 @@
  */
 export declare function fetchWithTimeout(
   url: string,
-  data?: RequestInit | undefined,
-  { timeoutMs, onTimeout }?: TimeoutOptions | undefined,
+  data?: RequestInit,
+  { timeoutMs, onTimeout }?: TimeoutOptions,
 ): Promise<Response>;
 
 /**
@@ -22,15 +22,15 @@ export declare function fetchWithTimeout(
  */
 export declare function fetchJsonWithTimeout(
   url: string,
-  data?: RequestInit | undefined,
-  { timeoutMs, onTimeout }?: TimeoutOptions | undefined,
+  data?: RequestInit,
+  { timeoutMs, onTimeout }?: TimeoutOptions,
 ): Promise<unknown>;
 
 /**
  * Represents an HTTP Error when a non-OK response is returned by Fetch
  */
 export declare class HttpError extends Error {
-  constructor(statusText: string, code: number, displayMessage?: string | undefined);
+  constructor(statusText: string, code: number, displayMessage?: string);
 
   code: number;
 

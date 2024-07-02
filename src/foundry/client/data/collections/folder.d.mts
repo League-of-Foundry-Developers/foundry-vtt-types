@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
 import type { StoredDocument } from "../../../../types/utils.d.mts";
 
 declare global {
@@ -9,16 +8,16 @@ declare global {
    * @see {@link Folder} The Folder document
    */
   class Folders extends WorldCollection<typeof foundry.documents.BaseFolder, "Folders"> {
-    constructor(data?: StoredDocument<InstanceType<ConfiguredDocumentClass<typeof Folder>>>["data"]["_source"][]);
+    constructor(data?: StoredDocument<Folder.ConfiguredInstance>["_source"][]);
 
     /**
      * Track which Folders are currently expanded in the UI
      */
     protected _expanded: Partial<Record<string, boolean>>;
 
-    static override documentName: "Folder";
+    static documentName: "Folder";
 
-    override render(force?: boolean, context?: ApplicationOptions): void;
+    render(force?: boolean, context?: ApplicationOptions): void;
 
     /**
      * Refresh the display of any active JournalSheet instances where the folder list will change.

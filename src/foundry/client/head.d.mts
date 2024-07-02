@@ -1,4 +1,4 @@
-export {};
+import type { InitializedWhen, InternalGame } from "./game.d.mts";
 
 declare global {
   /**
@@ -10,9 +10,9 @@ declare global {
    * The singleton Game instance
    * @defaultValue `{}`
    * @remarks
-   * Initialized between the `"DOMContentLoaded"` event and the `"init"` hook event.
+   * Initialized just before the `"init"` hook event.
    */
-  let game: "game" extends keyof LenientGlobalVariableTypes ? Game : Game | {};
+  let game: InitializedWhen<InternalGame<keyof AssumeHookRan>, "init", keyof AssumeHookRan, {}>;
 
   /**
    * The global boolean for whether the EULA is signed
@@ -48,7 +48,7 @@ declare global {
      * @defaultValue `{}`
      */
     windows: Record<number, Application>;
-  } & ("ui" extends keyof LenientGlobalVariableTypes ? UiApplications : Partial<UiApplications>);
+  } & InitializedWhen<UiApplications, "init", keyof AssumeHookRan>;
 
   /**
    * The client side console logger

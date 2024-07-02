@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
 import type { StoredDocument } from "../../../../types/utils.d.mts";
 
 declare global {
@@ -10,17 +9,17 @@ declare global {
    * @see {@link ChatLog} The ChatLog sidebar directory
    */
   class Messages extends WorldCollection<typeof foundry.documents.BaseChatMessage, "Messages"> {
-    static override documentName: "ChatMessage";
+    static documentName: "ChatMessage";
 
     override get directory(): typeof ui.chat;
 
-    override render(force?: boolean): void;
+    render(force?: boolean): void;
 
     /**
      * If requested, dispatch a Chat Bubble UI for the newly created message
      * @param message - The ChatMessage document to say
      */
-    sayBubble(message: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseChatMessage>>): void;
+    sayBubble(message: ChatMessage.ConfiguredInstance): void;
 
     /**
      * Handle export of the chat log to a text file
@@ -31,10 +30,6 @@ declare global {
      * Allow for bulk deletion of all chat messages, confirm first with a yes/no dialog.
      * @see {@link Dialog.confirm}
      */
-    flush(): Promise<
-      | Promise<StoredDocument<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseChatMessage>>>[]>
-      | false
-      | null
-    >;
+    flush(): Promise<Promise<StoredDocument<ChatMessage.ConfiguredInstance>[]> | false | null>;
   }
 }

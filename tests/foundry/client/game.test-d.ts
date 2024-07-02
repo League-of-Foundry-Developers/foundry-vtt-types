@@ -3,7 +3,7 @@ import { expectTypeOf, assertType } from "vitest";
 declare const aGame: Game;
 
 expectTypeOf(aGame.combats).toEqualTypeOf<CombatEncounters | undefined>();
-expectTypeOf(aGame.i18n).toEqualTypeOf<Localization>();
+expectTypeOf(aGame.i18n).toEqualTypeOf<Localization | undefined>();
 expectTypeOf(aGame.settings).toEqualTypeOf<ClientSettings>();
 
 declare global {
@@ -28,8 +28,6 @@ declare global {
     "required-api-module": true;
   }
 }
-/** Convenance type for test, might be worth while moving inside the types */
-type Module = Game.ModuleData<foundry.packages.ModuleData>;
 
 assertType<undefined | Module>(aGame.modules.get("optional-module"));
 

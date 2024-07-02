@@ -7,6 +7,6 @@ declare global {
    * @see {@link Cards} The Cards document
    */
   class CardStacks extends WorldCollection<typeof foundry.documents.BaseCards, "Cards"> {
-    static override documentName: "Cards";
+    static documentName: "Cards";
   }
 }

@@ -1,7 +1,6 @@
 import "./chat-popout.d.mts";
 import "./client-settings.d.mts";
 import "./compendium.d.mts";
-import "./controls-reference.d.mts";
 import "./invitation-links.d.mts";
 import "./keybindings-config.d.mts";
 import "./module-management.d.mts";

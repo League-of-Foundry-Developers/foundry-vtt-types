@@ -90,7 +90,7 @@ declare global {
      * @param selector - The selector being targeted
      * @returns Can the action be performed?
      */
-    can(action: DragDrop.Action, selector: string | undefined): boolean;
+    can(action: DragDrop.Action, selector?: string): boolean;
 
     /**
      * Handle the start of a drag workflow

@@ -2,6 +2,7 @@ import type { Mixin } from "../../../../../types/utils.d.mts";
 import type { OCCLUSION_MODES } from "../../../../common/constants.d.mts";
 
 declare class OccludableObject {
+  /** @privateRemarks All mixin classses should accept anything for its constructor. */
   constructor(...args: any[]);
 
   /**

@@ -1,16 +1,13 @@
-import type {
-  ConfiguredDocumentClassForName,
-  ConfiguredObjectClassForName,
-} from "../../../../../types/helperTypes.d.mts";
+export {};
 
 declare global {
   /**
    * An icon representing a Door Control
    */
   class DoorControl extends PIXI.Container {
-    constructor(wall: InstanceType<ConfiguredObjectClassForName<"Wall">>);
+    constructor(wall: Wall.ConfiguredInstance);
 
-    wall: InstanceType<ConfiguredObjectClassForName<"Wall">>;
+    wall: Wall.ConfiguredInstance;
 
     /**
      * The center of the wall which contains the door.
@@ -61,15 +58,13 @@ declare global {
      */
     protected _onMouseDown(
       event: PIXI.FederatedEvent,
-    ): false | void | Promise<InstanceType<ConfiguredDocumentClassForName<"Wall">> | undefined>;
+    ): false | void | Promise<WallDocument.ConfiguredInstance | undefined>;
 
     /**
      * Handle right mouse down events on the door control icon
      * This should toggle whether the door is LOCKED or CLOSED
      * @param event - The originating interaction event
      */
-    protected _onRightDown(
-      event: PIXI.FederatedEvent,
-    ): void | Promise<InstanceType<ConfiguredDocumentClassForName<"Wall">> | undefined>;
+    protected _onRightDown(event: PIXI.FederatedEvent): void | Promise<WallDocument.ConfiguredInstance | undefined>;
   }
 }

@@ -1,61 +1,40 @@
 import { expectTypeOf } from "vitest";
 
-interface ArmorDataSourceData {
-  armorValue: number;
+declare namespace ArmorData {
+  interface Schema extends DataSchema {
+    defense: foundry.data.fields.NumberField;
+  }
 }
 
-interface ArmorDataSource {
-  type: "armor";
-  data: ArmorDataSourceData;
+declare namespace WeaponData {
+  interface Schema extends DataSchema {
+    attack: foundry.data.fields.NumberField;
+  }
 }
 
-interface WeaponDataSourceData {
-  damagePerHit: number;
-  attackSpeed: number;
-}
+export class ArmorData extends foundry.abstract.TypeDataModel<ArmorData.Schema, Item> {}
 
-interface WeaponDataSource {
-  type: "weapon";
-  data: WeaponDataSourceData;
-}
-
-interface ArmorDataPropertiesData extends ArmorDataSourceData {
-  weight: number;
-}
-
-interface ArmorDataProperties {
-  type: "armor";
-  data: ArmorDataPropertiesData;
-}
-
-interface WeaponDataPropertiesData extends WeaponDataSourceData {
-  damage: number;
-}
-
-interface WeaponDataProperties {
-  type: "weapon";
-  data: WeaponDataPropertiesData;
-}
-
-type MyItemDataSource = ArmorDataSource | WeaponDataSource;
-type MyItemDataProperties = ArmorDataProperties | WeaponDataProperties;
+export class WeaponData extends foundry.abstract.TypeDataModel<WeaponData.Schema, Item> {}
 
 declare global {
-  interface DataConfig {
-    Item: MyItemDataProperties;
-  }
-
-  interface SourceConfig {
-    Item: MyItemDataSource;
+  interface DataModelConfig {
+    Item: {
+      armor: ArmorData;
+      weapon: WeaponData;
+    };
   }
 }
 
 const item = await Item.create({ name: "Mighty Axe of Killing", type: "weapon" });
 if (item) {
   expectTypeOf(item.actor).toEqualTypeOf<Actor | null>();
-  expectTypeOf(item.img).toEqualTypeOf<string | null>();
+  expectTypeOf(item.img).toEqualTypeOf<string | null | undefined>();
   expectTypeOf(item.isOwned).toEqualTypeOf<boolean>();
   expectTypeOf(item.transferredEffects).toEqualTypeOf<ActiveEffect[]>();
-  expectTypeOf(item.type).toEqualTypeOf<"weapon" | "armor">();
+  expectTypeOf(item.type).toEqualTypeOf<"weapon" | "armor" | "base">();
   expectTypeOf(item.getRollData()).toEqualTypeOf<object>();
+
+  if (item.system instanceof WeaponData) {
+    expectTypeOf(item.system.attack).toEqualTypeOf<number | null | undefined>();
+  }
 }

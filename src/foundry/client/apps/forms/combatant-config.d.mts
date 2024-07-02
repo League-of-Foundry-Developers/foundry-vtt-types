@@ -38,6 +38,6 @@ declare global {
       width: number;
     }
 
-    type FormData = Pick<foundry.data.CombatantData, "defeated" | "hidden" | "img" | "initiative" | "name">;
+    type FormData = Pick<foundry.documents.BaseCombatant, "defeated" | "hidden" | "img" | "initiative" | "name">;
   }
 }

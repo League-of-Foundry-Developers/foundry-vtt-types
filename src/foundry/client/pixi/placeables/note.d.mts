@@ -1,16 +1,27 @@
-import type { ConfiguredDocumentClass, ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
-import type { DeepPartial } from "../../../../types/utils.d.mts";
-
-type JournalEntryPage = unknown;
+import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
+import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
+  namespace Note {
+    type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof Note>;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    interface RenderFlags extends PlaceableObject.RenderFlags {
+      refreshPosition: boolean;
+
+      refreshVisibility: boolean;
+
+      refreshText: boolean;
+    }
+  }
+
   /**
    * A Note is an implementation of PlaceableObject which represents an annotated location within the Scene.
    * Each Note links to a JournalEntry document and represents its location on the map.
    * @see {@link NoteDocument}
    * @see {@link NotesLayer}
    */
-  class Note extends PlaceableObject<InstanceType<ConfiguredDocumentClass<typeof NoteDocument>>> {
+  class Note extends PlaceableObject<NoteDocument.ConfiguredInstance> {
     static override embeddedName: "Note";
 
     static override RENDER_FLAGS: {
@@ -38,7 +49,7 @@ declare global {
     /**
      * The associated JournalEntry which is described by this note
      */
-    get entry(): InstanceType<ConfiguredDocumentClassForName<"JournalEntry">>;
+    get entry(): JournalEntry.ConfiguredInstance;
 
     /**
      * The specific JournalEntryPage within the associated JournalEntry referenced by this Note.
@@ -88,24 +99,18 @@ declare global {
      */
     protected _refreshVisibility(): void;
 
-    protected override _onUpdate(changed: DeepPartial<foundry.data.NoteData["_source"]>): void;
+    protected override _onUpdate(
+      data: foundry.documents.BaseNote.UpdateData,
+      options: DocumentModificationOptions,
+      userId: string,
+    ): void;
 
-    protected override _canHover(user: InstanceType<ConfiguredDocumentClassForName<"User">>): true;
+    protected override _canHover(user: User.ConfiguredInstance): true;
 
-    protected override _canView(user: InstanceType<ConfiguredDocumentClassForName<"User">>): boolean;
+    protected override _canView(user: User.ConfiguredInstance): boolean;
 
     protected override _onHoverIn(event: PIXI.FederatedEvent, options?: PlaceableObject.HoverInOptions): false | void;
 
     protected override _onClickLeft2(event: PIXI.FederatedEvent): void;
-  }
-
-  namespace Note {
-    interface RenderFlags extends PlaceableObject.RenderFlags {
-      refreshPosition: boolean;
-
-      refreshVisibility: boolean;
-
-      refreshText: boolean;
-    }
   }
 }

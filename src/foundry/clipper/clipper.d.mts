@@ -137,7 +137,7 @@ declare global {
     }
 
     class IntPoint2 extends IntPoint {
-      constructor(x: number, y: number, z?: number | undefined);
+      constructor(x: number, y: number, z?: number);
     }
 
     class IntRect {
@@ -863,13 +863,13 @@ declare global {
 
     let JS: JS;
     interface JS {
-      AreaOfPolygon(poly: Path, scale?: number | undefined): number;
+      AreaOfPolygon(poly: Path, scale?: number): number;
 
-      AreaOfPolygons(poly: Paths, scale?: number | undefined): number;
+      AreaOfPolygons(poly: Paths, scale?: number): number;
 
-      BoundsOfPath(path: Path, scale?: number | undefined): IntRect;
+      BoundsOfPath(path: Path, scale?: number): IntRect;
 
-      BoundsOfPaths(paths: Paths, scale?: number | undefined): IntRect;
+      BoundsOfPaths(paths: Paths, scale?: number): IntRect;
 
       /**
        * Clean() joins vertices that are too near each other
@@ -894,17 +894,17 @@ declare global {
       Lighten(polygon: Path, tolerance: number): Path;
       Lighten(polygons: Paths, tolerance: number): Paths;
 
-      PerimeterOfPath(path: Path | undefined, closed: boolean, scale: number): number;
+      PerimeterOfPath(path: Path, closed: boolean, scale: number): number;
 
-      PerimeterOfPaths(paths: Paths, closed: boolean, scale?: number | undefined): number;
+      PerimeterOfPaths(paths: Paths, closed: boolean, scale?: number): number;
 
-      ScaleDownPath(path: Path, scale?: number | undefined): void;
+      ScaleDownPath(path: Path, scale?: number): void;
 
-      ScaleDownPaths(paths: Paths, scale?: number | undefined): void;
+      ScaleDownPaths(paths: Paths, scale?: number): void;
 
-      ScaleUpPath(path: Path, scale?: number | undefined): void;
+      ScaleUpPath(path: Path, scale?: number): void;
 
-      ScaleUpPaths(paths: Paths, scale?: number | undefined): void;
+      ScaleUpPaths(paths: Paths, scale?: number): void;
 
       AddOuterPolyNodeToExPolygons(polynode: PolyNode, expolygons: ExPolygons): void;
 

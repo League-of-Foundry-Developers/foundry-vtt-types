@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClass, ObjectClass } from "../../../../../types/helperTypes.d.mts";
+import type { ObjectClass } from "../../../../../types/helperTypes.d.mts";
 
 interface SetReplacementMembers<T> {
   add(value: T): void;
@@ -23,7 +23,7 @@ declare global {
   class UserTargets extends Set<InstanceType<ObjectClass<typeof TokenDocument>>> {
     constructor(user: UserTargets["user"]);
 
-    user: InstanceType<ConfiguredDocumentClass<typeof User>>;
+    user: User.ConfiguredInstance;
 
     /**
      * Return the Token IDs which are user targets

@@ -1,9 +1,9 @@
 const scene = new Scene({ name: "foobar" });
 
-// @ts-expect-error - A WallDocument requires data.
+// @ts-expect-error Creation technically works but fails validation
 new WallDocument();
 
-// @ts-expect-error - A WallDocument requires a c (coordinates) property.
+// @ts-expect-error Creation technically works but fails validation
 new WallDocument({});
 
 new WallDocument({ c: [0, 0, 0, 0] });

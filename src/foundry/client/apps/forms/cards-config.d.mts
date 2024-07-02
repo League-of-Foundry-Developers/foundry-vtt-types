@@ -1,5 +1,5 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
-import type { MaybePromise } from "../../../../types/utils.d.mts";
+import type { GetDataReturnType, MaybePromise } from "../../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -9,7 +9,7 @@ declare global {
    */
   class CardsConfig<Options extends CardsConfig.Options = CardsConfig.Options> extends DocumentSheet<
     Options,
-    InstanceType<ConfiguredDocumentClassForName<"Cards">>
+    Cards.ConfiguredInstance
   > {
     constructor(object: ConfiguredDocumentClassForName<"Cards">, options: Options);
 
@@ -40,7 +40,7 @@ declare global {
      */
     static override get defaultOptions(): CardsConfig.Options;
 
-    override getData(options?: Partial<Options>): MaybePromise<object>;
+    override getData(options?: Partial<Options>): MaybePromise<GetDataReturnType<CardsConfig.CardsConfigData>>;
 
     override activateListeners(html: JQuery): void;
 
@@ -75,8 +75,8 @@ declare global {
      */
     protected _onSortCard(
       event: DragEvent,
-      card: InstanceType<ConfiguredDocumentClassForName<"Card">>,
-    ): ReturnType<InstanceType<ConfiguredDocumentClassForName<"Cards">>["updateEmbeddedDocuments"]>;
+      card: Card.ConfiguredInstance,
+    ): ReturnType<Cards.ConfiguredInstance["updateEmbeddedDocuments"]>;
   }
 
   /**
@@ -116,6 +116,14 @@ declare global {
   namespace CardsConfig {
     interface Options extends DocumentSheetOptions<Cards> {
       sort: string;
+    }
+
+    interface CardsConfigData<Options extends CardsConfig.Options = CardsConfig.Options>
+      extends DocumentSheet.DocumentSheetData<Options, Cards.ConfiguredInstance> {
+      cards: Card.ConfiguredInstance[];
+      //TODO: Find if we can better type this
+      types: Record<string, string>;
+      inCompendium: boolean;
     }
   }
 }

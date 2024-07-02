@@ -1,7 +1,9 @@
 import "./actors.d.mts";
 import "./cards.d.mts";
 import "./combats.d.mts";
-import "./compendium.d.mts";
+import "./compendium-collection.d.mts";
+import "./compendium-folders.d.mts";
+import "./compendium-packs.d.mts";
 import "./fog.d.mts";
 import "./folder.d.mts";
 import "./items.d.mts";

@@ -4,8 +4,8 @@ declare global {
   /**
    * The sidebar directory which organizes and displays world-level Actor documents.
    */
-  class ActorDirectory extends SidebarDirectory<"Actor"> {
-    constructor(...args: ConstructorParameters<typeof SidebarDirectory>);
+  class ActorDirectory extends DocumentDirectory<"Actor"> {
+    constructor(...args: ConstructorParameters<typeof DocumentDirectory>);
 
     static override documentName: "Actor";
 

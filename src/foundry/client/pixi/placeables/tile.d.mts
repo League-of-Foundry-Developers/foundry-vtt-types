@@ -1,11 +1,65 @@
-import type { ConfiguredDocumentClass, ConfiguredObjectClassForName } from "../../../../types/helperTypes.d.mts";
-import type { DeepPartial } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
-import type { TileDataConstructorData } from "../../../common/data/data.mjs/tileData.d.mts";
-
-export {};
+import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
+  namespace Tile {
+    type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof Tile>;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    interface RenderFlags extends PlaceableObject.RenderFlags {
+      refreshShape: boolean;
+
+      refreshMesh: boolean;
+
+      refreshFrame: boolean;
+
+      refreshElevation: boolean;
+
+      refreshPerception: boolean;
+
+      refreshVideo: boolean;
+    }
+
+    interface RefreshOptions {
+      /**
+       * Also refresh the perception layer.
+       * @defaultValue `false`
+       */
+      refreshPerception?: boolean | undefined;
+    }
+
+    interface PlayOptions {
+      /** Should the video loop? */
+      loop?: boolean | undefined;
+      /** A specific timestamp between 0 and the video duration to begin playback */
+      offset?: number | undefined;
+      /** Desired volume level of the video's audio channel (if any) */
+      volume?: number | undefined;
+    }
+
+    interface OcclusionOptions {
+      /**
+       * Test corners of the hit-box in addition to the token center?
+       * @defaultValue `true`
+       */
+      corners?: boolean | undefined;
+    }
+
+    interface AlphaMapOptions {
+      /**
+       * Keep the Uint8Array of pixel alphas?
+       * @defaultValue `false`
+       */
+      keepPixels?: boolean | undefined;
+
+      /**
+       * Keep the pure white RenderTexture?
+       * @defaultValue `false`
+       */
+      keepTexture?: boolean | undefined;
+    }
+  }
+
   /**
    * A Tile is an implementation of PlaceableObject which represents a static piece of artwork or prop within the Scene.
    * Tiles are drawn inside the {@link TilesLayer} container.
@@ -13,7 +67,7 @@ declare global {
    * @see {@link TileDocument}
    * @see {@link TilesLayer}
    */
-  class Tile extends PlaceableObject<InstanceType<ConfiguredDocumentClass<typeof TileDocument>>> {
+  class Tile extends PlaceableObject<TileDocument.ConfiguredInstance> {
     static override embeddedName: "Tile";
 
     static override RENDER_FLAGS: {
@@ -138,9 +192,9 @@ declare global {
     protected _refreshHandle(b: Rectangle): void;
 
     protected override _onUpdate(
-      changed: DeepPartial<foundry.data.TileData["_source"]>,
-      options?: DocumentModificationOptions,
-      userId?: string,
+      changed: foundry.documents.BaseTile.UpdateData,
+      options: DocumentModificationOptions,
+      userId: string,
     ): Promise<this> | void;
 
     protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
@@ -206,16 +260,13 @@ declare global {
      * Create a preview tile with a background texture instead of an image
      * @param data - Initial data with which to create the preview Tile
      */
-    static createPreview(data: TileDataConstructorData): InstanceType<ConfiguredObjectClassForName<"Tile">>;
+    static createPreview(data: foundry.documents.BaseTile.ConstructorData): Tile.ConfiguredInstance;
 
     /**
      * @deprecated since v11, will be removed in v13
      * @remarks "Tile#testOcclusion has been deprecated in favor of PrimaryCanvasObject#testOcclusion"
      */
-    testOcclusion(
-      token: InstanceType<ConfiguredObjectClassForName<"Token">>,
-      options?: Tile.OcclusionOptions | undefined,
-    ): boolean;
+    testOcclusion(token: Token.ConfiguredInstance, options?: Tile.OcclusionOptions): boolean;
 
     /**
      * @deprecated since v11, will be removed in v13
@@ -239,60 +290,5 @@ declare global {
      * @remarks Not used
      */
     controlIcon: null;
-  }
-
-  namespace Tile {
-    interface RenderFlags extends PlaceableObject.RenderFlags {
-      refreshShape: boolean;
-
-      refreshMesh: boolean;
-
-      refreshFrame: boolean;
-
-      refreshElevation: boolean;
-
-      refreshPerception: boolean;
-
-      refreshVideo: boolean;
-    }
-
-    interface RefreshOptions {
-      /**
-       * Also refresh the perception layer.
-       * @defaultValue `false`
-       */
-      refreshPerception?: boolean | undefined;
-    }
-
-    interface PlayOptions {
-      /** Should the video loop? */
-      loop?: boolean | undefined;
-      /** A specific timestamp between 0 and the video duration to begin playback */
-      offset?: number | undefined;
-      /** Desired volume level of the video's audio channel (if any) */
-      volume?: number | undefined;
-    }
-
-    interface OcclusionOptions {
-      /**
-       * Test corners of the hit-box in addition to the token center?
-       * @defaultValue `true`
-       */
-      corners?: boolean | undefined;
-    }
-
-    interface AlphaMapOptions {
-      /**
-       * Keep the Uint8Array of pixel alphas?
-       * @defaultValue `false`
-       */
-      keepPixels?: boolean | undefined;
-
-      /**
-       * Keep the pure white RenderTexture?
-       * @defaultValue `false`
-       */
-      keepTexture?: boolean | undefined;
-    }
   }
 }

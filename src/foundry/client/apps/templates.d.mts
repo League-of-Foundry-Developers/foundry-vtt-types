@@ -6,15 +6,37 @@ declare global {
   /**
    * Get a template from the server by fetch request and caching the retrieved result
    * @param path - The web-accessible HTML template URL
+   * @param id   - An ID to register the partial with.
    * @returns A Promise which resolves to the compiled Handlebars template
    */
-  function getTemplate(path: string): Promise<Handlebars.TemplateDelegate>;
+  function getTemplate(path: string, id?: string): Promise<Handlebars.TemplateDelegate>;
 
   /**
    * Load and cache a set of templates by providing an Array of paths
-   * @param paths - An array of template file paths to load
+   * @param paths - An array of template file paths to load, or an object of Handlebars partial IDs to paths.
+   *
+   * @example Loading a list of templates.
+   * ```js
+   * await loadTemplates(["templates/apps/foo.html", "templates/apps/bar.html"]);
+   * ```
+   * ```hbs
+   * <!-- Include a pre-loaded template as a partial -->
+   * {{> "templates/apps/foo.html" }}
+   * ```
+   *
+   * @example Loading an object of templates.
+   * ```js
+   * await loadTemplates({
+   *   foo: "templates/apps/foo.html",
+   *   bar: "templates/apps/bar.html"
+   * });
+   * ```
+   * ```hbs
+   * <!-- Include a pre-loaded template as a partial -->
+   * {{> foo }}
+   * ```
    */
-  function loadTemplates(paths: string[]): Promise<Handlebars.TemplateDelegate[]>;
+  function loadTemplates(paths: string[] | Record<string, string>): Promise<Handlebars.TemplateDelegate[]>;
 
   /**
    * Get and render a template using provided data and handle the returned HTML
@@ -36,11 +58,22 @@ declare global {
   class HandlebarsHelpers {
     /**
      * For checkboxes, if the value of the checkbox is true, add the "checked" property, otherwise add nothing.
+     *
+     * @example
+     * ```hbs
+     * <label>My Checkbox</label>
+     * <input type="checkbox" name="myCheckbox" {{checked myCheckbox}}>
+     * ```
      */
     static checked(value: unknown): string;
 
     /**
      * For use in form inputs. If the supplied value is truthy, add the "disabled" property, otherwise add nothing.
+     *
+     * @example
+     * ```hbs
+     * <button type="submit" {{disabled myValue}}>Submit</button>
+     * ```
      */
     static disabled(value: unknown): string;
 
@@ -49,7 +82,7 @@ declare global {
      * This is useful for passing arguments with variable names.
      * @param values - The values to concatenate
      *
-     * @example <caption>Concatenate several string parts to create a dynamic variable</caption>
+     * @example Concatenate several string parts to create a dynamic variable
      * ```handlebars
      * {{filePicker target=(concat "faces." i ".img") type="image"}}
      * ```
@@ -59,25 +92,52 @@ declare global {
     /**
      * Render a pair of inputs for selecting a color.
      * @param options - Helper options
+     *
+     * @example
+     * ```hbs
+     * {{colorPicker name="myColor" value=myColor default="#000000"}}
+     * ```
      */
     static colorPicker(options: HandlebarsHelpers.ColorPickerOptions): Handlebars.SafeString;
 
     /**
-     * Construct an editor element for rich text editing with TinyMCE
+     * Construct an editor element for rich text editing with TinyMCE or ProseMirror.
      * @param options - Helper options
+     *
+     * @example
+     * ```hbs
+     * {{editor world.description target="description" button=false engine="prosemirror" collaborate=false}}
+     * ```
      */
-    static editor(options: HandlebarsHelpers.EditorOptions): Handlebars.SafeString;
+    static editor(...args: [content: string, options: HandlebarsHelpers.TextEditorOptions]): Handlebars.SafeString;
 
     /**
      * Render a file-picker button linked to an `<input>` field
      * @param options - Helper options
+     *
+     * @example
+     * ```hbs
+     * {{filePicker type="image" target="img"}}
+     * ```
      */
     static filePicker(options: HandlebarsHelpers.FilePickerOptions): Handlebars.SafeString | string;
 
     /**
+     * A ternary expression that allows inserting A or B depending on the value of C.
+     * @param options - Helper options
+     * @returns The ternary result
+     *
+     * @example Ternary if-then template usage
+     * ```hbs
+     * {{ifThen true "It is true" "It is false"}}
+     * ```
+     */
+    static ifThen(options: HandlebarsHelpers.IfThenOptions): string;
+
+    /**
      * Translate a provided string key by using the loaded dictionary of localization strings.
      *
-     * @example <caption>Translate a provided localization string, optionally including formatting parameters</caption>
+     * @example Translate a provided localization string, optionally including formatting parameters
      * ```handlebars
      * <label>{{localize "ACTOR.Create"}}</label> <!-- "Create Actor" -->
      * <label>{{localize "CHAT.InvalidCommand" command=foo}}</label> <!-- "foo is not a valid chat message command." -->
@@ -86,15 +146,27 @@ declare global {
     static localize(value: string, options: HandlebarsHelpers.LocalizeOptions): string;
 
     /**
+     * A string formatting helper to display a number with a certain fixed number of decimals and an explicit sign.
      * @param value   - A numeric value to format
      * @param options - Additional options which customize the resulting format
      * @returns The formatted string to be included in a template
-     * A string formatting helper to display a number with a certain fixed number of decimals and an explicit sign.
+     *
+     * @example
+     * ```hbs
+     * {{formatNumber 5.5}} <!-- 5.5 -->
+     * {{formatNumber 5.5 decimals=2}} <!-- 5.50 -->
+     * {{formatNumber 5.5 decimals=2 sign=true}} <!-- +5.50 -->
+     * ```
      */
     static numberFormat(value: string, options: HandlebarsHelpers.NumberFormatOptions): string;
 
     /**
      * Render a form input field of type number with value appropriately rounded to step size.
+     *
+     * @example
+     * ```hbs
+     * {{numberInput value name="numberField" step=1 min=0 max=10}}
+     * ```
      */
     static numberInput(value: string, options: HandlebarsHelpers.NumberInputOptions): Handlebars.SafeString;
 
@@ -106,14 +178,14 @@ declare global {
      * @param choices  - A mapping of radio checkbox values to human readable labels
      * @param options  - Options which customize the radio boxes creation
      *
-     * @example <caption>The provided input data</caption>
+     * @example The provided input data
      * ```typescript
      * let groupName = "importantChoice";
      * let choices = {a: "Choice A", b: "Choice B"};
      * let chosen = "a";
      * ```
      *
-     * @example <caption>The template HTML structure</caption>
+     * @example The template HTML structure
      * ```handlebars
      * <div class="form-group">
      *   <label>Radio Group Label</label>
@@ -138,6 +210,16 @@ declare global {
     /**
      * A helper to assign an `<option>` within a `<select>` block as selected based on its value
      * Escape the string as handlebars would, then escape any regexp characters in it
+     *
+     * @example
+     * ```hbs
+     * <select>
+     * {{#select selected}}
+     *   <option value="a">Choice A</option>
+     *   <option value="b">Choice B</option>
+     * {{/select}}
+     * </select>
+     * ```
      */
     static select(selected: string, options: HandlebarsHelpers.SelectOptions): string;
 
@@ -149,20 +231,20 @@ declare global {
      * @param choices - A mapping of radio checkbox values to human readable labels
      * @param options - Helper options
      *
-     * @example <caption>The provided input data</caption>
+     * @example The provided input data
      * ```typescript
      * let choices = {a: "Choice A", b: "Choice B"};
      * let value = "a";
      * ```
      *
-     * @example <caption>The template HTML structure</caption>
+     * @example The template HTML structure
      * ```handlebars
      * <select name="importantChoice">
      *   {{selectOptions choices selected=value localize=true}}
      * </select>
      * ```
      *
-     * @example <caption>The resulting HTML</caption>
+     * @example The resulting HTML
      * ```handlebars
      * <select name="importantChoice">
      *   <option value="a" selected>Choice A</option>
@@ -170,39 +252,39 @@ declare global {
      * </select>
      * ```
      *
-     * @example <caption>Using inverted</caption>
+     * @example Using inverted choices
      * ```typescript
      * let choices = {"Choice A": "a", "Choice B": "b"};
      * let value = "a";
      * ```
      *
-     * @example <caption>The template HTML structure</caption>
+     * @example The template HTML structure
      * ```handlebars
      * <select name="importantChoice">
      *   {{selectOptions choices selected=value inverted=true}}
      * </select>
      * ```
      *
-     * @example <caption>Using nameAttr and labelAttr with objects</caption>
+     * @example Using nameAttr and labelAttr with objects
      * ```typescript
      * let choices = {foo: {key: "a", label: "Choice A"}, bar: {key: "b", label: "Choice B"}};
      * let value = "b";
      * ```
      *
-     * @example <caption>The template HTML structure</caption>
+     * @example The template HTML structure
      * ```handlebars
      * <select name="importantChoice">
      *   {{selectOptions choices selected=value nameAttr="key" labelAttr="label"}}
      * </select>
      * ```
      *
-     * @example <caption>Using nameAttr and labelAttr with arrays</caption>
+     * @example Using nameAttr and labelAttr with arrays
      * ```typescript
      * let choices = [{key: "a", label: "Choice A"}, {key: "b", label: "Choice B"}];
      * let value = "b";
      * ```
      *
-     * @example <caption>The template HTML structure</caption>
+     * @example The template HTML structure
      * ```handlebars
      * <select name="importantChoice">
      *   {{selectOptions choices selected=value nameAttr="key" labelAttr="label"}}
@@ -210,13 +292,13 @@ declare global {
      * ```
      */
     static selectOptions(
-      choices: Record<string, string>,
+      choices: Record<string, string> | Array<string>,
       options: HandlebarsHelpers.SelectOptionsOptions,
     ): Handlebars.SafeString;
   }
 
   namespace HandlebarsHelpers {
-    interface ColorPickerOptions extends Handlebars.HelperOptions {
+    interface ColorPickerOptions extends Partial<Handlebars.HelperOptions> {
       hash: {
         /**
          * The name of the field to create
@@ -235,7 +317,7 @@ declare global {
       };
     }
 
-    interface EditorOptions extends Handlebars.HelperOptions {
+    interface TextEditorOptions extends Partial<Handlebars.HelperOptions> {
       hash: {
         /**
          * The named target data element
@@ -243,40 +325,62 @@ declare global {
         target: string;
 
         /**
-         * Is the current user an owner of the data?
-         */
-        owner?: boolean;
-
-        /**
          * Include a button used to activate the editor later?
          */
         button?: boolean;
 
         /**
+         * A specific CSS class to add to the editor container
+         */
+        class?: string;
+
+        /**
          * Is the text editor area currently editable?
+         * @defaultValue `true`
          */
         editable?: boolean;
 
         /**
+         * The engine editor to use, see {@link TextEditor.create}
+         * @defaultValue `"tinymce"`
+         */
+        engine?: "tinymce" | "prosemirror";
+
+        /**
+         * Whether to turn on collaborative editing features for ProseMirror
+         * @defaultValue `false`
+         */
+        collaborate?: boolean;
+
+        /**
+         * Is the current user an owner of the data?
+         * @deprecated since v10
+         */
+        owner?: boolean;
+
+        /**
          * Replace dynamic document links?
          * @defaultValue `true`
+         * @deprecated since v10
          */
         documents?: boolean;
 
         /**
          * The data object providing context for inline rolls
+         * @deprecated since v10
          */
         rollData?: object | (() => object);
 
         /**
          * The original HTML content as a string
          * @defaultValue `""`
+         * @deprecated since v10
          */
         content?: string;
       };
     }
 
-    interface FilePickerOptions extends Handlebars.HelperOptions {
+    interface FilePickerOptions extends Partial<Handlebars.HelperOptions> {
       hash: {
         /**
          * The type of FilePicker instance to display
@@ -290,11 +394,28 @@ declare global {
       };
     }
 
-    interface LocalizeOptions extends Handlebars.HelperOptions {
+    interface IfThenOptions extends Partial<Handlebars.HelperOptions> {
+      hash: {
+        /**
+         * THe test criteria
+         */
+        criteria: boolean;
+        /**
+         * The string to output if true
+         */
+        ifTrue: string;
+        /**
+         * The string to output if false
+         */
+        ifFalse: string;
+      };
+    }
+
+    interface LocalizeOptions extends Partial<Handlebars.HelperOptions> {
       hash: Record<string, unknown>;
     }
 
-    interface NumberFormatOptions extends Handlebars.HelperOptions {
+    interface NumberFormatOptions extends Partial<Handlebars.HelperOptions> {
       hash: {
         /**
          * The number of decimal places to include in the resulting string
@@ -310,7 +431,7 @@ declare global {
       };
     }
 
-    interface NumberInputOptions extends Handlebars.HelperOptions {
+    interface NumberInputOptions extends Partial<Handlebars.HelperOptions> {
       hash: {
         /**
          * @defaultValue `""`
@@ -340,7 +461,7 @@ declare global {
       };
     }
 
-    interface RadioBoxesOptions extends Handlebars.HelperOptions {
+    interface RadioBoxesOptions extends Partial<Handlebars.HelperOptions> {
       hash: {
         /**
          * Which key is currently checked?
@@ -356,7 +477,7 @@ declare global {
       };
     }
 
-    interface RangePickerOptions extends Handlebars.HelperOptions {
+    interface RangePickerOptions extends Partial<Handlebars.HelperOptions> {
       /**
        * The name of the field to create
        * @defaultValue `"range"`
@@ -384,9 +505,9 @@ declare global {
       step?: number;
     }
 
-    type SelectOptions = Handlebars.HelperOptions;
+    interface SelectOptions extends Handlebars.HelperOptions {}
 
-    interface SelectOptionsOptions extends Handlebars.HelperOptions {
+    interface SelectOptionsOptions extends Partial<Handlebars.HelperOptions> {
       hash: {
         /**
          * Which key or array of keys that are currently selected?

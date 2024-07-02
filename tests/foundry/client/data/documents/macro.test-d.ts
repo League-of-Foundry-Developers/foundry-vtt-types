@@ -5,7 +5,7 @@ const macro = new Macro({ name: "my macro", scope: "global", type: "script" });
 
 // properties and functions added by the concrete `Macro` class
 expectTypeOf(macro.isAuthor).toEqualTypeOf<boolean>();
-expectTypeOf(macro.execute).toEqualTypeOf<(scope?: { actor?: Actor; token?: Token }) => void>();
+expectTypeOf(macro.execute).toEqualTypeOf<(scope?: { actor?: Actor; token?: Token }) => any>();
 
 // properties and functions of `ClientDocumentMixin`
 expectTypeOf(macro.apps).toEqualTypeOf<Record<string, Application>>();
@@ -15,9 +15,6 @@ expectTypeOf(macro.isOwner).toEqualTypeOf<boolean>();
 
 // static properties and functions of `ClientDocumentMixin`
 expectTypeOf(Macro.createDialog()).toEqualTypeOf<Promise<Macro | null | undefined>>();
-
-// static properties of `BaseMacro`
-expectTypeOf(Macro.schema).toEqualTypeOf<typeof foundry.data.MacroData>();
 
 // properties of `Document`
 expectTypeOf(macro.parent).toEqualTypeOf<null>();

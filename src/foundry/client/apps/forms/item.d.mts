@@ -1,5 +1,4 @@
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
-import type { MaybePromise } from "../../../../types/utils.d.mts";
+import type { GetDataReturnType, MaybePromise } from "../../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -12,7 +11,7 @@ declare global {
    */
   class ItemSheet<Options extends DocumentSheetOptions<Item> = DocumentSheetOptions<Item>> extends DocumentSheet<
     Options,
-    InstanceType<ConfiguredDocumentClass<typeof Item>>
+    Item.ConfiguredInstance
   > {
     /**
      * @defaultValue
@@ -25,13 +24,12 @@ declare global {
      *   submitOnChange: true,
      *   resizable: true,
      *   baseApplication: "ItemSheet",
-     *   id: "item"
+     *   id: "item",
+     *   secrets: [{parentSelector: ".editor"}]
      * })
      * ```
      */
     static get defaultOptions(): DocumentSheetOptions<Item>;
-
-    override get id(): string;
 
     override get title(): string;
 
@@ -46,14 +44,13 @@ declare global {
      */
     get actor(): this["item"]["actor"];
 
-    override getData(options?: Partial<Options>): MaybePromise<object>;
+    override getData(options?: Partial<Options>): MaybePromise<GetDataReturnType<ItemSheet.ItemSheetData>>;
+  }
 
-    override activateListeners(html: JQuery): void;
-
-    /**
-     * Handle changing the item image
-     * @internal
-     */
-    protected _onEditImage(event: JQuery.ClickEvent): ReturnType<FilePicker["browse"]>;
+  namespace ItemSheet {
+    interface ItemSheetData<Options extends DocumentSheetOptions<Item> = DocumentSheetOptions<Item>>
+      extends DocumentSheet.DocumentSheetData<Options, Item.ConfiguredInstance> {
+      item: this["document"];
+    }
   }
 }

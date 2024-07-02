@@ -10,21 +10,22 @@ declare global {
    * variables everywhere. Some users might prefer the convenience over the 100% correctness in type checking.
    *
    * For this reason, this interface provides a way for users to configure certain global variables to be typed more
-   * leniently, i.e., as the types of their initialized state. This is done via declaration merging. To configure a
-   * specific global variable to be typed leniently, the user simply needs to merge a property with the name of the
-   * variable into this interface (the type doesn't matter).
+   * leniently, i.e., as the types of their initialized state. This is done via declaration merging. To do so merge in
+   * a property with the name of the event that should be assumed to have been run.
    *
-   * The currently supported variables are:
-   * - {@link game}
-   * - {@link socket}
-   * - {@link ui}
-   * - {@link canvas}
+   * The currently supported hooks are:
+   * - init
+   * - i18nReady
+   * - setup
+   * - ready
+   *
+   * You can also set the special key "none" to make the default behavior set the variable to `undefined` instead of a union.
    *
    * @example
    * ```typescript
    * declare global {
-   *   interface LenientGlobalVariableTypes {
-   *     game: never; // the type doesn't matter
+   *   interface AssumeHookRan {
+   *     setup: never; // the type doesn't matter
    *   }
    * }
    *
@@ -32,7 +33,7 @@ declare global {
    * ```
    */
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  interface LenientGlobalVariableTypes {}
+  interface AssumeHookRan {}
 
   /**
    * This interface is used to configure the used document classes at a type
@@ -171,6 +172,20 @@ declare global {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface DataConfig {}
 
+  /**
+   * Configure the return type of the `getData` method for AppV1 Applications.
+   *
+   * mode - The mode of the return type.
+   * - if mode is "partial", the return type is a partial of the data object, and will allow for any Record\<string,unknown\> to be returned, regardless of the actual data object.
+   * - if mode is "exact", the return type is the exact data object, and will not allow for any additional properties to be returned.
+   * - if mode is "object", the return type is a generic object, and will allow for any object to be returned, regardless of the actual data object.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface GetDataConfig {}
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface DataModelConfig {}
+
   /** @see {@link DataConfig} */
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface SourceConfig {}
@@ -212,3 +227,14 @@ declare global {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface RequiredModules {}
 }
+
+type ValidDataModel = {
+  [DocumentName in foundry.abstract.Document.SystemType]?: {
+    // Recommended to be a TypeDataModel subclass but DataModel is also technically valid.
+    [DocumentType in string]?: foundry.abstract.DataModel<any, any>;
+  };
+};
+
+type MustBeValid<T extends ValidDataModel> = T;
+
+type _TestValidDataModelConfig = MustBeValid<DataModelConfig>;

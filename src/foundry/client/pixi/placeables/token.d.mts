@@ -1,20 +1,227 @@
-import type {
-  ConfiguredDocumentClass,
-  ConfiguredDocumentClassForName,
-  ConfiguredObjectClassForName,
-} from "../../../../types/helperTypes.d.mts";
-import type { DeepPartial, RequiredProps } from "../../../../types/utils.d.mts";
+import type { RequiredProps } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
-
-export {};
+import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
+  namespace Token {
+    type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof Token>;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    interface RenderFlags extends PlaceableObject.RenderFlags {
+      redrawEffects: boolean;
+
+      refreshSize: boolean;
+
+      refreshPosition: boolean;
+
+      refreshElevation: boolean;
+
+      refreshVisibility: boolean;
+
+      refreshEffects: boolean;
+
+      refreshMesh: boolean;
+
+      refreshShader: boolean;
+
+      refreshBars: boolean;
+
+      refreshNameplate: boolean;
+
+      refreshBorder: boolean;
+
+      refreshTarget: boolean;
+    }
+
+    interface ReticuleOptions {
+      /**
+       * The amount of margin between the targeting arrows and the token's bounding box, expressed as a fraction of an arrow's size.
+       * @defaultValue `0`
+       */
+      margin?: number;
+
+      /**
+       * The alpha value of the arrows.
+       * @defaultValue `1`
+       */
+      alpha?: number;
+
+      /**
+       * The size of the arrows as a proportion of grid size.
+       * @defaultValue `0.15`
+       */
+      size?: number;
+
+      /**
+       * The color of the arrows.
+       * @defaultValue `0xFF6400`
+       */
+      color?: number;
+
+      /** The arrows' border style configuration. */
+      border?: {
+        /**
+         * The border color.
+         * @defaultValue `0`
+         */
+        color?: number;
+
+        /**
+         * The border width.
+         * @defaultValue `2`
+         */
+        width?: number;
+      };
+    }
+
+    type SourceType = "move" | "sight" | "light" | "sound";
+
+    interface Bar {
+      attribute: string;
+    }
+
+    interface Velocity {
+      dx: number;
+      sx: number;
+      dy: number;
+      sy: number;
+    }
+
+    /** The UI frame container which depicts Token metadata and status, displayed in the ControlsLayer. */
+    interface ObjectHUD extends globalThis.ObjectHUD {
+      /** Token health bars */
+      bars?: PIXI.Container;
+
+      /** Token nameplate */
+      nameplate?: PreciseText;
+
+      /** Token elevation tooltip */
+      tooltip?: PreciseText;
+
+      /** Token status effects */
+      effects?: PIXI.Container;
+
+      /** Token target marker */
+      target?: PIXI.Graphics;
+    }
+
+    type InitializedObjectHUD = RequiredProps<ObjectHUD, "bars" | "nameplate" | "tooltip" | "effects" | "target">;
+
+    interface UpdateLightSourceOptions {
+      /**
+       * Defer updating perception to manually update it later.
+       * @defaultValue `false`
+       */
+      defer?: boolean | undefined;
+
+      /**
+       * Indicate that this light source has been deleted.
+       * @defaultValue `false`
+       */
+      deleted?: boolean | undefined;
+    }
+
+    interface UpdateVisionSourceOptions {
+      /**
+       * Defer updating perception to manually update it later.
+       * @defaultValue `false`
+       */
+      defer?: boolean | undefined;
+
+      /**
+       * Indicate that this vision source has been deleted.
+       * @defaultValue `false`
+       */
+      deleted?: boolean | undefined;
+    }
+
+    type UpdateSourceOptions = UpdateLightSourceOptions & UpdateVisionSourceOptions;
+
+    interface PlayOptions {
+      /**
+       * Should the video loop?
+       * @defaultValue `true`
+       */
+      loop?: boolean | undefined;
+
+      /**
+       * A specific timestamp between 0 and the video duration to begin playback
+       * @defaultValue `0`
+       */
+      offset?: number | undefined;
+
+      /**
+       * Desired volume level of the video's audio channel (if any)
+       * @defaultValue `0`
+       */
+      volume?: number | undefined;
+    }
+
+    interface DrawOverlayOptions {
+      src?: string | undefined;
+      tint?: number | undefined;
+    }
+
+    interface PositionOptions {
+      /**
+       * Animate the movement path
+       * @defaultValue `true`
+       */
+      animate?: boolean;
+
+      /**
+       * Automatically re-center the view if token movement goes off-screen
+       * @defaultValue `true`
+       */
+      recenter?: boolean | undefined;
+    }
+
+    interface EffectToggleOptions {
+      /**
+       * Force a certain active state for the effect
+       * @defaultValue `false`
+       */
+      active?: boolean | undefined;
+
+      /**
+       * Whether to set the effect as the overlay effect?
+       * @defaultValue `false`
+       */
+      overlay?: boolean | undefined;
+    }
+
+    interface SetTargetContext {
+      /**
+       * Assign the token as a target for a specific User
+       * @defaultValue `null`
+       */
+      user?: User.ConfiguredInstance | null | undefined;
+
+      /**
+       * Release other active targets for the same player?
+       * @defaultValue `true`
+       */
+      releaseOthers?: boolean | undefined;
+
+      /**
+       * Is this target being set as part of a group selection workflow?
+       * @defaultValue `Is this target being set as part of a group selection workflow?`
+       */
+      groupSelection?: boolean | undefined;
+    }
+
+    interface ControlOptions extends PlaceableObject.ControlOptions {
+      /** @defaultValue `false` */
+      pan?: boolean;
+    }
+  }
+
   /**
    * A Token is an implementation of PlaceableObject which represents an Actor within a viewed Scene on the game canvas.
    * @see TokenDocument
    * @see TokenLayer
    */
-  class Token extends PlaceableObject<InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>> {
+  class Token extends PlaceableObject<TokenDocument.ConfiguredInstance> {
     static override embeddedName: "Token";
 
     static override RENDER_FLAGS: {
@@ -172,7 +379,7 @@ declare global {
     /**
      * Return a reference to a Combatant that represents this Token, if one is present in the current encounter.
      */
-    get combatant(): InstanceType<ConfiguredDocumentClass<typeof Combatant>> | null;
+    get combatant(): Combatant.ConfiguredInstance | null;
 
     /**
      * An indicator for whether the Token is currently targeted by the active game User
@@ -241,20 +448,20 @@ declare global {
      * Update the light and vision source objects associated with this Token
      * @param options - Options which configure how perception sources are updated
      */
-    updateSource(options?: Token.UpdateSourceOptions | undefined): void;
+    updateSource(options?: Token.UpdateSourceOptions): void;
 
     /**
      * Update an emitted light source associated with this Token.
      * @param options - (default `{}`)
      */
-    updateLightSource(options?: Token.UpdateLightSourceOptions | undefined): void;
+    updateLightSource(options?: Token.UpdateLightSourceOptions): void;
 
     /**
      * Update an Token vision source associated for this token.
      * @param options - Options which affect how the vision source is updated
      *                  (default: `{}`)
      */
-    updateVisionSource(options?: Token.UpdateVisionSourceOptions | undefined): void;
+    updateVisionSource(options?: Token.UpdateVisionSourceOptions): void;
 
     /**
      * Test whether this Token is a viable vision source for the current User
@@ -424,7 +631,7 @@ declare global {
         origin: Point;
 
         /** @defaultValue `"move"` */
-        type: Token.SourceType;
+        type: Exclude<Token.SourceType, "Sound">;
 
         /** @defaultValue `"any"` */
         mode: PointSourcePolygon.CollisionModes;
@@ -471,14 +678,14 @@ declare global {
      * @param context  - Additional context options
      *                   (default `{}`)
      */
-    setTarget(targeted?: boolean, context?: Token.SetTargetContext | undefined): void;
+    setTarget(targeted?: boolean, context?: Token.SetTargetContext): void;
 
     /**
      * Add or remove the currently controlled Tokens from the active combat encounter
      * @param combat - A specific combat encounter to which this Token should be added
      * @returns The Token which initiated the toggle
      */
-    toggleCombat(combat?: InstanceType<ConfiguredDocumentClass<typeof Combat>>): Promise<this>;
+    toggleCombat(combat?: Combat.ConfiguredInstance): Promise<this>;
 
     /**
      * Toggle an active effect by its texture path.
@@ -490,15 +697,15 @@ declare global {
      * @returns Was the texture applied (true) or removed (false)
      */
     toggleEffect(
-      effect: string | ConstructorParameters<ConfiguredDocumentClassForName<"ActiveEffect">>[0],
-      options?: Token.EffectToggleOptions | undefined,
+      effect: string | Parameters<TokenDocument["toggleActiveEffect"]>[0],
+      options?: Token.EffectToggleOptions,
     ): Promise<boolean>;
 
     /**
      * Toggle the visibility state of any Tokens in the currently selected set
      * @returns A Promise which resolves to the updated Token documents
      */
-    toggleVisibility(): Promise<InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>[]>;
+    toggleVisibility(): Promise<TokenDocument.ConfiguredInstance[]>;
 
     /**
      * The external radius of the token in pixels.
@@ -516,14 +723,16 @@ declare global {
 
     protected override _getShiftedPosition(dx: number, dy: number): { x: number; y: number };
 
-    // TODO: Fix after Token is all cleaned up
-    protected override _onCreate(data: unknown, options: unknown, userId: string): void;
+    protected override _onCreate(
+      data: foundry.documents.BaseToken.ConstructorData,
+      options: DocumentModificationOptions,
+      userId: string,
+    ): void;
 
-    // TODO: Fix after Token is all cleaned up
     protected override _onUpdate(
-      data?: DeepPartial<InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>["data"]["_source"]>,
-      options?: DocumentModificationOptions & { animate?: boolean },
-      userId?: string,
+      data: foundry.documents.BaseToken.UpdateData,
+      options: DocumentModificationOptions & { animate?: boolean },
+      userId: string,
     ): void;
 
     protected override _onDelete(options?: DocumentModificationOptions, userId?: string): void;
@@ -540,37 +749,19 @@ declare global {
 
     protected override _onRelease(
       options: PlaceableObject.ReleaseOptions,
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof TokenDocument>>> | undefined;
+    ): Promise<TokenDocument.ConfiguredInstance> | undefined;
 
-    protected override _canControl(
-      user?: InstanceType<ConfiguredDocumentClass<typeof User>>,
-      event?: PIXI.FederatedEvent,
-    ): boolean;
+    protected override _canControl(user?: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
 
-    protected override _canHUD(
-      user: InstanceType<ConfiguredDocumentClass<typeof User>>,
-      event?: PIXI.FederatedEvent,
-    ): boolean;
+    protected override _canHUD(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
 
-    protected override _canConfigure(
-      user?: InstanceType<ConfiguredDocumentClass<typeof User>>,
-      event?: PIXI.FederatedEvent,
-    ): true;
+    protected override _canConfigure(user?: User.ConfiguredInstance, event?: PIXI.FederatedEvent): true;
 
-    protected override _canHover(
-      user?: InstanceType<ConfiguredDocumentClass<typeof User>>,
-      event?: PIXI.FederatedEvent,
-    ): true;
+    protected override _canHover(user?: User.ConfiguredInstance, event?: PIXI.FederatedEvent): true;
 
-    protected override _canView(
-      user?: InstanceType<ConfiguredDocumentClass<typeof User>>,
-      event?: PIXI.FederatedEvent,
-    ): boolean;
+    protected override _canView(user?: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
 
-    protected override _canDrag(
-      user: InstanceType<ConfiguredDocumentClass<typeof User>>,
-      event: PIXI.FederatedEvent,
-    ): boolean;
+    protected override _canDrag(user: User.ConfiguredInstance, event: PIXI.FederatedEvent): boolean;
 
     protected override _onHoverIn(event: PIXI.FederatedEvent, options?: { hoverOutOthers?: boolean }): void;
 
@@ -633,220 +824,9 @@ declare global {
     getDisplayAttributes(): this["mesh"]["getDisplayAttributes"];
   }
 
-  namespace Token {
-    interface RenderFlags extends PlaceableObject.RenderFlags {
-      redrawEffects: boolean;
-
-      refreshSize: boolean;
-
-      refreshPosition: boolean;
-
-      refreshElevation: boolean;
-
-      refreshVisibility: boolean;
-
-      refreshEffects: boolean;
-
-      refreshMesh: boolean;
-
-      refreshShader: boolean;
-
-      refreshBars: boolean;
-
-      refreshNameplate: boolean;
-
-      refreshBorder: boolean;
-
-      refreshTarget: boolean;
-    }
-
-    type ReticuleOptions = {
-      /**
-       * The amount of margin between the targeting arrows and the token's bounding box, expressed as a fraction of an arrow's size.
-       * @defaultValue `0`
-       */
-      margin?: number;
-
-      /**
-       * The alpha value of the arrows.
-       * @defaultValue `1`
-       */
-      alpha?: number;
-
-      /**
-       * The size of the arrows as a proportion of grid size.
-       * @defaultValue `0.15`
-       */
-      size?: number;
-
-      /**
-       * The color of the arrows.
-       * @defaultValue `0xFF6400`
-       */
-      color?: number;
-
-      /** The arrows' border style configuration. */
-      border?: {
-        /**
-         * The border color.
-         * @defaultValue `0`
-         */
-        color?: number;
-
-        /**
-         * The border width.
-         * @defaultValue `2`
-         */
-        width?: number;
-      };
-    };
-
-    // TODO: Determine if there are other source types
-    type SourceType = "move" | "sight" | "light" | "sound";
-
-    interface Bar {
-      attribute: string;
-    }
-
-    interface Velocity {
-      dx: number;
-      sx: number;
-      dy: number;
-      sy: number;
-    }
-
-    /** The UI frame container which depicts Token metadata and status, displayed in the ControlsLayer. */
-    interface ObjectHUD extends globalThis.ObjectHUD {
-      /** Token health bars */
-      bars?: PIXI.Container;
-
-      /** Token nameplate */
-      nameplate?: PreciseText;
-
-      /** Token elevation tooltip */
-      tooltip?: PreciseText;
-
-      /** Token status effects */
-      effects?: PIXI.Container;
-
-      /** Token target marker */
-      target?: PIXI.Graphics;
-    }
-
-    type InitializedObjectHUD = RequiredProps<ObjectHUD, "bars" | "nameplate" | "tooltip" | "effects" | "target">;
-
-    interface UpdateLightSourceOptions {
-      /**
-       * Defer updating perception to manually update it later.
-       * @defaultValue `false`
-       */
-      defer?: boolean | undefined;
-
-      /**
-       * Indicate that this light source has been deleted.
-       * @defaultValue `false`
-       */
-      deleted?: boolean | undefined;
-    }
-
-    interface UpdateVisionSourceOptions {
-      /**
-       * Defer updating perception to manually update it later.
-       * @defaultValue `false`
-       */
-      defer?: boolean | undefined;
-
-      /**
-       * Indicate that this vision source has been deleted.
-       * @defaultValue `false`
-       */
-      deleted?: boolean | undefined;
-    }
-
-    type UpdateSourceOptions = UpdateLightSourceOptions & UpdateVisionSourceOptions;
-
-    interface PlayOptions {
-      /**
-       * Should the video loop?
-       * @defaultValue `true`
-       */
-      loop?: boolean | undefined;
-
-      /**
-       * A specific timestamp between 0 and the video duration to begin playback
-       * @defaultValue `0`
-       */
-      offset?: number | undefined;
-
-      /**
-       * Desired volume level of the video's audio channel (if any)
-       * @defaultValue `0`
-       */
-      volume?: number | undefined;
-    }
-
-    interface DrawOverlayOptions {
-      src?: string | undefined;
-      tint?: number | undefined;
-    }
-
-    interface PositionOptions {
-      /**
-       * Animate the movement path
-       * @defaultValue `true`
-       */
-      animate?: boolean;
-
-      /**
-       * Automatically re-center the view if token movement goes off-screen
-       * @defaultValue `true`
-       */
-      recenter?: boolean | undefined;
-    }
-
-    interface EffectToggleOptions {
-      /**
-       * Force a certain active state for the effect
-       * @defaultValue `false`
-       */
-      active?: boolean | undefined;
-
-      /**
-       * Whether to set the effect as the overlay effect?
-       * @defaultValue `false`
-       */
-      overlay?: boolean | undefined;
-    }
-
-    interface SetTargetContext {
-      /**
-       * Assign the token as a target for a specific User
-       * @defaultValue `null`
-       */
-      user?: InstanceType<ConfiguredDocumentClass<typeof User>> | null | undefined;
-
-      /**
-       * Release other active targets for the same player?
-       * @defaultValue `true`
-       */
-      releaseOthers?: boolean | undefined;
-
-      /**
-       * Is this target being set as part of a group selection workflow?
-       * @defaultValue `Is this target being set as part of a group selection workflow?`
-       */
-      groupSelection?: boolean | undefined;
-    }
-
-    interface ControlOptions extends PlaceableObject.ControlOptions {
-      /** @defaultValue `false` */
-      pan?: boolean;
-    }
-  }
-
   /**
    * A "secret" global to help debug attributes of the currently controlled Token.
    * This is only for debugging, and may be removed in the future, so it's not safe to use.
    */
-  let _token: InstanceType<ConfiguredObjectClassForName<"Token">> | null;
+  let _token: Token.ConfiguredInstance | null;
 }

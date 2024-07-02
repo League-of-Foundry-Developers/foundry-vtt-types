@@ -137,6 +137,7 @@ declare global {
     /**
      * Update the batch data object.
      * TODO: temporary method until the upstream issue is fixed: https://github.com/pixijs/pixijs/issues/8511
+     * @remarks The TODO is foundry internal
      */
     protected _updateBatchData(): void;
 

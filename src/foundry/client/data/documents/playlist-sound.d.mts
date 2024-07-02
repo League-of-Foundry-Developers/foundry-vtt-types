@@ -1,23 +1,23 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
-import type { DeepPartial } from "../../../../types/utils.d.mts";
+import type { InexactPartial } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 declare global {
+  namespace PlaylistSound {
+    type ConfiguredClass = ConfiguredDocumentClassForName<"PlaylistSound">;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+  }
+
   /**
    * The client-side PlaylistSound document which extends the common BasePlaylistSound model.
    * Each PlaylistSound belongs to the sounds collection of a Playlist document.
-   * Each PlaylistSound contains a PlaylistSoundData object which provides its source data.
    *
-   * @see {@link foundry.data.PlaylistSoundData} The PlaylistSound data schema
    * @see {@link Playlist}                       The Playlist document which contains PlaylistSound embedded documents
+   * @see {@link PlaylistSoundConfig}   The PlaylistSound configuration application
    * @see {@link Sound}                          The Sound API which manages web audio playback
    *
    */
   class PlaylistSound extends ClientDocumentMixin(foundry.documents.BasePlaylistSound) {
-    /**
-     * @param data   - Initial data provided to construct the PlaylistSound document
-     * @param parent - The parent Playlist document to which this result belongs
-     */
     constructor(
       data: ConstructorParameters<typeof foundry.documents.BasePlaylistSound>[0],
       context?: ConstructorParameters<typeof foundry.documents.BasePlaylistSound>[1],
@@ -47,19 +47,9 @@ declare global {
     protected _createSound(): Sound | null;
 
     /**
-     * A convenience reference to the HTTP path to the source audio file
+     * The effective volume at which this playlist sound is played, incorporating the global playlist volume setting.
      */
-    get path(): string | undefined | null;
-
-    /**
-     * A convenience indicator for whether this sound is currently playing.
-     */
-    get playing(): boolean;
-
-    /**
-     * The effective volume at which this PlaylistSound should be playing, including the global playlist volume modifier
-     */
-    get volume(): number;
+    get effectiveVolume(): number;
 
     /**
      * Determine the fade duration for this PlaylistSound based on its own configuration and that of its parent.
@@ -71,14 +61,22 @@ declare global {
      */
     sync(): void | Promise<void> | Promise<Sound>;
 
-    override _onCreate(
-      data: foundry.data.PlaylistSoundData["_source"],
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
+    toAnchor(
+      options?: InexactPartial<{
+        attrs: Record<string, string>;
+        dataset: Record<string, string>;
+        classes: string[];
+        name: string;
+        icon: string;
+      }>,
+    ): HTMLAnchorElement;
+
+    _onClickDocumentLink(event: MouseEvent): ReturnType<Playlist.ConfiguredInstance["stopSound" | "playSound"]>;
+
+    protected override _onCreate(data: this["_source"], options: DocumentModificationOptions, userId: string): void;
 
     protected override _onUpdate(
-      changed: DeepPartial<foundry.data.PlaylistSoundData["_source"]>,
+      changed: foundry.documents.BaseAmbientSound.UpdateData,
       options: DocumentModificationOptions,
       userId: string,
     ): void;
@@ -89,7 +87,7 @@ declare global {
      * Special handling that occurs when a PlaylistSound reaches the natural conclusion of its playback.
      * @internal
      */
-    protected _onEnd(): Promise<void | InstanceType<ConfiguredDocumentClassForName<"Playlist">> | undefined>;
+    protected _onEnd(): Promise<void | Playlist.ConfiguredInstance | undefined>;
 
     /**
      * Special handling that occurs when playback of a PlaylistSound is started.

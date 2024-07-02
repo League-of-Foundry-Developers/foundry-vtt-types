@@ -1,6 +1,6 @@
 import type { EditorView } from "prosemirror-view";
 import type { Editor } from "tinymce";
-import type { MaybePromise } from "../../../types/utils.d.mts";
+import type { GetDataReturnType, MaybePromise } from "../../../types/utils.d.mts";
 import type { ProseMirrorKeyMaps, ProseMirrorMenu } from "../../prosemirror/prosemirror.d.mts";
 
 declare global {
@@ -120,11 +120,13 @@ declare global {
     /**
      * @param options - (default: `{}`)
      */
-    override getData(options?: Partial<Options>): MaybePromise<object>;
+    override getData(
+      options?: Partial<Options>,
+    ): MaybePromise<GetDataReturnType<FormApplication.FormApplicationData<Options, ConcreteObject>>>;
 
     protected override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
-    protected override _renderInner(data: object): Promise<JQuery>;
+    protected override _renderInner(data: ReturnType<this["getData"]>): Promise<JQuery>;
 
     protected override _activateCoreListeners(html: JQuery): void;
 
@@ -168,7 +170,7 @@ declare global {
      * Do not preventDefault in this handler as other interactions on the form may also be occurring.
      * @param event - The initial change event
      */
-    protected _onChangeInput(event: JQuery.ChangeEvent): void;
+    protected _onChangeInput(event: JQuery.ChangeEvent): Promise<void | object>;
 
     /**
      * Handle the change of a color picker input which enters it's chosen value into a related input field
@@ -307,10 +309,19 @@ declare global {
        */
       preventRender?: boolean;
     }
+
+    interface FormApplicationData<
+      Options extends FormApplicationOptions = FormApplicationOptions,
+      ConcreteObject = unknown,
+    > {
+      object: ConcreteObject;
+      options: Options;
+      title: string;
+    }
   }
 
   interface DocumentSheetOptions<
-    ConcreteDocument extends foundry.abstract.Document<any, any> = foundry.abstract.Document<any, any>,
+    ConcreteDocument extends foundry.abstract.Document<any, any, any> = foundry.abstract.Document<any, any, any>,
   > extends FormApplicationOptions {
     /**
      * The default permissions required to view this Document sheet.
@@ -331,7 +342,7 @@ declare global {
    */
   abstract class DocumentSheet<
     Options extends DocumentSheetOptions<ConcreteDocument>,
-    ConcreteDocument extends foundry.abstract.Document<any, any> = foundry.abstract.Document<any, any>,
+    ConcreteDocument extends foundry.abstract.Document<any, any, any> = foundry.abstract.Document<any, any, any>,
   > extends FormApplication<Options, ConcreteDocument> {
     /**
      * @param object  - A Document instance which should be managed by this form.
@@ -371,14 +382,16 @@ declare global {
 
     override close(options?: FormApplication.CloseOptions): Promise<void>;
 
-    override getData(options?: Partial<Options>): MaybePromise<object>;
+    override getData(
+      options?: Partial<Options>,
+    ): MaybePromise<GetDataReturnType<DocumentSheet.DocumentSheetData<Options, ConcreteDocument>>>;
 
     protected override _activateCoreListeners(html: JQuery<HTMLElement>): void;
 
     override activateEditor(
       name: string,
-      options?: TextEditor.Options | undefined,
-      initialContent?: string | undefined,
+      options?: TextEditor.Options,
+      initialContent?: string,
     ): Promise<Editor | EditorView>;
 
     override render(force?: boolean, options?: Application.RenderOptions<Options>): this;
@@ -424,6 +437,28 @@ declare global {
      */
     protected _onConfigureSheet(event: JQuery.ClickEvent): void;
 
+    /**
+     * Handle changing a Document's image.
+     * @param event - The click event.
+     */
+    protected _onEditImage(event: MouseEvent): Promise<void>;
+
     protected override _updateObject(event: Event, formData: object): Promise<unknown>;
+  }
+
+  namespace DocumentSheet {
+    interface DocumentSheetData<
+      Options extends DocumentSheetOptions<ConcreteDocument>,
+      ConcreteDocument extends foundry.abstract.Document<any, any, any> = foundry.abstract.Document<any, any, any>,
+    > extends FormApplication.FormApplicationData {
+      cssClass: string;
+      editable: boolean;
+      data: ReturnType<ConcreteDocument["toObject"]>;
+      limited: boolean;
+      options: DocumentSheet<Options, ConcreteDocument>["options"];
+      owner: boolean;
+      title: DocumentSheet<Options, ConcreteDocument>["title"];
+      document: DocumentSheet<Options, ConcreteDocument>["document"];
+    }
   }
 }

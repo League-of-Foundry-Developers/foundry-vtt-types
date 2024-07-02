@@ -65,7 +65,7 @@ declare global {
      */
     protected _activateSubLayer(foreground?: boolean): void;
 
-    _tearDown(options?: Record<string, unknown> | undefined): Promise<void>;
+    _tearDown(options?: Record<string, unknown>): Promise<void>;
 
     protected _onDragLeftStart(event: PIXI.FederatedEvent): Promise<unknown>;
 
@@ -88,7 +88,7 @@ declare global {
      * @param data  - The extracted Tile data
      * @returns The prepared data to create
      */
-    _getDropData(event: DragEvent, data: DropData<any>): Promise<DropData<any>>;
+    _getDropData(event: DragEvent, data: TilesLayer.DropData): Promise<DropData<any>>;
 
     /**
      * @deprecated since v11, will be removed in v13
@@ -104,6 +104,11 @@ declare global {
       controllableObjects: true;
       rotatableObjects: true;
       elevationSorting: true;
+    }
+
+    interface DropData extends Canvas.DropPosition {
+      type: "Tile";
+      uuid: string;
     }
   }
 }

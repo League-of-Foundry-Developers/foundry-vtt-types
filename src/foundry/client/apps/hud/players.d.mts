@@ -1,5 +1,4 @@
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
-import type { MaybePromise, StoredDocument } from "../../../../types/utils.d.mts";
+import type { GetDataReturnType, MaybePromise } from "../../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -11,7 +10,7 @@ declare global {
     constructor(options?: Partial<Options>);
 
     /**
-     * An internal toggle for whether or not to show offline players or hide them
+     * An internal toggle for whether to show offline players or hide them
      * @defaultValue `false`
      */
     protected _showOffline: boolean;
@@ -19,7 +18,7 @@ declare global {
     /**
      * @defaultValue
      * ```typescript
-     * mergeObject(super.defaultOptions, {
+     * foundry.utils.mergeObject(super.defaultOptions, {
      *   id: "players",
      *   template: "templates/user/players.html",
      *   popOut: false
@@ -28,9 +27,24 @@ declare global {
      */
     static get defaultOptions(): ApplicationOptions;
 
+    /**
+     * Whether the players list is in a configuration where it is hidden
+     */
+    get isHidden(): boolean;
+
     override render(force?: boolean, options?: Application.RenderOptions<Options>): this;
 
-    override getData(options?: Partial<Options>): MaybePromise<object>;
+    override getData(options?: Partial<Options>): MaybePromise<GetDataReturnType<PlayerList.Data>>;
+
+    /**
+     * Prepare a displayed name string for the User which includes their name, pronouns, character, or GM tag.
+     */
+    protected _getDisplayName(user: User): string;
+
+    /**
+     * Position this Application in the main DOM appropriately.
+     */
+    protected _positionInDOM(): void;
 
     override activateListeners(html: JQuery): void;
 
@@ -47,8 +61,18 @@ declare global {
   }
 
   namespace PlayerList {
+    type UserData = {
+      active: User["active"];
+      isGM: User["isGM"];
+      isSelf: User["isSelf"];
+      charname: string;
+      color: string;
+      border: string;
+      displayName: string;
+    };
+
     interface Data {
-      users: StoredDocument<InstanceType<ConfiguredDocumentClass<typeof User>>>[];
+      users: UserData[];
       showOffline: boolean;
       hide: boolean;
     }
