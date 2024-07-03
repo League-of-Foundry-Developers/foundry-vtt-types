@@ -5,7 +5,9 @@ import type Document from "./document.d.mts";
 type StaticDataModel = typeof DataModel<DataSchema, Document<DataSchema, any, any>>;
 
 interface _InternalTypeDataModelInterface extends StaticDataModel {
-  new <_ComputedInstance extends object>(...args: ConstructorParameters<typeof DataModel>): _ComputedInstance;
+  new <Schema extends DataSchema, Parent extends Document<DataSchema, any, any>, _ComputedInstance extends object>(
+    ...args: ConstructorParameters<typeof DataModel>
+  ): DataModel<Schema, Parent> & _ComputedInstance;
 }
 
 declare const _InternalTypeDataModelConst: _InternalTypeDataModelInterface;
@@ -14,11 +16,11 @@ declare const _InternalTypeDataModelConst: _InternalTypeDataModelInterface;
 declare class _InternalTypeDataModel<
   Schema extends DataSchema,
   Parent extends Document<DataSchema, any, any>,
-  BaseData extends Record<string, unknown> = Record<never, never>,
-  DerivedData extends Record<string, unknown> = Record<never, never>,
+  BaseData extends Record<string, unknown> = Record<string, never>,
+  DerivedData extends Record<string, unknown> = Record<string, never>,
   // This does not work if inlined. It's weird to put it here but it works.
-  _ComputedInstance extends object = DataModel<Schema, Parent> & Merge<BaseData, DerivedData>,
-> extends _InternalTypeDataModelConst<_ComputedInstance> {}
+  _ComputedInstance extends object = Merge<BaseData, DerivedData>,
+> extends _InternalTypeDataModelConst<Schema, Parent, _ComputedInstance> {}
 
 /**
  * A specialized subclass of DataModel, intended to represent a Document's type-specific data.
@@ -79,8 +81,8 @@ declare class _InternalTypeDataModel<
 export default abstract class TypeDataModel<
   Schema extends DataSchema,
   Parent extends Document<DataSchema, any, any>,
-  BaseData extends Record<string, any> = Record<never, never>,
-  DerivedData extends Record<string, any> = Record<never, never>,
+  BaseData extends Record<string, any> = Record<string, never>,
+  DerivedData extends Record<string, any> = Record<string, never>,
 > extends _InternalTypeDataModel<Schema, Parent, BaseData, DerivedData> {
   modelProvider: System | Module | null;
 
