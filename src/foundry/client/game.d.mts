@@ -7,9 +7,6 @@ import type {
 } from "../../types/helperTypes.d.mts";
 import type { StoredDocument, ValueOf } from "../../types/utils.d.mts";
 
-// TODO: Apps
-type ClientIssues = unknown;
-
 type InitializationEvent = "none" | "init" | "i18nInit" | "setup" | "ready";
 
 type InitializedWhen<Data, MustRun extends InitializationEvent, RunEvents extends InitializationEvent, D = undefined> =

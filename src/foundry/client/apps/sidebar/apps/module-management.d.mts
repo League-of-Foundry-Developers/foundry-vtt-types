@@ -130,6 +130,4 @@ declare global {
       search: string;
     };
   }
-
-  interface ModuleSubTypeCounts extends Record<string, Record<string, number>> {}
 }
