@@ -1,7 +1,9 @@
 import { expectTypeOf } from "vitest";
 
-expectTypeOf(game).toEqualTypeOf<Game | {}>();
-expectTypeOf(ui.menu).toEqualTypeOf<MainMenu>();
+type UninitializedGame = { [K in keyof Game]?: never };
+
+expectTypeOf(game).toEqualTypeOf<UninitializedGame | I18nInitGame | InitGame | SetupGame | ReadyGame>();
+expectTypeOf(ui.menu).toEqualTypeOf<MainMenu | undefined>();
 
 const myColor = Color.from("foobar");
 

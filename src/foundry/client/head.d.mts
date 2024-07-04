@@ -1,4 +1,31 @@
-import type { InitializedWhen, InternalGame } from "./game.d.mts";
+import type { InitializationEvent } from "./game.d.mts";
+
+type ValidRanHooks = Extract<keyof AssumeHookRan, InitializationEvent>;
+
+// These are the hooks that have not yet run.
+// Though even if "ready" has already ran, it has to be accounted for so `CheckHooks` doesn't equal never.
+type CheckHooks = Exclude<InitializationEvent, ValidRanHooks> | "ready";
+
+type _UninitializedGame = { [K in keyof Game]?: never };
+interface UninitializedGame extends _UninitializedGame {}
+
+// These type aliases are used for intellisense reasons so that the type displays `UninitializedGame | InitGame | ...` instead of a too complex looking type.
+type Games = {
+  none: UninitializedGame;
+  init: InitGame;
+  i18nInit: I18nInitGame;
+  setup: SetupGame;
+  ready: ReadyGame;
+};
+
+// Put in its own helper type to cause type distribution.
+type DiscriminatedGame<Event extends InitializationEvent> = Event extends unknown ? Games[Event] : never;
+
+type MaybeUI = keyof AssumeHookRan extends never
+  ? Partial<UiApplications>
+  : keyof AssumeHookRan extends "ready"
+    ? UiApplications
+    : Partial<UiApplications>;
 
 declare global {
   /**
@@ -12,7 +39,7 @@ declare global {
    * @remarks
    * Initialized just before the `"init"` hook event.
    */
-  let game: InitializedWhen<InternalGame<keyof AssumeHookRan>, "init", keyof AssumeHookRan, {}>;
+  let game: DiscriminatedGame<CheckHooks>;
 
   /**
    * The global boolean for whether the EULA is signed
@@ -48,7 +75,7 @@ declare global {
      * @defaultValue `{}`
      */
     windows: Record<number, Application>;
-  } & InitializedWhen<UiApplications, "init", keyof AssumeHookRan>;
+  } & MaybeUI;
 
   /**
    * The client side console logger
