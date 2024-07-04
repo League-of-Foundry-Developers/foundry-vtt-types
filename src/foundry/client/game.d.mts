@@ -10,14 +10,10 @@ import type { StoredDocument, ValueOf } from "../../types/utils.d.mts";
 // TODO: Apps
 type ClientIssues = unknown;
 
-export type InitializationEvent = "none" | "init" | "i18nInit" | "setup" | "ready";
+type InitializationEvent = "none" | "init" | "i18nInit" | "setup" | "ready";
 
-type InitializedWhen<
-  Data,
-  MustRun extends InitializationEvent,
-  RanHooks extends InitializationEvent,
-  D = undefined,
-> = RanHooks extends MustRun ? Data : D;
+type InitializedWhen<Data, MustRun extends InitializationEvent, RunEvents extends InitializationEvent, D = undefined> =
+  Extract<RunEvents, MustRun> extends never ? D : Data;
 
 type MaybeInitialized<Data, MustRun extends InitializationEvent> = InitializedWhen<
   Data,
@@ -548,10 +544,10 @@ declare class InternalGame<RunEvents extends InitializationEvent> {
   protected _initializeStreamView(): Promise<void>;
 }
 
-type _InitGame = InternalGame<"init"> & Game;
-type _I18nInitGame = Game & InternalGame<"i18nInit">;
-type _SetupGame = Game & InternalGame<"setup">;
-type _ReadyGame = Game & InternalGame<"ready">;
+type _InitGame = Game & InternalGame<"init">;
+type _I18nInitGame = Game & InternalGame<"init" | "i18nInit">;
+type _SetupGame = Game & InternalGame<"init" | "i18nInit" | "setup">;
+type _ReadyGame = Game & InternalGame<"init" | "i18nInit" | "setup" | "ready">;
 
 declare global {
   /**

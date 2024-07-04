@@ -2,9 +2,16 @@ import type { InitializationEvent } from "./game.d.mts";
 
 type ValidRanHooks = Extract<keyof AssumeHookRan, InitializationEvent>;
 
-// These are the hooks that have not yet run.
-// Though even if "ready" has already ran, it has to be accounted for so `CheckHooks` doesn't equal never.
-type CheckHooks = Exclude<InitializationEvent, ValidRanHooks> | "ready";
+type EarlierEvents = {
+  none: never;
+  init: "none";
+  i18nInit: "none" | "init";
+  setup: "none" | "init" | "i18nInit";
+  ready: "none" | "init" | "i18nInit" | "setup";
+};
+
+// All earlier hooks can definitely be ignored since they're assumed to have ran.
+type CheckHooks = Exclude<InitializationEvent, EarlierEvents[ValidRanHooks]>;
 
 type _UninitializedGame = { [K in keyof Game]?: never };
 interface UninitializedGame extends _UninitializedGame {}
