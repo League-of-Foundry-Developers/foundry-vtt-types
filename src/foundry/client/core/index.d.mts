@@ -2,6 +2,7 @@ import "./document-index.d.mts";
 import "./gamepad.d.mts";
 import "./hooks.d.mts";
 import "./image.d.mts";
+import "./issues.d.mts";
 import "./keybindings.d.mts";
 import "./keyboard.d.mts";
 import "./mouse.d.mts";
