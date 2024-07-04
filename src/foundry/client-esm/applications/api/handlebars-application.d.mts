@@ -98,8 +98,7 @@ declare class HandlebarsApplication {
    * @param options - Options which configure application rendering behavior
    */
   protected _replaceHTML(
-    // TODO: Ignore warning?
-    result: Awaited<ReturnType<this["_renderHTML"]>>,
+    result: Record<string, HTMLElement>,
     content: HTMLElement,
     options: DeepPartial<ApplicationRenderOptions>,
   ): void;
