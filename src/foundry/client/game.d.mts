@@ -8,7 +8,6 @@ import type {
 import type { StoredDocument, ValueOf } from "../../types/utils.d.mts";
 
 // TODO: Apps
-type ClientIssues = unknown;
 
 type InitializationEvent = "none" | "init" | "i18nInit" | "setup" | "ready";
 
