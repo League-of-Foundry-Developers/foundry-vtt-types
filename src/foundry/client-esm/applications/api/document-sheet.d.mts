@@ -7,11 +7,13 @@ import type {
 } from "../_types.d.mts";
 import type ApplicationV2 from "./application.d.mts";
 
-interface DocumentSheetConfiguration extends ApplicationConfiguration {
+interface DocumentSheetConfiguration<
+  Document extends foundry.abstract.Document<any, any, any> = foundry.abstract.Document<any, any, any>,
+> extends ApplicationConfiguration {
   /**
    * The Document instance associated with this sheet
    */
-  document: foundry.abstract.Document<any, any, any>;
+  document: Document;
   /**
    * A permission level in CONST.DOCUMENT_OWNERSHIP_LEVELS
    */
@@ -27,7 +29,9 @@ interface DocumentSheetConfiguration extends ApplicationConfiguration {
 }
 
 interface DocumentSheetRenderOptions extends ApplicationRenderOptions {
+  /** A string with the format "\{operation\}\{documentName\}" providing context */
   renderContext: string;
+  /** Data describing the document modification that occurred */
   renderData: object;
 }
 
@@ -35,14 +39,15 @@ interface DocumentSheetRenderOptions extends ApplicationRenderOptions {
  * The Application class is responsible for rendering an HTMLElement into the Foundry Virtual Tabletop user interface.
  */
 export default class DocumentSheetV2<
-  Configuration extends DocumentSheetConfiguration = DocumentSheetConfiguration,
+  Document extends foundry.abstract.Document<any, any, any>,
+  Configuration extends DocumentSheetConfiguration<Document> = DocumentSheetConfiguration<Document>,
   RenderOptions extends DocumentSheetRenderOptions = DocumentSheetRenderOptions,
 > extends ApplicationV2<Configuration, RenderOptions> {
-  constructor(options: DeepPartial<Configuration>);
+  constructor(options: DeepPartial<Configuration> & { document: Document });
 
   static DEFAULT_OPTIONS: DeepPartial<DocumentSheetConfiguration>;
 
-  get Document(): ClientDocument;
+  get document(): Document;
 
   override get title(): string;
 
@@ -77,6 +82,7 @@ export default class DocumentSheetV2<
 
   /**
    * Prepare data used to update the Item upon form submission.
+   * This data is cleaned and validated before being returned for further processing.
    * @param event    - The originating form submission event
    * @param form     - The form element that was submitted
    * @param formData - Processed data for the submitted form
@@ -85,4 +91,30 @@ export default class DocumentSheetV2<
    */
   // TODO: Improve typing?
   protected _prepareSubmitData(event: SubmitEvent, form: HTMLFormElement, formData: FormDataExtended): object;
+
+  /**
+   * Customize how form data is extracted into an expanded object.
+   * @param event    - The originating form submission event
+   * @param form     - The form element that was submitted
+   * @param formData - Processed data for the submitted form
+   * @returns An expanded object of processed form data
+   * @throws Subclasses may throw validation errors here to prevent form submission
+   */
+  _processFormData(event: SubmitEvent, form: HTMLFormElement, formData: FormDataExtended): object;
+
+  /**
+   * Submit a document update based on the processed form data.
+   * @param event    - The originating form submission event
+   * @param form     - The form element that was submitted
+   * @param formData - Processed and validated form data to be used for a document update
+   */
+  _processSubmitData(event: SubmitEvent, form: HTMLFormElement, formData: FormDataExtended): Promise<void>;
+
+  /**
+   * Programmatically submit a DocumentSheetV2 instance, providing additional data to be merged with form data.
+   */
+  submit(options?: {
+    /** Additional data merged with processed form data */
+    updateData: object;
+  }): Promise<void>;
 }
