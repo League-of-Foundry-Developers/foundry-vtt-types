@@ -15,7 +15,7 @@ declare global {
     /**
      * A Font Awesome icon for the button
      */
-    icon: string;
+    icon?: string;
 
     /**
      * The label for the button
