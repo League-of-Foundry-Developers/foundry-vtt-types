@@ -136,7 +136,7 @@ declare namespace BaseItem {
      * The system data object which is defined by the system template.json model
      * @defaultValue `{}`
      */
-    system: fields.TypeDataField<BaseItem>;
+    system: fields.TypeDataField<typeof BaseItem>;
 
     /**
      * A collection of ActiveEffect embedded Documents

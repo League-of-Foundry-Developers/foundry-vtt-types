@@ -212,7 +212,7 @@ declare namespace BaseJournalEntryPage {
      * System-specific data.
      * @defaultValue `{}`
      */
-    system: fields.TypeDataField<BaseJournalEntryPage>;
+    system: fields.TypeDataField<typeof BaseJournalEntryPage>;
 
     /**
      * The numeric sort value which orders this page relative to its siblings.

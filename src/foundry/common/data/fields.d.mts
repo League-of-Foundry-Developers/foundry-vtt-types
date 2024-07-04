@@ -3,7 +3,7 @@ import type {
   ConfiguredDocumentClassForName,
   ConfiguredFlags,
 } from "../../../types/helperTypes.mts";
-import type { RemoveIndexSignatures, ConstructorOf, SimpleMerge } from "../../../types/utils.d.mts";
+import type { RemoveIndexSignatures, ConstructorOf, SimpleMerge, ValueOf } from "../../../types/utils.d.mts";
 import type { DataModel } from "../abstract/data.mts";
 import type Document from "../abstract/document.mts";
 import type { EmbeddedCollection, EmbeddedCollectionDelta } from "../abstract/module.d.mts";
@@ -3088,17 +3088,17 @@ declare namespace DocumentStatsField {
  * InitialValue: `{}`
  */
 declare class TypeDataField<
-  const DocumentType extends Document.Any,
-  const Options extends TypeDataField.Options<DocumentType> = TypeDataField.DefaultOptions,
-  const AssignmentType = TypeDataField.AssignmentType<DocumentType, Options>,
-  const InitializedType = TypeDataField.InitializedType<DocumentType, Options>,
-  const PersistedType extends object | null | undefined = TypeDataField.PersistedType<DocumentType, Options>,
+  const SystemDocument extends Document.SystemConstructor,
+  const Options extends TypeDataField.Options<InstanceType<SystemDocument>> = TypeDataField.DefaultOptions,
+  const AssignmentType = TypeDataField.AssignmentType<SystemDocument, Options>,
+  const InitializedType = TypeDataField.InitializedType<SystemDocument, Options>,
+  const PersistedType extends object | null | undefined = TypeDataField.PersistedType<SystemDocument, Options>,
 > extends ObjectField<Options, AssignmentType, InitializedType, PersistedType> {
   /**
    * @param document - The base document class which belongs in this field
    * @param options  - Options which configure the behavior of the field
    */
-  constructor(document: ConstructorOf<DocumentType>, options?: Options);
+  constructor(document: ConstructorOf<SystemDocument>, options?: Options);
 
   /** @defaultValue `true` */
   override required: boolean;
@@ -3106,7 +3106,7 @@ declare class TypeDataField<
   /**
    * The canonical document name of the document type which belongs in this field
    */
-  document: ConstructorOf<DocumentType>;
+  document: ConstructorOf<SystemDocument>;
 
   protected static override get _defaults(): TypeDataField.Options<Document.Any>;
 
@@ -3219,12 +3219,9 @@ declare namespace TypeDataField {
    * @typeParam Options - the options that override the default options
    */
   type AssignmentType<
-    DocumentType extends Document.Any,
-    Opts extends Options<DocumentType>,
-  > = DataField.DerivedAssignmentType<
-    SchemaField.InnerAssignmentType<DataModel.SchemaFor<DocumentType>>,
-    MergedOptions<DocumentType, Opts>
-  >;
+    SystemDocumentConstructor extends Document.SystemConstructor,
+    Opts extends Options<InstanceType<SystemDocumentConstructor>>,
+  > = DataField.DerivedAssignmentType<object, MergedOptions<InstanceType<SystemDocumentConstructor>, Opts>>;
 
   /**
    * A shorthand for the initialized type of a TypeDataField class.
@@ -3232,11 +3229,11 @@ declare namespace TypeDataField {
    * @typeParam Options - the options that override the default options
    */
   type InitializedType<
-    DocumentType extends Document.Any,
-    Opts extends Options<DocumentType>,
+    SystemDocumentConstructor extends Document.SystemConstructor,
+    Opts extends Options<InstanceType<SystemDocumentConstructor>>,
   > = DataField.DerivedInitializedType<
-    SchemaField.InnerInitializedType<DataModel.SchemaFor<DocumentType>>,
-    MergedOptions<DocumentType, Opts>
+    ValueOf<Config<SystemDocumentConstructor>> | object,
+    MergedOptions<InstanceType<SystemDocumentConstructor>, Opts>
   >;
 
   /**
@@ -3245,12 +3242,9 @@ declare namespace TypeDataField {
    * @typeParam Opts         - the options that override the default options
    */
   type PersistedType<
-    DocumentType extends Document.Any,
-    Opts extends Options<DocumentType>,
-  > = DataField.DerivedInitializedType<
-    SchemaField.InnerPersistedType<DataModel.SchemaFor<DocumentType>>,
-    MergedOptions<DocumentType, Opts>
-  >;
+    SystemDocumentConstructor extends Document.SystemConstructor,
+    Opts extends Options<InstanceType<SystemDocumentConstructor>>,
+  > = DataField.DerivedInitializedType<object, MergedOptions<InstanceType<SystemDocumentConstructor>, Opts>>;
 }
 
 /**
@@ -3286,7 +3280,9 @@ declare namespace ModelValidationError {
 /**
  * @deprecated since v10, will be removed in v12
  */
-export function systemDataField<const D extends Document.Any>(document: D): TypeDataField<D>;
+export function systemDataField<const D extends Document.SystemConstructor>(
+  document: InstanceType<D>,
+): TypeDataField<D>;
 
 /**
  * @deprecated since v10, will be removed in v12

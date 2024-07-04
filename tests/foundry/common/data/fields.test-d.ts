@@ -42,6 +42,11 @@ declare global {
 expectTypeOf(JEPCoreTypes).toEqualTypeOf<"base" | "image" | "pdf" | "text" | "video">();
 expectTypeOf(JEPSystemTypes).toEqualTypeOf<"headquarters">();
 
+declare const myJournalEntryPage: JournalEntryPage;
+if (myJournalEntryPage.system instanceof foundry.abstract.TypeDataModel) {
+  expectTypeOf(myJournalEntryPage.system?.prepareBaseData()).toEqualTypeOf<void>();
+}
+
 /** EmbeddedDataField */
 
 declare const embeddedModel: foundry.data.LightData;

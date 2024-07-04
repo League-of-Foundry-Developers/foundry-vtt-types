@@ -72,7 +72,7 @@ declare namespace BaseActor {
      * The system data object which is defined by the system template.json model
      * @defaultValue `{}`
      */
-    system: fields.TypeDataField<BaseActor>;
+    system: fields.TypeDataField<typeof BaseActor>;
 
     /**
      * Default Token settings which are used for Tokens created from this Actor
