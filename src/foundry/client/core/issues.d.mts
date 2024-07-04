@@ -13,7 +13,7 @@ declare global {
   class ClientIssues {
     /**
      * Keep track of valid Documents in the world that are using module-provided sub-types.
-     * @remark the keys are module ids.
+     * @remarks the keys are module ids.
      */
     #moduleTypeMap: Map<string, ModuleSubTypeCounts>;
 
@@ -87,9 +87,18 @@ declare global {
      * Add a Document to the count of module-provided sub-types.
      * @param documentName      - The Document name.
      * @param subType           - The Document's sub-type.
-     * @param options.decrement - Decrement the count rather than incrementing it. default: `false`
      */
-    #countDocumentSubType(documentName: DocumentType, subType: string, options?: { decrement?: boolean }): void;
+    #countDocumentSubType(
+      documentName: DocumentType,
+      subType: string,
+      options?: {
+        /**
+         * Decrement the counter rather than incrementing it.
+         * @defaultValue `false`
+         */
+        decrement?: boolean;
+      },
+    ): void;
 
     /**
      * Detect the user's browser and display a notification if it is below the minimum required version.
@@ -117,12 +126,21 @@ declare global {
      * Add an invalid Document to the module-provided sub-type counts.
      * @param documentName      - The Document name.
      * @param source            - The Document's source data.
-     * @param options.decrement - Decrement the counter rather than incrementing it. default: `false`
      * @internal
      *
-     * @remark official documentation says "invalid", but the document can be valid, it is simply not yet validated.
+     * @remarks official documentation says "invalid", but the document can be valid, it is simply not yet validated.
      */
-    _countDocumentSubType(documentName: DocumentType, source: unknown, options?: { decrement?: boolean }): void;
+    _countDocumentSubType(
+      documentName: DocumentType,
+      source: unknown,
+      options?: {
+        /**
+         * Decrement the counter rather than incrementing it.
+         * @defaultValue `false`
+         */
+        decrement?: boolean;
+      },
+    ): void;
 
     /**
      * Track a validation failure that occurred in a WorldCollection.
