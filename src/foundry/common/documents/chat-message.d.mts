@@ -101,8 +101,8 @@ declare namespace BaseChatMessage {
      */
     type: fields.NumberField<{
       required: true;
-      choices: CONST.CHAT_MESSAGE_TYPES[];
-      initial: typeof CONST.CHAT_MESSAGE_TYPES.OTHER;
+      choices: CONST.CHAT_MESSAGE_STYLES[];
+      initial: typeof CONST.CHAT_MESSAGE_STYLES.OTHER;
       validationError: "must be a value in CONST.CHAT_MESSAGE_TYPES";
     }>;
 
