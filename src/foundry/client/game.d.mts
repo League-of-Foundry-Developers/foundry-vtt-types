@@ -7,25 +7,17 @@ import type {
 } from "../../types/helperTypes.d.mts";
 import type { StoredDocument, ValueOf } from "../../types/utils.d.mts";
 
-// TODO: Apps
-type ClientIssues = unknown;
+type InitializationEvent = "none" | "init" | "i18nInit" | "setup" | "ready";
 
-type EventsRan = {
-  none: "none";
-  init: "init";
-  i18nInit: "init" | "i18nInit";
-  setup: "init" | "i18nInit" | "setup";
-  ready: "init" | "i18nInit" | "setup" | "ready";
-};
+type InitializedWhen<Data, MustRun extends InitializationEvent, RunEvents extends InitializationEvent, D = undefined> =
+  Extract<RunEvents, MustRun> extends never ? D : Data;
 
-type InitializationEvent = keyof EventsRan;
-
-type InitializedWhen<
+type MaybeInitialized<Data, MustRun extends InitializationEvent> = InitializedWhen<
   Data,
-  InitializedWhen extends InitializationEvent,
-  Event extends InitializationEvent,
-  D = undefined,
-> = InitializedWhen extends EventsRan[Event] ? Data : "none" extends Event ? D : Data | D;
+  MustRun,
+  keyof AssumeHookRan,
+  Data | undefined
+>;
 
 declare class InternalGame<RunEvents extends InitializationEvent> {
   /**
@@ -129,9 +121,9 @@ declare class InternalGame<RunEvents extends InitializationEvent> {
 
   /**
    * The user role permissions setting
-   * @remarks Initialized just before the `"ready"` hook event.
+   * @remarks Initialized just before the `"setup"` hook event.
    */
-  readonly permissions: InitializedWhen<Game.Permissions, "ready", RunEvents>;
+  readonly permissions: InitializedWhen<Game.Permissions, "setup", RunEvents>;
 
   /**
    * The client session id which is currently active
@@ -216,7 +208,7 @@ declare class InternalGame<RunEvents extends InitializationEvent> {
    * A flag for whether the Game has successfully reached the "ready" hook
    * @defaultValue `false`
    */
-  ready: boolean;
+  ready: InitializedWhen<true, "ready", RunEvents, false>;
 
   /**
    * Fetch World data and return a Game instance
@@ -297,64 +289,64 @@ declare class InternalGame<RunEvents extends InitializationEvent> {
   initializeDocuments(): void;
 
   /**
-   * @remarks Initialized just before the `"ready"` hook event.
+   * @remarks Initialized just before the `"setup"` hook event.
    */
-  users?: InitializedWhen<ConfiguredCollectionClassForName<"User">, "ready", RunEvents>;
+  users: InitializedWhen<ConfiguredCollectionClassForName<"User">, "setup", RunEvents>;
 
   /**
-   * @remarks Initialized just before the `"ready"` hook event.
+   * @remarks Initialized just before the `"setup"` hook event.
    */
-  folders?: InitializedWhen<ConfiguredCollectionClassForName<"Folder">, "ready", RunEvents>;
+  folders: InitializedWhen<ConfiguredCollectionClassForName<"Folder">, "setup", RunEvents>;
 
   /**
-   * @remarks Initialized just before the `"ready"` hook event.
+   * @remarks Initialized just before the `"setup"` hook event.
    */
-  actors?: InitializedWhen<ConfiguredCollectionClassForName<"Actor">, "ready", RunEvents>;
+  actors: InitializedWhen<ConfiguredCollectionClassForName<"Actor">, "setup", RunEvents>;
 
   /**
-   * @remarks Initialized just before the `"ready"` hook event.
+   * @remarks Initialized just before the `"setup"` hook event.
    */
-  items?: InitializedWhen<ConfiguredCollectionClassForName<"Item">, "ready", RunEvents>;
+  items: InitializedWhen<ConfiguredCollectionClassForName<"Item">, "setup", RunEvents>;
 
   /**
-   * @remarks Initialized just before the `"ready"` hook event.
+   * @remarks Initialized just before the `"setup"` hook event.
    */
-  scenes?: InitializedWhen<ConfiguredCollectionClassForName<"Scene">, "ready", RunEvents>;
+  scenes: InitializedWhen<ConfiguredCollectionClassForName<"Scene">, "setup", RunEvents>;
 
   /**
-   * @remarks Initialized just before the `"ready"` hook event.
+   * @remarks Initialized just before the `"setup"` hook event.
    */
-  combats?: InitializedWhen<ConfiguredCollectionClassForName<"Combat">, "ready", RunEvents>;
+  combats: InitializedWhen<ConfiguredCollectionClassForName<"Combat">, "setup", RunEvents>;
 
   /**
-   * @remarks Initialized just before the `"ready"` hook event.
+   * @remarks Initialized just before the `"setup"` hook event.
    */
-  journal?: InitializedWhen<ConfiguredCollectionClassForName<"JournalEntry">, "ready", RunEvents>;
+  journal: InitializedWhen<ConfiguredCollectionClassForName<"JournalEntry">, "setup", RunEvents>;
 
   /**
-   * @remarks Initialized just before the `"ready"` hook event.
+   * @remarks Initialized just before the `"setup"` hook event.
    */
-  macros?: InitializedWhen<ConfiguredCollectionClassForName<"Macro">, "ready", RunEvents>;
+  macros: InitializedWhen<ConfiguredCollectionClassForName<"Macro">, "setup", RunEvents>;
 
   /**
-   * @remarks Initialized just before the `"ready"` hook event.
+   * @remarks Initialized just before the `"setup"` hook event.
    */
-  playlists?: InitializedWhen<ConfiguredCollectionClassForName<"Playlist">, "ready", RunEvents>;
+  playlists: InitializedWhen<ConfiguredCollectionClassForName<"Playlist">, "setup", RunEvents>;
 
   /**
-   * @remarks Initialized just before the `"ready"` hook event.
+   * @remarks Initialized just before the `"setup"` hook event.
    */
-  tables?: InitializedWhen<ConfiguredCollectionClassForName<"RollTable">, "ready", RunEvents>;
+  tables: InitializedWhen<ConfiguredCollectionClassForName<"RollTable">, "setup", RunEvents>;
 
   /**
-   * @remarks Initialized just before the `"ready"` hook event.
+   * @remarks Initialized just before the `"setup"` hook event.
    */
-  cards?: InitializedWhen<ConfiguredCollectionClassForName<"Cards">, "ready", RunEvents>;
+  cards: InitializedWhen<ConfiguredCollectionClassForName<"Cards">, "setup", RunEvents>;
 
   /**
-   * @remarks Initialized just before the `"ready"` hook event.
+   * @remarks Initialized just before the `"setup"` hook event.
    */
-  messages?: InitializedWhen<ConfiguredCollectionClassForName<"ChatMessage">, "ready", RunEvents>;
+  messages: InitializedWhen<ConfiguredCollectionClassForName<"ChatMessage">, "setup", RunEvents>;
 
   /**
    * Initialize the Compendium packs which are present within this Game
@@ -370,7 +362,7 @@ declare class InternalGame<RunEvents extends InitializationEvent> {
   /**
    * @remarks Initialized just before the `"ready"` hook event.
    */
-  webrtc?: InitializedWhen<AVMaster, "ready", RunEvents>;
+  webrtc: InitializedWhen<AVMaster, "ready", RunEvents>;
 
   /**
    * Initialize core UI elements
@@ -549,16 +541,26 @@ declare class InternalGame<RunEvents extends InitializationEvent> {
   protected _initializeStreamView(): Promise<void>;
 }
 
+type _InitGame = Game & InternalGame<"init">;
+type _I18nInitGame = Game & InternalGame<"init" | "i18nInit">;
+type _SetupGame = Game & InternalGame<"init" | "i18nInit" | "setup">;
+type _ReadyGame = Game & InternalGame<"init" | "i18nInit" | "setup" | "ready">;
+
 declare global {
   /**
    * The core Game instance which encapsulates the data, settings, and states relevant for managing the game experience.
    * The singleton instance of the Game class is available as the global variable game.
    */
-  class Game extends InternalGame<never> {}
+  class Game extends InternalGame<any> {}
 
-  type I18nInitGame = InternalGame<"i18nInit">;
-  type SetupGame = InternalGame<"setup">;
-  type ReadyGame = InternalGame<"ready">;
+  // These helper types show `Game` at different points in its life cycle.
+  // They're merged with `Game` to preserve the invariant `XYZGame instanceof Game`.
+  // They're interfaces for easier user declaration merges as well as to give intellisense better names to use as the expanded type is intimidating.
+
+  interface InitGame extends _InitGame {}
+  interface I18nInitGame extends _I18nInitGame {}
+  interface SetupGame extends _SetupGame {}
+  interface ReadyGame extends _ReadyGame {}
 
   interface HotReloadData {
     /** The type of package which was modified */

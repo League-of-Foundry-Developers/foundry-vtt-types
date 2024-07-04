@@ -447,13 +447,16 @@ declare global {
     }
     interface Metadata {
       type: foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
-      id: string;
       name: string;
       label: string;
       path: string;
       private: boolean;
       package: string;
       system?: string;
+      /** Added by PackageCompendiumPacks#initialize */
+      id: string;
+      packageType: string;
+      packageName: string;
     }
 
     interface GetIndexOptions<T extends CompendiumCollection.Metadata> {

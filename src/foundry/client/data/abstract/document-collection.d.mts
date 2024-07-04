@@ -155,7 +155,7 @@ declare global {
          */
         exclude: string[];
       }>,
-    ): string[];
+    ): InstanceType<ConfiguredDocumentClass<T>>[];
 
     /**
      * Update all objects in this DocumentCollection with a provided transformation.

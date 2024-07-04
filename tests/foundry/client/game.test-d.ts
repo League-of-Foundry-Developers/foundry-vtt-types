@@ -60,3 +60,28 @@ const requiredApiModule = aGame.modules.get("required-api-module");
 
 expectTypeOf(requiredApiModule).toEqualTypeOf<Module & ModuleConfig["required-api-module"]>();
 expectTypeOf(requiredApiModule.hooks.triggerDialog(5)).toEqualTypeOf<void>();
+
+declare global {
+  interface Game {
+    declarationMergingWorks: number;
+  }
+
+  interface ReadyGame {
+    onlyInReady: string;
+  }
+}
+
+expectTypeOf(game.declarationMergingWorks).toEqualTypeOf<number | undefined>();
+
+if (game instanceof Game) {
+  expectTypeOf(game.declarationMergingWorks).toEqualTypeOf<number>();
+
+  // @ts-expect-error - game is not guaranteed to be ready yet.
+  // Arguably it shouldn't be a hard error, just undefined.
+  game.onlyInReady;
+}
+
+if (game.ready) {
+  expectTypeOf(game.declarationMergingWorks).toEqualTypeOf<number>();
+  expectTypeOf(game.onlyInReady).toEqualTypeOf<string>();
+}

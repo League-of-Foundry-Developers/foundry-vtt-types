@@ -94,9 +94,9 @@ declare global {
          */
         cssClass?: string;
         /** An optional boolean to lock the tooltip after creation. Defaults to false. */
-        locked: boolean;
+        locked?: boolean;
         /** Explicit HTML content to inject into the tooltip rather than using tooltip text. */
-        content: HTMLElement;
+        content?: HTMLElement;
       },
     ): void;
 
