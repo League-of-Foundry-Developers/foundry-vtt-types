@@ -1,6 +1,8 @@
 import { expectTypeOf } from "vitest";
 import type EmbeddedCollection from "../../../../src/foundry/common/abstract/embedded-collection.d.mts";
 import type { NumberField, SchemaField } from "../../../../src/foundry/common/data/fields.d.mts";
+import type DataModel from "../../../../src/foundry/common/abstract/data.d.mts";
+import type { Merge } from "../../../../src/types/utils.d.mts";
 
 // @ts-expect-error name and type are required
 new foundry.documents.BaseActor();
@@ -68,7 +70,7 @@ class MyCharacter extends foundry.abstract.TypeDataModel<MyCharacterSchema, Acto
     };
   }
 
-  prepareDerivedData(): void {
+  prepareDerivedData(this: Merge<DataModel<MyCharacterSchema, Actor.ConfiguredInstance>, {}>): void {
     this.abilities.strength.value + 2;
     for (const ability of Object.values(this.abilities)) {
       // @ts-expect-error Derived data must be declared
@@ -101,9 +103,8 @@ declare namespace BoilerplateActorBase {
 
 class BoilerplateActorBase<
   Schema extends BoilerplateActorBase.Schema = BoilerplateActorBase.Schema,
-  BaseData extends Record<string, any> = Record<never, never>,
   DerivedData extends Record<string, any> = Record<never, never>,
-> extends foundry.abstract.TypeDataModel<Schema, Actor.ConfiguredInstance, BaseData, DerivedData> {
+> extends foundry.abstract.TypeDataModel<Schema, Actor.ConfiguredInstance, DerivedData> {
   static defineSchema(): BoilerplateActorBase.Schema {
     const fields = foundry.data.fields;
     const requiredInteger = { required: true, nullable: false, integer: true };
