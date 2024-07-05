@@ -101,8 +101,8 @@ declare namespace BoilerplateActorBase {
 
 class BoilerplateActorBase<
   Schema extends BoilerplateActorBase.Schema = BoilerplateActorBase.Schema,
-  BaseData extends Record<string, any> = Record<never, never>,
-  DerivedData extends Record<string, any> = Record<never, never>,
+  BaseData extends Record<string, unknown> = Record<string, never>,
+  DerivedData extends Record<string, unknown> = Record<string, never>,
 > extends foundry.abstract.TypeDataModel<Schema, Actor.ConfiguredInstance, BaseData, DerivedData> {
   static defineSchema(): BoilerplateActorBase.Schema {
     const fields = foundry.data.fields;
@@ -173,8 +173,8 @@ declare namespace BoilerplateCharacter {
 
 class BoilerplateCharacter extends BoilerplateActorBase<
   BoilerplateCharacter.Schema,
-  Record<never, never>,
-  BoilerplateCharacter.DerivedProps
+  Record<string, never>,
+  BoilerplateCharacter.DerivedProps & Record<string, unknown>
 > {
   static defineSchema() {
     const fields = foundry.data.fields;

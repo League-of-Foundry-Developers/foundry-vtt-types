@@ -1,4 +1,4 @@
-import type { Merge } from "../../../types/utils.d.mts";
+import type { Merge, RemoveIndexSignatures } from "../../../types/utils.d.mts";
 import type DataModel from "./data.d.mts";
 import type Document from "./document.d.mts";
 
@@ -19,7 +19,7 @@ declare class _InternalTypeDataModel<
   BaseData extends Record<string, unknown> = Record<string, never>,
   DerivedData extends Record<string, unknown> = Record<string, never>,
   // This does not work if inlined. It's weird to put it here but it works.
-  _ComputedInstance extends object = Merge<BaseData, DerivedData>,
+  _ComputedInstance extends object = Merge<RemoveIndexSignatures<BaseData>, RemoveIndexSignatures<DerivedData>>,
 > extends _InternalTypeDataModelConst<Schema, Parent, _ComputedInstance> {}
 
 /**
