@@ -1325,25 +1325,25 @@ declare global {
          */
         lightAmplification: VisionMode;
       };
-    };
 
-    /**
-     * The set of DetectionMode definitions which are available to be used for visibility detection.
-     */
-    detectionModes: {
-      [key: string]: DetectionMode;
+      /**
+       * The set of DetectionMode definitions which are available to be used for visibility detection.
+       */
+      detectionModes: {
+        [key: string]: DetectionMode;
 
-      basicSight: DetectionModeBasicSight;
+        basicSight: DetectionModeBasicSight;
 
-      seeInvisibility: DetectionModeInvisibility;
+        seeInvisibility: DetectionModeInvisibility;
 
-      senseInvisibility: DetectionModeInvisibility;
+        senseInvisibility: DetectionModeInvisibility;
 
-      feelTremor: DetectionModeTremor;
+        feelTremor: DetectionModeTremor;
 
-      seeAll: DetectionModeAll;
+        seeAll: DetectionModeAll;
 
-      senseAll: DetectionModeAll;
+        senseAll: DetectionModeAll;
+      };
     };
 
     /**
