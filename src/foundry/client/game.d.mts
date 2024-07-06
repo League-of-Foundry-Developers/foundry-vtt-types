@@ -7,17 +7,29 @@ import type {
 } from "../../types/helperTypes.d.mts";
 import type { StoredDocument, ValueOf } from "../../types/utils.d.mts";
 
-type InitializationEvent = "none" | "init" | "i18nInit" | "setup" | "ready";
+type EarlierEvents = {
+  none: never;
+  init: "none";
+  i18nInit: "none" | "init";
+  setup: "none" | "init" | "i18nInit";
+  ready: "none" | "init" | "i18nInit" | "setup";
+};
 
-type InitializedWhen<Data, MustRun extends InitializationEvent, RunEvents extends InitializationEvent, D = undefined> =
+type InitializationEvent = keyof EarlierEvents;
+
+// Must be called with all hooks in a union.
+// Do not increase the complexity of this type. If you do Game related types may get complex enough to complain about not being statically known.
+type GameInitialized<Data, MustRun extends InitializationEvent, RunEvents extends InitializationEvent, D = undefined> =
   Extract<RunEvents, MustRun> extends never ? D : Data;
 
-type MaybeInitialized<Data, MustRun extends InitializationEvent> = InitializedWhen<
+type HooksRan<T extends InitializationEvent> = EarlierEvents[T] | T;
+
+// May be called with just one hook.
+type MaybeInitialized<
   Data,
-  MustRun,
-  keyof AssumeHookRan,
-  Data | undefined
->;
+  MustRun extends InitializationEvent,
+  RunEvents extends InitializationEvent,
+> = GameInitialized<Data, MustRun, HooksRan<RunEvents>, Data | undefined>;
 
 declare class InternalGame<RunEvents extends InitializationEvent> {
   /**
@@ -69,7 +81,7 @@ declare class InternalGame<RunEvents extends InitializationEvent> {
    * A mapping of WorldCollection instances, one per primary Document type.
    * @remarks Initialized just before the `"setup"` hook event is called.
    */
-  readonly collections: InitializedWhen<
+  readonly collections: GameInitialized<
     foundry.utils.Collection<WorldCollection<DocumentConstructor, string>>,
     "setup",
     RunEvents
@@ -79,7 +91,7 @@ declare class InternalGame<RunEvents extends InitializationEvent> {
    * A mapping of CompendiumCollection instances, one per Compendium pack.
    * @remarks Initialized just before the `"setup"` hook event is called.
    */
-  readonly packs: InitializedWhen<
+  readonly packs: GameInitialized<
     foundry.utils.Collection<CompendiumCollection<CompendiumCollection.Metadata>>,
     "setup",
     RunEvents
@@ -94,25 +106,25 @@ declare class InternalGame<RunEvents extends InitializationEvent> {
    * Localization support
    * @remarks Initialized just before the `"i18nInit"` hook event.
    */
-  readonly i18n: InitializedWhen<Localization, "i18nInit", RunEvents>;
+  readonly i18n: GameInitialized<Localization, "i18nInit", RunEvents>;
 
   /**
    * The Keyboard Manager
    * @remarks Initialized just before the `"ready"` hook event.
    */
-  readonly keyboard: InitializedWhen<KeyboardManager, "ready", RunEvents>;
+  readonly keyboard: GameInitialized<KeyboardManager, "ready", RunEvents>;
 
   /**
    * The Mouse Manager
    * @remarks Initialized just before the `"ready"` hook event.
    */
-  readonly mouse: InitializedWhen<MouseManager, "ready", RunEvents>;
+  readonly mouse: GameInitialized<MouseManager, "ready", RunEvents>;
 
   /**
    * The Gamepad Manager
    * @remarks Initialized just before the `"ready"` hook event.
    */
-  readonly gamepad: InitializedWhen<GamepadManager, "ready", RunEvents>;
+  readonly gamepad: GameInitialized<GamepadManager, "ready", RunEvents>;
 
   /**
    * The New User Experience manager.
@@ -123,7 +135,7 @@ declare class InternalGame<RunEvents extends InitializationEvent> {
    * The user role permissions setting
    * @remarks Initialized just before the `"setup"` hook event.
    */
-  readonly permissions: InitializedWhen<Game.Permissions, "setup", RunEvents>;
+  readonly permissions: GameInitialized<Game.Permissions, "setup", RunEvents>;
 
   /**
    * The client session id which is currently active
@@ -140,7 +152,7 @@ declare class InternalGame<RunEvents extends InitializationEvent> {
    * Client keybindings which are used to configure application behavior
    * @remarks Initialized just before the `"ready"` hook event.
    */
-  readonly keybindings: InitializedWhen<ClientKeybindings, "ready", RunEvents>;
+  readonly keybindings: GameInitialized<ClientKeybindings, "ready", RunEvents>;
 
   /**
    * A reference to the open Socket.io connection
@@ -156,7 +168,7 @@ declare class InternalGame<RunEvents extends InitializationEvent> {
    * A singleton reference to the Canvas object which may be used.
    * @remarks Initialized just before the `"ready"` hook event.
    */
-  readonly canvas: InitializedWhen<Canvas, "ready", RunEvents>;
+  readonly canvas: GameInitialized<Canvas, "ready", RunEvents>;
 
   /**
    * A singleton instance of the Audio Helper class
@@ -167,25 +179,25 @@ declare class InternalGame<RunEvents extends InitializationEvent> {
    * A singleton instance of the Video Helper class
    * @remarks Initialized just before the `"setup"` hook events is called.
    */
-  readonly video: InitializedWhen<VideoHelper, "setup", RunEvents>;
+  readonly video: GameInitialized<VideoHelper, "setup", RunEvents>;
 
   /**
    * A singleton instance of the TooltipManager class
    * @remarks Initialized just before the `"setup"` hook events is called.
    */
-  readonly tooltip: InitializedWhen<TooltipManager, "setup", RunEvents>;
+  readonly tooltip: GameInitialized<TooltipManager, "setup", RunEvents>;
 
   /**
    * A singleton instance of the Tour collection class
    * @remarks Initialized just before the `"setup"` hook events is called.
    */
-  readonly tours: InitializedWhen<Tours, "setup", RunEvents>;
+  readonly tours: GameInitialized<Tours, "setup", RunEvents>;
 
   /**
    * The global document index.
    * @remarks Initialized just before the `"setup"` hook events is called.
    */
-  readonly documentIndex: InitializedWhen<DocumentIndex, "setup", RunEvents>;
+  readonly documentIndex: GameInitialized<DocumentIndex, "setup", RunEvents>;
 
   /**
    * The singleton instance of the ClientIssues manager.
@@ -208,7 +220,7 @@ declare class InternalGame<RunEvents extends InitializationEvent> {
    * A flag for whether the Game has successfully reached the "ready" hook
    * @defaultValue `false`
    */
-  ready: InitializedWhen<true, "ready", RunEvents, false>;
+  ready: GameInitialized<true, "ready", RunEvents, false>;
 
   /**
    * Fetch World data and return a Game instance
@@ -291,62 +303,62 @@ declare class InternalGame<RunEvents extends InitializationEvent> {
   /**
    * @remarks Initialized just before the `"setup"` hook event.
    */
-  users: InitializedWhen<ConfiguredCollectionClassForName<"User">, "setup", RunEvents>;
+  users: GameInitialized<ConfiguredCollectionClassForName<"User">, "setup", RunEvents>;
 
   /**
    * @remarks Initialized just before the `"setup"` hook event.
    */
-  folders: InitializedWhen<ConfiguredCollectionClassForName<"Folder">, "setup", RunEvents>;
+  folders: GameInitialized<ConfiguredCollectionClassForName<"Folder">, "setup", RunEvents>;
 
   /**
    * @remarks Initialized just before the `"setup"` hook event.
    */
-  actors: InitializedWhen<ConfiguredCollectionClassForName<"Actor">, "setup", RunEvents>;
+  actors: GameInitialized<ConfiguredCollectionClassForName<"Actor">, "setup", RunEvents>;
 
   /**
    * @remarks Initialized just before the `"setup"` hook event.
    */
-  items: InitializedWhen<ConfiguredCollectionClassForName<"Item">, "setup", RunEvents>;
+  items: GameInitialized<ConfiguredCollectionClassForName<"Item">, "setup", RunEvents>;
 
   /**
    * @remarks Initialized just before the `"setup"` hook event.
    */
-  scenes: InitializedWhen<ConfiguredCollectionClassForName<"Scene">, "setup", RunEvents>;
+  scenes: GameInitialized<ConfiguredCollectionClassForName<"Scene">, "setup", RunEvents>;
 
   /**
    * @remarks Initialized just before the `"setup"` hook event.
    */
-  combats: InitializedWhen<ConfiguredCollectionClassForName<"Combat">, "setup", RunEvents>;
+  combats: GameInitialized<ConfiguredCollectionClassForName<"Combat">, "setup", RunEvents>;
 
   /**
    * @remarks Initialized just before the `"setup"` hook event.
    */
-  journal: InitializedWhen<ConfiguredCollectionClassForName<"JournalEntry">, "setup", RunEvents>;
+  journal: GameInitialized<ConfiguredCollectionClassForName<"JournalEntry">, "setup", RunEvents>;
 
   /**
    * @remarks Initialized just before the `"setup"` hook event.
    */
-  macros: InitializedWhen<ConfiguredCollectionClassForName<"Macro">, "setup", RunEvents>;
+  macros: GameInitialized<ConfiguredCollectionClassForName<"Macro">, "setup", RunEvents>;
 
   /**
    * @remarks Initialized just before the `"setup"` hook event.
    */
-  playlists: InitializedWhen<ConfiguredCollectionClassForName<"Playlist">, "setup", RunEvents>;
+  playlists: GameInitialized<ConfiguredCollectionClassForName<"Playlist">, "setup", RunEvents>;
 
   /**
    * @remarks Initialized just before the `"setup"` hook event.
    */
-  tables: InitializedWhen<ConfiguredCollectionClassForName<"RollTable">, "setup", RunEvents>;
+  tables: GameInitialized<ConfiguredCollectionClassForName<"RollTable">, "setup", RunEvents>;
 
   /**
    * @remarks Initialized just before the `"setup"` hook event.
    */
-  cards: InitializedWhen<ConfiguredCollectionClassForName<"Cards">, "setup", RunEvents>;
+  cards: GameInitialized<ConfiguredCollectionClassForName<"Cards">, "setup", RunEvents>;
 
   /**
    * @remarks Initialized just before the `"setup"` hook event.
    */
-  messages: InitializedWhen<ConfiguredCollectionClassForName<"ChatMessage">, "setup", RunEvents>;
+  messages: GameInitialized<ConfiguredCollectionClassForName<"ChatMessage">, "setup", RunEvents>;
 
   /**
    * Initialize the Compendium packs which are present within this Game
@@ -362,7 +374,7 @@ declare class InternalGame<RunEvents extends InitializationEvent> {
   /**
    * @remarks Initialized just before the `"ready"` hook event.
    */
-  webrtc: InitializedWhen<AVMaster, "ready", RunEvents>;
+  webrtc: GameInitialized<AVMaster, "ready", RunEvents>;
 
   /**
    * Initialize core UI elements
@@ -671,13 +683,13 @@ declare global {
    * @defaultValue `undefined`
    * Initialized just before the `"init"` hook event.
    */
-  let canvas: InitializedWhen<Canvas, "init", keyof AssumeHookRan>;
+  let canvas: MaybeInitialized<Canvas, "init", keyof AssumeHookRan>;
 
   /**
    * @defaultValue `undefined`
    * Initialized just before the `"ready"` hook event.
    */
-  let keyboard: InitializedWhen<KeyboardManager, "ready", keyof AssumeHookRan>;
+  let keyboard: MaybeInitialized<KeyboardManager, "ready", keyof AssumeHookRan>;
 }
 
 type ConfiguredCollectionClassForName<Name extends foundry.CONST.DOCUMENT_TYPES> = InstanceType<
