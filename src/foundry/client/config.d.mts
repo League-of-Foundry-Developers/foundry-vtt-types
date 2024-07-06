@@ -1838,7 +1838,9 @@ declare global {
      * A mapping of status effect IDs which provide some additional mechanical integration.
      * @defaultValue `{ DEFEATED: "dead", INVISIBLE: "invisible", BLIND: "blind" }`
      */
-    specialStatusEffects: Record<"DEFEATED" | "INVISIBLE" | "BLIND", string>;
+    specialStatusEffects: keyof CONFIG.SpecialStatusEffects extends never
+      ? CONFIG.DefaultSpecialStatusEffects
+      : CONFIG.SpecialStatusEffects;
 
     /**
      * A mapping of core audio effects used which can be replaced by systems or mods
@@ -2727,6 +2729,13 @@ declare global {
       blendMode: PIXI.BLEND_MODES;
       config: Record<string, unknown>;
     }
+
+    interface SpecialStatusEffects {}
+    type DefaultSpecialStatusEffects = {
+      DEFEATED: string;
+      INVISIBLE: string;
+      BLIND: string;
+    };
 
     namespace Cards {
       interface Preset {
