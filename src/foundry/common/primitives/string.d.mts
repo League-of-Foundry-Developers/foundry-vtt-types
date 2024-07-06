@@ -8,6 +8,15 @@ declare global {
     capitalize<S extends string>(this: S): Capitalize<S>;
 
     /**
+     * Compare this string (x) with the other string (y) by comparing each character's Unicode code point value.
+     * This is the same comparison function that used by Array#sort if the compare function argument is omitted.
+     * The result is host/locale-independent.
+     * @param other - The other string to compare this string to.
+     * @returns a negative Number if x < y, a positive Number if x > y, or a zero otherwise.
+     */
+    compare<S extends string>(this: S, other: string): number;
+
+    /**
      * Convert a string to Title Case where the first letter of each word is capitalized
      */
     titleCase<S extends string>(this: S): Titlecase<S>;
