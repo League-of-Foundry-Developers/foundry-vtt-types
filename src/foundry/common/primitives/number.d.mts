@@ -36,6 +36,8 @@ declare global {
 
     /**
      * Round a number to the nearest number which is a multiple of a given interval
+     * This is a convenience function intended to humanize issues of floating point precision.
+     * The interval is treated as a standard string representation to determine the amount of decimal truncation applied.
      * @param interval - The interval to round the number to the nearest multiple of
      *                   (default: `1`)
      * @param method   - The rounding method in: round, ceil, floor
