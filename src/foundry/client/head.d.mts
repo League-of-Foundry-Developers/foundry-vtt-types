@@ -28,11 +28,7 @@ type Games = {
 // Put in its own helper type to cause type distribution.
 type DiscriminatedGame<Event extends InitializationEvent> = Event extends unknown ? Games[Event] : never;
 
-type MaybeUI = keyof AssumeHookRan extends never
-  ? Partial<UiApplications>
-  : keyof AssumeHookRan extends "ready"
-    ? UiApplications
-    : Partial<UiApplications>;
+type MaybeUI = Extract<keyof AssumeHookRan, "ready"> extends never ? Partial<UiApplications> : UiApplications;
 
 declare global {
   /**
