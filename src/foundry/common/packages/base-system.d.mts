@@ -41,8 +41,6 @@ declare namespace BaseSystem {
   }
 }
 
-interface BaseSystem extends fields.SchemaField.InnerInitializedType<BaseSystem.Schema> {}
-
 /**
  * The data schema used to define System manifest files.
  * Extends the basic PackageData schema with some additional system-specific fields.

@@ -181,8 +181,6 @@ declare namespace ApplicationConfiguration {
   }
 }
 
-interface ApplicationConfiguration extends fields.SchemaField.InnerInitializedType<ApplicationConfiguration.Schema> {}
-
 /**
  * A data model definition which describes the application configuration options.
  * These options are persisted in the user data Config folder in the options.json file.
@@ -269,8 +267,6 @@ declare namespace ReleaseData {
     download: fields.StringField;
   }
 }
-
-interface ReleaseData extends fields.SchemaField.InnerInitializedType<ReleaseData.Schema> {}
 
 /** A data object which represents the details of this Release of Foundry VTT */
 declare class ReleaseData extends DataModel<ReleaseData.Schema> {

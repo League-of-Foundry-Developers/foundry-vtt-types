@@ -65,8 +65,6 @@ declare namespace BaseWorld {
   interface Schema extends BaseWorldSchema {}
 }
 
-interface BaseWorld extends fields.SchemaField.InnerInitializedType<BaseWorld.Schema> {}
-
 /**
  * The data schema used to define World manifest files.
  * Extends the basic PackageData schema with some additional world-specific fields.

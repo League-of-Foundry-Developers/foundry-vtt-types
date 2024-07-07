@@ -168,8 +168,6 @@ declare namespace LightData {
   }
 }
 
-interface LightData extends fields.SchemaField.InnerInitializedType<LightData.Schema> {}
-
 declare class LightData extends DataModel<LightData.Schema> {
   static defineSchema(): LightData.Schema;
 
@@ -214,8 +212,6 @@ declare namespace ShapeData {
     POLYGON: "p";
   };
 }
-
-interface ShapeData extends fields.SchemaField.InnerInitializedType<ShapeData.Schema> {}
 
 declare class ShapeData extends DataModel<ShapeData.Schema> {
   static defineSchema(): ShapeData.Schema;
@@ -269,9 +265,6 @@ declare namespace TextureData {
   };
 }
 
-interface TextureData<SrcOptions extends FilePathFieldOptions = TextureData.DefaultOptions>
-  extends fields.SchemaField.InnerInitializedType<TextureData.Schema<SrcOptions>> {}
-
 declare class TextureData<
   SrcOptions extends FilePathFieldOptions = TextureData.DefaultOptions,
   SchemaOptions extends fields.SchemaField.Options<TextureData.Schema<SrcOptions>> = {},
@@ -304,8 +297,6 @@ declare namespace PrototypeToken {
 
   type ConstructorData = fields.SchemaField.InnerAssignmentType<Schema>;
 }
-
-interface PrototypeToken extends fields.SchemaField.InnerInitializedType<PrototypeToken.Schema> {}
 
 declare class PrototypeToken extends DataModel<PrototypeToken.Schema, documents.BaseActor> {
   constructor(data?: PrototypeToken.ConstructorData, options?: DataModel.ConstructorOptions);
@@ -395,8 +386,6 @@ declare namespace TombstoneData {
     _stats: fields.DocumentStatsField;
   }
 }
-
-interface TombstoneData extends fields.SchemaField.InnerInitializedType<TombstoneData.Schema> {}
 
 declare class TombstoneData extends DataModel<TombstoneData.Schema> {
   static defineSchema(): TombstoneData.Schema;

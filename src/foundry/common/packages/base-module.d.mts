@@ -27,8 +27,6 @@ declare namespace BaseModule {
   }
 }
 
-interface BaseModule extends fields.SchemaField.InnerInitializedType<BaseModule.Schema> {}
-
 /**
  * The data schema used to define Module manifest files.
  * Extends the basic PackageData schema with some additional module-specific fields.

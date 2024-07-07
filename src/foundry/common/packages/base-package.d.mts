@@ -455,8 +455,6 @@ export class PackageCompendiumPacks<
   ): void | DataModelValidationFailure;
 }
 
-interface BasePackage extends fields.SchemaField.InnerInitializedType<BasePackage.Schema> {}
-
 /**
  * The data schema used to define a Package manifest.
  * Specific types of packages extend this schema with additional fields.
