@@ -223,7 +223,7 @@ declare namespace BasePackage {
       }
     : PackageCompendiumFolderSchemaHelper;
 
-  type Schema = {
+  interface Schema extends DataSchema {
     /**
      * The machine-readable unique package id, should be lower-case with no spaces or special characters
      */
@@ -343,7 +343,7 @@ declare namespace BasePackage {
     exclusive: fields.BooleanField;
 
     persistentStorage: fields.BooleanField;
-  };
+  }
 
   type PackageManifestData = {
     availability: CONST.PACKAGE_AVAILABILITY_CODES;

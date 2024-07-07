@@ -54,7 +54,7 @@ declare namespace LightData {
     max: fields.NumberField<{ initial: 1 }>;
   };
 
-  type Schema = {
+  interface Schema extends DataSchema {
     /**
      * An opacity for the emitted light, if any
      */
@@ -165,7 +165,7 @@ declare namespace LightData {
         validationError: "darkness.max may not be less than darkness.min";
       }
     >;
-  };
+  }
 }
 
 interface LightData extends fields.SchemaField.InnerInitializedType<LightData.Schema> {}
@@ -177,7 +177,7 @@ declare class LightData extends DataModel<LightData.Schema> {
 }
 
 declare namespace ShapeData {
-  type Schema = {
+  interface Schema extends DataSchema {
     /**
      * The type of shape, a value in ShapeData.TYPES.
      * For rectangles, the x/y coordinates are the top-left corner.
@@ -205,7 +205,7 @@ declare namespace ShapeData {
      * For polygons, the array of polygon coordinates which comprise the shape.
      */
     points: fields.ArrayField<fields.NumberField<{ nullable: false }>>;
-  };
+  }
 
   type TYPES = {
     RECTANGLE: "r";
@@ -378,7 +378,7 @@ declare class PrototypeToken extends DataModel<PrototypeToken.Schema, documents.
 }
 
 declare namespace TombstoneData {
-  type Schema = {
+  interface Schema extends DataSchema {
     /**
      * The _id of the base Document that this tombstone represents.
      */
@@ -393,7 +393,7 @@ declare namespace TombstoneData {
      * An object of creation and access information.
      */
     _stats: fields.DocumentStatsField;
-  };
+  }
 }
 
 interface TombstoneData extends fields.SchemaField.InnerInitializedType<TombstoneData.Schema> {}

@@ -2,7 +2,7 @@ import type BasePackage from "./base-package.d.mts";
 import * as fields from "../data/fields.mjs";
 
 declare namespace BaseSystem {
-  type Schema = ReturnType<typeof BasePackage.defineSchema> & {
+  interface Schema extends ReturnType<typeof BasePackage.defineSchema> {
     /**
      * The current package version
      * @remarks Actually defined in BasePackage but defined here to avoid conflict with BaseWorld
@@ -38,7 +38,7 @@ declare namespace BaseSystem {
      * An Actor data attribute path to use for Token secondary resource bars
      */
     secondaryTokenAttribute: fields.StringField;
-  };
+  }
 }
 
 interface BaseSystem extends fields.SchemaField.InnerInitializedType<BaseSystem.Schema> {}
