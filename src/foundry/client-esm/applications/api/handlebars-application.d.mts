@@ -43,6 +43,9 @@ type HandlebarsTemplatePart = {
  * The mixed application class augmented with [Handlebars](https://handlebarsjs.com) template rendering behavior.
  */
 declare class HandlebarsApplication {
+  /** @privateRemarks All mixin classses should accept anything for its constructor. */
+  constructor(...args: any[]);
+
   /**
    * Configure a registry of template parts which are supported for this application for partial rendering.
    * @defaultValue `{}`
