@@ -20,37 +20,37 @@ declare global {
      * Is this field required to be populated?
      * @defaultValue `false`
      */
-    required?: boolean;
+    required?: boolean | undefined;
 
     /**
      * Can this field have null values?
      * @defaultValue `false`
      */
-    nullable?: boolean;
+    nullable?: boolean | undefined;
 
     /** The initial value of a field, or a function which assigns that initial value. */
-    initial?: DataFieldOptions.InitialType<
-      DataFieldOptions.InitialReturnType<BaseAssignmentType, this["nullable"], this["required"]>
-    >;
+    initial?:
+      | DataFieldOptions.InitialType<
+          DataFieldOptions.InitialReturnType<BaseAssignmentType, this["nullable"], this["required"]>
+        >
+      | undefined;
 
     /** A data validation function which accepts one argument with the current value. */
-    validate?: (
-      this: DataField.Any,
-      value: any,
-      options?: DataField.ValidationOptions<DataField.Any>,
-    ) => boolean | void;
+    validate?:
+      | ((this: DataField.Any, value: any, options?: DataField.ValidationOptions<DataField.Any>) => boolean | void)
+      | undefined;
 
     /** A localizable label displayed on forms which render this field. */
-    label?: string;
+    label?: string | undefined;
 
     /** Localizable help text displayed on forms which render this field. */
-    hint?: string;
+    hint?: string | undefined;
 
     /**
      * A custom validation error string. When displayed will be prepended with the
      * document name, field name, and candidate value.
      */
-    validationError?: string;
+    validationError?: string | undefined;
   }
 
   namespace DataFieldOptions {
@@ -442,9 +442,12 @@ declare namespace DataField {
 declare class SchemaField<
   Fields extends DataSchema,
   Options extends SchemaField.Options<Fields> = SchemaField.DefaultOptions,
-  AssignmentType = SchemaField.AssignmentType<Fields, Options>,
-  InitializedType = SchemaField.InitializedType<Fields, Options>,
-  PersistedType extends object | null | undefined = SchemaField.PersistedType<Fields, Options>,
+  AssignmentType = SchemaField.AssignmentType<Fields, SimpleMerge<Options, SchemaField.DefaultOptions>>,
+  InitializedType = SchemaField.InitializedType<Fields, SimpleMerge<Options, SchemaField.DefaultOptions>>,
+  PersistedType extends object | null | undefined = SchemaField.PersistedType<
+    Fields,
+    SimpleMerge<Options, SchemaField.DefaultOptions>
+  >,
 > extends DataField<Options, AssignmentType, InitializedType, PersistedType> {
   /**
    * @param fields  - The contained field definitions
@@ -574,7 +577,11 @@ declare namespace SchemaField {
   type InnerAssignmentType<Fields extends DataSchema> = RemoveIndexSignatures<{
     [Key in keyof Fields]?: Fields[Key] extends DataField<any, infer AssignType, any, any>
       ? Fields[Key] extends SchemaField<infer SubSchema, any, any, any, any>
-        ? InnerAssignmentType<SubSchema>
+        ? // FIXME(LukeAbby): This is a quick hack into InnerAssignmentType that assumes that the `initial` of `SchemaField` is not changed from the default of `{}`
+          // This will be fixed with the refactoring of the types
+          {} extends InnerAssignmentType<SubSchema>
+          ? InnerAssignmentType<SubSchema> | undefined | null
+          : InnerAssignmentType<SubSchema>
         : AssignType
       : never;
   }>;
@@ -669,10 +676,12 @@ declare namespace SchemaField {
  */
 declare class BooleanField<
   const Options extends BooleanField.Options = BooleanField.DefaultOptions,
-  const AssignmentType = BooleanField.AssignmentType<Options>,
-  const InitializedType = BooleanField.InitializedType<Options>,
-  const PersistedType extends boolean | null | undefined = BooleanField.InitializedType<Options>,
-> extends DataField<Options, AssignmentType, InitializedType, PersistedType> {
+  const AssignmentType = BooleanField.AssignmentType<SimpleMerge<Options, BooleanField.DefaultOptions>>,
+  const InitializedType = BooleanField.InitializedType<SimpleMerge<Options, BooleanField.DefaultOptions>>,
+  const PersistedType extends boolean | null | undefined = BooleanField.InitializedType<
+    SimpleMerge<Options, BooleanField.DefaultOptions>
+  >,
+> extends DataField<SimpleMerge<Options, BooleanField.DefaultOptions>, AssignmentType, InitializedType, PersistedType> {
   /** @defaultValue `true` */
   override required: boolean;
 
