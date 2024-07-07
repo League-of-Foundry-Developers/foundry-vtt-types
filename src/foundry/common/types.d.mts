@@ -1,4 +1,6 @@
-import type { ConstructorOf } from "../../types/utils.d.mts";
+import type { ConstructorOf, DeepPartial } from "../../types/utils.d.mts";
+import type ApplicationV2 from "../client-esm/applications/api/application.mts";
+import type { CustomFormInput } from "../client-esm/applications/forms/fields.mts";
 
 declare global {
   interface DocumentConstructionContext {
@@ -6,100 +8,104 @@ declare global {
      * The parent Document of this one, if this one is embedded
      * @defaultValue `null`
      */
-    parent?: foundry.abstract.Document<any, any, any> | null;
+    parent?: foundry.abstract.Document<any, any, any> | null | undefined;
 
     /**
      * The compendium collection ID which contains this Document, if any
      * @defaultValue `null`
      */
-    pack?: string | null;
+    pack?: string | null | undefined;
 
     /**
      * Whether to validate initial data strictly?
      * @defaultValue `true`
      */
-    strict?: boolean;
+    strict?: boolean | undefined;
   }
 
+  // TODO Removed in v12
   interface DocumentModificationContext {
     /**
      * A parent Document within which these Documents should be embedded
      */
-    parent?: foundry.abstract.Document<any, any, any>;
+    parent?: foundry.abstract.Document<any, any, any> | undefined;
 
     /**
      * A Compendium pack identifier within which the Documents should be modified
      */
-    pack?: string;
+    pack?: string | undefined;
 
     /**
      * Block the dispatch of preCreate hooks for this operation
      * @defaultValue `false`
      */
-    noHook?: boolean;
+    noHook?: boolean | undefined;
 
     /**
      * Return an index of the Document collection, used only during a get operation.
      * @defaultValue `false`
      */
-    index?: boolean;
+    index?: boolean | undefined;
 
     /**
      * An array of fields to retrieve when indexing the collection
      */
-    indexFields?: string[];
+    indexFields?: string[] | undefined;
 
     /**
      * When performing a creation operation, keep the provided _id instead of clearing it.
      * @defaultValue `false`
      */
-    keepId?: boolean;
+    keepId?: boolean | undefined;
 
     /**
-     * When performing a creation operation, keep existing _id values of documents embedded within the one being created instead of generating new ones.
+     * When performing a creation operation, keep existing _id values of documents embedded within the one being
+     * created instead of generating new ones.
      * @defaultValue `true`
      */
-    keepEmbeddedIds?: boolean;
+    keepEmbeddedIds?: boolean | undefined;
 
     /**
      * Create a temporary document which is not saved to the database. Only used during creation.
      * @defaultValue `false`
      */
-    temporary?: boolean;
+    temporary?: boolean | undefined;
 
     /**
      * Automatically re-render existing applications associated with the document.
      * @defaultValue `true`
      */
-    render?: boolean;
+    render?: boolean | undefined;
 
     /**
      * Automatically create and render the Document sheet when the Document is first created.
      * @defaultValue `false`
      */
-    renderSheet?: boolean;
+    renderSheet?: boolean | undefined;
 
     /**
-     * Difference each update object against current Document data to reduce the size of the transferred data. Only used during update.
+     * Difference each update object against current Document data to reduce the size of the transferred data. Only
+     * used during update.
      * @defaultValue `true`
      */
-    diff?: boolean;
+    diff?: boolean | undefined;
 
     /**
      * Merge objects recursively. If false, inner objects will be replaced explicitly. Use with caution!
      * @defaultValue `true`
      */
-    recursive?: boolean;
+    recursive?: boolean | undefined;
 
     /**
      * Is the operation undoing a previous operation, only used by embedded Documents within a Scene
      */
-    isUndo?: boolean;
+    isUndo?: boolean | undefined;
 
     /**
-     * Whether to delete all documents of a given type, regardless of the array of ids provided. Only used during a delete operation.
+     * Whether to delete all documents of a given type, regardless of the array of ids provided. Only used during a
+     * delete operation.
      */
-    deleteAll?: boolean;
+    deleteAll?: boolean | undefined;
   }
 
   /**
@@ -155,40 +161,50 @@ declare global {
 
     // TODO: This can take data models and data fields now
     /** The JS Type that the Setting is storing */
-    type?: T extends string
-      ? typeof String
-      : T extends number
-        ? typeof Number
-        : T extends boolean
-          ? typeof Boolean
-          : T extends Array<any>
-            ? typeof Array
-            : ConstructorOf<T>;
+    type?:
+      | (T extends string
+          ? typeof String
+          : T extends number
+            ? typeof Number
+            : T extends boolean
+              ? typeof Boolean
+              : T extends Array<any>
+                ? typeof Array
+                : ConstructorOf<T>)
+      | undefined;
 
     /** For string Types, defines the allowable values */
     choices?: (T extends number | string ? Record<T, string> : never) | undefined;
 
     /** For numeric Types, defines the allowable range */
-    range?: T extends number
-      ? {
-          max: number;
-          min: number;
-          step: number;
-        }
-      : never;
+    range?:
+      | (T extends number
+          ? {
+              max: number;
+              min: number;
+              step: number;
+            }
+          : never)
+      | undefined;
 
     /** The default value */
     default: T;
 
     /** Whether setting requires Foundry to be reloaded on change  */
-    requiresReload?: boolean;
+    requiresReload?: boolean | undefined;
 
     /** Executes when the value of this Setting changes */
-    onChange?: (value: T) => void;
+    onChange?: ((value: T) => void) | undefined;
 
-    filePicker?: (T extends string ? true | "audio" | "image" | "video" | "imagevideo" | "folder" : never) | undefined;
+    /**
+     * A custom form field input used in conjunction with a DataField type
+     */
+    input?: CustomFormInput | undefined;
   }
 
+  /**
+   * A Client Setting Submenu
+   */
   interface SettingSubmenuConfig {
     key: string;
 
@@ -206,8 +222,10 @@ declare global {
     /** The classname of an Icon to render */
     icon?: string | undefined;
 
-    /** The FormApplication to render */
-    type: new () => FormApplication<any, any>;
+    /** The FormApplication or ApplicationV2 to render */
+    type:
+      | (new () => FormApplication<any, any>)
+      | (new (options?: DeepPartial<ApplicationV2.Configuration>) => ApplicationV2<any, any>);
 
     /** If true, only a GM can edit this Setting */
     restricted?: boolean | undefined;
@@ -222,46 +240,46 @@ declare global {
     name: string;
 
     /** An additional human readable hint */
-    hint?: string;
+    hint?: string | undefined;
 
     /** The default bindings that can never be changed nor removed. */
-    uneditable?: KeybindingActionBinding[];
+    uneditable?: KeybindingActionBinding[] | undefined;
 
     /** The default bindings that can be changed by the user. */
-    editable?: KeybindingActionBinding[];
+    editable?: KeybindingActionBinding[] | undefined;
 
     /** A function to execute when a key down event occurs. If True is returned, the event is consumed and no further keybinds execute. */
-    onDown?: (ctx: KeyboardEventContext) => boolean | void;
+    onDown?: ((ctx: KeyboardEventContext) => boolean | void) | undefined;
 
     /** A function to execute when a key up event occurs. If True is returned, the event is consumed and no further keybinds execute. */
-    onUp?: (ctx: KeyboardEventContext) => boolean | void;
+    onUp?: ((ctx: KeyboardEventContext) => boolean | void) | undefined;
 
     /** If True, allows Repeat events to execute the Action's onDown. Defaults to false. */
-    repeat?: boolean;
+    repeat?: boolean | undefined;
 
     /** If true, only a GM can edit and execute this Action */
-    restricted?: boolean;
+    restricted?: boolean | undefined;
 
     /** Modifiers such as [ "CONTROL" ] that can be also pressed when executing this Action. Prevents using one of these modifiers as a Binding. */
-    reservedModifiers?: string[];
+    reservedModifiers?: string[] | undefined;
 
     /** The preferred precedence of running this Keybinding Action */
-    precedence?: number; // TODO: KEYBINDING_PRECEDENCE?
+    precedence?: number | undefined; // TODO: KEYBINDING_PRECEDENCE?
 
     /** The recorded registration order of the action */
-    order?: number;
+    order?: number | undefined;
   }
 
   /** A Client Keybinding Action Binding */
   interface KeybindingActionBinding {
     /** A numeric index which tracks this bindings position during form rendering */
-    index?: number;
+    index?: number | undefined;
 
     /** The KeyboardEvent#code value from https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code/code_values */
     key: string;
 
     /** An array of modifiers keys from KeyboardManager.MODIFIER_KEYS which are required for this binding to be activated */
-    modifiers?: string[];
+    modifiers?: string[] | undefined;
   }
 
   /** An action that can occur when a key is pressed */
@@ -282,10 +300,10 @@ declare global {
     optionalModifiers: string[];
 
     /** The handler that executes onDown */
-    onDown: Function;
+    onDown?: ((ctx: KeyboardEventContext) => boolean | void) | undefined;
 
     /** The handler that executes onUp */
-    onUp: Function;
+    onUp?: ((ctx: KeyboardEventContext) => boolean | void) | undefined;
 
     /** If True, allows Repeat events to execute this Action's onDown */
     repeat: boolean;
@@ -330,7 +348,7 @@ declare global {
     repeat: boolean;
 
     /** The executing Keybinding Action. May be undefined until the action is known. */
-    action: string | undefined;
+    action?: string | undefined;
   }
 
   /** Connected Gamepad info */
@@ -342,43 +360,43 @@ declare global {
     activeButtons: Set<string>;
   }
 
-  type RequestData = object | object[] | string | string[];
+  type RequestData = Record<string, unknown> | Record<string, unknown>[] | string | string[];
 
   interface SocketRequest {
     /**
      * The server-side action being requested
      */
-    action?: string;
+    action?: string | undefined;
 
     /**
      * The type of object being modified
      */
-    type?: string;
+    type?: string | undefined;
 
     /**
      * Data applied to the operation
      */
-    data?: RequestData;
+    data?: RequestData | undefined;
 
     /**
      * A Compendium pack name
      */
-    pack?: string;
+    pack?: string | undefined;
 
     /**
      * The type of parent document
      */
-    parentType?: string;
+    parentType?: string | undefined;
 
     /**
      * The ID of a parent document
      */
-    parentId?: string;
+    parentId?: string | undefined;
 
     /**
      * Additional options applied to the request
      */
-    options?: object;
+    options?: Record<string, unknown> | undefined;
   }
 
   interface SocketResponse {
@@ -390,26 +408,26 @@ declare global {
     /**
      * An error, if one occurred
      */
-    error?: Error;
+    error?: Error | undefined;
 
     /**
      * The status of the request
      */
-    status?: string;
+    status?: string | undefined;
 
     /**
      * The ID of the requesting User
      */
-    userId?: string;
+    userId?: string | undefined;
 
     /**
      * Data returned as a result of the request
      */
-    data?: RequestData;
+    data?: RequestData | undefined;
 
     /**
      * An Array of created data objects
      */
-    result?: object[] | string[];
+    result?: Record<string, unknown>[] | string[] | undefined;
   }
 }
