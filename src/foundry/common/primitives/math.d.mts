@@ -43,19 +43,19 @@ declare global {
     /**
      * Transform an angle in degrees to be bounded within the domain [0, 360]
      * @param degrees - An angle in degrees
-     * @param base    - The base angle to normalize to, either 0 for [0, 360) or 360 for (0, 360] (default: `0`)
      * @returns The same angle on the range [0, 360) or (0, 360]
-     * @deprecated since v12 until v14.
-     * @remarks Use Math.normalizeDegrees(degrees: number): number.
      */
-    normalizeDegrees(degrees: number, base?: number): number;
+    normalizeDegrees(degrees: number): number;
 
     /**
      * Transform an angle in degrees to be bounded within the domain [0, 360]
      * @param degrees - An angle in degrees
+     * @param base    - The base angle to normalize to, either 0 for [0, 360) or 360 for (0, 360] (default: `0`)
      * @returns The same angle on the range [0, 360) or (0, 360]
+     * @deprecated since v12, until v14.
+     * @remarks Use Math.normalizeDegrees(degrees: number): number.
      */
-    normalizeDegrees(degrees: number): number;
+    normalizeDegrees(degrees: number, base?: number): number;
 
     /**
      * Transform an angle in radians to be bounded within the domain [-PI, PI]
@@ -68,7 +68,7 @@ declare global {
      * Round a floating point number to a certain number of decimal places
      * @param number - A floating point number
      * @param places - An integer number of decimal places
-     * @deprecated since v12 till v14
+     * @deprecated since v12, until v14
      */
     roundDecimals(number: number, places: number): number;
 

@@ -12,7 +12,7 @@ declare global {
      * This is the same comparison function that used by Array#sort if the compare function argument is omitted.
      * The result is host/locale-independent.
      * @param other - The other string to compare this string to.
-     * @returns a negative Number if x < y, a positive Number if x > y, or a zero otherwise.
+     * @returns A negative Number if x \< y, a positive Number if x \> y, or a zero otherwise.
      */
     compare<S extends string>(this: S, other: string): number;
 
