@@ -2,43 +2,6 @@ import type { DeepPartial, Mixin } from "../../../../types/utils.d.mts";
 import type { ApplicationFormConfiguration, ApplicationRenderContext, ApplicationRenderOptions } from "../_types.d.mts";
 import type ApplicationV2 from "./application.d.mts";
 
-// TODO: How does this merge with DocumentSheetRenderOptions?
-interface HandlebarsRenderOptions extends ApplicationRenderOptions {
-  parts: string[];
-}
-
-type HandlebarsTemplatePart = {
-  /**
-   * The template entry-point for the part
-   */
-  template: string;
-  /**
-   * A CSS id to assign to the top-level element of the rendered part.
-   * This id string is automatically prefixed by the application id.
-   */
-  id?: string;
-  /**
-   * An array of CSS classes to apply to the top-level element of the
-   * rendered part.
-   */
-  classes?: string[];
-  /**
-   * An array of templates that are required to render the part.
-   * If omitted, only the entry-point is inferred as required.
-   */
-  templates?: string[];
-  /**
-   * An array of selectors within this part whose scroll positions should
-   * be persisted during a re-render operation. A blank string is used
-   * to denote that the root level of the part is scrollable.
-   */
-  scrollabe?: string[];
-  /**
-   * A registry of forms selectors and submission handlers.
-   */
-  forms?: Record<string, ApplicationFormConfiguration>;
-};
-
 /**
  * The mixed application class augmented with [Handlebars](https://handlebarsjs.com) template rendering behavior.
  */
@@ -50,7 +13,7 @@ declare class HandlebarsApplication {
    * Configure a registry of template parts which are supported for this application for partial rendering.
    * @defaultValue `{}`
    */
-  static PARTS: Record<string, HandlebarsTemplatePart>;
+  static PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**
    * A record of all rendered template parts.
@@ -58,7 +21,7 @@ declare class HandlebarsApplication {
    */
   get parts(): Record<string, HTMLElement>;
 
-  protected _configureRenderOptions(options: DeepPartial<HandlebarsRenderOptions>): void;
+  protected _configureRenderOptions(options: DeepPartial<HandlebarsApplicationMixin.HandlebarsRenderOptions>): void;
 
   protected _preFirstRender(
     context: DeepPartial<ApplicationRenderContext>,
@@ -91,7 +54,7 @@ declare class HandlebarsApplication {
   protected _preparePartContext(
     partId: string,
     context: ApplicationRenderContext,
-    options: DeepPartial<HandlebarsRenderOptions>,
+    options: DeepPartial<HandlebarsApplicationMixin.HandlebarsRenderOptions>,
   ): Promise<ApplicationRenderContext>;
 
   /**
@@ -143,14 +106,14 @@ declare class HandlebarsApplication {
   protected _attachPartListeners(
     partId: string,
     htmlElement: HTMLElement,
-    options: DeepPartial<HandlebarsRenderOptions>,
+    options: DeepPartial<HandlebarsApplicationMixin.HandlebarsRenderOptions>,
   ): void;
 }
 
 /**
  * Augment an Application class with [Handlebars](https://handlebarsjs.com) template rendering behavior.
  */
-export default function HandlebarsApplicationMixin<BaseClass extends typeof ApplicationV2>(
+declare function HandlebarsApplicationMixin<BaseClass extends typeof ApplicationV2>(
   BaseApplication: BaseClass,
 ): Mixin<typeof HandlebarsApplication, BaseClass>;
 
@@ -159,4 +122,43 @@ declare namespace HandlebarsApplicationMixin {
     scrollPositions: Array<[el1: HTMLElement, scrollTop: number, scrollLeft: number]>;
     focus?: string | undefined;
   }
+
+  // TODO: How does this merge with DocumentSheetRenderOptions?
+  interface HandlebarsRenderOptions extends ApplicationRenderOptions {
+    parts: string[];
+  }
+
+  type HandlebarsTemplatePart = {
+    /**
+     * The template entry-point for the part
+     */
+    template: string;
+    /**
+     * A CSS id to assign to the top-level element of the rendered part.
+     * This id string is automatically prefixed by the application id.
+     */
+    id?: string;
+    /**
+     * An array of CSS classes to apply to the top-level element of the
+     * rendered part.
+     */
+    classes?: string[];
+    /**
+     * An array of templates that are required to render the part.
+     * If omitted, only the entry-point is inferred as required.
+     */
+    templates?: string[];
+    /**
+     * An array of selectors within this part whose scroll positions should
+     * be persisted during a re-render operation. A blank string is used
+     * to denote that the root level of the part is scrollable.
+     */
+    scrollabe?: string[];
+    /**
+     * A registry of forms selectors and submission handlers.
+     */
+    forms?: Record<string, ApplicationFormConfiguration>;
+  };
 }
+
+export default HandlebarsApplicationMixin;
