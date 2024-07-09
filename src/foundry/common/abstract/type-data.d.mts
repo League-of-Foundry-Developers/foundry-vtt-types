@@ -1,4 +1,4 @@
-import type { Merge, RemoveIndexSignatures } from "../../../types/utils.d.mts";
+import type { Merge, RemoveIndexSignatures, SimpleMerge } from "../../../types/utils.d.mts";
 import type BaseUser from "../documents/user.d.mts";
 import type DataModel from "./data.d.mts";
 import type Document from "./document.d.mts";
@@ -24,6 +24,52 @@ declare class _InternalTypeDataModel<
   // This does not work if inlined. It's weird to put it here but it works.
   _ComputedInstance extends object = RemoveIndexSignatures<Merge<BaseData, DerivedData>>,
 > extends _InternalTypeDataModelConst<Schema, Parent, _ComputedInstance> {}
+
+// These properties are used to give a performant way of inferring the `BaseModel`, `BaseData` and `DerivedData` types.
+// This avoids checking the entire constraint `T extends TypeDataModel.Any` to infer out the `BaseData` and `DerivedData` types.
+// To prevent adding properties that could appear at runtime they are unique symbols.
+// This means that the only way to access them is to have a reference to the variables which will be impossible outside of this file.
+declare const __BaseModel: unique symbol;
+declare const __BaseData: unique symbol;
+declare const __DerivedData: unique symbol;
+
+declare namespace TypeDataModel {
+  export type Any = TypeDataModel<any, any, any, any>;
+
+  // This still is only allows classes descended from `TypeDataField` because these unique symbols aren't used elsewhere.
+  // These generic parameters seem to be required.
+  // This is likely because of a TypeScript bug in which concrete types like `any` or `unknown` aren't treated as carefully as a type parameter.
+  type TypeDataModelInternal<BaseModel, BaseData, DerivedData> = {
+    [__BaseModel]: BaseModel;
+    [__BaseData]: BaseData;
+    [__DerivedData]: DerivedData;
+  };
+
+  // Removes the base and derived data from the type.
+  // Has no extends bounds to simplify any checking logic.
+  type RemoveDerived<BaseThis, BaseModel, BaseData, DerivedData> = SimpleMerge<
+    Omit<BaseThis, keyof BaseData | keyof DerivedData>,
+    BaseModel
+  >;
+
+  export type PrepareBaseDataThis<BaseThis extends TypeDataModelInternal<any, any, any>> =
+    BaseThis extends TypeDataModelInternal<infer BaseModel, infer BaseData, infer DerivedData>
+      ? SimpleMerge<
+          Omit<RemoveDerived<BaseThis, BaseModel, BaseData, DerivedData>, "prepareBaseData">,
+          // `Partial` over `InexactPartial` is correct: in `prepareBaseData` doing `this[baseProperty] = undefined` should be an error unless it's explicitly allowed in `BaseType`.
+          Partial<BaseData>
+        >
+      : never;
+
+  export type PrepareDerivedDataThis<BaseThis extends TypeDataModelInternal<any, any, any>> =
+    BaseThis extends TypeDataModelInternal<infer BaseModel, infer BaseData, infer DerivedData>
+      ? SimpleMerge<
+          Omit<RemoveDerived<BaseThis, BaseModel, BaseData, DerivedData>, "prepareDerivedData">,
+          // `Partial` over `InexactPartial` is correct: in `prepareDerivedData` doing `this[derivedProperty] = undefined` should be an error unless it's explicitly allowed in `DerivedType`.
+          Merge<BaseData, Partial<DerivedData>>
+        >
+      : never;
+}
 
 /**
  * A specialized subclass of DataModel, intended to represent a Document's type-specific data.
@@ -87,6 +133,10 @@ export default abstract class TypeDataModel<
   BaseData extends Record<string, unknown> = Record<string, never>,
   DerivedData extends Record<string, unknown> = Record<string, never>,
 > extends _InternalTypeDataModel<Schema, Parent, BaseData, DerivedData> {
+  [__BaseModel]: DataModel<Schema, Parent>;
+  [__BaseData]: RemoveIndexSignatures<BaseData>;
+  [__DerivedData]: RemoveIndexSignatures<DerivedData>;
+
   modelProvider: System | Module | null;
 
   /**
@@ -99,7 +149,7 @@ export default abstract class TypeDataModel<
    *
    * Called before {@link ClientDocument#prepareBaseData} in {@link ClientDocument#prepareData}.
    * */
-  prepareBaseData(this: Merge<DataModel<Schema, Parent>, BaseData>): void;
+  prepareBaseData(this: TypeDataModel.PrepareBaseDataThis<this>): void;
 
   /**
    * Apply transformations of derivations to the values of the source data object.
@@ -107,7 +157,7 @@ export default abstract class TypeDataModel<
    *
    * Called before {@link ClientDocument#prepareDerivedData} in {@link ClientDocument#prepareData}.
    */
-  prepareDerivedData(this: Merge<Merge<DataModel<Schema, Parent>, BaseData>, Partial<DerivedData>>): void;
+  prepareDerivedData(this: TypeDataModel.PrepareDerivedDataThis<this>): void;
 
   /**
    * Convert this Document to some HTML display for embedding purposes.
