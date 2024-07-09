@@ -133,7 +133,7 @@ declare abstract class DiceTerm extends RollTerm {
    * Evaluate deterministic values of this term synchronously.
    * @param options - Options forwarded to inner Roll evaluation. (Default: `{}`)
    */
-  _evaluateAsync(options?: InexactPartial<DiceTerm.EvaluationOptions>): Promise<this>;
+  _evaluateSync(options?: InexactPartial<DiceTerm.EvaluationOptions>): this;
 
   /* -------------------------------------------- */
 

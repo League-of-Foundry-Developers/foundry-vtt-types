@@ -1,7 +1,7 @@
 export { default as Coin } from "./coin.mts";
 export { default as DiceTerm } from "./dice.mts";
-export { default as Die } from "./die.mjs";
-export { default as FateDie } from "./fate.mjs";
+export { default as Die } from "./die.mts";
+export { default as FateDie } from "./fate.mts";
 export { default as FunctionTerm } from "./function.mts";
 export { default as NumericTerm } from "./numeric.mts";
 export { default as OperatorTerm } from "./operator.mts";
