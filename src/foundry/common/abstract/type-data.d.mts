@@ -19,9 +19,10 @@ declare const _InternalTypeDataModelConst: _InternalTypeDataModelInterface;
 declare class _InternalTypeDataModel<
   Schema extends DataSchema,
   Parent extends Document<DataSchema, any, any>,
+  BaseData extends Record<string, unknown> = Record<string, never>,
   DerivedData extends Record<string, unknown> = Record<string, never>,
   // This does not work if inlined. It's weird to put it here but it works.
-  _ComputedInstance extends object = DerivedData,
+  _ComputedInstance extends object = RemoveIndexSignatures<Merge<BaseData, DerivedData>>,
 > extends _InternalTypeDataModelConst<Schema, Parent, _ComputedInstance> {}
 
 /**
@@ -83,8 +84,9 @@ declare class _InternalTypeDataModel<
 export default abstract class TypeDataModel<
   Schema extends DataSchema,
   Parent extends Document<DataSchema, any, any>,
-  DerivedData extends Record<string, unknown> = RemoveIndexSignatures<Record<string, never>>,
-> extends _InternalTypeDataModel<Schema, Parent, DerivedData> {
+  BaseData extends Record<string, unknown> = Record<string, never>,
+  DerivedData extends Record<string, unknown> = Record<string, never>,
+> extends _InternalTypeDataModel<Schema, Parent, BaseData, DerivedData> {
   modelProvider: System | Module | null;
 
   /**
@@ -97,7 +99,7 @@ export default abstract class TypeDataModel<
    *
    * Called before {@link ClientDocument#prepareBaseData} in {@link ClientDocument#prepareData}.
    * */
-  prepareBaseData(this: DataModel<Schema, Parent>): void;
+  prepareBaseData(this: Merge<DataModel<Schema, Parent>, BaseData>): void;
 
   /**
    * Apply transformations of derivations to the values of the source data object.
@@ -105,7 +107,7 @@ export default abstract class TypeDataModel<
    *
    * Called before {@link ClientDocument#prepareDerivedData} in {@link ClientDocument#prepareData}.
    */
-  prepareDerivedData(this: Merge<DataModel<Schema, Parent>, Partial<DerivedData>>): void;
+  prepareDerivedData(this: Merge<Merge<DataModel<Schema, Parent>, BaseData>, Partial<DerivedData>>): void;
 
   /**
    * Convert this Document to some HTML display for embedding purposes.
