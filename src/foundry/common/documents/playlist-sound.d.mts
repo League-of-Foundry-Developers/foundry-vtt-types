@@ -2,7 +2,6 @@ import type { InexactPartial, Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
 import type * as fields from "../data/fields.mts";
-import type { CONST } from "../module.mts";
 
 declare global {
   type PlaylistSoundData = BasePlaylistSound.Properties;
@@ -29,7 +28,7 @@ declare class BasePlaylistSound extends Document<
 
   override testUserPermission(
     user: foundry.documents.BaseUser,
-    permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
+    permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS,
     options?: InexactPartial<{
       /**
        * Require the exact permission level requested?

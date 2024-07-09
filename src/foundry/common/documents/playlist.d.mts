@@ -2,8 +2,7 @@ import type { Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
 import type * as fields from "../data/fields.mts";
-import type { CONST } from "../module.mts";
-import type * as documents from "./module.mts";
+import type * as documents from "./_module.mts";
 
 declare global {
   type PlaylistData = BasePlaylist.Properties;
@@ -89,7 +88,7 @@ declare namespace BasePlaylist {
      */
     mode: fields.NumberField<{
       required: true;
-      choices: CONST.PLAYLIST_MODES[];
+      choices: foundry.CONST.PLAYLIST_MODES[];
       initial: typeof CONST.PLAYLIST_MODES.SEQUENTIAL;
       validationError: "must be a value in CONST.PLAYLIST_MODES";
     }>;
@@ -118,7 +117,7 @@ declare namespace BasePlaylist {
      */
     sorting: fields.StringField<{
       required: true;
-      choices: CONST.PLAYLIST_SORT_MODES[];
+      choices: foundry.CONST.PLAYLIST_SORT_MODES[];
       initial: typeof CONST.PLAYLIST_SORT_MODES.ALPHABETICAL;
       validationError: "must be a value in CONST.PLAYLIST_SORTING_MODES";
     }>;

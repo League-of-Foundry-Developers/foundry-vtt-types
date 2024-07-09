@@ -2,7 +2,6 @@ import type BasePackage from "./base-package.d.mts";
 import * as fields from "../data/fields.mjs";
 import type { InexactPartial, Merge } from "../../../types/utils.d.mts";
 import type { ReleaseData } from "../config.d.mts";
-import type { CONST } from "../module.d.mts";
 
 declare namespace BaseWorld {
   type Schema = Merge<
@@ -108,9 +107,9 @@ declare class BaseWorld extends BasePackage<BaseWorld.Schema> {
        * compatibility, if the world's availability is less than
        * this.
        */
-      systemAvailabilityThreshold: CONST.PACKAGE_AVAILABILITY_CODES;
+      systemAvailabilityThreshold: foundry.CONST.PACKAGE_AVAILABILITY_CODES;
     }>,
-  ): CONST.PACKAGE_AVAILABILITY_CODES;
+  ): foundry.CONST.PACKAGE_AVAILABILITY_CODES;
 }
 
 export default BaseWorld;

@@ -3,7 +3,7 @@ import type Document from "../abstract/document.mts";
 import type { DocumentMetadata, DocumentModificationOptions } from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
 import type * as fields from "../data/fields.mts";
-import type * as documents from "./module.mts";
+import type * as documents from "./_module.mts";
 
 declare global {
   type ActiveEffectData = BaseActiveEffect.Properties;

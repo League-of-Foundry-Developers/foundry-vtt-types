@@ -3,8 +3,7 @@ import type DataModel from "../abstract/data.mjs";
 import type { ReleaseData } from "../config.d.mts";
 import * as fields from "../data/fields.mjs";
 import type { DataModelValidationFailure } from "../data/validation-failure.d.mts";
-import type { BaseFolder } from "../documents/module.d.mts";
-import type { CONST } from "../module.d.mts";
+import type { BaseFolder } from "../documents/_module.d.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
 declare namespace BasePackage {
@@ -173,7 +172,7 @@ declare namespace BasePackage {
     flags: fields.ObjectField;
   };
 
-  type RelatedPackageSchema<PackageType extends CONST.PACKAGE_TYPES = CONST.PACKAGE_TYPES> = {
+  type RelatedPackageSchema<PackageType extends foundry.CONST.PACKAGE_TYPES = foundry.CONST.PACKAGE_TYPES> = {
     /**
      * The id of the related package
      */
@@ -346,7 +345,7 @@ declare namespace BasePackage {
   };
 
   type PackageManifestData = {
-    availability: CONST.PACKAGE_AVAILABILITY_CODES;
+    availability: foundry.CONST.PACKAGE_AVAILABILITY_CODES;
     locked: boolean;
     exclusive: boolean;
     owned: boolean;
@@ -373,9 +372,9 @@ export class PackageRelationships extends fields.SchemaField<BasePackage.Package
  * A custom SchemaField for defining a related Package.
  * It may be required to be a specific type of package, by passing the packageType option to the constructor.
  */
-export class RelatedPackage<PackageType extends CONST.PACKAGE_TYPES = CONST.PACKAGE_TYPES> extends fields.SchemaField<
-  BasePackage.RelatedPackageSchema<PackageType>
-> {
+export class RelatedPackage<
+  PackageType extends foundry.CONST.PACKAGE_TYPES = foundry.CONST.PACKAGE_TYPES,
+> extends fields.SchemaField<BasePackage.RelatedPackageSchema<PackageType>> {
   constructor({
     packageType,
     ...options
@@ -468,7 +467,7 @@ declare class BasePackage<
   /**
    * An availability code in PACKAGE_AVAILABILITY_CODES which defines whether this package can be used.
    */
-  availability: CONST.PACKAGE_AVAILABILITY_CODES;
+  availability: foundry.CONST.PACKAGE_AVAILABILITY_CODES;
 
   /**
    * A flag which tracks whether this package is currently locked.
@@ -499,12 +498,12 @@ declare class BasePackage<
    * Each BasePackage subclass must define this attribute.
    * @virtual
    */
-  static type: CONST.PACKAGE_TYPES;
+  static type: foundry.CONST.PACKAGE_TYPES;
 
   /**
    * The type of this package instance. A value in CONST.PACKAGE_TYPES.
    */
-  get type(): CONST.PACKAGE_TYPES;
+  get type(): foundry.CONST.PACKAGE_TYPES;
 
   /**
    * The canonical identifier for this package
@@ -522,7 +521,7 @@ declare class BasePackage<
    * Test if a given availability is incompatible with the core version.
    * @param availability - The availability value to test.
    */
-  static isIncompatibleWithCoreVersion(availability: CONST.PACKAGE_AVAILABILITY_CODES): boolean;
+  static isIncompatibleWithCoreVersion(availability: foundry.CONST.PACKAGE_AVAILABILITY_CODES): boolean;
 
   /**
    * The named collection to which this package type belongs
@@ -540,7 +539,7 @@ declare class BasePackage<
        */
       release: ReleaseData;
     }>,
-  ): CONST.PACKAGE_AVAILABILITY_CODES;
+  ): foundry.CONST.PACKAGE_AVAILABILITY_CODES;
 
   /**
    * Test that the dependencies of a package are satisfied as compatible.

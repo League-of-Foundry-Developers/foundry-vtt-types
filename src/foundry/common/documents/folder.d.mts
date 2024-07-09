@@ -2,7 +2,6 @@ import type { Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
 import type * as fields from "../data/fields.mts";
-import type { CONST } from "../module.mts";
 
 declare global {
   type FolderData = BaseFolder.Properties;
@@ -78,7 +77,7 @@ declare namespace BaseFolder {
     name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
     /** The document type which this Folder contains, from CONST.FOLDER_DOCUMENT_TYPES */
-    type: fields.StringField<{ required: true; choices: CONST.FOLDER_DOCUMENT_TYPES[] }>;
+    type: fields.StringField<{ required: true; choices: foundry.CONST.FOLDER_DOCUMENT_TYPES[] }>;
 
     /**
      * An HTML description of the contents of this folder

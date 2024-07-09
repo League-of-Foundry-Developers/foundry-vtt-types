@@ -10,6 +10,8 @@ declare global {
  * @see https://developer.mozilla.org/en-US/docs/Web/API/EventTarget
  */
 declare class EventEmitter {
+  /** @privateRemarks All mixin classses should accept anything for its constructor. */
+  constructor(...args: any[]);
   /**
    * An array of event types which are valid for this class.
    */

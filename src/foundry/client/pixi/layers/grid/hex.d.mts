@@ -1,5 +1,4 @@
 import type { InexactPartial } from "../../../../../types/utils.d.mts";
-import type { CONST } from "../../../../common/module.d.mts";
 
 declare global {
   type HexGridConfiguration = {
@@ -267,7 +266,7 @@ declare global {
     override getRect(w: number, h: number): PIXI.Rectangle;
 
     static override calculatePadding(
-      gridType: CONST.GRID_TYPES,
+      gridType: foundry.CONST.GRID_TYPES,
       width: number,
       height: number,
       size: number,
