@@ -21,7 +21,7 @@
     "test": "vitest --typecheck",
     "typecheck": "./node_modules/typescript/bin/tsc",
     "prepare": "is-ci || husky install",
-    "postinstall": "patch-package"
+    "postinstall": "patch-package && node ./setupSymlink.js"
   },
   "repository": {
     "type": "git",
