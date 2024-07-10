@@ -166,6 +166,10 @@ declare namespace BoilerplateCharacter {
         check: {
           deepDerivedProp: number;
         };
+
+        derived: {
+          prop: string;
+        };
       };
     };
     derivedString: string;
@@ -207,11 +211,12 @@ class BoilerplateCharacter extends BoilerplateActorBase<
       // Calculate the modifier using d20 rules.
       abil.mod = Math.floor((abil.value - 10) / 2);
       // Handle ability label localization.
-      abil.label = (game as Game).i18n!.localize(CONFIG.BOILERPLATE.abilities[key]) ?? key;
+      abil.label = game.i18n!.localize(CONFIG.BOILERPLATE.abilities[key]) ?? key;
     }
 
     expectTypeOf(this.extra.deep.check.propA).toEqualTypeOf<string>();
     expectTypeOf(this.extra.deep.check.deepDerivedProp).toEqualTypeOf<number | undefined>();
+    expectTypeOf(this.extra.deep.derived?.prop).toEqualTypeOf<string | undefined>();
 
     expectTypeOf(this.derivedString).toEqualTypeOf<string | undefined>();
   }
@@ -238,6 +243,7 @@ declare const boilerplateCharacter: BoilerplateCharacter;
 // Therefore the derived properties are all available.
 expectTypeOf(boilerplateCharacter.abilities.strength.mod).toEqualTypeOf<number>();
 expectTypeOf(boilerplateCharacter.extra.deep.check.deepDerivedProp).toEqualTypeOf<number>();
+expectTypeOf(boilerplateCharacter.extra.deep.derived.prop).toEqualTypeOf<string>();
 
 declare global {
   interface DataModelConfig {

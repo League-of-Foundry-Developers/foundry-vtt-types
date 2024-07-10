@@ -85,29 +85,29 @@ declare namespace TypeDataModel {
     [K in keyof T]-?: T extends { readonly [_ in K]: any } ? K : never;
   }[keyof T];
 
-  // Returns all the keys of U that should be optional when merged into T.
-  // When both `T[K]` and `U[K]` are required and both are objects, then it should be required.
+  // Returns all the keys of U that should be partial when merged into T.
+  // Only if both `T[K]` and `U[K]` are required and both are objects should a key be required.
   // This is because essentially only the most deep keys that are merged in need to be optional.
-  // In all other cases, it should be partial.
   type PartialMergeKeys<T, U> = {
-    [K in RequiredKeys<U>]-?: K extends RequiredKeys<T>
-      ? IsObject<T[K]> extends true
-        ? IsObject<U[K]> extends true
-          ? true
-          : never
+    [K in keyof U]-?: K extends RequiredKeys<U>
+      ? K extends RequiredKeys<T>
+        ? IsObject<T[K]> extends true
+          ? IsObject<U[K]> extends true
+            ? never
+            : K
+          : K
         : K
       : K;
-  }[RequiredKeys<U>];
+  }[keyof U];
 
   // Merges `U[K]` into `T[K]` if they're both objects, returns `U[K]` otherwise.
-  type InnerMerge<U, K extends keyof U, T> =
-    IsObject<U[K]> extends true
-      ? T extends { readonly [_ in K]?: infer V }
-        ? IsObject<V> extends true
-          ? MergePartial<V, U[K]>
-          : U[K]
-        : U[K]
-      : U[K];
+  type InnerMerge<U, K extends keyof U, T> = T extends { readonly [_ in K]?: infer V }
+    ? IsObject<U[K]> extends true
+      ? IsObject<V> extends true
+        ? MergePartial<V, U[K]>
+        : Partial<U[K]>
+      : Partial<U[K]>
+    : U[K];
 
   export type ParentAssignmentType<BaseThis extends TypeDataModelInternal<any, any, any, any, any>> =
     BaseThis extends TypeDataModelInternal<infer Schema, infer Parent, any, any, any>
