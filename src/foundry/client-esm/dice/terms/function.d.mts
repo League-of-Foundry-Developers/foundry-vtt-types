@@ -70,7 +70,7 @@ declare class FunctionTerm extends RollTerm {
   /* -------------------------------------------- */
   /*  Saving and Loading                          */
   /* -------------------------------------------- */
-  protected static override _fromData<T extends FunctionTerm>(this: ConstructorOf<T>, data: object): T;
+  protected static override _fromData<T extends RollTerm>(this: ConstructorOf<T>, data: object): T;
 
   /* -------------------------------------------- */
   override toJSON(): object;
