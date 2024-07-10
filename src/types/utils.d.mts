@@ -4,9 +4,13 @@ import type { ConfiguredDocumentClass, DocumentConstructor } from "./helperTypes
  * Recursively sets keys of an object to optional. Used primarily for update methods
  * @internal
  */
-export type DeepPartial<T> = {
-  [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
-};
+export type DeepPartial<T> = T extends unknown
+  ? IsObject<T> extends true
+    ? {
+        [P in keyof T]?: DeepPartial<T[P]>;
+      }
+    : T
+  : T;
 
 /**
  * Make all properties in T optional and explicitly allow `undefined`

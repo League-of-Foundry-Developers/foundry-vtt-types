@@ -386,6 +386,51 @@ declare global {
       relativeTo: ClientDocument<foundry.abstract.Document<any, any, any>>;
     }
 
+    interface DocumentHTMLEmbedConfig {
+      /**
+       * Any strings that did not have a key name associated with them.
+       */
+      values: string[];
+
+      /**
+       * Classes to attach to the outermost element.
+       */
+      classes?: string | undefined;
+
+      /**
+       * By default Documents are embedded inside a figure element. If this option is
+       * passed, the embed content will instead be included as part of the rest of the
+       * content flow, but still wrapped in a section tag for styling purposes.
+       * @defaultValue `false`
+       */
+      inline: boolean;
+
+      /**
+       * Whether to include a content link to the original Document as a citation. This
+       * options is ignored if the Document is inlined.
+       * @defaultValue `true`
+       */
+      cite: boolean;
+
+      /**
+       * Whether to include a caption. The caption will depend on the Document being
+       * embedded, but if an explicit label is provided, that will always be used as the
+       * caption. This option is ignored if the Document is inlined.
+       * @defaultValue `true`
+       */
+      caption: boolean;
+
+      /**
+       * Controls whether the caption is rendered above or below the embedded
+       * content.
+       * @defaultValue `"bottom"`
+       */
+      captionPosition: string;
+
+      /** The label. */
+      label: string;
+    }
+
     interface GetContentLinkOptions {
       /** A document to generate the link relative to. */
       relativeTo?: ClientDocument<foundry.abstract.Document<any, any, any>>;
