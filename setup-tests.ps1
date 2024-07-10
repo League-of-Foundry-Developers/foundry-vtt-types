@@ -18,17 +18,9 @@ if (-not (Test-Path -Path "$testPath")) {
   Write-Error "'tests' folder not found in root`r`n"
 }
 
-$nodePath = Join-Path -Path "$testPath" -ChildPath "node_modules"
+$typesPath = Join-Path -Path "$root" -ChildPath "node_modules\types"
 
-if (-not (Test-Path -Path "$nodePath")) {
-  New-Item -ItemType Directory -Path "$nodePath"
-}
-
-$typesPath = Join-Path -Path "$nodePath" -ChildPath "@types"
-
-if (-not (Test-Path -Path "$typesPath")) {
-  New-Item -ItemType Directory -Path "$typesPath"
-}
+New-Item -ItemType Directory -Path "$typesPath" -Force -ErrorAction SilentlyContinue
 
 # Check if there's a file or folder already and remove if so
 $fvttFile = Join-Path -Path "$typesPath" -ChildPath "fvtt-types"
