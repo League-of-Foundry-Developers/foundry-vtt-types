@@ -1,6 +1,3 @@
-type RGBColorVector = [r: number, g: number, b: number];
-type HSVColorVector = [h: number, s: number, v: number];
-
 export default Color;
 /**
  * A representation of a color in hexadecimal format.
@@ -9,7 +6,13 @@ export default Color;
 // @ts-expect-error 2417: Override of Color.fromString does not match Number.fromString
 declare class Color extends Number {
   /**
+   * Is this a valid color?
+   */
+  get valid(): boolean;
+
+  /**
    * A CSS-compatible color string.
+   * If this color is not valid, the empty string is returned.
    * An alias for Color#toString.
    */
   get css(): string;
@@ -56,7 +59,32 @@ declare class Color extends Number {
    */
   get hsv(): HSVColorVector;
 
+  /**
+   * The color represented as an HSL array.
+   * Assumes r, g, and b are contained in the set [0, 1] and returns h, s, and l in the set [0, 1].
+   */
+  get hsl(): HSLColorVector;
+
+  /**
+   * The color represented as a linear RGB array.
+   * Assumes r, g, and b are contained in the set [0, 1] and returns linear r, g, and b in the set [0, 1].
+   * @link https://en.wikipedia.org/wiki/SRGB#Transformation
+   */
+  get linear(): RGBColorVector;
+
   override toString(): string;
+
+  /**
+   * Serialize the Color.
+   * @returns The color as a CSS string
+   */
+  toJSON(): string;
+
+  /**
+   * Returns the color as a CSS string.
+   * @returns The color as a CSS string
+   */
+  toHTML(): string;
 
   /**
    * Test whether this color equals some other color
@@ -219,7 +247,7 @@ declare class Color extends Number {
    * @param color - A color input
    * @returns The hex color instance or NaN
    */
-  static from(color: null | string | number | RGBColorVector | Color): Color | number;
+  static from(color: ColorSource | null | undefined): Color;
 
   /**
    * Create a Color instance from a color string which either includes or does not include a leading #.
@@ -243,4 +271,21 @@ declare class Color extends Number {
    * @returns The hex color instance
    */
   static fromHSV(hsv: HSVColorVector): Color;
+
+  /**
+   * Create a Color instance from an HSL array.
+   * Assumes h, s, and l are contained in the set [0, 1].
+   * @param hsl - An HSL tuple
+   * @returns The hex color instance
+   */
+  static fromHSL(hsl: HSLColorVector): Color;
+
+  /**
+   * Create a Color instance (sRGB) from a linear rgb array.
+   * Assumes r, g, and b are contained in the set [0, 1].
+   * @link https://en.wikipedia.org/wiki/SRGB#Transformation
+   * @param linear - The linear rgb array
+   * @returns The hex color instance
+   */
+  static fromLinearRGB(linear: RGBColorVector): Color;
 }
