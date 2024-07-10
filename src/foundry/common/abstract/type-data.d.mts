@@ -39,8 +39,8 @@ declare namespace TypeDataModel {
   export type Any = TypeDataModel<any, any, any, any>;
 
   // This still is only allows classes descended from `TypeDataField` because these unique symbols aren't used elsewhere.
-  // These generic parameters seem to be required.
-  // This is likely because of a TypeScript bug in which concrete types like `any` or `unknown` aren't treated as carefully as a type parameter.
+  // These generic parameters seem to be required. This is likely because of a TypeScript soundness holes in which concrete types like `any` or `unknown`
+  // will get treated bivariantly whereas type parameters get treated more safely.
   type TypeDataModelInternal<
     Schema extends DataSchema,
     Parent extends Document.Any,
