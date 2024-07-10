@@ -3,7 +3,7 @@ import type * as fields from "./data/fields.mjs";
 import type { SOFTWARE_UPDATE_CHANNELS } from "./constants.d.mts";
 
 declare namespace ApplicationConfiguration {
-  type Schema = {
+  interface Schema extends DataSchema {
     /**
      * The server administrator password (obscured)
      */
@@ -178,10 +178,8 @@ declare namespace ApplicationConfiguration {
     }>;
 
     noBackups: fields.BooleanField<{ required: false }>;
-  };
+  }
 }
-
-interface ApplicationConfiguration extends fields.SchemaField.InnerInitializedType<ApplicationConfiguration.Schema> {}
 
 /**
  * A data model definition which describes the application configuration options.
@@ -204,7 +202,7 @@ declare class ApplicationConfiguration extends DataModel<ApplicationConfiguratio
 }
 
 declare namespace ReleaseData {
-  type Schema = {
+  interface Schema extends DataSchema {
     /**
      * The major generation of the Release
      */
@@ -267,10 +265,8 @@ declare namespace ReleaseData {
      * A temporary download URL where this version may be obtained
      */
     download: fields.StringField;
-  };
+  }
 }
-
-interface ReleaseData extends fields.SchemaField.InnerInitializedType<ReleaseData.Schema> {}
 
 /** A data object which represents the details of this Release of Foundry VTT */
 declare class ReleaseData extends DataModel<ReleaseData.Schema> {

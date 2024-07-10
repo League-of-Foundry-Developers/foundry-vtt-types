@@ -1325,25 +1325,25 @@ declare global {
          */
         lightAmplification: VisionMode;
       };
-    };
 
-    /**
-     * The set of DetectionMode definitions which are available to be used for visibility detection.
-     */
-    detectionModes: {
-      [key: string]: DetectionMode;
+      /**
+       * The set of DetectionMode definitions which are available to be used for visibility detection.
+       */
+      detectionModes: {
+        [key: string]: DetectionMode;
 
-      basicSight: DetectionModeBasicSight;
+        basicSight: DetectionModeBasicSight;
 
-      seeInvisibility: DetectionModeInvisibility;
+        seeInvisibility: DetectionModeInvisibility;
 
-      senseInvisibility: DetectionModeInvisibility;
+        senseInvisibility: DetectionModeInvisibility;
 
-      feelTremor: DetectionModeTremor;
+        feelTremor: DetectionModeTremor;
 
-      seeAll: DetectionModeAll;
+        seeAll: DetectionModeAll;
 
-      senseAll: DetectionModeAll;
+        senseAll: DetectionModeAll;
+      };
     };
 
     /**
@@ -1838,7 +1838,9 @@ declare global {
      * A mapping of status effect IDs which provide some additional mechanical integration.
      * @defaultValue `{ DEFEATED: "dead", INVISIBLE: "invisible", BLIND: "blind" }`
      */
-    specialStatusEffects: Record<"DEFEATED" | "INVISIBLE" | "BLIND", string>;
+    specialStatusEffects: keyof CONFIG.SpecialStatusEffects extends never
+      ? CONFIG.DefaultSpecialStatusEffects
+      : CONFIG.SpecialStatusEffects;
 
     /**
      * A mapping of core audio effects used which can be replaced by systems or mods
@@ -2727,6 +2729,13 @@ declare global {
       blendMode: PIXI.BLEND_MODES;
       config: Record<string, unknown>;
     }
+
+    interface SpecialStatusEffects {}
+    type DefaultSpecialStatusEffects = {
+      DEFEATED: string;
+      INVISIBLE: string;
+      BLIND: string;
+    };
 
     namespace Cards {
       interface Preset {

@@ -222,7 +222,7 @@ declare namespace BasePackage {
       }
     : PackageCompendiumFolderSchemaHelper;
 
-  type Schema = {
+  interface Schema extends DataSchema {
     /**
      * The machine-readable unique package id, should be lower-case with no spaces or special characters
      */
@@ -342,7 +342,7 @@ declare namespace BasePackage {
     exclusive: fields.BooleanField;
 
     persistentStorage: fields.BooleanField;
-  };
+  }
 
   type PackageManifestData = {
     availability: foundry.CONST.PACKAGE_AVAILABILITY_CODES;
@@ -453,8 +453,6 @@ export class PackageCompendiumPacks<
     options: fields.DataField.ValidationOptions<fields.DataField.Any>,
   ): void | DataModelValidationFailure;
 }
-
-interface BasePackage extends fields.SchemaField.InnerInitializedType<BasePackage.Schema> {}
 
 /**
  * The data schema used to define a Package manifest.

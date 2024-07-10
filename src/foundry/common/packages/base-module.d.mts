@@ -3,7 +3,7 @@ import * as fields from "../data/fields.mjs";
 import type AdditionalTypesField from "./sub-types.mjs";
 
 declare namespace BaseModule {
-  type Schema = ReturnType<typeof BasePackage.defineSchema> & {
+  interface Schema extends ReturnType<typeof BasePackage.defineSchema> {
     /**
      * The current package version
      * @remarks Actually defined in BasePackage but defined here to avoid conflict with BaseWorld
@@ -24,10 +24,8 @@ declare namespace BaseModule {
      * Additional document sub-types provided by this module.
      */
     documentTypes: AdditionalTypesField;
-  };
+  }
 }
-
-interface BaseModule extends fields.SchemaField.InnerInitializedType<BaseModule.Schema> {}
 
 /**
  * The data schema used to define Module manifest files.

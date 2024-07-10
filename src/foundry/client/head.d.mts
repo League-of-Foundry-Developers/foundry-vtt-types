@@ -1,17 +1,6 @@
-import type { InitializationEvent } from "./game.d.mts";
+import type { EarlierEvents, InitializationEvent } from "./game.d.mts";
 
 type ValidRanHooks = Extract<keyof AssumeHookRan, InitializationEvent>;
-
-type EarlierEvents = {
-  none: never;
-  init: "none";
-  i18nInit: "none" | "init";
-  setup: "none" | "init" | "i18nInit";
-  ready: "none" | "init" | "i18nInit" | "setup";
-};
-
-// All earlier hooks can definitely be ignored since they're assumed to have ran.
-type CheckHooks = Exclude<InitializationEvent, EarlierEvents[ValidRanHooks]>;
 
 type _UninitializedGame = { [K in keyof Game]?: never };
 interface UninitializedGame extends _UninitializedGame {}
@@ -25,14 +14,13 @@ type Games = {
   ready: ReadyGame;
 };
 
+// Needs to include the current hook as well as all hooks that can run after it.
+type GameHooks = Exclude<InitializationEvent, EarlierEvents[keyof AssumeHookRan]>;
+
 // Put in its own helper type to cause type distribution.
 type DiscriminatedGame<Event extends InitializationEvent> = Event extends unknown ? Games[Event] : never;
 
-type MaybeUI = keyof AssumeHookRan extends never
-  ? Partial<UiApplications>
-  : keyof AssumeHookRan extends "ready"
-    ? UiApplications
-    : Partial<UiApplications>;
+type MaybeUI = Extract<keyof AssumeHookRan, "ready"> extends never ? Partial<UiApplications> : UiApplications;
 
 declare global {
   /**
@@ -46,7 +34,7 @@ declare global {
    * @remarks
    * Initialized just before the `"init"` hook event.
    */
-  let game: DiscriminatedGame<CheckHooks>;
+  let game: DiscriminatedGame<GameHooks>;
 
   /**
    * The global boolean for whether the EULA is signed

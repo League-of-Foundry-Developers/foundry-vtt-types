@@ -22,7 +22,7 @@ declare class _InternalTypeDataModel<
   BaseData extends Record<string, unknown> = Record<string, never>,
   DerivedData extends Record<string, unknown> = Record<string, never>,
   // This does not work if inlined. It's weird to put it here but it works.
-  _ComputedInstance extends object = RemoveIndexSignatures<Merge<BaseData, DerivedData>>,
+  _ComputedInstance extends object = Merge<RemoveIndexSignatures<BaseData>, RemoveIndexSignatures<DerivedData>>,
 > extends _InternalTypeDataModelConst<Schema, Parent, _ComputedInstance> {}
 
 // These properties are used to give a performant way of inferring types like `BaseData` and `DerivedData` types.

@@ -180,7 +180,7 @@ declare namespace BoilerplateCharacter {
 
 class BoilerplateCharacter extends BoilerplateActorBase<
   BoilerplateCharacter.Schema,
-  Record<never, never>,
+  Record<string, never>,
   BoilerplateCharacter.DerivedProps
 > {
   static defineSchema() {

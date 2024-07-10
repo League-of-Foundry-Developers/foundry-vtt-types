@@ -26,13 +26,11 @@ declare global {
     override _cast(value: any): Exclude<InitializedType, undefined | null>; // typeof AbstractBaseShader;
   }
 
-  interface VisionMode extends fields.SchemaField.InnerInitializedType<VisionMode.Schema> {}
-
   /**
    * A Vision Mode which can be selected for use by a Token.
    * The selected Vision Mode alters the appearance of various aspects of the canvas while that Token is the POV.
    */
-  abstract class VisionMode extends foundry.abstract.DataModel<VisionMode.Schema> {
+  class VisionMode extends foundry.abstract.DataModel<VisionMode.Schema> {
     /**
      * Construct a Vision Mode using provided configuration parameters and callback functions.
      * @param data    - Data which fulfills the model defined by the VisionMode schema.
@@ -74,13 +72,13 @@ declare global {
      * Special activation handling that could be implemented by VisionMode subclasses
      * @param source - Activate this VisionMode for a specific source
      */
-    abstract _activate(source: VisionSource): void;
+    _activate(source: VisionSource): void;
 
     /**
      * Special deactivation handling that could be implemented by VisionMode subclasses
      * @param source - Deactivate this VisionMode for a specific source
      */
-    abstract _deactivate(source: VisionSource): void;
+    _deactivate(source: VisionSource): void;
 
     /**
      * Special handling which is needed when this Vision Mode is activated for a VisionSource.
