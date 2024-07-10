@@ -1,6 +1,7 @@
 import { expectTypeOf } from "vitest";
 import type EmbeddedCollection from "../../../../src/foundry/common/abstract/embedded-collection.d.mts";
 import type { NumberField, SchemaField } from "../../../../src/foundry/common/data/fields.d.mts";
+import type { TypeDataModel } from "../../../../src/foundry/common/abstract/type-data.d.mts";
 
 // @ts-expect-error name and type are required
 new foundry.documents.BaseActor();
@@ -147,13 +148,13 @@ declare namespace BoilerplateCharacter {
     extra: foundry.data.fields.SchemaField<{
       deep: foundry.data.fields.SchemaField<{
         check: foundry.data.fields.SchemaField<{
-          propA: foundry.data.fields.StringField;
+          propA: foundry.data.fields.StringField<{ required: true }>;
         }>;
       }>;
     }>;
   }
 
-  interface DerivedProps {
+  interface DerivedProps extends Record<string, unknown> {
     abilities: {
       strength: {
         mod: number;
@@ -163,7 +164,7 @@ declare namespace BoilerplateCharacter {
     extra: {
       deep: {
         check: {
-          propB: number;
+          deepDerivedProp: number;
         };
       };
     };
@@ -200,19 +201,19 @@ class BoilerplateCharacter extends BoilerplateActorBase<
     return schema;
   }
 
-  prepareDerivedData() {
+  prepareDerivedData(this: TypeDataModel.PrepareDerivedDataThis<this>) {
     // Loop through ability scores, and add their modifiers to our sheet output.
-
     for (const [key, abil] of Object.entries(this.abilities)) {
       // Calculate the modifier using d20 rules.
       abil.mod = Math.floor((abil.value - 10) / 2);
       // Handle ability label localization.
       abil.label = (game as Game).i18n!.localize(CONFIG.BOILERPLATE.abilities[key]) ?? key;
     }
-    this.extra.deep.check.propA;
-    this.extra.deep.check.propB;
-    // FIXME: This should be an optional property
-    this.derivedString.includes("foo");
+
+    expectTypeOf(this.extra.deep.check.propA).toEqualTypeOf<string>();
+    expectTypeOf(this.extra.deep.check.deepDerivedProp).toEqualTypeOf<number | undefined>();
+
+    expectTypeOf(this.derivedString).toEqualTypeOf<string | undefined>();
   }
 
   getRollData() {
@@ -230,6 +231,13 @@ class BoilerplateCharacter extends BoilerplateActorBase<
     return data;
   }
 }
+
+declare const boilerplateCharacter: BoilerplateCharacter;
+
+// The class is assumed to have fully gone through initialization.
+// Therefore the derived properties are all available.
+expectTypeOf(boilerplateCharacter.abilities.strength.mod).toEqualTypeOf<number>();
+expectTypeOf(boilerplateCharacter.extra.deep.check.deepDerivedProp).toEqualTypeOf<number>();
 
 declare global {
   interface DataModelConfig {
