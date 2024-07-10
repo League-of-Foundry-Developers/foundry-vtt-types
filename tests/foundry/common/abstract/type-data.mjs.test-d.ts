@@ -11,7 +11,9 @@ interface QuestSchema extends BaseJournalEntryPage.Schema {
 }
 
 type BaseQuestData = {
-  // Overrides the schema
+  // Overrides the schema.
+  // Since this changes the schema `this.description` will have no perfect type. During assignment it should be `HTMLElement` but during access it should be `string`.
+  // This is a limitation of the current implementation. If a dynamic getter/setter pair becomes possible this could be fixed.
   description: HTMLElement;
   questName: string;
 };

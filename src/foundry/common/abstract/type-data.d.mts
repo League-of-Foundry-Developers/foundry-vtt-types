@@ -1,4 +1,4 @@
-import type { Merge, RemoveIndexSignatures, SimpleMerge } from "../../../types/utils.d.mts";
+import type { IsObject, Merge, RemoveIndexSignatures, SimpleMerge } from "../../../types/utils.d.mts";
 import type BaseUser from "../documents/user.d.mts";
 import type DataModel from "./data.d.mts";
 import type Document from "./document.d.mts";
@@ -54,21 +54,52 @@ declare namespace TypeDataModel {
 
   export type PrepareBaseDataThis<BaseThis extends TypeDataModelInternal<any, any, any>> =
     BaseThis extends TypeDataModelInternal<infer BaseModel, infer BaseData, infer DerivedData>
-      ? SimpleMerge<
-          Omit<RemoveDerived<BaseThis, BaseModel, BaseData, DerivedData>, "prepareBaseData">,
-          // `Partial` over `InexactPartial` is correct: in `prepareBaseData` doing `this[baseProperty] = undefined` should be an error unless it's explicitly allowed in `BaseType`.
-          Partial<BaseData>
-        >
+      ? MergePartial<Omit<RemoveDerived<BaseThis, BaseModel, BaseData, DerivedData>, "prepareBaseData">, BaseData>
       : never;
 
   export type PrepareDerivedDataThis<BaseThis extends TypeDataModelInternal<any, any, any>> =
     BaseThis extends TypeDataModelInternal<infer BaseModel, infer BaseData, infer DerivedData>
-      ? SimpleMerge<
-          Omit<RemoveDerived<BaseThis, BaseModel, BaseData, DerivedData>, "prepareDerivedData">,
-          // `Partial` over `InexactPartial` is correct: in `prepareDerivedData` doing `this[derivedProperty] = undefined` should be an error unless it's explicitly allowed in `DerivedType`.
-          Merge<BaseData, Partial<DerivedData>>
+      ? MergePartial<
+          SimpleMerge<Omit<RemoveDerived<BaseThis, BaseModel, BaseData, DerivedData>, "prepareDerivedData">, BaseData>,
+          DerivedData
         >
       : never;
+
+  // Merges U into T but makes the appropriate keys partial.
+  // This is similar to `Merge<T, DeepPartial<U>>` but doesn't make keys optional if they are required in T.
+  type MergePartial<T, U> = Omit<T, keyof U> & {
+    [K in keyof U as K extends PartialMergeKeys<T, U> ? K : never]?: InnerMerge<U, K, T>;
+  } & {
+    [K in keyof U as K extends PartialMergeKeys<T, U> ? never : K]: InnerMerge<U, K, T>;
+  };
+
+  type RequiredKeys<T> = {
+    [K in keyof T]-?: T extends { readonly [_ in K]: any } ? K : never;
+  }[keyof T];
+
+  // Returns all the keys of U that should be optional when merged into T.
+  // When both `T[K]` and `U[K]` are required and both are objects, then it should be required.
+  // This is because essentially only the most deep keys that are merged in need to be optional.
+  // In all other cases, it should be partial.
+  type PartialMergeKeys<T, U> = {
+    [K in RequiredKeys<U>]-?: K extends RequiredKeys<T>
+      ? IsObject<T[K]> extends true
+        ? IsObject<U[K]> extends true
+          ? true
+          : never
+        : K
+      : K;
+  }[RequiredKeys<U>];
+
+  // Merges `U[K]` into `T[K]` if they're both objects, returns `U[K]` otherwise.
+  type InnerMerge<U, K extends keyof U, T> =
+    IsObject<U[K]> extends true
+      ? T extends { readonly [_ in K]?: infer V }
+        ? IsObject<V> extends true
+          ? MergePartial<V, U[K]>
+          : U[K]
+        : U[K]
+      : U[K];
 }
 
 /**
