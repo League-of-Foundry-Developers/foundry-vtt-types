@@ -2,6 +2,9 @@ import { expectTypeOf } from "vitest";
 import type { fields } from "../../../../src/foundry/common/data/module.d.mts";
 import type BaseJournalEntryPage from "../../../../src/foundry/common/documents/journal-entry-page.d.mts";
 import type { TypeDataModel } from "../../../../src/foundry/common/abstract/type-data.d.mts";
+import type { DocumentModificationOptions } from "../../../../src/foundry/common/abstract/document.d.mts";
+import type BaseUser from "../../../../src/foundry/common/documents/user.d.mts";
+import type { DeepPartial } from "../../../../src/types/utils.d.mts";
 
 /* attempting to use the example as a test */
 
@@ -68,6 +71,28 @@ class QuestModel extends foundry.abstract.TypeDataModel<
 
     // @ts-expect-error Recursively calling is technically possible but wouldn't be desired. Removing it also seems to reduce the type complexity.
     this.prepareDerivedData();
+  }
+
+  protected async _preCreate(
+    data: TypeDataModel.ParentAssignmentType<this>,
+    options: DocumentModificationOptions,
+    user: BaseUser,
+  ): Promise<boolean | void> {
+    expectTypeOf(data.system.steps).toEqualTypeOf<string[]>();
+
+    expectTypeOf(options).toEqualTypeOf<DocumentModificationOptions>();
+    expectTypeOf(user).toEqualTypeOf<BaseUser>();
+  }
+
+  protected async _preUpdate(
+    data: DeepPartial<TypeDataModel.ParentAssignmentType<this>>,
+    options: DocumentModificationOptions,
+    userId: string,
+  ): Promise<boolean | void> {
+    expectTypeOf(data.system?.steps).toEqualTypeOf<string[] | undefined>();
+
+    expectTypeOf(options).toEqualTypeOf<DocumentModificationOptions>();
+    expectTypeOf(userId).toEqualTypeOf<string>();
   }
 }
 

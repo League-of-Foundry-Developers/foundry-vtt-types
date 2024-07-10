@@ -48,7 +48,7 @@ declare class _InternalDataModel<
 /**
  * The abstract base class which defines the data schema contained within a Document.
  */
-export default abstract class DataModel<
+export abstract class DataModel<
   Schema extends DataSchema,
   Parent extends DataModel.Any | null = null,
 > extends _InternalDataModel<Schema> {
@@ -389,8 +389,6 @@ export default abstract class DataModel<
   update(changes: any, options: any): unknown;
 }
 
-export { DataModel };
-
 export declare namespace DataModel {
   interface ConstructorOptions<Parent extends Any | null = null> {
     /**
@@ -432,3 +430,5 @@ export declare namespace DataModel {
     _backup: Record<string, unknown>;
   }
 }
+
+export default DataModel;
