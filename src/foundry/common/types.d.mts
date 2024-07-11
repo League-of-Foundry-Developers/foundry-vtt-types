@@ -124,6 +124,12 @@ declare global {
         height: number;
       };
 
+  type RGBColorVector = [r: number, g: number, b: number];
+  type HSVColorVector = [h: number, s: number, v: number];
+  type HSLColorVector = [h: number, s: number, l: number];
+
+  type ColorSource = number | RGBColorVector | string | Color;
+
   /** A Client Setting */
   interface SettingConfig<T = unknown> {
     /** A unique machine-readable id for the setting */
