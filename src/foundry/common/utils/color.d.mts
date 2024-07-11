@@ -54,7 +54,7 @@ declare class Color extends Number {
 
   /**
    * The color represented as an HSV array.
-   * Conversion formula adapted from http://en.wikipedia.org/wiki/HSV_color_space.
+   * Conversion formula adapted from {@link http://en.wikipedia.org/wiki/HSV_color_space}.
    * Assumes r, g, and b are contained in the set [0, 1] and returns h, s, and v in the set [0, 1].
    */
   get hsv(): HSVColorVector;
@@ -68,7 +68,7 @@ declare class Color extends Number {
   /**
    * The color represented as a linear RGB array.
    * Assumes r, g, and b are contained in the set [0, 1] and returns linear r, g, and b in the set [0, 1].
-   * @link https://en.wikipedia.org/wiki/SRGB#Transformation
+   * {@link https://en.wikipedia.org/wiki/SRGB#Transformation}
    */
   get linear(): RGBColorVector;
 
@@ -265,7 +265,7 @@ declare class Color extends Number {
 
   /**
    * Create a Color instance from an HSV array.
-   * Conversion formula adapted from http://en.wikipedia.org/wiki/HSV_color_space.
+   * Conversion formula adapted from {@link http://en.wikipedia.org/wiki/HSV_color_space}.
    * Assumes h, s, and v are contained in the set [0, 1].
    * @param hsv - An HSV tuple
    * @returns The hex color instance
@@ -283,7 +283,7 @@ declare class Color extends Number {
   /**
    * Create a Color instance (sRGB) from a linear rgb array.
    * Assumes r, g, and b are contained in the set [0, 1].
-   * @link https://en.wikipedia.org/wiki/SRGB#Transformation
+   * {@link https://en.wikipedia.org/wiki/SRGB#Transformation}
    * @param linear - The linear rgb array
    * @returns The hex color instance
    */
