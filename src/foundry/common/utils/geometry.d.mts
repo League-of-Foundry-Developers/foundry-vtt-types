@@ -168,31 +168,31 @@ declare type Points = Point[] | number[];
  * Calculate the centroid non-self-intersecting closed polygon.
  * See https://en.wikipedia.org/wiki/Centroid#Of_a_polygon.
  *
- * @param {Points} points    The points of the polygon
- * @returns {Point}                    The centroid of the polygon
+ * @param points    - The points of the polygon
+ * @returns         - The centroid of the polygon
  */
 export declare function polygonCentroid(points: Points): Point;
 
 /**
  * Test whether the circle given by the center and radius intersects the path (open or closed).
  *
- * @param {Points} points    The points of the path
- * @param {boolean} close    If true, the edge from the last to the first point is tested
- * @param {Point} center     The center of the circle
- * @param {number} radius    The radius of the circle
- * @returns {boolean}        Does the circle intersect the path?
+ * @param points    - The points of the path
+ * @param close     - If true, the edge from the last to the first point is tested
+ * @param center    - The center of the circle
+ * @param radius    - The radius of the circle
+ * @returns         - Whether the circle intersect the path
  */
 export declare function pathCircleIntersects(points: Points, close: boolean, center: Point, radius: number): boolean;
 
 /**
  * Test whether two circles (with position and radius) intersect.
  *
- * @param {number} x0    x center coordinate of circle A.
- * @param {number} y0    y center coordinate of circle A.
- * @param {number} r0    radius of circle A.
- * @param {number} x1    x center coordinate of circle B.
- * @param {number} y1    y center coordinate of circle B.
- * @param {number} r1    radius of circle B.
- * @returns {boolean}    True if the two circles intersect, false otherwise.
+ * @param x0        - x center coordinate of circle A.
+ * @param y0        - y center coordinate of circle A.
+ * @param r0        - radius of circle A.
+ * @param x1        - x center coordinate of circle B.
+ * @param y1        - y center coordinate of circle B.
+ * @param r1        - radius of circle B.
+ * @returns         - True if the two circles intersect, false otherwise.
  */
 export function circleCircleIntersects(x0: number, y0: number, r0: number, x1: number, y1: number, r1: number): boolean;
