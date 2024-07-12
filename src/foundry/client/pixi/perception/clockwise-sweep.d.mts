@@ -6,7 +6,7 @@ declare global {
   type EdgeSet = Set<PolygonEdge>;
 
   interface PolygonRay extends Ray {
-    result: CollisionResult;
+    result: foundry.canvas.edges.CollisionResult;
   }
 
   /**
@@ -123,7 +123,7 @@ declare global {
      * @param result      - The pending collision result
      * @param activeEdges - The set of currently active edges
      */
-    _switchEdge(result: CollisionResult, activeEdges: EdgeSet): void;
+    _switchEdge(result: foundry.canvas.edges.CollisionResult, activeEdges: EdgeSet): void;
 
     /**
      * Identify the collision points between an emitted Ray and a set of active edges.
