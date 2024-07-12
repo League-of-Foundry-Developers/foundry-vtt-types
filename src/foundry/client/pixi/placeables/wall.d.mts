@@ -84,12 +84,12 @@ declare global {
     /**
      * A convenience reference to the coordinates Array for the Wall endpoints, [x0,y0,x1,y1].
      */
-    get coords(): [x0: number, y0: number, x1: number, y1: number]; // Wall["document"]["c"];
+    get coords(): Wall["document"]["c"];
 
     /**
-     * The endpoints of the wall expressed as {@link PolygonVertex} instances.
+     * The endpoints of the wall expressed as {@link foundry.canvas.edges.PolygonVertex} instances.
      */
-    get vertices(): { a: PolygonVertex; b: PolygonVertex };
+    get vertices(): { a: foundry.canvas.edges.PolygonVertex; b: foundry.canvas.edges.PolygonVertex };
 
     /**
      * The initial endpoint of the Wall

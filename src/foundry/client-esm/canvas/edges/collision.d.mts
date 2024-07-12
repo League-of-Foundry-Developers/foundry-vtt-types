@@ -5,8 +5,8 @@
  */
 declare class CollisionResult {
   constructor(values?: {
-    target?: PolygonVertex;
-    collisions?: PolygonVertex[];
+    target?: foundry.canvas.edges.PolygonVertex;
+    collisions?: foundry.canvas.edges.PolygonVertex[];
     cwEdges?: EdgeSet;
     ccwEdges?: EdgeSet;
     isBehind?: boolean;
@@ -18,13 +18,13 @@ declare class CollisionResult {
    * The vertex that was the target of this result
    * @defaultValue `null`
    */
-  target: PolygonVertex | null;
+  target: foundry.canvas.edges.PolygonVertex | null;
 
   /**
    * The array of collision points which apply to this result
    * @defaultValue `[]`
    */
-  collisions: PolygonVertex[];
+  collisions: foundry.canvas.edges.PolygonVertex[];
 
   /**
    * The set of edges connected to the target vertex that continue clockwise
