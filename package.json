@@ -21,7 +21,7 @@
     "test": "vitest --typecheck",
     "typecheck": "./node_modules/typescript/bin/tsc",
     "prepare": "is-ci || husky install",
-    "postinstall": "patch-package && node ./setupSymlink.js"
+    "postinstall": "patch-package"
   },
   "repository": {
     "type": "git",
@@ -64,6 +64,7 @@
   "dependencies": {
     "@pixi/graphics-smooth": "^1.1.0",
     "@pixi/particle-emitter": "^5.0.8",
+    "@types/fvtt-types": "file:.",
     "@types/jquery": "~3.5.22",
     "@types/showdown": "~2.0.2",
     "@types/simple-peer": "~9.11.1",
