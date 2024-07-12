@@ -120,13 +120,13 @@ declare class Edge {
    * A PolygonVertex instance.
    * Used as part of ClockwiseSweepPolygon computation.
    */
-  vertexA: PolygonVertex;
+  vertexA: foundry.canvas.edges.PolygonVertex;
 
   /**
    * A PolygonVertex instance.
    * Used as part of ClockwiseSweepPolygon computation.
    */
-  vertexB: PolygonVertex;
+  vertexB: foundry.canvas.edges.PolygonVertex;
 
   /**
    * Is this edge limited for a particular type?
