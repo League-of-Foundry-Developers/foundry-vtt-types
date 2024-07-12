@@ -9,7 +9,7 @@ declare class IterableWeakSet<T extends WeakKey> extends WeakSet<T> {
   /**
    * The backing iterable weak map.
    */
-  #map: IterableWeakMap<T, T>;
+  private map: IterableWeakMap<T, T>;
 
   /**
    * @param entries - The initial entries.
@@ -44,6 +44,11 @@ declare class IterableWeakSet<T extends WeakKey> extends WeakSet<T> {
    * Enumerate the collection.
    */
   values(): Generator<T, void, never>;
+
+  /**
+   * Clear all values from the set.
+   */
+  clear(): void;
 }
 
 export default IterableWeakSet;
