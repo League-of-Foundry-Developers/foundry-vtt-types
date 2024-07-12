@@ -4,7 +4,7 @@ import type { COMPATIBILITY_MODES } from "../constants.d.mts";
  * Log a compatibility warning which is filtered based on the client's defined compatibility settings.
  * @param message - The original warning or error message
  * @param options - Additional options which customize logging (default: `{}`)
- * @throws An Error if the mode is ERROR
+ * @throws        - An Error if the mode is ERROR
  */
 export declare function logCompatibilityWarning(message: string, options?: LogCompatibilityWarningOptions): void;
 export interface LogCompatibilityWarningOptions {
@@ -33,4 +33,10 @@ export interface LogCompatibilityWarningOptions {
    * @defaultValue `true`
    */
   stack?: boolean;
+
+  /**
+   * Log this message only once?
+   * @defaultValue `false`
+   */
+  once?: boolean;
 }
