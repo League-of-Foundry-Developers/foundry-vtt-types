@@ -67,6 +67,16 @@ expectTypeOf(foundry.utils.deepClone("abc" as string, { strict: false })).toEqua
 expectTypeOf(foundry.utils.deepClone("abc" as string, { strict: true })).toEqualTypeOf<string>();
 expectTypeOf(foundry.utils.deepClone("abc" as string, { strict: true as boolean })).toEqualTypeOf<string>();
 
+// diffObject
+
+expectTypeOf(foundry.utils.diffObject({ a: 1 }, { a: 1 })).toEqualTypeOf<object>();
+expectTypeOf(foundry.utils.diffObject({ a: 1 }, { a: 7, b: 2 })).toEqualTypeOf<object>();
+
+// getDefiningClass
+
+expectTypeOf(foundry.utils.getDefiningClass).parameter(0).toBeObject();
+expectTypeOf(foundry.utils.getDefiningClass).parameter(1).toBeString();
+
 // duplicate
 
 expectTypeOf(foundry.utils.duplicate("")).toEqualTypeOf<string>();
@@ -433,3 +443,37 @@ foundry.utils.mergeObject(1, 2);
 
 // @ts-expect-error - A string isn't a valid object to merge.
 foundry.utils.mergeObject("foo", "bar");
+
+// Additions v12
+//   - throttle
+expectTypeOf(foundry.utils.throttle(() => {}, 1)).toBeFunction();
+
+expectTypeOf(
+  foundry.utils.throttle((a: number) => {
+    console.log(a);
+  }, 1),
+).toMatchTypeOf<(a: number) => void>();
+
+expectTypeOf(
+  foundry.utils.throttle((a: number, b: string) => {
+    console.log(a, b);
+  }, 1),
+).toMatchTypeOf<(a: number, b: string) => void>();
+
+expectTypeOf(
+  foundry.utils.throttle((a: number, b: string, c: boolean) => {
+    console.log(a, b, c);
+  }, 1),
+).toMatchTypeOf<(a: number, b: string, c: boolean) => void>();
+
+expectTypeOf(
+  foundry.utils.throttle((a: number, b: string, c: boolean, d: symbol) => {
+    console.log(a, b, c, d);
+  }, 1),
+).toMatchTypeOf<(a: number, b: string, c: boolean, d: symbol) => void>();
+
+expectTypeOf(
+  foundry.utils.throttle((a: number, b: string, c: boolean, d: symbol, e: bigint) => {
+    console.log(a, b, c, d, e);
+  }, 1),
+).toMatchTypeOf<(a: number, b: string, c: boolean, d: symbol, e: bigint) => void>();

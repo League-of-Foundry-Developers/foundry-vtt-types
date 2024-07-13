@@ -35,6 +35,15 @@ export function debounce<T extends (...args: any[]) => unknown>(
 ): (...args: Parameters<T>) => void;
 
 /**
+ * Wrap a callback in a throttled timeout.
+ * Delay execution of the callback function when the last time the function was called was delay milliseconds ago
+ * @param callback     - A function to execute once the throttled threshold has been passed
+ * @param delay        - A maximum amount of time in milliseconds between to execution
+ * @returns            - A wrapped function which can be called to throttle execution
+ */
+export function throttle<T extends (...args: any[]) => any>(callback: T, delay: number): T;
+
+/**
  * A utility function to reload the page with a debounce.
  */
 export const debouncedReload: VoidFunction;
@@ -45,26 +54,23 @@ export interface DeepCloneOptions {
    * @defaultValue `false`
    */
   strict?: boolean;
+  /**
+   * An internal depth tracker
+   * @defaultValue 0
+   */
+  _d?: number;
 }
 
 /**
  * Quickly clone a simple piece of data, returning a copy which can be mutated safely.
  * This method DOES support recursive data structures containing inner objects or arrays.
  * This method DOES NOT support advanced object types like Set, Map, or other specialized classes.
- * @param original - Some sort of data
- * @param options  - Options to configure the behavior of deepClone
- * @returns The clone of that data
+ * @param original        - Some sort of data
+ * @param options         - Options to configure the behaviour of deepClone
+ * @returns               - The clone of that data
+ * @throws                - An Error if deepClone is unable to clone something and strict mode is enabled
  */
 export function deepClone<T>(original: T, options?: DeepCloneOptions): T;
-
-/**
- * Deeply difference an object against some other, returning the update keys and values
- * @param original - An object comparing data against which to compare.
- * @param other    - An object containing potentially different data.
- * @param options  - Additional options which configure the diff operation
- * @returns An object of the data in other which differs from that in original.
- */
-export function diffObject(original: object, other: object, options?: DiffObjectOptions): object;
 
 export type DiffObjectOptions = InexactPartial<{
   /**
@@ -79,7 +85,22 @@ export type DiffObjectOptions = InexactPartial<{
    * @defaultValue `false`
    */
   deletionKeys?: boolean;
+
+  /**
+   * An internal depth tracker
+   * @defaultValue 0
+   */
+  _d?: number;
 }>;
+
+/**
+ * Deeply difference an object against some other, returning the update keys and values.
+ * @param original       - An object comparing data against which to compare
+ * @param other          - An object containing potentially different data
+ * @param options        - Additional options which configure the diff operation
+ * @returns               - An object of the data in other which differs from that in original
+ */
+export function diffObject(original: object, other: object, options?: DiffObjectOptions): object;
 
 /**
  * Test if two objects contain the same enumerable keys and values.
@@ -118,9 +139,11 @@ export function isSubclass<Parent extends AnyClass>(cls: AnyClass, parent: Paren
 
 /**
  * Search up the prototype chain and return the class that defines the given property.
- * @param cls      - The starting class.
- * @param property - The property name.
- * @returns The class that defines the property.
+ * @param obj                - A class instance or class definition which contains a property.
+ *                             - If a class instance is passed the property is treated as an instance attribute.
+ *                             - If a class constructor is passed the property is treated as a static attribute.
+ * @param property           - The property name
+ * @returns     - The class that defines the property
  */
 export function getDefiningClass(cls: ConstructorOf<any>, property: string): ConstructorOf<any>;
 
@@ -278,14 +301,6 @@ export function invertObject<T extends InvertableObject>(obj: T): InvertObject<T
 export function isNewerVersion(v1: number | string, v0: number | string): boolean;
 
 /**
- * A simple function to test whether an Object is empty
- * @param obj - The object to test
- * @returns Is the object empty?
- * @deprecated since v10, will be removed in v12 - Use isEmpty instead.
- */
-export function isObjectEmpty(obj: object): boolean;
-
-/**
  * Test whether a value is empty-like; either undefined or a content-less object.
  * @param value - The value to test
  * @returns Is the value empty-like?
@@ -436,10 +451,10 @@ declare function _mergeUpdate<T extends object, K extends keyof T>(
 export function parseS3URL(key: string): { bucket: string | null; keyPrefix: string };
 
 /**
- * Generate a random string ID of a given requested length.
- * @param length - The length of the random ID to generate
- *                 (default: `16`)
- * @returns Return a string containing random letters and numbers
+ * Generate a random alphanumeric string ID of a given requested length using `crypto.getRandomValues()`.
+ * @param length    - The length of the random string to generate, which must be at most 16384.
+ *                    (default: `16`)
+ * @returns          - A string containing random letters (A-Z, a-z) and numbers (0-9).
  */
 export function randomID(length?: number): string;
 
@@ -479,39 +494,69 @@ interface ResolvedUUID {
   uuid: string;
 
   /**
-   * The parent collection.
+   * The type of Document referenced. Legacy compendium UUIDs will not populate this field if the compendium is not active in the World.
    */
-  collection?: DocumentCollection<any, any> | undefined;
+  type?: DocumentType;
 
   /**
-   * The parent document.
+   * The ID of the Document referenced.
    */
-  documentId?: string | undefined;
+  id: string;
 
   /**
-   * The parent document type.
+   * The primary Document type of this UUID. Only present if the Document is embedded.
    */
-  documentType?: DocumentType | undefined;
+  primaryType?: foundry.CONST.PRIMARY_DOCUMENT_TYPES;
 
   /**
-   * An already-resolved document.
+   * The primary Document ID of this UUID. Only present if the Document is embedded.
+   */
+  primaryId?: string;
+
+  /**
+   * The collection that the primary Document belongs to.
+   */
+  collection?: DocumentCollection<any, any>;
+
+  /**
+   * Additional Embedded Document parts.
+   */
+  embedded: string[];
+
+  /**
+   * An already-resolved parent Document.
    */
   doc?: Document<any, any, any>;
 
   /**
-   * Any remaining Embedded Document parts.
+   * Either the document type or the parent type. Retained for backwards compatibility.
    */
-  embedded: string[];
-}
+  documentType?: DocumentType;
 
-export function parseUuid(uuid: string, options: ParseUUIDOptions): ResolvedUUID;
+  /**
+   * Either the document id or the parent id. Retained for backwards compatibility.
+   */
+  documentId?: string;
+}
 
 interface ParseUUIDOptions {
   /**
    * A document to resolve relative UUIDs against.
    */
-  relative?: Document<any, any, any> | undefined;
+  relative?: Document<any, any, any>;
 }
+
+/**
+ * Parse a UUID into its constituent parts, identifying the type and ID of the referenced document.
+ * The ResolvedUUID result also identifies a "primary" document which is a root-level document either in the game
+ * World or in a Compendium pack which is a parent of the referenced document.
+ * @param uuid           - The UUID to parse.
+ * @param options        - Options to configure parsing behavior.
+ * @returns              - Returns the Collection, Document Type, and Document ID to resolve the parent
+ *                         document, as well as the remaining Embedded Document parts, if any.
+ * @throws               - An error if the provided uuid string is incorrectly structured
+ */
+export function parseUuid(uuid: string, options?: ParseUUIDOptions): ResolvedUUID;
 
 /**
  * Resolve a UUID relative to another document.
