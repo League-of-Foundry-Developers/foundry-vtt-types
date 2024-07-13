@@ -1,16 +1,9 @@
-import type IterableWeakMap from "./iterable-weak-map.d.mts";
-
 /**
  * Stores a set of objects with weak references to them, allowing them to be garbage collected. Can be iterated over,
  * unlike a WeakSet.
  * @typeParam T - The type of the objects contained in the WeakSet
  */
 declare class IterableWeakSet<T extends WeakKey> extends WeakSet<T> {
-  /**
-   * The backing iterable weak map.
-   */
-  private map: IterableWeakMap<T, T>;
-
   /**
    * @param entries - The initial entries.
    */
