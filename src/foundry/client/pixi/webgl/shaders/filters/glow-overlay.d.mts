@@ -9,6 +9,9 @@ declare global {
    * @remarks MIT License
    */
   class GlowOverlayFilter extends AbstractBaseFilter {
+    /**
+     * @defaultValue `6`
+     */
     override padding: number;
 
     /**

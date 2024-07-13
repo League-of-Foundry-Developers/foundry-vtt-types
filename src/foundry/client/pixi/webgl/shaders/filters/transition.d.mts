@@ -17,23 +17,6 @@ declare global {
      */
     static get TYPES(): Record<string, string>;
 
-    static #TYPES: Record<string, string>;
-
-    /**
-     * Maps the type number to its string.
-     */
-    static #TYPE_NUMBER_TO_STRING: ReadonlyArray<string>;
-
-    /**
-     * Maps the type string to its number.
-     */
-    static #TYPE_STRING_TO_NUMBER: Readonly<{ [type: string]: number }>;
-
-    /**
-     * Types that requires padding
-     */
-    static #PADDED_TYPES: ReadonlyArray<string>;
-
     /**
      * The transition type (see {@link TextureTransitionFilter.TYPES}).
      * @defaultValue TextureTransitionFilter.TYPES.FADE
@@ -49,17 +32,14 @@ declare global {
 
     /**
      * Animate a transition from a subject SpriteMesh/PIXI.Sprite to a given texture.
+     * @param subject - The source mesh/sprite to apply a transition.
+     * @param texture - The target texture.
+     * @param options - Animation options.
      * @returns   A Promise which resolves to true once the animation has concluded
      *            or false if the animation was prematurely terminated
      */
     static animate(
-      /**
-       * The source mesh/sprite to apply a transition.
-       */
       subject: PIXI.Sprite | SpriteMesh,
-      /**
-       * The target texture.
-       */
       texture: PIXI.Texture,
       options?: {
         /**
@@ -83,11 +63,11 @@ declare global {
       },
     ): Promise<boolean>;
 
-    static defaultUniforms: AbstractBaseShader.Uniforms;
+    static override defaultUniforms: AbstractBaseShader.Uniforms;
 
-    static vertexShader: string;
+    static override vertexShader: string;
 
-    static fragmentShader: string;
+    static override fragmentShader: string | ((...args: any[]) => string) | undefined;
 
     override apply(
       filterManager: FilterSystem,

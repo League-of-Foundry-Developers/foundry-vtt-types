@@ -13,9 +13,10 @@ declare global {
     ): T;
 
     /**
-     * The plugin name associated for this instance.
+     * The plugin name associated for this instance, if any.
+     * Returns "batch" if the shader is disabled.
      */
-    pluginName: (typeof BaseSamplerShader)["classPluginName"];
+    get pluginName(): (typeof BaseSamplerShader)["classPluginName"];
 
     /**
      * The named batch sampler plugin that is used by this shader, or null if no batching is used.
@@ -31,6 +32,16 @@ declare global {
     get enabled(): boolean;
 
     set enabled(enabled);
+
+    /**
+     * Pause or Unpause this sampler. If set to true, the shader is disabled. Otherwise, it is enabled.
+     * Contrary to enabled, a shader might decide to refuse a pause, to continue to render animations per example.
+     * @see enabled
+     * @defaultValue `false`
+     */
+    get paused(): boolean;
+
+    set paused(paused);
 
     /**
      * Contrast adjustment
@@ -98,7 +109,7 @@ declare global {
        */
     static override vertexShader: string;
 
-    static override fragmentShader: string;
+    static override fragmentShader: string | ((...args: any[]) => string);
 
     /**
      * Batch default vertex
@@ -135,23 +146,26 @@ declare global {
     /**
      * Pack interleaved geometry custom function.
      */
-    protected static _packInterleavedGeometry: (
-      element: PIXI.IBatchableElement,
-      attributeBuffer: PIXI.ViewableBuffer,
-      indexBuffer: Uint16Array,
-      aIndex: number,
-      iIndex: number,
-    ) => void | undefined;
+    protected static _packInterleavedGeometry:
+      | ((
+          element: PIXI.IBatchableElement,
+          attributeBuffer: PIXI.ViewableBuffer,
+          indexBuffer: Uint16Array,
+          aIndex: number,
+          iIndex: number,
+        ) => void)
+      | undefined;
 
     /**
      * A prerender function happening just before the batch renderer is flushed.
      */
-    protected static _preRenderBatch(): (batchRenderer: typeof BatchRenderer) => void;
+    protected static _preRenderBatch(): ((batchRenderer: typeof BatchRenderer) => void) | undefined;
 
     /**
      * A function that returns default uniforms associated with the batched version of this sampler.
      * @remarks Foundry annotated this as abstract
      */
+    //TODO: This is Odd. Foundry sets default value to {}. Revisit.
     static batchDefaultUniforms:
       | ((maxTextures: AbstractBaseShader.UniformValue) => AbstractBaseShader.Uniforms)
       | undefined;
@@ -188,13 +202,14 @@ declare global {
     /**
      * Register the plugin for this sampler.
      */
-    static registerPlugin(): void;
+    static registerPlugin(options?: {
+      /**
+       * Override the plugin of the same name that is already registered?
+       * @defaultValue `false`
+       */
+      force?: boolean;
+    }): void;
 
-    /**
-     * Perform operations which are required before binding the Shader to the Renderer.
-     * @param mesh - The mesh linked to this shader.
-     * @internal
-     */
-    protected _preRender(mesh: SpriteMesh): void;
+    protected override _preRender(mesh: PIXI.DisplayObject, renderer: PIXI.Renderer): void;
   }
 }

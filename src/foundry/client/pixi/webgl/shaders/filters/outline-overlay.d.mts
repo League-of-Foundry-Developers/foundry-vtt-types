@@ -9,15 +9,21 @@ declare global {
    * @remarks MIT License
    */
   class OutlineOverlayFilter extends AbstractBaseFilter {
+    /**
+     * @defaultValue `3`
+     */
     override padding: number;
 
+    /**
+     * @defaultValue `false`
+     */
     override autoFit: boolean;
 
     /**
      * If the filter is animated or not.
      * @defaultValue `true`
      */
-    animate: boolean;
+    animated: boolean;
 
     /**
      * @defaultValue
@@ -35,6 +41,9 @@ declare global {
 
     static override vertexShader: string;
 
+    /**
+     * @remarks marked as inheritdoc in foundry but doesn't exist in parent class
+     */
     static createFragmentShader(): string;
 
     /**
@@ -55,5 +64,17 @@ declare global {
       output: PIXI.RenderTexture,
       clear: PIXI.CLEAR_MODES,
     ): void;
+
+    /**
+     * @deprecated since v12, until v14
+     * @remarks OutlineOverlayFilter#animate is deprecated in favor of OutlineOverlayFilter#animated.
+     */
+    get animate(): boolean;
+
+    /**
+     * @deprecated since v12, until v14
+     * @remarks OutlineOverlayFilter#animate is deprecated in favor of OutlineOverlayFilter#animated.
+     */
+    set animate(v);
   }
 }

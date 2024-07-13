@@ -10,23 +10,8 @@ declare global {
      */
     static override classPluginName: string | null;
 
-    static override fragmentShader: string;
+    static override fragmentShader: string | ((...args: any[]) => string);
 
-    /**
-     * @defaultValue
-     * ```js
-     * {
-     *    tintAlpha: [1, 1, 1, 1],
-     *    tint: [1, 1, 1],
-     *    contrast: 0,
-     *    saturation: 0,
-     *    exposure: 0,
-     *    sampler: null,
-     *    linkedToDarknessLevel: false,
-     *    darknessLevel: 1
-     * }
-     * ```
-     */
     static override defaultUniforms: AbstractBaseShader.Uniforms;
 
     get linkedToDarknessLevel(): AbstractBaseShader.UniformValue;
@@ -59,28 +44,11 @@ declare global {
      */
     static override classPluginName: string | null;
 
-    static override fragmentShader: string;
+    static override vertexShader: string;
 
-    /**
-     * @defaultValue
-     * ```js
-     * {
-     *    tintAlpha: [1, 1, 1, 1],
-     *    tint: [0.38, 0.8, 0.38],
-     *    brightness: 0,
-     *    darknessLevel: 1,
-     *    enable: true
-     * }
-     * ```
-     */
+    static override fragmentShader: string | ((...args: any[]) => string);
+
     static override defaultUniforms: AbstractBaseShader.Uniforms;
-
-    /**
-     * Level of natural brightness (opposed to darkness level).
-     */
-    get darknessLevel(): number;
-
-    set darknessLevel(darknessLevel);
 
     /**
      * Brightness controls the luminosity.
