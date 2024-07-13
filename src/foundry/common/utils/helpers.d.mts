@@ -496,7 +496,7 @@ interface ResolvedUUID {
   /**
    * The type of Document referenced. Legacy compendium UUIDs will not populate this field if the compendium is not active in the World.
    */
-  type?: string;
+  type?: DocumentType;
 
   /**
    * The ID of the Document referenced.
@@ -506,7 +506,7 @@ interface ResolvedUUID {
   /**
    * The primary Document type of this UUID. Only present if the Document is embedded.
    */
-  primaryType?: string;
+  primaryType?: foundry.CONST.PRIMARY_DOCUMENT_TYPES;
 
   /**
    * The primary Document ID of this UUID. Only present if the Document is embedded.
@@ -516,7 +516,7 @@ interface ResolvedUUID {
   /**
    * The collection that the primary Document belongs to.
    */
-  collection?: DocumentType;
+  collection?: DocumentCollection<any, any>;
 
   /**
    * Additional Embedded Document parts.
@@ -531,7 +531,7 @@ interface ResolvedUUID {
   /**
    * Either the document type or the parent type. Retained for backwards compatibility.
    */
-  documentType?: string;
+  documentType?: DocumentType;
 
   /**
    * Either the document id or the parent id. Retained for backwards compatibility.
