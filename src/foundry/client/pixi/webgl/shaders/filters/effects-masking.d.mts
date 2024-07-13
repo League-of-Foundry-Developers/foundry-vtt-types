@@ -40,11 +40,11 @@ declare global {
      * The input cannot be separately typed, it must be fed directly into this method
      */
     // TODO: Replace when https://github.com/microsoft/TypeScript/issues/17867 is resolved
-    static create<T1 extends VisualEffectsMaskingFilter, T2 extends VisualEffectsMaskingFilter.CreateOptions<T2>>(
-      this: ConstructorOf<T1>,
-      { filterMode, postProcessModes, ...uniforms }?: T2,
-    ): T1;
-    static create<T extends VisualEffectsMaskingFilter>(
+    static override create<
+      T1 extends VisualEffectsMaskingFilter,
+      T2 extends VisualEffectsMaskingFilter.CreateOptions<T2>,
+    >(this: ConstructorOf<T1>, { filterMode, postProcessModes, ...uniforms }?: T2): T1;
+    static override create<T extends VisualEffectsMaskingFilter>(
       this: ConstructorOf<T>,
       { filterMode, postProcessModes, ...uniforms }?: VisualEffectsMaskingFilter.CreateOptionsIntersection,
     ): T;
@@ -73,9 +73,9 @@ declare global {
      * Masking modes.
      */
     static readonly FILTER_MODES: {
-      BACKGROUND: "background";
-      ILLUMINATION: "illumination";
-      COLORATION: "coloration";
+      BACKGROUND: 0;
+      ILLUMINATION: 1;
+      COLORATION: 2;
     };
 
     /**
@@ -95,6 +95,14 @@ declare global {
      */
     static override defaultUniforms: AbstractBaseShader.Uniforms;
 
+    override apply(
+      filterManager: PIXI.FilterSystem,
+      input: PIXI.RenderTexture,
+      output: PIXI.RenderTexture,
+      clear: PIXI.CLEAR_MODES,
+      currentState: PIXI.FilterState,
+    ): void;
+
     /**
      * Filter post-process techniques.
      */
@@ -105,18 +113,9 @@ declare global {
     };
 
     /**
-     * Assign the replacement color according to the filter mode.
-     * @param filterMode - Filter mode.
-     * @returns The replacement color.
-     */
-    static replacementColor(filterMode: VisualEffectsMaskingFilter.FilterMode): string;
-
-    /**
      * Memory allocations and headers for the VisualEffectsMaskingFilter
-     * @param filterMode - Filter mode.
-     * @returns The filter header according to the filter mode.
      */
-    static fragmentHeader(filterMode: VisualEffectsMaskingFilter.FilterMode): string;
+    static fragmentHeader: string;
 
     static fragmentCore: string;
 
@@ -131,11 +130,7 @@ declare global {
      * Specify the fragment shader to use according to mode
      * @param filterMode - (default: this.FILTER_MODES.BACKGROUND)
      * @param postProcessModes - (default: [])
-     * @override
      */
-    static fragmentShader(
-      filterMode?: VisualEffectsMaskingFilter.FilterMode,
-      postProcessModes?: VisualEffectsMaskingFilter.PostProcessModes,
-    ): string;
+    static override fragmentShader(postProcessModes?: VisualEffectsMaskingFilter.PostProcessModes): string;
   }
 }

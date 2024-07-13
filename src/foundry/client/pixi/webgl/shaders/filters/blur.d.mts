@@ -50,7 +50,7 @@ declare global {
     /**
      * The kernels containing the gaussian constants.
      */
-    static GAUSSIAN_VALUES: Record<number, number>;
+    static GAUSSIAN_VALUES: Record<number, number[]>;
 
     /**
      * The fragment template generator

@@ -29,18 +29,5 @@ declare global {
      * @returns The constructed AbstractFilter instance.
      */
     static create(uniforms?: AbstractBaseShader.Uniforms): AbstractBaseFilter;
-
-    /**
-     * Always target the resolution of the render texture or renderer
-     */
-    get resolution(): number;
-
-    set resolution(value);
-
-    /**
-     * Always target the MSAA level of the render texture or renderer
-     * @privateRemarks Foundry overrides here as a getter with a do-nothing setter
-     */
-    multisample: PIXI.MSAA_QUALITY;
   }
 }

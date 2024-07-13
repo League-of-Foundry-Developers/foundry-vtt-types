@@ -8,112 +8,7 @@ declare class BaseShaderMixinClass {
   constructor(...args: any[]);
 
   /**
-   * Common attributes for vertex shaders.
-   * @defaultValue
-   * ```js
-   * `attribute vec2 aVertexPosition;
-   * attribute float aDepthValue;`
-   * ```
-   */
-  static VERTEX_ATTRIBUTES: string;
-
-  /**
-   * Common uniforms for vertex shaders.
-   * @defaultValue
-   * ```js
-   * `uniform mat3 translationMatrix;
-   * uniform mat3 projectionMatrix;
-   * uniform float rotation;
-   * uniform float angle;
-   * uniform float radius;
-   * uniform float depthElevation;
-   * uniform vec2 screenDimensions;
-   * uniform vec2 resolution;
-   * uniform vec3 origin;
-   * uniform vec3 dimensions;`
-   * ```
-   */
-  static VERTEX_UNIFORMS: string;
-
-  /**
-   * Common varyings shared by vertex and fragment shaders.
-   * @defaultValue
-   * ```js
-   * `varying vec2 vUvs;
-   * varying vec2 vSamplerUvs;
-   * varying float vDepth;`
-   * ```
-   */
-  static VERTEX_FRAGMENT_VARYINGS: string;
-
-  /**
-   * Common uniforms shared by fragment shaders.
-   * @defaultValue
-   * ```js
-   * `uniform int technique;
-   * uniform bool useSampler;
-   * uniform bool darkness;
-   * uniform bool hasColor;
-   * uniform bool linkedToDarknessLevel;
-   * uniform float attenuation;
-   * uniform float contrast;
-   * uniform float shadows;
-   * uniform float exposure;
-   * uniform float saturation;
-   * uniform float intensity;
-   * uniform float brightness;
-   * uniform float luminosity;
-   * uniform float pulse;
-   * uniform float brightnessPulse;
-   * uniform float backgroundAlpha;
-   * uniform float illuminationAlpha;
-   * uniform float colorationAlpha;
-   * uniform float ratio;
-   * uniform float time;
-   * uniform float darknessLevel;
-   * uniform float darknessPenalty;
-   * uniform vec3 color;
-   * uniform vec3 colorBackground;
-   * uniform vec3 colorVision;
-   * uniform vec3 colorTint;
-   * uniform vec3 colorEffect;
-   * uniform vec3 colorDim;
-   * uniform vec3 colorBright;
-   * uniform vec3 ambientDaylight;
-   * uniform vec3 ambientDarkness;
-   * uniform vec3 ambientBrightest;
-   * uniform vec4 weights;
-   * uniform sampler2D primaryTexture;
-   * uniform sampler2D framebufferTexture;
-   * uniform sampler2D depthTexture;
-   *
-   * // Shared uniforms with vertex shader
-   * uniform ${PIXI.settings.PRECISION_VERTEX} float rotation;
-   * uniform ${PIXI.settings.PRECISION_VERTEX} float angle;
-   * uniform ${PIXI.settings.PRECISION_VERTEX} float radius;
-   * uniform ${PIXI.settings.PRECISION_VERTEX} float depthElevation;
-   * uniform ${PIXI.settings.PRECISION_VERTEX} vec2 resolution;
-   * uniform ${PIXI.settings.PRECISION_VERTEX} vec2 screenDimensions;
-   * uniform ${PIXI.settings.PRECISION_VERTEX} vec3 origin;
-   * uniform ${PIXI.settings.PRECISION_VERTEX} vec3 dimensions;
-   * uniform ${PIXI.settings.PRECISION_VERTEX} mat3 translationMatrix;
-   * uniform ${PIXI.settings.PRECISION_VERTEX} mat3 projectionMatrix;`
-   * ```
-   */
-  static FRAGMENT_UNIFORMS: string;
-
-  /**
    * Useful constant values computed at compile time
-   * @defaultValue
-   * ```js
-   * `const float PI = 3.14159265359;
-   * const float TWOPI = 2.0 * PI;
-   * const float INVTWOPI = 1.0 / TWOPI;
-   * const float INVTHREE = 1.0 / 3.0;
-   * const vec2 PIVOT = vec2(0.5);
-   * const vec3 BT709 = vec3(0.2126, 0.7152, 0.0722);
-   * const vec4 ALLONES = vec4(1.0);`
-   * ```
    */
   static CONSTANTS: string;
 
@@ -122,28 +17,13 @@ declare class BaseShaderMixinClass {
   /**
    * Fast approximate perceived brightness computation
    * Using Digital ITU BT.709 : Exact luminance factors
-   * @defaultValue
-   * ```js
-   * `float perceivedBrightness(in vec3 color) {
-   * return sqrt( BT709.x * color.r * color.r +
-   *              BT709.y * color.g * color.g +
-   *              BT709.z * color.b * color.b );
-   * }
-   *
-   * float perceivedBrightness(in vec4 color) {
-   * return perceivedBrightness(color.rgb);
-   * }
-   *
-   * float reversePerceivedBrightness(in vec3 color) {
-   * return 1.0 - perceivedBrightness(color);
-   * }
-   *
-   * float reversePerceivedBrightness(in vec4 color) {
-   * return 1.0 - perceivedBrightness(color.rgb);
-   * }`
-   * ```
    */
   static PERCEIVED_BRIGHTNESS: string;
+
+  /**
+   * Convertion functions for sRGB and Linear RGB.
+   */
+  static COLOR_SPACES: string;
 
   /**
    * Fractional Brownian Motion for a given number of octaves
@@ -329,6 +209,16 @@ declare class BaseShaderMixinClass {
    * ```
    */
   static VORONOI: string;
+
+  /**
+   * Enables GLSL 1.0 backwards compatibility in GLSL 3.00 ES vertex shaders.
+   */
+  static GLSL1_COMPATIBILITY_VERTEX: string;
+
+  /**
+   * Enables GLSL 1.0 backwards compatibility in GLSL 3.00 ES fragment shaders.
+   */
+  static GLSL1_COMPATIBILITY_FRAGMENT: string;
 }
 
 declare global {

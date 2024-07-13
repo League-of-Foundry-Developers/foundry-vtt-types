@@ -5,7 +5,7 @@ declare global {
    * Invisibility effect filter for placeables.
    */
   class InvisibilityFilter extends AbstractBaseFilter {
-    static fragmentShader: string;
-    static defaultUniforms: AbstractBaseShader.Uniforms;
+    static override fragmentShader: string | ((...args: any[]) => string) | undefined;
+    static override defaultUniforms: AbstractBaseShader.Uniforms;
   }
 }
