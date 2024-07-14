@@ -1,5 +1,5 @@
-import type { DataModel } from "./abstract/data.mjs";
-import type * as fields from "./data/fields.mjs";
+import type { DataModel } from "./abstract/data.d.mts";
+import type * as fields from "./data/fields.d.mts";
 import type { SOFTWARE_UPDATE_CHANNELS } from "./constants.d.mts";
 
 declare namespace ApplicationConfiguration {

@@ -1,6 +1,6 @@
 import type { DocumentType } from "../../../types/helperTypes.d.mts";
 import type { AnyClass, ConstructorOf, DeepPartial, InexactPartial } from "../../../types/utils.d.mts";
-import Document from "../abstract/document.mjs";
+import type Document from "../abstract/document.d.mts";
 
 /**
  * Benchmark the performance of a function, calling it a requested number of iterations.

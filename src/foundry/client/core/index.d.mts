@@ -7,7 +7,7 @@ import "./keybindings.d.mts";
 import "./keyboard.d.mts";
 import "./mouse.d.mts";
 import "./nue.d.mts";
-import "./packages.mjs";
+import "./packages.d.mts";
 import "./settings.d.mts";
 import "./socket.d.mts";
 import "./sorting.d.mts";

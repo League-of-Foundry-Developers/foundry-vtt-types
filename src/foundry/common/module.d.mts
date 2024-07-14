@@ -1,12 +1,12 @@
-import * as _abstract from "./abstract/module.mts";
-import * as _config from "./config.mts";
-import * as _CONST from "./constants.mts";
-import * as _data from "./data/module.mts";
-import * as _documents from "./documents/module.mts";
-import * as _packages from "./packages/module";
+import type * as _abstract from "./abstract/module.d.mts";
+import type * as _config from "./config.d.mts";
+import type * as _CONST from "./constants.d.mts";
+import type * as _data from "./data/module.d.mts";
+import type * as _documents from "./documents/module.d.mts";
+import type * as _packages from "./packages/module.d.mts";
 import "./primitives/module.d.mts";
 import "./types.d.mts";
-import * as _utils from "./utils/module.mts";
+import type * as _utils from "./utils/module.d.mts";
 
 /**
  * Constant definitions used throughout the Foundry Virtual Tabletop framework.
@@ -31,7 +31,7 @@ export type * as documents from "./documents/module.d.mts";
 /**
  * Package data definitions, validations, and schema
  */
-export type * as packages from "./packages/module";
+export type * as packages from "./packages/module.d.mts";
 
 /**
  * Utility functions providing helpful functionality.

@@ -1,6 +1,6 @@
 import type { DataField, SchemaField } from "../data/fields.mts";
 import type { fields } from "../data/module.mts";
-import { DataModelValidationFailure } from "../data/validation-failure.mts";
+import type { DataModelValidationFailure } from "../data/validation-failure.d.mts";
 
 declare global {
   interface DataSchema {
