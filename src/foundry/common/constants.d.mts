@@ -287,6 +287,7 @@ export type EMBEDDED_DOCUMENT_TYPES = ValueOf<typeof EMBEDDED_DOCUMENT_TYPES>;
 /**
  * A listing of all valid Document types, both primary and embedded.
  */
+export const ALL_DOCUMENT_TYPES: ALL_DOCUMENT_TYPES[];
 export type ALL_DOCUMENT_TYPES = PRIMARY_DOCUMENT_TYPES | EMBEDDED_DOCUMENT_TYPES;
 
 /**
