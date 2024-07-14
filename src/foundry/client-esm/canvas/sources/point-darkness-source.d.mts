@@ -1,11 +1,24 @@
 import BaseLightSource from "./base-light-source.mts";
 import PointEffectSourceMixin from "./point-effect-source.mts";
 
+// TODO: Adjust after client/config.js is updated
+type LightSourceAnimationConfig = unknown;
+
 /**
  * A specialized subclass of the BaseLightSource which renders a source of darkness as a point-based effect.
  */
 export default class PointDarknessSource extends PointEffectSourceMixin(BaseLightSource) {
-  static override _brightLightingLevel: number;
+  /** @defaultValue `"darknessSources"` */
+  static override effectsCollection: string;
+
+  /** @defaultValue `LIGHTING_LEVELS.HALFDARK` */
+  static override _dimLightingLevel: foundry.CONST.LIGHTING_LEVELS;
+
+  /** @defaultValue `LIGHTING_LEVELS.DARKNESS` */
+  static override _brightLightingLevel: foundry.CONST.LIGHTING_LEVELS;
+
+  /** @defaultValue `CONFIG.Canvas.darknessAnimations` */
+  static get ANIMATIONS(): LightSourceAnimationConfig;
 
   static override get _layers(): Record<string, foundry.canvas.sources.RenderedEffectSource.RenderedEffectLayerConfig>;
 

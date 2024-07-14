@@ -110,8 +110,9 @@ declare class RenderedEffectSource<
 
   /**
    * Configure which shaders are used for each rendered layer.
+   * @privateRemarks Foundry marks this as private then overrides it in `PointVisionSource`
    */
-  private _configureShaders: {
+  protected _configureShaders(): {
     background: AdaptiveLightingShader;
     coloration: AdaptiveLightingShader;
     illumination: AdaptiveLightingShader;

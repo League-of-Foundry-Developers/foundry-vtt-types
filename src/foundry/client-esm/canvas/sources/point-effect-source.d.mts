@@ -49,21 +49,16 @@ declare class PointEffectSource {
   /**
    * @deprecated since v11, until v13
    * @remarks `"PointEffectSource#los is deprecated in favor of PointEffectSource#shape."`
+   * @privateRemarks Actual definition is get/set
    */
-  get los(): PointSourcePolygon;
-
-  /**
-   * @deprecated since v11, until v13
-   * @remarks `"PointEffectSource#los is deprecated in favor of PointEffectSource#shape."`
-   */
-  set los(shape);
+  los: PointSourcePolygon;
 }
 
 /**
  * TODO - documentation required about what a PointEffectSource is.
  * @privateRemarks the TODO is from foundry, update this class whenever the comments are done
  */
-export default function PointEffectSourceMixin<BaseClass extends typeof BaseEffectSource<any, any>>(
+declare function PointEffectSourceMixin<BaseClass extends typeof BaseEffectSource<any, any>>(
   Base: BaseClass,
 ): Mixin<typeof PointEffectSource, BaseClass>;
 
@@ -91,3 +86,5 @@ declare namespace PointEffectSourceMixin {
     walls: boolean;
   }
 }
+
+export default PointEffectSourceMixin;
