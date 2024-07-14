@@ -63,7 +63,7 @@ declare class PointEffectSource {
  * TODO - documentation required about what a PointEffectSource is.
  * @privateRemarks the TODO is from foundry, update this class whenever the comments are done
  */
-export default function PointEffectSourceMixin<BaseClass extends typeof BaseEffectSource>(
+export default function PointEffectSourceMixin<BaseClass extends typeof BaseEffectSource<any, any>>(
   Base: BaseClass,
 ): Mixin<typeof PointEffectSource, BaseClass>;
 
