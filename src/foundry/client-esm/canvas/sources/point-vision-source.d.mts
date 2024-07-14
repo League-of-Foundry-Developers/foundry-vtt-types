@@ -2,7 +2,6 @@ import RenderedEffectSource from "./rendered-effect-source.mts";
 import PointEffectSourceMixin, {
   type PointEffectSourceMixin_RenderedEffectSource_Interface,
 } from "./point-effect-source.mts";
-import type { InexactPartial } from "../../../../types/utils.d.mts";
 
 declare const PointEffectSourceMixin_RenderedEffectSource: PointEffectSourceMixin_RenderedEffectSource_Interface;
 
@@ -10,7 +9,7 @@ declare const PointEffectSourceMixin_RenderedEffectSource: PointEffectSourceMixi
  * A specialized subclass of RenderedEffectSource which represents a source of point-based vision.
  */
 declare class PointVisionSource<
-  SourceData extends RenderedEffectSource.RenderedEffectSourceData,
+  SourceData extends PointVisionSource.VisionSourceData,
 > extends PointEffectSourceMixin_RenderedEffectSource<SourceData> {
   /** @defaultValue `"sight"` */
   static override sourceType: string;
@@ -111,7 +110,7 @@ declare class PointVisionSource<
    */
   visionModeOverrides: object;
 
-  override _initialize(data: InexactPartial<PointVisionSourceData>): void;
+  override _initialize(data: Partial<SourceData>): void;
 
   override _createShapes(): void;
 
@@ -122,7 +121,7 @@ declare class PointVisionSource<
    */
   protected _updateVisionMode(): void;
 
-  override _configure(changes: Partial<PointVisionSourceData>): void;
+  override _configure(changes: Partial<SourceData>): void;
 
   override _configureLayer(layer: object, layerId: string): void;
 
@@ -166,7 +165,9 @@ declare class PointVisionSource<
 }
 
 declare namespace PointVisionSource {
-  interface VisionSourceData extends RenderedEffectSource.RenderedEffectSourceData {
+  interface VisionSourceData
+    extends RenderedEffectSource.RenderedEffectSourceData,
+      PointEffectSourceMixin.PointEffectSourceData {
     /**
      * The amount of contrast
      */

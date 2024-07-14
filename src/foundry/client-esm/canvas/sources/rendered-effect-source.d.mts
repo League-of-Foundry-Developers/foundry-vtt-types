@@ -10,7 +10,8 @@ type AdaptiveDarknessShader = unknown;
  */
 declare class RenderedEffectSource<
   SourceData extends RenderedEffectSource.RenderedEffectSourceData = RenderedEffectSource.RenderedEffectSourceData,
-> extends BaseEffectSource<SourceData, any> {
+  SourceShape extends PIXI.Polygon = PIXI.Polygon,
+> extends BaseEffectSource<SourceData, SourceShape> {
   /**
    * Keys of the data object which require shaders to be re-initialized.
    */
@@ -99,7 +100,7 @@ declare class RenderedEffectSource<
    */
   get illumination(): PointSourceMesh;
 
-  _initialize(data: SourceData): void;
+  _initialize(data: Partial<SourceData>): void;
 
   /**
    * Decide whether to render soft edges with a blur.

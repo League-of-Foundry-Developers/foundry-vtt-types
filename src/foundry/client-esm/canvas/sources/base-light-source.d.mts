@@ -9,7 +9,8 @@ type LightSourceAnimationConfig = unknown;
  */
 declare class BaseLightSource<
   SourceData extends BaseLightSource.LightSourceData = BaseLightSource.LightSourceData,
-> extends RenderedEffectSource<SourceData> {
+  SourceShape extends PIXI.Polygon = PIXI.Polygon,
+> extends RenderedEffectSource<SourceData, SourceShape> {
   /** @defaultValue `"light"` */
   static override sourceType: string;
 
@@ -58,7 +59,7 @@ declare class BaseLightSource<
    */
   ratio: number;
 
-  override _initialize(data: SourceData): void;
+  override _initialize(data: Partial<SourceData>): void;
 
   override _updateColorationUniforms(): void;
 

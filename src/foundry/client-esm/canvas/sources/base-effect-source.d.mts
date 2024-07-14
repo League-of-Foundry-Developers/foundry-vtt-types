@@ -1,3 +1,5 @@
+import type { InexactPartial } from "../../../../types/utils.d.mts";
+
 /**
  * TODO - Re-document after ESM refactor.
  * An abstract base class which defines a framework for effect sources which originate radially from a specific point.
@@ -124,7 +126,7 @@ declare class BaseEffectSource<
    * @returns The initialized source
    */
   initialize(
-    data?: Partial<SourceData>,
+    data?: InexactPartial<SourceData>,
     options?: {
       /** An object containing optional behaviors to apply. */
       behaviors?: object;

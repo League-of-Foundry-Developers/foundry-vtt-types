@@ -1,5 +1,5 @@
 import type { Mixin } from "../../../../types/utils.d.mts";
-import BaseEffectSource from "./base-effect-source.mts";
+import type BaseEffectSource from "./base-effect-source.d.mts";
 import type BaseLightSource from "./base-light-source.d.mts";
 import type RenderedEffectSource from "./rendered-effect-source.d.mts";
 
@@ -7,8 +7,6 @@ declare class PointEffectSource {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
   constructor(...args: any[]);
 
-  /** @remarks Set by PointEffectSourceMixin */
-  shape: PointSourcePolygon;
   /**
    * @defaultValue
    * ```js
@@ -27,7 +25,7 @@ declare class PointEffectSource {
    */
   get radius(): number;
 
-  _initialize(data: PointEffectSourceMixin.PointEffectSourceData): void;
+  _initialize(data: Partial<PointEffectSourceMixin.PointEffectSourceData>): void;
 
   _initializeSoftEdges(): void;
 
@@ -61,24 +59,29 @@ type PointEffectSourceMixin_BaseEffectSource_Static = typeof PointEffectSource &
 export interface PointEffectSourceMixin_BaseEffectSource_Interface
   extends PointEffectSourceMixin_BaseEffectSource_Static {
   new <
-    SourceData extends BaseEffectSource.BaseEffectSourceData,
-    SourceShape extends PIXI.Polygon,
+    SourceData extends BaseEffectSource.BaseEffectSourceData & PointEffectSourceMixin.PointEffectSourceData,
+    SourceShape extends PointSourcePolygon,
   >(): PointEffectSource & BaseEffectSource<SourceData, SourceShape>;
-}
-
-type PointEffectSourceMixin_BaseLightSource_Static = typeof PointEffectSource & typeof BaseLightSource;
-
-export interface PointEffectSourceMixin_BaseLightSource_Interface
-  extends PointEffectSourceMixin_BaseLightSource_Static {
-  new <SourceData extends BaseLightSource.LightSourceData>(): PointEffectSource & BaseLightSource<SourceData>;
 }
 
 type PointEffectSourceMixin_RenderedEffectSource_Static = typeof PointEffectSource & typeof RenderedEffectSource;
 
 export interface PointEffectSourceMixin_RenderedEffectSource_Interface
   extends PointEffectSourceMixin_RenderedEffectSource_Static {
-  new <SourceData extends RenderedEffectSource.RenderedEffectSourceData>(): PointEffectSource &
-    RenderedEffectSource<SourceData>;
+  new <
+    SourceData extends RenderedEffectSource.RenderedEffectSourceData & PointEffectSourceMixin.PointEffectSourceData,
+    SourceShape extends PointSourcePolygon,
+  >(): PointEffectSource & RenderedEffectSource<SourceData, SourceShape>;
+}
+
+type PointEffectSourceMixin_BaseLightSource_Static = typeof PointEffectSource & typeof BaseLightSource;
+
+export interface PointEffectSourceMixin_BaseLightSource_Interface
+  extends PointEffectSourceMixin_BaseLightSource_Static {
+  new <
+    SourceData extends BaseLightSource.LightSourceData & PointEffectSourceMixin.PointEffectSourceData,
+    SourceShape extends PointSourcePolygon,
+  >(): PointEffectSource & BaseLightSource<SourceData, SourceShape>;
 }
 
 /**

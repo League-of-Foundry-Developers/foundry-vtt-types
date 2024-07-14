@@ -1,24 +1,26 @@
-import type { InexactPartial } from "../../../../types/utils.d.mts";
 import BaseLightSource from "./base-light-source.mts";
 import type { PointEffectSourceMixin_BaseLightSource_Interface } from "./point-effect-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
 
 declare const MixedPointBaseLightSource: PointEffectSourceMixin_BaseLightSource_Interface;
 
+type LightSourceData = PointEffectSourceMixin.PointEffectSourceData & BaseLightSource.LightSourceData;
+
 /**
  * A specialized subclass of the BaseLightSource which renders a source of light as a point-based effect.
  */
 export default class PointLightSource<
-  SourceShape extends BaseLightSource.LightSourceData,
-> extends MixedPointBaseLightSource<SourceShape> {
+  SourceData extends LightSourceData = LightSourceData,
+  SourceShape extends PointSourcePolygon = PointSourcePolygon,
+> extends MixedPointBaseLightSource<SourceData, SourceShape> {
   /** @defaultValue `"lightSources"` */
   static override effectsCollection: string;
 
-  override _initialize(data: InexactPartial<PointLightSourceData>): void;
+  override _initialize(data: Partial<SourceData>): void;
 
   override _createShapes(): void;
 
-  override _configure(changes: Partial<PointLightSourceData>): void;
+  override _configure(changes: Partial<SourceData>): void;
 
   override _getPolygonConfiguration(): PointSourcePolygonConfig;
 
@@ -42,5 +44,3 @@ export default class PointLightSource<
    */
   _canDetectObject(target: PlaceableObject): boolean;
 }
-
-type PointLightSourceData = PointEffectSourceMixin.PointEffectSourceData & BaseLightSource.LightSourceData;
