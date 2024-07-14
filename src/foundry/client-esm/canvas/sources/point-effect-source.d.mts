@@ -71,7 +71,11 @@ export interface PointEffectSourceMixin_RenderedEffectSource_Interface
   new <
     SourceData extends RenderedEffectSource.RenderedEffectSourceData & PointEffectSourceMixin.PointEffectSourceData,
     SourceShape extends PointSourcePolygon,
-  >(): PointEffectSource & RenderedEffectSource<SourceData, SourceShape>;
+    RenderingLayers extends Record<
+      string,
+      RenderedEffectSource.RenderedEffectSourceLayer
+    > = RenderedEffectSource.Layers,
+  >(): PointEffectSource & RenderedEffectSource<SourceData, SourceShape, RenderingLayers>;
 }
 
 type PointEffectSourceMixin_BaseLightSource_Static = typeof PointEffectSource & typeof BaseLightSource;
@@ -81,7 +85,11 @@ export interface PointEffectSourceMixin_BaseLightSource_Interface
   new <
     SourceData extends BaseLightSource.LightSourceData & PointEffectSourceMixin.PointEffectSourceData,
     SourceShape extends PointSourcePolygon,
-  >(): PointEffectSource & BaseLightSource<SourceData, SourceShape>;
+    RenderingLayers extends Record<
+      string,
+      RenderedEffectSource.RenderedEffectSourceLayer
+    > = RenderedEffectSource.Layers,
+  >(): PointEffectSource & BaseLightSource<SourceData, SourceShape, RenderingLayers>;
 }
 
 /**

@@ -11,6 +11,7 @@ type AdaptiveDarknessShader = unknown;
 declare class RenderedEffectSource<
   SourceData extends RenderedEffectSource.RenderedEffectSourceData = RenderedEffectSource.RenderedEffectSourceData,
   SourceShape extends PIXI.Polygon = PIXI.Polygon,
+  RenderingLayers extends Record<string, RenderedEffectSource.RenderedEffectSourceLayer> = RenderedEffectSource.Layers,
 > extends BaseEffectSource<SourceData, SourceShape> {
   /**
    * Keys of the data object which require shaders to be re-initialized.
@@ -54,11 +55,7 @@ declare class RenderedEffectSource<
   /**
    * Track the status of rendering layers
    */
-  layers: {
-    background: RenderedEffectSource.RenderedEffectSourceLayer;
-    coloration: RenderedEffectSource.RenderedEffectSourceLayer;
-    illumination: RenderedEffectSource.RenderedEffectSourceLayer;
-  };
+  layers: RenderingLayers;
 
   /**
    * The color of the source as an RGB vector.
@@ -317,6 +314,12 @@ declare namespace RenderedEffectSource {
      */
     blendMode: PIXI.BLEND_MODES;
   }
+
+  type Layers = {
+    background: RenderedEffectSource.RenderedEffectSourceLayer;
+    coloration: RenderedEffectSource.RenderedEffectSourceLayer;
+    illumination: RenderedEffectSource.RenderedEffectSourceLayer;
+  };
 }
 
 export default RenderedEffectSource;

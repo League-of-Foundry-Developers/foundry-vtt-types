@@ -10,7 +10,8 @@ type LightSourceAnimationConfig = unknown;
 declare class BaseLightSource<
   SourceData extends BaseLightSource.LightSourceData = BaseLightSource.LightSourceData,
   SourceShape extends PIXI.Polygon = PIXI.Polygon,
-> extends RenderedEffectSource<SourceData, SourceShape> {
+  RenderingLayers extends Record<string, RenderedEffectSource.RenderedEffectSourceLayer> = RenderedEffectSource.Layers,
+> extends RenderedEffectSource<SourceData, SourceShape, RenderingLayers> {
   /** @defaultValue `"light"` */
   static override sourceType: string;
 
