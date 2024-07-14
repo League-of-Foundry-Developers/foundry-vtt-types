@@ -1,11 +1,16 @@
 import type { InexactPartial } from "../../../../types/utils.d.mts";
 import BaseLightSource from "./base-light-source.mts";
+import type { PointEffectSourceMixin_BaseLightSource_Interface } from "./point-effect-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
+
+declare const MixedPointBaseLightSource: PointEffectSourceMixin_BaseLightSource_Interface;
 
 /**
  * A specialized subclass of the BaseLightSource which renders a source of light as a point-based effect.
  */
-export default class PointLightSource extends PointEffectSourceMixin(BaseLightSource) {
+export default class PointLightSource<
+  SourceShape extends BaseLightSource.LightSourceData,
+> extends MixedPointBaseLightSource<SourceShape> {
   /** @defaultValue `"lightSources"` */
   static override effectsCollection: string;
 

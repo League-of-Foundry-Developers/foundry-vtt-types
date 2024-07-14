@@ -1,13 +1,17 @@
 import BaseLightSource from "./base-light-source.mts";
-import PointEffectSourceMixin from "./point-effect-source.mts";
+import { type PointEffectSourceMixin_BaseLightSource_Interface } from "./point-effect-source.mts";
 
 // TODO: Adjust after client/config.js is updated
 type LightSourceAnimationConfig = unknown;
 
+declare const PointEffectSourceMixin_BaseLightSource: PointEffectSourceMixin_BaseLightSource_Interface;
+
 /**
  * A specialized subclass of the BaseLightSource which renders a source of darkness as a point-based effect.
  */
-export default class PointDarknessSource extends PointEffectSourceMixin(BaseLightSource) {
+export default class PointDarknessSource<
+  SourceData extends BaseLightSource.LightSourceData,
+> extends PointEffectSourceMixin_BaseLightSource<SourceData> {
   /** @defaultValue `"darknessSources"` */
   static override effectsCollection: string;
 

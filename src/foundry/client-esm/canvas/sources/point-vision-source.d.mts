@@ -1,11 +1,17 @@
 import RenderedEffectSource from "./rendered-effect-source.mts";
-import PointEffectSourceMixin from "./point-effect-source.mts";
+import PointEffectSourceMixin, {
+  type PointEffectSourceMixin_RenderedEffectSource_Interface,
+} from "./point-effect-source.mts";
 import type { InexactPartial } from "../../../../types/utils.d.mts";
+
+declare const PointEffectSourceMixin_RenderedEffectSource: PointEffectSourceMixin_RenderedEffectSource_Interface;
 
 /**
  * A specialized subclass of RenderedEffectSource which represents a source of point-based vision.
  */
-declare class PointVisionSource extends PointEffectSourceMixin(RenderedEffectSource) {
+declare class PointVisionSource<
+  SourceData extends RenderedEffectSource.RenderedEffectSourceData,
+> extends PointEffectSourceMixin_RenderedEffectSource<SourceData> {
   /** @defaultValue `"sight"` */
   static override sourceType: string;
 

@@ -1,5 +1,7 @@
 import type { Mixin } from "../../../../types/utils.d.mts";
 import BaseEffectSource from "./base-effect-source.mts";
+import type BaseLightSource from "./base-light-source.d.mts";
+import type RenderedEffectSource from "./rendered-effect-source.d.mts";
 
 declare class PointEffectSource {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
@@ -52,6 +54,31 @@ declare class PointEffectSource {
    * @privateRemarks Actual definition is get/set
    */
   los: PointSourcePolygon;
+}
+
+type PointEffectSourceMixin_BaseEffectSource_Static = typeof PointEffectSource & typeof BaseEffectSource;
+
+export interface PointEffectSourceMixin_BaseEffectSource_Interface
+  extends PointEffectSourceMixin_BaseEffectSource_Static {
+  new <
+    SourceData extends BaseEffectSource.BaseEffectSourceData,
+    SourceShape extends PIXI.Polygon,
+  >(): PointEffectSource & BaseEffectSource<SourceData, SourceShape>;
+}
+
+type PointEffectSourceMixin_BaseLightSource_Static = typeof PointEffectSource & typeof BaseLightSource;
+
+export interface PointEffectSourceMixin_BaseLightSource_Interface
+  extends PointEffectSourceMixin_BaseLightSource_Static {
+  new <SourceData extends BaseLightSource.LightSourceData>(): PointEffectSource & BaseLightSource<SourceData>;
+}
+
+type PointEffectSourceMixin_RenderedEffectSource_Static = typeof PointEffectSource & typeof RenderedEffectSource;
+
+export interface PointEffectSourceMixin_RenderedEffectSource_Interface
+  extends PointEffectSourceMixin_RenderedEffectSource_Static {
+  new <SourceData extends RenderedEffectSource.RenderedEffectSourceData>(): PointEffectSource &
+    RenderedEffectSource<SourceData>;
 }
 
 /**
