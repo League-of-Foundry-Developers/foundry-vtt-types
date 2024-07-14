@@ -137,7 +137,7 @@ declare class BaseEffectSource<
        */
       reset?: boolean;
     },
-  ): BaseEffectSource<any, any>;
+  ): this;
 
   /**
    * Subclass specific data initialization steps.
