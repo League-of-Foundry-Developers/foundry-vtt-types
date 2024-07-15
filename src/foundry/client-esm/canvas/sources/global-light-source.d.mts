@@ -13,6 +13,7 @@ export default class GlobalLightSource extends BaseLightSource {
   /**
    * @defaultValue
    * ```js
+   * {
    * ...super.defaultData,
    * rotation: 0,
    * angle: 360,
@@ -22,6 +23,7 @@ export default class GlobalLightSource extends BaseLightSource {
    * walls: false,
    * elevation: Infinity,
    * darkness: {min: 0, max: 0}
+   * }
    * ```
    */
   static override defaultData: BaseLightSource.LightSourceData;

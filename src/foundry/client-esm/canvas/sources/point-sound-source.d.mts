@@ -27,7 +27,7 @@ export default class PointSoundSource<
   getVolumeMultiplier(
     listener: Point,
     options?: {
-      easing?: boolean;
+      easing?: boolean | undefined;
     },
   ): number;
 }

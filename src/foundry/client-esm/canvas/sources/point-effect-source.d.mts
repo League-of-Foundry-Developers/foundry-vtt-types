@@ -10,12 +10,14 @@ declare class PointEffectSource {
   /**
    * @defaultValue
    * ```js
+   * {
    * ...super.defaultData,
    * radius: 0,
    * externalRadius: 0,
    * rotation: 0,
    * angle: 360,
    * walls: true
+   * }
    * ```
    */
   static defaultData: PointEffectSourceMixin.PointEffectSourceData;

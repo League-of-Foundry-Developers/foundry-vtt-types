@@ -38,6 +38,7 @@ declare class PointVisionSource<
   /**
    * @defaultValue
    * ```js
+   * {
    * ...super.defaultData,
    * contrast: 0,
    * attenuation: 0.5,
@@ -45,6 +46,7 @@ declare class PointVisionSource<
    * brightness: 0,
    * visionMode: "basic",
    * lightRadius: null
+   * }
    * ```
    */
   static override defaultData: PointVisionSourceData;
@@ -123,7 +125,7 @@ declare class PointVisionSource<
 
   override _configure(changes: Partial<SourceData>): void;
 
-  override _configureLayer(layer: object, layerId: string): void;
+  override _configureLayer(layer: Record<string, unknown>, layerId: string): void;
 
   override _getPolygonConfiguration(): PointSourcePolygonConfig;
 
@@ -155,7 +157,8 @@ declare class PointVisionSource<
 
   override _updateBackgroundUniforms(): void;
 
-  override _updateCommonUniforms(shader: any): void;
+  override _updateCommonUniforms(shader: AbstractBaseShader): void;
+
   /**
    * Update layer uniforms according to vision mode uniforms, if any.
    * @param shader     - The shader being updated.

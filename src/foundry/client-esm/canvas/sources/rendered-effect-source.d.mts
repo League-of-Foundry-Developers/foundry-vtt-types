@@ -25,6 +25,7 @@ declare class RenderedEffectSource<
 
   /**
    * Layers handled by this rendered source.
+   * @remarks Keys should match the keys of RenderingLayers
    */
   protected static get _layers(): Record<string, RenderedEffectSource.RenderedEffectLayerConfig>;
 
@@ -37,11 +38,13 @@ declare class RenderedEffectSource<
   /**
    * @defaultValue
    * ```js
+   * {
    * ...super.defaultData,
    * animation: {},
    * seed: null,
    * preview: false,
    * color: null
+   * }
    * ```
    */
   static defaultData: RenderedEffectSource.RenderedEffectSourceData;
@@ -119,7 +122,7 @@ declare class RenderedEffectSource<
   /**
    * Specific configuration for a layer.
    */
-  protected _configureLayer(layer: object, layerId: string): void;
+  protected _configureLayer(layer: Record<string, unknown>, layerId: string): void;
 
   /**
    * Create the geometry for the source shape that is used in shaders and compute its bounds for culling purpose.
@@ -166,11 +169,8 @@ declare class RenderedEffectSource<
   /**
    * Animate the PointSource, if an animation is enabled and if it currently has rendered containers.
    * @param dt - Delta time.
-   * @remarks Returns
    */
-  animate(
-    dt: number,
-  ): this["animation"]["animation"] extends (...args: any) => any ? ReturnType<this["animation"]["animation"]> : void;
+  animate(dt: number): this["animation"]["animation"] extends (...args: any) => infer Return ? Return : void;
 
   /**
    * Generic time-based animation used for Rendered Point Sources.
@@ -250,35 +250,36 @@ declare namespace RenderedEffectSource {
     /**
      * The human-readable (localized) label for the animation
      */
-    label?: string;
+    label?: string | undefined;
     /**
      * The animation function that runs every frame
+     * @privateRemarks TODO: Figure out if there's a better way to define the function
      */
-    animation?: Function;
+    animation?: Function | undefined;
     /**
      * A custom illumination shader used by this animation
      */
-    illuminationShader?: AdaptiveIlluminationShader;
+    illuminationShader?: AdaptiveIlluminationShader | undefined;
     /**
      * A custom coloration shader used by this animation
      */
-    colorationShader?: AdaptiveColorationShader;
+    colorationShader?: AdaptiveColorationShader | undefined;
     /**
      * A custom background shader used by this animation
      */
-    backgroundShader?: AdaptiveBackgroundShader;
+    backgroundShader?: AdaptiveBackgroundShader | undefined;
     /**
      * A custom darkness shader used by this animation
      */
-    darknessShader?: AdaptiveDarknessShader;
+    darknessShader?: AdaptiveDarknessShader | undefined;
     /**
      * The animation seed
      */
-    seed?: number;
+    seed?: number | undefined;
     /**
      * The animation time
      */
-    time?: number;
+    time?: number | undefined;
   }
 
   interface RenderedEffectSourceLayer {

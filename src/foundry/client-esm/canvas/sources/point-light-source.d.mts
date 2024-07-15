@@ -29,7 +29,7 @@ export default class PointLightSource<
    * @param config - The visibility test configuration
    * @returns Is the target object visible to this source?
    */
-  testVisibility(config?: {
+  testVisibility(config: {
     /** The sequence of tests to perform */
     tests: CanvasVisibilityTest[];
     /** The target object being tested */

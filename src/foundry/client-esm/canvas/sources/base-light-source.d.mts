@@ -39,6 +39,7 @@ declare class BaseLightSource<
   /**
    * @defaultValue
    * ```js
+   * {
    * ...super.defaultData,
    * priority: 0,
    * alpha: 0.5,
@@ -51,6 +52,7 @@ declare class BaseLightSource<
    * saturation: 0,
    * shadows: 0,
    * vision: false
+   * }
    * ```
    */
   static override defaultData: RenderedEffectSource.RenderedEffectSourceData;

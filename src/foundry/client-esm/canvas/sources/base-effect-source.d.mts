@@ -12,6 +12,7 @@ import type { InexactPartial } from "../../../../types/utils.d.mts";
  * source.refresh();                         // Refresh the point source
  * source.destroy();                         // Destroy the point source
  * ```
+ * @privateRemarks The TODO is foundry's
  */
 declare class BaseEffectSource<
   SourceData extends BaseEffectSource.BaseEffectSourceData,
@@ -38,10 +39,12 @@ declare class BaseEffectSource<
    * Effect source default data.
    * @defaultValue
    * ```js
+   * {
    * x: 0,
    * y: 0,
    * elevation: 0,
    * disabled: false
+   * }
    * ```
    */
   static defaultData: BaseEffectSource.BaseEffectSourceData;
@@ -127,16 +130,14 @@ declare class BaseEffectSource<
    */
   initialize(
     data?: InexactPartial<SourceData>,
-    options?: {
-      /** An object containing optional behaviors to apply. */
-      behaviors?: object;
-
+    options?: InexactPartial<{
+      // The type def references a behaviors object that is not even passed into the function
       /**
        * Should source data be reset to default values before applying changes?
        * @defaultValue `false`
        */
       reset?: boolean;
-    },
+    }>,
   ): this;
 
   /**
@@ -208,18 +209,18 @@ declare class BaseEffectSource<
 }
 
 declare namespace BaseEffectSource {
-  type BaseEffectSourceOptions = {
+  interface BaseEffectSourceOptions {
     /**
      * An optional PlaceableObject which is responsible for this source
      */
-    object?: PlaceableObject;
+    object?: PlaceableObject | undefined;
     /**
      * A unique ID for this source. This will be set automatically if an
-     *         object is provided, otherwise is required.
+     * object is provided, otherwise is required.
      */
-    sourceId?: string;
-  };
-  type BaseEffectSourceData = {
+    sourceId?: string | undefined;
+  }
+  interface BaseEffectSourceData {
     /**
      * The x-coordinate of the source location
      */
@@ -236,7 +237,7 @@ declare namespace BaseEffectSource {
      * Whether or not the source is disabled
      */
     disabled: boolean;
-  };
+  }
 }
 
 export default BaseEffectSource;

@@ -40,13 +40,14 @@ export default class PointDarknessSource<
    * The optional geometric shape is solely utilized for visual representation regarding darkness sources.
    * Used only when an additional radius is added for visuals.
    */
-  protected _visualShape: PointSourcePolygonConfig; // Typed as `SourceShape` parameter
+  protected _visualShape: SourceShape;
 
   /**
    * Padding applied on the darkness source shape for visual appearance only.
    * Note: for now, padding is increased radius. It might evolve in a future release.
    */
   protected _padding: number;
+
   /**
    * The Edge instances added by this darkness source.
    */
