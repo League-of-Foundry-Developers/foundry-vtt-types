@@ -6,11 +6,6 @@ import type { InexactPartial } from "../../../../types/utils.d.mts";
  */
 declare class Edge {
   /**
-   * Identify intersections between a provided iterable of edges.
-   * @param edges - An iterable of edges
-   */
-  static identifyEdgeIntersections(edges: Iterable<Edge>): void;
-  /**
    * Construct an Edge by providing the following information.
    * @param a - The first endpoint of the edge
    * @param b - The second endpoint of the edge
@@ -162,6 +157,12 @@ declare class Edge {
    *          right, or collinear (both) with the Edge
    */
   orientPoint(point: Point): foundry.CONST.WALL_DIRECTIONS;
+
+  /**
+   * Identify intersections between a provided iterable of edges.
+   * @param edges - An iterable of edges
+   */
+  static identifyEdgeIntersections(edges: Iterable<Edge>): void;
 
   /**
    * Record the intersections between two edges.
