@@ -3163,7 +3163,7 @@ declare class TypeDataField<
   migrateSource(sourceData: object, fieldData: unknown): unknown;
 }
 
-export declare namespace TypeDataField {
+declare namespace TypeDataField {
   /**
    * A shorthand for the options of a TypeDataField class.
    * @typeParam DocumentType - the type of the embedded Document

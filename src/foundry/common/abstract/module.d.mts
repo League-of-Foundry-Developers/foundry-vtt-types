@@ -1,7 +1,7 @@
-export { default as DataModel } from "./data.mts";
-export { default as TypeDataModel } from "./type-data.mts";
-export { default as Document } from "./document.mts";
-export { default as DatabaseBackend } from "./backend.mts";
-export { default as EmbeddedCollection } from "./embedded-collection.mts";
-export { default as EmbeddedCollectionDelta } from "./embedded-collection-delta.mts";
-export { default as SingletonEmbeddedCollection } from "./singleton-collection.mts";
+export type { default as DataModel } from "./data.d.mts";
+export type { default as TypeDataModel } from "./type-data.d.mts";
+export type { default as Document } from "./document.d.mts";
+export type { default as DatabaseBackend } from "./backend.d.mts";
+export type { default as EmbeddedCollection } from "./embedded-collection.d.mts";
+export type { default as EmbeddedCollectionDelta } from "./embedded-collection-delta.d.mts";
+export type { default as SingletonEmbeddedCollection } from "./singleton-collection.d.mts";

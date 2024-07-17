@@ -1,9 +1,9 @@
-export * from "./geometry.mts";
-export * from "./helpers.mts";
-export * from "./http.mts";
-export * from "./logging.mts";
-export { default as Collection } from "./collection.mts";
-export { default as IterableWeakSet } from "./iterable-weak-set.mts";
-export { default as IterableWeakMap } from "./iterable-weak-map.mts";
-export { default as Color } from "./color.mts";
-export { default as Semaphore } from "./semaphore.mts";
+export type * from "./geometry.d.mts";
+export type * from "./helpers.d.mts";
+export type * from "./http.d.mts";
+export type * from "./logging.d.mts";
+export type { default as Collection } from "./collection.d.mts";
+export type { default as IterableWeakSet } from "./iterable-weak-set.d.mts";
+export type { default as IterableWeakMap } from "./iterable-weak-map.d.mts";
+export type { default as Color } from "./color.d.mts";
+export type { default as Semaphore } from "./semaphore.d.mts";

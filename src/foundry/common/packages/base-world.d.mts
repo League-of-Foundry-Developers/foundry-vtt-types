@@ -1,5 +1,5 @@
 import type BasePackage from "./base-package.d.mts";
-import * as fields from "../data/fields.mjs";
+import type * as fields from "../data/fields.d.mts";
 import type { InexactPartial, Merge } from "../../../types/utils.d.mts";
 import type { ReleaseData } from "../config.d.mts";
 import type { CONST } from "../module.d.mts";
