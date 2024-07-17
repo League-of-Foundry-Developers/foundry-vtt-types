@@ -51,7 +51,7 @@ declare abstract class DatabaseBackend {
    */
   create<T extends Document.Any>(
     documentClass: ConstructorOf<T>,
-    operation: DatabaseCreateOperation,
+    operation: DatabaseCreateOperation<T>,
     user?: BaseUser,
   ): Promise<T[]>;
 
@@ -64,7 +64,7 @@ declare abstract class DatabaseBackend {
    */
   protected abstract _createDocuments<T extends Document.Any>(
     documentClass: ConstructorOf<T>,
-    operation: DatabaseCreateOperation,
+    operation: DatabaseCreateOperation<T>,
     user?: BaseUser,
   ): Promise<T[]>;
 
@@ -79,7 +79,7 @@ declare abstract class DatabaseBackend {
    */
   update<T extends Document.Any>(
     documentClass: ConstructorOf<T>,
-    operation: DatabaseUpdateOperation,
+    operation: DatabaseUpdateOperation<T>,
     user?: BaseUser,
   ): Promise<T[]>;
 
@@ -92,7 +92,7 @@ declare abstract class DatabaseBackend {
    */
   protected abstract _updateDocuments<T extends Document.Any>(
     documentClass: ConstructorOf<T>,
-    operation: DatabaseUpdateOperation,
+    operation: DatabaseUpdateOperation<T>,
     user: BaseUser,
   ): Promise<T[]>;
 
@@ -185,45 +185,6 @@ declare abstract class DatabaseBackend {
     subject: Document.Any | string,
     { parent, pack }?: { parent?: Document.Any; pack?: string },
   ): string;
-}
-
-//TODO: Can improve the typing even further here by specifying the parent bit
-export interface RequestContext<T extends Document.Any> {
-  /** An array of document data */
-  data?: T["_source"][];
-
-  /** An array of document data */
-  updates?: T["_source"][];
-
-  /** An array of document ids */
-  ids?: string[];
-
-  parent?: Document.Any;
-
-  parentUuid?: string;
-
-  /**
-   * A document search query to execute
-   * @defaultValue `{}`
-   */
-  query?: Record<string, unknown>;
-
-  /**
-   * Operation options
-   * @defaultValue `{}`
-   */
-  options?: RequestOptions;
-
-  /** A Compendium pack identifier */
-  pack?: string;
-}
-
-export interface RequestOptions {
-  index?: boolean;
-  broadcast?: boolean;
-  temporary?: boolean;
-  nohook?: boolean;
-  [key: string]: unknown;
 }
 
 export default DatabaseBackend;

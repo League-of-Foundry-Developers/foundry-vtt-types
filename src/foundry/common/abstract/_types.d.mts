@@ -35,7 +35,7 @@ export interface DatabaseGetOperation {
   parentUuid?: string;
 }
 
-export interface DatabaseCreateOperation {
+export interface DatabaseCreateOperation<T extends foundry.abstract.Document.Any = foundry.abstract.Document.Any> {
   /**
    * Whether the database operation is broadcast to other connected clients
    */
@@ -44,7 +44,7 @@ export interface DatabaseCreateOperation {
   /**
    * An array of data objects from which to create Documents
    */
-  data: object[];
+  data: foundry.data.fields.SchemaField.InnerAssignmentType<T["schema"]["fields"]>[];
 
   /**
    * Retain the _id values of provided data instead of generating new ids
@@ -98,7 +98,7 @@ export interface DatabaseCreateOperation {
   _result?: (string | object)[];
 }
 
-export interface DatabaseUpdateOperation {
+export interface DatabaseUpdateOperation<T extends foundry.abstract.Document.Any = foundry.abstract.Document.Any> {
   /**
    * Whether the database operation is broadcast to other connected clients
    */
@@ -108,7 +108,7 @@ export interface DatabaseUpdateOperation {
    * An array of data objects used to update existing Documents.
    * Each update object must contain the _id of the target Document
    */
-  updates: object[];
+  updates: foundry.data.fields.SchemaField.InnerAssignmentType<T["schema"]["fields"]>[];
 
   /**
    * Difference each update object against current Document data and only use
