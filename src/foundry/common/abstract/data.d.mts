@@ -432,4 +432,5 @@ declare namespace DataModel {
   }
 }
 
+// Matches foundry exporting class as both default and non-default
 export { DataModel };
