@@ -45,10 +45,11 @@ declare class _InternalDataModel<
   _Computed extends object = SchemaField.InnerInitializedType<Schema>,
 > extends DynamicClass<_Computed> {}
 
+export default DataModel;
 /**
  * The abstract base class which defines the data schema contained within a Document.
  */
-export abstract class DataModel<
+declare abstract class DataModel<
   Schema extends DataSchema,
   Parent extends DataModel.Any | null = null,
 > extends _InternalDataModel<Schema> {
@@ -389,7 +390,7 @@ export abstract class DataModel<
   update(changes: any, options: any): unknown;
 }
 
-export declare namespace DataModel {
+declare namespace DataModel {
   interface ConstructorOptions<Parent extends Any | null = null> {
     /**
      * A parent DataModel instance to which this DataModel belongs
@@ -431,4 +432,4 @@ export declare namespace DataModel {
   }
 }
 
-export default DataModel;
+export { DataModel };
