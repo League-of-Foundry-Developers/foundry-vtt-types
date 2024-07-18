@@ -20,8 +20,8 @@ declare class WordTree extends StringTree {
   /**
    * Return entries that match the given string prefix.
    * @param prefix              - The prefix.
-   * @param [options]           - Additional options to configure behaviour.
-   * @param [options.limit=10]  - The maximum number of items to retrieve. Defaults to 10. It is important
+   * @param options             - Additional options to configure behaviour.
+   * @param options.limit       - The maximum number of items to retrieve. Defaults to 10. It is important
    *                              to set this value as very short prefixes will naturally match large numbers
    *                              of entries.
    * @returns                   A number of entries that have the given prefix.
@@ -41,11 +41,10 @@ declare class WordTree extends StringTree {
 declare namespace WordTree {
   /**
    * A leaf entry in the tree.
-   * @typedef WordTreeEntry
    * @property  entry          - An object that this entry represents.
    * @property  documentName   - The document type.
    * @property  uuid           - The document's UUID.
-   * @property  [pack]         - The pack ID.
+   * @property  pack           - The (optional) pack ID.
    */
   export type WordTreeEntry = {
     entry: Document | object;
