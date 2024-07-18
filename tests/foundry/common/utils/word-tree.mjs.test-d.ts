@@ -1,9 +1,8 @@
 import { expectTypeOf } from "vitest";
-import WordTree from "../../../../src/foundry/common/utils/word-tree.mjs";
 
-declare const w: WordTree;
-declare const entry: WordTree.WordTreeEntry;
+const w = new foundry.utils.WordTree();
+const entry = {} as foundry.utils.WordTree.WordTreeEntry;
 
-expectTypeOf(w.addLeaf("a", entry)).toEqualTypeOf<WordTree.WordTreeEntry>();
-expectTypeOf(w.lookup("a", { limit: 4 })).toEqualTypeOf<WordTree.WordTreeEntry[]>();
-expectTypeOf(w.nodeAtPrefix("a")).toEqualTypeOf<WordTree.WordTreeEntry>();
+expectTypeOf(w.addLeaf("a", entry)).toEqualTypeOf<foundry.utils.WordTree.WordTreeEntry>();
+expectTypeOf(w.lookup("a", { limit: 4 })).toEqualTypeOf<foundry.utils.WordTree.WordTreeEntry[]>();
+expectTypeOf(w.nodeAtPrefix("a")).toEqualTypeOf<foundry.utils.WordTree.WordTreeEntry>();

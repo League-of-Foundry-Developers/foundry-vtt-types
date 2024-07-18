@@ -1,9 +1,8 @@
 import { expectTypeOf } from "vitest";
-import StringTree from "../../../../src/foundry/common/utils/string-tree.mjs";
 
-declare const s: StringTree;
-declare const node: StringTree.StringTreeNode;
+const s = new foundry.utils.StringTree();
+const node = {} as foundry.utils.StringTree.StringTreeNode;
 
-expectTypeOf(s.addLeaf(["a"], node)).toEqualTypeOf<StringTree.StringTreeNode>();
-expectTypeOf(s.lookup(["a"], { limit: 4 })).toEqualTypeOf<StringTree.StringTreeNode[]>();
-expectTypeOf(s.nodeAtPrefix(["a"])).toEqualTypeOf<StringTree.StringTreeNode | void>();
+expectTypeOf(s.addLeaf(["a"], node)).toEqualTypeOf<foundry.utils.StringTree.StringTreeNode>();
+expectTypeOf(s.lookup(["a"], { limit: 4 })).toEqualTypeOf<foundry.utils.StringTree.StringTreeNode[]>();
+expectTypeOf(s.nodeAtPrefix(["a"])).toEqualTypeOf<foundry.utils.StringTree.StringTreeNode | void>();

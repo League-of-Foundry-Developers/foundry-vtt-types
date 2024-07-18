@@ -1,11 +1,9 @@
 import type StringTree from "./string-tree.d.mts";
-type StringTreeNode = StringTree.StringTreeNode;
 
 /**
  * A data structure for quickly retrieving objects by a string prefix.
  * Note that this works well for languages with alphabets (latin, cyrillic, korean, etc.), but may need more nuanced
  * handling for languages that compose characters and letters.
- * @extends {StringTree}
  */
 declare class WordTree extends StringTree {
   /**
@@ -46,7 +44,7 @@ declare namespace WordTree {
    * @property  uuid           - The document's UUID.
    * @property  pack           - The (optional) pack ID.
    */
-  export type WordTreeEntry = {
+  type WordTreeEntry = {
     entry: Document | object;
     documentName: string;
     uuid: string;

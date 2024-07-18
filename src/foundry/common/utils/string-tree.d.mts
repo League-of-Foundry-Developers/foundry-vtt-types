@@ -73,7 +73,7 @@ declare class StringTree {
  * terminate at the current node.
  */
 declare namespace StringTree {
-  export type StringTreeNode = {
+  type StringTreeNode = {
     [key: string]: StringTreeNode;
   };
 }
