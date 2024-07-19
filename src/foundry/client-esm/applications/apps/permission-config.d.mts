@@ -1,4 +1,5 @@
 import type { USER_ROLES, UserPermission } from "../../../common/constants.d.mts";
+import type { ApplicationConfiguration, ApplicationRenderContext, ApplicationRenderOptions } from "../_types.d.mts";
 import type ApplicationV2 from "../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.mjs";
 
@@ -16,9 +17,14 @@ type PermissionWithRole = UserPermission & {
  */
 
 declare class PermissionConfig extends HandlebarsApplicationMixin(ApplicationV2) {
+  static override DEFAULT_OPTIONS: Partial<ApplicationConfiguration>;
+  static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
+
   /* -------------------------------------------- */
   /*  Rendering                                   */
   /* -------------------------------------------- */
+
+  override _prepareContext(_options: ApplicationRenderOptions): Promise<ApplicationRenderContext>;
 
   /**
    * Prepare the permissions object used to render the configuration template
