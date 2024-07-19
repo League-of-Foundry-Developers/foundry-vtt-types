@@ -20,9 +20,8 @@ declare class RollResolver<Configuration extends ApplicationConfiguration> exten
 
   /**
    * A function to call when the first pass of fulfillment is complete.
-   * @type {function}
    */
-  #resolve;
+  #resolve?: () => Promise<void>;
 
   /**
    * The roll being resolved.
