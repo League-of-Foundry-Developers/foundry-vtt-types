@@ -7,13 +7,12 @@ import type SMAABlendingWeightCalculationFilter from "./weights.mts";
 
 declare class SMAAFilter extends PIXI.Filter {
   /**
-   * @param [config]    The config (defaults: {@link SMAAFilter.PRESETS.DEFAULT})
+   * @param config    - The config (defaults: SMAAFilter.PRESETS.DEFAULT)
    */
   constructor(config?: InexactPartial<SMAAFilter.SMAAFilterConfig>);
 
   /**
    * The presets.
-   * @enum {SMAAFilterConfig}
    */
   static get PRESETS(): Record<string, SMAAFilter.SMAAFilterConfig>;
   static #PRESETS: Record<string, SMAAFilter.SMAAFilterConfig>;
@@ -50,7 +49,6 @@ declare namespace SMAAFilter {
      * Range: [0, 0.5]. 0.1 is a reasonable value, and allows to catch most visible edges. 0.05 is a rather overkill value, that allows to catch 'em all.
      */
     threshold: number;
-    x;
 
     /**
      * If there is an neighbor edge that has SMAA_LOCAL_CONTRAST_FACTOR times bigger contrast than current edge, current edge will be discarded.
