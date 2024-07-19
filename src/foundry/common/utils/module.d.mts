@@ -8,3 +8,5 @@ export { default as IterableWeakSet } from "./iterable-weak-set.mts";
 export { default as IterableWeakMap } from "./iterable-weak-map.mts";
 export { default as Color } from "./color.mts";
 export { default as Semaphore } from "./semaphore.mts";
+export { default as StringTree } from "./string-tree.mts";
+export { default as WordTree } from "./word-tree.mts";
