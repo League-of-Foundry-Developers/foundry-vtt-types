@@ -8,13 +8,13 @@ declare class CompendiumArt extends Map<string, CompendiumArtInfo> {
    * The key for the package manifest flag used to store the mapping information.
    * @defaultValue `"compendiumArtMappings"`
    */
-  FLAG: string;
+  readonly FLAG: string;
 
   /**
    * The key for the setting used to store the World's art preferences.
    * @defaultValue `"compendiumArtConfiguration"`
    */
-  SETTING: string;
+  readonly SETTING: string;
 
   /**
    * Whether art application is enabled. This should be switched off when performing client-side compendium migrations
