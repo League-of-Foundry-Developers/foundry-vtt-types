@@ -1,4 +1,4 @@
-import type { DeepPartial } from "../../../../types/utils.d.mts";
+import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
 import type { ApplicationConfiguration } from "../../../common/config.d.mts";
 import type ApplicationV2 from "../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.mjs";
@@ -56,7 +56,7 @@ declare class RollResolver<Configuration extends ApplicationConfiguration> exten
   resolveResult(
     term: DiceTerm,
     method: string,
-    options?: { reroll?: boolean; explode?: boolean },
+    options?: InexactPartial<{ reroll: boolean; explode: boolean }>,
   ): Promise<number | void>;
 
   /**
@@ -74,7 +74,7 @@ declare class RollResolver<Configuration extends ApplicationConfiguration> exten
    * @param options.isNew     - Whether this term is a new addition to the already-rendered RollResolver. Defaults to false.
    * @returns                 Array containing whether each term is fulfillable
    */
-  #identifyFulfillableTerms(terms: RollTerm[], options?: { isNew?: boolean }): Promise<boolean[]>;
+  #identifyFulfillableTerms(terms: RollTerm[], options?: InexactPartial<{ isNew: boolean }>): Promise<boolean[]>;
 
   /**
    * Add a new term to the resolver.
@@ -96,12 +96,12 @@ declare class RollResolver<Configuration extends ApplicationConfiguration> exten
 }
 
 declare namespace RollResolver {
-  type DiceTermFulfillmentDescriptor = {
+  interface DiceTermFulfillmentDescriptor {
     id: string;
     term: DiceTerm;
     method: string;
-    isNew?: boolean;
-  };
+    isNew?: boolean | undefined;
+  }
 }
 
 export default RollResolver;
