@@ -10,3 +10,4 @@ export { default as Color } from "./color.mts";
 export { default as Semaphore } from "./semaphore.mts";
 export { default as StringTree } from "./string-tree.mts";
 export { default as WordTree } from "./word-tree.mts";
+export { default as BitMask } from "./bitmask.mts";
