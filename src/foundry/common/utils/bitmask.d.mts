@@ -57,8 +57,6 @@ export default class BitMask extends Number {
    */
   hasState(state: string): boolean;
 
-  /* -------------------------------------------- */
-
   /**
    * Add a state to the bitmask.
    * @param state - The state to add. Throws an error if the provided state is not valid.

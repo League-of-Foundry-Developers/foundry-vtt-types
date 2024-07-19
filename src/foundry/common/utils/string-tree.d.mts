@@ -1,14 +1,19 @@
+import type { InexactPartial } from "../../../types/utils.d.mts";
+
 /**
  * A data structure representing a tree of string nodes with arbitrary object leaves.
  */
-declare class StringTree {
+declare class StringTree<EntryType> {
   /**
    * The key symbol that stores the leaves of any given node.
    * @type {symbol}
    */
-  static get leaves(): symbol;
+  // replaced the getter definition with a static property so that
+  //    it can be referenced as part of the StringTreeNode interface
+  // static get leaves(): symbol;
+  static readonly leaves: unique symbol;
 
-  static #leaves: symbol;
+  static readonly #leaves: unique symbol;
 
   /**
    * The tree's root.
@@ -28,7 +33,7 @@ declare class StringTree {
    * @param entry         - The entry to store.
    * @returns   The node the entry was added to.
    */
-  addLeaf(strings: string[], entry: StringTree.StringTreeNode): StringTree.StringTreeNode;
+  addLeaf(strings: string[], entry: EntryType): StringTree.StringTreeNode;
 
   /**
    * Traverse the tree along the given string path and return any entries reachable from the node.
@@ -37,7 +42,7 @@ declare class StringTree {
    * @param options.limit   - The maximum number of items to retrieve.
    * @returns    The reachable entries
    */
-  lookup(strings: string[], options?: { limit?: number }): StringTree.StringTreeNode[];
+  lookup(strings: string[], options?: InexactPartial<{ limit: number }>): StringTree.StringTreeNode[];
 
   /**
    * Returns the node at the given path through the tree.
@@ -48,7 +53,7 @@ declare class StringTree {
    *                                      if it exists. Defaults to false.
    * @returns The node at the path, if found
    */
-  nodeAtPrefix(strings: string[], options?: { hasLeaves?: boolean }): StringTree.StringTreeNode | void;
+  nodeAtPrefix(strings: string[], options?: InexactPartial<{ hasLeaves: boolean }>): StringTree.StringTreeNode | void;
 
   /**
    * Perform a breadth-first search starting from the given node and retrieving any entries reachable from that node,
@@ -62,9 +67,9 @@ declare class StringTree {
    */
   _breadthFirstSearch(
     node: StringTree.StringTreeNode,
-    entries: StringTree.StringTreeNode[],
+    entries: EntryType[],
     queue: StringTree.StringTreeNode[],
-    options?: { limit?: number },
+    options?: InexactPartial<{ limit: number }>,
   ): void;
 }
 
@@ -73,9 +78,10 @@ declare class StringTree {
  * terminate at the current node.
  */
 declare namespace StringTree {
-  type StringTreeNode = {
+  interface StringTreeNode {
+    [StringTree.leaves]: Record<string, unknown>[];
     [key: string]: StringTreeNode;
-  };
+  }
 }
 
 export default StringTree;

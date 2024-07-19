@@ -1,3 +1,4 @@
+import type { InexactPartial } from "../../../types/utils.d.mts";
 import type StringTree from "./string-tree.d.mts";
 
 /**
@@ -5,15 +6,15 @@ import type StringTree from "./string-tree.d.mts";
  * Note that this works well for languages with alphabets (latin, cyrillic, korean, etc.), but may need more nuanced
  * handling for languages that compose characters and letters.
  */
-declare class WordTree extends StringTree {
+declare class WordTree extends StringTree<WordTree.WordTreeEntry> {
   /**
    * Insert an entry into the tree.
    * @param string    - The string key for the entry.
    * @param entry     - The entry to store.
    * @returns         The node the entry was added to.
    */
-  addLeaf(string: string, entry: WordTree.WordTreeEntry): WordTree.WordTreeEntry;
-  addLeaf(strings: string[], entry: StringTree.StringTreeNode): StringTree.StringTreeNode;
+  addLeaf(string: string, entry: WordTree.WordTreeEntry): StringTree.StringTreeNode;
+  addLeaf(strings: string[], entry: any): StringTree.StringTreeNode;
 
   /**
    * Return entries that match the given string prefix.
@@ -24,15 +25,15 @@ declare class WordTree extends StringTree {
    *                              of entries.
    * @returns                   A number of entries that have the given prefix.
    */
-  lookup(prefix: string, options?: { limit?: number }): WordTree.WordTreeEntry[];
-  lookup(strings: string[], options?: { limit?: number }): StringTree.StringTreeNode[];
+  lookup(prefix: string, options?: InexactPartial<{ limit: number }>): WordTree.WordTreeEntry[];
+  lookup(strings: string[], options?: InexactPartial<{ limit: number }>): StringTree.StringTreeNode[];
 
   /**
    * Returns the node at the given prefix.
    * @param prefix        - The prefix.
    * @returns The node
    */
-  nodeAtPrefix(strings: string[], options?: { hasLeaves?: boolean }): StringTree.StringTreeNode | void;
+  nodeAtPrefix(strings: string[], options?: InexactPartial<{ hasLeaves: boolean }>): StringTree.StringTreeNode | void;
   nodeAtPrefix(prefix: string): WordTree.WordTreeEntry;
 }
 
@@ -44,12 +45,12 @@ declare namespace WordTree {
    * @property  uuid           - The document's UUID.
    * @property  pack           - The (optional) pack ID.
    */
-  type WordTreeEntry = {
-    entry: Document | object;
+  interface WordTreeEntry {
+    entry: Document;
     documentName: string;
     uuid: string;
     pack?: string;
-  };
+  }
 }
 
 export default WordTree;
