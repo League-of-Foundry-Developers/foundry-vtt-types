@@ -1,4 +1,6 @@
+import type { SchemaField } from "../../common/data/fields.d.mts";
 import type { PrototypeToken } from "../data/_module.d.mts";
+
 
 export interface CompendiumArtInfo {
   /**
@@ -9,7 +11,7 @@ export interface CompendiumArtInfo {
   /**
    * The path to the token image, or an object to merge into the Actor's prototype token.
    */
-  token?: string | PrototypeToken | undefined;
+  token?: string | SchemaField.InnerAssignmentType<PrototypeToken.Schema> | undefined;
 
   /**
    *An optional credit string for use by the game system to apply in an appropriate place.
