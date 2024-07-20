@@ -1,4 +1,4 @@
-import type { ConstructorOf } from "../../../types/utils.d.mts";
+import type { ConstructorOf, InexactPartial } from "../../../types/utils.d.mts";
 import type BaseUser from "../documents/user.d.mts";
 import type Document from "./document.d.mts";
 import type {
@@ -8,6 +8,7 @@ import type {
   DatabaseOperation,
   DatabaseUpdateOperation,
 } from "./_types.mjs";
+import type { LoggingLevels } from "../../../types/helperTypes.d.mts";
 
 /**
  * An abstract base class extended on both the client and server which defines how Documents are retrieved, created,
@@ -17,7 +18,7 @@ declare abstract class DatabaseBackend {
   /**
    * Retrieve Documents based on provided query parameters.
    * @param documentClass - The Document definition
-   * @param operation       - Parameters of the get operation
+   * @param operation     - Parameters of the get operation
    * @param user          - The requesting User
    * @returns An array of retrieved Document instances or index objects
    */
@@ -145,7 +146,7 @@ declare abstract class DatabaseBackend {
    * @param level   - The logging level
    * @param message - The message
    */
-  protected _log(level: string, message: string): void;
+  protected _log(level: LoggingLevels, message: string): void;
 
   /**
    * Log a database operation for an embedded document, capturing the action taken and relevant IDs
@@ -161,19 +162,19 @@ declare abstract class DatabaseBackend {
       parent,
       pack,
       level,
-    }?: {
+    }?: InexactPartial<{
       /** A parent document */
-      parent?: Document.Any;
+      parent: Document.Any;
 
       /** A compendium pack within which the operation occurred */
-      pack?: string;
+      pack: string;
 
       /**
        * The logging level
        * @defaultValue `"info"`
        */
-      level?: string;
-    },
+      level: LoggingLevels;
+    }>,
   ): void;
 
   /**

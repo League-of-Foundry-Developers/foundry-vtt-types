@@ -96,3 +96,6 @@ export type LayerClass<T extends DocumentConstructor> = T["metadata"]["name"] ex
     ? CONFIG[T["metadata"]["name"]]["layerClass"]
     : never
   : T;
+
+/** Keys of functions of console.log / globalThis.logger */
+export type LoggingLevels = "debug" | "log" | "info" | "warn" | "error";

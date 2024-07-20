@@ -7,32 +7,32 @@ export interface DatabaseGetOperation {
   /**
    * Get requests are never broadcast
    */
-  broadcast?: false;
+  broadcast?: false | undefined;
 
   /**
    * Return indices only instead of full Document records
    */
-  index?: boolean;
+  index?: boolean | undefined;
 
   /**
    * An array of field identifiers which should be indexed
    */
-  indexFields?: string[];
+  indexFields?: string[] | undefined;
 
   /**
    * A compendium collection ID which contains the Documents
    */
-  pack?: string | null;
+  pack?: string | null | undefined;
 
   /**
    * A parent Document within which Documents are embedded
    */
-  parent?: foundry.abstract.Document.Any;
+  parent?: foundry.abstract.Document.Any | undefined;
 
   /**
    * A parent Document UUID provided when the parent instance is unavailable
    */
-  parentUuid?: string;
+  parentUuid?: string | undefined;
 }
 
 export interface DatabaseCreateOperation<T extends foundry.abstract.Document.Any = foundry.abstract.Document.Any> {
@@ -49,38 +49,38 @@ export interface DatabaseCreateOperation<T extends foundry.abstract.Document.Any
   /**
    * Retain the _id values of provided data instead of generating new ids
    */
-  keepId?: boolean;
+  keepId?: boolean | undefined;
 
   /**
    * Retain the _id values of embedded document data instead of generating
    *    new ids for each embedded document
    */
-  keepEmbeddedIds?: boolean;
+  keepEmbeddedIds?: boolean | undefined;
 
   /**
    * The timestamp when the operation was performed
    */
-  modifiedTime?: number;
+  modifiedTime?: number | undefined;
 
   /**
    * Block the dispatch of hooks related to this operation
    */
-  noHook?: boolean;
+  noHook?: boolean | undefined;
 
   /**
    * Re-render Applications whose display depends on the created Documents
    */
-  render?: boolean;
+  render?: boolean | undefined;
 
   /**
    * Render the sheet Application for any created Documents
    */
-  renderSheet?: boolean;
+  renderSheet?: boolean | undefined;
 
   /**
    * A parent Document within which Documents are embedded
    */
-  parent?: foundry.abstract.Document.Any;
+  parent?: foundry.abstract.Document.Any | undefined;
 
   /**
    * A compendium collection ID which contains the Documents
@@ -90,12 +90,12 @@ export interface DatabaseCreateOperation<T extends foundry.abstract.Document.Any
   /**
    * A parent Document UUID provided when the parent instance is unavailable
    */
-  parentUuid?: string | null;
+  parentUuid?: string | null | undefined;
 
   /**
    * An alias for 'data' used internally by the server-side backend
    */
-  _result?: (string | object)[];
+  _result?: (string | Record<string, unknown>)[] | undefined;
 }
 
 export interface DatabaseUpdateOperation<T extends foundry.abstract.Document.Any = foundry.abstract.Document.Any> {
@@ -114,33 +114,33 @@ export interface DatabaseUpdateOperation<T extends foundry.abstract.Document.Any
    * Difference each update object against current Document data and only use
    * differential data for the update operation
    */
-  diff?: boolean;
+  diff?: boolean | undefined;
 
   /**
    * The timestamp when the operation was performed
    */
-  modifiedTime?: number;
+  modifiedTime?: number | undefined;
 
   /**
    * Merge objects recursively. If false, inner objects will be replaced
    * explicitly. Use with caution!
    */
-  recursive?: boolean;
+  recursive?: boolean | undefined;
 
   /**
    * Re-render Applications whose display depends on the created Documents
    */
-  render?: boolean;
+  render?: boolean | undefined;
 
   /**
    * Block the dispatch of hooks related to this operation
    */
-  noHook?: boolean;
+  noHook?: boolean | undefined;
 
   /**
    * A parent Document within which Documents are embedded
    */
-  parent?: foundry.abstract.Document.Any;
+  parent?: foundry.abstract.Document.Any | undefined;
 
   /**
    * A compendium collection ID which contains the Documents
@@ -150,12 +150,12 @@ export interface DatabaseUpdateOperation<T extends foundry.abstract.Document.Any
   /**
    * A parent Document UUID provided when the parent instance is unavailable
    */
-  parentUuid?: string | null;
+  parentUuid?: string | null | undefined;
 
   /**
    * An alias for 'updates' used internally by the server-side backend
    */
-  _result?: (string | object)[];
+  _result?: (string | Record<string, unknown>)[] | undefined;
 }
 
 export interface DatabaseDeleteOperation {
@@ -172,27 +172,27 @@ export interface DatabaseDeleteOperation {
   /**
    * Delete all documents in the Collection, regardless of _id
    */
-  deleteAll?: boolean;
+  deleteAll?: boolean | undefined;
 
   /**
    * The timestamp when the operation was performed
    */
-  modifiedTime?: number;
+  modifiedTime?: number | undefined;
 
   /**
    * Block the dispatch of hooks related to this operation
    */
-  noHook?: boolean;
+  noHook?: boolean | undefined;
 
   /**
    * Re-render Applications whose display depends on the deleted Documents
    */
-  render?: boolean;
+  render?: boolean | undefined;
 
   /**
    * A parent Document within which Documents are embedded
    */
-  parent?: foundry.abstract.Document.Any;
+  parent?: foundry.abstract.Document.Any | undefined;
 
   /**
    * A compendium collection ID which contains the Documents
@@ -202,23 +202,25 @@ export interface DatabaseDeleteOperation {
   /**
    * A parent Document UUID provided when the parent instance is unavailable
    */
-  parentUuid?: string | null;
+  parentUuid?: string | null | undefined;
 
   /**
    * An alias for 'ids' used internally by the server-side backend
    */
-  _result?: (string | object)[];
+  _result?: (string | Record<string, unknown>)[] | undefined;
 }
 
-export type DatabaseAction = "get" | "create" | "update" | "delete";
+export type DatabaseOperationMap = {
+  get: DatabaseGetOperation;
+  create: DatabaseCreateOperation;
+  update: DatabaseUpdateOperation;
+  delete: DatabaseDeleteOperation;
+};
 
-export type DatabaseOperation =
-  | DatabaseGetOperation
-  | DatabaseCreateOperation
-  | DatabaseUpdateOperation
-  | DatabaseDeleteOperation;
+export type DatabaseAction = keyof DatabaseOperationMap;
+export type DatabaseOperation = DatabaseOperationMap[keyof DatabaseOperationMap];
 
-export interface DocumentSocketRequest {
+export interface DocumentSocketRequest<Action extends DatabaseAction> {
   /**
    * The type of Document being transacted
    */
@@ -227,12 +229,12 @@ export interface DocumentSocketRequest {
   /**
    * The action of the request
    */
-  action: DatabaseAction;
+  action: Action;
 
   /**
    * Operation parameters for the request
    */
-  operation: DatabaseOperation;
+  operation: DatabaseOperationMap[Action];
 
   /**
    * The id of the requesting User

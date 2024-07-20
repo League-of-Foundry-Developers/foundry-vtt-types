@@ -6,6 +6,7 @@ import type {
   DatabaseUpdateOperation,
   DatabaseDeleteOperation,
 } from "../../common/abstract/_types.mjs";
+import type { LoggingLevels } from "../../../types/helperTypes.d.mts";
 
 /**
  * The client-side database backend implementation which handles Document modification operations.
@@ -45,7 +46,7 @@ declare class ClientDatabaseBackend extends foundry.abstract.DatabaseBackend {
 
   override getCompendiumScopes(): string[];
 
-  protected override _log(level: string, message: string): void;
+  protected override _log(level: LoggingLevels, message: string): void;
 }
 
 export default ClientDatabaseBackend;
