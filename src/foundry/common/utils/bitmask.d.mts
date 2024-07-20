@@ -29,15 +29,11 @@ export default class BitMask extends Number {
    */
   addState(state: string): void;
 
-  /* -------------------------------------------- */
-
   /**
    * Remove a state from the bitmask.
    * @param state   - The state to remove. Throws an error if the provided state is not valid.
    */
   removeState(state: string): void;
-
-  /* -------------------------------------------- */
 
   /**
    * Toggle the state of a specific state in the bitmask.
