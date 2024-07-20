@@ -39,11 +39,11 @@ declare class HTMLFilePickerElement extends AbstractFormInputElement<string> {
 
   protected override _buildElements(): (HTMLInputElement | HTMLButtonElement)[];
 
-  protected override _toggleDisabled(disabled: any): void;
+  protected override _toggleDisabled(disabled: boolean): void;
 
   protected override _activateListeners(): void;
 
-  protected override _onClick(event: any): void;
+  protected override _onClick(event: PointerEvent): void;
 
   /**
    * Create a HTMLFilePickerElement using provided configuration data.

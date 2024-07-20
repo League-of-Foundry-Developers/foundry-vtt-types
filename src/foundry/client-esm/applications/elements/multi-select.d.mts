@@ -8,26 +8,30 @@ import AbstractFormInputElement from "./form-element.mjs";
  */
 export class AbstractMultiSelectElement extends AbstractFormInputElement<Set<string> | string[]> {
   constructor();
-  _value: Set<any>;
+
+  protected _value: Set<string>;
+
   /**
    * Predefined <option> and <optgroup> elements which were defined in the original HTML.
    */
   protected _options: (HTMLOptionElement | HTMLOptGroupElement)[];
+
   /**
    * An object which maps option values to displayed labels.
    */
-  protected _choices: {
-    [x: string]: string;
-  };
+  protected _choices: Record<string, string>;
+
   /**
    * Preserve existing <option> and <optgroup> elements which are defined in the original HTML.
    */
   protected _initialize(): void;
+
   /**
    * Mark a choice as selected.
    * @param value - The value to add to the chosen set
    */
   select(value: string): void;
+
   /**
    * Mark a choice as un-selected.
    * @param value - The value to delete from the chosen set
@@ -64,7 +68,7 @@ export class HTMLMultiSelectElement extends AbstractMultiSelectElement {
 
   protected override _buildElements(): (HTMLDivElement | HTMLSelectElement)[];
 
-  protected override _toggleDisabled(disabled: any): void;
+  protected override _toggleDisabled(disabled: boolean): void;
 }
 /**
  * Provide a multi-select workflow as a grid of input checkbox elements.
@@ -87,5 +91,5 @@ export class HTMLMultiSelectElement extends AbstractMultiSelectElement {
 export class HTMLMultiCheckboxElement extends AbstractMultiSelectElement {
   protected override _buildElements(): (HTMLFieldSetElement | HTMLLabelElement)[];
 
-  protected override _toggleDisabled(disabled: any): void;
+  protected override _toggleDisabled(disabled: boolean): void;
 }
