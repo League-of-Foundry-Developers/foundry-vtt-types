@@ -5,7 +5,7 @@ import AbstractFormInputElement from "./form-element.mjs";
  * A custom HTML element which allows for arbitrary assignment of a set of string tags.
  * This element may be used directly or subclassed to impose additional validation or functionality.
  */
-export default class HTMLStringTagsElement extends AbstractFormInputElement<Set<string> | string[]> {
+declare class HTMLStringTagsElement extends AbstractFormInputElement<Set<string> | string[]> {
   constructor();
 
   static override tagName: "string-tags";
@@ -60,5 +60,14 @@ export default class HTMLStringTagsElement extends AbstractFormInputElement<Set<
   /**
    * Create a HTMLStringTagsElement using provided configuration data.
    */
-  static create(config: FormInputConfig<Set<string> | string[]>): HTMLElement;
+  static create(config: HTMLStringTagsElement.StringTagsInputConfig): HTMLElement;
 }
+
+declare namespace HTMLStringTagsElement {
+  interface StringTagsInputConfig extends FormInputConfig<Set<string> | string[]> {
+    /** Automatically slugify provided strings? */
+    slug: boolean;
+  }
+}
+
+export default HTMLStringTagsElement;
