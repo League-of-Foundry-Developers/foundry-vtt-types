@@ -16,12 +16,6 @@ declare class RollResolver<Configuration extends ApplicationConfiguration> exten
    * A collection of fulfillable dice terms.
    */
   get fulfillable(): Map<string, RollResolver.DiceTermFulfillmentDescriptor>;
-  #fulfillable: Map<string, RollResolver.DiceTermFulfillmentDescriptor>;
-
-  /**
-   * A function to call when the first pass of fulfillment is complete.
-   */
-  #resolve?: () => Promise<void>;
 
   /**
    * The roll being resolved.
@@ -66,15 +60,6 @@ declare class RollResolver<Configuration extends ApplicationConfiguration> exten
    * @param formData  - Processed data for the submitted form.
    */
   static _fulfillRoll(event: SubmitEvent, form: HTMLFormElement, formData: FormDataExtended): Promise<void>;
-
-  /**
-   * Identify any of the given terms which should be fulfilled externally.
-   * @param terms             - The terms.
-   * @param options           - Optional configuration options
-   * @param options.isNew     - Whether this term is a new addition to the already-rendered RollResolver. Defaults to false.
-   * @returns                 Array containing whether each term is fulfillable
-   */
-  #identifyFulfillableTerms(terms: RollTerm[], options?: InexactPartial<{ isNew: boolean }>): Promise<boolean[]>;
 
   /**
    * Add a new term to the resolver.
