@@ -1,9 +1,5 @@
 import type { InexactPartial, Mixin } from "../../../types/utils.d.mts";
 
-declare global {
-  type EmittedEventListener = (event: Event) => any;
-}
-
 /**
  * A mixin class which implements the behavior of EventTarget.
  * This is useful in cases where a class wants EventTarget-like behavior but needs to extend some other class.
@@ -12,6 +8,7 @@ declare global {
 declare class EventEmitter {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
   constructor(...args: any[]);
+
   /**
    * An array of event types which are valid for this class.
    */
@@ -26,7 +23,7 @@ declare class EventEmitter {
    */
   addEventListener(
     type: string,
-    listener: EmittedEventListener,
+    listener: EventEmitter.EmittedEventListener,
     options?: InexactPartial<{
       /**
        * Should the event only be responded to once and then removed
@@ -41,7 +38,7 @@ declare class EventEmitter {
    * @param type     - The type of event being removed
    * @param listener - The listener function being removed
    */
-  removeEventListener(type: string, listener: EmittedEventListener): void;
+  removeEventListener(type: string, listener: EventEmitter.EmittedEventListener): void;
 
   /**
    * Dispatch an event on this target.
@@ -50,6 +47,10 @@ declare class EventEmitter {
    * @returns Was default behavior for the event prevented?
    */
   dispatchEvent(event: Event): boolean;
+}
+
+declare namespace EventEmitter {
+  type EmittedEventListener = (event: Event) => any;
 }
 
 /**
