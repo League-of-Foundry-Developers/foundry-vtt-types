@@ -15,25 +15,6 @@ declare class CompendiumArtConfig extends HandlebarsApplicationMixin(Application
 
   /** @override */
   override _prepareContext(_options: ApplicationRenderOptions): Promise<ApplicationRenderContext>;
-
-  /* -------------------------------------------- */
-  /*  Event Handlers                              */
-  /* -------------------------------------------- */
-
-  /**
-   * Adjust the priority of a package.
-   * @param _event          - The click event.
-   * @param target          - The button that was clicked.
-   */
-  static #onAdjustPriority(_event: MouseEvent, target: HTMLButtonElement): Promise<void>;
-
-  /**
-   * Save the compendium art configuration.
-   * @param _event          - The form submission event.
-   * @param _form           - The form element that was submitted.
-   * @param formData        - Processed data for the submitted form.
-   */
-  static #onSubmit(_event: SubmitEvent, _form: HTMLFormElement, formData: FormDataExtended): Promise<void>;
 }
 
 export default CompendiumArtConfig;
