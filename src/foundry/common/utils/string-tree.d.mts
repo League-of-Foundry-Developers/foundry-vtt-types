@@ -16,18 +16,6 @@ declare class StringTree<EntryType> {
   static readonly #leaves: unique symbol;
 
   /**
-   * The tree's root.
-   * @type {StringTreeNode}
-   */
-  #root: StringTree.StringTreeNode;
-
-  /**
-   * Create a new node.
-   * @returns   The new node
-   */
-  #createNode(): StringTree.StringTreeNode;
-
-  /**
    * Insert an entry into the tree.
    * @param strings  - The string parents for the entry.
    * @param entry         - The entry to store.

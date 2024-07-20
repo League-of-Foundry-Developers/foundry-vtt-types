@@ -6,44 +6,10 @@ export default class BitMask extends Number {
   constructor(states?: Record<string, boolean> | null);
 
   /**
-   * The real value behind the bitmask instance.
-   */
-  #value: number;
-
-  /**
-   * The structure of valid states and their associated values.
-   */
-  #validStates: Map<string, number>;
-
-  /**
    * The enum associated with this structure.
    * @readonly
    */
   states: Record<string, string>;
-
-  /**
-   * Generates the valid states and their associated values.
-   * @param states The structure defining the valid states and their associated values. Defaults to null.
-   */
-  #generateValidStates(states?: Record<string, boolean> | null): void;
-
-  /**
-   * Generates an enum based on the provided valid states.
-   */
-  #generateEnum(): void;
-
-  /**
-   * Calculate the default value of the bitmask based on the initial states
-   * @param initialStates  - The structure defining the valid states and their associated values. Defaults to {}
-   * @returns           The bitmask value
-   */
-  #computeValue(initialStates?: Record<string, boolean>): number;
-
-  /**
-   * Checks a state and throws an error if it doesn't exist.
-   * @param state     - Name of the state to check.
-   */
-  #checkState(state: string): void;
 
   /**
    * True if this bitmask is empty (no active states).
