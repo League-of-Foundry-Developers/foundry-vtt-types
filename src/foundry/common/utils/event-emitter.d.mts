@@ -50,7 +50,7 @@ declare class EventEmitter {
 }
 
 declare namespace EventEmitter {
-  type EmittedEventListener = (event: Event) => any;
+  type EmittedEventListener = (event: Event) => void;
 }
 
 /**
