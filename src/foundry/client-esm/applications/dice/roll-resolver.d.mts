@@ -12,6 +12,9 @@ declare class RollResolver<Configuration extends ApplicationConfiguration> exten
 ) {
   constructor(roll: Roll, options?: DeepPartial<Configuration>);
 
+  // a placeholder private method to help subclassing
+  #rollResolver: true;
+
   /**
    * A collection of fulfillable dice terms.
    */
