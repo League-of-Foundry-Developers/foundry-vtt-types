@@ -5,6 +5,9 @@ export default class BitMask extends Number {
    */
   constructor(states?: Record<string, boolean> | null);
 
+  // a placeholder private method to help subclassing
+  #bitmask: true;
+
   /**
    * The enum associated with this structure.
    * @readonly
