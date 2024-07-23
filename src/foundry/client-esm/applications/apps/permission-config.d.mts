@@ -1,7 +1,7 @@
 // import type { UserPermission } from "../../../common/constants.d.mts";
 import type { UserPermission } from "../../../common/constants.d.mts";
 import type { CONST } from "../../client.d.mts";
-import type { ApplicationConfiguration } from "../_types.d.mts";
+import type { ApplicationConfiguration, FormFooterButton } from "../_types.d.mts";
 import type ApplicationV2 from "../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.mjs";
 
@@ -15,18 +15,10 @@ type PermissionWithRoles = UserPermission & {
   }[];
 };
 
-// TODO- temporary; I suspect there's a better type already somewhere
-type PermissingConfigButton = {
-  type: string;
-  action: string;
-  icon: string;
-  label: string;
-};
-
 type PermissionConfigRenderContext = {
   roles: Record<CONST.USER_ROLES, string>;
   permissions: PermissionWithRoles[];
-  buttons: PermissingConfigButton[];
+  buttons: FormFooterButton[];
 };
 
 /**
