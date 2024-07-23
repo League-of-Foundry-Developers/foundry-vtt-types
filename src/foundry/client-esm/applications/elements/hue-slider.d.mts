@@ -14,7 +14,7 @@ export default class HTMLHueSelectorSlider extends AbstractFormInputElement<numb
 
   protected override _activateListeners(): void;
 
-  protected override _setValue(value: any): void;
+  protected override _setValue(value: number): void;
 
-  protected override _toggleDisabled(disabled: any): void;
+  protected override _toggleDisabled(disabled: boolean): void;
 }

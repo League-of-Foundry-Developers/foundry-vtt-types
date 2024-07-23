@@ -10,6 +10,9 @@ declare class HTMLProseMirrorElement extends AbstractFormInputElement<string> {
 
   static override tagName: "prose-mirror";
 
+  /**
+   * Actions to take when the custom element is removed from the document.
+   */
   disconnectedCallback(): void;
 
   override _buildElements(): (HTMLButtonElement | HTMLDivElement)[];
@@ -38,6 +41,9 @@ declare namespace HTMLProseMirrorElement {
 
     /** Does this editor instance support collaborative editing? */
     collaborate: boolean;
+
+    /** Should the editor be presented in compact mode? */
+    compact: boolean;
 
     /** A Document UUID. Required for collaborative editing */
     documentUUID: string;
