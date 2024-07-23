@@ -8,11 +8,13 @@ declare class SMAAFilter extends PIXI.Filter {
    */
   constructor(config?: InexactPartial<SMAAFilter.SMAAFilterConfig>);
 
+  // a placeholder private method to help subclassing
+  #smaaFilter: true;
+
   /**
    * The presets.
    */
   static get PRESETS(): Record<string, SMAAFilter.SMAAFilterConfig>;
-  static #PRESETS: Record<string, SMAAFilter.SMAAFilterConfig>;
 
   /** @override */
   apply(
