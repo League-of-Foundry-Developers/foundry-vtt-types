@@ -1,8 +1,13 @@
-export type { default as BasePackage } from "./base-package.d.mts";
-export type { default as BaseWorld } from "./base-world.d.mts";
-export type { default as BaseSystem } from "./base-system.d.mts";
-export type { default as BaseModule } from "./base-module.d.mts";
-export type { PackageCompatibility, RelatedPackage } from "./base-package.d.mts";
+// In Foundry itself this file contains re-exports of these other modules.
+// Therefore it has a runtime effect and uses `.mjs` instead of `.d.mts`.
+// While `.mts` could work, to avoid `import/no-unresolved from erroring `.mjs` is used.
+/* eslint-disable import/extensions */
+
+export { default as BasePackage } from "./base-package.mjs";
+export { default as BaseWorld } from "./base-world.mjs";
+export { default as BaseSystem } from "./base-system.mjs";
+export { default as BaseModule } from "./base-module.mjs";
+export { PackageCompatibility, RelatedPackage } from "./base-package.mjs";
 
 declare global {
   type PackageAuthorData =
