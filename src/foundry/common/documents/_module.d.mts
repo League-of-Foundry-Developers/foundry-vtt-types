@@ -1,30 +1,35 @@
-export type { default as BaseActiveEffect } from "./active-effect.d.mts";
-export type { default as BaseActorDelta } from "./actor-delta.d.mts";
-export type { default as BaseActor } from "./actor.d.mts";
-export type { default as BaseAdventure } from "./adventure.d.mts";
-export type { default as BaseAmbientLight } from "./ambient-light.d.mts";
-export type { default as BaseAmbientSound } from "./ambient-sound.d.mts";
-export type { default as BaseCard } from "./card.d.mts";
-export type { default as BaseCards } from "./cards.d.mts";
-export type { default as BaseChatMessage } from "./chat-message.d.mts";
-export type { default as BaseCombat } from "./combat.d.mts";
-export type { default as BaseCombatant } from "./combatant.d.mts";
-export type { default as BaseDrawing } from "./drawing.d.mts";
-export type { default as BaseFogExploration } from "./fog-exploration.d.mts";
-export type { default as BaseFolder } from "./folder.d.mts";
-export type { default as BaseItem } from "./item.d.mts";
-export type { default as BaseJournalEntry } from "./journal-entry.d.mts";
-export type { default as BaseJournalEntryPage } from "./journal-entry-page.d.mts";
-export type { default as BaseMacro } from "./macro.d.mts";
-export type { default as BaseMeasuredTemplate } from "./measured-template.d.mts";
-export type { default as BaseNote } from "./note.d.mts";
-export type { default as BasePlaylist } from "./playlist.d.mts";
-export type { default as BasePlaylistSound } from "./playlist-sound.d.mts";
-export type { default as BaseRollTable } from "./roll-table.d.mts";
-export type { default as BaseScene } from "./scene.d.mts";
-export type { default as BaseSetting } from "./setting.d.mts";
-export type { default as BaseTableResult } from "./table-result.d.mts";
-export type { default as BaseTile } from "./tile.d.mts";
-export type { default as BaseToken } from "./token.d.mts";
-export type { default as BaseUser } from "./user.d.mts";
-export type { default as BaseWall } from "./wall.d.mts";
+// In Foundry itself this file contains re-exports of these other modules.
+// Therefore it has a runtime effect and uses `.mjs` instead of `.d.mts`.
+// While `.mts` could work, to avoid `import/no-unresolved from erroring `.mjs` is used.
+/* eslint-disable import/extensions */
+
+export { default as BaseActiveEffect } from "./active-effect.mjs";
+export { default as BaseActorDelta } from "./actor-delta.mjs";
+export { default as BaseActor } from "./actor.mjs";
+export { default as BaseAdventure } from "./adventure.mjs";
+export { default as BaseAmbientLight } from "./ambient-light.mjs";
+export { default as BaseAmbientSound } from "./ambient-sound.mjs";
+export { default as BaseCard } from "./card.mjs";
+export { default as BaseCards } from "./cards.mjs";
+export { default as BaseChatMessage } from "./chat-message.mjs";
+export { default as BaseCombat } from "./combat.mjs";
+export { default as BaseCombatant } from "./combatant.mjs";
+export { default as BaseDrawing } from "./drawing.mjs";
+export { default as BaseFogExploration } from "./fog-exploration.mjs";
+export { default as BaseFolder } from "./folder.mjs";
+export { default as BaseItem } from "./item.mjs";
+export { default as BaseJournalEntry } from "./journal-entry.mjs";
+export { default as BaseJournalEntryPage } from "./journal-entry-page.mjs";
+export { default as BaseMacro } from "./macro.mjs";
+export { default as BaseMeasuredTemplate } from "./measured-template.mjs";
+export { default as BaseNote } from "./note.mjs";
+export { default as BasePlaylist } from "./playlist.mjs";
+export { default as BasePlaylistSound } from "./playlist-sound.mjs";
+export { default as BaseRollTable } from "./roll-table.mjs";
+export { default as BaseScene } from "./scene.mjs";
+export { default as BaseSetting } from "./setting.mjs";
+export { default as BaseTableResult } from "./table-result.mjs";
+export { default as BaseTile } from "./tile.mjs";
+export { default as BaseToken } from "./token.mjs";
+export { default as BaseUser } from "./user.mjs";
+export { default as BaseWall } from "./wall.mjs";
