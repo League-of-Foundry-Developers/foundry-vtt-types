@@ -64,7 +64,6 @@
   "dependencies": {
     "@pixi/graphics-smooth": "^1.1.0",
     "@pixi/particle-emitter": "^5.0.8",
-    "@types/fvtt-types": "file:.",
     "@types/jquery": "~3.5.22",
     "@types/showdown": "~2.0.6",
     "@types/simple-peer": "~9.11.1",
@@ -90,6 +89,7 @@
     "tinymce": "^6.8.3"
   },
   "devDependencies": {
+    "@types/fvtt-types": "file:.",
     "@typescript-eslint/eslint-plugin": "^6.7.4",
     "@typescript-eslint/parser": "^6.7.4",
     "eslint": "^8.4.0",
