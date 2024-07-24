@@ -289,7 +289,10 @@ declare abstract class DataField<
    *          otherwise void.
    * @throws May throw a specific error if the value is not valid
    */
-  protected _validateType(value: InitializedType, options?: DataField.ValidationOptions<DataField.Any>): boolean | void;
+  protected _validateType(
+    value: InitializedType,
+    options?: DataField.ValidationOptions<DataField.Any>,
+  ): boolean | DataModelValidationFailure | void;
 
   /**
    * Certain fields may declare joint data validation criteria.
@@ -311,7 +314,7 @@ declare abstract class DataField<
   initialize(
     value: PersistedType,
     model: DataModel.Any,
-    options: object, // TODO: Type further.
+    options?: Record<string, unknown>, // TODO: Type further.
   ): (() => InitializedType | null) | InitializedType;
 
   /**
@@ -405,7 +408,7 @@ declare namespace DataField {
   type InitializedType<Options extends DataFieldOptions.Any> = DerivedInitializedType<any, MergedOptions<Options>>;
 
   /** An interface for the options of the {@link DataField} clean functions. */
-  interface CleanOptions {
+  export interface CleanOptions {
     /** Whether to perform partial cleaning? */
     partial?: boolean;
 
@@ -419,7 +422,7 @@ declare namespace DataField {
    * An interface for the options of the {@link DataField} validation functions.
    * @typeParam DataField - the type of the DataField, which is the receiver of the validate function
    */
-  interface ValidationOptions<DataField extends DataField.Any> extends DataValidationOptions {
+  export interface ValidationOptions<DataField extends DataField.Any> extends DataValidationOptions {
     source?: object;
     validate?: (this: DataField, value: unknown, options: ValidationOptions<DataField>) => boolean;
   }
@@ -529,12 +532,16 @@ declare class SchemaField<
 
   protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions): InitializedType;
 
-  override initialize(value: PersistedType, model: DataModel.Any): InitializedType | (() => InitializedType | null);
+  override initialize(
+    value: PersistedType,
+    model: DataModel.Any,
+    options?: Record<string, unknown>,
+  ): InitializedType | (() => InitializedType | null);
 
   protected override _validateType(
     value: InitializedType,
     options?: DataField.ValidationOptions<DataField.Any>,
-  ): boolean | void;
+  ): boolean | DataModelValidationFailure | void;
 
   protected override _validateModel(data: object, options?: object): void;
 
@@ -698,7 +705,7 @@ declare class BooleanField<
   protected override _validateType(
     value: InitializedType,
     options?: DataField.ValidationOptions<DataField.Any>,
-  ): boolean | void;
+  ): boolean | DataModelValidationFailure | void;
 }
 
 declare namespace BooleanField {
@@ -853,7 +860,7 @@ declare class NumberField<
   protected override _validateType(
     value: InitializedType,
     options?: DataField.ValidationOptions<DataField.Any>,
-  ): boolean | void;
+  ): boolean | DataModelValidationFailure | void;
 
   /**
    * Test whether a provided value is a valid choice from the allowed choice set
@@ -1003,7 +1010,7 @@ declare class StringField<
   protected override _validateType(
     value: InitializedType,
     options?: DataField.ValidationOptions<DataField.Any>,
-  ): boolean | void;
+  ): boolean | DataModelValidationFailure | void;
 
   /**
    * Test whether a provided value is a valid choice from the allowed choice set
@@ -1116,14 +1123,18 @@ declare class ObjectField<
 
   protected override _cast(value: AssignmentType): InitializedType;
 
-  override initialize(value: PersistedType, model: DataModel.Any): InitializedType | (() => InitializedType | null);
+  override initialize(
+    value: PersistedType,
+    model: DataModel.Any,
+    options?: Record<string, unknown>,
+  ): InitializedType | (() => InitializedType | null);
 
   override toObject(value: InitializedType): PersistedType;
 
   protected override _validateType(
     value: InitializedType,
     options?: DataField.ValidationOptions<DataField.Any>,
-  ): boolean | void;
+  ): boolean | DataModelValidationFailure | void;
 }
 
 declare namespace ObjectField {
@@ -1254,7 +1265,7 @@ declare class ArrayField<
   protected override _validateType(
     value: InitializedType,
     options?: DataField.ValidationOptions<DataField.Any>,
-  ): boolean | void;
+  ): boolean | DataModelValidationFailure | void;
 
   /**
    * Validate every element of the ArrayField
@@ -1278,7 +1289,11 @@ declare class ArrayField<
     options: DataField.ValidationOptions<DataField.Any>,
   ): DataModelValidationFailure | void;
 
-  override initialize(value: PersistedType, model: DataModel.Any): InitializedType | (() => InitializedType | null);
+  override initialize(
+    value: PersistedType,
+    model: DataModel.Any,
+    options?: Record<string, unknown>,
+  ): InitializedType | (() => InitializedType | null);
 
   override toObject(value: InitializedType): PersistedType;
 
@@ -1456,7 +1471,11 @@ declare class SetField<
     options?: DataField.ValidationOptions<DataField.Any>,
   ): void | DataModelValidationFailure;
 
-  override initialize(value: PersistedType, model: DataModel.Any): InitializedType | (() => InitializedType | null);
+  override initialize(
+    value: PersistedType,
+    model: DataModel.Any,
+    options?: Record<string, unknown>,
+  ): InitializedType | (() => InitializedType | null);
 
   override toObject(value: InitializedType): PersistedType;
 }
@@ -1565,7 +1584,11 @@ declare class EmbeddedDataField<
 
   protected override _initialize(fields: DataSchema): DataSchema;
 
-  override initialize(value: PersistedType, model: DataModel.Any): InitializedType | (() => InitializedType | null);
+  override initialize(
+    value: PersistedType,
+    model: DataModel.Any,
+    options?: Record<string, unknown>,
+  ): InitializedType | (() => InitializedType | null);
 
   override toObject(value: InitializedType): PersistedType;
 
@@ -1726,7 +1749,11 @@ declare class EmbeddedCollectionField<
     options?: DataField.ValidationOptions<DataField.Any>,
   ): DataModelValidationFailure | void;
 
-  override initialize(value: PersistedType, model: DataModel.Any): InitializedType | (() => InitializedType | null);
+  override initialize(
+    value: PersistedType,
+    model: DataModel.Any,
+    options?: Record<string, unknown>,
+  ): InitializedType | (() => InitializedType | null);
 
   override toObject(value: InitializedType): PersistedType;
 
@@ -2030,7 +2057,11 @@ declare class EmbeddedDocumentField<
   /** @defaultValue `true` */
   static override hierarchical: boolean;
 
-  override initialize(value: PersistedType, model: DataModel.Any): InitializedType | (() => InitializedType | null);
+  override initialize(
+    value: PersistedType,
+    model: DataModel.Any,
+    options?: Record<string, unknown>,
+  ): InitializedType | (() => InitializedType | null);
 
   /**
    * Return the embedded document(s) as a Collection.
@@ -2151,7 +2182,7 @@ declare class DocumentIdField<
   protected override _validateType(
     value: InitializedType,
     options?: DataField.ValidationOptions<DataField.Any>,
-  ): boolean | void;
+  ): boolean | DataModelValidationFailure | void;
 }
 
 declare namespace DocumentIdField {
@@ -2239,7 +2270,11 @@ declare class ForeignDocumentField<
 
   protected override _cast(value: AssignmentType): InitializedType;
 
-  override initialize(value: PersistedType, model: DataModel.Any): InitializedType | (() => InitializedType | null);
+  override initialize(
+    value: PersistedType,
+    model: DataModel.Any,
+    options?: Record<string, unknown>,
+  ): InitializedType | (() => InitializedType | null);
 
   override toObject(value: InitializedType): PersistedType;
 }
@@ -2331,7 +2366,7 @@ declare class ColorField<
   protected override _validateType(
     value: InitializedType,
     options?: DataField.ValidationOptions<DataField.Any>,
-  ): boolean | void;
+  ): boolean | DataModelValidationFailure | void;
 }
 
 declare namespace ColorField {
@@ -2454,7 +2489,7 @@ declare class FilePathField<
   protected override _validateType(
     value: InitializedType,
     options?: DataField.ValidationOptions<DataField.Any>,
-  ): boolean | void;
+  ): boolean | DataModelValidationFailure | void;
 }
 
 declare namespace FilePathField {
@@ -2692,8 +2727,8 @@ declare class DocumentOwnershipField<
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidationOptions<DataField.Any> | undefined,
-  ): boolean | void;
+    options?: DataField.ValidationOptions<DataField.Any>,
+  ): boolean | DataModelValidationFailure | void;
 }
 
 declare namespace DocumentOwnershipField {
@@ -2769,9 +2804,13 @@ declare class JSONField<
   protected override _validateType(
     value: InitializedType,
     options?: DataField.ValidationOptions<DataField.Any>,
-  ): boolean | void;
+  ): boolean | DataModelValidationFailure | void;
 
-  override initialize(value: PersistedType, model: DataModel.Any): InitializedType | (() => InitializedType | null);
+  override initialize(
+    value: PersistedType,
+    model: DataModel.Any,
+    options?: Record<string, unknown>,
+  ): InitializedType | (() => InitializedType | null);
 
   override toObject(value: InitializedType): PersistedType;
 }
@@ -3144,12 +3183,16 @@ declare class TypeDataField<
 
   protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions): InitializedType;
 
-  override initialize(value: PersistedType, model: DataModel.Any): InitializedType | (() => InitializedType | null);
+  override initialize(
+    value: PersistedType,
+    model: DataModel.Any,
+    options?: Record<string, unknown>,
+  ): InitializedType | (() => InitializedType | null);
 
   protected override _validateType(
     value: InitializedType,
     options?: DataField.ValidationOptions<DataField.Any>,
-  ): boolean | void;
+  ): boolean | DataModelValidationFailure | void;
 
   protected override _validateModel(data: object, options?: object): void;
 
