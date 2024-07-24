@@ -1,4 +1,4 @@
-import EmbeddedCollection from "./embedded-collection.mjs";
+import type EmbeddedCollection from "./embedded-collection.d.mts";
 
 /**
  * This class provides a {@link Collection} wrapper around a singleton embedded Document so that it can be interacted

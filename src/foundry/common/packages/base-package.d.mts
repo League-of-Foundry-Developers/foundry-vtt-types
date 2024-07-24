@@ -1,7 +1,8 @@
 import type { InexactPartial } from "../../../types/utils.d.mts";
-import type DataModel from "../abstract/data.mjs";
+// eslint-disable-next-line import/no-named-as-default
+import type DataModel from "../abstract/data.d.mts";
 import type { ReleaseData } from "../config.d.mts";
-import * as fields from "../data/fields.mjs";
+import type * as fields from "../data/fields.d.mts";
 import type { DataModelValidationFailure } from "../data/validation-failure.d.mts";
 import type { BaseFolder } from "../documents/_module.d.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
