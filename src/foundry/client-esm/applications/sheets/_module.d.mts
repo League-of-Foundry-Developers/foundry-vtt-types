@@ -1,7 +1,12 @@
-export { default as ActorSheetV2 } from "./actor-sheet.mts";
-export { default as AmbientSoundConfig } from "./ambient-sound-config.mts";
-export { default as AmbientLightConfig } from "./ambient-light-config.mts";
-export { default as ItemSheetV2 } from "./item-sheet.mts";
-export { default as RegionBehaviorConfig } from "./region-behavior-config.mts";
-export { default as RegionConfig } from "./region-config.mts";
-export { default as UserConfig } from "./user-config.mts";
+// In Foundry itself this file contains re-exports of these other modules.
+// Therefore it has a runtime effect and uses `.mjs` instead of `.d.mts`.
+// While `.mts` could work, to avoid `import/no-unresolved from erroring `.mjs` is used.
+/* eslint-disable import/extensions */
+
+export { default as ActorSheetV2 } from "./actor-sheet.mjs";
+export { default as AmbientSoundConfig } from "./ambient-sound-config.mjs";
+export { default as AmbientLightConfig } from "./ambient-light-config.mjs";
+export { default as ItemSheetV2 } from "./item-sheet.mjs";
+export { default as RegionBehaviorConfig } from "./region-behavior-config.mjs";
+export { default as RegionConfig } from "./region-config.mjs";
+export { default as UserConfig } from "./user-config.mjs";

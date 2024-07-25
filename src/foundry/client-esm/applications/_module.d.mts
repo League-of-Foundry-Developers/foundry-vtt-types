@@ -1,11 +1,16 @@
-export * as types from "./_types.mts";
-export * as api from "./api/_module.mts";
-export * as dice from "./dice/_module.mts";
-export * as elements from "./elements/_module.mts";
-export * as fields from "./forms/fields.mts";
-export * as apps from "./apps/_module.mts";
-export * as sheets from "./sheets/_module.mts";
-export * as ui from "./ui/_module.mts";
+// In Foundry itself this file contains re-exports of these other modules.
+// Therefore it has a runtime effect and uses `.mjs` instead of `.d.mts`.
+// While `.mts` could work, to avoid `import/no-unresolved from erroring `.mjs` is used.
+/* eslint-disable import/extensions */
+
+export * as types from "./_types.mjs";
+export * as api from "./api/_module.mjs";
+export * as dice from "./dice/_module.mjs";
+export * as elements from "./elements/_module.mjs";
+export * as fields from "./forms/fields.mjs";
+export * as apps from "./apps/_module.mjs";
+export * as sheets from "./sheets/_module.mjs";
+export * as ui from "./ui/_module.mjs";
 
 /**
  * A registry of currently rendered ApplicationV2 instances.
