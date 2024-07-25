@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
 import type { StoredDocument } from "../../../../types/utils.d.mts";
 
 declare global {
@@ -10,7 +9,7 @@ declare global {
    * @see {@link CombatTracker} The CombatTracker sidebar directory
    */
   class CombatEncounters extends WorldCollection<typeof foundry.documents.BaseCombat, "CombatEncounters"> {
-    static override documentName: "Combat";
+    static documentName: "Combat";
 
     /**
      * Provide the settings object which configures the Combat document
@@ -32,7 +31,7 @@ declare global {
     /**
      * The currently viewed Combat encounter
      */
-    get viewed(): StoredDocument<InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseCombat>>> | null;
+    get viewed(): StoredDocument<Combat.ConfiguredInstance> | null;
 
     /**
      * When a Token is deleted, remove it as a combatant from any combat encounters which included the Token

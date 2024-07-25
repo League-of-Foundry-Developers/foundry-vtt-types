@@ -21,7 +21,7 @@
     "test": "vitest --typecheck",
     "typecheck": "./node_modules/typescript/bin/tsc",
     "prepare": "is-ci || husky install",
-    "postinstall": "patch-package"
+    "postinstall": "patch-package && node ./setupSymlink.js"
   },
   "repository": {
     "type": "git",
@@ -93,13 +93,15 @@
     "@typescript-eslint/parser": "^6.7.4",
     "eslint": "^8.4.0",
     "eslint-config-prettier": "^9.0.0",
+    "eslint-import-resolver-typescript": "^3.6.1",
+    "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-tsdoc": "^0.2.14",
     "husky": "^8.0.0",
     "is-ci": "^3.0.1",
     "lint-staged": "^15.0.1",
     "prettier": "^3.0.3",
-    "typescript": "~5.3",
+    "typescript": "~5.4",
     "vitest": "^1.1.0"
   },
   "overrides": {

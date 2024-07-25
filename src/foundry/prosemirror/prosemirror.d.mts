@@ -5,14 +5,17 @@ import type { Plugin, PluginKey } from "prosemirror-state";
 import { AllSelection, TextSelection, EditorState } from "prosemirror-state";
 import { Step } from "prosemirror-transform";
 import { EditorView } from "prosemirror-view";
-import ProseMirrorContentLinkPlugin from "./content-link-plugin.mts";
-import ProseMirrorDirtyPlugin from "./dirty-plugin.mts";
+import type ProseMirrorContentLinkPlugin from "./content-link-plugin.d.mts";
+import type ProseMirrorDirtyPlugin from "./dirty-plugin.d.mts";
 import "./extensions.d.mts";
-import ProseMirrorImagePlugin from "./image-plugin.mts";
-import ProseMirrorInputRules from "./input-rules.mts";
-import ProseMirrorKeyMaps from "./keymaps.mts";
-import ProseMirrorMenu from "./menu.mts";
-import { schema as defaultSchema } from "./schema.mts";
+import type ProseMirrorImagePlugin from "./image-plugin.d.mts";
+// eslint-disable-next-line import/no-named-as-default
+import type ProseMirrorInputRules from "./input-rules.d.mts";
+// eslint-disable-next-line import/no-named-as-default
+import type ProseMirrorKeyMaps from "./keymaps.d.mts";
+// eslint-disable-next-line import/no-named-as-default
+import type ProseMirrorMenu from "./menu.d.mts";
+import type { schema as defaultSchema } from "./schema.d.mts";
 import type { parseHTMLString, serializeHTMLString } from "./util.d.mts";
 import type ProseMirrorPlugin from "./plugin.d.mts";
 import type ProseMirrorHighlightMatchesPlugin from "./highlight-matches-plugin.d.mts";

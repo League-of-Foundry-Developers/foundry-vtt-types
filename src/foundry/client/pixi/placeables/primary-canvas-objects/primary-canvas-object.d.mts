@@ -1,10 +1,8 @@
 import type { AnyConstructorFor, Mixin } from "../../../../../types/utils.d.mts";
 
 declare class PrimaryCanvasObject {
-  constructor(
-    placeableObjectOrData: Document | PrimaryCanvasObjectData,
-    ...args: ConstructorParameters<typeof PIXI.DisplayObject>
-  );
+  /** @privateRemarks All mixin classses should accept anything for its constructor. */
+  constructor(...args: any[]);
 
   /**
    * The PlaceableObject which is rendered to the PrimaryCanvasGroup (or undefined if no object is associated)

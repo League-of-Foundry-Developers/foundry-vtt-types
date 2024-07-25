@@ -30,10 +30,10 @@ declare global {
      */
     static override get defaultOptions(): PackageConfiguration.Options;
 
-    override getData(): MaybePromise<object>;
+    override getData(): MaybePromise<object>; // TODO: Implement GetDataReturnType
 
     /** Prepare the structure of category data which is rendered in this configuration form. */
-    abstract _prepareCategoryData(): PackageConfiguration.Category;
+    protected abstract _prepareCategoryData(): PackageConfiguration.CategoryData;
 
     /**
      * Classify what Category an Action belongs to
@@ -46,7 +46,10 @@ declare global {
     protected _sortCategories(a: PackageConfiguration.Category, b: PackageConfiguration.Category): number;
 
     /** {@inheritdoc} */
-    protected override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
+    protected override _render(
+      force?: boolean,
+      options?: Application.RenderOptions<Options> & { activeCategory: string },
+    ): Promise<void>;
 
     /** {@inheritdoc} */
     override activateListeners(html: JQuery<HTMLElement>): void;
@@ -71,6 +74,11 @@ declare global {
     interface Category {
       id: string;
       title: string;
+    }
+
+    interface CategoryData<PackageCategory extends Category = Category> {
+      categories: PackageCategory[];
+      total: number;
     }
   }
 }

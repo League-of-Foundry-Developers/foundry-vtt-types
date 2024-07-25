@@ -1,35 +1,22 @@
-import type { ConfiguredDocumentClassForName, ConstructorDataType } from "../../../../types/helperTypes.d.mts";
+import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
+import type { DeepPartial } from "../../../../types/utils.d.mts";
 
 declare global {
+  namespace Card {
+    type ConfiguredClass = ConfiguredDocumentClassForName<"Card">;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+  }
+
   /**
-   * The client-side Card document which extends the common BaseCard model.
-   * Each Card document contains CardData which defines its data schema.
+   * The client-side Card document which extends the common BaseCard document model.
    *
-   * @see {@link data.CardData}                      The Card data schema
-   * @see {@link documents.Cards}                    The Cards document type which contains Card embedded documents
+   * @see {@link Cards}                    The Cards document type which contains Card embedded documents
    */
   class Card extends ClientDocumentMixin(foundry.documents.BaseCard) {
     /**
-     * The card back.
-     * This reference is cached and lazily evaluated to retrieve an image and name from the source deck.
-     */
-    get back(): foundry.data.CardFaceData;
-
-    /**
-     * @defaultValue `undefined`
-     * @internal
-     */
-    protected _back?: foundry.data.CardFaceData | undefined;
-
-    /**
      * The current card face
      */
-    get face(): foundry.data.CardFaceData | null;
-
-    /**
-     * The image used to depict the back of this card
-     */
-    get backImg(): string;
+    get currentFace(): CardFaceData | null;
 
     /**
      * The image of the currently displayed card face or back
@@ -44,7 +31,7 @@ declare global {
     /**
      * A reference to the source Cards document which defines this Card.
      */
-    get source(): InstanceType<ConfiguredDocumentClassForName<"Cards">> | undefined | null;
+    get source(): Cards.ConfiguredInstance | undefined | null;
 
     /**
      * A convenience property for whether or not the Card is within its source Cards stack. Cards in decks are always
@@ -76,7 +63,7 @@ declare global {
      * @param face - A specific face to flip the card to
      * @returns A reference to this card after the flip operation is complete
      */
-    flip(face?: number | null | undefined): Promise<InstanceType<ConfiguredDocumentClassForName<"Card">> | undefined>;
+    flip(face?: number | null): Promise<Card.ConfiguredInstance | undefined>;
 
     /**
      * Pass this Card to some other Cards document.
@@ -84,38 +71,29 @@ declare global {
      * @param options - (default: `{}`)
      * @returns A reference to this card after the it has been passed to another parent document
      */
-    pass(
-      to: InstanceType<ConfiguredDocumentClassForName<"Cards">>,
-      options?: Cards.PassOptions | undefined,
-    ): Promise<InstanceType<ConfiguredDocumentClassForName<"Card">> | undefined>;
+    pass(to: Cards.ConfiguredInstance, options?: Cards.PassOptions): Promise<Card.ConfiguredInstance | undefined>;
 
     /**
      * Play a specific card to some other Cards document.
      * This method is currently a more semantic alias for Card#pass.
      * @see Card#pass
      */
-    play(
-      to: InstanceType<ConfiguredDocumentClassForName<"Cards">>,
-      options?: Cards.PassOptions | undefined,
-    ): Promise<InstanceType<ConfiguredDocumentClassForName<"Card">> | undefined>;
+    play(to: Cards.ConfiguredInstance, options?: Cards.PassOptions): Promise<Card.ConfiguredInstance | undefined>;
 
     /**
      * Discard a specific card to some other Cards document.
      * This method is currently a more semantic alias for Card#pass.
      * @see Card#pass
      */
-    discard(
-      to: InstanceType<ConfiguredDocumentClassForName<"Cards">>,
-      options?: Cards.PassOptions | undefined,
-    ): Promise<InstanceType<ConfiguredDocumentClassForName<"Card">> | undefined>;
+    discard(to: Cards.ConfiguredInstance, options?: Cards.PassOptions): Promise<Card.ConfiguredInstance | undefined>;
 
     /**
-     * Reset this Card to its original Cards parent.
+     * Recall this Card to its original Cards parent.
      * @param options - Options which modify the reset operation
      *                  (default: `{}`)
      * @returns A reference to the reset card belonging to its original parent
      */
-    reset(options?: Cards.ResetOptions | undefined): Promise<InstanceType<ConfiguredDocumentClassForName<"Card">>>;
+    recall(options?: Cards.ResetOptions): Promise<Card.ConfiguredInstance>;
 
     /**
      * Create a chat message which displays this Card.
@@ -126,8 +104,8 @@ declare global {
      * @returns The created chat message
      */
     toMessage(
-      messageData?: ConstructorDataType<foundry.data.ChatMessageData> | undefined,
-      options?: DocumentModificationContext | undefined,
-    ): Promise<InstanceType<ConfiguredDocumentClassForName<"ChatMessage">> | undefined>;
+      messageData?: DeepPartial<foundry.documents.BaseChatMessage.ConstructorData>,
+      options?: DocumentModificationContext,
+    ): Promise<ChatMessage.ConfiguredInstance | undefined>;
   }
 }

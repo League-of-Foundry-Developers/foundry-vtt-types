@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+
 class TestShader extends AbstractBaseShader {
   constructor(program: PIXI.Program, uniforms: AbstractBaseShader.Uniforms) {
     super(program, uniforms);

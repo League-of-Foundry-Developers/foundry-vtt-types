@@ -57,6 +57,6 @@ declare global {
     protected override _calculateBounds(): void;
 
     /** The local bounds need to be drawn from the underlying geometry. */
-    override getLocalBounds(rect?: PIXI.Rectangle | undefined): PIXI.Rectangle;
+    override getLocalBounds(rect?: PIXI.Rectangle): PIXI.Rectangle;
   }
 }

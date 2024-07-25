@@ -1,6 +1,4 @@
-import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { MaybePromise } from "../../../../types/utils.d.mts";
-import type { AmbientSoundDataConstructorData } from "../../../common/data/data.mjs/ambientSoundData.d.mts";
 
 declare global {
   /**
@@ -9,7 +7,7 @@ declare global {
    */
   class AmbientSoundConfig<
     Options extends DocumentSheetOptions<AmbientSoundDocument> = DocumentSheetOptions<AmbientSoundDocument>,
-  > extends DocumentSheet<Options, InstanceType<ConfiguredDocumentClassForName<"AmbientSound">>> {
+  > extends DocumentSheet<Options, AmbientSoundDocument.ConfiguredInstance> {
     /**
      * @defaultValue
      * ```typescript
@@ -24,7 +22,7 @@ declare global {
 
     override get title(): string;
 
-    override getData(options?: Partial<Options>): MaybePromise<object>;
+    override getData(options?: Partial<Options>): MaybePromise<object>; // TODO: Implement GetDataReturnType
 
     protected override _updateObject(event: Event, formData: AmbientSoundConfig.FormData): Promise<unknown>;
 
@@ -32,7 +30,12 @@ declare global {
   }
 
   namespace AmbientSoundConfig {
-    type FormData = Pick<foundry.data.AmbientSoundData, "easing" | "path" | "volume"> &
-      Pick<AmbientSoundDataConstructorData, "radius" | "x" | "y">;
+    type FormData = Pick<
+      foundry.documents.BaseAmbientSound,
+      "easing" | "path" | "volume" | "x" | "y" | "radius" | "walls"
+    > & {
+      "darkness.min": AmbientSoundDocument["darkness"]["min"];
+      "darkness.max": AmbientSoundDocument["darkness"]["max"];
+    };
   }
 }

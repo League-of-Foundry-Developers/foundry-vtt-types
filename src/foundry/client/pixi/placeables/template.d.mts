@@ -1,18 +1,45 @@
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
-import type { DeepPartial, RequiredProps } from "../../../../types/utils.d.mts";
+import type { RequiredProps } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
-
-export {};
+import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
+  namespace MeasuredTemplate {
+    type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof MeasuredTemplate>;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    interface RenderFlags extends PlaceableObject.RenderFlags {
+      refreshShape: boolean;
+
+      refreshTemplate: boolean;
+
+      refreshPosition: boolean;
+
+      refreshGrid: boolean;
+
+      refreshText: boolean;
+    }
+
+    interface ObjectHUD extends globalThis.ObjectHUD {
+      /**
+       * Template control icon
+       */
+      icon?: ControlIcon;
+
+      /**
+       * Ruler text tooltip
+       */
+      ruler?: PreciseText;
+    }
+
+    type InitializedObjectHUD = RequiredProps<ObjectHUD, "icon" | "ruler">;
+  }
+
   /**
    * A type of Placeable Object which highlights an area of the grid as covered by some area of effect.
    * @see {@link MeasuredTemplateDocument}
    * @see {@link TemplateLayer}
    */
-  class MeasuredTemplate extends PlaceableObject<
-    InstanceType<ConfiguredDocumentClass<typeof MeasuredTemplateDocument>>
-  > {
+  class MeasuredTemplate extends PlaceableObject<MeasuredTemplateDocument.ConfiguredInstance> {
     /**
      * The geometry shape used for testing point intersection
      * @defaultValue `undefined`
@@ -167,66 +194,26 @@ declare global {
 
     override rotate(angle: number, snap: number): Promise<this>;
 
-    protected override _canControl(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
+    protected override _canControl(user: User.ConfiguredInstance, event?: any): boolean;
 
-    protected override _canConfigure(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
+    protected override _canConfigure(user: User.ConfiguredInstance, event?: any): boolean;
 
-    protected override _canView(user: InstanceType<ConfiguredDocumentClass<typeof User>>, event?: any): boolean;
+    protected override _canView(user: User.ConfiguredInstance, event?: any): boolean;
 
     protected override _onUpdate(
-      data: DeepPartial<InstanceType<ConfiguredDocumentClass<typeof MeasuredTemplateDocument>>["data"]["_source"]>,
-      options?: DocumentModificationOptions,
-      userId?: string,
+      data: foundry.documents.BaseMeasuredTemplate.UpdateData,
+      options: DocumentModificationOptions,
+      userId: string,
     ): void;
 
-    protected override _canControl(
-      user: InstanceType<ConfiguredDocumentClass<typeof User>>,
-      event: PIXI.FederatedEvent,
-    ): boolean;
+    protected override _canControl(user: User.ConfiguredInstance, event: PIXI.FederatedEvent): boolean;
 
-    protected override _canHUD(
-      user: InstanceType<ConfiguredDocumentClass<typeof User>>,
-      event?: PIXI.FederatedEvent,
-    ): boolean;
+    protected override _canHUD(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
 
-    protected override _canConfigure(
-      user: InstanceType<ConfiguredDocumentClass<typeof User>>,
-      event?: PIXI.FederatedEvent,
-    ): boolean;
+    protected override _canConfigure(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
 
-    protected override _canView(
-      user: InstanceType<ConfiguredDocumentClass<typeof User>>,
-      event?: PIXI.FederatedEvent,
-    ): boolean;
+    protected override _canView(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
 
     protected override _onClickRight(event: PIXI.FederatedEvent): void;
-  }
-
-  namespace MeasuredTemplate {
-    interface RenderFlags extends PlaceableObject.RenderFlags {
-      refreshShape: boolean;
-
-      refreshTemplate: boolean;
-
-      refreshPosition: boolean;
-
-      refreshGrid: boolean;
-
-      refreshText: boolean;
-    }
-
-    interface ObjectHUD extends globalThis.ObjectHUD {
-      /**
-       * Template control icon
-       */
-      icon?: ControlIcon;
-
-      /**
-       * Ruler text tooltip
-       */
-      ruler?: PreciseText;
-    }
-
-    type InitializedObjectHUD = RequiredProps<ObjectHUD, "icon" | "ruler">;
   }
 }

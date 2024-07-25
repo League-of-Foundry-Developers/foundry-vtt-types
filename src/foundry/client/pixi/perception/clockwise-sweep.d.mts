@@ -28,7 +28,7 @@ declare global {
     /**
      * A collection of rays which are fired at vertices
      */
-    //@ts-expect-error Getter/setter routine is deprecated functionality as of v11, removed in v13
+    // @ts-expect-error Getter/setter routine is deprecated functionality as of v11, removed in v13
     rays: PolygonRay[];
 
     override initialize(origin: Point, config: PointSourcePolygonConfig): void;

@@ -1,6 +1,12 @@
-import type { ConfiguredDocumentClass, DocumentConstructor } from "../../../../types/helperTypes.d.mts";
-import type { DeepPartial, StoredDocument } from "../../../../types/utils.d.mts";
-import type { DOCUMENT_TYPES } from "../../../common/constants.d.mts";
+import type {
+  ConfiguredDocumentClass,
+  ConstructorDataType,
+  DocumentConstructor,
+} from "../../../../types/helperTypes.d.mts";
+import type { ConfiguredStoredDocument, DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
+import type { MixedDocumentCollectionInterface } from "./directory-collection-mixin.d.mts";
+
+declare const MixedDocumentCollection: MixedDocumentCollectionInterface;
 
 declare global {
   /**
@@ -8,38 +14,14 @@ declare global {
    * Each primary Document type has an associated subclass of WorldCollection which contains them.
    * @see {@link Game#collections}
    */
-  abstract class WorldCollection<T extends DocumentConstructor, Name extends string> extends DocumentCollection<
+  abstract class WorldCollection<T extends DocumentConstructor, Name extends string> extends MixedDocumentCollection<
     T,
     Name
   > {
     /**
-     *
-     * @param data - An array of data objects from which to create Document instances
-     *               (default: `[]`)
+     * Reference the set of Folders which contain documents in this collection
      */
-    constructor(data?: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>["data"]["_source"][]);
-
-    readonly _source: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>["data"]["_source"][];
-
-    /**
-     * Initialize the WorldCollection object by constructing its contained Document instances
-     * @internal
-     */
-    protected _initialize(): void;
-
-    /**
-     * @remarks In the abstract {@link WorldCollection}, this actually returns `null` but all deriving classes implement it properly.
-     */
-    get documentName(): ConfiguredDocumentClass<T>["metadata"]["name"];
-
-    /**
-     * The base Document type which is contained within this WorldCollection
-     * @defaultValue `null`
-     * @remarks
-     * All deriving classes must set this to the string matching the name of the document type they contain because it
-     * is used as value for {@link WorldCollection#documentName}.
-     */
-    static documentName: string | null;
+    get folders(): Collection<Folder>;
 
     /**
      * Return a reference to the SidebarDirectory application for this WorldCollection.
@@ -50,20 +32,19 @@ declare global {
     get directory(): Lowercase<Name> extends keyof typeof ui
       ? (typeof ui)[Lowercase<Name>]
       :
-          | (ConfiguredDocumentClass<T>["metadata"]["name"] extends DOCUMENT_TYPES
-              ? SidebarDirectory<ConfiguredDocumentClass<T>["metadata"]["name"]>
+          | (ConfiguredDocumentClass<T>["metadata"]["name"] extends foundry.CONST.FOLDER_DOCUMENT_TYPES
+              ? DocumentDirectory<ConfiguredDocumentClass<T>["metadata"]["name"]>
               : never)
           | SidebarTab
-          | undefined;
+          | undefined
+          | null;
 
     /**
      * Return a reference to the singleton instance of this WorldCollection, or null if it has not yet been created.
      */
     static get instance(): WorldCollection<DocumentConstructor, any>; // TODO: Find a way to type this more concretely. One option would be to separate the static and non static side of this class, which allows accessing the the static this type to use the `documentName`.
 
-    override set(id: string, document: StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>): this;
-
-    delete: (id: string) => boolean;
+    protected override _getVisibleTreeContents(): InstanceType<ConfiguredDocumentClass<T>>[];
 
     /**
      * Import a Document from a Compendium collection, adding it to the current World.
@@ -80,9 +61,9 @@ declare global {
         CompendiumCollection.Metadata & { type: ConfiguredDocumentClass<T>["metadata"]["name"] }
       >,
       id: string,
-      updateData?: DeepPartial<InstanceType<ConfiguredDocumentClass<T>>["data"]["_source"]> | undefined,
-      options?: (DocumentModificationContext & WorldCollection.FromCompendiumOptions) | undefined,
-    ): Promise<StoredDocument<InstanceType<ConfiguredDocumentClass<T>>>>;
+      updateData?: DeepPartial<InstanceType<ConfiguredDocumentClass<T>>["_source"]>,
+      options?: InexactPartial<DocumentModificationContext & WorldCollection.FromCompendiumOptions>,
+    ): Promise<ConfiguredStoredDocument<T>>;
 
     /**
      * Apply data transformations when importing a Document from a Compendium pack
@@ -90,20 +71,23 @@ declare global {
      * @param options  - Additional options which modify how the document is imported
      *                   (default: `{}`)
      * @returns The processed data ready for world Document creation
+     * @remarks FromCompendiumOptions is inflated to account for expanded downstream use
      */
-    fromCompendium(
-      document: InstanceType<ConfiguredDocumentClass<T>> | InstanceType<ConfiguredDocumentClass<T>>["data"]["_source"],
-      options?: WorldCollection.FromCompendiumOptions | undefined,
-    ): Omit<InstanceType<ConfiguredDocumentClass<T>>["data"]["_source"], "_id" | "folder">;
-
-    /**
-     * Prepare a document from an outside source for import into this collection.
-     * @param data - The data to be prepared.
-     * @returns The prepared data.
-     */
-    prepareForImport(
-      data: InstanceType<ConfiguredDocumentClass<T>>["data"]["_source"],
-    ): Omit<InstanceType<ConfiguredDocumentClass<T>>["data"]["_source"], "_id" | "folder">;
+    fromCompendium<
+      FolderOpt extends boolean = false,
+      SortOpt extends boolean = true,
+      OwnershipOpt extends boolean = false,
+      IdOpt extends boolean = false,
+    >(
+      document: InstanceType<ConfiguredDocumentClass<T>> | ConstructorDataType<T>,
+      options?: InexactPartial<WorldCollection.FromCompendiumOptions<FolderOpt, SortOpt, OwnershipOpt, IdOpt>>,
+    ): Omit<
+      InstanceType<ConfiguredDocumentClass<T>>["_source"],
+      | ClientDocument.OmitProperty<FolderOpt, "folder">
+      | ClientDocument.OmitProperty<SortOpt, "sort" | "navigation" | "navOrder">
+      | ClientDocument.OmitProperty<OwnershipOpt, "ownership">
+      | (IdOpt extends false ? "_id" : never)
+    >;
 
     /**
      * Register a Document sheet class as a candidate which can be used to display Documents of a given type.
@@ -119,7 +103,7 @@ declare global {
 
     /**
      * Unregister a Document sheet class, removing it from the list of available sheet Applications to use.
-     * See {@link DocumentSheetConfig.unregisterSheet} for detauls.
+     * See {@link DocumentSheetConfig.unregisterSheet} for details.
      * @see DocumentSheetConfig.unregisterSheet
      *
      * @example <caption>Deregister the default ActorSheet subclass to replace it with others.</caption>
@@ -137,30 +121,45 @@ declare global {
   }
 
   namespace WorldCollection {
-    interface FromCompendiumOptions {
+    interface FromCompendiumOptions<
+      FolderOpt extends boolean = false,
+      SortOpt extends boolean = true,
+      OwnershipOpt extends boolean = false,
+      IdOpt extends boolean = false,
+      StateOpt extends boolean = false,
+    > {
       /**
        * Add flags which track the import source
        * @defaultValue `false`
        */
-      addFlags?: boolean | undefined;
+      addFlags: boolean;
+
+      /**
+       * Clear the currently assigned folder
+       * @defaultValue
+       */
+      clearFolder: FolderOpt;
 
       /**
        * Clear the currently assigned folder and sort order
        * @defaultValue `true`
        */
-      clearSort?: boolean | undefined;
+      clearSort: SortOpt;
 
       /**
        * Clear document permissions
        * @defaultValue `true`
        */
-      clearPermissions?: boolean | undefined;
+      clearOwnership: OwnershipOpt;
 
       /**
        * Retain the Document id from the source Compendium
        * @defaultValue `false`
        */
-      keepId?: boolean | undefined;
+      keepId: IdOpt;
+
+      /** @remarks used by Scene#fromCompendium */
+      clearState: StateOpt;
     }
   }
 }

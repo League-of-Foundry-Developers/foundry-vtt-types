@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentClass } from "../../../types/helperTypes.d.mts";
 import type { InexactPartial, StoredDocument } from "../../../types/utils.d.mts";
 import type { CANVAS_PERFORMANCE_MODES } from "../../common/constants.d.mts";
 
@@ -255,10 +254,10 @@ declare global {
     /**
      * A reference to the currently displayed Scene document, or null if the Canvas is currently blank.
      */
-    get scene(): StoredDocument<Scene> | null;
+    get scene(): StoredDocument<Scene.ConfiguredInstance> | null;
 
     /** @defaultValue `null` */
-    #scene: StoredDocument<Scene> | null;
+    #scene: StoredDocument<Scene.ConfiguredInstance> | null;
 
     /**
      * A flag for whether the game Canvas is ready to be used. False if the canvas is not yet drawn, true otherwise.
@@ -362,18 +361,13 @@ declare global {
      */
     #createGroups(parentName: string, parent: PIXI.DisplayObject): void;
 
-    // TODO: Find a way to make these group properties dynamic
-
-    readonly hidden?: HiddenCanvasGroup;
-
-    readonly rendered?: RenderedCanvasGroup;
-
-    readonly environment?: EnvironmentCanvasGroup;
+    // Group properties are determined by the CanvasGroups type
 
     /**
      * TODO: Add a quality parameter
      * Compute the blur parameters according to grid size and performance mode.
      * @param options - Blur options.
+     * @remarks The TODO is foundry internal
      */
     protected _initializeBlur(
       options?: InexactPartial<{
@@ -411,7 +405,7 @@ declare global {
      * @param scene - A specific Scene document to render on the Canvas
      * @returns A Promise which resolves once the Canvas is fully drawn
      */
-    draw(scene?: InstanceType<ConfiguredDocumentClass<typeof Scene>>): Promise<this>;
+    draw(scene?: Scene.ConfiguredInstance): Promise<this>;
 
     /**
      * When re-drawing the canvas, first tear down or discontinue some existing processes
@@ -818,6 +812,9 @@ declare global {
     triggerPendingOperations(): void;
   }
 
+  // Most canvas group properties have explicit type definitions, but some are left off
+  interface Canvas extends CanvasGroups {}
+
   interface CanvasPerformanceSettings {
     /** The performance mode in CONST.CANVAS_PERFORMANCE_MODES */
     mode: CANVAS_PERFORMANCE_MODES;
@@ -916,3 +913,14 @@ interface CollectionNameToLayerMap {
   tokens: Canvas["tokens"];
   walls: Canvas["walls"];
 }
+
+// TODO: Find a way to make this more dynamic
+type CanvasGroups = {
+  // readonly [GroupName in keyof CONFIG.Canvas.Groups]?: CONFIG.Canvas.Groups[GroupName]["groupClass"];
+
+  readonly hidden?: HiddenCanvasGroup;
+
+  readonly rendered?: RenderedCanvasGroup;
+
+  readonly environment?: EnvironmentCanvasGroup;
+};

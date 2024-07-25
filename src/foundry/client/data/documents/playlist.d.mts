@@ -1,28 +1,32 @@
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
-import type { DeepPartial } from "../../../../types/utils.d.mts";
-import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
-import type { PlaylistDataConstructorData } from "../../../common/data/data.mjs/playlistData.d.mts";
+import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
+import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
+import type Document from "../../../common/abstract/document.d.mts";
+import type { AnyMetadata, DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
+import type { ClientDocument } from "../abstract/client-document.d.mts";
 
 declare global {
+  namespace Playlist {
+    type ConfiguredClass = ConfiguredDocumentClassForName<"Playlist">;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    interface PlayNextOptions {
+      /**
+       * Whether to advance forward (if 1) or backwards (if -1)
+       * @defaultValue `1`
+       */
+      direction: 1 | -1;
+    }
+  }
+
   /**
    * The client-side Playlist document which extends the common BasePlaylist model.
-   * Each Playlist document contains PlaylistData which defines its data schema.
    *
-   * @see {@link data.PlaylistData}               The Playlist data schema
-   * @see {@link documents.Playlists}             The world-level collection of Playlist documents
-   * @see {@link embedded.PlaylistSound}          The PlaylistSound embedded document within a parent Playlist
-   * @see {@link applications.PlaylistConfig}     The Playlist configuration application
+   * @see {@link Playlists}             The world-level collection of Playlist documents
+   * @see {@link PlaylistSound}         The PlaylistSound embedded document within a parent Playlist
+   * @see {@link PlaylistConfig}        The Playlist configuration application
    *
    */
   class Playlist extends ClientDocumentMixin(foundry.documents.BasePlaylist) {
-    /**
-     * @param data - Initial data provided to construct the Playlist document
-     */
-    constructor(
-      data: ConstructorParameters<typeof foundry.documents.BasePlaylist>[0],
-      context?: ConstructorParameters<typeof foundry.documents.BasePlaylist>[1],
-    );
-
     /**
      * Playlists may have a playback order which defines the sequence of Playlist Sounds
      * @defaultValue `undefined`
@@ -31,28 +35,26 @@ declare global {
     protected _playbackOrder: string[] | undefined;
 
     /**
-     * The playback mode for the Playlist instance
-     */
-    get mode(): foundry.CONST.PLAYLIST_MODES;
-
-    /**
      * The order in which sounds within this playlist will be played (if sequential or shuffled)
      * Uses a stored seed for randomization to guarantee that all clients generate the same random order.
      */
     get playbackOrder(): string[];
 
-    /**
-     * An indicator for whether any Sound within the Playlist is currently playing
-     */
-    get playing(): boolean;
-
     override get visible(): boolean;
+
+    /**
+     * Find all content links belonging to a given {@link Playlist} or {@link PlaylistSound}.
+     * @param doc - The Playlist or PlaylistSound.
+     */
+    static _getSoundContentLinks(doc: Playlist | PlaylistSound): NodeListOf<Element>;
+
+    override prepareDerivedData(): void;
 
     /**
      * Begin simultaneous playback for all sounds in the Playlist.
      * @returns The updated Playlist document
      */
-    playAll(): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>> | undefined>;
+    playAll(): Promise<this | undefined>;
 
     /**
      * Play the next Sound within the sequential or shuffled Playlist.
@@ -60,10 +62,7 @@ declare global {
      * @param options - Additional options which configure the next track
      * @returns The updated Playlist document
      */
-    playNext(
-      soundId?: string,
-      options?: Partial<Playlist.PlayNextOptions>,
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>> | undefined | null>;
+    playNext(soundId?: string, options?: Partial<Playlist.PlayNextOptions>): Promise<this | undefined | null>;
 
     /**
      * Begin playback of a specific Sound within this Playlist.
@@ -71,9 +70,7 @@ declare global {
      * @param sound - The desired sound that should play
      * @returns The updated Playlist
      */
-    playSound(
-      sound: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>,
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>> | undefined>;
+    playSound(sound: PlaylistSound.ConfiguredInstance): Promise<this | undefined>;
 
     /**
      * Stop playback of a specific Sound within this Playlist.
@@ -81,80 +78,88 @@ declare global {
      * @param sound - The desired sound that should play
      * @returns The updated Playlist
      */
-    stopSound(
-      sound: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>,
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>> | undefined>;
+    stopSound(sound: PlaylistSound.ConfiguredInstance): Promise<this | undefined>;
 
     /**
      * End playback for any/all currently playing sounds within the Playlist.
      * @returns The updated Playlist document
      */
-    stopAll(): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>> | undefined>;
+    stopAll(): Promise<this | undefined>;
 
     /**
      * Cycle the playlist mode
      * @returns A promise which resolves to the updated Playlist instance
      */
-    cycleMode(): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>> | undefined>;
+    cycleMode(): Promise<this | undefined>;
 
     /**
      * Get the next sound in the cached playback order. For internal use.
      * @internal
      */
-    protected _getNextSound(soundId: string): InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>> | undefined;
+    protected _getNextSound(soundId: string): PlaylistSound.ConfiguredInstance | undefined;
 
     /**
      * Get the previous sound in the cached playback order. For internal use.
      * @internal
      */
-    protected _getPreviousSound(
-      soundId: string,
-    ): InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>> | undefined;
+    protected _getPreviousSound(soundId: string): PlaylistSound.ConfiguredInstance | undefined;
 
     /**
      * Define the sorting order for the Sounds within this Playlist. For internal use.
      * @internal
      */
-    protected _sortSounds(
-      a: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>,
-      b: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>,
-    ): number;
+    protected _sortSounds(a: PlaylistSound.ConfiguredInstance, b: PlaylistSound.ConfiguredInstance): number;
+
+    override toAnchor(
+      options?: InexactPartial<{
+        attrs: Record<string, string>;
+        dataset: Record<string, string>;
+        classes: string[];
+        name: string;
+        icon: string;
+      }>,
+    ): HTMLAnchorElement;
+
+    override _onClickDocumentLink(event: MouseEvent): ReturnType<this["playAll" | "stopAll"]>;
 
     protected override _preUpdate(
-      changed: DeepPartial<PlaylistDataConstructorData>,
+      changed: Playlist["_source"],
       options: DocumentModificationOptions,
       user: foundry.documents.BaseUser,
     ): Promise<void>;
 
     protected override _onUpdate(
-      changed: DeepPartial<foundry.data.PlaylistData["_source"]>,
+      changed: foundry.documents.BasePlaylist.UpdateData,
       options: DocumentModificationOptions,
       userId: string,
     ): void;
 
     protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
 
-    protected override _onCreateEmbeddedDocuments(
-      embeddedName: string,
-      documents: foundry.abstract.Document<any, any>[],
-      result: Record<string, unknown>[],
+    protected override _onCreateDescendantDocuments(
+      parent: ClientDocument<Document<any, AnyMetadata, null>>,
+      collection: string,
+      documents: ClientDocument<Document<any, AnyMetadata, null>>[],
+      data: unknown[],
       options: DocumentModificationOptions,
       userId: string,
     ): void;
 
-    protected override _onUpdateEmbeddedDocuments(
-      embeddedName: string,
-      documents: foundry.abstract.Document<any, any>[],
-      result: Record<string, unknown>[],
-      options: DocumentModificationContext,
+    protected override _onUpdateDescendantDocuments(
+      parent: ClientDocument<Document<any, AnyMetadata, null>>,
+      collection: string,
+      documents: ClientDocument<Document<any, AnyMetadata, null>>[],
+      changes: unknown[],
+      options: DocumentModificationOptions,
       userId: string,
     ): void;
 
-    protected override _onDeleteEmbeddedDocuments(
-      embeddedName: string,
-      documents: foundry.abstract.Document<any, any>[],
-      result: string[],
-      options: DocumentModificationContext,
+    protected override _onDeleteDescendantDocuments(
+      parent: ClientDocument<Document<any, AnyMetadata, null>>,
+      collection: string,
+      documents: ClientDocument<Document<any, AnyMetadata, null>>[],
+      ids: string,
+      options: DocumentModificationOptions,
       userId: string,
     ): void;
 
@@ -162,32 +167,42 @@ declare global {
      * Handle callback logic when an individual sound within the Playlist concludes playback naturally
      * @internal
      */
-    _onSoundEnd(
-      sound: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>,
-    ): Promise<InstanceType<ConfiguredDocumentClass<typeof Playlist>> | undefined>;
+    _onSoundEnd(sound: PlaylistSound.ConfiguredInstance): Promise<this | undefined>;
 
     /**
      * Handle callback logic when playback for an individual sound within the Playlist is started.
      * Schedule auto-preload of next track
      * @internal
      */
-    _onSoundStart(sound: InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>): Promise<void>;
+    _onSoundStart(sound: PlaylistSound.ConfiguredInstance): Promise<void>;
 
-    override toCompendium(
-      pack?: CompendiumCollection<CompendiumCollection.Metadata> | null | undefined,
-      options?: ClientDocumentMixin.CompendiumExportOptions | undefined,
-    ): Omit<foundry.data.PlaylistData["_source"], "_id" | "folder" | "permission"> & {
-      permission?: foundry.data.PlaylistData["_source"]["permission"];
-    };
-  }
+    /**
+     * UPdate the playing status of this Playlist in content links.
+     * @param changed - The data changes
+     */
+    _updateContentLinkPlaying(changed: DeepPartial<Playlist["_source"]>): void;
 
-  namespace Playlist {
-    interface PlayNextOptions {
-      /**
-       * Whether to advance forward (if 1) or backwards (if -1)
-       * @defaultValue `1`
-       */
-      direction: 1 | -1;
-    }
+    override toCompendium<
+      FlagsOpt extends boolean = false,
+      SourceOpt extends boolean = true,
+      SortOpt extends boolean = true,
+      FolderOpt extends boolean = false,
+      OwnershipOpt extends boolean = false,
+      StateOpt extends boolean = true,
+      IdOpt extends boolean = false,
+    >(
+      pack?: CompendiumCollection<CompendiumCollection.Metadata> | null,
+      options?: InexactPartial<
+        ClientDocument.CompendiumExportOptions<FlagsOpt, SourceOpt, SortOpt, FolderOpt, OwnershipOpt, StateOpt, IdOpt>
+      >,
+    ): Omit<
+      this["_source"],
+      | (IdOpt extends false ? "_id" : never)
+      | ClientDocument.OmitProperty<SortOpt, "sort" | "navigation" | "navOrder">
+      | ClientDocument.OmitProperty<FolderOpt, "folder">
+      | ClientDocument.OmitProperty<FlagsOpt, "flags">
+      | ClientDocument.OmitProperty<OwnershipOpt, "ownership">
+      | ClientDocument.OmitProperty<StateOpt, "active" | "fogReset" | "playing"> // does not model the sounds.playing = false
+    >;
   }
 }

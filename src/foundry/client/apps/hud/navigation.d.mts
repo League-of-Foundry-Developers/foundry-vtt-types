@@ -1,5 +1,4 @@
-import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
-import type { MaybePromise } from "../../../../types/utils.d.mts";
+import type { GetDataReturnType, MaybePromise } from "../../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -32,13 +31,15 @@ declare global {
     /**
      * Return an Array of Scenes which are displayed in the Navigation bar
      */
-    get scenes(): InstanceType<ConfiguredDocumentClassForName<"Scene">>[];
+    get scenes(): Scene.ConfiguredInstance[];
 
     override render(force?: boolean, context?: Application.RenderOptions<Options>): this | void;
 
     protected override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
-    override getData(options?: Partial<ApplicationOptions>): MaybePromise<object>;
+    override getData(
+      options?: Partial<ApplicationOptions>,
+    ): MaybePromise<GetDataReturnType<SceneNavigation.SceneNavigationData>>;
 
     /**
      * Expand the SceneNavigation menu, sliding it down if it is currently collapsed
@@ -77,11 +78,27 @@ declare global {
 
     /**
      * Display progress of some major operation like loading Scene textures.
+     * @param options - Options for how the progress bar is displayed
      */
     static displayProgressBar(options: SceneNavigation.DisplayProgressBarOptions): void;
   }
 
   namespace SceneNavigation {
+    type SceneData = {
+      id: string;
+      active: boolean;
+      name: string;
+      tooltip: string | null;
+      users: { letter: string; color: User["color"] }[];
+      visible: boolean;
+      css: string;
+    };
+
+    interface SceneNavigationData {
+      collapsed: boolean;
+      scenes: SceneData[];
+    }
+
     interface DisplayProgressBarOptions {
       /**
        * A text label to display

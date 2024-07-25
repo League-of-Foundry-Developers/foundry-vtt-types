@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClass } from "../../../../../types/helperTypes.d.mts";
+export {};
 
 declare global {
   /**
@@ -6,12 +6,12 @@ declare global {
    * @typeParam Options - the type of the options object
    */
   class ChatPopout<Options extends ApplicationOptions = ApplicationOptions> extends Application<Options> {
-    constructor(message: InstanceType<ConfiguredDocumentClass<typeof ChatMessage>>, options?: Partial<Options>);
+    constructor(message: ChatMessage.ConfiguredInstance, options?: Partial<Options>);
 
     /**
      * The displayed Chat Message document
      */
-    message: InstanceType<ConfiguredDocumentClass<typeof ChatMessage>>;
+    message: ChatMessage.ConfiguredInstance;
 
     /**
      * @defaultValue
@@ -29,6 +29,7 @@ declare global {
 
     override get title(): string;
 
-    protected override _renderInner(data: object, options?: unknown): Promise<JQuery>;
+    /** @remarks Foundry references an options object as a second argument, but this is never used nor provided in the invocation */
+    protected override _renderInner(data: ReturnType<this["getData"]>): Promise<JQuery>;
   }
 }

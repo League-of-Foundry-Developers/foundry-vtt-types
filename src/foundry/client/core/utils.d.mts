@@ -1,4 +1,4 @@
-import type { ClientDocumentMixin } from "../data/abstract/client-document.d.mts";
+export {};
 
 declare global {
   /**
@@ -25,11 +25,11 @@ declare global {
     uuid: string,
     options?: {
       /** A Document to resolve relative UUIDs against. */
-      relative?: ClientDocumentMixin<foundry.abstract.Document<any, any>>;
+      relative?: ClientDocument;
       /** Allow retrieving an invalid Document. (default: `false`) */
       invalid?: boolean;
     },
-  ): Promise<foundry.abstract.Document<any, any> | null>;
+  ): Promise<foundry.abstract.Document<any, any, any> | null>;
 
   /**
    * Retrieve a Document by its Universally Unique Identifier (uuid) synchronously. If the uuid resolves to a compendium
@@ -43,13 +43,13 @@ declare global {
     uuid: string,
     options?: {
       /** A Document to resolve relative UUIDs against. */
-      relative?: ClientDocumentMixin<foundry.abstract.Document<any, any>>;
+      relative?: ClientDocument;
       /** Allow retrieving an invalid Document. (default: `false`) */
       invalid?: boolean;
       /** Throw an error if the UUID cannot be resolved synchronously. (default: `true`) */
       strict?: boolean;
     },
-  ): foundry.abstract.Document<any, any> | Record<string, unknown> | null;
+  ): foundry.abstract.Document<any, any, any> | Record<string, unknown> | null;
 
   /**
    * Resolve a series of embedded document UUID parts against a parent Document.
@@ -59,9 +59,9 @@ declare global {
    * @internal
    */
   function _resolveEmbedded(
-    parent: foundry.abstract.Document<any, any>,
+    parent: foundry.abstract.Document<any, any, any>,
     parts: string[],
-  ): foundry.abstract.Document<any, any>;
+  ): foundry.abstract.Document<any, any, any>;
 
   /**
    * Return a reference to the Document class implementation which is configured for use.

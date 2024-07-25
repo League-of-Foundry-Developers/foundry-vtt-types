@@ -1,17 +1,47 @@
-import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
-import type { DeepPartial } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
-
-export {};
+import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
+  namespace AmbientSound {
+    type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof AmbientSound>;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    interface RenderFlags extends PlaceableObject.RenderFlags {
+      refreshField: boolean;
+
+      refreshPosition: boolean;
+    }
+
+    interface SyncOptions {
+      /**
+       * A duration in milliseconds to fade volume transition
+       * @defaultValue `250`
+       */
+      fade: number;
+    }
+
+    interface UpdateSourceOptions {
+      /**
+       * Defer refreshing the SoundsLayer to manually call that refresh later.
+       * @defaultValue `false`
+       */
+      defer?: boolean | undefined;
+
+      /**
+       * Indicate that this SoundSource has been deleted.
+       * @defaultValue `false`
+       */
+      deleted?: boolean | undefined;
+    }
+  }
+
   /**
    * An AmbientSound is an implementation of PlaceableObject which represents a dynamic audio source within the Scene.
    * @see {@link AmbientSoundDocument}
    * @see {@link SoundsLayer}
    */
-  class AmbientSound extends PlaceableObject<InstanceType<ConfiguredDocumentClassForName<"AmbientSound">>> {
-    constructor(document: InstanceType<ConfiguredDocumentClassForName<"AmbientSound">>);
+  class AmbientSound extends PlaceableObject<AmbientSoundDocument.ConfiguredInstance> {
+    constructor(document: AmbientSoundDocument.ConfiguredInstance);
 
     /**
      * The Sound which manages playback for this AmbientSound effect
@@ -84,60 +114,30 @@ declare global {
      * Compute the field-of-vision for an object, determining its effective line-of-sight and field-of-vision polygons
      * @param options - (default: `{}`)
      */
-    updateSource(options?: AmbientSound.UpdateSourceOptions | undefined): void;
+    updateSource(options?: AmbientSound.UpdateSourceOptions): void;
 
     protected override _onCreate(
-      data: foundry.data.AmbientSoundData["_source"],
+      data: foundry.documents.BaseAmbientSound.ConstructorData,
       options: DocumentModificationOptions,
       userId: string,
     ): void;
 
     protected override _onUpdate(
-      changed: DeepPartial<foundry.data.AmbientSoundData["_source"]>,
+      data: foundry.documents.BaseAmbientSound.UpdateData,
       options?: DocumentModificationOptions,
       userId?: string,
     ): void;
 
     protected override _onDelete(...args: Parameters<PlaceableObject["_onDelete"]>): void;
 
-    protected override _canHUD(user: InstanceType<ConfiguredDocumentClassForName<"User">>, event?: any): boolean;
+    protected override _canHUD(user: User.ConfiguredInstance, event?: any): boolean;
 
-    protected override _canConfigure(user: InstanceType<ConfiguredDocumentClassForName<"User">>, event?: any): boolean;
+    protected override _canConfigure(user: User.ConfiguredInstance, event?: any): boolean;
 
     protected override _onClickRight(event: PIXI.FederatedEvent): void;
 
     protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
     protected override _onDragEnd(): void;
-  }
-
-  namespace AmbientSound {
-    interface RenderFlags extends PlaceableObject.RenderFlags {
-      refreshField: boolean;
-
-      refreshPosition: boolean;
-    }
-
-    interface SyncOptions {
-      /**
-       * A duration in milliseconds to fade volume transition
-       * @defaultValue `250`
-       */
-      fade: number;
-    }
-
-    interface UpdateSourceOptions {
-      /**
-       * Defer refreshing the SoundsLayer to manually call that refresh later.
-       * @defaultValue `false`
-       */
-      defer?: boolean | undefined;
-
-      /**
-       * Indicate that this SoundSource has been deleted.
-       * @defaultValue `false`
-       */
-      deleted?: boolean | undefined;
-    }
   }
 }

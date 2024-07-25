@@ -1,5 +1,4 @@
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
-import type { MaybePromise } from "../../../../types/utils.d.mts";
+import type { GetDataReturnType, MaybePromise } from "../../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -7,8 +6,8 @@ declare global {
    * The Hotbar is a UI element at the bottom of the screen which contains Macros as interactive buttons.
    * The Hotbar supports 5 pages of global macros which can be dragged and dropped to organize as you wish.
    *
-   * Left clicking a Macro button triggers its effect.
-   * Right clicking the button displays a context menu of Macro options.
+   * Left-clicking a Macro button triggers its effect.
+   * Right-clicking the button displays a context menu of Macro options.
    * The number keys 1 through 0 activate numbered hotbar slots.
    * Pressing the delete key while hovering over a Macro will remove it from the bar.
    *
@@ -30,7 +29,7 @@ declare global {
      * The currently displayed set of macros
      * @defaultValue `[]`
      */
-    macros: InstanceType<ConfiguredDocumentClass<typeof Macro>>[];
+    macros: Macro.ConfiguredInstance[];
 
     /**
      * Track collapsed state
@@ -57,13 +56,18 @@ declare global {
      */
     static override get defaultOptions(): ApplicationOptions;
 
-    override getData(options?: Partial<Options>): MaybePromise<object>;
+    override getData(options?: Partial<Options>): MaybePromise<GetDataReturnType<Hotbar.HotbarData>>;
+
+    /**
+     * Whether the hotbar is locked.
+     */
+    get locked(): boolean;
 
     /**
      * Get the Array of Macro (or null) values that should be displayed on a numbered page of the bar
      * @param page -
      */
-    protected _getMacrosByPage(page: number): InstanceType<ConfiguredDocumentClass<typeof Macro>>[];
+    protected _getMacrosByPage(page: number): Macro.ConfiguredInstance[];
 
     /**
      * Collapse the Hotbar, minimizing its display.
@@ -108,12 +112,6 @@ declare global {
     protected _onClickMacro(event: JQuery.ClickEvent): Promise<void>;
 
     /**
-     * Handle hover events on a macro button to track which slot is the hover target
-     * @param event - The originating mouseover or mouseleave event
-     */
-    protected _onHoverMacro(event: JQuery.MouseEnterEvent | JQuery.MouseLeaveEvent): void;
-
-    /**
      * Handle pagination controls
      * @param event - The originating click event
      */
@@ -128,9 +126,42 @@ declare global {
     protected override _onDrop(event: DragEvent): void;
 
     /**
+     * Create a Macro which rolls a RollTable when executed
+     * @param table - The RollTable document
+     */
+    protected _createRollTableRollMacro(table: RollTable): Promise<Macro.ConfiguredInstance>;
+
+    /**
+     * Create a Macro document which can be used to toggle display of a Journal Entry.
+     * @param doc - A Document which should be toggled
+     * @returns A created Macro document to add to the bar
+     */
+    protected _createDocumentSheetToggle(doc: ClientDocument): Promise<Macro.ConfiguredInstance>;
+
+    /**
      * Handle click events to toggle display of the macro bar
-     * @param event -
      */
     protected _onToggleBar(event: JQuery.ClickEvent): void;
+
+    /**
+     * Toggle the hotbar's lock state
+     */
+    protected _toggleHotBarLock(): Promise<this>;
+
+    /**
+     * Handle toggling a document sheet.
+     * @param uuid - The Document UUID to display
+     * @remarks Returns a ui notification number if doc could not be found
+     */
+    static toggleDocumentSheet(uuid: string): Promise<void> | Application | number;
+  }
+
+  namespace Hotbar {
+    interface HotbarData {
+      page: Hotbar["page"];
+      macros: Hotbar["macros"];
+      barClass: "collapsed" | "";
+      locked: boolean;
+    }
   }
 }

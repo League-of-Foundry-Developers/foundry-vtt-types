@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
+export {};
 
 declare global {
   /**
@@ -30,7 +30,7 @@ declare global {
      *                  (default: `{}`)
      */
     static loadSceneTextures(
-      scene: InstanceType<ConfiguredDocumentClassForName<"Scene">>,
+      scene: Scene.ConfiguredInstance,
       options?: Partial<TextureLoader.LoadSceneTextureOptions>,
     ): Promise<void[]>;
 

@@ -1,12 +1,11 @@
 import type { Schema, Slice } from "prosemirror-model";
 import type { Plugin } from "prosemirror-state";
 import type { EditorView } from "prosemirror-view";
-import type { ClientDocumentMixin } from "../client/data/abstract/client-document.d.mts";
 import type ProseMirrorPlugin from "./plugin.d.mts";
 
 interface ProseMirrorContentLinkOptions {
   /** The parent document housing this editor. */
-  document?: ClientDocumentMixin<foundry.abstract.Document<any, any>>;
+  document?: foundry.abstract.Document<any, any, any>;
   /** @defaultValue `false` */
   relativeLinks?: boolean;
 }
@@ -25,7 +24,7 @@ declare class ProseMirrorContentLinkPlugin extends ProseMirrorPlugin {
   /**
    * The parent document housing this editor.
    */
-  readonly document: ClientDocumentMixin<foundry.abstract.Document<any, any>>;
+  readonly document: foundry.abstract.Document<any, any, any>;
 
   /**
    * Whether to generate links relative to the parent document.

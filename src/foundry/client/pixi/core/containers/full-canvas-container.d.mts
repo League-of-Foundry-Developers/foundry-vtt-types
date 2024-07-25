@@ -1,6 +1,9 @@
 import type { Mixin } from "../../../../../types/utils.d.mts";
 
 declare class FullCanvasObject {
+  /** @privateRemarks All mixin classses should accept anything for its constructor. */
+  constructor(...args: any[]);
+
   /** @remarks Overrides the mixed in class */
   calculateBounds(): void;
 }

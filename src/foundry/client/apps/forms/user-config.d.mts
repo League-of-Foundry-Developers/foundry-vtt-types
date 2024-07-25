@@ -1,5 +1,5 @@
 import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
-import type { MaybePromise } from "../../../../types/utils.d.mts";
+import type { GetDataReturnType, MaybePromise } from "../../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -8,7 +8,7 @@ declare global {
    */
   class UserConfig<Options extends UserConfig.Options = UserConfig.Options> extends DocumentSheet<
     Options,
-    InstanceType<ConfiguredDocumentClass<typeof User>>
+    User.ConfiguredInstance
   > {
     /**
      * @defaultValue
@@ -25,7 +25,7 @@ declare global {
 
     override get title(): string;
 
-    override getData(options?: Partial<Options>): MaybePromise<object>;
+    override getData(options?: Partial<Options>): MaybePromise<GetDataReturnType<UserConfig.UserConfigData>>;
 
     override activateListeners(html: JQuery): void;
 
@@ -33,11 +33,6 @@ declare global {
      * Handle changing the user avatar image by opening a FilePicker
      */
     protected _onEditAvatar(event: JQuery.ClickEvent): ReturnType<FilePicker["browse"]>;
-
-    /**
-     * @remarks This method not overridden in foundry but added to provide types when overriding the UserConfig.
-     */
-    protected _updateObject(event: Event, formData: FormData): Promise<unknown>;
   }
 
   namespace UserConfig {
@@ -62,7 +57,13 @@ declare global {
        */
       height: DocumentSheetOptions["height"];
     }
+
+    interface UserConfigData<Options extends DocumentSheetOptions<User> = DocumentSheetOptions<User>> {
+      user: UserConfig<Options>["object"];
+      actors: ConfiguredDocumentClass<typeof Actor>[];
+      options: UserConfig<Options>["options"];
+    }
   }
 }
 
-type FormData = Pick<foundry.data.UserData, "avatar" | "character" | "color">;
+type FormData = Pick<User["_source"], "avatar" | "character" | "color">;

@@ -58,9 +58,8 @@ declare global {
      * @param origin - The initial coordinate
      * @returns The new drawing data
      * @remarks This is used from DrawingConfig and hence public on purpose.
-     * TODO: Replace NewDrawingData with DrawingData that's drawn from BaseDrawing (see: common/documents/drawing.mjs)
      */
-    _getNewDrawingData(origin: Point): NewDrawingData;
+    _getNewDrawingData(origin: Point): foundry.documents.BaseDrawing.ConstructorData;
 
     protected override _onClickLeft(event: PIXI.FederatedEvent): void;
 
@@ -90,59 +89,4 @@ declare global {
       zIndex: 20;
     }
   }
-
-  type NewDrawingData = ClientSettings.Values["core.defaultDrawingConfig"] & {
-    _id: null;
-    author: string;
-    fillColor: string;
-    strokeColor: string;
-    fontFamily: typeof CONFIG.defaultFontFamily;
-    x: number;
-    y: number | undefined;
-    /** Following properties come from DrawingDocument.CleanData */
-    shape: {
-      height: null;
-      points: PointArray[];
-      radius: null;
-      width: null;
-    };
-    bezierFactor: number;
-    fillAlpha: number;
-  } & (
-      | {
-          /** case "rect" && case "ellipse" */
-          shape: {
-            type: (typeof Drawing)["SHAPE_TYPES"]["RECTANGLE" | "ELLIPSE"];
-            width: number;
-            height: number;
-          };
-        }
-      | {
-          /** case "polygon" && case "freehand" */
-          shape: {
-            type: (typeof Drawing)["SHAPE_TYPES"]["POLYGON"];
-            points: PointArray[];
-          };
-          bezierFactor: number;
-        }
-      | {
-          /** case "text" */
-          shape: {
-            type: (typeof Drawing)["SHAPE_TYPES"]["RECTANGLE" | "ELLIPSE"];
-            width: number;
-            height: number;
-          };
-          /** @defaultValue `"#FFFFFF"` */
-          fillColor: string;
-
-          /** @defaultValue `0.10` */
-          fillAlpha: number;
-
-          /** @defaultValue `"#FFFFFF"` */
-          strokeColor: string;
-
-          /** @defaultValue `"New Text"` */
-          text: string;
-        }
-    );
 }

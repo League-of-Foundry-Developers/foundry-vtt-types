@@ -1,4 +1,26 @@
-export {};
+import type { EarlierEvents, InitializationEvent } from "./game.d.mts";
+
+type ValidRanHooks = Extract<keyof AssumeHookRan, InitializationEvent>;
+
+type _UninitializedGame = { [K in keyof Game]?: never };
+interface UninitializedGame extends _UninitializedGame {}
+
+// These type aliases are used for intellisense reasons so that the type displays `UninitializedGame | InitGame | ...` instead of a too complex looking type.
+type Games = {
+  none: UninitializedGame;
+  init: InitGame;
+  i18nInit: I18nInitGame;
+  setup: SetupGame;
+  ready: ReadyGame;
+};
+
+// Needs to include the current hook as well as all hooks that can run after it.
+type GameHooks = Exclude<InitializationEvent, EarlierEvents[keyof AssumeHookRan]>;
+
+// Put in its own helper type to cause type distribution.
+type DiscriminatedGame<Event extends InitializationEvent> = Event extends unknown ? Games[Event] : never;
+
+type MaybeUI = Extract<keyof AssumeHookRan, "ready"> extends never ? Partial<UiApplications> : UiApplications;
 
 declare global {
   /**
@@ -10,9 +32,9 @@ declare global {
    * The singleton Game instance
    * @defaultValue `{}`
    * @remarks
-   * Initialized between the `"DOMContentLoaded"` event and the `"init"` hook event.
+   * Initialized just before the `"init"` hook event.
    */
-  let game: "game" extends keyof LenientGlobalVariableTypes ? Game : Game | {};
+  let game: DiscriminatedGame<GameHooks>;
 
   /**
    * The global boolean for whether the EULA is signed
@@ -48,7 +70,7 @@ declare global {
      * @defaultValue `{}`
      */
     windows: Record<number, Application>;
-  } & ("ui" extends keyof LenientGlobalVariableTypes ? UiApplications : Partial<UiApplications>);
+  } & MaybeUI;
 
   /**
    * The client side console logger

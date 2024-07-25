@@ -1,6 +1,5 @@
 import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
-import type { MaybePromise } from "../../../../types/utils.d.mts";
-import type { SortingModes } from "../../../common/data/data.mjs/folderData.d.mts";
+import type { GetDataReturnType, MaybePromise, ValueOf } from "../../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -28,9 +27,9 @@ declare global {
 
     override get title(): string;
 
-    override close(options?: Application.CloseOptions | undefined): Promise<void>;
+    override close(options?: Application.CloseOptions): Promise<void>;
 
-    override getData(options?: Partial<Options>): MaybePromise<object>;
+    override getData(options?: Partial<Options>): MaybePromise<GetDataReturnType<FolderConfig.FolderConfigData>>;
 
     protected override _updateObject(event: Event, formData: FolderConfig.FormData): Promise<unknown>;
   }
@@ -44,8 +43,17 @@ declare global {
       color: string;
       name: string;
       parent: string;
-      sorting: SortingModes;
+      sorting: ValueOf<typeof Folder.SORTING_MODES>;
       type: foundry.CONST.FOLDER_DOCUMENT_TYPES;
+    }
+
+    interface FolderConfigData {
+      folder: ReturnType<FolderConfig["object"]["toObject"]>;
+      name: string;
+      newName: string;
+      safeColor: string;
+      sortingModes: { a: string; m: string };
+      submitText: string;
     }
   }
 }

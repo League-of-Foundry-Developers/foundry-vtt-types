@@ -3,7 +3,7 @@ import { expectTypeOf, assertType } from "vitest";
 declare const aGame: Game;
 
 expectTypeOf(aGame.combats).toEqualTypeOf<CombatEncounters | undefined>();
-expectTypeOf(aGame.i18n).toEqualTypeOf<Localization>();
+expectTypeOf(aGame.i18n).toEqualTypeOf<Localization | undefined>();
 expectTypeOf(aGame.settings).toEqualTypeOf<ClientSettings>();
 
 declare global {
@@ -28,8 +28,6 @@ declare global {
     "required-api-module": true;
   }
 }
-/** Convenance type for test, might be worth while moving inside the types */
-type Module = Game.ModuleData<foundry.packages.ModuleData>;
 
 assertType<undefined | Module>(aGame.modules.get("optional-module"));
 
@@ -62,3 +60,28 @@ const requiredApiModule = aGame.modules.get("required-api-module");
 
 expectTypeOf(requiredApiModule).toEqualTypeOf<Module & ModuleConfig["required-api-module"]>();
 expectTypeOf(requiredApiModule.hooks.triggerDialog(5)).toEqualTypeOf<void>();
+
+declare global {
+  interface Game {
+    declarationMergingWorks: number;
+  }
+
+  interface ReadyGame {
+    onlyInReady: string;
+  }
+}
+
+expectTypeOf(game.declarationMergingWorks).toEqualTypeOf<number | undefined>();
+
+if (game instanceof Game) {
+  expectTypeOf(game.declarationMergingWorks).toEqualTypeOf<number>();
+
+  // @ts-expect-error - game is not guaranteed to be ready yet.
+  // Arguably it shouldn't be a hard error, just undefined.
+  game.onlyInReady;
+}
+
+if (game.ready) {
+  expectTypeOf(game.declarationMergingWorks).toEqualTypeOf<number>();
+  expectTypeOf(game.onlyInReady).toEqualTypeOf<string>();
+}

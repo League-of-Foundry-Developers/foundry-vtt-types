@@ -86,7 +86,7 @@ declare global {
       filterManager: PIXI.FilterSystem,
       input: PIXI.RenderTexture,
       output: PIXI.RenderTexture,
-      clearMode?: PIXI.CLEAR_MODES | undefined,
+      clearMode?: PIXI.CLEAR_MODES,
     ): void;
   }
 
@@ -110,7 +110,7 @@ declare global {
       filterManager: PIXI.FilterSystem,
       input: PIXI.RenderTexture,
       output: PIXI.RenderTexture,
-      clearMode?: PIXI.CLEAR_MODES | undefined,
+      clearMode?: PIXI.CLEAR_MODES,
     ): void;
 
     /**

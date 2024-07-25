@@ -7,6 +7,7 @@ declare global {
     icon: string;
     visible?: boolean;
     active?: boolean;
+    toolclip?: ToolclipConfiguration;
   }
 
   interface SceneControlToolToggle extends SceneControlToolBase {
@@ -30,6 +31,31 @@ declare global {
     visible: boolean;
     tools: SceneControlTool[];
     activeTool: string;
+  }
+
+  interface ToolclipConfiguration {
+    /** The filename of the toolclip video. */
+    src: string;
+
+    /** The heading string. */
+    heading: string;
+
+    /** The items in the toolclip body. */
+    items: ToolclipConfigurationItem[];
+  }
+
+  interface ToolclipConfigurationItem {
+    /** A plain paragraph of content for this item. */
+    paragraph?: string;
+
+    /** A heading for the item. */
+    heading?: string;
+
+    /** Content for the item. */
+    content?: string;
+
+    /** If the item is a single key reference, use this instead of content. */
+    reference?: string;
   }
 
   /**
@@ -91,9 +117,9 @@ declare global {
     initialize(options?: InitializeOptions): void;
 
     override getData(options?: Partial<Options>): {
+      controls: SceneControl[];
       active: boolean;
       cssClass: "" | "disabled";
-      controls: SceneControl[];
     };
 
     override activateListeners(html: JQuery): void;

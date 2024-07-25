@@ -1,52 +1,65 @@
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
-import type { ConstructorOf, DeepPartial } from "../../../../types/utils.d.mts";
-import type { DocumentDataType, DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
+import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
+import type { InexactPartial } from "../../../../types/utils.d.mts";
+import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 declare global {
-  interface ActivityData {
-    /** The ID of the scene that the user is viewing. */
-    sceneId?: string | null | undefined;
+  namespace User {
+    type ConfiguredClass = ConfiguredDocumentClassForName<"User">;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    /** The position of the user's cursor. */
-    cursor?: { x: number; y: number } | null | undefined;
+    interface PingData {
+      /**
+       * Pulls all connected clients' views to the pinged co-ordinates.
+       */
+      pull?: false | undefined;
 
-    /** The state of the user's ruler, if they are currently using one. */
-    ruler?: RulerData | null | undefined;
+      /**
+       * The ping style, see CONFIG.Canvas.pings.
+       */
+      style: string;
 
-    /** The IDs of the tokens the user has targeted in the currently viewed */
-    targets?: string[] | undefined;
+      /**
+       * The ID of the scene that was pinged.
+       */
+      scene: string;
 
-    /** Whether the user has an open WS connection to the server or not. */
-    active?: boolean | undefined;
+      /**
+       * The zoom level at which the ping was made.
+       */
+      zoom: number;
+    }
 
-    /** Is the user pulling focus to the cursor coordinates? */
-    focus?: boolean | undefined;
+    interface ActivityData {
+      /** The ID of the scene that the user is viewing. */
+      sceneId: string | null;
 
-    /** Is the user emitting a ping at the cursor coordinates? */
-    ping?: boolean | undefined;
+      /** The position of the user's cursor. */
+      cursor: { x: number; y: number } | null;
 
-    /** The state of the user's AV settings. */
-    av?: AVSettingsData | undefined;
+      /** The state of the user's ruler, if they are currently using one. */
+      ruler: RulerData | null;
+
+      /** The IDs of the tokens the user has targeted in the currently viewed */
+      targets: string[];
+
+      /** Whether the user has an open WS connection to the server or not. */
+      active: boolean;
+
+      /** Is the user emitting a ping at the cursor coordinates? */
+      ping: PingData;
+
+      /** The state of the user's AV settings. */
+      av: AVSettingsData;
+    }
   }
 
   /**
    * The client-side User document which extends the common BaseUser model.
-   * Each User document contains UserData which defines its data schema.
    *
-   * @see {@link data.UserData}               The User data schema
-   * @see {@link documents.Users}             The world-level collection of User documents
-   * @see {@link applications.UserConfig}     The User configuration application
+   * @see {@link Users}             The world-level collection of User documents
+   * @see {@link UserConfig}     The User configuration application
    */
   class User extends ClientDocumentMixin(foundry.documents.BaseUser) {
-    /**
-     * @param data - Initial data provided to construct the User document
-     *               (default: `{}`)
-     */
-    constructor(
-      data?: ConstructorParameters<ConstructorOf<foundry.documents.BaseUser>>[0],
-      context?: ConstructorParameters<ConstructorOf<foundry.documents.BaseUser>>[1],
-    );
-
     /**
      * Track whether the user is currently active in the game
      * @defaultValue `false`
@@ -65,21 +78,6 @@ declare global {
     viewedScene: string | null;
 
     /**
-     * Return the User avatar icon or the controlled actor's image
-     */
-    get avatar(): string;
-
-    /**
-     * Return the Actor instance of the user's impersonated character (or undefined)
-     */
-    get character(): ReturnType<Exclude<Game["actors"], undefined>["get"]>;
-
-    /**
-     * A convenience shortcut for the permissions object of the current User
-     */
-    get permissions(): foundry.data.UserData["permissions"];
-
-    /**
      * A flag for whether the current User is a Trusted Player
      */
     get isTrusted(): boolean;
@@ -89,6 +87,8 @@ declare global {
      */
     get isSelf(): boolean;
 
+    override prepareDerivedData(): void;
+
     /**
      * Assign a Macro to a numbered hotbar slot between 1 and 50
      * @param macro    - The Macro document to assign
@@ -97,7 +97,7 @@ declare global {
      * @returns A Promise which resolves once the User update is complete
      */
     assignHotbarMacro(
-      macro: InstanceType<ConfiguredDocumentClass<typeof Macro>> | null,
+      macro: Macro.ConfiguredInstance | null,
       slot: string | number,
       { fromSlot }?: { fromSlot: number },
     ): Promise<this>;
@@ -114,20 +114,26 @@ declare global {
     /**
      * Submit User activity data to the server for broadcast to other players.
      * This type of data is transient, persisting only for the duration of the session and not saved to any database.
-     *
+     * Activity data uses a volatile event to prevent unnecessary buffering if the client temporarily loses connection.
      * @param activityData - An object of User activity data to submit to the server for broadcast.
      *                       (default: `{}`)
      */
-    broadcastActivity(activityData?: ActivityData): void;
+    broadcastActivity(
+      activityData?: InexactPartial<User.ActivityData>,
+      options?: InexactPartial<{
+        /**
+         * If undefined, volatile is inferred from the activity data
+         */
+        volatile: boolean;
+      }>,
+    ): void;
 
     /**
      * Get an Array of Macro Documents on this User's Hotbar by page
      * @param page - The hotbar page number
      *               (default: `1`)
      */
-    getHotbarMacros(
-      page?: number,
-    ): Array<{ slot: number; macro: InstanceType<ConfiguredDocumentClass<typeof Macro>> | null }>;
+    getHotbarMacros(page?: number): Array<{ slot: number; macro: Macro.ConfiguredInstance | null }>;
 
     /**
      * Update the set of Token targets for the user given an array of provided Token ids.
@@ -136,21 +142,12 @@ declare global {
      */
     updateTokenTargets(targetIds?: string[]): void;
 
-    override _onUpdate(
-      data: DeepPartial<DocumentDataType<foundry.documents.BaseUser>>,
+    protected override _onUpdate(
+      data: foundry.documents.BaseUser.UpdateData,
       options: DocumentModificationOptions,
       userId: string,
     ): void;
 
-    override _onDelete(options: DocumentModificationOptions, userId: string): void;
-
-    /** @remarks This property is set by PlayerList.getData() */
-    charname?: string;
-
-    /** @remarks This property is set by PlayerList.getData() */
-    color?: string;
-
-    /** @remarks This property is set by PlayerList.getData() */
-    border?: string;
+    protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
   }
 }

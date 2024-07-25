@@ -27,3 +27,7 @@ expectTypeOf(myCanvas.recenter({ x: null, y: null, scale: null })).toEqualTypeOf
 expectTypeOf(myCanvas.recenter({ x: 100, y: 100, scale: 1 })).toEqualTypeOf<Promise<boolean | void>>();
 
 myCanvas.pendingRenderFlags.OBJECTS.add(myCanvas.perception);
+
+expectTypeOf(myCanvas.hidden).toEqualTypeOf<HiddenCanvasGroup | undefined>();
+expectTypeOf(myCanvas.rendered).toEqualTypeOf<RenderedCanvasGroup | undefined>();
+expectTypeOf(myCanvas.environment).toEqualTypeOf<EnvironmentCanvasGroup | undefined>();

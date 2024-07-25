@@ -1,5 +1,5 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
-import type { MaybePromise, ValueOf } from "../../../../types/utils.d.mts";
+import type { GetDataReturnType, MaybePromise, ValueOf } from "../../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -23,7 +23,7 @@ declare global {
      */
     static override get defaultOptions(): DocumentSheetOptions<MeasuredTemplateDocument>;
 
-    override getData(): MaybePromise<object>;
+    override getData(): MaybePromise<GetDataReturnType<MeasuredTemplateConfig.MeasuredTemplateConfigData>>;
 
     protected override _updateObject(event: Event, formData: MeasuredTemplateConfig.FormData): Promise<unknown>;
   }
@@ -42,5 +42,16 @@ declare global {
       x: number | null;
       y: number | null;
     };
+
+    interface MeasuredTemplateConfigData<
+      Options extends DocumentSheetOptions<MeasuredTemplateDocument> = DocumentSheetOptions<MeasuredTemplateDocument>,
+    > extends DocumentSheet.DocumentSheetData<
+        Options,
+        InstanceType<ConfiguredDocumentClassForName<"MeasuredTemplate">>
+      > {
+      templateTypes: Record<foundry.CONST.MEASURED_TEMPLATE_TYPES, string>;
+      gridUnits: string;
+      submitText: string;
+    }
   }
 }

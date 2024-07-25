@@ -235,7 +235,7 @@ declare global {
     static override defaultUniforms: AbstractBaseShader.Uniforms;
 
     static override create(
-      uniforms?: AbstractBaseShader.Uniforms | undefined,
+      uniforms?: AbstractBaseShader.Uniforms,
       options?: Parameters<(typeof VisibilityFilter)["fragmentShader"]>,
     ): VisibilityFilter;
 
@@ -406,7 +406,7 @@ declare global {
 
     static override create<T extends OutlineOverlayFilter>(
       this: ConstructorOf<T>,
-      uniforms?: AbstractBaseShader.Uniforms | undefined,
+      uniforms?: AbstractBaseShader.Uniforms,
     ): T;
 
     override apply(

@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+
 expectTypeOf(earcut.earcutEdges).parameters.toEqualTypeOf<[data: number[], holeIndices: number[]]>;
 expectTypeOf(earcut.earcutEdges).returns.toEqualTypeOf<number[]>;
 expectTypeOf(earcut.earcutEdges.flatten).toEqualTypeOf<

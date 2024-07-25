@@ -1,5 +1,4 @@
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
-import type { StoredDocument } from "../../../../types/utils.d.mts";
+import type { InexactPartial, StoredDocument } from "../../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -10,23 +9,23 @@ declare global {
    * @see {@link SceneDirectory} The SceneDirectory sidebar directory
    */
   class Scenes extends WorldCollection<typeof foundry.documents.BaseScene, "Scenes"> {
-    static override documentName: "Scene";
+    static documentName: "Scene";
 
     /**
      * Return a reference to the Scene which is currently active
      */
-    get active(): StoredDocument<Scene> | undefined;
+    get active(): StoredDocument<Scene.ConfiguredInstance> | undefined;
 
     /**
      * Return the current Scene target.
      * This is the viewed scene if the canvas is active, otherwise it is the currently active scene.
      */
-    get current(): StoredDocument<Scene> | undefined;
+    get current(): StoredDocument<Scene.ConfiguredInstance> | undefined;
 
     /**
      * Return a reference to the Scene which is currently viewed
      */
-    get viewed(): StoredDocument<Scene> | undefined;
+    get viewed(): StoredDocument<Scene.ConfiguredInstance> | undefined;
 
     /**
      * Handle pre-loading the art assets for a Scene
@@ -41,23 +40,28 @@ declare global {
     static _activateSocketListeners(socket: io.Socket): void;
 
     /**
-     * Augment the standard modifyDocument listener to flush fog exploration
-     */
-    protected static _resetFog(response: { scene: Scene; reset: boolean }): Promise<Canvas | undefined> | undefined;
-
-    /**
      * Handle requests pulling the current User to a specific Scene
      */
     protected static _pullToScene(sceneId: string): void;
 
-    override fromCompendium(
-      document:
-        | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseScene>>
-        | InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseScene>>["data"]["_source"],
-      options?: WorldCollection.FromCompendiumOptions | undefined,
+    override fromCompendium<
+      FolderOpt extends boolean = false,
+      SortOpt extends boolean = true,
+      OwnershipOpt extends boolean = false,
+      IdOpt extends boolean = false,
+      StateOpt extends boolean = false,
+    >(
+      document: Scene.ConfiguredInstance | foundry.documents.BaseScene.ConstructorData,
+      options?: InexactPartial<
+        WorldCollection.FromCompendiumOptions<FolderOpt, SortOpt, OwnershipOpt, IdOpt, StateOpt>
+      >,
     ): Omit<
-      InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseScene>>["data"]["_source"],
-      "_id" | "folder"
+      Scene["_source"],
+      | ClientDocument.OmitProperty<FolderOpt, "folder">
+      | ClientDocument.OmitProperty<SortOpt, "sort" | "navigation" | "navOrder">
+      | ClientDocument.OmitProperty<OwnershipOpt, "ownership">
+      | (IdOpt extends false ? "_id" : never)
+      | ClientDocument.OmitProperty<StateOpt, "active">
     >;
   }
 }

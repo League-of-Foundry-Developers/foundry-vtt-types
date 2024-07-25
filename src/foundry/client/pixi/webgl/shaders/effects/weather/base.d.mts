@@ -47,7 +47,7 @@ declare global {
 
     static override create<T extends AbstractWeatherShader>(
       this: ConstructorOf<T>,
-      initialUniforms?: AbstractBaseShader.Uniforms | undefined,
+      initialUniforms?: AbstractBaseShader.Uniforms,
     ): T;
 
     /**

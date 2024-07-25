@@ -6,7 +6,7 @@ declare global {
      * The parent Document of this one, if this one is embedded
      * @defaultValue `null`
      */
-    parent?: Document | null;
+    parent?: foundry.abstract.Document<any, any, any> | null;
 
     /**
      * The compendium collection ID which contains this Document, if any
@@ -25,7 +25,7 @@ declare global {
     /**
      * A parent Document within which these Documents should be embedded
      */
-    parent?: foundry.abstract.Document<any, any>;
+    parent?: foundry.abstract.Document<any, any, any>;
 
     /**
      * A Compendium pack identifier within which the Documents should be modified
@@ -147,6 +147,7 @@ declare global {
     /** Indicates if this Setting should render in the Config application */
     config?: boolean | undefined;
 
+    // TODO: This can take data models and data fields now
     /** The JS Type that the Setting is storing */
     type?: T extends string
       ? typeof String

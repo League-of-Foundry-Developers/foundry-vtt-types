@@ -1,5 +1,5 @@
 import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
-import type { MaybePromise, ValueOf } from "../../../../types/utils.d.mts";
+import type { GetDataReturnType, MaybePromise, ValueOf } from "../../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -25,19 +25,11 @@ declare global {
      */
     static override get defaultOptions(): DocumentSheetOptions<Macro>;
 
-    override get id(): string;
-
-    override getData(options?: Partial<Options>): MaybePromise<object>;
+    override getData(options?: Partial<Options>): MaybePromise<GetDataReturnType<MacroConfig.MacroConfigData>>;
 
     override activateListeners(html: JQuery): void;
 
     protected override _disableFields(form: HTMLElement): void;
-
-    /**
-     * Handle changing the actor profile image by opening a FilePicker
-     * @internal
-     */
-    protected _onEditImage(event: MouseEvent): ReturnType<FilePicker["browse"]>;
 
     /**
      * Save and execute the macro using the button on the configuration sheet
@@ -56,5 +48,11 @@ declare global {
       name: string;
       type: ValueOf<typeof CONST.MACRO_TYPES>;
     };
+
+    interface MacroConfigData<Options extends DocumentSheetOptions<Macro> = DocumentSheetOptions<Macro>>
+      extends DocumentSheet.DocumentSheetData<Options, InstanceType<ConfiguredDocumentClass<typeof Macro>>> {
+      macroTypes: Record<string, string>;
+      macroScopes: typeof CONST.MACRO_TYPES;
+    }
   }
 }

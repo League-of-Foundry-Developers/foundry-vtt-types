@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClassForName, DocumentConstructor } from "../../../../types/helperTypes.d.mts";
+import type { DocumentConstructor } from "../../../../types/helperTypes.d.mts";
 import type { MaybePromise } from "../../../../types/utils.d.mts";
 
 declare global {
@@ -8,7 +8,7 @@ declare global {
    */
   class SceneConfig<Options extends DocumentSheetOptions<Scene> = DocumentSheetOptions<Scene>> extends DocumentSheet<
     Options,
-    InstanceType<ConfiguredDocumentClassForName<"Scene">>
+    Scene.ConfiguredInstance
   > {
     /**
      * @defaultValue
@@ -25,13 +25,18 @@ declare global {
      */
     static override get defaultOptions(): DocumentSheetOptions<Scene>;
 
+    /**
+     * Indicates if width / height should change together to maintain aspect ratio
+     */
+    linkedDimensions: boolean;
+
     override get title(): string;
 
-    override close(options?: Application.CloseOptions | undefined): Promise<void>;
+    override close(options?: Application.CloseOptions): Promise<void>;
 
     override render(force?: boolean, options?: Application.RenderOptions<Options>): this;
 
-    override getData(options?: Partial<Options>): MaybePromise<object>;
+    override getData(options?: Partial<Options>): MaybePromise<object>; // TODO: implement GetDataReturnType
 
     /**
      * Get an enumeration of the available grid types which can be applied to this Scene
@@ -60,7 +65,18 @@ declare global {
      */
     protected _onCapturePosition(event: JQuery.ClickEvent): void;
 
-    protected override _onChangeInput(event: JQuery.ChangeEvent): void;
+    /**
+     * Handle click events to open the grid configuration application
+     * @param event - The originating click event
+     */
+    protected _onGridConfig(event: Event): Promise<void>;
+
+    /**
+     * Handle click events to link or unlink the scene dimensions
+     */
+    protected _onLinkDimensions(event: Event): Promise<void>;
+
+    protected override _onChangeInput(event: JQuery.ChangeEvent): Promise<void>;
 
     protected override _onChangeColorPicker(event: JQuery.ChangeEvent): void;
 
@@ -92,55 +108,46 @@ declare global {
      */
     protected _onChangeJournal(event: JQuery.ChangeEvent): void;
 
-    /**
-     * Handle click events to open the grid configuration application
-     * @param event - The originating click event
-     */
-    protected _onGridConfig(event: JQuery.ClickEvent): void;
-
     protected override _updateObject(event: Event, formData: SceneConfig.FormData): Promise<unknown>;
   }
 
   namespace SceneConfig {
     type FormData = {
-      backgroundColor: string;
-      "background.src": string;
-      "background.offsetX": number;
-      "background.offsetY": number;
-      darkness: number;
-      fogExploration: boolean;
-      fogOverlay: string;
-      fogUnexploredColor: string;
-      foreground: string;
-      foregroundElevation: number;
-      globalLight: boolean;
-      globalLightThreshold: number;
-      grid: number | null;
-      "grid.alpha": number;
-      "grid.color": string;
-      "grid.distance": number | null;
-      "grid.type": foundry.CONST.GRID_TYPES;
-      "grid.units": string;
+      backgroundColor: Scene["backgroundColor"];
+      "background.src": Scene["background"]["src"];
+      "background.offsetX": Scene["background"]["offsetX"];
+      "background.offsetY": Scene["background"]["offsetY"];
+      darkness: Scene["darkness"];
+      fogExploration: Scene["fogExploration"];
+      fogOverlay: Scene["fogOverlay"];
+      fogUnexploredColor: Scene["fogUnexploredColor"];
+      foreground: Scene["foreground"];
+      foregroundElevation: Scene["foregroundElevation"];
+      globalLight: Scene["globalLight"];
+      globalLightThreshold: Scene["globalLightThreshold"];
+      grid: Scene["grid"];
+      "grid.alpha": Scene["grid"]["alpha"];
+      "grid.color": Scene["grid"]["color"];
+      "grid.distance": Scene["grid"]["distance"];
+      "grid.type": Scene["grid"]["type"];
+      "grid.units": Scene["grid"]["units"];
       hasGlobalThreshold: boolean;
-      height: number | null;
-      img: string;
-      "initial.scale": number | null;
-      "initial.x": number | null;
-      "initial.y": number | null;
-      journal: string;
-      journalEntryPage: string;
-      name: string;
-      navName: string;
-      navigation: boolean;
-      padding: number;
-      "permission.default": foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS;
-      playlist: string;
-      playlistSound: string;
-      shiftX: number | null;
-      shiftY: number | null;
-      tokenVision: boolean;
-      weather: string;
-      width: number | null;
+      height: Scene["height"];
+      "initial.scale": Scene["initial"]["scale"];
+      "initial.x": Scene["initial"]["x"];
+      "initial.y": Scene["initial"]["y"];
+      journal: Scene["_source"]["journal"];
+      journalEntryPage: Scene["journalEntryPage"];
+      name: Scene["name"];
+      navName: Scene["navName"];
+      navigation: Scene["navigation"];
+      padding: Scene["padding"];
+      "ownership.default": Scene["ownership"]["default"];
+      playlist: Scene["playlist"];
+      playlistSound: Scene["playlistSound"];
+      tokenVision: Scene["tokenVision"];
+      weather: Scene["weather"];
+      width: Scene["width"];
     };
   }
 }

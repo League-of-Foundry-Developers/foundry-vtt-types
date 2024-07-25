@@ -1,4 +1,4 @@
-import type { MaybePromise } from "../../../../../types/utils.d.mts";
+export {};
 
 declare global {
   /**
@@ -20,7 +20,8 @@ declare global {
      */
     static override get defaultOptions(): ApplicationOptions;
 
-    override getData(options?: Partial<Options> | undefined): MaybePromise<object>;
+    // TODO: Implement GetDataReturnType
+    override getData(options?: Partial<Options>): Promise<object>;
 
     override activateListeners(html: JQuery): void;
   }

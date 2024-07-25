@@ -1,42 +1,47 @@
-import * as _abstract from "./abstract/module.mts";
-import * as _config from "./config.mjs/index.mts";
-import * as _CONST from "./constants.mts";
-import * as _data from "./data/module.mts";
-import * as _documents from "./documents.mjs/index.mts";
-import * as _packages from "./packages.mjs/index.mts";
+// In Foundry itself this file contains re-exports of these other modules.
+// Therefore it has a runtime effect and uses `.mjs` instead of `.d.mts`.
+// While `.mts` could work, to avoid `import/no-unresolved` from erroring `.mjs` is used.
+/* eslint-disable import/extensions */
+
+import * as _abstract from "./abstract/module.mjs";
+import * as _config from "./config.mjs";
+import * as _CONST from "./constants.mjs";
+import * as _data from "./data/module.mjs";
+import * as _documents from "./documents/module.mjs";
+import * as _packages from "./packages/module.mjs";
 import "./primitives/module.d.mts";
 import "./types.d.mts";
-import * as _utils from "./utils/module.mts";
+import * as _utils from "./utils/module.mjs";
 
 /**
  * Constant definitions used throughout the Foundry Virtual Tabletop framework.
  */
-export type * as CONST from "./constants.d.mts";
+export * as CONST from "./constants.mjs";
 
 /**
  * Abstract class definitions providing fundamental interfaces used throughout the Foundry Virtual Tabletop framework.
  */
-export type * as abstract from "./abstract/module.d.mts";
+export * as abstract from "./abstract/module.mjs";
 
 /**
  * Data schema definitions providing structure for Documents used throughout the Foundry Virtual Tabletop framework.
  */
-export type * as data from "./data/module.d.mts";
+export * as data from "./data/module.mjs";
 
 /**
  * Document definitions used throughout the Foundry Virtual Tabletop framework.
  */
-export type * as documents from "./documents.mjs/index.d.mts";
+export * as documents from "./documents/module.mjs";
 
 /**
  * Package data definitions, validations, and schema
  */
-export type * as packages from "./packages.mjs/index.d.mts";
+export * as packages from "./packages/module.mjs";
 
 /**
  * Utility functions providing helpful functionality.
  */
-export type * as utils from "./utils/module.d.mts";
+export * as utils from "./utils/module.mjs";
 
 declare global {
   namespace foundry {

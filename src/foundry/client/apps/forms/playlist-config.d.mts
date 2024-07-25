@@ -1,5 +1,5 @@
 import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
-import type { MaybePromise } from "../../../../types/utils.d.mts";
+import type { GetDataReturnType, MaybePromise, ValueOf } from "../../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -22,7 +22,7 @@ declare global {
 
     override get title(): string;
 
-    override getData(options?: Partial<Options>): MaybePromise<object>;
+    override getData(options?: Partial<Options>): MaybePromise<GetDataReturnType<PlaylistConfig.PlaylistConfigData>>;
 
     protected override _getFilePickerOptions(event: PointerEvent): FilePickerOptions;
 
@@ -30,5 +30,13 @@ declare global {
      * @remarks The return type could be given more concretely but it is not supposed to be used.
      */
     protected override _onSelectFile(selection: string, filePicker: FilePicker): unknown;
+  }
+
+  namespace PlaylistConfig {
+    interface PlaylistConfigData<Options extends DocumentSheetOptions<Playlist> = DocumentSheetOptions<Playlist>>
+      extends DocumentSheet.DocumentSheetData<Options, InstanceType<ConfiguredDocumentClass<typeof Playlist>>> {
+      modes: Record<ValueOf<typeof foundry.CONST.PLAYLIST_MODES>, string>;
+      sorting: Record<ValueOf<typeof foundry.CONST.PLAYLIST_SORT_MODES>, string>;
+    }
   }
 }

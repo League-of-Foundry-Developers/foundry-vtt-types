@@ -8,9 +8,9 @@ declare global {
    * @see {@link Setting} The Setting document
    */
   class WorldSettings extends WorldCollection<typeof foundry.documents.BaseSetting, "WorldSettings"> {
-    static override documentName: "Setting";
+    static documentName: "Setting";
 
-    override get directory(): undefined;
+    override get directory(): null;
 
     /**
      * Return the Setting or Keybind document with the given key.

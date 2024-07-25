@@ -3,16 +3,21 @@ import type { MaybePromise } from "../../../../types/utils.d.mts";
 declare global {
   interface ImagePopoutOptions extends FormApplicationOptions {
     /**
-     * Can this image be shared with connected users?
+     * Caption text to display below the image.
      * @defaultValue `false`
      */
-    shareable: boolean;
+    caption: boolean;
 
     /**
      * The UUID of some related {@link Document}.
      * @defaultValue `null`
      */
     uuid: string | null;
+
+    /**
+     * Force showing or hiding the title.
+     */
+    showTitle: boolean;
   }
 
   /**
@@ -42,9 +47,9 @@ declare global {
     constructor(src: string, options?: Partial<ImagePopout.Options>);
 
     /**
-     * @defaultValue `null`
+     * Whether the application should display video content.
      */
-    protected _related: foundry.abstract.Document<any, any> | null;
+    get isVideo(): boolean;
 
     /**
      * @defaultValue
@@ -63,7 +68,7 @@ declare global {
 
     override get title(): string;
 
-    override getData(options?: Partial<Options> | undefined): MaybePromise<object>;
+    override getData(options?: Partial<Options>): MaybePromise<object>;
 
     /**
      * Test whether the title of the image popout should be visible to the user
@@ -73,17 +78,17 @@ declare global {
     /**
      * Provide a reference to the Document referenced by this popout, if one exists
      */
-    getRelatedObject(): Promise<foundry.abstract.Document<any, any> | null>;
+    getRelatedObject(): Promise<foundry.abstract.Document<any, any, any> | null>;
 
-    protected override _render(
-      force?: boolean,
-      options?: Application.RenderOptions<Options> | undefined,
-    ): Promise<void>;
+    protected override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
+
+    override activateListeners(html: JQuery<HTMLElement>): void;
 
     protected override _getHeaderButtons(): Application.HeaderButton[];
 
     /**
      * Determine the correct position and dimensions for the displayed image
+     * @param img - The image URL.
      * @returns The positioning object which should be used for rendering
      */
     protected static getPosition(
@@ -92,26 +97,26 @@ declare global {
 
     /**
      * Determine the Image dimensions given a certain path
+     * @param path - The image source.
      */
     static getImageSize(path: string): Promise<[width: number, height: number]>;
 
     /**
+     * Determine the dimensions of the given video file.
+     * @param src - The URL to the video.
+     */
+    static getVideoSize(src: string): Promise<[width: number, height: number]>;
+
+    /**
      * Share the displayed image with other connected Users
      */
-    shareImage(): void;
+    shareImage(options: ImagePopout.ShareImageConfig): void;
 
     /**
      * Handle a received request to display an image.
+     * @param config - The image configuration data.
      */
-    protected static _handleShareImage({
-      image,
-      title,
-      uuid,
-    }?: {
-      image: string;
-      title: string;
-      uuid: string;
-    }): ImagePopout;
+    protected static _handleShareImage(config: ImagePopout.ShareImageConfig): ImagePopout;
 
     /**
      * @remarks Not implemented for ImagePopout
@@ -150,6 +155,23 @@ declare global {
        * @defaultValue `null`
        */
       uuid: string | null;
+    }
+
+    interface ShareImageConfig {
+      /** The image URL to share. */
+      image: string;
+
+      /** The image title. */
+      title: string;
+
+      /** The UUID of a Document related to the image, used to determine permission to see the image title. */
+      uuid?: string;
+
+      /** If this is provided, the permissions of the related Document will be ignored and the title will be shown based on this parameter. */
+      showTitle?: boolean;
+
+      /** A list of user IDs to show the image to. */
+      users?: string[];
     }
   }
 }

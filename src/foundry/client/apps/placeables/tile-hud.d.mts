@@ -1,4 +1,3 @@
-import type { ConfiguredObjectClassForName } from "../../../../types/helperTypes.d.mts";
 import type { MaybePromise } from "../../../../types/utils.d.mts";
 
 declare global {
@@ -7,7 +6,7 @@ declare global {
    * @typeParam Options - the type of the options object
    */
   class TileHUD<Options extends ApplicationOptions = ApplicationOptions> extends BasePlaceableHUD<
-    ConcreteTile,
+    Tile.ConfiguredInstance,
     Options
   > {
     /**
@@ -21,10 +20,14 @@ declare global {
      */
     static override get defaultOptions(): ApplicationOptions;
 
-    override getData(options?: Partial<Options>): MaybePromise<object>;
+    override getData(options?: Partial<Options>): MaybePromise<object>; // TODO: Implement GetDataReturnType
 
     override setPosition(options?: Partial<Application.Position>): void;
+
+    protected override _onClickControl(event: JQuery.ClickEvent): void | this;
+
+    protected _onToggleOverhead(event: PointerEvent, overhead: boolean): Promise<ReturnType<this["render"]>>;
+
+    protected _onControlVideo(event: PointerEvent): this;
   }
 }
-
-type ConcreteTile = InstanceType<ConfiguredObjectClassForName<"Tile">>;
