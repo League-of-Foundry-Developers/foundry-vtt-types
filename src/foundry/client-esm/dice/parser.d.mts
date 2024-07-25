@@ -201,3 +201,5 @@ declare class RollParser {
    */
   static formatDebug(method: string, ...args: RollParseArg[]): string;
 }
+
+export default RollParser;
