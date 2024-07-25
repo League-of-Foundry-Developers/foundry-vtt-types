@@ -1,7 +1,12 @@
-export type { default as DataModel } from "./data.d.mts";
-export type { default as TypeDataModel } from "./type-data.d.mts";
-export type { default as Document } from "./document.d.mts";
-export type { default as DatabaseBackend } from "./backend.d.mts";
-export type { default as EmbeddedCollection } from "./embedded-collection.d.mts";
-export type { default as EmbeddedCollectionDelta } from "./embedded-collection-delta.d.mts";
-export type { default as SingletonEmbeddedCollection } from "./singleton-collection.d.mts";
+// In Foundry itself this file contains re-exports of these other modules.
+// Therefore it has a runtime effect and uses `.mjs` instead of `.d.mts`.
+// While `.mts` could work, to avoid `import/no-unresolved` from erroring `.mjs` is used.
+/* eslint-disable import/extensions */
+
+export { default as DataModel } from "./data.mjs";
+export { default as TypeDataModel } from "./type-data.mjs";
+export { default as Document } from "./document.mjs";
+export { default as DatabaseBackend } from "./backend.mjs";
+export { default as EmbeddedCollection } from "./embedded-collection.mjs";
+export { default as EmbeddedCollectionDelta } from "./embedded-collection-delta.mjs";
+export { default as SingletonEmbeddedCollection } from "./singleton-collection.mjs";

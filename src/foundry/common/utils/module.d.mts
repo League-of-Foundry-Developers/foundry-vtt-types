@@ -1,9 +1,14 @@
-export type * from "./geometry.d.mts";
-export type * from "./helpers.d.mts";
-export type * from "./http.d.mts";
-export type * from "./logging.d.mts";
-export type { default as Collection } from "./collection.d.mts";
-export type { default as IterableWeakSet } from "./iterable-weak-set.d.mts";
-export type { default as IterableWeakMap } from "./iterable-weak-map.d.mts";
-export type { default as Color } from "./color.d.mts";
-export type { default as Semaphore } from "./semaphore.d.mts";
+// In Foundry itself this file contains re-exports of these other modules.
+// Therefore it has a runtime effect and uses `.mjs` instead of `.d.mts`.
+// While `.mts` could work, to avoid `import/no-unresolved` from erroring `.mjs` is used.
+/* eslint-disable import/extensions */
+
+export * from "./geometry.mjs";
+export * from "./helpers.mjs";
+export * from "./http.mjs";
+export * from "./logging.mjs";
+export { default as Collection } from "./collection.mjs";
+export { default as IterableWeakSet } from "./iterable-weak-set.mjs";
+export { default as IterableWeakMap } from "./iterable-weak-map.mjs";
+export { default as Color } from "./color.mjs";
+export { default as Semaphore } from "./semaphore.mjs";
