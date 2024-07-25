@@ -4,4 +4,8 @@ import type HandlebarsApplicationMixin from "../api/handlebars-application.mts";
 /**
  * The AmbientSound configuration application.
  */
-export default class AmbientSoundConfig extends HandlebarsApplicationMixin(DocumentSheetV2) {}
+export default class AmbientSoundConfig<
+  Document extends foundry.abstract.Document<any, any, any>,
+  Configuration extends DocumentSheetV2.Configuration<Document> = DocumentSheetV2.Configuration<Document>,
+  RenderOptions extends DocumentSheetV2.RenderOptions = DocumentSheetV2.RenderOptions,
+> extends HandlebarsApplicationMixin(DocumentSheetV2)<Document, Configuration, RenderOptions> {}

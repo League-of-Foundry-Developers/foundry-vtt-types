@@ -1,5 +1,4 @@
 import type { DeepPartial } from "../../../../types/utils.d.mts";
-import type { ApplicationConfiguration, ApplicationRenderContext } from "../_types.mjs";
 import type ApplicationV2 from "./application.d.mts";
 
 /**
@@ -62,16 +61,16 @@ import type ApplicationV2 from "./application.d.mts";
  * }).render({ force: true });
  * ```
  */
-declare class DialogV2 extends ApplicationV2<DialogV2.DialogV2Configuration> {
-  static override DEFAULT_OPTIONS: DeepPartial<ApplicationConfiguration>;
+declare class DialogV2 extends ApplicationV2<DialogV2.Configuration> {
+  static override DEFAULT_OPTIONS: DeepPartial<ApplicationV2.Configuration>;
 
   protected override _initializeApplicationOptions(
-    options: Partial<DialogV2.DialogV2Configuration>,
-  ): Partial<DialogV2.DialogV2Configuration>;
+    options: Partial<DialogV2.Configuration>,
+  ): Partial<DialogV2.Configuration>;
 
   protected override _renderHTML(
-    _context: ApplicationRenderContext,
-    _options: DialogV2.DialogV2Configuration,
+    _context: ApplicationV2.RenderContext,
+    _options: DialogV2.Configuration,
   ): Promise<HTMLFormElement>;
 
   /**
@@ -87,14 +86,14 @@ declare class DialogV2 extends ApplicationV2<DialogV2.DialogV2Configuration> {
   protected _onSubmit(target: HTMLButtonElement, event: PointerEvent | SubmitEvent): Promise<DialogV2>;
 
   protected override _onFirstRender(
-    _context: ApplicationRenderContext,
-    _options: Partial<DialogV2.DialogV2Configuration>,
+    _context: ApplicationV2.RenderContext,
+    _options: Partial<DialogV2.Configuration>,
   ): void;
 
   protected override _replaceHTML(
     result: HTMLFormElement,
     content: HTMLElement,
-    _options: Partial<DialogV2.DialogV2Configuration>,
+    _options: Partial<DialogV2.Configuration>,
   ): void;
 
   /**
@@ -117,12 +116,12 @@ declare class DialogV2 extends ApplicationV2<DialogV2.DialogV2Configuration> {
    *          callback. If the dialog was dismissed, and rejectClose is false, the
    *          Promise resolves to null.
    */
-  static confirm<Options extends Partial<DialogV2.DialogV2WaitOptions>, YesReturn = true, NoReturn = false>(
+  static confirm<Options extends Partial<DialogV2.WaitOptions>, YesReturn = true, NoReturn = false>(
     options?: Options & {
       /** Options to overwrite the default yes button configuration. */
-      yes?: DialogV2.DialogV2Button<YesReturn>;
+      yes?: DialogV2.Button<YesReturn>;
       /** Options to overwrite the default no button configuration. */
-      no?: DialogV2.DialogV2Button<NoReturn>;
+      no?: DialogV2.Button<NoReturn>;
     },
   ): Promise<YesReturn | NoReturn | InferButtonReturnTypes<Options> | InferDismissType<Options>>;
 
@@ -132,10 +131,10 @@ declare class DialogV2 extends ApplicationV2<DialogV2.DialogV2Configuration> {
    *             or the value returned by that button's callback. If the dialog was
    *             dismissed, and rejectClose is false, the Promise resolves to null.
    */
-  static prompt<Options extends Partial<DialogV2.DialogV2WaitOptions>, OKReturn = string>(
+  static prompt<Options extends Partial<DialogV2.WaitOptions>, OKReturn = string>(
     options?: Options & {
       /** Options to overwrite the default confirmation button configuration. */
-      ok?: Partial<DialogV2.DialogV2Button<OKReturn>>;
+      ok?: Partial<DialogV2.Button<OKReturn>>;
     },
   ): Promise<OKReturn | InferButtonReturnTypes<Options> | InferDismissType<Options>>;
 
@@ -147,12 +146,12 @@ declare class DialogV2 extends ApplicationV2<DialogV2.DialogV2Configuration> {
    *          resolves to null.
    * @remarks Despite being the `wait` function this doesn't actually use that interface
    */
-  static wait<Options extends Partial<DialogV2.DialogV2Configuration>>(
+  static wait<Options extends Partial<DialogV2.Configuration>>(
     options?: Options & {
       /** A function to invoke whenever the dialog is rendered. */
-      render?: DialogV2.DialogV2RenderCallback;
+      render?: DialogV2.RenderCallback;
       /** A function to invoke when the dialog is closed under any circumstances. */
-      close?: DialogV2.DialogV2CloseCallback;
+      close?: DialogV2.CloseCallback;
       /**
        * Throw a Promise rejection if the dialog is dismissed.
        * @defaultValue `true`
@@ -163,44 +162,49 @@ declare class DialogV2 extends ApplicationV2<DialogV2.DialogV2Configuration> {
 }
 
 declare namespace DialogV2 {
-  type DialogV2Button<CallBackReturn> = {
+  export interface Button<CallBackReturn> {
     /**
      * The button action identifier.
      */
     action: string;
+
     /**
      * The button label. Will be localized.
      */
     label: string;
+
     /**
      * FontAwesome icon classes.
      */
     icon?: string;
+
     /**
      * CSS classes to apply to the button.
      */
     class?: string;
+
     /**
      * Whether this button represents the default action to take if the user
      * submits the form without pressing a button, i.e. with an Enter
      * keypress.
      */
     default?: boolean;
+
     /**
      * A function to invoke when the button is clicked. The value returned
      * from this function will be used as the dialog's submitted value.
      * Otherwise, the button's identifier is used.
      */
-    callback?: DialogV2ButtonCallback<CallBackReturn>;
-  };
+    callback?: ButtonCallback<CallBackReturn>;
+  }
 
-  type DialogV2ButtonCallback<T> = (
+  export type ButtonCallback<T> = (
     event: PointerEvent | SubmitEvent,
     button: HTMLButtonElement,
     dialog: HTMLDialogElement,
   ) => Promise<T>;
 
-  interface DialogV2Configuration extends ApplicationConfiguration {
+  export interface Configuration extends ApplicationV2.Configuration {
     /**
      * Modal dialogs prevent interaction with the rest of the UI until they
      * are dismissed or submitted.
@@ -210,7 +214,7 @@ declare namespace DialogV2 {
     /**
      * Button configuration.
      */
-    buttons: DialogV2Button<any>[];
+    buttons: Button<any>[];
 
     /**
      * The dialog content.
@@ -221,25 +225,29 @@ declare namespace DialogV2 {
      * A function to invoke when the dialog is submitted. This will not be
      * called if the dialog is dismissed.
      */
-    submit?: DialogV2SubmitCallback;
+    submit?: SubmitCallback;
   }
 
-  type DialogV2RenderCallback = (event: Event, dialog: HTMLDialogElement) => any;
+  // TODO(LukeAbby): I moved these types over from `_types.d.mts` mostly as-is. However this usage of `any` is suspicious and needs auditing.
 
-  type DialogV2CloseCallback = (event: Event, dialog: DialogV2) => any;
+  export type RenderCallback = (event: Event, dialog: HTMLDialogElement) => any;
 
-  type DialogV2SubmitCallback = (result: any) => Promise<void>;
+  export type CloseCallback = (event: Event, dialog: DialogV2) => any;
 
-  interface DialogV2WaitOptions extends DialogV2Configuration {
+  export type SubmitCallback = (result: any) => Promise<void>;
+
+  export interface WaitOptions extends Configuration {
     /**
      * A synchronous function to invoke whenever the dialog is rendered.
      */
-    render?: DialogV2RenderCallback;
+    render?: RenderCallback;
+
     /**
      * A synchronous function to invoke when the dialog is closed under any
      * circumstances.
      */
-    close?: DialogV2CloseCallback;
+    close?: CloseCallback;
+
     /**
      * Throw a Promise rejection if the dialog is dismissed.
      * @defaultValue `true`
@@ -248,15 +256,15 @@ declare namespace DialogV2 {
   }
 }
 
-type InferDismissType<Options extends Partial<DialogV2.DialogV2WaitOptions>> = Options["rejectClose"] extends boolean
+type InferDismissType<Options extends Partial<DialogV2.WaitOptions>> = Options["rejectClose"] extends boolean
   ? Options["rejectClose"] extends true
     ? never
     : null
   : never;
 
-type InferButtonReturnTypes<Options extends Partial<DialogV2.DialogV2WaitOptions>> =
+type InferButtonReturnTypes<Options extends Partial<DialogV2.WaitOptions>> =
   Options["buttons"] extends Array<infer Button>
-    ? Button extends DialogV2.DialogV2Button<infer Callback>
+    ? Button extends DialogV2.Button<infer Callback>
       ? Button["callback"] extends Function
         ? Callback
         : string
