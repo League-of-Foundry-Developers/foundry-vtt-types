@@ -331,7 +331,7 @@ declare global {
        * The Dice types which are supported.
        * @defaultValue `[Die, FateDie]`
        */
-      types: Array<ConstructorOf<DiceTerm>>;
+      types: Array<ConstructorOf<foundry.dice.terms.DiceTerm>>;
 
       rollModes: CONFIG.Dice.RollModes;
 
@@ -339,7 +339,7 @@ declare global {
        * Configured Roll class definitions
        * @defaultValue `[Roll]`
        */
-      rolls: Array<ConstructorOf<Roll>>;
+      rolls: Array<ConstructorOf<foundry.dice.Roll>>;
 
       /**
        * Configured DiceTerm class definitions
@@ -356,23 +356,27 @@ declare global {
        * }
        * ```
        */
-      termTypes: Record<string, ConstructorOf<RollTerm>>;
+      termTypes: Record<string, ConstructorOf<foundry.dice.terms.RollTerm>>;
 
-      /**
-       * Configured roll terms and the classes they map to.
-       */
+      /** Configured roll terms and the classes they map to. */
       terms: {
-        c: typeof Coin;
-        d: typeof Die;
-        f: typeof FateDie;
-      } & Record<string, ConstructorOf<DiceTerm>>;
+        c: typeof foundry.dice.terms.Coin;
+        d: typeof foundry.dice.terms.Die;
+        f: typeof foundry.dice.terms.FateDie;
+      } & Record<string, ConstructorOf<foundry.dice.terms.DiceTerm>>;
 
       /**
        * A function used to provide random uniform values.
        * @defaultValue `MersenneTwister.random`
        */
       randomUniform: () => number;
-    } & Record<string, ConstructorOf<Roll>>; // Common pattern
+
+      /** A parser implementation for parsing Roll expressions. */
+      parser: typeof foundry.dice.RollParser;
+
+      /** A collection of custom functions that can be included in roll expressions.*/
+      functions: Record<string, RollFunction>;
+    } & Record<string, ConstructorOf<foundry.dice.Roll>>; // Common pattern
 
     /**
      * Configuration for the FogExploration document
@@ -2851,3 +2855,5 @@ interface CanvasGroupConstructor extends PixiContainerConstructor {
 
 type ToSpriteConstructor<Class extends new (sprite?: SpriteMesh) => any> = Pick<Class, keyof Class> &
   (new (sprite: SpriteMesh) => InstanceType<Class>);
+
+export type RollFunction = (...args: any[]) => Promise<number> | number;
