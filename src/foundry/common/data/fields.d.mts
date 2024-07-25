@@ -333,7 +333,7 @@ declare abstract class DataField<
 
 declare namespace DataField {
   /** The type of the default options for the {@link DataField} class. */
-  type DefaultOptions = {
+  interface DefaultOptions {
     required: false;
     nullable: false;
     initial: undefined;
@@ -341,7 +341,7 @@ declare namespace DataField {
     label: "";
     hint: "";
     validationError: "is not a valid value";
-  };
+  }
 
   /**
    * A helper type for the given options type merged into the default options of the DataField class.

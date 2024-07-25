@@ -27,12 +27,12 @@ declare global {
   namespace DefaultSheetsConfig {
     interface Options extends PackageConfiguration.Options {}
 
-    type CategorySubType = {
+    interface CategorySubType {
       type: string;
       name: string;
       defaultClasses: Record<string, string>;
       defaultClass: string;
-    };
+    }
 
     interface Category extends PackageConfiguration.Category {
       count: number;

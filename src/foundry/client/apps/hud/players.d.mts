@@ -61,7 +61,7 @@ declare global {
   }
 
   namespace PlayerList {
-    type UserData = {
+    interface UserData {
       active: User["active"];
       isGM: User["isGM"];
       isSelf: User["isSelf"];
@@ -69,7 +69,7 @@ declare global {
       color: string;
       border: string;
       displayName: string;
-    };
+    }
 
     interface Data {
       users: UserData[];

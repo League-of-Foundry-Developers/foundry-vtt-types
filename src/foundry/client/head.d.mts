@@ -6,13 +6,13 @@ type _UninitializedGame = { [K in keyof Game]?: never };
 interface UninitializedGame extends _UninitializedGame {}
 
 // These type aliases are used for intellisense reasons so that the type displays `UninitializedGame | InitGame | ...` instead of a too complex looking type.
-type Games = {
+interface Games {
   none: UninitializedGame;
   init: InitGame;
   i18nInit: I18nInitGame;
   setup: SetupGame;
   ready: ReadyGame;
-};
+}
 
 // Needs to include the current hook as well as all hooks that can run after it.
 type GameHooks = Exclude<InitializationEvent, EarlierEvents[keyof AssumeHookRan]>;

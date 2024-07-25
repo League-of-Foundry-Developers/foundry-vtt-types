@@ -112,14 +112,16 @@ declare class ClientPackage {
 
 declare global {
   namespace ClientPackage {
-    type PackageCompatibilityBadge = {
+    interface PackageCompatibilityBadge {
       type: "safe" | "unsafe" | "warning" | "neutral" | "error";
       tooltip: string;
       label?: string;
       icon?: string;
-    };
+    }
 
-    type ModuleConstructorData = { active: boolean };
+    interface ModuleConstructorData {
+      active: boolean;
+    }
   }
 
   /**

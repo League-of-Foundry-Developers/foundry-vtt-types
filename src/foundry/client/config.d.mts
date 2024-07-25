@@ -2731,11 +2731,11 @@ declare global {
     }
 
     interface SpecialStatusEffects {}
-    type DefaultSpecialStatusEffects = {
+    interface DefaultSpecialStatusEffects {
       DEFEATED: string;
       INVISIBLE: string;
       BLIND: string;
-    };
+    }
 
     namespace Cards {
       interface Preset {

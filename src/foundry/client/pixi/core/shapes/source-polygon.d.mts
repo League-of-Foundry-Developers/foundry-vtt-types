@@ -242,11 +242,11 @@ declare global {
   namespace PointSourcePolygon {
     type CollisionModes = "any" | "all" | "closest";
 
-    type CollisionTypes = {
+    interface CollisionTypes {
       any: boolean;
       closest: PolygonVertex;
       all: PolygonVertex[] | null;
-    };
+    }
 
     type TestCollision<Mode extends CollisionModes> = CollisionTypes[Mode];
   }

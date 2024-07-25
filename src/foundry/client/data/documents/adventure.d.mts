@@ -48,16 +48,16 @@ declare global {
     importContent(data?: InexactPartial<AdventureImportData>): Promise<AdventureImportResult>;
   }
 
-  type AdventureImportData = {
+  interface AdventureImportData {
     toCreate?: DocumentDataRecord;
     toUpdate?: DocumentDataRecord;
     documentCount: number;
-  };
+  }
 
-  type AdventureImportResult = {
+  interface AdventureImportResult {
     created: DocumentResult;
     updated: DocumentResult;
-  };
+  }
 }
 
 type DocumentDataRecord = {

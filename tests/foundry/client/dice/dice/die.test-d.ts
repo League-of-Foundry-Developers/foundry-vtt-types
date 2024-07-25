@@ -1,4 +1,4 @@
-declare module Die {
+declare namespace Die {
   interface Modifiers {
     testModifier1: (this: DiceTerm) => void;
     testModifier2: (this: DiceTerm) => DiceTerm;

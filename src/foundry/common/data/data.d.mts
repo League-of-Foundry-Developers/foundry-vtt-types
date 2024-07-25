@@ -11,7 +11,7 @@ declare global {
 }
 
 declare namespace LightData {
-  type LightAnimationDataSchema = {
+  interface LightAnimationDataSchema {
     /**
      * The animation type which is applied
      */
@@ -47,12 +47,12 @@ declare namespace LightData {
      * Reverse the direction of animation.
      */
     reverse: fields.BooleanField<{ label: "LIGHT.AnimationReverse" }>;
-  };
+  }
 
-  type DarknessSchema = {
+  interface DarknessSchema {
     min: fields.NumberField<{ initial: 0 }>;
     max: fields.NumberField<{ initial: 1 }>;
-  };
+  }
 
   interface Schema extends DataSchema {
     /**
@@ -205,12 +205,12 @@ declare namespace ShapeData {
     points: fields.ArrayField<fields.NumberField<{ nullable: false }>>;
   }
 
-  type TYPES = {
+  interface TYPES {
     RECTANGLE: "r";
     CIRCLE: "c";
     ELLIPSE: "e";
     POLYGON: "p";
-  };
+  }
 }
 
 declare class ShapeData extends DataModel<ShapeData.Schema> {
@@ -220,14 +220,14 @@ declare class ShapeData extends DataModel<ShapeData.Schema> {
 }
 
 declare namespace TextureData {
-  type DefaultOptions = {
+  interface DefaultOptions {
     categories: ["IMAGE", "VIDEO"];
     // initial: null;
     wildcard: false;
     label: "";
-  };
+  }
 
-  type Schema<SrcOptions extends FilePathFieldOptions> = {
+  interface Schema<SrcOptions extends FilePathFieldOptions> {
     /**
      * The URL of the texture source.
      */
@@ -262,7 +262,7 @@ declare namespace TextureData {
      * An optional color string used to tint the texture.
      */
     tint: fields.ColorField;
-  };
+  }
 }
 
 declare class TextureData<

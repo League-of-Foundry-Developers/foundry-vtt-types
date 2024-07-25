@@ -1,4 +1,4 @@
-declare module Coin {
+declare namespace Coin {
   interface Modifiers {
     testModifier1: (this: DiceTerm) => void;
     testModifier2: (this: DiceTerm) => DiceTerm;

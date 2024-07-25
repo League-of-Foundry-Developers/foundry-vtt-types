@@ -150,11 +150,11 @@ export type Mixin<
   BaseClass extends abstract new (...args: any[]) => any,
 > = MixinClass & BaseClass;
 
-type GetDataConfigOptions<T> = {
+interface GetDataConfigOptions<T> {
   partial: Partial<T> & Record<string, unknown>;
   exact: T;
   object: object;
-};
+}
 
 type GetDataConfigOption = GetDataConfig extends {
   mode: keyof GetDataConfigOptions<unknown> & infer Mode;

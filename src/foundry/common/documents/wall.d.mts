@@ -71,13 +71,13 @@ declare namespace BaseWall {
     attenuation: fields.BooleanField;
   }
 
-  type CoordinateOptions = {
+  interface CoordinateOptions {
     required: true;
     integer: true;
     nullable: false;
     validate: (c: [x0: number, y0: number, x1: number, y1: number]) => boolean;
     validationError: "must be a length-4 array of integer coordinates";
-  };
+  }
 
   interface Schema extends DataSchema {
     /**

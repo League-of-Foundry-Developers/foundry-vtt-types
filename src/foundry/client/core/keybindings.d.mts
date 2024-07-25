@@ -295,18 +295,18 @@ declare global {
   }
 
   namespace ClientKeybindings {
-    type MovementDirections = {
+    interface MovementDirections {
       UP: "up";
       LEFT: "left";
       DOWN: "down";
       RIGHT: "right";
-    };
+    }
     type MovementDirection = ValueOf<MovementDirections>;
 
-    type ZoomDirections = {
+    interface ZoomDirections {
       IN: "in";
       OUT: "out";
-    };
+    }
     type ZoomDirection = ValueOf<ZoomDirections>;
   }
 }

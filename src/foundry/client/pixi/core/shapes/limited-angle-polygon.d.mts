@@ -85,7 +85,7 @@ declare global {
   }
 
   namespace LimitedAnglePolygon {
-    type ConstructorOptions = {
+    interface ConstructorOptions {
       /**
        * The radius of the emitted cone.
        */
@@ -114,6 +114,6 @@ declare global {
        * @defaultValue `0`
        */
       externalRadius?: number;
-    };
+    }
   }
 }

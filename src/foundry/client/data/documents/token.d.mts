@@ -272,12 +272,12 @@ declare global {
 
   // The getBarAttribute monkeypatch is simply inside the data model definition at `src\foundry\common\data\data.d.mts`
 
-  type TrackedAttributesDescription = {
+  interface TrackedAttributesDescription {
     /** A list of property path arrays to attributes with both a value and a max property. */
     bar: string[][];
     /** A list of property path arrays to attributes that have only a value property. */
     value: string[][];
-  };
+  }
 }
 
 interface SingleAttributeBar {

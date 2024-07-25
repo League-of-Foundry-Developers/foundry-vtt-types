@@ -9,13 +9,13 @@ import type { CONST } from "../module.d.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
 declare namespace BasePackage {
-  type optionalString = {
+  interface optionalString {
     required: false;
     blank: false;
     initial: undefined;
-  };
+  }
 
-  type PackageAuthorSchema = {
+  interface PackageAuthorSchema {
     /**
      * The author name
      */
@@ -37,9 +37,9 @@ declare namespace BasePackage {
     discord: fields.StringField<optionalString>;
 
     flags: fields.ObjectField;
-  };
+  }
 
-  type PackageMediaSchema = {
+  interface PackageMediaSchema {
     type: fields.StringField<optionalString>;
 
     url: fields.StringField<optionalString>;
@@ -51,14 +51,14 @@ declare namespace BasePackage {
     thumbnail: fields.StringField<optionalString>;
 
     flags: fields.ObjectField;
-  };
+  }
 
   type OwnershipRecord = Record<
     keyof typeof foundry.CONST.USER_ROLES,
     keyof typeof foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | undefined
   >;
 
-  type PackageCompendiumSchema = {
+  interface PackageCompendiumSchema {
     /**
      * The canonical compendium name. This should contain no spaces or special characters
      */
@@ -99,9 +99,9 @@ declare namespace BasePackage {
     ownership: CompendiumOwnershipField;
 
     flags: fields.ObjectField;
-  };
+  }
 
-  type PackageLanguageSchema = {
+  interface PackageLanguageSchema {
     /**
      * A string language code which is validated by Intl.getCanonicalLocales
      */
@@ -134,9 +134,9 @@ declare namespace BasePackage {
     module: fields.StringField<optionalString>;
 
     flags: fields.ObjectField;
-  };
+  }
 
-  type PackageCompatibilitySchema = {
+  interface PackageCompatibilitySchema {
     /**
      * The Package will not function before this version
      */
@@ -151,9 +151,9 @@ declare namespace BasePackage {
      * The Package will not function after this version
      */
     maximum: fields.StringField<{ required: false; blank: false; initial: undefined }>;
-  };
+  }
 
-  type PackageRelationshipsSchema = {
+  interface PackageRelationshipsSchema {
     /**
      * Systems that this Package supports
      */
@@ -172,9 +172,9 @@ declare namespace BasePackage {
     conflicts: fields.SetField<RelatedPackage>;
 
     flags: fields.ObjectField;
-  };
+  }
 
-  type RelatedPackageSchema<PackageType extends CONST.PACKAGE_TYPES = CONST.PACKAGE_TYPES> = {
+  interface RelatedPackageSchema<PackageType extends CONST.PACKAGE_TYPES = CONST.PACKAGE_TYPES> {
     /**
      * The id of the related package
      */
@@ -199,9 +199,9 @@ declare namespace BasePackage {
      * The reason for this relationship
      */
     reason: fields.StringField<{ required: false; blank: false; initial: undefined }>;
-  };
+  }
 
-  type PackageCompendiumFolderSchemaHelper = {
+  interface PackageCompendiumFolderSchemaHelper {
     name: fields.StringField<{ required: true; blank: false }>;
     sorting: fields.StringField<{
       required: false;
@@ -211,7 +211,7 @@ declare namespace BasePackage {
     }>;
     color: fields.ColorField;
     packs: fields.SetField<fields.StringField<{ required: true; blank: false }>>;
-  };
+  }
 
   // Foundry starts Depth at 1 and increments from there
   type FolderRecursion = [never, 2, 3];
@@ -346,14 +346,14 @@ declare namespace BasePackage {
     persistentStorage: fields.BooleanField;
   }
 
-  type PackageManifestData = {
+  interface PackageManifestData {
     availability: CONST.PACKAGE_AVAILABILITY_CODES;
     locked: boolean;
     exclusive: boolean;
     owned: boolean;
     tags: string[];
     hasStorage: boolean;
-  };
+  }
 }
 
 /**

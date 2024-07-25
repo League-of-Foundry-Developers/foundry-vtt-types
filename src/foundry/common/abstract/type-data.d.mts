@@ -39,19 +39,19 @@ declare namespace TypeDataModel {
   // This still is only allows classes descended from `TypeDataField` because these unique symbols aren't used elsewhere.
   // These generic parameters seem to be required. This is likely because of a TypeScript soundness holes in which concrete types like `any` or `unknown`
   // will get treated bivariantly whereas type parameters get treated more safely.
-  type TypeDataModelInternal<
+  interface TypeDataModelInternal<
     Schema extends DataSchema,
     Parent extends Document.Any,
     BaseModel,
     BaseData,
     DerivedData,
-  > = {
+  > {
     [__Schema]: Schema;
     [__Parent]: Parent;
     [__BaseModel]: BaseModel;
     [__BaseData]: BaseData;
     [__DerivedData]: DerivedData;
-  };
+  }
 
   // Removes the base and derived data from the type.
   // Has no extends bounds to simplify any checking logic.
