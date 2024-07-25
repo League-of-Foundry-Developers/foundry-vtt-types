@@ -11,7 +11,7 @@ declare global {
 }
 
 declare namespace LightData {
-  interface LightAnimationDataSchema {
+  export interface LightAnimationDataSchema extends DataSchema {
     /**
      * The animation type which is applied
      */
@@ -49,12 +49,12 @@ declare namespace LightData {
     reverse: fields.BooleanField<{ label: "LIGHT.AnimationReverse" }>;
   }
 
-  interface DarknessSchema {
+  export interface DarknessSchema extends DataSchema {
     min: fields.NumberField<{ initial: 0 }>;
     max: fields.NumberField<{ initial: 1 }>;
   }
 
-  interface Schema extends DataSchema {
+  export interface Schema extends DataSchema {
     /**
      * An opacity for the emitted light, if any
      */
@@ -175,7 +175,7 @@ declare class LightData extends DataModel<LightData.Schema> {
 }
 
 declare namespace ShapeData {
-  interface Schema extends DataSchema {
+  export interface Schema extends DataSchema {
     /**
      * The type of shape, a value in ShapeData.TYPES.
      * For rectangles, the x/y coordinates are the top-left corner.
@@ -227,7 +227,7 @@ declare namespace TextureData {
     label: "";
   }
 
-  interface Schema<SrcOptions extends FilePathFieldOptions> {
+  export interface Schema<SrcOptions extends FilePathFieldOptions> extends DataSchema {
     /**
      * The URL of the texture source.
      */
@@ -285,7 +285,7 @@ declare namespace PrototypeToken {
     | "overlayEffect"
     | "hidden";
 
-  interface Schema extends foundry.documents.BaseToken.SharedProtoSchema {
+  export interface Schema extends foundry.documents.BaseToken.SharedProtoSchema {
     // Name is technically redefined but with the same options so it's ignored here
     // name: fields.StringField<{ required: true; blank: true }>;
 
@@ -369,7 +369,7 @@ declare class PrototypeToken extends DataModel<PrototypeToken.Schema, documents.
 }
 
 declare namespace TombstoneData {
-  interface Schema extends DataSchema {
+  export interface Schema extends DataSchema {
     /**
      * The _id of the base Document that this tombstone represents.
      */

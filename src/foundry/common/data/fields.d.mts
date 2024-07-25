@@ -3082,7 +3082,7 @@ declare namespace DocumentStatsField {
   type Properties = SchemaField.InnerInitializedType<Schema>;
   type Source = SchemaField.InnerPersistedType<Schema>;
 
-  interface Schema extends DataSchema {
+  export interface Schema extends DataSchema {
     /**
      * The package name of the system the Document was created in.
      * @defaultValue `null`

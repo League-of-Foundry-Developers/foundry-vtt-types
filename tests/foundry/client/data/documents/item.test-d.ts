@@ -1,13 +1,13 @@
 import { expectTypeOf } from "vitest";
 
 declare namespace ArmorData {
-  interface Schema extends DataSchema {
+  export interface Schema extends DataSchema {
     defense: foundry.data.fields.NumberField;
   }
 }
 
 declare namespace WeaponData {
-  interface Schema extends DataSchema {
+  export interface Schema extends DataSchema {
     attack: foundry.data.fields.NumberField;
   }
 }

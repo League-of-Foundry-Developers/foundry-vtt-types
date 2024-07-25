@@ -15,7 +15,7 @@ declare namespace BasePackage {
     initial: undefined;
   }
 
-  interface PackageAuthorSchema {
+  export interface PackageAuthorSchema extends DataSchema {
     /**
      * The author name
      */
@@ -39,7 +39,7 @@ declare namespace BasePackage {
     flags: fields.ObjectField;
   }
 
-  interface PackageMediaSchema {
+  export interface PackageMediaSchema extends DataSchema {
     type: fields.StringField<optionalString>;
 
     url: fields.StringField<optionalString>;
@@ -58,7 +58,7 @@ declare namespace BasePackage {
     keyof typeof foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | undefined
   >;
 
-  interface PackageCompendiumSchema {
+  export interface PackageCompendiumSchema extends DataSchema {
     /**
      * The canonical compendium name. This should contain no spaces or special characters
      */
@@ -101,7 +101,7 @@ declare namespace BasePackage {
     flags: fields.ObjectField;
   }
 
-  interface PackageLanguageSchema {
+  export interface PackageLanguageSchema extends DataSchema {
     /**
      * A string language code which is validated by Intl.getCanonicalLocales
      */
@@ -136,7 +136,7 @@ declare namespace BasePackage {
     flags: fields.ObjectField;
   }
 
-  interface PackageCompatibilitySchema {
+  export interface PackageCompatibilitySchema extends DataSchema {
     /**
      * The Package will not function before this version
      */
@@ -153,7 +153,7 @@ declare namespace BasePackage {
     maximum: fields.StringField<{ required: false; blank: false; initial: undefined }>;
   }
 
-  interface PackageRelationshipsSchema {
+  export interface PackageRelationshipsSchema extends DataSchema {
     /**
      * Systems that this Package supports
      */
@@ -174,7 +174,8 @@ declare namespace BasePackage {
     flags: fields.ObjectField;
   }
 
-  interface RelatedPackageSchema<PackageType extends CONST.PACKAGE_TYPES = CONST.PACKAGE_TYPES> {
+  export interface RelatedPackageSchema<PackageType extends CONST.PACKAGE_TYPES = CONST.PACKAGE_TYPES>
+    extends DataSchema {
     /**
      * The id of the related package
      */
@@ -224,7 +225,7 @@ declare namespace BasePackage {
       }
     : PackageCompendiumFolderSchemaHelper;
 
-  interface Schema extends DataSchema {
+  export interface Schema extends DataSchema {
     /**
      * The machine-readable unique package id, should be lower-case with no spaces or special characters
      */

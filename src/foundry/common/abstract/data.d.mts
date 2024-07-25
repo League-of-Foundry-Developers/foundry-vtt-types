@@ -3,7 +3,7 @@ import type { fields } from "../data/module.mts";
 import type { DataModelValidationFailure } from "../data/validation-failure.d.mts";
 
 declare global {
-  type DataSchema = Record<string, DataField.Unknown>;
+  type DataSchema = Record<string, DataField.Any>;
 
   interface DataValidationOptions {
     /**

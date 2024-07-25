@@ -48,7 +48,7 @@ declare namespace BaseAmbientLight {
   type Properties = fields.SchemaField.InnerInitializedType<Schema>;
   type Source = fields.SchemaField.InnerPersistedType<Schema>;
 
-  interface Schema extends DataSchema {
+  export interface Schema extends DataSchema {
     /**
      * The _id which uniquely identifies this BaseAmbientLight embedded document
      * @defaultValue `null`

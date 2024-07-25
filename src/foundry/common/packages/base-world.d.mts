@@ -62,7 +62,7 @@ type BaseWorldSchema = Merge<
 >;
 
 declare namespace BaseWorld {
-  interface Schema extends BaseWorldSchema {}
+  export interface Schema extends BaseWorldSchema {}
 }
 
 /**

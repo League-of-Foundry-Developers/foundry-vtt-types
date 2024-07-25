@@ -153,7 +153,7 @@ declare global {
     >;
     type LightingMultipliers = Record<ValueOf<typeof VisionMode.LIGHTING_LEVELS>, number>;
 
-    interface Schema extends DataSchema {
+    export interface Schema extends DataSchema {
       id: fields.StringField<{ blank: false }>;
       label: fields.StringField<{ blank: false }>;
       tokenConfig: fields.BooleanField<{ initial: true }>;

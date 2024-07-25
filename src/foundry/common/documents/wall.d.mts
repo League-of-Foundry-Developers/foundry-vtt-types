@@ -49,7 +49,7 @@ declare namespace BaseWall {
   type Properties = fields.SchemaField.InnerInitializedType<Schema>;
   type Source = fields.SchemaField.InnerPersistedType<Schema>;
 
-  interface ThresholdSchema extends DataSchema {
+  export interface ThresholdSchema extends DataSchema {
     /**
      * Minimum distance from a light source for which this wall blocks light
      */
@@ -79,7 +79,7 @@ declare namespace BaseWall {
     validationError: "must be a length-4 array of integer coordinates";
   }
 
-  interface Schema extends DataSchema {
+  export interface Schema extends DataSchema {
     /**
      * The _id which uniquely identifies this BaseWall embedded document
      * @defaultValue `null`

@@ -126,7 +126,7 @@ declare namespace BaseToken {
   type Source = fields.SchemaField.InnerPersistedType<Schema>;
 
   // Needed because Omit wasn't working with schemas
-  interface SharedProtoSchema extends DataSchema {
+  export interface SharedProtoSchema extends DataSchema {
     /**
      * The name used to describe the Token
      * @defaultValue `""`
@@ -393,7 +393,7 @@ declare namespace BaseToken {
     flags: fields.ObjectField.FlagsField<"Token">;
   }
 
-  interface Schema extends SharedProtoSchema {
+  export interface Schema extends SharedProtoSchema {
     /**
      * The Token _id which uniquely identifies it within its parent Scene
      * @defaultValue `null`

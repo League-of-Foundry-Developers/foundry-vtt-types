@@ -3,7 +3,7 @@ import type * as fields from "./data/fields.d.mts";
 import type { SOFTWARE_UPDATE_CHANNELS } from "./constants.d.mts";
 
 declare namespace ApplicationConfiguration {
-  interface Schema extends DataSchema {
+  export interface Schema extends DataSchema {
     /**
      * The server administrator password (obscured)
      */
@@ -202,7 +202,7 @@ declare class ApplicationConfiguration extends DataModel<ApplicationConfiguratio
 }
 
 declare namespace ReleaseData {
-  interface Schema extends DataSchema {
+  export interface Schema extends DataSchema {
     /**
      * The major generation of the Release
      */

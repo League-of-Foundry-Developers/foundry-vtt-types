@@ -74,7 +74,7 @@ declare namespace BaseCards {
   type Properties = fields.SchemaField.InnerInitializedType<Schema>;
   type Source = fields.SchemaField.InnerPersistedType<Schema>;
 
-  interface Schema<TypeName extends TypeNames = TypeNames> extends DataSchema {
+  export interface Schema<TypeName extends TypeNames = TypeNames> extends DataSchema {
     /**
      * The _id which uniquely identifies this stack of Cards document
      * @defaultValue `null`
