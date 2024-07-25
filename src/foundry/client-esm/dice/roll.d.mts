@@ -3,8 +3,9 @@ import type { ConstructorOf, DeepPartial, InexactPartial } from "../../../types/
 
 import type { RollParseNode } from "./_types.d.mts";
 import type DiceTerm from "./terms/dice.d.mts";
-import type RollTerm from "./terms/term.d.mts";
 import type PoolTerm from "./terms/pool.d.mts";
+import type RollTerm from "./terms/term.d.mts";
+import type RollResolver from "../applications/dice/roll-resolver.d.mts";
 
 /**
  * An interface and API for constructing and evaluating dice rolls.

@@ -1,6 +1,8 @@
 import type { ConstructorOf, InexactPartial } from "../../../../types/utils.mts";
 import type { RollParseNode } from "../_types.mts";
 
+import type RollResolver from "../../applications/dice/roll-resolver.d.mts";
+
 declare abstract class RollTerm {
   constructor({ options }?: { options?: RollTerm.Options });
 
