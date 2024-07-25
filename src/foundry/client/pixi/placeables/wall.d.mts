@@ -180,12 +180,6 @@ declare global {
     protected override _destroy(options?: PIXI.IDestroyOptions | boolean): void;
 
     /**
-     * Given the properties of the wall - decide upon a color to render the wall for display on the WallsLayer
-     * @internal
-     */
-    protected _getWallColor(): number;
-
-    /**
      * Test whether the Wall direction lies between two provided angles
      * This test is used for collision and vision checks against one-directional walls
      * @param lower - The lower-bound limiting angle in radians

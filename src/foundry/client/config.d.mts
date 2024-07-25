@@ -2730,7 +2730,10 @@ declare global {
       config: Record<string, unknown>;
     }
 
+    // The point of this interface is to be declaration merged into so you can override `DefaultSpecialStatusEffects` and remove existing keys. It's never used when empty.
+    // eslint-disable-next-line @typescript-eslint/no-empty-interface
     interface SpecialStatusEffects {}
+
     interface DefaultSpecialStatusEffects {
       DEFEATED: string;
       INVISIBLE: string;

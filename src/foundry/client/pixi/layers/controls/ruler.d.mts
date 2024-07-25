@@ -156,11 +156,6 @@ declare global {
     ): Ruler.Segment[];
 
     /**
-     * Get the text label for a segment of the measured path
-     */
-    protected _getSegmentLabel(segmentDistance: number, totalDistance: number, isTotal: boolean): string;
-
-    /**
      * While measurement is in progress, update the destination to be the central point of the target grid space.
      * @param destination - The current pixel coordinates of the mouse movement
      * @returns The destination point, a center of a grid space
