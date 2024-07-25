@@ -18,32 +18,10 @@ export type PlaceableObjectConstructor = Pick<typeof PlaceableObject, keyof type
 export type ConfiguredDocumentClass<ConcreteDocument extends DocumentConstructor> =
   ConfiguredDocuments[ConcreteDocument["metadata"]["name"]];
 
-export type DocumentType =
-  | "ActiveEffect"
-  | "ActorDelta"
-  | "Actor"
-  | "Adventure"
-  | "Card"
-  | "Cards"
-  | "ChatMessage"
-  | "Combat"
-  | "Combatant"
-  | "FogExploration"
-  | "Folder"
-  | "Item"
-  | "JournalEntryPage"
-  | "JournalEntry"
-  | "Macro"
-  | "PlaylistSound"
-  | "Playlist"
-  | "RollTable"
-  | "Scene"
-  | "Setting"
-  | "TableResult"
-  | "User"
-  // All placeables also have a corresponding document class.
-  | PlaceableDocumentType;
+// TODO: Remove the Exclude after the appropriate classes are set up
+export type DocumentType = Exclude<foundry.CONST.ALL_DOCUMENT_TYPES, "Region" | "RegionBehavior">;
 
+// TODO: Add Region after the appropriate classes are set up
 export type PlaceableDocumentType =
   | "AmbientLight"
   | "AmbientSound"
@@ -54,7 +32,7 @@ export type PlaceableDocumentType =
   | "Token"
   | "Wall";
 
-// TODO: Probably a way to auto-determine this
+// TODO: Investigate if feasible to determine from the metadata (hasTypeData: true)
 type DocumentTypeWithTypeData = "Actor" | "Card" | "Cards" | "Item" | "JournalEntryPage";
 
 /**
@@ -118,3 +96,6 @@ export type LayerClass<T extends DocumentConstructor> = T["metadata"]["name"] ex
     ? CONFIG[T["metadata"]["name"]]["layerClass"]
     : never
   : T;
+
+/** Keys of functions of console.log / globalThis.logger */
+export type LoggingLevels = "debug" | "log" | "info" | "warn" | "error";

@@ -1,5 +1,5 @@
 import type { InexactPartial } from "../../../types/utils.d.mts";
-import EmbeddedCollection from "./embedded-collection.mjs";
+import type EmbeddedCollection from "./embedded-collection.d.mts";
 
 /**
  * An embedded collection delta contains delta source objects that can be compared against other objects inside a base

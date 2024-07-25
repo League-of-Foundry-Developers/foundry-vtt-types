@@ -1,8 +1,13 @@
-export { default as RegionBehaviorType } from "./base.mts";
-export { default as AdjustDarknessLevelRegionBehaviorType } from "./adjust-darkness-level.mts";
-export { default as ExecuteMacroRegionBehaviorType } from "./execute-macro.mts";
-export { default as ExecuteScriptRegionBehaviorType } from "./execute-script.mts";
-export { default as PauseGameRegionBehaviorType } from "./pause-game.mts";
-export { default as SuppressWeatherRegionBehaviorType } from "./suppress-weather.mts";
-export { default as TeleportTokenRegionBehaviorType } from "./teleport-token.mts";
-export { default as ToggleBehaviorRegionBehaviorType } from "./toggle-behavior.mts";
+// In Foundry itself this file contains re-exports of these other modules.
+// Therefore it has a runtime effect and uses `.mjs` instead of `.d.mts`.
+// While `.mts` could work, to avoid `import/no-unresolved from erroring `.mjs` is used.
+/* eslint-disable import/extensions */
+
+export { default as RegionBehaviorType } from "./base.mjs";
+export { default as AdjustDarknessLevelRegionBehaviorType } from "./adjust-darkness-level.mjs";
+export { default as ExecuteMacroRegionBehaviorType } from "./execute-macro.mjs";
+export { default as ExecuteScriptRegionBehaviorType } from "./execute-script.mjs";
+export { default as PauseGameRegionBehaviorType } from "./pause-game.mjs";
+export { default as SuppressWeatherRegionBehaviorType } from "./suppress-weather.mjs";
+export { default as TeleportTokenRegionBehaviorType } from "./teleport-token.mjs";
+export { default as ToggleBehaviorRegionBehaviorType } from "./toggle-behavior.mjs";

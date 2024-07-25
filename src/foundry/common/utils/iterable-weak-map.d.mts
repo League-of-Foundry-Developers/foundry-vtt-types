@@ -18,16 +18,6 @@ interface IterableWeakMapHeldValue<K extends WeakKey> {
  */
 declare class IterableWeakMap<K extends WeakKey, V> extends WeakMap<K, V> {
   /**
-   * A set of weak refs to the map's keys, allowing enumeration.
-   */
-  #refs: Set<WeakRef<K>>;
-
-  /**
-   * A FinalizationRegistry instance to clean up the ref set when objects are garbage collected.
-   */
-  #finalizer: FinalizationRegistry<IterableWeakMapHeldValue<K>>;
-
-  /**
    * @param entries - The initial entries.
    */
   constructor(entries?: Iterable<[K, V]>);
@@ -80,6 +70,11 @@ declare class IterableWeakMap<K extends WeakKey, V> extends WeakMap<K, V> {
    * Enumerate the values.
    */
   values(): Generator<V, void, never>;
+
+  /**
+   * Clear all values from the map.
+   */
+  clear(): void;
 }
 
 export default IterableWeakMap;

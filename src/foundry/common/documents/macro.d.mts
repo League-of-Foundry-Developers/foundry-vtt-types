@@ -3,7 +3,7 @@ import type Document from "../abstract/document.mts";
 import type { DocumentMetadata, DocumentModificationOptions } from "../abstract/document.mts";
 import * as CONST from "../constants.mts";
 import * as fields from "../data/fields.mts";
-import * as documents from "./module.mts";
+import * as documents from "./_module.mts";
 
 declare global {
   type MacroData = BaseMacro.Properties;

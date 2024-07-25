@@ -1,12 +1,12 @@
 export {};
 
 declare global {
-  type VertexMap = Map<number, PolygonVertex>;
+  type VertexMap = Map<number, foundry.canvas.edges.PolygonVertex>;
 
   type EdgeSet = Set<PolygonEdge>;
 
   interface PolygonRay extends Ray {
-    result: CollisionResult;
+    result: foundry.canvas.edges.CollisionResult;
   }
 
   /**
@@ -69,7 +69,7 @@ declare global {
      * @param activeEdges - A set of currently active edges
      * @internal
      */
-    protected _updateActiveEdges(vertex: PolygonVertex, activeEdges: EdgeSet): void;
+    protected _updateActiveEdges(vertex: foundry.canvas.edges.PolygonVertex, activeEdges: EdgeSet): void;
 
     /**
      * Determine the initial set of active edges as those which intersect with the initial ray
@@ -83,7 +83,7 @@ declare global {
      * @returns The array of sorted vertices
      * @internal
      */
-    protected _sortVertices(): PolygonVertex[];
+    protected _sortVertices(): foundry.canvas.edges.PolygonVertex[];
 
     /**
      * Test whether a target vertex is behind some closer active edge.
@@ -96,7 +96,7 @@ declare global {
      * @internal
      */
     protected _isVertexBehindActiveEdges(
-      vertex: PolygonVertex,
+      vertex: foundry.canvas.edges.PolygonVertex,
       activeEdges: EdgeSet,
     ): { isBehind: boolean; wasLimited: boolean };
 
@@ -107,7 +107,11 @@ declare global {
      * @param hasCollinear  - Are there collinear vertices behind the target vertex?
      * @internal
      */
-    protected _determineSweepResult(vertex: PolygonVertex, activeEdges: EdgeSet, hasCollinear: boolean): void;
+    protected _determineSweepResult(
+      vertex: foundry.canvas.edges.PolygonVertex,
+      activeEdges: EdgeSet,
+      hasCollinear: boolean,
+    ): void;
 
     /**
      * Switch to a new active edge.
@@ -123,7 +127,7 @@ declare global {
      * @param result      - The pending collision result
      * @param activeEdges - The set of currently active edges
      */
-    _switchEdge(result: CollisionResult, activeEdges: EdgeSet): void;
+    _switchEdge(result: foundry.canvas.edges.CollisionResult, activeEdges: EdgeSet): void;
 
     /**
      * Identify the collision points between an emitted Ray and a set of active edges.
@@ -132,7 +136,7 @@ declare global {
      * @returns A sorted array of collision points
      * @internal
      */
-    protected _getInternalEdgeCollisions(ray: PolygonRay, internalEdges: EdgeSet): PolygonVertex[];
+    protected _getInternalEdgeCollisions(ray: PolygonRay, internalEdges: EdgeSet): foundry.canvas.edges.PolygonVertex[];
 
     /**
      * @deprecated since v10, will be removed in v12
@@ -141,7 +145,7 @@ declare global {
     static getRayCollisions(
       ray: PolygonRay,
       config: PointSourcePolygonConfig,
-    ): boolean | PolygonVertex | PolygonVertex[] | null;
+    ): boolean | foundry.canvas.edges.PolygonVertex | foundry.canvas.edges.PolygonVertex[] | null;
 
     /**
      * Determine the set of collisions which occurs for a Ray.
@@ -160,6 +164,6 @@ declare global {
      * Visualize the polygon, displaying its computed area, rays, and collision points
      * @internal
      */
-    protected _visualizeCollision(ray: Ray, collisions: PolygonVertex[]): void;
+    protected _visualizeCollision(ray: Ray, collisions: foundry.canvas.edges.PolygonVertex[]): void;
   }
 }

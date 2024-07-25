@@ -1,30 +1,117 @@
 import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
 import type EventEmitterMixin from "../../../common/utils/event-emitter.d.mts";
-import type {
-  ApplicationClosingOptions,
-  ApplicationConfiguration,
-  ApplicationFormConfiguration,
-  ApplicationHeaderControlsEntry,
-  ApplicationPosition,
-  ApplicationRenderContext,
-  ApplicationRenderOptions,
-} from "../_types.d.mts";
 
 // TODO: Investigate use of DeepPartial vs Partial vs InexactPartial
 // TODO: Should
 
+declare namespace ApplicationV2 {
+  export interface Configuration {
+    /**
+     * An HTML element identifier used for this Application instance
+     */
+    id: string;
+
+    /**
+     * An string discriminator substituted for \{id\} in the default
+     * HTML element identifier for the class
+     */
+    uniqueId: string;
+
+    /**
+     * An array of CSS classes to apply to the Application
+     */
+    classes: string[];
+
+    /**
+     * The HTMLElement tag type used for the outer Application frame
+     */
+    tag: string;
+
+    /**
+     * Configuration of the window behaviors for this Application
+     */
+    window: WindowConfiguration;
+
+    /**
+     * Click actions supported by the Application and their event handler
+     * functions. A handler function can be defined directly which only
+     * responds to left-click events. Otherwise, an object can be declared
+     * containing both a handler function and an array of buttons which are
+     * matched against the PointerEvent#button property.
+     */
+    actions: Record<string, ClickAction | { handler: ClickAction; buttons: number[] }>;
+
+    /**
+     * Configuration used if the application top-level element is a form
+     */
+    form?: FormConfiguration;
+
+    /**
+     * Default positioning data for the application
+     */
+    position: Partial<Position>;
+  }
+
+  export interface Position {
+    /** Window offset pixels from top */
+    top: number;
+
+    /** Window offset pixels from left */
+    left: number;
+
+    /** Un-scaled pixels in width or "auto" */
+    width: number | "auto";
+
+    /** Un-scaled pixels in height or "auto" */
+    height: number | "auto";
+
+    /** A numeric scaling factor applied to application dimensions */
+    scale: number;
+
+    /** A z-index of the application relative to siblings */
+    zIndex: number;
+  }
+
+  export interface WindowConfiguration {}
+
+  export interface FormConfiguration {}
+
+  export interface HeaderControlsEntry {}
+
+  export interface ConstructionParams {
+    position: Position;
+  }
+
+  export interface RenderOptions {}
+
+  export interface WindowRenderOptions {}
+
+  /**
+   * Context data provided to the renderer
+   */
+  export interface RenderContext extends Record<string, unknown> {}
+
+  export interface ClosingOptions {}
+
+  export type ClickAction = (event: PointerEvent, target: HTMLElement) => Promise<void>;
+
+  export type FormSubmission = () => Promise<void>;
+
+  export interface Tab {}
+}
+
 /**
  * The Application class is responsible for rendering an HTMLElement into the Foundry Virtual Tabletop user interface.
  */
-export default class ApplicationV2<
-  Configuration extends ApplicationConfiguration = ApplicationConfiguration,
-  RenderOptions extends ApplicationRenderOptions = ApplicationRenderOptions,
+declare class ApplicationV2<
+  Configuration extends ApplicationV2.Configuration = ApplicationV2.Configuration,
+  RenderOptions extends ApplicationV2.RenderOptions = ApplicationV2.RenderOptions,
 > extends EventEmitterMixin(Object) {
   constructor(options: DeepPartial<Configuration>);
 
   static BASE_APPLICATION: typeof ApplicationV2;
 
-  static DEFAULT_OPTIONS: DeepPartial<ApplicationConfiguration>;
+  static DEFAULT_OPTIONS: DeepPartial<ApplicationV2.Configuration>;
 
   static readonly RENDER_STATES: {
     ERROR: -3;
@@ -55,7 +142,7 @@ export default class ApplicationV2<
     controlsDropdown: HTMLDivElement | undefined;
     onDrag: (event: PointerEvent) => void;
     onResize: (event: PointerEvent) => void;
-    pointerStartPosition: ApplicationPosition | undefined;
+    pointerStartPosition: ApplicationV2.Position | undefined;
     pointerMoveThrottle: boolean;
   };
 
@@ -94,7 +181,7 @@ export default class ApplicationV2<
   /**
    * The current position of the application with respect to the window.document.body.
    */
-  position: ApplicationPosition;
+  position: ApplicationV2.Position;
 
   /**
    * Is this Application instance currently rendered?
@@ -152,17 +239,17 @@ export default class ApplicationV2<
    * @param options - Options which configure application rendering behavior
    * @returns Context data for the render operation
    */
-  protected _prepareContext(options: DeepPartial<RenderOptions>): Promise<ApplicationRenderContext>;
+  protected _prepareContext(options: DeepPartial<RenderOptions>): Promise<ApplicationV2.RenderContext>;
 
   /**
    * Configure the array of header control menu options
    */
-  protected _getHeaderControls(): ApplicationHeaderControlsEntry[];
+  protected _getHeaderControls(): ApplicationV2.HeaderControlsEntry[];
 
   /**
    * Iterate over header control buttons, filtering for controls which are visible for the current client.
    */
-  protected _headerControlsButtons(): Generator<ApplicationHeaderControlsEntry>;
+  protected _headerControlsButtons(): Generator<ApplicationV2.HeaderControlsEntry>;
 
   /**
    * Render an HTMLElement for the Application.
@@ -172,7 +259,7 @@ export default class ApplicationV2<
    * @returns The result of HTML rendering may be implementation specific.
    *          Whatever value is returned here is passed to _replaceHTML
    */
-  protected _renderHTML(context: ApplicationRenderContext, options: DeepPartial<RenderOptions>): Promise<any>; //TODO: Might be the subject of a generic?
+  protected _renderHTML(context: ApplicationV2.RenderContext, options: DeepPartial<RenderOptions>): Promise<any>; //TODO: Might be the subject of a generic?
 
   /**
    * Replace the HTML of the application with the result provided by the rendering backend.
@@ -197,7 +284,7 @@ export default class ApplicationV2<
   /**
    * Render a header control button.
    */
-  protected _renderHeaderControl(control: ApplicationHeaderControlsEntry): HTMLLIElement;
+  protected _renderHeaderControl(control: ApplicationV2.HeaderControlsEntry): HTMLLIElement;
 
   /**
    * When the Application is rendered, optionally update aspects of the window frame.
@@ -219,7 +306,7 @@ export default class ApplicationV2<
    * @param options - Options which modify how the application is closed.
    * @returns A Promise which resolves to the closed Application instance
    */
-  close(options?: DeepPartial<ApplicationClosingOptions>): Promise<this>;
+  close(options?: DeepPartial<ApplicationV2.ClosingOptions>): Promise<this>;
 
   /**
    * Remove the application HTML element from the DOM.
@@ -232,7 +319,7 @@ export default class ApplicationV2<
    * Update the Application element position using provided data which is merged with the prior position.
    * @param position - New Application positioning data
    */
-  setPosition(position: DeepPartial<ApplicationPosition>): ApplicationPosition;
+  setPosition(position: DeepPartial<ApplicationV2.Position>): ApplicationV2.Position;
 
   /**
    * Translate a requested application position updated into a resolved allowed position for the Application.
@@ -240,7 +327,7 @@ export default class ApplicationV2<
    * @param position - Requested Application positioning data
    * @returns Resolved Application positioning data
    */
-  protected _updatePosition(position: ApplicationPosition): ApplicationPosition;
+  protected _updatePosition(position: ApplicationV2.Position): ApplicationV2.Position;
 
   /**
    * Toggle display of the Application controls menu.
@@ -312,7 +399,7 @@ export default class ApplicationV2<
    * @param options - Provided render options
    */
   protected _preFirstRender(
-    context: DeepPartial<ApplicationRenderContext>,
+    context: DeepPartial<ApplicationV2.RenderContext>,
     options: DeepPartial<RenderOptions>,
   ): Promise<void>;
 
@@ -322,7 +409,10 @@ export default class ApplicationV2<
    * @param context - Prepared context data
    * @param options - Provided render options
    */
-  protected _onFirstRender(context: DeepPartial<ApplicationRenderContext>, options: DeepPartial<RenderOptions>): void;
+  protected _onFirstRender(
+    context: DeepPartial<ApplicationV2.RenderContext>,
+    options: DeepPartial<RenderOptions>,
+  ): void;
 
   /**
    * Actions performed before any render of the Application.
@@ -331,7 +421,7 @@ export default class ApplicationV2<
    * @param options - Provided render options
    */
   protected _preRender(
-    context: DeepPartial<ApplicationRenderContext>,
+    context: DeepPartial<ApplicationV2.RenderContext>,
     options: DeepPartial<RenderOptions>,
   ): Promise<void>;
 
@@ -341,7 +431,7 @@ export default class ApplicationV2<
    * @param context - Prepared context data
    * @param options - Provided render options
    */
-  protected _onRender(context: DeepPartial<ApplicationRenderContext>, options: DeepPartial<RenderOptions>): void;
+  protected _onRender(context: DeepPartial<ApplicationV2.RenderContext>, options: DeepPartial<RenderOptions>): void;
 
   /**
    * Actions performed before closing the Application.
@@ -389,14 +479,14 @@ export default class ApplicationV2<
    * @param formConfig - The form configuration for which this handler is bound
    * @param event      - The form submission event
    */
-  protected _onSubmitForm(formConfig: ApplicationFormConfiguration, event: Event | SubmitEvent): Promise<void>;
+  protected _onSubmitForm(formConfig: ApplicationV2.FormConfiguration, event: Event | SubmitEvent): Promise<void>;
 
   /**
    * Handle changes to an input element within the form.
    * @param formConfig - The form configuration for which this handler is bound
    * @param event      - The form submission event
    */
-  _onChangeForm(formConfig: ApplicationFormConfiguration, event: Event): void;
+  _onChangeForm(formConfig: ApplicationV2.FormConfiguration, event: Event): void;
 
   /**
    * Parse a CSS style rule into a number of pixels which apply to that dimension.
@@ -420,3 +510,5 @@ export default class ApplicationV2<
    */
   bringToTop(): void;
 }
+
+export default ApplicationV2;

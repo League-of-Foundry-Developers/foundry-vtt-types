@@ -244,8 +244,8 @@ declare global {
 
     type CollisionTypes = {
       any: boolean;
-      closest: PolygonVertex;
-      all: PolygonVertex[] | null;
+      closest: foundry.canvas.edges.PolygonVertex;
+      all: foundry.canvas.edges.PolygonVertex[] | null;
     };
 
     type TestCollision<Mode extends CollisionModes> = CollisionTypes[Mode];

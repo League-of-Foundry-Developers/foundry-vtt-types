@@ -1,10 +1,18 @@
-export * from "./geometry.mts";
-export * from "./helpers.mts";
-export * from "./http.mts";
-export * from "./logging.mts";
-export { default as Collection } from "./collection.mts";
-export { default as EventEmitterMixin } from "./event-emitter.mts";
-export { default as IterableWeakSet } from "./iterable-weak-set.mts";
-export { default as IterableWeakMap } from "./iterable-weak-map.mts";
-export { default as Color } from "./color.mts";
-export { default as Semaphore } from "./semaphore.mts";
+// In Foundry itself this file contains re-exports of these other modules.
+// Therefore it has a runtime effect and uses `.mjs` instead of `.d.mts`.
+// While `.mts` could work, to avoid `import/no-unresolved from erroring `.mjs` is used.
+/* eslint-disable import/extensions */
+
+export * from "./geometry.mjs";
+export * from "./helpers.mjs";
+export * from "./http.mjs";
+export * from "./logging.mjs";
+export { default as Collection } from "./collection.mjs";
+export { default as EventEmitterMixin } from "./event-emitter.mjs";
+export { default as IterableWeakSet } from "./iterable-weak-set.mjs";
+export { default as IterableWeakMap } from "./iterable-weak-map.mjs";
+export { default as Color } from "./color.mjs";
+export { default as Semaphore } from "./semaphore.mjs";
+export { default as StringTree } from "./string-tree.mjs";
+export { default as WordTree } from "./word-tree.mjs";
+export { default as BitMask } from "./bitmask.mjs";

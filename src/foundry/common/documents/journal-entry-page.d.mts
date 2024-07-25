@@ -2,8 +2,7 @@ import type { Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
 import type * as fields from "../data/fields.mts";
-import type { CONST } from "../module.mts";
-import type * as documents from "./module.mts";
+import type * as documents from "./_module.mts";
 
 declare global {
   type JournalEntryPageImageData = JournalEntryPageData["image"];
@@ -43,7 +42,7 @@ declare class BaseJournalEntryPage extends Document<
    */
   static get TYPES(): BaseJournalEntryPage.TypeNames[];
 
-  override getUserLevel(user: documents.BaseUser): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
+  override getUserLevel(user: documents.BaseUser): foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
 }
 export default BaseJournalEntryPage;
 
@@ -148,7 +147,7 @@ declare namespace BaseJournalEntryPage {
       format: fields.NumberField<{
         label: "JOURNALENTRYPAGE.Format";
         initial: typeof CONST.JOURNAL_ENTRY_PAGE_FORMATS.HTML;
-        choices: CONST.JOURNAL_ENTRY_PAGE_FORMATS[];
+        choices: foundry.CONST.JOURNAL_ENTRY_PAGE_FORMATS[];
       }>;
     }>;
 

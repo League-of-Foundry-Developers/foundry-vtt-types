@@ -1,5 +1,5 @@
 import { assertType, expectTypeOf } from "vitest";
-import { Document } from "../../../../src/foundry/common/abstract/module.mts";
+import type { Document } from "../../../../src/foundry/common/abstract/module.d.mts";
 import type { AnyMetadata } from "../../../../src/foundry/common/abstract/document.d.mts";
 
 type EmbeddedInSceneDocumentSheetOptions = DocumentSheetOptions<Document<any, AnyMetadata, Scene.ConfiguredInstance>>;

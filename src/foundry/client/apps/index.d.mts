@@ -1,6 +1,5 @@
 import "./app.d.mts";
 import "./av/index.d.mts";
-import "./components/index.d.mts";
 import "./dialogs/index.d.mts";
 import "./form.d.mts";
 import "./forms/index.d.mts";
