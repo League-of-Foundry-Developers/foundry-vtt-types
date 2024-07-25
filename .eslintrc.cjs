@@ -26,6 +26,7 @@ module.exports = {
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-namespace": ["error", { allowDeclarations: true }],
     "@typescript-eslint/no-unsafe-declaration-merging": "off", // TODO: reenable in V10
+    "@typescript-eslint/no-unused-expressions": "off", // expectTypeOf seems to trip this rule.
     "@typescript-eslint/prefer-namespace-keyword": "error",
     "import/consistent-type-specifier-style": ["warn", "prefer-top-level"],
     "import/extensions": ["error", "always"],
