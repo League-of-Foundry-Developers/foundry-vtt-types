@@ -1,5 +1,5 @@
-import type { InexactPartial } from "../../../../types/utils.mts";
-import type DiceTerm from "./dice.mts";
+import type { InexactPartial } from "../../../../types/utils.d.mts";
+import type DiceTerm from "./dice.d.mts";
 
 /**
  * A type of DiceTerm used to represent flipping a two-sided coin.

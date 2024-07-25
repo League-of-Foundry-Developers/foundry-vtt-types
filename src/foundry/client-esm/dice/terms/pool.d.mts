@@ -1,9 +1,9 @@
 import type { ConstructorOf, InexactPartial } from "../../../../types/utils.d.mts";
-
-import type RollTerm from "./term.mts";
-import type DiceTerm from "./dice.mts";
-import type Die from "./die.mts";
 import type { PoolRollParseNode } from "../_types.d.mts";
+
+import type RollTerm from "./term.d.mts";
+import type DiceTerm from "./dice.d.mts";
+import type Die from "./die.d.mts";
 
 /**
  * A type of RollTerm which encloses a pool of multiple inner Rolls which are evaluated jointly.
@@ -22,7 +22,7 @@ import type { PoolRollParseNode } from "../_types.d.mts";
  * ```
  */
 declare class PoolTerm extends RollTerm {
-  constructor({ terms, modifiers, rolls, results, options }?: PoolTermConstructorData);
+  constructor({ terms, modifiers, rolls, results, options }?: PoolTerm.PoolTermConstructorData);
 
   /**
    * The original provided terms to the Dice Pool

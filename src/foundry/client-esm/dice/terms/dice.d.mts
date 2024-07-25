@@ -1,6 +1,8 @@
-import type { ConstructorOf, InexactPartial } from "../../../../types/utils.mts";
-import type { DiceRollParseNode } from "../_types.mts";
-import type RollTerm from "./term.mts";
+import type { ConstructorOf, InexactPartial } from "../../../../types/utils.d.mts";
+import type { DiceRollParseNode } from "../_types.d.mts";
+
+import type RollTerm from "./term.d.mts";
+import type Roll from "../roll.d.mts";
 
 /**
  * An abstract base class for any type of RollTerm which involves randomized input from dice, coins, or other devices.
@@ -59,7 +61,10 @@ declare abstract class DiceTerm extends RollTerm {
 
   static REGEXP: RegExp;
 
-  static SERIALIZE_ATTRIBUTES: ["number", "faces", "modifiers", "results", "method"];
+  /**
+   * @defaultValue `["number", "faces", "modifiers", "results", "method"]`
+   */
+  static SERIALIZE_ATTRIBUTES: string[];
 
   /* -------------------------------------------- */
   /*  Dice Term Attributes                        */
@@ -74,7 +79,7 @@ declare abstract class DiceTerm extends RollTerm {
    * The number of dice of this term to roll, before modifiers are applied, or a Roll instance that will be evaluated to
    * a number.
    */
-  _number: DiceTerm.TermData["number"] | Roll; // TODO: Fix this
+  _number: DiceTerm.TermData["number"] | Roll;
 
   /** The number of dice of this term to roll. */
   set number(value: DiceTerm.TermData["number"]);
@@ -86,7 +91,7 @@ declare abstract class DiceTerm extends RollTerm {
   get faces(): DiceTerm.TermData["faces"] | undefined;
 
   /** The number of faces on the die, or a Roll instance that will be evaluated to a number. */
-  _faces: DiceTerm.TermData["faces"] | Roll; // TODO: Fix this
+  _faces: DiceTerm.TermData["faces"] | Roll;
 
   set faces(value: DiceTerm.TermData["faces"]);
 

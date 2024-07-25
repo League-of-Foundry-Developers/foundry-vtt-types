@@ -1,4 +1,4 @@
-import type DiceTerm from "./dice.mts";
+import type DiceTerm from "./dice.d.mts";
 
 /**
  * A type of DiceTerm used to represent rolling a fair n-sided die.

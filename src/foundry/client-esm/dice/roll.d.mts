@@ -491,11 +491,11 @@ declare class Roll<D extends object = {}> {
   toMessage<T extends DeepPartial<ConstructorParameters<ConfiguredDocumentClass<typeof ChatMessage>>[0]> = {}>(
     messageData: T,
     { rollMode, create }: { rollMode?: keyof CONFIG.Dice.RollModes | "roll"; create: false },
-  ): MessageData<T>;
+  ): Roll.MessageData<T>;
   toMessage<T extends DeepPartial<ConstructorParameters<ConfiguredDocumentClass<typeof ChatMessage>>[0]> = {}>(
     messageData: T,
     { rollMode, create }: { rollMode?: keyof CONFIG.Dice.RollModes | "roll"; create: boolean },
-  ): Promise<ChatMessage.ConfiguredInstance | undefined> | MessageData<T>;
+  ): Promise<ChatMessage.ConfiguredInstance | undefined> | Roll.MessageData<T>;
 
   /* -------------------------------------------- */
   /*  Interface Helpers                           */
@@ -624,7 +624,7 @@ declare namespace Roll {
 
   type MessageData<T extends DeepPartial<ConstructorParameters<typeof ChatMessage>[0]>> = {
     user: string;
-    type: (typeof foundry.CONST.CHAT_MESSAGE_TYPES)["ROLL"];
+    type: (typeof foundry.CONST.CHAT_MESSAGE_TYPES)["ROLL"]; // TODO: Update this
     content: number;
     sound: typeof CONFIG.sounds.dice;
   } & T;

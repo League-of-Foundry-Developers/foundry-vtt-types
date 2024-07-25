@@ -1,8 +1,8 @@
-import type { ConstructorOf, InexactPartial } from "../../../../types/utils.mts";
-import type { FunctionRollParseNode } from "../_types.mts";
+import type { ConstructorOf, InexactPartial } from "../../../../types/utils.d.mts";
+import type { FunctionRollParseNode } from "../_types.d.mts";
 
-import type RollTerm from "./term.mts";
-import type DiceTerm from "./dice.mjs";
+import type RollTerm from "./term.d.mts";
+import type DiceTerm from "./dice.d.mts";
 
 /**
  * A type of RollTerm used to apply a function.

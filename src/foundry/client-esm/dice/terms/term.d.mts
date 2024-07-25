@@ -11,7 +11,7 @@ declare abstract class RollTerm {
   protected _evaluated: boolean;
 
   /** A reference to the Roll at the root of the evaluation tree. */
-  protected _root: Roll; // TODO: Add this type
+  protected _root: Roll;
 
   /**
    * Is this term intermediate, and should be evaluated first as part of the simplification process?

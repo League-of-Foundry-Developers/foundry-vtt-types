@@ -1,7 +1,8 @@
-import type RollTerm from "./term.d.mts";
-import type DiceTerm from "./dice.d.mts";
 import type { InexactPartial } from "../../../../types/utils.d.mts";
 import type { ParentheticalRollParseNode } from "../_types.d.mts";
+
+import type RollTerm from "./term.d.mts";
+import type DiceTerm from "./dice.d.mts";
 
 /**
  * A type of RollTerm used to enclose a parenthetical expression to be recursively evaluated.

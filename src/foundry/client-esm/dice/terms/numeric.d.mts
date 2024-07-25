@@ -1,4 +1,4 @@
-import type RollTerm from "./term.mts";
+import type RollTerm from "./term.d.mts";
 
 /**
  * A type of RollTerm used to represent static numbers.
@@ -19,7 +19,7 @@ declare class NumericTerm extends RollTerm {
   /**
    * @defaultValue `["number"]`
    */
-  static override SERIALIZE_ATTRIBUTES: string[]; // TODO: Fix all the other serialize attributes to be like so
+  static override SERIALIZE_ATTRIBUTES: string[];
 
   override get expression(): string;
 

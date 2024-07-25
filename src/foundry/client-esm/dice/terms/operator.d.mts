@@ -1,4 +1,4 @@
-import type RollTerm from "./term.mts";
+import type RollTerm from "./term.d.mts";
 
 /**
  * A type of RollTerm used to denote and perform an arithmetic operation.
@@ -18,8 +18,11 @@ declare class OperatorTerm extends RollTerm {
     "%": 20;
   };
 
-  /** An array of operators which represent arithmetic operations. */
-  static OPERATORS: ["+", "-", "*", "/", "%"]; // TODO: Rely on PRECEDENCE
+  /**
+   * An array of operators which represent arithmetic operations.
+   * @defaultValue `["+", "-", "*", "/", "%"]`
+   */
+  static OPERATORS: string[]; // TODO: Rely on PRECEDENCE
 
   static override REGEXP: RegExp;
 
