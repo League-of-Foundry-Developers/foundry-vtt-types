@@ -1,6 +1,6 @@
 // In Foundry itself this file contains re-exports of these other modules.
 // Therefore it has a runtime effect and uses `.mjs` instead of `.d.mts`.
-// While `.mts` could work, to avoid `import/no-unresolved from erroring `.mjs` is used.
+// While `.mts` could work, to avoid `import/no-unresolved` from erroring `.mjs` is used.
 /* eslint-disable import/extensions */
 
 import "../common/primitives/module.mjs";
@@ -12,7 +12,7 @@ import * as _utils from "../common/utils/module.mjs";
 import * as _config from "../common/config.mjs";
 // import * as _prosemirror from "../common/prosemirror/_module.mjs";
 // import * as _grid from "../common/grid/_module.mjs";
-import * as _types from "../common/types.mjs";
+// import * as _types from "../common/types.mjs";
 
 // client
 import * as _applications from "./applications/_module.mjs";
@@ -172,7 +172,7 @@ declare global {
     /**
      * Shared importable types.
      */
-    export import types = _types;
+    // export import types = _types;
   }
   /**
    * Constant definitions used throughout the Foundry Virtual Tabletop framework.
@@ -184,65 +184,104 @@ declare global {
   type Collection<T> = _utils.Collection<T>;
   var Collection: typeof _utils.Collection; // eslint-disable-line no-var
 
-  // Sorta deprecated global namespace dump; done programatically by fvtt
-  // will begin proper deprecation process in v12
+  // Deprecated global namespace dump; done programmatically by fvtt
   type Semaphore = _utils.Semaphore;
+  /** @deprecated since v12 will be removed in v14 */
   var Semaphore: typeof _utils.Semaphore; // eslint-disable-line no-var
 
   type IterableWeakMap<K extends WeakKey, V> = _utils.IterableWeakMap<K, V>;
+  /** @deprecated since v12 will be removed in v14 */
   var IterableWeakMap: typeof _utils.IterableWeakMap; // eslint-disable-line no-var
 
   type IterableWeakSet<T extends WeakKey> = _utils.IterableWeakSet<T>;
+  /** @deprecated since v12 will be removed in v14 */
   var IterableWeakSet: typeof _utils.IterableWeakSet; // eslint-disable-line no-var
 
   /* eslint-disable no-var */
   /* --- geometry --- */
+  /** @deprecated since v12 will be removed in v14 */
   var orient2dFast: typeof _utils.orient2dFast;
+  /** @deprecated since v12 will be removed in v14 */
   var lineSegmentIntersects: typeof _utils.lineSegmentIntersects;
+  /** @deprecated since v12 will be removed in v14 */
   var lineLineIntersection: typeof _utils.lineLineIntersection;
+  /** @deprecated since v12 will be removed in v14 */
   var lineSegmentIntersection: typeof _utils.lineSegmentIntersection;
+  /** @deprecated since v12 will be removed in v14 */
   var lineCircleIntersection: typeof _utils.lineCircleIntersection;
+  /** @deprecated since v12 will be removed in v14 */
   var closestPointToSegment: typeof _utils.closestPointToSegment;
+  /** @deprecated since v12 will be removed in v14 */
   var quadraticIntersection: typeof _utils.quadraticIntersection;
 
   /* --- helpers --- */
+  /** @deprecated since v12 will be removed in v14 */
   var benchmark: typeof _utils.benchmark;
+  /** @deprecated since v12 will be removed in v14 */
   var threadLock: typeof _utils.threadLock;
+  /** @deprecated since v12 will be removed in v14 */
   var debounce: typeof _utils.debounce;
+  /** @deprecated since v12 will be removed in v14 */
   var debouncedReload: typeof _utils.debouncedReload;
+  /** @deprecated since v12 will be removed in v14 */
   var deepClone: typeof _utils.deepClone;
+  /** @deprecated since v12 will be removed in v14 */
   var diffObject: typeof _utils.diffObject;
+  /** @deprecated since v12 will be removed in v14 */
   var objectsEqual: typeof _utils.objectsEqual;
+  /** @deprecated since v12 will be removed in v14 */
   var duplicate: typeof _utils.duplicate;
+  /** @deprecated since v12 will be removed in v14 */
   var isSubclass: typeof _utils.isSubclass;
+  /** @deprecated since v12 will be removed in v14 */
   var getDefiningClass: typeof _utils.getDefiningClass;
+  /** @deprecated since v12 will be removed in v14 */
   var encodeURL: typeof _utils.encodeURL;
+  /** @deprecated since v12 will be removed in v14 */
   var expandObject: typeof _utils.expandObject;
+  /** @deprecated since v12 will be removed in v14 */
   var filterObject: typeof _utils.filterObject;
+  /** @deprecated since v12 will be removed in v14 */
   var flattenObject: typeof _utils.flattenObject;
+  /** @deprecated since v12 will be removed in v14 */
   var getParentClasses: typeof _utils.getParentClasses;
+  /** @deprecated since v12 will be removed in v14 */
   var getRoute: typeof _utils.getRoute;
+  /** @deprecated since v12 will be removed in v14 */
   var getType: typeof _utils.getType;
+  /** @deprecated since v12 will be removed in v14 */
   var hasProperty: typeof _utils.hasProperty;
+  /** @deprecated since v12 will be removed in v14 */
   var getProperty: typeof _utils.getProperty;
+  /** @deprecated since v12 will be removed in v14 */
   var setProperty: typeof _utils.setProperty;
+  /** @deprecated since v12 will be removed in v14 */
   var invertObject: typeof _utils.invertObject;
-  var isObjectEmpty: typeof _utils.isObjectEmpty;
+  /** @deprecated since v12 will be removed in v14 */
   var isEmpty: typeof _utils.isEmpty;
+  /** @deprecated since v12 will be removed in v14 */
   var mergeObject: typeof _utils.mergeObject;
+  /** @deprecated since v12 will be removed in v14 */
   var parseS3URL: typeof _utils.parseS3URL;
+  /** @deprecated since v12 will be removed in v14 */
   var randomID: typeof _utils.randomID;
+  /** @deprecated since v12 will be removed in v14 */
   var timeSince: typeof _utils.timeSince;
+  /** @deprecated since v12 will be removed in v14 */
   var formatFileSize: typeof _utils.formatFileSize;
+  /** @deprecated since v12 will be removed in v14 */
   var parseUuid: typeof _utils.parseUuid;
 
   /* --- http --- */
 
+  /** @deprecated since v12 will be removed in v14 */
   var fetchWithTimeout: typeof _utils.fetchWithTimeout;
+  /** @deprecated since v12 will be removed in v14 */
   var fetchJsonWithTimeout: typeof _utils.fetchJsonWithTimeout;
 
   /* --- logging --- */
 
+  /** @deprecated since v12 will be removed in v14 */
   var logCompatibilityWarning: typeof _utils.logCompatibilityWarning;
   /* eslint-enable no-var */
 }

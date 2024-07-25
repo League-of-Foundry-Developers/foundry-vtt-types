@@ -7,7 +7,7 @@ import type {
   DatabaseGetOperation,
   DatabaseOperation,
   DatabaseUpdateOperation,
-} from "./_types.mjs";
+} from "./_types.d.mts";
 import type { LoggingLevels } from "../../../types/helperTypes.d.mts";
 
 /**

@@ -1,4 +1,4 @@
-import BaseLightSource from "./base-light-source.mjs";
+import type BaseLightSource from "./base-light-source.d.mts";
 
 /**
  * A specialized subclass of the BaseLightSource which is used to render global light source linked to the scene.

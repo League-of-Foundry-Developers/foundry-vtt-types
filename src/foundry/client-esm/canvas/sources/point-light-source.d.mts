@@ -1,4 +1,4 @@
-import BaseLightSource from "./base-light-source.mts";
+import type BaseLightSource from "./base-light-source.d.mts";
 import type { PointEffectSourceMixin_BaseLightSource_Interface } from "./point-effect-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
 

@@ -1,5 +1,5 @@
 import type { FormInputConfig } from "../forms/fields.d.mts";
-import AbstractFormInputElement from "./form-element.mjs";
+import type AbstractFormInputElement from "./form-element.d.mts";
 
 /**
  * A custom HTMLElement used to render a set of associated Documents referenced by UUID.

@@ -40,14 +40,14 @@ export default class BitMask extends Number {
 
   /**
    * Toggle the state of a specific state in the bitmask.
-   * @param state The state to toggle. Throws an error if the provided state is not valid.
-   * @param enabled   - Toggle on (true) or off (false)? If undefined, the state is switched automatically.
+   * @param state   - The state to toggle. Throws an error if the provided state is not valid.
+   * @param enabled - Toggle on (true) or off (false)? If undefined, the state is switched automatically.
    */
   toggleState(state: string, enabled: boolean): void;
 
   /**
    * Toggle the state of a specific state in the bitmask.
-   * @param state The state to toggle.
+   * @param state - The state to toggle.
    * @returns  The updated bitmask. Throws an error if the provided state is not valid.
    */
   toggleState(state: string): number;
@@ -97,7 +97,7 @@ export default class BitMask extends Number {
 
   /**
    * Creates a clone of this BitMask instance.
-   * @returns {BitMask} A new BitMask instance with the same value and valid states as this instance.
+   * @returns A new BitMask instance with the same value and valid states as this instance.
    */
   clone(): BitMask;
 

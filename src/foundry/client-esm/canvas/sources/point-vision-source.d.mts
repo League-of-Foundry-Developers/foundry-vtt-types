@@ -1,7 +1,6 @@
-import RenderedEffectSource from "./rendered-effect-source.mts";
-import PointEffectSourceMixin, {
-  type PointEffectSourceMixin_RenderedEffectSource_Interface,
-} from "./point-effect-source.mts";
+import type RenderedEffectSource from "./rendered-effect-source.d.mts";
+import type PointEffectSourceMixin from "./point-effect-source.d.mts";
+import type { PointEffectSourceMixin_RenderedEffectSource_Interface } from "./point-effect-source.mts";
 
 declare const PointEffectSourceMixin_RenderedEffectSource: PointEffectSourceMixin_RenderedEffectSource_Interface;
 

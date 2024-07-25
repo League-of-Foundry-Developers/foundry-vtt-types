@@ -1,5 +1,5 @@
 import type { InexactPartial } from "../../../../types/utils.d.mts";
-import BaseEffectSource from "./base-effect-source.mjs";
+import type BaseEffectSource from "./base-effect-source.d.mts";
 
 // TODO: Remove after shaders are done
 type AdaptiveDarknessShader = unknown;
