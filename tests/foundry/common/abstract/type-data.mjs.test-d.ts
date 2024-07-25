@@ -5,7 +5,7 @@ import type { TypeDataModel } from "../../../../src/foundry/common/abstract/type
 
 /* attempting to use the example as a test */
 
-interface QuestSchema extends BaseJournalEntryPage.Schema {
+export interface QuestSchema extends BaseJournalEntryPage.Schema {
   description: fields.HTMLField<{ required: false; blank: true; initial: "" }>;
   steps: fields.ArrayField<fields.StringField<{ required: true }>>;
 }

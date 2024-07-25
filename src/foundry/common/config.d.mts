@@ -190,7 +190,7 @@ declare namespace ApplicationConfiguration {
 declare class ApplicationConfiguration extends DataModel<ApplicationConfiguration.Schema> {
   static defineSchema(): ApplicationConfiguration.Schema;
 
-  static override migrateData(source: object): object;
+  static override migrateData(source: AnyObject): AnyObject;
 
   /**
    * Validate a port assignment.

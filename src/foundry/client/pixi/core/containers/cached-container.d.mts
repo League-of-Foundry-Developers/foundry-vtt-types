@@ -92,11 +92,11 @@ declare global {
   }
 
   namespace CachedContainer {
-    type RenderOptions = {
+    interface RenderOptions {
       /** Render function that will be called to render into the RT. */
       renderFunction?: (renderer: PIXI.Renderer) => void;
       /** An optional clear color to clear the RT before rendering into it. */
       clearColor?: number[];
-    };
+    }
   }
 }

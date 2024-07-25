@@ -26,7 +26,7 @@ declare class BaseAmbientSound extends Document<
 
   static override defineSchema(): BaseAmbientSound.Schema;
 
-  static override migrateData(source: object): object;
+  static override migrateData(source: AnyObject): AnyObject;
 }
 export default BaseAmbientSound;
 

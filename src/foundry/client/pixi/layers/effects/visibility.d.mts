@@ -149,13 +149,13 @@ declare global {
     format: PIXI.FORMATS;
   }
 
-  type CanvasVisibilityTest = {
+  interface CanvasVisibilityTest {
     point: PIXI.Point;
     los: Map<VisionSource, boolean>;
-  };
+  }
 
-  type CanvasVisibilityTestConfig = {
+  interface CanvasVisibilityTestConfig {
     object: PlaceableObject | null;
     tests: CanvasVisibilityTest[];
-  };
+  }
 }

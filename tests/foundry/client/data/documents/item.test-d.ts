@@ -32,8 +32,8 @@ if (item) {
   expectTypeOf(item.isOwned).toEqualTypeOf<boolean>();
   expectTypeOf(item.transferredEffects).toEqualTypeOf<ActiveEffect[]>();
   expectTypeOf(item.type).toEqualTypeOf<"weapon" | "armor" | "base">();
-  expectTypeOf(item.getRollData()).toEqualTypeOf<object>();
-  expectTypeOf(item.system).toEqualTypeOf<WeaponData | ArmorData | object>();
+  expectTypeOf(item.getRollData()).toEqualTypeOf<AnyObject>();
+  expectTypeOf(item.system).toEqualTypeOf<WeaponData | ArmorData | AnyObject>();
 
   if (item.system instanceof WeaponData) {
     expectTypeOf(item.system.attack).toEqualTypeOf<number | null | undefined>();

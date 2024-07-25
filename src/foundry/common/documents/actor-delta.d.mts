@@ -27,7 +27,7 @@ declare class BaseActorDelta extends Document<
 
   static override defineSchema(): BaseActorDelta.Schema;
 
-  override canUserModify(user: documents.BaseUser, action: "create" | "update" | "delete", data?: object): boolean;
+  override canUserModify(user: documents.BaseUser, action: "create" | "update" | "delete", data?: AnyObject): boolean;
 
   override testUserPermission(
     user: documents.BaseUser,

@@ -29,7 +29,7 @@ declare global {
   }
 
   namespace MeasuredTemplateConfig {
-    type FormData = {
+    interface FormData {
       angle: number | null;
       borderColor: string;
       direction: number | null;
@@ -41,7 +41,7 @@ declare global {
       width: number | null;
       x: number | null;
       y: number | null;
-    };
+    }
 
     interface MeasuredTemplateConfigData<
       Options extends DocumentSheetOptions<MeasuredTemplateDocument> = DocumentSheetOptions<MeasuredTemplateDocument>,

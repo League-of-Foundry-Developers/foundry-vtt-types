@@ -43,10 +43,10 @@ declare class BaseNote extends Document<BaseNote.Schema, BaseNote.Metadata, Scen
     }>,
   ): boolean;
 
-  static override migrateData(source: object): object;
+  static override migrateData(source: AnyObject): AnyObject;
 
   static override shimData(
-    data: object,
+    data: AnyObject,
     options?: {
       /**
        * Apply shims to embedded models?
@@ -54,7 +54,7 @@ declare class BaseNote extends Document<BaseNote.Schema, BaseNote.Metadata, Scen
        */
       embedded?: boolean;
     },
-  ): object;
+  ): AnyObject;
 }
 export default BaseNote;
 

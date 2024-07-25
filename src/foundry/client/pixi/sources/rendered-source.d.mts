@@ -36,7 +36,7 @@ declare global {
       time: number;
     }>;
 
-    type RenderedPointSourceLayer = {
+    interface RenderedPointSourceLayer {
       /** Is this layer actively rendered? */
       active?: boolean;
       /** Do uniforms need to be reset? */
@@ -47,7 +47,7 @@ declare global {
       mesh?: PointSourceMesh;
       /** The shader instance used for the layer */
       shader?: AdaptiveLightingShader;
-    };
+    }
   }
 
   class RenderedPointSource extends PointSource {

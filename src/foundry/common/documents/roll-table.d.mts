@@ -28,10 +28,10 @@ declare class BaseRollTable extends Document<BaseRollTable.Schema, BaseRollTable
    */
   static DEFAULT_ICON: "icons/svg/d20-grey.svg";
 
-  static override migrateData(source: object): object;
+  static override migrateData(source: AnyObject): AnyObject;
 
   static override shimData(
-    data: object,
+    data: AnyObject,
     options?: {
       /**
        * Apply shims to embedded models?
@@ -39,7 +39,7 @@ declare class BaseRollTable extends Document<BaseRollTable.Schema, BaseRollTable
        */
       embedded?: boolean;
     },
-  ): object;
+  ): AnyObject;
 }
 export default BaseRollTable;
 

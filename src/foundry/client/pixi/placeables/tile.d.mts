@@ -175,7 +175,7 @@ declare global {
      * Create a preview tile with a background texture instead of an image
      * @param data - Initial data with which to create the preview Tile
      */
-    static createPreview(data: unknown): Tile;
+    static createPreview(data: foundry.documents.BaseTile.ConstructorData): Tile.ConfiguredInstance;
 
     protected override _draw(options?: Record<string, unknown>): Promise<void>;
 
@@ -255,12 +255,6 @@ declare global {
      * Handle cancellation of a drag event for one of the resizing handles
      */
     protected _onHandleDragCancel(event: PIXI.FederatedEvent): void;
-
-    /**
-     * Create a preview tile with a background texture instead of an image
-     * @param data - Initial data with which to create the preview Tile
-     */
-    static createPreview(data: foundry.documents.BaseTile.ConstructorData): Tile.ConfiguredInstance;
 
     /**
      * @deprecated since v11, will be removed in v13

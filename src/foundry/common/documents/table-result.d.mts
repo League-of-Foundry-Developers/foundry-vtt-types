@@ -40,10 +40,10 @@ declare class BaseTableResult extends Document<
     }>,
   ): boolean;
 
-  static override migrateData(source: object): object;
+  static override migrateData(source: AnyObject): AnyObject;
 
   static override shimData(
-    data: object,
+    data: AnyObject,
     options?: {
       /**
        * Apply shims to embedded models?
@@ -51,7 +51,7 @@ declare class BaseTableResult extends Document<
        */
       embedded?: boolean;
     },
-  ): object;
+  ): AnyObject;
 }
 export default BaseTableResult;
 

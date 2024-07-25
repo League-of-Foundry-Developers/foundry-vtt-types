@@ -39,19 +39,13 @@ declare namespace TypeDataModel {
   // This still is only allows classes descended from `TypeDataField` because these unique symbols aren't used elsewhere.
   // These generic parameters seem to be required. This is likely because of a TypeScript soundness holes in which concrete types like `any` or `unknown`
   // will get treated bivariantly whereas type parameters get treated more safely.
-  type TypeDataModelInternal<
-    Schema extends DataSchema,
-    Parent extends Document.Any,
-    BaseModel,
-    BaseData,
-    DerivedData,
-  > = {
+  interface Internal<Schema extends DataSchema, Parent extends Document.Any, BaseModel, BaseData, DerivedData> {
     [__Schema]: Schema;
     [__Parent]: Parent;
     [__BaseModel]: BaseModel;
     [__BaseData]: BaseData;
     [__DerivedData]: DerivedData;
-  };
+  }
 
   // Removes the base and derived data from the type.
   // Has no extends bounds to simplify any checking logic.
@@ -60,13 +54,13 @@ declare namespace TypeDataModel {
     BaseModel
   >;
 
-  export type PrepareBaseDataThis<BaseThis extends TypeDataModelInternal<any, any, any, any, any>> =
-    BaseThis extends TypeDataModelInternal<any, any, infer BaseModel, infer BaseData, infer DerivedData>
+  export type PrepareBaseDataThis<BaseThis extends Internal<any, any, any, any, any>> =
+    BaseThis extends Internal<any, any, infer BaseModel, infer BaseData, infer DerivedData>
       ? MergePartial<Omit<RemoveDerived<BaseThis, BaseModel, BaseData, DerivedData>, "prepareBaseData">, BaseData>
       : never;
 
-  export type PrepareDerivedDataThis<BaseThis extends TypeDataModelInternal<any, any, any, any, any>> =
-    BaseThis extends TypeDataModelInternal<any, any, infer BaseModel, infer BaseData, infer DerivedData>
+  export type PrepareDerivedDataThis<BaseThis extends Internal<any, any, any, any, any>> =
+    BaseThis extends Internal<any, any, infer BaseModel, infer BaseData, infer DerivedData>
       ? MergePartial<
           SimpleMerge<Omit<RemoveDerived<BaseThis, BaseModel, BaseData, DerivedData>, "prepareDerivedData">, BaseData>,
           DerivedData
@@ -109,8 +103,8 @@ declare namespace TypeDataModel {
       : Partial<U[K]>
     : U[K];
 
-  export type ParentAssignmentType<BaseThis extends TypeDataModelInternal<any, any, any, any, any>> =
-    BaseThis extends TypeDataModelInternal<infer Schema, infer Parent, any, any, any>
+  export type ParentAssignmentType<BaseThis extends Internal<any, any, any, any, any>> =
+    BaseThis extends Internal<infer Schema, infer Parent, any, any, any>
       ? SimpleMerge<
           SchemaField.InitializedType<Document.SchemaFor<Parent>>,
           {

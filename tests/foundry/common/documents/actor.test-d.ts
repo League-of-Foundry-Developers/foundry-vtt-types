@@ -47,7 +47,7 @@ type MyCharacterSchema = {
 };
 
 class MyCharacter extends foundry.abstract.TypeDataModel<MyCharacterSchema, Actor.ConfiguredInstance> {
-  static defineSchema() {
+  static override defineSchema() {
     const { SchemaField, NumberField } = foundry.data.fields;
     return {
       abilities: new SchemaField({
@@ -69,7 +69,7 @@ class MyCharacter extends foundry.abstract.TypeDataModel<MyCharacterSchema, Acto
     };
   }
 
-  prepareDerivedData(): void {
+  override prepareDerivedData(): void {
     this.abilities.strength.value + 2;
     for (const ability of Object.values(this.abilities)) {
       // @ts-expect-error Derived data must be declared
@@ -102,10 +102,10 @@ declare namespace BoilerplateActorBase {
 
 class BoilerplateActorBase<
   Schema extends BoilerplateActorBase.Schema = BoilerplateActorBase.Schema,
-  BaseData extends Record<string, unknown> = Record<string, never>,
-  DerivedData extends Record<string, unknown> = Record<string, never>,
+  BaseData extends AnyObject = Record<string, never>,
+  DerivedData extends AnyObject = Record<string, never>,
 > extends foundry.abstract.TypeDataModel<Schema, Actor.ConfiguredInstance, BaseData, DerivedData> {
-  static defineSchema(): BoilerplateActorBase.Schema {
+  static override defineSchema(): BoilerplateActorBase.Schema {
     const fields = foundry.data.fields;
     const requiredInteger = { required: true, nullable: false, integer: true };
     const schema: DataSchema = {};
@@ -154,7 +154,7 @@ declare namespace BoilerplateCharacter {
     }>;
   }
 
-  interface DerivedProps extends Record<string, unknown> {
+  interface DerivedProps extends AnyObject {
     abilities: {
       strength: {
         mod: number;
@@ -179,9 +179,9 @@ declare namespace BoilerplateCharacter {
 class BoilerplateCharacter extends BoilerplateActorBase<
   BoilerplateCharacter.Schema,
   Record<string, never>,
-  BoilerplateCharacter.DerivedProps & Record<string, unknown>
+  BoilerplateCharacter.DerivedProps & AnyObject
 > {
-  static defineSchema() {
+  static override defineSchema() {
     const fields = foundry.data.fields;
     const requiredInteger = { required: true, nullable: false, integer: true };
     const schema = super.defineSchema();
@@ -205,7 +205,7 @@ class BoilerplateCharacter extends BoilerplateActorBase<
     return schema;
   }
 
-  prepareDerivedData(this: TypeDataModel.PrepareDerivedDataThis<this>) {
+  override prepareDerivedData(this: TypeDataModel.PrepareDerivedDataThis<this>) {
     // Loop through ability scores, and add their modifiers to our sheet output.
     for (const [key, abil] of Object.entries(this.abilities)) {
       // Calculate the modifier using d20 rules.
@@ -222,7 +222,7 @@ class BoilerplateCharacter extends BoilerplateActorBase<
   }
 
   getRollData() {
-    const data: Record<string, unknown> = {};
+    const data: AnyObject = {};
 
     // Copy the ability scores to the top level, so that rolls can use
     // formulas like `@str.mod + 4`.

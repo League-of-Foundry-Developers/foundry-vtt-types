@@ -80,10 +80,10 @@ declare class BaseWorld extends BasePackage<BaseWorld.Schema> {
    */
   static icon: string;
 
-  static migrateData(data: object): object;
+  static migrateData(data: AnyObject): AnyObject;
 
   static testAvailability(
-    data: Partial<PackageManifestData>,
+    data: InexactPartial<PackageManifestData>,
     options: InexactPartial<{
       /**
        * A specific software release for which to test availability.

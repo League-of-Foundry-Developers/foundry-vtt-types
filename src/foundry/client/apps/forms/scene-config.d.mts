@@ -112,7 +112,7 @@ declare global {
   }
 
   namespace SceneConfig {
-    type FormData = {
+    interface FormData {
       backgroundColor: Scene["backgroundColor"];
       "background.src": Scene["background"]["src"];
       "background.offsetX": Scene["background"]["offsetX"];
@@ -148,6 +148,6 @@ declare global {
       tokenVision: Scene["tokenVision"];
       weather: Scene["weather"];
       width: Scene["width"];
-    };
+    }
   }
 }

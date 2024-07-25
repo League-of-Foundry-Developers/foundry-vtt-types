@@ -2,10 +2,10 @@ export {};
 
 declare module "pixi.js" {
   namespace Polygon {
-    type ClipperPoint = {
+    interface ClipperPoint {
       X: number;
       Y: number;
-    };
+    }
   }
 
   interface Polygon {

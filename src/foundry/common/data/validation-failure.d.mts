@@ -150,19 +150,19 @@ declare namespace DataModelValidationFailure {
     unresolved: boolean;
   }
 
-  type ElementValidationFailure = {
+  interface ElementValidationFailure {
     /** Either the element's index or some other identifier for it. */
     id: string | number;
     /** Optionally a user-friendly name for the element. */
     name?: string;
     /** The element's validation failure. */
     failure: DataModelValidationFailure;
-  };
+  }
 
-  type ObjectProperties = {
+  interface ObjectProperties {
     invalidValue?: any;
     fallback?: any;
     dropped?: boolean;
     message?: string;
-  };
+  }
 }

@@ -42,12 +42,12 @@ declare global {
   }
 
   namespace MacroConfig {
-    type FormData = {
+    interface FormData {
       command: string;
       img: string;
       name: string;
       type: ValueOf<typeof CONST.MACRO_TYPES>;
-    };
+    }
 
     interface MacroConfigData<Options extends DocumentSheetOptions<Macro> = DocumentSheetOptions<Macro>>
       extends DocumentSheet.DocumentSheetData<Options, InstanceType<ConfiguredDocumentClass<typeof Macro>>> {
