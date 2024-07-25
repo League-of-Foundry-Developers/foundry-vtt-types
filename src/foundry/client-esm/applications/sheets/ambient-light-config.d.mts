@@ -1,5 +1,5 @@
-import type DocumentSheetV2 from "../api/document-sheet.mts";
-import type HandlebarsApplicationMixin from "../api/handlebars-application.mts";
+import type DocumentSheetV2 from "../api/document-sheet.d.mts";
+import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
 
 /**
  * The AmbientLight configuration application.

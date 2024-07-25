@@ -1,6 +1,6 @@
 import type BaseEffectSource from "./base-effect-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
-import type { PointEffectSourceMixin_BaseEffectSource_Interface } from "./point-effect-source.mts";
+import type { PointEffectSourceMixin_BaseEffectSource_Interface } from "./point-effect-source.d.mts";
 
 declare const PointEffectSourceMixin_BaseEffectSource: PointEffectSourceMixin_BaseEffectSource_Interface;
 

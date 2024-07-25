@@ -1,6 +1,6 @@
 import type BaseLightSource from "./base-light-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
-import type { PointEffectSourceMixin_BaseLightSource_Interface } from "./point-effect-source.mts";
+import type { PointEffectSourceMixin_BaseLightSource_Interface } from "./point-effect-source.d.mts";
 import type RenderedEffectSource from "./rendered-effect-source.d.mts";
 
 // TODO: Adjust after client/config.js is updated
