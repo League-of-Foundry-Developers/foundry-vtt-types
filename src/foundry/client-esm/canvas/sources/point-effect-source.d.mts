@@ -1,7 +1,5 @@
 import type { Mixin } from "../../../../types/utils.d.mts";
 import type BaseEffectSource from "./base-effect-source.d.mts";
-import type BaseLightSource from "./base-light-source.d.mts";
-import type RenderedEffectSource from "./rendered-effect-source.d.mts";
 
 declare class PointEffectSource {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
@@ -54,50 +52,6 @@ declare class PointEffectSource {
    * @privateRemarks Actual definition is get/set
    */
   los: PointSourcePolygon;
-}
-
-type PointEffectSourceMixin_BaseEffectSource_Static = typeof PointEffectSource & typeof BaseEffectSource;
-
-export interface PointEffectSourceMixin_BaseEffectSource_Interface
-  extends PointEffectSourceMixin_BaseEffectSource_Static {
-  new <
-    SourceData extends BaseEffectSource.BaseEffectSourceData & PointEffectSourceMixin.PointEffectSourceData,
-    SourceShape extends PointSourcePolygon,
-  >(
-    ...args: ConstructorParameters<typeof BaseEffectSource>
-  ): PointEffectSource & BaseEffectSource<SourceData, SourceShape>;
-}
-
-type PointEffectSourceMixin_RenderedEffectSource_Static = typeof PointEffectSource & typeof RenderedEffectSource;
-
-export interface PointEffectSourceMixin_RenderedEffectSource_Interface
-  extends PointEffectSourceMixin_RenderedEffectSource_Static {
-  new <
-    SourceData extends RenderedEffectSource.RenderedEffectSourceData & PointEffectSourceMixin.PointEffectSourceData,
-    SourceShape extends PointSourcePolygon,
-    RenderingLayers extends Record<
-      string,
-      RenderedEffectSource.RenderedEffectSourceLayer
-    > = RenderedEffectSource.Layers,
-  >(
-    ...args: ConstructorParameters<typeof RenderedEffectSource>
-  ): PointEffectSource & RenderedEffectSource<SourceData, SourceShape, RenderingLayers>;
-}
-
-type PointEffectSourceMixin_BaseLightSource_Static = typeof PointEffectSource & typeof BaseLightSource;
-
-export interface PointEffectSourceMixin_BaseLightSource_Interface
-  extends PointEffectSourceMixin_BaseLightSource_Static {
-  new <
-    SourceData extends BaseLightSource.LightSourceData & PointEffectSourceMixin.PointEffectSourceData,
-    SourceShape extends PointSourcePolygon,
-    RenderingLayers extends Record<
-      string,
-      RenderedEffectSource.RenderedEffectSourceLayer
-    > = RenderedEffectSource.Layers,
-  >(
-    ...args: ConstructorParameters<typeof BaseLightSource>
-  ): PointEffectSource & BaseLightSource<SourceData, SourceShape, RenderingLayers>;
 }
 
 /**

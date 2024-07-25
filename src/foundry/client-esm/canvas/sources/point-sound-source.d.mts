@@ -1,8 +1,5 @@
 import type BaseEffectSource from "./base-effect-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
-import type { PointEffectSourceMixin_BaseEffectSource_Interface } from "./point-effect-source.d.mts";
-
-declare const PointEffectSourceMixin_BaseEffectSource: PointEffectSourceMixin_BaseEffectSource_Interface;
 
 type SoundSourceData = PointEffectSourceMixin.PointEffectSourceData & BaseEffectSource.BaseEffectSourceData;
 
@@ -12,7 +9,7 @@ type SoundSourceData = PointEffectSourceMixin.PointEffectSourceData & BaseEffect
 export default class PointSoundSource<
   SourceData extends SoundSourceData = SoundSourceData,
   SourceShape extends PointSourcePolygon = PointSourcePolygon,
-> extends PointEffectSourceMixin_BaseEffectSource<SourceData, SourceShape> {
+> extends PointEffectSourceMixin(BaseEffectSource)<SourceData, SourceShape> {
   /** @defaultValue `"sound"` */
   static override sourceType: string;
 

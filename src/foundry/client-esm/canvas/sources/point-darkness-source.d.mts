@@ -1,12 +1,9 @@
 import type BaseLightSource from "./base-light-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
-import type { PointEffectSourceMixin_BaseLightSource_Interface } from "./point-effect-source.d.mts";
 import type RenderedEffectSource from "./rendered-effect-source.d.mts";
 
 // TODO: Adjust after client/config.js is updated
 type LightSourceAnimationConfig = unknown;
-
-declare const PointEffectSourceMixin_BaseLightSource: PointEffectSourceMixin_BaseLightSource_Interface;
 
 type DarknessSourceData = BaseLightSource.LightSourceData & PointEffectSourceMixin.PointEffectSourceData;
 
@@ -20,7 +17,7 @@ type DarknessLayers = {
 export default class PointDarknessSource<
   SourceData extends DarknessSourceData = DarknessSourceData,
   SourceShape extends PointSourcePolygon = PointSourcePolygon,
-> extends PointEffectSourceMixin_BaseLightSource<SourceData, SourceShape, DarknessLayers> {
+> extends PointEffectSourceMixin(BaseLightSource)<SourceData, SourceShape, DarknessLayers> {
   /** @defaultValue `"darknessSources"` */
   static override effectsCollection: string;
 
