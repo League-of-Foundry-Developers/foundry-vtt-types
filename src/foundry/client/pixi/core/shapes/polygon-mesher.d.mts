@@ -1,4 +1,4 @@
-import type { InexactPartial } from "../../../../../types/utils.mts";
+import type { InexactPartial } from "../../../../../types/utils.d.mts";
 
 declare global {
   /**

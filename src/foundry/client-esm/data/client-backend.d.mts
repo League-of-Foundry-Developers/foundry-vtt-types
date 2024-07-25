@@ -5,7 +5,7 @@ import type {
   DatabaseCreateOperation,
   DatabaseUpdateOperation,
   DatabaseDeleteOperation,
-} from "../../common/abstract/_types.mjs";
+} from "../../common/abstract/_types.d.mts";
 import type { LoggingLevels } from "../../../types/helperTypes.d.mts";
 
 /**

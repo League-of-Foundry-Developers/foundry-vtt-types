@@ -20,12 +20,19 @@ declare class WordTree extends StringTree<WordTree.WordTreeEntry> {
    * Return entries that match the given string prefix.
    * @param prefix              - The prefix.
    * @param options             - Additional options to configure behaviour.
-   * @param options.limit       - The maximum number of items to retrieve. Defaults to 10. It is important
-   *                              to set this value as very short prefixes will naturally match large numbers
-   *                              of entries.
    * @returns                   A number of entries that have the given prefix.
    */
-  lookup(prefix: string, options?: InexactPartial<{ limit: number }>): WordTree.WordTreeEntry[];
+  lookup(
+    prefix: string,
+    options?: InexactPartial<{
+      /**
+       * The maximum number of items to retrieve. Defaults to 10. It is important
+       * to set this value as very short prefixes will naturally match large numbers
+       * of entries.
+       */
+      limit: number;
+    }>,
+  ): WordTree.WordTreeEntry[];
   lookup(strings: string[], options?: InexactPartial<{ limit: number }>): StringTree.StringTreeNode[];
 
   /**
@@ -40,15 +47,15 @@ declare class WordTree extends StringTree<WordTree.WordTreeEntry> {
 declare namespace WordTree {
   /**
    * A leaf entry in the tree.
-   * @property  entry          - An object that this entry represents.
-   * @property  documentName   - The document type.
-   * @property  uuid           - The document's UUID.
-   * @property  pack           - The (optional) pack ID.
    */
   interface WordTreeEntry {
+    /** An object that this entry represents. */
     entry: Document;
+    /** The document type. */
     documentName: string;
+    /** The document's UUID. */
     uuid: string;
+    /** The (optional) pack ID. */
     pack?: string;
   }
 }

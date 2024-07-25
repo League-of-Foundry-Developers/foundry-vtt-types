@@ -1,5 +1,5 @@
 import type { FormInputConfig } from "../forms/fields.d.mts";
-import AbstractFormInputElement from "./form-element.mjs";
+import type AbstractFormInputElement from "./form-element.d.mts";
 
 /**
  * A custom HTML element which allows for arbitrary assignment of a set of string tags.

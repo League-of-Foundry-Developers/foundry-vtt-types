@@ -1,7 +1,6 @@
 import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
-import type { ApplicationConfiguration } from "../../../common/config.d.mts";
 import type ApplicationV2 from "../api/application.d.mts";
-import type HandlebarsApplicationMixin from "../api/handlebars-application.mjs";
+import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
 
 /**
  * An application responsible for handling unfulfilled dice terms in a roll.
@@ -46,15 +45,17 @@ declare class RollResolver<
    * Handle prompting for a single extra result from a term.
    * @param term                - The term.
    * @param method              - The method used to obtain the result.
-   * @param  options            - Optional configuration options
-   * @param  options.reroll     - Defaults to false
-   * @param  options.explode    - Defaults to false
    * @returns
    */
   resolveResult(
     term: DiceTerm,
     method: string,
-    options?: InexactPartial<{ reroll: boolean; explode: boolean }>,
+    options?: InexactPartial<{
+      /** @defaultValue `false` */
+      reroll: boolean;
+      /** @defaultValue `false` */
+      explode: boolean;
+    }>,
   ): Promise<number | void>;
 
   /**

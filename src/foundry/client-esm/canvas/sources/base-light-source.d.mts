@@ -1,5 +1,5 @@
 import type { InexactPartial } from "../../../../types/utils.d.mts";
-import RenderedEffectSource from "./rendered-effect-source.mts";
+import type RenderedEffectSource from "./rendered-effect-source.d.mts";
 
 // TODO: Adjust after client/config.js is updated
 type LightSourceAnimationConfig = unknown;
