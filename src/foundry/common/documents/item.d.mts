@@ -44,7 +44,7 @@ declare class BaseItem extends Document<BaseItem.Schema, BaseItem.Metadata, Acto
    */
   static get TYPES(): BaseItem.TypeNames[];
 
-  override canUserModify(user: documents.BaseUser, action: "create" | "delete" | "update", data?: object): boolean;
+  override canUserModify(user: documents.BaseUser, action: "create" | "delete" | "update", data?: AnyObject): boolean;
 
   override testUserPermission(
     user: documents.BaseUser,
@@ -58,10 +58,10 @@ declare class BaseItem extends Document<BaseItem.Schema, BaseItem.Metadata, Acto
     }>,
   ): boolean;
 
-  static override migrateData(source: object): object;
+  static override migrateData(source: AnyObject): AnyObject;
 
   static override shimData(
-    data: object,
+    data: AnyObject,
     options: {
       /**
        * Apply shims to embedded models?
@@ -69,7 +69,7 @@ declare class BaseItem extends Document<BaseItem.Schema, BaseItem.Metadata, Acto
        */
       embedded?: boolean;
     },
-  ): object;
+  ): AnyObject;
 }
 export default BaseItem;
 
@@ -101,7 +101,7 @@ declare namespace BaseItem {
   type Properties = fields.SchemaField.InnerInitializedType<Schema>;
   type Source = fields.SchemaField.InnerPersistedType<Schema>;
 
-  export interface Schema<TypeName extends TypeNames = TypeNames> extends DataSchema {
+  interface Schema<TypeName extends TypeNames = TypeNames> extends DataSchema {
     /**
      * The _id which uniquely identifies this Item document
      * @defaultValue `null`

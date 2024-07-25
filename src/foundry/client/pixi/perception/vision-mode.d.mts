@@ -36,7 +36,7 @@ declare global {
      * @param data    - Data which fulfills the model defined by the VisionMode schema.
      * @param options - Additional options passed to the DataModel constructor.
      */
-    constructor(data: Partial<any>, options?: object);
+    constructor(data: InexactPartial<any>, options?: AnyObject);
 
     static defineSchema(): VisionMode.Schema;
 
@@ -153,7 +153,7 @@ declare global {
     >;
     type LightingMultipliers = Record<ValueOf<typeof VisionMode.LIGHTING_LEVELS>, number>;
 
-    export interface Schema extends DataSchema {
+    interface Schema extends DataSchema {
       id: fields.StringField<{ blank: false }>;
       label: fields.StringField<{ blank: false }>;
       tokenConfig: fields.BooleanField<{ initial: true }>;

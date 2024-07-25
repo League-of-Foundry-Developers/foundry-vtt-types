@@ -3,7 +3,7 @@ import type * as fields from "../data/fields.d.mts";
 import type AdditionalTypesField from "./sub-types.d.mts";
 
 declare namespace BaseModule {
-  export interface Schema extends ReturnType<typeof BasePackage.defineSchema> {
+  interface Schema extends ReturnType<typeof BasePackage.defineSchema> {
     /**
      * The current package version
      * @remarks Actually defined in BasePackage but defined here to avoid conflict with BaseWorld

@@ -3,7 +3,7 @@ import type * as fields from "./data/fields.d.mts";
 import type { SOFTWARE_UPDATE_CHANNELS } from "./constants.d.mts";
 
 declare namespace ApplicationConfiguration {
-  export interface Schema extends DataSchema {
+  interface Schema extends DataSchema {
     /**
      * The server administrator password (obscured)
      */
@@ -190,7 +190,7 @@ declare namespace ApplicationConfiguration {
 declare class ApplicationConfiguration extends DataModel<ApplicationConfiguration.Schema> {
   static defineSchema(): ApplicationConfiguration.Schema;
 
-  static override migrateData(source: object): object;
+  static override migrateData(source: AnyObject): AnyObject;
 
   /**
    * Validate a port assignment.
@@ -202,7 +202,7 @@ declare class ApplicationConfiguration extends DataModel<ApplicationConfiguratio
 }
 
 declare namespace ReleaseData {
-  export interface Schema extends DataSchema {
+  interface Schema extends DataSchema {
     /**
      * The major generation of the Release
      */

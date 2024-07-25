@@ -28,10 +28,10 @@ declare class BaseTile extends Document<BaseTile.Schema, BaseTile.Metadata, Scen
 
   static override defineSchema(): BaseTile.Schema;
 
-  static override migrateData(source: object): object;
+  static override migrateData(source: AnyObject): AnyObject;
 
   static override shimData(
-    data: object,
+    data: AnyObject,
     options?: {
       /**
        * Apply shims to embedded models?
@@ -39,7 +39,7 @@ declare class BaseTile extends Document<BaseTile.Schema, BaseTile.Metadata, Scen
        */
       embedded?: boolean;
     },
-  ): object;
+  ): AnyObject;
 }
 export default BaseTile;
 
@@ -55,7 +55,7 @@ declare namespace BaseTile {
   type Properties = fields.SchemaField.InnerInitializedType<Schema>;
   type Source = fields.SchemaField.InnerPersistedType<Schema>;
 
-  export interface Schema extends DataSchema {
+  interface Schema extends DataSchema {
     /**
      * The _id which uniquely identifies this Tile embedded document
      * @defaultValue `null`

@@ -225,7 +225,7 @@ declare namespace BasePackage {
       }
     : PackageCompendiumFolderSchemaHelper;
 
-  export interface Schema extends DataSchema {
+  interface Schema extends DataSchema {
     /**
      * The machine-readable unique package id, should be lower-case with no spaces or special characters
      */
@@ -532,7 +532,7 @@ declare class BasePackage<
   static defineSchema(): BasePackage.Schema;
 
   static testAvailability(
-    data: Partial<BasePackage.PackageManifestData>,
+    data: InexactPartial<BasePackage.PackageManifestData>,
     options: InexactPartial<{
       /**
        * A specific software release for which to test availability.
@@ -567,7 +567,7 @@ declare class BasePackage<
    */
   static testDependencyCompatibility(compatibility: PackageCompatibility, dependency: BasePackage): boolean;
 
-  static cleanData(source?: object, options?: fields.DataField.CleanOptions): object;
+  static cleanData(source?: AnyObject, options?: fields.DataField.CleanOptions): AnyObject;
 
   /**
    * Validate that a Package ID is allowed.
@@ -594,29 +594,32 @@ declare class BasePackage<
   ): void;
 
   static migrateData(
-    data: object,
+    data: AnyObject,
     logOptions?: InexactPartial<{
       installed: boolean;
     }>,
-  ): object;
+  ): AnyObject;
 
-  protected static _migrateNameToId(data: object, logOptions: Parameters<typeof BasePackage._logWarning>[2]): void;
+  protected static _migrateNameToId(data: AnyObject, logOptions: Parameters<typeof BasePackage._logWarning>[2]): void;
 
   protected static _migrateDependenciesNameToId(
-    data: object,
+    data: AnyObject,
     logOptions: Parameters<typeof BasePackage._logWarning>[2],
   ): void;
 
   protected static _migrateToRelationships(
-    data: object,
+    data: AnyObject,
     logOptions: Parameters<typeof BasePackage._logWarning>[2],
   ): void;
 
-  protected static _migrateCompatibility(data: object, logOptions: Parameters<typeof BasePackage._logWarning>[2]): void;
+  protected static _migrateCompatibility(
+    data: AnyObject,
+    logOptions: Parameters<typeof BasePackage._logWarning>[2],
+  ): void;
 
-  protected static _migrateMediaURL(data: object, logOptions: Parameters<typeof BasePackage._logWarning>[2]): void;
+  protected static _migrateMediaURL(data: AnyObject, logOptions: Parameters<typeof BasePackage._logWarning>[2]): void;
 
-  protected static _migrateOwnership(data: object, logOptions: Parameters<typeof BasePackage._logWarning>[2]): void;
+  protected static _migrateOwnership(data: AnyObject, logOptions: Parameters<typeof BasePackage._logWarning>[2]): void;
 
   /**
    * Retrieve the latest Package manifest from a provided remote location.

@@ -36,10 +36,10 @@ declare class BaseCards extends Document<BaseCards.Schema, BaseCards.Metadata> {
    */
   static get TYPES(): BaseCards.TypeNames[];
 
-  static override migrateData(source: object): object;
+  static override migrateData(source: AnyObject): AnyObject;
 
   static override shimData(
-    data: object,
+    data: AnyObject,
     options?: {
       /**
        * Apply shims to embedded models?
@@ -47,7 +47,7 @@ declare class BaseCards extends Document<BaseCards.Schema, BaseCards.Metadata> {
        */
       embedded?: boolean;
     },
-  ): object;
+  ): AnyObject;
 }
 export default BaseCards;
 
@@ -74,7 +74,7 @@ declare namespace BaseCards {
   type Properties = fields.SchemaField.InnerInitializedType<Schema>;
   type Source = fields.SchemaField.InnerPersistedType<Schema>;
 
-  export interface Schema<TypeName extends TypeNames = TypeNames> extends DataSchema {
+  interface Schema<TypeName extends TypeNames = TypeNames> extends DataSchema {
     /**
      * The _id which uniquely identifies this stack of Cards document
      * @defaultValue `null`

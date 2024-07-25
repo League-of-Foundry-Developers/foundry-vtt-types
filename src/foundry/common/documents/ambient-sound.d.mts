@@ -26,7 +26,7 @@ declare class BaseAmbientSound extends Document<
 
   static override defineSchema(): BaseAmbientSound.Schema;
 
-  static override migrateData(source: object): object;
+  static override migrateData(source: AnyObject): AnyObject;
 }
 export default BaseAmbientSound;
 
@@ -48,7 +48,7 @@ declare namespace BaseAmbientSound {
   type Properties = fields.SchemaField.InnerInitializedType<Schema>;
   type Source = fields.SchemaField.InnerPersistedType<Schema>;
 
-  export interface Schema extends DataSchema {
+  interface Schema extends DataSchema {
     /**
      * The _id which uniquely identifies this AmbientSound document
      * @defaultValue `null`

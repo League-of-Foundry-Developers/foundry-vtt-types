@@ -40,7 +40,7 @@ declare namespace BaseActor {
   type Properties = fields.SchemaField.InnerInitializedType<Schema>;
   type Source = fields.SchemaField.InnerPersistedType<Schema>;
 
-  export interface Schema<TypeName extends TypeNames = TypeNames> extends DataSchema {
+  interface Schema<TypeName extends TypeNames = TypeNames> extends DataSchema {
     /**
      * The _id which uniquely identifies this Actor document
      * @defaultValue `null`
@@ -184,21 +184,21 @@ declare class BaseActor extends Document<BaseActor.Schema, BaseActor.Metadata> {
   static #canUpdate(user: documents.BaseUser, doc: BaseActor, data: BaseActor.UpdateData): boolean;
 
   protected override _preCreate(
-    data: fields.SchemaField.AssignmentType<documents.BaseActor.Schema, {}>,
+    data: fields.SchemaField.AssignmentType<documents.BaseActor.Schema, EmptyObject>,
     options: DocumentModificationOptions,
     user: documents.BaseUser,
   ): Promise<void>;
 
   protected override _preUpdate(
-    changed: fields.SchemaField.AssignmentType<documents.BaseActor.Schema, {}>,
+    changed: fields.SchemaField.AssignmentType<documents.BaseActor.Schema, EmptyObject>,
     options: DocumentModificationOptions,
     user: documents.BaseUser,
   ): Promise<void>;
 
-  static override migrateData(source: object): object;
+  static override migrateData(source: AnyObject): AnyObject;
 
   static override shimData(
-    data: object,
+    data: AnyObject,
     options?: {
       /**
        * Apply shims to embedded models?
@@ -206,7 +206,7 @@ declare class BaseActor extends Document<BaseActor.Schema, BaseActor.Metadata> {
        */
       embedded?: boolean;
     },
-  ): object;
+  ): AnyObject;
 }
 
 export default BaseActor;

@@ -50,10 +50,10 @@ declare class BaseChatMessage extends Document<BaseChatMessage.Schema, BaseChatM
    */
   static #validateRoll(rollJSON: string): void;
 
-  static override migrateData(source: object): object;
+  static override migrateData(source: AnyObject): AnyObject;
 
   static override shimData(
-    data: object,
+    data: AnyObject,
     options?: {
       /**
        * Apply shims to embedded models?
@@ -61,7 +61,7 @@ declare class BaseChatMessage extends Document<BaseChatMessage.Schema, BaseChatM
        */
       embedded?: boolean;
     },
-  ): object;
+  ): AnyObject;
 }
 export default BaseChatMessage;
 
@@ -88,7 +88,7 @@ declare namespace BaseChatMessage {
   type Properties = fields.SchemaField.InnerInitializedType<Schema>;
   type Source = fields.SchemaField.InnerPersistedType<Schema>;
 
-  export interface Schema extends DataSchema {
+  interface Schema extends DataSchema {
     /**
      * The _id which uniquely identifies this ChatMessage document
      * @defaultValue `null`

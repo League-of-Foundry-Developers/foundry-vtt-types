@@ -68,7 +68,7 @@ declare namespace BaseJournalEntryPage {
   type Properties = fields.SchemaField.InnerInitializedType<Schema>;
   type Source = fields.SchemaField.InnerPersistedType<Schema>;
 
-  export interface Schema<TypeName extends TypeNames = TypeNames> extends DataSchema {
+  interface Schema<TypeName extends TypeNames = TypeNames> extends DataSchema {
     /**
      * The _id which uniquely identifies this JournalEntryPage embedded document.
      * @defaultValue `null`

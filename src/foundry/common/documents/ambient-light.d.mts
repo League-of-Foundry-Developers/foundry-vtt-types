@@ -27,7 +27,7 @@ declare class BaseAmbientLight extends Document<
 
   static override defineSchema(): BaseAmbientLight.Schema;
 
-  static override migrateData(source: object): object;
+  static override migrateData(source: AnyObject): AnyObject;
 }
 export default BaseAmbientLight;
 
@@ -48,7 +48,7 @@ declare namespace BaseAmbientLight {
   type Properties = fields.SchemaField.InnerInitializedType<Schema>;
   type Source = fields.SchemaField.InnerPersistedType<Schema>;
 
-  export interface Schema extends DataSchema {
+  interface Schema extends DataSchema {
     /**
      * The _id which uniquely identifies this BaseAmbientLight embedded document
      * @defaultValue `null`

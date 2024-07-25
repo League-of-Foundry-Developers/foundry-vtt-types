@@ -29,14 +29,14 @@ declare class BaseUser extends Document<BaseUser.Schema, BaseUser.Metadata> {
    * @param bar - The attempted hotbar data
    * @internal
    */
-  static #validateHotbar(bar: object): boolean;
+  static #validateHotbar(bar: AnyObject): boolean;
 
   /**
    * Validate the structure of the User permissions object
    * @param perms - The attempted permissions data
    * @internal
    */
-  static #validatePermissions(perms: object): boolean;
+  static #validatePermissions(perms: AnyObject): boolean;
 
   /**
    * Test whether the User has a GAMEMASTER or ASSISTANT role in this World?
@@ -134,7 +134,7 @@ declare namespace BaseUser {
   type Properties = fields.SchemaField.InnerInitializedType<Schema>;
   type Source = fields.SchemaField.InnerPersistedType<Schema>;
 
-  export interface Schema extends DataSchema {
+  interface Schema extends DataSchema {
     /**
      * The _id which uniquely identifies this User document.
      * @defaultValue `null`
@@ -204,7 +204,7 @@ declare namespace BaseUser {
     hotbar: fields.ObjectField<
       {
         required: true;
-        validate: (bar: object) => boolean;
+        validate: (bar: AnyObject) => boolean;
         validationError: "must be a mapping of slots to macro identifiers";
       },
       Hotbar | null | undefined,
@@ -219,12 +219,12 @@ declare namespace BaseUser {
     permissions: fields.ObjectField<
       {
         required: true;
-        validate: (perms: object) => boolean;
+        validate: (perms: AnyObject) => boolean;
         validationError: "must be a mapping of permission names to booleans";
       },
-      Partial<Permissions> | null | undefined,
-      Partial<Permissions>,
-      Partial<Permissions>
+      InexactPartial<Permissions> | null | undefined,
+      InexactPartial<Permissions>,
+      InexactPartial<Permissions>
     >;
 
     /**

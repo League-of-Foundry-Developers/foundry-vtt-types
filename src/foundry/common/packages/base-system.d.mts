@@ -2,7 +2,7 @@ import type BasePackage from "./base-package.d.mts";
 import type * as fields from "../data/fields.d.mts";
 
 declare namespace BaseSystem {
-  export interface Schema extends ReturnType<typeof BasePackage.defineSchema> {
+  interface Schema extends ReturnType<typeof BasePackage.defineSchema> {
     /**
      * The current package version
      * @remarks Actually defined in BasePackage but defined here to avoid conflict with BaseWorld

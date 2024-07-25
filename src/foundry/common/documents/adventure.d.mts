@@ -47,7 +47,7 @@ declare class BaseAdventure extends Document<BaseAdventure.Schema, BaseAdventure
     },
   ): foundry.abstract.DataModel<Schema, DataModel.Any | null>;
 
-  static override migrateData(source: object): object;
+  static override migrateData(source: AnyObject): AnyObject;
 }
 export default BaseAdventure;
 
@@ -69,7 +69,7 @@ declare namespace BaseAdventure {
   type Properties = fields.SchemaField.InnerInitializedType<Schema>;
   type Source = fields.SchemaField.InnerPersistedType<Schema>;
 
-  export interface Schema extends DataSchema {
+  interface Schema extends DataSchema {
     /**
      * The _id which uniquely identifies this Adventure document
      * @defaultValue `null`

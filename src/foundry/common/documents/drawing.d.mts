@@ -50,12 +50,12 @@ declare class BaseDrawing extends Document<BaseDrawing.Schema, BaseDrawing.Metad
     }>,
   ): boolean;
 
-  static override cleanData(source?: object, options?: fields.DataField.CleanOptions): object;
+  static override cleanData(source?: AnyObject, options?: fields.DataField.CleanOptions): AnyObject;
 
-  static override migrateData(source: object): object;
+  static override migrateData(source: AnyObject): AnyObject;
 
   static override shimData(
-    data: object,
+    data: AnyObject,
     options?: {
       /**
        * Apply shims to embedded models?
@@ -63,7 +63,7 @@ declare class BaseDrawing extends Document<BaseDrawing.Schema, BaseDrawing.Metad
        */
       embedded?: boolean;
     },
-  ): object;
+  ): AnyObject;
 }
 export default BaseDrawing;
 
@@ -90,7 +90,7 @@ declare namespace BaseDrawing {
   type Properties = fields.SchemaField.InnerInitializedType<Schema>;
   type Source = fields.SchemaField.InnerPersistedType<Schema>;
 
-  export interface Schema extends DataSchema {
+  interface Schema extends DataSchema {
     /**
      * The _id which uniquely identifies this BaseDrawing embedded document
      * @defaultValue `null`

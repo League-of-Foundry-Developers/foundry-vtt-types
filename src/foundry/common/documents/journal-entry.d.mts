@@ -23,10 +23,10 @@ declare class BaseJournalEntry extends Document<BaseJournalEntry.Schema, BaseJou
 
   static override defineSchema(): BaseJournalEntry.Schema;
 
-  static override migrateData(source: object): object;
+  static override migrateData(source: AnyObject): AnyObject;
 
   static override shimData(
-    data: object,
+    data: AnyObject,
     options?: {
       /**
        * Apply shims to embedded models?
@@ -34,7 +34,7 @@ declare class BaseJournalEntry extends Document<BaseJournalEntry.Schema, BaseJou
        */
       embedded?: boolean;
     },
-  ): object;
+  ): AnyObject;
 
   protected override _initializeSource(
     data: this | BaseJournalEntry.UpdateData,
@@ -77,7 +77,7 @@ declare namespace BaseJournalEntry {
   type Properties = fields.SchemaField.InnerInitializedType<Schema>;
   type Source = fields.SchemaField.InnerPersistedType<Schema>;
 
-  export interface Schema extends DataSchema {
+  interface Schema extends DataSchema {
     /**
      * The _id which uniquely identifies this JournalEntry document
      * @defaultValue `null`

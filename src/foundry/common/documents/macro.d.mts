@@ -42,15 +42,15 @@ declare class BaseMacro extends Document<BaseMacro.Schema, BaseMacro.Metadata> {
   ): boolean;
 
   protected override _preCreate(
-    data: fields.SchemaField.AssignmentType<documents.BaseMacro.Schema, {}>,
+    data: fields.SchemaField.AssignmentType<documents.BaseMacro.Schema, EmptyObject>,
     options: DocumentModificationOptions,
     user: foundry.documents.BaseUser,
   ): Promise<void>;
 
-  static override migrateData(source: object): object;
+  static override migrateData(source: AnyObject): AnyObject;
 
   static override shimData(
-    data: object,
+    data: AnyObject,
     options?: {
       /**
        * Apply shims to embedded models?
@@ -58,7 +58,7 @@ declare class BaseMacro extends Document<BaseMacro.Schema, BaseMacro.Metadata> {
        */
       embedded?: boolean;
     },
-  ): object;
+  ): AnyObject;
 }
 export default BaseMacro;
 
@@ -86,7 +86,7 @@ declare namespace BaseMacro {
   type Properties = fields.SchemaField.InnerInitializedType<Schema>;
   type Source = fields.SchemaField.InnerPersistedType<Schema>;
 
-  export interface Schema extends DataSchema {
+  interface Schema extends DataSchema {
     /**
      * The _id which uniquely identifies this Macro document
      * @defaultValue `null`

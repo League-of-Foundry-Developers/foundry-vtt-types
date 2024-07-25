@@ -54,7 +54,7 @@ declare namespace LightData {
     max: fields.NumberField<{ initial: 1 }>;
   }
 
-  export interface Schema extends DataSchema {
+  interface Schema extends DataSchema {
     /**
      * An opacity for the emitted light, if any
      */
@@ -171,11 +171,11 @@ declare namespace LightData {
 declare class LightData extends DataModel<LightData.Schema> {
   static defineSchema(): LightData.Schema;
 
-  static migrateData(source: object): object;
+  static migrateData(source: AnyObject): AnyObject;
 }
 
 declare namespace ShapeData {
-  export interface Schema extends DataSchema {
+  interface Schema extends DataSchema {
     /**
      * The type of shape, a value in ShapeData.TYPES.
      * For rectangles, the x/y coordinates are the top-left corner.
@@ -227,7 +227,7 @@ declare namespace TextureData {
     label: "";
   }
 
-  export interface Schema<SrcOptions extends FilePathFieldOptions> extends DataSchema {
+  interface Schema<SrcOptions extends FilePathFieldOptions> extends DataSchema {
     /**
      * The URL of the texture source.
      */
@@ -267,7 +267,7 @@ declare namespace TextureData {
 
 declare class TextureData<
   SrcOptions extends FilePathFieldOptions = TextureData.DefaultOptions,
-  SchemaOptions extends fields.SchemaField.Options<TextureData.Schema<SrcOptions>> = {},
+  SchemaOptions extends fields.SchemaField.Options<TextureData.Schema<SrcOptions>> = EmptyObject,
 > extends fields.SchemaField<TextureData.Schema<SrcOptions>, SchemaOptions> {
   constructor(options?: SchemaOptions, srcOptions?: SrcOptions);
 }
@@ -285,7 +285,7 @@ declare namespace PrototypeToken {
     | "overlayEffect"
     | "hidden";
 
-  export interface Schema extends foundry.documents.BaseToken.SharedProtoSchema {
+  interface Schema extends foundry.documents.BaseToken.SharedProtoSchema {
     // Name is technically redefined but with the same options so it's ignored here
     // name: fields.StringField<{ required: true; blank: true }>;
 
@@ -314,10 +314,10 @@ declare class PrototypeToken extends DataModel<PrototypeToken.Schema, documents.
 
   static get database(): DatabaseBackend;
 
-  static override migrateData(source: object): object;
+  static override migrateData(source: AnyObject): AnyObject;
 
   static override shimData(
-    data: object,
+    data: AnyObject,
     options?: {
       /**
        * Apply shims to embedded models?
@@ -325,7 +325,7 @@ declare class PrototypeToken extends DataModel<PrototypeToken.Schema, documents.
        */
       embedded?: boolean;
     },
-  ): object;
+  ): AnyObject;
 
   /**
    * @see foundry.abstract.Document#update
@@ -369,7 +369,7 @@ declare class PrototypeToken extends DataModel<PrototypeToken.Schema, documents.
 }
 
 declare namespace TombstoneData {
-  export interface Schema extends DataSchema {
+  interface Schema extends DataSchema {
     /**
      * The _id of the base Document that this tombstone represents.
      */

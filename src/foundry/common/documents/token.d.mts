@@ -61,12 +61,12 @@ declare class BaseToken extends Document<BaseToken.Schema, BaseToken.Metadata, S
   updateSource(
     changes?: BaseToken.ConstructorData | undefined,
     options?: { dryRun?: boolean; fallback?: boolean; recursive?: boolean } | undefined,
-  ): object;
+  ): AnyObject;
 
-  static override migrateData(source: object): object;
+  static override migrateData(source: AnyObject): AnyObject;
 
   static override shimData(
-    data: object,
+    data: AnyObject,
     options?: {
       /**
        * Apply shims to embedded models?
@@ -74,7 +74,7 @@ declare class BaseToken extends Document<BaseToken.Schema, BaseToken.Metadata, S
        */
       embedded?: boolean;
     },
-  ): object;
+  ): AnyObject;
 
   //TODO: Update with the Delta conditionality
   toObject(source: true): this["_source"];
@@ -393,7 +393,7 @@ declare namespace BaseToken {
     flags: fields.ObjectField.FlagsField<"Token">;
   }
 
-  export interface Schema extends SharedProtoSchema {
+  interface Schema extends SharedProtoSchema {
     /**
      * The Token _id which uniquely identifies it within its parent Scene
      * @defaultValue `null`

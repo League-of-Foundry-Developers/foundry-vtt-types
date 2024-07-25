@@ -24,10 +24,10 @@ declare class BasePlaylist extends Document<BasePlaylist.Schema, BasePlaylist.Me
 
   static override defineSchema(): BasePlaylist.Schema;
 
-  static override migrateData(source: object): object;
+  static override migrateData(source: AnyObject): AnyObject;
 
   static override shimData(
-    data: object,
+    data: AnyObject,
     options?: {
       /**
        * Apply shims to embedded models?
@@ -35,7 +35,7 @@ declare class BasePlaylist extends Document<BasePlaylist.Schema, BasePlaylist.Me
        */
       embedded?: boolean;
     },
-  ): object;
+  ): AnyObject;
 }
 export default BasePlaylist;
 
@@ -59,7 +59,7 @@ declare namespace BasePlaylist {
   type Properties = fields.SchemaField.InnerInitializedType<Schema>;
   type Source = fields.SchemaField.InnerPersistedType<Schema>;
 
-  export interface Schema extends DataSchema {
+  interface Schema extends DataSchema {
     /**
      * The _id which uniquely identifies this Playlist document
      * @defaultValue `null`

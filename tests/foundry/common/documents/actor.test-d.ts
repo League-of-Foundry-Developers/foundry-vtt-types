@@ -87,7 +87,7 @@ expectTypeOf(MyCharacterSystem.abilities.strength.value).toEqualTypeOf<number>()
 type RequiredInteger = { required: true; nullable: false; integer: true };
 
 declare namespace BoilerplateActorBase {
-  export interface Schema extends DataSchema {
+  interface Schema extends DataSchema {
     health: foundry.data.fields.SchemaField<{
       value: foundry.data.fields.NumberField<RequiredInteger>;
       max: foundry.data.fields.NumberField<RequiredInteger>;
@@ -102,8 +102,8 @@ declare namespace BoilerplateActorBase {
 
 class BoilerplateActorBase<
   Schema extends BoilerplateActorBase.Schema = BoilerplateActorBase.Schema,
-  BaseData extends Record<string, unknown> = Record<string, never>,
-  DerivedData extends Record<string, unknown> = Record<string, never>,
+  BaseData extends AnyObject = Record<string, never>,
+  DerivedData extends AnyObject = Record<string, never>,
 > extends foundry.abstract.TypeDataModel<Schema, Actor.ConfiguredInstance, BaseData, DerivedData> {
   static override defineSchema(): BoilerplateActorBase.Schema {
     const fields = foundry.data.fields;
@@ -134,7 +134,7 @@ declare global {
 }
 
 declare namespace BoilerplateCharacter {
-  export interface Schema extends BoilerplateActorBase.Schema {
+  interface Schema extends BoilerplateActorBase.Schema {
     attributes: foundry.data.fields.SchemaField<{
       level: foundry.data.fields.SchemaField<{
         value: foundry.data.fields.NumberField<RequiredInteger>;
@@ -154,7 +154,7 @@ declare namespace BoilerplateCharacter {
     }>;
   }
 
-  interface DerivedProps extends Record<string, unknown> {
+  interface DerivedProps extends AnyObject {
     abilities: {
       strength: {
         mod: number;
@@ -179,7 +179,7 @@ declare namespace BoilerplateCharacter {
 class BoilerplateCharacter extends BoilerplateActorBase<
   BoilerplateCharacter.Schema,
   Record<string, never>,
-  BoilerplateCharacter.DerivedProps & Record<string, unknown>
+  BoilerplateCharacter.DerivedProps & AnyObject
 > {
   static override defineSchema() {
     const fields = foundry.data.fields;
@@ -222,7 +222,7 @@ class BoilerplateCharacter extends BoilerplateActorBase<
   }
 
   getRollData() {
-    const data: Record<string, unknown> = {};
+    const data: AnyObject = {};
 
     // Copy the ability scores to the top level, so that rolls can use
     // formulas like `@str.mod + 4`.

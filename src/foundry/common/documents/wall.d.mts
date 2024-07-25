@@ -25,7 +25,7 @@ declare class BaseWall extends Document<BaseWall.Schema, BaseWall.Metadata, Scen
 
   static override defineSchema(): BaseWall.Schema;
 
-  static override migrateData(source: object): object;
+  static override migrateData(source: AnyObject): AnyObject;
 }
 export default BaseWall;
 
@@ -79,7 +79,7 @@ declare namespace BaseWall {
     validationError: "must be a length-4 array of integer coordinates";
   }
 
-  export interface Schema extends DataSchema {
+  interface Schema extends DataSchema {
     /**
      * The _id which uniquely identifies this BaseWall embedded document
      * @defaultValue `null`

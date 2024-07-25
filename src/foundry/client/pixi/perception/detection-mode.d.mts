@@ -3,7 +3,7 @@ import type { fields } from "../../../common/data/module.d.mts";
 
 declare global {
   namespace DetectionMode {
-    export interface Schema extends DataSchema {
+    interface Schema extends DataSchema {
       id: fields.StringField<{ blank: false }>;
       label: fields.StringField<{ blank: false }>;
       tokenConfig: fields.BooleanField<{ initial: true }>;

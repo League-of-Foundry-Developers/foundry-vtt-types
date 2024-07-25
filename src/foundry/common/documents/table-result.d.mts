@@ -40,10 +40,10 @@ declare class BaseTableResult extends Document<
     }>,
   ): boolean;
 
-  static override migrateData(source: object): object;
+  static override migrateData(source: AnyObject): AnyObject;
 
   static override shimData(
-    data: object,
+    data: AnyObject,
     options?: {
       /**
        * Apply shims to embedded models?
@@ -51,7 +51,7 @@ declare class BaseTableResult extends Document<
        */
       embedded?: boolean;
     },
-  ): object;
+  ): AnyObject;
 }
 export default BaseTableResult;
 
@@ -79,7 +79,7 @@ declare namespace BaseTableResult {
   type Properties = fields.SchemaField.InnerInitializedType<Schema>;
   type Source = fields.SchemaField.InnerPersistedType<Schema>;
 
-  export interface Schema extends DataSchema {
+  interface Schema extends DataSchema {
     /**
      * The _id which uniquely identifies this TableResult embedded document
      * @defaultValue `null`

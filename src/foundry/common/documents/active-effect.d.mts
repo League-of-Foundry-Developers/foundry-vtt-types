@@ -28,7 +28,7 @@ declare class BaseActiveEffect extends Document<
    */
   constructor(data?: BaseActiveEffect.ConstructorData, context?: DocumentConstructionContext);
 
-  override canUserModify(user: documents.BaseUser, action: "create" | "update" | "delete", data?: object): boolean;
+  override canUserModify(user: documents.BaseUser, action: "create" | "update" | "delete", data?: AnyObject): boolean;
 
   static override metadata: Readonly<BaseActiveEffect.Metadata>;
 
@@ -47,14 +47,14 @@ declare class BaseActiveEffect extends Document<
   ): boolean;
 
   protected override _preCreate(
-    data: fields.SchemaField.AssignmentType<BaseActiveEffect.Schema, {}>,
+    data: fields.SchemaField.AssignmentType<BaseActiveEffect.Schema, EmptyObject>,
     options: DocumentModificationOptions,
     user: documents.BaseUser,
   ): Promise<void>;
 
   protected override _initialize(options?: any): void;
 
-  static override migrateData(source: object): object;
+  static override migrateData(source: AnyObject): AnyObject;
 
   /**
    * @deprecated since v11, will be removed in v13
@@ -80,7 +80,7 @@ declare namespace BaseActiveEffect {
   type Properties = fields.SchemaField.InnerInitializedType<Schema>;
   type Source = fields.SchemaField.InnerPersistedType<Schema>;
 
-  export interface Schema extends DataSchema {
+  interface Schema extends DataSchema {
     /**
      * The _id which uniquely identifies the ActiveEffect within a parent Actor or Item
      * @defaultValue `null`
