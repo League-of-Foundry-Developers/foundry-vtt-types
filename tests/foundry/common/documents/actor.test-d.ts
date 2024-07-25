@@ -47,7 +47,7 @@ type MyCharacterSchema = {
 };
 
 class MyCharacter extends foundry.abstract.TypeDataModel<MyCharacterSchema, Actor.ConfiguredInstance> {
-  static defineSchema() {
+  static override defineSchema() {
     const { SchemaField, NumberField } = foundry.data.fields;
     return {
       abilities: new SchemaField({
@@ -69,7 +69,7 @@ class MyCharacter extends foundry.abstract.TypeDataModel<MyCharacterSchema, Acto
     };
   }
 
-  prepareDerivedData(): void {
+  override prepareDerivedData(): void {
     this.abilities.strength.value + 2;
     for (const ability of Object.values(this.abilities)) {
       // @ts-expect-error Derived data must be declared
@@ -87,7 +87,7 @@ expectTypeOf(MyCharacterSystem.abilities.strength.value).toEqualTypeOf<number>()
 type RequiredInteger = { required: true; nullable: false; integer: true };
 
 declare namespace BoilerplateActorBase {
-  interface Schema extends DataSchema {
+  export interface Schema extends DataSchema {
     health: foundry.data.fields.SchemaField<{
       value: foundry.data.fields.NumberField<RequiredInteger>;
       max: foundry.data.fields.NumberField<RequiredInteger>;
@@ -105,7 +105,7 @@ class BoilerplateActorBase<
   BaseData extends Record<string, unknown> = Record<string, never>,
   DerivedData extends Record<string, unknown> = Record<string, never>,
 > extends foundry.abstract.TypeDataModel<Schema, Actor.ConfiguredInstance, BaseData, DerivedData> {
-  static defineSchema(): BoilerplateActorBase.Schema {
+  static override defineSchema(): BoilerplateActorBase.Schema {
     const fields = foundry.data.fields;
     const requiredInteger = { required: true, nullable: false, integer: true };
     const schema: DataSchema = {};
@@ -134,7 +134,7 @@ declare global {
 }
 
 declare namespace BoilerplateCharacter {
-  interface Schema extends BoilerplateActorBase.Schema {
+  export interface Schema extends BoilerplateActorBase.Schema {
     attributes: foundry.data.fields.SchemaField<{
       level: foundry.data.fields.SchemaField<{
         value: foundry.data.fields.NumberField<RequiredInteger>;
@@ -181,7 +181,7 @@ class BoilerplateCharacter extends BoilerplateActorBase<
   Record<string, never>,
   BoilerplateCharacter.DerivedProps & Record<string, unknown>
 > {
-  static defineSchema() {
+  static override defineSchema() {
     const fields = foundry.data.fields;
     const requiredInteger = { required: true, nullable: false, integer: true };
     const schema = super.defineSchema();
@@ -205,7 +205,7 @@ class BoilerplateCharacter extends BoilerplateActorBase<
     return schema;
   }
 
-  prepareDerivedData(this: TypeDataModel.PrepareDerivedDataThis<this>) {
+  override prepareDerivedData(this: TypeDataModel.PrepareDerivedDataThis<this>) {
     // Loop through ability scores, and add their modifiers to our sheet output.
     for (const [key, abil] of Object.entries(this.abilities)) {
       // Calculate the modifier using d20 rules.
