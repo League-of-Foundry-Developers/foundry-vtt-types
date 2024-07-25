@@ -1,5 +1,4 @@
 import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
-import type { ApplicationConfiguration } from "../../../common/config.d.mts";
 import type ApplicationV2 from "../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
 
