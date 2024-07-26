@@ -230,31 +230,31 @@ declare namespace ApplicationV2 {
   export interface FormNode {
     fieldset: boolean;
 
-    legend?: string;
+    legend?: string | undefined;
 
-    fields?: FormNode[];
+    fields?: FormNode[] | undefined;
 
-    field?: foundry.data.fields.DataField;
+    field?: foundry.data.fields.DataField | undefined;
 
-    value?: unknown;
+    value?: unknown | undefined;
   }
 
   /** @remarks Used with `templates/generic/form-footer.hbs` */
   export interface FormFooterButton {
-    type: string;
+    type: HTMLButtonElement["type"];
 
-    name?: string;
+    name?: string | undefined;
 
-    icon?: string;
+    icon?: string | undefined;
 
-    label?: string;
+    label?: string | undefined;
 
-    action?: string;
+    action?: string | undefined;
 
-    cssClass?: string;
+    cssClass?: string | undefined;
 
     /** @defaultValue `false` */
-    disabled?: boolean;
+    disabled?: boolean | undefined;
   }
 }
 
@@ -285,7 +285,7 @@ declare class ApplicationV2<
   /**
    * Application instance configuration options.
    */
-  options: DeepPartial<Configuration>;
+  readonly options: DeepPartial<Configuration>;
 
   /**
    * Convenience references to window header elements.
