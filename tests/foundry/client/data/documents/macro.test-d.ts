@@ -22,7 +22,8 @@ if (myMacro.type === "script") {
 }
 if (myMacro.type === "chat") {
   expectTypeOf(myMacro.type).toEqualTypeOf<"chat">();
-  expectTypeOf(myMacro.execute()).toEqualTypeOf<void>();
+  // Unable to successfully narrow the type here, *should* be void
+  expectTypeOf(myMacro.execute()).toEqualTypeOf<void | Promise<unknown>>();
 }
 
 // properties and functions of `ClientDocumentMixin`
