@@ -17,7 +17,7 @@ interface ApplicationFormConfiguration extends ApplicationV2.FormConfiguration {
 
 interface ApplicationHeaderControlsEntry extends ApplicationV2.HeaderControlsEntry {}
 
-interface ApplicationConstructionParams extends ApplicationV2.ConstructionParams {}
+interface ApplicationConstructorParams extends ApplicationV2.ConstructorParams {}
 
 interface ApplicationRenderOptions extends ApplicationV2.RenderOptions {}
 
@@ -31,6 +31,8 @@ interface ApplicationFormSubmission extends ApplicationV2.FormSubmission {}
 
 interface ApplicationFormSubmission extends ApplicationV2.FormSubmission {}
 
-type FormNode = {};
+interface ApplicationTab extends ApplicationV2.Tab {}
 
-type FormFooterButton = {};
+interface FormNode extends ApplicationV2.FormNode {}
+
+interface FormFooterButton extends ApplicationV2.FormFooterButton {}

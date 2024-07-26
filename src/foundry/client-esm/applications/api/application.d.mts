@@ -72,32 +72,190 @@ declare namespace ApplicationV2 {
     zIndex: number;
   }
 
-  export interface WindowConfiguration {}
+  export interface WindowConfiguration {
+    /**
+     * Is this Application rendered inside a window frame?
+     * @defaultValue `true`
+     */
+    frame: boolean;
 
-  export interface FormConfiguration {}
+    /**
+     * Can this Application be positioned via JavaScript or only by CSS
+     * @defaultValue `true`
+     */
+    positioned: boolean;
 
-  export interface HeaderControlsEntry {}
+    /** The window title. Displayed only if the application is framed */
+    title: string;
 
-  export interface ConstructionParams {
+    /** An optional Font Awesome icon class displayed left of the window title */
+    icon: string | false;
+
+    /** An array of window control entries */
+    controls: HeaderControlsEntry[];
+
+    /**
+     * Can the window app be minimized by double-clicking on the title
+     * @defaultValue `true`
+     */
+    minimizable: boolean;
+
+    /**
+     * Is this window resizable?
+     * @defaultValue `false`
+     */
+    resizable: boolean;
+
+    /**
+     * A specific tag name to use for the .window-content element
+     * @defaultValue `"section"`
+     */
+    contentTag: string;
+
+    /** Additional CSS classes to apply to the .window-content element */
+    contentClasses: string[];
+  }
+
+  export interface FormConfiguration {
+    handler: FormSubmission;
+
+    submitOnChange: boolean;
+
+    closeOnSubmit: boolean;
+  }
+
+  export interface HeaderControlsEntry {
+    /** A font-awesome icon class which denotes the control button */
+    icon: string;
+
+    /** The text label for the control button. This label will be automatically localized when the button is rendered */
+    label: string;
+
+    /** The action name triggered by clicking the control button */
+    action: string;
+
+    /** Is the control button visible for the current client? */
+    visible: boolean;
+
+    /**
+     * A key or value in CONST.DOCUMENT_OWNERSHIP_LEVELS that restricts visibility of this option for the current user.
+     * This option only applies to DocumentSheetV2 instances.
+     */
+    ownership: string | number;
+  }
+
+  export interface ConstructorParams {
     position: Position;
   }
 
-  export interface RenderOptions {}
+  export interface RenderOptions {
+    /**
+     * Force application rendering. If true, an application which does not yet exist in the DOM is added.
+     * If false, only applications which already exist are rendered.
+     */
+    force: boolean;
 
-  export interface WindowRenderOptions {}
+    /** A specific position at which to render the Application */
+    position: Position;
+
+    /** Updates to the Application window frame */
+    window: WindowRenderOptions;
+
+    /**
+     * Some Application classes, for example the HandlebarsApplication,
+     * support re-rendering a subset of application parts instead of the full Application HTML.
+     */
+    parts: string[];
+
+    /** Is this render the first one for the application? This property is populated automatically. */
+    isFirstRender: boolean;
+  }
+
+  export interface WindowRenderOptions {
+    /** Update the window title with a new value? */
+    title: string;
+
+    /** Update the window icon with a new value? */
+    icon: string | false;
+
+    /** Re-render the window controls menu? */
+    controls: boolean;
+  }
 
   /**
    * Context data provided to the renderer
    */
   export interface RenderContext extends Record<string, unknown> {}
 
-  export interface ClosingOptions {}
+  export interface ClosingOptions {
+    /** Whether to animate the close, or perform it instantaneously */
+    animate: boolean;
 
-  export type ClickAction = (event: PointerEvent, target: HTMLElement) => Promise<void>;
+    /** Whether the application was closed via keypress. */
+    closeKey: boolean;
+  }
 
-  export type FormSubmission = () => Promise<void>;
+  /** An on-click action supported by the Application. Run in the context of a HandlebarsApplication. */
+  export type ClickAction = (
+    /** The originating click event */
+    event: PointerEvent,
 
-  export interface Tab {}
+    /** The capturing HTML element which defines the [data-action] */
+    target: HTMLElement,
+  ) => Promise<void>;
+
+  /** A form submission handler method. Run in the context of a HandlebarsApplication */
+  export type FormSubmission = (
+    /** The originating form submission or input change event */
+    event: SubmitEvent | Event,
+
+    /** The form element that was submitted */
+    form: HTMLFormElement,
+
+    /** Processed data for the submitted form */
+    formData: FormDataExtended,
+  ) => Promise<void>;
+
+  /** @remarks Used with `templates/generic/tab-navigation.hbs` */
+  export interface Tab {
+    id: string;
+    group: string;
+    icon: string;
+    label: string;
+    active: boolean;
+    cssClass: string;
+  }
+
+  /** @remarks Used with `templates/generic/form-fields.hbs` */
+  export interface FormNode {
+    fieldset: boolean;
+
+    legend?: string;
+
+    fields?: FormNode[];
+
+    field?: foundry.data.fields.DataField;
+
+    value?: unknown;
+  }
+
+  /** @remarks Used with `templates/generic/form-footer.hbs` */
+  export interface FormFooterButton {
+    type: string;
+
+    name?: string;
+
+    icon?: string;
+
+    label?: string;
+
+    action?: string;
+
+    cssClass?: string;
+
+    /** @defaultValue `false` */
+    disabled?: boolean;
+  }
 }
 
 /**
