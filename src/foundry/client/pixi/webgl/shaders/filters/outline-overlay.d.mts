@@ -42,7 +42,7 @@ declare global {
     static override vertexShader: string;
 
     /**
-     * @remarks marked as inheritdoc in foundry but doesn't exist in parent class
+     * Dynamically create the fragment shader used for filters of this type.
      */
     static createFragmentShader(): string;
 
