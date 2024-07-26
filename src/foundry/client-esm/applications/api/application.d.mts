@@ -1,4 +1,4 @@
-import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
+import type { DeepPartial, InexactPartial, MaybePromise } from "../../../../types/utils.d.mts";
 import type EventEmitterMixin from "../../../common/utils/event-emitter.d.mts";
 
 // TODO: Investigate use of DeepPartial vs Partial vs InexactPartial
@@ -202,7 +202,7 @@ declare namespace ApplicationV2 {
 
     /** The capturing HTML element which defines the [data-action] */
     target: HTMLElement,
-  ) => Promise<void>;
+  ) => MaybePromise<void>;
 
   /** A form submission handler method. Run in the context of a HandlebarsApplication */
   export type FormSubmission = (
@@ -214,7 +214,7 @@ declare namespace ApplicationV2 {
 
     /** Processed data for the submitted form */
     formData: FormDataExtended,
-  ) => Promise<void>;
+  ) => MaybePromise<void>;
 
   /** @remarks Used with `templates/generic/tab-navigation.hbs` */
   export interface Tab {
