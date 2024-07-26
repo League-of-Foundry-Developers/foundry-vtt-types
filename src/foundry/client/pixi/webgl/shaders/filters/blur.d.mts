@@ -140,21 +140,21 @@ declare global {
     set repeatEdgePixels(value);
 
     /**
-     * Provided for completeness with PIXI.filters.BlurFilter
+     * Provided for completeness with PIXI.BlurFilter
      */
     get blurX(): number;
 
     set blurX(value);
 
     /**
-     * Provided for completeness with PIXI.filters.BlurFilter
+     * Provided for completeness with PIXI.BlurFilter
      */
     get blurY(): number;
 
     set blurY(value);
 
     /**
-     * Provided for completeness with PIXI.filters.BlurFilter
+     * Provided for completeness with PIXI.BlurFilter
      */
     get blendMode(): number;
 

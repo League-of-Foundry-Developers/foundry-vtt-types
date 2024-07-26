@@ -30,7 +30,7 @@ declare global {
      * Should this filter auto-animate?
      * @defaultValue `true`
      */
-    animated: number;
+    animated: boolean;
 
     /**
      * @defaultValue
@@ -45,6 +45,9 @@ declare global {
      */
     static override defaultUniforms: AbstractBaseShader.Uniforms & { distance: number; quality: number };
 
+    /**
+     * Dynamically create the fragment shader used for filters of this type.
+     */
     static createFragmentShader(quality: number, distance: number): string;
 
     static override vertexShader: string;

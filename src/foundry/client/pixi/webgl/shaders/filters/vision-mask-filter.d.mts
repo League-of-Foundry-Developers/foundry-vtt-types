@@ -9,8 +9,9 @@ declare global {
     static override create(): AbstractBaseMaskFilter;
 
     /**
-     * @remarks This is set as a property all the way up in PIXI.Filter and is listed as a getter, with a no-op setter
-     * TODO: check back in after 12.329 to see if fixed
+     * @remarks This is set as a property all the way up in PIXI.Filter, however Foundry has it
+     * as a getter, with a no-op setter. 12.330 did not change this signature after reporting its
+     * oddity, so it appears we're stuck with this.
      */
     override readonly enabled: boolean;
   }
