@@ -1,4 +1,4 @@
-import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
+import type { DeepPartial, InexactPartial, MaybePromise } from "../../../../types/utils.d.mts";
 import type EventEmitterMixin from "../../../common/utils/event-emitter.d.mts";
 
 // TODO: Investigate use of DeepPartial vs Partial vs InexactPartial
@@ -93,9 +93,9 @@ declare namespace ApplicationV2 {
 
   export interface ClosingOptions {}
 
-  export type ClickAction = (event: PointerEvent, target: HTMLElement) => Promise<void>;
+  export type ClickAction = (event: PointerEvent, target: HTMLElement) => MaybePromise<void>;
 
-  export type FormSubmission = () => Promise<void>;
+  export type FormSubmission = () => MaybePromise<void>;
 
   export interface Tab {}
 }
