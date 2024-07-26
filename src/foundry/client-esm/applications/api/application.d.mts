@@ -285,7 +285,7 @@ declare class ApplicationV2<
   /**
    * Application instance configuration options.
    */
-  readonly options: DeepPartial<Configuration>;
+  options: Readonly<DeepPartial<Configuration>>;
 
   /**
    * Convenience references to window header elements.
