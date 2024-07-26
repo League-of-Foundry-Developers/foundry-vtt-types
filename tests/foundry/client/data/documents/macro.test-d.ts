@@ -5,7 +5,10 @@ const macro = new Macro({ name: "my macro", scope: "global", type: "script" });
 
 // properties and functions added by the concrete `Macro` class
 expectTypeOf(macro.isAuthor).toEqualTypeOf<boolean>();
-expectTypeOf(macro.execute).toEqualTypeOf<(scope?: { actor?: Actor; token?: Token }) => any>();
+expectTypeOf(await macro.execute({ effect: new ActiveEffect() })).toEqualTypeOf<unknown>();
+
+// @ts-expect-error The actor property must be an actual Actor
+expectTypeOf(await macro.execute({ actor: new ActiveEffect() })).toEqualTypeOf<unknown>();
 
 // properties and functions of `ClientDocumentMixin`
 expectTypeOf(macro.apps).toEqualTypeOf<Record<string, Application>>();
