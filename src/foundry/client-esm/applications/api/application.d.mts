@@ -135,13 +135,13 @@ declare namespace ApplicationV2 {
     action: string;
 
     /** Is the control button visible for the current client? */
-    visible: boolean;
+    visible?: boolean | undefined;
 
     /**
      * A key or value in CONST.DOCUMENT_OWNERSHIP_LEVELS that restricts visibility of this option for the current user.
      * This option only applies to DocumentSheetV2 instances.
      */
-    ownership: string | number;
+    ownership?: string | number | undefined;
   }
 
   export interface ConstructorParams {
