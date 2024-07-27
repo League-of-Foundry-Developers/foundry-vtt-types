@@ -290,16 +290,27 @@ export type AnyConstructor = abstract new (...args: never[]) => unknown;
 export type AnyConcreteConstructor = new (...args: never[]) => unknown;
 
 /**
- * This type is equivalent to `Promise<T>`. Its usage is to indicate intent.
- * Normally all callbacks should be of the form `(...) => MaybePromise<T>`
- * because this gives the most flexibility to the caller. Typically asynchronous
- * callbacks are simply awaited, meaning that there's no difference between
- * `Promise` and {@link MaybePromise}. Even functions like
- * {@link Promise.allSettled} function correctly with {@link MaybePromise}.
+ * This type is equivalent to `Promise<T>` but exists to give an explicit signal
+ * that this is not a mistake. When Foundry accepts an asynchronous callback the
+ * vast majority of the time it is best to use {@link MaybePromise | `MaybePromise`}.
+ *
+ * By doing it this way the maximum flexibility is given to the definer of the
+ * callback. This is okay because typically asynchronous callbacks are simply
+ * awaited, meaning that there's no noticeable difference between a `Promise`
+ * and {@link MaybePromise | `MaybePromise`}. Even functions like
+ * {@link Promise.allSettled | `Promise.allSettled`} function correctly
+ * with {@link MaybePromise | `MaybePromise`}.
+ *
+ * Do not use this type or {@link MaybePromise | `MaybePromise`} for the return value of an
+ * asynchronous function on a function. For example for
+ * {@link foundry.abstract.Document._preCreate | Document#_preCreate} the typing
+ * should be `Promise<void>` and not this type. In theory we could use
+ * {@link MaybePromise | `MaybePromise`} in this context as well but this seems
+ * more likely to be confusing than to be helpful.
  *
  * Use this type only in the rare case where a type must be a `Promise`, for
  * example if `promise.then` or `promise.catch` is explicitly called. Please
- * also writing a comment explaining why {@link MaybePromise} is problematic in
+ * also writing a comment explaining why {@link MaybePromise | `MaybePromise`} is problematic in
  * this context.
  */
 export type MustBePromise<T> = Promise<T>;
@@ -310,8 +321,14 @@ export type MustBePromise<T> = Promise<T>;
  * callback instead.
  *
  * If it is not sound to provide a non-Promise for whatever reason, see
- * {@link MustBePromise} to declare this more explicitly than simply writing
+ * {@link MustBePromise | `MaybePromise`} to declare this more explicitly than simply writing
  * `Promise<T>`.
+ *
+ * This should generally not be used in asynchronous methods. For example in
+ * {@link foundry.abstract.Document._preCreate | `Document#_preCreate`} the typing
+ * is `Promise<void>` because it's declared as an async method. Overriding an
+ * asynchronous method with a synchronous method was deemeed more confusing than
+ * helpful.
  */
 export type MaybePromise<T> = T | Promise<T>;
 
@@ -337,8 +354,8 @@ export type NonNullish = {};
  * This is the closest approximation to a type representing an empty object.
  *
  * Use instead of `{}` when you want to represent an empty object. `{}` actually
- * allows any type that is not `null` or `undefined`. see {@link NonNullish} if
- * you want that behavior.
+ * allows any type that is not `null` or `undefined`. see
+ * {@link NonNullish | `NonNullish`} if you want that behavior.
  */
 // This type is not meant to be extended and it has to use an indexed type.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions, @typescript-eslint/consistent-indexed-object-style
