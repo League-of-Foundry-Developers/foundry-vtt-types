@@ -1,8 +1,5 @@
-import BaseLightSource from "./base-light-source.mts";
-import type { PointEffectSourceMixin_BaseLightSource_Interface } from "./point-effect-source.d.mts";
+import type BaseLightSource from "./base-light-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
-
-declare const MixedPointBaseLightSource: PointEffectSourceMixin_BaseLightSource_Interface;
 
 type LightSourceData = PointEffectSourceMixin.PointEffectSourceData & BaseLightSource.LightSourceData;
 
@@ -12,7 +9,7 @@ type LightSourceData = PointEffectSourceMixin.PointEffectSourceData & BaseLightS
 export default class PointLightSource<
   SourceData extends LightSourceData = LightSourceData,
   SourceShape extends PointSourcePolygon = PointSourcePolygon,
-> extends MixedPointBaseLightSource<SourceData, SourceShape> {
+> extends PointEffectSourceMixin(BaseLightSource)<SourceData, SourceShape> {
   /** @defaultValue `"lightSources"` */
   static override effectsCollection: string;
 

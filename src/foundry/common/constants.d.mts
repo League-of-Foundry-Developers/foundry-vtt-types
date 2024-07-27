@@ -1939,7 +1939,7 @@ export declare const SETUP_PACKAGE_PROGRESS: Readonly<{
     SNAPSHOT_WORLDS: "snapshotWorlds";
   };
 }>;
-export namespace SETUP_PACKAGE_PROGRESS {
+declare namespace SETUP_PACKAGE_PROGRESS {
   export type ACTIONS = ValueOf<typeof SETUP_PACKAGE_PROGRESS.ACTIONS>;
   export type STEPS = ValueOf<typeof SETUP_PACKAGE_PROGRESS.STEPS>;
 }

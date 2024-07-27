@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/package.json",
   "name": "@league-of-foundry-developers/foundry-vtt-types",
-  "version": "12.328.0",
+  "version": "12.329.0",
   "description": "TypeScript type definitions for Foundry VTT",
   "type": "module",
   "exports": {
@@ -64,7 +64,6 @@
   "dependencies": {
     "@pixi/graphics-smooth": "^1.1.0",
     "@pixi/particle-emitter": "^5.0.8",
-    "@types/fvtt-types": "file:.",
     "@types/jquery": "~3.5.22",
     "@types/showdown": "~2.0.6",
     "@types/simple-peer": "~9.11.1",
@@ -90,10 +89,13 @@
     "tinymce": "^6.8.3"
   },
   "devDependencies": {
+    "@types/fvtt-types": "file:.",
     "@typescript-eslint/eslint-plugin": "^6.7.4",
     "@typescript-eslint/parser": "^6.7.4",
     "eslint": "^8.4.0",
     "eslint-config-prettier": "^9.0.0",
+    "eslint-import-resolver-typescript": "^3.6.1",
+    "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-tsdoc": "^0.2.14",
     "husky": "^8.0.0",

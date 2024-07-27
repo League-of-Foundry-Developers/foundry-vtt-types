@@ -4,13 +4,16 @@ import type { UserPermission } from "../../../common/constants.d.mts";
 import type { CONST } from "../../client.d.mts";
 import type { ApplicationConfiguration, ApplicationRenderOptions, FormFooterButton } from "../_types.d.mts";
 import type ApplicationV2 from "../api/application.d.mts";
-import type HandlebarsApplicationMixin from "../api/handlebars-application.mjs";
+import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
 
 /**
  * An application for configuring the permissions which are available to each User role.
  */
 
-declare class PermissionConfig extends HandlebarsApplicationMixin(ApplicationV2) {
+declare class PermissionConfig<
+  Configuration extends ApplicationV2.Configuration = ApplicationV2.Configuration,
+  RenderOptions extends ApplicationV2.RenderOptions = ApplicationV2.RenderOptions,
+> extends HandlebarsApplicationMixin(ApplicationV2)<Configuration, RenderOptions> {
   // placeholder private member to help subclassing
   #permissionConfig: true;
 

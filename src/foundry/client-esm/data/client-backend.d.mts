@@ -1,31 +1,38 @@
 import type { ConstructorOf } from "../../../types/utils.d.mts";
-import type { RequestContext } from "../../common/abstract/backend.d.mts";
 import type Document from "../../common/abstract/document.d.mts";
+import type {
+  DatabaseGetOperation,
+  DatabaseCreateOperation,
+  DatabaseUpdateOperation,
+  DatabaseDeleteOperation,
+} from "../../common/abstract/_types.d.mts";
+import type { LoggingLevels } from "../../../types/helperTypes.d.mts";
+
 /**
  * The client-side database backend implementation which handles Document modification operations.
  */
 declare class ClientDatabaseBackend extends foundry.abstract.DatabaseBackend {
   protected override _getDocuments<T extends Document<any, any, any>>(
     documentClass: ConstructorOf<T>,
-    request: RequestContext<T>,
+    request: DatabaseGetOperation,
     user: User.ConfiguredInstance,
   ): Promise<T[]>;
 
   protected override _createDocuments<T extends Document<any, any, any>>(
     documentClass: ConstructorOf<T>,
-    request: RequestContext<T>,
+    request: DatabaseCreateOperation<T>,
     user: User.ConfiguredInstance,
   ): Promise<T[]>;
 
   protected override _updateDocuments<T extends Document<any, any, any>>(
     documentClass: ConstructorOf<T>,
-    request: RequestContext<T>,
+    request: DatabaseUpdateOperation<T>,
     user: User.ConfiguredInstance,
   ): Promise<T[]>;
 
   protected override _deleteDocuments<T extends Document<any, any, any>>(
     documentClass: ConstructorOf<T>,
-    request: RequestContext<T>,
+    request: DatabaseDeleteOperation,
     user: User.ConfiguredInstance,
   ): Promise<T[]>;
 
@@ -39,7 +46,7 @@ declare class ClientDatabaseBackend extends foundry.abstract.DatabaseBackend {
 
   override getCompendiumScopes(): string[];
 
-  // TODO: _log
+  protected override _log(level: LoggingLevels, message: string): void;
 }
 
 export default ClientDatabaseBackend;

@@ -1,8 +1,10 @@
+import type { InexactPartial } from "../../../types/utils.d.mts";
+
 /**
  * A class responsible for recording information about a validation failure.
  */
 export class DataModelValidationFailure {
-  constructor(options: DataModelValidationFailure.ConstructorArgs);
+  constructor(options?: InexactPartial<DataModelValidationFailure.ConstructorArgs>);
   /**
    * The value that failed validation for this field.
    */
@@ -73,7 +75,7 @@ export class DataModelValidationError extends Error {
    * @param failure - The failure that triggered this error or an error message
    * @param params  - Additional Error constructor parameters
    */
-  constructor(failure: DataModelValidationFailure | string, ...params: ConstructorParameters<ErrorConstructor>);
+  constructor(failure: DataModelValidationFailure | string, options?: { cause?: Error | string });
 
   /**
    * Retrieve the root failure that caused this error, or a specific sub-failure via a path.
@@ -129,24 +131,24 @@ export class DataModelValidationError extends Error {
 }
 
 declare namespace DataModelValidationFailure {
-  type ConstructorArgs = {
+  interface ConstructorArgs {
     /** The value that failed validation for this field. */
-    invalidValue?: any;
+    invalidValue: unknown;
     /**  The value it was replaced by, if any. */
-    fallback?: any;
+    fallback: unknown;
     /**
      * Whether the value was dropped from some parent collection.
      * @defaultValue `false`
      */
-    dropped?: boolean;
+    dropped: boolean;
     /** The validation error message. */
-    message?: string;
+    message: string;
     /**
      * Whether this failure was unresolved
      * @defaultValue `false`
      */
-    unresolved?: boolean;
-  };
+    unresolved: boolean;
+  }
 
   type ElementValidationFailure = {
     /** Either the element's index or some other identifier for it. */

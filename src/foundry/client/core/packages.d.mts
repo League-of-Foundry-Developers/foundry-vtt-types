@@ -1,5 +1,5 @@
 import type { AnyConstructorFor, InexactPartial, Mixin } from "../../../types/utils.d.mts";
-import type { CONST } from "../../client-esm/client.mts";
+import type { CONST } from "../../client-esm/client.d.mts";
 
 declare class ClientPackage {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */

@@ -3,7 +3,7 @@ import type { InexactPartial, Merge } from "../../../types/utils.d.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
 import type Document from "../abstract/document.mts";
 import type { fields } from "../data/module.d.mts";
-import type { CONST, documents } from "../../client-esm/client.mjs";
+import type { CONST, documents } from "../../client-esm/client.d.mts";
 
 declare global {
   type ActorDeltaData = documents.BaseActorDelta.Properties;

@@ -1,6 +1,6 @@
 import type BasePackage from "./base-package.d.mts";
-import * as fields from "../data/fields.mjs";
-import type AdditionalTypesField from "./sub-types.mjs";
+import type * as fields from "../data/fields.d.mts";
+import type AdditionalTypesField from "./sub-types.d.mts";
 
 declare namespace BaseModule {
   interface Schema extends ReturnType<typeof BasePackage.defineSchema> {

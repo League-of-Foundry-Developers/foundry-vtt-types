@@ -2,12 +2,15 @@ import type { DeepPartial } from "../../../../types/utils.d.mts";
 import type { CompendiumArtDescriptor } from "../../helpers/_types.d.mts";
 import type { ApplicationConfiguration, ApplicationRenderOptions, FormFooterButton } from "../_types.d.mts";
 import type ApplicationV2 from "../api/application.d.mts";
-import type HandlebarsApplicationMixin from "../api/handlebars-application.mjs";
+import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
 
 /**
  * An application for configuring compendium art priorities.
  */
-declare class CompendiumArtConfig extends HandlebarsApplicationMixin(ApplicationV2) {
+declare class CompendiumArtConfig<
+  Configuration extends ApplicationV2.Configuration = ApplicationV2.Configuration,
+  RenderOptions extends ApplicationV2.RenderOptions = ApplicationV2.RenderOptions,
+> extends HandlebarsApplicationMixin(ApplicationV2)<Configuration, RenderOptions> {
   // placeholder private member to help subclassing
   #compendiumArtConfig: true;
 
