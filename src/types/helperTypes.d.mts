@@ -118,3 +118,39 @@ export type LayerClass<T extends DocumentConstructor> = T["metadata"]["name"] ex
     ? CONFIG[T["metadata"]["name"]]["layerClass"]
     : never
   : T;
+
+/**
+ * Use this whenever a type is given that should match some constraint but is
+ * not guaranteed to. For example when additional properties can be declaration
+ * merged into an interface. When the type does not conform then `ConformTo` is
+ * used instead.
+ *
+ * See `MustConform` for a version that throws a compilation error when the type
+ * cannot be statically known to conform.
+ */
+export type MakeConform<T, ConformTo> = T extends ConformTo ? T : ConformTo;
+
+/**
+ * This is useful when you want to ensure that a type conforms to a certain
+ * constraint. If it is not guaranteed to conform then a compilation error is
+ * thrown. This makes it too conservative in some cases.
+ */
+export type MustConform<T extends ConformTo, ConformTo> = T;
+
+/**
+ * This allows you to treat all interfaces as a plain object. But beware, if the
+ * interface represents a function, array, or constructor then these will be
+ * stripped from the interface.
+ *
+ * This is generally intended for cases where an interface is given in order to
+ * be declaration merged and then must be assigned to a plain object type.
+ *
+ * The constraint `T extends object` is used because `object` includes functions
+ * and arrays etc. This is crucial to allow interfaces to be given to this type.
+ */
+export type InterfaceToObject<T extends object> = {
+  // Mapped types are no-ops on most types (even primitives like string) but for
+  // functions they strip the function signatures and if there's no additional
+  // properties returns `{}`.
+  [K in keyof T]: T[K];
+};
