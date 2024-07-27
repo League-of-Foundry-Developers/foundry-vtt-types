@@ -115,12 +115,6 @@ export type IsObject<T> =
  */
 export type SimpleMerge<Target, Override> = Omit<Target, keyof Override> & Override;
 
-/**
- * Instance of `T`, which may or may not be in a promise.
- * @typeParam T - the type which might be wrapped in a promise.
- */
-export type MaybePromise<T> = T | Promise<T>;
-
 export type StoredDocument<D extends { _source: unknown }> = D & {
   id: string;
   _id: string;
@@ -163,3 +157,191 @@ type GetDataConfigOption = GetDataConfig extends {
   : "object";
 
 export type GetDataReturnType<T extends object> = GetDataConfigOptions<T>[GetDataConfigOption];
+
+/**
+ * Replaces the type `{}` with `Record<string, never>` by default which is
+ * usually a better representation of an empty object. The type `{}` actually
+ * allows any type be assigned to it except for `null` and `undefined`.
+ *
+ * The theory behind this is that all non-nullish types allow
+ * you to access any property on them without erroring. Primitive types like
+ * `number` will not store the property but it still will not error to simply
+ * try to get and set properties.
+ *
+ * The type `{}` can appear for example after operations like `Omit` if it
+ * removes all properties rom an object, because an empty interface was given,
+ * or so on.
+ *
+ * @example
+ * ```ts
+ * type ObjectArray<T extends Record<string, unknown>> = T[];
+ *
+ * // As you would hope a union can't be assigned. It errors with:
+ * // "type 'string' is not assignable to type 'Record<string, unknown>'."
+ * type UnionErrors = ObjectArray<string | { x: number }>;
+ *
+ * // However, this works.
+ * type EmptyObjectArray = ObjectArray<{}>;
+ *
+ * // But it allows likely unsound behavior like this:
+ * const emptyObject: EmptyObjectArray = [1, "foo", () => 3];
+ *
+ * // So it may be better to define `ObjectArray` like so:
+ * type ObjectArray<T extends Record<string, unknown>> = HandleEmptyObject<T>[];
+ *
+ * // If it were, then this line would error appropriately!
+ * const emptyObject: EmptyObjectArray = [1, "foo", () => 3];
+ * ```
+ */
+export type HandleEmptyObject<
+  T extends Record<string, unknown>,
+  D extends Record<string, unknown> = Record<string, never>,
+> = [{}] extends [T] ? D : T;
+
+/**
+ * This type allows any plain objects. In other words it disallows functions
+ * and arrays.
+ *
+ * Use this type instead of:
+ * - `object` - This allows functions and arrays.
+ * - `Record<string, any>`/`{}` - These allows anything besides `null` and `undefined`.
+ * - `Record<string, unknown>` - This is the appropriate type for any mutable object but doesn't allow readonly objects.
+ */
+// This type is not meant to be extended and it has to use an indexed type.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions, @typescript-eslint/consistent-indexed-object-style
+export type AnyObject = {
+  readonly [K: string]: unknown;
+};
+
+/**
+ * Use this type to allow any array. This allows readonly arrays which is
+ * generally what you want. If you need a mutable array use the
+ * {@link MutableArray} type instead of the builtin `T[]` or `Array` types.
+ * This allows us to be more explicit about intent.
+ *
+ * Consider being more specific if possible. You should generally try to use a
+ * concrete array with a union or add a type parameter first.
+ *
+ * Use this instead of:
+ * - `any[]` - When elements of this array are accessed you get `any` which is not safe.
+ * - `unknown[]` - This is the appropriate type for any mutable array but doesn't allow readonly arrays.
+ */
+export type AnyArray = readonly unknown[];
+
+/**
+ * Use this type to allow a mutable array of type `T`. Only use this if mutation
+ * is sound. Otherwise you should be using `readonly T[]` or `ReadonlyArray<T>`.
+ */
+export type MutableArray<T> = Array<T>;
+
+/**
+ * Use this type to allow any function. Notably since this allows any function
+ * it is difficult to call the function in a safe way. This means its uses are
+ * mostly niche and it should be avoided.
+ *
+ * Make sure you have a good reason to use this type. It is almost always better
+ * to use a more specific function type. Please consider leaving a comment about
+ * why this type is necessary.
+ *
+ * Use this instead of:
+ * - `Function` - This refers to the fundamental `Function` object in JS. It allows classes.
+ * - `(...args: any[]) => any` - If someone explicitly accesses the parameters or return value you get `any` which is not safe.
+ * - `(...args: unknown[]) => unknown` - This allows obviously unsound calls like `fn(1, "foo")` because it indicates it can take any arguments.
+ */
+export type AnyFunction = (...args: never[]) => unknown;
+
+/**
+ * Use this type to allow any class, abstract class, or class-like constructor.
+ *
+ * See {@link AnyConcreteConstructor} if you cannot allow abstract classes. Please
+ * also consider writing a comment explaining why {@link AnyConcreteConstructor}
+ * is necessary.
+ *
+ * @example
+ * ```ts
+ * const concrete: AnyConstructor = class Concrete { ... }
+ * const abstract: AnyConstructor = abstract class Abstract { ... }
+ *
+ * // `Date` is not actually a class but it can be used as a constructor.
+ * const classLike: AnyConstructor = Date;
+ * ```
+ */
+export type AnyConstructor = abstract new (...args: never[]) => unknown;
+
+/**
+ * Use this type to allow any class or class-like constructor but disallow
+ * class-like constructors.
+ *
+ * Use this type only when abstract classes would be problematic such as the
+ * base type of a mixin. Please consider writing a comment explaining why.
+ * See {@link AnyConstructor} to also allow abstract classes.
+ *
+ * @example
+ * ```ts
+ * const concrete: AnyConcreteConstructor = class Concrete { ... }
+ *
+ * // `Date` is not actually a class but it can be used as a constructor.
+ * const classLike: AnyConcreteConstructor = Date;
+ *
+ * // This next line errors:
+ * const abstract: AnyConcreteConstructor = abstract class Abstract { ... }
+ * ```
+ */
+export type AnyConcreteConstructor = new (...args: never[]) => unknown;
+
+/**
+ * This type is equivalent to `Promise<T>`. Its usage is to indicate intent.
+ * Normally all callbacks should be of the form `(...) => MaybePromise<T>`
+ * because this gives the most flexibility to the caller. Typically asynchronous
+ * callbacks are simply awaited, meaning that there's no difference between
+ * `Promise` and {@link MaybePromise}. Even functions like
+ * {@link Promise.allSettled} function correctly with {@link MaybePromise}.
+ *
+ * Use this type only in the rare case where a type must be a `Promise`, for
+ * example if `promise.then` or `promise.catch` is explicitly called. Please
+ * also writing a comment explaining why {@link MaybePromise} is problematic in
+ * this context.
+ */
+export type MustBePromise<T> = Promise<T>;
+
+/**
+ * Use when a type may be either a promise or not. This is most useful in
+ * asynchronous callbacks where in most cases it's sound to provide a synchronous
+ * callback instead.
+ *
+ * If it is not sound to provide a non-Promise for whatever reason, see
+ * {@link MustBePromise} to declare this more explicitly than simply writing
+ * `Promise<T>`.
+ */
+export type MaybePromise<T> = T | Promise<T>;
+
+/**
+ * Use this to allow any type besides `null` or `undefined`.
+ *
+ * This type is equivalent to the type `{}`. It exists to give this type a
+ * better name. `{}` is not a type representing an empty object. In reality it
+ * allows assigning any type besides `null` or `undefined`. This is frustrating
+ * but it seems the theory is supposed to be that all types except for `null`
+ * and `undefined` will return `undefined` for any property accessed on them.
+ *
+ * Even primitives like `number` will not error when you get or even set a
+ * property on them, although they will not preserve the property. Since the
+ * only type that cannot be indexed is `null` or `undefined` this is the chosen
+ * semantics of `{}` in TypeScript.
+ */
+// This type is not meant to be extended and it's meant to be the explicit version of what the type `{}` does, i.e. allow any type besides `null` or `undefined`.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+export type NonNullish = {};
+
+/**
+ * This is the closest approximation to a type representing an empty object.
+ *
+ * Use instead of `{}` when you want to represent an empty object. `{}` actually
+ * allows any type that is not `null` or `undefined`. see {@link NonNullish} if
+ * you want that behavior.
+ */
+// This type is not meant to be extended and it has to use an indexed type.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions, @typescript-eslint/consistent-indexed-object-style
+export type EmptyObject = {
+  [K: string]: never;
+};
