@@ -3,7 +3,6 @@ import type { DeepPartial, InexactPartial, MaybePromise } from "../../../../type
 import type EventEmitterMixin from "../../../common/utils/event-emitter.d.mts";
 
 // TODO: Investigate use of DeepPartial vs Partial vs InexactPartial
-// TODO: Should
 
 declare const __Configuration: unique symbol;
 declare const __RenderOptions: unique symbol;
