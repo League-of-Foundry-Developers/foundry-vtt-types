@@ -99,3 +99,79 @@ export type LayerClass<T extends DocumentConstructor> = T["metadata"]["name"] ex
 
 /** Keys of functions of console.log / globalThis.logger */
 export type LoggingLevels = "debug" | "log" | "info" | "warn" | "error";
+
+/**
+ * Use this whenever a type is given that should match some constraint but is
+ * not guaranteed to. For example when additional properties can be declaration
+ * merged into an interface. When the type does not conform then `ConformTo` is
+ * used instead.
+ *
+ * See `MustConform` for a version that throws a compilation error when the type
+ * cannot be statically known to conform.
+ */
+export type MakeConform<T, ConformTo> = T extends ConformTo ? T : ConformTo;
+
+/**
+ * This is useful when you want to ensure that a type conforms to a certain
+ * constraint. If it is not guaranteed to conform then a compilation error is
+ * thrown. This makes it too conservative in some cases.
+ */
+export type MustConform<T extends ConformTo, ConformTo> = T;
+
+/**
+ * This allows you to treat all interfaces as a plain object. But beware, if the
+ * interface represents a function, array, or constructor then these will be
+ * stripped from the interface.
+ *
+ * This is generally intended for cases where an interface is given in order to
+ * be declaration merged and then must be assigned to a plain object type.
+ *
+ * The constraint `T extends object` is used because `object` includes functions
+ * and arrays etc. This is crucial to allow interfaces to be given to this type.
+ */
+export type InterfaceToObject<T extends object> = {
+  // Mapped types are no-ops on most types (even primitives like string) but for
+  // functions they strip the function signatures and if there's no additional
+  // properties returns `{}`.
+  [K in keyof T]: T[K];
+};
+
+/**
+ * Replaces the type `{}` with `Record<string, never>` which is usually a better
+ * representation of an empty object. The type `{}` actually allows any type be
+ * assigned to it except for `null` and `undefined`.
+ *
+ * The theory behind this is that all non-nullish types allow
+ * you to access any property on them without erroring. Primitive types like
+ * `number` will not store the property but it still will not error to simply
+ * try to get and set properties.
+ *
+ * The type `{}` can appear for example after operations like `Omit` if it
+ * removes all properties rom an object, because an empty interface was given,
+ * or so on.
+ *
+ * @example
+ * ```ts
+ * type ObjectArray<T extends Record<string, unknown>> = T[];
+ *
+ * // As you would hope a union can't be assigned. It errors with:
+ * // "type 'string' is not assignable to type 'Record<string, unknown>'."
+ * type UnionErrors = ObjectArray<string | { x: number }>;
+ *
+ * // However, this works.
+ * type EmptyObjectArray = ObjectArray<{}>;
+ *
+ * // But it allows likely unsound behavior like this:
+ * const emptyObject: EmptyObjectArray = [1, "foo", () => 3];
+ *
+ * // So it may be better to define `ObjectArray` like so:
+ * type ObjectArray<T extends Record<string, unknown>> = HandleEmptyObject<T>[];
+ *
+ * // If it were, then this line would error appropriately!
+ * const emptyObject: EmptyObjectArray = [1, "foo", () => 3];
+ * ```
+ */
+export type HandleEmptyObject<
+  T extends Record<string, unknown>,
+  D extends Record<string, unknown> = Record<string, never>,
+> = [{}] extends [T] ? D : T;

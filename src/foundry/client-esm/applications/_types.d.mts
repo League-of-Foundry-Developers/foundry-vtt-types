@@ -2,6 +2,8 @@
 
 import type ApplicationV2 from "./api/application.d.mts";
 
+export {};
+
 // After seeing that none of these types add anything or are even exported a
 // very reasonable question may be: Why on earth does this file exist?
 //
@@ -26,8 +28,6 @@ interface ApplicationWindowRenderOptions extends ApplicationV2.WindowRenderOptio
 interface ApplicationClosingOptions extends ApplicationV2.ClosingOptions {}
 
 interface ApplicationClickAction extends ApplicationV2.ClickAction {}
-
-interface ApplicationFormSubmission extends ApplicationV2.FormSubmission {}
 
 interface ApplicationFormSubmission extends ApplicationV2.FormSubmission {}
 

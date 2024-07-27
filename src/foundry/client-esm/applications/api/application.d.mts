@@ -1,10 +1,37 @@
+import type { MustConform } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial, MaybePromise } from "../../../../types/utils.d.mts";
 import type EventEmitterMixin from "../../../common/utils/event-emitter.d.mts";
 
 // TODO: Investigate use of DeepPartial vs Partial vs InexactPartial
-// TODO: Should
+
+declare const __Configuration: unique symbol;
+declare const __RenderOptions: unique symbol;
+declare const __RenderContext: unique symbol;
+
+type _MustBeAssignableToInternal = MustConform<ApplicationV2, ApplicationV2.Internal<any, any, any>>;
 
 declare namespace ApplicationV2 {
+  /**
+   * This type is an internal implementation detail of fvtt-types.
+   *
+   * It is used in `HandlebarsApplicationMixin` as a proxy bound for `ApplicationV2`
+   * as well as to implement generic passthrough from the mixin into the mixin
+   * class.
+   *
+   * It soundly be used as a bound to guarantee a subclass of `ApplicationV2`
+   * because it uses some `unique symbol`s that are used nowhere else in the
+   * codebase.
+   */
+  interface Internal<
+    Configuration extends ApplicationV2.Configuration,
+    RenderOptions extends ApplicationV2.RenderOptions,
+    RenderContext extends Record<string, unknown>,
+  > {
+    readonly [__Configuration]: Configuration;
+    readonly [__RenderOptions]: RenderOptions;
+    readonly [__RenderContext]: RenderContext;
+  }
+
   export interface Configuration {
     /**
      * An HTML element identifier used for this Application instance
@@ -182,11 +209,6 @@ declare namespace ApplicationV2 {
     controls: boolean;
   }
 
-  /**
-   * Context data provided to the renderer
-   */
-  export interface RenderContext extends Record<string, unknown> {}
-
   export interface ClosingOptions {
     /** Whether to animate the close, or perform it instantaneously */
     animate: boolean;
@@ -264,7 +286,14 @@ declare namespace ApplicationV2 {
 declare class ApplicationV2<
   Configuration extends ApplicationV2.Configuration = ApplicationV2.Configuration,
   RenderOptions extends ApplicationV2.RenderOptions = ApplicationV2.RenderOptions,
+  // Foundry doesn't define this generic in its documentation but it's necessary
+  // in fvtt-types to type `_prepareContext` etc.
+  RenderContext extends Record<string, unknown> = Record<string, never>,
 > extends EventEmitterMixin(Object) {
+  [__Configuration]: Configuration;
+  [__RenderOptions]: RenderOptions;
+  [__RenderContext]: RenderContext;
+
   constructor(options: DeepPartial<Configuration>);
 
   static BASE_APPLICATION: typeof ApplicationV2;
@@ -397,7 +426,7 @@ declare class ApplicationV2<
    * @param options - Options which configure application rendering behavior
    * @returns Context data for the render operation
    */
-  protected _prepareContext(options: DeepPartial<RenderOptions>): Promise<ApplicationV2.RenderContext>;
+  protected _prepareContext(options: DeepPartial<RenderOptions>): Promise<RenderContext>;
 
   /**
    * Configure the array of header control menu options
@@ -417,7 +446,7 @@ declare class ApplicationV2<
    * @returns The result of HTML rendering may be implementation specific.
    *          Whatever value is returned here is passed to _replaceHTML
    */
-  protected _renderHTML(context: ApplicationV2.RenderContext, options: DeepPartial<RenderOptions>): Promise<any>; //TODO: Might be the subject of a generic?
+  protected _renderHTML(context: RenderContext, options: DeepPartial<RenderOptions>): Promise<unknown>;
 
   /**
    * Replace the HTML of the application with the result provided by the rendering backend.
@@ -556,10 +585,7 @@ declare class ApplicationV2<
    * @param context - Prepared context data
    * @param options - Provided render options
    */
-  protected _preFirstRender(
-    context: DeepPartial<ApplicationV2.RenderContext>,
-    options: DeepPartial<RenderOptions>,
-  ): Promise<void>;
+  protected _preFirstRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): Promise<void>;
 
   /**
    * Actions performed after a first render of the Application.
@@ -567,10 +593,7 @@ declare class ApplicationV2<
    * @param context - Prepared context data
    * @param options - Provided render options
    */
-  protected _onFirstRender(
-    context: DeepPartial<ApplicationV2.RenderContext>,
-    options: DeepPartial<RenderOptions>,
-  ): void;
+  protected _onFirstRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): void;
 
   /**
    * Actions performed before any render of the Application.
@@ -578,10 +601,7 @@ declare class ApplicationV2<
    * @param context - Prepared context data
    * @param options - Provided render options
    */
-  protected _preRender(
-    context: DeepPartial<ApplicationV2.RenderContext>,
-    options: DeepPartial<RenderOptions>,
-  ): Promise<void>;
+  protected _preRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): Promise<void>;
 
   /**
    * Actions performed after any render of the Application.
@@ -589,7 +609,7 @@ declare class ApplicationV2<
    * @param context - Prepared context data
    * @param options - Provided render options
    */
-  protected _onRender(context: DeepPartial<ApplicationV2.RenderContext>, options: DeepPartial<RenderOptions>): void;
+  protected _onRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): void;
 
   /**
    * Actions performed before closing the Application.

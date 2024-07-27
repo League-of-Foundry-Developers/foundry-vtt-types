@@ -1,4 +1,9 @@
-import type { ConfiguredDocumentClassForName, PlaceableObjectConstructor } from "../../types/helperTypes.d.mts";
+import type {
+  ConfiguredDocumentClassForName,
+  HandleEmptyObject,
+  InterfaceToObject,
+  PlaceableObjectConstructor,
+} from "../../types/helperTypes.d.mts";
 import type { ConstructorOf, PropertyTypeOrFallback } from "../../types/utils.d.mts";
 import type * as CONST from "../common/constants.d.mts";
 import type { StatusEffect } from "./data/documents/token.d.mts";
@@ -1838,9 +1843,10 @@ declare global {
      * A mapping of status effect IDs which provide some additional mechanical integration.
      * @defaultValue `{ DEFEATED: "dead", INVISIBLE: "invisible", BLIND: "blind" }`
      */
-    specialStatusEffects: keyof CONFIG.SpecialStatusEffects extends never
-      ? CONFIG.DefaultSpecialStatusEffects
-      : CONFIG.SpecialStatusEffects;
+    specialStatusEffects: HandleEmptyObject<
+      InterfaceToObject<CONFIG.SpecialStatusEffects>,
+      CONFIG.DefaultSpecialStatusEffects
+    >;
 
     /**
      * A mapping of core audio effects used which can be replaced by systems or mods
