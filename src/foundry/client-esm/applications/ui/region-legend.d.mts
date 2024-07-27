@@ -7,4 +7,5 @@ import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts
 export default class RegionLegend<
   Configuration extends ApplicationV2.Configuration = ApplicationV2.Configuration,
   RenderOptions extends ApplicationV2.RenderOptions = ApplicationV2.RenderOptions,
-> extends HandlebarsApplicationMixin(ApplicationV2)<Configuration, RenderOptions> {}
+  RenderContext extends Record<string, unknown> = Record<string, never>,
+> extends HandlebarsApplicationMixin(ApplicationV2)<Configuration, RenderOptions, RenderContext> {}
