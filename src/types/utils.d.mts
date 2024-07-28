@@ -301,17 +301,17 @@ export type AnyConcreteConstructor = new (...args: never[]) => unknown;
  * {@link Promise.allSettled | `Promise.allSettled`} function correctly
  * with {@link MaybePromise | `MaybePromise`}.
  *
- * Do not use this type or {@link MaybePromise | `MaybePromise`} for the return value of an
- * asynchronous function on a function. For example for
+ * Do not use this type or {@link MaybePromise | `MaybePromise`} for the return
+ * type of asynchronous methods on classes. For example for
  * {@link foundry.abstract.Document._preCreate | Document#_preCreate} the typing
  * should be `Promise<void>` and not this type. In theory we could use
  * {@link MaybePromise | `MaybePromise`} in this context as well but this seems
  * more likely to be confusing than to be helpful.
  *
- * Use this type only in the rare case where a type must be a `Promise`, for
- * example if `promise.then` or `promise.catch` is explicitly called. Please
- * also writing a comment explaining why {@link MaybePromise | `MaybePromise`} is problematic in
- * this context.
+ * Use this type only in the rare case where a callback's return type must be a
+ * `Promise`, for example if `promise.then` or `promise.catch` is explicitly
+ * called. Please also writing a comment explaining why
+ * {@link MaybePromise | `MaybePromise`} is problematic in this context.
  */
 export type MustBePromise<T> = Promise<T>;
 
@@ -327,7 +327,7 @@ export type MustBePromise<T> = Promise<T>;
  * This should generally not be used in asynchronous methods. For example in
  * {@link foundry.abstract.Document._preCreate | `Document#_preCreate`} the typing
  * is `Promise<void>` because it's declared as an async method. Overriding an
- * asynchronous method with a synchronous method was deemeed more confusing than
+ * asynchronous method with a synchronous method is more confusing than
  * helpful.
  */
 export type MaybePromise<T> = T | Promise<T>;
