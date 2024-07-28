@@ -2,7 +2,7 @@ import { expectTypeOf } from "vitest";
 import type EmbeddedCollection from "../../../../src/foundry/common/abstract/embedded-collection.d.mts";
 import type { NumberField, SchemaField } from "../../../../src/foundry/common/data/fields.d.mts";
 import type { DataModel } from "../../../../src/foundry/common/abstract/data.d.mts";
-import type { AnyObject, EmptyObject, Merge } from "../../../../src/types/utils.d.mts";
+import type { AnyMutableObject, AnyObject, EmptyObject, Merge } from "../../../../src/types/utils.d.mts";
 import type { TypeDataModel } from "../../../../src/foundry/common/abstract/type-data.d.mts";
 
 // @ts-expect-error name and type are required
@@ -224,7 +224,7 @@ class BoilerplateCharacter extends BoilerplateActorBase<
   }
 
   getRollData() {
-    const data: AnyObject = {};
+    const data: AnyMutableObject = {};
 
     // Copy the ability scores to the top level, so that rolls can use
     // formulas like `@str.mod + 4`.
