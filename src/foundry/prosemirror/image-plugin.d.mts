@@ -2,6 +2,7 @@ import type { Schema, Slice } from "prosemirror-model";
 import type { Plugin } from "prosemirror-state";
 import type { EditorView } from "prosemirror-view";
 import type ProseMirrorPlugin from "./plugin.d.mts";
+import type { EmptyObject } from "../../types/utils.d.mts";
 
 export default ProseMirrorImagePlugin;
 /**
@@ -28,7 +29,7 @@ declare class ProseMirrorImagePlugin<
    */
   readonly document: RelatedDocument;
 
-  static override build(schema: Schema, options?: Record<string, never>): Plugin;
+  static override build(schema: Schema, options?: EmptyObject): Plugin;
 
   /**
    * Handle a drop onto the editor.

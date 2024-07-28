@@ -1,5 +1,5 @@
 import type { ConfiguredDocumentClassForName } from "../../../types/helperTypes.d.mts";
-import type { InexactPartial, Merge } from "../../../types/utils.d.mts";
+import type { AnyObject, InexactPartial, Merge } from "../../../types/utils.d.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
 import type Document from "../abstract/document.mts";
 import type { fields } from "../data/module.d.mts";

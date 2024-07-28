@@ -1,20 +1,18 @@
-import type { InexactPartial } from "../../../types/utils.d.mts";
-
 /**
  * A class responsible for recording information about a validation failure.
  */
 export class DataModelValidationFailure {
-  constructor(options?: InexactPartial<DataModelValidationFailure.ConstructorArgs>);
+  constructor(options: DataModelValidationFailure.ConstructorArgs);
+
   /**
    * The value that failed validation for this field.
    */
-  invalidValue?: any;
+  invalidValue: unknown;
 
   /**
    * The value it was replaced by, if any.
-   * @defaultValue `false`
    */
-  fallback: boolean;
+  fallback: unknown;
 
   /**
    * Whether the value was dropped from some parent collection.
@@ -59,7 +57,7 @@ export class DataModelValidationFailure {
   /**
    * Return the base properties of this failure, omitting any nested failures.
    */
-  toObject(): DataModelValidationFailure.ObjectProperties;
+  toObject(): DataModelValidationFailure.ToObject;
 
   /**
    * Represent the DataModelValidationFailure as a string.
@@ -132,37 +130,45 @@ export class DataModelValidationError extends Error {
 
 declare namespace DataModelValidationFailure {
   interface ConstructorArgs {
+    // The `| undefined` is redundant with `unknown` but it's provided anyways for easy auditing.
+
     /** The value that failed validation for this field. */
-    invalidValue: unknown;
+    invalidValue?: unknown | undefined;
+
     /**  The value it was replaced by, if any. */
-    fallback: unknown;
+    fallback?: unknown | undefined;
+
     /**
      * Whether the value was dropped from some parent collection.
      * @defaultValue `false`
      */
-    dropped: boolean;
+    dropped?: boolean | undefined;
+
     /** The validation error message. */
-    message: string;
+    message?: string | undefined;
+
     /**
      * Whether this failure was unresolved
      * @defaultValue `false`
      */
-    unresolved: boolean;
+    unresolved?: boolean | undefined;
   }
 
   interface ElementValidationFailure {
     /** Either the element's index or some other identifier for it. */
     id: string | number;
+
     /** Optionally a user-friendly name for the element. */
     name?: string;
+
     /** The element's validation failure. */
     failure: DataModelValidationFailure;
   }
 
-  interface ObjectProperties {
-    invalidValue?: any;
-    fallback?: any;
-    dropped?: boolean;
-    message?: string;
+  interface ToObject {
+    invalidValue?: unknown | undefined;
+    fallback?: unknown | undefined;
+    dropped?: boolean | undefined;
+    message?: string | undefined;
   }
 }
