@@ -2,7 +2,7 @@ import { expectTypeOf } from "vitest";
 import type EmbeddedCollection from "../../../../src/foundry/common/abstract/embedded-collection.d.mts";
 import type { NumberField, SchemaField } from "../../../../src/foundry/common/data/fields.d.mts";
 import type { DataModel } from "../../../../src/foundry/common/abstract/data.d.mts";
-import type { Merge } from "../../../../src/types/utils.d.mts";
+import type { AnyObject, EmptyObject, Merge } from "../../../../src/types/utils.d.mts";
 import type { TypeDataModel } from "../../../../src/foundry/common/abstract/type-data.d.mts";
 
 // @ts-expect-error name and type are required
@@ -104,8 +104,8 @@ declare namespace BoilerplateActorBase {
 
 class BoilerplateActorBase<
   Schema extends BoilerplateActorBase.Schema = BoilerplateActorBase.Schema,
-  BaseData extends Record<string, unknown> = Record<string, never>,
-  DerivedData extends Record<string, unknown> = Record<string, never>,
+  BaseData extends AnyObject = EmptyObject,
+  DerivedData extends AnyObject = EmptyObject,
 > extends foundry.abstract.TypeDataModel<Schema, Actor.ConfiguredInstance, BaseData, DerivedData> {
   static override defineSchema(): BoilerplateActorBase.Schema {
     const fields = foundry.data.fields;
@@ -156,7 +156,7 @@ declare namespace BoilerplateCharacter {
     }>;
   }
 
-  interface DerivedProps extends Record<string, unknown> {
+  interface DerivedProps extends AnyObject {
     abilities: {
       strength: {
         mod: number;
@@ -224,7 +224,7 @@ class BoilerplateCharacter extends BoilerplateActorBase<
   }
 
   getRollData() {
-    const data: Record<string, unknown> = {};
+    const data: AnyObject = {};
 
     // Copy the ability scores to the top level, so that rolls can use
     // formulas like `@str.mod + 4`.

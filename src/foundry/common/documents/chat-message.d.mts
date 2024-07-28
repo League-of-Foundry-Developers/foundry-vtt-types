@@ -50,10 +50,10 @@ declare class BaseChatMessage extends Document<BaseChatMessage.Schema, BaseChatM
    */
   static #validateRoll(rollJSON: string): void;
 
-  static override migrateData(source: object): object;
+  static override migrateData(source: AnyObject): AnyObject;
 
   static override shimData(
-    data: object,
+    data: AnyObject,
     options?: {
       /**
        * Apply shims to embedded models?
@@ -61,7 +61,7 @@ declare class BaseChatMessage extends Document<BaseChatMessage.Schema, BaseChatM
        */
       embedded?: boolean;
     },
-  ): object;
+  ): AnyObject;
 }
 export default BaseChatMessage;
 

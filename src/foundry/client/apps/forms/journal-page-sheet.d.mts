@@ -204,11 +204,11 @@ declare global {
       };
     }
 
-    type TimeComponents = {
+    interface TimeComponents {
       h: number;
       m: number;
       s: number;
-    };
+    }
   }
 
   /**

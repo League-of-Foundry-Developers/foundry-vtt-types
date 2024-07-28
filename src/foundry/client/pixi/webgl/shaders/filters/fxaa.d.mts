@@ -68,5 +68,7 @@ declare global {
     ): AdaptiveFXAAFilter;
   }
 
+  // TODO: This needs to be filled in.
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface AdaptiveFXAAFilterOptions {}
 }

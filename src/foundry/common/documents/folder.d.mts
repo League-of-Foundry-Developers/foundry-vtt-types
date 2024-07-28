@@ -30,10 +30,10 @@ declare class BaseFolder extends Document<BaseFolder.Schema, BaseFolder.Metadata
    */
   static SORTING_MODES: ("a" | "m")[];
 
-  static override migrateData(source: object): object;
+  static override migrateData(source: AnyObject): AnyObject;
 
   static override shimData(
-    data: object,
+    data: AnyObject,
     options?: {
       /**
        * Apply shims to embedded models?
@@ -41,7 +41,7 @@ declare class BaseFolder extends Document<BaseFolder.Schema, BaseFolder.Metadata
        */
       embedded?: boolean;
     },
-  ): object;
+  ): AnyObject;
 
   // TODO: `Return type annotation circularly references itself.`
   // static override get(documentId: string, options: InexactPartial<{ pack: string }>): Folder.ConfiguredInstance | null;

@@ -157,8 +157,8 @@ declare global {
   }
 
   namespace Localization {
-    type Translations = {
+    interface Translations {
       [K: string]: string | Translations;
-    };
+    }
   }
 }

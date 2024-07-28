@@ -242,11 +242,11 @@ declare global {
   namespace PointSourcePolygon {
     type CollisionModes = "any" | "all" | "closest";
 
-    type CollisionTypes = {
+    interface CollisionTypes {
       any: boolean;
       closest: foundry.canvas.edges.PolygonVertex;
       all: foundry.canvas.edges.PolygonVertex[] | null;
-    };
+    }
 
     type TestCollision<Mode extends CollisionModes> = CollisionTypes[Mode];
   }

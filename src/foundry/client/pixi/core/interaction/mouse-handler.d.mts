@@ -225,7 +225,7 @@ declare global {
     /**
      * Enumerate the states of handle outcome.
      */
-    type HANDLER_OUTCOME = {
+    interface HANDLER_OUTCOME {
       /** -2: SKIPPED - the handler has been skipped by previous logic */
       SKIPPED: -2;
 
@@ -237,7 +237,7 @@ declare global {
 
       /** 2: ACCEPTED - the handler callback has been processed and is accepting further process */
       ACCEPTED: 2;
-    };
+    }
 
     type PermissionAction =
       | "clickLeft"

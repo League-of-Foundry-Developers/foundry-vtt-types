@@ -36,7 +36,7 @@ declare global {
      * @param data    - Data which fulfills the model defined by the VisionMode schema.
      * @param options - Additional options passed to the DataModel constructor.
      */
-    constructor(data: Partial<any>, options?: object);
+    constructor(data: InexactPartial<any>, options?: AnyObject);
 
     static defineSchema(): VisionMode.Schema;
 

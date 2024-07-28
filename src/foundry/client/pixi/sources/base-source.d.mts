@@ -97,6 +97,13 @@ declare global {
     get radius(): number;
 
     /**
+     * @deprecated since v11, will be removed in v13
+     * @remarks The setter PointSource#radius is deprecated.
+     * @remarks The radius should not be set anywhere except in PointSource#_initialize.
+     */
+    set radius(radius);
+
+    /**
      * Initialize and configure the PointSource using provided data.
      * @param data - Provided data for configuration
      * @returns The configured source
@@ -160,13 +167,6 @@ declare global {
      * @remarks Use PointSource#constructor.sourceType instead.
      */
     get sourceType(): (typeof PointSource)["sourceType"];
-
-    /**
-     * @deprecated since v11, will be removed in v13
-     * @remarks The setter PointSource#radius is deprecated.
-     * @remarks The radius should not be set anywhere except in PointSource#_initialize.
-     */
-    set radius(radius);
 
     /**
      * @deprecated since v11, will be removed in v13

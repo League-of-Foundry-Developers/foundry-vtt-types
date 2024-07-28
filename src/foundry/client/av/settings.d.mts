@@ -275,7 +275,10 @@ declare global {
     type WorldSettings = typeof AVSettings.DEFAULT_WORLD_SETTINGS;
     type StoredUserSettings = typeof AVSettings.DEFAULT_USER_SETTINGS;
     type UserSettings = StoredUserSettings & { canBroadcastAudio: boolean; canBroadcastVideo: boolean };
-    type Settings = { client: ClientSettings; world: WorldSettings };
+    interface Settings {
+      client: ClientSettings;
+      world: WorldSettings;
+    }
     // eslint-disable-next-line @typescript-eslint/no-empty-interface
     interface Overrides {}
     interface DefaultVoiceModes {

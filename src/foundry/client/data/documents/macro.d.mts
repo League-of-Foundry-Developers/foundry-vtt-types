@@ -33,11 +33,10 @@ declare global {
     /**
      * Execute the Macro command.
      * @param scope - Macro execution scope which is passed to script macros
-     * @returns A created ChatMessage from chat macros or returned value from script macros
+     * @remarks `type === "chat"` returns void, `type === "script"` returns the promise
+     * @privateRemarks Foundry's stated return value is incorrect, #executeChat only returns `void`
      */
-
-    // TODO: Test if additional scope can be passed
-    execute(scope?: Scope): this["type"] extends "chat" ? ChatMessage.ConfiguredInstance : any;
+    execute(scope?: Scope): void | Promise<unknown>;
 
     _onClickDocumentLink(event: MouseEvent): ReturnType<this["execute"]>;
   }
@@ -53,4 +52,9 @@ interface Scope {
    * A Token which is the protagonist of the executed action
    */
   token?: Token;
+
+  /**
+   * @remarks Additional arguments passed as part of the scope
+   */
+  [arg: string]: unknown;
 }

@@ -1,7 +1,7 @@
 import type { InexactPartial } from "../../../../../types/utils.d.mts";
 
 declare global {
-  type HexGridConfiguration = {
+  interface HexGridConfiguration {
     /**
      * Columnar orientation?
      * @defaultValue `true`
@@ -34,9 +34,9 @@ declare global {
      * Legacy hex grid computation (not recommended)
      */
     legacy?: boolean | undefined;
-  };
+  }
 
-  type HexCubeCoordinate = {
+  interface HexCubeCoordinate {
     /**
      * Coordinate along the SW - NE axis
      */
@@ -51,9 +51,9 @@ declare global {
      * Coordinate along the NW - SE axis
      */
     s: number;
-  };
+  }
 
-  type HexOffsetCoordinate = {
+  interface HexOffsetCoordinate {
     /**
      * The row coordinate
      */
@@ -63,7 +63,7 @@ declare global {
      * The column coordinate
      */
     col: number;
-  };
+  }
 
   /**
    * A helper class which represents a single hexagon as part of a HexagonalGrid.

@@ -115,7 +115,7 @@ declare global {
   }
 
   namespace DocumentSheetConfig {
-    type SheetRegistration = {
+    interface SheetRegistration {
       action: "register";
 
       /** The Document class being registered */
@@ -135,9 +135,9 @@ declare global {
 
       /** Make this sheet the default for provided types? */
       makeDefault: boolean;
-    };
+    }
 
-    type SheetUnregistration = {
+    interface SheetUnregistration {
       action: "unregister";
 
       /** The Document class being unregistered */
@@ -148,7 +148,7 @@ declare global {
 
       /** An array of types for which this sheet is removed */
       types: string[];
-    };
+    }
 
     type SheetAssignment = SheetRegistration | SheetUnregistration;
 
