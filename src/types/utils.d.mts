@@ -214,6 +214,20 @@ export type AnyObject = {
 };
 
 /**
+ * This type allows mutable plain objects. This means readonly objects cannot be
+ * assigned.
+ *
+ * Use this type instead of:
+ * - `object` - This allows functions and arrays.
+ * - `Record<string, any>`/`{}` - These allows anything besides `null` and `undefined`.
+ * - `Record<string, unknown>` - These types are equivalent
+ */
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions, @typescript-eslint/consistent-indexed-object-style
+export type AnyMutableObject = {
+  [K: string]: unknown;
+};
+
+/**
  * Use this type to allow any array. This allows readonly arrays which is
  * generally what you want. If you need a mutable array use the
  * {@link MutableArray} type instead of the builtin `T[]` or `Array` types.
