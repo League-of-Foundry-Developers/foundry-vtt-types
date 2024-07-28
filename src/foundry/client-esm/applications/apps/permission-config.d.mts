@@ -1,4 +1,4 @@
-import type { InterfaceToObject } from "../../../../types/helperTypes.d.mts";
+import type { ConformRecord, InterfaceToObject, MustConform } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial } from "../../../../types/utils.d.mts";
 import type { UserPermission } from "../../../common/constants.d.mts";
 import type { CONST } from "../../client.d.mts";
@@ -6,6 +6,8 @@ import type ApplicationV2 from "../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
 
 type PermissionConfigRenderContext = InterfaceToObject<PermissionConfig.RenderContext>;
+
+type PermissionConfigParts = ConformRecord<PermissionConfig.Parts, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
 /**
  * An application for configuring the permissions which are available to each User role.
@@ -19,7 +21,7 @@ declare class PermissionConfig<
   #permissionConfig: true;
 
   static override DEFAULT_OPTIONS: Partial<ApplicationV2.Configuration>;
-  static override PARTS: PermissionConfig.Parts;
+  static override PARTS: PermissionConfigParts;
 
   /* -------------------------------------------- */
   /*  Rendering                                   */
@@ -44,10 +46,15 @@ declare namespace PermissionConfig {
     buttons: ApplicationV2.FormFooterButton[];
   }
 
-  interface Parts extends Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart> {
+  interface Parts {
     permissions: HandlebarsApplicationMixin.HandlebarsTemplatePart;
     footer: HandlebarsApplicationMixin.HandlebarsTemplatePart;
   }
 }
+
+type _PartsMustBeValid = MustConform<
+  InterfaceToObject<PermissionConfig.Parts>,
+  Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>
+>;
 
 export default PermissionConfig;
