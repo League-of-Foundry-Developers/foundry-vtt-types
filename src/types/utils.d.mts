@@ -24,13 +24,13 @@ export type InexactPartial<T> = {
  * Any valid class constructor.
  * @internal
  */
-export type AnyClass = abstract new (...args: any[]) => any;
+export type AnyClass = abstract new (...args: never[]) => any;
 
 /**
  * References the constructor of type `T`
  * @internal
  */
-export type ConstructorOf<T> = new (...args: any) => T;
+export type ConstructorOf<T> = new (...args: never[]) => T;
 
 /**
  * Expand an object that contains keys in dotted notation
@@ -97,16 +97,28 @@ export type Merge<T, U> =
 
 /**
  * Returns whether the type is a plain object. Excludes functions and arrays while still being friendly to interfaces.
+ *
+ * @example
+ * ```ts
+ * interface ObjectInterface {
+ *  prop: number;
+ * }
+ *
+ * type Interface = IsObject<ObjectInterface>; // true
+ * type Object = IsObject<{ prop: number }>; // true
+ * type Array = IsObject<number[]>; // false
+ * type Function = IsObject<() => void>; // false
+ *
+ * // By comparison, simply comparing against `Record<string, unknown>` fails.
+ * type RecordFails = Interface extends Record<string, unknown> ? true : false; // false
+ * ```
  */
-export type IsObject<T> =
-  // `Record<string, any>` can be a function or an array, so we need to exclude those
-  T extends Record<string, any>
-    ? T extends readonly any[]
-      ? false
-      : T extends (...args: any[]) => any
-        ? false
-        : true
-    : false;
+// eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
+export type IsObject<T> = T extends { readonly [K: string]: any }
+  ? T extends AnyArray | AnyFunction
+    ? false
+    : true
+  : false;
 
 /**
  * A simple, non-recursive merge type.

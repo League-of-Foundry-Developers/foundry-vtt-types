@@ -100,6 +100,25 @@ export type LayerClass<T extends DocumentConstructor> = T["metadata"]["name"] ex
 /** Keys of functions of console.log / globalThis.logger */
 export type LoggingLevels = "debug" | "log" | "info" | "warn" | "error";
 
+export type AnyKey = keyof any;
+
+/**
+ * Prefer this type over `K in keyof T ? T[K] : never`.
+ * This type plays nicely with partial or readonly types and also fixes some variance issues because `keyof` is inherently assumed to be contravariant.
+ */
+export type GetKey<T, K extends AnyKey, D = never> = T extends { readonly [_ in K]?: infer V } ? V : D;
+
+/**
+ * `Partial` is usually the wrong type.
+ * In order to make it easier to audit unintentional uses of `Partial` this type is provided.
+ */
+export type IntentionalPartial<T> = Partial<T>;
+
+/**
+ * This type is used to make a constraint where T must be statically known to .
+ */
+export type OverlapsWith<T, U> = [T & U] extends [never] ? U : T;
+
 /**
  * Use this whenever a type is given that should match some constraint but is
  * not guaranteed to. For example when additional properties can be declaration
@@ -175,3 +194,15 @@ export type HandleEmptyObject<
   T extends Record<string, unknown>,
   D extends Record<string, unknown> = Record<string, never>,
 > = [{}] extends [T] ? D : T;
+
+/**
+ * This is a helper type that allows you to ensure that a record conforms to a
+ * certain shape. This is useful when you want to ensure that a record has all
+ * keys of a certain type.
+ *
+ * When a value does not conform it is replaced with `never` to indicate that
+ * there is an issue.
+ */
+export type ConformRecord<T extends object, V> = {
+  [K in keyof T]: [T[K]] extends [V] ? T[K] : never;
+};
