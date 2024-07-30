@@ -13,7 +13,7 @@ declare global {
      * {...super.defaultUniforms, brightnessPulse: 1}
      * ```
      */
-    static overridedefaultUniforms: AbstractBaseShader.Uniforms;
+    static override defaultUniforms: AbstractBaseShader.Uniforms;
   }
 
   /**
