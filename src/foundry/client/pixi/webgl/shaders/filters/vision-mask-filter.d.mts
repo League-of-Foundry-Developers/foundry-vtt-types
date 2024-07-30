@@ -2,7 +2,7 @@ export {};
 
 declare global {
   class VisionMaskFilter extends AbstractBaseMaskFilter {
-    static override fragmentShader: string | ((...args: any[]) => string) | undefined;
+    static override fragmentShader: AbstractBaseFilter.FragmentShader;
 
     static override defaultUniforms: AbstractBaseShader.Uniforms;
 

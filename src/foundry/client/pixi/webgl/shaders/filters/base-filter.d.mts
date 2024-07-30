@@ -1,21 +1,24 @@
 export {};
 
 declare global {
+  namespace AbstractBaseFilter {
+    type FragmentShader = AbstractBaseShader.FragmentShader | undefined;
+  }
   /**
    * An abstract filter which provides a framework for reusable definition
    */
   class AbstractBaseFilter extends BaseShaderMixin(PIXI.Filter) {
     /**
      * The default uniforms used by the filter
-     * @defaultValue `undefined`
+     * @defaultValue `{}`
      */
-    static defaultUniforms: AbstractBaseShader.Uniforms | undefined;
+    static defaultUniforms: AbstractBaseShader.Uniforms;
 
     /**
      * The fragment shader which renders this filter.
      * @defaultValue `undefined`
      */
-    static fragmentShader: string | ((...args: any[]) => string) | undefined;
+    static fragmentShader: AbstractBaseFilter.FragmentShader;
 
     /**
      * The vertex shader which renders this filter.
