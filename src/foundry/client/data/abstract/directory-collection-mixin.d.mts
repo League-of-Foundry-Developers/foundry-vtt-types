@@ -1,20 +1,21 @@
 import type { ConfiguredDocumentClass, DocumentConstructor } from "../../../../types/helperTypes.d.mts";
 import type { AnyConstructorFor, Mixin } from "../../../../types/utils.d.mts";
 
-type DocumentCollectionBase = DirectoryCollection<DirectoryCollection.DirectoryTypes> &
+type DirectoryCollectionMixin_DocumentCollection_Static = DirectoryCollection<DirectoryCollection.DirectoryTypes> &
   DocumentCollection<DocumentConstructor, string>;
 
-export interface MixedDocumentCollectionInterface extends DocumentCollectionBase {
+export interface DirectoryCollectionMixin_DocumentCollection_Interface
+  extends DirectoryCollectionMixin_DocumentCollection_Static {
   new <T extends DocumentConstructor, Name extends string>(
     ...args: ConstructorParameters<typeof DocumentCollection>
   ): DirectoryCollection<InstanceType<ConfiguredDocumentClass<T>>> &
     DocumentCollection<ConfiguredDocumentClass<T>, Name>;
 }
 
-type CollectionBase = DirectoryCollection<DirectoryCollection.DirectoryTypes> &
+type DirectoryCollectionMixin_Collection_Static = DirectoryCollection<DirectoryCollection.DirectoryTypes> &
   Collection<CompendiumCollection<CompendiumCollection.Metadata>>;
 
-export interface MixedCollectionInterface extends CollectionBase {
+export interface DirectoryCollectionMixin_Collection_Interface extends DirectoryCollectionMixin_Collection_Static {
   new (
     ...args: ConstructorParameters<typeof Collection>
   ): DirectoryCollection<CompendiumCollection<CompendiumCollection.Metadata>> &
@@ -120,14 +121,14 @@ declare global {
     // TODO: Refine type based on CONST.FOLDER_DOCUMENT_TYPES
     type DirectoryTypes = object;
 
-    type TreeNode<T> = {
+    interface TreeNode<T> {
       children: TreeNode<T>[];
       depth: number;
       entries: T[];
       folder: Folder;
       root: boolean;
       visible: boolean;
-    };
+    }
 
     type AlphabeticalSortEntry = { name: string } & object;
     type StandardSortEntry = { sort: number } & object;

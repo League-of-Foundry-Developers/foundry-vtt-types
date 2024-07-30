@@ -4,7 +4,7 @@ import type { DocumentMetadata } from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
 import type * as fields from "../data/fields.mts";
 import type { ShapeData } from "../data/module.mts";
-import type * as documents from "./module.mts";
+import type * as documents from "./_module.mts";
 
 declare global {
   type DrawingData = BaseDrawing.Properties;
@@ -50,12 +50,12 @@ declare class BaseDrawing extends Document<BaseDrawing.Schema, BaseDrawing.Metad
     }>,
   ): boolean;
 
-  static override cleanData(source?: object, options?: fields.DataField.CleanOptions): object;
+  static override cleanData(source?: AnyObject, options?: fields.DataField.CleanOptions): AnyObject;
 
-  static override migrateData(source: object): object;
+  static override migrateData(source: AnyObject): AnyObject;
 
   static override shimData(
-    data: object,
+    data: AnyObject,
     options?: {
       /**
        * Apply shims to embedded models?
@@ -63,7 +63,7 @@ declare class BaseDrawing extends Document<BaseDrawing.Schema, BaseDrawing.Metad
        */
       embedded?: boolean;
     },
-  ): object;
+  ): AnyObject;
 }
 export default BaseDrawing;
 

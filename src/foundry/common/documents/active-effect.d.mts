@@ -3,7 +3,7 @@ import type Document from "../abstract/document.mts";
 import type { DocumentMetadata, DocumentModificationOptions } from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
 import type * as fields from "../data/fields.mts";
-import type * as documents from "./module.mts";
+import type * as documents from "./_module.mts";
 
 declare global {
   type ActiveEffectData = BaseActiveEffect.Properties;
@@ -28,7 +28,7 @@ declare class BaseActiveEffect extends Document<
    */
   constructor(data?: BaseActiveEffect.ConstructorData, context?: DocumentConstructionContext);
 
-  override canUserModify(user: documents.BaseUser, action: "create" | "update" | "delete", data?: object): boolean;
+  override canUserModify(user: documents.BaseUser, action: "create" | "update" | "delete", data?: AnyObject): boolean;
 
   static override metadata: Readonly<BaseActiveEffect.Metadata>;
 
@@ -47,14 +47,14 @@ declare class BaseActiveEffect extends Document<
   ): boolean;
 
   protected override _preCreate(
-    data: fields.SchemaField.AssignmentType<BaseActiveEffect.Schema, {}>,
+    data: fields.SchemaField.AssignmentType<BaseActiveEffect.Schema, EmptyObject>,
     options: DocumentModificationOptions,
     user: documents.BaseUser,
   ): Promise<void>;
 
   protected override _initialize(options?: any): void;
 
-  static override migrateData(source: object): object;
+  static override migrateData(source: AnyObject): AnyObject;
 
   /**
    * @deprecated since v11, will be removed in v13

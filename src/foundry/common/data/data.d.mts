@@ -1,7 +1,7 @@
 import type { DatabaseBackend } from "../abstract/module.d.mts";
 import type { DataModel } from "../abstract/data.d.mts";
 import type { fields } from "./module.d.mts";
-import type * as documents from "../documents/module.mjs";
+import type * as documents from "../documents/_module.d.mts";
 import type { ValueOf } from "../../../types/utils.d.mts";
 
 // TODO: Implement all of the necessary options
@@ -11,7 +11,7 @@ declare global {
 }
 
 declare namespace LightData {
-  type LightAnimationDataSchema = {
+  export interface LightAnimationDataSchema extends DataSchema {
     /**
      * The animation type which is applied
      */
@@ -47,14 +47,14 @@ declare namespace LightData {
      * Reverse the direction of animation.
      */
     reverse: fields.BooleanField<{ label: "LIGHT.AnimationReverse" }>;
-  };
+  }
 
-  type DarknessSchema = {
+  export interface DarknessSchema extends DataSchema {
     min: fields.NumberField<{ initial: 0 }>;
     max: fields.NumberField<{ initial: 1 }>;
-  };
+  }
 
-  type Schema = {
+  interface Schema extends DataSchema {
     /**
      * An opacity for the emitted light, if any
      */
@@ -165,19 +165,17 @@ declare namespace LightData {
         validationError: "darkness.max may not be less than darkness.min";
       }
     >;
-  };
+  }
 }
-
-interface LightData extends fields.SchemaField.InnerInitializedType<LightData.Schema> {}
 
 declare class LightData extends DataModel<LightData.Schema> {
   static defineSchema(): LightData.Schema;
 
-  static migrateData(source: object): object;
+  static migrateData(source: AnyObject): AnyObject;
 }
 
 declare namespace ShapeData {
-  type Schema = {
+  interface Schema extends DataSchema {
     /**
      * The type of shape, a value in ShapeData.TYPES.
      * For rectangles, the x/y coordinates are the top-left corner.
@@ -205,17 +203,15 @@ declare namespace ShapeData {
      * For polygons, the array of polygon coordinates which comprise the shape.
      */
     points: fields.ArrayField<fields.NumberField<{ nullable: false }>>;
-  };
+  }
 
-  type TYPES = {
+  interface TYPES {
     RECTANGLE: "r";
     CIRCLE: "c";
     ELLIPSE: "e";
     POLYGON: "p";
-  };
+  }
 }
-
-interface ShapeData extends fields.SchemaField.InnerInitializedType<ShapeData.Schema> {}
 
 declare class ShapeData extends DataModel<ShapeData.Schema> {
   static defineSchema(): ShapeData.Schema;
@@ -224,14 +220,14 @@ declare class ShapeData extends DataModel<ShapeData.Schema> {
 }
 
 declare namespace TextureData {
-  type DefaultOptions = {
+  interface DefaultOptions {
     categories: ["IMAGE", "VIDEO"];
     // initial: null;
     wildcard: false;
     label: "";
-  };
+  }
 
-  type Schema<SrcOptions extends FilePathFieldOptions> = {
+  interface Schema<SrcOptions extends FilePathFieldOptions> extends DataSchema {
     /**
      * The URL of the texture source.
      */
@@ -266,15 +262,12 @@ declare namespace TextureData {
      * An optional color string used to tint the texture.
      */
     tint: fields.ColorField;
-  };
+  }
 }
-
-interface TextureData<SrcOptions extends FilePathFieldOptions = TextureData.DefaultOptions>
-  extends fields.SchemaField.InnerInitializedType<TextureData.Schema<SrcOptions>> {}
 
 declare class TextureData<
   SrcOptions extends FilePathFieldOptions = TextureData.DefaultOptions,
-  SchemaOptions extends fields.SchemaField.Options<TextureData.Schema<SrcOptions>> = {},
+  SchemaOptions extends fields.SchemaField.Options<TextureData.Schema<SrcOptions>> = EmptyObject,
 > extends fields.SchemaField<TextureData.Schema<SrcOptions>, SchemaOptions> {
   constructor(options?: SchemaOptions, srcOptions?: SrcOptions);
 }
@@ -305,8 +298,6 @@ declare namespace PrototypeToken {
   type ConstructorData = fields.SchemaField.InnerAssignmentType<Schema>;
 }
 
-interface PrototypeToken extends fields.SchemaField.InnerInitializedType<PrototypeToken.Schema> {}
-
 declare class PrototypeToken extends DataModel<PrototypeToken.Schema, documents.BaseActor> {
   constructor(data?: PrototypeToken.ConstructorData, options?: DataModel.ConstructorOptions);
 
@@ -323,10 +314,10 @@ declare class PrototypeToken extends DataModel<PrototypeToken.Schema, documents.
 
   static get database(): DatabaseBackend;
 
-  static override migrateData(source: object): object;
+  static override migrateData(source: AnyObject): AnyObject;
 
   static override shimData(
-    data: object,
+    data: AnyObject,
     options?: {
       /**
        * Apply shims to embedded models?
@@ -334,7 +325,7 @@ declare class PrototypeToken extends DataModel<PrototypeToken.Schema, documents.
        */
       embedded?: boolean;
     },
-  ): object;
+  ): AnyObject;
 
   /**
    * @see foundry.abstract.Document#update
@@ -378,7 +369,7 @@ declare class PrototypeToken extends DataModel<PrototypeToken.Schema, documents.
 }
 
 declare namespace TombstoneData {
-  type Schema = {
+  interface Schema extends DataSchema {
     /**
      * The _id of the base Document that this tombstone represents.
      */
@@ -393,10 +384,8 @@ declare namespace TombstoneData {
      * An object of creation and access information.
      */
     _stats: fields.DocumentStatsField;
-  };
+  }
 }
-
-interface TombstoneData extends fields.SchemaField.InnerInitializedType<TombstoneData.Schema> {}
 
 declare class TombstoneData extends DataModel<TombstoneData.Schema> {
   static defineSchema(): TombstoneData.Schema;

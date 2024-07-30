@@ -1,7 +1,7 @@
 /**
  * An abstract custom HTMLElement designed for use with form inputs.
- * @fires {Event} input           An "input" event when the value of the input changes
- * @fires {Event} change          A "change" event when the value of the element changes
+ * @remarks Fires input  - An "input" event when the value of the input changes
+ * @remarks Fires change - A "change" event when the value of the element changes
  */
 export default abstract class AbstractFormInputElement<FormInputValueType> extends HTMLElement {
   constructor();
@@ -91,7 +91,7 @@ export default abstract class AbstractFormInputElement<FormInputValueType> exten
    * Apply key attributes on the containing custom HTML element to input elements contained within it.
    * @internal
    */
-  protected _applyInputAttributes(input: any): void;
+  protected _applyInputAttributes(input: HTMLInputElement): void;
 
   /**
    * Activate event listeners which add dynamic behavior to the custom element.

@@ -23,7 +23,7 @@ expectTypeOf(
     y: null,
     hidden: null,
     radius: null,
-    darkness: null, // FIXME: This is valid
+    darkness: null,
     easing: null,
     path: null,
     repeat: null,
@@ -37,7 +37,7 @@ expectTypeOf(
     y: undefined,
     hidden: undefined,
     radius: undefined,
-    darkness: undefined, // FIXME: This is valid
+    darkness: undefined,
     easing: undefined,
     path: undefined,
     repeat: undefined,

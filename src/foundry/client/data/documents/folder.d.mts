@@ -8,7 +8,7 @@ import type {
 import type { DeepPartial } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 import type BaseFolder from "../../../common/documents/folder.d.mts";
-import type { BaseUser } from "../../../common/documents/module.d.mts";
+import type { BaseUser } from "../../../common/documents/_module.d.mts";
 
 declare global {
   namespace Folder {

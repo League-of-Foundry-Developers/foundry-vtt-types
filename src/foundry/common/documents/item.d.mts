@@ -2,8 +2,7 @@ import type { InexactPartial, Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
 import type * as fields from "../data/fields.mts";
-import type { CONST } from "../module.mts";
-import type * as documents from "./module.mts";
+import type * as documents from "./_module.mts";
 
 declare global {
   type ItemData = BaseItem.Properties;
@@ -44,11 +43,11 @@ declare class BaseItem extends Document<BaseItem.Schema, BaseItem.Metadata, Acto
    */
   static get TYPES(): BaseItem.TypeNames[];
 
-  override canUserModify(user: documents.BaseUser, action: "create" | "delete" | "update", data?: object): boolean;
+  override canUserModify(user: documents.BaseUser, action: "create" | "delete" | "update", data?: AnyObject): boolean;
 
   override testUserPermission(
     user: documents.BaseUser,
-    permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
+    permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS,
     options?: InexactPartial<{
       /**
        * Require the exact permission level requested?
@@ -58,10 +57,10 @@ declare class BaseItem extends Document<BaseItem.Schema, BaseItem.Metadata, Acto
     }>,
   ): boolean;
 
-  static override migrateData(source: object): object;
+  static override migrateData(source: AnyObject): AnyObject;
 
   static override shimData(
-    data: object,
+    data: AnyObject,
     options: {
       /**
        * Apply shims to embedded models?
@@ -69,7 +68,7 @@ declare class BaseItem extends Document<BaseItem.Schema, BaseItem.Metadata, Acto
        */
       embedded?: boolean;
     },
-  ): object;
+  ): AnyObject;
 }
 export default BaseItem;
 

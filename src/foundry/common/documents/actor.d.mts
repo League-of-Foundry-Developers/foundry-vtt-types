@@ -3,7 +3,7 @@ import type Document from "../abstract/document.mts";
 import type { DocumentMetadata, DocumentModificationOptions } from "../abstract/document.mts";
 import type { PrototypeToken } from "../data/data.mts";
 import type * as fields from "../data/fields.mts";
-import type * as documents from "./module.mts";
+import type * as documents from "./_module.d.mts";
 
 declare global {
   type ActorData = BaseActor.Properties;
@@ -184,21 +184,21 @@ declare class BaseActor extends Document<BaseActor.Schema, BaseActor.Metadata> {
   static #canUpdate(user: documents.BaseUser, doc: BaseActor, data: BaseActor.UpdateData): boolean;
 
   protected override _preCreate(
-    data: fields.SchemaField.AssignmentType<documents.BaseActor.Schema, {}>,
+    data: fields.SchemaField.AssignmentType<documents.BaseActor.Schema, EmptyObject>,
     options: DocumentModificationOptions,
     user: documents.BaseUser,
   ): Promise<void>;
 
   protected override _preUpdate(
-    changed: fields.SchemaField.AssignmentType<documents.BaseActor.Schema, {}>,
+    changed: fields.SchemaField.AssignmentType<documents.BaseActor.Schema, EmptyObject>,
     options: DocumentModificationOptions,
     user: documents.BaseUser,
   ): Promise<void>;
 
-  static override migrateData(source: object): object;
+  static override migrateData(source: AnyObject): AnyObject;
 
   static override shimData(
-    data: object,
+    data: AnyObject,
     options?: {
       /**
        * Apply shims to embedded models?
@@ -206,7 +206,7 @@ declare class BaseActor extends Document<BaseActor.Schema, BaseActor.Metadata> {
        */
       embedded?: boolean;
     },
-  ): object;
+  ): AnyObject;
 }
 
 export default BaseActor;

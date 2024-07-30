@@ -12,10 +12,10 @@ declare global {
       scene: Scene | null;
 
       /** The Actor whom is speaking */
-      actor: Actor | null;
+      actor: Actor | null | undefined;
 
       /** The Token whom is speaking */
-      token: TokenDocument | Token | null;
+      token: TokenDocument | Token | null | undefined;
 
       /** The name of the speaker to display */
       alias: string | undefined;
@@ -54,6 +54,10 @@ declare global {
      */
     logged: boolean;
 
+    /* -------------------------------------------- */
+    /*  Properties                                  */
+    /* -------------------------------------------- */
+
     /**
      * Return the recommended String alias for this message.
      * The alias could be a Token name in the case of in-character messages or dice rolls.
@@ -82,6 +86,10 @@ declare global {
      * Messages may not be visible if they are private whispers.
      */
     get visible(): boolean;
+
+    /* -------------------------------------------- */
+    /*  Methods                                     */
+    /* -------------------------------------------- */
 
     override prepareDerivedData(): void;
 
@@ -166,7 +174,7 @@ declare global {
     /**
      * Obtain a data object used to evaluate any dice rolls associated with this particular chat message
      */
-    getRollData(): object;
+    getRollData(): Record<string, unknown>;
 
     /**
      * Given a string whisper target, return an Array of the user IDs which should be targeted for the whisper
@@ -195,6 +203,9 @@ declare global {
      */
     protected _renderRollHTML(isPrivate: boolean): Promise<string>;
 
+    /* -------------------------------------------- */
+    /*  Event Handlers                              */
+    /* -------------------------------------------- */
     protected override _preCreate(
       data: foundry.documents.BaseChatMessage.ConstructorData,
       options: DocumentModificationOptions,
@@ -210,6 +221,10 @@ declare global {
     ): void;
 
     protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
+
+    /* -------------------------------------------- */
+    /*  Importing and Exporting                     */
+    /* -------------------------------------------- */
 
     /**
      * Export the content of the chat message into a standardized log format

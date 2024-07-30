@@ -1,6 +1,5 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { InexactPartial } from "../../../../types/utils.d.mts";
-import type { CONST } from "../../../common/module.d.mts";
 
 declare global {
   namespace JournalEntryPage {
@@ -41,7 +40,7 @@ declare global {
      */
     get toc(): Record<string, JournalEntryPage.JournalEntryPageHeading>;
 
-    get permission(): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+    get permission(): foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
     /**
      * Return a reference to the Note instance for this Journal Entry Page in the current Scene, if any.

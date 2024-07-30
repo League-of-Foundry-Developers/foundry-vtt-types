@@ -1,4 +1,9 @@
-import type { ConfiguredDocumentClassForName, PlaceableObjectConstructor } from "../../types/helperTypes.d.mts";
+import type {
+  ConfiguredDocumentClassForName,
+  HandleEmptyObject,
+  InterfaceToObject,
+  PlaceableObjectConstructor,
+} from "../../types/helperTypes.d.mts";
 import type { ConstructorOf, PropertyTypeOrFallback } from "../../types/utils.d.mts";
 import type * as CONST from "../common/constants.d.mts";
 import type { StatusEffect } from "./data/documents/token.d.mts";
@@ -101,7 +106,7 @@ declare global {
      * Configure the DatabaseBackend used to perform Document operations
      * @defaultValue `new ClientDatabaseBackend()`
      */
-    DatabaseBackend: ClientDatabaseBackend;
+    DatabaseBackend: foundry.data.ClientDatabaseBackend;
 
     /**
      * Configuration for the Actor document
@@ -331,7 +336,7 @@ declare global {
        * The Dice types which are supported.
        * @defaultValue `[Die, FateDie]`
        */
-      types: Array<ConstructorOf<DiceTerm>>;
+      types: Array<ConstructorOf<foundry.dice.terms.DiceTerm>>;
 
       rollModes: CONFIG.Dice.RollModes;
 
@@ -339,7 +344,7 @@ declare global {
        * Configured Roll class definitions
        * @defaultValue `[Roll]`
        */
-      rolls: Array<ConstructorOf<Roll>>;
+      rolls: Array<ConstructorOf<foundry.dice.Roll>>;
 
       /**
        * Configured DiceTerm class definitions
@@ -356,23 +361,27 @@ declare global {
        * }
        * ```
        */
-      termTypes: Record<string, ConstructorOf<RollTerm>>;
+      termTypes: Record<string, ConstructorOf<foundry.dice.terms.RollTerm>>;
 
-      /**
-       * Configured roll terms and the classes they map to.
-       */
+      /** Configured roll terms and the classes they map to. */
       terms: {
-        c: typeof Coin;
-        d: typeof Die;
-        f: typeof FateDie;
-      } & Record<string, ConstructorOf<DiceTerm>>;
+        c: typeof foundry.dice.terms.Coin;
+        d: typeof foundry.dice.terms.Die;
+        f: typeof foundry.dice.terms.FateDie;
+      } & Record<string, ConstructorOf<foundry.dice.terms.DiceTerm>>;
 
       /**
        * A function used to provide random uniform values.
        * @defaultValue `MersenneTwister.random`
        */
       randomUniform: () => number;
-    } & Record<string, ConstructorOf<Roll>>; // Common pattern
+
+      /** A parser implementation for parsing Roll expressions. */
+      parser: typeof foundry.dice.RollParser;
+
+      /** A collection of custom functions that can be included in roll expressions.*/
+      functions: Record<string, RollFunction>;
+    } & Record<string, ConstructorOf<foundry.dice.Roll>>; // Common pattern
 
     /**
      * Configuration for the FogExploration document
@@ -1325,25 +1334,25 @@ declare global {
          */
         lightAmplification: VisionMode;
       };
-    };
 
-    /**
-     * The set of DetectionMode definitions which are available to be used for visibility detection.
-     */
-    detectionModes: {
-      [key: string]: DetectionMode;
+      /**
+       * The set of DetectionMode definitions which are available to be used for visibility detection.
+       */
+      detectionModes: {
+        [key: string]: DetectionMode;
 
-      basicSight: DetectionModeBasicSight;
+        basicSight: DetectionModeBasicSight;
 
-      seeInvisibility: DetectionModeInvisibility;
+        seeInvisibility: DetectionModeInvisibility;
 
-      senseInvisibility: DetectionModeInvisibility;
+        senseInvisibility: DetectionModeInvisibility;
 
-      feelTremor: DetectionModeTremor;
+        feelTremor: DetectionModeTremor;
 
-      seeAll: DetectionModeAll;
+        seeAll: DetectionModeAll;
 
-      senseAll: DetectionModeAll;
+        senseAll: DetectionModeAll;
+      };
     };
 
     /**
@@ -1838,7 +1847,10 @@ declare global {
      * A mapping of status effect IDs which provide some additional mechanical integration.
      * @defaultValue `{ DEFEATED: "dead", INVISIBLE: "invisible", BLIND: "blind" }`
      */
-    specialStatusEffects: Record<"DEFEATED" | "INVISIBLE" | "BLIND", string>;
+    specialStatusEffects: HandleEmptyObject<
+      InterfaceToObject<CONFIG.SpecialStatusEffects>,
+      CONFIG.DefaultSpecialStatusEffects
+    >;
 
     /**
      * A mapping of core audio effects used which can be replaced by systems or mods
@@ -2728,6 +2740,16 @@ declare global {
       config: Record<string, unknown>;
     }
 
+    // The point of this interface is to be declaration merged into so you can override `DefaultSpecialStatusEffects` and remove existing keys. It's never used when empty.
+    // eslint-disable-next-line @typescript-eslint/no-empty-interface
+    interface SpecialStatusEffects {}
+
+    interface DefaultSpecialStatusEffects {
+      DEFEATED: string;
+      INVISIBLE: string;
+      BLIND: string;
+    }
+
     namespace Cards {
       interface Preset {
         type: string;
@@ -2842,3 +2864,5 @@ interface CanvasGroupConstructor extends PixiContainerConstructor {
 
 type ToSpriteConstructor<Class extends new (sprite?: SpriteMesh) => any> = Pick<Class, keyof Class> &
   (new (sprite: SpriteMesh) => InstanceType<Class>);
+
+export type RollFunction = (...args: any[]) => Promise<number> | number;

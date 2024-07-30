@@ -3,7 +3,7 @@ import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
 import type * as fields from "../data/fields.mts";
-import type { documents } from "../module.mts";
+import type * as documents from "./_module.mts";
 
 declare global {
   type TableResultData = BaseTableResult.Properties;
@@ -40,10 +40,10 @@ declare class BaseTableResult extends Document<
     }>,
   ): boolean;
 
-  static override migrateData(source: object): object;
+  static override migrateData(source: AnyObject): AnyObject;
 
   static override shimData(
-    data: object,
+    data: AnyObject,
     options?: {
       /**
        * Apply shims to embedded models?
@@ -51,7 +51,7 @@ declare class BaseTableResult extends Document<
        */
       embedded?: boolean;
     },
-  ): object;
+  ): AnyObject;
 }
 export default BaseTableResult;
 

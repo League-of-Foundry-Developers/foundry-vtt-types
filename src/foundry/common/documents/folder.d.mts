@@ -2,7 +2,6 @@ import type { Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
 import type * as fields from "../data/fields.mts";
-import type { CONST } from "../module.mts";
 
 declare global {
   type FolderData = BaseFolder.Properties;
@@ -31,10 +30,10 @@ declare class BaseFolder extends Document<BaseFolder.Schema, BaseFolder.Metadata
    */
   static SORTING_MODES: ("a" | "m")[];
 
-  static override migrateData(source: object): object;
+  static override migrateData(source: AnyObject): AnyObject;
 
   static override shimData(
-    data: object,
+    data: AnyObject,
     options?: {
       /**
        * Apply shims to embedded models?
@@ -42,7 +41,7 @@ declare class BaseFolder extends Document<BaseFolder.Schema, BaseFolder.Metadata
        */
       embedded?: boolean;
     },
-  ): object;
+  ): AnyObject;
 
   // TODO: `Return type annotation circularly references itself.`
   // static override get(documentId: string, options: InexactPartial<{ pack: string }>): Folder.ConfiguredInstance | null;
@@ -78,7 +77,7 @@ declare namespace BaseFolder {
     name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
     /** The document type which this Folder contains, from CONST.FOLDER_DOCUMENT_TYPES */
-    type: fields.StringField<{ required: true; choices: CONST.FOLDER_DOCUMENT_TYPES[] }>;
+    type: fields.StringField<{ required: true; choices: foundry.CONST.FOLDER_DOCUMENT_TYPES[] }>;
 
     /**
      * An HTML description of the contents of this folder

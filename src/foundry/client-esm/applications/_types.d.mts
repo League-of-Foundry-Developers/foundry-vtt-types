@@ -1,92 +1,38 @@
 // Open question - this is just types?
 
-export interface ApplicationConfiguration {
-  /**
-   * An HTML element identifier used for this Application instance
-   */
-  id: string;
-  /**
-   * An string discriminator substituted for \{id\} in the default
-   * HTML element identifier for the class
-   */
-  uniqueId: string;
-  /**
-   * An array of CSS classes to apply to the Application
-   */
-  classes: string[];
-  /**
-   * The HTMLElement tag type used for the outer Application frame
-   */
-  tag: string;
-  /**
-   * Configuration of the window behaviors for this Application
-   */
-  window: ApplicationWindowConfiguration;
-  /**
-   * Click actions supported by the Application and their event handler
-   * functions. A handler function can be defined directly which only
-   * responds to left-click events. Otherwise, an object can be declared
-   * containing both a handler function and an array of buttons which are
-   * matched against the PointerEvent#button property.
-   */
-  actions: Record<string, ApplicationClickAction | { handler: ApplicationClickAction; buttons: number[] }>;
-  /**
-   * Configuration used if the application top-level element is a form
-   */
-  form?: ApplicationFormConfiguration;
-  /**
-   * Default positioning data for the application
-   */
-  position: Partial<ApplicationPosition>;
-}
+import type ApplicationV2 from "./api/application.d.mts";
 
-export type ApplicationPosition = {
-  /** Window offset pixels from top */
-  top: number;
+export {};
 
-  /** Window offset pixels from left */
-  left: number;
+// After seeing that none of these types add anything or are even exported a
+// very reasonable question may be: Why on earth does this file exist?
+//
+// Well this is the file in which Foundry defines these types. We don't house
+// them here because it has poor discoverability. The names Foundry has chosen
+// also overlaps with other existing names. For example `ApplicationConfiguration`
+// is also a class in `src/foundry/common/config.d.mts`. It's also just nice to
+// have as reference to keep us synced with the latest version of Foundry.
 
-  /** Un-scaled pixels in width or "auto" */
-  width: number | "auto";
+interface ApplicationConfiguration extends ApplicationV2.Configuration {}
 
-  /** Un-scaled pixels in height or "auto" */
-  height: number | "auto";
+interface ApplicationFormConfiguration extends ApplicationV2.FormConfiguration {}
 
-  /** A numeric scaling factor applied to application dimensions */
-  scale: number;
+interface ApplicationHeaderControlsEntry extends ApplicationV2.HeaderControlsEntry {}
 
-  /** A z-index of the application relative to siblings */
-  zIndex: number;
-};
+interface ApplicationConstructorParams extends ApplicationV2.ConstructorParams {}
 
-export type ApplicationWindowConfiguration = {};
+interface ApplicationRenderOptions extends ApplicationV2.RenderOptions {}
 
-export type ApplicationFormConfiguration = {};
+interface ApplicationWindowRenderOptions extends ApplicationV2.WindowRenderOptions {}
 
-export type ApplicationHeaderControlsEntry = {};
+interface ApplicationClosingOptions extends ApplicationV2.ClosingOptions {}
 
-export type ApplicationConstructionParams = {
-  position: ApplicationPosition;
-};
+interface ApplicationClickAction extends ApplicationV2.ClickAction {}
 
-export type ApplicationRenderOptions = {};
+interface ApplicationFormSubmission extends ApplicationV2.FormSubmission {}
 
-export type ApplicationWindowRenderOptions = {};
+interface ApplicationTab extends ApplicationV2.Tab {}
 
-/**
- * Context data provided to the renderer
- */
-export interface ApplicationRenderContext extends Record<string, any> {}
+interface FormNode extends ApplicationV2.FormNode {}
 
-export type ApplicationClosingOptions = {};
-
-export type ApplicationClickAction = (event: PointerEvent, target: HTMLElement) => Promise<void>;
-
-export type ApplicationFormSubmission = () => Promise<void>;
-
-export type ApplicationTab = {};
-
-export type FormNode = {};
-
-export type FormFooterButton = {};
+interface FormFooterButton extends ApplicationV2.FormFooterButton {}

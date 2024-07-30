@@ -1,7 +1,7 @@
 import type { InexactPartial, ValueOf } from "../../../../../types/utils.d.mts";
 
 declare global {
-  type RulerMeasurementSegment = {
+  interface RulerMeasurementSegment {
     /** The Ray which represents the point-to-point line segment */
     ray: Ray;
 
@@ -16,7 +16,7 @@ declare global {
 
     /** Is this segment the last one? */
     last: boolean;
-  };
+  }
 
   interface RulerData {
     /** The ruler measurement state. */
@@ -154,11 +154,6 @@ declare global {
         force: boolean;
       }>,
     ): Ruler.Segment[];
-
-    /**
-     * Get the text label for a segment of the measured path
-     */
-    protected _getSegmentLabel(segmentDistance: number, totalDistance: number, isTotal: boolean): string;
 
     /**
      * While measurement is in progress, update the destination to be the central point of the target grid space.

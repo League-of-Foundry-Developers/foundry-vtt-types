@@ -26,7 +26,7 @@ expectTypeOf(
     flavor: null,
     rolls: null,
     sound: null,
-    speaker: null, // FIXME: This is valid
+    speaker: null,
     timestamp: null,
     type: null,
     user: null,
@@ -43,7 +43,7 @@ expectTypeOf(
     flavor: undefined,
     rolls: undefined,
     sound: undefined,
-    speaker: undefined, // FIXME: This is valid
+    speaker: undefined,
     timestamp: undefined,
     type: undefined,
     user: undefined,

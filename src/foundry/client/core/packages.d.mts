@@ -1,5 +1,5 @@
 import type { AnyConstructorFor, InexactPartial, Mixin } from "../../../types/utils.d.mts";
-import type { CONST } from "../../common/module.d.mts";
+import type { CONST } from "../../client-esm/client.d.mts";
 
 declare class ClientPackage {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
@@ -112,14 +112,16 @@ declare class ClientPackage {
 
 declare global {
   namespace ClientPackage {
-    type PackageCompatibilityBadge = {
+    interface PackageCompatibilityBadge {
       type: "safe" | "unsafe" | "warning" | "neutral" | "error";
       tooltip: string;
       label?: string;
       icon?: string;
-    };
+    }
 
-    type ModuleConstructorData = { active: boolean };
+    interface ModuleConstructorData {
+      active: boolean;
+    }
   }
 
   /**

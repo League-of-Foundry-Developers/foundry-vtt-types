@@ -5,7 +5,7 @@ import type { DocumentMetadata } from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
 import type { LightData, TextureData } from "../data/data.mts";
 import type * as fields from "../data/fields.mts";
-import type * as documents from "./module.mts";
+import type * as documents from "./_module.mts";
 
 declare global {
   type TokenSightData = BaseToken.Properties["sight"];
@@ -61,12 +61,12 @@ declare class BaseToken extends Document<BaseToken.Schema, BaseToken.Metadata, S
   updateSource(
     changes?: BaseToken.ConstructorData | undefined,
     options?: { dryRun?: boolean; fallback?: boolean; recursive?: boolean } | undefined,
-  ): object;
+  ): AnyObject;
 
-  static override migrateData(source: object): object;
+  static override migrateData(source: AnyObject): AnyObject;
 
   static override shimData(
-    data: object,
+    data: AnyObject,
     options?: {
       /**
        * Apply shims to embedded models?
@@ -74,7 +74,7 @@ declare class BaseToken extends Document<BaseToken.Schema, BaseToken.Metadata, S
        */
       embedded?: boolean;
     },
-  ): object;
+  ): AnyObject;
 
   //TODO: Update with the Delta conditionality
   toObject(source: true): this["_source"];
@@ -126,7 +126,7 @@ declare namespace BaseToken {
   type Source = fields.SchemaField.InnerPersistedType<Schema>;
 
   // Needed because Omit wasn't working with schemas
-  interface SharedProtoSchema extends DataSchema {
+  export interface SharedProtoSchema extends DataSchema {
     /**
      * The name used to describe the Token
      * @defaultValue `""`

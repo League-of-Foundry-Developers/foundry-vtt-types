@@ -1,7 +1,7 @@
 import "./click-handler.d.mts";
 import "./content-link-plugin.d.mts";
 import "./dirty-plugin.d.mts";
-import "./dom-parser.mjs";
+import "./dom-parser.d.mts";
 import "./dropdown.d.mts";
 import "./extensions.d.mts";
 import "./highlight-matches-plugin.d.mts";

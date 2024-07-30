@@ -20,18 +20,18 @@ declare const Map: PatchedMapConstructor;
  * This concept is reused throughout Foundry VTT where a collection of uniquely identified elements is required.
  * @typeParam T - The type of the objects contained in the Collection
  */
-declare class Collection<T> extends Map<string, T> {
-  constructor(entries?: readonly (readonly [string, T])[] | null);
+declare class Collection<V> extends Map<string, V> {
+  constructor(entries?: readonly (readonly [string, V])[] | null);
 
   /**
    * When iterating over a Collection, we should iterate over its values instead of over its entries
    */
-  [Symbol.iterator](): IterableIterator<T>;
+  [Symbol.iterator](): IterableIterator<V>;
 
   /**
    * Return an Array of all the entry values in the Collection
    */
-  get contents(): T[];
+  get contents(): V[];
 
   /**
    * Find an entry in the Map using an functional condition.
@@ -47,8 +47,8 @@ declare class Collection<T> extends Map<string, T> {
    * c.get("a") === c.find(entry => entry === "A"); // true
    * ```
    */
-  find<S extends T>(condition: (e: T, index: number, collection: Collection<T>) => e is S): S | undefined;
-  find(condition: (e: T, index: number, collection: Collection<T>) => boolean): T | undefined;
+  find<S extends V>(condition: (e: V, index: number, collection: Collection<V>) => e is S): S | undefined;
+  find(condition: (e: V, index: number, collection: Collection<V>) => boolean): V | undefined;
 
   /**
    * Filter the Collection, returning an Array of entries which match a functional condition.
@@ -64,8 +64,8 @@ declare class Collection<T> extends Map<string, T> {
    * let hasA = c.filters(entry => entry.slice(0) === "A");
    * ```
    */
-  filter<S extends T>(condition: (e: T, index: number, collection: Collection<T>) => e is S): S[];
-  filter(condition: (e: T, index: number, collection: Collection<T>) => boolean): T[];
+  filter<S extends V>(condition: (e: V, index: number, collection: Collection<V>) => e is S): S[];
+  filter(condition: (e: V, index: number, collection: Collection<V>) => boolean): V[];
 
   /**
    * Apply a function to each element of the collection
@@ -78,7 +78,7 @@ declare class Collection<T> extends Map<string, T> {
    * c.forEach(e => e.active = true);
    * ```
    */
-  forEach(fn: (e: T) => void): void;
+  forEach(fn: (e: V) => void): void;
 
   /**
    * Get an element from the Collection by its key.
@@ -95,8 +95,8 @@ declare class Collection<T> extends Map<string, T> {
    * c.get("d", {strict: true}); // throws Error
    * ```
    */
-  get(key: string, { strict }: { strict: true }): T;
-  get(key: string, { strict }?: { strict?: false }): T | undefined;
+  get(key: string, { strict }: { strict: true }): V;
+  get(key: string, { strict }?: { strict?: false }): V | undefined;
 
   /**
    * Get an entry from the Collection by name.
@@ -114,8 +114,8 @@ declare class Collection<T> extends Map<string, T> {
    * c.getName("D", {strict: true}); // throws Error
    * ```
    */
-  getName(name: string, { strict }: { strict: true }): T;
-  getName(name: string, { strict }?: { strict?: false }): T | undefined;
+  getName(name: string, { strict }: { strict: true }): V;
+  getName(name: string, { strict }?: { strict?: false }): V | undefined;
 
   /**
    * Transform each element of the Collection into a new form, returning an Array of transformed values
@@ -124,7 +124,7 @@ declare class Collection<T> extends Map<string, T> {
    * @typeParam M       - The type of the mapped values
    * @returns An Array of transformed values
    */
-  map<M>(transformer: (entity: T, index: number, collection: Collection<T>) => M): M[];
+  map<M>(transformer: (entity: V, index: number, collection: Collection<V>) => M): M[];
 
   /**
    * Reduce the Collection by applying an evaluator function and accumulating entries
@@ -143,7 +143,7 @@ declare class Collection<T> extends Map<string, T> {
    * }, ""); // "ABC"
    * ```
    */
-  reduce<A>(evaluator: (accumulator: A, entity: T, index: number, collection: Collection<T>) => A, initial: A): A;
+  reduce<A>(evaluator: (accumulator: A, entity: V, index: number, collection: Collection<V>) => A, initial: A): A;
 
   /**
    * Test whether a condition is met by some entry in the Collection.
@@ -152,13 +152,13 @@ declare class Collection<T> extends Map<string, T> {
    *                    and the collection being tested.
    * @returns Was the test condition passed by at least one entry?
    */
-  some(condition: (e: T, index: number, collection: Collection<T>) => boolean): boolean;
+  some(condition: (e: V, index: number, collection: Collection<V>) => boolean): boolean;
 
   /**
    * Convert the Collection to a primitive array of its contents.
    * @returns An array of contained values
    */
-  toJSON(): Array<T extends { toJSON: (...args: any[]) => infer U } ? U : T>;
+  toJSON(): Array<V extends { toJSON: (...args: any[]) => infer U } ? U : V>;
 }
 
 export default Collection;

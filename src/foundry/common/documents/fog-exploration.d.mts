@@ -2,7 +2,7 @@ import type { Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata, DocumentModificationOptions } from "../abstract/document.mts";
 import type * as fields from "../data/fields.mts";
-import type * as documents from "./module.mts";
+import type * as documents from "./_module.mts";
 
 declare global {
   type FogExplorationData = BaseFogExploration.Properties;
@@ -26,7 +26,7 @@ declare class BaseFogExploration extends Document<BaseFogExploration.Schema, Bas
   static #canModify(user: documents.BaseUser, doc: BaseFogExploration);
 
   protected override _preUpdate(
-    changed: fields.SchemaField.AssignmentType<documents.BaseFogExploration.Schema, {}>,
+    changed: fields.SchemaField.AssignmentType<documents.BaseFogExploration.Schema, EmptyObject>,
     options: DocumentModificationOptions,
     user: documents.BaseUser,
   ): Promise<void>;

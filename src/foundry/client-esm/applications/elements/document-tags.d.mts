@@ -1,5 +1,5 @@
 import type { FormInputConfig } from "../forms/fields.d.mts";
-import AbstractFormInputElement from "./form-element.mjs";
+import type AbstractFormInputElement from "./form-element.d.mts";
 
 /**
  * A custom HTMLElement used to render a set of associated Documents referenced by UUID.
@@ -7,7 +7,7 @@ import AbstractFormInputElement from "./form-element.mjs";
 declare class HTMLDocumentTagsElement extends AbstractFormInputElement<Record<string, string> | string | string[]> {
   constructor();
 
-  _value: {};
+  protected _value: Record<string, string>;
 
   set type(value: string);
 
@@ -53,13 +53,13 @@ declare class HTMLDocumentTagsElement extends AbstractFormInputElement<Record<st
    * @param document - A candidate document or compendium index entry to tag
    * @throws An error if the candidate document is not allowed
    */
-  _validateDocument(document: foundry.abstract.Document.Any | object): void;
+  _validateDocument(document: foundry.abstract.Document.Any | Record<string, unknown>): void;
 
   protected override _getValue(): string | string[];
 
   protected override _setValue(value: string | string[]): void;
 
-  protected override _toggleDisabled(disabled: any): void;
+  protected override _toggleDisabled(disabled: boolean): void;
 
   /**
    * Create a HTMLDocumentTagsElement using provided configuration data.

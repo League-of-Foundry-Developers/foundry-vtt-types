@@ -69,7 +69,7 @@ declare global {
   }
 
   namespace AmbientLightConfig {
-    type FormData = {
+    interface FormData {
       x: AmbientLightDocument["x"];
       y: AmbientLightDocument["y"];
       rotation: AmbientLightDocument["rotation"];
@@ -92,6 +92,6 @@ declare global {
       "config.saturation": AmbientLightDocument["config"]["saturation"];
       "config.contrast": AmbientLightDocument["config"]["contrast"];
       "config.shadows": AmbientLightDocument["config"]["shadows"];
-    };
+    }
   }
 }

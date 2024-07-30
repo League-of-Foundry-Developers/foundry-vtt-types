@@ -1,9 +1,9 @@
-import type { MixedCollectionInterface } from "../abstract/directory-collection-mixin.d.mts";
+import type { DirectoryCollectionMixin_Collection_Interface } from "../abstract/directory-collection-mixin.d.mts";
 
-declare const MixedCollection: MixedCollectionInterface;
+declare const DirectoryCollectionMixin_Collection: DirectoryCollectionMixin_Collection_Interface;
 
 declare global {
-  class CompendiumPacks extends MixedCollection {
+  class CompendiumPacks extends DirectoryCollectionMixin_Collection {
     /**
      * Get a Collection of Folders which contain Compendium Packs
      */

@@ -72,6 +72,6 @@ declare global {
       onClick: () => void;
     }
 
-    type MenuStructure = { [name: string]: MenuItem };
+    type MenuStructure = Record<string, MenuItem>;
   }
 }

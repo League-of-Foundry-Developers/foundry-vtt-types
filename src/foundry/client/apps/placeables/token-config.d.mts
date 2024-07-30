@@ -137,7 +137,7 @@ declare global {
   }
 
   namespace TokenConfig {
-    type FormData = {
+    interface FormData {
       // TODO: Update
       actorId: string;
       actorLink: boolean;
@@ -173,7 +173,7 @@ declare global {
       width: number | null;
       x: number | null;
       y: number | null;
-    };
+    }
   }
 
   /**

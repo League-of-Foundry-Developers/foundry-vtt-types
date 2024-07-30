@@ -47,7 +47,7 @@ declare class BaseAdventure extends Document<BaseAdventure.Schema, BaseAdventure
     },
   ): foundry.abstract.DataModel<Schema, DataModel.Any | null>;
 
-  static override migrateData(source: object): object;
+  static override migrateData(source: AnyObject): AnyObject;
 }
 export default BaseAdventure;
 

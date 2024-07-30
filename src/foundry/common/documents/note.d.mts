@@ -3,8 +3,7 @@ import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
 import type { TextureData } from "../data/data.mts";
 import type * as fields from "../data/fields.mts";
-import type { CONST } from "../module.mts";
-import type * as documents from "./module.mts";
+import type * as documents from "./_module.mts";
 
 declare global {
   type NoteData = BaseNote.Properties;
@@ -33,7 +32,7 @@ declare class BaseNote extends Document<BaseNote.Schema, BaseNote.Metadata, Scen
 
   override testUserPermission(
     user: foundry.documents.BaseUser,
-    permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
+    permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS,
     options?: InexactPartial<{
       /**
        * Require the exact permission level requested?
@@ -43,10 +42,10 @@ declare class BaseNote extends Document<BaseNote.Schema, BaseNote.Metadata, Scen
     }>,
   ): boolean;
 
-  static override migrateData(source: object): object;
+  static override migrateData(source: AnyObject): AnyObject;
 
   static override shimData(
-    data: object,
+    data: AnyObject,
     options?: {
       /**
        * Apply shims to embedded models?
@@ -54,7 +53,7 @@ declare class BaseNote extends Document<BaseNote.Schema, BaseNote.Metadata, Scen
        */
       embedded?: boolean;
     },
-  ): object;
+  ): AnyObject;
 }
 export default BaseNote;
 
@@ -164,7 +163,7 @@ declare namespace BaseNote {
      */
     textAnchor: fields.NumberField<{
       required: true;
-      choices: CONST.TEXT_ANCHOR_POINTS[];
+      choices: foundry.CONST.TEXT_ANCHOR_POINTS[];
       initial: typeof CONST.TEXT_ANCHOR_POINTS.BOTTOM;
       label: "NOTE.AnchorPoint";
       validationError: "must be a value in CONST.TEXT_ANCHOR_POINTS";

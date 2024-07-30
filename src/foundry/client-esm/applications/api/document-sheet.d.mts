@@ -1,51 +1,52 @@
 import type { DeepPartial } from "../../../../types/utils.d.mts";
-import type {
-  ApplicationConfiguration,
-  ApplicationHeaderControlsEntry,
-  ApplicationRenderContext,
-  ApplicationRenderOptions,
-} from "../_types.d.mts";
 import type ApplicationV2 from "./application.d.mts";
 
-interface DocumentSheetConfiguration<
-  Document extends foundry.abstract.Document<any, any, any> = foundry.abstract.Document<any, any, any>,
-> extends ApplicationConfiguration {
-  /**
-   * The Document instance associated with this sheet
-   */
-  document: Document;
-  /**
-   * A permission level in CONST.DOCUMENT_OWNERSHIP_LEVELS
-   */
-  viewPermission: typeof foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS;
-  /**
-   * A permission level in CONST.DOCUMENT_OWNERSHIP_LEVELS
-   */
-  editPermission: typeof foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS;
-  /**
-   * Allow sheet configuration as a header button
-   */
-  sheetConfig: boolean;
-}
+declare namespace DocumentSheetV2 {
+  export interface Configuration<
+    Document extends foundry.abstract.Document<any, any, any> = foundry.abstract.Document<any, any, any>,
+  > extends ApplicationV2.Configuration {
+    /**
+     * The Document instance associated with this sheet
+     */
+    document: Document;
 
-interface DocumentSheetRenderOptions extends ApplicationRenderOptions {
-  /** A string with the format "\{operation\}\{documentName\}" providing context */
-  renderContext: string;
-  /** Data describing the document modification that occurred */
-  renderData: object;
+    /**
+     * A permission level in CONST.DOCUMENT_OWNERSHIP_LEVELS
+     */
+    viewPermission: typeof foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
+    /**
+     * A permission level in CONST.DOCUMENT_OWNERSHIP_LEVELS
+     */
+    editPermission: typeof foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
+    /**
+     * Allow sheet configuration as a header button
+     */
+    sheetConfig: boolean;
+  }
+
+  export interface RenderOptions extends ApplicationV2.RenderOptions {
+    /** A string with the format "\{operation\}\{documentName\}" providing context */
+    renderContext: string;
+
+    /** Data describing the document modification that occurred */
+    renderData: object;
+  }
 }
 
 /**
  * The Application class is responsible for rendering an HTMLElement into the Foundry Virtual Tabletop user interface.
  */
-export default class DocumentSheetV2<
+declare class DocumentSheetV2<
   Document extends foundry.abstract.Document<any, any, any>,
-  Configuration extends DocumentSheetConfiguration<Document> = DocumentSheetConfiguration<Document>,
-  RenderOptions extends DocumentSheetRenderOptions = DocumentSheetRenderOptions,
-> extends ApplicationV2<Configuration, RenderOptions> {
+  Configuration extends DocumentSheetV2.Configuration<Document> = DocumentSheetV2.Configuration<Document>,
+  RenderOptions extends DocumentSheetV2.RenderOptions = DocumentSheetV2.RenderOptions,
+  RenderContext extends Record<string, unknown> = Record<string, never>,
+> extends ApplicationV2<Configuration, RenderOptions, RenderContext> {
   constructor(options: DeepPartial<Configuration> & { document: Document });
 
-  static DEFAULT_OPTIONS: DeepPartial<DocumentSheetConfiguration>;
+  static DEFAULT_OPTIONS: DeepPartial<DocumentSheetV2.Configuration>;
 
   get document(): Document;
 
@@ -67,14 +68,14 @@ export default class DocumentSheetV2<
     options: DeepPartial<Configuration>,
   ): DeepPartial<Configuration> & Record<string, unknown>;
 
-  protected override _headerControlsButtons(): Generator<ApplicationHeaderControlsEntry>;
+  protected override _headerControlsButtons(): Generator<ApplicationV2.HeaderControlsEntry>;
 
   protected override _renderFrame(options: DeepPartial<RenderOptions>): Promise<HTMLElement>;
 
   protected override _canRender(options: DeepPartial<RenderOptions>): false | void;
 
   protected override _onFirstRender(
-    context: DeepPartial<ApplicationRenderContext>,
+    context: DeepPartial<ApplicationV2.RenderContext>,
     options: DeepPartial<RenderOptions>,
   ): void;
 
@@ -118,3 +119,5 @@ export default class DocumentSheetV2<
     updateData: object;
   }): Promise<void>;
 }
+
+export default DocumentSheetV2;

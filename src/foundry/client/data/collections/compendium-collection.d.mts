@@ -1,9 +1,9 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial, StoredDocument } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
-import type { MixedDocumentCollectionInterface } from "../abstract/directory-collection-mixin.d.mts";
+import type { DirectoryCollectionMixin_DocumentCollection_Interface } from "../abstract/directory-collection-mixin.d.mts";
 
-declare const MixedDocumentCollection: MixedDocumentCollectionInterface;
+declare const DirectoryCollectionMixin_DocumentCollection: DirectoryCollectionMixin_DocumentCollection_Interface;
 
 declare global {
   interface ManageCompendiumRequest extends SocketRequest {
@@ -42,10 +42,9 @@ declare global {
    *
    * @see {@link Game#packs}
    */
-  class CompendiumCollection<T extends CompendiumCollection.Metadata> extends MixedDocumentCollection<
-    DocumentClassForCompendiumMetadata<T>,
-    T["name"]
-  > {
+  class CompendiumCollection<
+    T extends CompendiumCollection.Metadata,
+  > extends DirectoryCollectionMixin_DocumentCollection<DocumentClassForCompendiumMetadata<T>, T["name"]> {
     /** @param metadata - The compendium metadata, an object provided by game.data */
     constructor(metadata: T);
 

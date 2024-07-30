@@ -25,7 +25,7 @@ declare class BaseWall extends Document<BaseWall.Schema, BaseWall.Metadata, Scen
 
   static override defineSchema(): BaseWall.Schema;
 
-  static override migrateData(source: object): object;
+  static override migrateData(source: AnyObject): AnyObject;
 }
 export default BaseWall;
 
@@ -49,7 +49,7 @@ declare namespace BaseWall {
   type Properties = fields.SchemaField.InnerInitializedType<Schema>;
   type Source = fields.SchemaField.InnerPersistedType<Schema>;
 
-  interface ThresholdSchema extends DataSchema {
+  export interface ThresholdSchema extends DataSchema {
     /**
      * Minimum distance from a light source for which this wall blocks light
      */
@@ -71,13 +71,13 @@ declare namespace BaseWall {
     attenuation: fields.BooleanField;
   }
 
-  type CoordinateOptions = {
+  interface CoordinateOptions {
     required: true;
     integer: true;
     nullable: false;
     validate: (c: [x0: number, y0: number, x1: number, y1: number]) => boolean;
     validationError: "must be a length-4 array of integer coordinates";
-  };
+  }
 
   interface Schema extends DataSchema {
     /**

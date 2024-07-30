@@ -1,5 +1,4 @@
 import type { InexactPartial } from "../../../types/utils.d.mts";
-import type { CONST } from "../../common/module.d.mts";
 
 export {};
 
@@ -60,7 +59,7 @@ declare global {
      */
     static canvasToBase64(
       canvas: HTMLCanvasElement,
-      type?: CONST.IMAGE_FILE_EXTENSIONS,
+      type?: foundry.CONST.IMAGE_FILE_EXTENSIONS,
       quality?: number,
     ): Promise<string>;
 
@@ -80,7 +79,7 @@ declare global {
         /** The data storage location to which the file should be uploaded (default: `"data"`) */
         storage: string;
         /** The MIME type of the file being uploaded */
-        type?: CONST.IMAGE_FILE_EXTENSIONS;
+        type?: foundry.CONST.IMAGE_FILE_EXTENSIONS;
         /** Display a UI notification when the upload is processed. (default: `true`)  */
         notify: boolean;
       },

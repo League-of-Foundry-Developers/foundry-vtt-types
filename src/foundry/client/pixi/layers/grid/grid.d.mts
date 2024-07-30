@@ -1,5 +1,4 @@
 import type { InexactPartial } from "../../../../../types/utils.d.mts";
-import type { CONST } from "../../../../common/module.d.mts";
 
 declare global {
   /**
@@ -26,7 +25,7 @@ declare global {
      * @param gridType - The grid type.
      * @returns (typeof BaseGrid) A constructor for a grid of the given type.
      */
-    static implementationFor(gridType: CONST.GRID_TYPES): typeof BaseGrid;
+    static implementationFor(gridType: foundry.CONST.GRID_TYPES): typeof BaseGrid;
 
     /**
      * Calculate the total size of the canvas with padding applied, as well as the top-left co-ordinates of the inner
@@ -39,7 +38,7 @@ declare global {
      * @param options  - Options to configure the padding calculation.
      */
     static calculatePadding(
-      gridType: CONST.GRID_TYPES,
+      gridType: foundry.CONST.GRID_TYPES,
       width: number,
       height: number,
       size: number,
