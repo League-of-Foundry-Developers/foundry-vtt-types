@@ -9,6 +9,8 @@ declare global {
     type UniformValue = boolean | number | Int32List | Float32List | Coordinates | Coordinates[] | PIXI.Texture;
 
     type Uniforms = Record<string, AbstractBaseShader.UniformValue>;
+
+    type FragmentShader = string | ((...args: never[]) => string);
   }
 
   /**
@@ -31,7 +33,7 @@ declare global {
      * A subclass of AbstractBaseShader must implement the fragmentShader static field.
      * @remarks This is abstract, subclasses must implement it.
      */
-    static fragmentShader: string | ((...args: any[]) => string);
+    static fragmentShader: AbstractBaseShader.FragmentShader;
 
     /**
      * The default uniform values for the shader.

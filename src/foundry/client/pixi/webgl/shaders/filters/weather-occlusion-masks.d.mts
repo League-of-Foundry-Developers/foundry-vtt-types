@@ -14,7 +14,7 @@ declare global {
 
     static override vertexShader: string;
 
-    static override fragmentShader: string | ((...args: any[]) => string) | undefined;
+    static override fragmentShader: AbstractBaseFilter.FragmentShader;
 
     /**
      * @defaultValue

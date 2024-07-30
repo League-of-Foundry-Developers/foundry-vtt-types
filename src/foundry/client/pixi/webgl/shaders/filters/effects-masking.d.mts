@@ -1,4 +1,5 @@
 import type { ConstructorOf, ValueOf } from "../../../../../../types/utils.d.mts";
+
 export {};
 
 declare global {
@@ -128,7 +129,7 @@ declare global {
 
     /**
      * Specify the fragment shader to use according to mode
-     * @param filterMode - (default: this.FILTER_MODES.BACKGROUND)
+     * @param filterMode       - (default: this.FILTER_MODES.BACKGROUND)
      * @param postProcessModes - (default: [])
      */
     static override fragmentShader(postProcessModes?: VisualEffectsMaskingFilter.PostProcessModes): string;
