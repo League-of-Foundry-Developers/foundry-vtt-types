@@ -11,6 +11,6 @@ declare global {
      */
     static override classPluginName: string | null;
 
-    static override fragmentShader: string | ((...args: any[]) => string);
+    static override fragmentShader: AbstractBaseShader.FragmentShader;
   }
 }

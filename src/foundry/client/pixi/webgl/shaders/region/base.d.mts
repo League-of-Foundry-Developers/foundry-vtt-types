@@ -7,7 +7,7 @@ declare global {
   class RegionShader extends AbstractBaseShader {
     static override vertexShader: string;
 
-    static override fragmentShader: string | ((...args: any[]) => string);
+    static override fragmentShader: AbstractBaseShader.FragmentShader;
 
     static override defaultUniforms: AbstractBaseShader.Uniforms;
 

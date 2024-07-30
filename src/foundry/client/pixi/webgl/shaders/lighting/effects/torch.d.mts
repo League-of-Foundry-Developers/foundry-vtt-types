@@ -5,14 +5,14 @@ declare global {
    * Allow coloring of illumination
    */
   class TorchIlluminationShader extends AdaptiveIlluminationShader {
-    static override fragmentShader: string | ((...args: any[]) => string);
+    static override fragmentShader: AbstractBaseShader.FragmentShader;
   }
 
   /**
    * Torch animation coloration shader
    */
   class TorchColorationShader extends AdaptiveColorationShader {
-    static override fragmentShader: string | ((...args: any[]) => string);
+    static override fragmentShader: AbstractBaseShader.FragmentShader;
 
     /**
      * @defaultValue

@@ -67,7 +67,7 @@ declare global {
 
     static override vertexShader: string;
 
-    static override get fragmentShader(): string;
+    static override get fragmentShader(): AbstractBaseShader.FragmentShader;
 
     /**
      * The fragment shader source. Subclasses can override it.

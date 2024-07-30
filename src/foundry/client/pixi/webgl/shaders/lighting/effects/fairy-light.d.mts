@@ -10,13 +10,13 @@ declare global {
      */
     static override forceDefaultColor: boolean;
 
-    static override fragmentShader: string | ((...args: any[]) => string);
+    static override fragmentShader: AbstractBaseShader.FragmentShader;
   }
 
   /**
    * Fairy light animation illumination shader
    */
   class FairyLightIlluminationShader extends AdaptiveIlluminationShader {
-    static override fragmentShader: string | ((...args: any[]) => string);
+    static override fragmentShader: AbstractBaseShader.FragmentShader;
   }
 }

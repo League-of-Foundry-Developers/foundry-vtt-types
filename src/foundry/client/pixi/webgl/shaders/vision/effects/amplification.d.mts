@@ -5,7 +5,7 @@ declare global {
    * Shader specialized in light amplification
    */
   class AmplificationBackgroundVisionShader extends BackgroundVisionShader {
-    static override fragmentShader: string | ((...args: any[]) => string);
+    static override fragmentShader: AbstractBaseShader.FragmentShader;
 
     /**
      * @defaultValue

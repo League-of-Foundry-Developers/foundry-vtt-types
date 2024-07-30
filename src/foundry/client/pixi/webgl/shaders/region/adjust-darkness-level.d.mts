@@ -33,7 +33,7 @@ declare global {
    * Render the RegionMesh with darkness level adjustments.
    */
   class AdjustDarknessLevelRegionShader extends AbstractDarknessLevelRegionShader {
-    static override fragmentShader: string | ((...args: any[]) => string);
+    static override fragmentShader: AbstractBaseShader.FragmentShader;
 
     static override defaultUniforms: AbstractBaseShader.Uniforms;
 
@@ -44,6 +44,6 @@ declare global {
    * Render the RegionMesh with darkness level adjustments.
    */
   class IlluminationDarknessLevelRegionShader extends AbstractDarknessLevelRegionShader {
-    static override fragmentShader: string | ((...args: any[]) => string);
+    static override fragmentShader: AbstractBaseShader.FragmentShader;
   }
 }

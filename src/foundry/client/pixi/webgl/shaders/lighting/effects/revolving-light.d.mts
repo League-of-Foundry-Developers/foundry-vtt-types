@@ -10,7 +10,7 @@ declare global {
      */
     static override forceDefaultColor: boolean;
 
-    static override fragmentShader: string | ((...args: any[]) => string);
+    static override fragmentShader: AbstractBaseShader.FragmentShader;
 
     /**
      * @defaultValue
