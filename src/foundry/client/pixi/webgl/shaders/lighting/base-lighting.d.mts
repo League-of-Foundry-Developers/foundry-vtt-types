@@ -1,4 +1,5 @@
 export {};
+
 declare global {
   interface ShaderTechnique {
     /** The numeric identifier of the technique */
@@ -8,13 +9,13 @@ declare global {
     label: string;
 
     /**  The coloration shader fragment when the technique is used */
-    coloration: string | undefined;
+    coloration?: string | undefined;
 
     /** The illumination shader fragment when the technique is used */
-    illumination: string | undefined;
+    illumination?: string | undefined;
 
     /** The background shader fragment when the technique is used */
-    background: string | undefined;
+    background?: string | undefined;
   }
 
   /**
