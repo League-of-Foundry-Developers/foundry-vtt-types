@@ -169,7 +169,7 @@ declare global {
   }
 
   namespace AdaptiveLightingShader {
-    type ShaderTypes = "coloration" | "illumination" | "background" | string;
+    type ShaderTypes = "coloration" | "illumination" | "background" | (string & {});
 
     interface ShaderTechniques extends Record<string, ShaderTechnique> {
       LEGACY: ShaderTechnique;
