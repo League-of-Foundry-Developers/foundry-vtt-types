@@ -1,4 +1,4 @@
-import type { Mixin } from "../../../../../types/utils.d.mts";
+import type { AnyConstructorFor, Mixin } from "../../../../../types/utils.d.mts";
 
 export {};
 
@@ -222,7 +222,7 @@ declare class BaseShaderMixinClass {
 }
 
 declare global {
-  function BaseShaderMixin<BaseClass extends typeof PIXI.Shader | typeof PIXI.Filter>(
+  function BaseShaderMixin<BaseClass extends AnyConstructorFor<typeof PIXI.Shader | typeof PIXI.Filter>>(
     ShaderClass: BaseClass,
   ): Mixin<typeof BaseShaderMixinClass, BaseClass>;
 }
