@@ -1,3 +1,5 @@
+import type { InexactPartial } from "../../../types/utils.d.mts";
+
 export {};
 
 declare global {
@@ -45,7 +47,7 @@ declare global {
     /**
      * @param options - (default: `{}`)
      */
-    constructor({ dragSelector, dropSelector, permissions, callbacks }?: DragDropConfiguration);
+    constructor({ dragSelector, dropSelector, permissions, callbacks }?: InexactPartial<DragDropConfiguration>);
 
     /**
      * The HTML selector which identifies draggable elements
@@ -63,13 +65,13 @@ declare global {
      * A set of permission checking functions for each action of the Drag and Drop workflow
      * @defaultValue `{}`
      */
-    permissions: Partial<Record<DragDrop.Action, (selector: string | undefined) => boolean>>;
+    permissions: Partial<Record<DragDrop.Action, (selector: DragDrop["dragSelector"]) => boolean>>;
 
     /**
      * A set of callback functions for each action of the Drag and Drop workflow
      * @defaultValue `{}`
      */
-    callbacks: Partial<Record<DragDrop.Action, (event: DragEvent) => void>>;
+    callbacks: InexactPartial<Record<DragDrop.Action, (event: DragEvent) => void>>;
 
     /**
      * Bind the DragDrop controller to an HTML application
@@ -85,12 +87,12 @@ declare global {
     callback(event: DragEvent, action: DragDrop.Action): void;
 
     /**
-     * Execute a callback function associated with a certain action in the workflow
+     * Test whether the current user has permission to perform a step of the workflow
      * @param action   - The action being attempted
      * @param selector - The selector being targeted
      * @returns Can the action be performed?
      */
-    can(action: DragDrop.Action, selector?: string): boolean;
+    can(action: DragDrop.Action, selector?: DragDrop["dragSelector"]): boolean;
 
     /**
      * Handle the start of a drag workflow
