@@ -1,5 +1,10 @@
 import type { ConfiguredDocumentClassForName, DocumentType } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
+import type {
+  DatabaseCreateOperation,
+  DatabaseDeleteOperation,
+  DatabaseUpdateOperation,
+} from "../../../common/abstract/_types.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 declare global {
@@ -28,6 +33,11 @@ declare global {
     get actor(): Actor.ConfiguredInstance | null;
 
     /**
+     * A reference to the base, World-level Actor this token represents.
+     */
+    get baseActor(): Actor | undefined;
+
+    /**
      * An indicator for whether or not the current User has full control over this Token document.
      */
     get isOwner(): boolean;
@@ -36,6 +46,12 @@ declare global {
      * A convenient reference for whether this TokenDocument is linked to the Actor it represents, or is a synthetic copy
      */
     get isLinked(): boolean;
+
+    /**
+     * Does this TokenDocument have the SECRET disposition and is the current user lacking the necessary permissions
+     * that would reveal this secret?
+     */
+    get isSecret(): boolean;
 
     /**
      * Return a reference to a Combatant that represents this Token, if one is present in the current encounter.
@@ -48,27 +64,33 @@ declare global {
     get inCombat(): boolean;
 
     /**
-     * Define a sort order for this TokenDocument.
-     * This controls its rendering order in the PrimaryCanvasGroup relative to siblings at the same elevation.
-     * In the future this will be replaced with a persisted database field for permanent adjustment of token stacking.
-     * In case of ties, Tokens will be sorted above other types of objects.
+     * The Regions this Token is currently in.
+     * @privateRemarks TODO: Change Set<any> to Set<RegionDocuments> when RegionDocuments are implemented
      */
-    get sort(): number;
+    regions: Set<any> | null;
 
-    set sort(value);
-
+    /* -------------------------------------------- */
+    /*  Methods                                     */
+    /* -------------------------------------------- */
+    // TODO: Same as `DataModel._initialize`
     protected override _initialize(options?: any): void;
-    protected override _initialize(): void;
 
     override prepareBaseData(): void;
 
     override prepareEmbeddedDocuments(): void;
 
+    override prepareDerivedData(): void;
+
+    /**
+     * Infer the subject texture path to use for a token ring.
+     */
+    protected _inferRingSubjectTexture(): string;
+
     /**
      * Prepare detection modes which are available to the Token.
      * Ensure that every Token has the basic sight detection mode configured.
      */
-    _prepareDetectionModes(): void;
+    protected _prepareDetectionModes(): void;
 
     /**
      * A helper method to retrieve the underlying data behind one of the Token's attribute bars
@@ -77,58 +99,90 @@ declare global {
      */
     getBarAttribute(
       barName: string,
-      options?: {
+      options?: InexactPartial<{
         /**
          * An alternative attribute path to get instead of the default one
          */
-        alternative?: string;
-      },
+        alternative: string;
+      }>,
     ): SingleAttributeBar | ObjectAttributeBar | null;
 
     /**
-     * A helper function to toggle a status effect which includes an Active Effect template
-     * @param effectData - The Active Effect data, including statusId
-     * @param options    - Options to configure application of the Active Effect
-     *                     (default: `{}`)
-     * @returns Whether the Active Effect is now on or off
-     */
-    toggleActiveEffect(
-      effectData: StatusEffect,
-      options?: InexactPartial<ToggleActiveEffectOptions> | undefined,
-    ): Promise<boolean>;
-
-    /**
-     * The status effect ID as defined in CONFIG.statusEffects
-     * @param statusId - Does the Token have this status effect?
+     * Test whether a Token has a specific status effect.
+     * @param statusId - The status effect ID as defined in CONFIG.statusEffects
+     * @returns Does the Actor of the Token have this status effect?
      */
     hasStatusEffect(statusId: string): boolean;
+
+    /* -------------------------------------------- */
+    /*  Combat Operations                           */
+    /* -------------------------------------------- */
+
+    /**
+     * Add or remove this Token from a Combat encounter.
+     * @param options - Additional options passed to TokenDocument.createCombatants or
+     *                  TokenDocument.deleteCombatants
+     *                  Default: `{}`
+     *  @returns Is this Token now an active Combatant?
+     */
+    toggleCombatant({
+      active,
+      ...options
+    }?: InexactPartial<
+      CreateCombatantOptions & {
+        /**
+         * Require this token to be an active Combatant or to be removed.
+         * Otherwise, the current combat state of the Token is toggled.
+         */
+        active: boolean;
+      }
+    >): Promise<boolean>;
+
+    /**
+     * Create or remove Combatants for an array of provided Token objects.
+     * @param tokens  - The tokens which should be added to the Combat
+     * @param options - Options which modify the toggle operation
+     *                  Default: `{}`
+     * @returns An array of created Combatant documents
+     */
+    static createCombatants(tokens: TokenDocument[], options?: CreateCombatantOptions): Promise<Combatant[]>;
+
+    /**
+     * Remove Combatants for the array of provided Tokens.
+     * @param tokens  - The tokens which should removed from the Combat
+     * @param options - Options which modify the operation
+     *                  Default: `{}`
+     * @returns An array of deleted Combatant documents
+     */
+    static deleteCombatants(tokens: TokenDocument[], options?: CreateCombatantOptions): Promise<Combatant[]>;
+
+    /* -------------------------------------------- */
+    /*  Actor Data Operations                       */
+    /* -------------------------------------------- */
 
     /**
      * Convenience method to change a token vision mode.
      * @param visionMode - The vision mode to apply to this token.
      * @param defaults   - If the vision mode should be updated with its defaults.
+     *                     Default = `true`
      */
     updateVisionMode(
       visionMode: typeof CONFIG.Canvas.visionModes,
       defaults?: boolean,
     ): Promise<ReturnType<this["update"]>>;
 
-    /**
-     * Redirect updates to a synthetic Token Actor to instead update the tokenData override object.
-     * Once an attribute in the Token has been overridden, it must always remain overridden.
-     *
-     * @param update  - The provided differential update data which should update the Token Actor
-     * @param options - Provided options which modify the update request
-     * @returns The updated un-linked Actor instance
-     */
-    modifyActorDocument(
-      update: Parameters<Actor.ConfiguredInstance["update"]>[0],
-      options: Parameters<this["update"]>[1],
-    ): Promise<[this["actor"]]>;
-
     override getEmbeddedCollection<DocType extends DocumentType>(
       embeddedName: DocType,
     ): Collection<InstanceType<ConfiguredDocumentClassForName<DocType>>>;
+
+    /* -------------------------------------------- */
+    /*  Event Handlers                              */
+    /* -------------------------------------------- */
+
+    /**
+     * @privateRemarks _onCreate, is overridden but with no signature changes.
+     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+     */
 
     protected override _preUpdate(
       data: foundry.documents.BaseToken.UpdateData,
@@ -142,7 +196,93 @@ declare global {
       userId: string,
     ): void;
 
+    /**
+     * Handle changes to the regions this token is in.
+     * @param priorRegionIds - The IDs of the prior regions
+     */
+    #onUpdateRegions(priorRegionIds: string[]): void;
+
+    /**
+     * Trigger TOKEN_MOVE, TOKEN_MOVE_IN, and TOKEN_MOVE_OUT events.
+     * @param origin   - he origin of movement
+     * @param teleport - Teleportation?
+     * @param forced   - Forced movement?
+     */
+    #triggerMoveRegionEvents(
+      origin: { x: number; y: number; elevation: number },
+      teleport: boolean,
+      forced: boolean,
+    ): void;
+
     protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
+
+    /**
+     * Identify the Regions the Token currently is or is going to be in after the changes are applied.
+     * @param changes - The changes.
+     * @returns The Region IDs the token is (sorted), if it could be determined.
+     */
+    #identifyRegions(changes?: Record<string, unknown>): string[] | void;
+
+    static _preCreateOperation(
+      documents: TokenDocument[],
+      operation: DatabaseCreateOperation,
+      user: User,
+    ): Promise<boolean | void>;
+
+    static _preUpdateOperation(
+      documents: TokenDocument[],
+      operation: DatabaseUpdateOperation,
+      user: User,
+    ): Promise<boolean | void>;
+
+    /**
+     * Handle Regions potentially stopping movement.
+     * @param documents - Document instances to be updated
+     * @param operation - Parameters of the database update operation
+     * @param user      - The User requesting the update operation
+     */
+    static #preUpdateMovement(
+      documents: TokenDocument[],
+      operation: DatabaseUpdateOperation,
+      user: User,
+    ): Promise<void>;
+
+    /**
+     * Identify and update the regions this Token is going to be in if necessary.
+     * @param documents - Document instances to be updated
+     * @param operation - Parameters of the database update operation
+     */
+    static #preUpdateRegions(documents: TokenDocument[], operation: DatabaseUpdateOperation): Promise<void>;
+
+    static _onCreateOperation(
+      documents: TokenDocument[],
+      operation: DatabaseCreateOperation,
+      user: User,
+    ): Promise<void>;
+
+    static _onUpdateOperation(
+      documents: TokenDocument[],
+      operation: DatabaseUpdateOperation,
+      user: User,
+    ): Promise<void>;
+
+    static _onDeleteOperation(
+      documents: TokenDocument[],
+      operation: DatabaseDeleteOperation,
+      user: User,
+    ): Promise<void>;
+
+    /**
+     * Is to Token document updated such that the Regions the Token is contained in may change?
+     * Called as part of the preUpdate workflow.
+     * @param changes - The changes.
+     * @returns Could this Token update change Region containment?
+     */
+    protected _couldRegionsChange(changes: DatabaseUpdateOperation<TokenDocument>["updates"]): boolean;
+
+    /* -------------------------------------------- */
+    /*  Actor Delta Operations                      */
+    /* -------------------------------------------- */
 
     protected override _preCreateDescendantDocuments(
       parent: ClientDocument,
@@ -251,6 +391,10 @@ declare global {
      */
     static getTrackedAttributeChoices(attributes?: TrackedAttributesDescription): Record<string, string[]>;
 
+    /* -------------------------------------------- */
+    /*  Deprecations                                */
+    /* -------------------------------------------- */
+
     /**
      * @deprecated since v11
      * @remarks `"TokenDocument#getActor has been deprecated. Please use the`
@@ -268,6 +412,20 @@ declare global {
      * @deprecated since v11
      */
     set actorData(actorData);
+
+    /**
+     * A helper function to toggle a status effect which includes an Active Effect template
+     * @param effectData - The Active Effect data, including statusId
+     * @param options    - Options to configure application of the Active Effect
+     *                     (default: `{}`)
+     * @returns Whether the Active Effect is now on or off
+     * @deprecated since v12
+     * @remarks `TokenDocument#toggleActiveEffect is deprecated in favor of Actor#toggleStatusEffect"`
+     */
+    toggleActiveEffect(
+      effectData: StatusEffect,
+      options?: InexactPartial<ToggleActiveEffectOptions> | undefined,
+    ): Promise<boolean>;
   }
 
   // The getBarAttribute monkeypatch is simply inside the data model definition at `src\foundry\common\data\data.d.mts`
@@ -277,6 +435,15 @@ declare global {
     bar: string[][];
     /** A list of property path arrays to attributes that have only a value property. */
     value: string[][];
+  }
+
+  interface CreateCombatantOptions {
+    /**
+     * A specific Combat instance which should be modified. If undefined,
+     * the current active combat will be modified if one exists. Otherwise, a new
+     * Combat encounter will be created if the requesting user is a Gamemaster.
+     */
+    combat?: Combat | undefined;
   }
 }
 
