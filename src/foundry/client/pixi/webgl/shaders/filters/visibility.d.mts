@@ -27,7 +27,7 @@ declare global {
 
     static override create(
       uniforms?: AbstractBaseShader.Uniforms,
-      options?: Parameters<(typeof VisibilityFilter)["fragmentShader"]>,
+      options?: { persistentVision: boolean },
     ): VisibilityFilter;
 
     static override vertexShader: string;
