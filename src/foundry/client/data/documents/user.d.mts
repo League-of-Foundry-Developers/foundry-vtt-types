@@ -55,6 +55,7 @@ declare global {
 
   /**
    * The client-side User document which extends the common BaseUser model.
+   * Each User document contains UserData which defines its data schema.
    *
    * @see {@link Users}             The world-level collection of User documents
    * @see {@link UserConfig}     The User configuration application
@@ -99,7 +100,7 @@ declare global {
     assignHotbarMacro(
       macro: Macro.ConfiguredInstance | null,
       slot: string | number,
-      { fromSlot }?: { fromSlot: number },
+      { fromSlot }?: InexactPartial<{ fromSlot: number }>,
     ): Promise<this>;
 
     /**
@@ -141,6 +142,10 @@ declare global {
      *                    (default: `[]`)
      */
     updateTokenTargets(targetIds?: string[]): void;
+
+    /* -------------------------------------------- */
+    /*  Event Handlers                              */
+    /* -------------------------------------------- */
 
     protected override _onUpdate(
       data: foundry.documents.BaseUser.UpdateData,
