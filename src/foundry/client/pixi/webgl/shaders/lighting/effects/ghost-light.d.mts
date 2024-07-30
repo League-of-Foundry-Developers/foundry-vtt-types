@@ -5,13 +5,13 @@ declare global {
    * Ghost light animation illumination shader
    */
   class GhostLightIlluminationShader extends AdaptiveIlluminationShader {
-    static override fragmentShader: string | ((...args: any[]) => string);
+    static override fragmentShader: AbstractBaseShader.FragmentShader;
   }
 
   /**
    * Ghost light animation coloration shader
    */
   class GhostLightColorationShader extends AdaptiveColorationShader {
-    static override fragmentShader: string | ((...args: any[]) => string);
+    static override fragmentShader: AbstractBaseShader.FragmentShader;
   }
 }

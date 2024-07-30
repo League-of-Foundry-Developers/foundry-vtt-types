@@ -5,14 +5,14 @@ declare global {
    * Pulse animation illumination shader
    */
   class PulseIlluminationShader extends AdaptiveIlluminationShader {
-    static override fragmentShader: string | ((...args: any[]) => string);
+    static override fragmentShader: AbstractBaseShader.FragmentShader;
   }
 
   /**
    * Pulse animation coloration shader
    */
   class PulseColorationShader extends AdaptiveColorationShader {
-    static override fragmentShader: string | ((...args: any[]) => string);
+    static override fragmentShader: AbstractBaseShader.FragmentShader;
 
     /**
      * @defaultValue

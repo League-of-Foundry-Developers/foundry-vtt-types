@@ -5,7 +5,7 @@ declare global {
    * Shader specialized in wave like senses (tremorsenses)
    */
   class WaveBackgroundVisionShader extends BackgroundVisionShader {
-    static override fragmentShader: string | ((...args: any[]) => string);
+    static override fragmentShader: AbstractBaseShader.FragmentShader;
 
     /**
      * @defaultValue
@@ -22,7 +22,7 @@ declare global {
    * The wave vision shader, used to create waves emanations (ex: tremorsense)
    */
   class WaveColorationVisionShader extends ColorationVisionShader {
-    static override fragmentShader: string | ((...args: any[]) => string);
+    static override fragmentShader: AbstractBaseShader.FragmentShader;
 
     static override defaultUniforms: AbstractBaseShader.Uniforms;
 

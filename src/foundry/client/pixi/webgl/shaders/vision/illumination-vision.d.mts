@@ -21,7 +21,7 @@ declare global {
      */
     static SHADER_HEADER: string;
 
-    static override fragmentShader: string | ((...args: any[]) => string);
+    static override fragmentShader: AbstractBaseShader.FragmentShader;
 
     static override defaultUniforms: AbstractBaseShader.Uniforms;
   }

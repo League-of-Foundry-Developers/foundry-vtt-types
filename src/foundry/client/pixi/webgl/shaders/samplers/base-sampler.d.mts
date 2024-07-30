@@ -109,7 +109,7 @@ declare global {
        */
     static override vertexShader: string;
 
-    static override fragmentShader: string | ((...args: any[]) => string);
+    static override fragmentShader: AbstractBaseShader.FragmentShader;
 
     /**
      * Batch default vertex
