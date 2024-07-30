@@ -6,6 +6,7 @@ import type {
   ModuleRequiredOrOptional,
 } from "../../types/helperTypes.d.mts";
 import type { StoredDocument, ValueOf } from "../../types/utils.d.mts";
+import type { BasePackage } from "../common/packages/module.d.ts";
 
 interface EarlierEvents {
   none: never;
@@ -91,11 +92,7 @@ declare class InternalGame<RunEvents extends InitializationEvent> {
    * A mapping of CompendiumCollection instances, one per Compendium pack.
    * @remarks Initialized just before the `"setup"` hook event is called.
    */
-  readonly packs: GameInitialized<
-    foundry.utils.Collection<CompendiumCollection<CompendiumCollection.Metadata>>,
-    "setup",
-    RunEvents
-  >;
+  readonly packs: GameInitialized<CompendiumPacks, "setup", RunEvents>;
 
   /**
    * A singleton web Worker manager.
@@ -645,8 +642,11 @@ declare global {
         PackageCompendiumData & {
           /** @deprecated since v11 */
           private?: boolean;
-          system?: string;
+          system?: string | undefined;
           type: foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
+          packageName: BasePackage["_source"]["id"];
+          packageType: BasePackage["type"];
+          id: string;
         }
       >;
       paused: boolean;
