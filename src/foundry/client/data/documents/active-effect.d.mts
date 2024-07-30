@@ -1,6 +1,10 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
+import type { DataField } from "../../../common/data/fields.d.mts";
+import type { DataModel } from "../../../common/abstract/data.d.mts";
+import type BaseUser from "../../../common/documents/user.d.mts";
+
 declare global {
   namespace ActiveEffect {
     type ConfiguredClass = ConfiguredDocumentClassForName<"ActiveEffect">;
@@ -18,22 +22,45 @@ declare global {
    */
   class ActiveEffect extends ClientDocumentMixin(foundry.documents.BaseActiveEffect) {
     /**
+     * Create an ActiveEffect instance from some status effect ID.
+     * Delegates to {@link ActiveEffect._fromStatusEffect} to create the ActiveEffect instance
+     * after creating the ActiveEffect data from the status effect data if `CONFIG.statusEffects`.
+     * @param statusId - The status effect ID.
+     * @param options  - Additional options to pass to the ActiveEffect constructor.
+     * @returns The created ActiveEffect instance.
+     *
+     * @throws An error if there is no status effect in `CONFIG.statusEffects` with the given status ID and if
+     * the status has implicit statuses but doesn't have a static _id.
+     */
+    static fromStatusEffect(statusId: string, options?: DocumentConstructionContext | undefined): Promise<ActiveEffect>;
+
+    /**
+     * Create an ActiveEffect instance from status effect data.
+     * Called by {@link ActiveEffect.fromStatusEffect}.
+     * @param statusId   - The status effect ID.
+     * @param effectData - The status effect data.
+     * @param options    - Additional options to pass to the ActiveEffect constructor.
+     * @returns The created ActiveEffect instance.
+     */
+    protected static _fromStatusEffect(
+      statusId: string,
+      effectData: ActiveEffectData,
+      options?: DocumentConstructionContext | undefined,
+    ): Promise<ActiveEffect>;
+
+    /* -------------------------------------------- */
+    /*  Properties                                  */
+    /* -------------------------------------------- */
+    /**
      * Is there some system logic that makes this active effect ineligible for application?
      * @defaultValue `false`
      */
     get isSuppressed(): boolean;
 
     /**
-     * Provide forward-compatibility with other Document types which use img as their primary image or icon.
-     * We are likely to formally migrate this in the future, but for now this getter provides compatible read access.
-     */
-    get img(): this["icon"];
-
-    /**
      * Retrieve the Document that this ActiveEffect targets for modification.
      */
-    // TODO: Consider if `target` should be made more generic for other's purposes
-    get target(): Actor | null;
+    get target(): Document | null;
 
     /**
      * Whether the Active Effect currently applying its changes to the target.
@@ -93,6 +120,19 @@ declare global {
      */
     get sourceName(): string;
 
+    /* -------------------------------------------- */
+    /*  Methods                                     */
+    /* -------------------------------------------- */
+
+    /**
+     * Apply EffectChangeData to a field within a DataModel.
+     * @param model  - The model instance.
+     * @param change - The change to apply.
+     * @param field  - The field. If not supplied, it will be retrieved from the supplied model.
+     * @returns The updated value.
+     */
+    static applyField(model: DataModel.Any, change: EffectChangeData, field?: DataField.Any | undefined): unknown;
+
     /**
      * Apply this ActiveEffect to a provided Actor.
      * TODO: This method is poorly conceived. Its functionality is static, applying a provided change to an Actor
@@ -102,6 +142,19 @@ declare global {
      * @returns The resulting applied value
      */
     apply(actor: Actor.ConfiguredInstance, change: EffectChangeData): unknown;
+
+    /**
+     * Apply this ActiveEffect to a provided Actor using a heuristic to infer the value types based on the current value
+     * and/or the default value in the template.json.
+     * @param actor   - The Actor to whom this effect should be applied.
+     * @param change  - The change data being applied.
+     * @param changes - The aggregate update paths and their updated values.
+     */
+    protected _applyLegacy(
+      actor: Actor.ConfiguredInstance,
+      change: EffectDurationData,
+      changes: Record<string, unknown>,
+    ): void;
 
     /**
      * Cast a raw EffectChangeData change string to the desired data type.
@@ -227,11 +280,14 @@ declare global {
     static getInitialDuration(): {
       duration: {
         startTime: number;
-        startRound?: number;
-        startTurn?: number;
+        startRound?: number | undefined;
+        startTurn?: number | undefined;
       };
     };
 
+    /* -------------------------------------------- */
+    /*  Flag Operations                             */
+    /* -------------------------------------------- */
     // TODO: This is a minor override and doing the extension is complicated
     // getFlag(scope: string, key: string): unknown;
 
@@ -241,6 +297,16 @@ declare global {
       user: foundry.documents.BaseUser,
     ): Promise<void>;
 
+    /* -------------------------------------------- */
+    /*  Event Handlers                              */
+    /* -------------------------------------------- */
+
+    protected override _preCreate(
+      data: foundry.documents.BaseActiveEffect.ConstructorData,
+      options: DocumentModificationOptions,
+      user: BaseUser,
+    ): Promise<boolean | void>;
+
     protected override _onCreate(data: this["_source"], options: DocumentModificationOptions, userId: string): void;
 
     protected override _onUpdate(
@@ -249,6 +315,12 @@ declare global {
       userId: string,
     ): void;
 
+    protected override _preUpdate(
+      changed: foundry.documents.BaseActiveEffect.UpdateData,
+      options: DocumentModificationOptions,
+      user: BaseUser,
+    ): Promise<boolean | void>;
+
     protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
 
     /**
@@ -256,6 +328,10 @@ declare global {
      * @param enabled - Is the active effect currently enabled?
      */
     protected _displayScrollingStatus(enabled: boolean): void;
+
+    /* -------------------------------------------- */
+    /*  Deprecations and Compatibility              */
+    /* -------------------------------------------- */
 
     /**
      * Get the name of the source of the Active Effect
