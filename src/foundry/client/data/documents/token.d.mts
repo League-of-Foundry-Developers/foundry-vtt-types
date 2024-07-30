@@ -72,8 +72,8 @@ declare global {
     /* -------------------------------------------- */
     /*  Methods                                     */
     /* -------------------------------------------- */
+    // TODO: Same as `DataModel._initialize`
     protected override _initialize(options?: any): void;
-    protected override _initialize(): void;
 
     override prepareBaseData(): void;
 
@@ -103,7 +103,7 @@ declare global {
         /**
          * An alternative attribute path to get instead of the default one
          */
-        alternative?: string;
+        alternative: string;
       }>,
     ): SingleAttributeBar | ObjectAttributeBar | null;
 
@@ -134,7 +134,7 @@ declare global {
          * Require this token to be an active Combatant or to be removed.
          * Otherwise, the current combat state of the Token is toggled.
          */
-        active?: boolean;
+        active: boolean;
       }
     >): Promise<boolean>;
 
@@ -221,7 +221,7 @@ declare global {
      * @param changes - The changes.
      * @returns The Region IDs the token is (sorted), if it could be determined.
      */
-    #identifyRegions(changes?: Record<string, any>): string[] | void;
+    #identifyRegions(changes?: Record<string, unknown>): string[] | void;
 
     static _preCreateOperation(
       documents: TokenDocument[],
