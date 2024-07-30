@@ -32,7 +32,7 @@ declare global {
      * @throws An error if there is no status effect in `CONFIG.statusEffects` with the given status ID and if
      * the status has implicit statuses but doesn't have a static _id.
      */
-    static fromStatusEffect(statusId: string, options?: DocumentConstructionContext | undefined): Promise<ActiveEffect>;
+    static fromStatusEffect(statusId: string, options?: DocumentConstructionContext): Promise<ActiveEffect>;
 
     /**
      * Create an ActiveEffect instance from status effect data.
@@ -45,7 +45,7 @@ declare global {
     protected static _fromStatusEffect(
       statusId: string,
       effectData: ActiveEffectData,
-      options?: DocumentConstructionContext | undefined,
+      options?: DocumentConstructionContext,
     ): Promise<ActiveEffect>;
 
     /* -------------------------------------------- */
@@ -131,7 +131,7 @@ declare global {
      * @param field  - The field. If not supplied, it will be retrieved from the supplied model.
      * @returns The updated value.
      */
-    static applyField(model: DataModel.Any, change: EffectChangeData, field?: DataField.Any | undefined): unknown;
+    static applyField(model: DataModel.Any, change: EffectChangeData, field?: DataField.Any): unknown;
 
     /**
      * Apply this ActiveEffect to a provided Actor.
