@@ -18,6 +18,10 @@ declare global {
     background?: string | undefined;
   }
 
+  namespace AdaptiveLightingShader {
+    type TechniqueReturn = ReturnType<(typeof AdaptiveLightingShader)["getShaderTechniques"]>;
+  }
+
   /**
    * This class defines an interface which all adaptive lighting shaders extend.
    */
@@ -79,17 +83,17 @@ declare global {
     /**
      * The coloration technique coloration shader fragment
      */
-    static get COLORATION_TECHNIQUES(): ReturnType<(typeof AdaptiveLightingShader)["getShaderTechniques"]>;
+    static get COLORATION_TECHNIQUES(): AdaptiveLightingShader.TechniqueReturn;
 
     /**
      * The coloration technique illumination shader fragment
      */
-    static get ILLUMINATION_TECHNIQUES(): ReturnType<(typeof AdaptiveLightingShader)["getShaderTechniques"]>;
+    static get ILLUMINATION_TECHNIQUES(): AdaptiveLightingShader.TechniqueReturn;
 
     /**
      * The coloration technique background shader fragment
      */
-    static get BACKGROUND_TECHNIQUES(): ReturnType<(typeof AdaptiveLightingShader)["getShaderTechniques"]>;
+    static get BACKGROUND_TECHNIQUES(): AdaptiveLightingShader.TechniqueReturn;
 
     /**
      * The adjustments made into fragment shaders
@@ -151,6 +155,7 @@ declare global {
      * A mapping of available coloration techniques
      */
     static SHADER_TECHNIQUES: AdaptiveLightingShader.ShaderTechniques;
+
     /**
      * Determine the correct penalty to apply for a given darkness level and luminosity
      * @param darknessLevel - The current darkness level on [0,1]
@@ -160,7 +165,7 @@ declare global {
      * @remarks AdaptiveLightingShader#getDarknessPenalty is deprecated without replacement.
      * The darkness penalty is no longer applied on light and vision sources.
      */
-    getDarknessPenalty(darknessLevel: number, luminosity: number): 0;
+    getDarknessPenalty(darknessLevel: number, luminosity: number): number;
   }
 
   namespace AdaptiveLightingShader {
