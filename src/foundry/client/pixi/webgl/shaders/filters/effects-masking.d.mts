@@ -39,10 +39,10 @@ declare global {
     static override create<
       T1 extends VisualEffectsMaskingFilter,
       T2 extends VisualEffectsMaskingFilter.CreateOptions<T2>,
-    >(this: ConstructorOf<T1>, { filterMode, postProcessModes, ...uniforms }?: T2): T1;
+    >(this: ConstructorOf<T1>, { postProcessModes, ...uniforms }?: T2): T1;
     static override create<T extends VisualEffectsMaskingFilter>(
       this: ConstructorOf<T>,
-      { filterMode, postProcessModes, ...uniforms }?: VisualEffectsMaskingFilter.CreateOptionsIntersection,
+      { postProcessModes, ...uniforms }?: VisualEffectsMaskingFilter.CreateOptionsIntersection,
     ): T;
 
     /**
