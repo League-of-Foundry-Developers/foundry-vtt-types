@@ -28,7 +28,7 @@ declare class BaseShaderMixinClass {
   /**
    * Fractional Brownian Motion for a given number of octaves
    * @param octaves - (default: `4`)
-   * @param amp - (default: `1.0`)
+   * @param amp     - (default: `1.0`)
    */
   static FBM(octaves: number, amp: number): string;
 
