@@ -26,7 +26,7 @@ declare namespace StringTerm {
   interface ConstructorData {
     term: string;
 
-    options?: RollTerm.Options;
+    options?: RollTerm.Options | undefined;
   }
 }
 

@@ -86,7 +86,7 @@ declare class ParentheticalTerm extends RollTerm {
    * t.formula; // (4d6 + 4)
    * ```
    */
-  static fromTerms(terms: RollTerm[], options?: Partial<RollTerm.Options>): ParentheticalTerm;
+  static fromTerms(terms: RollTerm[], options?: InexactPartial<RollTerm.Options>): ParentheticalTerm;
 
   /* -------------------------------------------- */
 
@@ -98,7 +98,7 @@ declare namespace ParentheticalTerm {
   interface TermData {
     term: string;
     roll: Roll;
-    options: RollTerm.Options;
+    options?: InexactPartial<RollTerm.Options>;
   }
 }
 

@@ -30,7 +30,7 @@ import type RollResolver from "../applications/dice/roll-resolver.d.mts";
  * console.log(r.total);    // 22
  * ```
  */
-declare class Roll<D extends object = {}> {
+declare class Roll<D extends Record<string, unknown> = {}> {
   /**
    * @param formula - The string formula to parse
    * @param data    - The data object against which to parse attributes within the formula
@@ -318,7 +318,7 @@ declare class Roll<D extends object = {}> {
   /**
    * Retrieve the appropriate resolver implementation based on the user's configuration.
    */
-  static get resolverImplementation(): typeof RollResolver; // TODO: Fix this
+  static get resolverImplementation(): typeof RollResolver;
 
   /**
    * Transform an array of RollTerm objects into a cleaned string formula representation.
@@ -370,7 +370,7 @@ declare class Roll<D extends object = {}> {
    * @param data    - A data object used to substitute for attributes in the formula
    * @returns A parsed array of RollTerm instances
    */
-  static parse(formula: string, data: object): RollTerm[];
+  static parse(formula: string, data: Record<string, unknown>): RollTerm[];
 
   /* -------------------------------------------- */
 
@@ -388,7 +388,7 @@ declare class Roll<D extends object = {}> {
    * @param data    - The data object which provides replacements
    * @param options - Options which modify formula replacement
    */
-  static replaceFormulaData<D>(
+  static replaceFormulaData<D extends Record<string, unknown>>(
     formula: string,
     data: D,
     options?: {
@@ -431,7 +431,11 @@ declare class Roll<D extends object = {}> {
    */
   protected static _classifyStringTerm(
     term: string,
-    { intermediate, prior, next }?: { intermediate?: boolean; prior?: RollTerm | string; next?: RollTerm | string },
+    {
+      intermediate,
+      prior,
+      next,
+    }?: InexactPartial<{ intermediate?: boolean; prior?: RollTerm | string; next?: RollTerm | string }>,
   ): RollTerm;
 
   /* -------------------------------------------- */
@@ -450,25 +454,27 @@ declare class Roll<D extends object = {}> {
    *                  (default: `{}`)
    * @returns The rendered HTML template as a string
    */
-  render(options?: {
-    /**
-     * Flavor text to include
-     * @defaultValue `undefined`
-     */
-    flavor?: string;
+  render(
+    options?: InexactPartial<{
+      /**
+       * Flavor text to include
+       * @defaultValue `undefined`
+       */
+      flavor?: string;
 
-    /**
-     * A custom HTML template path
-     * @defaultValue `this.constructor.CHAT_TEMPLATE`
-     */
-    template?: string;
+      /**
+       * A custom HTML template path
+       * @defaultValue `this.constructor.CHAT_TEMPLATE`
+       */
+      template?: string;
 
-    /**
-     * Is the Roll displayed privately?
-     * @defaultValue `false`
-     */
-    isPrivate?: boolean;
-  }): Promise<string>;
+      /**
+       * Is the Roll displayed privately?
+       * @defaultValue `false`
+       */
+      isPrivate?: boolean;
+    }>,
+  ): Promise<string>;
 
   /**
    * Transform a Roll instance into a ChatMessage, displaying the roll result.
@@ -485,15 +491,32 @@ declare class Roll<D extends object = {}> {
    * @returns A promise which resolves to the created ChatMessage entity, if create is true
    *          or the Object of prepared chatData otherwise.
    */
-  toMessage<T extends DeepPartial<ConstructorParameters<ConfiguredDocumentClass<typeof ChatMessage>>[0]> = {}>(
+  toMessage<
+    T extends DeepPartial<ConstructorParameters<ConfiguredDocumentClass<typeof ChatMessage>>[0]> = Record<
+      string,
+      unknown
+    >,
+  >(
     messageData?: T,
-    { rollMode, create }?: { rollMode?: keyof CONFIG.Dice.RollModes | "roll"; create?: true },
+    { rollMode, create }?: InexactPartial<{ rollMode?: keyof CONFIG.Dice.RollModes | "roll"; create?: true }>,
   ): Promise<ChatMessage.ConfiguredInstance | undefined>;
-  toMessage<T extends DeepPartial<ConstructorParameters<ConfiguredDocumentClass<typeof ChatMessage>>[0]> = {}>(
+
+  toMessage<
+    T extends DeepPartial<ConstructorParameters<ConfiguredDocumentClass<typeof ChatMessage>>[0]> = Record<
+      string,
+      unknown
+    >,
+  >(
     messageData: T,
     { rollMode, create }: { rollMode?: keyof CONFIG.Dice.RollModes | "roll"; create: false },
   ): Roll.MessageData<T>;
-  toMessage<T extends DeepPartial<ConstructorParameters<ConfiguredDocumentClass<typeof ChatMessage>>[0]> = {}>(
+
+  toMessage<
+    T extends DeepPartial<ConstructorParameters<ConfiguredDocumentClass<typeof ChatMessage>>[0]> = Record<
+      string,
+      unknown
+    >,
+  >(
     messageData: T,
     { rollMode, create }: { rollMode?: keyof CONFIG.Dice.RollModes | "roll"; create: boolean },
   ): Promise<ChatMessage.ConfiguredInstance | undefined> | Roll.MessageData<T>;
@@ -540,7 +563,7 @@ declare class Roll<D extends object = {}> {
    * @param data - Unpacked data representing the Roll
    * @returns A reconstructed Roll instance
    */
-  static fromData<T extends Roll>(this: ConstructorOf<T>, data: Roll.Data): T;
+  static fromData<T extends Roll<any>>(this: ConstructorOf<T>, data: Roll.Data): T;
 
   /**
    * Recreate a Roll instance using a provided JSON string
@@ -564,11 +587,11 @@ declare class Roll<D extends object = {}> {
    * roll.formula; // 4d8 + 8
    * ```
    */
-  static fromTerms<T extends ConstructorOf<Roll<any>>>(
-    this: T,
+  static fromTerms<T extends Roll<any>>(
+    this: ConstructorOf<T>,
     terms: RollTerm[],
     options?: InexactPartial<Roll.Options>,
-  ): InstanceType<T>;
+  ): T;
 }
 
 declare namespace Roll {
@@ -577,12 +600,12 @@ declare namespace Roll {
      * If false, force the use of non-interactive rolls and do not prompt the user to make manual rolls.
      * @defaultValue `true`
      */
-    allowInteractive?: boolean;
+    allowInteractive?: boolean | undefined;
     /**
      * Throw an Error if the Roll contains non-deterministic terms that cannot be evaluated synchronously.
      *  If this is set to false, non-deterministic terms will be ignored.
      */
-    strict?: boolean;
+    strict?: boolean | undefined;
   }
 
   interface SplitGroupOptions {
@@ -621,14 +644,14 @@ declare namespace Roll {
     total: number | null;
   }
 
-  type Flavor = Record<`%F${number}%`, string>;
+  type Flavor = Record<`%F${number}%`, string>; // TODO: Maybe remove this
 
-  type MessageData<T extends DeepPartial<ConstructorParameters<typeof ChatMessage>[0]>> = {
+  type MessageData<T extends DeepPartial<ConstructorParameters<typeof ChatMessage>[0]>> = T & {
     user: string;
-    type: (typeof foundry.CONST.CHAT_MESSAGE_TYPES)["ROLL"]; // TODO: Update this
+    type: (typeof foundry.CONST.CHAT_MESSAGE_TYPES)["ROLL"]; // TODO: Update this when chat messages are implemented for v12
     content: number;
     sound: typeof CONFIG.sounds.dice;
-  } & T;
+  };
 
   type Evaluated<T extends Roll> = T & { _evaluated: true; _total: number; get total(): number };
 }

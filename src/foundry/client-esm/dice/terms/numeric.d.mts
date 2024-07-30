@@ -1,3 +1,4 @@
+import type { InexactPartial } from "../../../../types/utils.d.mts";
 import type RollTerm from "./term.d.mts";
 
 /**
@@ -48,7 +49,7 @@ declare namespace NumericTerm {
     /**
      * @defaultValue `{}`
      */
-    options?: RollTerm.Options;
+    options?: InexactPartial<RollTerm.Options>;
   }
 }
 

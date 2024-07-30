@@ -1,10 +1,12 @@
+import type { InexactPartial } from "../../../../types/utils.d.mts";
+
 import type RollTerm from "./term.d.mts";
 
 /**
  * A type of RollTerm used to denote and perform an arithmetic operation.
  */
 declare class OperatorTerm extends RollTerm {
-  constructor({ operator, options }?: Partial<OperatorTerm.TermData>);
+  constructor({ operator, options }?: InexactPartial<OperatorTerm.TermData>);
 
   /** The term's operator value. */
   operator: OperatorTerm.TermData["operator"];
@@ -22,7 +24,7 @@ declare class OperatorTerm extends RollTerm {
    * An array of operators which represent arithmetic operations.
    * @defaultValue `["+", "-", "*", "/", "%"]`
    */
-  static OPERATORS: string[]; // TODO: Rely on PRECEDENCE
+  static OPERATORS: string[];
 
   static override REGEXP: RegExp;
 
@@ -36,7 +38,7 @@ declare class OperatorTerm extends RollTerm {
    * Optional flavor text which modifies and describes this term.
    * @remarks Operator terms cannot have flavor text
    */
-  override get flavor(): "";
+  override get flavor(): string;
 
   override get expression(): string;
 
@@ -46,7 +48,7 @@ declare class OperatorTerm extends RollTerm {
 declare namespace OperatorTerm {
   interface TermData {
     operator: string;
-    options?: RollTerm.Options;
+    options?: InexactPartial<RollTerm.Options>;
   }
 }
 

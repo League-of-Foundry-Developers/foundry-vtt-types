@@ -22,7 +22,7 @@ declare abstract class DiceTerm extends RollTerm {
    * @param options   - Additional options that modify the term
    *                    (default: `{}`)
    */
-  constructor(termData?: Partial<DiceTerm.TermData>);
+  constructor(termData?: InexactPartial<DiceTerm.TermData>);
 
   get method(): string; // TODO: Convert to CONFIG.Dice.fulfillment.methods
 
@@ -107,7 +107,7 @@ declare abstract class DiceTerm extends RollTerm {
   /** Return an array of rolled values which are still active within this term */
   get values(): number[];
 
-  override get isDeterministic(): false;
+  override get isDeterministic(): boolean;
 
   /* -------------------------------------------- */
   /*  Dice Term Methods                           */
@@ -253,13 +253,7 @@ declare abstract class DiceTerm extends RollTerm {
   protected static _keepOrDrop(
     results: DiceTerm.Result[],
     number: number,
-    {
-      keep,
-      highest,
-    }?: {
-      keep: boolean;
-      highest: boolean;
-    },
+    { keep, highest }?: InexactPartial<{ keep: boolean; highest: boolean }>,
   ): DiceTerm.Result;
 
   /* -------------------------------------------- */
@@ -273,13 +267,7 @@ declare abstract class DiceTerm extends RollTerm {
     results: DiceTerm.Result[],
     comparison: string,
     target: number,
-    {
-      flagSuccess,
-      flagFailure,
-    }?: {
-      flagSuccess: boolean;
-      flagFailure: boolean;
-    },
+    { flagSuccess, flagFailure }?: InexactPartial<{ flagSuccess: boolean; flagFailure: boolean }>,
   ): void;
 
   /* -------------------------------------------- */
@@ -293,13 +281,7 @@ declare abstract class DiceTerm extends RollTerm {
     results: DiceTerm.Result[],
     comparison: string,
     target: number,
-    {
-      deductFailure,
-      invertFailure,
-    }?: {
-      deductFailure: boolean;
-      invertFailure: boolean;
-    },
+    { deductFailure, invertFailure }?: InexactPartial<{ deductFailure: boolean; invertFailure: boolean }>,
   ): void;
 
   /* -------------------------------------------- */
@@ -313,7 +295,10 @@ declare abstract class DiceTerm extends RollTerm {
    * @param imputeNumber - Allow the number of dice to be optional, i.e. "d6"
    *                       (default: `true`)
    */
-  static matchTerm(expression: string, { imputeNumber }?: { imputeNumber: boolean }): RegExpMatchArray | null;
+  static matchTerm(
+    expression: string,
+    { imputeNumber }?: InexactPartial<{ imputeNumber: boolean }>,
+  ): RegExpMatchArray | null;
 
   /* -------------------------------------------- */
 
@@ -332,14 +317,14 @@ declare abstract class DiceTerm extends RollTerm {
   /*  Serialization & Loading                     */
   /* -------------------------------------------- */
 
-  protected static _fromData<T extends RollTerm>(this: ConstructorOf<T>, data: object): T;
+  protected static _fromData<T extends RollTerm>(this: ConstructorOf<T>, data: Record<string, unknown>): T;
 
   override toJSON(): object;
 }
 
 declare namespace DiceTerm {
-  interface Data extends Partial<TermData> {
-    class?: string;
+  interface Data extends InexactPartial<TermData> {
+    class?: string | undefined;
     results: DiceTerm.Result[];
   }
 
@@ -351,25 +336,25 @@ declare namespace DiceTerm {
     options: DiceTerm.Options;
   }
 
-  type Options = RollTerm.Options;
+  interface Options extends RollTerm.Options {}
 
   interface Result {
     /** The numeric result. */
     result: number;
     /** Is this result active, contributing to the total? */
-    active?: boolean;
+    active?: boolean | undefined;
     /** A value that the result counts as, otherwise the result is not used directly as. */
-    count?: number;
+    count?: number | undefined;
     /** Does this result denote a success? */
-    success?: boolean;
+    success?: boolean | undefined;
     /** Does this result denote a failure? */
-    failure?: boolean;
+    failure?: boolean | undefined;
     /** Was this result discarded? */
-    discarded?: boolean;
+    discarded?: boolean | undefined;
     /** Was this result rerolled? */
-    rerolled?: boolean;
+    rerolled?: boolean | undefined;
     /** Was this result exploded? */
-    exploded?: boolean;
+    exploded?: boolean | undefined;
   }
 
   interface ToolTipData {

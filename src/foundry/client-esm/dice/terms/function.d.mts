@@ -9,7 +9,7 @@ import type { RollFunction } from "../../../client/config.d.mts";
  * A type of RollTerm used to apply a function.
  */
 declare class FunctionTerm extends RollTerm {
-  constructor(termData?: Partial<FunctionTerm.TermData>);
+  constructor(termData?: InexactPartial<FunctionTerm.TermData>);
 
   /* The name of the configured function, or one in the Math environment, which should be applied to the term. */
   fn: string;
@@ -71,7 +71,7 @@ declare class FunctionTerm extends RollTerm {
   /* -------------------------------------------- */
   /*  Saving and Loading                          */
   /* -------------------------------------------- */
-  protected static override _fromData<T extends RollTerm>(this: ConstructorOf<T>, data: object): T;
+  protected static override _fromData<T extends RollTerm>(this: ConstructorOf<T>, data: Record<string, unknown>): T;
 
   /* -------------------------------------------- */
   override toJSON(): object;
@@ -81,8 +81,8 @@ declare class FunctionTerm extends RollTerm {
 }
 
 declare namespace FunctionTerm {
-  interface Data extends Partial<TermData> {
-    class?: string;
+  interface Data extends InexactPartial<TermData> {
+    class?: string | undefined;
     evaluated: boolean;
   }
 
@@ -95,10 +95,10 @@ declare namespace FunctionTerm {
     rolls: Roll[];
     /* The cached result of evaluating the method arguments. */
     result: string | number;
-    options: FunctionTerm.Options;
+    options?: InexactPartial<FunctionTerm.Options>;
   }
 
-  type Options = RollTerm.Options;
+  interface Options extends RollTerm.Options {}
 }
 
 export default FunctionTerm;

@@ -8,7 +8,7 @@ import type Die from "./die.d.mts";
  * Mathematically behaves like 1d3-2
  */
 declare class FateDie extends DiceTerm {
-  constructor(termData?: Partial<FateDie.TermData>);
+  constructor(termData?: InexactPartial<FateDie.TermData>);
 
   _faces: 3;
 

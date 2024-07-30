@@ -1,3 +1,5 @@
+import type { InexactPartial } from "../../../../types/utils.d.mts";
+
 import type DiceTerm from "./dice.d.mts";
 
 /**
@@ -9,7 +11,7 @@ import type DiceTerm from "./dice.d.mts";
  * ```
  */
 declare class Die extends DiceTerm {
-  constructor(termData?: Partial<Die.TermData>);
+  constructor(termData?: InexactPartial<Die.TermData>);
 
   /**
    * @defaultValue `"d"`
@@ -65,12 +67,12 @@ declare class Die extends DiceTerm {
    * @param recursive - Reroll recursively, continuing to reroll until the condition is no longer met
    * @returns False if the modifier was unmatched
    */
-  reroll(modifier: string, { recursive }?: { recursive?: boolean }): Promise<boolean | void>; // TODO: Maybe change from boolean to false.
+  reroll(modifier: string, { recursive }?: InexactPartial<{ recursive?: boolean }>): Promise<boolean | void>;
 
   /**
    * @see {@link Die#reroll}
    */
-  rerollRecursive(modifier: string): Promise<boolean | void>; // TODO: Maybe change boolean to false
+  rerollRecursive(modifier: string): Promise<boolean | void>;
 
   /**
    * Explode the Die, rolling additional results for any values which match the target set.
@@ -81,12 +83,12 @@ declare class Die extends DiceTerm {
    * @param recursive - Explode recursively, such that new rolls can also explode?
    *                    (default: `true`)
    */
-  explode(modifier: string, { recursive }?: { recursive: boolean }): Promise<boolean | void>; // TODO: Maybe change boolean to false
+  explode(modifier: string, { recursive }?: InexactPartial<{ recursive: boolean }>): Promise<boolean | void>;
 
   /**
    * @see {@link Die#explode}
    */
-  explodeOnce(modifier: string): Promise<boolean | void>; // TODO: Maybe change boolean to false
+  explodeOnce(modifier: string): Promise<boolean | void>;
 
   /**
    * Keep a certain number of highest or lowest dice rolls from the result set.
@@ -99,7 +101,7 @@ declare class Die extends DiceTerm {
    *
    * @param modifier - The matched modifier query
    */
-  keep(modifier: string): boolean | void; // TODO: Maybe change boolean to false
+  keep(modifier: string): boolean | void;
 
   /**
    * Drop a certain number of highest or lowest dice rolls from the result set.
@@ -112,7 +114,7 @@ declare class Die extends DiceTerm {
    *
    * @param modifier - The matched modifier query
    */
-  drop(modifier: string): boolean | void; // TODO: Maybe change boolean to false
+  drop(modifier: string): boolean | void;
 
   /**
    * Count the number of successful results which occurred in a given result set.
@@ -125,7 +127,7 @@ declare class Die extends DiceTerm {
    *
    * @param modifier - The matched modifier query
    */
-  countSuccess(modifier: string): boolean | void; // TODO: Maybe change boolean to false
+  countSuccess(modifier: string): boolean | void;
 
   /**
    * Count the number of failed results which occurred in a given result set.
@@ -138,7 +140,7 @@ declare class Die extends DiceTerm {
    *
    * @param modifier - The matched modifier query
    */
-  countFailures(modifier: string): boolean | void; // TODO: Maybe change boolean to false
+  countFailures(modifier: string): boolean | void;
 
   /**
    * Count the number of even results which occurred in a given result set.
@@ -149,7 +151,7 @@ declare class Die extends DiceTerm {
    *
    * @param modifier - The matched modifier query
    */
-  countEven(modifier: string): boolean | void; // TODO: Maybe change boolean to false. Modifiers is also unused.
+  countEven(modifier: string): boolean | void; // FIXME:  Modifiers is also unused.
 
   /**
    * Count the number of odd results which occurred in a given result set.
@@ -160,7 +162,7 @@ declare class Die extends DiceTerm {
    *
    * @param modifier - The matched modifier query
    */
-  countOdd(modifier: string): boolean | void; // TODO: Maybe change boolean to false. Modifiers is also unused.
+  countOdd(modifier: string): boolean | void; // FIXME: Modifiers is also unused.
 
   /**
    * Deduct the number of failures from the dice result, counting each failure as -1
@@ -173,7 +175,7 @@ declare class Die extends DiceTerm {
    *
    * @param modifier - The matched modifier query
    */
-  deductFailures(modifier: string): boolean | void; // TODO: Maybe change boolean to false
+  deductFailures(modifier: string): boolean | void;
 
   /**
    * Subtract the value of failed dice from the non-failed total, where each failure counts as its negative value.
@@ -184,28 +186,28 @@ declare class Die extends DiceTerm {
    *
    * @param modifier - The matched modifier query
    */
-  subtractFailures(modifier: string): boolean | void; // TODO: Maybe change boolean to false
+  subtractFailures(modifier: string): boolean | void;
 
   /**
    * Subtract the total value of the DiceTerm from a target value, treating the difference as the final total.
    * Example: 6d6ms\>12    Roll 6d6 and subtract 12 from the resulting total.
    * @param modifier - The matched modifier query
    */
-  marginSuccess(modifier: string): boolean | void; // TODO: Maybe change boolean to false
+  marginSuccess(modifier: string): boolean | void;
 
   /**
    * Constrain each rolled result to be at least some minimum value.
    * Example: 6d6min2    Roll 6d6, each result must be at least 2
    * @param modifier - The matched modifier query
    */
-  minimum(modifier: string): boolean | void; // TODO: Maybe change boolean to false
+  minimum(modifier: string): boolean | void;
 
   /**
    * Constrain each rolled result to be at most some maximum value.
    * Example: 6d6max5    Roll 6d6, each result must be at most 5
    * @param modifier - The matched modifier query
    */
-  maximum(modifier: string): boolean | void; // TODO: Maybe change boolean to false
+  maximum(modifier: string): boolean | void;
 }
 
 declare namespace Die {

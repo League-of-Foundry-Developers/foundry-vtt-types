@@ -5,7 +5,7 @@ import type DiceTerm from "./dice.d.mts";
  * A type of DiceTerm used to represent flipping a two-sided coin.
  */
 declare class Coin extends DiceTerm {
-  constructor(termData?: Partial<Coin.TermData>);
+  constructor(termData?: InexactPartial<Coin.TermData>);
 
   _faces: 2;
 

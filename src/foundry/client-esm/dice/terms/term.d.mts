@@ -4,7 +4,7 @@ import type { RollParseNode } from "../_types.mts";
 import type RollResolver from "../../applications/dice/roll-resolver.d.mts";
 
 declare abstract class RollTerm {
-  constructor({ options }?: { options?: RollTerm.Options });
+  constructor({ options }?: InexactPartial<{ options?: RollTerm.Options }>);
 
   /** An object of additional options which describes and modifies the term. */
   options: RollTerm.Options;
@@ -85,7 +85,10 @@ declare abstract class RollTerm {
   /**
    * Determine if evaluating a given RollTerm with certain evaluation options can be done so deterministically.
    */
-  static isDeterministic(term: RollTerm, { minimize, maximize }?: { minimize?: boolean; maximize?: boolean }): boolean;
+  static isDeterministic(
+    term: RollTerm,
+    { minimize, maximize }?: InexactPartial<{ minimize?: boolean; maximize?: boolean }>,
+  ): boolean;
 
   /* -------------------------------------------- */
   /*  Serialization and Loading                   */
@@ -96,7 +99,7 @@ declare abstract class RollTerm {
    * @param data - Provided data from an un-serialized term
    * @returns The constructed RollTerm
    */
-  static fromData(data: object): RollTerm;
+  static fromData(data: Record<string, unknown>): RollTerm;
 
   /** Construct a RollTerm from parser information. */
   static fromParseNode(node: RollParseNode): RollTerm;
@@ -106,7 +109,7 @@ declare abstract class RollTerm {
    * @param data - The de-serialized term data
    * @returns The re-constructed RollTerm object
    */
-  protected static _fromData<T extends RollTerm>(this: ConstructorOf<T>, data: object): T;
+  protected static _fromData<T extends RollTerm>(this: ConstructorOf<T>, data: Record<string, unknown>): T;
 
   /**
    * Reconstruct a RollTerm instance from a provided JSON string
@@ -119,12 +122,12 @@ declare abstract class RollTerm {
    * Serialize the RollTerm to a JSON string which allows it to be saved in the database or embedded in text.
    * This method should return an object suitable for passing to the JSON.stringify function.
    */
-  toJSON(): object;
+  toJSON(): Record<string, unknown>;
 }
 
 declare namespace RollTerm {
   interface Options {
-    flavor?: string;
+    flavor?: string | unknown;
   }
 
   interface EvaluationOptions {

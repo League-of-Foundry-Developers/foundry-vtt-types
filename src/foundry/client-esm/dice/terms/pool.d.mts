@@ -22,7 +22,7 @@ import type Die from "./die.d.mts";
  * ```
  */
 declare class PoolTerm extends RollTerm {
-  constructor({ terms, modifiers, rolls, results, options }?: PoolTerm.PoolTermConstructorData);
+  constructor({ terms, modifiers, rolls, results, options }?: InexactPartial<PoolTerm.PoolTermConstructorData>);
 
   /**
    * The original provided terms to the Dice Pool
@@ -243,35 +243,35 @@ declare namespace PoolTerm {
     cf: "countFailures";
   }
 
-  type TermData = Required<PoolTermConstructorData>;
+  interface TermData extends Required<PoolTermConstructorData> {}
 
   interface PoolTermConstructorData {
     /**
      * @defaultValue `[]`
      */
-    terms?: string[];
+    terms?: string[] | undefined;
 
     get isDeterministic(): boolean;
 
     /**
      * @defaultValue `[]`
      */
-    modifiers?: string[];
+    modifiers?: string[] | undefined;
 
     /**
      * @defaultValue `[]`
      */
-    rolls?: Roll[];
+    rolls?: Roll[] | undefined;
 
     /**
      * @defaultValue `[]`
      */
-    results?: DiceTerm.Result[];
+    results?: DiceTerm.Result[] | undefined;
 
     /**
      * @defaultValue `{}`
      */
-    options?: RollTerm.Options;
+    options?: RollTerm.Options | undefined;
   }
 }
 
