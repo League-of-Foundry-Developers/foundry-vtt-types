@@ -65,7 +65,7 @@ declare global {
      * A set of permission checking functions for each action of the Drag and Drop workflow
      * @defaultValue `{}`
      */
-    permissions: Partial<Record<DragDrop.Action, (selector: DragDrop["dragSelector"]) => boolean>>;
+    permissions: Partial<Record<DragDrop.Action, (selector: this["dragSelector"]) => boolean>>;
 
     /**
      * A set of callback functions for each action of the Drag and Drop workflow
@@ -92,7 +92,7 @@ declare global {
      * @param selector - The selector being targeted
      * @returns Can the action be performed?
      */
-    can(action: DragDrop.Action, selector?: DragDrop["dragSelector"]): boolean;
+    can(action: DragDrop.Action, selector?: this["dragSelector"]): boolean;
 
     /**
      * Handle the start of a drag workflow
