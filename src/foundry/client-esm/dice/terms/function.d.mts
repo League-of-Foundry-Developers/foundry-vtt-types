@@ -74,7 +74,7 @@ declare class FunctionTerm extends RollTerm {
   protected static override _fromData<T extends RollTerm>(this: ConstructorOf<T>, data: Record<string, unknown>): T;
 
   /* -------------------------------------------- */
-  override toJSON(): object;
+  override toJSON(): Record<string, unknown>;
 
   /* -------------------------------------------- */
   static override fromParseNode(node: FunctionRollParseNode): RollTerm;
@@ -82,7 +82,7 @@ declare class FunctionTerm extends RollTerm {
 
 declare namespace FunctionTerm {
   interface Data extends InexactPartial<TermData> {
-    class?: string | undefined;
+    class: string | undefined;
     evaluated: boolean;
   }
 

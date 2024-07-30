@@ -4,7 +4,7 @@ import type { RollParseNode } from "../_types.mts";
 import type RollResolver from "../../applications/dice/roll-resolver.d.mts";
 
 declare abstract class RollTerm {
-  constructor({ options }?: InexactPartial<{ options?: RollTerm.Options }>);
+  constructor({ options }?: InexactPartial<{ options: RollTerm.Options }>);
 
   /** An object of additional options which describes and modifies the term. */
   options: RollTerm.Options;
@@ -87,7 +87,7 @@ declare abstract class RollTerm {
    */
   static isDeterministic(
     term: RollTerm,
-    { minimize, maximize }?: InexactPartial<{ minimize?: boolean; maximize?: boolean }>,
+    { minimize, maximize }?: InexactPartial<{ minimize: boolean; maximize: boolean }>,
   ): boolean;
 
   /* -------------------------------------------- */

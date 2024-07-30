@@ -1,5 +1,5 @@
 import type { ConfiguredDocumentClass } from "../../../types/helperTypes.d.mts";
-import type { ConstructorOf, DeepPartial, InexactPartial } from "../../../types/utils.d.mts";
+import type { ConstructorOf, DeepPartial, EmptyObject, InexactPartial } from "../../../types/utils.d.mts";
 
 import type { RollParseNode } from "./_types.d.mts";
 import type DiceTerm from "./terms/dice.d.mts";
@@ -308,7 +308,7 @@ declare class Roll<D extends Record<string, unknown> = {}> {
     formula: string,
     data?: D,
     options?: InexactPartial<Roll.Options>,
-  ): typeof CONFIG.Dice.rolls extends [infer T] ? T : Roll<D>; // TODO: Unable to find config
+  ): typeof CONFIG.Dice.rolls extends [infer T] ? T : Roll<D>;
 
   /**
    * Get the default configured Roll class.
@@ -435,7 +435,7 @@ declare class Roll<D extends Record<string, unknown> = {}> {
       intermediate,
       prior,
       next,
-    }?: InexactPartial<{ intermediate?: boolean; prior?: RollTerm | string; next?: RollTerm | string }>,
+    }?: InexactPartial<{ intermediate: boolean; prior: RollTerm | string; next: RollTerm | string }>,
   ): RollTerm;
 
   /* -------------------------------------------- */
@@ -460,19 +460,19 @@ declare class Roll<D extends Record<string, unknown> = {}> {
        * Flavor text to include
        * @defaultValue `undefined`
        */
-      flavor?: string;
+      flavor: string;
 
       /**
        * A custom HTML template path
        * @defaultValue `this.constructor.CHAT_TEMPLATE`
        */
-      template?: string;
+      template: string;
 
       /**
        * Is the Roll displayed privately?
        * @defaultValue `false`
        */
-      isPrivate?: boolean;
+      isPrivate: boolean;
     }>,
   ): Promise<string>;
 
@@ -491,34 +491,19 @@ declare class Roll<D extends Record<string, unknown> = {}> {
    * @returns A promise which resolves to the created ChatMessage entity, if create is true
    *          or the Object of prepared chatData otherwise.
    */
-  toMessage<
-    T extends DeepPartial<ConstructorParameters<ConfiguredDocumentClass<typeof ChatMessage>>[0]> = Record<
-      string,
-      unknown
-    >,
-  >(
+  toMessage<T extends DeepPartial<ConstructorParameters<ConfiguredDocumentClass<typeof ChatMessage>>[0]> = EmptyObject>(
     messageData?: T,
-    { rollMode, create }?: InexactPartial<{ rollMode?: keyof CONFIG.Dice.RollModes | "roll"; create?: true }>,
+    { rollMode, create }?: InexactPartial<{ rollMode: keyof CONFIG.Dice.RollModes | "roll"; create: true }>,
   ): Promise<ChatMessage.ConfiguredInstance | undefined>;
 
-  toMessage<
-    T extends DeepPartial<ConstructorParameters<ConfiguredDocumentClass<typeof ChatMessage>>[0]> = Record<
-      string,
-      unknown
-    >,
-  >(
+  toMessage<T extends DeepPartial<ConstructorParameters<ConfiguredDocumentClass<typeof ChatMessage>>[0]> = EmptyObject>(
     messageData: T,
-    { rollMode, create }: { rollMode?: keyof CONFIG.Dice.RollModes | "roll"; create: false },
+    { rollMode, create }: { rollMode?: keyof CONFIG.Dice.RollModes | "roll" | undefined; create: false },
   ): Roll.MessageData<T>;
 
-  toMessage<
-    T extends DeepPartial<ConstructorParameters<ConfiguredDocumentClass<typeof ChatMessage>>[0]> = Record<
-      string,
-      unknown
-    >,
-  >(
+  toMessage<T extends DeepPartial<ConstructorParameters<ConfiguredDocumentClass<typeof ChatMessage>>[0]> = EmptyObject>(
     messageData: T,
-    { rollMode, create }: { rollMode?: keyof CONFIG.Dice.RollModes | "roll"; create: boolean },
+    { rollMode, create }: { rollMode?: keyof CONFIG.Dice.RollModes | "roll" | undefined; create: boolean },
   ): Promise<ChatMessage.ConfiguredInstance | undefined> | Roll.MessageData<T>;
 
   /* -------------------------------------------- */
@@ -643,8 +628,6 @@ declare namespace Roll {
     terms: Array<PoolTerm.TermData | DiceTerm.Data>;
     total: number | null;
   }
-
-  type Flavor = Record<`%F${number}%`, string>; // TODO: Maybe remove this
 
   type MessageData<T extends DeepPartial<ConstructorParameters<typeof ChatMessage>[0]>> = T & {
     user: string;

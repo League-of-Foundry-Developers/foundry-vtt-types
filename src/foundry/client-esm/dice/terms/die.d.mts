@@ -67,7 +67,7 @@ declare class Die extends DiceTerm {
    * @param recursive - Reroll recursively, continuing to reroll until the condition is no longer met
    * @returns False if the modifier was unmatched
    */
-  reroll(modifier: string, { recursive }?: InexactPartial<{ recursive?: boolean }>): Promise<boolean | void>;
+  reroll(modifier: string, { recursive }?: InexactPartial<{ recursive: boolean }>): Promise<boolean | void>;
 
   /**
    * @see {@link Die#reroll}

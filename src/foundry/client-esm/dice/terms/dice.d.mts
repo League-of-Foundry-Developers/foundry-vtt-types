@@ -74,6 +74,8 @@ declare abstract class DiceTerm extends RollTerm {
    * complex term that has not yet been evaluated.
    */
   get number(): DiceTerm.TermData["number"] | undefined;
+  /** The number of dice of this term to roll. */
+  set number(value: DiceTerm.TermData["number"]);
 
   /**
    * The number of dice of this term to roll, before modifiers are applied, or a Roll instance that will be evaluated to
@@ -81,19 +83,15 @@ declare abstract class DiceTerm extends RollTerm {
    */
   _number: DiceTerm.TermData["number"] | Roll;
 
-  /** The number of dice of this term to roll. */
-  set number(value: DiceTerm.TermData["number"]);
-
   /**
    * The number of faces on the die. Returns undefined if the faces are represented as a complex term that has not yet
    * been evaluated.
    */
   get faces(): DiceTerm.TermData["faces"] | undefined;
+  set faces(value: DiceTerm.TermData["faces"]);
 
   /** The number of faces on the die, or a Roll instance that will be evaluated to a number. */
   _faces: DiceTerm.TermData["faces"] | Roll;
-
-  set faces(value: DiceTerm.TermData["faces"]);
 
   /* -------------------------------------------- */
   /**  The denomination of this DiceTerm instance. */
@@ -319,7 +317,7 @@ declare abstract class DiceTerm extends RollTerm {
 
   protected static _fromData<T extends RollTerm>(this: ConstructorOf<T>, data: Record<string, unknown>): T;
 
-  override toJSON(): object;
+  override toJSON(): Record<string, unknown>;
 }
 
 declare namespace DiceTerm {

@@ -137,11 +137,11 @@ declare class PoolTerm extends RollTerm {
   /*  Saving and Loading                          */
   /* -------------------------------------------- */
 
-  protected static override _fromData<T extends RollTerm>(this: ConstructorOf<T>, data: object): T;
+  protected static override _fromData<T extends RollTerm>(this: ConstructorOf<T>, data: Record<string, unknown>): T;
 
   /* -------------------------------------------- */
 
-  toJSON(): object;
+  toJSON(): Record<string, unknown>;
 
   /* -------------------------------------------- */
 
