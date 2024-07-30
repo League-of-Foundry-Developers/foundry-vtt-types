@@ -40,7 +40,7 @@ declare global {
      */
     set blur(value: number);
 
-    get blur();
+    get blur(): number;
 
     override apply(
       filterManager: PIXI.FilterSystem,
