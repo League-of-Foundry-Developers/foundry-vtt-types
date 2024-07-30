@@ -13,13 +13,22 @@ declare global {
    * @see {@link WorldSettings}       The world-level collection of Setting documents
    */
   class Setting extends ClientDocumentMixin(foundry.documents.BaseSetting) {
+    static #PRIMITIVE_TYPES: readonly [
+      typeof String,
+      typeof Number,
+      typeof Boolean,
+      typeof Array,
+      typeof Symbol,
+      typeof BigInt,
+    ];
+
     /**
      * The setting configuration for this setting document.
      */
     get config(): SettingsConfig | undefined;
 
+    // TODO: This is the same as `DataModel._initialize`
     protected _initialize(options?: any): void;
-    protected _initialize(): void;
 
     protected override _onCreate(
       data: foundry.documents.BaseSetting.ConstructorData,
@@ -38,6 +47,6 @@ declare global {
      * @returns The initialized type of the Setting document.
      */
     // TODO: This could probably be derived
-    _castType(): any;
+    protected _castType(): any;
   }
 }
