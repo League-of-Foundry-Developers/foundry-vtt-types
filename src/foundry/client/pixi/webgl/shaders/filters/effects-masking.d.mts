@@ -31,13 +31,6 @@ declare global {
    * This filter handles masking and post-processing for visual effects.
    */
   class VisualEffectsMaskingFilter extends AbstractBaseMaskFilter {
-    constructor(
-      vertex: string,
-      fragment: string,
-      uniforms: AbstractBaseShader.Uniforms,
-      filterMode: VisualEffectsMaskingFilter.FilterMode,
-    );
-
     /**
      * @remarks This method has been overloaded to accurately type the object input.
      * The input cannot be separately typed, it must be fed directly into this method
