@@ -2,18 +2,11 @@ export {};
 
 declare global {
   namespace AbstractBaseShader {
-    type UniformValue =
-      | boolean
-      | number
-      | Int32List
-      | Float32List
+    type Coordinates =
       | { x: number; y: number }
       | { x: number; y: number; z: number }
-      | { x: number; y: number; z: number; w: number }
-      | { x: number; y: number }[]
-      | { x: number; y: number; z: number }[]
-      | { x: number; y: number; z: number; w: number }[]
-      | PIXI.Texture;
+      | { x: number; y: number; z: number; w: number };
+    type UniformValue = boolean | number | Int32List | Float32List | Coordinates | Coordinates[] | PIXI.Texture;
 
     type Uniforms = Record<string, AbstractBaseShader.UniformValue>;
   }
