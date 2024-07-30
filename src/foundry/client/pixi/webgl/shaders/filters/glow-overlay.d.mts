@@ -3,6 +3,12 @@ import type { ConstructorOf } from "../../../../../../types/utils.d.mts";
 export {};
 
 declare global {
+  namespace GlowOverlayFilter {
+    interface Uniforms extends AbstractBaseShader.Uniforms {
+      distance: number;
+      quality: number;
+    }
+  }
   /**
    * A filter which implements an inner or outer glow around the source texture.
    * Inspired from https://github.com/pixijs/filters/tree/main/filters/glow
@@ -43,7 +49,7 @@ declare global {
      * }
      * ```
      */
-    static override defaultUniforms: AbstractBaseShader.Uniforms & { distance: number; quality: number };
+    static override defaultUniforms: GlowOverlayFilter.Uniforms;
 
     /**
      * Dynamically create the fragment shader used for filters of this type.

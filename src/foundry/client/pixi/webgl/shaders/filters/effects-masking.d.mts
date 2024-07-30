@@ -4,8 +4,10 @@ export {};
 
 declare global {
   namespace VisualEffectsMaskingFilter {
+    //todo: convert to interface
     type PostProcessModes = Array<keyof (typeof VisualEffectsMaskingFilter)["POST_PROCESS_TECHNIQUES"]>;
 
+    //todo: convert to interface
     type FilterMode = ValueOf<(typeof VisualEffectsMaskingFilter)["FILTER_MODES"]>;
 
     /**
