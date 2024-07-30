@@ -1,3 +1,5 @@
+import type { InexactPartial } from "../../../../types/utils.d.mts";
+
 export {};
 
 declare global {
@@ -5,7 +7,7 @@ declare global {
    * A type of DiceTerm used to represent flipping a two-sided coin.
    */
   class Coin extends DiceTerm {
-    constructor(termData?: Partial<Coin.TermData>);
+    constructor(termData?: InexactPartial<Coin.TermData>);
 
     faces: 2;
 

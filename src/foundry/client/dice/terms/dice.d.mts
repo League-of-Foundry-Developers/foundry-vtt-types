@@ -1,3 +1,5 @@
+import type { InexactPartial } from "../../../../types/utils.d.mts";
+
 export {};
 
 declare global {
@@ -19,7 +21,7 @@ declare global {
      * @param options   - Additional options that modify the term
      *                    (default: `{}`)
      */
-    constructor(termData?: Partial<DiceTerm.TermData>);
+    constructor(termData?: InexactPartial<DiceTerm.TermData>);
 
     /**
      * The number of dice of this term to roll, before modifiers are applied
@@ -168,13 +170,7 @@ declare global {
     protected static _keepOrDrop(
       results: DiceTerm.Result[],
       number: number,
-      {
-        keep,
-        highest,
-      }?: {
-        keep: boolean;
-        highest: boolean;
-      },
+      { keep, highest }?: InexactPartial<{ keep: boolean; highest: boolean }>,
     ): DiceTerm.Result;
 
     /* -------------------------------------------- */
@@ -188,13 +184,7 @@ declare global {
       results: DiceTerm.Result[],
       comparison: string,
       target: number,
-      {
-        flagSuccess,
-        flagFailure,
-      }?: {
-        flagSuccess: boolean;
-        flagFailure: boolean;
-      },
+      { flagSuccess, flagFailure }?: InexactPartial<{ flagSuccess: boolean; flagFailure: boolean }>,
     ): void;
 
     /* -------------------------------------------- */
@@ -208,13 +198,7 @@ declare global {
       results: DiceTerm.Result[],
       comparison: string,
       target: number,
-      {
-        deductFailure,
-        invertFailure,
-      }?: {
-        deductFailure: boolean;
-        invertFailure: boolean;
-      },
+      { deductFailure, invertFailure }?: InexactPartial<{ deductFailure: boolean; invertFailure: boolean }>,
     ): void;
 
     /* -------------------------------------------- */
@@ -228,7 +212,10 @@ declare global {
      * @param imputeNumber - Allow the number of dice to be optional, i.e. "d6"
      *                       (default: `true`)
      */
-    static matchTerm(expression: string, { imputeNumber }?: { imputeNumber: boolean }): RegExpMatchArray | null;
+    static matchTerm(
+      expression: string,
+      { imputeNumber }?: InexactPartial<{ imputeNumber: boolean }>,
+    ): RegExpMatchArray | null;
 
     /* -------------------------------------------- */
 
