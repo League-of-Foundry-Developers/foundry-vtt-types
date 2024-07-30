@@ -28,12 +28,12 @@ declare global {
     }
   }
 
-  type CombatHistoryData = {
+  interface CombatHistoryData {
     round: number | null;
     turn: number | null;
     tokenId: string | null;
     combatantId: string | null;
-  };
+  }
 
   /**
    * The client-side Combat document which extends the common BaseCombat model.

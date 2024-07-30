@@ -194,11 +194,11 @@ declare global {
 
     override rotate(angle: number, snap: number): Promise<this>;
 
-    protected override _canControl(user: User.ConfiguredInstance, event?: any): boolean;
+    protected override _canControl(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
 
-    protected override _canConfigure(user: User.ConfiguredInstance, event?: any): boolean;
+    protected override _canConfigure(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
 
-    protected override _canView(user: User.ConfiguredInstance, event?: any): boolean;
+    protected override _canView(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
 
     protected override _onUpdate(
       data: foundry.documents.BaseMeasuredTemplate.UpdateData,
@@ -206,13 +206,7 @@ declare global {
       userId: string,
     ): void;
 
-    protected override _canControl(user: User.ConfiguredInstance, event: PIXI.FederatedEvent): boolean;
-
     protected override _canHUD(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
-
-    protected override _canConfigure(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
-
-    protected override _canView(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
 
     protected override _onClickRight(event: PIXI.FederatedEvent): void;
   }

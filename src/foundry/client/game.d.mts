@@ -7,13 +7,13 @@ import type {
 } from "../../types/helperTypes.d.mts";
 import type { StoredDocument, ValueOf } from "../../types/utils.d.mts";
 
-type EarlierEvents = {
+interface EarlierEvents {
   none: never;
   init: "none";
   i18nInit: "none" | "init";
   setup: "none" | "init" | "i18nInit";
   ready: "none" | "init" | "i18nInit" | "setup";
-};
+}
 
 type InitializationEvent = keyof EarlierEvents;
 
@@ -696,7 +696,7 @@ type ConfiguredCollectionClassForName<Name extends foundry.CONST.DOCUMENT_TYPES>
   CONFIG[Name]["collection"]
 >;
 
-type DocumentTemplate = {
+interface DocumentTemplate {
   htmlFields: string[];
   types: string[];
-};
+}

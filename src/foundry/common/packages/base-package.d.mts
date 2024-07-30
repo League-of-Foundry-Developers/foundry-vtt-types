@@ -8,13 +8,13 @@ import type { BaseFolder } from "../documents/_module.d.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
 declare namespace BasePackage {
-  type optionalString = {
+  interface optionalString {
     required: false;
     blank: false;
     initial: undefined;
-  };
+  }
 
-  type PackageAuthorSchema = {
+  export interface PackageAuthorSchema extends DataSchema {
     /**
      * The author name
      */
@@ -36,9 +36,9 @@ declare namespace BasePackage {
     discord: fields.StringField<optionalString>;
 
     flags: fields.ObjectField;
-  };
+  }
 
-  type PackageMediaSchema = {
+  export interface PackageMediaSchema extends DataSchema {
     type: fields.StringField<optionalString>;
 
     url: fields.StringField<optionalString>;
@@ -50,14 +50,14 @@ declare namespace BasePackage {
     thumbnail: fields.StringField<optionalString>;
 
     flags: fields.ObjectField;
-  };
+  }
 
   type OwnershipRecord = Record<
     keyof typeof foundry.CONST.USER_ROLES,
     keyof typeof foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | undefined
   >;
 
-  type PackageCompendiumSchema = {
+  export interface PackageCompendiumSchema extends DataSchema {
     /**
      * The canonical compendium name. This should contain no spaces or special characters
      */
@@ -98,9 +98,9 @@ declare namespace BasePackage {
     ownership: CompendiumOwnershipField;
 
     flags: fields.ObjectField;
-  };
+  }
 
-  type PackageLanguageSchema = {
+  export interface PackageLanguageSchema extends DataSchema {
     /**
      * A string language code which is validated by Intl.getCanonicalLocales
      */
@@ -133,9 +133,9 @@ declare namespace BasePackage {
     module: fields.StringField<optionalString>;
 
     flags: fields.ObjectField;
-  };
+  }
 
-  type PackageCompatibilitySchema = {
+  export interface PackageCompatibilitySchema extends DataSchema {
     /**
      * The Package will not function before this version
      */
@@ -150,9 +150,9 @@ declare namespace BasePackage {
      * The Package will not function after this version
      */
     maximum: fields.StringField<{ required: false; blank: false; initial: undefined }>;
-  };
+  }
 
-  type PackageRelationshipsSchema = {
+  export interface PackageRelationshipsSchema extends DataSchema {
     /**
      * Systems that this Package supports
      */
@@ -171,9 +171,9 @@ declare namespace BasePackage {
     conflicts: fields.SetField<RelatedPackage>;
 
     flags: fields.ObjectField;
-  };
+  }
 
-  type RelatedPackageSchema<PackageType extends foundry.CONST.PACKAGE_TYPES = foundry.CONST.PACKAGE_TYPES> = {
+  export interface RelatedPackageSchema<PackageType extends foundry.CONST.PACKAGE_TYPES = foundry.CONST.PACKAGE_TYPES> {
     /**
      * The id of the related package
      */
@@ -198,9 +198,9 @@ declare namespace BasePackage {
      * The reason for this relationship
      */
     reason: fields.StringField<{ required: false; blank: false; initial: undefined }>;
-  };
+  }
 
-  type PackageCompendiumFolderSchemaHelper = {
+  interface PackageCompendiumFolderSchemaHelper {
     name: fields.StringField<{ required: true; blank: false }>;
     sorting: fields.StringField<{
       required: false;
@@ -210,7 +210,7 @@ declare namespace BasePackage {
     }>;
     color: fields.ColorField;
     packs: fields.SetField<fields.StringField<{ required: true; blank: false }>>;
-  };
+  }
 
   // Foundry starts Depth at 1 and increments from there
   type FolderRecursion = [never, 2, 3];
@@ -345,14 +345,14 @@ declare namespace BasePackage {
     persistentStorage: fields.BooleanField;
   }
 
-  type PackageManifestData = {
+  interface PackageManifestData {
     availability: foundry.CONST.PACKAGE_AVAILABILITY_CODES;
     locked: boolean;
     exclusive: boolean;
     owned: boolean;
     tags: string[];
     hasStorage: boolean;
-  };
+  }
 }
 
 /**
@@ -530,7 +530,7 @@ declare class BasePackage<
   static defineSchema(): BasePackage.Schema;
 
   static testAvailability(
-    data: Partial<BasePackage.PackageManifestData>,
+    data: InexactPartial<BasePackage.PackageManifestData>,
     options: InexactPartial<{
       /**
        * A specific software release for which to test availability.
@@ -565,7 +565,7 @@ declare class BasePackage<
    */
   static testDependencyCompatibility(compatibility: PackageCompatibility, dependency: BasePackage): boolean;
 
-  static cleanData(source?: object, options?: fields.DataField.CleanOptions): object;
+  static cleanData(source?: AnyObject, options?: fields.DataField.CleanOptions): AnyObject;
 
   /**
    * Validate that a Package ID is allowed.
@@ -592,29 +592,32 @@ declare class BasePackage<
   ): void;
 
   static migrateData(
-    data: object,
+    data: AnyObject,
     logOptions?: InexactPartial<{
       installed: boolean;
     }>,
-  ): object;
+  ): AnyObject;
 
-  protected static _migrateNameToId(data: object, logOptions: Parameters<typeof BasePackage._logWarning>[2]): void;
+  protected static _migrateNameToId(data: AnyObject, logOptions: Parameters<typeof BasePackage._logWarning>[2]): void;
 
   protected static _migrateDependenciesNameToId(
-    data: object,
+    data: AnyObject,
     logOptions: Parameters<typeof BasePackage._logWarning>[2],
   ): void;
 
   protected static _migrateToRelationships(
-    data: object,
+    data: AnyObject,
     logOptions: Parameters<typeof BasePackage._logWarning>[2],
   ): void;
 
-  protected static _migrateCompatibility(data: object, logOptions: Parameters<typeof BasePackage._logWarning>[2]): void;
+  protected static _migrateCompatibility(
+    data: AnyObject,
+    logOptions: Parameters<typeof BasePackage._logWarning>[2],
+  ): void;
 
-  protected static _migrateMediaURL(data: object, logOptions: Parameters<typeof BasePackage._logWarning>[2]): void;
+  protected static _migrateMediaURL(data: AnyObject, logOptions: Parameters<typeof BasePackage._logWarning>[2]): void;
 
-  protected static _migrateOwnership(data: object, logOptions: Parameters<typeof BasePackage._logWarning>[2]): void;
+  protected static _migrateOwnership(data: AnyObject, logOptions: Parameters<typeof BasePackage._logWarning>[2]): void;
 
   /**
    * Retrieve the latest Package manifest from a provided remote location.

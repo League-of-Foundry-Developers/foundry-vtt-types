@@ -915,7 +915,7 @@ interface CollectionNameToLayerMap {
 }
 
 // TODO: Find a way to make this more dynamic
-type CanvasGroups = {
+interface CanvasGroups {
   // readonly [GroupName in keyof CONFIG.Canvas.Groups]?: CONFIG.Canvas.Groups[GroupName]["groupClass"];
 
   readonly hidden?: HiddenCanvasGroup;
@@ -923,4 +923,4 @@ type CanvasGroups = {
   readonly rendered?: RenderedCanvasGroup;
 
   readonly environment?: EnvironmentCanvasGroup;
-};
+}

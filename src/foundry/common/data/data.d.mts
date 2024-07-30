@@ -1,7 +1,7 @@
 import type { DatabaseBackend } from "../abstract/module.d.mts";
 import type { DataModel } from "../abstract/data.d.mts";
 import type { fields } from "./module.d.mts";
-import type * as documents from "../documents/_module.mjs";
+import type * as documents from "../documents/_module.d.mts";
 import type { ValueOf } from "../../../types/utils.d.mts";
 
 // TODO: Implement all of the necessary options
@@ -11,7 +11,7 @@ declare global {
 }
 
 declare namespace LightData {
-  type LightAnimationDataSchema = {
+  export interface LightAnimationDataSchema extends DataSchema {
     /**
      * The animation type which is applied
      */
@@ -47,12 +47,12 @@ declare namespace LightData {
      * Reverse the direction of animation.
      */
     reverse: fields.BooleanField<{ label: "LIGHT.AnimationReverse" }>;
-  };
+  }
 
-  type DarknessSchema = {
+  export interface DarknessSchema extends DataSchema {
     min: fields.NumberField<{ initial: 0 }>;
     max: fields.NumberField<{ initial: 1 }>;
-  };
+  }
 
   interface Schema extends DataSchema {
     /**
@@ -171,7 +171,7 @@ declare namespace LightData {
 declare class LightData extends DataModel<LightData.Schema> {
   static defineSchema(): LightData.Schema;
 
-  static migrateData(source: object): object;
+  static migrateData(source: AnyObject): AnyObject;
 }
 
 declare namespace ShapeData {
@@ -205,12 +205,12 @@ declare namespace ShapeData {
     points: fields.ArrayField<fields.NumberField<{ nullable: false }>>;
   }
 
-  type TYPES = {
+  interface TYPES {
     RECTANGLE: "r";
     CIRCLE: "c";
     ELLIPSE: "e";
     POLYGON: "p";
-  };
+  }
 }
 
 declare class ShapeData extends DataModel<ShapeData.Schema> {
@@ -220,14 +220,14 @@ declare class ShapeData extends DataModel<ShapeData.Schema> {
 }
 
 declare namespace TextureData {
-  type DefaultOptions = {
+  interface DefaultOptions {
     categories: ["IMAGE", "VIDEO"];
     // initial: null;
     wildcard: false;
     label: "";
-  };
+  }
 
-  type Schema<SrcOptions extends FilePathFieldOptions> = {
+  interface Schema<SrcOptions extends FilePathFieldOptions> extends DataSchema {
     /**
      * The URL of the texture source.
      */
@@ -262,12 +262,12 @@ declare namespace TextureData {
      * An optional color string used to tint the texture.
      */
     tint: fields.ColorField;
-  };
+  }
 }
 
 declare class TextureData<
   SrcOptions extends FilePathFieldOptions = TextureData.DefaultOptions,
-  SchemaOptions extends fields.SchemaField.Options<TextureData.Schema<SrcOptions>> = {},
+  SchemaOptions extends fields.SchemaField.Options<TextureData.Schema<SrcOptions>> = EmptyObject,
 > extends fields.SchemaField<TextureData.Schema<SrcOptions>, SchemaOptions> {
   constructor(options?: SchemaOptions, srcOptions?: SrcOptions);
 }
@@ -314,10 +314,10 @@ declare class PrototypeToken extends DataModel<PrototypeToken.Schema, documents.
 
   static get database(): DatabaseBackend;
 
-  static override migrateData(source: object): object;
+  static override migrateData(source: AnyObject): AnyObject;
 
   static override shimData(
-    data: object,
+    data: AnyObject,
     options?: {
       /**
        * Apply shims to embedded models?
@@ -325,7 +325,7 @@ declare class PrototypeToken extends DataModel<PrototypeToken.Schema, documents.
        */
       embedded?: boolean;
     },
-  ): object;
+  ): AnyObject;
 
   /**
    * @see foundry.abstract.Document#update

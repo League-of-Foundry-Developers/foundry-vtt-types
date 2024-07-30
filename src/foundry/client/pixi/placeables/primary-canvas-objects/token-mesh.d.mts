@@ -40,7 +40,7 @@ declare global {
     } & ReturnType<typeof OccludableObjectMixin<typeof SpriteMesh>>["defaultData"];
   }
 
-  type TokenMeshDisplayAttributes = {
+  interface TokenMeshDisplayAttributes {
     x: number;
 
     y: number;
@@ -58,5 +58,5 @@ declare global {
     scaleY: number;
 
     tint: Color;
-  };
+  }
 }

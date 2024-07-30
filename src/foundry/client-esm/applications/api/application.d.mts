@@ -1,10 +1,37 @@
-import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
+import type { MustConform } from "../../../../types/helperTypes.d.mts";
+import type { DeepPartial, InexactPartial, MaybePromise } from "../../../../types/utils.d.mts";
 import type EventEmitterMixin from "../../../common/utils/event-emitter.d.mts";
 
 // TODO: Investigate use of DeepPartial vs Partial vs InexactPartial
-// TODO: Should
+
+declare const __Configuration: unique symbol;
+declare const __RenderOptions: unique symbol;
+declare const __RenderContext: unique symbol;
+
+type _MustBeAssignableToInternal = MustConform<ApplicationV2, ApplicationV2.Internal<any, any, any>>;
 
 declare namespace ApplicationV2 {
+  /**
+   * This type is an internal implementation detail of fvtt-types.
+   *
+   * It is used in `HandlebarsApplicationMixin` as a proxy bound for `ApplicationV2`
+   * as well as to implement generic passthrough from the mixin into the mixin
+   * class.
+   *
+   * It soundly be used as a bound to guarantee a subclass of `ApplicationV2`
+   * because it uses some `unique symbol`s that are used nowhere else in the
+   * codebase.
+   */
+  interface Internal<
+    Configuration extends ApplicationV2.Configuration,
+    RenderOptions extends ApplicationV2.RenderOptions,
+    RenderContext extends Record<string, unknown>,
+  > {
+    readonly [__Configuration]: Configuration;
+    readonly [__RenderOptions]: RenderOptions;
+    readonly [__RenderContext]: RenderContext;
+  }
+
   export interface Configuration {
     /**
      * An HTML element identifier used for this Application instance
@@ -72,32 +99,185 @@ declare namespace ApplicationV2 {
     zIndex: number;
   }
 
-  export interface WindowConfiguration {}
+  export interface WindowConfiguration {
+    /**
+     * Is this Application rendered inside a window frame?
+     * @defaultValue `true`
+     */
+    frame: boolean;
 
-  export interface FormConfiguration {}
+    /**
+     * Can this Application be positioned via JavaScript or only by CSS
+     * @defaultValue `true`
+     */
+    positioned: boolean;
 
-  export interface HeaderControlsEntry {}
+    /** The window title. Displayed only if the application is framed */
+    title: string;
 
-  export interface ConstructionParams {
+    /** An optional Font Awesome icon class displayed left of the window title */
+    icon: string | false;
+
+    /** An array of window control entries */
+    controls: HeaderControlsEntry[];
+
+    /**
+     * Can the window app be minimized by double-clicking on the title
+     * @defaultValue `true`
+     */
+    minimizable: boolean;
+
+    /**
+     * Is this window resizable?
+     * @defaultValue `false`
+     */
+    resizable: boolean;
+
+    /**
+     * A specific tag name to use for the .window-content element
+     * @defaultValue `"section"`
+     */
+    contentTag: string;
+
+    /** Additional CSS classes to apply to the .window-content element */
+    contentClasses: string[];
+  }
+
+  export interface FormConfiguration {
+    handler: FormSubmission;
+
+    submitOnChange: boolean;
+
+    closeOnSubmit: boolean;
+  }
+
+  export interface HeaderControlsEntry {
+    /** A font-awesome icon class which denotes the control button */
+    icon: string;
+
+    /** The text label for the control button. This label will be automatically localized when the button is rendered */
+    label: string;
+
+    /** The action name triggered by clicking the control button */
+    action: string;
+
+    /** Is the control button visible for the current client? */
+    visible?: boolean | undefined;
+
+    /**
+     * A key or value in CONST.DOCUMENT_OWNERSHIP_LEVELS that restricts visibility of this option for the current user.
+     * This option only applies to DocumentSheetV2 instances.
+     */
+    ownership?: string | number | undefined;
+  }
+
+  export interface ConstructorParams {
     position: Position;
   }
 
-  export interface RenderOptions {}
+  export interface RenderOptions {
+    /**
+     * Force application rendering. If true, an application which does not yet exist in the DOM is added.
+     * If false, only applications which already exist are rendered.
+     */
+    force: boolean;
 
-  export interface WindowRenderOptions {}
+    /** A specific position at which to render the Application */
+    position: Position;
 
-  /**
-   * Context data provided to the renderer
-   */
-  export interface RenderContext extends Record<string, unknown> {}
+    /** Updates to the Application window frame */
+    window: WindowRenderOptions;
 
-  export interface ClosingOptions {}
+    /**
+     * Some Application classes, for example the HandlebarsApplication,
+     * support re-rendering a subset of application parts instead of the full Application HTML.
+     */
+    parts: string[];
 
-  export type ClickAction = (event: PointerEvent, target: HTMLElement) => Promise<void>;
+    /** Is this render the first one for the application? This property is populated automatically. */
+    isFirstRender: boolean;
+  }
 
-  export type FormSubmission = () => Promise<void>;
+  export interface WindowRenderOptions {
+    /** Update the window title with a new value? */
+    title: string;
 
-  export interface Tab {}
+    /** Update the window icon with a new value? */
+    icon: string | false;
+
+    /** Re-render the window controls menu? */
+    controls: boolean;
+  }
+
+  export interface ClosingOptions {
+    /** Whether to animate the close, or perform it instantaneously */
+    animate: boolean;
+
+    /** Whether the application was closed via keypress. */
+    closeKey: boolean;
+  }
+
+  /** An on-click action supported by the Application. Run in the context of a HandlebarsApplication. */
+  export type ClickAction = (
+    /** The originating click event */
+    event: PointerEvent,
+
+    /** The capturing HTML element which defines the [data-action] */
+    target: HTMLElement,
+  ) => MaybePromise<void>;
+
+  /** A form submission handler method. Run in the context of a HandlebarsApplication */
+  export type FormSubmission = (
+    /** The originating form submission or input change event */
+    event: SubmitEvent | Event,
+
+    /** The form element that was submitted */
+    form: HTMLFormElement,
+
+    /** Processed data for the submitted form */
+    formData: FormDataExtended,
+  ) => MaybePromise<void>;
+
+  /** @remarks Used with `templates/generic/tab-navigation.hbs` */
+  export interface Tab {
+    id: string;
+    group: string;
+    icon: string;
+    label: string;
+    active: boolean;
+    cssClass: string;
+  }
+
+  /** @remarks Used with `templates/generic/form-fields.hbs` */
+  export interface FormNode {
+    fieldset: boolean;
+
+    legend?: string | undefined;
+
+    fields?: FormNode[] | undefined;
+
+    field?: foundry.data.fields.DataField | undefined;
+
+    value?: unknown | undefined;
+  }
+
+  /** @remarks Used with `templates/generic/form-footer.hbs` */
+  export interface FormFooterButton {
+    type: HTMLButtonElement["type"];
+
+    name?: string | undefined;
+
+    icon?: string | undefined;
+
+    label?: string | undefined;
+
+    action?: string | undefined;
+
+    cssClass?: string | undefined;
+
+    /** @defaultValue `false` */
+    disabled?: boolean | undefined;
+  }
 }
 
 /**
@@ -106,7 +286,14 @@ declare namespace ApplicationV2 {
 declare class ApplicationV2<
   Configuration extends ApplicationV2.Configuration = ApplicationV2.Configuration,
   RenderOptions extends ApplicationV2.RenderOptions = ApplicationV2.RenderOptions,
+  // Foundry doesn't define this generic in its documentation but it's necessary
+  // in fvtt-types to type `_prepareContext` etc.
+  RenderContext extends Record<string, unknown> = Record<string, never>,
 > extends EventEmitterMixin(Object) {
+  [__Configuration]: Configuration;
+  [__RenderOptions]: RenderOptions;
+  [__RenderContext]: RenderContext;
+
   constructor(options: DeepPartial<Configuration>);
 
   static BASE_APPLICATION: typeof ApplicationV2;
@@ -127,7 +314,7 @@ declare class ApplicationV2<
   /**
    * Application instance configuration options.
    */
-  options: DeepPartial<Configuration>;
+  options: Readonly<DeepPartial<Configuration>>;
 
   /**
    * Convenience references to window header elements.
@@ -239,7 +426,7 @@ declare class ApplicationV2<
    * @param options - Options which configure application rendering behavior
    * @returns Context data for the render operation
    */
-  protected _prepareContext(options: DeepPartial<RenderOptions>): Promise<ApplicationV2.RenderContext>;
+  protected _prepareContext(options: DeepPartial<RenderOptions>): Promise<RenderContext>;
 
   /**
    * Configure the array of header control menu options
@@ -259,7 +446,7 @@ declare class ApplicationV2<
    * @returns The result of HTML rendering may be implementation specific.
    *          Whatever value is returned here is passed to _replaceHTML
    */
-  protected _renderHTML(context: ApplicationV2.RenderContext, options: DeepPartial<RenderOptions>): Promise<any>; //TODO: Might be the subject of a generic?
+  protected _renderHTML(context: RenderContext, options: DeepPartial<RenderOptions>): Promise<unknown>;
 
   /**
    * Replace the HTML of the application with the result provided by the rendering backend.
@@ -398,10 +585,7 @@ declare class ApplicationV2<
    * @param context - Prepared context data
    * @param options - Provided render options
    */
-  protected _preFirstRender(
-    context: DeepPartial<ApplicationV2.RenderContext>,
-    options: DeepPartial<RenderOptions>,
-  ): Promise<void>;
+  protected _preFirstRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): Promise<void>;
 
   /**
    * Actions performed after a first render of the Application.
@@ -409,10 +593,7 @@ declare class ApplicationV2<
    * @param context - Prepared context data
    * @param options - Provided render options
    */
-  protected _onFirstRender(
-    context: DeepPartial<ApplicationV2.RenderContext>,
-    options: DeepPartial<RenderOptions>,
-  ): void;
+  protected _onFirstRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): void;
 
   /**
    * Actions performed before any render of the Application.
@@ -420,10 +601,7 @@ declare class ApplicationV2<
    * @param context - Prepared context data
    * @param options - Provided render options
    */
-  protected _preRender(
-    context: DeepPartial<ApplicationV2.RenderContext>,
-    options: DeepPartial<RenderOptions>,
-  ): Promise<void>;
+  protected _preRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): Promise<void>;
 
   /**
    * Actions performed after any render of the Application.
@@ -431,7 +609,7 @@ declare class ApplicationV2<
    * @param context - Prepared context data
    * @param options - Provided render options
    */
-  protected _onRender(context: DeepPartial<ApplicationV2.RenderContext>, options: DeepPartial<RenderOptions>): void;
+  protected _onRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): void;
 
   /**
    * Actions performed before closing the Application.

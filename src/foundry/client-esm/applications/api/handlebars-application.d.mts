@@ -4,7 +4,23 @@ import type ApplicationV2 from "./application.d.mts";
 /**
  * The mixed application class augmented with [Handlebars](https://handlebarsjs.com) template rendering behavior.
  */
-declare class HandlebarsApplication {
+declare class HandlebarsApplication<
+  // BaseClass is the class being mixed. This is given by `HandlebarsApplicationMixin`.
+  BaseClass extends ConstructorOf<ApplicationV2.Internal<any, any, any>>,
+  // These type parameters should _never_ be explicitly assigned to. They're
+  // simply a way to make types more readable so that their names show up in
+  // intellisense instead of a transformation of `BaseClass`.
+  out RenderOptions extends ApplicationV2.RenderOptions = BaseClass extends ConstructorOf<
+    ApplicationV2.Internal<any, infer RenderOptions, any>
+  >
+    ? RenderOptions
+    : never,
+  out RenderContext extends Record<string, unknown> = BaseClass extends ConstructorOf<
+    ApplicationV2.Internal<any, any, infer RenderContext>
+  >
+    ? RenderContext
+    : never,
+> {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
   constructor(...args: any[]);
 
@@ -22,10 +38,7 @@ declare class HandlebarsApplication {
 
   protected _configureRenderOptions(options: DeepPartial<HandlebarsApplicationMixin.HandlebarsRenderOptions>): void;
 
-  protected _preFirstRender(
-    context: DeepPartial<ApplicationV2.RenderContext>,
-    options: DeepPartial<ApplicationV2.RenderOptions>,
-  ): Promise<void>;
+  protected _preFirstRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): Promise<void>;
 
   /**
    * Render each configured application part using Handlebars templates.
@@ -34,8 +47,8 @@ declare class HandlebarsApplication {
    * @returns A single rendered HTMLElement for each requested part
    */
   protected _renderHTML(
-    context: ApplicationV2.RenderContext,
-    options: DeepPartial<ApplicationV2.RenderOptions>,
+    context: RenderContext,
+    options: DeepPartial<RenderOptions>,
   ): Promise<Record<string, HTMLElement>>;
 
   /**
@@ -52,9 +65,9 @@ declare class HandlebarsApplication {
    */
   protected _preparePartContext(
     partId: string,
-    context: ApplicationV2.RenderContext,
+    context: RenderContext,
     options: DeepPartial<HandlebarsApplicationMixin.HandlebarsRenderOptions>,
-  ): Promise<ApplicationV2.RenderContext>;
+  ): Promise<RenderContext>;
 
   /**
    * Replace the HTML of the application with the result provided by Handlebars rendering.
@@ -65,7 +78,7 @@ declare class HandlebarsApplication {
   protected _replaceHTML(
     result: Record<string, HTMLElement>,
     content: HTMLElement,
-    options: DeepPartial<ApplicationV2.RenderOptions>,
+    options: DeepPartial<RenderOptions>,
   ): void;
 
   /**
@@ -112,9 +125,9 @@ declare class HandlebarsApplication {
 /**
  * Augment an Application class with [Handlebars](https://handlebarsjs.com) template rendering behavior.
  */
-declare function HandlebarsApplicationMixin<BaseClass extends ConstructorOf<ApplicationV2>>(
+declare function HandlebarsApplicationMixin<BaseClass extends ConstructorOf<ApplicationV2.Internal<any, any, any>>>(
   BaseApplication: BaseClass,
-): Mixin<typeof HandlebarsApplication, BaseClass>;
+): Mixin<typeof HandlebarsApplication<BaseClass>, BaseClass>;
 
 declare namespace HandlebarsApplicationMixin {
   interface PartState {

@@ -26,7 +26,7 @@ declare class BaseFogExploration extends Document<BaseFogExploration.Schema, Bas
   static #canModify(user: documents.BaseUser, doc: BaseFogExploration);
 
   protected override _preUpdate(
-    changed: fields.SchemaField.AssignmentType<documents.BaseFogExploration.Schema, {}>,
+    changed: fields.SchemaField.AssignmentType<documents.BaseFogExploration.Schema, EmptyObject>,
     options: DocumentModificationOptions,
     user: documents.BaseUser,
   ): Promise<void>;

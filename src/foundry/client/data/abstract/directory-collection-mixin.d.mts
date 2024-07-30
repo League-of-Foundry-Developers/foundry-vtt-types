@@ -121,14 +121,14 @@ declare global {
     // TODO: Refine type based on CONST.FOLDER_DOCUMENT_TYPES
     type DirectoryTypes = object;
 
-    type TreeNode<T> = {
+    interface TreeNode<T> {
       children: TreeNode<T>[];
       depth: number;
       entries: T[];
       folder: Folder;
       root: boolean;
       visible: boolean;
-    };
+    }
 
     type AlphabeticalSortEntry = { name: string } & object;
     type StandardSortEntry = { sort: number } & object;

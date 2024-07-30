@@ -1,5 +1,5 @@
 import type { FormInputConfig, SelectInputConfig } from "../forms/fields.d.mts";
-import AbstractFormInputElement from "./form-element.mjs";
+import type AbstractFormInputElement from "./form-element.d.mts";
 
 /**
  * An abstract base class designed to standardize the behavior for a multi-select UI component.

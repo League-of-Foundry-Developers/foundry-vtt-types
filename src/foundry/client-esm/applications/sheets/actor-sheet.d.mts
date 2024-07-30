@@ -1,4 +1,4 @@
-import type DocumentSheetV2 from "../api/document-sheet.mts";
+import type DocumentSheetV2 from "../api/document-sheet.d.mts";
 
 /**
  * A base class for providing Actor Sheet behavior using ApplicationV2.

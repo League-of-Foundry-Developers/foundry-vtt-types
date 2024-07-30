@@ -1,9 +1,5 @@
 import type BaseEffectSource from "./base-effect-source.d.mts";
-import PointEffectSourceMixin, {
-  type PointEffectSourceMixin_BaseEffectSource_Interface,
-} from "./point-effect-source.mts";
-
-declare const PointEffectSourceMixin_BaseEffectSource: PointEffectSourceMixin_BaseEffectSource_Interface;
+import type PointEffectSourceMixin from "./point-effect-source.d.mts";
 
 type MovementSourceData = PointEffectSourceMixin.PointEffectSourceData & BaseEffectSource.BaseEffectSourceData;
 
@@ -13,7 +9,7 @@ type MovementSourceData = PointEffectSourceMixin.PointEffectSourceData & BaseEff
 export default class PointMovementSource<
   SourceData extends MovementSourceData = MovementSourceData,
   SourceShape extends PointSourcePolygon = PointSourcePolygon,
-> extends PointEffectSourceMixin_BaseEffectSource<SourceData, SourceShape> {
+> extends PointEffectSourceMixin(BaseEffectSource)<SourceData, SourceShape> {
   /** @defaultValue `"move"` */
   static override sourceType: string;
 }

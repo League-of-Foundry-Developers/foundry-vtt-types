@@ -1,4 +1,4 @@
-import AbstractFormInputElement from "./form-element.mjs";
+import type AbstractFormInputElement from "./form-element.d.mts";
 
 /**
  * A class designed to standardize the behavior for a hue selector UI component.

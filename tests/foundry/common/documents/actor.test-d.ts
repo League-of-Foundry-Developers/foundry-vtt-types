@@ -1,8 +1,8 @@
 import { expectTypeOf } from "vitest";
 import type EmbeddedCollection from "../../../../src/foundry/common/abstract/embedded-collection.d.mts";
 import type { NumberField, SchemaField } from "../../../../src/foundry/common/data/fields.d.mts";
-import type DataModel from "../../../../src/foundry/common/abstract/data.d.mts";
-import type { Merge } from "../../../../src/types/utils.d.mts";
+import type { DataModel } from "../../../../src/foundry/common/abstract/data.d.mts";
+import type { AnyMutableObject, AnyObject, EmptyObject, Merge } from "../../../../src/types/utils.d.mts";
 import type { TypeDataModel } from "../../../../src/foundry/common/abstract/type-data.d.mts";
 
 // @ts-expect-error name and type are required
@@ -49,7 +49,7 @@ type MyCharacterSchema = {
 };
 
 class MyCharacter extends foundry.abstract.TypeDataModel<MyCharacterSchema, Actor.ConfiguredInstance> {
-  static defineSchema() {
+  static override defineSchema() {
     const { SchemaField, NumberField } = foundry.data.fields;
     return {
       abilities: new SchemaField({
@@ -71,7 +71,7 @@ class MyCharacter extends foundry.abstract.TypeDataModel<MyCharacterSchema, Acto
     };
   }
 
-  prepareDerivedData(this: Merge<DataModel<MyCharacterSchema, Actor.ConfiguredInstance>, {}>): void {
+  override prepareDerivedData(this: Merge<DataModel<MyCharacterSchema, Actor.ConfiguredInstance>, {}>): void {
     this.abilities.strength.value + 2;
     for (const ability of Object.values(this.abilities)) {
       // @ts-expect-error Derived data must be declared
@@ -104,10 +104,10 @@ declare namespace BoilerplateActorBase {
 
 class BoilerplateActorBase<
   Schema extends BoilerplateActorBase.Schema = BoilerplateActorBase.Schema,
-  BaseData extends Record<string, unknown> = Record<string, never>,
-  DerivedData extends Record<string, unknown> = Record<string, never>,
+  BaseData extends AnyObject = EmptyObject,
+  DerivedData extends AnyObject = EmptyObject,
 > extends foundry.abstract.TypeDataModel<Schema, Actor.ConfiguredInstance, BaseData, DerivedData> {
-  static defineSchema(): BoilerplateActorBase.Schema {
+  static override defineSchema(): BoilerplateActorBase.Schema {
     const fields = foundry.data.fields;
     const requiredInteger = { required: true, nullable: false, integer: true };
     const schema: DataSchema = {};
@@ -156,7 +156,7 @@ declare namespace BoilerplateCharacter {
     }>;
   }
 
-  interface DerivedProps extends Record<string, unknown> {
+  interface DerivedProps extends AnyObject {
     abilities: {
       strength: {
         mod: number;
@@ -183,7 +183,7 @@ class BoilerplateCharacter extends BoilerplateActorBase<
   Record<string, never>,
   BoilerplateCharacter.DerivedProps
 > {
-  static defineSchema() {
+  static override defineSchema() {
     const fields = foundry.data.fields;
     const requiredInteger = { required: true, nullable: false, integer: true };
     const schema = super.defineSchema();
@@ -207,7 +207,7 @@ class BoilerplateCharacter extends BoilerplateActorBase<
     return schema;
   }
 
-  prepareDerivedData(this: TypeDataModel.PrepareDerivedDataThis<this>) {
+  override prepareDerivedData(this: TypeDataModel.PrepareDerivedDataThis<this>) {
     // Loop through ability scores, and add their modifiers to our sheet output.
     for (const [key, abil] of Object.entries(this.abilities)) {
       // Calculate the modifier using d20 rules.
@@ -224,7 +224,7 @@ class BoilerplateCharacter extends BoilerplateActorBase<
   }
 
   getRollData() {
-    const data: Record<string, unknown> = {};
+    const data: AnyMutableObject = {};
 
     // Copy the ability scores to the top level, so that rolls can use
     // formulas like `@str.mod + 4`.

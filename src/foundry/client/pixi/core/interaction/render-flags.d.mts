@@ -34,12 +34,12 @@ declare class RenderFlagObject {
 
 declare global {
   /** @privateRemarks Values are marked as optional here based on use, foundry docs incomplete */
-  type RenderFlag<Flags> = {
+  interface RenderFlag<Flags> {
     /** Activating this flag also sets these flags to true */
     propagate?: Array<Partial<keyof Flags>>;
     /** Activating this flag resets these flags to false */
     reset?: Array<Partial<keyof Flags>>;
-  };
+  }
 
   /**
    * A data structure for tracking a set of boolean status flags.

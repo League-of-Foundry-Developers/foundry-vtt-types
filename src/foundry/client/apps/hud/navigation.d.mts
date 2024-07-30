@@ -84,7 +84,7 @@ declare global {
   }
 
   namespace SceneNavigation {
-    type SceneData = {
+    interface SceneData {
       id: string;
       active: boolean;
       name: string;
@@ -92,7 +92,7 @@ declare global {
       users: { letter: string; color: User["color"] }[];
       visible: boolean;
       css: string;
-    };
+    }
 
     interface SceneNavigationData {
       collapsed: boolean;

@@ -1,5 +1,5 @@
 import type { FormInputConfig } from "../forms/fields.d.mts";
-import AbstractFormInputElement from "./form-element.mjs";
+import type AbstractFormInputElement from "./form-element.d.mts";
 
 /**
  * A custom HTML element responsible selecting a value on a range slider with a linked number input field.
