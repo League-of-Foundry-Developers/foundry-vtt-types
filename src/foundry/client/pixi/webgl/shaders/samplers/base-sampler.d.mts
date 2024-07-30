@@ -191,6 +191,7 @@ declare global {
      * The batch generator to use.
      */
     static batchShaderGeneratorClass: typeof BatchShaderGenerator;
+
     /**
      * Create a batch plugin for this sampler class.
      * @returns - The batch plugin class linked to this sampler class.
