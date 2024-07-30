@@ -31,7 +31,7 @@ declare global {
      */
     get enabled(): boolean;
 
-    set enabled(enabled);
+    set enabled(enabled: boolean);
 
     /**
      * Pause or Unpause this sampler. If set to true, the shader is disabled. Otherwise, it is enabled.
@@ -41,7 +41,7 @@ declare global {
      */
     get paused(): boolean;
 
-    set paused(paused);
+    set paused(paused: boolean);
 
     /**
      * Contrast adjustment
