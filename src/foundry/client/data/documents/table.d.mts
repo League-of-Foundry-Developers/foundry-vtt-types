@@ -237,8 +237,8 @@ declare global {
     protected override _createFigureEmbed(
       content: HTMLElement | HTMLCollection,
       config: TextEditor.DocumentHTMLEmbedConfig,
-      options: TextEditor.EnrichmentOptions,
-    ): Promise<any>;
+      options?: TextEditor.EnrichmentOptions,
+    ): Promise<HTMLElement | null>;
 
     protected override _onCreateDescendantDocuments(
       parent: ClientDocument,

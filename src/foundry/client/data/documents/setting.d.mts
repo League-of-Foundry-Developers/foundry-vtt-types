@@ -13,14 +13,10 @@ declare global {
    * @see {@link WorldSettings}       The world-level collection of Setting documents
    */
   class Setting extends ClientDocumentMixin(foundry.documents.BaseSetting) {
-    static #PRIMITIVE_TYPES: readonly [
-      typeof String,
-      typeof Number,
-      typeof Boolean,
-      typeof Array,
-      typeof Symbol,
-      typeof BigInt,
-    ];
+    /**
+     * @privateRemarks This exists to let ts know that this class has a private property
+     */
+    static #PRIMITIVE_TYPES: any;
 
     /**
      * The setting configuration for this setting document.
