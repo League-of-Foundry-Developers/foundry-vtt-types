@@ -7,6 +7,8 @@ type LightSourceAnimationConfig = unknown;
 
 type DarknessSourceData = BaseLightSource.LightSourceData & PointEffectSourceMixin.PointEffectSourceData;
 
+// Interface causes errors
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 type DarknessLayers = {
   darkness: RenderedEffectSource.RenderedEffectSourceLayer;
 };

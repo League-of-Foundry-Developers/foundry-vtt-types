@@ -44,6 +44,7 @@ declare class PointEffectSource {
    * @deprecated since v11, until v13
    * @remarks `"The setter PointEffectSource#radius is deprecated. The radius should not be set anywhere except in PointEffectSource#_initialize."`
    */
+  // eslint-disable-next-line @typescript-eslint/adjacent-overload-signatures
   set radius(radius);
 
   /**

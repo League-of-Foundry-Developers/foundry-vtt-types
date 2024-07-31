@@ -210,12 +210,12 @@ export interface DatabaseDeleteOperation {
   _result?: (string | Record<string, unknown>)[] | undefined;
 }
 
-export type DatabaseOperationMap = {
+export interface DatabaseOperationMap {
   get: DatabaseGetOperation;
   create: DatabaseCreateOperation;
   update: DatabaseUpdateOperation;
   delete: DatabaseDeleteOperation;
-};
+}
 
 export type DatabaseAction = keyof DatabaseOperationMap;
 export type DatabaseOperation = DatabaseOperationMap[keyof DatabaseOperationMap];

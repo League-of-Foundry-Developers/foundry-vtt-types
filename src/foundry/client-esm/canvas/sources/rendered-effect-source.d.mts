@@ -316,6 +316,8 @@ declare namespace RenderedEffectSource {
     blendMode: PIXI.BLEND_MODES;
   }
 
+  // Interface causes errors
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   type Layers = {
     background: RenderedEffectSource.RenderedEffectSourceLayer;
     coloration: RenderedEffectSource.RenderedEffectSourceLayer;
