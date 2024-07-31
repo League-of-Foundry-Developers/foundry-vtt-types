@@ -24,6 +24,12 @@ declare global {
     );
 
     /**
+     * The debounce tolerance for processing rapid volume changes into database updates in milliseconds
+     * @defaultValue `100`
+     */
+    static VOLUME_DEBOUNCE_MS: number;
+
+    /**
      * The Sound which manages playback for this playlist sound
      */
     sound: Sound | null;
@@ -35,21 +41,10 @@ declare global {
     debounceVolume: (volume: number) => void;
 
     /**
-     * The debounce tolerance for processing rapid volume changes into database updates in milliseconds
-     * @defaultValue `100`
-     */
-    static VOLUME_DEBOUNCE_MS: number;
-
-    /**
      * Create a Sound used to play this PlaylistSound document
      * @internal
      */
     protected _createSound(): Sound | null;
-
-    /**
-     * The effective volume at which this playlist sound is played, incorporating the global playlist volume setting.
-     */
-    get effectiveVolume(): number;
 
     /**
      * Determine the fade duration for this PlaylistSound based on its own configuration and that of its parent.
@@ -57,9 +52,20 @@ declare global {
     get fadeDuration(): number;
 
     /**
+     * The audio context within which this sound is played.
+     * This will be undefined if the audio context is not yet active.
+     */
+    get context(): AudioContext | undefined;
+
+    /**
      * Synchronize playback for this particular PlaylistSound instance
      */
     sync(): void | Promise<void> | Promise<Sound>;
+
+    /**
+     * Load the audio for this sound for the current client.
+     */
+    load(): Promise<void>;
 
     toAnchor(
       options?: InexactPartial<{
@@ -84,16 +90,16 @@ declare global {
     protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
 
     /**
-     * Special handling that occurs when a PlaylistSound reaches the natural conclusion of its playback.
-     * @internal
-     */
-    protected _onEnd(): Promise<void | Playlist.ConfiguredInstance | undefined>;
-
-    /**
      * Special handling that occurs when playback of a PlaylistSound is started.
      * @internal
      */
     protected _onStart(): Promise<void>;
+
+    /**
+     * Special handling that occurs when a PlaylistSound reaches the natural conclusion of its playback.
+     * @internal
+     */
+    protected _onEnd(): Promise<void | Playlist.ConfiguredInstance | undefined>;
 
     /**
      * Special handling that occurs when a PlaylistSound is manually stopped before its natural conclusion.
@@ -102,15 +108,10 @@ declare global {
     protected _onStop(): Promise<void>;
 
     /**
-     * Handle fading in the volume for this sound when it begins to play (or loop)
-     * @internal
+     * The effective volume at which this playlist sound is played, incorporating the global playlist volume setting.
+     * @deprecated PlaylistSound#effectiveVolume is deprecated in favor of using PlaylistSound#volume directly
+     *
      */
-    protected _fadeIn(sound: Sound): void;
-
-    /**
-     * Handle fading out the volume for this sound when it begins to play (or loop)
-     * @internal
-     */
-    protected _fadeOut(sound: Sound): void;
+    get effectiveVolume(): number;
   }
 }

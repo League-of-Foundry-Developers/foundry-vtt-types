@@ -81,6 +81,14 @@ declare global {
        */
       _depth?: number;
     }
+
+    interface RollTableHTMLEmbedConfig extends TextEditor.DocumentHTMLEmbedConfig {
+      /**
+       * Adds a button allowing the table to be rolled directly from its embedded context.
+       * Default: `false`
+       */
+      rollable?: boolean | undefined;
+    }
   }
 
   /**
@@ -158,11 +166,79 @@ declare global {
     roll(options?: RollTable.RollOptions): Promise<RollTableDraw>;
 
     /**
+     * Handle a roll from within embedded content.
+     * @param event - The originating event.
+     */
+    protected _rollFromEmbeddedHTML(event: PointerEvent): Promise<void>;
+
+    /**
      * Get an Array of valid results for a given rolled total
      * @param value - The rolled value
      * @returns An Array of results
      */
     getResultsForRoll(value: number): TableResult.ConfiguredInstance[];
+
+    /**
+     * Create embedded roll table markup.
+     * @param config  - Configuration for embedding behavior.
+     * @param options - The original enrichment options for cases where the Document embed content
+     *                  also contains text that must be enriched.
+     *
+     * @example Embed the content of a Roll Table as a figure.
+     * ```
+     * @Embed[RollTable.kRfycm1iY3XCvP8c]
+     * ```
+     * becomes
+     * ```html
+     * <figure class="content-embed" data-content-embed data-uuid="RollTable.kRfycm1iY3XCvP8c" data-id="kRfycm1iY3XCvP8c">
+     *   <table class="roll-table-embed">
+     *     <thead>
+     *       <tr>
+     *         <th>Roll</th>
+     *         <th>Result</th>
+     *       </tr>
+     *     </thead>
+     *     <tbody>
+     *       <tr>
+     *         <td>1&mdash;10</td>
+     *         <td>
+     *           <a class="inline-roll roll" data-mode="roll" data-formula="1d6">
+     *             <i class="fas fa-dice-d20"></i>
+     *             1d6
+     *           </a>
+     *           Orcs attack!
+     *         </td>
+     *       </tr>
+     *       <tr>
+     *         <td>11&mdash;20</td>
+     *         <td>No encounter</td>
+     *       </tr>
+     *     </tbody>
+     *   </table>
+     *   <figcaption>
+     *     <div class="embed-caption">
+     *       <p>This is the Roll Table description.</p>
+     *     </div>
+     *     <cite>
+     *       <a class="content-link" data-link data-uuid="RollTable.kRfycm1iY3XCvP8c" data-id="kRfycm1iY3XCvP8c"
+     *          data-type="RollTable" data-tooltip="Rollable Table">
+     *         <i class="fas fa-th-list"></i>
+     *         Rollable Table
+     *     </cite>
+     *   </figcaption>
+     * </figure>
+     * ```
+     */
+    protected _buildEmbedHTML(
+      config: TextEditor.DocumentHTMLEmbedConfig & { rollable: boolean },
+      options?: RollTable.RollTableHTMLEmbedConfig,
+    ): Promise<HTMLElement | null>;
+
+    protected override _createFigureEmbed(
+      content: HTMLElement | HTMLCollection,
+      config: TextEditor.DocumentHTMLEmbedConfig,
+      options?: TextEditor.EnrichmentOptions,
+    ): Promise<HTMLElement | null>;
 
     protected override _onCreateDescendantDocuments(
       parent: ClientDocument,

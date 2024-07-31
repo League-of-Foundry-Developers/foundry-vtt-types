@@ -14,12 +14,17 @@ declare global {
    */
   class Setting extends ClientDocumentMixin(foundry.documents.BaseSetting) {
     /**
+     * @privateRemarks This exists to let ts know that this class has a private property
+     */
+    static #PRIMITIVE_TYPES: any;
+
+    /**
      * The setting configuration for this setting document.
      */
     get config(): SettingsConfig | undefined;
 
+    // TODO: This is the same as `DataModel._initialize`
     protected _initialize(options?: any): void;
-    protected _initialize(): void;
 
     protected override _onCreate(
       data: foundry.documents.BaseSetting.ConstructorData,
@@ -38,6 +43,6 @@ declare global {
      * @returns The initialized type of the Setting document.
      */
     // TODO: This could probably be derived
-    _castType(): any;
+    protected _castType(): any;
   }
 }
