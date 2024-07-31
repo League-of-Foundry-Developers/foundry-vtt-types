@@ -111,3 +111,9 @@ expectTypeOf(ParentDataModel.name).toEqualTypeOf<string>();
 expectTypeOf(AssignmentElementType.documentName).toEqualTypeOf<"ActiveEffect">();
 expectTypeOf(InitializedElementType.collectionName).toEqualTypeOf<"effects">();
 expectTypeOf(InitializedType.get("", { strict: true })).toEqualTypeOf<ActiveEffect>();
+
+// Regression test for issue where label was being constrained to `""`.
+// Reported by @FloRadical on Discord, see https://discord.com/channels/732325252788387980/793933527065690184/1268262811063287869.
+new foundry.data.fields.BooleanField({
+  label: "foo",
+});

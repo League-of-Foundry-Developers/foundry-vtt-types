@@ -3,7 +3,14 @@ import type {
   ConfiguredDocumentClassForName,
   ConfiguredFlags,
 } from "../../../types/helperTypes.mts";
-import type { RemoveIndexSignatures, ConstructorOf, SimpleMerge, ValueOf } from "../../../types/utils.d.mts";
+import type {
+  RemoveIndexSignatures,
+  ConstructorOf,
+  SimpleMerge,
+  ValueOf,
+  AnyObject,
+  EmptyObject,
+} from "../../../types/utils.d.mts";
 import type { DataModel } from "../abstract/data.mts";
 import type Document from "../abstract/document.mts";
 import type { EmbeddedCollection, EmbeddedCollectionDelta } from "../abstract/module.d.mts";
@@ -688,7 +695,7 @@ declare class BooleanField<
   const PersistedType extends boolean | null | undefined = BooleanField.InitializedType<
     SimpleMerge<Options, BooleanField.DefaultOptions>
   >,
-> extends DataField<SimpleMerge<Options, BooleanField.DefaultOptions>, AssignmentType, InitializedType, PersistedType> {
+> extends DataField<Options, AssignmentType, InitializedType, PersistedType> {
   /** @defaultValue `true` */
   override required: boolean;
 
