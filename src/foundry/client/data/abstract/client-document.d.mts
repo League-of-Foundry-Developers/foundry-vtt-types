@@ -329,11 +329,10 @@ declare class ClientDocument<
    * Gets the default new name for a Document
    * @param context - The context for which to create the Document name.
    */
-  static defaultName<T extends DocumentConstructor>(
+  static defaultName(
     context?: InexactPartial<{
-      this: T;
       /** The sub-type of the document */
-      // TODO: See if the valid strings can be inferred from T
+      // TODO: See if the valid strings can be inferred from this type
       type: string;
       /** A parent document within which the created Document should belong */
       parent: foundry.abstract.Document.Any;
@@ -356,10 +355,12 @@ declare class ClientDocument<
     this: T,
     data?: DeepPartial<ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>)>,
     context?: Pick<DocumentModificationContext, "parent" | "pack"> &
-      Partial<DialogOptions> & {
-        /** A restriction the selectable sub-types of the Dialog. */
-        types?: string[] | undefined;
-      },
+      InexactPartial<
+        DialogOptions & {
+          /** A restriction the selectable sub-types of the Dialog. */
+          types: string[];
+        }
+      >,
   ): Promise<InstanceType<ConfiguredDocumentClass<T>> | null | undefined>;
 
   /**

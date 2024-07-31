@@ -302,7 +302,7 @@ declare global {
       eventData: object,
       options?: InexactPartial<{
         /** A document to generate the link relative to. */
-        relativeTo?: foundry.abstract.Document.Any;
+        relativeTo: foundry.abstract.Document.Any;
       }>,
     ): Promise<string | null>;
 
