@@ -1,5 +1,5 @@
 import type { EditorView } from "prosemirror-view";
-import type { MaybePromise } from "../../../types/utils.d.mts";
+import type { AnyObject, InexactPartial, MaybePromise } from "../../../types/utils.d.mts";
 import type { ClientDocument } from "../data/abstract/client-document.d.mts";
 import type { ConfiguredDocumentClassForName } from "../../../types/helperTypes.d.mts";
 
@@ -37,7 +37,13 @@ declare global {
      *                   (default: `{}`)
      * @returns The enriched HTML content
      */
-    static enrichHTML(content: string, options?: Partial<TextEditor.EnrichmentOptions>): MaybePromise<string>;
+    static enrichHTML(content: string, options?: TextEditor.EnrichmentOptions): Promise<string>;
+
+    /**
+     * Scan for compendium UUIDs and retrieve Documents in batches so that they are in cache when enrichment proceeds.
+     * @param text - The text nodes to scan.
+     */
+    protected static _primeCompendiums(text: Text[]): Promise<void>;
 
     /**
      * Convert text of the form `@UUID[uuid]{name}` to anchor elements.
@@ -45,10 +51,15 @@ declare global {
      * @param options - Options provided to customize text enrichment
      * @returns Whether any content links were replaced and the text nodes need to be updated.
      */
-    protected static _enrichContentLinks(
-      text: Text[],
-      options?: Partial<TextEditor.EnrichmentOptions>,
-    ): MaybePromise<boolean>;
+    protected static _enrichContentLinks(text: Text[], options?: TextEditor.EnrichmentOptions): Promise<boolean>;
+
+    /**
+     * Handle embedding Document content with \@Embed[uuid]\{label\} text.
+     * @param text    - The existing text content
+     * @param options - Options provided to customize text enrichment
+     * @returns Whether any embeds were replaced and the text nodes need to be updated.
+     */
+    protected static _enrichEmbeds(text: Text[], options?: TextEditor.EnrichmentOptions): Promise<boolean>;
 
     /**
      * Convert URLs into anchor elements.
@@ -56,7 +67,7 @@ declare global {
      * @param options - Options provided to customize text enrichment
      * @returns Whether any hyperlinks were replaced and the text nodes need to be updated
      */
-    protected static _enrichHyperlinks(text: Text[], options?: Partial<TextEditor.EnrichmentOptions>): boolean;
+    protected static _enrichHyperlinks(text: Text[], options?: TextEditor.EnrichmentOptions): boolean;
 
     /**
      * Convert text of the form [[roll]] to anchor elements.
@@ -68,22 +79,20 @@ declare global {
     protected static _enrichInlineRolls(
       rollData: TextEditor.EnrichmentOptions["rollData"],
       text: Text[],
-      options?: Partial<TextEditor.EnrichmentOptions>,
-    ): MaybePromise<boolean>;
+      options?: TextEditor.EnrichmentOptions,
+    ): Promise<boolean>;
 
     /**
      * Match any custom registered regex patterns and apply their replacements.
-     * @param pattern - The pattern to match against.
-     * @param enricher - The function that will be run for each match.
-     * @param text - The existing text content.
+     * @param config  - The custom enricher configuration.
+     * @param text    - The existing text content.
      * @param options - Options provided to customize text enrichment
      * @returns Whether any replacements were made, requiring the text nodes to be updated.
      */
     static _applyCustomEnrichers(
-      pattern: RegExp,
-      enricher: CONFIG.TextEditor.Enricher,
+      config: TextEditor.EnricherConfig,
       text: Text[],
-      options?: Partial<TextEditor.EnrichmentOptions>,
+      options?: TextEditor.EnrichmentOptions,
     ): Promise<boolean>;
 
     /**
@@ -131,26 +140,77 @@ declare global {
     protected static _replaceTextContent(
       text: Text[],
       rgx: RegExp,
-      func: (...match: RegExpMatchArray) => MaybePromise<HTMLElement>,
-    ): MaybePromise<boolean>;
+      func: TextEditor.TextContentReplacer,
+      options?: TextEditor.TextReplacementOptions,
+    ): Promise<boolean>;
 
     /**
      * Replace a matched portion of a Text node with a replacement Node
+     * @param text        - The Text node containing the match.
+     * @param match       - The regular expression match.
+     * @param replacement - The replacement Node.
+     * @param options     - Options to configure text replacement behavior.
      * @internal
      */
-    protected static _replaceTextNode(text: Text, match: RegExpMatchArray, replacement: Node): void;
+    protected static _replaceTextNode(
+      text: Text,
+      match: RegExpMatchArray,
+      replacement: Node,
+      options?: TextEditor.TextReplacementOptions,
+    ): void;
 
     /**
      * Create a dynamic document link from a regular expression match
      * @param match   - The regular expression match
      * @param options - Additional options to configure enrichment behaviour
-     * @returns An HTML element for the document link, returned as a Promise if async was true
-     *          and the message contained a UUID link.
+     * @returns An HTML element for the document link.
      */
     protected static _createContentLink(
       match: RegExpMatchArray,
-      options?: Partial<TextEditor.CreateContentLinkOptions>,
-    ): MaybePromise<HTMLAnchorElement>;
+      options?: InexactPartial<{
+        /** A document to resolve relative UUIDs against.*/
+        relativeTo: foundry.abstract.Document.Any;
+      }>,
+    ): Promise<HTMLAnchorElement>;
+
+    /**
+     * Helper method to create an anchor element.
+     * @param options - Options to configure the anchor's construction.
+     */
+    static createAchor(options?: TextEditor.EnrichmentAnchorOptions): HTMLAnchorElement;
+
+    /**
+     * Embed content from another Document.
+     * @param match   - The regular expression match.
+     * @param options - Options provided to customize text enrichment.
+     * @returns A representation of the Document as HTML content, or null if the Document could not be embedded.
+     */
+    protected static _embedContent(
+      match: RegExpMatchArray,
+      options?: TextEditor.EnrichmentOptions,
+    ): Promise<HTMLElement | null>;
+
+    /**
+     * Parse the embed configuration to be passed to ClientDocument#toEmbed.
+     * The return value will be an object of any key=value pairs included with the configuration, as well as a separate
+     * values property that contains all the options supplied that were not in key=value format.
+     * If a uuid key is supplied it is used as the Document's UUID, otherwise the first supplied UUID is used.
+     * @param raw     - The raw matched config string.
+     * @param options - Options forwarded to parseUuid.
+     *
+     * @example Example configurations.
+     * ```js
+     * TextEditor._parseEmbedConfig('uuid=Actor.xyz caption="Example Caption" cite=false');
+     * // Returns: { uuid: "Actor.xyz", caption: "Example Caption", cite: false, values: [] }
+     *
+     * TextEditor._parseEmbedConfig('Actor.xyz caption="Example Caption" inline');
+     * // Returns: { uuid: "Actor.xyz", caption: "Example Caption", values: ["inline"] }
+     * ```
+     */
+    protected static _parseEmbedConfig(
+      raw: string,
+      options?: foundry.utils.ParseUUIDOptions,
+    ): TextEditor.DocumentHTMLEmbedConfig;
 
     /**
      * Create a dynamic document link from an old-form document link expression
@@ -170,27 +230,32 @@ declare global {
      * @returns An HTML element for the document link
      * @internal
      */
-    protected static _createHyperlink(match: RegExpMatchArray, options?: object): HTMLAnchorElement;
+    protected static _createHyperlink(match: RegExpMatchArray, options?: object): Promise<HTMLAnchorElement>;
 
     /**
      * Replace an inline roll formula with a rollable &lt;a&gt; element or an eagerly evaluated roll result
      * @param match    - The regular expression match array
      * @param rollData - Provided roll data for use in roll evaluation
      * @param options  - Additional options to configure enrichment behavior
-     * @returns The replaced match, returned as a Promise if async was true and the message contained an
-     *          immediate inline roll.
+     * @returns The replaced match. Returns null if the contained command is not a valid roll expression.
      * @internal
      */
     protected static _createInlineRoll(
       match: RegExpMatchArray,
       rollData: object,
       options: TextEditor.CreateInlineRollOptions,
-    ): MaybePromise<HTMLAnchorElement | null>;
+    ): Promise<HTMLAnchorElement | null>;
 
     /**
      * Activate listeners for the interior content of the editor frame.
      */
     static activateListeners(): void;
+
+    /**
+     * Handle actions in embedded content.
+     * @param event - The originating event.
+     */
+    protected static _onClickEmbeddedAction(event: PointerEvent): void;
 
     /**
      * Handle click events on Document Links
@@ -349,42 +414,47 @@ declare global {
        * Include secret tags in the final HTML? If false secret blocks will be removed.
        * @defaultValue `false`
        */
-      secrets: boolean;
+      secrets?: boolean | undefined;
 
       /**
        * Replace dynamic document links?
        * @defaultValue `true`
        */
-      documents: boolean;
+      documents?: boolean | undefined;
 
       /**
        * Replace hyperlink content?
        * @defaultValue `true`
        */
-      links: boolean;
+      links?: boolean | undefined;
 
       /**
        * Replace inline dice rolls?
        * @defaultValue `true`
        */
-      rolls: boolean;
+      rolls?: boolean | undefined;
 
       /**
        * The data object providing context for inline rolls, or a function that produces it.
        */
-      rollData: object | (() => object);
-
-      /**
-       * Perform the operation asynchronously returning a Promise
-       * @defaultValue `true`
-       */
-      async: boolean;
+      rollData?: AnyObject | (() => AnyObject) | undefined;
 
       /**
        * A document to resolve relative UUIDs against.
        */
-      relativeTo: ClientDocument<foundry.abstract.Document<any, any, any>>;
+      relativeTo?: foundry.abstract.Document.Any | undefined;
     }
+
+    interface TextReplacementOptions {
+      /** Hoist the replacement element out of its containing element if it would be the only child of that element. */
+      replaceParent?: boolean | undefined;
+    }
+
+    /**
+     * @param match - The regular expression match.
+     * @returns The HTML to replace the matched content with.
+     */
+    type TextContentReplacer = (match: RegExpMatchArray) => Promise<HTMLElement>;
 
     interface DocumentHTMLEmbedConfig {
       /**
@@ -439,19 +509,49 @@ declare global {
       label?: string;
     }
 
-    interface CreateContentLinkOptions {
-      /**
-       * If asynchronous evaluation is enabled, fromUuid will be called, allowing comprehensive UUID lookup,
-       * otherwise fromUuidSync will be used. (default: `false`)
-       */
-      async?: boolean;
+    interface EnrichmentAnchorOptions {
+      /** Attributes to set on the anchor. */
+      attrs?: Record<string, string> | undefined;
 
-      /** A document to resolve relative UUIDs against.*/
-      relativeTo?: ClientDocument<foundry.abstract.Document<any, any, any>>;
+      /** Data- attributes to set on the anchor. */
+      dataset?: Record<string, string> | undefined;
+
+      /** Classes to add to the anchor. */
+      classes?: string[] | undefined;
+
+      /** The anchor's content. */
+      name?: string | undefined;
+
+      /** A font-awesome icon class to use as the icon. */
+      icon?: string | undefined;
     }
 
     interface CreateInlineRollOptions {
       async: boolean;
+    }
+
+    /**
+     * @param match   - The regular expression match result
+     * @param options - Options provided to customize text enrichment
+     * @returns An HTML element to insert in place of the matched text or null to indicate that
+     *          no replacement should be made.
+     */
+    // Defined in `client/config.js`
+    type Enricher = (match: RegExpMatchArray, options?: EnrichmentOptions) => MaybePromise<HTMLElement | null>;
+
+    // Defined in `client/config.js`
+    interface EnricherConfig {
+      /** The string pattern to match. Must be flagged as global. */
+      pattern: RegExp;
+
+      /** Hoist the replacement element out of its containing element if it replaces the entire contents of the element. */
+      replaceParent?: boolean;
+
+      /**
+       * The function that will be called on each match. It is expected that this returns an HTML element
+       * to be inserted into the final enriched content.
+       */
+      enricher: Enricher;
     }
   }
 }
