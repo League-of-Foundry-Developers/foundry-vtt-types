@@ -1,6 +1,5 @@
 import type { EditorView } from "prosemirror-view";
 import type { AnyObject, InexactPartial, MaybePromise } from "../../../types/utils.d.mts";
-import type { ClientDocument } from "../data/abstract/client-document.d.mts";
 import type { ConfiguredDocumentClassForName } from "../../../types/helperTypes.d.mts";
 
 declare global {
@@ -240,11 +239,7 @@ declare global {
      * @returns The replaced match. Returns null if the contained command is not a valid roll expression.
      * @internal
      */
-    protected static _createInlineRoll(
-      match: RegExpMatchArray,
-      rollData: object,
-      options: TextEditor.CreateInlineRollOptions,
-    ): Promise<HTMLAnchorElement | null>;
+    protected static _createInlineRoll(match: RegExpMatchArray, rollData: object): Promise<HTMLAnchorElement | null>;
 
     /**
      * Activate listeners for the interior content of the editor frame.
@@ -303,7 +298,13 @@ declare global {
      * @param options   - Additional options to configure link creation.
      */
     // TODO: improve as part of https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues/928
-    static getContentLink(eventData: object, options?: TextEditor.GetContentLinkOptions): Promise<string | null>;
+    static getContentLink(
+      eventData: object,
+      options?: InexactPartial<{
+        /** A document to generate the link relative to. */
+        relativeTo?: foundry.abstract.Document.Any;
+      }>,
+    ): Promise<string | null>;
 
     /**
      * Upload an image to a document's asset path.
@@ -501,14 +502,6 @@ declare global {
       label: string;
     }
 
-    interface GetContentLinkOptions {
-      /** A document to generate the link relative to. */
-      relativeTo?: ClientDocument<foundry.abstract.Document<any, any, any>>;
-
-      /** A custom label to use instead of the document's name. */
-      label?: string;
-    }
-
     interface EnrichmentAnchorOptions {
       /** Attributes to set on the anchor. */
       attrs?: Record<string, string> | undefined;
@@ -524,10 +517,6 @@ declare global {
 
       /** A font-awesome icon class to use as the icon. */
       icon?: string | undefined;
-    }
-
-    interface CreateInlineRollOptions {
-      async: boolean;
     }
 
     /**
