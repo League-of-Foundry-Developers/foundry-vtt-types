@@ -1,10 +1,10 @@
-import type { InexactPartial, Merge } from "../../../types/utils.mts";
+import type { AnyObject, InexactPartial, Merge } from "../../../types/utils.mts";
 import type { DataModel } from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
 import type { LightData, TextureData } from "../data/data.mts";
-import type * as fields from "../data/fields.mts";
+import type { fields } from "../data/module.d.mts";
 import type * as documents from "./_module.mts";
 
 declare global {

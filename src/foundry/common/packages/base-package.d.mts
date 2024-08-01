@@ -1,4 +1,4 @@
-import type { InexactPartial } from "../../../types/utils.d.mts";
+import type { AnyObject, InexactPartial } from "../../../types/utils.d.mts";
 // eslint-disable-next-line import/no-named-as-default
 import type DataModel from "../abstract/data.d.mts";
 import type { ReleaseData } from "../config.d.mts";
