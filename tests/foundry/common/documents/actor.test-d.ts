@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
 import type EmbeddedCollection from "../../../../src/foundry/common/abstract/embedded-collection.d.mts";
-import type { NumberField, SchemaField } from "../../../../src/foundry/common/data/fields.d.mts/index.mjs";
+import type { NumberField, SchemaField } from "../../../../src/foundry/common/data/fields.d.mts";
 import type { AnyObject, EmptyObject } from "../../../../src/types/utils.d.mts";
 
 // @ts-expect-error name and type are required

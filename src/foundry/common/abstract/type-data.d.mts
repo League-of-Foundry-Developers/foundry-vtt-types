@@ -6,7 +6,7 @@ import type {
   RemoveIndexSignatures,
   SimpleMerge,
 } from "../../../types/utils.d.mts";
-import type { SchemaField } from "../data/fields.d.mts/index.d.mts";
+import type { SchemaField } from "../data/fields.d.mts";
 import type { DataModel } from "./data.d.mts";
 import type Document from "./document.d.mts";
 

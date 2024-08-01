@@ -1,4 +1,4 @@
-import type { DataField, SchemaField } from "../data/fields.d.mts/index.d.mts";
+import type { DataField, SchemaField } from "../data/fields.d.mts";
 import type { fields } from "../data/module.d.mts";
 import type { DataModelValidationFailure } from "../data/validation-failure.d.mts";
 

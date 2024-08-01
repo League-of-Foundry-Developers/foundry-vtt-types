@@ -2,7 +2,7 @@ import type { AnyObject, EmptyObject, InexactPartial, Merge } from "../../../typ
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata, DocumentModificationOptions } from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
-import type * as fields from "../data/fields.d.mts/index.d.mts";
+import type * as fields from "../data/fields.d.mts";
 import type * as documents from "./module.mts";
 
 declare global {

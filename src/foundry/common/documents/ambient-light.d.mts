@@ -3,7 +3,7 @@ import type { Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
 import type { LightData } from "../data/data.mts";
-import type * as fields from "../data/fields.d.mts/index.d.mts";
+import type * as fields from "../data/fields.d.mts";
 
 declare global {
   type AmbientLightData = BaseAmbientLight.Properties;

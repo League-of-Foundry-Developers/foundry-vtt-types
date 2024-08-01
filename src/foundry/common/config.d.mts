@@ -1,5 +1,5 @@
 import type { DataModel } from "./abstract/data.d.mts";
-import type * as fields from "./data/fields.d.mts/index.d.mts";
+import type * as fields from "./data/fields.d.mts";
 import type { SOFTWARE_UPDATE_CHANNELS } from "./constants.d.mts";
 import type { AnyObject } from "../../types/utils.d.mts";
 

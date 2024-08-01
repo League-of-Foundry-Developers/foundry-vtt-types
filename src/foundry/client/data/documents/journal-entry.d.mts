@@ -1,6 +1,6 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
-import type { SchemaField } from "../../../common/data/fields.d.mts/index.d.mts";
+import type { SchemaField } from "../../../common/data/fields.d.mts";
 import type { BaseJournalEntry, BaseUser } from "../../../common/documents/module.d.mts";
 
 declare global {

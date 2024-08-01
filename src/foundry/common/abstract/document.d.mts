@@ -15,7 +15,7 @@ import type {
   StoredDocument,
 } from "../../../types/utils.mts";
 import type * as CONST from "../constants.mts";
-import type { DataField } from "../data/fields.d.mts/index.d.mts";
+import type { DataField } from "../data/fields.d.mts";
 import type { fields } from "../data/module.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.mts";
 import type DataModel from "./data.mts";

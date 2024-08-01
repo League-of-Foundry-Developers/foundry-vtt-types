@@ -2,7 +2,7 @@ import type { AnyObject, InexactPartial } from "../../../types/utils.d.mts";
 // eslint-disable-next-line import/no-named-as-default
 import type DataModel from "../abstract/data.d.mts";
 import type { ReleaseData } from "../config.d.mts";
-import type * as fields from "../data/fields.d.mts/index.d.mts";
+import type * as fields from "../data/fields.d.mts";
 import type { DataModelValidationFailure } from "../data/validation-failure.d.mts";
 import type { BaseFolder } from "../documents/module.d.mts";
 import type { CONST } from "../module.d.mts";

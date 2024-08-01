@@ -1,6 +1,6 @@
 import type { DocumentTypeWithTypeData } from "../../../types/helperTypes.d.mts";
 import type { Merge } from "../../../types/utils.d.mts";
-import type { DataField, ObjectField } from "../data/fields.d.mts/index.d.mts";
+import type { DataField, ObjectField } from "../data/fields.d.mts";
 
 /**
  * A special [ObjectField]{@link ObjectField} available to packages which configures any additional Document sub-types

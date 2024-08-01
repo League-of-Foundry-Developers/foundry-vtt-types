@@ -1,5 +1,5 @@
 import type BasePackage from "./base-package.d.mts";
-import type * as fields from "../data/fields.d.mts/index.d.mts";
+import type * as fields from "../data/fields.d.mts";
 
 declare namespace BaseSystem {
   interface Schema extends ReturnType<typeof BasePackage.defineSchema> {

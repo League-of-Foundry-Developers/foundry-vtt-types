@@ -3,7 +3,7 @@ import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
 import type { TextureData } from "../data/data.mts";
-import type * as fields from "../data/fields.d.mts/index.d.mts";
+import type * as fields from "../data/fields.d.mts";
 
 declare global {
   type TileData = BaseTile.Properties;

@@ -1,5 +1,5 @@
 import type BasePackage from "./base-package.d.mts";
-import type * as fields from "../data/fields.d.mts/index.d.mts";
+import type * as fields from "../data/fields.d.mts";
 import type AdditionalTypesField from "./sub-types.d.mts";
 
 declare namespace BaseModule {
