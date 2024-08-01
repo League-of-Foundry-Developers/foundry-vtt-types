@@ -1,6 +1,5 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
-import type { SchemaField } from "../../../common/data/fields.d.mts";
 import type { BaseJournalEntry, BaseUser } from "../../../common/documents/_module.d.mts";
 
 declare global {
@@ -21,7 +20,7 @@ declare global {
      */
     get visible(): boolean;
 
-    getUserLevel(user: BaseUser): foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
+    override getUserLevel(user: BaseUser): foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
 
     /**
      * Return a reference to the Note instance for this Journal Entry in the current Scene, if any.
@@ -48,20 +47,8 @@ declare global {
      */
     panToNote(options?: PanToNoteOptions): Promise<void>;
 
-    protected _preCreate(
-      data: BaseJournalEntry.ConstructorData,
-      options: DocumentModificationOptions,
-      user: BaseUser,
-    ): Promise<boolean | void>;
-
-    protected _preUpdate(
-      changed: SchemaField.AssignmentType<BaseJournalEntry.Schema, {}>,
-      options: DocumentModificationOptions,
-      user: BaseUser,
-    ): Promise<boolean | void>;
-
     protected override _onUpdate(
-      data: foundry.documents.BaseJournalEntry.UpdateData,
+      changed: BaseJournalEntry.UpdateData,
       options: DocumentModificationOptions,
       userId: string,
     ): void;
