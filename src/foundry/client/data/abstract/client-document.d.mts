@@ -24,7 +24,7 @@ declare class ClientDocument<
    * @see {@link Document#render}
    * @defaultValue `{}`
    */
-  readonly apps: Record<string, Application>;
+  readonly apps: Record<string, Application | foundry.applications.api.ApplicationV2>;
 
   /**
    * A cached reference to the FormApplication instance used to configure this Document.
@@ -52,7 +52,7 @@ declare class ClientDocument<
     : undefined;
 
   /**
-   * A boolean indicator for whether or not the current game User has ownership rights for this Document.
+   * A boolean indicator for whether the current game User has ownership rights for this Document.
    * Different Document types may have more specialized rules for what constitutes ownership.
    */
   get isOwner(): boolean;
@@ -88,11 +88,12 @@ declare class ClientDocument<
   /**
    * Lazily obtain a FormApplication instance used to configure this Document, or null if no sheet is available.
    */
-  get sheet(): FormApplication | null; // TODO: Replace mit InstanceType<ConfiguredSheetClass<T>> once the circular reference problem has been solved
+  get sheet(): FormApplication | foundry.applications.api.ApplicationV2 | null;
 
   /**
    * A Universally Unique Identifier (uuid) for this Document instance.
    */
+  // TODO: Move to `src/foundry/common/abstract/document.d.mts` when that file is updated
   get uuid(): string;
 
   /**
@@ -104,7 +105,7 @@ declare class ClientDocument<
   /**
    * Obtain the FormApplication class constructor which should be used to configure this Document.
    */
-  protected _getSheetClass(): ConstructorOf<FormApplication> | null; // TODO: Replace with ConfiguredSheetClass<T> once the circular reference problem has been solved
+  protected _getSheetClass(): ConstructorOf<FormApplication | foundry.applications.api.ApplicationV2> | null;
 
   /**
    * Safely prepare data for a Document, catching any errors.
@@ -136,14 +137,17 @@ declare class ClientDocument<
   prepareDerivedData(): void;
 
   /**
-   * Render all of the Application instances which are connected to this document by calling their respective
+   * Render all Application instances which are connected to this document by calling their respective
    * @see Application#render
    * @param force   - Force rendering
    *                  (default: `false`)
    * @param context - Optional context
    *                  (default: `{}`)
    */
-  render(force?: boolean, context?: Application.RenderOptions): void;
+  render(
+    force?: boolean,
+    context?: Application.RenderOptions | foundry.applications.api.ApplicationV2.RenderOptions,
+  ): void;
 
   /**
    * Determine the sort order for this Document by positioning it relative a target sibling.
@@ -157,7 +161,7 @@ declare class ClientDocument<
    * Construct a UUID relative to another document.
    * @param doc - The document to compare against.
    */
-  getRelativeUuid(doc: ClientDocument): string;
+  getRelativeUuid(relative: ClientDocument): string;
 
   /**
    * Createa  content link for this document
@@ -323,8 +327,19 @@ declare class ClientDocument<
 
   /**
    * Gets the default new name for a Document
+   * @param context - The context for which to create the Document name.
    */
-  static defaultName(): string;
+  static defaultName(
+    context?: InexactPartial<{
+      /** The sub-type of the document */
+      // TODO: See if the valid strings can be inferred from this type
+      type: string;
+      /** A parent document within which the created Document should belong */
+      parent: foundry.abstract.Document.Any;
+      /** A compendium pack within which the Document should be created */
+      pack: string;
+    }>,
+  ): string;
 
   /**
    * Present a Dialog form to create a new Document of this type.
@@ -339,7 +354,13 @@ declare class ClientDocument<
   static createDialog<T extends DocumentConstructor>(
     this: T,
     data?: DeepPartial<ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>)>,
-    context?: Pick<DocumentModificationContext, "parent" | "pack"> & Partial<DialogOptions>,
+    context?: Pick<DocumentModificationContext, "parent" | "pack"> &
+      InexactPartial<
+        DialogOptions & {
+          /** A restriction the selectable sub-types of the Dialog. */
+          types: string[];
+        }
+      >,
   ): Promise<InstanceType<ConfiguredDocumentClass<T>> | null | undefined>;
 
   /**
@@ -355,43 +376,6 @@ declare class ClientDocument<
    * @param options - Additional options passed to the {@link ClientDocument#toCompendium} method
    */
   exportToJSON(options?: InexactPartial<ClientDocument.CompendiumExportOptions>): void;
-
-  /**
-   * Create a content link for this Document.
-   * @param options - Additional options to configure how the link is constructed.
-   */
-  toAnchor(
-    options?: InexactPartial<{
-      /**
-       * Attributes to set on the link.
-       * @defaultValue `{}`
-       */
-      attrs: Record<string, string>;
-
-      /**
-       * Custom data- attributes to set on the link.
-       * @defaultValue `{}`
-       */
-      dataset: Record<string, string>;
-
-      /**
-       * Additional classes to add to the link.
-       * The `content-link` class is added by default.
-       * @defaultValue `[]`
-       */
-      classes: string[];
-
-      /**
-       * A name to use for the Document, if different from the Document's name.
-       */
-      name: string;
-
-      /**
-       * A font-awesome icon class to use as the icon, if different to the Document's configured sidebarIcon.
-       */
-      icon: string;
-    }>,
-  ): HTMLAnchorElement;
 
   /**
    * Serialize salient information about this Document when dragging it.
@@ -415,6 +399,28 @@ declare class ClientDocument<
     options?: FromDropDataOptions,
   ): Promise<InstanceType<ConfiguredDocumentClass<T>> | undefined>;
 
+  /**
+   * Create the Document from the given source with migration applied to it.
+   * Only primary Documents may be imported.
+   *
+   * This function must be used to create a document from data that predates the current core version.
+   * It must be given nonpartial data matching the schema it had in the core version it is coming from.
+   * It applies legacy migrations to the source data before calling {@link Document.fromSource}.
+   * If this function is not used to import old data, necessary migrations may not applied to the data
+   * resulting in an incorrectly imported document.
+   *
+   * The core version is recorded in the `_stats` field, which all primary documents have. If the given source data
+   * doesn't contain a `_stats` field, the data is assumed to be pre-V10, when the `_stats` field didn't exist yet.
+   * The `_stats` field must not be stripped from the data before it is exported!
+   * @param source - The document data that is imported.
+   * @param context - The model construction context passed to {@link Document.fromSource}.
+   *                  (default: `context.strict=true`) Strict validation is enabled by default.
+   */
+  static fromImport<T extends DocumentConstructor>(
+    this: T,
+    source: Record<string, unknown>,
+    context?: DocumentConstructionContext & DataValidationOptions,
+  ): Promise<InstanceType<T>>;
   /**
    * Update this Document using a provided JSON string.
    * @param json - JSON data string
@@ -457,6 +463,58 @@ declare class ClientDocument<
     | ClientDocument.OmitProperty<OwnershipOpt, "ownership">
     | ClientDocument.OmitProperty<StateOpt, "active" | "fogReset" | "playing"> // helping out Playlist, Scene
   >;
+
+  /**
+   * Create a content link for this Document.
+   * @param options - Additional options to configure how the link is constructed.
+   */
+  toAnchor(options?: TextEditor.EnrichmentAnchorOptions): HTMLAnchorElement;
+
+  /**
+   * Convert a Document to some HTML display for embedding purposes.
+   * @param config  - Configuration for embedding behavior.
+   * @param options - The original enrichment options for cases where the Document embed content also contains text that must be enriched.
+   * @returns A representation of the Document as HTML content, or null if such a representation could not be generated.
+   */
+  toEmbed(
+    config: TextEditor.DocumentHTMLEmbedConfig,
+    options?: TextEditor.EnrichmentOptions,
+  ): Promise<HTMLElement | null>;
+
+  /**
+   * A method that can be overridden by subclasses to customize embedded HTML generation.
+   * @param config  - Configuration for embedding behavior.
+   * @param options - The original enrichment options for cases where the Document embed content also contains text that must be enriched.
+   * @returns Either a single root element to append, or a collection of elements that comprise the embedded content
+   */
+  protected _buildEmbedHTML(
+    config: TextEditor.DocumentHTMLEmbedConfig,
+    options?: TextEditor.EnrichmentOptions,
+  ): Promise<HTMLElement | HTMLCollection | null>;
+
+  /**
+   * A method that can be overridden by subclasses to customize inline embedded HTML generation.
+   * @param content - The embedded content.
+   * @param config  - Configuration for embedding behavior.
+   * @param options - The original enrichment options for cases where the Document embed content also contains text that must be enriched.
+   */
+  protected _createInlineEmbed(
+    content: HTMLElement | HTMLCollection,
+    config: TextEditor.DocumentHTMLEmbedConfig,
+    options?: TextEditor.EnrichmentOptions,
+  ): Promise<HTMLElement | null>;
+
+  /**
+   * A method that can be overridden by subclasses to customize the generation of the embed figure.
+   * @param content - The embedded content.
+   * @param config  - Configuration for embedding behavior.
+   * @param options - The original enrichment options for cases where the Document embed content also contains text that must be enriched.
+   */
+  protected _createFigureEmbed(
+    content: HTMLElement | HTMLCollection,
+    config: TextEditor.DocumentHTMLEmbedConfig,
+    options?: TextEditor.EnrichmentOptions,
+  ): Promise<HTMLElement | null>;
 
   /**
    * Preliminary actions taken before a set of embedded Documents in this parent Document are created.
@@ -598,7 +656,7 @@ declare global {
       clearFlags: FlagsOpt;
 
       /**
-       * Clear any prior sourceId flag
+       * Clear any prior source information
        * @defaultValue `true`
        */
       clearSource: SourceOpt;

@@ -2531,7 +2531,7 @@ declare global {
        * A collection of custom enrichers that can be applied to text content, allowing for the matching and handling of
        * custom patterns.
        */
-      enrichers: CONFIG.TextEditor.EnricherConfig[];
+      enrichers: TextEditor.EnricherConfig[];
     };
 
     /**
@@ -2794,30 +2794,6 @@ declare global {
 
       /** A sound path when the door becomes unlocked */
       unlock: string;
-    }
-
-    namespace TextEditor {
-      /**
-       * @param match   - The regular expression match result
-       * @param options - Options provided to customize text enrichment
-       * @returns An HTML element to insert in place of the matched text or null to indicate that
-       *          no replacement should be made.
-       */
-      type Enricher = (
-        match: RegExpMatchArray,
-        options?: globalThis.TextEditor.EnrichmentOptions,
-      ) => Promise<HTMLElement | null>;
-
-      interface EnricherConfig {
-        /** The string pattern to match. Must be flagged as global. */
-        pattern: RegExp;
-
-        /**
-         * The function that will be called on each match. It is expected that this returns an HTML element
-         * to be inserted into the final enriched content.
-         */
-        enricher: Enricher;
-      }
     }
     namespace Dice {
       // eslint-disable-next-line @typescript-eslint/no-empty-interface
