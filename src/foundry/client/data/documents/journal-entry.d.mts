@@ -1,5 +1,4 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
-import type { fields } from "../../../client-esm/data/_module.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 import type { BaseJournalEntry, BaseUser } from "../../../common/documents/_module.d.mts";
 
@@ -29,10 +28,6 @@ declare global {
      */
     get sceneNote(): Note | null;
 
-    /* -------------------------------------------- */
-    /*  Methods                                     */
-    /* -------------------------------------------- */
-
     /**
      * Show the JournalEntry to connected players.
      * By default the entry will only be shown to players who have permission to observe it.
@@ -52,12 +47,8 @@ declare global {
      */
     panToNote(options?: PanToNoteOptions): Promise<void>;
 
-    /* -------------------------------------------- */
-    /*  Event Handlers                              */
-    /* -------------------------------------------- */
-
     protected override _onUpdate(
-      changed: fields.SchemaField.InnerAssignmentType<BaseJournalEntry.Schema>,
+      changed: BaseJournalEntry.UpdateData,
       options: DocumentModificationOptions,
       userId: string,
     ): void;
