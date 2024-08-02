@@ -99,8 +99,6 @@ declare global {
       }>,
     ): JournalEntryPage.JournalEntryPageHeading;
 
-    // TODO - should we create a type for the options to be able to reuse
-    //    throughout the different document subclasses?
     protected override _createDocumentLink(
       eventData: unknown,
       options?: InexactPartial<{
@@ -123,7 +121,6 @@ declare global {
       userId: string,
     ): void;
 
-    // TODO: these need to be defined in client-document
     protected override _buildEmbedHTML(
       config: TextEditor.DocumentHTMLEmbedConfig,
     ): Promise<HTMLCollection | HTMLElement | null>;
