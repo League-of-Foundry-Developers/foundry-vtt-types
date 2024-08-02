@@ -3,6 +3,7 @@ import type {
   ConfiguredDocumentClass,
   ConfiguredObjectClassForName,
   DocumentConstructor,
+  EmptyObject,
   ToObjectFalseType,
 } from "../../types/helperTypes.d.mts";
 import type { DeepPartial, ValueOf } from "../../types/utils.d.mts";
@@ -1172,22 +1173,14 @@ declare global {
         err: Error,
         data: { id: string },
       ];
-      "Actor#getTokenImages": [location: "Actor#getTokenImages", err: Error, data: Record<string, never>];
+      "Actor#getTokenImages": [location: "Actor#getTokenImages", err: Error, data: EmptyObject];
       "Macro#executeChat": [location: "Macro#executeChat", err: Error, data: { command: string }];
       "ChatMessage#roll": [location: "ChatMessage#roll", err: Error, data: { command: string }];
-      "DefaultTokenConfig#_updateObject": [
-        location: "DefaultTokenConfig#_updateObject",
-        err: Error,
-        data: Record<string, never>,
-      ];
+      "DefaultTokenConfig#_updateObject": [location: "DefaultTokenConfig#_updateObject", err: Error, data: EmptyObject];
       "SceneConfig#_updateObject": [location: "SceneConfig#_updateObject", err: Error, data: { scene: string }];
-      "SidebarDirectory.setupFolders": [
-        location: "SidebarDirectory.setupFolders",
-        err: Error,
-        data: Record<string, never>,
-      ];
+      "SidebarDirectory.setupFolders": [location: "SidebarDirectory.setupFolders", err: Error, data: EmptyObject];
       "Sidebar#_render": [location: "Sidebar#_render", err: Error, data: { name: string }];
-      "Game#initializeCanvas": [location: "Game#initializeCanvas", err: Error, data: Record<string, never>];
+      "Game#initializeCanvas": [location: "Game#initializeCanvas", err: Error, data: EmptyObject];
       "EmbeddedCollection#_initialize": [
         location: "EmbeddedCollection#_initialize",
         err: Error,

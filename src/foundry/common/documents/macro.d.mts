@@ -1,9 +1,9 @@
-import type { InexactPartial, Merge } from "../../../types/utils.d.mts";
+import type { AnyObject, EmptyObject, InexactPartial, Merge } from "../../../types/utils.d.mts";
 import type Document from "../abstract/document.d.mts";
 import type { DocumentMetadata, DocumentModificationOptions } from "../abstract/document.d.mts";
-import type * as CONST from "../constants.d.mts";
+import type * as CONST from "../constants.mts";
 import type * as fields from "../data/fields.d.mts";
-import type * as documents from "./_module.d.mts";
+import type * as documents from "./_module.mts";
 
 declare global {
   type MacroData = BaseMacro.Properties;

@@ -1,5 +1,5 @@
-import type { DataField, SchemaField } from "../data/fields.mts";
-import type { fields } from "../data/module.mts";
+import type { DataField, SchemaField } from "../data/fields.d.mts";
+import type { fields } from "../data/module.d.mts";
 import type { DataModelValidationFailure } from "../data/validation-failure.d.mts";
 
 declare global {
@@ -10,19 +10,19 @@ declare global {
      * Throw an error if validation fails.
      * @defaultValue `true`
      */
-    strict?: boolean;
+    strict?: boolean | undefined;
 
     /**
      * Attempt to replace invalid values with valid defaults?
      * @defaultValue `false`
      */
-    fallback?: boolean;
+    fallback?: boolean | undefined;
 
     /**
      * Allow partial source data, ignoring absent fields?
      * @defaultValue `false`
      */
-    partial?: boolean;
+    partial?: boolean | undefined;
 
     /**
      * If true, invalid embedded documents will emit a warning and be
@@ -30,7 +30,7 @@ declare global {
      * parent to be considered invalid.
      * @defaultValue `false`
      */
-    dropInvalidEmbedded?: boolean;
+    dropInvalidEmbedded?: boolean | undefined;
   }
 }
 

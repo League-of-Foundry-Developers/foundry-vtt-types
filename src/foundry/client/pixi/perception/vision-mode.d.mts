@@ -1,4 +1,5 @@
-import type { SimpleMerge, ValueOf } from "../../../../types/utils.d.mts";
+import type { AnyObject, InexactPartial, SimpleMerge, ValueOf } from "../../../../types/utils.d.mts";
+import type { DataField } from "../../../common/data/fields.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
 
 export {};
@@ -100,7 +101,7 @@ declare global {
   }
 
   namespace ShaderField {
-    type Options = DataFieldOptions<typeof AbstractBaseShader>;
+    type Options = DataField.Options<typeof AbstractBaseShader>;
 
     type DefaultOptions = SimpleMerge<
       foundry.data.fields.DataField.DefaultOptions,
