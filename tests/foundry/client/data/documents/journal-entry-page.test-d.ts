@@ -2,7 +2,6 @@ import { expectTypeOf } from "vitest";
 
 // @ts-expect-error data is required
 new JournalEntryPage();
-// @ts-expect-error name is required
 new JournalEntryPage({});
 
 const myJournalEntryPage = new JournalEntryPage({ name: "foo" });

@@ -1,5 +1,7 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { InexactPartial } from "../../../../types/utils.d.mts";
+import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
+import type BaseJournalEntryPage from "../../../common/documents/journal-entry-page.d.mts";
 
 declare global {
   namespace JournalEntryPage {
@@ -21,6 +23,9 @@ declare global {
 
       /** Any child headings of this one. */
       children: string[];
+
+      /** The linear ordering of the heading in the table of contents. */
+      order: number;
     }
   }
 
@@ -33,24 +38,20 @@ declare global {
     /**
      * The cached table of contents for this JournalEntryPage.
      */
-    _toc: Record<string, JournalEntryPage.JournalEntryPageHeading>;
+    protected _toc: Record<string, JournalEntryPage.JournalEntryPageHeading>;
 
     /**
      * The table of contents for this JournalEntryPage.
      */
     get toc(): Record<string, JournalEntryPage.JournalEntryPageHeading>;
 
-    get permission(): foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS;
+    override get permission(): foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
     /**
      * Return a reference to the Note instance for this Journal Entry Page in the current Scene, if any.
      * If multiple notes are placed for this Journal Entry, only the first will be returned.
      */
     get sceneNote(): Note | null;
-
-    /* -------------------------------------------- */
-    /*  Table of Contents                           */
-    /* -------------------------------------------- */
 
     /**
      * Convert a heading into slug suitable for use as an identifier.
@@ -98,6 +99,118 @@ declare global {
       }>,
     ): JournalEntryPage.JournalEntryPageHeading;
 
-    // TODO: More method overrides
+    // TODO - should we create a type for the options to be able to reuse
+    //    throughout the different document subclasses?
+    protected override _createDocumentLink(
+      eventData: unknown,
+      options?: InexactPartial<{
+        /**
+         * A document to generate a link relative to.
+         */
+        relativeTo: ClientDocument;
+        /**
+         * A custom label to use instead of the document's name.
+         */
+        label: string;
+      }>,
+    ): string;
+
+    override _onClickDocumentLink(event: MouseEvent): this;
+
+    protected override _onUpdate(
+      changed: BaseJournalEntryPage.UpdateData,
+      options: DocumentModificationOptions,
+      userId: string,
+    ): void;
+
+    // TODO: these need to be defined in client-document
+    protected override _buildEmbedHTML(
+      config: TextEditor.DocumentHTMLEmbedConfig,
+    ): Promise<HTMLCollection | HTMLElement | null>;
+
+    protected override _createFigureEmbed(
+      content: HTMLElement | HTMLCollection,
+      config: TextEditor.DocumentHTMLEmbedConfig,
+      options?: TextEditor.EnrichmentOptions,
+    ): Promise<HTMLElement | null>;
+
+    /**
+     * Embed text page content.
+     * @param config        - Configuration for embedding behavior. This can include
+     *                        enrichment options to override those passed as part of
+     *                        the root enrichment process.
+     * @param options       - The original enrichment options to propagate to the embedded text page's
+     *                        enrichment.
+     * @returns
+     *
+     * @example Embed the content of the Journal Entry Page as a figure.
+     * ```@Embed[.yDbDF1ThSfeinh3Y classes="small right"]{Special caption}```
+     * becomes
+     * ```html
+     * <figure class="content-embed small right" data-content-embed
+     *         data-uuid="JournalEntry.ekAeXsvXvNL8rKFZ.JournalEntryPage.yDbDF1ThSfeinh3Y">
+     *   <p>The contents of the page</p>
+     *   <figcaption>
+     *     <strong class="embed-caption">Special caption</strong>
+     *     <cite>
+     *       <a class="content-link" draggable="true" data-link
+     *          data-uuid="JournalEntry.ekAeXsvXvNL8rKFZ.JournalEntryPage.yDbDF1ThSfeinh3Y"
+     *          data-id="yDbDF1ThSfeinh3Y" data-type="JournalEntryPage" data-tooltip="Text Page">
+     *         <i class="fas fa-file-lines"></i> Text Page
+     *       </a>
+     *     </cite>
+     *   <figcaption>
+     * </figure>
+     * ```
+     *
+     * @example Embed the content of the Journal Entry Page into the main content flow.
+     * ```@Embed[.yDbDF1ThSfeinh3Y inline]```
+     * becomes
+     * ```html
+     * <section class="content-embed" data-content-embed
+     *          data-uuid="JournalEntry.ekAeXsvXvNL8rKFZ.JournalEntryPage.yDbDF1ThSfeinh3Y">
+     *   <p>The contents of the page</p>
+     * </section>
+     * ```
+     */
+    protected _embedTextPage(
+      config: TextEditor.DocumentHTMLEmbedConfig & TextEditor.EnrichmentOptions,
+      options?: TextEditor.EnrichmentOptions,
+    ): Promise<HTMLCollection>;
+
+    /**
+     * Embed image page content.
+     * @param config            - Configuration for embedding behavior.
+     * @param options           - The original enrichment options for cases where the Document embed content
+     *                            also contains text that must be enriched.
+     * @returns
+     *
+     * @example Create an embedded image from a sibling journal entry page.
+     * ```@Embed[.QnH8yGIHy4pmFBHR classes="small right"]{Special caption}```
+     * becomes
+     * ```html
+     * <figure class="content-embed small right" data-content-embed
+     *         data-uuid="JournalEntry.xFNPjbSEDbWjILNj.JournalEntryPage.QnH8yGIHy4pmFBHR">
+     *   <img src="path/to/image.webp" alt="Special caption">
+     *   <figcaption>
+     *     <strong class="embed-caption">Special caption</strong>
+     *     <cite>
+     *       <a class="content-link" draggable="true" data-link
+     *          data-uuid="JournalEntry.xFNPjbSEDbWjILNj.JournalEntryPage.QnH8yGIHy4pmFBHR"
+     *          data-id="QnH8yGIHy4pmFBHR" data-type="JournalEntryPage" data-tooltip="Image Page">
+     *         <i class="fas fa-file-image"></i> Image Page
+     *       </a>
+     *     </cite>
+     *   </figcaption>
+     * </figure>
+     * ```
+     */
+    protected _embedImagePage(
+      config: TextEditor.DocumentHTMLEmbedConfig & {
+        /** Alt text for the image, otherwise the caption will be used. **/
+        alt?: string | unknown;
+      },
+      options?: InexactPartial<TextEditor.EnrichmentOptions>,
+    ): Promise<HTMLElement | HTMLCollection | null>;
   }
 }
