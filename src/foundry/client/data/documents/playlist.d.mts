@@ -1,5 +1,5 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
-import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
+import type { InexactPartial } from "../../../../types/utils.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { AnyMetadata, DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 import type { ClientDocument } from "../abstract/client-document.d.mts";
@@ -106,6 +106,8 @@ declare global {
 
     /**
      * Define the sorting order for the Sounds within this Playlist. For internal use.
+     * If sorting alphabetically, the sounds are sorted with a locale-independent comparator
+     * to ensure the same order on all clients.
      * @internal
      */
     protected _sortSounds(a: PlaylistSound.ConfiguredInstance, b: PlaylistSound.ConfiguredInstance): number;
@@ -175,12 +177,6 @@ declare global {
      * @internal
      */
     _onSoundStart(sound: PlaylistSound.ConfiguredInstance): Promise<void>;
-
-    /**
-     * UPdate the playing status of this Playlist in content links.
-     * @param changed - The data changes
-     */
-    _updateContentLinkPlaying(changed: DeepPartial<Playlist["_source"]>): void;
 
     override toCompendium<
       FlagsOpt extends boolean = false,
