@@ -75,6 +75,9 @@ declare class ProseMirrorMenu extends ProseMirrorPlugin {
    */
   constructor(schema: Schema, view: EditorView, options?: ProseMirrorMenu.Options);
 
+  // placeholder private attribute to support subclassing.
+  #proseMirrorMenu: true;
+
   /**
    * The editor view.
    */
@@ -185,6 +188,11 @@ declare class ProseMirrorMenu extends ProseMirrorPlugin {
    * Handle requests to save the editor contents
    */
   protected _handleSave(): void;
+
+  /**
+   * Global listeners for the drop-down menu.
+   */
+  static eventListeners(): void;
 
   /**
    * Display the insert image prompt.

@@ -18,6 +18,9 @@ declare class ProseMirrorDropDown {
    */
   constructor(title: string, items: ProseMirrorDropDownMenu.Entry[], options?: Options);
 
+  // placeholder private attribute to support subclasses
+  #proseMirrorDropDown: true;
+
   /**
    * The default title for this drop-down.
    */

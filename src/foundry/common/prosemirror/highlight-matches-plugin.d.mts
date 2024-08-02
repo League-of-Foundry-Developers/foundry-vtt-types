@@ -3,6 +3,7 @@ import type ProseMirrorPlugin from "./plugin.d.mts";
 import type { ProseMirrorMenu } from "./menu.d.mts";
 import { EditorState, Plugin } from "prosemirror-state";
 import { EditorView } from "prosemirror-view";
+import type { EmptyObject } from "../../../types/utils.d.mts";
 
 /**
  * A class responsible for handling the display of automated link recommendations when a user highlights text in a
@@ -74,5 +75,5 @@ declare class ProseMirrorHighlightMatchesPlugin extends ProseMirrorPlugin {
    */
   constructor(schema: Schema, options: ProseMirrorMenu.Options);
 
-  static override build(schema: Schema, options?: Record<string, unknown> | undefined): Plugin;
+  static override build(schema: Schema, options?: EmptyObject | undefined): Plugin;
 }

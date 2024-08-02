@@ -1,7 +1,6 @@
 import type { InputRule } from "prosemirror-inputrules";
 import type { Schema } from "prosemirror-model";
 import type { Plugin } from "prosemirror-state";
-import type { Options } from "../client/dice/roll.d.mts";
 import type ProseMirrorPlugin from "./plugin.d.mts";
 
 export declare namespace ProseMirrorInputRules {
