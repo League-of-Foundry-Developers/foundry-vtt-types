@@ -25,21 +25,19 @@ export default class EmbeddedCollectionDelta<
   ): ContainedDocument;
 
   protected override initialize(
-    options: InexactPartial<{
-      /**
-       * @defaultValue `true`
-       */
-      strict: boolean;
-      /**
-       * @defaultValue `false`
-       */
-      full: boolean;
-    }>,
+    options: InexactPartial<
+      {
+        /**
+         * @defaultValue `false`
+         */
+        full: boolean;
+      } & DocumentConstructionContext
+    >,
   ): void;
 
   protected override _initializeDocument(
     data: ContainedDocument["_source"][],
-    options: InexactPartial<{ strict: boolean }>,
+    options: DocumentConstructionContext,
   ): void;
 
   protected override _createOrUpdate(
