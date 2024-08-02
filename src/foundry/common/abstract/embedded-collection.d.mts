@@ -1,5 +1,6 @@
 import type { ConstructorOf, InexactPartial } from "../../../types/utils.d.mts";
 import type _Collection from "../utils/collection.d.mts";
+import type { DatabaseAction, DatabaseOperation } from "./_types.d.mts";
 
 // Fix for "Class 'Collection<ContainedDocument>' defines instance member property 'get',
 // but extended class 'EmbeddedCollection<ContainedDocument, ParentDataModel>' defines it as instance member function."
@@ -70,29 +71,14 @@ declare class EmbeddedCollection<
    * Initialize the EmbeddedCollection object by constructing its contained Document instances
    * @param options - Initialization options
    */
-  protected initialize(
-    options: InexactPartial<{
-      /**
-       * Whether to log an error or a warning when encountering invalid embedded documents.
-       */
-      strict: boolean;
-    }>,
-  ): void;
+  protected initialize(options: DocumentConstructionContext): void;
 
   /**
    * Initialize an embedded document and store it in the collection.
    * @param data    - The Document data.
    * @param options - Options to configure Document initialization.
    */
-  protected _initializeDocument(
-    data: ContainedDocument["_source"][],
-    options: InexactPartial<{
-      /**
-       * Whether to log an error or warning if the Document fails to initialize.
-       */
-      strict: boolean;
-    }>,
-  ): void;
+  protected _initializeDocument(data: ContainedDocument["_source"][], options: DocumentConstructionContext): void;
 
   /**
    * Log warnings or errors when a Document is found to be invalid.
@@ -237,6 +223,23 @@ declare class EmbeddedCollection<
    */
   toObject(source?: true): ContainedDocument["_source"][];
   toObject(source: false): ReturnType<ContainedDocument["schema"]["toObject"]>[];
+
+  /**
+   * Follow-up actions to take when a database operation modifies Documents in this EmbeddedCollection.
+   * @param action    - The database action performed
+   * @param documents - The array of modified Documents
+   * @param result    - The result of the database operation
+   * @param operation - Database operation details
+   * @param user      - The User who performed the operation
+   * @internal
+   */
+  _onModifyContents(
+    action: DatabaseAction,
+    documents: foundry.abstract.Document.Any[],
+    result: unknown,
+    operation: DatabaseOperation,
+    user: foundry.documents.BaseUser,
+  ): void;
 }
 
 export default EmbeddedCollection;
