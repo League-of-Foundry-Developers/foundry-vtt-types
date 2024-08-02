@@ -1,25 +1,30 @@
-import * as collab from "prosemirror-collab";
-import { keymap } from "prosemirror-keymap";
-import { DOMParser, DOMSerializer, Schema } from "prosemirror-model";
-import type { Plugin, PluginKey } from "prosemirror-state";
-import { AllSelection, TextSelection, EditorState } from "prosemirror-state";
-import { Step } from "prosemirror-transform";
+// In Foundry itself this file contains re-exports of these other modules.
+// Therefore it has a runtime effect and uses `.mjs` instead of `.d.mts`.
+// While `.mts` could work, to avoid `import/no-unresolved` from erroring `.mjs` is used.
+/* eslint-disable import/extensions */
+
+import { EditorState, AllSelection, TextSelection, Plugin, PluginKey } from "prosemirror-state";
 import { EditorView } from "prosemirror-view";
-import type ProseMirrorContentLinkPlugin from "./content-link-plugin.d.mts";
-import type ProseMirrorDirtyPlugin from "./dirty-plugin.d.mts";
-import "./extensions.d.mts";
-import type ProseMirrorImagePlugin from "./image-plugin.d.mts";
+import { Schema, DOMSerializer } from "prosemirror-model";
 // eslint-disable-next-line import/no-named-as-default
-import type ProseMirrorInputRules from "./input-rules.d.mts";
+import ProseMirrorInputRules from "./input-rules.mjs";
+import { keymap } from "prosemirror-keymap";
 // eslint-disable-next-line import/no-named-as-default
-import type ProseMirrorKeyMaps from "./keymaps.d.mts";
+import ProseMirrorKeyMaps from "./keymaps.mjs";
 // eslint-disable-next-line import/no-named-as-default
-import type ProseMirrorMenu from "./menu.d.mts";
-import type { schema as defaultSchema } from "./schema.d.mts";
-import type { parseHTMLString, serializeHTMLString } from "./util.d.mts";
-import type ProseMirrorPlugin from "./plugin.d.mts";
-import type ProseMirrorHighlightMatchesPlugin from "./highlight-matches-plugin.d.mts";
-import type ProseMirrorClickHandler from "./click-handler.d.mts";
+import ProseMirrorMenu from "./menu.mjs";
+import "./extensions.mjs";
+import * as collab from "prosemirror-collab";
+import { Step } from "prosemirror-transform";
+import { parseHTMLString, serializeHTMLString } from "./util.mjs";
+import { schema as defaultSchema } from "./schema.mjs";
+import ProseMirrorPlugin from "./plugin.mjs";
+import ProseMirrorImagePlugin from "./image-plugin.mjs";
+import ProseMirrorDirtyPlugin from "./dirty-plugin.mjs";
+import ProseMirrorContentLinkPlugin from "./content-link-plugin.mjs";
+import ProseMirrorHighlightMatchesPlugin from "./highlight-matches-plugin.mjs";
+import ProseMirrorClickHandler from "./click-handler.mjs";
+import DOMParser from "./dom-parser.mjs";
 
 declare const dom: {
   parser: DOMParser;
@@ -31,7 +36,6 @@ declare const dom: {
 declare const defaultPlugins: Record<
   | "inputRules"
   | "keyMaps"
-  | "images"
   | "menu"
   | "isDirty"
   | "clickHandler"

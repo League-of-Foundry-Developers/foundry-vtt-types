@@ -19,5 +19,5 @@ declare abstract class ProseMirrorPlugin {
    * @param options - Additional options to pass to the plugin.
    * @virtual
    */
-  static build(schema: Schema, options?: Record<string, unknown>): Plugin;
+  static build(schema: Schema, options?: Record<string, unknown> | undefined): Plugin;
 }
