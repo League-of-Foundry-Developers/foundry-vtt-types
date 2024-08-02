@@ -1,7 +1,9 @@
 import { expectTypeOf } from "vitest";
 
-// @ts-expect-error Expected 1-2 arguments, but got 0.
+// @ts-expect-error data is required
 new JournalEntryPage();
+
+// @ts-expect-error name is required
 new JournalEntryPage({});
 
 const myJournalEntryPage = new JournalEntryPage({ name: "foo" });

@@ -141,7 +141,9 @@ declare global {
      * @returns
      *
      * @example Embed the content of the Journal Entry Page as a figure.
-     * ```@Embed[.yDbDF1ThSfeinh3Y classes="small right"]{Special caption}```
+     * ```
+     * @Embed[.yDbDF1ThSfeinh3Y classes="small right"]{Special caption}
+     * ```
      * becomes
      * ```html
      * <figure class="content-embed small right" data-content-embed
@@ -161,7 +163,9 @@ declare global {
      * ```
      *
      * @example Embed the content of the Journal Entry Page into the main content flow.
-     * ```@Embed[.yDbDF1ThSfeinh3Y inline]```
+     * ```
+     * @Embed[.yDbDF1ThSfeinh3Y inline]
+     * ```
      * becomes
      * ```html
      * <section class="content-embed" data-content-embed
@@ -183,7 +187,9 @@ declare global {
      * @returns
      *
      * @example Create an embedded image from a sibling journal entry page.
-     * ```@Embed[.QnH8yGIHy4pmFBHR classes="small right"]{Special caption}```
+     * ```
+     * @Embed[.QnH8yGIHy4pmFBHR classes="small right"]{Special caption}
+     * ```
      * becomes
      * ```html
      * <figure class="content-embed small right" data-content-embed
