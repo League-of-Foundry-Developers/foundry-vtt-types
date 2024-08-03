@@ -290,12 +290,14 @@ declare global {
     ): Promise<ChatMessage.ConfiguredInstance | undefined>;
 
     protected override _preCreate(
+      // can't use UpdateData because it creates circular reference
       data: fields.SchemaField.InnerAssignmentType<BaseCards.Schema>,
       options: DocumentModificationOptions,
       user: BaseUser,
     ): Promise<boolean | void>;
 
     protected override _onUpdate(
+      // can't use UpdateData because it creates circular reference
       changed: fields.SchemaField.InnerAssignmentType<BaseCards.Schema>,
       options: DocumentModificationOptions,
       userId: string,
