@@ -8,6 +8,7 @@ import type { DeepPartial, InexactPartial, StoredDocument } from "../../../../ty
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
 import type BaseCards from "../../../common/documents/cards.d.mts";
+import type BaseUser from "../../../common/documents/user.d.mts";
 
 declare global {
   namespace Cards {
@@ -288,8 +289,14 @@ declare global {
       context: Record<string, unknown>,
     ): Promise<ChatMessage.ConfiguredInstance | undefined>;
 
-    protected override _onUpdate(
+    protected override _preCreate(
       data: fields.SchemaField.InnerAssignmentType<BaseCards.Schema>,
+      options: DocumentModificationOptions,
+      user: BaseUser,
+    ): Promise<boolean | void>;
+
+    protected override _onUpdate(
+      changed: fields.SchemaField.InnerAssignmentType<BaseCards.Schema>,
       options: DocumentModificationOptions,
       userId: string,
     ): void;
@@ -337,13 +344,6 @@ declare global {
      */
     resetDialog(): Promise<Cards.ConfiguredInstance | false | null>;
 
-    override deleteDialog(options?: Partial<DialogOptions>): Promise<this | false | null | undefined>;
-
-    // TODO: It's a bit weird that we have to do it in this generic way but otherwise there is an error overriding this. Investigate later.
-    static override createDialog<T extends DocumentConstructor>(
-      this: T,
-      data?: DeepPartial<Cards["_source"] | (Cards["_source"] & Record<string, unknown>)>,
-      context?: Pick<DocumentModificationContext, "parent" | "pack"> & Partial<DialogOptions>,
-    ): Promise<InstanceType<ConfiguredDocumentClass<T>> | null | undefined>;
+    // deleteDialog and createDialog have the same signatures as the parent class
   }
 }
