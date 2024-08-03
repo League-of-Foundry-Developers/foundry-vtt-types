@@ -1,8 +1,16 @@
 import { expectTypeOf } from "vitest";
+import type { FilePathField } from "../../../../../src/foundry/common/data/fields.d.mts";
+
+// @ts-expect-error - Cards requires name.
+new Cards();
+
+// // @ts-expect-error - Cards requires name.
+//new Cards({});
 
 const cards = new Cards({ name: "Just a deck of cards", type: "german" });
+expectTypeOf(cards).toEqualTypeOf<Cards>();
 
-expectTypeOf(cards.img).toEqualTypeOf<string | null>();
+expectTypeOf(cards.thumbnail).toEqualTypeOf<FilePathField.InitializedType<any>>();
 expectTypeOf(cards.availableCards).toEqualTypeOf<Card[]>();
 expectTypeOf(cards.drawnCards).toEqualTypeOf<Card[]>();
 
@@ -12,16 +20,16 @@ expectTypeOf(cards.deal([cards], 2)).toEqualTypeOf<Promise<Cards>>();
 expectTypeOf(
   cards.deal([cards], 2, {
     how: foundry.CONST.CARD_DRAW_MODES.RANDOM,
-    action: "some custom action",
-    updateData: { value: 3 },
+    action: "deal",
+    updateData: { description: "foo" },
     chatNotification: true,
   }),
 ).toEqualTypeOf<Promise<Cards>>();
 expectTypeOf(
   cards.deal([cards], undefined, {
     how: foundry.CONST.CARD_DRAW_MODES.RANDOM,
-    action: "some custom action",
-    updateData: { value: 3 },
+    action: "pass",
+    updateData: { description: "foo" },
     chatNotification: true,
   }),
 ).toEqualTypeOf<Promise<Cards>>();
@@ -122,3 +130,6 @@ expectTypeOf(cards.playDialog(new Card({ name: "Some Card" }))).toEqualTypeOf<Pr
 
 // resetDialog
 expectTypeOf(cards.resetDialog()).toEqualTypeOf<Promise<Cards | false | null>>();
+
+// TODO: Modify to Playlist | null once data can be grabbed from CONFIG
+expectTypeOf(cards.sheet).toEqualTypeOf<FormApplication | foundry.applications.api.ApplicationV2 | null>();
