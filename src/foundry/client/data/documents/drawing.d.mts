@@ -14,16 +14,8 @@ declare global {
    */
   class DrawingDocument extends CanvasDocumentMixin(foundry.documents.BaseDrawing) {
     /**
-     * Define an elevation property on the Drawing Document which in the future will become a part of its data schema.
+     * Is the current User the author of this drawing?
      */
-    get elevation(): number;
-
-    set elevation(value);
-    /**
-     * Define a sort property on the Drawing Document which in the future will become a core part of its data schema.
-     */
-    get sort(): this["z"];
+    get isAuthor(): boolean;
   }
 }
-
-export {};
