@@ -16,7 +16,8 @@ declare global {
     /**
      * Obtain the fog of war exploration progress for a specific Scene and User.
      * @param query      - Parameters for which FogExploration document is retrieved
-     * @param options    - Additional options passed to DatabaseBackend#get.  Default={}
+     * @param options    - Additional options passed to DatabaseBackend#get.
+     *                     (Default: `{}`)
      * @returns
      */
     static load(
