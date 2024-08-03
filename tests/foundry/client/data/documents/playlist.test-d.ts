@@ -23,4 +23,4 @@ expectTypeOf(playlist.cycleMode()).toEqualTypeOf<Promise<Playlist | undefined>>(
 expectTypeOf(playlist.toAnchor()).toEqualTypeOf<HTMLAnchorElement>();
 
 // TODO: Modify to Playlist | null once data can be grabbed from CONFIG
-expectTypeOf(playlist.sheet).toEqualTypeOf<FormApplication | null>();
+expectTypeOf(playlist.sheet).toEqualTypeOf<FormApplication | foundry.applications.api.ApplicationV2 | null>();
