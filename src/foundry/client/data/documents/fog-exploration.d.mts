@@ -1,4 +1,6 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
+import type { InexactPartial } from "../../../../types/utils.d.mts";
+import type { DatabaseGetOperation } from "../../../common/abstract/_types.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 declare global {
@@ -11,6 +13,22 @@ declare global {
    * The client-side FogExploration document which extends the common BaseFogExploration model.
    */
   class FogExploration extends ClientDocumentMixin(foundry.documents.BaseFogExploration) {
+    /**
+     * Obtain the fog of war exploration progress for a specific Scene and User.
+     * @param query      - Parameters for which FogExploration document is retrieved
+     * @param options    - Additional options passed to DatabaseBackend#get.  Default={}
+     * @returns
+     */
+    static load(
+      query?: InexactPartial<{
+        /** A certain Scene ID **/
+        scene: string;
+        /** A certain User ID **/
+        user: string;
+      }>,
+      options?: InexactPartial<DatabaseGetOperation>,
+    ): Promise<FogExploration | null>;
+
     /**
      * Transform the explored base64 data into a PIXI.Texture object
      */
