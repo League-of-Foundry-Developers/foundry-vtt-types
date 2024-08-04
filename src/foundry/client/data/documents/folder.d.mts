@@ -64,8 +64,9 @@ declare global {
     get documentClass(): this["type"] extends DocumentType ? ConfiguredDocumentClassForName<this["type"]> : never;
 
     /**
-     * Return a reference to the WorldCollection instance which provides Documents to this Folder,
+     * The reference to the WorldCollection instance which provides Documents to this Folder,
      * unless it's a Folder inside a Compendium pack, in which case it's the index of the pack.
+     * A world Folder containing CompendiumCollections will have neither.
      */
     // TODO: Compendium Pack index
     get documentCollection(): this["pack"] extends string ? unknown : undefined;
@@ -86,17 +87,6 @@ declare global {
       user: BaseUser,
     ): Promise<boolean | void>;
 
-    /**
-     * Present a Dialog form to create a new Folder.
-     * @see {@link ClientDocument.createDialog}
-     * @param data    - Initial data with which to populate the creation form
-     *                  (default: `{}`)
-     * @param context - Additional context options or dialog positioning options
-     *                  (default: `{}`)
-     * @returns A Promise which resolves to the created Folder, or null if the dialog was closed.
-     *
-     * @remarks For weird reasons, we need to make this generic.
-     */
     static createDialog<T extends DocumentConstructor>(
       this: T,
       data?: DeepPartial<ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>)>,
