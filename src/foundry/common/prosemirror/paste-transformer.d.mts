@@ -10,7 +10,7 @@ export default ProseMirrorPasteTransformer;
  * A class responsible for applying transformations to content pasted inside the editor.
  */
 declare class ProseMirrorPasteTransformer extends ProseMirrorPlugin {
-  static override build(schema: Schema, options?: EmptyObject | undefined): Plugin;
+  static override build(schema: Schema, options?: EmptyObject): Plugin;
 
   /**
    * Transform content before it is injected into the ProseMirror document.

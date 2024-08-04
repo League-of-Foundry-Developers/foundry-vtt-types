@@ -75,5 +75,5 @@ declare class ProseMirrorHighlightMatchesPlugin extends ProseMirrorPlugin {
    */
   constructor(schema: Schema, options: ProseMirrorMenu.Options);
 
-  static override build(schema: Schema, options?: EmptyObject | undefined): Plugin;
+  static override build(schema: Schema, options?: EmptyObject): Plugin;
 }

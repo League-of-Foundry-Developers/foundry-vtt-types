@@ -9,5 +9,5 @@ export default ProseMirrorDirtyPlugin;
  * A simple plugin that records the dirty state of the editor.
  */
 declare class ProseMirrorDirtyPlugin extends ProseMirrorPlugin {
-  static override build(schema: Schema, options?: EmptyObject | undefined): Plugin;
+  static override build(schema: Schema, options?: EmptyObject): Plugin;
 }

@@ -18,7 +18,7 @@ declare class ProseMirrorDropDown {
    */
   constructor(title: string, items: ProseMirrorDropDownMenu.Entry[], options?: Options);
 
-  // placeholder private attribute to support subclasses
+  // placeholder private attribute to limit what can count as a subtype at compile time
   #proseMirrorDropDown: true;
 
   /**
