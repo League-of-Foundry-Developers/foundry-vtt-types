@@ -8,5 +8,4 @@ expectTypeOf(template.refresh()).toEqualTypeOf<MeasuredTemplate>();
 
 // TODO: Rework test to validate data post-data model
 
-// TODO: Modify to the configured document sheet once the data can be grabbed from config
-expectTypeOf(template.sheet).toEqualTypeOf<FormApplication | null>();
+expectTypeOf(template.sheet).toEqualTypeOf<FormApplication | foundry.applications.api.ApplicationV2 | null>();

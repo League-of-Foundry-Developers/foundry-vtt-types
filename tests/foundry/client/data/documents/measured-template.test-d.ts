@@ -6,5 +6,4 @@ expectTypeOf(doc.isAuthor).toEqualTypeOf<boolean>();
 expectTypeOf(doc.layer).toEqualTypeOf<TemplateLayer>();
 expectTypeOf(doc.rotation).toEqualTypeOf<MeasuredTemplateDocument["direction"]>();
 
-// TODO: Modify to MeasuredTemplateConfig | null once data can be grabbed from CONFIG
-expectTypeOf(doc.sheet).toEqualTypeOf<FormApplication | null>();
+expectTypeOf(doc.sheet).toEqualTypeOf<FormApplication | foundry.applications.api.ApplicationV2 | null>();
