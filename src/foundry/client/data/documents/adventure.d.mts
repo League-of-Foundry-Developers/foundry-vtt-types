@@ -1,5 +1,8 @@
 import type { ConfiguredDocumentClassForName, FolderDocumentTypes } from "../../../../types/helperTypes.d.mts";
 import type { InexactPartial } from "../../../../types/utils.d.mts";
+// eslint-disable-next-line import/no-named-as-default
+import type DataModel from "../../../common/abstract/data.d.mts";
+import type { fields } from "../../../common/data/module.d.mts";
 
 declare global {
   namespace Adventure {
@@ -27,6 +30,20 @@ declare global {
    * The client-side Adventure document which extends the common {@link foundry.documents.BaseAdventure} model.
    */
   class Adventure extends ClientDocumentMixin(foundry.documents.BaseAdventure) {
+    static fromSource<Schema extends DataSchema>(
+      source: fields.SchemaField.InnerAssignmentType<Schema>,
+      {
+        strict,
+        ...context
+      }?: DataModel.ConstructorOptions & {
+        /**
+         * Models created from trusted source data are validated non-strictly
+         * @defaultValue `false`
+         */
+        strict?: boolean;
+      },
+    ): DataModel<Schema, DataModel.Any | null>;
+
     /**
      * Perform a full import workflow of this Adventure.
      * Create new and update existing documents within the World.
