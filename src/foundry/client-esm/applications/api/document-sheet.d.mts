@@ -40,10 +40,10 @@ declare namespace DocumentSheetV2 {
  */
 declare class DocumentSheetV2<
   Document extends foundry.abstract.Document<any, any, any>,
+  RenderContext extends Record<string, unknown> = Record<string, never>,
   Configuration extends DocumentSheetV2.Configuration<Document> = DocumentSheetV2.Configuration<Document>,
   RenderOptions extends DocumentSheetV2.RenderOptions = DocumentSheetV2.RenderOptions,
-  RenderContext extends Record<string, unknown> = Record<string, never>,
-> extends ApplicationV2<Configuration, RenderOptions, RenderContext> {
+> extends ApplicationV2<RenderContext, Configuration, RenderOptions> {
   constructor(options: DeepPartial<Configuration> & { document: Document });
 
   static DEFAULT_OPTIONS: DeepPartial<DocumentSheetV2.Configuration>;

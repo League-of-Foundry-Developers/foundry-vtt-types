@@ -91,12 +91,6 @@ declare class ClientDocument<
   get sheet(): FormApplication | foundry.applications.api.ApplicationV2 | null;
 
   /**
-   * A Universally Unique Identifier (uuid) for this Document instance.
-   */
-  // TODO: Move to `src/foundry/common/abstract/document.d.mts` when that file is updated
-  get uuid(): string;
-
-  /**
    * A boolean indicator for whether or not the current game User has at least limited visibility for this Document.
    * Different Document types may have more specialized rules for what determines visibility.
    */

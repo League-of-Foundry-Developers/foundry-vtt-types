@@ -4,7 +4,6 @@ import type {
   DocumentConstructor,
 } from "../../../../types/helperTypes.d.mts";
 import type { Mixin } from "../../../../types/utils.d.mts";
-import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 import type { ClientDocument } from "./client-document.d.mts";
 
 declare class CanvasDocument<
@@ -42,19 +41,8 @@ declare class CanvasDocument<
    */
   get rendered(): boolean;
 
-  protected _onCreate(
-    data: foundry.data.fields.SchemaField.InnerAssignmentType<BaseDocument["schema"]["fields"]>,
-    options: DocumentModificationOptions,
-    userId: string,
-  ): void;
-
-  protected _onUpdate(
-    changed: foundry.data.fields.SchemaField.InnerAssignmentType<BaseDocument["schema"]["fields"]>,
-    options: DocumentModificationOptions,
-    userId: string,
-  ): void;
-
-  protected _onDelete(options: DocumentModificationOptions, userId: string): void;
+  // _preCreate, _onCreate, _onUpdate, _onDelete intentionally omitted for type compilation complexity
+  // None of these overrides modify the function signature and so can be safely ignored
 }
 
 declare global {

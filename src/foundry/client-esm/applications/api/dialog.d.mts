@@ -1,4 +1,4 @@
-import type { DeepPartial } from "../../../../types/utils.d.mts";
+import type { DeepPartial, EmptyObject } from "../../../../types/utils.d.mts";
 import type ApplicationV2 from "./application.d.mts";
 
 /**
@@ -61,7 +61,7 @@ import type ApplicationV2 from "./application.d.mts";
  * }).render({ force: true });
  * ```
  */
-declare class DialogV2 extends ApplicationV2<DialogV2.Configuration> {
+declare class DialogV2 extends ApplicationV2<EmptyObject, DialogV2.Configuration> {
   static override DEFAULT_OPTIONS: DeepPartial<ApplicationV2.Configuration>;
 
   protected override _initializeApplicationOptions(

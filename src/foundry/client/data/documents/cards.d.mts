@@ -8,6 +8,7 @@ import type { DeepPartial, InexactPartial, StoredDocument } from "../../../../ty
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
 import type BaseCards from "../../../common/documents/cards.d.mts";
+import type BaseUser from "../../../common/documents/user.d.mts";
 
 declare global {
   namespace Cards {
@@ -288,8 +289,16 @@ declare global {
       context: Record<string, unknown>,
     ): Promise<ChatMessage.ConfiguredInstance | undefined>;
 
-    protected override _onUpdate(
+    protected override _preCreate(
+      // can't use UpdateData because it creates circular reference
       data: fields.SchemaField.InnerAssignmentType<BaseCards.Schema>,
+      options: DocumentModificationOptions,
+      user: BaseUser,
+    ): Promise<boolean | void>;
+
+    protected override _onUpdate(
+      // can't use UpdateData because it creates circular reference
+      changed: fields.SchemaField.InnerAssignmentType<BaseCards.Schema>,
       options: DocumentModificationOptions,
       userId: string,
     ): void;
@@ -339,11 +348,16 @@ declare global {
 
     override deleteDialog(options?: Partial<DialogOptions>): Promise<this | false | null | undefined>;
 
-    // TODO: It's a bit weird that we have to do it in this generic way but otherwise there is an error overriding this. Investigate later.
     static override createDialog<T extends DocumentConstructor>(
       this: T,
-      data?: DeepPartial<Cards["_source"] | (Cards["_source"] & Record<string, unknown>)>,
-      context?: Pick<DocumentModificationContext, "parent" | "pack"> & Partial<DialogOptions>,
+      data?: DeepPartial<ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>)>,
+      context?: Pick<DocumentModificationContext, "parent" | "pack"> &
+        InexactPartial<
+          DialogOptions & {
+            /** A restriction the selectable sub-types of the Dialog. */
+            types: string[];
+          }
+        >,
     ): Promise<InstanceType<ConfiguredDocumentClass<T>> | null | undefined>;
   }
 }

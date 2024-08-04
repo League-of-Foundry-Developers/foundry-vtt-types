@@ -225,7 +225,7 @@ declare global {
     /** The FormApplication or ApplicationV2 to render */
     type:
       | (new () => FormApplication<any, any>)
-      | (new (options?: DeepPartial<ApplicationV2.Configuration>) => ApplicationV2<any, any>);
+      | (new (options?: DeepPartial<ApplicationV2.Configuration>) => ApplicationV2.Any);
 
     /** If true, only a GM can edit this Setting */
     restricted?: boolean | undefined;

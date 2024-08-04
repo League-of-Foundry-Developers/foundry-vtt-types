@@ -1,5 +1,5 @@
 import type { MustConform } from "../../../../types/helperTypes.d.mts";
-import type { DeepPartial, InexactPartial, MaybePromise } from "../../../../types/utils.d.mts";
+import type { AnyObject, DeepPartial, EmptyObject, InexactPartial, MaybePromise } from "../../../../types/utils.d.mts";
 import type EventEmitterMixin from "../../../common/utils/event-emitter.d.mts";
 
 // TODO: Investigate use of DeepPartial vs Partial vs InexactPartial
@@ -11,6 +11,8 @@ declare const __RenderContext: unique symbol;
 type _MustBeAssignableToInternal = MustConform<ApplicationV2, ApplicationV2.Internal<any, any, any>>;
 
 declare namespace ApplicationV2 {
+  type Any = ApplicationV2<any, any, any>;
+
   /**
    * This type is an internal implementation detail of fvtt-types.
    *
@@ -79,7 +81,7 @@ declare namespace ApplicationV2 {
     position: Partial<Position>;
   }
 
-  export interface Position {
+  interface Position {
     /** Window offset pixels from top */
     top: number;
 
@@ -99,7 +101,7 @@ declare namespace ApplicationV2 {
     zIndex: number;
   }
 
-  export interface WindowConfiguration {
+  interface WindowConfiguration {
     /**
      * Is this Application rendered inside a window frame?
      * @defaultValue `true`
@@ -143,7 +145,7 @@ declare namespace ApplicationV2 {
     contentClasses: string[];
   }
 
-  export interface FormConfiguration {
+  interface FormConfiguration {
     handler: FormSubmission;
 
     submitOnChange: boolean;
@@ -151,7 +153,7 @@ declare namespace ApplicationV2 {
     closeOnSubmit: boolean;
   }
 
-  export interface HeaderControlsEntry {
+  interface HeaderControlsEntry {
     /** A font-awesome icon class which denotes the control button */
     icon: string;
 
@@ -171,11 +173,11 @@ declare namespace ApplicationV2 {
     ownership?: string | number | undefined;
   }
 
-  export interface ConstructorParams {
+  interface ConstructorParams {
     position: Position;
   }
 
-  export interface RenderOptions {
+  interface RenderOptions {
     /**
      * Force application rendering. If true, an application which does not yet exist in the DOM is added.
      * If false, only applications which already exist are rendered.
@@ -198,7 +200,7 @@ declare namespace ApplicationV2 {
     isFirstRender: boolean;
   }
 
-  export interface WindowRenderOptions {
+  interface WindowRenderOptions {
     /** Update the window title with a new value? */
     title: string;
 
@@ -209,7 +211,7 @@ declare namespace ApplicationV2 {
     controls: boolean;
   }
 
-  export interface ClosingOptions {
+  interface ClosingOptions {
     /** Whether to animate the close, or perform it instantaneously */
     animate: boolean;
 
@@ -218,7 +220,7 @@ declare namespace ApplicationV2 {
   }
 
   /** An on-click action supported by the Application. Run in the context of a HandlebarsApplication. */
-  export type ClickAction = (
+  type ClickAction = (
     /** The originating click event */
     event: PointerEvent,
 
@@ -227,7 +229,7 @@ declare namespace ApplicationV2 {
   ) => MaybePromise<void>;
 
   /** A form submission handler method. Run in the context of a HandlebarsApplication */
-  export type FormSubmission = (
+  type FormSubmission = (
     /** The originating form submission or input change event */
     event: SubmitEvent | Event,
 
@@ -239,7 +241,7 @@ declare namespace ApplicationV2 {
   ) => MaybePromise<void>;
 
   /** @remarks Used with `templates/generic/tab-navigation.hbs` */
-  export interface Tab {
+  interface Tab {
     id: string;
     group: string;
     icon: string;
@@ -249,7 +251,7 @@ declare namespace ApplicationV2 {
   }
 
   /** @remarks Used with `templates/generic/form-fields.hbs` */
-  export interface FormNode {
+  interface FormNode {
     fieldset: boolean;
 
     legend?: string | undefined;
@@ -262,7 +264,7 @@ declare namespace ApplicationV2 {
   }
 
   /** @remarks Used with `templates/generic/form-footer.hbs` */
-  export interface FormFooterButton {
+  interface FormFooterButton {
     type: HTMLButtonElement["type"];
 
     name?: string | undefined;
@@ -284,11 +286,11 @@ declare namespace ApplicationV2 {
  * The Application class is responsible for rendering an HTMLElement into the Foundry Virtual Tabletop user interface.
  */
 declare class ApplicationV2<
-  Configuration extends ApplicationV2.Configuration = ApplicationV2.Configuration,
-  RenderOptions extends ApplicationV2.RenderOptions = ApplicationV2.RenderOptions,
   // Foundry doesn't define this generic in its documentation but it's necessary
   // in fvtt-types to type `_prepareContext` etc.
-  RenderContext extends Record<string, unknown> = Record<string, never>,
+  RenderContext extends AnyObject = EmptyObject,
+  Configuration extends ApplicationV2.Configuration = ApplicationV2.Configuration,
+  RenderOptions extends ApplicationV2.RenderOptions = ApplicationV2.RenderOptions,
 > extends EventEmitterMixin(Object) {
   [__Configuration]: Configuration;
   [__RenderOptions]: RenderOptions;

@@ -15,9 +15,15 @@ import type {
   StoredDocument,
 } from "../../../types/utils.mts";
 import type * as CONST from "../constants.mts";
-import type { DataField } from "../data/fields.d.mts";
+import type { DataField, EmbeddedCollectionField, EmbeddedDocumentField, SchemaField } from "../data/fields.d.mts";
 import type { fields } from "../data/module.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.mts";
+import type {
+  DatabaseCreateOperation,
+  DatabaseDeleteOperation,
+  DatabaseGetOperation,
+  DatabaseUpdateOperation,
+} from "./_types.d.mts";
 import type DataModel from "./data.mts";
 
 export default Document;
@@ -56,6 +62,11 @@ declare abstract class Document<
    */
   readonly collections: Document.CollectionRecord<Schema>;
 
+  /**
+   * Ensure that all Document classes share the same schema of their base declaration.
+   */
+  static get schema(): foundry.data.fields.SchemaField.Any;
+
   protected _initialize(options?: any): void;
 
   /**
@@ -82,7 +93,8 @@ declare abstract class Document<
    *     update: "ASSISTANT",
    *     delete: "ASSISTANT"
    *   },
-   *   preserveOnImport: ["_id", "sort", "ownership"]
+   *   preserveOnImport: ["_id", "sort", "ownership"],
+   *   schemaVersion: undefined
    * }
    * ```
    */
@@ -99,6 +111,11 @@ declare abstract class Document<
   // Referencing the concrete class the config is not possible because accessors cannot be generic and there is not
   // static polymorphic this type
   static get implementation(): DocumentConstructor;
+
+  /**
+   * The base document definition that this document class extends from.
+   */
+  static get baseDocument(): DocumentConstructor;
 
   /**
    * The named collection to which this Document belongs.
@@ -121,17 +138,22 @@ declare abstract class Document<
   get documentName(): ConcreteMetadata["name"];
 
   /**
-   * Does this Document support additional sub-types?
+   * The allowed types which may exist for this Document class
+   */
+  static get TYPES(): string[];
+
+  /**
+   * Does this Document support additional subtypes?
    */
   static get hasTypeData(): boolean;
 
   /**
    * The Embedded Document hierarchy for this Document.
    */
-  static get hierarchy(): Record<string, DataField.Any>;
+  static get hierarchy(): Record<string, EmbeddedCollectionField<any, any> | EmbeddedDocumentField<any>>;
 
   /**
-   * Determine the collection this Document exists in on its parent, if any.
+   * Identify the collection in a parent Document that this Document exists belongs to, if any.
    * @param parentCollection - An explicitly provided parent collection name.
    */
   _getParentCollection(parentCollection?: string): string | null;
@@ -147,6 +169,11 @@ declare abstract class Document<
   get isEmbedded(): boolean;
 
   /**
+   * A Universally Unique Identifier (uuid) for this Document instance.
+   */
+  get uuid(): string;
+
+  /**
    * Test whether a given User has a sufficient role in order to create Documents of this type in general.
    * @param user - The User being tested
    * @returns Does the User have a sufficient role to create?
@@ -158,9 +185,10 @@ declare abstract class Document<
    * This method returns the value recorded in Document ownership, regardless of the User's role.
    * To test whether a user has a certain capability over the document, testUserPermission should be used.
    * @param user - The User being tested
+   *               (default: `game.user`)
    * @returns A numeric permission level from CONST.DOCUMENT_OWNERSHIP_LEVELS or null
    */
-  getUserLevel(user: foundry.documents.BaseUser): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
+  getUserLevel(user?: foundry.documents.BaseUser): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
 
   /**
    * Test whether a certain User has a requested permission level (or greater) over the Document
@@ -213,6 +241,12 @@ declare abstract class Document<
          * @defaultValue `false`
          */
         keepId: boolean;
+
+        /**
+         * Track the clone source
+         * @defaultValue `false`
+         */
+        addSource: boolean;
       } & DocumentConstructionContext
     >, // Adding StoredDocument to the return causes a recursive type error in Scene
   ): Save extends true ? Promise<this> : this;
@@ -224,13 +258,16 @@ declare abstract class Document<
    */
   migrateSystemData(): object;
 
+  override toObject(source: true): this["_source"];
+  override toObject(source?: boolean): ReturnType<this["schema"]["toObject"]>;
+
   /**
    * Create multiple Documents using provided input data.
    * Data is provided as an array of objects where each individual object becomes one new Document.
    *
-   * @param data    - An array of data objects used to create multiple documents
+   * @param data    - An array of data objects or existing Documents to persist.
    *                  (default: `[]`)
-   * @param context - Additional context which customizes the creation workflow
+   * @param operation - Parameters of the requested creation operation
    *                  (default: `{}`)
    * @returns An array of created Document instances
    *
@@ -259,30 +296,22 @@ declare abstract class Document<
    * const created = await Actor.createDocuments(data, {pack: "mymodule.mypack"});
    * ```
    */
-  static createDocuments<T extends Document.AnyConstructor>(
+  static createDocuments<T extends Document.AnyConstructor, Temporary extends boolean = false>(
     this: T,
     data: Array<
       | fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]>
       | (fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]> & Record<string, unknown>)
     >,
-    context: DocumentModificationContext & { temporary: false },
-  ): Promise<StoredDocument<InstanceType<Document.ConfiguredClass<T>>>[]>;
-  static createDocuments<T extends Document.AnyConstructor>(
-    this: T,
-    data: Array<
-      | fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]>
-      | (fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]> & Record<string, unknown>)
-    >,
-    context: DocumentModificationContext & { temporary: boolean },
-  ): Promise<InstanceType<Document.ConfiguredClass<T>>[]>;
-  static createDocuments<T extends Document.AnyConstructor>(
-    this: T,
-    data?: Array<
-      | fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]>
-      | (fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]> & Record<string, unknown>)
-    >,
-    context?: DocumentModificationContext,
-  ): Promise<StoredDocument<InstanceType<Document.ConfiguredClass<T>>>[]>;
+    operation?: InexactPartial<Omit<DatabaseCreateOperation<InstanceType<T>>, "data">> & {
+      /**
+       * @deprecated `"It is no longer supported to create temporary documents using the Document.createDocuments API. Use the new Document() constructor instead."`
+       * @remarks No explicit undefined because deprecation message checks `"temporary" in operation`
+       */
+      temporary?: Temporary;
+    },
+  ): true extends Temporary
+    ? Promise<InstanceType<Document.ConfiguredClass<T>>[]>
+    : Promise<StoredDocument<InstanceType<Document.ConfiguredClass<T>>>[]>;
 
   /**
    * Update multiple Document instances using provided differential data.
@@ -290,7 +319,7 @@ declare abstract class Document<
    *
    * @param updates - An array of differential data objects, each used to update a single Document
    *                  (default: `[]`)
-   * @param context - Additional context which customizes the update workflow
+   * @param operation - Parameters of the database update operation
    *                  (default: `{}`)
    * @returns An array of updated Document instances
    *
@@ -322,7 +351,8 @@ declare abstract class Document<
   static updateDocuments<T extends Document.AnyConstructor>(
     this: T,
     updates?: Array<DeepPartial<ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>)>>,
-    context?: DocumentModificationContext & foundry.utils.MergeObjectOptions,
+    operation?: InexactPartial<Omit<DatabaseUpdateOperation<InstanceType<T>>, "updates">> &
+      foundry.utils.MergeObjectOptions,
   ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
 
   /**
@@ -331,7 +361,7 @@ declare abstract class Document<
    *
    * @param ids - An array of string ids for the documents to be deleted
    *              (default: `[]`)
-   * @param context - Additional context which customizes the update workflow
+   * @param operation - Parameters of the database deletion operation
    *                  (default: `{}`)
    * @returns An array of deleted Document instances
    *
@@ -365,14 +395,14 @@ declare abstract class Document<
   static deleteDocuments<T extends Document.AnyConstructor>(
     this: T,
     ids?: string[],
-    context?: DocumentModificationContext,
+    operation?: InexactPartial<Omit<DatabaseDeleteOperation, "ids">>,
   ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
 
   /**
    * Create a new Document using provided input data, saving it to the database.
    * @see {@link Document.createDocuments}
    * @param data    - Initial data used to create this Document
-   * @param context - Additional context which customizes the creation workflow
+   * @param operation - Parameters of the creation operation
    *                  (default: `{}`)
    * @returns The created Document instance
    *
@@ -397,29 +427,27 @@ declare abstract class Document<
    *
    * @remarks If no document has actually been created, the returned {@link Promise} resolves to `undefined`.
    */
-  static create<T extends Document.AnyConstructor>(
+  static create<T extends Document.AnyConstructor, Temporary extends boolean = false>(
     this: T,
     data: ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>),
-    context: DocumentModificationContext & { temporary: false },
-  ): Promise<ConfiguredStoredDocument<T> | undefined>;
-  static create<T extends Document.AnyConstructor>(
-    this: T,
-    data: ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>),
-    context: DocumentModificationContext & { temporary: boolean },
-  ): Promise<InstanceType<ConfiguredDocumentClass<T>> | undefined>;
-  static create<T extends Document.AnyConstructor>(
-    this: T,
-    data: ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>),
-    context?: DocumentModificationContext,
-  ): Promise<ConfiguredStoredDocument<T> | undefined>;
+    operation?: InexactPartial<Omit<DatabaseCreateOperation<InstanceType<T>>, "data">> & {
+      /**
+       * @deprecated `"It is no longer supported to create temporary documents using the Document.createDocuments API. Use the new Document() constructor instead."`
+       * @remarks No explicit undefined because deprecation message checks `"temporary" in operation`
+       */
+      temporary?: Temporary;
+    },
+  ): true extends Temporary
+    ? Promise<InstanceType<ConfiguredDocumentClass<T>> | undefined>
+    : Promise<ConfiguredStoredDocument<T> | undefined>;
 
   /**
    * Update this Document using incremental data, saving it to the database.
    * @see {@link Document.updateDocuments}
-   * @param data    - Differential update data which modifies the existing values of this document data
-   *                  (default: `{}`)
-   * @param context - Additional context which customizes the update workflow
-   *                  (default: `{}`)
+   * @param data      - Differential update data which modifies the existing values of this document data
+   *                    (default: `{}`)
+   * @param operation - Parameters of the update operation
+   *                    (default: `{}`)
    * @returns The updated Document instance
    *
    * @remarks If no document has actually been updated, the returned {@link Promise} resolves to `undefined`.
@@ -428,19 +456,19 @@ declare abstract class Document<
     data?:
       | fields.SchemaField.AssignmentType<Schema, {}>
       | (fields.SchemaField.AssignmentType<Schema, {}> & Record<string, unknown>),
-    context?: DocumentModificationContext & foundry.utils.MergeObjectOptions,
+    operation?: InexactPartial<Omit<DatabaseUpdateOperation<this>, "updates">> & foundry.utils.MergeObjectOptions,
   ): Promise<this | undefined>;
 
   /**
    * Delete this Document, removing it from the database.
    * @see {@link Document.deleteDocuments}
-   * @param context - Additional context which customizes the deletion workflow
-   *                  (default: `{}`)
+   * @param operation - Parameters of the deletion operation
+   *                    (default: `{}`)
    * @returns The deleted Document instance
    *
    * @remarks If no document has actually been deleted, the returned {@link Promise} resolves to `undefined`.
    */
-  delete(context?: DocumentModificationContext): Promise<this | undefined>;
+  delete(operation?: InexactPartial<Omit<DatabaseDeleteOperation, "ids">>): Promise<this | undefined>;
 
   /**
    * Get a World-level Document of this type by its id.
@@ -448,12 +476,7 @@ declare abstract class Document<
    * @param options    - Additional options which customize the request
    * @returns The retrieved Document, or null
    */
-  static get(
-    documentId: string,
-    options: InexactPartial<{
-      pack: string;
-    }>,
-  ): Document.Any | null;
+  static get(documentId: string, options?: InexactPartial<DatabaseGetOperation>): Document.Any | null;
 
   /**
    * A compatibility method that returns the appropriate name of an embedded collection within this Document.
@@ -515,21 +538,24 @@ declare abstract class Document<
    * @param embeddedName - The name of the embedded Document type
    * @param data         - An array of data objects used to create multiple documents
    *                       (default: `[]`)
-   * @param context      - Additional context which customizes the creation workflow
+   * @param operation    - Parameters of the database creation workflow
    *                       (default: `{}`)
    * @returns An array of created Document instances
    */
-  // Excluding FogExploration because it broke polymorphism and is never embedded. Can be removed in v12
-  createEmbeddedDocuments<
-    EmbeddedName extends Exclude<DocumentType, "FogExploration">,
-    Temporary extends boolean = false,
-  >(
+  // TODO: After regions are defined, change first parameter to `extends foundry.CONST.EMBEDDED_DOCUMENT_TYPES`
+  createEmbeddedDocuments<EmbeddedName extends DocumentType, Temporary extends boolean = false>(
     embeddedName: EmbeddedName,
     data?: Array<ConstructorDataType<ConfiguredDocumentClassForName<EmbeddedName>>>,
-    context?: Omit<DocumentModificationContext, "temporary"> & { temporary?: Temporary }, // Possibly a way to specify the parent here, but seems less relevant?
+    operation?: InexactPartial<Omit<DatabaseCreateOperation, "data">> & {
+      /**
+       * @deprecated `"It is no longer supported to create temporary documents using the Document.createDocuments API. Use the new Document() constructor instead."`
+       * @remarks No explicit undefined because deprecation message checks `"temporary" in operation`
+       */
+      temporary?: Temporary;
+    },
   ): Promise<
     Array<
-      Temporary extends true
+      true extends Temporary
         ? InstanceType<ConfiguredDocumentClassForName<EmbeddedName>>
         : StoredDocument<InstanceType<ConfiguredDocumentClassForName<EmbeddedName>>>
     >
@@ -541,14 +567,15 @@ declare abstract class Document<
    * @param embeddedName - The name of the embedded Document type
    * @param updates      - An array of differential data objects, each used to update a single Document
    *                       (default: `[]`)
-   * @param context      - Additional context which customizes the creation workflow
+   * @param operation    - Parameters of the database update workflow
    *                       (default: `{}`)
    * @returns An array of updated Document instances
    */
-  updateEmbeddedDocuments<EmbeddedName extends Exclude<DocumentType, "FogExploration">>(
+  // TODO: After regions are defined, change first parameter to `extends foundry.CONST.EMBEDDED_DOCUMENT_TYPES`
+  updateEmbeddedDocuments<EmbeddedName extends DocumentType>(
     embeddedName: EmbeddedName,
     updates?: Array<Record<string, unknown>>,
-    context?: DocumentModificationContext,
+    operation?: InexactPartial<Omit<DatabaseUpdateOperation, "updates">>,
   ): Promise<Array<StoredDocument<InstanceType<ConfiguredDocumentClassForName<EmbeddedName>>>>>;
 
   /**
@@ -556,15 +583,22 @@ declare abstract class Document<
    * @see {@link Document.deleteDocuments}
    * @param embeddedName - The name of the embedded Document type
    * @param ids          - An array of string ids for each Document to be deleted
-   * @param context      - Additional context which customizes the deletion workflow
+   * @param operation    - Parameters of the database deletion workflow
    *                       (default: `{}`)
    * @returns An array of deleted Document instances
    */
-  deleteEmbeddedDocuments<EmbeddedName extends Exclude<DocumentType, "FogExploration">>(
+  deleteEmbeddedDocuments<EmbeddedName extends DocumentType>(
     embeddedName: EmbeddedName,
     ids: Array<string>,
-    context?: DocumentModificationContext,
+    operation?: InexactPartial<Omit<DatabaseDeleteOperation, "ids">>,
   ): Promise<Array<StoredDocument<InstanceType<ConfiguredDocumentClassForName<EmbeddedName>>>>>;
+
+  /**
+   * Iterate over all embedded Documents that are hierarchical children of this Document.
+   * @param _parentPath - A parent field path already traversed
+   * @remarks Not called within Foundry's client-side code, likely exists for server documents
+   */
+  traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.Any]>;
 
   /**
    * Get the value of a "flag" for this document
@@ -617,19 +651,70 @@ declare abstract class Document<
   unsetFlag(scope: string, key: string): Promise<this>;
 
   /**
-   * Perform preliminary operations before a Document of this type is created.
-   * Pre-creation operations only occur for the client which requested the operation.
-   * Modifications to the pending document before it is persisted should be performed with this.updateSource().
-   * @param data    - The initial data used to create the document
+   * Pre-process a creation operation for a single Document instance.
+   * Pre-operation events only occur for the client which requested the operation.
+   * Modifications to the pending Document instance must be performed using {@link Document#updateSource}.
+   * @param data    - The initial data object provided to the document creation request
    * @param options - Additional options which modify the creation request
    * @param user    - The User requesting the document creation
-   * @returns A return value of false indicates the creation operation should be cancelled
+   * @returns Return false to exclude this Document from the creation operation
    */
   protected _preCreate(
     data: fields.SchemaField.AssignmentType<Schema>,
     options: DocumentModificationOptions,
     user: foundry.documents.BaseUser,
   ): Promise<boolean | void>;
+
+  /**
+   * Post-process a creation operation for a single Document instance.
+   * Post-operation events occur for all connected clients.
+   * @param data    - The initial data object provided to the document creation request
+   * @param options - Additional options which modify the creation request
+   * @param userId  - The id of the User requesting the document update
+   */
+  protected _onCreate(
+    data: fields.SchemaField.InnerAssignmentType<Schema>,
+    options: DocumentModificationOptions,
+    userId: string,
+  ): void;
+
+  /**
+   * Pre-process a creation operation, potentially altering its instructions or input data. Pre-operation events only
+   * occur for the client which requested the operation.
+   *
+   * This batch-wise workflow occurs after individual {@link Document#_preCreate} workflows and provides a final
+   * pre-flight check before a database operation occurs.
+   *
+   * Modifications to pending documents must mutate the documents array or alter individual document instances using
+   * {@link Document#updateSource}.
+   * @param documents - Pending document instances ot be created
+   * @param operation - Parameters of the database creation operation
+   * @param user      - The User requesting the creation operation
+   * @returns Return false to cancel the creation operation entirely
+   */
+  protected static _preCreateOperation<T extends Document.AnyConstructor>(
+    this: T,
+    documents: InstanceType<Document.ConfiguredClass<T>>[],
+    operation: DatabaseCreateOperation,
+    user: foundry.documents.BaseUser,
+  ): Promise<boolean | void>;
+
+  /**
+   * Post-process a creation operation, reacting to database changes which have occurred. Post-operation events occur
+   * for all connected clients.
+   *
+   * This batch-wise workflow occurs after individual {@link Document#_onCreate} workflows.
+   *
+   * @param documents - The Document instances which were created
+   * @param operation - Parameters of the database creation operation
+   * @param user      - The User who performed the creation operation
+   */
+  protected static _onCreateOperation<T extends Document.AnyConstructor>(
+    this: T,
+    documents: InstanceType<Document.ConfiguredClass<T>>[],
+    operation: DatabaseCreateOperation,
+    user: foundry.documents.BaseUser,
+  ): Promise<void>;
 
   /**
    * Perform preliminary operations before a Document of this type is updated.
@@ -646,28 +731,6 @@ declare abstract class Document<
   ): Promise<boolean | void>;
 
   /**
-   * Perform preliminary operations before a Document of this type is deleted.
-   * Pre-delete operations only occur for the client which requested the operation.
-   * @param options - Additional options which modify the deletion request
-   * @param user    - The User requesting the document deletion
-   * @returns A return value of false indicates the delete operation should be cancelled
-   */
-  protected _preDelete(options: DocumentModificationOptions, user: foundry.documents.BaseUser): Promise<boolean | void>;
-
-  /**
-   * Perform follow-up operations after a Document of this type is created.
-   * Post-creation operations occur for all clients after the creation is broadcast.
-   * @param data    - The data from which the document was created
-   * @param options - Additional options which modify the creation request
-   * @param userId  - The id of the User requesting the document update
-   */
-  protected _onCreate(
-    data: fields.SchemaField.InnerAssignmentType<Schema>,
-    options: DocumentModificationOptions,
-    userId: string,
-  ): void;
-
-  /**
    * Perform follow-up operations after a Document of this type is updated.
    * Post-update operations occur for all clients after the update is broadcast.
    * @param changed - The differential data that was changed relative to the documents prior values
@@ -681,6 +744,54 @@ declare abstract class Document<
   ): void;
 
   /**
+   * Pre-process an update operation, potentially altering its instructions or input data. Pre-operation events only
+   * occur for the client which requested the operation.
+   *
+   * This batch-wise workflow occurs after individual {@link Document#_preUpdate} workflows and provides a final
+   * pre-flight check before a database operation occurs.
+   *
+   * Modifications to the requested updates are performed by mutating the data array of the operation.
+   * {@link Document#updateSource}.
+   *
+   * @param documents - Document instances to be updated
+   * @param operation - Parameters of the database update operation
+   * @param user      - The User requesting the update operation
+   * @returns Return false to cancel the update operation entirely
+   */
+  protected static _preUpdateOperation<T extends Document.AnyConstructor>(
+    this: T,
+    documents: InstanceType<Document.ConfiguredClass<T>>[],
+    operation: DatabaseUpdateOperation,
+    user: foundry.documents.BaseUser,
+  ): Promise<boolean | void>;
+
+  /**
+   * Post-process an update operation, reacting to database changes which have occurred. Post-operation events occur
+   * for all connected clients.
+   *
+   * This batch-wise workflow occurs after individual {@link Document#_onUpdate} workflows.
+   *
+   * @param documents - The Document instances which were updated
+   * @param operation - Parameters of the database update operation
+   * @param user      - The User who performed the update operation
+   */
+  protected static _onUpdateOperation<T extends Document.AnyConstructor>(
+    this: T,
+    documents: InstanceType<Document.ConfiguredClass<T>>[],
+    operation: DatabaseUpdateOperation,
+    user: foundry.documents.BaseUser,
+  ): Promise<void>;
+
+  /**
+   * Perform preliminary operations before a Document of this type is deleted.
+   * Pre-delete operations only occur for the client which requested the operation.
+   * @param options - Additional options which modify the deletion request
+   * @param user    - The User requesting the document deletion
+   * @returns A return value of false indicates the delete operation should be cancelled
+   */
+  protected _preDelete(options: DocumentModificationOptions, user: foundry.documents.BaseUser): Promise<boolean | void>;
+
+  /**
    * Perform follow-up operations after a Document of this type is deleted.
    * Post-deletion operations occur for all clients after the deletion is broadcast.
    * @param options - Additional options which modify the deletion request
@@ -689,51 +800,44 @@ declare abstract class Document<
   protected _onDelete(options: DocumentModificationOptions, userId: string): void;
 
   /**
-   * Perform follow-up operations when a set of Documents of this type are created.
-   * This is where side effects of creation should be implemented.
-   * Post-creation side effects are performed only for the client which requested the operation.
-   * @param documents - The Document instances which were created
-   * @param context   - The context for the modification operation
-   */
-  protected static _onCreateDocuments<T extends Document.AnyConstructor>(
-    this: T,
-    documents: Array<InstanceType<ConfiguredDocumentClass<T>>>,
-    context: DocumentModificationContext,
-  ): Promise<void>;
-
-  /**
-   * Perform follow-up operations when a set of Documents of this type are updated.
-   * This is where side effects of updates should be implemented.
-   * Post-update side effects are performed only for the client which requested the operation.
-   * @param documents - The Document instances which were updated
-   * @param context   - The context for the modification operation
+   * Pre-process a deletion operation, potentially altering its instructions or input data. Pre-operation events only
+   * occur for the client which requested the operation.
    *
-   * @remarks The base implementation returns `void` but it is typed as
-   * `unknown` to allow deriving classes to return whatever they want. The
-   * return type is not meant to be used.
+   * This batch-wise workflow occurs after individual {@link Document#_preDelete} workflows and provides a final
+   * pre-flight check before a database operation occurs.
+   *
+   * Modifications to the requested deletions are performed by mutating the operation object.
+   * {@link Document#updateSource}.
+   *
+   * @param documents - Document instances to be deleted
+   * @param operation - Parameters of the database update operation
+   * @param user      - The User requesting the deletion operation
+   * @returns Return false to cancel the deletion operation entirely
+   * @internal
    */
-  protected static _onUpdateDocuments<T extends Document.AnyConstructor>(
+  protected static _preDeleteOperation<T extends Document.AnyConstructor>(
     this: T,
-    documents: Array<InstanceType<ConfiguredDocumentClass<T>>>,
-    context: DocumentModificationContext,
-  ): Promise<unknown>;
+    documents: InstanceType<Document.ConfiguredClass<T>>[],
+    operation: DatabaseDeleteOperation,
+    user: foundry.documents.BaseUser,
+  ): Promise<boolean | void>;
 
   /**
-   * Perform follow-up operations when a set of Documents of this type are deleted.
-   * This is where side effects of deletion should be implemented.
-   * Post-deletion side effects are performed only for the client which requested the operation.
+   * Post-process a deletion operation, reacting to database changes which have occurred. Post-operation events occur
+   * for all connected clients.
+   *
+   * This batch-wise workflow occurs after individual {@link Document#_onDelete} workflows.
+   *
    * @param documents - The Document instances which were deleted
-   * @param context   - The context for the modification operation
-   *
-   * @remarks The base implementation returns `void` but it is typed as
-   * `unknown` to allow deriving classes to return whatever they want. The
-   * return type is not meant to be used.
+   * @param operation - Parameters of the database deletion operation
+   * @param user      - The User who performed the deletion operation
    */
-  protected static _onDeleteDocuments<T extends Document.AnyConstructor>(
+  protected static _onDeleteOperation<T extends Document.AnyConstructor>(
     this: T,
-    documents: Array<InstanceType<ConfiguredDocumentClass<T>>>,
-    context: DocumentModificationContext,
-  ): Promise<unknown>;
+    documents: InstanceType<Document.ConfiguredClass<T>>[],
+    operation: DatabaseDeleteOperation,
+    user: foundry.documents.BaseUser,
+  ): Promise<void>;
 
   /**
    * Configure whether V10 Document Model migration warnings should be logged for this class.
@@ -741,18 +845,10 @@ declare abstract class Document<
   static LOG_V10_COMPATIBILITY_WARNINGS: boolean;
 
   /**
-   * @deprecated since v10
-   */
-  get data(): unknown;
-
-  /**
    * @deprecated since v11, will be removed in v13
    * @remarks "You are accessing `Document.hasSystemData` which is deprecated. Please use `Document.hasTypeData` instead."
    */
   static get hasSystemData(): boolean;
-
-  override toObject(source: true): this["_source"];
-  override toObject(source?: boolean): ReturnType<this["schema"]["toObject"]>;
 
   /**
    * A reusable helper for adding migration shims.
@@ -786,7 +882,35 @@ declare abstract class Document<
     options?: LogCompatibilityWarningOptions,
   ): void;
 
-  protected static _logV10CompatibilityWarning(options?: LogCompatibilityWarningOptions): void;
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks `"The Document._onCreateDocuments static method is deprecated in favor of Document._onCreateOperation"`
+   */
+  protected static _onCreateDocuments<T extends Document.AnyConstructor>(
+    this: T,
+    documents: Array<InstanceType<ConfiguredDocumentClass<T>>>,
+    context: DocumentModificationContext,
+  ): Promise<void>;
+
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks `"The Document._onUpdateDocuments static method is deprecated in favor of Document._onUpdateOperation"`
+   */
+  protected static _onUpdateDocuments<T extends Document.AnyConstructor>(
+    this: T,
+    documents: Array<InstanceType<ConfiguredDocumentClass<T>>>,
+    context: DocumentModificationContext,
+  ): Promise<unknown>;
+
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks `"The Document._onDeleteDocuments static method is deprecated in favor of Document._onDeleteOperation"`
+   */
+  protected static _onDeleteDocuments<T extends Document.AnyConstructor>(
+    this: T,
+    documents: Array<InstanceType<ConfiguredDocumentClass<T>>>,
+    context: DocumentModificationContext,
+  ): Promise<unknown>;
 }
 
 declare namespace Document {
@@ -899,6 +1023,7 @@ export interface Metadata<ConcreteDocument extends Document.Any> {
     delete: string | ((user: foundry.documents.BaseUser, doc: ConcreteDocument, data: {}) => boolean);
   };
   preserveOnImport?: string[];
+  schemaVersion: string | undefined;
   labelPlural: string; // This is not set for the Document class but every class that implements Document actually provides it.
   types: readonly string[];
   hasSystemData: boolean;

@@ -1,5 +1,9 @@
 import { expectTypeOf } from "vitest";
 
-const doc = new DrawingDocument();
+new DrawingDocument();
+new DrawingDocument({});
 
-expectTypeOf(doc.author).toEqualTypeOf<User>();
+const doc = new DrawingDocument();
+expectTypeOf(doc).toEqualTypeOf<DrawingDocument>();
+
+expectTypeOf(doc.isAuthor).toEqualTypeOf<boolean>();
