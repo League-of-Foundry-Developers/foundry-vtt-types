@@ -306,7 +306,7 @@ declare abstract class Document<
       /**
        * @deprecated `"It is no longer supported to create temporary documents using the Document.createDocuments API. Use the new Document() constructor instead."`
        * @remarks No explicit undefined because deprecation message checks `"temporary" in operation`
-       * */
+       */
       temporary?: Temporary;
     },
   ): true extends Temporary
@@ -434,7 +434,7 @@ declare abstract class Document<
       /**
        * @deprecated `"It is no longer supported to create temporary documents using the Document.createDocuments API. Use the new Document() constructor instead."`
        * @remarks No explicit undefined because deprecation message checks `"temporary" in operation`
-       * */
+       */
       temporary?: Temporary;
     },
   ): true extends Temporary
@@ -550,7 +550,7 @@ declare abstract class Document<
       /**
        * @deprecated `"It is no longer supported to create temporary documents using the Document.createDocuments API. Use the new Document() constructor instead."`
        * @remarks No explicit undefined because deprecation message checks `"temporary" in operation`
-       * */
+       */
       temporary?: Temporary;
     },
   ): Promise<
