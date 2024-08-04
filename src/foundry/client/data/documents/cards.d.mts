@@ -346,6 +346,18 @@ declare global {
      */
     resetDialog(): Promise<Cards.ConfiguredInstance | false | null>;
 
-    // deleteDialog and createDialog have the same signatures as the parent class
+    override deleteDialog(options?: Partial<DialogOptions>): Promise<this | false | null | undefined>;
+
+    static override createDialog<T extends DocumentConstructor>(
+      this: T,
+      data?: DeepPartial<ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>)>,
+      context?: Pick<DocumentModificationContext, "parent" | "pack"> &
+        InexactPartial<
+          DialogOptions & {
+            /** A restriction the selectable sub-types of the Dialog. */
+            types: string[];
+          }
+        >,
+    ): Promise<InstanceType<ConfiguredDocumentClass<T>> | null | undefined>;
   }
 }
