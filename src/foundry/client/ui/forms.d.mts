@@ -57,12 +57,6 @@ declare global {
      * @param value - The value to append to the form data
      */
     override append(name: string, value: any): void;
-
-    /**
-     * Export the FormData as an object
-     * @deprecated since v10, use `FormDataExtended#object` instead.
-     */
-    toObject(): FormDataExtended["object"];
   }
 }
 
@@ -84,7 +78,7 @@ declare namespace FormDataExtended {
      */
     disabled?: boolean;
     /** Include readonly fields?
-     * (default: `false`)
+     * (default: `true`)
      */
     readonly?: boolean;
   }
