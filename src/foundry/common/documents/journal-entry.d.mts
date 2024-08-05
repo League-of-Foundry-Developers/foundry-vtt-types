@@ -68,6 +68,7 @@ declare namespace BaseJournalEntry {
       permissions: {
         create: "JOURNAL_CREATE";
       };
+      schemaVersion: "12.324";
     }
   >;
 

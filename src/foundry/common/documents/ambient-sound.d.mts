@@ -39,6 +39,7 @@ declare namespace BaseAmbientSound {
       label: "DOCUMENT.AmbientSound";
       labelPlural: "DOCUMENT.AmbientSounds";
       isEmbedded: true;
+      schemaVersion: "12.324";
     }
   >;
 

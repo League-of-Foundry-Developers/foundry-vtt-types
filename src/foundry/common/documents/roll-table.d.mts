@@ -54,6 +54,7 @@ declare namespace BaseRollTable {
       embedded: { TableResult: "results" };
       label: "DOCUMENT.RollTable";
       labelPlural: "DOCUMENT.RollTables";
+      schemaVersion: "12.324";
     }
   >;
 

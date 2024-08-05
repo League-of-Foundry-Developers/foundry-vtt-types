@@ -50,6 +50,7 @@ declare namespace BaseCombatant {
       label: "DOCUMENT.Combatant";
       labelPlural: "DOCUMENT.Combatants";
       isEmbedded: true;
+      schemaVersion: "12.324";
       permissions: {
         create: (user: documents.BaseUser, doc: Document.Any) => boolean;
         update: (user: documents.BaseUser, doc: Document.Any, data: UpdateData) => boolean;

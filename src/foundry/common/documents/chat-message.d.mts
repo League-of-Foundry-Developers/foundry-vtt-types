@@ -79,6 +79,7 @@ declare namespace BaseChatMessage {
         update: (user: documents.BaseUser, doc: Document.Any, data: UpdateData) => boolean;
         delete: (user: documents.BaseUser, doc: Document.Any) => boolean;
       };
+      schemaVersion: "12.324";
     }
   >;
 

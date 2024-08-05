@@ -65,6 +65,7 @@ declare namespace BaseCards {
       label: "DOCUMENT.Cards";
       labelPlural: "DOCUMENT.CardsPlural";
       coreTypes: ["deck", "hand", "pile"];
+      schemaVersion: "12.324";
     }
   >;
 

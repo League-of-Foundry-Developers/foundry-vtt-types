@@ -26,6 +26,7 @@ declare namespace BaseActor {
         create: (user: documents.BaseUser, doc: Document.Any) => boolean;
         update: (user: documents.BaseUser, doc: Document.Any, data: UpdateData) => boolean;
       };
+      schemaVersion: "12.324";
 
       /**
        * @deprecated since v10, BaseActor.metadata.types is deprecated since v10 in favor of BaseActor.TYPES.

@@ -57,6 +57,7 @@ declare namespace BaseFolder {
       label: "DOCUMENT.Folder";
       labelPlural: "DOCUMENT.Folders";
       coreTypes: typeof CONST.FOLDER_DOCUMENT_TYPES;
+      schemaVersion: "12.324";
     }
   >;
 

@@ -70,6 +70,7 @@ declare namespace BaseTableResult {
       permissions: {
         update: (user: documents.BaseUser, doc: Document.Any, data: UpdateData) => boolean;
       };
+      schemaVersion: "12.324";
     }
   >;
 

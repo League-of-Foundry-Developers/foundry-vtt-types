@@ -68,6 +68,7 @@ declare namespace BaseNote {
       permissions: {
         create: "NOTE_CREATE";
       };
+      schemaVersion: "12.324";
     }
   >;
 

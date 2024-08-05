@@ -38,6 +38,7 @@ declare namespace BaseSetting {
         update: "SETTINGS_MODIFY";
         delete: "SETTINGS_MODIFY";
       };
+      schemaVersion: "12.324";
     }
   >;
 

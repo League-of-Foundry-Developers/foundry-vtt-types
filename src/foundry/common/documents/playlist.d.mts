@@ -49,6 +49,7 @@ declare namespace BasePlaylist {
       embedded: { PlaylistSound: "sounds" };
       label: "DOCUMENT.Playlist";
       labelPlural: "DOCUMENT.Playlists";
+      schemaVersion: "12.324";
     }
   >;
 

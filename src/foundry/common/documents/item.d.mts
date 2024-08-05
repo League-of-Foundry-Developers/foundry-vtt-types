@@ -86,6 +86,7 @@ declare namespace BaseItem {
       label: "DOCUMENT.Item";
       labelPlural: "DOCUMENT.Items";
       permissions: { create: "ITEM_CREATE" };
+      schemaVersion: "12.324";
 
       /**
        * @deprecated since v10, BaseItem.metadata.types is deprecated since v10 in favor of BaseItem.TYPES.

@@ -58,6 +58,7 @@ declare namespace BaseJournalEntryPage {
       label: "DOCUMENT.JournalEntryPage";
       labelPlural: "DOCUMENT.JournalEntryPages";
       coreTypes: ["image", "pdf", "text", "video"];
+      schemaVersion: "12.324";
     }
   >;
 

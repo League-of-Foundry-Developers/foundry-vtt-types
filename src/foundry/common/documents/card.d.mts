@@ -91,6 +91,7 @@ declare namespace BaseCard {
         create: () => boolean;
         update: () => boolean;
       };
+      schemaVersion: "12.324";
     }
   >;
 

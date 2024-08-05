@@ -81,6 +81,7 @@ declare namespace BaseActorDelta {
         Item: "items";
         ActiveEffect: "effects";
       };
+      schemaVersion: "12.324";
     }
   >;
 

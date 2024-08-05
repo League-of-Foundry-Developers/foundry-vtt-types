@@ -77,6 +77,7 @@ declare namespace BaseMacro {
       labelPlural: "DOCUMENT.Macros";
       coreTypes: CONST.MACRO_TYPES[];
       permissions: { create: "PLAYER" };
+      schemaVersion: "12.324";
     }
   >;
 

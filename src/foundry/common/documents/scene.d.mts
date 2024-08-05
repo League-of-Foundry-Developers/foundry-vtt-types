@@ -61,6 +61,7 @@ declare namespace BaseScene {
       label: "DOCUMENT.Scene";
       labelPlural: "DOCUMENT.Scenes";
       preserveOnImport: ["_id", "sort", "ownership", "active"];
+      schemaVersion: "12.324";
     }
   >;
 

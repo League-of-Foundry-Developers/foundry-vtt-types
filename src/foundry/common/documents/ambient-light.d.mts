@@ -40,6 +40,7 @@ declare namespace BaseAmbientLight {
       collection: "lights";
       label: "DOCUMENT.AmbientLight";
       labelPlural: "DOCUMENT.AmbientLights";
+      schemaVersion: "12.324";
     }
   >;
 

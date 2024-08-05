@@ -40,6 +40,7 @@ declare namespace BaseWall {
       permissions: {
         update: (user: foundry.documents.BaseUser, doc: Document.Any, data: UpdateData) => boolean;
       };
+      schemaVersion: "12.324";
     }
   >;
 

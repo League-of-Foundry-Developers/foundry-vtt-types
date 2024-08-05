@@ -116,6 +116,7 @@ declare namespace BaseToken {
         update: (user: documents.BaseUser, doc: Document.Any, data: UpdateData) => boolean;
         delete: "TOKEN_DELETE";
       };
+      schemaVersion: "12.324";
     }
   >;
 
