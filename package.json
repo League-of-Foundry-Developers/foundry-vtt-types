@@ -20,7 +20,7 @@
     "eslint:report": "eslint --output-file eslint_report.json --format json .",
     "test": "vitest --typecheck",
     "typecheck": "./node_modules/typescript/bin/tsc",
-    "prepare": "is-ci || husky install",
+    "prepare": "is-ci || husky",
     "postinstall": "patch-package"
   },
   "repository": {
@@ -90,19 +90,19 @@
   },
   "devDependencies": {
     "@types/fvtt-types": "file:.",
-    "@typescript-eslint/eslint-plugin": "^6.7.4",
-    "@typescript-eslint/parser": "^6.7.4",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
     "eslint": "^8.4.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-import-resolver-typescript": "^3.6.1",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-prettier": "^5.0.0",
-    "eslint-plugin-tsdoc": "^0.2.14",
-    "husky": "^8.0.0",
+    "eslint-plugin-tsdoc": "^0.3.0",
+    "husky": "^9.1.4",
     "is-ci": "^3.0.1",
     "lint-staged": "^15.0.1",
     "prettier": "^3.0.3",
-    "typescript": "~5.4",
+    "typescript": "~5.3",
     "vitest": "^1.1.0"
   },
   "overrides": {
