@@ -37,15 +37,15 @@ declare namespace BaseCombat {
     {
       name: "Combat";
       collection: "combats";
-      label: "DOCUMENT.Combat";
-      labelPlural: "DOCUMENT.Combats";
+      label: string;
+      labelPlural: string;
       embedded: {
         Combatant: "combatants";
       };
       permissions: {
         update: (user: documents.BaseUser, doc: Document.Any, data: UpdateData) => boolean;
       };
-      schemaVersion: "12.324";
+      schemaVersion: string;
     }
   >;
 

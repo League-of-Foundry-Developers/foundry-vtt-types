@@ -63,12 +63,12 @@ declare namespace BaseJournalEntry {
       indexed: true;
       compendiumIndexFields: ["_id", "name", "sort", "folder"];
       embedded: { JournalEntryPage: "pages" };
-      label: "DOCUMENT.JournalEntry";
-      labelPlural: "DOCUMENT.JournalEntries";
+      label: string;
+      labelPlural: string;
       permissions: {
         create: "JOURNAL_CREATE";
       };
-      schemaVersion: "12.324";
+      schemaVersion: string;
     }
   >;
 

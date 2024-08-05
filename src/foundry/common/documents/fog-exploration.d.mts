@@ -39,15 +39,15 @@ declare namespace BaseFogExploration {
     {
       name: "FogExploration";
       collection: "fog";
-      label: "DOCUMENT.FogExploration";
-      labelPlural: "DOCUMENT.FogExplorations";
+      label: string;
+      labelPlural: string;
       isPrimary: true;
       permissions: {
         create: "PLAYER";
         update: (user: documents.BaseUser, doc: Document.Any, data: UpdateData) => boolean;
         delete: (user: documents.BaseUser, doc: Document.Any, data: UpdateData) => boolean;
       };
-      schemaVersion: "12.324";
+      schemaVersion: string;
     }
   >;
 

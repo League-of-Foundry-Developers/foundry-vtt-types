@@ -49,9 +49,9 @@ declare namespace BaseTile {
     {
       name: "Tile";
       collection: "tiles";
-      label: "DOCUMENT.Tile";
-      labelPlural: "DOCUMENT.Tiles";
-      schemaVersion: "12.324";
+      label: string;
+      labelPlural: string;
+      schemaVersion: string;
     }
   >;
 

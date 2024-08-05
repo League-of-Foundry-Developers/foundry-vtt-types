@@ -71,15 +71,15 @@ declare namespace BaseChatMessage {
     {
       name: "ChatMessage";
       collection: "messages";
-      label: "DOCUMENT.ChatMessage";
-      labelPlural: "DOCUMENT.ChatMessages";
+      label: string;
+      labelPlural: string;
       isPrimary: true;
       permissions: {
         create: (user: documents.BaseUser, doc: Document.Any) => boolean;
         update: (user: documents.BaseUser, doc: Document.Any, data: UpdateData) => boolean;
         delete: (user: documents.BaseUser, doc: Document.Any) => boolean;
       };
-      schemaVersion: "12.324";
+      schemaVersion: string;
     }
   >;
 

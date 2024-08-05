@@ -47,10 +47,10 @@ declare namespace BaseCombatant {
     {
       name: "Combatant";
       collection: "combatants";
-      label: "DOCUMENT.Combatant";
-      labelPlural: "DOCUMENT.Combatants";
+      label: string;
+      labelPlural: string;
       isEmbedded: true;
-      schemaVersion: "12.324";
+      schemaVersion: string;
       permissions: {
         create: (user: documents.BaseUser, doc: Document.Any) => boolean;
         update: (user: documents.BaseUser, doc: Document.Any, data: UpdateData) => boolean;

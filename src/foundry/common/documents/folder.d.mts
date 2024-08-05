@@ -54,10 +54,10 @@ declare namespace BaseFolder {
     {
       name: "Folder";
       collection: "folders";
-      label: "DOCUMENT.Folder";
-      labelPlural: "DOCUMENT.Folders";
+      label: string;
+      labelPlural: string;
       coreTypes: typeof CONST.FOLDER_DOCUMENT_TYPES;
-      schemaVersion: "12.324";
+      schemaVersion: string;
     }
   >;
 

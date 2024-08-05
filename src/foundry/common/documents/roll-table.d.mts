@@ -52,9 +52,9 @@ declare namespace BaseRollTable {
       indexed: true;
       compendiumIndexFields: ["_id", "name", "img", "sort", "folder"];
       embedded: { TableResult: "results" };
-      label: "DOCUMENT.RollTable";
-      labelPlural: "DOCUMENT.RollTables";
-      schemaVersion: "12.324";
+      label: string;
+      labelPlural: string;
+      schemaVersion: string;
     }
   >;
 

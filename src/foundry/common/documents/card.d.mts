@@ -85,13 +85,13 @@ declare namespace BaseCard {
       name: "Card";
       collection: "cards";
       indexed: true;
-      label: "DOCUMENT.Card";
-      labelPlural: "DOCUMENT.Cards";
+      label: string;
+      labelPlural: string;
       permissions: {
         create: () => boolean;
         update: () => boolean;
       };
-      schemaVersion: "12.324";
+      schemaVersion: string;
     }
   >;
 

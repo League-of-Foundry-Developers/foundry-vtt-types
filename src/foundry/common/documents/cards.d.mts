@@ -62,10 +62,10 @@ declare namespace BaseCards {
       indexed: true;
       compendiumIndexFields: ["_id", "name", "description", "img", "type", "sort", "folder"];
       embedded: { Card: "cards" };
-      label: "DOCUMENT.Cards";
-      labelPlural: "DOCUMENT.CardsPlural";
+      label: string;
+      labelPlural: string;
       coreTypes: ["deck", "hand", "pile"];
-      schemaVersion: "12.324";
+      schemaVersion: string;
     }
   >;
 

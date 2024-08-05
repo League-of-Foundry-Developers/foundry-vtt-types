@@ -68,15 +68,15 @@ declare namespace BaseMeasuredTemplate {
     {
       name: "MeasuredTemplate";
       collection: "templates";
-      label: "DOCUMENT.MeasuredTemplate";
-      labelPlural: "DOCUMENT.MeasuredTemplates";
+      label: string;
+      labelPlural: string;
       isEmbedded: true;
       permissions: {
         create: (user: documents.BaseUser, doc: Document.Any) => boolean;
         update: (user: documents.BaseUser, doc: Document.Any, data: UpdateData) => boolean;
         delete: (user: documents.BaseUser, doc: Document.Any, data: UpdateData) => boolean;
       };
-      schemaVersion: "12.324";
+      schemaVersion: string;
     }
   >;
 

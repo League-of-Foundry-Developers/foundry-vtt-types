@@ -63,12 +63,12 @@ declare namespace BaseNote {
     {
       name: "Note";
       collection: "notes";
-      label: "DOCUMENT.Note";
-      labelPlural: "DOCUMENT.Notes";
+      label: string;
+      labelPlural: string;
       permissions: {
         create: "NOTE_CREATE";
       };
-      schemaVersion: "12.324";
+      schemaVersion: string;
     }
   >;
 

@@ -55,10 +55,10 @@ declare namespace BaseJournalEntryPage {
       name: "JournalEntryPage";
       collection: "pages";
       indexed: true;
-      label: "DOCUMENT.JournalEntryPage";
-      labelPlural: "DOCUMENT.JournalEntryPages";
+      label: string;
+      labelPlural: string;
       coreTypes: ["image", "pdf", "text", "video"];
-      schemaVersion: "12.324";
+      schemaVersion: string;
     }
   >;
 

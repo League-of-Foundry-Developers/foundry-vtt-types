@@ -31,14 +31,14 @@ declare namespace BaseSetting {
     {
       name: "Setting";
       collection: "settings";
-      label: "DOCUMENT.Setting";
-      labelPlural: "DOCUMENT.Settings";
+      label: string;
+      labelPlural: string;
       permissions: {
         create: "SETTINGS_MODIFY";
         update: "SETTINGS_MODIFY";
         delete: "SETTINGS_MODIFY";
       };
-      schemaVersion: "12.324";
+      schemaVersion: string;
     }
   >;
 

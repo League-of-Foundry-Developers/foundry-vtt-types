@@ -38,9 +38,9 @@ declare namespace BaseAmbientLight {
     {
       name: "AmbientLight";
       collection: "lights";
-      label: "DOCUMENT.AmbientLight";
-      labelPlural: "DOCUMENT.AmbientLights";
-      schemaVersion: "12.324";
+      label: string;
+      labelPlural: string;
+      schemaVersion: string;
     }
   >;
 

@@ -115,14 +115,14 @@ declare namespace BaseUser {
     {
       name: "User";
       collection: "users";
-      label: "DOCUMENT.User";
-      labelPlural: "DOCUMENT.Users";
+      label: string;
+      labelPlural: string;
       permissions: {
         create: (user: BaseUser, doc: Document.Any, data?: UpdateData) => boolean;
         update: (user: BaseUser, doc: Document.Any, changes: UpdateData) => boolean;
         delete: (user: BaseUser, doc: Document.Any) => boolean;
       };
-      schemaVersion: "12.324";
+      schemaVersion: string;
     }
   >;
 

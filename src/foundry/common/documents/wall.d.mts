@@ -35,12 +35,12 @@ declare namespace BaseWall {
     {
       name: "Wall";
       collection: "walls";
-      label: "DOCUMENT.Wall";
-      labelPlural: "DOCUMENT.Walls";
+      label: string;
+      labelPlural: string;
       permissions: {
         update: (user: foundry.documents.BaseUser, doc: Document.Any, data: UpdateData) => boolean;
       };
-      schemaVersion: "12.324";
+      schemaVersion: string;
     }
   >;
 

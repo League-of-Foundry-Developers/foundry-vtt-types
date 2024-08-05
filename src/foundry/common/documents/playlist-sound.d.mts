@@ -47,9 +47,9 @@ declare namespace BasePlaylistSound {
       name: "PlaylistSound";
       collection: "sounds";
       indexed: true;
-      label: "DOCUMENT.PlaylistSound";
-      labelPlural: "DOCUMENT.PlaylistSounds";
-      schemaVersion: "12.324";
+      label: string;
+      labelPlural: string;
+      schemaVersion: string;
     }
   >;
 

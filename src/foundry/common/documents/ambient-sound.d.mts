@@ -36,10 +36,10 @@ declare namespace BaseAmbientSound {
     {
       name: "AmbientSound";
       collection: "sounds";
-      label: "DOCUMENT.AmbientSound";
-      labelPlural: "DOCUMENT.AmbientSounds";
+      label: string;
+      labelPlural: string;
       isEmbedded: true;
-      schemaVersion: "12.324";
+      schemaVersion: string;
     }
   >;
 

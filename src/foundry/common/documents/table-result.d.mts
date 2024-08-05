@@ -64,13 +64,13 @@ declare namespace BaseTableResult {
     {
       name: "TableResult";
       collection: "results";
-      label: "DOCUMENT.TableResult";
-      labelPlural: "DOCUMENT.TableResults";
+      label: string;
+      labelPlural: string;
       coreTypes: ["0", "1", "2"];
       permissions: {
         update: (user: documents.BaseUser, doc: Document.Any, data: UpdateData) => boolean;
       };
-      schemaVersion: "12.324";
+      schemaVersion: string;
     }
   >;
 
