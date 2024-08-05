@@ -47,8 +47,7 @@ declare global {
      */
     constructor(options?: Partial<Options>);
 
-    // private member to
-    //FIND THE RIGHT COMMENT HERE
+    // placeholder private member
     #filePicker: true;
 
     /**
