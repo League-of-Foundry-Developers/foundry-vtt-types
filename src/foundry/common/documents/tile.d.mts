@@ -46,7 +46,13 @@ export default BaseTile;
 declare namespace BaseTile {
   type Metadata = Merge<
     DocumentMetadata,
-    { name: "Tile"; collection: "tiles"; label: "DOCUMENT.Tile"; labelPlural: "DOCUMENT.Tiles" }
+    {
+      name: "Tile";
+      collection: "tiles";
+      label: string;
+      labelPlural: string;
+      schemaVersion: string;
+    }
   >;
 
   type SchemaField = fields.SchemaField<Schema>;

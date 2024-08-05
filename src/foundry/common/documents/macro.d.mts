@@ -73,10 +73,11 @@ declare namespace BaseMacro {
       collection: "macros";
       indexed: true;
       compendiumIndexFields: ["_id", "name", "img", "sort", "folder"];
-      label: "DOCUMENT.Macro";
-      labelPlural: "DOCUMENT.Macros";
+      label: string;
+      labelPlural: string;
       coreTypes: CONST.MACRO_TYPES[];
       permissions: { create: "PLAYER" };
+      schemaVersion: string;
     }
   >;
 

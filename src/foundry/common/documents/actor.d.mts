@@ -20,12 +20,13 @@ declare namespace BaseActor {
       indexed: true;
       compendiumIndexFields: ["_id", "name", "img", "type", "sort", "folder"];
       embedded: { ActiveEffect: "effects"; Item: "items" };
-      label: "DOCUMENT.Actor";
-      labelPlural: "DOCUMENT.Actors";
+      label: string;
+      labelPlural: string;
       permissions: {
         create: (user: documents.BaseUser, doc: Document.Any) => boolean;
         update: (user: documents.BaseUser, doc: Document.Any, data: UpdateData) => boolean;
       };
+      schemaVersion: string;
 
       /**
        * @deprecated since v10, BaseActor.metadata.types is deprecated since v10 in favor of BaseActor.TYPES.

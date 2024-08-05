@@ -58,8 +58,9 @@ declare namespace BaseAdventure {
       name: "Adventure";
       collection: "adventures";
       compendiumIndexFields: ["_id", "name", "img", "sort", "folder"];
-      label: "DOCUMENT.Adventure";
-      labelPlural: "DOCUMENT.Adventures";
+      label: string;
+      labelPlural: string;
+      schemaVersion: string;
     }
   >;
 

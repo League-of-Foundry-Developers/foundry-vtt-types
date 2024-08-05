@@ -69,8 +69,9 @@ declare namespace BaseActiveEffect {
     {
       name: "ActiveEffect";
       collection: "effects";
-      label: "DOCUMENT.ActiveEffect";
-      labelPlural: "DOCUMENT.ActiveEffects";
+      label: string;
+      labelPlural: string;
+      schemaVersion: string;
     }
   >;
 

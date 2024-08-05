@@ -83,9 +83,10 @@ declare namespace BaseItem {
       indexed: true;
       compendiumIndexFields: ["_id", "name", "img", "type", "sort", "folder"];
       embedded: { ActiveEffect: "effects" };
-      label: "DOCUMENT.Item";
-      labelPlural: "DOCUMENT.Items";
+      label: string;
+      labelPlural: string;
       permissions: { create: "ITEM_CREATE" };
+      schemaVersion: string;
 
       /**
        * @deprecated since v10, BaseItem.metadata.types is deprecated since v10 in favor of BaseItem.TYPES.

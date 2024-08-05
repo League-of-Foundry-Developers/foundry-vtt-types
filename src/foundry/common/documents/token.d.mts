@@ -105,8 +105,8 @@ declare namespace BaseToken {
     {
       name: "Token";
       collection: "tokens";
-      label: "DOCUMENT.Token";
-      labelPlural: "DOCUMENT.Tokens";
+      label: string;
+      labelPlural: string;
       isEmbedded: true;
       embedded: {
         ActorDelta: "delta";
@@ -116,6 +116,7 @@ declare namespace BaseToken {
         update: (user: documents.BaseUser, doc: Document.Any, data: UpdateData) => boolean;
         delete: "TOKEN_DELETE";
       };
+      schemaVersion: string;
     }
   >;
 

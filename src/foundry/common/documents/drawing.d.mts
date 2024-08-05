@@ -73,14 +73,15 @@ declare namespace BaseDrawing {
     {
       name: "Drawing";
       collection: "drawings";
-      label: "DOCUMENT.Drawing";
-      labelPlural: "DOCUMENT.Drawings";
+      label: string;
+      labelPlural: string;
       isEmbedded: true;
       permissions: {
         create: "DRAWING_CREATE";
         update: (user: documents.BaseUser, doc: Document.Any, data: UpdateData) => boolean;
         delete: (user: documents.BaseUser, doc: Document.Any, data: UpdateData) => boolean;
       };
+      schemaVersion: string;
     }
   >;
 

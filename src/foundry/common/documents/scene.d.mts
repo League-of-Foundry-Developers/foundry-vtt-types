@@ -58,9 +58,10 @@ declare namespace BaseScene {
         Token: "tokens";
         Wall: "walls";
       };
-      label: "DOCUMENT.Scene";
-      labelPlural: "DOCUMENT.Scenes";
+      label: string;
+      labelPlural: string;
       preserveOnImport: ["_id", "sort", "ownership", "active"];
+      schemaVersion: string;
     }
   >;
 

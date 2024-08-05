@@ -47,8 +47,9 @@ declare namespace BasePlaylist {
       indexed: true;
       compendiumIndexFields: ["_id", "name", "sort", "folder"];
       embedded: { PlaylistSound: "sounds" };
-      label: "DOCUMENT.Playlist";
-      labelPlural: "DOCUMENT.Playlists";
+      label: string;
+      labelPlural: string;
+      schemaVersion: string;
     }
   >;
 

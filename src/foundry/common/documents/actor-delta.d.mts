@@ -74,13 +74,14 @@ declare namespace BaseActorDelta {
     {
       name: "ActorDelta";
       collection: "delta";
-      label: "DOCUMENT.ActorDelta";
-      labelPlural: "DOCUMENT.ActorDeltas";
+      label: string;
+      labelPlural: string;
       isEmbedded: true;
       embedded: {
         Item: "items";
         ActiveEffect: "effects";
       };
+      schemaVersion: string;
     }
   >;
 
