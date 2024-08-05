@@ -14,14 +14,13 @@ declare global {
    */
   class MeasuredTemplateDocument extends CanvasDocumentMixin(foundry.documents.BaseMeasuredTemplate) {
     /**
-     * A reference to the User who created the MeasuredTemplate document.
-     * @remarks Will return undefined if the user has been deleted
-     */
-    get author(): User.ConfiguredInstance | undefined;
-
-    /**
      * Rotation is an alias for direction
      */
     get rotation(): this["direction"];
+
+    /**
+     * Is the current User the author of this template?
+     */
+    get isAuthor(): boolean;
   }
 }
