@@ -32,7 +32,10 @@ declare global {
      * @throws An error if there is no status effect in `CONFIG.statusEffects` with the given status ID and if
      * the status has implicit statuses but doesn't have a static _id.
      */
-    static fromStatusEffect(statusId: string, options?: DocumentConstructionContext): Promise<ActiveEffect>;
+    static fromStatusEffect(
+      statusId: string,
+      options?: DocumentConstructionContext,
+    ): Promise<ActiveEffect.ConfiguredInstance>;
 
     /**
      * Create an ActiveEffect instance from status effect data.
@@ -46,7 +49,7 @@ declare global {
       statusId: string,
       effectData: ActiveEffectData,
       options?: DocumentConstructionContext,
-    ): Promise<ActiveEffect>;
+    ): Promise<ActiveEffect.ConfiguredInstance>;
 
     /* -------------------------------------------- */
     /*  Properties                                  */
