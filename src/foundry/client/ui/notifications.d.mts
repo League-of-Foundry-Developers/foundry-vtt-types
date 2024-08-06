@@ -59,7 +59,7 @@ declare global {
      *                    (default: `"info"`)
      * @param options   - Additional options which affect the notification
      *                    (default: `{}`)
-     * @returns The ID of the notification
+     * @returns The ID of the notification (positive integer)
      */
     notify(message: string, type?: "info" | "warning" | "error", options?: Notifications.NotifyOptions): number;
 
@@ -67,7 +67,7 @@ declare global {
      * Display a notification with the "info" type
      * @param message - The content of the notification message
      * @param options - Notification options passed to the notify function
-     * @returns The ID of the notification
+     * @returns The ID of the notification (positive integer)
      */
     info(message: string, options?: Notifications.NotifyOptions): number;
 
@@ -75,7 +75,7 @@ declare global {
      * Display a notification with the "warning" type
      * @param message - The content of the notification message
      * @param options - Notification options passed to the notify function
-     * @returns The ID of the notification
+     * @returns The ID of the notification (positive integer)
      */
     warn(message: string, options?: Notifications.NotifyOptions): number;
 
@@ -83,7 +83,7 @@ declare global {
      * Display a notification with the "error" type
      * @param message - The content of the notification message
      * @param options - Notification options passed to the notify function
-     * @returns The ID of the notification
+     * @returns The ID of the notification (positive integer)
      */
     error(message: string, options?: Notifications.NotifyOptions): number;
 
