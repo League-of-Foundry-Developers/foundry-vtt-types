@@ -86,10 +86,10 @@
     "prosemirror-transform": "^1.7.1",
     "prosemirror-view": "^1.30.2",
     "socket.io-client": "^4.6.1",
-    "tinymce": "^6.7.1"
+    "tinymce": "^6.7.1",
+    "typescript-eslint": "^8.0.1"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^8.0.0",
     "@typescript-eslint/parser": "^8.0.0",
     "eslint": "^9.8.0",
     "eslint-config-prettier": "^9.0.0",
