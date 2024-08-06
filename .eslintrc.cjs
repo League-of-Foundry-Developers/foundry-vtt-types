@@ -3,6 +3,7 @@ module.exports = {
     es6: true,
   },
   extends: ["eslint:recommended", "plugin:@typescript-eslint/recommended", "plugin:prettier/recommended"],
+  ignores: [".eslintrc.cjs", ".prettierrc.cjs"],
   parser: "@typescript-eslint/parser",
   parserOptions: {
     project: "./tsconfig.eslint.json",
