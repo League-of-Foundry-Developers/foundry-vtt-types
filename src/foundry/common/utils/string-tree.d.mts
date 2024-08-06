@@ -86,7 +86,7 @@ declare namespace StringTree {
   }
 
   /**
-   * @param entry  The entry to filter.
+   * @param entry   - The entry to filter.
    * @returns Whether the entry should be included in the result set.
    */
   type StringTreeEntryFilter = (entry: unknown) => boolean;

@@ -31,7 +31,7 @@ declare global {
      * @remarks official documentation says "invalid", but the document can be valid, it is simply not yet validated.
      */
     _countDocumentSubType(
-      cls: Document<any>,
+      cls: Document.Any,
       source: unknown,
       options?: {
         /**
