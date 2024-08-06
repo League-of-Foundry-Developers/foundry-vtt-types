@@ -181,7 +181,7 @@ declare global {
      * @param context - The context data of the event
      * @internal
      */
-    protected static _onToggleCharacterSheet(context?: KeyboardEventContext): ActorSheet | null;
+    protected static _onToggleCharacterSheet(context?: KeyboardEventContext): ReturnType<Game["toggleCharacterSheet"]>;
 
     /**
      * Handle action to target the currently hovered token.
