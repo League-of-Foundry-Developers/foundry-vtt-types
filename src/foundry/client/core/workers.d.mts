@@ -10,12 +10,6 @@ declare global {
 
     /** The task action being performed, from WorkerManager.WORKER_TASK_ACTIONS */
     action: ValueOf<typeof WorkerManager.WORKER_TASK_ACTIONS>;
-
-    /** A Promise resolution handler */
-    resolve?: VoidFunction;
-
-    /** A Promise rejection handler */
-    reject?: VoidFunction;
   }
 
   /**
@@ -26,11 +20,6 @@ declare global {
   class AsyncWorker extends Worker {
     constructor(name: string, options?: Partial<AsyncWorker.Options>);
 
-    /**
-     * A Promise which resolves once the Worker is ready to accept tasks
-     */
-    ready: Promise<void>;
-
     name: string;
 
     /**
@@ -40,9 +29,9 @@ declare global {
     static WORKER_HARNESS_JS: string;
 
     /**
-     * A queue of active tasks that this Worker is executing.
+     * A Promise which resolves once the Worker is ready to accept tasks
      */
-    tasks: Map<number, WorkerTask>;
+    get ready(): Promise<void>;
 
     /**
      * An auto-incrementing task index.
@@ -70,15 +59,6 @@ declare global {
      * @returns A Promise which resolves with the returned result of the function once complete.
      */
     executeFunction(functionName: string, args?: any[], transfer?: any[]): Promise<unknown>;
-
-    /**
-     * Dispatch a task to a named Worker, awaiting confirmation of the result.
-     * @param taskData - Data to dispatch to the Worker as part of the task.
-     * @param transfer - An array of transferable objects which are transferred to the worker thread. (default: `[]`)
-     * @returns A Promise which wraps the task transaction.
-     * @internal
-     */
-    protected _dispatchTask(taskData?: WorkerTask, transfer?: any[]): Promise<unknown>;
   }
 
   /**
