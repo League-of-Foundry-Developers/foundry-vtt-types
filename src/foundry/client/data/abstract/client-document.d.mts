@@ -5,7 +5,11 @@ import type {
 } from "../../../../types/helperTypes.d.mts";
 import type { ConstructorOf, DeepPartial, InexactPartial, Mixin, ValueOf } from "../../../../types/utils.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
-import type { AnyMetadata, DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
+import type {
+  AnyMetadata,
+  DocumentCreateOperation,
+  DocumentModificationOptions,
+} from "../../../common/abstract/document.d.mts";
 
 declare class ClientDocument<
   BaseDocument extends foundry.abstract.Document<any, AnyMetadata, any> = foundry.abstract.Document<
@@ -348,7 +352,7 @@ declare class ClientDocument<
   static createDialog<T extends DocumentConstructor>(
     this: T,
     data?: DeepPartial<ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>)>,
-    context?: Pick<DocumentModificationContext, "parent" | "pack"> &
+    context?: Pick<DocumentCreateOperation<T>, "parent" | "pack"> &
       InexactPartial<
         DialogOptions & {
           /** A restriction the selectable sub-types of the Dialog. */
