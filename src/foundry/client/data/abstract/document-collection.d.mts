@@ -1,6 +1,6 @@
 import type { ConfiguredDocumentClass, DocumentConstructor } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial, ConfiguredStoredDocument } from "../../../../types/utils.d.mts";
-import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
+import type { DocumentModificationOptions, DocumentUpdateOperation } from "../../../common/abstract/document.d.mts";
 // import type _Collection from "../../../common/utils/collection.d.mts";
 
 // Fix for "Class 'Collection<ConfiguredStoredDocument<T>>' defines instance member property 'delete',
@@ -172,7 +172,7 @@ declare global {
         | DeepPartial<InstanceType<ConfiguredDocumentClass<T>>["_source"]>
         | ((doc: ConfiguredStoredDocument<T>) => DeepPartial<InstanceType<ConfiguredDocumentClass<T>>["_source"]>),
       condition?: ((obj: ConfiguredStoredDocument<T>) => boolean) | null,
-      options?: DocumentModificationContext,
+      options?: DocumentUpdateOperation<T>,
     ): ReturnType<this["documentClass"]["updateDocuments"]>;
 
     /**
