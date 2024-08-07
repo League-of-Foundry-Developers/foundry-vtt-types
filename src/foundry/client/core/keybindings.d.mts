@@ -153,7 +153,7 @@ declare global {
      * Register core keybindings.
      * @param view           - The active game view
      */
-    protected _registerCoreKeybindings(view: string): void;
+    protected _registerCoreKeybindings(view: Game.View): void;
 
     /**
      * Handle Select all action
