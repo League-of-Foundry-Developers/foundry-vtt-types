@@ -144,10 +144,10 @@ declare global {
     /** The namespace the setting belongs to */
     namespace: string;
 
-    /** The human readable name */
+    /** The human-readable name */
     name?: string | undefined;
 
-    /** An additional human readable hint */
+    /** An additional human-readable hint */
     hint?: string | undefined;
 
     /**
@@ -363,40 +363,9 @@ declare global {
   type RequestData = Record<string, unknown> | Record<string, unknown>[] | string | string[];
 
   interface SocketRequest {
-    /**
-     * The server-side action being requested
-     */
-    action?: string | undefined;
-
-    /**
-     * The type of object being modified
-     */
-    type?: string | undefined;
-
-    /**
-     * Data applied to the operation
-     */
-    data?: RequestData | undefined;
-
-    /**
-     * A Compendium pack name
-     */
-    pack?: string | undefined;
-
-    /**
-     * The type of parent document
-     */
-    parentType?: string | undefined;
-
-    /**
-     * The ID of a parent document
-     */
-    parentId?: string | undefined;
-
-    /**
-     * Additional options applied to the request
-     */
+    /** Additional options applied to the request */
     options?: Record<string, unknown> | undefined;
+    broadcast?: boolean | undefined;
   }
 
   interface SocketResponse {
