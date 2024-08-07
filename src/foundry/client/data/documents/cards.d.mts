@@ -5,7 +5,11 @@ import type {
   DocumentConstructor,
 } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial, StoredDocument } from "../../../../types/utils.d.mts";
-import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
+import type {
+  DocumentCreateOperation,
+  DocumentDeleteOperation,
+  DocumentModificationOptions,
+} from "../../../common/abstract/document.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
 import type BaseCards from "../../../common/documents/cards.d.mts";
 import type BaseUser from "../../../common/documents/user.d.mts";
@@ -160,19 +164,15 @@ declare global {
      */
     get canClone(): boolean;
 
-    // TODO: Figure out the typing here
-    static override createDocuments(
-      data: Array<ConstructorDataType<typeof Cards> | (ConstructorDataType<typeof Cards> & Record<string, unknown>)>,
-      context: DocumentModificationContext & { temporary: false },
-    ): Promise<StoredDocument<Cards.ConfiguredInstance>[]>;
-    static createDocuments(
-      data: Array<ConstructorDataType<typeof Cards> | (ConstructorDataType<typeof Cards> & Record<string, unknown>)>,
-      context: DocumentModificationContext & { temporary: boolean },
-    ): Promise<Cards.ConfiguredInstance[]>;
-    static createDocuments(
-      data: Array<ConstructorDataType<typeof Cards> | (ConstructorDataType<typeof Cards> & Record<string, unknown>)>,
-      context?: DocumentModificationContext,
-    ): Promise<StoredDocument<Cards.ConfiguredInstance>[]>;
+    static override createDocuments<Temporary extends boolean = false>(
+      data: Array<
+        | fields.SchemaField.AssignmentType<Card["schema"]["fields"]>
+        | (fields.SchemaField.AssignmentType<Card["schema"]["fields"]> & Record<string, unknown>)
+      >,
+      context: DocumentCreateOperation<typeof Card, Temporary>,
+    ): true extends Temporary
+      ? Promise<InstanceType<Cards.ConfiguredClass>[]>
+      : Promise<StoredDocument<Cards.ConfiguredInstance>[]>;
 
     /**
      * Deal one or more cards from this Cards document to each of a provided array of Cards destinations.
@@ -312,7 +312,7 @@ declare global {
     static override deleteDocuments<T extends DocumentConstructor>(
       this: T,
       ids?: string[],
-      context?: DocumentModificationContext,
+      context?: DocumentDeleteOperation,
     ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
 
     /**
@@ -351,7 +351,13 @@ declare global {
     static override createDialog<T extends DocumentConstructor>(
       this: T,
       data?: DeepPartial<ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>)>,
-      context?: Pick<DocumentModificationContext, "parent" | "pack"> &
+
+      // TODO: not sure if this is right. I can't find anywhere that the context is actually
+      //    used other than parent, pack, and types.  It just gets passed around a bunch of
+      //    places as 'options'.  Everywhere that actually calls createDialog is only
+      //    passing in those and other DialogOptions.  So I think this is safe,  but not sure if it's
+      //    what is intended.
+      context?: Pick<DocumentCreateOperation<typeof Card>, "parent" | "pack"> &
         InexactPartial<
           DialogOptions & {
             /** A restriction the selectable sub-types of the Dialog. */

@@ -1,5 +1,6 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
-import type { DeepPartial } from "../../../../types/utils.d.mts";
+import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
+import type { DatabaseCreateOperation } from "../../../common/abstract/_types.d.mts";
 
 declare global {
   namespace Card {
@@ -105,7 +106,7 @@ declare global {
      */
     toMessage(
       messageData?: DeepPartial<foundry.documents.BaseChatMessage.ConstructorData>,
-      options?: DocumentModificationContext,
+      options?: InexactPartial<Omit<DatabaseCreateOperation<Card>, "data">>,
     ): Promise<ChatMessage.ConfiguredInstance | undefined>;
   }
 }

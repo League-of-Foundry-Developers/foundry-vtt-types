@@ -302,13 +302,7 @@ declare abstract class Document<
       | fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]>
       | (fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]> & Record<string, unknown>)
     >,
-    operation?: InexactPartial<Omit<DatabaseCreateOperation<InstanceType<T>>, "data">> & {
-      /**
-       * @deprecated `"It is no longer supported to create temporary documents using the Document.createDocuments API. Use the new Document() constructor instead."`
-       * @remarks No explicit undefined because deprecation message checks `"temporary" in operation`
-       */
-      temporary?: Temporary;
-    },
+    operation?: DocumentCreateOperation<T, Temporary>,
   ): true extends Temporary
     ? Promise<InstanceType<Document.ConfiguredClass<T>>[]>
     : Promise<StoredDocument<InstanceType<Document.ConfiguredClass<T>>>[]>;
@@ -351,8 +345,7 @@ declare abstract class Document<
   static updateDocuments<T extends Document.AnyConstructor>(
     this: T,
     updates?: Array<DeepPartial<ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>)>>,
-    operation?: InexactPartial<Omit<DatabaseUpdateOperation<InstanceType<T>>, "updates">> &
-      foundry.utils.MergeObjectOptions,
+    operation?: DocumentUpdateOperation<T>,
   ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
 
   /**
@@ -395,7 +388,7 @@ declare abstract class Document<
   static deleteDocuments<T extends Document.AnyConstructor>(
     this: T,
     ids?: string[],
-    operation?: InexactPartial<Omit<DatabaseDeleteOperation, "ids">>,
+    operation?: DocumentDeleteOperation,
   ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
 
   /**
@@ -430,13 +423,7 @@ declare abstract class Document<
   static create<T extends Document.AnyConstructor, Temporary extends boolean = false>(
     this: T,
     data: ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>),
-    operation?: InexactPartial<Omit<DatabaseCreateOperation<InstanceType<T>>, "data">> & {
-      /**
-       * @deprecated `"It is no longer supported to create temporary documents using the Document.createDocuments API. Use the new Document() constructor instead."`
-       * @remarks No explicit undefined because deprecation message checks `"temporary" in operation`
-       */
-      temporary?: Temporary;
-    },
+    operation?: DocumentCreateOperation<T, Temporary>,
   ): true extends Temporary
     ? Promise<InstanceType<ConfiguredDocumentClass<T>> | undefined>
     : Promise<ConfiguredStoredDocument<T> | undefined>;
@@ -452,11 +439,11 @@ declare abstract class Document<
    *
    * @remarks If no document has actually been updated, the returned {@link Promise} resolves to `undefined`.
    */
-  override update(
+  override update<T extends Document.AnyConstructor>(
     data?:
       | fields.SchemaField.AssignmentType<Schema, {}>
       | (fields.SchemaField.AssignmentType<Schema, {}> & Record<string, unknown>),
-    operation?: InexactPartial<Omit<DatabaseUpdateOperation<this>, "updates">> & foundry.utils.MergeObjectOptions,
+    operation?: DocumentUpdateOperation<T>,
   ): Promise<this | undefined>;
 
   /**
@@ -468,7 +455,7 @@ declare abstract class Document<
    *
    * @remarks If no document has actually been deleted, the returned {@link Promise} resolves to `undefined`.
    */
-  delete(operation?: InexactPartial<Omit<DatabaseDeleteOperation, "ids">>): Promise<this | undefined>;
+  delete(operation?: DocumentDeleteOperation): Promise<this | undefined>;
 
   /**
    * Get a World-level Document of this type by its id.
@@ -543,16 +530,10 @@ declare abstract class Document<
    * @returns An array of created Document instances
    */
   // TODO: After regions are defined, change first parameter to `extends foundry.CONST.EMBEDDED_DOCUMENT_TYPES`
-  createEmbeddedDocuments<EmbeddedName extends DocumentType, Temporary extends boolean = false>(
+  createEmbeddedDocuments<EmbeddedName extends Exclude<DocumentType, "Cards">, Temporary extends boolean = false>(
     embeddedName: EmbeddedName,
     data?: Array<ConstructorDataType<ConfiguredDocumentClassForName<EmbeddedName>>>,
-    operation?: InexactPartial<Omit<DatabaseCreateOperation, "data">> & {
-      /**
-       * @deprecated `"It is no longer supported to create temporary documents using the Document.createDocuments API. Use the new Document() constructor instead."`
-       * @remarks No explicit undefined because deprecation message checks `"temporary" in operation`
-       */
-      temporary?: Temporary;
-    },
+    operation?: DocumentCreateOperation<ConfiguredDocumentClassForName<EmbeddedName>, Temporary>,
   ): Promise<
     Array<
       true extends Temporary
@@ -590,7 +571,7 @@ declare abstract class Document<
   deleteEmbeddedDocuments<EmbeddedName extends DocumentType>(
     embeddedName: EmbeddedName,
     ids: Array<string>,
-    operation?: InexactPartial<Omit<DatabaseDeleteOperation, "ids">>,
+    operation?: DocumentDeleteOperation,
   ): Promise<Array<StoredDocument<InstanceType<ConfiguredDocumentClassForName<EmbeddedName>>>>>;
 
   /**
@@ -1044,3 +1025,18 @@ export interface DocumentMetadata {
   };
   pack: null;
 }
+
+export interface DocumentCreateOperation<T extends Document.AnyConstructor, Temporary extends boolean = false>
+  extends InexactPartial<Omit<DatabaseCreateOperation<InstanceType<T>>, "data">> {
+  /**
+   * @deprecated `"It is no longer supported to create temporary documents using the Document.createDocuments API. Use the new Document() constructor instead."`
+   * @remarks No explicit undefined because deprecation message checks `"temporary" in operation`
+   */
+  temporary?: Temporary;
+}
+
+export interface DocumentDeleteOperation extends InexactPartial<Omit<DatabaseDeleteOperation, "ids">> {}
+
+export interface DocumentUpdateOperation<T extends Document.AnyConstructor>
+  extends InexactPartial<Omit<DatabaseUpdateOperation<InstanceType<T>>, "updates">>,
+    foundry.utils.MergeObjectOptions {}

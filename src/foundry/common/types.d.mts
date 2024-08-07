@@ -23,7 +23,11 @@ declare global {
     strict?: boolean | undefined;
   }
 
-  // TODO Removed in v12
+  // TODO: deprecated in V12, will be removed in V14
+  // note: this was removed from this file in V12, but there are still (deprecated) methods
+  //    in Document that use it, so we should retain it until V14 when those
+  //    methods are removed
+  /** @deprecated since v12 */
   interface DocumentModificationContext {
     /**
      * A parent Document within which these Documents should be embedded
@@ -121,14 +125,12 @@ declare global {
   /**
    * A standard rectangle interface.
    */
-  type Rectangle =
-    | PIXI.Rectangle
-    | {
-        x: number;
-        y: number;
-        width: number;
-        height: number;
-      };
+  interface Rectangle {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  }
 
   type RGBColorVector = [r: number, g: number, b: number];
   type HSVColorVector = [h: number, s: number, v: number];
