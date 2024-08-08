@@ -1,6 +1,6 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial, StoredDocument } from "../../../../types/utils.d.mts";
-import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
+import type { DocumentCreateOperation, DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 import type { DirectoryCollectionMixin_DocumentCollection_Interface } from "../abstract/directory-collection-mixin.d.mts";
 
 declare const DirectoryCollectionMixin_DocumentCollection: DirectoryCollectionMixin_DocumentCollection_Interface;
@@ -300,7 +300,8 @@ declare global {
            * @defaultValue `""`
            * */
           folderName: string;
-        } & DocumentModificationContext &
+          //  TODO::: figure out how to get constructor from metatdata
+        } & DocumentCreateOperation<typeof DocumentInstanceForCompendiumMetadata<T>> &
           WorldCollection.FromCompendiumOptions
       >,
     ): Promise<StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[]>;
