@@ -10,9 +10,12 @@ import type ProseMirrorKeyMaps from "./keymaps.d.mts";
 import type ProseMirrorMenu from "./menu.d.mts";
 import "./extensions.d.mts";
 import * as collab from "prosemirror-collab";
-import { Step } from "prosemirror-transform";
+import type { Step } from "prosemirror-transform";
 import type { parseHTMLString, serializeHTMLString } from "./util.d.mts";
-import type { schema as defaultSchema } from "./schema.d.mts";
+
+// A const is being imported here. It can't be `import type`.
+// eslint-disable-next-line import/extensions
+import { schema as defaultSchema } from "./schema.mjs";
 import type ProseMirrorPlugin from "./plugin.d.mts";
 import type ProseMirrorImagePlugin from "./image-plugin.d.mts";
 import type ProseMirrorDirtyPlugin from "./dirty-plugin.d.mts";
@@ -44,10 +47,6 @@ declare const defaultPlugins: Record<
   Plugin
 >;
 
-// In Foundry itself this file contains re-exports of these other modules.
-// Therefore it has a runtime effect and uses `.mjs` instead of `.d.mts`.
-// While `.mts` could work, to avoid `import/no-unresolved` from erroring `.mjs` is used.
-/* eslint-disable import/extensions */
 export * as commands from "prosemirror-commands";
 export * as transform from "prosemirror-transform";
 export * as list from "prosemirror-schema-list";
