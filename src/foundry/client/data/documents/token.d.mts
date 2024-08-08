@@ -313,7 +313,7 @@ declare global {
       collection: string,
       documents: ClientDocument[],
       data: unknown[],
-      options: DocumentModificationOptions,
+      options: InexactPartial<DatabaseUpdateOperation>,
       userId: string,
     ): void;
 
@@ -322,7 +322,7 @@ declare global {
       collection: string,
       documents: ClientDocument[],
       changes: unknown[],
-      options: DocumentModificationOptions,
+      options: InexactPartial<DatabaseUpdateOperation>,
       userId: string,
     ): void;
 
@@ -331,7 +331,7 @@ declare global {
       collection: string,
       documents: ClientDocument[],
       ids: string,
-      options: DocumentModificationOptions,
+      options: InexactPartial<DatabaseUpdateOperation>,
       userId: string,
     ): void;
 
@@ -340,7 +340,7 @@ declare global {
      */
     protected _onUpdateBaseActor(
       update?: DeepPartial<Actor.ConfiguredInstance["_source"]>,
-      options?: DocumentModificationContext,
+      options?: InexactPartial<DatabaseUpdateOperation>,
     ): void;
 
     /**
@@ -350,7 +350,7 @@ declare global {
      */
     protected _onRelatedUpdate(
       update?: DeepPartial<Actor.ConfiguredInstance["_source"]>,
-      options?: DocumentModificationContext,
+      options?: InexactPartial<DatabaseUpdateOperation>,
     ): void;
 
     /**

@@ -553,10 +553,10 @@ declare abstract class Document<
    * @returns An array of updated Document instances
    */
   // TODO: After regions are defined, change first parameter to `extends foundry.CONST.EMBEDDED_DOCUMENT_TYPES`
-  updateEmbeddedDocuments<EmbeddedName extends DocumentType>(
+  updateEmbeddedDocuments<EmbeddedName extends Exclude<DocumentType, "Cards">>(
     embeddedName: EmbeddedName,
     updates?: Array<Record<string, unknown>>,
-    operation?: InexactPartial<Omit<DatabaseUpdateOperation, "updates">>,
+    operation?: DocumentUpdateOperation<ConfiguredDocumentClassForName<EmbeddedName>>,
   ): Promise<Array<StoredDocument<InstanceType<ConfiguredDocumentClassForName<EmbeddedName>>>>>;
 
   /**

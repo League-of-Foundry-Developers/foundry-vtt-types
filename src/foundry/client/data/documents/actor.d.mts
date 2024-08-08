@@ -1,5 +1,6 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
+import type { DatabaseUpdateOperation } from "../../../common/abstract/_types.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 declare global {
@@ -267,7 +268,7 @@ declare global {
 
     protected override _onUpdate(
       changed: foundry.documents.BaseActor.UpdateData,
-      options: DocumentModificationOptions,
+      options: InexactPartial<DatabaseUpdateOperation>,
       user: string,
     ): void;
 
@@ -309,6 +310,9 @@ declare global {
      * @param update  - The update delta.
      * @param options - The update context.
      */
-    _updateDependentTokens(update: DeepPartial<TokenDocument["_source"]>, options: DocumentModificationContext): void;
+    _updateDependentTokens(
+      update: DeepPartial<TokenDocument["_source"]>,
+      options: InexactPartial<DatabaseUpdateOperation>,
+    ): void;
   }
 }

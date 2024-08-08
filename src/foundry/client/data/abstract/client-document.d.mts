@@ -4,6 +4,7 @@ import type {
   DocumentConstructor,
 } from "../../../../types/helperTypes.d.mts";
 import type { ConstructorOf, DeepPartial, InexactPartial, Mixin, ValueOf } from "../../../../types/utils.d.mts";
+import type { DatabaseUpdateOperation } from "../../../common/abstract/_types.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type {
   AnyMetadata,
@@ -557,7 +558,7 @@ declare class ClientDocument<
   protected _preUpdateEmbeddedDocuments(
     embeddedName: string,
     result: Record<string, unknown>[],
-    options: DocumentModificationOptions,
+    options: InexactPartial<Omit<DatabaseUpdateOperation, "updates">>,
     userId: string,
   ): void;
 
@@ -574,7 +575,7 @@ declare class ClientDocument<
     embeddedName: string,
     documents: foundry.abstract.Document<any, any, any>[],
     result: Record<string, unknown>[],
-    options: DocumentModificationContext,
+    options: InexactPartial<Omit<DatabaseUpdateOperation, "updates">>,
     userId: string,
   ): void;
 
