@@ -10,8 +10,8 @@ import type { DeepPartial, ValueOf } from "../../types/utils.d.mts";
 import type { DropData } from "./data/abstract/client-document.d.mts";
 import type { DocumentModificationOptions } from "../common/abstract/document.d.mts";
 // eslint-disable-next-line import/no-named-as-default
-import type ProseMirrorMenu from "../prosemirror/menu.d.mts";
-import type { ProseMirrorDropDown } from "../prosemirror/menu.d.mts";
+import type ProseMirrorMenu from "../common/prosemirror/menu.d.mts";
+import type { ProseMirrorDropDown } from "../common/prosemirror/menu.d.mts";
 import type { OccludableObject } from "./pixi/placeables/primary-canvas-objects/occludable-object.d.mts";
 
 export {};

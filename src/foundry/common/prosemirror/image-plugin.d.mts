@@ -2,7 +2,7 @@ import type { Schema, Slice } from "prosemirror-model";
 import type { Plugin } from "prosemirror-state";
 import type { EditorView } from "prosemirror-view";
 import type ProseMirrorPlugin from "./plugin.d.mts";
-import type { EmptyObject } from "../../types/utils.d.mts";
+import type { EmptyObject } from "../../../types/utils.d.mts";
 
 export default ProseMirrorImagePlugin;
 /**

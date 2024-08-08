@@ -1,7 +1,7 @@
 import type { EditorView } from "prosemirror-view";
 import type { Editor } from "tinymce";
 import type { GetDataReturnType, MaybePromise } from "../../../types/utils.d.mts";
-import type { ProseMirrorKeyMaps, ProseMirrorMenu } from "../../prosemirror/prosemirror.d.mts";
+import type { ProseMirrorKeyMaps, ProseMirrorMenu } from "../../common/prosemirror/_module.d.mts";
 
 declare global {
   interface FormApplicationOptions extends ApplicationOptions {

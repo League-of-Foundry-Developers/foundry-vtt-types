@@ -1,5 +1,6 @@
 import type { Schema } from "prosemirror-model";
 import type { Plugin } from "prosemirror-state";
+import type { AnyObject } from "../../../types/utils.d.mts";
 
 export default ProseMirrorPlugin;
 declare abstract class ProseMirrorPlugin {
@@ -19,5 +20,5 @@ declare abstract class ProseMirrorPlugin {
    * @param options - Additional options to pass to the plugin.
    * @virtual
    */
-  static build(schema: Schema, options?: Record<string, unknown>): Plugin;
+  static build(schema: Schema, options?: AnyObject): Plugin;
 }
