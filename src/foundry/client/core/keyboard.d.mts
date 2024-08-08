@@ -50,7 +50,7 @@ declare global {
     static CONTROL_KEY_STRING: "⌘" | "Control";
 
     /**
-     * An special mapping of how special KeyboardEvent#code values should map to displayed strings or symbols.
+     * A special mapping of how special KeyboardEvent#code values should map to displayed strings or symbols.
      * Values in this configuration object override any other display formatting rules which may be applied.
      */
     static KEYCODE_DISPLAY_MAPPING: {
@@ -137,6 +137,13 @@ declare global {
      * @returns Is this modifier key currently down (active)?
      */
     isModifierActive(modifier: string): boolean;
+
+    /**
+     * Report whether a core action key is currently actively depressed.
+     * @param action       - The core action to verify (ex: "target")
+     * @returns              Is this core action key currently down (active)?
+     */
+    isCoreActionKeyActive(action: string): boolean;
 
     /**
      * Converts a Keyboard Context event into a string representation, such as "C" or "Control+C"

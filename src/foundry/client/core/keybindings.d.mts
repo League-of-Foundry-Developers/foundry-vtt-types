@@ -149,16 +149,18 @@ declare global {
      */
     static _compareActions(a: KeybindingAction, b: KeybindingAction): number;
 
-    /** Register core keybindings */
-    protected _registerCoreKeybindings(): void;
+    /**
+     * Register core keybindings.
+     * @param view           - The active game view
+     */
+    protected _registerCoreKeybindings(view: Game.View): void;
 
     /**
      * Handle Select all action
-     * @param event   - The originating keyboard event
      * @param context - The context data of the event
      * @internal
      */
-    protected static _onSelectAllObjects(event?: KeyboardEvent, context?: KeyboardEventContext): boolean;
+    protected static _onSelectAllObjects(context?: KeyboardEventContext): boolean;
 
     /**
      * Handle Cycle View actions
@@ -172,15 +174,14 @@ declare global {
      * @param context - The context data of the event
      * @internal
      */
-    protected static _onDismiss(context?: KeyboardEventContext): boolean;
+    protected static _onDismiss(context?: KeyboardEventContext): Promise<boolean>;
 
     /**
      * Open Character sheet for current token or controlled actor
-     * @param event   -
      * @param context - The context data of the event
      * @internal
      */
-    protected static _onToggleCharacterSheet(event?: KeyboardEvent, context?: KeyboardEventContext): ActorSheet | null;
+    protected static _onToggleCharacterSheet(context?: KeyboardEventContext): ReturnType<Game["toggleCharacterSheet"]>;
 
     /**
      * Handle action to target the currently hovered token.
@@ -191,11 +192,10 @@ declare global {
 
     /**
      * Handle DELETE Keypress Events
-     * @param event   - The originating keyboard event
      * @param context - The context data of the event
      * @internal
      */
-    protected static _onDelete(event: KeyboardEvent, context?: KeyboardEventContext): boolean;
+    protected static _onDelete(context?: KeyboardEventContext): boolean;
 
     /**
      * Handle keyboard movement once a small delay has elapsed to allow for multiple simultaneous key-presses.

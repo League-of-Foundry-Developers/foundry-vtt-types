@@ -33,6 +33,8 @@ declare class StringTree<EntryType> {
     options?: InexactPartial<{
       /** The maximum number of items to retrieve. */
       limit: number;
+      /** A filter function to apply to each candidate entry. */
+      filterEntries?: StringTree.StringTreeEntryFilter | undefined;
     }>,
   ): StringTree.StringTreeNode[];
 
@@ -82,6 +84,12 @@ declare namespace StringTree {
     [StringTree.leaves]: Record<string, unknown>[];
     [key: string]: StringTreeNode;
   }
+
+  /**
+   * @param entry   - The entry to filter.
+   * @returns Whether the entry should be included in the result set.
+   */
+  type StringTreeEntryFilter = (entry: unknown) => boolean;
 }
 
 export default StringTree;
