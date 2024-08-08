@@ -16,7 +16,17 @@ const contextMenu = new ContextMenu(element, ".some-class", [
     },
   },
 ]);
+expectTypeOf(contextMenu.element).toEqualTypeOf<JQuery>();
+expectTypeOf(contextMenu.selector).toEqualTypeOf<string>();
+expectTypeOf(contextMenu.eventName).toEqualTypeOf<string>();
+expectTypeOf(contextMenu.menuItems).toEqualTypeOf<ContextMenuEntry[]>();
+expectTypeOf(contextMenu.onOpen).toEqualTypeOf<ContextMenu.ContextMenuCallback>();
+expectTypeOf(contextMenu.onClose).toEqualTypeOf<ContextMenu.ContextMenuCallback>();
+expectTypeOf(contextMenu.menu).toEqualTypeOf<JQuery>();
 
+declare const app: foundry.applications.api.ApplicationV2;
+expectTypeOf(ContextMenu.create(app, new HTMLElement(), ".class", [])).toEqualTypeOf<ContextMenu>();
 expectTypeOf(contextMenu.bind()).toEqualTypeOf<void>();
-expectTypeOf(contextMenu.render(element)).toEqualTypeOf<void | Promise<void>>();
+expectTypeOf(contextMenu.close()).toEqualTypeOf<Promise<void>>();
+expectTypeOf(contextMenu.render(element)).toEqualTypeOf<void | Promise<JQuery | void>>();
 expectTypeOf(contextMenu.menuItems).toEqualTypeOf<ContextMenuEntry[]>();
