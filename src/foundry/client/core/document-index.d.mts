@@ -1,95 +1,8 @@
+import type { DOCUMENT_OWNERSHIP_LEVELS } from "../../common/constants.d.mts";
+
 export {};
 
 declare global {
-  /**
-   * A data structure for quickly retrieving objects by a string prefix.
-   * Note that this works well for languages with alphabets (latin, cyrillic, korean, etc.), but may need more nuanced
-   * handling for languages that compose characters and letters.
-   */
-  class WordTree {
-    /**
-     * Create a new node.
-     */
-    get node(): WordTree.Node;
-
-    /**
-     * Insert an entry into the tree.
-     * @param string - The string key for the entry.
-     * @param entry  - The entry to store.
-     * @returns The node the entry was added to.
-     */
-    addLeaf(string: string, entry: WordTree.Entry): WordTree.Node;
-
-    /**
-     * Return entries that match the given string prefix.
-     * @param prefix  - The prefix.
-     * @param options - Additional options to configure behaviour.
-     * @returns A number of entries that have the given prefix.
-     */
-    lookup(
-      prefix: string,
-      options?: {
-        /**
-         * The maximum number of items to retrieve. It is important to set this value as
-         * very short prefixes will naturally match large numbers of entries. (default: `10`)
-         */
-        limit: number;
-      },
-    ): WordTree.Entry[];
-
-    /**
-     * Returns the node at the given prefix.
-     * @param prefix - The prefix.
-     */
-    nodeAtPrefix(prefix: string): WordTree.Node;
-
-    /**
-     * Perform a breadth-first search starting from the given node and retrieving any entries along the way, until we
-     * reach the limit.
-     * @param node    - The starting node.
-     * @param entries - The accumulated entries.
-     * @param queue   - The working queue of nodes to search.
-     * @param options - Additional options for the search.
-     * @internal
-     */
-    protected _breadthFirstSearch(
-      node: WordTree.Node,
-      entries: WordTree.Entry[],
-      queue: WordTree.Node[],
-      options?: {
-        /** The maximum number of entries to retrieve before stopping. (default: `10`) */
-        limit: 10;
-      },
-    ): void;
-  }
-  export namespace WordTree {
-    /**
-     * A leaf entry in the tree.
-     */
-    interface Entry {
-      /** An object that this entry represents. */
-      entry: Document | object;
-
-      /** The document type. */
-      documentName: string;
-
-      /** The document's UUID. */
-      uuid: string;
-
-      /** The pack ID. */
-      pack?: string;
-    }
-
-    /**
-     * A word tree node consists of zero or more 1-character keys, and a leaves property that contains any objects that
-     * terminate at the current string prefix.
-     */
-    interface Node {
-      /** Any leaves at this node. */
-      leaves: Entry[];
-    }
-  }
-
   /**
    * This class is responsible for indexing all documents available in the world and storing them in a word tree structure
    * that allows for fast searching.
@@ -100,13 +13,13 @@ declare global {
      * A collection of WordTree structures for each document type.
      * @defaultValue `{}`
      */
-    trees: Record<string, WordTree>;
+    trees: Record<string, foundry.utils.WordTree>;
 
     /**
      * A reverse-lookup of a document's UUID to its parent node in the word tree.
      * @defaultValue `{}`
      */
-    uuids: Record<string, WordTree.Node>;
+    uuids: Record<string, foundry.utils.StringTree.StringTreeNode>;
 
     /**
      * Returns a Promise that resolves when the indexing process is complete.
@@ -122,7 +35,7 @@ declare global {
      * Return entries that match the given string prefix.
      * @param prefix  - The prefix.
      * @param options - Additional options to configure behaviour.
-     * A number of entries that have the given prefix, grouped by document type.
+     * @returns A number of entries that have the given prefix, grouped by document type.
      */
     lookup(
       prefix: string,
@@ -130,6 +43,7 @@ declare global {
         /**
          * The maximum number of items per document type to retrieve. It is important to set this
          * value as very short prefixes will naturally match large numbers of entries. (default: `10`)
+         * (default: `10`)
          */
         limit?: number;
         /**
@@ -137,8 +51,16 @@ declare global {
          * will be searched for. (default: `[]`)
          */
         documentTypes?: string[];
+        /**
+         * A filter function to apply to each candidate entry.
+         */
+        filterEntries?: foundry.utils.StringTree.StringTreeEntryFilter;
+        /**
+         * Only return entries that the user meets this ownership level for.
+         */
+        ownership?: DOCUMENT_OWNERSHIP_LEVELS;
       },
-    ): Record<string, WordTree.Entry[]>;
+    ): Record<string, foundry.utils.WordTree.WordTreeEntry[]>;
 
     /**
      * Add an entry to the index.

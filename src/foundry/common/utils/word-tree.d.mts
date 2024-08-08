@@ -26,11 +26,14 @@ declare class WordTree extends StringTree<WordTree.WordTreeEntry> {
     prefix: string,
     options?: InexactPartial<{
       /**
-       * The maximum number of items to retrieve. Defaults to 10. It is important
+       * The maximum number of items to retrieve. It is important
        * to set this value as very short prefixes will naturally match large numbers
        * of entries.
+       * (default: `10`)
        */
       limit: number;
+      /** A filter function to apply to each candidate entry. */
+      filterEntries?: StringTree.StringTreeEntryFilter | undefined;
     }>,
   ): WordTree.WordTreeEntry[];
   lookup(strings: string[], options?: InexactPartial<{ limit: number }>): StringTree.StringTreeNode[];
