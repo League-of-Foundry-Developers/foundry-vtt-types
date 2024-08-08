@@ -1,6 +1,6 @@
-import type { AnyObject, EmptyObject, InexactPartial, Merge } from "../../../types/utils.d.mts";
+import type { AnyObject, InexactPartial, Merge } from "../../../types/utils.d.mts";
 import type Document from "../abstract/document.d.mts";
-import type { DocumentMetadata, DocumentModificationOptions } from "../abstract/document.d.mts";
+import type { DocumentMetadata } from "../abstract/document.d.mts";
 import type * as CONST from "../constants.mts";
 import type * as fields from "../data/fields.d.mts";
 import type * as documents from "./_module.mts";
@@ -41,11 +41,7 @@ declare class BaseMacro extends Document<BaseMacro.Schema, BaseMacro.Metadata> {
     }>,
   ): boolean;
 
-  protected override _preCreate(
-    data: fields.SchemaField.AssignmentType<documents.BaseMacro.Schema, EmptyObject>,
-    options: DocumentModificationOptions,
-    user: foundry.documents.BaseUser,
-  ): Promise<void>;
+  // removed _preCreate() as override isn't meaningful and it causes other issues
 
   static override migrateData(source: AnyObject): AnyObject;
 

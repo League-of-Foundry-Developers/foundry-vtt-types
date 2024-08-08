@@ -294,12 +294,7 @@ declare global {
       context: Record<string, unknown>,
     ): Promise<ChatMessage.ConfiguredInstance | undefined>;
 
-    protected override _preCreate(
-      // can't use UpdateData because it creates circular reference
-      data: fields.SchemaField.InnerAssignmentType<BaseCards.Schema>,
-      options: DocumentModificationOptions,
-      user: BaseUser,
-    ): Promise<boolean | void>;
+    // removed _preCreate() as override isn't meaningful and it causes other issues
 
     protected override _onUpdate(
       // can't use UpdateData because it creates circular reference

@@ -6,9 +6,6 @@ import type {
   DocumentType,
 } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial } from "../../../../types/utils.d.mts";
-import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
-import type BaseFolder from "../../../common/documents/folder.d.mts";
-import type { BaseUser } from "../../../common/documents/_module.d.mts";
 
 declare global {
   namespace Folder {
@@ -81,11 +78,7 @@ declare global {
      */
     get ancestors(): Folder.ConfiguredInstance[];
 
-    protected _preCreate(
-      data: BaseFolder.ConstructorData,
-      options: DocumentModificationOptions,
-      user: BaseUser,
-    ): Promise<boolean | void>;
+    // removed _preCreate() as override isn't meaningful and it causes other issues
 
     static createDialog<T extends DocumentConstructor>(
       this: T,

@@ -244,11 +244,7 @@ declare global {
      */
     protected _unregisterDependentScene(scene: Scene): void;
 
-    protected override _preCreate(
-      data: foundry.documents.BaseActor.ConstructorData,
-      options: DocumentModificationOptions,
-      user: foundry.documents.BaseUser,
-    ): Promise<void>;
+    // removed _preCreate() as override isn't meaningful and it causes other issues
 
     /**
      * When an Actor is being created, apply default token configuration settings to its prototype token.

@@ -51,9 +51,6 @@ declare global {
       options?: DocumentConstructionContext,
     ): Promise<ActiveEffect.ConfiguredInstance>;
 
-    /* -------------------------------------------- */
-    /*  Properties                                  */
-    /* -------------------------------------------- */
     /**
      * Is there some system logic that makes this active effect ineligible for application?
      * @defaultValue `false`
@@ -122,10 +119,6 @@ declare global {
      * Returns "None" (localized) if it has no origin, and "Unknown" (localized) if the origin cannot be resolved.
      */
     get sourceName(): string;
-
-    /* -------------------------------------------- */
-    /*  Methods                                     */
-    /* -------------------------------------------- */
 
     /**
      * Apply EffectChangeData to a field within a DataModel.
@@ -288,27 +281,10 @@ declare global {
       };
     };
 
-    /* -------------------------------------------- */
-    /*  Flag Operations                             */
-    /* -------------------------------------------- */
     // TODO: This is a minor override and doing the extension is complicated
     // getFlag(scope: string, key: string): unknown;
 
-    protected _preCreate(
-      data: foundry.documents.BaseActiveEffect.ConstructorData,
-      options: DocumentModificationOptions,
-      user: foundry.documents.BaseUser,
-    ): Promise<void>;
-
-    /* -------------------------------------------- */
-    /*  Event Handlers                              */
-    /* -------------------------------------------- */
-
-    protected override _preCreate(
-      data: foundry.documents.BaseActiveEffect.ConstructorData,
-      options: DocumentModificationOptions,
-      user: BaseUser,
-    ): Promise<boolean | void>;
+    // removed _preCreate() as override isn't meaningful and it causes other issues
 
     protected override _onCreate(data: this["_source"], options: DocumentModificationOptions, userId: string): void;
 

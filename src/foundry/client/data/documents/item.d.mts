@@ -1,6 +1,4 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
-import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
-import type { BaseUser } from "../../../common/documents/_module.d.mts";
 
 declare global {
   namespace Item {
@@ -46,11 +44,7 @@ declare global {
      */
     getRollData(): object;
 
-    protected override _preCreate(
-      data: foundry.documents.BaseItem.ConstructorData,
-      options: DocumentModificationOptions,
-      user: BaseUser,
-    ): Promise<boolean | void>;
+    // removed _preCreate() as override isn't meaningful and it causes other issues
 
     /**
      * @privateRemarks _onCreateDocuments and _onDeleteDocuments are overridden but left off because the signature doesn't change and unnecessarily adds to the type complexity.

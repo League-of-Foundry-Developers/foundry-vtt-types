@@ -184,11 +184,7 @@ declare class BaseActor extends Document<BaseActor.Schema, BaseActor.Metadata> {
    */
   static #canUpdate(user: documents.BaseUser, doc: BaseActor, data: BaseActor.UpdateData): boolean;
 
-  protected override _preCreate(
-    data: fields.SchemaField.AssignmentType<documents.BaseActor.Schema, EmptyObject>,
-    options: DocumentModificationOptions,
-    user: documents.BaseUser,
-  ): Promise<void>;
+  // removed _preCreate() as override isn't meaningful and it causes other issues
 
   protected override _preUpdate(
     changed: fields.SchemaField.AssignmentType<documents.BaseActor.Schema, EmptyObject>,

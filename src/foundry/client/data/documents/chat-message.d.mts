@@ -54,10 +54,6 @@ declare global {
      */
     logged: boolean;
 
-    /* -------------------------------------------- */
-    /*  Properties                                  */
-    /* -------------------------------------------- */
-
     /**
      * Return the recommended String alias for this message.
      * The alias could be a Token name in the case of in-character messages or dice rolls.
@@ -86,10 +82,6 @@ declare global {
      * Messages may not be visible if they are private whispers.
      */
     get visible(): boolean;
-
-    /* -------------------------------------------- */
-    /*  Methods                                     */
-    /* -------------------------------------------- */
 
     override prepareDerivedData(): void;
 
@@ -203,14 +195,7 @@ declare global {
      */
     protected _renderRollHTML(isPrivate: boolean): Promise<string>;
 
-    /* -------------------------------------------- */
-    /*  Event Handlers                              */
-    /* -------------------------------------------- */
-    protected override _preCreate(
-      data: foundry.documents.BaseChatMessage.ConstructorData,
-      options: DocumentModificationOptions,
-      user: foundry.documents.BaseUser,
-    ): Promise<void>;
+    // removed _preCreate() as override isn't meaningful and it causes other issues
 
     protected override _onCreate(data: this["_source"], options: DocumentModificationOptions, userId: string): void;
 
@@ -221,10 +206,6 @@ declare global {
     ): void;
 
     protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
-
-    /* -------------------------------------------- */
-    /*  Importing and Exporting                     */
-    /* -------------------------------------------- */
 
     /**
      * Export the content of the chat message into a standardized log format

@@ -92,11 +92,7 @@ declare global {
 
     override _onClickDocumentLink(event: MouseEvent): unknown;
 
-    protected override _preCreate(
-      data: foundry.documents.BaseScene.ConstructorData,
-      options: DocumentModificationOptions,
-      user: foundry.documents.BaseUser,
-    ): Promise<void>;
+    // removed _preCreate() as override isn't meaningful and it causes other issues
 
     protected override _onCreate(
       data: foundry.documents.BaseScene.ConstructorData,
