@@ -1,6 +1,6 @@
 import type { ConfiguredDocumentClassForName, ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
 import type { InexactPartial } from "../../../../types/utils.d.mts";
-import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
+import type { DocumentCreateOperation, DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 import type { ClientDocument } from "../abstract/client-document.d.mts";
 
 declare global {
@@ -60,7 +60,7 @@ declare global {
        * Additional options which customize the created messages
        * @defaultValue `{}`
        */
-      messageOptions: DocumentModificationContext & { rollMode: keyof CONFIG.Dice.RollModes | "roll" };
+      messageOptions: DocumentCreateOperation<typeof ChatMessage> & { rollMode: keyof CONFIG.Dice.RollModes | "roll" };
     }
 
     interface RollOptions {

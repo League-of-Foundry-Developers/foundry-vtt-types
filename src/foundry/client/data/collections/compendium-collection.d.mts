@@ -301,7 +301,7 @@ declare global {
            * */
           folderName: string;
           //  TODO::: figure out how to get constructor from metatdata
-        } & DocumentCreateOperation<typeof DocumentInstanceForCompendiumMetadata<T>> &
+        } & DocumentCreateOperation<DocumentClassForCompendiumMetadata<T>> &
           WorldCollection.FromCompendiumOptions
       >,
     ): Promise<StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[]>;

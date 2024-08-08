@@ -351,12 +351,6 @@ declare global {
     static override createDialog<T extends DocumentConstructor>(
       this: T,
       data?: DeepPartial<ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>)>,
-
-      // TODO: not sure if this is right. I can't find anywhere that the context is actually
-      //    used other than parent, pack, and types.  It just gets passed around a bunch of
-      //    places as 'options'.  Everywhere that actually calls createDialog is only
-      //    passing in those and other DialogOptions.  So I think this is safe,  but not sure if it's
-      //    what is intended.
       context?: Pick<DocumentCreateOperation<typeof Card>, "parent" | "pack"> &
         InexactPartial<
           DialogOptions & {

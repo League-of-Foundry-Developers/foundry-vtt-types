@@ -962,7 +962,22 @@ declare namespace Document {
     OptionsForSchema<Schema> extends FlagInSchema<S, K, infer Options> ? DataField.InitializedType<Options> : undefined;
 }
 
+/** @deprecated - since v12 */
 export type DocumentModificationOptions = Omit<DocumentModificationContext, "parent" | "pack">;
+
+export type DocumentCreateOptions<T extends Document.AnyConstructor, Temporary extends boolean = false> = Omit<
+  DocumentCreateOperation<T, Temporary>,
+  "parent" | "pack"
+>;
+export type DocumentUpdateOptions<T extends Document.AnyConstructor> = Omit<
+  DocumentUpdateOperation<T>,
+  "parent" | "pack"
+>;
+export type DocumentDeleteOptions = Omit<DocumentDeleteOperation, "parent" | "pack">;
+
+export type DocumentUpsertOptions<T extends Document.AnyConstructor> =
+  | DocumentCreateOptions<T>
+  | DocumentUpdateOptions<T>;
 
 export interface Context<Parent extends Document.Any | null> {
   /**
@@ -1040,3 +1055,7 @@ export interface DocumentDeleteOperation extends InexactPartial<Omit<DatabaseDel
 export interface DocumentUpdateOperation<T extends Document.AnyConstructor>
   extends InexactPartial<Omit<DatabaseUpdateOperation<InstanceType<T>>, "updates">>,
     foundry.utils.MergeObjectOptions {}
+
+export type DocumentUpsertOperation<T extends Document.AnyConstructor> =
+  | DocumentCreateOperation<T>
+  | DocumentUpdateOperation<T>;
