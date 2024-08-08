@@ -11,7 +11,7 @@ declare class ProseMirrorContentLinkPlugin extends ProseMirrorPlugin {
    * @param schema  - The ProseMirror schema.
    * @param options - Additional options to configure the plugin's behaviour.
    */
-  constructor(schema: Schema, options?: ProseMirrorContentLinkPlugin.ContentLinkOptions);
+  constructor(schema: Schema, options?: ProseMirrorContentLinkPlugin.ProseMirrorContentLinkOptions);
 
   /**
    * The parent document housing this editor.
@@ -23,7 +23,7 @@ declare class ProseMirrorContentLinkPlugin extends ProseMirrorPlugin {
    */
   readonly relativeLinks: boolean;
 
-  static override build(schema: Schema, options?: ProseMirrorContentLinkPlugin.ContentLinkOptions): Plugin;
+  static override build(schema: Schema, options?: ProseMirrorContentLinkPlugin.ProseMirrorContentLinkOptions): Plugin;
 
   /**
    * Handle a drop onto the editor.
@@ -36,9 +36,9 @@ declare class ProseMirrorContentLinkPlugin extends ProseMirrorPlugin {
 }
 
 declare namespace ProseMirrorContentLinkPlugin {
-  interface ContentLinkOptions {
+  interface ProseMirrorContentLinkOptions {
     /** The parent document housing this editor. */
-    document?: foundry.abstract.Document<any, any, any>;
+    document?: foundry.abstract.Document<any, any, any> | undefined;
     /** @defaultValue `false` */
     relativeLinks?: boolean | undefined;
   }

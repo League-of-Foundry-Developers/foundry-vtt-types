@@ -5,7 +5,7 @@ import type { ProseMirrorCommand } from "./keymaps.d.mts";
 import type ProseMirrorPlugin from "./plugin.d.mts";
 
 export declare namespace ProseMirrorMenu {
-  export interface Options {
+  export interface ProseMirrorMenuOptions {
     /** A function to call when the save button is pressed. */
     onSave?: () => void;
     /** Whether this editor instance is intended to be destroyed when saved. */
@@ -73,7 +73,7 @@ declare class ProseMirrorMenu extends ProseMirrorPlugin {
    * @param view    - The editor view.
    * @param options - Additional options to configure the plugin's behaviour.
    */
-  constructor(schema: Schema, view: EditorView, options?: ProseMirrorMenu.Options);
+  constructor(schema: Schema, view: EditorView, options?: ProseMirrorMenu.ProseMirrorMenuOptions);
 
   // placeholder private attribute to support subclassing.
   #proseMirrorMenu: true;
@@ -105,14 +105,14 @@ declare class ProseMirrorMenu extends ProseMirrorPlugin {
   /**
    * Additional options to configure the plugin's behaviour.
    */
-  options: ProseMirrorMenu.Options;
+  options: ProseMirrorMenu.ProseMirrorMenuOptions;
 
   /**
    * The dropdowns configured for this menu.
    */
   dropdowns: ProseMirrorDropDown.Entry[];
 
-  static override build(schema: Schema, options?: ProseMirrorMenu.Options): Plugin;
+  static override build(schema: Schema, options?: ProseMirrorMenu.ProseMirrorMenuOptions): Plugin;
 
   /**
    * Render the menu's HTML.
