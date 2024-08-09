@@ -21,6 +21,7 @@ import * as _canvas from "./canvas/_module.mjs";
 import * as _helpers from "./helpers/_module.mjs";
 import * as _data from "./data/_module.mjs";
 import * as _dice from "./dice/_module.mjs";
+import type { AnyObject } from "../../types/utils.d.mts";
 
 /**
  * Constant definitions used throughout the Foundry Virtual Tabletop framework.
@@ -183,6 +184,9 @@ declare global {
 
   type Collection<T> = _utils.Collection<T>;
   var Collection: typeof _utils.Collection; // eslint-disable-line no-var
+
+  type Roll<D extends Record<string, unknown> = AnyObject> = _dice.Roll<D>;
+  var Roll: typeof _dice.Roll; // eslint-disable-line no-var
 
   // Deprecated global namespace dump; done programmatically by fvtt
   type Semaphore = _utils.Semaphore;
