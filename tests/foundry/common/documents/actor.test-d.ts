@@ -70,7 +70,7 @@ class MyCharacter extends foundry.abstract.TypeDataModel<MyCharacterSchema, Acto
     };
   }
 
-  override prepareDerivedData(this: Merge<DataModel<MyCharacterSchema, Actor.ConfiguredInstance>, {}>): void {
+  override prepareDerivedData(this: Merge<DataModel<MyCharacterSchema, Actor.ConfiguredInstance>, EmptyObject>): void {
     this.abilities.strength.value + 2;
     for (const ability of Object.values(this.abilities)) {
       // @ts-expect-error Derived data must be declared

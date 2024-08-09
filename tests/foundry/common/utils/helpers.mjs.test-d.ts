@@ -1,4 +1,5 @@
 import { expectTypeOf, assertType } from "vitest";
+import type { AnyFunction, NonNullish } from "../../../../src/types/utils.d.mts";
 
 // Global export test
 expectTypeOf(benchmark).toEqualTypeOf(foundry.utils.benchmark);
@@ -112,7 +113,7 @@ expectTypeOf(foundry.utils.duplicate(((): string | null => "")())).toEqualTypeOf
 
 expectTypeOf(foundry.utils.duplicate(((): string | undefined => "")())).toEqualTypeOf<string>();
 
-expectTypeOf(foundry.utils.duplicate(((): string | Function => "")())).toEqualTypeOf<string>();
+expectTypeOf(foundry.utils.duplicate(((): string | AnyFunction => "")())).toEqualTypeOf<string>();
 
 expectTypeOf(foundry.utils.duplicate(((): string | symbol => "")())).toEqualTypeOf<string>();
 
@@ -158,11 +159,11 @@ expectTypeOf(foundry.utils.duplicate({ a: ((): boolean => false)() })).toEqualTy
 
 expectTypeOf(foundry.utils.duplicate({ a: null })).toEqualTypeOf<{ a: null }>();
 
-expectTypeOf(foundry.utils.duplicate({ a: undefined })).toEqualTypeOf<{}>();
+expectTypeOf(foundry.utils.duplicate({ a: undefined })).toEqualTypeOf<NonNullish>();
 
-expectTypeOf(foundry.utils.duplicate({ a: () => 0 })).toEqualTypeOf<{}>();
+expectTypeOf(foundry.utils.duplicate({ a: () => 0 })).toEqualTypeOf<NonNullish>();
 
-expectTypeOf(foundry.utils.duplicate({ a: Symbol("") })).toEqualTypeOf<{}>();
+expectTypeOf(foundry.utils.duplicate({ a: Symbol("") })).toEqualTypeOf<NonNullish>();
 
 expectTypeOf(foundry.utils.duplicate({ a: ((): string | boolean => "")() })).toEqualTypeOf<{ a: string | boolean }>();
 
@@ -174,7 +175,7 @@ expectTypeOf(foundry.utils.duplicate({ a: ((): string | undefined => "")() })).t
   a?: string | undefined;
 }>();
 
-expectTypeOf(foundry.utils.duplicate({ a: ((): string | Function => "")() })).toEqualTypeOf<{
+expectTypeOf(foundry.utils.duplicate({ a: ((): string | AnyFunction => "")() })).toEqualTypeOf<{
   a?: string | undefined;
 }>();
 
