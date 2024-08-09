@@ -9,6 +9,7 @@ import type Document from "../../../common/abstract/document.d.mts";
 import type {
   AnyMetadata,
   DocumentCreateOperation,
+  DocumentCreateOptions,
   DocumentModificationOptions,
 } from "../../../common/abstract/document.d.mts";
 
@@ -240,7 +241,7 @@ declare class ClientDocument<
     collection: string,
     documents: ClientDocument[],
     data: unknown[],
-    options: DocumentModificationOptions,
+    options: DocumentCreateOptions<typeof ClientDocument>,
     userId: string,
   ): void;
   /**

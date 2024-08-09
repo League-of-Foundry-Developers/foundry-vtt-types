@@ -237,7 +237,19 @@ export default abstract class TypeDataModel<
   /*  Database Operations                         */
   /* -------------------------------------------- */
 
-  // removed _preCreate() as override isn't meaningful and it causes other issues
+  /**
+   * Called by {@link ClientDocument#_preCreate}.
+   *
+   * @param data    - The initial data object provided to the document creation request
+   * @param options - Additional options which modify the creation request
+   * @param user    - The User requesting the document creation
+   * @returns Return false to exclude this Document from the creation operation
+   */
+  protected _preCreate(
+    data: TypeDataModel.ParentAssignmentType<this>,
+    options: DocumentModificationOptions,
+    user: BaseUser,
+  ): Promise<boolean | void>;
 
   /**
    * Called by {@link ClientDocument#_onCreate}.
