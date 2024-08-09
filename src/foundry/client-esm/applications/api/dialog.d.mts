@@ -265,7 +265,8 @@ type InferDismissType<Options extends Partial<DialogV2.WaitOptions>> = Options["
 type InferButtonReturnTypes<Options extends Partial<DialogV2.WaitOptions>> =
   Options["buttons"] extends Array<infer Button>
     ? Button extends DialogV2.Button<infer Callback>
-      ? Button["callback"] extends Function
+      ? // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+        Button["callback"] extends Function
         ? Callback
         : string
       : never

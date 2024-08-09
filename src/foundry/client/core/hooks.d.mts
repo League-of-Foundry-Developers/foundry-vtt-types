@@ -123,6 +123,7 @@ declare global {
     interface HookedFunction {
       hook: string;
       id: number;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
       fn: Function;
       once: boolean;
     }

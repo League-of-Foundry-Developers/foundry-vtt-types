@@ -156,6 +156,7 @@ declare global {
   }
 
   namespace FontConfig {
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     interface Options extends FormApplicationOptions {}
 
     interface FontConfigData {

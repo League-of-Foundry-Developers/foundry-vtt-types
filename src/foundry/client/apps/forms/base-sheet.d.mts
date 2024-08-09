@@ -33,6 +33,7 @@ declare global {
   }
 
   namespace BaseSheet {
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     interface Options extends DocumentSheetOptions<Adventure.ConfiguredInstance> {}
 
     interface BaseSheetData extends DocumentSheet.DocumentSheetData<Options, foundry.abstract.Document.Any> {

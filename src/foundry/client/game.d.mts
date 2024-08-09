@@ -6,7 +6,6 @@ import type {
   ModuleRequiredOrOptional,
 } from "../../types/helperTypes.d.mts";
 import type { StoredDocument, ValueOf } from "../../types/utils.d.mts";
-import type { BasePackage } from "../common/packages/module.d.ts";
 
 interface EarlierEvents {
   none: never;
@@ -566,10 +565,12 @@ declare global {
   // They're merged with `Game` to preserve the invariant `XYZGame instanceof Game`.
   // They're interfaces for easier user declaration merges as well as to give intellisense better names to use as the expanded type is intimidating.
 
+  /* eslint-disable @typescript-eslint/no-empty-object-type */
   interface InitGame extends _InitGame {}
   interface I18nInitGame extends _I18nInitGame {}
   interface SetupGame extends _SetupGame {}
   interface ReadyGame extends _ReadyGame {}
+  /* eslint-enable @typescript-eslint/no-empty-object-type */
 
   interface HotReloadData {
     /** The type of package which was modified */
@@ -644,8 +645,8 @@ declare global {
           private?: boolean;
           system?: string | undefined;
           type: foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
-          packageName: BasePackage["_source"]["id"];
-          packageType: BasePackage["type"];
+          packageName: foundry.packages.BasePackage["_source"]["id"];
+          packageType: foundry.packages.BasePackage["type"];
           id: string;
         }
       >;

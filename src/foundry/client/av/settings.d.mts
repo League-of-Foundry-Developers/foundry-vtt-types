@@ -279,7 +279,7 @@ declare global {
       client: ClientSettings;
       world: WorldSettings;
     }
-    // eslint-disable-next-line @typescript-eslint/no-empty-interface
+    // eslint-disable-next-line @typescript-eslint/no-empty-interface, @typescript-eslint/no-empty-object-type
     interface Overrides {}
     interface DefaultVoiceModes {
       ALWAYS: "always";

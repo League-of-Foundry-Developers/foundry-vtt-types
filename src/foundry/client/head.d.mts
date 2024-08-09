@@ -3,6 +3,7 @@ import type { EarlierEvents, InitializationEvent } from "./game.d.mts";
 type ValidRanHooks = Extract<keyof AssumeHookRan, InitializationEvent>;
 
 type _UninitializedGame = { [K in keyof Game]?: never };
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface UninitializedGame extends _UninitializedGame {}
 
 // These type aliases are used for intellisense reasons so that the type displays `UninitializedGame | InitGame | ...` instead of a too complex looking type.
