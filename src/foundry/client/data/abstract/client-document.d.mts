@@ -9,7 +9,12 @@ import type Document from "../../../common/abstract/document.d.mts";
 import type {
   AnyMetadata,
   DocumentCreateOperation,
-  DocumentModificationOptions,
+  DocumentOnCreateOptions,
+  DocumentOnDeleteOptions,
+  DocumentOnUpdateOptions,
+  DocumentPreCreateOptions,
+  DocumentPreDeleteOptions,
+  DocumentPreUpdateOptions,
 } from "../../../common/abstract/document.d.mts";
 
 declare class ClientDocument<
@@ -222,7 +227,7 @@ declare class ClientDocument<
     parent: ClientDocument,
     collection: string,
     data: unknown[],
-    options: DocumentModificationOptions,
+    options: DocumentPreCreateOptions,
     userId: string,
   ): void;
 
@@ -240,7 +245,7 @@ declare class ClientDocument<
     collection: string,
     documents: ClientDocument[],
     data: unknown[],
-    options: DocumentModificationOptions,
+    options: DocumentOnCreateOptions,
     userId: string,
   ): void;
   /**
@@ -255,7 +260,7 @@ declare class ClientDocument<
     parent: ClientDocument,
     collection: string,
     changes: unknown[],
-    options: DocumentModificationOptions,
+    options: DocumentPreUpdateOptions,
     userId: string,
   ): void;
 
@@ -273,7 +278,7 @@ declare class ClientDocument<
     collection: string,
     documents: ClientDocument[],
     changes: unknown[],
-    options: DocumentModificationOptions,
+    options: DocumentOnUpdateOptions,
     userId: string,
   ): void;
 
@@ -289,7 +294,7 @@ declare class ClientDocument<
     parent: ClientDocument,
     collection: string,
     ids: string[],
-    options: DocumentModificationOptions,
+    options: DocumentPreDeleteOptions,
     userId: string,
   ): void;
 
@@ -307,7 +312,7 @@ declare class ClientDocument<
     collection: string,
     documents: ClientDocument[],
     ids: string,
-    options: DocumentModificationOptions,
+    options: DocumentOnDeleteOptions,
     userId: string,
   ): void;
 
@@ -526,7 +531,7 @@ declare class ClientDocument<
   protected _preCreateEmbeddedDocuments(
     embeddedName: string,
     result: Record<string, unknown>[],
-    options: DocumentModificationOptions,
+    options: DocumentPreCreateOptions,
     userId: string,
   ): void;
 
@@ -543,7 +548,7 @@ declare class ClientDocument<
     embeddedName: string,
     documents: foundry.abstract.Document<any, any, any>[],
     result: Record<string, unknown>[],
-    options: DocumentModificationOptions,
+    options: DocumentOnCreateOptions,
     userId: string,
   ): void;
 
