@@ -1,6 +1,6 @@
-import type { AnyObject, EmptyObject, Merge } from "../../../types/utils.mts";
+import type { AnyObject, Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
-import type { DocumentMetadata, DocumentModificationOptions } from "../abstract/document.mts";
+import type { DocumentMetadata } from "../abstract/document.mts";
 import type { PrototypeToken } from "../data/data.mts";
 import type * as fields from "../data/fields.d.mts";
 import type * as documents from "./_module.d.mts";
@@ -184,13 +184,10 @@ declare class BaseActor extends Document<BaseActor.Schema, BaseActor.Metadata> {
    */
   static #canUpdate(user: documents.BaseUser, doc: BaseActor, data: BaseActor.UpdateData): boolean;
 
-  // removed _preCreate() as override isn't meaningful and it causes other issues
-
-  protected override _preUpdate(
-    changed: fields.SchemaField.AssignmentType<documents.BaseActor.Schema, EmptyObject>,
-    options: DocumentModificationOptions,
-    user: documents.BaseUser,
-  ): Promise<void>;
+  /**
+   * @privateRemarks _preCreate and _preUpdate are overridden but with no signature changes.
+   * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+   */
 
   static override migrateData(source: AnyObject): AnyObject;
 

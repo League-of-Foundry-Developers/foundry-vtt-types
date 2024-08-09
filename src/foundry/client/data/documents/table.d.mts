@@ -1,6 +1,6 @@
 import type { ConfiguredDocumentClassForName, ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
 import type { InexactPartial } from "../../../../types/utils.d.mts";
-import type { DocumentCreateOperation, DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
+import type { DocumentCreateOperation, DocumentCreateOptions } from "../../../common/abstract/document.d.mts";
 import type { ClientDocument } from "../abstract/client-document.d.mts";
 
 declare global {
@@ -231,7 +231,7 @@ declare global {
      */
     protected _buildEmbedHTML(
       config: TextEditor.DocumentHTMLEmbedConfig & { rollable: boolean },
-      options?: RollTable.RollTableHTMLEmbedConfig,
+      options?: TextEditor.EnrichmentOptions,
     ): Promise<HTMLElement | null>;
 
     protected override _createFigureEmbed(
@@ -275,7 +275,7 @@ declare global {
      */
     static fromFolder(
       folder: Folder,
-      options?: DocumentModificationOptions,
+      options?: DocumentCreateOptions<typeof RollTable>,
     ): Promise<RollTable.ConfiguredInstance | undefined>;
   }
 

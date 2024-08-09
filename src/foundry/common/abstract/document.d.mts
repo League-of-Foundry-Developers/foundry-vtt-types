@@ -640,9 +640,9 @@ declare abstract class Document<
    * @param user    - The User requesting the document creation
    * @returns Return false to exclude this Document from the creation operation
    */
-  protected _preCreate(
+  protected _preCreate<T extends Document.AnyConstructor, Temporary extends boolean = false>(
     data: fields.SchemaField.AssignmentType<Schema>,
-    options: DocumentModificationOptions,
+    options: DocumentCreateOptions<T, Temporary>,
     user: foundry.documents.BaseUser,
   ): Promise<boolean | void>;
 
@@ -653,9 +653,9 @@ declare abstract class Document<
    * @param options - Additional options which modify the creation request
    * @param userId  - The id of the User requesting the document update
    */
-  protected _onCreate(
+  protected _onCreate<T extends Document.AnyConstructor, Temporary extends boolean = false>(
     data: fields.SchemaField.InnerAssignmentType<Schema>,
-    options: DocumentModificationOptions,
+    options: DocumentCreateOptions<T, Temporary>,
     userId: string,
   ): void;
 
@@ -705,9 +705,9 @@ declare abstract class Document<
    * @param user    - The User requesting the document update
    * @returns A return value of false indicates the update operation should be cancelled
    */
-  protected _preUpdate(
+  protected _preUpdate<T extends Document.AnyConstructor>(
     changed: fields.SchemaField.AssignmentType<Schema>,
-    options: DocumentModificationOptions,
+    options: DocumentUpdateOptions<T>,
     user: foundry.documents.BaseUser,
   ): Promise<boolean | void>;
 
@@ -718,9 +718,9 @@ declare abstract class Document<
    * @param options - Additional options which modify the update request
    * @param userId  - The id of the User requesting the document update
    */
-  protected _onUpdate(
+  protected _onUpdate<T extends Document.AnyConstructor>(
     changed: fields.SchemaField.InnerAssignmentType<Schema>,
-    options: DocumentModificationOptions,
+    options: DocumentUpdateOptions<T>,
     userId: string,
   ): void;
 
@@ -770,7 +770,7 @@ declare abstract class Document<
    * @param user    - The User requesting the document deletion
    * @returns A return value of false indicates the delete operation should be cancelled
    */
-  protected _preDelete(options: DocumentModificationOptions, user: foundry.documents.BaseUser): Promise<boolean | void>;
+  protected _preDelete(options: DocumentDeleteOptions, user: foundry.documents.BaseUser): Promise<boolean | void>;
 
   /**
    * Perform follow-up operations after a Document of this type is deleted.
@@ -778,7 +778,7 @@ declare abstract class Document<
    * @param options - Additional options which modify the deletion request
    * @param userId  - The id of the User requesting the document update
    */
-  protected _onDelete(options: DocumentModificationOptions, userId: string): void;
+  protected _onDelete(options: DocumentDeleteOptions, userId: string): void;
 
   /**
    * Pre-process a deletion operation, potentially altering its instructions or input data. Pre-operation events only
