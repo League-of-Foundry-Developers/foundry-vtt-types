@@ -1,3 +1,5 @@
+import type { AnyFunction } from "../../../types/utils.d.mts";
+
 export {};
 
 declare global {
@@ -123,8 +125,7 @@ declare global {
     interface HookedFunction {
       hook: string;
       id: number;
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-      fn: Function;
+      fn: AnyFunction;
       once: boolean;
     }
   }
