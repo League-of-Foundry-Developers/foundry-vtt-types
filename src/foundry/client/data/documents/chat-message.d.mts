@@ -1,6 +1,5 @@
 import type { ConfiguredDocumentClassForName, ToObjectFalseType } from "../../../../types/helperTypes.d.mts";
 import type { InexactPartial, StoredDocument } from "../../../../types/utils.d.mts";
-import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace ChatMessage {
@@ -195,17 +194,10 @@ declare global {
      */
     protected _renderRollHTML(isPrivate: boolean): Promise<string>;
 
-    // removed _preCreate() as override isn't meaningful and it causes other issues
-
-    protected override _onCreate(data: this["_source"], options: DocumentModificationOptions, userId: string): void;
-
-    protected override _onUpdate(
-      data: foundry.documents.BaseChatMessage.UpdateData,
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-
-    protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
+    /**
+     * @privateRemarks _preCreate, _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
+     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+     */
 
     /**
      * Export the content of the chat message into a standardized log format

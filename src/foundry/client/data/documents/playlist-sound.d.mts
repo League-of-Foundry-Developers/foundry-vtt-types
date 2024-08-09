@@ -1,6 +1,5 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { InexactPartial } from "../../../../types/utils.d.mts";
-import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace PlaylistSound {
@@ -79,15 +78,10 @@ declare global {
 
     _onClickDocumentLink(event: MouseEvent): ReturnType<Playlist.ConfiguredInstance["stopSound" | "playSound"]>;
 
-    protected override _onCreate(data: this["_source"], options: DocumentModificationOptions, userId: string): void;
-
-    protected override _onUpdate(
-      changed: foundry.documents.BaseAmbientSound.UpdateData,
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-
-    protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
+    /**
+     * @privateRemarks _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
+     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+     */
 
     /**
      * Special handling that occurs when playback of a PlaylistSound is started.

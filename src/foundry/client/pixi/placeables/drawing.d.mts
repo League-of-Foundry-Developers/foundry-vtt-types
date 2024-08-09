@@ -1,5 +1,4 @@
 import type { ValueOf } from "../../../../types/utils.d.mts";
-import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
@@ -187,13 +186,10 @@ declare global {
 
     protected override _onRelease(options: PlaceableObject.ReleaseOptions): void;
 
-    protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
-
-    protected override _onUpdate(
-      data: foundry.documents.BaseDrawing.UpdateData,
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
+    /**
+     * @privateRemarks _onDelete and _onUpdate are overridden but with no signature changes.
+     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+     */
 
     override activateListeners(): void;
 

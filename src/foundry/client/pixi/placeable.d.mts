@@ -1,5 +1,4 @@
 import type { ValueOf } from "../../../types/utils.d.mts";
-import type { DocumentModificationOptions } from "../../common/abstract/document.d.mts";
 import type { Document } from "../../common/abstract/module.d.mts";
 
 declare global {
@@ -224,28 +223,9 @@ declare global {
     protected _getTargetAlpha(): number;
 
     /**
-     * Register pending canvas operations which should occur after a new PlaceableObject of this type is created
+     * @privateRemarks _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
+     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
      */
-    protected _onCreate(
-      data: foundry.data.fields.SchemaField.InnerAssignmentType<D["schema"]["fields"]>,
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-
-    /**
-     * Define additional steps taken when an existing placeable object of this type is updated with new data
-     * @remarks Called without options and userId in Drawing._onUpdate
-     */
-    protected _onUpdate(
-      changed: foundry.data.fields.SchemaField.InnerAssignmentType<D["schema"]["fields"]>,
-      options?: DocumentModificationOptions,
-      userId?: string,
-    ): void;
-
-    /**
-     * Define additional steps taken when an existing placeable object of this type is deleted
-     */
-    protected _onDelete(options: DocumentModificationOptions, userId: string): void;
 
     /**
      * Assume control over a PlaceableObject, flagging it as controlled and enabling downstream behaviors

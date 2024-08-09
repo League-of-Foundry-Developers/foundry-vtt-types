@@ -631,7 +631,20 @@ declare abstract class Document<
    */
   unsetFlag(scope: string, key: string): Promise<this>;
 
-  // removed _preCreate() as override isn't meaningful and it causes other issues
+  /**
+   * Pre-process a creation operation for a single Document instance.
+   * Pre-operation events only occur for the client which requested the operation.
+   * Modifications to the pending Document instance must be performed using {@link Document#updateSource}.
+   * @param data    - The initial data object provided to the document creation request
+   * @param options - Additional options which modify the creation request
+   * @param user    - The User requesting the document creation
+   * @returns Return false to exclude this Document from the creation operation
+   */
+  protected _preCreate(
+    data: fields.SchemaField.AssignmentType<Schema>,
+    options: DocumentModificationOptions,
+    user: foundry.documents.BaseUser,
+  ): Promise<boolean | void>;
 
   /**
    * Post-process a creation operation for a single Document instance.

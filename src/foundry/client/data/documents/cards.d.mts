@@ -6,14 +6,8 @@ import type {
 } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial, StoredDocument } from "../../../../types/utils.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
-import type {
-  DocumentCreateOperation,
-  DocumentDeleteOperation,
-  DocumentModificationOptions,
-} from "../../../common/abstract/document.d.mts";
+import type { DocumentCreateOperation, DocumentDeleteOperation } from "../../../common/abstract/document.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
-import type BaseCards from "../../../common/documents/cards.d.mts";
-import type BaseUser from "../../../common/documents/user.d.mts";
 
 declare global {
   namespace Cards {
@@ -294,19 +288,10 @@ declare global {
       context: Record<string, unknown>,
     ): Promise<ChatMessage.ConfiguredInstance | undefined>;
 
-    // removed _preCreate() as override isn't meaningful and it causes other issues
-
-    protected override _onUpdate(
-      // can't use UpdateData because it creates circular reference
-      changed: fields.SchemaField.InnerAssignmentType<BaseCards.Schema>,
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-
-    protected override _preDelete(
-      options: DocumentModificationOptions,
-      user: foundry.documents.BaseUser,
-    ): Promise<void>;
+    /**
+     * @privateRemarks _preCreate, _onUpdate, and _preDelete are all overridden but with no signature changes.
+     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+     */
 
     // TODO: It's a bit weird that we have to do it in this generic way but otherwise there is an error overriding this. Investigate later.
     static override deleteDocuments<T extends DocumentConstructor>(

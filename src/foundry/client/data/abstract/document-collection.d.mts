@@ -1,6 +1,10 @@
 import type { ConfiguredDocumentClass, DocumentConstructor } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial, ConfiguredStoredDocument } from "../../../../types/utils.d.mts";
-import type { DocumentModificationOptions, DocumentUpdateOperation } from "../../../common/abstract/document.d.mts";
+import type {
+  DocumentCreateOptions,
+  DocumentUpdateOperation,
+  DocumentUpdateOptions,
+} from "../../../common/abstract/document.d.mts";
 // import type _Collection from "../../../common/utils/collection.d.mts";
 
 // Fix for "Class 'Collection<ConfiguredStoredDocument<T>>' defines instance member property 'delete',
@@ -183,7 +187,7 @@ declare global {
      */
     protected _preCreateDocuments(
       result: (InstanceType<T>["_source"] & { _id: string })[],
-      options: DocumentModificationOptions,
+      options: DocumentCreateOptions<T>,
       userId: string,
     ): void;
 
@@ -197,7 +201,7 @@ declare global {
     protected _onCreateDocuments(
       documents: ConfiguredStoredDocument<T>[],
       result: (InstanceType<T>["_source"] & { _id: string })[],
-      options: DocumentModificationOptions,
+      options: DocumentCreateOptions<T>,
       userId: string,
     ): void;
 
@@ -209,7 +213,7 @@ declare global {
      */
     protected _preUpdateDocuments(
       result: (DeepPartial<InstanceType<T>["_source"]> & { _id: string })[],
-      options: DocumentModificationOptions,
+      options: DocumentUpdateOptions<T>,
       userId: string,
     ): void;
 
@@ -223,7 +227,7 @@ declare global {
     protected _onUpdateDocuments(
       documents: ConfiguredStoredDocument<T>[],
       result: (DeepPartial<InstanceType<T>["_source"]> & { _id: string })[],
-      options: DocumentModificationOptions,
+      options: DocumentUpdateOptions<T>,
       userId: string,
     ): void;
 
@@ -233,7 +237,7 @@ declare global {
      * @param options - Options which modified the deletion operation
      * @param userId  - The ID of the User who triggered the operation
      */
-    protected _preDeleteDocuments(result: string[], options: DocumentModificationOptions, userId: string): void;
+    protected _preDeleteDocuments(result: string[], options: DocumentDeleteOptions, userId: string): void;
 
     /**
      * Follow-up actions taken after a set of Documents in this Collection are deleted.
@@ -245,7 +249,7 @@ declare global {
     protected _onDeleteDocuments(
       documents: ConfiguredStoredDocument<T>[],
       result: string[],
-      options: DocumentModificationOptions,
+      options: DocumentDeleteOptions,
       userId: string,
     ): void;
 

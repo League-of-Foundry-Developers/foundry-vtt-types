@@ -240,23 +240,10 @@ declare global {
       options?: TextEditor.EnrichmentOptions,
     ): Promise<HTMLElement | null>;
 
-    protected override _onCreateDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      documents: ClientDocument[],
-      data: unknown[],
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-
-    protected override _onDeleteDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      documents: ClientDocument[],
-      ids: string,
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
+    /**
+     * @privateRemarks _onCreateDescendantDocuments and _onDeleteDescendantDocuments are overridden but with no signature changes.
+     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+     */
 
     override toCompendium<
       FlagsOpt extends boolean = false,

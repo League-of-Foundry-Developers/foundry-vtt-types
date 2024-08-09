@@ -1,11 +1,6 @@
 import type { ConfiguredDocumentClassForName, DocumentType } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
-import type {
-  DatabaseCreateOperation,
-  DatabaseDeleteOperation,
-  DatabaseUpdateOperation,
-} from "../../../common/abstract/_types.d.mts";
-import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
+import type { DatabaseUpdateOperation } from "../../../common/abstract/_types.d.mts";
 
 declare global {
   namespace TokenDocument {
@@ -69,9 +64,6 @@ declare global {
      */
     regions: Set<any> | null;
 
-    /* -------------------------------------------- */
-    /*  Methods                                     */
-    /* -------------------------------------------- */
     // TODO: Same as `DataModel._initialize`
     protected override _initialize(options?: any): void;
 
@@ -114,10 +106,6 @@ declare global {
      */
     hasStatusEffect(statusId: string): boolean;
 
-    /* -------------------------------------------- */
-    /*  Combat Operations                           */
-    /* -------------------------------------------- */
-
     /**
      * Add or remove this Token from a Combat encounter.
      * @param options - Additional options passed to TokenDocument.createCombatants or
@@ -156,10 +144,6 @@ declare global {
      */
     static deleteCombatants(tokens: TokenDocument[], options?: CreateCombatantOptions): Promise<Combatant[]>;
 
-    /* -------------------------------------------- */
-    /*  Actor Data Operations                       */
-    /* -------------------------------------------- */
-
     /**
      * Convenience method to change a token vision mode.
      * @param visionMode - The vision mode to apply to this token.
@@ -175,102 +159,12 @@ declare global {
       embeddedName: DocType,
     ): Collection<InstanceType<ConfiguredDocumentClassForName<DocType>>>;
 
-    /* -------------------------------------------- */
-    /*  Event Handlers                              */
-    /* -------------------------------------------- */
-
     /**
-     * @privateRemarks _onCreate, is overridden but with no signature changes.
+     * @privateRemarks _onCreate, _preUpdate, _onUpdate, _onDelete, preCreateOperation, _preUpdateOperation, _onCreateOperation,
+     * _onUpdateOperation, _onDeleteOperation, _preCreateDescendantDocuments, _preUpdateDescendantDocuments, _preDeleteDescendantDocuments,
+     * _onUpdateDescendantDocuments, and _onDeleteDescendantDocuments are all overridden but with no signature changes.
      * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
      */
-
-    protected override _preUpdate(
-      data: foundry.documents.BaseToken.UpdateData,
-      options: DocumentModificationOptions,
-      user: User.ConfiguredInstance,
-    ): Promise<void>;
-
-    protected override _onUpdate(
-      data: foundry.documents.BaseToken.UpdateData,
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-
-    /**
-     * Handle changes to the regions this token is in.
-     * @param priorRegionIds - The IDs of the prior regions
-     */
-    #onUpdateRegions(priorRegionIds: string[]): void;
-
-    /**
-     * Trigger TOKEN_MOVE, TOKEN_MOVE_IN, and TOKEN_MOVE_OUT events.
-     * @param origin   - he origin of movement
-     * @param teleport - Teleportation?
-     * @param forced   - Forced movement?
-     */
-    #triggerMoveRegionEvents(
-      origin: { x: number; y: number; elevation: number },
-      teleport: boolean,
-      forced: boolean,
-    ): void;
-
-    protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
-
-    /**
-     * Identify the Regions the Token currently is or is going to be in after the changes are applied.
-     * @param changes - The changes.
-     * @returns The Region IDs the token is (sorted), if it could be determined.
-     */
-    #identifyRegions(changes?: Record<string, unknown>): string[] | void;
-
-    static _preCreateOperation(
-      documents: TokenDocument[],
-      operation: DatabaseCreateOperation,
-      user: User,
-    ): Promise<boolean | void>;
-
-    static _preUpdateOperation(
-      documents: TokenDocument[],
-      operation: DatabaseUpdateOperation,
-      user: User,
-    ): Promise<boolean | void>;
-
-    /**
-     * Handle Regions potentially stopping movement.
-     * @param documents - Document instances to be updated
-     * @param operation - Parameters of the database update operation
-     * @param user      - The User requesting the update operation
-     */
-    static #preUpdateMovement(
-      documents: TokenDocument[],
-      operation: DatabaseUpdateOperation,
-      user: User,
-    ): Promise<void>;
-
-    /**
-     * Identify and update the regions this Token is going to be in if necessary.
-     * @param documents - Document instances to be updated
-     * @param operation - Parameters of the database update operation
-     */
-    static #preUpdateRegions(documents: TokenDocument[], operation: DatabaseUpdateOperation): Promise<void>;
-
-    static _onCreateOperation(
-      documents: TokenDocument[],
-      operation: DatabaseCreateOperation,
-      user: User,
-    ): Promise<void>;
-
-    static _onUpdateOperation(
-      documents: TokenDocument[],
-      operation: DatabaseUpdateOperation,
-      user: User,
-    ): Promise<void>;
-
-    static _onDeleteOperation(
-      documents: TokenDocument[],
-      operation: DatabaseDeleteOperation,
-      user: User,
-    ): Promise<void>;
 
     /**
      * Is to Token document updated such that the Regions the Token is contained in may change?
@@ -279,61 +173,6 @@ declare global {
      * @returns Could this Token update change Region containment?
      */
     protected _couldRegionsChange(changes: DatabaseUpdateOperation<TokenDocument>["updates"]): boolean;
-
-    /* -------------------------------------------- */
-    /*  Actor Delta Operations                      */
-    /* -------------------------------------------- */
-
-    protected override _preCreateDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      data: unknown[],
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-
-    protected override _preUpdateDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      changes: unknown[],
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-
-    protected override _preDeleteDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      ids: string[],
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-
-    protected override _onCreateDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      documents: ClientDocument[],
-      data: unknown[],
-      options: InexactPartial<DatabaseUpdateOperation>,
-      userId: string,
-    ): void;
-
-    protected override _onUpdateDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      documents: ClientDocument[],
-      changes: unknown[],
-      options: InexactPartial<DatabaseUpdateOperation>,
-      userId: string,
-    ): void;
-
-    protected override _onDeleteDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      documents: ClientDocument[],
-      ids: string,
-      options: InexactPartial<DatabaseUpdateOperation>,
-      userId: string,
-    ): void;
 
     /**
      * When the base Actor for a TokenDocument changes, we may need to update its Actor instance
@@ -390,10 +229,6 @@ declare global {
      * @returns A nested object of attribute choices to display
      */
     static getTrackedAttributeChoices(attributes?: TrackedAttributesDescription): Record<string, string[]>;
-
-    /* -------------------------------------------- */
-    /*  Deprecations                                */
-    /* -------------------------------------------- */
 
     /**
      * @deprecated since v11

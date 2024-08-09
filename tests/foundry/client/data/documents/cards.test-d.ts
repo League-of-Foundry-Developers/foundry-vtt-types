@@ -4,8 +4,8 @@ import type { FilePathField } from "../../../../../src/foundry/common/data/field
 // @ts-expect-error - Cards requires name.
 new Cards();
 
-// // @ts-expect-error - Cards requires name.
-//new Cards({});
+// @ts-expect-error - Cards requires name.
+new Cards({});
 
 const cards = new Cards({ name: "Just a deck of cards", type: "german" });
 expectTypeOf(cards).toEqualTypeOf<Cards>();

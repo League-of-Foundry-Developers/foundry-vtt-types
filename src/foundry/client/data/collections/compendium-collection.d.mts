@@ -3,7 +3,7 @@ import type { DeepPartial, InexactPartial, StoredDocument } from "../../../../ty
 import type { DatabaseAction, DatabaseOperation } from "../../../common/abstract/_types.d.mts";
 import type {
   DocumentCreateOperation,
-  DocumentModificationOptions,
+  DocumentCreateOptions,
   DocumentUpdateOperation,
 } from "../../../common/abstract/document.d.mts";
 import type { DirectoryCollectionMixin_DocumentCollection_Interface } from "../abstract/directory-collection-mixin.d.mts";
@@ -351,7 +351,7 @@ declare global {
      */
     static createCompendium<T extends CompendiumCollection.Metadata>(
       metadata: T,
-      options?: Partial<DocumentModificationOptions>,
+      options?: DocumentCreateOptions<DocumentClassForCompendiumMetadata<T>>,
     ): Promise<CompendiumCollection<T>>;
 
     /**

@@ -1,4 +1,3 @@
-import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
@@ -116,19 +115,10 @@ declare global {
      */
     updateSource(options?: AmbientSound.UpdateSourceOptions): void;
 
-    protected override _onCreate(
-      data: foundry.documents.BaseAmbientSound.ConstructorData,
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-
-    protected override _onUpdate(
-      data: foundry.documents.BaseAmbientSound.UpdateData,
-      options?: DocumentModificationOptions,
-      userId?: string,
-    ): void;
-
-    protected override _onDelete(...args: Parameters<PlaceableObject["_onDelete"]>): void;
+    /**
+     * @privateRemarks _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
+     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+     */
 
     protected override _canHUD(user: User.ConfiguredInstance, event?: any): boolean;
 

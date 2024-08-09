@@ -1,9 +1,7 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
-import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 import type { DataField } from "../../../common/data/fields.d.mts";
 import type { DataModel } from "../../../common/abstract/data.d.mts";
-import type BaseUser from "../../../common/documents/user.d.mts";
 
 declare global {
   namespace ActiveEffect {
@@ -284,23 +282,10 @@ declare global {
     // TODO: This is a minor override and doing the extension is complicated
     // getFlag(scope: string, key: string): unknown;
 
-    // removed _preCreate() as override isn't meaningful and it causes other issues
-
-    protected override _onCreate(data: this["_source"], options: DocumentModificationOptions, userId: string): void;
-
-    protected override _onUpdate(
-      data: foundry.documents.BaseActiveEffect.UpdateData,
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-
-    protected override _preUpdate(
-      changed: foundry.documents.BaseActiveEffect.UpdateData,
-      options: DocumentModificationOptions,
-      user: BaseUser,
-    ): Promise<boolean | void>;
-
-    protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
+    /**
+     * @privateRemarks _preCreate, _onCreate, _onUpdate, _preUpdate, and _onDelete are all overridden but with no signature changes.
+     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+     */
 
     /**
      * Display changes to active effects as scrolling Token status text.

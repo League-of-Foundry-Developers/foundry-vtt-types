@@ -1,5 +1,4 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
-import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace AmbientLightDocument {
@@ -14,11 +13,10 @@ declare global {
    * @see {@link AmbientLightConfig}        The AmbientLight configuration application
    */
   class AmbientLightDocument extends CanvasDocumentMixin(foundry.documents.BaseAmbientLight) {
-    protected override _onUpdate(
-      changed: foundry.documents.BaseAmbientLight.UpdateData,
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
+    /**
+     * @privateRemarks _onUpdate is overridden but with no signature changes.
+     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+     */
 
     /**
      * Is this ambient light source global in nature?

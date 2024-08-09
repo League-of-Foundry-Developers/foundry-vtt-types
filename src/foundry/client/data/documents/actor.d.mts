@@ -1,7 +1,6 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
 import type { DatabaseUpdateOperation } from "../../../common/abstract/_types.d.mts";
-import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace Actor {
@@ -262,38 +261,10 @@ declare global {
       }>,
     ): ReturnType<this["updateSource"]>;
 
-    protected override _onUpdate(
-      changed: foundry.documents.BaseActor.UpdateData,
-      options: InexactPartial<DatabaseUpdateOperation>,
-      user: string,
-    ): void;
-
-    protected override _onCreateDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      documents: ClientDocument[],
-      data: unknown[],
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-
-    protected override _onUpdateDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      documents: ClientDocument[],
-      changes: unknown[],
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-
-    protected override _onDeleteDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      documents: ClientDocument[],
-      ids: string,
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
+    /**
+     * @privateRemarks _onUpdate, onCreateDescendantDocuments, onUpdateDescendantDocuments, and _onDeleteDescendentDocuments are all overridden but with no signature changes.
+     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+     */
 
     /**
      * Additional workflows to perform when any descendant document within this Actor changes.

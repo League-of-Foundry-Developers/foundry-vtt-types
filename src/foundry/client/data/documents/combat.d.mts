@@ -1,6 +1,6 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { ConstructorOf } from "../../../../types/utils.d.mts";
-import type { DocumentModificationOptions, DocumentUpdateOperation } from "../../../common/abstract/document.d.mts";
+import type { DocumentUpdateOperation } from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace Combat {
@@ -195,43 +195,10 @@ declare global {
      */
     protected _refreshTokenHUD(documents: Array<Combatant>): void;
 
-    protected override _onCreate(data: this["_source"], options: DocumentModificationOptions, userId: string): void;
-
-    protected override _onUpdate(
-      changed: foundry.documents.BaseCombatant.UpdateData,
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-
-    protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
-
-    // TODO: Consider hardening the types based on the known properties of the schema
-    protected override _onCreateDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      documents: ClientDocument[],
-      result: unknown[],
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-
-    protected override _onUpdateDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      documents: ClientDocument[],
-      changes: unknown[],
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-
-    protected override _onDeleteDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      documents: ClientDocument[],
-      ids: string,
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
+    /**
+     * @privateRemarks _onCreate, _onUpdate, _onDelete, onCreateDescendantDocuments, onUpdateDescendantDocuments, and _onDeleteDescendantDocuments are all overridden but with no signature changes.
+     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+     */
 
     /**
      * Manage the execution of Combat lifecycle events.

@@ -1,7 +1,5 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { InexactPartial } from "../../../../types/utils.d.mts";
-import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
-import type BaseJournalEntryPage from "../../../common/documents/journal-entry-page.d.mts";
 
 declare global {
   namespace JournalEntryPage {
@@ -115,11 +113,10 @@ declare global {
 
     override _onClickDocumentLink(event: MouseEvent): this;
 
-    protected override _onUpdate(
-      changed: BaseJournalEntryPage.UpdateData,
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
+    /**
+     * @privateRemarks _onUpdate is overridden but with no signature changes.
+     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+     */
 
     protected override _buildEmbedHTML(
       config: TextEditor.DocumentHTMLEmbedConfig,
