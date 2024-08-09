@@ -13,26 +13,26 @@ export {};
 // is also a class in `src/foundry/common/config.d.mts`. It's also just nice to
 // have as reference to keep us synced with the latest version of Foundry.
 
-interface ApplicationConfiguration extends ApplicationV2.Configuration {}
+type ApplicationConfiguration = ApplicationV2.Configuration;
 
-interface ApplicationFormConfiguration extends ApplicationV2.FormConfiguration {}
+type ApplicationFormConfiguration = ApplicationV2.FormConfiguration;
 
-interface ApplicationHeaderControlsEntry extends ApplicationV2.HeaderControlsEntry {}
+type ApplicationHeaderControlsEntry = ApplicationV2.HeaderControlsEntry;
 
-interface ApplicationConstructorParams extends ApplicationV2.ConstructorParams {}
+type ApplicationConstructorParams = ApplicationV2.ConstructorParams;
 
-interface ApplicationRenderOptions extends ApplicationV2.RenderOptions {}
+type ApplicationRenderOptions = ApplicationV2.RenderOptions;
 
-interface ApplicationWindowRenderOptions extends ApplicationV2.WindowRenderOptions {}
+type ApplicationWindowRenderOptions = ApplicationV2.WindowRenderOptions;
 
-interface ApplicationClosingOptions extends ApplicationV2.ClosingOptions {}
+type ApplicationClosingOptions = ApplicationV2.ClosingOptions;
 
-interface ApplicationClickAction extends ApplicationV2.ClickAction {}
+type ApplicationClickAction = ApplicationV2.ClickAction;
 
-interface ApplicationFormSubmission extends ApplicationV2.FormSubmission {}
+type ApplicationFormSubmission = ApplicationV2.FormSubmission;
 
-interface ApplicationTab extends ApplicationV2.Tab {}
+type ApplicationTab = ApplicationV2.Tab;
 
-interface FormNode extends ApplicationV2.FormNode {}
+type FormNode = ApplicationV2.FormNode;
 
-interface FormFooterButton extends ApplicationV2.FormFooterButton {}
+type FormFooterButton = ApplicationV2.FormFooterButton;
