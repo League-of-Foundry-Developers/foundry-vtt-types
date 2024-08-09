@@ -1,4 +1,4 @@
-import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
+import type { AnyObject, DeepPartial, EmptyObject, InexactPartial } from "../../../../types/utils.d.mts";
 import type ApplicationV2 from "../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
 
@@ -9,8 +9,8 @@ import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts
 declare class RollResolver<
   Configuration extends ApplicationV2.Configuration = ApplicationV2.Configuration,
   RenderOptions extends ApplicationV2.RenderOptions = ApplicationV2.RenderOptions,
-  RenderContext extends Record<string, unknown> = Record<string, never>,
-> extends HandlebarsApplicationMixin(ApplicationV2)<Configuration, RenderOptions, RenderContext> {
+  RenderContext extends AnyObject = EmptyObject,
+> extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
   constructor(roll: Roll, options?: DeepPartial<Configuration>);
 
   // a placeholder private method to help subclassing
@@ -49,7 +49,7 @@ declare class RollResolver<
    * @returns
    */
   resolveResult(
-    term: DiceTerm,
+    term: foundry.dice.terms.DiceTerm,
     method: string,
     options?: InexactPartial<{
       /** @defaultValue `false` */
@@ -72,7 +72,7 @@ declare class RollResolver<
    * @param term        - The term.
    * @returns  A Promise that resolves when the term's results have been externally fulfilled.
    */
-  addTerm(term: DiceTerm): Promise<void>;
+  addTerm(term: foundry.dice.terms.DiceTerm): Promise<void>;
 
   /**
    * Check if all rolls have been fulfilled.
@@ -89,7 +89,7 @@ declare class RollResolver<
 declare namespace RollResolver {
   interface DiceTermFulfillmentDescriptor {
     id: string;
-    term: DiceTerm;
+    term: foundry.dice.terms.DiceTerm;
     method: string;
     isNew?: boolean | undefined;
   }

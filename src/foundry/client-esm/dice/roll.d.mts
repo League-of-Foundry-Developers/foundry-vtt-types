@@ -29,7 +29,7 @@ import type RollResolver from "../applications/dice/roll-resolver.d.mts";
  * console.log(r.total);    // 22
  * ```
  */
-declare class Roll<D extends Record<string, unknown> = AnyObject> {
+declare class Roll<D extends AnyObject = AnyObject> {
   /**
    * @param formula - The string formula to parse
    * @param data    - The data object against which to parse attributes within the formula

@@ -16,7 +16,7 @@ declare class PermissionConfig<
   Configuration extends ApplicationV2.Configuration = ApplicationV2.Configuration,
   RenderOptions extends ApplicationV2.RenderOptions = ApplicationV2.RenderOptions,
   RenderContext extends PermissionConfigRenderContext = PermissionConfigRenderContext,
-> extends HandlebarsApplicationMixin(ApplicationV2)<Configuration, RenderOptions, RenderContext> {
+> extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
   // placeholder private member to help subclassing
   #permissionConfig: true;
 

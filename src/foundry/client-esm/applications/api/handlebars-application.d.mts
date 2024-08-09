@@ -1,4 +1,4 @@
-import type { ConstructorOf, DeepPartial, Mixin } from "../../../../types/utils.d.mts";
+import type { AnyObject, ConstructorOf, DeepPartial, Mixin } from "../../../../types/utils.d.mts";
 import type ApplicationV2 from "./application.d.mts";
 
 /**
@@ -15,7 +15,7 @@ declare class HandlebarsApplication<
   >
     ? RenderOptions
     : never,
-  out RenderContext extends Record<string, unknown> = BaseClass extends ConstructorOf<
+  out RenderContext extends AnyObject = BaseClass extends ConstructorOf<
     ApplicationV2.Internal<any, any, infer RenderContext>
   >
     ? RenderContext
