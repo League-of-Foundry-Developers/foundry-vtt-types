@@ -15,7 +15,7 @@ declare global {
   class AmbientLightDocument extends CanvasDocumentMixin(foundry.documents.BaseAmbientLight) {
     /**
      * @privateRemarks _onUpdate is overridden but with no signature changes.
-     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+     * For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
      */
 
     /**

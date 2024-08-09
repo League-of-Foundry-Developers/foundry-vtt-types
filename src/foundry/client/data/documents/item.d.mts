@@ -44,10 +44,9 @@ declare global {
      */
     getRollData(): object;
 
-    // removed _preCreate() as override isn't meaningful and it causes other issues
-
     /**
-     * @privateRemarks _onCreateDocuments and _onDeleteDocuments are overridden but left off because the signature doesn't change and unnecessarily adds to the type complexity.
+     * @privateRemarks _preCreate, _onCreateDocuments and _onDeleteDocuments are all overridden but with no signature changes.
+     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
      */
   }
 }

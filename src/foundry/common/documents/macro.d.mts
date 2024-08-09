@@ -41,7 +41,10 @@ declare class BaseMacro extends Document<BaseMacro.Schema, BaseMacro.Metadata> {
     }>,
   ): boolean;
 
-  // removed _preCreate() as override isn't meaningful and it causes other issues
+  /**
+   * @privateRemarks _preCreate all overridden but with no signature changes.
+   * For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
+   */
 
   static override migrateData(source: AnyObject): AnyObject;
 

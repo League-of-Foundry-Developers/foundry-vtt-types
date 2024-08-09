@@ -243,8 +243,6 @@ declare global {
      */
     protected _unregisterDependentScene(scene: Scene): void;
 
-    // removed _preCreate() as override isn't meaningful and it causes other issues
-
     /**
      * When an Actor is being created, apply default token configuration settings to its prototype token.
      * @param data    - Data explicitly provided to the creation workflow
@@ -262,7 +260,7 @@ declare global {
     ): ReturnType<this["updateSource"]>;
 
     /**
-     * @privateRemarks _onUpdate, onCreateDescendantDocuments, onUpdateDescendantDocuments, and _onDeleteDescendentDocuments are all overridden but with no signature changes.
+     * @privateRemarks _preCreate, _onUpdate, onCreateDescendantDocuments, onUpdateDescendantDocuments, and _onDeleteDescendentDocuments are all overridden but with no signature changes.
      * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
      */
 

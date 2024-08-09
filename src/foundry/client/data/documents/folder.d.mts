@@ -78,7 +78,10 @@ declare global {
      */
     get ancestors(): Folder.ConfiguredInstance[];
 
-    // removed _preCreate() as override isn't meaningful and it causes other issues
+    /**
+     * @privateRemarks _preCreate overridden but with no signature changes.
+     * For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
+     */
 
     static createDialog<T extends DocumentConstructor>(
       this: T,
