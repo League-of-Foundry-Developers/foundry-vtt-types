@@ -1,11 +1,7 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial, StoredDocument } from "../../../../types/utils.d.mts";
 import type { DatabaseAction, DatabaseOperation } from "../../../common/abstract/_types.d.mts";
-import type {
-  DocumentCreateOperation,
-  DocumentCreateOptions,
-  DocumentUpdateOperation,
-} from "../../../common/abstract/document.d.mts";
+import type { DocumentOnCreateOptions, DocumentOnUpdateOptions } from "../../../common/abstract/document.d.mts";
 import type { DirectoryCollectionMixin_DocumentCollection_Interface } from "../abstract/directory-collection-mixin.d.mts";
 
 declare const DirectoryCollectionMixin_DocumentCollection: DirectoryCollectionMixin_DocumentCollection_Interface;
@@ -307,7 +303,7 @@ declare global {
            * @defaultValue `""`
            * */
           folderName: string;
-        } & DocumentCreateOperation<DocumentClassForCompendiumMetadata<T>> &
+        } & DocumentOnCreateOptions &
           WorldCollection.FromCompendiumOptions
       >,
     ): Promise<StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[]>;
@@ -351,7 +347,7 @@ declare global {
      */
     static createCompendium<T extends CompendiumCollection.Metadata>(
       metadata: T,
-      options?: DocumentCreateOptions<DocumentClassForCompendiumMetadata<T>>,
+      options?: DocumentOnCreateOptions,
     ): Promise<CompendiumCollection<T>>;
 
     /**
@@ -397,7 +393,7 @@ declare global {
             doc: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>,
           ) => DeepPartial<DocumentInstanceForCompendiumMetadata<T>["_source"]>),
       condition?: ((obj: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>) => boolean) | null,
-      options?: DocumentUpdateOperation<DocumentClassForCompendiumMetadata<T>>,
+      options?: DocumentOnUpdateOptions,
     ): ReturnType<this["documentClass"]["updateDocuments"]>;
 
     /**

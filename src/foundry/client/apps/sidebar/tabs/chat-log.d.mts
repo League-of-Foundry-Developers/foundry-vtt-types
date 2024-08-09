@@ -1,4 +1,4 @@
-import type { DocumentCreateOperation } from "../../../../common/abstract/document.d.mts";
+import type { DocumentOnCreateOptions } from "../../../../common/abstract/document.d.mts";
 
 export {};
 
@@ -198,7 +198,7 @@ declare global {
       command: string,
       match: RegExpMatchArray[],
       chatData: foundry.documents.BaseChatMessage.ConstructorData,
-      createOptions: DocumentCreateOperation<typeof ChatMessage>,
+      createOptions: DocumentOnCreateOptions,
     ): Promise<void>;
 
     /**
@@ -214,7 +214,7 @@ declare global {
       command: string,
       match: RegExpMatchArray,
       chatData: foundry.documents.BaseChatMessage.ConstructorData,
-      createOptions: DocumentCreateOperation<typeof ChatMessage>,
+      createOptions: DocumentOnCreateOptions,
     ): void;
 
     /**
@@ -229,7 +229,7 @@ declare global {
       command: string,
       match: RegExpMatchArray,
       chatData: foundry.documents.BaseChatMessage.ConstructorData,
-      createOptions: DocumentCreateOperation<typeof ChatMessage>,
+      createOptions: DocumentOnCreateOptions,
     ): void;
 
     /**

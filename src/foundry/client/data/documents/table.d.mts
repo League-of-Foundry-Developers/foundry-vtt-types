@@ -1,7 +1,6 @@
 import type { ConfiguredDocumentClassForName, ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
 import type { InexactPartial } from "../../../../types/utils.d.mts";
-import type { DocumentCreateOperation, DocumentCreateOptions } from "../../../common/abstract/document.d.mts";
-import type { ClientDocument } from "../abstract/client-document.d.mts";
+import type { DocumentOnCreateOptions } from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace RollTable {
@@ -60,7 +59,7 @@ declare global {
        * Additional options which customize the created messages
        * @defaultValue `{}`
        */
-      messageOptions: DocumentCreateOperation<typeof ChatMessage> & { rollMode: keyof CONFIG.Dice.RollModes | "roll" };
+      messageOptions: DocumentOnCreateOptions & { rollMode: keyof CONFIG.Dice.RollModes | "roll" };
     }
 
     interface RollOptions {
@@ -275,7 +274,7 @@ declare global {
      */
     static fromFolder(
       folder: Folder,
-      options?: DocumentCreateOptions<typeof RollTable>,
+      options?: DocumentOnCreateOptions,
     ): Promise<RollTable.ConfiguredInstance | undefined>;
   }
 

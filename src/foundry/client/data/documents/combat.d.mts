@@ -1,6 +1,6 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { ConstructorOf } from "../../../../types/utils.d.mts";
-import type { DocumentUpdateOperation } from "../../../common/abstract/document.d.mts";
+import type { DocumentOnUpdateOptions } from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace Combat {
@@ -88,7 +88,7 @@ declare global {
      * Deactivate all other Combat encounters within the viewed Scene and set this one as active
      * @param options - Additional context to customize the update workflow
      */
-    activate(options?: DocumentUpdateOperation<typeof Combat>): Promise<Combat.ConfiguredInstance[]>;
+    activate(options?: DocumentOnUpdateOptions): Promise<Combat.ConfiguredInstance[]>;
 
     override prepareDerivedData(): void;
 

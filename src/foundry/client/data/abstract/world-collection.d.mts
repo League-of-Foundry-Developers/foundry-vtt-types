@@ -4,7 +4,7 @@ import type {
   DocumentConstructor,
 } from "../../../../types/helperTypes.d.mts";
 import type { ConfiguredStoredDocument, DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
-import type { DocumentCreateOperation } from "../../../common/abstract/document.d.mts";
+import type { DocumentOnCreateOptions } from "../../../common/abstract/document.d.mts";
 import type { DirectoryCollectionMixin_DocumentCollection_Interface } from "./directory-collection-mixin.d.mts";
 
 declare const DirectoryCollectionMixin_DocumentCollection: DirectoryCollectionMixin_DocumentCollection_Interface;
@@ -63,7 +63,7 @@ declare global {
       >,
       id: string,
       updateData?: DeepPartial<InstanceType<ConfiguredDocumentClass<T>>["_source"]>,
-      options?: InexactPartial<DocumentCreateOperation<T> & WorldCollection.FromCompendiumOptions>,
+      options?: InexactPartial<DocumentOnCreateOptions & WorldCollection.FromCompendiumOptions>,
     ): Promise<ConfiguredStoredDocument<T>>;
 
     /**

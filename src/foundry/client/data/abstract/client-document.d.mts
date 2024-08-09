@@ -9,7 +9,6 @@ import type Document from "../../../common/abstract/document.d.mts";
 import type {
   AnyMetadata,
   DocumentCreateOperation,
-  DocumentCreateOptions,
   DocumentModificationOptions,
 } from "../../../common/abstract/document.d.mts";
 
@@ -241,7 +240,7 @@ declare class ClientDocument<
     collection: string,
     documents: ClientDocument[],
     data: unknown[],
-    options: DocumentCreateOptions<typeof ClientDocument>,
+    options: DocumentModificationOptions,
     userId: string,
   ): void;
   /**
@@ -354,7 +353,7 @@ declare class ClientDocument<
   static createDialog<T extends DocumentConstructor>(
     this: T,
     data?: DeepPartial<ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>)>,
-    context?: Pick<DocumentCreateOperation<T>, "parent" | "pack"> &
+    context?: Pick<DocumentCreateOperation, "parent" | "pack"> &
       InexactPartial<
         DialogOptions & {
           /** A restriction the selectable sub-types of the Dialog. */

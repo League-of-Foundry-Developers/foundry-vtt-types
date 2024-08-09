@@ -168,7 +168,7 @@ declare global {
         // | fields.SchemaField.AssignmentType<Card["schema"]["fields"]>
         // | (fields.SchemaField.AssignmentType<Card["schema"]["fields"]> & Record<string, unknown>)
       >,
-      context: DocumentCreateOperation<T, Temporary>,
+      context: DocumentCreateOperation<Temporary>,
     ): true extends Temporary
       ? Promise<InstanceType<Document.ConfiguredClass<T>>[]>
       : Promise<StoredDocument<InstanceType<Document.ConfiguredClass<T>>>[]>;
@@ -336,7 +336,7 @@ declare global {
     static override createDialog<T extends DocumentConstructor>(
       this: T,
       data?: DeepPartial<ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>)>,
-      context?: Pick<DocumentCreateOperation<typeof Card>, "parent" | "pack"> &
+      context?: Pick<DocumentCreateOperation, "parent" | "pack"> &
         InexactPartial<
           DialogOptions & {
             /** A restriction the selectable sub-types of the Dialog. */

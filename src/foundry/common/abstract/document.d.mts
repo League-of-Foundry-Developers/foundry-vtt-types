@@ -302,7 +302,7 @@ declare abstract class Document<
       | fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]>
       | (fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]> & Record<string, unknown>)
     >,
-    operation?: DocumentCreateOperation<T, Temporary>,
+    operation?: DocumentCreateOperation<Temporary>,
   ): true extends Temporary
     ? Promise<InstanceType<Document.ConfiguredClass<T>>[]>
     : Promise<StoredDocument<InstanceType<Document.ConfiguredClass<T>>>[]>;
@@ -345,7 +345,7 @@ declare abstract class Document<
   static updateDocuments<T extends Document.AnyConstructor>(
     this: T,
     updates?: Array<DeepPartial<ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>)>>,
-    operation?: DocumentUpdateOperation<T>,
+    operation?: DocumentUpdateOperation,
   ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
 
   /**
@@ -423,7 +423,7 @@ declare abstract class Document<
   static create<T extends Document.AnyConstructor, Temporary extends boolean = false>(
     this: T,
     data: ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>),
-    operation?: DocumentCreateOperation<T, Temporary>,
+    operation?: DocumentCreateOperation<Temporary>,
   ): true extends Temporary
     ? Promise<InstanceType<ConfiguredDocumentClass<T>> | undefined>
     : Promise<ConfiguredStoredDocument<T> | undefined>;
@@ -439,11 +439,11 @@ declare abstract class Document<
    *
    * @remarks If no document has actually been updated, the returned {@link Promise} resolves to `undefined`.
    */
-  override update<T extends Document.AnyConstructor>(
+  override update(
     data?:
       | fields.SchemaField.AssignmentType<Schema, {}>
       | (fields.SchemaField.AssignmentType<Schema, {}> & Record<string, unknown>),
-    operation?: DocumentUpdateOperation<T>,
+    operation?: DocumentUpdateOperation,
   ): Promise<this | undefined>;
 
   /**
@@ -533,7 +533,7 @@ declare abstract class Document<
   createEmbeddedDocuments<EmbeddedName extends Exclude<DocumentType, "Cards">, Temporary extends boolean = false>(
     embeddedName: EmbeddedName,
     data?: Array<ConstructorDataType<ConfiguredDocumentClassForName<EmbeddedName>>>,
-    operation?: DocumentCreateOperation<ConfiguredDocumentClassForName<EmbeddedName>, Temporary>,
+    operation?: DocumentCreateOperation<Temporary>,
   ): Promise<
     Array<
       true extends Temporary
@@ -556,7 +556,7 @@ declare abstract class Document<
   updateEmbeddedDocuments<EmbeddedName extends Exclude<DocumentType, "Cards">>(
     embeddedName: EmbeddedName,
     updates?: Array<Record<string, unknown>>,
-    operation?: DocumentUpdateOperation<ConfiguredDocumentClassForName<EmbeddedName>>,
+    operation?: DocumentUpdateOperation,
   ): Promise<Array<StoredDocument<InstanceType<ConfiguredDocumentClassForName<EmbeddedName>>>>>;
 
   /**
@@ -640,9 +640,9 @@ declare abstract class Document<
    * @param user    - The User requesting the document creation
    * @returns Return false to exclude this Document from the creation operation
    */
-  protected _preCreate<T extends Document.AnyConstructor, Temporary extends boolean = false>(
+  protected _preCreate(
     data: fields.SchemaField.AssignmentType<Schema>,
-    options: DocumentCreateOptions<T, Temporary>,
+    options: DocumentOnCreateOptions,
     user: foundry.documents.BaseUser,
   ): Promise<boolean | void>;
 
@@ -653,9 +653,9 @@ declare abstract class Document<
    * @param options - Additional options which modify the creation request
    * @param userId  - The id of the User requesting the document update
    */
-  protected _onCreate<T extends Document.AnyConstructor, Temporary extends boolean = false>(
+  protected _onCreate(
     data: fields.SchemaField.InnerAssignmentType<Schema>,
-    options: DocumentCreateOptions<T, Temporary>,
+    options: DocumentOnCreateOptions,
     userId: string,
   ): void;
 
@@ -705,9 +705,9 @@ declare abstract class Document<
    * @param user    - The User requesting the document update
    * @returns A return value of false indicates the update operation should be cancelled
    */
-  protected _preUpdate<T extends Document.AnyConstructor>(
+  protected _preUpdate(
     changed: fields.SchemaField.AssignmentType<Schema>,
-    options: DocumentUpdateOptions<T>,
+    options: DocumentPreUpdateOptions,
     user: foundry.documents.BaseUser,
   ): Promise<boolean | void>;
 
@@ -718,9 +718,9 @@ declare abstract class Document<
    * @param options - Additional options which modify the update request
    * @param userId  - The id of the User requesting the document update
    */
-  protected _onUpdate<T extends Document.AnyConstructor>(
+  protected _onUpdate(
     changed: fields.SchemaField.InnerAssignmentType<Schema>,
-    options: DocumentUpdateOptions<T>,
+    options: DocumentOnUpdateOptions,
     userId: string,
   ): void;
 
@@ -770,7 +770,7 @@ declare abstract class Document<
    * @param user    - The User requesting the document deletion
    * @returns A return value of false indicates the delete operation should be cancelled
    */
-  protected _preDelete(options: DocumentDeleteOptions, user: foundry.documents.BaseUser): Promise<boolean | void>;
+  protected _preDelete(options: DocumentPreDeleteOptions, user: foundry.documents.BaseUser): Promise<boolean | void>;
 
   /**
    * Perform follow-up operations after a Document of this type is deleted.
@@ -778,7 +778,7 @@ declare abstract class Document<
    * @param options - Additional options which modify the deletion request
    * @param userId  - The id of the User requesting the document update
    */
-  protected _onDelete(options: DocumentDeleteOptions, userId: string): void;
+  protected _onDelete(options: DocumentOnDeleteOptions, userId: string): void;
 
   /**
    * Pre-process a deletion operation, potentially altering its instructions or input data. Pre-operation events only
@@ -965,19 +965,28 @@ declare namespace Document {
 /** @deprecated - since v12 */
 export type DocumentModificationOptions = Omit<DocumentModificationContext, "parent" | "pack">;
 
-export type DocumentCreateOptions<T extends Document.AnyConstructor, Temporary extends boolean = false> = Omit<
-  DocumentCreateOperation<T, Temporary>,
-  "parent" | "pack"
->;
-export type DocumentUpdateOptions<T extends Document.AnyConstructor> = Omit<
-  DocumentUpdateOperation<T>,
-  "parent" | "pack"
->;
-export type DocumentDeleteOptions = Omit<DocumentDeleteOperation, "parent" | "pack">;
+type NewType = "noHook";
 
-export type DocumentUpsertOptions<T extends Document.AnyConstructor> =
-  | DocumentCreateOptions<T>
-  | DocumentUpdateOptions<T>;
+export type DocumentPreCreateOptions = Omit<DatabaseCreateOperation, "data" | "noHook" | "pack" | "parent">;
+export type DocumentOnCreateOptions = Omit<DatabaseCreateOperation, "pack" | "parentUUid" | "syntheticActorUpdate">;
+
+export type DocumentPreUpdateOptions = Omit<
+  DatabaseUpdateOperation,
+  "updates" | "restoreDelta" | "noHook" | "parent" | "pack"
+>;
+export type DocumentOnUpdateOptions = Omit<DatabaseUpdateOperation, "pack" | "parentUUid" | "syntheticActorUpdate">;
+
+export type DocumentPreDeleteOptions = Omit<
+  DatabaseDeleteOperation,
+  "ids" | "deleteAll" | "noHook" | "pack" | "parent"
+>;
+export type DocumentOnDeleteOptions = Omit<
+  DatabaseDeleteOperation,
+  "deleteAll" | "pack" | "parentUuid" | "syntheticActorUpdate"
+>;
+
+export type DocumentPreUpsertOptions = DocumentPreCreateOptions | DocumentPreUpdateOptions;
+export type DocumentOnUpsertOptions = DocumentOnCreateOptions | DocumentOnUpdateOptions;
 
 export interface Context<Parent extends Document.Any | null> {
   /**
@@ -1041,8 +1050,8 @@ export interface DocumentMetadata {
   pack: null;
 }
 
-export interface DocumentCreateOperation<T extends Document.AnyConstructor, Temporary extends boolean = false>
-  extends InexactPartial<Omit<DatabaseCreateOperation<InstanceType<T>>, "data">> {
+export interface DocumentCreateOperation<Temporary extends boolean = false>
+  extends InexactPartial<Omit<DatabaseCreateOperation, "data">> {
   /**
    * @deprecated `"It is no longer supported to create temporary documents using the Document.createDocuments API. Use the new Document() constructor instead."`
    * @remarks No explicit undefined because deprecation message checks `"temporary" in operation`
@@ -1052,10 +1061,6 @@ export interface DocumentCreateOperation<T extends Document.AnyConstructor, Temp
 
 export interface DocumentDeleteOperation extends InexactPartial<Omit<DatabaseDeleteOperation, "ids">> {}
 
-export interface DocumentUpdateOperation<T extends Document.AnyConstructor>
-  extends InexactPartial<Omit<DatabaseUpdateOperation<InstanceType<T>>, "updates">>,
+export interface DocumentUpdateOperation
+  extends InexactPartial<Omit<DatabaseUpdateOperation, "updates">>,
     foundry.utils.MergeObjectOptions {}
-
-export type DocumentUpsertOperation<T extends Document.AnyConstructor> =
-  | DocumentCreateOperation<T>
-  | DocumentUpdateOperation<T>;

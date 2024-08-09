@@ -1,3 +1,4 @@
+import type { DocumentOnCreateOptions } from "../../../common/abstract/document.d.mts";
 import type { LineIntersection } from "../../../common/utils/geometry.d.mts";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
@@ -230,6 +231,11 @@ declare global {
      * @privateRemarks _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
      * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
      */
+    protected _onCreate(
+      data: foundry.data.fields.SchemaField.InnerAssignmentType<D["schema"]["fields"]>,
+      options: DocumentOnCreateOptions & { newoption: string },
+      userId: string,
+    ): void;
 
     /**
      * Play a door interaction sound.
