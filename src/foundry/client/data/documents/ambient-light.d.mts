@@ -1,9 +1,21 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
+import type { InexactPartial } from "../../../../types/utils.d.mts";
+import type {
+  DatabaseCreateOperation,
+  DatabaseDeleteOperation,
+  DatabaseUpdateOperation,
+} from "../../../common/abstract/_types.d.mts";
 
 declare global {
   namespace AmbientLightDocument {
     type ConfiguredClass = ConfiguredDocumentClassForName<"AmbientLight">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    export interface DatabaseOperations {
+      create: DatabaseCreateOperation;
+      update: DatabaseUpdateOperation & InexactPartial<{ animate: boolean }>;
+      delete: DatabaseDeleteOperation;
+    }
   }
 
   /**

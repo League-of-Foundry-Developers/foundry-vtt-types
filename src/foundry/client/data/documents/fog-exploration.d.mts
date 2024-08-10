@@ -1,11 +1,22 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { InexactPartial } from "../../../../types/utils.d.mts";
-import type { DatabaseGetOperation } from "../../../common/abstract/_types.d.mts";
+import type {
+  DatabaseGetOperation,
+  DatabaseCreateOperation,
+  DatabaseDeleteOperation,
+  DatabaseUpdateOperation,
+} from "../../../common/abstract/_types.d.mts";
 
 declare global {
   namespace FogExploration {
     type ConfiguredClass = ConfiguredDocumentClassForName<"FogExploration">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    export interface DatabaseOperations {
+      create: DatabaseCreateOperation & InexactPartial<{ loadFog: boolean }>;
+      update: DatabaseUpdateOperation & InexactPartial<{ loadFog: boolean }>;
+      delete: DatabaseDeleteOperation & InexactPartial<{ loadFog: boolean }>;
+    }
   }
 
   /**

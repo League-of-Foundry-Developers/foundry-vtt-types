@@ -1,11 +1,21 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
-import type { DatabaseCreateOperation } from "../../../common/abstract/_types.d.mts";
+import type {
+  DatabaseCreateOperation,
+  DatabaseDeleteOperation,
+  DatabaseUpdateOperation,
+} from "../../../common/abstract/_types.d.mts";
 
 declare global {
   namespace Card {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Card">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    export interface DatabaseOperations {
+      create: DatabaseCreateOperation;
+      update: DatabaseUpdateOperation;
+      delete: DatabaseDeleteOperation;
+    }
   }
 
   /**
@@ -106,7 +116,7 @@ declare global {
      */
     toMessage(
       messageData?: DeepPartial<foundry.documents.BaseChatMessage.ConstructorData>,
-      options?: InexactPartial<Omit<DatabaseCreateOperation<Card>, "data">>,
+      options?: InexactPartial<Omit<DatabaseCreateOperation<ChatMessage>, "data">>,
     ): Promise<ChatMessage.ConfiguredInstance | undefined>;
   }
 }

@@ -1,10 +1,21 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { InexactPartial } from "../../../../types/utils.d.mts";
+import type {
+  DatabaseCreateOperation,
+  DatabaseDeleteOperation,
+  DatabaseUpdateOperation,
+} from "../../../common/abstract/_types.d.mts";
 
 declare global {
   namespace User {
     type ConfiguredClass = ConfiguredDocumentClassForName<"User">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    export interface DatabaseOperations {
+      create: DatabaseCreateOperation;
+      update: DatabaseUpdateOperation;
+      delete: DatabaseDeleteOperation;
+    }
 
     interface PingData {
       /**

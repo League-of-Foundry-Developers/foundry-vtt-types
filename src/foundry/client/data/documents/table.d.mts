@@ -1,11 +1,22 @@
 import type { ConfiguredDocumentClassForName, ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
 import type { InexactPartial } from "../../../../types/utils.d.mts";
-import type { DocumentOnCreateOptions } from "../../../common/abstract/document.d.mts";
+import type { DocumentOnCreateOptions, DocumentOnDeleteOptions } from "../../../common/abstract/document.d.mts";
+import type {
+  DatabaseCreateOperation,
+  DatabaseDeleteOperation,
+  DatabaseUpdateOperation,
+} from "../../../common/abstract/_types.d.mts";
 
 declare global {
   namespace RollTable {
     type ConfiguredClass = ConfiguredDocumentClassForName<"RollTable">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    export interface DatabaseOperations {
+      create: DatabaseCreateOperation;
+      update: DatabaseUpdateOperation;
+      delete: DatabaseDeleteOperation;
+    }
 
     /**
      * Optional arguments which customize the draw
@@ -239,10 +250,23 @@ declare global {
       options?: TextEditor.EnrichmentOptions,
     ): Promise<HTMLElement | null>;
 
-    /**
-     * @privateRemarks _onCreateDescendantDocuments and _onDeleteDescendantDocuments are overridden but with no signature changes.
-     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
-     */
+    protected override _onCreateDescendantDocuments(
+      parent: ClientDocument,
+      collection: string,
+      documents: ClientDocument[],
+      data: unknown[],
+      options: DocumentOnCreateOptions<"TableResult">,
+      userId: string,
+    ): void;
+
+    protected override _onDeleteDescendantDocuments(
+      parent: ClientDocument,
+      collection: string,
+      documents: ClientDocument[],
+      ids: string,
+      options: DocumentOnDeleteOptions<"TableResult">,
+      userId: string,
+    ): void;
 
     override toCompendium<
       FlagsOpt extends boolean = false,
@@ -274,7 +298,7 @@ declare global {
      */
     static fromFolder(
       folder: Folder,
-      options?: DocumentOnCreateOptions,
+      options?: DocumentOnCreateOptions<"Folder">,
     ): Promise<RollTable.ConfiguredInstance | undefined>;
   }
 

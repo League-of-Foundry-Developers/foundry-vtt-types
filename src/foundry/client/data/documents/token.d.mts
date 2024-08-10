@@ -1,11 +1,29 @@
 import type { ConfiguredDocumentClassForName, DocumentType } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
-import type { DatabaseUpdateOperation } from "../../../common/abstract/_types.d.mts";
+import type {
+  DatabaseCreateOperation,
+  DatabaseDeleteOperation,
+  DatabaseUpdateOperation,
+} from "../../../common/abstract/_types.d.mts";
 
 declare global {
   namespace TokenDocument {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Token">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    export interface DatabaseOperations {
+      create: DatabaseCreateOperation;
+      update: DatabaseUpdateOperation &
+        InexactPartial<{
+          previousActorId: string | null;
+          animate: boolean;
+          _priorRegions: Record<string, string[]>;
+          _priorPosition: Record<string, { x: number; y: number; elevation: number }>;
+          teleport: boolean;
+          forced: boolean;
+        }>;
+      delete: DatabaseDeleteOperation;
+    }
   }
 
   /**

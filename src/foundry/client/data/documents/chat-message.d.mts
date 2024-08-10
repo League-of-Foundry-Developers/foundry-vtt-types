@@ -1,10 +1,22 @@
 import type { ConfiguredDocumentClassForName, ToObjectFalseType } from "../../../../types/helperTypes.d.mts";
 import type { InexactPartial, StoredDocument } from "../../../../types/utils.d.mts";
+import type {
+  DatabaseCreateOperation,
+  DatabaseDeleteOperation,
+  DatabaseUpdateOperation,
+} from "../../../common/abstract/_types.d.mts";
 
 declare global {
   namespace ChatMessage {
     type ConfiguredClass = ConfiguredDocumentClassForName<"ChatMessage">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    export interface DatabaseOperations {
+      create: DatabaseCreateOperation &
+        InexactPartial<{ rollMode: foundry.CONST.DICE_ROLL_MODES; chatBubble: boolean }>;
+      update: DatabaseUpdateOperation;
+      delete: DatabaseDeleteOperation;
+    }
 
     interface GetSpeakerOptions {
       /** The Scene in which the speaker resides */

@@ -1,11 +1,27 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
-import type { ConstructorOf } from "../../../../types/utils.d.mts";
-import type { DocumentOnUpdateOptions } from "../../../common/abstract/document.d.mts";
+import type { ConstructorOf, InexactPartial } from "../../../../types/utils.d.mts";
+import type {
+  DocumentOnCreateOptions,
+  DocumentOnDeleteOptions,
+  DocumentOnUpdateOptions,
+} from "../../../common/abstract/document.d.mts";
+import type {
+  DatabaseCreateOperation,
+  DatabaseDeleteOperation,
+  DatabaseUpdateOperation,
+} from "../../../common/abstract/_types.d.mts";
 
 declare global {
   namespace Combat {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Combat">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    export interface DatabaseOperations {
+      create: DatabaseCreateOperation;
+      update: DatabaseUpdateOperation &
+        InexactPartial<{ direction: -1 | 1; worldTime: { delta: number }; turnEvents: boolean }>;
+      delete: DatabaseDeleteOperation;
+    }
 
     interface InitiativeOptions {
       /**
@@ -88,7 +104,7 @@ declare global {
      * Deactivate all other Combat encounters within the viewed Scene and set this one as active
      * @param options - Additional context to customize the update workflow
      */
-    activate(options?: DocumentOnUpdateOptions): Promise<Combat.ConfiguredInstance[]>;
+    activate(options?: DocumentOnUpdateOptions<"Combat">): Promise<Combat.ConfiguredInstance[]>;
 
     override prepareDerivedData(): void;
 
@@ -196,10 +212,36 @@ declare global {
     protected _refreshTokenHUD(documents: Array<Combatant>): void;
 
     /**
-     * @privateRemarks _onCreate, _onUpdate, _onDelete, onCreateDescendantDocuments, onUpdateDescendantDocuments, and _onDeleteDescendantDocuments are all overridden but with no signature changes.
+     * @privateRemarks _onCreate, _onUpdate, and _onDelete  are all overridden but with no signature changes.
      * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
      */
 
+    protected override _onCreateDescendantDocuments(
+      parent: ClientDocument,
+      collection: string,
+      documents: ClientDocument[],
+      result: unknown[],
+      options: DocumentOnCreateOptions<"Combatant"> & InexactPartial<{ combatTurn: number; turnEvents: boolean }>,
+      userId: string,
+    ): void;
+
+    protected override _onUpdateDescendantDocuments(
+      parent: ClientDocument,
+      collection: string,
+      documents: ClientDocument[],
+      changes: unknown[],
+      options: DocumentOnUpdateOptions<"Combatant"> & InexactPartial<{ combatTurn: number; turnEvents: boolean }>,
+      userId: string,
+    ): void;
+
+    protected override _onDeleteDescendantDocuments(
+      parent: ClientDocument,
+      collection: string,
+      documents: ClientDocument[],
+      ids: string,
+      options: DocumentOnDeleteOptions<"Combatant"> & InexactPartial<{ combatTurn: number; turnEvents: boolean }>,
+      userId: string,
+    ): void;
     /**
      * Manage the execution of Combat lifecycle events.
      * This method orchestrates the execution of four events in the following order, as applicable:

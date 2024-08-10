@@ -1,11 +1,29 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { InexactPartial } from "../../../../types/utils.d.mts";
+import type {
+  AnyMetadata,
+  DocumentOnCreateOptions,
+  DocumentOnDeleteOptions,
+  DocumentOnUpdateOptions,
+} from "../../../common/abstract/document.d.mts";
+import type { Document } from "../../../common/abstract/module.d.mts";
 import type { ClientDocument } from "../abstract/client-document.d.mts";
+import type {
+  DatabaseCreateOperation,
+  DatabaseDeleteOperation,
+  DatabaseUpdateOperation,
+} from "../../../common/abstract/_types.d.mts";
 
 declare global {
   namespace Playlist {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Playlist">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    export interface DatabaseOperations {
+      create: DatabaseCreateOperation;
+      update: DatabaseUpdateOperation;
+      delete: DatabaseDeleteOperation;
+    }
 
     interface PlayNextOptions {
       /**
@@ -126,6 +144,33 @@ declare global {
      * @privateRemarks _preUpdate, _onUpdate, _onDelete, _onCreateDescendantDocuments, _onUpdateDescendantDocuments, and _onDeleteDescendantDocuments are all overridden but with no signature changes.
      * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
      */
+
+    protected override _onCreateDescendantDocuments(
+      parent: ClientDocument<Document<any, AnyMetadata, null>>,
+      collection: string,
+      documents: ClientDocument<Document<any, AnyMetadata, null>>[],
+      data: unknown[],
+      options: DocumentOnCreateOptions<"PlaylistSound">,
+      userId: string,
+    ): void;
+
+    protected override _onUpdateDescendantDocuments(
+      parent: ClientDocument<Document<any, AnyMetadata, null>>,
+      collection: string,
+      documents: ClientDocument<Document<any, AnyMetadata, null>>[],
+      changes: unknown[],
+      options: DocumentOnUpdateOptions<"PlaylistSound">,
+      userId: string,
+    ): void;
+
+    protected override _onDeleteDescendantDocuments(
+      parent: ClientDocument<Document<any, AnyMetadata, null>>,
+      collection: string,
+      documents: ClientDocument<Document<any, AnyMetadata, null>>[],
+      ids: string,
+      options: DocumentOnDeleteOptions<"PlaylistSound">,
+      userId: string,
+    ): void;
 
     /**
      * Handle callback logic when an individual sound within the Playlist concludes playback naturally

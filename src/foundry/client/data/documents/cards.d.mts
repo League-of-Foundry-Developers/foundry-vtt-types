@@ -8,11 +8,22 @@ import type { DeepPartial, InexactPartial, StoredDocument } from "../../../../ty
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentCreateOperation, DocumentDeleteOperation } from "../../../common/abstract/document.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
+import type {
+  DatabaseCreateOperation,
+  DatabaseDeleteOperation,
+  DatabaseUpdateOperation,
+} from "../../../common/abstract/_types.d.mts";
 
 declare global {
   namespace Cards {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Cards">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    export interface DatabaseOperations {
+      create: DatabaseCreateOperation;
+      update: DatabaseUpdateOperation;
+      delete: DatabaseDeleteOperation;
+    }
 
     type CardsAction = "deal" | "pass";
 
