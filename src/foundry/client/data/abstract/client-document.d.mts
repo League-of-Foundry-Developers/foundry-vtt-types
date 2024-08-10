@@ -4,11 +4,11 @@ import type {
   DocumentConstructor,
 } from "../../../../types/helperTypes.d.mts";
 import type { ConstructorOf, DeepPartial, InexactPartial, Mixin, ValueOf } from "../../../../types/utils.d.mts";
-import type { DatabaseUpdateOperation } from "../../../common/abstract/_types.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type {
   AnyMetadata,
   DocumentCreateOperation,
+  DocumentModificationOptions,
   DocumentOnCreateOptions,
   DocumentOnDeleteOptions,
   DocumentOnUpdateOptions,
@@ -245,7 +245,7 @@ declare class ClientDocument<
     collection: string,
     documents: ClientDocument[],
     data: unknown[],
-    options: DocumentOnCreateOptions,
+    options: DocumentOnCreateOptions & InexactPartial<{ render: boolean }>,
     userId: string,
   ): void;
   /**
@@ -278,7 +278,7 @@ declare class ClientDocument<
     collection: string,
     documents: ClientDocument[],
     changes: unknown[],
-    options: DocumentOnUpdateOptions,
+    options: DocumentOnUpdateOptions & InexactPartial<{ render: boolean }>,
     userId: string,
   ): void;
 
@@ -312,7 +312,7 @@ declare class ClientDocument<
     collection: string,
     documents: ClientDocument[],
     ids: string,
-    options: DocumentOnDeleteOptions,
+    options: DocumentOnDeleteOptions & InexactPartial<{ render: boolean }>,
     userId: string,
   ): void;
 
@@ -531,7 +531,7 @@ declare class ClientDocument<
   protected _preCreateEmbeddedDocuments(
     embeddedName: string,
     result: Record<string, unknown>[],
-    options: DocumentPreCreateOptions,
+    options: DocumentModificationOptions,
     userId: string,
   ): void;
 
@@ -548,7 +548,7 @@ declare class ClientDocument<
     embeddedName: string,
     documents: foundry.abstract.Document<any, any, any>[],
     result: Record<string, unknown>[],
-    options: DocumentOnCreateOptions,
+    options: DocumentModificationOptions,
     userId: string,
   ): void;
 
@@ -563,7 +563,7 @@ declare class ClientDocument<
   protected _preUpdateEmbeddedDocuments(
     embeddedName: string,
     result: Record<string, unknown>[],
-    options: InexactPartial<Omit<DatabaseUpdateOperation, "updates">>,
+    options: DocumentModificationOptions,
     userId: string,
   ): void;
 
@@ -580,7 +580,7 @@ declare class ClientDocument<
     embeddedName: string,
     documents: foundry.abstract.Document<any, any, any>[],
     result: Record<string, unknown>[],
-    options: InexactPartial<Omit<DatabaseUpdateOperation, "updates">>,
+    options: DocumentModificationOptions,
     userId: string,
   ): void;
 

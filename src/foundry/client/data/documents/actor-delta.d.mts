@@ -1,11 +1,22 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { SchemaField } from "../../../common/data/fields.d.mts";
 import type { BaseActor } from "../../../common/documents/_module.d.mts";
+import type {
+  DatabaseCreateOperation,
+  DatabaseUpdateOperation,
+  DatabaseDeleteOperation,
+} from "../../../common/abstract/_types.d.mts";
 
 declare global {
   namespace ActorDelta {
     type ConfiguredClass = ConfiguredDocumentClassForName<"ActorDelta">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    export interface DatabaseOperations {
+      create: DatabaseCreateOperation;
+      update: DatabaseUpdateOperation;
+      delete: DatabaseDeleteOperation;
+    }
   }
 
   /**

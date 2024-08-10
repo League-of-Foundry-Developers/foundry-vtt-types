@@ -2,11 +2,23 @@ import type { ConfiguredDocumentClassForName } from "../../../../types/helperTyp
 
 import type { DataField } from "../../../common/data/fields.d.mts";
 import type { DataModel } from "../../../common/abstract/data.d.mts";
+import type Document from "../../../common/abstract/document.d.mts";
+import type {
+  DatabaseCreateOperation,
+  DatabaseDeleteOperation,
+  DatabaseUpdateOperation,
+} from "../../../common/abstract/_types.d.mts";
 
 declare global {
   namespace ActiveEffect {
     type ConfiguredClass = ConfiguredDocumentClassForName<"ActiveEffect">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    export interface DatabaseOperations {
+      create: DatabaseCreateOperation & { animate?: boolean | undefined };
+      update: DatabaseUpdateOperation & { animate?: boolean | undefined };
+      delete: DatabaseDeleteOperation & { animate?: boolean | undefined };
+    }
   }
 
   /**

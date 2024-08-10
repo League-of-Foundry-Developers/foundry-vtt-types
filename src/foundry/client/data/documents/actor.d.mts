@@ -1,11 +1,22 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
-import type { DatabaseUpdateOperation } from "../../../common/abstract/_types.d.mts";
+import type {
+  DatabaseCreateOperation,
+  DatabaseDeleteOperation,
+  DatabaseUpdateOperation,
+} from "../../../common/abstract/_types.d.mts";
+import type { DocumentOnUpdateOptions } from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace Actor {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Actor">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    export interface DatabaseOperations {
+      create: DatabaseCreateOperation;
+      update: DatabaseUpdateOperation;
+      delete: DatabaseDeleteOperation;
+    }
 
     interface RollInitiativeOptions {
       /**
@@ -277,7 +288,7 @@ declare global {
      */
     _updateDependentTokens(
       update: DeepPartial<TokenDocument["_source"]>,
-      options: InexactPartial<DatabaseUpdateOperation>,
+      options: DocumentOnUpdateOptions<"Token">,
     ): void;
   }
 }

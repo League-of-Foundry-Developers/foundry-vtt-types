@@ -96,6 +96,26 @@ export interface DatabaseCreateOperation<T extends foundry.abstract.Document.Any
    * An alias for 'data' used internally by the server-side backend
    */
   _result?: (string | Record<string, unknown>)[] | undefined;
+
+  /** @privateRemarks  are added from WorldCollection.importFromCompendium()
+  fromCompendium?: boolean | undefined;
+
+  /**
+   * Clear the currently assigned folder
+   */
+  clearFolder?: boolean | undefined;
+
+  /**
+   * Clear the current sort order
+   */
+  clearSort?: boolean | undefined;
+
+  /**
+   * Clear Document ownership
+   */
+  clearOwnership?: boolean | undefined;
+
+  //
 }
 
 export interface DatabaseUpdateOperation<T extends foundry.abstract.Document.Any = foundry.abstract.Document.Any> {

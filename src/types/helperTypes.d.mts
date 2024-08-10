@@ -1,3 +1,4 @@
+import type { DatabaseOperationMap, Operation } from "../foundry/common/abstract/document.d.mts";
 import type { ConfiguredDocuments } from "./configuredDocuments.d.mts";
 import type { DeepPartial } from "./utils.d.mts";
 
@@ -206,3 +207,12 @@ export type HandleEmptyObject<
 export type ConformRecord<T extends object, V> = {
   [K in keyof T]: [T[K]] extends [V] ? T[K] : never;
 };
+
+/**
+ * This is a helper type that gets the right DatabaseOperation (including the
+ * proper options) for a particular Document type.
+ */
+export type DatabaseOperationsFor<
+  Name extends DocumentType,
+  ConcreteOperation extends Operation,
+> = DatabaseOperationMap[Name][ConcreteOperation];

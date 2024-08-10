@@ -2,7 +2,9 @@ import type {
   ConfiguredDocumentClass,
   ConfiguredDocumentClassForName,
   ConstructorDataType,
+  DatabaseOperationsFor,
   DocumentConstructor,
+  DocumentOperationsFor,
   DocumentType,
   DocumentTypeWithTypeData,
   PlaceableDocumentType,
@@ -642,7 +644,7 @@ declare abstract class Document<
    */
   protected _preCreate(
     data: fields.SchemaField.AssignmentType<Schema>,
-    options: DocumentOnCreateOptions,
+    options: DocumentPreCreateOptions<ConcreteMetadata["name"]>,
     user: foundry.documents.BaseUser,
   ): Promise<boolean | void>;
 
@@ -655,7 +657,7 @@ declare abstract class Document<
    */
   protected _onCreate(
     data: fields.SchemaField.InnerAssignmentType<Schema>,
-    options: DocumentOnCreateOptions,
+    options: DocumentOnCreateOptions<ConcreteMetadata["name"]>,
     userId: string,
   ): void;
 
@@ -676,7 +678,7 @@ declare abstract class Document<
   protected static _preCreateOperation<T extends Document.AnyConstructor>(
     this: T,
     documents: InstanceType<Document.ConfiguredClass<T>>[],
-    operation: DatabaseCreateOperation,
+    operation: DocumentOperationsFor<InstanceType<Document.ConfiguredClass<T>>>["name"]["create"],
     user: foundry.documents.BaseUser,
   ): Promise<boolean | void>;
 
@@ -707,7 +709,7 @@ declare abstract class Document<
    */
   protected _preUpdate(
     changed: fields.SchemaField.AssignmentType<Schema>,
-    options: DocumentPreUpdateOptions,
+    options: DocumentPreUpdateOptions<ConcreteMetadata["name"]>,
     user: foundry.documents.BaseUser,
   ): Promise<boolean | void>;
 
@@ -720,7 +722,7 @@ declare abstract class Document<
    */
   protected _onUpdate(
     changed: fields.SchemaField.InnerAssignmentType<Schema>,
-    options: DocumentOnUpdateOptions,
+    options: DocumentOnUpdateOptions<ConcreteMetadata["name"]>,
     userId: string,
   ): void;
 
@@ -759,7 +761,7 @@ declare abstract class Document<
   protected static _onUpdateOperation<T extends Document.AnyConstructor>(
     this: T,
     documents: InstanceType<Document.ConfiguredClass<T>>[],
-    operation: DatabaseUpdateOperation,
+    operation: DocumentUpdateOperation,
     user: foundry.documents.BaseUser,
   ): Promise<void>;
 
@@ -770,7 +772,10 @@ declare abstract class Document<
    * @param user    - The User requesting the document deletion
    * @returns A return value of false indicates the delete operation should be cancelled
    */
-  protected _preDelete(options: DocumentPreDeleteOptions, user: foundry.documents.BaseUser): Promise<boolean | void>;
+  protected _preDelete(
+    options: DocumentPreDeleteOptions<ConcreteMetadata["name"]>,
+    user: foundry.documents.BaseUser,
+  ): Promise<boolean | void>;
 
   /**
    * Perform follow-up operations after a Document of this type is deleted.
@@ -778,7 +783,7 @@ declare abstract class Document<
    * @param options - Additional options which modify the deletion request
    * @param userId  - The id of the User requesting the document update
    */
-  protected _onDelete(options: DocumentOnDeleteOptions, userId: string): void;
+  protected _onDelete(options: DocumentOnDeleteOptions<ConcreteMetadata["name"]>, userId: string): void;
 
   /**
    * Pre-process a deletion operation, potentially altering its instructions or input data. Pre-operation events only
@@ -967,27 +972,6 @@ export type DocumentModificationOptions = Omit<DocumentModificationContext, "par
 
 type NewType = "noHook";
 
-export type DocumentPreCreateOptions = Omit<DatabaseCreateOperation, "data" | "noHook" | "pack" | "parent">;
-export type DocumentOnCreateOptions = Omit<DatabaseCreateOperation, "pack" | "parentUUid" | "syntheticActorUpdate">;
-
-export type DocumentPreUpdateOptions = Omit<
-  DatabaseUpdateOperation,
-  "updates" | "restoreDelta" | "noHook" | "parent" | "pack"
->;
-export type DocumentOnUpdateOptions = Omit<DatabaseUpdateOperation, "pack" | "parentUUid" | "syntheticActorUpdate">;
-
-export type DocumentPreDeleteOptions = Omit<
-  DatabaseDeleteOperation,
-  "ids" | "deleteAll" | "noHook" | "pack" | "parent"
->;
-export type DocumentOnDeleteOptions = Omit<
-  DatabaseDeleteOperation,
-  "deleteAll" | "pack" | "parentUuid" | "syntheticActorUpdate"
->;
-
-export type DocumentPreUpsertOptions = DocumentPreCreateOptions | DocumentPreUpdateOptions;
-export type DocumentOnUpsertOptions = DocumentOnCreateOptions | DocumentOnUpdateOptions;
-
 export interface Context<Parent extends Document.Any | null> {
   /**
    * A parent document within which this Document is embedded
@@ -1050,17 +1034,93 @@ export interface DocumentMetadata {
   pack: null;
 }
 
-export interface DocumentCreateOperation<Temporary extends boolean = false>
-  extends InexactPartial<Omit<DatabaseCreateOperation, "data">> {
+export type Operation = "create" | "update" | "delete";
+
+export interface DatabaseOperationMap {
+  ActiveEffect: ActiveEffect.DatabaseOperations;
+  Actor: Actor.DatabaseOperations;
+  ActorDelta: ActorDelta.DatabaseOperations;
+  Adventure: ActiveEffect.DatabaseOperations;
+  AmbientLight: ActiveEffect.DatabaseOperations;
+  AmbientSound: ActiveEffect.DatabaseOperations;
+  Card: ActiveEffect.DatabaseOperations;
+  Cards: ActiveEffect.DatabaseOperations;
+  ChatMessage: ActiveEffect.DatabaseOperations;
+  Combat: ActiveEffect.DatabaseOperations;
+  Combatant: ActiveEffect.DatabaseOperations;
+  Drawing: ActiveEffect.DatabaseOperations;
+  FogExploration: ActiveEffect.DatabaseOperations;
+  Folder: ActiveEffect.DatabaseOperations;
+  Item: ActiveEffect.DatabaseOperations;
+  JournalEntry: ActiveEffect.DatabaseOperations;
+  JournalEntryPage: ActiveEffect.DatabaseOperations;
+  Macro: ActiveEffect.DatabaseOperations;
+  MeasuredTemplate: ActiveEffect.DatabaseOperations;
+  Note: ActiveEffect.DatabaseOperations;
+  Playlist: ActiveEffect.DatabaseOperations;
+  PlaylistSound: ActiveEffect.DatabaseOperations;
+  // TODO: Add these once documents are done
+  // Region: ActiveEffect.DatabaseOperations;
+  // RegionBehavior: ActiveEffect.DatabaseOperations;
+  RollTable: ActiveEffect.DatabaseOperations;
+  Scene: ActiveEffect.DatabaseOperations;
+  Setting: ActiveEffect.DatabaseOperations;
+  TableResult: ActiveEffect.DatabaseOperations;
+  Tile: ActiveEffect.DatabaseOperations;
+  Token: ActiveEffect.DatabaseOperations;
+  User: ActiveEffect.DatabaseOperations;
+  Wall: ActiveEffect.DatabaseOperations;
+}
+
+export type DocumentCreateOperation<Name extends DocumentType, Temporary extends boolean = false> = InexactPartial<
+  Omit<DatabaseOperationsFor<Name, "create">, "data">
+> & {
   /**
    * @deprecated `"It is no longer supported to create temporary documents using the Document.createDocuments API. Use the new Document() constructor instead."`
    * @remarks No explicit undefined because deprecation message checks `"temporary" in operation`
    */
   temporary?: Temporary;
-}
+};
 
-export interface DocumentDeleteOperation extends InexactPartial<Omit<DatabaseDeleteOperation, "ids">> {}
+export type DocumentDeleteOperation<Name extends DocumentType> = InexactPartial<
+  Omit<DatabaseOperationsFor<Name, "delete">, "ids">
+> & {};
 
-export interface DocumentUpdateOperation
-  extends InexactPartial<Omit<DatabaseUpdateOperation, "updates">>,
-    foundry.utils.MergeObjectOptions {}
+export type DocumentUpdateOperation<Name extends DocumentType> = InexactPartial<
+  Omit<DatabaseOperationsFor<Name, "update">, "updates">
+> &
+  foundry.utils.MergeObjectOptions;
+
+export type DocumentPreCreateOptions<Name extends DocumentType> = Omit<
+  DocumentCreateOperation<Name>,
+  "data" | "noHook" | "pack" | "parent"
+>;
+export type DocumentOnCreateOptions<Name extends DocumentType> = Omit<
+  DocumentCreateOperation<Name>,
+  "pack" | "parentUUid" | "syntheticActorUpdate"
+>;
+
+export type DocumentPreUpdateOptions<Name extends DocumentType> = Omit<
+  DocumentUpdateOperation<Name>,
+  "updates" | "restoreDelta" | "noHook" | "parent" | "pack"
+>;
+export type DocumentOnUpdateOptions<Name extends DocumentType> = Omit<
+  DocumentUpdateOperation<Name>,
+  "pack" | "parentUUid" | "syntheticActorUpdate"
+>;
+
+export type DocumentPreDeleteOptions<Name extends DocumentType> = Omit<
+  DocumentDeleteOperation<Name>,
+  "ids" | "deleteAll" | "noHook" | "pack" | "parent"
+>;
+export type DocumentOnDeleteOptions<Name extends DocumentType> = Omit<
+  DocumentDeleteOperation<Name>,
+  "deleteAll" | "pack" | "parentUuid" | "syntheticActorUpdate"
+>;
+
+export type DocumentPreUpsertOptions<Name extends DocumentType> =
+  | DocumentPreCreateOptions<Name>
+  | DocumentPreUpdateOptions<Name>;
+export type DocumentOnUpsertOptions<Name extends DocumentType> =
+  | DocumentOnCreateOptions<Name>
+  | DocumentOnUpdateOptions<Name>;

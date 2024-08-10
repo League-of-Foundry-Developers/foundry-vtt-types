@@ -57,6 +57,14 @@ declare global {
      *                     (default: `{}`)
      * @returns The imported Document instance
      */
+
+    /**
+     * @privateRemarks We've added everything in WorldCollection.FromCompendiumOptions to DatabaseCreateOperation
+     * because they get passed through to Document.create() by this function.  So the
+     * union type isn't really needed.  Leaving it because it feels like foundry will pull
+     * those back out in the future (and we could miss it because we added them to
+     * DatabaseCreateOperation but the foundry typedef doesn't have them).
+     */
     importFromCompendium(
       pack: CompendiumCollection<
         CompendiumCollection.Metadata & { type: ConfiguredDocumentClass<T>["metadata"]["name"] }
