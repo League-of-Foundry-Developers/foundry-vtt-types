@@ -4,7 +4,6 @@ import type {
   ConstructorDataType,
   DatabaseOperationsFor,
   DocumentConstructor,
-  DocumentOperationsFor,
   DocumentType,
   DocumentTypeWithTypeData,
   PlaceableDocumentType,
@@ -20,12 +19,7 @@ import type * as CONST from "../constants.mts";
 import type { DataField, EmbeddedCollectionField, EmbeddedDocumentField, SchemaField } from "../data/fields.d.mts";
 import type { fields } from "../data/module.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.mts";
-import type {
-  DatabaseCreateOperation,
-  DatabaseDeleteOperation,
-  DatabaseGetOperation,
-  DatabaseUpdateOperation,
-} from "./_types.d.mts";
+import type { DatabaseGetOperation } from "./_types.d.mts";
 import type DataModel from "./data.mts";
 
 export default Document;
@@ -304,7 +298,7 @@ declare abstract class Document<
       | fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]>
       | (fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]> & Record<string, unknown>)
     >,
-    operation?: DocumentCreateOperation<Temporary>,
+    operation?: DocumentCreateOperation<InstanceType<T>["documentName"], Temporary>,
   ): true extends Temporary
     ? Promise<InstanceType<Document.ConfiguredClass<T>>[]>
     : Promise<StoredDocument<InstanceType<Document.ConfiguredClass<T>>>[]>;
@@ -347,7 +341,7 @@ declare abstract class Document<
   static updateDocuments<T extends Document.AnyConstructor>(
     this: T,
     updates?: Array<DeepPartial<ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>)>>,
-    operation?: DocumentUpdateOperation,
+    operation?: DocumentUpdateOperation<InstanceType<T>["documentName"]>,
   ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
 
   /**
@@ -390,7 +384,7 @@ declare abstract class Document<
   static deleteDocuments<T extends Document.AnyConstructor>(
     this: T,
     ids?: string[],
-    operation?: DocumentDeleteOperation,
+    operation?: DocumentDeleteOperation<InstanceType<T>["documentName"]>,
   ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
 
   /**
@@ -425,7 +419,7 @@ declare abstract class Document<
   static create<T extends Document.AnyConstructor, Temporary extends boolean = false>(
     this: T,
     data: ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>),
-    operation?: DocumentCreateOperation<Temporary>,
+    operation?: DocumentCreateOperation<InstanceType<T>["documentName"], Temporary>,
   ): true extends Temporary
     ? Promise<InstanceType<ConfiguredDocumentClass<T>> | undefined>
     : Promise<ConfiguredStoredDocument<T> | undefined>;
@@ -445,7 +439,7 @@ declare abstract class Document<
     data?:
       | fields.SchemaField.AssignmentType<Schema, {}>
       | (fields.SchemaField.AssignmentType<Schema, {}> & Record<string, unknown>),
-    operation?: DocumentUpdateOperation,
+    operation?: DocumentUpdateOperation<ConcreteMetadata["name"]>,
   ): Promise<this | undefined>;
 
   /**
@@ -457,7 +451,7 @@ declare abstract class Document<
    *
    * @remarks If no document has actually been deleted, the returned {@link Promise} resolves to `undefined`.
    */
-  delete(operation?: DocumentDeleteOperation): Promise<this | undefined>;
+  delete(operation?: DocumentDeleteOperation<ConcreteMetadata["name"]>): Promise<this | undefined>;
 
   /**
    * Get a World-level Document of this type by its id.
@@ -535,7 +529,7 @@ declare abstract class Document<
   createEmbeddedDocuments<EmbeddedName extends Exclude<DocumentType, "Cards">, Temporary extends boolean = false>(
     embeddedName: EmbeddedName,
     data?: Array<ConstructorDataType<ConfiguredDocumentClassForName<EmbeddedName>>>,
-    operation?: DocumentCreateOperation<Temporary>,
+    operation?: DocumentCreateOperation<ConcreteMetadata["name"], Temporary>,
   ): Promise<
     Array<
       true extends Temporary
@@ -558,7 +552,7 @@ declare abstract class Document<
   updateEmbeddedDocuments<EmbeddedName extends Exclude<DocumentType, "Cards">>(
     embeddedName: EmbeddedName,
     updates?: Array<Record<string, unknown>>,
-    operation?: DocumentUpdateOperation,
+    operation?: DocumentUpdateOperation<ConcreteMetadata["name"]>,
   ): Promise<Array<StoredDocument<InstanceType<ConfiguredDocumentClassForName<EmbeddedName>>>>>;
 
   /**
@@ -573,7 +567,7 @@ declare abstract class Document<
   deleteEmbeddedDocuments<EmbeddedName extends DocumentType>(
     embeddedName: EmbeddedName,
     ids: Array<string>,
-    operation?: DocumentDeleteOperation,
+    operation?: DocumentDeleteOperation<ConcreteMetadata["name"]>,
   ): Promise<Array<StoredDocument<InstanceType<ConfiguredDocumentClassForName<EmbeddedName>>>>>;
 
   /**
@@ -678,7 +672,7 @@ declare abstract class Document<
   protected static _preCreateOperation<T extends Document.AnyConstructor>(
     this: T,
     documents: InstanceType<Document.ConfiguredClass<T>>[],
-    operation: DocumentOperationsFor<InstanceType<Document.ConfiguredClass<T>>>["name"]["create"],
+    operation: DocumentCreateOperation<InstanceType<T>["documentName"]>,
     user: foundry.documents.BaseUser,
   ): Promise<boolean | void>;
 
@@ -695,7 +689,7 @@ declare abstract class Document<
   protected static _onCreateOperation<T extends Document.AnyConstructor>(
     this: T,
     documents: InstanceType<Document.ConfiguredClass<T>>[],
-    operation: DatabaseCreateOperation,
+    operation: DocumentCreateOperation<InstanceType<T>["documentName"]>,
     user: foundry.documents.BaseUser,
   ): Promise<void>;
 
@@ -744,7 +738,7 @@ declare abstract class Document<
   protected static _preUpdateOperation<T extends Document.AnyConstructor>(
     this: T,
     documents: InstanceType<Document.ConfiguredClass<T>>[],
-    operation: DatabaseUpdateOperation,
+    operation: DocumentUpdateOperation<InstanceType<T>["documentName"]>,
     user: foundry.documents.BaseUser,
   ): Promise<boolean | void>;
 
@@ -761,7 +755,7 @@ declare abstract class Document<
   protected static _onUpdateOperation<T extends Document.AnyConstructor>(
     this: T,
     documents: InstanceType<Document.ConfiguredClass<T>>[],
-    operation: DocumentUpdateOperation,
+    operation: DocumentUpdateOperation<InstanceType<T>["documentName"]>,
     user: foundry.documents.BaseUser,
   ): Promise<void>;
 
@@ -804,7 +798,7 @@ declare abstract class Document<
   protected static _preDeleteOperation<T extends Document.AnyConstructor>(
     this: T,
     documents: InstanceType<Document.ConfiguredClass<T>>[],
-    operation: DatabaseDeleteOperation,
+    operation: DocumentDeleteOperation<InstanceType<T>["documentName"]>,
     user: foundry.documents.BaseUser,
   ): Promise<boolean | void>;
 
@@ -821,7 +815,7 @@ declare abstract class Document<
   protected static _onDeleteOperation<T extends Document.AnyConstructor>(
     this: T,
     documents: InstanceType<Document.ConfiguredClass<T>>[],
-    operation: DatabaseDeleteOperation,
+    operation: DocumentDeleteOperation<InstanceType<T>["documentName"]>,
     user: foundry.documents.BaseUser,
   ): Promise<void>;
 
