@@ -48,7 +48,7 @@ declare global {
      * @param options - Additional options passed to game.settings.set
      * @returns The new game time
      */
-    advance(seconds: number, options?: DocumentOnUpsertOptions): Promise<number>;
+    advance(seconds: number, options?: DocumentOnUpsertOptions<"Setting">): Promise<number>;
 
     /**
      * Synchronize the local client game time with the official time kept by the server

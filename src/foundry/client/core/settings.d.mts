@@ -160,7 +160,7 @@ declare global {
       namespace: N,
       key: K,
       value: V,
-      options?: DocumentOnUpsertOptions,
+      options?: DocumentOnUpsertOptions<"Setting">,
     ): Promise<V>;
   }
 
