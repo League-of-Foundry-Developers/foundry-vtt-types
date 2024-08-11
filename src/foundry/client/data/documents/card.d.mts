@@ -1,10 +1,11 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
-import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
+import type { DeepPartial } from "../../../../types/utils.d.mts";
 import type {
   DatabaseCreateOperation,
   DatabaseDeleteOperation,
   DatabaseUpdateOperation,
 } from "../../../common/abstract/_types.d.mts";
+import type { DocumentCreateOperation } from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace Card {
@@ -116,7 +117,7 @@ declare global {
      */
     toMessage(
       messageData?: DeepPartial<foundry.documents.BaseChatMessage.ConstructorData>,
-      options?: InexactPartial<Omit<DatabaseCreateOperation<ChatMessage>, "data">>,
+      options?: DocumentCreateOperation<"ChatMessage">,
     ): Promise<ChatMessage.ConfiguredInstance | undefined>;
   }
 }

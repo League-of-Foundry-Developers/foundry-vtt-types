@@ -170,19 +170,15 @@ declare global {
      */
     get canClone(): boolean;
 
-    // TODO: I tried to eliminate T and just use typeof Card, but it said the signature
-    //    didn't match the parent any more
-    static override createDocuments<T extends Document.AnyConstructor, Temporary extends boolean = false>(
+    static override createDocuments<Temporary extends boolean = false>(
       data: Array<
-        | fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]>
-        | (fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]> & Record<string, unknown>)
-        // | fields.SchemaField.AssignmentType<Card["schema"]["fields"]>
-        // | (fields.SchemaField.AssignmentType<Card["schema"]["fields"]> & Record<string, unknown>)
+        | fields.SchemaField.AssignmentType<Cards["schema"]["fields"]>
+        | (fields.SchemaField.AssignmentType<Cards["schema"]["fields"]> & Record<string, unknown>)
       >,
-      context: DocumentCreateOperation<InstanceType<T>["documentName"], Temporary>,
+      context: DocumentCreateOperation<Cards["documentName"], Temporary>,
     ): true extends Temporary
-      ? Promise<InstanceType<Document.ConfiguredClass<T>>[]>
-      : Promise<StoredDocument<InstanceType<Document.ConfiguredClass<T>>>[]>;
+      ? Promise<InstanceType<Document.ConfiguredClass<typeof Cards>>[]>
+      : Promise<StoredDocument<InstanceType<Document.ConfiguredClass<typeof Cards>>>[]>;
 
     /**
      * Deal one or more cards from this Cards document to each of a provided array of Cards destinations.
