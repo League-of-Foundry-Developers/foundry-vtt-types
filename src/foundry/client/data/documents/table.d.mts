@@ -70,7 +70,7 @@ declare global {
        * Additional options which customize the created messages
        * @defaultValue `{}`
        */
-      messageOptions: DocumentOnCreateOptions & { rollMode: keyof CONFIG.Dice.RollModes | "roll" };
+      messageOptions: DocumentOnCreateOptions<"ChatMessage">;
     }
 
     interface RollOptions {

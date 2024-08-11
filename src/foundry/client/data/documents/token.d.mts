@@ -5,6 +5,7 @@ import type {
   DatabaseDeleteOperation,
   DatabaseUpdateOperation,
 } from "../../../common/abstract/_types.d.mts";
+import type { DocumentOnUpdateOptions } from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace TokenDocument {
@@ -197,7 +198,7 @@ declare global {
      */
     protected _onUpdateBaseActor(
       update?: DeepPartial<Actor.ConfiguredInstance["_source"]>,
-      options?: InexactPartial<DatabaseUpdateOperation>,
+      options?: DocumentOnUpdateOptions<"Actor">,
     ): void;
 
     /**
@@ -207,7 +208,10 @@ declare global {
      */
     protected _onRelatedUpdate(
       update?: DeepPartial<Actor.ConfiguredInstance["_source"]>,
-      options?: InexactPartial<DatabaseUpdateOperation>,
+      /** @privateRemarks foundry calls this field operation
+       * but it's being passed options (and then ignores them)
+       */
+      operation?: DocumentOnUpdateOptions<"Actor">,
     ): void;
 
     /**

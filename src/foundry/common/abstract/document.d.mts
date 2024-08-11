@@ -964,8 +964,6 @@ declare namespace Document {
 /** @deprecated - since v12 */
 export type DocumentModificationOptions = Omit<DocumentModificationContext, "parent" | "pack">;
 
-type NewType = "noHook";
-
 export interface Context<Parent extends Document.Any | null> {
   /**
    * A parent document within which this Document is embedded

@@ -5,7 +5,6 @@ import type {
   DocumentConstructor,
 } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial, StoredDocument } from "../../../../types/utils.d.mts";
-import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentCreateOperation } from "../../../common/abstract/document.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
 import type {
@@ -177,8 +176,8 @@ declare global {
       >,
       context: DocumentCreateOperation<Cards["documentName"], Temporary>,
     ): true extends Temporary
-      ? Promise<InstanceType<Document.ConfiguredClass<typeof Cards>>[]>
-      : Promise<StoredDocument<InstanceType<Document.ConfiguredClass<typeof Cards>>>[]>;
+      ? Promise<Cards.ConfiguredInstance[]>
+      : Promise<StoredDocument<Cards.ConfiguredInstance>[]>;
 
     /**
      * Deal one or more cards from this Cards document to each of a provided array of Cards destinations.

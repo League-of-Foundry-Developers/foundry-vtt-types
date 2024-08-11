@@ -97,7 +97,7 @@ export interface DatabaseCreateOperation<T extends foundry.abstract.Document.Any
    */
   _result?: (string | Record<string, unknown>)[] | undefined;
 
-  /** @privateRemarks  are added from WorldCollection.importFromCompendium()
+  /** @privateRemarks these are added from WorldCollection.importFromCompendium() **/
   fromCompendium?: boolean | undefined;
 
   /**
