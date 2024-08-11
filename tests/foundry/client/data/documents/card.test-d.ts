@@ -1,11 +1,16 @@
 import { expectTypeOf } from "vitest";
 
+// @ts-expect-error - Card requires name.
+new Card();
+
+// @ts-expect-error - Card requires name.
+new Card({});
+
 // TODO: Investigate why this isn't complaining about specific types
 const card = new Card({ name: "Just a single card", type: "base" });
 const cards = new Cards({ name: "Some Card Deck", type: "deck" });
 
-expectTypeOf(card.back).toEqualTypeOf<CardFaceData>();
-expectTypeOf(card.face).toEqualTypeOf<number | null>();
+expectTypeOf(card.currentFace).toEqualTypeOf<CardFaceData | null>();
 expectTypeOf(card.img).toEqualTypeOf<string>();
 expectTypeOf(card.name).toEqualTypeOf<string>();
 expectTypeOf(card.source).toEqualTypeOf<Cards | undefined | null>();
@@ -68,7 +73,7 @@ card.discard(cards, { unknownProp: 0 });
 // @ts-expect-error - "unknownProp" is not a valid option
 card.discard(cards, { updateData: { unknownProp: 0 } });
 
-// discard
+// recall
 expectTypeOf(card.recall()).toEqualTypeOf<Promise<Card>>();
 expectTypeOf(
   card.recall({
@@ -76,12 +81,6 @@ expectTypeOf(
     chatNotification: true,
   }),
 ).toEqualTypeOf<Promise<Card>>();
-
-// @ts-expect-error - "unknownProp" is not a valid option
-card.reset({ unknownProp: 0 });
-
-// @ts-expect-error - "unknownProp" is not a valid option
-card.reset({ updateData: { unknownProp: 0 } });
 
 // toMessage
 expectTypeOf(card.toMessage()).toEqualTypeOf<Promise<ChatMessage | undefined>>();
@@ -97,3 +96,9 @@ expectTypeOf(
     },
   ),
 ).toEqualTypeOf<Promise<ChatMessage | undefined>>();
+
+// @ts-expect-error - "unknownProp" is not a valid option
+card.reset({ unknownProp: 0 });
+
+// @ts-expect-error - "unknownProp" is not a valid option
+card.reset({ updateData: { unknownProp: 0 } });

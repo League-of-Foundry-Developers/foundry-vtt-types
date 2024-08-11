@@ -1,6 +1,12 @@
 import { expectTypeOf } from "vitest";
 import type { StoredDocument } from "../../../../../src/types/utils.d.mts";
 
+// @ts-expect-error - requires key
+new Setting();
+
+// @ts-expect-error - requires key
+new Setting({});
+
 const setting = new Setting({ key: "foo.bar", value: "bar" });
 
 expectTypeOf(setting.key).toEqualTypeOf<string>();

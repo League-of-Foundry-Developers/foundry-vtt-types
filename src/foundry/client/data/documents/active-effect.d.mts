@@ -70,7 +70,7 @@ declare global {
     /**
      * Retrieve the Document that this ActiveEffect targets for modification.
      */
-    get target(): Document | null;
+    get target(): Document.Any | null;
 
     /**
      * Whether the Active Effect currently applying its changes to the target.

@@ -1,6 +1,12 @@
 import { assertType, expectTypeOf } from "vitest";
 import type { ConfiguredDocumentClass } from "../../../../../src/types/helperTypes.d.mts";
 
+// @ts-expect-error - requires a name.
+new User();
+
+// @ts-expect-error - requires a name.
+new User({});
+
 const user = new User({ name: "Test" });
 
 expectTypeOf(user.active).toEqualTypeOf<boolean>();

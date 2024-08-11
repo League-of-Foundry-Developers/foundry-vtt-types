@@ -101,9 +101,9 @@ declare global {
 
     /**
      * Recall this Card to its original Cards parent.
-     * @param options - Options which modify the reset operation
+     * @param options - Options which modify the recall operation
      *                  (default: `{}`)
-     * @returns A reference to the reset card belonging to its original parent
+     * @returns A reference to the recallled card belonging to its original parent
      */
     recall(options?: Cards.ResetOptions): Promise<Card.ConfiguredInstance>;
 
