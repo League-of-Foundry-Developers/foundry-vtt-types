@@ -172,7 +172,7 @@ declare global {
         | DeepPartial<InstanceType<ConfiguredDocumentClass<T>>["_source"]>
         | ((doc: ConfiguredStoredDocument<T>) => DeepPartial<InstanceType<ConfiguredDocumentClass<T>>["_source"]>),
       condition?: ((obj: ConfiguredStoredDocument<T>) => boolean) | null,
-      options?: DocumentOnUpdateOptions,
+      options?: DocumentOnUpdateOptions<InstanceType<T>["documentName"]>,
     ): ReturnType<this["documentClass"]["updateDocuments"]>;
   }
 

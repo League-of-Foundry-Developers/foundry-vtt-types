@@ -232,7 +232,7 @@ declare global {
      */
     protected _onCreate(
       data: foundry.data.fields.SchemaField.InnerAssignmentType<D["schema"]["fields"]>,
-      options: DocumentOnCreateOptions,
+      options: DocumentOnCreateOptions<D["documentName"]>,
       userId: string,
     ): void;
 
@@ -242,14 +242,14 @@ declare global {
      */
     protected _onUpdate(
       changed: foundry.data.fields.SchemaField.InnerAssignmentType<D["schema"]["fields"]>,
-      options?: DocumentOnUpdateOptions,
+      options?: DocumentOnUpdateOptions<D["documentName"]>,
       userId?: string,
     ): void;
 
     /**
      * Define additional steps taken when an existing placeable object of this type is deleted
      */
-    protected _onDelete(options: DocumentOnDeleteOptions, userId: string): void;
+    protected _onDelete(options: DocumentOnDeleteOptions<D["documentName"]>, userId: string): void;
 
     /**
      * Assume control over a PlaceableObject, flagging it as controlled and enabling downstream behaviors

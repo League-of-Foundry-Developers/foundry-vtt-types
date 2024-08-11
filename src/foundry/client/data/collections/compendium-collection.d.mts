@@ -303,7 +303,7 @@ declare global {
            * @defaultValue `""`
            * */
           folderName: string;
-        } & DocumentOnCreateOptions &
+        } & DocumentOnCreateOptions<this["metadata"]["type"]> &
           WorldCollection.FromCompendiumOptions
       >,
     ): Promise<StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[]>;
@@ -347,7 +347,7 @@ declare global {
      */
     static createCompendium<T extends CompendiumCollection.Metadata>(
       metadata: T,
-      options?: DocumentOnCreateOptions,
+      options?: DocumentOnCreateOptions<T["type"]>,
     ): Promise<CompendiumCollection<T>>;
 
     /**
@@ -393,7 +393,7 @@ declare global {
             doc: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>,
           ) => DeepPartial<DocumentInstanceForCompendiumMetadata<T>["_source"]>),
       condition?: ((obj: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>) => boolean) | null,
-      options?: DocumentOnUpdateOptions,
+      options?: DocumentOnUpdateOptions<this["metadata"]["type"]>,
     ): ReturnType<this["documentClass"]["updateDocuments"]>;
 
     /**

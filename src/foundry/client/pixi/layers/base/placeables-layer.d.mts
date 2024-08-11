@@ -325,7 +325,7 @@ declare global {
           ) => Partial<InstanceType<ConfiguredDocumentClassForName<DocumentName>>["_source"]>)
         | Partial<InstanceType<ConfiguredDocumentClassForName<DocumentName>>["_source"]>,
       condition?: ((placeable: InstanceType<ConfiguredObjectClassForName<DocumentName>>) => boolean) | null,
-      options?: DocumentOnUpdateOptions,
+      options?: DocumentOnUpdateOptions<DocumentName>,
     ): Promise<Array<InstanceType<ConfiguredDocumentClassForName<DocumentName>>>>;
 
     /**

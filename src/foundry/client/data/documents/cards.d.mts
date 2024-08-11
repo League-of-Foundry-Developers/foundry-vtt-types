@@ -6,7 +6,7 @@ import type {
 } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial, StoredDocument } from "../../../../types/utils.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
-import type { DocumentCreateOperation, DocumentDeleteOperation } from "../../../common/abstract/document.d.mts";
+import type { DocumentCreateOperation } from "../../../common/abstract/document.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
 import type {
   DatabaseCreateOperation,
@@ -179,7 +179,7 @@ declare global {
         // | fields.SchemaField.AssignmentType<Card["schema"]["fields"]>
         // | (fields.SchemaField.AssignmentType<Card["schema"]["fields"]> & Record<string, unknown>)
       >,
-      context: DocumentCreateOperation<Temporary>,
+      context: DocumentCreateOperation<InstanceType<T>["documentName"], Temporary>,
     ): true extends Temporary
       ? Promise<InstanceType<Document.ConfiguredClass<T>>[]>
       : Promise<StoredDocument<InstanceType<Document.ConfiguredClass<T>>>[]>;
@@ -304,13 +304,6 @@ declare global {
      * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
      */
 
-    // TODO: It's a bit weird that we have to do it in this generic way but otherwise there is an error overriding this. Investigate later.
-    static override deleteDocuments<T extends DocumentConstructor>(
-      this: T,
-      ids?: string[],
-      context?: DocumentDeleteOperation,
-    ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
-
     /**
      * Display a dialog which prompts the user to deal cards to some number of hand-type Cards documents.
      * @see {@link Cards#deal}
@@ -347,7 +340,9 @@ declare global {
     static override createDialog<T extends DocumentConstructor>(
       this: T,
       data?: DeepPartial<ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>)>,
-      context?: Pick<DocumentCreateOperation, "parent" | "pack"> &
+      // note: using DocumentCreateOperation gave an error, but is unnecessary here
+      //    due to the Pick
+      context?: Pick<DatabaseCreateOperation, "parent" | "pack"> &
         InexactPartial<
           DialogOptions & {
             /** A restriction the selectable sub-types of the Dialog. */

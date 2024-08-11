@@ -1,4 +1,3 @@
-import type { InexactPartial } from "../../../../../types/utils.d.mts";
 import type { DocumentOnCreateOptions } from "../../../../common/abstract/document.d.mts";
 
 export {};
@@ -199,7 +198,7 @@ declare global {
       command: string,
       match: RegExpMatchArray[],
       chatData: foundry.documents.BaseChatMessage.ConstructorData,
-      createOptions: ChatLog.OnCreateOptions,
+      createOptions: DocumentOnCreateOptions<"ChatMessage">,
     ): Promise<void>;
 
     /**
@@ -215,7 +214,7 @@ declare global {
       command: string,
       match: RegExpMatchArray,
       chatData: foundry.documents.BaseChatMessage.ConstructorData,
-      createOptions: ChatLog.OnCreateOptions,
+      createOptions: DocumentOnCreateOptions<"ChatMessage">,
     ): void;
 
     /**
@@ -230,7 +229,7 @@ declare global {
       command: string,
       match: RegExpMatchArray,
       chatData: foundry.documents.BaseChatMessage.ConstructorData,
-      createOptions: ChatLog.OnCreateOptions,
+      createOptions: DocumentOnCreateOptions<"ChatMessage">,
     ): void;
 
     /**
@@ -363,9 +362,5 @@ declare global {
        */
       notify?: boolean | undefined;
     }
-
-    interface OnCreateOptions
-      extends DocumentOnCreateOptions,
-        InexactPartial<{ rollMode: foundry.CONST.DICE_ROLL_MODES; chatBubble: boolean }> {}
   }
 }

@@ -302,7 +302,7 @@ declare global {
       updateCompendium: (
         pack: CompendiumCollection<any>,
         documents: foundry.abstract.Document<any, any, any>[],
-        options: DocumentOnUpdateOptions,
+        options: DocumentOnUpdateOptions<InstanceType<any>["documentName"]>,
         userId: string,
       ) => void;
 
@@ -950,7 +950,7 @@ declare global {
     type PreCreateDocument<D extends DocumentConstructor = DocumentConstructor> = (
       document: InstanceType<ConfiguredDocumentClass<D>>,
       data: ConstructorParameters<D>[0],
-      options: DocumentPreCreateOptions,
+      options: DocumentPreCreateOptions<InstanceType<D>["documentName"]>,
       userId: string,
     ) => boolean | void;
 
@@ -976,7 +976,7 @@ declare global {
     type PreUpdateDocument<D extends DocumentConstructor = DocumentConstructor> = (
       document: InstanceType<ConfiguredDocumentClass<D>>,
       change: DeepPartial<ConstructorParameters<D>[0]>,
-      options: DocumentPreUpdateOptions,
+      options: DocumentPreUpdateOptions<InstanceType<D>["documentName"]>,
       userId: string,
     ) => boolean | void;
 
@@ -1000,7 +1000,7 @@ declare global {
      */
     type PreDeleteDocument<D extends DocumentConstructor = DocumentConstructor> = (
       document: InstanceType<ConfiguredDocumentClass<D>>,
-      options: DocumentPreDeleteOptions,
+      options: DocumentPreDeleteOptions<InstanceType<D>["documentName"]>,
       userId: string,
     ) => boolean | void;
 
@@ -1020,7 +1020,7 @@ declare global {
      */
     type CreateDocument<D extends DocumentConstructor = DocumentConstructor> = (
       document: InstanceType<ConfiguredDocumentClass<D>>,
-      options: DocumentOnCreateOptions,
+      options: DocumentOnCreateOptions<InstanceType<D>["documentName"]>,
       userId: string,
     ) => void;
 
@@ -1042,7 +1042,7 @@ declare global {
     type UpdateDocument<D extends DocumentConstructor = DocumentConstructor> = (
       document: InstanceType<ConfiguredDocumentClass<D>>,
       change: DeepPartial<ConstructorParameters<D>[0]>,
-      options: DocumentOnUpdateOptions,
+      options: DocumentOnUpdateOptions<InstanceType<D>["documentName"]>,
       userId: string,
     ) => void;
 
@@ -1062,7 +1062,7 @@ declare global {
      */
     type DeleteDocument<D extends DocumentConstructor = DocumentConstructor> = (
       document: InstanceType<ConfiguredDocumentClass<D>>,
-      options: DocumentOnDeleteOptions,
+      options: DocumentOnDeleteOptions<InstanceType<D>["documentName"]>,
       userId: string,
     ) => void;
 

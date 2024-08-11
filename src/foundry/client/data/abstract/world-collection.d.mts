@@ -71,7 +71,9 @@ declare global {
       >,
       id: string,
       updateData?: DeepPartial<InstanceType<ConfiguredDocumentClass<T>>["_source"]>,
-      options?: InexactPartial<DocumentOnCreateOptions & WorldCollection.FromCompendiumOptions>,
+      options?: InexactPartial<
+        DocumentOnCreateOptions<InstanceType<T>["documentName"]> & WorldCollection.FromCompendiumOptions
+      >,
     ): Promise<ConfiguredStoredDocument<T>>;
 
     /**

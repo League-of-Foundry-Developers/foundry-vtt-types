@@ -227,7 +227,7 @@ declare class ClientDocument<
     parent: ClientDocument,
     collection: string,
     data: unknown[],
-    options: DocumentPreCreateOptions,
+    options: DocumentPreCreateOptions<any>,
     userId: string,
   ): void;
 
@@ -245,7 +245,7 @@ declare class ClientDocument<
     collection: string,
     documents: ClientDocument[],
     data: unknown[],
-    options: DocumentOnCreateOptions & InexactPartial<{ render: boolean }>,
+    options: DocumentOnCreateOptions<any> & InexactPartial<{ render: boolean }>,
     userId: string,
   ): void;
   /**
@@ -260,7 +260,7 @@ declare class ClientDocument<
     parent: ClientDocument,
     collection: string,
     changes: unknown[],
-    options: DocumentPreUpdateOptions,
+    options: DocumentPreUpdateOptions<any>,
     userId: string,
   ): void;
 
@@ -278,7 +278,7 @@ declare class ClientDocument<
     collection: string,
     documents: ClientDocument[],
     changes: unknown[],
-    options: DocumentOnUpdateOptions & InexactPartial<{ render: boolean }>,
+    options: DocumentOnUpdateOptions<any> & InexactPartial<{ render: boolean }>,
     userId: string,
   ): void;
 
@@ -294,7 +294,7 @@ declare class ClientDocument<
     parent: ClientDocument,
     collection: string,
     ids: string[],
-    options: DocumentPreDeleteOptions,
+    options: DocumentPreDeleteOptions<any>,
     userId: string,
   ): void;
 
@@ -312,7 +312,7 @@ declare class ClientDocument<
     collection: string,
     documents: ClientDocument[],
     ids: string,
-    options: DocumentOnDeleteOptions & InexactPartial<{ render: boolean }>,
+    options: DocumentOnDeleteOptions<any> & InexactPartial<{ render: boolean }>,
     userId: string,
   ): void;
 
@@ -358,7 +358,7 @@ declare class ClientDocument<
   static createDialog<T extends DocumentConstructor>(
     this: T,
     data?: DeepPartial<ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>)>,
-    context?: Pick<DocumentCreateOperation, "parent" | "pack"> &
+    context?: Pick<DocumentCreateOperation<any>, "parent" | "pack"> &
       InexactPartial<
         DialogOptions & {
           /** A restriction the selectable sub-types of the Dialog. */
