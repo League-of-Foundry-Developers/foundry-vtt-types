@@ -298,7 +298,7 @@ declare abstract class Document<
       | fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]>
       | (fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]> & Record<string, unknown>)
     >,
-    operation?: DocumentCreateOperation<InstanceType<T>["documentName"], Temporary>,
+    operation?: DocumentCreateOperation<T["metadata"]["name"], Temporary>,
   ): true extends Temporary
     ? Promise<InstanceType<Document.ConfiguredClass<T>>[]>
     : Promise<StoredDocument<InstanceType<Document.ConfiguredClass<T>>>[]>;
@@ -341,7 +341,7 @@ declare abstract class Document<
   static updateDocuments<T extends Document.AnyConstructor>(
     this: T,
     updates?: Array<DeepPartial<ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>)>>,
-    operation?: DocumentUpdateOperation<InstanceType<T>["documentName"]>,
+    operation?: DocumentUpdateOperation<T["metadata"]["name"]>,
   ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
 
   /**
@@ -384,7 +384,7 @@ declare abstract class Document<
   static deleteDocuments<T extends Document.AnyConstructor>(
     this: T,
     ids?: string[],
-    operation?: DocumentDeleteOperation<InstanceType<T>["documentName"]>,
+    operation?: DocumentDeleteOperation<T["metadata"]["name"]>,
   ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
 
   /**
@@ -419,7 +419,7 @@ declare abstract class Document<
   static create<T extends Document.AnyConstructor, Temporary extends boolean = false>(
     this: T,
     data: ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>),
-    operation?: DocumentCreateOperation<InstanceType<T>["documentName"], Temporary>,
+    operation?: DocumentCreateOperation<T["metadata"]["name"], Temporary>,
   ): true extends Temporary
     ? Promise<InstanceType<ConfiguredDocumentClass<T>> | undefined>
     : Promise<ConfiguredStoredDocument<T> | undefined>;
@@ -672,7 +672,7 @@ declare abstract class Document<
   protected static _preCreateOperation<T extends Document.AnyConstructor>(
     this: T,
     documents: InstanceType<Document.ConfiguredClass<T>>[],
-    operation: DocumentCreateOperation<InstanceType<T>["documentName"]>,
+    operation: DocumentCreateOperation<T["metadata"]["name"]>,
     user: foundry.documents.BaseUser,
   ): Promise<boolean | void>;
 
@@ -689,7 +689,7 @@ declare abstract class Document<
   protected static _onCreateOperation<T extends Document.AnyConstructor>(
     this: T,
     documents: InstanceType<Document.ConfiguredClass<T>>[],
-    operation: DocumentCreateOperation<InstanceType<T>["documentName"]>,
+    operation: DocumentCreateOperation<T["metadata"]["name"]>,
     user: foundry.documents.BaseUser,
   ): Promise<void>;
 
@@ -738,7 +738,7 @@ declare abstract class Document<
   protected static _preUpdateOperation<T extends Document.AnyConstructor>(
     this: T,
     documents: InstanceType<Document.ConfiguredClass<T>>[],
-    operation: DocumentUpdateOperation<InstanceType<T>["documentName"]>,
+    operation: DocumentUpdateOperation<T["metadata"]["name"]>,
     user: foundry.documents.BaseUser,
   ): Promise<boolean | void>;
 
@@ -755,7 +755,7 @@ declare abstract class Document<
   protected static _onUpdateOperation<T extends Document.AnyConstructor>(
     this: T,
     documents: InstanceType<Document.ConfiguredClass<T>>[],
-    operation: DocumentUpdateOperation<InstanceType<T>["documentName"]>,
+    operation: DocumentUpdateOperation<T["metadata"]["name"]>,
     user: foundry.documents.BaseUser,
   ): Promise<void>;
 
@@ -798,7 +798,7 @@ declare abstract class Document<
   protected static _preDeleteOperation<T extends Document.AnyConstructor>(
     this: T,
     documents: InstanceType<Document.ConfiguredClass<T>>[],
-    operation: DocumentDeleteOperation<InstanceType<T>["documentName"]>,
+    operation: DocumentDeleteOperation<T["metadata"]["name"]>,
     user: foundry.documents.BaseUser,
   ): Promise<boolean | void>;
 
@@ -815,7 +815,7 @@ declare abstract class Document<
   protected static _onDeleteOperation<T extends Document.AnyConstructor>(
     this: T,
     documents: InstanceType<Document.ConfiguredClass<T>>[],
-    operation: DocumentDeleteOperation<InstanceType<T>["documentName"]>,
+    operation: DocumentDeleteOperation<T["metadata"]["name"]>,
     user: foundry.documents.BaseUser,
   ): Promise<void>;
 
