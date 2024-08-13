@@ -10,7 +10,7 @@ import * as _documents from "../common/documents/_module.mjs";
 import * as _packages from "../common/packages/module.mjs";
 import * as _utils from "../common/utils/module.mjs";
 import * as _config from "../common/config.mjs";
-// import * as _prosemirror from "../common/prosemirror/_module.mjs";
+import * as _prosemirror from "../common/prosemirror/_module.mjs";
 // import * as _grid from "../common/grid/_module.mjs";
 // import * as _types from "../common/types.mjs";
 
@@ -133,7 +133,7 @@ declare global {
     /**
      * A library for providing rich text editing using ProseMirror within the Foundry Virtual Tabletop game client.
      */
-    // export import prosemirror = _prosemirror;
+    export import prosemirror = _prosemirror;
 
     /**
      * Grid classes.

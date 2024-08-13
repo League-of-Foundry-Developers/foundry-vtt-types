@@ -2,16 +2,14 @@ import type { Schema, Slice } from "prosemirror-model";
 import type { Plugin } from "prosemirror-state";
 import type { EditorView } from "prosemirror-view";
 import type ProseMirrorPlugin from "./plugin.d.mts";
-import type { EmptyObject } from "../../types/utils.d.mts";
+import type { EmptyObject } from "../../../types/utils.d.mts";
 
 export default ProseMirrorImagePlugin;
 /**
  * A class responsible for handle drag-and-drop and pasting of image content. Ensuring no base64 data is injected
  * directly into the journal content and it is instead uploaded to the user's data directory.
  */
-declare class ProseMirrorImagePlugin<
-  RelatedDocument extends foundry.abstract.Document<any, any, any>,
-> extends ProseMirrorPlugin {
+declare class ProseMirrorImagePlugin<RelatedDocument extends foundry.abstract.Document.Any> extends ProseMirrorPlugin {
   /**
    * @param schema   - The ProseMirror schema.
    * @param options  - Additional options to configure the plugin's behaviour.
