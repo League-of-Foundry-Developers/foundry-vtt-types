@@ -1,20 +1,13 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
-import type {
-  DatabaseCreateOperation,
-  DatabaseDeleteOperation,
-  DatabaseUpdateOperation,
-} from "../../../common/abstract/_types.d.mts";
+import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace AmbientSoundDocument {
     type ConfiguredClass = ConfiguredDocumentClassForName<"AmbientSound">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    export interface DatabaseOperations<BlahXXX extends boolean = false> {
-      create: DatabaseCreateOperation<AmbientSoundDocument, BlahXXX>;
-      update: DatabaseUpdateOperation<AmbientSoundDocument>;
-      delete: DatabaseDeleteOperation;
-    }
+    export interface DatabaseOperations<BlahXXX extends boolean = false>
+      extends DocumentDatabaseOperations<AmbientSoundDocument, BlahXXX> {}
   }
 
   /**

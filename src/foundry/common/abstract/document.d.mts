@@ -19,7 +19,12 @@ import type * as CONST from "../constants.mts";
 import type { DataField, EmbeddedCollectionField, EmbeddedDocumentField, SchemaField } from "../data/fields.d.mts";
 import type { fields } from "../data/module.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.mts";
-import type { DatabaseGetOperation } from "./_types.d.mts";
+import type {
+  DatabaseCreateOperation,
+  DatabaseDeleteOperation,
+  DatabaseGetOperation,
+  DatabaseUpdateOperation,
+} from "./_types.d.mts";
 import type DataModel from "./data.mts";
 
 export default Document;
@@ -298,10 +303,7 @@ declare abstract class Document<
     Operation extends DatabaseOperationsFor<T["metadata"]["name"], "create">,
   >(
     this: T,
-    data: Array<
-      | fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]>
-      | (fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]> & Record<string, unknown>)
-    >,
+    data: Array<fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]> & Record<string, unknown>>,
     operation?: InexactPartial<Omit<Operation, "data">>,
   ): Promise<MaybeTemporary<T, Operation["temporary"] extends true ? true : false> | undefined>;
   // Operation["temporary"] extends true
@@ -345,7 +347,7 @@ declare abstract class Document<
    */
   static updateDocuments<T extends Document.AnyConstructor>(
     this: T,
-    updates?: Array<DeepPartial<ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>)>>,
+    updates?: Array<DeepPartial<ConstructorDataType<T> & Record<string, unknown>>>,
     operation?: InexactPartial<Omit<DatabaseOperationsFor<InstanceType<T>["documentName"], "update">, "updates">>,
   ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
 
@@ -426,7 +428,7 @@ declare abstract class Document<
     const Operation extends DatabaseOperationsFor<T["metadata"]["name"], "create">,
   >(
     this: T,
-    data: ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>),
+    data: ConstructorDataType<T> & Record<string, unknown>,
     operation?: InexactPartial<Omit<Operation, "data">>,
   ): Promise<MaybeTemporary<T, Operation["temporary"]> | undefined>;
 
@@ -442,9 +444,7 @@ declare abstract class Document<
    * @remarks If no document has actually been updated, the returned {@link Promise} resolves to `undefined`.
    */
   override update(
-    data?:
-      | fields.SchemaField.AssignmentType<Schema, {}>
-      | (fields.SchemaField.AssignmentType<Schema, {}> & Record<string, unknown>),
+    data?: fields.SchemaField.AssignmentType<Schema, {}> & Record<string, unknown>,
     operation?: InexactPartial<Omit<DatabaseOperationsFor<ConcreteMetadata["name"], "update">, "updates">>,
   ): Promise<this | undefined>;
 
@@ -1038,6 +1038,18 @@ export interface DocumentMetadata {
 }
 
 export type Operation = "create" | "update" | "delete";
+
+export interface DocumentDatabaseOperations<
+  T extends foundry.abstract.Document.Any = foundry.abstract.Document.Any,
+  BlahXXX extends boolean = false,
+  ExtraCreateOptions extends Record<string, unknown> = {},
+  ExtraUpdateOptions extends Record<string, unknown> = {},
+  ExtraDeleteOptions extends Record<string, unknown> = {},
+> {
+  create: DatabaseCreateOperation<T, BlahXXX> & InexactPartial<ExtraCreateOptions>;
+  update: DatabaseUpdateOperation<T> & InexactPartial<ExtraUpdateOptions>;
+  delete: DatabaseDeleteOperation & InexactPartial<ExtraDeleteOptions>;
+}
 
 export interface DatabaseOperationMap<BlahXXX extends boolean> {
   ActiveEffect: ActiveEffect.DatabaseOperations<BlahXXX>;

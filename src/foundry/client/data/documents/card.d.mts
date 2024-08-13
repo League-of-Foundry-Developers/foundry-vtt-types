@@ -1,22 +1,14 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial } from "../../../../types/utils.d.mts";
-import type {
-  DatabaseCreateOperation,
-  DatabaseDeleteOperation,
-  DatabaseUpdateOperation,
-} from "../../../common/abstract/_types.d.mts";
-import type { DocumentOnCreateOptions } from "../../../common/abstract/document.d.mts";
+import type { DocumentDatabaseOperations, DocumentOnCreateOptions } from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace Card {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Card">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    export interface DatabaseOperations<BlahXXX extends boolean = false> {
-      create: DatabaseCreateOperation<Card, BlahXXX>;
-      update: DatabaseUpdateOperation<Card>;
-      delete: DatabaseDeleteOperation;
-    }
+    export interface DatabaseOperations<BlahXXX extends boolean = false>
+      extends DocumentDatabaseOperations<Card, BlahXXX> {}
   }
 
   /**

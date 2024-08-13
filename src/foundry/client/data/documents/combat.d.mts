@@ -1,27 +1,25 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { ConstructorOf, InexactPartial } from "../../../../types/utils.d.mts";
 import type {
+  DocumentDatabaseOperations,
   DocumentOnCreateOptions,
   DocumentOnDeleteOptions,
   DocumentOnUpdateOptions,
 } from "../../../common/abstract/document.d.mts";
-import type {
-  DatabaseCreateOperation,
-  DatabaseDeleteOperation,
-  DatabaseUpdateOperation,
-} from "../../../common/abstract/_types.d.mts";
 
 declare global {
   namespace Combat {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Combat">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    export interface DatabaseOperations<BlahXXX extends boolean = false> {
-      create: DatabaseCreateOperation<Combat, BlahXXX>;
-      update: DatabaseUpdateOperation<Combat> &
-        InexactPartial<{ direction: -1 | 1; worldTime: { delta: number }; turnEvents: boolean }>;
-      delete: DatabaseDeleteOperation;
-    }
+    export interface DatabaseOperations<BlahXXX extends boolean = false>
+      extends DocumentDatabaseOperations<
+        Combat,
+        BlahXXX,
+        {},
+        { direction: -1 | 1; worldTime: { delta: number }; turnEvents: boolean },
+        {}
+      > {}
 
     interface InitiativeOptions {
       /**

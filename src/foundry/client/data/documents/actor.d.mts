@@ -1,22 +1,14 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
-import type {
-  DatabaseCreateOperation,
-  DatabaseDeleteOperation,
-  DatabaseUpdateOperation,
-} from "../../../common/abstract/_types.d.mts";
-import type { DocumentOnUpdateOptions } from "../../../common/abstract/document.d.mts";
+import type { DocumentDatabaseOperations, DocumentOnUpdateOptions } from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace Actor {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Actor">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    export interface DatabaseOperations<BlahXXX extends boolean = false> {
-      create: DatabaseCreateOperation<Actor, BlahXXX>;
-      update: DatabaseUpdateOperation<Actor>;
-      delete: DatabaseDeleteOperation;
-    }
+    export interface DatabaseOperations<BlahXXX extends boolean = false>
+      extends DocumentDatabaseOperations<Actor, BlahXXX> {}
 
     interface RollInitiativeOptions {
       /**

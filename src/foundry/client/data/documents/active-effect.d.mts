@@ -3,23 +3,21 @@ import type { ConfiguredDocumentClassForName } from "../../../../types/helperTyp
 import type { DataField } from "../../../common/data/fields.d.mts";
 import type { DataModel } from "../../../common/abstract/data.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
-import type {
-  DatabaseCreateOperation,
-  DatabaseDeleteOperation,
-  DatabaseUpdateOperation,
-} from "../../../common/abstract/_types.d.mts";
-import type { InexactPartial } from "../../../../types/utils.d.mts";
+import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace ActiveEffect {
     type ConfiguredClass = ConfiguredDocumentClassForName<"ActiveEffect">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    export interface DatabaseOperations<BlahXXX extends boolean = false> {
-      create: DatabaseCreateOperation<ActiveEffect, BlahXXX> & InexactPartial<{ animate: boolean }>;
-      update: DatabaseUpdateOperation<ActiveEffect> & InexactPartial<{ animate?: boolean }>;
-      delete: DatabaseDeleteOperation & InexactPartial<{ animate?: boolean }>;
-    }
+    export interface DatabaseOperations<BlahXXX extends boolean = false>
+      extends DocumentDatabaseOperations<
+        ActiveEffect,
+        BlahXXX,
+        { animate: boolean },
+        { animate: boolean },
+        { animate: boolean }
+      > {}
   }
 
   /**

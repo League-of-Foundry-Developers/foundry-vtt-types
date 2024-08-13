@@ -3,22 +3,15 @@ import type { InexactPartial } from "../../../../types/utils.d.mts";
 // eslint-disable-next-line import/no-named-as-default
 import type DataModel from "../../../common/abstract/data.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
-import type {
-  DatabaseCreateOperation,
-  DatabaseDeleteOperation,
-  DatabaseUpdateOperation,
-} from "../../../common/abstract/_types.d.mts";
+import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace Adventure {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Adventure">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    export interface DatabaseOperations<BlahXXX extends boolean = false> {
-      create: DatabaseCreateOperation<Adventure, BlahXXX>;
-      update: DatabaseUpdateOperation<Adventure>;
-      delete: DatabaseDeleteOperation;
-    }
+    export interface DatabaseOperations<BlahXXX extends boolean = false>
+      extends DocumentDatabaseOperations<Adventure, BlahXXX> {}
 
     interface PrepareImportOptions {
       /**
