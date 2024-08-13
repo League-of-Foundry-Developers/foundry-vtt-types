@@ -32,7 +32,7 @@ declare global {
    * const referenceToGame: Game = game; // ok! :)
    * ```
    */
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface, @typescript-eslint/no-empty-object-type
   interface AssumeHookRan {}
 
   /**
@@ -61,7 +61,7 @@ declare global {
    * }
    * ```
    */
-  //eslint-disable-next-line @typescript-eslint/no-empty-interface
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface, @typescript-eslint/no-empty-object-type
   interface DocumentClassConfig {}
 
   /**
@@ -90,7 +90,7 @@ declare global {
    * }
    * ```
    */
-  //eslint-disable-next-line @typescript-eslint/no-empty-interface
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface, @typescript-eslint/no-empty-object-type
   interface PlaceableObjectClassConfig {}
 
   /**
@@ -169,7 +169,7 @@ declare global {
    * }
    * ```
    */
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface, @typescript-eslint/no-empty-object-type
   interface DataConfig {}
 
   /**
@@ -180,20 +180,20 @@ declare global {
    * - if mode is "exact", the return type is the exact data object, and will not allow for any additional properties to be returned.
    * - if mode is "object", the return type is a generic object, and will allow for any object to be returned, regardless of the actual data object.
    */
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface, @typescript-eslint/no-empty-object-type
   interface GetDataConfig {}
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface, @typescript-eslint/no-empty-object-type
   interface DataModelConfig {}
 
   /** @see {@link DataConfig} */
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface, @typescript-eslint/no-empty-object-type
   interface SourceConfig {}
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface, @typescript-eslint/no-empty-object-type
   interface FlagConfig {}
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface, @typescript-eslint/no-empty-object-type
   interface WebRTCConfig {}
 
   /**
@@ -209,7 +209,7 @@ declare global {
    * const moduleApi: APIObject | undefined = game.module.get("module-id")?.api;
    * ```
    */
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface, @typescript-eslint/no-empty-object-type
   interface ModuleConfig {}
 
   /**
@@ -224,7 +224,7 @@ declare global {
    * const module: Game.ModuleData<foundry.packages.ModuleData> = game.module.get("module-id");
    * ```
    */
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface, @typescript-eslint/no-empty-object-type
   interface RequiredModules {}
 }
 

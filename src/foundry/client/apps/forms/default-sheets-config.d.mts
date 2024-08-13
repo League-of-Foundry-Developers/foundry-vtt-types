@@ -25,6 +25,7 @@ declare global {
   }
 
   namespace DefaultSheetsConfig {
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     interface Options extends PackageConfiguration.Options {}
 
     interface CategorySubType {
@@ -39,6 +40,7 @@ declare global {
       subtypes: CategorySubType[];
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     interface CategoryData extends PackageConfiguration.CategoryData<Category> {}
   }
 }

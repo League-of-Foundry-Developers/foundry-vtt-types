@@ -98,6 +98,7 @@ declare namespace FunctionTerm {
     options?: InexactPartial<FunctionTerm.Options>;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface Options extends RollTerm.Options {}
 }
 

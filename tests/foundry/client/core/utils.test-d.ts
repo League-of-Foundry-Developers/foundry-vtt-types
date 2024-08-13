@@ -1,5 +1,6 @@
 import { assertType } from "vitest";
+import type { AnyFunction } from "../../../../src/types/utils.d.mts";
 
 // prove that they are global
-assertType<Function>(saveDataToFile);
-assertType<Function>(readTextFromFile);
+assertType<AnyFunction>(saveDataToFile);
+assertType<AnyFunction>(readTextFromFile);

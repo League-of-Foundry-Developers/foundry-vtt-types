@@ -1,4 +1,4 @@
-import type { MaybePromise, ValueOf } from "../../../types/utils.d.mts";
+import type { EmptyObject, MaybePromise, ValueOf } from "../../../types/utils.d.mts";
 
 declare global {
   interface FilePickerOptions extends ApplicationOptions {
@@ -72,7 +72,7 @@ declare global {
      * The latest set of results browsed from the server
      * @remarks This is never set.
      */
-    results: {};
+    results: EmptyObject;
 
     /**
      * The general file type which controls the set of extensions which will be accepted
@@ -309,7 +309,7 @@ declare global {
       file: File,
       body?: FilePicker.UploadBody,
       options?: FilePicker.UploadOptions,
-    ): Promise<FilePicker.UploadResult | false | void | {}>;
+    ): Promise<FilePicker.UploadResult | false | void | EmptyObject>;
 
     /**
      * A convenience function that uploads a file to a given package's persistent /storage/ directory
@@ -328,7 +328,7 @@ declare global {
       file: File,
       body?: FilePicker.UploadBody,
       options?: FilePicker.UploadOptions,
-    ): Promise<FilePicker.UploadResult | false | void | {}>;
+    ): Promise<FilePicker.UploadResult | false | void | EmptyObject>;
 
     /**
      * Additional actions performed when the file-picker UI is rendered

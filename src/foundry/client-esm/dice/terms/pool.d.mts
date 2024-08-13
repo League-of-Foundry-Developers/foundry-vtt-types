@@ -243,6 +243,7 @@ declare namespace PoolTerm {
     cf: "countFailures";
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface TermData extends Required<PoolTermConstructorData> {}
 
   interface PoolTermConstructorData {

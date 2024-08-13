@@ -1,5 +1,5 @@
 import type { DocumentSubTypes, DocumentType } from "../../../types/helperTypes.d.mts";
-import type { DeepPartial, InexactPartial } from "../../../types/utils.d.mts";
+import type { DeepPartial, EmptyObject, InexactPartial } from "../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -172,10 +172,10 @@ declare global {
       "core.animateRollTable": boolean;
       "core.chatBubbles": boolean;
       "core.chatBubblesPan": boolean;
-      "core.combatTrackerConfig": { resource: string; skipDefeated: boolean } | {};
+      "core.combatTrackerConfig": { resource: string; skipDefeated: boolean } | EmptyObject;
       "core.compendiumConfiguration": Partial<Record<string, CompendiumCollection.Configuration>>;
       "core.coneTemplateType": "round" | "flat";
-      "core.defaultDrawingConfig": foundry.documents.BaseDrawing["_source"] | {};
+      "core.defaultDrawingConfig": foundry.documents.BaseDrawing["_source"] | EmptyObject;
       "core.defaultToken": DeepPartial<foundry.documents.BaseToken>;
       "core.disableResolutionScaling": boolean;
       "core.fontSize": number;

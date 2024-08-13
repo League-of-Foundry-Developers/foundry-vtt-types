@@ -632,6 +632,7 @@ export function colorStringToHex(color: string): number | null;
  *
  * @internal
  */
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 type NonStringifiable = undefined | Function | symbol;
 
 /**

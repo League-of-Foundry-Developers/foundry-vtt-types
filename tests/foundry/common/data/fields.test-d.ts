@@ -50,18 +50,18 @@ if (myJournalEntryPage.system instanceof foundry.abstract.TypeDataModel) {
 /** EmbeddedDataField */
 
 declare const embeddedModel: foundry.data.LightData;
-declare const embeddedOptions: foundry.data.fields.EmbeddedDataField.Options<typeof embeddedModel>;
+declare type embeddedOptions = foundry.data.fields.EmbeddedDataField.Options<typeof embeddedModel>;
 declare const embeddedAssignment: foundry.data.fields.EmbeddedDataField.AssignmentType<
   typeof embeddedModel,
-  typeof embeddedOptions
+  embeddedOptions
 >;
 declare const embeddedInitialized: foundry.data.fields.EmbeddedDataField.InitializedType<
   typeof embeddedModel,
-  typeof embeddedOptions
+  embeddedOptions
 >;
 declare const embeddedPersisted: foundry.data.fields.EmbeddedDataField.PersistedType<
   typeof embeddedModel,
-  typeof embeddedOptions
+  embeddedOptions
 >;
 
 expectTypeOf(embeddedAssignment?.alpha).toEqualTypeOf<number | undefined | null>();
@@ -96,14 +96,14 @@ declare const AssignmentElementType: foundry.data.fields.EmbeddedCollectionField
 declare const InitializedElementType: foundry.data.fields.EmbeddedCollectionField.InitializedElementType<
   typeof ElementFieldType
 >;
-declare const EmbeddedCollectionOptions: foundry.data.fields.EmbeddedCollectionField.DefaultOptions<
+declare type EmbeddedCollectionOptions = foundry.data.fields.EmbeddedCollectionField.DefaultOptions<
   typeof AssignmentElementType
 >;
 declare const InitializedType: foundry.data.fields.EmbeddedCollectionField.InitializedType<
   typeof AssignmentElementType,
   typeof InitializedElementType,
   typeof ParentDataModel,
-  typeof EmbeddedCollectionOptions
+  EmbeddedCollectionOptions
 >;
 
 expectTypeOf(ElementFieldType.hasTypeData).toEqualTypeOf<boolean>();
