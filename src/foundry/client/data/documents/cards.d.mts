@@ -3,9 +3,9 @@ import type {
   ConfiguredDocumentClass,
   ConstructorDataType,
   DocumentConstructor,
+  DatabaseOperationsFor,
 } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial, StoredDocument } from "../../../../types/utils.d.mts";
-import type { DocumentCreateOperation } from "../../../common/abstract/document.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
 import type {
   DatabaseCreateOperation,
@@ -18,9 +18,9 @@ declare global {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Cards">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    export interface DatabaseOperations {
-      create: DatabaseCreateOperation;
-      update: DatabaseUpdateOperation;
+    export interface DatabaseOperations<Temporary extends boolean = false> {
+      create: DatabaseCreateOperation<Cards, Temporary>;
+      update: DatabaseUpdateOperation<Cards>;
       delete: DatabaseDeleteOperation;
     }
 
@@ -174,7 +174,7 @@ declare global {
         | fields.SchemaField.AssignmentType<Cards["schema"]["fields"]>
         | (fields.SchemaField.AssignmentType<Cards["schema"]["fields"]> & Record<string, unknown>)
       >,
-      context: DocumentCreateOperation<Cards["documentName"], Temporary>,
+      context: DatabaseOperationsFor<Cards["documentName"], "create", Temporary>,
     ): true extends Temporary
       ? Promise<Cards.ConfiguredInstance[]>
       : Promise<StoredDocument<Cards.ConfiguredInstance>[]>;
@@ -335,9 +335,7 @@ declare global {
     static override createDialog<T extends DocumentConstructor>(
       this: T,
       data?: DeepPartial<ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>)>,
-      // note: using DocumentCreateOperation gave an error, but is unnecessary here
-      //    due to the Pick
-      context?: Pick<DatabaseCreateOperation, "parent" | "pack"> &
+      context?: Pick<DatabaseOperationsFor<Cards["documentName"], "create">, "parent" | "pack"> &
         InexactPartial<
           DialogOptions & {
             /** A restriction the selectable sub-types of the Dialog. */

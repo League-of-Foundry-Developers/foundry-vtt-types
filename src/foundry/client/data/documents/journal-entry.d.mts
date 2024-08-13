@@ -11,9 +11,9 @@ declare global {
     type ConfiguredClass = ConfiguredDocumentClassForName<"JournalEntry">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    export interface DatabaseOperations {
-      create: DatabaseCreateOperation;
-      update: DatabaseUpdateOperation;
+    export interface DatabaseOperations<Temporary extends boolean = false> {
+      create: DatabaseCreateOperation<JournalEntry, Temporary>;
+      update: DatabaseUpdateOperation<JournalEntry>;
       delete: DatabaseDeleteOperation;
     }
   }

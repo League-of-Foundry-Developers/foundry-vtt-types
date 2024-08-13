@@ -35,7 +35,10 @@ export interface DatabaseGetOperation {
   parentUuid?: string | undefined;
 }
 
-export interface DatabaseCreateOperation<T extends foundry.abstract.Document.Any = foundry.abstract.Document.Any> {
+export interface DatabaseCreateOperation<
+  T extends foundry.abstract.Document.Any = foundry.abstract.Document.Any,
+  Temporary extends boolean = false,
+> {
   /**
    * Whether the database operation is broadcast to other connected clients
    */
@@ -115,7 +118,11 @@ export interface DatabaseCreateOperation<T extends foundry.abstract.Document.Any
    */
   clearOwnership?: boolean | undefined;
 
-  //
+  /**
+   * @deprecated `"It is no longer supported to create temporary documents using the Document.createDocuments API. Use the new Document() constructor instead."`
+   * @remarks No explicit undefined because deprecation message checks `"temporary" in operation`
+   */
+  temporary?: Temporary;
 }
 
 export interface DatabaseUpdateOperation<T extends foundry.abstract.Document.Any = foundry.abstract.Document.Any> {

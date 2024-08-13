@@ -8,16 +8,17 @@ import type {
   DatabaseDeleteOperation,
   DatabaseUpdateOperation,
 } from "../../../common/abstract/_types.d.mts";
+import type { InexactPartial } from "../../../../types/utils.d.mts";
 
 declare global {
   namespace ActiveEffect {
     type ConfiguredClass = ConfiguredDocumentClassForName<"ActiveEffect">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    export interface DatabaseOperations {
-      create: DatabaseCreateOperation & { animate?: boolean | undefined };
-      update: DatabaseUpdateOperation & { animate?: boolean | undefined };
-      delete: DatabaseDeleteOperation & { animate?: boolean | undefined };
+    export interface DatabaseOperations<Temporary extends boolean = false> {
+      create: DatabaseCreateOperation<ActiveEffect, Temporary> & InexactPartial<{ animate: boolean }>;
+      update: DatabaseUpdateOperation<ActiveEffect> & InexactPartial<{ animate?: boolean }>;
+      delete: DatabaseDeleteOperation & InexactPartial<{ animate?: boolean }>;
     }
   }
 

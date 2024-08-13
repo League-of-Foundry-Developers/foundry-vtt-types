@@ -12,9 +12,9 @@ declare global {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Token">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    export interface DatabaseOperations {
-      create: DatabaseCreateOperation;
-      update: DatabaseUpdateOperation &
+    export interface DatabaseOperations<Temporary extends boolean = false> {
+      create: DatabaseCreateOperation<TokenDocument, Temporary>;
+      update: DatabaseUpdateOperation<TokenDocument> &
         InexactPartial<{
           previousActorId: string | null;
           animate: boolean;

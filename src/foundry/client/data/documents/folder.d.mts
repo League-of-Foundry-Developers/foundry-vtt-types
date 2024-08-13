@@ -17,9 +17,9 @@ declare global {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Folder">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    export interface DatabaseOperations {
-      create: DatabaseCreateOperation;
-      update: DatabaseUpdateOperation;
+    export interface DatabaseOperations<Temporary extends boolean = false> {
+      create: DatabaseCreateOperation<Folder, Temporary>;
+      update: DatabaseUpdateOperation<Folder>;
       delete: DatabaseDeleteOperation;
     }
 

@@ -11,9 +11,9 @@ declare global {
     type ConfiguredClass = ConfiguredDocumentClassForName<"AmbientLight">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    export interface DatabaseOperations {
-      create: DatabaseCreateOperation;
-      update: DatabaseUpdateOperation & InexactPartial<{ animate: boolean }>;
+    export interface DatabaseOperations<Temporary extends boolean = false> {
+      create: DatabaseCreateOperation<AmbientLightDocument, Temporary>;
+      update: DatabaseUpdateOperation<AmbientLightDocument> & InexactPartial<{ animate?: boolean }>;
       delete: DatabaseDeleteOperation;
     }
   }

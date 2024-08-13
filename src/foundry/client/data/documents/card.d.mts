@@ -5,16 +5,16 @@ import type {
   DatabaseDeleteOperation,
   DatabaseUpdateOperation,
 } from "../../../common/abstract/_types.d.mts";
-import type { DocumentCreateOperation } from "../../../common/abstract/document.d.mts";
+import type { DocumentOnCreateOptions } from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace Card {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Card">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    export interface DatabaseOperations {
-      create: DatabaseCreateOperation;
-      update: DatabaseUpdateOperation;
+    export interface DatabaseOperations<Temporary extends boolean = false> {
+      create: DatabaseCreateOperation<Card, Temporary>;
+      update: DatabaseUpdateOperation<Card>;
       delete: DatabaseDeleteOperation;
     }
   }
@@ -117,7 +117,7 @@ declare global {
      */
     toMessage(
       messageData?: DeepPartial<foundry.documents.BaseChatMessage.ConstructorData>,
-      options?: DocumentCreateOperation<"ChatMessage">,
+      options?: DocumentOnCreateOptions<"ChatMessage">,
     ): Promise<ChatMessage.ConfiguredInstance | undefined>;
   }
 }

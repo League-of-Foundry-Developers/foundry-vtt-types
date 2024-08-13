@@ -1,7 +1,21 @@
 import { expectTypeOf } from "vitest";
 import type { StoredDocument } from "../../../../src/types/utils.d.mts";
 import type BaseActiveEffect from "../../../../src/foundry/common/documents/active-effect.d.mts";
-import type { ConfiguredDocumentClass } from "../../../../src/types/helperTypes.d.mts";
+import type { ConfiguredDocumentClass, DatabaseOperationsFor } from "../../../../src/types/helperTypes.d.mts";
+
+import type {
+  DocumentOnCreateOptions,
+  DocumentOnDeleteOptions,
+  DocumentOnUpdateOptions,
+  DocumentPreCreateOptions,
+  DocumentPreDeleteOptions,
+  DocumentPreUpdateOptions,
+} from "../../../../src/foundry/common/abstract/document.d.mts";
+import type {
+  DatabaseCreateOperation,
+  DatabaseDeleteOperation,
+  DatabaseUpdateOperation,
+} from "../../../../src/foundry/common/abstract/_types.d.mts";
 
 declare const configuredActiveEffect: InstanceType<
   foundry.abstract.Document.ConfiguredClass<typeof foundry.documents.BaseActiveEffect>
@@ -96,6 +110,39 @@ declare global {
     };
   }
 }
+
+// test the database operations
+declare const dbo: ActiveEffect.DatabaseOperations;
+declare const dbo2: ActiveEffect.DatabaseOperations<true>;
+declare const dbo3: ActiveEffect.DatabaseOperations<false>;
+expectTypeOf(dbo.create).toEqualTypeOf<DatabaseCreateOperation<ActiveEffect> & { animate?: boolean | undefined }>();
+expectTypeOf(dbo.create).toEqualTypeOf<DatabaseOperationsFor<"ActiveEffect", "create">>();
+expectTypeOf(dbo2.create).toEqualTypeOf<DatabaseOperationsFor<"ActiveEffect", "create", true>>();
+expectTypeOf(dbo3.create).toEqualTypeOf<DatabaseOperationsFor<"ActiveEffect", "create", false>>();
+expectTypeOf(dbo.update).toEqualTypeOf<DatabaseUpdateOperation<ActiveEffect> & { animate?: boolean | undefined }>();
+expectTypeOf(dbo.update).toEqualTypeOf<DatabaseOperationsFor<"ActiveEffect", "update">>();
+expectTypeOf(dbo.delete).toEqualTypeOf<DatabaseDeleteOperation & { animate?: boolean | undefined }>();
+expectTypeOf(dbo.delete).toEqualTypeOf<DatabaseOperationsFor<"ActiveEffect", "delete">>();
+
+// test the options
+declare const dco: DatabaseOperationsFor<"ActiveEffect", "create">;
+declare const duo: DatabaseOperationsFor<"ActiveEffect", "update">;
+declare const ddo: DatabaseOperationsFor<"ActiveEffect", "delete">;
+
+declare const pco: DocumentPreCreateOptions<"ActiveEffect">;
+expectTypeOf(pco).toEqualTypeOf<Omit<typeof dco, "data" | "noHook" | "pack" | "parent">>();
+declare const oco: DocumentOnCreateOptions<"ActiveEffect">;
+expectTypeOf(oco).toEqualTypeOf<Omit<typeof dco, "pack" | "parentUuid" | "syntheticActorUpdate">>();
+
+declare const puo: DocumentPreUpdateOptions<"ActiveEffect">;
+expectTypeOf(puo).toEqualTypeOf<Omit<typeof duo, "updates" | "restoreDelta" | "noHook" | "parent" | "pack">>();
+declare const ouo: DocumentOnUpdateOptions<"ActiveEffect">;
+expectTypeOf(ouo).toEqualTypeOf<Omit<typeof duo, "pack" | "parentUuid" | "syntheticActorUpdate">>();
+
+declare const pdo: DocumentPreDeleteOptions<"ActiveEffect">;
+expectTypeOf(pdo).toEqualTypeOf<Omit<typeof ddo, "ids" | "deleteAll" | "noHook" | "pack" | "parent">>();
+declare const odo: DocumentOnDeleteOptions<"ActiveEffect">;
+expectTypeOf(odo).toEqualTypeOf<Omit<typeof ddo, "deleteAll" | "pack" | "parentUuid" | "syntheticActorUpdate">>();
 
 // const combatant = new Combatant({}, {});
 // expectTypeOf(combatant.flags["my-system"]).toEqualTypeOf<{ value: boolean; value2: number }>();

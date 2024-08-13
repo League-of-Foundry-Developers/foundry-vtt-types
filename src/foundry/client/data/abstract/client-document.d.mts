@@ -4,10 +4,10 @@ import type {
   DocumentConstructor,
 } from "../../../../types/helperTypes.d.mts";
 import type { ConstructorOf, DeepPartial, InexactPartial, Mixin, ValueOf } from "../../../../types/utils.d.mts";
+import type { DatabaseCreateOperation } from "../../../common/abstract/_types.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type {
   AnyMetadata,
-  DocumentCreateOperation,
   DocumentModificationOptions,
   DocumentOnCreateOptions,
   DocumentOnDeleteOptions,
@@ -358,7 +358,7 @@ declare class ClientDocument<
   static createDialog<T extends DocumentConstructor>(
     this: T,
     data?: DeepPartial<ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>)>,
-    context?: Pick<DocumentCreateOperation<any>, "parent" | "pack"> &
+    context?: Pick<DatabaseCreateOperation<any>, "parent" | "pack"> &
       InexactPartial<
         DialogOptions & {
           /** A restriction the selectable sub-types of the Dialog. */

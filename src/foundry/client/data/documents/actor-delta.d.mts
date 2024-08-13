@@ -12,9 +12,9 @@ declare global {
     type ConfiguredClass = ConfiguredDocumentClassForName<"ActorDelta">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    export interface DatabaseOperations {
-      create: DatabaseCreateOperation;
-      update: DatabaseUpdateOperation;
+    export interface DatabaseOperations<Temporary extends boolean = false> {
+      create: DatabaseCreateOperation<ActorDelta, Temporary>;
+      update: DatabaseUpdateOperation<ActorDelta>;
       delete: DatabaseDeleteOperation;
     }
   }

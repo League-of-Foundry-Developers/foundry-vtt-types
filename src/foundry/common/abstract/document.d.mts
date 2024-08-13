@@ -298,7 +298,7 @@ declare abstract class Document<
       | fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]>
       | (fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]> & Record<string, unknown>)
     >,
-    operation?: DocumentCreateOperation<T["metadata"]["name"], Temporary>,
+    operation?: DatabaseOperationsFor<T["metadata"]["name"], "create", Temporary>,
   ): true extends Temporary
     ? Promise<InstanceType<Document.ConfiguredClass<T>>[]>
     : Promise<StoredDocument<InstanceType<Document.ConfiguredClass<T>>>[]>;
@@ -341,7 +341,7 @@ declare abstract class Document<
   static updateDocuments<T extends Document.AnyConstructor>(
     this: T,
     updates?: Array<DeepPartial<ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>)>>,
-    operation?: DocumentUpdateOperation<T["metadata"]["name"]>,
+    operation?: DatabaseOperationsFor<InstanceType<T>["documentName"], "update">,
   ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
 
   /**
@@ -384,7 +384,7 @@ declare abstract class Document<
   static deleteDocuments<T extends Document.AnyConstructor>(
     this: T,
     ids?: string[],
-    operation?: DocumentDeleteOperation<T["metadata"]["name"]>,
+    operation?: DatabaseOperationsFor<InstanceType<T>["documentName"], "delete">,
   ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
 
   /**
@@ -419,7 +419,7 @@ declare abstract class Document<
   static create<T extends Document.AnyConstructor, Temporary extends boolean = false>(
     this: T,
     data: ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>),
-    operation?: DocumentCreateOperation<T["metadata"]["name"], Temporary>,
+    operation?: DatabaseOperationsFor<T["metadata"]["name"], "create", Temporary>,
   ): true extends Temporary
     ? Promise<InstanceType<ConfiguredDocumentClass<T>> | undefined>
     : Promise<ConfiguredStoredDocument<T> | undefined>;
@@ -439,7 +439,7 @@ declare abstract class Document<
     data?:
       | fields.SchemaField.AssignmentType<Schema, {}>
       | (fields.SchemaField.AssignmentType<Schema, {}> & Record<string, unknown>),
-    operation?: DocumentUpdateOperation<ConcreteMetadata["name"]>,
+    operation?: DatabaseOperationsFor<ConcreteMetadata["name"], "update">,
   ): Promise<this | undefined>;
 
   /**
@@ -451,7 +451,7 @@ declare abstract class Document<
    *
    * @remarks If no document has actually been deleted, the returned {@link Promise} resolves to `undefined`.
    */
-  delete(operation?: DocumentDeleteOperation<ConcreteMetadata["name"]>): Promise<this | undefined>;
+  delete(operation?: DatabaseOperationsFor<ConcreteMetadata["name"], "delete">): Promise<this | undefined>;
 
   /**
    * Get a World-level Document of this type by its id.
@@ -529,7 +529,7 @@ declare abstract class Document<
   createEmbeddedDocuments<EmbeddedName extends Exclude<DocumentType, "Cards">, Temporary extends boolean = false>(
     embeddedName: EmbeddedName,
     data?: Array<ConstructorDataType<ConfiguredDocumentClassForName<EmbeddedName>>>,
-    operation?: DocumentCreateOperation<ConcreteMetadata["name"], Temporary>,
+    operation?: DatabaseOperationsFor<EmbeddedName, "create", Temporary>,
   ): Promise<
     Array<
       true extends Temporary
@@ -552,7 +552,7 @@ declare abstract class Document<
   updateEmbeddedDocuments<EmbeddedName extends Exclude<DocumentType, "Cards">>(
     embeddedName: EmbeddedName,
     updates?: Array<Record<string, unknown>>,
-    operation?: DocumentUpdateOperation<ConcreteMetadata["name"]>,
+    operation?: DatabaseOperationsFor<ConcreteMetadata["name"], "update">,
   ): Promise<Array<StoredDocument<InstanceType<ConfiguredDocumentClassForName<EmbeddedName>>>>>;
 
   /**
@@ -567,7 +567,7 @@ declare abstract class Document<
   deleteEmbeddedDocuments<EmbeddedName extends DocumentType>(
     embeddedName: EmbeddedName,
     ids: Array<string>,
-    operation?: DocumentDeleteOperation<ConcreteMetadata["name"]>,
+    operation?: DatabaseOperationsFor<ConcreteMetadata["name"], "delete">,
   ): Promise<Array<StoredDocument<InstanceType<ConfiguredDocumentClassForName<EmbeddedName>>>>>;
 
   /**
@@ -669,10 +669,10 @@ declare abstract class Document<
    * @param user      - The User requesting the creation operation
    * @returns Return false to cancel the creation operation entirely
    */
-  protected static _preCreateOperation<T extends Document.AnyConstructor>(
+  protected static _preCreateOperation<T extends Document.AnyConstructor, Temporary extends boolean = false>(
     this: T,
     documents: InstanceType<Document.ConfiguredClass<T>>[],
-    operation: DocumentCreateOperation<T["metadata"]["name"]>,
+    operation: DatabaseOperationsFor<T["metadata"]["name"], "create", Temporary>,
     user: foundry.documents.BaseUser,
   ): Promise<boolean | void>;
 
@@ -686,10 +686,10 @@ declare abstract class Document<
    * @param operation - Parameters of the database creation operation
    * @param user      - The User who performed the creation operation
    */
-  protected static _onCreateOperation<T extends Document.AnyConstructor>(
+  protected static _onCreateOperation<T extends Document.AnyConstructor, Temporary extends boolean = false>(
     this: T,
     documents: InstanceType<Document.ConfiguredClass<T>>[],
-    operation: DocumentCreateOperation<T["metadata"]["name"]>,
+    operation: DatabaseOperationsFor<T["metadata"]["name"], "create", Temporary>,
     user: foundry.documents.BaseUser,
   ): Promise<void>;
 
@@ -738,7 +738,7 @@ declare abstract class Document<
   protected static _preUpdateOperation<T extends Document.AnyConstructor>(
     this: T,
     documents: InstanceType<Document.ConfiguredClass<T>>[],
-    operation: DocumentUpdateOperation<T["metadata"]["name"]>,
+    operation: DatabaseOperationsFor<InstanceType<T>["documentName"], "update">,
     user: foundry.documents.BaseUser,
   ): Promise<boolean | void>;
 
@@ -755,7 +755,7 @@ declare abstract class Document<
   protected static _onUpdateOperation<T extends Document.AnyConstructor>(
     this: T,
     documents: InstanceType<Document.ConfiguredClass<T>>[],
-    operation: DocumentUpdateOperation<T["metadata"]["name"]>,
+    operation: DatabaseOperationsFor<InstanceType<T>["documentName"], "update">,
     user: foundry.documents.BaseUser,
   ): Promise<void>;
 
@@ -798,7 +798,7 @@ declare abstract class Document<
   protected static _preDeleteOperation<T extends Document.AnyConstructor>(
     this: T,
     documents: InstanceType<Document.ConfiguredClass<T>>[],
-    operation: DocumentDeleteOperation<T["metadata"]["name"]>,
+    operation: DatabaseOperationsFor<InstanceType<T>["documentName"], "delete">,
     user: foundry.documents.BaseUser,
   ): Promise<boolean | void>;
 
@@ -815,7 +815,7 @@ declare abstract class Document<
   protected static _onDeleteOperation<T extends Document.AnyConstructor>(
     this: T,
     documents: InstanceType<Document.ConfiguredClass<T>>[],
-    operation: DocumentDeleteOperation<T["metadata"]["name"]>,
+    operation: DatabaseOperationsFor<InstanceType<T>["documentName"], "delete">,
     user: foundry.documents.BaseUser,
   ): Promise<void>;
 
@@ -1028,85 +1028,67 @@ export interface DocumentMetadata {
 
 export type Operation = "create" | "update" | "delete";
 
-export interface DatabaseOperationMap {
-  ActiveEffect: ActiveEffect.DatabaseOperations;
-  Actor: Actor.DatabaseOperations;
-  ActorDelta: ActorDelta.DatabaseOperations;
-  Adventure: Adventure.DatabaseOperations;
-  AmbientLight: AmbientLightDocument.DatabaseOperations;
-  AmbientSound: AmbientSoundDocument.DatabaseOperations;
-  Card: Card.DatabaseOperations;
-  Cards: Cards.DatabaseOperations;
-  ChatMessage: ChatMessage.DatabaseOperations;
-  Combat: Combat.DatabaseOperations;
-  Combatant: Combatant.DatabaseOperations;
-  Drawing: DrawingDocument.DatabaseOperations;
-  FogExploration: FogExploration.DatabaseOperations;
-  Folder: Folder.DatabaseOperations;
-  Item: Item.DatabaseOperations;
-  JournalEntry: JournalEntry.DatabaseOperations;
-  JournalEntryPage: JournalEntryPage.DatabaseOperations;
-  Macro: Macro.DatabaseOperations;
-  MeasuredTemplate: MeasuredTemplateDocument.DatabaseOperations;
-  Note: NoteDocument.DatabaseOperations;
-  Playlist: Playlist.DatabaseOperations;
-  PlaylistSound: PlaylistSound.DatabaseOperations;
+export interface DatabaseOperationMap<Temporary extends boolean = false> {
+  ActiveEffect: ActiveEffect.DatabaseOperations<Temporary>;
+  Actor: Actor.DatabaseOperations<Temporary>;
+  ActorDelta: ActorDelta.DatabaseOperations<Temporary>;
+  Adventure: Adventure.DatabaseOperations<Temporary>;
+  AmbientLight: AmbientLightDocument.DatabaseOperations<Temporary>;
+  AmbientSound: AmbientSoundDocument.DatabaseOperations<Temporary>;
+  Card: Card.DatabaseOperations<Temporary>;
+  Cards: Cards.DatabaseOperations<Temporary>;
+  ChatMessage: ChatMessage.DatabaseOperations<Temporary>;
+  Combat: Combat.DatabaseOperations<Temporary>;
+  Combatant: Combatant.DatabaseOperations<Temporary>;
+  Drawing: DrawingDocument.DatabaseOperations<Temporary>;
+  FogExploration: FogExploration.DatabaseOperations<Temporary>;
+  Folder: Folder.DatabaseOperations<Temporary>;
+  Item: Item.DatabaseOperations<Temporary>;
+  JournalEntry: JournalEntry.DatabaseOperations<Temporary>;
+  JournalEntryPage: JournalEntryPage.DatabaseOperations<Temporary>;
+  Macro: Macro.DatabaseOperations<Temporary>;
+  MeasuredTemplate: MeasuredTemplateDocument.DatabaseOperations<Temporary>;
+  Note: NoteDocument.DatabaseOperations<Temporary>;
+  Playlist: Playlist.DatabaseOperations<Temporary>;
+  PlaylistSound: PlaylistSound.DatabaseOperations<Temporary>;
   // TODO: Add these once documents are done
-  // Region: ActiveEffect.DatabaseOperations;
-  // RegionBehavior: ActiveEffect.DatabaseOperations;
-  RollTable: RollTable.DatabaseOperations;
-  Scene: Scene.DatabaseOperations;
-  Setting: Setting.DatabaseOperations;
-  TableResult: TableResult.DatabaseOperations;
-  Tile: TileDocument.DatabaseOperations;
-  Token: TokenDocument.DatabaseOperations;
-  User: User.DatabaseOperations;
-  Wall: WallDocument.DatabaseOperations;
+  // Region: ActiveEffect.DatabaseOperations<Temporary>;
+  // RegionBehavior: ActiveEffect.DatabaseOperations<Temporary>;
+  RollTable: RollTable.DatabaseOperations<Temporary>;
+  Scene: Scene.DatabaseOperations<Temporary>;
+  Setting: Setting.DatabaseOperations<Temporary>;
+  TableResult: TableResult.DatabaseOperations<Temporary>;
+  Tile: TileDocument.DatabaseOperations<Temporary>;
+  Token: TokenDocument.DatabaseOperations<Temporary>;
+  User: User.DatabaseOperations<Temporary>;
+  Wall: WallDocument.DatabaseOperations<Temporary>;
 }
 
-export type DocumentCreateOperation<Name extends DocumentType, Temporary extends boolean = false> = InexactPartial<
-  Omit<DatabaseOperationsFor<Name, "create">, "data">
-> & {
-  /**
-   * @deprecated `"It is no longer supported to create temporary documents using the Document.createDocuments API. Use the new Document() constructor instead."`
-   * @remarks No explicit undefined because deprecation message checks `"temporary" in operation`
-   */
-  temporary?: Temporary;
-};
-
-export type DocumentDeleteOperation<Name extends DocumentType> = InexactPartial<
-  Omit<DatabaseOperationsFor<Name, "delete">, "ids">
-> & {};
-
-export type DocumentUpdateOperation<Name extends DocumentType> = InexactPartial<
-  Omit<DatabaseOperationsFor<Name, "update">, "updates">
-> &
-  foundry.utils.MergeObjectOptions;
-
+// options
 export type DocumentPreCreateOptions<Name extends DocumentType> = Omit<
-  DocumentCreateOperation<Name>,
+  DatabaseOperationsFor<Name, "create">,
   "data" | "noHook" | "pack" | "parent"
 >;
 export type DocumentOnCreateOptions<Name extends DocumentType> = Omit<
-  DocumentCreateOperation<Name>,
-  "pack" | "parentUUid" | "syntheticActorUpdate"
+  DatabaseOperationsFor<Name, "create">,
+  "pack" | "parentUuid" | "syntheticActorUpdate"
 >;
 
 export type DocumentPreUpdateOptions<Name extends DocumentType> = Omit<
-  DocumentUpdateOperation<Name>,
+  DatabaseOperationsFor<Name, "update">,
   "updates" | "restoreDelta" | "noHook" | "parent" | "pack"
 >;
 export type DocumentOnUpdateOptions<Name extends DocumentType> = Omit<
-  DocumentUpdateOperation<Name>,
-  "pack" | "parentUUid" | "syntheticActorUpdate"
+  DatabaseOperationsFor<Name, "update">,
+  "pack" | "parentUuid" | "syntheticActorUpdate"
 >;
 
 export type DocumentPreDeleteOptions<Name extends DocumentType> = Omit<
-  DocumentDeleteOperation<Name>,
+  DatabaseOperationsFor<Name, "delete">,
   "ids" | "deleteAll" | "noHook" | "pack" | "parent"
 >;
 export type DocumentOnDeleteOptions<Name extends DocumentType> = Omit<
-  DocumentDeleteOperation<Name>,
+  DatabaseOperationsFor<Name, "delete">,
   "deleteAll" | "pack" | "parentUuid" | "syntheticActorUpdate"
 >;
 
