@@ -3,7 +3,7 @@ import type ProseMirrorPlugin from "./plugin.d.mts";
 import type { ProseMirrorMenu } from "./menu.d.mts";
 import { EditorState, Plugin } from "prosemirror-state";
 import { EditorView } from "prosemirror-view";
-import type { EmptyObject } from "../../../types/utils.d.mts";
+import type { EmptyObject, InexactPartial } from "../../../types/utils.d.mts";
 
 declare namespace ProseMirrorHighlightMatchesPlugin {
   /**
@@ -30,7 +30,7 @@ declare namespace ProseMirrorHighlightMatchesPlugin {
      * @param options  - Additional options which can override tooltip behavior.
      */
     _createTooltip(
-      position: {
+      position: InexactPartial<{
         /** Explicit top position for the tooltip */
         top?: string;
         /** Explicit right position for the tooltip */
@@ -39,7 +39,7 @@ declare namespace ProseMirrorHighlightMatchesPlugin {
         bottom?: string;
         /** Explicit left position for the tooltip */
         left?: string;
-      },
+      }>,
       text: string,
       options?: {
         /** An optional, space-separated list of CSS classes to apply to the activated tooltip. */
@@ -74,7 +74,7 @@ declare class ProseMirrorHighlightMatchesPlugin extends ProseMirrorPlugin {
    * @param schema  - The ProseMirror schema.
    * @param options - Additional options to configure the plugin's behaviour.
    */
-  constructor(schema: Schema, options: ProseMirrorMenu.Options);
+  constructor(schema: Schema, options: ProseMirrorMenu.ProseMirrorMenuOptions);
 
   static override build(schema: Schema, options?: EmptyObject): Plugin;
 }
