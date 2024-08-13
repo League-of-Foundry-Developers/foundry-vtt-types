@@ -12,8 +12,8 @@ declare global {
     type ConfiguredClass = ConfiguredDocumentClassForName<"RollTable">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    export interface DatabaseOperations<Temporary extends boolean = false> {
-      create: DatabaseCreateOperation<RollTable, Temporary>;
+    export interface DatabaseOperations<BlahXXX extends boolean = false> {
+      create: DatabaseCreateOperation<RollTable, BlahXXX>;
       update: DatabaseUpdateOperation<RollTable>;
       delete: DatabaseDeleteOperation;
     }

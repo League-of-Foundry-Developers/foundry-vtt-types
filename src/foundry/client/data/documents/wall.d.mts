@@ -10,8 +10,8 @@ declare global {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Wall">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    export interface DatabaseOperations<Temporary extends boolean = false> {
-      create: DatabaseCreateOperation<WallDocument, Temporary>;
+    export interface DatabaseOperations<BlahXXX extends boolean = false> {
+      create: DatabaseCreateOperation<WallDocument, BlahXXX>;
       update: DatabaseUpdateOperation<WallDocument>;
       delete: DatabaseDeleteOperation;
     }

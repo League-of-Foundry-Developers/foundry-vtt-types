@@ -11,8 +11,8 @@ declare global {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Scene">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    export interface DatabaseOperations<Temporary extends boolean = false> {
-      create: DatabaseCreateOperation<Scene, Temporary>;
+    export interface DatabaseOperations<BlahXXX extends boolean = false> {
+      create: DatabaseCreateOperation<Scene, BlahXXX>;
       update: DatabaseUpdateOperation<Scene> &
         InexactPartial<{ thumb: (string | null)[]; autoReposition: boolean; animateDarkness: number }>;
       delete: DatabaseDeleteOperation;

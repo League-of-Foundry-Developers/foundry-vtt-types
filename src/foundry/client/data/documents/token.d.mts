@@ -12,8 +12,8 @@ declare global {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Token">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    export interface DatabaseOperations<Temporary extends boolean = false> {
-      create: DatabaseCreateOperation<TokenDocument, Temporary>;
+    export interface DatabaseOperations<BlahXXX extends boolean = false> {
+      create: DatabaseCreateOperation<TokenDocument, BlahXXX>;
       update: DatabaseUpdateOperation<TokenDocument> &
         InexactPartial<{
           previousActorId: string | null;

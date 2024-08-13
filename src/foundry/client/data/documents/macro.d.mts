@@ -10,8 +10,8 @@ declare global {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Macro">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    export interface DatabaseOperations<Temporary extends boolean = false> {
-      create: DatabaseCreateOperation<Macro, Temporary>;
+    export interface DatabaseOperations<BlahXXX extends boolean = false> {
+      create: DatabaseCreateOperation<Macro, BlahXXX>;
       update: DatabaseUpdateOperation<Macro>;
       delete: DatabaseDeleteOperation;
     }

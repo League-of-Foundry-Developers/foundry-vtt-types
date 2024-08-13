@@ -10,8 +10,8 @@ declare global {
     type ConfiguredClass = ConfiguredDocumentClassForName<"AmbientSound">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    export interface DatabaseOperations<Temporary extends boolean = false> {
-      create: DatabaseCreateOperation<AmbientSoundDocument, Temporary>;
+    export interface DatabaseOperations<BlahXXX extends boolean = false> {
+      create: DatabaseCreateOperation<AmbientSoundDocument, BlahXXX>;
       update: DatabaseUpdateOperation<AmbientSoundDocument>;
       delete: DatabaseDeleteOperation;
     }

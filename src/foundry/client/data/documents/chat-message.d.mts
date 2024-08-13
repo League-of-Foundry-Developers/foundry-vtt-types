@@ -11,8 +11,8 @@ declare global {
     type ConfiguredClass = ConfiguredDocumentClassForName<"ChatMessage">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    export interface DatabaseOperations<Temporary extends boolean = false> {
-      create: DatabaseCreateOperation<ChatMessage, Temporary> &
+    export interface DatabaseOperations<BlahXXX extends boolean = false> {
+      create: DatabaseCreateOperation<ChatMessage, BlahXXX> &
         InexactPartial<{ rollMode: foundry.CONST.DICE_ROLL_MODES; chatBubble: boolean }>;
       update: DatabaseUpdateOperation<ChatMessage>;
       delete: DatabaseDeleteOperation;

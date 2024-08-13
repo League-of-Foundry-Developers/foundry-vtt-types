@@ -37,7 +37,7 @@ export interface DatabaseGetOperation {
 
 export interface DatabaseCreateOperation<
   T extends foundry.abstract.Document.Any = foundry.abstract.Document.Any,
-  Temporary extends boolean = false,
+  BlahXXX extends boolean = false,
 > {
   /**
    * Whether the database operation is broadcast to other connected clients
@@ -122,7 +122,8 @@ export interface DatabaseCreateOperation<
    * @deprecated `"It is no longer supported to create temporary documents using the Document.createDocuments API. Use the new Document() constructor instead."`
    * @remarks No explicit undefined because deprecation message checks `"temporary" in operation`
    */
-  temporary?: Temporary;
+  temporary?: boolean | undefined;
+  blah?: BlahXXX;
 }
 
 export interface DatabaseUpdateOperation<T extends foundry.abstract.Document.Any = foundry.abstract.Document.Any> {

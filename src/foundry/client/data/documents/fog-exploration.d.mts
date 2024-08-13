@@ -12,8 +12,8 @@ declare global {
     type ConfiguredClass = ConfiguredDocumentClassForName<"FogExploration">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    export interface DatabaseOperations<Temporary extends boolean = false> {
-      create: DatabaseCreateOperation<FogExploration, Temporary> & InexactPartial<{ loadFog: boolean }>;
+    export interface DatabaseOperations<BlahXXX extends boolean = false> {
+      create: DatabaseCreateOperation<FogExploration, BlahXXX> & InexactPartial<{ loadFog: boolean }>;
       update: DatabaseUpdateOperation<FogExploration> & InexactPartial<{ loadFog: boolean }>;
       delete: DatabaseDeleteOperation & InexactPartial<{ loadFog: boolean }>;
     }

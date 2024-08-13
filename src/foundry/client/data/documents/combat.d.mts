@@ -16,8 +16,8 @@ declare global {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Combat">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    export interface DatabaseOperations<Temporary extends boolean = false> {
-      create: DatabaseCreateOperation<Combat, Temporary>;
+    export interface DatabaseOperations<BlahXXX extends boolean = false> {
+      create: DatabaseCreateOperation<Combat, BlahXXX>;
       update: DatabaseUpdateOperation<Combat> &
         InexactPartial<{ direction: -1 | 1; worldTime: { delta: number }; turnEvents: boolean }>;
       delete: DatabaseDeleteOperation;

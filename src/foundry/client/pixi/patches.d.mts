@@ -1,7 +1,7 @@
 // export {};
 
 // // Foundry adjustments to PIXI for video
-// // Temporary workaround until PIXI 7.3.0 (pixijs/pixijs#9441)
+// // BlahXXX workaround until PIXI 7.3.0 (pixijs/pixijs#9441)
 // declare module "pixi.js" {
 //   interface BaseImageResource {
 //     upload(

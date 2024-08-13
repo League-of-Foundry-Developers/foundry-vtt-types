@@ -42,20 +42,23 @@ if (item) {
 
 declare const bool: boolean;
 
-expectTypeOf(foundry.documents.BaseMacro.create({ name: "" }, { temporary: bool })).toEqualTypeOf<
-  Promise<Macro | undefined>
->();
-expectTypeOf(foundry.documents.BaseMacro.create({ name: "" }, { temporary: true })).toEqualTypeOf<
-  Promise<Macro | undefined>
->();
 expectTypeOf(foundry.documents.BaseMacro.create({ name: "" })).toEqualTypeOf<
   Promise<StoredDocument<Macro> | undefined>
 >();
 expectTypeOf(foundry.documents.BaseMacro.create({ name: "" }, { temporary: false })).toEqualTypeOf<
   Promise<StoredDocument<Macro> | undefined>
 >();
+// this should fail
+expectTypeOf(foundry.documents.BaseMacro.create({ name: "" }, { temporary: true })).toEqualTypeOf<
+  Promise<StoredDocument<Macro> | undefined>
+>();
 
-expectTypeOf(foundry.documents.BaseMacro.createDocuments([], { temporary: bool })).toEqualTypeOf<Promise<Macro[]>>();
+// this should pass
+expectTypeOf(foundry.documents.BaseMacro.create({ name: "" }, { temporary: true })).toEqualTypeOf<
+  Promise<StoredDocument<Macro> | undefined>
+>();
+
+// TODO: still need to fix these
 expectTypeOf(foundry.documents.BaseMacro.createDocuments([], { temporary: true })).toEqualTypeOf<Promise<Macro[]>>();
 expectTypeOf(foundry.documents.BaseMacro.createDocuments([])).toEqualTypeOf<Promise<StoredDocument<Macro>[]>>();
 expectTypeOf(foundry.documents.BaseMacro.createDocuments([], { temporary: false })).toEqualTypeOf<

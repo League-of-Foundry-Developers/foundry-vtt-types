@@ -10,8 +10,8 @@ declare global {
     type ConfiguredClass = ConfiguredDocumentClassForName<"MeasuredTemplate">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    export interface DatabaseOperations<Temporary extends boolean = false> {
-      create: DatabaseCreateOperation<MeasuredTemplateDocument, Temporary>;
+    export interface DatabaseOperations<BlahXXX extends boolean = false> {
+      create: DatabaseCreateOperation<MeasuredTemplateDocument, BlahXXX>;
       update: DatabaseUpdateOperation<MeasuredTemplateDocument>;
       delete: DatabaseDeleteOperation;
     }

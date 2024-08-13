@@ -15,8 +15,8 @@ declare global {
     type ConfiguredClass = ConfiguredDocumentClassForName<"ActiveEffect">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    export interface DatabaseOperations<Temporary extends boolean = false> {
-      create: DatabaseCreateOperation<ActiveEffect, Temporary> & InexactPartial<{ animate: boolean }>;
+    export interface DatabaseOperations<BlahXXX extends boolean = false> {
+      create: DatabaseCreateOperation<ActiveEffect, BlahXXX> & InexactPartial<{ animate: boolean }>;
       update: DatabaseUpdateOperation<ActiveEffect> & InexactPartial<{ animate?: boolean }>;
       delete: DatabaseDeleteOperation & InexactPartial<{ animate?: boolean }>;
     }
