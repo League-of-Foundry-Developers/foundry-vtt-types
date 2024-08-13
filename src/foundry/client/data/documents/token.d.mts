@@ -1,30 +1,28 @@
 import type { ConfiguredDocumentClassForName, DocumentType } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
-import type {
-  DatabaseCreateOperation,
-  DatabaseDeleteOperation,
-  DatabaseUpdateOperation,
-} from "../../../common/abstract/_types.d.mts";
-import type { DocumentOnUpdateOptions } from "../../../common/abstract/document.d.mts";
+import type { DocumentDatabaseOperations, DocumentOnUpdateOptions } from "../../../common/abstract/document.d.mts";
+import type { SchemaField } from "../../../common/data/fields.d.mts";
 
 declare global {
   namespace TokenDocument {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Token">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    export interface DatabaseOperations<BlahXXX extends boolean = false> {
-      create: DatabaseCreateOperation<TokenDocument, BlahXXX>;
-      update: DatabaseUpdateOperation<TokenDocument> &
-        InexactPartial<{
+    export interface DatabaseOperations<BlahXXX extends boolean = false>
+      extends DocumentDatabaseOperations<
+        TokenDocument,
+        BlahXXX,
+        {},
+        {
           previousActorId: string | null;
           animate: boolean;
           _priorRegions: Record<string, string[]>;
           _priorPosition: Record<string, { x: number; y: number; elevation: number }>;
           teleport: boolean;
           forced: boolean;
-        }>;
-      delete: DatabaseDeleteOperation;
-    }
+        },
+        {}
+      > {}
   }
 
   /**
@@ -191,7 +189,10 @@ declare global {
      * @param changes - The changes.
      * @returns Could this Token update change Region containment?
      */
-    protected _couldRegionsChange(changes: DatabaseUpdateOperation<TokenDocument>["updates"]): boolean;
+
+    protected _couldRegionsChange(
+      changes: SchemaField.InnerAssignmentType<foundry.documents.BaseToken.Schema>,
+    ): boolean;
 
     /**
      * When the base Actor for a TokenDocument changes, we may need to update its Actor instance
@@ -268,7 +269,7 @@ declare global {
     /**
      * @deprecated since v11
      */
-    set actorData(actorData);
+    set actorData(actorData: this["delta"]["_source"]);
 
     /**
      * A helper function to toggle a status effect which includes an Active Effect template

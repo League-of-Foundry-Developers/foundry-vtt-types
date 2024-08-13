@@ -1,22 +1,20 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { InexactPartial } from "../../../../types/utils.d.mts";
-import type {
-  DatabaseCreateOperation,
-  DatabaseDeleteOperation,
-  DatabaseUpdateOperation,
-} from "../../../common/abstract/_types.d.mts";
+import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace Scene {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Scene">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    export interface DatabaseOperations<BlahXXX extends boolean = false> {
-      create: DatabaseCreateOperation<Scene, BlahXXX>;
-      update: DatabaseUpdateOperation<Scene> &
-        InexactPartial<{ thumb: (string | null)[]; autoReposition: boolean; animateDarkness: number }>;
-      delete: DatabaseDeleteOperation;
-    }
+    export interface DatabaseOperations<BlahXXX extends boolean = false>
+      extends DocumentDatabaseOperations<
+        Scene,
+        BlahXXX,
+        {},
+        { thumb: (string | null)[]; autoReposition: boolean; animateDarkness: number },
+        {}
+      > {}
   }
 
   /**

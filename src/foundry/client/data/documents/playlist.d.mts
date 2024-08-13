@@ -2,28 +2,21 @@ import type { ConfiguredDocumentClassForName } from "../../../../types/helperTyp
 import type { InexactPartial } from "../../../../types/utils.d.mts";
 import type {
   AnyMetadata,
+  DocumentDatabaseOperations,
   DocumentOnCreateOptions,
   DocumentOnDeleteOptions,
   DocumentOnUpdateOptions,
 } from "../../../common/abstract/document.d.mts";
 import type { Document } from "../../../common/abstract/module.d.mts";
 import type { ClientDocument } from "../abstract/client-document.d.mts";
-import type {
-  DatabaseCreateOperation,
-  DatabaseDeleteOperation,
-  DatabaseUpdateOperation,
-} from "../../../common/abstract/_types.d.mts";
 
 declare global {
   namespace Playlist {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Playlist">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    export interface DatabaseOperations<BlahXXX extends boolean = false> {
-      create: DatabaseCreateOperation<Playlist, BlahXXX>;
-      update: DatabaseUpdateOperation<Playlist>;
-      delete: DatabaseDeleteOperation;
-    }
+    export interface DatabaseOperations<BlahXXX extends boolean = false>
+      extends DocumentDatabaseOperations<Playlist, BlahXXX> {}
 
     interface PlayNextOptions {
       /**

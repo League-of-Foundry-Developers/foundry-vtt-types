@@ -6,22 +6,15 @@ import type {
   DocumentType,
 } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial } from "../../../../types/utils.d.mts";
-import type {
-  DatabaseCreateOperation,
-  DatabaseDeleteOperation,
-  DatabaseUpdateOperation,
-} from "../../../common/abstract/_types.d.mts";
+import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace Folder {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Folder">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    export interface DatabaseOperations<BlahXXX extends boolean = false> {
-      create: DatabaseCreateOperation<Folder, BlahXXX>;
-      update: DatabaseUpdateOperation<Folder>;
-      delete: DatabaseDeleteOperation;
-    }
+    export interface DatabaseOperations<BlahXXX extends boolean = false>
+      extends DocumentDatabaseOperations<Folder, BlahXXX> {}
 
     interface ExportToCompendiumOptions {
       /** Update existing entries in the Compendium pack, matching by name */

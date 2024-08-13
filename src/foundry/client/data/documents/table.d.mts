@@ -1,22 +1,18 @@
 import type { ConfiguredDocumentClassForName, ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
 import type { InexactPartial } from "../../../../types/utils.d.mts";
-import type { DocumentOnCreateOptions, DocumentOnDeleteOptions } from "../../../common/abstract/document.d.mts";
 import type {
-  DatabaseCreateOperation,
-  DatabaseDeleteOperation,
-  DatabaseUpdateOperation,
-} from "../../../common/abstract/_types.d.mts";
+  DocumentDatabaseOperations,
+  DocumentOnCreateOptions,
+  DocumentOnDeleteOptions,
+} from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace RollTable {
     type ConfiguredClass = ConfiguredDocumentClassForName<"RollTable">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    export interface DatabaseOperations<BlahXXX extends boolean = false> {
-      create: DatabaseCreateOperation<RollTable, BlahXXX>;
-      update: DatabaseUpdateOperation<RollTable>;
-      delete: DatabaseDeleteOperation;
-    }
+    export interface DatabaseOperations<BlahXXX extends boolean = false>
+      extends DocumentDatabaseOperations<RollTable, BlahXXX> {}
 
     /**
      * Optional arguments which customize the draw
