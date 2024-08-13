@@ -293,7 +293,7 @@ declare global {
        */
       updateCompendium: (
         pack: CompendiumCollection<any>,
-        documents: foundry.abstract.Document<any, any, any>[],
+        documents: foundry.abstract.Document.Any[],
         options: DocumentModificationOptions,
         userId: string,
       ) => void;

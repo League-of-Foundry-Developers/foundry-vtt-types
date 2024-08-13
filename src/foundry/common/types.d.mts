@@ -8,7 +8,7 @@ declare global {
      * The parent Document of this one, if this one is embedded
      * @defaultValue `null`
      */
-    parent?: foundry.abstract.Document<any, any, any> | null | undefined;
+    parent?: foundry.abstract.Document.Any | null | undefined;
 
     /**
      * The compendium collection ID which contains this Document, if any
@@ -28,7 +28,7 @@ declare global {
     /**
      * A parent Document within which these Documents should be embedded
      */
-    parent?: foundry.abstract.Document<any, any, any> | undefined;
+    parent?: foundry.abstract.Document.Any | undefined;
 
     /**
      * A Compendium pack identifier within which the Documents should be modified
