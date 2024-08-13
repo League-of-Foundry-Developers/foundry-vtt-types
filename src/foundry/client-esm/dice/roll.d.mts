@@ -303,7 +303,7 @@ declare class Roll<D extends AnyObject = AnyObject> {
    * @param options - Additional options which modify or describe this Roll
    * @returns The constructed Roll instance
    */
-  static create<D extends Record<string, unknown> = AnyObject>(
+  static create<D extends AnyObject = AnyObject>(
     formula: string,
     data?: D,
     options?: InexactPartial<Roll.Options>,

@@ -62,9 +62,7 @@ export type ConfiguredFlags<T extends string> = T extends keyof FlagConfig
 
 export type ModuleRequiredOrOptional<Name extends string> = Name extends keyof RequiredModules ? never : undefined;
 
-export type ConfiguredModuleData<Name extends string> = Name extends keyof ModuleConfig
-  ? ModuleConfig[Name]
-  : EmptyObject;
+export type ConfiguredModuleData<Name extends string> = GetKey<ModuleConfig, Name, EmptyObject>;
 
 export type ConfiguredModule<Name extends string> =
   ModuleRequiredOrOptional<Name> extends never

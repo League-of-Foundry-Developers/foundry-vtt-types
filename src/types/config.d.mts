@@ -32,7 +32,7 @@ declare global {
    * const referenceToGame: Game = game; // ok! :)
    * ```
    */
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface, @typescript-eslint/no-empty-object-type, @typescript-eslint/no-empty-object-type
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface, @typescript-eslint/no-empty-object-type
   interface AssumeHookRan {}
 
   /**
@@ -61,7 +61,7 @@ declare global {
    * }
    * ```
    */
-  //eslint-disable-next-line @typescript-eslint/no-empty-interface, @typescript-eslint/no-empty-object-type
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface, @typescript-eslint/no-empty-object-type
   interface DocumentClassConfig {}
 
   /**
@@ -90,7 +90,7 @@ declare global {
    * }
    * ```
    */
-  //eslint-disable-next-line @typescript-eslint/no-empty-interface, @typescript-eslint/no-empty-object-type
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface, @typescript-eslint/no-empty-object-type
   interface PlaceableObjectClassConfig {}
 
   /**

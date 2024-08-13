@@ -15,9 +15,9 @@ type CompendiumArtConfigParts = ConformRecord<
  * An application for configuring compendium art priorities.
  */
 declare class CompendiumArtConfig<
+  RenderContext extends CompendiumArtConfigRenderContext = CompendiumArtConfigRenderContext,
   Configuration extends ApplicationV2.Configuration = ApplicationV2.Configuration,
   RenderOptions extends ApplicationV2.RenderOptions = ApplicationV2.RenderOptions,
-  RenderContext extends CompendiumArtConfigRenderContext = CompendiumArtConfigRenderContext,
 > extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
   // placeholder private member to help subclassing
   #compendiumArtConfig: true;
