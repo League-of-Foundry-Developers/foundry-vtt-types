@@ -2,9 +2,8 @@ import type { AnyObject, DeepPartial, EmptyObject } from "../../../../types/util
 import type ApplicationV2 from "./application.d.mts";
 
 declare namespace DocumentSheetV2 {
-  export interface Configuration<
-    Document extends foundry.abstract.Document<any, any, any> = foundry.abstract.Document<any, any, any>,
-  > extends ApplicationV2.Configuration {
+  export interface Configuration<Document extends foundry.abstract.Document.Any = foundry.abstract.Document.Any>
+    extends ApplicationV2.Configuration {
     /**
      * The Document instance associated with this sheet
      */
@@ -39,7 +38,7 @@ declare namespace DocumentSheetV2 {
  * The Application class is responsible for rendering an HTMLElement into the Foundry Virtual Tabletop user interface.
  */
 declare class DocumentSheetV2<
-  Document extends foundry.abstract.Document<any, any, any>,
+  Document extends foundry.abstract.Document.Any,
   RenderContext extends AnyObject = EmptyObject,
   Configuration extends DocumentSheetV2.Configuration<Document> = DocumentSheetV2.Configuration<Document>,
   RenderOptions extends DocumentSheetV2.RenderOptions = DocumentSheetV2.RenderOptions,

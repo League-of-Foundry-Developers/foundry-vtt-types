@@ -8,7 +8,7 @@ declare global {
    */
   class DocumentOwnershipConfig<
     Options extends DocumentSheetOptions<ConcreteDocument>,
-    ConcreteDocument extends foundry.abstract.Document<any, any, any> = foundry.abstract.Document<any, any, any>,
+    ConcreteDocument extends foundry.abstract.Document.Any = foundry.abstract.Document.Any,
   > extends DocumentSheet<Options, ConcreteDocument> {
     /**
      * @defaultValue

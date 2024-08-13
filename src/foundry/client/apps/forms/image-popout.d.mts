@@ -78,7 +78,7 @@ declare global {
     /**
      * Provide a reference to the Document referenced by this popout, if one exists
      */
-    getRelatedObject(): Promise<foundry.abstract.Document<any, any, any> | null>;
+    getRelatedObject(): Promise<foundry.abstract.Document.Any | null>;
 
     protected override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
