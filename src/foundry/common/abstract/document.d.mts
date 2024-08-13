@@ -541,13 +541,7 @@ declare abstract class Document<
     embeddedName: EmbeddedName,
     data?: Array<ConstructorDataType<ConfiguredDocumentClassForName<EmbeddedName>>>,
     operation?: InexactPartial<Operation>,
-  ): Promise<
-    Array<
-      Operation["temporary"] extends true
-        ? InstanceType<ConfiguredDocumentClassForName<EmbeddedName>>
-        : StoredDocument<InstanceType<ConfiguredDocumentClassForName<EmbeddedName>>>
-    >
-  >;
+  ): Promise<Array<MaybeTemporary<ConfiguredDocumentClassForName<EmbeddedName>, Operation["temporary"]>>>;
 
   /**
    * Update multiple embedded Document instances within a parent Document using provided differential data.
