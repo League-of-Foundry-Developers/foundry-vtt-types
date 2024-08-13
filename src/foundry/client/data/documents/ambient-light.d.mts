@@ -6,8 +6,8 @@ declare global {
     type ConfiguredClass = ConfiguredDocumentClassForName<"AmbientLight">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    export interface DatabaseOperations<BlahXXX extends boolean = false>
-      extends DocumentDatabaseOperations<AmbientLightDocument, BlahXXX, {}, { animate: boolean }, {}> {}
+    export interface DatabaseOperations
+      extends DocumentDatabaseOperations<AmbientLightDocument, {}, { animate: boolean }, {}> {}
   }
 
   /**

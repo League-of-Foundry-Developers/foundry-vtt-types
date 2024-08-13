@@ -8,8 +8,7 @@ declare global {
     type ConfiguredClass = ConfiguredDocumentClassForName<"ActorDelta">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    export interface DatabaseOperations<BlahXXX extends boolean = false>
-      extends DocumentDatabaseOperations<ActorDelta, BlahXXX> {}
+    export interface DatabaseOperations extends DocumentDatabaseOperations<ActorDelta> {}
   }
 
   /**

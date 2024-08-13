@@ -40,29 +40,20 @@ if (item) {
   >();
 }
 
-declare const bool: boolean;
-
-expectTypeOf(foundry.documents.BaseMacro.create({ name: "" })).toEqualTypeOf<
-  Promise<StoredDocument<Macro> | undefined>
->();
+expectTypeOf(foundry.documents.BaseMacro.create({ name: "" })).toEqualTypeOf<Promise<Macro | undefined>>();
 expectTypeOf(foundry.documents.BaseMacro.create({ name: "" }, { temporary: false })).toEqualTypeOf<
-  Promise<StoredDocument<Macro> | undefined>
->();
-// this should fail
-expectTypeOf(foundry.documents.BaseMacro.create({ name: "" }, { temporary: true })).toEqualTypeOf<
-  Promise<StoredDocument<Macro> | undefined>
->();
-
-// this should pass
-expectTypeOf(foundry.documents.BaseMacro.create({ name: "" }, { temporary: true })).toEqualTypeOf<
   Promise<Macro | undefined>
 >();
+expectTypeOf(foundry.documents.BaseMacro.create({ name: "" }, { temporary: true })).toEqualTypeOf<
+  Promise<StoredDocument<Macro> | undefined>
+>();
 
-// TODO: still need to fix these
-expectTypeOf(foundry.documents.BaseMacro.createDocuments([], { temporary: true })).toEqualTypeOf<Promise<Macro[]>>();
-expectTypeOf(foundry.documents.BaseMacro.createDocuments([])).toEqualTypeOf<Promise<StoredDocument<Macro>[]>>();
+expectTypeOf(foundry.documents.BaseMacro.createDocuments([], { temporary: true })).toEqualTypeOf<
+  Promise<StoredDocument<Macro>[] | undefined>
+>();
+expectTypeOf(foundry.documents.BaseMacro.createDocuments([])).toEqualTypeOf<Promise<Macro[] | undefined>>();
 expectTypeOf(foundry.documents.BaseMacro.createDocuments([], { temporary: false })).toEqualTypeOf<
-  Promise<StoredDocument<Macro>[]>
+  Promise<Macro[] | undefined>
 >();
 
 expectTypeOf(foundry.documents.BaseMacro.updateDocuments([])).toEqualTypeOf<Promise<Macro[]>>();
@@ -78,26 +69,21 @@ if (user) {
 // test creation of embedded documents
 declare const actor: Actor;
 expectTypeOf(actor.createEmbeddedDocuments("ActiveEffect", [], { temporary: true })).toEqualTypeOf<
-  Promise<ActiveEffect[]>
->();
-expectTypeOf(actor.createEmbeddedDocuments("ActiveEffect", [], { temporary: bool })).toEqualTypeOf<
-  Promise<ActiveEffect[] | StoredDocument<ActiveEffect>[]>
+  Promise<StoredDocument<ActiveEffect>[] | undefined>
 >();
 expectTypeOf(actor.createEmbeddedDocuments("ActiveEffect", [], { temporary: false })).toEqualTypeOf<
-  Promise<StoredDocument<ActiveEffect>[]>
+  Promise<ActiveEffect[] | undefined>
 >();
-expectTypeOf(actor.createEmbeddedDocuments("ActiveEffect", [])).toEqualTypeOf<
-  Promise<StoredDocument<ActiveEffect>[]>
->();
+expectTypeOf(actor.createEmbeddedDocuments("ActiveEffect", [])).toEqualTypeOf<Promise<ActiveEffect[] | undefined>>();
 
 // verify that document lifecycle methods work with source data is possible
 
 if (item) {
-  expectTypeOf(Item.createDocuments([item.toObject()])).toEqualTypeOf<Promise<StoredDocument<Item>[]>>();
-  expectTypeOf(Item.create(item.toObject())).toEqualTypeOf<Promise<StoredDocument<Item> | undefined>>();
+  expectTypeOf(Item.createDocuments([item.toObject()])).toEqualTypeOf<Promise<Item[] | undefined>>();
+  expectTypeOf(Item.create(item.toObject())).toEqualTypeOf<Promise<Item | undefined>>();
   expectTypeOf(Item.updateDocuments([item.toObject()])).toEqualTypeOf<Promise<Item[]>>();
-  expectTypeOf(item.update(item.toObject())).toEqualTypeOf<Promise<StoredDocument<Item> | undefined>>();
-  expectTypeOf(item.clone(item.toObject())).toEqualTypeOf<StoredDocument<Item>>();
+  expectTypeOf(item.update(item.toObject())).toEqualTypeOf<Promise<Item | undefined>>();
+  expectTypeOf(item.clone(item.toObject())).toEqualTypeOf<Item>();
 }
 
 declare global {
@@ -116,12 +102,8 @@ declare global {
 
 // test the database operations
 declare const dbo: ActiveEffect.DatabaseOperations;
-declare const dbo2: ActiveEffect.DatabaseOperations<true>;
-declare const dbo3: ActiveEffect.DatabaseOperations<false>;
 expectTypeOf(dbo.create).toEqualTypeOf<DatabaseCreateOperation<ActiveEffect> & { animate?: boolean | undefined }>();
 expectTypeOf(dbo.create).toEqualTypeOf<DatabaseOperationsFor<"ActiveEffect", "create">>();
-expectTypeOf(dbo2.create).toEqualTypeOf<DatabaseOperationsFor<"ActiveEffect", "create", true>>();
-expectTypeOf(dbo3.create).toEqualTypeOf<DatabaseOperationsFor<"ActiveEffect", "create", false>>();
 expectTypeOf(dbo.update).toEqualTypeOf<DatabaseUpdateOperation<ActiveEffect> & { animate?: boolean | undefined }>();
 expectTypeOf(dbo.update).toEqualTypeOf<DatabaseOperationsFor<"ActiveEffect", "update">>();
 expectTypeOf(dbo.delete).toEqualTypeOf<DatabaseDeleteOperation & { animate?: boolean | undefined }>();

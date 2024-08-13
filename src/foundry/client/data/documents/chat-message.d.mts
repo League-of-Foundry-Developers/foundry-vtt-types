@@ -7,10 +7,9 @@ declare global {
     type ConfiguredClass = ConfiguredDocumentClassForName<"ChatMessage">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    export interface DatabaseOperations<BlahXXX extends boolean = false>
+    export interface DatabaseOperations
       extends DocumentDatabaseOperations<
         ChatMessage,
-        BlahXXX,
         { rollMode: foundry.CONST.DICE_ROLL_MODES; chatBubble: boolean },
         {},
         {}

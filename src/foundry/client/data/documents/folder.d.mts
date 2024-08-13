@@ -13,8 +13,7 @@ declare global {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Folder">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    export interface DatabaseOperations<BlahXXX extends boolean = false>
-      extends DocumentDatabaseOperations<Folder, BlahXXX> {}
+    export interface DatabaseOperations extends DocumentDatabaseOperations<Folder> {}
 
     interface ExportToCompendiumOptions {
       /** Update existing entries in the Compendium pack, matching by name */

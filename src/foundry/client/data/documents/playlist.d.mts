@@ -15,8 +15,7 @@ declare global {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Playlist">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    export interface DatabaseOperations<BlahXXX extends boolean = false>
-      extends DocumentDatabaseOperations<Playlist, BlahXXX> {}
+    export interface DatabaseOperations extends DocumentDatabaseOperations<Playlist> {}
 
     interface PlayNextOptions {
       /**

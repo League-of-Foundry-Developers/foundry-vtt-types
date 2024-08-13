@@ -10,10 +10,9 @@ declare global {
     type ConfiguredClass = ConfiguredDocumentClassForName<"ActiveEffect">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    export interface DatabaseOperations<BlahXXX extends boolean = false>
+    export interface DatabaseOperations
       extends DocumentDatabaseOperations<
         ActiveEffect,
-        BlahXXX,
         { animate: boolean },
         { animate: boolean },
         { animate: boolean }

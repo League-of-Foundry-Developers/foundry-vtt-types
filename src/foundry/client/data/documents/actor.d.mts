@@ -7,8 +7,7 @@ declare global {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Actor">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    export interface DatabaseOperations<BlahXXX extends boolean = false>
-      extends DocumentDatabaseOperations<Actor, BlahXXX> {}
+    export interface DatabaseOperations extends DocumentDatabaseOperations<Actor> {}
 
     interface RollInitiativeOptions {
       /**

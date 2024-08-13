@@ -6,8 +6,7 @@ declare global {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Macro">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    export interface DatabaseOperations<BlahXXX extends boolean = false>
-      extends DocumentDatabaseOperations<Macro, BlahXXX> {}
+    export interface DatabaseOperations extends DocumentDatabaseOperations<Macro> {}
   }
 
   /**

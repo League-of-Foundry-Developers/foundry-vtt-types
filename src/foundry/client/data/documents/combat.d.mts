@@ -12,10 +12,9 @@ declare global {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Combat">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    export interface DatabaseOperations<BlahXXX extends boolean = false>
+    export interface DatabaseOperations
       extends DocumentDatabaseOperations<
         Combat,
-        BlahXXX,
         {},
         { direction: -1 | 1; worldTime: { delta: number }; turnEvents: boolean },
         {}

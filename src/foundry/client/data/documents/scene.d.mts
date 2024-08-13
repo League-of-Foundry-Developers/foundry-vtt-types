@@ -7,10 +7,9 @@ declare global {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Scene">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    export interface DatabaseOperations<BlahXXX extends boolean = false>
+    export interface DatabaseOperations
       extends DocumentDatabaseOperations<
         Scene,
-        BlahXXX,
         {},
         { thumb: (string | null)[]; autoReposition: boolean; animateDarkness: number },
         {}

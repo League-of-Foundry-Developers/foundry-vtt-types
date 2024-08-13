@@ -7,8 +7,7 @@ declare global {
     type ConfiguredClass = ConfiguredDocumentClassForName<"JournalEntryPage">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    export interface DatabaseOperations<BlahXXX extends boolean = false>
-      extends DocumentDatabaseOperations<JournalEntryPage, BlahXXX> {}
+    export interface DatabaseOperations extends DocumentDatabaseOperations<JournalEntryPage> {}
 
     interface JournalEntryPageHeading {
       /** The heading level, 1-6. */

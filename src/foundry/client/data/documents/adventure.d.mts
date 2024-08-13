@@ -10,8 +10,7 @@ declare global {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Adventure">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    export interface DatabaseOperations<BlahXXX extends boolean = false>
-      extends DocumentDatabaseOperations<Adventure, BlahXXX> {}
+    export interface DatabaseOperations extends DocumentDatabaseOperations<Adventure> {}
 
     interface PrepareImportOptions {
       /**

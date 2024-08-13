@@ -6,8 +6,7 @@ declare global {
     type ConfiguredClass = ConfiguredDocumentClassForName<"MeasuredTemplate">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    export interface DatabaseOperations<BlahXXX extends boolean = false>
-      extends DocumentDatabaseOperations<MeasuredTemplateDocument, BlahXXX> {}
+    export interface DatabaseOperations extends DocumentDatabaseOperations<MeasuredTemplateDocument> {}
   }
 
   /**

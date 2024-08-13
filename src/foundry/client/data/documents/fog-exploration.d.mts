@@ -7,10 +7,9 @@ declare global {
     type ConfiguredClass = ConfiguredDocumentClassForName<"FogExploration">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    export interface DatabaseOperationsFor<BlahXXX extends boolean = false>
+    export interface DatabaseOperations
       extends DocumentDatabaseOperations<
         FogExploration,
-        BlahXXX,
         { loadFog: boolean },
         { loadFog: boolean },
         { loadFog: boolean }

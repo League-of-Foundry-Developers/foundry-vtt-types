@@ -215,5 +215,4 @@ export type ConformRecord<T extends object, V> = {
 export type DatabaseOperationsFor<
   Name extends DocumentType,
   ConcreteOperation extends Operation,
-  BlahXXX extends boolean = false, // only here to support the deprecated temporary option for create
-> = DatabaseOperationMap<BlahXXX>[Name][ConcreteOperation];
+> = DatabaseOperationMap[Name][ConcreteOperation];

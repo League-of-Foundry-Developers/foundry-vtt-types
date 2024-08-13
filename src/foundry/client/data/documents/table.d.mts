@@ -11,8 +11,7 @@ declare global {
     type ConfiguredClass = ConfiguredDocumentClassForName<"RollTable">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    export interface DatabaseOperations<BlahXXX extends boolean = false>
-      extends DocumentDatabaseOperations<RollTable, BlahXXX> {}
+    export interface DatabaseOperations extends DocumentDatabaseOperations<RollTable> {}
 
     /**
      * Optional arguments which customize the draw

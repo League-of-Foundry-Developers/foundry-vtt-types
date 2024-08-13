@@ -14,8 +14,7 @@ declare global {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Cards">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    export interface DatabaseOperations<BlahXXX extends boolean = false>
-      extends DocumentDatabaseOperations<Cards, BlahXXX> {}
+    export interface DatabaseOperations extends DocumentDatabaseOperations<Cards> {}
 
     type CardsAction = "deal" | "pass";
 
@@ -162,13 +161,24 @@ declare global {
      */
     get canClone(): boolean;
 
-    static override createDocuments<BlahXXX extends boolean = false>(
+    static override createDocuments(
       data: Array<
         | fields.SchemaField.AssignmentType<Cards["schema"]["fields"]>
         | (fields.SchemaField.AssignmentType<Cards["schema"]["fields"]> & Record<string, unknown>)
       >,
-      context: DatabaseOperationsFor<Cards["documentName"], "create", BlahXXX>,
-    ): true extends BlahXXX ? Promise<Cards.ConfiguredInstance[]> : Promise<StoredDocument<Cards.ConfiguredInstance>[]>;
+      context: DatabaseOperationsFor<Cards["documentName"], "create"> & {
+        temporary?: false | undefined;
+      },
+    ): Promise<StoredDocument<Cards.ConfiguredInstance>[]>;
+    static override createDocuments(
+      data: Array<
+        | fields.SchemaField.AssignmentType<Cards["schema"]["fields"]>
+        | (fields.SchemaField.AssignmentType<Cards["schema"]["fields"]> & Record<string, unknown>)
+      >,
+      context: DatabaseOperationsFor<Cards["documentName"], "create"> & {
+        temporary: true;
+      },
+    ): Promise<Cards.ConfiguredInstance[]>;
 
     /**
      * Deal one or more cards from this Cards document to each of a provided array of Cards destinations.

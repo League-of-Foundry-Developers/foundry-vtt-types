@@ -35,10 +35,7 @@ export interface DatabaseGetOperation {
   parentUuid?: string | undefined;
 }
 
-export interface DatabaseCreateOperation<
-  T extends foundry.abstract.Document.Any = foundry.abstract.Document.Any,
-  BlahXXX extends boolean = false,
-> {
+export interface DatabaseCreateOperation<T extends foundry.abstract.Document.Any = foundry.abstract.Document.Any> {
   /**
    * Whether the database operation is broadcast to other connected clients
    */
@@ -123,7 +120,6 @@ export interface DatabaseCreateOperation<
    * @remarks No explicit undefined because deprecation message checks `"temporary" in operation`
    */
   temporary?: boolean | undefined;
-  blah?: BlahXXX;
 }
 
 export interface DatabaseUpdateOperation<T extends foundry.abstract.Document.Any = foundry.abstract.Document.Any> {
