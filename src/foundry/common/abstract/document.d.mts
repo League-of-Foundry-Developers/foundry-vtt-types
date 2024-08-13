@@ -428,9 +428,7 @@ declare abstract class Document<
     this: T,
     data: ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>),
     operation?: InexactPartial<Omit<Operation, "data">>,
-  ): Operation["temporary"] extends true
-    ? Promise<InstanceType<ConfiguredDocumentClass<T>> | undefined>
-    : Promise<ConfiguredStoredDocument<T> | undefined>;
+  ): Promise<MaybeTemporary<T, Operation["temporary"]> | undefined>;
 
   /**
    * Update this Document using incremental data, saving it to the database.
@@ -1114,7 +1112,7 @@ export type DocumentOnUpsertOptions<Name extends DocumentType> =
 
 type MaybeTemporary<
   ConcreteDocument extends Document.AnyConstructor,
-  Temporary extends boolean,
+  Temporary extends boolean | undefined,
 > = Temporary extends true
   ? InstanceType<ConfiguredDocumentClass<ConcreteDocument>>
   : ConfiguredStoredDocument<ConcreteDocument>;

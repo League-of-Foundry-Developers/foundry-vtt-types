@@ -55,7 +55,7 @@ expectTypeOf(foundry.documents.BaseMacro.create({ name: "" }, { temporary: true 
 
 // this should pass
 expectTypeOf(foundry.documents.BaseMacro.create({ name: "" }, { temporary: true })).toEqualTypeOf<
-  Promise<StoredDocument<Macro> | undefined>
+  Promise<Macro | undefined>
 >();
 
 // TODO: still need to fix these
