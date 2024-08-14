@@ -6,8 +6,10 @@ declare global {
     type ConfiguredClass = ConfiguredDocumentClassForName<"AmbientLight">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
+    /* eslint-disable @typescript-eslint/no-empty-object-type */
     export interface DatabaseOperations
       extends DocumentDatabaseOperations<AmbientLightDocument, {}, { animate: boolean }, {}> {}
+    /* eslint-enable @typescript-eslint/no-empty-object-type */
   }
 
   /**

@@ -12,6 +12,7 @@ declare global {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Combat">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
+    /* eslint-disable @typescript-eslint/no-empty-object-type */
     export interface DatabaseOperations
       extends DocumentDatabaseOperations<
         Combat,
@@ -19,6 +20,7 @@ declare global {
         { direction: -1 | 1; worldTime: { delta: number }; turnEvents: boolean },
         {}
       > {}
+    /* eslint-enable @typescript-eslint/no-empty-object-type */
 
     interface InitiativeOptions {
       /**

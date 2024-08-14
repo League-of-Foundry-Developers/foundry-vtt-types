@@ -6,7 +6,8 @@ declare global {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Combatant">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    export interface DatabaseOperations extends DocumentDatabaseOperations<Combantant> {}
+    /* eslint-disable-next-line @typescript-eslint/no-empty-object-type */
+    export interface DatabaseOperations extends DocumentDatabaseOperations<Combatant> {}
   }
 
   /**

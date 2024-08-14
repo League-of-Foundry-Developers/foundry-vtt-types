@@ -15,6 +15,7 @@ declare global {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Playlist">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
+    /* eslint-disable-next-line @typescript-eslint/no-empty-object-type */
     export interface DatabaseOperations extends DocumentDatabaseOperations<Playlist> {}
 
     interface PlayNextOptions {

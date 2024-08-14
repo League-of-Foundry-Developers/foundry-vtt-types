@@ -7,6 +7,7 @@ declare global {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Scene">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
+    /* eslint-disable @typescript-eslint/no-empty-object-type */
     export interface DatabaseOperations
       extends DocumentDatabaseOperations<
         Scene,
@@ -14,6 +15,7 @@ declare global {
         { thumb: (string | null)[]; autoReposition: boolean; animateDarkness: number },
         {}
       > {}
+    /* eslint-enable @typescript-eslint/no-empty-object-type */
   }
 
   /**
