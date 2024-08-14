@@ -19,7 +19,7 @@ declare global {
      * An identifier for a group this entry belongs to.
      * @defaultValue `_none`
      */
-    group?: string;
+    group?: string | undefined;
 
     /**
      * The function to call when the menu item is clicked. Receives the HTML element
@@ -31,7 +31,7 @@ declare global {
      * A function to call or boolean value to determine if this entry
      * appears in the menu.
      */
-    condition?: boolean | ((target: JQuery) => boolean);
+    condition?: boolean | ((target: JQuery) => boolean) | undefined;
   }
 
   /**
