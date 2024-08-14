@@ -116,24 +116,32 @@ expectTypeOf(dbo.delete).toEqualTypeOf<DatabaseDeleteOperation & { animate?: boo
 expectTypeOf(dbo.delete).toEqualTypeOf<DatabaseOperationsFor<"ActiveEffect", "delete">>();
 
 // test the options
-declare const dco: DatabaseOperationsFor<"ActiveEffect", "create">;
-declare const duo: DatabaseOperationsFor<"ActiveEffect", "update">;
-declare const ddo: DatabaseOperationsFor<"ActiveEffect", "delete">;
-
 declare const pco: DocumentPreCreateOptions<"ActiveEffect">;
-expectTypeOf(pco).toEqualTypeOf<Omit<typeof dco, "data" | "noHook" | "pack" | "parent">>();
+expectTypeOf(pco).toEqualTypeOf<
+  Omit<DatabaseOperationsFor<"ActiveEffect", "create">, "data" | "noHook" | "pack" | "parent">
+>();
 declare const oco: DocumentOnCreateOptions<"ActiveEffect">;
-expectTypeOf(oco).toEqualTypeOf<Omit<typeof dco, "pack" | "parentUuid" | "syntheticActorUpdate">>();
+expectTypeOf(oco).toEqualTypeOf<
+  Omit<DatabaseOperationsFor<"ActiveEffect", "create">, "pack" | "parentUuid" | "syntheticActorUpdate">
+>();
 
 declare const puo: DocumentPreUpdateOptions<"ActiveEffect">;
-expectTypeOf(puo).toEqualTypeOf<Omit<typeof duo, "updates" | "restoreDelta" | "noHook" | "parent" | "pack">>();
+expectTypeOf(puo).toEqualTypeOf<
+  Omit<DatabaseOperationsFor<"ActiveEffect", "update">, "updates" | "restoreDelta" | "noHook" | "parent" | "pack">
+>();
 declare const ouo: DocumentOnUpdateOptions<"ActiveEffect">;
-expectTypeOf(ouo).toEqualTypeOf<Omit<typeof duo, "pack" | "parentUuid" | "syntheticActorUpdate">>();
+expectTypeOf(ouo).toEqualTypeOf<
+  Omit<DatabaseOperationsFor<"ActiveEffect", "update">, "pack" | "parentUuid" | "syntheticActorUpdate">
+>();
 
 declare const pdo: DocumentPreDeleteOptions<"ActiveEffect">;
-expectTypeOf(pdo).toEqualTypeOf<Omit<typeof ddo, "ids" | "deleteAll" | "noHook" | "pack" | "parent">>();
+expectTypeOf(pdo).toEqualTypeOf<
+  Omit<DatabaseOperationsFor<"ActiveEffect", "delete">, "ids" | "deleteAll" | "noHook" | "pack" | "parent">
+>();
 declare const odo: DocumentOnDeleteOptions<"ActiveEffect">;
-expectTypeOf(odo).toEqualTypeOf<Omit<typeof ddo, "deleteAll" | "pack" | "parentUuid" | "syntheticActorUpdate">>();
+expectTypeOf(odo).toEqualTypeOf<
+  Omit<DatabaseOperationsFor<"ActiveEffect", "delete">, "deleteAll" | "pack" | "parentUuid" | "syntheticActorUpdate">
+>();
 
 // const combatant = new Combatant({}, {});
 // expectTypeOf(combatant.flags["my-system"]).toEqualTypeOf<{ value: boolean; value2: number }>();

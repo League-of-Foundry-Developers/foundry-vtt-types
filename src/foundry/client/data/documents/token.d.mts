@@ -8,6 +8,7 @@ declare global {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Token">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
+    /* eslint-disable @typescript-eslint/no-empty-object-type */
     export interface DatabaseOperations
       extends DocumentDatabaseOperations<
         TokenDocument,
@@ -22,6 +23,7 @@ declare global {
         },
         {}
       > {}
+    /* eslint-enable @typescript-eslint/no-empty-object-type */
   }
 
   /**

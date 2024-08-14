@@ -29,7 +29,7 @@ export declare function serializeHTMLString(
 ): string;
 
 /**
- * @param node    The candidate node.
+ * @param node    - The candidate node.
  * @returns A new node to replace the candidate node, or nothing if a replacement should not be made.
  */
 export declare type ProseMirrorSliceTransformer = (node: Node) => Node | void;
