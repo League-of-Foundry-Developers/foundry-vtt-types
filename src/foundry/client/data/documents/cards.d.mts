@@ -23,7 +23,7 @@ declare global {
        * Create a ChatMessage which notifies that this action has occurred
        * @defaultValue `true`
        */
-      chatNotification: boolean;
+      chatNotification: boolean | undefined;
     }
 
     interface DealOptions extends BaseOperationOptions {
@@ -75,6 +75,12 @@ declare global {
        * @defaultValue `"pass"`
        */
       action: string | undefined;
+
+      /**
+       * Create a ChatMessage which notifies that this action has occurred
+       * @defaultValue `true`
+       */
+      chatNotification: boolean | undefined;
     }
 
     interface DrawOptions extends PassOptions {
@@ -97,9 +103,13 @@ declare global {
        * Modifications to make to each Card as part of the shuffle operation,
        * for example the displayed face
        * @defaultValue `{}`
-       * @remarks This is not actually used by {@link Cards.shuffle}.
        */
       updateData: DeepPartial<Card["_source"]>;
+
+      /** Create a ChatMessage which notifies that this action has occurred
+       *  @defaultValue `true`
+       */
+      chatNotification: boolean | undefined;
     }
 
     /** Options which modify the reset operation */

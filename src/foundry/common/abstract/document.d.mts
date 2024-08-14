@@ -303,14 +303,14 @@ declare abstract class Document<
     operation?: InexactPartial<Omit<DatabaseOperationsFor<T["metadata"]["name"], "create">, "data">> & {
       temporary?: false | undefined;
     },
-  ): Promise<InstanceType<ConfiguredDocumentClass<T>>[] | undefined>;
+  ): Promise<ConfiguredStoredDocument<T>[] | undefined>;
   static createDocuments<T extends Document.AnyConstructor>(
     this: T,
     data: Array<fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]> & Record<string, unknown>>,
     operation?: InexactPartial<Omit<DatabaseOperationsFor<T["metadata"]["name"], "create">, "data">> & {
       temporary: true;
     },
-  ): Promise<ConfiguredStoredDocument<T>[] | undefined>;
+  ): Promise<InstanceType<ConfiguredDocumentClass<T>>[] | undefined>;
 
   /**
    * Update multiple Document instances using provided differential data.
@@ -431,14 +431,14 @@ declare abstract class Document<
     operation?: InexactPartial<Omit<DatabaseOperationsFor<T["metadata"]["name"], "create">, "data">> & {
       temporary?: false | undefined;
     },
-  ): Promise<InstanceType<ConfiguredDocumentClass<T>> | undefined>;
+  ): Promise<ConfiguredStoredDocument<T> | undefined>;
   static create<T extends Document.AnyConstructor>(
     this: T,
     data: ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>),
     operation?: InexactPartial<Omit<DatabaseOperationsFor<T["metadata"]["name"], "create">, "data">> & {
       temporary: true;
     },
-  ): Promise<ConfiguredStoredDocument<T> | undefined>;
+  ): Promise<InstanceType<ConfiguredDocumentClass<T>> | undefined>;
 
   /**
    * Update this Document using incremental data, saving it to the database.
@@ -548,14 +548,14 @@ declare abstract class Document<
     operation?: InexactPartial<DatabaseOperationsFor<EmbeddedName, "create">> & {
       temporary?: false | undefined;
     },
-  ): Promise<InstanceType<ConfiguredDocumentClassForName<EmbeddedName>>[] | undefined>;
+  ): Promise<ConfiguredStoredDocument<ConfiguredDocumentClassForName<EmbeddedName>>[] | undefined>;
   createEmbeddedDocuments<EmbeddedName extends Exclude<DocumentType, "Cards">>(
     embeddedName: EmbeddedName,
     data?: Array<ConstructorDataType<ConfiguredDocumentClassForName<EmbeddedName>>>,
     operation?: InexactPartial<DatabaseOperationsFor<EmbeddedName, "create">> & {
       temporary: true;
     },
-  ): Promise<ConfiguredStoredDocument<ConfiguredDocumentClassForName<EmbeddedName>>[] | undefined>;
+  ): Promise<InstanceType<ConfiguredDocumentClassForName<EmbeddedName>>[] | undefined>;
 
   /**
    * Update multiple embedded Document instances within a parent Document using provided differential data.

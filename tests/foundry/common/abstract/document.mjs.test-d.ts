@@ -40,20 +40,24 @@ if (item) {
   >();
 }
 
-expectTypeOf(foundry.documents.BaseMacro.create({ name: "" })).toEqualTypeOf<Promise<Macro | undefined>>();
+expectTypeOf(foundry.documents.BaseMacro.create({ name: "" })).toEqualTypeOf<
+  Promise<StoredDocument<Macro> | undefined>
+>();
 expectTypeOf(foundry.documents.BaseMacro.create({ name: "" }, { temporary: false })).toEqualTypeOf<
-  Promise<Macro | undefined>
+  Promise<StoredDocument<Macro> | undefined>
 >();
 expectTypeOf(foundry.documents.BaseMacro.create({ name: "" }, { temporary: true })).toEqualTypeOf<
-  Promise<StoredDocument<Macro> | undefined>
+  Promise<Macro | undefined>
 >();
 
 expectTypeOf(foundry.documents.BaseMacro.createDocuments([], { temporary: true })).toEqualTypeOf<
+  Promise<Macro[] | undefined>
+>();
+expectTypeOf(foundry.documents.BaseMacro.createDocuments([])).toEqualTypeOf<
   Promise<StoredDocument<Macro>[] | undefined>
 >();
-expectTypeOf(foundry.documents.BaseMacro.createDocuments([])).toEqualTypeOf<Promise<Macro[] | undefined>>();
 expectTypeOf(foundry.documents.BaseMacro.createDocuments([], { temporary: false })).toEqualTypeOf<
-  Promise<Macro[] | undefined>
+  Promise<StoredDocument<Macro>[] | undefined>
 >();
 
 expectTypeOf(foundry.documents.BaseMacro.updateDocuments([])).toEqualTypeOf<Promise<Macro[]>>();
@@ -69,21 +73,23 @@ if (user) {
 // test creation of embedded documents
 declare const actor: Actor;
 expectTypeOf(actor.createEmbeddedDocuments("ActiveEffect", [], { temporary: true })).toEqualTypeOf<
-  Promise<StoredDocument<ActiveEffect>[] | undefined>
->();
-expectTypeOf(actor.createEmbeddedDocuments("ActiveEffect", [], { temporary: false })).toEqualTypeOf<
   Promise<ActiveEffect[] | undefined>
 >();
-expectTypeOf(actor.createEmbeddedDocuments("ActiveEffect", [])).toEqualTypeOf<Promise<ActiveEffect[] | undefined>>();
+expectTypeOf(actor.createEmbeddedDocuments("ActiveEffect", [], { temporary: false })).toEqualTypeOf<
+  Promise<StoredDocument<ActiveEffect>[] | undefined>
+>();
+expectTypeOf(actor.createEmbeddedDocuments("ActiveEffect", [])).toEqualTypeOf<
+  Promise<StoredDocument<ActiveEffect>[] | undefined>
+>();
 
 // verify that document lifecycle methods work with source data is possible
 
 if (item) {
-  expectTypeOf(Item.createDocuments([item.toObject()])).toEqualTypeOf<Promise<Item[] | undefined>>();
-  expectTypeOf(Item.create(item.toObject())).toEqualTypeOf<Promise<Item | undefined>>();
+  expectTypeOf(Item.createDocuments([item.toObject()])).toEqualTypeOf<Promise<StoredDocument<Item>[] | undefined>>();
+  expectTypeOf(Item.create(item.toObject())).toEqualTypeOf<Promise<StoredDocument<Item> | undefined>>();
   expectTypeOf(Item.updateDocuments([item.toObject()])).toEqualTypeOf<Promise<Item[]>>();
-  expectTypeOf(item.update(item.toObject())).toEqualTypeOf<Promise<Item | undefined>>();
-  expectTypeOf(item.clone(item.toObject())).toEqualTypeOf<Item>();
+  expectTypeOf(item.update(item.toObject())).toEqualTypeOf<Promise<StoredDocument<Item> | undefined>>();
+  expectTypeOf(item.clone(item.toObject())).toEqualTypeOf<StoredDocument<Item>>();
 }
 
 declare global {

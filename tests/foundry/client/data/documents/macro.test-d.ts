@@ -48,6 +48,6 @@ expectTypeOf(myMacro.pack).toEqualTypeOf<string | null>();
 
 // static properties of `Document`
 expectTypeOf(Macro.create({ name: "Some Macro" })).toEqualTypeOf<Promise<StoredDocument<Macro> | undefined>>();
-expectTypeOf(Macro.createDocuments([])).toEqualTypeOf<Promise<StoredDocument<Macro>[]>>();
+expectTypeOf(Macro.createDocuments([])).toEqualTypeOf<Promise<StoredDocument<Macro>[] | undefined>>();
 expectTypeOf(Macro.updateDocuments([])).toEqualTypeOf<Promise<Macro[]>>();
 expectTypeOf(Macro.deleteDocuments([])).toEqualTypeOf<Promise<Macro[]>>();

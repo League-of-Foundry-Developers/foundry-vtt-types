@@ -1,5 +1,5 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
-import type { DeepPartial } from "../../../../types/utils.d.mts";
+import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
 import type { DocumentDatabaseOperations, DocumentOnCreateOptions } from "../../../common/abstract/document.d.mts";
 
 declare global {
@@ -108,7 +108,7 @@ declare global {
      */
     toMessage(
       messageData?: DeepPartial<foundry.documents.BaseChatMessage.ConstructorData>,
-      options?: DocumentOnCreateOptions<"ChatMessage">,
+      options?: InexactPartial<DocumentOnCreateOptions<"ChatMessage">>,
     ): Promise<ChatMessage.ConfiguredInstance | undefined>;
   }
 }
