@@ -69,6 +69,6 @@ declare global {
   }
 
   // TODO: This needs to be filled in.
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface, @typescript-eslint/no-empty-object-type
   interface AdaptiveFXAAFilterOptions {}
 }

@@ -71,15 +71,15 @@ if (user) {
 }
 
 // test creation of embedded documents
-declare const actor: Actor;
-expectTypeOf(actor.createEmbeddedDocuments("ActiveEffect", [], { temporary: true })).toEqualTypeOf<
-  Promise<ActiveEffect[] | undefined>
+declare const scene: Scene;
+expectTypeOf(scene.createEmbeddedDocuments("Note", [], { temporary: true })).toEqualTypeOf<
+  Promise<NoteDocument[] | undefined>
 >();
-expectTypeOf(actor.createEmbeddedDocuments("ActiveEffect", [], { temporary: false })).toEqualTypeOf<
-  Promise<StoredDocument<ActiveEffect>[] | undefined>
+expectTypeOf(scene.createEmbeddedDocuments("Note", [], { temporary: false })).toEqualTypeOf<
+  Promise<StoredDocument<NoteDocument>[] | undefined>
 >();
-expectTypeOf(actor.createEmbeddedDocuments("ActiveEffect", [])).toEqualTypeOf<
-  Promise<StoredDocument<ActiveEffect>[] | undefined>
+expectTypeOf(scene.createEmbeddedDocuments("Note", [])).toEqualTypeOf<
+  Promise<StoredDocument<NoteDocument>[] | undefined>
 >();
 
 // verify that document lifecycle methods work with source data is possible

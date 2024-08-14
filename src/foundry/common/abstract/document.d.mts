@@ -11,6 +11,7 @@ import type {
 import type {
   ConfiguredStoredDocument,
   DeepPartial,
+  EmptyObject,
   InexactPartial,
   RemoveIndexSignatures,
   StoredDocument,
@@ -228,7 +229,7 @@ declare abstract class Document<
    * @returns The cloned Document instance
    */
   override clone<Save extends boolean = false>(
-    data?: fields.SchemaField.AssignmentType<Schema, {}>,
+    data?: fields.SchemaField.AssignmentType<Schema, EmptyObject>,
     context?: InexactPartial<
       {
         /**
@@ -452,7 +453,7 @@ declare abstract class Document<
    * @remarks If no document has actually been updated, the returned {@link Promise} resolves to `undefined`.
    */
   override update(
-    data?: fields.SchemaField.AssignmentType<Schema, {}> & Record<string, unknown>,
+    data?: fields.SchemaField.AssignmentType<Schema, EmptyObject> & Record<string, unknown>,
     operation?: InexactPartial<Omit<DatabaseOperationsFor<ConcreteMetadata["name"], "update">, "updates">>,
   ): Promise<this | undefined>;
 
@@ -502,9 +503,10 @@ declare abstract class Document<
    * @returns The Collection instance of embedded Documents of the requested type
    * @remarks Usually returns some form of DocumentCollection, but not always (e.g. Token["actors"])
    */
-  getEmbeddedCollection<DocType extends Document.TypeName>(
-    embeddedName: DocType,
-  ): Collection<InstanceType<Document.ConfiguredClassForName<DocType>>>;
+  // TODO: After regions are defined, change first parameter to `extends foundry.CONST.EMBEDDED_DOCUMENT_TYPES`
+  getEmbeddedCollection<
+    EmbeddedName extends Exclude<foundry.CONST.EMBEDDED_DOCUMENT_TYPES, "Region" | "RegionBehavior">,
+  >(embeddedName: EmbeddedName): Collection<InstanceType<Document.ConfiguredClassForName<EmbeddedName>>>;
 
   /**
    * Get an embedded document by its id from a named collection in the parent document.
@@ -542,14 +544,21 @@ declare abstract class Document<
    * @returns An array of created Document instances
    */
   // TODO: After regions are defined, change first parameter to `extends foundry.CONST.EMBEDDED_DOCUMENT_TYPES`
-  createEmbeddedDocuments<EmbeddedName extends Exclude<DocumentType, "Cards">>(
+  // TODO: I think we could do a better job on all the embedded methods of limiting the types here based on the
+  //   allowed embedded types of the parent (vs. allowing any document to create embedded
+  //   documents of any type)
+  createEmbeddedDocuments<
+    EmbeddedName extends Exclude<foundry.CONST.EMBEDDED_DOCUMENT_TYPES, "Region" | "RegionBehavior">,
+  >(
     embeddedName: EmbeddedName,
     data?: Array<ConstructorDataType<ConfiguredDocumentClassForName<EmbeddedName>>>,
     operation?: InexactPartial<DatabaseOperationsFor<EmbeddedName, "create">> & {
       temporary?: false | undefined;
     },
   ): Promise<ConfiguredStoredDocument<ConfiguredDocumentClassForName<EmbeddedName>>[] | undefined>;
-  createEmbeddedDocuments<EmbeddedName extends Exclude<DocumentType, "Cards">>(
+  createEmbeddedDocuments<
+    EmbeddedName extends Exclude<foundry.CONST.EMBEDDED_DOCUMENT_TYPES, "Region" | "RegionBehavior">,
+  >(
     embeddedName: EmbeddedName,
     data?: Array<ConstructorDataType<ConfiguredDocumentClassForName<EmbeddedName>>>,
     operation?: InexactPartial<DatabaseOperationsFor<EmbeddedName, "create">> & {
@@ -568,7 +577,9 @@ declare abstract class Document<
    * @returns An array of updated Document instances
    */
   // TODO: After regions are defined, change first parameter to `extends foundry.CONST.EMBEDDED_DOCUMENT_TYPES`
-  updateEmbeddedDocuments<EmbeddedName extends Exclude<DocumentType, "Cards">>(
+  updateEmbeddedDocuments<
+    EmbeddedName extends Exclude<foundry.CONST.EMBEDDED_DOCUMENT_TYPES, "Region" | "RegionBehavior">,
+  >(
     embeddedName: EmbeddedName,
     updates?: Array<Record<string, unknown>>,
     operation?: DatabaseOperationsFor<ConcreteMetadata["name"], "update">,
@@ -583,7 +594,10 @@ declare abstract class Document<
    *                       (default: `{}`)
    * @returns An array of deleted Document instances
    */
-  deleteEmbeddedDocuments<EmbeddedName extends DocumentType>(
+  // TODO: After regions are defined, change first parameter to `extends foundry.CONST.EMBEDDED_DOCUMENT_TYPES`
+  deleteEmbeddedDocuments<
+    EmbeddedName extends Exclude<foundry.CONST.EMBEDDED_DOCUMENT_TYPES, "Region" | "RegionBehavior">,
+  >(
     embeddedName: EmbeddedName,
     ids: Array<string>,
     operation?: DatabaseOperationsFor<ConcreteMetadata["name"], "delete">,
@@ -1020,7 +1034,7 @@ export interface Metadata<ConcreteDocument extends Document.Any> {
           doc: ConcreteDocument,
           data: fields.SchemaField.InnerAssignmentType<ConcreteDocument["schema"]["fields"]>,
         ) => boolean);
-    delete: string | ((user: foundry.documents.BaseUser, doc: ConcreteDocument, data: {}) => boolean);
+    delete: string | ((user: foundry.documents.BaseUser, doc: ConcreteDocument, data: EmptyObject) => boolean);
   };
   preserveOnImport?: string[];
   schemaVersion: string | undefined;
@@ -1035,7 +1049,7 @@ export interface DocumentMetadata {
   collection: "documents";
   label: "DOCUMENT.Document";
   types: [];
-  embedded: {};
+  embedded: EmptyObject;
   hasSystemData: false;
   permissions: {
     create: "ASSISTANT";
@@ -1047,6 +1061,7 @@ export interface DocumentMetadata {
 
 export type Operation = "create" | "update" | "delete";
 
+/* eslint-disable @typescript-eslint/no-empty-object-type */
 export interface DocumentDatabaseOperations<
   T extends foundry.abstract.Document.Any = foundry.abstract.Document.Any,
   ExtraCreateOptions extends Record<string, unknown> = {},
@@ -1057,6 +1072,7 @@ export interface DocumentDatabaseOperations<
   update: DatabaseUpdateOperation<T> & InexactPartial<ExtraUpdateOptions>;
   delete: DatabaseDeleteOperation & InexactPartial<ExtraDeleteOptions>;
 }
+/* eslint-enable @typescript-eslint/no-empty-object-type */
 
 export interface DatabaseOperationMap {
   ActiveEffect: ActiveEffect.DatabaseOperations;
