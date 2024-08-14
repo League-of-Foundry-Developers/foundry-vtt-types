@@ -208,6 +208,7 @@ export type GetDataReturnType<T extends object> = GetDataConfigOptions<T>[GetDat
 export type HandleEmptyObject<
   T extends Record<string, unknown>,
   D extends Record<string, unknown> = Record<string, never>,
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 > = [{}] extends [T] ? D : T;
 
 /**
@@ -373,7 +374,7 @@ export type MaybePromise<T> = T | Promise<T>;
  * semantics of `{}` in TypeScript.
  */
 // This type is not meant to be extended and it's meant to be the explicit version of what the type `{}` does, i.e. allow any type besides `null` or `undefined`.
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions, @typescript-eslint/no-empty-object-type
 export type NonNullish = {};
 
 /**

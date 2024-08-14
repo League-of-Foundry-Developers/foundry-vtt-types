@@ -6,6 +6,7 @@ declare global {
   /**
    * An object structure of document types at the top level, with a count of different sub-types for that document type.
    */
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface ModuleSubTypeCounts extends Record<DocumentType, Record<string, number>> {}
 
   /**

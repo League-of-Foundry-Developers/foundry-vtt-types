@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import type { EmptyObject } from "../../../../src/types/utils.d.mts";
 
 const clientSettings = new ClientSettings([]);
 
@@ -64,13 +65,12 @@ clientSettings.register("some", "numberSetting", {
 clientSettings.register("some", "stringSetting", {
   scope: "world",
   type: String,
-  filePicker: "audio",
 });
 
 // core settings
 
 expectTypeOf(clientSettings.get("core", "combatTrackerConfig")).toEqualTypeOf<
-  { resource: string; skipDefeated: boolean } | {}
+  { resource: string; skipDefeated: boolean } | EmptyObject
 >();
 expectTypeOf(clientSettings.get("core", "compendiumConfiguration")).toEqualTypeOf<
   Partial<Record<string, CompendiumCollection.Configuration>>

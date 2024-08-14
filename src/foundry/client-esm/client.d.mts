@@ -10,7 +10,7 @@ import * as _documents from "../common/documents/_module.mjs";
 import * as _packages from "../common/packages/module.mjs";
 import * as _utils from "../common/utils/module.mjs";
 import * as _config from "../common/config.mjs";
-// import * as _prosemirror from "../common/prosemirror/_module.mjs";
+import * as _prosemirror from "../common/prosemirror/_module.mjs";
 // import * as _grid from "../common/grid/_module.mjs";
 // import * as _types from "../common/types.mjs";
 
@@ -21,6 +21,7 @@ import * as _canvas from "./canvas/_module.mjs";
 import * as _helpers from "./helpers/_module.mjs";
 import * as _data from "./data/_module.mjs";
 import * as _dice from "./dice/_module.mjs";
+import type { AnyObject } from "../../types/utils.d.mts";
 
 /**
  * Constant definitions used throughout the Foundry Virtual Tabletop framework.
@@ -132,7 +133,7 @@ declare global {
     /**
      * A library for providing rich text editing using ProseMirror within the Foundry Virtual Tabletop game client.
      */
-    // export import prosemirror = _prosemirror;
+    export import prosemirror = _prosemirror;
 
     /**
      * Grid classes.
@@ -183,6 +184,9 @@ declare global {
 
   type Collection<T> = _utils.Collection<T>;
   var Collection: typeof _utils.Collection; // eslint-disable-line no-var
+
+  type Roll<D extends Record<string, unknown> = AnyObject> = _dice.Roll<D>;
+  var Roll: typeof _dice.Roll; // eslint-disable-line no-var
 
   // Deprecated global namespace dump; done programmatically by fvtt
   type Semaphore = _utils.Semaphore;

@@ -11,7 +11,7 @@ import "./keymaps.d.mts";
 import "./menu.d.mts";
 import "./paste-transformer.d.mts";
 import "./plugin.d.mts";
-import type * as ProseMirrorObject from "./prosemirror.d.mts";
+import type * as ProseMirrorObject from "./_module.d.mts";
 import "./schema/index.d.mts";
 import "./schema.d.mts";
 import "./string-serializer.d.mts";

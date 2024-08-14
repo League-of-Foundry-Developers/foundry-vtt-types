@@ -26,6 +26,7 @@ declare global {
    * The data structure of a package manifest. This data structure is extended by BasePackage subclasses to add additional
    * type-specific fields.
    */
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface PackageManifestData
     extends foundry.data.fields.SchemaField.InnerAssignmentType<foundry.packages.BasePackage.Schema> {}
 }

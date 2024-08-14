@@ -1,5 +1,4 @@
-import type { ConfiguredDocumentClass } from "../../../types/helperTypes.d.mts";
-import type { ConstructorOf, DeepPartial, EmptyObject, InexactPartial } from "../../../types/utils.d.mts";
+import type { AnyObject, ConstructorOf, EmptyObject, InexactPartial } from "../../../types/utils.d.mts";
 
 import type { RollParseNode } from "./_types.d.mts";
 import type DiceTerm from "./terms/dice.d.mts";
@@ -30,7 +29,7 @@ import type RollResolver from "../applications/dice/roll-resolver.d.mts";
  * console.log(r.total);    // 22
  * ```
  */
-declare class Roll<D extends Record<string, unknown> = {}> {
+declare class Roll<D extends AnyObject = AnyObject> {
   /**
    * @param formula - The string formula to parse
    * @param data    - The data object against which to parse attributes within the formula
@@ -191,7 +190,7 @@ declare class Roll<D extends Record<string, unknown> = {}> {
     allowStrings,
     allowInteractive,
     ...options
-  }?: InexactPartial<Roll.Options>): Roll.Evaluated<this> | Promise<Roll.Evaluated<this>>;
+  }?: InexactPartial<Roll.Options>): Promise<Roll.Evaluated<this>>;
 
   /* -------------------------------------------- */
 
@@ -259,7 +258,7 @@ declare class Roll<D extends Record<string, unknown> = {}> {
    * @see Roll#evaluate
    * @param options - Options passed to Roll#evaluate.
    */
-  roll(options?: InexactPartial<Roll.Options>): Roll.Evaluated<this> | Promise<Roll.Evaluated<this>>;
+  roll(options?: InexactPartial<Roll.Options>): Promise<Roll.Evaluated<this>>;
 
   /* -------------------------------------------- */
 
@@ -269,7 +268,7 @@ declare class Roll<D extends Record<string, unknown> = {}> {
    * @param options - Evaluation options passed to Roll#evaluate
    * @returns A new Roll object, rolled using the same formula and data
    */
-  reroll(options?: InexactPartial<Roll.Options>): Roll.Evaluated<this> | Promise<Roll.Evaluated<this>>;
+  reroll(options?: InexactPartial<Roll.Options>): Promise<Roll.Evaluated<this>>;
 
   /* -------------------------------------------- */
 
@@ -304,7 +303,7 @@ declare class Roll<D extends Record<string, unknown> = {}> {
    * @param options - Additional options which modify or describe this Roll
    * @returns The constructed Roll instance
    */
-  static create<D extends Record<string, unknown> = {}>(
+  static create<D extends AnyObject = AnyObject>(
     formula: string,
     data?: D,
     options?: InexactPartial<Roll.Options>,
@@ -491,20 +490,24 @@ declare class Roll<D extends Record<string, unknown> = {}> {
    * @returns A promise which resolves to the created ChatMessage entity, if create is true
    *          or the Object of prepared chatData otherwise.
    */
-  toMessage<T extends DeepPartial<ConstructorParameters<ConfiguredDocumentClass<typeof ChatMessage>>[0]> = EmptyObject>(
+  toMessage<T extends foundry.documents.BaseChatMessage.ConstructorData = EmptyObject, Create extends boolean = true>(
     messageData?: T,
-    { rollMode, create }?: InexactPartial<{ rollMode: keyof CONFIG.Dice.RollModes | "roll"; create: true }>,
-  ): Promise<ChatMessage.ConfiguredInstance | undefined>;
-
-  toMessage<T extends DeepPartial<ConstructorParameters<ConfiguredDocumentClass<typeof ChatMessage>>[0]> = EmptyObject>(
-    messageData: T,
-    { rollMode, create }: { rollMode?: keyof CONFIG.Dice.RollModes | "roll" | undefined; create: false },
-  ): Roll.MessageData<T>;
-
-  toMessage<T extends DeepPartial<ConstructorParameters<ConfiguredDocumentClass<typeof ChatMessage>>[0]> = EmptyObject>(
-    messageData: T,
-    { rollMode, create }: { rollMode?: keyof CONFIG.Dice.RollModes | "roll" | undefined; create: boolean },
-  ): Promise<ChatMessage.ConfiguredInstance | undefined> | Roll.MessageData<T>;
+    options?: InexactPartial<{
+      /**
+       * The template roll mode to use for the message from CONFIG.Dice.rollModes
+       * @remarks "roll" equivalent to explicit undefined
+       */
+      rollMode: keyof CONFIG.Dice.RollModes | "roll";
+      /**
+       * Whether to automatically create the chat message, or only return the prepared chatData object.
+       * @defaultValue `true`
+       */
+      create: Create;
+    }>,
+  ): Promise<
+    | (true extends Create ? ChatMessage.ConfiguredInstance | undefined : never)
+    | (false extends Create ? Roll.MessageData<T> : never)
+  >;
 
   /* -------------------------------------------- */
   /*  Interface Helpers                           */
@@ -629,9 +632,9 @@ declare namespace Roll {
     total: number | null;
   }
 
-  type MessageData<T extends DeepPartial<ConstructorParameters<typeof ChatMessage>[0]>> = T & {
+  type MessageData<T extends foundry.documents.BaseChatMessage.ConstructorData> = T & {
     user: string;
-    type: (typeof foundry.CONST.CHAT_MESSAGE_TYPES)["ROLL"]; // TODO: Update this when chat messages are implemented for v12
+    rolls: Roll[];
     content: number;
     sound: typeof CONFIG.sounds.dice;
   };

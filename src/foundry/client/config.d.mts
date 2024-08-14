@@ -336,7 +336,7 @@ declare global {
        * The Dice types which are supported.
        * @defaultValue `[Die, FateDie]`
        */
-      types: Array<ConstructorOf<foundry.dice.terms.DiceTerm>>;
+      types: Array<typeof foundry.dice.terms.DiceTerm>;
 
       rollModes: CONFIG.Dice.RollModes;
 
@@ -344,7 +344,7 @@ declare global {
        * Configured Roll class definitions
        * @defaultValue `[Roll]`
        */
-      rolls: Array<ConstructorOf<foundry.dice.Roll>>;
+      rolls: Array<typeof foundry.dice.Roll>;
 
       /**
        * Configured DiceTerm class definitions
@@ -361,14 +361,14 @@ declare global {
        * }
        * ```
        */
-      termTypes: Record<string, ConstructorOf<foundry.dice.terms.RollTerm>>;
+      termTypes: Record<string, typeof foundry.dice.terms.RollTerm>;
 
       /** Configured roll terms and the classes they map to. */
       terms: {
         c: typeof foundry.dice.terms.Coin;
         d: typeof foundry.dice.terms.Die;
         f: typeof foundry.dice.terms.FateDie;
-      } & Record<string, ConstructorOf<foundry.dice.terms.DiceTerm>>;
+      } & Record<string, typeof foundry.dice.terms.DiceTerm>;
 
       /**
        * A function used to provide random uniform values.
@@ -381,7 +381,7 @@ declare global {
 
       /** A collection of custom functions that can be included in roll expressions.*/
       functions: Record<string, RollFunction>;
-    } & Record<string, ConstructorOf<foundry.dice.Roll>>; // Common pattern
+    } & Record<string, typeof foundry.dice.Roll>; // Common pattern
 
     /**
      * Configuration for the FogExploration document
@@ -2741,7 +2741,7 @@ declare global {
     }
 
     // The point of this interface is to be declaration merged into so you can override `DefaultSpecialStatusEffects` and remove existing keys. It's never used when empty.
-    // eslint-disable-next-line @typescript-eslint/no-empty-interface
+    // eslint-disable-next-line @typescript-eslint/no-empty-interface, @typescript-eslint/no-empty-object-type
     interface SpecialStatusEffects {}
 
     interface DefaultSpecialStatusEffects {
@@ -2796,7 +2796,7 @@ declare global {
       unlock: string;
     }
     namespace Dice {
-      // eslint-disable-next-line @typescript-eslint/no-empty-interface
+      // eslint-disable-next-line @typescript-eslint/no-empty-object-type
       interface RollModes extends Record<foundry.CONST.DICE_ROLL_MODES, string> {}
     }
   }

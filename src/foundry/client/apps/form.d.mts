@@ -1,7 +1,7 @@
 import type { EditorView } from "prosemirror-view";
 import type { Editor } from "tinymce";
 import type { GetDataReturnType, MaybePromise } from "../../../types/utils.d.mts";
-import type { ProseMirrorKeyMaps, ProseMirrorMenu } from "../../prosemirror/prosemirror.d.mts";
+import type { ProseMirrorKeyMaps, ProseMirrorMenu } from "../../common/prosemirror/_module.d.mts";
 
 declare global {
   interface FormApplicationOptions extends ApplicationOptions {
@@ -320,9 +320,8 @@ declare global {
     }
   }
 
-  interface DocumentSheetOptions<
-    ConcreteDocument extends foundry.abstract.Document<any, any, any> = foundry.abstract.Document<any, any, any>,
-  > extends FormApplicationOptions {
+  interface DocumentSheetOptions<ConcreteDocument extends foundry.abstract.Document.Any = foundry.abstract.Document.Any>
+    extends FormApplicationOptions {
     /**
      * The default permissions required to view this Document sheet.
      * @defaultValue {@link CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED}
@@ -342,7 +341,7 @@ declare global {
    */
   abstract class DocumentSheet<
     Options extends DocumentSheetOptions<ConcreteDocument>,
-    ConcreteDocument extends foundry.abstract.Document<any, any, any> = foundry.abstract.Document<any, any, any>,
+    ConcreteDocument extends foundry.abstract.Document.Any = foundry.abstract.Document.Any,
   > extends FormApplication<Options, ConcreteDocument> {
     /**
      * @param object  - A Document instance which should be managed by this form.
@@ -449,7 +448,7 @@ declare global {
   namespace DocumentSheet {
     interface DocumentSheetData<
       Options extends DocumentSheetOptions<ConcreteDocument>,
-      ConcreteDocument extends foundry.abstract.Document<any, any, any> = foundry.abstract.Document<any, any, any>,
+      ConcreteDocument extends foundry.abstract.Document.Any = foundry.abstract.Document.Any,
     > extends FormApplication.FormApplicationData {
       cssClass: string;
       editable: boolean;

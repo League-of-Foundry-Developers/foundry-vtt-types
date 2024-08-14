@@ -27,7 +27,7 @@ declare namespace ApplicationV2 {
   interface Internal<
     Configuration extends ApplicationV2.Configuration,
     RenderOptions extends ApplicationV2.RenderOptions,
-    RenderContext extends Record<string, unknown>,
+    RenderContext extends AnyObject,
   > {
     readonly [__Configuration]: Configuration;
     readonly [__RenderOptions]: RenderOptions;
@@ -457,12 +457,7 @@ declare class ApplicationV2<
    * @param content - The content element into which the rendered result must be inserted
    * @param options - Options which configure application rendering behavior
    */
-  protected _replaceHTML(
-    // TODO: Ignore warning?
-    result: Awaited<ReturnType<this["_renderHTML"]>>,
-    content: HTMLElement,
-    options: DeepPartial<RenderOptions>,
-  ): void;
+  protected _replaceHTML(result: unknown, content: HTMLElement, options: DeepPartial<RenderOptions>): void;
 
   /**
    * Render the outer framing HTMLElement which wraps the inner HTML of the Application.

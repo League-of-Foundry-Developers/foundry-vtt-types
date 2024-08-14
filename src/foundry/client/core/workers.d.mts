@@ -47,6 +47,7 @@ declare global {
      * @param functionRef  - A reference to the function that should be loaded
      * @returns A Promise which resolves once the Worker has loaded the function.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
     loadFunction(functionName: string, functionRef: Function): Promise<unknown>;
 
     /**

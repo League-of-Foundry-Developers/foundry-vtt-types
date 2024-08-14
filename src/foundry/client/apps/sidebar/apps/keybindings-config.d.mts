@@ -149,6 +149,7 @@ declare global {
       count: number;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     interface CategoryData extends PackageConfiguration.CategoryData<Category> {}
 
     interface ActionData extends KeybindingActionConfig {

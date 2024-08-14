@@ -18,8 +18,8 @@ import type {
 } from "../common/abstract/document.d.mts";
 
 // eslint-disable-next-line import/no-named-as-default
-import type ProseMirrorMenu from "../prosemirror/menu.d.mts";
-import type { ProseMirrorDropDown } from "../prosemirror/menu.d.mts";
+import type ProseMirrorMenu from "../common/prosemirror/menu.d.mts";
+import type { ProseMirrorDropDown } from "../common/prosemirror/menu.d.mts";
 import type { OccludableObject } from "./pixi/placeables/primary-canvas-objects/occludable-object.d.mts";
 
 export {};
@@ -301,8 +301,8 @@ declare global {
        */
       updateCompendium: (
         pack: CompendiumCollection<any>,
-        documents: foundry.abstract.Document<any, any, any>[],
-        options: DocumentOnUpdateOptions<InstanceType<any>["documentName"]>,
+        documents: foundry.abstract.Document.Any[],
+        options: DocumentOnUpdateOptions<foundry.abstract.Document.Any["documentName"]>,
         userId: string,
       ) => void;
 

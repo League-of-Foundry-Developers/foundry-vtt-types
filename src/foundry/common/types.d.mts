@@ -9,7 +9,7 @@ declare global {
      * The parent Document of this one, if this one is embedded
      * @defaultValue `null`
      */
-    parent?: foundry.abstract.Document<any, any, any> | null | undefined;
+    parent?: foundry.abstract.Document.Any | null | undefined;
 
     /**
      * The compendium collection ID which contains this Document, if any
@@ -33,7 +33,7 @@ declare global {
     /**
      * A parent Document within which these Documents should be embedded
      */
-    parent?: foundry.abstract.Document<any, any, any> | undefined;
+    parent?: foundry.abstract.Document.Any | undefined;
 
     /**
      * A Compendium pack identifier within which the Documents should be modified
@@ -129,6 +129,7 @@ declare global {
   /* eslint-disable prettier/prettier */   // prettier is breaking this code
   type DeepReadonly<T> = Readonly<{
     [K in keyof T]:
+      /* eslint-disable-next-line @typescript-eslint/no-unsafe-function-type */
        T[K] extends (undefined | null | boolean | number | string | symbol | bigint | Function) ? T[K] :
        T[K] extends Array<infer V> ? ReadonlyArray<DeepReadonly<V>> :
        T[K] extends Map<infer K, infer V> ? ReadonlyMap<DeepReadonly<K>, DeepReadonly<V>> :

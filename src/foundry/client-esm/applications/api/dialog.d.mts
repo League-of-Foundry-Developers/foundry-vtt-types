@@ -1,4 +1,4 @@
-import type { DeepPartial, EmptyObject } from "../../../../types/utils.d.mts";
+import type { AnyFunction, DeepPartial, EmptyObject } from "../../../../types/utils.d.mts";
 import type ApplicationV2 from "./application.d.mts";
 
 /**
@@ -65,13 +65,10 @@ declare class DialogV2 extends ApplicationV2<EmptyObject, DialogV2.Configuration
   static override DEFAULT_OPTIONS: DeepPartial<ApplicationV2.Configuration>;
 
   protected override _initializeApplicationOptions(
-    options: Partial<DialogV2.Configuration>,
-  ): Partial<DialogV2.Configuration>;
+    options: DeepPartial<DialogV2.Configuration>,
+  ): DeepPartial<DialogV2.Configuration>;
 
-  protected override _renderHTML(
-    _context: ApplicationV2.RenderContext,
-    _options: DialogV2.Configuration,
-  ): Promise<HTMLFormElement>;
+  protected override _renderHTML(_context: unknown, _options: ApplicationV2.RenderOptions): Promise<HTMLFormElement>;
 
   /**
    * Render configured buttons.
@@ -85,15 +82,12 @@ declare class DialogV2 extends ApplicationV2<EmptyObject, DialogV2.Configuration
    */
   protected _onSubmit(target: HTMLButtonElement, event: PointerEvent | SubmitEvent): Promise<DialogV2>;
 
-  protected override _onFirstRender(
-    _context: ApplicationV2.RenderContext,
-    _options: Partial<DialogV2.Configuration>,
-  ): void;
+  protected override _onFirstRender(_context: EmptyObject, _options: DeepPartial<ApplicationV2.RenderOptions>): void;
 
   protected override _replaceHTML(
     result: HTMLFormElement,
     content: HTMLElement,
-    _options: Partial<DialogV2.Configuration>,
+    _options: DeepPartial<ApplicationV2.RenderOptions>,
   ): void;
 
   /**
@@ -265,7 +259,7 @@ type InferDismissType<Options extends Partial<DialogV2.WaitOptions>> = Options["
 type InferButtonReturnTypes<Options extends Partial<DialogV2.WaitOptions>> =
   Options["buttons"] extends Array<infer Button>
     ? Button extends DialogV2.Button<infer Callback>
-      ? Button["callback"] extends Function
+      ? Button["callback"] extends AnyFunction
         ? Callback
         : string
       : never

@@ -1,4 +1,4 @@
-import type { InexactPartial } from "../../../../types/utils.d.mts";
+import type { AnyFunction, InexactPartial } from "../../../../types/utils.d.mts";
 import type BaseEffectSource from "./base-effect-source.d.mts";
 
 // TODO: Remove after shaders are done
@@ -255,7 +255,7 @@ declare namespace RenderedEffectSource {
      * The animation function that runs every frame
      * @privateRemarks TODO: Figure out if there's a better way to define the function
      */
-    animation?: Function | undefined;
+    animation?: AnyFunction | undefined;
     /**
      * A custom illumination shader used by this animation
      */

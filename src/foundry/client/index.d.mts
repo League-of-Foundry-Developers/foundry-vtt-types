@@ -4,7 +4,6 @@ import "./av/index.d.mts";
 import "./config.d.mts";
 import "./core/index.d.mts";
 import "./data/index.d.mts";
-import "./dice/index.d.mts";
 import "./game.d.mts";
 import "./head.d.mts";
 import "./hooks.d.mts";

@@ -1,6 +1,6 @@
 import type { DatabaseOperationMap, Operation } from "../foundry/common/abstract/document.d.mts";
 import type { ConfiguredDocuments } from "./configuredDocuments.d.mts";
-import type { DeepPartial } from "./utils.d.mts";
+import type { DeepPartial, EmptyObject } from "./utils.d.mts";
 
 /**
  * Returns the type of the constructor data for the given {@link foundry.abstract.Document}.
@@ -53,9 +53,9 @@ export type ConfiguredObjectClassForName<Name extends PlaceableDocumentType> = C
 
 export type ConfiguredLayerClassForName<Name extends PlaceableDocumentType> = CONFIG[Name]["layerClass"];
 
-export type ConfiguredData<Name extends string> = Name extends keyof DataConfig ? DataConfig[Name] : {};
+export type ConfiguredData<Name extends string> = Name extends keyof DataConfig ? DataConfig[Name] : EmptyObject;
 
-export type ConfiguredSource<Name extends string> = Name extends keyof SourceConfig ? SourceConfig[Name] : {};
+export type ConfiguredSource<Name extends string> = Name extends keyof SourceConfig ? SourceConfig[Name] : EmptyObject;
 
 export type ConfiguredFlags<T extends string> = T extends keyof FlagConfig
   ? FlagConfig[T] & Record<string, unknown>
@@ -63,7 +63,7 @@ export type ConfiguredFlags<T extends string> = T extends keyof FlagConfig
 
 export type ModuleRequiredOrOptional<Name extends string> = Name extends keyof RequiredModules ? never : undefined;
 
-export type ConfiguredModuleData<Name extends string> = Name extends keyof ModuleConfig ? ModuleConfig[Name] : {};
+export type ConfiguredModuleData<Name extends string> = GetKey<ModuleConfig, Name, EmptyObject>;
 
 export type ConfiguredModule<Name extends string> =
   ModuleRequiredOrOptional<Name> extends never
@@ -194,6 +194,7 @@ export type InterfaceToObject<T extends object> = {
 export type HandleEmptyObject<
   T extends Record<string, unknown>,
   D extends Record<string, unknown> = Record<string, never>,
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 > = [{}] extends [T] ? D : T;
 
 /**

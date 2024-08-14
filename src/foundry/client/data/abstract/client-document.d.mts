@@ -7,7 +7,6 @@ import type { ConstructorOf, DeepPartial, InexactPartial, Mixin, ValueOf } from 
 import type { DatabaseCreateOperation } from "../../../common/abstract/_types.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type {
-  AnyMetadata,
   DocumentModificationOptions,
   DocumentOnCreateOptions,
   DocumentOnDeleteOptions,
@@ -17,13 +16,7 @@ import type {
   DocumentPreUpdateOptions,
 } from "../../../common/abstract/document.d.mts";
 
-declare class ClientDocument<
-  BaseDocument extends foundry.abstract.Document<any, AnyMetadata, any> = foundry.abstract.Document<
-    any,
-    AnyMetadata,
-    any
-  >,
-> {
+declare class ClientDocument<BaseDocument extends foundry.abstract.Document.Any = foundry.abstract.Document.Any> {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
   constructor(...args: any[]);
 
@@ -546,7 +539,7 @@ declare class ClientDocument<
    */
   protected _onCreateEmbeddedDocuments(
     embeddedName: string,
-    documents: foundry.abstract.Document<any, any, any>[],
+    documents: foundry.abstract.Document.Any[],
     result: Record<string, unknown>[],
     options: DocumentModificationOptions,
     userId: string,
@@ -578,7 +571,7 @@ declare class ClientDocument<
    */
   protected _onUpdateEmbeddedDocuments(
     embeddedName: string,
-    documents: foundry.abstract.Document<any, any, any>[],
+    documents: foundry.abstract.Document.Any[],
     result: Record<string, unknown>[],
     options: DocumentModificationOptions,
     userId: string,
@@ -610,7 +603,7 @@ declare class ClientDocument<
    */
   protected _onDeleteEmbeddedDocuments(
     embeddedName: string,
-    documents: foundry.abstract.Document<any, any, any>[],
+    documents: foundry.abstract.Document.Any[],
     result: string[],
     options: DocumentModificationContext,
     userId: string,
@@ -698,12 +691,12 @@ declare global {
   }
 }
 
-export type DropData<T extends foundry.abstract.Document<any, any, any>> = T extends { id: string | undefined }
+export type DropData<T extends foundry.abstract.Document.Any> = T extends { id: string | undefined }
   ? DropData.Data<T> & DropData.UUID
   : DropData.Data<T>;
 
 declare namespace DropData {
-  interface Data<T extends foundry.abstract.Document<any, any, any>> {
+  interface Data<T extends foundry.abstract.Document.Any> {
     type: T["documentName"];
     data: T["_source"];
   }

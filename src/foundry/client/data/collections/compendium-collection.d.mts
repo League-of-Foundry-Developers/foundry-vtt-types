@@ -1,7 +1,7 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
-import type { DeepPartial, InexactPartial, StoredDocument } from "../../../../types/utils.d.mts";
 import type { DatabaseAction, DatabaseOperation } from "../../../common/abstract/_types.d.mts";
 import type { DocumentOnCreateOptions, DocumentOnUpdateOptions } from "../../../common/abstract/document.d.mts";
+import type { DeepPartial, EmptyObject, InexactPartial, StoredDocument } from "../../../../types/utils.d.mts";
 import type { DirectoryCollectionMixin_DocumentCollection_Interface } from "../abstract/directory-collection-mixin.d.mts";
 
 declare const DirectoryCollectionMixin_DocumentCollection: DirectoryCollectionMixin_DocumentCollection_Interface;
@@ -118,7 +118,7 @@ declare global {
     static _sortStandard(a: number, b: number): number;
 
     /** Access the compendium configuration data for this pack */
-    get config(): CompendiumCollection.Configuration | {};
+    get config(): CompendiumCollection.Configuration | EmptyObject;
 
     get documentName(): this["metadata"]["type"];
 

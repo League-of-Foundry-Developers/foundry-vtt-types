@@ -1,25 +1,28 @@
-import * as collab from "prosemirror-collab";
-import { keymap } from "prosemirror-keymap";
-import { DOMParser, DOMSerializer, Schema } from "prosemirror-model";
-import type { Plugin, PluginKey } from "prosemirror-state";
-import { AllSelection, TextSelection, EditorState } from "prosemirror-state";
-import { Step } from "prosemirror-transform";
+import { EditorState, AllSelection, TextSelection, Plugin, PluginKey } from "prosemirror-state";
 import { EditorView } from "prosemirror-view";
-import type ProseMirrorContentLinkPlugin from "./content-link-plugin.d.mts";
-import type ProseMirrorDirtyPlugin from "./dirty-plugin.d.mts";
-import "./extensions.d.mts";
-import type ProseMirrorImagePlugin from "./image-plugin.d.mts";
+import { Schema, DOMSerializer } from "prosemirror-model";
 // eslint-disable-next-line import/no-named-as-default
 import type ProseMirrorInputRules from "./input-rules.d.mts";
+import { keymap } from "prosemirror-keymap";
 // eslint-disable-next-line import/no-named-as-default
 import type ProseMirrorKeyMaps from "./keymaps.d.mts";
 // eslint-disable-next-line import/no-named-as-default
 import type ProseMirrorMenu from "./menu.d.mts";
-import type { schema as defaultSchema } from "./schema.d.mts";
+import "./extensions.d.mts";
+import * as collab from "prosemirror-collab";
+import type { Step } from "prosemirror-transform";
 import type { parseHTMLString, serializeHTMLString } from "./util.d.mts";
+
+// A const is being imported here. It can't be `import type`.
+// eslint-disable-next-line import/extensions
+import { schema as defaultSchema } from "./schema.mjs";
 import type ProseMirrorPlugin from "./plugin.d.mts";
+import type ProseMirrorImagePlugin from "./image-plugin.d.mts";
+import type ProseMirrorDirtyPlugin from "./dirty-plugin.d.mts";
+import type ProseMirrorContentLinkPlugin from "./content-link-plugin.d.mts";
 import type ProseMirrorHighlightMatchesPlugin from "./highlight-matches-plugin.d.mts";
 import type ProseMirrorClickHandler from "./click-handler.d.mts";
+import type DOMParser from "./dom-parser.d.mts";
 
 declare const dom: {
   parser: DOMParser;
@@ -31,7 +34,6 @@ declare const dom: {
 declare const defaultPlugins: Record<
   | "inputRules"
   | "keyMaps"
-  | "images"
   | "menu"
   | "isDirty"
   | "clickHandler"
