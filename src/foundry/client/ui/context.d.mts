@@ -1,3 +1,6 @@
+import type { InexactPartial } from "../../../types/utils.d.mts";
+import type ApplicationV2 from "../../client-esm/applications/api/application.d.mts";
+
 export {};
 
 declare global {
@@ -16,17 +19,32 @@ declare global {
      * An identifier for a group this entry belongs to.
      * @defaultValue `_none`
      */
-    group?: string;
+    group?: string | undefined;
 
     /**
-     * The function to call when the menu item is clicked. Receives the HTML element of the SidebarTab entry that this context menu is for.
+     * The function to call when the menu item is clicked. Receives the HTML element
+     * of the entry that this context menu is for.
      */
     callback: (target: JQuery) => void;
 
     /**
-     * A function to call to determine if this item appears in the menu. Receives the HTML element of the SidebarTab entry that this context menu is for.
+     * A function to call or boolean value to determine if this entry
+     * appears in the menu.
      */
-    condition?: boolean | ((target: JQuery) => boolean);
+    condition?: boolean | ((target: JQuery) => boolean) | undefined;
+  }
+
+  /**
+   * @param html      - The HTML element of the context menu entry.
+   * @returns         whether the entry should be rendered in the context menu.
+   */
+  type ContextMenuCondition = (html: JQuery) => boolean;
+
+  namespace ContextMenu {
+    interface RenderOptions {
+      /** The event that triggered the context menu opening. */
+      event: PointerEvent;
+    }
   }
 
   /**
@@ -103,8 +121,8 @@ declare global {
      *                    (default: `"EntryContext"`)
      */
     static create(
-      app: Application,
-      html: JQuery,
+      app: Application | ApplicationV2,
+      html: JQuery | HTMLElement,
       selector: string,
       menuItems: ContextMenuEntry[],
       options?: ContextMenu.ConstructorOptions,
@@ -134,14 +152,18 @@ declare global {
      * Render the Context Menu by iterating over the menuItems it contains
      * Check the visibility of each menu item, and only render ones which are allowed by the item's logical condition
      * Attach a click handler to each item which is rendered
-     * @param target - The target element to which the context menu is attached
+     * @param target        - The target element to which the context menu is attached
+     * @param options       - (default: `{}`)
      */
-    render(target: JQuery): void | Promise<void>;
+    render(target: JQuery, options?: InexactPartial<ContextMenu.RenderOptions>): void | Promise<JQuery | void>;
 
     /**
      * Set the position of the context menu, taking into consideration whether the menu should expand upward or downward
+     * @param html            - The context menu element.
+     * @param target          - The element that the context menu was spawned on.
+     * @param options         - (default: `{}`)
      */
-    protected _setPosition(html: JQuery, target: JQuery): void;
+    protected _setPosition(html: JQuery, target: JQuery, options?: InexactPartial<ContextMenu.RenderOptions>): void;
 
     /**
      * Local listeners which apply to each ContextMenu instance which is created.

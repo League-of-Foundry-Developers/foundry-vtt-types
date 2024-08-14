@@ -2,7 +2,7 @@ import type { EmptyObject, MaybePromise, ValueOf } from "../../../types/utils.d.
 
 declare global {
   interface FilePickerOptions extends ApplicationOptions {
-    /** A type of file to target, in "audio", "image", "video", "imagevideo", "folder", "font", "graphics", "text", or "any" */
+    /** A type of file to target */
     type?: FilePicker.Type | undefined;
 
     /** The current file path being modified, if any */
@@ -46,6 +46,9 @@ declare global {
      * @param options - Options that configure the behavior of the FilePicker
      */
     constructor(options?: Partial<Options>);
+
+    // placeholder private member
+    #filePicker: true;
 
     /**
      * The full requested path given by the user
@@ -101,6 +104,11 @@ declare global {
     extensions: string[] | undefined;
 
     protected _loaded: boolean;
+
+    /**
+     * The allowed values for the type of this FilePicker instance.
+     */
+    static FILE_TYPES: string[];
 
     /**
      * Record the last-browsed directory path so that re-opening a different FilePicker instance uses the same target
@@ -180,24 +188,11 @@ declare global {
     protected _inferCurrentDirectory(target: string): [string, string];
 
     /**
-     * Get the valid file extensions for a given named file picker type
-     * @internal
-     */
-    protected _getExtensions(type: FilePicker.Type): string[] | undefined;
-
-    /**
      * Test a URL to see if it matches a well known s3 key pattern
      * @param url - An input URL to test
      * @returns A regular expression match
      */
     static matchS3URL(url: string): RegExpMatchArray | null;
-
-    /**
-     * Parse a s3 key to learn the bucket and the key prefix used for the request
-     * @deprecated since v10, use `foundry.utils.parseS3URL` instead.
-     * @param key - A fully qualified key name or prefix path
-     */
-    static parseS3URL(key: string): { bucket: string | null; keyPrefix: string };
 
     override get title(): string;
 
@@ -232,7 +227,7 @@ declare global {
      * @param target - The target within the currently active source location.
      * @param options - Browsing options (default: `{}`)
      */
-    browse(target: string, options?: FilePicker.BrowseOptions): Promise<FilePicker.BrowseResult>;
+    browse(target?: string, options?: FilePicker.BrowseOptions): Promise<FilePicker.BrowseResult>;
 
     /**
      * Browse files for a certain directory location
@@ -273,26 +268,6 @@ declare global {
     ): Promise<string>;
 
     /**
-     * General dispatcher method to submit file management commands to the server
-     * @internal
-     * @param data    - Request data dispatched to the server
-     * @param options - Options dispatched to the server
-     * @returns The server response
-     */
-    protected static _manageFiles(
-      data: FilePicker.BrowseFilesData,
-      options?: FilePicker.BrowseOptions,
-    ): Promise<FilePicker.BrowseResult>;
-    protected static _manageFiles(
-      data: FilePicker.ConfigurePathData,
-      options?: FilePicker.ConfigurePathOptions,
-    ): Promise<FilePicker.ConfigurePathResult>;
-    protected static _manageFiles(
-      data: FilePicker.CreateDirectoryData,
-      options?: FilePicker.CreateDirectoryOptions,
-    ): Promise<string>;
-
-    /**
      * Dispatch a POST request to the server containing a directory path and a file to upload
      * @param source  - The data source to which the file should be uploaded
      * @param path    - The destination path
@@ -313,8 +288,9 @@ declare global {
 
     /**
      * A convenience function that uploads a file to a given package's persistent /storage/ directory
-     * @param packageId  - The id of the package to which the file should be uploaded. Only supports Systems and Modules.
-     * @param path       - The relative path in the package's storage directory the file should be uploaded to
+     * @param packageId  - The id of the package to which the file should be uploaded.
+     *                     Only supports Systems and Modules.
+     * @param path       - The relative destination path in the package's storage directory
      * @param file       - The File object to upload
      * @param body       - Additional file upload options sent in the POST body
      *                     (default: `{}`)
@@ -337,13 +313,6 @@ declare global {
 
     override activateListeners(html: JQuery): void;
 
-    /**
-     * Handle a click event to change the display mode of the File Picker
-     * @param event - The triggering click event
-     * @internal
-     */
-    protected _onChangeDisplayMode(event: JQuery.ClickEvent): void;
-
     protected override _onChangeTab(event: MouseEvent | null, tabs: Tabs, active: this["activeSource"]): void;
 
     protected override _canDragStart(selector: string | null): boolean;
@@ -358,53 +327,6 @@ declare global {
     protected override _onDrop(event: DragEvent): void;
 
     /**
-     * Handle user submission of the address bar to request an explicit target
-     * @param event - The originating keydown event
-     * @internal
-     */
-    protected _onRequestTarget(event: KeyboardEvent): void;
-
-    /**
-     * Handle user interaction with the favorites
-     * @param event - The originating click event
-     */
-    protected _onClickFavorites(event: MouseEvent): Promise<void>;
-
-    /**
-     * Handle requests from the IntersectionObserver to lazily load an image file
-     * @internal
-     */
-    protected _onLazyLoadImages(...args: Parameters<SidebarTab["_onLazyLoadImage"]>): void;
-
-    /**
-     * Handle file or folder selection within the file picker
-     * @param event - The originating click event
-     * @internal
-     */
-    protected _onPick(event: JQuery.ClickEvent): void;
-
-    /**
-     * Handle backwards navigation of the fol6der structure.
-     * @param event - The triggering click event
-     * @internal
-     */
-    protected _onClickDirectoryControl(event: PointerEvent): void;
-
-    /**
-     * Present the user with a dialog to create a subdirectory within their currently browsed file storage location.
-     * @param source - The data source being browsed
-     * @internal
-     */
-    protected _createDirectoryDialog(source: FilePicker.Source): void;
-
-    /**
-     * Handle changes to the bucket selector
-     * @param event - The S3 bucket select change event
-     * @internal
-     */
-    protected _onChangeBucket(event: Event): void;
-
-    /**
      * Handle changes to the tile size.
      * @param event - The triggering event.
      */
@@ -413,13 +335,6 @@ declare global {
     protected override _onSearchFilter(event: KeyboardEvent, query: string, rgx: RegExp, html: HTMLElement): void;
 
     protected _onSubmit(ev: Event): void;
-
-    /**
-     * Handle file upload
-     * @param ev - The file upload event
-     * @internal
-     */
-    protected _onUpload(ev: Event): void;
 
     /**
      * Bind the file picker to a new target field.
@@ -447,19 +362,19 @@ declare global {
       /**
        * A bucket within which to search, if using the S3 source
        */
-      bucket?: string;
+      bucket?: string | undefined;
 
       /**
        * An Array of file extensions to filter on
        * @defaultValue `[]` (do not filter on extension)
        */
-      extensions?: string[];
+      extensions?: string[] | undefined;
 
       /**
        * The requested dir represents a wildcard path
        * @defaultValue false
        */
-      wildcard?: boolean;
+      wildcard?: boolean | undefined;
     }
 
     type Callback = (path: string) => void;
@@ -490,7 +405,7 @@ declare global {
       /**
        * @defaultValue `""`
        */
-      bucket?: string | null;
+      bucket?: string | null | undefined;
     }
 
     type SourceType = "data" | "public" | "s3";
@@ -535,7 +450,7 @@ declare global {
       };
     }
 
-    type Type = "any" | "audio" | "image" | "video" | "imagevideo" | "folder" | "font" | "graphics" | "text";
+    type Type = "image" | "audio" | "video" | "text" | "imagevideo" | "font" | "folder" | "any";
 
     interface UploadBody {
       /**
