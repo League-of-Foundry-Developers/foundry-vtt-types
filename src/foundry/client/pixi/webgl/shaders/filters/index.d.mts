@@ -1,3 +1,13 @@
+import "./base-filter.d.mts";
+import "./base-mask-filter.d.mts";
 import "./blur.d.mts";
-import "./filters.d.mts";
-import "./fxaa.d.mts";
+import "./effects-masking.d.mts";
+import "./environment.d.mts";
+import "./glow-overlay.d.mts";
+import "./invisibility.d.mts";
+import "./outline-overlay.d.mts";
+import "./transition.d.mts";
+import "./visibility.d.mts";
+import "./vision-mask-filter.d.mts";
+import "./void.d.mts";
+import "./weather-occlusion-masks.d.mts";
