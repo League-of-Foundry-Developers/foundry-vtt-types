@@ -33,10 +33,11 @@ declare global {
     /**
      * Execute the Macro command.
      * @param scope - Macro execution scope which is passed to script macros
-     * @remarks `type === "chat"` returns void, `type === "script"` returns the promise
-     * @privateRemarks Foundry's stated return value is incorrect, #executeChat only returns `void`
+     * @returns A promising containing a created {@link ChatMessage} (or `undefined`) if a chat
+     *          macro or the return value if a script macro. A void return is possible if the user
+     *          is not permitted to execute macros or a script macro execution fails.
      */
-    execute(scope?: Scope): void | Promise<unknown>;
+    execute(scope?: Scope): Promise<ChatMessage | undefined> | Promise<unknown> | void;
 
     _onClickDocumentLink(event: MouseEvent): ReturnType<this["execute"]>;
   }

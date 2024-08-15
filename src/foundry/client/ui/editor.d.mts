@@ -288,7 +288,7 @@ declare global {
      * @remarks `TokensLayer#_onDropActorData` returns a number - a notification ID - the  if the user lacks permissions
      * @remarks `User#assignHotbarMacro` returns a promise to a user document
      */
-    protected static getDragEventData(
+    static getDragEventData(
       event: DragEvent,
     ): PlaceableObject | number | Promise<ConfiguredDocumentClassForName<"User">>;
 
