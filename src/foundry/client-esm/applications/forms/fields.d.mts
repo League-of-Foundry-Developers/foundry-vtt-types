@@ -142,6 +142,7 @@ export interface FormSelectOption {
   group?: string;
   disabled?: boolean;
   selected?: boolean;
+  rule?: boolean;
 }
 
 // Compatible with multiple different types of FormInputConfig so this does *not* extend that interface

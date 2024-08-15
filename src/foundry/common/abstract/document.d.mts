@@ -401,9 +401,9 @@ declare abstract class Document<
   /**
    * Create a new Document using provided input data, saving it to the database.
    * @see {@link Document.createDocuments}
-   * @param data    - Initial data used to create this Document
+   * @param data      - Initial data used to create this Document, or a Document instance to persist.
    * @param operation - Parameters of the creation operation
-   *                  (default: `{}`)
+   *                    (default: `{}`)
    * @returns The created Document instance
    *
    * @example Create a World-level Item

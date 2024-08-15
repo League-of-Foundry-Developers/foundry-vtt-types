@@ -33,11 +33,11 @@ declare global {
     /**
      * Execute the Macro command.
      * @param scope - Macro execution scope which is passed to script macros
-     * @remarks `type === "chat"` returns `Promise<ChatMessage | undefined>`
-     *          `type === "script"` returns `Promise<unknown>`
-     *          All errors are caught and return `void` synchronously
+     * @returns A promising containing a created {@link ChatMessage} (or `undefined`) if a chat
+     *          macro or the return value if a script macro. A void return is possible if the user
+     *          is not permitted to execute macros or a script macro execution fails.
      */
-    execute(scope?: Scope): Promise<ChatMessage | undefined> | void | Promise<unknown>;
+    execute(scope?: Scope): Promise<ChatMessage | undefined> | Promise<unknown> | void;
 
     _onClickDocumentLink(event: MouseEvent): ReturnType<this["execute"]>;
   }
