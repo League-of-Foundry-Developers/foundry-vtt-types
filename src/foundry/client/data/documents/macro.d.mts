@@ -33,10 +33,11 @@ declare global {
     /**
      * Execute the Macro command.
      * @param scope - Macro execution scope which is passed to script macros
-     * @remarks `type === "chat"` returns void, `type === "script"` returns the promise
-     * @privateRemarks Foundry's stated return value is incorrect, #executeChat only returns `void`
+     * @remarks `type === "chat"` returns `Promise<ChatMessage | undefined>`
+     *          `type === "script"` returns `Promise<unknown>`
+     *          All errors are caught and return `void` synchronously
      */
-    execute(scope?: Scope): void | Promise<unknown>;
+    execute(scope?: Scope): Promise<ChatMessage | undefined> | void | Promise<unknown>;
 
     _onClickDocumentLink(event: MouseEvent): ReturnType<this["execute"]>;
   }
