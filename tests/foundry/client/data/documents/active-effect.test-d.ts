@@ -1,10 +1,10 @@
 import { expectTypeOf } from "vitest";
 import type { DataModel, Document } from "../../../../../src/foundry/common/abstract/module.d.mts";
 
-// @ts-expect-error - Adventure requires name.
+// @ts-expect-error - ActiveEffect requires name.
 new ActiveEffect();
 
-// @ts-expect-error - Adventure requires name.
+// @ts-expect-error - ActiveEffect requires name.
 new ActiveEffect({});
 
 const effect = new ActiveEffect({ name: "My effect" });

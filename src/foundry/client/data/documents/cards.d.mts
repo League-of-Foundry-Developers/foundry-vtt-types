@@ -173,10 +173,7 @@ declare global {
     get canClone(): boolean;
 
     static override createDocuments(
-      data: Array<
-        | fields.SchemaField.AssignmentType<Cards["schema"]["fields"]>
-        | (fields.SchemaField.AssignmentType<Cards["schema"]["fields"]> & Record<string, unknown>)
-      >,
+      data: Array<foundry.documents.BaseCards.UpdateData & Record<string, unknown>>,
       context: DatabaseOperationsFor<Cards["documentName"], "create"> & {
         temporary?: false | undefined;
       },
