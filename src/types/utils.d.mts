@@ -21,12 +21,6 @@ export type InexactPartial<T> = {
 };
 
 /**
- * Any valid class constructor.
- * @internal
- */
-export type AnyClass = abstract new (...args: never[]) => any;
-
-/**
  * References the constructor of type `T`
  * @internal
  */
