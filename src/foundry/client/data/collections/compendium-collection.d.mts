@@ -1,5 +1,9 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
-import type { DatabaseAction, DatabaseOperation } from "../../../common/abstract/_types.d.mts";
+import type {
+  DatabaseCreateOperation,
+  DatabaseDeleteOperation,
+  DatabaseUpdateOperation,
+} from "../../../common/abstract/_types.d.mts";
 import type { DocumentOnCreateOptions, DocumentOnUpdateOptions } from "../../../common/abstract/document.d.mts";
 import type { DeepPartial, EmptyObject, InexactPartial, StoredDocument } from "../../../../types/utils.d.mts";
 import type { DirectoryCollectionMixin_DocumentCollection_Interface } from "../abstract/directory-collection-mixin.d.mts";
@@ -400,12 +404,25 @@ declare global {
      * Follow-up actions taken when Documents within this Compendium pack are modified
      * @internal
      */
-    // TODO: find the right answer for result
-    protected _onModifyContents(
-      action: DatabaseAction,
+    _onModifyContents(
+      action: "create",
       documents: ClientDocument[],
-      result: any[],
-      operation: DatabaseOperation,
+      result: Record<string, unknown>[],
+      operation: DatabaseCreateOperation<DocumentClassForCompendiumMetadata<T>>,
+      user: User,
+    ): void;
+    _onModifyContents(
+      action: "update",
+      documents: ClientDocument[],
+      result: Record<string, unknown>[],
+      operation: DatabaseUpdateOperation<DocumentClassForCompendiumMetadata<T>>,
+      user: User,
+    ): void;
+    _onModifyContents(
+      action: "delete",
+      documents: ClientDocument[],
+      result: string[],
+      operation: DatabaseDeleteOperation<DocumentClassForCompendiumMetadata<T>>,
       user: User,
     ): void;
 
