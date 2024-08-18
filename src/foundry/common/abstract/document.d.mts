@@ -8,6 +8,7 @@ import type {
   PlaceableDocumentType,
 } from "../../../types/helperTypes.mts";
 import type {
+  AnyConstructorFor,
   ConfiguredStoredDocument,
   DeepPartial,
   InexactPartial,
@@ -798,7 +799,7 @@ declare namespace Document {
 
   export type Constructor = typeof Document<DataSchema, AnyMetadata, any>;
 
-  export type AnyConstructor = Pick<typeof Document, keyof typeof Document> & (new (...args: any[]) => Document.Any);
+  export type AnyConstructor = AnyConstructorFor<typeof Document>;
 
   type SystemConstructor = AnyConstructor & { metadata: { name: SystemType; coreTypes?: string[] } };
 

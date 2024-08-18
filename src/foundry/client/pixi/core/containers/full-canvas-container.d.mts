@@ -1,4 +1,4 @@
-import type { Mixin } from "../../../../../types/utils.d.mts";
+import type { AnyConstructorFor, Mixin } from "../../../../../types/utils.d.mts";
 
 declare class FullCanvasObject {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
@@ -15,7 +15,7 @@ declare global {
    * @param Base - Any PIXI DisplayObject subclass
    * @returns The decorated subclass with full canvas bounds
    */
-  function FullCanvasObjectMixin<BaseClass extends typeof PIXI.DisplayObject>(
+  function FullCanvasObjectMixin<BaseClass extends AnyConstructorFor<typeof PIXI.DisplayObject>>(
     Base: BaseClass,
   ): Mixin<typeof FullCanvasObject, BaseClass>;
 

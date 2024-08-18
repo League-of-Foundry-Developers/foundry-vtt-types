@@ -1,4 +1,6 @@
-import type { AnyConstructorFor, Mixin } from "../../../../../types/utils.d.mts";
+import type { DisplayObject } from "pixi.js";
+import type { Mixin } from "../../../../../types/utils.d.mts";
+import type { IntentionalPartial } from "../../../../../types/helperTypes.d.mts";
 
 declare class PrimaryCanvasObject {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
@@ -134,7 +136,20 @@ declare global {
    * @param DisplayObject - The parent DisplayObject class being mixed
    * @returns A DisplayObject subclass mixed with PrimaryCanvasObject features
    */
-  function PrimaryCanvasObjectMixin<BaseClass extends AnyConstructorFor<typeof PIXI.DisplayObject>>(
+  function PrimaryCanvasObjectMixin<BaseClass extends PrimaryCanvasObjectMixin.BaseClass>(
     DisplayObject: BaseClass,
   ): Mixin<typeof PrimaryCanvasObject, BaseClass>;
+
+  namespace PrimaryCanvasObjectMixin {
+    interface BaseClass extends DisplayObjectClass {
+      new (
+        placeableObjectOrData: PlaceableObject | Document.Any | IntentionalPartial<PrimaryCanvasObjectData>,
+        arg1: never,
+        ...args: never[]
+      ): DisplayObject;
+    }
+  }
 }
+
+// Necessary so that `PrimaryCanvasObjectMixin.Constructor` can extend the class.
+type DisplayObjectClass = typeof DisplayObject;

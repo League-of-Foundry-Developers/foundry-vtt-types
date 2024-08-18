@@ -140,15 +140,26 @@ export type PropertyTypeOrFallback<T, Key extends string, Fallback> = Key extend
  */
 export type RequiredProps<T, K extends keyof T> = Required<Pick<T, K>> & Omit<T, K>;
 
-export type AnyConstructorFor<Class extends abstract new (...args: any[]) => any> = Pick<Class, keyof Class> &
-  (Class extends new (...args: any[]) => any
-    ? new (...args: any[]) => InstanceType<Class>
-    : abstract new (...args: any[]) => InstanceType<Class>);
+/**
+ * Allows a subclass with any constructor signature to be used in place of a superclass.
+ *
+ * Note: For safety reasons the resulting type is effectively unconstructable because its signature could be anything.
+ * Unfortunately for abstract classes, they may still be called with their original signature.
+ * Since the class is abstract this is only way this is possible is for subclasses calling `super` which never happens in this repository as there's no runtime code.
+ * This is because a signature allowing anything is added as an overload.
+ * Technically it'd be possible to write `Pick<Class, keyof Class>` to strip the constructor (as a constructor is not a key), unfortunately this would also strip private static properties.
+ */
+export type AnyConstructorFor<Class extends AnyConstructor> = Class extends AnyConcreteConstructor
+  ? AnyConstructorInterface<Class>
+  : Class & (abstract new (arg0: never, ...args: never[]) => InstanceType<Class>);
 
-export type Mixin<
-  MixinClass extends new (...args: any[]) => any,
-  BaseClass extends abstract new (...args: any[]) => any,
-> = MixinClass & BaseClass;
+// This is unexported to prevent it from being declaration merged which would be unsound.
+// @ts-expect-error - Ignore the "incorrectly extends interface" error inherent to this pattern.
+interface AnyConstructorInterface<T extends AnyConstructor> extends T {
+  new (arg0: never, ...args: never[]): InstanceType<T>;
+}
+
+export type Mixin<MixinClass extends AnyConcreteConstructor, BaseClass extends AnyConstructor> = MixinClass & BaseClass;
 
 interface GetDataConfigOptions<T> {
   partial: Partial<T> & Record<string, unknown>;
@@ -286,7 +297,7 @@ export type AnyFunction = (arg0: never, ...args: never[]) => unknown;
  * const classLike: AnyConstructor = Date;
  * ```
  */
-export type AnyConstructor = abstract new (arg0: never, ...args: never[]) => unknown;
+export type AnyConstructor = abstract new (arg0: never, ...args: never[]) => object;
 
 /**
  * Use this type to allow any class or class-like constructor but disallow
@@ -307,7 +318,7 @@ export type AnyConstructor = abstract new (arg0: never, ...args: never[]) => unk
  * const abstract: AnyConcreteConstructor = abstract class Abstract { ... }
  * ```
  */
-export type AnyConcreteConstructor = new (arg0: never, ...args: never[]) => unknown;
+export type AnyConcreteConstructor = new (arg0: never, ...args: never[]) => object;
 
 /**
  * This type is equivalent to `Promise<T>` but exists to give an explicit signal

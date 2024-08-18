@@ -159,7 +159,17 @@ declare global {
    * @param DisplayObject - The parent DisplayObject class being mixed
    * @returns A DisplayObject subclass mixed with OccludableObject features
    */
-  function OccludableObjectMixin<BaseClass extends typeof SpriteMesh>(
+  // It's vaguely nonsensical that OccludableObjectMixin extends PrimaryCanvasObjectMixin because PrimaryCanvasObjectMixin's first parameter is incompatible.
+  // It mostly works at runtime because the defaults will be used.
+  function OccludableObjectMixin<BaseClass extends OccludableObjectMixin.BaseClass>(
     DisplayObject: BaseClass,
-  ): Mixin<typeof OccludableObject, ReturnType<typeof PrimaryCanvasObjectMixin<BaseClass>>>;
+  ): Mixin<typeof OccludableObject, Mixin<ReturnType<typeof PrimaryCanvasObjectMixin>, BaseClass>>;
+
+  namespace OccludableObjectMixin {
+    interface BaseClass extends SpriteMeshClass {
+      new (texture: PIXI.Texture): SpriteMesh;
+    }
+  }
 }
+
+type SpriteMeshClass = typeof SpriteMesh;

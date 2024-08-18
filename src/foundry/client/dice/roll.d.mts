@@ -1,5 +1,5 @@
 import type { ConfiguredDocumentClass } from "../../../types/helperTypes.d.mts";
-import type { ConstructorOf, DeepPartial, InexactPartial } from "../../../types/utils.d.mts";
+import type { AnyConstructorFor, ConstructorOf, DeepPartial, InexactPartial } from "../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -481,7 +481,7 @@ declare global {
      * roll.formula; // 4d8 + 8
      * ```
      */
-    static fromTerms<T extends ConstructorOf<Roll<any>>>(
+    static fromTerms<T extends AnyConstructorFor<typeof Roll>>(
       this: T,
       terms: RollTerm[],
       options?: InexactPartial<Options>,

@@ -1,4 +1,4 @@
-import type { Mixin } from "../../../../types/utils.d.mts";
+import type { AnyConstructorFor, Mixin } from "../../../../types/utils.d.mts";
 
 declare class DirectoryApplication {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
@@ -270,7 +270,7 @@ declare global {
     sort?: string;
   }
 
-  function DirectoryApplicationMixin<BaseApplication extends typeof Application>(
+  function DirectoryApplicationMixin<BaseApplication extends AnyConstructorFor<typeof Application>>(
     Base: BaseApplication,
   ): Mixin<typeof DirectoryApplication, BaseApplication>;
 }

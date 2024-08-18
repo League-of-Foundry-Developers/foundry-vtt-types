@@ -1,5 +1,4 @@
 import type { ConfiguredDocuments } from "./configuredDocuments.d.mts";
-import type { DeepPartial } from "./utils.d.mts";
 
 /**
  * Returns the type of the constructor data for the given {@link foundry.abstract.Document}.
@@ -8,12 +7,7 @@ export type ConstructorDataType<T extends DocumentConstructor> = foundry.data.fi
   ReturnType<T["defineSchema"]>
 >;
 
-type ObjectToDeepPartial<T> = T extends object ? DeepPartial<T> : T;
-
 export type DocumentConstructor = foundry.abstract.Document.AnyConstructor;
-
-export type PlaceableObjectConstructor = Pick<typeof PlaceableObject, keyof typeof PlaceableObject> &
-  (new (...args: any[]) => PlaceableObject<any>);
 
 export type ConfiguredDocumentClass<ConcreteDocument extends DocumentConstructor> =
   ConfiguredDocuments[ConcreteDocument["metadata"]["name"]];

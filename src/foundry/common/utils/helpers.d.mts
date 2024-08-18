@@ -1,11 +1,5 @@
 import type { DocumentType } from "../../../types/helperTypes.d.mts";
-import type {
-  AnyConstructor,
-  AnyFunction,
-  ConstructorOf,
-  DeepPartial,
-  InexactPartial,
-} from "../../../types/utils.d.mts";
+import type { AnyConstructor, AnyFunction, DeepPartial, InexactPartial } from "../../../types/utils.d.mts";
 import type Document from "../abstract/document.d.mts";
 
 /**
@@ -121,7 +115,7 @@ export function isSubclass<Parent extends AnyConstructor>(cls: AnyConstructor, p
  * @param property - The property name.
  * @returns The class that defines the property.
  */
-export function getDefiningClass(cls: ConstructorOf<any>, property: string): ConstructorOf<any>;
+export function getDefiningClass(cls: AnyConstructor, property: string): AnyConstructor;
 
 /**
  * Encode a url-like string by replacing any characters which need encoding

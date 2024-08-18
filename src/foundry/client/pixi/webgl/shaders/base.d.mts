@@ -1,4 +1,4 @@
-import type { ConstructorOf, Mixin } from "../../../../../types/utils.d.mts";
+import type { AnyConstructorFor, ConstructorOf, Mixin } from "../../../../../types/utils.d.mts";
 
 export {};
 
@@ -379,17 +379,17 @@ declare global {
     type Uniforms = Record<string, AbstractBaseShader.UniformValue>;
   }
 
-  function BaseShaderMixin<BaseClass extends typeof PIXI.Shader | typeof PIXI.Filter>(
-    ShaderClass: BaseClass,
-  ): Mixin<typeof BaseShaderMixinClass, BaseClass>;
+  function BaseShaderMixin<
+    BaseClass extends AnyConstructorFor<typeof PIXI.Shader> | AnyConstructorFor<typeof PIXI.Filter>,
+  >(ShaderClass: BaseClass): Mixin<typeof BaseShaderMixinClass, BaseClass>;
 
   namespace AdaptiveFragmentChannel {
     type Channel = "r" | "g" | "b";
   }
 
-  function AdaptiveFragmentChannelMixin<BaseClass extends typeof PIXI.Shader | typeof PIXI.Filter>(
-    ShaderClass: BaseClass,
-  ): Mixin<typeof AdaptiveFragmentChannelMixinClass, BaseClass>;
+  function AdaptiveFragmentChannelMixin<
+    BaseClass extends AnyConstructorFor<typeof PIXI.Shader> | AnyConstructorFor<typeof PIXI.Filter>,
+  >(ShaderClass: BaseClass): Mixin<typeof AdaptiveFragmentChannelMixinClass, BaseClass>;
 
   /**
    * This class defines an interface which all shaders utilize
