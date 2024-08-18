@@ -137,6 +137,8 @@ declare global {
   }
 
   namespace TokenConfig {
+    type Any = TokenConfig<any>;
+
     interface FormData {
       // TODO: Update
       actorId: string;
@@ -232,5 +234,9 @@ declare global {
     protected override _onAddDetectionMode(modes: TokenDocument["detectionModes"]): void;
 
     protected override _onRemoveDetectionMode(index: number, modes: TokenDocument["detectionModes"]): void;
+  }
+
+  namespace DefaultTokenConfig {
+    type Any = DefaultTokenConfig<any>;
   }
 }

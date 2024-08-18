@@ -8,7 +8,7 @@ declare global {
    */
   class DocumentOwnershipConfig<
     Options extends DocumentSheetOptions<ConcreteDocument>,
-    ConcreteDocument extends foundry.abstract.Document<any, any, any> = foundry.abstract.Document<any, any, any>,
+    ConcreteDocument extends foundry.abstract.Document.Any = foundry.abstract.Document.Any,
   > extends DocumentSheet<Options, ConcreteDocument> {
     /**
      * @defaultValue
@@ -29,6 +29,10 @@ declare global {
     ): MaybePromise<GetDataReturnType<DocumentOwnershipConfig.DocumentOwnershipConfigData>>;
 
     protected override _updateObject(event: Event, formData: DocumentOwnershipConfig.FormData): Promise<unknown>;
+  }
+
+  namespace DocumentOwnershipConfig {
+    type Any = DocumentOwnershipConfig<any, any>;
   }
 
   /**

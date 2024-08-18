@@ -7,7 +7,7 @@ declare global {
    * @typeParam Options - the type of the options object
    */
   abstract class BasePlaceableHUD<
-    Object extends PlaceableObject<any> = PlaceableObject,
+    Object extends PlaceableObject.Any = PlaceableObject,
     Options extends ApplicationOptions = ApplicationOptions,
   > extends Application<Options> {
     /**
@@ -79,5 +79,9 @@ declare global {
      * @param event - The originating mouse click event
      */
     protected _onSort(up: boolean, event: JQuery.ClickEvent): Promise<Array<Object["document"]>>;
+  }
+
+  namespace BasePlaceableHUD {
+    type Any = BasePlaceableHUD<any, any>;
   }
 }

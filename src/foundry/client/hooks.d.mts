@@ -291,8 +291,8 @@ declare global {
        * @see {@link CompendiumCollection#_onModifyContents}
        */
       updateCompendium: (
-        pack: CompendiumCollection<any>,
-        documents: foundry.abstract.Document<any, any, any>[],
+        pack: CompendiumCollection.Any,
+        documents: foundry.abstract.Document.Any[],
         options: DocumentModificationOptions,
         userId: string,
       ) => void;

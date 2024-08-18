@@ -66,6 +66,8 @@ declare global {
   }
 
   namespace PackageConfiguration {
+    type Any = PackageConfiguration<any>;
+
     interface Options extends FormApplicationOptions {
       categoryTemplate?: string;
       submitButton?: boolean;

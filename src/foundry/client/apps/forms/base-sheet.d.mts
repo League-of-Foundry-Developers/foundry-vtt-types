@@ -33,6 +33,8 @@ declare global {
   }
 
   namespace BaseSheet {
+    type Any = BaseSheet<any>;
+
     interface Options extends DocumentSheetOptions<Adventure.ConfiguredInstance> {}
 
     interface BaseSheetData extends DocumentSheet.DocumentSheetData<Options, foundry.abstract.Document.Any> {

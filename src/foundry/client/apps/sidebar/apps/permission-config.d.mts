@@ -52,6 +52,8 @@ declare global {
   }
 
   namespace PermissionConfig {
+    type Any = PermissionConfig<any>;
+
     type FormData = Record<string, boolean>;
 
     interface Permission extends foundry.CONST.UserPermission {

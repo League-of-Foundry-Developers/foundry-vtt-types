@@ -45,6 +45,8 @@ declare global {
   }
 
   namespace NoteConfig {
+    type Any = NoteConfig<any>;
+
     interface FormData {
       entryId: NoteDocument["entryId"];
       fontFamily: NoteDocument["fontFamily"];

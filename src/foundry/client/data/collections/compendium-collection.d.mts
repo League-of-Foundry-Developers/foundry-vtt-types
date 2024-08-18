@@ -441,6 +441,8 @@ declare global {
   }
 
   namespace CompendiumCollection {
+    type Any = CompendiumCollection<any>;
+
     interface Configuration {
       ownership: foundry.packages.BasePackage.OwnershipRecord;
       locked: boolean;

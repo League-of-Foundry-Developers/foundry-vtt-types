@@ -25,4 +25,8 @@ declare global {
 
     override activateListeners(html: JQuery): void;
   }
+
+  namespace InvitationLinks {
+    type Any = InvitationLinks<any>;
+  }
 }

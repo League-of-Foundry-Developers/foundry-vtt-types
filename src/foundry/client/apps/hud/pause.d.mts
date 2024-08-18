@@ -23,6 +23,8 @@ declare global {
   }
 
   namespace Pause {
+    type Any = Pause<any>;
+
     interface PauseData {
       paused: boolean;
     }

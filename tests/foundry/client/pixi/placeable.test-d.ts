@@ -25,7 +25,7 @@ class OnePlaceable extends PlaceableObject<EmbeddedInSceneDocument> {
 }
 
 const placeable = new OnePlaceable(new EmbeddedInSceneDocument());
-assertType<Document<any, any, any>>(placeable.document);
+assertType<Document.Any>(placeable.document);
 expectTypeOf(placeable.document).toEqualTypeOf<EmbeddedInSceneDocument>();
 expectTypeOf(placeable.sheet).toEqualTypeOf<EmbeddedInSceneDocumentSheet>();
 

@@ -157,6 +157,8 @@ declare global {
   }
 
   namespace Hotbar {
+    type Any = Hotbar<any>;
+
     interface HotbarData {
       page: Hotbar["page"];
       macros: Hotbar["macros"];

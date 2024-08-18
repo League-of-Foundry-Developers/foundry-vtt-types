@@ -283,6 +283,8 @@ declare global {
   }
 
   namespace JournalSheet {
+    type Any = JournalSheet<any>;
+
     type SheetMode = "text" | "image";
 
     type RenderOptions<Options extends JournalSheetOptions = JournalSheetOptions> = Application.RenderOptions<Options> &

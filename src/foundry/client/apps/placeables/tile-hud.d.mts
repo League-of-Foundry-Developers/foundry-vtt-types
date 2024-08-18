@@ -30,4 +30,8 @@ declare global {
 
     protected _onControlVideo(event: PointerEvent): this;
   }
+
+  namespace TileHUD {
+    type Any = TileHUD<any>;
+  }
 }

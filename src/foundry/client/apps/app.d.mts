@@ -504,6 +504,8 @@ declare global {
   }
 
   namespace Application {
+    type Any = Application<any>;
+
     interface CloseOptions {
       force?: boolean | undefined;
     }

@@ -144,19 +144,19 @@ declare global {
      * Add an entry to the index.
      * @param doc - The document entry.
      */
-    addDocument(doc: foundry.abstract.Document<any, any, any>): void;
+    addDocument(doc: foundry.abstract.Document.Any): void;
 
     /**
      * Remove an entry from the index.
      * @param doc - The document entry.
      */
-    removeDocument(doc: foundry.abstract.Document<any, any, any>): void;
+    removeDocument(doc: foundry.abstract.Document.Any): void;
 
     /**
      * Replace an entry in the index with an updated one.
      * @param doc - The document entry.
      */
-    replaceDocument(doc: foundry.abstract.Document<any, any, any>): void;
+    replaceDocument(doc: foundry.abstract.Document.Any): void;
 
     /**
      * Add a leaf node to the word tree index.
@@ -165,10 +165,10 @@ declare global {
      * @internal
      */
     protected _addLeaf(
-      doc: foundry.abstract.Document<any, any, any>,
+      doc: foundry.abstract.Document.Any,
       options?: {
         /** The compendium that the index belongs to. */
-        pack?: CompendiumCollection<any>;
+        pack?: CompendiumCollection.Any;
       },
     ): void;
 
@@ -177,14 +177,14 @@ declare global {
      * @param pack - The compendium pack.
      * @internal
      */
-    protected _indexCompendium(pack: CompendiumCollection<any>): void;
+    protected _indexCompendium(pack: CompendiumCollection.Any): void;
 
     /**
      * Add all of a parent document's embedded documents to the index.
      * @param parent - The parent document.
      * @internal
      */
-    protected _indexEmbeddedDocuments(parent: foundry.abstract.Document<any, any, any>): void;
+    protected _indexEmbeddedDocuments(parent: foundry.abstract.Document.Any): void;
 
     /**
      * Aggregate all documents and embedded documents in a world collection and add them to the index.

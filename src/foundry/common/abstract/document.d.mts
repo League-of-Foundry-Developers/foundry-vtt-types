@@ -821,7 +821,7 @@ declare namespace Document {
     ConcreteDocument extends Document<any, infer ConcreteMetadata, any> ? ConcreteMetadata : never;
 
   type CollectionRecord<Schema extends DataSchema> = {
-    [Key in keyof Schema]: Schema[Key] extends fields.EmbeddedCollectionField<any, any> ? Schema[Key] : never;
+    [Key in keyof Schema]: Schema[Key] extends fields.EmbeddedCollectionField.Any ? Schema[Key] : never;
   };
 
   export type Flags<ConcreteDocument extends Any> = OptionsForSchema<SchemaFor<ConcreteDocument>>;

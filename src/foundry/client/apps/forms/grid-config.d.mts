@@ -125,6 +125,8 @@ declare global {
   }
 
   namespace GridConfig {
+    type Any = GridConfig<any>;
+
     interface FormData {
       "grid.type": Scene["grid"]["type"];
       "grid.size": Scene["grid"]["size"];

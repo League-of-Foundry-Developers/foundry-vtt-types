@@ -72,6 +72,8 @@ declare global {
   }
 
   namespace AdventureImporter {
+    type Any = AdventureImporter<any>;
+
     interface Options extends DocumentSheetOptions<Adventure.ConfiguredInstance> {}
 
     interface AdventureImporterData {

@@ -1778,6 +1778,8 @@ declare class EmbeddedCollectionField<
 }
 
 declare namespace EmbeddedCollectionField {
+  type Any = EmbeddedCollectionField<any, any, any, any, any, any, any, any, any>;
+
   /**
    * A shorthand for the options of an EmbeddedCollectionField class.
    * @typeParam AssignmentElementType - the assignment type of the elements of the EmbeddedCollectionField

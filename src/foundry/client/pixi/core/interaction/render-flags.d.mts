@@ -8,7 +8,7 @@ declare class RenderFlagObject {
    * Configure the render flags used for this class.
    * @defaultValue `{}`
    */
-  static RENDER_FLAGS: Record<string, RenderFlag<any>>;
+  static RENDER_FLAGS: Record<string, RenderFlag.Any>;
 
   /**
    * The ticker priority when RenderFlags of this class are handled.
@@ -37,6 +37,10 @@ declare global {
     propagate?: Array<Partial<keyof Flags>>;
     /** Activating this flag resets these flags to false */
     reset?: Array<Partial<keyof Flags>>;
+  }
+
+  namespace RenderFlag {
+    type Any = RenderFlag<any>;
   }
 
   /**

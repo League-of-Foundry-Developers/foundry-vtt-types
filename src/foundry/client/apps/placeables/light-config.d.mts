@@ -69,6 +69,8 @@ declare global {
   }
 
   namespace AmbientLightConfig {
+    type Any = AmbientLightConfig<any>;
+
     interface FormData {
       x: AmbientLightDocument["x"];
       y: AmbientLightDocument["y"];

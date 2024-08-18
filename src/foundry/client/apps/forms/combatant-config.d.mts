@@ -30,6 +30,8 @@ declare global {
   }
 
   namespace CombatantConfig {
+    type Any = CombatantConfig<any>;
+
     interface Options extends DocumentSheetOptions<Combatant> {
       id: "combatant-config";
       title: string;

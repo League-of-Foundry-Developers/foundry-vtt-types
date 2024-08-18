@@ -8,7 +8,7 @@ declare global {
     );
     config: SetupTourConfig;
 
-    focusedApp: Application<any>;
+    focusedApp: Application.Any;
     override get canStart(): boolean;
     override get steps(): TourStep[];
     protected override _preStep(): Promise<void>;

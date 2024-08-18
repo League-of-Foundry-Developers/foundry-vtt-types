@@ -530,6 +530,8 @@ declare global {
   }
 
   namespace PlaceableObject {
+    type Any = PlaceableObject<any>;
+
     interface RenderFlags {
       redraw: boolean;
 

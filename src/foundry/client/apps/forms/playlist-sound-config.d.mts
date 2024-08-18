@@ -42,6 +42,8 @@ declare global {
   }
 
   namespace PlaylistSoundConfig {
+    type Any = PlaylistSoundConfig<any>;
+
     interface FormData {
       description: string;
       fade: number | null;
