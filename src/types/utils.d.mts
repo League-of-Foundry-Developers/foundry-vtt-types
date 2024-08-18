@@ -24,7 +24,7 @@ export type InexactPartial<T> = {
  * References the constructor of type `T`
  * @internal
  */
-export type ConstructorOf<T> = new (...args: never[]) => T;
+export type ConstructorOf<T> = new (arg0: never, ...args: never[]) => T;
 
 /**
  * Expand an object that contains keys in dotted notation
@@ -268,7 +268,7 @@ export type MutableArray<T> = Array<T>;
  * - `(...args: any[]) => any` - If someone explicitly accesses the parameters or return value you get `any` which is not safe.
  * - `(...args: unknown[]) => unknown` - This allows obviously unsound calls like `fn(1, "foo")` because it indicates it can take any arguments.
  */
-export type AnyFunction = (...args: never[]) => unknown;
+export type AnyFunction = (arg0: never, ...args: never[]) => unknown;
 
 /**
  * Use this type to allow any class, abstract class, or class-like constructor.
@@ -286,7 +286,7 @@ export type AnyFunction = (...args: never[]) => unknown;
  * const classLike: AnyConstructor = Date;
  * ```
  */
-export type AnyConstructor = abstract new (...args: never[]) => unknown;
+export type AnyConstructor = abstract new (arg0: never, ...args: never[]) => unknown;
 
 /**
  * Use this type to allow any class or class-like constructor but disallow
@@ -307,7 +307,7 @@ export type AnyConstructor = abstract new (...args: never[]) => unknown;
  * const abstract: AnyConcreteConstructor = abstract class Abstract { ... }
  * ```
  */
-export type AnyConcreteConstructor = new (...args: never[]) => unknown;
+export type AnyConcreteConstructor = new (arg0: never, ...args: never[]) => unknown;
 
 /**
  * This type is equivalent to `Promise<T>` but exists to give an explicit signal

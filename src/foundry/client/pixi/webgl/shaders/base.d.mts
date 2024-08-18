@@ -416,7 +416,7 @@ declare global {
      * A subclass of AbstractBaseShader must implement the fragmentShader static field.
      * @remarks This is abstract, subclasses must implement it.
      */
-    static fragmentShader: string | ((...args: any[]) => string);
+    static fragmentShader: string | ((arg0: never, ...args: never[]) => string);
 
     /**
      * The default uniform values for the shader.
@@ -452,7 +452,7 @@ declare global {
      * The fragment shader which renders this filter.
      * @defaultValue `undefined`
      */
-    static fragmentShader: string | ((...args: any[]) => string) | undefined;
+    static fragmentShader: string | ((arg0: never, ...args: never[]) => string) | undefined;
 
     /**
      * The vertex shader which renders this filter.

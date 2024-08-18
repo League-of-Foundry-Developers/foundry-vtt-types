@@ -1,5 +1,11 @@
 import type { DocumentType } from "../../../types/helperTypes.d.mts";
-import type { AnyClass, ConstructorOf, DeepPartial, InexactPartial } from "../../../types/utils.d.mts";
+import type {
+  AnyConstructor,
+  AnyFunction,
+  ConstructorOf,
+  DeepPartial,
+  InexactPartial,
+} from "../../../types/utils.d.mts";
 import type Document from "../abstract/document.d.mts";
 
 /**
@@ -8,11 +14,7 @@ import type Document from "../abstract/document.d.mts";
  * @param iterations - The number of iterations to test
  * @param args       - Additional arguments passed to the benchmarked function
  */
-export function benchmark<F extends (...args: any[]) => unknown>(
-  func: F,
-  iterations: number,
-  ...args: Parameters<F>
-): Promise<void>;
+export function benchmark<F extends AnyFunction>(func: F, iterations: number, ...args: Parameters<F>): Promise<void>;
 
 /**
  * A debugging function to test latency or timeouts by forcibly locking the thread for an amount of time.
@@ -29,10 +31,7 @@ export function threadLock(ms: number, debug?: boolean): Promise<void>;
  * @param delay    - An amount of time in milliseconds to delay
  * @returns A wrapped function which can be called to debounce execution
  */
-export function debounce<T extends (...args: any[]) => unknown>(
-  callback: T,
-  delay: number,
-): (...args: Parameters<T>) => void;
+export function debounce<T extends AnyFunction>(callback: T, delay: number): (...args: Parameters<T>) => void;
 
 /**
  * A utility function to reload the page with a debounce.
@@ -114,7 +113,7 @@ export type Duplicated<T> = T extends NonStringifiable ? never : InnerDuplicated
  * @param parent - Some other class which may be a parent
  * @returns Is the class a subclass of the parent?
  */
-export function isSubclass<Parent extends AnyClass>(cls: AnyClass, parent: Parent): cls is Parent;
+export function isSubclass<Parent extends AnyConstructor>(cls: AnyConstructor, parent: Parent): cls is Parent;
 
 /**
  * Search up the prototype chain and return the class that defines the given property.
@@ -187,7 +186,7 @@ export function flattenObject(obj: object, _d?: number): object;
  * @param cls - An ES6 Class definition
  * @returns An array of parent Classes which the provided class extends
  */
-export function getParentClasses(cls: AnyClass): Array<AnyClass>;
+export function getParentClasses(cls: AnyConstructor): Array<AnyConstructor>;
 
 export interface GetRouteOptions {
   /**
@@ -583,11 +582,11 @@ export function hexToRGBAString(hex: number, alpha?: number): `rgba(${number}, $
 export function colorStringToHex(color: string): number | null;
 
 /**
- * Internal Helper for {@link Duplicated}. A union type of all primitive types that do not have a JSON representation.
+ * Internal Helper for {@link Duplicated}. A union type of all types that do not have a JSON representation.
  *
  * @internal
  */
-type NonStringifiable = undefined | Function | symbol;
+type NonStringifiable = undefined | AnyFunction | AnyConstructor | symbol;
 
 /**
  * Internal helper for {@link InnerDuplicated}. Maps the properties of `T` to their duplicated types.
