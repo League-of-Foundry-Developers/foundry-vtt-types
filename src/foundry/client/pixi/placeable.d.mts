@@ -1,5 +1,9 @@
 import type { ValueOf } from "../../../types/utils.d.mts";
-import type { DocumentModificationOptions } from "../../common/abstract/document.d.mts";
+import type {
+  DocumentOnCreateOptions,
+  DocumentOnDeleteOptions,
+  DocumentOnUpdateOptions,
+} from "../../common/abstract/document.d.mts";
 import type { Document } from "../../common/abstract/module.d.mts";
 
 declare global {
@@ -228,7 +232,7 @@ declare global {
      */
     protected _onCreate(
       data: foundry.data.fields.SchemaField.InnerAssignmentType<D["schema"]["fields"]>,
-      options: DocumentModificationOptions,
+      options: DocumentOnCreateOptions<D["documentName"]>,
       userId: string,
     ): void;
 
@@ -238,14 +242,14 @@ declare global {
      */
     protected _onUpdate(
       changed: foundry.data.fields.SchemaField.InnerAssignmentType<D["schema"]["fields"]>,
-      options?: DocumentModificationOptions,
+      options?: DocumentOnUpdateOptions<D["documentName"]>,
       userId?: string,
     ): void;
 
     /**
      * Define additional steps taken when an existing placeable object of this type is deleted
      */
-    protected _onDelete(options: DocumentModificationOptions, userId: string): void;
+    protected _onDelete(options: DocumentOnDeleteOptions<D["documentName"]>, userId: string): void;
 
     /**
      * Assume control over a PlaceableObject, flagging it as controlled and enabling downstream behaviors

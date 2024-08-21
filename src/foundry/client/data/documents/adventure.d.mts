@@ -3,11 +3,15 @@ import type { InexactPartial } from "../../../../types/utils.d.mts";
 // eslint-disable-next-line import/no-named-as-default
 import type DataModel from "../../../common/abstract/data.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
+import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace Adventure {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Adventure">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    /* eslint-disable-next-line @typescript-eslint/no-empty-object-type */
+    export interface DatabaseOperations extends DocumentDatabaseOperations<Adventure> {}
 
     interface PrepareImportOptions {
       /**

@@ -1,4 +1,5 @@
 import type { DocumentSubTypes, DocumentType } from "../../../types/helperTypes.d.mts";
+import type { DocumentOnUpsertOptions } from "../../common/abstract/document.d.mts";
 import type { DeepPartial, EmptyObject, InexactPartial } from "../../../types/utils.d.mts";
 
 declare global {
@@ -159,7 +160,7 @@ declare global {
       namespace: N,
       key: K,
       value: V,
-      options?: DocumentModificationContext,
+      options?: DocumentOnUpsertOptions<"Setting">,
     ): Promise<V>;
   }
 

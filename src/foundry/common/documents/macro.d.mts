@@ -1,6 +1,6 @@
-import type { AnyObject, EmptyObject, InexactPartial, Merge } from "../../../types/utils.d.mts";
+import type { AnyObject, InexactPartial, Merge } from "../../../types/utils.d.mts";
 import type Document from "../abstract/document.d.mts";
-import type { DocumentMetadata, DocumentModificationOptions } from "../abstract/document.d.mts";
+import type { DocumentMetadata } from "../abstract/document.d.mts";
 import type * as CONST from "../constants.mts";
 import type * as fields from "../data/fields.d.mts";
 import type * as documents from "./_module.mts";
@@ -41,11 +41,10 @@ declare class BaseMacro extends Document<BaseMacro.Schema, BaseMacro.Metadata> {
     }>,
   ): boolean;
 
-  protected override _preCreate(
-    data: fields.SchemaField.AssignmentType<documents.BaseMacro.Schema, EmptyObject>,
-    options: DocumentModificationOptions,
-    user: foundry.documents.BaseUser,
-  ): Promise<void>;
+  /**
+   * @privateRemarks _preCreate all overridden but with no signature changes.
+   * For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
+   */
 
   static override migrateData(source: AnyObject): AnyObject;
 

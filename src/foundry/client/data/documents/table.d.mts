@@ -1,12 +1,18 @@
 import type { ConfiguredDocumentClassForName, ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
 import type { InexactPartial } from "../../../../types/utils.d.mts";
-import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
-import type { ClientDocument } from "../abstract/client-document.d.mts";
+import type {
+  DocumentDatabaseOperations,
+  DocumentOnCreateOptions,
+  DocumentOnDeleteOptions,
+} from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace RollTable {
     type ConfiguredClass = ConfiguredDocumentClassForName<"RollTable">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    /* eslint-disable-next-line @typescript-eslint/no-empty-object-type */
+    export interface DatabaseOperations extends DocumentDatabaseOperations<RollTable> {}
 
     /**
      * Optional arguments which customize the draw
@@ -60,7 +66,7 @@ declare global {
        * Additional options which customize the created messages
        * @defaultValue `{}`
        */
-      messageOptions: DocumentModificationContext & { rollMode: keyof CONFIG.Dice.RollModes | "roll" };
+      messageOptions: DocumentOnCreateOptions<"ChatMessage">;
     }
 
     interface RollOptions {
@@ -231,7 +237,7 @@ declare global {
      */
     protected _buildEmbedHTML(
       config: TextEditor.DocumentHTMLEmbedConfig & { rollable: boolean },
-      options?: RollTable.RollTableHTMLEmbedConfig,
+      options?: TextEditor.EnrichmentOptions,
     ): Promise<HTMLElement | null>;
 
     protected override _createFigureEmbed(
@@ -245,7 +251,7 @@ declare global {
       collection: string,
       documents: ClientDocument[],
       data: unknown[],
-      options: DocumentModificationOptions,
+      options: DocumentOnCreateOptions<"TableResult">,
       userId: string,
     ): void;
 
@@ -254,7 +260,7 @@ declare global {
       collection: string,
       documents: ClientDocument[],
       ids: string,
-      options: DocumentModificationOptions,
+      options: DocumentOnDeleteOptions<"TableResult">,
       userId: string,
     ): void;
 
@@ -288,7 +294,7 @@ declare global {
      */
     static fromFolder(
       folder: Folder,
-      options?: DocumentModificationOptions,
+      options?: DocumentOnCreateOptions<"Folder">,
     ): Promise<RollTable.ConfiguredInstance | undefined>;
   }
 

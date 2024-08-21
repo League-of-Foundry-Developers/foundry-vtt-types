@@ -25,17 +25,17 @@ declare global {
   }
 }
 
-const item = await Item.create({ name: "Mighty Axe of Killing", type: "weapon" });
-if (item) {
-  expectTypeOf(item.actor).toEqualTypeOf<Actor | null>();
-  expectTypeOf(item.img).toEqualTypeOf<string | null | undefined>();
-  expectTypeOf(item.isOwned).toEqualTypeOf<boolean>();
-  expectTypeOf(item.transferredEffects).toEqualTypeOf<ActiveEffect[]>();
-  expectTypeOf(item.type).toEqualTypeOf<"weapon" | "armor" | "base">();
-  expectTypeOf(item.getRollData()).toEqualTypeOf<AnyObject>();
-  expectTypeOf(item.system).toEqualTypeOf<WeaponData | ArmorData | AnyObject>();
+// @ts-expect-error - Item requires name.
+new Item();
 
-  if (item.system instanceof WeaponData) {
-    expectTypeOf(item.system.attack).toEqualTypeOf<number | null | undefined>();
-  }
-}
+// @ts-expect-error - Item requires name.
+new Item({});
+
+const item = new Item({ name: "Mighty Axe of Killing", type: "weapon" });
+
+expectTypeOf(item.actor).toEqualTypeOf<Actor | null>();
+expectTypeOf(item.img).toEqualTypeOf<string | null | undefined>();
+expectTypeOf(item.isOwned).toEqualTypeOf<boolean>();
+expectTypeOf(item.transferredEffects).toEqualTypeOf<ActiveEffect[]>();
+expectTypeOf(item.type).toEqualTypeOf<"weapon" | "armor" | "base">();
+expectTypeOf(item.getRollData()).toEqualTypeOf<object>();

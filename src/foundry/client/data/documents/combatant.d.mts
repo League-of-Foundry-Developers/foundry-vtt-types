@@ -1,9 +1,13 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
+import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace Combatant {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Combatant">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    /* eslint-disable-next-line @typescript-eslint/no-empty-object-type */
+    export interface DatabaseOperations extends DocumentDatabaseOperations<Combatant> {}
   }
 
   /**

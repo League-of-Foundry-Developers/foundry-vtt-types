@@ -1,6 +1,6 @@
-import type { AnyObject, EmptyObject, InexactPartial, Merge } from "../../../types/utils.mts";
+import type { AnyObject, InexactPartial, Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
-import type { DocumentMetadata, DocumentModificationOptions } from "../abstract/document.mts";
+import type { DocumentMetadata } from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
 import type * as fields from "../data/fields.d.mts";
 import type * as documents from "./_module.mts";
@@ -46,11 +46,10 @@ declare class BaseActiveEffect extends Document<
     }>,
   ): boolean;
 
-  protected override _preCreate(
-    data: fields.SchemaField.AssignmentType<BaseActiveEffect.Schema, EmptyObject>,
-    options: DocumentModificationOptions,
-    user: documents.BaseUser,
-  ): Promise<void>;
+  /**
+   * @privateRemarks _preCreate overridden but with no signature changes.
+   * For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
+   */
 
   protected override _initialize(options?: any): void;
 

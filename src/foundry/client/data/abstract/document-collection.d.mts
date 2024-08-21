@@ -1,6 +1,6 @@
 import type { ConfiguredDocumentClass, DocumentConstructor } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial, ConfiguredStoredDocument } from "../../../../types/utils.d.mts";
-import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
+import type { DocumentOnUpdateOptions } from "../../../common/abstract/document.d.mts";
 // import type _Collection from "../../../common/utils/collection.d.mts";
 
 // Fix for "Class 'Collection<ConfiguredStoredDocument<T>>' defines instance member property 'delete',
@@ -163,7 +163,7 @@ declare global {
      * @param transformation - An object of data or function to apply to all matched objects
      * @param condition      - A function which tests whether to target each object
      *                         (default: `null`)
-     * @param options        - Additional options passed to Document.update
+     * @param options        - Additional options passed to Document.updateDocuments
      *                         (default: `{}`)
      * @returns An array of updated data once the operation is complete
      */
@@ -172,114 +172,8 @@ declare global {
         | DeepPartial<InstanceType<ConfiguredDocumentClass<T>>["_source"]>
         | ((doc: ConfiguredStoredDocument<T>) => DeepPartial<InstanceType<ConfiguredDocumentClass<T>>["_source"]>),
       condition?: ((obj: ConfiguredStoredDocument<T>) => boolean) | null,
-      options?: DocumentModificationContext,
+      options?: DocumentOnUpdateOptions<T["metadata"]["name"]>,
     ): ReturnType<this["documentClass"]["updateDocuments"]>;
-
-    /**
-     * Preliminary actions taken before a set of Documents in this Collection are created.
-     * @param result  - An Array of created data objects
-     * @param options - Options which modified the creation operation
-     * @param userId  - The ID of the User who triggered the operation
-     */
-    protected _preCreateDocuments(
-      result: (InstanceType<T>["_source"] & { _id: string })[],
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-
-    /**
-     * Follow-up actions taken after a set of Documents in this Collection are created.
-     * @param documents - An Array of created Documents
-     * @param result    - An Array of created data objects
-     * @param options   - Options which modified the creation operation
-     * @param userId    - The ID of the User who triggered the operation
-     */
-    protected _onCreateDocuments(
-      documents: ConfiguredStoredDocument<T>[],
-      result: (InstanceType<T>["_source"] & { _id: string })[],
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-
-    /**
-     * Preliminary actions taken before a set of Documents in this Collection are updated.
-     * @param result  - An Array of incremental data objects
-     * @param options - Options which modified the update operation
-     * @param userId  - The ID of the User who triggered the operation
-     */
-    protected _preUpdateDocuments(
-      result: (DeepPartial<InstanceType<T>["_source"]> & { _id: string })[],
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-
-    /**
-     * Follow-up actions taken after a set of Documents in this Collection are updated.
-     * @param documents - An Array of updated Documents
-     * @param result    - An Array of incremental data objects
-     * @param options   - Options which modified the update operation
-     * @param userId    - The ID of the User who triggered the operation
-     */
-    protected _onUpdateDocuments(
-      documents: ConfiguredStoredDocument<T>[],
-      result: (DeepPartial<InstanceType<T>["_source"]> & { _id: string })[],
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-
-    /**
-     * Preliminary actions taken before a set of Documents in this Collection are deleted.
-     * @param result  - An Array of document IDs being deleted
-     * @param options - Options which modified the deletion operation
-     * @param userId  - The ID of the User who triggered the operation
-     */
-    protected _preDeleteDocuments(result: string[], options: DocumentModificationOptions, userId: string): void;
-
-    /**
-     * Follow-up actions taken after a set of Documents in this Collection are deleted.
-     * @param documents - An Array of deleted Documents
-     * @param result    - An Array of document IDs being deleted
-     * @param options   - Options which modified the deletion operation
-     * @param userId    - The ID of the User who triggered the operation
-     */
-    protected _onDeleteDocuments(
-      documents: ConfiguredStoredDocument<T>[],
-      result: string[],
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-
-    /**
-     * Handle shifting documents in a deleted folder to a new parent folder.
-     * @param parentFolder   - The parent folder to which documents should be shifted
-     * @param deleteFolderId - The ID of the folder being deleted
-     * @param deleteContents - Whether to delete the contents of the folder
-     */
-    protected _onDeleteFolder(parentFolder: Folder, deleteFolderId: string, deleteContents?: boolean): string[];
-
-    /**
-     * Generate the render context information provided for CRUD operations.
-     * @param action    - The CRUD operation.
-     * @param documents - The documents being operated on.
-     * @param data      - An array of creation or update objects, or an array of document IDs, depending on
-     *                    the operation.
-     * @internal
-     */
-    protected _getRenderContext(
-      action: DocumentCollection.RenderContext.Create<T>["action"],
-      documents: ConfiguredStoredDocument<T>[],
-      data: (InstanceType<T>["_source"] & { _id: string })[],
-    ): DocumentCollection.RenderContext.Create<T>;
-    protected _getRenderContext(
-      action: DocumentCollection.RenderContext.Update<T>["action"],
-      documents: ConfiguredStoredDocument<T>[],
-      data: (DeepPartial<InstanceType<T>["_source"]> & { _id: string })[],
-    ): DocumentCollection.RenderContext.Update<T>;
-    protected _getRenderContext(
-      action: DocumentCollection.RenderContext.Delete<T>["action"],
-      documents: ConfiguredStoredDocument<T>[],
-      data: string[],
-    ): DocumentCollection.RenderContext.Delete<T>;
   }
 
   namespace DocumentCollection {

@@ -17,7 +17,7 @@ export type ProseMirrorCommand = (
 export declare namespace ProseMirrorKeyMaps {
   export interface Options {
     /** A function to call when Ctrl+S is pressed. */
-    onSave?: Function;
+    onSave?: () => void;
   }
 }
 
@@ -35,7 +35,7 @@ declare class ProseMirrorKeyMaps extends ProseMirrorPlugin {
   /**
    * A function to call when Ctrl+S is pressed.
    */
-  readonly onSave: Function;
+  readonly onSave: () => void;
 
   static override build(schema: Schema, options?: ProseMirrorKeyMaps.Options): Plugin;
 

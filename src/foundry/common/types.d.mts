@@ -1,6 +1,7 @@
-import type { ConstructorOf, DeepPartial } from "../../types/utils.d.mts";
 import type ApplicationV2 from "../client-esm/applications/api/application.mts";
 import type { CustomFormInput } from "../client-esm/applications/forms/fields.mts";
+import type { DataModel } from "./abstract/module.d.mts";
+import type { DataField } from "./data/fields.d.mts";
 
 declare global {
   interface DocumentConstructionContext {
@@ -23,7 +24,11 @@ declare global {
     strict?: boolean | undefined;
   }
 
-  // TODO Removed in v12
+  // TODO: deprecated in V12, will be removed in V14
+  // note: this was removed from this file in V12, but there are still (deprecated) methods
+  //    in Document that use it, so we should retain it until V14 when those
+  //    methods are removed
+  /** @deprecated since v12 */
   interface DocumentModificationContext {
     /**
      * A parent Document within which these Documents should be embedded
@@ -119,16 +124,36 @@ declare global {
   type PointArray = [x: number, y: number];
 
   /**
+   * Make all properties in T recursively readonly.
+   */
+  /* eslint-disable prettier/prettier */   // prettier is breaking this code
+  type DeepReadonly<T> = Readonly<{
+    [K in keyof T]:
+      /* eslint-disable-next-line @typescript-eslint/no-unsafe-function-type */
+       T[K] extends (undefined | null | boolean | number | string | symbol | bigint | Function) ? T[K] :
+       T[K] extends Array<infer V> ? ReadonlyArray<DeepReadonly<V>> :
+       T[K] extends Map<infer K, infer V> ? ReadonlyMap<DeepReadonly<K>, DeepReadonly<V>> :
+       T[K] extends Set<infer V> ? ReadonlySet<DeepReadonly<V>> : DeepReadonly<T[K]>
+   }>
+  /* eslint-enable prettier/prettier */
+
+  /**
+   * A class constructor.
+   * Used for functions with generic class constructor parameters.
+   */
+  type Constructor = new (...args: any[]) => any;
+
+  /**
    * A standard rectangle interface.
    */
-  type Rectangle =
-    | PIXI.Rectangle
-    | {
-        x: number;
-        y: number;
-        width: number;
-        height: number;
-      };
+  interface Rectangle {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  }
+
+  type BuiltInTypes = typeof Number | typeof String | typeof Boolean;
 
   type RGBColorVector = [r: number, g: number, b: number];
   type HSVColorVector = [h: number, s: number, v: number];
@@ -159,19 +184,8 @@ declare global {
     /** Indicates if this Setting should render in the Config application */
     config?: boolean | undefined;
 
-    // TODO: This can take data models and data fields now
-    /** The JS Type that the Setting is storing */
-    type?:
-      | (T extends string
-          ? typeof String
-          : T extends number
-            ? typeof Number
-            : T extends boolean
-              ? typeof Boolean
-              : T extends Array<any>
-                ? typeof Array
-                : ConstructorOf<T>)
-      | undefined;
+    /** The type of data stored by this Setting */
+    type: BuiltInTypes | DataField | DataModel<any, any>;
 
     /** For string Types, defines the allowable values */
     choices?: (T extends number | string ? Record<T, string> : never) | undefined;
@@ -188,7 +202,7 @@ declare global {
       | undefined;
 
     /** The default value */
-    default: T;
+    default?: T | undefined;
 
     /** Whether setting requires Foundry to be reloaded on change  */
     requiresReload?: boolean | undefined;

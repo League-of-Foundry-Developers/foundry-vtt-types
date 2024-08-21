@@ -1,10 +1,13 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
-import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
+import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace Setting {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Setting">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    /* eslint-disable-next-line @typescript-eslint/no-empty-object-type */
+    export interface DatabaseOperations extends DocumentDatabaseOperations<Setting> {}
   }
 
   /**
@@ -26,17 +29,10 @@ declare global {
     // TODO: This is the same as `DataModel._initialize`
     protected _initialize(options?: any): void;
 
-    protected override _onCreate(
-      data: foundry.documents.BaseSetting.ConstructorData,
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-
-    protected _onUpdate(
-      changed: foundry.documents.BaseSetting.UpdateData,
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
+    /**
+     * @privateRemarks _onCreate and _preUpdate are overridden but with no signature changes.
+     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+     */
 
     /**
      * Cast the value of the Setting into its defined type.

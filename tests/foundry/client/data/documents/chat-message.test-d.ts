@@ -73,6 +73,6 @@ expectTypeOf(chat.applyRollMode("custom-roll-mode")).toEqualTypeOf<void>();
 // @ts-expect-error - "unknown-roll-mode" is not a valid roll mode
 chat.applyRollMode("unknown-roll-mode");
 
-expectTypeOf(chat.getRollData()).toEqualTypeOf<object>();
+expectTypeOf(chat.getRollData()).toEqualTypeOf<Record<string, unknown>>();
 expectTypeOf(chat.getHTML()).toEqualTypeOf<Promise<JQuery>>();
 expectTypeOf(chat.export()).toEqualTypeOf<string>();

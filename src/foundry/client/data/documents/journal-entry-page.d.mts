@@ -1,12 +1,14 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { InexactPartial } from "../../../../types/utils.d.mts";
-import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
-import type BaseJournalEntryPage from "../../../common/documents/journal-entry-page.d.mts";
+import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace JournalEntryPage {
     type ConfiguredClass = ConfiguredDocumentClassForName<"JournalEntryPage">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    /* eslint-disable-next-line @typescript-eslint/no-empty-object-type */
+    export interface DatabaseOperations extends DocumentDatabaseOperations<JournalEntryPage> {}
 
     interface JournalEntryPageHeading {
       /** The heading level, 1-6. */
@@ -115,11 +117,10 @@ declare global {
 
     override _onClickDocumentLink(event: MouseEvent): this;
 
-    protected override _onUpdate(
-      changed: BaseJournalEntryPage.UpdateData,
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
+    /**
+     * @privateRemarks _onUpdate is overridden but with no signature changes.
+     * For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
+     */
 
     protected override _buildEmbedHTML(
       config: TextEditor.DocumentHTMLEmbedConfig,

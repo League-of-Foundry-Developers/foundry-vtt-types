@@ -6,14 +6,15 @@ import type {
   DocumentType,
 } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial } from "../../../../types/utils.d.mts";
-import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
-import type BaseFolder from "../../../common/documents/folder.d.mts";
-import type { BaseUser } from "../../../common/documents/_module.d.mts";
+import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace Folder {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Folder">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    /* eslint-disable-next-line @typescript-eslint/no-empty-object-type */
+    export interface DatabaseOperations extends DocumentDatabaseOperations<Folder> {}
 
     interface ExportToCompendiumOptions {
       /** Update existing entries in the Compendium pack, matching by name */
@@ -81,11 +82,10 @@ declare global {
      */
     get ancestors(): Folder.ConfiguredInstance[];
 
-    protected _preCreate(
-      data: BaseFolder.ConstructorData,
-      options: DocumentModificationOptions,
-      user: BaseUser,
-    ): Promise<boolean | void>;
+    /**
+     * @privateRemarks _preCreate overridden but with no signature changes.
+     * For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
+     */
 
     static createDialog<T extends DocumentConstructor>(
       this: T,

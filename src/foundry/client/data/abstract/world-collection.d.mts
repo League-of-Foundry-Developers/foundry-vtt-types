@@ -4,6 +4,7 @@ import type {
   DocumentConstructor,
 } from "../../../../types/helperTypes.d.mts";
 import type { ConfiguredStoredDocument, DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
+import type { DocumentOnCreateOptions } from "../../../common/abstract/document.d.mts";
 import type { DirectoryCollectionMixin_DocumentCollection_Interface } from "./directory-collection-mixin.d.mts";
 
 declare const DirectoryCollectionMixin_DocumentCollection: DirectoryCollectionMixin_DocumentCollection_Interface;
@@ -56,13 +57,21 @@ declare global {
      *                     (default: `{}`)
      * @returns The imported Document instance
      */
+
+    /**
+     * @privateRemarks We've added everything in WorldCollection.FromCompendiumOptions to DatabaseCreateOperation
+     * because they get passed through to Document.create() by this function.  So the
+     * union type isn't really needed.  Leaving it because it feels like foundry will pull
+     * those back out in the future (and we could miss it because we added them to
+     * DatabaseCreateOperation but the foundry typedef doesn't have them).
+     */
     importFromCompendium(
       pack: CompendiumCollection<
         CompendiumCollection.Metadata & { type: ConfiguredDocumentClass<T>["metadata"]["name"] }
       >,
       id: string,
       updateData?: DeepPartial<InstanceType<ConfiguredDocumentClass<T>>["_source"]>,
-      options?: InexactPartial<DocumentModificationContext & WorldCollection.FromCompendiumOptions>,
+      options?: InexactPartial<DocumentOnCreateOptions<T["metadata"]["name"]> & WorldCollection.FromCompendiumOptions>,
     ): Promise<ConfiguredStoredDocument<T>>;
 
     /**

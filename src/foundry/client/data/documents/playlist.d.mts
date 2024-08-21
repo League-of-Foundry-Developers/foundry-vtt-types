@@ -1,13 +1,22 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { InexactPartial } from "../../../../types/utils.d.mts";
-import type Document from "../../../common/abstract/document.d.mts";
-import type { AnyMetadata, DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
+import type {
+  AnyMetadata,
+  DocumentDatabaseOperations,
+  DocumentOnCreateOptions,
+  DocumentOnDeleteOptions,
+  DocumentOnUpdateOptions,
+} from "../../../common/abstract/document.d.mts";
+import type { Document } from "../../../common/abstract/module.d.mts";
 import type { ClientDocument } from "../abstract/client-document.d.mts";
 
 declare global {
   namespace Playlist {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Playlist">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    /* eslint-disable-next-line @typescript-eslint/no-empty-object-type */
+    export interface DatabaseOperations extends DocumentDatabaseOperations<Playlist> {}
 
     interface PlayNextOptions {
       /**
@@ -124,26 +133,17 @@ declare global {
 
     override _onClickDocumentLink(event: MouseEvent): ReturnType<this["playAll" | "stopAll"]>;
 
-    protected override _preUpdate(
-      changed: Playlist["_source"],
-      options: DocumentModificationOptions,
-      user: foundry.documents.BaseUser,
-    ): Promise<void>;
-
-    protected override _onUpdate(
-      changed: foundry.documents.BasePlaylist.UpdateData,
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-
-    protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
+    /**
+     * @privateRemarks _preUpdate, _onUpdate, _onDelete, _onCreateDescendantDocuments, _onUpdateDescendantDocuments, and _onDeleteDescendantDocuments are all overridden but with no signature changes.
+     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+     */
 
     protected override _onCreateDescendantDocuments(
       parent: ClientDocument<Document<any, AnyMetadata, null>>,
       collection: string,
       documents: ClientDocument<Document<any, AnyMetadata, null>>[],
       data: unknown[],
-      options: DocumentModificationOptions,
+      options: DocumentOnCreateOptions<"PlaylistSound">,
       userId: string,
     ): void;
 
@@ -152,7 +152,7 @@ declare global {
       collection: string,
       documents: ClientDocument<Document<any, AnyMetadata, null>>[],
       changes: unknown[],
-      options: DocumentModificationOptions,
+      options: DocumentOnUpdateOptions<"PlaylistSound">,
       userId: string,
     ): void;
 
@@ -161,7 +161,7 @@ declare global {
       collection: string,
       documents: ClientDocument<Document<any, AnyMetadata, null>>[],
       ids: string,
-      options: DocumentModificationOptions,
+      options: DocumentOnDeleteOptions<"PlaylistSound">,
       userId: string,
     ): void;
 

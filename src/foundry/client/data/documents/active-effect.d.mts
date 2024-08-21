@@ -1,14 +1,23 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
-import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 import type { DataField } from "../../../common/data/fields.d.mts";
 import type { DataModel } from "../../../common/abstract/data.d.mts";
-import type BaseUser from "../../../common/documents/user.d.mts";
+import type Document from "../../../common/abstract/document.d.mts";
+import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace ActiveEffect {
     type ConfiguredClass = ConfiguredDocumentClassForName<"ActiveEffect">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    /* eslint-disable-next-line @typescript-eslint/no-empty-object-type */
+    export interface DatabaseOperations
+      extends DocumentDatabaseOperations<
+        ActiveEffect,
+        { animate: boolean },
+        { animate: boolean },
+        { animate: boolean }
+      > {}
   }
 
   /**
@@ -51,9 +60,6 @@ declare global {
       options?: DocumentConstructionContext,
     ): Promise<ActiveEffect.ConfiguredInstance>;
 
-    /* -------------------------------------------- */
-    /*  Properties                                  */
-    /* -------------------------------------------- */
     /**
      * Is there some system logic that makes this active effect ineligible for application?
      * @defaultValue `false`
@@ -63,7 +69,7 @@ declare global {
     /**
      * Retrieve the Document that this ActiveEffect targets for modification.
      */
-    get target(): Document | null;
+    get target(): Document.Any | null;
 
     /**
      * Whether the Active Effect currently applying its changes to the target.
@@ -122,10 +128,6 @@ declare global {
      * Returns "None" (localized) if it has no origin, and "Unknown" (localized) if the origin cannot be resolved.
      */
     get sourceName(): string;
-
-    /* -------------------------------------------- */
-    /*  Methods                                     */
-    /* -------------------------------------------- */
 
     /**
      * Apply EffectChangeData to a field within a DataModel.
@@ -288,43 +290,13 @@ declare global {
       };
     };
 
-    /* -------------------------------------------- */
-    /*  Flag Operations                             */
-    /* -------------------------------------------- */
     // TODO: This is a minor override and doing the extension is complicated
     // getFlag(scope: string, key: string): unknown;
 
-    protected _preCreate(
-      data: foundry.documents.BaseActiveEffect.ConstructorData,
-      options: DocumentModificationOptions,
-      user: foundry.documents.BaseUser,
-    ): Promise<void>;
-
-    /* -------------------------------------------- */
-    /*  Event Handlers                              */
-    /* -------------------------------------------- */
-
-    protected override _preCreate(
-      data: foundry.documents.BaseActiveEffect.ConstructorData,
-      options: DocumentModificationOptions,
-      user: BaseUser,
-    ): Promise<boolean | void>;
-
-    protected override _onCreate(data: this["_source"], options: DocumentModificationOptions, userId: string): void;
-
-    protected override _onUpdate(
-      data: foundry.documents.BaseActiveEffect.UpdateData,
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-
-    protected override _preUpdate(
-      changed: foundry.documents.BaseActiveEffect.UpdateData,
-      options: DocumentModificationOptions,
-      user: BaseUser,
-    ): Promise<boolean | void>;
-
-    protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
+    /**
+     * @privateRemarks _preCreate, _onCreate, _onUpdate, _preUpdate, and _onDelete are all overridden but with no signature changes.
+     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+     */
 
     /**
      * Display changes to active effects as scrolling Token status text.

@@ -1,5 +1,4 @@
 import type { RequiredProps } from "../../../../types/utils.d.mts";
-import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
@@ -723,19 +722,10 @@ declare global {
 
     protected override _getShiftedPosition(dx: number, dy: number): { x: number; y: number };
 
-    protected override _onCreate(
-      data: foundry.documents.BaseToken.ConstructorData,
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-
-    protected override _onUpdate(
-      data: foundry.documents.BaseToken.UpdateData,
-      options: DocumentModificationOptions & { animate?: boolean },
-      userId: string,
-    ): void;
-
-    protected override _onDelete(options?: DocumentModificationOptions, userId?: string): void;
+    /**
+     * @privateRemarks _onDelete and _onUpdate are overridden but with no signature changes.
+     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+     */
 
     /**
      * Handle changes to Token behavior when a significant status effect is applied

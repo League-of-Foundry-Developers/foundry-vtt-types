@@ -1,10 +1,14 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
-import type { DeepPartial } from "../../../../types/utils.d.mts";
+import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
+import type { DocumentDatabaseOperations, DocumentOnCreateOptions } from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace Card {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Card">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    /* eslint-disable-next-line @typescript-eslint/no-empty-object-type */
+    export interface DatabaseOperations extends DocumentDatabaseOperations<Card> {}
   }
 
   /**
@@ -89,9 +93,9 @@ declare global {
 
     /**
      * Recall this Card to its original Cards parent.
-     * @param options - Options which modify the reset operation
+     * @param options - Options which modify the recall operation
      *                  (default: `{}`)
-     * @returns A reference to the reset card belonging to its original parent
+     * @returns A reference to the recallled card belonging to its original parent
      */
     recall(options?: Cards.ResetOptions): Promise<Card.ConfiguredInstance>;
 
@@ -105,7 +109,7 @@ declare global {
      */
     toMessage(
       messageData?: DeepPartial<foundry.documents.BaseChatMessage.ConstructorData>,
-      options?: DocumentModificationContext,
+      options?: InexactPartial<DocumentOnCreateOptions<"ChatMessage">>,
     ): Promise<ChatMessage.ConfiguredInstance | undefined>;
   }
 }

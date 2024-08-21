@@ -1,11 +1,21 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { InexactPartial } from "../../../../types/utils.d.mts";
-import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
+import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace Scene {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Scene">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    /* eslint-disable @typescript-eslint/no-empty-object-type */
+    export interface DatabaseOperations
+      extends DocumentDatabaseOperations<
+        Scene,
+        {},
+        { thumb: (string | null)[]; autoReposition: boolean; animateDarkness: number },
+        {}
+      > {}
+    /* eslint-enable @typescript-eslint/no-empty-object-type */
   }
 
   /**
@@ -92,23 +102,10 @@ declare global {
 
     override _onClickDocumentLink(event: MouseEvent): unknown;
 
-    protected override _preCreate(
-      data: foundry.documents.BaseScene.ConstructorData,
-      options: DocumentModificationOptions,
-      user: foundry.documents.BaseUser,
-    ): Promise<void>;
-
-    protected override _onCreate(
-      data: foundry.documents.BaseScene.ConstructorData,
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-
-    protected override _preUpdate(
-      changed: foundry.documents.BaseScene.UpdateData,
-      options: DocumentModificationOptions,
-      user: foundry.documents.BaseUser,
-    ): Promise<void>;
+    /**
+     * @privateRemarks _onCreate, _preUpdate, _onUpdate, _preDelete, and _onDelete are all overridden but with no signature changes.
+     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+     */
 
     /**
      * Handle repositioning of placed objects when the Scene dimensions change
@@ -117,57 +114,16 @@ declare global {
       sceneUpdateData: foundry.documents.BaseScene.ConstructorData,
     ): foundry.documents.BaseScene.ConstructorData;
 
-    protected override _onUpdate(
-      changed: foundry.documents.BaseScene.UpdateData,
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-
-    protected override _preDelete(
-      options: DocumentModificationOptions,
-      user: foundry.documents.BaseUser,
-    ): Promise<void>;
-
-    protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
-
     /**
      * Handle Scene activation workflow if the active state is changed to true
      * @param active - Is the scene now active?
      */
     protected _onActivate(active: boolean): ReturnType<this["view"]> | ReturnType<Canvas["draw"]>;
 
-    protected override _preCreateDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      data: unknown[],
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-
-    protected override _preUpdateDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      changes: unknown[],
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-
-    protected override _preDeleteDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      ids: string[],
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-
-    protected override _onUpdateDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      documents: ClientDocument[],
-      changes: unknown[],
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
+    /**
+     * @privateRemarks _preCreateDescendantDocuments, _preUpdateDescendantDocuments, _preDeleteDescendantDocuments, and_onUpdateDescendantDocuments are all overridden but with no signature changes.
+     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+     */
 
     override toCompendium<
       FlagsOpt extends boolean = false,

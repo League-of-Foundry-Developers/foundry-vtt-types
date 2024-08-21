@@ -1,11 +1,13 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
-import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
-import type { BaseUser } from "../../../common/documents/_module.d.mts";
+import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace Item {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Item">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    /* eslint-disable-next-line @typescript-eslint/no-empty-object-type */
+    export interface DatabaseOperations extends DocumentDatabaseOperations<Item> {}
   }
 
   /**
@@ -46,14 +48,9 @@ declare global {
      */
     getRollData(): object;
 
-    protected override _preCreate(
-      data: foundry.documents.BaseItem.ConstructorData,
-      options: DocumentModificationOptions,
-      user: BaseUser,
-    ): Promise<boolean | void>;
-
     /**
-     * @privateRemarks _onCreateDocuments and _onDeleteDocuments are overridden but left off because the signature doesn't change and unnecessarily adds to the type complexity.
+     * @privateRemarks _preCreate, _onCreateDocuments and _onDeleteDocuments are all overridden but with no signature changes.
+     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
      */
   }
 }

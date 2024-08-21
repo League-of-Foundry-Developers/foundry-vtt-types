@@ -1,4 +1,3 @@
-import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
@@ -191,13 +190,10 @@ declare global {
      */
     protected _refreshHandle(b: Rectangle): void;
 
-    protected override _onUpdate(
-      changed: foundry.documents.BaseTile.UpdateData,
-      options: DocumentModificationOptions,
-      userId: string,
-    ): Promise<this> | void;
-
-    protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
+    /**
+     * @privateRemarks _onUpdate and _onDelete are all overridden but with no signature changes.
+     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+     */
 
     override activateListeners(): void;
 

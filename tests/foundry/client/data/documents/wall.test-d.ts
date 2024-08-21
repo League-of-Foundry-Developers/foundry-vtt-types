@@ -1,9 +1,9 @@
 const scene = new Scene({ name: "foobar" });
 
-// @ts-expect-error Creation technically works but fails validation
+// @ts-expect-error requires 'c'
 new WallDocument();
 
-// @ts-expect-error Creation technically works but fails validation
+// @ts-expect-error requires 'c'
 new WallDocument({});
 
 new WallDocument({ c: [0, 0, 0, 0] });

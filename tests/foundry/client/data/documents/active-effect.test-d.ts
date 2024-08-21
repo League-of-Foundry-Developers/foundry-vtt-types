@@ -1,29 +1,30 @@
 import { expectTypeOf } from "vitest";
+import type { DataModel, Document } from "../../../../../src/foundry/common/abstract/module.d.mts";
 
-const eff = new ActiveEffect({});
+// @ts-expect-error - ActiveEffect requires name.
+new ActiveEffect();
 
-expectTypeOf(eff.img).toEqualTypeOf<string | null | undefined>();
-expectTypeOf(eff.updateDuration().seconds).toEqualTypeOf<number | undefined | null>();
+// @ts-expect-error - ActiveEffect requires name.
+new ActiveEffect({});
 
-// declare global {
-//   interface FlagConfig {
-//     ActiveEffect: {
-//       mySystem?: {
-//         importantFlag?: boolean;
-//       };
-//     };
-//   }
-// }
+const effect = new ActiveEffect({ name: "My effect" });
+expectTypeOf(effect).toEqualTypeOf<ActiveEffect>();
 
-// expectTypeOf(eff.getFlag("mySystem", "importantFlag")).toEqualTypeOf<boolean | undefined>();
-// expectTypeOf(eff.getFlag("core", "statusId")).toEqualTypeOf<string | undefined>();
-// expectTypeOf(eff.getFlag("core", "overlay")).toEqualTypeOf<boolean | undefined>();
+declare const model: DataModel.Any;
+declare const change: EffectChangeData;
 
-// eff.setFlag("core", "statusId", "foo");
-// eff.setFlag("core", "overlay", false);
+expectTypeOf(ActiveEffect.fromStatusEffect("")).toEqualTypeOf<Promise<ActiveEffect.ConfiguredInstance>>();
+expectTypeOf(ActiveEffect.applyField(model, change)).toEqualTypeOf<unknown>();
 
-// // @ts-expect-error the setting core.statusId is a string not a number
-// eff.setFlag("core", "statusId", 0);
+expectTypeOf(effect.isSuppressed).toEqualTypeOf<boolean>();
+expectTypeOf(effect.target).toEqualTypeOf<Document.Any | null>();
+expectTypeOf(effect.active).toEqualTypeOf<boolean>();
+expectTypeOf(effect.modifiesActor).toEqualTypeOf<boolean>();
+expectTypeOf(effect.prepareBaseData()).toEqualTypeOf<void>();
+expectTypeOf(effect.prepareDerivedData()).toEqualTypeOf<void>();
+expectTypeOf(effect.updateDuration()).toEqualTypeOf<ActiveEffectDuration>();
+expectTypeOf(effect.isTemporary).toEqualTypeOf<boolean>();
+expectTypeOf(effect.sourceName).toEqualTypeOf<string>();
 
-// // @ts-expect-error the setting core.overlay is a boolean not a number
-// eff.setFlag("core", "overlay", 0);
+declare const actor: Actor.ConfiguredInstance;
+expectTypeOf(effect.apply(actor, change)).toEqualTypeOf<unknown>();

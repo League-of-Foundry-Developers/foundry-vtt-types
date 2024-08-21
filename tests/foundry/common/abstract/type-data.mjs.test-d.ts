@@ -2,7 +2,6 @@ import { expectTypeOf } from "vitest";
 import type { fields } from "../../../../src/foundry/common/data/module.d.mts";
 import type BaseJournalEntryPage from "../../../../src/foundry/common/documents/journal-entry-page.d.mts";
 import type { TypeDataModel } from "../../../../src/foundry/common/abstract/type-data.d.mts";
-import type { DocumentModificationOptions } from "../../../../src/foundry/common/abstract/document.d.mts";
 import type BaseUser from "../../../../src/foundry/common/documents/user.d.mts";
 import type { DeepPartial } from "../../../../src/types/utils.d.mts";
 
@@ -76,23 +75,23 @@ class QuestModel extends foundry.abstract.TypeDataModel<
 
   protected async _preCreate(
     data: TypeDataModel.ParentAssignmentType<this>,
-    options: DocumentModificationOptions,
+    options: TypeDataModel.TypeDataModelModificationOptions,
     user: BaseUser,
   ): Promise<boolean | void> {
     expectTypeOf(data.system.steps).toEqualTypeOf<string[]>();
 
-    expectTypeOf(options).toEqualTypeOf<DocumentModificationOptions>();
+    expectTypeOf(options).toEqualTypeOf<TypeDataModel.TypeDataModelModificationOptions>();
     expectTypeOf(user).toEqualTypeOf<BaseUser>();
   }
 
   protected async _preUpdate(
     data: DeepPartial<TypeDataModel.ParentAssignmentType<this>>,
-    options: DocumentModificationOptions,
+    options: TypeDataModel.TypeDataModelModificationOptions,
     userId: string,
   ): Promise<boolean | void> {
     expectTypeOf(data.system?.steps).toEqualTypeOf<string[] | undefined>();
 
-    expectTypeOf(options).toEqualTypeOf<DocumentModificationOptions>();
+    expectTypeOf(options).toEqualTypeOf<TypeDataModel.TypeDataModelModificationOptions>();
     expectTypeOf(userId).toEqualTypeOf<string>();
   }
 }

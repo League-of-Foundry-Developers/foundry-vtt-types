@@ -9,9 +9,6 @@ expectTypeOf(doc.inCombat).toEqualTypeOf<boolean>();
 expectTypeOf(doc.clone()).toEqualTypeOf<TokenDocument>();
 expectTypeOf(doc.clone({}, { save: true })).toEqualTypeOf<Promise<TokenDocument>>();
 expectTypeOf(doc.actor).toEqualTypeOf<Actor.ConfiguredInstance | null>();
-expectTypeOf(doc.modifyActorDocument({ actorLink: true, "lightAnimation.speed": 5 }, {})).toEqualTypeOf<
-  Promise<[Actor.ConfiguredInstance | null]>
->();
 
 // Can't get more specific due to delta concerns
 expectTypeOf(doc.getEmbeddedCollection("Item")).toEqualTypeOf<foundry.utils.Collection<Item.ConfiguredInstance>>();

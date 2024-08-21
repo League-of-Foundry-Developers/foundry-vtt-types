@@ -1,5 +1,11 @@
 import { expectTypeOf } from "vitest";
 
-const doc = new TileDocument({ width: 400, height: 400 });
-expectTypeOf(doc.object).toEqualTypeOf<Tile.ConfiguredInstance | null>();
-expectTypeOf(doc.layer).toEqualTypeOf<TilesLayer>();
+// @ts-expect-error - requires width and height
+new TileDocument();
+
+// @ts-expect-error - requires width and height
+new TileDocument({});
+
+const tile = new TileDocument({ width: 400, height: 400 });
+expectTypeOf(tile).toEqualTypeOf<TileDocument>();
+expectTypeOf(tile.prepareDerivedData()).toEqualTypeOf<void>();

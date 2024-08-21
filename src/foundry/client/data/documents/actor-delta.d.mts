@@ -1,12 +1,15 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
-import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 import type { SchemaField } from "../../../common/data/fields.d.mts";
 import type { BaseActor } from "../../../common/documents/_module.d.mts";
+import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace ActorDelta {
     type ConfiguredClass = ConfiguredDocumentClassForName<"ActorDelta">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    /* eslint-disable-next-line @typescript-eslint/no-empty-object-type */
+    export interface DatabaseOperations extends DocumentDatabaseOperations<ActorDelta> {}
   }
 
   /**
@@ -64,13 +67,10 @@ declare global {
      */
     _handleDeltaCollectionUpdates(doc: Document): void;
 
-    protected override _onUpdate(
-      changed: foundry.documents.BaseActor.UpdateData,
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-
-    protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
+    /**
+     * @privateRemarks _onUpdate and _onDelete are all overridden but with no signature changes.
+     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+     */
 
     protected override _dispatchDescendantDocumentEvents(
       event: ClientDocument.lifeCycleEventName,

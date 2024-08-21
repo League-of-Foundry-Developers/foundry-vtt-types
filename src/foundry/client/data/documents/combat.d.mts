@@ -1,11 +1,26 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
-import type { ConstructorOf } from "../../../../types/utils.d.mts";
-import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
+import type { ConstructorOf, InexactPartial } from "../../../../types/utils.d.mts";
+import type {
+  DocumentDatabaseOperations,
+  DocumentOnCreateOptions,
+  DocumentOnDeleteOptions,
+  DocumentOnUpdateOptions,
+} from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace Combat {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Combat">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    /* eslint-disable @typescript-eslint/no-empty-object-type */
+    export interface DatabaseOperations
+      extends DocumentDatabaseOperations<
+        Combat,
+        {},
+        { direction: -1 | 1; worldTime: { delta: number }; turnEvents: boolean },
+        {}
+      > {}
+    /* eslint-enable @typescript-eslint/no-empty-object-type */
 
     interface InitiativeOptions {
       /**
@@ -88,9 +103,7 @@ declare global {
      * Deactivate all other Combat encounters within the viewed Scene and set this one as active
      * @param options - Additional context to customize the update workflow
      */
-    activate(
-      options?: DocumentModificationContext & foundry.utils.MergeObjectOptions,
-    ): Promise<Combat.ConfiguredInstance[]>;
+    activate(options?: DocumentOnUpdateOptions<"Combat">): Promise<Combat.ConfiguredInstance[]>;
 
     override prepareDerivedData(): void;
 
@@ -197,23 +210,17 @@ declare global {
      */
     protected _refreshTokenHUD(documents: Array<Combatant>): void;
 
-    protected override _onCreate(data: this["_source"], options: DocumentModificationOptions, userId: string): void;
+    /**
+     * @privateRemarks _onCreate, _onUpdate, and _onDelete  are all overridden but with no signature changes.
+     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+     */
 
-    protected override _onUpdate(
-      changed: foundry.documents.BaseCombatant.UpdateData,
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-
-    protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
-
-    // TODO: Consider hardening the types based on the known properties of the schema
     protected override _onCreateDescendantDocuments(
       parent: ClientDocument,
       collection: string,
       documents: ClientDocument[],
       result: unknown[],
-      options: DocumentModificationOptions,
+      options: DocumentOnCreateOptions<"Combatant"> & InexactPartial<{ combatTurn: number; turnEvents: boolean }>,
       userId: string,
     ): void;
 
@@ -222,7 +229,7 @@ declare global {
       collection: string,
       documents: ClientDocument[],
       changes: unknown[],
-      options: DocumentModificationOptions,
+      options: DocumentOnUpdateOptions<"Combatant"> & InexactPartial<{ combatTurn: number; turnEvents: boolean }>,
       userId: string,
     ): void;
 
@@ -231,10 +238,9 @@ declare global {
       collection: string,
       documents: ClientDocument[],
       ids: string,
-      options: DocumentModificationOptions,
+      options: DocumentOnDeleteOptions<"Combatant"> & InexactPartial<{ combatTurn: number; turnEvents: boolean }>,
       userId: string,
     ): void;
-
     /**
      * Manage the execution of Combat lifecycle events.
      * This method orchestrates the execution of four events in the following order, as applicable:

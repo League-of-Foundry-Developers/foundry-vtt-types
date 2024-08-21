@@ -1,11 +1,14 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
-import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
-import type { BaseJournalEntry, BaseUser } from "../../../common/documents/_module.d.mts";
+import type { BaseUser } from "../../../common/documents/_module.d.mts";
+import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace JournalEntry {
     type ConfiguredClass = ConfiguredDocumentClassForName<"JournalEntry">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    /* eslint-disable-next-line @typescript-eslint/no-empty-object-type */
+    export interface DatabaseOperations extends DocumentDatabaseOperations<JournalEntry> {}
   }
 
   /**
@@ -47,13 +50,10 @@ declare global {
      */
     panToNote(options?: PanToNoteOptions): Promise<void>;
 
-    protected override _onUpdate(
-      changed: BaseJournalEntry.UpdateData,
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-
-    protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
+    /**
+     * @privateRemarks _onUpdate and _onDelete are all overridden but with no signature changes.
+     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+     */
   }
 }
 

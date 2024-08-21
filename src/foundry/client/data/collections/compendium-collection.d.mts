@@ -1,6 +1,11 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
+import type {
+  DatabaseCreateOperation,
+  DatabaseDeleteOperation,
+  DatabaseUpdateOperation,
+} from "../../../common/abstract/_types.d.mts";
+import type { DocumentOnCreateOptions, DocumentOnUpdateOptions } from "../../../common/abstract/document.d.mts";
 import type { DeepPartial, EmptyObject, InexactPartial, StoredDocument } from "../../../../types/utils.d.mts";
-import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 import type { DirectoryCollectionMixin_DocumentCollection_Interface } from "../abstract/directory-collection-mixin.d.mts";
 
 declare const DirectoryCollectionMixin_DocumentCollection: DirectoryCollectionMixin_DocumentCollection_Interface;
@@ -76,7 +81,7 @@ declare global {
     get collection(): this["metadata"]["id"];
 
     /** The banner image for this Compendium pack, or the default image for the pack type if no image is set. */
-    get banner(): string;
+    get banner(): string | null | void;
 
     /**
      * A reference to the Application class which provides an interface to interact with this compendium content.
@@ -172,6 +177,8 @@ declare global {
     set(id: string, document: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>): this;
 
     delete: (id: string) => boolean;
+
+    clear: () => void;
 
     /**
      * Load the Compendium index and cache it as the keys and values of the Collection.
@@ -300,7 +307,7 @@ declare global {
            * @defaultValue `""`
            * */
           folderName: string;
-        } & DocumentModificationContext &
+        } & DocumentOnCreateOptions<this["metadata"]["type"]> &
           WorldCollection.FromCompendiumOptions
       >,
     ): Promise<StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[]>;
@@ -344,7 +351,7 @@ declare global {
      */
     static createCompendium<T extends CompendiumCollection.Metadata>(
       metadata: T,
-      options?: Partial<DocumentModificationOptions>,
+      options?: DocumentOnCreateOptions<T["type"]>,
     ): Promise<CompendiumCollection<T>>;
 
     /**
@@ -390,40 +397,33 @@ declare global {
             doc: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>,
           ) => DeepPartial<DocumentInstanceForCompendiumMetadata<T>["_source"]>),
       condition?: ((obj: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>) => boolean) | null,
-      options?: DocumentModificationContext,
+      options?: DocumentOnUpdateOptions<this["metadata"]["type"]>,
     ): ReturnType<this["documentClass"]["updateDocuments"]>;
-
-    protected _onCreateDocuments(
-      documents: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[],
-      result: (DocumentInstanceForCompendiumMetadata<T>["_source"] & { _id: string })[],
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-
-    protected _onUpdateDocuments(
-      documents: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[],
-      result: (DeepPartial<DocumentInstanceForCompendiumMetadata<T>["_source"]> & { _id: string })[],
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-
-    protected _onDeleteDocuments(
-      documents: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[],
-      result: string[],
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-
-    protected _onDeleteFolder(parentFolder: Folder, deleteFolderId: string, deleteContents?: boolean): string[];
 
     /**
      * Follow-up actions taken when Documents within this Compendium pack are modified
      * @internal
      */
-    protected _onModifyContents(
-      documents: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[],
-      options: DocumentModificationOptions,
-      userId: string,
+    _onModifyContents(
+      action: "create",
+      documents: ClientDocument[],
+      result: Record<string, unknown>[],
+      operation: DatabaseCreateOperation<DocumentClassForCompendiumMetadata<T>>,
+      user: User,
+    ): void;
+    _onModifyContents(
+      action: "update",
+      documents: ClientDocument[],
+      result: Record<string, unknown>[],
+      operation: DatabaseUpdateOperation<DocumentClassForCompendiumMetadata<T>>,
+      user: User,
+    ): void;
+    _onModifyContents(
+      action: "delete",
+      documents: ClientDocument[],
+      result: string[],
+      operation: DatabaseDeleteOperation<DocumentClassForCompendiumMetadata<T>>,
+      user: User,
     ): void;
 
     /**
@@ -471,24 +471,6 @@ declare global {
       DocumentInstanceForCompendiumMetadata<T>["_source"]
     >;
   }
-}
-
-interface ImportAllOptions {
-  /**
-   * An existing Folder _id to use.
-   * @defaultValue `null`
-   * */
-  folderId?: string | null | undefined;
-  /**
-   * A new Folder name to create.
-   * @defaultValue `""`
-   * */
-  folderName?: string | undefined;
-  /**
-   * Additional options forwarded to {@link WorldCollection#fromCompendium} and {@link Document.createDocuments}
-   * @defaultValue `{}`
-   */
-  options?: (DocumentModificationContext & WorldCollection.FromCompendiumOptions) | undefined;
 }
 
 type DocumentClassForCompendiumMetadata<T extends CompendiumCollection.Metadata> = ConfiguredDocumentClassForName<

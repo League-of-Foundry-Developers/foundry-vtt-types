@@ -1,11 +1,14 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
-import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
+import type { DocumentDatabaseOperations, DocumentOnUpdateOptions } from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace Actor {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Actor">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    /* eslint-disable-next-line @typescript-eslint/no-empty-object-type */
+    export interface DatabaseOperations extends DocumentDatabaseOperations<Actor> {}
 
     interface RollInitiativeOptions {
       /**
@@ -243,12 +246,6 @@ declare global {
      */
     protected _unregisterDependentScene(scene: Scene): void;
 
-    protected override _preCreate(
-      data: foundry.documents.BaseActor.ConstructorData,
-      options: DocumentModificationOptions,
-      user: foundry.documents.BaseUser,
-    ): Promise<void>;
-
     /**
      * When an Actor is being created, apply default token configuration settings to its prototype token.
      * @param data    - Data explicitly provided to the creation workflow
@@ -265,38 +262,10 @@ declare global {
       }>,
     ): ReturnType<this["updateSource"]>;
 
-    protected override _onUpdate(
-      changed: foundry.documents.BaseActor.UpdateData,
-      options: DocumentModificationOptions,
-      user: string,
-    ): void;
-
-    protected override _onCreateDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      documents: ClientDocument[],
-      data: unknown[],
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-
-    protected override _onUpdateDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      documents: ClientDocument[],
-      changes: unknown[],
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-
-    protected override _onDeleteDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      documents: ClientDocument[],
-      ids: string,
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
+    /**
+     * @privateRemarks _preCreate, _onUpdate, onCreateDescendantDocuments, onUpdateDescendantDocuments, and _onDeleteDescendentDocuments are all overridden but with no signature changes.
+     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+     */
 
     /**
      * Additional workflows to perform when any descendant document within this Actor changes.
@@ -309,6 +278,9 @@ declare global {
      * @param update  - The update delta.
      * @param options - The update context.
      */
-    _updateDependentTokens(update: DeepPartial<TokenDocument["_source"]>, options: DocumentModificationContext): void;
+    _updateDependentTokens(
+      update: DeepPartial<TokenDocument["_source"]>,
+      options: DocumentOnUpdateOptions<"Token">,
+    ): void;
   }
 }

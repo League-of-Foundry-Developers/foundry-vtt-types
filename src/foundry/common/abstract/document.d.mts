@@ -2,6 +2,7 @@ import type {
   ConfiguredDocumentClass,
   ConfiguredDocumentClassForName,
   ConstructorDataType,
+  DatabaseOperationsFor,
   DocumentConstructor,
   DocumentType,
   DocumentTypeWithTypeData,
@@ -10,6 +11,7 @@ import type {
 import type {
   ConfiguredStoredDocument,
   DeepPartial,
+  EmptyObject,
   InexactPartial,
   RemoveIndexSignatures,
   StoredDocument,
@@ -227,7 +229,7 @@ declare abstract class Document<
    * @returns The cloned Document instance
    */
   override clone<Save extends boolean = false>(
-    data?: fields.SchemaField.AssignmentType<Schema, {}>,
+    data?: fields.SchemaField.AssignmentType<Schema, EmptyObject>,
     context?: InexactPartial<
       {
         /**
@@ -296,22 +298,20 @@ declare abstract class Document<
    * const created = await Actor.createDocuments(data, {pack: "mymodule.mypack"});
    * ```
    */
-  static createDocuments<T extends Document.AnyConstructor, Temporary extends boolean = false>(
+  static createDocuments<T extends Document.AnyConstructor>(
     this: T,
-    data: Array<
-      | fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]>
-      | (fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]> & Record<string, unknown>)
-    >,
-    operation?: InexactPartial<Omit<DatabaseCreateOperation<InstanceType<T>>, "data">> & {
-      /**
-       * @deprecated `"It is no longer supported to create temporary documents using the Document.createDocuments API. Use the new Document() constructor instead."`
-       * @remarks No explicit undefined because deprecation message checks `"temporary" in operation`
-       */
-      temporary?: Temporary;
+    data: Array<fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]> & Record<string, unknown>>,
+    operation?: InexactPartial<Omit<DatabaseOperationsFor<T["metadata"]["name"], "create">, "data">> & {
+      temporary?: false | undefined;
     },
-  ): true extends Temporary
-    ? Promise<InstanceType<Document.ConfiguredClass<T>>[]>
-    : Promise<StoredDocument<InstanceType<Document.ConfiguredClass<T>>>[]>;
+  ): Promise<ConfiguredStoredDocument<T>[] | undefined>;
+  static createDocuments<T extends Document.AnyConstructor>(
+    this: T,
+    data: Array<fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]> & Record<string, unknown>>,
+    operation?: InexactPartial<Omit<DatabaseOperationsFor<T["metadata"]["name"], "create">, "data">> & {
+      temporary: true;
+    },
+  ): Promise<InstanceType<ConfiguredDocumentClass<T>>[] | undefined>;
 
   /**
    * Update multiple Document instances using provided differential data.
@@ -350,9 +350,8 @@ declare abstract class Document<
    */
   static updateDocuments<T extends Document.AnyConstructor>(
     this: T,
-    updates?: Array<DeepPartial<ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>)>>,
-    operation?: InexactPartial<Omit<DatabaseUpdateOperation<InstanceType<T>>, "updates">> &
-      foundry.utils.MergeObjectOptions,
+    updates?: Array<DeepPartial<ConstructorDataType<T> & Record<string, unknown>>>,
+    operation?: InexactPartial<Omit<DatabaseOperationsFor<InstanceType<T>["documentName"], "update">, "updates">>,
   ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
 
   /**
@@ -395,7 +394,7 @@ declare abstract class Document<
   static deleteDocuments<T extends Document.AnyConstructor>(
     this: T,
     ids?: string[],
-    operation?: InexactPartial<Omit<DatabaseDeleteOperation, "ids">>,
+    operation?: InexactPartial<Omit<DatabaseOperationsFor<InstanceType<T>["documentName"], "delete">, "ids">>,
   ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
 
   /**
@@ -427,19 +426,20 @@ declare abstract class Document<
    *
    * @remarks If no document has actually been created, the returned {@link Promise} resolves to `undefined`.
    */
-  static create<T extends Document.AnyConstructor, Temporary extends boolean = false>(
+  static create<T extends Document.AnyConstructor>(
     this: T,
     data: ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>),
-    operation?: InexactPartial<Omit<DatabaseCreateOperation<InstanceType<T>>, "data">> & {
-      /**
-       * @deprecated `"It is no longer supported to create temporary documents using the Document.createDocuments API. Use the new Document() constructor instead."`
-       * @remarks No explicit undefined because deprecation message checks `"temporary" in operation`
-       */
-      temporary?: Temporary;
+    operation?: InexactPartial<Omit<DatabaseOperationsFor<T["metadata"]["name"], "create">, "data">> & {
+      temporary?: false | undefined;
     },
-  ): true extends Temporary
-    ? Promise<InstanceType<ConfiguredDocumentClass<T>> | undefined>
-    : Promise<ConfiguredStoredDocument<T> | undefined>;
+  ): Promise<ConfiguredStoredDocument<T> | undefined>;
+  static create<T extends Document.AnyConstructor>(
+    this: T,
+    data: ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>),
+    operation?: InexactPartial<Omit<DatabaseOperationsFor<T["metadata"]["name"], "create">, "data">> & {
+      temporary: true;
+    },
+  ): Promise<InstanceType<ConfiguredDocumentClass<T>> | undefined>;
 
   /**
    * Update this Document using incremental data, saving it to the database.
@@ -453,10 +453,8 @@ declare abstract class Document<
    * @remarks If no document has actually been updated, the returned {@link Promise} resolves to `undefined`.
    */
   override update(
-    data?:
-      | fields.SchemaField.AssignmentType<Schema, {}>
-      | (fields.SchemaField.AssignmentType<Schema, {}> & Record<string, unknown>),
-    operation?: InexactPartial<Omit<DatabaseUpdateOperation<this>, "updates">> & foundry.utils.MergeObjectOptions,
+    data?: fields.SchemaField.AssignmentType<Schema, EmptyObject> & Record<string, unknown>,
+    operation?: InexactPartial<Omit<DatabaseOperationsFor<ConcreteMetadata["name"], "update">, "updates">>,
   ): Promise<this | undefined>;
 
   /**
@@ -468,7 +466,9 @@ declare abstract class Document<
    *
    * @remarks If no document has actually been deleted, the returned {@link Promise} resolves to `undefined`.
    */
-  delete(operation?: InexactPartial<Omit<DatabaseDeleteOperation, "ids">>): Promise<this | undefined>;
+  delete(
+    operation?: InexactPartial<Omit<DatabaseOperationsFor<ConcreteMetadata["name"], "delete">, "ids">>,
+  ): Promise<this | undefined>;
 
   /**
    * Get a World-level Document of this type by its id.
@@ -503,9 +503,10 @@ declare abstract class Document<
    * @returns The Collection instance of embedded Documents of the requested type
    * @remarks Usually returns some form of DocumentCollection, but not always (e.g. Token["actors"])
    */
-  getEmbeddedCollection<DocType extends Document.TypeName>(
-    embeddedName: DocType,
-  ): Collection<InstanceType<Document.ConfiguredClassForName<DocType>>>;
+  // TODO: After regions are defined, change first parameter to `extends foundry.CONST.EMBEDDED_DOCUMENT_TYPES`
+  getEmbeddedCollection<
+    EmbeddedName extends Exclude<foundry.CONST.EMBEDDED_DOCUMENT_TYPES, "Region" | "RegionBehavior">,
+  >(embeddedName: EmbeddedName): Collection<InstanceType<Document.ConfiguredClassForName<EmbeddedName>>>;
 
   /**
    * Get an embedded document by its id from a named collection in the parent document.
@@ -543,23 +544,27 @@ declare abstract class Document<
    * @returns An array of created Document instances
    */
   // TODO: After regions are defined, change first parameter to `extends foundry.CONST.EMBEDDED_DOCUMENT_TYPES`
-  createEmbeddedDocuments<EmbeddedName extends DocumentType, Temporary extends boolean = false>(
+  // TODO: I think we could do a better job on all the embedded methods of limiting the types here based on the
+  //   allowed embedded types of the parent (vs. allowing any document to create embedded
+  //   documents of any type)
+  createEmbeddedDocuments<
+    EmbeddedName extends Exclude<foundry.CONST.EMBEDDED_DOCUMENT_TYPES, "Region" | "RegionBehavior">,
+  >(
     embeddedName: EmbeddedName,
     data?: Array<ConstructorDataType<ConfiguredDocumentClassForName<EmbeddedName>>>,
-    operation?: InexactPartial<Omit<DatabaseCreateOperation, "data">> & {
-      /**
-       * @deprecated `"It is no longer supported to create temporary documents using the Document.createDocuments API. Use the new Document() constructor instead."`
-       * @remarks No explicit undefined because deprecation message checks `"temporary" in operation`
-       */
-      temporary?: Temporary;
+    operation?: InexactPartial<DatabaseOperationsFor<EmbeddedName, "create">> & {
+      temporary?: false | undefined;
     },
-  ): Promise<
-    Array<
-      true extends Temporary
-        ? InstanceType<ConfiguredDocumentClassForName<EmbeddedName>>
-        : StoredDocument<InstanceType<ConfiguredDocumentClassForName<EmbeddedName>>>
-    >
-  >;
+  ): Promise<ConfiguredStoredDocument<ConfiguredDocumentClassForName<EmbeddedName>>[] | undefined>;
+  createEmbeddedDocuments<
+    EmbeddedName extends Exclude<foundry.CONST.EMBEDDED_DOCUMENT_TYPES, "Region" | "RegionBehavior">,
+  >(
+    embeddedName: EmbeddedName,
+    data?: Array<ConstructorDataType<ConfiguredDocumentClassForName<EmbeddedName>>>,
+    operation?: InexactPartial<DatabaseOperationsFor<EmbeddedName, "create">> & {
+      temporary: true;
+    },
+  ): Promise<InstanceType<ConfiguredDocumentClassForName<EmbeddedName>>[] | undefined>;
 
   /**
    * Update multiple embedded Document instances within a parent Document using provided differential data.
@@ -572,10 +577,12 @@ declare abstract class Document<
    * @returns An array of updated Document instances
    */
   // TODO: After regions are defined, change first parameter to `extends foundry.CONST.EMBEDDED_DOCUMENT_TYPES`
-  updateEmbeddedDocuments<EmbeddedName extends DocumentType>(
+  updateEmbeddedDocuments<
+    EmbeddedName extends Exclude<foundry.CONST.EMBEDDED_DOCUMENT_TYPES, "Region" | "RegionBehavior">,
+  >(
     embeddedName: EmbeddedName,
     updates?: Array<Record<string, unknown>>,
-    operation?: InexactPartial<Omit<DatabaseUpdateOperation, "updates">>,
+    operation?: DatabaseOperationsFor<ConcreteMetadata["name"], "update">,
   ): Promise<Array<StoredDocument<InstanceType<ConfiguredDocumentClassForName<EmbeddedName>>>>>;
 
   /**
@@ -587,10 +594,13 @@ declare abstract class Document<
    *                       (default: `{}`)
    * @returns An array of deleted Document instances
    */
-  deleteEmbeddedDocuments<EmbeddedName extends DocumentType>(
+  // TODO: After regions are defined, change first parameter to `extends foundry.CONST.EMBEDDED_DOCUMENT_TYPES`
+  deleteEmbeddedDocuments<
+    EmbeddedName extends Exclude<foundry.CONST.EMBEDDED_DOCUMENT_TYPES, "Region" | "RegionBehavior">,
+  >(
     embeddedName: EmbeddedName,
     ids: Array<string>,
-    operation?: InexactPartial<Omit<DatabaseDeleteOperation, "ids">>,
+    operation?: DatabaseOperationsFor<ConcreteMetadata["name"], "delete">,
   ): Promise<Array<StoredDocument<InstanceType<ConfiguredDocumentClassForName<EmbeddedName>>>>>;
 
   /**
@@ -661,7 +671,7 @@ declare abstract class Document<
    */
   protected _preCreate(
     data: fields.SchemaField.AssignmentType<Schema>,
-    options: DocumentModificationOptions,
+    options: DocumentPreCreateOptions<ConcreteMetadata["name"]>,
     user: foundry.documents.BaseUser,
   ): Promise<boolean | void>;
 
@@ -674,7 +684,7 @@ declare abstract class Document<
    */
   protected _onCreate(
     data: fields.SchemaField.InnerAssignmentType<Schema>,
-    options: DocumentModificationOptions,
+    options: DocumentOnCreateOptions<ConcreteMetadata["name"]>,
     userId: string,
   ): void;
 
@@ -695,7 +705,7 @@ declare abstract class Document<
   protected static _preCreateOperation<T extends Document.AnyConstructor>(
     this: T,
     documents: InstanceType<Document.ConfiguredClass<T>>[],
-    operation: DatabaseCreateOperation,
+    operation: DatabaseOperationsFor<T["metadata"]["name"], "create">,
     user: foundry.documents.BaseUser,
   ): Promise<boolean | void>;
 
@@ -712,7 +722,7 @@ declare abstract class Document<
   protected static _onCreateOperation<T extends Document.AnyConstructor>(
     this: T,
     documents: InstanceType<Document.ConfiguredClass<T>>[],
-    operation: DatabaseCreateOperation,
+    operation: DatabaseOperationsFor<T["metadata"]["name"], "create">,
     user: foundry.documents.BaseUser,
   ): Promise<void>;
 
@@ -726,7 +736,7 @@ declare abstract class Document<
    */
   protected _preUpdate(
     changed: fields.SchemaField.AssignmentType<Schema>,
-    options: DocumentModificationOptions,
+    options: DocumentPreUpdateOptions<ConcreteMetadata["name"]>,
     user: foundry.documents.BaseUser,
   ): Promise<boolean | void>;
 
@@ -739,7 +749,7 @@ declare abstract class Document<
    */
   protected _onUpdate(
     changed: fields.SchemaField.InnerAssignmentType<Schema>,
-    options: DocumentModificationOptions,
+    options: DocumentOnUpdateOptions<ConcreteMetadata["name"]>,
     userId: string,
   ): void;
 
@@ -761,7 +771,7 @@ declare abstract class Document<
   protected static _preUpdateOperation<T extends Document.AnyConstructor>(
     this: T,
     documents: InstanceType<Document.ConfiguredClass<T>>[],
-    operation: DatabaseUpdateOperation,
+    operation: DatabaseOperationsFor<InstanceType<T>["documentName"], "update">,
     user: foundry.documents.BaseUser,
   ): Promise<boolean | void>;
 
@@ -778,7 +788,7 @@ declare abstract class Document<
   protected static _onUpdateOperation<T extends Document.AnyConstructor>(
     this: T,
     documents: InstanceType<Document.ConfiguredClass<T>>[],
-    operation: DatabaseUpdateOperation,
+    operation: DatabaseOperationsFor<InstanceType<T>["documentName"], "update">,
     user: foundry.documents.BaseUser,
   ): Promise<void>;
 
@@ -789,7 +799,10 @@ declare abstract class Document<
    * @param user    - The User requesting the document deletion
    * @returns A return value of false indicates the delete operation should be cancelled
    */
-  protected _preDelete(options: DocumentModificationOptions, user: foundry.documents.BaseUser): Promise<boolean | void>;
+  protected _preDelete(
+    options: DocumentPreDeleteOptions<ConcreteMetadata["name"]>,
+    user: foundry.documents.BaseUser,
+  ): Promise<boolean | void>;
 
   /**
    * Perform follow-up operations after a Document of this type is deleted.
@@ -797,7 +810,7 @@ declare abstract class Document<
    * @param options - Additional options which modify the deletion request
    * @param userId  - The id of the User requesting the document update
    */
-  protected _onDelete(options: DocumentModificationOptions, userId: string): void;
+  protected _onDelete(options: DocumentOnDeleteOptions<ConcreteMetadata["name"]>, userId: string): void;
 
   /**
    * Pre-process a deletion operation, potentially altering its instructions or input data. Pre-operation events only
@@ -818,7 +831,7 @@ declare abstract class Document<
   protected static _preDeleteOperation<T extends Document.AnyConstructor>(
     this: T,
     documents: InstanceType<Document.ConfiguredClass<T>>[],
-    operation: DatabaseDeleteOperation,
+    operation: DatabaseOperationsFor<InstanceType<T>["documentName"], "delete">,
     user: foundry.documents.BaseUser,
   ): Promise<boolean | void>;
 
@@ -835,7 +848,7 @@ declare abstract class Document<
   protected static _onDeleteOperation<T extends Document.AnyConstructor>(
     this: T,
     documents: InstanceType<Document.ConfiguredClass<T>>[],
-    operation: DatabaseDeleteOperation,
+    operation: DatabaseOperationsFor<InstanceType<T>["documentName"], "delete">,
     user: foundry.documents.BaseUser,
   ): Promise<void>;
 
@@ -981,6 +994,7 @@ declare namespace Document {
     OptionsForSchema<Schema> extends FlagInSchema<S, K, infer Options> ? DataField.InitializedType<Options> : undefined;
 }
 
+/** @deprecated - since v12 */
 export type DocumentModificationOptions = Omit<DocumentModificationContext, "parent" | "pack">;
 
 export interface Context<Parent extends Document.Any | null> {
@@ -1020,7 +1034,7 @@ export interface Metadata<ConcreteDocument extends Document.Any> {
           doc: ConcreteDocument,
           data: fields.SchemaField.InnerAssignmentType<ConcreteDocument["schema"]["fields"]>,
         ) => boolean);
-    delete: string | ((user: foundry.documents.BaseUser, doc: ConcreteDocument, data: {}) => boolean);
+    delete: string | ((user: foundry.documents.BaseUser, doc: ConcreteDocument, data: EmptyObject) => boolean);
   };
   preserveOnImport?: string[];
   schemaVersion: string | undefined;
@@ -1035,7 +1049,7 @@ export interface DocumentMetadata {
   collection: "documents";
   label: "DOCUMENT.Document";
   types: [];
-  embedded: {};
+  embedded: EmptyObject;
   hasSystemData: false;
   permissions: {
     create: "ASSISTANT";
@@ -1044,3 +1058,89 @@ export interface DocumentMetadata {
   };
   pack: null;
 }
+
+export type Operation = "create" | "update" | "delete";
+
+/* eslint-disable @typescript-eslint/no-empty-object-type */
+export interface DocumentDatabaseOperations<
+  T extends foundry.abstract.Document.Any = foundry.abstract.Document.Any,
+  ExtraCreateOptions extends Record<string, unknown> = {},
+  ExtraUpdateOptions extends Record<string, unknown> = {},
+  ExtraDeleteOptions extends Record<string, unknown> = {},
+> {
+  create: DatabaseCreateOperation<T> & InexactPartial<ExtraCreateOptions>;
+  update: DatabaseUpdateOperation<T> & InexactPartial<ExtraUpdateOptions>;
+  delete: DatabaseDeleteOperation & InexactPartial<ExtraDeleteOptions>;
+}
+/* eslint-enable @typescript-eslint/no-empty-object-type */
+
+export interface DatabaseOperationMap {
+  ActiveEffect: ActiveEffect.DatabaseOperations;
+  Actor: Actor.DatabaseOperations;
+  ActorDelta: ActorDelta.DatabaseOperations;
+  Adventure: Adventure.DatabaseOperations;
+  AmbientLight: AmbientLightDocument.DatabaseOperations;
+  AmbientSound: AmbientSoundDocument.DatabaseOperations;
+  Card: Card.DatabaseOperations;
+  Cards: Cards.DatabaseOperations;
+  ChatMessage: ChatMessage.DatabaseOperations;
+  Combat: Combat.DatabaseOperations;
+  Combatant: Combatant.DatabaseOperations;
+  Drawing: DrawingDocument.DatabaseOperations;
+  FogExploration: FogExploration.DatabaseOperations;
+  Folder: Folder.DatabaseOperations;
+  Item: Item.DatabaseOperations;
+  JournalEntry: JournalEntry.DatabaseOperations;
+  JournalEntryPage: JournalEntryPage.DatabaseOperations;
+  Macro: Macro.DatabaseOperations;
+  MeasuredTemplate: MeasuredTemplateDocument.DatabaseOperations;
+  Note: NoteDocument.DatabaseOperations;
+  Playlist: Playlist.DatabaseOperations;
+  PlaylistSound: PlaylistSound.DatabaseOperations;
+  // TODO: Add these once documents are done
+  // Region: ActiveEffect.DatabaseOperations;
+  // RegionBehavior: ActiveEffect.DatabaseOperations;
+  RollTable: RollTable.DatabaseOperations;
+  Scene: Scene.DatabaseOperations;
+  Setting: Setting.DatabaseOperations;
+  TableResult: TableResult.DatabaseOperations;
+  Tile: TileDocument.DatabaseOperations;
+  Token: TokenDocument.DatabaseOperations;
+  User: User.DatabaseOperations;
+  Wall: WallDocument.DatabaseOperations;
+}
+
+// options
+export type DocumentPreCreateOptions<Name extends DocumentType> = Omit<
+  DatabaseOperationsFor<Name, "create">,
+  "data" | "noHook" | "pack" | "parent"
+>;
+export type DocumentOnCreateOptions<Name extends DocumentType> = Omit<
+  DatabaseOperationsFor<Name, "create">,
+  "pack" | "parentUuid" | "syntheticActorUpdate"
+>;
+
+export type DocumentPreUpdateOptions<Name extends DocumentType> = Omit<
+  DatabaseOperationsFor<Name, "update">,
+  "updates" | "restoreDelta" | "noHook" | "parent" | "pack"
+>;
+export type DocumentOnUpdateOptions<Name extends DocumentType> = Omit<
+  DatabaseOperationsFor<Name, "update">,
+  "pack" | "parentUuid" | "syntheticActorUpdate"
+>;
+
+export type DocumentPreDeleteOptions<Name extends DocumentType> = Omit<
+  DatabaseOperationsFor<Name, "delete">,
+  "ids" | "deleteAll" | "noHook" | "pack" | "parent"
+>;
+export type DocumentOnDeleteOptions<Name extends DocumentType> = Omit<
+  DatabaseOperationsFor<Name, "delete">,
+  "deleteAll" | "pack" | "parentUuid" | "syntheticActorUpdate"
+>;
+
+export type DocumentPreUpsertOptions<Name extends DocumentType> =
+  | DocumentPreCreateOptions<Name>
+  | DocumentPreUpdateOptions<Name>;
+export type DocumentOnUpsertOptions<Name extends DocumentType> =
+  | DocumentOnCreateOptions<Name>
+  | DocumentOnUpdateOptions<Name>;

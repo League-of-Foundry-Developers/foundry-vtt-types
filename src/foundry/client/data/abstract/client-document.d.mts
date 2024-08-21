@@ -4,8 +4,17 @@ import type {
   DocumentConstructor,
 } from "../../../../types/helperTypes.d.mts";
 import type { ConstructorOf, DeepPartial, InexactPartial, Mixin, ValueOf } from "../../../../types/utils.d.mts";
+import type { DatabaseCreateOperation } from "../../../common/abstract/_types.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
-import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
+import type {
+  DocumentModificationOptions,
+  DocumentOnCreateOptions,
+  DocumentOnDeleteOptions,
+  DocumentOnUpdateOptions,
+  DocumentPreCreateOptions,
+  DocumentPreDeleteOptions,
+  DocumentPreUpdateOptions,
+} from "../../../common/abstract/document.d.mts";
 
 declare class ClientDocument<BaseDocument extends foundry.abstract.Document.Any = foundry.abstract.Document.Any> {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
@@ -211,7 +220,7 @@ declare class ClientDocument<BaseDocument extends foundry.abstract.Document.Any 
     parent: ClientDocument,
     collection: string,
     data: unknown[],
-    options: DocumentModificationOptions,
+    options: DocumentPreCreateOptions<any>,
     userId: string,
   ): void;
 
@@ -229,7 +238,7 @@ declare class ClientDocument<BaseDocument extends foundry.abstract.Document.Any 
     collection: string,
     documents: ClientDocument[],
     data: unknown[],
-    options: DocumentModificationOptions,
+    options: DocumentOnCreateOptions<any> & InexactPartial<{ render: boolean }>,
     userId: string,
   ): void;
   /**
@@ -244,7 +253,7 @@ declare class ClientDocument<BaseDocument extends foundry.abstract.Document.Any 
     parent: ClientDocument,
     collection: string,
     changes: unknown[],
-    options: DocumentModificationOptions,
+    options: DocumentPreUpdateOptions<any>,
     userId: string,
   ): void;
 
@@ -262,7 +271,7 @@ declare class ClientDocument<BaseDocument extends foundry.abstract.Document.Any 
     collection: string,
     documents: ClientDocument[],
     changes: unknown[],
-    options: DocumentModificationOptions,
+    options: DocumentOnUpdateOptions<any> & InexactPartial<{ render: boolean }>,
     userId: string,
   ): void;
 
@@ -278,7 +287,7 @@ declare class ClientDocument<BaseDocument extends foundry.abstract.Document.Any 
     parent: ClientDocument,
     collection: string,
     ids: string[],
-    options: DocumentModificationOptions,
+    options: DocumentPreDeleteOptions<any>,
     userId: string,
   ): void;
 
@@ -296,7 +305,7 @@ declare class ClientDocument<BaseDocument extends foundry.abstract.Document.Any 
     collection: string,
     documents: ClientDocument[],
     ids: string,
-    options: DocumentModificationOptions,
+    options: DocumentOnDeleteOptions<any> & InexactPartial<{ render: boolean }>,
     userId: string,
   ): void;
 
@@ -342,7 +351,7 @@ declare class ClientDocument<BaseDocument extends foundry.abstract.Document.Any 
   static createDialog<T extends DocumentConstructor>(
     this: T,
     data?: DeepPartial<ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>)>,
-    context?: Pick<DocumentModificationContext, "parent" | "pack"> &
+    context?: Pick<DatabaseCreateOperation<any>, "parent" | "pack"> &
       InexactPartial<
         DialogOptions & {
           /** A restriction the selectable sub-types of the Dialog. */
@@ -564,7 +573,7 @@ declare class ClientDocument<BaseDocument extends foundry.abstract.Document.Any 
     embeddedName: string,
     documents: foundry.abstract.Document.Any[],
     result: Record<string, unknown>[],
-    options: DocumentModificationContext,
+    options: DocumentModificationOptions,
     userId: string,
   ): void;
 

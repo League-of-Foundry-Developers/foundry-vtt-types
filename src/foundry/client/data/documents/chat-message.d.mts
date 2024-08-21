@@ -1,11 +1,21 @@
 import type { ConfiguredDocumentClassForName, ToObjectFalseType } from "../../../../types/helperTypes.d.mts";
 import type { InexactPartial, StoredDocument } from "../../../../types/utils.d.mts";
-import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
+import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace ChatMessage {
     type ConfiguredClass = ConfiguredDocumentClassForName<"ChatMessage">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    /* eslint-disable @typescript-eslint/no-empty-object-type */
+    export interface DatabaseOperations
+      extends DocumentDatabaseOperations<
+        ChatMessage,
+        { rollMode: foundry.CONST.DICE_ROLL_MODES; chatBubble: boolean },
+        {},
+        {}
+      > {}
+    /* eslint-enable @typescript-eslint/no-empty-object-type */
 
     interface GetSpeakerOptions {
       /** The Scene in which the speaker resides */
@@ -54,10 +64,6 @@ declare global {
      */
     logged: boolean;
 
-    /* -------------------------------------------- */
-    /*  Properties                                  */
-    /* -------------------------------------------- */
-
     /**
      * Return the recommended String alias for this message.
      * The alias could be a Token name in the case of in-character messages or dice rolls.
@@ -86,10 +92,6 @@ declare global {
      * Messages may not be visible if they are private whispers.
      */
     get visible(): boolean;
-
-    /* -------------------------------------------- */
-    /*  Methods                                     */
-    /* -------------------------------------------- */
 
     override prepareDerivedData(): void;
 
@@ -203,28 +205,10 @@ declare global {
      */
     protected _renderRollHTML(isPrivate: boolean): Promise<string>;
 
-    /* -------------------------------------------- */
-    /*  Event Handlers                              */
-    /* -------------------------------------------- */
-    protected override _preCreate(
-      data: foundry.documents.BaseChatMessage.ConstructorData,
-      options: DocumentModificationOptions,
-      user: foundry.documents.BaseUser,
-    ): Promise<void>;
-
-    protected override _onCreate(data: this["_source"], options: DocumentModificationOptions, userId: string): void;
-
-    protected override _onUpdate(
-      data: foundry.documents.BaseChatMessage.UpdateData,
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-
-    protected override _onDelete(options: DocumentModificationOptions, userId: string): void;
-
-    /* -------------------------------------------- */
-    /*  Importing and Exporting                     */
-    /* -------------------------------------------- */
+    /**
+     * @privateRemarks _preCreate, _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
+     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+     */
 
     /**
      * Export the content of the chat message into a standardized log format

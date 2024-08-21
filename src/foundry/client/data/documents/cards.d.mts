@@ -3,17 +3,19 @@ import type {
   ConfiguredDocumentClass,
   ConstructorDataType,
   DocumentConstructor,
+  DatabaseOperationsFor,
 } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial, StoredDocument } from "../../../../types/utils.d.mts";
-import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
-import type BaseCards from "../../../common/documents/cards.d.mts";
-import type BaseUser from "../../../common/documents/user.d.mts";
+import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace Cards {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Cards">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    /* eslint-disable-next-line @typescript-eslint/no-empty-object-type */
+    export interface DatabaseOperations extends DocumentDatabaseOperations<Cards> {}
 
     type CardsAction = "deal" | "pass";
 
@@ -22,7 +24,7 @@ declare global {
        * Create a ChatMessage which notifies that this action has occurred
        * @defaultValue `true`
        */
-      chatNotification: boolean;
+      chatNotification: boolean | undefined;
     }
 
     interface DealOptions extends BaseOperationOptions {
@@ -74,6 +76,12 @@ declare global {
        * @defaultValue `"pass"`
        */
       action: string | undefined;
+
+      /**
+       * Create a ChatMessage which notifies that this action has occurred
+       * @defaultValue `true`
+       */
+      chatNotification: boolean | undefined;
     }
 
     interface DrawOptions extends PassOptions {
@@ -96,9 +104,13 @@ declare global {
        * Modifications to make to each Card as part of the shuffle operation,
        * for example the displayed face
        * @defaultValue `{}`
-       * @remarks This is not actually used by {@link Cards.shuffle}.
        */
       updateData: DeepPartial<Card["_source"]>;
+
+      /** Create a ChatMessage which notifies that this action has occurred
+       *  @defaultValue `true`
+       */
+      chatNotification: boolean | undefined;
     }
 
     /** Options which modify the reset operation */
@@ -160,19 +172,21 @@ declare global {
      */
     get canClone(): boolean;
 
-    // TODO: Figure out the typing here
     static override createDocuments(
-      data: Array<ConstructorDataType<typeof Cards> | (ConstructorDataType<typeof Cards> & Record<string, unknown>)>,
-      context: DocumentModificationContext & { temporary: false },
+      data: Array<foundry.documents.BaseCards.UpdateData & Record<string, unknown>>,
+      context: DatabaseOperationsFor<Cards["documentName"], "create"> & {
+        temporary?: false | undefined;
+      },
     ): Promise<StoredDocument<Cards.ConfiguredInstance>[]>;
-    static createDocuments(
-      data: Array<ConstructorDataType<typeof Cards> | (ConstructorDataType<typeof Cards> & Record<string, unknown>)>,
-      context: DocumentModificationContext & { temporary: boolean },
+    static override createDocuments(
+      data: Array<
+        | fields.SchemaField.AssignmentType<Cards["schema"]["fields"]>
+        | (fields.SchemaField.AssignmentType<Cards["schema"]["fields"]> & Record<string, unknown>)
+      >,
+      context: DatabaseOperationsFor<Cards["documentName"], "create"> & {
+        temporary: true;
+      },
     ): Promise<Cards.ConfiguredInstance[]>;
-    static createDocuments(
-      data: Array<ConstructorDataType<typeof Cards> | (ConstructorDataType<typeof Cards> & Record<string, unknown>)>,
-      context?: DocumentModificationContext,
-    ): Promise<StoredDocument<Cards.ConfiguredInstance>[]>;
 
     /**
      * Deal one or more cards from this Cards document to each of a provided array of Cards destinations.
@@ -289,31 +303,10 @@ declare global {
       context: Record<string, unknown>,
     ): Promise<ChatMessage.ConfiguredInstance | undefined>;
 
-    protected override _preCreate(
-      // can't use UpdateData because it creates circular reference
-      data: fields.SchemaField.InnerAssignmentType<BaseCards.Schema>,
-      options: DocumentModificationOptions,
-      user: BaseUser,
-    ): Promise<boolean | void>;
-
-    protected override _onUpdate(
-      // can't use UpdateData because it creates circular reference
-      changed: fields.SchemaField.InnerAssignmentType<BaseCards.Schema>,
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
-
-    protected override _preDelete(
-      options: DocumentModificationOptions,
-      user: foundry.documents.BaseUser,
-    ): Promise<void>;
-
-    // TODO: It's a bit weird that we have to do it in this generic way but otherwise there is an error overriding this. Investigate later.
-    static override deleteDocuments<T extends DocumentConstructor>(
-      this: T,
-      ids?: string[],
-      context?: DocumentModificationContext,
-    ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
+    /**
+     * @privateRemarks _preCreate, _onUpdate, and _preDelete are all overridden but with no signature changes.
+     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+     */
 
     /**
      * Display a dialog which prompts the user to deal cards to some number of hand-type Cards documents.
@@ -351,7 +344,7 @@ declare global {
     static override createDialog<T extends DocumentConstructor>(
       this: T,
       data?: DeepPartial<ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>)>,
-      context?: Pick<DocumentModificationContext, "parent" | "pack"> &
+      context?: Pick<DatabaseOperationsFor<Cards["documentName"], "create">, "parent" | "pack"> &
         InexactPartial<
           DialogOptions & {
             /** A restriction the selectable sub-types of the Dialog. */

@@ -1,4 +1,3 @@
-import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
@@ -99,11 +98,10 @@ declare global {
      */
     protected _refreshVisibility(): void;
 
-    protected override _onUpdate(
-      data: foundry.documents.BaseNote.UpdateData,
-      options: DocumentModificationOptions,
-      userId: string,
-    ): void;
+    /**
+     * @privateRemarks _onUpdate is overridden but with no signature changes.
+     * For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
+     */
 
     protected override _canHover(user: User.ConfiguredInstance): true;
 

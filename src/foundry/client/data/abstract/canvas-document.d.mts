@@ -41,8 +41,10 @@ declare class CanvasDocument<
    */
   get rendered(): boolean;
 
-  // _preCreate, _onCreate, _onUpdate, _onDelete intentionally omitted for type compilation complexity
-  // None of these overrides modify the function signature and so can be safely ignored
+  /**
+   * @privateRemarks _preCreate, _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
+   * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+   */
 }
 
 declare global {
