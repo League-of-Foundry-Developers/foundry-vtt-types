@@ -1,7 +1,7 @@
 import { expectTypeOf } from "vitest";
 import type EmbeddedCollection from "../../../../src/foundry/common/abstract/embedded-collection.d.mts";
 import type { NumberField, SchemaField } from "../../../../src/foundry/common/data/fields.d.mts";
-import type { TypeDataModel } from "../../../../src/foundry/common/abstract/type-data.d.mts";
+import type { AnyObject, EmptyObject } from "../../../../src/types/utils.d.mts";
 
 // @ts-expect-error name and type are required
 new foundry.documents.BaseActor();
@@ -102,8 +102,8 @@ declare namespace BoilerplateActorBase {
 
 class BoilerplateActorBase<
   Schema extends BoilerplateActorBase.Schema = BoilerplateActorBase.Schema,
-  BaseData extends AnyObject = Record<string, never>,
-  DerivedData extends AnyObject = Record<string, never>,
+  BaseData extends AnyObject = EmptyObject,
+  DerivedData extends AnyObject = EmptyObject,
 > extends foundry.abstract.TypeDataModel<Schema, Actor.ConfiguredInstance, BaseData, DerivedData> {
   static override defineSchema(): BoilerplateActorBase.Schema {
     const fields = foundry.data.fields;
@@ -178,7 +178,7 @@ declare namespace BoilerplateCharacter {
 
 class BoilerplateCharacter extends BoilerplateActorBase<
   BoilerplateCharacter.Schema,
-  Record<string, never>,
+  EmptyObject,
   BoilerplateCharacter.DerivedProps & AnyObject
 > {
   static override defineSchema() {

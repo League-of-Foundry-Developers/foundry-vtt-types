@@ -2,7 +2,7 @@ import type { AnyObject, InexactPartial, Merge } from "../../../types/utils.mts"
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
 import type { TextureData } from "../data/data.mts";
-import type * as fields from "../data/fields.mts";
+import type * as fields from "../data/fields.d.mts";
 import type { CONST } from "../module.mts";
 import type * as documents from "./module.mts";
 

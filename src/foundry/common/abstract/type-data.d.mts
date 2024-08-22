@@ -1,4 +1,11 @@
-import type { IsObject, Merge, RemoveIndexSignatures, SimpleMerge } from "../../../types/utils.d.mts";
+import type {
+  AnyObject,
+  EmptyObject,
+  IsObject,
+  Merge,
+  RemoveIndexSignatures,
+  SimpleMerge,
+} from "../../../types/utils.d.mts";
 import type { SchemaField } from "../data/fields.d.mts";
 import type { DataModel } from "./data.d.mts";
 import type Document from "./document.d.mts";
@@ -17,8 +24,8 @@ declare const _InternalTypeDataModelConst: _InternalTypeDataModelInterface;
 declare class _InternalTypeDataModel<
   Schema extends DataSchema,
   Parent extends Document<DataSchema, any, any>,
-  BaseData extends Record<string, unknown> = Record<string, never>,
-  DerivedData extends Record<string, unknown> = Record<string, never>,
+  BaseData extends AnyObject = EmptyObject,
+  DerivedData extends AnyObject = EmptyObject,
   // This does not work if inlined. It's weird to put it here but it works.
   _ComputedInstance extends object = Merge<RemoveIndexSignatures<BaseData>, RemoveIndexSignatures<DerivedData>>,
 > extends _InternalTypeDataModelConst<Schema, Parent, _ComputedInstance> {}
@@ -39,7 +46,13 @@ declare namespace TypeDataModel {
   // This still is only allows classes descended from `TypeDataField` because these unique symbols aren't used elsewhere.
   // These generic parameters seem to be required. This is likely because of a TypeScript soundness holes in which concrete types like `any` or `unknown`
   // will get treated bivariantly whereas type parameters get treated more safely.
-  interface Internal<Schema extends DataSchema, Parent extends Document.Any, BaseModel, BaseData, DerivedData> {
+  interface Internal<
+    out Schema extends DataSchema,
+    out Parent extends Document.Any,
+    out BaseModel,
+    out BaseData,
+    out DerivedData,
+  > {
     [__Schema]: Schema;
     [__Parent]: Parent;
     [__BaseModel]: BaseModel;
@@ -175,8 +188,8 @@ declare namespace TypeDataModel {
 export default abstract class TypeDataModel<
   Schema extends DataSchema,
   Parent extends Document<DataSchema, any, any>,
-  BaseData extends Record<string, unknown> = Record<string, never>,
-  DerivedData extends Record<string, unknown> = Record<string, never>,
+  BaseData extends AnyObject = EmptyObject,
+  DerivedData extends AnyObject = EmptyObject,
 > extends _InternalTypeDataModel<Schema, Parent, BaseData, DerivedData> {
   [__Schema]: Schema;
   [__Parent]: Parent;
