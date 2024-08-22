@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { MaybePromise } from "../../../../src/types/utils.d.mts";
+import type { EmptyObject, MaybePromise } from "../../../../src/types/utils.d.mts";
 
 const filepicker = new FilePicker();
 expectTypeOf(filepicker).toEqualTypeOf<FilePicker>();
@@ -9,7 +9,7 @@ expectTypeOf(filepicker.sources).toEqualTypeOf<FilePicker.Sources>();
 expectTypeOf(filepicker.activeSource).toEqualTypeOf<FilePicker.SourceType>();
 
 expectTypeOf(filepicker.callback).toEqualTypeOf<FilePicker.Callback | undefined>();
-expectTypeOf(filepicker.results).toEqualTypeOf<{}>();
+expectTypeOf(filepicker.results).toEqualTypeOf<EmptyObject>();
 expectTypeOf(filepicker.type).toEqualTypeOf<FilePicker.Type>();
 expectTypeOf(filepicker.field).toEqualTypeOf<HTMLElement | undefined>();
 expectTypeOf(filepicker.button).toEqualTypeOf<HTMLElement | undefined>();
@@ -42,10 +42,12 @@ expectTypeOf(FilePicker.configurePath("data", "")).toEqualTypeOf<Promise<FilePic
 expectTypeOf(FilePicker.createDirectory("data", "")).toEqualTypeOf<Promise<string>>();
 
 const file = new File([], "testfile");
-expectTypeOf(FilePicker.upload("data", "", file)).toEqualTypeOf<Promise<FilePicker.UploadResult | false | void | {}>>();
+expectTypeOf(FilePicker.upload("data", "", file)).toEqualTypeOf<
+  Promise<FilePicker.UploadResult | false | void | EmptyObject>
+>();
 
 expectTypeOf(FilePicker.uploadPersistent("", "", file)).toEqualTypeOf<
-  Promise<FilePicker.UploadResult | false | void | {}>
+  Promise<FilePicker.UploadResult | false | void | EmptyObject>
 >();
 
 expectTypeOf(filepicker.render()).toEqualTypeOf<FilePicker>();
