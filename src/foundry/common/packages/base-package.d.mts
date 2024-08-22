@@ -1,4 +1,4 @@
-import type { InexactPartial } from "../../../types/utils.d.mts";
+import type { AnyObject, InexactPartial } from "../../../types/utils.d.mts";
 // eslint-disable-next-line import/no-named-as-default
 import type DataModel from "../abstract/data.d.mts";
 import type { ReleaseData } from "../config.d.mts";
@@ -202,7 +202,7 @@ declare namespace BasePackage {
     reason: fields.StringField<{ required: false; blank: false; initial: undefined }>;
   }
 
-  interface PackageCompendiumFolderSchemaHelper {
+  interface PackageCompendiumFolderSchemaHelper extends DataSchema {
     name: fields.StringField<{ required: true; blank: false }>;
     sorting: fields.StringField<{
       required: false;
@@ -354,6 +354,11 @@ declare namespace BasePackage {
     owned: boolean;
     tags: string[];
     hasStorage: boolean;
+  }
+
+  interface LogOptions extends InexactPartial<LogCompatibilityWarningOptions> {
+    /** Is the package installed? */
+    installed?: unknown | undefined;
   }
 }
 
@@ -582,16 +587,7 @@ declare class BasePackage<
    * @param message   - The warning or error being logged
    * @param options   - Logging options passed to foundry.utils.logCompatibilityWarning
    */
-  protected static _logWarning(
-    packageId: string,
-    message: string,
-    options?: InexactPartial<
-      {
-        /** Is the package installed? */
-        installed: unknown;
-      } & LogCompatibilityWarningOptions
-    >,
-  ): void;
+  protected static _logWarning(packageId: string, message: string, options?: BasePackage.LogOptions): void;
 
   static migrateData(
     data: AnyObject,
@@ -600,26 +596,17 @@ declare class BasePackage<
     }>,
   ): AnyObject;
 
-  protected static _migrateNameToId(data: AnyObject, logOptions: Parameters<typeof BasePackage._logWarning>[2]): void;
+  protected static _migrateNameToId(data: AnyObject, logOptions: BasePackage.LogOptions): void;
 
-  protected static _migrateDependenciesNameToId(
-    data: AnyObject,
-    logOptions: Parameters<typeof BasePackage._logWarning>[2],
-  ): void;
+  protected static _migrateDependenciesNameToId(data: AnyObject, logOptions: BasePackage.LogOptions): void;
 
-  protected static _migrateToRelationships(
-    data: AnyObject,
-    logOptions: Parameters<typeof BasePackage._logWarning>[2],
-  ): void;
+  protected static _migrateToRelationships(data: AnyObject, logOptions: BasePackage.LogOptions): void;
 
-  protected static _migrateCompatibility(
-    data: AnyObject,
-    logOptions: Parameters<typeof BasePackage._logWarning>[2],
-  ): void;
+  protected static _migrateCompatibility(data: AnyObject, logOptions: BasePackage.LogOptions): void;
 
-  protected static _migrateMediaURL(data: AnyObject, logOptions: Parameters<typeof BasePackage._logWarning>[2]): void;
+  protected static _migrateMediaURL(data: AnyObject, logOptions: BasePackage.LogOptions): void;
 
-  protected static _migrateOwnership(data: AnyObject, logOptions: Parameters<typeof BasePackage._logWarning>[2]): void;
+  protected static _migrateOwnership(data: AnyObject, logOptions: BasePackage.LogOptions): void;
 
   /**
    * Retrieve the latest Package manifest from a provided remote location.

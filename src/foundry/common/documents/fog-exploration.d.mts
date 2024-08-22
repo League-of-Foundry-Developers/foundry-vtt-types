@@ -1,4 +1,4 @@
-import type { Merge } from "../../../types/utils.mts";
+import type { EmptyObject, Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata, DocumentModificationOptions } from "../abstract/document.mts";
 import type * as fields from "../data/fields.mts";

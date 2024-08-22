@@ -2,7 +2,7 @@ import type { DatabaseBackend } from "../abstract/module.d.mts";
 import type { DataModel } from "../abstract/data.d.mts";
 import type { fields } from "./module.d.mts";
 import type * as documents from "../documents/module.d.mts";
-import type { ValueOf } from "../../../types/utils.d.mts";
+import type { AnyObject, EmptyObject, ValueOf } from "../../../types/utils.d.mts";
 
 // TODO: Implement all of the necessary options
 

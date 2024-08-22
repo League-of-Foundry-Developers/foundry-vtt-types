@@ -34,9 +34,10 @@ declare global {
   /** @privateRemarks Values are marked as optional here based on use, foundry docs incomplete */
   interface RenderFlag<Flags> {
     /** Activating this flag also sets these flags to true */
-    propagate?: Array<Partial<keyof Flags>>;
+    propagate?: Array<Partial<keyof Flags>> | undefined;
+
     /** Activating this flag resets these flags to false */
-    reset?: Array<Partial<keyof Flags>>;
+    reset?: Array<Partial<keyof Flags>> | undefined;
   }
 
   namespace RenderFlag {

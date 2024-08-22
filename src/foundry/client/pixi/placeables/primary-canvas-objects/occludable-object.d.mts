@@ -163,7 +163,7 @@ declare global {
   // It mostly works at runtime because the defaults will be used.
   function OccludableObjectMixin<BaseClass extends OccludableObjectMixin.BaseClass>(
     DisplayObject: BaseClass,
-  ): Mixin<typeof OccludableObject, Mixin<ReturnType<typeof PrimaryCanvasObjectMixin>, BaseClass>>;
+  ): Mixin<typeof OccludableObject, Mixin<PrimaryCanvasObjectMixin.MixinClass, BaseClass>>;
 
   namespace OccludableObjectMixin {
     interface BaseClass extends SpriteMeshClass {

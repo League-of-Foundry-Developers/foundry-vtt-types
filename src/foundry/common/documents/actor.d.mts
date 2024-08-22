@@ -1,4 +1,4 @@
-import type { Merge } from "../../../types/utils.mts";
+import type { AnyObject, EmptyObject, Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata, DocumentModificationOptions } from "../abstract/document.mts";
 import type { PrototypeToken } from "../data/data.mts";

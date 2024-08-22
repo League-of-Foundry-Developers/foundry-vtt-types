@@ -1,4 +1,5 @@
-import type { InexactPartial, Merge } from "../../../types/utils.mts";
+import type { InterfaceToObject } from "../../../types/helperTypes.d.mts";
+import type { AnyObject, EmptyObject, InexactPartial, Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata, DocumentModificationOptions } from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
@@ -223,10 +224,12 @@ declare namespace BaseActiveEffect {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
-    flags: fields.ObjectField.FlagsField<"ActiveEffect", CoreFlags>;
+    flags: fields.ObjectField.FlagsField<"ActiveEffect", _CoreFlags>;
   }
 
   interface CoreFlags {
     core?: { statusId?: string; overlay?: boolean };
   }
+
+  type _CoreFlags = InterfaceToObject<CoreFlags>;
 }

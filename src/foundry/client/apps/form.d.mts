@@ -1,6 +1,6 @@
 import type { EditorView } from "prosemirror-view";
 import type { Editor } from "tinymce";
-import type { GetDataReturnType, MaybePromise } from "../../../types/utils.d.mts";
+import type { AnyObject, GetDataReturnType, MaybePromise } from "../../../types/utils.d.mts";
 import type { ProseMirrorKeyMaps, ProseMirrorMenu } from "../../prosemirror/prosemirror.d.mts";
 
 declare global {
@@ -154,7 +154,7 @@ declare global {
     protected _onSubmit(
       event: Event,
       { updateData, preventClose, preventRender }?: FormApplication.OnSubmitOptions,
-    ): Promise<Partial<Record<string, unknown>>>;
+    ): Promise<Partial<AnyObject>>;
 
     /**
      * Get an object of update data used to update the form's target object
@@ -163,7 +163,7 @@ declare global {
      * @returns The prepared update data
      */
     // TODO: Maybe we can calculate how the flattened `updateData` looks like, then it would be Partial<Record<string, unknown>> & Flattened<T>
-    protected _getSubmitData(updateData?: object | null): Record<string, unknown>;
+    protected _getSubmitData(updateData?: AnyObject | null): AnyObject;
 
     /**
      * Handle changes to an input element, submitting the form if options.submitOnChange is true.

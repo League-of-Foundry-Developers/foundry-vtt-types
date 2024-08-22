@@ -1,6 +1,7 @@
 import type { DisplayObject } from "pixi.js";
 import type { Mixin } from "../../../../../types/utils.d.mts";
 import type { IntentionalPartial } from "../../../../../types/helperTypes.d.mts";
+import type Document from "../../../../common/abstract/document.d.mts";
 
 declare class PrimaryCanvasObject {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
@@ -60,14 +61,14 @@ declare class PrimaryCanvasObject {
    * Initialize data using an explicitly provided data object or a canvas document.
    * @param data - Provided data or canvas document.
    */
-  initialize(data?: PrimaryCanvasObjectData | Document): void;
+  initialize(data?: PrimaryCanvasObjectData | Document.Any): void;
 
   /**
    * Map the document data to an object and process some properties.
    * @param data - The document data.
    * @returns The updated data object.
    */
-  protected _getCanvasDocumentData(data: Document): unknown;
+  protected _getCanvasDocumentData(data: Document.Any): unknown;
 
   /**
    * Initialize sorting of this PCO. Perform checks and call the primary group sorting if necessary.
@@ -148,6 +149,8 @@ declare global {
         ...args: never[]
       ): DisplayObject;
     }
+
+    type MixinClass = typeof PrimaryCanvasObject;
   }
 }
 

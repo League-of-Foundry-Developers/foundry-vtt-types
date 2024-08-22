@@ -1,4 +1,4 @@
-export {};
+import type Document from "../../../../common/abstract/document.d.mts";
 
 declare global {
   /**
@@ -11,7 +11,7 @@ declare global {
 
     override updateBounds(): void;
 
-    protected override _getCanvasDocumentData(data: Document): unknown;
+    protected override _getCanvasDocumentData(data: Document.Any): unknown;
   }
 
   /**

@@ -1,4 +1,4 @@
-import type { InexactPartial, Merge } from "../../../types/utils.mts";
+import type { AnyObject, EmptyObject, InexactPartial, Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata, DocumentModificationOptions } from "../abstract/document.mts";
 import type * as CONST from "../constants.d.mts";

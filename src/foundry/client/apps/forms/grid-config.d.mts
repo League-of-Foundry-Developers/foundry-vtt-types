@@ -1,5 +1,5 @@
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
-import type { MaybePromise } from "../../../../types/utils.d.mts";
+import type { ConfiguredDocumentClass, InterfaceToObject } from "../../../../types/helperTypes.d.mts";
+import type { AnyObject, MaybePromise } from "../../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -38,9 +38,9 @@ declare global {
 
     protected override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
-    override getData(options?: Partial<Options>): MaybePromise<object>;
+    override getData(options?: Partial<Options>): MaybePromise<AnyObject>;
 
-    protected override _getSubmitData(updateData?: object | null): GridConfig.FormData;
+    protected override _getSubmitData(updateData?: AnyObject | null): GridConfig._FormData;
 
     override close(options?: FormApplication.CloseOptions): ReturnType<FormApplication["close"]>;
 
@@ -134,5 +134,7 @@ declare global {
       "background.offsetX": Scene["background"]["offsetX"];
       "background.offsetY": Scene["background"]["offsetY"];
     }
+
+    type _FormData = InterfaceToObject<FormData>;
   }
 }

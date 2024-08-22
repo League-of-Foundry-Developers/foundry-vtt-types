@@ -1,4 +1,4 @@
-import type { Merge } from "../../../types/utils.mts";
+import type { AnyObject, InexactPartial, Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata } from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
