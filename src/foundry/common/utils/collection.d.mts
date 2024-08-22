@@ -165,4 +165,12 @@ declare class Collection<T> extends Map<string, T> {
   toJSON(): Array<T extends { toJSON: (...args: any[]) => infer U } ? U : T>;
 }
 
+declare namespace Collection {
+  type AnyConstructor = typeof AnyCollection;
+}
+
+declare abstract class AnyCollection extends Collection<any> {
+  constructor(arg0: never, ...args: never[]);
+}
+
 export default Collection;

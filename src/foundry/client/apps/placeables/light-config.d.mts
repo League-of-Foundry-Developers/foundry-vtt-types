@@ -1,4 +1,5 @@
-import type { DeepPartial, MaybePromise } from "../../../../types/utils.d.mts";
+import type { InterfaceToObject } from "../../../../types/helperTypes.d.mts";
+import type { AnyObject, DeepPartial, MaybePromise } from "../../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -57,7 +58,7 @@ declare global {
 
     protected override _onChangeTab(event: MouseEvent | null, tabs: Tabs, active: string): void;
 
-    protected override _getSubmitData(updateData?: object | null): AmbientLightConfig.FormData;
+    protected override _getSubmitData(updateData?: AnyObject | null): InterfaceToObject<AmbientLightConfig.FormData>;
 
     protected override _updateObject(event: Event, formData: AmbientLightConfig.FormData): Promise<unknown>;
 

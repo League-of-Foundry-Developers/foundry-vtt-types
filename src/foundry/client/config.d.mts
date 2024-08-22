@@ -1,5 +1,5 @@
 import type { ConfiguredDocumentClassForName, GetKey } from "../../types/helperTypes.d.mts";
-import type { AnyConstructorFor, ConstructorOf, PropertyTypeOrFallback } from "../../types/utils.d.mts";
+import type { ConstructorOf, PropertyTypeOrFallback } from "../../types/utils.d.mts";
 import type * as CONST from "../common/constants.d.mts";
 import type { StatusEffect } from "./data/documents/token.d.mts";
 import type { DataModel } from "../common/abstract/module.d.mts";
@@ -2819,7 +2819,7 @@ declare global {
   const CONFIG: CONFIG;
 }
 
-type ConfiguredObjectClassOrDefault<Fallback extends AnyConstructorFor<typeof PlaceableObject>> = GetKey<
+type ConfiguredObjectClassOrDefault<Fallback extends PlaceableObject.AnyConstructor> = GetKey<
   PlaceableObjectClassConfig,
   Fallback["embeddedName"],
   Fallback

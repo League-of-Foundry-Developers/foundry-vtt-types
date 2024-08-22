@@ -224,12 +224,10 @@ declare namespace BaseActiveEffect {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
-    flags: fields.ObjectField.FlagsField<"ActiveEffect", _CoreFlags>;
+    flags: fields.ObjectField.FlagsField<"ActiveEffect", InterfaceToObject<CoreFlags>>;
   }
 
   interface CoreFlags {
     core?: { statusId?: string; overlay?: boolean };
   }
-
-  type _CoreFlags = InterfaceToObject<CoreFlags>;
 }

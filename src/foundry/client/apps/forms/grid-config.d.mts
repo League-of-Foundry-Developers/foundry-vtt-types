@@ -40,7 +40,7 @@ declare global {
 
     override getData(options?: Partial<Options>): MaybePromise<AnyObject>;
 
-    protected override _getSubmitData(updateData?: AnyObject | null): GridConfig._FormData;
+    protected override _getSubmitData(updateData?: AnyObject | null): InterfaceToObject<GridConfig.FormData>;
 
     override close(options?: FormApplication.CloseOptions): ReturnType<FormApplication["close"]>;
 
@@ -134,7 +134,5 @@ declare global {
       "background.offsetX": Scene["background"]["offsetX"];
       "background.offsetY": Scene["background"]["offsetY"];
     }
-
-    type _FormData = InterfaceToObject<FormData>;
   }
 }

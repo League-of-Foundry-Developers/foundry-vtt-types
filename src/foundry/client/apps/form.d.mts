@@ -297,19 +297,19 @@ declare global {
        * same time as processing a form submission to avoid multiple database operations.
        * @defaultValue `null`
        */
-      updateData?: object;
+      updateData?: AnyObject | null | undefined;
 
       /**
        * Override the standard behavior of whether to close the form on submit
        * @defaultValue `false`
        */
-      preventClose?: boolean;
+      preventClose?: boolean | undefined;
 
       /**
        * Prevent the application from re-rendering as a result of form submission
        * @defaultValue `false`
        */
-      preventRender?: boolean;
+      preventRender?: boolean | undefined;
     }
 
     interface FormApplicationData<

@@ -1,6 +1,5 @@
 import type { DisplayObject } from "pixi.js";
 import type { Mixin } from "../../../../../types/utils.d.mts";
-import type { IntentionalPartial } from "../../../../../types/helperTypes.d.mts";
 import type Document from "../../../../common/abstract/document.d.mts";
 
 declare class PrimaryCanvasObject {
@@ -142,17 +141,19 @@ declare global {
   ): Mixin<typeof PrimaryCanvasObject, BaseClass>;
 
   namespace PrimaryCanvasObjectMixin {
-    interface BaseClass extends DisplayObjectClass {
-      new (
-        placeableObjectOrData: PlaceableObject | Document.Any | IntentionalPartial<PrimaryCanvasObjectData>,
-        arg1: never,
-        ...args: never[]
-      ): DisplayObject;
-    }
+    type BaseClass = PrimaryCanvasObjectMixinBaseClass;
 
     type MixinClass = typeof PrimaryCanvasObject;
   }
 }
 
-// Necessary so that `PrimaryCanvasObjectMixin.Constructor` can extend the class.
 type DisplayObjectClass = typeof DisplayObject;
+
+interface PrimaryCanvasObjectMixinBaseClass extends DisplayObjectClass {
+  new (
+    // Foundry technically requires the first parameter to be compatible but actually usage ignores this constraint.
+    // placeableObjectOrData: PlaceableObject | Document.Any | IntentionalPartial<PrimaryCanvasObjectData>,
+    arg0: never,
+    ...args: never[]
+  ): DisplayObject;
+}

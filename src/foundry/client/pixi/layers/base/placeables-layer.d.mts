@@ -418,6 +418,8 @@ declare global {
   namespace PlaceablesLayer {
     type Any = PlaceablesLayer<any>;
 
+    type AnyConstructor = typeof AnyPlaceablesLayer;
+
     type HistoryEventType = "create" | "update" | "delete";
 
     type CreationState = ValueOf<(typeof PlaceablesLayer)["CREATION_STATES"]>;
@@ -475,6 +477,10 @@ declare global {
       type Any = LayerOptions<any>;
     }
   }
+}
+
+declare abstract class AnyPlaceablesLayer extends PlaceablesLayer<any> {
+  constructor(arg0: never, ...args: never[]);
 }
 
 interface RotationOptions {

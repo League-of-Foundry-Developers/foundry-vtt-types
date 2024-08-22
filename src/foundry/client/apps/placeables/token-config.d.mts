@@ -1,3 +1,5 @@
+import type { AnyObject } from "../../../../types/utils.d.mts";
+
 export {};
 
 declare global {
@@ -79,7 +81,7 @@ declare global {
 
     override close(options?: FormApplication.CloseOptions): Promise<void>;
 
-    protected override _getSubmitData(updateData?: object | null): TokenConfig.FormData;
+    protected override _getSubmitData(updateData?: AnyObject | null): TokenConfig.FormData;
 
     protected override _onChangeInput(event: JQuery.ChangeEvent): Promise<void>;
 
@@ -87,7 +89,7 @@ declare global {
      * Mimic changes to the Token document as if they were true document updates.
      * @param change - The change to preview.
      */
-    protected _previewChanges(change?: object): void;
+    protected _previewChanges(change?: AnyObject): void;
 
     /**
      * Reset the temporary preview of the Token when the form is submitted or closed.

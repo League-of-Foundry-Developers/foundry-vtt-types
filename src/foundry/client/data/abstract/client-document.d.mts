@@ -566,7 +566,7 @@ declare global {
    */
   // Note: Unlike most mixins, `ClientDocumentMixin` actually requires a specific constructor, the same as `Document`.
   // This means that `BaseClass extends Document.AnyConstructor` would be too permissive.
-  function ClientDocumentMixin<BaseClass extends typeof Document.Any>(
+  function ClientDocumentMixin<BaseClass extends Document.AnyConstructor>(
     Base: BaseClass,
   ): Mixin<typeof ClientDocument<InstanceType<BaseClass>>, BaseClass>;
 

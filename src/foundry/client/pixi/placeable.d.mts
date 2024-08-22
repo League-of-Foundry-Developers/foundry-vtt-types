@@ -2,6 +2,10 @@ import type { ValueOf } from "../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../common/abstract/document.d.mts";
 import type { Document } from "../../common/abstract/module.d.mts";
 
+declare abstract class AnyPlaceableObject extends PlaceableObject<any> {
+  constructor(arg0: never, ...args: never[]);
+}
+
 declare global {
   /**
    * An Abstract Base Class which defines a Placeable Object which represents a Document placed on the Canvas
@@ -531,6 +535,8 @@ declare global {
 
   namespace PlaceableObject {
     type Any = PlaceableObject<any>;
+
+    type AnyConstructor = typeof AnyPlaceableObject;
 
     interface RenderFlags {
       redraw: boolean;
