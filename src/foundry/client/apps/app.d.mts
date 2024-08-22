@@ -590,6 +590,6 @@ declare global {
   }
 }
 
-declare abstract class AnyApplication extends Application {
+declare abstract class AnyApplication extends Application<any> {
   constructor(arg0: never, ...args: never[]);
 }

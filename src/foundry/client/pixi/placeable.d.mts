@@ -2,10 +2,6 @@ import type { ValueOf } from "../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../common/abstract/document.d.mts";
 import type { Document } from "../../common/abstract/module.d.mts";
 
-declare abstract class AnyPlaceableObject extends PlaceableObject<any> {
-  constructor(arg0: never, ...args: never[]);
-}
-
 declare global {
   /**
    * An Abstract Base Class which defines a Placeable Object which represents a Document placed on the Canvas
@@ -579,4 +575,8 @@ interface Vision {
    * This is required but has been set to optional because of PointSource
    */
   los?: PointSourcePolygon | undefined;
+}
+
+declare abstract class AnyPlaceableObject extends PlaceableObject<any> {
+  constructor(arg0: never, ...args: never[]);
 }

@@ -46,6 +46,6 @@ declare global {
   }
 }
 
-declare abstract class AnyPIXIContainer extends PIXI.Container {
+declare abstract class AnyPIXIContainer extends PIXI.Container<any> {
   constructor(arg0: never, ...args: never[]);
 }
