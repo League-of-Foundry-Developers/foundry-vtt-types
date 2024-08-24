@@ -3,7 +3,14 @@ import type {
   ConfiguredDocumentClassForName,
   ConfiguredFlags,
 } from "../../../types/helperTypes.mts";
-import type { RemoveIndexSignatures, ConstructorOf, SimpleMerge, ValueOf } from "../../../types/utils.d.mts";
+import type {
+  RemoveIndexSignatures,
+  ConstructorOf,
+  SimpleMerge,
+  ValueOf,
+  AnyObject,
+  EmptyObject,
+} from "../../../types/utils.d.mts";
 import type { DataModel } from "../abstract/data.mts";
 import type Document from "../abstract/document.mts";
 import type { EmbeddedCollection, EmbeddedCollectionDelta } from "../abstract/module.d.mts";
@@ -1144,7 +1151,7 @@ declare namespace ObjectField {
     {
       required: true;
       nullable: false;
-      initial: () => AnyObject;
+      initial: () => EmptyObject;
     }
   >;
 
@@ -1778,6 +1785,8 @@ declare class EmbeddedCollectionField<
 }
 
 declare namespace EmbeddedCollectionField {
+  type Any = EmbeddedCollectionField<any, any, any, any, any, any, any, any, any>;
+
   /**
    * A shorthand for the options of an EmbeddedCollectionField class.
    * @typeParam AssignmentElementType - the assignment type of the elements of the EmbeddedCollectionField

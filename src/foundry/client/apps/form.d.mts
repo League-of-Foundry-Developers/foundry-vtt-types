@@ -1,6 +1,6 @@
 import type { EditorView } from "prosemirror-view";
 import type { Editor } from "tinymce";
-import type { GetDataReturnType, MaybePromise } from "../../../types/utils.d.mts";
+import type { AnyObject, GetDataReturnType, MaybePromise } from "../../../types/utils.d.mts";
 import type { ProseMirrorKeyMaps, ProseMirrorMenu } from "../../prosemirror/prosemirror.d.mts";
 
 declare global {
@@ -154,7 +154,7 @@ declare global {
     protected _onSubmit(
       event: Event,
       { updateData, preventClose, preventRender }?: FormApplication.OnSubmitOptions,
-    ): Promise<Partial<Record<string, unknown>>>;
+    ): Promise<Partial<AnyObject>>;
 
     /**
      * Get an object of update data used to update the form's target object
@@ -163,7 +163,7 @@ declare global {
      * @returns The prepared update data
      */
     // TODO: Maybe we can calculate how the flattened `updateData` looks like, then it would be Partial<Record<string, unknown>> & Flattened<T>
-    protected _getSubmitData(updateData?: object | null): Record<string, unknown>;
+    protected _getSubmitData(updateData?: AnyObject | null): AnyObject;
 
     /**
      * Handle changes to an input element, submitting the form if options.submitOnChange is true.
@@ -272,6 +272,8 @@ declare global {
   }
 
   namespace FormApplication {
+    type Any = FormApplication<any, any>;
+
     interface CloseOptions extends Application.CloseOptions {
       submit?: boolean;
     }
@@ -295,19 +297,19 @@ declare global {
        * same time as processing a form submission to avoid multiple database operations.
        * @defaultValue `null`
        */
-      updateData?: object;
+      updateData?: AnyObject | null | undefined;
 
       /**
        * Override the standard behavior of whether to close the form on submit
        * @defaultValue `false`
        */
-      preventClose?: boolean;
+      preventClose?: boolean | undefined;
 
       /**
        * Prevent the application from re-rendering as a result of form submission
        * @defaultValue `false`
        */
-      preventRender?: boolean;
+      preventRender?: boolean | undefined;
     }
 
     interface FormApplicationData<
@@ -320,9 +322,8 @@ declare global {
     }
   }
 
-  interface DocumentSheetOptions<
-    ConcreteDocument extends foundry.abstract.Document<any, any, any> = foundry.abstract.Document<any, any, any>,
-  > extends FormApplicationOptions {
+  interface DocumentSheetOptions<ConcreteDocument extends foundry.abstract.Document.Any = foundry.abstract.Document.Any>
+    extends FormApplicationOptions {
     /**
      * The default permissions required to view this Document sheet.
      * @defaultValue {@link CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED}
@@ -342,7 +343,7 @@ declare global {
    */
   abstract class DocumentSheet<
     Options extends DocumentSheetOptions<ConcreteDocument>,
-    ConcreteDocument extends foundry.abstract.Document<any, any, any> = foundry.abstract.Document<any, any, any>,
+    ConcreteDocument extends foundry.abstract.Document.Any = foundry.abstract.Document.Any,
   > extends FormApplication<Options, ConcreteDocument> {
     /**
      * @param object  - A Document instance which should be managed by this form.
@@ -447,9 +448,11 @@ declare global {
   }
 
   namespace DocumentSheet {
+    type Any = DocumentSheet<any, any>;
+
     interface DocumentSheetData<
       Options extends DocumentSheetOptions<ConcreteDocument>,
-      ConcreteDocument extends foundry.abstract.Document<any, any, any> = foundry.abstract.Document<any, any, any>,
+      ConcreteDocument extends foundry.abstract.Document.Any = foundry.abstract.Document.Any,
     > extends FormApplication.FormApplicationData {
       cssClass: string;
       editable: boolean;

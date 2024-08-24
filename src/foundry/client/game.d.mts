@@ -6,7 +6,7 @@ import type {
   ModuleRequiredOrOptional,
 } from "../../types/helperTypes.d.mts";
 import type { StoredDocument, ValueOf } from "../../types/utils.d.mts";
-import type { BasePackage } from "../common/packages/module.d.ts";
+import type BasePackage from "../common/packages/base-package.d.mts";
 
 interface EarlierEvents {
   none: never;

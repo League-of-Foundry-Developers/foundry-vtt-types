@@ -143,6 +143,10 @@ declare global {
     protected _getControlButtons(): SceneControl[];
   }
 
+  namespace SceneControls {
+    type Any = SceneControls<any>;
+  }
+
   interface InitializeOptions {
     /**
      * An optional control set to set as active

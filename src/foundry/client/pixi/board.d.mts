@@ -677,7 +677,7 @@ declare global {
      */
     protected _onDragLeftDrop(
       event: PIXI.FederatedEvent,
-    ): ReturnType<PlaceablesLayer<any>["selectObjects"]> | ReturnType<TokenLayer["targetObjects"]> | void;
+    ): ReturnType<PlaceablesLayer.Any["selectObjects"]> | ReturnType<TokenLayer["targetObjects"]> | void;
 
     /**
      * Handle the cancellation of a left-mouse drag workflow

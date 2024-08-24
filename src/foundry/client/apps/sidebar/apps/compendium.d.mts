@@ -83,6 +83,8 @@ declare global {
   }
 
   namespace Compendium {
+    type Any = Compendium<any, any>;
+
     interface Options<Metadata extends CompendiumCollection.Metadata = CompendiumCollection.Metadata>
       extends DocumentDirectoryOptions {
       collection: CompendiumCollection<Metadata>;

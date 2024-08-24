@@ -2,8 +2,6 @@ import type { AnyObject, InexactPartial, SimpleMerge, ValueOf } from "../../../.
 import type { DataField } from "../../../common/data/fields.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
 
-export {};
-
 declare global {
   class ShaderField<
     const Options extends ShaderField.Options = ShaderField.DefaultOptions,

@@ -789,6 +789,10 @@ declare abstract class Document<
   protected static _logV10CompatibilityWarning(options?: LogCompatibilityWarningOptions): void;
 }
 
+declare abstract class AnyDocumentConstructor extends Document<any, any, any> {
+  constructor(arg0: never, ...args: never[]);
+}
+
 declare namespace Document {
   /** Any Document, except for Settings */
   export type Any = Document<DataSchema, AnyMetadata, any>;
@@ -796,9 +800,7 @@ declare namespace Document {
   /** Any Document, that is a child of the given parent Document. */
   export type AnyChild<Parent extends Any | null> = Document<DataSchema, AnyMetadata, Parent>;
 
-  export type Constructor = typeof Document<DataSchema, AnyMetadata, any>;
-
-  export type AnyConstructor = Pick<typeof Document, keyof typeof Document> & (new (...args: any[]) => Document.Any);
+  export type AnyConstructor = typeof AnyDocumentConstructor;
 
   type SystemConstructor = AnyConstructor & { metadata: { name: SystemType; coreTypes?: string[] } };
 
@@ -820,7 +822,7 @@ declare namespace Document {
     ConcreteDocument extends Document<any, infer ConcreteMetadata, any> ? ConcreteMetadata : never;
 
   type CollectionRecord<Schema extends DataSchema> = {
-    [Key in keyof Schema]: Schema[Key] extends fields.EmbeddedCollectionField<any, any> ? Schema[Key] : never;
+    [Key in keyof Schema]: Schema[Key] extends fields.EmbeddedCollectionField.Any ? Schema[Key] : never;
   };
 
   export type Flags<ConcreteDocument extends Any> = OptionsForSchema<SchemaFor<ConcreteDocument>>;

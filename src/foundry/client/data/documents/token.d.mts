@@ -234,7 +234,7 @@ declare global {
      * @param schema - The schema to explore for attributes.
      */
     protected static _getTrackedAttributesFromSchema(
-      schema: foundry.data.fields.SchemaField<any>,
+      schema: foundry.data.fields.SchemaField.Any,
       _path?: string[],
     ): TrackedAttributesDescription;
 

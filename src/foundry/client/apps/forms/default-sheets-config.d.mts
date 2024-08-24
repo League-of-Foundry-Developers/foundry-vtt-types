@@ -25,6 +25,8 @@ declare global {
   }
 
   namespace DefaultSheetsConfig {
+    type Any = DefaultSheetsConfig<any>;
+
     interface Options extends PackageConfiguration.Options {}
 
     interface CategorySubType {

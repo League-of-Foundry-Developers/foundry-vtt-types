@@ -42,6 +42,8 @@ declare global {
   }
 
   namespace MacroConfig {
+    type Any = MacroConfig<any>;
+
     interface FormData {
       command: string;
       img: string;

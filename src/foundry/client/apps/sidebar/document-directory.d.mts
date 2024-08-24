@@ -158,4 +158,8 @@ declare global {
      */
     protected _handleDroppedDocument(target: HTMLElement, data: object): Promise<void>;
   }
+
+  namespace DocumentDirectory {
+    type Any = DocumentDirectory<any, any>;
+  }
 }

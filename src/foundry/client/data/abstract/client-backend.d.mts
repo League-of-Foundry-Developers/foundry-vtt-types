@@ -7,25 +7,25 @@ declare global {
    * The client-side database backend implementation which handles Document modification operations.
    */
   class ClientDatabaseBackend extends foundry.abstract.DatabaseBackend {
-    protected override _getDocuments<T extends Document<any, any, any>>(
+    protected override _getDocuments<T extends Document.Any>(
       documentClass: ConstructorOf<T>,
       request: RequestContext<T>,
       user: User.ConfiguredInstance,
     ): Promise<T[]>;
 
-    protected override _createDocuments<T extends Document<any, any, any>>(
+    protected override _createDocuments<T extends Document.Any>(
       documentClass: ConstructorOf<T>,
       request: RequestContext<T>,
       user: User.ConfiguredInstance,
     ): Promise<T[]>;
 
-    protected override _updateDocuments<T extends Document<any, any, any>>(
+    protected override _updateDocuments<T extends Document.Any>(
       documentClass: ConstructorOf<T>,
       request: RequestContext<T>,
       user: User.ConfiguredInstance,
     ): Promise<T[]>;
 
-    protected override _deleteDocuments<T extends Document<any, any, any>>(
+    protected override _deleteDocuments<T extends Document.Any>(
       documentClass: ConstructorOf<T>,
       request: RequestContext<T>,
       user: User.ConfiguredInstance,

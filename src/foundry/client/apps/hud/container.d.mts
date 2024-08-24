@@ -47,4 +47,8 @@ declare global {
      */
     align(): void;
   }
+
+  namespace HeadsUpDisplay {
+    type Any = HeadsUpDisplay<any>;
+  }
 }

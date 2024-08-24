@@ -1,4 +1,5 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
+import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 import type { SchemaField } from "../../../common/data/fields.d.mts";
 import type { BaseActor } from "../../../common/documents/module.d.mts";
@@ -62,7 +63,7 @@ declare global {
      * Ensure that the embedded collection delta is managing any entries that have had their descendants updated.
      * @param doc - The parent whose immediate children have been modified.
      */
-    _handleDeltaCollectionUpdates(doc: Document): void;
+    _handleDeltaCollectionUpdates(doc: Document.Any): void;
 
     protected override _onUpdate(
       changed: foundry.documents.BaseActor.UpdateData,

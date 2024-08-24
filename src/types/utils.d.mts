@@ -21,29 +21,22 @@ export type InexactPartial<T> = {
 };
 
 /**
- * Any valid class constructor.
- * @internal
- */
-export type AnyClass = abstract new (...args: never[]) => any;
-
-/**
  * References the constructor of type `T`
  * @internal
  */
-export type ConstructorOf<T> = new (...args: never[]) => T;
+export type ConstructorOf<T> = new (arg0: never, ...args: never[]) => T;
 
 /**
  * Expand an object that contains keys in dotted notation
  * @internal
  */
-export type Expanded<O> =
-  O extends Record<string, unknown>
-    ? {
-        [KO in keyof O as KO extends `${infer A}.${string}` ? A : KO]: KO extends `${string}.${infer B}`
-          ? Expanded<{ [EB in B]: O[KO] }>
-          : Expanded<O[KO]>;
-      }
-    : O;
+export type Expanded<O> = O extends AnyObject
+  ? {
+      [KO in keyof O as KO extends `${infer A}.${string}` ? A : KO]: KO extends `${string}.${infer B}`
+        ? Expanded<{ [EB in B]: O[KO] }>
+        : Expanded<O[KO]>;
+    }
+  : O;
 
 /**
  * Union type of the types of the values in `T`
@@ -74,7 +67,7 @@ export type Titlecase<S extends string> = S extends `${infer A} ${infer B}`
   : Capitalize<Lowercase<S>>;
 
 /**
- * Deeply merge two types. If either of the given types is not an `object`, `U`
+ * Deeply merge two types. If either of the given types is not an object then `U`
  * simply overwrites `T`.
  *
  * Nested properties of type `object` are merged recursively unless the property
@@ -146,15 +139,7 @@ export type PropertyTypeOrFallback<T, Key extends string, Fallback> = Key extend
  */
 export type RequiredProps<T, K extends keyof T> = Required<Pick<T, K>> & Omit<T, K>;
 
-export type AnyConstructorFor<Class extends abstract new (...args: any[]) => any> = Pick<Class, keyof Class> &
-  (Class extends new (...args: any[]) => any
-    ? new (...args: any[]) => InstanceType<Class>
-    : abstract new (...args: any[]) => InstanceType<Class>);
-
-export type Mixin<
-  MixinClass extends new (...args: any[]) => any,
-  BaseClass extends abstract new (...args: any[]) => any,
-> = MixinClass & BaseClass;
+export type Mixin<MixinClass extends AnyConcreteConstructor, BaseClass extends AnyConstructor> = MixinClass & BaseClass;
 
 interface GetDataConfigOptions<T> {
   partial: Partial<T> & Record<string, unknown>;
@@ -163,7 +148,7 @@ interface GetDataConfigOptions<T> {
 }
 
 type GetDataConfigOption = GetDataConfig extends {
-  mode: keyof GetDataConfigOptions<unknown> & infer Mode;
+  mode: infer Mode extends keyof GetDataConfigOptions<unknown>;
 }
   ? Mode
   : "object";
@@ -205,18 +190,15 @@ export type GetDataReturnType<T extends object> = GetDataConfigOptions<T>[GetDat
  * const emptyObject: EmptyObjectArray = [1, "foo", () => 3];
  * ```
  */
-export type HandleEmptyObject<
-  T extends Record<string, unknown>,
-  D extends Record<string, unknown> = Record<string, never>,
-> = [{}] extends [T] ? D : T;
+export type HandleEmptyObject<T extends AnyObject, D extends AnyObject = EmptyObject> = [{}] extends [T] ? D : T;
 
 /**
  * This type allows any plain objects. In other words it disallows functions
  * and arrays.
  *
  * Use this type instead of:
- * - `object` - This allows functions and arrays.
- * - `Record<string, any>`/`{}` - These allows anything besides `null` and `undefined`.
+ * - `object`/`Record<any, any>` - This allows functions and arrays.
+ * - `{}` - This type allows anything besides `null` and `undefined`.
  * - `Record<string, unknown>` - This is the appropriate type for any mutable object but doesn't allow readonly objects.
  */
 // This type is not meant to be extended and it has to use an indexed type.
@@ -232,7 +214,7 @@ export type AnyObject = {
  * Use this type instead of:
  * - `object` - This allows functions and arrays.
  * - `Record<string, any>`/`{}` - These allows anything besides `null` and `undefined`.
- * - `Record<string, unknown>` - These types are equivalent
+ * - `Record<string, unknown>` - These types are equivalent but `AnyMutableObject` is preferred for explicitness.
  */
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions, @typescript-eslint/consistent-indexed-object-style
 export type AnyMutableObject = {
@@ -242,8 +224,8 @@ export type AnyMutableObject = {
 /**
  * Use this type to allow any array. This allows readonly arrays which is
  * generally what you want. If you need a mutable array use the
- * {@link MutableArray} type instead of the builtin `T[]` or `Array` types.
- * This allows us to be more explicit about intent.
+ * {@link MutableArray | `MutableArray`} type instead of the builtin `T[]` or
+ * `Array` types. This allows us to be more explicit about intent.
  *
  * Consider being more specific if possible. You should generally try to use a
  * concrete array with a union or add a type parameter first.
@@ -255,8 +237,9 @@ export type AnyMutableObject = {
 export type AnyArray = readonly unknown[];
 
 /**
- * Use this type to allow a mutable array of type `T`. Only use this if mutation
- * is sound. Otherwise you should be using `readonly T[]` or `ReadonlyArray<T>`.
+ * Use this type to allow a mutable array of type `T`. Only use this if the
+ * array can be soundly mutated. Otherwise you should be using
+ * `readonly T[]` or {@link ReadonlyArray | `ReadonlyArray`}
  */
 export type MutableArray<T> = Array<T>;
 
@@ -271,17 +254,21 @@ export type MutableArray<T> = Array<T>;
  *
  * Use this instead of:
  * - `Function` - This refers to the fundamental `Function` object in JS. It allows classes.
- * - `(...args: any[]) => any` - If someone explicitly accesses the parameters or return value you get `any` which is not safe.
+ * - `(...args: any[]) => any` - If someone explicitly accesses the parameters or uses the return value you get `any` which is not safe.
  * - `(...args: unknown[]) => unknown` - This allows obviously unsound calls like `fn(1, "foo")` because it indicates it can take any arguments.
  */
-export type AnyFunction = (...args: never[]) => unknown;
+// The explicit arg0 does not prevent a function with no arguments from being assigned to `AnyFunction` because any function that takes less arguments can be assigned to one that takes more.
+// The point of this is to prevent it from being possible to call with 0 arguments.
+// never is used to make it impossible to call with anything besides `never` or `any`. This makes it the most type safe way to define any function.
+export type AnyFunction = (arg0: never, ...args: never[]) => unknown;
 
 /**
  * Use this type to allow any class, abstract class, or class-like constructor.
  *
- * See {@link AnyConcreteConstructor} if you cannot allow abstract classes. Please
- * also consider writing a comment explaining why {@link AnyConcreteConstructor}
- * is necessary.
+ * See {@link AnyConcreteConstructor | `AnyConcreteConstructor`} if you cannot
+ * allow abstract classes. Please also consider writing a comment
+ * explaining why {@link AnyConcreteConstructor | `AnyConcreteConstructor`} is
+ * necessary.
  *
  * @example
  * ```ts
@@ -292,7 +279,7 @@ export type AnyFunction = (...args: never[]) => unknown;
  * const classLike: AnyConstructor = Date;
  * ```
  */
-export type AnyConstructor = abstract new (...args: never[]) => unknown;
+export type AnyConstructor = abstract new (arg0: never, ...args: never[]) => object;
 
 /**
  * Use this type to allow any class or class-like constructor but disallow
@@ -300,7 +287,7 @@ export type AnyConstructor = abstract new (...args: never[]) => unknown;
  *
  * Use this type only when abstract classes would be problematic such as the
  * base type of a mixin. Please consider writing a comment explaining why.
- * See {@link AnyConstructor} to also allow abstract classes.
+ * See {@link AnyConstructor | `AnyConstructor`} to also allow abstract classes.
  *
  * @example
  * ```ts
@@ -313,7 +300,7 @@ export type AnyConstructor = abstract new (...args: never[]) => unknown;
  * const abstract: AnyConcreteConstructor = abstract class Abstract { ... }
  * ```
  */
-export type AnyConcreteConstructor = new (...args: never[]) => unknown;
+export type AnyConcreteConstructor = new (arg0: never, ...args: never[]) => object;
 
 /**
  * This type is equivalent to `Promise<T>` but exists to give an explicit signal
@@ -329,7 +316,7 @@ export type AnyConcreteConstructor = new (...args: never[]) => unknown;
  *
  * Do not use this type or {@link MaybePromise | `MaybePromise`} for the return
  * type of asynchronous methods on classes. For example for
- * {@link foundry.abstract.Document._preCreate | Document#_preCreate} the typing
+ * {@link foundry.abstract.Document._preCreate | `Document#_preCreate`} the typing
  * should be `Promise<void>` and not this type. In theory we could use
  * {@link MaybePromise | `MaybePromise`} in this context as well but this seems
  * more likely to be confusing than to be helpful.
@@ -383,8 +370,12 @@ export type NonNullish = {};
  * allows any type that is not `null` or `undefined`. see
  * {@link NonNullish | `NonNullish`} if you want that behavior.
  */
-// This type is not meant to be extended and it has to use an indexed type.
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions, @typescript-eslint/consistent-indexed-object-style
-export type EmptyObject = {
-  [K: string]: never;
-};
+// It would be unsound to merge into so an interface is not used.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+export type EmptyObject = Record<string, never>;
+
+/**
+ * Defer is a utility type that allows you to defer the evaluation of a type.
+ * The use cases for this are extremely advanced. In essence they have to do with breaking cycles in evaluation.
+ */
+export type Defer<T> = [T][T extends any ? 0 : never];

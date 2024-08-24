@@ -9,7 +9,7 @@ declare global {
    */
   class DocumentSheetConfig<
     Options extends FormApplicationOptions = FormApplicationOptions,
-    ConcreteDocument extends foundry.abstract.Document<any, any, any> = foundry.abstract.Document<any, any, any>,
+    ConcreteDocument extends foundry.abstract.Document.Any = foundry.abstract.Document.Any,
   > extends FormApplication<Options, ConcreteDocument> {
     /**
      * @defaultValue
@@ -115,6 +115,8 @@ declare global {
   }
 
   namespace DocumentSheetConfig {
+    type Any = DocumentSheetConfig<any>;
+
     interface SheetRegistration {
       action: "register";
 

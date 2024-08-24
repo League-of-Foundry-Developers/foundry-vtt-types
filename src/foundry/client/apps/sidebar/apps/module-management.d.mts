@@ -124,6 +124,8 @@ declare global {
   }
 
   namespace ModuleManagement {
+    type Any = ModuleManagement<any>;
+
     type FilterName = "all" | "active" | "inactive";
 
     type FormData = Record<string, boolean> & {

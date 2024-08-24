@@ -3,10 +3,9 @@ import type {
   ConfiguredDocumentClass,
   ConfiguredObjectClassForName,
   DocumentConstructor,
-  EmptyObject,
   ToObjectFalseType,
 } from "../../types/helperTypes.d.mts";
-import type { DeepPartial, ValueOf } from "../../types/utils.d.mts";
+import type { DeepPartial, EmptyObject, ValueOf } from "../../types/utils.d.mts";
 import type { DropData } from "./data/abstract/client-document.d.mts";
 import type { DocumentModificationOptions } from "../common/abstract/document.d.mts";
 // eslint-disable-next-line import/no-named-as-default
@@ -292,8 +291,8 @@ declare global {
        * @see {@link CompendiumCollection#_onModifyContents}
        */
       updateCompendium: (
-        pack: CompendiumCollection<any>,
-        documents: foundry.abstract.Document<any, any, any>[],
+        pack: CompendiumCollection.Any,
+        documents: foundry.abstract.Document.Any[],
         options: DocumentModificationOptions,
         userId: string,
       ) => void;

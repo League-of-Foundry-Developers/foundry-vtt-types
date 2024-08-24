@@ -1,3 +1,4 @@
+import type { InterfaceToObject } from "../../../types/helperTypes.d.mts";
 import type { AnyObject, EmptyObject, InexactPartial, Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type { DocumentMetadata, DocumentModificationOptions } from "../abstract/document.mts";
@@ -223,7 +224,7 @@ declare namespace BaseActiveEffect {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
-    flags: fields.ObjectField.FlagsField<"ActiveEffect", CoreFlags>;
+    flags: fields.ObjectField.FlagsField<"ActiveEffect", InterfaceToObject<CoreFlags>>;
   }
 
   interface CoreFlags {

@@ -66,6 +66,8 @@ declare global {
   }
 
   namespace JournalPageSheet {
+    type Any = JournalPageSheet<any>;
+
     interface Options extends DocumentSheetOptions<JournalEntryPage.ConfiguredInstance> {}
 
     interface JournalPageSheetData
