@@ -10,6 +10,11 @@ declare namespace BaseSystem {
     version: fields.StringField<{ required: true; blank: false; initial: "0" }>;
 
     /**
+     * Additional document subtypes provided by this system.
+     */
+    documentTypes: fields.ObjectField;
+
+    /**
      * A web URL or local file path which provides a default background banner for worlds which are created using this system
      */
     background: fields.StringField<{ required: false; blank: false }>;
@@ -20,14 +25,21 @@ declare namespace BaseSystem {
     initiative: fields.StringField;
 
     /**
-     * A default distance measurement to use for Scenes in this system
+     * The default grid settings to use for Scenes in this system
      */
-    gridDistance: fields.NumberField;
+    grid: fields.SchemaField<{
+      /** A default grid type to use for Scenes in this system */
+      type: fields.NumberField;
 
-    /**
-     * A default unit of measure to use for distance measurement in this system
-     */
-    gridUnits: fields.StringField;
+      /** A default distance measurement to use for Scenes in this system */
+      distance: fields.NumberField;
+
+      /** A default unit of measure to use for distance measurement in this system */
+      units: fields.StringField;
+
+      /** The default rule used by this system for diagonal measurement on square grids */
+      diagonals: fields.NumberField;
+    }>;
 
     /**
      * An Actor data attribute path to use for Token primary resource bars
@@ -38,6 +50,18 @@ declare namespace BaseSystem {
      * An Actor data attribute path to use for Token secondary resource bars
      */
     secondaryTokenAttribute: fields.StringField;
+
+    /**
+     * A default distance measurement to use for Scenes in this system
+     * @deprecated since v12
+     */
+    gridDistance: fields.NumberField;
+
+    /**
+     * A default unit of measure to use for distance measurement in this system
+     * @deprecated since v12
+     */
+    gridUnits: fields.NumberField;
   }
 }
 
@@ -57,19 +81,9 @@ declare class BaseSystem extends BasePackage<BaseSystem.Schema> {
   static icon: string;
 
   /**
-   * An alias for the document types available in the currently active World.
+   * Does the system template request strict type checking of data compared to template.json inferred types.
    */
-  get documentTypes(): Game["documentTypes"];
-
-  /**
-   * An alias for the raw template JSON loaded from the game System.
-   */
-  get template(): Game["template"];
-
-  /**
-   * An alias for the structured data model organized by document class and type.
-   */
-  get model(): Game["model"];
+  strictDataCleaning: boolean;
 }
 
 export default BaseSystem;
