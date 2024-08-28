@@ -1,5 +1,6 @@
 import type BasePackage from "./base-package.d.mts";
 import type * as fields from "../data/fields.d.mts";
+import type AdditionalTypesField from "./sub-types.d.mts";
 
 declare namespace BaseSystem {
   interface Schema extends ReturnType<typeof BasePackage.defineSchema> {
@@ -12,7 +13,7 @@ declare namespace BaseSystem {
     /**
      * Additional document subtypes provided by this system.
      */
-    documentTypes: fields.ObjectField;
+    documentTypes: AdditionalTypesField;
 
     /**
      * A web URL or local file path which provides a default background banner for worlds which are created using this system
