@@ -369,6 +369,8 @@ export class PackageRelationships extends fields.SchemaField<BasePackage.Package
   constructor(options: fields.SchemaField.Options<BasePackage.PackageRelationshipsSchema>);
 }
 
+// ommitted private class PackageRelationshipField
+
 /**
  * A custom SchemaField for defining a related Package.
  * It may be required to be a specific type of package, by passing the packageType option to the constructor.
@@ -591,6 +593,11 @@ declare class BasePackage<
     >,
   ): void;
 
+  /**
+   * A set of package manifest keys that are migrated.
+   */
+  static migratedKeys: Set<string>;
+
   static migrateData(
     data: AnyObject,
     logOptions?: InexactPartial<{
@@ -618,6 +625,13 @@ declare class BasePackage<
   protected static _migrateMediaURL(data: AnyObject, logOptions: Parameters<typeof BasePackage._logWarning>[2]): void;
 
   protected static _migrateOwnership(data: AnyObject, logOptions: Parameters<typeof BasePackage._logWarning>[2]): void;
+
+  protected static _migratePackIDs(data: AnyObject, logOptions: Parameters<typeof BasePackage._logWarning>[2]): void;
+
+  protected static _migratePackEntityToType(
+    data: AnyObject,
+    logOptions: Parameters<typeof BasePackage._logWarning>[2],
+  ): void;
 
   /**
    * Retrieve the latest Package manifest from a provided remote location.
