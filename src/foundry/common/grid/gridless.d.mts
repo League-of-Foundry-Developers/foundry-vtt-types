@@ -11,35 +11,35 @@ declare class Gridless extends BaseGrid {
     padding: number,
   ): { width: number; height: number; x: number; y: number; rows: number; columns: number };
 
-  getOffset(coords: BaseGrid.GridCoordinates): BaseGrid.GridOffset;
+  getOffset(coords: Gridless.Coordinates): Gridless.Offset;
 
   getOffsetRange(bounds: Rectangle): { i0: number; j0: number; i1: number; j1: number };
 
-  getAdjacentOffsets(coords: BaseGrid.GridCoordinates): BaseGrid.GridOffset[];
+  getAdjacentOffsets(coords: Gridless.Coordinates): Gridless.Offset[];
 
-  testAdjacency(coords1: BaseGrid.GridCoordinates, coords2: BaseGrid.GridCoordinates): boolean;
+  testAdjacency(coords1: Gridless.Coordinates, coords2: Gridless.Coordinates): boolean;
 
-  getShiftedOffset(coords: BaseGrid.GridCoordinates, direction: number): BaseGrid.GridOffset;
+  getShiftedOffset(coords: Gridless.Coordinates, direction: number): Gridless.Offset;
 
   getShiftedPoint(point: Point, direction: number): Point;
 
-  getTopLeftPoint(coords: BaseGrid.GridCoordinates): Point;
+  getTopLeftPoint(coords: Gridless.Coordinates): Point;
 
-  getCenterPoint(coords: BaseGrid.GridCoordinates): Point;
+  getCenterPoint(coords: Gridless.Coordinates): Point;
 
   getShape(): Point[];
 
-  getVertices(coords: BaseGrid.GridCoordinates): Point[];
+  getVertices(coords: Gridless.Coordinates): Point[];
 
-  getSnappedPoint({ x, y }: Point, behavior: BaseGrid.GridSnappingBehavior): Point;
+  getSnappedPoint({ x, y }: Point, behavior: Gridless.SnappingBehavior): Point;
 
   protected _measurePath(
-    waypoints: BaseGrid.GridMeasurePathWaypoint[],
-    options: InexactPartial<{ cost: BaseGrid.GridMeasurePathCostFunction }>,
-    result: BaseGrid.GridMeasurePathResult,
+    waypoints: Gridless.MeasurePathWaypoint[],
+    options: InexactPartial<{ cost: Gridless.MeasurePathCostFunction }>,
+    result: Gridless.MeasurePathResult,
   ): void;
 
-  getDirectPath(waypoints: BaseGrid.GridCoordinates[]): BaseGrid.GridOffset[];
+  getDirectPath(waypoints: Gridless.Coordinates[]): Gridless.Offset[];
 
   getTranslatedPoint(point: Point, direction: number, distance: number): Point;
 
@@ -48,6 +48,30 @@ declare class Gridless extends BaseGrid {
   getCone(origin: Point, radius: number, direction: number, angle: number): Point[];
 }
 
-declare namespace Gridless {}
+declare namespace Gridless {
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  interface Configuration extends BaseGrid.Configuration {}
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  interface Offset extends BaseGrid.Offset {}
+
+  type Coordinates = Offset | Point;
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  interface SnappingBehavior extends BaseGrid.SnappingBehavior {}
+
+  type MeasurePathWaypoint = BaseGrid.MeasurePathWaypoint;
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  interface MeasurePathResultWaypoint extends BaseGrid.MeasurePathResultWaypoint {}
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  interface MeasurePathResultSegment extends BaseGrid.MeasurePathResultSegment {}
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  interface MeasurePathResult extends BaseGrid.MeasurePathResult {}
+
+  type MeasurePathCostFunction = BaseGrid.MeasurePathCostFunction;
+}
 
 export default Gridless;
