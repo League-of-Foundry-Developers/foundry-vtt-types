@@ -5,7 +5,7 @@ import type { InexactPartial } from "../../../types/utils.d.mts";
  */
 declare abstract class BaseGrid {
   /** The base grid constructor. */
-  constructor(config: BaseGrid.GridConfiguration);
+  constructor(config: BaseGrid.Configuration);
 
   size: number;
 
@@ -61,7 +61,7 @@ declare abstract class BaseGrid {
    * @param coords -The coordinates
    * @returns The offset
    */
-  abstract getOffset(coords: BaseGrid.GridCoordinates): BaseGrid.GridOffset;
+  abstract getOffset(coords: BaseGrid.Coordinates): BaseGrid.Offset;
 
   /**
    * Returns the smallest possible range containing the offsets of all grid spaces that intersect the given bounds.
@@ -87,7 +87,7 @@ declare abstract class BaseGrid {
    * @param coords - The coordinates
    * @returns The adjacent offsets
    */
-  abstract getAdjacentOffsets(coords: BaseGrid.GridCoordinates): BaseGrid.GridOffset[];
+  abstract getAdjacentOffsets(coords: BaseGrid.Coordinates): BaseGrid.Offset[];
 
   /**
    * Returns true if the grid spaces corresponding to the given coordinates are adjacent to each other.
@@ -96,7 +96,7 @@ declare abstract class BaseGrid {
    * @param coords1 - The first coordinates
    * @param coords2 - The second coordinates
    */
-  abstract testAdjacency(coords1: BaseGrid.GridCoordinates, coords2: BaseGrid.GridCoordinates): boolean;
+  abstract testAdjacency(coords1: BaseGrid.Coordinates, coords2: BaseGrid.Coordinates): boolean;
 
   /**
    * Returns the offset of the grid space corresponding to the given coordinates
@@ -107,7 +107,7 @@ declare abstract class BaseGrid {
    * @param direction - The direction (see {@link CONST.MOVEMENT_DIRECTIONS})
    * @returns The offset
    */
-  abstract getShiftedOffset(coords: BaseGrid.GridCoordinates, direction: number): BaseGrid.GridOffset;
+  abstract getShiftedOffset(coords: BaseGrid.Coordinates, direction: number): BaseGrid.Offset;
 
   /**
    * Returns the point shifted by the difference between the grid space corresponding to the given coordinates
@@ -127,7 +127,7 @@ declare abstract class BaseGrid {
    * @param coords - The coordinates
    * @returns The top-left point
    */
-  abstract getTopLeftPoint(coords: BaseGrid.GridCoordinates): Point;
+  abstract getTopLeftPoint(coords: BaseGrid.Coordinates): Point;
 
   /**
    * Returns the center point of the grid space corresponding to the given coordinates.
@@ -136,7 +136,7 @@ declare abstract class BaseGrid {
    * @param coords- The coordinates
    * @returns The center point
    */
-  abstract getCenterPoint(coords: BaseGrid.GridCoordinates): Point;
+  abstract getCenterPoint(coords: BaseGrid.Coordinates): Point;
 
   /**
    * Returns the points of the grid space shape relative to the center point.
@@ -155,7 +155,7 @@ declare abstract class BaseGrid {
    * @param coords - The coordinates
    * @returns The vertices
    */
-  abstract getVertices(coords: BaseGrid.GridCoordinates): Point[];
+  abstract getVertices(coords: BaseGrid.Coordinates): Point[];
 
   /**
    * Snaps the given point to the grid.
@@ -163,7 +163,7 @@ declare abstract class BaseGrid {
    * @param behavior - The snapping behavior
    * @returns The snapped point
    */
-  abstract getSnappedPoint({ x, y }: Point, behavior: BaseGrid.GridSnappingBehavior): Point;
+  abstract getSnappedPoint({ x, y }: Point, behavior: BaseGrid.SnappingBehavior): Point;
 
   /**
    * Measure a shortest, direct path through the given waypoints.
@@ -172,15 +172,15 @@ declare abstract class BaseGrid {
    * @returns The measurements a shortest, direct path through the given waypoints.
    */
   measurePath(
-    waypoints: BaseGrid.GridMeasurePathWaypoint[],
+    waypoints: BaseGrid.MeasurePathWaypoint[],
     options: InexactPartial<{
       /**
        * The function that returns the cost for a given move between
        * grid spaces (default is the distance traveled along the direct path)
        */
-      cost: BaseGrid.GridMeasurePathCostFunction;
+      cost: BaseGrid.MeasurePathCostFunction;
     }>,
-  ): BaseGrid.GridMeasurePathResult;
+  ): BaseGrid.MeasurePathResult;
 
   /**
    * Measures the path and writes the measurements into `result`.
@@ -190,15 +190,15 @@ declare abstract class BaseGrid {
    * @param result    - The measurement result that the measurements need to be written to
    */
   protected abstract _measurePath(
-    waypoints: BaseGrid.GridMeasurePathWaypoint[],
+    waypoints: BaseGrid.MeasurePathWaypoint[],
     options: InexactPartial<{
       /**
        * The function that returns the cost for a given move between
        * grid spaces (default is the distance traveled along the direct path)
        */
-      cost: BaseGrid.GridMeasurePathCostFunction;
+      cost: BaseGrid.MeasurePathCostFunction;
     }>,
-    result: BaseGrid.GridMeasurePathResult,
+    result: BaseGrid.MeasurePathResult,
   ): void;
 
   /**
@@ -206,7 +206,7 @@ declare abstract class BaseGrid {
    * @param waypoints - The waypoints the path must pass through
    * @returns The sequence of grid offsets of a shortest, direct path
    */
-  abstract getDirectPath(waypoints: BaseGrid.GridCoordinates[]): BaseGrid.GridOffset[];
+  abstract getDirectPath(waypoints: BaseGrid.Coordinates[]): BaseGrid.Offset[];
 
   /**
    * Get the point translated in a direction by a distance.
@@ -351,7 +351,7 @@ declare abstract class BaseGrid {
    * @param y  - The starting y-coordinate in pixels
    * @param dx - The number of grid positions to shift horizontally
    * @param dy - The number of grid positions to shift vertically
-   * @param options - Additional options to configure shift behaviour.
+   * @param options - Additional options to configure shift behavior.
    * @deprecated Since v12 until v14. Use {@link BaseGrid#getShiftedPoint} instead.
    */
   shiftPosition(
@@ -392,7 +392,7 @@ declare abstract class BaseGrid {
    *                   At interval=2, snapping would occur at the center-points of each grid size
    *                   At interval=null, no snapping occurs
    *                   (default: `null`)
-   * @param options  - Additional options to configure snapping behaviour.
+   * @param options  - Additional options to configure snapping behavior.
    * @returns An object containing the coordinates of the snapped location
    * @deprecated Since v12 until v14. Use {@link BaseGrid#getSnappedPoint} instead.
    */
@@ -495,7 +495,7 @@ declare abstract class BaseGrid {
 }
 
 declare namespace BaseGrid {
-  interface GridConfiguration {
+  interface Configuration {
     /** The size of a grid space in pixels (a positive number) */
     size: number;
     /**
@@ -530,16 +530,16 @@ declare namespace BaseGrid {
     thickness?: number | undefined;
   }
 
-  interface GridOffset {
+  interface Offset {
     /** The row coordinate */
     i: number;
     /** The column coordinate */
     j: number;
   }
 
-  type GridCoordinates = GridOffset | Point;
+  type Coordinates = Offset | Point;
 
-  interface GridSnappingBehavior {
+  interface SnappingBehavior {
     /** The snapping mode (a union of {@link CONST.GRID_SNAPPING_MODES}) */
     mode: number;
     /**
@@ -549,14 +549,14 @@ declare namespace BaseGrid {
     resolution?: number | undefined;
   }
 
-  type GridMeasurePathWaypoint = GridCoordinates | (GridConfiguration & { teleport: boolean });
+  type MeasurePathWaypoint = Coordinates | (Configuration & { teleport: boolean });
 
   /** The measurements of a waypoint. */
-  interface GridMeasurePathResultWaypoint {
+  interface MeasurePathResultWaypoint {
     /** The segment from the previous waypoint to this waypoint. */
-    backward: GridMeasurePathResultSegment | null;
+    backward: MeasurePathResultSegment | null;
     /** The segment from this waypoint to the next waypoint. */
-    forward: GridMeasurePathResultSegment | null;
+    forward: MeasurePathResultSegment | null;
     /** The total distance traveled along the path up to this waypoint. */
     distance: number;
     /** The total number of spaces moved along a direct path up to this waypoint. */
@@ -566,11 +566,11 @@ declare namespace BaseGrid {
   }
 
   /** The measurements of a segment. */
-  interface GridMeasurePathResultSegment {
+  interface MeasurePathResultSegment {
     /** The waypoint that this segment starts from. */
-    from: GridMeasurePathResultWaypoint;
+    from: MeasurePathResultWaypoint;
     /** The waypoint that this segment goes to. */
-    to: GridMeasurePathResultWaypoint;
+    to: MeasurePathResultWaypoint;
     /** Is teleportation? */
     teleport: boolean;
     /** The distance traveled in grid units along this segment. */
@@ -582,11 +582,11 @@ declare namespace BaseGrid {
   }
 
   /** The measurements result of {@link BaseGrid#measurePath}. */
-  interface GridMeasurePathResult {
+  interface MeasurePathResult {
     /** The measurements at each waypoint. */
-    waypoints: GridMeasurePathResultWaypoint[];
+    waypoints: MeasurePathResultWaypoint[];
     /** The measurements at each segments. */
-    segments: GridMeasurePathResultSegment[];
+    segments: MeasurePathResultSegment[];
     /** The total distance traveled along the path through all waypoints. */
     distance: number;
     /**
@@ -608,7 +608,7 @@ declare namespace BaseGrid {
    * @param distance - The distance between the grid spaces, or 0 if teleported.
    * @returns The cost of the move between the grid spaces.
    */
-  type GridMeasurePathCostFunction = (from: GridOffset, to: GridOffset, distance: number) => number;
+  type MeasurePathCostFunction = (from: Offset, to: Offset, distance: number) => number;
 }
 
 export default BaseGrid;
