@@ -138,7 +138,7 @@ declare global {
     interface GridConfigData {
       gridTypes: Record<foundry.CONST.GRID_TYPES, string>;
       scale: number;
-      scene: Scene;
+      scene: Scene.ConfiguredInstance;
     }
   }
 }
