@@ -43,6 +43,12 @@ declare global {
     hud: HeadsUpDisplay | null;
 
     /**
+     * Position of the mouse on stage.
+     * @type {PIXI.Point}
+     */
+    mousePosition: PIXI.Point;
+
+    /**
      * An Array of pending canvas operations which should trigger on the next re-paint
      * @defaultValue `[]`
      */
