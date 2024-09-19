@@ -141,7 +141,7 @@ declare global {
   namespace TokenConfig {
     type Any = TokenConfig<any>;
 
-    interface FormData {
+    interface FormData extends AnyObject {
       // TODO: Update
       actorId: string;
       actorLink: boolean;

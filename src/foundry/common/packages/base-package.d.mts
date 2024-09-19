@@ -516,7 +516,7 @@ declare class BasePackage<
    * @deprecated since v10, will be removed in v13
    * @remarks `"You are accessing BasePackage#name which is now deprecated in favor of id."`
    */
-  get name(): this["id"];
+  get name(): PackageSchema["id"];
 
   /**
    * A flag which defines whether this package is unavailable to be used.
