@@ -328,7 +328,7 @@ declare global {
      *               (default: `{}`)
      * @returns A Promise which resolves once the animation has been completed
      */
-    animatePan(view?: Partial<AnimatedPanView>): ReturnType<typeof CanvasAnimation.animateLinear>;
+    animatePan(view?: AnimatedPanView): ReturnType<typeof CanvasAnimation.animateLinear>;
 
     /**
      * Recenter the canvas
@@ -575,28 +575,28 @@ interface AnimatedPanView {
   /**
    * The destination x-coordinate
    */
-  x?: number;
+  x?: number | null;
 
   /**
    * The destination y-coordinate
    */
-  y?: number;
+  y?: number | null;
 
   /**
    * The destination zoom scale
    */
-  scale?: number;
+  scale?: number | null;
 
   /**
    * The total duration of the animation in milliseconds; used if speed is not set
    * @defaultValue 250
    */
-  duration: number;
+  duration?: number | null;
 
   /**
    * The speed of animation in pixels per second; overrides duration if set
    */
-  speed?: number;
+  speed?: number | null;
 }
 
 interface EmbeddedEntityNameToLayerMap {
