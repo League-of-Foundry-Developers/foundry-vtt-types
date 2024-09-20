@@ -46,7 +46,7 @@ declare global {
      * Prepare a data object which defines the data schema used by dice roll commands against this Item
      * @remarks defaults to this.system, but provided as object for flexible overrides
      */
-    getRollData(): object;
+    getRollData(): Record<string, unknown>;
 
     /**
      * @privateRemarks _preCreate, _onCreateDocuments and _onDeleteDocuments are all overridden but with no signature changes.
