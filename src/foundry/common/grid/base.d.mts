@@ -43,18 +43,7 @@ declare abstract class BaseGrid {
    * @param sceneHeight - The height of the scene.
    * @param padding     - The percentage of padding.
    */
-  abstract calculateDimensions(
-    sceneWidth: number,
-    sceneHeight: number,
-    padding: number,
-  ): {
-    width: number;
-    height: number;
-    x: number;
-    y: number;
-    rows: number;
-    columns: number;
-  };
+  abstract calculateDimensions(sceneWidth: number, sceneHeight: number, padding: number): BaseGrid.Dimensions;
 
   /**
    * Returns the offset of the grid space corresponding to the given coordinates.
@@ -609,6 +598,15 @@ declare namespace BaseGrid {
    * @returns The cost of the move between the grid spaces.
    */
   type MeasurePathCostFunction = (from: Offset, to: Offset, distance: number) => number;
+
+  interface Dimensions {
+    width: number;
+    height: number;
+    x: number;
+    y: number;
+    rows: number;
+    columns: number;
+  }
 }
 
 export default BaseGrid;

@@ -55,11 +55,7 @@ declare class SquareGrid extends BaseGrid {
 
   getCircle(center: Point, radius: number): Point[];
 
-  calculateDimensions(
-    sceneWidth: number,
-    sceneHeight: number,
-    padding: number,
-  ): { width: number; height: number; x: number; y: number; rows: number; columns: number };
+  calculateDimensions(sceneWidth: number, sceneHeight: number, padding: number): SquareGrid.Dimensions;
 }
 
 declare namespace SquareGrid {
@@ -97,6 +93,9 @@ declare namespace SquareGrid {
   }
 
   type MeasurePathCostFunction = BaseGrid.MeasurePathCostFunction;
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  interface Dimensions extends BaseGrid.Dimensions {}
 }
 
 export default SquareGrid;

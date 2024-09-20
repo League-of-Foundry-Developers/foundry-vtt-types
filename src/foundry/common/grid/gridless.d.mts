@@ -5,11 +5,7 @@ import type { InexactPartial } from "../../../types/utils.d.mts";
 declare class Gridless extends BaseGrid {
   override type: number;
 
-  calculateDimensions(
-    sceneWidth: number,
-    sceneHeight: number,
-    padding: number,
-  ): { width: number; height: number; x: number; y: number; rows: number; columns: number };
+  calculateDimensions(sceneWidth: number, sceneHeight: number, padding: number): Gridless.Dimensions;
 
   getOffset(coords: Gridless.Coordinates): Gridless.Offset;
 
@@ -72,6 +68,9 @@ declare namespace Gridless {
   interface MeasurePathResult extends BaseGrid.MeasurePathResult {}
 
   type MeasurePathCostFunction = BaseGrid.MeasurePathCostFunction;
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  interface Dimensions extends BaseGrid.Dimensions {}
 }
 
 export default Gridless;
