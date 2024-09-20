@@ -1,6 +1,7 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
 import type { DocumentDatabaseOperations, DocumentOnUpdateOptions } from "../../../common/abstract/document.d.mts";
+import type { SchemaField } from "../../../common/data/fields.d.mts";
 
 declare global {
   namespace Actor {
@@ -34,6 +35,9 @@ declare global {
   /**
    * The client-side Actor document which extends the common BaseActor model.
    *
+   *  ### Hook Events
+   * {@link hookEvents.applyCompendiumArt}
+   *
    * @see {@link Actors}            The world-level collection of Actor documents
    * @see {@link ActorSheet}     The Actor configuration application
    *
@@ -61,6 +65,11 @@ declare global {
       Scene.ConfiguredInstance,
       TokenDocument.ConfiguredInstance
     >;
+
+    protected override _initializeSource(
+      data: this | SchemaField.InnerAssignmentType<DataSchema>,
+      options?: any,
+    ): SchemaField.InnerPersistedType<DataSchema>;
 
     /**
      * An object that tracks which tracks the changes to the data model which were applied by active effects
@@ -185,6 +194,8 @@ declare global {
      */
     modifyTokenAttribute(attribute: string, value: number, isDelta: boolean, isBar: boolean): Promise<this | undefined>;
 
+    override prepareData(): void;
+
     override prepareEmbeddedDocuments(): void;
 
     /**
@@ -196,6 +207,26 @@ declare global {
      * @returns A promise which resolves to the Combat document once rolls are complete.
      */
     rollInitiative(options?: Actor.RollInitiativeOptions): Promise<void>;
+
+    /**
+     * Toggle a configured status effect for the Actor.
+     * @param statusId  - A status effect ID defined in CONFIG.statusEffects
+     * @param options   - Additional options which modify how the effect is created
+     * @returns A promise which resolves to one of the following values:
+     *            - ActiveEffect if a new effect need to be created
+     *            - true if was already an existing effect
+     *            - false if an existing effect needed to be removed
+     *            - undefined if no changes need to be made
+     */
+    toggleStatusEffect(
+      statusId: string,
+      options?: InexactPartial<{
+        /** Force the effect to be active or inactive regardless of its current state. */
+        active: boolean;
+        /** Display the toggled effect as an overlay. Default `false`. */
+        overlay: boolean;
+      }>,
+    ): Promise<ActiveEffect.ConfiguredInstance | boolean | undefined>;
 
     /**
      * Request wildcard token images from the server and return them.
@@ -247,22 +278,6 @@ declare global {
     protected _unregisterDependentScene(scene: Scene): void;
 
     /**
-     * When an Actor is being created, apply default token configuration settings to its prototype token.
-     * @param data    - Data explicitly provided to the creation workflow
-     * @param options - Options which configure creation
-     */
-    protected _applyDefaultTokenSettings(
-      data: foundry.documents.BaseActor.ConstructorData,
-      options: InexactPartial<{
-        /**
-         * Does this creation workflow originate via compendium import?
-         * @defaultValue `false`
-         */
-        fromCompendium: boolean;
-      }>,
-    ): ReturnType<this["updateSource"]>;
-
-    /**
      * @privateRemarks _preCreate, _onUpdate, onCreateDescendantDocuments, onUpdateDescendantDocuments, and _onDeleteDescendentDocuments are all overridden but with no signature changes.
      * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
      */
@@ -278,7 +293,7 @@ declare global {
      * @param update  - The update delta.
      * @param options - The update context.
      */
-    _updateDependentTokens(
+    protected _updateDependentTokens(
       update: DeepPartial<TokenDocument["_source"]>,
       options: DocumentOnUpdateOptions<"Token">,
     ): void;
