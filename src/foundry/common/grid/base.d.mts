@@ -1,4 +1,4 @@
-import type { InexactPartial } from "../../../types/utils.d.mts";
+import type { AnyObject, InexactPartial } from "../../../types/utils.d.mts";
 
 /**
  * The base grid class.
@@ -68,7 +68,7 @@ declare abstract class BaseGrid {
    * @param bounds - The bounds
    * @returns The offset range
    */
-  abstract getOffsetRange(bounds: Rectangle): { i0: number; j0: number; i1: number; j1: number };
+  abstract getOffsetRange(bounds: Rectangle): BaseGrid.OffsetRange;
 
   /**
    * Returns the offsets of the grid spaces adjacent to the one corresponding to the given coordinates.
@@ -352,7 +352,7 @@ declare abstract class BaseGrid {
       /**
        * The token that is being shifted.
        */
-      token?: Token;
+      token: Token;
     }>,
   ): PointArray;
 
@@ -403,7 +403,7 @@ declare abstract class BaseGrid {
    * @param options - Additional options to configure behavior.
    * @deprecated Since v12 until v14. Use {@link GridLayer#highlightPosition} instead.
    */
-  highlightGridPosition(layer: GridHighlight, options?: Record<string, unknown>): void;
+  highlightGridPosition(layer: GridHighlight, options?: AnyObject): void;
 
   /* -------------------------------------------- */
 
@@ -431,7 +431,7 @@ declare abstract class BaseGrid {
   /**
    * @deprecated Since v12 until v14. Use {@link BaseGrid#measurePath} instead.
    */
-  measureDistance(origin: Point, target: Point, options: Record<string, unknown>);
+  measureDistance(origin: Point, target: Point, options: AnyObject);
 
   /* -------------------------------------------- */
 
@@ -480,38 +480,44 @@ declare abstract class BaseGrid {
   /**
    * @deprecated Since v12 until v14.
    */
-  highlightPosition(name: string, options: Record<string, unknown>);
+  highlightPosition(name: string, options: AnyObject);
 }
 
 declare namespace BaseGrid {
   interface Configuration {
     /** The size of a grid space in pixels (a positive number) */
     size: number;
+
     /**
      * The distance of a grid space in units (a positive number)
      * Default: `1`
      */
     distance?: number | undefined;
+
     /**
      * The units of measurement
      * Default: `""`
      */
     units?: string | undefined;
+
     /**
      * The style of the grid
      * Default: `"solidLines"`
      */
     style?: string | undefined;
+
     /**
      * The color of the grid
      * Default: `0`
      */
     color?: ColorSource | undefined;
+
     /**
      * The alpha of the grid
      * Default: `1`
      */
     alpha?: number | undefined;
+
     /**
      * The line thickness of the grid
      * Default: `1`
@@ -522,8 +528,16 @@ declare namespace BaseGrid {
   interface Offset {
     /** The row coordinate */
     i: number;
+
     /** The column coordinate */
     j: number;
+  }
+
+  interface OffsetRange {
+    i0: number;
+    j0: number;
+    i1: number;
+    j1: number;
   }
 
   type Coordinates = Offset | Point;
@@ -531,6 +545,7 @@ declare namespace BaseGrid {
   interface SnappingBehavior {
     /** The snapping mode (a union of {@link CONST.GRID_SNAPPING_MODES}) */
     mode: number;
+
     /**
      * The resolution (a positive integer)
      * Default: `1`
@@ -544,12 +559,16 @@ declare namespace BaseGrid {
   interface MeasurePathResultWaypoint {
     /** The segment from the previous waypoint to this waypoint. */
     backward: MeasurePathResultSegment | null;
+
     /** The segment from this waypoint to the next waypoint. */
     forward: MeasurePathResultSegment | null;
+
     /** The total distance traveled along the path up to this waypoint. */
     distance: number;
+
     /** The total number of spaces moved along a direct path up to this waypoint. */
     spaces: number;
+
     /** The total cost of the direct path ({@link BaseGrid#getDirectPath}) up to this waypoint. */
     cost: number;
   }
@@ -558,14 +577,19 @@ declare namespace BaseGrid {
   interface MeasurePathResultSegment {
     /** The waypoint that this segment starts from. */
     from: MeasurePathResultWaypoint;
+
     /** The waypoint that this segment goes to. */
     to: MeasurePathResultWaypoint;
+
     /** Is teleportation? */
     teleport: boolean;
+
     /** The distance traveled in grid units along this segment. */
     distance: number;
+
     /** The number of spaces moved along this segment. */
     spaces: number;
+
     /** The cost of the direct path ({@link BaseGrid#getDirectPath}) between the two waypoints. */
     cost: number;
   }
@@ -574,16 +598,20 @@ declare namespace BaseGrid {
   interface MeasurePathResult {
     /** The measurements at each waypoint. */
     waypoints: MeasurePathResultWaypoint[];
+
     /** The measurements at each segments. */
     segments: MeasurePathResultSegment[];
+
     /** The total distance traveled along the path through all waypoints. */
     distance: number;
+
     /**
      * The total number of spaces moved along a direct path through all waypoints.
      * Moving from a grid space to any of its neighbors counts as 1 step.
      * Always 0 in gridless grids.
      */
     spaces: number;
+
     /** The total cost of the direct path ({@link BaseGrid#getDirectPath}) through all waypoints. */
     cost: number;
   }

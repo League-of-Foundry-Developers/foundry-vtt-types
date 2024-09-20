@@ -16,7 +16,7 @@ declare class HexagonalGrid extends BaseGrid {
 
   getOffset(coords: HexagonalGrid.Coordinates): HexagonalGrid.Offset;
 
-  getOffsetRange(bounds: Rectangle): { i0: number; j0: number; i1: number; j1: number };
+  getOffsetRange(bounds: Rectangle): HexagonalGrid.OffsetRange;
 
   getAdjacentOffsets(coords: HexagonalGrid.Coordinates): HexagonalGrid.Offset[];
 
@@ -79,7 +79,7 @@ declare class HexagonalGrid extends BaseGrid {
     sceneWidth: number,
     sceneHeight: number,
     padding: number,
-  ): { width: number; height: number; x: number; y: number; rows: number; columns: number };
+  ): HexagonalGrid.Dimensions;
 
   protected _measurePath(
     waypoints: HexagonalGrid.MeasurePathWaypoint[],
@@ -340,6 +340,7 @@ declare namespace HexagonalGrid {
      * Default: `false`
      */
     columns: boolean;
+
     /**
      * Is this grid even or odd?
      * Default: `false`
@@ -354,17 +355,22 @@ declare namespace HexagonalGrid {
      * Equal to the offset column coordinate if column orientation.
      */
     q: number;
+
     /**
      * The coordinate along the NE-SW (columns) or N-S (rows) axis.
      * Equal to the offset row coordinate if row orientation.
      */
     r: number;
+
     /** The coordinate along the SE-NW axis. */
     s: number;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface Offset extends BaseGrid.Offset {}
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  interface OffsetRange extends BaseGrid.OffsetRange {}
 
   /** Cube coordinates in a hexagonal grid. q + r + s = 0. */
   type Coordinates = BaseGrid.Coordinates | Cube;

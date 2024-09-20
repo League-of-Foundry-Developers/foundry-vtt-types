@@ -9,7 +9,7 @@ declare class Gridless extends BaseGrid {
 
   getOffset(coords: Gridless.Coordinates): Gridless.Offset;
 
-  getOffsetRange(bounds: Rectangle): { i0: number; j0: number; i1: number; j1: number };
+  getOffsetRange(bounds: Rectangle): Gridless.OffsetRange;
 
   getAdjacentOffsets(coords: Gridless.Coordinates): Gridless.Offset[];
 
@@ -50,6 +50,9 @@ declare namespace Gridless {
 
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface Offset extends BaseGrid.Offset {}
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  interface OffsetRange extends BaseGrid.OffsetRange {}
 
   type Coordinates = Offset | Point;
 

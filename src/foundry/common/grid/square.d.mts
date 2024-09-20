@@ -14,7 +14,7 @@ declare class SquareGrid extends BaseGrid {
 
   getOffset(coords: SquareGrid.Coordinates): SquareGrid.Offset;
 
-  getOffsetRange(bounds: Rectangle): { i0: number; j0: number; i1: number; j1: number };
+  getOffsetRange(bounds: Rectangle): SquareGrid.OffsetRange;
 
   getAdjacentOffsets(coords: SquareGrid.Coordinates): SquareGrid.Offset[];
 
@@ -69,6 +69,9 @@ declare namespace SquareGrid {
 
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface Offset extends BaseGrid.Offset {}
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  interface OffsetRange extends BaseGrid.OffsetRange {}
 
   type Coordinates = Offset | Point;
 
