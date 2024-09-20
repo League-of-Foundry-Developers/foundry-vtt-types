@@ -22,6 +22,13 @@ declare global {
     protected override _initialize(options?: any): void;
     protected override _initialize(): void;
 
+    /** Pass-through the type from the synthetic Actor, if it exists. */
+    _type: string;
+
+    get type(): string;
+
+    set type(type: string);
+
     /**
      * Apply this ActorDelta to the base Actor and return a synthetic Actor.
      * @param context - Context to supply to synthetic Actor instantiation.
@@ -65,7 +72,7 @@ declare global {
      * Ensure that the embedded collection delta is managing any entries that have had their descendants updated.
      * @param doc - The parent whose immediate children have been modified.
      */
-    _handleDeltaCollectionUpdates(doc: Document): void;
+    _handleDeltaCollectionUpdates(doc: foundry.abstract.Document.Any): void;
 
     /**
      * @privateRemarks _onUpdate and _onDelete are all overridden but with no signature changes.
