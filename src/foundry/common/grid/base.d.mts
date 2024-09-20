@@ -391,7 +391,7 @@ declare abstract class BaseGrid {
     interval?: number | null,
     options?: InexactPartial<{
       /** The token that is being moved. */
-      token?: Token;
+      token: Token;
     }>,
   ): { x: number; y: number };
 
