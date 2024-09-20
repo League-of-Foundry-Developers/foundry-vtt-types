@@ -53,7 +53,7 @@ declare namespace WordTree {
    */
   interface WordTreeEntry {
     /** An object that this entry represents. */
-    entry: Document;
+    entry: foundry.abstract.Document.Any;
     /** The document type. */
     documentName: string;
     /** The document's UUID. */
