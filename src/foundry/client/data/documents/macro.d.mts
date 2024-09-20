@@ -1,4 +1,5 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
+import type { InexactPartial } from "../../../../types/utils.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 
 declare global {
@@ -8,6 +9,22 @@ declare global {
 
     /* eslint-disable-next-line @typescript-eslint/no-empty-object-type */
     export interface DatabaseOperations extends DocumentDatabaseOperations<Macro> {}
+
+    interface Scope {
+      /** An Actor who is the protagonist of the executed action. */
+      actor: Actor;
+
+      /**  A Token which is the protagonist of the executed action. */
+      token: Token;
+
+      /** An optional event passed to the executed macro. */
+      event: Event | RegionEvent;
+
+      /**
+       * @remarks Additional arguments passed as part of the scope
+       */
+      [arg: string]: unknown;
+    }
   }
 
   /**
@@ -35,31 +52,23 @@ declare global {
     get thumbnail(): string | null;
 
     /**
+     * Test whether the given User is capable of executing this Macro.
+     * @param user - The User to test.
+     * @returns Can this User execute this Macro?
+     */
+    canUserExecute(user: User): boolean;
+
+    /**
      * Execute the Macro command.
      * @param scope - Macro execution scope which is passed to script macros
      * @returns A promising containing a created {@link ChatMessage} (or `undefined`) if a chat
      *          macro or the return value if a script macro. A void return is possible if the user
      *          is not permitted to execute macros or a script macro execution fails.
      */
-    execute(scope?: Scope): Promise<ChatMessage | undefined> | Promise<unknown> | void;
+    execute(scope?: InexactPartial<Macro.Scope>): Promise<ChatMessage | void> | Promise<unknown> | void;
+
+    #executeScript();
 
     _onClickDocumentLink(event: MouseEvent): ReturnType<this["execute"]>;
   }
-}
-
-interface Scope {
-  /**
-   * An Actor who is the protagonist of the executed action
-   */
-  actor?: Actor;
-
-  /**
-   * A Token which is the protagonist of the executed action
-   */
-  token?: Token;
-
-  /**
-   * @remarks Additional arguments passed as part of the scope
-   */
-  [arg: string]: unknown;
 }

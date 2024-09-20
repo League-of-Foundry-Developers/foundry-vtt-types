@@ -41,13 +41,13 @@ declare global {
        */
       messageOptions?: foundry.documents.BaseChatMessage.ConstructorData;
     }
-  }
 
-  interface CombatHistoryData {
-    round: number | null;
-    turn: number | null;
-    tokenId: string | null;
-    combatantId: string | null;
+    export interface HistoryData {
+      round: number | null;
+      turn: number | null;
+      tokenId: string | null;
+      combatantId: string | null;
+    }
   }
 
   /**
@@ -70,13 +70,16 @@ declare global {
     turns: Combatant.ConfiguredInstance[];
 
     /** Record the current round, turn, and tokenId to understand changes in the encounter state */
-    current: CombatHistoryData;
+    current: Combat.HistoryData;
 
     /** Track the previous round, turn, and tokenId to understand changes in the encounter state */
-    previous: CombatHistoryData;
+    previous: Combat.HistoryData;
 
-    /** The configuration setting used to record Combat preferences */
-    static CONFIG_SETTING: "combatTrackerConfig";
+    /**
+     * The configuration setting used to record Combat preferences
+     * Default: `"combatTrackerConfig"`
+     */
+    static CONFIG_SETTING: string;
 
     /** Get the Combatant who has the current turn. */
     get combatant(): this["turns"][number] | undefined;
@@ -109,39 +112,40 @@ declare global {
 
     /**
      * Get a Combatant using its Token id
-     * @param tokenId - The id of the Token for which to acquire the combatant
+     * @param token - A Token ID or a TokenDocument instance
+     * @returns An array of Combatants which represent the Token.
      */
-    getCombatantByToken(tokenId: string): Combatant.ConfiguredInstance | undefined;
+    getCombatantsByToken(token: string | TokenDocument): Combatant.ConfiguredInstance[];
 
     /**
      * Get a Combatant that represents the given Actor or Actor ID.
      * @param actorOrId - An Actor ID or an Actor instance.
      */
-    getCombatantByActor(actorOrId: string | Actor): Combatant.ConfiguredInstance | undefined;
+    getCombatantsByActor(actorOrId: string | Actor): Combatant.ConfiguredInstance[];
 
     /** Begin the combat encounter, advancing to round 1 and turn 1 */
     startCombat(): Promise<this>;
 
     /** Advance the combat to the next round */
-    nextRound(): Promise<this | undefined>;
+    nextRound(): Promise<this>;
 
     /** Rewind the combat to the previous round */
-    previousRound(): Promise<this | undefined>;
+    previousRound(): Promise<this>;
 
     /** Advance the combat to the next turn */
-    nextTurn(): Promise<this | undefined>;
+    nextTurn(): Promise<this>;
 
     /** Rewind the combat to the previous turn */
-    previousTurn(): Promise<this | undefined>;
+    previousTurn(): Promise<this>;
 
     /** Display a dialog querying the GM whether they wish to end the combat encounter and empty the tracker */
-    endCombat(): Promise<this | undefined>;
+    endCombat(): Promise<this>;
 
     /** Toggle whether this combat is linked to the scene or globally available. */
-    toggleSceneLink(): Promise<this | undefined>;
+    toggleSceneLink(): Promise<this>;
 
     /** Reset all combatant initiative scores, setting the turn back to zero */
-    resetAll(): Promise<this | undefined>;
+    resetAll(): Promise<this>;
 
     /**
      * Roll initiative for one or multiple Combatants within the Combat document
@@ -241,6 +245,15 @@ declare global {
       options: DocumentOnDeleteOptions<"Combatant"> & InexactPartial<{ combatTurn: number; turnEvents: boolean }>,
       userId: string,
     ): void;
+
+    #onModifyCombatants();
+
+    /**
+     * Get the current history state of the Combat encounter.
+     * @param combatant - The new active combatant
+     */
+    protected _getCurrentState(combatant: Combatant): Combat.HistoryData;
+
     /**
      * Manage the execution of Combat lifecycle events.
      * This method orchestrates the execution of four events in the following order, as applicable:
@@ -286,5 +299,20 @@ declare global {
      * @param combatant - The Combatant whose turn just started
      */
     protected _onStartTurn(combatant: Combatant): Promise<void>;
+
+    /**
+     * @deprecated Since v11 until v13. Use {@link Combat#updateCombatantActors} instead.
+     */
+    updateEffectDurations(): void;
+
+    /**
+     * @deprecated Since v12. Use {@link Combat#getCombatantsByActor} instead.
+     */
+    getCombatantByActor(actor: Actor): Combatant[];
+
+    /**
+     * @deprecated Since v12. Use {@link Combat#getCombatantsByActor} instead.
+     */
+    getCombatantByToken(token: Token): Combatant[];
   }
 }
