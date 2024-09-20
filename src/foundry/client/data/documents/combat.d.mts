@@ -42,7 +42,7 @@ declare global {
       messageOptions?: foundry.documents.BaseChatMessage.ConstructorData;
     }
 
-    interface CombatHistoryData {
+    export interface HistoryData {
       round: number | null;
       turn: number | null;
       tokenId: string | null;
@@ -70,10 +70,10 @@ declare global {
     turns: Combatant.ConfiguredInstance[];
 
     /** Record the current round, turn, and tokenId to understand changes in the encounter state */
-    current: Combat.CombatHistoryData;
+    current: Combat.HistoryData;
 
     /** Track the previous round, turn, and tokenId to understand changes in the encounter state */
-    previous: Combat.CombatHistoryData;
+    previous: Combat.HistoryData;
 
     /**
      * The configuration setting used to record Combat preferences
@@ -252,7 +252,7 @@ declare global {
      * Get the current history state of the Combat encounter.
      * @param combatant - The new active combatant
      */
-    protected _getCurrentState(combatant: Combatant): Combat.CombatHistoryData;
+    protected _getCurrentState(combatant: Combatant): Combat.HistoryData;
 
     /**
      * Manage the execution of Combat lifecycle events.

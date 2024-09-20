@@ -65,7 +65,7 @@ declare global {
      *          macro or the return value if a script macro. A void return is possible if the user
      *          is not permitted to execute macros or a script macro execution fails.
      */
-    execute(scope?: InexactPartial<Macro.Scope>): Promise<ChatMessage | undefined> | Promise<unknown> | void;
+    execute(scope?: InexactPartial<Macro.Scope>): Promise<ChatMessage | void> | Promise<unknown> | void;
 
     #executeScript();
 

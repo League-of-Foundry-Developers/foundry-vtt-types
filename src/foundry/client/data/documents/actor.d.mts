@@ -68,7 +68,7 @@ declare global {
 
     protected override _initializeSource(
       data: this | SchemaField.InnerAssignmentType<DataSchema>,
-      options?: any,
+      options?: unknown,
     ): SchemaField.InnerPersistedType<DataSchema>;
 
     /**
