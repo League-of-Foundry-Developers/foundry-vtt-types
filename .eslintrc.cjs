@@ -16,6 +16,7 @@ module.exports = {
     sourceType: "module",
   },
   plugins: ["@typescript-eslint", "eslint-plugin-tsdoc", "import"],
+  ignorePatterns: ["vitest.config.js"],
   rules: {
     // When array types get complex enough `Array<...>` is nicer looking than `(...)[]`.
     "@typescript-eslint/array-type": "off",
