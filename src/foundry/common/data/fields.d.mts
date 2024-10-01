@@ -3270,7 +3270,10 @@ declare namespace TypeDataField {
    * Get the configured system type names for a specific document type.
    * @typeParam DocumentType - the type of the Document this system data is for
    */
-  type SystemTypeNames<DocumentType extends Document.SystemConstructor> = keyof Config<DocumentType>;
+  // The `& string` is helpful even though there should never be any numeric/symbol keys.
+  // This is because when `keyof Config<...>` is deferred then TypeScript does a bunch of proofs under the assumption that `SystemTypeNames` could be a `string | number` until proven otherwise.
+  // This causes issues where there shouldn't be, for example it has been observed to obstruct the resolution of the `Actor` class.
+  type SystemTypeNames<DocumentType extends Document.SystemConstructor> = keyof Config<DocumentType> & string;
 
   /**
    * A shorthand for the assignment type of a TypeDataField class.
