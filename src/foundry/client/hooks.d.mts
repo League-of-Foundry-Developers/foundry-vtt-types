@@ -3,10 +3,9 @@ import type {
   ConfiguredDocumentClass,
   ConfiguredObjectClassForName,
   DocumentConstructor,
-  EmptyObject,
   ToObjectFalseType,
 } from "../../types/helperTypes.d.mts";
-import type { DeepPartial, ValueOf } from "../../types/utils.d.mts";
+import type { DeepPartial, EmptyObject, ValueOf } from "../../types/utils.d.mts";
 import type { DropData } from "./data/abstract/client-document.d.mts";
 import type {
   DocumentOnCreateOptions,

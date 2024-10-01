@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
+import type { ConfiguredDocumentClass, InterfaceToObject } from "../../../../types/helperTypes.d.mts";
 import type { MaybePromise } from "../../../../types/utils.d.mts";
 
 declare global {
@@ -40,7 +40,7 @@ declare global {
 
     override getData(options?: Partial<Options>): MaybePromise<object>;
 
-    protected override _getSubmitData(updateData?: object | null): GridConfig.FormData;
+    protected override _getSubmitData(updateData?: object | null): InterfaceToObject<GridConfig.FormData>;
 
     override close(options?: FormApplication.CloseOptions): ReturnType<FormApplication["close"]>;
 

@@ -1,3 +1,4 @@
+import type { DeepPartial } from "../../types/utils.d.mts";
 import type ApplicationV2 from "../client-esm/applications/api/application.mts";
 import type { CustomFormInput } from "../client-esm/applications/forms/fields.mts";
 import type { DataModel } from "./abstract/module.d.mts";
@@ -126,15 +127,19 @@ declare global {
   /**
    * Make all properties in T recursively readonly.
    */
-  /* eslint-disable prettier/prettier */   // prettier is breaking this code
+  /* eslint-disable prettier/prettier */ // prettier is breaking this code
   type DeepReadonly<T> = Readonly<{
-    [K in keyof T]:
-      /* eslint-disable-next-line @typescript-eslint/no-unsafe-function-type */
-       T[K] extends (undefined | null | boolean | number | string | symbol | bigint | Function) ? T[K] :
-       T[K] extends Array<infer V> ? ReadonlyArray<DeepReadonly<V>> :
-       T[K] extends Map<infer K, infer V> ? ReadonlyMap<DeepReadonly<K>, DeepReadonly<V>> :
-       T[K] extends Set<infer V> ? ReadonlySet<DeepReadonly<V>> : DeepReadonly<T[K]>
-   }>
+    [K in keyof T]: /* eslint-disable-next-line @typescript-eslint/no-unsafe-function-type */
+    T[K] extends undefined | null | boolean | number | string | symbol | bigint | Function
+      ? T[K]
+      : T[K] extends Array<infer V>
+        ? ReadonlyArray<DeepReadonly<V>>
+        : T[K] extends Map<infer K, infer V>
+          ? ReadonlyMap<DeepReadonly<K>, DeepReadonly<V>>
+          : T[K] extends Set<infer V>
+            ? ReadonlySet<DeepReadonly<V>>
+            : DeepReadonly<T[K]>;
+  }>;
   /* eslint-enable prettier/prettier */
 
   /**

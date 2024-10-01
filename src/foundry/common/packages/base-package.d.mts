@@ -173,7 +173,8 @@ declare namespace BasePackage {
     flags: fields.ObjectField;
   }
 
-  export interface RelatedPackageSchema<PackageType extends foundry.CONST.PACKAGE_TYPES = foundry.CONST.PACKAGE_TYPES> {
+  export interface RelatedPackageSchema<PackageType extends foundry.CONST.PACKAGE_TYPES = foundry.CONST.PACKAGE_TYPES>
+    extends DataSchema {
     /**
      * The id of the related package
      */
@@ -200,7 +201,7 @@ declare namespace BasePackage {
     reason: fields.StringField<{ required: false; blank: false; initial: undefined }>;
   }
 
-  interface PackageCompendiumFolderSchemaHelper {
+  interface PackageCompendiumFolderSchemaHelper extends DataSchema {
     name: fields.StringField<{ required: true; blank: false }>;
     sorting: fields.StringField<{
       required: false;

@@ -1849,7 +1849,7 @@ declare global {
      */
     specialStatusEffects: HandleEmptyObject<
       InterfaceToObject<CONFIG.SpecialStatusEffects>,
-      CONFIG.DefaultSpecialStatusEffects
+      InterfaceToObject<CONFIG.DefaultSpecialStatusEffects>
     >;
 
     /**

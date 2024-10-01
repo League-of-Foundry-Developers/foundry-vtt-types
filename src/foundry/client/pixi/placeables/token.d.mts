@@ -441,7 +441,10 @@ declare global {
      */
     get optimalSightRange(): number;
 
-    override clone(): Token;
+    // TODO(LukeAbby): This override appears to fail because it creates a circular dependency that tsc can't resolve for some reason. Bug report?
+    // `Token` is a `PlaceableObject` if it properly extends `PlaceableObject` however `clone` is a proper override of `PlaceableObject.clone` only if its return value extends `PlaceableObject`.
+    // This creates a loop of checking `Token` against `PlaceableObject`.
+    // override clone(): Token;
 
     /**
      * Update the light and vision source objects associated with this Token

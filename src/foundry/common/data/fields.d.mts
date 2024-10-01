@@ -3339,35 +3339,6 @@ declare namespace ModelValidationError {
   type Errors = Record<number | string | symbol, Error> | Error[] | string;
 }
 
-/**
- * @deprecated since v10, will be removed in v12
- */
-export function systemDataField<const D extends Document.Any>(document: D): TypeDataField<D>;
-
-/**
- * @deprecated since v10, will be removed in v12
- */
-export function foreignDocumentField<Model extends Document.Any>(
-  options: ForeignDocumentField.Options & { type: { model: Model } },
-): ForeignDocumentField<Model>;
-
-/**
- * @deprecated since v10, will be removed in v12
- */
-// TODO: Fix the typing on Embedded
-// export function embeddedCollectionField<Embedded extends typeof Document>(
-//   document: Embedded,
-//   options?: EmbeddedCollectionField.Options<Embedded>,
-// ): EmbeddedCollectionField<Embedded>;
-
-/**
- * @deprecated since v10, will be removed in v12
- */
-export function field(
-  field: { type: typeof String | typeof Number | typeof Boolean | typeof Object },
-  options?: DataFieldOptions.Any,
-): DataField;
-
 export {
   AlphaField,
   AngleField,

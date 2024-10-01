@@ -926,6 +926,10 @@ declare abstract class Document<
   ): Promise<unknown>;
 }
 
+declare class AnyDocumentConstructor extends Document<any, any, any> {
+  constructor(arg0: never, ...args: never[]);
+}
+
 declare namespace Document {
   /** Any Document, except for Settings */
   export type Any = Document<DataSchema, AnyMetadata, any>;
@@ -935,7 +939,7 @@ declare namespace Document {
 
   export type Constructor = typeof Document<DataSchema, AnyMetadata, any>;
 
-  export type AnyConstructor = Pick<typeof Document, keyof typeof Document> & (new (...args: any[]) => Document.Any);
+  export type AnyConstructor = typeof AnyDocumentConstructor;
 
   type SystemConstructor = AnyConstructor & { metadata: { name: SystemType; coreTypes?: string[] } };
 

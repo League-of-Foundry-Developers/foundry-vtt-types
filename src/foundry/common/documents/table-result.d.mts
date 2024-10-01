@@ -91,7 +91,7 @@ declare namespace BaseTableResult {
      * A result subtype from CONST.TABLE_RESULT_TYPES
      * @defaultValue `CONST.TABLE_RESULT_TYPES.TEXT`
      */
-    type: fields.NumberField<{
+    type: fields.StringField<{
       required: true;
       choices: CONST.TABLE_RESULT_TYPES[];
       initial: typeof CONST.TABLE_RESULT_TYPES.TEXT;

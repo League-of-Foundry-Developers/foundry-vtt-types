@@ -1,3 +1,6 @@
+import type { InterfaceToObject } from "../../../../types/helperTypes.d.mts";
+import type StringTerm from "../../../client-esm/dice/terms/string.d.mts";
+
 export {};
 
 declare global {
@@ -79,7 +82,7 @@ declare global {
 
     override close(options?: FormApplication.CloseOptions): Promise<void>;
 
-    protected override _getSubmitData(updateData?: object | null): TokenConfig.FormData;
+    protected override _getSubmitData(updateData?: object | null): InterfaceToObject<TokenConfig.FormData>;
 
     protected override _onChangeInput(event: JQuery.ChangeEvent): Promise<void>;
 

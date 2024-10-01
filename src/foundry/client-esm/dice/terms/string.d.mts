@@ -1,4 +1,5 @@
 import type { InexactPartial } from "../../../../types/utils.d.mts";
+import type RollTerm from "./term.d.mts";
 
 /**
  * A type of RollTerm used to represent strings which have not yet been matched.
