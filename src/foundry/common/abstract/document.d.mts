@@ -8,6 +8,7 @@ import type {
   PlaceableDocumentType,
 } from "../../../types/helperTypes.mts";
 import type {
+  AnyConstructorFor,
   ConfiguredStoredDocument,
   DeepPartial,
   InexactPartial,
@@ -791,16 +792,18 @@ declare abstract class Document<
 
 declare namespace Document {
   /** Any Document, except for Settings */
-  export type Any = Document<DataSchema, AnyMetadata, any>;
+  export type Any = Document<any, any, any>;
 
   /** Any Document, that is a child of the given parent Document. */
-  export type AnyChild<Parent extends Any | null> = Document<DataSchema, AnyMetadata, Parent>;
+  export type AnyChild<Parent extends Any | null> = Document<any, any, Parent>;
 
-  export type Constructor = typeof Document<DataSchema, AnyMetadata, any>;
+  export type Constructor = typeof Document<any, any, any>;
 
-  export type AnyConstructor = Pick<typeof Document, keyof typeof Document> & (new (...args: any[]) => Document.Any);
+  export type AnyConstructor = AnyConstructorFor<typeof Document>;
 
-  type SystemConstructor = AnyConstructor & { metadata: { name: SystemType; coreTypes?: string[] } };
+  type SystemConstructor = AnyConstructor & {
+    metadata: { name: SystemType; coreTypes?: readonly string[] | undefined };
+  };
 
   type ConfiguredClass<T extends { metadata: AnyMetadata }> = ConfiguredClassForName<T["metadata"]["name"]>;
 
@@ -825,8 +828,8 @@ declare namespace Document {
 
   export type Flags<ConcreteDocument extends Any> = OptionsForSchema<SchemaFor<ConcreteDocument>>;
 
-  interface OptionsInFlags<Options extends DataFieldOptions.Any> {
-    readonly flags?: DataField<Options, any, any, any>;
+  interface OptionsInFlags<Options extends DataField.Options.Any> {
+    readonly flags?: DataField<Options, any>;
   }
 
   // These  types only exists to simplify solving the `Document` type. Using `Document.Flags<this>` means the constraint `this extends Document.Any` has to be proved.
@@ -845,10 +848,12 @@ declare namespace Document {
     K
   >;
 
-  export type FlagInSchema<S extends string, K extends string, Options extends DataFieldOptions.Any> = {
-    readonly [_ in S]?: {
-      readonly [_ in K]?: DataField<Options, any, any, any>;
-    };
+  export type FlagInSchema<S extends string, K extends string, Options extends DataField.Options.Any> = {
+    readonly [_ in S]?:
+      | {
+          readonly [_ in K]?: DataField<Options, any, any, any> | undefined;
+        }
+      | undefined;
   };
 
   // Looks for flags in the schema.
@@ -863,23 +868,23 @@ export interface Context<Parent extends Document.Any | null> {
   /**
    * A parent document within which this Document is embedded
    */
-  parent?: Parent;
+  parent?: Parent | undefined;
 
   /**
    * A named compendium pack within which this Document exists
    */
-  pack?: string;
+  pack?: string | undefined;
 }
 
-export type AnyMetadata = Metadata<Document.Any>;
+export type AnyMetadata = Metadata<any>;
 
 export interface Metadata<ConcreteDocument extends Document.Any> {
   name: Document.TypeName;
   collection: string;
-  indexed?: boolean;
-  compendiumIndexFields?: string[];
+  indexed?: boolean | undefined;
+  compendiumIndexFields?: string[] | undefined;
   label: string;
-  coreTypes?: readonly string[];
+  coreTypes?: readonly string[] | undefined;
   embedded: Record<string, string>;
   permissions: {
     create:
@@ -898,7 +903,7 @@ export interface Metadata<ConcreteDocument extends Document.Any> {
         ) => boolean);
     delete: string | ((user: foundry.documents.BaseUser, doc: ConcreteDocument, data: {}) => boolean);
   };
-  preserveOnImport?: string[];
+  preserveOnImport?: readonly string[] | undefined;
   labelPlural: string; // This is not set for the Document class but every class that implements Document actually provides it.
   types: readonly string[];
   hasSystemData: boolean;

@@ -222,7 +222,7 @@ class BoilerplateCharacter extends BoilerplateActorBase<
   }
 
   getRollData() {
-    const data: AnyObject = {};
+    const data: Record<string, unknown> = {};
 
     // Copy the ability scores to the top level, so that rolls can use
     // formulas like `@str.mod + 4`.

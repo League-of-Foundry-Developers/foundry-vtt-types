@@ -34,16 +34,17 @@ declare global {
   }
 }
 
-declare const DynamicClass: new <_Computed extends object>(...args: any[]) => _Computed;
+declare const DynamicClass: new <_Computed extends object>(arg0: never, ...args: never[]) => _Computed;
 
 // @ts-expect-error - This is a workaround to allow for dynamic top level properties in a class.
 declare class _InternalDataModel<
-  Schema extends DataSchema,
+  out Schema extends DataSchema,
   // Do not inline. Being a type parameter is an important part of the circumvention of TypeScript's detection of dynamic classes.
-  _Computed extends object = SchemaField.InnerInitializedType<Schema>,
+  out _Computed extends object = SchemaField.InnerInitializedType<Schema>,
 > extends DynamicClass<_Computed> {}
 
 export default DataModel;
+
 /**
  * The abstract base class which defines the data schema contained within a Document.
  */
@@ -56,8 +57,9 @@ declare abstract class DataModel<
    *                  will be owned by the constructed model instance and may be mutated.
    * @param options - Options which affect DataModel construction
    */
+  // TODO(LukeAbby): Make only optional if `{}` is assignable to `InnerAssignmentType`.
   constructor(
-    data?: fields.SchemaField.InnerAssignmentType<Schema>,
+    data?: fields.SchemaField.InnerAssignmentType<Schema> | DataModel<Schema, any>,
     { parent, strict, ...options }?: DataModel.ConstructorOptions<Parent>,
   );
 
@@ -250,11 +252,13 @@ declare abstract class DataModel<
    * @param data - Candidate data for the model
    * @throws An error if a validation failure is detected
    */
-  static validateJoint(data: object): void;
+  // TODO(LukeAbby): Should be SourceType
+  static validateJoint(data: Record<string, unknown>): void;
 
   /**
    * @deprecated since v11; Use the validateJoint static method instead.
    */
+  // TODO(LukeAbby): Should be SourceType
   protected _validateModel(data: fields.SchemaField.InnerAssignmentType<Schema>): void;
 
   /**
@@ -267,6 +271,7 @@ declare abstract class DataModel<
    * @param options - Options which determine how the new data is merged
    * @returns An object containing the changed keys and values
    */
+  // TODO(LukeAbby): Should be SourceType
   updateSource(
     changes?: fields.SchemaField.InnerAssignmentType<Schema>,
     options?: { dryRun?: boolean; fallback?: boolean; recursive?: boolean },
@@ -409,7 +414,6 @@ declare namespace DataModel {
     pack?: DocumentConstructionContext["pack"];
   }
 
-  /** Any DataModel. */
   type Any = DataModel<DataSchema, any>;
 
   /**

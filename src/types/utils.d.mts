@@ -24,13 +24,13 @@ export type InexactPartial<T> = {
  * Any valid class constructor.
  * @internal
  */
-export type AnyClass = abstract new (...args: never[]) => any;
+export type AnyClass = abstract new (arg0: never, ...args: never[]) => any;
 
 /**
  * References the constructor of type `T`
  * @internal
  */
-export type ConstructorOf<T> = new (...args: never[]) => T;
+export type ConstructorOf<T> = new (arg0: never, ...args: never[]) => T;
 
 /**
  * Expand an object that contains keys in dotted notation
@@ -150,15 +150,16 @@ export type PropertyTypeOrFallback<T, Key extends string, Fallback> = Key extend
  */
 export type RequiredProps<T, K extends keyof T> = Required<Pick<T, K>> & Omit<T, K>;
 
-export type AnyConstructorFor<Class extends abstract new (...args: any[]) => any> = Pick<Class, keyof Class> &
-  (Class extends new (...args: any[]) => any
-    ? new (...args: any[]) => InstanceType<Class>
-    : abstract new (...args: any[]) => InstanceType<Class>);
+export type AnyConstructorFor<Class extends abstract new (arg0: never, ...args: never[]) => unknown> =
+  AnyConstructorInterface<Class>;
 
-export type Mixin<
-  MixinClass extends new (...args: any[]) => any,
-  BaseClass extends abstract new (...args: any[]) => any,
-> = MixinClass & BaseClass;
+// This is unexported to prevent it from being declaration merged which would be unsound.
+// @ts-expect-error - Ignore the "incorrectly extends interface" error inherent to this pattern.
+interface AnyConstructorInterface<T extends AnyConstructor> extends T {
+  new (arg0: never, ...args: never[]): InstanceType<T>;
+}
+
+export type Mixin<MixinClass extends AnyConcreteConstructor, BaseClass extends AnyClass> = MixinClass & BaseClass;
 
 interface GetDataConfigOptions<T> {
   partial: Partial<T> & Record<string, unknown>;
@@ -216,8 +217,8 @@ export type HandleEmptyObject<T extends AnyObject, D extends AnyObject = EmptyOb
  * and arrays.
  *
  * Use this type instead of:
- * - `object` - This allows functions and arrays.
- * - `Record<string, any>`/`{}` - These allows anything besides `null` and `undefined`.
+ * - `object`/`Record<any, any>` - This allows functions, classes, and arrays.
+ * - `{}` - This type allows anything besides `null` and `undefined`.
  * - `Record<string, unknown>` - This is the appropriate type for any mutable object but doesn't allow readonly objects.
  */
 // This type is not meant to be extended and it has to use an indexed type.
@@ -298,7 +299,7 @@ export type AnyFunction = (arg0: never, ...args: never[]) => unknown;
  * const classLike: AnyConstructor = Date;
  * ```
  */
-export type AnyConstructor = abstract new (...args: never[]) => unknown;
+export type AnyConstructor = abstract new (arg0: never, ...args: never[]) => unknown;
 
 /**
  * Use this type to allow any class or class-like constructor but disallow
@@ -319,7 +320,7 @@ export type AnyConstructor = abstract new (...args: never[]) => unknown;
  * const abstract: AnyConcreteConstructor = abstract class Abstract { ... }
  * ```
  */
-export type AnyConcreteConstructor = new (...args: never[]) => unknown;
+export type AnyConcreteConstructor = new (arg0: never, ...args: never[]) => unknown;
 
 /**
  * This type is equivalent to `Promise<T>` but exists to give an explicit signal
@@ -382,6 +383,8 @@ export type MaybePromise<T> = T | Promise<T>;
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type NonNullish = {};
 
+declare const empty: unique symbol;
+
 /**
  * This is the closest approximation to a type representing an empty object.
  *
@@ -389,8 +392,10 @@ export type NonNullish = {};
  * allows any type that is not `null` or `undefined`. see
  * {@link NonNullish | `NonNullish`} if you want that behavior.
  */
-// This type is not meant to be extended and it has to use an indexed type.
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions, @typescript-eslint/consistent-indexed-object-style
+// It would be unsound to merge into so an interface is not used.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type EmptyObject = {
-  [K: string]: never;
+  // A single unused property is added to distinguish this type from `{}`.
+  // The type `{}` actually allows any type besides `null` and `undefined`.
+  readonly [empty]?: never;
 };
