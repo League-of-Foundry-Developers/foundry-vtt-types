@@ -63,7 +63,11 @@ export type ConcreteKeys<T> = T extends never
 /**
  * Removes all index signatures from an object. Use this instead of `[K in keyof ConcreteKeys<T>]` to preserve modifiers e.g. readonly, or optional.
  */
-export type RemoveIndexSignatures<T> = Pick<T, ConcreteKeys<T>>;
+// DO NOT CHANGE (LukeAbby): It may seem easier to write `Pick<T, ConcreteKeys<T>>` but this behaves poorly with generic parameters.
+// See: https://www.typescriptlang.org/play/?#code/KYDwDg9gTgLgBDAnmYcDCEB2BjKwbADSwiAzgDwAqAfHALxwDWJEAZnAN4BQccA2oTgBLTExbtKcAIak4pGFBEBzOKAKYAJrMEB+OJmAA3YFDgAufQFcAtgCMTqkOq1xd+ow4ulEdiABtHZ204PQNjUwtCAF0LMJMAbi4AX0SuJBQ4ACVgawhjAElNUABlISVMKRhLPAoaejgABSFsRioAGnQsXHwiElrqalTsPxlZABFKqQBZCA1gP3Ji7AALHKlabl454ak8OFy5vwts3IKikFLyyurgCiXV63Xkri4d0lliy1sZw8WVtcCwE0sg4cCUQJMzQaUAgYAsUkwiHi-EIXgUyhiVjsDiStDUQJcExg01m8z+D3WnB4+3wy1mAAoAJRU3i8AD0bLglGWQlkYBhKCgiDkdMsfg0jl58FslngGggt0wAHIYAA6am8GA80iqg7zVXggyKbDQ2GpVkIbW60l+VVSWzYRK8JLJIA
+export type RemoveIndexSignatures<T> = {
+  [K in keyof T as string extends K ? never : number extends K ? never : symbol extends K ? never : K]: T[K];
+};
 
 /**
  * Transforms a string to lowercase and the first character to uppercase.
