@@ -35,6 +35,8 @@ declare global {
   }
 
   namespace FolderConfig {
+    type Any = FolderConfig<any>;
+
     interface Options extends DocumentSheetOptions<Folder> {
       resolve?: (doc: InstanceType<ConfiguredDocumentClass<typeof Folder>>) => void;
     }

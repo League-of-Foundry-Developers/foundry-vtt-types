@@ -73,4 +73,8 @@ declare global {
      */
     protected _onLazyLoadImage(entries: IntersectionObserverEntry[], observer: IntersectionObserver): void;
   }
+
+  namespace SidebarTab {
+    type Any = SidebarTab<any>;
+  }
 }

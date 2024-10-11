@@ -283,6 +283,8 @@ declare global {
   }
 
   namespace DocumentCollection {
+    type Any = DocumentCollection<any, any>;
+
     namespace RenderContext {
       interface Base<T extends DocumentConstructor> {
         documentType: T["metadata"]["name"];

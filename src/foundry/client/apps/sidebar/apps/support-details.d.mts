@@ -90,6 +90,10 @@ declare global {
     static getWebGLRendererInfo(gl: WebGLRenderingContext): string;
   }
 
+  namespace SupportDetails {
+    type Any = SupportDetails<any>;
+  }
+
   interface SupportReportData {
     coreVersion: number;
     systemVersion: string;

@@ -1,7 +1,5 @@
 import type { ConstructorOf, Mixin } from "../../../../../types/utils.d.mts";
 
-export {};
-
 /** @remarks Class name adjusted to avoid name collision with function */
 declare class BaseShaderMixinClass {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
@@ -379,17 +377,25 @@ declare global {
     type Uniforms = Record<string, AbstractBaseShader.UniformValue>;
   }
 
-  function BaseShaderMixin<BaseClass extends typeof PIXI.Shader | typeof PIXI.Filter>(
+  function BaseShaderMixin<BaseClass extends BaseShaderMixin.BaseClass>(
     ShaderClass: BaseClass,
   ): Mixin<typeof BaseShaderMixinClass, BaseClass>;
+
+  namespace BaseShaderMixin {
+    type BaseClass = typeof AnyPIXIShader | typeof AnyPIXIFilter;
+  }
 
   namespace AdaptiveFragmentChannel {
     type Channel = "r" | "g" | "b";
   }
 
-  function AdaptiveFragmentChannelMixin<BaseClass extends typeof PIXI.Shader | typeof PIXI.Filter>(
+  function AdaptiveFragmentChannelMixin<BaseClass extends AdaptiveFragmentChannelMixin.BaseClass>(
     ShaderClass: BaseClass,
   ): Mixin<typeof AdaptiveFragmentChannelMixinClass, BaseClass>;
+
+  namespace AdaptiveFragmentChannelMixin {
+    type BaseClass = typeof AnyPIXIShader | typeof AnyPIXIFilter;
+  }
 
   /**
    * This class defines an interface which all shaders utilize
@@ -416,7 +422,7 @@ declare global {
      * A subclass of AbstractBaseShader must implement the fragmentShader static field.
      * @remarks This is abstract, subclasses must implement it.
      */
-    static fragmentShader: string | ((...args: any[]) => string);
+    static fragmentShader: string | ((arg0: never, ...args: never[]) => string);
 
     /**
      * The default uniform values for the shader.
@@ -452,7 +458,7 @@ declare global {
      * The fragment shader which renders this filter.
      * @defaultValue `undefined`
      */
-    static fragmentShader: string | ((...args: any[]) => string) | undefined;
+    static fragmentShader: string | ((arg0: never, ...args: never[]) => string) | undefined;
 
     /**
      * The vertex shader which renders this filter.
@@ -674,4 +680,12 @@ declare global {
      */
     protected _preRender(mesh: SpriteMesh): void;
   }
+}
+
+declare abstract class AnyPIXIShader extends PIXI.Shader {
+  constructor(arg0: never, ...args: never[]);
+}
+
+declare abstract class AnyPIXIFilter extends PIXI.Filter {
+  constructor(arg0: never, ...args: never[]);
 }

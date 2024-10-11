@@ -2,6 +2,12 @@ import type { ConfiguredDocumentClass } from "../../../types/helperTypes.d.mts";
 import type { ConstructorOf, DeepPartial, InexactPartial } from "../../../types/utils.d.mts";
 
 declare global {
+  namespace Roll {
+    type Any = Roll<any>;
+
+    type AnyConstructor = typeof AnyRoll;
+  }
+
   /**
    * An interface and API for constructing and evaluating dice rolls.
    * The basic structure for a dice roll is a string formula and an object of data against which to parse it.
@@ -481,7 +487,7 @@ declare global {
      * roll.formula; // 4d8 + 8
      * ```
      */
-    static fromTerms<T extends ConstructorOf<Roll<any>>>(
+    static fromTerms<T extends Roll.AnyConstructor>(
       this: T,
       terms: RollTerm[],
       options?: InexactPartial<Options>,
@@ -537,3 +543,7 @@ export type MessageData<T extends DeepPartial<ConstructorParameters<typeof ChatM
 } & T;
 
 export type Evaluated<T extends Roll> = T & { _evaluated: true; _total: number; get total(): number };
+
+declare abstract class AnyRoll extends Roll<any> {
+  constructor(arg0: never, ...args: never[]);
+}

@@ -231,7 +231,7 @@ declare global {
 type ValidDataModel = {
   [DocumentName in foundry.abstract.Document.SystemType]?: {
     // Recommended to be a TypeDataModel subclass but DataModel is also technically valid.
-    [DocumentType in string]?: foundry.abstract.DataModel<any, any>;
+    [DocumentType in string]?: foundry.abstract.DataModel.Any;
   };
 };
 

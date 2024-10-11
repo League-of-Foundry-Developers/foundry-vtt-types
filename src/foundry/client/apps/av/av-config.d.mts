@@ -66,6 +66,8 @@ declare global {
   }
 
   namespace AVConfig {
+    type Any = AVConfig<any>;
+
     interface AVConfigData {
       user: User;
       modes: Record<AVSettings.AV_MODES, string>;

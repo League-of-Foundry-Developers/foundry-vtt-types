@@ -8,7 +8,6 @@ import type {
   PlaceableDocumentType,
 } from "../../../types/helperTypes.mts";
 import type {
-  AnyConstructorFor,
   ConfiguredStoredDocument,
   DeepPartial,
   InexactPartial,
@@ -790,6 +789,10 @@ declare abstract class Document<
   protected static _logV10CompatibilityWarning(options?: LogCompatibilityWarningOptions): void;
 }
 
+declare abstract class AnyDocumentConstructor extends Document<any, any, any> {
+  constructor(arg0: never, ...args: never[]);
+}
+
 declare namespace Document {
   /** Any Document, except for Settings */
   export type Any = Document<any, any, any>;
@@ -797,9 +800,7 @@ declare namespace Document {
   /** Any Document, that is a child of the given parent Document. */
   export type AnyChild<Parent extends Any | null> = Document<any, any, Parent>;
 
-  export type Constructor = typeof Document<any, any, any>;
-
-  export type AnyConstructor = AnyConstructorFor<typeof Document>;
+  export type AnyConstructor = typeof AnyDocumentConstructor;
 
   type SystemConstructor = AnyConstructor & {
     metadata: { name: SystemType; coreTypes?: readonly string[] | undefined };
@@ -823,7 +824,7 @@ declare namespace Document {
     ConcreteDocument extends Document<any, infer ConcreteMetadata, any> ? ConcreteMetadata : never;
 
   type CollectionRecord<Schema extends DataSchema> = {
-    [Key in keyof Schema]: Schema[Key] extends fields.EmbeddedCollectionField<any, any> ? Schema[Key] : never;
+    [Key in keyof Schema]: Schema[Key] extends fields.EmbeddedCollectionField.Any ? Schema[Key] : never;
   };
 
   export type Flags<ConcreteDocument extends Any> = OptionsForSchema<SchemaFor<ConcreteDocument>>;

@@ -504,6 +504,10 @@ declare global {
   }
 
   namespace Application {
+    type Any = Application<any>;
+
+    type AnyConstructor = typeof AnyApplication;
+
     interface CloseOptions {
       force?: boolean | undefined;
     }
@@ -584,4 +588,8 @@ declare global {
      */
     type RenderState = ValueOf<(typeof Application)["RENDER_STATES"]>;
   }
+}
+
+declare abstract class AnyApplication extends Application<any> {
+  constructor(arg0: never, ...args: never[]);
 }

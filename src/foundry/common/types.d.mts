@@ -6,7 +6,7 @@ declare global {
      * The parent Document of this one, if this one is embedded
      * @defaultValue `null`
      */
-    parent?: foundry.abstract.Document<any, any, any> | null;
+    parent?: foundry.abstract.Document.Any | null;
 
     /**
      * The compendium collection ID which contains this Document, if any
@@ -25,7 +25,7 @@ declare global {
     /**
      * A parent Document within which these Documents should be embedded
      */
-    parent?: foundry.abstract.Document<any, any, any>;
+    parent?: foundry.abstract.Document.Any;
 
     /**
      * A Compendium pack identifier within which the Documents should be modified
@@ -201,7 +201,7 @@ declare global {
     icon?: string | undefined;
 
     /** The FormApplication to render */
-    type: new () => FormApplication<any, any>;
+    type: new () => FormApplication.Any;
 
     /** If true, only a GM can edit this Setting */
     restricted?: boolean | undefined;

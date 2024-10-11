@@ -484,7 +484,7 @@ declare class ClientDocument<
    */
   protected _onCreateEmbeddedDocuments(
     embeddedName: string,
-    documents: foundry.abstract.Document<any, any, any>[],
+    documents: foundry.abstract.Document.Any[],
     result: Record<string, unknown>[],
     options: DocumentModificationOptions,
     userId: string,
@@ -516,7 +516,7 @@ declare class ClientDocument<
    */
   protected _onUpdateEmbeddedDocuments(
     embeddedName: string,
-    documents: foundry.abstract.Document<any, any, any>[],
+    documents: foundry.abstract.Document.Any[],
     result: Record<string, unknown>[],
     options: DocumentModificationContext,
     userId: string,
@@ -548,7 +548,7 @@ declare class ClientDocument<
    */
   protected _onDeleteEmbeddedDocuments(
     embeddedName: string,
-    documents: foundry.abstract.Document<any, any, any>[],
+    documents: foundry.abstract.Document.Any[],
     result: string[],
     options: DocumentModificationContext,
     userId: string,
@@ -564,7 +564,9 @@ declare global {
    * A mixin which extends each Document definition with specialized client-side behaviors.
    * This mixin defines the client-side interface for database operations and common document behaviors.
    */
-  function ClientDocumentMixin<BaseClass extends DocumentConstructor>(
+  // Note: Unlike most mixins, `ClientDocumentMixin` actually requires a specific constructor, the same as `Document`.
+  // This means that `BaseClass extends Document.AnyConstructor` would be too permissive.
+  function ClientDocumentMixin<BaseClass extends Document.AnyConstructor>(
     Base: BaseClass,
   ): Mixin<typeof ClientDocument<InstanceType<BaseClass>>, BaseClass>;
 
@@ -636,12 +638,14 @@ declare global {
   }
 }
 
-export type DropData<T extends foundry.abstract.Document<any, any, any>> = T extends { id: string | undefined }
+export type DropData<T extends foundry.abstract.Document.Any> = T extends { id: string | undefined }
   ? DropData.Data<T> & DropData.UUID
   : DropData.Data<T>;
 
 declare namespace DropData {
-  interface Data<T extends foundry.abstract.Document<any, any, any>> {
+  type Any = DropData<any>;
+
+  interface Data<T extends foundry.abstract.Document.Any> {
     type: T["documentName"];
     data: T["_source"];
   }

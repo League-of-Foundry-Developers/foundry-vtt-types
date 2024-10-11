@@ -50,6 +50,8 @@ declare global {
   }
 
   namespace ActiveEffectConfig {
+    type Any = ActiveEffectConfig<any>;
+
     // @ts-expect-error - Fake polymorphism override
     interface ActiveEffectConfigData<
       Options extends DocumentSheetOptions<ActiveEffect> = DocumentSheetOptions<ActiveEffect>,

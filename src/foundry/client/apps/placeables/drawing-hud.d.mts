@@ -24,4 +24,8 @@ declare global {
 
     override setPosition(options?: Partial<Application.Position>): void;
   }
+
+  namespace DrawingHUD {
+    type Any = DrawingHUD<any>;
+  }
 }

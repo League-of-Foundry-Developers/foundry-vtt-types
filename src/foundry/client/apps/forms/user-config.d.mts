@@ -36,6 +36,8 @@ declare global {
   }
 
   namespace UserConfig {
+    type Any = UserConfig<any>;
+
     interface Options extends DocumentSheetOptions<User> {
       /**
        * @defaultValue `["sheet", "user-config"]`

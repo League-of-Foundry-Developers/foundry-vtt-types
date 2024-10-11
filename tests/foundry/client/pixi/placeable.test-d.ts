@@ -1,6 +1,7 @@
 import { assertType, expectTypeOf } from "vitest";
-import type { Document } from "../../../../src/foundry/common/abstract/module.d.mts";
 import type { AnyMetadata } from "../../../../src/foundry/common/abstract/document.d.mts";
+
+import Document = foundry.abstract.Document;
 
 type EmbeddedInSceneDocumentSheetOptions = DocumentSheetOptions<Document<any, AnyMetadata, Scene.ConfiguredInstance>>;
 
@@ -11,7 +12,7 @@ class EmbeddedInSceneDocumentSheet<
 class BaseEmbeddedInSceneDocument extends Document<any, AnyMetadata, Scene.ConfiguredInstance | null> {}
 
 class EmbeddedInSceneDocument extends CanvasDocumentMixin(BaseEmbeddedInSceneDocument) {
-  get sheet(): EmbeddedInSceneDocumentSheet {
+  override get sheet(): EmbeddedInSceneDocumentSheet {
     return null as unknown as EmbeddedInSceneDocumentSheet;
   }
 }
@@ -25,7 +26,7 @@ class OnePlaceable extends PlaceableObject<EmbeddedInSceneDocument> {
 }
 
 const placeable = new OnePlaceable(new EmbeddedInSceneDocument());
-assertType<Document<any, any, any>>(placeable.document);
+assertType<Document.Any>(placeable.document);
 expectTypeOf(placeable.document).toEqualTypeOf<EmbeddedInSceneDocument>();
 expectTypeOf(placeable.sheet).toEqualTypeOf<EmbeddedInSceneDocumentSheet>();
 

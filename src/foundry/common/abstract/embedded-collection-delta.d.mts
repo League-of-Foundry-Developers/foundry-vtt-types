@@ -6,8 +6,8 @@ import type EmbeddedCollection from "./embedded-collection.d.mts";
  * embedded collection, and generate new embedded Documents by combining them.
  */
 export default class EmbeddedCollectionDelta<
-  ContainedDocument extends foundry.abstract.Document<any, any, any>,
-  ParentDataModel extends foundry.abstract.Document<any, any, any>,
+  ContainedDocument extends foundry.abstract.Document.Any,
+  ParentDataModel extends foundry.abstract.Document.Any,
 > extends EmbeddedCollection<ContainedDocument, ParentDataModel> {
   /**
    * A convenience getter to return the corresponding base collection.

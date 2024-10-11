@@ -124,6 +124,8 @@ declare global {
   }
 
   namespace RollTableConfig {
+    type Any = RollTableConfig<any>;
+
     type FormData = {
       description: string;
       displayRoll: boolean;

@@ -70,7 +70,8 @@ declare namespace BaseWorld {
  * Extends the basic PackageData schema with some additional world-specific fields.
  */
 declare class BaseWorld extends BasePackage<BaseWorld.Schema> {
-  static defineSchema(): BaseWorld.Schema;
+  // TODO(LukeAbby): This override is unsound. Revisit.
+  // static defineSchema(): BaseWorld.Schema;
 
   static type: "world";
 

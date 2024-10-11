@@ -530,6 +530,10 @@ declare global {
   }
 
   namespace PlaceableObject {
+    type Any = PlaceableObject<any>;
+
+    type AnyConstructor = typeof AnyPlaceableObject;
+
     interface RenderFlags {
       redraw: boolean;
 
@@ -571,4 +575,8 @@ interface Vision {
    * This is required but has been set to optional because of PointSource
    */
   los?: PointSourcePolygon | undefined;
+}
+
+declare abstract class AnyPlaceableObject extends PlaceableObject<any> {
+  constructor(arg0: never, ...args: never[]);
 }

@@ -270,7 +270,7 @@ declare global {
     sort?: string;
   }
 
-  function DirectoryApplicationMixin<BaseApplication extends typeof Application>(
+  function DirectoryApplicationMixin<BaseApplication extends Application.AnyConstructor>(
     Base: BaseApplication,
   ): Mixin<typeof DirectoryApplication, BaseApplication>;
 }

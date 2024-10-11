@@ -84,6 +84,8 @@ declare global {
   }
 
   namespace SceneNavigation {
+    type Any = SceneNavigation<any>;
+
     interface SceneData {
       id: string;
       active: boolean;

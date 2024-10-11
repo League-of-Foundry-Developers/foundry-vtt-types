@@ -1,5 +1,5 @@
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
-import type { MaybePromise } from "../../../../types/utils.d.mts";
+import type { ConfiguredDocumentClass, InterfaceToObject } from "../../../../types/helperTypes.d.mts";
+import type { AnyObject, GetDataReturnType, MaybePromise } from "../../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -38,9 +38,9 @@ declare global {
 
     protected override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
-    override getData(options?: Partial<Options>): MaybePromise<object>;
+    override getData(options?: Partial<Options>): MaybePromise<GetDataReturnType<GridConfig.GridConfigData>>;
 
-    protected override _getSubmitData(updateData?: object | null): GridConfig.FormData;
+    protected override _getSubmitData(updateData?: AnyObject | null): InterfaceToObject<GridConfig.FormData>;
 
     override close(options?: FormApplication.CloseOptions): ReturnType<FormApplication["close"]>;
 
@@ -125,12 +125,20 @@ declare global {
   }
 
   namespace GridConfig {
+    type Any = GridConfig<any>;
+
     interface FormData {
       "grid.type": Scene["grid"]["type"];
       "grid.size": Scene["grid"]["size"];
       scale: Scene["width"];
       "background.offsetX": Scene["background"]["offsetX"];
       "background.offsetY": Scene["background"]["offsetY"];
+    }
+
+    interface GridConfigData {
+      gridTypes: Record<foundry.CONST.GRID_TYPES, string>;
+      scale: number;
+      scene: Scene.ConfiguredInstance;
     }
   }
 }
