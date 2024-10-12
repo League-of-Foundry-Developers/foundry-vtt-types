@@ -131,3 +131,10 @@ class QuestModel3 extends foundry.abstract.TypeDataModel<QuestSchema, BaseJourna
     this.totalSteps + 1;
   }
 }
+
+class CustomTypeDataModel extends foundry.abstract.TypeDataModel<any, Item.ConfiguredInstance> {}
+
+// This is a regression test for a case where `TypeDataModel` was written as `...args: ConstructorParameters<typeof DataModel>` instead of `...args: ConstructorParameters<typeof DataModel<Schema, Parent>>`.
+// Thus causing the constructor to be typed with no respect to the `Parent`.
+// @ts-expect-error - This should not work as it is attempting to give an `Actor` to `TypeDataModel` where it's configured with a parent of `Item`.
+new CustomTypeDataModel({}, { parent: new Actor({ name: "test" }) });

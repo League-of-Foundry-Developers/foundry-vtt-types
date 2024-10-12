@@ -14,7 +14,7 @@ type StaticDataModel = typeof DataModel<DataSchema, Document<DataSchema, any, an
 
 interface _InternalTypeDataModelInterface extends StaticDataModel {
   new <Schema extends DataSchema, Parent extends Document.Any, _ComputedInstance extends DataModel<Schema, Parent>>(
-    ...args: ConstructorParameters<typeof DataModel>
+    ...args: ConstructorParameters<typeof DataModel<Schema, Parent>>
   ): _ComputedInstance;
 }
 
