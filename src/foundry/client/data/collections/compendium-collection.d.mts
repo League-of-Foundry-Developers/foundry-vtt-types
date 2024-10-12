@@ -1,5 +1,6 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial, StoredDocument } from "../../../../types/utils.d.mts";
+import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 import type { MixedDocumentCollectionInterface } from "../abstract/directory-collection-mixin.d.mts";
 
@@ -301,7 +302,7 @@ declare global {
            * @defaultValue `""`
            * */
           folderName: string;
-        } & DocumentModificationContext &
+        } & Document.ModificationContext<Document.Any | null> &
           WorldCollection.FromCompendiumOptions
       >,
     ): Promise<StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[]>;
@@ -391,7 +392,7 @@ declare global {
             doc: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>,
           ) => DeepPartial<DocumentInstanceForCompendiumMetadata<T>["_source"]>),
       condition?: ((obj: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>) => boolean) | null,
-      options?: DocumentModificationContext,
+      options?: Document.ModificationContext<Document.Any | null>,
     ): ReturnType<this["documentClass"]["updateDocuments"]>;
 
     protected _onCreateDocuments(
@@ -491,7 +492,7 @@ interface ImportAllOptions {
    * Additional options forwarded to {@link WorldCollection#fromCompendium} and {@link Document.createDocuments}
    * @defaultValue `{}`
    */
-  options?: (DocumentModificationContext & WorldCollection.FromCompendiumOptions) | undefined;
+  options?: (Document.ModificationContext<Document.Any | null> & WorldCollection.FromCompendiumOptions) | undefined;
 }
 
 type DocumentClassForCompendiumMetadata<T extends CompendiumCollection.Metadata> = ConfiguredDocumentClassForName<

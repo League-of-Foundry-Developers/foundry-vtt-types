@@ -1,5 +1,6 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { InexactPartial } from "../../../../types/utils.d.mts";
+import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 declare global {
@@ -75,7 +76,7 @@ declare global {
            * @defaultValue `false`
            */
           keepId: boolean;
-        } & DocumentConstructionContext
+        } & Document.ConstructionContext<this["parent"]>
       >,
     ): Save extends true ? Promise<this> : this;
 

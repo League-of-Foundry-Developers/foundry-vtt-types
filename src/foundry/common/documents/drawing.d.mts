@@ -14,12 +14,17 @@ declare global {
  * The Document definition for a Drawing.
  * Defines the DataSchema and common behaviors for a Drawing which are shared between both client and server.
  */
-declare class BaseDrawing extends Document<BaseDrawing.Schema, BaseDrawing.Metadata, Scene.ConfiguredInstance | null> {
+// Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
+// This pattern evolved from trying to avoid circular loops and even internal tsc errors.
+// See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
+declare class BaseDrawing extends Document<BaseDrawing.Schema, BaseDrawing.Metadata, any> {
   /**
    * @param data    - Initial data from which to construct the Drawing
    * @param context - Construction context options
    */
-  constructor(data?: BaseDrawing.ConstructorData, context?: DocumentConstructionContext);
+  constructor(data?: BaseDrawing.ConstructorData, context?: Document.ConstructionContext<BaseDrawing.Parent>);
+
+  override parent: BaseDrawing.Parent;
 
   static override metadata: Readonly<BaseDrawing.Metadata>;
 
@@ -65,9 +70,12 @@ declare class BaseDrawing extends Document<BaseDrawing.Schema, BaseDrawing.Metad
     },
   ): AnyObject;
 }
+
 export default BaseDrawing;
 
 declare namespace BaseDrawing {
+  type Parent = Scene.ConfiguredInstance | null;
+
   type Metadata = Merge<
     DocumentMetadata,
     {

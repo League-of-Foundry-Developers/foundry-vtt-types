@@ -11,16 +11,17 @@ declare global {
  * The Document definition for an AmbientSound.
  * Defines the DataSchema and common behaviors for an AmbientSound which are shared between both client and server.
  */
-declare class BaseAmbientSound extends Document<
-  BaseAmbientSound.Schema,
-  BaseAmbientSound.Metadata,
-  Scene.ConfiguredInstance | null
-> {
+// Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
+// This pattern evolved from trying to avoid circular loops and even internal tsc errors.
+// See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
+declare class BaseAmbientSound extends Document<BaseAmbientSound.Schema, BaseAmbientSound.Metadata, any> {
   /**
    * @param data    - Initial data from which to construct the AmbientSound
    * @param context - Construction context options
    */
-  constructor(data?: BaseAmbientSound.ConstructorData, context?: DocumentConstructionContext);
+  constructor(data?: BaseAmbientSound.ConstructorData, context?: Document.ConstructionContext<BaseAmbientSound.Parent>);
+
+  override parent: BaseAmbientSound.Parent;
 
   static override metadata: Readonly<BaseAmbientSound.Metadata>;
 
@@ -28,9 +29,12 @@ declare class BaseAmbientSound extends Document<
 
   static override migrateData(source: AnyObject): AnyObject;
 }
+
 export default BaseAmbientSound;
 
 declare namespace BaseAmbientSound {
+  type Parent = Scene.ConfiguredInstance | null;
+
   type Metadata = Merge<
     DocumentMetadata,
     {

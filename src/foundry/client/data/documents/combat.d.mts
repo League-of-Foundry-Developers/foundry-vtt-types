@@ -1,5 +1,6 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { ConstructorOf } from "../../../../types/utils.d.mts";
+import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 declare global {
@@ -89,7 +90,7 @@ declare global {
      * @param options - Additional context to customize the update workflow
      */
     activate(
-      options?: DocumentModificationContext & foundry.utils.MergeObjectOptions,
+      options?: Document.ModificationContext<Document.Any | null> & foundry.utils.MergeObjectOptions,
     ): Promise<Combat.ConfiguredInstance[]>;
 
     override prepareDerivedData(): void;

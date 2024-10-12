@@ -12,12 +12,17 @@ declare global {
  * The Document definition for Cards.
  * Defines the DataSchema and common behaviors for Cards which are shared between both client and server.
  */
-declare class BaseCards extends Document<BaseCards.Schema, BaseCards.Metadata> {
+// Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
+// This pattern evolved from trying to avoid circular loops and even internal tsc errors.
+// See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
+declare class BaseCards extends Document<BaseCards.Schema, BaseCards.Metadata, any> {
   /**
    * @param data    - Initial data from which to construct the Cards
    * @param context - Construction context options
    */
-  constructor(data: BaseCards.ConstructorData, context?: DocumentConstructionContext);
+  constructor(data: BaseCards.ConstructorData, context?: Document.ConstructionContext<BaseCards.Parent>);
+
+  override parent: BaseCards.Parent;
 
   override _source: BaseCards.Source;
 
@@ -49,9 +54,12 @@ declare class BaseCards extends Document<BaseCards.Schema, BaseCards.Metadata> {
     },
   ): AnyObject;
 }
+
 export default BaseCards;
 
 declare namespace BaseCards {
+  type Parent = null;
+
   type TypeNames = fields.TypeDataField.TypeNames<typeof BaseCards>;
 
   type Metadata = Merge<

@@ -5,6 +5,7 @@ import type {
   DocumentConstructor,
 } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial, StoredDocument } from "../../../../types/utils.d.mts";
+import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
 import type BaseCards from "../../../common/documents/cards.d.mts";
@@ -162,15 +163,15 @@ declare global {
     // TODO: Figure out the typing here
     static override createDocuments(
       data: Array<ConstructorDataType<typeof Cards> | (ConstructorDataType<typeof Cards> & Record<string, unknown>)>,
-      context: DocumentModificationContext & { temporary: false },
+      context: Document.ModificationContext<Document.Any | null> & { temporary: false },
     ): Promise<StoredDocument<Cards.ConfiguredInstance>[]>;
     static createDocuments(
       data: Array<ConstructorDataType<typeof Cards> | (ConstructorDataType<typeof Cards> & Record<string, unknown>)>,
-      context: DocumentModificationContext & { temporary: boolean },
+      context: Document.ModificationContext<Document.Any | null> & { temporary: boolean },
     ): Promise<Cards.ConfiguredInstance[]>;
     static createDocuments(
       data: Array<ConstructorDataType<typeof Cards> | (ConstructorDataType<typeof Cards> & Record<string, unknown>)>,
-      context?: DocumentModificationContext,
+      context?: Document.ModificationContext<Document.Any | null>,
     ): Promise<StoredDocument<Cards.ConfiguredInstance>[]>;
 
     /**
@@ -303,7 +304,7 @@ declare global {
     static override deleteDocuments<T extends DocumentConstructor>(
       this: T,
       ids?: string[],
-      context?: DocumentModificationContext,
+      context?: Document.ModificationContext<Document.Any | null>,
     ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
 
     /**
@@ -343,7 +344,7 @@ declare global {
     static override createDialog<T extends DocumentConstructor>(
       this: T,
       data?: DeepPartial<Cards["_source"] | (Cards["_source"] & Record<string, unknown>)>,
-      context?: Pick<DocumentModificationContext, "parent" | "pack"> & Partial<DialogOptions>,
+      context?: Pick<Document.ModificationContext<Document.Any | null>, "parent" | "pack"> & Partial<DialogOptions>,
     ): Promise<InstanceType<ConfiguredDocumentClass<T>> | null | undefined>;
   }
 }

@@ -1,5 +1,6 @@
 import type { ConfiguredDocumentClass, DocumentConstructor } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial, ConfiguredStoredDocument } from "../../../../types/utils.d.mts";
+import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 // import type _Collection from "../../../common/utils/collection.d.mts";
 
@@ -67,7 +68,7 @@ declare global {
     createDocument(
       // TODO: This probably needs refinement for mandatory assignment fields like name
       data: DeepPartial<InstanceType<T>["_source"]>,
-      context: DocumentConstructionContext,
+      context: Document.ConstructionContext<Document.Any | null>,
     ): InstanceType<T>;
 
     /**
@@ -172,7 +173,7 @@ declare global {
         | DeepPartial<InstanceType<ConfiguredDocumentClass<T>>["_source"]>
         | ((doc: ConfiguredStoredDocument<T>) => DeepPartial<InstanceType<ConfiguredDocumentClass<T>>["_source"]>),
       condition?: ((obj: ConfiguredStoredDocument<T>) => boolean) | null,
-      options?: DocumentModificationContext,
+      options?: Document.ModificationContext<Document.Any | null>,
     ): ReturnType<this["documentClass"]["updateDocuments"]>;
 
     /**

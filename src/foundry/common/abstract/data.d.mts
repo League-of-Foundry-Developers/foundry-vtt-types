@@ -1,6 +1,7 @@
 import type { DataField, SchemaField } from "../data/fields.d.mts";
 import type { fields } from "../data/module.d.mts";
 import type { DataModelValidationFailure } from "../data/validation-failure.d.mts";
+import type Document from "./document.d.mts";
 
 declare global {
   type DataSchema = Record<string, DataField.Any>;
@@ -405,13 +406,13 @@ declare namespace DataModel {
      * Control the strictness of validation for initially provided data
      * @defaultValue `true`
      */
-    strict?: DocumentConstructionContext["strict"];
+    strict?: Document.ConstructionContext<Document.Any | null>["strict"];
 
     /**
      * The compendium collection ID which contains this Document, if any
      * @defaultValue `null`
      */
-    pack?: DocumentConstructionContext["pack"];
+    pack?: Document.ConstructionContext<Document.Any | null>["pack"];
   }
 
   type Any = DataModel<DataSchema, any>;

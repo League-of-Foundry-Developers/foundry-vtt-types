@@ -1,5 +1,6 @@
 import type { DocumentSubTypes, DocumentType } from "../../../types/helperTypes.d.mts";
 import type { AnyArray, AnyObject, DeepPartial, InexactPartial } from "../../../types/utils.d.mts";
+import type Document from "../../common/abstract/document.d.mts";
 
 declare global {
   /**
@@ -159,7 +160,7 @@ declare global {
       namespace: N,
       key: K,
       value: V,
-      options?: DocumentModificationContext,
+      options?: Document.ModificationContext<Document.Any | null>,
     ): Promise<V>;
   }
 

@@ -35,7 +35,7 @@ declare abstract class Document<
    * @param data    - Initial data provided to construct the Document
    * @param context - Construction context options
    */
-  constructor(data?: fields.SchemaField.InnerConstructorType<Schema>, context?: DocumentConstructionContext);
+  constructor(data?: fields.SchemaField.InnerConstructorType<Schema>, context?: Document.ConstructionContext<Parent>);
 
   override parent: Parent;
 
@@ -213,7 +213,7 @@ declare abstract class Document<
          * @defaultValue `false`
          */
         keepId: boolean;
-      } & DocumentConstructionContext
+      } & Document.ConstructionContext<this["parent"]>
     >, // Adding StoredDocument to the return causes a recursive type error in Scene
   ): Save extends true ? Promise<this> : this;
 
@@ -265,7 +265,7 @@ declare abstract class Document<
       | fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]>
       | (fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]> & Record<string, unknown>)
     >,
-    context: DocumentModificationContext & { temporary: false },
+    context: Document.ModificationContext<InstanceType<T>["parent"]> & { temporary: false },
   ): Promise<StoredDocument<InstanceType<Document.ConfiguredClass<T>>>[]>;
   static createDocuments<T extends Document.AnyConstructor>(
     this: T,
@@ -273,7 +273,7 @@ declare abstract class Document<
       | fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]>
       | (fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]> & Record<string, unknown>)
     >,
-    context: DocumentModificationContext & { temporary: boolean },
+    context: Document.ModificationContext<InstanceType<T>["parent"]> & { temporary: boolean },
   ): Promise<InstanceType<Document.ConfiguredClass<T>>[]>;
   static createDocuments<T extends Document.AnyConstructor>(
     this: T,
@@ -281,7 +281,7 @@ declare abstract class Document<
       | fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]>
       | (fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]> & Record<string, unknown>)
     >,
-    context?: DocumentModificationContext,
+    context?: Document.ModificationContext<InstanceType<T>["parent"]>,
   ): Promise<StoredDocument<InstanceType<Document.ConfiguredClass<T>>>[]>;
 
   /**
@@ -322,7 +322,7 @@ declare abstract class Document<
   static updateDocuments<T extends Document.AnyConstructor>(
     this: T,
     updates?: Array<DeepPartial<ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>)>>,
-    context?: DocumentModificationContext & foundry.utils.MergeObjectOptions,
+    context?: Document.ModificationContext<InstanceType<T>["parent"]> & foundry.utils.MergeObjectOptions,
   ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
 
   /**
@@ -365,7 +365,7 @@ declare abstract class Document<
   static deleteDocuments<T extends Document.AnyConstructor>(
     this: T,
     ids?: string[],
-    context?: DocumentModificationContext,
+    context?: Document.ModificationContext<InstanceType<T>["parent"]>,
   ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
 
   /**
@@ -400,17 +400,17 @@ declare abstract class Document<
   static create<T extends Document.AnyConstructor>(
     this: T,
     data: ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>),
-    context: DocumentModificationContext & { temporary: false },
+    context: Document.ModificationContext<InstanceType<T>["parent"]> & { temporary: false },
   ): Promise<ConfiguredStoredDocument<T> | undefined>;
   static create<T extends Document.AnyConstructor>(
     this: T,
     data: ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>),
-    context: DocumentModificationContext & { temporary: boolean },
+    context: Document.ModificationContext<InstanceType<T>["parent"]> & { temporary: boolean },
   ): Promise<InstanceType<ConfiguredDocumentClass<T>> | undefined>;
   static create<T extends Document.AnyConstructor>(
     this: T,
     data: ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>),
-    context?: DocumentModificationContext,
+    context?: Document.ModificationContext<InstanceType<T>["parent"]>,
   ): Promise<ConfiguredStoredDocument<T> | undefined>;
 
   /**
@@ -428,7 +428,7 @@ declare abstract class Document<
     data?:
       | fields.SchemaField.AssignmentType<Schema, {}>
       | (fields.SchemaField.AssignmentType<Schema, {}> & Record<string, unknown>),
-    context?: DocumentModificationContext & foundry.utils.MergeObjectOptions,
+    context?: Document.ModificationContext<this["parent"]> & foundry.utils.MergeObjectOptions,
   ): Promise<this | undefined>;
 
   /**
@@ -440,7 +440,7 @@ declare abstract class Document<
    *
    * @remarks If no document has actually been deleted, the returned {@link Promise} resolves to `undefined`.
    */
-  delete(context?: DocumentModificationContext): Promise<this | undefined>;
+  delete(context?: Document.ModificationContext<this["parent"]>): Promise<this | undefined>;
 
   /**
    * Get a World-level Document of this type by its id.
@@ -526,7 +526,7 @@ declare abstract class Document<
   >(
     embeddedName: EmbeddedName,
     data?: Array<ConstructorDataType<ConfiguredDocumentClassForName<EmbeddedName>>>,
-    context?: Omit<DocumentModificationContext, "temporary"> & { temporary?: Temporary }, // Possibly a way to specify the parent here, but seems less relevant?
+    context?: Omit<Document.ModificationContext<this["parent"]>, "temporary"> & { temporary?: Temporary }, // Possibly a way to specify the parent here, but seems less relevant?
   ): Promise<
     Array<
       Temporary extends true
@@ -548,7 +548,7 @@ declare abstract class Document<
   updateEmbeddedDocuments<EmbeddedName extends Exclude<DocumentType, "FogExploration">>(
     embeddedName: EmbeddedName,
     updates?: Array<Record<string, unknown>>,
-    context?: DocumentModificationContext,
+    context?: Document.ModificationContext<this["parent"]>,
   ): Promise<Array<StoredDocument<InstanceType<ConfiguredDocumentClassForName<EmbeddedName>>>>>;
 
   /**
@@ -563,7 +563,7 @@ declare abstract class Document<
   deleteEmbeddedDocuments<EmbeddedName extends Exclude<DocumentType, "FogExploration">>(
     embeddedName: EmbeddedName,
     ids: Array<string>,
-    context?: DocumentModificationContext,
+    context?: Document.ModificationContext<this["parent"]>,
   ): Promise<Array<StoredDocument<InstanceType<ConfiguredDocumentClassForName<EmbeddedName>>>>>;
 
   /**
@@ -698,7 +698,7 @@ declare abstract class Document<
   protected static _onCreateDocuments<T extends Document.AnyConstructor>(
     this: T,
     documents: Array<InstanceType<ConfiguredDocumentClass<T>>>,
-    context: DocumentModificationContext,
+    context: Document.ModificationContext<InstanceType<T>["parent"]>,
   ): Promise<void>;
 
   /**
@@ -715,7 +715,7 @@ declare abstract class Document<
   protected static _onUpdateDocuments<T extends Document.AnyConstructor>(
     this: T,
     documents: Array<InstanceType<ConfiguredDocumentClass<T>>>,
-    context: DocumentModificationContext,
+    context: Document.ModificationContext<InstanceType<T>["parent"]>,
   ): Promise<unknown>;
 
   /**
@@ -732,7 +732,7 @@ declare abstract class Document<
   protected static _onDeleteDocuments<T extends Document.AnyConstructor>(
     this: T,
     documents: Array<InstanceType<ConfiguredDocumentClass<T>>>,
-    context: DocumentModificationContext,
+    context: Document.ModificationContext<InstanceType<T>["parent"]>,
   ): Promise<unknown>;
 
   /**
@@ -795,12 +795,12 @@ declare abstract class AnyDocumentConstructor extends Document<any, any, any> {
 
 declare namespace Document {
   /** Any Document, except for Settings */
-  export type Any = Document<any, any, any>;
+  type Any = Document<any, any, any>;
 
   /** Any Document, that is a child of the given parent Document. */
-  export type AnyChild<Parent extends Any | null> = Document<any, any, Parent>;
+  type AnyChild<Parent extends Any | null> = Document<any, any, Parent>;
 
-  export type AnyConstructor = typeof AnyDocumentConstructor;
+  type AnyConstructor = typeof AnyDocumentConstructor;
 
   type SystemConstructor = AnyConstructor & {
     metadata: { name: SystemType; coreTypes?: readonly string[] | undefined };
@@ -817,17 +817,17 @@ declare namespace Document {
 
   type PlaceableTypeName = PlaceableDocumentType;
 
-  export type SchemaFor<ConcreteDocument extends Any> =
+  type SchemaFor<ConcreteDocument extends Any> =
     ConcreteDocument extends Document<infer Schema, any, any> ? Schema : never;
 
-  export type MetadataFor<ConcreteDocument extends Any> =
+  type MetadataFor<ConcreteDocument extends Any> =
     ConcreteDocument extends Document<any, infer ConcreteMetadata, any> ? ConcreteMetadata : never;
 
   type CollectionRecord<Schema extends DataSchema> = {
     [Key in keyof Schema]: Schema[Key] extends fields.EmbeddedCollectionField.Any ? Schema[Key] : never;
   };
 
-  export type Flags<ConcreteDocument extends Any> = OptionsForSchema<SchemaFor<ConcreteDocument>>;
+  type Flags<ConcreteDocument extends Any> = OptionsForSchema<SchemaFor<ConcreteDocument>>;
 
   interface OptionsInFlags<Options extends DataField.Options.Any> {
     readonly flags?: DataField<Options, any>;
@@ -843,13 +843,13 @@ declare namespace Document {
   // Returns only string keys and returns `never` if `T` is never.
   type FlagKeyOf<T> = T extends never ? never : keyof T & string;
 
-  export type GetFlag<ConcreteDocument extends Any, S extends string, K extends string> = GetFlagForSchema<
+  type GetFlag<ConcreteDocument extends Any, S extends string, K extends string> = GetFlagForSchema<
     SchemaFor<ConcreteDocument>,
     S,
     K
   >;
 
-  export type FlagInSchema<S extends string, K extends string, Options extends DataField.Options.Any> = {
+  type FlagInSchema<S extends string, K extends string, Options extends DataField.Options.Any> = {
     readonly [_ in S]?:
       | {
           readonly [_ in K]?: DataField<Options, any, any, any> | undefined;
@@ -861,9 +861,110 @@ declare namespace Document {
   // If a flag can't be found `undefined` is returned.
   type GetFlagForSchema<Schema extends DataSchema, S extends string, K extends string> =
     OptionsForSchema<Schema> extends FlagInSchema<S, K, infer Options> ? DataField.InitializedType<Options> : undefined;
+
+  interface ConstructionContext<Parent extends Document.Any | null> {
+    /**
+     * The parent Document of this one, if this one is embedded
+     * @defaultValue `null`
+     */
+    parent?: Parent | null;
+
+    /**
+     * The compendium collection ID which contains this Document, if any
+     * @defaultValue `null`
+     */
+    pack?: string | null;
+
+    /**
+     * Whether to validate initial data strictly?
+     * @defaultValue `true`
+     */
+    strict?: boolean;
+  }
+
+  interface ModificationContext<Parent extends Document.Any | null> {
+    /**
+     * A parent Document within which these Documents should be embedded
+     */
+    parent?: Parent | null;
+
+    /**
+     * A Compendium pack identifier within which the Documents should be modified
+     */
+    pack?: string;
+
+    /**
+     * Block the dispatch of preCreate hooks for this operation
+     * @defaultValue `false`
+     */
+    noHook?: boolean;
+
+    /**
+     * Return an index of the Document collection, used only during a get operation.
+     * @defaultValue `false`
+     */
+    index?: boolean;
+
+    /**
+     * An array of fields to retrieve when indexing the collection
+     */
+    indexFields?: string[];
+
+    /**
+     * When performing a creation operation, keep the provided _id instead of clearing it.
+     * @defaultValue `false`
+     */
+    keepId?: boolean;
+
+    /**
+     * When performing a creation operation, keep existing _id values of documents embedded within the one being created instead of generating new ones.
+     * @defaultValue `true`
+     */
+    keepEmbeddedIds?: boolean;
+
+    /**
+     * Create a temporary document which is not saved to the database. Only used during creation.
+     * @defaultValue `false`
+     */
+    temporary?: boolean;
+
+    /**
+     * Automatically re-render existing applications associated with the document.
+     * @defaultValue `true`
+     */
+    render?: boolean;
+
+    /**
+     * Automatically create and render the Document sheet when the Document is first created.
+     * @defaultValue `false`
+     */
+    renderSheet?: boolean;
+
+    /**
+     * Difference each update object against current Document data to reduce the size of the transferred data. Only used during update.
+     * @defaultValue `true`
+     */
+    diff?: boolean;
+
+    /**
+     * Merge objects recursively. If false, inner objects will be replaced explicitly. Use with caution!
+     * @defaultValue `true`
+     */
+    recursive?: boolean;
+
+    /**
+     * Is the operation undoing a previous operation, only used by embedded Documents within a Scene
+     */
+    isUndo?: boolean;
+
+    /**
+     * Whether to delete all documents of a given type, regardless of the array of ids provided. Only used during a delete operation.
+     */
+    deleteAll?: boolean;
+  }
 }
 
-export type DocumentModificationOptions = Omit<DocumentModificationContext, "parent" | "pack">;
+export type DocumentModificationOptions = Omit<Document.ModificationContext<Document.Any | null>, "parent" | "pack">;
 
 export interface Context<Parent extends Document.Any | null> {
   /**

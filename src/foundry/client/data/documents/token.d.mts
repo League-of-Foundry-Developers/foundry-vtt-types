@@ -1,5 +1,6 @@
 import type { ConfiguredDocumentClassForName, DocumentType } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
+import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 declare global {
@@ -200,7 +201,7 @@ declare global {
      */
     protected _onUpdateBaseActor(
       update?: DeepPartial<Actor.ConfiguredInstance["_source"]>,
-      options?: DocumentModificationContext,
+      options?: Document.ModificationContext<Document.Any | null>,
     ): void;
 
     /**
@@ -210,7 +211,7 @@ declare global {
      */
     protected _onRelatedUpdate(
       update?: DeepPartial<Actor.ConfiguredInstance["_source"]>,
-      options?: DocumentModificationContext,
+      options?: Document.ModificationContext<Document.Any | null>,
     ): void;
 
     /**

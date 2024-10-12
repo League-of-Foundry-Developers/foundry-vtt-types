@@ -1,5 +1,6 @@
 import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
+import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 declare global {
@@ -309,6 +310,9 @@ declare global {
      * @param update  - The update delta.
      * @param options - The update context.
      */
-    _updateDependentTokens(update: DeepPartial<TokenDocument["_source"]>, options: DocumentModificationContext): void;
+    _updateDependentTokens(
+      update: DeepPartial<TokenDocument["_source"]>,
+      options: Document.ModificationContext<Document.Any | null>,
+    ): void;
   }
 }

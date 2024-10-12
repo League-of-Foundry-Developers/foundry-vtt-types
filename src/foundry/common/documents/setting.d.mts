@@ -11,12 +11,17 @@ declare global {
  * The Document definition for a Setting.
  * Defines the DataSchema and common behaviors for a Setting which are shared between both client and server.
  */
-declare class BaseSetting extends Document<BaseSetting.Schema, BaseSetting.Metadata> {
+// Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
+// This pattern evolved from trying to avoid circular loops and even internal tsc errors.
+// See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
+declare class BaseSetting extends Document<BaseSetting.Schema, BaseSetting.Metadata, any> {
   /**
    * @param data    - Initial data from which to construct the Setting
    * @param context - Construction context options
    */
-  constructor(data: BaseSetting.ConstructorData, context?: DocumentConstructionContext);
+  constructor(data: BaseSetting.ConstructorData, context?: Document.ConstructionContext<BaseSetting.Parent>);
+
+  override parent: BaseSetting.Parent;
 
   static override metadata: Readonly<BaseSetting.Metadata>;
 
@@ -26,6 +31,8 @@ declare class BaseSetting extends Document<BaseSetting.Schema, BaseSetting.Metad
 export default BaseSetting;
 
 declare namespace BaseSetting {
+  type Parent = null;
+
   type Metadata = Merge<
     DocumentMetadata,
     {

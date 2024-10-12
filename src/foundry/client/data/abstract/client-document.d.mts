@@ -339,7 +339,7 @@ declare class ClientDocument<
   static createDialog<T extends DocumentConstructor>(
     this: T,
     data?: DeepPartial<ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>)>,
-    context?: Pick<DocumentModificationContext, "parent" | "pack"> & Partial<DialogOptions>,
+    context?: Pick<Document.ModificationContext<Document.Any | null>, "parent" | "pack"> & Partial<DialogOptions>,
   ): Promise<InstanceType<ConfiguredDocumentClass<T>> | null | undefined>;
 
   /**
@@ -518,7 +518,7 @@ declare class ClientDocument<
     embeddedName: string,
     documents: foundry.abstract.Document.Any[],
     result: Record<string, unknown>[],
-    options: DocumentModificationContext,
+    options: Document.ModificationContext<Document.Any | null>,
     userId: string,
   ): void;
 
@@ -533,7 +533,7 @@ declare class ClientDocument<
   protected _preDeleteEmbeddedDocuments(
     embeddedName: string,
     result: string[],
-    options: DocumentModificationContext,
+    options: Document.ModificationContext<Document.Any | null>,
     userId: string,
   ): void;
 
@@ -550,7 +550,7 @@ declare class ClientDocument<
     embeddedName: string,
     documents: foundry.abstract.Document.Any[],
     result: string[],
-    options: DocumentModificationContext,
+    options: Document.ModificationContext<Document.Any | null>,
     userId: string,
   ): void;
 }

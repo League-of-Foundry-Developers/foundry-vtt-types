@@ -12,12 +12,17 @@ declare global {
  * The Document definition for a Combat.
  * Defines the DataSchema and common behaviors for a Combat which are shared between both client and server.
  */
-declare class BaseCombat extends Document<BaseCombat.Schema, BaseCombat.Metadata> {
+// Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
+// This pattern evolved from trying to avoid circular loops and even internal tsc errors.
+// See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
+declare class BaseCombat extends Document<BaseCombat.Schema, BaseCombat.Metadata, any> {
   /**
    * @param data    - Initial data from which to construct the Combat
    * @param context - Construction context options
    */
-  constructor(data?: BaseCombat.ConstructorData, context?: DocumentConstructionContext);
+  constructor(data?: BaseCombat.ConstructorData, context?: Document.ConstructionContext<BaseCombat.Parent>);
+
+  override parent: BaseCombat.Parent;
 
   static override metadata: Readonly<BaseCombat.Metadata>;
 
@@ -29,9 +34,12 @@ declare class BaseCombat extends Document<BaseCombat.Schema, BaseCombat.Metadata
    */
   static #canUpdate(user: documents.BaseUser, doc: BaseCombat, data: BaseCombat.UpdateData): boolean;
 }
+
 export default BaseCombat;
 
 declare namespace BaseCombat {
+  type Parent = null;
+
   type Metadata = Merge<
     DocumentMetadata,
     {

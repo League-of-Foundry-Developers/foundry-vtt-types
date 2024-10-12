@@ -12,12 +12,17 @@ declare global {
  * The Document definition for a JournalEntry.
  * Defines the DataSchema and common behaviors for a JournalEntry which are shared between both client and server.
  */
-declare class BaseJournalEntry extends Document<BaseJournalEntry.Schema, BaseJournalEntry.Metadata> {
+// Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
+// This pattern evolved from trying to avoid circular loops and even internal tsc errors.
+// See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
+declare class BaseJournalEntry extends Document<BaseJournalEntry.Schema, BaseJournalEntry.Metadata, any> {
   /**
    * @param data    - Initial data from which to construct the JournalEntry
    * @param context - Construction context options
    */
-  constructor(data: BaseJournalEntry.ConstructorData, context?: DocumentConstructionContext);
+  constructor(data: BaseJournalEntry.ConstructorData, context?: Document.ConstructionContext<BaseJournalEntry.Parent>);
+
+  override parent: BaseJournalEntry.Parent;
 
   static override metadata: Readonly<BaseJournalEntry.Metadata>;
 
@@ -52,9 +57,12 @@ declare class BaseJournalEntry extends Document<BaseJournalEntry.Schema, BaseJou
     content?: string;
   }): documents.BaseJournalEntryPage.ConstructorData[];
 }
+
 export default BaseJournalEntry;
 
 declare namespace BaseJournalEntry {
+  type Parent = null;
+
   type Metadata = Merge<
     DocumentMetadata,
     {

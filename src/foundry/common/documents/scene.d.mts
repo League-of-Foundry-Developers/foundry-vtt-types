@@ -14,12 +14,17 @@ declare global {
  * The Document definition for a Scene.
  * Defines the DataSchema and common behaviors for a Scene which are shared between both client and server.
  */
-declare class BaseScene extends Document<BaseScene.Schema, BaseScene.Metadata> {
+// Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
+// This pattern evolved from trying to avoid circular loops and even internal tsc errors.
+// See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
+declare class BaseScene extends Document<BaseScene.Schema, BaseScene.Metadata, any> {
   /**
    * @param data    - Initial data from which to construct the Scene
    * @param context - Construction context options
    */
-  constructor(data: BaseScene.ConstructorData, context?: DocumentConstructionContext);
+  constructor(data: BaseScene.ConstructorData, context?: Document.ConstructionContext<BaseScene.Parent>);
+
+  override parent: BaseScene.Parent;
 
   static override metadata: Readonly<BaseScene.Metadata>;
 
@@ -38,9 +43,12 @@ declare class BaseScene extends Document<BaseScene.Schema, BaseScene.Metadata> {
     },
   ): AnyObject;
 }
+
 export default BaseScene;
 
 declare namespace BaseScene {
+  type Parent = null;
+
   type Metadata = Merge<
     DocumentMetadata,
     {
