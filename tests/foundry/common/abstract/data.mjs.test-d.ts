@@ -8,9 +8,9 @@ myItem.updateSource({ img: "newPath" });
 myItem.updateSource({ foo: "bar" });
 
 type SchemaWithIndexSignatures = {
-  genericProperty: fields.StringField<{}>;
+  genericProperty: fields.StringField;
 
-  [K: string | number | symbol]: fields.StringField<{}> | fields.NumberField;
+  [K: string | number | symbol]: fields.StringField | fields.NumberField;
 };
 
 class _GenericDataModel<Schema extends SchemaWithIndexSignatures> extends foundry.abstract.DataModel<Schema, null> {
