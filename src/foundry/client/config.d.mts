@@ -1,5 +1,6 @@
 import type {
   ConfiguredDocumentClassForName,
+  GetKey,
   HandleEmptyObject,
   InterfaceToObject,
 } from "../../types/helperTypes.d.mts";
@@ -9,6 +10,60 @@ import type { StatusEffect } from "./data/documents/token.d.mts";
 import type { DataModel } from "../common/abstract/module.d.mts";
 
 declare global {
+  namespace CONFIG {
+    interface Dice {
+      /**
+       * The Dice types which are supported.
+       * @defaultValue `[Die, FateDie]`
+       */
+      types: Array<typeof foundry.dice.terms.DiceTerm>;
+
+      rollModes: CONFIG.Dice.RollModes;
+
+      /**
+       * Configured Roll class definitions
+       * @defaultValue `[Roll]`
+       */
+      rolls: Array<typeof foundry.dice.Roll>;
+
+      /**
+       * Configured DiceTerm class definitions
+       * @defaultValue
+       * ```typescript
+       * {
+       *   DiceTerm: typeof DiceTerm,
+       *   MathTerm: typeof MathTerm,
+       *   NumericTerm: typeof NumericTerm,
+       *   OperatorTerm: typeof OperatorTerm,
+       *   ParentheticalTerm: typeof ParentheticalTerm,
+       *   PoolTerm: typeof PoolTerm,
+       *   StringTerm: typeof StringTerm
+       * }
+       * ```
+       */
+      termTypes: Record<string, typeof foundry.dice.terms.RollTerm>;
+
+      /** Configured roll terms and the classes they map to. */
+      terms: {
+        c: typeof foundry.dice.terms.Coin;
+        d: typeof foundry.dice.terms.Die;
+        f: typeof foundry.dice.terms.FateDie;
+      } & Record<string, typeof foundry.dice.terms.DiceTerm>;
+
+      /**
+       * A function used to provide random uniform values.
+       * @defaultValue `MersenneTwister.random`
+       */
+      randomUniform: () => number;
+
+      /** A parser implementation for parsing Roll expressions. */
+      parser: typeof foundry.dice.RollParser;
+
+      /** A collection of custom functions that can be included in roll expressions.*/
+      functions: Record<string, RollFunction>;
+    }
+  }
+
   /**
    * Runtime configuration settings for Foundry VTT which exposes a large number of variables which determine how
    * aspects of the software behaves.
@@ -330,57 +385,7 @@ declare global {
     /**
      * Configuration for dice rolling behaviors in the Foundry Virtual Tabletop client
      */
-    Dice: {
-      /**
-       * The Dice types which are supported.
-       * @defaultValue `[Die, FateDie]`
-       */
-      types: Array<typeof foundry.dice.terms.DiceTerm>;
-
-      rollModes: CONFIG.Dice.RollModes;
-
-      /**
-       * Configured Roll class definitions
-       * @defaultValue `[Roll]`
-       */
-      rolls: Array<typeof foundry.dice.Roll>;
-
-      /**
-       * Configured DiceTerm class definitions
-       * @defaultValue
-       * ```typescript
-       * {
-       *   DiceTerm: typeof DiceTerm,
-       *   MathTerm: typeof MathTerm,
-       *   NumericTerm: typeof NumericTerm,
-       *   OperatorTerm: typeof OperatorTerm,
-       *   ParentheticalTerm: typeof ParentheticalTerm,
-       *   PoolTerm: typeof PoolTerm,
-       *   StringTerm: typeof StringTerm
-       * }
-       * ```
-       */
-      termTypes: Record<string, typeof foundry.dice.terms.RollTerm>;
-
-      /** Configured roll terms and the classes they map to. */
-      terms: {
-        c: typeof foundry.dice.terms.Coin;
-        d: typeof foundry.dice.terms.Die;
-        f: typeof foundry.dice.terms.FateDie;
-      } & Record<string, typeof foundry.dice.terms.DiceTerm>;
-
-      /**
-       * A function used to provide random uniform values.
-       * @defaultValue `MersenneTwister.random`
-       */
-      randomUniform: () => number;
-
-      /** A parser implementation for parsing Roll expressions. */
-      parser: typeof foundry.dice.RollParser;
-
-      /** A collection of custom functions that can be included in roll expressions.*/
-      functions: Record<string, RollFunction>;
-    } & Record<string, typeof foundry.dice.Roll>; // Common pattern
+    Dice: CONFIG.Dice; // Common pattern
 
     /**
      * Configuration for the FogExploration document
@@ -2568,67 +2573,67 @@ declare global {
   namespace CONFIG {
     interface UI {
       /** @defaultValue `MainMenu` */
-      menu: ConstructorOf<MainMenu>;
+      menu: typeof MainMenu;
 
       /** @defaultValue `Sidebar` */
-      sidebar: ConstructorOf<Sidebar>;
+      sidebar: typeof Sidebar;
 
       /** @defaultValue `Pause` */
-      pause: ConstructorOf<Pause>;
+      pause: typeof Pause;
 
       /** @defaultValue `SceneNavigation` */
-      nav: ConstructorOf<SceneNavigation>;
+      nav: typeof SceneNavigation;
 
       /** @defaultValue `Notifications` */
-      notifications: ConstructorOf<Notifications>;
+      notifications: typeof Notifications;
 
       /** @defaultValue `ActorDirectory` */
-      actors: ConstructorOf<ActorDirectory>;
+      actors: typeof ActorDirectory;
 
       /** @defaultValue `CardsDirectory` */
-      cards: ConstructorOf<CardsDirectory>;
+      cards: typeof CardsDirectory;
 
       /** @defaultValue `ChatLog` */
-      chat: ConstructorOf<ChatLog>;
+      chat: typeof ChatLog;
 
       /** @defaultValue `CombatTracker` */
-      combat: ConstructorOf<CombatTracker>;
+      combat: typeof CombatTracker;
 
       /** @defaultValue `CompendiumDirectory` */
-      compendium: ConstructorOf<CompendiumDirectory>;
+      compendium: typeof CompendiumDirectory;
 
       /** @defaultValue `SceneControls` */
-      controls: ConstructorOf<SceneControls>;
+      controls: typeof SceneControls;
 
       /** @defaultValue `Hotbar` */
-      hotbar: ConstructorOf<Hotbar>;
+      hotbar: typeof Hotbar;
 
       /** @defaultValue `ItemDirectory` */
-      items: ConstructorOf<ItemDirectory>;
+      items: typeof ItemDirectory;
 
       /** @defaultValue `JournalDirectory` */
-      journal: ConstructorOf<JournalDirectory>;
+      journal: typeof JournalDirectory;
 
       /** @defaultValue `MacroDirectory` */
-      macros: ConstructorOf<MacroDirectory>;
+      macros: typeof MacroDirectory;
 
       /** @defaultValue `PlayerList` */
-      players: ConstructorOf<PlayerList>;
+      players: typeof PlayerList;
 
       /** @defaultValue `PlaylistDirectory` */
-      playlists: ConstructorOf<PlaylistDirectory>;
+      playlists: typeof PlaylistDirectory;
 
       /** @defaultValue `SceneDirectory` */
-      scenes: ConstructorOf<SceneDirectory>;
+      scenes: typeof SceneDirectory;
 
       /** @defaultValue `Settings` */
-      settings: ConstructorOf<Settings>;
+      settings: typeof Settings;
 
       /** @defaultValue `RollTableDirectory` */
-      tables: ConstructorOf<RollTableDirectory>;
+      tables: typeof RollTableDirectory;
 
       /** @defaultValue `CameraViews` */
-      webrtc: ConstructorOf<CameraViews>;
+      webrtc: typeof CameraViews;
     }
 
     namespace Canvas {
