@@ -1,8 +1,4 @@
-import type {
-  ConfiguredDocumentClass,
-  ConfiguredDocumentClassForName,
-  ConfiguredFlags,
-} from "../../../types/helperTypes.mts";
+import type { ConfiguredDocumentInstance, ConfiguredFlags } from "../../../types/helperTypes.mts";
 import type {
   RemoveIndexSignatures,
   ConstructorOf,
@@ -568,12 +564,18 @@ declare class SchemaField<
   migrateSource(sourceData: AnyObject, fieldData: unknown): unknown;
 }
 
+// FIXME(LukeAbby): This is a quick patch that avoids issues with the fact that the `initial` in `SchemaField` is not actually assignable to its assignment type etc.
+// This will be superceded once proper field treatment is applied.
+declare const __SchemaFieldInitialSymbol: unique symbol;
+
+type __SchemaFieldInitial = typeof __SchemaFieldInitialSymbol;
+
 declare namespace SchemaField {
   /**
    * A shorthand for the options of a SchemaField class.
    * @typeParam Fields - the DataSchema fields of the SchemaField
    */
-  type Options<Fields extends DataSchema> = DataFieldOptions<InnerAssignmentType<Fields>>;
+  type Options<Fields extends DataSchema> = DataFieldOptions<InnerAssignmentType<Fields> | __SchemaFieldInitial>;
 
   /** Any SchemaField. */
   type Any = SchemaField<any, any, any, any, any>;
@@ -632,7 +634,7 @@ declare namespace SchemaField {
     {
       required: true;
       nullable: false;
-      initial: EmptyObject;
+      initial: __SchemaFieldInitial;
     }
   >;
 
@@ -1151,7 +1153,6 @@ declare namespace ObjectField {
     {
       required: true;
       nullable: false;
-      initial: () => EmptyObject;
     }
   >;
 
@@ -1615,7 +1616,7 @@ declare namespace EmbeddedDataField {
    * @typeParam ModelType - the DataModel for the embedded data
    */
   type Options<ModelType extends DataModel.Any> = DataFieldOptions<
-    SchemaField.InnerAssignmentType<DataModel.SchemaFor<ModelType>>
+    SchemaField.InnerAssignmentType<DataModel.SchemaFor<ModelType>> | __SchemaFieldInitial
   >;
 
   /** The type of the default options for the {@link EmbeddedDataField} class. */
@@ -1823,9 +1824,8 @@ declare namespace EmbeddedCollectionField {
    * A type to infer the initialized element type of an EmbeddedCollectionField from its ElementFieldType.
    * @typeParam ElementFieldType - the DataField type of the elements in the EmbeddedCollectionField
    */
-  type InitializedElementType<ElementFieldType extends Document.AnyConstructor> = InstanceType<
-    ConfiguredDocumentClass<ElementFieldType>
-  >;
+  type InitializedElementType<ElementFieldType extends Document.AnyConstructor> =
+    ConfiguredDocumentInstance<ElementFieldType>;
 
   /**
    * A type to infer the initialized element type of an EmbeddedCollectionField from its ElementFieldType.
@@ -1858,11 +1858,11 @@ declare namespace EmbeddedCollectionField {
    */
   type InitializedType<
     AssignmentElementType,
-    InitializedElementType extends Document.Any,
+    InitializedElementType extends Document.Internal.Instance.Any,
     ParentDataModel extends Document.Any,
     Opts extends Options<AssignmentElementType>,
   > = DataField.DerivedInitializedType<
-    EmbeddedCollection<InitializedElementType, ParentDataModel>,
+    EmbeddedCollection<Document.Internal.Instance.Complete<InitializedElementType>, ParentDataModel>,
     MergedOptions<AssignmentElementType, Opts>
   >;
 
@@ -1975,9 +1975,8 @@ declare namespace EmbeddedCollectionDeltaField {
    * A type to infer the initialized element type of an EmbeddedCollectionDeltaField from its ElementFieldType.
    * @typeParam ElementFieldType - the DataField type of the elements in the EmbeddedCollectionDeltaField
    */
-  type InitializedElementType<ElementFieldType extends Document.AnyConstructor> = InstanceType<
-    ConfiguredDocumentClass<ElementFieldType>
-  >;
+  type InitializedElementType<ElementFieldType extends Document.AnyConstructor> =
+    ConfiguredDocumentInstance<ElementFieldType>;
 
   /**
    * A type to infer the initialized element type of an EmbeddedCollectionDeltaField from its ElementFieldType.
@@ -2010,11 +2009,11 @@ declare namespace EmbeddedCollectionDeltaField {
    */
   type InitializedType<
     AssignmentElementType,
-    InitializedElementType extends Document.Any,
+    InitializedElementType extends Document.Internal.Instance.Any,
     ParentDataModel extends Document.Any,
     Opts extends Options<AssignmentElementType>,
   > = DataField.DerivedInitializedType<
-    EmbeddedCollectionDelta<InitializedElementType, ParentDataModel>,
+    EmbeddedCollectionDelta<Document.Internal.Instance.Complete<InitializedElementType>, ParentDataModel>,
     MergedOptions<AssignmentElementType, Opts>
   >;
 
@@ -2085,7 +2084,7 @@ declare namespace EmbeddedDocumentField {
    * @typeParam DocumentType - the type of the embedded Document
    */
   type Options<DocumentType extends Document.Any> = DataFieldOptions<
-    SchemaField.InnerAssignmentType<DataModel.SchemaFor<DocumentType>>
+    SchemaField.InnerAssignmentType<DataModel.SchemaFor<DocumentType>> | __SchemaFieldInitial
   >;
 
   /** The type of the default options for the {@link EmbeddedDocumentField} class. */
@@ -2326,7 +2325,7 @@ declare namespace ForeignDocumentField {
    * @typeParam Opts - the options that override the default options
    */
   type InitializedType<DocumentType extends Document.Any, Opts extends Options> = DataField.DerivedInitializedType<
-    Opts["idOnly"] extends true ? string : InstanceType<ConfiguredDocumentClassForName<DocumentType["documentName"]>>,
+    Opts["idOnly"] extends true ? string : ConfiguredDocumentInstance<DocumentType["documentName"]>,
     MergedOptions<Opts>
   >;
 

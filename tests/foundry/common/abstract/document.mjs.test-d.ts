@@ -1,7 +1,7 @@
 import { expectTypeOf } from "vitest";
 import type { StoredDocument } from "../../../../src/types/utils.d.mts";
 import type BaseActiveEffect from "../../../../src/foundry/common/documents/active-effect.d.mts";
-import type { ConfiguredDocumentClass, DatabaseOperationsFor } from "../../../../src/types/helperTypes.d.mts";
+import type { ConfiguredDocumentInstance, DatabaseOperationsFor } from "../../../../src/types/helperTypes.d.mts";
 
 import type {
   DocumentOnCreateOptions,
@@ -22,7 +22,7 @@ declare const configuredActiveEffect: InstanceType<
 >;
 expectTypeOf(configuredActiveEffect).toEqualTypeOf<ActiveEffect>();
 
-declare const helperConfigAE: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseActiveEffect>>;
+declare const helperConfigAE: ConfiguredDocumentInstance<typeof foundry.documents.BaseActiveEffect>;
 expectTypeOf(helperConfigAE).toEqualTypeOf<ActiveEffect>();
 
 const baseActiveEffect = new foundry.documents.BaseActiveEffect();

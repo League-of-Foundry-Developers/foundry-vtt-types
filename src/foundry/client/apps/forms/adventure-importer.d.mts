@@ -1,7 +1,5 @@
 import type { GetDataReturnType } from "../../../../types/utils.d.mts";
 
-export {};
-
 declare global {
   /**
    * An interface for importing an adventure from a compendium pack.

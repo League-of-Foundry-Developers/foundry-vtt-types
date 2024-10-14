@@ -1,6 +1,6 @@
 import type {
-  ConfiguredDocumentClass,
   ConfiguredDocumentClassForName,
+  ConfiguredDocumentInstance,
   ConstructorDataType,
   DatabaseOperationsFor,
   DocumentConstructor,
@@ -17,7 +17,7 @@ import type {
   StoredDocument,
 } from "../../../types/utils.mts";
 import type * as CONST from "../constants.mts";
-import type { DataField, EmbeddedCollectionField, EmbeddedDocumentField, SchemaField } from "../data/fields.d.mts";
+import type { DataField, EmbeddedCollectionField, EmbeddedDocumentField } from "../data/fields.d.mts";
 import type { fields } from "../data/module.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.mts";
 import type {
@@ -323,7 +323,7 @@ declare abstract class Document<
     operation?: InexactPartial<Omit<DatabaseOperationsFor<T["metadata"]["name"], "create">, "data">> & {
       temporary: true;
     },
-  ): Promise<InstanceType<ConfiguredDocumentClass<T>>[] | undefined>;
+  ): Promise<ConfiguredDocumentInstance<T>[] | undefined>;
 
   /**
    * Update multiple Document instances using provided differential data.
@@ -364,7 +364,7 @@ declare abstract class Document<
     this: T,
     updates?: Array<DeepPartial<ConstructorDataType<T> & Record<string, unknown>>>,
     operation?: InexactPartial<Omit<DatabaseOperationsFor<InstanceType<T>["documentName"], "update">, "updates">>,
-  ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
+  ): Promise<ConfiguredDocumentInstance<T>[]>;
 
   /**
    * Delete one or multiple existing Documents using an array of provided ids.
@@ -407,7 +407,7 @@ declare abstract class Document<
     this: T,
     ids?: string[],
     operation?: InexactPartial<Omit<DatabaseOperationsFor<InstanceType<T>["documentName"], "delete">, "ids">>,
-  ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
+  ): Promise<ConfiguredDocumentInstance<T>[]>;
 
   /**
    * Create a new Document using provided input data, saving it to the database.
@@ -451,7 +451,7 @@ declare abstract class Document<
     operation?: InexactPartial<Omit<DatabaseOperationsFor<T["metadata"]["name"], "create">, "data">> & {
       temporary: true;
     },
-  ): Promise<InstanceType<ConfiguredDocumentClass<T>> | undefined>;
+  ): Promise<ConfiguredDocumentInstance<T> | undefined>;
 
   /**
    * Update this Document using incremental data, saving it to the database.
@@ -913,7 +913,7 @@ declare abstract class Document<
    */
   protected static _onCreateDocuments<T extends Document.AnyConstructor>(
     this: T,
-    documents: Array<InstanceType<ConfiguredDocumentClass<T>>>,
+    documents: Array<ConfiguredDocumentInstance<T>>,
     context: Document.ModificationContext<Document.Any | null>,
   ): Promise<void>;
 
@@ -923,7 +923,7 @@ declare abstract class Document<
    */
   protected static _onUpdateDocuments<T extends Document.AnyConstructor>(
     this: T,
-    documents: Array<InstanceType<ConfiguredDocumentClass<T>>>,
+    documents: Array<ConfiguredDocumentInstance<T>>,
     context: Document.ModificationContext<Document.Any | null>,
   ): Promise<unknown>;
 
@@ -933,7 +933,7 @@ declare abstract class Document<
    */
   protected static _onDeleteDocuments<T extends Document.AnyConstructor>(
     this: T,
-    documents: Array<InstanceType<ConfiguredDocumentClass<T>>>,
+    documents: Array<ConfiguredDocumentInstance<T>>,
     context: Document.ModificationContext<Document.Any | null>,
   ): Promise<unknown>;
 }

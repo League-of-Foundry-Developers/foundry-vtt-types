@@ -1,6 +1,6 @@
 import type {
-  ConfiguredDocumentClass,
   ConfiguredDocumentClassForName,
+  ConfiguredDocumentInstance,
   ConstructorDataType,
   DocumentConstructor,
   DocumentType,
@@ -91,7 +91,7 @@ declare global {
       this: T,
       data?: DeepPartial<ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>)>,
       context?: InexactPartial<Omit<FolderConfig.Options, "resolve">>,
-    ): Promise<InstanceType<ConfiguredDocumentClass<T>> | null | undefined>;
+    ): Promise<ConfiguredDocumentInstance<T> | null | undefined>;
 
     /**
      * Export all Documents contained in this Folder to a given Compendium pack.

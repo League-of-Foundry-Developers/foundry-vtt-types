@@ -1,7 +1,5 @@
 import type { InexactPartial } from "../../../../types/utils.d.mts";
 
-export {};
-
 declare global {
   /**
    * The singleton collection of Macro documents which exist within the active World.

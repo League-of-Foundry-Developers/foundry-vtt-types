@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClassForName, ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
+import type { ConfiguredDocumentClassForName, ConfiguredDocumentInstance } from "../../../../types/helperTypes.d.mts";
 import type { InexactPartial } from "../../../../types/utils.d.mts";
 import type {
   DocumentDatabaseOperations,
@@ -310,6 +310,6 @@ declare global {
     /**
      * An array of drawn TableResult documents
      */
-    results: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseTableResult>>[];
+    results: ConfiguredDocumentInstance<typeof foundry.documents.BaseTableResult>[];
   }
 }

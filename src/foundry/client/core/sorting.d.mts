@@ -1,7 +1,5 @@
 import type { InexactPartial } from "../../../types/utils.d.mts";
 
-export {};
-
 declare global {
   /**
    * A collection of functions related to sorting objects within a parent container.

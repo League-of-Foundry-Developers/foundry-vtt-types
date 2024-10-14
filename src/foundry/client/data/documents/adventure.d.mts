@@ -92,5 +92,3 @@ type DocumentResult = {
 };
 
 type AdventureDocumentTypes = Exclude<FolderDocumentTypes, "Adventure"> | "Folder";
-
-export {};

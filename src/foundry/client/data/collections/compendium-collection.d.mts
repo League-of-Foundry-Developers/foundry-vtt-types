@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
+import type { ConfiguredDocumentClassForName, ConfiguredDocumentInstance } from "../../../../types/helperTypes.d.mts";
 import type {
   DatabaseCreateOperation,
   DatabaseDeleteOperation,
@@ -479,7 +479,7 @@ type DocumentClassForCompendiumMetadata<T extends CompendiumCollection.Metadata>
   T["type"]
 >;
 
-type DocumentInstanceForCompendiumMetadata<T extends CompendiumCollection.Metadata> = InstanceType<
+type DocumentInstanceForCompendiumMetadata<T extends CompendiumCollection.Metadata> = ConfiguredDocumentInstance<
   DocumentClassForCompendiumMetadata<T>
 >;
 

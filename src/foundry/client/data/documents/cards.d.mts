@@ -1,6 +1,6 @@
 import type {
   ConfiguredDocumentClassForName,
-  ConfiguredDocumentClass,
+  ConfiguredDocumentInstance,
   ConstructorDataType,
   DocumentConstructor,
   DatabaseOperationsFor,
@@ -351,6 +351,6 @@ declare global {
             types: string[];
           }
         >,
-    ): Promise<InstanceType<ConfiguredDocumentClass<T>> | null | undefined>;
+    ): Promise<ConfiguredDocumentInstance<T> | null | undefined>;
   }
 }

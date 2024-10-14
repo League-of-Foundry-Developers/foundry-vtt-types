@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
+import type { ConfiguredDocumentInstance } from "../../../../types/helperTypes.d.mts";
 import type { GetDataReturnType, MaybePromise } from "../../../../types/utils.d.mts";
 
 declare global {
@@ -11,7 +11,7 @@ declare global {
    */
   class PlaylistSoundConfig<
     Options extends DocumentSheetOptions<PlaylistSound> = DocumentSheetOptions<PlaylistSound>,
-  > extends DocumentSheet<Options, InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>> {
+  > extends DocumentSheet<Options, ConfiguredDocumentInstance<typeof PlaylistSound>> {
     /**
      * @defaultValue
      * ```typescript
@@ -55,7 +55,7 @@ declare global {
 
     interface PlaylistSoundConfigData<
       Options extends DocumentSheetOptions<PlaylistSound> = DocumentSheetOptions<PlaylistSound>,
-    > extends DocumentSheet.DocumentSheetData<Options, InstanceType<ConfiguredDocumentClass<typeof PlaylistSound>>> {
+    > extends DocumentSheet.DocumentSheetData<Options, ConfiguredDocumentInstance<typeof PlaylistSound>> {
       lvolume: number;
     }
   }

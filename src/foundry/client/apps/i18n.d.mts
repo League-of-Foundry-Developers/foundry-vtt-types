@@ -1,7 +1,5 @@
 import type { InexactPartial } from "../../../types/utils.d.mts";
 
-export {};
-
 declare global {
   /**
    * A helper class which assists with localization and string translation

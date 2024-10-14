@@ -1,4 +1,8 @@
-import type { ConfiguredDocumentClass, DocumentConstructor } from "../../../../types/helperTypes.d.mts";
+import type {
+  ConfiguredDocumentClass,
+  ConfiguredDocumentInstance,
+  DocumentConstructor,
+} from "../../../../types/helperTypes.d.mts";
 import type { Mixin } from "../../../../types/utils.d.mts";
 
 type DirectoryCollectionMixin_DocumentCollection_Static = DirectoryCollection<DirectoryCollection.DirectoryTypes> &
@@ -8,8 +12,7 @@ export interface DirectoryCollectionMixin_DocumentCollection_Interface
   extends DirectoryCollectionMixin_DocumentCollection_Static {
   new <T extends DocumentConstructor, Name extends string>(
     ...args: ConstructorParameters<typeof DocumentCollection>
-  ): DirectoryCollection<InstanceType<ConfiguredDocumentClass<T>>> &
-    DocumentCollection<ConfiguredDocumentClass<T>, Name>;
+  ): DirectoryCollection<ConfiguredDocumentInstance<T>> & DocumentCollection<ConfiguredDocumentClass<T>, Name>;
 }
 
 type DirectoryCollectionMixin_Collection_Static = DirectoryCollection<DirectoryCollection.DirectoryTypes> &

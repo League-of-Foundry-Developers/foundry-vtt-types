@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
+import type { ConfiguredDocumentInstance } from "../../../../types/helperTypes.d.mts";
 import type { GetDataReturnType, MaybePromise, ValueOf } from "../../../../types/utils.d.mts";
 
 declare global {
@@ -9,7 +9,7 @@ declare global {
    */
   class ActiveEffectConfig<
     Options extends DocumentSheetOptions<ActiveEffect> = DocumentSheetOptions<ActiveEffect>,
-  > extends DocumentSheet<Options, InstanceType<ConfiguredDocumentClass<typeof ActiveEffect>>> {
+  > extends DocumentSheet<Options, ConfiguredDocumentInstance<typeof ActiveEffect>> {
     /**
      * @defaultValue
      * ```typescript
@@ -55,7 +55,7 @@ declare global {
     // @ts-expect-error - Fake polymorphism override
     interface ActiveEffectConfigData<
       Options extends DocumentSheetOptions<ActiveEffect> = DocumentSheetOptions<ActiveEffect>,
-    > extends DocumentSheet.DocumentSheetData<Options, InstanceType<ConfiguredDocumentClass<typeof ActiveEffect>>> {
+    > extends DocumentSheet.DocumentSheetData<Options, ConfiguredDocumentInstance<typeof ActiveEffect>> {
       labels: {
         transfer: {
           name: string;

@@ -1,5 +1,5 @@
 import type {
-  ConfiguredDocumentClass,
+  ConfiguredDocumentInstance,
   ConstructorDataType,
   DocumentConstructor,
 } from "../../../../types/helperTypes.d.mts";
@@ -358,7 +358,7 @@ declare class ClientDocument<BaseDocument extends Document.Internal.Instance.Any
           types: string[];
         }
       >,
-  ): Promise<InstanceType<ConfiguredDocumentClass<T>> | null | undefined>;
+  ): Promise<ConfiguredDocumentInstance<T> | null | undefined>;
 
   /**
    * Present a Dialog form to confirm deletion of this Document.
@@ -394,7 +394,7 @@ declare class ClientDocument<BaseDocument extends Document.Internal.Instance.Any
     this: T,
     data: DropData<InstanceType<T>>,
     options?: FromDropDataOptions,
-  ): Promise<InstanceType<ConfiguredDocumentClass<T>> | undefined>;
+  ): Promise<ConfiguredDocumentInstance<T> | undefined>;
 
   /**
    * Create the Document from the given source with migration applied to it.

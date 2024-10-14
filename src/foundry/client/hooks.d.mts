@@ -1,6 +1,7 @@
 import type { EditorState } from "prosemirror-state";
 import type {
   ConfiguredDocumentClass,
+  ConfiguredDocumentInstance,
   ConfiguredObjectClassForName,
   DocumentConstructor,
   ToObjectFalseType,
@@ -20,8 +21,6 @@ import type {
 import type ProseMirrorMenu from "../common/prosemirror/menu.d.mts";
 import type { ProseMirrorDropDown } from "../common/prosemirror/menu.d.mts";
 import type { OccludableObject } from "./pixi/placeables/primary-canvas-objects/occludable-object.d.mts";
-
-export {};
 
 declare global {
   /**
@@ -947,7 +946,7 @@ declare global {
      * @see {@link TokenDocument#_preUpdateTokenActor}
      */
     type PreCreateDocument<D extends DocumentConstructor = DocumentConstructor> = (
-      document: InstanceType<ConfiguredDocumentClass<D>>,
+      document: ConfiguredDocumentInstance<D>,
       data: ConstructorParameters<D>[0],
       options: DocumentPreCreateOptions<InstanceType<D>["documentName"]>,
       userId: string,
@@ -973,7 +972,7 @@ declare global {
      * @see {@link TokenDocument#_preUpdateTokenActor}
      */
     type PreUpdateDocument<D extends DocumentConstructor = DocumentConstructor> = (
-      document: InstanceType<ConfiguredDocumentClass<D>>,
+      document: ConfiguredDocumentInstance<D>,
       change: DeepPartial<ConstructorParameters<D>[0]>,
       options: DocumentPreUpdateOptions<InstanceType<D>["documentName"]>,
       userId: string,
@@ -998,7 +997,7 @@ declare global {
      * @see {@link TokenDocument#_preUpdateTokenActor}
      */
     type PreDeleteDocument<D extends DocumentConstructor = DocumentConstructor> = (
-      document: InstanceType<ConfiguredDocumentClass<D>>,
+      document: ConfiguredDocumentInstance<D>,
       options: DocumentPreDeleteOptions<InstanceType<D>["documentName"]>,
       userId: string,
     ) => boolean | void;
@@ -1018,7 +1017,7 @@ declare global {
      * @see {@link TokenDocument#_onUpdateTokenActor}
      */
     type CreateDocument<D extends DocumentConstructor = DocumentConstructor> = (
-      document: InstanceType<ConfiguredDocumentClass<D>>,
+      document: ConfiguredDocumentInstance<D>,
       options: DocumentOnCreateOptions<InstanceType<D>["documentName"]>,
       userId: string,
     ) => void;
@@ -1039,7 +1038,7 @@ declare global {
      * @see {@link TokenDocument#_onUpdateTokenActor}
      */
     type UpdateDocument<D extends DocumentConstructor = DocumentConstructor> = (
-      document: InstanceType<ConfiguredDocumentClass<D>>,
+      document: ConfiguredDocumentInstance<D>,
       change: DeepPartial<ConstructorParameters<D>[0]>,
       options: DocumentOnUpdateOptions<InstanceType<D>["documentName"]>,
       userId: string,
@@ -1060,7 +1059,7 @@ declare global {
      * @see {@link TokenDocument#_onUpdateTokenActor}
      */
     type DeleteDocument<D extends DocumentConstructor = DocumentConstructor> = (
-      document: InstanceType<ConfiguredDocumentClass<D>>,
+      document: ConfiguredDocumentInstance<D>,
       options: DocumentOnDeleteOptions<InstanceType<D>["documentName"]>,
       userId: string,
     ) => void;

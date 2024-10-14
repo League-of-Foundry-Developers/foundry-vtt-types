@@ -88,5 +88,3 @@ declare global {
     ): void;
   }
 }
-
-export {};

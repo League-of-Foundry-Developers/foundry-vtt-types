@@ -1,5 +1,6 @@
 import type {
   ConfiguredDocumentClass,
+  ConfiguredDocumentInstance,
   ConstructorDataType,
   DocumentConstructor,
 } from "../../../../types/helperTypes.d.mts";
@@ -45,7 +46,7 @@ declare global {
      */
     static get instance(): WorldCollection<DocumentConstructor, any>; // TODO: Find a way to type this more concretely. One option would be to separate the static and non static side of this class, which allows accessing the the static this type to use the `documentName`.
 
-    protected override _getVisibleTreeContents(): InstanceType<ConfiguredDocumentClass<T>>[];
+    protected override _getVisibleTreeContents(): ConfiguredDocumentInstance<T>[];
 
     /**
      * Import a Document from a Compendium collection, adding it to the current World.
@@ -70,7 +71,7 @@ declare global {
         CompendiumCollection.Metadata & { type: ConfiguredDocumentClass<T>["metadata"]["name"] }
       >,
       id: string,
-      updateData?: DeepPartial<InstanceType<ConfiguredDocumentClass<T>>["_source"]>,
+      updateData?: DeepPartial<ConfiguredDocumentInstance<T>["_source"]>,
       options?: InexactPartial<DocumentOnCreateOptions<T["metadata"]["name"]> & WorldCollection.FromCompendiumOptions>,
     ): Promise<ConfiguredStoredDocument<T>>;
 
@@ -88,10 +89,10 @@ declare global {
       OwnershipOpt extends boolean = false,
       IdOpt extends boolean = false,
     >(
-      document: InstanceType<ConfiguredDocumentClass<T>> | ConstructorDataType<T>,
+      document: ConfiguredDocumentInstance<T> | ConstructorDataType<T>,
       options?: InexactPartial<WorldCollection.FromCompendiumOptions<FolderOpt, SortOpt, OwnershipOpt, IdOpt>>,
     ): Omit<
-      InstanceType<ConfiguredDocumentClass<T>>["_source"],
+      ConfiguredDocumentInstance<T>["_source"],
       | ClientDocument.OmitProperty<FolderOpt, "folder">
       | ClientDocument.OmitProperty<SortOpt, "sort" | "navigation" | "navOrder">
       | ClientDocument.OmitProperty<OwnershipOpt, "ownership">

@@ -1,7 +1,5 @@
 import type { ConstructorOf } from "../../../../../types/utils.d.mts";
 
-export {};
-
 declare global {
   interface PointSourcePolygonConfig {
     /** The type of polygon being computed */

@@ -43,7 +43,7 @@ export interface DefaultDocuments extends Record<DocumentType, Document.AnyConst
 // See https://gist.github.com/LukeAbby/f9561689e5cad8a4b1e9cb92a8c63982 for more information.
 type ConfiguredDocument<ConcreteDocumentType extends DocumentType> =
   ConcreteDocumentType extends keyof DocumentClassConfig
-    ? MakeConform<ConcreteDocumentType, DocumentClassConfig[ConcreteDocumentType]>
+    ? MakeConform<DocumentClassConfig[ConcreteDocumentType], Document.Internal.Constructor>
     : DefaultDocuments[ConcreteDocumentType];
 
 // This interface exists as a way to catch circular errors easier.

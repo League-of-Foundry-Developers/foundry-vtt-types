@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClass, InterfaceToObject } from "../../../../types/helperTypes.d.mts";
+import type { ConfiguredDocumentInstance, InterfaceToObject } from "../../../../types/helperTypes.d.mts";
 import type { AnyObject, GetDataReturnType, MaybePromise } from "../../../../types/utils.d.mts";
 
 declare global {
@@ -8,10 +8,10 @@ declare global {
    */
   class GridConfig<Options extends FormApplicationOptions = FormApplicationOptions> extends FormApplication<
     Options,
-    InstanceType<ConfiguredDocumentClass<typeof Scene>>
+    ConfiguredDocumentInstance<typeof Scene>
   > {
     constructor(
-      scene: InstanceType<ConfiguredDocumentClass<typeof Scene>>,
+      scene: ConfiguredDocumentInstance<typeof Scene>,
       sheet: GridConfig["sheet"],
       options?: Partial<Options>,
     );

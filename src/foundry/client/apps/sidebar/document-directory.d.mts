@@ -1,7 +1,5 @@
 import type { ConfiguredDocumentClassForName, DocumentType } from "../../../../types/helperTypes.d.mts";
 
-export {};
-
 declare global {
   interface DocumentDirectoryOptions extends ApplicationOptions {
     /**
