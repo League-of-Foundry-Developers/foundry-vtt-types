@@ -1,10 +1,15 @@
+import type { MakeConform } from "../../../types/helperTypes.d.mts";
 import type { ValueOf } from "../../../types/utils.d.mts";
+import type ApplicationV2 from "../../client-esm/applications/api/application.d.mts";
 import type {
   DocumentOnCreateOptions,
   DocumentOnDeleteOptions,
   DocumentOnUpdateOptions,
 } from "../../common/abstract/document.d.mts";
 import type { Document } from "../../common/abstract/module.d.mts";
+
+// Gets a key with a required shape to conform to which is also used as a fallback when the key doesn't exist.
+type GetKeyWithShape<T, K, S> = K extends keyof T ? MakeConform<T[K], S> : S;
 
 declare global {
   /**
@@ -147,7 +152,7 @@ declare global {
     /**
      * Provide a reference to the CanvasLayer which contains this PlaceableObject.
      */
-    get layer(): "layer" extends keyof D ? D["layer"] : PIXI.Container;
+    get layer(): GetKeyWithShape<D, "layer", PIXI.Container>;
 
     /**
      * The line-of-sight polygon for the object, if it has been computed
@@ -158,7 +163,7 @@ declare global {
      * A Form Application which is used to configure the properties of this Placeable Object or the Document it
      * represents.
      */
-    get sheet(): "sheet" extends keyof D ? D["sheet"] : FormApplication | null;
+    get sheet(): GetKeyWithShape<D, "sheet", FormApplication | ApplicationV2.Any | null>;
 
     /**
      * An indicator for whether the object is currently controlled
