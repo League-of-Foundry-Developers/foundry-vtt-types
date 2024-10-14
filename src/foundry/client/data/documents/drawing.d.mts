@@ -25,5 +25,3 @@ declare global {
     get sort(): this["z"];
   }
 }
-
-export {};

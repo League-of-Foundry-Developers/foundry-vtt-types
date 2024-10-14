@@ -300,5 +300,3 @@ declare global {
     _combatTime: number;
   }
 }
-
-export {};

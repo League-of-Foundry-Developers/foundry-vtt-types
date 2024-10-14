@@ -1,7 +1,5 @@
 import type { AnyObject } from "../../../../types/utils.d.mts";
 
-export {};
-
 declare global {
   /**
    * The Application responsible for configuring a single Token document within a parent Scene.

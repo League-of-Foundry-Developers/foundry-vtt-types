@@ -1,7 +1,5 @@
 import type { ValueOf } from "../../../types/utils.d.mts";
 
-export {};
-
 declare global {
   /** Options which customize the behavior of the filter */
   interface SearchFilterConfiguration {

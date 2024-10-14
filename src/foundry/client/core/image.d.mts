@@ -1,8 +1,6 @@
 import type { InexactPartial } from "../../../types/utils.d.mts";
 import type { CONST } from "../../common/module.d.mts";
 
-export {};
-
 declare global {
   /**
    * A helper class to provide common functionality for working with Image objects

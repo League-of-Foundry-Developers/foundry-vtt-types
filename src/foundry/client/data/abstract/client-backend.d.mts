@@ -42,5 +42,3 @@ declare global {
     override getCompendiumScopes(): string[];
   }
 }
-
-export {};

@@ -1,7 +1,5 @@
 import type { GetDataReturnType, MaybePromise } from "../../../../types/utils.d.mts";
 
-export {};
-
 declare global {
   class FontConfig<Options extends FontConfig.Options = FontConfig.Options> extends FormApplication<
     Options,

@@ -1,7 +1,5 @@
 import type { InexactPartial } from "../../../../../../../types/utils.d.mts";
 
-export {};
-
 declare global {
   /**
    * An interface for defining shader-based weather effects

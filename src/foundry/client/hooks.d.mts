@@ -13,8 +13,6 @@ import type ProseMirrorMenu from "../prosemirror/menu.d.mts";
 import type { ProseMirrorDropDown } from "../prosemirror/menu.d.mts";
 import type { OccludableObject } from "./pixi/placeables/primary-canvas-objects/occludable-object.d.mts";
 
-export {};
-
 declare global {
   /**
    * This namespace contains typescript specific type definitions for the {@link Hooks} callback functions. It contains an

@@ -2,8 +2,6 @@ import type { EditorView } from "prosemirror-view";
 import type { Editor } from "tinymce";
 import type { GetDataReturnType } from "../../../../types/utils.d.mts";
 
-export {};
-
 declare global {
   /**
    * An interface for packaging Adventure content and loading it to a compendium pack.

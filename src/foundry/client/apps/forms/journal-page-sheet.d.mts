@@ -3,8 +3,6 @@ import type { EditorView } from "prosemirror-view";
 import type { GetDataReturnType, InexactPartial, MaybePromise } from "../../../../types/utils.d.mts";
 import type Showdown from "showdown";
 
-export {};
-
 declare global {
   /**
    * The Application responsible for displaying and editing a single JournalEntryPage document.

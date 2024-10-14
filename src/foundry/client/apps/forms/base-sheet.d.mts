@@ -2,8 +2,6 @@ import type { EditorView } from "prosemirror-view";
 import type { Editor } from "tinymce";
 import type { GetDataReturnType } from "../../../../types/utils.d.mts";
 
-export {};
-
 declare global {
   class BaseSheet<Options extends BaseSheet.Options = BaseSheet.Options> extends DocumentSheet<
     Options,
