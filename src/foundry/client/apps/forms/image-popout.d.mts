@@ -125,6 +125,8 @@ declare global {
   }
 
   namespace ImagePopout {
+    type Any = ImagePopout<any>;
+
     interface Options extends FormApplicationOptions {
       /**
        * @defaultValue `"templates/apps/image-popout.html"`

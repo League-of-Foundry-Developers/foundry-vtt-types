@@ -12,25 +12,25 @@ import type { LoggingLevels } from "../../../types/helperTypes.d.mts";
  * The client-side database backend implementation which handles Document modification operations.
  */
 declare class ClientDatabaseBackend extends foundry.abstract.DatabaseBackend {
-  protected override _getDocuments<T extends Document<any, any, any>>(
+  protected override _getDocuments<T extends Document.Any>(
     documentClass: ConstructorOf<T>,
     request: DatabaseGetOperation,
     user: User.ConfiguredInstance,
   ): Promise<T[]>;
 
-  protected override _createDocuments<T extends Document<any, any, any>>(
+  protected override _createDocuments<T extends Document.Any>(
     documentClass: ConstructorOf<T>,
     request: DatabaseCreateOperation<T>,
     user: User.ConfiguredInstance,
   ): Promise<T[]>;
 
-  protected override _updateDocuments<T extends Document<any, any, any>>(
+  protected override _updateDocuments<T extends Document.Any>(
     documentClass: ConstructorOf<T>,
     request: DatabaseUpdateOperation<T>,
     user: User.ConfiguredInstance,
   ): Promise<T[]>;
 
-  protected override _deleteDocuments<T extends Document<any, any, any>>(
+  protected override _deleteDocuments<T extends Document.Any>(
     documentClass: ConstructorOf<T>,
     request: DatabaseDeleteOperation,
     user: User.ConfiguredInstance,

@@ -12,12 +12,17 @@ declare global {
  * The Document definition for an Item.
  * Defines the DataSchema and common behaviors for an Item which are shared between both client and server.
  */
-declare class BaseItem extends Document<BaseItem.Schema, BaseItem.Metadata, Actor.ConfiguredInstance | null> {
+// Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
+// This pattern evolved from trying to avoid circular loops and even internal tsc errors.
+// See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
+declare class BaseItem extends Document<BaseItem.Schema, BaseItem.Metadata, any> {
   /**
    * @param data    - Initial data from which to construct the Item
    * @param context - Construction context options
    */
-  constructor(data: BaseItem.ConstructorData, context?: DocumentConstructionContext);
+  constructor(data: BaseItem.ConstructorData, context?: Document.ConstructionContext<BaseItem.Parent>);
+
+  override parent: BaseItem.Parent;
 
   override _source: BaseItem.Source;
 
@@ -70,9 +75,12 @@ declare class BaseItem extends Document<BaseItem.Schema, BaseItem.Metadata, Acto
     },
   ): AnyObject;
 }
+
 export default BaseItem;
 
 declare namespace BaseItem {
+  type Parent = Actor.ConfiguredInstance | null;
+
   type TypeNames = fields.TypeDataField.TypeNames<typeof BaseItem>;
 
   type Metadata = Merge<

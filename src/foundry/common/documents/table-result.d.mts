@@ -13,16 +13,17 @@ declare global {
  * The Document definition for a TableResult.
  * Defines the DataSchema and common behaviors for a TableResult which are shared between both client and server.
  */
-declare class BaseTableResult extends Document<
-  BaseTableResult.Schema,
-  BaseTableResult.Metadata,
-  RollTable.ConfiguredInstance | null
-> {
+// Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
+// This pattern evolved from trying to avoid circular loops and even internal tsc errors.
+// See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
+declare class BaseTableResult extends Document<BaseTableResult.Schema, BaseTableResult.Metadata, any> {
   /**
    * @param data    - Initial data from which to construct the Table Result
    * @param context - Construction context options
    */
-  constructor(data: BaseTableResult.ConstructorData, context?: DocumentConstructionContext);
+  constructor(data: BaseTableResult.ConstructorData, context?: Document.ConstructionContext<BaseTableResult.Parent>);
+
+  override parent: BaseTableResult.Parent;
 
   static override metadata: Readonly<BaseTableResult.Metadata>;
 
@@ -53,9 +54,12 @@ declare class BaseTableResult extends Document<
     },
   ): AnyObject;
 }
+
 export default BaseTableResult;
 
 declare namespace BaseTableResult {
+  type Parent = RollTable.ConfiguredInstance | null;
+
   // TODO: Remove "base" in v12
   type TypeNames = (typeof foundry.documents.BaseMacro)["metadata"]["coreTypes"][number] | "base";
 

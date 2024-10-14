@@ -79,6 +79,10 @@ declare global {
     ): ReturnType<Cards.ConfiguredInstance["updateEmbeddedDocuments"]>;
   }
 
+  namespace CardsConfig {
+    type Any = CardsConfig<any>;
+  }
+
   /**
    * A subclass of CardsConfig which provides a sheet representation for Cards documents with the "hand" type.
    *
@@ -96,6 +100,10 @@ declare global {
     static override get defaultOptions(): CardsConfig.Options;
   }
 
+  namespace CardsHand {
+    type Any = CardsHand<any>;
+  }
+
   /**
    * A subclass of CardsConfig which provides a sheet representation for Cards documents with the "pile" type.
    *
@@ -111,6 +119,10 @@ declare global {
      * ```
      */
     static override get defaultOptions(): CardsConfig.Options;
+  }
+
+  namespace CardsPile {
+    type Any = CardsPile<any>;
   }
 
   namespace CardsConfig {

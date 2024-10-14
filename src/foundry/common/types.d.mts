@@ -1,119 +1,21 @@
-import type { DeepPartial } from "../../types/utils.d.mts";
+import type { AnyConstructor, AnyFunction, DeepPartial } from "../../types/utils.d.mts";
 import type ApplicationV2 from "../client-esm/applications/api/application.mts";
 import type { CustomFormInput } from "../client-esm/applications/forms/fields.mts";
-import type { DataModel } from "./abstract/module.d.mts";
+import type { DataModel, Document } from "./abstract/module.d.mts";
 import type { DataField } from "./data/fields.d.mts";
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+interface DocumentConstructionContext extends Document.ConstructionContext<Document.Any | null> {}
+
+// TODO: deprecated in V12, will be removed in V14
+// note: this was removed from this file in V12, but there are still (deprecated) methods
+//    in Document that use it, so we should retain it until V14 when those
+//    methods are removed
+/** @deprecated since v12 */
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+interface DocumentModificationContext extends Document.ModificationContext<Document.Any | null> {}
+
 declare global {
-  interface DocumentConstructionContext {
-    /**
-     * The parent Document of this one, if this one is embedded
-     * @defaultValue `null`
-     */
-    parent?: foundry.abstract.Document.Any | null | undefined;
-
-    /**
-     * The compendium collection ID which contains this Document, if any
-     * @defaultValue `null`
-     */
-    pack?: string | null | undefined;
-
-    /**
-     * Whether to validate initial data strictly?
-     * @defaultValue `true`
-     */
-    strict?: boolean | undefined;
-  }
-
-  // TODO: deprecated in V12, will be removed in V14
-  // note: this was removed from this file in V12, but there are still (deprecated) methods
-  //    in Document that use it, so we should retain it until V14 when those
-  //    methods are removed
-  /** @deprecated since v12 */
-  interface DocumentModificationContext {
-    /**
-     * A parent Document within which these Documents should be embedded
-     */
-    parent?: foundry.abstract.Document.Any | undefined;
-
-    /**
-     * A Compendium pack identifier within which the Documents should be modified
-     */
-    pack?: string | undefined;
-
-    /**
-     * Block the dispatch of preCreate hooks for this operation
-     * @defaultValue `false`
-     */
-    noHook?: boolean | undefined;
-
-    /**
-     * Return an index of the Document collection, used only during a get operation.
-     * @defaultValue `false`
-     */
-    index?: boolean | undefined;
-
-    /**
-     * An array of fields to retrieve when indexing the collection
-     */
-    indexFields?: string[] | undefined;
-
-    /**
-     * When performing a creation operation, keep the provided _id instead of clearing it.
-     * @defaultValue `false`
-     */
-    keepId?: boolean | undefined;
-
-    /**
-     * When performing a creation operation, keep existing _id values of documents embedded within the one being
-     * created instead of generating new ones.
-     * @defaultValue `true`
-     */
-    keepEmbeddedIds?: boolean | undefined;
-
-    /**
-     * Create a temporary document which is not saved to the database. Only used during creation.
-     * @defaultValue `false`
-     */
-    temporary?: boolean | undefined;
-
-    /**
-     * Automatically re-render existing applications associated with the document.
-     * @defaultValue `true`
-     */
-    render?: boolean | undefined;
-
-    /**
-     * Automatically create and render the Document sheet when the Document is first created.
-     * @defaultValue `false`
-     */
-    renderSheet?: boolean | undefined;
-
-    /**
-     * Difference each update object against current Document data to reduce the size of the transferred data. Only
-     * used during update.
-     * @defaultValue `true`
-     */
-    diff?: boolean | undefined;
-
-    /**
-     * Merge objects recursively. If false, inner objects will be replaced explicitly. Use with caution!
-     * @defaultValue `true`
-     */
-    recursive?: boolean | undefined;
-
-    /**
-     * Is the operation undoing a previous operation, only used by embedded Documents within a Scene
-     */
-    isUndo?: boolean | undefined;
-
-    /**
-     * Whether to delete all documents of a given type, regardless of the array of ids provided. Only used during a
-     * delete operation.
-     */
-    deleteAll?: boolean | undefined;
-  }
-
   /**
    * A single point, expressed as an object \{x, y\}
    */
@@ -129,8 +31,16 @@ declare global {
    */
   /* eslint-disable prettier/prettier */ // prettier is breaking this code
   type DeepReadonly<T> = Readonly<{
-    [K in keyof T]: /* eslint-disable-next-line @typescript-eslint/no-unsafe-function-type */
-    T[K] extends undefined | null | boolean | number | string | symbol | bigint | Function
+    [K in keyof T /* eslint-disable-next-line @typescript-eslint/no-unsafe-function-type */]: T[K] extends
+      | undefined
+      | null
+      | boolean
+      | number
+      | string
+      | symbol
+      | bigint
+      | AnyFunction
+      | AnyConstructor
       ? T[K]
       : T[K] extends Array<infer V>
         ? ReadonlyArray<DeepReadonly<V>>
@@ -243,7 +153,7 @@ declare global {
 
     /** The FormApplication or ApplicationV2 to render */
     type:
-      | (new () => FormApplication<any, any>)
+      | (new () => FormApplication.Any)
       | (new (options?: DeepPartial<ApplicationV2.Configuration>) => ApplicationV2.Any);
 
     /** If true, only a GM can edit this Setting */

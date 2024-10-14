@@ -17,12 +17,17 @@ declare global {
  * The Document definition for a Tile.
  * Defines the DataSchema and common behaviors for a Tile which are shared between both client and server.
  */
-declare class BaseTile extends Document<BaseTile.Schema, BaseTile.Metadata, Scene.ConfiguredInstance | null> {
+// Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
+// This pattern evolved from trying to avoid circular loops and even internal tsc errors.
+// See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
+declare class BaseTile extends Document<BaseTile.Schema, BaseTile.Metadata, any> {
   /**
    * @param data    - Initial data from which to construct the Tile
    * @param context - Construction context options
    */
-  constructor(data: BaseTile.ConstructorData, context?: DocumentConstructionContext);
+  constructor(data: BaseTile.ConstructorData, context?: Document.ConstructionContext<BaseTile.Parent>);
+
+  override parent: BaseTile.Parent;
 
   static override metadata: Readonly<BaseTile.Metadata>;
 
@@ -41,9 +46,12 @@ declare class BaseTile extends Document<BaseTile.Schema, BaseTile.Metadata, Scen
     },
   ): AnyObject;
 }
+
 export default BaseTile;
 
 declare namespace BaseTile {
+  type Parent = Scene.ConfiguredInstance | null;
+
   type Metadata = Merge<
     DocumentMetadata,
     {

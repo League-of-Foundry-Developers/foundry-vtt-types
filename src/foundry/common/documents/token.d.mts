@@ -20,8 +20,13 @@ declare global {
 /**
  * The base Token model definition which defines common behavior of an Token document between both client and server.
  */
-declare class BaseToken extends Document<BaseToken.Schema, BaseToken.Metadata, Scene.ConfiguredInstance | null> {
-  constructor(data?: BaseToken.ConstructorData, context?: DocumentConstructionContext);
+// Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
+// This pattern evolved from trying to avoid circular loops and even internal tsc errors.
+// See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
+declare class BaseToken extends Document<BaseToken.Schema, BaseToken.Metadata, any> {
+  constructor(data?: BaseToken.ConstructorData, context?: Document.ConstructionContext<BaseToken.Parent>);
+
+  override parent: BaseToken.Parent;
 
   static override metadata: Readonly<BaseToken.Metadata>;
 
@@ -100,6 +105,8 @@ export class ActorDeltaField<
 export default BaseToken;
 
 declare namespace BaseToken {
+  type Parent = Scene.ConfiguredInstance | null;
+
   type Metadata = Merge<
     DocumentMetadata,
     {

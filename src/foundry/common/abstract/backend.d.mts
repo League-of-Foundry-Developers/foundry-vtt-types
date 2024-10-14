@@ -183,7 +183,6 @@ declare abstract class DatabaseBackend {
   protected _logError(
     user: BaseUser,
     action: string,
-    subject: Document.Any | string,
     { parent, pack }?: { parent?: Document.Any; pack?: string },
   ): string;
 }

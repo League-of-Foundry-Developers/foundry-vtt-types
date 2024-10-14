@@ -1,6 +1,7 @@
 import type { ConstructorOf, InexactPartial } from "../../../types/utils.d.mts";
 import type _Collection from "../utils/collection.d.mts";
 import type { DatabaseAction, DatabaseOperation } from "./_types.d.mts";
+import type Document from "./document.d.mts";
 
 // Fix for "Class 'Collection<ContainedDocument>' defines instance member property 'get',
 // but extended class 'EmbeddedCollection<ContainedDocument, ParentDataModel>' defines it as instance member function."
@@ -65,20 +66,26 @@ declare class EmbeddedCollection<
   /**
    * Instantiate a Document for inclusion in the Collection
    */
-  createDocument(data: ContainedDocument["_source"][], context: DocumentConstructionContext): ContainedDocument;
+  createDocument(
+    data: ContainedDocument["_source"][],
+    context: Document.ConstructionContext<Document.Any | null>,
+  ): ContainedDocument;
 
   /**
    * Initialize the EmbeddedCollection object by constructing its contained Document instances
    * @param options - Initialization options
    */
-  protected initialize(options: DocumentConstructionContext): void;
+  protected initialize(options: Document.ConstructionContext<ContainedDocument>): void;
 
   /**
    * Initialize an embedded document and store it in the collection.
    * @param data    - The Document data.
    * @param options - Options to configure Document initialization.
    */
-  protected _initializeDocument(data: ContainedDocument["_source"][], options: DocumentConstructionContext): void;
+  protected _initializeDocument(
+    data: ContainedDocument["_source"][],
+    options: Document.ConstructionContext<ContainedDocument>,
+  ): void;
 
   /**
    * Log warnings or errors when a Document is found to be invalid.

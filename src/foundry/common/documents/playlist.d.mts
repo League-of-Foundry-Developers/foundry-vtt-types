@@ -12,12 +12,17 @@ declare global {
  * The Document definition for a Playlist.
  * Defines the DataSchema and common behaviors for a Playlist which are shared between both client and server.
  */
-declare class BasePlaylist extends Document<BasePlaylist.Schema, BasePlaylist.Metadata> {
+// Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
+// This pattern evolved from trying to avoid circular loops and even internal tsc errors.
+// See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
+declare class BasePlaylist extends Document<BasePlaylist.Schema, BasePlaylist.Metadata, any> {
   /**
    * @param data    - Initial data from which to construct the Playlist
    * @param context - Construction context options
    */
-  constructor(data: BasePlaylist.ConstructorData, context?: DocumentConstructionContext);
+  constructor(data: BasePlaylist.ConstructorData, context?: Document.ConstructionContext<BasePlaylist.Parent>);
+
+  override parent: BasePlaylist.Parent;
 
   static override metadata: Readonly<BasePlaylist.Metadata>;
 
@@ -36,9 +41,12 @@ declare class BasePlaylist extends Document<BasePlaylist.Schema, BasePlaylist.Me
     },
   ): AnyObject;
 }
+
 export default BasePlaylist;
 
 declare namespace BasePlaylist {
+  type Parent = null;
+
   type Metadata = Merge<
     DocumentMetadata,
     {

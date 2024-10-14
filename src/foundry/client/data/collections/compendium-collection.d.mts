@@ -408,21 +408,21 @@ declare global {
       action: "create",
       documents: ClientDocument[],
       result: Record<string, unknown>[],
-      operation: DatabaseCreateOperation<DocumentClassForCompendiumMetadata<T>>,
+      operation: DatabaseCreateOperation<InstanceType<DocumentClassForCompendiumMetadata<T>>>,
       user: User,
     ): void;
     _onModifyContents(
       action: "update",
       documents: ClientDocument[],
       result: Record<string, unknown>[],
-      operation: DatabaseUpdateOperation<DocumentClassForCompendiumMetadata<T>>,
+      operation: DatabaseUpdateOperation<InstanceType<DocumentClassForCompendiumMetadata<T>>>,
       user: User,
     ): void;
     _onModifyContents(
       action: "delete",
       documents: ClientDocument[],
       result: string[],
-      operation: DatabaseDeleteOperation<DocumentClassForCompendiumMetadata<T>>,
+      operation: DatabaseDeleteOperation,
       user: User,
     ): void;
 
@@ -440,6 +440,8 @@ declare global {
   }
 
   namespace CompendiumCollection {
+    type Any = CompendiumCollection<any>;
+
     interface Configuration {
       ownership: foundry.packages.BasePackage.OwnershipRecord;
       locked: boolean;

@@ -13,12 +13,17 @@ declare global {
  * The Document definition for a Note.
  * Defines the DataSchema and common behaviors for a Note which are shared between both client and server.
  */
-declare class BaseNote extends Document<BaseNote.Schema, BaseNote.Metadata, Scene.ConfiguredInstance | null> {
+// Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
+// This pattern evolved from trying to avoid circular loops and even internal tsc errors.
+// See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
+declare class BaseNote extends Document<BaseNote.Schema, BaseNote.Metadata, any> {
   /**
    * @param data    - Initial data from which to construct the Note
    * @param context - Construction context options
    */
-  constructor(data?: BaseNote.ConstructorData, context?: DocumentConstructionContext);
+  constructor(data?: BaseNote.ConstructorData, context?: Document.ConstructionContext<BaseNote.Parent>);
+
+  override parent: BaseNote.Parent;
 
   static override metadata: Readonly<BaseNote.Metadata>;
 
@@ -55,9 +60,12 @@ declare class BaseNote extends Document<BaseNote.Schema, BaseNote.Metadata, Scen
     },
   ): AnyObject;
 }
+
 export default BaseNote;
 
 declare namespace BaseNote {
+  type Parent = Scene.ConfiguredInstance | null;
+
   type Metadata = Merge<
     DocumentMetadata,
     {

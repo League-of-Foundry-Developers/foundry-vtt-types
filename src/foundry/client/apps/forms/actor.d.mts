@@ -130,6 +130,8 @@ declare global {
   }
 
   namespace ActorSheet {
+    type Any = ActorSheet<any>;
+
     type DropData =
       | DropData.ActiveEffect
       | DropData.Actor

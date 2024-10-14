@@ -1,7 +1,6 @@
 import type { InterfaceToObject } from "../../../../types/helperTypes.d.mts";
+import type { AnyObject } from "../../../../types/utils.d.mts";
 import type StringTerm from "../../../client-esm/dice/terms/string.d.mts";
-
-export {};
 
 declare global {
   /**
@@ -82,7 +81,7 @@ declare global {
 
     override close(options?: FormApplication.CloseOptions): Promise<void>;
 
-    protected override _getSubmitData(updateData?: object | null): InterfaceToObject<TokenConfig.FormData>;
+    protected override _getSubmitData(updateData?: AnyObject | null): InterfaceToObject<TokenConfig.FormData>;
 
     protected override _onChangeInput(event: JQuery.ChangeEvent): Promise<void>;
 
@@ -90,7 +89,7 @@ declare global {
      * Mimic changes to the Token document as if they were true document updates.
      * @param change - The change to preview.
      */
-    protected _previewChanges(change?: object): void;
+    protected _previewChanges(change?: AnyObject): void;
 
     /**
      * Reset the temporary preview of the Token when the form is submitted or closed.
@@ -140,6 +139,8 @@ declare global {
   }
 
   namespace TokenConfig {
+    type Any = TokenConfig<any>;
+
     interface FormData {
       // TODO: Update
       actorId: string;
@@ -235,5 +236,9 @@ declare global {
     protected override _onAddDetectionMode(modes: TokenDocument["detectionModes"]): void;
 
     protected override _onRemoveDetectionMode(index: number, modes: TokenDocument["detectionModes"]): void;
+  }
+
+  namespace DefaultTokenConfig {
+    type Any = DefaultTokenConfig<any>;
   }
 }

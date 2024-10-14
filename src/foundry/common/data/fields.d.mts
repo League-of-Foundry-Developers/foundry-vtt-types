@@ -632,7 +632,7 @@ declare namespace SchemaField {
     {
       required: true;
       nullable: false;
-      initial: Record<string, never>;
+      initial: EmptyObject;
     }
   >;
 
@@ -1151,7 +1151,7 @@ declare namespace ObjectField {
     {
       required: true;
       nullable: false;
-      initial: () => AnyObject;
+      initial: () => EmptyObject;
     }
   >;
 
@@ -1785,6 +1785,8 @@ declare class EmbeddedCollectionField<
 }
 
 declare namespace EmbeddedCollectionField {
+  type Any = EmbeddedCollectionField<any, any, any, any, any, any, any, any, any>;
+
   /**
    * A shorthand for the options of an EmbeddedCollectionField class.
    * @typeParam AssignmentElementType - the assignment type of the elements of the EmbeddedCollectionField

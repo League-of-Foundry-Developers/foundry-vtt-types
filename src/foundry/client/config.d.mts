@@ -2,7 +2,6 @@ import type {
   ConfiguredDocumentClassForName,
   HandleEmptyObject,
   InterfaceToObject,
-  PlaceableObjectConstructor,
 } from "../../types/helperTypes.d.mts";
 import type { ConstructorOf, PropertyTypeOrFallback } from "../../types/utils.d.mts";
 import type * as CONST from "../common/constants.d.mts";
@@ -2770,6 +2769,7 @@ declare global {
       interface Definition extends FontFaceDescriptors {
         url: string[];
       }
+
       interface FamilyDefinition {
         editor: boolean;
         fonts: Definition[];
@@ -2804,10 +2804,11 @@ declare global {
   const CONFIG: CONFIG;
 }
 
-type ConfiguredObjectClassOrDefault<Fallback extends PlaceableObjectConstructor> =
-  Fallback["embeddedName"] extends keyof PlaceableObjectClassConfig
-    ? PlaceableObjectClassConfig[Fallback["embeddedName"]]
-    : Fallback;
+type ConfiguredObjectClassOrDefault<Fallback extends PlaceableObject.AnyConstructor> = GetKey<
+  PlaceableObjectClassConfig,
+  Fallback["embeddedName"],
+  Fallback
+>;
 
 interface SheetClassConfig {
   canBeDefault: boolean;
@@ -2838,7 +2839,11 @@ interface CanvasGroupConstructor extends PixiContainerConstructor {
   groupName?: string;
 }
 
-type ToSpriteConstructor<Class extends new (sprite?: SpriteMesh) => any> = Pick<Class, keyof Class> &
-  (new (sprite: SpriteMesh) => InstanceType<Class>);
+type AnySpriteClass = abstract new (sprite?: SpriteMesh) => unknown;
 
-export type RollFunction = (...args: any[]) => Promise<number> | number;
+type ToSpriteConstructor<Class extends AnySpriteClass> = ToSpriteConstructorInterface<Class>;
+
+// @ts-expect-error - Ignore the "incorrectly extends interface" error inherent to this pattern.
+interface ToSpriteConstructorInterface<T extends AnySpriteClass> extends T {
+  new (sprite: SpriteMesh): InstanceType<T>;
+}

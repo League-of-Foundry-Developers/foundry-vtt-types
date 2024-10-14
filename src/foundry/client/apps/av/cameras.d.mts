@@ -160,6 +160,8 @@ declare global {
   }
 
   namespace CameraViews {
+    type Any = CameraViews<any>;
+
     interface User {
       user: StoredDocument<globalThis.User>;
       settings: AVSettings.UserSettings;

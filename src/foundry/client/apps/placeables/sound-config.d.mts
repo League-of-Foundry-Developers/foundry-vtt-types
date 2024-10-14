@@ -30,6 +30,8 @@ declare global {
   }
 
   namespace AmbientSoundConfig {
+    type Any = AmbientSoundConfig<any>;
+
     type FormData = Pick<
       foundry.documents.BaseAmbientSound,
       "easing" | "path" | "volume" | "x" | "y" | "radius" | "walls"

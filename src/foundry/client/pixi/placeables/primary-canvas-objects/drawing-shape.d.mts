@@ -1,4 +1,4 @@
-export {};
+import type { Document } from "../../../../common/abstract/module.d.mts";
 
 declare global {
   /**
@@ -42,7 +42,7 @@ declare global {
 
     override setPosition(): void;
 
-    protected override _getCanvasDocumentData(data: Document): unknown;
+    protected override _getCanvasDocumentData(data: Document.Any): unknown;
 
     /**
      * Draw rectangular shapes.

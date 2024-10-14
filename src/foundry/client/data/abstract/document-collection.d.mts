@@ -1,5 +1,6 @@
 import type { ConfiguredDocumentClass, DocumentConstructor } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial, ConfiguredStoredDocument } from "../../../../types/utils.d.mts";
+import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentOnUpdateOptions } from "../../../common/abstract/document.d.mts";
 // import type _Collection from "../../../common/utils/collection.d.mts";
 
@@ -67,7 +68,7 @@ declare global {
     createDocument(
       // TODO: This probably needs refinement for mandatory assignment fields like name
       data: DeepPartial<InstanceType<T>["_source"]>,
-      context: DocumentConstructionContext,
+      context: Document.ConstructionContext<Document.Any | null>,
     ): InstanceType<T>;
 
     /**
@@ -177,6 +178,8 @@ declare global {
   }
 
   namespace DocumentCollection {
+    type Any = DocumentCollection<any, any>;
+
     namespace RenderContext {
       interface Base<T extends DocumentConstructor> {
         documentType: T["metadata"]["name"];

@@ -14,12 +14,17 @@ declare global {
  * The Document definition for a Wall.
  * Defines the DataSchema and common behaviors for a Wall which are shared between both client and server.
  */
-declare class BaseWall extends Document<BaseWall.Schema, BaseWall.Metadata, Scene.ConfiguredInstance | null> {
+// Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
+// This pattern evolved from trying to avoid circular loops and even internal tsc errors.
+// See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
+declare class BaseWall extends Document<BaseWall.Schema, BaseWall.Metadata, any> {
   /**
    * @param data    - Initial data from which to construct the Wall
    * @param context - Construction context options
    */
-  constructor(data: BaseWall.ConstructorData, context?: DocumentConstructionContext);
+  constructor(data: BaseWall.ConstructorData, context?: Document.ConstructionContext<BaseWall.Parent>);
+
+  override parent: BaseWall.Parent;
 
   static override metadata: Readonly<BaseWall.Metadata>;
 
@@ -27,9 +32,12 @@ declare class BaseWall extends Document<BaseWall.Schema, BaseWall.Metadata, Scen
 
   static override migrateData(source: AnyObject): AnyObject;
 }
+
 export default BaseWall;
 
 declare namespace BaseWall {
+  type Parent = Scene.ConfiguredInstance | null;
+
   type Metadata = Merge<
     DocumentMetadata,
     {

@@ -90,7 +90,7 @@ declare global {
       doc: foundry.abstract.Document.Any,
       options?: {
         /** The compendium that the index belongs to. */
-        pack?: CompendiumCollection<any>;
+        pack?: CompendiumCollection.Any;
       },
     ): void;
 
@@ -99,7 +99,7 @@ declare global {
      * @param pack - The compendium pack.
      * @internal
      */
-    protected _indexCompendium(pack: CompendiumCollection<any>): void;
+    protected _indexCompendium(pack: CompendiumCollection.Any): void;
 
     /**
      * Add all of a parent document's embedded documents to the index.

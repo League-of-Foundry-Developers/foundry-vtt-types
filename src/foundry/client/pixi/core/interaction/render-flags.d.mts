@@ -1,6 +1,4 @@
-import type { Mixin } from "../../../../../types/utils.d.mts";
-
-export {};
+import type { AnyConstructor, Mixin } from "../../../../../types/utils.d.mts";
 
 declare class RenderFlagObject {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
@@ -10,7 +8,7 @@ declare class RenderFlagObject {
    * Configure the render flags used for this class.
    * @defaultValue `{}`
    */
-  static RENDER_FLAGS: Record<string, RenderFlag<any>>;
+  static RENDER_FLAGS: Record<string, RenderFlag.Any>;
 
   /**
    * The ticker priority when RenderFlags of this class are handled.
@@ -36,9 +34,14 @@ declare global {
   /** @privateRemarks Values are marked as optional here based on use, foundry docs incomplete */
   interface RenderFlag<Flags> {
     /** Activating this flag also sets these flags to true */
-    propagate?: Array<Partial<keyof Flags>>;
+    propagate?: Array<Partial<keyof Flags>> | undefined;
+
     /** Activating this flag resets these flags to false */
-    reset?: Array<Partial<keyof Flags>>;
+    reset?: Array<Partial<keyof Flags>> | undefined;
+  }
+
+  namespace RenderFlag {
+    type Any = RenderFlag<any>;
   }
 
   /**
@@ -94,7 +97,7 @@ declare global {
    * @param Base - The base class being mixed
    * @returns The mixed class definition
    */
-  function RenderFlagsMixin<BaseClass extends abstract new (...args: any[]) => any>(
+  function RenderFlagsMixin<BaseClass extends AnyConstructor>(
     Base: BaseClass,
   ): Mixin<typeof RenderFlagObject, BaseClass>;
 }

@@ -1,6 +1,6 @@
 import type { DocumentSubTypes, DocumentType } from "../../../types/helperTypes.d.mts";
 import type { DocumentOnUpsertOptions } from "../../common/abstract/document.d.mts";
-import type { DeepPartial, EmptyObject, InexactPartial } from "../../../types/utils.d.mts";
+import type { AnyArray, AnyObject, DeepPartial, EmptyObject, InexactPartial } from "../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -91,7 +91,7 @@ declare global {
     register<N extends string, K extends string, T>(
       namespace: N,
       key: K,
-      data: ClientSettings.Values[`${N}.${K}`] extends string | number | boolean | Array<any> | object | null
+      data: ClientSettings.Values[`${N}.${K}`] extends string | number | boolean | AnyArray | AnyObject | null
         ? ClientSettings.PartialSettingConfig<ClientSettings.Values[`${N}.${K}`]>
         : ClientSettings.PartialSettingConfig<T>,
     ): void;

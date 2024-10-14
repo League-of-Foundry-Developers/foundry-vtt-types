@@ -5,7 +5,7 @@ import type {
   DocumentConstructor,
   DocumentType,
 } from "../../../../types/helperTypes.d.mts";
-import type { DeepPartial } from "../../../../types/utils.d.mts";
+import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 
 declare global {
@@ -90,7 +90,7 @@ declare global {
     static createDialog<T extends DocumentConstructor>(
       this: T,
       data?: DeepPartial<ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>)>,
-      context?: Partial<Omit<FolderConfig.Options, "resolve">>,
+      context?: InexactPartial<Omit<FolderConfig.Options, "resolve">>,
     ): Promise<InstanceType<ConfiguredDocumentClass<T>> | null | undefined>;
 
     /**

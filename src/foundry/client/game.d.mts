@@ -6,6 +6,7 @@ import type {
   ModuleRequiredOrOptional,
 } from "../../types/helperTypes.d.mts";
 import type { StoredDocument, ValueOf } from "../../types/utils.d.mts";
+import type BasePackage from "../common/packages/base-package.d.mts";
 
 interface EarlierEvents {
   none: never;
@@ -645,8 +646,8 @@ declare global {
           private?: boolean;
           system?: string | undefined;
           type: foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
-          packageName: foundry.packages.BasePackage["_source"]["id"];
-          packageType: foundry.packages.BasePackage["type"];
+          packageName: BasePackage["_source"]["id"];
+          packageType: BasePackage["type"];
           id: string;
         }
       >;

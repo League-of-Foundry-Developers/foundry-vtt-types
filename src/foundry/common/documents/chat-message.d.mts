@@ -15,12 +15,17 @@ declare global {
  * The Document definition for a ChatMessage.
  * Defines the DataSchema and common behaviors for a ChatMessage which are shared between both client and server.
  */
-declare class BaseChatMessage extends Document<BaseChatMessage.Schema, BaseChatMessage.Metadata> {
+// Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
+// This pattern evolved from trying to avoid circular loops and even internal tsc errors.
+// See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
+declare class BaseChatMessage extends Document<BaseChatMessage.Schema, BaseChatMessage.Metadata, any> {
   /**
    * @param data    - Initial data from which to construct the ChatMessage
    * @param context - Construction context options
    */
-  constructor(data?: BaseChatMessage.ConstructorData, context?: DocumentConstructionContext);
+  constructor(data?: BaseChatMessage.ConstructorData, context?: Document.ConstructionContext<BaseChatMessage.Parent>);
+
+  override parent: BaseChatMessage.Parent;
 
   static override metadata: Readonly<BaseChatMessage.Metadata>;
 
@@ -63,9 +68,12 @@ declare class BaseChatMessage extends Document<BaseChatMessage.Schema, BaseChatM
     },
   ): AnyObject;
 }
+
 export default BaseChatMessage;
 
 declare namespace BaseChatMessage {
+  type Parent = null;
+
   type Metadata = Merge<
     DocumentMetadata,
     {

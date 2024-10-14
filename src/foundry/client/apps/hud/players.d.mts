@@ -61,6 +61,8 @@ declare global {
   }
 
   namespace PlayerList {
+    type Any = PlayerList<any>;
+
     interface UserData {
       active: User["active"];
       isGM: User["isGM"];

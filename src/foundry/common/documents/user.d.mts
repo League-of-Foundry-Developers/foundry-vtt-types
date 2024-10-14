@@ -13,12 +13,17 @@ declare global {
  * The Document definition for a User.
  * Defines the DataSchema and common behaviors for a User which are shared between both client and server.
  */
-declare class BaseUser extends Document<BaseUser.Schema, BaseUser.Metadata> {
+// Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
+// This pattern evolved from trying to avoid circular loops and even internal tsc errors.
+// See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
+declare class BaseUser extends Document<BaseUser.Schema, BaseUser.Metadata, any> {
   /**
    * @param data    - Initial data from which to construct the User
    * @param context - Construction context options
    */
-  constructor(data: BaseUser.ConstructorData, context?: DocumentConstructionContext);
+  constructor(data: BaseUser.ConstructorData, context?: BaseUser.Parent);
+
+  override parent: BaseUser.Parent;
 
   static override metadata: Readonly<BaseUser.Metadata>;
 
@@ -107,9 +112,12 @@ declare class BaseUser extends Document<BaseUser.Schema, BaseUser.Metadata> {
    */
   static #canDelete(user: BaseUser, doc: BaseUser): boolean;
 }
+
 export default BaseUser;
 
 declare namespace BaseUser {
+  type Parent = null;
+
   type Metadata = Merge<
     DocumentMetadata,
     {

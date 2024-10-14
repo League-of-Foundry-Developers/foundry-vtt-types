@@ -2,6 +2,7 @@ import type { ConfiguredDocumentClassForName } from "../../../../types/helperTyp
 import type { SchemaField } from "../../../common/data/fields.d.mts";
 import type { BaseActor } from "../../../common/documents/_module.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
+import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace ActorDelta {
@@ -72,7 +73,7 @@ declare global {
      * Ensure that the embedded collection delta is managing any entries that have had their descendants updated.
      * @param doc - The parent whose immediate children have been modified.
      */
-    _handleDeltaCollectionUpdates(doc: foundry.abstract.Document.Any): void;
+    _handleDeltaCollectionUpdates(doc: Document.Any): void;
 
     /**
      * @privateRemarks _onUpdate and _onDelete are all overridden but with no signature changes.
@@ -80,7 +81,7 @@ declare global {
      */
 
     protected override _dispatchDescendantDocumentEvents(
-      event: ClientDocument.lifeCycleEventName,
+      event: ClientDocument.LifeCycleEventName,
       collection: string,
       args: unknown[],
       _parent: ClientDocument,

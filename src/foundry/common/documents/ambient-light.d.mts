@@ -12,16 +12,17 @@ declare global {
  * The Document definition for an AmbientLight.
  * Defines the DataSchema and common behaviors for an AmbientLight which are shared between both client and server.
  */
-declare class BaseAmbientLight extends Document<
-  BaseAmbientLight.Schema,
-  BaseAmbientLight.Metadata,
-  Scene.ConfiguredInstance | null
-> {
+// Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
+// This pattern evolved from trying to avoid circular loops and even internal tsc errors.
+// See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
+declare class BaseAmbientLight extends Document<BaseAmbientLight.Schema, BaseAmbientLight.Metadata, any> {
   /**
    * @param data    - Initial data from which to construct the AmbientLight
    * @param context - Construction context options
    */
-  constructor(data?: BaseAmbientLight.ConstructorData, context?: DocumentConstructionContext);
+  constructor(data?: BaseAmbientLight.ConstructorData, context?: Document.ConstructionContext<BaseAmbientLight.Parent>);
+
+  override parent: BaseAmbientLight.Parent;
 
   static override metadata: Readonly<BaseAmbientLight.Metadata>;
 
@@ -29,9 +30,12 @@ declare class BaseAmbientLight extends Document<
 
   static override migrateData(source: AnyObject): AnyObject;
 }
+
 export default BaseAmbientLight;
 
 declare namespace BaseAmbientLight {
+  type Parent = Scene.ConfiguredInstance | null;
+
   type Metadata = Merge<
     DocumentMetadata,
     {

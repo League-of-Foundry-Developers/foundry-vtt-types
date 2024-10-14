@@ -11,16 +11,20 @@ declare global {
  * The Document definition for a PlaylistSound.
  * Defines the DataSchema and common behaviors for a PlaylistSound which are shared between both client and server.
  */
-declare class BasePlaylistSound extends Document<
-  BasePlaylistSound.Schema,
-  BasePlaylistSound.Metadata,
-  Playlist.ConfiguredInstance | null
-> {
+// Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
+// This pattern evolved from trying to avoid circular loops and even internal tsc errors.
+// See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
+declare class BasePlaylistSound extends Document<BasePlaylistSound.Schema, BasePlaylistSound.Metadata, any> {
   /**
    * @param data    - Initial data from which to construct the PlaylistSound
    * @param context - Construction context options
    */
-  constructor(data: BasePlaylistSound.ConstructorData, context?: DocumentConstructionContext);
+  constructor(
+    data: BasePlaylistSound.ConstructorData,
+    context?: Document.ConstructionContext<BasePlaylistSound.Parent>,
+  );
+
+  override parent: BasePlaylistSound.Parent;
 
   static override metadata: Readonly<BasePlaylistSound.Metadata>;
 
@@ -38,9 +42,12 @@ declare class BasePlaylistSound extends Document<
     }>,
   ): boolean;
 }
+
 export default BasePlaylistSound;
 
 declare namespace BasePlaylistSound {
+  type Parent = Playlist.ConfiguredInstance | null;
+
   type Metadata = Merge<
     DocumentMetadata,
     {

@@ -112,6 +112,8 @@ declare global {
   }
 
   namespace SceneConfig {
+    type Any = SceneConfig<any>;
+
     interface FormData {
       backgroundColor: Scene["backgroundColor"];
       "background.src": Scene["background"]["src"];

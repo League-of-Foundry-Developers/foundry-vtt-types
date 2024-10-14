@@ -30,6 +30,12 @@ import type DataModel from "./data.mts";
 
 export default Document;
 
+declare const __DocumentBrand: unique symbol;
+
+declare const __Schema: unique symbol;
+declare const __ConcreteMetadata: unique symbol;
+declare const __Parent: unique symbol;
+
 /**
  * An extension of the base DataModel which defines a Document.
  * Documents are special in that they are persisted to the database and referenced by _id.
@@ -39,11 +45,17 @@ declare abstract class Document<
   ConcreteMetadata extends AnyMetadata = AnyMetadata,
   Parent extends Document.Any | null = null,
 > extends DataModel<Schema, Parent> {
+  static [__DocumentBrand]: never;
+
+  [__Schema]: Schema;
+  [__ConcreteMetadata]: ConcreteMetadata;
+  [__Parent]: Parent;
+
   /**
    * @param data    - Initial data provided to construct the Document
    * @param context - Construction context options
    */
-  constructor(data?: fields.SchemaField.InnerConstructorType<Schema>, context?: DocumentConstructionContext);
+  constructor(data?: fields.SchemaField.InnerConstructorType<Schema>, context?: Document.ConstructionContext<Parent>);
 
   override parent: Parent;
 
@@ -249,7 +261,7 @@ declare abstract class Document<
          * @defaultValue `false`
          */
         addSource: boolean;
-      } & DocumentConstructionContext
+      } & Document.ConstructionContext<this["parent"]>
     >, // Adding StoredDocument to the return causes a recursive type error in Scene
   ): Save extends true ? Promise<this> : this;
 
@@ -902,7 +914,7 @@ declare abstract class Document<
   protected static _onCreateDocuments<T extends Document.AnyConstructor>(
     this: T,
     documents: Array<InstanceType<ConfiguredDocumentClass<T>>>,
-    context: DocumentModificationContext,
+    context: Document.ModificationContext<Document.Any | null>,
   ): Promise<void>;
 
   /**
@@ -912,7 +924,7 @@ declare abstract class Document<
   protected static _onUpdateDocuments<T extends Document.AnyConstructor>(
     this: T,
     documents: Array<InstanceType<ConfiguredDocumentClass<T>>>,
-    context: DocumentModificationContext,
+    context: Document.ModificationContext<Document.Any | null>,
   ): Promise<unknown>;
 
   /**
@@ -922,7 +934,7 @@ declare abstract class Document<
   protected static _onDeleteDocuments<T extends Document.AnyConstructor>(
     this: T,
     documents: Array<InstanceType<ConfiguredDocumentClass<T>>>,
-    context: DocumentModificationContext,
+    context: Document.ModificationContext<Document.Any | null>,
   ): Promise<unknown>;
 }
 
@@ -932,16 +944,145 @@ declare class AnyDocument extends Document<any, any, any> {
 
 declare namespace Document {
   /** Any Document, except for Settings */
-  export type Any = Document<DataSchema, AnyMetadata, any>;
+  type Any = Document<any, any, any>;
+
+  // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
+  namespace Internal {
+    interface Constructor {
+      [__DocumentBrand]: never;
+
+      new (...args: never[]): Instance.Any;
+    }
+
+    interface Instance<
+      Schema extends DataSchema,
+      ConcreteMetadata extends AnyMetadata,
+      Parent extends Document.Any | null,
+    > {
+      [__Schema]: Schema;
+      [__ConcreteMetadata]: ConcreteMetadata;
+      [__Parent]: Parent;
+    }
+
+    namespace Instance {
+      type Any = Instance<any, any, any>;
+
+      type Complete<T extends Any> = T extends Document.Any ? T : never;
+    }
+  }
+
+  interface ConstructionContext<Parent extends Document.Any | null> {
+    /**
+     * The parent Document of this one, if this one is embedded
+     * @defaultValue `null`
+     */
+    parent?: Parent | undefined;
+
+    /**
+     * The compendium collection ID which contains this Document, if any
+     * @defaultValue `null`
+     */
+    pack?: string | null | undefined;
+
+    /**
+     * Whether to validate initial data strictly?
+     * @defaultValue `true`
+     */
+    strict?: boolean | undefined;
+  }
+
+  interface ModificationContext<Parent extends Document.Any | null> {
+    /**
+     * A parent Document within which these Documents should be embedded
+     */
+    parent?: Parent | undefined;
+
+    /**
+     * A Compendium pack identifier within which the Documents should be modified
+     */
+    pack?: string | undefined;
+
+    /**
+     * Block the dispatch of preCreate hooks for this operation
+     * @defaultValue `false`
+     */
+    noHook?: boolean | undefined;
+
+    /**
+     * Return an index of the Document collection, used only during a get operation.
+     * @defaultValue `false`
+     */
+    index?: boolean | undefined;
+
+    /**
+     * An array of fields to retrieve when indexing the collection
+     */
+    indexFields?: string[] | undefined;
+
+    /**
+     * When performing a creation operation, keep the provided _id instead of clearing it.
+     * @defaultValue `false`
+     */
+    keepId?: boolean | undefined;
+
+    /**
+     * When performing a creation operation, keep existing _id values of documents embedded within the one being
+     * created instead of generating new ones.
+     * @defaultValue `true`
+     */
+    keepEmbeddedIds?: boolean | undefined;
+
+    /**
+     * Create a temporary document which is not saved to the database. Only used during creation.
+     * @defaultValue `false`
+     */
+    temporary?: boolean | undefined;
+
+    /**
+     * Automatically re-render existing applications associated with the document.
+     * @defaultValue `true`
+     */
+    render?: boolean | undefined;
+
+    /**
+     * Automatically create and render the Document sheet when the Document is first created.
+     * @defaultValue `false`
+     */
+    renderSheet?: boolean | undefined;
+
+    /**
+     * Difference each update object against current Document data to reduce the size of the transferred data. Only
+     * used during update.
+     * @defaultValue `true`
+     */
+    diff?: boolean | undefined;
+
+    /**
+     * Merge objects recursively. If false, inner objects will be replaced explicitly. Use with caution!
+     * @defaultValue `true`
+     */
+    recursive?: boolean | undefined;
+
+    /**
+     * Is the operation undoing a previous operation, only used by embedded Documents within a Scene
+     */
+    isUndo?: boolean | undefined;
+
+    /**
+     * Whether to delete all documents of a given type, regardless of the array of ids provided. Only used during a
+     * delete operation.
+     */
+    deleteAll?: boolean | undefined;
+  }
 
   /** Any Document, that is a child of the given parent Document. */
-  export type AnyChild<Parent extends Any | null> = Document<DataSchema, AnyMetadata, Parent>;
+  type AnyChild<Parent extends Any | null> = Document<any, any, Parent>;
 
-  export type Constructor = typeof Document<DataSchema, AnyMetadata, any>;
+  type AnyConstructor = typeof AnyDocument;
 
-  export type AnyConstructor = typeof AnyDocument;
-
-  type SystemConstructor = AnyConstructor & { metadata: { name: SystemType; coreTypes?: string[] } };
+  type SystemConstructor = AnyConstructor & {
+    metadata: { name: SystemType; coreTypes?: readonly string[] | undefined };
+  };
 
   type ConfiguredClass<T extends { metadata: AnyMetadata }> = ConfiguredClassForName<T["metadata"]["name"]>;
 
@@ -954,20 +1095,20 @@ declare namespace Document {
 
   type PlaceableTypeName = PlaceableDocumentType;
 
-  export type SchemaFor<ConcreteDocument extends Any> =
-    ConcreteDocument extends Document<infer Schema, any, any> ? Schema : never;
+  type SchemaFor<ConcreteDocument extends Internal.Instance.Any> =
+    ConcreteDocument extends Internal.Instance<infer Schema, any, any> ? Schema : never;
 
-  export type MetadataFor<ConcreteDocument extends Any> =
-    ConcreteDocument extends Document<any, infer ConcreteMetadata, any> ? ConcreteMetadata : never;
+  type MetadataFor<ConcreteDocument extends Internal.Instance.Any> =
+    ConcreteDocument extends Internal.Instance<any, infer ConcreteMetadata, any> ? ConcreteMetadata : never;
 
   type CollectionRecord<Schema extends DataSchema> = {
-    [Key in keyof Schema]: Schema[Key] extends fields.EmbeddedCollectionField<any, any> ? Schema[Key] : never;
+    [Key in keyof Schema]: Schema[Key] extends fields.EmbeddedCollectionField.Any ? Schema[Key] : never;
   };
 
-  export type Flags<ConcreteDocument extends Any> = OptionsForSchema<SchemaFor<ConcreteDocument>>;
+  type Flags<ConcreteDocument extends Internal.Instance.Any> = OptionsForSchema<SchemaFor<ConcreteDocument>>;
 
   interface OptionsInFlags<Options extends DataFieldOptions.Any> {
-    readonly flags?: DataField<Options, any, any, any>;
+    readonly flags?: DataField<Options, any>;
   }
 
   // These  types only exists to simplify solving the `Document` type. Using `Document.Flags<this>` means the constraint `this extends Document.Any` has to be proved.
@@ -980,16 +1121,18 @@ declare namespace Document {
   // Returns only string keys and returns `never` if `T` is never.
   type FlagKeyOf<T> = T extends never ? never : keyof T & string;
 
-  export type GetFlag<ConcreteDocument extends Any, S extends string, K extends string> = GetFlagForSchema<
+  type GetFlag<ConcreteDocument extends Internal.Instance.Any, S extends string, K extends string> = GetFlagForSchema<
     SchemaFor<ConcreteDocument>,
     S,
     K
   >;
 
-  export type FlagInSchema<S extends string, K extends string, Options extends DataFieldOptions.Any> = {
-    readonly [_ in S]?: {
-      readonly [_ in K]?: DataField<Options, any, any, any>;
-    };
+  type FlagInSchema<S extends string, K extends string, Options extends DataFieldOptions.Any> = {
+    readonly [_ in S]?:
+      | {
+          readonly [_ in K]?: DataField<Options, any, any, any> | undefined;
+        }
+      | undefined;
   };
 
   // Looks for flags in the schema.
@@ -999,29 +1142,29 @@ declare namespace Document {
 }
 
 /** @deprecated - since v12 */
-export type DocumentModificationOptions = Omit<DocumentModificationContext, "parent" | "pack">;
+export type DocumentModificationOptions = Omit<Document.ModificationContext<Document.Any | null>, "parent" | "pack">;
 
 export interface Context<Parent extends Document.Any | null> {
   /**
    * A parent document within which this Document is embedded
    */
-  parent?: Parent;
+  parent?: Parent | undefined;
 
   /**
    * A named compendium pack within which this Document exists
    */
-  pack?: string;
+  pack?: string | undefined;
 }
 
-export type AnyMetadata = Metadata<Document.Any>;
+export type AnyMetadata = Metadata<any>;
 
 export interface Metadata<ConcreteDocument extends Document.Any> {
   name: Document.TypeName;
   collection: string;
-  indexed?: boolean;
-  compendiumIndexFields?: string[];
+  indexed?: boolean | undefined;
+  compendiumIndexFields?: string[] | undefined;
   label: string;
-  coreTypes?: readonly string[];
+  coreTypes?: readonly string[] | undefined;
   embedded: Record<string, string>;
   permissions: {
     create:

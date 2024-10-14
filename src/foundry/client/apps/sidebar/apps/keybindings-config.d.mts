@@ -144,6 +144,8 @@ declare global {
   }
 
   namespace KeybindingsConfig {
+    type Any = KeybindingsConfig<any>;
+
     interface Category extends PackageConfiguration.Category {
       actions: ActionData[];
       count: number;

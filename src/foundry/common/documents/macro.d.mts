@@ -13,12 +13,17 @@ declare global {
  * The Document definition for a Macro.
  * Defines the DataSchema and common behaviors for a Macro which are shared between both client and server.
  */
-declare class BaseMacro extends Document<BaseMacro.Schema, BaseMacro.Metadata> {
+// Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
+// This pattern evolved from trying to avoid circular loops and even internal tsc errors.
+// See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
+declare class BaseMacro extends Document<BaseMacro.Schema, BaseMacro.Metadata, any> {
   /**
    * @param data    - Initial data from which to construct the Macro
    * @param context - Construction context options
    */
-  constructor(data: BaseMacro.ConstructorData, context?: DocumentConstructionContext);
+  constructor(data: BaseMacro.ConstructorData, context?: Document.ConstructionContext<BaseMacro.Parent>);
+
+  override parent: BaseMacro.Parent;
 
   static override metadata: Readonly<BaseMacro.Metadata>;
 
@@ -62,6 +67,8 @@ declare class BaseMacro extends Document<BaseMacro.Schema, BaseMacro.Metadata> {
 export default BaseMacro;
 
 declare namespace BaseMacro {
+  type Parent = null;
+
   // TODO: Remove "base" in v12
   type TypeNames = (typeof foundry.documents.BaseMacro)["metadata"]["coreTypes"][number] | "base";
 

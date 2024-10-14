@@ -31,6 +31,10 @@ declare global {
     protected override _updateObject(event: Event, formData: DocumentOwnershipConfig.FormData): Promise<unknown>;
   }
 
+  namespace DocumentOwnershipConfig {
+    type Any = DocumentOwnershipConfig<any, any>;
+  }
+
   /**
    * @deprecated since v10.
    */

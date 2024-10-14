@@ -1,5 +1,5 @@
 import type { DocumentType } from "../../../types/helperTypes.d.mts";
-import type { AnyClass, ConstructorOf, DeepPartial, InexactPartial } from "../../../types/utils.d.mts";
+import type { AnyConstructor, AnyFunction, DeepPartial, InexactPartial } from "../../../types/utils.d.mts";
 import type Document from "../abstract/document.d.mts";
 
 /**
@@ -8,11 +8,7 @@ import type Document from "../abstract/document.d.mts";
  * @param iterations - The number of iterations to test
  * @param args       - Additional arguments passed to the benchmarked function
  */
-export function benchmark<F extends (...args: any[]) => unknown>(
-  func: F,
-  iterations: number,
-  ...args: Parameters<F>
-): Promise<void>;
+export function benchmark<F extends AnyFunction>(func: F, iterations: number, ...args: Parameters<F>): Promise<void>;
 
 /**
  * A debugging function to test latency or timeouts by forcibly locking the thread for an amount of time.
@@ -29,10 +25,7 @@ export function threadLock(ms: number, debug?: boolean): Promise<void>;
  * @param delay    - An amount of time in milliseconds to delay
  * @returns A wrapped function which can be called to debounce execution
  */
-export function debounce<T extends (...args: any[]) => unknown>(
-  callback: T,
-  delay: number,
-): (...args: Parameters<T>) => void;
+export function debounce<T extends AnyFunction>(callback: T, delay: number): (...args: Parameters<T>) => void;
 
 /**
  * Wrap a callback in a throttled timeout.
@@ -135,7 +128,7 @@ export type Duplicated<T> = T extends NonStringifiable ? never : InnerDuplicated
  * @param parent - Some other class which may be a parent
  * @returns Is the class a subclass of the parent?
  */
-export function isSubclass<Parent extends AnyClass>(cls: AnyClass, parent: Parent): cls is Parent;
+export function isSubclass<Parent extends AnyConstructor>(cls: AnyConstructor, parent: Parent): cls is Parent;
 
 /**
  * Search up the prototype chain and return the class that defines the given property.
@@ -145,7 +138,7 @@ export function isSubclass<Parent extends AnyClass>(cls: AnyClass, parent: Paren
  * @param property           - The property name
  * @returns     - The class that defines the property
  */
-export function getDefiningClass(cls: ConstructorOf<any>, property: string): ConstructorOf<any>;
+export function getDefiningClass(cls: AnyConstructor, property: string): AnyConstructor;
 
 /**
  * Encode a url-like string by replacing any characters which need encoding
@@ -210,7 +203,7 @@ export function flattenObject(obj: object, _d?: number): object;
  * @param cls - An ES6 Class definition
  * @returns An array of parent Classes which the provided class extends
  */
-export function getParentClasses(cls: AnyClass): Array<AnyClass>;
+export function getParentClasses(cls: AnyConstructor): Array<AnyConstructor>;
 
 export interface GetRouteOptions {
   /**
@@ -526,7 +519,7 @@ interface ResolvedUUID {
   /**
    * An already-resolved parent Document.
    */
-  doc?: Document<any, any, any>;
+  doc?: Document.Any;
 
   /**
    * Either the document type or the parent type. Retained for backwards compatibility.
@@ -543,7 +536,7 @@ interface ParseUUIDOptions {
   /**
    * A document to resolve relative UUIDs against.
    */
-  relative?: Document<any, any, any>;
+  relative?: Document.Any;
 }
 
 /**
@@ -569,7 +562,7 @@ export function parseUuid(uuid: string, options?: ParseUUIDOptions): ResolvedUUI
  * @returns
  * @internal
  */
-declare function _resolveRelativeUuid(uuid: string, relative: Document<any, any, any>): ResolvedUUID;
+declare function _resolveRelativeUuid(uuid: string, relative: Document.Any): ResolvedUUID;
 
 /**
  * Converts an RGB color value to HSV. Conversion formula adapted from http://en.wikipedia.org/wiki/HSV_color_space.
@@ -628,12 +621,11 @@ export function hexToRGBAString(hex: number, alpha?: number): `rgba(${number}, $
 export function colorStringToHex(color: string): number | null;
 
 /**
- * Internal Helper for {@link Duplicated}. A union type of all primitive types that do not have a JSON representation.
+ * Internal Helper for {@link Duplicated}. A union type of all types that do not have a JSON representation.
  *
  * @internal
  */
-// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-type NonStringifiable = undefined | Function | symbol;
+type NonStringifiable = undefined | AnyFunction | AnyConstructor | symbol;
 
 /**
  * Internal helper for {@link InnerDuplicated}. Maps the properties of `T` to their duplicated types.

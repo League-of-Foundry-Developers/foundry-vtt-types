@@ -16,7 +16,7 @@ import type {
   DocumentPreUpdateOptions,
 } from "../../../common/abstract/document.d.mts";
 
-declare class ClientDocument<BaseDocument extends foundry.abstract.Document.Any = foundry.abstract.Document.Any> {
+declare class ClientDocument<BaseDocument extends Document.Internal.Instance.Any = Document.Any> {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
   constructor(...args: any[]);
 
@@ -201,7 +201,7 @@ declare class ClientDocument<BaseDocument extends foundry.abstract.Document.Any 
    * @internal
    */
   protected _dispatchDescendantDocumentEvents(
-    event: ClientDocument.lifeCycleEventName,
+    event: ClientDocument.LifeCycleEventName,
     collection: string,
     args: unknown[],
     _parent: ClientDocument,
@@ -351,7 +351,7 @@ declare class ClientDocument<BaseDocument extends foundry.abstract.Document.Any 
   static createDialog<T extends DocumentConstructor>(
     this: T,
     data?: DeepPartial<ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>)>,
-    context?: Pick<DatabaseCreateOperation<any>, "parent" | "pack"> &
+    context?: Pick<DatabaseCreateOperation<InstanceType<T>>, "parent" | "pack"> &
       InexactPartial<
         DialogOptions & {
           /** A restriction the selectable sub-types of the Dialog. */
@@ -416,7 +416,7 @@ declare class ClientDocument<BaseDocument extends foundry.abstract.Document.Any 
   static fromImport<T extends DocumentConstructor>(
     this: T,
     source: Record<string, unknown>,
-    context?: DocumentConstructionContext & DataValidationOptions,
+    context?: Document.ConstructionContext<Document.Any | null> & DataValidationOptions,
   ): Promise<InstanceType<T>>;
   /**
    * Update this Document using a provided JSON string.
@@ -452,7 +452,7 @@ declare class ClientDocument<BaseDocument extends foundry.abstract.Document.Any 
       ClientDocument.CompendiumExportOptions<FlagsOpt, SourceOpt, SortOpt, FolderOpt, OwnershipOpt, StateOpt, IdOpt>
     >,
   ): Omit<
-    BaseDocument["_source"],
+    Document.Internal.Instance.Complete<BaseDocument>["_source"],
     | (IdOpt extends false ? "_id" : never)
     | ClientDocument.OmitProperty<SortOpt, "sort" | "navigation" | "navOrder"> // helping out Scene
     | ClientDocument.OmitProperty<FolderOpt, "folder">
@@ -539,7 +539,7 @@ declare class ClientDocument<BaseDocument extends foundry.abstract.Document.Any 
    */
   protected _onCreateEmbeddedDocuments(
     embeddedName: string,
-    documents: foundry.abstract.Document.Any[],
+    documents: Document.Any[],
     result: Record<string, unknown>[],
     options: DocumentModificationOptions,
     userId: string,
@@ -571,9 +571,9 @@ declare class ClientDocument<BaseDocument extends foundry.abstract.Document.Any 
    */
   protected _onUpdateEmbeddedDocuments(
     embeddedName: string,
-    documents: foundry.abstract.Document.Any[],
+    documents: Document.Any[],
     result: Record<string, unknown>[],
-    options: DocumentModificationOptions,
+    options: Document.ModificationContext<Document.Any | null>,
     userId: string,
   ): void;
 
@@ -588,7 +588,7 @@ declare class ClientDocument<BaseDocument extends foundry.abstract.Document.Any 
   protected _preDeleteEmbeddedDocuments(
     embeddedName: string,
     result: string[],
-    options: DocumentModificationContext,
+    options: Document.ModificationContext<Document.Any | null>,
     userId: string,
   ): void;
 
@@ -603,9 +603,9 @@ declare class ClientDocument<BaseDocument extends foundry.abstract.Document.Any 
    */
   protected _onDeleteEmbeddedDocuments(
     embeddedName: string,
-    documents: foundry.abstract.Document.Any[],
+    documents: Document.Any[],
     result: string[],
-    options: DocumentModificationContext,
+    options: Document.ModificationContext<Document.Any | null>,
     userId: string,
   ): void;
 }
@@ -619,7 +619,9 @@ declare global {
    * A mixin which extends each Document definition with specialized client-side behaviors.
    * This mixin defines the client-side interface for database operations and common document behaviors.
    */
-  function ClientDocumentMixin<BaseClass extends DocumentConstructor>(
+  // Note: Unlike most mixins, `ClientDocumentMixin` actually requires a specific constructor, the same as `Document`.
+  // This means that `BaseClass extends Document.AnyConstructor` would be too permissive.
+  function ClientDocumentMixin<BaseClass extends Document.Internal.Constructor>(
     Base: BaseClass,
   ): Mixin<typeof ClientDocument<InstanceType<BaseClass>>, BaseClass>;
 
@@ -633,7 +635,7 @@ declare global {
     }
 
     // TODO: This may be better defined elsewhere
-    type lifeCycleEventName = "preCreate" | "onCreate" | "preUpdate" | "onUpdate" | "preDelete" | "onDelete";
+    type LifeCycleEventName = "preCreate" | "onCreate" | "preUpdate" | "onUpdate" | "preDelete" | "onDelete";
 
     type OmitProperty<T extends boolean, Property extends string> = T extends true ? Property : never;
 
@@ -691,12 +693,14 @@ declare global {
   }
 }
 
-export type DropData<T extends foundry.abstract.Document.Any> = T extends { id: string | undefined }
-  ? DropData.Data<T> & DropData.UUID
-  : DropData.Data<T>;
+export type DropData<T extends Document.Internal.Instance.Any> = T extends { id: string | undefined }
+  ? InternalData<T> & DropData.UUID
+  : InternalData<T>;
 
 declare namespace DropData {
-  interface Data<T extends foundry.abstract.Document.Any> {
+  type Any = DropData<any>;
+
+  interface Data<T extends Document.Any> {
     type: T["documentName"];
     data: T["_source"];
   }
@@ -705,6 +709,8 @@ declare namespace DropData {
     uuid: string;
   }
 }
+
+type InternalData<T extends Document.Internal.Instance.Any> = DropData.Data<Document.Internal.Instance.Complete<T>>;
 
 interface FromDropDataOptions {
   /**

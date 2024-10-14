@@ -1,7 +1,5 @@
 import type { DocumentOnCreateOptions } from "../../../../common/abstract/document.d.mts";
 
-export {};
-
 declare global {
   interface ChatLogOptions extends ApplicationOptions {
     /**

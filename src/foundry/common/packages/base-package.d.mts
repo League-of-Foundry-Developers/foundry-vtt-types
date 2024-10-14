@@ -354,6 +354,11 @@ declare namespace BasePackage {
     tags: string[];
     hasStorage: boolean;
   }
+
+  interface LogOptions extends InexactPartial<LogCompatibilityWarningOptions> {
+    /** Is the package installed? */
+    installed?: unknown | undefined;
+  }
 }
 
 /**
@@ -583,16 +588,7 @@ declare class BasePackage<
    * @param message   - The warning or error being logged
    * @param options   - Logging options passed to foundry.utils.logCompatibilityWarning
    */
-  protected static _logWarning(
-    packageId: string,
-    message: string,
-    options?: InexactPartial<
-      {
-        /** Is the package installed? */
-        installed: unknown;
-      } & LogCompatibilityWarningOptions
-    >,
-  ): void;
+  protected static _logWarning(packageId: string, message: string, options?: BasePackage.LogOptions): void;
 
   /**
    * A set of package manifest keys that are migrated.
@@ -606,26 +602,17 @@ declare class BasePackage<
     }>,
   ): AnyObject;
 
-  protected static _migrateNameToId(data: AnyObject, logOptions: Parameters<typeof BasePackage._logWarning>[2]): void;
+  protected static _migrateNameToId(data: AnyObject, logOptions: BasePackage.LogOptions): void;
 
-  protected static _migrateDependenciesNameToId(
-    data: AnyObject,
-    logOptions: Parameters<typeof BasePackage._logWarning>[2],
-  ): void;
+  protected static _migrateDependenciesNameToId(data: AnyObject, logOptions: BasePackage.LogOptions): void;
 
-  protected static _migrateToRelationships(
-    data: AnyObject,
-    logOptions: Parameters<typeof BasePackage._logWarning>[2],
-  ): void;
+  protected static _migrateToRelationships(data: AnyObject, logOptions: BasePackage.LogOptions): void;
 
-  protected static _migrateCompatibility(
-    data: AnyObject,
-    logOptions: Parameters<typeof BasePackage._logWarning>[2],
-  ): void;
+  protected static _migrateCompatibility(data: AnyObject, logOptions: BasePackage.LogOptions): void;
 
-  protected static _migrateMediaURL(data: AnyObject, logOptions: Parameters<typeof BasePackage._logWarning>[2]): void;
+  protected static _migrateMediaURL(data: AnyObject, logOptions: BasePackage.LogOptions): void;
 
-  protected static _migrateOwnership(data: AnyObject, logOptions: Parameters<typeof BasePackage._logWarning>[2]): void;
+  protected static _migrateOwnership(data: AnyObject, logOptions: BasePackage.LogOptions): void;
 
   protected static _migratePackIDs(data: AnyObject, logOptions: Parameters<typeof BasePackage._logWarning>[2]): void;
 

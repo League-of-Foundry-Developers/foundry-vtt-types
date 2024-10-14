@@ -20,16 +20,17 @@ declare global {
  * The Document definition for a JournalEntryPage.
  * Defines the data schema and common behaviours for a JournalEntryPage which are shared between both client and server.
  */
-declare class BaseJournalEntryPage extends Document<
-  BaseJournalEntryPage.Schema,
-  BaseJournalEntryPage.Metadata,
-  Scene.ConfiguredInstance | null
-> {
+declare class BaseJournalEntryPage extends Document<BaseJournalEntryPage.Schema, BaseJournalEntryPage.Metadata, any> {
   /**
    * @param data    - Initial data from which to construct the JournalEntryPage.
    * @param context - Construction context options.
    */
-  constructor(data: BaseJournalEntryPage.ConstructorData, context?: DocumentConstructionContext);
+  constructor(
+    data: BaseJournalEntryPage.ConstructorData,
+    context?: Document.ConstructionContext<BaseJournalEntryPage.Parent>,
+  );
+
+  override parent: BaseJournalEntryPage.Parent;
 
   _source: BaseJournalEntryPage.Source;
 
@@ -44,9 +45,12 @@ declare class BaseJournalEntryPage extends Document<
 
   override getUserLevel(user: documents.BaseUser): foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
 }
+
 export default BaseJournalEntryPage;
 
 declare namespace BaseJournalEntryPage {
+  type Parent = Scene.ConfiguredInstance | null;
+
   type TypeNames = fields.TypeDataField.TypeNames<typeof BaseJournalEntryPage>;
 
   type Metadata = Merge<

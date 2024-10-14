@@ -33,6 +33,8 @@ declare global {
   }
 
   namespace PlaylistConfig {
+    type Any = PlaylistConfig<any>;
+
     interface PlaylistConfigData<Options extends DocumentSheetOptions<Playlist> = DocumentSheetOptions<Playlist>>
       extends DocumentSheet.DocumentSheetData<Options, InstanceType<ConfiguredDocumentClass<typeof Playlist>>> {
       modes: Record<ValueOf<typeof foundry.CONST.PLAYLIST_MODES>, string>;

@@ -5,12 +5,16 @@ interface MapReplacementMembers<K, V> {
 type PatchedMap<K, V> = Omit<Map<K, V>, "forEach" | typeof Symbol.iterator | "get" | "set"> &
   MapReplacementMembers<K, V>;
 
+declare namespace PatchedMap {
+  type Any = PatchedMap<any, any>;
+}
+
 interface PatchedMapConstructor {
-  new (): PatchedMap<any, any>;
+  new (): PatchedMap.Any;
   new <K, V>(entries?: readonly (readonly [K, V])[] | null): PatchedMap<K, V>;
   new <K, V>(iterable: Iterable<readonly [K, V]>): PatchedMap<K, V>;
   readonly [Symbol.species]: PatchedMapConstructor;
-  readonly prototype: PatchedMap<any, any>;
+  readonly prototype: PatchedMap.Any;
 }
 
 declare const Map: PatchedMapConstructor;
@@ -159,6 +163,14 @@ declare class Collection<V> extends Map<string, V> {
    * @returns An array of contained values
    */
   toJSON(): Array<V extends { toJSON: (...args: any[]) => infer U } ? U : V>;
+}
+
+declare namespace Collection {
+  type AnyConstructor = typeof AnyCollection;
+}
+
+declare abstract class AnyCollection extends Collection<any> {
+  constructor(arg0: never, ...args: never[]);
 }
 
 export default Collection;

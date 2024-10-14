@@ -127,4 +127,8 @@ declare global {
      */
     protected _onToggleTarget(event: JQuery.ClickEvent): void;
   }
+
+  namespace TokenHUD {
+    type Any = TokenHUD<any>;
+  }
 }

@@ -1,6 +1,6 @@
 import type { DatabaseOperationMap, Operation } from "../foundry/common/abstract/document.d.mts";
 import type { ConfiguredDocuments } from "./configuredDocuments.d.mts";
-import type { DeepPartial, EmptyObject } from "./utils.d.mts";
+import type { EmptyObject } from "./utils.d.mts";
 
 /**
  * Returns the type of the constructor data for the given {@link foundry.abstract.Document}.
@@ -9,12 +9,7 @@ export type ConstructorDataType<T extends DocumentConstructor> = foundry.data.fi
   ReturnType<T["defineSchema"]>
 >;
 
-type ObjectToDeepPartial<T> = T extends object ? DeepPartial<T> : T;
-
 export type DocumentConstructor = foundry.abstract.Document.AnyConstructor;
-
-export type PlaceableObjectConstructor = Pick<typeof PlaceableObject, keyof typeof PlaceableObject> &
-  (new (...args: any[]) => PlaceableObject<any>);
 
 export type ConfiguredDocumentClass<ConcreteDocument extends DocumentConstructor> =
   ConfiguredDocuments[ConcreteDocument["metadata"]["name"]];
@@ -41,11 +36,10 @@ type DocumentTypeWithTypeData = "Actor" | "Card" | "Cards" | "Item" | "JournalEn
  */
 export type FolderDocumentTypes = Exclude<foundry.CONST.FOLDER_DOCUMENT_TYPES, "Compendium">;
 
-export type DocumentSubTypes<T extends DocumentType> = "type" extends keyof InstanceType<
-  ConfiguredDocumentClassForName<T>
->
-  ? InstanceType<ConfiguredDocumentClassForName<T>>["type"]
-  : typeof foundry.CONST.BASE_DOCUMENT_TYPE;
+export type DocumentSubTypes<T extends DocumentType> =
+  InstanceType<ConfiguredDocumentClassForName<T>> extends { type: infer Types }
+    ? Types
+    : typeof foundry.CONST.BASE_DOCUMENT_TYPE;
 
 export type ConfiguredDocumentClassForName<Name extends DocumentType> = ConfiguredDocuments[Name];
 
@@ -53,23 +47,23 @@ export type ConfiguredObjectClassForName<Name extends PlaceableDocumentType> = C
 
 export type ConfiguredLayerClassForName<Name extends PlaceableDocumentType> = CONFIG[Name]["layerClass"];
 
-export type ConfiguredData<Name extends string> = Name extends keyof DataConfig ? DataConfig[Name] : EmptyObject;
+export type ConfiguredData<Name extends string> = GetKey<DataConfig, Name, EmptyObject>;
 
-export type ConfiguredSource<Name extends string> = Name extends keyof SourceConfig ? SourceConfig[Name] : EmptyObject;
+export type ConfiguredSource<Name extends string> = GetKey<SourceConfig, Name, EmptyObject>;
 
-export type ConfiguredFlags<T extends string> = T extends keyof FlagConfig
-  ? FlagConfig[T] & Record<string, unknown>
-  : Record<string, unknown>;
+export type ConfiguredFlags<T extends string> = GetKey<FlagConfig, T, EmptyObject> & Record<string, unknown>;
 
 export type ModuleRequiredOrOptional<Name extends string> = Name extends keyof RequiredModules ? never : undefined;
 
-export type ConfiguredModuleData<Name extends string> = GetKey<ModuleConfig, Name, EmptyObject>;
+export type ConfiguredModuleData<Name extends string> = Name extends keyof ModuleConfig
+  ? ModuleConfig[Name]
+  : EmptyObject;
 
 export type ConfiguredModule<Name extends string> =
   ModuleRequiredOrOptional<Name> extends never
     ? ConfiguredModuleData<Name>
     :
-        | (ConfiguredModuleData<Name> & { active: true })
+        | ({ active: true } & ConfiguredModuleData<Name>)
         // flawed, can't use `key in module` this way, but omitting the Partial Record type kills nullish
         // collocating, which is probably the better DX.
         | ({ active: false } & Record<keyof ConfiguredModuleData<Name>, undefined>);
@@ -80,23 +74,19 @@ export type ToObjectFalseType<T> = T extends {
   ? U
   : T;
 
-export type ConfiguredSheetClass<T extends DocumentConstructor> = T["metadata"]["name"] extends keyof CONFIG
-  ? "sheetClass" extends keyof CONFIG[T["metadata"]["name"]]
-    ? CONFIG[T["metadata"]["name"]]["sheetClass"]
-    : never
-  : T;
+export type ConfiguredSheetClass<T extends DocumentConstructor> = GetKey<
+  GetKey<CONFIG, T["metadata"]["name"]>,
+  "sheetClass",
+  T
+>;
 
-export type ObjectClass<T extends DocumentConstructor> = T["metadata"]["name"] extends keyof CONFIG
-  ? "objectClass" extends keyof CONFIG[T["metadata"]["name"]]
-    ? CONFIG[T["metadata"]["name"]]["objectClass"]
-    : never
-  : T;
+export type ObjectClass<T extends DocumentConstructor> = GetKey<
+  GetKey<CONFIG, T["metadata"]["name"]>,
+  "objectClass",
+  T
+>;
 
-export type LayerClass<T extends DocumentConstructor> = T["metadata"]["name"] extends keyof CONFIG
-  ? "layerClass" extends keyof CONFIG[T["metadata"]["name"]]
-    ? CONFIG[T["metadata"]["name"]]["layerClass"]
-    : never
-  : T;
+export type LayerClass<T extends DocumentConstructor> = GetKey<GetKey<CONFIG, T["metadata"]["name"]>, "layerClass", T>;
 
 /** Keys of functions of console.log / globalThis.logger */
 export type LoggingLevels = "debug" | "log" | "info" | "warn" | "error";
@@ -106,8 +96,10 @@ export type AnyKey = keyof any;
 /**
  * Prefer this type over `K in keyof T ? T[K] : never`.
  * This type plays nicely with partial or readonly types and also fixes some variance issues because `keyof` is inherently assumed to be contravariant.
+ *
+ * Note: For the case of `T = {}` it is intersected with `{ _?: any }` to avoid always returning `unknown`.
  */
-export type GetKey<T, K extends AnyKey, D = never> = T extends { readonly [_ in K]?: infer V } ? V : D;
+export type GetKey<T, K extends AnyKey, D = never> = { _?: any } & T extends { readonly [_ in K]?: infer V } ? V : D;
 
 /**
  * `Partial` is usually the wrong type.
@@ -116,7 +108,7 @@ export type GetKey<T, K extends AnyKey, D = never> = T extends { readonly [_ in 
 export type IntentionalPartial<T> = Partial<T>;
 
 /**
- * This type is used to make a constraint where T must be statically known to .
+ * This type is used to make a constraint where `T` must be statically known to overlap with `U`.
  */
 export type OverlapsWith<T, U> = [T & U] extends [never] ? U : T;
 

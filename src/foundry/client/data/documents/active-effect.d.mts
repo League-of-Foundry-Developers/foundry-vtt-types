@@ -43,7 +43,7 @@ declare global {
      */
     static fromStatusEffect(
       statusId: string,
-      options?: DocumentConstructionContext,
+      options?: Document.ConstructionContext<Document.Any | null>,
     ): Promise<ActiveEffect.ConfiguredInstance>;
 
     /**
@@ -57,7 +57,7 @@ declare global {
     protected static _fromStatusEffect(
       statusId: string,
       effectData: ActiveEffectData,
-      options?: DocumentConstructionContext,
+      options?: Document.ConstructionContext<Document.Any | null>,
     ): Promise<ActiveEffect.ConfiguredInstance>;
 
     /**

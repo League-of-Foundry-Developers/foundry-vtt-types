@@ -48,6 +48,8 @@ declare global {
   }
 
   namespace ItemSheet {
+    type Any = ItemSheet<any>;
+
     interface ItemSheetData<Options extends DocumentSheetOptions<Item> = DocumentSheetOptions<Item>>
       extends DocumentSheet.DocumentSheetData<Options, Item.ConfiguredInstance> {
       item: this["document"];

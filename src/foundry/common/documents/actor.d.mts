@@ -10,6 +10,8 @@ declare global {
 }
 
 declare namespace BaseActor {
+  type Parent = null;
+
   type TypeNames = fields.TypeDataField.TypeNames<typeof BaseActor>;
 
   type Metadata = Merge<
@@ -129,12 +131,17 @@ declare namespace BaseActor {
  * The Document definition for an Actor.
  * Defines the DataSchema and common behaviors for an Actor which are shared between both client and server.
  */
-declare class BaseActor extends Document<BaseActor.Schema, BaseActor.Metadata> {
+// Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
+// This pattern evolved from trying to avoid circular loops and even internal tsc errors.
+// See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
+declare class BaseActor extends Document<BaseActor.Schema, BaseActor.Metadata, any> {
   /**
    * @param data    - Initial data from which to construct the Actor
    * @param context - Construction context options
    */
-  constructor(data: BaseActor.ConstructorData, context?: DocumentConstructionContext);
+  constructor(data: BaseActor.ConstructorData, context?: Document.ConstructionContext<BaseActor.Parent>);
+
+  override parent: BaseActor.Parent;
 
   static override metadata: Readonly<BaseActor.Metadata>;
 

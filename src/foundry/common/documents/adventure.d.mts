@@ -12,12 +12,17 @@ declare global {
  * The Document definition for an Adventure.
  * Defines the DataSchema and common behaviors for an Adventure which are shared between both client and server.
  */
-declare class BaseAdventure extends Document<BaseAdventure.Schema, BaseAdventure.Metadata> {
+// Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
+// This pattern evolved from trying to avoid circular loops and even internal tsc errors.
+// See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
+declare class BaseAdventure extends Document<BaseAdventure.Schema, BaseAdventure.Metadata, any> {
   /**
    * @param data    - Initial data from which to construct the Actor
    * @param context - Construction context options
    */
-  constructor(data: BaseAdventure.ConstructorData, context?: DocumentConstructionContext);
+  constructor(data: BaseAdventure.ConstructorData, context?: Document.ConstructionContext<BaseAdventure.Parent>);
+
+  override parent: BaseAdventure.Parent;
 
   static override metadata: Readonly<BaseAdventure.Metadata>;
 
@@ -49,9 +54,12 @@ declare class BaseAdventure extends Document<BaseAdventure.Schema, BaseAdventure
 
   static override migrateData(source: AnyObject): AnyObject;
 }
+
 export default BaseAdventure;
 
 declare namespace BaseAdventure {
+  type Parent = null;
+
   type Metadata = Merge<
     DocumentMetadata,
     {

@@ -112,6 +112,30 @@ expectTypeOf(AssignmentElementType.documentName).toEqualTypeOf<"ActiveEffect">()
 expectTypeOf(InitializedElementType.collectionName).toEqualTypeOf<"effects">();
 expectTypeOf(InitializedType.get("", { strict: true })).toEqualTypeOf<ActiveEffect>();
 
+const stringField = new foundry.data.fields.StringField();
+
+new foundry.data.fields.StringField({ choices: ["a", "b", "c"] });
+
+// @ts-expect-error - A string field is not `nullable` by default and validate does not accept null.
+stringField.validate(null);
+
+// A string field can effectively cast anything. It's a very unsound method.
+stringField["_cast"](null);
+
+// `null` gets handled by `DataField.clean` and gets turned into `undefined` and then the default initial value.
+stringField.clean(null);
+
+stringField.initialize(null);
+
+// @ts-expect-error - Options cannot accept null.
+type _NullOptions = DataField.Options<null>;
+
+// @ts-expect-error - Options cannot accept undefined.
+type _UndefinedOptions = DataField.Options<undefined>;
+
+// Options never contains required elements.
+const _emptyOptions = {} satisfies DataField.Options.Default<number>;
+
 // Regression test for issue where label was being constrained to `""`.
 // Reported by @FloRadical on Discord, see https://discord.com/channels/732325252788387980/793933527065690184/1268262811063287869.
 new foundry.data.fields.BooleanField({

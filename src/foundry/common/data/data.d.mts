@@ -273,6 +273,8 @@ declare class TextureData<
 }
 
 declare namespace PrototypeToken {
+  type Parent = documents.BaseActor;
+
   // Not otherwise used
   type ExcludedProperties =
     | "_id"
@@ -298,8 +300,10 @@ declare namespace PrototypeToken {
   type ConstructorData = fields.SchemaField.InnerAssignmentType<Schema>;
 }
 
-declare class PrototypeToken extends DataModel<PrototypeToken.Schema, documents.BaseActor> {
-  constructor(data?: PrototypeToken.ConstructorData, options?: DataModel.ConstructorOptions);
+declare class PrototypeToken extends DataModel<PrototypeToken.Schema, any> {
+  constructor(data?: PrototypeToken.ConstructorData, options?: DataModel.ConstructorOptions<PrototypeToken.Parent>);
+
+  declare parent: PrototypeToken.Parent;
 
   /** @defaultValue `{}` */
   apps: Record<string, Application>;

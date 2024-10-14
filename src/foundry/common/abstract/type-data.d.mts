@@ -23,9 +23,9 @@ import type Document from "./document.d.mts";
 type StaticDataModel = typeof DataModel<DataSchema, Document<DataSchema, any, any>>;
 
 interface _InternalTypeDataModelInterface extends StaticDataModel {
-  new <Schema extends DataSchema, Parent extends Document<DataSchema, any, any>, _ComputedInstance extends object>(
-    ...args: ConstructorParameters<typeof DataModel>
-  ): DataModel<Schema, Parent> & _ComputedInstance;
+  new <Schema extends DataSchema, Parent extends Document.Any, _ComputedInstance extends DataModel<Schema, Parent>>(
+    ...args: ConstructorParameters<typeof DataModel<Schema, Parent>>
+  ): _ComputedInstance;
 }
 
 declare const _InternalTypeDataModelConst: _InternalTypeDataModelInterface;
@@ -37,8 +37,17 @@ declare class _InternalTypeDataModel<
   BaseData extends AnyObject = EmptyObject,
   DerivedData extends AnyObject = EmptyObject,
   // This does not work if inlined. It's weird to put it here but it works.
-  _ComputedInstance extends object = Merge<RemoveIndexSignatures<BaseData>, RemoveIndexSignatures<DerivedData>>,
+  _ComputedInstance extends DataModel<Schema, Parent> = SimpleMerge<
+    Merge<RemoveIndexSignatures<BaseData>, RemoveIndexSignatures<DerivedData>>,
+    // The merge is written this way because properties in the data model _cannot_ be allowed to be overridden by the base or derived data.
+    // In theory this could be allowed but it causes a few difficulties.
+    // The fundamental issue is that allowing this would cause subclasses to no longer guaranteed to be valid subtypes.
+    // A particularly thorny but not fully fundamental issue is that it also causes difficulties with `this` inside of classes generic over `BaseData`.
+    DataModel<Schema, Parent>
+  >,
 > extends _InternalTypeDataModelConst<Schema, Parent, _ComputedInstance> {}
+
+declare const __TypeDataModelBrand: unique symbol;
 
 // These properties are used to give a performant way of inferring types like `BaseData` and `DerivedData` types.
 // This avoids checking the entire constraint `T extends TypeDataModel.Any` to infer out the types.
@@ -50,84 +59,97 @@ declare const __BaseModel: unique symbol;
 declare const __BaseData: unique symbol;
 declare const __DerivedData: unique symbol;
 
-declare namespace TypeDataModel {
-  export type Any = TypeDataModel<any, any, any, any>;
+// Removes the base and derived data from the type.
+// Has no extends bounds to simplify any checking logic.
+type RemoveDerived<BaseThis, BaseModel, BaseData, DerivedData> = SimpleMerge<
+  Omit<BaseThis, keyof BaseData | keyof DerivedData>,
+  BaseModel
+>;
 
-  // This still is only allows classes descended from `TypeDataField` because these unique symbols aren't used elsewhere.
-  // These generic parameters seem to be required. This is likely because of a TypeScript soundness holes in which concrete types like `any` or `unknown`
-  // will get treated bivariantly whereas type parameters get treated more safely.
-  interface Internal<
-    out Schema extends DataSchema,
-    out Parent extends Document.Any,
-    out BaseModel,
-    out BaseData,
-    out DerivedData,
-  > {
-    [__Schema]: Schema;
-    [__Parent]: Parent;
-    [__BaseModel]: BaseModel;
-    [__BaseData]: BaseData;
-    [__DerivedData]: DerivedData;
+// Merges U into T but makes the appropriate keys partial.
+// This is similar to `Merge<T, DeepPartial<U>>` but only makes the deepest keys in `U` optional.
+type MergePartial<T, U> = Omit<T, keyof U> & {
+  [K in keyof U as K extends PartialMergeKeys<T, U> ? K : never]?: InnerMerge<U, K, T>;
+} & {
+  [K in keyof U as K extends PartialMergeKeys<T, U> ? never : K]: InnerMerge<U, K, T>;
+};
+
+type RequiredKeys<T> = {
+  [K in keyof T]-?: T extends { readonly [_ in K]: any } ? K : never;
+}[keyof T];
+
+// Returns all the keys of U that should be partial when merged into T.
+// Only if both `T[K]` and `U[K]` are required and both are objects should a key be required.
+// This is because essentially only the most deep keys that are merged in need to be optional.
+type PartialMergeKeys<T, U> = {
+  [K in keyof U]-?: K extends RequiredKeys<U>
+    ? K extends RequiredKeys<T>
+      ? IsObject<T[K]> extends true
+        ? IsObject<U[K]> extends true
+          ? never
+          : K
+        : K
+      : K
+    : K;
+}[keyof U];
+
+// Merges `U[K]` into `T[K]` if they're both objects, returns `U[K]` otherwise.
+type InnerMerge<U, K extends keyof U, T> = T extends { readonly [_ in K]?: infer V }
+  ? IsObject<U[K]> extends true
+    ? IsObject<V> extends true
+      ? MergePartial<V, U[K]>
+      : Partial<U[K]>
+    : Partial<U[K]>
+  : U[K];
+
+declare namespace TypeDataModel {
+  type Any = TypeDataModel<any, any, any, any>;
+
+  // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
+  namespace Internal {
+    interface Constructor {
+      [__TypeDataModelBrand]: never;
+
+      new (...args: never[]): Instance.Any;
+    }
+
+    // This still is only allows instances descended from `TypeDataField` because these unique symbols aren't used elsewhere.
+    // These generic parameters seem to be required. This is likely because of a TypeScript soundness holes in which concrete types like `any` or `unknown`
+    // will get treated bivariantly whereas type parameters get treated more safely.
+    interface Instance<
+      out Schema extends DataSchema,
+      out Parent extends Document.Any,
+      out BaseModel,
+      out BaseData,
+      out DerivedData,
+    > {
+      [__Schema]: Schema;
+      [__Parent]: Parent;
+      [__BaseModel]: BaseModel;
+      [__BaseData]: BaseData;
+      [__DerivedData]: DerivedData;
+    }
+
+    namespace Instance {
+      type Any = Instance<any, any, any, any, any>;
+    }
   }
 
-  // Removes the base and derived data from the type.
-  // Has no extends bounds to simplify any checking logic.
-  type RemoveDerived<BaseThis, BaseModel, BaseData, DerivedData> = SimpleMerge<
-    Omit<BaseThis, keyof BaseData | keyof DerivedData>,
-    BaseModel
-  >;
-
-  export type PrepareBaseDataThis<BaseThis extends Internal<any, any, any, any, any>> =
-    BaseThis extends Internal<any, any, infer BaseModel, infer BaseData, infer DerivedData>
+  type PrepareBaseDataThis<BaseThis extends Internal.Instance.Any> =
+    BaseThis extends Internal.Instance<any, any, infer BaseModel, infer BaseData, infer DerivedData>
       ? MergePartial<Omit<RemoveDerived<BaseThis, BaseModel, BaseData, DerivedData>, "prepareBaseData">, BaseData>
       : never;
 
-  export type PrepareDerivedDataThis<BaseThis extends Internal<any, any, any, any, any>> =
-    BaseThis extends Internal<any, any, infer BaseModel, infer BaseData, infer DerivedData>
+  type PrepareDerivedDataThis<BaseThis extends Internal.Instance.Any> =
+    BaseThis extends Internal.Instance<any, any, infer BaseModel, infer BaseData, infer DerivedData>
       ? MergePartial<
           SimpleMerge<Omit<RemoveDerived<BaseThis, BaseModel, BaseData, DerivedData>, "prepareDerivedData">, BaseData>,
           DerivedData
         >
       : never;
 
-  // Merges U into T but makes the appropriate keys partial.
-  // This is similar to `Merge<T, DeepPartial<U>>` but only makes the deepest keys in `U` optional.
-  type MergePartial<T, U> = Omit<T, keyof U> & {
-    [K in keyof U as K extends PartialMergeKeys<T, U> ? K : never]?: InnerMerge<U, K, T>;
-  } & {
-    [K in keyof U as K extends PartialMergeKeys<T, U> ? never : K]: InnerMerge<U, K, T>;
-  };
-
-  type RequiredKeys<T> = {
-    [K in keyof T]-?: T extends { readonly [_ in K]: any } ? K : never;
-  }[keyof T];
-
-  // Returns all the keys of U that should be partial when merged into T.
-  // Only if both `T[K]` and `U[K]` are required and both are objects should a key be required.
-  // This is because essentially only the most deep keys that are merged in need to be optional.
-  type PartialMergeKeys<T, U> = {
-    [K in keyof U]-?: K extends RequiredKeys<U>
-      ? K extends RequiredKeys<T>
-        ? IsObject<T[K]> extends true
-          ? IsObject<U[K]> extends true
-            ? never
-            : K
-          : K
-        : K
-      : K;
-  }[keyof U];
-
-  // Merges `U[K]` into `T[K]` if they're both objects, returns `U[K]` otherwise.
-  type InnerMerge<U, K extends keyof U, T> = T extends { readonly [_ in K]?: infer V }
-    ? IsObject<U[K]> extends true
-      ? IsObject<V> extends true
-        ? MergePartial<V, U[K]>
-        : Partial<U[K]>
-      : Partial<U[K]>
-    : U[K];
-
-  export type ParentAssignmentType<BaseThis extends Internal<any, any, any, any, any>> =
-    BaseThis extends Internal<infer Schema, infer Parent, any, any, any>
+  type ParentAssignmentType<BaseThis extends Internal.Instance.Any> =
+    BaseThis extends Internal.Instance<infer Schema, infer Parent, any, any, any>
       ? SimpleMerge<
           SchemaField.InitializedType<Document.SchemaFor<Parent>>,
           {
@@ -201,6 +223,8 @@ export default abstract class TypeDataModel<
   BaseData extends AnyObject = EmptyObject,
   DerivedData extends AnyObject = EmptyObject,
 > extends _InternalTypeDataModel<Schema, Parent, BaseData, DerivedData> {
+  static [__TypeDataModelBrand]: never;
+
   [__Schema]: Schema;
   [__Parent]: Parent;
   [__BaseModel]: DataModel<Schema, Parent>;

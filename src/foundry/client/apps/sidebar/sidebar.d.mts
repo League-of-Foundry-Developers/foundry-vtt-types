@@ -88,4 +88,8 @@ declare global {
      */
     protected _onToggleCollapse(event: MouseEvent): void;
   }
+
+  namespace Sidebar {
+    type Any = Sidebar<any>;
+  }
 }

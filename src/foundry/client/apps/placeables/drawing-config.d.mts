@@ -52,6 +52,8 @@ declare global {
   }
 
   namespace DrawingConfig {
+    type Any = DrawingConfig<any>;
+
     interface FormData {
       author: string;
       bezierFactor: DrawingDocument["bezierFactor"];

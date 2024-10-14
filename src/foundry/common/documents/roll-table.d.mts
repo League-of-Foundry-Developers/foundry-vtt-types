@@ -12,12 +12,17 @@ declare global {
  * The Document definition for a RollTable.
  * Defines the DataSchema and common behaviors for a RollTable which are shared between both client and server.
  */
-declare class BaseRollTable extends Document<BaseRollTable.Schema, BaseRollTable.Metadata> {
+// Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
+// This pattern evolved from trying to avoid circular loops and even internal tsc errors.
+// See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
+declare class BaseRollTable extends Document<BaseRollTable.Schema, BaseRollTable.Metadata, any> {
   /**
    * @param data    - Initial data from which to construct the Roll Table
    * @param context - Construction context options
    */
-  constructor(data: BaseRollTable.ConstructorData, context?: DocumentConstructionContext);
+  constructor(data: BaseRollTable.ConstructorData, context?: Document.ConstructionContext<BaseRollTable.Parent>);
+
+  override parent: BaseRollTable.Parent;
 
   static override metadata: Readonly<BaseRollTable.Metadata>;
 
@@ -41,9 +46,12 @@ declare class BaseRollTable extends Document<BaseRollTable.Schema, BaseRollTable
     },
   ): AnyObject;
 }
+
 export default BaseRollTable;
 
 declare namespace BaseRollTable {
+  type Parent = null;
+
   type Metadata = Merge<
     DocumentMetadata,
     {

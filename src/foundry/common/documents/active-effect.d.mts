@@ -14,20 +14,20 @@ declare global {
   type EffectChangeData = BaseActiveEffect.Properties["changes"][number];
 }
 
-export default BaseActiveEffect;
 /**
  * The data schema for an ActiveEffect document.
  */
-declare class BaseActiveEffect extends Document<
-  BaseActiveEffect.Schema,
-  BaseActiveEffect.Metadata,
-  Actor.ConfiguredInstance | Item.ConfiguredInstance | null
-> {
+// Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
+// This pattern evolved from trying to avoid circular loops and even internal tsc errors.
+// See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
+declare class BaseActiveEffect extends Document<BaseActiveEffect.Schema, BaseActiveEffect.Metadata, any> {
   /**
    * @param data    - Initial data from which to construct the ActiveEffect
    * @param context - Construction context options
    */
-  constructor(data?: BaseActiveEffect.ConstructorData, context?: DocumentConstructionContext);
+  constructor(data?: BaseActiveEffect.ConstructorData, context?: Document.ConstructionContext<BaseActiveEffect.Parent>);
+
+  override parent: BaseActiveEffect.Parent;
 
   override canUserModify(user: documents.BaseUser, action: "create" | "update" | "delete", data?: AnyObject): boolean;
 
@@ -63,7 +63,11 @@ declare class BaseActiveEffect extends Document<
   get label(): string;
 }
 
+export default BaseActiveEffect;
+
 declare namespace BaseActiveEffect {
+  type Parent = Actor.ConfiguredInstance | Item.ConfiguredInstance | null;
+
   type Metadata = Merge<
     DocumentMetadata,
     {

@@ -25,6 +25,8 @@ declare global {
   }
 
   namespace DefaultSheetsConfig {
+    type Any = DefaultSheetsConfig<any>;
+
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     interface Options extends PackageConfiguration.Options {}
 

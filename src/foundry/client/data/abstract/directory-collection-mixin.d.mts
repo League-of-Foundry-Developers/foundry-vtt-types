@@ -1,5 +1,5 @@
 import type { ConfiguredDocumentClass, DocumentConstructor } from "../../../../types/helperTypes.d.mts";
-import type { AnyConstructorFor, Mixin } from "../../../../types/utils.d.mts";
+import type { Mixin } from "../../../../types/utils.d.mts";
 
 type DirectoryCollectionMixin_DocumentCollection_Static = DirectoryCollection<DirectoryCollection.DirectoryTypes> &
   DocumentCollection<DocumentConstructor, string>;
@@ -114,7 +114,7 @@ declare global {
    */
   function DirectoryCollectionMixin<
     T extends DirectoryCollection.DirectoryTypes,
-    BaseCollection extends AnyConstructorFor<typeof foundry.utils.Collection>,
+    BaseCollection extends foundry.utils.Collection.AnyConstructor,
   >(BaseCollection: BaseCollection): Mixin<typeof DirectoryCollection<T>, BaseCollection>;
 
   namespace DirectoryCollection {

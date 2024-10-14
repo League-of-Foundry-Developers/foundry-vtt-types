@@ -2,6 +2,7 @@ import type { ConfiguredDocumentClassForName } from "../../../../types/helperTyp
 import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
 import type { DocumentDatabaseOperations, DocumentOnUpdateOptions } from "../../../common/abstract/document.d.mts";
 import type { SchemaField } from "../../../common/data/fields.d.mts";
+import type { BaseActor } from "../../../common/documents/_module.d.mts";
 
 declare global {
   namespace Actor {
@@ -67,9 +68,9 @@ declare global {
     >;
 
     protected override _initializeSource(
-      data: this | SchemaField.InnerAssignmentType<DataSchema>,
+      data: this | SchemaField.InnerAssignmentType<BaseActor.Schema>,
       options?: unknown,
-    ): SchemaField.InnerPersistedType<DataSchema>;
+    ): SchemaField.InnerPersistedType<BaseActor.Schema>;
 
     /**
      * An object that tracks which tracks the changes to the data model which were applied by active effects

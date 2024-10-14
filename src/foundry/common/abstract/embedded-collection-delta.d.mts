@@ -1,4 +1,5 @@
 import type { InexactPartial } from "../../../types/utils.d.mts";
+import type Document from "./document.d.mts";
 import type EmbeddedCollection from "./embedded-collection.d.mts";
 
 /**
@@ -21,7 +22,7 @@ export default class EmbeddedCollectionDelta<
 
   override createDocument(
     data: ContainedDocument["_source"][],
-    context: DocumentConstructionContext,
+    context: Document.ConstructionContext<Document.Any | null>,
   ): ContainedDocument;
 
   protected override initialize(
@@ -31,13 +32,13 @@ export default class EmbeddedCollectionDelta<
          * @defaultValue `false`
          */
         full: boolean;
-      } & DocumentConstructionContext
+      } & Document.ConstructionContext<ParentDataModel["parent"]>
     >,
   ): void;
 
   protected override _initializeDocument(
     data: ContainedDocument["_source"][],
-    options: DocumentConstructionContext,
+    options: Document.ConstructionContext<ParentDataModel["parent"]>,
   ): void;
 
   protected override _createOrUpdate(

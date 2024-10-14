@@ -80,7 +80,7 @@ declare global {
      * @param event - The concluding drag event
      * @param data  - The extracted Tile data
      */
-    protected _onDropData(event: DragEvent, data: DropData<any>): Promise<void>;
+    protected _onDropData(event: DragEvent, data: DropData.Any): Promise<void>;
 
     /**
      * Prepare the data object when a new Tile is dropped onto the canvas
@@ -88,7 +88,7 @@ declare global {
      * @param data  - The extracted Tile data
      * @returns The prepared data to create
      */
-    _getDropData(event: DragEvent, data: TilesLayer.DropData): Promise<DropData<any>>;
+    _getDropData(event: DragEvent, data: TilesLayer.DropData): Promise<DropData.Any>;
 
     /**
      * @deprecated since v11, will be removed in v13

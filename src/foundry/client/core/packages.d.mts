@@ -1,4 +1,4 @@
-import type { AnyConstructorFor, InexactPartial, Mixin } from "../../../types/utils.d.mts";
+import type { InexactPartial, Mixin } from "../../../types/utils.d.mts";
 import type { CONST } from "../../client-esm/client.d.mts";
 
 declare class ClientPackage {
@@ -129,9 +129,13 @@ declare global {
    * @param BasePackage - The parent BasePackage class being mixed
    * @returns A BasePackage subclass mixed with ClientPackage features
    */
-  function ClientPackageMixin<BaseClass extends AnyConstructorFor<typeof foundry.packages.BasePackage>>(
+  function ClientPackageMixin<BaseClass extends ClientPackageMixin.BaseClass>(
     BasePackage: BaseClass,
   ): Mixin<typeof ClientPackage, BaseClass>;
+
+  namespace ClientPackageMixin {
+    type BaseClass = typeof AnyBasePackage;
+  }
 
   class Module extends ClientPackageMixin(foundry.packages.BaseModule) {
     constructor(data: ClientPackage.ModuleConstructorData, options: unknown);
@@ -181,4 +185,8 @@ declare global {
       }>,
     ): string;
   }
+}
+
+declare abstract class AnyBasePackage extends foundry.packages.BasePackage<any> {
+  constructor(arg0: never, ...args: never[]);
 }

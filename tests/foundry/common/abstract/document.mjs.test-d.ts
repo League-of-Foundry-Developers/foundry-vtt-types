@@ -186,4 +186,4 @@ expectTypeOf(odo).toEqualTypeOf<
 //   }
 // }
 
-// expectTypeOf(typeof foundry.abstract.Document).toEqualTypeOf<foundry.abstract.Document.Constructor>();
+// expectTypeOf(typeof foundry.abstract.Document).toEqualTypeOf<foundry.abstract.Document.AnyConstructor>();

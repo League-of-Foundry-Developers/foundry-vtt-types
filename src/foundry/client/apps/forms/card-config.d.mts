@@ -37,6 +37,8 @@ declare global {
   }
 
   namespace CardConfig {
+    type Any = CardConfig<any>;
+
     interface CardConfigData<Options extends DocumentSheetOptions<Card> = DocumentSheetOptions<Card>>
       extends DocumentSheet.DocumentSheetData<Options, Card.ConfiguredInstance> {
       //TODO: Find if we can better type this

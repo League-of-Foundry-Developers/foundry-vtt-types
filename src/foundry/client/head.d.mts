@@ -18,9 +18,6 @@ interface Games {
 // Needs to include the current hook as well as all hooks that can run after it.
 type GameHooks = Exclude<InitializationEvent, EarlierEvents[keyof AssumeHookRan]>;
 
-// Put in its own helper type to cause type distribution.
-type DiscriminatedGame<Event extends InitializationEvent> = Event extends unknown ? Games[Event] : never;
-
 type MaybeUI = Extract<keyof AssumeHookRan, "ready"> extends never ? Partial<UiApplications> : UiApplications;
 
 declare global {
@@ -35,7 +32,7 @@ declare global {
    * @remarks
    * Initialized just before the `"init"` hook event.
    */
-  let game: DiscriminatedGame<GameHooks>;
+  let game: Games[GameHooks];
 
   /**
    * The global boolean for whether the EULA is signed

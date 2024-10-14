@@ -48,6 +48,8 @@ declare global {
   }
 
   namespace WallConfig {
+    type Any = WallConfig<any>;
+
     type FormData = Pick<
       WallDocument["_source"],
       "move" | "light" | "sight" | "sound" | "dir" | "door" | "ds" | "doorSound"

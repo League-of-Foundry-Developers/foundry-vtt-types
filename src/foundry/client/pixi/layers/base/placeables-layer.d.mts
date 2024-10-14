@@ -52,9 +52,9 @@ declare global {
     /**
      * @remarks Override not in foundry docs but implicit from layerOptions
      */
-    override options: PlaceablesLayer.LayerOptions<any>;
+    override options: PlaceablesLayer.LayerOptions.Any;
 
-    static override get layerOptions(): PlaceablesLayer.LayerOptions<any>;
+    static override get layerOptions(): PlaceablesLayer.LayerOptions.Any;
 
     /**
      * A reference to the named Document type which is contained within this Canvas Layer.
@@ -417,6 +417,10 @@ declare global {
   }
 
   namespace PlaceablesLayer {
+    type Any = PlaceablesLayer<any>;
+
+    type AnyConstructor = typeof AnyPlaceablesLayer;
+
     type HistoryEventType = "create" | "update" | "delete";
 
     type CreationState = ValueOf<(typeof PlaceablesLayer)["CREATION_STATES"]>;
@@ -469,7 +473,15 @@ declare global {
        */
       elevationSorting: boolean;
     }
+
+    namespace LayerOptions {
+      type Any = LayerOptions<any>;
+    }
   }
+}
+
+declare abstract class AnyPlaceablesLayer extends PlaceablesLayer<any> {
+  constructor(arg0: never, ...args: never[]);
 }
 
 interface RotationOptions {
