@@ -1,9 +1,12 @@
-import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
+import type {
+  ConfiguredDocumentClassForName,
+  ConfiguredDocumentInstanceForName,
+} from "../../../../types/helperTypes.d.mts";
 
 declare global {
   namespace DrawingDocument {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Drawing">;
-    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+    type ConfiguredInstance = ConfiguredDocumentInstanceForName<"Drawing">;
   }
 
   /**

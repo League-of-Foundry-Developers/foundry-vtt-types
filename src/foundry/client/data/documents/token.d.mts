@@ -7,6 +7,10 @@ declare global {
   namespace TokenDocument {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Token">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    // TODO: This causes a circularity that's likely latent.
+    // Look into this.
+    // type ConfiguredInstance = ConfiguredDocumentInstanceForName<"Token">;
   }
 
   /**

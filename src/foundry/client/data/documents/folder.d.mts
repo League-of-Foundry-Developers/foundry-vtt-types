@@ -1,6 +1,7 @@
 import type {
   ConfiguredDocumentClassForName,
   ConfiguredDocumentInstance,
+  ConfiguredDocumentInstanceForName,
   ConstructorDataType,
   DocumentConstructor,
   DocumentType,
@@ -13,7 +14,7 @@ import type { BaseUser } from "../../../common/documents/module.d.mts";
 declare global {
   namespace Folder {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Folder">;
-    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+    type ConfiguredInstance = ConfiguredDocumentInstanceForName<"Folder">;
 
     interface ExportToCompendiumOptions {
       /** Update existing entries in the Compendium pack, matching by name */

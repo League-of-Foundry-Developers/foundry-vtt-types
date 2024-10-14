@@ -1,11 +1,14 @@
-import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
+import type {
+  ConfiguredDocumentClassForName,
+  ConfiguredDocumentInstanceForName,
+} from "../../../../types/helperTypes.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 import type { BaseUser } from "../../../common/documents/module.d.mts";
 
 declare global {
   namespace Item {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Item">;
-    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+    type ConfiguredInstance = ConfiguredDocumentInstanceForName<"Item">;
   }
 
   /**

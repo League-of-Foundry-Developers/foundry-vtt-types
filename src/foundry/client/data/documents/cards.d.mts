@@ -1,6 +1,7 @@
 import type {
   ConfiguredDocumentClassForName,
   ConfiguredDocumentInstance,
+  ConfiguredDocumentInstanceForName,
   ConstructorDataType,
   DocumentConstructor,
 } from "../../../../types/helperTypes.d.mts";
@@ -13,7 +14,7 @@ import type BaseCards from "../../../common/documents/cards.d.mts";
 declare global {
   namespace Cards {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Cards">;
-    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+    type ConfiguredInstance = ConfiguredDocumentInstanceForName<"Cards">;
 
     type CardsAction = "deal" | "pass";
 

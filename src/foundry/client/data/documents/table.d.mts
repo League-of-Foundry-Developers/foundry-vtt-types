@@ -1,4 +1,8 @@
-import type { ConfiguredDocumentClassForName, ConfiguredDocumentInstance } from "../../../../types/helperTypes.d.mts";
+import type {
+  ConfiguredDocumentClassForName,
+  ConfiguredDocumentInstance,
+  ConfiguredDocumentInstanceForName,
+} from "../../../../types/helperTypes.d.mts";
 import type { InexactPartial } from "../../../../types/utils.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
@@ -7,7 +11,7 @@ import type { ClientDocument } from "../abstract/client-document.d.mts";
 declare global {
   namespace RollTable {
     type ConfiguredClass = ConfiguredDocumentClassForName<"RollTable">;
-    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+    type ConfiguredInstance = ConfiguredDocumentInstanceForName<"RollTable">;
 
     /**
      * Optional arguments which customize the draw

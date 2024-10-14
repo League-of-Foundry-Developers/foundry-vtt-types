@@ -1,11 +1,15 @@
-import type { ConfiguredDocumentClassForName, ToObjectFalseType } from "../../../../types/helperTypes.d.mts";
+import type {
+  ConfiguredDocumentClassForName,
+  ConfiguredDocumentInstanceForName,
+  ToObjectFalseType,
+} from "../../../../types/helperTypes.d.mts";
 import type { InexactPartial, StoredDocument } from "../../../../types/utils.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace ChatMessage {
     type ConfiguredClass = ConfiguredDocumentClassForName<"ChatMessage">;
-    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+    type ConfiguredInstance = ConfiguredDocumentInstanceForName<"ChatMessage">;
 
     interface GetSpeakerOptions {
       /** The Scene in which the speaker resides */

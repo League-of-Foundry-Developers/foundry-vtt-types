@@ -1,9 +1,6 @@
-import type { GetKey } from "../../../../types/helperTypes.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 import type { LineIntersection } from "../../../common/utils/geometry.d.mts";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
-
-type Foo = GetKey<PlaceableObjectClassConfig, (typeof Wall)["embeddedName"], typeof Wall>;
 
 declare global {
   namespace Wall {

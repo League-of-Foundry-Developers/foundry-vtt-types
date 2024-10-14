@@ -1,10 +1,14 @@
-import type { ConfiguredDocumentClassForName, FolderDocumentTypes } from "../../../../types/helperTypes.d.mts";
+import type {
+  ConfiguredDocumentClassForName,
+  ConfiguredDocumentInstanceForName,
+  FolderDocumentTypes,
+} from "../../../../types/helperTypes.d.mts";
 import type { InexactPartial } from "../../../../types/utils.d.mts";
 
 declare global {
   namespace Adventure {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Adventure">;
-    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+    type ConfiguredInstance = ConfiguredDocumentInstanceForName<"Adventure">;
 
     interface PrepareImportOptions {
       /**
