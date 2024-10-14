@@ -1,4 +1,7 @@
-import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
+import type {
+  ConfiguredDocumentClassForName,
+  ConfiguredDocumentInstanceForName,
+} from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
 import type { DocumentDatabaseOperations, DocumentOnUpdateOptions } from "../../../common/abstract/document.d.mts";
 import type { SchemaField } from "../../../common/data/fields.d.mts";
@@ -7,9 +10,9 @@ import type { BaseActor } from "../../../common/documents/_module.d.mts";
 declare global {
   namespace Actor {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Actor">;
-    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+    type ConfiguredInstance = ConfiguredDocumentInstanceForName<"Actor">;
 
-    /* eslint-disable-next-line @typescript-eslint/no-empty-object-type */
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     export interface DatabaseOperations extends DocumentDatabaseOperations<Actor> {}
 
     interface RollInitiativeOptions {

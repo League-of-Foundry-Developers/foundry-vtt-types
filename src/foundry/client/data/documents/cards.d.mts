@@ -1,6 +1,7 @@
 import type {
   ConfiguredDocumentClassForName,
   ConfiguredDocumentInstance,
+  ConfiguredDocumentInstanceForName,
   ConstructorDataType,
   DocumentConstructor,
   DatabaseOperationsFor,
@@ -12,9 +13,9 @@ import type { DocumentDatabaseOperations } from "../../../common/abstract/docume
 declare global {
   namespace Cards {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Cards">;
-    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+    type ConfiguredInstance = ConfiguredDocumentInstanceForName<"Cards">;
 
-    /* eslint-disable-next-line @typescript-eslint/no-empty-object-type */
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     export interface DatabaseOperations extends DocumentDatabaseOperations<Cards> {}
 
     type CardsAction = "deal" | "pass";

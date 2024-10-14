@@ -1188,8 +1188,10 @@ declare namespace ObjectField {
    */
   type FlagsField<
     Key extends string,
-    ExtensionFlags extends AnyObject = EmptyObject,
-    Options extends DataFieldOptions.Any = EmptyObject,
+    // The type `{}` is useful here because in an intersection it reduces down to nothing unlike `EmptyObject`.
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    ExtensionFlags extends AnyObject = {},
+    Options extends DataFieldOptions.Any = ObjectField.DefaultOptions,
   > = ObjectField<
     Options,
     DataField.DerivedAssignmentType<ConfiguredFlags<Key> & ExtensionFlags, MergedOptions<Options>>,

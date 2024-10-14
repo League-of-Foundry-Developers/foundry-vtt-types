@@ -1,4 +1,8 @@
-import type { ConfiguredDocumentClassForName, ConfiguredDocumentInstance } from "../../../../types/helperTypes.d.mts";
+import type {
+  ConfiguredDocumentClassForName,
+  ConfiguredDocumentInstance,
+  ConfiguredDocumentInstanceForName,
+} from "../../../../types/helperTypes.d.mts";
 import type { InexactPartial } from "../../../../types/utils.d.mts";
 import type {
   DocumentDatabaseOperations,
@@ -9,9 +13,9 @@ import type {
 declare global {
   namespace RollTable {
     type ConfiguredClass = ConfiguredDocumentClassForName<"RollTable">;
-    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+    type ConfiguredInstance = ConfiguredDocumentInstanceForName<"RollTable">;
 
-    /* eslint-disable-next-line @typescript-eslint/no-empty-object-type */
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     export interface DatabaseOperations extends DocumentDatabaseOperations<RollTable> {}
 
     /**

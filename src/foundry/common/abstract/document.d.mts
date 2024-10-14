@@ -6,6 +6,7 @@ import type {
   DocumentConstructor,
   DocumentType,
   DocumentTypeWithTypeData,
+  GetKey,
   PlaceableDocumentType,
 } from "../../../types/helperTypes.mts";
 import type {
@@ -631,9 +632,9 @@ declare abstract class Document<
    * @returns The flag value
    */
   getFlag<
-    S extends Document.FlagKeyOf<Document.OptionsForSchema<Schema>>,
-    K extends Document.FlagKeyOf<Document.OptionsForSchema<Schema>[S]>,
-  >(scope: S, key: K): Document.GetFlagForSchema<Schema, S, K>;
+    S extends Document.FlagKeyOf<Document.FlagsFor<this>>,
+    K extends Document.FlagKeyOf<Document.FlagsFor<this>[S]>,
+  >(scope: S, key: K): Document.GetFlag<this, S, K>;
 
   /**
    * Assign a "flag" to this document.
@@ -654,15 +655,10 @@ declare abstract class Document<
    * @returns A Promise resolving to the updated document
    */
   setFlag<
-    S extends keyof Document.OptionsForSchema<Schema>,
-    K extends keyof Required<Document.OptionsForSchema<Schema>>[S],
-    V extends Required<Document.OptionsForSchema<Schema>>[S][K],
+    S extends keyof GetKey<this, "flags">,
+    K extends keyof NonNullable<GetKey<this, "flags">>[S],
+    V extends NonNullable<GetKey<this, "flags">>[S][K],
   >(scope: S, key: K, value: V): Promise<this>;
-  setFlag<S extends keyof Document.OptionsForSchema<Schema>, K extends string>(
-    scope: S,
-    key: K,
-    v: unknown extends Document.OptionsForSchema<Schema>[S] ? unknown : never,
-  ): Promise<this>;
 
   /**
    * Remove a flag assigned to the document
@@ -940,6 +936,12 @@ declare abstract class Document<
 
 declare class AnyDocument extends Document<any, any, any> {
   constructor(arg0: never, ...args: never[]);
+
+  // `getFlag` does some unusual introspection on effectively `GetKey<this, "flags">`.
+  // This is because not all documents have flags.
+  flags?: any;
+
+  getFlag(scope: never, key: never): never;
 }
 
 declare namespace Document {

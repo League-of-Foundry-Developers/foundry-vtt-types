@@ -1,6 +1,7 @@
 import type {
   ConfiguredDocumentClassForName,
   ConfiguredDocumentInstance,
+  ConfiguredDocumentInstanceForName,
   ConstructorDataType,
   DocumentConstructor,
   DocumentType,
@@ -11,9 +12,9 @@ import type { DocumentDatabaseOperations } from "../../../common/abstract/docume
 declare global {
   namespace Folder {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Folder">;
-    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+    type ConfiguredInstance = ConfiguredDocumentInstanceForName<"Folder">;
 
-    /* eslint-disable-next-line @typescript-eslint/no-empty-object-type */
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     export interface DatabaseOperations extends DocumentDatabaseOperations<Folder> {}
 
     interface ExportToCompendiumOptions {

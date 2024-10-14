@@ -1,13 +1,16 @@
-import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
+import type {
+  ConfiguredDocumentClassForName,
+  ConfiguredDocumentInstanceForName,
+} from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
 import type { DocumentDatabaseOperations, DocumentOnCreateOptions } from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace Card {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Card">;
-    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+    type ConfiguredInstance = ConfiguredDocumentInstanceForName<"Card">;
 
-    /* eslint-disable-next-line @typescript-eslint/no-empty-object-type */
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     export interface DatabaseOperations extends DocumentDatabaseOperations<Card> {}
   }
 

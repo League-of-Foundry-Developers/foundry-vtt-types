@@ -1,13 +1,16 @@
-import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
+import type {
+  ConfiguredDocumentClassForName,
+  ConfiguredDocumentInstanceForName,
+} from "../../../../types/helperTypes.d.mts";
 import type { InexactPartial } from "../../../../types/utils.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace PlaylistSound {
     type ConfiguredClass = ConfiguredDocumentClassForName<"PlaylistSound">;
-    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+    type ConfiguredInstance = ConfiguredDocumentInstanceForName<"PlaylistSound">;
 
-    /* eslint-disable-next-line @typescript-eslint/no-empty-object-type */
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     export interface DatabaseOperations extends DocumentDatabaseOperations<PlaylistSound> {}
   }
 

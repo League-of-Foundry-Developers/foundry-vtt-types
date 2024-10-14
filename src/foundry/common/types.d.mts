@@ -31,7 +31,7 @@ declare global {
    */
   /* eslint-disable prettier/prettier */ // prettier is breaking this code
   type DeepReadonly<T> = Readonly<{
-    [K in keyof T /* eslint-disable-next-line @typescript-eslint/no-unsafe-function-type */]: T[K] extends
+    [K in keyof T]: T[K] extends
       | undefined
       | null
       | boolean

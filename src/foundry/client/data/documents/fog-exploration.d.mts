@@ -1,4 +1,7 @@
-import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
+import type {
+  ConfiguredDocumentClassForName,
+  ConfiguredDocumentInstanceForName,
+} from "../../../../types/helperTypes.d.mts";
 import type { InexactPartial } from "../../../../types/utils.d.mts";
 import type { DatabaseGetOperation } from "../../../common/abstract/_types.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
@@ -6,9 +9,9 @@ import type { DocumentDatabaseOperations } from "../../../common/abstract/docume
 declare global {
   namespace FogExploration {
     type ConfiguredClass = ConfiguredDocumentClassForName<"FogExploration">;
-    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+    type ConfiguredInstance = ConfiguredDocumentInstanceForName<"FogExploration">;
 
-    /* eslint-disable-next-line @typescript-eslint/no-empty-object-type */
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     export interface DatabaseOperations
       extends DocumentDatabaseOperations<
         FogExploration,

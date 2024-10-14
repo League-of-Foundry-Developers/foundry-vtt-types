@@ -8,6 +8,10 @@ declare global {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Token">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
+    // TODO: This causes a circularity that's likely latent.
+    // Look into this.
+    // type ConfiguredInstance = ConfiguredDocumentInstanceForName<"Token">;
+
     /* eslint-disable @typescript-eslint/no-empty-object-type */
     export interface DatabaseOperations
       extends DocumentDatabaseOperations<

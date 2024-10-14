@@ -1,4 +1,7 @@
-import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
+import type {
+  ConfiguredDocumentClassForName,
+  ConfiguredDocumentInstanceForName,
+} from "../../../../types/helperTypes.d.mts";
 import type { InexactPartial } from "../../../../types/utils.d.mts";
 import type {
   AnyMetadata,
@@ -13,9 +16,9 @@ import type { ClientDocument } from "../abstract/client-document.d.mts";
 declare global {
   namespace Playlist {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Playlist">;
-    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+    type ConfiguredInstance = ConfiguredDocumentInstanceForName<"Playlist">;
 
-    /* eslint-disable-next-line @typescript-eslint/no-empty-object-type */
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     export interface DatabaseOperations extends DocumentDatabaseOperations<Playlist> {}
 
     interface PlayNextOptions {

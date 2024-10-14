@@ -1,4 +1,4 @@
-export {};
+import type { GetKey } from "../../../types/helperTypes.d.mts";
 
 declare global {
   /**
@@ -67,9 +67,5 @@ declare global {
    */
   function getDocumentClass<DocumentName extends string>(
     documentName: DocumentName,
-  ): DocumentName extends keyof CONFIG
-    ? "documentClass" extends keyof CONFIG[DocumentName]
-      ? CONFIG[DocumentName]["documentClass"]
-      : undefined
-    : undefined;
+  ): GetKey<GetKey<CONFIG, DocumentName, never>, "documentClass", undefined>;
 }

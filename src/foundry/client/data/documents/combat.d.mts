@@ -1,4 +1,7 @@
-import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
+import type {
+  ConfiguredDocumentClassForName,
+  ConfiguredDocumentInstanceForName,
+} from "../../../../types/helperTypes.d.mts";
 import type { ConstructorOf, InexactPartial } from "../../../../types/utils.d.mts";
 import type {
   DocumentDatabaseOperations,
@@ -10,9 +13,9 @@ import type {
 declare global {
   namespace Combat {
     type ConfiguredClass = ConfiguredDocumentClassForName<"Combat">;
-    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+    type ConfiguredInstance = ConfiguredDocumentInstanceForName<"Combat">;
 
-    /* eslint-disable @typescript-eslint/no-empty-object-type */
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     export interface DatabaseOperations
       extends DocumentDatabaseOperations<
         Combat,
@@ -20,7 +23,6 @@ declare global {
         { direction: -1 | 1; worldTime: { delta: number }; turnEvents: boolean },
         {}
       > {}
-    /* eslint-enable @typescript-eslint/no-empty-object-type */
 
     interface InitiativeOptions {
       /**

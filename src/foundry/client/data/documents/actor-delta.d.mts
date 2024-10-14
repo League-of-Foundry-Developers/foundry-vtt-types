@@ -1,4 +1,7 @@
-import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
+import type {
+  ConfiguredDocumentClassForName,
+  ConfiguredDocumentInstanceForName,
+} from "../../../../types/helperTypes.d.mts";
 import type { SchemaField } from "../../../common/data/fields.d.mts";
 import type { BaseActor } from "../../../common/documents/_module.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
@@ -7,9 +10,9 @@ import type Document from "../../../common/abstract/document.d.mts";
 declare global {
   namespace ActorDelta {
     type ConfiguredClass = ConfiguredDocumentClassForName<"ActorDelta">;
-    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+    type ConfiguredInstance = ConfiguredDocumentInstanceForName<"ActorDelta">;
 
-    /* eslint-disable-next-line @typescript-eslint/no-empty-object-type */
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     export interface DatabaseOperations extends DocumentDatabaseOperations<ActorDelta> {}
   }
 
