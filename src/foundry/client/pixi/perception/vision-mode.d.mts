@@ -99,7 +99,7 @@ declare global {
   }
 
   namespace ShaderField {
-    type Options = DataField.Options<typeof AbstractBaseShader>;
+    type Options = DataFieldOptions<typeof AbstractBaseShader>;
 
     type DefaultOptions = SimpleMerge<
       foundry.data.fields.DataField.DefaultOptions,

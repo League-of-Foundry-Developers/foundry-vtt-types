@@ -1,4 +1,8 @@
-import type { ConfiguredDocumentClass, DocumentConstructor } from "../../../../types/helperTypes.d.mts";
+import type {
+  ConfiguredDocumentClass,
+  ConfiguredDocumentInstance,
+  DocumentConstructor,
+} from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial, ConfiguredStoredDocument } from "../../../../types/utils.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
@@ -156,7 +160,7 @@ declare global {
          */
         exclude: string[];
       }>,
-    ): InstanceType<ConfiguredDocumentClass<T>>[];
+    ): ConfiguredDocumentInstance<T>[];
 
     /**
      * Update all objects in this DocumentCollection with a provided transformation.
@@ -170,8 +174,8 @@ declare global {
      */
     updateAll(
       transformation:
-        | DeepPartial<InstanceType<ConfiguredDocumentClass<T>>["_source"]>
-        | ((doc: ConfiguredStoredDocument<T>) => DeepPartial<InstanceType<ConfiguredDocumentClass<T>>["_source"]>),
+        | DeepPartial<ConfiguredDocumentInstance<T>["_source"]>
+        | ((doc: ConfiguredStoredDocument<T>) => DeepPartial<ConfiguredDocumentInstance<T>["_source"]>),
       condition?: ((obj: ConfiguredStoredDocument<T>) => boolean) | null,
       options?: Document.ModificationContext<Document.Any | null>,
     ): ReturnType<this["documentClass"]["updateDocuments"]>;

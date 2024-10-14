@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
+import type { ConfiguredDocumentInstance } from "../../../../types/helperTypes.d.mts";
 import type { GetDataReturnType, MaybePromise, ValueOf } from "../../../../types/utils.d.mts";
 
 declare global {
@@ -9,7 +9,7 @@ declare global {
    */
   class MacroConfig<Options extends DocumentSheetOptions<Macro> = DocumentSheetOptions<Macro>> extends DocumentSheet<
     Options,
-    InstanceType<ConfiguredDocumentClass<typeof Macro>>
+    ConfiguredDocumentInstance<typeof Macro>
   > {
     /**
      * @defaultValue
@@ -52,7 +52,7 @@ declare global {
     }
 
     interface MacroConfigData<Options extends DocumentSheetOptions<Macro> = DocumentSheetOptions<Macro>>
-      extends DocumentSheet.DocumentSheetData<Options, InstanceType<ConfiguredDocumentClass<typeof Macro>>> {
+      extends DocumentSheet.DocumentSheetData<Options, ConfiguredDocumentInstance<typeof Macro>> {
       macroTypes: Record<string, string>;
       macroScopes: typeof CONST.MACRO_TYPES;
     }

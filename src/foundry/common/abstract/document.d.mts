@@ -1,6 +1,6 @@
 import type {
-  ConfiguredDocumentClass,
   ConfiguredDocumentClassForName,
+  ConfiguredDocumentInstance,
   ConstructorDataType,
   DocumentConstructor,
   DocumentType,
@@ -335,7 +335,7 @@ declare abstract class Document<
     this: T,
     updates?: Array<DeepPartial<ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>)>>,
     context?: Document.ModificationContext<InstanceType<T>["parent"]> & foundry.utils.MergeObjectOptions,
-  ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
+  ): Promise<ConfiguredDocumentInstance<T>[]>;
 
   /**
    * Delete one or multiple existing Documents using an array of provided ids.
@@ -378,7 +378,7 @@ declare abstract class Document<
     this: T,
     ids?: string[],
     context?: Document.ModificationContext<InstanceType<T>["parent"]>,
-  ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
+  ): Promise<ConfiguredDocumentInstance<T>[]>;
 
   /**
    * Create a new Document using provided input data, saving it to the database.
@@ -418,7 +418,7 @@ declare abstract class Document<
     this: T,
     data: ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>),
     context: Document.ModificationContext<InstanceType<T>["parent"]> & { temporary: boolean },
-  ): Promise<InstanceType<ConfiguredDocumentClass<T>> | undefined>;
+  ): Promise<ConfiguredDocumentInstance<T> | undefined>;
   static create<T extends Document.AnyConstructor>(
     this: T,
     data: ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>),
@@ -709,7 +709,7 @@ declare abstract class Document<
    */
   protected static _onCreateDocuments<T extends Document.AnyConstructor>(
     this: T,
-    documents: Array<InstanceType<ConfiguredDocumentClass<T>>>,
+    documents: Array<ConfiguredDocumentInstance<T>>,
     context: Document.ModificationContext<InstanceType<T>["parent"]>,
   ): Promise<void>;
 
@@ -726,7 +726,7 @@ declare abstract class Document<
    */
   protected static _onUpdateDocuments<T extends Document.AnyConstructor>(
     this: T,
-    documents: Array<InstanceType<ConfiguredDocumentClass<T>>>,
+    documents: Array<ConfiguredDocumentInstance<T>>,
     context: Document.ModificationContext<InstanceType<T>["parent"]>,
   ): Promise<unknown>;
 
@@ -743,7 +743,7 @@ declare abstract class Document<
    */
   protected static _onDeleteDocuments<T extends Document.AnyConstructor>(
     this: T,
-    documents: Array<InstanceType<ConfiguredDocumentClass<T>>>,
+    documents: Array<ConfiguredDocumentInstance<T>>,
     context: Document.ModificationContext<InstanceType<T>["parent"]>,
   ): Promise<unknown>;
 
@@ -866,7 +866,7 @@ declare namespace Document {
 
   type Flags<ConcreteDocument extends Internal.Instance.Any> = OptionsForSchema<SchemaFor<ConcreteDocument>>;
 
-  interface OptionsInFlags<Options extends DataField.Options.Any> {
+  interface OptionsInFlags<Options extends DataFieldOptions.Any> {
     readonly flags?: DataField<Options, any>;
   }
 
@@ -886,7 +886,7 @@ declare namespace Document {
     K
   >;
 
-  type FlagInSchema<S extends string, K extends string, Options extends DataField.Options.Any> = {
+  type FlagInSchema<S extends string, K extends string, Options extends DataFieldOptions.Any> = {
     readonly [_ in S]?:
       | {
           readonly [_ in K]?: DataField<Options, any, any, any> | undefined;

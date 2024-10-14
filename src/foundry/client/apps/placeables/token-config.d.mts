@@ -1,3 +1,4 @@
+import type { InterfaceToObject } from "../../../../types/helperTypes.d.mts";
 import type { AnyObject } from "../../../../types/utils.d.mts";
 
 declare global {
@@ -79,7 +80,7 @@ declare global {
 
     override close(options?: FormApplication.CloseOptions): Promise<void>;
 
-    protected override _getSubmitData(updateData?: AnyObject | null): TokenConfig.FormData;
+    protected override _getSubmitData(updateData?: AnyObject | null): InterfaceToObject<TokenConfig.FormData>;
 
     protected override _onChangeInput(event: JQuery.ChangeEvent): Promise<void>;
 

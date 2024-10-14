@@ -1,3 +1,4 @@
+import type Document from "../foundry/common/abstract/document.d.mts";
 import type { ConfiguredDocuments } from "./configuredDocuments.d.mts";
 
 /**
@@ -9,8 +10,16 @@ export type ConstructorDataType<T extends DocumentConstructor> = foundry.data.fi
 
 export type DocumentConstructor = foundry.abstract.Document.AnyConstructor;
 
-export type ConfiguredDocumentClass<ConcreteDocument extends DocumentConstructor> =
-  ConfiguredDocuments[ConcreteDocument["metadata"]["name"]];
+export type ConfiguredDocumentClass<ConcreteDocument extends DocumentConstructor> = MakeConform<
+  ConfiguredDocuments[ConcreteDocument["metadata"]["name"]],
+  Document.AnyConstructor
+>;
+
+export type ConfiguredDocumentInstance<ConcreteDocument extends DocumentConstructor> = MakeConform<
+  // NOTE(LukeAbby): This avoids calling `ConfiguredDocumentClass` because that checks the static side of the class which can be expensive and even lead to loops.
+  InstanceType<ConfiguredDocuments[ConcreteDocument["metadata"]["name"]]>,
+  Document.Any
+>;
 
 export type DocumentType =
   | "ActiveEffect"

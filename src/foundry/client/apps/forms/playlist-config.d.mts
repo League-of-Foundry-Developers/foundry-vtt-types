@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
+import type { ConfiguredDocumentInstance } from "../../../../types/helperTypes.d.mts";
 import type { GetDataReturnType, MaybePromise, ValueOf } from "../../../../types/utils.d.mts";
 
 declare global {
@@ -8,7 +8,7 @@ declare global {
    */
   class PlaylistConfig<
     Options extends DocumentSheetOptions<Playlist> = DocumentSheetOptions<Playlist>,
-  > extends DocumentSheet<Options, InstanceType<ConfiguredDocumentClass<typeof Playlist>>> {
+  > extends DocumentSheet<Options, ConfiguredDocumentInstance<typeof Playlist>> {
     /**
      * @defaultValue
      * ```typescript
@@ -36,7 +36,7 @@ declare global {
     type Any = PlaylistConfig<any>;
 
     interface PlaylistConfigData<Options extends DocumentSheetOptions<Playlist> = DocumentSheetOptions<Playlist>>
-      extends DocumentSheet.DocumentSheetData<Options, InstanceType<ConfiguredDocumentClass<typeof Playlist>>> {
+      extends DocumentSheet.DocumentSheetData<Options, ConfiguredDocumentInstance<typeof Playlist>> {
       modes: Record<ValueOf<typeof foundry.CONST.PLAYLIST_MODES>, string>;
       sorting: Record<ValueOf<typeof foundry.CONST.PLAYLIST_SORT_MODES>, string>;
     }

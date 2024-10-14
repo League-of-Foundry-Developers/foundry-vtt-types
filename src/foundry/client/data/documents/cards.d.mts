@@ -1,6 +1,6 @@
 import type {
   ConfiguredDocumentClassForName,
-  ConfiguredDocumentClass,
+  ConfiguredDocumentInstance,
   ConstructorDataType,
   DocumentConstructor,
 } from "../../../../types/helperTypes.d.mts";
@@ -305,7 +305,7 @@ declare global {
       this: T,
       ids?: string[],
       context?: Document.ModificationContext<Document.Any | null>,
-    ): Promise<InstanceType<ConfiguredDocumentClass<T>>[]>;
+    ): Promise<ConfiguredDocumentInstance<T>[]>;
 
     /**
      * Display a dialog which prompts the user to deal cards to some number of hand-type Cards documents.
@@ -345,6 +345,6 @@ declare global {
       this: T,
       data?: DeepPartial<Cards["_source"] | (Cards["_source"] & Record<string, unknown>)>,
       context?: Pick<Document.ModificationContext<Document.Any | null>, "parent" | "pack"> & Partial<DialogOptions>,
-    ): Promise<InstanceType<ConfiguredDocumentClass<T>> | null | undefined>;
+    ): Promise<ConfiguredDocumentInstance<T> | null | undefined>;
   }
 }

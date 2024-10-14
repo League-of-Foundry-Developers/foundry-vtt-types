@@ -1,14 +1,14 @@
 import { expectTypeOf } from "vitest";
 import type { StoredDocument } from "../../../../src/types/utils.d.mts";
 import type BaseActiveEffect from "../../../../src/foundry/common/documents/active-effect.d.mts";
-import type { ConfiguredDocumentClass } from "../../../../src/types/helperTypes.d.mts";
+import type { ConfiguredDocumentInstance } from "../../../../src/types/helperTypes.d.mts";
 
 declare const configuredActiveEffect: InstanceType<
   foundry.abstract.Document.ConfiguredClass<typeof foundry.documents.BaseActiveEffect>
 >;
 expectTypeOf(configuredActiveEffect).toEqualTypeOf<ActiveEffect>();
 
-declare const helperConfigAE: InstanceType<ConfiguredDocumentClass<typeof foundry.documents.BaseActiveEffect>>;
+declare const helperConfigAE: ConfiguredDocumentInstance<typeof foundry.documents.BaseActiveEffect>;
 expectTypeOf(helperConfigAE).toEqualTypeOf<ActiveEffect>();
 
 const baseActiveEffect = new foundry.documents.BaseActiveEffect();

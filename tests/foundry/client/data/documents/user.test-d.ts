@@ -1,5 +1,5 @@
 import { assertType, expectTypeOf } from "vitest";
-import type { ConfiguredDocumentClass } from "../../../../../src/types/helperTypes.d.mts";
+import type { ConfiguredDocumentInstance } from "../../../../../src/types/helperTypes.d.mts";
 
 const user = new User({ name: "Test" });
 
@@ -10,7 +10,7 @@ expectTypeOf(user.viewedScene).toEqualTypeOf<string | null>();
 assertType<Partial<Record<string, boolean>>>(user.permissions);
 expectTypeOf(user.getHotbarMacros().map((each) => each.macro)).toEqualTypeOf<Array<Macro | null>>();
 expectTypeOf(user.getHotbarMacros().map((each) => each.macro)).toEqualTypeOf<
-  Array<InstanceType<ConfiguredDocumentClass<typeof Macro>> | null>
+  Array<ConfiguredDocumentInstance<typeof Macro> | null>
 >();
 
 user.assignHotbarMacro(new Macro({ name: "Foo" }), 1);

@@ -1,6 +1,7 @@
 import type { EditorState } from "prosemirror-state";
 import type {
   ConfiguredDocumentClass,
+  ConfiguredDocumentInstance,
   ConfiguredObjectClassForName,
   DocumentConstructor,
   ToObjectFalseType,
@@ -937,7 +938,7 @@ declare global {
      * @see {@link TokenDocument#_preUpdateTokenActor}
      */
     type PreCreateDocument<D extends DocumentConstructor = DocumentConstructor> = (
-      document: InstanceType<ConfiguredDocumentClass<D>>,
+      document: ConfiguredDocumentInstance<D>,
       data: ConstructorParameters<D>[0],
       options: DocumentModificationOptions,
       userId: string,
@@ -963,7 +964,7 @@ declare global {
      * @see {@link TokenDocument#_preUpdateTokenActor}
      */
     type PreUpdateDocument<D extends DocumentConstructor = DocumentConstructor> = (
-      document: InstanceType<ConfiguredDocumentClass<D>>,
+      document: ConfiguredDocumentInstance<D>,
       change: DeepPartial<ConstructorParameters<D>[0]>,
       options: DocumentModificationOptions,
       userId: string,
@@ -988,7 +989,7 @@ declare global {
      * @see {@link TokenDocument#_preUpdateTokenActor}
      */
     type PreDeleteDocument<D extends DocumentConstructor = DocumentConstructor> = (
-      document: InstanceType<ConfiguredDocumentClass<D>>,
+      document: ConfiguredDocumentInstance<D>,
       options: DocumentModificationOptions,
       userId: string,
     ) => boolean | void;
@@ -1008,7 +1009,7 @@ declare global {
      * @see {@link TokenDocument#_onUpdateTokenActor}
      */
     type CreateDocument<D extends DocumentConstructor = DocumentConstructor> = (
-      document: InstanceType<ConfiguredDocumentClass<D>>,
+      document: ConfiguredDocumentInstance<D>,
       options: DocumentModificationOptions,
       userId: string,
     ) => void;
@@ -1029,7 +1030,7 @@ declare global {
      * @see {@link TokenDocument#_onUpdateTokenActor}
      */
     type UpdateDocument<D extends DocumentConstructor = DocumentConstructor> = (
-      document: InstanceType<ConfiguredDocumentClass<D>>,
+      document: ConfiguredDocumentInstance<D>,
       change: DeepPartial<ConstructorParameters<D>[0]>,
       options: DocumentModificationOptions,
       userId: string,
@@ -1050,7 +1051,7 @@ declare global {
      * @see {@link TokenDocument#_onUpdateTokenActor}
      */
     type DeleteDocument<D extends DocumentConstructor = DocumentConstructor> = (
-      document: InstanceType<ConfiguredDocumentClass<D>>,
+      document: ConfiguredDocumentInstance<D>,
       options: DocumentModificationOptions,
       userId: string,
     ) => void;

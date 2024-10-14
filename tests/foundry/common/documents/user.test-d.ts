@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { ConfiguredDocumentClass } from "../../../../src/types/helperTypes.d.mts";
+import type { ConfiguredDocumentInstance } from "../../../../src/types/helperTypes.d.mts";
 import type { StoredDocument } from "../../../../src/types/utils.d.mts";
 
 expectTypeOf(foundry.documents.BaseUser.create({ name: "SomeUser" })).toEqualTypeOf<
@@ -7,10 +7,10 @@ expectTypeOf(foundry.documents.BaseUser.create({ name: "SomeUser" })).toEqualTyp
 >();
 expectTypeOf(foundry.documents.BaseUser.createDocuments([])).toEqualTypeOf<Promise<StoredDocument<User>[]>>();
 expectTypeOf(foundry.documents.BaseUser.updateDocuments([])).toEqualTypeOf<
-  Promise<InstanceType<ConfiguredDocumentClass<typeof User>>[]>
+  Promise<ConfiguredDocumentInstance<typeof User>[]>
 >();
 expectTypeOf(foundry.documents.BaseUser.deleteDocuments([])).toEqualTypeOf<
-  Promise<InstanceType<ConfiguredDocumentClass<typeof User>>[]>
+  Promise<ConfiguredDocumentInstance<typeof User>[]>
 >();
 
 const user = await foundry.documents.BaseUser.create({ name: "Another User" }, { temporary: true });

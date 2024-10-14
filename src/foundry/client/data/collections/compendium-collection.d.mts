@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
+import type { ConfiguredDocumentClassForName, ConfiguredDocumentInstance } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial, StoredDocument } from "../../../../types/utils.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
@@ -499,7 +499,7 @@ type DocumentClassForCompendiumMetadata<T extends CompendiumCollection.Metadata>
   T["type"]
 >;
 
-type DocumentInstanceForCompendiumMetadata<T extends CompendiumCollection.Metadata> = InstanceType<
+type DocumentInstanceForCompendiumMetadata<T extends CompendiumCollection.Metadata> = ConfiguredDocumentInstance<
   DocumentClassForCompendiumMetadata<T>
 >;
 
