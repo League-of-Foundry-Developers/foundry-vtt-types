@@ -37,6 +37,8 @@ declare class _InternalTypeDataModel<
   >,
 > extends _InternalTypeDataModelConst<Schema, Parent, _ComputedInstance> {}
 
+declare const __TypeDataModelBrand: unique symbol;
+
 // These properties are used to give a performant way of inferring types like `BaseData` and `DerivedData` types.
 // This avoids checking the entire constraint `T extends TypeDataModel.Any` to infer out the types.
 // To prevent adding properties that could appear at runtime they are unique symbols.
@@ -93,38 +95,51 @@ type InnerMerge<U, K extends keyof U, T> = T extends { readonly [_ in K]?: infer
 declare namespace TypeDataModel {
   type Any = TypeDataModel<any, any, any, any>;
 
-  // This still is only allows classes descended from `TypeDataField` because these unique symbols aren't used elsewhere.
-  // These generic parameters seem to be required. This is likely because of a TypeScript soundness holes in which concrete types like `any` or `unknown`
-  // will get treated bivariantly whereas type parameters get treated more safely.
-  interface Internal<
-    out Schema extends DataSchema,
-    out Parent extends Document.Any,
-    out BaseModel,
-    out BaseData,
-    out DerivedData,
-  > {
-    [__Schema]: Schema;
-    [__Parent]: Parent;
-    [__BaseModel]: BaseModel;
-    [__BaseData]: BaseData;
-    [__DerivedData]: DerivedData;
+  // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
+  namespace Internal {
+    interface Constructor {
+      [__TypeDataModelBrand]: never;
+
+      new (...args: never[]): Instance.Any;
+    }
+
+    // This still is only allows instances descended from `TypeDataField` because these unique symbols aren't used elsewhere.
+    // These generic parameters seem to be required. This is likely because of a TypeScript soundness holes in which concrete types like `any` or `unknown`
+    // will get treated bivariantly whereas type parameters get treated more safely.
+    interface Instance<
+      out Schema extends DataSchema,
+      out Parent extends Document.Any,
+      out BaseModel,
+      out BaseData,
+      out DerivedData,
+    > {
+      [__Schema]: Schema;
+      [__Parent]: Parent;
+      [__BaseModel]: BaseModel;
+      [__BaseData]: BaseData;
+      [__DerivedData]: DerivedData;
+    }
+
+    namespace Instance {
+      type Any = Instance<any, any, any, any, any>;
+    }
   }
 
-  type PrepareBaseDataThis<BaseThis extends Internal<any, any, any, any, any>> =
-    BaseThis extends Internal<any, any, infer BaseModel, infer BaseData, infer DerivedData>
+  type PrepareBaseDataThis<BaseThis extends Internal.Instance.Any> =
+    BaseThis extends Internal.Instance<any, any, infer BaseModel, infer BaseData, infer DerivedData>
       ? MergePartial<Omit<RemoveDerived<BaseThis, BaseModel, BaseData, DerivedData>, "prepareBaseData">, BaseData>
       : never;
 
-  type PrepareDerivedDataThis<BaseThis extends Internal<any, any, any, any, any>> =
-    BaseThis extends Internal<any, any, infer BaseModel, infer BaseData, infer DerivedData>
+  type PrepareDerivedDataThis<BaseThis extends Internal.Instance.Any> =
+    BaseThis extends Internal.Instance<any, any, infer BaseModel, infer BaseData, infer DerivedData>
       ? MergePartial<
           SimpleMerge<Omit<RemoveDerived<BaseThis, BaseModel, BaseData, DerivedData>, "prepareDerivedData">, BaseData>,
           DerivedData
         >
       : never;
 
-  type ParentAssignmentType<BaseThis extends Internal<any, any, any, any, any>> =
-    BaseThis extends Internal<infer Schema, infer Parent, any, any, any>
+  type ParentAssignmentType<BaseThis extends Internal.Instance.Any> =
+    BaseThis extends Internal.Instance<infer Schema, infer Parent, any, any, any>
       ? SimpleMerge<
           SchemaField.InitializedType<Document.SchemaFor<Parent>>,
           {
@@ -198,6 +213,8 @@ export default abstract class TypeDataModel<
   BaseData extends AnyObject = EmptyObject,
   DerivedData extends AnyObject = EmptyObject,
 > extends _InternalTypeDataModel<Schema, Parent, BaseData, DerivedData> {
+  static [__TypeDataModelBrand]: never;
+
   [__Schema]: Schema;
   [__Parent]: Parent;
   [__BaseModel]: DataModel<Schema, Parent>;

@@ -5,15 +5,9 @@ import type {
 } from "../../../../types/helperTypes.d.mts";
 import type { ConstructorOf, DeepPartial, InexactPartial, Mixin, ValueOf } from "../../../../types/utils.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
-import type { AnyMetadata, DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
+import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
-declare class ClientDocument<
-  BaseDocument extends foundry.abstract.Document<any, AnyMetadata, any> = foundry.abstract.Document<
-    any,
-    AnyMetadata,
-    any
-  >,
-> {
+declare class ClientDocument<BaseDocument extends Document.Internal.Instance.Any = Document.Any> {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
   constructor(...args: any[]);
 
@@ -449,7 +443,7 @@ declare class ClientDocument<
       ClientDocument.CompendiumExportOptions<FlagsOpt, SourceOpt, SortOpt, FolderOpt, OwnershipOpt, StateOpt, IdOpt>
     >,
   ): Omit<
-    BaseDocument["_source"],
+    Document.Internal.Instance.Complete<BaseDocument>["_source"],
     | (IdOpt extends false ? "_id" : never)
     | ClientDocument.OmitProperty<SortOpt, "sort" | "navigation" | "navOrder"> // helping out Scene
     | ClientDocument.OmitProperty<FolderOpt, "folder">
@@ -484,7 +478,7 @@ declare class ClientDocument<
    */
   protected _onCreateEmbeddedDocuments(
     embeddedName: string,
-    documents: foundry.abstract.Document.Any[],
+    documents: Document.Any[],
     result: Record<string, unknown>[],
     options: DocumentModificationOptions,
     userId: string,
@@ -516,7 +510,7 @@ declare class ClientDocument<
    */
   protected _onUpdateEmbeddedDocuments(
     embeddedName: string,
-    documents: foundry.abstract.Document.Any[],
+    documents: Document.Any[],
     result: Record<string, unknown>[],
     options: Document.ModificationContext<Document.Any | null>,
     userId: string,
@@ -548,7 +542,7 @@ declare class ClientDocument<
    */
   protected _onDeleteEmbeddedDocuments(
     embeddedName: string,
-    documents: foundry.abstract.Document.Any[],
+    documents: Document.Any[],
     result: string[],
     options: Document.ModificationContext<Document.Any | null>,
     userId: string,
@@ -566,7 +560,7 @@ declare global {
    */
   // Note: Unlike most mixins, `ClientDocumentMixin` actually requires a specific constructor, the same as `Document`.
   // This means that `BaseClass extends Document.AnyConstructor` would be too permissive.
-  function ClientDocumentMixin<BaseClass extends Document.AnyConstructor>(
+  function ClientDocumentMixin<BaseClass extends Document.Internal.Constructor>(
     Base: BaseClass,
   ): Mixin<typeof ClientDocument<InstanceType<BaseClass>>, BaseClass>;
 
@@ -638,9 +632,9 @@ declare global {
   }
 }
 
-export type DropData<T extends foundry.abstract.Document.Any> = T extends { id: string | undefined }
-  ? DropData.Data<T> & DropData.UUID
-  : DropData.Data<T>;
+export type DropData<T extends Document.Internal.Instance.Any> = T extends { id: string | undefined }
+  ? InternalData<T> & DropData.UUID
+  : InternalData<T>;
 
 declare namespace DropData {
   type Any = DropData<any>;
@@ -654,6 +648,8 @@ declare namespace DropData {
     uuid: string;
   }
 }
+
+type InternalData<T extends Document.Internal.Instance.Any> = DropData.Data<Document.Internal.Instance.Complete<T>>;
 
 interface FromDropDataOptions {
   /**

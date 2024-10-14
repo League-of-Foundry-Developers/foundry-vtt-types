@@ -22,6 +22,12 @@ import type DataModel from "./data.mts";
 
 export default Document;
 
+declare const __DocumentBrand: unique symbol;
+
+declare const __Schema: unique symbol;
+declare const __ConcreteMetadata: unique symbol;
+declare const __Parent: unique symbol;
+
 /**
  * An extension of the base DataModel which defines a Document.
  * Documents are special in that they are persisted to the database and referenced by _id.
@@ -31,6 +37,12 @@ declare abstract class Document<
   ConcreteMetadata extends AnyMetadata = AnyMetadata,
   Parent extends Document.Any | null = null,
 > extends DataModel<Schema, Parent> {
+  static [__DocumentBrand]: never;
+
+  [__Schema]: Schema;
+  [__ConcreteMetadata]: ConcreteMetadata;
+  [__Parent]: Parent;
+
   /**
    * @param data    - Initial data provided to construct the Document
    * @param context - Construction context options
@@ -797,6 +809,31 @@ declare namespace Document {
   /** Any Document, except for Settings */
   type Any = Document<any, any, any>;
 
+  // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
+  namespace Internal {
+    interface Constructor {
+      [__DocumentBrand]: never;
+
+      new (...args: never[]): Instance.Any;
+    }
+
+    interface Instance<
+      Schema extends DataSchema,
+      ConcreteMetadata extends AnyMetadata,
+      Parent extends Document.Any | null,
+    > {
+      [__Schema]: Schema;
+      [__ConcreteMetadata]: ConcreteMetadata;
+      [__Parent]: Parent;
+    }
+
+    namespace Instance {
+      type Any = Instance<any, any, any>;
+
+      type Complete<T extends Any> = T extends Document.Any ? T : never;
+    }
+  }
+
   /** Any Document, that is a child of the given parent Document. */
   type AnyChild<Parent extends Any | null> = Document<any, any, Parent>;
 
@@ -817,17 +854,17 @@ declare namespace Document {
 
   type PlaceableTypeName = PlaceableDocumentType;
 
-  type SchemaFor<ConcreteDocument extends Any> =
-    ConcreteDocument extends Document<infer Schema, any, any> ? Schema : never;
+  type SchemaFor<ConcreteDocument extends Internal.Instance.Any> =
+    ConcreteDocument extends Internal.Instance<infer Schema, any, any> ? Schema : never;
 
-  type MetadataFor<ConcreteDocument extends Any> =
-    ConcreteDocument extends Document<any, infer ConcreteMetadata, any> ? ConcreteMetadata : never;
+  type MetadataFor<ConcreteDocument extends Internal.Instance.Any> =
+    ConcreteDocument extends Internal.Instance<any, infer ConcreteMetadata, any> ? ConcreteMetadata : never;
 
   type CollectionRecord<Schema extends DataSchema> = {
     [Key in keyof Schema]: Schema[Key] extends fields.EmbeddedCollectionField.Any ? Schema[Key] : never;
   };
 
-  type Flags<ConcreteDocument extends Any> = OptionsForSchema<SchemaFor<ConcreteDocument>>;
+  type Flags<ConcreteDocument extends Internal.Instance.Any> = OptionsForSchema<SchemaFor<ConcreteDocument>>;
 
   interface OptionsInFlags<Options extends DataField.Options.Any> {
     readonly flags?: DataField<Options, any>;
@@ -843,7 +880,7 @@ declare namespace Document {
   // Returns only string keys and returns `never` if `T` is never.
   type FlagKeyOf<T> = T extends never ? never : keyof T & string;
 
-  type GetFlag<ConcreteDocument extends Any, S extends string, K extends string> = GetFlagForSchema<
+  type GetFlag<ConcreteDocument extends Internal.Instance.Any, S extends string, K extends string> = GetFlagForSchema<
     SchemaFor<ConcreteDocument>,
     S,
     K
