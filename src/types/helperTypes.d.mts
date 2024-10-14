@@ -72,6 +72,11 @@ export type DocumentSubTypes<T extends DocumentType> =
 
 export type ConfiguredDocumentClassForName<Name extends DocumentType> = ConfiguredDocuments[Name];
 
+export type ConfiguredDocumentInstanceForName<Name extends DocumentType> = MakeConform<
+  InstanceType<ConfiguredDocuments[Name]>,
+  Document.Any
+>;
+
 export type ConfiguredObjectClassForName<Name extends PlaceableDocumentType> = CONFIG[Name]["objectClass"];
 
 export type ConfiguredLayerClassForName<Name extends PlaceableDocumentType> = CONFIG[Name]["layerClass"];
@@ -80,7 +85,7 @@ export type ConfiguredData<Name extends string> = GetKey<DataConfig, Name, {}>;
 
 export type ConfiguredSource<Name extends string> = GetKey<SourceConfig, Name, {}>;
 
-export type ConfiguredFlags<T extends string> = GetKey<FlagConfig, T, {}> & Record<string, unknown>;
+export type ConfiguredFlags<T extends string> = GetKey<FlagConfig, T, {}>;
 
 export type ModuleRequiredOrOptional<Name extends string> = Name extends keyof RequiredModules ? never : undefined;
 
@@ -118,12 +123,14 @@ export type LayerClass<T extends DocumentConstructor> = GetKey<GetKey<CONFIG, T[
 export type AnyKey = keyof any;
 
 /**
- * Prefer this type over `K in keyof T ? T[K] : never`.
- * This type plays nicely with partial or readonly types and also fixes some variance issues because `keyof` is inherently assumed to be contravariant.
- *
- * Note: For the case of `T = {}` it is intersected with `{ _?: any }` to avoid always returning `unknown`.
+ * `GetKey` accesses a property while intentionally ignoring index signatures. This means `GetKey<Record<string, unknown>, "foo">` will return `never`.
  */
-export type GetKey<T, K extends AnyKey, D = never> = { _?: any } & T extends { readonly [_ in K]?: infer V } ? V : D;
+// Note(LukeAbby): There are two tricky cases:
+// - `T = {}` would regularly always return `unknown`. The fix here adding a single dummy property `{ _?: any } & T`.
+// - `T = never` would regularly always return `unknown`. The fix here is adding `_GetKey` which makes the type distributive and therefore `never` as an input becomes `never` in the output.
+export type GetKey<T, K extends AnyKey, D = never> = _GetKey<{ _?: any } & T, K, D>;
+
+type _GetKey<T, K extends AnyKey, D> = T extends { readonly [_ in K]?: infer V } ? V : D;
 
 /**
  * `Partial` is usually the wrong type.

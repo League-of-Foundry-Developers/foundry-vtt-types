@@ -5,6 +5,7 @@ import type {
   DocumentConstructor,
   DocumentType,
   DocumentTypeWithTypeData,
+  GetKey,
   PlaceableDocumentType,
 } from "../../../types/helperTypes.mts";
 import type {
@@ -587,9 +588,9 @@ declare abstract class Document<
    * @returns The flag value
    */
   getFlag<
-    S extends Document.FlagKeyOf<Document.OptionsForSchema<Schema>>,
-    K extends Document.FlagKeyOf<Document.OptionsForSchema<Schema>[S]>,
-  >(scope: S, key: K): Document.GetFlagForSchema<Schema, S, K>;
+    S extends Document.FlagKeyOf<Document.FlagsFor<this>>,
+    K extends Document.FlagKeyOf<Document.FlagsFor<this>[S]>,
+  >(scope: S, key: K): Document.GetFlag<this, S, K>;
 
   /**
    * Assign a "flag" to this document.
@@ -610,15 +611,10 @@ declare abstract class Document<
    * @returns A Promise resolving to the updated document
    */
   setFlag<
-    S extends keyof Document.OptionsForSchema<Schema>,
-    K extends keyof Required<Document.OptionsForSchema<Schema>>[S],
-    V extends Required<Document.OptionsForSchema<Schema>>[S][K],
+    S extends keyof GetKey<this, "flags">,
+    K extends keyof NonNullable<GetKey<this, "flags">>[S],
+    V extends NonNullable<GetKey<this, "flags">>[S][K],
   >(scope: S, key: K, value: V): Promise<this>;
-  setFlag<S extends keyof Document.OptionsForSchema<Schema>, K extends string>(
-    scope: S,
-    key: K,
-    v: unknown extends Document.OptionsForSchema<Schema>[S] ? unknown : never,
-  ): Promise<this>;
 
   /**
    * Remove a flag assigned to the document
@@ -801,8 +797,14 @@ declare abstract class Document<
   protected static _logV10CompatibilityWarning(options?: LogCompatibilityWarningOptions): void;
 }
 
-declare abstract class AnyDocumentConstructor extends Document<any, any, any> {
+declare abstract class AnyDocument extends Document<any, any, any> {
   constructor(arg0: never, ...args: never[]);
+
+  // `getFlag` does some unusual introspection on effectively `GetKey<this, "flags">`.
+  // This is because not all documents have flags.
+  flags?: any;
+
+  getFlag(scope: never, key: never): never;
 }
 
 declare namespace Document {
@@ -837,7 +839,7 @@ declare namespace Document {
   /** Any Document, that is a child of the given parent Document. */
   type AnyChild<Parent extends Any | null> = Document<any, any, Parent>;
 
-  type AnyConstructor = typeof AnyDocumentConstructor;
+  type AnyConstructor = typeof AnyDocument;
 
   type SystemConstructor = AnyConstructor & {
     metadata: { name: SystemType; coreTypes?: readonly string[] | undefined };
@@ -877,27 +879,22 @@ declare namespace Document {
   type OptionsForSchema<Schema extends DataSchema> =
     RemoveIndexSignatures<Schema> extends OptionsInFlags<infer Options> ? DataField.InitializedType<Options> : never;
 
-  // Returns only string keys and returns `never` if `T` is never.
-  type FlagKeyOf<T> = T extends never ? never : keyof T & string;
+  // Like `keyof` but handles properties desirable for flags:
+  // - `never` returns `never` (instead of `PropertyKey`)
+  // - `unknown` returns `string` (instead of `never`)
+  // - Strips out non string keys.
+  type FlagKeyOf<T> = keyof T & string;
 
-  type GetFlag<ConcreteDocument extends Internal.Instance.Any, S extends string, K extends string> = GetFlagForSchema<
-    SchemaFor<ConcreteDocument>,
-    S,
+  type FlagGetKey<T, K extends PropertyKey> = K extends keyof T ? T[K] : never;
+
+  // Note(LukeAbby): It's very important for `GetFlag` to be covariant over `ConcreteDocument`.
+  // If it isn't then issues arise where the `Document` type ends up becoming invaraint.
+  type GetFlag<ConcreteDocument extends Internal.Instance.Any, S extends string, K extends string> = FlagGetKey<
+    FlagGetKey<Document.FlagsFor<ConcreteDocument>, S>,
     K
   >;
 
-  type FlagInSchema<S extends string, K extends string, Options extends DataFieldOptions.Any> = {
-    readonly [_ in S]?:
-      | {
-          readonly [_ in K]?: DataField<Options, any, any, any> | undefined;
-        }
-      | undefined;
-  };
-
-  // Looks for flags in the schema.
-  // If a flag can't be found `undefined` is returned.
-  type GetFlagForSchema<Schema extends DataSchema, S extends string, K extends string> =
-    OptionsForSchema<Schema> extends FlagInSchema<S, K, infer Options> ? DataField.InitializedType<Options> : undefined;
+  type FlagsFor<ConcreteDocument extends Internal.Instance.Any> = GetKey<ConcreteDocument, "flags">;
 
   interface ConstructionContext<Parent extends Document.Any | null> {
     /**
