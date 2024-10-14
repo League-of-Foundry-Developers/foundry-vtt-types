@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentInstance } from "../../../../types/helperTypes.d.mts";
 import type { GetDataReturnType, MaybePromise, ValueOf } from "../../../../types/utils.d.mts";
 
 declare global {
@@ -8,8 +7,9 @@ declare global {
    * @typeParam Options - the type of the options object
    */
   class ActiveEffectConfig<
-    Options extends DocumentSheetOptions<ActiveEffect> = DocumentSheetOptions<ActiveEffect>,
-  > extends DocumentSheet<Options, ConfiguredDocumentInstance<typeof ActiveEffect>> {
+    Options extends
+      DocumentSheetOptions<ActiveEffect.ConfiguredInstance> = DocumentSheetOptions<ActiveEffect.ConfiguredInstance>,
+  > extends DocumentSheet<Options, ActiveEffect.ConfiguredInstance> {
     /**
      * @defaultValue
      * ```typescript
@@ -22,7 +22,7 @@ declare global {
      * });
      * ```
      */
-    static override get defaultOptions(): DocumentSheetOptions<ActiveEffect>;
+    static override get defaultOptions(): DocumentSheetOptions<ActiveEffect.ConfiguredInstance>;
 
     override getData(
       options?: Partial<Options>,
@@ -52,10 +52,10 @@ declare global {
   namespace ActiveEffectConfig {
     type Any = ActiveEffectConfig<any>;
 
-    // @ts-expect-error - Fake polymorphism override
     interface ActiveEffectConfigData<
-      Options extends DocumentSheetOptions<ActiveEffect> = DocumentSheetOptions<ActiveEffect>,
-    > extends DocumentSheet.DocumentSheetData<Options, ConfiguredDocumentInstance<typeof ActiveEffect>> {
+      Options extends
+        DocumentSheetOptions<ActiveEffect.ConfiguredInstance> = DocumentSheetOptions<ActiveEffect.ConfiguredInstance>,
+    > extends DocumentSheet.DocumentSheetData<Options, ActiveEffect.ConfiguredInstance> {
       labels: {
         transfer: {
           name: string;
