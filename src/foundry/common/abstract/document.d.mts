@@ -295,20 +295,13 @@ declare abstract class Document<
    * const created = await Actor.createDocuments(data, {pack: "mymodule.mypack"});
    * ```
    */
-  static createDocuments<T extends Document.AnyConstructor>(
+  static createDocuments<T extends Document.AnyConstructor, Temporary extends boolean | undefined>(
     this: T,
     data: Array<fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]> & Record<string, unknown>>,
     operation?: InexactPartial<Omit<DatabaseOperationsFor<T["metadata"]["name"], "create">, "data">> & {
-      temporary?: false | undefined;
+      temporary?: Temporary;
     },
-  ): Promise<Document.ToConfiguredStored<T>[] | undefined>;
-  static createDocuments<T extends Document.AnyConstructor>(
-    this: T,
-    data: Array<fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]> & Record<string, unknown>>,
-    operation?: InexactPartial<Omit<DatabaseOperationsFor<T["metadata"]["name"], "create">, "data">> & {
-      temporary: true;
-    },
-  ): Promise<Document.ToConfiguredStored<T>[] | undefined>;
+  ): Promise<Document.ToStoredIf<T, Temporary>[] | undefined>;
 
   /**
    * Update multiple Document instances using provided differential data.
@@ -423,21 +416,13 @@ declare abstract class Document<
    *
    * @remarks If no document has actually been created, the returned {@link Promise} resolves to `undefined`.
    */
-  static create<T extends Document.AnyConstructor>(
+  static create<T extends Document.AnyConstructor, Temporary extends boolean | undefined>(
     this: T,
-    data: Document.ConstructorDataFor<T> & Record<string, unknown>,
+    data: Document.ConstructorDataFor<T> | Document.ConstructorDataFor<T>[],
     operation?: InexactPartial<Omit<DatabaseOperationsFor<T["metadata"]["name"], "create">, "data">> & {
-      temporary?: false | undefined;
+      temporary?: Temporary;
     },
-  ): Promise<Document.ToConfiguredStored<T> | undefined>;
-  static create<T extends Document.AnyConstructor>(
-    this: T,
-    data: Document.ConstructorDataFor<T> & Record<string, unknown>,
-    operation?: InexactPartial<Omit<DatabaseOperationsFor<T["metadata"]["name"], "create">, "data">> & {
-      temporary: true;
-    },
-  ): Promise<Document.ToConfiguredInstance<T> | undefined>;
-
+  ): Promise<Document.ToStoredIf<T, Temporary> | undefined>;
   /**
    * Update this Document using incremental data, saving it to the database.
    * @see {@link Document.updateDocuments}
@@ -450,7 +435,8 @@ declare abstract class Document<
    * @remarks If no document has actually been updated, the returned {@link Promise} resolves to `undefined`.
    */
   override update(
-    data?: fields.SchemaField.AssignmentType<Schema, EmptyObject> & Record<string, unknown>,
+    // TODO: Determine if this is Partial, DeepPartial, or InexactPartial.
+    data?: Partial<Document.ConstructorDataForSchema<Schema>>,
     operation?: InexactPartial<Omit<DatabaseOperationsFor<ConcreteMetadata["name"], "update">, "updates">>,
   ): Promise<this | undefined>;
 
@@ -546,22 +532,14 @@ declare abstract class Document<
   //   documents of any type)
   createEmbeddedDocuments<
     EmbeddedName extends Exclude<foundry.CONST.EMBEDDED_DOCUMENT_TYPES, "Region" | "RegionBehavior">,
+    Temporary extends boolean | undefined,
   >(
     embeddedName: EmbeddedName,
     data?: Array<Document.ConstructorDataFor<Document.ConfiguredClassForName<EmbeddedName>>>,
     operation?: InexactPartial<DatabaseOperationsFor<EmbeddedName, "create">> & {
-      temporary?: false | undefined;
+      temporary?: Temporary;
     },
-  ): Promise<Document.Stored<Document.ConfiguredInstanceForName<EmbeddedName>>[] | undefined>;
-  createEmbeddedDocuments<
-    EmbeddedName extends Exclude<foundry.CONST.EMBEDDED_DOCUMENT_TYPES, "Region" | "RegionBehavior">,
-  >(
-    embeddedName: EmbeddedName,
-    data?: Array<Document.ConstructorDataFor<Document.ConfiguredClassForName<EmbeddedName>>>,
-    operation?: InexactPartial<DatabaseOperationsFor<EmbeddedName, "create">> & {
-      temporary: true;
-    },
-  ): Promise<Document.ConfiguredInstanceForName<EmbeddedName>[] | undefined>;
+  ): Promise<Array<Document.ToStoredIf<Document.ConfiguredInstanceForName<EmbeddedName>, Temporary>> | undefined>;
 
   /**
    * Update multiple embedded Document instances within a parent Document using provided differential data.
@@ -1006,10 +984,12 @@ declare namespace Document {
   /**
    * Returns the type of the constructor data for the given {@link foundry.abstract.Document}.
    */
-  type ConstructorDataFor<T extends Document.Internal.Constructor> =
-    foundry.data.fields.SchemaField.InnerAssignmentType<
-      T extends { defineSchema: () => infer R extends DataSchema } ? R : never
-    >;
+  type ConstructorDataFor<T extends Document.Internal.Constructor> = ConstructorDataForSchema<
+    T extends { defineSchema: () => infer R extends DataSchema } ? R : never
+  >;
+
+  type ConstructorDataForSchema<Schema extends DataSchema> =
+    foundry.data.fields.SchemaField.InnerAssignmentType<Schema>;
 
   type SystemConstructor = AnyConstructor & {
     metadata: { name: SystemType; coreTypes?: readonly string[] | undefined };
@@ -1040,6 +1020,11 @@ declare namespace Document {
     _id: string;
     _source: GetKey<D, "_source"> & { _id: string };
   };
+
+  type ToStoredIf<
+    D extends Document.Internal.Constructor,
+    Temporary extends boolean | undefined,
+  > = Temporary extends true ? ToConfiguredStored<D> : ToConfiguredInstance<D>;
 
   type Temporary<D extends Document.Internal.Instance.Any> = D extends Stored<infer U> ? U : D;
 

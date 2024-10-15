@@ -167,20 +167,13 @@ declare global {
      */
     get canClone(): boolean;
 
-    static createDocuments<T extends Document.AnyConstructor>(
+    static createDocuments<T extends Document.AnyConstructor, Temporary extends boolean | undefined>(
       this: T,
       data: Array<fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]> & Record<string, unknown>>,
       operation?: InexactPartial<Omit<DatabaseOperationsFor<T["metadata"]["name"], "create">, "data">> & {
-        temporary?: false | undefined;
+        temporary?: Temporary;
       },
-    ): Promise<Document.ToConfiguredStored<T>[] | undefined>;
-    static createDocuments<T extends Document.AnyConstructor>(
-      this: T,
-      data: Array<fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]> & Record<string, unknown>>,
-      operation?: InexactPartial<Omit<DatabaseOperationsFor<T["metadata"]["name"], "create">, "data">> & {
-        temporary: true;
-      },
-    ): Promise<Document.ToConfiguredStored<T>[] | undefined>;
+    ): Promise<Document.ToStoredIf<T, Temporary>[] | undefined>;
 
     /**
      * Deal one or more cards from this Cards document to each of a provided array of Cards destinations.
