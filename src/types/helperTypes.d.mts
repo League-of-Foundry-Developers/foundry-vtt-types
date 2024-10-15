@@ -136,7 +136,7 @@ export type ConformRecord<T extends object, V> = {
  * proper options) for a particular Document type.
  */
 export type DatabaseOperationsFor<
-  Name extends DocumentType,
+  Name extends Document.Type,
   ConcreteOperation extends Operation,
 > = DatabaseOperationMap[Name][ConcreteOperation];
 

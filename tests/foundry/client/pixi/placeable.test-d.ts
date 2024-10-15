@@ -1,15 +1,14 @@
 import { assertType, expectTypeOf } from "vitest";
-import type { AnyMetadata } from "../../../../src/foundry/common/abstract/document.d.mts";
 
 import Document = foundry.abstract.Document;
 
-type EmbeddedInSceneDocumentSheetOptions = DocumentSheetOptions<Document<any, AnyMetadata, Scene.ConfiguredInstance>>;
+type EmbeddedInSceneDocumentSheetOptions = DocumentSheetOptions<Document<any, any, Scene.ConfiguredInstance>>;
 
 class EmbeddedInSceneDocumentSheet<
   Options extends EmbeddedInSceneDocumentSheetOptions = EmbeddedInSceneDocumentSheetOptions,
-> extends DocumentSheet<Options, Document<any, AnyMetadata, Scene.ConfiguredInstance>> {}
+> extends DocumentSheet<Options, Document<any, any, Scene.ConfiguredInstance>> {}
 
-class BaseEmbeddedInSceneDocument extends Document<any, AnyMetadata, Scene.ConfiguredInstance | null> {}
+class BaseEmbeddedInSceneDocument extends Document<any, any, Scene.ConfiguredInstance | null> {}
 
 class EmbeddedInSceneDocument extends CanvasDocumentMixin(BaseEmbeddedInSceneDocument) {
   override get sheet(): EmbeddedInSceneDocumentSheet {

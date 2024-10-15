@@ -1,13 +1,10 @@
-import type {
-  ConfiguredDocumentClassForName,
-  ConfiguredDocumentInstanceForName,
-} from "../../../../types/helperTypes.d.mts";
+import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace AmbientSoundDocument {
-    type ConfiguredClass = ConfiguredDocumentClassForName<"AmbientSound">;
-    type ConfiguredInstance = ConfiguredDocumentInstanceForName<"AmbientSound">;
+    type ConfiguredClass = Document.ConfiguredClassForName<"AmbientSound">;
+    type ConfiguredInstance = Document.ConfiguredInstanceForName<"AmbientSound">;
 
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     export interface DatabaseOperations extends DocumentDatabaseOperations<AmbientSoundDocument> {}

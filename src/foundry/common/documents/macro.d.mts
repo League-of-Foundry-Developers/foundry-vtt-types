@@ -1,6 +1,5 @@
 import type { AnyObject, InexactPartial, Merge } from "../../../types/utils.d.mts";
 import type Document from "../abstract/document.d.mts";
-import type { DocumentMetadata } from "../abstract/document.d.mts";
 import type * as CONST from "../constants.mts";
 import type * as fields from "../data/fields.d.mts";
 import type * as documents from "./_module.mts";
@@ -73,7 +72,7 @@ declare namespace BaseMacro {
   type TypeNames = (typeof foundry.documents.BaseMacro)["metadata"]["coreTypes"][number] | "base";
 
   type Metadata = Merge<
-    DocumentMetadata,
+    Document.Metadata.Default,
     {
       name: "Macro";
       collection: "macros";

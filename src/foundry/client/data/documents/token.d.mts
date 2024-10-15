@@ -1,6 +1,6 @@
 import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
-import type { DocumentDatabaseOperations, DocumentOnUpdateOptions } from "../../../common/abstract/document.d.mts";
+import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 import type { SchemaField } from "../../../common/data/fields.d.mts";
 
 declare global {
@@ -207,7 +207,7 @@ declare global {
      */
     protected _onUpdateBaseActor(
       update?: DeepPartial<Actor.ConfiguredInstance["_source"]>,
-      options?: DocumentOnUpdateOptions<"Actor">,
+      options?: Document.OnUpdateOptions<"Actor">,
     ): void;
 
     /**
@@ -220,7 +220,7 @@ declare global {
       /** @privateRemarks foundry calls this field operation
        * but it's being passed options (and then ignores them)
        */
-      operation?: DocumentOnUpdateOptions<"Actor">,
+      operation?: Document.OnUpdateOptions<"Actor">,
     ): void;
 
     /**

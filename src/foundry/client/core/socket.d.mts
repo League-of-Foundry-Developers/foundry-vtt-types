@@ -1,7 +1,5 @@
 import type { DatabaseOperationMap, DocumentSocketRequest } from "../../common/abstract/_types.d.mts";
 
-export {};
-
 declare global {
   class SocketInterface {
     /**

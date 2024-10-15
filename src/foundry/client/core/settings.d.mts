@@ -1,4 +1,3 @@
-import type { DocumentOnUpsertOptions } from "../../common/abstract/document.d.mts";
 import type { AnyArray, AnyObject, DeepPartial, EmptyObject, InexactPartial } from "../../../types/utils.d.mts";
 import type Document from "../../common/abstract/document.d.mts";
 
@@ -160,7 +159,7 @@ declare global {
       namespace: N,
       key: K,
       value: V,
-      options?: DocumentOnUpsertOptions<"Setting">,
+      options?: Document.OnUpsertOptions<"Setting">,
     ): Promise<V>;
   }
 

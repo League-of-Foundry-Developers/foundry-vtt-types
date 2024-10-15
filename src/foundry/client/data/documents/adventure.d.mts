@@ -1,21 +1,18 @@
-import type {
-  ConfiguredDocumentClassForName,
-  ConfiguredDocumentInstanceForName,
-  FolderDocumentTypes,
-} from "../../../../types/helperTypes.d.mts";
+import type { FolderDocumentTypes } from "../../../../types/helperTypes.d.mts";
 import type { InexactPartial } from "../../../../types/utils.d.mts";
 // eslint-disable-next-line import/no-named-as-default
 import type DataModel from "../../../common/abstract/data.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
+import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace Adventure {
-    type ConfiguredClass = ConfiguredDocumentClassForName<"Adventure">;
-    type ConfiguredInstance = ConfiguredDocumentInstanceForName<"Adventure">;
+    type ConfiguredClass = Document.ConfiguredClassForName<"Adventure">;
+    type ConfiguredInstance = Document.ConfiguredInstanceForName<"Adventure">;
 
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    export interface DatabaseOperations extends DocumentDatabaseOperations<Adventure> {}
+    interface DatabaseOperations extends DocumentDatabaseOperations<Adventure> {}
 
     interface PrepareImportOptions {
       /**
@@ -87,12 +84,12 @@ declare global {
 
 type DocumentDataRecord = {
   [K in AdventureDocumentTypes]?: foundry.data.fields.SchemaField.InnerAssignmentType<
-    ReturnType<ConfiguredDocumentClassForName<K>["defineSchema"]>
+    ReturnType<Document.ConfiguredClassForName<K>["defineSchema"]>
   >[];
 };
 
 type DocumentResult = {
-  [K in AdventureDocumentTypes]?: InstanceType<ConfiguredDocumentClassForName<K>>[];
+  [K in AdventureDocumentTypes]?: InstanceType<Document.ConfiguredClassForName<K>>[];
 };
 
 type AdventureDocumentTypes = Exclude<FolderDocumentTypes, "Adventure"> | "Folder";

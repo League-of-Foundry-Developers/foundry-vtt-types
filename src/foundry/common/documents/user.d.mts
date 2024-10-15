@@ -1,6 +1,5 @@
 import type { AnyObject, InexactPartial, Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
-import type { DocumentMetadata } from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
 import type * as fields from "../data/fields.d.mts";
 import type BaseActor from "./actor.mts";
@@ -119,7 +118,7 @@ declare namespace BaseUser {
   type Parent = null;
 
   type Metadata = Merge<
-    DocumentMetadata,
+    Document.Metadata.Default,
     {
       name: "User";
       collection: "users";

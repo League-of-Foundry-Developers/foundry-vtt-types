@@ -1,14 +1,11 @@
-import type {
-  ConfiguredDocumentClassForName,
-  ConfiguredDocumentInstanceForName,
-} from "../../../../types/helperTypes.d.mts";
 import type { InexactPartial } from "../../../../types/utils.d.mts";
+import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace User {
-    type ConfiguredClass = ConfiguredDocumentClassForName<"User">;
-    type ConfiguredInstance = ConfiguredDocumentInstanceForName<"User">;
+    type ConfiguredClass = Document.ConfiguredClassForName<"User">;
+    type ConfiguredInstance = Document.ConfiguredInstanceForName<"User">;
 
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     export interface DatabaseOperations extends DocumentDatabaseOperations<User> {}

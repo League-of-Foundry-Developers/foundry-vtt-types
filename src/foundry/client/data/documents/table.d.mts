@@ -1,19 +1,11 @@
-import type {
-  ConfiguredDocumentClassForName,
-  ConfiguredDocumentInstance,
-  ConfiguredDocumentInstanceForName,
-} from "../../../../types/helperTypes.d.mts";
 import type { InexactPartial } from "../../../../types/utils.d.mts";
-import type {
-  DocumentDatabaseOperations,
-  DocumentOnCreateOptions,
-  DocumentOnDeleteOptions,
-} from "../../../common/abstract/document.d.mts";
+import type Document from "../../../common/abstract/document.d.mts";
+import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace RollTable {
-    type ConfiguredClass = ConfiguredDocumentClassForName<"RollTable">;
-    type ConfiguredInstance = ConfiguredDocumentInstanceForName<"RollTable">;
+    type ConfiguredClass = Document.ConfiguredClassForName<"RollTable">;
+    type ConfiguredInstance = Document.ConfiguredInstanceForName<"RollTable">;
 
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     export interface DatabaseOperations extends DocumentDatabaseOperations<RollTable> {}
@@ -70,7 +62,7 @@ declare global {
        * Additional options which customize the created messages
        * @defaultValue `{}`
        */
-      messageOptions: DocumentOnCreateOptions<"ChatMessage">;
+      messageOptions: Document.OnCreateOptions<"ChatMessage">;
     }
 
     interface RollOptions {
@@ -255,7 +247,7 @@ declare global {
       collection: string,
       documents: ClientDocument[],
       data: unknown[],
-      options: DocumentOnCreateOptions<"TableResult">,
+      options: Document.OnCreateOptions<"TableResult">,
       userId: string,
     ): void;
 
@@ -264,7 +256,7 @@ declare global {
       collection: string,
       documents: ClientDocument[],
       ids: string,
-      options: DocumentOnDeleteOptions<"TableResult">,
+      options: Document.OnDeleteOptions<"TableResult">,
       userId: string,
     ): void;
 
@@ -298,7 +290,7 @@ declare global {
      */
     static fromFolder(
       folder: Folder,
-      options?: DocumentOnCreateOptions<"Folder">,
+      options?: Document.OnCreateOptions<"Folder">,
     ): Promise<RollTable.ConfiguredInstance | undefined>;
   }
 
@@ -314,6 +306,6 @@ declare global {
     /**
      * An array of drawn TableResult documents
      */
-    results: ConfiguredDocumentInstance<typeof foundry.documents.BaseTableResult>[];
+    results: Document.ToConfiguredInstance<typeof foundry.documents.BaseTableResult>[];
   }
 }

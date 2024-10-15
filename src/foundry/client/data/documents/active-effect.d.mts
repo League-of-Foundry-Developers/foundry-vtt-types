@@ -1,8 +1,3 @@
-import type {
-  ConfiguredDocumentClassForName,
-  ConfiguredDocumentInstanceForName,
-} from "../../../../types/helperTypes.d.mts";
-
 import type { DataField } from "../../../common/data/fields.d.mts";
 import type { DataModel } from "../../../common/abstract/data.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
@@ -10,11 +5,11 @@ import type { DocumentDatabaseOperations } from "../../../common/abstract/docume
 
 declare global {
   namespace ActiveEffect {
-    type ConfiguredClass = ConfiguredDocumentClassForName<"ActiveEffect">;
-    type ConfiguredInstance = ConfiguredDocumentInstanceForName<"ActiveEffect">;
+    type ConfiguredClass = Document.ConfiguredClassForName<"ActiveEffect">;
+    type ConfiguredInstance = Document.ConfiguredInstanceForName<"ActiveEffect">;
 
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    export interface DatabaseOperations
+    interface DatabaseOperations
       extends DocumentDatabaseOperations<
         ActiveEffect,
         { animate: boolean },

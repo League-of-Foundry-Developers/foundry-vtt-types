@@ -1,6 +1,5 @@
 import type { AnyObject, Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
-import type { DocumentMetadata } from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
 import type { TextureData } from "../data/data.mts";
 import type * as fields from "../data/fields.d.mts";
@@ -50,7 +49,7 @@ declare namespace BaseScene {
   type Parent = null;
 
   type Metadata = Merge<
-    DocumentMetadata,
+    Document.Metadata.Default,
     {
       name: "Scene";
       collection: "scenes";

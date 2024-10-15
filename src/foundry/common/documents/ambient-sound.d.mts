@@ -1,6 +1,5 @@
 import type { AnyObject, Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
-import type { DocumentMetadata } from "../abstract/document.mts";
 import type * as fields from "../data/fields.d.mts";
 
 declare global {
@@ -36,7 +35,7 @@ declare namespace BaseAmbientSound {
   type Parent = Scene.ConfiguredInstance | null;
 
   type Metadata = Merge<
-    DocumentMetadata,
+    Document.Metadata.Default,
     {
       name: "AmbientSound";
       collection: "sounds";

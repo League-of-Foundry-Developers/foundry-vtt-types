@@ -1,16 +1,13 @@
-import type {
-  ConfiguredDocumentClassForName,
-  ConfiguredDocumentInstanceForName,
-} from "../../../../types/helperTypes.d.mts";
+import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace AmbientLightDocument {
-    type ConfiguredClass = ConfiguredDocumentClassForName<"AmbientLight">;
-    type ConfiguredInstance = ConfiguredDocumentInstanceForName<"AmbientLight">;
+    type ConfiguredClass = Document.ConfiguredClassForName<"AmbientLight">;
+    type ConfiguredInstance = Document.ConfiguredInstanceForName<"AmbientLight">;
 
     /* eslint-disable @typescript-eslint/no-empty-object-type */
-    export interface DatabaseOperations
+    interface DatabaseOperations
       extends DocumentDatabaseOperations<AmbientLightDocument, {}, { animate: boolean }, {}> {}
     /* eslint-enable @typescript-eslint/no-empty-object-type */
   }

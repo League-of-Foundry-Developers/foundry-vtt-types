@@ -1,4 +1,4 @@
-import type { DocumentOnCreateOptions } from "../../../../common/abstract/document.d.mts";
+import type Document from "../../../../common/abstract/document.d.mts";
 
 declare global {
   interface ChatLogOptions extends ApplicationOptions {
@@ -196,7 +196,7 @@ declare global {
       command: string,
       match: RegExpMatchArray[],
       chatData: foundry.documents.BaseChatMessage.ConstructorData,
-      createOptions: DocumentOnCreateOptions<"ChatMessage">,
+      createOptions: Document.OnCreateOptions<"ChatMessage">,
     ): Promise<void>;
 
     /**
@@ -212,7 +212,7 @@ declare global {
       command: string,
       match: RegExpMatchArray,
       chatData: foundry.documents.BaseChatMessage.ConstructorData,
-      createOptions: DocumentOnCreateOptions<"ChatMessage">,
+      createOptions: Document.OnCreateOptions<"ChatMessage">,
     ): void;
 
     /**
@@ -227,7 +227,7 @@ declare global {
       command: string,
       match: RegExpMatchArray,
       chatData: foundry.documents.BaseChatMessage.ConstructorData,
-      createOptions: DocumentOnCreateOptions<"ChatMessage">,
+      createOptions: Document.OnCreateOptions<"ChatMessage">,
     ): void;
 
     /**

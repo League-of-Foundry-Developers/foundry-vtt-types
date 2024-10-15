@@ -1,5 +1,5 @@
 import type { ConfiguredDocuments } from "../../../types/configuredDocuments.d.mts";
-import type { DatabaseOperationsFor, DocumentType, GetKey, MakeConform } from "../../../types/helperTypes.mts";
+import type { DatabaseOperationsFor, GetKey, MakeConform } from "../../../types/helperTypes.mts";
 import type { DeepPartial, EmptyObject, InexactPartial, RemoveIndexSignatures } from "../../../types/utils.mts";
 import type * as CONST from "../constants.mts";
 import type { DataField, EmbeddedCollectionField, EmbeddedDocumentField } from "../data/fields.d.mts";
@@ -27,7 +27,7 @@ declare const __Parent: unique symbol;
  */
 declare abstract class Document<
   Schema extends DataSchema,
-  ConcreteMetadata extends AnyMetadata = AnyMetadata,
+  ConcreteMetadata extends Document.Metadata.Any = Document.Metadata.Any,
   Parent extends Document.Any | null = null,
 > extends DataModel<Schema, Parent> {
   static [__DocumentBrand]: never;
@@ -97,7 +97,7 @@ declare abstract class Document<
    * }
    * ```
    */
-  static metadata: Metadata<any>;
+  static metadata: Document.Metadata.Any;
 
   /**
    * The database backend used to execute operations and handle results
@@ -663,7 +663,7 @@ declare abstract class Document<
    */
   protected _preCreate(
     data: fields.SchemaField.AssignmentType<Schema>,
-    options: DocumentPreCreateOptions<ConcreteMetadata["name"]>,
+    options: Document.PreCreateOptions<ConcreteMetadata["name"]>,
     user: foundry.documents.BaseUser,
   ): Promise<boolean | void>;
 
@@ -676,7 +676,7 @@ declare abstract class Document<
    */
   protected _onCreate(
     data: fields.SchemaField.InnerAssignmentType<Schema>,
-    options: DocumentOnCreateOptions<ConcreteMetadata["name"]>,
+    options: Document.OnCreateOptions<ConcreteMetadata["name"]>,
     userId: string,
   ): void;
 
@@ -728,7 +728,7 @@ declare abstract class Document<
    */
   protected _preUpdate(
     changed: fields.SchemaField.AssignmentType<Schema>,
-    options: DocumentPreUpdateOptions<ConcreteMetadata["name"]>,
+    options: Document.PreUpdateOptions<ConcreteMetadata["name"]>,
     user: foundry.documents.BaseUser,
   ): Promise<boolean | void>;
 
@@ -741,7 +741,7 @@ declare abstract class Document<
    */
   protected _onUpdate(
     changed: fields.SchemaField.InnerAssignmentType<Schema>,
-    options: DocumentOnUpdateOptions<ConcreteMetadata["name"]>,
+    options: Document.OnUpdateOptions<ConcreteMetadata["name"]>,
     userId: string,
   ): void;
 
@@ -792,7 +792,7 @@ declare abstract class Document<
    * @returns A return value of false indicates the delete operation should be cancelled
    */
   protected _preDelete(
-    options: DocumentPreDeleteOptions<ConcreteMetadata["name"]>,
+    options: Document.PreDeleteOptions<ConcreteMetadata["name"]>,
     user: foundry.documents.BaseUser,
   ): Promise<boolean | void>;
 
@@ -802,7 +802,7 @@ declare abstract class Document<
    * @param options - Additional options which modify the deletion request
    * @param userId  - The id of the User requesting the document update
    */
-  protected _onDelete(options: DocumentOnDeleteOptions<ConcreteMetadata["name"]>, userId: string): void;
+  protected _onDelete(options: Document.OnDeleteOptions<ConcreteMetadata["name"]>, userId: string): void;
 
   /**
    * Pre-process a deletion operation, potentially altering its instructions or input data. Pre-operation events only
@@ -983,7 +983,7 @@ declare namespace Document {
 
     interface Instance<
       Schema extends DataSchema,
-      ConcreteMetadata extends AnyMetadata,
+      ConcreteMetadata extends Metadata.Any,
       Parent extends Document.Any | null,
     > {
       [__Schema]: Schema;
@@ -1015,7 +1015,7 @@ declare namespace Document {
     metadata: { name: SystemType; coreTypes?: readonly string[] | undefined };
   };
 
-  type ConfiguredClass<T extends { metadata: AnyMetadata }> = ConfiguredClassForName<T["metadata"]["name"]>;
+  type ConfiguredClass<T extends { metadata: Metadata.Any }> = ConfiguredClassForName<T["metadata"]["name"]>;
 
   type ConfiguredClassForName<Name extends Type> = ConfiguredDocuments[Name];
 
@@ -1212,70 +1212,90 @@ declare namespace Document {
      */
     deleteAll?: boolean | undefined;
   }
-}
 
-export type DocumentModificationOptions = Omit<Document.ModificationContext<Document.Any | null>, "parent" | "pack">;
+  type ModificationOptions = Omit<Document.ModificationContext<Document.Any | null>, "parent" | "pack">;
 
-export interface Context<Parent extends Document.Any | null> {
-  /**
-   * A parent document within which this Document is embedded
-   */
-  parent?: Parent | undefined;
+  type PreCreateOptions<Name extends Type> = Omit<
+    DatabaseOperationsFor<Name, "create">,
+    "data" | "noHook" | "pack" | "parent"
+  >;
+  type OnCreateOptions<Name extends Type> = Omit<
+    DatabaseOperationsFor<Name, "create">,
+    "pack" | "parentUuid" | "syntheticActorUpdate"
+  >;
 
-  /**
-   * A named compendium pack within which this Document exists
-   */
-  pack?: string | undefined;
-}
+  type PreUpdateOptions<Name extends Type> = Omit<
+    DatabaseOperationsFor<Name, "update">,
+    "updates" | "restoreDelta" | "noHook" | "parent" | "pack"
+  >;
+  type OnUpdateOptions<Name extends Type> = Omit<
+    DatabaseOperationsFor<Name, "update">,
+    "pack" | "parentUuid" | "syntheticActorUpdate"
+  >;
 
-export type AnyMetadata = Metadata<any>;
+  type PreDeleteOptions<Name extends Type> = Omit<
+    DatabaseOperationsFor<Name, "delete">,
+    "ids" | "deleteAll" | "noHook" | "pack" | "parent"
+  >;
+  type OnDeleteOptions<Name extends Type> = Omit<
+    DatabaseOperationsFor<Name, "delete">,
+    "deleteAll" | "pack" | "parentUuid" | "syntheticActorUpdate"
+  >;
 
-export interface Metadata<ConcreteDocument extends Document.Any> {
-  name: Document.Type;
-  collection: string;
-  indexed?: boolean | undefined;
-  compendiumIndexFields?: string[] | undefined;
-  label: string;
-  coreTypes?: readonly string[] | undefined;
-  embedded: Record<string, string>;
-  permissions: {
-    create:
-      | string
-      | ((
-          user: foundry.documents.BaseUser,
-          doc: ConcreteDocument,
-          data: fields.SchemaField.InnerAssignmentType<ConcreteDocument["schema"]["fields"]>,
-        ) => boolean);
-    update:
-      | string
-      | ((
-          user: foundry.documents.BaseUser,
-          doc: ConcreteDocument,
-          data: fields.SchemaField.InnerAssignmentType<ConcreteDocument["schema"]["fields"]>,
-        ) => boolean);
-    delete: string | ((user: foundry.documents.BaseUser, doc: ConcreteDocument, data: EmptyObject) => boolean);
-  };
-  preserveOnImport?: string[];
-  schemaVersion: string | undefined;
-  labelPlural: string; // This is not set for the Document class but every class that implements Document actually provides it.
-  types: readonly string[];
-  hasSystemData: boolean;
-  pack: any;
-}
+  type PreUpsertOptions<Name extends Type> = PreCreateOptions<Name> | PreUpdateOptions<Name>;
+  type OnUpsertOptions<Name extends Type> = OnCreateOptions<Name> | OnUpdateOptions<Name>;
 
-export interface DocumentMetadata {
-  name: "Document";
-  collection: "documents";
-  label: "DOCUMENT.Document";
-  types: [];
-  embedded: EmptyObject;
-  hasSystemData: false;
-  permissions: {
-    create: "ASSISTANT";
-    update: "ASSISTANT";
-    delete: "ASSISTANT";
-  };
-  pack: null;
+  interface Metadata<ConcreteDocument extends Document.Any> {
+    name: Document.Type;
+    collection: string;
+    indexed?: boolean | undefined;
+    compendiumIndexFields?: string[] | undefined;
+    label: string;
+    coreTypes?: readonly string[] | undefined;
+    embedded: Record<string, string>;
+    permissions: {
+      create:
+        | string
+        | ((
+            user: foundry.documents.BaseUser,
+            doc: ConcreteDocument,
+            data: fields.SchemaField.InnerAssignmentType<ConcreteDocument["schema"]["fields"]>,
+          ) => boolean);
+      update:
+        | string
+        | ((
+            user: foundry.documents.BaseUser,
+            doc: ConcreteDocument,
+            data: fields.SchemaField.InnerAssignmentType<ConcreteDocument["schema"]["fields"]>,
+          ) => boolean);
+      delete: string | ((user: foundry.documents.BaseUser, doc: ConcreteDocument, data: EmptyObject) => boolean);
+    };
+    preserveOnImport?: string[];
+    schemaVersion: string | undefined;
+    labelPlural: string; // This is not set for the Document class but every class that implements Document actually provides it.
+    types: readonly string[];
+    hasSystemData: boolean;
+    pack: any;
+  }
+
+  namespace Metadata {
+    type Any = Metadata<any>;
+
+    export interface Default {
+      name: "Document";
+      collection: "documents";
+      label: "DOCUMENT.Document";
+      types: [];
+      embedded: EmptyObject;
+      hasSystemData: false;
+      permissions: {
+        create: "ASSISTANT";
+        update: "ASSISTANT";
+        delete: "ASSISTANT";
+      };
+      pack: null;
+    }
+  }
 }
 
 export type Operation = "create" | "update" | "delete";
@@ -1328,38 +1348,3 @@ export interface DatabaseOperationMap {
   User: User.DatabaseOperations;
   Wall: WallDocument.DatabaseOperations;
 }
-
-// options
-export type DocumentPreCreateOptions<Name extends DocumentType> = Omit<
-  DatabaseOperationsFor<Name, "create">,
-  "data" | "noHook" | "pack" | "parent"
->;
-export type DocumentOnCreateOptions<Name extends DocumentType> = Omit<
-  DatabaseOperationsFor<Name, "create">,
-  "pack" | "parentUuid" | "syntheticActorUpdate"
->;
-
-export type DocumentPreUpdateOptions<Name extends DocumentType> = Omit<
-  DatabaseOperationsFor<Name, "update">,
-  "updates" | "restoreDelta" | "noHook" | "parent" | "pack"
->;
-export type DocumentOnUpdateOptions<Name extends DocumentType> = Omit<
-  DatabaseOperationsFor<Name, "update">,
-  "pack" | "parentUuid" | "syntheticActorUpdate"
->;
-
-export type DocumentPreDeleteOptions<Name extends DocumentType> = Omit<
-  DatabaseOperationsFor<Name, "delete">,
-  "ids" | "deleteAll" | "noHook" | "pack" | "parent"
->;
-export type DocumentOnDeleteOptions<Name extends DocumentType> = Omit<
-  DatabaseOperationsFor<Name, "delete">,
-  "deleteAll" | "pack" | "parentUuid" | "syntheticActorUpdate"
->;
-
-export type DocumentPreUpsertOptions<Name extends DocumentType> =
-  | DocumentPreCreateOptions<Name>
-  | DocumentPreUpdateOptions<Name>;
-export type DocumentOnUpsertOptions<Name extends DocumentType> =
-  | DocumentOnCreateOptions<Name>
-  | DocumentOnUpdateOptions<Name>;

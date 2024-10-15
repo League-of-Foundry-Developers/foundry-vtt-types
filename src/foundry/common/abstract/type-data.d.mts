@@ -10,14 +10,6 @@ import type {
 import type { SchemaField } from "../data/fields.d.mts";
 import type BaseUser from "../documents/user.d.mts";
 import type { DataModel } from "./data.d.mts";
-import type {
-  DocumentOnCreateOptions,
-  DocumentOnDeleteOptions,
-  DocumentOnUpdateOptions,
-  DocumentPreCreateOptions,
-  DocumentPreDeleteOptions,
-  DocumentPreUpdateOptions,
-} from "./document.d.mts";
 import type Document from "./document.d.mts";
 
 type StaticDataModel = typeof DataModel<DataSchema, Document<DataSchema, any, any>>;
@@ -276,7 +268,7 @@ export default abstract class TypeDataModel<
    */
   protected _preCreate(
     data: TypeDataModel.ParentAssignmentType<this>,
-    options: DocumentPreCreateOptions<any>,
+    options: Document.PreCreateOptions<any>,
     user: BaseUser,
   ): Promise<boolean | void>;
 
@@ -289,7 +281,7 @@ export default abstract class TypeDataModel<
    */
   protected _onCreate(
     data: TypeDataModel.ParentAssignmentType<this>,
-    options: DocumentOnCreateOptions<any>,
+    options: Document.OnCreateOptions<any>,
     userId: string,
   ): void;
 
@@ -303,7 +295,7 @@ export default abstract class TypeDataModel<
    */
   protected _preUpdate(
     changes: DeepPartial<TypeDataModel.ParentAssignmentType<this>>,
-    options: DocumentPreUpdateOptions<any>,
+    options: Document.PreUpdateOptions<any>,
     userId: string,
   ): Promise<boolean | void>;
 
@@ -316,7 +308,7 @@ export default abstract class TypeDataModel<
    */
   protected _onUpdate(
     changed: DeepPartial<TypeDataModel.ParentAssignmentType<this>>,
-    options: DocumentOnUpdateOptions<any>,
+    options: Document.OnUpdateOptions<any>,
     userId: string,
   ): void;
 
@@ -327,7 +319,7 @@ export default abstract class TypeDataModel<
    * @param user    - The User requesting the document deletion
    * @returns A return value of false indicates the deletion operation should be cancelled.
    */
-  protected _preDelete(options: DocumentPreDeleteOptions<any>, user: BaseUser): Promise<boolean | void>;
+  protected _preDelete(options: Document.PreDeleteOptions<any>, user: BaseUser): Promise<boolean | void>;
 
   /**
    * Called by {@link ClientDocument#_onDelete}.
@@ -335,5 +327,5 @@ export default abstract class TypeDataModel<
    * @param options - Additional options which modify the deletion request
    * @param userId  - The id of the User requesting the document update
    */
-  protected _onDelete(options: DocumentOnDeleteOptions<any>, userId: string): void;
+  protected _onDelete(options: Document.OnDeleteOptions<any>, userId: string): void;
 }

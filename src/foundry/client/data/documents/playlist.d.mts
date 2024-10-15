@@ -1,25 +1,15 @@
-import type {
-  ConfiguredDocumentClassForName,
-  ConfiguredDocumentInstanceForName,
-} from "../../../../types/helperTypes.d.mts";
 import type { InexactPartial } from "../../../../types/utils.d.mts";
-import type {
-  AnyMetadata,
-  DocumentDatabaseOperations,
-  DocumentOnCreateOptions,
-  DocumentOnDeleteOptions,
-  DocumentOnUpdateOptions,
-} from "../../../common/abstract/document.d.mts";
+import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 import type { Document } from "../../../common/abstract/module.d.mts";
 import type { ClientDocument } from "../abstract/client-document.d.mts";
 
 declare global {
   namespace Playlist {
-    type ConfiguredClass = ConfiguredDocumentClassForName<"Playlist">;
-    type ConfiguredInstance = ConfiguredDocumentInstanceForName<"Playlist">;
+    type ConfiguredClass = Document.ConfiguredClassForName<"Playlist">;
+    type ConfiguredInstance = Document.ConfiguredInstanceForName<"Playlist">;
 
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    export interface DatabaseOperations extends DocumentDatabaseOperations<Playlist> {}
+    interface DatabaseOperations extends DocumentDatabaseOperations<Playlist> {}
 
     interface PlayNextOptions {
       /**
@@ -142,29 +132,29 @@ declare global {
      */
 
     protected override _onCreateDescendantDocuments(
-      parent: ClientDocument<Document<any, AnyMetadata, null>>,
+      parent: ClientDocument<Document.Any>,
       collection: string,
-      documents: ClientDocument<Document<any, AnyMetadata, null>>[],
+      documents: ClientDocument<Document.Any>[],
       data: unknown[],
-      options: DocumentOnCreateOptions<"PlaylistSound">,
+      options: Document.OnCreateOptions<"PlaylistSound">,
       userId: string,
     ): void;
 
     protected override _onUpdateDescendantDocuments(
-      parent: ClientDocument<Document<any, AnyMetadata, null>>,
+      parent: ClientDocument<Document.Any>,
       collection: string,
-      documents: ClientDocument<Document<any, AnyMetadata, null>>[],
+      documents: ClientDocument<Document.Any>[],
       changes: unknown[],
-      options: DocumentOnUpdateOptions<"PlaylistSound">,
+      options: Document.OnUpdateOptions<"PlaylistSound">,
       userId: string,
     ): void;
 
     protected override _onDeleteDescendantDocuments(
-      parent: ClientDocument<Document<any, AnyMetadata, null>>,
+      parent: ClientDocument<Document.Any>,
       collection: string,
-      documents: ClientDocument<Document<any, AnyMetadata, null>>[],
+      documents: ClientDocument<Document.Any>[],
       ids: string,
-      options: DocumentOnDeleteOptions<"PlaylistSound">,
+      options: Document.OnDeleteOptions<"PlaylistSound">,
       userId: string,
     ): void;
 

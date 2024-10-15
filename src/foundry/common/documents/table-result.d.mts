@@ -1,6 +1,5 @@
 import type { AnyObject, InexactPartial, Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
-import type { DocumentMetadata } from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
 import type * as fields from "../data/fields.d.mts";
 import type * as documents from "./_module.mts";
@@ -64,7 +63,7 @@ declare namespace BaseTableResult {
   type TypeNames = (typeof foundry.documents.BaseMacro)["metadata"]["coreTypes"][number] | "base";
 
   type Metadata = Merge<
-    DocumentMetadata,
+    Document.Metadata.Default,
     {
       name: "TableResult";
       collection: "results";

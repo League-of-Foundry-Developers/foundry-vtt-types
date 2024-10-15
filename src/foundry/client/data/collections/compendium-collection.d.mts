@@ -4,7 +4,6 @@ import type {
   DatabaseDeleteOperation,
   DatabaseUpdateOperation,
 } from "../../../common/abstract/_types.d.mts";
-import type { DocumentOnCreateOptions, DocumentOnUpdateOptions } from "../../../common/abstract/document.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DirectoryCollectionMixin_DocumentCollection_Interface } from "../abstract/directory-collection-mixin.d.mts";
 
@@ -307,7 +306,7 @@ declare global {
            * @defaultValue `""`
            * */
           folderName: string;
-        } & DocumentOnCreateOptions<this["metadata"]["type"]> &
+        } & Document.OnCreateOptions<this["metadata"]["type"]> &
           WorldCollection.FromCompendiumOptions
       >,
     ): Promise<Document.Stored<DocumentInstanceForCompendiumMetadata<T>>[]>;
@@ -351,7 +350,7 @@ declare global {
      */
     static createCompendium<T extends CompendiumCollection.Metadata>(
       metadata: T,
-      options?: DocumentOnCreateOptions<T["type"]>,
+      options?: Document.OnCreateOptions<T["type"]>,
     ): Promise<CompendiumCollection<T>>;
 
     /**
@@ -397,7 +396,7 @@ declare global {
             doc: Document.Stored<DocumentInstanceForCompendiumMetadata<T>>,
           ) => DeepPartial<DocumentInstanceForCompendiumMetadata<T>["_source"]>),
       condition?: ((obj: Document.Stored<DocumentInstanceForCompendiumMetadata<T>>) => boolean) | null,
-      options?: DocumentOnUpdateOptions<this["metadata"]["type"]>,
+      options?: Document.OnUpdateOptions<this["metadata"]["type"]>,
     ): ReturnType<this["documentClass"]["updateDocuments"]>;
 
     /**

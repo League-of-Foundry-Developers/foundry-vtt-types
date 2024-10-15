@@ -1,28 +1,21 @@
-import type {
-  ConfiguredDocumentClassForName,
-  ConfiguredDocumentInstanceForName,
-} from "../../../../types/helperTypes.d.mts";
 import type { ConstructorOf, InexactPartial } from "../../../../types/utils.d.mts";
-import type {
-  DocumentDatabaseOperations,
-  DocumentOnCreateOptions,
-  DocumentOnDeleteOptions,
-  DocumentOnUpdateOptions,
-} from "../../../common/abstract/document.d.mts";
+import type Document from "../../../common/abstract/document.d.mts";
+import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace Combat {
-    type ConfiguredClass = ConfiguredDocumentClassForName<"Combat">;
-    type ConfiguredInstance = ConfiguredDocumentInstanceForName<"Combat">;
+    type ConfiguredClass = Document.ConfiguredClassForName<"Combat">;
+    type ConfiguredInstance = Document.ConfiguredInstanceForName<"Combat">;
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    export interface DatabaseOperations
+    /* eslint-disable @typescript-eslint/no-empty-object-type */
+    interface DatabaseOperations
       extends DocumentDatabaseOperations<
         Combat,
         {},
         { direction: -1 | 1; worldTime: { delta: number }; turnEvents: boolean },
         {}
       > {}
+    /* eslint-enable @typescript-eslint/no-empty-object-type */
 
     interface InitiativeOptions {
       /**
@@ -108,7 +101,7 @@ declare global {
      * Deactivate all other Combat encounters within the viewed Scene and set this one as active
      * @param options - Additional context to customize the update workflow
      */
-    activate(options?: DocumentOnUpdateOptions<"Combat">): Promise<Combat.ConfiguredInstance[]>;
+    activate(options?: Document.OnUpdateOptions<"Combat">): Promise<Combat.ConfiguredInstance[]>;
 
     override prepareDerivedData(): void;
 
@@ -226,7 +219,7 @@ declare global {
       collection: string,
       documents: ClientDocument[],
       result: unknown[],
-      options: DocumentOnCreateOptions<"Combatant"> & InexactPartial<{ combatTurn: number; turnEvents: boolean }>,
+      options: Document.OnCreateOptions<"Combatant"> & InexactPartial<{ combatTurn: number; turnEvents: boolean }>,
       userId: string,
     ): void;
 
@@ -235,7 +228,7 @@ declare global {
       collection: string,
       documents: ClientDocument[],
       changes: unknown[],
-      options: DocumentOnUpdateOptions<"Combatant"> & InexactPartial<{ combatTurn: number; turnEvents: boolean }>,
+      options: Document.OnUpdateOptions<"Combatant"> & InexactPartial<{ combatTurn: number; turnEvents: boolean }>,
       userId: string,
     ): void;
 
@@ -244,7 +237,7 @@ declare global {
       collection: string,
       documents: ClientDocument[],
       ids: string,
-      options: DocumentOnDeleteOptions<"Combatant"> & InexactPartial<{ combatTurn: number; turnEvents: boolean }>,
+      options: Document.OnDeleteOptions<"Combatant"> & InexactPartial<{ combatTurn: number; turnEvents: boolean }>,
       userId: string,
     ): void;
 

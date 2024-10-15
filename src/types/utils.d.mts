@@ -337,7 +337,7 @@ export type MustBePromise<T> = Promise<T>;
  * callback instead.
  *
  * If it is not sound to provide a non-Promise for whatever reason, see
- * {@link MustBePromise | `MaybePromise`} to declare this more explicitly than simply writing
+ * {@link MustBePromise | `MustBePromise`} to declare this more explicitly than simply writing
  * `Promise<T>`.
  *
  * This should generally not be used in asynchronous methods. For example in

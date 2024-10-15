@@ -1,6 +1,5 @@
 import type { Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
-import type { DocumentMetadata } from "../abstract/document.mts";
 import type * as fields from "../data/fields.d.mts";
 import type * as documents from "./_module.mts";
 
@@ -45,7 +44,7 @@ declare namespace BaseFogExploration {
   type Parent = null;
 
   type Metadata = Merge<
-    DocumentMetadata,
+    Document.Metadata.Default,
     {
       name: "FogExploration";
       collection: "fog";

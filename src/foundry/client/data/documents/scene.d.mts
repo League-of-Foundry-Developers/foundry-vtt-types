@@ -1,15 +1,11 @@
-import type {
-  ConfiguredDocumentClassForName,
-  ConfiguredDocumentInstanceForName,
-} from "../../../../types/helperTypes.d.mts";
 import type { InexactPartial } from "../../../../types/utils.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace Scene {
-    type ConfiguredClass = ConfiguredDocumentClassForName<"Scene">;
-    type ConfiguredInstance = ConfiguredDocumentInstanceForName<"Scene">;
+    type ConfiguredClass = Document.ConfiguredClassForName<"Scene">;
+    type ConfiguredInstance = Document.ConfiguredInstanceForName<"Scene">;
 
     /* eslint-disable @typescript-eslint/no-empty-object-type */
     export interface DatabaseOperations

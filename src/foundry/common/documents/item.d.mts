@@ -1,6 +1,5 @@
 import type { AnyObject, InexactPartial, Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
-import type { DocumentMetadata } from "../abstract/document.mts";
 import type * as fields from "../data/fields.d.mts";
 import type * as documents from "./_module.mts";
 
@@ -84,7 +83,7 @@ declare namespace BaseItem {
   type TypeNames = fields.TypeDataField.TypeNames<typeof BaseItem>;
 
   type Metadata = Merge<
-    DocumentMetadata,
+    Document.Metadata.Default,
     {
       name: "Item";
       collection: "items";

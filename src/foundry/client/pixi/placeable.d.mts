@@ -1,11 +1,6 @@
 import type { MakeConform } from "../../../types/helperTypes.d.mts";
 import type { ValueOf } from "../../../types/utils.d.mts";
 import type ApplicationV2 from "../../client-esm/applications/api/application.d.mts";
-import type {
-  DocumentOnCreateOptions,
-  DocumentOnDeleteOptions,
-  DocumentOnUpdateOptions,
-} from "../../common/abstract/document.d.mts";
 import type { Document } from "../../common/abstract/module.d.mts";
 
 // Gets a key with a required shape to conform to which is also used as a fallback when the key doesn't exist.
@@ -237,7 +232,7 @@ declare global {
      */
     protected _onCreate(
       data: foundry.data.fields.SchemaField.InnerAssignmentType<D["schema"]["fields"]>,
-      options: DocumentOnCreateOptions<D["documentName"]>,
+      options: Document.OnCreateOptions<D["documentName"]>,
       userId: string,
     ): void;
 
@@ -247,14 +242,14 @@ declare global {
      */
     protected _onUpdate(
       changed: foundry.data.fields.SchemaField.InnerAssignmentType<D["schema"]["fields"]>,
-      options?: DocumentOnUpdateOptions<D["documentName"]>,
+      options?: Document.OnUpdateOptions<D["documentName"]>,
       userId?: string,
     ): void;
 
     /**
      * Define additional steps taken when an existing placeable object of this type is deleted
      */
-    protected _onDelete(options: DocumentOnDeleteOptions<D["documentName"]>, userId: string): void;
+    protected _onDelete(options: Document.OnDeleteOptions<D["documentName"]>, userId: string): void;
 
     /**
      * Assume control over a PlaceableObject, flagging it as controlled and enabling downstream behaviors

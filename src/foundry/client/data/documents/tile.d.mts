@@ -1,13 +1,10 @@
-import type {
-  ConfiguredDocumentClassForName,
-  ConfiguredDocumentInstanceForName,
-} from "../../../../types/helperTypes.d.mts";
+import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace TileDocument {
-    type ConfiguredClass = ConfiguredDocumentClassForName<"Tile">;
-    type ConfiguredInstance = ConfiguredDocumentInstanceForName<"Tile">;
+    type ConfiguredClass = Document.ConfiguredClassForName<"Tile">;
+    type ConfiguredInstance = Document.ConfiguredInstanceForName<"Tile">;
 
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     export interface DatabaseOperations extends DocumentDatabaseOperations<TileDocument> {}

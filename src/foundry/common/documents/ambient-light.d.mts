@@ -1,6 +1,5 @@
 import type { AnyObject, Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
-import type { DocumentMetadata } from "../abstract/document.mts";
 import type { LightData } from "../data/data.mts";
 import type * as fields from "../data/fields.d.mts";
 
@@ -37,7 +36,7 @@ declare namespace BaseAmbientLight {
   type Parent = Scene.ConfiguredInstance | null;
 
   type Metadata = Merge<
-    DocumentMetadata,
+    Document.Metadata.Default,
     {
       name: "AmbientLight";
       collection: "lights";

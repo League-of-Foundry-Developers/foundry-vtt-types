@@ -3,14 +3,6 @@ import type BaseActiveEffect from "../../../../src/foundry/common/documents/acti
 import type { DatabaseOperationsFor } from "../../../../src/types/helperTypes.d.mts";
 
 import type {
-  DocumentOnCreateOptions,
-  DocumentOnDeleteOptions,
-  DocumentOnUpdateOptions,
-  DocumentPreCreateOptions,
-  DocumentPreDeleteOptions,
-  DocumentPreUpdateOptions,
-} from "../../../../src/foundry/common/abstract/document.d.mts";
-import type {
   DatabaseCreateOperation,
   DatabaseDeleteOperation,
   DatabaseUpdateOperation,
@@ -114,29 +106,29 @@ expectTypeOf(dbo.delete).toEqualTypeOf<DatabaseDeleteOperation & { animate?: boo
 expectTypeOf(dbo.delete).toEqualTypeOf<DatabaseOperationsFor<"ActiveEffect", "delete">>();
 
 // test the options
-declare const pco: DocumentPreCreateOptions<"ActiveEffect">;
+declare const pco: Document.PreCreateOptions<"ActiveEffect">;
 expectTypeOf(pco).toEqualTypeOf<
   Omit<DatabaseOperationsFor<"ActiveEffect", "create">, "data" | "noHook" | "pack" | "parent">
 >();
-declare const oco: DocumentOnCreateOptions<"ActiveEffect">;
+declare const oco: Document.OnCreateOptions<"ActiveEffect">;
 expectTypeOf(oco).toEqualTypeOf<
   Omit<DatabaseOperationsFor<"ActiveEffect", "create">, "pack" | "parentUuid" | "syntheticActorUpdate">
 >();
 
-declare const puo: DocumentPreUpdateOptions<"ActiveEffect">;
+declare const puo: Document.PreUpdateOptions<"ActiveEffect">;
 expectTypeOf(puo).toEqualTypeOf<
   Omit<DatabaseOperationsFor<"ActiveEffect", "update">, "updates" | "restoreDelta" | "noHook" | "parent" | "pack">
 >();
-declare const ouo: DocumentOnUpdateOptions<"ActiveEffect">;
+declare const ouo: Document.OnUpdateOptions<"ActiveEffect">;
 expectTypeOf(ouo).toEqualTypeOf<
   Omit<DatabaseOperationsFor<"ActiveEffect", "update">, "pack" | "parentUuid" | "syntheticActorUpdate">
 >();
 
-declare const pdo: DocumentPreDeleteOptions<"ActiveEffect">;
+declare const pdo: Document.PreDeleteOptions<"ActiveEffect">;
 expectTypeOf(pdo).toEqualTypeOf<
   Omit<DatabaseOperationsFor<"ActiveEffect", "delete">, "ids" | "deleteAll" | "noHook" | "pack" | "parent">
 >();
-declare const odo: DocumentOnDeleteOptions<"ActiveEffect">;
+declare const odo: Document.OnDeleteOptions<"ActiveEffect">;
 expectTypeOf(odo).toEqualTypeOf<
   Omit<DatabaseOperationsFor<"ActiveEffect", "delete">, "deleteAll" | "pack" | "parentUuid" | "syntheticActorUpdate">
 >();

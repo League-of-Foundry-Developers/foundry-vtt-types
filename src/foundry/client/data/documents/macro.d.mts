@@ -1,17 +1,14 @@
-import type {
-  ConfiguredDocumentClassForName,
-  ConfiguredDocumentInstanceForName,
-} from "../../../../types/helperTypes.d.mts";
 import type { InexactPartial } from "../../../../types/utils.d.mts";
+import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace Macro {
-    type ConfiguredClass = ConfiguredDocumentClassForName<"Macro">;
-    type ConfiguredInstance = ConfiguredDocumentInstanceForName<"Macro">;
+    type ConfiguredClass = Document.ConfiguredClassForName<"Macro">;
+    type ConfiguredInstance = Document.ConfiguredInstanceForName<"Macro">;
 
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    export interface DatabaseOperations extends DocumentDatabaseOperations<Macro> {}
+    interface DatabaseOperations extends DocumentDatabaseOperations<Macro> {}
 
     interface Scope {
       /** An Actor who is the protagonist of the executed action. */

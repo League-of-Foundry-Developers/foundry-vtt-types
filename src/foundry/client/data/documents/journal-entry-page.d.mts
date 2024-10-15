@@ -1,17 +1,14 @@
-import type {
-  ConfiguredDocumentClassForName,
-  ConfiguredDocumentInstanceForName,
-} from "../../../../types/helperTypes.d.mts";
 import type { InexactPartial } from "../../../../types/utils.d.mts";
+import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace JournalEntryPage {
-    type ConfiguredClass = ConfiguredDocumentClassForName<"JournalEntryPage">;
-    type ConfiguredInstance = ConfiguredDocumentInstanceForName<"JournalEntryPage">;
+    type ConfiguredClass = Document.ConfiguredClassForName<"JournalEntryPage">;
+    type ConfiguredInstance = Document.ConfiguredInstanceForName<"JournalEntryPage">;
 
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    export interface DatabaseOperations extends DocumentDatabaseOperations<JournalEntryPage> {}
+    interface DatabaseOperations extends DocumentDatabaseOperations<JournalEntryPage> {}
 
     interface JournalEntryPageHeading {
       /** The heading level, 1-6. */

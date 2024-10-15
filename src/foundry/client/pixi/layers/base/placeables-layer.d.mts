@@ -1,6 +1,5 @@
 import type { ConstructorOf, InexactPartial, ValueOf } from "../../../../../types/utils.d.mts";
 import type Document from "../../../../common/abstract/document.d.mts";
-import type { DocumentOnUpdateOptions } from "../../../../common/abstract/document.d.mts";
 import type EmbeddedCollection from "../../../../common/abstract/embedded-collection.d.mts";
 
 type ConcretePlaceableOrPlaceableObject<T> = T extends PlaceableObject ? T : PlaceableObject;
@@ -325,7 +324,7 @@ declare global {
           ) => Partial<InstanceType<Document.ConfiguredClassForName<DocumentName>>["_source"]>)
         | Partial<InstanceType<Document.ConfiguredClassForName<DocumentName>>["_source"]>,
       condition?: ((placeable: InstanceType<Document.ConfiguredObjectClassForName<DocumentName>>) => boolean) | null,
-      options?: DocumentOnUpdateOptions<DocumentName>,
+      options?: Document.OnUpdateOptions<DocumentName>,
     ): Promise<Array<InstanceType<Document.ConfiguredClassForName<DocumentName>>>>;
 
     /**

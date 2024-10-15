@@ -1,6 +1,5 @@
 import type { InexactPartial, Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
-import type { DocumentMetadata } from "../abstract/document.mts";
 import type * as fields from "../data/fields.d.mts";
 
 declare global {
@@ -49,7 +48,7 @@ declare namespace BasePlaylistSound {
   type Parent = Playlist.ConfiguredInstance | null;
 
   type Metadata = Merge<
-    DocumentMetadata,
+    Document.Metadata.Default,
     {
       name: "PlaylistSound";
       collection: "sounds";

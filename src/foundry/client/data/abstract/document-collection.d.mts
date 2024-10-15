@@ -1,6 +1,5 @@
 import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
-import type { DocumentOnUpdateOptions } from "../../../common/abstract/document.d.mts";
 
 declare global {
   /**
@@ -167,7 +166,7 @@ declare global {
         | DeepPartial<Document.ToConfiguredInstance<T>["_source"]>
         | ((doc: Document.ToConfiguredStored<T>) => DeepPartial<Document.ToConfiguredInstance<T>["_source"]>),
       condition?: ((obj: Document.ToConfiguredStored<T>) => boolean) | null,
-      options?: DocumentOnUpdateOptions<T["metadata"]["name"]>,
+      options?: Document.OnUpdateOptions<T["metadata"]["name"]>,
     ): ReturnType<this["documentClass"]["updateDocuments"]>;
   }
 

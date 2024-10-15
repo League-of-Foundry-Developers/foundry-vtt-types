@@ -2,15 +2,6 @@ import type { ConfiguredDocumentInstance } from "../../../../types/helperTypes.d
 import type { ConstructorOf, DeepPartial, InexactPartial, Mixin, ValueOf } from "../../../../types/utils.d.mts";
 import type { DatabaseCreateOperation } from "../../../common/abstract/_types.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
-import type {
-  DocumentModificationOptions,
-  DocumentOnCreateOptions,
-  DocumentOnDeleteOptions,
-  DocumentOnUpdateOptions,
-  DocumentPreCreateOptions,
-  DocumentPreDeleteOptions,
-  DocumentPreUpdateOptions,
-} from "../../../common/abstract/document.d.mts";
 
 declare class ClientDocument<BaseDocument extends Document.Internal.Instance.Any = Document.Any> {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
@@ -216,7 +207,7 @@ declare class ClientDocument<BaseDocument extends Document.Internal.Instance.Any
     parent: ClientDocument,
     collection: string,
     data: unknown[],
-    options: DocumentPreCreateOptions<any>,
+    options: Document.PreCreateOptions<any>,
     userId: string,
   ): void;
 
@@ -234,7 +225,7 @@ declare class ClientDocument<BaseDocument extends Document.Internal.Instance.Any
     collection: string,
     documents: ClientDocument[],
     data: unknown[],
-    options: DocumentOnCreateOptions<any> & InexactPartial<{ render: boolean }>,
+    options: Document.OnCreateOptions<any> & InexactPartial<{ render: boolean }>,
     userId: string,
   ): void;
   /**
@@ -249,7 +240,7 @@ declare class ClientDocument<BaseDocument extends Document.Internal.Instance.Any
     parent: ClientDocument,
     collection: string,
     changes: unknown[],
-    options: DocumentPreUpdateOptions<any>,
+    options: Document.PreUpdateOptions<any>,
     userId: string,
   ): void;
 
@@ -267,7 +258,7 @@ declare class ClientDocument<BaseDocument extends Document.Internal.Instance.Any
     collection: string,
     documents: ClientDocument[],
     changes: unknown[],
-    options: DocumentOnUpdateOptions<any> & InexactPartial<{ render: boolean }>,
+    options: Document.OnUpdateOptions<any> & InexactPartial<{ render: boolean }>,
     userId: string,
   ): void;
 
@@ -283,7 +274,7 @@ declare class ClientDocument<BaseDocument extends Document.Internal.Instance.Any
     parent: ClientDocument,
     collection: string,
     ids: string[],
-    options: DocumentPreDeleteOptions<any>,
+    options: Document.PreDeleteOptions<any>,
     userId: string,
   ): void;
 
@@ -301,7 +292,7 @@ declare class ClientDocument<BaseDocument extends Document.Internal.Instance.Any
     collection: string,
     documents: ClientDocument[],
     ids: string,
-    options: DocumentOnDeleteOptions<any> & InexactPartial<{ render: boolean }>,
+    options: Document.OnDeleteOptions<any> & InexactPartial<{ render: boolean }>,
     userId: string,
   ): void;
 
@@ -520,7 +511,7 @@ declare class ClientDocument<BaseDocument extends Document.Internal.Instance.Any
   protected _preCreateEmbeddedDocuments(
     embeddedName: string,
     result: Record<string, unknown>[],
-    options: DocumentModificationOptions,
+    options: Document.ModificationOptions,
     userId: string,
   ): void;
 
@@ -537,7 +528,7 @@ declare class ClientDocument<BaseDocument extends Document.Internal.Instance.Any
     embeddedName: string,
     documents: Document.Any[],
     result: Record<string, unknown>[],
-    options: DocumentModificationOptions,
+    options: Document.ModificationOptions,
     userId: string,
   ): void;
 
@@ -552,7 +543,7 @@ declare class ClientDocument<BaseDocument extends Document.Internal.Instance.Any
   protected _preUpdateEmbeddedDocuments(
     embeddedName: string,
     result: Record<string, unknown>[],
-    options: DocumentModificationOptions,
+    options: Document.ModificationOptions,
     userId: string,
   ): void;
 

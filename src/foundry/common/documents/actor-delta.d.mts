@@ -1,6 +1,4 @@
-import type { ConfiguredDocumentClassForName } from "../../../types/helperTypes.d.mts";
 import type { AnyObject, InexactPartial, Merge } from "../../../types/utils.d.mts";
-import type { DocumentMetadata } from "../abstract/document.mts";
 import type Document from "../abstract/document.mts";
 import type { fields } from "../data/module.d.mts";
 import type { CONST, documents } from "../../client-esm/client.d.mts";
@@ -52,7 +50,7 @@ declare class BaseActorDelta extends Document<BaseActorDelta.Schema, BaseActorDe
     delta: BaseActorDelta,
     baseActor: documents.BaseActor,
     context: unknown,
-  ): ConfiguredDocumentClassForName<"Actor"> | null;
+  ): Document.ConfiguredClassForName<"Actor"> | null;
 
   //TODO: Figure out if this override still applies
   toObject(source: true): this["_source"];
@@ -73,7 +71,7 @@ declare namespace BaseActorDelta {
   type Source = fields.SchemaField.InnerPersistedType<Schema>;
 
   type Metadata = Merge<
-    DocumentMetadata,
+    Document.Metadata.Default,
     {
       name: "ActorDelta";
       collection: "delta";

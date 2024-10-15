@@ -1,19 +1,14 @@
-import type {
-  ConfiguredDocumentClassForName,
-  ConfiguredDocumentInstance,
-  ConfiguredDocumentInstanceForName,
-} from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace Folder {
-    type ConfiguredClass = ConfiguredDocumentClassForName<"Folder">;
-    type ConfiguredInstance = ConfiguredDocumentInstanceForName<"Folder">;
+    type ConfiguredClass = Document.ConfiguredClassForName<"Folder">;
+    type ConfiguredInstance = Document.ConfiguredInstanceForName<"Folder">;
 
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    export interface DatabaseOperations extends DocumentDatabaseOperations<Folder> {}
+    interface DatabaseOperations extends DocumentDatabaseOperations<Folder> {}
 
     interface ExportToCompendiumOptions {
       /** Update existing entries in the Compendium pack, matching by name */
