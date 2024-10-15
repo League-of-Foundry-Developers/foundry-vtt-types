@@ -1,4 +1,4 @@
-import type { StoredDocument } from "../../../../../types/utils.d.mts";
+import type Document from "../../../../common/abstract/document.d.mts";
 
 declare global {
   /**
@@ -18,7 +18,7 @@ declare global {
      * Record the currently tracked Combat encounter
      * @defaultValue `null`
      */
-    viewed: StoredDocument<Combat.ConfiguredInstance> | null;
+    viewed: Document.Stored<Combat.ConfiguredInstance> | null;
 
     /**
      * @defaultValue
@@ -36,7 +36,7 @@ declare global {
     /**
      * Return an array of Combat encounters which occur within the current Scene.
      */
-    get combats(): StoredDocument<Combat.ConfiguredInstance>[];
+    get combats(): Document.Stored<Combat.ConfiguredInstance>[];
 
     override createPopout(): this;
 

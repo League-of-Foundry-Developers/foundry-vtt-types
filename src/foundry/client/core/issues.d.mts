@@ -1,11 +1,11 @@
-import type { DocumentConstructor, DocumentType } from "../../../types/helperTypes.d.mts";
+import type Document from "../../common/abstract/document.d.mts";
 import type { DataModelValidationError } from "../../common/data/validation-failure.d.mts";
 
 declare global {
   /**
    * An object structure of document types at the top level, with a count of different sub-types for that document type.
    */
-  interface ModuleSubTypeCounts extends Record<DocumentType, Record<string, number>> {}
+  interface ModuleSubTypeCounts extends Record<Document.Type, Record<string, number>> {}
 
   /**
    * A class responsible for tracking issues in the current world.
@@ -21,7 +21,7 @@ declare global {
      * Keep track of document validation failures.
      */
     #documentValidationFailures: Record<
-      DocumentType,
+      Document.Type,
       Record<string, { name: string; error: DataModelValidationError }>
     >;
 
@@ -89,7 +89,7 @@ declare global {
      * @param subType           - The Document's sub-type.
      */
     #countDocumentSubType(
-      documentName: DocumentType,
+      documentName: Document.Type,
       subType: string,
       options?: {
         /**
@@ -131,7 +131,7 @@ declare global {
      * @remarks official documentation says "invalid", but the document can be valid, it is simply not yet validated.
      */
     _countDocumentSubType(
-      documentName: DocumentType,
+      documentName: Document.Type,
       source: unknown,
       options?: {
         /**
@@ -150,7 +150,7 @@ declare global {
      * @internal
      */
     _trackValidationFailures(
-      collection: WorldCollection<DocumentConstructor, string>,
+      collection: WorldCollection<Document.AnyConstructor, string>,
       source: unknown,
       error: DataModelValidationError,
     ): void;
@@ -175,7 +175,7 @@ declare global {
     /**
      * Retrieve the tracked validation failures.
      */
-    get validationFailures(): Record<DocumentType, Record<string, { name: string; error: DataModelValidationError }>>;
+    get validationFailures(): Record<Document.Type, Record<string, { name: string; error: DataModelValidationError }>>;
 
     /**
      * Retrieve the tracked usability issues.

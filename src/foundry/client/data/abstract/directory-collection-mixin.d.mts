@@ -1,17 +1,13 @@
-import type {
-  ConfiguredDocumentClass,
-  ConfiguredDocumentInstance,
-  DocumentConstructor,
-} from "../../../../types/helperTypes.d.mts";
 import type { Mixin } from "../../../../types/utils.d.mts";
+import type Document from "../../../common/abstract/document.d.mts";
 
 type DocumentCollectionBase = DirectoryCollection<DirectoryCollection.DirectoryTypes> &
-  DocumentCollection<DocumentConstructor, string>;
+  DocumentCollection<Document.AnyConstructor, string>;
 
 export interface MixedDocumentCollectionInterface extends DocumentCollectionBase {
-  new <T extends DocumentConstructor, Name extends string>(
+  new <T extends Document.AnyConstructor, Name extends string>(
     ...args: ConstructorParameters<typeof DocumentCollection>
-  ): DirectoryCollection<ConfiguredDocumentInstance<T>> & DocumentCollection<ConfiguredDocumentClass<T>, Name>;
+  ): DirectoryCollection<Document.ToConfiguredInstance<T>> & DocumentCollection<Document.ToConfiguredClass<T>, Name>;
 }
 
 type CollectionBase = DirectoryCollection<DirectoryCollection.DirectoryTypes> &

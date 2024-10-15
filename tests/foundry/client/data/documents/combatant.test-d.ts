@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { StoredDocument } from "../../../../../src/types/utils.d.mts";
+import type Document from "../../../../../src/foundry/common/abstract/document.d.mts";
 
 const combatant = new Combatant({}, {});
 
@@ -13,8 +13,8 @@ expectTypeOf(combatant.apps).toEqualTypeOf<Record<string, Application>>();
 
 // static properties
 expectTypeOf(Combatant.create({ name: "Some Combatant" })).toEqualTypeOf<
-  Promise<StoredDocument<Combatant> | undefined>
+  Promise<Document.Stored<Combatant> | undefined>
 >();
-expectTypeOf(Combatant.createDocuments([])).toEqualTypeOf<Promise<StoredDocument<Combatant>[]>>();
+expectTypeOf(Combatant.createDocuments([])).toEqualTypeOf<Promise<Document.Stored<Combatant>[]>>();
 expectTypeOf(Combatant.updateDocuments([])).toEqualTypeOf<Promise<Combatant[]>>();
 expectTypeOf(Combatant.deleteDocuments([])).toEqualTypeOf<Promise<Combatant[]>>();

@@ -1,8 +1,8 @@
-import type { ConfiguredDocumentClassForName, GetKey } from "../../types/helperTypes.d.mts";
-import type { ConstructorOf, PropertyTypeOrFallback } from "../../types/utils.d.mts";
+import type { GetKey } from "../../types/helperTypes.d.mts";
+import type { PropertyTypeOrFallback } from "../../types/utils.d.mts";
 import type * as CONST from "../common/constants.d.mts";
 import type { StatusEffect } from "./data/documents/token.d.mts";
-import type { DataModel } from "../common/abstract/module.d.mts";
+import type { DataModel, Document } from "../common/abstract/module.d.mts";
 
 declare global {
   /**
@@ -108,10 +108,10 @@ declare global {
      */
     Actor: {
       /** @defaultValue `Actor` */
-      documentClass: ConfiguredDocumentClassForName<"Actor">;
+      documentClass: Document.ConfiguredClassForName<"Actor">;
 
       /** @defaultValue `Actors` */
-      collection: ConstructorOf<Actors>;
+      collection: typeof Actors;
 
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
@@ -126,7 +126,7 @@ declare global {
        * @defaultValue `{}`
        * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
        */
-      dataModels: Record<string, ConstructorOf<DataModel<any, Actor>>>;
+      dataModels: Record<string, typeof DataModel<any, Actor>>;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -153,7 +153,7 @@ declare global {
      */
     Adventure: {
       /** @defaultValue `foundry.documents.BaseAdventure` */
-      documentClass: ConfiguredDocumentClassForName<"Adventure">;
+      documentClass: Document.ConfiguredClassForName<"Adventure">;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -180,13 +180,13 @@ declare global {
      */
     Cards: {
       /** @defaultValue `CardStacks` */
-      collection: ConstructorOf<CardStacks>;
+      collection: typeof CardStacks;
 
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
 
       /** @defaultValue `Cards` */
-      documentClass: ConfiguredDocumentClassForName<"Cards">;
+      documentClass: Document.ConfiguredClassForName<"Cards">;
 
       /** @defaultValue `"fa-solid fa-cards"` */
       sidebarIcon: string;
@@ -195,7 +195,7 @@ declare global {
        * @defaultValue `{}`
        * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
        */
-      dataModels: Record<string, ConstructorOf<DataModel<any, Cards>>>;
+      dataModels: Record<string, typeof DataModel<any, Cards>>;
 
       /**
        * @defaultValue
@@ -243,7 +243,7 @@ declare global {
      */
     ChatMessage: {
       /** @defaultValue `ChatMessage` */
-      documentClass: ConfiguredDocumentClassForName<"ChatMessage">;
+      documentClass: Document.ConfiguredClassForName<"ChatMessage">;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -257,7 +257,7 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `Messages` */
-      collection: ConstructorOf<Messages>;
+      collection: typeof Messages;
 
       /** @defaultValue `"templates/sidebar/chat-message.html"` */
       template: string;
@@ -274,7 +274,7 @@ declare global {
      */
     Combat: {
       /** @defaultValue `Combat` */
-      documentClass: ConfiguredDocumentClassForName<"Combat">;
+      documentClass: Document.ConfiguredClassForName<"Combat">;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -288,7 +288,7 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `CombatEncounters` */
-      collection: ConstructorOf<CombatEncounters>;
+      collection: typeof CombatEncounters;
 
       /** @defaultValue `"fas fa-swords"` */
       sidebarIcon: string;
@@ -331,7 +331,7 @@ declare global {
        * The Dice types which are supported.
        * @defaultValue `[Die, FateDie]`
        */
-      types: Array<ConstructorOf<DiceTerm>>;
+      types: Array<typeof DiceTerm>;
 
       rollModes: CONFIG.Dice.RollModes;
 
@@ -339,7 +339,7 @@ declare global {
        * Configured Roll class definitions
        * @defaultValue `[Roll]`
        */
-      rolls: Array<ConstructorOf<Roll>>;
+      rolls: Array<typeof Roll>;
 
       /**
        * Configured DiceTerm class definitions
@@ -356,7 +356,7 @@ declare global {
        * }
        * ```
        */
-      termTypes: Record<string, ConstructorOf<RollTerm>>;
+      termTypes: Record<string, typeof RollTerm>;
 
       /**
        * Configured roll terms and the classes they map to.
@@ -365,21 +365,21 @@ declare global {
         c: typeof Coin;
         d: typeof Die;
         f: typeof FateDie;
-      } & Record<string, ConstructorOf<DiceTerm>>;
+      } & Record<string, typeof DiceTerm>;
 
       /**
        * A function used to provide random uniform values.
        * @defaultValue `MersenneTwister.random`
        */
       randomUniform: () => number;
-    } & Record<string, ConstructorOf<Roll>>; // Common pattern
+    } & Record<string, typeof Roll>; // Common pattern
 
     /**
      * Configuration for the FogExploration document
      */
     FogExploration: {
       /** @defaultValue `FogExploration` */
-      documentClass: ConfiguredDocumentClassForName<"FogExploration">;
+      documentClass: Document.ConfiguredClassForName<"FogExploration">;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -392,7 +392,7 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `FogExplorations` */
-      collection: ConstructorOf<FogExplorations>;
+      collection: typeof FogExplorations;
     };
 
     /**
@@ -400,10 +400,10 @@ declare global {
      */
     Folder: {
       /** @defaultValue `Folder` */
-      documentClass: ConfiguredDocumentClassForName<"Folder">;
+      documentClass: Document.ConfiguredClassForName<"Folder">;
 
       /** @defaultValue `Folders` */
-      collection: ConstructorOf<Folders>;
+      collection: typeof Folders;
 
       /** @defaultValue `"fas fa-folder"` */
       sidebarIcon: string;
@@ -424,10 +424,10 @@ declare global {
      */
     Item: {
       /** @defaultValue `Item` */
-      documentClass: ConfiguredDocumentClassForName<"Item">;
+      documentClass: Document.ConfiguredClassForName<"Item">;
 
       /** @defaultValue `Items` */
-      collection: ConstructorOf<Items>;
+      collection: typeof Items;
 
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
@@ -442,7 +442,7 @@ declare global {
        * @defaultValue `{}`
        * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
        */
-      dataModels: Record<string, ConstructorOf<DataModel<any, Item>>>;
+      dataModels: Record<string, typeof DataModel<any, Item>>;
 
       /**
        * @defaultValue `{}`
@@ -461,7 +461,7 @@ declare global {
      */
     JournalEntry: {
       /** @defaultValue `JournalEntry` */
-      documentClass: ConfiguredDocumentClassForName<"JournalEntry">;
+      documentClass: Document.ConfiguredClassForName<"JournalEntry">;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -474,7 +474,7 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `Journal` */
-      collection: ConstructorOf<Journal>;
+      collection: typeof Journal;
 
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
@@ -574,7 +574,7 @@ declare global {
      */
     Macro: {
       /** @defaultValue `Macro` */
-      documentClass: ConfiguredDocumentClassForName<"Macro">;
+      documentClass: Document.ConfiguredClassForName<"Macro">;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -587,7 +587,7 @@ declare global {
       typeLabels?: Record<foundry.documents.BaseMacro.TypeNames, string>;
 
       /** @defaultValue `Macros` */
-      collection: ConstructorOf<Macros>;
+      collection: typeof Macros;
 
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
@@ -604,7 +604,7 @@ declare global {
      */
     Playlist: {
       /** @defaultValue `Playlist` */
-      documentClass: ConfiguredDocumentClassForName<"Playlist">;
+      documentClass: Document.ConfiguredClassForName<"Playlist">;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -617,7 +617,7 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `Playlists` */
-      collection: ConstructorOf<Playlists>;
+      collection: typeof Playlists;
 
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
@@ -637,7 +637,7 @@ declare global {
      */
     RollTable: {
       /** @defaultValue `RollTable` */
-      documentClass: ConfiguredDocumentClassForName<"RollTable">;
+      documentClass: Document.ConfiguredClassForName<"RollTable">;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -650,7 +650,7 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `RollTables` */
-      collection: ConstructorOf<RollTables>;
+      collection: typeof RollTables;
 
       /** @defaultValue `["formula"]` */
       compendiumIndexFields: string[];
@@ -673,7 +673,7 @@ declare global {
      */
     Scene: {
       /** @defaultValue `Scene` */
-      documentClass: ConfiguredDocumentClassForName<"Scene">;
+      documentClass: Document.ConfiguredClassForName<"Scene">;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -686,7 +686,7 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `Scenes` */
-      collection: ConstructorOf<Scenes>;
+      collection: typeof Scenes;
 
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
@@ -700,7 +700,7 @@ declare global {
 
     Setting: {
       /** @defaultValue `Setting` */
-      documentClass: ConfiguredDocumentClassForName<"Setting">;
+      documentClass: Document.ConfiguredClassForName<"Setting">;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -713,7 +713,7 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `WorldSettings` */
-      collection: ConstructorOf<WorldSettings>;
+      collection: typeof WorldSettings;
     };
 
     /**
@@ -721,7 +721,7 @@ declare global {
      */
     User: {
       /** @defaultValue `User` */
-      documentClass: ConfiguredDocumentClassForName<"User">;
+      documentClass: Document.ConfiguredClassForName<"User">;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -734,7 +734,7 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `Users` */
-      collection: ConstructorOf<Users>;
+      collection: typeof Users;
     };
 
     /**
@@ -850,10 +850,10 @@ declare global {
           animation: CONFIG.Canvas.LightAnimationFunction;
 
           /** @defaultValue `FlameIlluminationShader` */
-          illuminationShader: ConstructorOf<AbstractBaseShader>;
+          illuminationShader: typeof AbstractBaseShader;
 
           /** @defaultValue `FlameColorationShader` */
-          colorationShader: ConstructorOf<AbstractBaseShader>;
+          colorationShader: typeof AbstractBaseShader;
         };
 
         torch: {
@@ -864,10 +864,10 @@ declare global {
           animation: CONFIG.Canvas.LightAnimationFunction;
 
           /** @defaultValue `TorchIlluminationShader` */
-          illuminationShader: ConstructorOf<AbstractBaseShader>;
+          illuminationShader: typeof AbstractBaseShader;
 
           /** @defaultValue `TorchColorationShader` */
-          colorationShader: ConstructorOf<AbstractBaseShader>;
+          colorationShader: typeof AbstractBaseShader;
         };
 
         revolving: {
@@ -878,7 +878,7 @@ declare global {
           animation: CONFIG.Canvas.LightAnimationFunction;
 
           /** @defaultValue `RevolvingColorationShader` */
-          colorationShader: ConstructorOf<AbstractBaseShader>;
+          colorationShader: typeof AbstractBaseShader;
         };
 
         siren: {
@@ -889,10 +889,10 @@ declare global {
           animation: CONFIG.Canvas.LightAnimationFunction;
 
           /** @defaultValue `SirenIlluminationShader` */
-          illuminationShader: ConstructorOf<AbstractBaseShader>;
+          illuminationShader: typeof AbstractBaseShader;
 
           /** @defaultValue `SirenIlluminationShader` */
-          colorationShader: ConstructorOf<AbstractBaseShader>;
+          colorationShader: typeof AbstractBaseShader;
         };
 
         pulse: {
@@ -903,10 +903,10 @@ declare global {
           animation: CONFIG.Canvas.LightAnimationFunction;
 
           /** @defaultValue `PulseIlluminationShader` */
-          illuminationShader: ConstructorOf<AbstractBaseShader>;
+          illuminationShader: typeof AbstractBaseShader;
 
           /** @defaultValue `PulseColorationShader` */
-          colorationShader: ConstructorOf<AbstractBaseShader>;
+          colorationShader: typeof AbstractBaseShader;
         };
 
         chroma: {
@@ -917,7 +917,7 @@ declare global {
           animation: CONFIG.Canvas.LightAnimationFunction;
 
           /** @defaultValue `ChromaColorationShader` */
-          colorationShader: ConstructorOf<AbstractBaseShader>;
+          colorationShader: typeof AbstractBaseShader;
         };
 
         wave: {
@@ -928,10 +928,10 @@ declare global {
           animation: CONFIG.Canvas.LightAnimationFunction;
 
           /** @defaultValue `WaveIlluminationShader` */
-          illuminationShader: ConstructorOf<AbstractBaseShader>;
+          illuminationShader: typeof AbstractBaseShader;
 
           /** @defaultValue `WaveColorationShader` */
-          colorationShader: ConstructorOf<AbstractBaseShader>;
+          colorationShader: typeof AbstractBaseShader;
         };
 
         fog: {
@@ -942,7 +942,7 @@ declare global {
           animation: CONFIG.Canvas.LightAnimationFunction;
 
           /** @defaultValue `FogColorationShader` */
-          colorationShader: ConstructorOf<AbstractBaseShader>;
+          colorationShader: typeof AbstractBaseShader;
         };
 
         sunburst: {
@@ -953,10 +953,10 @@ declare global {
           animation: CONFIG.Canvas.LightAnimationFunction;
 
           /** @defaultValue `SunburstIlluminationShader` */
-          illuminationShader: ConstructorOf<AbstractBaseShader>;
+          illuminationShader: typeof AbstractBaseShader;
 
           /** @defaultValue `SunburstColorationShader` */
-          colorationShader: ConstructorOf<AbstractBaseShader>;
+          colorationShader: typeof AbstractBaseShader;
         };
 
         dome: {
@@ -967,7 +967,7 @@ declare global {
           animation: CONFIG.Canvas.LightAnimationFunction;
 
           /** @defaultValue `LightDomeColorationShader` */
-          colorationShader: ConstructorOf<AbstractBaseShader>;
+          colorationShader: typeof AbstractBaseShader;
         };
 
         emanation: {
@@ -978,7 +978,7 @@ declare global {
           animation: CONFIG.Canvas.LightAnimationFunction;
 
           /** @defaultValue `EmanationColorationShader` */
-          colorationShader: ConstructorOf<AbstractBaseShader>;
+          colorationShader: typeof AbstractBaseShader;
         };
 
         hexa: {
@@ -989,7 +989,7 @@ declare global {
           animation: CONFIG.Canvas.LightAnimationFunction;
 
           /** @defaultValue `HexaDomeColorationShader` */
-          colorationShader: ConstructorOf<AbstractBaseShader>;
+          colorationShader: typeof AbstractBaseShader;
         };
 
         ghost: {
@@ -1000,10 +1000,10 @@ declare global {
           animation: CONFIG.Canvas.LightAnimationFunction;
 
           /** @defaultValue `GhostLightIlluminationShader` */
-          illuminationShader: ConstructorOf<AbstractBaseShader>;
+          illuminationShader: typeof AbstractBaseShader;
 
           /** @defaultValue `GhostLightColorationShader` */
-          colorationShader: ConstructorOf<AbstractBaseShader>;
+          colorationShader: typeof AbstractBaseShader;
         };
 
         energy: {
@@ -1014,7 +1014,7 @@ declare global {
           animation: CONFIG.Canvas.LightAnimationFunction;
 
           /** @defaultValue `EnergyFieldColorationShader` */
-          colorationShader: ConstructorOf<AbstractBaseShader>;
+          colorationShader: typeof AbstractBaseShader;
         };
 
         roiling: {
@@ -1025,7 +1025,7 @@ declare global {
           animation: CONFIG.Canvas.LightAnimationFunction;
 
           /** @defaultValue `RoilingIlluminationShader` */
-          illuminationShader: ConstructorOf<AbstractBaseShader>;
+          illuminationShader: typeof AbstractBaseShader;
         };
 
         hole: {
@@ -1036,7 +1036,7 @@ declare global {
           animation: CONFIG.Canvas.LightAnimationFunction;
 
           /** @defaultValue `BlackHoleIlluminationShader` */
-          illuminationShader: ConstructorOf<AbstractBaseShader>;
+          illuminationShader: typeof AbstractBaseShader;
         };
 
         vortex: {
@@ -1047,10 +1047,10 @@ declare global {
           animation: CONFIG.Canvas.LightAnimationFunction;
 
           /** @defaultValue `VortexIlluminationShader` */
-          illuminationShader: ConstructorOf<AbstractBaseShader>;
+          illuminationShader: typeof AbstractBaseShader;
 
           /** @defaultValue `VortexColorationShader` */
-          colorationShader: ConstructorOf<AbstractBaseShader>;
+          colorationShader: typeof AbstractBaseShader;
         };
 
         witchwave: {
@@ -1061,10 +1061,10 @@ declare global {
           animation: CONFIG.Canvas.LightAnimationFunction;
 
           /** @defaultValue `BewitchingWaveIlluminationShader` */
-          illuminationShader: ConstructorOf<AbstractBaseShader>;
+          illuminationShader: typeof AbstractBaseShader;
 
           /** @defaultValue `BewitchingWaveColorationShader` */
-          colorationShader: ConstructorOf<AbstractBaseShader>;
+          colorationShader: typeof AbstractBaseShader;
         };
 
         rainbowswirl: {
@@ -1075,7 +1075,7 @@ declare global {
           animation: CONFIG.Canvas.LightAnimationFunction;
 
           /** @defaultValue `SwirlingRainbowColorationShader` */
-          colorationShader: ConstructorOf<AbstractBaseShader>;
+          colorationShader: typeof AbstractBaseShader;
         };
 
         radialrainbow: {
@@ -1086,7 +1086,7 @@ declare global {
           animation: CONFIG.Canvas.LightAnimationFunction;
 
           /** @defaultValue `RadialRainbowColorationShader` */
-          colorationShader: ConstructorOf<AbstractBaseShader>;
+          colorationShader: typeof AbstractBaseShader;
         };
 
         fairy: {
@@ -1097,18 +1097,18 @@ declare global {
           animation: CONFIG.Canvas.LightAnimationFunction;
 
           /** @defaultValue `FairyLightIlluminationShader` */
-          illuminationShader: ConstructorOf<AbstractBaseShader>;
+          illuminationShader: typeof AbstractBaseShader;
 
           /** @defaultValue `FairyLightColorationShader` */
-          colorationShader: ConstructorOf<AbstractBaseShader>;
+          colorationShader: typeof AbstractBaseShader;
         };
       } & Record<
         string,
         {
           label: string;
           animation: CONFIG.Canvas.LightAnimationFunction;
-          illuminationShader?: ConstructorOf<AbstractBaseShader>;
-          colorationShader?: ConstructorOf<AbstractBaseShader>;
+          illuminationShader?: typeof AbstractBaseShader;
+          colorationShader?: typeof AbstractBaseShader;
         }
       >;
 
@@ -1896,7 +1896,7 @@ declare global {
      */
     ActiveEffect: {
       /** @defaultValue `ActiveEffect` */
-      documentClass: ConfiguredDocumentClassForName<"ActiveEffect">;
+      documentClass: Document.ConfiguredClassForName<"ActiveEffect">;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -1924,7 +1924,7 @@ declare global {
      */
     ActorDelta: {
       /** @defaultValue `ActorDelta` */
-      documentClass: ConfiguredDocumentClassForName<"ActorDelta">;
+      documentClass: Document.ConfiguredClassForName<"ActorDelta">;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -1942,13 +1942,13 @@ declare global {
      */
     Card: {
       /** @defaultValue `Card` */
-      documentClass: ConfiguredDocumentClassForName<"Card">;
+      documentClass: Document.ConfiguredClassForName<"Card">;
 
       /**
        * @defaultValue `{}`
        * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
        */
-      dataModels: Record<string, ConstructorOf<DataModel<any, Card>>>;
+      dataModels: Record<string, typeof DataModel<any, Card>>;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -1966,7 +1966,7 @@ declare global {
      */
     TableResult: {
       /** @defaultValue `TableResult` */
-      documentClass: ConfiguredDocumentClassForName<"TableResult">;
+      documentClass: Document.ConfiguredClassForName<"TableResult">;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -1981,13 +1981,13 @@ declare global {
 
     JournalEntryPage: {
       /** @defaultValue `JournalEntryPage` */
-      documentClass: ConfiguredDocumentClassForName<"JournalEntryPage">;
+      documentClass: Document.ConfiguredClassForName<"JournalEntryPage">;
 
       /**
        * @defaultValue `{}`
        * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
        */
-      dataModels: Record<string, ConstructorOf<DataModel<any, JournalEntryPage>>>;
+      dataModels: Record<string, typeof DataModel<any, JournalEntryPage>>;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -2025,7 +2025,7 @@ declare global {
      */
     PlaylistSound: {
       /** @defaultValue `PlaylistSound` */
-      documentClass: ConfiguredDocumentClassForName<"PlaylistSound">;
+      documentClass: Document.ConfiguredClassForName<"PlaylistSound">;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -2043,7 +2043,7 @@ declare global {
      */
     AmbientLight: {
       /** @defaultValue `AmbientLightDocument` */
-      documentClass: ConfiguredDocumentClassForName<"AmbientLight">;
+      documentClass: Document.ConfiguredClassForName<"AmbientLight">;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -2067,7 +2067,7 @@ declare global {
      */
     AmbientSound: {
       /** @defaultValue `AmbientSoundDocument` */
-      documentClass: ConfiguredDocumentClassForName<"AmbientSound">;
+      documentClass: Document.ConfiguredClassForName<"AmbientSound">;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -2091,7 +2091,7 @@ declare global {
      */
     Combatant: {
       /** @defaultValue `Combatant` */
-      documentClass: ConfiguredDocumentClassForName<"Combatant">;
+      documentClass: Document.ConfiguredClassForName<"Combatant">;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -2110,7 +2110,7 @@ declare global {
      */
     Drawing: {
       /** @defaultValue `DrawingDocument` */
-      documentClass: ConfiguredDocumentClassForName<"Drawing">;
+      documentClass: Document.ConfiguredClassForName<"Drawing">;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -2156,7 +2156,7 @@ declare global {
       };
 
       /** @defaultValue `MeasuredTemplateDocument` */
-      documentClass: ConfiguredDocumentClassForName<"MeasuredTemplate">;
+      documentClass: Document.ConfiguredClassForName<"MeasuredTemplate">;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -2180,7 +2180,7 @@ declare global {
      */
     Note: {
       /** @defaultValue `NoteDocument` */
-      documentClass: ConfiguredDocumentClassForName<"Note">;
+      documentClass: Document.ConfiguredClassForName<"Note">;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -2204,7 +2204,7 @@ declare global {
      */
     Tile: {
       /** @defaultValue `TileDocument` */
-      documentClass: ConfiguredDocumentClassForName<"Tile">;
+      documentClass: Document.ConfiguredClassForName<"Tile">;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -2228,7 +2228,7 @@ declare global {
      */
     Token: {
       /** @defaultValue `TokenDocument` */
-      documentClass: ConfiguredDocumentClassForName<"Token">;
+      documentClass: Document.ConfiguredClassForName<"Token">;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -2247,7 +2247,7 @@ declare global {
       layerClass: typeof TokenLayer;
 
       /** @defaultValue `TokenConfig` */
-      prototypeSheetClass: ConstructorOf<TokenConfig>;
+      prototypeSheetClass: typeof TokenConfig;
 
       /** @defaultValue `"TOKEN.Adjectives"` */
       adjectivesPrefix: string;
@@ -2258,7 +2258,7 @@ declare global {
      */
     Wall: {
       /** @defaultValue `WallDocument` */
-      documentClass: ConfiguredDocumentClassForName<"Wall">;
+      documentClass: Document.ConfiguredClassForName<"Wall">;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -2559,67 +2559,67 @@ declare global {
   namespace CONFIG {
     interface UI {
       /** @defaultValue `MainMenu` */
-      menu: ConstructorOf<MainMenu>;
+      menu: typeof MainMenu;
 
       /** @defaultValue `Sidebar` */
-      sidebar: ConstructorOf<Sidebar>;
+      sidebar: typeof Sidebar;
 
       /** @defaultValue `Pause` */
-      pause: ConstructorOf<Pause>;
+      pause: typeof Pause;
 
       /** @defaultValue `SceneNavigation` */
-      nav: ConstructorOf<SceneNavigation>;
+      nav: typeof SceneNavigation;
 
       /** @defaultValue `Notifications` */
-      notifications: ConstructorOf<Notifications>;
+      notifications: typeof Notifications;
 
       /** @defaultValue `ActorDirectory` */
-      actors: ConstructorOf<ActorDirectory>;
+      actors: typeof ActorDirectory;
 
       /** @defaultValue `CardsDirectory` */
-      cards: ConstructorOf<CardsDirectory>;
+      cards: typeof CardsDirectory;
 
       /** @defaultValue `ChatLog` */
-      chat: ConstructorOf<ChatLog>;
+      chat: typeof ChatLog;
 
       /** @defaultValue `CombatTracker` */
-      combat: ConstructorOf<CombatTracker>;
+      combat: typeof CombatTracker;
 
       /** @defaultValue `CompendiumDirectory` */
-      compendium: ConstructorOf<CompendiumDirectory>;
+      compendium: typeof CompendiumDirectory;
 
       /** @defaultValue `SceneControls` */
-      controls: ConstructorOf<SceneControls>;
+      controls: typeof SceneControls;
 
       /** @defaultValue `Hotbar` */
-      hotbar: ConstructorOf<Hotbar>;
+      hotbar: typeof Hotbar;
 
       /** @defaultValue `ItemDirectory` */
-      items: ConstructorOf<ItemDirectory>;
+      items: typeof ItemDirectory;
 
       /** @defaultValue `JournalDirectory` */
-      journal: ConstructorOf<JournalDirectory>;
+      journal: typeof JournalDirectory;
 
       /** @defaultValue `MacroDirectory` */
-      macros: ConstructorOf<MacroDirectory>;
+      macros: typeof MacroDirectory;
 
       /** @defaultValue `PlayerList` */
-      players: ConstructorOf<PlayerList>;
+      players: typeof PlayerList;
 
       /** @defaultValue `PlaylistDirectory` */
-      playlists: ConstructorOf<PlaylistDirectory>;
+      playlists: typeof PlaylistDirectory;
 
       /** @defaultValue `SceneDirectory` */
-      scenes: ConstructorOf<SceneDirectory>;
+      scenes: typeof SceneDirectory;
 
       /** @defaultValue `Settings` */
-      settings: ConstructorOf<Settings>;
+      settings: typeof Settings;
 
       /** @defaultValue `RollTableDirectory` */
-      tables: ConstructorOf<RollTableDirectory>;
+      tables: typeof RollTableDirectory;
 
       /** @defaultValue `CameraViews` */
-      webrtc: ConstructorOf<CameraViews>;
+      webrtc: typeof CameraViews;
     }
 
     namespace Canvas {
@@ -2692,7 +2692,7 @@ declare global {
         parent: string;
       }
 
-      interface LayerDefinition<LayerClass extends ConstructorOf<CanvasLayer> = ConstructorOf<CanvasLayer>> {
+      interface LayerDefinition<LayerClass extends typeof CanvasLayer = typeof CanvasLayer> {
         layerClass: LayerClass;
         group: keyof CONFIG["Canvas"]["groups"];
       }

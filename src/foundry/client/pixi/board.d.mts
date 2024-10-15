@@ -1,4 +1,5 @@
-import type { InexactPartial, StoredDocument } from "../../../types/utils.d.mts";
+import type { InexactPartial } from "../../../types/utils.d.mts";
+import type Document from "../../common/abstract/document.d.mts";
 import type { CANVAS_PERFORMANCE_MODES } from "../../common/constants.d.mts";
 
 declare global {
@@ -254,10 +255,10 @@ declare global {
     /**
      * A reference to the currently displayed Scene document, or null if the Canvas is currently blank.
      */
-    get scene(): StoredDocument<Scene.ConfiguredInstance> | null;
+    get scene(): Document.Stored<Scene.ConfiguredInstance> | null;
 
     /** @defaultValue `null` */
-    #scene: StoredDocument<Scene.ConfiguredInstance> | null;
+    #scene: Document.Stored<Scene.ConfiguredInstance> | null;
 
     /**
      * A flag for whether the game Canvas is ready to be used. False if the canvas is not yet drawn, true otherwise.

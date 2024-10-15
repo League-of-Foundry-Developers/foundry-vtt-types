@@ -1,4 +1,4 @@
-import type { DocumentSubTypes, DocumentType } from "../../../types/helperTypes.d.mts";
+import type { DocumentSubTypes } from "../../../types/helperTypes.d.mts";
 import type { AnyArray, AnyObject, DeepPartial, InexactPartial } from "../../../types/utils.d.mts";
 import type Document from "../../common/abstract/document.d.mts";
 
@@ -202,7 +202,7 @@ declare global {
       "core.rtcWorldSettings": typeof AVSettings.DEFAULT_WORLD_SETTINGS;
       "core.scrollingStatusText": boolean;
       "core.sheetClasses": {
-        [Key in DocumentType as DocumentSubTypes<Key> extends string ? Key : never]?: Record<
+        [Key in Document.Type as DocumentSubTypes<Key> extends string ? Key : never]?: Record<
           DocumentSubTypes<Key> & string,
           string
         >;

@@ -1,11 +1,11 @@
 import { expectTypeOf } from "vitest";
-import type { StoredDocument } from "../../../../src/types/utils.d.mts";
+import type Document from "../../../../src/foundry/common/abstract/document.d.mts";
 
 expectTypeOf(foundry.documents.BaseChatMessage.create({})).toEqualTypeOf<
-  Promise<StoredDocument<ChatMessage> | undefined>
+  Promise<Document.Stored<ChatMessage> | undefined>
 >();
 expectTypeOf(foundry.documents.BaseChatMessage.createDocuments([])).toEqualTypeOf<
-  Promise<StoredDocument<ChatMessage>[]>
+  Promise<Document.Stored<ChatMessage>[]>
 >();
 expectTypeOf(foundry.documents.BaseChatMessage.updateDocuments([])).toEqualTypeOf<Promise<ChatMessage[]>>();
 expectTypeOf(foundry.documents.BaseChatMessage.deleteDocuments([])).toEqualTypeOf<Promise<ChatMessage[]>>();

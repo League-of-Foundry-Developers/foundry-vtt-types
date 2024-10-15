@@ -1,4 +1,4 @@
-import type { ObjectClass } from "../../../../../types/helperTypes.d.mts";
+export {};
 
 interface SetReplacementMembers<T> {
   add(value: T): void;
@@ -20,7 +20,7 @@ declare global {
    * A subclass of Set which manages the Token ids which the User has targeted.
    * @see User#targets
    */
-  class UserTargets extends Set<InstanceType<ObjectClass<typeof TokenDocument>>> {
+  class UserTargets extends Set<TokenDocument.ObjectInstance> {
     constructor(user: UserTargets["user"]);
 
     user: User.ConfiguredInstance;
@@ -33,13 +33,13 @@ declare global {
     /**
      * @remarks Returns void, but Set<T>.add returns boolean
      */
-    override add(token: InstanceType<ObjectClass<typeof TokenDocument>>): void;
+    override add(token: TokenDocument.ObjectInstance): void;
 
     override clear(): void;
 
     /**
      * @remarks Returns void, but Set<T>.delete returns boolean
      */
-    override delete(token: InstanceType<ObjectClass<typeof TokenDocument>>): void;
+    override delete(token: TokenDocument.ObjectInstance): void;
   }
 }

@@ -2,11 +2,9 @@ import type {
   ConfiguredDocumentClassForName,
   ConfiguredDocumentInstance,
   ConfiguredDocumentInstanceForName,
-  ConstructorDataType,
-  DocumentConstructor,
-  DocumentType,
 } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial } from "../../../../types/utils.d.mts";
+import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 import type BaseFolder from "../../../common/documents/folder.d.mts";
 import type { BaseUser } from "../../../common/documents/module.d.mts";
@@ -53,7 +51,7 @@ declare global {
      * unless it's a Folder inside a Compendium pack, in which case it's the array
      * of objects inside the index of the pack that are contained in this Folder.
      */
-    get contents(): this["type"] extends DocumentType
+    get contents(): this["type"] extends Document.Type
       ? InstanceType<ConfiguredDocumentClassForName<this["type"]>>[]
       : never;
 
@@ -62,7 +60,7 @@ declare global {
     /**
      * The reference to the Document type which is contained within this Folder.
      */
-    get documentClass(): this["type"] extends DocumentType ? ConfiguredDocumentClassForName<this["type"]> : never;
+    get documentClass(): this["type"] extends Document.Type ? ConfiguredDocumentClassForName<this["type"]> : never;
 
     /**
      * Return a reference to the WorldCollection instance which provides Documents to this Folder,
@@ -98,9 +96,9 @@ declare global {
      *
      * @remarks For weird reasons, we need to make this generic.
      */
-    static createDialog<T extends DocumentConstructor>(
+    static createDialog<T extends Document.AnyConstructor>(
       this: T,
-      data?: DeepPartial<ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>)>,
+      data?: DeepPartial<Document.ConstructorDataFor<T> | (Document.ConstructorDataFor<T> & Record<string, unknown>)>,
       context?: Partial<Omit<FolderConfig.Options, "resolve">>,
     ): Promise<ConfiguredDocumentInstance<T> | null | undefined>;
 

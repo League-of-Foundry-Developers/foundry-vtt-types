@@ -1,11 +1,4 @@
-import type {
-  ConfiguredDocumentClassForName,
-  ConfiguredDocumentInstance,
-  ConfiguredDocumentInstanceForName,
-  ConstructorDataType,
-  DocumentConstructor,
-} from "../../../../types/helperTypes.d.mts";
-import type { DeepPartial, InexactPartial, StoredDocument } from "../../../../types/utils.d.mts";
+import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
@@ -13,8 +6,8 @@ import type BaseCards from "../../../common/documents/cards.d.mts";
 
 declare global {
   namespace Cards {
-    type ConfiguredClass = ConfiguredDocumentClassForName<"Cards">;
-    type ConfiguredInstance = ConfiguredDocumentInstanceForName<"Cards">;
+    type ConfiguredClass = Document.ConfiguredClassForName<"Cards">;
+    type ConfiguredInstance = Document.ConfiguredInstanceForName<"Cards">;
 
     type CardsAction = "deal" | "pass";
 
@@ -163,17 +156,17 @@ declare global {
 
     // TODO: Figure out the typing here
     static override createDocuments(
-      data: Array<ConstructorDataType<typeof Cards> | (ConstructorDataType<typeof Cards> & Record<string, unknown>)>,
+      data: Array<Document.ConstructorDataFor<typeof Cards> & Record<string, unknown>>,
       context: Document.ModificationContext<Document.Any | null> & { temporary: false },
-    ): Promise<StoredDocument<Cards.ConfiguredInstance>[]>;
+    ): Promise<Document.Stored<Cards.ConfiguredInstance>[]>;
     static createDocuments(
-      data: Array<ConstructorDataType<typeof Cards> | (ConstructorDataType<typeof Cards> & Record<string, unknown>)>,
+      data: Array<Document.ConstructorDataFor<typeof Cards> & Record<string, unknown>>,
       context: Document.ModificationContext<Document.Any | null> & { temporary: boolean },
     ): Promise<Cards.ConfiguredInstance[]>;
     static createDocuments(
-      data: Array<ConstructorDataType<typeof Cards> | (ConstructorDataType<typeof Cards> & Record<string, unknown>)>,
+      data: Array<Document.ConstructorDataFor<typeof Cards> & Record<string, unknown>>,
       context?: Document.ModificationContext<Document.Any | null>,
-    ): Promise<StoredDocument<Cards.ConfiguredInstance>[]>;
+    ): Promise<Document.Stored<Cards.ConfiguredInstance>[]>;
 
     /**
      * Deal one or more cards from this Cards document to each of a provided array of Cards destinations.
@@ -302,11 +295,11 @@ declare global {
     ): Promise<void>;
 
     // TODO: It's a bit weird that we have to do it in this generic way but otherwise there is an error overriding this. Investigate later.
-    static override deleteDocuments<T extends DocumentConstructor>(
+    static override deleteDocuments<T extends Document.AnyConstructor>(
       this: T,
       ids?: string[],
       context?: Document.ModificationContext<Document.Any | null>,
-    ): Promise<ConfiguredDocumentInstance<T>[]>;
+    ): Promise<Document.ToConfiguredInstance<T>[]>;
 
     /**
      * Display a dialog which prompts the user to deal cards to some number of hand-type Cards documents.
@@ -342,10 +335,10 @@ declare global {
     override deleteDialog(options?: Partial<DialogOptions>): Promise<this | false | null | undefined>;
 
     // TODO: It's a bit weird that we have to do it in this generic way but otherwise there is an error overriding this. Investigate later.
-    static override createDialog<T extends DocumentConstructor>(
+    static override createDialog<T extends Document.AnyConstructor>(
       this: T,
       data?: DeepPartial<Cards["_source"] | (Cards["_source"] & Record<string, unknown>)>,
       context?: Pick<Document.ModificationContext<Document.Any | null>, "parent" | "pack"> & Partial<DialogOptions>,
-    ): Promise<ConfiguredDocumentInstance<T> | null | undefined>;
+    ): Promise<Document.ToConfiguredInstance<T> | null | undefined>;
   }
 }

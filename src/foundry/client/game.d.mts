@@ -2,11 +2,11 @@ import type { Socket } from "socket.io-client";
 import type {
   ConfiguredDocumentClassForName,
   ConfiguredModule,
-  DocumentConstructor,
   ModuleRequiredOrOptional,
 } from "../../types/helperTypes.d.mts";
-import type { StoredDocument, ValueOf } from "../../types/utils.d.mts";
+import type { ValueOf } from "../../types/utils.d.mts";
 import type BasePackage from "../common/packages/base-package.d.mts";
+import type { Document } from "../common/abstract/module.d.mts";
 
 interface EarlierEvents {
   none: never;
@@ -83,7 +83,7 @@ declare class InternalGame<RunEvents extends InitializationEvent> {
    * @remarks Initialized just before the `"setup"` hook event is called.
    */
   readonly collections: GameInitialized<
-    foundry.utils.Collection<WorldCollection<DocumentConstructor, string>>,
+    foundry.utils.Collection<WorldCollection<Document.AnyConstructor, string>>,
     "setup",
     RunEvents
   >;
@@ -416,7 +416,7 @@ declare class InternalGame<RunEvents extends InitializationEvent> {
   /**
    * The currently connected User entity, or null if Users is not yet initialized
    */
-  get user(): StoredDocument<User.ConfiguredInstance> | null;
+  get user(): Document.Stored<User.ConfiguredInstance> | null;
 
   /**
    * A convenience accessor for the currently viewed Combat encounter

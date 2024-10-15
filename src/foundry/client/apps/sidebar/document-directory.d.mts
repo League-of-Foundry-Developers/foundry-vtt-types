@@ -1,4 +1,5 @@
-import type { ConfiguredDocumentClassForName, DocumentType } from "../../../../types/helperTypes.d.mts";
+import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
+import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
   interface DocumentDirectoryOptions extends ApplicationOptions {
@@ -28,7 +29,7 @@ declare global {
     /**
      * References to the set of Documents which are displayed in the Sidebar
      */
-    documents: FolderType extends DocumentType ? InstanceType<ConfiguredDocumentClassForName<FolderType>> : undefined;
+    documents: FolderType extends Document.Type ? InstanceType<ConfiguredDocumentClassForName<FolderType>> : undefined;
 
     /**
      * Reference the set of Folders which exist in this Sidebar
@@ -62,7 +63,7 @@ declare global {
 
     override get tabName(): string;
 
-    static get collection(): WorldCollection<foundry.abstract.Document.AnyConstructor, string>;
+    static get collection(): WorldCollection<Document.AnyConstructor, string>;
 
     /**
      * Initialize the content of the directory by categorizing folders and documents into a hierarchical tree structure.

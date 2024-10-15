@@ -1,10 +1,10 @@
 import { expectTypeOf } from "vitest";
-import type { StoredDocument } from "../../../../src/types/utils.d.mts";
+import type Document from "../../../../src/foundry/common/abstract/document.d.mts";
 
 expectTypeOf(foundry.documents.BaseSetting.create({ key: "foo.bar", value: "bar" })).toEqualTypeOf<
-  Promise<StoredDocument<Setting> | undefined>
+  Promise<Document.Stored<Setting> | undefined>
 >();
-expectTypeOf(foundry.documents.BaseSetting.createDocuments([])).toEqualTypeOf<Promise<StoredDocument<Setting>[]>>();
+expectTypeOf(foundry.documents.BaseSetting.createDocuments([])).toEqualTypeOf<Promise<Document.Stored<Setting>[]>>();
 expectTypeOf(foundry.documents.BaseSetting.updateDocuments([])).toEqualTypeOf<Promise<Setting[]>>();
 expectTypeOf(foundry.documents.BaseSetting.deleteDocuments([])).toEqualTypeOf<Promise<Setting[]>>();
 

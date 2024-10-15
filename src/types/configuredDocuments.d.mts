@@ -1,9 +1,9 @@
 import type { Document } from "../foundry/common/abstract/module.d.mts";
-import type { DocumentType, MakeConform } from "./helperTypes.d.mts";
+import type { MakeConform } from "./helperTypes.d.mts";
 
 // This interface holds all documents without configuration.
 // It is structured this way to create a place for errors to show up if the type complexity grows too great.
-export interface DefaultDocuments extends Record<DocumentType, Document.AnyConstructor> {
+export interface DefaultDocuments extends Record<Document.Type, Document.AnyConstructor> {
   ActiveEffect: typeof ActiveEffect;
   ActorDelta: typeof ActorDelta;
   Actor: typeof Actor;
@@ -41,14 +41,14 @@ export interface DefaultDocuments extends Record<DocumentType, Document.AnyConst
 // Note(LukeAbby): This helper type is structured this way to make it as simple as possible for TypeScript to figure out that it's always a Document.
 // This also uses `ConcreteDocumentType extends keyof DocumentClassConfig` instead of `GetKey` or equivalent for the critical purposes of stymying circular errors.
 // See https://gist.github.com/LukeAbby/f9561689e5cad8a4b1e9cb92a8c63982 for more information.
-type ConfiguredDocument<ConcreteDocumentType extends DocumentType> =
+type ConfiguredDocument<ConcreteDocumentType extends Document.Type> =
   ConcreteDocumentType extends keyof DocumentClassConfig
     ? MakeConform<DocumentClassConfig[ConcreteDocumentType], Document.Internal.Constructor>
     : DefaultDocuments[ConcreteDocumentType];
 
 // This interface exists as a way to catch circular errors easier.
 // This makes it more verbose than it might seem it has to be but it's important to stay this way.
-export interface ConfiguredDocuments extends Record<DocumentType, Document.AnyConstructor> {
+export interface ConfiguredDocuments extends Record<Document.Type, Document.AnyConstructor> {
   ActiveEffect: ConfiguredDocument<"ActiveEffect">;
   ActorDelta: ConfiguredDocument<"ActorDelta">;
   Actor: ConfiguredDocument<"Actor">;

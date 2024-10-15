@@ -1,9 +1,5 @@
-import type {
-  ConfiguredLayerClassForName,
-  ConfiguredObjectClassForName,
-  DocumentConstructor,
-} from "../../../../types/helperTypes.d.mts";
 import type { Mixin } from "../../../../types/utils.d.mts";
+import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 import type { ClientDocument } from "./client-document.d.mts";
 
@@ -16,14 +12,14 @@ declare class CanvasDocument<
   /**
    * A lazily constructed PlaceableObject instance which can represent this Document on the game canvas.
    */
-  get object(): InstanceType<ConfiguredObjectClassForName<BaseDocument["documentName"]>> | null;
+  get object(): InstanceType<Document.ConfiguredObjectClassForName<BaseDocument["documentName"]>> | null;
 
   /**
    * A reference to the PlaceableObject instance which represents this Embedded Document.
    * @internal
    * @defaultValue `null`
    */
-  protected _object: InstanceType<ConfiguredObjectClassForName<BaseDocument["documentName"]>> | null;
+  protected _object: InstanceType<Document.ConfiguredObjectClassForName<BaseDocument["documentName"]>> | null;
 
   /**
    * Has this object been deliberately destroyed as part of the deletion workflow?
@@ -35,7 +31,7 @@ declare class CanvasDocument<
   /**
    * A reference to the CanvasLayer which contains Document objects of this type.
    */
-  get layer(): InstanceType<ConfiguredLayerClassForName<BaseDocument["documentName"]>>; // PlaceablesLayer<any>; // TODO: Replace once the circular reference problem has been solved
+  get layer(): InstanceType<PlaceablesLayer.ConfiguredClassForName<BaseDocument["documentName"]>>;
 
   /**
    * An indicator for whether this document is currently rendered on the game canvas.
@@ -57,13 +53,20 @@ declare class CanvasDocument<
   protected _onDelete(options: DocumentModificationOptions, userId: string): void;
 }
 
+declare namespace CanvasDocument {
+  type Any = CanvasDocument<any>;
+}
+
 declare global {
+  /**
+   * @deprecated {@link CanvasDocument.Any | `CanvasDocument.Any`}
+   */
   type CanvasDocument = ReturnType<typeof CanvasDocumentMixin>;
 
   /**
    * A specialized sub-class of the ClientDocumentMixin which is used for document types that are intended to be represented upon the game Canvas.
    */
-  function CanvasDocumentMixin<BaseClass extends DocumentConstructor>(
+  function CanvasDocumentMixin<BaseClass extends Document.AnyConstructor>(
     Base: BaseClass,
   ): Mixin<typeof CanvasDocument<InstanceType<BaseClass>>, BaseClass>;
 }

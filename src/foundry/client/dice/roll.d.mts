@@ -1,5 +1,5 @@
-import type { ConfiguredDocumentClass } from "../../../types/helperTypes.d.mts";
 import type { ConstructorOf, DeepPartial, InexactPartial } from "../../../types/utils.d.mts";
+import type Document from "../../common/abstract/document.d.mts";
 
 declare global {
   namespace Roll {
@@ -412,15 +412,15 @@ declare global {
      * @returns A promise which resolves to the created ChatMessage entity, if create is true
      *          or the Object of prepared chatData otherwise.
      */
-    toMessage<T extends DeepPartial<ConstructorParameters<ConfiguredDocumentClass<typeof ChatMessage>>[0]> = {}>(
+    toMessage<T extends DeepPartial<Document.ConstructorDataFor<typeof ChatMessage>> = {}>(
       messageData?: T,
       { rollMode, create }?: { rollMode?: keyof CONFIG.Dice.RollModes | "roll"; create?: true },
     ): Promise<ChatMessage.ConfiguredInstance | undefined>;
-    toMessage<T extends DeepPartial<ConstructorParameters<ConfiguredDocumentClass<typeof ChatMessage>>[0]> = {}>(
+    toMessage<T extends DeepPartial<Document.ConstructorDataFor<typeof ChatMessage>> = {}>(
       messageData: T,
       { rollMode, create }: { rollMode?: keyof CONFIG.Dice.RollModes | "roll"; create: false },
     ): MessageData<T>;
-    toMessage<T extends DeepPartial<ConstructorParameters<ConfiguredDocumentClass<typeof ChatMessage>>[0]> = {}>(
+    toMessage<T extends DeepPartial<Document.ConstructorDataFor<typeof ChatMessage>> = {}>(
       messageData: T,
       { rollMode, create }: { rollMode?: keyof CONFIG.Dice.RollModes | "roll"; create: boolean },
     ): Promise<ChatMessage.ConfiguredInstance | undefined> | MessageData<T>;

@@ -1,16 +1,18 @@
-import type { ConfiguredDocumentClassForName, DocumentType } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace TokenDocument {
-    type ConfiguredClass = ConfiguredDocumentClassForName<"Token">;
+    type ConfiguredClass = Document.ConfiguredClassForName<"Token">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    // TODO: This causes a circularity that's likely latent.
+    // TODO(LukeAbby): This causes a circularity that's likely latent.
     // Look into this.
     // type ConfiguredInstance = ConfiguredDocumentInstanceForName<"Token">;
+
+    type ObjectClass = Document.ConfiguredObjectClassForName<"Token">;
+    type ObjectInstance = Document.ConfiguredObjectInstanceForName<"Token">;
   }
 
   /**
@@ -131,9 +133,9 @@ declare global {
       options: Parameters<this["update"]>[1],
     ): Promise<[this["actor"]]>;
 
-    override getEmbeddedCollection<DocType extends DocumentType>(
+    override getEmbeddedCollection<DocType extends Document.Type>(
       embeddedName: DocType,
-    ): Collection<InstanceType<ConfiguredDocumentClassForName<DocType>>>;
+    ): Collection<InstanceType<Document.ConfiguredClassForName<DocType>>>;
 
     protected override _preUpdate(
       data: foundry.documents.BaseToken.UpdateData,

@@ -1,12 +1,6 @@
 import { assertType, expectTypeOf } from "vitest";
-import type {
-  DeepPartial,
-  Expanded,
-  MaybePromise,
-  RequiredProps,
-  StoredDocument,
-  Titlecase,
-} from "../../src/types/utils.d.mts";
+import type { DeepPartial, Expanded, MaybePromise, RequiredProps, Titlecase } from "../../src/types/utils.d.mts";
+import type Document from "../../src/foundry/common/abstract/document.d.mts";
 
 declare const membersBecomeOptional: DeepPartial<{ a: string }>;
 expectTypeOf(membersBecomeOptional).toEqualTypeOf<{ a?: string }>();
@@ -74,7 +68,7 @@ expectTypeOf(user.toObject(false)._id).toEqualTypeOf<string | null>();
 expectTypeOf(user.clone()).toEqualTypeOf<User>();
 expectTypeOf(user.clone({}, { save: true })).toEqualTypeOf<Promise<User>>();
 
-declare const storedUser: StoredDocument<User>;
+declare const storedUser: Document.Stored<User>;
 expectTypeOf(storedUser.id).toEqualTypeOf<string>();
 expectTypeOf(storedUser._id).toEqualTypeOf<string>();
 expectTypeOf(storedUser._source._id).toEqualTypeOf<string>();
@@ -84,9 +78,9 @@ expectTypeOf(storedUser.toJSON()._id).toEqualTypeOf<string>();
 // expectTypeOf(storedUser.toObject()._id).toEqualTypeOf<string>();
 // expectTypeOf(storedUser.toObject(false)._id).toEqualTypeOf<string>();
 // expectTypeOf(storedUser.toObject(false)._id).toEqualTypeOf<string>();
-expectTypeOf(storedUser.clone()).toEqualTypeOf<StoredDocument<User>>();
+expectTypeOf(storedUser.clone()).toEqualTypeOf<Document.Stored<User>>();
 
-declare const actor: StoredDocument<Actor>;
+declare const actor: Document.Stored<Actor>;
 expectTypeOf(actor.id).toEqualTypeOf<string>();
 expectTypeOf(actor._id).toEqualTypeOf<string>();
 expectTypeOf(actor._source._id).toEqualTypeOf<string>();
@@ -96,7 +90,7 @@ expectTypeOf(actor.toJSON()._id).toEqualTypeOf<string>();
 // expectTypeOf(actor.toObject()._id).toEqualTypeOf<string>();
 // expectTypeOf(actor.toObject(false)._id).toEqualTypeOf<string>();
 // expectTypeOf(actor.toObject(false)._id).toEqualTypeOf<string>();
-expectTypeOf(actor.clone()).toEqualTypeOf<StoredDocument<Actor>>();
+expectTypeOf(actor.clone()).toEqualTypeOf<Document.Stored<Actor>>();
 
 // we need to test with `assertType` because the types are not considered equal, even though they are structurally the same
 type A = { foo?: string; bar?: number; baz: boolean };

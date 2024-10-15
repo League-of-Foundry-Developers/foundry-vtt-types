@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentInstance, ConfiguredFlags } from "../../../types/helperTypes.mts";
+import type { ConfiguredDocumentInstance } from "../../../types/helperTypes.mts";
 import type {
   RemoveIndexSignatures,
   ConstructorOf,
@@ -1187,16 +1187,16 @@ declare namespace ObjectField {
    * @typeParam Options        - the options of the field
    */
   type FlagsField<
-    Key extends string,
+    Name extends Document.Type,
     // The type `{}` is useful here because in an intersection it reduces down to nothing unlike `EmptyObject`.
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     ExtensionFlags extends AnyObject = {},
     Options extends DataFieldOptions.Any = ObjectField.DefaultOptions,
   > = ObjectField<
     Options,
-    DataField.DerivedAssignmentType<ConfiguredFlags<Key> & ExtensionFlags, MergedOptions<Options>>,
-    DataField.DerivedInitializedType<ConfiguredFlags<Key> & ExtensionFlags, MergedOptions<Options>>,
-    DataField.DerivedInitializedType<ConfiguredFlags<Key> & ExtensionFlags, MergedOptions<Options>>
+    DataField.DerivedAssignmentType<Document.ConfiguredFlagsForName<Name> & ExtensionFlags, MergedOptions<Options>>,
+    DataField.DerivedInitializedType<Document.ConfiguredFlagsForName<Name> & ExtensionFlags, MergedOptions<Options>>,
+    DataField.DerivedInitializedType<Document.ConfiguredFlagsForName<Name> & ExtensionFlags, MergedOptions<Options>>
   >;
 }
 

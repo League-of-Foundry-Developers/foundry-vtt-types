@@ -97,11 +97,9 @@ declare namespace TypeDataModel {
 
   // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
   namespace Internal {
-    interface Constructor {
+    type Constructor = (abstract new (arg0: never, ...args: never[]) => Instance.Any) & {
       [__TypeDataModelBrand]: never;
-
-      new (...args: never[]): Instance.Any;
-    }
+    };
 
     // This still is only allows instances descended from `TypeDataField` because these unique symbols aren't used elsewhere.
     // These generic parameters seem to be required. This is likely because of a TypeScript soundness holes in which concrete types like `any` or `unknown`

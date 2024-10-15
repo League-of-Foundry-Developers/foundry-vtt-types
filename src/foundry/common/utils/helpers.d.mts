@@ -1,4 +1,3 @@
-import type { DocumentType } from "../../../types/helperTypes.d.mts";
 import type { AnyConstructor, AnyFunction, DeepPartial, InexactPartial } from "../../../types/utils.d.mts";
 import type Document from "../abstract/document.d.mts";
 
@@ -484,7 +483,7 @@ interface ResolvedUUID {
   /**
    * The parent document type.
    */
-  documentType?: DocumentType | undefined;
+  documentType?: Document.Type | undefined;
 
   /**
    * An already-resolved document.

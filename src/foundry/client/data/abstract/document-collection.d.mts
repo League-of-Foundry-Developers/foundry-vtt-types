@@ -1,23 +1,13 @@
-import type {
-  ConfiguredDocumentClass,
-  ConfiguredDocumentInstance,
-  DocumentConstructor,
-} from "../../../../types/helperTypes.d.mts";
-import type { DeepPartial, InexactPartial, ConfiguredStoredDocument } from "../../../../types/utils.d.mts";
+import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
-// import type _Collection from "../../../common/utils/collection.d.mts";
-
-// Fix for "Class 'Collection<ConfiguredStoredDocument<T>>' defines instance member property 'delete',
-// but extended class 'DocumentCollection<T, Name>' defines it as instance member function."
-// type Collection<T> = Omit<_Collection<T>, "set" | "delete" | "get">;
 
 declare global {
   /**
    * An abstract subclass of the Collection container which defines a collection of Document instances.
    */
-  class DocumentCollection<T extends DocumentConstructor, Name extends string> extends foundry.utils.Collection<
-    ConfiguredStoredDocument<T>
+  class DocumentCollection<T extends Document.AnyConstructor, Name extends string> extends foundry.utils.Collection<
+    Document.ToConfiguredStored<T>
   > {
     constructor(data: InstanceType<T>["_source"][]);
 
@@ -41,13 +31,13 @@ declare global {
     /**
      * A reference to the Document class definition which is contained within this DocumentCollection.
      */
-    get documentClass(): ConfiguredDocumentClass<T>;
+    get documentClass(): Document.ToConfiguredClass<T>;
 
     /**
      * A reference to the named Document class which is contained within this DocumentCollection.
      * @remarks This accessor is abstract: A subclass of DocumentCollection must implement the documentName getter
      */
-    get documentName(): ConfiguredDocumentClass<T>["metadata"]["name"];
+    get documentName(): Document.ToConfiguredClass<T>["metadata"]["name"];
 
     /**
      * The base Document type which is contained within this DocumentCollection
@@ -106,14 +96,14 @@ declare global {
          */
         invalid: false;
       }>,
-    ): ConfiguredStoredDocument<T> | undefined;
-    get(key: string, options: { strict: true; invalid?: false }): ConfiguredStoredDocument<T>;
+    ): Document.ToConfiguredStored<T> | undefined;
+    get(key: string, options: { strict: true; invalid?: false }): Document.ToConfiguredStored<T>;
     get(key: string, options: { strict?: boolean; invalid: true }): unknown;
 
     /**
      * @remarks The parameter `id` is ignored, instead `document.id` is used as the key.
      */
-    set(id: string, document: ConfiguredStoredDocument<T>): this;
+    set(id: string, document: Document.ToConfiguredStored<T>): this;
 
     /** @remarks Actually returns void */
     delete: (id: string) => boolean;
@@ -160,7 +150,7 @@ declare global {
          */
         exclude: string[];
       }>,
-    ): ConfiguredDocumentInstance<T>[];
+    ): Document.ToConfiguredInstance<T>[];
 
     /**
      * Update all objects in this DocumentCollection with a provided transformation.
@@ -174,9 +164,9 @@ declare global {
      */
     updateAll(
       transformation:
-        | DeepPartial<ConfiguredDocumentInstance<T>["_source"]>
-        | ((doc: ConfiguredStoredDocument<T>) => DeepPartial<ConfiguredDocumentInstance<T>["_source"]>),
-      condition?: ((obj: ConfiguredStoredDocument<T>) => boolean) | null,
+        | DeepPartial<Document.ToConfiguredInstance<T>["_source"]>
+        | ((doc: Document.ToConfiguredStored<T>) => DeepPartial<Document.ToConfiguredInstance<T>["_source"]>),
+      condition?: ((obj: Document.ToConfiguredStored<T>) => boolean) | null,
       options?: Document.ModificationContext<Document.Any | null>,
     ): ReturnType<this["documentClass"]["updateDocuments"]>;
 
@@ -200,7 +190,7 @@ declare global {
      * @param userId    - The ID of the User who triggered the operation
      */
     protected _onCreateDocuments(
-      documents: ConfiguredStoredDocument<T>[],
+      documents: Document.ToConfiguredStored<T>[],
       result: (InstanceType<T>["_source"] & { _id: string })[],
       options: DocumentModificationOptions,
       userId: string,
@@ -226,7 +216,7 @@ declare global {
      * @param userId    - The ID of the User who triggered the operation
      */
     protected _onUpdateDocuments(
-      documents: ConfiguredStoredDocument<T>[],
+      documents: Document.ToConfiguredStored<T>[],
       result: (DeepPartial<InstanceType<T>["_source"]> & { _id: string })[],
       options: DocumentModificationOptions,
       userId: string,
@@ -248,7 +238,7 @@ declare global {
      * @param userId    - The ID of the User who triggered the operation
      */
     protected _onDeleteDocuments(
-      documents: ConfiguredStoredDocument<T>[],
+      documents: Document.ToConfiguredStored<T>[],
       result: string[],
       options: DocumentModificationOptions,
       userId: string,
@@ -272,17 +262,17 @@ declare global {
      */
     protected _getRenderContext(
       action: DocumentCollection.RenderContext.Create<T>["action"],
-      documents: ConfiguredStoredDocument<T>[],
+      documents: Document.ToConfiguredStored<T>[],
       data: (InstanceType<T>["_source"] & { _id: string })[],
     ): DocumentCollection.RenderContext.Create<T>;
     protected _getRenderContext(
       action: DocumentCollection.RenderContext.Update<T>["action"],
-      documents: ConfiguredStoredDocument<T>[],
+      documents: Document.ToConfiguredStored<T>[],
       data: (DeepPartial<InstanceType<T>["_source"]> & { _id: string })[],
     ): DocumentCollection.RenderContext.Update<T>;
     protected _getRenderContext(
       action: DocumentCollection.RenderContext.Delete<T>["action"],
-      documents: ConfiguredStoredDocument<T>[],
+      documents: Document.ToConfiguredStored<T>[],
       data: string[],
     ): DocumentCollection.RenderContext.Delete<T>;
   }
@@ -291,9 +281,9 @@ declare global {
     type Any = DocumentCollection<any, any>;
 
     namespace RenderContext {
-      interface Base<T extends DocumentConstructor> {
+      interface Base<T extends Document.AnyConstructor> {
         documentType: T["metadata"]["name"];
-        documents: ConfiguredStoredDocument<T>[];
+        documents: Document.ToConfiguredStored<T>[];
 
         /** @deprecated The "entities" render context is deprecated. Please use "documents" instead. */
         get entities(): this["documents"];
@@ -302,17 +292,17 @@ declare global {
         get entityType(): this["documentType"];
       }
 
-      interface Create<T extends DocumentConstructor> extends Base<T> {
+      interface Create<T extends Document.AnyConstructor> extends Base<T> {
         action: "create";
         data: (InstanceType<T>["_source"] & { _id: string })[];
       }
 
-      interface Update<T extends DocumentConstructor> extends Base<T> {
+      interface Update<T extends Document.AnyConstructor> extends Base<T> {
         action: "update";
         data: (DeepPartial<InstanceType<T>["_source"]> & { _id: string })[];
       }
 
-      interface Delete<T extends DocumentConstructor> extends Base<T> {
+      interface Delete<T extends Document.AnyConstructor> extends Base<T> {
         action: "delete";
         data: string[];
       }

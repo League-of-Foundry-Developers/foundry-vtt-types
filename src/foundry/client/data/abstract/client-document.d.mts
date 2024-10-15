@@ -1,8 +1,4 @@
-import type {
-  ConfiguredDocumentInstance,
-  ConstructorDataType,
-  DocumentConstructor,
-} from "../../../../types/helperTypes.d.mts";
+import type { ConfiguredDocumentInstance } from "../../../../types/helperTypes.d.mts";
 import type { ConstructorOf, DeepPartial, InexactPartial, Mixin, ValueOf } from "../../../../types/utils.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentModificationOptions } from "../../../common/abstract/document.d.mts";
@@ -330,9 +326,9 @@ declare class ClientDocument<BaseDocument extends Document.Internal.Instance.Any
    * @returns A Promise which resolves to the created Document, or null if the dialog was
    *          closed.
    */
-  static createDialog<T extends DocumentConstructor>(
+  static createDialog<T extends Document.AnyConstructor>(
     this: T,
-    data?: DeepPartial<ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>)>,
+    data?: DeepPartial<Document.ConstructorDataFor<T> & Record<string, unknown>>,
     context?: Pick<Document.ModificationContext<Document.Any | null>, "parent" | "pack"> & Partial<DialogOptions>,
   ): Promise<ConfiguredDocumentInstance<T> | null | undefined>;
 
@@ -403,7 +399,7 @@ declare class ClientDocument<BaseDocument extends Document.Internal.Instance.Any
    * @returns The resolved Document
    * @throws If a Document could not be retrieved from the provided data.
    */
-  static fromDropData<T extends DocumentConstructor>(
+  static fromDropData<T extends Document.AnyConstructor>(
     this: T,
     data: DropData<InstanceType<T>>,
     options?: FromDropDataOptions,

@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { StoredDocument } from "../../../../../src/types/utils.d.mts";
+import type Document from "../../../../../src/foundry/common/abstract/document.d.mts";
 
 const myMacro = new Macro({ name: "my macro", scope: "global", type: "script" });
 
@@ -40,7 +40,7 @@ expectTypeOf(myMacro.parent).toEqualTypeOf<null>();
 expectTypeOf(myMacro.pack).toEqualTypeOf<string | null>();
 
 // static properties of `Document`
-expectTypeOf(Macro.create({ name: "Some Macro" })).toEqualTypeOf<Promise<StoredDocument<Macro> | undefined>>();
-expectTypeOf(Macro.createDocuments([])).toEqualTypeOf<Promise<StoredDocument<Macro>[]>>();
+expectTypeOf(Macro.create({ name: "Some Macro" })).toEqualTypeOf<Promise<Document.Stored<Macro> | undefined>>();
+expectTypeOf(Macro.createDocuments([])).toEqualTypeOf<Promise<Document.Stored<Macro>[]>>();
 expectTypeOf(Macro.updateDocuments([])).toEqualTypeOf<Promise<Macro[]>>();
 expectTypeOf(Macro.deleteDocuments([])).toEqualTypeOf<Promise<Macro[]>>();

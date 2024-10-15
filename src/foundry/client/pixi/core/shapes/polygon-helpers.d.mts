@@ -1,4 +1,4 @@
-import type { ConfiguredObjectClassForName } from "../../../../../types/helperTypes.d.mts";
+import type Document from "../../../../common/abstract/document.d.mts";
 
 declare global {
   /**
@@ -136,7 +136,7 @@ declare global {
      * @param type - The type of polygon being constructed
      */
     static fromWall(
-      wall: ConfiguredObjectClassForName<"Wall"> | WallDocument,
+      wall: Document.ConfiguredObjectClassForName<"Wall"> | WallDocument,
       type: foundry.CONST.WALL_RESTRICTION_TYPES,
     ): PolygonEdge;
   }

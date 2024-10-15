@@ -1,4 +1,4 @@
-import type { StoredDocument } from "../../../../types/utils.d.mts";
+import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
   /**
@@ -31,7 +31,7 @@ declare global {
     /**
      * The currently viewed Combat encounter
      */
-    get viewed(): StoredDocument<Combat.ConfiguredInstance> | null;
+    get viewed(): Document.Stored<Combat.ConfiguredInstance> | null;
 
     /**
      * When a Token is deleted, remove it as a combatant from any combat encounters which included the Token

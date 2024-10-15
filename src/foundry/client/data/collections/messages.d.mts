@@ -1,4 +1,4 @@
-import type { StoredDocument } from "../../../../types/utils.d.mts";
+import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
   /**
@@ -30,6 +30,6 @@ declare global {
      * Allow for bulk deletion of all chat messages, confirm first with a yes/no dialog.
      * @see {@link Dialog.confirm}
      */
-    flush(): Promise<Promise<StoredDocument<ChatMessage.ConfiguredInstance>[]> | false | null>;
+    flush(): Promise<Promise<Document.Stored<ChatMessage.ConfiguredInstance>[]> | false | null>;
   }
 }

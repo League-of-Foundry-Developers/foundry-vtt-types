@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
-import type { DeepPartial, StoredDocument } from "../../../../../src/types/utils.d.mts";
+import type { DeepPartial } from "../../../../../src/types/utils.d.mts";
+import type Document from "../../../../../src/foundry/common/abstract/document.d.mts";
 
 const metadata = {
   type: "JournalEntry" as const,
@@ -12,9 +13,9 @@ const metadata = {
 };
 
 const compendiumCollection = new CompendiumCollection(metadata);
-expectTypeOf(compendiumCollection.get("", { strict: true })).toEqualTypeOf<StoredDocument<JournalEntry>>();
+expectTypeOf(compendiumCollection.get("", { strict: true })).toEqualTypeOf<Document.Stored<JournalEntry>>();
 // expectTypeOf(compendiumCollection.toJSON()).toEqualTypeOf<
-//   Array<StoredDocument<foundry.documents.BaseJournalEntry>["_source"]>
+//   Array<Document.Stored<foundry.documents.BaseJournalEntry>["_source"]>
 // >();
 
 // @ts-expect-error - "_initialize" is a protected method.
@@ -50,9 +51,9 @@ expectTypeOf(
   (await itemCollection.getIndex({ fields: ["name", "effects", "system"] })).get("some id", { strict: true }),
 ).toEqualTypeOf<{ _id: string; uuid: string } & DeepPartial<foundry.documents.BaseItem["_source"]>>();
 
-expectTypeOf(await itemCollection.getDocuments()).toEqualTypeOf<StoredDocument<Item>[]>(); // get all items
-expectTypeOf(await itemCollection.getDocuments({})).toEqualTypeOf<StoredDocument<Item>[]>(); // get all items
-expectTypeOf(await itemCollection.getDocuments({ name: "foo" })).toEqualTypeOf<StoredDocument<Item>[]>(); // get all items called "foo"
+expectTypeOf(await itemCollection.getDocuments()).toEqualTypeOf<Document.Stored<Item>[]>(); // get all items
+expectTypeOf(await itemCollection.getDocuments({})).toEqualTypeOf<Document.Stored<Item>[]>(); // get all items
+expectTypeOf(await itemCollection.getDocuments({ name: "foo" })).toEqualTypeOf<Document.Stored<Item>[]>(); // get all items called "foo"
 expectTypeOf(
   await itemCollection.getDocuments({ $or: [{ name: "baz" }, { name: "bar" }], effects: { $size: 2 } }), // only get items called "baz" or "bar" that have exactly 2 effects
-).toEqualTypeOf<StoredDocument<Item>[]>();
+).toEqualTypeOf<Document.Stored<Item>[]>();

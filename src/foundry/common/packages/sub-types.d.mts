@@ -1,5 +1,5 @@
-import type { DocumentTypeWithTypeData } from "../../../types/helperTypes.d.mts";
 import type { Merge } from "../../../types/utils.d.mts";
+import type Document from "../abstract/document.d.mts";
 import type { DataField, ObjectField } from "../data/fields.d.mts";
 
 /**
@@ -36,5 +36,5 @@ declare namespace AdditionalTypesField {
     }
   >;
 
-  type ServerTypeDeclarations = Record<DocumentTypeWithTypeData, Record<string, Record<string, unknown>>>;
+  type ServerTypeDeclarations = Record<Document.SystemType, Record<string, Record<string, unknown>>>;
 }
