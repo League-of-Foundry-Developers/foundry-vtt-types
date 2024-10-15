@@ -1,19 +1,22 @@
-import type { ConfiguredDocumentClassForName, DocumentType } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
+import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentDatabaseOperations, DocumentOnUpdateOptions } from "../../../common/abstract/document.d.mts";
 import type { SchemaField } from "../../../common/data/fields.d.mts";
 
 declare global {
   namespace TokenDocument {
-    type ConfiguredClass = ConfiguredDocumentClassForName<"Token">;
+    type ConfiguredClass = Document.ConfiguredClassForName<"Token">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
-    // TODO: This causes a circularity that's likely latent.
+    // TODO(LukeAbby): This causes a circularity that's likely latent.
     // Look into this.
     // type ConfiguredInstance = ConfiguredDocumentInstanceForName<"Token">;
 
+    type ObjectClass = Document.ConfiguredObjectClassForName<"Token">;
+    type ObjectInstance = Document.ConfiguredObjectInstanceForName<"Token">;
+
     /* eslint-disable @typescript-eslint/no-empty-object-type */
-    export interface DatabaseOperations
+    interface DatabaseOperations
       extends DocumentDatabaseOperations<
         TokenDocument,
         {},
@@ -177,9 +180,9 @@ declare global {
       defaults?: boolean,
     ): Promise<ReturnType<this["update"]>>;
 
-    override getEmbeddedCollection<DocType extends DocumentType>(
+    override getEmbeddedCollection<DocType extends Document.Type>(
       embeddedName: DocType,
-    ): Collection<InstanceType<ConfiguredDocumentClassForName<DocType>>>;
+    ): Collection<InstanceType<Document.ConfiguredClassForName<DocType>>>;
 
     /**
      * @privateRemarks _onCreate, _preUpdate, _onUpdate, _onDelete, preCreateOperation, _preUpdateOperation, _onCreateOperation,

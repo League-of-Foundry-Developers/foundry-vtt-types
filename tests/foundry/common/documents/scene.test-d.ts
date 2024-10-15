@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
 import type EmbeddedCollection from "../../../../src/foundry/common/abstract/embedded-collection.d.mts";
-import type { StoredDocument } from "../../../../src/types/utils.d.mts";
+import type Document from "../../../../src/foundry/common/abstract/document.d.mts";
 
 // @ts-expect-error - A BaseScene requires data.
 foundry.documents.BaseScene.create();
@@ -9,7 +9,7 @@ foundry.documents.BaseScene.create();
 new foundry.documents.BaseScene({});
 
 expectTypeOf(foundry.documents.BaseScene.create({ name: "My scene" })).toEqualTypeOf<
-  Promise<StoredDocument<Scene> | undefined>
+  Promise<Document.Stored<Scene> | undefined>
 >();
 
 const myScene = await foundry.documents.BaseScene.create({ name: "My second scene" }, { temporary: true });

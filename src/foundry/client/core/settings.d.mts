@@ -1,6 +1,6 @@
-import type { DocumentSubTypes, DocumentType } from "../../../types/helperTypes.d.mts";
 import type { DocumentOnUpsertOptions } from "../../common/abstract/document.d.mts";
 import type { AnyArray, AnyObject, DeepPartial, EmptyObject, InexactPartial } from "../../../types/utils.d.mts";
+import type Document from "../../common/abstract/document.d.mts";
 
 declare global {
   /**
@@ -202,8 +202,8 @@ declare global {
       "core.rtcWorldSettings": typeof AVSettings.DEFAULT_WORLD_SETTINGS;
       "core.scrollingStatusText": boolean;
       "core.sheetClasses": {
-        [Key in DocumentType as DocumentSubTypes<Key> extends string ? Key : never]?: Record<
-          DocumentSubTypes<Key> & string,
+        [Key in Document.Type as Document.SubTypesOf<Key> extends string ? Key : never]?: Record<
+          Document.SubTypesOf<Key> & string,
           string
         >;
       };

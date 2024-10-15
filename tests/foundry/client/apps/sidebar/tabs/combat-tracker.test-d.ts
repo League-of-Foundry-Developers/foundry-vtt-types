@@ -1,12 +1,12 @@
 import { expectTypeOf } from "vitest";
-import type { StoredDocument } from "../../../../../../src/types/utils.d.mts";
+import type Document from "../../../../../../src/foundry/common/abstract/document.d.mts";
 
 declare const combat: Combat;
 
 expectTypeOf(CombatTracker.defaultOptions).toEqualTypeOf<ApplicationOptions>();
 
 const tracker = new CombatTracker();
-expectTypeOf(tracker.combats).toEqualTypeOf<StoredDocument<Combat>[]>();
+expectTypeOf(tracker.combats).toEqualTypeOf<Document.Stored<Combat>[]>();
 expectTypeOf(tracker.createPopout()).toEqualTypeOf<CombatTracker>();
 
 expectTypeOf(tracker.initialize()).toEqualTypeOf<void>();

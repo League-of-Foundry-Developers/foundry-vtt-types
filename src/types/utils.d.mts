@@ -1,4 +1,5 @@
-import type { ConfiguredDocumentInstance, DocumentConstructor } from "./helperTypes.d.mts";
+import type { Document } from "../foundry/common/abstract/module.d.mts";
+import type { MakeConform } from "./helperTypes.d.mts";
 
 /**
  * Recursively sets keys of an object to optional. Used primarily for update methods
@@ -42,7 +43,7 @@ export type Expanded<O> = O extends AnyObject
  * Union type of the types of the values in `T`
  * @internal
  */
-export type ValueOf<T> = T extends ReadonlyArray<unknown> ? T[number] : T[keyof T];
+export type ValueOf<T> = T extends ReadonlyArray<infer V> ? V : T[keyof T];
 
 type OmitIndex<K extends PropertyKey> = string extends K
   ? never
@@ -132,16 +133,6 @@ export type IsObject<T> = T extends { readonly [K: string]: any }
  */
 export type SimpleMerge<Target, Override> = Omit<Target, keyof Override> & Override;
 
-export type StoredDocument<D extends { _source: unknown }> = D & {
-  id: string;
-  _id: string;
-  _source: D["_source"] & { _id: string };
-};
-
-export type ConfiguredStoredDocument<T extends DocumentConstructor> = StoredDocument<ConfiguredDocumentInstance<T>>;
-
-export type TemporaryDocument<D> = D extends StoredDocument<infer U> ? U : D;
-
 export type PropertyTypeOrFallback<T, Key extends string, Fallback> = Key extends keyof T ? T[Key] : Fallback;
 
 /**
@@ -226,7 +217,6 @@ export type AnyObject = {
  * - `object` - This allows functions and arrays.
  * - `Record<string, any>`/`{}` - These allows anything besides `null` and `undefined`.
  * - `Record<string, unknown>` - These types are equivalent but `AnyMutableObject` is preferred for explicitness.
- * - `Record<string, unknown>` - These types are equivalent but `AnyMutableObject` is preferred for explicitness.
  */
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions, @typescript-eslint/consistent-indexed-object-style
 export type AnyMutableObject = {
@@ -236,8 +226,6 @@ export type AnyMutableObject = {
 /**
  * Use this type to allow any array. This allows readonly arrays which is
  * generally what you want. If you need a mutable array use the
- * {@link MutableArray | `MutableArray`} type instead of the builtin `T[]` or
- * `Array` types. This allows us to be more explicit about intent.
  * {@link MutableArray | `MutableArray`} type instead of the builtin `T[]` or
  * `Array` types. This allows us to be more explicit about intent.
  *
@@ -251,9 +239,6 @@ export type AnyMutableObject = {
 export type AnyArray = readonly unknown[];
 
 /**
- * Use this type to allow a mutable array of type `T`. Only use this if the
- * array can be soundly mutated. Otherwise you should be using
- * `readonly T[]` or {@link ReadonlyArray | `ReadonlyArray`}
  * Use this type to allow a mutable array of type `T`. Only use this if the
  * array can be soundly mutated. Otherwise you should be using
  * `readonly T[]` or {@link ReadonlyArray | `ReadonlyArray`}
@@ -392,8 +377,27 @@ export type NonNullish = {};
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type EmptyObject = Record<string, never>;
 
+declare const empty: unique symbol;
+
 /**
  * Defer is a utility type that allows you to defer the evaluation of a type.
  * The use cases for this are extremely advanced. In essence they have to do with breaking cycles in evaluation.
  */
 export type Defer<T> = [T][T extends any ? 0 : never];
+
+/**
+ * @deprecated {@link Document.ToConfiguredStored | `Document.ToConfiguredStored`}
+ */
+export type ConfiguredStoredDocument<T extends Document.AnyConstructor> = Document.ToConfiguredStored<T>;
+
+/**
+ * @deprecated {@link Document.Stored | `Document.Stored`}
+ */
+export type StoredDocument<D extends { _source: unknown }> = Document.Stored<
+  MakeConform<D, Document.Internal.Instance.Any>
+>;
+
+/**
+ * @deprecated {@link Document.Temporary | `Document.Temporary`}
+ */
+export type TemporaryDocument<D> = Document.Temporary<MakeConform<D, Document.Internal.Instance.Any>>;

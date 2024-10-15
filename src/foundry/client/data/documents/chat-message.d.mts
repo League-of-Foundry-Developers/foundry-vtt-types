@@ -1,18 +1,14 @@
-import type {
-  ConfiguredDocumentClassForName,
-  ConfiguredDocumentInstanceForName,
-  ToObjectFalseType,
-} from "../../../../types/helperTypes.d.mts";
-import type { InexactPartial, StoredDocument } from "../../../../types/utils.d.mts";
+import type { InexactPartial } from "../../../../types/utils.d.mts";
+import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace ChatMessage {
-    type ConfiguredClass = ConfiguredDocumentClassForName<"ChatMessage">;
-    type ConfiguredInstance = ConfiguredDocumentInstanceForName<"ChatMessage">;
+    type ConfiguredClass = Document.ConfiguredClassForName<"ChatMessage">;
+    type ConfiguredInstance = Document.ConfiguredInstanceForName<"ChatMessage">;
 
     /* eslint-disable @typescript-eslint/no-empty-object-type */
-    export interface DatabaseOperations
+    interface DatabaseOperations
       extends DocumentDatabaseOperations<
         ChatMessage,
         { rollMode: foundry.CONST.DICE_ROLL_MODES; chatBubble: boolean },
@@ -36,8 +32,8 @@ declare global {
     }
 
     interface MessageData {
-      message: ToObjectFalseType<ChatMessage>;
-      user: StoredDocument<User.ConfiguredInstance>;
+      message: Document.ToObjectFalseType<ChatMessage>;
+      user: Document.Stored<User.ConfiguredInstance>;
       author: User.ConfiguredInstance | undefined;
       alias: string;
       cssClass: string;
@@ -188,7 +184,7 @@ declare global {
      * @param name - The target name of the whisper target
      * @returns An array of User instances
      */
-    static getWhisperRecipients(name: string): StoredDocument<User.ConfiguredInstance>[];
+    static getWhisperRecipients(name: string): Document.Stored<User.ConfiguredInstance>[];
 
     /**
      * Render the HTML for the ChatMessage which should be added to the log

@@ -1,5 +1,5 @@
-import type { ConfiguredDocumentClass } from "../../../../types/helperTypes.d.mts";
 import type { GetDataReturnType, MaybePromise } from "../../../../types/utils.d.mts";
+import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
   /**
@@ -62,7 +62,7 @@ declare global {
 
     interface UserConfigData<Options extends DocumentSheetOptions<User> = DocumentSheetOptions<User>> {
       user: UserConfig<Options>["object"];
-      actors: ConfiguredDocumentClass<typeof Actor>[];
+      actors: Document.ToConfiguredClass<typeof Actor>[];
       options: UserConfig<Options>["options"];
     }
   }

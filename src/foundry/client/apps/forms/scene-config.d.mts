@@ -1,5 +1,5 @@
-import type { DocumentConstructor } from "../../../../types/helperTypes.d.mts";
 import type { MaybePromise } from "../../../../types/utils.d.mts";
+import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
   /**
@@ -54,7 +54,9 @@ declare global {
      * Get the alphabetized Documents which can be chosen as a configuration for the Scene
      * @internal
      */
-    protected _getDocuments(collection: WorldCollection<DocumentConstructor, string>): { _id: string; name: string }[];
+    protected _getDocuments(
+      collection: WorldCollection<Document.AnyConstructor, string>,
+    ): { _id: string; name: string }[];
 
     override activateListeners(html: JQuery): void;
 

@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { StoredDocument } from "../../../../../src/types/utils.d.mts";
+import type Document from "../../../../../src/foundry/common/abstract/document.d.mts";
 
 expectTypeOf(new ChatMessage()).toEqualTypeOf<ChatMessage>();
 expectTypeOf(new ChatMessage({})).toEqualTypeOf<ChatMessage>();
@@ -52,7 +52,7 @@ expectTypeOf(ChatMessage.getSpeaker({ token: new TokenDocument() })).toEqualType
 expectTypeOf(ChatMessage.getSpeaker({ alias: "Mario" })).toEqualTypeOf<ChatSpeakerData>();
 
 expectTypeOf(ChatMessage.getSpeakerActor(ChatMessage.getSpeaker())).toEqualTypeOf<Actor | null>();
-expectTypeOf(ChatMessage.getWhisperRecipients("Mario")).toEqualTypeOf<StoredDocument<User>[]>();
+expectTypeOf(ChatMessage.getWhisperRecipients("Mario")).toEqualTypeOf<Document.Stored<User>[]>();
 
 const chat = new ChatMessage();
 expectTypeOf(chat.alias).toEqualTypeOf<string>();

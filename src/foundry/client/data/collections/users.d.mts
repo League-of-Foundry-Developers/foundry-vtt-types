@@ -1,4 +1,5 @@
-import type { InexactPartial, StoredDocument } from "../../../../types/utils.d.mts";
+import type { InexactPartial } from "../../../../types/utils.d.mts";
+import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
   /**
@@ -14,7 +15,7 @@ declare global {
      * The User document of the currently connected user
      * @defaultValue `null`
      */
-    current: StoredDocument<User.ConfiguredInstance> | null;
+    current: Document.Stored<User.ConfiguredInstance> | null;
 
     /**
      * Initialize the Map object and all its contained documents

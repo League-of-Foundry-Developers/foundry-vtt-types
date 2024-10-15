@@ -1,8 +1,4 @@
-import type {
-  ConfiguredDocumentInstance,
-  ConstructorDataType,
-  DocumentConstructor,
-} from "../../../../types/helperTypes.d.mts";
+import type { ConfiguredDocumentInstance } from "../../../../types/helperTypes.d.mts";
 import type { ConstructorOf, DeepPartial, InexactPartial, Mixin, ValueOf } from "../../../../types/utils.d.mts";
 import type { DatabaseCreateOperation } from "../../../common/abstract/_types.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
@@ -348,9 +344,9 @@ declare class ClientDocument<BaseDocument extends Document.Internal.Instance.Any
    * @returns A Promise which resolves to the created Document, or null if the dialog was
    *          closed.
    */
-  static createDialog<T extends DocumentConstructor>(
+  static createDialog<T extends Document.AnyConstructor>(
     this: T,
-    data?: DeepPartial<ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>)>,
+    data?: DeepPartial<Document.ConstructorDataFor<T> & Record<string, unknown>>,
     context?: Pick<DatabaseCreateOperation<InstanceType<T>>, "parent" | "pack"> &
       InexactPartial<
         DialogOptions & {
@@ -390,7 +386,7 @@ declare class ClientDocument<BaseDocument extends Document.Internal.Instance.Any
    * @returns The resolved Document
    * @throws If a Document could not be retrieved from the provided data.
    */
-  static fromDropData<T extends DocumentConstructor>(
+  static fromDropData<T extends Document.AnyConstructor>(
     this: T,
     data: DropData<InstanceType<T>>,
     options?: FromDropDataOptions,
@@ -413,7 +409,7 @@ declare class ClientDocument<BaseDocument extends Document.Internal.Instance.Any
    * @param context - The model construction context passed to {@link Document.fromSource}.
    *                  (default: `context.strict=true`) Strict validation is enabled by default.
    */
-  static fromImport<T extends DocumentConstructor>(
+  static fromImport<T extends Document.AnyConstructor>(
     this: T,
     source: Record<string, unknown>,
     context?: Document.ConstructionContext<Document.Any | null> & DataValidationOptions,

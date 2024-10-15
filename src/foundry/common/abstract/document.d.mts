@@ -1,22 +1,6 @@
-import type {
-  ConfiguredDocumentClassForName,
-  ConfiguredDocumentInstance,
-  ConstructorDataType,
-  DatabaseOperationsFor,
-  DocumentConstructor,
-  DocumentType,
-  DocumentTypeWithTypeData,
-  GetKey,
-  PlaceableDocumentType,
-} from "../../../types/helperTypes.mts";
-import type {
-  ConfiguredStoredDocument,
-  DeepPartial,
-  EmptyObject,
-  InexactPartial,
-  RemoveIndexSignatures,
-  StoredDocument,
-} from "../../../types/utils.mts";
+import type { ConfiguredDocuments } from "../../../types/configuredDocuments.d.mts";
+import type { DatabaseOperationsFor, DocumentType, GetKey, MakeConform } from "../../../types/helperTypes.mts";
+import type { DeepPartial, EmptyObject, InexactPartial, RemoveIndexSignatures } from "../../../types/utils.mts";
 import type * as CONST from "../constants.mts";
 import type { DataField, EmbeddedCollectionField, EmbeddedDocumentField } from "../data/fields.d.mts";
 import type { fields } from "../data/module.mts";
@@ -125,12 +109,12 @@ declare abstract class Document<
    */
   // Referencing the concrete class the config is not possible because accessors cannot be generic and there is not
   // static polymorphic this type
-  static get implementation(): DocumentConstructor;
+  static get implementation(): Document.AnyConstructor;
 
   /**
    * The base document definition that this document class extends from.
    */
-  static get baseDocument(): DocumentConstructor;
+  static get baseDocument(): Document.AnyConstructor;
 
   /**
    * The named collection to which this Document belongs.
@@ -263,7 +247,7 @@ declare abstract class Document<
          */
         addSource: boolean;
       } & Document.ConstructionContext<this["parent"]>
-    >, // Adding StoredDocument to the return causes a recursive type error in Scene
+    >, // FIXME(LukeAbby): Adding Document.Stored to the return causes a recursive type error in Scene
   ): Save extends true ? Promise<this> : this;
 
   /**
@@ -317,14 +301,14 @@ declare abstract class Document<
     operation?: InexactPartial<Omit<DatabaseOperationsFor<T["metadata"]["name"], "create">, "data">> & {
       temporary?: false | undefined;
     },
-  ): Promise<ConfiguredStoredDocument<T>[] | undefined>;
+  ): Promise<Document.ToConfiguredStored<T>[] | undefined>;
   static createDocuments<T extends Document.AnyConstructor>(
     this: T,
     data: Array<fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]> & Record<string, unknown>>,
     operation?: InexactPartial<Omit<DatabaseOperationsFor<T["metadata"]["name"], "create">, "data">> & {
       temporary: true;
     },
-  ): Promise<ConfiguredDocumentInstance<T>[] | undefined>;
+  ): Promise<Document.ToConfiguredStored<T>[] | undefined>;
 
   /**
    * Update multiple Document instances using provided differential data.
@@ -363,9 +347,9 @@ declare abstract class Document<
    */
   static updateDocuments<T extends Document.AnyConstructor>(
     this: T,
-    updates?: Array<DeepPartial<ConstructorDataType<T> & Record<string, unknown>>>,
+    updates?: Array<DeepPartial<Document.ConstructorDataFor<T> & Record<string, unknown>>>,
     operation?: InexactPartial<Omit<DatabaseOperationsFor<InstanceType<T>["documentName"], "update">, "updates">>,
-  ): Promise<ConfiguredDocumentInstance<T>[]>;
+  ): Promise<Document.ToConfiguredInstance<T>[]>;
 
   /**
    * Delete one or multiple existing Documents using an array of provided ids.
@@ -408,7 +392,7 @@ declare abstract class Document<
     this: T,
     ids?: string[],
     operation?: InexactPartial<Omit<DatabaseOperationsFor<InstanceType<T>["documentName"], "delete">, "ids">>,
-  ): Promise<ConfiguredDocumentInstance<T>[]>;
+  ): Promise<Document.ToConfiguredInstance<T>[]>;
 
   /**
    * Create a new Document using provided input data, saving it to the database.
@@ -441,18 +425,18 @@ declare abstract class Document<
    */
   static create<T extends Document.AnyConstructor>(
     this: T,
-    data: ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>),
+    data: Document.ConstructorDataFor<T> & Record<string, unknown>,
     operation?: InexactPartial<Omit<DatabaseOperationsFor<T["metadata"]["name"], "create">, "data">> & {
       temporary?: false | undefined;
     },
-  ): Promise<ConfiguredStoredDocument<T> | undefined>;
+  ): Promise<Document.ToConfiguredStored<T> | undefined>;
   static create<T extends Document.AnyConstructor>(
     this: T,
-    data: ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>),
+    data: Document.ConstructorDataFor<T> & Record<string, unknown>,
     operation?: InexactPartial<Omit<DatabaseOperationsFor<T["metadata"]["name"], "create">, "data">> & {
       temporary: true;
     },
-  ): Promise<ConfiguredDocumentInstance<T> | undefined>;
+  ): Promise<Document.ToConfiguredInstance<T> | undefined>;
 
   /**
    * Update this Document using incremental data, saving it to the database.
@@ -564,20 +548,20 @@ declare abstract class Document<
     EmbeddedName extends Exclude<foundry.CONST.EMBEDDED_DOCUMENT_TYPES, "Region" | "RegionBehavior">,
   >(
     embeddedName: EmbeddedName,
-    data?: Array<ConstructorDataType<ConfiguredDocumentClassForName<EmbeddedName>>>,
+    data?: Array<Document.ConstructorDataFor<Document.ConfiguredClassForName<EmbeddedName>>>,
     operation?: InexactPartial<DatabaseOperationsFor<EmbeddedName, "create">> & {
       temporary?: false | undefined;
     },
-  ): Promise<ConfiguredStoredDocument<ConfiguredDocumentClassForName<EmbeddedName>>[] | undefined>;
+  ): Promise<Document.Stored<Document.ConfiguredInstanceForName<EmbeddedName>>[] | undefined>;
   createEmbeddedDocuments<
     EmbeddedName extends Exclude<foundry.CONST.EMBEDDED_DOCUMENT_TYPES, "Region" | "RegionBehavior">,
   >(
     embeddedName: EmbeddedName,
-    data?: Array<ConstructorDataType<ConfiguredDocumentClassForName<EmbeddedName>>>,
+    data?: Array<Document.ConstructorDataFor<Document.ConfiguredClassForName<EmbeddedName>>>,
     operation?: InexactPartial<DatabaseOperationsFor<EmbeddedName, "create">> & {
       temporary: true;
     },
-  ): Promise<InstanceType<ConfiguredDocumentClassForName<EmbeddedName>>[] | undefined>;
+  ): Promise<Document.ConfiguredInstanceForName<EmbeddedName>[] | undefined>;
 
   /**
    * Update multiple embedded Document instances within a parent Document using provided differential data.
@@ -595,8 +579,8 @@ declare abstract class Document<
   >(
     embeddedName: EmbeddedName,
     updates?: Array<Record<string, unknown>>,
-    operation?: DatabaseOperationsFor<ConcreteMetadata["name"], "update">,
-  ): Promise<Array<StoredDocument<InstanceType<ConfiguredDocumentClassForName<EmbeddedName>>>>>;
+    context?: Document.ModificationContext<this["parent"]>,
+  ): Promise<Array<Document.Stored<Document.ConfiguredInstanceForName<EmbeddedName>>>>;
 
   /**
    * Delete multiple embedded Document instances within a parent Document using provided string ids.
@@ -614,7 +598,7 @@ declare abstract class Document<
     embeddedName: EmbeddedName,
     ids: Array<string>,
     operation?: DatabaseOperationsFor<ConcreteMetadata["name"], "delete">,
-  ): Promise<Array<StoredDocument<InstanceType<ConfiguredDocumentClassForName<EmbeddedName>>>>>;
+  ): Promise<Array<Document.Stored<Document.ConfiguredInstanceForName<EmbeddedName>>>>;
 
   /**
    * Iterate over all embedded Documents that are hierarchical children of this Document.
@@ -633,7 +617,7 @@ declare abstract class Document<
    */
   getFlag<
     S extends Document.FlagKeyOf<Document.FlagsFor<this>>,
-    K extends Document.FlagKeyOf<Document.FlagsFor<this>[S]>,
+    K extends Document.FlagKeyOf<GetKey<Document.FlagsFor<this>, S>>,
   >(scope: S, key: K): Document.GetFlag<this, S, K>;
 
   /**
@@ -838,10 +822,10 @@ declare abstract class Document<
    */
   protected static _preDeleteOperation<T extends Document.AnyConstructor>(
     this: T,
-    documents: InstanceType<Document.ConfiguredClass<T>>[],
+    documents: Array<Document.ToConfiguredInstance<T>>,
     operation: DatabaseOperationsFor<InstanceType<T>["documentName"], "delete">,
     user: foundry.documents.BaseUser,
-  ): Promise<boolean | void>;
+  ): Promise<unknown>;
 
   /**
    * Post-process a deletion operation, reacting to database changes which have occurred. Post-operation events occur
@@ -855,10 +839,10 @@ declare abstract class Document<
    */
   protected static _onDeleteOperation<T extends Document.AnyConstructor>(
     this: T,
-    documents: InstanceType<Document.ConfiguredClass<T>>[],
+    documents: Array<Document.ToConfiguredInstance<T>>,
     operation: DatabaseOperationsFor<InstanceType<T>["documentName"], "delete">,
     user: foundry.documents.BaseUser,
-  ): Promise<void>;
+  ): Promise<unknown>;
 
   /**
    * Configure whether V10 Document Model migration warnings should be logged for this class.
@@ -909,7 +893,7 @@ declare abstract class Document<
    */
   protected static _onCreateDocuments<T extends Document.AnyConstructor>(
     this: T,
-    documents: Array<ConfiguredDocumentInstance<T>>,
+    documents: Array<Document.ToConfiguredInstance<T>>,
     context: Document.ModificationContext<Document.Any | null>,
   ): Promise<void>;
 
@@ -919,7 +903,7 @@ declare abstract class Document<
    */
   protected static _onUpdateDocuments<T extends Document.AnyConstructor>(
     this: T,
-    documents: Array<ConfiguredDocumentInstance<T>>,
+    documents: Array<Document.ToConfiguredInstance<T>>,
     context: Document.ModificationContext<Document.Any | null>,
   ): Promise<unknown>;
 
@@ -929,7 +913,7 @@ declare abstract class Document<
    */
   protected static _onDeleteDocuments<T extends Document.AnyConstructor>(
     this: T,
-    documents: Array<ConfiguredDocumentInstance<T>>,
+    documents: Array<Document.ToConfiguredInstance<T>>,
     context: Document.ModificationContext<Document.Any | null>,
   ): Promise<unknown>;
 }
@@ -937,24 +921,65 @@ declare abstract class Document<
 declare class AnyDocument extends Document<any, any, any> {
   constructor(arg0: never, ...args: never[]);
 
+  // Note(LukeAbby): Specifically adding the `__DocumentBrand` should be redundant but in practice it seems to help tsc more efficiently deduce that it's actually inheriting from `Document`.
+  // This is odd but probably is because it bails from looking up the parent class properties at times or something.
+  static [__DocumentBrand]: never;
+
   // `getFlag` does some unusual introspection on effectively `GetKey<this, "flags">`.
   // This is because not all documents have flags.
-  flags?: any;
+  flags?: unknown;
 
-  getFlag(scope: never, key: never): never;
+  getFlag(scope: never, key: never): any;
 }
 
 declare namespace Document {
   /** Any Document, except for Settings */
   type Any = Document<any, any, any>;
 
+  type Type =
+    | "ActiveEffect"
+    | "ActorDelta"
+    | "Actor"
+    | "Adventure"
+    | "Card"
+    | "Cards"
+    | "ChatMessage"
+    | "Combat"
+    | "Combatant"
+    | "FogExploration"
+    | "Folder"
+    | "Item"
+    | "JournalEntryPage"
+    | "JournalEntry"
+    | "Macro"
+    | "PlaylistSound"
+    | "Playlist"
+    | "RollTable"
+    | "Scene"
+    | "Setting"
+    | "TableResult"
+    | "User"
+    // All placeables also have a corresponding document class.
+    | PlaceableType;
+
+  type PlaceableType =
+    | "AmbientLight"
+    | "AmbientSound"
+    | "Drawing"
+    | "MeasuredTemplate"
+    | "Note"
+    | "Tile"
+    | "Token"
+    | "Wall";
+
+  // TODO: Probably a way to auto-determine this
+  type SystemType = "Actor" | "Card" | "Cards" | "Item" | "JournalEntryPage";
+
   // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
   namespace Internal {
-    interface Constructor {
+    type Constructor = (abstract new (arg0: never, ...args: never[]) => Instance.Any) & {
       [__DocumentBrand]: never;
-
-      new (...args: never[]): Instance.Any;
-    }
+    };
 
     interface Instance<
       Schema extends DataSchema,
@@ -972,6 +997,117 @@ declare namespace Document {
       type Complete<T extends Any> = T extends Document.Any ? T : never;
     }
   }
+
+  /** Any Document, that is a child of the given parent Document. */
+  type AnyChild<Parent extends Any | null> = Document<any, any, Parent>;
+
+  type AnyConstructor = typeof AnyDocument;
+
+  /**
+   * Returns the type of the constructor data for the given {@link foundry.abstract.Document}.
+   */
+  type ConstructorDataFor<T extends Document.Internal.Constructor> =
+    foundry.data.fields.SchemaField.InnerAssignmentType<
+      T extends { defineSchema: () => infer R extends DataSchema } ? R : never
+    >;
+
+  type SystemConstructor = AnyConstructor & {
+    metadata: { name: SystemType; coreTypes?: readonly string[] | undefined };
+  };
+
+  type ConfiguredClass<T extends { metadata: AnyMetadata }> = ConfiguredClassForName<T["metadata"]["name"]>;
+
+  type ConfiguredClassForName<Name extends Type> = ConfiguredDocuments[Name];
+
+  type SubTypesOf<T extends Type> =
+    ConfiguredInstanceForName<T> extends { type: infer Types } ? Types : typeof foundry.CONST.BASE_DOCUMENT_TYPE;
+
+  type ToConfiguredClass<ConcreteDocument extends Document.Internal.Constructor> = MakeConform<
+    ConfiguredDocuments[NameFor<ConcreteDocument>],
+    Document.AnyConstructor
+  >;
+
+  type ToConfiguredInstance<ConcreteDocument extends Document.Internal.Constructor> = MakeConform<
+    // NOTE(LukeAbby): This avoids calling `Document.ToConfiguredClass` because that checks the static side of the class which can be expensive and even lead to loops.
+    InstanceType<ConfiguredDocuments[NameFor<ConcreteDocument>]>,
+    Document.Any
+  >;
+
+  type ToConfiguredStored<D extends Document.Internal.Constructor> = Stored<ToConfiguredInstance<D>>;
+
+  type Stored<D extends Document.Internal.Instance.Any> = D & {
+    id: string;
+    _id: string;
+    _source: GetKey<D, "_source"> & { _id: string };
+  };
+
+  type Temporary<D extends Document.Internal.Instance.Any> = D extends Stored<infer U> ? U : D;
+
+  type NameFor<ConcreteDocument extends Document.Internal.Constructor> = ConcreteDocument extends {
+    readonly metadata: { readonly name: infer Name extends Type };
+  }
+    ? Name
+    : never;
+
+  type ConfiguredInstanceForName<Name extends Type> = MakeConform<
+    InstanceType<ConfiguredDocuments[Name]>,
+    Document.Any
+  >;
+
+  type ConfiguredObjectClassForName<Name extends PlaceableType> = CONFIG[Name]["objectClass"];
+  type ConfiguredObjectInstanceForName<Name extends PlaceableType> = InstanceType<CONFIG[Name]["objectClass"]>;
+
+  type ConfiguredDataForName<Name extends Type> = GetKey<DataConfig, Name, EmptyObject>;
+
+  type ConfiguredSourceForName<Name extends Type> = GetKey<SourceConfig, Name, EmptyObject>;
+
+  type ConfiguredFlagsForName<Name extends Type> = GetKey<FlagConfig, Name, EmptyObject>;
+
+  type ToObjectFalseType<T extends Document.Internal.Instance.Any> = T extends {
+    toObject: (source: false) => infer U;
+  }
+    ? U
+    : T;
+
+  type SchemaFor<ConcreteDocument extends Internal.Instance.Any> =
+    ConcreteDocument extends Internal.Instance<infer Schema, any, any> ? Schema : never;
+
+  type MetadataFor<ConcreteDocument extends Internal.Instance.Any> =
+    ConcreteDocument extends Internal.Instance<any, infer ConcreteMetadata, any> ? ConcreteMetadata : never;
+
+  type CollectionRecord<Schema extends DataSchema> = {
+    [Key in keyof Schema]: Schema[Key] extends fields.EmbeddedCollectionField.Any ? Schema[Key] : never;
+  };
+
+  type Flags<ConcreteDocument extends Internal.Instance.Any> = OptionsForSchema<SchemaFor<ConcreteDocument>>;
+
+  interface OptionsInFlags<Options extends DataFieldOptions.Any> {
+    readonly flags?: DataField<Options, any>;
+  }
+
+  // These  types only exists to simplify solving the `Document` type. Using `Document.Flags<this>` means the constraint `this extends Document.Any` has to be proved.
+  // This is much more complex than proving the constraint for `Document.FlagsInternal<Schema>` that `Schema extends DataSchema`.
+
+  // TODO: This needs to use the derived flags not just how they're initialized.
+  type OptionsForSchema<Schema extends DataSchema> =
+    RemoveIndexSignatures<Schema> extends OptionsInFlags<infer Options> ? DataField.InitializedType<Options> : never;
+
+  // Like `keyof` but handles properties desirable for flags:
+  // - `never` returns `never` (instead of `PropertyKey`)
+  // - `unknown` returns `string` (instead of `never`)
+  // - Strips out non string keys.
+  type FlagKeyOf<T> = T extends unknown ? string : T extends never ? never : keyof T & string;
+
+  type FlagGetKey<T, K extends PropertyKey> = K extends keyof T ? T[K] : never;
+
+  // Note(LukeAbby): It's very important for `GetFlag` to be covariant over `ConcreteDocument`.
+  // If it isn't then issues arise where the `Document` type ends up becoming invaraint.
+  type GetFlag<ConcreteDocument extends Internal.Instance.Any, S extends string, K extends string> = FlagGetKey<
+    FlagGetKey<Document.FlagsFor<ConcreteDocument>, S>,
+    K
+  >;
+
+  type FlagsFor<ConcreteDocument extends Internal.Instance.Any> = GetKey<ConcreteDocument, "flags", never>;
 
   interface ConstructionContext<Parent extends Document.Any | null> {
     /**
@@ -1076,74 +1212,8 @@ declare namespace Document {
      */
     deleteAll?: boolean | undefined;
   }
-
-  /** Any Document, that is a child of the given parent Document. */
-  type AnyChild<Parent extends Any | null> = Document<any, any, Parent>;
-
-  type AnyConstructor = typeof AnyDocument;
-
-  type SystemConstructor = AnyConstructor & {
-    metadata: { name: SystemType; coreTypes?: readonly string[] | undefined };
-  };
-
-  type ConfiguredClass<T extends { metadata: AnyMetadata }> = ConfiguredClassForName<T["metadata"]["name"]>;
-
-  type ConfiguredClassForName<Name extends TypeName> = CONFIG[Name]["documentClass"];
-
-  // Doubled references are useful but shouldn't store the lists separately
-  type SystemType = DocumentTypeWithTypeData;
-
-  type TypeName = DocumentType;
-
-  type PlaceableTypeName = PlaceableDocumentType;
-
-  type SchemaFor<ConcreteDocument extends Internal.Instance.Any> =
-    ConcreteDocument extends Internal.Instance<infer Schema, any, any> ? Schema : never;
-
-  type MetadataFor<ConcreteDocument extends Internal.Instance.Any> =
-    ConcreteDocument extends Internal.Instance<any, infer ConcreteMetadata, any> ? ConcreteMetadata : never;
-
-  type CollectionRecord<Schema extends DataSchema> = {
-    [Key in keyof Schema]: Schema[Key] extends fields.EmbeddedCollectionField.Any ? Schema[Key] : never;
-  };
-
-  type Flags<ConcreteDocument extends Internal.Instance.Any> = OptionsForSchema<SchemaFor<ConcreteDocument>>;
-
-  interface OptionsInFlags<Options extends DataFieldOptions.Any> {
-    readonly flags?: DataField<Options, any>;
-  }
-
-  // These  types only exists to simplify solving the `Document` type. Using `Document.Flags<this>` means the constraint `this extends Document.Any` has to be proved.
-  // This is much more complex than proving the constraint for `Document.FlagsInternal<Schema>` that `Schema extends DataSchema`.
-
-  // TODO: This needs to use the derived flags not just how they're initialized.
-  type OptionsForSchema<Schema extends DataSchema> =
-    RemoveIndexSignatures<Schema> extends OptionsInFlags<infer Options> ? DataField.InitializedType<Options> : never;
-
-  // Returns only string keys and returns `never` if `T` is never.
-  type FlagKeyOf<T> = T extends never ? never : keyof T & string;
-
-  type GetFlag<ConcreteDocument extends Internal.Instance.Any, S extends string, K extends string> = GetFlagForSchema<
-    SchemaFor<ConcreteDocument>,
-    S,
-    K
-  >;
-
-  type FlagInSchema<S extends string, K extends string, Options extends DataFieldOptions.Any> = {
-    readonly [_ in S]?:
-      | {
-          readonly [_ in K]?: DataField<Options, any, any, any> | undefined;
-        }
-      | undefined;
-  };
-
-  // Looks for flags in the schema.
-  // If a flag can't be found `undefined` is returned.
-  type GetFlagForSchema<Schema extends DataSchema, S extends string, K extends string> =
-    OptionsForSchema<Schema> extends FlagInSchema<S, K, infer Options> ? DataField.InitializedType<Options> : undefined;
 }
 
-/** @deprecated - since v12 */
 export type DocumentModificationOptions = Omit<Document.ModificationContext<Document.Any | null>, "parent" | "pack">;
 
 export interface Context<Parent extends Document.Any | null> {
@@ -1161,7 +1231,7 @@ export interface Context<Parent extends Document.Any | null> {
 export type AnyMetadata = Metadata<any>;
 
 export interface Metadata<ConcreteDocument extends Document.Any> {
-  name: Document.TypeName;
+  name: Document.Type;
   collection: string;
   indexed?: boolean | undefined;
   compendiumIndexFields?: string[] | undefined;

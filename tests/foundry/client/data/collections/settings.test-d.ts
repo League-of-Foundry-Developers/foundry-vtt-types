@@ -1,8 +1,8 @@
 import { expectTypeOf } from "vitest";
-import type { StoredDocument } from "../../../../../src/types/utils.d.mts";
+import type Document from "../../../../../src/foundry/common/abstract/document.d.mts";
 
 const worldSettings = new WorldSettings([]);
-expectTypeOf(worldSettings.get("", { strict: true })).toEqualTypeOf<StoredDocument<Setting>>();
-expectTypeOf(worldSettings.getSetting("foo")).toEqualTypeOf<StoredDocument<Setting> | undefined>();
-expectTypeOf(worldSettings.toJSON()).toEqualTypeOf<StoredDocument<Setting>["_source"][]>();
+expectTypeOf(worldSettings.get("", { strict: true })).toEqualTypeOf<Document.Stored<Setting>>();
+expectTypeOf(worldSettings.getSetting("foo")).toEqualTypeOf<Document.Stored<Setting> | undefined>();
+expectTypeOf(worldSettings.toJSON()).toEqualTypeOf<Document.Stored<Setting>["_source"][]>();
 expectTypeOf(worldSettings.directory).toEqualTypeOf<null>();

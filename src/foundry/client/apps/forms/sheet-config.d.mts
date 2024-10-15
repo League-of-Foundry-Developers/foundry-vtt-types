@@ -1,5 +1,5 @@
-import type { DocumentConstructor, DocumentType } from "../../../../types/helperTypes.d.mts";
 import type { ConstructorOf, GetDataReturnType, MaybePromise } from "../../../../types/utils.d.mts";
+import type { Document } from "../../../common/abstract/module.d.mts";
 
 declare global {
   /**
@@ -43,7 +43,7 @@ declare global {
      * @param subType      - The Document sub-type. // TODO: Generic to specify string options?
      */
     static getSheetClassesForSubType(
-      documentName: DocumentType,
+      documentName: Document.Type,
       subType: string,
     ): DocumentSheetConfig.SheetClassesForSubType;
 
@@ -58,7 +58,7 @@ declare global {
     /**
      * @internal
      */
-    protected static _getDocumentTypes(cls: DocumentConstructor, types?: string[]): string[];
+    protected static _getDocumentTypes(cls: Document.AnyConstructor, types?: string[]): string[];
 
     /**
      * Register a sheet class as a candidate which can be used to display documents of a given type
@@ -68,7 +68,7 @@ declare global {
      * @param config        - Additional options used for sheet registration
      */
     static registerSheet(
-      documentClass: DocumentConstructor,
+      documentClass: Document.AnyConstructor,
       scope: string,
       sheetClass: typeof FormApplication,
       config?: DocumentSheetConfig.RegisterSheetOptions,
@@ -89,7 +89,7 @@ declare global {
      * @param types         - An Array of types for which this sheet should be removed
      */
     static unregisterSheet(
-      documentClass: DocumentConstructor,
+      documentClass: Document.AnyConstructor,
       scope: string,
       sheetClass: ConstructorOf<FormApplication<FormApplicationOptions, any>>,
       { types }?: { types?: string[] },
@@ -105,7 +105,7 @@ declare global {
     /**
      * Update the current default Sheets using a new core world setting.
      */
-    static updateDefaultSheets(setting?: Record<DocumentType, Record<string, string>>): void;
+    static updateDefaultSheets(setting?: Record<Document.Type, Record<string, string>>): void;
 
     /**
      * Initialize default sheet configurations for all document types.
@@ -121,7 +121,7 @@ declare global {
       action: "register";
 
       /** The Document class being registered */
-      documentClass: DocumentConstructor;
+      documentClass: Document.AnyConstructor;
 
       /** The sheet ID being registered */
       id: string;
@@ -143,7 +143,7 @@ declare global {
       action: "unregister";
 
       /** The Document class being unregistered */
-      documentClass: DocumentConstructor;
+      documentClass: Document.AnyConstructor;
 
       /** The sheet ID being unregistered */
       id: string;

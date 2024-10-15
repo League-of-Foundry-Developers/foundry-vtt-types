@@ -1,9 +1,5 @@
-import type {
-  ConfiguredDocumentClassForName,
-  ConfiguredObjectClassForName,
-  PlaceableDocumentType,
-} from "../../../../../types/helperTypes.d.mts";
 import type { ConstructorOf, InexactPartial, ValueOf } from "../../../../../types/utils.d.mts";
+import type Document from "../../../../common/abstract/document.d.mts";
 import type { DocumentOnUpdateOptions } from "../../../../common/abstract/document.d.mts";
 import type EmbeddedCollection from "../../../../common/abstract/embedded-collection.d.mts";
 
@@ -16,7 +12,7 @@ declare global {
    * @typeParam DocumentName - The key of the configuration which defines the object and document class.
    * @typeParam Options      - The type of the options in this layer.
    */
-  class PlaceablesLayer<DocumentName extends PlaceableDocumentType> extends InteractionLayer {
+  class PlaceablesLayer<DocumentName extends PlaceablesLayer.Type> extends InteractionLayer {
     constructor();
 
     /**
@@ -40,13 +36,15 @@ declare global {
      * Keep track of an object copied with CTRL+C which can be pasted later
      * @defaultValue `[]`
      */
-    protected _copy: ConcretePlaceableOrPlaceableObject<InstanceType<ConfiguredObjectClassForName<DocumentName>>>[];
+    protected _copy: ConcretePlaceableOrPlaceableObject<
+      InstanceType<Document.ConfiguredObjectClassForName<DocumentName>>
+    >[];
 
     /**
      * A Quadtree which partitions and organizes Walls into quadrants for efficient target identification.
      */
     quadtree: Quadtree<
-      ConcretePlaceableOrPlaceableObject<InstanceType<ConfiguredObjectClassForName<DocumentName>>>
+      ConcretePlaceableOrPlaceableObject<InstanceType<Document.ConfiguredObjectClassForName<DocumentName>>>
     > | null;
 
     /**
@@ -60,7 +58,7 @@ declare global {
      * A reference to the named Document type which is contained within this Canvas Layer.
      * @remarks This getter is abstract in {@link PlaceablesLayer}.
      */
-    static documentName: PlaceableDocumentType;
+    static documentName: PlaceablesLayer.Type;
 
     /**
      * Creation states affected to placeables during their construction.
@@ -76,7 +74,7 @@ declare global {
      * Obtain a reference to the Collection of embedded Document instances within the currently viewed Scene
      */
     get documentCollection(): EmbeddedCollection<
-      InstanceType<ConfiguredDocumentClassForName<DocumentName>>,
+      InstanceType<Document.ConfiguredClassForName<DocumentName>>,
       Scene.ConfiguredInstance
     > | null;
 
@@ -94,17 +92,17 @@ declare global {
      * If objects on this PlaceableLayer have a HUD UI, provide a reference to its instance
      * @remarks Returns `null` unless overridden
      */
-    get hud(): BasePlaceableHUD<InstanceType<ConfiguredObjectClassForName<DocumentName>>> | null;
+    get hud(): BasePlaceableHUD<InstanceType<Document.ConfiguredObjectClassForName<DocumentName>>> | null;
 
     /**
      * A convenience method for accessing the placeable object instances contained in this layer
      */
-    get placeables(): InstanceType<ConfiguredObjectClassForName<DocumentName>>[];
+    get placeables(): InstanceType<Document.ConfiguredObjectClassForName<DocumentName>>[];
 
     /**
      * An Array of placeable objects in this layer which have the _controlled attribute
      */
-    get controlled(): InstanceType<ConfiguredObjectClassForName<DocumentName>>[];
+    get controlled(): InstanceType<Document.ConfiguredObjectClassForName<DocumentName>>[];
 
     /**
      * Iterates over placeable objects that are eligible for control/select.
@@ -136,7 +134,7 @@ declare global {
      */
     getDocuments():
       | Exclude<this["documentCollection"], null>
-      | InstanceType<ConfiguredDocumentClassForName<DocumentName>>[];
+      | InstanceType<Document.ConfiguredClassForName<DocumentName>>[];
 
     override _draw(options?: Record<string, unknown>): Promise<void>;
 
@@ -145,8 +143,8 @@ declare global {
      * @param document - The Document instance used to create the placeable object
      */
     createObject(
-      document: InstanceType<ConfiguredDocumentClassForName<DocumentName>>,
-    ): InstanceType<ConfiguredObjectClassForName<DocumentName>> | null;
+      document: InstanceType<Document.ConfiguredClassForName<DocumentName>>,
+    ): InstanceType<Document.ConfiguredObjectClassForName<DocumentName>> | null;
 
     override _tearDown(options?: Record<string, unknown>): Promise<void>;
 
@@ -171,7 +169,7 @@ declare global {
      * @param objectId - The ID of the contained object to retrieve
      * @returns The object instance, or undefined
      */
-    get(objectId: string): InstanceType<ConfiguredObjectClassForName<DocumentName>> | undefined;
+    get(objectId: string): InstanceType<Document.ConfiguredObjectClassForName<DocumentName>> | undefined;
 
     /**
      * Acquire control over all PlaceableObject instances which are visible and controllable within the layer.
@@ -180,7 +178,9 @@ declare global {
      *                  (default: `{}`)
      * @returns An array of objects that were controlled
      */
-    controlAll(options?: PlaceableObject.ControlOptions): InstanceType<ConfiguredObjectClassForName<DocumentName>>[];
+    controlAll(
+      options?: PlaceableObject.ControlOptions,
+    ): InstanceType<Document.ConfiguredObjectClassForName<DocumentName>>[];
 
     /**
      * Release all controlled PlaceableObject instance from this layer.
@@ -200,7 +200,7 @@ declare global {
      *                  (default: `{}`)
      * @returns An array of objects which were rotated
      */
-    rotateMany(options?: RotationOptions): Promise<InstanceType<ConfiguredObjectClassForName<DocumentName>>[]>;
+    rotateMany(options?: RotationOptions): Promise<InstanceType<Document.ConfiguredObjectClassForName<DocumentName>>[]>;
 
     /**
      * Simultaneously move multiple PlaceableObjects via keyboard movement offsets.
@@ -213,20 +213,20 @@ declare global {
      */
     moveMany(
       options?: MovementOptions,
-    ): Promise<InstanceType<ConfiguredObjectClassForName<DocumentName>>[]> | undefined;
+    ): Promise<InstanceType<Document.ConfiguredObjectClassForName<DocumentName>>[]> | undefined;
 
     /**
      * Undo a change to the objects in this layer
      * This method is typically activated using CTRL+Z while the layer is active
      */
-    undoHistory(): Promise<InstanceType<ConfiguredDocumentClassForName<DocumentName>>[]>;
+    undoHistory(): Promise<InstanceType<Document.ConfiguredClassForName<DocumentName>>[]>;
 
     /**
      * A helper method to prompt for deletion of all PlaceableObject instances within the Scene
      * Renders a confirmation dialogue to confirm with the requester that all objects will be deleted
      * @returns An array of Document objects which were deleted by the operation
      */
-    deleteAll(): Promise<InstanceType<ConfiguredDocumentClassForName<DocumentName>>[] | false | null>;
+    deleteAll(): Promise<InstanceType<Document.ConfiguredClassForName<DocumentName>>[] | false | null>;
 
     /**
      * Record a new CRUD event in the history log so that it can be undone later
@@ -235,14 +235,14 @@ declare global {
      */
     storeHistory(
       type: PlaceablesLayer.HistoryEventType,
-      data: InstanceType<ConfiguredDocumentClassForName<DocumentName>>["_source"],
+      data: InstanceType<Document.ConfiguredClassForName<DocumentName>>["_source"],
     ): void;
 
     /**
      * Copy currently controlled PlaceableObjects to a temporary Array, ready to paste back into the scene later
      * @returns The Array of copied PlaceableObject instances
      */
-    copyObjects(): InstanceType<ConfiguredObjectClassForName<DocumentName>>[];
+    copyObjects(): InstanceType<Document.ConfiguredObjectClassForName<DocumentName>>[];
 
     /**
      * Paste currently copied PlaceableObjects back to the layer by creating new copies
@@ -265,7 +265,7 @@ declare global {
          */
         snap: boolean;
       }>,
-    ): Promise<InstanceType<ConfiguredDocumentClassForName<DocumentName>>[]>;
+    ): Promise<InstanceType<Document.ConfiguredClassForName<DocumentName>>[]>;
 
     /**
      * Select all PlaceableObject instances which fall within a coordinate rectangle.
@@ -321,12 +321,12 @@ declare global {
     updateAll(
       transformation:
         | ((
-            placeable: InstanceType<ConfiguredObjectClassForName<DocumentName>>,
-          ) => Partial<InstanceType<ConfiguredDocumentClassForName<DocumentName>>["_source"]>)
-        | Partial<InstanceType<ConfiguredDocumentClassForName<DocumentName>>["_source"]>,
-      condition?: ((placeable: InstanceType<ConfiguredObjectClassForName<DocumentName>>) => boolean) | null,
+            placeable: InstanceType<Document.ConfiguredObjectClassForName<DocumentName>>,
+          ) => Partial<InstanceType<Document.ConfiguredClassForName<DocumentName>>["_source"]>)
+        | Partial<InstanceType<Document.ConfiguredClassForName<DocumentName>>["_source"]>,
+      condition?: ((placeable: InstanceType<Document.ConfiguredObjectClassForName<DocumentName>>) => boolean) | null,
       options?: DocumentOnUpdateOptions<DocumentName>,
-    ): Promise<Array<InstanceType<ConfiguredDocumentClassForName<DocumentName>>>>;
+    ): Promise<Array<InstanceType<Document.ConfiguredClassForName<DocumentName>>>>;
 
     /**
      * Get the world-transformed drop position.
@@ -350,7 +350,7 @@ declare global {
      * @returns The created preview object
      */
     protected _createPreview(
-      createData: InstanceType<ConfiguredDocumentClassForName<DocumentName>>["_source"],
+      createData: InstanceType<Document.ConfiguredClassForName<DocumentName>>["_source"],
       options: {
         /**
          * Render the preview object config sheet?
@@ -404,7 +404,7 @@ declare global {
     set _highlight(state);
   }
 
-  interface CanvasHistory<DocumentName extends PlaceableDocumentType> {
+  interface CanvasHistory<DocumentName extends PlaceablesLayer.Type> {
     /**
      * The type of operation stored as history (create, update, delete)
      */
@@ -413,7 +413,7 @@ declare global {
     /**
      * The data corresponding to the action which may later be un-done
      */
-    data: InstanceType<ConfiguredDocumentClassForName<DocumentName>>["_source"][];
+    data: InstanceType<Document.ConfiguredClassForName<DocumentName>>["_source"][];
   }
 
   namespace PlaceablesLayer {
@@ -421,14 +421,18 @@ declare global {
 
     type AnyConstructor = typeof AnyPlaceablesLayer;
 
+    type Type = Document.PlaceableType;
+
     type HistoryEventType = "create" | "update" | "delete";
 
     type CreationState = ValueOf<(typeof PlaceablesLayer)["CREATION_STATES"]>;
 
+    type ConfiguredClassForName<Name extends Document.PlaceableType> = CONFIG[Name]["layerClass"];
+
     /**
      * @typeParam DocumentName - The key of the configuration which defines the object and document class.
      */
-    interface LayerOptions<DocumentName extends PlaceableDocumentType> extends InteractionLayer.LayerOptions {
+    interface LayerOptions<DocumentName extends Type> extends InteractionLayer.LayerOptions {
       baseClass: typeof PlaceablesLayer;
 
       /**
@@ -459,7 +463,7 @@ declare global {
        * The class used to represent an object on this layer.
        * @defaultValue `getDocumentClass(this.documentName)`
        */
-      objectClass: ConfiguredObjectClassForName<DocumentName>;
+      objectClass: Document.ConfiguredObjectClassForName<DocumentName>;
 
       /**
        * Does this layer use a quadtree to track object positions?

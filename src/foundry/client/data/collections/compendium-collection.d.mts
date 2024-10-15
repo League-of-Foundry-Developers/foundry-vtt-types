@@ -1,11 +1,11 @@
-import type { ConfiguredDocumentClassForName, ConfiguredDocumentInstance } from "../../../../types/helperTypes.d.mts";
+import type { DeepPartial, EmptyObject, InexactPartial } from "../../../../types/utils.d.mts";
 import type {
   DatabaseCreateOperation,
   DatabaseDeleteOperation,
   DatabaseUpdateOperation,
 } from "../../../common/abstract/_types.d.mts";
 import type { DocumentOnCreateOptions, DocumentOnUpdateOptions } from "../../../common/abstract/document.d.mts";
-import type { DeepPartial, EmptyObject, InexactPartial, StoredDocument } from "../../../../types/utils.d.mts";
+import type Document from "../../../common/abstract/document.d.mts";
 import type { DirectoryCollectionMixin_DocumentCollection_Interface } from "../abstract/directory-collection-mixin.d.mts";
 
 declare const DirectoryCollectionMixin_DocumentCollection: DirectoryCollectionMixin_DocumentCollection_Interface;
@@ -167,14 +167,14 @@ declare global {
          */
         invalid: false;
       }>,
-    ): StoredDocument<DocumentInstanceForCompendiumMetadata<T>> | undefined;
+    ): Document.Stored<DocumentInstanceForCompendiumMetadata<T>> | undefined;
     get(
       key: string,
       options: { strict: true; invalid?: false },
-    ): StoredDocument<DocumentInstanceForCompendiumMetadata<T>>;
+    ): Document.Stored<DocumentInstanceForCompendiumMetadata<T>>;
     get(key: string, options: { strict?: boolean; invalid: true }): unknown;
 
-    set(id: string, document: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>): this;
+    set(id: string, document: Document.Stored<DocumentInstanceForCompendiumMetadata<T>>): this;
 
     delete: (id: string) => boolean;
 
@@ -192,7 +192,7 @@ declare global {
      * @param id -  The requested Document id
      * @returns The retrieved Document instance
      */
-    getDocument(id: string): Promise<StoredDocument<DocumentInstanceForCompendiumMetadata<T>> | undefined | null>;
+    getDocument(id: string): Promise<Document.Stored<DocumentInstanceForCompendiumMetadata<T>> | undefined | null>;
 
     /**
      * Load multiple documents from the Compendium pack using a provided query object.
@@ -215,7 +215,7 @@ declare global {
      * await pack.getDocuments({ type__in: ["weapon", "armor"] });
      * ```
      */
-    getDocuments(query?: Record<string, unknown>): Promise<StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[]>;
+    getDocuments(query?: Record<string, unknown>): Promise<Document.Stored<DocumentInstanceForCompendiumMetadata<T>>[]>;
 
     /**
      * Get the ownership level that a User has for this Compendium pack.
@@ -253,7 +253,7 @@ declare global {
     importDocument(
       document: DocumentInstanceForCompendiumMetadata<T>,
       options?: InexactPartial<ClientDocument.CompendiumExportOptions>,
-    ): Promise<StoredDocument<DocumentInstanceForCompendiumMetadata<T>> | undefined>;
+    ): Promise<Document.Stored<DocumentInstanceForCompendiumMetadata<T>> | undefined>;
 
     /**
      * Import a Folder into this Compendium Collection.
@@ -310,7 +310,7 @@ declare global {
         } & DocumentOnCreateOptions<this["metadata"]["type"]> &
           WorldCollection.FromCompendiumOptions
       >,
-    ): Promise<StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[]>;
+    ): Promise<Document.Stored<DocumentInstanceForCompendiumMetadata<T>>[]>;
 
     /**
      * Provide a dialog form that prompts the user to import the full contents of a Compendium pack into the World.
@@ -322,13 +322,13 @@ declare global {
      */
     importDialog(
       options?: DialogOptions,
-    ): Promise<StoredDocument<DocumentInstanceForCompendiumMetadata<T>>[] | null | false>;
+    ): Promise<Document.Stored<DocumentInstanceForCompendiumMetadata<T>>[] | null | false>;
 
     /**
      * Add a Document to the index, capturing it's relevant index attributes
      * @param document -The document to index
      */
-    indexDocument(document: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>): void;
+    indexDocument(document: Document.Stored<DocumentInstanceForCompendiumMetadata<T>>): void;
 
     /**
      * Prompt the gamemaster with a dialog to configure ownership of this Compendium pack.
@@ -394,9 +394,9 @@ declare global {
       transformation:
         | DeepPartial<DocumentInstanceForCompendiumMetadata<T>["_source"]>
         | ((
-            doc: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>,
+            doc: Document.Stored<DocumentInstanceForCompendiumMetadata<T>>,
           ) => DeepPartial<DocumentInstanceForCompendiumMetadata<T>["_source"]>),
-      condition?: ((obj: StoredDocument<DocumentInstanceForCompendiumMetadata<T>>) => boolean) | null,
+      condition?: ((obj: Document.Stored<DocumentInstanceForCompendiumMetadata<T>>) => boolean) | null,
       options?: DocumentOnUpdateOptions<this["metadata"]["type"]>,
     ): ReturnType<this["documentClass"]["updateDocuments"]>;
 
@@ -475,13 +475,30 @@ declare global {
   }
 }
 
-type DocumentClassForCompendiumMetadata<T extends CompendiumCollection.Metadata> = ConfiguredDocumentClassForName<
+interface ImportAllOptions {
+  /**
+   * An existing Folder _id to use.
+   * @defaultValue `null`
+   * */
+  folderId?: string | null | undefined;
+  /**
+   * A new Folder name to create.
+   * @defaultValue `""`
+   * */
+  folderName?: string | undefined;
+  /**
+   * Additional options forwarded to {@link WorldCollection#fromCompendium} and {@link Document.createDocuments}
+   * @defaultValue `{}`
+   */
+  options?: (Document.ModificationContext<Document.Any | null> & WorldCollection.FromCompendiumOptions) | undefined;
+}
+
+type DocumentClassForCompendiumMetadata<T extends CompendiumCollection.Metadata> = Document.ConfiguredClassForName<
   T["type"]
 >;
 
-type DocumentInstanceForCompendiumMetadata<T extends CompendiumCollection.Metadata> = ConfiguredDocumentInstance<
-  DocumentClassForCompendiumMetadata<T>
->;
+type DocumentInstanceForCompendiumMetadata<T extends CompendiumCollection.Metadata> =
+  Document.ConfiguredInstanceForName<T["type"]>;
 
 type IndexTypeForMetadata<T extends CompendiumCollection.Metadata> = foundry.utils.Collection<
   CompendiumCollection.IndexEntry<T>

@@ -1,11 +1,11 @@
 import { expectTypeOf } from "vitest";
-import type { StoredDocument } from "../../../../src/types/utils.d.mts";
+import type Document from "../../../../src/foundry/common/abstract/document.d.mts";
 
 expectTypeOf(foundry.documents.BaseActiveEffect.create({})).toEqualTypeOf<
-  Promise<StoredDocument<ActiveEffect> | undefined>
+  Promise<Document.Stored<ActiveEffect> | undefined>
 >();
 expectTypeOf(foundry.documents.BaseActiveEffect.createDocuments([])).toEqualTypeOf<
-  Promise<StoredDocument<ActiveEffect>[]>
+  Promise<Document.Stored<ActiveEffect>[]>
 >();
 expectTypeOf(foundry.documents.BaseActiveEffect.updateDocuments([])).toEqualTypeOf<Promise<ActiveEffect[]>>();
 expectTypeOf(foundry.documents.BaseActiveEffect.deleteDocuments([])).toEqualTypeOf<Promise<ActiveEffect[]>>();

@@ -1,4 +1,3 @@
-import type { DocumentType } from "../../../types/helperTypes.d.mts";
 import type { AnyConstructor, AnyFunction, DeepPartial, InexactPartial } from "../../../types/utils.d.mts";
 import type Document from "../abstract/document.d.mts";
 
@@ -509,7 +508,7 @@ interface ResolvedUUID {
   /**
    * The collection that the primary Document belongs to.
    */
-  collection?: DocumentCollection<any, any>;
+  collection?: DocumentCollection.Any;
 
   /**
    * Additional Embedded Document parts.

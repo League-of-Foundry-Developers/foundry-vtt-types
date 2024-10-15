@@ -1,11 +1,11 @@
 import { expectTypeOf } from "vitest";
 import type { ConfiguredDocumentInstance } from "../../../../src/types/helperTypes.d.mts";
-import type { StoredDocument } from "../../../../src/types/utils.d.mts";
+import type Document from "../../../../src/foundry/common/abstract/document.d.mts";
 
 expectTypeOf(foundry.documents.BaseUser.create({ name: "SomeUser" })).toEqualTypeOf<
-  Promise<StoredDocument<User> | undefined>
+  Promise<Document.Stored<User> | undefined>
 >();
-expectTypeOf(foundry.documents.BaseUser.createDocuments([])).toEqualTypeOf<Promise<StoredDocument<User>[]>>();
+expectTypeOf(foundry.documents.BaseUser.createDocuments([])).toEqualTypeOf<Promise<Document.Stored<User>[]>>();
 expectTypeOf(foundry.documents.BaseUser.updateDocuments([])).toEqualTypeOf<
   Promise<ConfiguredDocumentInstance<typeof User>[]>
 >();

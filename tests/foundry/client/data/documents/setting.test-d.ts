@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
-import type { StoredDocument } from "../../../../../src/types/utils.d.mts";
+import type Document from "../../../../../src/foundry/common/abstract/document.d.mts";
+import type { AnyObject } from "../../../../../src/types/utils.d.mts";
 
 // @ts-expect-error - requires key
 new Setting();
@@ -12,11 +13,11 @@ const setting = new Setting({ key: "foo.bar", value: "bar" });
 expectTypeOf(setting.config).toEqualTypeOf<SettingsConfig | undefined>();
 
 expectTypeOf(setting.key).toEqualTypeOf<string>();
-// expectTypeOf(setting.value).toEqualTypeOf<unknown>();
+expectTypeOf(setting.value).toEqualTypeOf<AnyObject | null>();
 expectTypeOf(Setting.create({ key: "foo.bar", value: "bar" })).toEqualTypeOf<
-  Promise<StoredDocument<Setting> | undefined>
+  Promise<Document.Stored<Setting> | undefined>
 >();
-expectTypeOf(Setting.createDocuments([])).toEqualTypeOf<Promise<StoredDocument<Setting>[]>>();
+expectTypeOf(Setting.createDocuments([])).toEqualTypeOf<Promise<Document.Stored<Setting>[]>>();
 expectTypeOf(Setting.updateDocuments([])).toEqualTypeOf<Promise<Setting[]>>();
 expectTypeOf(Setting.deleteDocuments([])).toEqualTypeOf<Promise<Setting[]>>();
 
@@ -24,4 +25,4 @@ expectTypeOf(Setting.deleteDocuments([])).toEqualTypeOf<Promise<Setting[]>>();
 const flagValue = setting.getFlag("scope", "key");
 
 // However if it is called, since the flag doesn't exist it returns `undefined` which matches what happens at runtime.
-expectTypeOf(flagValue).toEqualTypeOf<any>();
+expectTypeOf(flagValue).toEqualTypeOf<never>();

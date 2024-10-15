@@ -1,4 +1,4 @@
-import type { ToObjectFalseType } from "../../../../../types/helperTypes.d.mts";
+import type Document from "../../../../common/abstract/document.d.mts";
 
 declare global {
   /**
@@ -249,7 +249,7 @@ declare global {
   }
 
   namespace PlaylistDirectory {
-    type PlaylistData = ToObjectFalseType<globalThis.PlaylistData> & {
+    type PlaylistData = Document.ToObjectFalseType<Playlist.ConfiguredInstance> & {
       modeTooltip: string;
       modeIcon: string;
       disabled: boolean;
@@ -259,7 +259,7 @@ declare global {
       sounds: SoundData[];
     };
 
-    type SoundData = ToObjectFalseType<globalThis.PlaylistSoundData> & {
+    type SoundData = Document.ToObjectFalseType<PlaylistSound.ConfiguredInstance> & {
       playlistId: string | null;
       css: string;
       controlCSS: string;

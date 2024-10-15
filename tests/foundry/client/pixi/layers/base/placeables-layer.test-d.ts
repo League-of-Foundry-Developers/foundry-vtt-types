@@ -4,7 +4,7 @@ import type { ConstructorOf } from "../../../../../../src/types/utils.d.mts";
 import type { Container, DisplayObject } from "pixi.js";
 
 class SomeLightLayer extends PlaceablesLayer<"AmbientLight"> {
-  static get layerOptions() {
+  static override get layerOptions() {
     return foundry.utils.mergeObject(super.layerOptions, {
       name: "myLighting",
     });
@@ -16,7 +16,7 @@ class SomeLightLayer extends PlaceablesLayer<"AmbientLight"> {
 expectTypeOf(SomeLightLayer.instance).toEqualTypeOf<CanvasLayer | Container<DisplayObject> | undefined>();
 // FIXME: I think data model related error?
 // expectTypeOf(SomeLightLayer.layerOptions).toEqualTypeOf<PlaceablesLayer.LayerOptions<"AmbientLight">>();
-expectTypeOf(SomeLightLayer.layerOptions.objectClass).toEqualTypeOf<any>(); // TODO: Can this be typed to DocumentConstructor?
+expectTypeOf(SomeLightLayer.layerOptions.objectClass).toEqualTypeOf<any>(); // TODO: Can this be typed to Document.AnyConstructor?
 expectTypeOf(PlaceablesLayer.documentName).toEqualTypeOf<
   "AmbientLight" | "AmbientSound" | "Drawing" | "MeasuredTemplate" | "Note" | "Tile" | "Token" | "Wall"
 >();

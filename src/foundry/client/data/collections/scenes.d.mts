@@ -1,4 +1,5 @@
-import type { InexactPartial, StoredDocument } from "../../../../types/utils.d.mts";
+import type { InexactPartial } from "../../../../types/utils.d.mts";
+import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
   /**
@@ -14,18 +15,18 @@ declare global {
     /**
      * Return a reference to the Scene which is currently active
      */
-    get active(): StoredDocument<Scene.ConfiguredInstance> | undefined;
+    get active(): Document.Stored<Scene.ConfiguredInstance> | undefined;
 
     /**
      * Return the current Scene target.
      * This is the viewed scene if the canvas is active, otherwise it is the currently active scene.
      */
-    get current(): StoredDocument<Scene.ConfiguredInstance> | undefined;
+    get current(): Document.Stored<Scene.ConfiguredInstance> | undefined;
 
     /**
      * Return a reference to the Scene which is currently viewed
      */
-    get viewed(): StoredDocument<Scene.ConfiguredInstance> | undefined;
+    get viewed(): Document.Stored<Scene.ConfiguredInstance> | undefined;
 
     /**
      * Handle pre-loading the art assets for a Scene

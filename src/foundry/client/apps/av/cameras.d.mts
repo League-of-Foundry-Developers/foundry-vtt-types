@@ -1,4 +1,5 @@
-import type { GetDataReturnType, MaybePromise, StoredDocument } from "../../../../types/utils.d.mts";
+import type { GetDataReturnType, MaybePromise } from "../../../../types/utils.d.mts";
+import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
   /**
@@ -163,9 +164,9 @@ declare global {
     type Any = CameraViews<any>;
 
     interface User {
-      user: StoredDocument<globalThis.User>;
+      user: Document.Stored<globalThis.User>;
       settings: AVSettings.UserSettings;
-      local: StoredDocument<globalThis.User>["isSelf"];
+      local: Document.Stored<globalThis.User>["isSelf"];
       charname: string;
       volume: number;
       cameraViewClass: string;

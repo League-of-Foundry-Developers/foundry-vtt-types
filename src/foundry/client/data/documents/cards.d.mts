@@ -1,22 +1,16 @@
-import type {
-  ConfiguredDocumentClassForName,
-  ConfiguredDocumentInstance,
-  ConfiguredDocumentInstanceForName,
-  ConstructorDataType,
-  DocumentConstructor,
-  DatabaseOperationsFor,
-} from "../../../../types/helperTypes.d.mts";
-import type { DeepPartial, InexactPartial, StoredDocument } from "../../../../types/utils.d.mts";
+import type { DatabaseOperationsFor } from "../../../../types/helperTypes.d.mts";
+import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
+import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace Cards {
-    type ConfiguredClass = ConfiguredDocumentClassForName<"Cards">;
-    type ConfiguredInstance = ConfiguredDocumentInstanceForName<"Cards">;
+    type ConfiguredClass = Document.ConfiguredClassForName<"Cards">;
+    type ConfiguredInstance = Document.ConfiguredInstanceForName<"Cards">;
 
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    export interface DatabaseOperations extends DocumentDatabaseOperations<Cards> {}
+    interface DatabaseOperations extends DocumentDatabaseOperations<Cards> {}
 
     type CardsAction = "deal" | "pass";
 
@@ -173,21 +167,20 @@ declare global {
      */
     get canClone(): boolean;
 
-    static override createDocuments(
-      data: Array<foundry.documents.BaseCards.UpdateData & Record<string, unknown>>,
-      context: DatabaseOperationsFor<Cards["documentName"], "create"> & {
+    static createDocuments<T extends Document.AnyConstructor>(
+      this: T,
+      data: Array<fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]> & Record<string, unknown>>,
+      operation?: InexactPartial<Omit<DatabaseOperationsFor<T["metadata"]["name"], "create">, "data">> & {
         temporary?: false | undefined;
       },
-    ): Promise<StoredDocument<Cards.ConfiguredInstance>[]>;
-    static override createDocuments(
-      data: Array<
-        | fields.SchemaField.AssignmentType<Cards["schema"]["fields"]>
-        | (fields.SchemaField.AssignmentType<Cards["schema"]["fields"]> & Record<string, unknown>)
-      >,
-      context: DatabaseOperationsFor<Cards["documentName"], "create"> & {
+    ): Promise<Document.ToConfiguredStored<T>[] | undefined>;
+    static createDocuments<T extends Document.AnyConstructor>(
+      this: T,
+      data: Array<fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]> & Record<string, unknown>>,
+      operation?: InexactPartial<Omit<DatabaseOperationsFor<T["metadata"]["name"], "create">, "data">> & {
         temporary: true;
       },
-    ): Promise<Cards.ConfiguredInstance[]>;
+    ): Promise<Document.ToConfiguredStored<T>[] | undefined>;
 
     /**
      * Deal one or more cards from this Cards document to each of a provided array of Cards destinations.
@@ -342,9 +335,9 @@ declare global {
 
     override deleteDialog(options?: Partial<DialogOptions>): Promise<this | false | null | undefined>;
 
-    static override createDialog<T extends DocumentConstructor>(
+    static override createDialog<T extends Document.AnyConstructor>(
       this: T,
-      data?: DeepPartial<ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>)>,
+      data?: DeepPartial<Document.ConstructorDataFor<T> & Record<string, unknown>>,
       context?: Pick<DatabaseOperationsFor<Cards["documentName"], "create">, "parent" | "pack"> &
         InexactPartial<
           DialogOptions & {
@@ -352,6 +345,6 @@ declare global {
             types: string[];
           }
         >,
-    ): Promise<ConfiguredDocumentInstance<T> | null | undefined>;
+    ): Promise<Document.ToConfiguredInstance<T> | null | undefined>;
   }
 }

@@ -1,10 +1,10 @@
 import { expectTypeOf } from "vitest";
-import type { StoredDocument } from "../../../../src/types/utils.d.mts";
+import type Document from "../../../../src/foundry/common/abstract/document.d.mts";
 
 expectTypeOf(foundry.documents.BaseFolder.create({ name: "Some Folder", type: "Item" })).toEqualTypeOf<
-  Promise<StoredDocument<Folder> | undefined>
+  Promise<Document.Stored<Folder> | undefined>
 >();
-expectTypeOf(foundry.documents.BaseFolder.createDocuments([])).toEqualTypeOf<Promise<StoredDocument<Folder>[]>>();
+expectTypeOf(foundry.documents.BaseFolder.createDocuments([])).toEqualTypeOf<Promise<Document.Stored<Folder>[]>>();
 expectTypeOf(foundry.documents.BaseFolder.updateDocuments([])).toEqualTypeOf<Promise<Folder[]>>();
 expectTypeOf(foundry.documents.BaseFolder.deleteDocuments([])).toEqualTypeOf<Promise<Folder[]>>();
 

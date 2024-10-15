@@ -1,11 +1,6 @@
-import type {
-  ConfiguredDocumentClass,
-  ConfiguredDocumentInstance,
-  ConstructorDataType,
-  DocumentConstructor,
-} from "../../../../types/helperTypes.d.mts";
-import type { ConfiguredStoredDocument, DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
+import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
 import type { DocumentOnCreateOptions } from "../../../common/abstract/document.d.mts";
+import type Document from "../../../common/abstract/document.d.mts";
 import type { DirectoryCollectionMixin_DocumentCollection_Interface } from "./directory-collection-mixin.d.mts";
 
 declare const DirectoryCollectionMixin_DocumentCollection: DirectoryCollectionMixin_DocumentCollection_Interface;
@@ -17,7 +12,7 @@ declare global {
    * @see {@link Game#collections}
    */
   abstract class WorldCollection<
-    T extends DocumentConstructor,
+    T extends Document.AnyConstructor,
     Name extends string,
   > extends DirectoryCollectionMixin_DocumentCollection<T, Name> {
     /**
@@ -34,8 +29,8 @@ declare global {
     get directory(): Lowercase<Name> extends keyof typeof ui
       ? (typeof ui)[Lowercase<Name>]
       :
-          | (ConfiguredDocumentClass<T>["metadata"]["name"] extends foundry.CONST.FOLDER_DOCUMENT_TYPES
-              ? DocumentDirectory<ConfiguredDocumentClass<T>["metadata"]["name"]>
+          | (Document.ToConfiguredClass<T>["metadata"]["name"] extends foundry.CONST.FOLDER_DOCUMENT_TYPES
+              ? DocumentDirectory<Document.ToConfiguredClass<T>["metadata"]["name"]>
               : never)
           | SidebarTab
           | undefined
@@ -44,9 +39,9 @@ declare global {
     /**
      * Return a reference to the singleton instance of this WorldCollection, or null if it has not yet been created.
      */
-    static get instance(): WorldCollection<DocumentConstructor, any>; // TODO: Find a way to type this more concretely. One option would be to separate the static and non static side of this class, which allows accessing the the static this type to use the `documentName`.
+    static get instance(): WorldCollection<Document.AnyConstructor, any>; // TODO: Find a way to type this more concretely. One option would be to separate the static and non static side of this class, which allows accessing the the static this type to use the `documentName`.
 
-    protected override _getVisibleTreeContents(): ConfiguredDocumentInstance<T>[];
+    protected override _getVisibleTreeContents(): Document.ToConfiguredInstance<T>[];
 
     /**
      * Import a Document from a Compendium collection, adding it to the current World.
@@ -68,12 +63,12 @@ declare global {
      */
     importFromCompendium(
       pack: CompendiumCollection<
-        CompendiumCollection.Metadata & { type: ConfiguredDocumentClass<T>["metadata"]["name"] }
+        CompendiumCollection.Metadata & { type: Document.ToConfiguredClass<T>["metadata"]["name"] }
       >,
       id: string,
-      updateData?: DeepPartial<ConfiguredDocumentInstance<T>["_source"]>,
+      updateData?: DeepPartial<Document.ToConfiguredInstance<T>["_source"]>,
       options?: InexactPartial<DocumentOnCreateOptions<T["metadata"]["name"]> & WorldCollection.FromCompendiumOptions>,
-    ): Promise<ConfiguredStoredDocument<T>>;
+    ): Promise<Document.ToConfiguredStored<T>>;
 
     /**
      * Apply data transformations when importing a Document from a Compendium pack
@@ -89,10 +84,10 @@ declare global {
       OwnershipOpt extends boolean = false,
       IdOpt extends boolean = false,
     >(
-      document: ConfiguredDocumentInstance<T> | ConstructorDataType<T>,
+      document: Document.ToConfiguredInstance<T> | Document.ConstructorDataFor<T>,
       options?: InexactPartial<WorldCollection.FromCompendiumOptions<FolderOpt, SortOpt, OwnershipOpt, IdOpt>>,
     ): Omit<
-      ConfiguredDocumentInstance<T>["_source"],
+      Document.ToConfiguredInstance<T>["_source"],
       | ClientDocument.OmitProperty<FolderOpt, "folder">
       | ClientDocument.OmitProperty<SortOpt, "sort" | "navigation" | "navOrder">
       | ClientDocument.OmitProperty<OwnershipOpt, "ownership">

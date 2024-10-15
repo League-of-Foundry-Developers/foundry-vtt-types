@@ -1,11 +1,4 @@
 import type { EditorState } from "prosemirror-state";
-import type {
-  ConfiguredDocumentClass,
-  ConfiguredDocumentInstance,
-  ConfiguredObjectClassForName,
-  DocumentConstructor,
-  ToObjectFalseType,
-} from "../../types/helperTypes.d.mts";
 import type { DeepPartial, EmptyObject, ValueOf } from "../../types/utils.d.mts";
 import type { DropData } from "./data/abstract/client-document.d.mts";
 import type {
@@ -21,6 +14,7 @@ import type {
 import type ProseMirrorMenu from "../common/prosemirror/menu.d.mts";
 import type { ProseMirrorDropDown } from "../common/prosemirror/menu.d.mts";
 import type { OccludableObject } from "./pixi/placeables/primary-canvas-objects/occludable-object.d.mts";
+import type Document from "../common/abstract/document.d.mts";
 
 declare global {
   /**
@@ -299,8 +293,8 @@ declare global {
        */
       updateCompendium: (
         pack: CompendiumCollection.Any,
-        documents: foundry.abstract.Document.Any[],
-        options: DocumentOnUpdateOptions<foundry.abstract.Document.Any["documentName"]>,
+        documents: Document.Any[],
+        options: DocumentOnUpdateOptions<Document.Any["documentName"]>,
         userId: string,
       ) => void;
 
@@ -371,7 +365,7 @@ declare global {
        */
       targetToken: (
         user: User.ConfiguredInstance,
-        token: ConfiguredObjectClassForName<"Token">,
+        token: Document.ConfiguredObjectClassForName<"Token">,
         targeted: boolean,
       ) => void;
 
@@ -673,7 +667,7 @@ declare global {
           user: string;
 
           /** The identified speaker data, see {@link ChatMessage.getSpeaker} */
-          speaker: ReturnType<ConfiguredDocumentClass<typeof ChatMessage>["getSpeaker"]>;
+          speaker: ReturnType<Document.ToConfiguredClass<typeof ChatMessage>["getSpeaker"]>;
         },
       ) => boolean | void;
 
@@ -690,7 +684,7 @@ declare global {
         message: ChatMessage,
         html: JQuery,
         messageData: {
-          message: ToObjectFalseType<ChatMessage.ConfiguredInstance>;
+          message: Document.ToObjectFalseType<ChatMessage.ConfiguredInstance>;
           user: Game["user"];
           author: ChatMessage.ConfiguredInstance["user"];
           alias: ChatMessage.ConfiguredInstance["alias"];
@@ -945,8 +939,8 @@ declare global {
      * @see {@link ClientDatabaseBackend#_preCreateDocumentArray}
      * @see {@link TokenDocument#_preUpdateTokenActor}
      */
-    type PreCreateDocument<D extends DocumentConstructor = DocumentConstructor> = (
-      document: ConfiguredDocumentInstance<D>,
+    type PreCreateDocument<D extends Document.AnyConstructor = Document.AnyConstructor> = (
+      document: Document.ToConfiguredInstance<D>,
       data: ConstructorParameters<D>[0],
       options: DocumentPreCreateOptions<InstanceType<D>["documentName"]>,
       userId: string,
@@ -971,8 +965,8 @@ declare global {
      * @see {@link ClientDatabaseBackend#_preUpdateDocumentArray}
      * @see {@link TokenDocument#_preUpdateTokenActor}
      */
-    type PreUpdateDocument<D extends DocumentConstructor = DocumentConstructor> = (
-      document: ConfiguredDocumentInstance<D>,
+    type PreUpdateDocument<D extends Document.AnyConstructor = Document.AnyConstructor> = (
+      document: Document.ToConfiguredInstance<D>,
       change: DeepPartial<ConstructorParameters<D>[0]>,
       options: DocumentPreUpdateOptions<InstanceType<D>["documentName"]>,
       userId: string,
@@ -996,8 +990,8 @@ declare global {
      * @see {@link ClientDatabaseBackend#_preDeleteDocumentArray}.
      * @see {@link TokenDocument#_preUpdateTokenActor}
      */
-    type PreDeleteDocument<D extends DocumentConstructor = DocumentConstructor> = (
-      document: ConfiguredDocumentInstance<D>,
+    type PreDeleteDocument<D extends Document.AnyConstructor = Document.AnyConstructor> = (
+      document: Document.ToConfiguredInstance<D>,
       options: DocumentPreDeleteOptions<InstanceType<D>["documentName"]>,
       userId: string,
     ) => boolean | void;
@@ -1016,8 +1010,8 @@ declare global {
      * @see {@link ClientDatabaseBackend#_postCreateDocumentCallbacks}
      * @see {@link TokenDocument#_onUpdateTokenActor}
      */
-    type CreateDocument<D extends DocumentConstructor = DocumentConstructor> = (
-      document: ConfiguredDocumentInstance<D>,
+    type CreateDocument<D extends Document.AnyConstructor = Document.AnyConstructor> = (
+      document: Document.ToConfiguredInstance<D>,
       options: DocumentOnCreateOptions<InstanceType<D>["documentName"]>,
       userId: string,
     ) => void;
@@ -1037,8 +1031,8 @@ declare global {
      * @see {@link ClientDatabaseBackend#_postUpdateDocumentCallbacks}
      * @see {@link TokenDocument#_onUpdateTokenActor}
      */
-    type UpdateDocument<D extends DocumentConstructor = DocumentConstructor> = (
-      document: ConfiguredDocumentInstance<D>,
+    type UpdateDocument<D extends Document.AnyConstructor = Document.AnyConstructor> = (
+      document: Document.ToConfiguredInstance<D>,
       change: DeepPartial<ConstructorParameters<D>[0]>,
       options: DocumentOnUpdateOptions<InstanceType<D>["documentName"]>,
       userId: string,
@@ -1058,8 +1052,8 @@ declare global {
      * @see {@link ClientDatabaseBackend#_postDeleteDocumentCallbacks}
      * @see {@link TokenDocument#_onUpdateTokenActor}
      */
-    type DeleteDocument<D extends DocumentConstructor = DocumentConstructor> = (
-      document: ConfiguredDocumentInstance<D>,
+    type DeleteDocument<D extends Document.AnyConstructor = Document.AnyConstructor> = (
+      document: Document.ToConfiguredInstance<D>,
       options: DocumentOnDeleteOptions<InstanceType<D>["documentName"]>,
       userId: string,
     ) => void;

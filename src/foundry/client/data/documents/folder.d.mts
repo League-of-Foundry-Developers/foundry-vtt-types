@@ -2,11 +2,9 @@ import type {
   ConfiguredDocumentClassForName,
   ConfiguredDocumentInstance,
   ConfiguredDocumentInstanceForName,
-  ConstructorDataType,
-  DocumentConstructor,
-  DocumentType,
 } from "../../../../types/helperTypes.d.mts";
 import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
+import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 
 declare global {
@@ -54,7 +52,7 @@ declare global {
      * unless it's a Folder inside a Compendium pack, in which case it's the array
      * of objects inside the index of the pack that are contained in this Folder.
      */
-    get contents(): this["type"] extends DocumentType
+    get contents(): this["type"] extends Document.Type
       ? InstanceType<ConfiguredDocumentClassForName<this["type"]>>[]
       : never;
 
@@ -63,7 +61,7 @@ declare global {
     /**
      * The reference to the Document type which is contained within this Folder.
      */
-    get documentClass(): this["type"] extends DocumentType ? ConfiguredDocumentClassForName<this["type"]> : never;
+    get documentClass(): this["type"] extends Document.Type ? ConfiguredDocumentClassForName<this["type"]> : never;
 
     /**
      * The reference to the WorldCollection instance which provides Documents to this Folder,
@@ -88,9 +86,9 @@ declare global {
      * For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
      */
 
-    static createDialog<T extends DocumentConstructor>(
+    static createDialog<T extends Document.AnyConstructor>(
       this: T,
-      data?: DeepPartial<ConstructorDataType<T> | (ConstructorDataType<T> & Record<string, unknown>)>,
+      data?: DeepPartial<Document.ConstructorDataFor<T> | (Document.ConstructorDataFor<T> & Record<string, unknown>)>,
       context?: InexactPartial<Omit<FolderConfig.Options, "resolve">>,
     ): Promise<ConfiguredDocumentInstance<T> | null | undefined>;
 
