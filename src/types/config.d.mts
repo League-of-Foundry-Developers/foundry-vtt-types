@@ -1,4 +1,5 @@
-export {};
+import type Document from "../foundry/common/abstract/document.d.mts";
+import type { DeepPartial } from "./utils.d.mts";
 
 declare global {
   /**
@@ -226,7 +227,61 @@ declare global {
    */
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface RequiredModules {}
+
+  interface SettingsConfig {
+    "core.animateRollTable": boolean;
+    "core.chatBubbles": boolean;
+    "core.chatBubblesPan": boolean;
+    "core.combatTrackerConfig": { resource: string; skipDefeated: boolean } | {};
+    "core.compendiumConfiguration": Partial<Record<string, CompendiumCollection.Configuration>>;
+    "core.coneTemplateType": "round" | "flat";
+    "core.defaultDrawingConfig": foundry.documents.BaseDrawing["_source"] | {};
+    "core.defaultToken": DeepPartial<foundry.documents.BaseToken>;
+    "core.disableResolutionScaling": boolean;
+    "core.fontSize": number;
+    "core.fpsMeter": boolean;
+    "core.globalAmbientVolume": number;
+    "core.globalInterfaceVolume": number;
+    "core.globalPlaylistVolume": number;
+    "core.keybindings": Record<string, KeybindingActionBinding[]>;
+    "core.language": string;
+    "core.leftClickRelease": boolean;
+    "core.lightAnimation": boolean;
+    "core.maxFPS": number;
+    "core.mipmap": boolean;
+    "core.moduleConfiguration": Record<string, boolean>;
+    "core.noCanvas": boolean;
+    "core.notesDisplayToggle": boolean;
+    "core.nue.shownTips": boolean;
+    "core.performanceMode": boolean;
+    "core.permissions": Game.Permissions;
+    "core.playlist.playingLocation": "top" | "bottom";
+    "core.rollMode": keyof CONFIG.Dice.RollModes;
+    "core.rtcClientSettings": typeof AVSettings.DEFAULT_CLIENT_SETTINGS;
+    "core.rtcWorldSettings": typeof AVSettings.DEFAULT_WORLD_SETTINGS;
+    "core.scrollingStatusText": boolean;
+    "core.sheetClasses": {
+      [Key in Document.Type as Document.SubTypesOf<Key> extends string ? Key : never]?: Record<
+        Document.SubTypesOf<Key> & string,
+        string
+      >;
+    };
+    "core.time": number;
+    "core.tokenDragPreview": boolean;
+    "core.visionAnimation": boolean;
+  }
+
+  namespace SettingsConfig {
+    type Namespace = GetNamespaces<keyof _SettingsConfig>;
+    type Key = GetKeys<keyof _SettingsConfig>;
+  }
 }
+
+type GetNamespaces<SettingPath extends string> = SettingPath extends `${infer Scope}.${string}` ? Scope : never;
+type GetKeys<SettingPath extends string> = SettingPath extends `${string}.${infer Name}` ? Name : never;
+
+// Refers to the deprecated interface so that merging works both ways.
+type _SettingsConfig = ClientSettings.Values;
 
 type ValidDataModel = {
   [DocumentName in foundry.abstract.Document.SystemType]?: {

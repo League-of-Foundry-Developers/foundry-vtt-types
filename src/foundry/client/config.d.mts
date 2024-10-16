@@ -234,6 +234,7 @@ declare global {
         hand: string;
         /** @defaultValue `"fa-duotone fa-layer-group"` */
         pile: string;
+
         [x: string]: string;
       };
     };

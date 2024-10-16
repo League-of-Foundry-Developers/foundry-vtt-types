@@ -1,5 +1,4 @@
-import type { DocumentSubTypes } from "../../../types/helperTypes.d.mts";
-import type { AnyArray, AnyObject, DeepPartial, InexactPartial } from "../../../types/utils.d.mts";
+import type { AnyArray, AnyObject, InexactPartial } from "../../../types/utils.d.mts";
 import type Document from "../../common/abstract/document.d.mts";
 
 declare global {
@@ -88,12 +87,12 @@ declare global {
      * });
      * ```
      */
-    register<N extends string, K extends string, T>(
+    register<N extends SettingsConfig.Namespace, K extends SettingsConfig.Key, T>(
       namespace: N,
       key: K,
-      data: ClientSettings.Values[`${N}.${K}`] extends string | number | boolean | AnyArray | AnyObject | null
-        ? ClientSettings.PartialSettingConfig<ClientSettings.Values[`${N}.${K}`]>
-        : ClientSettings.PartialSettingConfig<T>,
+      data: SettingsConfig[`${N}.${K}`] extends string | number | boolean | AnyArray | AnyObject | null
+        ? ClientSettings.RegisterSetting<SettingsConfig[`${N}.${K}`]>
+        : ClientSettings.RegisterSetting<T>,
     ): void;
 
     /**
@@ -117,11 +116,7 @@ declare global {
      * });
      * ```
      */
-    registerMenu<N extends string, K extends string>(
-      namespace: N,
-      key: K,
-      data: ClientSettings.PartialSettingSubmenuConfig,
-    ): void;
+    registerMenu<N extends string, K extends string>(namespace: N, key: K, data: ClientSettings.RegisterSubmenu): void;
 
     /**
      * Get the value of a game setting for a certain namespace and setting key
@@ -136,7 +131,10 @@ declare global {
      * game.settings.get("myModule", "myClientSetting");
      * ```
      */
-    get<N extends string, K extends string>(namespace: N, key: K): ClientSettings.Values[`${N}.${K}`];
+    get<N extends SettingsConfig.Namespace, K extends SettingsConfig.Key>(
+      namespace: N,
+      key: K,
+    ): SettingsConfig[`${N}.${K}`];
 
     /**
      * Set the value of a game setting for a certain namespace and setting key
@@ -156,61 +154,23 @@ declare global {
      * game.settings.set("myModule", "myClientSetting", "b");
      * ```
      */
-    set<N extends string, K extends string, V extends ClientSettings.Values[`${N}.${K}`]>(
+    set<N extends SettingsConfig.Namespace, K extends SettingsConfig.Key>(
       namespace: N,
       key: K,
-      value: V,
+      value: SettingsConfig[`${N}.${K}`],
       options?: Document.ModificationContext<Document.Any | null>,
-    ): Promise<V>;
+    ): Promise<SettingsConfig[`${N}.${K}`]>;
   }
 
   namespace ClientSettings {
-    type PartialSettingConfig<T = unknown> = InexactPartial<Omit<SettingConfig<T>, "key" | "namespace">>;
+    type RegisterSetting<T = unknown> = InexactPartial<Omit<SettingConfig<T>, "key" | "namespace">>;
 
-    type PartialSettingSubmenuConfig = Omit<SettingSubmenuConfig, "key" | "namespace">;
+    type RegisterSubmenu = Omit<SettingSubmenuConfig, "key" | "namespace">;
 
-    interface Values {
-      "core.animateRollTable": boolean;
-      "core.chatBubbles": boolean;
-      "core.chatBubblesPan": boolean;
-      "core.combatTrackerConfig": { resource: string; skipDefeated: boolean } | {};
-      "core.compendiumConfiguration": Partial<Record<string, CompendiumCollection.Configuration>>;
-      "core.coneTemplateType": "round" | "flat";
-      "core.defaultDrawingConfig": foundry.documents.BaseDrawing["_source"] | {};
-      "core.defaultToken": DeepPartial<foundry.documents.BaseToken>;
-      "core.disableResolutionScaling": boolean;
-      "core.fontSize": number;
-      "core.fpsMeter": boolean;
-      "core.globalAmbientVolume": number;
-      "core.globalInterfaceVolume": number;
-      "core.globalPlaylistVolume": number;
-      "core.keybindings": Record<string, KeybindingActionBinding[]>;
-      "core.language": string;
-      "core.leftClickRelease": boolean;
-      "core.lightAnimation": boolean;
-      "core.maxFPS": number;
-      "core.mipmap": boolean;
-      "core.moduleConfiguration": Record<string, boolean>;
-      "core.noCanvas": boolean;
-      "core.notesDisplayToggle": boolean;
-      "core.nue.shownTips": boolean;
-      "core.performanceMode": boolean;
-      "core.permissions": Game.Permissions;
-      "core.playlist.playingLocation": "top" | "bottom";
-      "core.rollMode": keyof CONFIG.Dice.RollModes;
-      "core.rtcClientSettings": typeof AVSettings.DEFAULT_CLIENT_SETTINGS;
-      "core.rtcWorldSettings": typeof AVSettings.DEFAULT_WORLD_SETTINGS;
-      "core.scrollingStatusText": boolean;
-      "core.sheetClasses": {
-        [Key in Document.Type as DocumentSubTypes<Key> extends string ? Key : never]?: Record<
-          DocumentSubTypes<Key> & string,
-          string
-        >;
-      };
-      "core.time": number;
-      "core.tokenDragPreview": boolean;
-      "core.visionAnimation": boolean;
-      [key: string]: unknown;
-    }
+    /**
+     * @deprecated - {@link SettingsConfig | `SettingsConfig`}
+     */
+    // eslint-disable-next-line @typescript-eslint/no-empty-interface
+    interface Values extends SettingsConfig {}
   }
 }

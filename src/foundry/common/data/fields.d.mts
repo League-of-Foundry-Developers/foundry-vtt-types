@@ -1745,7 +1745,7 @@ declare class EmbeddedCollectionField<
   /**
    * A reference to the DataModel subclass of the embedded document element
    */
-  get model(): typeof Document;
+  get model(): Document.AnyConstructor;
 
   /**
    * The DataSchema of the contained Document model.
