@@ -1,5 +1,4 @@
 import type { GetKey } from "../../types/helperTypes.d.mts";
-import type { PropertyTypeOrFallback } from "../../types/utils.d.mts";
 import type * as CONST from "../common/constants.d.mts";
 import type { StatusEffect } from "./data/documents/token.d.mts";
 import type { DataModel, Document } from "../common/abstract/module.d.mts";
@@ -2530,7 +2529,7 @@ declare global {
      */
     WebRTC: {
       /** @defaultValue `SimplePeerAVClient` */
-      clientClass: PropertyTypeOrFallback<WebRTCConfig, "clientClass", typeof SimplePeerAVClient>;
+      clientClass: GetKey<WebRTCConfig, "clientClass", typeof SimplePeerAVClient>;
 
       /** @defaultValue `50` */
       detectPeerVolumeInterval: number;
