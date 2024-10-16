@@ -18,7 +18,8 @@ declare class BaseSetting extends Document<BaseSetting.Schema, BaseSetting.Metad
    * @param data    - Initial data from which to construct the Setting
    * @param context - Construction context options
    */
-  constructor(data: BaseSetting.ConstructorData, context?: Document.ConstructionContext<BaseSetting.Parent>);
+  // TODO(LukeAbby): This constructor is a symptom of a circular error.
+  // constructor(data: BaseSetting.ConstructorData, context?: Document.ConstructionContext<BaseSetting.Parent>);
 
   override parent: BaseSetting.Parent;
 

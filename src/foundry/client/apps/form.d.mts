@@ -2,6 +2,7 @@ import type { EditorView } from "prosemirror-view";
 import type { Editor } from "tinymce";
 import type { AnyObject, GetDataReturnType, MaybePromise } from "../../../types/utils.d.mts";
 import type { ProseMirrorKeyMaps, ProseMirrorMenu } from "../../common/prosemirror/_module.d.mts";
+import type Document from "../../common/abstract/document.d.mts";
 
 declare global {
   interface FormApplicationOptions extends ApplicationOptions {
@@ -322,8 +323,9 @@ declare global {
     }
   }
 
-  interface DocumentSheetOptions<ConcreteDocument extends foundry.abstract.Document.Any = foundry.abstract.Document.Any>
-    extends FormApplicationOptions {
+  interface DocumentSheetOptions<
+    ConcreteDocument extends Document.Internal.Instance.Any = Document.Internal.Instance.Any,
+  > extends FormApplicationOptions {
     /**
      * The default permissions required to view this Document sheet.
      * @defaultValue {@link CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED}

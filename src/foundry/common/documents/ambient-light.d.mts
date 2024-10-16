@@ -19,7 +19,8 @@ declare class BaseAmbientLight extends Document<BaseAmbientLight.Schema, BaseAmb
    * @param data    - Initial data from which to construct the AmbientLight
    * @param context - Construction context options
    */
-  constructor(data?: BaseAmbientLight.ConstructorData, context?: Document.ConstructionContext<BaseAmbientLight.Parent>);
+  // TODO(LukeAbby): This constructor is a symptom of a circular error.
+  // constructor(data?: BaseAmbientLight.ConstructorData, context?: Document.ConstructionContext<BaseAmbientLight.Parent>);
 
   override parent: BaseAmbientLight.Parent;
 

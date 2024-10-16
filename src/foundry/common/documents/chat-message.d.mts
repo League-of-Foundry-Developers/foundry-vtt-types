@@ -22,7 +22,8 @@ declare class BaseChatMessage extends Document<BaseChatMessage.Schema, BaseChatM
    * @param data    - Initial data from which to construct the ChatMessage
    * @param context - Construction context options
    */
-  constructor(data?: BaseChatMessage.ConstructorData, context?: Document.ConstructionContext<BaseChatMessage.Parent>);
+  // TODO(LukeAbby): This constructor is a symptom of a circular error.
+  // constructor(data?: BaseChatMessage.ConstructorData, context?: Document.ConstructionContext<BaseChatMessage.Parent>);
 
   override parent: BaseChatMessage.Parent;
 

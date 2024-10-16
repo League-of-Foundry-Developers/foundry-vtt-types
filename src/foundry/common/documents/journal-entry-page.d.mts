@@ -24,10 +24,11 @@ declare class BaseJournalEntryPage extends Document<BaseJournalEntryPage.Schema,
    * @param data    - Initial data from which to construct the JournalEntryPage.
    * @param context - Construction context options.
    */
-  constructor(
-    data: BaseJournalEntryPage.ConstructorData,
-    context?: Document.ConstructionContext<BaseJournalEntryPage.Parent>,
-  );
+  // TODO(LukeAbby): This constructor is a symptom of a circular error.
+  // constructor(
+  //   data: BaseJournalEntryPage.ConstructorData,
+  //   context?: Document.ConstructionContext<BaseJournalEntryPage.Parent>,
+  // );
 
   override parent: BaseJournalEntryPage.Parent;
 

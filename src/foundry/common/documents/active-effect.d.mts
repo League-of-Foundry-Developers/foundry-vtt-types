@@ -24,7 +24,8 @@ declare class BaseActiveEffect extends Document<BaseActiveEffect.Schema, BaseAct
    * @param data    - Initial data from which to construct the ActiveEffect
    * @param context - Construction context options
    */
-  constructor(data?: BaseActiveEffect.ConstructorData, context?: Document.ConstructionContext<BaseActiveEffect.Parent>);
+  // TODO(LukeAbby): This constructor is causing a circular error.
+  // constructor(data?: BaseActiveEffect.ConstructorData, context?: Document.ConstructionContext<BaseActiveEffect.Parent>);
 
   override parent: BaseActiveEffect.Parent;
 

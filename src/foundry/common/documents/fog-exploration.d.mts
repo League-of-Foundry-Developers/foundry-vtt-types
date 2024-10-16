@@ -19,10 +19,11 @@ declare class BaseFogExploration extends Document<BaseFogExploration.Schema, Bas
    * @param data    - Initial data from which to construct the FogExploration
    * @param context - Construction context options
    */
-  constructor(
-    data?: BaseFogExploration.ConstructorData,
-    context?: Document.ConstructionContext<BaseFogExploration.Parent>,
-  );
+  // TODO(LukeAbby): This constructor is a symptom of a circular error.
+  // constructor(
+  //   data?: BaseFogExploration.ConstructorData,
+  //   context?: Document.ConstructionContext<BaseFogExploration.Parent>,
+  // );
 
   override parent: BaseFogExploration.Parent;
 

@@ -3,7 +3,8 @@ import type Document from "../../../common/abstract/document.d.mts";
 import type { ClientDocument } from "./client-document.d.mts";
 
 declare class CanvasDocument<
-  BaseDocument extends foundry.abstract.Document<any, any, Scene.ConfiguredInstance | null>,
+  // TODO(LukeAbby): Setting this to `Scene.ConfiguredInstance` causes a lot of circular errors.
+  BaseDocument extends Document<any, any, Scene | null>,
 > extends ClientDocument<BaseDocument> {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
   constructor(...args: any[]);
@@ -56,7 +57,7 @@ declare global {
   /**
    * A specialized sub-class of the ClientDocumentMixin which is used for document types that are intended to be represented upon the game Canvas.
    */
-  function CanvasDocumentMixin<BaseClass extends Document.AnyConstructor>(
+  function CanvasDocumentMixin<BaseClass extends Document.Internal.Constructor>(
     Base: BaseClass,
   ): Mixin<typeof CanvasDocument<InstanceType<BaseClass>>, BaseClass>;
 }

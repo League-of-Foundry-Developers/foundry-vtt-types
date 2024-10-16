@@ -23,7 +23,8 @@ declare global {
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
 declare class BaseToken extends Document<BaseToken.Schema, BaseToken.Metadata, any> {
-  constructor(data?: BaseToken.ConstructorData, context?: Document.ConstructionContext<BaseToken.Parent>);
+  // TODO(LukeAbby): This constructor is causing a circular error.
+  // constructor(data?: BaseToken.ConstructorData, context?: Document.ConstructionContext<BaseToken.Parent>);
 
   override parent: BaseToken.Parent;
 

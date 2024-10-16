@@ -18,7 +18,8 @@ declare class BaseAmbientSound extends Document<BaseAmbientSound.Schema, BaseAmb
    * @param data    - Initial data from which to construct the AmbientSound
    * @param context - Construction context options
    */
-  constructor(data?: BaseAmbientSound.ConstructorData, context?: Document.ConstructionContext<BaseAmbientSound.Parent>);
+  // TODO(LukeAbby): This constructor is a symptom of a circular error.
+  // constructor(data?: BaseAmbientSound.ConstructorData, context?: Document.ConstructionContext<BaseAmbientSound.Parent>);
 
   override parent: BaseAmbientSound.Parent;
 

@@ -21,7 +21,8 @@ declare class BaseScene extends Document<BaseScene.Schema, BaseScene.Metadata, a
    * @param data    - Initial data from which to construct the Scene
    * @param context - Construction context options
    */
-  constructor(data: BaseScene.ConstructorData, context?: Document.ConstructionContext<BaseScene.Parent>);
+  // TODO(LukeAbby): This constructor is a symptom of a circular error.
+  // constructor(data: BaseScene.ConstructorData, context?: Document.ConstructionContext<BaseScene.Parent>);
 
   override parent: BaseScene.Parent;
 

@@ -18,10 +18,11 @@ declare class BasePlaylistSound extends Document<BasePlaylistSound.Schema, BaseP
    * @param data    - Initial data from which to construct the PlaylistSound
    * @param context - Construction context options
    */
-  constructor(
-    data: BasePlaylistSound.ConstructorData,
-    context?: Document.ConstructionContext<BasePlaylistSound.Parent>,
-  );
+  // TODO(LukeAbby): This constructor is a symptom of a circular error.
+  // constructor(
+  //   data: BasePlaylistSound.ConstructorData,
+  //   context?: Document.ConstructionContext<BasePlaylistSound.Parent>,
+  // );
 
   override parent: BasePlaylistSound.Parent;
 

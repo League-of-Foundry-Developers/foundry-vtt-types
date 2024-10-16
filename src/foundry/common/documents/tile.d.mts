@@ -24,7 +24,8 @@ declare class BaseTile extends Document<BaseTile.Schema, BaseTile.Metadata, any>
    * @param data    - Initial data from which to construct the Tile
    * @param context - Construction context options
    */
-  constructor(data: BaseTile.ConstructorData, context?: Document.ConstructionContext<BaseTile.Parent>);
+  // TODO(LukeAbby): This constructor is a symptom of a circular error.
+  // constructor(data: BaseTile.ConstructorData, context?: Document.ConstructionContext<BaseTile.Parent>);
 
   override parent: BaseTile.Parent;
 

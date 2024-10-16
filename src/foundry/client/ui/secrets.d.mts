@@ -1,4 +1,4 @@
-export {};
+import type Document from "../../common/abstract/document.d.mts";
 
 declare global {
   /**
@@ -13,11 +13,11 @@ declare global {
    * @returns The updated Document.
    */
   type HTMLSecretUpdateCallback<
-    ConcreteDocument extends foundry.abstract.Document.Any = foundry.abstract.Document.Any,
+    ConcreteDocument extends Document.Internal.Instance.Any = Document.Internal.Instance.Any,
   > = (secret: HTMLElement, content: string) => Promise<ConcreteDocument>;
 
   interface HTMLSecretConfiguration<
-    ConcreteDocument extends foundry.abstract.Document.Any = foundry.abstract.Document.Any,
+    ConcreteDocument extends Document.Internal.Instance.Any = Document.Internal.Instance.Any,
   > {
     /** The CSS selector used to target content that contains secret blocks. */
     parentSelector: string;

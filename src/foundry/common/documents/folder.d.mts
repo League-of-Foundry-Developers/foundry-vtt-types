@@ -18,7 +18,8 @@ declare class BaseFolder extends Document<BaseFolder.Schema, BaseFolder.Metadata
    * @param data    - Initial data from which to construct the Folder
    * @param context - Construction context options
    */
-  constructor(data: BaseFolder.ConstructorData, context?: Document.ConstructionContext<BaseFolder.Parent>);
+  // TODO(LukeAbby): This constructor is a symptom of a circular error.
+  // constructor(data: BaseFolder.ConstructorData, context?: Document.ConstructionContext<BaseFolder.Parent>);
 
   override parent: BaseFolder.Parent;
 

@@ -19,7 +19,8 @@ declare class BaseCards extends Document<BaseCards.Schema, BaseCards.Metadata, a
    * @param data    - Initial data from which to construct the Cards
    * @param context - Construction context options
    */
-  constructor(data: BaseCards.ConstructorData, context?: Document.ConstructionContext<BaseCards.Parent>);
+  // TODO(LukeAbby): This constructor is a symptom of a circular error.
+  // constructor(data: BaseCards.ConstructorData, context?: Document.ConstructionContext<BaseCards.Parent>);
 
   override parent: BaseCards.Parent;
 

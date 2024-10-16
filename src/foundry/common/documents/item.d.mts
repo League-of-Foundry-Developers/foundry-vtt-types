@@ -19,7 +19,8 @@ declare class BaseItem extends Document<BaseItem.Schema, BaseItem.Metadata, any>
    * @param data    - Initial data from which to construct the Item
    * @param context - Construction context options
    */
-  constructor(data: BaseItem.ConstructorData, context?: Document.ConstructionContext<BaseItem.Parent>);
+  // TODO(LukeAbby): This constructor is causing a circular error.
+  // constructor(data: BaseItem.ConstructorData, context?: Document.ConstructionContext<BaseItem.Parent>);
 
   override parent: BaseItem.Parent;
 

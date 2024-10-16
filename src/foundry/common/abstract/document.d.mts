@@ -1,6 +1,12 @@
 import type { ConfiguredDocuments } from "../../../types/configuredDocuments.d.mts";
 import type { DatabaseOperationsFor, GetKey, MakeConform } from "../../../types/helperTypes.mts";
-import type { DeepPartial, EmptyObject, InexactPartial, RemoveIndexSignatures } from "../../../types/utils.mts";
+import type {
+  AnyObject,
+  DeepPartial,
+  EmptyObject,
+  InexactPartial,
+  RemoveIndexSignatures,
+} from "../../../types/utils.mts";
 import type * as CONST from "../constants.mts";
 import type { DataField, EmbeddedCollectionField, EmbeddedDocumentField } from "../data/fields.d.mts";
 import type { fields } from "../data/module.mts";
@@ -539,7 +545,7 @@ declare abstract class Document<
     operation?: InexactPartial<DatabaseOperationsFor<EmbeddedName, "create">> & {
       temporary?: Temporary;
     },
-  ): Promise<Array<Document.ToStoredIf<Document.ConfiguredInstanceForName<EmbeddedName>, Temporary>> | undefined>;
+  ): Promise<Array<Document.ToStoredIf<Document.ConfiguredClassForName<EmbeddedName>, Temporary>> | undefined>;
 
   /**
    * Update multiple embedded Document instances within a parent Document using provided differential data.
@@ -969,6 +975,15 @@ declare namespace Document {
       [__Parent]: Parent;
     }
 
+    type SchemaFor<ConcreteInstance extends Instance.Any> =
+      ConcreteInstance extends Instance<infer Schema, any, any> ? Schema : never;
+
+    type ConcreteMetadataFor<ConcreteInstance extends Instance.Any> =
+      ConcreteInstance extends Instance<any, infer ConcreteMetadata, any> ? ConcreteMetadata : never;
+
+    type ParentFor<ConcreteInstance extends Instance.Any> =
+      ConcreteInstance extends Instance<any, infer Parent, any> ? Parent : never;
+
     namespace Instance {
       type Any = Instance<any, any, any>;
 
@@ -1287,10 +1302,10 @@ export type Operation = "create" | "update" | "delete";
 
 /* eslint-disable @typescript-eslint/no-empty-object-type */
 export interface DocumentDatabaseOperations<
-  T extends foundry.abstract.Document.Any = foundry.abstract.Document.Any,
-  ExtraCreateOptions extends Record<string, unknown> = {},
-  ExtraUpdateOptions extends Record<string, unknown> = {},
-  ExtraDeleteOptions extends Record<string, unknown> = {},
+  T extends Document.Internal.Instance.Any = Document.Internal.Instance.Any,
+  ExtraCreateOptions extends AnyObject = {},
+  ExtraUpdateOptions extends AnyObject = {},
+  ExtraDeleteOptions extends AnyObject = {},
 > {
   create: DatabaseCreateOperation<T> & InexactPartial<ExtraCreateOptions>;
   update: DatabaseUpdateOperation<T> & InexactPartial<ExtraUpdateOptions>;

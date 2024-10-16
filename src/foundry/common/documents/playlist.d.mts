@@ -19,7 +19,8 @@ declare class BasePlaylist extends Document<BasePlaylist.Schema, BasePlaylist.Me
    * @param data    - Initial data from which to construct the Playlist
    * @param context - Construction context options
    */
-  constructor(data: BasePlaylist.ConstructorData, context?: Document.ConstructionContext<BasePlaylist.Parent>);
+  // TODO(LukeAbby): This constructor is a symptom of a circular error.
+  // constructor(data: BasePlaylist.ConstructorData, context?: Document.ConstructionContext<BasePlaylist.Parent>);
 
   override parent: BasePlaylist.Parent;
 

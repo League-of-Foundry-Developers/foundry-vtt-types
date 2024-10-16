@@ -20,7 +20,8 @@ declare class BaseNote extends Document<BaseNote.Schema, BaseNote.Metadata, any>
    * @param data    - Initial data from which to construct the Note
    * @param context - Construction context options
    */
-  constructor(data?: BaseNote.ConstructorData, context?: Document.ConstructionContext<BaseNote.Parent>);
+  // TODO(LukeAbby): This constructor is a symptom of a circular error.
+  // constructor(data?: BaseNote.ConstructorData, context?: Document.ConstructionContext<BaseNote.Parent>);
 
   override parent: BaseNote.Parent;
 

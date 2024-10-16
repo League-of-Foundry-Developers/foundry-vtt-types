@@ -20,7 +20,8 @@ declare class BaseUser extends Document<BaseUser.Schema, BaseUser.Metadata, any>
    * @param data    - Initial data from which to construct the User
    * @param context - Construction context options
    */
-  constructor(data: BaseUser.ConstructorData, context?: BaseUser.Parent);
+  // TODO(LukeAbby): This constructor is a symptom of a circular error.
+  // constructor(data: BaseUser.ConstructorData, context?: BaseUser.Parent);
 
   override parent: BaseUser.Parent;
 

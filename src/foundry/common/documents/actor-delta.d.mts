@@ -16,7 +16,8 @@ declare global {
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
 declare class BaseActorDelta extends Document<BaseActorDelta.Schema, BaseActorDelta.Metadata, any> {
-  constructor(data?: BaseActorDelta.ConstructorData, context?: Document.ConstructionContext<BaseActorDelta.Parent>);
+  // TODO(LukeAbby): This constructor is a symptom of a circular error.
+  // constructor(data?: BaseActorDelta.ConstructorData, context?: Document.ConstructionContext<BaseActorDelta.Parent>);
 
   override parent: BaseActorDelta.Parent;
 

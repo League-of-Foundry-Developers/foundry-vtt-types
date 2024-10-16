@@ -21,7 +21,8 @@ declare class BaseDrawing extends Document<BaseDrawing.Schema, BaseDrawing.Metad
    * @param data    - Initial data from which to construct the Drawing
    * @param context - Construction context options
    */
-  constructor(data?: BaseDrawing.ConstructorData, context?: Document.ConstructionContext<BaseDrawing.Parent>);
+  // TODO(LukeAbby): This constructor is a symptom of a circular error.
+  // constructor(data?: BaseDrawing.ConstructorData, context?: Document.ConstructionContext<BaseDrawing.Parent>);
 
   override parent: BaseDrawing.Parent;
 

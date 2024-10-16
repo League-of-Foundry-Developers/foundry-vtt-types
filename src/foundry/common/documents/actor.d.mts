@@ -138,7 +138,8 @@ declare class BaseActor extends Document<BaseActor.Schema, BaseActor.Metadata, a
    * @param data    - Initial data from which to construct the Actor
    * @param context - Construction context options
    */
-  constructor(data: BaseActor.ConstructorData, context?: Document.ConstructionContext<BaseActor.Parent>);
+  // TODO(LukeAbby): This constructor is causing a circular error.
+  // constructor(data: BaseActor.ConstructorData, context?: Document.ConstructionContext<BaseActor.Parent>);
 
   override parent: BaseActor.Parent;
 

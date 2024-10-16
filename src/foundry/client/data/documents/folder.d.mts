@@ -47,16 +47,14 @@ declare global {
      * unless it's a Folder inside a Compendium pack, in which case it's the array
      * of objects inside the index of the pack that are contained in this Folder.
      */
-    get contents(): this["type"] extends Document.Type
-      ? InstanceType<ConfiguredDocumentClassForName<this["type"]>>[]
-      : never;
+    get contents(): this["type"] extends Document.Type ? Document.ConfiguredInstanceForName<this["type"]>[] : never;
 
     set contents(value);
 
     /**
      * The reference to the Document type which is contained within this Folder.
      */
-    get documentClass(): this["type"] extends Document.Type ? ConfiguredDocumentClassForName<this["type"]> : never;
+    get documentClass(): this["type"] extends Document.Type ? Document.ConfiguredClassForName<this["type"]> : never;
 
     /**
      * The reference to the WorldCollection instance which provides Documents to this Folder,
@@ -85,7 +83,7 @@ declare global {
       this: T,
       data?: DeepPartial<Document.ConstructorDataFor<T> | (Document.ConstructorDataFor<T> & Record<string, unknown>)>,
       context?: InexactPartial<Omit<FolderConfig.Options, "resolve">>,
-    ): Promise<ConfiguredDocumentInstance<T> | null | undefined>;
+    ): Promise<Document.ToConfiguredInstance<T> | null | undefined>;
 
     /**
      * Export all Documents contained in this Folder to a given Compendium pack.

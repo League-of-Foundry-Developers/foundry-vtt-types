@@ -1,8 +1,10 @@
+import type Document from "./document.d.mts";
+
 export interface DatabaseGetOperation {
   /**
    * A query object which identifies the set of Documents retrieved
    */
-  query: Record<string, any>;
+  query: Record<string, unknown>;
 
   /**
    * Get requests are never broadcast
@@ -35,7 +37,7 @@ export interface DatabaseGetOperation {
   parentUuid?: string | undefined;
 }
 
-export interface DatabaseCreateOperation<T extends foundry.abstract.Document.Any = foundry.abstract.Document.Any> {
+export interface DatabaseCreateOperation<T extends Document.Internal.Instance.Any = Document.Internal.Instance.Any> {
   /**
    * Whether the database operation is broadcast to other connected clients
    */
@@ -44,7 +46,7 @@ export interface DatabaseCreateOperation<T extends foundry.abstract.Document.Any
   /**
    * An array of data objects from which to create Documents
    */
-  data: foundry.data.fields.SchemaField.InnerAssignmentType<T["schema"]["fields"]>[];
+  data: foundry.data.fields.SchemaField.InnerAssignmentType<Document.Internal.SchemaFor<T>>[];
 
   /**
    * Retain the _id values of provided data instead of generating new ids
@@ -122,7 +124,7 @@ export interface DatabaseCreateOperation<T extends foundry.abstract.Document.Any
   temporary?: boolean | undefined;
 }
 
-export interface DatabaseUpdateOperation<T extends foundry.abstract.Document.Any = foundry.abstract.Document.Any> {
+export interface DatabaseUpdateOperation<T extends Document.Internal.Instance.Any = Document.Internal.Instance.Any> {
   /**
    * Whether the database operation is broadcast to other connected clients
    */
@@ -132,7 +134,7 @@ export interface DatabaseUpdateOperation<T extends foundry.abstract.Document.Any
    * An array of data objects used to update existing Documents.
    * Each update object must contain the _id of the target Document
    */
-  updates: foundry.data.fields.SchemaField.InnerAssignmentType<T["schema"]["fields"]>[];
+  updates: foundry.data.fields.SchemaField.InnerAssignmentType<Document.Internal.SchemaFor<T>>[];
 
   /**
    * Difference each update object against current Document data and only use

@@ -19,7 +19,8 @@ declare class BaseAdventure extends Document<BaseAdventure.Schema, BaseAdventure
    * @param data    - Initial data from which to construct the Actor
    * @param context - Construction context options
    */
-  constructor(data: BaseAdventure.ConstructorData, context?: Document.ConstructionContext<BaseAdventure.Parent>);
+  // TODO(LukeAbby): This constructor is a symptom of a circular error.
+  // constructor(data: BaseAdventure.ConstructorData, context?: Document.ConstructionContext<BaseAdventure.Parent>);
 
   override parent: BaseAdventure.Parent;
 

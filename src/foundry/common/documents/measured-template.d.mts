@@ -19,10 +19,11 @@ declare class BaseMeasuredTemplate extends Document<BaseMeasuredTemplate.Schema,
    * @param data    - Initial data from which to construct the MeasuredTemplate
    * @param context - Construction context options
    */
-  constructor(
-    data?: BaseMeasuredTemplate.ConstructorData,
-    context?: Document.ConstructionContext<BaseMeasuredTemplate.Parent>,
-  );
+  // TODO(LukeAbby): This constructor is a symptom of a circular error.
+  // constructor(
+  //   data?: BaseMeasuredTemplate.ConstructorData,
+  //   context?: Document.ConstructionContext<BaseMeasuredTemplate.Parent>,
+  // );
 
   override parent: BaseMeasuredTemplate.Parent;
 

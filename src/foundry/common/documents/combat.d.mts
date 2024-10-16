@@ -19,7 +19,8 @@ declare class BaseCombat extends Document<BaseCombat.Schema, BaseCombat.Metadata
    * @param data    - Initial data from which to construct the Combat
    * @param context - Construction context options
    */
-  constructor(data?: BaseCombat.ConstructorData, context?: Document.ConstructionContext<BaseCombat.Parent>);
+  // TODO(LukeAbby): This constructor is a symptom of a circular error.
+  // constructor(data?: BaseCombat.ConstructorData, context?: Document.ConstructionContext<BaseCombat.Parent>);
 
   override parent: BaseCombat.Parent;
 
