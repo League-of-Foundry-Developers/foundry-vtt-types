@@ -4,34 +4,48 @@ import type EventEmitterMixin from "../../../common/utils/event-emitter.d.mts";
 
 // TODO: Investigate use of DeepPartial vs Partial vs InexactPartial
 
+declare const __ApplicationV2Brand: unique symbol;
+
 declare const __Configuration: unique symbol;
 declare const __RenderOptions: unique symbol;
 declare const __RenderContext: unique symbol;
 
-type _MustBeAssignableToInternal = MustConform<ApplicationV2, ApplicationV2.Internal<any, any, any>>;
+type _ClassMustBeAssignableToInternal = MustConform<typeof ApplicationV2, ApplicationV2.Internal.Constructor>;
+type _InstanceMustBeAssignableToInternal = MustConform<ApplicationV2, ApplicationV2.Internal.Instance.Any>;
 
 declare namespace ApplicationV2 {
   type Any = ApplicationV2<any, any, any>;
 
-  /**
-   * This type is an internal implementation detail of fvtt-types.
-   *
-   * It is used in `HandlebarsApplicationMixin` as a proxy bound for `ApplicationV2`
-   * as well as to implement generic passthrough from the mixin into the mixin
-   * class.
-   *
-   * It soundly be used as a bound to guarantee a subclass of `ApplicationV2`
-   * because it uses some `unique symbol`s that are used nowhere else in the
-   * codebase.
-   */
-  interface Internal<
-    Configuration extends ApplicationV2.Configuration,
-    RenderOptions extends ApplicationV2.RenderOptions,
-    RenderContext extends AnyObject,
-  > {
-    readonly [__Configuration]: Configuration;
-    readonly [__RenderOptions]: RenderOptions;
-    readonly [__RenderContext]: RenderContext;
+  // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
+  namespace Internal {
+    type Constructor = (abstract new (arg0: never, ...args: never[]) => Instance.Any) & {
+      [__ApplicationV2Brand]: never;
+    };
+
+    /**
+     * This type is an internal implementation detail of fvtt-types.
+     *
+     * It is used in `HandlebarsApplicationMixin` as a proxy bound for `ApplicationV2`
+     * as well as to implement generic passthrough from the mixin into the mixin
+     * class.
+     *
+     * It soundly be used as a bound to guarantee a subclass of `ApplicationV2`
+     * because it uses some `unique symbol`s that are used nowhere else in the
+     * codebase.
+     */
+    interface Instance<
+      Configuration extends ApplicationV2.Configuration,
+      RenderOptions extends ApplicationV2.RenderOptions,
+      RenderContext extends AnyObject,
+    > {
+      readonly [__Configuration]: Configuration;
+      readonly [__RenderOptions]: RenderOptions;
+      readonly [__RenderContext]: RenderContext;
+    }
+
+    namespace Instance {
+      type Any = Instance<any, any, any>;
+    }
   }
 
   export interface Configuration {
@@ -292,6 +306,8 @@ declare class ApplicationV2<
   Configuration extends ApplicationV2.Configuration = ApplicationV2.Configuration,
   RenderOptions extends ApplicationV2.RenderOptions = ApplicationV2.RenderOptions,
 > extends EventEmitterMixin(Object) {
+  static [__ApplicationV2Brand]: never;
+
   [__Configuration]: Configuration;
   [__RenderOptions]: RenderOptions;
   [__RenderContext]: RenderContext;

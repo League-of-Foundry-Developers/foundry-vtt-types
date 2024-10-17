@@ -1,5 +1,5 @@
 import type { ConfiguredDocuments } from "../../../types/configuredDocuments.d.mts";
-import type { DatabaseOperationsFor, GetKey, MakeConform } from "../../../types/helperTypes.mts";
+import type { DatabaseOperationsFor, GetKey, MakeConform, MustConform } from "../../../types/helperTypes.mts";
 import type {
   AnyObject,
   DeepPartial,
@@ -26,6 +26,9 @@ declare const __DocumentBrand: unique symbol;
 declare const __Schema: unique symbol;
 declare const __ConcreteMetadata: unique symbol;
 declare const __Parent: unique symbol;
+
+type _ClassMustBeAssignableToInternal = MustConform<typeof Document, Document.Internal.Constructor>;
+type _InstanceMustBeAssignableToInternal = MustConform<Document.Any, Document.Internal.Instance.Any>;
 
 /**
  * An extension of the base DataModel which defines a Document.

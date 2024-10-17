@@ -12,14 +12,14 @@ declare class CanvasDocument<
   /**
    * A lazily constructed PlaceableObject instance which can represent this Document on the game canvas.
    */
-  get object(): InstanceType<Document.ConfiguredObjectClassForName<BaseDocument["documentName"]>> | null;
+  get object(): Document.ConfiguredObjectInstanceForName<BaseDocument["documentName"]> | null;
 
   /**
    * A reference to the PlaceableObject instance which represents this Embedded Document.
    * @internal
    * @defaultValue `null`
    */
-  protected _object: InstanceType<Document.ConfiguredObjectClassForName<BaseDocument["documentName"]>> | null;
+  protected _object: Document.ConfiguredObjectInstanceForName<BaseDocument["documentName"]> | null;
 
   /**
    * Has this object been deliberately destroyed as part of the deletion workflow?

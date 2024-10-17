@@ -606,8 +606,9 @@ declare global {
    * A mixin which extends each Document definition with specialized client-side behaviors.
    * This mixin defines the client-side interface for database operations and common document behaviors.
    */
-  // Note: Unlike most mixins, `ClientDocumentMixin` actually requires a specific constructor, the same as `Document`.
-  // This means that `BaseClass extends Document.AnyConstructor` would be too permissive.
+  // FIXME(LukeAbby): Unlike most mixins, `ClientDocumentMixin` actually requires a specific constructor, the same as `Document`.
+  // This means that `BaseClass extends Document.Internal.Constructor` is actually too permissive.
+  // However this easily leads to circularities.
   function ClientDocumentMixin<BaseClass extends Document.Internal.Constructor>(
     Base: BaseClass,
   ): Mixin<typeof ClientDocument<InstanceType<BaseClass>>, BaseClass>;

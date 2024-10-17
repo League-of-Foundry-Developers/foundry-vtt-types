@@ -1,3 +1,4 @@
+import type { MustConform } from "../../../types/helperTypes.d.mts";
 import type {
   AnyObject,
   EmptyObject,
@@ -50,6 +51,9 @@ declare const __Parent: unique symbol;
 declare const __BaseModel: unique symbol;
 declare const __BaseData: unique symbol;
 declare const __DerivedData: unique symbol;
+
+type _ClassMustBeAssignableToInternal = MustConform<typeof Document, Document.Internal.Constructor>;
+type _InstanceMustBeAssignableToInternal = MustConform<Document.Any, Document.Internal.Instance.Any>;
 
 // Removes the base and derived data from the type.
 // Has no extends bounds to simplify any checking logic.

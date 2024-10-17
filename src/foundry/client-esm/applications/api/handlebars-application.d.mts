@@ -1,26 +1,22 @@
-import type { AnyObject, ConstructorOf, DeepPartial, Mixin } from "../../../../types/utils.d.mts";
+import type { DeepPartial, Mixin } from "../../../../types/utils.d.mts";
 import type ApplicationV2 from "./application.d.mts";
+
+declare namespace HandlebarsApplication {
+  // Note(LukeAbby): `unknown` is returned in the false case instead of `never` because otherwise errors will crop up at usage sites like "any cannot be assigned to `never`".
+  type ConfigurationFor<Instance extends HandlebarsApplication> =
+    Instance extends ApplicationV2.Internal.Instance<infer Configuration, any, any> ? Configuration : unknown;
+
+  type RenderOptionsFor<Instance extends HandlebarsApplication> =
+    Instance extends ApplicationV2.Internal.Instance<any, infer RenderOptions, any> ? RenderOptions : unknown;
+
+  type RenderContextFor<Instance extends HandlebarsApplication> =
+    Instance extends ApplicationV2.Internal.Instance<any, any, infer RenderContext> ? RenderContext : unknown;
+}
 
 /**
  * The mixed application class augmented with [Handlebars](https://handlebarsjs.com) template rendering behavior.
  */
-declare class HandlebarsApplication<
-  // BaseClass is the class being mixed. This is given by `HandlebarsApplicationMixin`.
-  BaseClass extends ConstructorOf<ApplicationV2.Internal<any, any, any>>,
-  // These type parameters should _never_ be explicitly assigned to. They're
-  // simply a way to make types more readable so that their names show up in
-  // intellisense instead of a transformation of `BaseClass`.
-  out RenderOptions extends ApplicationV2.RenderOptions = BaseClass extends ConstructorOf<
-    ApplicationV2.Internal<any, infer RenderOptions, any>
-  >
-    ? RenderOptions
-    : never,
-  out RenderContext extends AnyObject = BaseClass extends ConstructorOf<
-    ApplicationV2.Internal<any, any, infer RenderContext>
-  >
-    ? RenderContext
-    : never,
-> {
+declare class HandlebarsApplication {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
   constructor(...args: any[]);
 
@@ -38,7 +34,10 @@ declare class HandlebarsApplication<
 
   protected _configureRenderOptions(options: DeepPartial<HandlebarsApplicationMixin.HandlebarsRenderOptions>): void;
 
-  protected _preFirstRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): Promise<void>;
+  protected _preFirstRender(
+    context: DeepPartial<HandlebarsApplication.RenderContextFor<this>>,
+    options: DeepPartial<HandlebarsApplication.RenderOptionsFor<this>>,
+  ): Promise<void>;
 
   /**
    * Render each configured application part using Handlebars templates.
@@ -47,8 +46,8 @@ declare class HandlebarsApplication<
    * @returns A single rendered HTMLElement for each requested part
    */
   protected _renderHTML(
-    context: RenderContext,
-    options: DeepPartial<RenderOptions>,
+    context: HandlebarsApplication.RenderContextFor<this>,
+    options: DeepPartial<HandlebarsApplication.RenderOptionsFor<this>>,
   ): Promise<Record<string, HTMLElement>>;
 
   /**
@@ -65,9 +64,9 @@ declare class HandlebarsApplication<
    */
   protected _preparePartContext(
     partId: string,
-    context: RenderContext,
+    context: HandlebarsApplication.RenderContextFor<this>,
     options: DeepPartial<HandlebarsApplicationMixin.HandlebarsRenderOptions>,
-  ): Promise<RenderContext>;
+  ): Promise<HandlebarsApplication.RenderContextFor<this>>;
 
   /**
    * Replace the HTML of the application with the result provided by Handlebars rendering.
@@ -78,7 +77,7 @@ declare class HandlebarsApplication<
   protected _replaceHTML(
     result: Record<string, HTMLElement>,
     content: HTMLElement,
-    options: DeepPartial<RenderOptions>,
+    options: DeepPartial<HandlebarsApplication.RenderOptionsFor<this>>,
   ): void;
 
   /**
@@ -125,9 +124,9 @@ declare class HandlebarsApplication<
 /**
  * Augment an Application class with [Handlebars](https://handlebarsjs.com) template rendering behavior.
  */
-declare function HandlebarsApplicationMixin<BaseClass extends ConstructorOf<ApplicationV2.Internal<any, any, any>>>(
+declare function HandlebarsApplicationMixin<BaseClass extends ApplicationV2.Internal.Constructor>(
   BaseApplication: BaseClass,
-): Mixin<typeof HandlebarsApplication<BaseClass>, BaseClass>;
+): Mixin<typeof HandlebarsApplication, BaseClass>;
 
 declare namespace HandlebarsApplicationMixin {
   interface PartState {
