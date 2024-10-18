@@ -468,7 +468,9 @@ export class PackageCompendiumPacks<
 
   override initialize(
     value: fields.ArrayField.PersistedElementType<ElementFieldType>[],
-    model: BasePackage,
+    // In Foundry itself, this field is only used in `BasePackage`, however it should be able to accept any model.
+    // NOTE(LukeAbby): This also has been seen in a circularity `Type of property 'packs' circularly references itself in mapped type ...`.
+    model: DataModel.Any,
   ):
     | Set<fields.ArrayField.InitializedElementType<ElementFieldType>>
     | (() => Set<fields.ArrayField.InitializedElementType<ElementFieldType>> | null);
