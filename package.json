@@ -1,17 +1,9 @@
 {
   "$schema": "https://json.schemastore.org/package.json",
   "name": "@league-of-foundry-developers/foundry-vtt-types",
-  "version": "11.315.0",
+  "version": "11.315.0-beta",
   "description": "TypeScript type definitions for Foundry VTT",
   "type": "module",
-  "exports": {
-    ".": {
-      "types": "./index.d.mts"
-    },
-    "./lenient": {
-      "types": "./index-lenient.d.mts"
-    }
-  },
   "types": "./index.d.mts",
   "scripts": {
     "lint": "./node_modules/typescript/bin/tsc; eslint .",
@@ -20,7 +12,7 @@
     "eslint:report": "eslint --output-file eslint_report.json --format json .",
     "test": "vitest --typecheck",
     "typecheck": "./node_modules/typescript/bin/tsc",
-    "prepare": "is-ci || husky install",
+    "prepare": "is-ci || husky",
     "postinstall": "patch-package"
   },
   "repository": {
@@ -89,20 +81,20 @@
     "tinymce": "^6.7.1"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^6.7.4",
-    "@typescript-eslint/parser": "^6.7.4",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
     "eslint": "^8.4.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-import-resolver-typescript": "^3.6.1",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-prettier": "^5.0.0",
-    "eslint-plugin-tsdoc": "^0.2.14",
-    "husky": "^8.0.0",
+    "eslint-plugin-tsdoc": "^0.3.0",
+    "husky": "^9.1.4",
     "is-ci": "^3.0.1",
     "lint-staged": "^15.0.1",
     "prettier": "^3.0.3",
     "typescript": "~5.4",
-    "vitest": "^1.1.0"
+    "vitest": "^2.0.4"
   },
   "overrides": {
     "@types/css-font-loading-module": "^0.0.12s"
@@ -126,5 +118,6 @@
   ],
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }
