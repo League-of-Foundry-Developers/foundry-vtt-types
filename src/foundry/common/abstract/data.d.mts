@@ -60,7 +60,7 @@ declare abstract class DataModel<
    */
   // TODO(LukeAbby): Make only optional if `{}` is assignable to `InnerAssignmentType`.
   constructor(
-    data?: fields.SchemaField.InnerAssignmentType<Schema> | DataModel<Schema, any>,
+    data?: DataModel.ConstructorData<Schema>,
     { parent, strict, ...options }?: DataModel.ConstructorOptions<Parent>,
   );
 
@@ -395,6 +395,12 @@ declare abstract class DataModel<
 }
 
 declare namespace DataModel {
+  type ConstructorData<Schema extends DataSchema> =
+    | fields.SchemaField.InnerAssignmentType<Schema>
+    | DataModel<Schema, any>;
+
+  type ConstructorDataFor<ConcreteDataModel extends DataModel.Any> = ConstructorData<SchemaFor<ConcreteDataModel>>;
+
   interface ConstructorOptions<Parent extends Any | null = null> {
     /**
      * A parent DataModel instance to which this DataModel belongs
@@ -417,6 +423,8 @@ declare namespace DataModel {
 
   type Any = DataModel<DataSchema, any>;
 
+  type AnyConstructor = typeof AnyDataModel;
+
   /**
    * A helper type to extract the {@link SchemaFor} from a {@link DataModel}.
    * @typeParam ModelType - the DataModel for the embedded data
@@ -433,6 +441,10 @@ declare namespace DataModel {
     _diff: Record<string, unknown>;
     _backup: Record<string, unknown>;
   }
+}
+
+declare class AnyDataModel extends DataModel<any, any> {
+  constructor(arg0: never, ...args: never[]);
 }
 
 // Matches foundry exporting class as both default and non-default

@@ -1,4 +1,4 @@
-import type { AnyFunction, ConstructorOf } from "../../types/utils.d.mts";
+import type { AnyFunction } from "../../types/utils.d.mts";
 
 declare global {
   /**
@@ -24,63 +24,9 @@ declare global {
       };
 
   /** A Client Setting */
-  interface SettingConfig<T = unknown> {
-    /** A unique machine-readable id for the setting */
-    key: string;
-
-    /** The namespace the setting belongs to */
-    namespace: string;
-
-    /** The human readable name */
-    name?: string | undefined;
-
-    /** An additional human readable hint */
-    hint?: string | undefined;
-
-    /**
-     * The scope the Setting is stored in, either World or Client
-     * @defaultValue `"client"`
-     */
-    scope: "world" | "client";
-
-    /** Indicates if this Setting should render in the Config application */
-    config?: boolean | undefined;
-
-    // TODO(LukeAbby): This can take data models and data fields now
-    /** The JS Type that the Setting is storing */
-    type?: T extends string
-      ? typeof String
-      : T extends number
-        ? typeof Number
-        : T extends boolean
-          ? typeof Boolean
-          : T extends Array<any>
-            ? typeof Array
-            : ConstructorOf<T>;
-
-    /** For string Types, defines the allowable values */
-    choices?: (T extends number | string ? Record<T, string> : never) | undefined;
-
-    /** For numeric Types, defines the allowable range */
-    range?: T extends number
-      ? {
-          max: number;
-          min: number;
-          step: number;
-        }
-      : never;
-
-    /** The default value */
-    default: T;
-
-    /** Whether setting requires Foundry to be reloaded on change  */
-    requiresReload?: boolean;
-
-    /** Executes when the value of this Setting changes */
-    onChange?: (value: T) => void;
-
-    filePicker?: (T extends string ? true | "audio" | "image" | "video" | "imagevideo" | "folder" : never) | undefined;
-  }
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  interface SettingOptions<T extends ClientSettings.Type = (value: unknown) => unknown>
+    extends _SettingOptions<ClientSettings.ToRuntimeType<T>, ClientSettings.ToSettingAssignmentType<T>> {}
 
   interface SettingSubmenuConfig {
     key: string;
@@ -305,4 +251,63 @@ declare global {
      */
     result?: object[] | string[];
   }
+}
+
+// This type is named `SettingConfig` in FoundryVTT but that name is confusing within fvtt-types because of the `Config` nomenclature meaning declaration merging.
+interface _SettingOptions<
+  RuntimeType extends ClientSettings.RuntimeType,
+  AssignmentType extends ClientSettings.TypeScriptType,
+> {
+  /** A unique machine-readable id for the setting */
+  key: string;
+
+  /** The namespace the setting belongs to */
+  namespace: string;
+
+  /** The human readable name */
+  name?: string | undefined;
+
+  /** An additional human readable hint */
+  hint?: string | undefined;
+
+  /**
+   * The scope the Setting is stored in, either World or Client
+   * @defaultValue `"client"`
+   */
+  scope: "world" | "client";
+
+  /** Indicates if this Setting should render in the Config application */
+  config?: boolean | undefined;
+
+  /** The JS Type that the Setting is storing */
+  type?: RuntimeType;
+
+  /** For string Types, defines the allowable values */
+  choices?: AssignmentType extends string
+    ? {
+        readonly [K in AssignmentType]?: string;
+      }
+    : never;
+
+  /** For numeric Types, defines the allowable range */
+  range?: AssignmentType extends number
+    ? {
+        max: number;
+        min: number;
+        step: number;
+      }
+    : never;
+
+  /** The default value */
+  default: AssignmentType;
+
+  /** Whether setting requires Foundry to be reloaded on change  */
+  requiresReload?: boolean;
+
+  /** Executes when the value of this Setting changes */
+  onChange?: (value: AssignmentType) => void;
+
+  filePicker?:
+    | (AssignmentType extends string ? true | "audio" | "image" | "video" | "imagevideo" | "folder" : never)
+    | undefined;
 }

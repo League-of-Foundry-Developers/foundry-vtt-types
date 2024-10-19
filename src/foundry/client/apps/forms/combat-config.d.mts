@@ -29,7 +29,7 @@ declare global {
 
     protected override _updateObject(
       event: Event,
-      formData: ClientSettings.Values["core.combatTrackerConfig"],
+      formData: SettingConfig["core.combatTrackerConfig"],
     ): Promise<unknown>;
 
     override activateListeners(html: JQuery<HTMLElement>): void;
@@ -41,10 +41,10 @@ declare global {
     type Any = CombatTrackerConfig<any>;
 
     interface CombatTrackerConfigData extends FormApplication.FormApplicationData {
-      settings: ClientSettings.Values["core.combatTrackerConfig"];
+      settings: SettingConfig["core.combatTrackerConfig"];
       attributeChoices: ReturnType<(typeof TokenDocument)["getTrackedAttributeChoices"]>;
-      combatTheme: SettingConfig<string>;
-      selectedTheme: ClientSettings.Values["core.combatTheme"];
+      combatTheme: SettingOptions<string>;
+      selectedTheme: SettingConfig["core.combatTheme"];
       user: User;
     }
   }

@@ -76,8 +76,6 @@ declare global {
       | Exclude<BaseAssignmentType, null | undefined>
       | (NullableOption extends true ? null : never)
       | (RequiredOption extends true ? never : undefined);
-
-    type Choices<T> = T[] | Record<string, T> | (() => T[] | Record<string, T>);
   }
 
   interface DataFieldValidationOptions {
@@ -335,6 +333,15 @@ declare abstract class DataField<
 }
 
 declare namespace DataField {
+  /** Any DataField. */
+  type Any = DataField<any, any, any, any>;
+
+  /** A DataField with unknown inner types. */
+  type Unknown = DataField<any, unknown, unknown, unknown>;
+
+  type AssignmentTypeFor<ConcreteDataField extends Any> =
+    ConcreteDataField extends DataField<any, infer AssignmentType, any, any> ? AssignmentType : never;
+
   /** The type of the default options for the {@link DataField} class. */
   interface DefaultOptions {
     required: false;
@@ -351,12 +358,6 @@ declare namespace DataField {
    * @typeParam Options - the options that override the default options
    */
   type MergedOptions<Options extends DataFieldOptions.Any> = SimpleMerge<DefaultOptions, Options>;
-
-  /** Any DataField. */
-  type Any = DataField<any, any, any, any>;
-
-  /** A DataField with unknown inner types. */
-  type Unknown = DataField<any, unknown, unknown, unknown>;
 
   /**
    * A type to decorate the base assignment type to a DataField, based on the options of the field.
@@ -411,7 +412,7 @@ declare namespace DataField {
   type InitializedType<Options extends DataFieldOptions.Any> = DerivedInitializedType<any, MergedOptions<Options>>;
 
   /** An interface for the options of the {@link DataField} clean functions. */
-  export interface CleanOptions {
+  interface CleanOptions {
     /** Whether to perform partial cleaning? */
     partial?: boolean;
 
@@ -425,7 +426,7 @@ declare namespace DataField {
    * An interface for the options of the {@link DataField} validation functions.
    * @typeParam DataField - the type of the DataField, which is the receiver of the validate function
    */
-  export interface ValidationOptions<DataField extends DataField.Any> extends DataValidationOptions {
+  interface ValidationOptions<DataField extends DataField.Any> extends DataValidationOptions {
     source?: AnyObject;
     validate?: (this: DataField, value: unknown, options: ValidationOptions<DataField>) => boolean;
   }
@@ -788,7 +789,7 @@ declare global {
      * returns the array of choices.
      * @defaultValue `undefined`
      */
-    choices?: DataFieldOptions.Choices<number> | undefined;
+    choices?: NumberField.Choices | undefined;
   }
 }
 
@@ -924,6 +925,14 @@ declare namespace NumberField {
     number,
     MergedOptions<Options>
   >;
+
+  type BaseChoices =
+    | {
+        readonly [K: number | `${number}`]: string;
+      }
+    | readonly number[];
+
+  type Choices = BaseChoices | (() => BaseChoices);
 }
 
 declare global {
@@ -946,7 +955,7 @@ declare global {
      * returns the array of choices.
      * @defaultValue `undefined`
      */
-    choices?: DataFieldOptions.Choices<string> | undefined;
+    choices?: StringField.Choices | undefined;
 
     /**
      * @defaultValue `false`
@@ -1098,6 +1107,14 @@ declare namespace StringField {
     ValidChoice<Options>,
     MergedOptions<Options>
   >;
+
+  type BaseChoices =
+    | {
+        readonly [K: string]: string;
+      }
+    | readonly string[];
+
+  type Choices = BaseChoices | (() => BaseChoices);
 }
 
 /**

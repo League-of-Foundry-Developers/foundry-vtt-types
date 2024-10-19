@@ -320,7 +320,7 @@ declare global {
        * }
        * ```
        */
-      sounds: Record<string, CONFIG.Combat.SoundPreset>;
+      sounds: CONFIG.Combat.Sounds;
     };
 
     /**
@@ -2813,6 +2813,13 @@ declare global {
     namespace Dice {
       // eslint-disable-next-line @typescript-eslint/no-empty-interface
       interface RollModes extends Record<foundry.CONST.DICE_ROLL_MODES, string> {}
+    }
+
+    namespace Combat {
+      interface Sounds {
+        epic: CONFIG.Combat.SoundPreset;
+        mc: CONFIG.Combat.SoundPreset;
+      }
     }
   }
 
