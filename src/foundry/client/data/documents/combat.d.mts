@@ -86,7 +86,7 @@ declare global {
 
     /** Return the object of settings which modify the Combat Tracker behavior */
     // Type is copied here to avoid recursion issue
-    get settings(): ClientSettings.Values[`core.${(typeof Combat)["CONFIG_SETTING"]}`];
+    get settings(): SettingConfig[`core.${(typeof Combat)["CONFIG_SETTING"]}`];
 
     /** Has this combat encounter been started? */
     get started(): boolean;

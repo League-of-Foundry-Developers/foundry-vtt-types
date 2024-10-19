@@ -1,5 +1,8 @@
-import type { AnyArray, AnyObject, DeepPartial, EmptyObject, InexactPartial } from "../../../types/utils.d.mts";
+import type { ConformRecord } from "../../../types/helperTypes.d.mts";
+import type { AnyArray, AnyObject, InexactPartial } from "../../../types/utils.d.mts";
+import type DataModel from "../../common/abstract/data.d.mts";
 import type Document from "../../common/abstract/document.d.mts";
+import type { DataField } from "../../common/data/fields.d.mts";
 
 declare global {
   /**
@@ -42,11 +45,8 @@ declare global {
      * Register a new game setting under this setting scope
      *
      * @param namespace - The namespace under which the setting is registered
-     * @param key       - The key name for the setting under the namespace module
+     * @param key       - The key name for the setting under the namespace
      * @param data      - Configuration for setting data
-     * @typeParam N     - The namespace under which the setting is registered, as a type
-     * @typeParam K     - The key name for the setting under the namespace module, as a type
-     * @typeParam T     - The type of the setting value
      *
      * @example Register a client setting
      * ```typescript
@@ -55,6 +55,7 @@ declare global {
      *   hint: "A description of the registered setting and its behavior.",
      *   scope: "client",     // This specifies a client-stored setting
      *   config: true,        // This specifies that the setting appears in the configuration view
+     *   requiresReload: true // This will prompt the user to reload the application for the setting to take effect.
      *   type: String,
      *   choices: {           // If choices are defined, the resulting setting will be a select menu
      *     "a": "Option A",
@@ -74,12 +75,9 @@ declare global {
      *   hint: "A description of the registered setting and its behavior.",
      *   scope: "world",      // This specifies a world-level setting
      *   config: true,        // This specifies that the setting appears in the configuration view
-     *   type: Number,
-     *   range: {             // If range is specified, the resulting setting will be a range slider
-     *     min: 0,
-     *     max: 100,
-     *     step: 10
-     *   }
+     *   requiresReload: true // This will prompt the GM to have all clients reload the application for the setting to
+     *                        // take effect.
+     *   type: new foundry.fields.NumberField({nullable: false, min: 0, max: 100, step: 10}),
      *   default: 50,         // The default value for the setting
      *   onChange: value => { // A callback function which triggers when the setting is changed
      *     console.log(value)
@@ -87,12 +85,12 @@ declare global {
      * });
      * ```
      */
-    register<N extends string, K extends string, T>(
+    register<N extends ClientSettings.Namespace, K extends ClientSettings.Key, T extends ClientSettings.Type>(
       namespace: N,
       key: K,
-      data: ClientSettings.Values[`${N}.${K}`] extends string | number | boolean | AnyArray | AnyObject | null
-        ? ClientSettings.PartialSettingConfig<ClientSettings.Values[`${N}.${K}`]>
-        : ClientSettings.PartialSettingConfig<T>,
+      data: ClientSettings.Type extends T
+        ? ClientSettings.RegisterSetting<_SettingConfig[`${N}.${K}`]>
+        : ClientSettings.RegisterSetting<NoInfer<T>>,
     ): void;
 
     /**
@@ -116,11 +114,7 @@ declare global {
      * });
      * ```
      */
-    registerMenu<N extends string, K extends string>(
-      namespace: N,
-      key: K,
-      data: ClientSettings.PartialSettingSubmenuConfig,
-    ): void;
+    registerMenu<N extends string, K extends string>(namespace: N, key: K, data: ClientSettings.RegisterSubmenu): void;
 
     /**
      * Get the value of a game setting for a certain namespace and setting key
@@ -135,7 +129,10 @@ declare global {
      * game.settings.get("myModule", "myClientSetting");
      * ```
      */
-    get<N extends string, K extends string>(namespace: N, key: K): ClientSettings.Values[`${N}.${K}`];
+    get<N extends ClientSettings.Namespace, K extends ClientSettings.Key>(
+      namespace: N,
+      key: K,
+    ): ClientSettings.SettingInitializedType<N, K>;
 
     /**
      * Set the value of a game setting for a certain namespace and setting key
@@ -155,61 +152,108 @@ declare global {
      * game.settings.set("myModule", "myClientSetting", "b");
      * ```
      */
-    set<N extends string, K extends string, V extends ClientSettings.Values[`${N}.${K}`]>(
+    set<N extends ClientSettings.Namespace, K extends ClientSettings.Key>(
       namespace: N,
       key: K,
-      value: V,
+      value: ClientSettings.SettingAssignmentType<N, K>,
       options?: Document.OnUpsertOptions<"Setting">,
-    ): Promise<V>;
+    ): Promise<ClientSettings.SettingInitializedType<N, K>>;
   }
 
   namespace ClientSettings {
-    type PartialSettingConfig<T = unknown> = InexactPartial<Omit<SettingConfig<T>, "key" | "namespace">>;
+    type Namespace = GetNamespaces<keyof _SettingConfig>;
+    type Key = GetKeys<keyof _SettingConfig>;
 
-    type PartialSettingSubmenuConfig = Omit<SettingSubmenuConfig, "key" | "namespace">;
+    /**
+     * A compile type is a type for a setting that only exists at compile time.
+     * For example `string` does not correspond to a real runtime value like `String` does.
+     */
+    type TypeScriptType = string | number | boolean | symbol | bigint | AnyArray | AnyObject;
+    type RuntimeType = DataField.Any | DataModel.Any | SettingFunction | SettingConstructor;
 
-    interface Values {
-      "core.animateRollTable": boolean;
-      "core.chatBubbles": boolean;
-      "core.chatBubblesPan": boolean;
-      "core.combatTrackerConfig": { resource: string; skipDefeated: boolean } | EmptyObject;
-      "core.compendiumConfiguration": Partial<Record<string, CompendiumCollection.Configuration>>;
-      "core.coneTemplateType": "round" | "flat";
-      "core.defaultDrawingConfig": foundry.documents.BaseDrawing["_source"] | EmptyObject;
-      "core.defaultToken": DeepPartial<foundry.documents.BaseToken>;
-      "core.disableResolutionScaling": boolean;
-      "core.fontSize": number;
-      "core.fpsMeter": boolean;
-      "core.globalAmbientVolume": number;
-      "core.globalInterfaceVolume": number;
-      "core.globalPlaylistVolume": number;
-      "core.keybindings": Record<string, KeybindingActionBinding[]>;
-      "core.language": string;
-      "core.leftClickRelease": boolean;
-      "core.lightAnimation": boolean;
-      "core.maxFPS": number;
-      "core.mipmap": boolean;
-      "core.moduleConfiguration": Record<string, boolean>;
-      "core.noCanvas": boolean;
-      "core.notesDisplayToggle": boolean;
-      "core.nue.shownTips": boolean;
-      "core.performanceMode": boolean;
-      "core.permissions": Game.Permissions;
-      "core.playlist.playingLocation": "top" | "bottom";
-      "core.rollMode": keyof CONFIG.Dice.RollModes;
-      "core.rtcClientSettings": typeof AVSettings.DEFAULT_CLIENT_SETTINGS;
-      "core.rtcWorldSettings": typeof AVSettings.DEFAULT_WORLD_SETTINGS;
-      "core.scrollingStatusText": boolean;
-      "core.sheetClasses": {
-        [Key in Document.Type as Document.SubTypesOf<Key> extends string ? Key : never]?: Record<
-          Document.SubTypesOf<Key> & string,
-          string
-        >;
-      };
-      "core.time": number;
-      "core.tokenDragPreview": boolean;
-      "core.visionAnimation": boolean;
-      [key: string]: unknown;
-    }
+    type Type = TypeScriptType | RuntimeType;
+
+    type ToRuntimeType<T extends Type> =
+      | (T extends RuntimeType ? T : never)
+      | (T extends string ? typeof String : never)
+      | (T extends number ? typeof Number : never)
+      | (T extends boolean ? typeof Boolean : never)
+      | (T extends symbol ? typeof Symbol : never)
+      | (T extends bigint ? typeof BigInt : never)
+      | (T extends readonly (infer V)[] ? typeof Array<V> : never)
+      | (T extends AnyObject ? typeof Object : never);
+
+    type SettingAssignmentType<N extends Namespace, K extends Key> = ToSettingAssignmentType<ConfiguredType<N, K>>;
+    type ToSettingAssignmentType<T extends Type> = ReplaceUndefinedWithNull<
+      | SettingType<T>
+      // TODO(LukeAbby): The `fromSource` function is called with `strict` which changes how fallback behaviour works. See `ClientSettings#set`
+      | (T extends DataModel.AnyConstructor ? DataModel.ConstructorDataFor<InstanceType<T>> : never)
+    >;
+
+    type SettingInitializedType<N extends Namespace, K extends Key> = ToSettingInitializedType<ConfiguredType<N, K>>;
+    type ToSettingInitializedType<T extends Type> = ReplaceUndefinedWithNull<
+      SettingType<T> | (T extends DataModel.Any ? T : never)
+    >;
+
+    type RegisterSetting<T extends Type = (value: unknown) => unknown> = InexactPartial<
+      Omit<SettingOptions<T>, "key" | "namespace">
+    >;
+
+    type RegisterSubmenu = Omit<SettingSubmenuConfig, "key" | "namespace">;
+
+    /**
+     * @deprecated - {@link SettingConfig | `SettingConfig`}
+     */
+    // eslint-disable-next-line @typescript-eslint/no-empty-interface
+    interface Values extends SettingConfig {}
   }
 }
+
+type SettingFunction = (value: never) => unknown;
+type SettingConstructor = new (value: never) => unknown;
+
+// Matches what's in `Setting#PRIMITIVE_TYPES`.
+// Foundry itself uses this nomenclature despite the fact that it's a misnomer.
+type PRIMITIVE_TYPES = readonly [
+  typeof String,
+  typeof Number,
+  typeof Boolean,
+  typeof Array,
+  typeof Symbol,
+  typeof BigInt,
+];
+
+// A type can be both a constructor and a function at once.
+// Foundry prioritizes the constructor over the function unless it's in `Setting#PRIMITIVE_TYPES`.
+type ConstructorToSettingType<T extends SettingConstructor> = T extends PRIMITIVE_TYPES[number]
+  ? PrimitiveConstructorToSettingType<T>
+  : InstanceType<T>;
+
+// In theory this is just the `ReturnType<T>`.
+// However the function end of `Array` returns `any[]` while `Object` returns `any`.
+// To increase safety they're special cased here.
+type PrimitiveConstructorToSettingType<T extends PRIMITIVE_TYPES[number]> = T extends typeof Array
+  ? AnyArray
+  : T extends typeof Object
+    ? AnyObject
+    : ReturnType<T>;
+
+type ConfiguredType<N extends ClientSettings.Namespace, K extends ClientSettings.Key> = _SettingConfig[`${N}.${K}`];
+
+type SettingType<T extends ClientSettings.Type> =
+  // Note(LukeAbby): This isn't written as `T extends ClientSettings.TypeScriptType ? T : never` because then types like `DataField.Any` would be matched.
+  | (T extends ClientSettings.RuntimeType ? never : T)
+  // TODO(LukeAbby): The `validate` function is called with `strict` which changes how fallback behaviour works. See `ClientSettings#set`
+  | (T extends DataField.Any ? DataField.AssignmentTypeFor<T> : never)
+  | (T extends SettingConstructor ? ConstructorToSettingType<T> : T extends SettingFunction ? ReturnType<T> : never);
+
+type ReplaceUndefinedWithNull<T> = T extends undefined ? null : T;
+
+type GetNamespaces<SettingPath extends string> = SettingPath extends `${infer Scope}.${string}` ? Scope : never;
+type GetKeys<SettingPath extends string> = SettingPath extends `${string}.${infer Name}` ? Name : never;
+
+type _SettingConfig = ConformRecord<
+  // Refers to the deprecated interface so that merging works both ways.
+  ClientSettings.Values,
+  ClientSettings.Type
+>;

@@ -1103,8 +1103,10 @@ declare namespace Document {
 
   type FlagGetKey<T, K extends PropertyKey> = K extends keyof T ? T[K] : never;
 
-  // Note(LukeAbby): It's very important for `GetFlag` to be covariant over `ConcreteDocument`.
+  // Note(LukeAbby): It's at times been very important for `GetFlag` to be covariant over `ConcreteDocument`.
   // If it isn't then issues arise where the `Document` type ends up becoming invaraint.
+  // Currently it is actually contravariant over `ConcreteDocument` and this may cause issues (because of the usage of `keyof`).
+  // Unfortunately it's not easy to avoid because the typical `GetKey` trick has issues between `never`, not defined at all, and `unknown` etc.
   type GetFlag<ConcreteDocument extends Internal.Instance.Any, S extends string, K extends string> = FlagGetKey<
     FlagGetKey<Document.FlagsFor<ConcreteDocument>, S>,
     K

@@ -1,4 +1,7 @@
-export {};
+import type Document from "../foundry/common/abstract/document.d.mts";
+import type { fields } from "../foundry/common/data/module.d.mts";
+import type { InterfaceToObject, MaybeEmpty, MustConform } from "./helperTypes.d.mts";
+import type { DeepPartial } from "./utils.d.mts";
 
 declare global {
   /**
@@ -226,15 +229,103 @@ declare global {
    */
   // eslint-disable-next-line @typescript-eslint/no-empty-interface, @typescript-eslint/no-empty-object-type
   interface RequiredModules {}
+
+  interface SettingConfig {
+    "core.animateRollTable": boolean;
+    "core.chatBubbles": fields.BooleanField<{ initial: true }>;
+    "core.chatBubblesPan": fields.BooleanField<{ initial: true }>;
+    "core.combatTrackerConfig": MaybeEmpty<{ resource: string; skipDefeated: boolean }>;
+    "core.compendiumConfiguration": Partial<Record<string, CompendiumCollection.Configuration>>;
+    "core.coneTemplateType": "round" | "flat";
+    "core.colorSchema": fields.StringField<{
+      required: true;
+      blank: true;
+      initial: "";
+      choices: {
+        "": "SETTINGS.ColorSchemeDefault";
+        dark: "SETTINGS.ColorSchemeDark";
+        light: "SETTINGS.ColorSchemeLight";
+      };
+    }>;
+    "core.combatTheme": fields.StringField<{
+      required: true;
+      blank: false;
+      initial: "none";
+      choices: () => {
+        [K in keyof CONFIG.Combat.Sounds]: string;
+      };
+    }>;
+    "core.defaultDrawingConfig": MaybeEmpty<foundry.documents.BaseDrawing["_source"]>;
+    "core.defaultToken": DeepPartial<foundry.documents.BaseToken>;
+    "core.disableResolutionScaling": boolean;
+    "core.fontSize": number;
+    "core.fpsMeter": boolean;
+    "core.globalAmbientVolume": number;
+    "core.globalInterfaceVolume": number;
+    "core.globalPlaylistVolume": number;
+    "core.keybindings": Record<string, KeybindingActionBinding[]>;
+    "core.language": fields.StringField<{
+      required: true;
+      blank: false;
+      initial: NonNullable<typeof game.i18n>["lang"];
+      choices: typeof CONFIG.supportedLanguages;
+    }>;
+    "core.leftClickRelease": fields.BooleanField<{ initial: true }>;
+    "core.lightAnimation": boolean;
+    "core.maxFPS": number;
+    "core.mipmap": boolean;
+    "core.moduleConfiguration": Record<string, boolean>;
+    "core.noCanvas": fields.BooleanField<{ initial: false }>;
+    "core.notesDisplayToggle": boolean;
+    "core.nue.shownTips": boolean;
+    "core.performanceMode": fields.NumberField<{
+      required: true;
+      nullable: true;
+      initial: null;
+      choices: {
+        [CONST.CANVAS_PERFORMANCE_MODES.LOW]: "SETTINGS.PerformanceModeLow";
+        [CONST.CANVAS_PERFORMANCE_MODES.MED]: "SETTINGS.PerformanceModeMed";
+        [CONST.CANVAS_PERFORMANCE_MODES.HIGH]: "SETTINGS.PerformanceModeHigh";
+        [CONST.CANVAS_PERFORMANCE_MODES.MAX]: "SETTINGS.PerformanceModeMax";
+      };
+    }>;
+    "core.permissions": Game.Permissions;
+    "core.pixelRatioResolutionScaling": fields.BooleanField<{ initial: true }>;
+    "core.playlist.playingLocation": "top" | "bottom";
+    "core.rollMode": fields.StringField<{
+      required: true;
+      blank: false;
+      initial: typeof CONST.DICE_ROLL_MODES.PUBLIC;
+      choices: typeof CONFIG.Dice.rollModes;
+    }>;
+    "core.rtcClientSettings": typeof AVSettings.DEFAULT_CLIENT_SETTINGS;
+    "core.rtcWorldSettings": typeof AVSettings.DEFAULT_WORLD_SETTINGS;
+    "core.scrollingStatusText": fields.BooleanField<{ initial: true }>;
+    "core.sheetClasses": {
+      [Key in Document.Type as Document.SubTypesOf<Key> extends string ? Key : never]?: Record<
+        Document.SubTypesOf<Key> & string,
+        string
+      >;
+    };
+    "core.time": fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
+    "core.tokenDragPreview": boolean;
+    "core.visionAnimation": boolean;
+  }
 }
 
 type ValidDataModel = {
-  [DocumentName in foundry.abstract.Document.SystemType]?: {
+  readonly [DocumentName in foundry.abstract.Document.SystemType]?: {
     // Recommended to be a TypeDataModel subclass but DataModel is also technically valid.
-    [DocumentType in string]?: foundry.abstract.DataModel.Any;
+    readonly [DocumentType in string]?: foundry.abstract.DataModel.Any;
   };
 };
 
 type MustBeValid<T extends ValidDataModel> = T;
 
-type _TestValidDataModelConfig = MustBeValid<DataModelConfig>;
+type _TestValidDataModelConfig = MustConform<DataModelConfig, ValidDataModel>;
+
+interface ValidSettingConfig {
+  readonly [K: string]: ClientSettings.Type;
+}
+
+type _TestValidSettingConfig = MustConform<InterfaceToObject<SettingConfig>, ValidSettingConfig>;

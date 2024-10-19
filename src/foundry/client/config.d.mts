@@ -1,5 +1,4 @@
 import type { GetKey, HandleEmptyObject, InterfaceToObject } from "../../types/helperTypes.d.mts";
-import type { PropertyTypeOrFallback } from "../../types/utils.d.mts";
 import type * as CONST from "../common/constants.d.mts";
 import type { StatusEffect } from "./data/documents/token.d.mts";
 import type { DataModel, Document } from "../common/abstract/module.d.mts";
@@ -288,6 +287,7 @@ declare global {
         hand: string;
         /** @defaultValue `"fa-duotone fa-layer-group"` */
         pile: string;
+
         [x: string]: string;
       };
     };
@@ -374,7 +374,7 @@ declare global {
        * }
        * ```
        */
-      sounds: Record<string, CONFIG.Combat.SoundPreset>;
+      sounds: CONFIG.Combat.Sounds;
     };
 
     /**
@@ -2538,7 +2538,7 @@ declare global {
      */
     WebRTC: {
       /** @defaultValue `SimplePeerAVClient` */
-      clientClass: PropertyTypeOrFallback<WebRTCConfig, "clientClass", typeof SimplePeerAVClient>;
+      clientClass: GetKey<WebRTCConfig, "clientClass", typeof SimplePeerAVClient>;
 
       /** @defaultValue `50` */
       detectPeerVolumeInterval: number;
@@ -2798,6 +2798,13 @@ declare global {
     namespace Dice {
       // eslint-disable-next-line @typescript-eslint/no-empty-object-type
       interface RollModes extends Record<foundry.CONST.DICE_ROLL_MODES, string> {}
+    }
+
+    namespace Combat {
+      interface Sounds {
+        epic: CONFIG.Combat.SoundPreset;
+        mc: CONFIG.Combat.SoundPreset;
+      }
     }
   }
 

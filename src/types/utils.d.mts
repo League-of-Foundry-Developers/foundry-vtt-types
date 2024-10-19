@@ -133,6 +133,9 @@ export type IsObject<T> = T extends { readonly [K: string]: any }
  */
 export type SimpleMerge<Target, Override> = Omit<Target, keyof Override> & Override;
 
+/**
+ * @deprecated - {@link GetKey | `GetKey`}
+ */
 export type PropertyTypeOrFallback<T, Key extends string, Fallback> = Key extends keyof T ? T[Key] : Fallback;
 
 /**

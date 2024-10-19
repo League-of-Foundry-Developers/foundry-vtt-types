@@ -1,7 +1,7 @@
 import type { DatabaseOperationMap, Operation } from "../foundry/common/abstract/document.d.mts";
 import type Document from "../foundry/common/abstract/document.d.mts";
 import type { ConfiguredDocuments } from "./configuredDocuments.d.mts";
-import type { EmptyObject } from "./utils.d.mts";
+import type { AnyObject, EmptyObject } from "./utils.d.mts";
 
 export type ModuleRequiredOrOptional<Name extends string> = Name extends keyof RequiredModules ? never : undefined;
 
@@ -73,8 +73,9 @@ export type MustConform<T extends ConformTo, ConformTo> = T;
  */
 export type InterfaceToObject<T extends object> = {
   // Mapped types are no-ops on most types (even primitives like string) but for
-  // functions they strip the function signatures and if there's no additional
-  // properties returns `{}`.
+  // functions, classes, and arrays they convert them to "proper" objects by
+  // stripping constructors/function signatures. One side effect is a type like
+  // `() => number` will result in `{}`.
   [K in keyof T]: T[K];
 };
 
@@ -201,6 +202,12 @@ export type LayerClass<T extends Document.AnyConstructor> = GetKey<
  * Actual document types that go in folders
  */
 export type FolderDocumentTypes = Exclude<foundry.CONST.FOLDER_DOCUMENT_TYPES, "Compendium">;
+
+export type MaybeEmpty<T extends AnyObject> =
+  | T
+  | {
+      [K in keyof T]?: never;
+    };
 
 /**
  * @deprecated {@link Document.SubTypesOf | `Document.SubTypesOf`}.

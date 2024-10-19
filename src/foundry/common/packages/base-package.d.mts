@@ -7,14 +7,37 @@ import type { DataModelValidationFailure } from "../data/validation-failure.d.mt
 import type { BaseFolder } from "../documents/_module.d.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
+declare const __BasePackageBrand: unique symbol;
+
+declare const __PackageSchema: unique symbol;
+
 declare namespace BasePackage {
-  interface optionalString {
+  type Any = BasePackage<any>;
+
+  type AnyConstructor = typeof AnyBasePackage;
+
+  // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
+  namespace Internal {
+    type Constructor = (abstract new (arg0: never, ...args: never[]) => Instance.Any) & {
+      [__BasePackageBrand]: never;
+    };
+
+    interface Instance<PackageSchema extends Omit<BasePackage.Schema, "version"> = BasePackage.Schema> {
+      [__PackageSchema]: PackageSchema;
+    }
+
+    namespace Instance {
+      type Any = Instance<any>;
+    }
+  }
+
+  interface OptionalString {
     required: false;
     blank: false;
     initial: undefined;
   }
 
-  export interface PackageAuthorSchema extends DataSchema {
+  interface PackageAuthorSchema extends DataSchema {
     /**
      * The author name
      */
@@ -23,31 +46,31 @@ declare namespace BasePackage {
     /**
      * The author email address
      */
-    email: fields.StringField<optionalString>;
+    email: fields.StringField<OptionalString>;
 
     /**
      * A website url for the author
      */
-    url: fields.StringField<optionalString>;
+    url: fields.StringField<OptionalString>;
 
     /**
      * A Discord username for the author
      */
-    discord: fields.StringField<optionalString>;
+    discord: fields.StringField<OptionalString>;
 
     flags: fields.ObjectField;
   }
 
-  export interface PackageMediaSchema extends DataSchema {
-    type: fields.StringField<optionalString>;
+  interface PackageMediaSchema extends DataSchema {
+    type: fields.StringField<OptionalString>;
 
-    url: fields.StringField<optionalString>;
+    url: fields.StringField<OptionalString>;
 
-    caption: fields.StringField<optionalString>;
+    caption: fields.StringField<OptionalString>;
 
     loop: fields.BooleanField<{ required: false; blank: false; initial: false }>;
 
-    thumbnail: fields.StringField<optionalString>;
+    thumbnail: fields.StringField<OptionalString>;
 
     flags: fields.ObjectField;
   }
@@ -57,7 +80,7 @@ declare namespace BasePackage {
     keyof typeof foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | undefined
   >;
 
-  export interface PackageCompendiumSchema extends DataSchema {
+  interface PackageCompendiumSchema extends DataSchema {
     /**
      * The canonical compendium name. This should contain no spaces or special characters
      */
@@ -73,7 +96,7 @@ declare namespace BasePackage {
      */
     label: fields.StringField<{ required: true; blank: false }>;
 
-    banner: fields.StringField<optionalString>;
+    banner: fields.StringField<OptionalString>;
 
     /**
      * The local relative path to the compendium source directory. The filename should match the name attribute
@@ -93,14 +116,14 @@ declare namespace BasePackage {
     /**
      * Denote that this compendium pack requires a specific game system to function properly
      */
-    system: fields.StringField<optionalString>;
+    system: fields.StringField<OptionalString>;
 
     ownership: CompendiumOwnershipField;
 
     flags: fields.ObjectField;
   }
 
-  export interface PackageLanguageSchema extends DataSchema {
+  interface PackageLanguageSchema extends DataSchema {
     /**
      * A string language code which is validated by Intl.getCanonicalLocales
      */
@@ -125,17 +148,17 @@ declare namespace BasePackage {
     /**
      * Only apply this set of translations when a specific system is being used
      */
-    system: fields.StringField<optionalString>;
+    system: fields.StringField<OptionalString>;
 
     /**
      * Only apply this set of translations when a specific module is active
      */
-    module: fields.StringField<optionalString>;
+    module: fields.StringField<OptionalString>;
 
     flags: fields.ObjectField;
   }
 
-  export interface PackageCompatibilitySchema extends DataSchema {
+  interface PackageCompatibilitySchema extends DataSchema {
     /**
      * The Package will not function before this version
      */
@@ -152,7 +175,7 @@ declare namespace BasePackage {
     maximum: fields.StringField<{ required: false; blank: false; initial: undefined }>;
   }
 
-  export interface PackageRelationshipsSchema extends DataSchema {
+  interface PackageRelationshipsSchema extends DataSchema {
     /**
      * Systems that this Package supports
      */
@@ -173,8 +196,7 @@ declare namespace BasePackage {
     flags: fields.ObjectField;
   }
 
-  export interface RelatedPackageSchema<PackageType extends foundry.CONST.PACKAGE_TYPES = foundry.CONST.PACKAGE_TYPES>
-    extends DataSchema {
+  interface RelatedPackageSchema<PackageType extends foundry.CONST.PACKAGE_TYPES = foundry.CONST.PACKAGE_TYPES> extends DataSchema {
     /**
      * The id of the related package
      */
@@ -252,27 +274,27 @@ declare namespace BasePackage {
     /**
      * A web url where more details about the package may be found
      */
-    url: fields.StringField<optionalString>;
+    url: fields.StringField<OptionalString>;
 
     /**
      * A web url or relative file path where license details may be found
      */
-    license: fields.StringField<optionalString>;
+    license: fields.StringField<OptionalString>;
 
     /**
      * A web url or relative file path where readme instructions may be found
      */
-    readme: fields.StringField<optionalString>;
+    readme: fields.StringField<OptionalString>;
 
     /**
      *  A web url where bug reports may be submitted and tracked
      */
-    bugs: fields.StringField<optionalString>;
+    bugs: fields.StringField<OptionalString>;
 
     /**
      * A web url where notes detailing package updates are available
      */
-    changelog: fields.StringField<optionalString>;
+    changelog: fields.StringField<OptionalString>;
 
     flags: fields.ObjectField;
 
@@ -447,7 +469,9 @@ export class PackageCompendiumPacks<
 
   override initialize(
     value: fields.ArrayField.PersistedElementType<ElementFieldType>[],
-    model: BasePackage,
+    // In Foundry itself, this field is only used in `BasePackage`, however it should be able to accept any model.
+    // NOTE(LukeAbby): This also has been seen in a circularity `Type of property 'packs' circularly references itself in mapped type ...`.
+    model: DataModel.Any,
   ):
     | Set<fields.ArrayField.InitializedElementType<ElementFieldType>>
     | (() => Set<fields.ArrayField.InitializedElementType<ElementFieldType>> | null);
@@ -471,6 +495,10 @@ declare class BasePackage<
   // BaseWorld alters the definition of `version`
   PackageSchema extends Omit<BasePackage.Schema, "version"> = BasePackage.Schema,
 > extends DataModel<PackageSchema, null> {
+  static [__BasePackageBrand]: never;
+
+  [__PackageSchema]: PackageSchema;
+
   /**
    * An availability code in PACKAGE_AVAILABILITY_CODES which defines whether this package can be used.
    */
@@ -638,6 +666,10 @@ declare class BasePackage<
       strict: boolean;
     },
   ): Promise<never>;
+}
+
+declare abstract class AnyBasePackage extends foundry.packages.BasePackage<any> {
+  constructor(arg0: never, ...args: never[]);
 }
 
 export default BasePackage;

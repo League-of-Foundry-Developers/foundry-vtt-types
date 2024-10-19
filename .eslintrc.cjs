@@ -21,6 +21,7 @@ module.exports = {
     // When array types get complex enough `Array<...>` is nicer looking than `(...)[]`.
     "@typescript-eslint/array-type": "off",
     "@typescript-eslint/ban-types": "off",
+    "@typescript-eslint/consistent-indexed-object-style": "off",
     // `allowSingleExtends` allows the pattern of `interface X extends _X {}`.
     // This is done as a performance optimization or simply to display a different name in intellisense.
     "@typescript-eslint/no-empty-interface": ["error", { allowSingleExtends: true }],

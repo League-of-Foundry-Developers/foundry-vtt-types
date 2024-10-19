@@ -1,4 +1,5 @@
-import type { PropertyTypeOrFallback, ValueOf } from "../../../types/utils.d.mts";
+import type { GetKey } from "../../../types/helperTypes.d.mts";
+import type { ValueOf } from "../../../types/utils.d.mts";
 
 declare global {
   interface AVSettingsData {
@@ -286,7 +287,7 @@ declare global {
       ACTIVITY: "activity";
       PTT: "ptt";
     }
-    type VoiceModes = PropertyTypeOrFallback<AVSettings.Overrides, "VoiceModes", DefaultVoiceModes>;
+    type VoiceModes = GetKey<AVSettings.Overrides, "VoiceModes", DefaultVoiceModes>;
     type VOICE_MODES = ValueOf<VoiceModes>;
 
     interface DefaultNamePlateModes {
@@ -295,7 +296,7 @@ declare global {
       PLAYER_ONLY: 2;
       CHAR_ONLY: 3;
     }
-    type NameplateModes = PropertyTypeOrFallback<AVSettings.Overrides, "NameplateModes", DefaultNamePlateModes>;
+    type NameplateModes = GetKey<AVSettings.Overrides, "NameplateModes", DefaultNamePlateModes>;
     type NAMEPLATE_MODES = ValueOf<NameplateModes>;
 
     interface DefaultDockPositions {
@@ -304,7 +305,7 @@ declare global {
       BOTTOM: "bottom";
       LEFT: "left";
     }
-    type DockPositions = PropertyTypeOrFallback<AVSettings.Overrides, "DockPositions", DefaultDockPositions>;
+    type DockPositions = GetKey<AVSettings.Overrides, "DockPositions", DefaultDockPositions>;
     type DOCK_POSITIONS = ValueOf<DockPositions>;
 
     type AV_MODES = ValueOf<typeof AVSettings.AV_MODES>;

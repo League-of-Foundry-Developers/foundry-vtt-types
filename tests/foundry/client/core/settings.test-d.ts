@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { EmptyObject } from "../../../../src/types/utils.d.mts";
+import type { MaybeEmpty } from "../../../../src/types/helperTypes.d.mts";
 
 const clientSettings = new ClientSettings([]);
 
@@ -10,6 +10,8 @@ declare global {
       "foo.bar": boolean;
       "some.numberSetting": number;
       "some.stringSetting": string;
+
+      "data-model.setting": typeof Actor;
     }
   }
 }
@@ -32,7 +34,8 @@ clientSettings.register("foo", "bar", {
 clientSettings.set("foo", "bar", false);
 expectTypeOf(clientSettings.get("foo", "bar")).toEqualTypeOf<boolean>();
 
-expectTypeOf(clientSettings.get("foo", "baz")).toEqualTypeOf<unknown>();
+// @ts-expect-error - Expect an error because the setting wasn't registered.
+clientSettings.get("foo", "baz");
 
 clientSettings.register("some", "stringSetting", {
   scope: "world",
@@ -65,14 +68,33 @@ clientSettings.register("some", "numberSetting", {
 clientSettings.register("some", "stringSetting", {
   scope: "world",
   type: String,
+  filePicker: "audio",
 });
+
+clientSettings.register("data-model", "setting", {
+  scope: "client",
+  type: Actor,
+});
+
+expectTypeOf(clientSettings.set("data-model", "setting", { name: "Test Actor" })).toEqualTypeOf<Promise<Actor>>();
+expectTypeOf(clientSettings.get("data-model", "setting")).toEqualTypeOf<Actor>();
+
+clientSettings.register("data-model", "setting", {
+  scope: "client",
+  type: Actor,
+});
+
+expectTypeOf(clientSettings.set("data-model", "setting", { name: "Test Actor" })).toEqualTypeOf<Promise<Actor>>();
+expectTypeOf(clientSettings.get("data-model", "setting")).toEqualTypeOf<Actor>();
 
 // core settings
 
 expectTypeOf(clientSettings.get("core", "combatTrackerConfig")).toEqualTypeOf<
-  { resource: string; skipDefeated: boolean } | EmptyObject
+  MaybeEmpty<{ resource: string; skipDefeated: boolean }>
 >();
 expectTypeOf(clientSettings.get("core", "compendiumConfiguration")).toEqualTypeOf<
   Partial<Record<string, CompendiumCollection.Configuration>>
 >();
-expectTypeOf(clientSettings.get("core", "rollMode")).toEqualTypeOf<keyof CONFIG.Dice.RollModes>();
+
+type RollMode = keyof typeof CONFIG.Dice.rollModes;
+expectTypeOf(clientSettings.get("core", "rollMode")).toEqualTypeOf<RollMode | null>();
