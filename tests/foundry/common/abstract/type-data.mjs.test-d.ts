@@ -1,9 +1,10 @@
 import { expectTypeOf } from "vitest";
 import type { fields } from "../../../../src/foundry/common/data/module.d.mts";
 import type BaseJournalEntryPage from "../../../../src/foundry/common/documents/journal-entry-page.d.mts";
-import type { TypeDataModel } from "../../../../src/foundry/common/abstract/type-data.d.mts";
 import type BaseUser from "../../../../src/foundry/common/documents/user.d.mts";
-import type { DeepPartial } from "../../../../src/types/utils.d.mts";
+import type { DeepPartial, EmptyObject } from "../../../../src/types/utils.d.mts";
+
+import TypeDataModel = foundry.abstract.TypeDataModel;
 
 /* attempting to use the example as a test */
 
@@ -24,20 +25,15 @@ type DerivedQuestData = { totalSteps: number };
 
 // Test With specified Base and DerivedData.
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-class QuestModel extends foundry.abstract.TypeDataModel<
-  QuestSchema,
-  BaseJournalEntryPage,
-  BaseQuestData,
-  DerivedQuestData
-> {
+class QuestModel extends TypeDataModel<QuestSchema, BaseJournalEntryPage, BaseQuestData, DerivedQuestData> {
   otherMethod() {}
 
-  prepareBaseData(this: TypeDataModel.PrepareBaseDataThis<this>): void {
+  override prepareBaseData(this: TypeDataModel.PrepareBaseDataThis<this>): void {
     this.otherMethod();
 
     // From schema
     expectTypeOf(this.steps).toEqualTypeOf<string[]>;
-    expectTypeOf(this.description).toEqualTypeOf<HTMLElement | undefined>;
+    expectTypeOf(this.description).toEqualTypeOf<Partial<HTMLElement> | undefined>;
 
     // @ts-expect-error Derived Data is not available yet
     this.totalSteps + 1;
@@ -49,11 +45,11 @@ class QuestModel extends foundry.abstract.TypeDataModel<
     this.prepareDerivedData();
   }
 
-  prepareDerivedData(this: TypeDataModel.PrepareDerivedDataThis<this>): void {
+  override prepareDerivedData(this: TypeDataModel.PrepareDerivedDataThis<this>): void {
     this.otherMethod();
 
     // From JournalEntryPage
-    expectTypeOf(this.flags).toEqualTypeOf<Record<string, unknown>>;
+    expectTypeOf(this.flags).toEqualTypeOf<EmptyObject>;
 
     // From QuestSchema
     expectTypeOf(this.steps).toEqualTypeOf<string[]>;
@@ -73,7 +69,7 @@ class QuestModel extends foundry.abstract.TypeDataModel<
     this.prepareDerivedData();
   }
 
-  protected async _preCreate(
+  protected override async _preCreate(
     data: TypeDataModel.ParentAssignmentType<this>,
     options: TypeDataModel.TypeDataModelModificationOptions,
     user: BaseUser,
@@ -84,7 +80,7 @@ class QuestModel extends foundry.abstract.TypeDataModel<
     expectTypeOf(user).toEqualTypeOf<BaseUser>();
   }
 
-  protected async _preUpdate(
+  protected override async _preUpdate(
     data: DeepPartial<TypeDataModel.ParentAssignmentType<this>>,
     options: TypeDataModel.TypeDataModelModificationOptions,
     userId: string,
@@ -99,9 +95,9 @@ class QuestModel extends foundry.abstract.TypeDataModel<
 /* Test with default BaseData and DerivedData */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 class QuestModel2 extends foundry.abstract.TypeDataModel<QuestSchema, BaseJournalEntryPage> {
-  prepareBaseData(this: TypeDataModel.PrepareBaseDataThis<this>): void {
+  override prepareBaseData(this: TypeDataModel.PrepareBaseDataThis<this>): void {
     // From JournalEntryPage
-    expectTypeOf(this.flags).toEqualTypeOf<Record<string, unknown>>;
+    expectTypeOf(this.flags).toEqualTypeOf<EmptyObject>;
 
     // Comes from the schema
     expectTypeOf(this.steps).toEqualTypeOf<string[]>;
@@ -113,9 +109,9 @@ class QuestModel2 extends foundry.abstract.TypeDataModel<QuestSchema, BaseJourna
     this.totalSteps + 1;
   }
 
-  prepareDerivedData(this: TypeDataModel.PrepareDerivedDataThis<this>): void {
+  override prepareDerivedData(this: TypeDataModel.PrepareDerivedDataThis<this>): void {
     // From JournalEntryPage
-    expectTypeOf(this.flags).toEqualTypeOf<Record<string, unknown>>;
+    expectTypeOf(this.flags).toEqualTypeOf<EmptyObject>;
 
     // Comes from the schema
     expectTypeOf(this.steps).toEqualTypeOf<string[]>;
@@ -131,21 +127,21 @@ class QuestModel2 extends foundry.abstract.TypeDataModel<QuestSchema, BaseJourna
 /* Test with no DerivedData */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 class QuestModel3 extends foundry.abstract.TypeDataModel<QuestSchema, BaseJournalEntryPage, BaseQuestData> {
-  prepareBaseData(this: TypeDataModel.PrepareBaseDataThis<this>): void {
+  override prepareBaseData(this: TypeDataModel.PrepareBaseDataThis<this>): void {
     // From JournalEntryPage
-    expectTypeOf(this.flags).toEqualTypeOf<Record<string, unknown>>;
+    expectTypeOf(this.flags).toEqualTypeOf<EmptyObject>;
 
     // From BaseData
     expectTypeOf(this.steps).toEqualTypeOf<string[]>;
-    expectTypeOf(this.description).toEqualTypeOf<HTMLElement | undefined>;
+    expectTypeOf(this.description).toEqualTypeOf<Partial<HTMLElement> | undefined>;
 
     // @ts-expect-error There is no derived Data
     this.totalSteps + 1;
   }
 
-  prepareDerivedData(this: TypeDataModel.PrepareDerivedDataThis<this>): void {
+  override prepareDerivedData(this: TypeDataModel.PrepareDerivedDataThis<this>): void {
     // From JournalEntryPage
-    expectTypeOf(this.flags).toEqualTypeOf<Record<string, unknown>>;
+    expectTypeOf(this.flags).toEqualTypeOf<EmptyObject>;
 
     // From BaseData
     expectTypeOf(this.steps).toEqualTypeOf<string[]>;

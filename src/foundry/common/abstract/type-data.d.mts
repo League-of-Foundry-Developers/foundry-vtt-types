@@ -211,7 +211,7 @@ declare namespace TypeDataModel {
  * }
  * ```
  */
-export default abstract class TypeDataModel<
+declare abstract class TypeDataModel<
   Schema extends DataSchema,
   Parent extends Document.Any,
   BaseData extends AnyObject = EmptyObject,
@@ -333,3 +333,5 @@ export default abstract class TypeDataModel<
    */
   protected _onDelete(options: Document.OnDeleteOptions<any>, userId: string): void;
 }
+
+export default TypeDataModel;

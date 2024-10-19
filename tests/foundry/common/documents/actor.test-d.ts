@@ -1,8 +1,9 @@
 import { expectTypeOf } from "vitest";
 import type EmbeddedCollection from "../../../../src/foundry/common/abstract/embedded-collection.d.mts";
 import type { NumberField, SchemaField } from "../../../../src/foundry/common/data/fields.d.mts";
-import type { DataModel } from "../../../../src/foundry/common/abstract/data.d.mts";
-import type { AnyMutableObject, AnyObject, EmptyObject, Merge } from "../../../../src/types/utils.d.mts";
+import type { AnyMutableObject, AnyObject, EmptyObject } from "../../../../src/types/utils.d.mts";
+
+import TypeDataModel = foundry.abstract.TypeDataModel;
 
 // @ts-expect-error name and type are required
 new foundry.documents.BaseActor();
@@ -47,7 +48,7 @@ type MyCharacterSchema = {
   }>;
 };
 
-class MyCharacter extends foundry.abstract.TypeDataModel<MyCharacterSchema, Actor.ConfiguredInstance> {
+class MyCharacter extends TypeDataModel<MyCharacterSchema, Actor.ConfiguredInstance> {
   static override defineSchema() {
     const { SchemaField, NumberField } = foundry.data.fields;
     return {
@@ -70,7 +71,7 @@ class MyCharacter extends foundry.abstract.TypeDataModel<MyCharacterSchema, Acto
     };
   }
 
-  override prepareDerivedData(this: Merge<DataModel<MyCharacterSchema, Actor.ConfiguredInstance>, EmptyObject>): void {
+  override prepareDerivedData(this: TypeDataModel.PrepareDerivedDataThis<this>): void {
     this.abilities.strength.value + 2;
     for (const ability of Object.values(this.abilities)) {
       // @ts-expect-error Derived data must be declared
@@ -78,8 +79,6 @@ class MyCharacter extends foundry.abstract.TypeDataModel<MyCharacterSchema, Acto
     }
   }
 }
-
-// interface MyCharacter extends foundry.data.fields.SchemaField.InnerInitializedType<MyCharacterSchema> {}
 
 declare const MyCharacterSystem: MyCharacter;
 
