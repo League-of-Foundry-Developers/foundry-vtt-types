@@ -135,12 +135,12 @@ declare global {
 
     override getEmbeddedCollection<DocType extends Document.Type>(
       embeddedName: DocType,
-    ): Collection<InstanceType<Document.ConfiguredClassForName<DocType>>>;
+    ): Collection<Document.ConfiguredInstanceForName<DocType>>;
 
     protected override _preUpdate(
       data: foundry.documents.BaseToken.UpdateData,
       options: DocumentModificationOptions,
-      user: User.ConfiguredInstance,
+      user: foundry.documents.BaseUser,
     ): Promise<void>;
 
     protected override _onUpdate(

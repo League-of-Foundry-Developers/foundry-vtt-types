@@ -1,4 +1,4 @@
-import type { GetDataReturnType, MaybePromise, ValueOf } from "../../../../types/utils.d.mts";
+import type { GetDataReturnType, MaybePromise, SimpleMerge, ValueOf } from "../../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -52,23 +52,26 @@ declare global {
   namespace ActiveEffectConfig {
     type Any = ActiveEffectConfig<any>;
 
-    interface ActiveEffectConfigData<
+    type ActiveEffectConfigData<
       Options extends
         DocumentSheetOptions<ActiveEffect.ConfiguredInstance> = DocumentSheetOptions<ActiveEffect.ConfiguredInstance>,
-    > extends DocumentSheet.DocumentSheetData<Options, ActiveEffect.ConfiguredInstance> {
-      labels: {
-        transfer: {
-          name: string;
-          hint: string;
+    > = SimpleMerge<
+      DocumentSheet.DocumentSheetData<Options, ActiveEffect.ConfiguredInstance>,
+      {
+        labels: {
+          transfer: {
+            name: string;
+            hint: string;
+          };
         };
-      };
-      effect: ActiveEffectConfig["object"]; // Backwards compatibility
-      data: ActiveEffectConfig["object"];
-      isActorEffect: boolean;
-      isItemEffect: boolean;
-      submitText: string;
-      modes: Record<ValueOf<typeof CONST.ACTIVE_EFFECT_MODES>, string>;
-      descriptionHTML: string;
-    }
+        effect: ActiveEffectConfig["object"]; // Backwards compatibility
+        data: ActiveEffectConfig["object"];
+        isActorEffect: boolean;
+        isItemEffect: boolean;
+        submitText: string;
+        modes: Record<ValueOf<typeof CONST.ACTIVE_EFFECT_MODES>, string>;
+        descriptionHTML: string;
+      }
+    >;
   }
 }

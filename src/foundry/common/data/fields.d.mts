@@ -1104,7 +1104,7 @@ declare namespace StringField {
    * @typeParam Options - the options that override the default options
    */
   type InitializedType<Options extends StringFieldOptions> = DataField.DerivedInitializedType<
-    ValidChoice<Options>,
+    ValidChoice<Options> & (string | null | undefined),
     MergedOptions<Options>
   >;
 

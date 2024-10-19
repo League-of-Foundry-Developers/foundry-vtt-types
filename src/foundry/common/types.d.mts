@@ -254,10 +254,7 @@ declare global {
 }
 
 // This type is named `SettingConfig` in FoundryVTT but that name is confusing within fvtt-types because of the `Config` nomenclature meaning declaration merging.
-interface _SettingOptions<
-  RuntimeType extends ClientSettings.RuntimeType,
-  AssignmentType extends ClientSettings.TypeScriptType,
-> {
+interface _SettingOptions<RuntimeType extends ClientSettings.RuntimeType, AssignmentType> {
   /** A unique machine-readable id for the setting */
   key: string;
 

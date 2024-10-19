@@ -1,6 +1,12 @@
 import type { ConfiguredDocuments } from "../../../types/configuredDocuments.d.mts";
 import type { GetKey, MakeConform } from "../../../types/helperTypes.mts";
-import type { DeepPartial, EmptyObject, InexactPartial, RemoveIndexSignatures } from "../../../types/utils.mts";
+import type {
+  AnyObject,
+  DeepPartial,
+  EmptyObject,
+  InexactPartial,
+  RemoveIndexSignatures,
+} from "../../../types/utils.mts";
 import type * as CONST from "../constants.mts";
 import type { DataField } from "../data/fields.d.mts";
 import type { fields } from "../data/module.mts";
@@ -479,9 +485,9 @@ declare abstract class Document<
    * @returns The Collection instance of embedded Documents of the requested type
    * @remarks Usually returns some form of DocumentCollection, but not always (e.g. Token["actors"])
    */
-  getEmbeddedCollection<DocType extends Document.TypeName>(
+  getEmbeddedCollection<DocType extends Document.Type>(
     embeddedName: DocType,
-  ): Collection<InstanceType<Document.ConfiguredClassForName<DocType>>>;
+  ): Collection<Document.ConfiguredInstanceForName<DocType>>;
 
   /**
    * Get an embedded document by its id from a named collection in the parent document.
@@ -524,7 +530,7 @@ declare abstract class Document<
     Temporary extends boolean = false,
   >(
     embeddedName: EmbeddedName,
-    data?: Array<Document.ConstructorDataFor<Document.ConfiguredClassForName<EmbeddedName>>>,
+    data?: Array<AnyObject>,
     context?: Omit<Document.ModificationContext<this["parent"]>, "temporary"> & { temporary?: Temporary }, // Possibly a way to specify the parent here, but seems less relevant?
   ): Promise<
     Array<
@@ -839,6 +845,25 @@ declare namespace Document {
 
   // TODO: Probably a way to auto-determine this
   type SystemType = "Actor" | "Card" | "Cards" | "Item" | "JournalEntryPage";
+
+  type EmbeddableNamesFor<ConcreteDocument extends Document.Internal.Instance.Any> = {
+    [K in keyof ConfiguredDocuments]: IsParentOf<ConcreteDocument, InstanceType<ConfiguredDocuments[K]>> extends true
+      ? K
+      : never;
+  };
+
+  type ParentOf<ConcreteDocument extends Document.Internal.Instance.Any> =
+    ConcreteDocument extends Document.Internal.Instance<any, any, infer Parent> ? Parent : never;
+
+  type NameOf<ConcreteDocument extends Document.Internal.Instance.Any> =
+    ConcreteDocument extends Document.Internal.Instance<any, infer ConcreteMetadata, any>
+      ? ConcreteMetadata["name"]
+      : never;
+
+  type IsParentOf<
+    ParentDocument extends Document.Internal.Instance.Any,
+    ChildDocument extends Document.Internal.Instance.Any,
+  > = NameOf<ParentDocument> extends NameOf<ParentOf<ChildDocument>> ? true : false;
 
   // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
   namespace Internal {

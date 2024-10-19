@@ -1,3 +1,4 @@
+import type { GetKey } from "../../../types/helperTypes.d.mts";
 import type { AnyObject, InexactPartial } from "../../../types/utils.d.mts";
 // eslint-disable-next-line import/no-named-as-default
 import type DataModel from "../abstract/data.d.mts";
@@ -544,7 +545,7 @@ declare class BasePackage<
    * @deprecated since v10, will be removed in v13
    * @remarks `"You are accessing BasePackage#name which is now deprecated in favor of id."`
    */
-  get name(): this["id"];
+  get name(): GetKey<this, "id">;
 
   /**
    * A flag which defines whether this package is unavailable to be used.
