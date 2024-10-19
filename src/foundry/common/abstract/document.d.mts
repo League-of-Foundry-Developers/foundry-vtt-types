@@ -882,7 +882,7 @@ declare namespace Document {
 
   type ConfiguredClass<T extends { metadata: AnyMetadata }> = ConfiguredClassForName<T["metadata"]["name"]>;
 
-  type ConfiguredClassForName<Name extends Type> = ConfiguredDocuments[Name];
+  type ConfiguredClassForName<Name extends Type> = MakeConform<ConfiguredDocuments[Name], Document.AnyConstructor>;
 
   type SubTypesOf<T extends Type> =
     ConfiguredInstanceForName<T> extends { type: infer Types } ? Types : typeof foundry.CONST.BASE_DOCUMENT_TYPE;
