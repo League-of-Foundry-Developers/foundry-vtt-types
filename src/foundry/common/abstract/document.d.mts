@@ -498,7 +498,7 @@ declare abstract class Document<
   // TODO: After regions are defined, change first parameter to `extends foundry.CONST.EMBEDDED_DOCUMENT_TYPES`
   getEmbeddedCollection<
     EmbeddedName extends Exclude<foundry.CONST.EMBEDDED_DOCUMENT_TYPES, "Region" | "RegionBehavior">,
-  >(embeddedName: EmbeddedName): Collection<InstanceType<Document.ConfiguredClassForName<EmbeddedName>>>;
+  >(embeddedName: EmbeddedName): Collection<Document.ConfiguredInstanceForName<EmbeddedName>>;
 
   /**
    * Get an embedded document by its id from a named collection in the parent document.
@@ -544,7 +544,7 @@ declare abstract class Document<
     Temporary extends boolean | undefined,
   >(
     embeddedName: EmbeddedName,
-    data?: Array<Document.ConstructorDataFor<Document.ConfiguredClassForName<EmbeddedName>>>,
+    data?: Array<AnyObject>,
     operation?: InexactPartial<DatabaseOperationsFor<EmbeddedName, "create">> & {
       temporary?: Temporary;
     },
@@ -962,6 +962,25 @@ declare namespace Document {
   // TODO: Probably a way to auto-determine this
   type SystemType = "Actor" | "Card" | "Cards" | "Item" | "JournalEntryPage";
 
+  type EmbeddableNamesFor<ConcreteDocument extends Document.Internal.Instance.Any> = {
+    [K in keyof ConfiguredDocuments]: IsParentOf<ConcreteDocument, InstanceType<ConfiguredDocuments[K]>> extends true
+      ? K
+      : never;
+  };
+
+  type ParentOf<ConcreteDocument extends Document.Internal.Instance.Any> =
+    ConcreteDocument extends Document.Internal.Instance<any, any, infer Parent> ? Parent : never;
+
+  type NameOf<ConcreteDocument extends Document.Internal.Instance.Any> =
+    ConcreteDocument extends Document.Internal.Instance<any, infer ConcreteMetadata, any>
+      ? ConcreteMetadata["name"]
+      : never;
+
+  type IsParentOf<
+    ParentDocument extends Document.Internal.Instance.Any,
+    ChildDocument extends Document.Internal.Instance.Any,
+  > = NameOf<ParentDocument> extends NameOf<ParentOf<ChildDocument>> ? true : false;
+
   // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
   namespace Internal {
     type Constructor = (abstract new (arg0: never, ...args: never[]) => Instance.Any) & {
@@ -1015,7 +1034,7 @@ declare namespace Document {
 
   type ConfiguredClass<T extends { metadata: Metadata.Any }> = ConfiguredClassForName<T["metadata"]["name"]>;
 
-  type ConfiguredClassForName<Name extends Type> = ConfiguredDocuments[Name];
+  type ConfiguredClassForName<Name extends Type> = MakeConform<ConfiguredDocuments[Name], Document.AnyConstructor>;
 
   type SubTypesOf<T extends Type> =
     ConfiguredInstanceForName<T> extends { type: infer Types } ? Types : typeof foundry.CONST.BASE_DOCUMENT_TYPE;

@@ -1,8 +1,7 @@
 import type { AnyConstructor, AnyFunction, DeepPartial } from "../../types/utils.d.mts";
 import type ApplicationV2 from "../client-esm/applications/api/application.mts";
 import type { CustomFormInput } from "../client-esm/applications/forms/fields.mts";
-import type { DataModel, Document } from "./abstract/module.d.mts";
-import type { DataField } from "./data/fields.d.mts";
+import type { Document } from "./abstract/module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface DocumentConstructionContext extends Document.ConstructionContext<Document.Any | null> {}
@@ -281,10 +280,7 @@ declare global {
 }
 
 // This type is named `SettingConfig` in FoundryVTT but that name is confusing within fvtt-types because of the `Config` nomenclature meaning declaration merging.
-interface _SettingOptions<
-  RuntimeType extends ClientSettings.RuntimeType,
-  AssignmentType extends ClientSettings.TypeScriptType,
-> {
+interface _SettingOptions<RuntimeType extends ClientSettings.RuntimeType, AssignmentType> {
   /** A unique machine-readable id for the setting */
   key: string;
 

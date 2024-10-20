@@ -70,7 +70,7 @@ Add foundry-vtt-types to your types section in your `tsconfig.json`:
 {
   "compilerOptions": {
     "types": ["@league-of-foundry-developers/foundry-vtt-types"],
-    "module": "ES2022",
+    "module": "node16",
     "moduleResolution": "node16",
     "esModuleInterop": true,
     "strictNullChecks": true
@@ -80,7 +80,7 @@ Add foundry-vtt-types to your types section in your `tsconfig.json`:
 
 This will make the type definitions available globally in your project.
 
-Make sure you are using at least `"module": "ES2022"` and `"moduleResolution": "node16"`, too. It is required for some
+Make sure you are using at least `"module": "node16"` and `"moduleResolution": "node16"`, too. It is required for some
 imports to be resolved correctly, such as `@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mts`.
 
 Also make sure to set `"strictNullChecks": true` because otherwise, some conditional types used in the type definitions

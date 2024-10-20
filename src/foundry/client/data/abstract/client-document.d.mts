@@ -609,9 +609,11 @@ declare global {
   // FIXME(LukeAbby): Unlike most mixins, `ClientDocumentMixin` actually requires a specific constructor, the same as `Document`.
   // This means that `BaseClass extends Document.Internal.Constructor` is actually too permissive.
   // However this easily leads to circularities.
+  //
+  // Note(LukeAbby): The seemingly redundant merging in of `AnyDocument` makes it easier for tsc to recognize that anything extending `ClientDocumentMixin` is also a document.
   function ClientDocumentMixin<BaseClass extends Document.Internal.Constructor>(
     Base: BaseClass,
-  ): Mixin<typeof ClientDocument<InstanceType<BaseClass>>, BaseClass>;
+  ): AnyDocument & Mixin<typeof ClientDocument<InstanceType<BaseClass>>, BaseClass>;
 
   namespace ClientDocument {
     interface SortOptions<T, SortKey extends string = "sort"> extends SortingHelpers.SortOptions<T, SortKey> {
@@ -696,6 +698,13 @@ declare namespace DropData {
   interface UUID {
     uuid: string;
   }
+}
+
+// This is yet another `AnyDocument` type.
+// It exists specifically because the `Document.AnyConstructor` type is too safe to be merged in with a mixin.
+// The `arg0: never, ...args: never[]` trick trips up the base constructor check and so this one with an actual `...args: any[]` one is used instead.
+declare class AnyDocument extends Document<any, any, any> {
+  constructor(...args: any[]);
 }
 
 type InternalData<T extends Document.Internal.Instance.Any> = DropData.Data<Document.Internal.Instance.Complete<T>>;

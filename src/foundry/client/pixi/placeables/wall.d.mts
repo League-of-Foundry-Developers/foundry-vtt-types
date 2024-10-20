@@ -243,7 +243,7 @@ declare global {
 
     override activateListeners(): void;
 
-    protected override _canControl(user: User, event?: any): boolean;
+    protected override _canControl(user: User.ConfiguredInstance, event?: any): boolean;
 
     protected override _onHoverIn(event: PIXI.FederatedEvent, options?: PlaceableObject.HoverInOptions): false | void;
 

@@ -1,4 +1,4 @@
-import type { GetDataReturnType, MaybePromise, Merge, ValueOf } from "../../../../types/utils.d.mts";
+import type { GetDataReturnType, MaybePromise, SimpleMerge, ValueOf } from "../../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -55,7 +55,7 @@ declare global {
     type ActiveEffectConfigData<
       Options extends
         DocumentSheetOptions<ActiveEffect.ConfiguredInstance> = DocumentSheetOptions<ActiveEffect.ConfiguredInstance>,
-    > = Merge<
+    > = SimpleMerge<
       DocumentSheet.DocumentSheetData<Options, ActiveEffect.ConfiguredInstance>,
       {
         labels: {

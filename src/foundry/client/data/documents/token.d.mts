@@ -182,7 +182,7 @@ declare global {
 
     override getEmbeddedCollection<DocType extends Document.Type>(
       embeddedName: DocType,
-    ): Collection<InstanceType<Document.ConfiguredClassForName<DocType>>>;
+    ): Collection<Document.ConfiguredInstanceForName<DocType>>;
 
     /**
      * @privateRemarks _onCreate, _preUpdate, _onUpdate, _onDelete, preCreateOperation, _preUpdateOperation, _onCreateOperation,
