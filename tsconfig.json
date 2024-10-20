@@ -12,7 +12,8 @@
     "noImplicitOverride": true,
     "strict": true,
     "target": "ES2021",
-    "verbatimModuleSyntax": true
+    "verbatimModuleSyntax": true,
+    "noUncheckedSideEffectImports": true
   },
   "include": ["index.d.mts"]
 }
