@@ -37,12 +37,14 @@ declare global {
       messageOptions?: foundry.documents.BaseChatMessage.ConstructorData;
     }
 
-    export interface HistoryData {
+    interface HistoryData {
       round: number | null;
       turn: number | null;
       tokenId: string | null;
       combatantId: string | null;
     }
+
+    type CONFIG_SETTING = "combatTrackerConfig";
   }
 
   /**
@@ -86,7 +88,7 @@ declare global {
 
     /** Return the object of settings which modify the Combat Tracker behavior */
     // Type is copied here to avoid recursion issue
-    get settings(): SettingConfig[`core.${(typeof Combat)["CONFIG_SETTING"]}`];
+    get settings(): ClientSettings.SettingInitializedType<"core", Combat.CONFIG_SETTING>;
 
     /** Has this combat encounter been started? */
     get started(): boolean;

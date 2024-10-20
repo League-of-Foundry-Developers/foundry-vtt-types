@@ -14,7 +14,7 @@ declare global {
     /**
      * Provide the settings object which configures the Combat document
      */
-    static get settings(): SettingConfig[`core.${(typeof Combat)["CONFIG_SETTING"]}`];
+    static get settings(): ClientSettings.SettingInitializedType<"core", Combat.CONFIG_SETTING>;
 
     override get directory(): (typeof ui)["combat"];
 

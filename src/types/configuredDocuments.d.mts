@@ -1,9 +1,11 @@
 import type { Document } from "../foundry/common/abstract/module.d.mts";
-import type { MakeConform } from "./helperTypes.d.mts";
+import type { ConformRecord, InterfaceToObject, MakeConform, MustConform } from "./helperTypes.d.mts";
+
+type DocumentConform<T> = MakeConform<T, Document.AnyConstructor>;
 
 // This interface holds all documents without configuration.
 // It is structured this way to create a place for errors to show up if the type complexity grows too great.
-export interface DefaultDocuments extends Record<Document.Type, Document.AnyConstructor> {
+interface _DefaultDocuments {
   ActiveEffect: typeof ActiveEffect;
   ActorDelta: typeof ActorDelta;
   Actor: typeof Actor;
@@ -38,17 +40,27 @@ export interface DefaultDocuments extends Record<Document.Type, Document.AnyCons
   Wall: typeof WallDocument;
 }
 
+type TestDefaultDocumentsValid = MustConform<
+  InterfaceToObject<_DefaultDocuments>,
+  Record<string, Document.AnyConstructor>
+>;
+
+type ConformedDefault = ConformRecord<_DefaultDocuments, Document.AnyConstructor>;
+
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface DefaultDocuments extends ConformedDefault {}
+
 // Note(LukeAbby): This helper type is structured this way to make it as simple as possible for TypeScript to figure out that it's always a Document.
 // This also uses `ConcreteDocumentType extends keyof DocumentClassConfig` instead of `GetKey` or equivalent for the critical purposes of stymying circular errors.
 // See https://gist.github.com/LukeAbby/f9561689e5cad8a4b1e9cb92a8c63982 for more information.
 type ConfiguredDocument<ConcreteDocumentType extends Document.Type> =
   ConcreteDocumentType extends keyof DocumentClassConfig
-    ? MakeConform<DocumentClassConfig[ConcreteDocumentType], Document.Internal.Constructor>
+    ? DocumentClassConfig[ConcreteDocumentType]
     : DefaultDocuments[ConcreteDocumentType];
 
 // This interface exists as a way to catch circular errors easier.
 // This makes it more verbose than it might seem it has to be but it's important to stay this way.
-export interface ConfiguredDocuments extends Record<Document.Type, Document.AnyConstructor> {
+interface _ConfiguredDocuments {
   ActiveEffect: ConfiguredDocument<"ActiveEffect">;
   ActorDelta: ConfiguredDocument<"ActorDelta">;
   Actor: ConfiguredDocument<"Actor">;
@@ -81,3 +93,13 @@ export interface ConfiguredDocuments extends Record<Document.Type, Document.AnyC
   Token: ConfiguredDocument<"Token">;
   Wall: ConfiguredDocument<"Wall">;
 }
+
+type TestConfiguredDocumentsValid = MustConform<
+  InterfaceToObject<_ConfiguredDocuments>,
+  Record<string, Document.AnyConstructor>
+>;
+
+type ConformedConfigured = ConformRecord<_ConfiguredDocuments, Document.AnyConstructor>;
+
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface ConfiguredDocuments extends _ConfiguredDocuments {}

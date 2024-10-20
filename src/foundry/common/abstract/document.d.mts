@@ -540,15 +540,15 @@ declare abstract class Document<
   //   allowed embedded types of the parent (vs. allowing any document to create embedded
   //   documents of any type)
   createEmbeddedDocuments<
-    EmbeddedName extends Exclude<foundry.CONST.EMBEDDED_DOCUMENT_TYPES, "Region" | "RegionBehavior">,
+    EmbeddedName extends foundry.CONST.EMBEDDED_DOCUMENT_TYPES,
     Temporary extends boolean | undefined,
   >(
     embeddedName: EmbeddedName,
     data?: Array<AnyObject>,
-    operation?: InexactPartial<DatabaseOperationsFor<EmbeddedName, "create">> & {
+    operation?: InexactPartial<DatabaseOperationsFor<Extract<EmbeddedName, Document.Type>, "create">> & {
       temporary?: Temporary;
     },
-  ): Promise<Array<Document.ToStoredIf<Document.ConfiguredClassForName<EmbeddedName>, Temporary>> | undefined>;
+  ): Promise<Array<Document.ConfiguredClassForName<Extract<EmbeddedName, Document.Type>>> | undefined>;
 
   /**
    * Update multiple embedded Document instances within a parent Document using provided differential data.
@@ -561,13 +561,11 @@ declare abstract class Document<
    * @returns An array of updated Document instances
    */
   // TODO: After regions are defined, change first parameter to `extends foundry.CONST.EMBEDDED_DOCUMENT_TYPES`
-  updateEmbeddedDocuments<
-    EmbeddedName extends Exclude<foundry.CONST.EMBEDDED_DOCUMENT_TYPES, "Region" | "RegionBehavior">,
-  >(
+  updateEmbeddedDocuments<EmbeddedName extends foundry.CONST.EMBEDDED_DOCUMENT_TYPES>(
     embeddedName: EmbeddedName,
-    updates?: Array<Record<string, unknown>>,
+    updates?: Array<AnyObject>,
     context?: Document.ModificationContext<this["parent"]>,
-  ): Promise<Array<Document.Stored<Document.ConfiguredInstanceForName<EmbeddedName>>>>;
+  ): Promise<Array<Document.Stored<Document.ConfiguredInstanceForName<Extract<EmbeddedName, Document.Type>>>>>;
 
   /**
    * Delete multiple embedded Document instances within a parent Document using provided string ids.
@@ -990,7 +988,7 @@ declare namespace Document {
     interface Instance<
       Schema extends DataSchema,
       ConcreteMetadata extends Metadata.Any,
-      Parent extends Document.Any | null,
+      Parent extends Document.Internal.Instance.Any | null,
     > {
       [__Schema]: Schema;
       [__ConcreteMetadata]: ConcreteMetadata;
