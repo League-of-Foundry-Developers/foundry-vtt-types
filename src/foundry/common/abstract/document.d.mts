@@ -998,7 +998,7 @@ declare namespace Document {
     type SchemaFor<ConcreteInstance extends Instance.Any> =
       ConcreteInstance extends Instance<infer Schema, any, any> ? Schema : never;
 
-    type ConcreteMetadataFor<ConcreteInstance extends Instance.Any> =
+    type MetadataFor<ConcreteInstance extends Instance.Any> =
       ConcreteInstance extends Instance<any, infer ConcreteMetadata, any> ? ConcreteMetadata : never;
 
     type ParentFor<ConcreteInstance extends Instance.Any> =

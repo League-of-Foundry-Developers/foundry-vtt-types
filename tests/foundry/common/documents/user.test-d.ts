@@ -1,5 +1,4 @@
 import { expectTypeOf } from "vitest";
-import type { ConfiguredDocumentInstance } from "../../../../src/types/helperTypes.d.mts";
 import type Document from "../../../../src/foundry/common/abstract/document.d.mts";
 
 expectTypeOf(foundry.documents.BaseUser.create({ name: "SomeUser" })).toEqualTypeOf<
@@ -7,14 +6,15 @@ expectTypeOf(foundry.documents.BaseUser.create({ name: "SomeUser" })).toEqualTyp
 >();
 expectTypeOf(foundry.documents.BaseUser.createDocuments([])).toEqualTypeOf<Promise<Document.Stored<User>[]>>();
 expectTypeOf(foundry.documents.BaseUser.updateDocuments([])).toEqualTypeOf<
-  Promise<ConfiguredDocumentInstance<typeof User>[]>
+  Promise<Document.ToConfiguredInstance<typeof User>[]>
 >();
 expectTypeOf(foundry.documents.BaseUser.deleteDocuments([])).toEqualTypeOf<
-  Promise<ConfiguredDocumentInstance<typeof User>[]>
+  Promise<Document.ToConfiguredInstance<typeof User>[]>
 >();
 
 const user = await foundry.documents.BaseUser.create({ name: "Another User" }, { temporary: true });
 if (user) {
+  // Note(LukeAbby): At one point there was a regression in `ForeignDocumentField` that would have caused this to fail.
   expectTypeOf(user.character).toEqualTypeOf<Actor | null>();
 }
 

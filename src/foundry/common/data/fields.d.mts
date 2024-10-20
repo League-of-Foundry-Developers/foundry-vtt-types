@@ -2335,8 +2335,8 @@ declare namespace ForeignDocumentField {
    * A shorthand for the assignment type of a ForeignDocumentField class.
    * @typeParam Opts - the options that override the default options
    */
-  type AssignmentType<DocumentType extends Document.Any, Opts extends Options> = DataField.DerivedAssignmentType<
-    string | DocumentType,
+  type AssignmentType<ConcreteDocument extends Document.Any, Opts extends Options> = DataField.DerivedAssignmentType<
+    string | Document.ConfiguredClassForName<ConcreteDocument["documentName"]>,
     MergedOptions<Opts>
   >;
 
@@ -2344,8 +2344,8 @@ declare namespace ForeignDocumentField {
    * A shorthand for the initialized type of a ForeignDocumentField class.
    * @typeParam Opts - the options that override the default options
    */
-  type InitializedType<DocumentType extends Document.Any, Opts extends Options> = DataField.DerivedInitializedType<
-    Opts["idOnly"] extends true ? string : ConfiguredDocumentInstance<DocumentType["documentName"]>,
+  type InitializedType<ConcreteDocument extends Document.Any, Opts extends Options> = DataField.DerivedInitializedType<
+    Opts["idOnly"] extends true ? string : Document.ConfiguredInstanceForName<ConcreteDocument["documentName"]>,
     MergedOptions<Opts>
   >;
 
