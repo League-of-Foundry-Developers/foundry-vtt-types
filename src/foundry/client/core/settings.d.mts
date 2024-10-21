@@ -89,8 +89,8 @@ declare global {
       namespace: N,
       key: K,
       data: ClientSettings.Type extends T
-        ? ClientSettings.RegisterSetting<_SettingConfig[`${N}.${K}`]>
-        : ClientSettings.RegisterSetting<NoInfer<T>>,
+        ? ClientSettings.RegisterOptions<_SettingConfig[`${N}.${K}`]>
+        : ClientSettings.RegisterOptions<NoInfer<T>>,
     ): void;
 
     /**
@@ -197,7 +197,7 @@ declare global {
       SettingType<T> | (T extends DataModel.Any ? T : never)
     >;
 
-    interface RegisterSetting<T extends Type = (value: unknown) => unknown>
+    interface RegisterOptions<T extends Type = (value: unknown) => unknown>
       extends InexactPartial<Omit<SettingOptions<T>, "key" | "namespace">> {}
 
     type RegisterSubmenu = Omit<SettingSubmenuConfig, "key" | "namespace">;
@@ -250,8 +250,8 @@ type SettingType<T extends ClientSettings.Type> =
 
 type ReplaceUndefinedWithNull<T> = T extends undefined ? null : T;
 
-type GetNamespaces<SettingPath extends string> = SettingPath extends `${infer Scope}.${string}` ? Scope : never;
-type GetKeys<SettingPath extends string> = SettingPath extends `${string}.${infer Name}` ? Name : never;
+type GetNamespaces<SettingPath extends PropertyKey> = SettingPath extends `${infer Scope}.${string}` ? Scope : never;
+type GetKeys<SettingPath extends PropertyKey> = SettingPath extends `${string}.${infer Name}` ? Name : never;
 
 type _SettingConfig = ConformRecord<
   // Refers to the deprecated interface so that merging works both ways.
