@@ -169,7 +169,9 @@ declare global {
      * For example `string` does not correspond to a real runtime value like `String` does.
      */
     type TypeScriptType = string | number | boolean | symbol | bigint | AnyArray | AnyObject;
-    type RuntimeType = DataField.Any | DataModel.Any | SettingFunction | SettingConstructor;
+
+    // The type `typeof DataModel<any, any>` is used because Foundry actually constructs with its regular constructor parameters in this case.
+    type RuntimeType = DataField.Any | typeof DataModel<any, any> | SettingFunction | SettingConstructor;
 
     type Type = TypeScriptType | RuntimeType;
 
