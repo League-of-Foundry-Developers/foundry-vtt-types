@@ -22,9 +22,9 @@ module.exports = {
     "@typescript-eslint/array-type": "off",
     "@typescript-eslint/ban-types": "off",
     "@typescript-eslint/consistent-indexed-object-style": "off",
-    // `allowSingleExtends` allows the pattern of `interface X extends _X {}`.
-    // This is done as a performance optimization or simply to display a different name in intellisense.
-    "@typescript-eslint/no-empty-interface": ["error", { allowSingleExtends: true }],
+    // `allowInterfaces` allows the pattern of `interface X extends _X {}`.
+    // This is sometimes done as a performance optimization, to allow declaration merging with a dynamic base, or simply to display a different name in intellisense.
+    "@typescript-eslint/no-empty-object-type": ["error", { allowInterfaces: "with-single-extends" }],
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-namespace": ["error", { allowDeclarations: true }],
     "@typescript-eslint/no-unsafe-declaration-merging": "off", // TODO: reenable in V10
@@ -48,6 +48,8 @@ module.exports = {
     "import/no-extraneous-dependencies": "error",
     "import/no-import-module-exports": "error",
     "import/no-named-default": "warn",
+    // Some classes like `DataModel` are both default and named exports.
+    "import/no-named-as-default": "off",
     "import/no-self-import": "error",
     "import/no-unused-modules": "warn",
     "import/no-useless-path-segments": "warn",

@@ -7,8 +7,7 @@ declare global {
     type ConfiguredClass = Document.ConfiguredClassForName<"RollTable">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"RollTable">;
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    export interface DatabaseOperations extends DocumentDatabaseOperations<RollTable> {}
+    interface DatabaseOperations extends DocumentDatabaseOperations<RollTable> {}
 
     /**
      * Optional arguments which customize the draw

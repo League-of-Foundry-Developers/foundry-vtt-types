@@ -505,7 +505,6 @@ declare global {
       step?: number;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     interface SelectOptions extends Handlebars.HelperOptions {}
 
     interface SelectOptionsOptions extends Partial<Handlebars.HelperOptions> {

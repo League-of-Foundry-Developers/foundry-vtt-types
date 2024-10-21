@@ -7,7 +7,6 @@ declare global {
     type ConfiguredClass = Document.ConfiguredClassForName<"Macro">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Macro">;
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     interface DatabaseOperations extends DocumentDatabaseOperations<Macro> {}
 
     interface Scope {

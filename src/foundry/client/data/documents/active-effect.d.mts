@@ -8,7 +8,6 @@ declare global {
     type ConfiguredClass = Document.ConfiguredClassForName<"ActiveEffect">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"ActiveEffect">;
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     interface DatabaseOperations
       extends DocumentDatabaseOperations<
         ActiveEffect,

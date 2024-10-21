@@ -9,7 +9,6 @@ declare global {
     type ConfiguredClass = Document.ConfiguredClassForName<"Cards">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Cards">;
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     interface DatabaseOperations extends DocumentDatabaseOperations<Cards> {}
 
     type CardsAction = "deal" | "pass";

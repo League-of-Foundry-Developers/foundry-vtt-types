@@ -7,7 +7,6 @@ declare global {
     type ConfiguredClass = Document.ConfiguredClassForName<"PlaylistSound">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"PlaylistSound">;
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     interface DatabaseOperations extends DocumentDatabaseOperations<PlaylistSound> {}
   }
 

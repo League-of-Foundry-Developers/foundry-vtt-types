@@ -47,7 +47,6 @@ type TestDefaultDocumentsValid = MustConform<
 
 type ConformedDefault = ConformRecord<_DefaultDocuments, Document.AnyConstructor>;
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface DefaultDocuments extends ConformedDefault {}
 
 // Note(LukeAbby): This helper type is structured this way to make it as simple as possible for TypeScript to figure out that it's always a Document.
@@ -101,5 +100,4 @@ type TestConfiguredDocumentsValid = MustConform<
 
 type ConformedConfigured = ConformRecord<_ConfiguredDocuments, Document.AnyConstructor>;
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface ConfiguredDocuments extends _ConfiguredDocuments {}

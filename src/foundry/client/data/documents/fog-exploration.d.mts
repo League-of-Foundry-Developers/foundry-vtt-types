@@ -8,7 +8,6 @@ declare global {
     type ConfiguredClass = Document.ConfiguredClassForName<"FogExploration">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"FogExploration">;
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     interface DatabaseOperations
       extends DocumentDatabaseOperations<
         FogExploration,

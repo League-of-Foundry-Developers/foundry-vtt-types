@@ -8,7 +8,6 @@ declare global {
     type ConfiguredClass = Document.ConfiguredClassForName<"ActorDelta">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"ActorDelta">;
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     interface DatabaseOperations extends DocumentDatabaseOperations<ActorDelta> {}
   }
 

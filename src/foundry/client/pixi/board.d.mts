@@ -814,7 +814,6 @@ declare global {
   }
 
   // Most canvas group properties have explicit type definitions, but some are left off
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface Canvas extends CanvasGroups {}
 
   interface CanvasPerformanceSettings {

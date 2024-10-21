@@ -11,7 +11,6 @@ declare global {
     type ConfiguredClass = Document.ConfiguredClassForName<"Adventure">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Adventure">;
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     interface DatabaseOperations extends DocumentDatabaseOperations<Adventure> {}
 
     interface PrepareImportOptions {

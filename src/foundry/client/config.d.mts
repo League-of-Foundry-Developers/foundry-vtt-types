@@ -2740,7 +2740,7 @@ declare global {
     }
 
     // The point of this interface is to be declaration merged into so you can override `DefaultSpecialStatusEffects` and remove existing keys. It's never used when empty.
-    // eslint-disable-next-line @typescript-eslint/no-empty-interface, @typescript-eslint/no-empty-object-type
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     interface SpecialStatusEffects {}
 
     interface DefaultSpecialStatusEffects {
@@ -2795,8 +2795,8 @@ declare global {
       /** A sound path when the door becomes unlocked */
       unlock: string;
     }
+
     namespace Dice {
-      // eslint-disable-next-line @typescript-eslint/no-empty-object-type
       interface RollModes extends Record<foundry.CONST.DICE_ROLL_MODES, string> {}
     }
 

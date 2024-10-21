@@ -72,7 +72,6 @@ declare global {
   namespace AdventureImporter {
     type Any = AdventureImporter<any>;
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     interface Options extends DocumentSheetOptions<Adventure.ConfiguredInstance> {}
 
     interface AdventureImporterData {

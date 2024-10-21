@@ -3,7 +3,6 @@ import type ApplicationV2 from "../client-esm/applications/api/application.mts";
 import type { CustomFormInput } from "../client-esm/applications/forms/fields.mts";
 import type { Document } from "./abstract/module.d.mts";
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface DocumentConstructionContext extends Document.ConstructionContext<Document.Any | null> {}
 
 // TODO: deprecated in V12, will be removed in V14
@@ -11,7 +10,6 @@ interface DocumentConstructionContext extends Document.ConstructionContext<Docum
 //    in Document that use it, so we should retain it until V14 when those
 //    methods are removed
 /** @deprecated since v12 */
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface DocumentModificationContext extends Document.ModificationContext<Document.Any | null> {}
 
 declare global {
@@ -76,7 +74,6 @@ declare global {
   type ColorSource = number | RGBColorVector | string | Color;
 
   /** A Client Setting */
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface SettingOptions<T extends ClientSettings.Type = (value: unknown) => unknown>
     extends _SettingOptions<ClientSettings.ToRuntimeType<T>, ClientSettings.ToSettingAssignmentType<T>> {}
 

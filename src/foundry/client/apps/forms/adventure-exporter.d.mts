@@ -75,7 +75,6 @@ declare global {
   namespace AdventureExporter {
     type Any = AdventureExporter<any>;
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     interface Options extends DocumentSheetOptions<Adventure.ConfiguredInstance> {}
 
     interface AdventureContentTreeNode {

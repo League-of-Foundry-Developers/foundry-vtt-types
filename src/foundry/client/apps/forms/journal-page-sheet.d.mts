@@ -66,7 +66,6 @@ declare global {
   namespace JournalPageSheet {
     type Any = JournalPageSheet<any>;
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     interface Options extends DocumentSheetOptions<JournalEntryPage.ConfiguredInstance> {}
 
     interface JournalPageSheetData
@@ -309,7 +308,6 @@ declare global {
   }
 
   namespace JournalTextTinyMCESheet {
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     interface MCEData extends JournalTextPageSheet.TextData {}
   }
 }

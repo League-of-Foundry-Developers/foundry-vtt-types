@@ -67,15 +67,12 @@ declare namespace SquareGrid {
     diagonals: number;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface Offset extends BaseGrid.Offset {}
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface OffsetRange extends BaseGrid.OffsetRange {}
 
   type Coordinates = Offset | Point;
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface SnappingBehavior extends BaseGrid.SnappingBehavior {}
 
   type MeasurePathWaypoint = BaseGrid.MeasurePathWaypoint;
@@ -97,7 +94,6 @@ declare namespace SquareGrid {
 
   type MeasurePathCostFunction = BaseGrid.MeasurePathCostFunction;
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface Dimensions extends BaseGrid.Dimensions {}
 }
 

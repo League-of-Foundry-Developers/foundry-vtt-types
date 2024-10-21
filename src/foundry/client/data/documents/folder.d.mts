@@ -7,7 +7,6 @@ declare global {
     type ConfiguredClass = Document.ConfiguredClassForName<"Folder">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Folder">;
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     interface DatabaseOperations extends DocumentDatabaseOperations<Folder> {}
 
     interface ExportToCompendiumOptions {

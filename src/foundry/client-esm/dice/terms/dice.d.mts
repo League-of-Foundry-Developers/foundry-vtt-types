@@ -334,7 +334,6 @@ declare namespace DiceTerm {
     options: DiceTerm.Options;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface Options extends RollTerm.Options {}
 
   interface Result {
@@ -375,7 +374,7 @@ declare namespace DiceTerm {
     strict: boolean;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type, @typescript-eslint/no-empty-interface
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface Modifiers {}
 }
 

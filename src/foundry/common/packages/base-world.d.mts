@@ -61,7 +61,6 @@ type BaseWorldSchema = Merge<
 >;
 
 declare namespace BaseWorld {
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface Schema extends BaseWorldSchema {}
 }
 

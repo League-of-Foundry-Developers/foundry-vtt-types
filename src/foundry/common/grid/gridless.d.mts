@@ -45,34 +45,26 @@ declare class Gridless extends BaseGrid {
 }
 
 declare namespace Gridless {
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface Configuration extends BaseGrid.Configuration {}
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface Offset extends BaseGrid.Offset {}
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface OffsetRange extends BaseGrid.OffsetRange {}
 
   type Coordinates = Offset | Point;
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface SnappingBehavior extends BaseGrid.SnappingBehavior {}
 
   type MeasurePathWaypoint = BaseGrid.MeasurePathWaypoint;
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface MeasurePathResultWaypoint extends BaseGrid.MeasurePathResultWaypoint {}
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface MeasurePathResultSegment extends BaseGrid.MeasurePathResultSegment {}
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface MeasurePathResult extends BaseGrid.MeasurePathResult {}
 
   type MeasurePathCostFunction = BaseGrid.MeasurePathCostFunction;
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface Dimensions extends BaseGrid.Dimensions {}
 }
 

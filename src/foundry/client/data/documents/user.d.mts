@@ -7,8 +7,7 @@ declare global {
     type ConfiguredClass = Document.ConfiguredClassForName<"User">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"User">;
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    export interface DatabaseOperations extends DocumentDatabaseOperations<User> {}
+    interface DatabaseOperations extends DocumentDatabaseOperations<User> {}
 
     interface PingData {
       /**

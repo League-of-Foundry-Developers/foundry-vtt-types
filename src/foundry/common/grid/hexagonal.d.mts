@@ -366,32 +366,25 @@ declare namespace HexagonalGrid {
     s: number;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface Offset extends BaseGrid.Offset {}
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface OffsetRange extends BaseGrid.OffsetRange {}
 
   /** Cube coordinates in a hexagonal grid. q + r + s = 0. */
   type Coordinates = BaseGrid.Coordinates | Cube;
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface SnappingBehavior extends BaseGrid.SnappingBehavior {}
 
   type MeasurePathWaypoint = BaseGrid.MeasurePathWaypoint;
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface MeasurePathResultWaypoint extends BaseGrid.MeasurePathResultWaypoint {}
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface MeasurePathResultSegment extends BaseGrid.MeasurePathResultSegment {}
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface MeasurePathResult extends BaseGrid.MeasurePathResult {}
 
   type MeasurePathCostFunction = BaseGrid.MeasurePathCostFunction;
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface Dimensions extends BaseGrid.Dimensions {}
 }
 
