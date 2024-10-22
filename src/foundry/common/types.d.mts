@@ -26,7 +26,6 @@ declare global {
   /**
    * Make all properties in T recursively readonly.
    */
-  /* eslint-disable prettier/prettier */ // prettier is breaking this code
   type DeepReadonly<T> = Readonly<{
     [K in keyof T]: T[K] extends
       | undefined
@@ -47,7 +46,6 @@ declare global {
             ? ReadonlySet<DeepReadonly<V>>
             : DeepReadonly<T[K]>;
   }>;
-  /* eslint-enable prettier/prettier */
 
   /**
    * A class constructor.

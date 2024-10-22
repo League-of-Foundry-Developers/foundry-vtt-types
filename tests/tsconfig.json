@@ -1,5 +1,10 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig.json",
   "extends": "../tsconfig.json",
-  "include": ["**/*.test-d.ts"]
+  "compilerOptions": {
+    "composite": true,
+    "noEmit": false,
+    "emitDeclarationOnly": true
+  },
+  "include": ["**/*.test-d.ts", "**/*.d.ts"]
 }

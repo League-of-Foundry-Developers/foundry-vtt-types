@@ -6,9 +6,9 @@ module.exports = {
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/stylistic",
-    "plugin:prettier/recommended",
     "plugin:import/recommended",
     "plugin:import/typescript",
+    "prettier",
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
@@ -16,7 +16,7 @@ module.exports = {
     sourceType: "module",
   },
   plugins: ["@typescript-eslint", "eslint-plugin-tsdoc", "import"],
-  ignorePatterns: ["vitest.config.js"],
+  ignorePatterns: ["vitest.config.js", "node_modules"],
   rules: {
     // When array types get complex enough `Array<...>` is nicer looking than `(...)[]`.
     "@typescript-eslint/array-type": "off",
@@ -27,7 +27,8 @@ module.exports = {
     "@typescript-eslint/no-empty-object-type": ["error", { allowInterfaces: "with-single-extends" }],
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-namespace": ["error", { allowDeclarations: true }],
-    "@typescript-eslint/no-unsafe-declaration-merging": "off", // TODO: reenable in V10
+    // TODO(LukeAbby): reenable once all document declaration merges can be removed
+    "@typescript-eslint/no-unsafe-declaration-merging": "off",
     "@typescript-eslint/no-unused-expressions": "off", // expectTypeOf seems to trip this rule.
     "@typescript-eslint/no-unused-vars": [
       "error",

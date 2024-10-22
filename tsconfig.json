@@ -15,5 +15,7 @@
     "verbatimModuleSyntax": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["index.d.mts"]
+  "include": ["index.d.mts"],
+
+  "references": [{ "path": "./tests" }]
 }

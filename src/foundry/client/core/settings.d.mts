@@ -205,7 +205,6 @@ declare global {
     /**
      * @deprecated - {@link SettingConfig | `SettingConfig`}
      */
-    // eslint-disable-next-line @typescript-eslint/no-empty-interface
     interface Values extends SettingConfig {}
   }
 }
@@ -248,6 +247,7 @@ type SettingType<T extends ClientSettings.Type> =
   | (T extends DataField.Any ? DataField.AssignmentTypeFor<T> : never)
   | (T extends SettingConstructor ? ConstructorToSettingType<T> : T extends SettingFunction ? ReturnType<T> : never);
 
+// TODO(LukeAbby): The exact semantics for when `undefined` is replaced with `null` are unclear.
 type ReplaceUndefinedWithNull<T> = T extends undefined ? null : T;
 
 type GetNamespaces<SettingPath extends PropertyKey> = SettingPath extends `${infer Scope}.${string}` ? Scope : never;
