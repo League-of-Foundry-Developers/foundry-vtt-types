@@ -1116,7 +1116,7 @@ declare namespace Document {
   // - `never` returns `never` (instead of `PropertyKey`)
   // - `unknown` returns `string` (instead of `never`)
   // - Strips out non string keys.
-  type FlagKeyOf<T> = T extends unknown ? string : T extends never ? never : keyof T & string;
+  type FlagKeyOf<T> = unknown extends T ? string : [T] extends [never] ? never : keyof T & string;
 
   type FlagGetKey<T, K extends PropertyKey> = K extends keyof T ? T[K] : never;
 

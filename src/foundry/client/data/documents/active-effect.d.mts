@@ -2,6 +2,7 @@ import type { DataField } from "../../../common/data/fields.d.mts";
 import type { DataModel } from "../../../common/abstract/data.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
+import type { AnyObject } from "../../../../types/utils.d.mts";
 
 declare global {
   namespace ActiveEffect {
@@ -152,11 +153,7 @@ declare global {
      * @param change  - The change data being applied.
      * @param changes - The aggregate update paths and their updated values.
      */
-    protected _applyLegacy(
-      actor: Actor.ConfiguredInstance,
-      change: EffectDurationData,
-      changes: Record<string, unknown>,
-    ): void;
+    protected _applyLegacy(actor: Actor.ConfiguredInstance, change: EffectDurationData, changes: AnyObject): void;
 
     /**
      * Cast a raw EffectChangeData change string to the desired data type.
@@ -202,7 +199,7 @@ declare global {
       change: EffectChangeData,
       current: any,
       delta: any,
-      changes: Record<string, any>,
+      changes: AnyObject,
     ): void;
 
     /**
@@ -220,7 +217,7 @@ declare global {
       change: EffectChangeData,
       current: any,
       delta: any,
-      changes: Record<string, any>,
+      changes: AnyObject,
     ): void;
 
     /**
@@ -238,7 +235,7 @@ declare global {
       change: EffectChangeData,
       current: any,
       delta: any,
-      changes: Record<string, any>,
+      changes: AnyObject,
     ): void;
 
     /**
@@ -256,7 +253,7 @@ declare global {
       change: EffectChangeData,
       current: any,
       delta: any,
-      changes: Record<string, any>,
+      changes: AnyObject,
     ): void;
 
     /**
@@ -273,7 +270,7 @@ declare global {
       change: EffectChangeData,
       current: any,
       delta: any,
-      changes: Record<string, any>,
+      changes: AnyObject,
     ): void;
 
     /**

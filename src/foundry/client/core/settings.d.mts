@@ -197,7 +197,7 @@ declare global {
       SettingType<T> | (T extends DataModel.Any ? T : never)
     >;
 
-    interface RegisterOptions<T extends Type = (value: unknown) => unknown>
+    interface RegisterOptions<T extends Type>
       extends InexactPartial<Omit<SettingOptions<T>, "key" | "namespace">> {}
 
     type RegisterSubmenu = Omit<SettingSubmenuConfig, "key" | "namespace">;
