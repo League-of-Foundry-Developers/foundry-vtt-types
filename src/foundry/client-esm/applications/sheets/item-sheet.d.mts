@@ -9,4 +9,14 @@ export default class ItemSheetV2<
   Configuration extends
     DocumentSheetV2.Configuration<Item.ConfiguredInstance> = DocumentSheetV2.Configuration<Item.ConfiguredInstance>,
   RenderOptions extends DocumentSheetV2.RenderOptions = DocumentSheetV2.RenderOptions,
-> extends DocumentSheetV2<Item.ConfiguredInstance, RenderContext, Configuration, RenderOptions> {}
+> extends DocumentSheetV2<Item.ConfiguredInstance, RenderContext, Configuration, RenderOptions> {
+  /**
+   * The Item document managed by this sheet.
+   */
+  get item(): this["document"];
+
+  /**
+   * The Actor instance which owns this Item, if any.
+   */
+  get actor(): this["document"]["actor"];
+}
