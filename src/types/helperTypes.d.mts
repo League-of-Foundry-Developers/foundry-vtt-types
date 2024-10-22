@@ -129,7 +129,7 @@ export type HandleEmptyObject<
  * there is an issue.
  */
 export type ConformRecord<T extends object, V> = {
-  [K in keyof T]: [T[K]] extends [V] ? T[K] : never;
+  [K in keyof T]: T[K] extends V ? T[K] : never;
 };
 
 /**

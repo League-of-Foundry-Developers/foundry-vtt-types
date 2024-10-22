@@ -27,7 +27,8 @@ declare class BaseFolder extends Document<BaseFolder.Schema, BaseFolder.Metadata
 
   static override defineSchema(): BaseFolder.Schema;
 
-  static override validateJoint(data: fields.SchemaField.InnerAssignmentType<BaseFolder.Schema>): void;
+  // NOTE(LukeAbby): The `validateJoint` method override was left off because it didn't change the signature and it also seemed to cause a loop.
+  // See: https://gist.github.com/LukeAbby/43ee5c2a39cd33f3fac693d1d4a5653f
 
   /**
    * Allow folder sorting modes
