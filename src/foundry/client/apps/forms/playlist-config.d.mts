@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentInstance } from "../../../../types/helperTypes.d.mts";
 import type { GetDataReturnType, MaybePromise, ValueOf } from "../../../../types/utils.d.mts";
 
 declare global {
@@ -7,8 +6,9 @@ declare global {
    * @typeParam Options - the type of the options object
    */
   class PlaylistConfig<
-    Options extends DocumentSheetOptions<Playlist> = DocumentSheetOptions<Playlist>,
-  > extends DocumentSheet<Options, ConfiguredDocumentInstance<typeof Playlist>> {
+    Options extends
+      DocumentSheetOptions<Playlist.ConfiguredInstance> = DocumentSheetOptions<Playlist.ConfiguredInstance>,
+  > extends DocumentSheet<Options, Playlist.ConfiguredInstance> {
     /**
      * @defaultValue
      * ```typescript
@@ -18,7 +18,7 @@ declare global {
      * options.width = 360;
      * ```
      */
-    static get defaultOptions(): DocumentSheetOptions<Playlist>;
+    static get defaultOptions(): DocumentSheetOptions<Playlist.ConfiguredInstance>;
 
     override get title(): string;
 
@@ -35,8 +35,10 @@ declare global {
   namespace PlaylistConfig {
     type Any = PlaylistConfig<any>;
 
-    interface PlaylistConfigData<Options extends DocumentSheetOptions<Playlist> = DocumentSheetOptions<Playlist>>
-      extends DocumentSheet.DocumentSheetData<Options, ConfiguredDocumentInstance<typeof Playlist>> {
+    interface PlaylistConfigData<
+      Options extends
+        DocumentSheetOptions<Playlist.ConfiguredInstance> = DocumentSheetOptions<Playlist.ConfiguredInstance>,
+    > extends DocumentSheet.DocumentSheetData<Options, Playlist.ConfiguredInstance> {
       modes: Record<ValueOf<typeof foundry.CONST.PLAYLIST_MODES>, string>;
       sorting: Record<ValueOf<typeof foundry.CONST.PLAYLIST_SORT_MODES>, string>;
     }

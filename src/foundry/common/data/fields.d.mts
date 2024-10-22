@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentInstance } from "../../../types/helperTypes.mts";
 import type {
   RemoveIndexSignatures,
   ConstructorOf,
@@ -1845,7 +1844,7 @@ declare namespace EmbeddedCollectionField {
    * @typeParam ElementFieldType - the DataField type of the elements in the EmbeddedCollectionField
    */
   type InitializedElementType<ElementFieldType extends Document.AnyConstructor> =
-    ConfiguredDocumentInstance<ElementFieldType>;
+    Document.ToConfiguredInstance<ElementFieldType>;
 
   /**
    * A type to infer the initialized element type of an EmbeddedCollectionField from its ElementFieldType.
@@ -1996,7 +1995,7 @@ declare namespace EmbeddedCollectionDeltaField {
    * @typeParam ElementFieldType - the DataField type of the elements in the EmbeddedCollectionDeltaField
    */
   type InitializedElementType<ElementFieldType extends Document.AnyConstructor> =
-    ConfiguredDocumentInstance<ElementFieldType>;
+    Document.ToConfiguredInstance<ElementFieldType>;
 
   /**
    * A type to infer the initialized element type of an EmbeddedCollectionDeltaField from its ElementFieldType.

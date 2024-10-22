@@ -1,4 +1,4 @@
-import type { ConfiguredDocumentInstance } from "../../../../types/helperTypes.d.mts";
+export {};
 
 declare global {
   /**
@@ -8,7 +8,7 @@ declare global {
    */
   class CombatantConfig<Options extends CombatantConfig.Options = CombatantConfig.Options> extends DocumentSheet<
     Options,
-    ConfiguredDocumentInstance<typeof Combatant>
+    Combatant.ConfiguredInstance
   > {
     /**
      * @defaultValue

@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentInstance } from "../../../../types/helperTypes.d.mts";
 import type { GetDataReturnType, MaybePromise } from "../../../../types/utils.d.mts";
 
 declare global {
@@ -10,8 +9,9 @@ declare global {
    * @typeParam Options - the type of the options object
    */
   class PlaylistSoundConfig<
-    Options extends DocumentSheetOptions<PlaylistSound> = DocumentSheetOptions<PlaylistSound>,
-  > extends DocumentSheet<Options, ConfiguredDocumentInstance<typeof PlaylistSound>> {
+    Options extends
+      DocumentSheetOptions<PlaylistSound.ConfiguredInstance> = DocumentSheetOptions<PlaylistSound.ConfiguredInstance>,
+  > extends DocumentSheet<Options, PlaylistSound.ConfiguredInstance> {
     /**
      * @defaultValue
      * ```typescript
@@ -22,7 +22,7 @@ declare global {
      * });
      * ```
      */
-    static override get defaultOptions(): DocumentSheetOptions<PlaylistSound>;
+    static override get defaultOptions(): DocumentSheetOptions<PlaylistSound.ConfiguredInstance>;
 
     override get title(): string;
 
@@ -54,8 +54,9 @@ declare global {
     }
 
     interface PlaylistSoundConfigData<
-      Options extends DocumentSheetOptions<PlaylistSound> = DocumentSheetOptions<PlaylistSound>,
-    > extends DocumentSheet.DocumentSheetData<Options, ConfiguredDocumentInstance<typeof PlaylistSound>> {
+      Options extends
+        DocumentSheetOptions<PlaylistSound.ConfiguredInstance> = DocumentSheetOptions<PlaylistSound.ConfiguredInstance>,
+    > extends DocumentSheet.DocumentSheetData<Options, PlaylistSound.ConfiguredInstance> {
       lvolume: number;
     }
   }

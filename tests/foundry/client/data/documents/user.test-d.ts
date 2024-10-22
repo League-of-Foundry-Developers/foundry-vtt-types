@@ -1,5 +1,4 @@
 import { assertType, expectTypeOf } from "vitest";
-import type { ConfiguredDocumentInstance } from "../../../../../src/types/helperTypes.d.mts";
 
 // @ts-expect-error - requires a name.
 new User();
@@ -16,7 +15,7 @@ expectTypeOf(user.viewedScene).toEqualTypeOf<string | null>();
 assertType<Partial<Record<string, boolean>>>(user.permissions);
 expectTypeOf(user.getHotbarMacros().map((each) => each.macro)).toEqualTypeOf<Array<Macro | null>>();
 expectTypeOf(user.getHotbarMacros().map((each) => each.macro)).toEqualTypeOf<
-  Array<ConfiguredDocumentInstance<typeof Macro> | null>
+  Array<Macro.ConfiguredInstance | null>
 >();
 
 user.assignHotbarMacro(new Macro({ name: "Foo" }), 1);

@@ -123,7 +123,7 @@ Example:
 ````typescript
 declare class ActorSheet<Options extends ActorSheet.Options = ActorSheet.Options> extends DocumentSheet<
   Options,
-  ConfiguredDocumentInstance<typeof Actor>
+  Actor.ConfiguredInstance
 > {
   /**
    * @defaultValue

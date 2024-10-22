@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentInstance } from "../../../../types/helperTypes.d.mts";
 import type { GetDataReturnType, MaybePromise, ValueOf } from "../../../../types/utils.d.mts";
 
 declare global {
@@ -9,7 +8,7 @@ declare global {
    */
   class FolderConfig<Options extends FolderConfig.Options = FolderConfig.Options> extends DocumentSheet<
     Options,
-    ConfiguredDocumentInstance<typeof Folder>
+    Folder.ConfiguredInstance
   > {
     /**
      * @defaultValue
@@ -37,8 +36,8 @@ declare global {
   namespace FolderConfig {
     type Any = FolderConfig<any>;
 
-    interface Options extends DocumentSheetOptions<Folder> {
-      resolve?: (doc: ConfiguredDocumentInstance<typeof Folder>) => void;
+    interface Options extends DocumentSheetOptions<Folder.ConfiguredInstance> {
+      resolve?: (doc: Folder.ConfiguredInstance) => void;
     }
 
     interface FormData {

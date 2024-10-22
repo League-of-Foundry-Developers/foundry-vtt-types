@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentInstance } from "../../../../types/helperTypes.d.mts";
 import type { ConstructorOf, DeepPartial, InexactPartial, Mixin, ValueOf } from "../../../../types/utils.d.mts";
 import type { DatabaseCreateOperation } from "../../../common/abstract/_types.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
@@ -345,7 +344,7 @@ declare class ClientDocument<BaseDocument extends Document.Internal.Instance.Any
           types: string[];
         }
       >,
-  ): Promise<ConfiguredDocumentInstance<T> | null | undefined>;
+  ): Promise<Document.ToConfiguredInstance<T> | null | undefined>;
 
   /**
    * Present a Dialog form to confirm deletion of this Document.
@@ -381,7 +380,7 @@ declare class ClientDocument<BaseDocument extends Document.Internal.Instance.Any
     this: T,
     data: DropData<InstanceType<T>>,
     options?: FromDropDataOptions,
-  ): Promise<ConfiguredDocumentInstance<T> | undefined>;
+  ): Promise<Document.ToConfiguredInstance<T> | undefined>;
 
   /**
    * Create the Document from the given source with migration applied to it.

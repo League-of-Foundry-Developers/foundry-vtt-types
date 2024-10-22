@@ -1,5 +1,4 @@
 import { expectTypeOf } from "vitest";
-import type { ConfiguredDocumentInstance } from "../../../../../src/types/helperTypes.d.mts";
 import type Document from "../../../../../src/foundry/common/abstract/document.d.mts";
 
 const token = new Token(new TokenDocument());
@@ -11,7 +10,7 @@ expectTypeOf(token.document.x).toEqualTypeOf<number>();
 expectTypeOf(token.document.y).toEqualTypeOf<number>();
 expectTypeOf(token.document.hidden).toEqualTypeOf<boolean>();
 expectTypeOf(token.emitsLight).toEqualTypeOf<boolean>();
-expectTypeOf(token.toggleVisibility()).toEqualTypeOf<Promise<ConfiguredDocumentInstance<typeof TokenDocument>[]>>();
+expectTypeOf(token.toggleVisibility()).toEqualTypeOf<Promise<TokenDocument.ConfiguredInstance[]>>();
 expectTypeOf(token.toggleEffect(CONFIG.statusEffects[0])).toEqualTypeOf<Promise<boolean>>();
 declare const effect: Document.Stored<ActiveEffect>;
 expectTypeOf(token.toggleEffect(effect)).toEqualTypeOf<Promise<boolean>>();
