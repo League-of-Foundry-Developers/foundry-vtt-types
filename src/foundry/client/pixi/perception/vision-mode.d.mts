@@ -70,25 +70,25 @@ declare global {
      * Special activation handling that could be implemented by VisionMode subclasses
      * @param source - Activate this VisionMode for a specific source
      */
-    _activate(source: foundry.canvas.sources.PointVisionSource<any>): void;
+    _activate(source: foundry.canvas.sources.PointVisionSource.Any): void;
 
     /**
      * Special deactivation handling that could be implemented by VisionMode subclasses
      * @param source - Deactivate this VisionMode for a specific source
      */
-    _deactivate(source: foundry.canvas.sources.PointVisionSource<any>): void;
+    _deactivate(source: foundry.canvas.sources.PointVisionSource.Any): void;
 
     /**
      * Special handling which is needed when this Vision Mode is activated for a VisionSource.
      * @param source - Activate this VisionMode for a specific source
      */
-    activate(source: foundry.canvas.sources.PointVisionSource<any>): void;
+    activate(source: foundry.canvas.sources.PointVisionSource.Any): void;
 
     /**
      * Special handling which is needed when this Vision Mode is deactivated for a VisionSource.
      * @param source - Deactivate this VisionMode for a specific source
      */
-    deactivate(source: foundry.canvas.sources.PointVisionSource<any>): void;
+    deactivate(source: foundry.canvas.sources.PointVisionSource.Any): void;
 
     /**
      * An animation function which runs every frame while this Vision Mode is active.

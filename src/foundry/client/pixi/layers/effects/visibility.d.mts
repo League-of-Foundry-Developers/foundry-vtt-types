@@ -33,7 +33,7 @@ declare global {
      * }
      * ```
      */
-    visionModeData: { source: foundry.canvas.sources.PointVisionSource<any> | null; activeLightingOptions: Record<string, unknown> };
+    visionModeData: { source: foundry.canvas.sources.PointVisionSource.Any | null; activeLightingOptions: Record<string, unknown> };
 
     /**
      * Define whether each lighting layer is enabled, required, or disabled by this vision mode.
@@ -184,7 +184,7 @@ declare global {
 
   interface CanvasVisibilityTest {
     point: PIXI.Point;
-    los: Map<foundry.canvas.sources.PointVisionSource<any>, boolean>;
+    los: Map<foundry.canvas.sources.PointVisionSource.Any, boolean>;
   }
 
   interface CanvasVisibilityTestConfig {

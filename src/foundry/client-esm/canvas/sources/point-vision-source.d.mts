@@ -164,6 +164,8 @@ declare class PointVisionSource<SourceData extends PointVisionSource.VisionSourc
 }
 
 declare namespace PointVisionSource {
+  type Any = PointVisionSource<VisionSourceData>;
+
   interface VisionSourceData
     extends RenderedEffectSource.RenderedEffectSourceData,
       PointEffectSourceMixin.PointEffectSourceData {

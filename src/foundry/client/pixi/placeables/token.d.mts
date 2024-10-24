@@ -294,7 +294,7 @@ declare global {
     /**
      * A reference to the VisionSource object which defines this vision source area of effect
      */
-    vision: foundry.canvas.sources.PointVisionSource<any>;
+    vision: foundry.canvas.sources.PointVisionSource.Any;
 
     /**
      * A reference to the LightSource object which defines this light source area of effect

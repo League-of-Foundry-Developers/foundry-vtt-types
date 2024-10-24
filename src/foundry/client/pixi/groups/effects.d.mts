@@ -25,7 +25,7 @@ declare global {
     /**
      * A Collection of vision sources which are currently active within the rendered Scene.
      */
-    visionSources: Collection<foundry.canvas.sources.PointVisionSource<any>>;
+    visionSources: Collection<foundry.canvas.sources.PointVisionSource.Any>;
 
     /**
      * A set of vision mask filters used in visual effects group
