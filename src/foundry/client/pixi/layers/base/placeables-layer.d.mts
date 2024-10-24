@@ -15,6 +15,12 @@ declare global {
     constructor();
 
     /**
+     * Sort order for placeables belonging to this layer
+     * @defaultValue `0`
+     */
+    static SORT_ORDER: number;
+
+    /**
      * Placeable Layer Objects
      * @defaultValue `null`
      */
@@ -83,12 +89,7 @@ declare global {
     static get placeableClass(): ConstructorOf<PlaceableObject>;
 
     /**
-     * Return the precision relative to the Scene grid with which Placeable objects should be snapped
-     */
-    get gridPrecision(): number;
-
-    /**
-     * If objects on this PlaceableLayer have a HUD UI, provide a reference to its instance
+     * If objects on this PlaceablesLayer have a HUD UI, provide a reference to its instance
      * @remarks Returns `null` unless overridden
      */
     get hud(): BasePlaceableHUD<InstanceType<Document.ConfiguredObjectClassForName<DocumentName>>> | null;
@@ -127,6 +128,27 @@ declare global {
      * @defaultValue `false`
      */
     highlightObjects: boolean;
+
+    /**
+     * Get the maximum sort value of all placeables.
+     * @returns The maximum sort value (-Infinity if there are no objects)
+     */
+    getMaxSort(): number;
+
+    /**
+     * Send the controlled objects of this layer to the back or bring them to the front.
+     * @param front - Bring to front instead of send to back?
+     * @returns Returns true if the layer has sortable object, and false otherwise
+     */
+    protected _sentToBackOrBringToFront(front: boolean): boolean;
+
+
+    /**
+     * Snaps the given point to grid. The layer defines the snapping behavior.
+     * @param point - The point that is to be snapped
+     * @returns The snapped point
+     */
+    getSnappedPoint(point: Point): Point;
 
     /**
      * Obtain an iterable of objects which should be added to this PlaceableLayer
@@ -192,27 +214,39 @@ declare global {
 
     /**
      * Simultaneously rotate multiple PlaceableObjects using a provided angle or incremental.
-     * This executes a single database operation using Scene.update.
+     * This executes a single database operation using Scene#updateEmbeddedDocuments.
      * If rotating only a single object, it is better to use the PlaceableObject.rotate instance method.
      *
      * @param options - Options which configure how multiple objects are rotated
      *                  (default: `{}`)
      * @returns An array of objects which were rotated
+     * @throws An error if explicitly provided id is not valid
      */
-    rotateMany(options?: RotationOptions): Promise<InstanceType<Document.ConfiguredObjectClassForName<DocumentName>>[]>;
+    rotateMany(options?: InexactPartial<RotationOptions>): Promise<InstanceType<Document.ConfiguredObjectClassForName<DocumentName>>[]>;
 
     /**
      * Simultaneously move multiple PlaceableObjects via keyboard movement offsets.
-     * This executes a single database operation using Scene.update.
-     * If moving only a single object, this will delegate to PlaceableObject.update for performance reasons.
+     * This executes a single database operation using Scene#updateEmbeddedDocuments.
      *
      * @param options - Options which configure how multiple objects are moved
      *                  (default: `{}`)
      * @returns An array of objects which were moved during the operation
+     * @throws An error if explicitly provided id is not valid
      */
     moveMany(
-      options?: MovementOptions,
+      options?: InexactPartial<MovementOptions>,
     ): Promise<InstanceType<Document.ConfiguredObjectClassForName<DocumentName>>[]> | undefined;
+
+    /**
+     * An internal helper method to identify the array of PlaceableObjects which can be moved or rotated.
+     * @param ids           - An explicit array of IDs requested.
+     * @param includeLocked - Include locked objects which would otherwise be ignored?
+     * @returns An array of objects which can be moved or rotated
+     * @throws An error if any explicitly requested ID is not valid
+     * @remarks Any non-array input for `ids` will default to using currently controlled objects,
+     * allowing you to provide `true` to the includeLocked
+     */
+    protected _getMovableObjects(ids?: string[] | null, includeLocked?: boolean): Document.ConfiguredObjectInstanceForName<DocumentName>;
 
     /**
      * Undo a change to the objects in this layer
@@ -265,6 +299,29 @@ declare global {
         snap: boolean;
       }>,
     ): Promise<InstanceType<Document.ConfiguredClassForName<DocumentName>>[]>;
+
+    /**
+     * Get the data of the copied object pasted at the position given by the offset.
+     * Called by {@link PlaceablesLayer#pasteObjects} for each copied object.
+     * @param copy    - The copied object that is pasted
+     * @param offset  - The offset relative from the current position to the destination
+     * @param options - Options of {@link PlaceablesLayer#pasteObjects}
+     * @returns The update data
+     */
+    _pasteObject(copy: Document.ConfiguredObjectInstanceForName<DocumentName>, offset: Point, options?: InexactPartial<{
+
+      /**
+       * Paste in a hidden state, if applicable.
+       * @defaultValue `false`
+       */
+      hidden: boolean;
+
+      /**
+       * Snap to the grid.
+       * @defaultValue `true`
+       */
+      snap: boolean;
+    }>): Document.ConfiguredSourceForName<DocumentName>
 
     /**
      * Select all PlaceableObject instances which fall within a coordinate rectangle.
@@ -373,11 +430,13 @@ declare global {
 
     protected override _onClickLeft(event: PIXI.FederatedEvent): void;
 
-    protected override _onDragLeftStart(event: PIXI.FederatedEvent): Promise<unknown>;
+    protected override _canDragLeftStart(user: User.ConfiguredInstance, event: PIXI.FederatedEvent): boolean;
+
+    protected override _onDragLeftStart(event: PIXI.FederatedEvent): unknown;
 
     protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
-    protected override _onDragLeftDrop(event: PIXI.FederatedEvent): Promise<void>;
+    protected override _onDragLeftDrop(event: PIXI.FederatedEvent): void;
 
     protected override _onDragLeftCancel(event: PointerEvent): void;
 
@@ -385,19 +444,22 @@ declare global {
 
     protected override _onMouseWheel(event: WheelEvent): void;
 
-    /**
-     * @param event - Unused
-     */
-    protected override _onDeleteKey(event?: KeyboardEvent): Promise<void>;
+    protected override _onDeleteKey(event: KeyboardEvent): Promise<void>;
 
     /**
-     * @deprecated since v11, will be removed in v11
+     * @deprecated since v12, will be removed in v14
+     * @remarks `"PlaceablesLayer#gridPrecision is deprecated. Use PlaceablesLayer#getSnappedPoint instead of GridLayer#getSnappedPosition and PlaceablesLayer#gridPrecision."`
+     */
+    get gridPrecision(): number;
+
+    /**
+     * @deprecated since v11, will be removed in v13
      * @remarks `"PlaceableLayer#_highlight is deprecated. Use PlaceableLayer#highlightObjects instead."`
      */
     get _highlight(): this["highlightObjects"];
 
     /**
-     * @deprecated since v11, will be removed in v11
+     * @deprecated since v11, will be removed in v13
      * @remarks `"PlaceableLayer#_highlight is deprecated. Use PlaceableLayer#highlightObjects instead."`
      */
     set _highlight(state);
@@ -414,6 +476,8 @@ declare global {
      */
     data: InstanceType<Document.ConfiguredClassForName<DocumentName>>["_source"][];
   }
+
+  type PlaceablesLayerOptions<DocumentName extends Document.PlaceableType> = PlaceablesLayer.LayerOptions<DocumentName>
 
   namespace PlaceablesLayer {
     type Any = PlaceablesLayer<any>;
@@ -433,13 +497,6 @@ declare global {
      */
     interface LayerOptions<DocumentName extends Type> extends InteractionLayer.LayerOptions {
       baseClass: typeof PlaceablesLayer;
-
-      /**
-       * Does this layer support a mouse-drag workflow to create new objects?
-       * @defaultValue `game.user.isGM`
-       */
-      canDragCreate: boolean;
-
       /**
        * Can placeable objects in this layer be controlled?
        * @defaultValue `false`
@@ -453,10 +510,9 @@ declare global {
       rotatableObjects: boolean;
 
       /**
-       * Do objects in this layer snap to the grid
-       * @defaultValue `true`
+       * Confirm placeable object deletion with a dialog?
        */
-      snapToGrid: boolean;
+      confirmDeleteKey: boolean;
 
       /**
        * The class used to represent an object on this layer.
@@ -469,12 +525,6 @@ declare global {
        * @defaultValue `true`
        */
       quadtree: boolean;
-
-      /**
-       * Are contained objects sorted based on elevation instead of zIndex
-       * @defaultValue `false`
-       */
-      elevationSorting: boolean;
     }
 
     namespace LayerOptions {
@@ -491,46 +541,58 @@ interface RotationOptions {
   /**
    * A target angle of rotation (in degrees) where zero faces "south"
    */
-  angle?: number;
+  angle: number;
 
   /**
    * An incremental angle of rotation (in degrees)
    */
-  delta?: number;
+  delta: number;
 
   /**
    * Snap the resulting angle to a multiple of some increment (in degrees)
    */
-  snap?: number;
+  snap: number;
 
   /**
    * An Array of object IDs to target for rotation
    */
-  ids?: string[];
+  ids: string[];
+
+  /**
+   * Rotate objects whose documents are locked?
+   * @defaultValue `false`
+   */
+  includeLocked: boolean;
 }
 
 interface MovementOptions {
   /**
-   * The number of incremental grid units in the horizontal direction
+   * Horizontal movement direction
    * @defaultValue `0`
    */
-  dx?: number;
+  dx: -1 | 0 | 1;
 
   /**
-   * The number of incremental grid units in the vertical direction
+   * Vertical movement direction
    * @defaultValue `0`
    */
-  dy?: number;
+  dy: -1 | 0 | 1;
 
   /**
-   * Rotate the token to the keyboard direction instead of moving
+   * Rotate the placeable to the keyboard direction instead of moving
    * @defaultValue
    */
-  rotate?: boolean;
+  rotate: boolean;
 
   /**
-   * An Array of object IDs to target for movement
+   * An Array of object IDs to target for movement. The default is the IDs of controlled objects.
    * @defaultValue `this.controlled.filter(o => !o.data.locked).map(o => o.id)`
    */
-  ids?: string[];
+  ids: string[];
+
+  /**
+   * Move objects whose documents are locked?
+   * @defaultValue `false`
+   */
+  includeLocked: boolean;
 }

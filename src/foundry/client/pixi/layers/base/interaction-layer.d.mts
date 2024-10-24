@@ -66,36 +66,43 @@ declare global {
 
     /**
      * Handle double left-click events which originate from the Canvas stage.
-     * @see {@link Canvas._onClickLeft2}
+     * @see {@link Canvas.#onClickLeft2}
      * @param event - The PIXI InteractionEvent which wraps a PointerEvent
      */
     protected _onClickLeft2(event: PIXI.FederatedEvent): void;
 
+  /**
+   * Does the User have permission to left-click drag on the Canvas?
+   * @param user  - The User performing the action.
+   * @param event - The event object.
+   */
+  protected _canDragLeftStart(user: User.ConfiguredInstance, event: PIXI.FederatedEvent): boolean;
+
     /**
      * Start a left-click drag workflow originating from the Canvas stage.
-     * @see {@link Canvas._onDragLeftStart}
+     * @see {@link Canvas.#onDragLeftStart}
      * @param event - The PIXI InteractionEvent which wraps a PointerEvent
      * @remarks Current implementation always returns undefined
      */
-    protected _onDragLeftStart(event: PIXI.FederatedEvent): Promise<unknown>;
+    protected _onDragLeftStart(event: PIXI.FederatedEvent): unknown;
 
     /**
      * Continue a left-click drag workflow originating from the Canvas stage.
-     * @see {@link Canvas._onDragLeftMove}
+     * @see {@link Canvas.#onDragLeftMove}
      * @param event - The PIXI InteractionEvent which wraps a PointerEvent
      */
     protected _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
     /**
      * Conclude a left-click drag workflow originating from the Canvas stage.
-     * @see {@link Canvas._onDragLeftDrop}
+     * @see {@link Canvas.#onDragLeftDrop}
      * @param vent - The PIXI InteractionEvent which wraps a PointerEvent
      */
-    protected _onDragLeftDrop(event: PIXI.FederatedEvent): Promise<void>;
+    protected _onDragLeftDrop(event: PIXI.FederatedEvent): void;
 
     /**
      * Cancel a left-click drag workflow originating from the Canvas stage.
-     * @see {@link Canvas._onDragLeftDrop}
+     * @see {@link Canvas.#onDragLeftDrop}
      * @param event - A right-click pointer event on the document.
      */
     protected _onDragLeftCancel(event: PointerEvent): void;
@@ -124,8 +131,6 @@ declare global {
 
   namespace InteractionLayer {
     interface LayerOptions extends CanvasLayer.LayerOptions {
-      sortActiveTop: boolean;
-
       zIndex: number;
 
       baseClass: typeof InteractionLayer;
