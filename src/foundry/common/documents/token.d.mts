@@ -168,12 +168,6 @@ declare namespace BaseToken {
     prependAdjective: fields.BooleanField;
 
     /**
-     * The token's texture on the canvas.
-     * @defaultValue `BaseToken.DEFAULT_ICON`
-     */
-    texture: TextureData<{ initial: () => typeof BaseToken.DEFAULT_ICON; wildcard: true }>;
-
-    /**
      * The width of the Token in grid units
      * @defaultValue `1`
      */
@@ -184,6 +178,20 @@ declare namespace BaseToken {
      * @defaultValue `1`
      */
     height: fields.NumberField<{ positive: true; initial: 1; label: "Height" }>;
+
+    /**
+     * The token's texture on the canvas.
+     * @defaultValue `BaseToken.DEFAULT_ICON`
+     */
+    texture: TextureData<{ initial: () => typeof BaseToken.DEFAULT_ICON; wildcard: true }>;
+
+    /**
+     * @defaultValue `CONST.TOKEN_HEXAGONAL_SHAPES.ELLIPSE_1`
+     */
+    hexagonalShape: fields.NumberField<{
+      initial: typeof CONST.TOKEN_HEXAGONAL_SHAPES.ELLIPSE_1;
+      choices: CONST.TOKEN_HEXAGONAL_SHAPES[];
+    }>;
 
     /**
      * Prevent the Token image from visually rotating?
@@ -393,6 +401,61 @@ declare namespace BaseToken {
         validate: () => void;
       }
     >;
+
+    /**
+     * @defaultValue see properties
+     */
+    occludable: fields.SchemaField<{
+      /**
+       * @defaultValue `0`
+       */
+      radius: fields.NumberField<{ nullable: false; min: 0; step: 0.01; initial: 0 }>;
+    }>;
+
+    /**
+     * @defaultValue see properties
+     */
+    ring: fields.SchemaField<{
+      /**
+       * @defaultValue `false`
+       */
+      enabled: fields.BooleanField;
+
+      /**
+       * @defaultValue see properties
+       */
+      colors: fields.SchemaField<{
+        /**
+         * @defaultValue `null`
+         */
+        ring: fields.ColorField;
+
+        /**
+         * @defaultValue `null`
+         */
+        background: fields.ColorField;
+      }>;
+
+      /**
+       * @defaultValue `1`
+       */
+      effects: fields.NumberField<{ initial: 1; min: 0; max: 8388607; integer: true }>;
+
+      /**
+       * @defaultValue see properties
+       */
+      subject: fields.SchemaField<{
+        /**
+         * @defaultValue `1`
+         */
+        scale: fields.NumberField<{ initial: 1; min: 0.5 }>;
+
+        /**
+         * @defaultValue `null`
+         */
+        texture: fields.FilePathField<{ categories: ["IMAGE"] }>;
+      }>;
+    }>;
 
     /**
      * An object of optional key/value flags

@@ -119,6 +119,11 @@ declare abstract class DataModel<
   #validationFailures: { fields: DataModelValidationFailure | null; joint: DataModelValidationFailure | null };
 
   /**
+   * A set of localization prefix paths which are used by this DataModel.
+   */
+  static LOCALIZATION_PREFIXES: string[];
+
+  /**
    * Initialize the source data for a new DataModel instance.
    * One-time migrations and initial cleaning operations are applied to the source data.
    * @param data    - The candidate source data from which the model will be constructed
