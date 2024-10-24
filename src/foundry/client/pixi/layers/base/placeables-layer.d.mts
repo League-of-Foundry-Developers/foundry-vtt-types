@@ -143,11 +143,11 @@ declare global {
     protected _sentToBackOrBringToFront(front: boolean): boolean;
 
 
-  /**
-   * Snaps the given point to grid. The layer defines the snapping behavior.
-   * @param point - The point that is to be snapped
-   * @returns The snapped point
-   */
+    /**
+     * Snaps the given point to grid. The layer defines the snapping behavior.
+     * @param point - The point that is to be snapped
+     * @returns The snapped point
+     */
     getSnappedPoint(point: Point): Point;
 
     /**
@@ -222,7 +222,7 @@ declare global {
      * @returns An array of objects which were rotated
      * @throws An error if explicitly provided id is not valid
      */
-    rotateMany(options?: RotationOptions): Promise<InstanceType<Document.ConfiguredObjectClassForName<DocumentName>>[]>;
+    rotateMany(options?: InexactPartial<RotationOptions>): Promise<InstanceType<Document.ConfiguredObjectClassForName<DocumentName>>[]>;
 
     /**
      * Simultaneously move multiple PlaceableObjects via keyboard movement offsets.
@@ -234,7 +234,7 @@ declare global {
      * @throws An error if explicitly provided id is not valid
      */
     moveMany(
-      options?: MovementOptions,
+      options?: InexactPartial<MovementOptions>,
     ): Promise<InstanceType<Document.ConfiguredObjectClassForName<DocumentName>>[]> | undefined;
 
     /**
@@ -309,6 +309,7 @@ declare global {
      * @returns The update data
      */
     _pasteObject(copy: Document.ConfiguredObjectInstanceForName<DocumentName>, offset: Point, options?: InexactPartial<{
+
       /**
        * Paste in a hidden state, if applicable.
        * @defaultValue `false`
@@ -540,28 +541,28 @@ interface RotationOptions {
   /**
    * A target angle of rotation (in degrees) where zero faces "south"
    */
-  angle?: number;
+  angle: number;
 
   /**
    * An incremental angle of rotation (in degrees)
    */
-  delta?: number;
+  delta: number;
 
   /**
    * Snap the resulting angle to a multiple of some increment (in degrees)
    */
-  snap?: number;
+  snap: number;
 
   /**
    * An Array of object IDs to target for rotation
    */
-  ids?: string[];
+  ids: string[];
 
   /**
    * Rotate objects whose documents are locked?
    * @defaultValue `false`
    */
-  includeLocked?: boolean;
+  includeLocked: boolean;
 }
 
 interface MovementOptions {
@@ -569,29 +570,29 @@ interface MovementOptions {
    * Horizontal movement direction
    * @defaultValue `0`
    */
-  dx?: -1 | 0 | 1;
+  dx: -1 | 0 | 1;
 
   /**
    * Vertical movement direction
    * @defaultValue `0`
    */
-  dy?:  -1 | 0 | 1;
+  dy: -1 | 0 | 1;
 
   /**
    * Rotate the placeable to the keyboard direction instead of moving
    * @defaultValue
    */
-  rotate?: boolean;
+  rotate: boolean;
 
   /**
    * An Array of object IDs to target for movement. The default is the IDs of controlled objects.
    * @defaultValue `this.controlled.filter(o => !o.data.locked).map(o => o.id)`
    */
-  ids?: string[];
+  ids: string[];
 
   /**
    * Move objects whose documents are locked?
    * @defaultValue `false`
    */
-  includeLocked?: boolean;
+  includeLocked: boolean;
 }
