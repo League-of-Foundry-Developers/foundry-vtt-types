@@ -50,7 +50,7 @@ declare global {
     /**
      * A SoundSource object which manages the area of effect for this ambient sound
      */
-    source: SoundSource;
+    source: foundry.canvas.sources.PointSoundSource;
 
     static override embeddedName: "AmbientSound";
 

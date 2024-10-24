@@ -20,7 +20,7 @@ declare global {
      * A mapping of ambient audio sources which are active within the rendered Scene
      * @defaultValue `new foundry.utils.Collection()`
      */
-    sources: foundry.utils.Collection<SoundSource>;
+    sources: foundry.utils.Collection<foundry.canvas.sources.PointSoundSource>;
 
     /**
      * @privateRemarks This is not overridden in foundry but reflects the real behavior.
