@@ -8,11 +8,6 @@ declare global {
     constructor();
 
     /**
-     * The current global light source.
-     */
-    globalLightSource: GlobalLightSource;
-
-    /**
      * Whether to currently animate light sources.
      */
     animateLightSources: boolean;
@@ -25,12 +20,12 @@ declare global {
     /**
      * A mapping of light sources which are active within the rendered Scene.
      */
-    lightSources: Collection<LightSource>;
+    lightSources: Collection<foundry.canvas.sources.PointLightSource>;
 
     /**
      * A Collection of vision sources which are currently active within the rendered Scene.
      */
-    visionSources: Collection<VisionSource>;
+    visionSources: Collection<foundry.canvas.sources.PointVisionSource.Any>;
 
     /**
      * A set of vision mask filters used in visual effects group

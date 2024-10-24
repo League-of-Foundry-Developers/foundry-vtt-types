@@ -1,5 +1,8 @@
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
+// TODO: Remove when the whole class is updated
+type LightSource = unknown;
+
 declare global {
   namespace AmbientLight {
     type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof AmbientLight>;

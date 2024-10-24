@@ -294,12 +294,12 @@ declare global {
     /**
      * A reference to the VisionSource object which defines this vision source area of effect
      */
-    vision: VisionSource;
+    vision: foundry.canvas.sources.PointVisionSource.Any;
 
     /**
      * A reference to the LightSource object which defines this light source area of effect
      */
-    light: LightSource;
+    light: foundry.canvas.sources.PointLightSource;
 
     /**
      * A reference to an animation that is currently in progress for this Token, if any

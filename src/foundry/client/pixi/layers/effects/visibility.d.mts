@@ -7,20 +7,16 @@ declare global {
    * @see {@link PointSource}
    */
   class CanvasVisibility extends CanvasLayer {
-    /**
-     * The exploration container which tracks exploration progress
-     */
-    explored: PIXI.Container;
 
     /**
-     * The container of current vision exploration
+     * The currently revealed vision.
      */
     vision: CanvasVisionContainer;
 
     /**
-     * The canonical line-of-sight polygon which defines current Token visibility.
+     * The exploration container which tracks exploration progress.
      */
-    los: PIXI.Graphics | undefined;
+    explored: PIXI.Container;
 
     /**
      * The optional visibility overlay sprite that should be drawn instead of the unexplored color in the fog of war.
@@ -37,7 +33,7 @@ declare global {
      * }
      * ```
      */
-    visionModeData: { source: VisionSource | null; activeLightingOptions: Record<string, unknown> };
+    visionModeData: { source: foundry.canvas.sources.PointVisionSource.Any | null; activeLightingOptions: Record<string, unknown> };
 
     /**
      * Define whether each lighting layer is enabled, required, or disabled by this vision mode.
@@ -47,6 +43,7 @@ declare global {
      *   background: VisionMode.LIGHTING_VISIBILITY.ENABLED,
      *    illumination: VisionMode.LIGHTING_VISIBILITY.ENABLED,
      *    coloration: VisionMode.LIGHTING_VISIBILITY.ENABLED,
+     *    darkness: VisionMode.LIGHTING_VISIBILITY.ENABLED,
      *    any: true
      * }
      * ```
@@ -55,6 +52,7 @@ declare global {
       illumination: CanvasVisibility.LightingVisibility;
       background: CanvasVisibility.LightingVisibility;
       coloration: CanvasVisibility.LightingVisibility;
+      darkness: CanvasVisibility.LightingVisibility;
       any: boolean;
     };
 
@@ -62,6 +60,11 @@ declare global {
      * A status flag for whether the layer initialization workflow has succeeded.
      */
     get initialized(): boolean;
+
+    /**
+     * Indicates whether containment filtering is required when rendering vision into a texture
+     */
+    protected get needsContainment(): boolean;
 
     /**
      * Does the currently viewed Scene support Token field of vision?
@@ -74,9 +77,19 @@ declare global {
     get textureConfiguration(): FogTextureConfiguration;
 
     /**
+     * Optional overrides for exploration sprite dimensions.
+     */
+    set explorationRect(rect: FogTextureConfiguration);
+
+    /**
      * Initialize all Token vision sources which are present on this layer
      */
     initializeSources(): void;
+
+    /**
+     * Initialize the vision mode.
+     */
+    initializeVisionMode(): void;
 
     protected override _draw(options?: Record<string, unknown>): Promise<void>;
 
@@ -128,6 +141,26 @@ declare global {
     ): boolean;
 
     /**
+     * Create the visibility test config.
+     * @param point   - The point in space to test, an object with coordinates x and y.
+     * @param options - Additional options which modify visibility testing.
+     */
+    _createVisibilityTestConfig(point: Point, options?: InexactPartial<{
+      /**
+       * A numeric radial offset which allows for a non-exact match.
+       * For example, if tolerance is 2 then the test will pass if the point
+       * is within 2px of a vision polygon
+       * @defaultValue `2`
+       */
+      tolerance: number;
+
+      /**
+       * An optional reference to the object whose visibility is being tested
+       */
+      object: PlaceableObject | null;
+    }>): CanvasVisibilityTestConfig;
+
+    /**
      * @deprecated since v11, will be removed in v13
      * @remarks `"fogOverlay is deprecated in favor of visibilityOverlay"`
      */
@@ -151,7 +184,7 @@ declare global {
 
   interface CanvasVisibilityTest {
     point: PIXI.Point;
-    los: Map<VisionSource, boolean>;
+    los: Map<foundry.canvas.sources.PointVisionSource.Any, boolean>;
   }
 
   interface CanvasVisibilityTestConfig {
