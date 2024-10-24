@@ -4,7 +4,7 @@ declare global {
   /**
    * A container group which displays interface elements rendered above other canvas groups.
    */
-  class InterfaceCanvasGroup extends BaseCanvasMixin(PIXI.Container) {
+  class InterfaceCanvasGroup extends CanvasGroupMixin(PIXI.Container) {
     /**
      * @defaultValue `"interface"`
      */

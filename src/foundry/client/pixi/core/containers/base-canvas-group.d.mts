@@ -1,6 +1,6 @@
 import type { InexactPartial, Mixin } from "../../../../../types/utils.d.mts";
 
-declare class BaseCanvasMixinClass {
+declare class CanvasGroup {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
   constructor(...args: any[]);
 
@@ -19,10 +19,26 @@ declare class BaseCanvasMixinClass {
   static tearDownChildren: boolean;
 
   /**
+   * The canonical name of the canvas group is the name of the constructor that is the immediate child of the defined base class.
+   */
+  get name(): string;
+
+  /**
+   * The name used by hooks to construct their hook string.
+   * Note: You should override this getter if hookName should not return the class constructor name.
+   */
+  get hookName(): string;
+
+  /**
    * A mapping of CanvasLayer classes which belong to this group.
-   * @remarks Default value defined by this.#createLayers, which pulls from CONFIG.Canvas.layers
+   * @remarks Default value defined by this._createLayers, which pulls from CONFIG.Canvas.layers
    */
   layers: Record<string, CanvasLayer>;
+
+  /**
+   * Create CanvasLayer instances which belong to the canvas group.
+   */
+  _createLayers(): Record<string, CanvasLayer>;
 
   /** Draw the canvas group and all its component layers. */
   draw(): Promise<void>;
@@ -37,9 +53,9 @@ declare global {
    * @param ContainerClass - The parent Container class being mixed.
    * @returns A ContainerClass subclass mixed with BaseCanvasMixin features.
    */
-  function BaseCanvasMixin<BaseClass extends BaseCanvasMixin.BaseClass>(
+  function CanvasGroupMixin<BaseClass extends BaseCanvasMixin.BaseClass>(
     ContainerClass: BaseClass,
-  ): Mixin<typeof BaseCanvasMixinClass, BaseClass>;
+  ): Mixin<typeof CanvasGroup, BaseClass>;
 
   namespace BaseCanvasMixin {
     type BaseClass = typeof AnyPIXIContainer;
