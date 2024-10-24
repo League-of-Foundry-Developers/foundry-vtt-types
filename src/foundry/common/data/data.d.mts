@@ -75,7 +75,6 @@ declare namespace LightData {
     /**
      * @defaultValue `0`
      */
-    // TODO: report undocumented
     priority: fields.NumberField<{ required: true; nullable: false; integer: true; initial: 0; min: 0 }>;
 
     /**
@@ -223,7 +222,6 @@ declare namespace ShapeData {
   }
 }
 
-// TODO: report additional, nonexistent `elevation` property documenation
 /**
  * A data model intended to be used as an inner EmbeddedDataField which defines a geometric shape.
  */
@@ -475,7 +473,6 @@ declare namespace TextureData {
     /**
      * @defaultValue `initial.fit ?? "fill"`
      */
-    // TODO: report missing documentation
     fit: fields.StringField<{ initial: string; choices: typeof CONST.TEXTURE_DATA_FIT_MODES }>;
 
     /**
@@ -508,8 +505,6 @@ declare namespace TextureData {
      * @defaultValue `initial.alphaThreshold ?? 0`
      */
     alphaThreshold: fields.AlphaField<{ nullable: false; initial: number }>;
-
-    // NOTE: continue here
   }
 }
 

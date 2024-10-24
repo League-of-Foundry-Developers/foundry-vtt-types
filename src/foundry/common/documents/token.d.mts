@@ -188,7 +188,6 @@ declare namespace BaseToken {
     /**
      * @defaultValue `CONST.TOKEN_HEXAGONAL_SHAPES.ELLIPSE_1`
      */
-    // TODO: report undocumented
     hexagonalShape: fields.NumberField<{
       initial: typeof CONST.TOKEN_HEXAGONAL_SHAPES.ELLIPSE_1;
       choices: CONST.TOKEN_HEXAGONAL_SHAPES[];
@@ -406,7 +405,6 @@ declare namespace BaseToken {
     /**
      * @defaultValue see properties
      */
-    // TODO: report undocumented
     occludable: fields.SchemaField<{
       /**
        * @defaultValue `0`
@@ -417,7 +415,6 @@ declare namespace BaseToken {
     /**
      * @defaultValue see properties
      */
-    // TODO: report undocumented
     ring: fields.SchemaField<{
       /**
        * @defaultValue `false`
