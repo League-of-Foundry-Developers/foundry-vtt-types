@@ -14,153 +14,149 @@ declare namespace LightData {
   export interface LightAnimationDataSchema extends DataSchema {
     /**
      * The animation type which is applied
+     * @defaultValue `null`
      */
-    type: fields.StringField<{ nullable: true; blank: false; initial: null; label: "LIGHT.AnimationType" }>;
+    type: fields.StringField<{ nullable: true; blank: false; initial: null }>;
 
     /**
      * The speed of the animation, a number between 0 and 10
+     * @defaultValue `5`
      */
     speed: fields.NumberField<{
       required: true;
+      nullable: false;
       integer: true;
       initial: 5;
       min: 0;
       max: 10;
-      label: "LIGHT.AnimationSpeed";
       validationError: "Light animation speed must be an integer between 0 and 10";
     }>;
 
     /**
      * The intensity of the animation, a number between 1 and 10
+     * @defaultValue `5`
      */
     intensity: fields.NumberField<{
       required: true;
+      nullable: false;
       integer: true;
       initial: 5;
-      min: 0;
+      min: 1;
       max: 10;
-      label: "LIGHT.AnimationIntensity";
       validationError: "Light animation intensity must be an integer between 1 and 10";
     }>;
 
     /**
      * Reverse the direction of animation.
+     * @defaultValue `false`
      */
-    reverse: fields.BooleanField<{ label: "LIGHT.AnimationReverse" }>;
+    reverse: fields.BooleanField;
   }
 
   export interface DarknessSchema extends DataSchema {
+    /**
+     * @defaultValue `0`
+     */
     min: fields.NumberField<{ initial: 0 }>;
+
+    /**
+     * @defaultValue `1`
+     */
     max: fields.NumberField<{ initial: 1 }>;
   }
 
   interface Schema extends DataSchema {
     /**
-     * An opacity for the emitted light, if any
+     * Is this light source a negative source? (i.e. darkness source)
+     * @defaultValue `false`
      */
-    alpha: fields.AlphaField<{ initial: 0.5; label: "LIGHT.Alpha" }>;
+    negative: fields.BooleanField;
+
+    /**
+     * @defaultValue `0`
+     */
+    // TODO: report undocumented
+    priority: fields.NumberField<{ required: true; nullable: false; integer: true; initial: 0; min: 0 }>;
+
+    /**
+     * An opacity for the emitted light, if any
+     * @defaultValue `0.5`
+     */
+    alpha: fields.AlphaField<{ initial: 0.5 }>;
 
     /**
      * The angle of emission for this point source
+     * @defaultValue `0`
      */
-    angle: fields.AngleField<{ initial: 360; base: 360; label: "LIGHT.Angle" }>;
+    angle: fields.AngleField<{ initial: 360; normalize: false }>;
 
     /**
      * The allowed radius of bright vision or illumination
+     * @defaultValue `0`
      */
-    bright: fields.NumberField<{ required: true; initial: 0; min: 0; step: 0.01; label: "LIGHT.Bright" }>;
+    bright: fields.NumberField<{ required: true; nullable: false; initial: 0; min: 0; step: 0.01 }>;
 
     /**
      * A tint color for the emitted light, if any
+     * @defaultValue `null`
      */
-    color: fields.ColorField<{ label: "LIGHT.Color" }>;
+    color: fields.ColorField;
 
     /**
      * The coloration technique applied in the shader
+     * @defaultValue `1`
      */
-    coloration: fields.NumberField<{
-      required: true;
-      integer: true;
-      initial: 1;
-      label: "LIGHT.ColorationTechnique";
-      hint: "LIGHT.ColorationTechniqueHint";
-    }>;
-
-    /**
-     * The amount of contrast this light applies to the background texture
-     */
-    dim: fields.NumberField<{ required: true; initial: 0; min: 0; step: 0.01; label: "LIGHT.Dim" }>;
+    coloration: fields.NumberField<{ required: true; integer: true; initial: 1 }>;
 
     /**
      * The allowed radius of dim vision or illumination
+     * @defaultValue `0`
      */
-    attenuation: fields.AlphaField<{ initial: 0.5; label: "LIGHT.Attenuation"; hint: "LIGHT.AttenuationHint" }>;
+    dim: fields.NumberField<{ required: true; nullable: false; initial: 0; min: 0; step: 0.01 }>;
 
     /**
      * Fade the difference between bright, dim, and dark gradually?
+     * @defaultValue `0.5`
      */
-    luminosity: fields.NumberField<{
-      required: true;
-      nullable: false;
-      initial: 0.5;
-      min: -1;
-      max: 1;
-      label: "LIGHT.Luminosity";
-      hint: "LIGHT.LuminosityHint";
-    }>;
+    attenuation: fields.AlphaField<{ initial: 0.5 }>;
 
     /**
      * The luminosity applied in the shader
+     * @defaultValue `0.5`
      */
-    saturation: fields.NumberField<{
-      required: true;
-      nullable: false;
-      initial: 0;
-      min: -1;
-      max: 1;
-      label: "LIGHT.Saturation";
-      hint: "LIGHT.SaturationHint";
-    }>;
+    luminosity: fields.NumberField<{ required: true; nullable: false; initial: 0.5; min: 0; max: 1 }>;
 
     /**
      * The amount of color saturation this light applies to the background texture
+     * @defaultValue `0`
      */
-    contrast: fields.NumberField<{
-      required: true;
-      nullable: false;
-      initial: 0;
-      min: -1;
-      max: 1;
-      label: "LIGHT.Contrast";
-      hint: "LIGHT.ContrastHint";
-    }>;
+    saturation: fields.NumberField<{ required: true; nullable: false; initial: 0; min: -1; max: 1 }>;
+
+    /**
+     * The amount of contrast this light applies to the background texture
+     * @defaultValue `0`
+     */
+    contrast: fields.NumberField<{ required: true; nullable: false; initial: 0; min: -1; max: 1 }>;
 
     /**
      * The depth of shadows this light applies to the background texture
+     * @defaultValue `0`
      */
-    shadows: fields.NumberField<{
-      required: true;
-      nullable: false;
-      initial: 0;
-      min: 0;
-      max: 1;
-      label: "LIGHT.Shadows";
-      hint: "LIGHT.ShadowsHint";
-    }>;
+    shadows: fields.NumberField<{ required: true; nullable: false; initial: 0; min: 0; max: 1 }>;
 
     /**
      * An animation configuration for the source
+     * @defaultValue see properties
      */
     animation: fields.SchemaField<LightAnimationDataSchema>;
 
     /**
      * A darkness range (min and max) for which the source should be active
+     * @defaultValue see properties
      */
     darkness: fields.SchemaField<
       DarknessSchema,
       {
-        label: "LIGHT.DarknessRange";
-        hint: "LIGHT.DarknessRangeHint";
         validate: (d: fields.SchemaField.InnerAssignmentType<DarknessSchema>) => boolean;
         validationError: "darkness.max may not be less than darkness.min";
       }
@@ -168,8 +164,17 @@ declare namespace LightData {
   }
 }
 
+/**
+ * A reusable document structure for the internal data used to render the appearance of a light source.
+ * This is re-used by both the AmbientLightData and TokenData classes.
+ */
 declare class LightData extends DataModel<LightData.Schema> {
-  static defineSchema(): LightData.Schema;
+  static override defineSchema(): LightData.Schema;
+
+  /**
+   * @defaultValue `["LIGHT"]`
+   */
+  static override LOCALIZATION_PREFIXES: string[];
 
   static migrateData(source: AnyObject): AnyObject;
 }
@@ -181,26 +186,31 @@ declare namespace ShapeData {
      * For rectangles, the x/y coordinates are the top-left corner.
      * For circles, the x/y coordinates are the center of the circle.
      * For polygons, the x/y coordinates are the first point of the polygon.
+     * @defaultValue `"r"`
      */
     type: fields.StringField<{ required: true; blank: false; choices: ValueOf<TYPES>[]; initial: "r" }>;
 
     /**
      * For rectangles, the pixel width of the shape.
+     * @defaultValue `null`
      */
     width: fields.NumberField<{ required: false; integer: true; min: 0 }>;
 
     /**
      * For rectangles, the pixel width of the shape.
+     * @defaultValue `null`
      */
     height: fields.NumberField<{ required: false; integer: true; min: 0 }>;
 
     /**
      * For circles, the pixel radius of the shape.
+     * @defaultValue `null`
      */
     radius: fields.NumberField<{ required: false; integer: true; positive: true }>;
 
     /**
      * For polygons, the array of polygon coordinates which comprise the shape.
+     * @defaultValue `[]`
      */
     points: fields.ArrayField<fields.NumberField<{ nullable: false }>>;
   }
@@ -213,16 +223,220 @@ declare namespace ShapeData {
   }
 }
 
+// TODO: report additional, nonexistent `elevation` property documenation
+/**
+ * A data model intended to be used as an inner EmbeddedDataField which defines a geometric shape.
+ */
 declare class ShapeData extends DataModel<ShapeData.Schema> {
-  static defineSchema(): ShapeData.Schema;
+  static override defineSchema(): ShapeData.Schema;
 
   static TYPES: ShapeData.TYPES;
+}
+
+declare namespace BaseShapeData {
+  interface Schema extends DataSchema {
+    /**
+     * The type of shape, a value in BaseShapeData.TYPES.
+     * @defaultValue `this.TYPE`
+     */
+    type: fields.StringField<{
+      required: true;
+      blank: false;
+      initial: string;
+      validate: (value: string) => boolean;
+      validationError: `must be equal to "${string}"`;
+    }>;
+
+    /**
+     * Is this shape a hole?
+     * @defaultValue `false`
+     */
+    hole: fields.BooleanField;
+  }
+
+  interface Types {
+    rectangle: RectangleShapeData;
+    circle: CircleShapeData;
+    ellipse: EllipseShapeData;
+    polygon: PolygonShapeData;
+  }
+}
+
+/**
+ * A data model intended to be used as an inner EmbeddedDataField which defines a geometric shape.
+ */
+declare abstract class BaseShapeData extends DataModel<BaseShapeData.Schema> {
+  /**
+   * The possible shape types.
+   */
+  static get TYPES(): Readonly<BaseShapeData.Types>;
+
+  static #TYPES: Readonly<BaseShapeData.Types>;
+
+  /**
+   * The type of this shape.
+   */
+  static TYPE: string;
+
+  static override defineSchema(): BaseShapeData.Schema;
+}
+
+declare namespace RectangleShapeData {
+  interface Schema extends BaseShapeData.Schema {
+    /**
+     * The top-left x-coordinate in pixels before rotation.
+     * @defaultValue `undefined`
+     */
+    x: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
+
+    /**
+     * The top-left y-coordinate in pixels before rotation.
+     * @defaultValue `undefined`
+     */
+    y: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
+
+    /**
+     * The width of the rectangle in pixels.
+     * @defaultValue `undefined`
+     */
+    width: fields.NumberField<{ required: true; nullable: false; initial: undefined; positive: true }>;
+
+    /**
+     * The height of the rectangle in pixels.
+     * @defaultValue `undefined`
+     */
+    height: fields.NumberField<{ required: true; nullable: false; initial: undefined; positive: true }>;
+
+    /**
+     * The rotation around the center of the rectangle in degrees.
+     * @defaultValue `0`
+     */
+    rotation: fields.AngleField;
+  }
+}
+
+/**
+ * The data model for a rectangular shape.
+ */
+declare class RectangleShapeData extends BaseShapeData {
+  /**
+   * @defaultValue `"rectangle"`
+   */
+  static override TYPE: string;
+
+  static override defineSchema(): RectangleShapeData.Schema;
+}
+
+declare namespace CircleShapeData {
+  interface Schema extends BaseShapeData.Schema {
+    /**
+     * The x-coordinate of the center point in pixels.
+     * @defaultValue `undefined`
+     */
+    x: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
+
+    /**
+     * The y-coordinate of the center point in pixels.
+     * @defaultValue `undefined`
+     */
+    y: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
+
+    /**
+     * The radius of the circle in pixels.
+     * @defaultValue `undefined`
+     */
+    radius: fields.NumberField<{ required: true; nullable: false; initial: undefined; positive: true }>;
+  }
+}
+
+/**
+ * The data model for a circle shape.
+ */
+declare class CircleShapeData extends BaseShapeData {
+  /**
+   * @defaultValue `"circle"`
+   */
+  static override TYPE: string;
+
+  static override defineSchema(): CircleShapeData.Schema;
+}
+
+declare namespace EllipseShapeData {
+  interface Schema extends BaseShapeData.Schema {
+    /**
+     * The x-coordinate of the center point in pixels.
+     * @defaultValue `undefined`
+     */
+    x: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
+
+    /**
+     * The y-coordinate of the center point in pixels.
+     * @defaultValue `undefined`
+     */
+    y: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
+
+    /**
+     * The x-radius of the circle in pixels.
+     * @defaultValue `undefined`
+     */
+    radiusX: fields.NumberField<{ required: true; nullable: false; initial: undefined; positive: true }>;
+
+    /**
+     * The y-radius of the circle in pixels.
+     * @defaultValue `undefined`
+     */
+    radiusY: fields.NumberField<{ required: true; nullable: false; initial: undefined; positive: true }>;
+
+    /**
+     * The rotation around the center of the rectangle in degrees.
+     * @defaultValue `0`
+     */
+    rotation: fields.AngleField;
+  }
+}
+
+/**
+ * The data model for an ellipse shape.
+ */
+declare class EllipseShapeData extends BaseShapeData {
+  /**
+   * @defaultValue `"ellipse"`
+   */
+  static override TYPE: string;
+
+  static override defineSchema(): EllipseShapeData.Schema;
+}
+
+declare namespace PolygonShapeData {
+  interface Schema extends BaseShapeData.Schema {
+    /**
+     * The points of the polygon ([x0, y0, x1, y1, ...]).
+     * The polygon must not be self-intersecting.
+     * @defaultValue `[]`
+     */
+    points: fields.ArrayField<
+      fields.NumberField<{ required: true; nullable: false; initial: undefined }>,
+      { validate: (value: []) => void }
+    >;
+  }
+}
+
+/**
+ * The data model for a polygon shape.
+ */
+declare class PolygonShapeData extends BaseShapeData {
+  /**
+   * @defaultValue `"polygon"`
+   */
+  static override TYPE: string;
+
+  static override defineSchema(): PolygonShapeData.Schema;
 }
 
 declare namespace TextureData {
   interface DefaultOptions {
     categories: ["IMAGE", "VIDEO"];
-    // initial: null;
+    // initial: {};
     wildcard: false;
     label: "";
   }
@@ -230,45 +444,86 @@ declare namespace TextureData {
   interface Schema<SrcOptions extends FilePathFieldOptions> extends DataSchema {
     /**
      * The URL of the texture source.
+     * @defaultValue `initial.src ?? null`
      */
     src: fields.FilePathField<SrcOptions>;
 
     /**
-     * The scale of the texture in the X dimension.
+     * The X coordinate of the texture anchor.
+     * @defaultValue `initial.anchorX ?? 0`
      */
-    scaleX: fields.NumberField<{ nullable: false; initial: 1 }>;
+    anchorX: fields.NumberField<{ nullable: false; initial: number }>;
 
     /**
-     * The scale of the texture in the Y dimension.
+     * The Y coordinate of the texture anchor.
+     * @defaultValue `initial.anchorY ?? 0`
      */
-    scaleY: fields.NumberField<{ nullable: false; initial: 1 }>;
+    anchorY: fields.NumberField<{ nullable: false; initial: number }>;
 
     /**
      * The X offset of the texture with (0,0) in the top left.
+     * @defaultValue `initial.offsetX ?? 0`
      */
-    offsetX: fields.NumberField<{ nullable: false; integer: true; initial: 0 }>;
+    offsetX: fields.NumberField<{ nullable: false; integer: true; initial: number }>;
 
     /**
      * The Y offset of the texture with (0,0) in the top left.
+     * @defaultValue `initial.offsetY ?? 0`
      */
-    offsetY: fields.NumberField<{ nullable: false; integer: true; initial: 0 }>;
+    offsetY: fields.NumberField<{ nullable: false; integer: true; initial: number }>;
+
+    /**
+     * @defaultValue `initial.fit ?? "fill"`
+     */
+    // TODO: report missing documentation
+    fit: fields.StringField<{ initial: string; choices: typeof CONST.TEXTURE_DATA_FIT_MODES }>;
+
+    /**
+     * The scale of the texture in the X dimension.
+     * @defaultValue `initial.scaleX ?? 1`
+     */
+    scaleX: fields.NumberField<{ nullable: false; initial: number }>;
+
+    /**
+     * The scale of the texture in the Y dimension.
+     * @defaultValue `initial.scaleY ?? 1`
+     */
+    scaleY: fields.NumberField<{ nullable: false; initial: number }>;
 
     /**
      * An angle of rotation by which this texture is rotated around its center.
+     * @defaultValue `initial.rotation ?? 0`
      */
-    rotation: fields.AngleField;
+    rotation: fields.AngleField<{ initial: number }>;
 
     /**
-     * An optional color string used to tint the texture.
+     * The tint applied to the texture.
+     * @defaultValue `initial.tint ?? "#ffffff"`
      */
-    tint: fields.ColorField;
+    tint: fields.ColorField<{ nullable: false; initial: string }>;
+
+    /**
+     * Only pixels with an alpha value at or above this value are consider solid
+     * w.r.t. to occlusion testing and light/weather blocking.
+     * @defaultValue `initial.alphaThreshold ?? 0`
+     */
+    alphaThreshold: fields.AlphaField<{ nullable: false; initial: number }>;
+
+    // NOTE: continue here
   }
 }
 
+/**
+ * A {@link fields.SchemaField} subclass used to represent texture data.
+ */
 declare class TextureData<
   SrcOptions extends FilePathFieldOptions = TextureData.DefaultOptions,
   SchemaOptions extends fields.SchemaField.Options<TextureData.Schema<SrcOptions>> = EmptyObject,
 > extends fields.SchemaField<TextureData.Schema<SrcOptions>, SchemaOptions> {
+  /**
+   * @param options    - Options which are forwarded to the SchemaField constructor
+   * @param srcOptions - Additional options for the src field
+   */
   constructor(options?: SchemaOptions, srcOptions?: SrcOptions);
 }
 
@@ -283,16 +538,17 @@ declare namespace PrototypeToken {
     | "x"
     | "y"
     | "elevation"
-    | "effects"
-    | "overlayEffect"
-    | "hidden";
+    | "sort"
+    | "hidden"
+    | "locked"
+    | "_regions";
 
   interface Schema extends foundry.documents.BaseToken.SharedProtoSchema {
-    // Name is technically redefined but with the same options so it's ignored here
-    // name: fields.StringField<{ required: true; blank: true }>;
+    name: fields.StringField<{ required: true; blank: true; textSearch: boolean }>;
 
     /**
      * Does the prototype token use a random wildcard image?
+     * @defaultValue `false`
      */
     randomImg: fields.BooleanField;
   }
@@ -300,6 +556,9 @@ declare namespace PrototypeToken {
   type ConstructorData = fields.SchemaField.InnerAssignmentType<Schema>;
 }
 
+/**
+ * Extend the base TokenData to define a PrototypeToken which exists within a parent Actor.
+ */
 declare class PrototypeToken extends DataModel<PrototypeToken.Schema, any> {
   constructor(data?: PrototypeToken.ConstructorData, options?: DataModel.ConstructorOptions<PrototypeToken.Parent>);
 
@@ -307,6 +566,13 @@ declare class PrototypeToken extends DataModel<PrototypeToken.Schema, any> {
 
   /** @defaultValue `{}` */
   apps: Record<string, Application>;
+
+  static override defineSchema(): PrototypeToken.Schema;
+
+  /**
+   * @defaultValue `["TOKEN"]`
+   */
+  static override LOCALIZATION_PREFIXES: string[];
 
   /**
    * The Actor which owns this Prototype Token
@@ -318,18 +584,11 @@ declare class PrototypeToken extends DataModel<PrototypeToken.Schema, any> {
 
   static get database(): DatabaseBackend;
 
-  static override migrateData(source: AnyObject): AnyObject;
-
-  static override shimData(
-    data: AnyObject,
-    options?: {
-      /**
-       * Apply shims to embedded models?
-       * @defaultValue `true`
-       */
-      embedded?: boolean;
-    },
-  ): AnyObject;
+  /**
+   * Apply configured default token settings to the schema.
+   * @param schema - The schema to apply the settings to.
+   */
+  static #applyDefaultTokenSettings(schema: DataSchema): void;
 
   /**
    * @see foundry.abstract.Document#update
@@ -376,30 +635,38 @@ declare namespace TombstoneData {
   interface Schema extends DataSchema {
     /**
      * The _id of the base Document that this tombstone represents.
+     * @defaultValue `null`
      */
     _id: fields.DocumentIdField;
 
     /**
      * A property that identifies this entry as a tombstone.
+     * @defaultValue `true`
      */
-    _tombstone: fields.BooleanField;
-
-    /**
-     * An object of creation and access information.
-     */
-    _stats: fields.DocumentStatsField;
+    _tombstone: fields.BooleanField<{
+      initial: true;
+      validate: (v: boolean) => boolean;
+      validationError: "must be true";
+    }>;
   }
 }
 
+/**
+ * A minimal data model used to represent a tombstone entry inside an EmbeddedCollectionDelta.
+ */
 declare class TombstoneData extends DataModel<TombstoneData.Schema> {
-  static defineSchema(): TombstoneData.Schema;
+  static override defineSchema(): TombstoneData.Schema;
 }
 
 export {
   LightData,
   PrototypeToken,
-  // PrototypeTokenData,
   ShapeData,
+  BaseShapeData,
+  RectangleShapeData,
+  CircleShapeData,
+  EllipseShapeData,
+  PolygonShapeData,
   TextureData,
   TombstoneData,
 };
