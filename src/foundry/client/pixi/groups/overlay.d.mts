@@ -4,7 +4,7 @@ declare global {
   /**
    * A container group which is not bound to the stage world transform.
    */
-  class OverlayCanvasGroup extends BaseCanvasMixin(UnboundContainer) {
+  class OverlayCanvasGroup extends CanvasGroupMixin(UnboundContainer) {
     /**
      * @defaultValue `"overlay"`
      */

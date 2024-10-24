@@ -23,7 +23,7 @@ declare global {
     };
 
     /**
-     * An map of render textures, linked to their render function and an optional RGBA clear color.
+     * A map of render textures, linked to their render function and an optional RGBA clear color.
      */
     protected _renderPaths: Map<PIXI.RenderTexture, CachedContainer.RenderOptions>;
 
@@ -38,6 +38,20 @@ declare global {
      * @defaultValue `false`
      */
     displayed: boolean;
+
+    /**
+     * If true, the Container is rendered every frame.
+     * If false, the Container is rendered only if {@link CachedContainer#renderDirty} is true.
+     * @defaultValue `true`
+     */
+    autoRender: boolean;
+
+    /**
+     * Does the Container need to be rendered?
+     * Set to false after the Container is rendered.
+     * @defaultValue `true`
+     */
+    renderDirty: boolean;
 
     /**
      * The primary render texture bound to this cached container.

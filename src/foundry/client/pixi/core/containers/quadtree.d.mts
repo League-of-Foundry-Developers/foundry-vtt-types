@@ -15,12 +15,12 @@ declare global {
      * @param bounds  - The outer bounds of the region
      * @param options - Additional options which configure the Quadtree
      */
-    constructor(bounds: Rectangle, options?: Quadtree.Options<T>);
+    constructor(bounds: PIXI.Rectangle, options?: Quadtree.Options<T>);
 
     /**
      * The bounding rectangle of the region
      */
-    bounds: Rectangle;
+    bounds: PIXI.Rectangle;
 
     /**
      * The maximum number of objects allowed within this node before it must split
@@ -162,7 +162,7 @@ declare global {
   class CanvasQuadtree extends Quadtree<object> {
     constructor(options?: Quadtree.Options<object>);
 
-    readonly bounds: SceneDimensions["rect"];
+    readonly bounds: PIXI.Rectangle;
   }
 
   namespace Quadtree {

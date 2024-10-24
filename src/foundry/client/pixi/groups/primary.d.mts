@@ -9,7 +9,7 @@ declare global {
    * This group is a {@link CachedContainer} which is rendered to the Scene as a {@link SpriteMesh}.
    * This allows the rendered result of the Primary Canvas Group to be affected by a {@link BaseSamplerShader}.
    */
-  class PrimaryCanvasGroup extends BaseCanvasMixin(CachedContainer) {
+  class PrimaryCanvasGroup extends CanvasGroupMixin(CachedContainer) {
     /**
      * @param sprite - (default: `new SpriteMesh(undefined, BaseSamplerShader)`)
      */
