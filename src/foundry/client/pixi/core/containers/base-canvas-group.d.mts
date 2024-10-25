@@ -41,22 +41,22 @@ declare class CanvasGroup {
   _createLayers(): Record<string, CanvasLayer>;
 
   /** Draw the canvas group and all its component layers. */
-  draw(options: InexactPartial<Record<string, unknown>>): Promise<void>;
+  draw(options: CanvasGroupMixin.DrawOptions): Promise<void>;
 
   /**
    * Draw the canvas group and all its component layers.
    */
-  _draw(options: InexactPartial<Record<string, unknown>>): Promise<void>;
+  _draw(options: CanvasGroupMixin.DrawOptions): Promise<void>;
 
   /**
    * Remove and destroy all layers from the base canvas.
    */
-  tearDown(options: InexactPartial<Record<string, unknown>>): Promise<void>;
+  tearDown(options: CanvasGroupMixin.TearDownOptions): Promise<void>;
 
   /**
    * Remove and destroy all layers from the base canvas.
    */
-  _tearDown(options: InexactPartial<Record<string, unknown>>): Promise<void>;
+  _tearDown(options: CanvasGroupMixin.TearDownOptions): Promise<void>;
 }
 
 declare global {
@@ -65,12 +65,16 @@ declare global {
    * @param ContainerClass - The parent Container class being mixed.
    * @returns A ContainerClass subclass mixed with BaseCanvasMixin features.
    */
-  function CanvasGroupMixin<BaseClass extends BaseCanvasMixin.BaseClass>(
+  function CanvasGroupMixin<BaseClass extends CanvasGroupMixin.BaseClass>(
     ContainerClass: BaseClass,
   ): Mixin<typeof CanvasGroup, BaseClass>;
 
-  namespace BaseCanvasMixin {
+  namespace CanvasGroupMixin {
     type BaseClass = typeof AnyPIXIContainer;
+
+    type DrawOptions = InexactPartial<Record<string, unknown>>;
+
+    type TearDownOptions = InexactPartial<Record<string, unknown>>;
   }
 }
 

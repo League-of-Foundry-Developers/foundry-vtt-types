@@ -40,7 +40,7 @@ declare global {
      */
     get darknessLevel(): number;
 
-    override _draw(options: InexactPartial<Record<string, unknown>>): Promise<void>;
+    override _draw(options: CanvasGroupMixin.DrawOptions): Promise<void>;
 
     /**
      * Initialize the scene environment options.

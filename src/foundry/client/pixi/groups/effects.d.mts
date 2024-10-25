@@ -1,5 +1,3 @@
-import type { InexactPartial } from "../../../../types/utils.d.mts";
-
 export {};
 
 // TODO: Remove after layer is defined by #2841
@@ -78,7 +76,7 @@ declare global {
      */
     clearEffects(): void;
 
-    override _draw(options: InexactPartial<Record<string, unknown>>): Promise<void>;
+    override _draw(options: CanvasGroupMixin.DrawOptions): Promise<void>;
 
     /**
      * Initialize positive light sources which exist within the active Scene.
@@ -133,7 +131,7 @@ declare global {
      */
     getDarknessLevel(point: Point, elevation: number): number;
 
-    override _tearDown(options: InexactPartial<Record<string, unknown>>): Promise<void>;
+    override _tearDown(options: CanvasGroupMixin.TearDownOptions): Promise<void>;
 
     /**
      * Activate vision masking for visual effects

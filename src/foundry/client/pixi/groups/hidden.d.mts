@@ -28,8 +28,13 @@ declare global {
      */
     addMask(name: string, displayObject: PIXI.DisplayObject, position?: number): void;
 
-    override draw(): Promise<void>;
+    /**
+     * Invalidate the masks: flag them for rerendering.
+     */
+    invalidateMasks(): void;
 
-    override tearDown(): Promise<void>;
+    override _draw(options: CanvasGroupMixin.DrawOptions): Promise<void>;
+
+    override _tearDown(options: CanvasGroupMixin.TearDownOptions): Promise<void>;
   }
 }
