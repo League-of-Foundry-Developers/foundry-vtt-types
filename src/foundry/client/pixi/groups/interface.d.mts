@@ -23,7 +23,7 @@ declare global {
      */
     removeDrawing(drawing: Drawing): void;
 
-    override _draw(options: CanvasGroupMixin.DrawOptions): Promise<void>;
+    protected override _draw(options: CanvasGroupMixin.DrawOptions): Promise<void>;
 
     /**
      * Display scrolling status text originating from this ObjectHUD container.

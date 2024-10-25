@@ -1,7 +1,16 @@
+import type { Renderer } from "pixi.js";
+
 export {};
 
 // Included to match Foundry's documented types
 type PrimaryCanvasObject = ReturnType<typeof PrimaryCanvasObjectMixin>;
+
+// TODO: remove after #2855
+type PrimarySpriteMesh = unknown;
+type PrimaryGraphics = unknown;
+
+// TODO: remove after #2570
+type PrimaryCanvasGroupAmbienceFilter = unknown;
 
 declare global {
   /**
@@ -16,9 +25,26 @@ declare global {
     constructor(sprite?: SpriteMesh);
 
     /**
+     * Sort order to break ties on the group/layer level.
+     */
+    static readonly SORT_LAYERS: {
+      SCENE: number;
+      TILES: number;
+      DRAWINGS: number;
+      TOKENS: number;
+      WEATHER: number;
+    };
+
+    /**
      * @defaultValue `"primary"`
      */
     static override groupName: string;
+
+    static override textureConfiguration: {
+      scaleMode: PIXI.SCALE_MODES;
+      format: PIXI.FORMATS;
+      multisample: PIXI.MSAA_QUALITY;
+    };
 
     /**
      * @defaultValue `"none"`
@@ -31,9 +57,19 @@ declare global {
     override clearColor: [r: number, g: number, b: number, a: number];
 
     /**
+     * The background color in RGB.
+     */
+    _backgroundColor?: [red: number, green: number, blue: number];
+
+    /**
      * Track the set of HTMLVideoElements which are currently playing as part of this group.
      */
     videoMeshes: Set<SpriteMesh>;
+
+    /**
+     * Occludable objects above this elevation are faded on hover.
+     */
+    hoverFadeElevation: number;
 
     /**
      * Allow API users to override the default elevation of the background layer.
@@ -69,7 +105,12 @@ declare global {
     /**
      * The collection of SpriteMesh objects which are rendered in the Scene.
      */
-    tiles: Collection<TileMesh | TileSprite>;
+    tiles: Collection<PrimarySpriteMesh | TileSprite>;
+
+    /**
+     * The ambience filter which is applying post-processing effects.
+     */
+    _ambienceFilter: PrimaryCanvasGroupAmbienceFilter;
 
     /**
      * Render all tokens in their own render texture.
@@ -93,22 +134,22 @@ declare global {
     refreshPrimarySpriteMesh(): void;
 
     /**
-     * Draw the canvas group and all its component layers.
+     * Update this group. Calculates the canvas transform and bounds of all its children and updates the quadtree.
      */
-    draw(): Promise<void>;
+    update(): void;
 
-    /**
-     * Remove and destroy all children from the group.
-     * Clear container references to rendered objects.
-     */
-    tearDown(): Promise<void>;
+    protected override _draw(options: CanvasGroupMixin.DrawOptions): Promise<void>;
+
+    protected override _render(_renderer: Renderer): void;
+
+    protected override _tearDown(options: CanvasGroupMixin.TearDownOptions): Promise<void>;
 
     /**
      * Draw the SpriteMesh for a specific Token object.
      * @param token - The Token being added
-     * @returns The added TokenMesh
+     * @returns The added PrimarySpriteMesh
      */
-    addToken(token: Token): TokenMesh;
+    addToken(token: Token): PrimarySpriteMesh;
 
     /**
      * Remove a TokenMesh from the group.
@@ -119,9 +160,9 @@ declare global {
     /**
      * Draw the SpriteMesh for a specific Token object.
      * @param tile - The Tile being added
-     * @returns The added TileMesh or TileSprite
+     * @returns The added PrimarySpriteMesh
      */
-    addTile(tile: Tile): TileMesh | TileSprite;
+    addTile(tile: Tile): PrimarySpriteMesh;
 
     /**
      * Remove a TokenMesh from the group.
@@ -130,24 +171,17 @@ declare global {
     removeTile(tile: Tile): void;
 
     /**
-     * Add a DrawingShape to the group.
+     * Add a PrimaryGraphics to the group.
      * @param drawing - The Drawing being added
-     * @returns The created DrawingShape instance
+     * @returns The created PrimaryGraphics instance
      */
-    addDrawing(drawing: Drawing): DrawingShape;
+    addDrawing(drawing: Drawing): PrimaryGraphics;
 
     /**
-     * Remove a DrawingShape from the group.
+     * Remove a PrimaryGraphics from the group.
      * @param drawing - The Drawing being removed
      */
     removeDrawing(drawing: Drawing): void;
-
-    /**
-     * Map an elevation value to a depth value with the right precision.
-     * @param elevation - A current elevation (or zIndex) in distance units.
-     * @returns The depth value for this elevation on the range [1/255, 1]
-     */
-    mapElevationToDepth(elevation: number): number;
 
     /**
      * Override the default PIXI.Container behavior for how objects in this container are sorted.
@@ -156,16 +190,15 @@ declare global {
     sortChildren(): void;
 
     /**
-     * The sorting function used to order objects inside the Primary Canvas Group.
-     * Overrides the default sorting function defined for the PIXI.Container.
-     * Sort TokenMesh above other objects except WeatherEffects, then DrawingShape, all else held equal.
-     * @param a - An object to display
-     * @param b - Some other object to display
+     * Handle mousemove events on the primary group to update the hovered state of its children.
      */
-    static _sortObjects(
-      a: PrimaryCanvasObject | PIXI.DisplayObject,
-      b: PrimaryCanvasObject | PIXI.DisplayObject,
-    ): number;
+    protected _onMouseMove(): void;
+
+    /**
+     * @deprecated since v12, will be removed in v14
+     * @remarks `"PrimaryCanvasGroup#mapElevationAlpha is deprecated. Use canvas.masks.depth.mapElevation(elevation) instead."`
+     */
+    mapElevationToDepth(elevation: number): number;
 
     /**
      * @deprecated since v11, will be removed in v13

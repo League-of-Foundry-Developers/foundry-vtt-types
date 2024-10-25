@@ -76,7 +76,7 @@ declare global {
      */
     clearEffects(): void;
 
-    override _draw(options: CanvasGroupMixin.DrawOptions): Promise<void>;
+    protected override _draw(options: CanvasGroupMixin.DrawOptions): Promise<void>;
 
     /**
      * Initialize positive light sources which exist within the active Scene.

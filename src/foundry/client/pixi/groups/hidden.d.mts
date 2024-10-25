@@ -33,8 +33,8 @@ declare global {
      */
     invalidateMasks(): void;
 
-    override _draw(options: CanvasGroupMixin.DrawOptions): Promise<void>;
+    protected override _draw(options: CanvasGroupMixin.DrawOptions): Promise<void>;
 
-    override _tearDown(options: CanvasGroupMixin.TearDownOptions): Promise<void>;
+    protected override _tearDown(options: CanvasGroupMixin.TearDownOptions): Promise<void>;
   }
 }

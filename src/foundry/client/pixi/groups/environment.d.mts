@@ -40,7 +40,7 @@ declare global {
      */
     get darknessLevel(): number;
 
-    override _draw(options: CanvasGroupMixin.DrawOptions): Promise<void>;
+    protected override _draw(options: CanvasGroupMixin.DrawOptions): Promise<void>;
 
     /**
      * Initialize the scene environment options.

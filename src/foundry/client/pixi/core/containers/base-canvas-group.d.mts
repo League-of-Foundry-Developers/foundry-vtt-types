@@ -46,7 +46,7 @@ declare class CanvasGroup {
   /**
    * Draw the canvas group and all its component layers.
    */
-  _draw(options: CanvasGroupMixin.DrawOptions): Promise<void>;
+  protected _draw(options: CanvasGroupMixin.DrawOptions): Promise<void>;
 
   /**
    * Remove and destroy all layers from the base canvas.
@@ -56,7 +56,7 @@ declare class CanvasGroup {
   /**
    * Remove and destroy all layers from the base canvas.
    */
-  _tearDown(options: CanvasGroupMixin.TearDownOptions): Promise<void>;
+  protected _tearDown(options: CanvasGroupMixin.TearDownOptions): Promise<void>;
 }
 
 declare global {
