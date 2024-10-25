@@ -59,7 +59,7 @@ declare global {
     /**
      * Cached tint value so we can tell when the tint is changed.
      */
-    protected _cachedTint: [red: number, green: number, blue: number, alpha: number]
+    protected _cachedTint: [red: number, green: number, blue: number, alpha: number];
 
     /**
      * The texture trimmed ID.
@@ -128,7 +128,7 @@ declare global {
      * Instanced only when padding becomes non-zero.
      * @defaultValue `null`
      */
-    protected _textureUvs: PIXI.TextureUvs|null;
+    protected _textureUvs: PIXI.TextureUvs | null;
 
     /**
      * Used to track a tint or alpha change to execute a recomputation of _cachedTint.
@@ -158,14 +158,14 @@ declare global {
      */
     get paddingY(): number;
 
-    set paddingY(value)
+    set paddingY(value);
 
     /**
      * The maximum x/y padding in pixels (must be a non-negative value.)
      */
     get padding(): number;
 
-    set padding(value)
+    set padding(value);
 
     /**
      * @defaultValue `0`
@@ -176,7 +176,6 @@ declare global {
      * @defaultValue `0`
      */
     protected _paddingY: number;
-
 
     /**
      * The blend mode applied to the SpriteMesh.
@@ -193,7 +192,7 @@ declare global {
      * To set the global default, change PIXI.settings.ROUND_PIXELS
      * @defaultValue `PIXI.settings.ROUND_PIXELS`
      */
-    set roundPixels(value: boolean)
+    set roundPixels(value: boolean);
 
     get roundPixels();
 
