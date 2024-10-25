@@ -4,7 +4,7 @@ declare global {
   /**
    * A specialized canvas group for rendering hidden containers before all others (like masks).
    */
-  class HiddenCanvasGroup extends BaseCanvasMixin(PIXI.Container) {
+  class HiddenCanvasGroup extends CanvasGroupMixin(PIXI.Container) {
     /**
      * @defaultValue `"none"`
      */

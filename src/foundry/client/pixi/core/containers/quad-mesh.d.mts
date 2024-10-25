@@ -7,27 +7,14 @@ declare global {
    */
   class QuadMesh extends PIXI.Container {
     /**
-     * @param shaderCls - The shader class to use.
+     * @param shaderClass - The shader class to use.
      */
-    constructor(shaderCls: typeof AbstractBaseShader);
+    constructor(shaderClass: typeof AbstractBaseShader);
 
     /**
-     * The shader.
+     * The shader bound to this mesh.
      */
-    shader: BaseSamplerShader;
-
-    /**
-     * The state.
-     */
-    state: PIXI.State;
-
-    /**
-     * Assigned geometry to this mesh.
-     * We need to handle the refCount.
-     */
-    get geometry(): PIXI.Geometry;
-
-    set geometry(value: PIXI.Geometry);
+    get shader(): BaseSamplerShader;
 
     /**
      * Assigned blend mode to this mesh.
@@ -38,21 +25,11 @@ declare global {
 
     /**
      * Initialize shader based on the shader class type.
-     * @param shaderCls - Shader class used. Must inherit from AbstractBaseShader.
+     * @param shaderClass - Shader class used. Must inherit from AbstractBaseShader.
      */
-    setShaderClass(shaderCls: typeof AbstractBaseShader): void;
+    setShaderClass(shaderClass: typeof AbstractBaseShader): void;
 
     protected override _render(_renderer: PIXI.Renderer): void;
-
-    override get width(): number;
-    override set width(value: number);
-
-    protected _width: number;
-
-    get height(): number;
-    set height(value: number);
-
-    protected _height: number;
 
     protected override _calculateBounds(): void;
 
