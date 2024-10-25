@@ -41,10 +41,22 @@ declare class CanvasGroup {
   _createLayers(): Record<string, CanvasLayer>;
 
   /** Draw the canvas group and all its component layers. */
-  draw(): Promise<void>;
+  draw(options: InexactPartial<Record<string, unknown>>): Promise<void>;
 
-  /** Remove and destroy all layers from the base canvas. */
+  /**
+   * Draw the canvas group and all its component layers.
+   */
+  _draw(options: InexactPartial<Record<string, unknown>>): Promise<void>;
+
+  /**
+   * Remove and destroy all layers from the base canvas.
+   */
   tearDown(options: InexactPartial<Record<string, unknown>>): Promise<void>;
+
+  /**
+   * Remove and destroy all layers from the base canvas.
+   */
+  _tearDown(options: InexactPartial<Record<string, unknown>>): Promise<void>;
 }
 
 declare global {
