@@ -2,10 +2,6 @@ import type { AnyObject, Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type * as fields from "../data/fields.d.mts";
 
-declare global {
-  type AmbientSoundData = BaseAmbientSound.Properties;
-}
-
 /**
  * The Document definition for an AmbientSound.
  * Defines the DataSchema and common behaviors for an AmbientSound which are shared between both client and server.

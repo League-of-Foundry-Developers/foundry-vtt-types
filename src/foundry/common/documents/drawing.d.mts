@@ -5,10 +5,6 @@ import type * as fields from "../data/fields.d.mts";
 import type { ShapeData } from "../data/module.mts";
 import type * as documents from "./_module.mts";
 
-declare global {
-  type DrawingData = BaseDrawing.Properties;
-}
-
 /**
  * The Document definition for a Drawing.
  * Defines the DataSchema and common behaviors for a Drawing which are shared between both client and server.

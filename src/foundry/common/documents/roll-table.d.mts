@@ -3,10 +3,6 @@ import type Document from "../abstract/document.mts";
 import type * as fields from "../data/fields.d.mts";
 import type * as documents from "./_module.mts";
 
-declare global {
-  type RollTableData = BaseRollTable.Properties;
-}
-
 /**
  * The Document definition for a RollTable.
  * Defines the DataSchema and common behaviors for a RollTable which are shared between both client and server.

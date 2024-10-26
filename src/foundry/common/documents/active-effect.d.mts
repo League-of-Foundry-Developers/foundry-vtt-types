@@ -5,14 +5,6 @@ import type * as CONST from "../constants.mts";
 import type * as fields from "../data/fields.d.mts";
 import type * as documents from "./_module.mts";
 
-declare global {
-  type ActiveEffectData = BaseActiveEffect.Properties;
-
-  type EffectDurationData = BaseActiveEffect.Properties["duration"];
-
-  type EffectChangeData = BaseActiveEffect.Properties["changes"][number];
-}
-
 /**
  * The data schema for an ActiveEffect document.
  */

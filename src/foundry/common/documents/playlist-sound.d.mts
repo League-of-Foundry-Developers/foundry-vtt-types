@@ -2,10 +2,6 @@ import type { InexactPartial, Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type * as fields from "../data/fields.d.mts";
 
-declare global {
-  type PlaylistSoundData = BasePlaylistSound.Properties;
-}
-
 /**
  * The Document definition for a PlaylistSound.
  * Defines the DataSchema and common behaviors for a PlaylistSound which are shared between both client and server.

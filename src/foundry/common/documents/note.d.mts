@@ -4,10 +4,6 @@ import type { TextureData } from "../data/data.mts";
 import type * as fields from "../data/fields.d.mts";
 import type * as documents from "./_module.mts";
 
-declare global {
-  type NoteData = BaseNote.Properties;
-}
-
 /**
  * The Document definition for a Note.
  * Defines the DataSchema and common behaviors for a Note which are shared between both client and server.

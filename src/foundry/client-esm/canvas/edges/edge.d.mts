@@ -1,4 +1,5 @@
 import type { InexactPartial } from "../../../../types/utils.d.mts";
+import type { WallThresholdData } from "../../../common/documents/_types.d.mts";
 
 /**
  * A data structure used to represent potential edges used by the ClockwiseSweepPolygon.

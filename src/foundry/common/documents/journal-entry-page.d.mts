@@ -3,18 +3,6 @@ import type Document from "../abstract/document.mts";
 import type * as fields from "../data/fields.d.mts";
 import type * as documents from "./_module.mts";
 
-declare global {
-  type JournalEntryPageImageData = JournalEntryPageData["image"];
-
-  type JournalEntryPageTextData = JournalEntryPageData["text"];
-
-  type JournalEntryPageVideoData = JournalEntryPageData["video"];
-
-  type JournalEntryPageTitleData = JournalEntryPageData["title"];
-
-  type JournalEntryPageData = BaseJournalEntryPage.Properties;
-}
-
 /**
  * The Document definition for a JournalEntryPage.
  * Defines the data schema and common behaviours for a JournalEntryPage which are shared between both client and server.

@@ -4,12 +4,6 @@ import type * as CONST from "../constants.mts";
 import type * as fields from "../data/fields.d.mts";
 import type * as documents from "./_module.mts";
 
-declare global {
-  type ChatMessageData = BaseChatMessage.Properties;
-
-  type ChatSpeakerData = BaseChatMessage.Properties["speaker"];
-}
-
 /**
  * The Document definition for a ChatMessage.
  * Defines the DataSchema and common behaviors for a ChatMessage which are shared between both client and server.

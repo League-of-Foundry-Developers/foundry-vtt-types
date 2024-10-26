@@ -1,13 +1,13 @@
 import { expectTypeOf } from "vitest";
-import type BaseActiveEffect from "../../../../src/foundry/common/documents/active-effect.d.mts";
-import type { DatabaseOperationsFor } from "../../../../src/types/helperTypes.d.mts";
-
 import type {
   DatabaseCreateOperation,
   DatabaseDeleteOperation,
   DatabaseUpdateOperation,
 } from "../../../../src/foundry/common/abstract/_types.d.mts";
 import type Document from "../../../../src/foundry/common/abstract/document.d.mts";
+import type { EffectChangeData } from "../../../../src/foundry/common/documents/_types.d.mts";
+import type BaseActiveEffect from "../../../../src/foundry/common/documents/active-effect.d.mts";
+import type { DatabaseOperationsFor } from "../../../../src/types/helperTypes.d.mts";
 
 declare const configuredActiveEffect: Document.ToConfiguredInstance<typeof foundry.documents.BaseActiveEffect>;
 expectTypeOf(configuredActiveEffect).toEqualTypeOf<ActiveEffect>();

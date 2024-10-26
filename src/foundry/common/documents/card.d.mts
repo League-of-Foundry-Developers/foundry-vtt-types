@@ -4,12 +4,6 @@ import type * as CONST from "../constants.mts";
 import type * as fields from "../data/fields.d.mts";
 import type * as documents from "./_module.mts";
 
-declare global {
-  type CardData = BaseCard.Properties;
-
-  type CardFaceData = BaseCard.Properties["faces"][number];
-}
-
 /**
  * The Document definition for a Card.
  * Defines the DataSchema and common behaviors for a Card which are shared between both client and server.

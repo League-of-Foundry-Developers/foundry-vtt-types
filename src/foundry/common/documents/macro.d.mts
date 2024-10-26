@@ -4,10 +4,6 @@ import type * as CONST from "../constants.mts";
 import type * as fields from "../data/fields.d.mts";
 import type * as documents from "./_module.mts";
 
-declare global {
-  type MacroData = BaseMacro.Properties;
-}
-
 /**
  * The Document definition for a Macro.
  * Defines the DataSchema and common behaviors for a Macro which are shared between both client and server.

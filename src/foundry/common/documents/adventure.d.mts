@@ -3,10 +3,6 @@ import type { DataModel } from "../abstract/data.mts";
 import type Document from "../abstract/document.mts";
 import type * as fields from "../data/fields.d.mts";
 
-declare global {
-  type AdventureData = BaseAdventure.Properties;
-}
-
 /**
  * The Document definition for an Adventure.
  * Defines the DataSchema and common behaviors for an Adventure which are shared between both client and server.

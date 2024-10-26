@@ -2,10 +2,6 @@ import type { AnyObject, Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type * as fields from "../data/fields.d.mts";
 
-declare global {
-  type FolderData = BaseFolder.Properties;
-}
-
 /**
  * The Document definition for a Folder.
  * Defines the DataSchema and common behaviors for a Folder which are shared between both client and server.

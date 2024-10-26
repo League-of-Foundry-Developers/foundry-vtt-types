@@ -1,8 +1,9 @@
-import type { DataField } from "../../../common/data/fields.d.mts";
+import type { AnyObject } from "../../../../types/utils.d.mts";
 import type { DataModel } from "../../../common/abstract/data.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
-import type { AnyObject } from "../../../../types/utils.d.mts";
+import type { DataField } from "../../../common/data/fields.d.mts";
+import type { ActiveEffectData, EffectChangeData, EffectDurationData } from "../../../common/documents/_types.d.mts";
 
 declare global {
   namespace ActiveEffect {
