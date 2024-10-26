@@ -1,4 +1,4 @@
-import type { InexactPartial, Mixin } from "../../../../../types/utils.d.mts";
+import type { AnyObject, Mixin } from "../../../../../types/utils.d.mts";
 
 declare class CanvasGroup {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
@@ -41,10 +41,22 @@ declare class CanvasGroup {
   _createLayers(): Record<string, CanvasLayer>;
 
   /** Draw the canvas group and all its component layers. */
-  draw(): Promise<void>;
+  draw(options: CanvasGroupMixin.DrawOptions): Promise<void>;
 
-  /** Remove and destroy all layers from the base canvas. */
-  tearDown(options: InexactPartial<Record<string, unknown>>): Promise<void>;
+  /**
+   * Draw the canvas group and all its component layers.
+   */
+  protected _draw(options: CanvasGroupMixin.DrawOptions): Promise<void>;
+
+  /**
+   * Remove and destroy all layers from the base canvas.
+   */
+  tearDown(options: CanvasGroupMixin.TearDownOptions): Promise<void>;
+
+  /**
+   * Remove and destroy all layers from the base canvas.
+   */
+  protected _tearDown(options: CanvasGroupMixin.TearDownOptions): Promise<void>;
 }
 
 declare global {
@@ -53,12 +65,16 @@ declare global {
    * @param ContainerClass - The parent Container class being mixed.
    * @returns A ContainerClass subclass mixed with BaseCanvasMixin features.
    */
-  function CanvasGroupMixin<BaseClass extends BaseCanvasMixin.BaseClass>(
+  function CanvasGroupMixin<BaseClass extends CanvasGroupMixin.BaseClass>(
     ContainerClass: BaseClass,
   ): Mixin<typeof CanvasGroup, BaseClass>;
 
-  namespace BaseCanvasMixin {
+  namespace CanvasGroupMixin {
     type BaseClass = typeof AnyPIXIContainer;
+
+    type DrawOptions = AnyObject;
+
+    type TearDownOptions = AnyObject;
   }
 }
 

@@ -1,10 +1,13 @@
 export {};
 
+// TODO: Remove after layer is defined by #2841
+type CanvasDarknessEffects = CanvasLayer;
+
 declare global {
   /**
    * A container group which contains visual effects rendered above the primary group.
    */
-  class EffectsCanvasGroup extends PIXI.Container {
+  class EffectsCanvasGroup extends CanvasGroupMixin(PIXI.Container) {
     constructor();
 
     /**
@@ -23,6 +26,11 @@ declare global {
     lightSources: Collection<foundry.canvas.sources.PointLightSource>;
 
     /**
+     * A mapping of darkness sources which are active within the rendered Scene.
+     */
+    darknessSources: Collection<foundry.canvas.sources.PointDarknessSource>;
+
+    /**
      * A Collection of vision sources which are currently active within the rendered Scene.
      */
     visionSources: Collection<foundry.canvas.sources.PointVisionSource.Any>;
@@ -31,6 +39,17 @@ declare global {
      * A set of vision mask filters used in visual effects group
      */
     visualEffectsMaskingFilters: Set<VisualEffectsMaskingFilter>;
+
+    /**
+     * Iterator for all light and darkness sources.
+     */
+    allSources(): Generator<
+      foundry.canvas.sources.PointDarknessSource | foundry.canvas.sources.PointLightSource,
+      void,
+      void
+    >;
+
+    override _createLayers(): Record<string, CanvasLayer>;
 
     /**
      * A layer of background alteration effects which change the appearance of the primary group render texture.
@@ -48,47 +67,33 @@ declare global {
     coloration: CanvasColorationEffects;
 
     /**
-     * A layer which controls the current visibility of the scene.
+     * A layer which adds darkness effects to the scene.
      */
-    visibility: CanvasVisibility;
+    darkness: CanvasDarknessEffects;
 
     /**
      * Clear all effects containers and animated sources.
      */
     clearEffects(): void;
 
-    /**
-     * Draw the component layers of the canvas group.
-     */
-    draw(): Promise<void>;
+    protected override _draw(options: CanvasGroupMixin.DrawOptions): Promise<void>;
 
     /**
-     * Actions to take when the darkness level is changed
-     * @param darkness - The new darkness level
-     * @param prior    - The prior darkness level
-     * @internal
-     */
-    _onDarknessChange(darkness: number, prior: number): void;
-
-    /**
-     * Initialize LightSource objects for all AmbientLightDocument instances which exist within the active Scene.
+     * Initialize positive light sources which exist within the active Scene.
+     * Packages can use the "initializeLightSources" hook to programmatically add light sources.
      */
     initializeLightSources(): void;
 
     /**
-     * Update the global light source which provides global illumination to the Scene.
-     * @param options - Options which modify how the source is updated
+     * Re-initialize the shapes of all darkness sources in the Scene.
+     * This happens before initialization of light sources because darkness sources contribute additional edges which
+     * limit perception.
+     * Packages can use the "initializeDarknessSources" hook to programmatically add darkness sources.
      */
-    updateGlobalLightSource(options: {
-      /**
-       * Defer updating perception to manually update it later
-       * @defaultValue `false`
-       */
-      defer: boolean;
-    }): void;
+    initializeDarknessSources(): void;
 
     /**
-     * Refresh the state and uniforms of all LightSource objects.
+     * Refresh the state and uniforms of all light sources and darkness sources objects.
      */
     refreshLightSources(): boolean;
 
@@ -103,9 +108,30 @@ declare global {
     refreshLighting(): boolean;
 
     /**
-     * Perform a deconstruction workflow for this canvas group when the canvas is retired.
+     * Test whether the point is inside light.
+     * @param point     - The point.
+     * @param elevation - The elevation of the point.
+     * @returns Is inside light?
      */
-    tearDown(): Promise<void>;
+    testInsideLight(point: Point, elevation: number): boolean;
+
+    /**
+     * Test whether the point is inside darkness.
+     * @param point     - The point.
+     * @param elevation - The elevation of the point.
+     * @returns Is inside darkness?
+     */
+    testInsideDarkness(point: Point, elevation: number): boolean;
+
+    /**
+     * Get the darkness level at the given point.
+     * @param point     - The point.
+     * @param elevation - The elevation of the point.
+     * @returns The darkness level.
+     */
+    getDarknessLevel(point: Point, elevation: number): number;
+
+    override _tearDown(options: CanvasGroupMixin.TearDownOptions): Promise<void>;
 
     /**
      * Activate vision masking for visual effects

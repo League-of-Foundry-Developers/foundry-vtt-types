@@ -11,9 +11,19 @@ declare global {
     static override groupName: string;
 
     /**
-     * Draw the canvas group and all its component layers.
+     * Add a PrimaryGraphics to the group.
+     * @param drawing - The Drawing being added
+     * @returns The created Graphics instance
      */
-    override draw(): Promise<void>;
+    addDrawing(drawing: Drawing): PIXI.Graphics;
+
+    /**
+     * Remove a PrimaryGraphics from the group.
+     * @param drawing - The Drawing being removed
+     */
+    removeDrawing(drawing: Drawing): void;
+
+    protected override _draw(options: CanvasGroupMixin.DrawOptions): Promise<void>;
 
     /**
      * Display scrolling status text originating from this ObjectHUD container.
@@ -60,13 +70,5 @@ declare global {
         textStyle: InexactPartial<PIXI.ITextStyle>;
       },
     ): Promise<PreciseText | null>;
-
-    /**
-     * @deprecated since v11, will be removed in v13
-     * @remarks "InterfaceCanvasGroup.reverseMaskfilter is deprecated.
-     * Please create your own ReverseMaskFilter, or instead of attaching the filter to each of your objects extend the
-     * already masked GridLayer with a container for these objects, which is much better for performance."
-     */
-    get reverseMaskfilter(): ReverseMaskFilter;
   }
 }
