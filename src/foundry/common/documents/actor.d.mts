@@ -4,10 +4,6 @@ import type { PrototypeToken } from "../data/data.mts";
 import type * as fields from "../data/fields.d.mts";
 import type * as documents from "./_module.d.mts";
 
-declare global {
-  type ActorData = BaseActor.Properties;
-}
-
 declare namespace BaseActor {
   type Parent = null;
 

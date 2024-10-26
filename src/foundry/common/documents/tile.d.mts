@@ -4,14 +4,6 @@ import type * as CONST from "../constants.mts";
 import type { TextureData } from "../data/data.mts";
 import type * as fields from "../data/fields.d.mts";
 
-declare global {
-  type TileData = BaseTile.Properties;
-
-  type TileOcclusionData = BaseTile.Properties["occlusion"];
-
-  type TileVideoData = BaseTile.Properties["video"];
-}
-
 /**
  * The Document definition for a Tile.
  * Defines the DataSchema and common behaviors for a Tile which are shared between both client and server.

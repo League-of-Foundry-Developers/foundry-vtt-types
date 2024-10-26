@@ -4,10 +4,6 @@ import type * as CONST from "../constants.mts";
 import type * as fields from "../data/fields.d.mts";
 import type BaseActor from "./actor.mts";
 
-declare global {
-  type UserData = BaseUser.Properties;
-}
-
 /**
  * The Document definition for a User.
  * Defines the DataSchema and common behaviors for a User which are shared between both client and server.

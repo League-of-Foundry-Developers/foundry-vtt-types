@@ -3,10 +3,6 @@ import type Document from "../abstract/document.mts";
 import type * as fields from "../data/fields.d.mts";
 import type * as documents from "./_module.mts";
 
-declare global {
-  type ItemData = BaseItem.Properties;
-}
-
 /**
  * The Document definition for an Item.
  * Defines the DataSchema and common behaviors for an Item which are shared between both client and server.

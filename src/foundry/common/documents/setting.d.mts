@@ -2,10 +2,6 @@ import type { Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type * as fields from "../data/fields.d.mts";
 
-declare global {
-  type SettingData = BaseSetting.Properties;
-}
-
 /**
  * The Document definition for a Setting.
  * Defines the DataSchema and common behaviors for a Setting which are shared between both client and server.

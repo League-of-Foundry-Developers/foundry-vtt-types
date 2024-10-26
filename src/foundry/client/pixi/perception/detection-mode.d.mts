@@ -1,5 +1,6 @@
 import type { InexactPartial, ValueOf } from "../../../../types/utils.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
+import type { TokenDetectionMode } from "../../../common/documents/_types.d.mts";
 
 declare global {
   namespace DetectionMode {
@@ -162,7 +163,10 @@ declare global {
   class DetectionModeInvisibility extends DetectionMode {
     static override getDetectionFilter(): PIXI.Filter | undefined;
 
-    protected override _canDetect(visionSource: foundry.canvas.sources.PointVisionSource.Any, target: PlaceableObject): boolean;
+    protected override _canDetect(
+      visionSource: foundry.canvas.sources.PointVisionSource.Any,
+      target: PlaceableObject,
+    ): boolean;
   }
 
   /**
@@ -171,7 +175,10 @@ declare global {
   class DetectionModeTremor extends DetectionMode {
     static override getDetectionFilter(): PIXI.Filter | undefined;
 
-    protected override _canDetect(visionSource: foundry.canvas.sources.PointVisionSource.Any, target: PlaceableObject): boolean;
+    protected override _canDetect(
+      visionSource: foundry.canvas.sources.PointVisionSource.Any,
+      target: PlaceableObject,
+    ): boolean;
   }
 
   /**
@@ -181,6 +188,9 @@ declare global {
   class DetectionModeAll extends DetectionMode {
     static override getDetectionFilter(): PIXI.Filter | undefined;
 
-    protected override _canDetect(visionSource: foundry.canvas.sources.PointVisionSource.Any, target: PlaceableObject): boolean;
+    protected override _canDetect(
+      visionSource: foundry.canvas.sources.PointVisionSource.Any,
+      target: PlaceableObject,
+    ): boolean;
   }
 }

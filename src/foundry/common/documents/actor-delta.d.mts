@@ -3,10 +3,6 @@ import type Document from "../abstract/document.mts";
 import type { fields } from "../data/module.d.mts";
 import type { CONST, documents } from "../../client-esm/client.d.mts";
 
-declare global {
-  type ActorDeltaData = documents.BaseActorDelta.Properties;
-}
-
 /**
  * The Document definition for an ActorDelta.
  * Defines the DataSchema and common behaviors for an ActorDelta which are shared between both client and server.

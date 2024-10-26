@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import type { CardFaceData } from "../../../../../src/foundry/common/documents/_types.d.mts";
 
 // @ts-expect-error - Card requires name.
 new Card();

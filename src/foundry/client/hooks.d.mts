@@ -1,12 +1,13 @@
 import type { EditorState } from "prosemirror-state";
 import type { DeepPartial, EmptyObject, ValueOf } from "../../types/utils.d.mts";
+import type Document from "../common/abstract/document.d.mts";
+import type { EffectChangeData } from "../common/documents/_types.d.mts";
+import type { ProseMirrorDropDown } from "../common/prosemirror/menu.d.mts";
 import type { DropData } from "./data/abstract/client-document.d.mts";
+import type { OccludableObject } from "./pixi/placeables/primary-canvas-objects/occludable-object.d.mts";
 
 // eslint-disable-next-line import/no-named-as-default
 import type ProseMirrorMenu from "../common/prosemirror/menu.d.mts";
-import type { ProseMirrorDropDown } from "../common/prosemirror/menu.d.mts";
-import type { OccludableObject } from "./pixi/placeables/primary-canvas-objects/occludable-object.d.mts";
-import type Document from "../common/abstract/document.d.mts";
 
 declare global {
   /**
