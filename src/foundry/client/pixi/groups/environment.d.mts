@@ -1,7 +1,5 @@
 import type { InexactPartial } from "../../../../types/utils.d.mts";
 
-export {};
-
 // TODO: Remove when this is typed as part of #2674
 type SceneEnvironmentData = unknown;
 
@@ -59,16 +57,22 @@ declare global {
     interface InitializeConfig {
       /** The background canvas color */
       backgroundColor: ColorSource;
+
       /** The brightest ambient color */
       brightestColor: ColorSource;
+
       /** The color of darkness */
       darknessColor: ColorSource;
+
       /** The ambient daylight color */
       daylightColor: ColorSource;
+
       /** The color applied to explored areas */
       fogExploredColor: ColorSource;
+
       /** The color applied to unexplored areas */
       fogUnexploredColor: ColorSource;
+
       /** The scene environment data */
       environment: SceneEnvironmentData;
     }

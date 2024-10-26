@@ -1,7 +1,5 @@
 import type { Renderer } from "pixi.js";
 
-export {};
-
 // Included to match Foundry's documented types
 type PrimaryCanvasObject = ReturnType<typeof PrimaryCanvasObjectMixin>;
 

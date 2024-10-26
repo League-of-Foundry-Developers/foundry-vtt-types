@@ -1,4 +1,4 @@
-import type { InexactPartial, Mixin } from "../../../../../types/utils.d.mts";
+import type { AnyObject, Mixin } from "../../../../../types/utils.d.mts";
 
 declare class CanvasGroup {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
@@ -72,9 +72,9 @@ declare global {
   namespace CanvasGroupMixin {
     type BaseClass = typeof AnyPIXIContainer;
 
-    type DrawOptions = InexactPartial<Record<string, unknown>>;
+    type DrawOptions = AnyObject;
 
-    type TearDownOptions = InexactPartial<Record<string, unknown>>;
+    type TearDownOptions = AnyObject;
   }
 }
 
