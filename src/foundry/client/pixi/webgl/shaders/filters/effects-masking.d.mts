@@ -37,9 +37,9 @@ declare global {
      */
     // TODO: Replace when https://github.com/microsoft/TypeScript/issues/17867 is resolved
     static override create<
-      T1 extends VisualEffectsMaskingFilter,
-      T2 extends VisualEffectsMaskingFilter.CreateOptions<T2>,
-    >(this: ConstructorOf<T1>, { postProcessModes, ...uniforms }?: T2): T1;
+      T extends VisualEffectsMaskingFilter,
+      Options extends VisualEffectsMaskingFilter.CreateOptions<Options>,
+    >(this: ConstructorOf<T>, { postProcessModes, ...uniforms }?: Options): T;
     static override create<T extends VisualEffectsMaskingFilter>(
       this: ConstructorOf<T>,
       { postProcessModes, ...uniforms }?: VisualEffectsMaskingFilter.CreateOptionsIntersection,
