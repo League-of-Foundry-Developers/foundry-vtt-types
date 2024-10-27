@@ -36,3 +36,4 @@ declare global {
     type WeatherShaderEffectConfig = InexactPartial<AbstractBaseShader.Uniforms & WeatherShaderEffect["shader"]>;
   }
 }
+
