@@ -15,13 +15,27 @@ TypeScript type definitions for [Foundry Virtual Tabletop](https://foundryvtt.co
 
 We aim to support the latest release of each Foundry VTT version (0.7, 0.8, 9, etc.), starting with 0.7.
 
-At the moment, versions 0.7, 0.8, and 9 are fully supported. Work on support for version 11 is well underway, but involves some catchup on Version 11. See the [open foundry V10 issues](https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues?q=is%3Aopen+is%3Aissue+label%3A%22foundry+V10%22) as well as the [Version 11 tracking issue](https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues/2461) to view the current progress
+At the moment, versions 0.7, 0.8, and 9 are fully supported with partial support for versions 10 and 11. Work on support for version 12 is currently underway. See the [open foundry V12 issues](https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues?q=is%3Aopen+is%3Aissue+label%3A%22foundry+V12%22).
+
+## V12 Installation
+
+Currently v12 is still in beta. There are known bugs, issues in the ergonomics, and major unfinished work in the current implementation. To get a direct line of communication about the current status of development as well as to help us understand what areas need to be prioritizated first, join the [League of Extraordinary FoundryVTT Developers Discord](https://discord.gg/73HTMuK7dT) or file an issue.
+
+The recommended way to install for v12 is this command:
+
+```sh
+npm add --include=dev github:League-of-Foundry-Developers/foundry-vtt-types#main
+```
+
+Alternatively, if you're using yarn you'll need to use the command `yarn add --dev foundry-vtt-types@github:League-of-Foundry-Developers/foundry-vtt-types#main`.
+
+This will add the current commit on `main` as a dependency. Both npm and yarn's lockfile will store the commit you initially installed this command and so updates to your dependency will not happen automatically or even after a fresh install. To update you will need to be rerun the prior command periodically to update as improvements are added frequently.
 
 ## Installation
 
-You can install foundry-vtt-types from the [npm registry](https://npmjs.org/).
+You can install historical versions of foundry-vtt-types from the [npm registry](https://npmjs.org/).
 
-In order to install the latest version, run
+In order to install the latest stable version (v9), run
 
 ```sh
 npm install --save-dev @league-of-foundry-developers/foundry-vtt-types
