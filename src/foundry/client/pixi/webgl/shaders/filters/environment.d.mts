@@ -3,6 +3,7 @@ export {};
 declare abstract class AnyPrimaryCanvasGroupAmbienceFilter extends PrimaryCanvasGroupAmbienceFilter {
   constructor(arg0: never, ...args: never[]);
 }
+
 declare global {
   namespace PrimaryCanvasGroupAmbienceFilter {
     type AnyConstructor = typeof AnyPrimaryCanvasGroupAmbienceFilter;

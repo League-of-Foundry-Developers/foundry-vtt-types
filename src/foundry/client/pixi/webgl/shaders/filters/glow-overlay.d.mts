@@ -1,5 +1,3 @@
-import type { InexactPartial } from "../../../../../../types/utils.d.mts";
-
 export {};
 
 declare abstract class AnyGlowOverlayFilter extends GlowOverlayFilter {
@@ -9,11 +7,6 @@ declare abstract class AnyGlowOverlayFilter extends GlowOverlayFilter {
 declare global {
   namespace GlowOverlayFilter {
     type AnyConstructor = typeof AnyGlowOverlayFilter;
-
-    interface Uniforms extends AbstractBaseShader.Uniforms {
-      distance: number;
-      quality: number;
-    }
   }
 
   /**
@@ -58,7 +51,7 @@ declare global {
      * }
      * ```
      */
-    static override defaultUniforms: GlowOverlayFilter.Uniforms;
+    static override defaultUniforms: AbstractBaseShader.Uniforms;
 
     /**
      * Dynamically create the fragment shader used for filters of this type.
@@ -67,9 +60,10 @@ declare global {
 
     static override vertexShader: string;
 
-    static override create<ConcreteClass extends GlowOverlayFilter.AnyConstructor>(
+    //todo: figure out why this can't be `extends GlowOverlayFilter` https://i.imgur.com/ztywGFf.png
+    static override create<ConcreteClass extends AbstractBaseFilter.AnyConstructor>(
       this: ConcreteClass,
-      initialUniforms?: InexactPartial<GlowOverlayFilter.Uniforms>,
+      initialUniforms?: AbstractBaseShader.Uniforms,
     ): InstanceType<ConcreteClass>;
 
     override apply(

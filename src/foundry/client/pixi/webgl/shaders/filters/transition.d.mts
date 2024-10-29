@@ -3,7 +3,34 @@ import type { ValueOf } from "../../../../../../types/utils.d.mts";
 
 export {};
 
+declare abstract class AnyTextureTransitionFilter extends TextureTransitionFilter {
+  constructor(arg0: never, ...args: never[]);
+}
+
 declare global {
+  namespace TextureTransitionFilter {
+    type AnyConstructor = typeof AnyTextureTransitionFilter;
+
+    /**
+     * @privateRemarks types are literals and not `string` to make the `type` getter and setter typings work
+     */
+    interface TYPES {
+      FADE: "fade";
+      SWIRL: "swirl";
+      WATER_DROP: "waterDrop";
+      MORPH: "morph";
+      CROSSHATCH: "crosshatch";
+      WIND: "wind";
+      WAVES: "waves";
+      WHITE_NOISE: "whiteNoise";
+      HOLOGRAM: "hologram";
+      HOLE: "hole";
+      HOLE_SWIRL: "holeSwirl";
+      GLITCH: "glitch";
+      DOTS: "dots";
+    }
+  }
+
   /**
    * A filter specialized for transition effects between a source object and a target texture.
    */
@@ -15,7 +42,7 @@ declare global {
 
     /**
      * The transition type (see {@link TextureTransitionFilter.TYPES}).
-     * @defaultValue TextureTransitionFilter.TYPES.FADE
+     * @defaultValue TYPES.FADE
      */
     get type(): ValueOf<TextureTransitionFilter.TYPES>;
 
@@ -87,24 +114,5 @@ declare global {
       output: RenderTexture,
       clearMode?: CLEAR_MODES,
     ): void;
-  }
-
-  namespace TextureTransitionFilter {
-    // types are literals and not `string` to make the `type` getter and setter typings work
-    interface TYPES {
-      FADE: "fade";
-      SWIRL: "swirl";
-      WATER_DROP: "waterDrop";
-      MORPH: "morph";
-      CROSSHATCH: "crosshatch";
-      WIND: "wind";
-      WAVES: "waves";
-      WHITE_NOISE: "whiteNoise";
-      HOLOGRAM: "hologram";
-      HOLE: "hole";
-      HOLE_SWIRL: "holeSwirl";
-      GLITCH: "glitch";
-      DOTS: "dots";
-    }
   }
 }

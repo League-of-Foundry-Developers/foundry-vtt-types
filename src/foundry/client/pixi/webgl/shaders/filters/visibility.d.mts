@@ -2,7 +2,19 @@ import type { InexactPartial } from "../../../../../../types/utils.d.mts";
 
 export {};
 
+declare abstract class AnyVisibilityFilter extends VisibilityFilter {
+  constructor(arg0: never, ...args: never[]);
+}
+
 declare global {
+  namespace VisibilityFilter {
+    type AnyConstructor = typeof AnyVisibilityFilter;
+
+    interface FragmentShaderOptions {
+      persistentVision: boolean;
+    }
+  }
+
   /**
    * Apply visibility coloration according to the baseLine color.
    * Uses very lightweight gaussian vertical and horizontal blur filter passes.
@@ -27,10 +39,11 @@ declare global {
      */
     static override defaultUniforms: AbstractBaseShader.Uniforms;
 
-    static override create(
-      uniforms?: AbstractBaseShader.Uniforms,
+    static override create<ConcreteClass extends AbstractBaseFilter.AnyConstructor>(
+      this: ConcreteClass,
+      initiaUniforms?: AbstractBaseShader.Uniforms,
       options?: InexactPartial<VisibilityFilter.FragmentShaderOptions>,
-    ): VisibilityFilter;
+    ): InstanceType<ConcreteClass>;
 
     static override vertexShader: string;
 
@@ -55,10 +68,5 @@ declare global {
      * Calculate the fog overlay sprite matrix.
      */
     calculateMatrix(filterManager: PIXI.FilterSystem): void;
-  }
-  namespace VisibilityFilter {
-    interface FragmentShaderOptions {
-      persistentVision: boolean
-    }
   }
 }

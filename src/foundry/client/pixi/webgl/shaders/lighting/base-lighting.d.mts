@@ -1,25 +1,47 @@
 export {};
 
+declare abstract class AnyAdaptiveLightingShader extends AdaptiveLightingShader {
+  constructor(arg0: never, ...args: never[]);
+}
+
 declare global {
-  interface ShaderTechnique {
-    /** The numeric identifier of the technique */
-    id: number;
-
-    /** The localization string that labels the technique */
-    label: string;
-
-    /**  The coloration shader fragment when the technique is used */
-    coloration?: string | undefined;
-
-    /** The illumination shader fragment when the technique is used */
-    illumination?: string | undefined;
-
-    /** The background shader fragment when the technique is used */
-    background?: string | undefined;
-  }
-
   namespace AdaptiveLightingShader {
+    type AnyConstructor = typeof AnyAdaptiveLightingShader;
+
     type TechniqueReturn = ReturnType<(typeof AdaptiveLightingShader)["getShaderTechniques"]>;
+
+    type ShaderTypes = "coloration" | "illumination" | "background" | (string & {});
+
+    interface ShaderTechnique {
+      /** The numeric identifier of the technique */
+      id: number;
+
+      /** The localization string that labels the technique */
+      label: string;
+
+      /**  The coloration shader fragment when the technique is used */
+      coloration?: string | undefined;
+
+      /** The illumination shader fragment when the technique is used */
+      illumination?: string | undefined;
+
+      /** The background shader fragment when the technique is used */
+      background?: string | undefined;
+    }
+
+    interface ShaderTechniques extends Record<string, ShaderTechnique> {
+      LEGACY: ShaderTechnique;
+      LUMINANCE: ShaderTechnique;
+      INTERNAL_HALO: ShaderTechnique;
+      EXTERNAL_HALO: ShaderTechnique;
+      COLOR_BURN: ShaderTechnique;
+      INTERNAL_BURN: ShaderTechnique;
+      EXTERNAL_BURN: ShaderTechnique;
+      LOW_ABSORPTION: ShaderTechnique;
+      HIGH_ABSORPTION: ShaderTechnique;
+      INVERT_ABSORPTION: ShaderTechnique;
+      NATURAL_LIGHT: ShaderTechnique;
+    }
   }
 
   /**
@@ -166,23 +188,5 @@ declare global {
      * The darkness penalty is no longer applied on light and vision sources.
      */
     getDarknessPenalty(darknessLevel: number, luminosity: number): number;
-  }
-
-  namespace AdaptiveLightingShader {
-    type ShaderTypes = "coloration" | "illumination" | "background" | (string & {});
-
-    interface ShaderTechniques extends Record<string, ShaderTechnique> {
-      LEGACY: ShaderTechnique;
-      LUMINANCE: ShaderTechnique;
-      INTERNAL_HALO: ShaderTechnique;
-      EXTERNAL_HALO: ShaderTechnique;
-      COLOR_BURN: ShaderTechnique;
-      INTERNAL_BURN: ShaderTechnique;
-      EXTERNAL_BURN: ShaderTechnique;
-      LOW_ABSORPTION: ShaderTechnique;
-      HIGH_ABSORPTION: ShaderTechnique;
-      INVERT_ABSORPTION: ShaderTechnique;
-      NATURAL_LIGHT: ShaderTechnique;
-    }
   }
 }

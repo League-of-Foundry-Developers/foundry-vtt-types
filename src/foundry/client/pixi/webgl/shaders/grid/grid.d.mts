@@ -1,6 +1,14 @@
 export {};
 
+declare abstract class AnyGridShader extends GridShader {
+  constructor(arg0: never, ...args: never[]);
+}
+
 declare global {
+  namespace GridShader {
+    type AnyConstructor = typeof AnyGridShader;
+  }
+
   /**
    * The grid shader used by {@link GridMesh}.
    */
@@ -74,6 +82,24 @@ declare global {
      */
     protected static _fragmentShader: string;
 
+    /**
+     * @defaultValue
+     * ```js
+     * {
+     *   canvasDimensions: [1, 1],
+     *   meshDimensions: [0, 0, 1, 1],
+     *   sceneDimensions: [0, 0, 1, 1],
+     *   screenDimensions: [1, 1],
+     *   gridSize: 1,
+     *   type: 0,
+     *   thickness: 0,
+     *   resolution: 0,
+     *   color: [0, 0, 0, 0],
+     *   alpha: 0,
+     *   style: 0
+     * }
+     * ```
+     */
     static override defaultUniforms: AbstractBaseShader.Uniforms;
 
     /**

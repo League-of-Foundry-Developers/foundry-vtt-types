@@ -1,6 +1,14 @@
 export {};
 
+declare abstract class AnyAdaptiveBackgroundShader extends AdaptiveBackgroundShader {
+  constructor(arg0: never, ...args: never[]);
+}
+
 declare global {
+  namespace AdaptiveBackgroundShader {
+    type AnyConstructor = typeof AnyAdaptiveBackgroundShader;
+  }
+
   /**
    * The default coloration shader used by standard rendering and animations
    * A fragment shader which creates a solid light source.
@@ -13,6 +21,38 @@ declare global {
 
     static override fragmentShader: AbstractBaseShader.FragmentShader;
 
+    /**
+     * @defaultValue
+     * ```js
+     * {
+     *   technique: 1,
+     *   contrast: 0,  shadows: 0,
+     *   saturation: 0,
+     *   intensity: 5,
+     *   attenuation: 0.5,
+     *   exposure: 0,
+     *   ratio: 0.5,
+     *   color: [1, 1, 1],
+     *   colorBackground: [1, 1, 1],
+     *   screenDimensions: [1, 1],
+     *   time: 0,
+     *   useSampler: true,
+     *   primaryTexture: null,
+     *   depthTexture: null,
+     *   darknessLevelTexture: null,
+     *   depthElevation: 1,
+     *   ambientBrightest: [1, 1, 1],
+     *   ambientDarkness: [0, 0, 0],
+     *   ambientDaylight: [1, 1, 1],
+     *   weights: [0, 0, 0, 0],
+     *   dimLevelCorrection: 1,
+     *   brightLevelCorrection: 2,
+     *   computeIllumination: false,
+     *   globalLight: false,
+     *   globalLightThresholds: [0, 0]
+     * }
+     * ```
+     */
     static override defaultUniforms: AbstractBaseShader.Uniforms;
 
     /**

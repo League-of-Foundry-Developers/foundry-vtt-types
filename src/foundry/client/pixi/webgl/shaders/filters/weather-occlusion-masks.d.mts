@@ -1,6 +1,14 @@
 export {};
 
+declare abstract class AnyWeatherOcclusionMaskFilter extends WeatherOcclusionMaskFilter {
+  constructor(arg0: never, ...args: never[]);
+}
+
 declare global {
+  namespace WeatherOcclusionMaskFilter {
+    type AnyConstructor = typeof AnyWeatherOcclusionMaskFilter;
+  }
+
   /**
    * The filter used by the weather layer to mask weather above occluded roofs.
    * @see {@link WeatherEffects}
@@ -20,17 +28,18 @@ declare global {
      * @defaultValue
      * ```js
      * {
-     *    depthElevation: 0,
-     *    useOcclusion: true,
-     *    occlusionTexture: null,
-     *    reverseOcclusion: false,
-     *    occlusionWeights: [0, 0, 1, 0],
-     *    useTerrain: false,
-     *    terrainTexture: null,
-     *    reverseTerrain: false,
-     *    terrainWeights: [1, 0, 0, 0],
-     *    sceneDimensions: [0, 0],
-     *    sceneAnchor: [0, 0]
+     *   depthElevation: 0,
+     *   useOcclusion: true,
+     *   occlusionTexture: null,
+     *   everseOcclusion: false,
+     *   occlusionWeights: [0, 0, 1, 0],
+     *   seTerrain: false,
+     *   terrainTexture: null,
+     *   reverseTerrain: false,
+     *   terrainWeights: [1, 0, 0, 0],
+     *   sceneDimensions: [0, 0],
+     *   sceneAnchor: [0, 0]
+     *   terrainUvMatrix: new PIXI.Matrix()
      * }
      * ```
      */

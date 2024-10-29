@@ -1,4 +1,4 @@
-import type { ConstructorOf, InexactPartial, ValueOf } from "../../../../../../types/utils.d.mts";
+import type { InexactPartial } from "../../../../../../types/utils.d.mts";
 
 export {};
 
@@ -10,26 +10,21 @@ declare global {
   namespace VisualEffectsMaskingFilter {
     type AnyConstructor = typeof AnyVisualEffectsMaskingFilter;
 
-    //todo: convert to interface
-    type PostProcessModes = Array<keyof (typeof VisualEffectsMaskingFilter)["POST_PROCESS_TECHNIQUES"]>;
-
-    //todo: convert to interface
-    type FilterMode = ValueOf<(typeof VisualEffectsMaskingFilter)["FILTER_MODES"]>;
+    type PostProcessModes = Array<keyof VisualEffectsMaskingFilter.POST_PROCESS_TECHNIQUES>;
 
     /**
      * @privateRemarks Implementation taken from https://stackoverflow.com/a/61434547
      */
     // TODO: Replace when https://github.com/microsoft/TypeScript/issues/17867 is resolved
-    type CreateOptionsIntersection = {
-      filterMode?: FilterMode;
-      postProcessModes?: PostProcessModes;
-    } & AbstractBaseShader.Uniforms;
+    type CreateOptionsIntersection = InexactPartial<{
+      postProcessModes: PostProcessModes;
+    }> &
+      AbstractBaseShader.Uniforms;
 
     type CreateOptions<T> = InexactPartial<{
-      filterMode: FilterMode;
       postProcessModes: PostProcessModes;
     }> & {
-      [K in keyof T]: K extends "filterMode" | "postProcessModes" ? unknown : AbstractBaseShader.UniformValue;
+      [K in keyof T]: K extends "postProcessModes" ? unknown : AbstractBaseShader.UniformValue;
     };
 
     interface POST_PROCESS_TECHNIQUES {
@@ -49,13 +44,13 @@ declare global {
      */
     // TODO: Replace when https://github.com/microsoft/TypeScript/issues/17867 is resolved
     static override create<
-      T extends VisualEffectsMaskingFilter,
-      Options extends VisualEffectsMaskingFilter.CreateOptions<T>,
-    >(this: ConstructorOf<T>, { postProcessModes, ...uniforms }?: Options): T;
-    static override create<T extends VisualEffectsMaskingFilter>(
-      this: ConstructorOf<T>,
-      { postProcessModes, ...uniforms }?: VisualEffectsMaskingFilter.CreateOptionsIntersection,
-    ): T;
+      ConcreteClass extends VisualEffectsMaskingFilter.AnyConstructor,
+      Options extends VisualEffectsMaskingFilter.CreateOptions<Options>,
+    >(this: ConcreteClass, options?: Options): InstanceType<ConcreteClass>;
+    static override create<ConcreteClass extends VisualEffectsMaskingFilter.AnyConstructor>(
+      this: ConcreteClass,
+      { postProcessModes, ...initialUniforms }?: VisualEffectsMaskingFilter.CreateOptionsIntersection,
+    ): ConcreteClass;
 
     /**
      * Masking modes.
@@ -131,7 +126,6 @@ declare global {
 
     /**
      * Specify the fragment shader to use according to mode
-     * @param filterMode       - (default: this.FILTER_MODES.BACKGROUND)
      * @param postProcessModes - (default: [])
      */
     static override fragmentShader(postProcessModes?: VisualEffectsMaskingFilter.PostProcessModes): string;

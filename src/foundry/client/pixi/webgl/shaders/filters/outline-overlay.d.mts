@@ -1,8 +1,14 @@
-import type { ConstructorOf } from "../../../../../../types/utils.d.mts";
-
 export {};
 
+declare abstract class AnyOutlineOverlayFilter extends OutlineOverlayFilter {
+  constructor(arg0: never, ...args: never[]);
+}
+
 declare global {
+  namespace OutlineOverlayFilter {
+    type AnyConstructor = typeof AnyOutlineOverlayFilter;
+  }
+
   /**
    * A filter which implements an outline.
    * Inspired from https://github.com/pixijs/filters/tree/main/filters/outline
@@ -53,10 +59,11 @@ declare global {
 
     set thickness(value);
 
-    static override create<T extends OutlineOverlayFilter>(
-      this: ConstructorOf<T>,
-      uniforms?: AbstractBaseShader.Uniforms,
-    ): T;
+    //todo: figure out why this can't be `extends OutlineOverlayFilter`: https://i.imgur.com/2x3nwNz.png
+    static override create<ConcreteClass extends AbstractBaseFilter.AnyConstructor>(
+      this: ConcreteClass,
+      initialUniforms?: AbstractBaseShader.Uniforms,
+    ): InstanceType<ConcreteClass>;
 
     override apply(
       filterManager: PIXI.FilterSystem,
