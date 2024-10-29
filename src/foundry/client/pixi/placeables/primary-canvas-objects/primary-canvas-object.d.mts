@@ -157,7 +157,7 @@ declare global {
    */
   function PrimaryCanvasObjectMixin<BaseClass extends PrimaryCanvasObjectMixin.BaseClass>(
     DisplayObject: BaseClass,
-  ): Mixin<typeof PrimaryCanvasObject, BaseClass>;
+  ): Mixin<typeof PrimaryCanvasObject, ReturnType<typeof CanvasTransformMixin<BaseClass>>>;
 
   namespace PrimaryCanvasObjectMixin {
     type BaseClass = PrimaryCanvasObjectMixinBaseClass;
