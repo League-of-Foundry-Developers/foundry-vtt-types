@@ -1,4 +1,4 @@
-import type { AnyConstructorFor, Mixin } from "../../../../../types/utils.d.mts";
+import type { Mixin } from "../../../../../types/utils.d.mts";
 
 export {};
 
@@ -36,7 +36,7 @@ declare global {
   namespace AdaptiveFragmentChannel {
     type Channel = "r" | "g" | "b";
   }
-  function AdaptiveFragmentChannelMixin<BaseClass extends AnyConstructorFor<typeof PIXI.Shader | typeof PIXI.Filter>>(
+  function AdaptiveFragmentChannelMixin<BaseClass extends PIXI.Shader.AnyConstructor | PIXI.Filter.AnyConstructor>(
     ShaderClass: BaseClass,
   ): Mixin<typeof AdaptiveFragmentChannelMixinClass, BaseClass>;
 }

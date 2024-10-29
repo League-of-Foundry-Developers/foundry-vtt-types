@@ -1,14 +1,21 @@
-import type { ConstructorOf } from "../../../../../../types/utils.d.mts";
+import type { InexactPartial } from "../../../../../../types/utils.d.mts";
 
 export {};
 
+declare abstract class AnyGlowOverlayFilter extends GlowOverlayFilter {
+  constructor(arg0: never, ...args: never[]);
+}
+
 declare global {
   namespace GlowOverlayFilter {
+    type AnyConstructor = typeof AnyGlowOverlayFilter;
+
     interface Uniforms extends AbstractBaseShader.Uniforms {
       distance: number;
       quality: number;
     }
   }
+
   /**
    * A filter which implements an inner or outer glow around the source texture.
    * Inspired from https://github.com/pixijs/filters/tree/main/filters/glow
@@ -40,12 +47,14 @@ declare global {
 
     /**
      * @defaultValue
-     * ```typescript
+     * ```js
      * {
      *   distance: 10,
-     *   innerStrength: 0,
      *   glowColor: [1, 1, 1, 1],
      *   quality: 0.1,
+     *   time: 0,
+     *   knockout: true,
+     *   alpha: 1
      * }
      * ```
      */
@@ -58,10 +67,10 @@ declare global {
 
     static override vertexShader: string;
 
-    static override create<T extends GlowOverlayFilter>(
-      this: ConstructorOf<T>,
-      uniforms: AbstractBaseShader.Uniforms,
-    ): T;
+    static override create<ConcreteClass extends GlowOverlayFilter.AnyConstructor>(
+      this: ConcreteClass,
+      initialUniforms?: InexactPartial<GlowOverlayFilter.Uniforms>,
+    ): InstanceType<ConcreteClass>;
 
     override apply(
       filterManager: PIXI.FilterSystem,

@@ -1,12 +1,18 @@
 export {};
 
+declare abstract class AnyAbstractBaseMaskFilter extends AbstractBaseMaskFilter {
+  constructor(arg0: never, ...args: never[]);
+}
+
 declare global {
+  namespace AbstractBaseMaskFilter {
+    type AnyConstructor = typeof AnyAbstractBaseMaskFilter;
+  }
+
   /**
    * This class defines an interface for masked custom filters
    */
   class AbstractBaseMaskFilter extends AbstractBaseFilter {
-    static create(uniforms?: AbstractBaseShader.Uniforms): AbstractBaseMaskFilter;
-
     /**
      * The default vertex shader used by all instances of AbstractBaseMaskFilter
      */

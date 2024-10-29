@@ -1,6 +1,21 @@
 export {};
 
+declare abstract class AnyAlphaBlurFilterPass extends AlphaBlurFilterPass {
+  constructor(arg0: never, ...args: never[]);
+}
+declare abstract class AnyAlphaBlurFilter extends AlphaBlurFilter {
+  constructor(arg0: never, ...args: never[]);
+}
+
 declare global {
+  namespace AlphaBlurFilterPass {
+    type AnyConstructor = typeof AnyAlphaBlurFilterPass;
+  }
+
+  namespace AlphaBlurFilter {
+    type AnyConstructor = typeof AnyAlphaBlurFilter;
+  }
+
   /**
    * Apply a vertical or horizontal gaussian blur going inward by using alpha as the penetrating channel.
    */
@@ -105,6 +120,12 @@ declare global {
      *                     (default: `5`)
      */
     constructor(strength?: number, quality?: number, resolution?: number, kernelSize?: number);
+
+    blurXFilter: typeof AlphaBlurFilterPass;
+
+    blurYFilter: typeof AlphaBlurFilterPass;
+
+    _repeatEdgePixels: boolean;
 
     override apply(
       filterManager: PIXI.FilterSystem,

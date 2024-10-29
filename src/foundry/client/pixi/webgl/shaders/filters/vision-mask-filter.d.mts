@@ -1,12 +1,30 @@
 export {};
 
+declare abstract class AnyVisionMaskFilter extends VisionMaskFilter {
+  constructor(arg0: never, ...args: never[]);
+}
+
 declare global {
+  namespace VisionMaskFilter {
+    type AnyConstructor = typeof AnyVisionMaskFilter;
+  }
+
   class VisionMaskFilter extends AbstractBaseMaskFilter {
     static override fragmentShader: AbstractBaseFilter.FragmentShader;
 
+    /**
+     * @defaultValue
+     * ```js
+     * {
+     *   uMaskSampler: null
+     * }
+     * ```
+     */
     static override defaultUniforms: AbstractBaseShader.Uniforms;
 
-    static override create(): AbstractBaseMaskFilter;
+    static override create<ConcreteClass extends VisionMaskFilter.AnyConstructor>(
+      this: ConcreteClass,
+    ): InstanceType<ConcreteClass>;
 
     /**
      * @remarks This is set as a property all the way up in PIXI.Filter, however Foundry has it

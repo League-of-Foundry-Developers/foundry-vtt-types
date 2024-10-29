@@ -1,6 +1,12 @@
+import type { PropertiesOfType } from "../../../../../types/helperTypes.d.mts";
+
 export {};
 
 declare global {
+  namespace CanvasAnimation {
+    type EasingFunction = CoreEasingFunctions | ((percent: number) => number);
+    type CoreEasingFunctions = PropertiesOfType<typeof CanvasAnimation, (percent: number) => number>
+  }
   interface CanvasAnimationAttribute {
     /** The attribute name being animated */
     attribute: string;
@@ -44,7 +50,7 @@ declare global {
      * An easing function used to translate animation time or the string name
      * of a static member of the CanvasAnimation class
      */
-    easing?: ((pt: number) => number) | string;
+    easing?: CanvasAnimation.EasingFunction;
 
     /** A callback function which fires after every frame */
     ontick?: (dt: number, animation: CanvasAnimationData) => void;

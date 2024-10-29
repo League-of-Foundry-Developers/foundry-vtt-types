@@ -1,3 +1,5 @@
+import type { InexactPartial } from "../../../../../../types/utils.d.mts";
+
 export {};
 
 declare global {
@@ -27,12 +29,12 @@ declare global {
 
     static override create(
       uniforms?: AbstractBaseShader.Uniforms,
-      options?: { persistentVision: boolean },
+      options?: InexactPartial<VisibilityFilter.FragmentShaderOptions>,
     ): VisibilityFilter;
 
     static override vertexShader: string;
 
-    static override fragmentShader(options: { persistentVision: boolean }): string;
+    static override fragmentShader(options: InexactPartial<VisibilityFilter.FragmentShaderOptions>): string;
 
     /**
      * Set the blur strength
@@ -53,5 +55,10 @@ declare global {
      * Calculate the fog overlay sprite matrix.
      */
     calculateMatrix(filterManager: PIXI.FilterSystem): void;
+  }
+  namespace VisibilityFilter {
+    interface FragmentShaderOptions {
+      persistentVision: boolean
+    }
   }
 }
