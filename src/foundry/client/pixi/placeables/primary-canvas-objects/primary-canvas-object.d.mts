@@ -173,6 +173,10 @@ declare global {
   function CanvasTransformMixin<BaseClass extends PrimaryCanvasObjectMixinBaseClass>(
     DisplayObject: BaseClass
   ): Mixin<typeof CanvasTransformMixinClass, BaseClass>;
+
+  namespace CanvasTransformMixin {
+    type MixinClass = typeof CanvasTransformMixinClass;
+  }
 }
 
 type DisplayObjectClass = typeof DisplayObject;
