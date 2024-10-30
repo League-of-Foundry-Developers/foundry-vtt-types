@@ -11,7 +11,7 @@ import * as _packages from "../common/packages/module.mjs";
 import * as _utils from "../common/utils/module.mjs";
 import * as _config from "../common/config.mjs";
 import * as _prosemirror from "../common/prosemirror/_module.mjs";
-// import * as _grid from "../common/grid/_module.mjs";
+import * as _grid from "../common/grid/_module.mjs";
 // import * as _types from "../common/types.mjs";
 
 // client
@@ -61,7 +61,7 @@ export * as utils from "../common/utils/module.mjs";
 /**
  * Grid classes.
  */
-// export * as grid from "../common/grid/_module.mjs";
+export * as grid from "../common/grid/_module.mjs";
 
 /**
  * A library for rendering and managing HTML user interface elements within the Foundry Virtual Tabletop game client.
@@ -138,7 +138,7 @@ declare global {
     /**
      * Grid classes.
      */
-    // export import grid = _grid;
+    export import grid = _grid;
 
     /**
      * A library for rendering and managing HTML user interface elements within the Foundry Virtual Tabletop game client.

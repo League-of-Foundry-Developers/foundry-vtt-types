@@ -233,7 +233,7 @@ declare class HexagonalGrid extends BaseGrid {
    * @returns The width and height of a single hexagon, in pixels.
    * @deprecated Since v12 until v14. No Replacement
    */
-  static computeDimensions(config: HexGridConfiguration): { width: number; height: number };
+  static computeDimensions(config: HexagonalGrid.Configuration): { width: number; height: number };
 
   /**
    * Is this hex grid column-based (flat-topped), or row-based (pointy-topped)?
@@ -274,7 +274,7 @@ declare class HexagonalGrid extends BaseGrid {
    * @deprecated Since v12 until v14. Use {@link HexagonalGrid#offsetToCube} instead.
    */
   static offsetToCube(
-    offset: HexOffsetCoordinate,
+    offset: unknown,
     config?: InexactPartial<{
       columns: boolean;
       even: boolean;
@@ -290,7 +290,7 @@ declare class HexagonalGrid extends BaseGrid {
    * @returns The offset coordinate
    * @deprecated Since v12 until v14. Use {@link HexagonalGrid#cubeToOffset} instead.
    */
-  static cubeToOffset(cube: HexCubeCoordinate, config: HexGridConfiguration): HexagonalGrid.Offset;
+  static cubeToOffset(cube: unknown, config: HexagonalGrid.Configuration): HexagonalGrid.Offset;
 
   /**
    * Given a cursor position (x, y), obtain the cube coordinate hex (q, r, s) of the hex which contains it
@@ -300,7 +300,7 @@ declare class HexagonalGrid extends BaseGrid {
    * @returns The cube coordinate
    * @deprecated Since v12 until v14. Use {@link HexagonalGrid#pointToCube} instead.
    */
-  static pixelToCube(point: Point, config: HexGridConfiguration): HexagonalGrid.Coordinates;
+  static pixelToCube(point: Point, config: HexagonalGrid.Configuration): HexagonalGrid.Coordinates;
 
   /**
    * Compute the top-left pixel coordinate of a hexagon from its offset coordinate.
@@ -309,7 +309,7 @@ declare class HexagonalGrid extends BaseGrid {
    * @returns The coordinate in pixels
    * @deprecated Since v12 until v14. Use {@link HexagonalGrid#getTopLeftPoint} instead.
    */
-  static offsetToPixels(offset: HexOffsetCoordinate, config: HexGridConfiguration): Point;
+  static offsetToPixels(offset: unknown, config: HexagonalGrid.Configuration): Point;
 
   /**
    * Compute the offset coordinate of a hexagon from a pixel coordinate contained within that hex.
@@ -320,7 +320,7 @@ declare class HexagonalGrid extends BaseGrid {
    * @returns The offset coordinate
    * @deprecated Since v12 until v14. No Replacement
    */
-  static pixelsToOffset(point: Point, config: HexGridConfiguration, method?: keyof Math): HexagonalGrid.Coordinates;
+  static pixelsToOffset(point: Point, config: HexagonalGrid.Configuration, method?: keyof Math): HexagonalGrid.Coordinates;
 
   /**
    * Compute the shortest path between two hexagons using the A-star algorithm.
@@ -330,7 +330,7 @@ declare class HexagonalGrid extends BaseGrid {
    * @returns The optimal path of hexagons to traverse
    * @deprecated Since v12 until v14. No Replacement
    */
-  getAStarPath(start: GridHex, goal: GridHex): { cost: number; path: GridHex[] };
+  getAStarPath(start: unknown, goal: unknown): { cost: number; path: unknown[] };
 }
 
 declare namespace HexagonalGrid {
