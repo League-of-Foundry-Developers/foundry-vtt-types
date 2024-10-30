@@ -1,4 +1,4 @@
-import type { ConstructorOf, ValueOf } from "../../../../../../types/utils.d.mts";
+import type { ConstructorOf, ValueOf, ShapeWithIndexSignature, AnyObject } from "../../../../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -78,21 +78,11 @@ declare global {
 
     type FilterMode = ValueOf<(typeof VisualEffectsMaskingFilter)["FILTER_MODES"]>;
 
-    /**
-     * @privateRemarks Implementation taken from https://stackoverflow.com/a/61434547
-     */
-    // TODO: Replace when https://github.com/microsoft/TypeScript/issues/17867 is resolved
-    type CreateOptionsIntersection = {
+    interface ConcreteCreateOptions {
       filterMode?: FilterMode;
-      postProcessModes?: PostProcessModes;
-    } & AbstractBaseShader.Uniforms;
 
-    type CreateOptions<T> = {
-      filterMode?: FilterMode;
       postProcessModes?: PostProcessModes;
-    } & {
-      [K in keyof T]: K extends "filterMode" | "postProcessModes" ? unknown : AbstractBaseShader.UniformValue;
-    };
+    }
   }
 
   /**
@@ -106,19 +96,14 @@ declare global {
       filterMode: VisualEffectsMaskingFilter.FilterMode,
     );
 
-    /**
-     * @remarks This method has been overloaded to accurately type the object input.
-     * The input cannot be separately typed, it must be fed directly into this method
-     */
-    // TODO: Replace when https://github.com/microsoft/TypeScript/issues/17867 is resolved
-    static create<T1 extends VisualEffectsMaskingFilter, T2 extends VisualEffectsMaskingFilter.CreateOptions<T2>>(
-      this: ConstructorOf<T1>,
-      { filterMode, postProcessModes, ...uniforms }?: T2,
-    ): T1;
-    static create<T extends VisualEffectsMaskingFilter>(
-      this: ConstructorOf<T>,
-      { filterMode, postProcessModes, ...uniforms }?: VisualEffectsMaskingFilter.CreateOptionsIntersection,
-    ): T;
+    static create<ConcreteClass extends typeof VisualEffectsMaskingFilter, T extends AnyObject>(
+      this: ConcreteClass,
+      {
+        filterMode,
+        postProcessModes,
+        ...uniforms
+      }?: ShapeWithIndexSignature<T, VisualEffectsMaskingFilter.ConcreteCreateOptions, string, AbstractBaseShader.UniformValue>,
+    ): InstanceType<ConcreteClass>;
 
     /**
      * The filter mode.

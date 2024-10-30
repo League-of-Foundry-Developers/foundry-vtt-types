@@ -383,6 +383,43 @@ export type EmptyObject = Record<string, never>;
 declare const empty: unique symbol;
 
 /**
+ * This helper type helps emulate index signatures for types with incompatible concrete keys.
+ *
+ * For example the type `{ foo: number; [K: string]: string }` is not allowed because the index signature is incompatible with the concrete key `foo`.
+ * It may seem like tricks like `{ foo: number; } & { [K: string]: string }` work but this defers the error to the caller.
+ *
+ * @example
+ * ```typescript
+ * type NaiveType = { foo: number; [K: string]: boolean };
+ * //                 ^ Property 'foo' of type 'number' is not assignable to 'string' index type 'boolean'.
+ *
+ * type NaiveIntersection = { foo: number } & { [K: string]: string };
+ *
+ * function usesIntersection(intersection: NaiveIntersection) { ... }
+ *
+ * usesIntersection({ foo: 1, x: true });
+ * //               ^ Argument of type '{ foo: number; }' is not assignable to parameter of type 'NaiveIntersection'.
+ * //                   Type '{ foo: number; }' is not assignable to type '{ [K: string]: boolean; }'.
+ * //                     Property 'foo' is incompatible with index signature.
+ * //                       Type 'number' is not assignable to type 'boolean'.
+ *
+ * function usesCorrectly<T extends AnyObject>(withIndex: ShapeWithIndexSignature<T, { foo: number }, string, boolean>) { ... }
+ *
+ * usesCorrectly({ foo: 1, x: true });
+ * ```
+ */
+// Note: If https://github.com/microsoft/TypeScript/issues/17867 or https://github.com/microsoft/TypeScript/issues/43826 (depending on implementation) is implemented it's likely this type can be expressed in a better way.
+export type ShapeWithIndexSignature<
+  T extends AnyObject,
+  // Uses `extends object` to allow interfaces and if useful other objects.
+  PrimaryShape extends object,
+  IndexSignature extends PropertyKey,
+  IndexType,
+> = PrimaryShape & {
+  readonly [K in keyof T & IndexSignature]: K extends keyof PrimaryShape ? PrimaryShape[K] : IndexType;
+};
+
+/**
  * Defer is a utility type that allows you to defer the evaluation of a type.
  * The use cases for this are extremely advanced. In essence they have to do with breaking cycles in evaluation.
  */
