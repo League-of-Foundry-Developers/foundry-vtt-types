@@ -35,7 +35,7 @@ declare class PrimaryCanvasObject {
   set sortLayer(value);
 
   /**
-   *  A key which resolves ties amongst objects at the same elevation within the same layer and same sort.
+   * A key which resolves ties amongst objects at the same elevation within the same layer and same sort.
    */
   get zIndex(): number;
 
