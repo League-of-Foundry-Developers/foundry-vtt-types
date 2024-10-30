@@ -28,7 +28,7 @@ declare class AdaptiveFragmentChannelMixinClass {
      * A color channel to target for masking.
      * @defaultValue `r`
      */
-    channel?: string;
+    channel?: AdaptiveFragmentChannel.Channel;
   }): PIXI.Shader | PIXI.Filter;
 }
 
