@@ -111,7 +111,7 @@ declare class PrimaryOccludableObject {
   /**
    * @deprecated since v12, will be removed in v14
    */
-  containsPixel(x: number, y: number, alphaThreshold: number);
+  containsPixel(x: number, y: number, alphaThreshold: number): boolean;
 
   /**
    * @deprecated since v11, will be removed in v13

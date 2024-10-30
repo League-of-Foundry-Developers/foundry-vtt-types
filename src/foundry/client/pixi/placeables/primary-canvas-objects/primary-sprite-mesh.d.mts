@@ -3,6 +3,9 @@ import type { InexactPartial } from "../../../../../types/utils.d.mts";
 // TODO: Remove when #2570 is completed
 declare const PrimaryBaseSamplerShader: BaseSamplerShader;
 
+// TODO: Remove when #2878 is completed
+type TextureAlphaData = unknown;
+
 declare global {
   /**
    * A basic PCO sprite mesh which is handling occlusion and depth.
@@ -77,7 +80,7 @@ declare global {
         /** The scale on Y axis. */
         scaleY: number;
       }>,
-    );
+    ): void;
 
     protected override _updateBatchData(): void;
 
