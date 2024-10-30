@@ -1,4 +1,3 @@
-import type { DisplayObject } from "pixi.js";
 import type { Mixin } from "../../../../../types/utils.d.mts";
 import type Document from "../../../../common/abstract/document.d.mts";
 
@@ -155,13 +154,11 @@ declare global {
    * @param DisplayObject - The parent DisplayObject class being mixed
    * @returns A DisplayObject subclass mixed with PrimaryCanvasObject features
    */
-  function PrimaryCanvasObjectMixin<BaseClass extends PrimaryCanvasObjectMixin.BaseClass>(
+  function PrimaryCanvasObjectMixin<BaseClass extends PIXI.DisplayObject.AnyConstructor>(
     DisplayObject: BaseClass,
   ): Mixin<typeof PrimaryCanvasObject, ReturnType<typeof CanvasTransformMixin<BaseClass>>>;
 
   namespace PrimaryCanvasObjectMixin {
-    type BaseClass = PrimaryCanvasObjectMixinBaseClass;
-
     type MixinClass = typeof PrimaryCanvasObject;
   }
 
@@ -170,23 +167,11 @@ declare global {
    * @param DisplayObject - The parent DisplayObject class being mixed
    * @returns A DisplayObject subclass mixed with CanvasTransformMixin features
    */
-  function CanvasTransformMixin<BaseClass extends PrimaryCanvasObjectMixinBaseClass>(
+  function CanvasTransformMixin<BaseClass extends PIXI.DisplayObject.AnyConstructor>(
     DisplayObject: BaseClass,
   ): Mixin<typeof CanvasTransformMixinClass, BaseClass>;
 
   namespace CanvasTransformMixin {
     type MixinClass = typeof CanvasTransformMixinClass;
   }
-}
-
-type DisplayObjectClass = typeof DisplayObject;
-
-// TODO: Is this advanced construction still needed with the rework to PCO?
-interface PrimaryCanvasObjectMixinBaseClass extends DisplayObjectClass {
-  new (
-    // Foundry technically requires the first parameter to be compatible but actually usage ignores this constraint.
-    // placeableObjectOrData: PlaceableObject | Document.Any | IntentionalPartial<PrimaryCanvasObjectData>,
-    arg0: never,
-    ...args: never[]
-  ): DisplayObject;
 }

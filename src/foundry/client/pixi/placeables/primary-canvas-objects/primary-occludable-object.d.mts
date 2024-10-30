@@ -1,4 +1,4 @@
-import type { InexactPartial, Mixin, ValueOf } from "../../../../../types/utils.d.mts";
+import type { InexactPartial, Mixin } from "../../../../../types/utils.d.mts";
 
 declare class PrimaryOccludableObject {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
@@ -20,7 +20,7 @@ declare class PrimaryOccludableObject {
    * The occlusion mode of this occludable object.
    * @defaultValue `CONST.OCCLUSION_MODES.NONE`
    */
-  occlusionMode: ValueOf<(typeof CONST)["OCCLUSION_MODES"]>;
+  occlusionMode: typeof CONST.OCCLUSION_MODES;
 
   /**
    * The unoccluded alpha of this object.
@@ -120,7 +120,7 @@ declare class PrimaryOccludableObject {
 }
 
 declare global {
-  function PrimaryOccludableObjectMixin<BaseClass extends PrimaryCanvasObjectMixin.BaseClass>(
+  function PrimaryOccludableObjectMixin<BaseClass extends PIXI.DisplayObject.AnyConstructor>(
     DisplayObject: BaseClass,
   ): Mixin<typeof PrimaryOccludableObject, ReturnType<typeof PrimaryCanvasObjectMixin<BaseClass>>>;
 

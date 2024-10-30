@@ -3,6 +3,10 @@ import type { InexactPartial } from "../../../../../types/utils.d.mts";
 // TODO: Remove when #2570 is completed
 declare const PrimaryBaseSamplerShader: BaseSamplerShader;
 
+declare namespace PrimaryBaseSamplerShader {
+  type AnyConstructor = unknown;
+}
+
 // TODO: Remove when #2878 is completed
 type TextureAlphaData = unknown;
 
@@ -18,13 +22,13 @@ declare global {
             texture: PIXI.Texture;
 
             /** The shader class used to render this sprite. */
-            shaderClass: typeof PrimaryBaseSamplerShader;
+            shaderClass: PrimaryBaseSamplerShader.AnyConstructor;
 
             /** The name of this sprite. */
             name: string;
           }>
         | PIXI.Texture,
-      shaderClass?: typeof PrimaryBaseSamplerShader,
+      shaderClass?: PrimaryBaseSamplerShader.AnyConstructor,
     );
 
     /**
@@ -41,7 +45,7 @@ declare global {
 
     override _onTextureUpdate(): void;
 
-    override setShaderClass(shaderClass: typeof AbstractBaseShader): void;
+    override setShaderClass(shaderClass: PrimaryBaseSamplerShader.AnyConstructor): void;
 
     /**
      * An all-in-one helper method: Resizing the PCO according to desired dimensions and options.
