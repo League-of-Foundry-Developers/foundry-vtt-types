@@ -6,7 +6,13 @@ declare global {
     type ConfiguredClass = Document.ConfiguredClassForName<"Combatant">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Combatant">;
 
-    interface DatabaseOperations extends DocumentDatabaseOperations<Combatant> {}
+    interface DatabaseOperations
+      extends DocumentDatabaseOperations<
+        Combatant,
+        { combatTurn: number },
+        { combatTurn: number },
+        { combatTurn: number }
+      > {}
   }
 
   /**
