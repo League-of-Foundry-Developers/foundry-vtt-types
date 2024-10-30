@@ -33,14 +33,14 @@ declare class PrimaryCanvasObject {
    */
   get sortLayer(): number;
 
-  set sortLayer(value)
+  set sortLayer(value);
 
   /**
    *  A key which resolves ties amongst objects at the same elevation within the same layer and same sort.
    */
   get zIndex(): number;
 
-  set zIndex(value)
+  set zIndex(value);
 
   /**
    * Event fired when this display object is added to a parent.
@@ -171,7 +171,7 @@ declare global {
    * @returns A DisplayObject subclass mixed with CanvasTransformMixin features
    */
   function CanvasTransformMixin<BaseClass extends PrimaryCanvasObjectMixinBaseClass>(
-    DisplayObject: BaseClass
+    DisplayObject: BaseClass,
   ): Mixin<typeof CanvasTransformMixinClass, BaseClass>;
 
   namespace CanvasTransformMixin {
