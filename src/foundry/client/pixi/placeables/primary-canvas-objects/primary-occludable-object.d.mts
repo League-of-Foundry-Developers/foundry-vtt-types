@@ -1,6 +1,9 @@
 import type { InexactPartial, Mixin, ValueOf } from "../../../../../types/utils.d.mts";
 
 declare class PrimaryOccludableObject {
+  /** @privateRemarks All mixin classses should accept anything for its constructor. */
+  constructor(...args: any[]);
+
   /**
    * Is this occludable object hidden for Gamemaster visibility only?
    * @defaultValue `false`
