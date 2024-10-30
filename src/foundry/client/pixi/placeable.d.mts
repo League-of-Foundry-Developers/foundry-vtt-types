@@ -18,9 +18,6 @@ declare global {
      */
     constructor(document: D);
 
-    /** @internal */
-    protected _original?: this | undefined;
-
     /**
      * Retain a reference to the Scene within which this Placeable Object resides
      */
@@ -30,20 +27,6 @@ declare global {
      * A reference to the Scene embedded Document instance which this object represents
      */
     document: D;
-
-    /**
-     * The underlying data object which provides the basis for this placeable object
-     * @deprecated since v10, will be removed in v12
-     * @remarks `"You are accessing PlaceableObject#data which is no longer used and instead the Document class should be referenced directly as PlaceableObject#document."`
-     */
-    data: D;
-
-    /**
-     * Track the field of vision for the placeable object.
-     * This is necessary to determine whether a player has line-of-sight towards a placeable object or vice-versa
-     * @defaultValue `{ fov: undefined, los: undefined }`
-     */
-    vision: Vision;
 
     /**
      * A control icon for interacting with the object
@@ -85,16 +68,14 @@ declare global {
     };
 
     /**
-     * Passthrough certain drag operations on locked objects.
-     * @defaultValue `false`
+     * The object that this object is a preview of if this object is a preview
      */
-    protected _dragPassthrough: boolean;
+    get _original(): this | undefined;
 
     /**
-     * Know if a placeable is in the hover-in state.
-     * @defaultValue `false`
+     * A convenient reference for whether the current User has full control over the document.
      */
-    protected _isHoverIn: boolean;
+    get isOwner(): boolean;
 
     /**
      * The mouse interaction state of this placeable.
@@ -105,7 +86,7 @@ declare global {
      * The bounding box for this PlaceableObject.
      * This is required if the layer uses a Quadtree, otherwise it is optional
      */
-    abstract get bounds(): Rectangle;
+    abstract get bounds(): PIXI.Rectangle;
 
     /**
      * The central coordinate pair of the placeable object based on it's own width and height
@@ -140,19 +121,9 @@ declare global {
     get hasPreview(): boolean;
 
     /**
-     * The field-of-vision polygon for the object, if it has been computed
-     */
-    get fov(): this["vision"]["fov"];
-
-    /**
      * Provide a reference to the CanvasLayer which contains this PlaceableObject.
      */
     get layer(): GetKeyWithShape<D, "layer", PIXI.Container>;
-
-    /**
-     * The line-of-sight polygon for the object, if it has been computed
-     */
-    get los(): this["vision"]["los"];
 
     /**
      * A Form Application which is used to configure the properties of this Placeable Object or the Document it
@@ -171,6 +142,18 @@ declare global {
     get hover(): boolean;
 
     set hover(state);
+
+    /**
+     * Is the HUD display active for this Placeable?
+     */
+    get hasActiveHUD(): boolean;
+
+    /**
+     * Get the snapped position for a given position or the current position
+     * @param position - The position to be used instead of the current position
+     * @returns The snapped position
+     */
+    getSnappedPosition(position?: Point): Point;
 
     override applyRenderFlags(): void;
 
@@ -208,6 +191,13 @@ declare global {
     protected abstract _draw(options?: Record<string, unknown>): Promise<void>;
 
     /**
+     * Execute a partial draw.
+     * @param fn - The draw function
+     * @returns The drawn object
+     */
+    protected _partialDraw(fn: () => Promise<void>): Promise<this>;
+
+    /**
      * Refresh all incremental render flags for the PlaceableObject.
      * This method is no longer used by the core software but provided for backwards compatibility.
      * @param options - Options which may modify the refresh workflow
@@ -221,6 +211,12 @@ declare global {
     protected _updateQuadtree(): void;
 
     /* -------------------------------------------- */
+
+    /**
+     * Is this PlaceableObject within the selection rectangle?
+     * @param rectangle - The selection rectangle
+     */
+    protected _overlapsSelection(rectangle: PIXI.Rectangle): boolean;
 
     /**
      * Get the target opacity that should be used for a Placeable Object depending on its preview state.
@@ -336,7 +332,7 @@ declare global {
      * @param dy - The number of grid units to shift along the Y-axis
      * @returns The shifted target coordinates
      */
-    protected _getShiftedPosition(dx: number, dy: number): { x: number; y: number };
+    protected _getShiftedPosition(dx: -1 | 0 | 1, dy: -1 | 0 | 1): Point;
 
     /**
      * Activate interactivity for the Placeable Object
@@ -408,6 +404,14 @@ declare global {
     protected _canDrag(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
 
     /**
+     * Does the User have permission to left-click drag this Placeable Object?
+     * @param user  - The User performing the action.
+     * @param event - The event object.
+     * @returns The returned status
+     */
+    protected _canDragLeftStart(user: User.ConfiguredInstance, event: DragEvent): boolean;
+
+    /**
      * Does the User have permission to hover on this Placeable Object?
      * @param user  - The User performing the action.
      * @param event - The event object.
@@ -434,17 +438,16 @@ declare global {
     /**
      * Actions that should be taken for this Placeable Object when a mouseover event occurs.
      * Hover events on PlaceableObject instances allow event propagation by default.
-     * @see MouseInteractionManager##handleMouseOver
+     * @see MouseInteractionManager##handlePointerOver
      * @param event   - The triggering canvas interaction event
      * @param options - Options which customize event handling
      *                  (default: `{}`)
-     * @returns True if the event was handled, otherwise false
      */
     protected _onHoverIn(event: PIXI.FederatedEvent, options?: PlaceableObject.HoverInOptions): false | void;
 
     /**
      * Actions that should be taken for this Placeable Object when a mouseout event occurs
-     * @see MouseInteractionManager##handleMouseOut
+     * @see MouseInteractionManager##handlePointerOut
      * @param event - The triggering canvas interaction event
      * @returns True if the event was handled, otherwise false
      */
@@ -515,7 +518,16 @@ declare global {
      * @see MouseInteractionManager##handleDragDrop
      * @param event - The triggering canvas interaction event
      */
-    protected _onDragLeftDrop(event: PIXI.FederatedEvent): Promise<unknown>;
+    protected _onDragLeftDrop(event: PIXI.FederatedEvent): void;
+
+    /**
+     * Perform the database updates that should occur as the result of a drag-left-drop operation.
+     * @param event - The triggering canvas interaction event
+     * @returns An array of database updates to perform for documents in this collection
+     */
+    _prepareDragLeftDropUpdates(
+      event: PIXI.FederatedEvent,
+    ): foundry.data.fields.SchemaField.InnerAssignmentType<D["schema"]["fields"]>[] | null;
 
     /**
      * Callback actions which occur on a mouse-move operation.
@@ -523,6 +535,34 @@ declare global {
      * @param event - The triggering mouse click event
      */
     protected _onDragLeftCancel(event: PIXI.FederatedEvent): void;
+
+    /**
+     * Callback actions which occur on a right mouse-drag operation.
+     * @see MouseInteractionManager##handleDragStart
+     * @param event - The triggering mouse click event
+     */
+    protected _onDragRightStart(event: PIXI.FederatedEvent): void;
+
+    /**
+     * Callback actions which occur on a right mouse-drag operation.
+     * @see MouseInteractionManager##handleDragMove
+     * @param event - The triggering canvas interaction event
+     */
+    protected _onDragRightMove(event: PIXI.FederatedEvent): void;
+
+    /**
+     * Callback actions which occur on a right mouse-drag operation.
+     * @see MouseInteractionManager##handleDragDrop
+     * @param event - The triggering canvas interaction event
+     */
+    protected _onDragRightDrop(event: PIXI.FederatedEvent): void;
+
+    /**
+     * Callback actions which occur on a right mouse-drag operation.
+     * @see MouseInteractionManager##handleDragDrop
+     * @param event - The triggering mouse click event
+     */
+    protected _onDragRightCancel(event: PIXI.FederatedEvent): void;
 
     /**
      * Callback action which occurs on a long press.
