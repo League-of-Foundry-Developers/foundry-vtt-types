@@ -4,7 +4,8 @@
   "compilerOptions": {
     "composite": true,
     "noEmit": false,
-    "emitDeclarationOnly": true
+    "emitDeclarationOnly": true,
+    "typeRoots": ["../node_modules/@fvtt-types"]
   },
   "include": ["**/*.test-d.ts", "**/*.d.ts"]
 }

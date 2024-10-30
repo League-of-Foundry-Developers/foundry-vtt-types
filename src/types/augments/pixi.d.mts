@@ -15,7 +15,17 @@ declare global {
     export import particles = pixiParticles;
 
     export class Graphics extends PIXI.smooth.SmoothGraphics {}
+
+    export import DisplayObject = _PIXI.DisplayObject;
+
+    namespace DisplayObject {
+      type AnyConstructor = typeof AnyDisplayObject;
+    }
   }
+}
+
+declare abstract class AnyDisplayObject extends DisplayObject {
+  constructor(arg0: never, ...args: never[]);
 }
 
 declare module "pixi.js" {
