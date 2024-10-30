@@ -19,18 +19,14 @@ declare global {
     export import DisplayObject = _PIXI.DisplayObject;
 
     namespace DisplayObject {
-        type AnyConstructor = typeof AnyDisplayObject;
+      type AnyConstructor = typeof AnyDisplayObject;
     }
   }
 }
 
 declare abstract class AnyDisplayObject extends DisplayObject {
-  new (
-    arg0: never,
-    ...args: never[]
-  ): DisplayObject;
+  constructor(arg0: never, ...args: never[]);
 }
-
 
 declare module "pixi.js" {
   export const LegacyGraphics: typeof _PIXI.Graphics;
