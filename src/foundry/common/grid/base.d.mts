@@ -431,56 +431,56 @@ declare abstract class BaseGrid {
   /**
    * @deprecated Since v12 until v14. Use {@link BaseGrid#measurePath} instead.
    */
-  measureDistance(origin: Point, target: Point, options: AnyObject);
+  measureDistance(origin: Point, target: Point, options: AnyObject): number[];
 
   /* -------------------------------------------- */
 
   /**
    * @deprecated Since v12 until v14.
    */
-  get highlight();
+  get highlight(): unknown;
 
   /* -------------------------------------------- */
 
   /**
    * @deprecated Since v12 until v14.
    */
-  get highlightLayers();
+  get highlightLayers(): unknown;
 
   /* -------------------------------------------- */
 
   /**
    * @deprecated Since v12 until v14.
    */
-  addHighlightLayer(name: string);
+  addHighlightLayer(name: string): unknown;
 
   /* -------------------------------------------- */
 
   /**
    * @deprecated Since v12 until v14.
    */
-  clearHighlightLayer(name: string);
+  clearHighlightLayer(name: string): unknown;
 
   /* -------------------------------------------- */
 
   /**
    * @deprecated Since v12 until v14.
    */
-  destroyHighlightLayer(name: string);
+  destroyHighlightLayer(name: string): unknown;
 
   /* -------------------------------------------- */
 
   /**
    * @deprecated Since v12 until v14.
    */
-  getHighlightLayer(name: string);
+  getHighlightLayer(name: string): unknown;
 
   /* -------------------------------------------- */
 
   /**
    * @deprecated Since v12 until v14.
    */
-  highlightPosition(name: string, options: AnyObject);
+  highlightPosition(name: string, options: AnyObject): unknown;
 }
 
 declare namespace BaseGrid {
