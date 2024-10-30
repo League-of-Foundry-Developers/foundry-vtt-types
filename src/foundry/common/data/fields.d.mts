@@ -2372,7 +2372,7 @@ declare class ColorField<
   Options extends StringFieldOptions = ColorField.DefaultOptions,
   AssignmentType = ColorField.AssignmentType<Options>,
   InitializedType = ColorField.InitializedType<Options>,
-  PersistedType extends string | null | undefined = ColorField.InitializedType<Options>,
+  PersistedType extends string | null | undefined = ColorField.PersistedType<Options>,
 > extends StringField<Options, AssignmentType, InitializedType, PersistedType> {
   /** @defaultValue `true` */
   override nullable: boolean;
@@ -2428,6 +2428,15 @@ declare namespace ColorField {
    * @typeParam Options - the options that override the default options
    */
   type InitializedType<Options extends StringFieldOptions> = DataField.DerivedInitializedType<
+    Color,
+    MergedOptions<Options>
+  >;
+
+  /**
+   * A shorthand for the persisted type of a ColorField class.
+   * @typeParam Options - the options that override the default options
+   */
+  type PersistedType<Options extends StringFieldOptions> = DataField.DerivedInitializedType<
     string,
     MergedOptions<Options>
   >;
