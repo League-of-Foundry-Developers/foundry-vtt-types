@@ -1,4 +1,4 @@
-import type { InexactPartial } from "../../../../../../types/utils.d.mts";
+import type { AnyObject, ShapeWithIndexSignature } from "../../../../../../types/utils.d.mts";
 
 export {};
 
@@ -12,20 +12,9 @@ declare global {
 
     type PostProcessModes = Array<keyof VisualEffectsMaskingFilter.POST_PROCESS_TECHNIQUES>;
 
-    /**
-     * @privateRemarks Implementation taken from https://stackoverflow.com/a/61434547
-     */
-    // TODO: Replace when https://github.com/microsoft/TypeScript/issues/17867 is resolved
-    type CreateOptionsIntersection = InexactPartial<{
+    interface ConcreteCreateOptions {
       postProcessModes: PostProcessModes;
-    }> &
-      AbstractBaseShader.Uniforms;
-
-    type CreateOptions<T> = InexactPartial<{
-      postProcessModes: PostProcessModes;
-    }> & {
-      [K in keyof T]: K extends "postProcessModes" ? unknown : AbstractBaseShader.UniformValue;
-    };
+    }
 
     interface POST_PROCESS_TECHNIQUES {
       EXPOSURE: { id: string; glsl: string };
@@ -38,19 +27,19 @@ declare global {
    * This filter handles masking and post-processing for visual effects.
    */
   class VisualEffectsMaskingFilter extends AbstractBaseMaskFilter {
-    /**
-     * @remarks This method has been overloaded to accurately type the object input.
-     * The input cannot be separately typed, it must be fed directly into this method
-     */
-    // TODO: Replace when https://github.com/microsoft/TypeScript/issues/17867 is resolved
-    static override create<
-      ConcreteClass extends VisualEffectsMaskingFilter.AnyConstructor,
-      Options extends VisualEffectsMaskingFilter.CreateOptions<Options>,
-    >(this: ConcreteClass, options?: Options): InstanceType<ConcreteClass>;
-    static override create<ConcreteClass extends VisualEffectsMaskingFilter.AnyConstructor>(
+    //todo: figure out why this can't be `extends VisualEffectsMaskingFilter` below
+    static override create<ConcreteClass extends AbstractBaseMaskFilter.AnyConstructor, T extends AnyObject>(
       this: ConcreteClass,
-      { postProcessModes, ...initialUniforms }?: VisualEffectsMaskingFilter.CreateOptionsIntersection,
-    ): ConcreteClass;
+      {
+        postProcessModes,
+        ...initialUniforms
+      }?: ShapeWithIndexSignature<
+        T,
+        VisualEffectsMaskingFilter.ConcreteCreateOptions,
+        string,
+        AbstractBaseShader.UniformValue
+      >,
+    ): InstanceType<ConcreteClass>;
 
     /**
      * Masking modes.
