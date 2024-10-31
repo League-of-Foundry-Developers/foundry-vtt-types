@@ -7,7 +7,7 @@ declare global {
   let _appId: number;
 
   /**
-   * @defaultValue `100`
+   * @defaultValue `Number(getComputedStyle(document.body).getPropertyValue("--z-index-window") ?? 100)`
    */
   let _maxZ: number;
 
@@ -311,6 +311,13 @@ declare global {
      * @internal
      */
     protected static _getInheritanceChain(): (typeof Application)[];
+
+    /**
+     * Call all hooks for all applications in the inheritance chain.
+     * @param hookName - The hook being triggered, which formatted with the Application class name
+     * @param hookArgs - The arguments passed to the hook calls
+     */
+    protected _callHooks(hookName: string | ((className: string) => string), hookArgs?: unknown[]): void;
 
     /**
      * Persist the scroll positions of containers within the app before re-rendering the content
