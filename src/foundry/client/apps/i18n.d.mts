@@ -42,6 +42,62 @@ declare global {
     initialize(): Promise<void>;
 
     /**
+     * Perform one-time localization of the fields in a DataModel schema, translating their label and hint properties.
+     * @param model   - The DataModel class to localize
+     * @param options - Options which configure how localization is performed
+     *
+     * @example
+     * JavaScript class definition and localization call.
+     * ```js
+     * class MyDataModel extends foundry.abstract.DataModel {
+     *   static defineSchema() {
+     *     return {
+     *       foo: new foundry.data.fields.StringField(),
+     *       bar: new foundry.data.fields.NumberField()
+     *     };
+     *   }
+     *   static LOCALIZATION_PREFIXES = ["MYMODULE.MYDATAMODEL"];
+     * }
+     *
+     * Hooks.on("i18nInit", () => {
+     *   Localization.localizeDataModel(MyDataModel);
+     * });
+     * ```
+     *
+     * JSON localization file
+     * ```json
+     * {
+     *   "MYMODULE": {
+     *     "MYDATAMODEL": {
+     *       "FIELDS" : {
+     *         "foo": {
+     *           "label": "Foo",
+     *           "hint": "Instructions for foo"
+     *         },
+     *         "bar": {
+     *           "label": "Bar",
+     *           "hint": "Instructions for bar"
+     *         }
+     *       }
+     *     }
+     *   }
+     * }
+     * ```
+     */
+    static localizeDataModel(model: foundry.abstract.DataModel.AnyConstructor, options?: InexactPartial<{
+      /**
+       * An array of localization key prefixes to use. If not specified, prefixes
+       * are learned from the DataModel.LOCALIZATION_PREFIXES static property.
+       */
+      prefixes: string[];
+
+      /**
+       * A localization path prefix used to prefix all field names within this model. This is generally not required.
+       */
+      prefixPath: string;
+    }>): void;
+
+    /**
      * Set a language as the active translation source for the session
      * @param lang - A language string in CONFIG.supportedLanguages
      * @returns A Promise which resolves once the translations for the requested language are ready
