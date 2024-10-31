@@ -1,6 +1,6 @@
 import type { EditorView } from "prosemirror-view";
 import type { Editor } from "tinymce";
-import type { AnyObject, GetDataReturnType, MaybePromise } from "../../../types/utils.d.mts";
+import type { AnyObject, GetDataReturnType, InexactPartial, MaybePromise } from "../../../types/utils.d.mts";
 import type { ProseMirrorKeyMaps, ProseMirrorMenu } from "../../common/prosemirror/_module.d.mts";
 import type Document from "../../common/abstract/document.d.mts";
 
@@ -82,18 +82,16 @@ declare global {
     form: HTMLElement | null;
 
     /**
-     * Keep track of any FilePicker instances which are associated with this form
-     * The values of this Array are inner-objects with references to the FilePicker instances and other metadata
-     * @defaultValue `[]`
-     */
-    filepickers: FilePicker[];
-
-    /**
      * Keep track of any mce editors which may be active as part of this form
      * The values of this Array are inner-objects with references to the MCE editor and other metadata
      * @defaultValue `{}`
      */
     editors: Record<string, FormApplication.FormApplicationEditor>;
+
+    /**
+     * An array of custom element tag names that should be listened to for changes.
+     */
+    protected static _customElements: string[]
 
     /**
      * Assign the default options which are supported by the entity edit sheet.
@@ -186,13 +184,6 @@ declare global {
     protected _onChangeRange(event: JQuery.ChangeEvent): void;
 
     /**
-     * Additional handling which should trigger when a FilePicker contained within this FormApplication is submitted.
-     * @param selection  - The target path which was selected
-     * @param filePicker - The FilePicker instance which was submitted
-     */
-    protected _onSelectFile(selection: string, filePicker: FilePicker): void;
-
-    /**
      * This method is called upon form submission after form data is validated
      * @param event    - The initial triggering submission event
      * @param formData - The object of validated form data with which to update the object
@@ -216,11 +207,23 @@ declare global {
 
     /**
      * Handle saving the content of a specific editor by name
-     * @param name   - The named editor to save
-     * @param remove - Remove the editor after saving its content
-     *                 (default: `true`)
+     * @param name - The named editor to save
      */
-    saveEditor(name: string, { remove }?: { remove?: boolean }): Promise<void>;
+    saveEditor(
+      name: string,
+      options?: InexactPartial<{
+        /**
+         * Remove the editor after saving its content
+         * @defaultValue `true`
+         */
+        remove: boolean;
+
+        /**
+         * Prevent normal re-rendering of the sheet after saving.
+         */
+        preventRender: boolean;
+      }>,
+    ): Promise<void>;
 
     /**
      * Activate an editor instance present within the form
@@ -245,20 +248,6 @@ declare global {
     };
 
     /**
-     * Activate a FilePicker instance present within the form
-     * @param event - The mouse click event on a file picker activation button
-     */
-    protected _activateFilePicker(event: PointerEvent): void;
-
-    /**
-     * Determine the configuration options used to initialize a FilePicker instance within this FormApplication.
-     * Subclasses can extend this method to customize the behavior of pickers within their form.
-     * @param event - The initiating mouse click event which opens the picker
-     * @returns Options passed to the FilePicker constructor
-     */
-    protected _getFilePickerOptions(event: PointerEvent): FilePickerOptions;
-
-    /**
      * @param options - (default: `{}`)
      */
     override close(options?: FormApplication.CloseOptions): Promise<void>;
@@ -269,7 +258,27 @@ declare global {
      *                  (default: `{}`)
      * @returns Return a self-reference for convenient method chaining
      */
-    submit(options?: FormApplication.OnSubmitOptions): Promise<this> | void;
+    submit(options?: FormApplication.OnSubmitOptions): Promise<this>;
+
+    /**
+     * @deprecated since v12, will be removed in v14
+     */
+    get filepickers(): FilePicker[];
+
+    /**
+     * @deprecated since v12, will be removed in v14
+     */
+    protected _activateFilePicker(event: PointerEvent): void;
+
+    /**
+     * @deprecated since v12, will be removed in v14
+     */
+    protected _getFilePickerOptions(event: PointerEvent): FilePickerOptions;
+
+    /**
+     * @deprecated since v12, will be removed in v14
+     */
+    protected _onSelectFile(selection: string, filePicker: FilePicker): void;
   }
 
   namespace FormApplication {
@@ -397,7 +406,7 @@ declare global {
       initialContent?: string,
     ): Promise<Editor | EditorView>;
 
-    override render(force?: boolean, options?: Application.RenderOptions<Options>): this;
+    override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
     protected override _renderOuter(): Promise<JQuery<HTMLElement>>;
 
