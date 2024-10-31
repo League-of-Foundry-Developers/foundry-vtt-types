@@ -1,1 +1,1 @@
-// Open question - this is just types?
+type SoundPlaybackOptions = foundry.audio.Sound.PlaybackOptions;
