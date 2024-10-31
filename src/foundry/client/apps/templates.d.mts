@@ -1,8 +1,6 @@
 import type { AnyObject } from "../../../types/utils.d.mts";
 import type { FormInputConfig, NumberInputConfig, SelectInputConfig } from "../../client-esm/applications/forms/fields.d.mts";
 
-export {};
-
 declare global {
   /**
    * Get a template from the server by fetch request and caching the retrieved result
@@ -310,17 +308,17 @@ declare global {
         /**
          * The name of the field to create
          */
-        name?: string;
+        name?: string | undefined;
 
         /**
          * The current color value
          */
-        value?: string;
+        value?: string | undefined;
 
         /**
          * A default color string if a value is not provided
          */
-        default?: string;
+        default?: string | undefined;
       };
     }
 
@@ -334,30 +332,30 @@ declare global {
         /**
          * Include a button used to activate the editor later?
          */
-        button?: boolean;
+        button?: boolean | undefined;
 
         /**
          * A specific CSS class to add to the editor container
          */
-        class?: string;
+        class?: string | undefined;
 
         /**
          * Is the text editor area currently editable?
          * @defaultValue `true`
          */
-        editable?: boolean;
+        editable?: boolean | undefined;
 
         /**
          * The engine editor to use, see {@link TextEditor.create}
          * @defaultValue `"tinymce"`
          */
-        engine?: "tinymce" | "prosemirror";
+        engine?: "tinymce" | "prosemirror" | undefined;
 
         /**
          * Whether to turn on collaborative editing features for ProseMirror
          * @defaultValue `false`
          */
-        collaborate?: boolean;
+        collaborate?: boolean | undefined;
       };
     }
 
@@ -378,13 +376,15 @@ declare global {
     interface IfThenOptions extends Partial<Handlebars.HelperOptions> {
       hash: {
         /**
-         * THe test criteria
+         * The test criteria
          */
         criteria: boolean;
+
         /**
          * The string to output if true
          */
         ifTrue: string;
+
         /**
          * The string to output if false
          */
@@ -402,13 +402,13 @@ declare global {
          * The number of decimal places to include in the resulting string
          * @defaultValue `0`
          */
-        decimals?: number;
+        decimals?: number | undefined;
 
         /**
          * Whether to include an explicit "+" sign for positive numbers
          * @defaultValue `false`
          */
-        sign?: boolean;
+        sign?: boolean | undefined;
       };
     }
 
@@ -428,13 +428,13 @@ declare global {
          * Which key is currently checked?
          * @defaultValue `null`
          */
-        checked?: string;
+        checked?: string | undefined;
 
         /**
          * Pass each label through string localization?
          * @defaultValue `false`
          */
-        localize?: boolean;
+        localize?: boolean | undefined;
       };
     }
 
@@ -473,12 +473,12 @@ declare global {
         /**
          * The currently selected value or values
          */
-        selected?: string | string[];
+        selected?: string | string[] | undefined;
 
         /**
          * Invert the key/value order of a provided choices object
          */
-        inverted?: boolean;
+        inverted?: boolean | undefined;
       };
     }
   }
