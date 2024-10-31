@@ -1,5 +1,3 @@
-// Open question - this is just types?
-
 import type ApplicationV2 from "./api/application.d.mts";
 
 export {};
