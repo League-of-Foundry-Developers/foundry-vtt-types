@@ -170,7 +170,7 @@ declare class InternalGame<RunEvents extends InitializationEvent> {
   /**
    * A singleton instance of the Audio Helper class
    */
-  readonly audio: AudioHelper;
+  readonly audio: foundry.audio.AudioHelper;
 
   /**
    * A singleton instance of the Video Helper class
