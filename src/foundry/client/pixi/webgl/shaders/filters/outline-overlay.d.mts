@@ -60,10 +60,10 @@ declare global {
     set thickness(value);
 
     //todo: figure out why this can't be `extends OutlineOverlayFilter`: https://i.imgur.com/2x3nwNz.png
-    static override create<ConcreteClass extends AbstractBaseFilter.AnyConstructor>(
-      this: ConcreteClass,
+    static override create<ThisType extends AbstractBaseFilter.AnyConstructor>(
+      this: ThisType,
       initialUniforms?: AbstractBaseShader.Uniforms,
-    ): InstanceType<ConcreteClass>;
+    ): InstanceType<ThisType>;
 
     override apply(
       filterManager: PIXI.FilterSystem,

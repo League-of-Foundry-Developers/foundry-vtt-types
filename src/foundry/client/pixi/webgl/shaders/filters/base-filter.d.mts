@@ -1,5 +1,3 @@
-import type { InexactPartial } from "../../../../../../types/utils.d.mts";
-
 export {};
 
 declare abstract class AnyAbstractBaseFilter extends AbstractBaseFilter {
@@ -37,12 +35,12 @@ declare global {
 
     /**
      * A factory method for creating the filter using its defined default values.
-     * @param uniforms - Initial uniform values which override filter defaults
-     * @returns The constructed AbstractFilter instance.
+     * @param initialUniforms - Initial uniform values which override filter defaults
+     * @returns The constructed AbstractFilter[sic] instance.
      */
-    static create<ConcreteClass extends AbstractBaseFilter.AnyConstructor>(
-      this: ConcreteClass,
-      initialUniforms?: InexactPartial<AbstractBaseShader.Uniforms>,
-    ): InstanceType<ConcreteClass>;
+    static create<ThisType extends AbstractBaseFilter.AnyConstructor>(
+      this: ThisType,
+      initialUniforms?: AbstractBaseShader.Uniforms,
+    ): InstanceType<ThisType>;
   }
 }

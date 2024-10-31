@@ -1,6 +1,22 @@
 export {};
 
+declare abstract class AnySirenColorationShader extends SirenColorationShader {
+  constructor(arg0: never, ...args: never[]);
+}
+
+declare abstract class AnySirenIlluminationShader extends SirenIlluminationShader {
+  constructor(arg0: never, ...args: never[]);
+}
+
 declare global {
+  namespace SirenColorationShader {
+    type AnyConstructor = typeof AnySirenColorationShader;
+  }
+
+  namespace SirenIlluminationShader {
+    type AnyConstructor = typeof AnySirenIlluminationShader;
+  }
+
   /**
    * Siren light animation coloration shader
    */

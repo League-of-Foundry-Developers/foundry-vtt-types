@@ -61,10 +61,10 @@ declare global {
     static override vertexShader: string;
 
     //todo: figure out why this can't be `extends GlowOverlayFilter` https://i.imgur.com/ztywGFf.png
-    static override create<ConcreteClass extends AbstractBaseFilter.AnyConstructor>(
-      this: ConcreteClass,
+    static override create<ThisType extends AbstractBaseFilter.AnyConstructor>(
+      this: ThisType,
       initialUniforms?: AbstractBaseShader.Uniforms,
-    ): InstanceType<ConcreteClass>;
+    ): InstanceType<ThisType>;
 
     override apply(
       filterManager: PIXI.FilterSystem,

@@ -1,4 +1,4 @@
-import type { Mixin } from "../../../../../types/utils.d.mts";
+import type { AnyObject, Mixin, ShapeWithIndexSignature } from "../../../../../types/utils.d.mts";
 
 export {};
 
@@ -18,23 +18,31 @@ declare class AdaptiveFragmentChannelMixinClass {
    * A factory method for creating the filter using its defined default values
    * @param options - Options which affect filter construction
    */
-  static create(options?: {
-    /**
-     * Initial uniforms provided to the filter
-     */
-    uniforms?: AbstractBaseShader.Uniforms;
-
+  static create<T extends AnyObject>({
     /**
      * A color channel to target for masking.
      * @defaultValue `r`
      */
-    channel?: AdaptiveFragmentChannel.Channel;
-  }): PIXI.Shader | PIXI.Filter;
+    channel,
+    /**
+     * Initial uniforms provided to the filter
+     */
+    ...uniforms
+  }?: ShapeWithIndexSignature<
+    T,
+    AdaptiveFragmentChannel.ConcreteCreateOptions,
+    string,
+    AbstractBaseShader.UniformValue
+  >): PIXI.Shader | PIXI.Filter;
 }
 
 declare global {
   namespace AdaptiveFragmentChannel {
     type Channel = "r" | "g" | "b";
+
+    interface ConcreteCreateOptions {
+      channel: AdaptiveFragmentChannel.Channel | undefined;
+    }
   }
   function AdaptiveFragmentChannelMixin<BaseClass extends PIXI.Shader.AnyConstructor | PIXI.Filter.AnyConstructor>(
     ShaderClass: BaseClass,

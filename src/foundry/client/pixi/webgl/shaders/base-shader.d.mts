@@ -61,10 +61,10 @@ declare global {
     /**
      * A factory method for creating the shader using its defined default values
      */
-    static create<ConcreteClass extends AbstractBaseShader.AnyConstructor>(
-      this: ConcreteClass,
-      initialUniforms?: AbstractBaseShader.Uniforms,
-    ): InstanceType<ConcreteClass>;
+    static create<ThisType extends AbstractBaseShader.AnyConstructor>(
+      this: ThisType,
+      initialUniforms: AbstractBaseShader.Uniforms,
+    ): InstanceType<ThisType>;
 
     /**
      * Reset the shader uniforms back to their initial values.

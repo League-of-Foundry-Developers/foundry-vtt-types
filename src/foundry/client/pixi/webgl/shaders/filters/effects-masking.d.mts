@@ -13,7 +13,7 @@ declare global {
     type PostProcessModes = Array<keyof VisualEffectsMaskingFilter.POST_PROCESS_TECHNIQUES>;
 
     interface ConcreteCreateOptions {
-      postProcessModes: PostProcessModes;
+      postProcessModes?: PostProcessModes | undefined;
     }
 
     interface POST_PROCESS_TECHNIQUES {

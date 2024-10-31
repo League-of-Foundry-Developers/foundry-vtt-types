@@ -22,9 +22,9 @@ declare global {
      */
     static override defaultUniforms: AbstractBaseShader.Uniforms;
 
-    static override create<ConcreteClass extends VisionMaskFilter.AnyConstructor>(
-      this: ConcreteClass,
-    ): InstanceType<ConcreteClass>;
+    static override create<ThisType extends VisionMaskFilter.AnyConstructor>(
+      this: ThisType,
+    ): InstanceType<ThisType>;
 
     /**
      * @remarks This is set as a property all the way up in PIXI.Filter, however Foundry has it

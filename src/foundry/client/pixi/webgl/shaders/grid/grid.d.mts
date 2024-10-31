@@ -1,3 +1,5 @@
+import type { IntentionalPartial } from "../../../../../../types/helperTypes.d.mts";
+
 export {};
 
 declare abstract class AnyGridShader extends GridShader {
@@ -105,7 +107,7 @@ declare global {
     /**
      * Configure the shader.
      */
-    configure(options?: { style?: AbstractBaseShader.UniformValue }): void;
+    configure(options?: IntentionalPartial<{ style: AbstractBaseShader.UniformValue }>): void;
 
     protected override _preRender(mesh: PIXI.DisplayObject, renderer: PIXI.Renderer): void;
   }

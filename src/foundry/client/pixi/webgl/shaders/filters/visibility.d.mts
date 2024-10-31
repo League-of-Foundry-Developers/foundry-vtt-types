@@ -39,11 +39,11 @@ declare global {
      */
     static override defaultUniforms: AbstractBaseShader.Uniforms;
 
-    static override create<ConcreteClass extends AbstractBaseFilter.AnyConstructor>(
-      this: ConcreteClass,
+    static override create<ThisType extends AbstractBaseFilter.AnyConstructor>(
+      this: ThisType,
       initiaUniforms?: AbstractBaseShader.Uniforms,
       options?: InexactPartial<VisibilityFilter.FragmentShaderOptions>,
-    ): InstanceType<ConcreteClass>;
+    ): InstanceType<ThisType>;
 
     static override vertexShader: string;
 

@@ -1,6 +1,22 @@
 export {};
 
+declare abstract class AnyFlameIlluminationShader extends FlameIlluminationShader {
+  constructor(arg0: never, ...args: never[]);
+}
+
+declare abstract class AnyFlameColorationShader extends FlameColorationShader {
+  constructor(arg0: never, ...args: never[]);
+}
+
 declare global {
+  namespace FlameIlluminationShader {
+    type AnyConstructor = typeof AnyFlameIlluminationShader;
+  }
+
+  namespace FlameColorationShader {
+    type AnyConstructor = typeof AnyFlameColorationShader;
+  }
+
   /**
    * Alternative torch illumination shader
    */
@@ -10,7 +26,10 @@ declare global {
     /**
      * @defaultValue
      * ```js
-     * {...super.defaultUniforms, brightnessPulse: 1}
+     * {
+     *   ...super.defaultUniforms,
+     *   brightnessPulse: 1
+     * }
      * ```
      */
     static override defaultUniforms: AbstractBaseShader.Uniforms;
@@ -25,7 +44,10 @@ declare global {
     /**
      * @defaultValue
      * ```js
-     * { ...super.defaultUniforms, brightnessPulse: 1}
+     * {
+     *   ...super.defaultUniforms,
+     *   brightnessPulse: 1
+     * }
      * ```
      */
     static override defaultUniforms: AbstractBaseShader.Uniforms;

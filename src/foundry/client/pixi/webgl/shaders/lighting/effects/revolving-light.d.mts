@@ -1,6 +1,14 @@
 export {};
 
+declare abstract class AnyRevolvingColorationShader extends RevolvingColorationShader {
+  constructor(arg0: never, ...args: never[]);
+}
+
 declare global {
+  namespace RevolvingColorationShader {
+    type AnyConstructor = typeof AnyRevolvingColorationShader;
+  }
+
   /**
    * Revolving animation coloration shader
    */

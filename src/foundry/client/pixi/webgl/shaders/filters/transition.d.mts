@@ -1,5 +1,4 @@
-import type { FilterSystem, RenderTexture, CLEAR_MODES } from "pixi.js";
-import type { ValueOf } from "../../../../../../types/utils.d.mts";
+import type { InexactPartial, ValueOf } from "../../../../../../types/utils.d.mts";
 
 export {};
 
@@ -64,26 +63,26 @@ declare global {
     static animate(
       subject: PIXI.Sprite | SpriteMesh,
       texture: PIXI.Texture,
-      options?: {
+      options?: InexactPartial<{
         /**
          * The transition type
          * @defaultValue `TYPES.FADE`
          */
-        type?: ValueOf<TextureTransitionFilter.TYPES>;
+        type: ValueOf<TextureTransitionFilter.TYPES>;
         /**
          * The name of the {@link CanvasAnimation}.
          */
-        name?: string | symbol;
+        name: string | symbol;
         /**
          * The animation duration
          * @defaultValue 1000
          */
-        duration?: number;
+        duration: number;
         /**
          * The easing function of the animation
          */
-        easing?: CanvasAnimation.EasingFunction;
-      },
+        easing: CanvasAnimation.EasingFunction;
+      }>,
     ): Promise<boolean>;
 
     /**
@@ -109,10 +108,10 @@ declare global {
     static override fragmentShader: AbstractBaseFilter.FragmentShader;
 
     override apply(
-      filterManager: FilterSystem,
-      input: RenderTexture,
-      output: RenderTexture,
-      clearMode?: CLEAR_MODES,
+      filterManager: PIXI.FilterSystem,
+      input: PIXI.RenderTexture,
+      output: PIXI.RenderTexture,
+      clearMode?: PIXI.CLEAR_MODES,
     ): void;
   }
 }

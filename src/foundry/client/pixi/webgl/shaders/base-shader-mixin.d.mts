@@ -1,5 +1,4 @@
 import type { Mixin } from "../../../../../types/utils.d.mts";
-import * as _PIXI from "pixi.js";
 
 export {};
 /**
