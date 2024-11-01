@@ -1,4 +1,4 @@
-import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
+import type { AnyObject, DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
 import type { DatabaseAction, DatabaseOperationMap } from "../../../common/abstract/_types.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 
@@ -181,7 +181,7 @@ declare global {
     _onModifyContents<T extends foundry.abstract.Document.Any, A extends DatabaseAction>(
       action: A,
       documents: T[],
-      result: Record<string, unknown>[] | string[],
+      result: AnyObject[] | readonly string[],
       operation: DatabaseOperationMap[A],
       user: User.ConfiguredInstance,
     ): void;

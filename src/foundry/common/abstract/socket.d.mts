@@ -1,4 +1,4 @@
-import type { DocumentType } from "../../../types/helperTypes.d.mts";
+import type { AnyObject } from "../../../types/utils.d.mts";
 import type { DatabaseAction, DatabaseOperation, DocumentSocketRequest } from "./_types.d.mts";
 
 /**
@@ -12,7 +12,7 @@ declare class DocumentSocketResponse<Action extends DatabaseAction> {
   constructor(request: DocumentSocketRequest<Action>);
 
   /** The type of Document being transacted. */
-  type: DocumentType | undefined;
+  type: foundry.abstract.Document.Type | undefined;
 
   /** The database action that was performed. */
   action: Action | undefined;
@@ -27,7 +27,7 @@ declare class DocumentSocketResponse<Action extends DatabaseAction> {
   userId: string | undefined;
 
   /** The result of the request. Present if successful */
-  result: Record<string, unknown>[] | string[] | undefined;
+  result: AnyObject[] | readonly string[] | undefined;
 
   /** An error that occurred. Present if unsuccessful */
   error: Error | undefined;
