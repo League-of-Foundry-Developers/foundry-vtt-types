@@ -178,9 +178,9 @@ declare global {
      * @param operation - Database operation details
      * @param user      - The User who performed the operation
      */
-    _onModifyContents<T extends foundry.abstract.Document.Any, A extends DatabaseAction>(
+    _onModifyContents<A extends DatabaseAction>(
       action: A,
-      documents: T[],
+      documents: InstanceType<T>[],
       result: AnyObject[] | readonly string[],
       operation: DatabaseOperationMap[A],
       user: User.ConfiguredInstance,
