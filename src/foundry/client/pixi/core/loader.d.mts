@@ -1,7 +1,5 @@
 import type { AnyObject } from "../../../../types/utils.d.mts";
 
-export {};
-
 declare global {
   /**
    * A Loader class which helps with loading video and image textures

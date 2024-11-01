@@ -7,9 +7,6 @@ declare namespace PrimaryBaseSamplerShader {
   type AnyConstructor = unknown;
 }
 
-// TODO: Remove when #2878 is completed
-type TextureAlphaData = unknown;
-
 declare global {
   /**
    * A basic PCO sprite mesh which is handling occlusion and depth.
@@ -34,7 +31,7 @@ declare global {
     /**
      * The texture alpha data.
      */
-    _textureAlphaData: TextureAlphaData | null;
+    _textureAlphaData: TextureLoader.TextureAlphaData | null;
 
     /**
      * The texture alpha threshold used for point containment tests.
