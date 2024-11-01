@@ -53,12 +53,9 @@ declare class ConvolverEffect extends ConvolverNode {
     }>,
   ): void;
 
-  override disconnect(): void;
-  override disconnect(destinationNode: AudioNode): void;
-  override disconnect(destinationNode: AudioNode, output: number): void;
-  override disconnect(destinationNode: AudioNode, output: number, input: number): void;
-  override disconnect(destinationParam: AudioParam): void;
-  override disconnect(destinationParam: AudioParam, output: number): void;
+  override disconnect(output?: number): void;
+  override disconnect(destinationNode?: AudioNode, output?: number, input?: number): void;
+  override disconnect(destinationParam?: AudioParam, output?: number): void;
 
   override connect(destinationNode: AudioNode, output?: number, input?: number): AudioNode;
   override connect(destinationParam: AudioParam, output?: number): AudioParam;

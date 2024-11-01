@@ -34,7 +34,7 @@ declare namespace Sound {
     offset: number;
 
     /** A callback function attached to the source node */
-    onended: (...args: unknown[]) => void | null;
+    onended: ((sound: Sound) => void) | null;
 
     /** The volume at which to play the sound */
     volume: number;
@@ -333,7 +333,7 @@ declare class Sound extends EventEmitterMixin(Object) {
    * sound.schedule(() => console.log("Do something 5 seconds before the end of the track"), sound.duration - 5);
    * ```
    */
-  schedule<R extends Sound.ScheduleCallback>(fn: R, playbackTime: number): Promise<ReturnType<R>>;
+  schedule<R extends Sound.ScheduleCallback>(fn: R, playbackTime: number): Promise<Awaited<ReturnType<R>>>;
 
   /**
    * Update the array of effects applied to a Sound instance.

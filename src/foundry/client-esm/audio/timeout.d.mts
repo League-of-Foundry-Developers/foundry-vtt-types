@@ -45,7 +45,7 @@ declare namespace AudioTimeout {
  * }
  * ```
  */
-declare class AudioTimeout<CallbackReturn = void> {
+declare class AudioTimeout<CallbackReturn = unknown> {
   /**
    * Create an AudioTimeout by providing a delay and callback.
    * @param delayMS - A desired delay timing in milliseconds
@@ -76,7 +76,7 @@ declare class AudioTimeout<CallbackReturn = void> {
    * @param options - Additional options which modify timeout behavior
    * @returns A promise which resolves as a returned value of the callback or void
    */
-  static wait<CallbackReturn = void>(delayMS: number, options?: AudioTimeout.Options<CallbackReturn>): Promise<CallbackReturn>;
+  static wait<CallbackReturn = unknown>(delayMS: number, options?: AudioTimeout.Options<CallbackReturn>): Promise<CallbackReturn>;
 }
 
 export default AudioTimeout;
