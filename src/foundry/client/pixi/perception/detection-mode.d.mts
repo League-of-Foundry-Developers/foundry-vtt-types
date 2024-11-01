@@ -35,8 +35,7 @@ declare global {
     static _detectionFilter: PIXI.Filter | undefined;
 
     /**
-     * The type of the detection mode. If its sight based, sound based, etc.
-     * It is related to wall's WALL_RESTRICTION_TYPES
+     * The type of the detection mode.
      * @see CONST.WALL_RESTRICTION_TYPES
      */
     static DETECTION_TYPES: {
@@ -141,16 +140,33 @@ declare global {
   }
 
   /**
-   * A special detection mode which models standard human vision.
-   * This mode is the default case which is tested first when evaluating visibility of objects.
-   * It is also a special case, in that it is the only detection mode which considers the area of distant light sources.
+   * This detection mode tests whether the target is visible due to being illuminated by a light source.
+   * By default tokens have light perception with an infinite range if light perception isn't explicitely
+   * configured.
    */
-  class DetectionModeBasicSight extends DetectionMode {
-    override _testPoint(
+  class DetectionModeLightPerception extends DetectionMode {
+    protected override _canDetect(
+      visionSource: foundry.canvas.sources.PointVisionSource.Any,
+      target: PlaceableObject,
+    ): boolean;
+
+    protected override _testPoint(
       visionSource: foundry.canvas.sources.PointVisionSource.Any,
       mode: TokenDetectionMode,
       target: PlaceableObject,
       test: CanvasVisibilityTest,
+    ): boolean;
+  }
+
+  /**
+   * A special detection mode which models a form of darkvision (night vision).
+   * This mode is the default case which is tested first when evaluating visibility of objects.
+   * It is also a special case, in that it is the only detection mode which considers the area of distant light sources.
+   */
+  class DetectionModeBasicSight extends DetectionMode {
+    protected override _canDetect(
+      visionSource: foundry.canvas.sources.PointVisionSource.Any,
+      target: PlaceableObject,
     ): boolean;
   }
 
