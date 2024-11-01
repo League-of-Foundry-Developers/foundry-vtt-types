@@ -120,8 +120,14 @@ declare global {
       icon?: string;
     }
 
-    interface ModuleConstructorData {
+    interface ModuleConstructorData
+      extends foundry.data.fields.SchemaField.InnerAssignmentType<foundry.packages.BaseModule.Schema> {
       active: boolean;
+    }
+
+    interface SystemConstructorData
+      extends foundry.data.fields.SchemaField.InnerAssignmentType<foundry.packages.BaseSystem.Schema> {
+      strictDataCleaning?: boolean;
     }
   }
 
@@ -143,7 +149,17 @@ declare global {
     readonly active: boolean;
   }
 
-  class System extends ClientPackageMixin(foundry.packages.BaseSystem) {}
+  class System extends ClientPackageMixin(foundry.packages.BaseSystem) {
+    constructor(data: ClientPackage.SystemConstructorData, options: unknown);
+
+    override _configure(options: unknown): void;
+
+    /**
+     * @deprecated since v12, will be removed in v14
+     * @remarks `"System#template is deprecated in favor of System#documentTypes"`
+     */
+    get template(): Game["model"];
+  }
 
   class World extends ClientPackageMixin(foundry.packages.BaseWorld) {
     static override getVersionBadge(
