@@ -1,5 +1,4 @@
 import "./clockwise-sweep.d.mts";
-import "./color-manager.d.mts";
 import "./detection-mode.d.mts";
 import "./fog.d.mts";
 import "./perception-manager.d.mts";
