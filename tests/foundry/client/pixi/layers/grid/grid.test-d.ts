@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
 
-const myGrid = new BaseGrid({
+const myGrid = new foundry.grid.BaseGrid({
   dimensions: {
     width: 1,
     height: 2,
@@ -19,4 +19,4 @@ const myGrid = new BaseGrid({
   alpha: 3,
 });
 
-expectTypeOf(myGrid.draw()).toEqualTypeOf<BaseGrid>();
+expectTypeOf(myGrid.draw()).toEqualTypeOf<foundry.grid.BaseGrid>();

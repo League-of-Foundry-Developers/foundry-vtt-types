@@ -406,7 +406,7 @@ declare global {
       initialContent?: string,
     ): Promise<Editor | EditorView>;
 
-    override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
+    protected override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
     protected override _renderOuter(): Promise<JQuery<HTMLElement>>;
 

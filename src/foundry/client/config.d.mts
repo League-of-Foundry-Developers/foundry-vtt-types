@@ -2,6 +2,7 @@ import type { GetKey, HandleEmptyObject, InterfaceToObject } from "../../types/h
 import type * as CONST from "../common/constants.d.mts";
 import type { StatusEffect } from "./data/documents/token.d.mts";
 import type { DataModel, Document } from "../common/abstract/module.d.mts";
+import type PointLightSource from "../client-esm/canvas/sources/point-light-source.d.mts";
 
 declare global {
   namespace CONFIG {
@@ -2707,7 +2708,10 @@ declare global {
       }
 
       type LightAnimationFunction = (
-        this: PointSource,
+        // `this` is technically not a `PointLightSource`.
+        // Instead it is `foundry.canvas.sources.PointLightSource.prototype`.
+        // However differentiating this would be a lot of work for little gain as nothing critical happens in the constructor.
+        this: PointLightSource,
         dt: number,
         properties?: { speed?: number; intensity?: number; reverse?: false },
       ) => void;

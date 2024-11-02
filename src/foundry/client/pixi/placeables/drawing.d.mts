@@ -66,7 +66,7 @@ declare global {
      * The primary drawing shape
      * @defaultValue `null`
      */
-    shape: DrawingShape;
+    shape: PrimaryGraphics | PIXI.Graphics;
 
     static override embeddedName: "Drawing";
 
@@ -104,7 +104,7 @@ declare global {
      */
     static readonly SHAPE_TYPES: (typeof foundry.data.ShapeData)["TYPES"];
 
-    override get bounds(): Rectangle;
+    override get bounds(): PIXI.Rectangle;
 
     override get center(): PIXI.Point;
 

@@ -289,7 +289,7 @@ declare global {
     /**
      * A reference to the SpriteMesh which displays this Token in the PrimaryCanvasGroup.
      */
-    mesh: TokenMesh;
+    mesh: PrimarySpriteMesh;
 
     /**
      * A reference to the VisionSource object which defines this vision source area of effect
@@ -336,7 +336,7 @@ declare global {
      */
     readonly name: string;
 
-    override get bounds(): Rectangle;
+    override get bounds(): PIXI.Rectangle;
 
     /**
      * Translate the token's grid width into a pixel width based on the canvas size
@@ -608,11 +608,12 @@ declare global {
          */
         movementSpeed: number;
 
-        /** The animation starting attributes if different from those cached. */
-        a0: TokenMeshDisplayAttributes;
-
-        /** The placeable need hover/un-hover emulation. */
-        hoverInOut: TokenMeshDisplayAttributes;
+        /**
+         * The animation starting attributes if different from those cached.
+         *
+         * @deprecated since v12, will be removed in v14
+         */
+        a0: unknown;
       },
     ): Promise<void>;
 
@@ -809,12 +810,6 @@ declare global {
      * @remarks "Token#refreshHUD is deprecated in favor of token.renderFlags.set()"
      */
     refreshHUD(options?: Token.ObjectHUD): void;
-
-    /**
-     * @deprecated since 11, will be removed in v13
-     * @remarks `"Token#getDisplayAttributes is deprecated in favor of TokenMesh#getDisplayAttributes"`
-     */
-    getDisplayAttributes(): this["mesh"]["getDisplayAttributes"];
   }
 
   /**
