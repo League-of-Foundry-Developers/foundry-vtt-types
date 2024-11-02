@@ -12,7 +12,15 @@ declare class BatchPlugin<BaseSamplerShaderClass extends BaseSamplerShader.AnyCo
 
   geometryClass: BaseSamplerShader.ToGeometryClass<BaseSamplerShaderClass["batchGeometry"]>;
 
-  static get defaultVertexSrc(): (typeof BaseSamplerShaderClass)["batchVertexShader"];
+  setShaderGenerator(options?: InexactPartial<BatchRenderer.ShaderGeneratorOptions>): void;
+
+  contextChange(): void;
+}
+
+interface BatchPluginStatic<BaseSamplerShaderClass extends BaseSamplerShader.AnyConstructor> {
+  shaderGeneratorClass: BaseSamplerShaderClass["batchShaderGeneratorClass"];
+  defaultVertexSrc: BaseSamplerShaderClass["batchVertexShader"];
+  defaultFragmentTemplate: BaseSamplerShaderClass["batchDefaultUniforms"]
 }
 
 declare class BatchGeometry extends PIXI.Geometry {
@@ -25,14 +33,14 @@ declare global {
 
     type PluginName = (typeof BaseSamplerShader)["classPluginName"];
 
-    interface BatchGeometry {
+    interface BatchGeometryData {
       id: string;
       size: number;
       normalized: boolean;
       type: PIXI.TYPES;
     }
 
-    type ToGeometryClass<G extends PIXI.BatchGeometry.AnyConstructor | BaseSamplerShader.BatchGeometry[]> =
+    type ToGeometryClass<G extends PIXI.BatchGeometry.AnyConstructor | BaseSamplerShader.BatchGeometryData[]> =
       G extends readonly unknown[] ? typeof BatchGeometry : G;
   }
 
@@ -125,7 +133,7 @@ declare global {
      * Batch geometry associated with this sampler.
      * @defaultValue `PIXI.BatchGeometry`
      */
-    static batchGeometry: BaseSamplerShader.BatchGeometry;
+    static batchGeometry: typeof PIXI.BatchGeometry | BaseSamplerShader.BatchGeometryData[];
 
     /**
      * The size of a vertice with all its packed attributes.
@@ -178,10 +186,7 @@ declare global {
      */
     static createPlugin<ThisType extends BaseSamplerShader.AnyConstructor>(
       this: ThisType,
-    ): Mixin<typeof BatchPlugin<ThisType>, ThisType["batchRendererClass"]>;
-    // static createPlugin<T extends typeof BaseSamplerShader, BatchPlugin extends T["batchRendererClass"]>(
-    //   this: ConstructorOf<T>,
-    // ): BatchPlugin;
+    ): Mixin<typeof BatchPlugin<ThisType> & BatchPluginStatic<ThisType>, ThisType["batchRendererClass"]>;
 
     /**
      * Register the plugin for this sampler.

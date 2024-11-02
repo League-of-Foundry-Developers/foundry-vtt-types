@@ -4,9 +4,17 @@ declare abstract class AnyColorAdjustmentsSamplerShader extends ColorAdjustments
   constructor(arg0: never, ...args: never[]);
 }
 
+declare abstract class AnyAmplificationSamplerShader extends AmplificationSamplerShader {
+  constructor(arg0: never, ...args: never[]);
+}
+
 declare global {
   namespace ColorAdjustmentsSamplerShader {
     type AnyConstructor = typeof AnyColorAdjustmentsSamplerShader;
+  }
+
+  namespace AmplificationSamplerShader {
+    type AnyConstructor = typeof AnyAmplificationSamplerShader;
   }
 
   /**
@@ -39,23 +47,19 @@ declare global {
 
     get linkedToDarknessLevel(): AbstractBaseShader.UniformValue;
 
-    set linkedToDarknessLevel(link);
-
-    get darknessLevel(): AbstractBaseShader.UniformValue;
-
-    set darknessLevel(darknessLevel);
+    set linkedToDarknessLevel(link: AbstractBaseShader.UniformValue);
 
     get contrast(): AbstractBaseShader.UniformValue;
 
-    set contrast(contrast);
+    set contrast(contrast: AbstractBaseShader.UniformValue);
 
     get exposure(): AbstractBaseShader.UniformValue;
 
-    set exposure(exposure);
+    set exposure(exposure: AbstractBaseShader.UniformValue);
 
     get saturation(): AbstractBaseShader.UniformValue;
 
-    set saturation(saturation);
+    set saturation(saturation: AbstractBaseShader.UniformValue);
   }
 
   /**
@@ -71,6 +75,19 @@ declare global {
 
     static override fragmentShader: AbstractBaseShader.FragmentShader;
 
+    /**
+     * @defaultValue
+     * ```js
+     * {
+     *   tintAlpha: [1, 1, 1, 1],
+     *   tint: [0.38, 0.8, 0.38],
+     *   brightness: 0,
+     *   darknessLevelTexture: null,
+     *   screenDimensions: [1, 1],
+     *   enable: true
+     * }
+     * ```
+     */
     static override defaultUniforms: AbstractBaseShader.Uniforms;
 
     /**
@@ -78,7 +95,7 @@ declare global {
      */
     get brightness(): number;
 
-    set brightness(brightness);
+    set brightness(brightness: AbstractBaseShader.UniformValue);
 
     /**
      * Tint color applied to Light Amplification.
@@ -87,6 +104,6 @@ declare global {
      */
     get colorTint(): number[];
 
-    set colorTint(color);
+    set colorTint(color: AbstractBaseShader.UniformValue);
   }
 }
