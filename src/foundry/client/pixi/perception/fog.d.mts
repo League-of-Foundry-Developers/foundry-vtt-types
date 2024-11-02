@@ -1,7 +1,4 @@
 import type { DisplayObject } from "pixi.js";
-import type { FogExplorationData } from "../../../common/documents/_types.d.mts";
-
-export {};
 
 declare global {
   /**
@@ -98,7 +95,7 @@ declare global {
      * @param base64Image - The extracted base64 image data
      * @returns Exploration data to update
      */
-    protected _prepareFogUpdateData(base64Image: string): Partial<FogExplorationData>;
+    protected _prepareFogUpdateData(base64Image: string): foundry.documents.BaseFogExploration.UpdateData;
 
     /**
      * If fog of war data is reset from the server, deactivate the current fog and initialize the exploration.

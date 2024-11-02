@@ -1,9 +1,24 @@
-import type { DeepPartial } from "../../../../types/utils.d.mts";
+export {}
 
 declare global {
   interface PerceptionManagerFlags {
-    /** Re-initialize the entire lighting configuration */
+    /**
+     * Re-initialize the entire lighting configuration. An aggregate behavior
+     * which does no work directly but propagates to set several other flags.
+     */
     initializeLighting: boolean;
+
+    /** Re-initialize the entire vision configuration. See {@link CanvasVisibility#initializeSources}. */
+    initializeVision: boolean;
+
+    /** Re-initialize the entire vision modes. See {@link CanvasVisibility#initializeVisionMode}. */
+    initializeVisionModes: boolean;
+
+    /** Re-initialize the entire ambient sound configuration. See {@link SoundsLayer#initializeSources}. */
+    initializeSounds: boolean;
+
+    /** Recompute intersections between all registered edges. See {@link CanvasEdges#refresh}. */
+    refreshEdges: boolean;
 
     /** Refresh the rendered appearance of lighting */
     refreshLighting: boolean;
@@ -11,47 +26,58 @@ declare global {
     /** Update the configuration of light sources */
     refreshLightSources: boolean;
 
-    /** Re-initialize the entire vision configuration */
-    initializeVision: boolean;
+    /** Refresh occlusion */
+    refreshOcclusion: boolean;
 
-    /** Update the configuration of vision sources */
-    refreshVisionSources: boolean;
-
-    /** Refresh the rendered appearance of vision */
-    refreshVision: boolean;
-
-    /** Re-initialize the entire ambient sound configuration */
-    initializeSounds: boolean;
+    /** Refresh the contents of the PrimaryCanvasGroup mesh */
+    refreshPrimary: boolean;
 
     /** Refresh the audio state of ambient sounds */
     refreshSounds: boolean;
 
+    /** Refresh the rendered appearance of vision */
+    refreshVision: boolean;
+
+    /** Update the configuration of vision sources */
+    refreshVisionSources: boolean;
+
     /** Apply a fade duration to sound refresh workflow */
     soundFadeDuration: boolean;
-
-    /** Refresh the visual appearance of tiles */
-    refreshTiles: boolean;
-
-    /** Refresh the contents of the PrimaryCanvasGroup mesh */
-    refreshPrimary: boolean;
   }
 
   /**
    * A helper class which manages the refresh workflow for perception layers on the canvas.
    * This controls the logic which batches multiple requested updates to minimize the amount of work required.
-   * A singleton instance is available as canvas#perception.
-   * @see Canvas#perception
+   * A singleton instance is available as {@link Canvas#perception}.
    */
   class PerceptionManager extends RenderFlagsMixin(Object) {
     static RENDER_FLAGS: {
-      /** @defaultValue `{ propagate: ["refreshLighting", "refreshVision"] }` */
+      /** @defaultValue `{}` */
+      refreshEdges: RenderFlag<PerceptionManagerFlags>;
+
+      /** @defaultValue `{propagate: ["refreshLighting", "refreshVision"]}` */
       initializeLighting: RenderFlag<PerceptionManagerFlags>;
 
-      /** @defaultValue `{ propagate: ["refreshLightSources"] }` */
+      /** @defaultValue `{propagate: ["refreshLighting", "refreshVision", "refreshEdges"]}` */
+      initializeDarknessSources: RenderFlag<PerceptionManagerFlags>;
+
+      /** @defaultValue `{propagate: ["refreshLighting", "refreshVision"]}` */
+      initializeLightSources: RenderFlag<PerceptionManagerFlags>;
+
+      /** @defaultValue `{propagate: ["refreshLightSources"]}` */
       refreshLighting: RenderFlag<PerceptionManagerFlags>;
 
       /** @defaultValue `{}` */
       refreshLightSources: RenderFlag<PerceptionManagerFlags>;
+
+      /** @defaultValue `{propagate: ["refreshVisionSources", "refreshLighting", "refreshPrimary"]}` */
+      initializeVisionModes: RenderFlag<PerceptionManagerFlags>;
+
+      /** @defaultValue `{propagate: ["refreshVision", "refreshTiles", "refreshLighting", "refreshLightSources", "refreshPrimary"]}` */
+      initializeVision: RenderFlag<PerceptionManagerFlags>;
+
+      /** @defaultValue `{propagate: ["refreshVisionSources", "refreshOcclusionMask"]}` */
+      refreshVision: RenderFlag<PerceptionManagerFlags>;
 
       /** @defaultValue `{}` */
       refreshVisionSources: RenderFlag<PerceptionManagerFlags>;
@@ -59,11 +85,14 @@ declare global {
       /** @defaultValue `{}` */
       refreshPrimary: RenderFlag<PerceptionManagerFlags>;
 
-      /** @defaultValue `{ propagate: ["refreshVision", "refreshTiles", "refreshLighting", "refreshLightSources", "refreshPrimary"] }` */
-      initializeVision: RenderFlag<PerceptionManagerFlags>;
+      /** `{propagate: ["refreshOcclusionStates", "refreshOcclusionMask"]}` */
+      refreshOcclusion: RenderFlag<PerceptionManagerFlags>;
 
-      /** @defaultValue `{ propagate: ["refreshVisionSources"] }` */
-      refreshVision: RenderFlag<PerceptionManagerFlags>;
+      /** @defaultValue `{}` */
+      refreshOcclusionStates: RenderFlag<PerceptionManagerFlags>;
+
+      /** @defaultValue `{}` */
+      refreshOcclusionMask: RenderFlag<PerceptionManagerFlags>;
 
       /** @defaultValue `{ propagate: ["refreshSounds"] }` */
       initializeSounds: RenderFlag<PerceptionManagerFlags>;
@@ -71,16 +100,16 @@ declare global {
       /** @defaultValue `{}` */
       refreshSounds: RenderFlag<PerceptionManagerFlags>;
 
-      /** @defaultValue `{ propagate: ["refreshLightSources", "refreshVisionSources"] }` */
-      refreshTiles: RenderFlag<PerceptionManagerFlags>;
-
       /** @defaultValue `{}` */
       soundFadeDuration: RenderFlag<PerceptionManagerFlags>;
 
-      /** @defaultValue `{ propagate: ["initializeLighting", "initializeVision"] }` */
+      /** @deprecated since v12, will be removed in v14 */
+      refreshTiles: RenderFlag<PerceptionManagerFlags>;
+
+      /** @deprecated since v12, will be removed in v14 */
       identifyInteriorWalls: RenderFlag<PerceptionManagerFlags>;
 
-      /** @defaultValue `{ propagate: ["refreshVision"] }` */
+      /** @deprecated since v12, will be removed in v14 */
       forceUpdateFog: RenderFlag<PerceptionManagerFlags>;
     };
 
@@ -89,26 +118,10 @@ declare global {
     applyRenderFlags(): void;
 
     /**
-     * A shim mapping which supports backwards compatibility for old-style (V9 and before) perception manager flags.
-     */
-    static COMPATIBILITY_MAPPING: {
-      "lighting.initialize": "initializeLighting";
-      "lighting.refresh": "refreshLighting";
-      "sight.initialize": "initializeVision";
-      "sight.refresh": "refreshVision";
-      "sounds.initialize": "initializeSounds";
-      "sounds.refresh": "refreshSounds";
-      "sounds.fade": "soundFadeDuration";
-      "foreground.refresh": "refreshTiles";
-    };
-
-    /**
      * Update perception manager flags which configure which behaviors occur on the next frame render.
      * @param flags - Flag values (true) to assign where the keys belong to PerceptionManager.FLAGS
-     * @param v2    - Opt-in to passing v2 flags, otherwise a backwards compatibility shim will be applied
-     *                (default: `true`)
      */
-    update(flags: Partial<PerceptionManagerFlags>, v2?: boolean): void;
+    update(flags: Partial<PerceptionManagerFlags>): void;
 
     /**
      * A helper function to perform an immediate initialization plus incremental refresh.
@@ -116,25 +129,13 @@ declare global {
     initialize(): ReturnType<this["update"]>;
 
     /**
-     * A helper function to perform an incremental refresh only.
+     * @deprecated since v12, will be removed in v14
+     * @remarks `"PerceptionManager#refresh is deprecated in favor of assigning granular "refresh flags"`
      */
     refresh(): ReturnType<this["update"]>;
 
     /**
-     * @deprecated since v10, will be removed in v12
-     * @remarks PerceptionManager#cancel is renamed to PerceptionManager#deactivate
-     * @remarks PerceptionManager#deactivate does not actually exist as of v11
-     */
-    cancel(): void;
-
-    /**
-     * @deprecated since v10, will be removed in v12
-     * @remarks PerceptionManager#schedule is replaced by PerceptionManager#update
-     */
-    schedule(options?: DeepPartial<PerceptionManager.Options>): void;
-
-    /**
-     * @deprecated since v11
+     * @deprecated since v11, will be removed in v13
      * @remarks forceUpdateFog flag is now obsolete and has no replacement. The fog is now always updated when the visibility is refreshed
      */
     static forceUpdateFog(): void;
