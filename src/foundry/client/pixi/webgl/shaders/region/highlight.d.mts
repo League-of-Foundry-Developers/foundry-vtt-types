@@ -1,6 +1,14 @@
 export {};
 
+declare abstract class AnyHighlightRegionShader extends HighlightRegionShader {
+  constructor(arg0: never, ...args: never[]);
+}
+
 declare global {
+  namespace HighlightRegionShader {
+    type AnyConstructor = typeof AnyHighlightRegionShader;
+  }
+
   /**
    * Shader for the Region highlight.
    */
@@ -9,6 +17,17 @@ declare global {
 
     static override fragmentShader: AbstractBaseShader.FragmentShader;
 
+    /**
+     * @defaultValue
+     * ```js
+     * {
+     *   ...super.defaultUniforms,
+     *   resolution: 1,
+     *   hatchEnabled: false,
+     *   hatchThickness: 1
+     * }
+     * ```
+     */
     static override defaultUniforms: AbstractBaseShader.Uniforms;
 
     protected override _preRender(mesh: PIXI.DisplayObject, renderer: PIXI.Renderer): void;

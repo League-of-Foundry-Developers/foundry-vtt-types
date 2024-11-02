@@ -28,8 +28,8 @@ declare global {
    */
   class VisualEffectsMaskingFilter extends AbstractBaseMaskFilter {
     //todo: figure out why this can't be `extends VisualEffectsMaskingFilter` below
-    static override create<ConcreteClass extends AbstractBaseMaskFilter.AnyConstructor, T extends AnyObject>(
-      this: ConcreteClass,
+    static override create<ThisType extends AbstractBaseMaskFilter.AnyConstructor, T extends AnyObject>(
+      this: ThisType,
       {
         postProcessModes,
         ...initialUniforms
@@ -39,7 +39,7 @@ declare global {
         string,
         AbstractBaseShader.UniformValue
       >,
-    ): InstanceType<ConcreteClass>;
+    ): InstanceType<ThisType>;
 
     /**
      * Masking modes.

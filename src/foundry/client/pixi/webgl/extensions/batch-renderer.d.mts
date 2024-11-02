@@ -1,14 +1,16 @@
+import type { InexactPartial } from "../../../../../types/utils.d.mts";
+
 export {};
 
+declare abstract class AnyBatchRenderer extends BatchRenderer {
+  constructor(arg0: never, ...args: never[]);
+}
+
 declare global {
-  /**
-   * A batch renderer with a customizable data transfer function to packed geometries.
-   */
-  class BatchRenderer extends PIXI.BatchRenderer {
-    /**
-     * The PackInterleavedGeometry function provided by the sampler.
-     */
-    protected _packInterleavedGeometry: (
+  namespace BatchRenderer {
+    type AnyConstructor = typeof AnyBatchRenderer;
+
+    type PackInterleavedGeometryFunction = (
       element: PIXI.IBatchableElement,
       attributeBuffer: PIXI.ViewableBuffer,
       indexBuffer: Uint16Array,
@@ -16,22 +18,58 @@ declare global {
       iIndex: number,
     ) => void;
 
+    type PreRenderBatchFunction = (batchRenderer: typeof BatchRenderer) => void;
+
+    type BatchDefaultUniformsFunction = (maxTextures: AbstractBaseShader.UniformValue) => AbstractBaseShader.Uniforms;
+
+    type ReservedTextureUnits = 0 | 1 | 2 | 3 | 4;
+
+    interface ShaderGeneratorOptions {
+      vertex: (typeof BatchRenderer)["defaultVertexSrc"];
+      fragment: (typeof BatchRenderer)["defaultFragmentTemplate"];
+      uniforms: (typeof BatchRenderer)["defaultUniforms"];
+    }
+  }
+
+  /**
+   * A batch renderer with a customizable data transfer function to packed geometries.
+   */
+  class BatchRenderer extends PIXI.BatchRenderer {
+    /**
+     * The batch shader generator class.
+     * @defaultValue `BatchShaderGenerator`
+     */
+    static shaderGeneratorClass: typeof BatchShaderGenerator;
+
+    /**
+     * The default uniform values for the batch shader.
+     * @defaultValue `{}`
+     */
+    static defaultUniforms: AbstractBaseShader.Uniforms | BatchRenderer.BatchDefaultUniformsFunction;
+
+    /**
+     * The PackInterleavedGeometry function provided by the sampler.
+     */
+    protected _packInterleavedGeometry: BatchRenderer.PackInterleavedGeometryFunction | undefined;
+
     /**
      * The preRender function provided by the sampler and that is called just before a flush.
      */
-    protected _preRenderBatch: (batchRenderer: typeof BatchRenderer) => void;
+    protected _preRenderBatch: BatchRenderer.PreRenderBatchFunction | undefined;
 
-    get uniforms(): AbstractBaseShader.Uniforms;
+    get uniforms(): AbstractBaseShader.Uniforms | undefined;
 
     /**
      * The number of reserved texture units that the shader generator should not use (maximum 4).
      */
-    protected set reservedTextureUnits(val: number);
+    protected set reservedTextureUnits(val: BatchRenderer.ReservedTextureUnits);
 
     /**
      * Number of reserved texture units reserved by the batch shader that cannot be used by the batch renderer.
      */
-    get reservedTextureUnits(): number;
+    get reservedTextureUnits(): BatchRenderer.ReservedTextureUnits;
+
+    override setShaderGenerator(options?: InexactPartial<BatchRenderer.ShaderGeneratorOptions>): void;
 
     /**
      * This override allows to allocate a given number of texture units reserved for a custom batched shader.
@@ -40,15 +78,11 @@ declare global {
      */
     override contextChange(): void;
 
+    override onPrerender(): void;
+
     override start(): void;
 
-    override packInterleavedGeometry(
-      element: PIXI.IBatchableElement,
-      attributeBuffer: PIXI.ViewableBuffer,
-      indexBuffer: Uint16Array,
-      aIndex: number,
-      iIndex: number,
-    ): void;
+    override packInterleavedGeometry: BatchRenderer.PackInterleavedGeometryFunction;
 
     /**
      * Verify if a PIXI plugin exists. Check by name.

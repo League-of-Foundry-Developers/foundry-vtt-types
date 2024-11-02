@@ -1,28 +1,62 @@
-import type { ConstructorOf } from "../../../../../../types/utils.d.mts";
+import type { EmptyObject, InexactPartial, Mixin } from "../../../../../../types/utils.d.mts";
 
 export {};
 
+declare abstract class AnyBaseSamplerShader extends BaseSamplerShader {
+  constructor(arg0: never, ...args: never[]);
+}
+
+declare class BatchPlugin<BaseSamplerShaderClass extends BaseSamplerShader.AnyConstructor> {
+  /** @privateRemarks All mixin classses should accept anything for its constructor. */
+  constructor(...args: any[]);
+
+  geometryClass: BaseSamplerShader.ToGeometryClass<BaseSamplerShaderClass["batchGeometry"]>;
+
+  static get defaultVertexSrc(): (typeof BaseSamplerShaderClass)["batchVertexShader"];
+}
+
+declare class BatchGeometry extends PIXI.Geometry {
+  constructor(_static?: boolean);
+}
+
 declare global {
+  namespace BaseSamplerShader {
+    type AnyConstructor = typeof AnyBaseSamplerShader;
+
+    type PluginName = (typeof BaseSamplerShader)["classPluginName"];
+
+    interface BatchGeometry {
+      id: string;
+      size: number;
+      normalized: boolean;
+      type: PIXI.TYPES;
+    }
+
+    type ToGeometryClass<G extends PIXI.BatchGeometry.AnyConstructor | BaseSamplerShader.BatchGeometry[]> =
+      G extends readonly unknown[] ? typeof BatchGeometry : G;
+  }
+
   /**
    * A simple shader to emulate a PIXI.Sprite with a PIXI.Mesh (but faster!)
    */
   class BaseSamplerShader extends AbstractBaseShader {
-    static override create<T extends BaseSamplerShader>(
-      this: ConstructorOf<T>,
-      defaultUniforms?: AbstractBaseShader.Uniforms | undefined,
-    ): T;
-
-    /**
-     * The plugin name associated for this instance, if any.
-     * Returns "batch" if the shader is disabled.
-     */
-    get pluginName(): (typeof BaseSamplerShader)["classPluginName"];
-
     /**
      * The named batch sampler plugin that is used by this shader, or null if no batching is used.
      * @defaultValue `"batch"`
      */
     static classPluginName: string | null;
+
+    /**
+     * Is this shader pausable or not?
+     * @defaultValue `true`
+     */
+    static pausable: boolean;
+
+    /**
+     * The plugin name associated for this instance, if any.
+     * Returns "batch" if the shader is disabled.
+     */
+    get pluginName(): BaseSamplerShader.PluginName;
 
     /**
      * Activate or deactivate this sampler. If set to false, the batch rendering is redirected to "batch".
@@ -37,7 +71,6 @@ declare global {
      * Pause or Unpause this sampler. If set to true, the shader is disabled. Otherwise, it is enabled.
      * Contrary to enabled, a shader might decide to refuse a pause, to continue to render animations per example.
      * @see enabled
-     * @defaultValue `false`
      */
     get paused(): boolean;
 
@@ -45,68 +78,24 @@ declare global {
 
     /**
      * Contrast adjustment
-     * @defaultValue
-     * ```js
-     * `// Computing contrasted color
-     * if ( contrast != 0.0 ) {
-     * changedColor = (changedColor - 0.5) * (contrast + 1.0) + 0.5;
-     * }`
-     * ```
      */
     static CONTRAST: string;
 
     /**
      * Saturation adjustment
-     * @defaultValue
-     * ```js
-     * `// Computing saturated color
-     * if ( saturation != 0.0 ) {
-     *  vec3 grey = vec3(perceivedBrightness(changedColor));
-     *  changedColor = mix(grey, changedColor, 1.0 + saturation);
-     * }`
-     * ```
      */
     static SATURATION: string;
 
     /**
      * Exposure adjustment.
-     * @defaultValue
-     * ```js
-     * `if ( exposure != 0.0 ) {
-     *   changedColor *= (1.0 + exposure);
-     * }`
-     * ```
      */
     static EXPOSURE: string;
 
     /**
      * The adjustments made into fragment shaders.
-     * @defaultValue
-     * ```js
-     * `vec3 changedColor = baseColor.rgb;
-     * ${this.CONTRAST}
-     * ${this.SATURATION}
-     * ${this.EXPOSURE}
-     * baseColor.rgb = changedColor;`
-     * ```
      */
     static get ADJUSTMENTS(): string;
 
-    /**
-       * @defaultValue
-       * ```js
-       * `precision ${PIXI.settings.PRECISION_VERTEX} float;
-       * attribute vec2 aVertexPosition;
-       * attribute vec2 aTextureCoord;
-       * uniform mat3 projectionMatrix;
-       * varying vec2 vUvs;
-
-       * void main() {
-       *   vUvs = aTextureCoord;
-       *   gl_Position = vec4((projectionMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);
-       * }`
-       * ```
-       */
     static override vertexShader: string;
 
     static override fragmentShader: AbstractBaseShader.FragmentShader;
@@ -123,10 +112,10 @@ declare global {
 
     /**
      * @defaultValue
-     * ```javascript
+     * ```js
      * {
-     *  tintAlpha: [1, 1, 1, 1],
-     *  sampler: 0
+     *   sampler: 0,
+     *   tintAlpha: [1, 1, 1, 1]
      * };
      * ```
      */
@@ -134,8 +123,9 @@ declare global {
 
     /**
      * Batch geometry associated with this sampler.
+     * @defaultValue `PIXI.BatchGeometry`
      */
-    static batchGeometry: typeof PIXI.BatchGeometry;
+    static batchGeometry: BaseSamplerShader.BatchGeometry;
 
     /**
      * The size of a vertice with all its packed attributes.
@@ -146,29 +136,18 @@ declare global {
     /**
      * Pack interleaved geometry custom function.
      */
-    protected static _packInterleavedGeometry:
-      | ((
-          element: PIXI.IBatchableElement,
-          attributeBuffer: PIXI.ViewableBuffer,
-          indexBuffer: Uint16Array,
-          aIndex: number,
-          iIndex: number,
-        ) => void)
-      | undefined;
+    protected static _packInterleavedGeometry: BatchRenderer.PackInterleavedGeometryFunction | undefined;
 
     /**
      * A prerender function happening just before the batch renderer is flushed.
      */
-    protected static _preRenderBatch(): ((batchRenderer: typeof BatchRenderer) => void) | undefined;
+    protected static _preRenderBatch: BatchRenderer.PreRenderBatchFunction | undefined;
 
     /**
      * A function that returns default uniforms associated with the batched version of this sampler.
-     * @remarks Foundry annotated this as abstract
+     * @defaultValue `{}`
      */
-    //TODO: This is Odd. Foundry sets default value to {}. Revisit.
-    static batchDefaultUniforms:
-      | ((maxTextures: AbstractBaseShader.UniformValue) => AbstractBaseShader.Uniforms)
-      | undefined;
+    static batchDefaultUniforms: BatchRenderer.BatchDefaultUniformsFunction | EmptyObject;
 
     /**
      * The number of reserved texture units for this shader that cannot be used by the batch renderer.
@@ -178,17 +157,18 @@ declare global {
 
     /**
      * Initialize the batch geometry with custom properties.
-     * @remarks Foundry annotated this as abstract
      */
     static initializeBatchGeometry(): void;
 
     /**
      * The batch renderer to use.
+     * @defaultValue `BatchRenderer`
      */
     static batchRendererClass: typeof BatchRenderer;
 
     /**
      * The batch generator to use.
+     * @defaultValue `BatchShaderGenerator`
      */
     static batchShaderGeneratorClass: typeof BatchShaderGenerator;
 
@@ -196,20 +176,25 @@ declare global {
      * Create a batch plugin for this sampler class.
      * @returns - The batch plugin class linked to this sampler class.
      */
-    static createPlugin<T extends typeof BaseSamplerShader, BatchPlugin extends T["batchRendererClass"]>(
-      this: ConstructorOf<T>,
-    ): BatchPlugin;
+    static createPlugin<ThisType extends BaseSamplerShader.AnyConstructor>(
+      this: ThisType,
+    ): Mixin<typeof BatchPlugin<ThisType>, ThisType["batchRendererClass"]>;
+    // static createPlugin<T extends typeof BaseSamplerShader, BatchPlugin extends T["batchRendererClass"]>(
+    //   this: ConstructorOf<T>,
+    // ): BatchPlugin;
 
     /**
      * Register the plugin for this sampler.
      */
-    static registerPlugin(options?: {
-      /**
-       * Override the plugin of the same name that is already registered?
-       * @defaultValue `false`
-       */
-      force?: boolean;
-    }): void;
+    static registerPlugin(
+      options?: InexactPartial<{
+        /**
+         * Override the plugin of the same name that is already registered?
+         * @defaultValue `false`
+         */
+        force: boolean;
+      }>,
+    ): void;
 
     protected override _preRender(mesh: PIXI.DisplayObject, renderer: PIXI.Renderer): void;
   }

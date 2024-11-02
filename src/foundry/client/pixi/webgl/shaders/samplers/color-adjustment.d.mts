@@ -1,6 +1,14 @@
 export {};
 
+declare abstract class AnyColorAdjustmentsSamplerShader extends ColorAdjustmentsSamplerShader {
+  constructor(arg0: never, ...args: never[]);
+}
+
 declare global {
+  namespace ColorAdjustmentsSamplerShader {
+    type AnyConstructor = typeof AnyColorAdjustmentsSamplerShader;
+  }
+
   /**
    * A color adjustment shader.
    */
@@ -12,6 +20,21 @@ declare global {
 
     static override fragmentShader: AbstractBaseShader.FragmentShader;
 
+    /**
+     * @defaultValue
+     * ```js
+     * {
+     *   tintAlpha: [1, 1, 1, 1],
+     *   tint: [1, 1, 1],  contrast: 0,
+     *   saturation: 0,
+     *   exposure: 0,
+     *   sampler: null,
+     *   linkedToDarknessLevel: false,
+     *   darknessLevelTexture: null,
+     *   screenDimensions: [1, 1]
+     * }
+     * ```
+     */
     static override defaultUniforms: AbstractBaseShader.Uniforms;
 
     get linkedToDarknessLevel(): AbstractBaseShader.UniformValue;

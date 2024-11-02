@@ -17,6 +17,14 @@ declare abstract class AnyPIXIFilter extends PIXI.Filter {
   constructor(arg0: never, ...args: never[]);
 }
 
+declare abstract class AnyPIXIBatchGeometry extends PIXI.BatchGeometry {
+  constructor(arg0: never, ...args: never[]);
+}
+
+declare abstract class AnyPIXIBatchRenderer extends PIXI.BatchRenderer {
+  constructor(arg0: never, ...args: never[]);
+}
+
 declare global {
   namespace PIXI {
     export import smooth = graphicsSmooth;
@@ -32,6 +40,16 @@ declare global {
     export import Filter = _PIXI.Filter;
     namespace Filter {
       type AnyConstructor = typeof AnyPIXIFilter;
+    }
+
+    export import BatchGeometry = _PIXI.BatchGeometry;
+    namespace BatchGeometry {
+      type AnyConstructor = typeof AnyPIXIBatchGeometry;
+    }
+
+    export import BatchRenderer = _PIXI.BatchGeometry;
+    namespace BatchRenderer {
+      type AnyConstructor = typeof AnyPIXIBatchGeometry;
     }
   }
 }
