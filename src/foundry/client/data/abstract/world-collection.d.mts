@@ -133,36 +133,30 @@ declare global {
       StateOpt extends boolean = false,
     > {
       /**
-       * Add flags which track the import source
-       * @defaultValue `false`
-       */
-      addFlags: boolean;
-
-      /**
        * Clear the currently assigned folder
-       * @defaultValue
+       * @defaultValue `false`
        */
       clearFolder: FolderOpt;
 
       /**
-       * Clear the currently assigned folder and sort order
+       * Clear the currently sort order
        * @defaultValue `true`
        */
       clearSort: SortOpt;
 
       /**
-       * Clear document permissions
+       * Clear Document ownership
        * @defaultValue `true`
        */
       clearOwnership: OwnershipOpt;
 
       /**
-       * Retain the Document id from the source Compendium
+       * Retain the Document ID from the source Compendium
        * @defaultValue `false`
        */
       keepId: IdOpt;
 
-      /** @remarks used by Scene#fromCompendium */
+      /** @remarks used by Scenes#fromCompendium */
       clearState: StateOpt;
     }
   }

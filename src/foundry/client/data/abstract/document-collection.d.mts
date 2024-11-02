@@ -1,4 +1,5 @@
-import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
+import type { AnyObject, DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
+import type { DatabaseAction, DatabaseOperationMap } from "../../../common/abstract/_types.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
@@ -120,9 +121,9 @@ declare global {
      * @returns The dot-delimited property paths of searchable fields
      */
     // TODO: Could significantly improve this with type defs
-    static getSearchableFields(
-      documentName: foundry.CONST.DOCUMENT_TYPES,
-      documentSubtype?: string,
+    static getSearchableFields<T extends foundry.abstract.Document.Type>(
+      documentName: T,
+      documentSubtype?: foundry.abstract.Document.SubTypesOf<T>,
       isEmbedded?: boolean,
     ): Set<string>;
 
@@ -168,6 +169,22 @@ declare global {
       condition?: ((obj: Document.ToConfiguredStored<T>) => boolean) | null,
       options?: Document.OnUpdateOptions<T["metadata"]["name"]>,
     ): ReturnType<this["documentClass"]["updateDocuments"]>;
+
+    /**
+     * Follow-up actions to take when a database operation modifies Documents in this DocumentCollection.
+     * @param action    - The database action performed
+     * @param documents - The array of modified Documents
+     * @param result    - The result of the database operation
+     * @param operation - Database operation details
+     * @param user      - The User who performed the operation
+     */
+    _onModifyContents<A extends DatabaseAction>(
+      action: A,
+      documents: InstanceType<T>[],
+      result: AnyObject[] | readonly string[],
+      operation: DatabaseOperationMap[A],
+      user: User.ConfiguredInstance,
+    ): void;
   }
 
   namespace DocumentCollection {
