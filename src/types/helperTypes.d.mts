@@ -1,7 +1,7 @@
 import type { DatabaseOperationMap, Operation } from "../foundry/common/abstract/document.d.mts";
 import type Document from "../foundry/common/abstract/document.d.mts";
 import type { ConfiguredDocuments } from "./configuredDocuments.d.mts";
-import type { AnyObject, EmptyObject } from "./utils.d.mts";
+import type { AnyFunction, AnyObject, EmptyObject } from "./utils.d.mts";
 
 export type ModuleRequiredOrOptional<Name extends string> = Name extends keyof RequiredModules ? never : undefined;
 
@@ -140,6 +140,89 @@ export type DatabaseOperationsFor<
   Name extends Document.Type,
   ConcreteOperation extends Operation,
 > = DatabaseOperationMap[Name][ConcreteOperation];
+
+/**
+ * Converts a regular function type into a function derived from a method.
+ *
+ * Methods have a special exception in TypeScript that allows unsound subtyping
+ * that unfortunately has been deeply engrained into not just JavaScript codebases
+ * but the core APIs of JavaScript itself in the DOM.
+ *
+ * It might seem odd to want to opt-in to this unsoundness but it's unfortunately
+ * useful in several cases, such as when you have a property like
+ * `prop: ((arg: Options) => number) | undefined` and you want to meet the expectations
+ * from other similar methods.
+ *
+ * @example
+ * ```typescript
+ * declare class ExampleBaseClass {
+ *     // This demonstrates a typical example of where the allowed unsoundness is useful.
+ *     methodOne(arg: { x: string }): number;
+ *
+ *     // This helps demonstrates an example that may be easier to recognize as unsound.
+ *     methodTwo(arg: string): number;
+ *
+ *     functionProperty: (arg: string) => number;
+ *     methodLikeProperty: ToMethod<(arg: string) => number>;
+ * }
+ *
+ * // TypeScript allows this without any errors.
+ * declare class MethodSubclassing extends ExampleBaseClass {
+ *     // It's a very common thing for subclasses to ask for extra arguments.
+ *     methodOne(arg: { x: string; y: string }): number;
+ *
+ *     // Only taking `"foo" | "bar"` should seem pretty unsound.
+ *     // The above is actually equally unsound but it's less obvious to many people.
+ *     methodTwo(arg: "foo" | "bar"): number;
+ * }
+ *
+ * const exampleMethodSubclass: ExampleBaseClass = new MethodSubclassing();
+ *
+ * // This is allowed, however at runtime `MethodSubclassing#methodOne` could
+ * // will almost certainly error as it has the required property `y`.
+ * // The reason why there's no errors is an intentional unsoundness in TypeScript.
+ * exampleMethodSubclass.methodOne({ x: "foo" });
+ *
+ * // Similarly this is allowed.
+ * // Both methods show taking arguments that are 'subtypes' of the original.
+ * // In the case of functions this is unsound as demonstrated because in both
+ * // examples you're substituting a function that has to be able to be called
+ * // with a wide variety of arguments with one that will error for many of them.
+ * exampleMethodSubclass.methodTwo("lorem");
+ *
+ * declare class PropertySubclassing extends ExampleBaseClass {
+ *     // This errors right here. This preventative error is because of the prior
+ *     // explained unsoundness. It errors here because there's really only 3
+ *     // places to error at compile time to prevent a runtime error:
+ *     // 1. At the call site when a subclass is used unsoundly. Unfortunately
+ *     //    at this point it's too late to know for certain if it's a subclass
+ *     //    or not. For example there could be a guarded condition to avoid
+ *     //    subclasses that TypeScript can't possibly track.
+ *     // 2. When trying to assign `PropertySubclassing` to `ExampleBaseClass`.
+ *     //    This would be a feasible alternative but would likely come as a
+ *     //    surprise as the subclass could have been used for quite a while
+ *     //    before trying to be assigned to its superclass.
+ *     // 3. Error at the definition. This is where TypeScript has chosen to error.
+ *     //    The error is unfortunately not the most intuitive but it is correct.
+ *     functionProperty: (arg: "foo" | "bar") => number;
+ * }
+ *
+ * declare class MethodLikeSubclassing {
+ *     // This is unsound but by using the `ToMethod` in the parent class it's allowed.
+ *     methodLikeProperty: (arg: "foo" | "bar") => number;
+ * }
+ * ```
+ *
+ * The TypeScript FAQ explains this in a way that may either be intuitive and
+ * explain all lingering questions or be confusing and muddle the waters.
+ * It's also worth mentioning that it claims all function parameters work this way,
+ * this behavior is disabled for functions in most codebases (including this one)
+ * because of the `strictFunctionTypes` compiler flag, implicit under `strict: true`.
+ * See: https://github.com/Microsoft/TypeScript/wiki/FAQ#why-are-function-parameters-bivariant
+ */
+export type ToMethod<T extends AnyFunction> = {
+  method(...args: Parameters<T>): ReturnType<T>;
+}["method"];
 
 // Deprecated types, to be removed in the first stable v12 release or at the latest v13.
 
