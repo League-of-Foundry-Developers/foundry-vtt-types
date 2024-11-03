@@ -39,14 +39,7 @@ declare global {
     static defineSchema(): VisionMode.Schema;
 
     /** The lighting illumination levels which are supported. */
-    static LIGHTING_LEVELS: {
-      DARKNESS: -2;
-      HALFDARK: -1;
-      UNLIT: 0;
-      DIM: 1;
-      BRIGHT: 2;
-      BRIGHTEST: 3;
-    };
+    static LIGHTING_LEVELS: typeof CONST.LIGHTING_LEVELS;
 
     /**
      * Flags for how each lighting channel should be rendered for the currently active vision modes:
@@ -65,6 +58,12 @@ declare global {
      * @defaultValue `false`
      */
     animated: boolean;
+
+    /**
+     * Does this vision mode enable light sources?
+     * True unless it disables lighting entirely.
+     */
+    get perceivesLight(): boolean;
 
     /**
      * Special activation handling that could be implemented by VisionMode subclasses
@@ -146,8 +145,8 @@ declare global {
     }>;
 
     type LightingLevels = Record<
-      ValueOf<typeof VisionMode.LIGHTING_LEVELS>,
-      ValueOf<typeof VisionMode.LIGHTING_LEVELS>
+      ValueOf<typeof CONST.LIGHTING_LEVELS>,
+      ValueOf<typeof CONST.LIGHTING_LEVELS>
     >;
     type LightingMultipliers = Record<ValueOf<typeof VisionMode.LIGHTING_LEVELS>, number>;
 
@@ -189,7 +188,13 @@ declare global {
         darkness: fields.SchemaField<{
           adaptive: fields.BooleanField<{ initial: true }>;
         }>;
-        defaults: fields.ObjectField;
+        defaults: fields.SchemaField<{
+          color: fields.ColorField<{required: false, initial: undefined}>;
+          attenuation: fields.AlphaField<{required: false, initial: undefined}>;
+          brightness: fields.NumberField<{required: false, initial: undefined, nullable: false, min: number, max: number}>;
+          saturation: fields.NumberField<{required: false, initial: undefined, nullable: false, min: number, max: number}>;
+          contrast: fields.NumberField<{required: false, initial: undefined, nullable: false, min: number, max: number}>;
+        }>;
         preferred: fields.BooleanField<{ initial: false }>;
       }>;
     }
