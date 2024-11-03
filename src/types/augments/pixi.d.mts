@@ -47,7 +47,7 @@ declare global {
       type AnyConstructor = typeof AnyPIXIBatchGeometry;
     }
 
-    export import BatchRenderer = _PIXI.BatchGeometry;
+    export import BatchRenderer = _PIXI.BatchRenderer;
     namespace BatchRenderer {
       type AnyConstructor = typeof AnyPIXIBatchGeometry;
     }

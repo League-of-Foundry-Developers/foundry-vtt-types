@@ -1,9 +1,13 @@
-import type { BatchGeometry } from "pixi.js";
-
 export {};
+
+declare abstract class AnyOccludableSamplerShader extends OccludableSamplerShader {
+  constructor(arg0: never, ...args: never[]);
+}
 
 declare global {
   namespace OccludableSamplerShader {
+    type AnyConstructor = typeof AnyOccludableSamplerShader;
+
     interface OccludableBatchData extends PIXI.IBatchableElement {
       elevation: number;
       unoccludedAlpha: number;
@@ -27,7 +31,7 @@ declare global {
      * @remarks this is a guess; autofill produces just `BatchGeometry`
      * without the typeof which immediately starts yelling
      */
-    static override batchGeometry: typeof BatchGeometry;
+    static override batchGeometry: BaseSamplerShader.BatchGeometry;
 
     /**
      * @defaultValue `7`
@@ -43,22 +47,25 @@ declare global {
      * @defaultValue
      * ```js
      * {
-     *   screenDimensions: [1, 1];
-     *   occlusionTexture: maxTex;
+     *   screenDimensions: [1, 1],
+     *   sampler: null,
+     *   tintAlpha: [1, 1, 1, 1],
+     *   occlusionTexture: null,
+     *   unoccludedAlpha: 1,
+     *   occludedAlpha: 0,
+     *   occlusionElevation: 0,
+     *   fadeOcclusion: 0,
+     *   radialOcclusion: 0,
+     *   visionOcclusion: 0
      * }
      * ```
      */
-    static override batchDefaultUniforms(maxTex: AbstractBaseShader.UniformValue): AbstractBaseShader.Uniforms;
+    static override batchDefaultUniforms: BatchRenderer.BatchDefaultUniformsFunction;
 
-    protected static override _preRenderBatch(): ((batchRenderer: typeof BatchRenderer) => void) | undefined;
+    protected static override _preRenderBatch: BatchRenderer.PreRenderBatchFunction;
 
-    /**
-     * @remarks The first argument for the following function should be of type
-     * OccludableSampleShader.OccludableBatchData but TS really doesn't like the
-     * signature changing. Unsure how to resolve.
-     */
     protected static override _packInterleavedGeometry(
-      element: PIXI.IBatchableElement,
+      element: OccludableSamplerShader.OccludableBatchData,
       attributeBuffer: PIXI.ViewableBuffer,
       indexBuffer: Uint16Array,
       aIndex: number,

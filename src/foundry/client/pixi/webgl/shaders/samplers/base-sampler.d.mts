@@ -42,6 +42,8 @@ declare global {
 
     type ToGeometryClass<G extends PIXI.BatchGeometry.AnyConstructor | BaseSamplerShader.BatchGeometryData[]> =
       G extends readonly unknown[] ? typeof BatchGeometry : G;
+
+    type BatchGeometry = typeof PIXI.BatchGeometry | BaseSamplerShader.BatchGeometryData[];
   }
 
   /**
@@ -133,7 +135,7 @@ declare global {
      * Batch geometry associated with this sampler.
      * @defaultValue `PIXI.BatchGeometry`
      */
-    static batchGeometry: typeof PIXI.BatchGeometry | BaseSamplerShader.BatchGeometryData[];
+    static batchGeometry: BaseSamplerShader.BatchGeometry;
 
     /**
      * The size of a vertice with all its packed attributes.
