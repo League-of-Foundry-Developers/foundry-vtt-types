@@ -43,7 +43,7 @@ declare global {
       refreshText: RenderFlag<Partial<Note.RenderFlags>>;
     };
 
-    override get bounds(): Rectangle;
+    override get bounds(): PIXI.Rectangle;
 
     /**
      * The associated JournalEntry which is described by this note

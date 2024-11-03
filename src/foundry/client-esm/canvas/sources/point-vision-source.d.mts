@@ -4,9 +4,9 @@ import type PointEffectSourceMixin from "./point-effect-source.d.mts";
 /**
  * A specialized subclass of RenderedEffectSource which represents a source of point-based vision.
  */
-declare class PointVisionSource<SourceData extends PointVisionSource.VisionSourceData> extends PointEffectSourceMixin(
-  RenderedEffectSource,
-)<SourceData> {
+declare class PointVisionSource<
+  SourceData extends PointVisionSource.VisionSourceData = PointVisionSource.VisionSourceData,
+> extends PointEffectSourceMixin(RenderedEffectSource)<SourceData> {
   /** @defaultValue `"sight"` */
   static override sourceType: string;
 
@@ -173,26 +173,32 @@ declare namespace PointVisionSource {
      * The amount of contrast
      */
     contrast: number;
+
     /**
      * Strength of the attenuation between bright, dim, and dark
      */
     attenuation: number;
+
     /**
      * The amount of color saturation
      */
     saturation: number;
+
     /**
      * The vision brightness.
      */
     brightness: number;
+
     /**
      * The vision mode.
      */
     visionMode: string;
+
     /**
      * The range of light perception.
      */
     lightRadius: number;
+
     /**
      * Is this vision source blinded?
      */

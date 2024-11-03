@@ -209,6 +209,8 @@ declare class BaseEffectSource<
 }
 
 declare namespace BaseEffectSource {
+  type AnyConstructor = typeof AnyBaseEffectSource;
+
   interface BaseEffectSourceOptions {
     /**
      * An optional PlaceableObject which is responsible for this source
@@ -220,6 +222,7 @@ declare namespace BaseEffectSource {
      */
     sourceId?: string | undefined;
   }
+
   interface BaseEffectSourceData {
     /**
      * The x-coordinate of the source location
@@ -238,6 +241,10 @@ declare namespace BaseEffectSource {
      */
     disabled: boolean;
   }
+}
+
+declare abstract class AnyBaseEffectSource extends BaseEffectSource<any, any> {
+  constructor(arg0: never, ...args: never[]);
 }
 
 export default BaseEffectSource;

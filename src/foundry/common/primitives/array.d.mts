@@ -1,4 +1,4 @@
-export {};
+import type { OverlapsWith } from "../../../types/helperTypes.d.mts";
 
 declare global {
   namespace Array {
@@ -17,7 +17,7 @@ declare global {
      * @param other - Some other array against which to test equality
      * @returns Are the two arrays element-wise equal?
      */
-    equals(other: T[]): boolean;
+    equals<O>(other: OverlapsWith<O, T>[]): boolean;
 
     /**
      * Partition an original array into two children array based on a logical test

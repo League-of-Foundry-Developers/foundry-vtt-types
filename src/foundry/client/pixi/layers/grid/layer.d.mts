@@ -1,4 +1,5 @@
 import type { InexactPartial } from "../../../../../types/utils.d.mts";
+import type BaseGrid from "../../../../common/grid/base.d.mts";
 
 declare global {
   /**

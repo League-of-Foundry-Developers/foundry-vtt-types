@@ -1,4 +1,5 @@
 import type { ConstructorOf } from "../../../../../types/utils.d.mts";
+import type PointEffectSourceMixin from "../../../../client-esm/canvas/sources/point-effect-source.d.mts";
 
 declare global {
   interface PointSourcePolygonConfig {
@@ -27,7 +28,7 @@ declare global {
     debug?: boolean;
 
     /** The object (if any) that spawned this polygon. */
-    source?: PointSource;
+    source?: PointEffectSourceMixin.AnyMixed;
 
     /** Limiting polygon boundary shapes */
     boundaryShapes?: Array<PIXI.Rectangle | PIXI.Circle | PIXI.Polygon>;

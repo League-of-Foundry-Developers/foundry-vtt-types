@@ -93,17 +93,17 @@ declare global {
     /**
      * The collection of PrimaryDrawingContainer objects which are rendered in the Scene.
      */
-    drawings: Collection<DrawingShape>;
+    drawings: Collection<PrimaryGraphics>;
 
     /**
      * The collection of SpriteMesh objects which are rendered in the Scene.
      */
-    tokens: Collection<TokenMesh>;
+    tokens: Collection<PrimarySpriteMesh>;
 
     /**
      * The collection of SpriteMesh objects which are rendered in the Scene.
      */
-    tiles: Collection<PrimarySpriteMesh | TileSprite>;
+    tiles: Collection<PrimarySpriteMesh>;
 
     /**
      * The ambience filter which is applying post-processing effects.
