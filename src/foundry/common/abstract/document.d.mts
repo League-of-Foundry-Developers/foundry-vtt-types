@@ -919,7 +919,7 @@ declare class AnyDocument extends Document<any, any, any> {
 
 declare namespace Document {
   /** Any Document, except for Settings */
-  type Any = Document<any, any, any>;
+  type Any = AnyDocument;
 
   type Type =
     | "ActiveEffect"

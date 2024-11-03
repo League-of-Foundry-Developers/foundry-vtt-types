@@ -40,6 +40,11 @@ declare global {
     protected _view: this["active"];
 
     /**
+     * The grid instance
+     */
+    grid: foundry.grid.BaseGrid;
+
+    /**
      * Determine the canvas dimensions this Scene would occupy, if rendered
      * @defaultValue `{}`
      */
@@ -187,11 +192,23 @@ declare global {
     /** The number of distance units in a single grid space. */
     distance: number;
 
+    /** The factor to convert distance units to pixels */
+    distancePixels: number;
+
+    /** The units of distance */
+    units: string;
+
     /** The aspect ratio of the scene rectangle. */
     ratio: number;
 
     /** The length of the longest line that can be drawn on the canvas. */
     maxR: number;
+
+    /** The number of grid rows on the canvas */
+    rows: number;
+
+    /** The number of grid columns on the canvas */
+    columns: number;
   }
 }
 

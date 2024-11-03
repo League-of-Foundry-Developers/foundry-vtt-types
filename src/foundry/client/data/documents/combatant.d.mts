@@ -1,3 +1,4 @@
+import type { ValueOf } from "../../../../types/utils.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 
@@ -6,7 +7,13 @@ declare global {
     type ConfiguredClass = Document.ConfiguredClassForName<"Combatant">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Combatant">;
 
-    interface DatabaseOperations extends DocumentDatabaseOperations<Combatant> {}
+    interface DatabaseOperations
+      extends DocumentDatabaseOperations<
+        Combatant,
+        { combatTurn: number },
+        { combatTurn: number },
+        { combatTurn: number }
+      > {}
   }
 
   /**
@@ -31,6 +38,11 @@ declare global {
 
     /** This is treated as a non-player combatant if it has no associated actor and no player users who can control it */
     get isNPC(): boolean;
+
+    /**
+     * Eschew `ClientDocument`'s redirection to `Combat#permission` in favor of special ownership determination.
+     */
+    override get permission(): ValueOf<typeof CONST.DOCUMENT_OWNERSHIP_LEVELS>;
 
     override get visible(): boolean;
 

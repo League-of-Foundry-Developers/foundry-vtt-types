@@ -1,4 +1,4 @@
-export {};
+import type { AnyObject } from "../../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -12,9 +12,9 @@ declare global {
     static CACHE_TTL: number;
 
     /**
-     * A mapping of url to cached texture buffer data
+     * Initialize the basis transcoder for PIXI.Assets
      */
-    static textureBufferDataMap: Map<string, object>;
+    static initializeBasisTranscoder(): Promise<unknown>;
 
     /**
      * Check if a source has a text file extension.
@@ -22,6 +22,16 @@ declare global {
      * @returns If the source has a text extension or not.
      */
     static hasTextExtension(src: string): boolean;
+
+    /**
+     * Use the texture to create a cached mapping of pixel alpha and cache it.
+     * Cache the bounding box of non-transparent pixels for the un-rotated shape.
+     * @param texture    - The provided texture
+     * @param resolution - Resolution of the texture data output
+     *                     (default: `1`)
+     * @returns The texture data if the texture is valid, else undefined.
+     */
+    static getTextureAlphaData(texture: PIXI.Texture, resolution?: number): TextureLoader.TextureAlphaData | undefined;
 
     /**
      * Load all the textures which are required for a particular Scene
@@ -124,12 +134,42 @@ declare global {
     loadVideoTexture(src: string): Promise<PIXI.BaseTexture>;
 
     /**
+     * @deprecated since v12, will be removed in v14
+     * @remarks `"TextureLoader.textureBufferDataMap is deprecated without replacement. Use TextureLoader.getTextureAlphaData`
+     * `to create a texture data map and cache it automatically, or create your own caching system."`
+     */
+    static get textureBufferDataMap(): Map<string, AnyObject>
+
+    /**
      * A global reference to the singleton texture loader
      */
     static loader: TextureLoader;
   }
 
   namespace TextureLoader {
+    interface TextureAlphaData {
+      /** The width of the (downscaled) texture. */
+      width: number;
+
+      /** The height of the (downscaled) texture. */
+      height: number;
+
+      /** The minimum x-coordinate with alpha \> 0. */
+      minX: number;
+
+      /** The minimum y-coordinate with alpha \> 0. */
+      minY: number;
+
+      /** The maximum x-coordinate with alpha \> 0 plus 1. */
+      maxX: number;
+
+      /** The maximum y-coordinate with alpha \> 0 plus 1. */
+      maxY: number;
+
+      /** The array containing the texture alpha values (0-255) with the dimensions (maxX-minX)×(maxY-minY). */
+      data: Uint8Array;
+    }
+
     interface LoadSceneTextureOptions {
       /**
        * Destroy other expired textures

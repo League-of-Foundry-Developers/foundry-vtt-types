@@ -49,7 +49,7 @@ declare global {
      * @param data      - Configuration for setting data
      *
      * @example Register a client setting
-     * ```typescript
+     * ```js
      * game.settings.register("myModule", "myClientSetting", {
      *   name: "Register a Module Setting with Choices",
      *   hint: "A description of the registered setting and its behavior.",
@@ -69,7 +69,7 @@ declare global {
      * ```
      *
      * @example Register a world setting
-     * ```typescript
+     * ```js
      * game.settings.register("myModule", "myWorldSetting", {
      *   name: "Register a Module Setting with a Range slider",
      *   hint: "A description of the registered setting and its behavior.",
@@ -197,8 +197,7 @@ declare global {
       SettingType<T> | (T extends DataModel.Any ? T : never)
     >;
 
-    interface RegisterOptions<T extends Type>
-      extends InexactPartial<Omit<SettingOptions<T>, "key" | "namespace">> {}
+    interface RegisterOptions<T extends Type> extends InexactPartial<Omit<SettingOptions<T>, "key" | "namespace">> {}
 
     type RegisterSubmenu = Omit<SettingSubmenuConfig, "key" | "namespace">;
 
