@@ -31,10 +31,10 @@ declare global {
    */
   class Ping extends PIXI.Container {
     /**
-     * @param origin  - The canvas co-ordinates of the origin of the ping.
+     * @param origin  - The canvas coordinates of the origin of the ping.
      * @param options - Additional options to configure the ping animation.
      */
-    constructor(origin: PIXI.Point, options?: PingOptions);
+    constructor(origin: Point, options?: PingOptions);
 
     options: PingOptions;
 
