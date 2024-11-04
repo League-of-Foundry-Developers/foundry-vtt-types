@@ -2,7 +2,7 @@ import type { InexactPartial } from "../../../../../../types/utils.d.mts";
 
 export {};
 
-declare abstract class AnyWeatherShaderEffect extends WeatherShaderEffect {
+declare abstract class AnyWeatherShaderEffect extends WeatherShaderEffect<any> {
   constructor(arg0: never, ...args: never[]);
 }
 
@@ -33,7 +33,7 @@ declare global {
    * An interface for defining shader-based weather effects
    */
   class WeatherShaderEffect<
-    ShaderClass extends AbstractBaseShader.AnyConstructor = AbstractWeatherShader.AnyConstructor,
+    ShaderClass extends AbstractWeatherShader.AnyConstructor = AbstractWeatherShader.AnyConstructor,
   > extends InternalWeatherShaderEffect<ShaderClass> {
     /**
      * @param config - The config object to create the shader effect
