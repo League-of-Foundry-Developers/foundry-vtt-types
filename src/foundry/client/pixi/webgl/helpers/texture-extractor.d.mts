@@ -1,7 +1,5 @@
 import type { InexactPartial } from "../../../../../types/utils.d.mts";
 
-export {};
-
 declare abstract class AnyTextureExtractor extends TextureExtractor {
   constructor(arg0: never, ...args: never[]);
 }
@@ -31,7 +29,7 @@ declare global {
       frame: PIXI.Rectangle;
 
       /** The compression mode to apply, or NONE */
-      compression: (typeof TextureExtractor)["COMPRESSION_MODES"];
+      compression: TextureExtractor.COMPRESSION_MODES;
 
       /** The optional image mime type. */
       type: string;
@@ -42,6 +40,7 @@ declare global {
       /** The optional debug flag to use. */
       debug: boolean;
     }
+
     interface COMPRESSION_MODES {
       readonly NONE: 0;
       readonly BASE64: 1;

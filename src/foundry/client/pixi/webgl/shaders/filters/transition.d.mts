@@ -1,7 +1,5 @@
 import type { InexactPartial, ValueOf } from "../../../../../../types/utils.d.mts";
 
-export {};
-
 declare abstract class AnyTextureTransitionFilter extends TextureTransitionFilter {
   constructor(arg0: never, ...args: never[]);
 }
@@ -69,16 +67,19 @@ declare global {
          * @defaultValue `TYPES.FADE`
          */
         type: ValueOf<TextureTransitionFilter.TYPES>;
+
         /**
          * The name of the {@link CanvasAnimation}.
          */
         name: string | symbol;
+
         /**
          * The animation duration
          * @defaultValue 1000
          * @remarks this function does not provide a default, but CanvasAnimation.animate does
          */
         duration: number;
+
         /**
          * The easing function of the animation
          */

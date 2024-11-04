@@ -1,7 +1,5 @@
 import type { InexactPartial } from "../../../../../types/utils.d.mts";
 
-export {};
-
 declare global {
   namespace SmoothNoise {
     interface ConstructorOptions {
@@ -10,11 +8,13 @@ declare global {
        * @defaultValue `1`
        */
       amplitude: number;
+
       /**
        * An adjustment factor for the input x values which place them on an appropriate range.
        * @defaultValue `1`
        */
       scale: number;
+
       /**
        * The number of pre-generated random numbers to generate.
        * @defaultValue `256`

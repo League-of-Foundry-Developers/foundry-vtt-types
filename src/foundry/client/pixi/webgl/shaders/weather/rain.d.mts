@@ -1,7 +1,5 @@
 import type { InterfaceToObject } from "../../../../../../types/helperTypes.d.mts";
 
-export {};
-
 declare abstract class AnyRainShader extends RainShader {
   constructor(arg0: never, ...args: never[]);
 }

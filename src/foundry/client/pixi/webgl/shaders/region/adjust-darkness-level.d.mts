@@ -24,6 +24,7 @@ declare global {
   namespace IlluminationDarknessLevelRegionShader {
     type AnyConstructor = typeof AnyIlluminationDarknessLevelRegionShader;
   }
+
   /**
    * Abstract shader used for Adjust Darkness Level region behavior.
    * @remarks Foundry labeled as abstract
@@ -68,6 +69,7 @@ declare global {
    */
   class AdjustDarknessLevelRegionShader extends AbstractDarknessLevelRegionShader {
     static override fragmentShader: string;
+
     /**
      * @defaultValue
      * ```js

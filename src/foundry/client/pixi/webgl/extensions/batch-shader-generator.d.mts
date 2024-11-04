@@ -3,6 +3,7 @@ export {};
 declare abstract class AnyBatchShaderGenerator extends BatchShaderGenerator {
   constructor(arg0: never, ...args: never[]);
 }
+
 declare global {
   namespace BatchShaderGenerator {
     type AnyConstructor = typeof AnyBatchShaderGenerator;

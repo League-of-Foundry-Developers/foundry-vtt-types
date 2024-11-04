@@ -1,7 +1,5 @@
 import type { InterfaceToObject } from "../../../../../../types/helperTypes.d.mts";
 
-export {};
-
 declare abstract class AnyFogShader extends FogShader {
   constructor(arg0: never, ...args: never[]);
 }

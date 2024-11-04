@@ -1,4 +1,5 @@
 export {};
+
 declare abstract class AnyBewitchingWaveColorationShader extends BewitchingWaveColorationShader {
   constructor(arg0: never, ...args: never[]);
 }
@@ -15,6 +16,7 @@ declare global {
   namespace BewitchingWaveIlluminationShader {
     type AnyConstructor = typeof AnyBewitchingWaveIlluminationShader;
   }
+
   /**
    * Bewitching Wave animation illumination shader
    */

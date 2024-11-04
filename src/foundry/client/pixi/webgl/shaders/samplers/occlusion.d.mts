@@ -17,6 +17,7 @@ declare global {
       visionOcclusion: number;
     }
   }
+
   /**
    * An occlusion shader to reveal certain area with elevation comparisons.
    * This shader is also working as a batched plugin.
@@ -27,10 +28,6 @@ declare global {
      */
     static override classPluginName: string;
 
-    /**
-     * @remarks this is a guess; autofill produces just `BatchGeometry`
-     * without the typeof which immediately starts yelling
-     */
     static override batchGeometry: BaseSamplerShader.BatchGeometry;
 
     /**

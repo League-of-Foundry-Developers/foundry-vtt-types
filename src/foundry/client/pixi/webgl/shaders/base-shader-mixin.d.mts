@@ -1,6 +1,5 @@
 import type { Mixin } from "../../../../../types/utils.d.mts";
 
-export {};
 declare abstract class AnyBaseShader extends BaseShader {
   constructor(arg0: never, ...args: never[]);
 }
@@ -113,6 +112,7 @@ declare global {
   namespace BaseShader {
     type AnyConstructor = typeof AnyBaseShader;
   }
+
   function BaseShaderMixin<BaseClass extends PIXI.Shader.AnyConstructor | PIXI.Filter.AnyConstructor>(
     ShaderClass: BaseClass,
   ): Mixin<typeof BaseShader, BaseClass>;

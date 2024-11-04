@@ -3,6 +3,7 @@ export {};
 declare abstract class AnyAlphaBlurFilterPass extends AlphaBlurFilterPass {
   constructor(arg0: never, ...args: never[]);
 }
+
 declare abstract class AnyAlphaBlurFilter extends AlphaBlurFilter {
   constructor(arg0: never, ...args: never[]);
 }

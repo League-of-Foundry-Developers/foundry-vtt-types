@@ -1,8 +1,6 @@
 import type { InterfaceToObject } from "../../../../../../types/helperTypes.d.mts";
 import type { AnyObject, RemoveIndexSignatures } from "../../../../../../types/utils.d.mts";
 
-export {};
-
 declare abstract class AnyAbstractWeatherShader extends AbstractWeatherShader {
   constructor(arg0: never, ...args: never[]);
 }
@@ -71,7 +69,6 @@ declare global {
 
     /**
      * Default uniforms for a specific class
-     * @remarks No default value, marked as abstract
      */
     static override defaultUniforms: AbstractBaseShader.Uniforms;
 

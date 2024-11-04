@@ -162,7 +162,7 @@ declare global {
     /**
      * A mapping of available coloration techniques
      */
-    static SHADER_TECHNIQUES: Record<string, AdaptiveLightingShader.ShaderTechnique>
+    static SHADER_TECHNIQUES: Record<string, AdaptiveLightingShader.ShaderTechnique>;
 
     /**
      * Determine the correct penalty to apply for a given darkness level and luminosity

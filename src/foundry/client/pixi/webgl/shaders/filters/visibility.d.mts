@@ -1,7 +1,5 @@
 import type { InexactPartial } from "../../../../../../types/utils.d.mts";
 
-export {};
-
 declare abstract class AnyVisibilityFilter extends VisibilityFilter {
   constructor(arg0: never, ...args: never[]);
 }

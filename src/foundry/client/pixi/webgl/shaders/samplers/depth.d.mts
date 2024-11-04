@@ -26,10 +26,6 @@ declare global {
      */
     static override classPluginName: string | null;
 
-    /**
-     * @remarks this is a guess; autofill produces just `BatchGeometry`
-     * without the typeof which immediately starts yelling
-     */
     static override batchGeometry: BaseSamplerShader.BatchGeometry;
 
     /**
@@ -66,10 +62,6 @@ declare global {
 
     static override _preRenderBatch: BatchRenderer.PreRenderBatchFunction;
 
-    /**
-     * @remarks The first argument for the following function should be of type DepthSampleShader.DepthBatchData
-     * but TS really doesn't like the signature changing. Unsure how to resolve.
-     */
     protected static override _packInterleavedGeometry(
       element: DepthSamplerShader.DepthBatchData,
       attributeBuffer: PIXI.ViewableBuffer,

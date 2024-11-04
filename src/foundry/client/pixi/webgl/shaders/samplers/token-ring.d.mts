@@ -1,5 +1,3 @@
-import type { BatchGeometry } from "pixi.js";
-
 export {};
 
 declare global {
@@ -12,7 +10,7 @@ declare global {
      */
     static override classPluginName: string;
 
-    static override batchGeometry: typeof BatchGeometry;
+    static override batchGeometry: typeof PIXI.BatchGeometry;
 
     /**
      * @defaultValue `super.batchVertexSize + 11`

@@ -1,4 +1,3 @@
-
 export {};
 
 declare abstract class AnyOutlineOverlayFilter extends OutlineOverlayFilter {
