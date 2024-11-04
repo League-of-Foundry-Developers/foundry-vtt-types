@@ -30,9 +30,9 @@ declare global {
      */
     static nullUvs: Float32Array;
 
-    static override batchDefaultUniforms(maxTex: AbstractBaseShader.UniformValue): AbstractBaseShader.Uniforms;
+    static override batchDefaultUniforms: BatchRenderer.BatchDefaultUniformsFunction;
 
-    protected static override _preRenderBatch(): ((batchRenderer: typeof BatchRenderer) => void) | undefined;
+    protected static override _preRenderBatch: BatchRenderer.PreRenderBatchFunction;
 
     protected static override _packInterleavedGeometry(
       element: PIXI.IBatchableElement,

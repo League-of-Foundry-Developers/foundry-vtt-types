@@ -1,6 +1,14 @@
 export {};
 
+declare abstract class AnySnowShader extends SnowShader {
+  constructor(arg0: never, ...args: never[]);
+}
+
 declare global {
+  namespace SnowShader {
+    type AnyConstructor = typeof AnySnowShader;
+  }
+
   /**
    * Snow shader effect.
    */
@@ -15,6 +23,6 @@ declare global {
      */
     static override defaultUniforms: AbstractBaseShader.Uniforms;
 
-    static override fragmentShader: AbstractBaseShader.FragmentShader;
+    static override fragmentShader: string;
   }
 }

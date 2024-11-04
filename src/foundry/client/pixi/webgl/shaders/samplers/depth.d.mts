@@ -99,13 +99,13 @@ declare global {
      */
     protected static _vertexShader: string;
 
-    static override get fragmentShader(): AbstractBaseShader.FragmentShader;
+    static override get fragmentShader(): string;
 
     /**
      * The fragment shader source. Subclasses can override it.
      */
     protected static _fragmentShader: string;
 
-    protected override _preRender(mesh: PIXI.DisplayObject, renderer: PIXI.Renderer): void;
+    protected override _preRender: AbstractBaseShader.PreRenderFunction;
   }
 }

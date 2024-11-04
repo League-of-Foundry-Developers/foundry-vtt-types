@@ -1,5 +1,3 @@
-import type { ConstructorOf } from "../../../../../../types/utils.d.mts";
-
 export {};
 
 declare abstract class AnyAbstractBaseFilter extends AbstractBaseFilter {
@@ -9,8 +7,6 @@ declare abstract class AnyAbstractBaseFilter extends AbstractBaseFilter {
 declare global {
   namespace AbstractBaseFilter {
     type AnyConstructor = typeof AnyAbstractBaseFilter;
-
-    type FragmentShader = AbstractBaseShader.FragmentShader | undefined;
   }
 
   /**
@@ -27,7 +23,7 @@ declare global {
      * The fragment shader which renders this filter.
      * @defaultValue `undefined`
      */
-    static fragmentShader: AbstractBaseFilter.FragmentShader;
+    static fragmentShader: AbstractBaseShader.FragmentShaderFunction | string | undefined;
 
     /**
      * The vertex shader which renders this filter.
@@ -40,12 +36,12 @@ declare global {
      * @param initialUniforms - Initial uniform values which override filter defaults
      * @returns The constructed AbstractFilter[sic] instance.
      */
-    static create<ThisType extends AbstractBaseFilter>(
-      this: ConstructorOf<ThisType>,
+    static create<ThisType extends AbstractBaseFilter.AnyConstructor>(
+      this: ThisType,
       /**
        * @defaultValue `{}`
        */
       initialUniforms?: AbstractBaseShader.Uniforms,
-    ): ThisType;
+    ): InstanceType<ThisType>;
   }
 }

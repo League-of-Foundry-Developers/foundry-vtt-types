@@ -1,6 +1,19 @@
 import type { InexactPartial } from "../../../../../../types/utils.d.mts";
 
+export {};
+
+declare abstract class AnyWeatherShaderEffect extends WeatherShaderEffect {
+  constructor(arg0: never, ...args: never[]);
+}
+
 declare global {
+  namespace WeatherShaderEffect {
+    type AnyConstructor = typeof AnyWeatherShaderEffect;
+
+    //todo: make sure this works since ["shader"] is an instance type
+    type WeatherShaderEffectConfig = InexactPartial<AbstractBaseShader.Uniforms & WeatherShaderEffect["shader"]>;
+  }
+
   /**
    * An interface for defining shader-based weather effects
    */
@@ -31,9 +44,4 @@ declare global {
      */
     protected _initialize(config: WeatherShaderEffect.WeatherShaderEffectConfig): void;
   }
-
-  namespace WeatherShaderEffect {
-    type WeatherShaderEffectConfig = InexactPartial<AbstractBaseShader.Uniforms & WeatherShaderEffect["shader"]>;
-  }
 }
-

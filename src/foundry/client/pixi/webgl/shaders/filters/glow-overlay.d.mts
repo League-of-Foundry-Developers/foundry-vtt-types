@@ -1,4 +1,3 @@
-import type { ConstructorOf } from "../../../../../../types/utils.d.mts";
 
 export {};
 
@@ -62,10 +61,10 @@ declare global {
 
     static override vertexShader: string;
 
-    static override create<ThisType extends AbstractBaseFilter>(
-      this: ConstructorOf<ThisType>,
+    static override create<ThisType extends AbstractBaseFilter.AnyConstructor>(
+      this: ThisType,
       initialUniforms?: AbstractBaseShader.Uniforms,
-    ): ThisType;
+    ): InstanceType<ThisType>;
 
     override apply(
       filterManager: PIXI.FilterSystem,

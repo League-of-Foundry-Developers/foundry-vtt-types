@@ -1,6 +1,20 @@
 export {};
 
+declare abstract class AnyFogShader extends FogShader {
+  constructor(arg0: never, ...args: never[]);
+}
+
 declare global {
+  namespace FogShader {
+    type AnyConstructor = typeof AnyFogShader;
+
+    interface DefaultUniforms {
+      intensity: number;
+      rotation: number;
+      slope: number;
+    }
+  }
+
   /**
    * Fog shader effect.
    */

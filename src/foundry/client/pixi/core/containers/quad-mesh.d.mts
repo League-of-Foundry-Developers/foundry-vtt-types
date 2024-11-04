@@ -14,7 +14,7 @@ declare global {
     /**
      * The shader bound to this mesh.
      */
-    get shader(): BaseSamplerShader;
+    get shader(): AbstractBaseShader;
 
     /**
      * Assigned blend mode to this mesh.

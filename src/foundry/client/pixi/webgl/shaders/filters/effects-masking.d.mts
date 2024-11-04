@@ -1,4 +1,4 @@
-import type { AnyObject, ConstructorOf, ShapeWithIndexSignature } from "../../../../../../types/utils.d.mts";
+import type { AnyObject,  ShapeWithIndexSignature } from "../../../../../../types/utils.d.mts";
 
 export {};
 
@@ -27,8 +27,8 @@ declare global {
    * This filter handles masking and post-processing for visual effects.
    */
   class VisualEffectsMaskingFilter extends AbstractBaseMaskFilter {
-    static override create<ThisType extends AbstractBaseMaskFilter, T extends AnyObject>(
-      this: ConstructorOf<ThisType>,
+    static override create<ThisType extends AbstractBaseFilter.AnyConstructor, T extends AnyObject>(
+      this: ThisType,
       {
         postProcessModes,
         ...initialUniforms
@@ -38,7 +38,7 @@ declare global {
         string,
         AbstractBaseShader.UniformValue
       >,
-    ): ThisType;
+    ): InstanceType<ThisType>;
 
     /**
      * Masking modes.

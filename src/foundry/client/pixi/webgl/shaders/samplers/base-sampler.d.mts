@@ -1,4 +1,4 @@
-import type { EmptyObject, InexactPartial, Mixin } from "../../../../../../types/utils.d.mts";
+import type { InexactPartial, Mixin } from "../../../../../../types/utils.d.mts";
 
 export {};
 
@@ -20,7 +20,7 @@ declare class BatchPlugin<BaseSamplerShaderClass extends BaseSamplerShader.AnyCo
 interface BatchPluginStatic<BaseSamplerShaderClass extends BaseSamplerShader.AnyConstructor> {
   shaderGeneratorClass: BaseSamplerShaderClass["batchShaderGeneratorClass"];
   defaultVertexSrc: BaseSamplerShaderClass["batchVertexShader"];
-  defaultFragmentTemplate: BaseSamplerShaderClass["batchDefaultUniforms"]
+  defaultFragmentTemplate: BaseSamplerShaderClass["batchDefaultUniforms"];
 }
 
 declare class BatchGeometry extends PIXI.Geometry {
@@ -108,7 +108,7 @@ declare global {
 
     static override vertexShader: string;
 
-    static override fragmentShader: AbstractBaseShader.FragmentShader;
+    static override fragmentShader: string;
 
     /**
      * Batch default vertex
@@ -157,7 +157,7 @@ declare global {
      * A function that returns default uniforms associated with the batched version of this sampler.
      * @defaultValue `{}`
      */
-    static batchDefaultUniforms: BatchRenderer.BatchDefaultUniformsFunction | EmptyObject;
+    static batchDefaultUniforms: BatchRenderer.BatchDefaultUniformsFunction | AbstractBaseShader.Uniforms;
 
     /**
      * The number of reserved texture units for this shader that cannot be used by the batch renderer.
@@ -203,6 +203,6 @@ declare global {
       }>,
     ): void;
 
-    protected override _preRender(mesh: PIXI.DisplayObject, renderer: PIXI.Renderer): void;
+    protected override _preRender: AbstractBaseShader.PreRenderFunction;
   }
 }

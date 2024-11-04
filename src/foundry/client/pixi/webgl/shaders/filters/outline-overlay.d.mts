@@ -1,4 +1,3 @@
-import type { ConstructorOf } from "../../../../../../types/utils.d.mts";
 
 export {};
 
@@ -61,10 +60,10 @@ declare global {
 
     set thickness(value);
 
-    static override create<ThisType extends AbstractBaseFilter>(
-      this: ConstructorOf<ThisType>,
+    static override create<ThisType extends AbstractBaseFilter.AnyConstructor>(
+      this: ThisType,
       initialUniforms?: AbstractBaseShader.Uniforms,
-    ): ThisType;
+    ): InstanceType<ThisType>;
 
     override apply(
       filterManager: PIXI.FilterSystem,

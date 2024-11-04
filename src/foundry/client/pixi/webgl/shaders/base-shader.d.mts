@@ -1,5 +1,4 @@
 import type { ToMethod } from "../../../../../types/helperTypes.d.mts";
-import type { ConstructorOf } from "../../../../../types/utils.d.mts";
 
 export {};
 
@@ -20,11 +19,9 @@ declare global {
 
     type Uniforms = Record<string, AbstractBaseShader.UniformValue>;
 
-    type FragmentShader = string | AbstractBaseShader.FragmentShaderFunction;
-
     type FragmentShaderFunction = ToMethod<(arg0: never) => string>;
 
-    type PreRenderFunction = ToMethod<(mesh: PIXI.DisplayObject, renderer: PIXI.Renderer)=> void>
+    type PreRenderFunction = ToMethod<(mesh: PIXI.DisplayObject, renderer: PIXI.Renderer) => void>;
   }
 
   /**
@@ -45,7 +42,7 @@ declare global {
      * A subclass of AbstractBaseShader must implement the fragmentShader static field.
      * @defaultValue `""`
      */
-    static fragmentShader: string;
+    static fragmentShader: string | AbstractBaseShader.FragmentShaderFunction;
 
     /**
      * The default uniform values for the shader.
@@ -58,15 +55,15 @@ declare global {
      * The initial values of the shader uniforms.
      * @remarks Set during construction
      */
-    initialUniforms: AbstractBaseShader.FragmentShader;
+    initialUniforms: AbstractBaseShader.Uniforms;
 
     /**
      * A factory method for creating the shader using its defined default values
      */
-    static create<ThisType extends AbstractBaseShader>(
-      this: ConstructorOf<ThisType>,
+    static create<ThisType extends AbstractBaseShader.AnyConstructor>(
+      this: ThisType,
       initialUniforms: AbstractBaseShader.Uniforms,
-    ): ThisType;
+    ): InstanceType<ThisType>;
 
     /**
      * Reset the shader uniforms back to their initial values.

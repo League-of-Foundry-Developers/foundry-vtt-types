@@ -1,6 +1,14 @@
 export {};
 
+declare abstract class AnyRainShader extends RainShader {
+  constructor(arg0: never, ...args: never[]);
+}
+
 declare global {
+  namespace RainShader {
+    type AnyConstructor = typeof AnyRainShader;
+  }
+
   /**
    * Rain shader effect.
    */
@@ -19,6 +27,6 @@ declare global {
      */
     static override defaultUniforms: AbstractBaseShader.Uniforms;
 
-    static override fragmentShader: AbstractBaseShader.FragmentShader;
+    static override fragmentShader: string;
   }
 }

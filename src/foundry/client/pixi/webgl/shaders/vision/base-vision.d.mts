@@ -1,6 +1,14 @@
 export {};
 
+declare abstract class AnyAdaptiveVisionShader extends AdaptiveVisionShader {
+  constructor(arg0: never, ...args: never[]);
+}
+
 declare global {
+  namespace AdaptiveVisionShader {
+    type AnyConstructor = typeof AnyAdaptiveVisionShader;
+  }
+
   /**
    * This class defines an interface which all adaptive vision shaders extend.
    */
@@ -18,6 +26,6 @@ declare global {
     /**
      * A mapping of available shader techniques
      */
-    static override SHADER_TECHNIQUES: AdaptiveLightingShader.ShaderTechniques;
+    static override SHADER_TECHNIQUES: Record<string, AdaptiveLightingShader.ShaderTechnique>;
   }
 }

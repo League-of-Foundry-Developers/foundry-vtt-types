@@ -26,7 +26,7 @@ declare global {
      */
     static override classPluginName: string | null;
 
-    static override fragmentShader: AbstractBaseShader.FragmentShader;
+    static override fragmentShader: string;
 
     /**
      * @defaultValue
@@ -73,7 +73,7 @@ declare global {
 
     static override vertexShader: string;
 
-    static override fragmentShader: AbstractBaseShader.FragmentShader;
+    static override fragmentShader: string;
 
     /**
      * @defaultValue

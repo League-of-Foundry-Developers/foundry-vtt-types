@@ -28,20 +28,6 @@ declare global {
       /** The background shader fragment when the technique is used */
       background?: string | undefined;
     }
-
-    interface ShaderTechniques extends Record<string, ShaderTechnique> {
-      LEGACY: ShaderTechnique;
-      LUMINANCE: ShaderTechnique;
-      INTERNAL_HALO: ShaderTechnique;
-      EXTERNAL_HALO: ShaderTechnique;
-      COLOR_BURN: ShaderTechnique;
-      INTERNAL_BURN: ShaderTechnique;
-      EXTERNAL_BURN: ShaderTechnique;
-      LOW_ABSORPTION: ShaderTechnique;
-      HIGH_ABSORPTION: ShaderTechnique;
-      INVERT_ABSORPTION: ShaderTechnique;
-      NATURAL_LIGHT: ShaderTechnique;
-    }
   }
 
   /**
@@ -176,7 +162,7 @@ declare global {
     /**
      * A mapping of available coloration techniques
      */
-    static SHADER_TECHNIQUES: AdaptiveLightingShader.ShaderTechniques;
+    static SHADER_TECHNIQUES: Record<string, AdaptiveLightingShader.ShaderTechnique>
 
     /**
      * Determine the correct penalty to apply for a given darkness level and luminosity

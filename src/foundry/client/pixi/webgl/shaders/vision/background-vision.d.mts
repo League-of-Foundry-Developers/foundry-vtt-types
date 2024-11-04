@@ -1,6 +1,14 @@
 export {};
 
+declare abstract class AnyBackgroundVisionShader extends BackgroundVisionShader {
+  constructor(arg0: never, ...args: never[]);
+}
+
 declare global {
+  namespace BackgroundVisionShader {
+    type AnyConstructor = typeof AnyBackgroundVisionShader;
+  }
+
   /**
    * The default background shader used for vision sources
    */
@@ -21,7 +29,7 @@ declare global {
      */
     static SHADER_HEADER: string;
 
-    static override fragmentShader: AbstractBaseShader.FragmentShader;
+    static override fragmentShader: string;
 
     static override defaultUniforms: AbstractBaseShader.Uniforms;
 

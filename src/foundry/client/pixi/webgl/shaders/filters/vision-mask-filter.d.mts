@@ -1,5 +1,3 @@
-import type { ConstructorOf } from "../../../../../../types/utils.d.mts";
-
 export {};
 
 declare abstract class AnyVisionMaskFilter extends VisionMaskFilter {
@@ -24,7 +22,9 @@ declare global {
      */
     static override defaultUniforms: AbstractBaseShader.Uniforms;
 
-    static override create<ThisType extends AbstractBaseMaskFilter>(this: ConstructorOf<ThisType>): ThisType;
+    static override create<ThisType extends AbstractBaseFilter.AnyConstructor>(
+      this: ThisType,
+    ): InstanceType<ThisType>;
 
     /**
      * @remarks This is set as a property all the way up in PIXI.Filter, however Foundry has it

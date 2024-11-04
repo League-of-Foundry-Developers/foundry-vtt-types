@@ -1,6 +1,14 @@
 export {};
 
+declare abstract class AnyIlluminationVisionShader extends IlluminationVisionShader {
+  constructor(arg0: never, ...args: never[]);
+}
+
 declare global {
+  namespace IlluminationVisionShader {
+    type AnyConstructor = typeof AnyIlluminationVisionShader;
+  }
+
   /**
    * The default illumination shader used for vision sources
    */
@@ -21,7 +29,7 @@ declare global {
      */
     static SHADER_HEADER: string;
 
-    static override fragmentShader: AbstractBaseShader.FragmentShader;
+    static override fragmentShader: string;
 
     static override defaultUniforms: AbstractBaseShader.Uniforms;
   }
