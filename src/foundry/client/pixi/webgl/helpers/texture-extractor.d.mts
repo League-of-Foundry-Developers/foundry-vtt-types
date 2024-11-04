@@ -42,6 +42,10 @@ declare global {
       /** The optional debug flag to use. */
       debug: boolean;
     }
+    interface COMPRESSION_MODES {
+      readonly NONE: 0;
+      readonly BASE64: 1;
+    }
   }
 
   /**
@@ -56,11 +60,7 @@ declare global {
     /**
      * List of compression that could be applied with extraction
      */
-    static COMPRESSION_MODES: {
-      readonly NONE: 0;
-      readonly BASE64: 1;
-      [compressionMode: string]: number;
-    };
+    static COMPRESSION_MODES: TextureExtractor.COMPRESSION_MODES;
 
     /**
      * Debug flag.

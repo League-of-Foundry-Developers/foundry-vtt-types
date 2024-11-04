@@ -15,7 +15,7 @@ declare global {
   class HighlightRegionShader extends RegionShader {
     static override vertexShader: string;
 
-    static override fragmentShader: AbstractBaseShader.FragmentShader;
+    static override fragmentShader: string;
 
     /**
      * @defaultValue
@@ -30,6 +30,6 @@ declare global {
      */
     static override defaultUniforms: AbstractBaseShader.Uniforms;
 
-    protected override _preRender(mesh: PIXI.DisplayObject, renderer: PIXI.Renderer): void;
+    protected override _preRender: AbstractBaseShader.PreRenderFunction;
   }
 }
