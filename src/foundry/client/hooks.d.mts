@@ -4,10 +4,11 @@ import type Document from "../common/abstract/document.d.mts";
 import type { EffectChangeData } from "../common/documents/_types.d.mts";
 import type { ProseMirrorDropDown } from "../common/prosemirror/menu.d.mts";
 import type { DropData } from "./data/abstract/client-document.d.mts";
-import type { OccludableObject } from "./pixi/placeables/primary-canvas-objects/occludable-object.d.mts";
 
 // eslint-disable-next-line import/no-named-as-default
 import type ProseMirrorMenu from "../common/prosemirror/menu.d.mts";
+import type PointVisionSource from "../client-esm/canvas/sources/point-vision-source.d.mts";
+import type RenderedEffectSource from "../client-esm/canvas/sources/rendered-effect-source.d.mts";
 
 declare global {
   /**
@@ -440,7 +441,7 @@ declare global {
        * @param sources - The collection of current vision sources
        * @remarks This is called by {@link Hooks.call}.
        */
-      initializeVisionSources: (sources: Collection<VisionSource>) => void;
+      initializeVisionSources: (sources: Collection<PointVisionSource.Any>) => void;
 
       /**
        * A hook event that fires when the LightingLayer is refreshed.
@@ -740,14 +741,6 @@ declare global {
         config: RollTableConfig,
         data: object,
       ) => boolean | void;
-
-      /** PrimaryCanvasObject */
-
-      /**
-       * A hook event that fires when the occlusion of an OccludableObject refreshed.
-       * @param object - The boject whose occlusion is refreshed
-       */
-      refreshOcclusion: (object: OccludableObject) => void;
 
       /** Specific implementations of GetEntryContext */
 
@@ -1055,12 +1048,12 @@ declare global {
 
     /**
      * A hook event that fires after RenderedPointSource shaders have initialized.
-     * @param source  - The RenderedPointSource being initialized.
+     * @param source - The RenderedEffectSource instance being initialized
      * @typeParam RPS - the type of the RenderedPointSource
      * @remarks The name for this hook is dynamically created by wrapping the type name of the shader in `initialize` and `Shaders`.
      * @remarks This is called by {@link Hooks.callAll}.
      */
-    type InitializeRenderedPointSourceShaders<RPS extends RenderedPointSource = RenderedPointSource> = (
+    type InitializeRenderedPointSourceShaders<RPS extends RenderedEffectSource.Any = RenderedEffectSource.Any> = (
       source: RPS,
     ) => void;
 

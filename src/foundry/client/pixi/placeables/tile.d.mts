@@ -137,7 +137,7 @@ declare global {
      */
     get aspectRatio(): number;
 
-    override get bounds(): Rectangle;
+    override get bounds(): PIXI.Rectangle;
 
     /**
      * The HTML source element for the primary Tile texture

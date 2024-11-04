@@ -1,3 +1,4 @@
+import type Sound from "../../../client-esm/audio/sound.d.mts";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
@@ -76,7 +77,7 @@ declare global {
      */
     get isAudible(): boolean;
 
-    override get bounds(): Rectangle;
+    override get bounds(): PIXI.Rectangle;
 
     /**
      * The named identified for the source object associated with this ambient sound

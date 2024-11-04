@@ -207,6 +207,8 @@ declare class RenderedEffectSource<
 }
 
 declare namespace RenderedEffectSource {
+  type Any = RenderedEffectSource<any, any, any>;
+
   interface RenderedEffectSourceData extends BaseEffectSource.BaseEffectSourceData {
     /**
      * An animation configuration for the source

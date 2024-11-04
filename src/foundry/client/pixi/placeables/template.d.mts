@@ -100,7 +100,7 @@ declare global {
       refreshText: RenderFlag<Partial<MeasuredTemplate.RenderFlags>>;
     };
 
-    override get bounds(): Rectangle;
+    override get bounds(): PIXI.Rectangle;
 
     /**
      * A convenience accessor for the border color as a numeric hex code

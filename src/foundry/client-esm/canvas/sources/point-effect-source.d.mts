@@ -59,11 +59,13 @@ declare class PointEffectSource {
  * TODO - documentation required about what a PointEffectSource is.
  * @privateRemarks the TODO is from foundry, update this class whenever the comments are done
  */
-declare function PointEffectSourceMixin<BaseClass extends typeof BaseEffectSource<any, any>>(
+declare function PointEffectSourceMixin<BaseClass extends BaseEffectSource.AnyConstructor>(
   Base: BaseClass,
 ): Mixin<typeof PointEffectSource, BaseClass>;
 
 declare namespace PointEffectSourceMixin {
+  type AnyMixed = ReturnType<typeof PointEffectSourceMixin<BaseEffectSource.AnyConstructor>>;
+
   interface PointEffectSourceData extends BaseEffectSource.BaseEffectSourceData {
     /**
      * The radius of the source

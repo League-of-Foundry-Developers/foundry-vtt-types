@@ -1,4 +1,5 @@
 import type { InexactPartial } from "../../../../types/utils.d.mts";
+import type Sound from "../../../client-esm/audio/sound.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 

@@ -1,48 +1,10 @@
-import type { ConstructorOf } from "../../../../../types/utils.d.mts";
+import type { ConstructorOf, InexactPartial } from "../../../../../types/utils.d.mts";
+import type PointEffectSourceMixin from "../../../../client-esm/canvas/sources/point-effect-source.d.mts";
 
 declare global {
-  interface PointSourcePolygonConfig {
+  interface PointSourcePolygonConfig extends PointSourcePolygon._Config {
     /** The type of polygon being computed */
-    type?: foundry.CONST.WALL_RESTRICTION_TYPES;
-
-    /** The angle of emission, if limited */
-    angle?: number;
-
-    /** The desired density of padding rays, a number per PI */
-    density?: number;
-
-    /** A limited radius of the resulting polygon */
-    radius?: number;
-
-    /** The direction of facing, required if the angle is limited */
-    rotation?: number;
-
-    /** Customize how wall direction of one-way walls is applied */
-    wallDirectionMode?: number;
-
-    /** Compute the polygon with threshold wall constraints applied */
-    useThreshold?: boolean;
-
-    /** Display debugging visualization and logging for the polygon */
-    debug?: boolean;
-
-    /** The object (if any) that spawned this polygon. */
-    source?: PointSource;
-
-    /** Limiting polygon boundary shapes */
-    boundaryShapes?: Array<PIXI.Rectangle | PIXI.Circle | PIXI.Polygon>;
-
-    /** Does this polygon use the Scene inner or outer bounding rectangle */
-    readonly useInnerBounds?: boolean;
-
-    /** Does this polygon have a limited radius? */
-    readonly hasLimitedRadius?: boolean;
-
-    /** Does this polygon have a limited angle? */
-    readonly hasLimitedAngle?: boolean;
-
-    /** The computed bounding box for the polygon */
-    readonly boundingBox?: PIXI.Rectangle;
+    type: PointSourcePolygon.PolygonType;
   }
 
   /**
@@ -125,26 +87,6 @@ declare global {
      * @param config - The provided configuration object
      */
     initialize(origin: Point, config: PointSourcePolygonConfig): void;
-
-    /**
-     * Get the super-set of walls which could potentially apply to this polygon.
-     * Define a custom collision test used by the Quadtree to obtain candidate Walls.
-     */
-    protected _getWalls(): Set<Wall>;
-
-    /**
-     * Test whether a wall should be included in the computed polygon for a given origin and type
-     * @param wall    - The Wall being considered
-     * @param bounds  - The overall bounding box
-     * @returns Should the wall be included?
-     */
-    protected _testWallInclusion(wall: Wall, bounds: PIXI.Rectangle): boolean;
-
-    /**
-     * Compute the aggregate bounding box which is the intersection of all boundary shapes.
-     * Round and pad the resulting rectangle by 1 pixel to ensure it always contains the origin.
-     */
-    protected _defineBoundingBox(): PIXI.Rectangle;
 
     /**
      * Apply a constraining boundary shape to an existing PointSourcePolygon.
@@ -238,6 +180,62 @@ declare global {
   }
 
   namespace PointSourcePolygon {
+    /** @internal */
+    type _Config = InexactPartial<{
+      /** The angle of emission, if limited */
+      angle: number;
+
+      /** The desired density of padding rays, a number per PI */
+      density: number;
+
+      /** A limited radius of the resulting polygon */
+      radius: number;
+
+      /** The direction of facing, required if the angle is limited */
+      rotation: number;
+
+      /** Customize how wall direction of one-way walls is applied */
+      wallDirectionMode: number;
+
+      /**
+       * Compute the polygon with threshold wall constraints applied
+       * @defaultValue `false`
+       */
+      useThreshold: boolean;
+
+      /**
+       * Include edges coming from darkness sources
+       * @defaultValue `false`
+       */
+      includeDarkness: boolean;
+
+      /** Priority when it comes to ignore edges from darkness sources */
+      priority: number;
+
+      /** Display debugging visualization and logging for the polygon */
+      debug: boolean;
+
+      /** The object (if any) that spawned this polygon. */
+      source: PointEffectSourceMixin.AnyMixed;
+
+      /** Limiting polygon boundary shapes */
+      boundaryShapes: Array<PIXI.Rectangle | PIXI.Circle | PIXI.Polygon>;
+
+      /** Does this polygon use the Scene inner or outer bounding rectangle */
+      readonly useInnerBounds: boolean;
+
+      /** Does this polygon have a limited radius? */
+      readonly hasLimitedRadius: boolean;
+
+      /** Does this polygon have a limited angle? */
+      readonly hasLimitedAngle: boolean;
+
+      /** The computed bounding box for the polygon */
+      readonly boundingBox: PIXI.Rectangle;
+    }>;
+
+    type PolygonType = "light" | "sight" | "sound" | "move" | "universal";
+
     type CollisionModes = "any" | "all" | "closest";
 
     interface CollisionTypes {

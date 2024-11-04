@@ -1,4 +1,4 @@
-export {};
+import type { DisplayObject } from "pixi.js";
 
 declare global {
   /**
@@ -10,6 +10,17 @@ declare global {
      * @defaultValue `null`
      */
     exploration: FogExploration | null;
+
+    /**
+     * Track whether we have pending fog updates which have not yet been saved to the database
+     * @defaultValue `false`
+     */
+    _updated: boolean;
+
+    /**
+     * Texture extractor
+     */
+    get extractor(): TextureExtractor;
 
     /**
      * Define the number of fog refresh needed before the fog texture is extracted and pushed to the server.
@@ -35,6 +46,11 @@ declare global {
      * Does the currently viewed Scene support fog of war exploration?
      */
     get fogExploration(): boolean;
+
+    /**
+     * Create the exploration display object with or without a provided texture.
+     */
+    protected _createExplorationObject(tex?: PIXI.Texture | PIXI.RenderTexture): DisplayObject
 
     /**
      * Initialize fog of war - resetting it when switching scenes or re-drawing the canvas
@@ -68,6 +84,18 @@ declare global {
      * Note: if a save operation is pending, we're waiting for its conclusion.
      */
     save(): Promise<void>;
+
+    /**
+     * Extract fog data as a base64 string
+     */
+    protected _extractBase64(): Promise<string>;
+
+    /**
+     * Prepare the data that will be used to update the FogExploration document.
+     * @param base64Image - The extracted base64 image data
+     * @returns Exploration data to update
+     */
+    protected _prepareFogUpdateData(base64Image: string): foundry.documents.BaseFogExploration.UpdateData;
 
     /**
      * If fog of war data is reset from the server, deactivate the current fog and initialize the exploration.
