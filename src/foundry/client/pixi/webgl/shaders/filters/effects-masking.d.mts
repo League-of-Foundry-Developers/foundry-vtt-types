@@ -16,6 +16,12 @@ declare global {
       postProcessModes?: PostProcessModes | undefined;
     }
 
+    interface FILTER_MODES {
+      readonly BACKGROUND: 0;
+      readonly ILLUMINATION: 1;
+      readonly COLORATION: 2;
+    }
+
     interface POST_PROCESS_TECHNIQUES {
       EXPOSURE: { id: string; glsl: string };
       CONTRAST: { id: string; glsl: string };
@@ -43,11 +49,7 @@ declare global {
     /**
      * Masking modes.
      */
-    static readonly FILTER_MODES: {
-      BACKGROUND: 0;
-      ILLUMINATION: 1;
-      COLORATION: 2;
-    };
+    static readonly FILTER_MODES: VisualEffectsMaskingFilter.FILTER_MODES
 
     /**
      * @defaultValue

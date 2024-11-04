@@ -1,3 +1,5 @@
+import type { ValueOf } from "../../../../types/utils.d.mts";
+
 export {};
 
 // TODO: Remove after layer is defined by #2841
@@ -147,7 +149,7 @@ declare global {
      * @param uniforms            - The uniforms to update.
      */
     activatePostProcessingFilters(
-      filterMode: VisualEffectsMaskingFilter.FilterMode,
+      filterMode: ValueOf<VisualEffectsMaskingFilter.FILTER_MODES>,
       postProcessingModes: VisualEffectsMaskingFilter.PostProcessModes,
       uniforms: AbstractBaseShader.Uniforms,
     ): void;
