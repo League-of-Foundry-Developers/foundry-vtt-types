@@ -30,7 +30,7 @@ declare global {
      */
     static SHADER_HEADER: string;
 
-    static override fragmentShader: AbstractBaseShader.FragmentShader;
+    static override fragmentShader: string;
 
     /**
      * @defaultValue
