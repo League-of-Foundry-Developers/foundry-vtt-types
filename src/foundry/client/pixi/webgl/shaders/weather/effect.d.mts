@@ -10,7 +10,6 @@ declare global {
   namespace WeatherShaderEffect {
     type AnyConstructor = typeof AnyWeatherShaderEffect;
 
-    //todo: make sure this works since ["shader"] is an instance type
     type WeatherShaderEffectConfig = InexactPartial<AbstractBaseShader.Uniforms & WeatherShaderEffect["shader"]>;
   }
 

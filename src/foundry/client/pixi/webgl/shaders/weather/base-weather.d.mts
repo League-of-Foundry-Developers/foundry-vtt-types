@@ -1,4 +1,5 @@
-import type { AnyObject } from "../../../../../../types/utils.d.mts";
+import type { InterfaceToObject } from "../../../../../../types/helperTypes.d.mts";
+import type { AnyObject, RemoveIndexSignatures } from "../../../../../../types/utils.d.mts";
 
 export {};
 
@@ -9,18 +10,24 @@ declare abstract class AnyAbstractWeatherShader extends AbstractWeatherShader {
 type AbstractBaseShaderClass = typeof AbstractBaseShader;
 
 interface InternalAbstractWeatherShader_Interface extends AbstractBaseShaderClass {
-  new <Uniforms extends object>(
+  new <_ComputedUniforms extends object>(
     ...args: ConstructorParameters<typeof AbstractBaseShader>
-  ): AbstractBaseShader & Uniforms;
+  ): AbstractBaseShader & _ComputedUniforms;
 }
 
 declare const InternalAbstractWeatherShader_Const: InternalAbstractWeatherShader_Interface;
+
+// @ts-expect-error - This pattern inherently requires a ts-expect-error as the base class is dynamic.
+class InternalAbstractWeatherShader<
+  DefaultUniforms extends AnyObject,
+  _ComputedUniforms extends object = RemoveIndexSignatures<Extract<DefaultUniforms, AnyObject>>,
+> extends InternalAbstractWeatherShader_Const<_ComputedUniforms> {}
 
 declare global {
   namespace AbstractWeatherShader {
     type AnyConstructor = typeof AnyAbstractWeatherShader;
 
-    interface commonUniforms {
+    interface CommonUniforms {
       terrainUvMatrix: PIXI.Matrix;
       useOcclusion: boolean;
       occlusionTexture: PIXI.Matrix | null;
@@ -37,14 +44,17 @@ declare global {
       depthElevation: number;
       time: number;
     }
+
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    interface DefaultUniforms {}
   }
 
   /**
    * The base shader class for weather shaders.
    */
   class AbstractWeatherShader<
-    DefaultUniforms extends AbstractBaseShader.Uniforms = AbstractBaseShader.Uniforms,
-  > extends InternalAbstractWeatherShader_Const<Extract<DefaultUniforms, AnyObject>> {
+    DefaultUniforms extends AnyObject = InterfaceToObject<AbstractWeatherShader.DefaultUniforms>,
+  > extends InternalAbstractWeatherShader<DefaultUniforms> {
     constructor(...args: ConstructorParameters<typeof AbstractBaseShader>);
 
     /**
@@ -57,7 +67,7 @@ declare global {
      */
     static FRAGMENT_HEADER: string;
 
-    static commonUniforms: AbstractWeatherShader.commonUniforms;
+    static commonUniforms: AbstractWeatherShader.CommonUniforms;
 
     /**
      * Default uniforms for a specific class

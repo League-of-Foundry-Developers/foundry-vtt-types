@@ -1,3 +1,5 @@
+import type { InterfaceToObject } from "../../../../../../types/helperTypes.d.mts";
+
 export {};
 
 declare abstract class AnyFogShader extends FogShader {
@@ -8,7 +10,7 @@ declare global {
   namespace FogShader {
     type AnyConstructor = typeof AnyFogShader;
 
-    interface DefaultUniforms {
+    interface DefaultUniforms extends AbstractBaseShader.Uniforms {
       intensity: number;
       rotation: number;
       slope: number;
@@ -18,7 +20,9 @@ declare global {
   /**
    * Fog shader effect.
    */
-  class FogShader extends AbstractWeatherShader {
+  class FogShader<
+    DefaultUniforms extends FogShader.DefaultUniforms = FogShader.DefaultUniforms,
+  > extends AbstractWeatherShader<InterfaceToObject<DefaultUniforms>> {
     /**
      * @defaultValue
      * ```js
@@ -29,7 +33,7 @@ declare global {
      * }
      * ```
      */
-    static override defaultUniforms: AbstractBaseShader.Uniforms;
+    static override defaultUniforms: FogShader.DefaultUniforms;
 
     /**
      * Configure the number of octaves into the shaders.

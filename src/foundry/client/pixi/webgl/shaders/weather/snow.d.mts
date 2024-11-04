@@ -1,3 +1,5 @@
+import type { InterfaceToObject } from "../../../../../../types/helperTypes.d.mts";
+
 export {};
 
 declare abstract class AnySnowShader extends SnowShader {
@@ -7,12 +9,18 @@ declare abstract class AnySnowShader extends SnowShader {
 declare global {
   namespace SnowShader {
     type AnyConstructor = typeof AnySnowShader;
+
+    interface DefaultUniforms extends AbstractBaseShader.Uniforms {
+      direction: number;
+    }
   }
 
   /**
    * Snow shader effect.
    */
-  class SnowShader extends AbstractWeatherShader {
+  class SnowShader<
+    DefaultUniforms extends SnowShader.DefaultUniforms = SnowShader.DefaultUniforms,
+  > extends AbstractWeatherShader<InterfaceToObject<DefaultUniforms>> {
     /**
      * @defaultValue
      * ```
@@ -21,7 +29,7 @@ declare global {
      * }
      * ```
      */
-    static override defaultUniforms: AbstractBaseShader.Uniforms;
+    static override defaultUniforms: SnowShader.DefaultUniforms;
 
     static override fragmentShader: string;
   }

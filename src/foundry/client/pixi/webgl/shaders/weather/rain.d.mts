@@ -1,3 +1,5 @@
+import type { InterfaceToObject } from "../../../../../../types/helperTypes.d.mts";
+
 export {};
 
 declare abstract class AnyRainShader extends RainShader {
@@ -7,12 +9,22 @@ declare abstract class AnyRainShader extends RainShader {
 declare global {
   namespace RainShader {
     type AnyConstructor = typeof AnyRainShader;
+
+    interface DefaultUniforms extends AbstractBaseShader.Uniforms {
+      opacity: number;
+      intensity: number;
+      strength: number;
+      rotation: number;
+      resolution: [number, number];
+    }
   }
 
   /**
    * Rain shader effect.
    */
-  class RainShader extends AbstractWeatherShader {
+  class RainShader<
+    DefaultUniforms extends RainShader.DefaultUniforms = RainShader.DefaultUniforms,
+  > extends AbstractWeatherShader<InterfaceToObject<DefaultUniforms>> {
     /**
      * @defaultValue
      * ```js
@@ -25,7 +37,7 @@ declare global {
      * }
      * ```
      */
-    static override defaultUniforms: AbstractBaseShader.Uniforms;
+    static override defaultUniforms: RainShader.DefaultUniforms;
 
     static override fragmentShader: string;
   }
