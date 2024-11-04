@@ -26,13 +26,13 @@ declare global {
      */
     static override forceDefaultColor: boolean;
 
-    static override fragmentShader: AbstractBaseShader.FragmentShader;
+    static override fragmentShader: string;
   }
 
   /**
    * Vortex animation coloration shader
    */
   class VortexIlluminationShader extends AdaptiveIlluminationShader {
-    static override fragmentShader: AbstractBaseShader.FragmentShader;
+    static override fragmentShader: string;
   }
 }

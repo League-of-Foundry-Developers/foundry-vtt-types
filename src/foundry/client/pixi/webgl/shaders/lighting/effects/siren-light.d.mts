@@ -21,7 +21,7 @@ declare global {
    * Siren light animation coloration shader
    */
   class SirenColorationShader extends AdaptiveColorationShader {
-    static override fragmentShader: AbstractBaseShader.FragmentShader;
+    static override fragmentShader: string;
 
     /**
      * @defaultValue
@@ -43,7 +43,7 @@ declare global {
    * Siren light animation illumination shader
    */
   class SirenIlluminationShader extends AdaptiveIlluminationShader {
-    static override fragmentShader: AbstractBaseShader.FragmentShader;
+    static override fragmentShader: string;
 
     /**
      * @defaultValue

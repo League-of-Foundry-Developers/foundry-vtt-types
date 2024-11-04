@@ -21,13 +21,13 @@ declare global {
    * Wave animation illumination shader
    */
   class WaveIlluminationShader extends AdaptiveIlluminationShader {
-    static override fragmentShader: AbstractBaseShader.FragmentShader;
+    static override fragmentShader: string;
   }
 
   /**
    * Wave animation coloration shader
    */
   class WaveColorationShader extends AdaptiveColorationShader {
-    static override fragmentShader: AbstractBaseShader.FragmentShader;
+    static override fragmentShader: string;
   }
 }

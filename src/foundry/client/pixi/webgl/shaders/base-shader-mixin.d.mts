@@ -1,10 +1,11 @@
 import type { Mixin } from "../../../../../types/utils.d.mts";
 
 export {};
-/**
- * @remarks Naming this class simply `BaseShaderMixin` really does break things
- */
-declare class BaseShaderMixinClass {
+declare abstract class AnyBaseShader extends BaseShader {
+  constructor(arg0: never, ...args: never[]);
+}
+
+declare class BaseShader {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
   constructor(...args: any[]);
 
@@ -109,7 +110,10 @@ declare class BaseShaderMixinClass {
 }
 
 declare global {
+  namespace BaseShader {
+    type AnyConstructor = typeof AnyBaseShader;
+  }
   function BaseShaderMixin<BaseClass extends PIXI.Shader.AnyConstructor | PIXI.Filter.AnyConstructor>(
     ShaderClass: BaseClass,
-  ): Mixin<typeof BaseShaderMixinClass, BaseClass>;
+  ): Mixin<typeof BaseShader, BaseClass>;
 }

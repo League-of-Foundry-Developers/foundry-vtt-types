@@ -2,8 +2,11 @@ import type { AnyObject, Mixin, ShapeWithIndexSignature } from "../../../../../t
 
 export {};
 
-/** @remarks Class name adjusted to avoid name collision with function */
-declare class AdaptiveFragmentChannelMixinClass {
+declare abstract class AnyAdaptiveFragmentChannel extends AdaptiveFragmentChannel {
+  constructor(arg0: never, ...args: never[]);
+}
+
+declare class AdaptiveFragmentChannel {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
   constructor(...args: any[]);
 
@@ -38,13 +41,16 @@ declare class AdaptiveFragmentChannelMixinClass {
 
 declare global {
   namespace AdaptiveFragmentChannel {
+    type AnyConstructor = typeof AnyAdaptiveFragmentChannel;
+
     type Channel = "r" | "g" | "b";
 
     interface ConcreteCreateOptions {
       channel: AdaptiveFragmentChannel.Channel | undefined;
     }
   }
+
   function AdaptiveFragmentChannelMixin<BaseClass extends PIXI.Shader.AnyConstructor | PIXI.Filter.AnyConstructor>(
     ShaderClass: BaseClass,
-  ): Mixin<typeof AdaptiveFragmentChannelMixinClass, BaseClass>;
+  ): Mixin<typeof AdaptiveFragmentChannel, BaseClass>;
 }

@@ -12,6 +12,6 @@ declare global {
    * Roiling mass illumination shader - intended primarily for darkness
    */
   class RoilingDarknessShader extends AdaptiveIlluminationShader {
-    static override fragmentShader: AbstractBaseShader.FragmentShader;
+    static override fragmentShader: string;
   }
 }
