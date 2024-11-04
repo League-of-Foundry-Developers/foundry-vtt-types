@@ -38,6 +38,19 @@ declare global {
 
     /** Activating this flag resets these flags to false */
     reset?: Array<Partial<keyof Flags>> | undefined;
+
+    /**
+     * Is this flag deprecated? The deprecation options are passed to
+     * logCompatibilityWarning. The deprectation message is auto-generated
+     * unless message is passed with the options.
+     * By default the message is logged only once.
+     */
+    deprecated?: {
+      message: string;
+      since: number;
+      until: number;
+      alias?: boolean;
+    };
   }
 
   namespace RenderFlag {
@@ -94,7 +107,7 @@ declare global {
   /**
    * Add RenderFlags functionality to some other object.
    * This mixin standardizes the interface for such functionality.
-   * @param Base - The base class being mixed
+   * @param Base - The base class being mixed. Normally a PIXI.DisplayObject
    * @returns The mixed class definition
    */
   function RenderFlagsMixin<BaseClass extends AnyConstructor>(
