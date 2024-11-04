@@ -6,35 +6,35 @@ declare global {
    * There are three phases of events: hover, click, and drag
    *
    * Hover Events:
-   * _handleMouseOver
+   * _handlePointerOver
    *  action: hoverIn
-   * _handleMouseOut
+   * _handlePointerOut
    *  action: hoverOut
    *
    * Left Click and Double-Click
-   * _handleMouseDown
+   * _handlePointerDown
    *  action: clickLeft
    *  action: clickLeft2
+   *  action: unclickLeft
    *
    * Right Click and Double-Click
    * _handleRightDown
    *  action: clickRight
    *  action: clickRight2
+   *  action: unclickRight
    *
    * Drag and Drop
-   * _handleMouseMove
+   * _handlePointerMove
    *  action: dragLeftStart
    *  action: dragRightStart
    *  action: dragLeftMove
    *  action: dragRightMove
-   * _handleMouseUp
+   * _handlePointerUp
    *  action: dragLeftDrop
    *  action: dragRightDrop
    * _handleDragCancel
    *  action: dragLeftCancel
    *  action: dragRightCancel
-   *
-   * @typeParam Object - The concrete {@link PIXI.Container} object that for which mouse interactions are being managed
    */
   class MouseInteractionManager<Object extends PIXI.Container = PIXI.Container> {
     /**
@@ -117,29 +117,41 @@ declare global {
     /**
      * An optional ControlIcon instance for the object
      */
-    controlIcon: ControlIcon | undefined;
+    controlIcon: ControlIcon | null;
 
     /**
      * The view id pertaining to the PIXI Application.
      * If not provided, default to canvas.app.view.id
      */
-    viewId: ControlIcon;
+    viewId: string;
+
+    /**
+     * The client position of the last left/right-click.
+     */
+    lastClick: PIXI.Point;
 
     /**
      * Enumerate the states of a mouse interaction workflow.
      * 0: NONE - the object is inactive
      * 1: HOVER - the mouse is hovered over the object
      * 2: CLICKED - the object is clicked
-     * 3: DRAG - the object is being dragged
-     * 4: DROP - the object is being dropped
+     * 3: GRABBED - the object is grabbed
+     * 4: DRAG - the object is being dragged
+     * 5: DROP - the object is being dropped
      */
-    static INTERACTION_STATES: {
-      NONE: 0;
-      HOVER: 1;
-      CLICKED: 2;
-      DRAG: 3;
-      DROP: 4;
-    };
+    static INTERACTION_STATES: MouseInteractionManager.INTERACTION_STATES;
+
+    /**
+     * The maximum number of milliseconds between two clicks to be considered a double-click.
+     * @defaultValue `250`
+     */
+    static DOUBLE_CLICK_TIME_MS: number;
+
+    /**
+     * The maximum number of pixels between two clicks to be considered a double-click.
+     * @defaultValue `5`
+     */
+    static DOUBLE_CLICK_DISTANCE_PX: number;
 
     /**
      * The number of milliseconds of mouse click depression to consider it a long press.
@@ -152,6 +164,12 @@ declare global {
      * @defaultValue `null`
      */
     static longPressTimeout: number | null;
+
+    /**
+     * Emulate a pointermove event. Needs to be called when an object with the static event mode
+     * or any of its parents is transformed or its visibility is changed.
+     */
+    static emulateMoveEvent(): void;
 
     /**
      * Get the target.
@@ -189,12 +207,12 @@ declare global {
     /**
      * A reference to the possible interaction states which can be observed
      */
-    get states(): (typeof MouseInteractionManager)["INTERACTION_STATES"];
+    get states(): MouseInteractionManager.INTERACTION_STATES;
 
     /**
      * A reference to the possible interaction states which can be observed
      */
-    get handlerOutcomes(): ValueOf<MouseInteractionManager.HANDLER_OUTCOME>;
+    get handlerOutcomes(): MouseInteractionManager.HANDLER_OUTCOME;
 
     /**
      * A public method to handle directly an event into this manager, according to its type.
@@ -237,6 +255,15 @@ declare global {
 
       /** 2: ACCEPTED - the handler callback has been processed and is accepting further process */
       ACCEPTED: 2;
+    }
+
+    interface INTERACTION_STATES {
+      NONE: 0;
+      HOVER: 1;
+      CLICKED: 2;
+      GRABBED: 3;
+      DRAG: 4;
+      DROP: 5;
     }
 
     type PermissionAction =
