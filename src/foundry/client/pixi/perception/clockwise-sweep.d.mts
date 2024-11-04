@@ -1,7 +1,5 @@
 import type Edge from "../../../client-esm/canvas/edges/edge.d.mts";
 
-export {};
-
 declare global {
   type VertexMap = Map<number, foundry.canvas.edges.PolygonVertex>;
 
