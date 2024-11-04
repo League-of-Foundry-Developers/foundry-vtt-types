@@ -1,7 +1,5 @@
 import type { AnyObject,  ShapeWithIndexSignature } from "../../../../../../types/utils.d.mts";
 
-export {};
-
 declare abstract class AnyVisualEffectsMaskingFilter extends VisualEffectsMaskingFilter {
   constructor(arg0: never, ...args: never[]);
 }

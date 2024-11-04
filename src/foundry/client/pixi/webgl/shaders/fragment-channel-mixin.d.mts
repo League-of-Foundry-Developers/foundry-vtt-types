@@ -46,7 +46,7 @@ declare global {
     type Channel = "r" | "g" | "b";
 
     interface ConcreteCreateOptions {
-      channel: AdaptiveFragmentChannel.Channel | undefined;
+      channel?: AdaptiveFragmentChannel.Channel | undefined;
     }
   }
 
