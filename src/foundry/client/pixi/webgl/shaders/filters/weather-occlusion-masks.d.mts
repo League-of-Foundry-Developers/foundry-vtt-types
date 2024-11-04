@@ -22,7 +22,7 @@ declare global {
 
     static override vertexShader: string;
 
-    static override fragmentShader: AbstractBaseFilter.FragmentShader;
+    static override fragmentShader: string;
 
     /**
      * @defaultValue
@@ -50,6 +50,7 @@ declare global {
       input: PIXI.RenderTexture,
       output: PIXI.RenderTexture,
       clear: PIXI.CLEAR_MODES,
+      currentState: PIXI.FilterState,
     ): void;
   }
 }

@@ -13,6 +13,6 @@ declare global {
    * A minimalist filter (just used for blending)
    */
   class VoidFilter extends AbstractBaseFilter {
-    static override fragmentShader: AbstractBaseFilter.FragmentShader;
+    static override fragmentShader: string;
   }
 }

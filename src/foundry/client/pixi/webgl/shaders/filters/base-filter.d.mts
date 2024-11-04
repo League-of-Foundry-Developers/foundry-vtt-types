@@ -1,3 +1,5 @@
+import type { ConstructorOf } from "../../../../../../types/utils.d.mts";
+
 export {};
 
 declare abstract class AnyAbstractBaseFilter extends AbstractBaseFilter {
@@ -31,16 +33,19 @@ declare global {
      * The vertex shader which renders this filter.
      * @defaultValue `undefined`
      */
-    static vertexShader: string;
+    static vertexShader: string | undefined;
 
     /**
      * A factory method for creating the filter using its defined default values.
      * @param initialUniforms - Initial uniform values which override filter defaults
      * @returns The constructed AbstractFilter[sic] instance.
      */
-    static create<ThisType extends AbstractBaseFilter.AnyConstructor>(
-      this: ThisType,
+    static create<ThisType extends AbstractBaseFilter>(
+      this: ConstructorOf<ThisType>,
+      /**
+       * @defaultValue `{}`
+       */
       initialUniforms?: AbstractBaseShader.Uniforms,
-    ): InstanceType<ThisType>;
+    ): ThisType;
   }
 }

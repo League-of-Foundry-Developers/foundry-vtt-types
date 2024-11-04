@@ -1,3 +1,4 @@
+import type { ToMethod } from "../../../../../types/helperTypes.d.mts";
 import type { InexactPartial } from "../../../../../types/utils.d.mts";
 
 export {};
@@ -10,24 +11,26 @@ declare global {
   namespace BatchRenderer {
     type AnyConstructor = typeof AnyBatchRenderer;
 
-    type PackInterleavedGeometryFunction = (
-      element: PIXI.IBatchableElement,
-      attributeBuffer: PIXI.ViewableBuffer,
-      indexBuffer: Uint16Array,
-      aIndex: number,
-      iIndex: number,
-    ) => void;
+    type PackInterleavedGeometryFunction = ToMethod<
+      (
+        element: PIXI.IBatchableElement,
+        attributeBuffer: PIXI.ViewableBuffer,
+        indexBuffer: Uint16Array,
+        aIndex: number,
+        iIndex: number,
+      ) => void
+    >;
 
     type PreRenderBatchFunction = (batchRenderer: typeof BatchRenderer) => void;
 
-    type BatchDefaultUniformsFunction = (maxTextures: AbstractBaseShader.UniformValue) => AbstractBaseShader.Uniforms;
+    type BatchDefaultUniformsFunction = (maxTextures: number) => AbstractBaseShader.Uniforms;
 
     type ReservedTextureUnits = 0 | 1 | 2 | 3 | 4;
 
     interface ShaderGeneratorOptions {
-      vertex: (typeof BatchRenderer)["defaultVertexSrc"];
-      fragment: (typeof BatchRenderer)["defaultFragmentTemplate"];
-      uniforms: (typeof BatchRenderer)["defaultUniforms"];
+      vertex: typeof BatchRenderer.defaultVertexSrc;
+      fragment: typeof BatchRenderer.defaultFragmentTemplate;
+      uniforms: typeof BatchRenderer.defaultUniforms;
     }
   }
 

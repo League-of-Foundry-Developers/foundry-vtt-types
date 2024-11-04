@@ -76,6 +76,7 @@ declare global {
         /**
          * The animation duration
          * @defaultValue 1000
+         * @remarks this function does not provide a default, but CanvasAnimation.animate does
          */
         duration: number;
         /**
@@ -105,7 +106,7 @@ declare global {
 
     static override vertexShader: string;
 
-    static override fragmentShader: AbstractBaseFilter.FragmentShader;
+    static override fragmentShader: string;
 
     override apply(
       filterManager: PIXI.FilterSystem,

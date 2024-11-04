@@ -1,3 +1,5 @@
+import type { ConstructorOf } from "../../../../../../types/utils.d.mts";
+
 export {};
 
 declare abstract class AnyOutlineOverlayFilter extends OutlineOverlayFilter {
@@ -59,11 +61,10 @@ declare global {
 
     set thickness(value);
 
-    //todo: figure out why this can't be `extends OutlineOverlayFilter`: https://i.imgur.com/2x3nwNz.png
-    static override create<ThisType extends AbstractBaseFilter.AnyConstructor>(
-      this: ThisType,
+    static override create<ThisType extends AbstractBaseFilter>(
+      this: ConstructorOf<ThisType>,
       initialUniforms?: AbstractBaseShader.Uniforms,
-    ): InstanceType<ThisType>;
+    ): ThisType;
 
     override apply(
       filterManager: PIXI.FilterSystem,

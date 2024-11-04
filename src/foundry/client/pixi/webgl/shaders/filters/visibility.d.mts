@@ -1,4 +1,4 @@
-import type { InexactPartial } from "../../../../../../types/utils.d.mts";
+import type { ConstructorOf, InexactPartial } from "../../../../../../types/utils.d.mts";
 
 export {};
 
@@ -39,11 +39,11 @@ declare global {
      */
     static override defaultUniforms: AbstractBaseShader.Uniforms;
 
-    static override create<ThisType extends AbstractBaseFilter.AnyConstructor>(
-      this: ThisType,
+    static override create<ThisType extends AbstractBaseMaskFilter>(
+      this: ConstructorOf<ThisType>,
       initiaUniforms?: AbstractBaseShader.Uniforms,
       options?: InexactPartial<VisibilityFilter.FragmentShaderOptions>,
-    ): InstanceType<ThisType>;
+    ): ThisType;
 
     static override vertexShader: string;
 
