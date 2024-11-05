@@ -1,4 +1,4 @@
-export {};
+import type { InexactPartial } from "../../../../types/utils.d.mts";
 
 declare module "pixi.js" {
   namespace Polygon {
@@ -63,13 +63,13 @@ declare module "pixi.js" {
      */
     fromClipperPoints(
       points: PIXI.Polygon.ClipperPoint[],
-      options?: {
+      options?: InexactPartial<{
         /**
          * A scaling factor used to preserve floating point precision
-         * (default: `1`)
+         * @defaultValue `1`
          */
         scalingFactor: number;
-      },
+      }>,
     ): PIXI.Polygon;
 
     /**
@@ -94,18 +94,18 @@ declare module "pixi.js" {
      * Intersect this PIXI.Polygon with another PIXI.Polygon using the clipper library.
      * @param other   - Another PIXI.Polygon
      * @param options - Options which configure how the intersection is computed
-     * @returns The intersected polygon or null if no solution was present
+     * @returns The intersected polygon
      */
     intersectPolygon(
       other: PIXI.Polygon,
-      options: {
+      options: InexactPartial<{
         /** The clipper clip type */
-        clipType?: number;
+        clipType: number;
 
         /** A scaling factor passed to Polygon#toClipperPoints to preserve precision */
-        scalingFactor?: number;
-      },
-    ): PIXI.Polygon | null;
+        scalingFactor: number;
+      }>,
+    ): PIXI.Polygon;
 
     /**
      * Intersect this PIXI.Polygon with an array of ClipperPoints.
@@ -114,13 +114,13 @@ declare module "pixi.js" {
      */
     intersectClipper(
       clipperPoints: PIXI.Polygon.ClipperPoint[],
-      options?: {
+      options?: InexactPartial<{
         /** The clipper clip type */
-        clipType?: number;
+        clipType: number;
 
         /** A scaling factor passed to Polygon#toClipperPoints to preserve precision */
-        scalingFactor?: number;
-      },
+        scalingFactor: number;
+      }>,
     ): PIXI.Polygon.ClipperPoint[];
 
     /**
@@ -131,13 +131,7 @@ declare module "pixi.js" {
      * @param options - Options which configure how the intersection is computed
      * @returns The intersected polygon
      */
-    intersectCircle(
-      circle: PIXI.Circle,
-      options?: {
-        /** The number of points which defines the density of approximation */
-        density: number;
-      },
-    ): PIXI.Polygon;
+    intersectCircle(circle: PIXI.Circle, options?: Parameters<PIXI.Circle["intersectPolygon"]>[1]): PIXI.Polygon;
 
     /**
      * Intersect this PIXI.Polygon with a PIXI.Rectangle.
@@ -147,6 +141,6 @@ declare module "pixi.js" {
      * @param options - Options which configure how the intersection is computed
      * @returns The intersected polygon
      */
-    intersectRectangle(rect: PIXI.Rectangle, options?: Record<string, unknown>): PIXI.Polygon;
+    intersectRectangle(rect: PIXI.Rectangle, options?: Parameters<PIXI.Rectangle["intersectPolygon"]>[1]): PIXI.Polygon;
   }
 }
