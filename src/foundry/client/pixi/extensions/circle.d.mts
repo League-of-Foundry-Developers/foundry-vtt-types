@@ -1,4 +1,4 @@
-export {};
+import type { InexactPartial } from "../../../../types/utils.d.mts";
 
 declare module "pixi.js" {
   interface Circle {
@@ -6,7 +6,7 @@ declare module "pixi.js" {
      * Determine the center of the circle.
      * Trivial, but used to match center method for other shapes.
      */
-    get circle(): Point;
+    get circle(): PIXI.Point;
 
     /**
      * Determine if a point is on or nearly on this circle.
@@ -86,7 +86,7 @@ declare module "pixi.js" {
      */
     intersectPolygon(
       polygon: PIXI.Polygon,
-      options?: {
+      options?: InexactPartial<{
         /** The number of points which defines the density of approximation */
         density: number;
 
@@ -98,7 +98,7 @@ declare module "pixi.js" {
          * (default: `true`)
          * */
         weilerAtherton: boolean;
-      },
+      }>,
     ): PIXI.Polygon;
 
     /**
@@ -111,10 +111,12 @@ declare module "pixi.js" {
      */
     intersectClipper(
       clipperPoints: PIXI.Polygon.ClipperPoint[],
-      options?: {
-        /** The number of points which defines the density of approximation */
-        density: number;
-      },
+      options?: InexactPartial<
+        {
+          /** The number of points which defines the density of approximation */
+          density: number;
+        } & Parameters<PIXI.Polygon["intersectClipper"]>[1]
+      >,
     ): PIXI.Polygon;
   }
 
