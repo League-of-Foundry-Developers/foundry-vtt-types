@@ -111,11 +111,7 @@ declare module "pixi.js" {
      */
     intersectClipper(
       clipperPoints: PIXI.Polygon.ClipperPoint[],
-      options?: Parameters<PIXI.Polygon["intersectClipper"]>[1] &
-        InexactPartial<{
-          /** The number of points which defines the density of approximation */
-          density: number;
-        }>,
+      options?: PIXI.Circle.IntersectClipperOptions,
     ): PIXI.Polygon;
   }
 
@@ -126,6 +122,11 @@ declare module "pixi.js" {
 
       /** Whether to include points at the circle where the arc starts and ends */
       includeEndpoints: boolean;
+    }
+
+    interface IntersectClipperOptions extends PIXI.Polygon.IntersectClipperOptions {
+          /** The number of points which defines the density of approximation */
+          density?: number | undefined;
     }
   }
 }

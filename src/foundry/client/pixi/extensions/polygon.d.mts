@@ -1,13 +1,6 @@
 import type { InexactPartial } from "../../../../types/utils.d.mts";
 
 declare module "pixi.js" {
-  namespace Polygon {
-    interface ClipperPoint {
-      X: number;
-      Y: number;
-    }
-  }
-
   interface Polygon {
     /**
      * Test whether the polygon is has a positive signed area.
@@ -96,16 +89,7 @@ declare module "pixi.js" {
      * @param options - Options which configure how the intersection is computed
      * @returns The intersected polygon
      */
-    intersectPolygon(
-      other: PIXI.Polygon,
-      options: InexactPartial<{
-        /** The clipper clip type */
-        clipType: number;
-
-        /** A scaling factor passed to Polygon#toClipperPoints to preserve precision */
-        scalingFactor: number;
-      }>,
-    ): PIXI.Polygon;
+    intersectPolygon(other: PIXI.Polygon, options: PIXI.Polygon.IntersectClipperOptions): PIXI.Polygon;
 
     /**
      * Intersect this PIXI.Polygon with an array of ClipperPoints.
@@ -114,13 +98,7 @@ declare module "pixi.js" {
      */
     intersectClipper(
       clipperPoints: PIXI.Polygon.ClipperPoint[],
-      options?: InexactPartial<{
-        /** The clipper clip type */
-        clipType: number;
-
-        /** A scaling factor passed to Polygon#toClipperPoints to preserve precision */
-        scalingFactor: number;
-      }>,
+      options?: PIXI.Polygon.IntersectClipperOptions,
     ): PIXI.Polygon.ClipperPoint[];
 
     /**
@@ -131,7 +109,7 @@ declare module "pixi.js" {
      * @param options - Options which configure how the intersection is computed
      * @returns The intersected polygon
      */
-    intersectCircle(circle: PIXI.Circle, options?: Parameters<PIXI.Circle["intersectPolygon"]>[1]): PIXI.Polygon;
+    intersectCircle(circle: PIXI.Circle, options?: PIXI.Circle.IntersectClipperOptions): PIXI.Polygon;
 
     /**
      * Intersect this PIXI.Polygon with a PIXI.Rectangle.
@@ -142,5 +120,23 @@ declare module "pixi.js" {
      * @returns The intersected polygon
      */
     intersectRectangle(rect: PIXI.Rectangle, options?: Parameters<PIXI.Rectangle["intersectPolygon"]>[1]): PIXI.Polygon;
+  }
+
+  namespace Polygon {
+    interface ClipperPoint {
+      X: number;
+      Y: number;
+    }
+
+    /** @internal Helper type for interface to simplify InexactPartial usage */
+    type _IntersectClipperOptions = InexactPartial<{
+      /** The clipper clip type */
+      clipType: number;
+
+      /** A scaling factor passed to Polygon#toClipperPoints to preserve precision */
+      scalingFactor: number;
+    }>;
+
+    interface IntersectClipperOptions extends _IntersectClipperOptions {}
   }
 }

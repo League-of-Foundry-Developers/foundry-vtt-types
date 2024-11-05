@@ -156,25 +156,7 @@ declare module "pixi.js" {
      * @param options - Options which configure how the intersection is computed
      * @returns The intersected polygon
      */
-    intersectPolygon(
-      polygon: PIXI.Polygon,
-      options?: InexactPartial<{
-        /** The number of points which defines the density of approximation */
-        density: number;
-
-        /** The clipper clip type */
-        clipType: number;
-
-        /**
-         * Use the Weiler-Atherton algorithm. Otherwise, use Clipper.
-         * @defaultValue `true`
-         * */
-        weilerAtherton: boolean;
-
-        /** If the WeilerAtherton constructor could mutate or not */
-        canMutate: boolean;
-      }>,
-    ): PIXI.Polygon;
+    intersectPolygon(polygon: PIXI.Polygon, options?: PIXI.Rectangle.IntersectPolygonOptions): PIXI.Polygon;
 
     /**
      * Intersect this PIXI.Rectangle with an array of ClipperPoints. Currently, uses the clipper library.
@@ -223,7 +205,37 @@ declare module "pixi.js" {
      * @param _outRect - (Internal)
      * @returns The constructed rotated rectangle bounds
      */
-    fromRotation(x: number, y: number, width: number, height: number, radians: number, pivot?: PIXI.Point, _outRect?: PIXI.Rectangle): PIXI.Rectangle;
+    fromRotation(
+      x: number,
+      y: number,
+      width: number,
+      height: number,
+      radians: number,
+      pivot?: PIXI.Point,
+      _outRect?: PIXI.Rectangle,
+    ): PIXI.Rectangle;
+  }
+
+  namespace Rectangle {
+    /** @internal Helper type for interface to simplify InexactPartial usage */
+    type _IntersectPolygonOptions = InexactPartial<{
+      /** The number of points which defines the density of approximation */
+      density: number;
+
+      /** The clipper clip type */
+      clipType: number;
+
+      /**
+       * Use the Weiler-Atherton algorithm. Otherwise, use Clipper.
+       * @defaultValue `true`
+       * */
+      weilerAtherton: boolean;
+
+      /** If the WeilerAtherton constructor could mutate or not */
+      canMutate: boolean;
+    }>;
+
+    interface IntersectPolygonOptions extends _IntersectPolygonOptions {}
   }
 }
 

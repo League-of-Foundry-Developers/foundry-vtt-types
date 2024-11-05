@@ -1,6 +1,6 @@
 export {};
 
-type GraphicsPath = [number[] | PIXI.IPointData[] | PIXI.Polygon] | Array<number[] | PIXI.IPointData>;
+type GraphicsPath = [number[] | PIXI.IPointData[] | PIXI.Polygon] | Array<number | PIXI.IPointData>;
 
 /**
  * @remarks Internal helper to accommodate for the reuse of functions across the various Graphics classes
