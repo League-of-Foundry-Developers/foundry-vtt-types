@@ -15,9 +15,10 @@ declare global {
 
     type UniformValue = boolean | number | Int32List | Float32List | Coordinates | Coordinates[] | PIXI.Texture;
 
-    interface Uniforms {
+    // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+    type Uniforms = {
       readonly [K: string]: AbstractBaseShader.UniformValue;
-    }
+    };
 
     type FragmentShaderFunction = ToMethod<(arg0: never) => string>;
 
