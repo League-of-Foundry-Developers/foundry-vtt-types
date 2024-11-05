@@ -119,7 +119,7 @@ declare module "pixi.js" {
      * @param options - Options which configure how the intersection is computed
      * @returns The intersected polygon
      */
-    intersectRectangle(rect: PIXI.Rectangle, options?: Parameters<PIXI.Rectangle["intersectPolygon"]>[1]): PIXI.Polygon;
+    intersectRectangle(rect: PIXI.Rectangle, options?: PIXI.Rectangle.IntersectPolygonOptions): PIXI.Polygon;
   }
 
   namespace Polygon {
