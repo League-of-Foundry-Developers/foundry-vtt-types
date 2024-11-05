@@ -31,31 +31,35 @@ declare class RenderFlagObject {
   applyRenderFlags(): void;
 }
 
+/**
+ * @privateRemarks Values are marked as optional here based on use, foundry docs incomplete
+ * @internal
+ */
+type _RenderFlags<Flags> = InexactPartial<{
+  /** Activating this flag also sets these flags to true */
+  propagate: Array<Partial<keyof Flags>>;
+
+  /** Activating this flag resets these flags to false */
+  reset: Array<Partial<keyof Flags>>;
+
+  /**
+   * Is this flag deprecated? The deprecation options are passed to
+   * logCompatibilityWarning. The deprectation message is auto-generated
+   * unless message is passed with the options.
+   * By default the message is logged only once.
+   */
+  deprecated: {
+    message: string;
+  } & LogCompatibilityWarningOptions;
+
+  /**
+   * @remarks Possibly meant to be a sub-property of deprecated,
+   * the runtime check in `RenderFlags##set` looks for this as a top level property
+   */
+  alias: boolean;
+}>;
+
 declare global {
-  /** @privateRemarks Values are marked as optional here based on use, foundry docs incomplete */
-  type _RenderFlags<Flags> = InexactPartial<{
-    /** Activating this flag also sets these flags to true */
-    propagate: Array<Partial<keyof Flags>>;
-
-    /** Activating this flag resets these flags to false */
-    reset: Array<Partial<keyof Flags>>;
-
-    /**
-     * Is this flag deprecated? The deprecation options are passed to
-     * logCompatibilityWarning. The deprectation message is auto-generated
-     * unless message is passed with the options.
-     * By default the message is logged only once.
-     */
-    deprecated: {
-      message: string;
-    } & LogCompatibilityWarningOptions;
-
-    /**
-     * @remarks Possibly meant to be a sub-property of deprecated,
-     * the runtime check in `RenderFlags##set` looks for this as a top level property
-     */
-    alias: boolean;
-  }>;
 
   interface RenderFlag<Flags> extends _RenderFlags<Flags> {}
 
