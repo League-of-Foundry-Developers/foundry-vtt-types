@@ -77,7 +77,6 @@ declare global {
    * A helper class providing utility methods for PIXI Canvas animation
    */
   class CanvasAnimation {
-
     static get STATES(): {
       /** An error occurred during waiting or running the animation. */
       FAILED: -2;
@@ -93,7 +92,7 @@ declare global {
 
       /** The animation was completed without errors and without being terminated. */
       COMPLETED: 2;
-    }
+    };
 
     /**
      * The ticker used for animations.

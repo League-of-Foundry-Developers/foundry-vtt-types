@@ -73,16 +73,17 @@ declare global {
     /**
      * Incremental refresh for ControlIcon appearance.
      */
-    refresh({
-      visible,
-      iconColor,
-      borderColor,
-      borderVisible,
-    }?: InexactPartial<{
+    refresh({ visible, iconColor, borderColor, borderVisible }?: ControlIcon.RefreshOptions): this;
+  }
+
+  namespace ControlIcon {
+    type _RefreshOptions = InexactPartial<{
       visible: boolean;
       iconColor: number;
       borderColor: number;
       borderVisible: boolean;
-    }>): this;
+    }>;
+
+    interface RefreshOptions extends _RefreshOptions {}
   }
 }

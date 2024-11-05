@@ -1,4 +1,5 @@
-import type { AnyConstructor, Mixin } from "../../../../../types/utils.d.mts";
+import type { AnyConstructor, InexactPartial, Mixin } from "../../../../../types/utils.d.mts";
+import type { LogCompatibilityWarningOptions } from "../../../../common/utils/logging.d.mts";
 
 declare class RenderFlagObject {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
@@ -32,12 +33,12 @@ declare class RenderFlagObject {
 
 declare global {
   /** @privateRemarks Values are marked as optional here based on use, foundry docs incomplete */
-  interface RenderFlag<Flags> {
+  type _RenderFlags<Flags> = InexactPartial<{
     /** Activating this flag also sets these flags to true */
-    propagate?: Array<Partial<keyof Flags>> | undefined;
+    propagate: Array<Partial<keyof Flags>>;
 
     /** Activating this flag resets these flags to false */
-    reset?: Array<Partial<keyof Flags>> | undefined;
+    reset: Array<Partial<keyof Flags>>;
 
     /**
      * Is this flag deprecated? The deprecation options are passed to
@@ -45,13 +46,18 @@ declare global {
      * unless message is passed with the options.
      * By default the message is logged only once.
      */
-    deprecated?: {
+    deprecated: {
       message: string;
-      since: number;
-      until: number;
-      alias?: boolean;
-    };
-  }
+    } & LogCompatibilityWarningOptions;
+
+    /**
+     * @remarks Possibly meant to be a sub-property of deprecated,
+     * the runtime check in `RenderFlags##set` looks for this as a top level property
+     */
+    alias: boolean;
+  }>;
+
+  interface RenderFlag<Flags> extends _RenderFlags<Flags> {}
 
   namespace RenderFlag {
     type Any = RenderFlag<any>;
