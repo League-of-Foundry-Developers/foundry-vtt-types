@@ -20,10 +20,10 @@ declare global {
    */
   class PulsePing extends Ping {
     /**
-     * @param origin - The canvas co-ordinates of the origin of the ping.
+     * @param origin - The canvas coordinates of the origin of the ping.
      * @param options - Additional options to configure the ping animation.
      */
-    constructor(origin: PIXI.Point, options?: PulsePingOptions);
+    constructor(origin: Point, options?: PulsePingOptions);
 
     _color2: Color | number;
 
@@ -83,7 +83,7 @@ declare global {
    */
   class ArrowPing extends PulsePing {
     /**
-     * @param origin - The canvas co-ordinates of the origin of the ping. This becomes the arrow's tip.
+     * @param origin - The canvas coordinates of the origin of the ping. This becomes the arrow's tip.
      * @param options - Additional options to configure the ping animation.
      */
     constructor(
@@ -105,7 +105,7 @@ declare global {
    */
   class AlertPing extends PulsePing {
     /**
-     * @param origin  - The canvas co-ordinates of the origin of the ping.
+     * @param origin  - The canvas coordinates of the origin of the ping.
      * @param options - Additional options to configure the ping animation.
      */
     constructor(origin: PIXI.Point, options: PulsePingOptions);

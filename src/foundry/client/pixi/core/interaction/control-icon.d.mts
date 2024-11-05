@@ -1,25 +1,24 @@
-export {};
+import type { InexactPartial } from "../../../../../types/utils.d.mts";
 
 declare global {
   /**
    * A generic helper for drawing a standard Control Icon
    */
   class ControlIcon extends PIXI.Container {
-    /**
-     * @param size        - (default: `40`)
-     * @param borderColor - (default: `0xFF5500`)
-     * @param tint        - (default: `null`)
-     */
-    constructor({
-      texture,
-      size,
-      borderColor,
-      tint,
-    }: {
+    constructor(args: {
       texture: string;
+
+      /** @defaultValue `40` */
       size?: number;
+
+      /** @defaultValue `0xFF5500` */
       borderColor?: number;
+
+      /** @defaultValue `null` */
       tint?: number | null;
+
+      /** @defaultValue `number` */
+      elevation: number;
     });
 
     iconSrc: string;
@@ -57,6 +56,15 @@ declare global {
      */
     border: PIXI.Graphics;
 
+    tooltip: PreciseText;
+
+    /**
+     * The elevation of the ControlIcon, which is displayed in its tooltip text.
+     */
+    get elevation(): number;
+
+    set elevation(value);
+
     /**
      * Initial drawing of the ControlIcon
      */
@@ -65,16 +73,17 @@ declare global {
     /**
      * Incremental refresh for ControlIcon appearance.
      */
-    refresh({
-      visible,
-      iconColor,
-      borderColor,
-      borderVisible,
-    }?: {
-      visible?: boolean;
-      iconColor?: number;
-      borderColor?: number;
-      borderVisible?: boolean;
-    }): this;
+    refresh({ visible, iconColor, borderColor, borderVisible }?: ControlIcon.RefreshOptions): this;
+  }
+
+  namespace ControlIcon {
+    type _RefreshOptions = InexactPartial<{
+      visible: boolean;
+      iconColor: number;
+      borderColor: number;
+      borderVisible: boolean;
+    }>;
+
+    interface RefreshOptions extends _RefreshOptions {}
   }
 }

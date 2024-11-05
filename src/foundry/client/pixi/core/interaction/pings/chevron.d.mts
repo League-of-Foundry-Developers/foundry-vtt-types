@@ -6,11 +6,11 @@ declare global {
    */
   class ChevronPing extends Ping {
     /**
-     * @param origin  - The canvas co-ordinates of the origin of the ping.
+     * @param origin  - The canvas coordinates of the origin of the ping.
      * @param options - Additional options to configure the ping animation.
      *                  (default: `{duration: 900, size: 128, color: "#ff6400"}`)
      */
-    constructor(origin: PIXI.Point, options?: PingOptions);
+    constructor(origin: Point, options?: PingOptions);
 
     /** @defaultValue `(this.options.size / 2) * .75` */
     _r: number;

@@ -1,4 +1,5 @@
-import type { AnyConstructor, Mixin } from "../../../../../types/utils.d.mts";
+import type { AnyConstructor, InexactPartial, Mixin } from "../../../../../types/utils.d.mts";
+import type { LogCompatibilityWarningOptions } from "../../../../common/utils/logging.d.mts";
 
 declare class RenderFlagObject {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
@@ -30,15 +31,37 @@ declare class RenderFlagObject {
   applyRenderFlags(): void;
 }
 
-declare global {
-  /** @privateRemarks Values are marked as optional here based on use, foundry docs incomplete */
-  interface RenderFlag<Flags> {
-    /** Activating this flag also sets these flags to true */
-    propagate?: Array<Partial<keyof Flags>> | undefined;
+/**
+ * @privateRemarks Values are marked as optional here based on use, foundry docs incomplete
+ * @internal
+ */
+type _RenderFlags<Flags> = InexactPartial<{
+  /** Activating this flag also sets these flags to true */
+  propagate: Array<Partial<keyof Flags>>;
 
-    /** Activating this flag resets these flags to false */
-    reset?: Array<Partial<keyof Flags>> | undefined;
-  }
+  /** Activating this flag resets these flags to false */
+  reset: Array<Partial<keyof Flags>>;
+
+  /**
+   * Is this flag deprecated? The deprecation options are passed to
+   * logCompatibilityWarning. The deprectation message is auto-generated
+   * unless message is passed with the options.
+   * By default the message is logged only once.
+   */
+  deprecated: {
+    message: string;
+  } & LogCompatibilityWarningOptions;
+
+  /**
+   * @remarks Possibly meant to be a sub-property of deprecated,
+   * the runtime check in `RenderFlags##set` looks for this as a top level property
+   */
+  alias: boolean;
+}>;
+
+declare global {
+
+  interface RenderFlag<Flags> extends _RenderFlags<Flags> {}
 
   namespace RenderFlag {
     type Any = RenderFlag<any>;
@@ -94,7 +117,7 @@ declare global {
   /**
    * Add RenderFlags functionality to some other object.
    * This mixin standardizes the interface for such functionality.
-   * @param Base - The base class being mixed
+   * @param Base - The base class being mixed. Normally a PIXI.DisplayObject
    * @returns The mixed class definition
    */
   function RenderFlagsMixin<BaseClass extends AnyConstructor>(

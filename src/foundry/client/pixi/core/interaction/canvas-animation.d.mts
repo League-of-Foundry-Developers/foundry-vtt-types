@@ -1,3 +1,4 @@
+import type { ValueOf } from "../../../../../types/utils.d.mts";
 import type { PropertiesOfType } from "../../../../../types/helperTypes.d.mts";
 
 declare global {
@@ -34,7 +35,7 @@ declare global {
     context?: PIXI.DisplayObject;
 
     /** A unique name which can be used to reference the in-progress animation */
-    name?: string;
+    name?: string | symbol;
 
     /** A duration in milliseconds over which the animation should occur */
     duration?: number;
@@ -55,7 +56,7 @@ declare global {
     ontick?: (dt: number, animation: CanvasAnimationData) => void;
   }
 
-  interface CanvasAnimationData {
+  interface CanvasAnimationData extends CanvasAnimationOptions {
     /** The animation function being executed each frame */
     fn: (dt: number) => void;
 
@@ -64,6 +65,9 @@ declare global {
 
     /** The attributes being animated */
     attributes: CanvasAnimationAttribute[];
+
+    /** The current state of the animation */
+    state: ValueOf<typeof CanvasAnimation.STATES>;
 
     /** A Promise which resolves once the animation is complete */
     promise: Promise<boolean>;
@@ -79,6 +83,26 @@ declare global {
    * A helper class providing utility methods for PIXI Canvas animation
    */
   class CanvasAnimation {
+    static get STATES(): {
+      /** An error occurred during waiting or running the animation. */
+      FAILED: -2;
+
+      /** The animation was terminated before it could complete. */
+      TERMINATED: -1;
+
+      /** Waiting for the wait promise before the animation is started. */
+      WAITING: 0;
+
+      /** The animation has been started and is running. */
+      RUNNING: 1;
+
+      /** The animation was completed without errors and without being terminated. */
+      COMPLETED: 2;
+    };
+
+    /**
+     * The ticker used for animations.
+     */
     static get ticker(): PIXI.Ticker;
 
     /**
@@ -117,7 +141,7 @@ declare global {
     static animate(
       attributes: CanvasAnimationAttribute[],
       { context, name, duration, easing, ontick, priority }?: CanvasAnimationOptions,
-    ): Promise<boolean | void>;
+    ): Promise<boolean>;
 
     /**
      * Retrieve an animation currently in progress by its name
@@ -152,14 +176,5 @@ declare global {
      * @returns The eased animation progress on [0,1]
      */
     static easeInCircle(pt: number): number;
-
-    /**
-     * @deprecated since v10, will be removed in v12
-     * @remarks "You are calling CanvasAnimation.animateLinear which is deprecated in favor of CanvasAnimation.animate"
-     */
-    static animateLinear(
-      attributes: CanvasAnimationAttribute[],
-      options: CanvasAnimationOptions,
-    ): Promise<boolean | void>;
   }
 }
