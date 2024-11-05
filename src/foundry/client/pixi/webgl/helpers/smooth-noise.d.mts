@@ -1,6 +1,28 @@
-export {};
+import type { InexactPartial } from "../../../../../types/utils.d.mts";
 
 declare global {
+  namespace SmoothNoise {
+    interface ConstructorOptions {
+      /**
+       * The generated noise will be on the range [0, amplitude].
+       * @defaultValue `1`
+       */
+      amplitude: number;
+
+      /**
+       * An adjustment factor for the input x values which place them on an appropriate range.
+       * @defaultValue `1`
+       */
+      scale: number;
+
+      /**
+       * The number of pre-generated random numbers to generate.
+       * @defaultValue `256`
+       */
+      maxReferences: number;
+    }
+  }
+
   /**
    * A smooth noise generator for one-dimensional values.
    */
@@ -8,7 +30,11 @@ declare global {
     /**
      * @param options - Configuration options for the noise process.
      */
-    constructor(options: SmoothNoise.ConstructorOptions);
+    constructor({ amplitude, scale, maxReferences }?: InexactPartial<SmoothNoise.ConstructorOptions>);
+
+    _maxReferences: number;
+
+    _references: number[];
 
     /**
      * Amplitude of the generated noise output
@@ -35,27 +61,5 @@ declare global {
      * @returns The corresponding smoothed noise value
      */
     generate(x: number): number;
-  }
-
-  namespace SmoothNoise {
-    interface ConstructorOptions {
-      /**
-       * The generated noise will be on the range [0, amplitude].
-       * @defaultValue `1`
-       */
-      amplitude: number;
-
-      /**
-       * An adjustment factor for the input x values which place them on an appropriate range.
-       * @defaultValue `1`
-       */
-      scale: number;
-
-      /**
-       * The number of pre-generated random numbers to generate.
-       * @defaultValue `256`
-       */
-      maxReferences: number;
-    }
   }
 }
