@@ -8,6 +8,12 @@ declare global {
     constructor(user: User.ConfiguredInstance);
 
     /**
+     * Update visibility and animations
+     * @param user - The user
+     */
+    refreshVisibility(user: User.ConfiguredInstance): void;
+
+    /**
      * @defaultValue `{x: 0, y: 0}`
      */
     target: { x: number; y: number };
