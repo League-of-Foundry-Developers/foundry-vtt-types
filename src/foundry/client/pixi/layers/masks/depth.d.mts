@@ -18,7 +18,8 @@ declare global {
      * ```js
      * {
      *   scaleMode: PIXI.SCALE_MODES.NEAREST,
-     *   format: PIXI.FORMATS.RGB
+     *   format: PIXI.FORMATS.RGB,
+     *   multisample: PIXI.MSAA_QUALITY.NONE
      * }
      * ```
      */
