@@ -19,9 +19,9 @@ declare global {
       ) => void
     >;
 
-    type PreRenderBatchFunction = (batchRenderer: typeof BatchRenderer) => void;
+    type PreRenderBatchFunction = ToMethod<(batchRenderer: typeof BatchRenderer) => void>;
 
-    type BatchDefaultUniformsFunction = (maxTextures: number) => AbstractBaseShader.Uniforms;
+    type BatchDefaultUniformsFunction = ToMethod<(maxTextures: number) => AbstractBaseShader.Uniforms>;
 
     type ReservedTextureUnits = 0 | 1 | 2 | 3 | 4;
 
