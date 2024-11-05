@@ -29,8 +29,9 @@ declare abstract class AnyDisplayObject extends DisplayObject {
 }
 
 declare module "pixi.js" {
-  export const LegacyGraphics: typeof _PIXI.Graphics;
-  export type LegacyGraphics = _PIXI.Graphics;
+  // export const LegacyGraphics: typeof _PIXI.Graphics;
+  // export type LegacyGraphics = _PIXI.Graphics;
+  export import LegacyGraphics = _PIXI.Graphics;
 
   export enum UPDATE_PRIORITY {
     /**
