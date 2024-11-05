@@ -1,3 +1,5 @@
+import type { InexactPartial } from "../../../../types/utils.d.mts";
+
 export type CustomFormGroup = (
   field: foundry.data.fields.DataField,
   groupConfig: FormGroupConfig,
@@ -53,45 +55,60 @@ export interface FormGroupConfig {
   widget?: CustomFormGroup;
 }
 
-export interface FormInputConfig<FormInputValue = any> {
+interface _FormInputConfig<FormInputValue = unknown> {
+  /**
+   * The current value of the form element
+   */
+  value: FormInputValue;
+
+  /**
+   * Is the field required?
+   * @defaultValue `false`
+   */
+  required: boolean;
+
+  /**
+   * Is the field disabled?
+   * @defaultValue `false`
+   */
+  disabled: boolean;
+
+  /**
+   * Is the field readonly?
+   * @defaultValue `false`
+   */
+  readonly: boolean;
+
+  /**
+   * Is the field autofocused?
+   * @defaultValue `false`
+   */
+  autofocus: boolean;
+
+  /**
+   * Localize values of this field?
+   * @defaultValue `false`
+   */
+  localize: boolean;
+
+  /**
+   * Additional dataset attributes to assign to the input
+   */
+  dataset: Record<string, string>;
+
+  /**
+   * A placeholder value, if supported by the element type
+   */
+  placeholder: string;
+
+  input: CustomFormInput;
+}
+
+export interface FormInputConfig<FormInputValue = unknown> extends InexactPartial<_FormInputConfig<FormInputValue>> {
   /**
    * The name of the form element
    */
   name: string;
-  /**
-   * The current value of the form element
-   */
-  value?: FormInputValue;
-  /**
-   * Is the field required?
-   */
-  required?: boolean;
-  /**
-   * Is the field disabled?
-   */
-  disabled?: boolean;
-  /**
-   * Is the field readonly?
-   */
-  readonly?: boolean;
-  /**
-   * Is the field autofocused?
-   */
-  autofocus?: boolean;
-  /**
-   * Localize values of this field?
-   */
-  localize?: boolean;
-  /**
-   * Additional dataset attributes to assign to the input
-   */
-  dataset?: Record<string, string>;
-  /**
-   * A placeholder value, if supported by the element type
-   */
-  placeholder?: string;
-
-  input?: CustomFormInput;
 }
 
 /**

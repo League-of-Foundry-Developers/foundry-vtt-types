@@ -12,6 +12,8 @@ import type { EmbeddedCollection, EmbeddedCollectionDelta } from "../abstract/mo
 import type { DOCUMENT_OWNERSHIP_LEVELS } from "../constants.d.mts";
 import type { CONST } from "../../client-esm/client.d.mts";
 import type { DataModelValidationFailure } from "./validation-failure.mts";
+import type { EffectChangeData } from "../documents/_types.d.mts";
+import type { FormInputConfig } from "../../client-esm/applications/forms/fields.d.mts";
 
 declare global {
   /**
@@ -329,6 +331,144 @@ declare abstract class DataField<
    * @param path - The field path as an array of strings
    */
   protected _getField(path: string[]): unknown; // TODO: Type further.
+
+  /**
+   * Does this form field class have defined form support?
+   */
+  static get hasFormSupport(): boolean;
+
+  /**
+   * Render this DataField as an HTML element.
+   * @param config - Form element configuration parameters
+   * @throws An Error if this DataField subclass does not support input rendering
+   * @returns A rendered HTMLElement for the field
+   */
+  toInput(config?: FormInputConfig): HTMLElement | HTMLCollection;
+
+  /**
+   * Render this DataField as an HTML element.
+   * Subclasses should implement this method rather than the public toInput method which wraps it.
+   * @param config - Form element configuration parameters
+   * @throws An Error if this DataField subclass does not support input rendering
+   * @returns A rendered HTMLElement for the field
+   */
+  protected _toInput(config: FormInputConfig): HTMLElement | HTMLCollection;
+
+  /**
+   * Render this DataField as a standardized form-group element.
+   * @param groupConfig - Configuration options passed to the wrapping form-group
+   * @param inputConfig - Input element configuration options passed to DataField#toInput
+   * @returns The rendered form group element
+   */
+  toFormGroup(groupConfig?: FormInputConfig, inputConfig?: FormInputConfig): HTMLDivElement;
+
+  /**
+   * Apply an ActiveEffectChange to this field.
+   * @param value  - The field's current value.
+   * @param model  - The model instance.
+   * @param change - The change to apply.
+   * @returns The updated value.
+   */
+  applyChange(value: InitializedType, model: DataModel.Any, change: EffectChangeData): InitializedType;
+
+  /**
+   * Cast a change delta into an appropriate type to be applied to this field.
+   * @param delta - The change delta.
+   * @internal
+   */
+  // Note(LukeAbby): Technically since this defers to `_cast` it should take whatever `_cast` can.
+  // But it always must be able to take a `string` because that's how `applyChange` calls it.
+  _castChangeDelta(delta: string): InitializedType;
+
+  /**
+   * Apply an ADD change to this field.
+   * @param value  - The field's current value.
+   * @param delta  - The change delta.
+   * @param model  - The model instance.
+   * @param change - The original change data.
+   * @returns - The updated value.
+   */
+  protected _applyChangeAdd(
+    value: InitializedType,
+    delta: InitializedType,
+    model: DataModel.Any,
+    change: EffectChangeData,
+  ): InitializedType | undefined;
+
+  /**
+   * Apply a MULTIPLY change to this field.
+   * @param value  - The field's current value.
+   * @param delta  - The change delta.
+   * @param model  - The model instance.
+   * @param change - The original change data.
+   * @returns The updated value.
+   */
+  protected _applyChangeMultiply(
+    value: InitializedType,
+    delta: InitializedType,
+    model: DataModel.Any,
+    change: EffectChangeData,
+  ): InitializedType | undefined;
+
+  /**
+   * Apply an OVERRIDE change to this field.
+   * @param value  - The field's current value.
+   * @param delta  - The change delta.
+   * @param model  - The model instance.
+   * @param change - The original change data.
+   * @returns The updated value.
+   */
+  protected _applyChangeOverride(
+    value: InitializedType,
+    delta: InitializedType,
+    model: DataModel.Any,
+    change: EffectChangeData,
+  ): InitializedType | undefined;
+
+  /**
+   * Apply an UPGRADE change to this field.
+   * @param value - The field's current value.
+   * @param delta - The change delta.
+   * @param model - The model instance.
+   * @param change - The original change data.
+   * @returns - The updated value.
+   */
+  protected _applyChangeUpgrade(
+    value: InitializedType,
+    delta: InitializedType,
+    model: DataModel.Any,
+    change: EffectChangeData,
+  ): InitializedType | undefined;
+
+  /**
+   * Apply a DOWNGRADE change to this field.
+   * @param value  - The field's current value.
+   * @param delta  - The change delta.
+   * @param model  - The model instance.
+   * @param change - The original change data.
+   * @returns The updated value.
+   */
+  protected _applyChangeDowngrade(
+    value: InitializedType,
+    delta: InitializedType,
+    model: DataModel.Any,
+    change: EffectChangeData,
+  ): InitializedType | undefined;
+
+  /**
+   * Apply a CUSTOM change to this field.
+   * @param value - The field's current value.
+   * @param delta - The change delta.
+   * @param model - The model instance.
+   * @param change - The original change data.
+   * @returns - The updated value.
+   */
+  protected _applyChangeCustom(
+    value: InitializedType,
+    delta: InitializedType,
+    model: DataModel.Any,
+    change: EffectChangeData,
+  ): InitializedType;
 }
 
 declare namespace DataField {
