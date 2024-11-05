@@ -111,12 +111,11 @@ declare module "pixi.js" {
      */
     intersectClipper(
       clipperPoints: PIXI.Polygon.ClipperPoint[],
-      options?: InexactPartial<
-        {
+      options?: Parameters<PIXI.Polygon["intersectClipper"]>[1] &
+        InexactPartial<{
           /** The number of points which defines the density of approximation */
           density: number;
-        } & Parameters<PIXI.Polygon["intersectClipper"]>[1]
-      >,
+        }>,
     ): PIXI.Polygon;
   }
 

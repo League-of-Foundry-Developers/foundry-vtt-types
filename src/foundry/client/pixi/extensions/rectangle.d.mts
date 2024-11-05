@@ -1,3 +1,5 @@
+import type { InexactPartial } from "../../../../types/utils.d.mts";
+
 export {};
 
 declare module "pixi.js" {
@@ -70,6 +72,10 @@ declare module "pixi.js" {
      * @returns Array of intersections or empty if no intersection.
      *  If A|B is parallel to an edge of this rectangle, returns the two furthest points on
      *  the segment A|B that are on the edge.
+     *  The return object's t0 property signifies the location of the intersection on segment A|B.
+     *  This will be NaN if the segment is a point.
+     *  The return object's t1 property signifies the location of the intersection on the rectangle edge.
+     *  The t1 value is measured relative to the intersecting edge of the rectangle.
      */
     segmentIntersections(a: Point, b: Point): Point[];
 
@@ -154,7 +160,7 @@ declare module "pixi.js" {
      */
     intersectPolygon(
       polygon: PIXI.Polygon,
-      options?: {
+      options?: InexactPartial<{
         /** The number of points which defines the density of approximation */
         density: number;
 
@@ -163,11 +169,14 @@ declare module "pixi.js" {
 
         /**
          * Use the Weiler-Atherton algorithm. Otherwise, use Clipper.
-         * (default: `true`)
+         * @defaultValue `true`
          * */
         weilerAtherton: boolean;
-      },
-    ): PIXI.Polygon | null;
+
+        /** If the WeilerAtherton constructor could mutate or not */
+        canMutate: boolean;
+      }>,
+    ): PIXI.Polygon;
 
     /**
      * Intersect this PIXI.Rectangle with an array of ClipperPoints. Currently, uses the clipper library.
@@ -178,10 +187,10 @@ declare module "pixi.js" {
      */
     intersectClipper(
       clipperPoints: PIXI.Polygon.ClipperPoint[],
-      options?: {
+      options?: InexactPartial<{
         /** The number of points which defines the density of approximation */
         density: number;
-      },
+      }>,
     ): PIXI.Polygon | null;
 
     /**
@@ -198,11 +207,12 @@ declare module "pixi.js" {
     normalize(): PIXI.Rectangle;
 
     /**
-     * Generate a new rectangle by rotating this one clockwise about its center by a certain number of radians
-     * @param radians - The angle of rotation
+     * Fits this rectangle around this rectangle rotated around the given pivot counterclockwise by the given angle in radians.
+     * @param radians - The angle of rotation.
+     * @param pivot   - An optional pivot point (normalized).
      * @returns A new rotated rectangle
      */
-    rotate(radians: number): PIXI.Rectangle;
+    rotate(radians: number, pivot?: PIXI.Point): PIXI.Rectangle;
 
     /**
      * Create normalized rectangular bounds given a rectangle shape and an angle of central rotation.
@@ -211,9 +221,11 @@ declare module "pixi.js" {
      * @param width   - The width of the un-rotated rectangle
      * @param height  - The height of the un-rotated rectangle
      * @param radians - The angle of rotation about the center
+     * @param pivot   - An optional pivot point (if not provided, the pivot is the centroid)
+     * @param _outRect - (Internal)
      * @returns The constructed rotated rectangle bounds
      */
-    fromRotation(x: number, y: number, width: number, height: number, radians: number): PIXI.Rectangle;
+    fromRotation(x: number, y: number, width: number, height: number, radians: number, pivot?: PIXI.Point, _outRect?: PIXI.Rectangle): PIXI.Rectangle;
   }
 }
 
