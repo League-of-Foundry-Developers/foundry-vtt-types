@@ -1,0 +1,30 @@
+import type { AnyObject } from "../../../../types/utils.d.mts";
+
+declare global {
+  /**
+   * A custom Transform class allowing to observe changes with a callback.
+   * @privateRemarks Scope extends object is intentional; `"The scope bound to an ObservableTransform class must be a valid object/class."`
+   */
+  class ObservableTransform<Scope extends AnyObject, CB extends (this: Scope) => unknown> extends PIXI.Transform {
+    /**
+     *
+     * @param callback - The callback called to observe changes.
+     * @param scope    - The scope of the callback.
+     */
+    constructor(callback: CB, scope: Scope);
+
+    /**
+     * The callback which is observing the changes.
+     */
+    cb: CB;
+
+    /**
+     * The scope of the callback.
+     */
+    scope: Scope;
+
+    protected override onChange(): void;
+
+    protected override updateSkew(): void;
+  }
+}

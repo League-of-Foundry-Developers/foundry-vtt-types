@@ -293,6 +293,13 @@ export type MaybeEmpty<T extends AnyObject> =
     };
 
 /**
+ * The following uses `extends object` instead of `AnyObject` to allow `O = typeof SomeClass`
+ */
+export type PropertiesOfType<O extends object, T> = {
+  [K in keyof O]: [O[K], T] extends [T, O[K]] ? K : never;
+}[keyof O];
+
+/**
  * @deprecated {@link Document.SubTypesOf | `Document.SubTypesOf`}.
  */
 export type DocumentSubTypes<T extends Document.Type> = Document.SubTypesOf<T>;
