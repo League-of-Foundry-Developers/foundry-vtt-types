@@ -1,7 +1,5 @@
 import type { ValueOf } from "../../../../types/utils.d.mts";
 
-export {};
-
 // TODO: Remove after layer is defined by #2841
 type CanvasDarknessEffects = CanvasLayer;
 

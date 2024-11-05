@@ -1,12 +1,11 @@
 import type { PropertiesOfType } from "../../../../../types/helperTypes.d.mts";
 
-export {};
-
 declare global {
   namespace CanvasAnimation {
     type EasingFunction = CoreEasingFunctions | ((percent: number) => number);
-    type CoreEasingFunctions = PropertiesOfType<typeof CanvasAnimation, (percent: number) => number>
+    type CoreEasingFunctions = PropertiesOfType<typeof CanvasAnimation, (percent: number) => number>;
   }
+
   interface CanvasAnimationAttribute {
     /** The attribute name being animated */
     attribute: string;
