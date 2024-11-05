@@ -10,14 +10,15 @@ declare global {
      * ```js
      * {
      *    scaleMode: PIXI.SCALE_MODES.NEAREST,
-     *    format: PIXI.FORMATS.RED
+     *    format: PIXI.FORMATS.RED,
+     *    multisample: PIXI.MSAA_QUALITY.NONE
      * }
      * ```
      */
     static override textureConfiguration: {
-      multisample: PIXI.MSAA_QUALITY;
       scaleMode: PIXI.SCALE_MODES;
       format: PIXI.FORMATS;
+      multisample: PIXI.MSAA_QUALITY;
     };
 
     /**
@@ -25,7 +26,9 @@ declare global {
      */
     override clearColor: [r: number, g: number, b: number, a: number];
 
-    vision: CanvasVisionContainer;
+    override autoRender: boolean;
+
+    vision: CanvasVisionMask.CanvasVisionContainer;
 
     /**
      * The BlurFilter which applies to the vision mask texture.
@@ -39,13 +42,13 @@ declare global {
      * Initialize the vision mask with the los and the fov graphics objects.
      * @param vision - The vision container to attach
      */
-    attachVision(vision: PIXI.Container): CanvasVisionContainer;
+    attachVision(vision: PIXI.Container): CanvasVisionMask.CanvasVisionContainer;
 
     /**
      * Detach the vision mask from the cached container.
      * @returns The detached vision container.
      */
-    detachVision(): CanvasVisionContainer;
+    detachVision(): CanvasVisionMask.CanvasVisionContainer;
 
     /**
      * @deprecated since v11, will be removed in v13
@@ -56,30 +59,50 @@ declare global {
     set filter(f);
   }
 
-  interface CanvasVisionContainer {
+  namespace CanvasVisionMask {
     /**
-     * LOS polygons
+     * The sight part of {@link CanvasVisionContainer}.
+     * The blend mode is MAX_COLOR.
      */
-    los: PIXI.Graphics;
+    interface CanvasVisionContainerSight extends PIXI.LegacyGraphics {
+      /** FOV that should not be committed to fog exploration. */
+      preview: PIXI.LegacyGraphics;
+    }
 
     /**
-     * Base vision
+     * The light part of {@link CanvasVisionContainer}.
+     * The blend mode is MAX_COLOR.
      */
-    base: PIXI.Graphics;
+    interface CanvasVisionContainerLight extends PIXI.LegacyGraphics {
+      /** FOV that should not be committed to fog exploration. */
+      preview: PIXI.LegacyGraphics;
+
+      /** The sprite with the texture of FOV of cached light sources. */
+      cached: SpriteMesh;
+
+      /** The light perception polygons of vision sources and the FOV of vision sources that provide vision. */
+      mask: PIXI.LegacyGraphics & { preview: PIXI.LegacyGraphics };
+    }
 
     /**
-     * FOV polygons
+     * The sight part of {@link CanvasVisionContainer}.
+     * The blend mode is ERASE.
      */
-    fov: PIXI.Graphics;
+    interface CanvasVisionContainerDarkness extends PIXI.LegacyGraphics {
+      /** Darkness source erasing fog of war. */
+      darkness: PIXI.LegacyGraphics;
+    }
 
-    /**
-     * Alias of los
-     */
-    mask: PIXI.Graphics;
+    /** The currently visible areas. */
+    interface CanvasVisionContainer extends PIXI.Container {
+      /** Areas visible because of light sources and light perception. */
+      light: CanvasVisionContainerLight;
 
-    /**
-     * Does this vision point represent an explored position?
-     */
-    _explored: boolean;
+      /** Areas visible because of FOV of vision sources. */
+      sight: CanvasVisionContainerSight;
+
+      /** Areas erased by darkness sources. */
+      darkness: CanvasVisionContainerDarkness;
+    }
   }
 }
