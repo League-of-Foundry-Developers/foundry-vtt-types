@@ -14,11 +14,86 @@ export type DeepPartial<T> = T extends unknown
   : T;
 
 /**
- * Make all properties in T optional and explicitly allow `undefined`
+ * Gets all possible keys of `T`. This is useful because if `T` is a union type
+ * it will get the properties of all types in the union. Otherwise it functions identically to `keyof T`.
+ */
+export type AllKeysOf<T extends object> = T extends unknown ? keyof T : never;
+
+/**
+ * Make all properties in `T` optional and explicitly allow `undefined`
+ *
+ * ### Picking the right helper type
+ * - Favor `NullishProps` whenever it is valid. Allowing both `null` and
+ *   `undefined` is convenient for the end user and it is very common that
+ *   wherever `undefined` is valid so is `null`. For some examples it is valid
+ *   for `options.prop ??= "default"`, `options.prop ||= "default"`,
+ *   `if (options.prop) { ... }`, `if (options.prop == null)`, or so on.
+ * - Use `IntentionalPartial` when an explicit `undefined` is problematic but
+ *   leaving off the property entirely is fine. This primarily occurs when
+ *   patterns like `options = { ...defaultOptions, ...options }`,
+ *   `Object.apply({}, defaultOptions, options)`,
+ *   `foundry.utils.mergeObject(defaultOptions, options)`, or so on.
+ *
+ *   Note that {@link foundry.utils.mergeObject | `foundry.utils.mergeObject`}
+ *   also expands the object. So once `ExpandsTo` exists you should also use
+ *   that helper type.
+ *
+ *   What these patterns have in common is that if `options` looks like
+ *   `{ prop: undefined }` that will override whatever is in `defaultOptions`
+ *   and may cause issues. Note that even if you see one of these patterns you
+ *   also need to ensure that `undefined` would cause issues down the road
+ *   before using `IntentionalPartial` as it could be an intended way of
+ *   resetting a property.
+ * - Use `InexactPartial` when `null` is problematic but `undefined` is not.
+ *   This should be a relatively rare situation but may come up if there are
+ *   specific checks for `undefined` that cause issues with `null`.
+ *
  * @internal
  */
-export type InexactPartial<T> = {
-  [P in keyof T]?: T[P] | undefined;
+export type InexactPartial<T extends object, K extends AllKeysOf<T> = AllKeysOf<T>> = {
+  [K2 in keyof T as Extract<K2, K>]?: T[K2] | undefined;
+} & {
+  // Note(LukeAbby): This effectively inlines `Omit<T, K>`, hoping for slightly better type display.
+  [K2 in keyof T as Exclude<K2, K>]: T[K2];
+};
+
+/**
+ * Makes select properties in `T` optional and explicitly allows both `null` and
+ * `undefined` values.
+ *
+ * ### Picking the right helper type
+ * - Favor `NullishProps` whenever it is valid. Allowing both `null` and
+ *   `undefined` is convenient for the end user and it is very common that
+ *   wherever `undefined` is valid so is `null`. For some examples it is valid
+ *   for `options.prop ??= "default"`, `options.prop ||= "default"`,
+ *   `if (options.prop) { ... }`, `if (options.prop == null)`, or so on.
+ * - Use `IntentionalPartial` when an explicit `undefined` is problematic but
+ *   leaving off the property entirely is fine. This primarily occurs when
+ *   patterns like `options = { ...defaultOptions, ...options }`,
+ *   `Object.apply({}, defaultOptions, options)`,
+ *   `foundry.utils.mergeObject(defaultOptions, options)`, or so on.
+ *
+ *   Note that {@link foundry.utils.mergeObject | `foundry.utils.mergeObject`}
+ *   also expands the object. So once `ExpandsTo` exists you should also use
+ *   that helper type.
+ *
+ *   What these patterns have in common is that if `options` looks like
+ *   `{ prop: undefined }` that will override whatever is in `defaultOptions`
+ *   and may cause issues. Note that even if you see one of these patterns you
+ *   also need to ensure that `undefined` would cause issues down the road
+ *   before using `IntentionalPartial` as it could be an intended way of
+ *   resetting a property.
+ * - Use `InexactPartial` when `null` is problematic but `undefined` is not.
+ *   This should be a relatively rare situation but may come up if there are
+ *   specific checks for `undefined` that cause issues with `null`.
+ *
+ * @internal
+ */
+export type NullishProps<T extends object, K extends AllKeysOf<T> = AllKeysOf<T>> = {
+  [K2 in keyof T as Extract<K2, K>]?: T[K2] | null | undefined;
+} & {
+  // Note(LukeAbby): This effectively inlines `Omit<T, K>`, hoping for slightly better type display.
+  [K2 in keyof T as Exclude<K2, K>]: T[K2];
 };
 
 /**
