@@ -7,11 +7,10 @@ declare global {
    * @see {@link PointSource}
    */
   class CanvasVisibility extends CanvasLayer {
-
     /**
      * The currently revealed vision.
      */
-    vision: CanvasVisionContainer;
+    vision: CanvasVisionMask.CanvasVisionContainer;
 
     /**
      * The exploration container which tracks exploration progress.
@@ -33,7 +32,10 @@ declare global {
      * }
      * ```
      */
-    visionModeData: { source: foundry.canvas.sources.PointVisionSource.Any | null; activeLightingOptions: Record<string, unknown> };
+    visionModeData: {
+      source: foundry.canvas.sources.PointVisionSource.Any | null;
+      activeLightingOptions: Record<string, unknown>;
+    };
 
     /**
      * Define whether each lighting layer is enabled, required, or disabled by this vision mode.
@@ -145,20 +147,23 @@ declare global {
      * @param point   - The point in space to test, an object with coordinates x and y.
      * @param options - Additional options which modify visibility testing.
      */
-    _createVisibilityTestConfig(point: Point, options?: InexactPartial<{
-      /**
-       * A numeric radial offset which allows for a non-exact match.
-       * For example, if tolerance is 2 then the test will pass if the point
-       * is within 2px of a vision polygon
-       * @defaultValue `2`
-       */
-      tolerance: number;
+    _createVisibilityTestConfig(
+      point: Point,
+      options?: InexactPartial<{
+        /**
+         * A numeric radial offset which allows for a non-exact match.
+         * For example, if tolerance is 2 then the test will pass if the point
+         * is within 2px of a vision polygon
+         * @defaultValue `2`
+         */
+        tolerance: number;
 
-      /**
-       * An optional reference to the object whose visibility is being tested
-       */
-      object: PlaceableObject | null;
-    }>): CanvasVisibilityTestConfig;
+        /**
+         * An optional reference to the object whose visibility is being tested
+         */
+        object: PlaceableObject | null;
+      }>,
+    ): CanvasVisibilityTestConfig;
 
     /**
      * @deprecated since v11, will be removed in v13
