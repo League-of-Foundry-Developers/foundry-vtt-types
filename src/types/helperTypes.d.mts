@@ -34,6 +34,32 @@ type _GetKey<T, K extends PropertyKey, D> = T extends { readonly [_ in K]?: infe
 /**
  * `Partial` is usually the wrong type.
  * In order to make it easier to audit unintentional uses of `Partial` this type is provided.
+ *
+ * ### Picking the right helper type
+ * - Favor `NullishProps` whenever it is valid. Allowing both `null` and
+ *   `undefined` is convenient for the end user and it is very common that
+ *   wherever `undefined` is valid so is `null`. For some examples it is valid
+ *   for `options.prop ??= "default"`, `options.prop ||= "default"`,
+ *   `if (options.prop) { ... }`, `if (options.prop == null)`, or so on.
+ * - Use `IntentionalPartial` when an explicit `undefined` is problematic but
+ *   leaving off the property entirely is fine. This primarily occurs when
+ *   patterns like `options = { ...defaultOptions, ...options }`,
+ *   `Object.apply({}, defaultOptions, options)`,
+ *   `foundry.utils.mergeObject(defaultOptions, options)`, or so on.
+ *
+ *   Note that {@link foundry.utils.mergeObject | `foundry.utils.mergeObject`}
+ *   also expands the object. So once `ExpandsTo` exists you should also use
+ *   that helper type.
+ *
+ *   What these patterns have in common is that if `options` looks like
+ *   `{ prop: undefined }` that will override whatever is in `defaultOptions`
+ *   and may cause issues. Note that even if you see one of these patterns you
+ *   also need to ensure that `undefined` would cause issues down the road
+ *   before using `IntentionalPartial` as it could be an intended way of
+ *   resetting a property.
+ * - Use `InexactPartial` when `null` is problematic but `undefined` is not.
+ *   This should be a relatively rare situation but may come up if there are
+ *   specific checks for `undefined` that cause issues with `null`.
  */
 export type IntentionalPartial<T> = Partial<T>;
 

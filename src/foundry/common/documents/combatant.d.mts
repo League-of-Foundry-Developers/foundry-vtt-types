@@ -75,18 +75,18 @@ declare namespace BaseCombatant {
      * The _id of an Actor associated with this Combatant
      * @defaultValue `null`
      */
-    actorId: fields.ForeignDocumentField<documents.BaseActor, { label: "COMBAT.CombatantActor"; idOnly: true }>;
+    actorId: fields.ForeignDocumentField<typeof documents.BaseActor, { label: "COMBAT.CombatantActor"; idOnly: true }>;
 
     /**
      * The _id of a Token associated with this Combatant
      * @defaultValue `null`
      */
-    tokenId: fields.ForeignDocumentField<documents.BaseToken, { label: "COMBAT.CombatantToken"; idOnly: true }>;
+    tokenId: fields.ForeignDocumentField<typeof documents.BaseToken, { label: "COMBAT.CombatantToken"; idOnly: true }>;
 
     /**
      * @defaultValue `null`
      */
-    sceneId: fields.ForeignDocumentField<documents.BaseScene, { label: "COMBAT.CombatantScene"; idOnly: true }>;
+    sceneId: fields.ForeignDocumentField<typeof documents.BaseScene, { label: "COMBAT.CombatantScene"; idOnly: true }>;
 
     /**
      * A customized name which replaces the name of the Token in the tracker

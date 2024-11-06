@@ -1,5 +1,4 @@
 import { expectTypeOf } from "vitest";
-import type { ConstructorOf } from "../../../../src/types/utils.d.mts";
 
 // #2554 Null and undefined for SchemaField and EmbeddedDataField
 
@@ -49,7 +48,7 @@ if (myJournalEntryPage.system instanceof foundry.abstract.TypeDataModel) {
 
 /** EmbeddedDataField */
 
-declare const embeddedModel: foundry.data.LightData;
+declare const embeddedModel: typeof foundry.data.LightData;
 declare type embeddedOptions = foundry.data.fields.EmbeddedDataField.Options<typeof embeddedModel>;
 declare const embeddedAssignment: foundry.data.fields.EmbeddedDataField.AssignmentType<
   typeof embeddedModel,
@@ -71,8 +70,8 @@ expectTypeOf(embeddedModel["schema"]["fields"]["color"]).toEqualTypeOf<
   foundry.data.fields.ColorField<{ label: "LIGHT.Color" }>
 >();
 
-declare const embeddedLightField: foundry.data.fields.EmbeddedDataField<foundry.data.LightData>;
-expectTypeOf(embeddedLightField.model).toEqualTypeOf<ConstructorOf<foundry.data.LightData>>();
+declare const embeddedLightField: foundry.data.fields.EmbeddedDataField<typeof foundry.data.LightData>;
+expectTypeOf(embeddedLightField.model).toEqualTypeOf<typeof foundry.data.LightData>();
 
 declare const schemaWithLight: foundry.data.fields.SchemaField.InnerInitializedType<{
   light: typeof embeddedLightField;

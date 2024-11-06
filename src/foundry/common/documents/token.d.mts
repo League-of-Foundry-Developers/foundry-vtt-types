@@ -81,7 +81,7 @@ declare class BaseToken extends Document<BaseToken.Schema, BaseToken.Metadata, a
  * A special subclass of EmbeddedDocumentField which allows construction of the ActorDelta to be lazily evaluated.
  */
 export class ActorDeltaField<
-  DocumentType extends Document.Any,
+  DocumentType extends Document.AnyConstructor,
   Options extends fields.EmbeddedDocumentField.Options<DocumentType> = fields.EmbeddedDocumentField.DefaultOptions,
 > extends fields.EmbeddedDocumentField<DocumentType, Options> {
   override initialize(
@@ -268,7 +268,7 @@ declare namespace BaseToken {
      * Configuration of the light source that this Token emits
      * @defaultValue see {@link LightData}
      */
-    light: fields.EmbeddedDataField<LightData>;
+    light: fields.EmbeddedDataField<typeof LightData>;
 
     /**
      * Configuration of sight and vision properties for the Token
@@ -466,13 +466,13 @@ declare namespace BaseToken {
      * The _id of an Actor document which this Token represents
      * @defaultValue `null`
      */
-    actorId: fields.ForeignDocumentField<documents.BaseActor, { idOnly: true }>;
+    actorId: fields.ForeignDocumentField<typeof documents.BaseActor, { idOnly: true }>;
 
     /**
      * The ActorDelta embedded document which stores the differences between this
      * token and the base actor it represents.
      */
-    delta: ActorDeltaField<documents.BaseActor>;
+    delta: ActorDeltaField<typeof documents.BaseActor>;
 
     /**
      * The x-coordinate of the top-left corner of the Token

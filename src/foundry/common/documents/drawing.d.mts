@@ -106,13 +106,13 @@ declare namespace BaseDrawing {
      * The _id of the user who created the drawing
      * @defaultValue `game.user?.id`
      */
-    author: fields.ForeignDocumentField<documents.BaseUser, { nullable: false; initial: () => string }>;
+    author: fields.ForeignDocumentField<typeof documents.BaseUser, { nullable: false; initial: () => string }>;
 
     /**
      * The geometric shape of the drawing
      * @defaultValue see {@link ShapeData.Schema}
      */
-    shape: fields.EmbeddedDataField<ShapeData>;
+    shape: fields.EmbeddedDataField<typeof ShapeData>;
 
     /**
      * The x-coordinate position of the top-left corner of the drawn shape

@@ -90,7 +90,7 @@ declare namespace BaseAmbientLight {
      * Light configuration data
      * @defaultValue see {@link LightData}
      */
-    config: fields.EmbeddedDataField<LightData>;
+    config: fields.EmbeddedDataField<typeof LightData>;
 
     /**
      * Is the light source currently hidden?

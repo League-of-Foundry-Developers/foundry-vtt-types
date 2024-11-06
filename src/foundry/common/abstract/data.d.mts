@@ -405,7 +405,7 @@ declare namespace DataModel {
     | fields.SchemaField.InnerAssignmentType<Schema>
     | DataModel<Schema, any>;
 
-  type ConstructorDataFor<ConcreteDataModel extends DataModel.Any> = ConstructorData<SchemaFor<ConcreteDataModel>>;
+  type ConstructorDataFor<ConcreteDataModel extends DataModel.Any> = ConstructorData<SchemaOf<ConcreteDataModel>>;
 
   interface ConstructorOptions<Parent extends Any | null = null> {
     /**
@@ -432,10 +432,12 @@ declare namespace DataModel {
   type AnyConstructor = typeof AnyDataModel;
 
   /**
-   * A helper type to extract the {@link SchemaFor} from a {@link DataModel}.
+   * A helper type to extract the {@link SchemaOf} from a {@link DataModel}.
    * @typeParam ModelType - the DataModel for the embedded data
    */
-  type SchemaFor<ModelType extends DataModel.Any> = ModelType["schema"]["fields"];
+  type SchemaOf<ModelType extends DataModel.Any> = ModelType["schema"]["fields"];
+
+  type SchemaOfClass<ConcreteClass extends DataModel.AnyConstructor> = SchemaOf<InstanceType<ConcreteClass>>;
 
   interface UpdateOptions {
     dryRun?: boolean;
@@ -449,7 +451,7 @@ declare namespace DataModel {
   }
 }
 
-declare class AnyDataModel extends DataModel<any, any> {
+declare abstract class AnyDataModel extends DataModel<any, any> {
   constructor(arg0: never, ...args: never[]);
 }
 

@@ -1,17 +1,12 @@
-import type {
-  RemoveIndexSignatures,
-  ConstructorOf,
-  SimpleMerge,
-  ValueOf,
-  AnyObject,
-  EmptyObject,
-} from "../../../types/utils.d.mts";
+import type { RemoveIndexSignatures, SimpleMerge, ValueOf, AnyObject, EmptyObject } from "../../../types/utils.d.mts";
 import type { DataModel } from "../abstract/data.mts";
 import type Document from "../abstract/document.mts";
 import type { EmbeddedCollection, EmbeddedCollectionDelta } from "../abstract/module.d.mts";
 import type { DOCUMENT_OWNERSHIP_LEVELS } from "../constants.d.mts";
 import type { CONST } from "../../client-esm/client.d.mts";
 import type { DataModelValidationFailure } from "./validation-failure.mts";
+import type { EffectChangeData } from "../documents/_types.d.mts";
+import type { FormInputConfig } from "../../client-esm/applications/forms/fields.d.mts";
 
 declare global {
   /**
@@ -118,7 +113,7 @@ declare abstract class DataField<
   /**
    * @param options - Options which configure the behavior of the field
    */
-  constructor(options?: Options);
+  constructor(options?: Options, context?: DataField.Context);
 
   /** The initially provided options which configure the data field */
   options: Options;
@@ -329,6 +324,144 @@ declare abstract class DataField<
    * @param path - The field path as an array of strings
    */
   protected _getField(path: string[]): unknown; // TODO: Type further.
+
+  /**
+   * Does this form field class have defined form support?
+   */
+  static get hasFormSupport(): boolean;
+
+  /**
+   * Render this DataField as an HTML element.
+   * @param config - Form element configuration parameters
+   * @throws An Error if this DataField subclass does not support input rendering
+   * @returns A rendered HTMLElement for the field
+   */
+  toInput(config?: FormInputConfig): HTMLElement | HTMLCollection;
+
+  /**
+   * Render this DataField as an HTML element.
+   * Subclasses should implement this method rather than the public toInput method which wraps it.
+   * @param config - Form element configuration parameters
+   * @throws An Error if this DataField subclass does not support input rendering
+   * @returns A rendered HTMLElement for the field
+   */
+  protected _toInput(config: FormInputConfig): HTMLElement | HTMLCollection;
+
+  /**
+   * Render this DataField as a standardized form-group element.
+   * @param groupConfig - Configuration options passed to the wrapping form-group
+   * @param inputConfig - Input element configuration options passed to DataField#toInput
+   * @returns The rendered form group element
+   */
+  toFormGroup(groupConfig?: FormInputConfig, inputConfig?: FormInputConfig): HTMLDivElement;
+
+  /**
+   * Apply an ActiveEffectChange to this field.
+   * @param value  - The field's current value.
+   * @param model  - The model instance.
+   * @param change - The change to apply.
+   * @returns The updated value.
+   */
+  applyChange(value: InitializedType, model: DataModel.Any, change: EffectChangeData): InitializedType;
+
+  /**
+   * Cast a change delta into an appropriate type to be applied to this field.
+   * @param delta - The change delta.
+   * @internal
+   */
+  // Note(LukeAbby): Technically since this defers to `_cast` it should take whatever `_cast` can.
+  // But it always must be able to take a `string` because that's how `applyChange` calls it.
+  protected _castChangeDelta(delta: string): InitializedType;
+
+  /**
+   * Apply an ADD change to this field.
+   * @param value  - The field's current value.
+   * @param delta  - The change delta.
+   * @param model  - The model instance.
+   * @param change - The original change data.
+   * @returns - The updated value.
+   */
+  protected _applyChangeAdd(
+    value: InitializedType,
+    delta: InitializedType,
+    model: DataModel.Any,
+    change: EffectChangeData,
+  ): InitializedType | undefined;
+
+  /**
+   * Apply a MULTIPLY change to this field.
+   * @param value  - The field's current value.
+   * @param delta  - The change delta.
+   * @param model  - The model instance.
+   * @param change - The original change data.
+   * @returns The updated value.
+   */
+  protected _applyChangeMultiply(
+    value: InitializedType,
+    delta: InitializedType,
+    model: DataModel.Any,
+    change: EffectChangeData,
+  ): InitializedType | undefined;
+
+  /**
+   * Apply an OVERRIDE change to this field.
+   * @param value  - The field's current value.
+   * @param delta  - The change delta.
+   * @param model  - The model instance.
+   * @param change - The original change data.
+   * @returns The updated value.
+   */
+  protected _applyChangeOverride(
+    value: InitializedType,
+    delta: InitializedType,
+    model: DataModel.Any,
+    change: EffectChangeData,
+  ): InitializedType | undefined;
+
+  /**
+   * Apply an UPGRADE change to this field.
+   * @param value - The field's current value.
+   * @param delta - The change delta.
+   * @param model - The model instance.
+   * @param change - The original change data.
+   * @returns - The updated value.
+   */
+  protected _applyChangeUpgrade(
+    value: InitializedType,
+    delta: InitializedType,
+    model: DataModel.Any,
+    change: EffectChangeData,
+  ): InitializedType | undefined;
+
+  /**
+   * Apply a DOWNGRADE change to this field.
+   * @param value  - The field's current value.
+   * @param delta  - The change delta.
+   * @param model  - The model instance.
+   * @param change - The original change data.
+   * @returns The updated value.
+   */
+  protected _applyChangeDowngrade(
+    value: InitializedType,
+    delta: InitializedType,
+    model: DataModel.Any,
+    change: EffectChangeData,
+  ): InitializedType | undefined;
+
+  /**
+   * Apply a CUSTOM change to this field.
+   * @param value - The field's current value.
+   * @param delta - The change delta.
+   * @param model - The model instance.
+   * @param change - The original change data.
+   * @returns - The updated value.
+   */
+  protected _applyChangeCustom(
+    value: InitializedType,
+    delta: InitializedType,
+    model: DataModel.Any,
+    change: EffectChangeData,
+  ): InitializedType;
 }
 
 declare namespace DataField {
@@ -340,6 +473,12 @@ declare namespace DataField {
 
   type AssignmentTypeFor<ConcreteDataField extends Any> =
     ConcreteDataField extends DataField<any, infer AssignmentType, any, any> ? AssignmentType : never;
+
+  type InitializedTypeFor<ConcreteDataField extends Any> =
+    ConcreteDataField extends DataField<any, any, infer InitializedType, any> ? InitializedType : never;
+
+  type PersistedTypeFor<ConcreteDataField extends Any> =
+    ConcreteDataField extends DataField<any, any, any, infer PersistedType> ? PersistedType : never;
 
   /** The type of the default options for the {@link DataField} class. */
   interface DefaultOptions {
@@ -429,6 +568,14 @@ declare namespace DataField {
     source?: AnyObject;
     validate?: (this: DataField, value: unknown, options: ValidationOptions<DataField>) => boolean;
   }
+
+  interface Context {
+    /** A field name to assign to the constructed field */
+    name: string;
+
+    /** Another data field which is a hierarchical parent of this one */
+    parent: DataField.Any;
+  }
 }
 
 /**
@@ -460,7 +607,7 @@ declare class SchemaField<
    * @param options - Options which configure the behavior of the field
    */
   // Saying `fields: Fields` here causes the inference for the fields to be unnecessarily widened. This might effectively be a no-op but it fixes the inference.
-  constructor(fields: { [K in keyof Fields]: Fields[K] }, options?: Options);
+  constructor(fields: { [K in keyof Fields]: Fields[K] }, options?: Options, context?: DataField.Context);
 
   /** @defaultValue `true` */
   override required: boolean;
@@ -609,7 +756,7 @@ declare namespace SchemaField {
   type InnerInitializedType<Fields extends DataSchema> = RemoveIndexSignatures<{
     [Key in keyof Fields]: Fields[Key] extends DataField<any, any, infer InitType, any>
       ? Fields[Key] extends EmbeddedDataField<infer Model, any, any, any, any>
-        ? Model
+        ? InstanceType<Model>
         : Fields[Key] extends SchemaField<infer SubSchema, any, any, any, any>
           ? InnerInitializedType<SubSchema>
           : InitType
@@ -814,7 +961,7 @@ declare class NumberField<
   /**
    * @param options - Options which configure the behavior of the field
    */
-  constructor(options?: Options);
+  constructor(options?: Options, context?: DataField.Context);
 
   /** @defaultValue `null` */
   override initial: DataFieldOptions.InitialType<InitializedType>;
@@ -985,7 +1132,7 @@ declare class StringField<
   /**
    * @param options - Options which configure the behavior of the field
    */
-  constructor(options?: Options);
+  constructor(options?: Options, context?: DataField.Context);
 
   /** @defaultValue `undefined` */
   override initial: DataFieldOptions.InitialType<InitializedType>;
@@ -1252,7 +1399,7 @@ declare class ArrayField<
    * @param element - A DataField instance which defines the type of element contained in the Array.
    * @param options - Options which configure the behavior of the field
    */
-  constructor(element: ElementFieldType, options?: Options);
+  constructor(element: ElementFieldType, options?: Options, context?: DataField.Context);
 
   /** @defaultValue `true` */
   override required: boolean;
@@ -1592,22 +1739,22 @@ declare namespace SetField {
  * InitialValue: `{}`
  */
 declare class EmbeddedDataField<
-  const ModelType extends DataModel.Any,
+  const ModelType extends DataModel.AnyConstructor,
   const Options extends EmbeddedDataField.Options<ModelType> = EmbeddedDataField.DefaultOptions,
   const AssignmentType = EmbeddedDataField.AssignmentType<ModelType, Options>,
   const InitializedType = EmbeddedDataField.InitializedType<ModelType, Options>,
   const PersistedType extends AnyObject | null | undefined = EmbeddedDataField.PersistedType<ModelType, Options>,
-> extends SchemaField<DataModel.SchemaFor<ModelType>, Options, AssignmentType, InitializedType, PersistedType> {
+> extends SchemaField<DataModel.SchemaOfClass<ModelType>, Options, AssignmentType, InitializedType, PersistedType> {
   /**
    * @param model   - The class of DataModel which should be embedded in this field
    * @param options - Options which configure the behavior of the field
    */
-  constructor(model: ConstructorOf<ModelType>, options?: Options);
+  constructor(model: ModelType, options?: Options, context?: DataField.Context);
 
   /**
    * The embedded DataModel definition which is contained in this field.
    */
-  model: ConstructorOf<ModelType>;
+  model: ModelType;
 
   protected override _initialize(fields: DataSchema): DataSchema;
 
@@ -1634,8 +1781,8 @@ declare namespace EmbeddedDataField {
    * A shorthand for the options of an EmbeddedDataField class.
    * @typeParam ModelType - the DataModel for the embedded data
    */
-  type Options<ModelType extends DataModel.Any> = DataFieldOptions<
-    SchemaField.InnerAssignmentType<DataModel.SchemaFor<ModelType>> | __SchemaFieldInitial
+  type Options<ModelType extends DataModel.AnyConstructor> = DataFieldOptions<
+    SchemaField.InnerAssignmentType<DataModel.SchemaOfClass<ModelType>> | __SchemaFieldInitial
   >;
 
   /** The type of the default options for the {@link EmbeddedDataField} class. */
@@ -1646,7 +1793,7 @@ declare namespace EmbeddedDataField {
    * @typeParam ModelType - the DataModel for the embedded data
    * @typeParam Opts      - the options that override the default options
    */
-  type MergedOptions<ModelType extends DataModel.Any, Opts extends Options<ModelType>> = SimpleMerge<
+  type MergedOptions<ModelType extends DataModel.AnyConstructor, Opts extends Options<ModelType>> = SimpleMerge<
     DefaultOptions,
     Opts
   >;
@@ -1657,10 +1804,10 @@ declare namespace EmbeddedDataField {
    * @typeParam Opts      - the options that override the default options
    */
   type AssignmentType<
-    ModelType extends DataModel.Any,
+    ModelType extends DataModel.AnyConstructor,
     Opts extends Options<ModelType>,
   > = DataField.DerivedAssignmentType<
-    SchemaField.InnerAssignmentType<DataModel.SchemaFor<ModelType>>,
+    SchemaField.InnerAssignmentType<DataModel.SchemaOfClass<ModelType>>,
     MergedOptions<ModelType, Opts>
   >;
 
@@ -1671,10 +1818,10 @@ declare namespace EmbeddedDataField {
    */
   // FIXME: Schema is unsure in src\foundry\common\data\data.d.mts
   type InitializedType<
-    ModelType extends DataModel.Any,
+    ModelType extends DataModel.AnyConstructor,
     Opts extends Options<ModelType>,
   > = DataField.DerivedInitializedType<
-    SchemaField.InnerInitializedType<DataModel.SchemaFor<ModelType>>,
+    SchemaField.InnerInitializedType<DataModel.SchemaOfClass<ModelType>>,
     MergedOptions<ModelType, Opts>
   >;
 
@@ -1684,10 +1831,10 @@ declare namespace EmbeddedDataField {
    * @typeParam Opts      - the options that override the default options
    */
   type PersistedType<
-    ModelType extends DataModel.Any,
+    ModelType extends DataModel.AnyConstructor,
     Opts extends Options<ModelType>,
   > = DataField.DerivedInitializedType<
-    SchemaField.InnerPersistedType<DataModel.SchemaFor<ModelType>>,
+    SchemaField.InnerPersistedType<DataModel.SchemaOfClass<ModelType>>,
     MergedOptions<ModelType, Opts>
   >;
 }
@@ -1744,7 +1891,7 @@ declare class EmbeddedCollectionField<
    * @param element - The type of Document which belongs to this embedded collection
    * @param options - Options which configure the behavior of the field
    */
-  constructor(element: ElementFieldType, options?: Options);
+  constructor(element: ElementFieldType, options?: Options, context?: DataField.Context);
 
   /** @defaultValue `true` */
   override readonly: true;
@@ -2064,7 +2211,7 @@ declare namespace EmbeddedCollectionDeltaField {
  * InitialValue: `{}`
  */
 declare class EmbeddedDocumentField<
-  const DocumentType extends Document.Any,
+  const DocumentType extends Document.AnyConstructor,
   const Options extends EmbeddedDocumentField.Options<DocumentType> = EmbeddedDocumentField.DefaultOptions,
   const AssignmentType = EmbeddedDocumentField.AssignmentType<DocumentType, Options>,
   const InitializedType = EmbeddedDocumentField.InitializedType<DocumentType, Options>,
@@ -2074,12 +2221,12 @@ declare class EmbeddedDocumentField<
    * @param model   - The type of Document which is embedded.
    * @param options - Options which configure the behavior of the field.
    */
-  constructor(model: ConstructorOf<DocumentType>, options?: Options);
+  constructor(model: DocumentType, options?: Options, context?: DataField.Context);
 
   /** @defaultValue `true` */
   override nullable: boolean;
 
-  protected static override get _defaults(): EmbeddedDocumentField.Options<Document.Any>;
+  protected static override get _defaults(): EmbeddedDocumentField.Options<Document.AnyConstructor>;
 
   /** @defaultValue `true` */
   static override hierarchical: boolean;
@@ -2102,8 +2249,8 @@ declare namespace EmbeddedDocumentField {
    * A shorthand for the options of an EmbeddedDocumentField class.
    * @typeParam DocumentType - the type of the embedded Document
    */
-  type Options<DocumentType extends Document.Any> = DataFieldOptions<
-    SchemaField.InnerAssignmentType<DataModel.SchemaFor<DocumentType>> | __SchemaFieldInitial
+  type Options<DocumentType extends Document.AnyConstructor> = DataFieldOptions<
+    SchemaField.InnerAssignmentType<DataModel.SchemaOfClass<DocumentType>> | __SchemaFieldInitial
   >;
 
   /** The type of the default options for the {@link EmbeddedDocumentField} class. */
@@ -2119,7 +2266,7 @@ declare namespace EmbeddedDocumentField {
    * @typeParam DocumentType - the type of the embedded Document
    * @typeParam Opts         - the options that override the default options
    */
-  type MergedOptions<DocumentType extends Document.Any, Opts extends Options<DocumentType>> = SimpleMerge<
+  type MergedOptions<DocumentType extends Document.AnyConstructor, Opts extends Options<DocumentType>> = SimpleMerge<
     DefaultOptions,
     Opts
   >;
@@ -2130,10 +2277,10 @@ declare namespace EmbeddedDocumentField {
    * @typeParam Opts         - the options that override the default options
    */
   type AssignmentType<
-    DocumentType extends Document.Any,
+    DocumentType extends Document.AnyConstructor,
     Opts extends Options<DocumentType>,
   > = DataField.DerivedAssignmentType<
-    SchemaField.InnerAssignmentType<DataModel.SchemaFor<DocumentType>>,
+    SchemaField.InnerAssignmentType<DataModel.SchemaOfClass<DocumentType>>,
     MergedOptions<DocumentType, Opts>
   >;
 
@@ -2143,10 +2290,10 @@ declare namespace EmbeddedDocumentField {
    * @typeParam Opts         - the options that override the default options
    */
   type InitializedType<
-    DocumentType extends Document.Any,
+    DocumentType extends Document.AnyConstructor,
     Opts extends Options<DocumentType>,
   > = DataField.DerivedInitializedType<
-    SchemaField.InnerInitializedType<DataModel.SchemaFor<DocumentType>>,
+    SchemaField.InnerInitializedType<DataModel.SchemaOfClass<DocumentType>>,
     MergedOptions<DocumentType, Opts>
   >;
 
@@ -2156,10 +2303,10 @@ declare namespace EmbeddedDocumentField {
    * @typeParam Opts         - the options that override the default options
    */
   type PersistedType<
-    DocumentType extends Document.Any,
+    DocumentType extends Document.AnyConstructor,
     Opts extends Options<DocumentType>,
   > = DataField.DerivedInitializedType<
-    SchemaField.InnerPersistedType<DataModel.SchemaFor<DocumentType>>,
+    SchemaField.InnerPersistedType<DataModel.SchemaOfClass<DocumentType>>,
     MergedOptions<DocumentType, Opts>
   >;
 }
@@ -2252,6 +2399,61 @@ declare namespace DocumentIdField {
 }
 
 /**
+ * A subclass of {@link StringField} which supports referencing some other Document by its UUID.
+ * This field may not be blank, but may be null to indicate that no UUID is referenced.
+ */
+declare class DocumentUUIDField<
+  const Options extends DocumentUUIDField.Options = DocumentUUIDField.DefaultOptions,
+  const AssignmentType = StringField.AssignmentType<Options>,
+  const InitializedType = StringField.InitializedType<Options>,
+  const PersistedType extends string | null | undefined = StringField.InitializedType<Options>,
+> extends StringField<Options, AssignmentType, InitializedType, PersistedType> {
+  /**
+   * @param options - Options which configure the behavior of the field
+   * @param context - Additional context which describes the field
+   */
+  constructor(options?: Options, context?: DataField.Context);
+
+  /** A specific document type in CONST.ALL_DOCUMENT_TYPES required by this field */
+  type: Document.Type | undefined;
+
+  /** Does this field require (or prohibit) embedded documents? */
+  embedded: boolean | undefined;
+
+  static get _defaults(): DocumentUUIDField.Options;
+
+  protected override _validateType(
+    value: InitializedType,
+    options?: DataField.ValidationOptions<DataField.Any>,
+  ): boolean | DataModelValidationFailure | void;
+
+  protected override _toInput(config: FormInputConfig): HTMLElement | HTMLCollection;
+}
+
+declare namespace DocumentUUIDField {
+  type Options = StringFieldOptions &
+    StringFieldOptions & {
+      /* A specific document type in CONST.ALL_DOCUMENT_TYPES required by this field */
+      type?: Document.Type | undefined;
+
+      /* Does this field require (or prohibit) embedded documents? */
+      embedded?: boolean | undefined;
+    };
+
+  type DefaultOptions = SimpleMerge<
+    StringField.DefaultOptions,
+    {
+      required: true;
+      blank: false;
+      nullable: true;
+      initial: null;
+      type: undefined;
+      embedded: undefined;
+    }
+  >;
+}
+
+/**
  * A special class of [StringField]{@link StringField} field which references another DataModel by its id.
  * This field may also be null to indicate that no foreign model is linked.
  * @typeParam DocumentType    - the type of the foreign document constructor
@@ -2267,7 +2469,7 @@ declare namespace DocumentIdField {
  * InitialValue: `null`
  */
 declare class ForeignDocumentField<
-  DocumentType extends Document.Any,
+  DocumentType extends Document.AnyConstructor,
   Options extends ForeignDocumentField.Options = ForeignDocumentField.DefaultOptions,
   AssignmentType = ForeignDocumentField.AssignmentType<DocumentType, Options>,
   InitializedType = ForeignDocumentField.InitializedType<DocumentType, Options>,
@@ -2277,7 +2479,7 @@ declare class ForeignDocumentField<
    * @param model   - The foreign DataModel class definition which this field should link to.
    * @param options - Options which configure the behavior of the field
    */
-  constructor(model: ConstructorOf<DocumentType>, options?: Options);
+  constructor(model: DocumentType, options?: Options, context?: DataField.Context);
 
   /** @defaultValue `true` */
   override nullable: boolean;
@@ -2291,7 +2493,7 @@ declare class ForeignDocumentField<
   /**
    * A reference to the model class which is stored in this field
    */
-  model: ConstructorOf<DocumentType>;
+  model: DocumentType;
 
   protected static override get _defaults(): ForeignDocumentField.Options;
 
@@ -2334,17 +2536,20 @@ declare namespace ForeignDocumentField {
    * A shorthand for the assignment type of a ForeignDocumentField class.
    * @typeParam Opts - the options that override the default options
    */
-  type AssignmentType<ConcreteDocument extends Document.Any, Opts extends Options> = DataField.DerivedAssignmentType<
-    string | Document.ConfiguredClassForName<ConcreteDocument["documentName"]>,
-    MergedOptions<Opts>
-  >;
+  type AssignmentType<
+    ConcreteDocument extends Document.AnyConstructor,
+    Opts extends Options,
+  > = DataField.DerivedAssignmentType<string | Document.ToConfiguredClass<ConcreteDocument>, MergedOptions<Opts>>;
 
   /**
    * A shorthand for the initialized type of a ForeignDocumentField class.
    * @typeParam Opts - the options that override the default options
    */
-  type InitializedType<ConcreteDocument extends Document.Any, Opts extends Options> = DataField.DerivedInitializedType<
-    Opts["idOnly"] extends true ? string : Document.ConfiguredInstanceForName<ConcreteDocument["documentName"]>,
+  type InitializedType<
+    ConcreteDocument extends Document.AnyConstructor,
+    Opts extends Options,
+  > = DataField.DerivedInitializedType<
+    Opts["idOnly"] extends true ? string : Document.ToConfiguredClass<ConcreteDocument>,
     MergedOptions<Opts>
   >;
 
@@ -2489,7 +2694,7 @@ declare class FilePathField<
   /**
    * @param options - Options which configure the behavior of the field
    */
-  constructor(options?: Options);
+  constructor(options?: Options, context?: DataField.Context);
 
   /**
    * A set of categories in CONST.FILE_CATEGORIES which this field supports
@@ -2732,6 +2937,37 @@ declare namespace AlphaField {
 }
 
 /**
+ * A special [NumberField]{@link NumberField} represents a number between 0 (inclusive) and 1 (exclusive).
+ * Its values are normalized (modulo 1) to the range [0, 1) instead of being clamped.
+ */
+declare class HueField<
+  const Options extends NumberFieldOptions = NumberField.DefaultOptions,
+  const AssignmentType = NumberField.AssignmentType<Options>,
+  const InitializedType = NumberField.InitializedType<Options>,
+  const PersistedType extends number | null | undefined = NumberField.InitializedType<Options>,
+> extends NumberField<Options, AssignmentType, InitializedType, PersistedType> {
+  static get _defaults(): HueField.Options;
+
+  protected override _cast(value: AssignmentType): InitializedType;
+}
+
+declare namespace HueField {
+  type Options = NumberFieldOptions;
+
+  type DefaultOptions = SimpleMerge<
+    NumberField.DefaultOptions,
+    {
+      required: true;
+      nullable: false;
+      initial: 0;
+      min: 0;
+      max: 1;
+      validationError: "is not a number between 0 (inclusive) and 1 (exclusive)";
+    }
+  >;
+}
+
+/**
  * A special [ObjectField]{@link ObjectField} which captures a mapping of User IDs to Document permission levels.
  * @typeParam Options         - the options of the DocumentOwnershipField instance
  * @typeParam AssignmentType  - the type of the allowed assignment values of the DocumentOwnershipField
@@ -2819,11 +3055,14 @@ declare namespace DocumentOwnershipField {
  * InitialValue: `undefined`
  */
 declare class JSONField<
+  // TODO(LukeAbby): Due to the unconditional setting of `blank`, `trim`, and `choices` setting them is meaningless which basically means they're removed from the options.
   Options extends StringFieldOptions = JSONField.DefaultOptions,
   AssignmentType = JSONField.AssignmentType<Options>,
   InitializedType = JSONField.InitializedType<Options>,
   PersistedType extends string | null | undefined = JSONField.PersistedType<Options>,
 > extends StringField<Options, AssignmentType, InitializedType, PersistedType> {
+  constructor(options?: Options, context?: DataField.Context);
+
   /** @defaultValue `false` */
   override blank: boolean;
 
@@ -2894,6 +3133,21 @@ declare namespace JSONField {
     string,
     MergedOptions<Options>
   >;
+}
+
+/**
+ * A special subclass of {@link DataField} which can contain any value of any type.
+ * Any input is accepted and is treated as valid.
+ * It is not recommended to use this class except for very specific circumstances.
+ */
+// TODO(LukeAbby): This field effectively removes all options because there's no point asking for an options when none of them do anything.
+declare class AnyField extends DataField<DataFieldOptions.Any, unknown, unknown, unknown> {
+  override _cast(value: unknown): unknown;
+
+  protected override _validateType(
+    value: unknown,
+    options?: DataField.ValidationOptions<DataField.Any>,
+  ): boolean | DataModelValidationFailure | void;
 }
 
 /**
@@ -3120,6 +3374,12 @@ declare namespace DocumentStatsField {
 
   interface Schema extends DataSchema {
     /**
+     * The core version the Document was created in.
+     * @defaultValue `null`
+     */
+    coreVersion: StringField<{ required: true; blank: false; nullable: true; initial: null }>;
+
+    /**
      * The package name of the system the Document was created in.
      * @defaultValue `null`
      */
@@ -3130,12 +3390,6 @@ declare namespace DocumentStatsField {
      * @defaultValue `null`
      */
     systemVersion: StringField<{ required: true; blank: false; nullable: true; initial: null }>;
-
-    /**
-     * The core version the Document was created in.
-     * @defaultValue `null`
-     */
-    coreVersion: StringField<{ required: true; blank: false; nullable: true; initial: null }>;
 
     /**
      * A timestamp of when the Document was created.
@@ -3153,8 +3407,83 @@ declare namespace DocumentStatsField {
      * The ID of the user who last modified the Document.
      * @defaultValue `null`
      */
-    lastModifiedBy: ForeignDocumentField<foundry.documents.BaseUser, { idOnly: true }>;
+    lastModifiedBy: ForeignDocumentField<typeof foundry.documents.BaseUser, { idOnly: true }>;
+
+    compendiumSource: DocumentUUIDField;
+    duplicateSource: DocumentUUIDField;
   }
+}
+
+/**
+ * A subclass of [StringField]{@link StringField} that is used specifically for the Document "type" field.
+ */
+declare class DocumentTypeField<
+  const ConcreteDocumentClass extends Document.AnyConstructor,
+  const Options extends DocumentTypeField.Options = DocumentTypeField.DefaultOptions,
+  const AssignmentType = DocumentTypeField.AssignmentType<ConcreteDocumentClass, Options>,
+  const InitializedType = DocumentTypeField.InitializedType<ConcreteDocumentClass, Options>,
+  const PersistedType extends string | null | undefined = DocumentTypeField.InitializedType<
+    ConcreteDocumentClass,
+    Options
+  >,
+> extends StringField<
+  DocumentTypeField.MergedOptions<ConcreteDocumentClass, Options>,
+  AssignmentType,
+  InitializedType,
+  PersistedType
+> {
+  /**
+   * @param documentClass - The base document class which belongs in this field
+   * @param options - Options which configure the behavior of the field
+   * @param context - Additional context which describes the field
+   */
+  constructor(documentClass: ConcreteDocumentClass, options: DocumentTypeField.Options, context?: DataField.Context);
+
+  static override get _defaults(): DocumentTypeField.Options;
+
+  protected override _validateType(
+    value: InitializedType,
+    options?: DataField.ValidationOptions<DataField.Any>,
+  ): boolean | DataModelValidationFailure | void;
+}
+
+declare namespace DocumentTypeField {
+  /** The type of the default options for the {@link DocumentTypeField} class. */
+  type DefaultOptions = SimpleMerge<
+    StringField.DefaultOptions,
+    {
+      required: true;
+      nullable: false;
+      blank: false;
+    }
+  >;
+
+  interface Options extends StringFieldOptions {}
+
+  // TODO(LukeAbby): This class has effectively removed `choices` and `validationError` since they're unconditionally set in the constructor.
+  type MergedOptions<
+    ConcreteDocumentClass extends Document.AnyConstructor,
+    Options extends StringFieldOptions,
+  > = SimpleMerge<
+    SimpleMerge<DefaultOptions, Options>,
+    {
+      choices: () => ConcreteDocumentClass["TYPES"];
+      validationError: string;
+    }
+  >;
+
+  type AssignmentType<
+    ConcreteDocumentClass extends Document.AnyConstructor,
+    Options extends StringFieldOptions,
+  > = StringField.AssignmentType<MergedOptions<ConcreteDocumentClass, Options>>;
+  type InitializedType<
+    ConcreteDocumentClass extends Document.AnyConstructor,
+    Options extends StringFieldOptions,
+  > = StringField.InitializedType<MergedOptions<ConcreteDocumentClass, Options>>;
+  type PersistedType<
+    ConcreteDocumentClass extends Document.AnyConstructor,
+    Options extends StringFieldOptions,
+  > = StringField.InitializedType<MergedOptions<ConcreteDocumentClass, Options>>;
 }
 
 /**
@@ -3173,7 +3502,7 @@ declare namespace DocumentStatsField {
  */
 declare class TypeDataField<
   const SystemDocument extends Document.SystemConstructor,
-  const Options extends TypeDataField.Options<InstanceType<SystemDocument>> = TypeDataField.DefaultOptions,
+  const Options extends TypeDataField.Options<SystemDocument> = TypeDataField.DefaultOptions,
   const AssignmentType = TypeDataField.AssignmentType<SystemDocument, Options>,
   const InitializedType = TypeDataField.InitializedType<SystemDocument, Options>,
   const PersistedType extends AnyObject | null | undefined = TypeDataField.PersistedType<SystemDocument, Options>,
@@ -3182,7 +3511,7 @@ declare class TypeDataField<
    * @param document - The base document class which belongs in this field
    * @param options  - Options which configure the behavior of the field
    */
-  constructor(document: ConstructorOf<SystemDocument>, options?: Options);
+  constructor(document: SystemDocument, options?: Options);
 
   /** @defaultValue `true` */
   override required: boolean;
@@ -3190,9 +3519,9 @@ declare class TypeDataField<
   /**
    * The canonical document name of the document type which belongs in this field
    */
-  document: ConstructorOf<SystemDocument>;
+  document: SystemDocument;
 
-  protected static override get _defaults(): TypeDataField.Options<Document.Any>;
+  protected static override get _defaults(): TypeDataField.Options<Document.SystemConstructor>;
 
   /** @defaultValue `true` */
   static override recursive: boolean;
@@ -3213,7 +3542,7 @@ declare class TypeDataField<
    * @param type - The Document instance type
    * @returns The DataModel class or null
    */
-  getModelForType(type: string): ConstructorOf<DataModel.Any> | null;
+  getModelForType(type: string): DataModel.AnyConstructor | null;
 
   override getInitialValue(data: { type?: string }): InitializedType;
 
@@ -3247,8 +3576,8 @@ declare namespace TypeDataField {
    * A shorthand for the options of a TypeDataField class.
    * @typeParam DocumentType - the type of the embedded Document
    */
-  type Options<DocumentType extends Document.Any> = DataFieldOptions<
-    SchemaField.InnerAssignmentType<DataModel.SchemaFor<DocumentType>>
+  type Options<DocumentType extends Document.SystemConstructor> = DataFieldOptions<
+    SchemaField.InnerAssignmentType<DataModel.SchemaOfClass<DocumentType>>
   >;
 
   /** The type of the default options for the {@link TypeDataField} class. */
@@ -3264,7 +3593,7 @@ declare namespace TypeDataField {
    * @typeParam DocumentType - the type of the embedded Document
    * @typeParam Options - the options that override the default options
    */
-  type MergedOptions<DocumentType extends Document.Any, Opts extends Options<DocumentType>> = SimpleMerge<
+  type MergedOptions<DocumentType extends Document.SystemConstructor, Opts extends Options<DocumentType>> = SimpleMerge<
     DefaultOptions,
     Opts
   >;
@@ -3339,6 +3668,133 @@ declare namespace TypeDataField {
 }
 
 /**
+ * A subclass of [DataField]{@link DataField} which allows to typed schemas.
+ */
+declare class TypedSchemaField<
+  const Types extends TypedSchemaField.Types,
+  const Options extends TypedSchemaField.DefaultOptions = TypedSchemaField.DefaultOptions,
+  const AssignmentType = TypedSchemaField.AssignmentType<Types, Options>,
+  const InitializedType = TypedSchemaField.InitializedType<Types, Options>,
+  const PersistedType extends unknown | null | undefined = TypedSchemaField.PersistedType<Types, Options>,
+> extends DataField<Options, AssignmentType, InitializedType, PersistedType> {
+  /**
+   * @param types   - The different types this field can represent.
+   * @param options - Options which configure the behavior of the field
+   * @param context - Additional context which describes the field
+   */
+  constructor(types: Types, options: Options, context?: DataField.Context);
+
+  static get _defaults(): DataFieldOptions.Any;
+
+  /**
+   * The types of this field.
+   */
+  types: TypedSchemaField.ToConfiguredTypes<Types>;
+
+  protected override _getField(path: string[]): unknown;
+
+  protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions): InitializedType;
+
+  protected override _cast(value: AssignmentType): InitializedType;
+
+  protected override _validateSpecial(value: AssignmentType): boolean | void;
+
+  protected override _validateType(
+    value: InitializedType,
+    options?: DataField.ValidationOptions<DataField.Any>,
+  ): boolean | DataModelValidationFailure | void;
+
+  override initialize(
+    value: PersistedType,
+    model: DataModel.Any,
+    options?: AnyObject, // TODO: Type further.
+  ): (() => InitializedType | null) | InitializedType;
+
+  override toObject(value: InitializedType): PersistedType;
+
+  // TODO(LukeAbby): Type `TypedSchemaField#apply`.
+
+  migrateSource(sourceData: AnyObject, fieldData: unknown): unknown;
+}
+
+declare namespace TypedSchemaField {
+  type DefaultOptions = SimpleMerge<
+    DataField.DefaultOptions,
+    {
+      required: true;
+    }
+  >;
+
+  type ValidField = DataField<
+    {
+      required: true;
+      nullable: false;
+    },
+    any,
+    any,
+    any
+  >;
+
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+  type ValidDataSchema = {
+    readonly [field: string]: ValidField;
+  };
+
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+  type Types = {
+    [type: string]:
+      | ValidDataSchema
+      | SchemaField<ValidDataSchema, any, any, any, any>
+      | typeof DataModel<ValidDataSchema, any>;
+  };
+
+  type ToConfiguredTypes<Types extends TypedSchemaField.Types> = {
+    [K in keyof Types]: Types[K] extends DataModel.AnyConstructor ? EmbeddedDataField<Types[K]> : never;
+  };
+
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+  type ConfiguredTypes = {
+    [type: string]: SchemaField.Any;
+  };
+
+  /**
+   * @internal
+   */
+  type _AssignmentType<Types extends ConfiguredTypes> = {
+    [K in keyof Types]: DataField.AssignmentTypeFor<Types[K]>;
+  }[keyof Types];
+
+  type AssignmentType<
+    Types extends TypedSchemaField.Types,
+    Options extends TypedSchemaField.DefaultOptions,
+  > = DataField.DerivedAssignmentType<_AssignmentType<ToConfiguredTypes<Types>>, Options>;
+
+  /**
+   * @internal
+   */
+  type _InitializedType<Types extends ConfiguredTypes> = {
+    [K in keyof Types]: DataField.InitializedTypeFor<Types[K]>;
+  }[keyof Types];
+
+  type InitializedType<
+    Types extends TypedSchemaField.Types,
+    Options extends TypedSchemaField.DefaultOptions,
+  > = DataField.DerivedInitializedType<_InitializedType<ToConfiguredTypes<Types>>, Options>;
+
+  /**
+   * @internal
+   */
+  type _PersistedType<Types extends ConfiguredTypes> = {
+    [K in keyof Types]: DataField.PersistedTypeFor<Types[K]>;
+  }[keyof Types];
+
+  type PersistedType<
+    Types extends TypedSchemaField.Types,
+    _Options extends TypedSchemaField.DefaultOptions,
+  > = DataField.DerivedInitializedType<_PersistedType<ToConfiguredTypes<Types>>, _Options>;
+}
+
+/**
  * @deprecated since v11; ModelValidationError is deprecated. Please use DataModelValidationError instead.
  * @typeParam Errors - the type of the errors contained in this error
  */
@@ -3368,9 +3824,51 @@ declare namespace ModelValidationError {
   type Errors = Record<number | string | symbol, Error> | Error[] | string;
 }
 
+/**
+ * A subclass of {@link StringField} which contains JavaScript code.
+ */
+declare class JavaScriptField<
+  const Options extends JavaScriptField.Options = JavaScriptField.DefaultOptions,
+  const AssignmentType = StringField.AssignmentType<Options>,
+  const InitializedType = StringField.InitializedType<Options>,
+  const PersistedType extends string | null | undefined = StringField.InitializedType<Options>,
+> extends StringField<Options, AssignmentType, InitializedType, PersistedType> {
+  constructor(options?: Options, context?: DataField.Context);
+
+  static get _defaults(): JavaScriptField.Options;
+
+  protected override _validateType(
+    value: InitializedType,
+    options?: DataField.ValidationOptions<DataField.Any>,
+  ): boolean | DataModelValidationFailure | void;
+
+  override toFormGroup(groupConfig?: FormInputConfig, inputConfig?: FormInputConfig): HTMLDivElement;
+
+  protected override _toInput(config: FormInputConfig): HTMLElement | HTMLCollection;
+}
+
+declare namespace JavaScriptField {
+  // TODO(LukeAbby): `choices` is effectively deleted due to being unconditionally set to `undefined` in the constructor.
+  type Options = StringFieldOptions & {
+    /**
+     * Does the field allow async code?
+     * @defaultValue `false`
+     */
+    async?: boolean;
+  };
+
+  type DefaultOptions = SimpleMerge<
+    StringFieldOptions,
+    {
+      async: false;
+    }
+  >;
+}
+
 export {
   AlphaField,
   AngleField,
+  AnyField,
   ArrayField,
   BooleanField,
   ColorField,
@@ -3378,20 +3876,25 @@ export {
   DocumentIdField,
   DocumentOwnershipField,
   DocumentStatsField,
-  EmbeddedCollectionDeltaField,
-  EmbeddedCollectionField,
+  DocumentTypeField,
+  DocumentUUIDField,
   EmbeddedDataField,
+  EmbeddedCollectionField,
+  EmbeddedCollectionDeltaField,
   EmbeddedDocumentField,
   FilePathField,
   ForeignDocumentField,
   HTMLField,
+  HueField,
   IntegerSortField,
+  JavaScriptField,
   JSONField,
-  ModelValidationError,
   NumberField,
   ObjectField,
+  TypedSchemaField,
   SchemaField,
   SetField,
   StringField,
   TypeDataField,
+  ModelValidationError,
 };

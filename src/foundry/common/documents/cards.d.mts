@@ -162,7 +162,7 @@ declare namespace BaseCards {
      * The _id of a Folder which contains this document
      * @defaultValue `null`
      */
-    folder: fields.ForeignDocumentField<documents.BaseFolder>;
+    folder: fields.ForeignDocumentField<typeof documents.BaseFolder>;
 
     /**
      * The sort order of this stack relative to others in its parent collection
