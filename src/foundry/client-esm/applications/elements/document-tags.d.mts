@@ -68,7 +68,7 @@ declare class HTMLDocumentTagsElement extends AbstractFormInputElement<Record<st
 }
 
 declare namespace HTMLDocumentTagsElement {
-  interface DocumentTagsInputConfig extends FormInputConfig {
+  interface DocumentTagsInputConfig extends FormInputConfig<unknown> {
     /**
      * A specific document type in CONST.ALL_DOCUMENT_TYPES
      */

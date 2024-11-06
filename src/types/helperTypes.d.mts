@@ -58,8 +58,8 @@ type _GetKey<T, K extends PropertyKey, D> = T extends { readonly [_ in K]?: infe
  *   before using `IntentionalPartial` as it could be an intended way of
  *   resetting a property.
  * - Use `InexactPartial` when `null` is problematic but `undefined` is not.
- *   This should be a relatively rare situation but may come up if there are
- *   specific checks for `undefined` that cause issues with `null`.
+ *   The most common time this shows up is with the pattern
+ *   `exampleFunction({ prop = "foo" } = {}) { ... }`.
  */
 export type IntentionalPartial<T> = Partial<T>;
 

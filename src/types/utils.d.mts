@@ -45,8 +45,8 @@ export type AllKeysOf<T extends object> = T extends unknown ? keyof T : never;
  *   before using `IntentionalPartial` as it could be an intended way of
  *   resetting a property.
  * - Use `InexactPartial` when `null` is problematic but `undefined` is not.
- *   This should be a relatively rare situation but may come up if there are
- *   specific checks for `undefined` that cause issues with `null`.
+ *   The most common time this shows up is with the pattern
+ *   `exampleFunction({ prop = "foo" } = {}) { ... }`.
  *
  * @internal
  */
@@ -84,8 +84,8 @@ export type InexactPartial<T extends object, K extends AllKeysOf<T> = AllKeysOf<
  *   before using `IntentionalPartial` as it could be an intended way of
  *   resetting a property.
  * - Use `InexactPartial` when `null` is problematic but `undefined` is not.
- *   This should be a relatively rare situation but may come up if there are
- *   specific checks for `undefined` that cause issues with `null`.
+ *   The most common time this shows up is with the pattern
+ *   `exampleFunction({ prop = "foo" } = {}) { ... }`.
  *
  * @internal
  */
