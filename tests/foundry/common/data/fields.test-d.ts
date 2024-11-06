@@ -140,3 +140,12 @@ const _emptyOptions = {} satisfies DataField.Options.Default<number>;
 new foundry.data.fields.BooleanField({
   label: "foo",
 });
+
+// Name should not be required because it's filled in by the field's `fieldPath` property
+stringField.toInput({ value: 'foo' })
+
+// @ts-expect-error StringField input values MUST be valid for the field
+stringField.toInput({ value: 200 })
+
+// Inputs generated from a StringField should accept additional CONFIG properties from `createSelectInput`
+stringField.toInput({ blank: true })
