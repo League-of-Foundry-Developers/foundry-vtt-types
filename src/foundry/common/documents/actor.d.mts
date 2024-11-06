@@ -76,7 +76,7 @@ declare namespace BaseActor {
      * Default Token settings which are used for Tokens created from this Actor
      * @defaultValue see {@link PrototypeToken}
      */
-    prototypeToken: fields.EmbeddedDataField<PrototypeToken>;
+    prototypeToken: fields.EmbeddedDataField<typeof PrototypeToken>;
 
     /**
      * A Collection of Item embedded Documents
@@ -94,7 +94,7 @@ declare namespace BaseActor {
      * The _id of a Folder which contains this Actor
      * @defaultValue `null`
      */
-    folder: fields.ForeignDocumentField<documents.BaseFolder>;
+    folder: fields.ForeignDocumentField<typeof documents.BaseFolder>;
 
     /**
      * The numeric sort value which orders this Actor relative to its siblings

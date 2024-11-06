@@ -104,7 +104,7 @@ declare namespace BaseJournalEntry {
      * The _id of a Folder which contains this JournalEntry
      * @defaultValue `null`
      */
-    folder: fields.ForeignDocumentField<documents.BaseFolder>;
+    folder: fields.ForeignDocumentField<typeof documents.BaseFolder>;
 
     /**
      * The numeric sort value which orders this JournalEntry relative to its siblings

@@ -114,7 +114,7 @@ declare namespace BasePlaylist {
      * The _id of a Folder which contains this playlist
      * @defaultValue `null`
      */
-    folder: fields.ForeignDocumentField<documents.BaseFolder>;
+    folder: fields.ForeignDocumentField<typeof documents.BaseFolder>;
 
     /**
      * The sorting mode used for this playlist.

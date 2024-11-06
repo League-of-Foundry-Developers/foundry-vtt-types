@@ -70,7 +70,7 @@ declare namespace BaseCombat {
      * The _id of a Scene within which this Combat occurs
      * @defaultValue `null`
      */
-    scene: fields.ForeignDocumentField<documents.BaseScene>;
+    scene: fields.ForeignDocumentField<typeof documents.BaseScene>;
 
     /**
      * A Collection of Combatant embedded Documents

@@ -120,7 +120,7 @@ declare namespace BaseTableResult {
      * The _id of a Document within the collection this result references
      * @defaultValue `null`
      */
-    documentId: fields.ForeignDocumentField<Document<DataSchema, any>, { idOnly: true }>;
+    documentId: fields.ForeignDocumentField<typeof Document, { idOnly: true }>;
 
     /**
      * The probabilistic weight of this result relative to other results

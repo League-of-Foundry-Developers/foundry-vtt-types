@@ -93,13 +93,13 @@ declare namespace BaseNote {
      * The _id of a JournalEntry document which this Note represents
      * @defaultValue `null`
      */
-    entryId: fields.ForeignDocumentField<documents.BaseJournalEntry, { idOnly: true }>;
+    entryId: fields.ForeignDocumentField<typeof documents.BaseJournalEntry, { idOnly: true }>;
 
     /**
      * The _id of a specific JournalEntryPage document which this Note represents
      * @defaultValue `null`
      */
-    pageId: fields.ForeignDocumentField<documents.BaseJournalEntryPage, { idOnly: true }>;
+    pageId: fields.ForeignDocumentField<typeof documents.BaseJournalEntryPage, { idOnly: true }>;
 
     /**
      * The x-coordinate position of the center of the note icon

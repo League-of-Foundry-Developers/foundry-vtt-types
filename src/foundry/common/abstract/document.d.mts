@@ -903,7 +903,7 @@ declare abstract class Document<
   ): Promise<unknown>;
 }
 
-declare class AnyDocument extends Document<any, any, any> {
+declare abstract class AnyDocument extends Document<any, any, any> {
   constructor(arg0: never, ...args: never[]);
 
   // Note(LukeAbby): Specifically adding the `__DocumentBrand` should be redundant but in practice it seems to help tsc more efficiently deduce that it's actually inheriting from `Document`.

@@ -113,7 +113,7 @@ declare namespace BaseChatMessage {
      * The _id of the User document who generated this message
      * @defaultValue `game?.user?.id`
      */
-    user: fields.ForeignDocumentField<documents.BaseUser, { nullable: false; initial: () => string }>;
+    user: fields.ForeignDocumentField<typeof documents.BaseUser, { nullable: false; initial: () => string }>;
 
     /**
      * The timestamp at which point this message was generated
@@ -142,19 +142,19 @@ declare namespace BaseChatMessage {
        * The _id of the Scene where this message was created
        * @defaultValue `null`
        */
-      scene: fields.ForeignDocumentField<documents.BaseScene, { idOnly: true }>;
+      scene: fields.ForeignDocumentField<typeof documents.BaseScene, { idOnly: true }>;
 
       /**
        * The _id of the Actor who generated this message
        * @defaultValue `null`
        */
-      actor: fields.ForeignDocumentField<documents.BaseActor, { idOnly: true }>;
+      actor: fields.ForeignDocumentField<typeof documents.BaseActor, { idOnly: true }>;
 
       /**
        * The _id of the Token who generated this message
        * @defaultValue `null`
        */
-      token: fields.ForeignDocumentField<documents.BaseToken, { idOnly: true }>;
+      token: fields.ForeignDocumentField<typeof documents.BaseToken, { idOnly: true }>;
 
       /**
        * An overridden alias name used instead of the Actor or Token name
@@ -167,7 +167,7 @@ declare namespace BaseChatMessage {
      * An array of User _id values to whom this message is privately whispered
      * @defaultValue `[]`
      */
-    whisper: fields.ArrayField<fields.ForeignDocumentField<documents.BaseUser, { idOnly: true }>>;
+    whisper: fields.ArrayField<fields.ForeignDocumentField<typeof documents.BaseUser, { idOnly: true }>>;
 
     /**
      * Is this message sent blindly where the creating User cannot see it?

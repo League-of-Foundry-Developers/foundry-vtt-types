@@ -75,13 +75,13 @@ declare namespace BaseFogExploration {
      * @defaultValue `canvas?.scene?.id`
      */
     // FIXME: Initial should be able to return undefined
-    scene: fields.ForeignDocumentField<documents.BaseScene, { initial: () => string }>;
+    scene: fields.ForeignDocumentField<typeof documents.BaseScene, { initial: () => string }>;
 
     /**
      * The _id of the User document to which this fog applies
      * @defaultValue `null`
      */
-    user: fields.ForeignDocumentField<documents.BaseUser, { initial: () => string }>;
+    user: fields.ForeignDocumentField<typeof documents.BaseUser, { initial: () => string }>;
 
     /**
      * The base64 image/jpeg of the explored fog polygon

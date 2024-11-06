@@ -152,7 +152,7 @@ declare namespace BaseItem {
      * The _id of a Folder which contains this Item
      * @defaultValue `null`
      */
-    folder: fields.ForeignDocumentField<documents.BaseFolder>;
+    folder: fields.ForeignDocumentField<typeof documents.BaseFolder>;
 
     /**
      * The numeric sort value which orders this Item relative to its siblings

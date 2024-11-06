@@ -335,26 +335,26 @@ declare namespace BaseScene {
      * Scene becomes active.
      * @defaultValue `null`
      */
-    playlist: fields.ForeignDocumentField<documents.BasePlaylist>;
+    playlist: fields.ForeignDocumentField<typeof documents.BasePlaylist>;
 
     /**
      * A linked PlaylistSound document from the selected playlist that will
      * begin automatically playing when this Scene becomes active
      * @defaultValue `null`
      */
-    playlistSound: fields.ForeignDocumentField<documents.BasePlaylistSound, { idOnly: true }>;
+    playlistSound: fields.ForeignDocumentField<typeof documents.BasePlaylistSound, { idOnly: true }>;
 
     /**
      * A JournalEntry document which provides narrative details about this Scene
      * @defaultValue `null`
      */
-    journal: fields.ForeignDocumentField<documents.BaseJournalEntry>;
+    journal: fields.ForeignDocumentField<typeof documents.BaseJournalEntry>;
 
     /**
      * A document ID for a JournalEntryPage which provides narrative details about this Scene
      * @defaultValue `null`
      */
-    journalEntryPage: fields.ForeignDocumentField<documents.BaseJournalEntryPage, { idOnly: true }>;
+    journalEntryPage: fields.ForeignDocumentField<typeof documents.BaseJournalEntryPage, { idOnly: true }>;
 
     /**
      * A named weather effect which should be rendered in this Scene.
@@ -366,7 +366,7 @@ declare namespace BaseScene {
      * The _id of a Folder which contains this Actor
      * @defaultValue `null`
      */
-    folder: fields.ForeignDocumentField<documents.BaseFolder>;
+    folder: fields.ForeignDocumentField<typeof documents.BaseFolder>;
 
     /**
      * The numeric sort value which orders this Actor relative to its siblings

@@ -147,7 +147,7 @@ declare namespace BaseActiveEffect {
        * The _id of the CombatEncounter in which the effect first started
        * @defaultValue `null`
        */
-      combat: fields.ForeignDocumentField<documents.BaseCombat, { label: "EFFECT.Combat" }>;
+      combat: fields.ForeignDocumentField<typeof documents.BaseCombat, { label: "EFFECT.Combat" }>;
 
       /**
        * The maximum duration of the effect, in combat rounds
