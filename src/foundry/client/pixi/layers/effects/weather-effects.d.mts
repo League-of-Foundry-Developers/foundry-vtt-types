@@ -155,7 +155,7 @@ declare global {
        * If the mask should be reversed.
        * @defaultValue `false`
        */
-      reverse?: boolean;
+      reverse?: boolean | undefined;
 
       /**
        * A texture which defines the mask region.

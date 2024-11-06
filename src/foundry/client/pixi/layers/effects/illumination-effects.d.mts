@@ -1,3 +1,5 @@
+import type { NullishProps } from "../../../../../types/utils.d.mts";
+
 export {};
 
 declare global {
@@ -114,12 +116,12 @@ declare global {
      * }
      * ```
      */
-    static override textureConfiguration: {
-      multisample?: PIXI.MSAA_QUALITY;
-      scaleMode?: PIXI.SCALE_MODES;
-      format?: PIXI.FORMATS;
-      mipmap?: PIXI.MIPMAP_MODES;
-    };
+    static override textureConfiguration: NullishProps<{
+      multisample: PIXI.MSAA_QUALITY;
+      scaleMode: PIXI.SCALE_MODES;
+      format: PIXI.FORMATS;
+      mipmap: PIXI.MIPMAP_MODES;
+    }>;
 
     /** @privateRemarks Including to protect duck typing due to overall similarities b/w DarknessLevelContainer and CachedContainer */
     #onChildChange(): void;

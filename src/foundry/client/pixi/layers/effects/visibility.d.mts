@@ -34,7 +34,7 @@ declare global {
      */
     visionModeData: {
       source: foundry.canvas.sources.PointVisionSource.Any | null;
-      activeLightingOptions: Record<string, unknown>;
+      activeLightingOptions: VisionMode["_source"]["lighting"];
     };
 
     /**
