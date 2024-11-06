@@ -25,10 +25,9 @@ declare global {
     doors: PIXI.Container;
 
     /**
-     * A container of HUD interface elements
-     * @defaultValue `this.addChild(new PIXI.Container())`
+     * Always interactive even if disabled for doors controls
      */
-    hud: PIXI.Container;
+    override interactiveChildren: boolean;
 
     /**
      * A container of cursor interaction elements.
@@ -118,7 +117,7 @@ declare global {
     /**
      * Handle mousemove events on the game canvas to broadcast activity of the user's cursor position
      */
-    protected _onMouseMove(event: PIXI.FederatedEvent): void;
+    protected _onMouseMove(): void;
 
     /**
      * Handle pinging the canvas.
@@ -148,46 +147,49 @@ declare global {
     /**
      * Update display of an active Ruler object for a user given provided data
      */
-    updateRuler(user: User.ConfiguredInstance, rulerData: Parameters<Ruler["update"]>[0] | null): void;
+    updateRuler(user: User.ConfiguredInstance, rulerData: Ruler.MeasurementData | null): void;
 
     /**
      * Handle a broadcast ping.
+     * @see {@link Ping#drawPing}
      * @param user     - The user who pinged.
      * @param position - The position on the canvas that was pinged.
      * @param data     - The broadcast ping data.
-     * @returns @see Ping#animate
+     * @returns A promise which resolves once the Ping has been drawn and animated
      */
-    handlePing(user: User.ConfiguredInstance, position: PIXI.Point, data?: User.PingData): Promise<boolean>;
+    handlePing(user: User.ConfiguredInstance, position: Point, data?: User.PingData): Promise<boolean>;
 
     /**
      * Draw a ping at the edge of the viewport, pointing to the location of an off-screen ping.
-     * @param position - The co-ordinates of the off-screen ping.
+     * @see {@link Ping#drawPing}
+     * @param position - The coordinates of the off-screen ping.
      * @param options  - Additional options to configure how the ping is drawn.
-     * @returns @see {@link Ping#animate}
+     * @returns A promise which resolves once the Ping has been drawn and animated
      */
     drawOffscreenPing(
-      position: PIXI.Point,
+      position: Point,
       options?: InexactPartial<
         PingOptions & {
           /**
            * The style of ping to draw, from CONFIG.Canvas.pings.
            * @defaultValue `"arrow"`
            */
-          style?: string;
+          style: string;
 
           /**
            * The user who pinged.
            */
-          user?: User.ConfiguredInstance;
+          user: User.ConfiguredInstance;
         }
       >,
     ): Promise<boolean>;
 
     /**
      * Draw a ping on the canvas
+     * @see {@link Ping#animate}
      * @param position - The position on the canvas that was pinged.
      * @param options  - Additional options to configure how the ping is drawn.
-     * @returns @see {@link Ping#animate}
+     * @returns A promise which resolves once the Ping has been drawn and animated
      */
     drawPing(
       position: PIXI.Point,
@@ -206,11 +208,9 @@ declare global {
     ): Promise<boolean>;
 
     /**
-     * Given an off-screen co-ordinate, determine the closest point at the edge of the viewport to that co-ordinate.
+     * Given off-screen coordinates, determine the closest point at the edge of the viewport to these coordinates.
      * @param position - The off-screen co-ordinate.
-     * @returns The closest point at the edge of the viewport to that
-     *          co-ordinate and a ray cast from the centre of the
-     *          screen towards it.
+     * @returns The closest point at the edge of the viewport to these coordinates and a ray cast from the centre of the screen towards it.
      * @internal
      */
     protected _findViewportIntersection(position: Point): {
