@@ -147,5 +147,5 @@ stringField.toInput({ value: 'foo' })
 // @ts-expect-error StringField input values MUST be valid for the field
 stringField.toInput({ value: 200 })
 
-// Inputs generated from a StringField should accept additional CONFIG properties from `createSelectInput`
+// Inputs generated from a StringField should accept additional config properties for possible use in `createSelectInput`
 stringField.toInput({ blank: true })
