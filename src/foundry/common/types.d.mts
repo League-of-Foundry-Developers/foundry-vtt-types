@@ -62,39 +62,6 @@ declare global {
 
   type ColorSource = number | RGBColorVector | string | Color;
 
-  /** Keyboard event context */
-  interface KeyboardEventContext {
-    /** The normalized string key, such as "A" */
-    key: string;
-
-    /** The originating keypress event */
-    event: KeyboardEvent;
-
-    /** Is the Shift modifier being pressed */
-    isShift: boolean;
-
-    /** Is the Control or Meta modifier being processed */
-    isControl: boolean;
-
-    /** Is the Alt modifier being pressed */
-    isAlt: boolean;
-
-    /** Are any of the modifiers being pressed */
-    hasModifier: boolean;
-
-    /** A list of string modifiers applied to this context, such as [ "CONTROL" ] */
-    modifiers: string[];
-
-    /** True if the Key is Up, else False if down */
-    up: boolean;
-
-    /** True if the given key is being held down such that it is automatically repeating. */
-    repeat: boolean;
-
-    /** The executing Keybinding Action. May be undefined until the action is known. */
-    action?: string | undefined;
-  }
-
   /** Connected Gamepad info */
   interface ConnectedGamepad {
     /** A map of axes values */
@@ -163,3 +130,5 @@ type KeyBindingActionConfig = ClientKeybindings.KeybindingActionConfig;
 type KeybindingActionBinding = ClientKeybindings.KeybindingActionBinding;
 
 type KeybindingAction = ClientKeybindings.KeybindingAction;
+
+type KeyboardEventContext = KeyboardManager.KeyboardEventContext;

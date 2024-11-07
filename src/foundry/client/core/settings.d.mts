@@ -264,6 +264,7 @@ declare global {
 
     /**
      * A Client Setting Submenu
+     * Copied from `resources/app/common/types.mjs`
      */
     interface SettingSubmenuConfig {
       key: string;

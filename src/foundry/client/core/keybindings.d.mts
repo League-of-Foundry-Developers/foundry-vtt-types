@@ -160,42 +160,44 @@ declare global {
      * @param context - The context data of the event
      * @internal
      */
-    protected static _onSelectAllObjects(context?: KeyboardEventContext): boolean;
+    protected static _onSelectAllObjects(context?: KeyboardManager.KeyboardEventContext): boolean;
 
     /**
      * Handle Cycle View actions
      * @param context - The context data of the event
      * @internal
      */
-    protected static _onCycleView(context: KeyboardEventContext): boolean;
+    protected static _onCycleView(context: KeyboardManager.KeyboardEventContext): boolean;
 
     /**
      * Handle Dismiss actions
      * @param context - The context data of the event
      * @internal
      */
-    protected static _onDismiss(context?: KeyboardEventContext): Promise<boolean>;
+    protected static _onDismiss(context?: KeyboardManager.KeyboardEventContext): Promise<boolean>;
 
     /**
      * Open Character sheet for current token or controlled actor
      * @param context - The context data of the event
      * @internal
      */
-    protected static _onToggleCharacterSheet(context?: KeyboardEventContext): ReturnType<Game["toggleCharacterSheet"]>;
+    protected static _onToggleCharacterSheet(
+      context?: KeyboardManager.KeyboardEventContext,
+    ): ReturnType<Game["toggleCharacterSheet"]>;
 
     /**
      * Handle action to target the currently hovered token.
      * @param context - The context data of the event
      * @internal
      */
-    protected static _onTarget(context: KeyboardEventContext): boolean;
+    protected static _onTarget(context: KeyboardManager.KeyboardEventContext): boolean;
 
     /**
      * Handle DELETE Keypress Events
      * @param context - The context data of the event
      * @internal
      */
-    protected static _onDelete(context?: KeyboardEventContext): boolean;
+    protected static _onDelete(context?: KeyboardManager.KeyboardEventContext): boolean;
 
     /**
      * Handle keyboard movement once a small delay has elapsed to allow for multiple simultaneous key-presses.
@@ -203,7 +205,7 @@ declare global {
      * @param layer   - The active InteractionLayer instance
      * @internal
      */
-    protected _handleMovement(context: KeyboardEventContext, layer: InteractionLayer): void;
+    protected _handleMovement(context: KeyboardManager.KeyboardEventContext, layer: InteractionLayer): void;
 
     /** Handle panning the canvas using CTRL + directional keys */
     protected _handleCanvasPan(): ReturnType<Canvas["animatePan"]>;
@@ -213,21 +215,21 @@ declare global {
      * @param context - The context data of the event
      * @internal
      */
-    protected static _onMeasuredRulerMovement(context?: KeyboardEventContext): boolean | void;
+    protected static _onMeasuredRulerMovement(context?: KeyboardManager.KeyboardEventContext): boolean | void;
 
     /**
      * Handle Pause Action
      * @param context - The context data of the event
      * @internal
      */
-    protected static _onPause(context?: KeyboardEventContext): true;
+    protected static _onPause(context?: KeyboardManager.KeyboardEventContext): true;
 
     /**
      * Handle Highlight action
      * @param context - The context data of the event
      * @internal
      */
-    protected static _onHighlight(context?: KeyboardEventContext): boolean;
+    protected static _onHighlight(context?: KeyboardManager.KeyboardEventContext): boolean;
 
     /**
      * Handle Pan action
@@ -235,7 +237,10 @@ declare global {
      * @param movementDirections - The Directions being panned in
      * @internal
      */
-    protected _onPan(context: KeyboardEventContext, movementDirections: ClientKeybindings.MovementDirection[]): boolean;
+    protected _onPan(
+      context: KeyboardManager.KeyboardEventContext,
+      movementDirections: ClientKeybindings.MovementDirection[],
+    ): boolean;
 
     /**
      * Handle Macro executions
@@ -243,7 +248,7 @@ declare global {
      * @internal
      */
     protected static _onMacroExecute(
-      context: KeyboardEventContext,
+      context: KeyboardManager.KeyboardEventContext,
       number: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 0,
     ): boolean;
 
@@ -252,28 +257,28 @@ declare global {
      * @param context - The context data of the event
      * @internal
      */
-    protected static _onMacroPageSwap(context: KeyboardEventContext, page: number): true;
+    protected static _onMacroPageSwap(context: KeyboardManager.KeyboardEventContext, page: number): true;
 
     /**
      * Handle action to copy data to clipboard
      * @param context - The context data of the event
      * @internal
      */
-    protected static _onCopy(context?: KeyboardEventContext): boolean;
+    protected static _onCopy(context?: KeyboardManager.KeyboardEventContext): boolean;
 
     /**
      * Handle Paste action
      * @param context - The context data of the event
      * @internal
      */
-    protected static _onPaste(context: KeyboardEventContext): boolean;
+    protected static _onPaste(context: KeyboardManager.KeyboardEventContext): boolean;
 
     /**
      * Handle Undo action
      * @param context - The context data of the event
      * @internal
      */
-    protected static _onUndo(context?: KeyboardEventContext): boolean;
+    protected static _onUndo(context?: KeyboardManager.KeyboardEventContext): boolean;
 
     /**
      * Handle presses to keyboard zoom keys
@@ -282,7 +287,7 @@ declare global {
      * @internal
      */
     protected static _onZoom(
-      context: KeyboardEventContext | unknown,
+      context: KeyboardManager.KeyboardEventContext | unknown,
       zoomDirection: ClientKeybindings.ZoomDirection,
     ): boolean;
 
@@ -291,11 +296,14 @@ declare global {
      * @param context - The context data of the event
      * @internal
      */
-    static _onFocusChat(context: KeyboardEventContext): boolean;
+    static _onFocusChat(context: KeyboardManager.KeyboardEventContext): boolean;
   }
 
   namespace ClientKeybindings {
-    /** A Client Keybinding Action Configuration */
+    /**
+     * A Client Keybinding Action Configuration
+     * Copied from `resources/app/common/types.mjs`
+     */
     interface KeybindingActionConfig {
       /** The namespace within which the action was registered */
       namespace?: string;
@@ -313,10 +321,10 @@ declare global {
       editable?: KeybindingActionBinding[] | undefined;
 
       /** A function to execute when a key down event occurs. If True is returned, the event is consumed and no further keybinds execute. */
-      onDown?: ((ctx: KeyboardEventContext) => boolean | void) | undefined;
+      onDown?: ((ctx: KeyboardManager.KeyboardEventContext) => boolean | void) | undefined;
 
       /** A function to execute when a key up event occurs. If True is returned, the event is consumed and no further keybinds execute. */
-      onUp?: ((ctx: KeyboardEventContext) => boolean | void) | undefined;
+      onUp?: ((ctx: KeyboardManager.KeyboardEventContext) => boolean | void) | undefined;
 
       /** If True, allows Repeat events to execute the Action's onDown. Defaults to false. */
       repeat?: boolean | undefined;
@@ -334,7 +342,10 @@ declare global {
       order?: number | undefined;
     }
 
-    /** A Client Keybinding Action Binding */
+    /**
+     * A Client Keybinding Action Binding
+     * Copied from `resources/app/common/types.mjs`
+     */
     interface KeybindingActionBinding {
       /** A numeric index which tracks this bindings position during form rendering */
       index?: number | undefined;
@@ -346,7 +357,10 @@ declare global {
       modifiers?: string[] | undefined;
     }
 
-    /** An action that can occur when a key is pressed */
+    /**
+     * An action that can occur when a key is pressed
+     * Copied from `resources/app/common/types.mjs`
+     */
     interface KeybindingAction {
       /** The namespaced machine identifier of the Action */
       action: string;
@@ -364,10 +378,10 @@ declare global {
       optionalModifiers: string[];
 
       /** The handler that executes onDown */
-      onDown?: ((ctx: KeyboardEventContext) => boolean | void) | undefined;
+      onDown?: ((ctx: KeyboardManager.KeyboardEventContext) => boolean | void) | undefined;
 
       /** The handler that executes onUp */
-      onUp?: ((ctx: KeyboardEventContext) => boolean | void) | undefined;
+      onUp?: ((ctx: KeyboardManager.KeyboardEventContext) => boolean | void) | undefined;
 
       /** If True, allows Repeat events to execute this Action's onDown */
       repeat: boolean;
