@@ -1,3 +1,4 @@
+import type { AnyObject } from "../../../types/utils.d.mts";
 import type { DatabaseOperationMap, DocumentSocketRequest } from "../../common/abstract/_types.d.mts";
 
 declare global {
@@ -16,12 +17,12 @@ declare global {
 
   namespace SocketInterface {
     /** @remarks Copied from `resources/app/common/types.mjs` */
-    type RequestData = Record<string, unknown> | Record<string, unknown>[] | string | string[];
+    type RequestData = AnyObject | AnyObject[] | string | readonly string[];
 
     /** @remarks Copied from `resources/app/common/types.mjs` */
     interface SocketRequest {
       /** Additional options applied to the request */
-      options?: Record<string, unknown> | undefined;
+      options?: AnyObject | undefined;
       broadcast?: boolean | undefined;
     }
 
@@ -55,7 +56,7 @@ declare global {
       /**
        * An Array of created data objects
        */
-      result?: Record<string, unknown>[] | string[] | undefined;
+      result?: AnyObject[] | readonly string[] | undefined;
     }
   }
 }
