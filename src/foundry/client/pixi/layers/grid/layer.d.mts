@@ -1,5 +1,4 @@
-import type { InexactPartial } from "../../../../../types/utils.d.mts";
-import type BaseGrid from "../../../../common/grid/base.d.mts";
+import type { AnyObject, InexactPartial, NullishProps } from "../../../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -7,10 +6,10 @@ declare global {
    */
   class GridLayer extends CanvasLayer {
     /**
-     * The Grid container
-     * @defaultValue `undefined`
+     * @remarks Due to the grid rework in v12 this points to a BaseGrid subclass rather than a GridLayer instance
+     * @privateRemarks This is not overridden in foundry but reflects the real behavior.
      */
-    grid: BaseGrid | undefined;
+    static get instance(): Canvas["grid"];
 
     /**
      * The Grid Highlight container
@@ -25,11 +24,6 @@ declare global {
     highlightLayers: Record<string, GridHighlight>;
 
     /**
-     * @privateRemarks This is not overridden in foundry but reflects the real behavior.
-     */
-    static get instance(): Canvas["grid"];
-
-    /**
      * @defaultValue
      * ```js
      * foundry.utils.mergeObject(super.layerOptions, {name: "grid"});
@@ -37,107 +31,37 @@ declare global {
      */
     static override get layerOptions(): GridLayer.LayerOptions;
 
-    options: GridLayer.LayerOptions;
-
-    /**
-     * The grid type rendered in this Scene
-     */
-    get type(): foundry.CONST.GRID_TYPES;
-
-    /**
-     * A convenient reference to the pixel grid size used throughout this layer
-     */
-    get size(): number;
-
-    /**
-     * Get grid unit width
-     */
-    get w(): BaseGrid["w"];
-
-    /**
-     * Get grid unit height
-     */
-    get h(): BaseGrid["h"];
-
-    /**
-     * A boolean flag for whether the current grid is hexagonal
-     */
-    get isHex(): boolean;
+    override options: GridLayer.LayerOptions;
 
     /**
      * Draw the grid
-     * @param preview - Override settings used in place of those saved to the Scene data
+     * @param options - Override settings used in place of those saved to the Scene data
      */
-    _draw(preview?: GridLayer.DrawOptions): Promise<void>;
+    _draw(options?: AnyObject): Promise<void>;
 
     /**
-     * Given a pair of coordinates (x1,y1), return the grid coordinates (x2,y2) which represent the snapped position
-     * @param x        - The exact target location x
-     * @param y        - The exact target location y
-     * @param interval - An interval of grid spaces at which to snap, default is 1.
-     *                   (defaultValue: `1`)
-     * @param options  - Additional options to configure snapping behaviour.
+     * Creates the grid mesh.
      */
-    getSnappedPosition(
-      x: number,
-      y: number,
-      interval?: number,
-      options?: InexactPartial<{
-        /**
-         * The token
-         */
-        token: Token;
+    protected _drawMesh(): Promise<GridMesh>;
+
+    /**
+     * Initialize the grid mesh appearance and configure the grid shader.
+     */
+    initializeMesh(
+      options?: NullishProps<{
+        /** The grid style */
+        style: string; // keyof CONFIG["Canvas"]["gridStyles"]; TODO: Update as part of #2572
+
+        /** The grid thickness */
+        thickness: number;
+
+        /** The grid color */
+        color: string;
+
+        /** The grid alpha */
+        alpha: number;
       }>,
-    ): { x: number; y: number };
-
-    /**
-     * Given a pair of coordinates (x, y) - return the top-left of the grid square which contains that point
-     * @param x - Coordinate X.
-     * @param y - Coordinate Y.
-     * @returns An Array [x, y] of the top-left coordinate of the square which contains (x, y)
-     */
-    getTopLeft(x: number, y: number): PointArray;
-
-    /**
-     * Given a pair of coordinates (x, y), return the center of the grid square which contains that point
-     * @param x - Coordinate X.
-     * @param y - Coordinate Y.
-     * @returns An Array [x, y] of the central point of the square which contains (x, y)
-     */
-    getCenter(x: number, y: number): PointArray;
-
-    /**
-     * Measure the distance between two point coordinates.
-     * @param origin  - The origin point
-     * @param target  - The target point
-     * @param options - Additional options which modify the measurement
-     *                  (default: `{}`)
-     * @returns The measured distance between these points
-     *
-     * @example
-     * ```js
-     * let distance = canvas.grid.measureDistance({x: 1000, y: 1000}, {x: 2000, y: 2000});
-     * ```
-     */
-    measureDistance(
-      origin: {
-        x: number;
-        y: number;
-      },
-      target: {
-        x: number;
-        y: number;
-      },
-      options?: GridLayer.MeasureDistancesOptions,
-    ): number;
-
-    /**
-     * Measure the distance traveled over an array of distance segments.
-     * @param segments - An array of measured segments
-     * @param options  - Additional options which modify the measurement
-     *                   (default: `{}`)
-     */
-    measureDistances(segments: GridLayer.Segment[], options?: GridLayer.MeasureDistancesOptions): number[];
+    ): void;
 
     /**
      * Define a new Highlight graphic
@@ -168,16 +92,93 @@ declare global {
      * @param name    - The name for the referenced highlight layer
      * @param options - Options for the grid position that should be highlighted
      */
-    highlightPosition(name: string, options?: Parameters<BaseGrid["highlightGridPosition"]>[1]): false | void;
+    highlightPosition(name: string, options?: GridLayer.HighlightPositionOptions): false | void;
 
     /**
-     * Test if a specific row and column position is a neighboring location to another row and column coordinate
-     * @param r0 - The original row position
-     * @param c0 - The original column position
-     * @param r1 - The candidate row position
-     * @param c1 - The candidate column position
+     * @deprecated since v12, will be removed in v14
+     * @remarks `"GridLayer#type is deprecated. Use canvas.grid.type instead."`
+     */
+    get type(): foundry.CONST.GRID_TYPES;
+
+    /**
+     * @deprecated since v12, will be removed in v14
+     * @remarks `"GridLayer#size is deprecated. Use canvas.grid.size instead.`
+     */
+    get size(): number;
+
+    /**
+     * @deprecated since v12, will be removed in v14
+     * `"GridLayer#grid is deprecated. Use canvas.grid instead."`
+     */
+    grid: Canvas["grid"];
+
+    /**
+     * @deprecated since v12, will be removed in v14
+     * @remarks `"GridLayer#isNeighbor is deprecated. Use canvas.grid.testAdjacency instead."`
      */
     isNeighbor(r0: number, c0: number, r1: number, c1: number): boolean;
+
+    /**
+     * @deprecated since v12, will be removed in v14
+     * @remarks `"GridLayer#w is deprecated in favor of canvas.grid.sizeX."`
+     */
+    get w(): number;
+
+    /**
+     * @deprecated since v12, will be removed in v14
+     * @remarks `"GridLayer#h is deprecated in favor of canvas.grid.sizeY."`
+     */
+    get h(): number;
+
+    /**
+     * @deprecated since v12, will be removed in v14
+     * @remarks `"GridLayer#isHex is deprecated. Use canvas.grid.isHexagonal instead."`
+     */
+    get isHex(): boolean;
+
+    /**
+     * @deprecated since v12, will be removed in v14
+     * @remarks `"GridLayer#getTopLeft is deprecated. Use canvas.grid.getTopLeftPoint instead."`
+     */
+    getTopLeft(x: number, y: number): PointArray;
+
+    /**
+     * @deprecated since v12, will be removed in v14
+     * @remarks `"GridLayer#getCenter is deprecated. Use canvas.grid.getCenterPoint instead."`
+     */
+    getCenter(x: number, y: number): PointArray;
+
+    /**
+     * @deprecated since v12, will be removed in v14
+     * @remarks `"GridLayer#getSnappedPosition is deprecated. Use canvas.grid.getCenterPoint instead."`
+     */
+    getSnappedPosition(
+      x: number,
+      y: number,
+      interval?: number,
+      options?: InexactPartial<{
+        /**
+         * The token
+         */
+        token: Token;
+      }>,
+    ): { x: number; y: number };
+
+    /**
+     * @deprecated since v12, will be removed in v14
+     * @remarks `"GridLayer#measureDistance is deprecated. "Use canvas.grid.measurePath instead for non-Euclidean measurements."`
+     */
+    measureDistance(
+      origin: {
+        x: number;
+        y: number;
+      },
+      target: {
+        x: number;
+        y: number;
+      },
+      options?: GridLayer.MeasureDistancesOptions,
+    ): number;
   }
 
   namespace GridLayer {
@@ -185,39 +186,58 @@ declare global {
       name: "grid";
     }
 
+    interface HighlightPositionOptions {
+      /**
+       * The x-coordinate of the highlighted position
+       * @remarks Required if `canvas.grid !== CONST.GRID_TYPES.GRIDLESS`
+       */
+      x?: number | undefined | null;
+
+      /**
+       * The y-coordinate of the highlighted position
+       * @remarks Required if `canvas.grid !== CONST.GRID_TYPES.GRIDLESS`
+       */
+      y?: number | undefined | null;
+
+      /**
+       * The fill color of the highlight
+       * @defaultValue `0x33BBFF`
+       * @privateRemarks `null` is a problem because it's forwarded to a PIXI.Graphics#beginFill call which has a default value set
+       */
+      color?: PIXI.ColorSource | undefined;
+
+      /**
+       * The border color of the highlight
+       * @defaultValue `null`
+       */
+      border?: PIXI.ColorSource | undefined | null;
+
+      /**
+       * The opacity of the highlight
+       * @defaultValue `0.25`
+       */
+      alpha?: number | undefined;
+
+      /**
+       * A predefined shape to highlight
+       * @defaultValue `null`
+       */
+      shape?: PIXI.Polygon | undefined | null;
+    }
+
+    /**
+     * @deprecated since v12, will be removed in v14
+     * @remarks Used by {@link foundry.grid.BaseGrid#measureDistances}
+     */
     interface Segment {
       ray: Ray;
       label?: Ruler["labels"]["children"][number];
     }
 
-    type DrawOptions = InexactPartial<{
-      /**
-       * @defaultValue `null`
-       */
-      type?: foundry.CONST.GRID_TYPES | null;
-
-      /**
-       * @defaultValue `null`
-       */
-      dimensions?: Canvas["dimensions"] | null;
-
-      color?: number | string | null;
-
-      alpha?: number | null;
-
-      /**
-       * @deprecated since v10, will be removed in v12
-       * @remarks "You are passing the gridColor parameter to GridLayer#draw which is deprecated in favor of the color parameter."
-       */
-      gridColor?: number | string | null;
-
-      /**
-       * @deprecated since v10, will be removed in v12
-       * @remarks "You are passing the gridAlpha parameter to GridLayer#draw which is deprecated in favor of the alpha parameter."
-       */
-      gridAlpha?: number | null;
-    }>;
-
+    /**
+     * @deprecated since v12, will be removed in v14
+     * @remarks Used by {@link foundry.grid.BaseGrid#measureDistances}
+     */
     type MeasureDistancesOptions = InexactPartial<{
       /** Return the distance in grid increments rather than the co-ordinate distance. */
       gridSpaces?: boolean;
