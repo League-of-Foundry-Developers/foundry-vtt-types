@@ -46,9 +46,9 @@ declare global {
      */
     protected _detectConflictingActions(
       actionId: string,
-      action: KeybindingActionConfig,
-      binding: KeybindingActionBinding,
-    ): KeybindingAction[];
+      action: ClientKeybindings.KeybindingActionConfig,
+      binding: ClientKeybindings.KeybindingActionBinding,
+    ): ClientKeybindings.KeybindingAction[];
 
     /**
      * Transforms a Binding into a human readable string representation
@@ -56,7 +56,7 @@ declare global {
      * @returns A human readable string
      * @internal
      */
-    protected static _humanizeBinding(binding: KeybindingActionBinding): string;
+    protected static _humanizeBinding(binding: ClientKeybindings.KeybindingActionBinding): string;
 
     override activateListeners(html: JQuery): void;
 
@@ -153,7 +153,7 @@ declare global {
 
     interface CategoryData extends PackageConfiguration.CategoryData<Category> {}
 
-    interface ActionData extends KeybindingActionConfig {
+    interface ActionData extends ClientKeybindings.KeybindingActionConfig {
       category: string;
       bindings: DisplayBinding[];
       id: string;
@@ -163,7 +163,7 @@ declare global {
       notes: string;
     }
 
-    interface DisplayBinding extends Partial<KeybindingActionBinding> {
+    interface DisplayBinding extends Partial<ClientKeybindings.KeybindingActionBinding> {
       id: string;
       display: string;
       cssClasses: string;
@@ -173,7 +173,7 @@ declare global {
       hasConflicts: boolean;
     }
 
-    interface PendingBinding extends KeybindingActionBinding {
+    interface PendingBinding extends ClientKeybindings.KeybindingActionBinding {
       index: number;
     }
   }

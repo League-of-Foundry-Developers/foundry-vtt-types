@@ -62,93 +62,6 @@ declare global {
 
   type ColorSource = number | RGBColorVector | string | Color;
 
-  /** A Client Keybinding Action Configuration */
-  interface KeybindingActionConfig {
-    /** The namespace within which the action was registered */
-    namespace?: string;
-
-    /** The human readable name */
-    name: string;
-
-    /** An additional human readable hint */
-    hint?: string | undefined;
-
-    /** The default bindings that can never be changed nor removed. */
-    uneditable?: KeybindingActionBinding[] | undefined;
-
-    /** The default bindings that can be changed by the user. */
-    editable?: KeybindingActionBinding[] | undefined;
-
-    /** A function to execute when a key down event occurs. If True is returned, the event is consumed and no further keybinds execute. */
-    onDown?: ((ctx: KeyboardEventContext) => boolean | void) | undefined;
-
-    /** A function to execute when a key up event occurs. If True is returned, the event is consumed and no further keybinds execute. */
-    onUp?: ((ctx: KeyboardEventContext) => boolean | void) | undefined;
-
-    /** If True, allows Repeat events to execute the Action's onDown. Defaults to false. */
-    repeat?: boolean | undefined;
-
-    /** If true, only a GM can edit and execute this Action */
-    restricted?: boolean | undefined;
-
-    /** Modifiers such as [ "CONTROL" ] that can be also pressed when executing this Action. Prevents using one of these modifiers as a Binding. */
-    reservedModifiers?: string[] | undefined;
-
-    /** The preferred precedence of running this Keybinding Action */
-    precedence?: number | undefined; // TODO: KEYBINDING_PRECEDENCE?
-
-    /** The recorded registration order of the action */
-    order?: number | undefined;
-  }
-
-  /** A Client Keybinding Action Binding */
-  interface KeybindingActionBinding {
-    /** A numeric index which tracks this bindings position during form rendering */
-    index?: number | undefined;
-
-    /** The KeyboardEvent#code value from https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code/code_values */
-    key: string;
-
-    /** An array of modifiers keys from KeyboardManager.MODIFIER_KEYS which are required for this binding to be activated */
-    modifiers?: string[] | undefined;
-  }
-
-  /** An action that can occur when a key is pressed */
-  interface KeybindingAction {
-    /** The namespaced machine identifier of the Action */
-    action: string;
-
-    /** The Keyboard key */
-    key: string;
-
-    /** The human readable name */
-    name: string;
-
-    /** Required modifiers */
-    requiredModifiers: string[];
-
-    /** Optional (reserved) modifiers */
-    optionalModifiers: string[];
-
-    /** The handler that executes onDown */
-    onDown?: ((ctx: KeyboardEventContext) => boolean | void) | undefined;
-
-    /** The handler that executes onUp */
-    onUp?: ((ctx: KeyboardEventContext) => boolean | void) | undefined;
-
-    /** If True, allows Repeat events to execute this Action's onDown */
-    repeat: boolean;
-
-    /** If true, only a GM can execute this Action */
-    restricted: boolean;
-
-    /** The registration precedence */
-    precedence: number;
-
-    /** The registration order */
-    order: number;
-  }
-
   /** Keyboard event context */
   interface KeyboardEventContext {
     /** The normalized string key, such as "A" */
@@ -244,3 +157,9 @@ type DocumentConstructionContext = Document.ConstructionContext<Document.Any | n
 type SettingConfig = ClientSettings.SettingOptions;
 
 type SettingSubmenuConfig = ClientSettings.SettingSubmenuConfig;
+
+type KeyBindingActionConfig = ClientKeybindings.KeybindingActionConfig;
+
+type KeybindingActionBinding = ClientKeybindings.KeybindingActionBinding;
+
+type KeybindingAction = ClientKeybindings.KeybindingAction;

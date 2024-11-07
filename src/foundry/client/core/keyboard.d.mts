@@ -160,7 +160,7 @@ declare global {
      * @returns The matched Keybind Actions. May be empty.
      * @internal
      */
-    static _getMatchingActions(context: KeyboardEventContext): KeybindingAction[];
+    static _getMatchingActions(context: KeyboardEventContext): ClientKeybindings.KeybindingAction[];
 
     /**
      * Test whether a keypress context matches the registration for a keybinding action
@@ -169,7 +169,7 @@ declare global {
      * @returns Does the context match the action requirements?
      * @internal
      */
-    protected static _testContext(action: KeybindingAction, context: KeyboardEventContext): boolean;
+    protected static _testContext(action: ClientKeybindings.KeybindingAction, context: KeyboardEventContext): boolean;
 
     /**
      * Given a registered Keybinding Action, executes the action with a given event and context
@@ -179,7 +179,7 @@ declare global {
      * @returns Returns true if the keybind was consumed
      * @internal
      */
-    protected static _executeKeybind(keybind: KeybindingAction, context: KeyboardEventContext): boolean;
+    protected static _executeKeybind(keybind: ClientKeybindings.KeybindingAction, context: KeyboardEventContext): boolean;
 
     /**
      * Processes a keyboard event context, checking it against registered keybinding actions
