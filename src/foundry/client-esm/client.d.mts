@@ -56,7 +56,7 @@ export * as utils from "../common/utils/module.mjs";
 /**
  * A library for providing rich text editing using ProseMirror within the Foundry Virtual Tabletop game client.
  */
-// export * as prosemirror from "../common/prosemirror/_module.mjs";
+export * as prosemirror from "../common/prosemirror/_module.mjs";
 
 /**
  * Grid classes.
@@ -169,11 +169,6 @@ declare global {
      * A module for parsing and executing dice roll syntax.
      */
     export import dice = _dice;
-
-    /**
-     * Shared importable types.
-     */
-    // export import types = _types;
   }
   /**
    * Constant definitions used throughout the Foundry Virtual Tabletop framework.

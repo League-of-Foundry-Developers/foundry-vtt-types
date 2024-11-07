@@ -1,16 +1,7 @@
-import type { AnyConstructor, AnyFunction, DeepPartial } from "../../types/utils.d.mts";
-import type ApplicationV2 from "../client-esm/applications/api/application.mts";
-import type { CustomFormInput } from "../client-esm/applications/forms/fields.mts";
+import type { AnyConstructor, AnyFunction } from "../../types/utils.d.mts";
 import type { Document } from "./abstract/module.d.mts";
 
-interface DocumentConstructionContext extends Document.ConstructionContext<Document.Any | null> {}
-
-// TODO: deprecated in V12, will be removed in V14
-// note: this was removed from this file in V12, but there are still (deprecated) methods
-//    in Document that use it, so we should retain it until V14 when those
-//    methods are removed
-/** @deprecated since v12 */
-interface DocumentModificationContext extends Document.ModificationContext<Document.Any | null> {}
+// Types that are still needed
 
 declare global {
   /**
@@ -70,39 +61,6 @@ declare global {
   type HSLColorVector = [h: number, s: number, l: number];
 
   type ColorSource = number | RGBColorVector | string | Color;
-
-  /** A Client Setting */
-  interface SettingOptions<T extends ClientSettings.Type = (value: unknown) => unknown>
-    extends _SettingOptions<ClientSettings.ToRuntimeType<T>, ClientSettings.ToSettingAssignmentType<T>> {}
-
-  /**
-   * A Client Setting Submenu
-   */
-  interface SettingSubmenuConfig {
-    key: string;
-
-    namespace: string;
-
-    /** The human-readable name */
-    name?: string | undefined;
-
-    /** An additional human-readable hint */
-    label?: string | undefined;
-
-    /** An additional human readable hint */
-    hint?: string | undefined;
-
-    /** The classname of an Icon to render */
-    icon?: string | undefined;
-
-    /** The FormApplication or ApplicationV2 to render */
-    type:
-      | (new () => FormApplication.Any)
-      | (new (options?: DeepPartial<ApplicationV2.Configuration>) => ApplicationV2.Any);
-
-    /** If true, only a GM can edit this Setting */
-    restricted?: boolean | undefined;
-  }
 
   /** A Client Keybinding Action Configuration */
   interface KeybindingActionConfig {
@@ -274,59 +232,15 @@ declare global {
   }
 }
 
-// This type is named `SettingConfig` in FoundryVTT but that name is confusing within fvtt-types because of the `Config` nomenclature meaning declaration merging.
-interface _SettingOptions<RuntimeType extends ClientSettings.RuntimeType, AssignmentType> {
-  /** A unique machine-readable id for the setting */
-  key: string;
+// After seeing that none of these types add anything or are even exported a
+// very reasonable question may be: Why on earth does this file exist?
+//
+// Well this is the file in which Foundry defines these types. We don't house
+// them here because it has poor discoverability. The names Foundry has chosen
+// also overlaps with other existing names.
 
-  /** The namespace the setting belongs to */
-  namespace: string;
+type DocumentConstructionContext = Document.ConstructionContext<Document.Any | null>;
 
-  /** The human readable name */
-  name?: string | undefined;
+type SettingConfig = ClientSettings.SettingOptions;
 
-  /** An additional human readable hint */
-  hint?: string | undefined;
-
-  /**
-   * The scope the Setting is stored in, either World or Client
-   * @defaultValue `"client"`
-   */
-  scope: "world" | "client";
-
-  /** Indicates if this Setting should render in the Config application */
-  config?: boolean | undefined;
-
-  /** The JS Type that the Setting is storing */
-  type?: RuntimeType;
-
-  /** For string Types, defines the allowable values */
-  choices?: AssignmentType extends string
-    ? {
-        readonly [K in AssignmentType]?: string;
-      }
-    : never;
-
-  /** For numeric Types, defines the allowable range */
-  range?: AssignmentType extends number
-    ? {
-        max: number;
-        min: number;
-        step: number;
-      }
-    : never;
-
-  /** The default value */
-  default: AssignmentType;
-
-  /** Whether setting requires Foundry to be reloaded on change  */
-  requiresReload?: boolean;
-
-  /** Executes when the value of this Setting changes */
-  onChange?: (value: AssignmentType) => void;
-
-  /**
-   * A custom form field input used in conjunction with a DataField type
-   */
-  input?: CustomFormInput | undefined;
-}
+type SettingSubmenuConfig = ClientSettings.SettingSubmenuConfig;

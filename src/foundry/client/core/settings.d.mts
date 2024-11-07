@@ -1,5 +1,7 @@
 import type { ConformRecord } from "../../../types/helperTypes.d.mts";
-import type { AnyArray, AnyObject, InexactPartial } from "../../../types/utils.d.mts";
+import type { AnyArray, AnyObject, DeepPartial, InexactPartial } from "../../../types/utils.d.mts";
+import type ApplicationV2 from "../../client-esm/applications/api/application.d.mts";
+import type { CustomFormInput } from "../../client-esm/applications/forms/fields.d.mts";
 import type DataModel from "../../common/abstract/data.d.mts";
 import type Document from "../../common/abstract/document.d.mts";
 import type { DataField } from "../../common/data/fields.d.mts";
@@ -27,7 +29,7 @@ declare global {
     /**
      * Registered settings menus which trigger secondary applications
      */
-    menus: Map<string, SettingSubmenuConfig>;
+    menus: Map<string, ClientSettings.SettingSubmenuConfig>;
 
     /**
      * The storage interfaces used for persisting settings
@@ -197,7 +199,97 @@ declare global {
       SettingType<T> | (T extends DataModel.Any ? T : never)
     >;
 
+    // This type is named `SettingConfig` in FoundryVTT but that name is confusing within fvtt-types because of the `Config` nomenclature meaning declaration merging.
+    interface _SettingOptions<RuntimeType extends ClientSettings.RuntimeType, AssignmentType> {
+      /** A unique machine-readable id for the setting */
+      key: string;
+
+      /** The namespace the setting belongs to */
+      namespace: string;
+
+      /** The human readable name */
+      name?: string | undefined;
+
+      /** An additional human readable hint */
+      hint?: string | undefined;
+
+      /**
+       * The scope the Setting is stored in, either World or Client
+       * @defaultValue `"client"`
+       */
+      scope: "world" | "client";
+
+      /** Indicates if this Setting should render in the Config application */
+      config?: boolean | undefined;
+
+      /** The JS Type that the Setting is storing */
+      type?: RuntimeType;
+
+      /** For string Types, defines the allowable values */
+      choices?: AssignmentType extends string
+        ? {
+            readonly [K in AssignmentType]?: string;
+          }
+        : never;
+
+      /** For numeric Types, defines the allowable range */
+      range?: AssignmentType extends number
+        ? {
+            max: number;
+            min: number;
+            step: number;
+          }
+        : never;
+
+      /** The default value */
+      default: AssignmentType;
+
+      /** Whether setting requires Foundry to be reloaded on change  */
+      requiresReload?: boolean;
+
+      /** Executes when the value of this Setting changes */
+      onChange?: (value: AssignmentType) => void;
+
+      /**
+       * A custom form field input used in conjunction with a DataField type
+       */
+      input?: CustomFormInput | undefined;
+    }
+
+    /** A Client Setting */
+    interface SettingOptions<T extends Type = (value: unknown) => unknown>
+      extends _SettingOptions<ToRuntimeType<T>, ToSettingAssignmentType<T>> {}
+
     interface RegisterOptions<T extends Type> extends InexactPartial<Omit<SettingOptions<T>, "key" | "namespace">> {}
+
+    /**
+     * A Client Setting Submenu
+     */
+    interface SettingSubmenuConfig {
+      key: string;
+
+      namespace: string;
+
+      /** The human-readable name */
+      name?: string | undefined;
+
+      /** An additional human-readable hint */
+      label?: string | undefined;
+
+      /** An additional human readable hint */
+      hint?: string | undefined;
+
+      /** The classname of an Icon to render */
+      icon?: string | undefined;
+
+      /** The FormApplication or ApplicationV2 to render */
+      type:
+        | (new () => FormApplication.Any)
+        | (new (options?: DeepPartial<ApplicationV2.Configuration>) => ApplicationV2.Any);
+
+      /** If true, only a GM can edit this Setting */
+      restricted?: boolean | undefined;
+    }
 
     type RegisterSubmenu = Omit<SettingSubmenuConfig, "key" | "namespace">;
 
