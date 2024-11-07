@@ -44,7 +44,7 @@ declare global {
      * Can this field only be modified by a gamemaster or assistant gamemaster?
      * @defaultValue `false`
      */
-    gmOnly?: boolean | undefined
+    gmOnly?: boolean | undefined;
 
     /** The initial value of a field, or a function which assigns that initial value. */
     initial?:
@@ -64,7 +64,9 @@ declare global {
 
     /**
      * A custom validation error string. When displayed will be prepended with the
-     * document name, field name, and candidate value.
+     * document name, field name, and candidate value. This error string is only
+     * used when the return type of the validate function is a boolean. If an Error
+     * is thrown in the validate function, the string message of that Error is used.
      */
     validationError?: string | undefined;
   }
@@ -150,6 +152,12 @@ declare abstract class DataField<
   nullable: boolean;
 
   /**
+   * Can this field only be modified by a gamemaster or assistant gamemaster?
+   * @defaultValue `false`
+   */
+  gmOnly: boolean;
+
+  /**
    * The initial value of a field, or a function which assigns that initial value.
    * @defaultValue `undefined`
    */
@@ -176,7 +184,9 @@ declare abstract class DataField<
 
   /**
    * A custom validation error string. When displayed will be prepended with the
-   * document name, field name, and candidate value.
+   * document name, field name, and candidate value. This error string is only
+   * used when the return type of the validate function is a boolean. If an Error
+   * is thrown in the validate function, the string message of that Error is used.
    * @defaultValue `"is not a valid value"`
    */
   validationError: string;
