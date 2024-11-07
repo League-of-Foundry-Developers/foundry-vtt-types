@@ -302,7 +302,7 @@ declare global {
   namespace ClientKeybindings {
     /**
      * A Client Keybinding Action Configuration
-     * Copied from `resources/app/common/types.mjs`
+     * @remarks Copied from `resources/app/common/types.mjs`
      */
     interface KeybindingActionConfig {
       /** The namespace within which the action was registered */
@@ -344,7 +344,7 @@ declare global {
 
     /**
      * A Client Keybinding Action Binding
-     * Copied from `resources/app/common/types.mjs`
+     * @remarks Copied from `resources/app/common/types.mjs`
      */
     interface KeybindingActionBinding {
       /** A numeric index which tracks this bindings position during form rendering */
@@ -359,7 +359,7 @@ declare global {
 
     /**
      * An action that can occur when a key is pressed
-     * Copied from `resources/app/common/types.mjs`
+     * @remarks Copied from `resources/app/common/types.mjs`
      */
     interface KeybindingAction {
       /** The namespaced machine identifier of the Action */

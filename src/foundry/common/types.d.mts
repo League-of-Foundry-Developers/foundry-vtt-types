@@ -1,4 +1,4 @@
-import type { AnyConstructor, AnyFunction } from "../../types/utils.d.mts";
+import type { AnyConcreteConstructor, AnyConstructor, AnyFunction } from "../../types/utils.d.mts";
 import type { Document } from "./abstract/module.d.mts";
 
 // Types that are still needed globally and don't have a good place elsewhere
@@ -14,36 +14,6 @@ declare global {
   type PointArray = [x: number, y: number];
 
   /**
-   * Make all properties in T recursively readonly.
-   */
-  type DeepReadonly<T> = Readonly<{
-    [K in keyof T]: T[K] extends
-      | undefined
-      | null
-      | boolean
-      | number
-      | string
-      | symbol
-      | bigint
-      | AnyFunction
-      | AnyConstructor
-      ? T[K]
-      : T[K] extends Array<infer V>
-        ? ReadonlyArray<DeepReadonly<V>>
-        : T[K] extends Map<infer K, infer V>
-          ? ReadonlyMap<DeepReadonly<K>, DeepReadonly<V>>
-          : T[K] extends Set<infer V>
-            ? ReadonlySet<DeepReadonly<V>>
-            : DeepReadonly<T[K]>;
-  }>;
-
-  /**
-   * A class constructor.
-   * Used for functions with generic class constructor parameters.
-   */
-  type Constructor = new (...args: any[]) => any;
-
-  /**
    * A standard rectangle interface.
    */
   interface Rectangle {
@@ -52,8 +22,6 @@ declare global {
     width: number;
     height: number;
   }
-
-  type BuiltInTypes = typeof Number | typeof String | typeof Boolean;
 
   type RGBColorVector = [r: number, g: number, b: number];
   type HSVColorVector = [h: number, s: number, v: number];
@@ -71,7 +39,40 @@ declare global {
 
 type DocumentConstructionContext = Document.ConstructionContext<Document.Any | null>;
 
-type SettingConfig = ClientSettings.SettingOptions;
+/**
+ * Make all properties in T recursively readonly.
+ * @privateRemarks We have better tools & this is only used in a private method
+ */
+type DeepReadonly<T> = Readonly<{
+  [K in keyof T]: T[K] extends
+    | undefined
+    | null
+    | boolean
+    | number
+    | string
+    | symbol
+    | bigint
+    | AnyFunction
+    | AnyConstructor
+    | AnyConcreteConstructor
+    ? T[K]
+    : T[K] extends Array<infer V>
+      ? ReadonlyArray<DeepReadonly<V>>
+      : T[K] extends Map<infer K, infer V>
+        ? ReadonlyMap<DeepReadonly<K>, DeepReadonly<V>>
+        : T[K] extends Set<infer V>
+          ? ReadonlySet<DeepReadonly<V>>
+          : DeepReadonly<T[K]>;
+}>;
+
+/**
+ * A class constructor.
+ * Used for functions with generic class constructor parameters.
+ * @privateRemarks We have better tools like {@link AnyConcreteConstructor} and {@link AnyConstructor}
+ */
+type Constructor = new (...args: any[]) => any;
+
+type SettingConfig = ClientSettings.SettingConfig;
 
 type SettingSubmenuConfig = ClientSettings.SettingSubmenuConfig;
 

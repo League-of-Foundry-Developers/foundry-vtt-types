@@ -234,7 +234,7 @@ declare global {
   namespace KeyboardManager {
     /**
      * Keyboard event context
-     * Copied from `resources/app/common/types.mjs`
+     * @remarks Copied from `resources/app/common/types.mjs`
      */
     interface KeyboardEventContext {
       /** The normalized string key, such as "A" */

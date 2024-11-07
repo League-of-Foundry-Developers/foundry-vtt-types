@@ -91,7 +91,7 @@ declare global {
       namespace: N,
       key: K,
       data: ClientSettings.Type extends T
-        ? ClientSettings.RegisterOptions<_SettingConfig[`${N}.${K}`]>
+        ? ClientSettings.RegisterOptions<_SettingConfigRecord[`${N}.${K}`]>
         : ClientSettings.RegisterOptions<NoInfer<T>>,
     ): void;
 
@@ -163,8 +163,8 @@ declare global {
   }
 
   namespace ClientSettings {
-    type Namespace = GetNamespaces<keyof _SettingConfig>;
-    type Key = GetKeys<keyof _SettingConfig>;
+    type Namespace = GetNamespaces<keyof _SettingConfigRecord>;
+    type Key = GetKeys<keyof _SettingConfigRecord>;
 
     /**
      * A compile type is a type for a setting that only exists at compile time.
@@ -199,8 +199,7 @@ declare global {
       SettingType<T> | (T extends DataModel.Any ? T : never)
     >;
 
-    // This type is named `SettingConfig` in FoundryVTT but that name is confusing within fvtt-types because of the `Config` nomenclature meaning declaration merging.
-    interface _SettingOptions<RuntimeType extends ClientSettings.RuntimeType, AssignmentType> {
+    interface _SettingConfig<RuntimeType extends ClientSettings.RuntimeType, AssignmentType> {
       /** A unique machine-readable id for the setting */
       key: string;
 
@@ -256,15 +255,19 @@ declare global {
       input?: CustomFormInput | undefined;
     }
 
-    /** A Client Setting */
-    interface SettingOptions<T extends Type = (value: unknown) => unknown>
-      extends _SettingOptions<ToRuntimeType<T>, ToSettingAssignmentType<T>> {}
+    /**
+     * A Client Setting
+     * @remarks Copied from `resources/app/common/types.mjs`
+     * @remarks Not to be confused with {@link globalThis.SettingConfig} which is how you register setting types in this project
+     */
+    interface SettingConfig<T extends Type = (value: unknown) => unknown>
+      extends _SettingConfig<ToRuntimeType<T>, ToSettingAssignmentType<T>> {}
 
-    interface RegisterOptions<T extends Type> extends InexactPartial<Omit<SettingOptions<T>, "key" | "namespace">> {}
+    interface RegisterOptions<T extends Type> extends InexactPartial<Omit<SettingConfig<T>, "key" | "namespace">> {}
 
     /**
      * A Client Setting Submenu
-     * Copied from `resources/app/common/types.mjs`
+     * @remarks Copied from `resources/app/common/types.mjs`
      */
     interface SettingSubmenuConfig {
       key: string;
@@ -295,9 +298,9 @@ declare global {
     type RegisterSubmenu = Omit<SettingSubmenuConfig, "key" | "namespace">;
 
     /**
-     * @deprecated - {@link SettingConfig | `SettingConfig`}
+     * @deprecated - {@link globalThis.SettingConfig | `SettingConfig`}
      */
-    interface Values extends SettingConfig {}
+    interface Values extends globalThis.SettingConfig {}
   }
 }
 
@@ -330,7 +333,7 @@ type PrimitiveConstructorToSettingType<T extends PRIMITIVE_TYPES[number]> = T ex
     ? AnyObject
     : ReturnType<T>;
 
-type ConfiguredType<N extends ClientSettings.Namespace, K extends ClientSettings.Key> = _SettingConfig[`${N}.${K}`];
+type ConfiguredType<N extends ClientSettings.Namespace, K extends ClientSettings.Key> = _SettingConfigRecord[`${N}.${K}`];
 
 type SettingType<T extends ClientSettings.Type> =
   // Note(LukeAbby): This isn't written as `T extends ClientSettings.TypeScriptType ? T : never` because then types like `DataField.Any` would be matched.
@@ -345,7 +348,7 @@ type ReplaceUndefinedWithNull<T> = T extends undefined ? null : T;
 type GetNamespaces<SettingPath extends PropertyKey> = SettingPath extends `${infer Scope}.${string}` ? Scope : never;
 type GetKeys<SettingPath extends PropertyKey> = SettingPath extends `${string}.${infer Name}` ? Name : never;
 
-type _SettingConfig = ConformRecord<
+type _SettingConfigRecord = ConformRecord<
   // Refers to the deprecated interface so that merging works both ways.
   ClientSettings.Values,
   ClientSettings.Type
