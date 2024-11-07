@@ -1,4 +1,3 @@
-import type { AnyObject } from "../../../types/utils.d.mts";
 import type { FormInputConfig, NumberInputConfig, SelectInputConfig } from "../../client-esm/applications/forms/fields.d.mts";
 
 declare global {
@@ -265,11 +264,10 @@ declare global {
      * @param field   - The DataField instance to convert to an input
      * @param options - Helper options
      */
-    static formInput(
-      field: foundry.data.fields.DataField.Any,
+    static formInput<Field extends foundry.data.fields.DataField.Any>(
+      field: Field,
       options: {
-        // TODO: Derive valid hash options from the provided field
-        hash?: AnyObject;
+        hash?: Parameters<Field["toInput"]>[0];
       },
     ): Handlebars.SafeString;
 
@@ -278,11 +276,10 @@ declare global {
      * @param field   - The DataField instance to convert to an input
      * @param options - Helper options
      */
-    static formGroup(
-      field: foundry.data.fields.DataField.Any,
+    static formGroup<Field extends foundry.data.fields.DataField.Any>(
+      field: Field,
       options: {
-        // TODO: Derive valid hash options from the provided field
-        hash?: AnyObject;
+        hash?: Parameters<Field["toFormGroup"]>[0] & Parameters<Field["toFormGroup"]>[1];
       },
     ): Handlebars.SafeString;
 
