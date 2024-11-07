@@ -1,8 +1,7 @@
 import type { AnyConstructor, AnyFunction } from "../../types/utils.d.mts";
 import type { Document } from "./abstract/module.d.mts";
 
-// Types that are still needed
-
+// Types that are still needed globally and don't have a good place elsewhere
 declare global {
   /**
    * A single point, expressed as an object \{x, y\}
