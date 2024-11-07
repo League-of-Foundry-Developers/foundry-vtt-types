@@ -22,6 +22,8 @@ new foundry.documents.BaseNote({
 
 // @ts-expect-error - A textAnchor cannot be an arbitrary number.
 new foundry.documents.BaseNote({ textAnchor: 999 });
+// Should be correct
+new foundry.documents.BaseNote({ textAnchor: 2 });
 
 // @ts-expect-error - t cannot be an arbitrary string.
 new foundry.documents.BaseMeasuredTemplate({ t: "foobar" });

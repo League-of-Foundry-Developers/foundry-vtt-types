@@ -40,6 +40,12 @@ declare global {
      */
     nullable?: boolean | undefined;
 
+    /**
+     * Can this field only be modified by a gamemaster or assistant gamemaster?
+     * @defaultValue `false`
+     */
+    gmOnly?: boolean | undefined
+
     /** The initial value of a field, or a function which assigns that initial value. */
     initial?:
       | DataFieldOptions.InitialType<
@@ -48,9 +54,7 @@ declare global {
       | undefined;
 
     /** A data validation function which accepts one argument with the current value. */
-    validate?:
-      | ((this: DataField.Any, value: any, options?: DataField.ValidationOptions<DataField.Any>) => boolean | void)
-      | undefined;
+    validate?: DataField.Validator | undefined;
 
     /** A localizable label displayed on forms which render this field. */
     label?: string | undefined;
@@ -506,6 +510,7 @@ declare namespace DataField {
     nullable: false;
     initial: undefined;
     readonly: false;
+    gmOnly: false;
     label: "";
     hint: "";
     validationError: "is not a valid value";
@@ -581,12 +586,25 @@ declare namespace DataField {
   }
 
   /**
+   * A Custom DataField validator function.
+   *
+   * A boolean return value indicates that the value is valid (true) or invalid (false) with certainty. With an explicit
+   * boolean return value no further validation functions will be evaluated.
+   *
+   * An undefined return indicates that the value may be valid but further validation functions should be performed,
+   * if defined.
+   *
+   * An Error may be thrown which provides a custom error message explaining the reason the value is invalid.
+   */
+  type Validator = (this: DataField, value: unknown, options: ValidationOptions<DataField>) => boolean | void;
+
+  /**
    * An interface for the options of the {@link DataField} validation functions.
    * @typeParam DataField - the type of the DataField, which is the receiver of the validate function
    */
   interface ValidationOptions<DataField extends DataField.Any> extends DataValidationOptions {
     source?: AnyObject;
-    validate?: (this: DataField, value: unknown, options: ValidationOptions<DataField>) => boolean;
+    validate?: Validator;
   }
 
   interface Context {
@@ -1071,7 +1089,9 @@ declare class NumberField<
   toFormGroup(
     groupConfig?: DataField.GroupConfig,
     // TODO(LukeAbby): `Options["Choices"]` is inappropriate as it does not account for `DefaultOptions`.
-    inputConfig?: NumberField.ToInputConfig<InitializedType, Options["choices"]> | NumberField.ToInputConfigWithOptions<InitializedType>,
+    inputConfig?:
+      | NumberField.ToInputConfig<InitializedType, Options["choices"]>
+      | NumberField.ToInputConfigWithOptions<InitializedType>,
   ): HTMLDivElement;
   toFormGroup(
     groupConfig?: DataField.GroupConfig,
@@ -1079,12 +1099,18 @@ declare class NumberField<
   ): HTMLDivElement;
 
   toInput(
-    config?: NumberField.ToInputConfig<InitializedType, Options["choices"]> | NumberField.ToInputConfigWithOptions<InitializedType>,
+    config?:
+      | NumberField.ToInputConfig<InitializedType, Options["choices"]>
+      | NumberField.ToInputConfigWithOptions<InitializedType>,
   ): HTMLElement | HTMLCollection;
-  toInput(config?: NumberField.ToInputConfigWithChoices<InitializedType,  Options["choices"]>): HTMLElement | HTMLCollection;
+  toInput(
+    config?: NumberField.ToInputConfigWithChoices<InitializedType, Options["choices"]>,
+  ): HTMLElement | HTMLCollection;
 
   protected override _toInput(
-    config: NumberField.ToInputConfig<InitializedType, Options["choices"]> | NumberField.ToInputConfigWithOptions<InitializedType>,
+    config:
+      | NumberField.ToInputConfig<InitializedType, Options["choices"]>
+      | NumberField.ToInputConfigWithOptions<InitializedType>,
   ): HTMLElement | HTMLCollection;
   protected override _toInput(
     config: NumberField.ToInputConfigWithChoices<InitializedType, Options["choices"]>,
@@ -1288,7 +1314,9 @@ declare class StringField<
   toInput(
     config?: DataField.ToInputConfig<InitializedType> | DataField.ToInputConfigWithOptions<InitializedType>,
   ): HTMLElement | HTMLCollection;
-  toInput(config?: DataField.ToInputConfigWithChoices<InitializedType, Options["choices"]>): HTMLElement | HTMLCollection;
+  toInput(
+    config?: DataField.ToInputConfigWithChoices<InitializedType, Options["choices"]>,
+  ): HTMLElement | HTMLCollection;
 
   protected override _toInput(
     config: DataField.ToInputConfig<InitializedType> | DataField.ToInputConfigWithOptions<InitializedType>,
@@ -3305,7 +3333,9 @@ declare class JSONField<
   toInput(
     config?: DataField.ToInputConfig<InitializedType> | DataField.ToInputConfigWithOptions<InitializedType>,
   ): HTMLElement | HTMLCollection;
-  toInput(config?: DataField.ToInputConfigWithChoices<InitializedType, Options["choices"]>): HTMLElement | HTMLCollection;
+  toInput(
+    config?: DataField.ToInputConfigWithChoices<InitializedType, Options["choices"]>,
+  ): HTMLElement | HTMLCollection;
 
   protected override _toInput(
     config: DataField.ToInputConfig<InitializedType> | DataField.ToInputConfigWithOptions<InitializedType>,
@@ -3417,7 +3447,9 @@ declare class HTMLField<
   toInput(
     config?: DataField.ToInputConfig<InitializedType> | DataField.ToInputConfigWithOptions<InitializedType>,
   ): HTMLElement | HTMLCollection;
-  toInput(config?: DataField.ToInputConfigWithChoices<InitializedType, Options["choices"]>): HTMLElement | HTMLCollection;
+  toInput(
+    config?: DataField.ToInputConfigWithChoices<InitializedType, Options["choices"]>,
+  ): HTMLElement | HTMLCollection;
 
   protected override _toInput(
     config: DataField.ToInputConfig<InitializedType> | DataField.ToInputConfigWithOptions<InitializedType>,
