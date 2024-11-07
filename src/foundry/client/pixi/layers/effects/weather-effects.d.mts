@@ -21,10 +21,16 @@ declare global {
     override eventMode: PIXI.EventMode;
 
     /**
-     * Sorting values to deal with ties.
-     * @defaultValue `1000`
+     * The container in which effects are added.
+     * @defaultValue `undefined`
      */
-    static PRIMARY_SORT_ORDER: number;
+    weatherEffects: PIXI.Container | undefined;
+
+    /**
+     * The container in which suppression meshed are added.
+     * @defaultValue `undefined`
+     */
+    suppression: PIXI.Container | undefined;
 
     /**
      * @defaultValue `foundry.utils.mergeObject(super.layerOptions, { name: "effects" })`
@@ -56,12 +62,34 @@ declare global {
     occlusionFilter: WeatherOcclusionMaskFilter;
 
     /**
-     * Define an elevation property on the WeatherEffects layer.
-     * This approach is used for now until the weather elevation property is formally added to the Scene data schema.
+     * The elevation of this object.
      */
     get elevation(): number;
 
     set elevation(value);
+
+    /**
+     * A key which resolves ties amongst objects at the same elevation of different layers.
+     * @defaultValue `PrimaryCanvasGroup.SORT_LAYERS.WEATHER`
+     */
+    get sortLayer(): number;
+
+    set sortLayer(value);
+
+    /**
+     * A key which resolves ties amongst objects at the same elevation within the same layer.
+     * @defaultValue `0`
+     */
+    get sort(): number;
+
+    set sort(value);
+
+    /**
+     * A key which resolves ties amongst objects at the same elevation within the same layer and same sort.
+     */
+    get zIndex(): number;
+
+    set zIndex(value);
 
     protected override _draw(options?: Record<string, unknown>): Promise<void>;
 
@@ -127,7 +155,7 @@ declare global {
        * If the mask should be reversed.
        * @defaultValue `false`
        */
-      reverse: boolean;
+      reverse?: boolean | undefined;
 
       /**
        * A texture which defines the mask region.

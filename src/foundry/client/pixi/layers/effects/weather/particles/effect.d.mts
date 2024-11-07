@@ -9,7 +9,7 @@ declare global {
      * @param options - Options passed to the getParticleEmitters method which can be used to customize values of the emitter configuration.
      *                  (default: `{}`)
      */
-    constructor(options?: Record<string, unknown>);
+    constructor(options: PIXI.particles.EmitterConfigV3);
 
     parent: PIXI.Container;
 
@@ -24,10 +24,12 @@ declare global {
 
     /**
      * Get the particle emitters which should be active for this particle effect.
+     * This base class creates a single emitter using the explicitly provided configuration.
+     * Subclasses can override this method for more advanced configurations.
      * @param options - Options provided to the ParticleEffect constructor which can be used to customize
      *                  configuration values for created emitters. (default: `{}`)
      */
-    getParticleEmitters(options?: Record<string, unknown>): PIXI.particles.Emitter[];
+    getParticleEmitters(options: PIXI.particles.EmitterConfigV3): PIXI.particles.Emitter[];
 
     override destroy(options?: boolean | PIXI.IDestroyOptions): void;
 
@@ -41,7 +43,4 @@ declare global {
      */
     stop(): void;
   }
-
-  /** @deprecated since v10 */
-  class SpecialEffect extends ParticleEffect {}
 }

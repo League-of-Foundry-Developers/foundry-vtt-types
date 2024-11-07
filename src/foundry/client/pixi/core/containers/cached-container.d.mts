@@ -1,3 +1,5 @@
+import type { NullishProps } from "../../../../../types/utils.d.mts";
+
 export {};
 
 declare global {
@@ -16,11 +18,11 @@ declare global {
      * The texture configuration to use for this cached container
      * @remarks Foundry marked as abstract
      */
-    static textureConfiguration: {
-      multisample?: PIXI.MSAA_QUALITY;
-      scaleMode?: PIXI.SCALE_MODES;
-      format?: PIXI.FORMATS;
-    };
+    static textureConfiguration: NullishProps<{
+      multisample: PIXI.MSAA_QUALITY;
+      scaleMode: PIXI.SCALE_MODES;
+      format: PIXI.FORMATS;
+    }>;
 
     /**
      * A map of render textures, linked to their render function and an optional RGBA clear color.

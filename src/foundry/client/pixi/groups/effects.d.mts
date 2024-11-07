@@ -1,8 +1,5 @@
 import type { ValueOf } from "../../../../types/utils.d.mts";
 
-// TODO: Remove after layer is defined by #2841
-type CanvasDarknessEffects = CanvasLayer;
-
 declare global {
   /**
    * A container group which contains visual effects rendered above the primary group.

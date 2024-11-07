@@ -1,3 +1,5 @@
+import type { NullishProps } from "../../../../../types/utils.d.mts";
+
 export {};
 
 declare global {
@@ -6,26 +8,39 @@ declare global {
    */
   class CanvasIlluminationEffects extends CanvasLayer {
     /**
-     * A minimalist texture that holds the background color.
+     * The filter used to mask visual effects on this layer
      */
-    backgroundColorTexture: PIXI.Texture;
-
-    background: PIXI.LegacyGraphics;
+    filter: VisualEffectsMaskingFilter;
 
     /**
-     * @defaultValue `lights.sortableChildren = true`
+     * The container holding the lights.
      */
     lights: PIXI.Container;
 
     /**
-     * Is global illumination currently applied to the canvas?
+     * A minimalist texture that holds the background color.
      */
-    get globalLight(): boolean;
+    backgroundColorTexture: PIXI.Texture;
 
     /**
-     * The filter used to mask visual effects on this layer
+     * The base line mesh.
      */
-    filter: VisualEffectsMaskingFilter;
+    baselineMesh: SpriteMesh;
+
+    /**
+     * The cached container holding the illumination meshes.
+     */
+    darknessLevelMeshes: DarknessLevelContainer;
+
+    /**
+     * To know if dynamic darkness level is active on this scene.
+     */
+    get hasDynamicDarknessLevel(): boolean;
+
+    /**
+     * The illumination render texture.
+     */
+    get renderTexture(): PIXI.RenderTexture;
 
     /**
      * Set or retrieve the illumination background color.
@@ -36,6 +51,13 @@ declare global {
      * Clear illumination effects container
      */
     clear(): void;
+
+    /**
+     * Invalidate the cached container state to trigger a render pass.
+     * @param force - Force cached container invalidation?
+     *                (default: `false`)
+     */
+    invalidateDarknessLevelContainer(force: boolean): void;
 
     /**
      * Create the background color texture used by illumination point source meshes.
@@ -59,16 +81,49 @@ declare global {
     protected override _draw(options?: Record<string, unknown>): Promise<void>;
 
     protected override _tearDown(options?: Record<string, unknown>): Promise<void>;
-
-    /**
-     * Draw illumination baseline
-     */
-    drawBaseline(): void;
-
     /**
      * @deprecated since v11, will be removed in v13
      * @remarks "CanvasIlluminationEffects#updateGlobalLight has been deprecated."
      */
     updateGlobalLight(): false;
+
+    /**
+     * @deprecated since v12, will be removed in v14
+     */
+    background: PIXI.LegacyGraphics;
+
+    /**
+     * @deprecated since v12, will be removed in v14
+     * @remarks `"CanvasIlluminationEffects#globalLight has been deprecated without replacement. Check the canvas.environment.globalLightSource.active instead."`
+     */
+    get globalLight(): boolean;
+  }
+
+  /**
+   * Cached container used for dynamic darkness level. Display objects (of any type) added to this cached container will
+   * contribute to computing the darkness level of the masked area. Only the red channel is utilized, which corresponds
+   * to the desired darkness level. Other channels are ignored.
+   */
+  class DarknessLevelContainer extends CachedContainer {
+    /**
+     * @defaultValue
+     * ```js
+     * {
+     *  scaleMode: PIXI.SCALE_MODES.NEAREST,
+     *  format: PIXI.FORMATS.RED,
+     *  multisample: PIXI.MSAA_QUALITY.NONE,
+     *  mipmap: PIXI.MIPMAP_MODES.OFF
+     * }
+     * ```
+     */
+    static override textureConfiguration: NullishProps<{
+      multisample: PIXI.MSAA_QUALITY;
+      scaleMode: PIXI.SCALE_MODES;
+      format: PIXI.FORMATS;
+      mipmap: PIXI.MIPMAP_MODES;
+    }>;
+
+    /** @privateRemarks Including to protect duck typing due to overall similarities b/w DarknessLevelContainer and CachedContainer */
+    #onChildChange(): void;
   }
 }
