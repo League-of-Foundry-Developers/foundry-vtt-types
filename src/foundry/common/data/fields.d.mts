@@ -1,4 +1,12 @@
-import type { RemoveIndexSignatures, SimpleMerge, ValueOf, AnyObject, EmptyObject } from "../../../types/utils.d.mts";
+import type {
+  RemoveIndexSignatures,
+  SimpleMerge,
+  ValueOf,
+  AnyObject,
+  EmptyObject,
+  NullishProps,
+  InexactPartial,
+} from "../../../types/utils.d.mts";
 import type { DataModel } from "../abstract/data.mts";
 import type Document from "../abstract/document.mts";
 import type { EmbeddedCollection, EmbeddedCollectionDelta } from "../abstract/module.d.mts";
@@ -6,7 +14,14 @@ import type { DOCUMENT_OWNERSHIP_LEVELS } from "../constants.d.mts";
 import type { CONST } from "../../client-esm/client.d.mts";
 import type { DataModelValidationFailure } from "./validation-failure.mts";
 import type { EffectChangeData } from "../documents/_types.d.mts";
-import type { FormInputConfig } from "../../client-esm/applications/forms/fields.d.mts";
+import type {
+  FormGroupConfig,
+  FormInputConfig,
+  FormSelectOption,
+  MultiSelectInputConfig,
+  SelectInputConfig,
+  TextAreaInputConfig,
+} from "../../client-esm/applications/forms/fields.d.mts";
 
 declare global {
   /**
@@ -25,6 +40,12 @@ declare global {
      */
     nullable?: boolean | undefined;
 
+    /**
+     * Can this field only be modified by a gamemaster or assistant gamemaster?
+     * @defaultValue `false`
+     */
+    gmOnly?: boolean | undefined;
+
     /** The initial value of a field, or a function which assigns that initial value. */
     initial?:
       | DataFieldOptions.InitialType<
@@ -33,9 +54,7 @@ declare global {
       | undefined;
 
     /** A data validation function which accepts one argument with the current value. */
-    validate?:
-      | ((this: DataField.Any, value: any, options?: DataField.ValidationOptions<DataField.Any>) => boolean | void)
-      | undefined;
+    validate?: DataField.Validator | undefined;
 
     /** A localizable label displayed on forms which render this field. */
     label?: string | undefined;
@@ -45,7 +64,9 @@ declare global {
 
     /**
      * A custom validation error string. When displayed will be prepended with the
-     * document name, field name, and candidate value.
+     * document name, field name, and candidate value. This error string is only
+     * used when the return type of the validate function is a boolean. If an Error
+     * is thrown in the validate function, the string message of that Error is used.
      */
     validationError?: string | undefined;
   }
@@ -131,6 +152,12 @@ declare abstract class DataField<
   nullable: boolean;
 
   /**
+   * Can this field only be modified by a gamemaster or assistant gamemaster?
+   * @defaultValue `false`
+   */
+  gmOnly: boolean;
+
+  /**
    * The initial value of a field, or a function which assigns that initial value.
    * @defaultValue `undefined`
    */
@@ -157,7 +184,9 @@ declare abstract class DataField<
 
   /**
    * A custom validation error string. When displayed will be prepended with the
-   * document name, field name, and candidate value.
+   * document name, field name, and candidate value. This error string is only
+   * used when the return type of the validate function is a boolean. If an Error
+   * is thrown in the validate function, the string message of that Error is used.
    * @defaultValue `"is not a valid value"`
    */
   validationError: string;
@@ -336,7 +365,7 @@ declare abstract class DataField<
    * @throws An Error if this DataField subclass does not support input rendering
    * @returns A rendered HTMLElement for the field
    */
-  toInput(config?: FormInputConfig): HTMLElement | HTMLCollection;
+  toInput(config?: DataField.ToInputConfig<InitializedType>): HTMLElement | HTMLCollection;
 
   /**
    * Render this DataField as an HTML element.
@@ -345,7 +374,7 @@ declare abstract class DataField<
    * @throws An Error if this DataField subclass does not support input rendering
    * @returns A rendered HTMLElement for the field
    */
-  protected _toInput(config: FormInputConfig): HTMLElement | HTMLCollection;
+  protected _toInput(config: DataField.ToInputConfig<InitializedType>): HTMLElement | HTMLCollection;
 
   /**
    * Render this DataField as a standardized form-group element.
@@ -353,7 +382,10 @@ declare abstract class DataField<
    * @param inputConfig - Input element configuration options passed to DataField#toInput
    * @returns The rendered form group element
    */
-  toFormGroup(groupConfig?: FormInputConfig, inputConfig?: FormInputConfig): HTMLDivElement;
+  toFormGroup(
+    groupConfig?: DataField.GroupConfig,
+    inputConfig?: DataField.ToInputConfig<InitializedType>,
+  ): HTMLDivElement;
 
   /**
    * Apply an ActiveEffectChange to this field.
@@ -468,6 +500,8 @@ declare namespace DataField {
   /** Any DataField. */
   type Any = DataField<any, any, any, any>;
 
+  type AnyConstructor = typeof AnyDataField;
+
   /** A DataField with unknown inner types. */
   type Unknown = DataField<any, unknown, unknown, unknown>;
 
@@ -486,6 +520,7 @@ declare namespace DataField {
     nullable: false;
     initial: undefined;
     readonly: false;
+    gmOnly: false;
     label: "";
     hint: "";
     validationError: "is not a valid value";
@@ -561,12 +596,25 @@ declare namespace DataField {
   }
 
   /**
+   * A Custom DataField validator function.
+   *
+   * A boolean return value indicates that the value is valid (true) or invalid (false) with certainty. With an explicit
+   * boolean return value no further validation functions will be evaluated.
+   *
+   * An undefined return indicates that the value may be valid but further validation functions should be performed,
+   * if defined.
+   *
+   * An Error may be thrown which provides a custom error message explaining the reason the value is invalid.
+   */
+  type Validator = (this: DataField, value: unknown, options: ValidationOptions<DataField>) => boolean | void;
+
+  /**
    * An interface for the options of the {@link DataField} validation functions.
    * @typeParam DataField - the type of the DataField, which is the receiver of the validate function
    */
   interface ValidationOptions<DataField extends DataField.Any> extends DataValidationOptions {
     source?: AnyObject;
-    validate?: (this: DataField, value: unknown, options: ValidationOptions<DataField>) => boolean;
+    validate?: Validator;
   }
 
   interface Context {
@@ -576,7 +624,28 @@ declare namespace DataField {
     /** Another data field which is a hierarchical parent of this one */
     parent: DataField.Any;
   }
+
+  interface ToInputConfig<InitializedType> extends FormInputConfig<InitializedType> {}
+
+  interface ToInputConfigWithOptions<InitializedType> extends FormInputConfig<InitializedType>, SelectInputConfig {}
+
+  type AnyChoices = StringField.Choices | NumberField.Choices;
+
+  type ToInputConfigWithChoices<InitializedType, Choices extends AnyChoices | undefined> = SimpleMerge<
+    Omit<ToInputConfigWithOptions<InitializedType>, "options">,
+    Choices extends undefined ? StringField.GetChoicesOptions : NullishProps<StringField.GetChoicesOptions, "choices">
+  >;
+
+  type SelectableToInputConfig<InitializedType, Choices extends StringField.Choices | undefined> =
+    | ToInputConfig<InitializedType>
+    | ToInputConfigWithOptions<InitializedType>
+    | ToInputConfigWithChoices<InitializedType, Choices>;
+
+  // `DataField#toFormGroup` provides default values for these by way of `??=`.
+  interface GroupConfig extends NullishProps<FormGroupConfig, "label" | "hint" | "input"> {}
 }
+
+declare abstract class AnyDataField extends DataField<any, any, any, any> {}
 
 /**
  * A special class of {@link DataField} which defines a data schema.
@@ -590,7 +659,6 @@ declare namespace DataField {
  * AssignmentType: `SchemaField.AssignmentType<Fields> | null | undefined`
  * InitializedType: `SchemaField.InitializedType<Fields>`
  * PersistedType: `SchemaField.PersistedType<Fields>`
- * InitialValue: `{}`
  */
 declare class SchemaField<
   Fields extends DataSchema,
@@ -862,6 +930,8 @@ declare class BooleanField<
     value: InitializedType,
     options?: DataField.ValidationOptions<DataField.Any>,
   ): boolean | DataModelValidationFailure | void;
+
+  protected override _toInput(config: DataField.ToInputConfig<InitializedType>): HTMLElement | HTMLCollection;
 }
 
 declare namespace BooleanField {
@@ -1024,6 +1094,37 @@ declare class NumberField<
    * @returns Is the choice valid?
    */
   #isValidChoice(value: AssignmentType): boolean;
+
+  // These verbose overloads are because otherwise there would be a misleading errors about `choices` being required without mentioning `options` or vice versa.
+  toFormGroup(
+    groupConfig?: DataField.GroupConfig,
+    // TODO(LukeAbby): `Options["Choices"]` is inappropriate as it does not account for `DefaultOptions`.
+    inputConfig?:
+      | NumberField.ToInputConfig<InitializedType, Options["choices"]>
+      | NumberField.ToInputConfigWithOptions<InitializedType>,
+  ): HTMLDivElement;
+  toFormGroup(
+    groupConfig?: DataField.GroupConfig,
+    inputConfig?: NumberField.ToInputConfigWithChoices<InitializedType, Options["choices"]>,
+  ): HTMLDivElement;
+
+  toInput(
+    config?:
+      | NumberField.ToInputConfig<InitializedType, Options["choices"]>
+      | NumberField.ToInputConfigWithOptions<InitializedType>,
+  ): HTMLElement | HTMLCollection;
+  toInput(
+    config?: NumberField.ToInputConfigWithChoices<InitializedType, Options["choices"]>,
+  ): HTMLElement | HTMLCollection;
+
+  protected override _toInput(
+    config:
+      | NumberField.ToInputConfig<InitializedType, Options["choices"]>
+      | NumberField.ToInputConfigWithOptions<InitializedType>,
+  ): HTMLElement | HTMLCollection;
+  protected override _toInput(
+    config: NumberField.ToInputConfigWithChoices<InitializedType, Options["choices"]>,
+  ): HTMLElement | HTMLCollection;
 }
 
 declare namespace NumberField {
@@ -1079,6 +1180,28 @@ declare namespace NumberField {
     | readonly number[];
 
   type Choices = BaseChoices | (() => BaseChoices);
+
+  /** @internal */
+  type _ToInputConfig<InitializedType> = DataField.ToInputConfig<InitializedType> &
+    NullishProps<{
+      min: number;
+      max: number;
+      step: number;
+    }>;
+
+  type ToInputConfigWithChoices<InitializedType, Choices extends NumberField.Choices | undefined> = SimpleMerge<
+    DataField.ToInputConfigWithChoices<InitializedType, Choices>,
+    _ToInputConfig<InitializedType>
+  >;
+
+  interface ToInputConfigWithOptions<InitializedType>
+    extends DataField.ToInputConfigWithOptions<InitializedType>,
+      _ToInputConfig<InitializedType> {}
+
+  type ToInputConfig<InitializedType, Choices extends NumberField.Choices | undefined> =
+    | _ToInputConfig<InitializedType>
+    | ToInputConfigWithChoices<InitializedType, Choices>
+    | ToInputConfigWithOptions<InitializedType>;
 }
 
 declare global {
@@ -1182,6 +1305,35 @@ declare class StringField<
    * @returns Is the choice valid?
    */
   protected _isValidChoice(value: AssignmentType): boolean;
+
+  /**
+   * Get a record of eligible choices for the field.
+   */
+  static _getChoices(options?: StringField.GetChoicesOptions): FormSelectOption[];
+
+  // These verbose overloads are because otherwise there would be a misleading errors about `choices` being required without mentioning `options` or vice versa.
+  toFormGroup(
+    groupConfig?: DataField.GroupConfig,
+    inputConfig?: DataField.ToInputConfig<InitializedType> | DataField.ToInputConfigWithOptions<InitializedType>,
+  ): HTMLDivElement;
+  toFormGroup(
+    groupConfig?: DataField.GroupConfig,
+    inputConfig?: DataField.ToInputConfigWithChoices<InitializedType, Options["choices"]>,
+  ): HTMLDivElement;
+
+  toInput(
+    config?: DataField.ToInputConfig<InitializedType> | DataField.ToInputConfigWithOptions<InitializedType>,
+  ): HTMLElement | HTMLCollection;
+  toInput(
+    config?: DataField.ToInputConfigWithChoices<InitializedType, Options["choices"]>,
+  ): HTMLElement | HTMLCollection;
+
+  protected override _toInput(
+    config: DataField.ToInputConfig<InitializedType> | DataField.ToInputConfigWithOptions<InitializedType>,
+  ): HTMLElement | HTMLCollection;
+  protected override _toInput(
+    config: DataField.ToInputConfigWithChoices<InitializedType, Options["choices"]>,
+  ): HTMLElement | HTMLCollection;
 }
 
 declare namespace StringField {
@@ -1262,6 +1414,32 @@ declare namespace StringField {
     | readonly string[];
 
   type Choices = BaseChoices | (() => BaseChoices);
+
+  /**
+   * @internal
+   */
+  interface _GetChoicesOptions {
+    /**
+     * The property in the choice object values to use as the option label.
+     * @defaultValue `"label"`
+     */
+    labelAttr: string;
+
+    valueAttr: string;
+
+    /**
+     * Pass each label through string localization?
+     *
+     * @defaultValue `false`
+     */
+    localize: boolean;
+  }
+
+  // Note: This usage of `InexactPartial` is correct over `NonNullish` because
+  // Foundry writes `static _getChoices({choices, labelAttr="label", valueAttr, localize=false}={})`.
+  interface GetChoicesOptions extends InexactPartial<_GetChoicesOptions> {
+    choices: { readonly [K: string]: string } | { readonly [K: number]: string } | ReadonlyArray<number | string>;
+  }
 }
 
 /**
@@ -1652,6 +1830,17 @@ declare class SetField<
   ): InitializedType | (() => InitializedType | null);
 
   override toObject(value: InitializedType): PersistedType;
+
+  toFormGroup(
+    groupConfig?: DataField.GroupConfig,
+    inputConfig?: SetField.ToInputConfig<ElementFieldType, InitializedType>,
+  ): HTMLDivElement;
+
+  toInput(config?: SetField.ToInputConfig<ElementFieldType, InitializedType>): HTMLElement | HTMLCollection;
+
+  protected override _toInput(
+    config: SetField.ToInputConfig<ElementFieldType, InitializedType>,
+  ): HTMLElement | HTMLCollection;
 }
 
 declare namespace SetField {
@@ -1722,6 +1911,14 @@ declare namespace SetField {
     PersistedElementType,
     Opts extends Options<AssignmentElementType>,
   > = DataField.DerivedInitializedType<PersistedElementType[], MergedOptions<AssignmentElementType, Opts>>;
+
+  type ToInputConfig<ElementFieldType extends DataField.Any, InitializedType> = ElementFieldType extends {
+    readonly choices: readonly string[];
+  }
+    ? // If the field has `choices` then you _must_ provide options for `createMultiSelectInput`.
+      DataField.ToInputConfig<InitializedType> & MultiSelectInputConfig
+    : // Otherwise it's optional to provide.
+      DataField.ToInputConfig<InitializedType> | (DataField.ToInputConfig<InitializedType> & MultiSelectInputConfig);
 }
 
 /**
@@ -2427,7 +2624,33 @@ declare class DocumentUUIDField<
     options?: DataField.ValidationOptions<DataField.Any>,
   ): boolean | DataModelValidationFailure | void;
 
-  protected override _toInput(config: FormInputConfig): HTMLElement | HTMLCollection;
+  // These verbose overloads are because otherwise there would be a misleading errors about `choices` being required without mentioning `options` or vice versa.
+  toFormGroup(
+    groupConfig?: DataField.GroupConfig,
+    inputConfig?:
+      | DocumentUUIDField.RootToInputConfig<InitializedType>
+      | DocumentUUIDField.ToInputConfigWithOptions<InitializedType>,
+  ): HTMLDivElement;
+  toFormGroup(
+    groupConfig?: DataField.GroupConfig,
+    inputConfig?: DocumentUUIDField.ToInputConfigWithChoices<InitializedType>,
+  ): HTMLDivElement;
+
+  toInput(
+    config?:
+      | DocumentUUIDField.RootToInputConfig<InitializedType>
+      | DocumentUUIDField.ToInputConfigWithOptions<InitializedType>,
+  ): HTMLElement | HTMLCollection;
+  toInput(config?: DocumentUUIDField.ToInputConfigWithChoices<InitializedType>): HTMLElement | HTMLCollection;
+
+  protected override _toInput(
+    config:
+      | DocumentUUIDField.RootToInputConfig<InitializedType>
+      | DocumentUUIDField.ToInputConfigWithOptions<InitializedType>,
+  ): HTMLElement | HTMLCollection;
+  protected override _toInput(
+    config: DocumentUUIDField.ToInputConfigWithChoices<InitializedType>,
+  ): HTMLElement | HTMLCollection;
 }
 
 declare namespace DocumentUUIDField {
@@ -2451,6 +2674,24 @@ declare namespace DocumentUUIDField {
       embedded: undefined;
     }
   >;
+
+  interface RootToInputConfig<InitializedType>
+    extends Omit<DataField.ToInputConfig<InitializedType>, "type" | "single"> {}
+
+  /** @internal */
+  type _Choices = Omit<SelectInputConfig, "options"> & StringField.GetChoicesOptions;
+
+  interface ToInputConfigWithOptions<InitializedType> extends RootToInputConfig<InitializedType>, SelectInputConfig {}
+  interface ToInputConfigWithChoices<InitializedType>
+    extends SimpleMerge<RootToInputConfig<InitializedType>, _Choices> {}
+
+  /**
+   * @remarks `DocumentUUIDField#_toInput` writes `Object.assign(config, {type: this.type, single: true});` which is why they have been removed as options.
+   */
+  type ToInputConfig<InitializedType> =
+    | RootToInputConfig<InitializedType>
+    | ToInputConfigWithOptions<InitializedType>
+    | ToInputConfigWithChoices<InitializedType>;
 }
 
 /**
@@ -3088,6 +3329,30 @@ declare class JSONField<
   ): InitializedType | (() => InitializedType | null);
 
   override toObject(value: InitializedType): PersistedType;
+
+  // These verbose overloads are because otherwise there would be a misleading errors about `choices` being required without mentioning `options` or vice versa.
+  toFormGroup(
+    groupConfig?: DataField.GroupConfig,
+    inputConfig?: DataField.ToInputConfig<InitializedType> | DataField.ToInputConfigWithOptions<InitializedType>,
+  ): HTMLDivElement;
+  toFormGroup(
+    groupConfig?: DataField.GroupConfig,
+    inputConfig?: DataField.ToInputConfigWithChoices<InitializedType, Options["choices"]>,
+  ): HTMLDivElement;
+
+  toInput(
+    config?: DataField.ToInputConfig<InitializedType> | DataField.ToInputConfigWithOptions<InitializedType>,
+  ): HTMLElement | HTMLCollection;
+  toInput(
+    config?: DataField.ToInputConfigWithChoices<InitializedType, Options["choices"]>,
+  ): HTMLElement | HTMLCollection;
+
+  protected override _toInput(
+    config: DataField.ToInputConfig<InitializedType> | DataField.ToInputConfigWithOptions<InitializedType>,
+  ): HTMLElement | HTMLCollection;
+  protected override _toInput(
+    config: DataField.ToInputConfigWithChoices<InitializedType, Options["choices"]>,
+  ): HTMLElement | HTMLCollection;
 }
 
 declare namespace JSONField {
@@ -3178,6 +3443,30 @@ declare class HTMLField<
   override blank: boolean;
 
   protected static override get _defaults(): StringFieldOptions;
+
+  // These verbose overloads are because otherwise there would be a misleading errors about `choices` being required without mentioning `options` or vice versa.
+  toFormGroup(
+    groupConfig?: HTMLField.GroupConfig,
+    inputConfig?: DataField.ToInputConfig<InitializedType> | DataField.ToInputConfigWithOptions<InitializedType>,
+  ): HTMLDivElement;
+  toFormGroup(
+    groupConfig?: HTMLField.GroupConfig,
+    inputConfig?: DataField.ToInputConfigWithChoices<InitializedType, Options["choices"]>,
+  ): HTMLDivElement;
+
+  toInput(
+    config?: DataField.ToInputConfig<InitializedType> | DataField.ToInputConfigWithOptions<InitializedType>,
+  ): HTMLElement | HTMLCollection;
+  toInput(
+    config?: DataField.ToInputConfigWithChoices<InitializedType, Options["choices"]>,
+  ): HTMLElement | HTMLCollection;
+
+  protected override _toInput(
+    config: DataField.ToInputConfig<InitializedType> | DataField.ToInputConfigWithOptions<InitializedType>,
+  ): HTMLElement | HTMLCollection;
+  protected override _toInput(
+    config: DataField.ToInputConfigWithChoices<InitializedType, Options["choices"]>,
+  ): HTMLElement | HTMLCollection;
 }
 
 declare namespace HTMLField {
@@ -3213,6 +3502,9 @@ declare namespace HTMLField {
     string,
     MergedOptions<Options>
   >;
+
+  // `HTMLField#toFormGroup` provides a default by way of `groupConfig.stacked ??= true`.
+  interface GroupConfig extends NullishProps<DataField.GroupConfig, "stacked"> {}
 }
 
 /**
@@ -3824,6 +4116,21 @@ declare namespace ModelValidationError {
   type Errors = Record<number | string | symbol, Error> | Error[] | string;
 }
 
+// The subclassing of `StringField` can't be done in one step because
+// `ToInputOptions` both adds and removes properties.
+// This is done this way to avoid the need for some `@ts-expect-error`
+// directives that could mask other errors.
+declare class _InternalJavaScriptField<
+  const Options extends JavaScriptField.Options = JavaScriptField.DefaultOptions,
+  const AssignmentType = StringField.AssignmentType<Options>,
+  const InitializedType = StringField.InitializedType<Options>,
+  const PersistedType extends string | null | undefined = StringField.InitializedType<Options>,
+> extends StringField<Options, AssignmentType, InitializedType, PersistedType> {
+  override toFormGroup(groupConfig?: any, inputConfig?: any): HTMLDivElement;
+
+  protected override _toInput(config: any): HTMLElement | HTMLCollection;
+}
+
 /**
  * A subclass of {@link StringField} which contains JavaScript code.
  */
@@ -3832,7 +4139,7 @@ declare class JavaScriptField<
   const AssignmentType = StringField.AssignmentType<Options>,
   const InitializedType = StringField.InitializedType<Options>,
   const PersistedType extends string | null | undefined = StringField.InitializedType<Options>,
-> extends StringField<Options, AssignmentType, InitializedType, PersistedType> {
+> extends _InternalJavaScriptField<Options, AssignmentType, InitializedType, PersistedType> {
   constructor(options?: Options, context?: DataField.Context);
 
   static get _defaults(): JavaScriptField.Options;
@@ -3842,9 +4149,12 @@ declare class JavaScriptField<
     options?: DataField.ValidationOptions<DataField.Any>,
   ): boolean | DataModelValidationFailure | void;
 
-  override toFormGroup(groupConfig?: FormInputConfig, inputConfig?: FormInputConfig): HTMLDivElement;
+  override toFormGroup(
+    groupConfig?: JavaScriptField.GroupConfig,
+    inputConfig?: JavaScriptField.ToInputConfig<InitializedType>,
+  ): HTMLDivElement;
 
-  protected override _toInput(config: FormInputConfig): HTMLElement | HTMLCollection;
+  protected override _toInput(config: JavaScriptField.ToInputConfig<InitializedType>): HTMLElement | HTMLCollection;
 }
 
 declare namespace JavaScriptField {
@@ -3863,6 +4173,12 @@ declare namespace JavaScriptField {
       async: false;
     }
   >;
+
+  // `JavaScriptField#toFormGroup` provides a default by way of `groupConfig.stacked ??= true`.
+  interface GroupConfig extends NullishProps<DataField.GroupConfig, "stacked"> {}
+
+  interface ToInputConfig<InitializedType>
+    extends SimpleMerge<DataField.ToInputConfig<InitializedType>, TextAreaInputConfig> {}
 }
 
 export {

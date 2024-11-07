@@ -22,5 +22,5 @@ export default class HTMLColorPickerElement extends AbstractFormInputElement<str
   /**
    * Create a HTMLColorPickerElement using provided configuration data.
    */
-  static create(config: FormInputConfig): HTMLColorPickerElement;
+  static create(config: FormInputConfig<unknown>): HTMLColorPickerElement;
 }

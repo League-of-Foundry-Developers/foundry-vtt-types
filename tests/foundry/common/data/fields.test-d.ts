@@ -22,6 +22,8 @@ new foundry.documents.BaseNote({
 
 // @ts-expect-error - A textAnchor cannot be an arbitrary number.
 new foundry.documents.BaseNote({ textAnchor: 999 });
+// Should be correct
+new foundry.documents.BaseNote({ textAnchor: 2 });
 
 // @ts-expect-error - t cannot be an arbitrary string.
 new foundry.documents.BaseMeasuredTemplate({ t: "foobar" });
@@ -113,7 +115,7 @@ expectTypeOf(InitializedType.get("", { strict: true })).toEqualTypeOf<ActiveEffe
 
 const stringField = new foundry.data.fields.StringField();
 
-new foundry.data.fields.StringField({ choices: ["a", "b", "c"] });
+const withChoices = new foundry.data.fields.StringField({ choices: ["a", "b", "c"] });
 
 // @ts-expect-error - A string field is not `nullable` by default and validate does not accept null.
 stringField.validate(null);
@@ -140,3 +142,18 @@ const _emptyOptions = {} satisfies DataField.Options.Default<number>;
 new foundry.data.fields.BooleanField({
   label: "foo",
 });
+
+stringField.toInput({ value: "foo" });
+
+// @ts-expect-error values passed to `toInput` MUST be valid for the field
+stringField.toInput({ value: 200 });
+
+// Inputs generated from a StringField should accept additional config properties for possible use in `createSelectInput`.
+stringField.toInput({ blank: "blank option", choices: ["option1"] });
+stringField.toInput({ blank: "blank option", options: [{ value: "option2", label: "Option 2" }] });
+
+// @ts-expect-error - `blank` is not valid by itself when the field doesn't have choices set.
+stringField.toInput({ blank: "blank option" });
+
+// Because this `StringField` has options it doesn't need to be passed in to `toInput` anymore.
+withChoices.toInput({ blank: "blank option" });
