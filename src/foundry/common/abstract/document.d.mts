@@ -1131,6 +1131,7 @@ declare namespace Document {
 
   type FlagsFor<ConcreteDocument extends Internal.Instance.Any> = GetKey<ConcreteDocument, "flags", never>;
 
+  /** @remarks Copied from `resources/app/common/types.mjs` */
   interface ConstructionContext<Parent extends Document.Any | null> {
     /**
      * The parent Document of this one, if this one is embedded

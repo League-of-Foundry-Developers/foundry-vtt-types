@@ -555,7 +555,7 @@ declare global {
      * @param origin  - Point to display Ping at
      * @param options - Additional options to configure how the ping is drawn.
      */
-    ping(origin: Point, options?: PingOptions): Promise<boolean>;
+    ping(origin: Canvas.Point, options?: PingOptions): Promise<boolean>;
 
     /**
      * Get the constrained zoom scale parameter which is allowed by the maxZoom parameter
@@ -590,21 +590,21 @@ declare global {
      * @param origin - The canvas coordinates.
      * @returns The corresponding co-ordinates relative to the client's viewport.
      */
-    clientCoordinatesFromCanvas(origin: Point): Point;
+    clientCoordinatesFromCanvas(origin: Canvas.Point): Canvas.Point;
 
     /**
      * Convert client viewport co-ordinates to canvas co-ordinates.
      * @param origin - The client coordinates.
      * @returns The corresponding canvas co-ordinates.
      */
-    canvasCoordinatesFromClient(origin: Point): Point;
+    canvasCoordinatesFromClient(origin: Canvas.Point): Canvas.Point;
 
     /**
      * Determine whether given canvas co-ordinates are off-screen.
      * @param position - The canvas co-ordinates.
      * @returns Is the coordinate outside the screen bounds?
      */
-    isOffscreen(position: Point): boolean;
+    isOffscreen(position: Canvas.Point): boolean;
 
     /**
      * Remove all children of the display object and call one cleaning method:
@@ -889,6 +889,29 @@ declare global {
     interface DropPosition {
       x: number;
       y: number;
+    }
+
+    /**
+     * A single point, expressed as an object \{x, y\}
+     * @remarks Copied from `resources/app/common/types.mjs`
+     */
+    type Point = PIXI.Point | { x: number; y: number };
+
+    /**
+     * A single point, expressed as an array \[x,y\]
+     * @remarks Copied from `resources/app/common/types.mjs`
+     */
+    type PointArray = [x: number, y: number];
+
+    /**
+     * A standard rectangle interface.
+     * @remarks Copied from `resources/app/common/types.mjs`
+     */
+    interface Rectangle {
+      x: number;
+      y: number;
+      width: number;
+      height: number;
     }
   }
 }

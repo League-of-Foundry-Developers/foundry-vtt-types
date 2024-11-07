@@ -34,7 +34,7 @@ declare global {
      * @param origin  - The canvas coordinates of the origin of the ping.
      * @param options - Additional options to configure the ping animation.
      */
-    constructor(origin: Point, options?: PingOptions);
+    constructor(origin: Canvas.Point, options?: PingOptions);
 
     options: PingOptions;
 

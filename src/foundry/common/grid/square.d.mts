@@ -14,7 +14,7 @@ declare class SquareGrid extends BaseGrid {
 
   getOffset(coords: SquareGrid.Coordinates): SquareGrid.Offset;
 
-  getOffsetRange(bounds: Rectangle): SquareGrid.OffsetRange;
+  getOffsetRange(bounds: Canvas.Rectangle): SquareGrid.OffsetRange;
 
   getAdjacentOffsets(coords: SquareGrid.Coordinates): SquareGrid.Offset[];
 
@@ -22,20 +22,20 @@ declare class SquareGrid extends BaseGrid {
 
   getShiftedOffset(coords: SquareGrid.Coordinates, direction: number): SquareGrid.Offset;
 
-  getShiftedPoint(point: Point, direction: number): Point;
+  getShiftedPoint(point: Canvas.Point, direction: number): Canvas.Point;
 
-  getTopLeftPoint(coords: SquareGrid.Coordinates): Point;
+  getTopLeftPoint(coords: SquareGrid.Coordinates): Canvas.Point;
 
-  getCenterPoint(coords: SquareGrid.Coordinates): Point;
+  getCenterPoint(coords: SquareGrid.Coordinates): Canvas.Point;
 
-  getShape(): Point[];
+  getShape(): Canvas.Point[];
 
-  getVertices(coords: SquareGrid.Coordinates): Point[];
+  getVertices(coords: SquareGrid.Coordinates): Canvas.Point[];
 
-  getSnappedPoint({ x, y }: Point, behavior: SquareGrid.SnappingBehavior): Point;
+  getSnappedPoint({ x, y }: Canvas.Point, behavior: SquareGrid.SnappingBehavior): Canvas.Point;
 
   /** @privateRemarks This is added so that ts knows this class has a private method. */
-  #snapToCenter(point: Point, resolution: number): Point;
+  #snapToCenter(point: Canvas.Point, resolution: number): Canvas.Point;
 
   protected _measurePath(
     waypoints: SquareGrid.MeasurePathWaypoint[],
@@ -51,9 +51,9 @@ declare class SquareGrid extends BaseGrid {
    */
   getDirectPath(waypoints: SquareGrid.Coordinates[]): SquareGrid.Offset[];
 
-  getTranslatedPoint(point: Point, direction: number, distance: number): Point;
+  getTranslatedPoint(point: Canvas.Point, direction: number, distance: number): Canvas.Point;
 
-  getCircle(center: Point, radius: number): Point[];
+  getCircle(center: Canvas.Point, radius: number): Canvas.Point[];
 
   calculateDimensions(sceneWidth: number, sceneHeight: number, padding: number): SquareGrid.Dimensions;
 }
@@ -71,7 +71,7 @@ declare namespace SquareGrid {
 
   interface OffsetRange extends BaseGrid.OffsetRange {}
 
-  type Coordinates = Offset | Point;
+  type Coordinates = Offset | Canvas.Point;
 
   interface SnappingBehavior extends BaseGrid.SnappingBehavior {}
 

@@ -140,13 +140,13 @@ declare global {
      * @deprecated since v12, will be removed in v14
      * @remarks `"GridLayer#getTopLeft is deprecated. Use canvas.grid.getTopLeftPoint instead."`
      */
-    getTopLeft(x: number, y: number): PointArray;
+    getTopLeft(x: number, y: number): Canvas.PointArray;
 
     /**
      * @deprecated since v12, will be removed in v14
      * @remarks `"GridLayer#getCenter is deprecated. Use canvas.grid.getCenterPoint instead."`
      */
-    getCenter(x: number, y: number): PointArray;
+    getCenter(x: number, y: number): Canvas.PointArray;
 
     /**
      * @deprecated since v12, will be removed in v14

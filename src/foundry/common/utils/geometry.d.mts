@@ -13,7 +13,7 @@
  *          A negative value if the points are in clockwise order (C lies to the right of AB)
  *          Zero if the points A, B, and C are collinear.
  */
-export declare function orient2dFast(a: Point, b: Point, c: Point): number;
+export declare function orient2dFast(a: Canvas.Point, b: Canvas.Point, c: Canvas.Point): number;
 
 /**
  * Quickly test whether the line segment AB intersects with the line segment CD.
@@ -26,7 +26,7 @@ export declare function orient2dFast(a: Point, b: Point, c: Point): number;
  *
  * @returns Do the line segments intersect?
  */
-export declare function lineSegmentIntersects(a: Point, b: Point, c: Point, d: Point): boolean;
+export declare function lineSegmentIntersects(a: Canvas.Point, b: Canvas.Point, c: Canvas.Point, d: Canvas.Point): boolean;
 
 export interface LineIntersection {
   /** The x-coordinate of intersection */
@@ -63,10 +63,10 @@ interface LineIntersectionOptions {
  * @returns An intersection point, or null if no intersection occurred
  */
 export declare function lineLineIntersection(
-  a: Point,
-  b: Point,
-  c: Point,
-  d: Point,
+  a: Canvas.Point,
+  b: Canvas.Point,
+  c: Canvas.Point,
+  d: Canvas.Point,
   options?: LineIntersectionOptions,
 ): LineIntersection | null;
 
@@ -84,10 +84,10 @@ export declare function lineLineIntersection(
  * @returns An intersection point, or null if no intersection occurred
  */
 export declare function lineSegmentIntersection(
-  a: Point,
-  b: Point,
-  c: Point,
-  d: Point,
+  a: Canvas.Point,
+  b: Canvas.Point,
+  c: Canvas.Point,
+  d: Canvas.Point,
   epsilon?: number,
 ): LineIntersection | null;
 
@@ -108,7 +108,7 @@ export interface LineCircleIntersection {
   tangent: boolean;
 
   /** Intersection points: zero, one, or two */
-  intersections: [Point?, Point?];
+  intersections: [Canvas.Point?, Canvas.Point?];
 }
 
 /**
@@ -124,9 +124,9 @@ export interface LineCircleIntersection {
  * @returns The intersection of the segment AB with the circle
  */
 export declare function lineCircleIntersection(
-  a: Point,
-  b: Point,
-  center: Point,
+  a: Canvas.Point,
+  b: Canvas.Point,
+  center: Canvas.Point,
   radius: number,
   epsilon?: number,
 ): LineCircleIntersection;
@@ -140,7 +140,7 @@ export declare function lineCircleIntersection(
  *
  * @returns The closest point to C on segment AB
  */
-export declare function closestPointToSegment(c: Point, a: Point, b: Point): Point;
+export declare function closestPointToSegment(c: Canvas.Point, a: Canvas.Point, b: Canvas.Point): Canvas.Point;
 
 /**
  * Determine the points of intersection between a line segment (p0,p1) and a circle.
@@ -155,14 +155,14 @@ export declare function closestPointToSegment(c: Point, a: Point, b: Point): Poi
  *                  (default: `0`)
  */
 export declare function quadraticIntersection(
-  p0: Point,
-  p1: Point,
-  center: Point,
+  p0: Canvas.Point,
+  p1: Canvas.Point,
+  center: Canvas.Point,
   radius: number,
   epsilon?: number,
-): [Point?, Point?];
+): [Canvas.Point?, Canvas.Point?];
 
-declare type Points = Point[] | number[];
+declare type Points = Canvas.Point[] | number[];
 
 /**
  * Calculate the centroid non-self-intersecting closed polygon.
@@ -171,7 +171,7 @@ declare type Points = Point[] | number[];
  * @param points    - The points of the polygon
  * @returns         - The centroid of the polygon
  */
-export declare function polygonCentroid(points: Points): Point;
+export declare function polygonCentroid(points: Points): Canvas.Point;
 
 /**
  * Test whether the circle given by the center and radius intersects the path (open or closed).
@@ -182,7 +182,7 @@ export declare function polygonCentroid(points: Points): Point;
  * @param radius    - The radius of the circle
  * @returns         - Whether the circle intersect the path
  */
-export declare function pathCircleIntersects(points: Points, close: boolean, center: Point, radius: number): boolean;
+export declare function pathCircleIntersects(points: Points, close: boolean, center: Canvas.Point, radius: number): boolean;
 
 /**
  * Test whether two circles (with position and radius) intersect.

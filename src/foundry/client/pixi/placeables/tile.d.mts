@@ -188,7 +188,7 @@ declare global {
      * Refresh the display of the Tile resizing handle.
      * Shift the position of the drag handle from the bottom-right (default) depending on which way we are dragging.
      */
-    protected _refreshHandle(b: Rectangle): void;
+    protected _refreshHandle(b: Canvas.Rectangle): void;
 
     /**
      * @privateRemarks _onUpdate and _onDelete are all overridden but with no signature changes.

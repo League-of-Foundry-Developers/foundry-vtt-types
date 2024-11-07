@@ -21,7 +21,7 @@ export default class PointSoundSource<
    * Get the effective volume at which an AmbientSound source should be played for a certain listener.
    */
   getVolumeMultiplier(
-    listener: Point,
+    listener: Canvas.Point,
     options?: {
       easing?: boolean | undefined;
     },

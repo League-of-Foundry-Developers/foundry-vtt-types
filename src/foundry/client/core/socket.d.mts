@@ -15,14 +15,17 @@ declare global {
   }
 
   namespace SocketInterface {
+    /** @remarks Copied from `resources/app/common/types.mjs` */
     type RequestData = Record<string, unknown> | Record<string, unknown>[] | string | string[];
 
+    /** @remarks Copied from `resources/app/common/types.mjs` */
     interface SocketRequest {
       /** Additional options applied to the request */
       options?: Record<string, unknown> | undefined;
       broadcast?: boolean | undefined;
     }
 
+    /** @remarks Copied from `resources/app/common/types.mjs` */
     interface SocketResponse {
       /**
        * The initial request

@@ -26,7 +26,7 @@ declare global {
       shape: {
         width: number;
         height: number;
-        points: Point[];
+        points: Canvas.Point[];
       };
       x: number;
       y: number;
@@ -154,7 +154,7 @@ declare global {
      * @internal
      */
     protected _addPoint(
-      position: Point,
+      position: Canvas.Point,
       options?: {
         /**
          * Should the point be rounded to integer coordinates?

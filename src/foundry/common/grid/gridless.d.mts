@@ -9,7 +9,7 @@ declare class Gridless extends BaseGrid {
 
   getOffset(coords: Gridless.Coordinates): Gridless.Offset;
 
-  getOffsetRange(bounds: Rectangle): Gridless.OffsetRange;
+  getOffsetRange(bounds: Canvas.Rectangle): Gridless.OffsetRange;
 
   getAdjacentOffsets(coords: Gridless.Coordinates): Gridless.Offset[];
 
@@ -17,17 +17,17 @@ declare class Gridless extends BaseGrid {
 
   getShiftedOffset(coords: Gridless.Coordinates, direction: number): Gridless.Offset;
 
-  getShiftedPoint(point: Point, direction: number): Point;
+  getShiftedPoint(point: Canvas.Point, direction: number): Canvas.Point;
 
-  getTopLeftPoint(coords: Gridless.Coordinates): Point;
+  getTopLeftPoint(coords: Gridless.Coordinates): Canvas.Point;
 
-  getCenterPoint(coords: Gridless.Coordinates): Point;
+  getCenterPoint(coords: Gridless.Coordinates): Canvas.Point;
 
-  getShape(): Point[];
+  getShape(): Canvas.Point[];
 
-  getVertices(coords: Gridless.Coordinates): Point[];
+  getVertices(coords: Gridless.Coordinates): Canvas.Point[];
 
-  getSnappedPoint({ x, y }: Point, behavior: Gridless.SnappingBehavior): Point;
+  getSnappedPoint({ x, y }: Canvas.Point, behavior: Gridless.SnappingBehavior): Canvas.Point;
 
   protected _measurePath(
     waypoints: Gridless.MeasurePathWaypoint[],
@@ -37,11 +37,11 @@ declare class Gridless extends BaseGrid {
 
   getDirectPath(waypoints: Gridless.Coordinates[]): Gridless.Offset[];
 
-  getTranslatedPoint(point: Point, direction: number, distance: number): Point;
+  getTranslatedPoint(point: Canvas.Point, direction: number, distance: number): Canvas.Point;
 
-  getCircle(center: Point, radius: number): Point[];
+  getCircle(center: Canvas.Point, radius: number): Canvas.Point[];
 
-  getCone(origin: Point, radius: number, direction: number, angle: number): Point[];
+  getCone(origin: Canvas.Point, radius: number, direction: number, angle: number): Canvas.Point[];
 }
 
 declare namespace Gridless {
@@ -51,7 +51,7 @@ declare namespace Gridless {
 
   interface OffsetRange extends BaseGrid.OffsetRange {}
 
-  type Coordinates = Offset | Point;
+  type Coordinates = Offset | Canvas.Point;
 
   interface SnappingBehavior extends BaseGrid.SnappingBehavior {}
 

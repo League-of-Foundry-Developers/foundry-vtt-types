@@ -172,7 +172,7 @@ declare global {
     size: number;
 
     /** The canvas rectangle. */
-    rect: Rectangle;
+    rect: Canvas.Rectangle;
 
     /** The X coordinate of the scene rectangle within the larger canvas. */
     sceneX: number;
@@ -187,7 +187,7 @@ declare global {
     sceneHeight: number;
 
     /** The scene rectangle. */
-    sceneRect: Rectangle;
+    sceneRect: Canvas.Rectangle;
 
     /** The number of distance units in a single grid space. */
     distance: number;

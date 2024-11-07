@@ -13,8 +13,8 @@ declare class Edge {
    * @param options - Additional options which describe the edge
    */
   constructor(
-    a: Point,
-    b: Point,
+    a: Canvas.Point,
+    b: Canvas.Point,
     options?: InexactPartial<{
       /** A string used to uniquely identify this edge */
       id?: string;
@@ -92,12 +92,12 @@ declare class Edge {
   /**
    * The endpoint of the edge which is oriented towards the top-left.
    */
-  nw: Point;
+  nw: Canvas.Point;
 
   /**
    * The endpoint of the edge which is oriented towards the bottom-right.
    */
-  se: Point;
+  se: Canvas.Point;
 
   /**
    * The rectangular bounds of the edge. Used by the quadtree.
@@ -149,7 +149,7 @@ declare class Edge {
    * @returns True if the edge has a threshold greater than 0 for the source type,
    *          and the source type is within that distance.
    */
-  applyThreshold(sourceType: string, sourceOrigin: Point, externalRadius?: number): boolean;
+  applyThreshold(sourceType: string, sourceOrigin: Canvas.Point, externalRadius?: number): boolean;
 
   /**
    * Determine the orientation of this Edge with respect to a reference point.
@@ -157,7 +157,7 @@ declare class Edge {
    * @returns An orientation in CONST.WALL_DIRECTIONS which indicates whether the Point is left,
    *          right, or collinear (both) with the Edge
    */
-  orientPoint(point: Point): foundry.CONST.WALL_DIRECTIONS;
+  orientPoint(point: Canvas.Point): foundry.CONST.WALL_DIRECTIONS;
 
   /**
    * Identify intersections between a provided iterable of edges.

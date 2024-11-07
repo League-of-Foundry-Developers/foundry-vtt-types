@@ -189,7 +189,7 @@ declare global {
     /**
      * Get an array of points which define top-left grid spaces to highlight for square or hexagonal grids.
      */
-    protected _getGridHighlightPositions(): Point[];
+    protected _getGridHighlightPositions(): Canvas.Point[];
 
     override rotate(angle: number, snap: number): Promise<this>;
 

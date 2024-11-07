@@ -110,7 +110,7 @@ declare global {
      * @param elevation - The elevation of the point.
      * @returns Is inside light?
      */
-    testInsideLight(point: Point, elevation: number): boolean;
+    testInsideLight(point: Canvas.Point, elevation: number): boolean;
 
     /**
      * Test whether the point is inside darkness.
@@ -118,7 +118,7 @@ declare global {
      * @param elevation - The elevation of the point.
      * @returns Is inside darkness?
      */
-    testInsideDarkness(point: Point, elevation: number): boolean;
+    testInsideDarkness(point: Canvas.Point, elevation: number): boolean;
 
     /**
      * Get the darkness level at the given point.
@@ -126,7 +126,7 @@ declare global {
      * @param elevation - The elevation of the point.
      * @returns The darkness level.
      */
-    getDarknessLevel(point: Point, elevation: number): number;
+    getDarknessLevel(point: Canvas.Point, elevation: number): number;
 
     override _tearDown(options: CanvasGroupMixin.TearDownOptions): Promise<void>;
 

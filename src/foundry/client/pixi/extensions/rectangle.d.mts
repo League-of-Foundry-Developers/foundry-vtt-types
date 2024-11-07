@@ -25,7 +25,7 @@ declare module "pixi.js" {
     /**
      * Calculate center of this rectangle.
      */
-    get center(): Point;
+    get center(): Canvas.Point;
 
     /**
      * Return the bounding box for a PIXI.Rectangle.
@@ -38,7 +38,7 @@ declare module "pixi.js" {
      * @param p - Point to test
      * @returns Is the point on the rectangle boundary?
      */
-    pointIsOn(p: Point): boolean;
+    pointIsOn(p: Canvas.Point): boolean;
 
     /**
      * Calculate the rectangle Zone for a given point located around, on, or in the rectangle.
@@ -47,7 +47,7 @@ declare module "pixi.js" {
      * @param point - A point to test for location relative to the rectangle
      * @returns Which edge zone does the point belong to?
      */
-    _getEdgeZone(point: Point): PIXI.Rectangle["CS_ZONES"];
+    _getEdgeZone(point: Canvas.Point): PIXI.Rectangle["CS_ZONES"];
 
     /**
      * Get all the points (corners) for a polygon approximation of a rectangle between two points on the rectangle.
@@ -60,7 +60,7 @@ declare module "pixi.js" {
      * @param b - A point on or outside the rectangle, representing the starting position.
      * @returns Points returned are clockwise from start to end.
      */
-    pointsBetween(a: Point, b: Point): Point[];
+    pointsBetween(a: Canvas.Point, b: Canvas.Point): Canvas.Point[];
 
     /**
      * Get all intersection points for a segment A|B
@@ -75,7 +75,7 @@ declare module "pixi.js" {
      *  The return object's t1 property signifies the location of the intersection on the rectangle edge.
      *  The t1 value is measured relative to the intersecting edge of the rectangle.
      */
-    segmentIntersections(a: Point, b: Point): Point[];
+    segmentIntersections(a: Canvas.Point, b: Canvas.Point): Canvas.Point[];
 
     /**
      * Compute the intersection of this Rectangle with some other Rectangle.
@@ -95,8 +95,8 @@ declare module "pixi.js" {
      * The returned edge endpoints are oriented clockwise around the rectangle.
      */
     get leftEdge(): {
-      A: Point;
-      B: Point;
+      A: Canvas.Point;
+      B: Canvas.Point;
     };
 
     /**
@@ -104,8 +104,8 @@ declare module "pixi.js" {
      * The returned edge endpoints are oriented clockwise around the rectangle.
      */
     get rightEdge(): {
-      A: Point;
-      B: Point;
+      A: Canvas.Point;
+      B: Canvas.Point;
     };
 
     /**
@@ -113,8 +113,8 @@ declare module "pixi.js" {
      * The returned edge endpoints are oriented clockwise around the rectangle.
      */
     get topEdge(): {
-      A: Point;
-      B: Point;
+      A: Canvas.Point;
+      B: Canvas.Point;
     };
 
     /**
@@ -122,8 +122,8 @@ declare module "pixi.js" {
      * The returned edge endpoints are oriented clockwise around the rectangle.
      */
     get bottomEdge(): {
-      A: Point;
-      B: Point;
+      A: Canvas.Point;
+      B: Canvas.Point;
     };
 
     /**
@@ -132,7 +132,7 @@ declare module "pixi.js" {
      *
      * @param p - Point to test for location relative to the rectangle
      */
-    _getZone(p: Point): PIXI.Rectangle["CS_ZONES"];
+    _getZone(p: Canvas.Point): PIXI.Rectangle["CS_ZONES"];
 
     /**
      * Test whether a line segment AB intersects this rectangle.
@@ -142,8 +142,8 @@ declare module "pixi.js" {
      * @returns True if intersects.
      */
     lineSegmentIntersects(
-      a: Point,
-      b: Point,
+      a: Canvas.Point,
+      b: Canvas.Point,
       options?: {
         /** If true, a line contained within the rectangle will return true */
         inside?: boolean;

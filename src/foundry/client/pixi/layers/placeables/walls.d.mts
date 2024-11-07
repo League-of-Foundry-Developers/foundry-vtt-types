@@ -50,7 +50,7 @@ declare global {
      * ```
      */
     protected last: {
-      point: PointArray | null;
+      point: Canvas.PointArray | null;
     };
 
     /**
@@ -119,12 +119,12 @@ declare global {
      * @param wall  - The existing Wall object being chained to
      * @returns The [x,y] coordinates of the starting endpoint
      */
-    static getClosestEndpoint(point: Point, wall: Wall.ConfiguredInstance): PointArray;
+    static getClosestEndpoint(point: Canvas.Point, wall: Wall.ConfiguredInstance): Canvas.PointArray;
 
     override releaseAll(options?: PlaceableObject.ReleaseOptions): number;
 
     override pasteObjects(
-      position: Point,
+      position: Canvas.Point,
       options?: Record<string, unknown>,
     ): Promise<WallDocument.ConfiguredInstance[]>;
 
@@ -142,7 +142,7 @@ declare global {
      * @returns The wall endpoint coordinates.
      */
     protected _getWallEndpointCoordinates(
-      point: Point,
+      point: Canvas.Point,
       options?: InexactPartial<{
         /**
          * Snap to the grid?
@@ -150,7 +150,7 @@ declare global {
          */
         snap: boolean;
       }>,
-    ): PointArray;
+    ): Canvas.PointArray;
 
     /**
      * The Scene Controls tools provide several different types of prototypical Walls to choose from

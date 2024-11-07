@@ -38,7 +38,7 @@ declare module "pixi.js" {
      * @param point - The point to add to the Polygon
      * @returns A reference to the polygon for method chaining
      */
-    addPoint(point: Point): this;
+    addPoint(point: Canvas.Point): this;
 
     /**
      * Return the bounding box for a PIXI.Polygon.

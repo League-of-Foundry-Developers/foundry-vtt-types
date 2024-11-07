@@ -61,7 +61,10 @@ declare global {
   }
 
   namespace GamepadManager {
-    /** Connected Gamepad info */
+    /**
+     * Connected Gamepad info
+     * @remarks Copied from `resources/app/common/types.mjs`
+     */
     interface ConnectedGamepad {
       /** A map of axes values */
       axes: Map<string, number>;

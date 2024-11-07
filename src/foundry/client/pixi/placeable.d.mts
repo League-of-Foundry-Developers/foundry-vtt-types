@@ -153,7 +153,7 @@ declare global {
      * @param position - The position to be used instead of the current position
      * @returns The snapped position
      */
-    getSnappedPosition(position?: Point): Point;
+    getSnappedPosition(position?: Canvas.Point): Canvas.Point;
 
     override applyRenderFlags(): void;
 
@@ -332,7 +332,7 @@ declare global {
      * @param dy - The number of grid units to shift along the Y-axis
      * @returns The shifted target coordinates
      */
-    protected _getShiftedPosition(dx: -1 | 0 | 1, dy: -1 | 0 | 1): Point;
+    protected _getShiftedPosition(dx: -1 | 0 | 1, dy: -1 | 0 | 1): Canvas.Point;
 
     /**
      * Activate interactivity for the Placeable Object

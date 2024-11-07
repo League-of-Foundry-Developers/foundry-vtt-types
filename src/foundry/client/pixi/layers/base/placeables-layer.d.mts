@@ -148,7 +148,7 @@ declare global {
      * @param point - The point that is to be snapped
      * @returns The snapped point
      */
-    getSnappedPoint(point: Point): Point;
+    getSnappedPoint(point: Canvas.Point): Canvas.Point;
 
     /**
      * Obtain an iterable of objects which should be added to this PlaceableLayer
@@ -284,7 +284,7 @@ declare global {
      * @returns An Array of created PlaceableObject instances
      */
     pasteObjects(
-      position: Point,
+      position: Canvas.Point,
       options?: InexactPartial<{
         /**
          * Paste data in a hidden state, if applicable. Default is false.
@@ -308,7 +308,7 @@ declare global {
      * @param options - Options of {@link PlaceablesLayer#pasteObjects}
      * @returns The update data
      */
-    _pasteObject(copy: Document.ConfiguredObjectInstanceForName<DocumentName>, offset: Point, options?: InexactPartial<{
+    _pasteObject(copy: Document.ConfiguredObjectInstanceForName<DocumentName>, offset: Canvas.Point, options?: InexactPartial<{
 
       /**
        * Paste in a hidden state, if applicable.

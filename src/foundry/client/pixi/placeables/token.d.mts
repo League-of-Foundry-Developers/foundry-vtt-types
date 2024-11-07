@@ -351,12 +351,12 @@ declare global {
     /**
      * The Token's current central position
      */
-    get center(): Point;
+    get center(): Canvas.Point;
 
     /**
      * The Token's central position, adjusted in each direction by one or zero pixels to offset it relative to walls.
      */
-    getMovementAdjustedPoint(point: Point, offset?: { offsetX: number; offsetY: number }): Point;
+    getMovementAdjustedPoint(point: Canvas.Point, offset?: { offsetX: number; offsetY: number }): Canvas.Point;
 
     /**
      * The HTML source element for the primary Tile texture
@@ -629,9 +629,9 @@ declare global {
      * @returns The result of the WallsLayer#checkCollision test
      */
     checkCollision(
-      destination: Point,
+      destination: Canvas.Point,
       options: {
-        origin: Point;
+        origin: Canvas.Point;
 
         /** @defaultValue `"move"` */
         type: Exclude<Token.SourceType, "Sound">;

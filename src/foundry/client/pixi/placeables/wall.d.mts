@@ -93,12 +93,12 @@ declare global {
     /**
      * The initial endpoint of the Wall
      */
-    get A(): Point;
+    get A(): Canvas.Point;
 
     /**
      * The second endpoint of the Wall
      */
-    get B(): Point;
+    get B(): Canvas.Point;
 
     /**
      * A set of vertex sort keys which identify this Wall's endpoints.
@@ -125,7 +125,7 @@ declare global {
     /**
      * Return the coordinates [x,y] at the midpoint of the wall segment
      */
-    get midpoint(): PointArray;
+    get midpoint(): Canvas.PointArray;
 
     override get center(): PIXI.Point;
 
@@ -161,7 +161,7 @@ declare global {
      * @returns An orientation in CONST.WALL_DIRECTIONS which indicates whether the Point is left,
      *          right, or collinear (both) with the Wall
      */
-    orientPoint(point: Point): number;
+    orientPoint(point: Canvas.Point): number;
 
     /**
      * Test whether to apply a configured threshold of this wall.
@@ -172,7 +172,7 @@ declare global {
      *                         (default: `0`)
      * @returns True if the wall has a threshold greater than 0 for the source type, and the source type is within that distance.
      */
-    applyThreshold(sourceType: string, sourceOrigin: Point, externalRadius: number): boolean;
+    applyThreshold(sourceType: string, sourceOrigin: Canvas.Point, externalRadius: number): boolean;
 
     override control(options?: Wall.ControlOptions): boolean;
 

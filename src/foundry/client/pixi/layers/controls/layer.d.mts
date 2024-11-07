@@ -71,7 +71,7 @@ declare global {
      * The positions of any offscreen pings we are tracking.
      * @internal
      */
-    protected _offscreenPings: Record<string, Point>;
+    protected _offscreenPings: Record<string, Canvas.Point>;
 
     override options: ControlsLayer.LayerOptions;
 
@@ -142,7 +142,7 @@ declare global {
      * @param user     - The User for whom to update the cursor
      * @param position - The new cursor position
      */
-    updateCursor(user: User.ConfiguredInstance, position: Point | null): void;
+    updateCursor(user: User.ConfiguredInstance, position: Canvas.Point | null): void;
 
     /**
      * Update display of an active Ruler object for a user given provided data
@@ -157,7 +157,7 @@ declare global {
      * @param data     - The broadcast ping data.
      * @returns A promise which resolves once the Ping has been drawn and animated
      */
-    handlePing(user: User.ConfiguredInstance, position: Point, data?: User.PingData): Promise<boolean>;
+    handlePing(user: User.ConfiguredInstance, position: Canvas.Point, data?: User.PingData): Promise<boolean>;
 
     /**
      * Draw a ping at the edge of the viewport, pointing to the location of an off-screen ping.
@@ -167,7 +167,7 @@ declare global {
      * @returns A promise which resolves once the Ping has been drawn and animated
      */
     drawOffscreenPing(
-      position: Point,
+      position: Canvas.Point,
       options?: InexactPartial<
         PingOptions & {
           /**
@@ -213,7 +213,7 @@ declare global {
      * @returns The closest point at the edge of the viewport to these coordinates and a ray cast from the centre of the screen towards it.
      * @internal
      */
-    protected _findViewportIntersection(position: Point): {
+    protected _findViewportIntersection(position: Canvas.Point): {
       ray: Ray;
 
       intersection: LineIntersection | null;

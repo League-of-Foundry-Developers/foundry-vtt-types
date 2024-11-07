@@ -1,35 +1,12 @@
 import type { AnyConcreteConstructor, AnyConstructor, AnyFunction } from "../../types/utils.d.mts";
 import type { Document } from "./abstract/module.d.mts";
 
-// Types that are still needed globally and don't have a good place elsewhere
-declare global {
-  /**
-   * A single point, expressed as an object \{x, y\}
-   */
-  type Point = PIXI.Point | { x: number; y: number };
-
-  /**
-   * A single point, expressed as an array \[x,y\]
-   */
-  type PointArray = [x: number, y: number];
-
-  /**
-   * A standard rectangle interface.
-   */
-  interface Rectangle {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  }
-}
-
 // After seeing that none of these types add anything or are even exported a
 // very reasonable question may be: Why on earth does this file exist?
 //
 // Well this is the file in which Foundry defines these types. We don't house
 // them here because it has poor discoverability. The names Foundry has chosen
-// also overlaps with other existing names.
+// also overlaps with other existing names, such as SettingConfig vs. ClientSetting.SettingConfig
 
 type DocumentConstructionContext = Document.ConstructionContext<Document.Any | null>;
 
@@ -65,6 +42,14 @@ type DeepReadonly<T> = Readonly<{
  * @privateRemarks We have better tools like {@link AnyConcreteConstructor} and {@link AnyConstructor}
  */
 type Constructor = new (...args: any[]) => any;
+
+type Point = Canvas.Point;
+
+type PointArray = Canvas.PointArray;
+
+type Rectangle = Canvas.Rectangle;
+
+type BuiltinTypes = typeof Number | typeof String | typeof Boolean;
 
 type ColorSource = foundry.utils.Color.Source;
 

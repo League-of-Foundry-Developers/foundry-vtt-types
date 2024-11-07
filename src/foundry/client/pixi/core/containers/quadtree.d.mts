@@ -2,7 +2,7 @@ export {};
 
 declare global {
   interface QuadtreeObject<T> {
-    r: Rectangle;
+    r: Canvas.Rectangle;
     t: T;
     n: Set<Quadtree<T>>;
   }
@@ -112,13 +112,13 @@ declare global {
      * @returns The objects in the Quadtree which represent potential collisions
      */
     getObjects(
-      rect: Rectangle,
+      rect: Canvas.Rectangle,
       options?: {
         /* Function to further refine objects to return
          * after a potential collision is found. Parameters are the object and rect, and the
          * function should return true if the object should be added to the result set.
          */
-        collisionTest: (o: QuadtreeObject<T>, rect: Rectangle) => boolean;
+        collisionTest: (o: QuadtreeObject<T>, rect: Canvas.Rectangle) => boolean;
 
         /** The existing result set, for internal use.
          *  (default: `new Set<T>()`)
@@ -133,7 +133,7 @@ declare global {
      * @param rect - The target rectangle.x
      * @returns The Quadtree nodes to which the target rectangle belongs
      */
-    getLeafNodes(rect: Rectangle): Quadtree<T>[];
+    getLeafNodes(rect: Canvas.Rectangle): Quadtree<T>[];
 
     /**
      * Obtain the child nodes within the current node which a rectangle belongs to.
@@ -141,7 +141,7 @@ declare global {
      * @param rect - The target rectangle.
      * @returns The Quadtree nodes to which the target rectangle belongs
      */
-    getChildNodes(rect: Rectangle): Quadtree<T>[];
+    getChildNodes(rect: Canvas.Rectangle): Quadtree<T>[];
 
     /**
      * Identify all nodes which are adjacent to this one within the parent Quadtree.

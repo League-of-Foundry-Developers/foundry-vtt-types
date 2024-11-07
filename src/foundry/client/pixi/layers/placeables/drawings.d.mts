@@ -59,7 +59,7 @@ declare global {
      * @returns The new drawing data
      * @remarks This is used from DrawingConfig and hence public on purpose.
      */
-    _getNewDrawingData(origin: Point): foundry.documents.BaseDrawing.ConstructorData;
+    _getNewDrawingData(origin: Canvas.Point): foundry.documents.BaseDrawing.ConstructorData;
 
     protected override _onClickLeft(event: PIXI.FederatedEvent): void;
 

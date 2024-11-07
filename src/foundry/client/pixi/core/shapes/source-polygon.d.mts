@@ -29,7 +29,7 @@ declare global {
     /**
      * The origin point of the source polygon.
      */
-    origin: Point;
+    origin: Canvas.Point;
 
     /**
      * The configuration of this polygon.
@@ -48,7 +48,7 @@ declare global {
      * @param origin     - The origin point to benchmark
      * @param config     - The polygon configuration to benchmark
      */
-    static benchmark(iterations: number, origin: Point, config: PointSourcePolygonConfig): Promise<void>;
+    static benchmark(iterations: number, origin: Canvas.Point, config: PointSourcePolygonConfig): Promise<void>;
 
     /**
      * Compute the polygon given a point origin and radius
@@ -59,7 +59,7 @@ declare global {
      */
     static create<T extends ConstructorOf<PointSourcePolygon>>(
       this: T,
-      origin: Point,
+      origin: Canvas.Point,
       config?: Parameters<InstanceType<T>["initialize"]>[1],
     ): InstanceType<T>;
 
@@ -86,7 +86,7 @@ declare global {
      * @param origin - The provided polygon origin
      * @param config - The provided configuration object
      */
-    initialize(origin: Point, config: PointSourcePolygonConfig): void;
+    initialize(origin: Canvas.Point, config: PointSourcePolygonConfig): void;
 
     /**
      * Apply a constraining boundary shape to an existing PointSourcePolygon.
@@ -122,8 +122,8 @@ declare global {
      *          * closest: returns a PolygonVertex instance or null
      */
     static testCollision<Mode extends PointSourcePolygon.CollisionModes>(
-      origin: Point,
-      destination: Point,
+      origin: Canvas.Point,
+      destination: Canvas.Point,
       {
         mode,
         ...config
