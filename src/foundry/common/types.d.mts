@@ -62,15 +62,6 @@ declare global {
 
   type ColorSource = number | RGBColorVector | string | Color;
 
-  /** Connected Gamepad info */
-  interface ConnectedGamepad {
-    /** A map of axes values */
-    axes: Map<string, number>;
-
-    /** The Set of pressed Buttons */
-    activeButtons: Set<string>;
-  }
-
   type RequestData = Record<string, unknown> | Record<string, unknown>[] | string | string[];
 
   interface SocketRequest {
@@ -132,3 +123,5 @@ type KeybindingActionBinding = ClientKeybindings.KeybindingActionBinding;
 type KeybindingAction = ClientKeybindings.KeybindingAction;
 
 type KeyboardEventContext = KeyboardManager.KeyboardEventContext;
+
+type ConnectedGamepad = GamepadManager.ConnectedGamepad;

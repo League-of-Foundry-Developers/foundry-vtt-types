@@ -15,7 +15,7 @@ declare global {
      * The connected Gamepads
      * @internal
      */
-    protected _connectedGamepads: Map<string, ConnectedGamepad>;
+    protected _connectedGamepads: Map<string, GamepadManager.ConnectedGamepad>;
 
     /**
      * How often Gamepad polling should check for button presses
@@ -58,5 +58,16 @@ declare global {
      * @internal
      */
     protected _handleGamepadInput(gamepadId: string, up: boolean, repeat?: boolean): void;
+  }
+
+  namespace GamepadManager {
+    /** Connected Gamepad info */
+    interface ConnectedGamepad {
+      /** A map of axes values */
+      axes: Map<string, number>;
+
+      /** The Set of pressed Buttons */
+      activeButtons: Set<string>;
+    }
   }
 }
