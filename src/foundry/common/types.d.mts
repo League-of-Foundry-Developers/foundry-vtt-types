@@ -22,12 +22,6 @@ declare global {
     width: number;
     height: number;
   }
-
-  type RGBColorVector = [r: number, g: number, b: number];
-  type HSVColorVector = [h: number, s: number, v: number];
-  type HSLColorVector = [h: number, s: number, l: number];
-
-  type ColorSource = number | RGBColorVector | string | Color;
 }
 
 // After seeing that none of these types add anything or are even exported a
@@ -71,6 +65,8 @@ type DeepReadonly<T> = Readonly<{
  * @privateRemarks We have better tools like {@link AnyConcreteConstructor} and {@link AnyConstructor}
  */
 type Constructor = new (...args: any[]) => any;
+
+type ColorSource = foundry.utils.Color.Source;
 
 type SettingConfig = ClientSettings.SettingConfig;
 

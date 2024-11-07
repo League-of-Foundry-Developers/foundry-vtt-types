@@ -20,7 +20,7 @@ declare class Color extends Number {
   /**
    * The color represented as an RGB array.
    */
-  get rgb(): RGBColorVector;
+  get rgb(): Color.RGBColorVector;
 
   /**
    * The numeric value of the red channel between [0, 1].
@@ -57,20 +57,20 @@ declare class Color extends Number {
    * Conversion formula adapted from {@link http://en.wikipedia.org/wiki/HSV_color_space}.
    * Assumes r, g, and b are contained in the set [0, 1] and returns h, s, and v in the set [0, 1].
    */
-  get hsv(): HSVColorVector;
+  get hsv(): Color.HSVColorVector;
 
   /**
    * The color represented as an HSL array.
    * Assumes r, g, and b are contained in the set [0, 1] and returns h, s, and l in the set [0, 1].
    */
-  get hsl(): HSLColorVector;
+  get hsl(): Color.HSLColorVector;
 
   /**
    * The color represented as a linear RGB array.
    * Assumes r, g, and b are contained in the set [0, 1] and returns linear r, g, and b in the set [0, 1].
    * {@link https://en.wikipedia.org/wiki/SRGB#Transformation}
    */
-  get linear(): RGBColorVector;
+  get linear(): Color.RGBColorVector;
 
   override toString(): string;
 
@@ -247,7 +247,7 @@ declare class Color extends Number {
    * @param color - A color input
    * @returns The hex color instance or NaN
    */
-  static from(color: ColorSource | null | undefined): Color;
+  static from(color: Color.Source | null | undefined): Color;
 
   /**
    * Create a Color instance from a color string which either includes or does not include a leading #.
@@ -261,7 +261,7 @@ declare class Color extends Number {
    * @param rgb - An RGB tuple
    * @returns The hex color instance
    */
-  static fromRGB(rgb: RGBColorVector): Color;
+  static fromRGB(rgb: Color.RGBColorVector): Color;
 
   /**
    * Create a Color instance from an HSV array.
@@ -270,7 +270,7 @@ declare class Color extends Number {
    * @param hsv - An HSV tuple
    * @returns The hex color instance
    */
-  static fromHSV(hsv: HSVColorVector): Color;
+  static fromHSV(hsv: Color.HSVColorVector): Color;
 
   /**
    * Create a Color instance from an HSL array.
@@ -278,7 +278,7 @@ declare class Color extends Number {
    * @param hsl - An HSL tuple
    * @returns The hex color instance
    */
-  static fromHSL(hsl: HSLColorVector): Color;
+  static fromHSL(hsl: Color.HSLColorVector): Color;
 
   /**
    * Create a Color instance (sRGB) from a linear rgb array.
@@ -287,5 +287,15 @@ declare class Color extends Number {
    * @param linear - The linear rgb array
    * @returns The hex color instance
    */
-  static fromLinearRGB(linear: RGBColorVector): Color;
+  static fromLinearRGB(linear: Color.RGBColorVector): Color;
+}
+
+declare namespace Color {
+
+
+  type RGBColorVector = [r: number, g: number, b: number];
+  type HSVColorVector = [h: number, s: number, v: number];
+  type HSLColorVector = [h: number, s: number, l: number];
+
+  type Source = number | RGBColorVector | string | Color;
 }

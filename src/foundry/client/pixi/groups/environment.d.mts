@@ -56,22 +56,22 @@ declare global {
   namespace EnvironmentCanvasGroup {
     interface InitializeConfig {
       /** The background canvas color */
-      backgroundColor: ColorSource;
+      backgroundColor: Color.Source;
 
       /** The brightest ambient color */
-      brightestColor: ColorSource;
+      brightestColor: Color.Source;
 
       /** The color of darkness */
-      darknessColor: ColorSource;
+      darknessColor: Color.Source;
 
       /** The ambient daylight color */
-      daylightColor: ColorSource;
+      daylightColor: Color.Source;
 
       /** The color applied to explored areas */
-      fogExploredColor: ColorSource;
+      fogExploredColor: Color.Source;
 
       /** The color applied to unexplored areas */
-      fogUnexploredColor: ColorSource;
+      fogUnexploredColor: Color.Source;
 
       /** The scene environment data */
       environment: SceneEnvironmentData;

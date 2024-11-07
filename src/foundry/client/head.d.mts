@@ -80,6 +80,10 @@ declare global {
    */
   type Color = foundry.utils.Color;
   var Color: typeof foundry.utils.Color; // eslint-disable-line no-var
+
+  namespace Color {
+    type Source = foundry.utils.Color.Source;
+  }
 }
 
 type UiApplications = {

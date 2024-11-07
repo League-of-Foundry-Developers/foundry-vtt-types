@@ -510,7 +510,7 @@ declare namespace BaseGrid {
      * The color of the grid
      * Default: `0`
      */
-    color?: ColorSource | undefined;
+    color?: Color.Source | undefined;
 
     /**
      * The alpha of the grid
