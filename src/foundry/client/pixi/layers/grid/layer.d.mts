@@ -199,16 +199,29 @@ declare global {
        */
       y?: number | undefined | null;
 
-      /** The fill color of the highlight */
+      /**
+       * The fill color of the highlight
+       * @defaultValue `0x33BBFF`
+       * @privateRemarks `null` is a problem because it's forwarded to a PIXI.Graphics#beginFill call which has a default value set
+       */
       color?: PIXI.ColorSource | undefined;
 
-      /** The border color of the highlight */
+      /**
+       * The border color of the highlight
+       * @defaultValue `null`
+       */
       border?: PIXI.ColorSource | undefined | null;
 
-      /** The opacity of the highlight */
+      /**
+       * The opacity of the highlight
+       * @defaultValue `0.25`
+       */
       alpha?: number | undefined;
 
-      /** A predefined shape to highlight */
+      /**
+       * A predefined shape to highlight
+       * @defaultValue `null`
+       */
       shape?: PIXI.Polygon | undefined | null;
     }
 
