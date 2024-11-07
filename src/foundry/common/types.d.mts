@@ -61,46 +61,6 @@ declare global {
   type HSLColorVector = [h: number, s: number, l: number];
 
   type ColorSource = number | RGBColorVector | string | Color;
-
-  type RequestData = Record<string, unknown> | Record<string, unknown>[] | string | string[];
-
-  interface SocketRequest {
-    /** Additional options applied to the request */
-    options?: Record<string, unknown> | undefined;
-    broadcast?: boolean | undefined;
-  }
-
-  interface SocketResponse {
-    /**
-     * The initial request
-     */
-    request: SocketRequest;
-
-    /**
-     * An error, if one occurred
-     */
-    error?: Error | undefined;
-
-    /**
-     * The status of the request
-     */
-    status?: string | undefined;
-
-    /**
-     * The ID of the requesting User
-     */
-    userId?: string | undefined;
-
-    /**
-     * Data returned as a result of the request
-     */
-    data?: RequestData | undefined;
-
-    /**
-     * An Array of created data objects
-     */
-    result?: Record<string, unknown>[] | string[] | undefined;
-  }
 }
 
 // After seeing that none of these types add anything or are even exported a
@@ -125,3 +85,9 @@ type KeybindingAction = ClientKeybindings.KeybindingAction;
 type KeyboardEventContext = KeyboardManager.KeyboardEventContext;
 
 type ConnectedGamepad = GamepadManager.ConnectedGamepad;
+
+type RequestData = SocketInterface.RequestData;
+
+type SocketRequest = SocketInterface.SocketRequest;
+
+type SocketResponse = SocketInterface.SocketResponse;

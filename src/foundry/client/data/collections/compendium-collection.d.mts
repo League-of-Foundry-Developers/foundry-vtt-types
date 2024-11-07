@@ -10,7 +10,7 @@ import type { DirectoryCollectionMixin_DocumentCollection_Interface } from "../a
 declare const DirectoryCollectionMixin_DocumentCollection: DirectoryCollectionMixin_DocumentCollection_Interface;
 
 declare global {
-  interface ManageCompendiumRequest extends SocketRequest {
+  interface ManageCompendiumRequest extends SocketInterface.SocketRequest {
     /**
      * The request action.
      */
@@ -28,7 +28,7 @@ declare global {
   }
 
   // @ts-expect-error Bad inheritance
-  interface ManageCompendiumResponse extends SocketResponse {
+  interface ManageCompendiumResponse extends SocketInterface.SocketResponse {
     /**
      * The original request.
      */

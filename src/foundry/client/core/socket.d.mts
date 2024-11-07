@@ -11,6 +11,48 @@ declare global {
     static dispatch<DatabaseAction extends keyof DatabaseOperationMap>(
       eventName: string,
       request: DocumentSocketRequest<DatabaseAction> | ManageCompendiumRequest,
-    ): Promise<SocketResponse>;
+    ): Promise<SocketInterface.SocketResponse>;
+  }
+
+  namespace SocketInterface {
+    type RequestData = Record<string, unknown> | Record<string, unknown>[] | string | string[];
+
+    interface SocketRequest {
+      /** Additional options applied to the request */
+      options?: Record<string, unknown> | undefined;
+      broadcast?: boolean | undefined;
+    }
+
+    interface SocketResponse {
+      /**
+       * The initial request
+       */
+      request: SocketRequest;
+
+      /**
+       * An error, if one occurred
+       */
+      error?: Error | undefined;
+
+      /**
+       * The status of the request
+       */
+      status?: string | undefined;
+
+      /**
+       * The ID of the requesting User
+       */
+      userId?: string | undefined;
+
+      /**
+       * Data returned as a result of the request
+       */
+      data?: RequestData | undefined;
+
+      /**
+       * An Array of created data objects
+       */
+      result?: Record<string, unknown>[] | string[] | undefined;
+    }
   }
 }
