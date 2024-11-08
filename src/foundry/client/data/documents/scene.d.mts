@@ -32,7 +32,7 @@ declare global {
      * @defaultValue `{}`
      * @remarks This is intentionally public because it is used in Canvas._initializeCanvasPosition() and Canvas.pan()
      */
-    _viewPosition: CanvasViewPosition;
+    _viewPosition: Canvas.ViewPosition;
 
     /**
      * Track whether the scene is the active view
