@@ -1,4 +1,4 @@
-import type { InexactPartial } from "../../../types/utils.d.mts";
+import type { InexactPartial, NullishProps } from "../../../types/utils.d.mts";
 import type Document from "../../common/abstract/document.d.mts";
 import type { CANVAS_PERFORMANCE_MODES } from "../../common/constants.d.mts";
 
@@ -494,7 +494,7 @@ declare global {
         speed?: number;
 
         /** An easing function passed to CanvasAnimation animate */
-        easing?: () => unknown;
+        easing?: CanvasAnimation.EasingFunction;
       },
     ): ReturnType<typeof CanvasAnimation.animate>;
 
@@ -736,22 +736,25 @@ declare global {
       sceneRect: PIXI.Rectangle;
     }
 
-    interface ViewPosition {
+    /** @internal */
+    type _ViewPosition = NullishProps<{
       /**
        * The x-coordinate which becomes stage.pivot.x
        */
-      x?: number | null;
+      x: number;
 
       /**
        * The y-coordinate which becomes stage.pivot.y
        */
-      y?: number | null;
+      y: number;
 
       /**
        * The zoom level up to CONFIG.Canvas.maxZoom which becomes stage.scale.x and y
        */
-      scale?: number | null;
-    }
+      scale: number;
+    }>;
+
+    interface ViewPosition extends _ViewPosition {}
 
     interface DropPosition {
       x: number;
