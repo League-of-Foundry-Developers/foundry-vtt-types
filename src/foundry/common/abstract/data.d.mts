@@ -236,23 +236,6 @@ declare abstract class DataModel<
   }): boolean;
 
   /**
-   * Get an array of validation errors from the provided error structure
-   */
-  static formatValidationErrors(
-    errors: any,
-    {
-      label,
-      namespace,
-    }?: {
-      /** A prefix label that should prepend any error messages */
-      label?: string;
-
-      /** A field namespace that should prepend key names with dot-notation */
-      namespace?: string;
-    },
-  ): string;
-
-  /**
    * Evaluate joint validation rules which apply validation conditions across multiple fields of the model.
    * Field-specific validation rules should be defined as part of the DataSchema for the model.
    * This method allows for testing aggregate rules which impose requirements on the overall model.
@@ -393,11 +376,6 @@ declare abstract class DataModel<
       embedded?: boolean;
     },
   ): object;
-
-  /**
-   * @deprecated since v10 and is renamed to DataModel#updateSource
-   */
-  update(changes: any, options: any): unknown;
 }
 
 declare namespace DataModel {
