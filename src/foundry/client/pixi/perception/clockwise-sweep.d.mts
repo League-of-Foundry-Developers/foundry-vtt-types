@@ -31,7 +31,7 @@ declare global {
     // @ts-expect-error Getter/setter routine is deprecated functionality as of v11, removed in v13
     rays: PolygonRay[];
 
-    override initialize(origin: Point, config: PointSourcePolygonConfig): void;
+    override initialize(origin: Canvas.Point, config: PointSourcePolygonConfig): void;
 
     clone(): this;
 

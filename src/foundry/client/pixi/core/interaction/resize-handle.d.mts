@@ -17,17 +17,17 @@ declare global {
      */
     active: boolean;
 
-    refresh(bounds: Rectangle): void;
+    refresh(bounds: Canvas.Rectangle): void;
 
     /**
      * @param aspectRatio - (default: `null`)
      */
     updateDimensions(
-      current: Rectangle,
-      origin: Rectangle,
-      destination: Rectangle,
+      current: Canvas.Rectangle,
+      origin: Canvas.Rectangle,
+      destination: Canvas.Rectangle,
       { aspectRatio }?: { aspectRatio?: number | null },
-    ): Rectangle;
+    ): Canvas.Rectangle;
 
     activateListeners(): void;
 

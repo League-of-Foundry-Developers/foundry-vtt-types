@@ -15,7 +15,7 @@ declare module "pixi.js" {
      *                  (default: `1e-08`)
      * @returns Is the point on the circle within the allowed tolerance?
      */
-    pointIsOn(point: Point, epsilon: number): boolean;
+    pointIsOn(point: Canvas.Point, epsilon: number): boolean;
 
     /**
      * Get all intersection points on this circle for a segment A|B
@@ -24,7 +24,7 @@ declare module "pixi.js" {
      * @param b - The second endpoint on segment A|B
      * @returns Points where the segment A|B intersects the circle
      */
-    segmentIntersections(a: Point, b: Point): [Point?, Point?];
+    segmentIntersections(a: Canvas.Point, b: Canvas.Point): [Canvas.Point?, Canvas.Point?];
 
     /**
      * Calculate an x,y point on this circle's circumference given an angle
@@ -35,7 +35,7 @@ declare module "pixi.js" {
      * @param angle - Angle of the point, in radians
      * @returns The point on the circle at the given angle
      */
-    pointAtAngle(angle: number): Point;
+    pointAtAngle(angle: number): Canvas.Point;
 
     /**
      * Get all the points for a polygon approximation of this circle between two points.
@@ -47,7 +47,7 @@ declare module "pixi.js" {
      * @param options - Options passed on to the pointsForArc method
      * @returns An array of points arranged clockwise from start to end
      */
-    pointsBetween(a: Point, b: Point, options?: Circle.PointsForArcOptions): Point[];
+    pointsBetween(a: Canvas.Point, b: Canvas.Point, options?: Circle.PointsForArcOptions): Canvas.Point[];
 
     /**
      * Get the points that would approximate a circular arc along this circle, given a starting and ending angle.
@@ -57,7 +57,7 @@ declare module "pixi.js" {
      * @param options   - Options which affect how the circle is converted
      * @returns An array of points along the requested arc
      */
-    pointsForArc(fromAngle: number, toAngle: number, options?: Circle.PointsForArcOptions): Point[];
+    pointsForArc(fromAngle: number, toAngle: number, options?: Circle.PointsForArcOptions): Canvas.Point[];
 
     /**
      * Approximate this PIXI.Circle as a PIXI.Polygon

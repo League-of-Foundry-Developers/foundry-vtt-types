@@ -162,14 +162,14 @@ declare global {
      * @param context - The context data of the event
      * @internal
      */
-    _onPTTStart(context: KeyboardEventContext): void;
+    _onPTTStart(context: KeyboardManager.KeyboardEventContext): void;
 
     /**
      * Handle deactivation of a push-to-talk key or button.
      * @param context - The context data of the event
      * @internal
      */
-    _onPTTEnd(context: KeyboardEventContext): void;
+    _onPTTEnd(context: KeyboardManager.KeyboardEventContext): void;
 
     render(): void;
 

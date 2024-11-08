@@ -78,8 +78,7 @@ declare global {
   /**
    * The Color management and manipulation class
    */
-  type Color = foundry.utils.Color;
-  var Color: typeof foundry.utils.Color; // eslint-disable-line no-var
+  export import Color = foundry.utils.Color;
 }
 
 type UiApplications = {

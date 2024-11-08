@@ -263,7 +263,7 @@ declare global {
     "core.globalAmbientVolume": number;
     "core.globalInterfaceVolume": number;
     "core.globalPlaylistVolume": number;
-    "core.keybindings": Record<string, KeybindingActionBinding[]>;
+    "core.keybindings": Record<string, ClientKeybindings.KeybindingActionBinding[]>;
     "core.language": fields.StringField<{
       required: true;
       blank: false;

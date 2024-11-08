@@ -9,14 +9,14 @@ declare global {
    */
   class LimitedAnglePolygon extends PIXI.Polygon {
     constructor(
-      origin: Point,
+      origin: Canvas.Point,
       { radius, angle, rotation, density, externalRadius }: LimitedAnglePolygon.ConstructorOptions,
     );
 
     /**
      * The origin point of the Polygon
      */
-    origin: Point;
+    origin: Canvas.Point;
 
     /**
      * The radius of the emitted cone.
@@ -69,7 +69,7 @@ declare global {
      * @returns Should the edge be included in the PointSourcePolygon computation?
      * @internal
      */
-    protected _includeEdge(a: Point, b: Point): boolean;
+    protected _includeEdge(a: Canvas.Point, b: Canvas.Point): boolean;
 
     /**
      * Test whether a vertex lies between two boundary rays.
@@ -81,7 +81,7 @@ declare global {
      * @param angle - The angle being tested, in degrees
      * @returns Is the vertex between the two rays?
      */
-    static pointBetweenRays(point: Point, rMin: PolygonRay, rMax: PolygonRay, angle: number): boolean;
+    static pointBetweenRays(point: Canvas.Point, rMin: PolygonRay, rMax: PolygonRay, angle: number): boolean;
   }
 
   namespace LimitedAnglePolygon {

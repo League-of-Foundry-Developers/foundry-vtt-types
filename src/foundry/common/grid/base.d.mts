@@ -68,7 +68,7 @@ declare abstract class BaseGrid {
    * @param bounds - The bounds
    * @returns The offset range
    */
-  abstract getOffsetRange(bounds: Rectangle): BaseGrid.OffsetRange;
+  abstract getOffsetRange(bounds: Canvas.Rectangle): BaseGrid.OffsetRange;
 
   /**
    * Returns the offsets of the grid spaces adjacent to the one corresponding to the given coordinates.
@@ -107,7 +107,7 @@ declare abstract class BaseGrid {
    * @param direction - The direction (see {@link CONST.MOVEMENT_DIRECTIONS})
    * @returns The shifted point
    */
-  abstract getShiftedPoint(point: Point, direction: number): Point;
+  abstract getShiftedPoint(point: Canvas.Point, direction: number): Canvas.Point;
 
   /**
    * Returns the top-left point of the grid space corresponding to the given coordinates.
@@ -116,7 +116,7 @@ declare abstract class BaseGrid {
    * @param coords - The coordinates
    * @returns The top-left point
    */
-  abstract getTopLeftPoint(coords: BaseGrid.Coordinates): Point;
+  abstract getTopLeftPoint(coords: BaseGrid.Coordinates): Canvas.Point;
 
   /**
    * Returns the center point of the grid space corresponding to the given coordinates.
@@ -125,7 +125,7 @@ declare abstract class BaseGrid {
    * @param coords- The coordinates
    * @returns The center point
    */
-  abstract getCenterPoint(coords: BaseGrid.Coordinates): Point;
+  abstract getCenterPoint(coords: BaseGrid.Coordinates): Canvas.Point;
 
   /**
    * Returns the points of the grid space shape relative to the center point.
@@ -133,7 +133,7 @@ declare abstract class BaseGrid {
    * In gridless grids an empty array is returned.
    * @returns The points of the polygon
    */
-  abstract getShape(): Point[];
+  abstract getShape(): Canvas.Point[];
 
   /**
    * Returns the vertices of the grid space corresponding to the given coordinates.
@@ -144,7 +144,7 @@ declare abstract class BaseGrid {
    * @param coords - The coordinates
    * @returns The vertices
    */
-  abstract getVertices(coords: BaseGrid.Coordinates): Point[];
+  abstract getVertices(coords: BaseGrid.Coordinates): Canvas.Point[];
 
   /**
    * Snaps the given point to the grid.
@@ -152,7 +152,7 @@ declare abstract class BaseGrid {
    * @param behavior - The snapping behavior
    * @returns The snapped point
    */
-  abstract getSnappedPoint({ x, y }: Point, behavior: BaseGrid.SnappingBehavior): Point;
+  abstract getSnappedPoint({ x, y }: Canvas.Point, behavior: BaseGrid.SnappingBehavior): Canvas.Point;
 
   /**
    * Measure a shortest, direct path through the given waypoints.
@@ -204,7 +204,7 @@ declare abstract class BaseGrid {
    * @param distance  - The distance in grid units.
    * @returns The translated point.
    */
-  abstract getTranslatedPoint(point: Point, direction: number, distance: number): Point;
+  abstract getTranslatedPoint(point: Canvas.Point, direction: number, distance: number): Canvas.Point;
 
   /**
    * Get the circle polygon given the radius in grid units for this grid.
@@ -214,7 +214,7 @@ declare abstract class BaseGrid {
    * @param center - The center point of the circle.
    * @returns The points of the circle polygon.
    */
-  abstract getCircle(center: Point, radius: number): Point[];
+  abstract getCircle(center: Canvas.Point, radius: number): Canvas.Point[];
 
   /**
    * Get the cone polygon given the radius in grid units and the angle in degrees for this grid.
@@ -226,7 +226,7 @@ declare abstract class BaseGrid {
    * @param angle     - The angle in degrees.
    * @returns The points of the cone polygon.
    */
-  getCone(origin: Point, radius: number, direction: number, angle: number): Point[];
+  getCone(origin: Canvas.Point, radius: number, direction: number, angle: number): Canvas.Point[];
 
   /* -------------------------------------------- */
   /*  Deprecations and Compatibility              */
@@ -290,7 +290,7 @@ declare abstract class BaseGrid {
    * @returns An Array [x, y] of the top-left coordinate of the square which contains (x, y)
    * @deprecated Since v12 until v14. Use {@link BaseGrid#getTopLeftPoint} instead.
    */
-  getTopLeft(x: number, y: number): PointArray;
+  getTopLeft(x: number, y: number): Canvas.PointArray;
 
   /**
    * Given a pair of coordinates (x, y), return the center of the grid square which contains that point
@@ -299,7 +299,7 @@ declare abstract class BaseGrid {
    * @returns An array [cx, cy] of the central point of the grid space which contains (x, y)
    * @deprecated Since v12 until v14. Use {@link BaseGrid#getCenterPoint} instead.
    */
-  getCenter(x: number, y: number): PointArray;
+  getCenter(x: number, y: number): Canvas.PointArray;
 
   /**
    * Get the grid row and column positions which are neighbors of a certain position
@@ -308,7 +308,7 @@ declare abstract class BaseGrid {
    * @returns An array of grid positions which are neighbors of the row and column
    * @deprecated Since v12 until v14. Use {@link BaseGrid#getAdjacentOffsets} instead.
    */
-  getNeighbors(row: number, col: number): PointArray[];
+  getNeighbors(row: number, col: number): Canvas.PointArray[];
 
   /**
    * Given a pair of pixel coordinates, return the grid position as an Array.
@@ -318,7 +318,7 @@ declare abstract class BaseGrid {
    * @returns An array representing the position in grid units
    * @deprecated Since v12 until v14. Use {@link BaseGrid#getOffset} instead.
    */
-  getGridPositionFromPixels(x: number, y: number): PointArray;
+  getGridPositionFromPixels(x: number, y: number): Canvas.PointArray;
 
   /* -------------------------------------------- */
 
@@ -330,7 +330,7 @@ declare abstract class BaseGrid {
    * @returns An array representing the position in pixels
    * @deprecated Since v12 until v14. Use {@link BaseGrid#getTopLeftPoint} instead.
    */
-  getPixelsFromGridPosition(x: number, y: number): PointArray;
+  getPixelsFromGridPosition(x: number, y: number): Canvas.PointArray;
 
   /* -------------------------------------------- */
 
@@ -354,7 +354,7 @@ declare abstract class BaseGrid {
        */
       token: Token;
     }>,
-  ): PointArray;
+  ): Canvas.PointArray;
 
   /* -------------------------------------------- */
 
@@ -431,7 +431,7 @@ declare abstract class BaseGrid {
   /**
    * @deprecated Since v12 until v14. Use {@link BaseGrid#measurePath} instead.
    */
-  measureDistance(origin: Point, target: Point, options: AnyObject): number[];
+  measureDistance(origin: Canvas.Point, target: Canvas.Point, options: AnyObject): number[];
 
   /* -------------------------------------------- */
 
@@ -510,7 +510,7 @@ declare namespace BaseGrid {
      * The color of the grid
      * Default: `0`
      */
-    color?: ColorSource | undefined;
+    color?: Color.Source | undefined;
 
     /**
      * The alpha of the grid
@@ -540,7 +540,7 @@ declare namespace BaseGrid {
     j1: number;
   }
 
-  type Coordinates = Offset | Point;
+  type Coordinates = Offset | Canvas.Point;
 
   interface SnappingBehavior {
     /** The snapping mode (a union of {@link CONST.GRID_SNAPPING_MODES}) */

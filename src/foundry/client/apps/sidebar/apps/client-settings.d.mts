@@ -68,7 +68,7 @@ declare global {
     type Any = SettingsConfig<any>;
 
     interface Category extends PackageConfiguration.Category {
-      menus: SettingSubmenuConfig[];
+      menus: ClientSettings.SettingSubmenuConfig[];
       settings: SettingConfig[];
       count: number;
     }

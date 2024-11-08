@@ -31,17 +31,17 @@ declare global {
      * @param A - The origin of the Ray
      * @param B - The destination of the Ray
      */
-    constructor(A: Point, B: Point);
+    constructor(A: Canvas.Point, B: Canvas.Point);
 
     /**
      * The origin point, `{x, y}`
      */
-    A: Point;
+    A: Canvas.Point;
 
     /**
      * The destination point, `{x, y}`
      */
-    B: Point;
+    B: Canvas.Point;
 
     /**
      * The origin y-coordinate
@@ -117,7 +117,7 @@ declare global {
      * @param B - The destination point [x,y]
      * @returns The constructed Ray instance
      */
-    static fromArrays(A: PointArray, B: PointArray): Ray;
+    static fromArrays(A: Canvas.PointArray, B: Canvas.PointArray): Ray;
 
     /**
      * Project the Array by some proportion of it's initial distance.
@@ -133,7 +133,7 @@ declare global {
      * @param point    - The point towards which to project
      * @param distance - The distance of projection
      */
-    static towardsPoint(origin: Point, point: Point, distance: number): Ray;
+    static towardsPoint(origin: Canvas.Point, point: Canvas.Point, distance: number): Ray;
 
     /**
      * Create a Ray by projecting a certain squared-distance towards a known point.
@@ -141,7 +141,7 @@ declare global {
      * @param point     - The point towards which to project
      * @param distance2 - The squared distance of projection
      */
-    static towardsPointSquared(origin: Point, point: Point, distance2: number): Ray;
+    static towardsPointSquared(origin: Canvas.Point, point: Canvas.Point, distance2: number): Ray;
 
     /**
      * Reverse the direction of the Ray, returning a second Ray

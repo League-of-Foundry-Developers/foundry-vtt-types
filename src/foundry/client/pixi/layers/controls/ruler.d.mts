@@ -67,20 +67,20 @@ declare global {
      * The current destination point at the end of the measurement
      * @defaultValue `null`
      */
-    destination: Point | null;
+    destination: Canvas.Point | null;
 
     /**
      * The origin point of the measurement, which is the first waypoint.
      * @defaultValue `null`
      */
-    get origin(): Point | null;
+    get origin(): Canvas.Point | null;
 
     /**
      * This Array tracks individual waypoints along the ruler's measured path.
      * The first waypoint is always the origin of the route.
      * @defaultValue `[]`
      */
-    waypoints: Point[];
+    waypoints: Canvas.Point[];
 
     /**
      * The array of most recently computed ruler measurement segments
@@ -142,7 +142,7 @@ declare global {
      * @returns The array of measured segments if measured
      */
     measure(
-      destination: Point,
+      destination: Canvas.Point,
       options?: InexactPartial<{
         /**
          * Snap the destination?
@@ -164,7 +164,7 @@ declare global {
      * @param options - Additional options
      */
     protected _getMeasurementOrigin(
-      point: Point,
+      point: Canvas.Point,
       options?: InexactPartial<{
         /**
          * Snap the waypoint?
@@ -172,7 +172,7 @@ declare global {
          */
         snap: boolean;
       }>,
-    ): Point;
+    ): Canvas.Point;
 
     /**
      * While measurement is in progress, update the destination to be the central point of the target grid space.
@@ -181,7 +181,7 @@ declare global {
      * @returns The snapped destination point
      */
     protected _getMeasurementDestination(
-      point: Point,
+      point: Canvas.Point,
       options?: InexactPartial<{
         /**
          * Snap the point?
@@ -189,7 +189,7 @@ declare global {
          */
         snap: boolean;
       }>,
-    ): Point;
+    ): Canvas.Point;
 
     /**
      * Translate the waypoints and destination point of the Ruler into an array of Ray segments.
@@ -203,7 +203,7 @@ declare global {
      * @param options - Additional options
      */
     protected _startMeasurement(
-      origin: Point,
+      origin: Canvas.Point,
       options?: InexactPartial<{
         /**
          * Snap the origin?
@@ -229,7 +229,7 @@ declare global {
      * @param options - Additional options
      */
     protected _addWaypoint(
-      point: Point,
+      point: Canvas.Point,
       options?: InexactPartial<{
         /**
          * Snap the waypoint?
@@ -283,7 +283,7 @@ declare global {
      * @returns The Token that is to be moved, if any
      *
      */
-    protected _getMovementToken(origin: Point): Token.ConfiguredInstance | null | undefined;
+    protected _getMovementToken(origin: Canvas.Point): Token.ConfiguredInstance | null | undefined;
 
     /**
      * Get the current measurement history.
@@ -323,7 +323,7 @@ declare global {
     protected _animateSegment(
       token: Token,
       segment: Ruler.MeasurementSegment,
-      destination: Point,
+      destination: Canvas.Point,
       updateOptions: TokenDocument.DatabaseOperations["update"],
     ): Promise<void>;
 
@@ -394,7 +394,7 @@ declare global {
     /**
      * Move the Token along the measured path when the move key is pressed.
      */
-    protected _onMoveKeyDown(context: KeyboardEventContext): void;
+    protected _onMoveKeyDown(context: KeyboardManager.KeyboardEventContext): void;
   }
 
   namespace Ruler {
@@ -457,10 +457,10 @@ declare global {
       history: MeasurementHistory;
 
       /** The waypoints ({@link Ruler#waypoints}) */
-      waypoints: Point[];
+      waypoints: Canvas.Point[];
 
       /** The destination ({@link Ruler#destination}) */
-      destination: Point | null;
+      destination: Canvas.Point | null;
     }
   }
 }

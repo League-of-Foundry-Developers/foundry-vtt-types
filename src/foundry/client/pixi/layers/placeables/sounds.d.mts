@@ -64,7 +64,7 @@ declare global {
      * Preview ambient audio for a given mouse cursor position
      * @param position - The cursor position to preview
      */
-    previewSound(position: Point): void;
+    previewSound(position: Canvas.Point): void;
 
     /**
      * Terminate playback of all ambient audio sources
@@ -77,7 +77,7 @@ declare global {
      * @param options   - Additional options forwarded to AmbientSound synchronization
      *                    (defaultValue: `{}`)
      */
-    protected _syncPositions(listeners: Point[], options?: { fade?: number }): void;
+    protected _syncPositions(listeners: Canvas.Point[], options?: { fade?: number }): void;
 
     /**
      * Define the easing function used to map radial distance to volume.

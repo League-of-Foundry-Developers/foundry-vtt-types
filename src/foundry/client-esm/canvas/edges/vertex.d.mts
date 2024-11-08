@@ -1,3 +1,5 @@
+import type Edge from "./edge.d.mts";
+
 /**
  * A specialized point data structure used to represent vertices in the context of the ClockwiseSweepPolygon.
  * This class is not designed or intended for use outside of that context.
@@ -104,7 +106,7 @@ declare class PolygonVertex {
    * @param orientation - The orientation of the edge with respect to the origin
    * @param type        - The restriction type of the polygon being created
    */
-  attachEdge(edge: PolygonEdge, orientation: number, type: string): void;
+  attachEdge(edge: Edge, orientation: number, type: string): void;
 
   /**
    * Is this vertex terminal (at the maximum radius)
@@ -121,7 +123,7 @@ declare class PolygonVertex {
    * @param options - Additional options that apply to this vertex
    * @returns The constructed vertex
    */
-  static fromPoint(point: Point, options?: PolygonVertex.Options): PolygonVertex;
+  static fromPoint(point: Canvas.Point, options?: PolygonVertex.Options): PolygonVertex;
 }
 
 declare namespace PolygonVertex {

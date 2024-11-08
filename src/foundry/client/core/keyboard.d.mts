@@ -110,7 +110,7 @@ declare global {
         repeat,
         force,
       }?: { altKey?: boolean; ctrlKey?: boolean; shiftKey?: boolean; repeat?: boolean; force?: boolean },
-    ): KeyboardEventContext;
+    ): KeyboardManager.KeyboardEventContext;
 
     /**
      * Format a KeyboardEvent#code into a displayed string.
@@ -129,7 +129,7 @@ declare global {
      *                (default: `false`)
      * @returns The standardized context of the event
      */
-    static getKeyboardEventContext(event: KeyboardEvent, up: boolean): KeyboardEventContext;
+    static getKeyboardEventContext(event: KeyboardEvent, up: boolean): KeyboardManager.KeyboardEventContext;
 
     /**
      * Report whether a modifier in KeyboardManager.MODIFIER_KEYS is currently actively depressed.
@@ -152,7 +152,10 @@ declare global {
      *                           (default: `true`)
      * @internal
      */
-    protected static _getContextDisplayString(context: KeyboardEventContext, includeModifiers?: boolean): string;
+    protected static _getContextDisplayString(
+      context: KeyboardManager.KeyboardEventContext,
+      includeModifiers?: boolean,
+    ): string;
 
     /**
      * Given a standardized pressed key, find all matching registered Keybind Actions.
@@ -160,7 +163,7 @@ declare global {
      * @returns The matched Keybind Actions. May be empty.
      * @internal
      */
-    static _getMatchingActions(context: KeyboardEventContext): KeybindingAction[];
+    static _getMatchingActions(context: KeyboardManager.KeyboardEventContext): ClientKeybindings.KeybindingAction[];
 
     /**
      * Test whether a keypress context matches the registration for a keybinding action
@@ -169,7 +172,10 @@ declare global {
      * @returns Does the context match the action requirements?
      * @internal
      */
-    protected static _testContext(action: KeybindingAction, context: KeyboardEventContext): boolean;
+    protected static _testContext(
+      action: ClientKeybindings.KeybindingAction,
+      context: KeyboardManager.KeyboardEventContext,
+    ): boolean;
 
     /**
      * Given a registered Keybinding Action, executes the action with a given event and context
@@ -179,14 +185,17 @@ declare global {
      * @returns Returns true if the keybind was consumed
      * @internal
      */
-    protected static _executeKeybind(keybind: KeybindingAction, context: KeyboardEventContext): boolean;
+    protected static _executeKeybind(
+      keybind: ClientKeybindings.KeybindingAction,
+      context: KeyboardManager.KeyboardEventContext,
+    ): boolean;
 
     /**
      * Processes a keyboard event context, checking it against registered keybinding actions
      * @param context - The keyboard event context
      * @internal
      */
-    protected _processKeyboardContext(context: KeyboardEventContext): void;
+    protected _processKeyboardContext(context: KeyboardManager.KeyboardEventContext): void;
 
     /**
      * Reset tracking for which keys are in the down and released states
@@ -220,5 +229,43 @@ declare global {
      * @param event - The focus event.
      */
     protected _onFocusIn(event: FocusEvent): void;
+  }
+
+  namespace KeyboardManager {
+    /**
+     * Keyboard event context
+     * @remarks Copied from `resources/app/common/types.mjs`
+     */
+    interface KeyboardEventContext {
+      /** The normalized string key, such as "A" */
+      key: string;
+
+      /** The originating keypress event */
+      event: KeyboardEvent;
+
+      /** Is the Shift modifier being pressed */
+      isShift: boolean;
+
+      /** Is the Control or Meta modifier being processed */
+      isControl: boolean;
+
+      /** Is the Alt modifier being pressed */
+      isAlt: boolean;
+
+      /** Are any of the modifiers being pressed */
+      hasModifier: boolean;
+
+      /** A list of string modifiers applied to this context, such as [ "CONTROL" ] */
+      modifiers: string[];
+
+      /** True if the Key is Up, else False if down */
+      up: boolean;
+
+      /** True if the given key is being held down such that it is automatically repeating. */
+      repeat: boolean;
+
+      /** The executing Keybinding Action. May be undefined until the action is known. */
+      action?: string | undefined;
+    }
   }
 }

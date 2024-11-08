@@ -22,10 +22,10 @@ declare class GridHex {
   offset: HexagonalGrid.Offset;
 
   /** Return a reference to the pixel point in the center of this hexagon. */
-  get center(): Point;
+  get center(): Canvas.Point;
 
   /** Return a reference to the pixel point of the top-left corner of this hexagon. */
-  get topLeft(): Point;
+  get topLeft(): Canvas.Point;
 
   /**
    * Return the array of hexagons which are neighbors of this one.

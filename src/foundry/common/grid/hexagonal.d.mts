@@ -16,7 +16,7 @@ declare class HexagonalGrid extends BaseGrid {
 
   getOffset(coords: HexagonalGrid.Coordinates): HexagonalGrid.Offset;
 
-  getOffsetRange(bounds: Rectangle): HexagonalGrid.OffsetRange;
+  getOffsetRange(bounds: Canvas.Rectangle): HexagonalGrid.OffsetRange;
 
   getAdjacentOffsets(coords: HexagonalGrid.Coordinates): HexagonalGrid.Offset[];
 
@@ -24,7 +24,7 @@ declare class HexagonalGrid extends BaseGrid {
 
   getShiftedOffset(coords: HexagonalGrid.Coordinates, direction: number): HexagonalGrid.Offset;
 
-  getShiftedPoint(point: Point, direction: number): Point;
+  getShiftedPoint(point: Canvas.Point, direction: number): Canvas.Point;
 
   /**
    * Returns the cube coordinates of the grid space corresponding to the given coordinates.
@@ -49,15 +49,15 @@ declare class HexagonalGrid extends BaseGrid {
    */
   getShiftedCube(coords: HexagonalGrid.Coordinates, direction: number): HexagonalGrid.Cube;
 
-  getTopLeftPoint(coords: HexagonalGrid.Coordinates): Point;
+  getTopLeftPoint(coords: HexagonalGrid.Coordinates): Canvas.Point;
 
-  getCenterPoint(coords: HexagonalGrid.Coordinates): Point;
+  getCenterPoint(coords: HexagonalGrid.Coordinates): Canvas.Point;
 
-  getShape(): Point[];
+  getShape(): Canvas.Point[];
 
-  getVertices(coords: HexagonalGrid.Coordinates): Point[];
+  getVertices(coords: HexagonalGrid.Coordinates): Canvas.Point[];
 
-  getSnappedPoint({ x, y }: Point, behavior: HexagonalGrid.SnappingBehavior): Point;
+  getSnappedPoint({ x, y }: Canvas.Point, behavior: HexagonalGrid.SnappingBehavior): Canvas.Point;
 
   /** @privateRemarks This is added so that ts knows this class has a private method. */
   #snapToCenter();
@@ -89,9 +89,9 @@ declare class HexagonalGrid extends BaseGrid {
 
   getDirectPath(waypoints: HexagonalGrid.Coordinates[]): HexagonalGrid.Offset[];
 
-  getTranslatedPoint(point: Point, direction: number, distance: number): Point;
+  getTranslatedPoint(point: Canvas.Point, direction: number, distance: number): Canvas.Point;
 
-  getCircle(center: Point, radius: number): Point[];
+  getCircle(center: Canvas.Point, radius: number): Canvas.Point[];
 
   /**
    * Round the fractional cube coordinates (q, r, s).
@@ -108,7 +108,7 @@ declare class HexagonalGrid extends BaseGrid {
    * @param point - The point
    * @returns The (fractional) cube coordinates
    */
-  pointToCube(point: Point): HexagonalGrid.Cube;
+  pointToCube(point: Canvas.Point): HexagonalGrid.Cube;
 
   /**
    * Convert cube coordinates (q, r, s) into point coordinates (x, y).
@@ -117,7 +117,7 @@ declare class HexagonalGrid extends BaseGrid {
    * @param cube - The cube coordinates
    * @returns The point coordinates
    */
-  cubeToPoint(cube: HexagonalGrid.Cube): Point;
+  cubeToPoint(cube: HexagonalGrid.Cube): Canvas.Point;
 
   /**
    * Convert offset coordinates (i, j) into integer cube coordinates (q, r, s).
@@ -147,7 +147,7 @@ declare class HexagonalGrid extends BaseGrid {
   static cubeDistance(a: HexagonalGrid.Cube, b: HexagonalGrid.Cube): number;
 
   /** Used by {@link HexagonalGrid#snapToCenter}. */
-  static #TEMP_POINT: Point;
+  static #TEMP_POINT: Canvas.Point;
 
   /**
    * Used by {@link HexagonalGrid#snapToCenter}.
@@ -163,7 +163,7 @@ declare class HexagonalGrid extends BaseGrid {
    * Special border polygons for different token sizes.
    * @deprecated Since v12 until v14. No Replacement
    */
-  static get POINTY_HEX_BORDERS(): Record<number, PointArray[]>;
+  static get POINTY_HEX_BORDERS(): Record<number, Canvas.PointArray[]>;
 
   /**
    * @deprecated Since v12 until v14. No Replacement
@@ -174,25 +174,25 @@ declare class HexagonalGrid extends BaseGrid {
    * Special border polygons for different token sizes.
    * @deprecated Since v12 until v14. No Replacement
    */
-  static get FLAT_HEX_BORDERS(): Record<number, PointArray[]>;
+  static get FLAT_HEX_BORDERS(): Record<number, Canvas.PointArray[]>;
 
   /**
    * A matrix of x and y offsets which is multiplied by the width/height vector to get pointy-top polygon coordinates
    * @deprecated Since v12 until v14. No Replacement
    */
-  static get pointyHexPoints(): PointArray[];
+  static get pointyHexPoints(): Canvas.PointArray[];
 
   /**
    * A matrix of x and y offsets which is multiplied by the width/height vector to get flat-top polygon coordinates
    * @deprecated Since v12 until v14. No Replacement
    */
-  static get flatHexPoints(): PointArray[];
+  static get flatHexPoints(): Canvas.PointArray[];
 
   /**
    * An array of the points which define a hexagon for this grid shape
    * @deprecated Since v12 until v14. No Replacement
    */
-  get hexPoints(): PointArray[];
+  get hexPoints(): Canvas.PointArray[];
 
   /**
    * A convenience method for getting all the polygon points relative to a top-left [x,y] coordinate pair
@@ -204,12 +204,12 @@ declare class HexagonalGrid extends BaseGrid {
    * @deprecated Since v12 until v14. You can get the shape of the hex with {@link HexagonalGrid#getShape}
    *             and the polygon with {@link HexagonalGrid#getVertices}.
    */
-  getPolygon(x: number, y: number, w?: number, h?: number, points?: PointArray[]): PointArray[];
+  getPolygon(x: number, y: number, w?: number, h?: number, points?: Canvas.PointArray[]): Canvas.PointArray[];
 
   /**
    * @deprecated Since v12 until v14. If you need the shape of a Token, use {@link Token#getShape} instead.
    */
-  getBorderPolygon(w: number, h: number, p: number): PointArray[];
+  getBorderPolygon(w: number, h: number, p: number): Canvas.PointArray[];
 
   /**
    * @deprecated Since v12 until v14. If you need the size of a Token, use {@link Token#getSize} instead.
@@ -300,7 +300,7 @@ declare class HexagonalGrid extends BaseGrid {
    * @returns The cube coordinate
    * @deprecated Since v12 until v14. Use {@link HexagonalGrid#pointToCube} instead.
    */
-  static pixelToCube(point: Point, config: HexagonalGrid.Configuration): HexagonalGrid.Coordinates;
+  static pixelToCube(point: Canvas.Point, config: HexagonalGrid.Configuration): HexagonalGrid.Coordinates;
 
   /**
    * Compute the top-left pixel coordinate of a hexagon from its offset coordinate.
@@ -309,7 +309,7 @@ declare class HexagonalGrid extends BaseGrid {
    * @returns The coordinate in pixels
    * @deprecated Since v12 until v14. Use {@link HexagonalGrid#getTopLeftPoint} instead.
    */
-  static offsetToPixels(offset: unknown, config: HexagonalGrid.Configuration): Point;
+  static offsetToPixels(offset: unknown, config: HexagonalGrid.Configuration): Canvas.Point;
 
   /**
    * Compute the offset coordinate of a hexagon from a pixel coordinate contained within that hex.
@@ -320,7 +320,7 @@ declare class HexagonalGrid extends BaseGrid {
    * @returns The offset coordinate
    * @deprecated Since v12 until v14. No Replacement
    */
-  static pixelsToOffset(point: Point, config: HexagonalGrid.Configuration, method?: keyof Math): HexagonalGrid.Coordinates;
+  static pixelsToOffset(point: Canvas.Point, config: HexagonalGrid.Configuration, method?: keyof Math): HexagonalGrid.Coordinates;
 
   /**
    * Compute the shortest path between two hexagons using the A-star algorithm.

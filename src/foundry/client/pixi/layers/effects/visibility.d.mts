@@ -126,7 +126,7 @@ declare global {
      * @returns Whether the point is currently visible.
      */
     testVisibility(
-      point: Point,
+      point: Canvas.Point,
       options?: InexactPartial<{
         /**
          * A numeric radial offset which allows for a non-exact match.
@@ -148,7 +148,7 @@ declare global {
      * @param options - Additional options which modify visibility testing.
      */
     _createVisibilityTestConfig(
-      point: Point,
+      point: Canvas.Point,
       options?: InexactPartial<{
         /**
          * A numeric radial offset which allows for a non-exact match.

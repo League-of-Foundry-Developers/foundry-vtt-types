@@ -33,7 +33,7 @@ declare global {
      * @returns - The created PreciseText object which is scrolling
      */
     createScrollingText(
-      origin: Point,
+      origin: Canvas.Point,
       content: string,
       options?: {
         /**
