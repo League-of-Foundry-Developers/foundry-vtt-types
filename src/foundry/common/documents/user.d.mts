@@ -5,7 +5,7 @@ import type * as fields from "../data/fields.d.mts";
 import type BaseActor from "./actor.mts";
 
 /**
- * The Document definition for a User.
+ * The User Document.
  * Defines the DataSchema and common behaviors for a User which are shared between both client and server.
  */
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
@@ -38,6 +38,11 @@ declare class BaseUser extends Document<BaseUser.Schema, BaseUser.Metadata, any>
    * @internal
    */
   static #validatePermissions(perms: AnyObject): boolean;
+
+  /**
+   * A convenience test for whether this User has the NONE role.
+   */
+  get isBanned(): boolean;
 
   /**
    * Test whether the User has a GAMEMASTER or ASSISTANT role in this World?
