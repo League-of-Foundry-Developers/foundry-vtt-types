@@ -1,4 +1,4 @@
-import type { EmptyObject } from "../../../types/utils.d.mts";
+import type { AnyObject, EmptyObject } from "../../../types/utils.d.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
 import type { fields } from "../data/module.d.mts";
 import type { DataModelValidationFailure } from "../data/validation-failure.d.mts";
@@ -350,14 +350,14 @@ declare abstract class DataModel<
    * @param source - The candidate source data from which the model will be constructed
    * @returns Migrated source data, if necessary
    */
-  static migrateData(source: object): object;
+  static migrateData(source: AnyObject): AnyObject;
 
   /**
    * Wrap data migration in a try/catch which attempts it safely
    * @param source - The candidate source data from which the model will be constructed
    * @returns Migrated source data, if necessary
    */
-  static migrateDataSafe(source: object): object;
+  static migrateDataSafe(source: AnyObject): AnyObject;
 
   /**
    * Take data which conforms to the current data schema and add backwards-compatible accessors to it in order to
