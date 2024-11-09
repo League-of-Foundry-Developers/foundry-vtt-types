@@ -1,10 +1,9 @@
-import type { AnyObject, Merge } from "../../../types/utils.mts";
-import type { DataModel } from "../abstract/data.mts";
+import type { Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type * as fields from "../data/fields.d.mts";
 
 /**
- * The Document definition for an Adventure.
+ * The Adventure Document.
  * Defines the DataSchema and common behaviors for an Adventure which are shared between both client and server.
  */
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
@@ -33,22 +32,6 @@ declare class BaseAdventure extends Document<BaseAdventure.Schema, BaseAdventure
    * Provide a thumbnail image path used to represent the Adventure document.
    */
   get thumbnail(): string;
-
-  static override fromSource<Schema extends DataSchema>(
-    source: fields.SchemaField.InnerAssignmentType<Schema>,
-    {
-      strict,
-      ...context
-    }?: DataModel.ConstructorOptions<null> & {
-      /**
-       * Models created from trusted source data are validated non-strictly
-       * @defaultValue `false`
-       */
-      strict?: boolean;
-    },
-  ): foundry.abstract.DataModel<Schema, DataModel.Any | null>;
-
-  static override migrateData(source: AnyObject): AnyObject;
 }
 
 export default BaseAdventure;
@@ -203,7 +186,7 @@ declare namespace BaseAdventure {
       ? Key
       : never]: BaseAdventure.Schema[Key] extends fields.SetField<infer ElementType, any, any, any, any, any, any, any>
       ? ElementType extends fields.EmbeddedDataField<infer ModelType, any, any, any, any>
-        ? ModelType extends typeof Document // TODO: This doesn't seem to quite work to ensure it's the configured class
+        ? ModelType extends Document.AnyConstructor // TODO: This doesn't seem to quite work to ensure it's the configured class
           ? ModelType["implementation"]
           : ModelType
         : never
