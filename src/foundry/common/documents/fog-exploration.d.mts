@@ -4,7 +4,7 @@ import type * as fields from "../data/fields.d.mts";
 import type * as documents from "./_module.mts";
 
 /**
- * The Document definition for FogExploration.
+ * The FogExploration Document.
  * Defines the DataSchema and common behaviors for FogExploration which are shared between both client and server.
  */
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
@@ -106,5 +106,7 @@ declare namespace BaseFogExploration {
      * @defaultValue `{}`
      */
     flags: fields.ObjectField.FlagsField<"FogExploration">;
+
+    _stats: fields.DocumentStatsField;
   }
 }
