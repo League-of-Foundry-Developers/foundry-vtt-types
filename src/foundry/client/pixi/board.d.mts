@@ -1,4 +1,4 @@
-import type { InexactPartial } from "../../../types/utils.d.mts";
+import type { InexactPartial, NullishProps } from "../../../types/utils.d.mts";
 import type Document from "../../common/abstract/document.d.mts";
 import type { CANVAS_PERFORMANCE_MODES } from "../../common/constants.d.mts";
 
@@ -33,28 +33,6 @@ declare global {
     constructor();
 
     /**
-     * A perception manager interface for batching lighting, sight, and sound updates
-     */
-    perception: PerceptionManager;
-
-    /**
-     * A flag to indicate whether a new Scene is currently being drawn.
-     * @defaultValue `false`
-     */
-    loading: boolean;
-
-    /**
-     * A promise that resolves when the canvas is first initialized and ready.
-     */
-    initializing: Promise<void> | null;
-
-    /**
-     * Track the last automatic pan time to throttle
-     * @defaultValue `0`
-     */
-    protected _panTime: number;
-
-    /**
      * A set of blur filter instances which are modified by the zoom level and the "soft shadows" setting
      * @defaultValue `[]`
      */
@@ -64,11 +42,6 @@ declare global {
      * A reference to the MouseInteractionManager that is currently controlling pointer-based interaction, or null.
      */
     currentMouseManager: MouseInteractionManager<PIXI.Container> | null;
-
-    /**
-     * The current pixel dimensions of the displayed Scene, or null if the Canvas is blank.
-     */
-    readonly dimensions: SceneDimensions | null;
 
     /**
      * Configure options passed to the texture loaded for the Scene.
@@ -101,7 +74,7 @@ declare global {
      * Textures registered here will be automatically loaded as part of the TextureLoader.loadSceneTextures workflow.
      * Textures which need to be loaded should be configured during the "canvasInit" hook.
      */
-    sceneTextures: { background?: PIXI.Texture; foreground?: PIXI.Texture; fogOverlay?: PIXI.Texture };
+    sceneTextures: { background?: string; foreground?: string; fogOverlay?: string };
 
     /**
      * Record framerate performance data
@@ -149,49 +122,16 @@ declare global {
     screenDimensions: [x: number, y: number];
 
     /**
-     * The singleton Fog of War manager instance.
-     * @internal
+     * A flag to indicate whether a new Scene is currently being drawn.
+     * @defaultValue `false`
      */
-    protected _fog: FogManager;
+    loading: boolean;
 
     /**
-     * The singleton color manager instance.
+     * A promise that resolves when the canvas is first initialized and ready.
+     * @defaultValue `null`
      */
-    #colorManager: CanvasColorManager;
-
-    /**
-     * The DragDrop instance which handles interactivity resulting from DragTransfer events.
-     * @defaultValue `undefined`
-     */
-    #dragDrop: DragDrop | undefined;
-
-    /**
-     * An object of data which caches data which should be persisted across re-draws of the game canvas.
-     */
-    #reload: {
-      scene: string;
-      layer: string;
-      controlledTokens: string[];
-      targetedTokens: string[];
-    };
-
-    /**
-     * Track the timestamp when the last mouse move event was captured
-     * @defaultValue `0`
-     */
-    #mouseMoveTime: number;
-
-    /**
-     * The debounce timer in milliseconds for tracking mouse movements on the Canvas.
-     * @defaultValue `100`
-     */
-    #mouseMoveDebounceMS: number;
-
-    /**
-     * A debounced function which tracks movements of the mouse on the game canvas.
-     * @defaultValue `foundry.utils.debounce(this._onMouseMove.bind(this), this.#mouseMoveDebounceMS)`
-     */
-    #debounceMouseMove: (event: PIXI.FederatedEvent) => void;
+    initializing: Promise<void> | null;
 
     /**
      * The singleton PIXI.Application instance rendered on the Canvas.
@@ -206,6 +146,31 @@ declare global {
     readonly stage: PIXI.Container | undefined;
 
     /**
+     * The rendered canvas group which render the environment canvas group and the interface canvas group.
+     */
+    rendered: RenderedCanvasGroup;
+
+    /**
+     * A singleton CanvasEdges instance.
+     */
+    edges: foundry.canvas.edges.CanvasEdges;
+
+    /**
+     * The singleton FogManager instance.
+     */
+    fog: FogManager;
+
+    /**
+     * A perception manager interface for batching lighting, sight, and sound updates
+     */
+    perception: PerceptionManager;
+
+    /**
+     * The environment canvas group which render the primary canvas group and the effects canvas group.
+     */
+    environment: EnvironmentCanvasGroup;
+
+    /**
      * The primary Canvas group which generally contains tangible physical objects which exist within the Scene.
      * This group is a {@link CachedContainer} which is rendered to the Scene as a {@link SpriteMesh}.
      * This allows the rendered result of the Primary Canvas Group to be affected by a {@link BaseSamplerShader}.
@@ -215,10 +180,16 @@ declare global {
 
     /**
      * The effects Canvas group which modifies the result of the {@link PrimaryCanvasGroup} by adding special effects.
-     * This includes lighting, weather, vision, and other visual effects which modify the appearance of the Scene.
+     * This includes lighting, vision, fog of war and related animations..
      * @defaultValue `undefined`
      */
     readonly effects: EffectsCanvasGroup | undefined;
+
+    /**
+     * The visibility Canvas group which handles the fog of war overlay by consolidating multiple render textures,
+     * and applying a filter with special effects and blur.
+     */
+    visibility: CanvasVisibility;
 
     /**
      * The interface Canvas group which is rendered above other groups and contains all interactive elements.
@@ -245,43 +216,52 @@ declare global {
     mousePosition: PIXI.Point;
 
     /**
+     * Track the last automatic pan time to throttle
+     * @defaultValue `0`
+     */
+    protected _panTime: number;
+
+    /**
+     * Force snapping to grid vertices?
+     * @defaultValue `false`
+     */
+    forceSnapVertices: boolean;
+
+    /**
      * A flag for whether the game Canvas is fully initialized and ready for additional content to be drawn.
      */
     get initialized(): boolean;
-
-    /** @defaultValue `false` */
-    #initialized: boolean;
 
     /**
      * A reference to the currently displayed Scene document, or null if the Canvas is currently blank.
      */
     get scene(): Document.Stored<Scene.ConfiguredInstance> | null;
 
-    /** @defaultValue `null` */
-    #scene: Document.Stored<Scene.ConfiguredInstance> | null;
+    /**
+     * A SceneManager instance which adds behaviors to this Scene, or null if there is no manager.
+     * @defaultValue `null`
+     */
+    get manager(): foundry.canvas.SceneManager | null;
+
+    /**
+     * The current pixel dimensions of the displayed Scene, or null if the Canvas is blank.
+     */
+    get dimensions(): Canvas.Dimensions | null;
+
+    /**
+     * A reference to the grid of the currently displayed Scene document, or null if the Canvas is currently blank.
+     */
+    get grid(): foundry.grid.BaseGrid | null;
 
     /**
      * A flag for whether the game Canvas is ready to be used. False if the canvas is not yet drawn, true otherwise.
      */
     get ready(): boolean;
 
-    /** @defaultValue `false` */
-    #ready: boolean;
-
-    /**
-     * The fog of war bound to this canvas
-     */
-    get fog(): FogManager;
-
-    /**
-     * The color manager class bound to this canvas
-     */
-    get colorManager(): CanvasColorManager;
-
     /**
      * The colors bound to this scene and handled by the color manager.
      */
-    get colors(): CanvasColorManager["colors"];
+    get colors(): this["environment"]["colors"];
 
     /**
      * Shortcut to get the masks container from HiddenCanvasGroup.
@@ -414,9 +394,9 @@ declare global {
     tearDown(): Promise<void>;
 
     /**
-     * A special workflow to perform when rendering a blank Canvas with no active Scene.
+     * Create a SceneManager instance used for this Scene, if any.
      */
-    #drawBlank(): this;
+    static getSceneManager(scene: Scene.ConfiguredInstance): foundry.canvas.SceneManager | null;
 
     /**
      * Get the value of a GL parameter
@@ -426,33 +406,18 @@ declare global {
     getGLParameter(parameter: string): unknown;
 
     /**
-     * Once the canvas is drawn, initialize control, visibility, and audio states
-     */
-    #initialize(): Promise<void>;
-
-    /**
      * Initialize the starting view of the canvas stage
      * If we are re-drawing a scene which was previously rendered, restore the prior view position
      * Otherwise set the view to the top-left corner of the scene at standard scale
      */
     initializeCanvasPosition(): void;
 
-    /**
-     * Initialize a CanvasLayer in the activation state
-     */
-    #initializeCanvasLayer(): void;
-
-    /**
-     * Initialize a token or set of tokens which should be controlled.
-     * Restore controlled and targeted tokens from before the re-draw.
-     */
-    #initializeTokenControl(): void;
-
-    // Layers are added to the global `canvas` object via `BaseCanvasMixin##createLayers()`
+    // Layers are added to the global `canvas` object via `CanvasGroupMixin#_createLayers()`
+    // TODO: Revisit after updating CONFIG in #2911
 
     readonly weather?: WeatherEffects;
 
-    readonly grid?: GridLayer;
+    // GridLayer is not assigned due to conflicting `Canvas#grid` property pointing to the BaseGrid subclass
 
     readonly drawings?: DrawingsLayer;
 
@@ -506,7 +471,7 @@ declare global {
     /**
      * Pan the canvas to a certain \{x,y\} coordinate and a certain zoom level
      */
-    pan({ x, y, scale }?: CanvasViewPosition): void;
+    pan({ x, y, scale }?: Canvas.ViewPosition): void;
 
     /**
      * Animate panning the canvas to a certain destination coordinate and zoom scale
@@ -517,29 +482,28 @@ declare global {
      *               (default: `{}`)
      * @returns A Promise which resolves once the animation has been completed
      */
-    animatePan({
-      x,
-      y,
-      scale,
-      duration,
-      speed,
-    }?: CanvasViewPosition & {
-      /**
-       * The total duration of the animation in milliseconds; used if speed is not set
-       * @defaultValue `250`
-       */
-      duration?: number;
+    animatePan(
+      view: Canvas.ViewPosition & {
+        /**
+         * The total duration of the animation in milliseconds; used if speed is not set
+         * @defaultValue `250`
+         */
+        duration?: number;
 
-      /** The speed of animation in pixels per second; overrides duration if set */
-      speed?: number;
-    }): ReturnType<typeof CanvasAnimation.animate>;
+        /** The speed of animation in pixels per second; overrides duration if set */
+        speed?: number;
+
+        /** An easing function passed to CanvasAnimation animate */
+        easing?: CanvasAnimation.EasingFunction;
+      },
+    ): ReturnType<typeof CanvasAnimation.animate>;
 
     /**
      * Recenter the canvas with a pan animation that ends in the center of the canvas rectangle.
      * @param initial - A desired initial position from which to begin the animation
      * @returns A Promise which resolves once the animation has been completed
      */
-    recenter(initial?: CanvasViewPosition): ReturnType<this["animatePan"]>;
+    recenter(initial?: Canvas.ViewPosition): ReturnType<this["animatePan"]>;
 
     /**
      * Highlight objects on any layers which are visible
@@ -558,18 +522,13 @@ declare global {
     ping(origin: Canvas.Point, options?: PingOptions): Promise<boolean>;
 
     /**
-     * Get the constrained zoom scale parameter which is allowed by the maxZoom parameter
-     * @param position - The unconstrained position
-     * @returns The constrained position
-     */
-    #constrainView({ x, y, scale }: CanvasViewPosition): CanvasViewPosition;
-
-    /**
      * Create a BlurFilter instance and register it to the array for updates when the zoom level changes.
      * @param blurStrength - The desired blur strength to use for this filter
      *                       (default: `CONFIG.Canvas.blurStrength`)
+     * @param blurQuality  - The desired quality to use for this filter
+     *                       (default: `CONFIG.Canvas.blurQuality`)
      */
-    createBlurFilter(blurStrength?: number): PIXI.BlurFilter;
+    createBlurFilter(blurStrength?: number, blurQuality?: number): PIXI.BlurFilter;
 
     /**
      * Add a filter to the blur filter list. The filter must have the blur property
@@ -586,22 +545,22 @@ declare global {
     protected updateBlur(strength?: number): void;
 
     /**
-     * Convert canvas co-ordinates to the client's viewport.
+     * Convert canvas coordinates to the client's viewport.
      * @param origin - The canvas coordinates.
-     * @returns The corresponding co-ordinates relative to the client's viewport.
+     * @returns The corresponding coordinates relative to the client's viewport.
      */
     clientCoordinatesFromCanvas(origin: Canvas.Point): Canvas.Point;
 
     /**
-     * Convert client viewport co-ordinates to canvas co-ordinates.
+     * Convert client viewport coordinates to canvas coordinates.
      * @param origin - The client coordinates.
      * @returns The corresponding canvas co-ordinates.
      */
     canvasCoordinatesFromClient(origin: Canvas.Point): Canvas.Point;
 
     /**
-     * Determine whether given canvas co-ordinates are off-screen.
-     * @param position - The canvas co-ordinates.
+     * Determine whether given canvas coordinates are off-screen.
+     * @param position - The canvas coordinates.
      * @returns Is the coordinate outside the screen bounds?
      */
     isOffscreen(position: Canvas.Point): boolean;
@@ -623,79 +582,20 @@ declare global {
         /**
          * The clear color to use for this texture. Transparent by default.
          */
-        clearColor: number[];
+        clearColor: number[] | null;
 
         /**
          * The render texture configuration.
+         * @privateRemarks forwarded to `PIXI.RenderTexture.create`
          */
         textureConfiguration: Parameters<(typeof PIXI.RenderTexture)["create"]>[0];
       }>,
     ): PIXI.RenderTexture;
 
     /**
-     * Attach event listeners to the game canvas to handle click and interaction events
+     * Handle right-mouse start drag events occurring on the Canvas.
      */
-    #addListeners(): void;
-
-    /**
-     * Handle mouse movement on the game canvas.
-     * This handler fires on both a throttle and a debounce, ensuring that the final update is always recorded.
-     */
-    protected _onMouseMove(event: PIXI.FederatedEvent): void;
-
-    /**
-     * Handle left mouse-click events occurring on the Canvas.
-     */
-    protected _onClickLeft(event: PIXI.FederatedEvent): void;
-
-    /**
-     * Handle double left-click events occurring on the Canvas stage.
-     */
-    protected _onClickLeft2(event: PIXI.FederatedEvent): void;
-
-    /**
-     * Handle long press events occurring on the Canvas.
-     * @param event  - The triggering canvas interaction event.
-     * @param origin - The local canvas coordinates of the mousepress.
-     */
-    protected _onLongPress(event: PIXI.FederatedEvent, origin: PIXI.Point): void;
-
-    /**
-     * Handle the beginning of a left-mouse drag workflow on the Canvas stage or its active Layer.
-     * @internal
-     */
-    protected _onDragLeftStart(event: PIXI.FederatedEvent): void;
-
-    /**
-     * Handle mouse movement events occurring on the Canvas.
-     * @internal
-     */
-    protected _onDragLeftMove(event: PIXI.FederatedEvent): void;
-
-    /**
-     * Handle the conclusion of a left-mouse drag workflow when the mouse button is released.
-     * @internal
-     */
-    protected _onDragLeftDrop(
-      event: PIXI.FederatedEvent,
-    ): ReturnType<PlaceablesLayer.Any["selectObjects"]> | ReturnType<TokenLayer["targetObjects"]> | void;
-
-    /**
-     * Handle the cancellation of a left-mouse drag workflow
-     * @internal
-     */
-    protected _onDragLeftCancel(event: PointerEvent): PIXI.Graphics | void;
-
-    /**
-     * Handle right mouse-click events occurring on the Canvas stage or it's active layer
-     */
-    protected _onClickRight(event: PIXI.FederatedEvent): void;
-
-    /**
-     * Handle double right-click events occurring on the Canvas.
-     * @internal
-     */
-    protected _onClickRight2(event: PIXI.FederatedEvent): void;
+    protected _onDragRightStart(event: PIXI.FederatedEvent): void;
 
     /**
      * Handle right-mouse drag events occurring on the Canvas.
@@ -708,9 +608,9 @@ declare global {
     protected _onDragRightDrop(event: PIXI.FederatedEvent): void;
 
     /**
-     * Determine selection coordinate rectangle during a mouse-drag workflow
+     * Handle the cancellation of a right-mouse drag workflow the Canvas stage.
      */
-    protected _onDragSelect(event: PIXI.FederatedEvent): void;
+    protected _onDragRightCancel(event: PIXI.FederatedEvent): void;
 
     /**
      * Pan the canvas view when the cursor position gets close to the edge of the frame
@@ -746,59 +646,6 @@ declare global {
     };
 
     /**
-     * @deprecated since v10, will be removed in v12
-     * @remarks "canvas.blurDistance is deprecated in favor of canvas.blur.strength"
-     */
-    get blurDistance(): number;
-
-    /**
-     * @deprecated since v10, will be removed in v12
-     * @remarks "Setting canvas.blurDistance is replaced by setting canvas.blur.strength"
-     */
-    set blurDistance(value: number);
-
-    /**
-     * @deprecated since v10, will be removed in v12
-     * @remarks "Canvas#activateLayer is deprecated in favor of CanvasLayer#activate"
-     */
-    activateLayer(
-      layerName:
-        | "grid"
-        | "sight"
-        | "effects"
-        | "controls"
-        | "lighting"
-        | "sounds"
-        | "drawings"
-        | "notes"
-        | "templates"
-        | "background"
-        | "foreground"
-        | "tokens"
-        | "walls",
-    ): void;
-
-    /**
-     * @deprecated since v10, will be removed in v12
-     * @remarks "Canvas.getDimensions is deprecated in favor of Scene#getDimensions"
-     */
-    static getDimensions(data: {
-      width?: number;
-      height?: number;
-      grid: number;
-      gridDistance: number;
-      padding: number;
-      shiftX: number;
-      shiftY: number;
-    }): ReturnType<Scene["getDimensions"]>;
-
-    /**
-     * @deprecated since v10, will be removed in v12
-     * @remarks "Canvas#setBackgroundColor is deprecated in favor of Canvas#colorManager#initialize"
-     */
-    setBackgroundColor(color: string): void;
-
-    /**
      * @deprecated since v11, will be removed in v13
      * @remarks "Canvas#addPendingOperation is deprecated without replacement in v11.
      * The callback that you have passed as a pending operation has been executed immediately.
@@ -811,6 +658,18 @@ declare global {
      * @remarks "Canvas#triggerPendingOperations is deprecated without replacement in v11 and performs no action."
      */
     triggerPendingOperations(): void;
+
+    /**
+     * @deprecated since v11, will be removed in v13
+     * @remarks `"Canvas#pendingOperations is deprecated without replacement in v11."`
+     */
+    get pendingOperations(): [];
+
+    /**
+     * @deprecated since v12, will be removed in v14
+     * @remarks `"Canvas#colorManager is deprecated and replaced by Canvas#environment"`
+     */
+    get colorManager(): this["environment"];
   }
 
   // Most canvas group properties have explicit type definitions, but some are left off
@@ -868,24 +727,35 @@ declare global {
     offscreenCanvas: boolean;
   }
 
-  interface CanvasViewPosition {
-    /**
-     * The x-coordinate which becomes stage.pivot.x
-     */
-    x?: number | null;
-
-    /**
-     * The y-coordinate which becomes stage.pivot.y
-     */
-    y?: number | null;
-
-    /**
-     * The zoom level up to CONFIG.Canvas.maxZoom which becomes stage.scale.x and y
-     */
-    scale?: number | null;
-  }
-
   namespace Canvas {
+    interface Dimensions extends SceneDimensions {
+      /** The canvas rectangle. */
+      rect: PIXI.Rectangle;
+
+      /** The scene rectangle. */
+      sceneRect: PIXI.Rectangle;
+    }
+
+    /** @internal */
+    type _ViewPosition = NullishProps<{
+      /**
+       * The x-coordinate which becomes stage.pivot.x
+       */
+      x: number;
+
+      /**
+       * The y-coordinate which becomes stage.pivot.y
+       */
+      y: number;
+
+      /**
+       * The zoom level up to CONFIG.Canvas.maxZoom which becomes stage.scale.x and y
+       */
+      scale: number;
+    }>;
+
+    interface ViewPosition extends _ViewPosition {}
+
     interface DropPosition {
       x: number;
       y: number;

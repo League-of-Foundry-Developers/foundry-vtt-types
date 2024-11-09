@@ -138,10 +138,7 @@ declare global {
      * CanvasAnimation.animate(attributes, {duration:500});
      * ```
      */
-    static animate(
-      attributes: CanvasAnimationAttribute[],
-      { context, name, duration, easing, ontick, priority }?: CanvasAnimationOptions,
-    ): Promise<boolean>;
+    static animate(attributes: CanvasAnimationAttribute[], options?: CanvasAnimationOptions): Promise<boolean>;
 
     /**
      * Retrieve an animation currently in progress by its name

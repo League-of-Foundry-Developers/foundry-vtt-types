@@ -146,7 +146,7 @@ declare global {
        * @see {@link Canvas#pan}
        * @see {@link Canvas#animatePan}
        */
-      canvasPan: (canvas: Canvas, view: CanvasViewPosition) => void;
+      canvasPan: (canvas: Canvas, view: Canvas.ViewPosition) => void;
 
       /**
        * A hook event that fires when the Canvas is ready.
