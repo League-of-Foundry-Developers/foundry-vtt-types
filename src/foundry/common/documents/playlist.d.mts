@@ -54,7 +54,7 @@ declare namespace BasePlaylist {
       label: string;
       labelPlural: string;
       permissions: {
-        create: string;
+        create: "PLAYLIST_CREATE";
       };
       schemaVersion: string;
     }
