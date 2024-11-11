@@ -4,7 +4,7 @@ import type * as fields from "../data/fields.d.mts";
 import type * as documents from "./_module.mts";
 
 /**
- * The Document definition for a Playlist.
+ * The Playlist Document.
  * Defines the DataSchema and common behaviors for a Playlist which are shared between both client and server.
  */
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
@@ -53,6 +53,9 @@ declare namespace BasePlaylist {
       embedded: { PlaylistSound: "sounds" };
       label: string;
       labelPlural: string;
+      permissions: {
+        create: "PLAYLIST_CREATE";
+      };
       schemaVersion: string;
     }
   >;
@@ -86,6 +89,12 @@ declare namespace BasePlaylist {
      * @defaultValue `[]`
      */
     sounds: fields.EmbeddedCollectionField<typeof documents.BasePlaylistSound, Playlist.ConfiguredInstance>;
+
+    /**
+     * A channel in CONST.AUDIO_CHANNELS where all sounds in this playlist are played
+     * @defaultValue `"music"`
+     */
+    channel: fields.StringField<{ choices: typeof foundry.CONST.AUDIO_CHANNELS; initial: string; blank: false }>;
 
     /**
      * The playback mode for sounds in this playlist

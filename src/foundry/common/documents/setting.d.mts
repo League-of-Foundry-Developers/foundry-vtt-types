@@ -1,9 +1,10 @@
-import type { Merge } from "../../../types/utils.mts";
+import type { AnyObject, Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type * as fields from "../data/fields.d.mts";
+import type BaseUser from "./user.d.mts";
 
 /**
- * The Document definition for a Setting.
+ * The Setting Document.
  * Defines the DataSchema and common behaviors for a Setting which are shared between both client and server.
  */
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
@@ -22,6 +23,8 @@ declare class BaseSetting extends Document<BaseSetting.Schema, BaseSetting.Metad
   static override metadata: Readonly<BaseSetting.Metadata>;
 
   static override defineSchema(): BaseSetting.Schema;
+
+  static canUserCreate(user: BaseUser): boolean;
 }
 
 export default BaseSetting;
@@ -37,9 +40,9 @@ declare namespace BaseSetting {
       label: string;
       labelPlural: string;
       permissions: {
-        create: "SETTINGS_MODIFY";
-        update: "SETTINGS_MODIFY";
-        delete: "SETTINGS_MODIFY";
+        create: (user: BaseUser, doc: Document.Any, data: AnyObject) => boolean;
+        update: (user: BaseUser, doc: Document.Any, data: AnyObject) => boolean;
+        delete: (user: BaseUser, doc: Document.Any, data: AnyObject) => boolean;
       };
       schemaVersion: string;
     }
@@ -77,6 +80,7 @@ declare namespace BaseSetting {
     value: fields.JSONField<{
       required: true;
       nullable: true;
+      initial: null;
     }>;
 
     /**

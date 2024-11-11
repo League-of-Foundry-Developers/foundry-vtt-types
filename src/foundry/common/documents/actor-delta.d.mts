@@ -4,7 +4,7 @@ import type { fields } from "../data/module.d.mts";
 import type { CONST, documents } from "../../client-esm/client.d.mts";
 
 /**
- * The Document definition for an ActorDelta.
+ * The ActorDelta Document.
  * Defines the DataSchema and common behaviors for an ActorDelta which are shared between both client and server.
  * ActorDeltas store a delta that can be applied to a particular Actor in order to produce a new Actor.
  */
@@ -48,6 +48,8 @@ declare class BaseActorDelta extends Document<BaseActorDelta.Schema, BaseActorDe
     baseActor: documents.BaseActor,
     context: unknown,
   ): Document.ConfiguredClassForName<"Actor"> | null;
+
+  static migrateData(source: AnyObject): AnyObject;
 
   //TODO: Figure out if this override still applies
   toObject(source: true): this["_source"];

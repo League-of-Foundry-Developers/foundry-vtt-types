@@ -432,6 +432,7 @@ declare abstract class Document<
       temporary?: Temporary;
     },
   ): Promise<Document.ToStoredIf<T, Temporary> | undefined>;
+
   /**
    * Update this Document using incremental data, saving it to the database.
    * @see {@link Document.updateDocuments}
@@ -443,7 +444,7 @@ declare abstract class Document<
    *
    * @remarks If no document has actually been updated, the returned {@link Promise} resolves to `undefined`.
    */
-  override update(
+  update(
     // TODO: Determine if this is Partial, DeepPartial, or InexactPartial.
     data?: Partial<Document.ConstructorDataForSchema<Schema>>,
     operation?: InexactPartial<Omit<DatabaseOperationsFor<ConcreteMetadata["name"], "update">, "updates">>,

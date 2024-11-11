@@ -3,7 +3,7 @@ import type Document from "../abstract/document.mts";
 import type * as fields from "../data/fields.d.mts";
 
 /**
- * The Document definition for a PlaylistSound.
+ * The PlaylistSound Document.
  * Defines the DataSchema and common behaviors for a PlaylistSound which are shared between both client and server.
  */
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
@@ -52,6 +52,7 @@ declare namespace BasePlaylistSound {
       indexed: true;
       label: string;
       labelPlural: string;
+      compendiumIndexFields: ["name", "sort"];
       schemaVersion: string;
     }
   >;
@@ -72,7 +73,7 @@ declare namespace BasePlaylistSound {
     /**
      * The name of this sound
      */
-    name: fields.StringField<{ required: true; blank: false }>;
+    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
     /**
      * The description of this sound
@@ -85,6 +86,12 @@ declare namespace BasePlaylistSound {
      * @defaultValue `null`
      */
     path: fields.FilePathField<{ categories: ["AUDIO"] }>;
+
+    /**
+     * A channel in CONST.AUDIO_CHANNELS where this sound is are played
+     * @defaultValue `"music"`
+     */
+    channel: fields.StringField<{ choices: typeof foundry.CONST.AUDIO_CHANNELS; initial: string; blank: false }>;
 
     /**
      * Is this sound currently playing?
