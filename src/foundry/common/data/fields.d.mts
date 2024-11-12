@@ -2790,7 +2790,7 @@ declare namespace ForeignDocumentField {
     ConcreteDocument extends Document.AnyConstructor,
     Opts extends Options,
   > = DataField.DerivedInitializedType<
-    Opts["idOnly"] extends true ? string : Document.ToConfiguredClass<ConcreteDocument>,
+    Opts["idOnly"] extends true ? string : Document.ToConfiguredInstance<ConcreteDocument>,
     MergedOptions<Opts>
   >;
 
