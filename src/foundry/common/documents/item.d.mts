@@ -12,7 +12,7 @@ import type * as documents from "./_module.mts";
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
 declare class BaseItem extends Document<BaseItem.Schema, BaseItem.Metadata, any> {
   /**
-   * @privateRemarks Manual override of the return due to
+   * @privateRemarks Manual override of the return due to TS limitations with static `this`
    */
   static get TYPES(): BaseItem.TypeNames[];
   /**

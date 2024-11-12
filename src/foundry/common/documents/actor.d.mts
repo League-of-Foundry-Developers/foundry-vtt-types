@@ -4,10 +4,83 @@ import type { PrototypeToken } from "../data/data.mts";
 import type * as fields from "../data/fields.d.mts";
 import type * as documents from "./_module.d.mts";
 
+/**
+ * The Document definition for an Actor.
+ * Defines the DataSchema and common behaviors for an Actor which are shared between both client and server.
+ */
+// Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
+// This pattern evolved from trying to avoid circular loops and even internal tsc errors.
+// See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
+declare class BaseActor extends Document<BaseActor.Schema, BaseActor.Metadata, any> {
+  /**
+   * @privateRemarks Manual override of the return due to TS limitations with static `this`
+   */
+  static get TYPES(): BaseActor.TypeNames[];
+
+  /**
+   * @param data    - Initial data from which to construct the Actor
+   * @param context - Construction context options
+   */
+  // TODO(LukeAbby): This constructor is causing a circular error.
+  // constructor(data: BaseActor.ConstructorData, context?: Document.ConstructionContext<BaseActor.Parent>);
+
+  override parent: BaseActor.Parent;
+
+  static override metadata: Readonly<BaseActor.Metadata>;
+
+  static override defineSchema(): BaseActor.Schema;
+
+  /**
+   * The default icon used for newly created Actor documents.
+   * @defaultValue `CONST.DEFAULT_TOKEN`
+   */
+  static DEFAULT_ICON: string;
+
+  /**
+   * Determine default artwork based on the provided actor data
+   * @param actorData - The source actor data
+   */
+  static getDefaultArtwork(actorData: BaseActor.ConstructorData): {
+    img: string;
+    texture: { src: string };
+  };
+
+  protected override _initializeSource(
+    data: fields.SchemaField.InnerAssignmentType<documents.BaseActor.Schema> | this,
+    options?: any,
+  ): fields.SchemaField.InnerPersistedType<documents.BaseActor.Schema>;
+
+  static override canUserCreate(user: documents.BaseUser): boolean;
+
+  /**
+   * Is a user able to create this actor?
+   * @param user - The user attempting the creation operation.
+   * @param doc  - The Actor being created.
+   * @internal
+   */
+  static #canCreate(user: documents.BaseUser, doc: BaseActor): boolean;
+
+  /**
+   * Is a user able to update an existing actor?
+   * @param user - The user attempting the update operation.
+   * @param doc  - The Actor being updated.
+   * @param data - The update delta being applied.
+   * @internal
+   */
+  static #canUpdate(user: documents.BaseUser, doc: BaseActor, data: BaseActor.UpdateData): boolean;
+
+  /**
+   * @privateRemarks _preCreate and _preUpdate are overridden but with no signature changes.
+   * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+   */
+
+  static override migrateData(source: AnyObject): AnyObject;
+}
+
 declare namespace BaseActor {
   type Parent = null;
 
-  type TypeNames = fields.TypeDataField.TypeNames<typeof BaseActor>;
+  type TypeNames = Game.Model.TypeNames<typeof BaseActor>;
 
   type Metadata = Merge<
     Document.Metadata.Default,
@@ -17,6 +90,7 @@ declare namespace BaseActor {
       indexed: true;
       compendiumIndexFields: ["_id", "name", "img", "type", "sort", "folder"];
       embedded: { ActiveEffect: "effects"; Item: "items" };
+      hasTypeData: true;
       label: string;
       labelPlural: string;
       permissions: {
@@ -24,11 +98,6 @@ declare namespace BaseActor {
         update: (user: documents.BaseUser, doc: Document.Any, data: UpdateData) => boolean;
       };
       schemaVersion: string;
-
-      /**
-       * @deprecated since v10, BaseActor.metadata.types is deprecated since v10 in favor of BaseActor.TYPES.
-       */
-      types: typeof BaseActor.TYPES;
     }
   >;
 
@@ -38,7 +107,7 @@ declare namespace BaseActor {
   type Properties = fields.SchemaField.InnerInitializedType<Schema>;
   type Source = fields.SchemaField.InnerPersistedType<Schema>;
 
-  interface Schema<TypeName extends TypeNames = TypeNames> extends DataSchema {
+  interface Schema extends DataSchema {
     /**
      * The _id which uniquely identifies this Actor document
      * @defaultValue `null`
@@ -49,22 +118,13 @@ declare namespace BaseActor {
     name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
     /** An Actor subtype which configures the system data model applied */
-    type: fields.StringField<
-      {
-        required: true;
-        choices: () => typeof BaseActor.TYPES;
-        validationError: "must be in the array of Actor types defined by the game system";
-      },
-      TypeName,
-      TypeName,
-      TypeName
-    >;
+    type: fields.DocumentTypeField<typeof BaseActor>;
 
     /**
      * An image file path which provides the artwork for this Actor
      * @defaultValue `null`
      */
-    img: fields.FilePathField<{ categories: "IMAGE"[]; initial: () => typeof BaseActor.DEFAULT_ICON }>;
+    img: fields.FilePathField<{ categories: "IMAGE"[]; initial: (data: unknown) => string }>;
 
     /**
      * The system data object which is defined by the system template.json model
@@ -120,90 +180,6 @@ declare namespace BaseActor {
      */
     _stats: fields.DocumentStatsField;
   }
-}
-
-/**
- * The Document definition for an Actor.
- * Defines the DataSchema and common behaviors for an Actor which are shared between both client and server.
- */
-// Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
-// This pattern evolved from trying to avoid circular loops and even internal tsc errors.
-// See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
-declare class BaseActor extends Document<BaseActor.Schema, BaseActor.Metadata, any> {
-  /**
-   * @param data    - Initial data from which to construct the Actor
-   * @param context - Construction context options
-   */
-  // TODO(LukeAbby): This constructor is causing a circular error.
-  // constructor(data: BaseActor.ConstructorData, context?: Document.ConstructionContext<BaseActor.Parent>);
-
-  override parent: BaseActor.Parent;
-
-  static override metadata: Readonly<BaseActor.Metadata>;
-
-  static override defineSchema(): BaseActor.Schema;
-
-  /**
-   * The default icon used for newly created Actor documents.
-   * @defaultValue `CONST.DEFAULT_TOKEN`
-   */
-  static DEFAULT_ICON: string;
-
-  /**
-   * Determine default artwork based on the provided actor data
-   * @param actorData - The source actor data
-   */
-  static getDefaultArtwork(actorData: BaseActor.ConstructorData): {
-    img: string;
-    texture: { src: string };
-  };
-
-  /**
-   * The allowed set of Actor types which may exist.
-   */
-  static get TYPES(): BaseActor.TypeNames[];
-
-  protected override _initializeSource(
-    data: fields.SchemaField.InnerAssignmentType<documents.BaseActor.Schema> | this,
-    options?: any,
-  ): fields.SchemaField.InnerPersistedType<documents.BaseActor.Schema>;
-
-  static override canUserCreate(user: documents.BaseUser): boolean;
-
-  /**
-   * Is a user able to create this actor?
-   * @param user - The user attempting the creation operation.
-   * @param doc  - The Actor being created.
-   * @internal
-   */
-  static #canCreate(user: documents.BaseUser, doc: BaseActor): boolean;
-
-  /**
-   * Is a user able to update an existing actor?
-   * @param user - The user attempting the update operation.
-   * @param doc  - The Actor being updated.
-   * @param data - The update delta being applied.
-   * @internal
-   */
-  static #canUpdate(user: documents.BaseUser, doc: BaseActor, data: BaseActor.UpdateData): boolean;
-
-  /**
-   * @privateRemarks _preCreate and _preUpdate are overridden but with no signature changes.
-   * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
-   */
-
-  static override migrateData(source: AnyObject): AnyObject;
-
-  static override shimData(
-    data: AnyObject,
-    options?: {
-      /**
-       * Apply shims to embedded models?
-       * @defaultValue `true`
-       */
-      embedded?: boolean;
-    },
-  ): AnyObject;
 }
 
 export default BaseActor;
