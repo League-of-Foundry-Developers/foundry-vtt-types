@@ -1,4 +1,4 @@
-import type { Merge, NullishProps } from "../../../types/utils.mts";
+import type { Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type * as fields from "../data/fields.d.mts";
 
@@ -37,7 +37,8 @@ declare class BaseFolder extends Document<BaseFolder.Schema, BaseFolder.Metadata
    */
   static SORTING_MODES: ("a" | "m")[];
 
-  static override get(documentId: string, options: NullishProps<{ pack: string }>): Folder.ConfiguredInstance | null;
+  // Doesn't affect type, "Return Type circularly references itself"
+  // static override get(documentId: string, options: NullishProps<{ pack: string }>): Folder.ConfiguredInstance | null;
 }
 
 export default BaseFolder;
