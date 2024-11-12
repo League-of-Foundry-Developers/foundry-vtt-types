@@ -48,12 +48,16 @@ declare class BaseActiveEffect extends Document<BaseActiveEffect.Schema, BaseAct
 
   /**
    * @deprecated since v11, will be removed in v13
-   * @remarks Replaced by name
+   * @remarks Replaced by `name`
    */
   get label(): this["name"];
 
   set label(value);
 
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks Replaced by `img`
+   */
   get icon(): this["img"];
 
   set icon(value);
