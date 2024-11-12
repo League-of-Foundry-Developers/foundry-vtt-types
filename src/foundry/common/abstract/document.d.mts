@@ -960,7 +960,16 @@ declare namespace Document {
     | "Wall";
 
   // TODO: Probably a way to auto-determine this
-  type SystemType = "Actor" | "Card" | "Cards" | "Item" | "JournalEntryPage";
+  type SystemType =
+    | "ActiveEffect"
+    | "Actor"
+    | "Card"
+    | "Cards"
+    | "ChatMessage"
+    | "Combat"
+    | "Combatant"
+    | "Item"
+    | "JournalEntryPage";
 
   type EmbeddableNamesFor<ConcreteDocument extends Document.Internal.Instance.Any> = {
     [K in keyof ConfiguredDocuments]: IsParentOf<ConcreteDocument, InstanceType<ConfiguredDocuments[K]>> extends true
