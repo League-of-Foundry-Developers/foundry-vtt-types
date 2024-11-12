@@ -68,6 +68,8 @@ export default BaseActiveEffect;
 declare namespace BaseActiveEffect {
   type Parent = Actor.ConfiguredInstance | Item.ConfiguredInstance | null;
 
+  type TypeNames = Game.Model.TypeNames<typeof BaseActiveEffect>;
+
   type Metadata = Merge<
     Document.Metadata.Default,
     {

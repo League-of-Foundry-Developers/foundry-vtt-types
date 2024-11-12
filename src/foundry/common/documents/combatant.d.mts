@@ -1,10 +1,11 @@
 import type { Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
+import type { DOCUMENT_OWNERSHIP_LEVELS } from "../constants.d.mts";
 import type * as fields from "../data/fields.d.mts";
 import type * as documents from "./_module.mts";
 
 /**
- * The Document definition for a Combatant.
+ * The Combatant Document.
  * Defines the DataSchema and common behaviors for a Combatant which are shared between both client and server.
  */
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
@@ -35,12 +36,16 @@ declare class BaseCombatant extends Document<BaseCombatant.Schema, BaseCombatant
    * @internal
    */
   static #canCreate(user: documents.BaseUser, doc: BaseCombatant, data: BaseCombatant.ConstructorData): boolean;
+
+  override getUserLevel(user?: documents.BaseUser): DOCUMENT_OWNERSHIP_LEVELS | null;
 }
 
 export default BaseCombatant;
 
 declare namespace BaseCombatant {
   type Parent = Combat.ConfiguredInstance | null;
+
+  type TypeNames = Game.Model.TypeNames<typeof BaseCombatant>;
 
   type Metadata = Merge<
     Document.Metadata.Default,
@@ -50,6 +55,7 @@ declare namespace BaseCombatant {
       label: string;
       labelPlural: string;
       isEmbedded: true;
+      hasTypeData: true;
       schemaVersion: string;
       permissions: {
         create: (user: documents.BaseUser, doc: Document.Any) => boolean;
@@ -70,6 +76,10 @@ declare namespace BaseCombatant {
      * @defaultValue `null`
      */
     _id: fields.DocumentIdField;
+
+    type: fields.DocumentTypeField<typeof BaseCombatant, { initial: typeof foundry.CONST.BASE_DOCUMENT_TYPE }>;
+
+    system: fields.TypeDataField<typeof BaseCombatant>;
 
     /**
      * The _id of an Actor associated with this Combatant
@@ -92,7 +102,7 @@ declare namespace BaseCombatant {
      * A customized name which replaces the name of the Token in the tracker
      * @defaultValue `""`
      */
-    name: fields.StringField<{ label: "COMBAT.CombatantName" }>;
+    name: fields.StringField<{ label: "COMBAT.CombatantName"; textSearch: true }>;
 
     /**
      * A customized image which replaces the Token image in the tracker
@@ -123,5 +133,7 @@ declare namespace BaseCombatant {
      * @defaultValue `{}`
      */
     flags: fields.ObjectField.FlagsField<"Combatant">;
+
+    _stats: fields.DocumentStatsField;
   }
 }
