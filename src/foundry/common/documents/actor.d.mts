@@ -5,7 +5,7 @@ import type * as fields from "../data/fields.d.mts";
 import type * as documents from "./_module.d.mts";
 
 /**
- * The Document definition for an Actor.
+ * The Actor Document.
  * Defines the DataSchema and common behaviors for an Actor which are shared between both client and server.
  */
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
