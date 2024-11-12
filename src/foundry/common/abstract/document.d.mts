@@ -147,6 +147,7 @@ declare abstract class Document<
 
   /**
    * The allowed types which may exist for this Document class
+   * @remarks Document.TYPES is overly generic so subclasses don't cause problems
    */
   static get TYPES(): string[];
 
@@ -1028,7 +1029,7 @@ declare namespace Document {
     foundry.data.fields.SchemaField.InnerAssignmentType<Schema>;
 
   type SystemConstructor = AnyConstructor & {
-    metadata: { name: SystemType; coreTypes?: readonly string[] | undefined };
+    metadata: { name: SystemType };
   };
 
   type ConfiguredClass<T extends { metadata: Metadata.Any }> = ConfiguredClassForName<T["metadata"]["name"]>;
@@ -1275,7 +1276,7 @@ declare namespace Document {
     indexed?: boolean | undefined;
     compendiumIndexFields?: string[] | undefined;
     label: string;
-    coreTypes?: readonly string[] | undefined;
+    coreTypes: readonly string[];
     embedded: Record<string, string>;
     permissions: {
       create:
@@ -1309,6 +1310,7 @@ declare namespace Document {
       name: "Document";
       collection: "documents";
       label: "DOCUMENT.Document";
+      coreTypes: [typeof foundry.CONST.BASE_DOCUMENT_TYPE];
       types: [];
       embedded: EmptyObject;
       hasSystemData: false;

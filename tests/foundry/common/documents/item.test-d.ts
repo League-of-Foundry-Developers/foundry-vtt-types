@@ -13,6 +13,7 @@ expectTypeOf(baseItem.effects).toEqualTypeOf<
   EmbeddedCollection<ActiveEffect.ConfiguredInstance, Item.ConfiguredInstance>
 >();
 expectTypeOf(baseItem._source.effects[0]!.duration.seconds).toEqualTypeOf<number | null | undefined>();
+expectTypeOf(baseItem.type).toEqualTypeOf<"base" | "armor" | "weapon">();
 
 type ItemFlags = {
   "my-system": {
