@@ -5,13 +5,18 @@ import type * as fields from "../data/fields.d.mts";
 import type * as documents from "./_module.mts";
 
 /**
- * The Document definition for a Macro.
+ * The Macro Document.
  * Defines the DataSchema and common behaviors for a Macro which are shared between both client and server.
  */
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
 declare class BaseMacro extends Document<BaseMacro.Schema, BaseMacro.Metadata, any> {
+  /**
+   * @privateRemarks Manual override of the return due to TS limitations with static `this`
+   */
+  static get TYPES(): BaseMacro.TypeNames[];
+
   /**
    * @param data    - Initial data from which to construct the Macro
    * @param context - Construction context options
@@ -30,6 +35,12 @@ declare class BaseMacro extends Document<BaseMacro.Schema, BaseMacro.Metadata, a
    */
   static DEFAULT_ICON: "icons/svg/dice-target.svg";
 
+  static override migrateData(source: AnyObject): AnyObject;
+
+  static override validateJoint(data: Record<string, unknown>): void;
+
+  static override canUserCreate(user: foundry.documents.BaseUser): boolean;
+
   override testUserPermission(
     user: documents.BaseUser,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
@@ -46,27 +57,13 @@ declare class BaseMacro extends Document<BaseMacro.Schema, BaseMacro.Metadata, a
    * @privateRemarks _preCreate all overridden but with no signature changes.
    * For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
    */
-
-  static override migrateData(source: AnyObject): AnyObject;
-
-  static override shimData(
-    data: AnyObject,
-    options?: {
-      /**
-       * Apply shims to embedded models?
-       * @defaultValue `true`
-       */
-      embedded?: boolean;
-    },
-  ): AnyObject;
 }
 export default BaseMacro;
 
 declare namespace BaseMacro {
   type Parent = null;
 
-  // TODO: Remove "base" in v12
-  type TypeNames = (typeof foundry.documents.BaseMacro)["metadata"]["coreTypes"][number] | "base";
+  type TypeNames = Game.Model.TypeNames<typeof BaseMacro>;
 
   type Metadata = Merge<
     Document.Metadata.Default,
@@ -78,7 +75,10 @@ declare namespace BaseMacro {
       label: string;
       labelPlural: string;
       coreTypes: CONST.MACRO_TYPES[];
-      permissions: { create: "PLAYER" };
+      permissions: {
+        create: (user: documents.BaseUser, doc: Document.Any) => boolean;
+        update: (user: documents.BaseUser, doc: Document.Any) => boolean;
+      };
       schemaVersion: string;
     }
   >;
@@ -111,11 +111,8 @@ declare namespace BaseMacro {
      * A Macro subtype from CONST.MACRO_TYPES
      * @defaultValue `CONST.MACRO_TYPES.CHAT`
      */
-    type: fields.StringField<{
-      required: true;
-      choices: CONST.MACRO_TYPES[];
+    type: fields.DocumentTypeField<typeof BaseMacro, {
       initial: typeof CONST.MACRO_TYPES.CHAT;
-      validationError: "must be a value in CONST.MACRO_TYPES";
       label: "Type";
     }>;
 

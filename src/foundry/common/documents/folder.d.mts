@@ -11,6 +11,11 @@ import type * as fields from "../data/fields.d.mts";
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
 declare class BaseFolder extends Document<BaseFolder.Schema, BaseFolder.Metadata, any> {
   /**
+   * @privateRemarks Manual override of the return due to TS limitations with static `this`
+   */
+  static get TYPES(): BaseFolder.TypeNames[];
+
+  /**
    * @param data    - Initial data from which to construct the Folder
    * @param context - Construction context options
    */
@@ -39,6 +44,8 @@ export default BaseFolder;
 
 declare namespace BaseFolder {
   type Parent = null;
+
+  type TypeNames = Game.Model.TypeNames<typeof BaseFolder>;
 
   type Metadata = Merge<
     Document.Metadata.Default,
