@@ -4,7 +4,7 @@ import type * as fields from "../data/fields.d.mts";
 import type * as documents from "./_module.mts";
 
 /**
- * The Document definition for a Combat.
+ * The Combat Document.
  * Defines the DataSchema and common behaviors for a Combat which are shared between both client and server.
  */
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
@@ -29,6 +29,22 @@ declare class BaseCombat extends Document<BaseCombat.Schema, BaseCombat.Metadata
    * @internal
    */
   static #canUpdate(user: documents.BaseUser, doc: BaseCombat, data: BaseCombat.UpdateData): boolean;
+
+  /**
+   * Can a certain User change the Combat round?
+   * @param user - The user attempting to change the round
+   * @returns Is the user allowed to change the round?
+   */
+  protected _canChangeRound(user: User.ConfiguredInstance): boolean;
+
+  /**
+   * Can a certain User change the Combat turn?
+   * @param user - The user attempting to change the turn
+   * @returns Is the user allowed to change the turn?
+   */
+  protected _canChangeTurn(user: User.ConfiguredInstance): boolean;
+
+  // BaseCombat implements _preUpdate but leaving out here for type computation reasons
 }
 
 export default BaseCombat;
@@ -46,6 +62,7 @@ declare namespace BaseCombat {
       embedded: {
         Combatant: "combatants";
       };
+      hasTypeData: true;
       permissions: {
         update: (user: documents.BaseUser, doc: Document.Any, data: UpdateData) => boolean;
       };
@@ -65,6 +82,10 @@ declare namespace BaseCombat {
      * @defaultValue `null`
      */
     _id: fields.DocumentIdField;
+
+    type: fields.DocumentTypeField<typeof BaseCombat, { initial: typeof foundry.CONST.BASE_DOCUMENT_TYPE }>;
+
+    system: fields.TypeDataField<typeof BaseCombat>;
 
     /**
      * The _id of a Scene within which this Combat occurs
