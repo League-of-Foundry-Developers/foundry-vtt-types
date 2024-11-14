@@ -1,10 +1,17 @@
 import type { InexactPartial } from "../../../../../types/utils.d.mts";
 
+declare abstract class AnyInteractionLayer extends InteractionLayer {
+  constructor(arg0: never, ...args: never[]);
+}
+
 declare global {
   /**
    * A subclass of CanvasLayer which provides support for user interaction with its contained objects.
    */
-  class InteractionLayer extends CanvasLayer {
+  class InteractionLayer<
+    DrawOptions extends CanvasLayer.DrawOptions = InteractionLayer.DrawOptions,
+    TearDownOptions extends CanvasLayer.TearDownOptions = CanvasLayer.TearDownOptions,
+  > extends CanvasLayer<DrawOptions, TearDownOptions> {
     /**
      * Is this layer currently active
      */
@@ -50,7 +57,7 @@ declare global {
      */
     protected _deactivate(): void;
 
-    protected override _draw(options?: Record<string, unknown>): Promise<void>;
+    protected override _draw(options?: DrawOptions): Promise<void>;
 
     /**
      * Get the zIndex that should be used for ordering this layer vertically relative to others in the same Container.
@@ -71,12 +78,12 @@ declare global {
      */
     protected _onClickLeft2(event: PIXI.FederatedEvent): void;
 
-  /**
-   * Does the User have permission to left-click drag on the Canvas?
-   * @param user  - The User performing the action.
-   * @param event - The event object.
-   */
-  protected _canDragLeftStart(user: User.ConfiguredInstance, event: PIXI.FederatedEvent): boolean;
+    /**
+     * Does the User have permission to left-click drag on the Canvas?
+     * @param user  - The User performing the action.
+     * @param event - The event object.
+     */
+    protected _canDragLeftStart(user: User.ConfiguredInstance, event: PIXI.FederatedEvent): boolean;
 
     /**
      * Start a left-click drag workflow originating from the Canvas stage.
@@ -130,10 +137,16 @@ declare global {
   }
 
   namespace InteractionLayer {
+    type AnyConstructor = typeof AnyInteractionLayer;
+
     interface LayerOptions extends CanvasLayer.LayerOptions {
       zIndex: number;
 
       baseClass: typeof InteractionLayer;
     }
+
+    interface DrawOptions extends CanvasLayer.DrawOptions {}
+
+    interface TearDownOptions extends CanvasLayer.TearDownOptions {}
   }
 }

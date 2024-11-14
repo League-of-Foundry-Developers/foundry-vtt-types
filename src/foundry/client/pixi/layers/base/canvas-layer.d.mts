@@ -1,10 +1,17 @@
 export {};
 
+declare abstract class AnyCanvasLayer extends CanvasLayer {
+  constructor(arg0: never, ...args: never[]);
+}
+
 declare global {
   /**
    * An abstract pattern for primary layers of the game canvas to implement
    */
-  abstract class CanvasLayer extends PIXI.Container {
+  abstract class CanvasLayer<
+    DrawOptions extends CanvasLayer.DrawOptions = CanvasLayer.DrawOptions,
+    TearDownOptions extends CanvasLayer.TearDownOptions = CanvasLayer.TearDownOptions,
+  > extends PIXI.Container {
     constructor();
 
     /**
@@ -45,28 +52,30 @@ declare global {
      * The Promise resolves to the drawn layer once its contents are successfully rendered.
      * @param options - Options which configure how the layer is drawn
      */
-    draw(options?: Record<string, unknown>): Promise<this>;
+    draw(options?: DrawOptions): Promise<this>;
 
     /**
      * The inner _draw method which must be defined by each CanvasLayer subclass.
      * @param options - Options which configure how the layer is drawn
      */
-    protected abstract _draw(options?: Record<string, unknown>): Promise<void>;
+    protected abstract _draw(options?: DrawOptions): Promise<void>;
 
     /**
      * Deconstruct data used in the current layer in preparation to re-draw the canvas
      * @param options - Options which configure how the layer is deconstructed
      * @remarks ControlsLayer returns void. See https://gitlab.com/foundrynet/foundryvtt/-/issues/6939
      */
-    tearDown(options?: Record<string, unknown>): Promise<this | void>;
+    tearDown(options?: TearDownOptions): Promise<this | void>;
 
     /**
      * The inner _tearDown method which may be customized by each CanvasLayer subclass.
      * @param options - Options which configure how the layer is deconstructed
      */
-    protected _tearDown(options?: Record<string, unknown>): Promise<void>;
+    protected _tearDown(options?: TearDownOptions): Promise<void>;
   }
   namespace CanvasLayer {
+    type AnyConstructor = typeof AnyCanvasLayer;
+
     interface LayerOptions {
       /**
        * The layer name by which the instance is referenced within the Canvas
@@ -75,5 +84,11 @@ declare global {
 
       baseClass: typeof CanvasLayer;
     }
+
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    interface DrawOptions {}
+
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    interface TearDownOptions {}
   }
 }
