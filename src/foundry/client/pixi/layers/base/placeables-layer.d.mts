@@ -1,4 +1,4 @@
-import type { ConstructorOf, InexactPartial, ValueOf } from "../../../../../types/utils.d.mts";
+import type { ConstructorOf, InexactPartial, NullishProps, ValueOf } from "../../../../../types/utils.d.mts";
 import type Document from "../../../../common/abstract/document.d.mts";
 import type EmbeddedCollection from "../../../../common/abstract/embedded-collection.d.mts";
 
@@ -11,7 +11,11 @@ declare global {
    * @typeParam DocumentName - The key of the configuration which defines the object and document class.
    * @typeParam Options      - The type of the options in this layer.
    */
-  class PlaceablesLayer<DocumentName extends PlaceablesLayer.Type> extends InteractionLayer {
+  class PlaceablesLayer<
+    DocumentName extends PlaceablesLayer.Type,
+    DrawOptions extends PlaceablesLayer.DrawOptions = PlaceablesLayer.DrawOptions,
+    TearDownOptions extends PlaceablesLayer.TearDownOptions = PlaceablesLayer.TearDownOptions,
+  > extends InteractionLayer<DrawOptions, TearDownOptions> {
     constructor();
 
     /**
@@ -34,6 +38,7 @@ declare global {
 
     /**
      * Keep track of history so that CTRL+Z can undo changes
+     * @defaultValue `[]`
      */
     history: Array<CanvasHistory<DocumentName>>;
 
@@ -68,12 +73,7 @@ declare global {
     /**
      * Creation states affected to placeables during their construction.
      */
-    static CREATION_STATES: Readonly<{
-      NONE: 0;
-      POTENTIAL: 1;
-      CONFIRMED: 2;
-      COMPLETED: 3;
-    }>;
+    static CREATION_STATES: PlaceablesLayer.CREATION_STATES;
 
     /**
      * Obtain a reference to the Collection of embedded Document instances within the currently viewed Scene
@@ -142,7 +142,6 @@ declare global {
      */
     protected _sentToBackOrBringToFront(front: boolean): boolean;
 
-
     /**
      * Snaps the given point to grid. The layer defines the snapping behavior.
      * @param point - The point that is to be snapped
@@ -157,7 +156,7 @@ declare global {
       | Exclude<this["documentCollection"], null>
       | InstanceType<Document.ConfiguredClassForName<DocumentName>>[];
 
-    override _draw(options?: Record<string, unknown>): Promise<void>;
+    override _draw(options?: DrawOptions): Promise<void>;
 
     /**
      * Draw a single placeable object
@@ -167,13 +166,7 @@ declare global {
       document: InstanceType<Document.ConfiguredClassForName<DocumentName>>,
     ): InstanceType<Document.ConfiguredObjectClassForName<DocumentName>> | null;
 
-    override _tearDown(options?: Record<string, unknown>): Promise<void>;
-
-    /**
-     * Override the default PIXI.Container behavior for how objects in this container are sorted.
-     * @internal
-     */
-    protected _sortObjectsByElevation(): void;
+    override _tearDown(options?: TearDownOptions): Promise<void>;
 
     override _activate(): void;
 
@@ -222,7 +215,9 @@ declare global {
      * @returns An array of objects which were rotated
      * @throws An error if explicitly provided id is not valid
      */
-    rotateMany(options?: InexactPartial<RotationOptions>): Promise<InstanceType<Document.ConfiguredObjectClassForName<DocumentName>>[]>;
+    rotateMany(
+      options?: InexactPartial<RotationOptions>,
+    ): Promise<InstanceType<Document.ConfiguredObjectClassForName<DocumentName>>[]>;
 
     /**
      * Simultaneously move multiple PlaceableObjects via keyboard movement offsets.
@@ -246,7 +241,10 @@ declare global {
      * @remarks Any non-array input for `ids` will default to using currently controlled objects,
      * allowing you to provide `true` to the includeLocked
      */
-    protected _getMovableObjects(ids?: string[] | null, includeLocked?: boolean): Document.ConfiguredObjectInstanceForName<DocumentName>;
+    protected _getMovableObjects(
+      ids?: string[] | null,
+      includeLocked?: boolean,
+    ): Document.ConfiguredObjectInstanceForName<DocumentName>;
 
     /**
      * Undo a change to the objects in this layer
@@ -285,7 +283,7 @@ declare global {
      */
     pasteObjects(
       position: Canvas.Point,
-      options?: InexactPartial<{
+      options?: NullishProps<{
         /**
          * Paste data in a hidden state, if applicable. Default is false.
          * @defaultValue `false`
@@ -308,20 +306,23 @@ declare global {
      * @param options - Options of {@link PlaceablesLayer#pasteObjects}
      * @returns The update data
      */
-    _pasteObject(copy: Document.ConfiguredObjectInstanceForName<DocumentName>, offset: Canvas.Point, options?: InexactPartial<{
+    _pasteObject(
+      copy: Document.ConfiguredObjectInstanceForName<DocumentName>,
+      offset: Canvas.Point,
+      options?: NullishProps<{
+        /**
+         * Paste in a hidden state, if applicable.
+         * @defaultValue `false`
+         */
+        hidden: boolean;
 
-      /**
-       * Paste in a hidden state, if applicable.
-       * @defaultValue `false`
-       */
-      hidden: boolean;
-
-      /**
-       * Snap to the grid.
-       * @defaultValue `true`
-       */
-      snap: boolean;
-    }>): Document.ConfiguredSourceForName<DocumentName>
+        /**
+         * Snap to the grid.
+         * @defaultValue `true`
+         */
+        snap: boolean;
+      }>,
+    ): Document.ConfiguredSourceForName<DocumentName>;
 
     /**
      * Select all PlaceableObject instances which fall within a coordinate rectangle.
@@ -362,6 +363,13 @@ declare global {
          */
         controlOptions: PlaceableObject.ControlOptions;
       }>,
+      secondOptions?: NullishProps<{
+        /**
+         * Whether to release other selected objects.
+         * @defaultValue `true`
+         */
+        releaseOthers: boolean;
+      }>,
     ): boolean;
 
     /**
@@ -390,7 +398,7 @@ declare global {
      */
     protected _canvasCoordinatesFromDrop(
       event: DragEvent,
-      options?: InexactPartial<{
+      options?: NullishProps<{
         /**
          * Return the co-ordinates of the center of the nearest grid element.
          * @defaultValue `true`
@@ -407,7 +415,7 @@ declare global {
      */
     protected _createPreview(
       createData: InstanceType<Document.ConfiguredClassForName<DocumentName>>["_source"],
-      options: {
+      options?: NullishProps<{
         /**
          * Render the preview object config sheet?
          * @defaultValue `true`
@@ -425,7 +433,7 @@ declare global {
          * @defaultValue `0`
          */
         left: number;
-      },
+      }>,
     ): Promise<DocumentName>;
 
     protected override _onClickLeft(event: PIXI.FederatedEvent): void;
@@ -477,7 +485,7 @@ declare global {
     data: InstanceType<Document.ConfiguredClassForName<DocumentName>>["_source"][];
   }
 
-  type PlaceablesLayerOptions<DocumentName extends Document.PlaceableType> = PlaceablesLayer.LayerOptions<DocumentName>
+  type PlaceablesLayerOptions<DocumentName extends Document.PlaceableType> = PlaceablesLayer.LayerOptions<DocumentName>;
 
   namespace PlaceablesLayer {
     type Any = PlaceablesLayer<any>;
@@ -491,6 +499,17 @@ declare global {
     type CreationState = ValueOf<(typeof PlaceablesLayer)["CREATION_STATES"]>;
 
     type ConfiguredClassForName<Name extends Document.PlaceableType> = CONFIG[Name]["layerClass"];
+
+    interface DrawOptions extends InteractionLayer.DrawOptions {}
+
+    interface TearDownOptions extends CanvasLayer.DrawOptions {}
+
+    interface CREATION_STATES {
+      readonly NONE: 0;
+      readonly POTENTIAL: 1;
+      readonly CONFIRMED: 2;
+      readonly COMPLETED: 3;
+    }
 
     /**
      * @typeParam DocumentName - The key of the configuration which defines the object and document class.

@@ -1,15 +1,11 @@
-import type { InexactPartial } from "../../../../../types/utils.d.mts";
-
-declare abstract class AnyInteractionLayer extends InteractionLayer {
-  constructor(arg0: never, ...args: never[]);
-}
+import type { NullishProps } from "../../../../../types/utils.d.mts";
 
 declare global {
   /**
    * A subclass of CanvasLayer which provides support for user interaction with its contained objects.
    */
   class InteractionLayer<
-    DrawOptions extends CanvasLayer.DrawOptions = InteractionLayer.DrawOptions,
+    DrawOptions extends InteractionLayer.DrawOptions = InteractionLayer.DrawOptions,
     TearDownOptions extends CanvasLayer.TearDownOptions = CanvasLayer.TearDownOptions,
   > extends CanvasLayer<DrawOptions, TearDownOptions> {
     /**
@@ -23,6 +19,11 @@ declare global {
     override options: InteractionLayer.LayerOptions;
 
     /**
+     * @defaultValue `"passive"`
+     */
+    override eventMode: PIXI.EventMode;
+
+    /**
      * Customize behaviors of this CanvasLayer by modifying some behaviors at a class level.
      */
     static get layerOptions(): InteractionLayer.LayerOptions;
@@ -33,7 +34,7 @@ declare global {
      * @returns - The layer instance, now activated
      */
     activate(
-      options?: InexactPartial<{
+      options?: NullishProps<{
         /**
          * A specific tool in the control palette to set as active
          */
@@ -146,7 +147,9 @@ declare global {
     }
 
     interface DrawOptions extends CanvasLayer.DrawOptions {}
-
-    interface TearDownOptions extends CanvasLayer.TearDownOptions {}
   }
+}
+
+declare abstract class AnyInteractionLayer extends InteractionLayer {
+  constructor(arg0: never, ...args: never[]);
 }

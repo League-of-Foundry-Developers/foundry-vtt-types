@@ -1,9 +1,5 @@
 export {};
 
-declare abstract class AnyCanvasLayer extends CanvasLayer {
-  constructor(arg0: never, ...args: never[]);
-}
-
 declare global {
   /**
    * An abstract pattern for primary layers of the game canvas to implement
@@ -73,6 +69,7 @@ declare global {
      */
     protected _tearDown(options?: TearDownOptions): Promise<void>;
   }
+
   namespace CanvasLayer {
     type AnyConstructor = typeof AnyCanvasLayer;
 
@@ -91,4 +88,8 @@ declare global {
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     interface TearDownOptions {}
   }
+}
+
+declare abstract class AnyCanvasLayer extends CanvasLayer {
+  constructor(arg0: never, ...args: never[]);
 }
