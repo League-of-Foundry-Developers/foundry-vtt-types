@@ -2663,6 +2663,7 @@ declare global {
         weather: LayerDefinition<typeof WeatherEffects>;
 
         /** @defaultValue `{ layerClass: GridLayer, group: "interface" }` */
+        // @ts-expect-error see https://github.com/foundryvtt/foundryvtt/issues/11794
         grid: LayerDefinition<typeof GridLayer>;
 
         /** @defaultValue `{ layerClass: DrawingsLayer, group: "interface" }` */

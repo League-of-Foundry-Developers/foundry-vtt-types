@@ -4,7 +4,10 @@ declare global {
   /**
    * A CanvasLayer for displaying coloration visual effects
    */
-  class CanvasColorationEffects extends CanvasLayer {
+  class CanvasColorationEffects<
+    DrawOptions extends CanvasColorationEffects.DrawOptions = CanvasColorationEffects.DrawOptions,
+    TearDownOptions extends CanvasColorationEffects.TearDownOptions = CanvasColorationEffects.TearDownOptions,
+  > extends CanvasLayer<DrawOptions, TearDownOptions> {
     /**
      * @defaultValue `true`
      */
@@ -20,8 +23,20 @@ declare global {
      */
     clear(): void;
 
-    protected override _draw(options?: Record<string, unknown>): Promise<void>;
+    protected override _draw(options?: DrawOptions): Promise<void>;
 
-    protected override _tearDown(options?: Record<string, unknown>): Promise<void>;
+    protected override _tearDown(options?: TearDownOptions): Promise<void>;
   }
+
+  namespace CanvasColorationEffects {
+    type AnyConstructor = typeof AnyCanvasColorationEffects;
+
+    interface DrawOptions extends CanvasLayer.DrawOptions {}
+
+    interface TearDownOptions extends CanvasLayer.TearDownOptions {}
+  }
+}
+
+declare abstract class AnyCanvasColorationEffects extends CanvasColorationEffects {
+  constructor(arg0: never, ...args: never[]);
 }

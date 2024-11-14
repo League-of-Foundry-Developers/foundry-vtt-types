@@ -1,10 +1,14 @@
-import type { AnyObject, InexactPartial, NullishProps } from "../../../../../types/utils.d.mts";
+import type { InexactPartial, NullishProps } from "../../../../../types/utils.d.mts";
 
 declare global {
   /**
    * A CanvasLayer responsible for drawing a square grid
    */
-  class GridLayer extends CanvasLayer {
+  // @ts-expect-error see https://github.com/foundryvtt/foundryvtt/issues/11794
+  class GridLayer<
+    DrawOptions extends GridLayer.DrawOptions = GridLayer.DrawOptions,
+    TearDownOptions extends CanvasLayer.TearDownOptions = CanvasLayer.TearDownOptions,
+  > extends CanvasLayer<DrawOptions, TearDownOptions> {
     /**
      * @remarks Due to the grid rework in v12 this points to a BaseGrid subclass rather than a GridLayer instance
      * @privateRemarks This is not overridden in foundry but reflects the real behavior.
@@ -37,7 +41,7 @@ declare global {
      * Draw the grid
      * @param options - Override settings used in place of those saved to the Scene data
      */
-    _draw(options?: AnyObject): Promise<void>;
+    _draw(options?: DrawOptions): Promise<void>;
 
     /**
      * Creates the grid mesh.
@@ -182,6 +186,12 @@ declare global {
   }
 
   namespace GridLayer {
+    type AnyConstructor = typeof AnyGridLayer;
+
+    interface DrawOptions extends CanvasLayer.DrawOptions {}
+
+    interface TearDownOptions extends CanvasLayer.TearDownOptions {}
+
     interface LayerOptions extends CanvasLayer.LayerOptions {
       name: "grid";
     }
@@ -243,4 +253,8 @@ declare global {
       gridSpaces?: boolean;
     }>;
   }
+}
+
+declare abstract class AnyGridLayer extends GridLayer {
+  constructor(arg0: never, ...args: never[]);
 }

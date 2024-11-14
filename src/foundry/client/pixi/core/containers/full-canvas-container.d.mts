@@ -15,12 +15,14 @@ declare global {
    * @param Base - Any PIXI DisplayObject subclass
    * @returns The decorated subclass with full canvas bounds
    */
-  function FullCanvasObjectMixin<BaseClass extends FullCanvasObjectMixin.BaseClass>(
+  function FullCanvasObjectMixin<BaseClass extends FullCanvasObject.BaseClass>(
     Base: BaseClass,
   ): Mixin<typeof FullCanvasObject, BaseClass>;
 
-  namespace FullCanvasObjectMixin {
-    type BaseClass = typeof AnyDisplayObject;
+  namespace FullCanvasObject {
+    type AnyConstructor = typeof AnyFullCanvasObject;
+
+    type BaseClass = PIXI.DisplayObject.AnyConstructor;
   }
 
   /**
@@ -30,6 +32,6 @@ declare global {
   class FullCanvasContainer extends FullCanvasObjectMixin(PIXI.Container) {}
 }
 
-declare abstract class AnyDisplayObject extends PIXI.DisplayObject {
+declare abstract class AnyFullCanvasObject extends FullCanvasObject {
   constructor(arg0: never, ...args: never[]);
 }

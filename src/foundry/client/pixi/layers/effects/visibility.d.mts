@@ -6,7 +6,10 @@ declare global {
    * This layer uses an event-driven workflow to perform the minimal required calculation in response to changes.
    * @see {@link PointSource}
    */
-  class CanvasVisibility extends CanvasLayer {
+  class CanvasVisibility<
+    DrawOptions extends CanvasVisibility.DrawOptions = CanvasVisibility.DrawOptions,
+    TearDownOptions extends CanvasVisibility.TearDownOptions = CanvasVisibility.TearDownOptions,
+  > extends CanvasLayer<DrawOptions, TearDownOptions> {
     /**
      * The currently revealed vision.
      */
@@ -93,9 +96,9 @@ declare global {
      */
     initializeVisionMode(): void;
 
-    protected override _draw(options?: Record<string, unknown>): Promise<void>;
+    protected override _draw(options?: DrawOptions): Promise<void>;
 
-    protected override _tearDown(options?: Record<string, unknown>): Promise<void>;
+    protected override _tearDown(options?: TearDownOptions): Promise<void>;
 
     /**
      * Update the display of the sight layer.
@@ -173,7 +176,13 @@ declare global {
   }
 
   namespace CanvasVisibility {
+    type AnyConstructor = typeof AnyCanvasVisibility;
+
     type LightingVisibility = ValueOf<typeof VisionMode.LIGHTING_VISIBILITY>;
+
+    interface DrawOptions extends CanvasLayer.DrawOptions {}
+
+    interface TearDownOptions extends CanvasLayer.TearDownOptions {}
   }
 
   interface FogTextureConfiguration {
@@ -196,4 +205,8 @@ declare global {
     object: PlaceableObject | null;
     tests: CanvasVisibilityTest[];
   }
+}
+
+declare abstract class AnyCanvasVisibility extends CanvasVisibility {
+  constructor(arg0: never, ...args: never[]);
 }

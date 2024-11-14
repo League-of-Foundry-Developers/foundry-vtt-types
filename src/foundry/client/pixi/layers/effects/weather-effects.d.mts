@@ -1,10 +1,13 @@
-export {};
+import type { InexactPartial } from "../../../../../types/utils.d.mts";
 
 declare global {
   /**
    * A CanvasLayer for displaying visual effects like weather, transitions, flashes, or more
    */
-  class WeatherEffects extends FullCanvasObjectMixin(CanvasLayer) {
+  class WeatherEffects<
+    DrawOptions extends WeatherEffects.DrawOptions = WeatherEffects.DrawOptions,
+    TearDownOptions extends WeatherEffects.TearDownOptions = WeatherEffects.TearDownOptions,
+  > extends FullCanvasObjectMixin(CanvasLayer) {
     /**
      * @privateRemarks This is not overridden in foundry but reflects the real behavior.
      */
@@ -35,9 +38,9 @@ declare global {
     /**
      * @defaultValue `foundry.utils.mergeObject(super.layerOptions, { name: "effects" })`
      */
-    static override get layerOptions(): WeatherLayer.LayerOptions;
+    static override get layerOptions(): WeatherEffects.LayerOptions;
 
-    override options: WeatherLayer.LayerOptions;
+    override options: WeatherEffects.LayerOptions;
 
     /**
      * Array of weather effects linked to this weather container.
@@ -48,13 +51,13 @@ declare global {
      * A default configuration of the terrain mask that is automatically applied to any shader-based weather effects.
      * This configuration is automatically passed to WeatherShaderEffect#configureTerrainMask upon construction.
      */
-    terrainMaskConfig: WeatherLayer.WeatherTerrainMaskConfiguration;
+    terrainMaskConfig: WeatherEffects.WeatherTerrainMaskConfiguration;
 
     /**
      * A default configuration of the terrain mask that is automatically applied to any shader-based weather effects.
      * This configuration is automatically passed to WeatherShaderEffect#configureTerrainMask upon construction.
      */
-    occlusionMaskConfig: WeatherLayer.WeatherOcclusionMaskConfiguration;
+    occlusionMaskConfig: WeatherEffects.WeatherOcclusionMaskConfiguration;
 
     /**
      * The inverse occlusion mask filter bound to this container.
@@ -66,7 +69,7 @@ declare global {
      */
     get elevation(): number;
 
-    set elevation(value);
+    set elevation(value: number);
 
     /**
      * A key which resolves ties amongst objects at the same elevation of different layers.
@@ -82,24 +85,24 @@ declare global {
      */
     get sort(): number;
 
-    set sort(value);
+    set sort(value: number);
 
     /**
      * A key which resolves ties amongst objects at the same elevation within the same layer and same sort.
      */
     get zIndex(): number;
 
-    set zIndex(value);
+    set zIndex(value: number);
 
-    protected override _draw(options?: Record<string, unknown>): Promise<void>;
+    protected override _draw(options?: DrawOptions): Promise<void>;
 
-    protected override _tearDown(options?: Record<string, unknown>): Promise<void>;
+    protected override _tearDown(options?: TearDownOptions): Promise<void>;
 
     /**
      * Initialize the weather container from a weather config object.
      * @param weatherEffectsConfig - Weather config object (or null/undefined to clear the container).
      */
-    initializeEffects(weatherEffectsConfig?: WeatherLayer.WeatherEffectsConfig | null): void;
+    initializeEffects(weatherEffectsConfig?: WeatherEffects.WeatherEffectsConfig | null): void;
 
     /**
      * Clear the weather container.
@@ -113,7 +116,7 @@ declare global {
      */
     protected static configureOcclusionMask(
       context: PIXI.Shader,
-      config: WeatherLayer.WeatherOcclusionMaskConfiguration,
+      config?: InexactPartial<WeatherEffects.WeatherOcclusionMaskConfiguration>,
     ): void;
 
     /**
@@ -123,7 +126,7 @@ declare global {
      */
     protected static configureTerrainMask(
       context: PIXI.Shader,
-      config: WeatherLayer.WeatherTerrainMaskConfiguration,
+      config?: InexactPartial<WeatherEffects.WeatherTerrainMaskConfiguration>,
     ): void;
 
     /**
@@ -133,10 +136,16 @@ declare global {
     get weather(): this;
   }
 
-  namespace WeatherLayer {
+  namespace WeatherEffects {
+    type AnyConstructor = typeof AnyWeatherEffects;
+
     interface LayerOptions extends CanvasLayer.LayerOptions {
       name: "effects";
     }
+
+    interface DrawOptions extends CanvasLayer.DrawOptions {}
+
+    interface TearDownOptions extends CanvasLayer.TearDownOptions {}
 
     interface WeatherTerrainMaskConfiguration {
       /**
@@ -197,4 +206,8 @@ declare global {
       filter: PIXI.Filter;
     }
   }
+}
+
+declare abstract class AnyWeatherEffects extends WeatherEffects {
+  constructor(arg0: never, ...args: never[]);
 }
