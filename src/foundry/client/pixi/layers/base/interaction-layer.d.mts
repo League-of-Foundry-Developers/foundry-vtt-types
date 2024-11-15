@@ -25,6 +25,13 @@ declare global {
 
     /**
      * Customize behaviors of this CanvasLayer by modifying some behaviors at a class level.
+     * @defaultValue
+     * ```js
+     * {
+     *   baseClass: InteractionLayer,
+     *   zIndex: 0,
+     * }
+     * ```
      */
     static get layerOptions(): InteractionLayer.LayerOptions;
 

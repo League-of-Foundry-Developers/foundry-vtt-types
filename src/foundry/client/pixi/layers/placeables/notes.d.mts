@@ -1,10 +1,15 @@
+import type { InexactPartial } from "../../../../../types/utils.d.mts";
+
 export {};
 
 declare global {
   /**
    * The Notes Layer which contains Note canvas objects
    */
-  class NotesLayer extends PlaceablesLayer<"Note"> {
+  class NotesLayer<
+    DrawOptions extends NotesLayer.DrawOptions = NotesLayer.DrawOptions,
+    TearDownOptions extends PlaceablesLayer.TearDownOptions = PlaceablesLayer.TearDownOptions,
+  > extends PlaceablesLayer<"Note", DrawOptions, TearDownOptions> {
     /**
      * @privateRemarks This is not overridden in foundry but reflects the real behavior.
      */
@@ -15,9 +20,7 @@ declare global {
      * ```
      * foundry.utils.mergeObject(super.layerOptions, {
      *  name: "notes",
-     *  canDragCreate: false,
-     *  sortActiveTop: true, // TODO this needs to be removed
-     *  zIndex: 200
+     *  zIndex: 800
      * })
      * ```
      * @remarks The TODO is foundry internal
@@ -38,7 +41,11 @@ declare global {
 
     override get hookName(): string;
 
+    override interactiveChildren: boolean;
+
     override _deactivate(): void;
+
+    override _draw(options?: DrawOptions): Promise<void>;
 
     /**
      * Register game settings used by the NotesLayer
@@ -58,7 +65,7 @@ declare global {
      */
     panToNote(
       note: Note,
-      options?: {
+      options?: InexactPartial<{
         /**
          * The resulting zoom level.
          * @defaultValue `1.5`
@@ -70,23 +77,25 @@ declare global {
          * @defaultValue `250`
          */
         duration: number;
-      },
+      }>,
     ): Promise<void>;
 
-    protected override _onClickLeft(event: PIXI.FederatedEvent): void;
+    protected override _onClickLeft(event: PIXI.FederatedEvent): Promise<Note | void>;
 
     /**
      * Handle JournalEntry document drop data
      */
-    protected _onDropData(event: DragEvent, data: NotesLayer.DropData): Promise<false | void>;
+    protected _onDropData(event: DragEvent, data: NotesLayer.DropData): Promise<false | Note>;
   }
 
   namespace NotesLayer {
+    type AnyConstructor = typeof AnyNotesLayer;
+
+    interface DrawOptions extends PlaceablesLayer.DrawOptions {}
+
     interface LayerOptions extends PlaceablesLayer.LayerOptions<"Note"> {
       name: "notes";
-      canDragCreate: false;
-      sortActiveTop: true;
-      zIndex: 60;
+      zIndex: 800;
     }
 
     interface DropData<DocType extends "JournalEntry" | "JournalEntryPage" = "JournalEntry" | "JournalEntryPage">
@@ -96,4 +105,8 @@ declare global {
       anchor: DocType extends "JournalEntryPage" ? { name: string } : undefined;
     }
   }
+}
+
+declare abstract class AnyNotesLayer extends NotesLayer {
+  constructor(arg0: never, ...args: never[]);
 }

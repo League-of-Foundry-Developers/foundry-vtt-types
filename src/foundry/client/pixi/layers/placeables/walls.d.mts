@@ -1,20 +1,14 @@
-import type { ConstructorOf, InexactPartial } from "../../../../../types/utils.d.mts";
+import type { ConstructorOf, NullishProps } from "../../../../../types/utils.d.mts";
+import type Document from "../../../../common/abstract/document.d.mts";
 
 declare global {
   /**
    * The Walls canvas layer which provides a container for Wall objects within the rendered Scene.
    */
-  class WallsLayer extends PlaceablesLayer<"Wall"> {
-    /**
-     * Synthetic Wall instances which represent the outer boundaries of the game canvas.
-     */
-    outerBounds: Wall[];
-
-    /**
-     * Synthetic Wall instances which represent the inner boundaries of the scene rectangle.
-     */
-    innerBounds: Wall[];
-
+  class WallsLayer<
+    DrawOptions extends WallsLayer.DrawOptions = WallsLayer.DrawOptions,
+    TearDownOptions extends PlaceablesLayer.TearDownOptions = PlaceablesLayer.TearDownOptions,
+  > extends PlaceablesLayer<"Wall", DrawOptions, TearDownOptions> {
     /**
      * A graphics layer used to display chained Wall selection
      * @defaultValue `null`
@@ -26,12 +20,6 @@ declare global {
      * @defaultValue `false`
      */
     protected _chain: boolean;
-
-    /**
-     * Track whether the layer is currently toggled to snap at exact grid precision
-     * @defaultValue `false`
-     */
-    protected _forceSnap: boolean;
 
     /**
      * Track the most recently created or updated wall data for use with the clone tool
@@ -64,11 +52,9 @@ declare global {
      * mergeObject(super.layerOptions, {
      *  name: "walls"
      *  controllableObjects: true,
-     *  sortActiveTop: true, // TODO this needs to be removed
-     *  zIndex: 40
+     *  zIndex: 700
      * })
      * ```
-     * @remarks The TODO is foundry internal
      */
     static override get layerOptions(): WallsLayer.LayerOptions;
 
@@ -86,32 +72,11 @@ declare global {
      */
     get doors(): Wall.ConfiguredInstance[];
 
-    /**
-     * Gate the precision of wall snapping to become less precise for small scale maps.
-     * @remarks Returns `1 | 4 | 8 | 16`
-     */
-    get gridPrecision(): number;
+    override getSnappedPoint(point: Canvas.Point): Canvas.Point;
 
-    override _draw(options?: Record<string, unknown>): Promise<void>;
+    override _draw(options?: DrawOptions): Promise<void>;
 
     override _deactivate(): void;
-
-    /**
-     * Perform initialization steps for the WallsLayer whenever the composition of walls in the Scene is changed.
-     * Cache unique wall endpoints and identify interior walls using overhead roof tiles.
-     */
-    initialize(): void;
-
-    /**
-     * Initialization to identify all intersections between walls.
-     * These intersections are cached and used later when computing point source polygons.
-     */
-    identifyWallIntersections(): void;
-
-    /**
-     * Identify walls which are treated as "interior" because they are contained fully within a roof tile.
-     */
-    identifyInteriorWalls(): void;
 
     /**
      * Given a point and the coordinates of a wall, determine which endpoint is closer to the point
@@ -123,10 +88,11 @@ declare global {
 
     override releaseAll(options?: PlaceableObject.ReleaseOptions): number;
 
-    override pasteObjects(
-      position: Canvas.Point,
-      options?: Record<string, unknown>,
-    ): Promise<WallDocument.ConfiguredInstance[]>;
+    override _pasteObject(
+      copy: Wall.ConfiguredInstance,
+      offset: Canvas.Point,
+      options?: NullishProps<{ hidden: boolean; snap: boolean }>,
+    ): Document.ConfiguredSourceForName<"Wall">;
 
     /**
      * Pan the canvas view when the cursor position gets close to the edge of the frame
@@ -143,7 +109,7 @@ declare global {
      */
     protected _getWallEndpointCoordinates(
       point: Canvas.Point,
-      options?: InexactPartial<{
+      options?: NullishProps<{
         /**
          * Snap to the grid?
          * @defaultValue `true`
@@ -167,21 +133,23 @@ declare global {
         }
       | this["_cloneType"];
 
-    protected override _onDragLeftStart(event: PIXI.FederatedEvent): Promise<void>;
+    /**
+     * Identify the interior enclosed by the given walls.
+     * @param  walls - The walls that enclose the interior.
+     * @returns The polygons of the interior.
+     * @remarks Marked \@license MIT
+     */
+    identifyInteriorArea(walls: Wall.ConfiguredInstance[]): PIXI.Polygon[];
+
+    protected override _onDragLeftStart(event: PIXI.FederatedEvent): ReturnType<Wall.ConfiguredInstance["draw"]>;
 
     protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
-    protected override _onDragLeftDrop(event: PIXI.FederatedEvent): Promise<void>;
+    protected override _onDragLeftDrop(event: PIXI.FederatedEvent): void;
 
     protected override _onDragLeftCancel(event: PointerEvent): void;
 
     protected override _onClickRight(event: PIXI.FederatedEvent): void;
-
-    /**
-     * @deprecated since v10, will be removed in v12
-     * @remarks "WallsLayer#boundaries is deprecated in favor of WallsLayer#outerBounds and WallsLayer#innerBounds"
-     */
-    get boundaries(): Set<Wall>;
 
     /**
      * @deprecated since v11, will be removed in v13
@@ -194,9 +162,36 @@ declare global {
      * @remarks "The WallsLayer#highlightControlledSegments function is deprecated in favor of calling wall.renderFlags.set(\"refreshHighlight\") on individual Wall objects"
      */
     highlightControlledSegments(): void;
+
+    /**
+     * Perform initialization steps for the WallsLayer whenever the composition of walls in the Scene is changed.
+     * Cache unique wall endpoints and identify interior walls using overhead roof tiles.
+     * @deprecated since v12 until v14
+     * @remarks "WallsLayer#initialize is deprecated in favor of Canvas#edges#initialize"
+     */
+    initialize(): void;
+
+    /**
+     * Identify walls which are treated as "interior" because they are contained fully within a roof tile.
+     * @deprecated since v12 until v14
+     * @remarks "WallsLayer#identifyInteriorWalls has been deprecated. It has no effect anymore and there's no replacement."
+     */
+    identifyInteriorWalls(): void;
+
+    /**
+     * Initialization to identify all intersections between walls.
+     * These intersections are cached and used later when computing point source polygons.
+     * @deprecated since v12 until v14
+     * @remarks "WallsLayer#identifyWallIntersections is deprecated in favor of foundry.canvas.edges.Edge.identifyEdgeIntersections and has no effect."
+     */
+    identifyWallIntersections(): void;
   }
 
   namespace WallsLayer {
+    type AnyConstructor = typeof AnyWallsLayer;
+
+    interface DrawOptions extends PlaceablesLayer.DrawOptions {}
+
     interface LayerOptions extends PlaceablesLayer.LayerOptions<"Wall"> {
       name: "walls";
       controllableObjects: true;
@@ -207,4 +202,8 @@ declare global {
       zIndex: number;
     }
   }
+}
+
+declare abstract class AnyWallsLayer extends WallsLayer {
+  constructor(arg0: never, ...args: never[]);
 }

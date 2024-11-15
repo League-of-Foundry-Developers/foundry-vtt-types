@@ -4,7 +4,10 @@ declare global {
   /**
    * A PlaceablesLayer designed for rendering the visual Scene for a specific vertical cross-section.
    */
-  class TilesLayer extends PlaceablesLayer<"Tile"> {
+  class TilesLayer<
+    DrawOptions extends PlaceablesLayer.DrawOptions = PlaceablesLayer.DrawOptions,
+    TearDownOptions extends TilesLayer.TearDownOptions = TilesLayer.TearDownOptions,
+  > extends PlaceablesLayer<"Tile", DrawOptions, TearDownOptions> {
     /**
      * @privateRemarks This is not overridden in foundry but reflects the real behavior.
      */
@@ -19,10 +22,9 @@ declare global {
      * ```js
      * foundry.utils.mergeObject(super.layerOptions, {
      *    name: "tiles",
-     *    zIndex: 0,
+     *    zIndex: 300,
      *    controllableObjects: true,
      *    rotatableObjects: true,
-     *    elevationSorting: true
      * })
      * ```
      */
@@ -37,50 +39,26 @@ declare global {
      */
     get tiles(): Tile[];
 
-    /**
-     * Get an array of overhead Tile objects which are roofs
-     */
-    get roofs(): Tile[];
-
-    /**
-     * Determine whether to display roofs
-     */
-    get displayRoofs(): boolean;
-
-    /**
-     * A convenience reference to the tile occlusion mask on the primary canvas group.
-     */
-    get depthMask(): CachedContainer;
-
     override controllableObjects(): Generator<Tile>;
 
-    override _activate(): void;
+    override getSnappedPoint(point: Canvas.Point): Canvas.Point;
 
-    override _deactivate(): void;
+    _tearDown(options?: TearDownOptions): ReturnType<PlaceablesLayer<"Tile">["_draw"]>;
 
-    /**
-     * Activate a sublayer of the tiles layer, which controls interactivity of placeables and release controlled objects.
-     * @param foreground - Which sublayer need to be activated? Foreground or background?
-     *                     (default: `false`)
-     */
-    protected _activateSubLayer(foreground?: boolean): void;
-
-    _tearDown(options?: Record<string, unknown>): Promise<void>;
-
-    protected _onDragLeftStart(event: PIXI.FederatedEvent): Promise<unknown>;
+    protected _onDragLeftStart(event: PIXI.FederatedEvent): void;
 
     protected _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
-    protected _onDragLeftDrop(event: PIXI.FederatedEvent): Promise<void>;
+    protected _onDragLeftDrop(event: PIXI.FederatedEvent): void;
 
-    protected _onDragLeftCancel(event: PointerEvent): void;
+    protected _onDragLeftCancel(event: PointerEvent): ReturnType<PlaceablesLayer<"Tile">["_onDragLeftCancel"]>;
 
     /**
      * Handle drop events for Tile data on the Tiles Layer
      * @param event - The concluding drag event
      * @param data  - The extracted Tile data
      */
-    protected _onDropData(event: DragEvent, data: DropData.Any): Promise<void>;
+    protected _onDropData(event: DragEvent, data: DropData.Any): Promise<TileDocument | false | void>;
 
     /**
      * Prepare the data object when a new Tile is dropped onto the canvas
@@ -91,19 +69,36 @@ declare global {
     _getDropData(event: DragEvent, data: TilesLayer.DropData): Promise<DropData.Any>;
 
     /**
+     * Get an array of overhead Tile objects which are roofs
+     * @deprecated since v12 until v14
+     * @remarks "TilesLayer#roofs has been deprecated without replacement."
+     */
+    get roofs(): Tile[];
+
+    /**
      * @deprecated since v11, will be removed in v13
      * @remarks "TilesLayer#textureDataMap has moved to TextureLoader.textureBufferDataMap"
      */
     get textureDataMap(): (typeof TextureLoader)["textureBufferDataMap"];
+
+    /**
+     * A convenience reference to the tile occlusion mask on the primary canvas group.
+     * @deprecated since v11 until v13
+     * @remarks "TilesLayer#depthMask is deprecated without replacement. Use canvas.masks.depth instead"
+     */
+    get depthMask(): CachedContainer;
   }
 
   namespace TilesLayer {
+    type AnyConstructor = typeof AnyTilesLayer;
+
+    interface TearDownOptions extends PlaceablesLayer.TearDownOptions {}
+
     interface LayerOptions extends PlaceablesLayer.LayerOptions<"Tile"> {
       name: "tiles";
-      zIndex: 0;
+      zIndex: 300;
       controllableObjects: true;
       rotatableObjects: true;
-      elevationSorting: true;
     }
 
     interface DropData extends Canvas.DropPosition {
@@ -111,4 +106,8 @@ declare global {
       uuid: string;
     }
   }
+}
+
+declare abstract class AnyTilesLayer extends TilesLayer {
+  constructor(arg0: never, ...args: never[]);
 }

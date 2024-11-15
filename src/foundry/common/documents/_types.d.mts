@@ -73,7 +73,8 @@ export type AmbientLightData = BaseAmbientLight.Properties;
 
 export type AmbientSoundData = BaseAmbientSound.Properties;
 
-export type AmbientSoundEffect = unknown; // TODO: Add when BaseAmbientSound's schema is updated.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+export type AmbientSoundEffect = { type: string; intensity: number }; // TODO: Audit and maybe move when BaseAmbientSound's schema is updated.
 
 export type CardData = BaseCard.Properties;
 

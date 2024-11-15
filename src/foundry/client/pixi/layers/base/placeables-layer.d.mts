@@ -62,6 +62,19 @@ declare global {
      */
     override options: PlaceablesLayer.LayerOptions.Any;
 
+    /**
+     * @defaultValue
+     * ```js
+     * foundry.utils.mergeObject(super.layerOptions, {
+     *   baseClass: PlaceablesLayer,
+     *   controllableObjects: false,
+     *   rotatableObjects: false,
+     *   confirmDeleteKey: false,
+     *   objectClass: CONFIG[this.documentName]?.objectClass,
+     *   quadtree: true,
+     * }
+     * ```
+     */
     static override get layerOptions(): PlaceablesLayer.LayerOptions.Any;
 
     /**
@@ -244,7 +257,7 @@ declare global {
     protected _getMovableObjects(
       ids?: string[] | null,
       includeLocked?: boolean,
-    ): Document.ConfiguredObjectInstanceForName<DocumentName>;
+    ): Document.ConfiguredObjectInstanceForName<DocumentName>[];
 
     /**
      * Undo a change to the objects in this layer
@@ -530,12 +543,13 @@ declare global {
 
       /**
        * Confirm placeable object deletion with a dialog?
+       * @defaultValue `false`
        */
       confirmDeleteKey: boolean;
 
       /**
        * The class used to represent an object on this layer.
-       * @defaultValue `getDocumentClass(this.documentName)`
+       * @defaultValue `CONFIG[this.documentName]?.objectClass`
        */
       objectClass: Document.ConfiguredObjectClassForName<DocumentName>;
 

@@ -5,7 +5,10 @@ export {};
  * @see {@link MeasuredTemplate}
  */
 declare global {
-  class TemplateLayer extends PlaceablesLayer<"MeasuredTemplate"> {
+  class TemplateLayer<
+    DrawOptions extends TemplateLayer.DrawOptions = TemplateLayer.DrawOptions,
+    TearDownOptions extends PlaceablesLayer.TearDownOptions = PlaceablesLayer.TearDownOptions,
+  > extends PlaceablesLayer<"MeasuredTemplate", DrawOptions, TearDownOptions> {
     /**
      * @privateRemarks This is not overridden in foundry but reflects the real behavior.
      */
@@ -21,10 +24,8 @@ declare global {
      * ```
      * mergeObject(super.layerOptions, {
      *   name: "templates",
-     *   canDragCreate: true,
      *   rotatableObjects: true,
-     *   sortActiveTop: true,
-     *   zIndex: 50
+     *   zIndex: 400
      * })
      * ```
      */
@@ -36,12 +37,14 @@ declare global {
 
     override _deactivate(): void;
 
+    override _draw(options?: DrawOptions): Promise<void>;
+
     /**
      * Register game settings used by the TemplatesLayer
      */
     static registerSettings(): void;
 
-    protected override _onDragLeftStart(event: PIXI.FederatedEvent): Promise<MeasuredTemplate>;
+    protected override _onDragLeftStart(event: PIXI.FederatedEvent): void;
 
     protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
@@ -49,12 +52,18 @@ declare global {
   }
 
   namespace TemplateLayer {
+    type AnyConstructor = typeof AnyTemplateLayer;
+
+    interface DrawOptions extends PlaceablesLayer.DrawOptions {}
+
     interface LayerOptions extends PlaceablesLayer.LayerOptions<"MeasuredTemplate"> {
       name: "templates";
-      canDragCreate: true;
       rotatableObjects: true;
-      sortActiveTop: true;
-      zIndex: 50;
+      zIndex: 400;
     }
   }
+}
+
+declare abstract class AnyTemplateLayer extends TemplateLayer {
+  constructor(arg0: never, ...args: never[]);
 }

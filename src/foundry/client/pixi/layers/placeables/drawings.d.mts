@@ -4,7 +4,10 @@ declare global {
   /**
    * The DrawingsLayer subclass of PlaceablesLayer.
    */
-  class DrawingsLayer extends PlaceablesLayer<"Drawing"> {
+  class DrawingsLayer<
+    DrawOptions extends DrawingsLayer.DrawOptions = DrawingsLayer.DrawOptions,
+    TearDownOptions extends CanvasLayer.TearDownOptions = CanvasLayer.TearDownOptions,
+  > extends PlaceablesLayer<"Drawing", DrawOptions, TearDownOptions> {
     /**
      * @privateRemarks This is not overridden in foundry but reflects the real behavior.
      */
@@ -20,10 +23,9 @@ declare global {
      * ```
      * mergeObject(super.layerOptions, {
      *   name: "drawings"
-     *   canDragCreate: true,
      *   controllableObjects: true,
      *   rotatableObjects: true,
-     *   zIndex: 20
+     *   zIndex: 500
      * })
      * ```
      */
@@ -36,21 +38,22 @@ declare global {
      */
     static DEFAULT_CONFIG_SETTING: "defaultDrawingConfig";
 
-    /**
-     * Use an adaptive precision depending on the size of the grid
-     */
-    get gridPrecision(): 0 | 8 | 16;
+    graphics: Collection<Drawing>;
 
     override get hud(): Exclude<Canvas["hud"], undefined>["drawing"];
 
     override get hookName(): (typeof DrawingsLayer)["name"];
+
+    override getSnappedPoint(point: Canvas.Point): Canvas.Point;
 
     /**
      * Render a configuration sheet to configure the default Drawing settings
      */
     configureDefault(): void;
 
-    override _deactivate(): this;
+    override _deactivate(): void;
+
+    override _draw(options?: DrawOptions): Promise<void>;
 
     /**
      * Get initial data for a new drawing.
@@ -63,30 +66,43 @@ declare global {
 
     protected override _onClickLeft(event: PIXI.FederatedEvent): void;
 
-    protected override _onClickLeft2(event: PIXI.FederatedEvent): void | Promise<void>;
+    protected override _onClickLeft2(event: PIXI.FederatedEvent): void;
 
-    protected override _onDragLeftStart(event: PIXI.FederatedEvent): ReturnType<Drawing["draw"]>;
+    protected override _onDragLeftStart(event: PIXI.FederatedEvent): void;
 
     protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
     /**
      * Handling of mouse-up events which conclude a new object creation after dragging
+     * @remarks Foundry notes this as \@private
      */
-    protected _onDragLeftDrop(event: PIXI.FederatedEvent): Promise<void>;
+    protected _onDragLeftDrop(event: PIXI.FederatedEvent): void;
 
     protected override _onDragLeftCancel(event: PointerEvent): void;
 
     protected override _onClickRight(event: PIXI.FederatedEvent): void;
+
+    /**
+     * Use an adaptive precision depending on the size of the grid
+     * @deprecated since v12 until v14
+     */
+    get gridPrecision(): 0 | 8 | 16;
   }
 
   namespace DrawingsLayer {
+    type AnyConstructor = typeof AnyDrawingsLayer;
+
+    interface DrawOptions extends CanvasLayer.DrawOptions {}
+
     interface LayerOptions extends PlaceablesLayer.LayerOptions<"Drawing"> {
       name: "drawings";
-      canDragCreate: true;
       controllableObjects: true;
       rotatableObjects: true;
-      elevationSorting: true;
-      zIndex: 20;
+      zIndex: 500;
     }
   }
+}
+
+declare abstract class AnyDrawingsLayer extends DrawingsLayer {
+  constructor(arg0: never, ...args: never[]);
 }
