@@ -31,7 +31,7 @@ export type AllKeysOf<T extends object> = T extends unknown ? keyof T : never;
  * - Use `IntentionalPartial` when an explicit `undefined` is problematic but
  *   leaving off the property entirely is fine. This primarily occurs when
  *   patterns like `options = { ...defaultOptions, ...options }`,
- *   `Object.apply({}, defaultOptions, options)`,
+ *   `Object.assign({}, defaultOptions, options)`,
  *   `foundry.utils.mergeObject(defaultOptions, options)`, or so on.
  *
  *   Note that {@link foundry.utils.mergeObject | `foundry.utils.mergeObject`}

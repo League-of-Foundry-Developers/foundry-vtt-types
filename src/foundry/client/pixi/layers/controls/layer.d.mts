@@ -10,7 +10,10 @@ declare global {
    * 2) Ruler measurement
    * 3) Map pings
    */
-  class ControlsLayer extends InteractionLayer {
+  class ControlsLayer<
+    DrawOptions extends ControlsLayer.DrawOptions = ControlsLayer.DrawOptions,
+    TearDownOptions extends ControlsLayer.TearDownOptions = ControlsLayer.TearDownOptions,
+  > extends InteractionLayer<DrawOptions, TearDownOptions> {
     constructor();
 
     /**
@@ -26,6 +29,7 @@ declare global {
 
     /**
      * Always interactive even if disabled for doors controls
+     * @defaultValue `true`
      */
     override interactiveChildren: boolean;
 
@@ -75,21 +79,30 @@ declare global {
 
     override options: ControlsLayer.LayerOptions;
 
+    /**
+     * @defaultValue
+     * ```js
+     * foundry.utils.mergeObject(super.layerOptions, {
+     *   name: "controls",
+     *   zIndex: 1000
+     * }
+     * ```
+     */
     static override get layerOptions(): ControlsLayer.LayerOptions;
 
     /**
      * A convenience accessor to the Ruler for the active game user
      */
-    get ruler(): ReturnType<ControlsLayer["getRulerForUser"]>;
+    get ruler(): ReturnType<this["getRulerForUser"]>;
 
     /**
      * Get the Ruler display for a specific User ID
      */
     getRulerForUser(userId: string): Ruler | null;
 
-    override _draw(): Promise<void>;
+    override _draw(options?: DrawOptions): Promise<void>;
 
-    override _tearDown(): Promise<void>;
+    override _tearDown(options?: TearDownOptions): Promise<void>;
 
     /**
      * Draw the cursors container
@@ -110,7 +123,7 @@ declare global {
      * Draw the select rectangle given an event originated within the base canvas layer
      * @param coords - The rectangle coordinates of the form `{x, y, width, height}`
      */
-    drawSelect(coords: { x: number; y: number; width: number; height: number }): void;
+    drawSelect(coords: Canvas.Rectangle): void;
 
     override _deactivate(): void;
 
@@ -124,7 +137,7 @@ declare global {
      * @param event   - The triggering canvas interaction event.
      * @param origin  - The local canvas coordinates of the mousepress.
      */
-    protected _onLongPress(event: PIXI.FederatedEvent, origin: PIXI.Point): void;
+    protected _onLongPress(event: PIXI.FederatedEvent, origin: PIXI.Point): ReturnType<Canvas["ping"]>;
 
     /**
      * Handle the canvas panning to a new view.
@@ -157,7 +170,11 @@ declare global {
      * @param data     - The broadcast ping data.
      * @returns A promise which resolves once the Ping has been drawn and animated
      */
-    handlePing(user: User.ConfiguredInstance, position: Canvas.Point, data?: User.PingData): Promise<boolean>;
+    handlePing(
+      user: User.ConfiguredInstance,
+      position: Canvas.Point,
+      data?: InexactPartial<User.PingData & PingOptions>,
+    ): Promise<boolean>;
 
     /**
      * Draw a ping at the edge of the viewport, pointing to the location of an off-screen ping.
@@ -174,6 +191,7 @@ declare global {
            * The style of ping to draw, from CONFIG.Canvas.pings.
            * @defaultValue `"arrow"`
            */
+          //TODO: eventually replace with a type like `keyof CONFIG.Canvas.pings` but something mergable?
           style: string;
 
           /**
@@ -182,7 +200,7 @@ declare global {
           user: User.ConfiguredInstance;
         }
       >,
-    ): Promise<boolean>;
+    ): ReturnType<this["drawPing"]>;
 
     /**
      * Draw a ping on the canvas
@@ -198,6 +216,7 @@ declare global {
          * The style of ping to draw, from CONFIG.Canvas.pings.
          * @defaultValue `"pulse"`
          */
+        //TODO: eventually replace with a type like `keyof CONFIG.Canvas.pings` but something mergable?
         style?: string;
 
         /**
@@ -205,7 +224,7 @@ declare global {
          */
         user?: User.ConfiguredInstance;
       },
-    ): Promise<boolean>;
+    ): ReturnType<Ping["animate"]>;
 
     /**
      * Given off-screen coordinates, determine the closest point at the edge of the viewport to these coordinates.
@@ -221,9 +240,19 @@ declare global {
   }
 
   namespace ControlsLayer {
+    type AnyConstructor = typeof AnyControlsLayer;
+
+    interface DrawOptions extends InteractionLayer.DrawOptions {}
+
+    interface TearDownOptions extends CanvasLayer.TearDownOptions {}
+
     interface LayerOptions extends InteractionLayer.LayerOptions {
       name: "controls";
       zIndex: 1000;
     }
   }
+}
+
+declare abstract class AnyControlsLayer extends ControlsLayer {
+  constructor(arg0: never, ...args: never[]);
 }

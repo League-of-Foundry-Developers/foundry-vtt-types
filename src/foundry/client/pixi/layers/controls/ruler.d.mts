@@ -1,4 +1,4 @@
-import type { InexactPartial, ValueOf } from "../../../../../types/utils.d.mts";
+import type { NullishProps, ValueOf } from "../../../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -12,7 +12,7 @@ declare global {
      */
     constructor(
       user?: User.ConfiguredInstance,
-      options?: InexactPartial<{
+      options?: NullishProps<{
         /**
          * The color of the ruler (defaults to the color of the User)
          */
@@ -51,12 +51,7 @@ declare global {
     /**
      * The possible Ruler measurement states.
      */
-    static get STATES(): {
-      INACTIVE: 0;
-      STARTING: 1;
-      MEASURING: 2;
-      MOVING: 3;
-    };
+    static get STATES(): Ruler.STATES;
 
     /**
      * Is the ruler ready for measure?
@@ -108,12 +103,13 @@ declare global {
     /**
      * The current state of the Ruler (one of {@link Ruler.STATES}).
      */
-    get state(): ValueOf<(typeof Ruler)["STATES"]>;
+    get state(): ValueOf<Ruler.STATES>;
 
     /**
      * The current state of the Ruler (one of {@link Ruler.STATES}).
+     * @defaultValue `Ruler.STATES.INACTIVE`
      */
-    protected _state: ValueOf<(typeof Ruler)["STATES"]>;
+    protected _state: ValueOf<Ruler.STATES>;
 
     /**
      * Is the Ruler being actively used to measure distance?
@@ -143,7 +139,7 @@ declare global {
      */
     measure(
       destination: Canvas.Point,
-      options?: InexactPartial<{
+      options?: NullishProps<{
         /**
          * Snap the destination?
          * @defaultValue `true`
@@ -165,7 +161,7 @@ declare global {
      */
     protected _getMeasurementOrigin(
       point: Canvas.Point,
-      options?: InexactPartial<{
+      options?: NullishProps<{
         /**
          * Snap the waypoint?
          * @defaultValue `true`
@@ -182,7 +178,7 @@ declare global {
      */
     protected _getMeasurementDestination(
       point: Canvas.Point,
-      options?: InexactPartial<{
+      options?: NullishProps<{
         /**
          * Snap the point?
          * @defaultValue `true`
@@ -204,7 +200,7 @@ declare global {
      */
     protected _startMeasurement(
       origin: Canvas.Point,
-      options?: InexactPartial<{
+      options?: NullishProps<{
         /**
          * Snap the origin?
          * @defaultValue `true`
@@ -230,7 +226,7 @@ declare global {
      */
     protected _addWaypoint(
       point: Canvas.Point,
-      options?: InexactPartial<{
+      options?: NullishProps<{
         /**
          * Snap the waypoint?
          * @defaultValue `true`
@@ -275,7 +271,7 @@ declare global {
      * @returns An indicator for whether a token was successfully moved or not. If True the event should be
      *          prevented from propagating further, if False it should move on to other handlers.
      */
-    moveToken(): Promise<false | undefined>;
+    moveToken(): Promise<boolean>;
 
     /**
      * Acquire a Token, if any, which is eligible to perform a movement based on the starting point of the Ruler
@@ -283,7 +279,7 @@ declare global {
      * @returns The Token that is to be moved, if any
      *
      */
-    protected _getMovementToken(origin: Canvas.Point): Token.ConfiguredInstance | null | undefined;
+    protected _getMovementToken(origin: Canvas.Point): Token.ConfiguredInstance | null;
 
     /**
      * Get the current measurement history.
@@ -303,14 +299,14 @@ declare global {
      * @returns Whether the movement is allowed
      * @throws  A specific Error message used instead of returning false
      */
-    protected _canMove(token: Token): true;
+    protected _canMove(token: Token.ConfiguredInstance): boolean;
 
     /**
      * Animate piecewise Token movement along the measured segment path.
      * @param token - The Token being animated
      * @returns A Promise which resolves once all animation is completed
      */
-    protected _animateMovement(token: Token): Promise<void>;
+    protected _animateMovement(token: Token.ConfiguredInstance): Promise<void>;
 
     /**
      * Update Token position and configure its animation properties for the next leg of its animation.
@@ -321,7 +317,7 @@ declare global {
      * @returns A Promise that resolves once the animation for this segment is done
      */
     protected _animateSegment(
-      token: Token,
+      token: Token.ConfiguredInstance,
       segment: Ruler.MeasurementSegment,
       destination: Canvas.Point,
       updateOptions: TokenDocument.DatabaseOperations["update"],
@@ -375,7 +371,7 @@ declare global {
      * @param event - The pointer-down event
      * @see Canvas._onClickRight
      */
-    protected _onClickRight(event: PIXI.FederatedEvent): boolean | void;
+    protected _onClickRight(event: PIXI.FederatedEvent): void;
 
     /**
      * Continue a Ruler measurement workflow for left-mouse movements on the Canvas.
@@ -398,6 +394,15 @@ declare global {
   }
 
   namespace Ruler {
+    type AnyConstructor = typeof AnyRuler;
+
+    interface STATES {
+      readonly INACTIVE: 0;
+      readonly STARTING: 1;
+      readonly MEASURING: 2;
+      readonly MOVING: 3;
+    }
+
     interface MeasurementSegment {
       /** The Ray which represents the point-to-point line segment */
       ray: Ray;
@@ -448,7 +453,7 @@ declare global {
 
     interface MeasurementData {
       /** The state ({@link Ruler#state}) */
-      state: number;
+      state: ValueOf<Ruler.STATES>;
 
       /** The token ID ({@link Ruler#token}) */
       token: string | null;
@@ -463,4 +468,8 @@ declare global {
       destination: Canvas.Point | null;
     }
   }
+}
+
+declare abstract class AnyRuler extends Ruler {
+  constructor(arg0: never, ...args: never[]);
 }
