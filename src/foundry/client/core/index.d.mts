@@ -1,3 +1,4 @@
+import "./clipboard.d.mts";
 import "./document-index.d.mts";
 import "./gamepad.d.mts";
 import "./hooks.d.mts";
