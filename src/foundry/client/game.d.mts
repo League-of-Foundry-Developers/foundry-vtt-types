@@ -87,7 +87,7 @@ declare class InternalGame<RunEvents extends InitializationEvent> {
    * A mapping of CompendiumCollection instances, one per Compendium pack.
    * @remarks Initialized just before the `"setup"` hook event is called.
    */
-  readonly packs: GameInitialized<CompendiumPacks, "setup", RunEvents>;
+  packs: GameInitialized<CompendiumPacks, "setup", RunEvents>;
 
   /**
    * A registry of document sub-types and their respective data models.
@@ -109,12 +109,13 @@ declare class InternalGame<RunEvents extends InitializationEvent> {
 
   /**
    * The global document index.
-   * @remarks Initialized just before the `"setup"` hook events is called.
+   * @remarks Initialized just before the `"setup"` hook event is called.
    */
   readonly documentIndex: GameInitialized<DocumentIndex, "setup", RunEvents>;
 
   /**
    * The UUID redirects tree.
+   * @remarks Initialized just before the `"ready"` hook event is called.
    */
   compendiumUUIDRedirects: foundry.utils.StringTree<string[]>;
 
@@ -235,7 +236,8 @@ declare class InternalGame<RunEvents extends InitializationEvent> {
   ready: GameInitialized<true, "ready", RunEvents, false>;
 
   /**
-   * The singleton compendium art manger.
+   * The singleton compendium art manager.
+   * @remarks Initialized just before the `"setup"` hook event.
    */
   compendiumArt: foundry.helpers.CompendiumArt;
 
@@ -292,6 +294,7 @@ declare class InternalGame<RunEvents extends InitializationEvent> {
 
   /**
    * The New User Experience manager.
+   * @remarks Initialized just after the `"ready"` hook event.
    */
   nue: NewUserExperience;
 
@@ -327,7 +330,7 @@ declare class InternalGame<RunEvents extends InitializationEvent> {
   /**
    * A singleton web Worker manager.
    */
-  readonly workers: WorkerManager;
+  workers: WorkerManager;
 
   /**
    * Fetch World data and return a Game instance
