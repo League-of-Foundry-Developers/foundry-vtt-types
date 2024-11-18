@@ -11,7 +11,7 @@ declare global {
     /**
      * The filter used to mask visual effects on this layer
      */
-    filter: VisualEffectsMaskingFilter;
+    filter: VisualEffectsMaskingFilter | undefined;
 
     /**
      * The container holding the lights.
@@ -92,7 +92,7 @@ declare global {
     /**
      * @deprecated since v12, will be removed in v14
      */
-    background: PIXI.LegacyGraphics;
+    background: null;
 
     /**
      * @deprecated since v12, will be removed in v14

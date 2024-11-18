@@ -50,14 +50,20 @@ declare global {
     /**
      * A default configuration of the terrain mask that is automatically applied to any shader-based weather effects.
      * This configuration is automatically passed to WeatherShaderEffect#configureTerrainMask upon construction.
+     *
+     * @privateRemarks This property is checked and conditionally passed in two places in this file,
+     * but never set as far as I can tell. It is not initialized to a value.
      */
-    terrainMaskConfig: WeatherEffects.WeatherTerrainMaskConfiguration;
+    terrainMaskConfig: WeatherEffects.WeatherTerrainMaskConfiguration | undefined;
 
     /**
      * A default configuration of the terrain mask that is automatically applied to any shader-based weather effects.
      * This configuration is automatically passed to WeatherShaderEffect#configureTerrainMask upon construction.
+     *
+     * @privateRemarks This property is passed to `WeatherEffects.configureOcclusionMask` in two places, but both times
+     * as `|| {enabled: true}`, and it is never set as far as I can tell.
      */
-    occlusionMaskConfig: WeatherEffects.WeatherOcclusionMaskConfiguration;
+    occlusionMaskConfig: WeatherEffects.WeatherOcclusionMaskConfiguration | undefined;
 
     /**
      * The inverse occlusion mask filter bound to this container.
@@ -66,6 +72,7 @@ declare global {
 
     /**
      * The elevation of this object.
+     * @throws The setter throws an error if passed NaN or a non-number
      */
     get elevation(): number;
 
@@ -74,6 +81,7 @@ declare global {
     /**
      * A key which resolves ties amongst objects at the same elevation of different layers.
      * @defaultValue `PrimaryCanvasGroup.SORT_LAYERS.WEATHER`
+     * @throws The setter throws an error if passed NaN or a non-number
      */
     get sortLayer(): number;
 
@@ -82,6 +90,7 @@ declare global {
     /**
      * A key which resolves ties amongst objects at the same elevation within the same layer.
      * @defaultValue `0`
+     * @throws The setter throws an error if passed NaN or a non-number
      */
     get sort(): number;
 
@@ -89,6 +98,7 @@ declare global {
 
     /**
      * A key which resolves ties amongst objects at the same elevation within the same layer and same sort.
+     * @throws The setter throws an error if passed NaN or a non-number
      */
     get zIndex(): number;
 
@@ -101,8 +111,10 @@ declare global {
     /**
      * Initialize the weather container from a weather config object.
      * @param weatherEffectsConfig - Weather config object (or null/undefined to clear the container).
+     *
+     * @privateRemarks Foundry has this typed as just `object`, but explicitly calls it with null and implicitly with undefined
      */
-    initializeEffects(weatherEffectsConfig?: WeatherEffects.WeatherEffectsConfig | null): void;
+    initializeEffects(weatherEffectsConfig?: WeatherEffects.WeatherEffectsConfig | null | undefined): void;
 
     /**
      * Clear the weather container.
@@ -116,6 +128,7 @@ declare global {
      */
     protected static configureOcclusionMask(
       context: PIXI.Shader,
+      /** @privateRemarks can't be NullishProps because `texture` is only checked for `!== undefined` */
       config?: InexactPartial<WeatherEffects.WeatherOcclusionMaskConfiguration>,
     ): void;
 
@@ -126,6 +139,7 @@ declare global {
      */
     protected static configureTerrainMask(
       context: PIXI.Shader,
+      /** @privateRemarks can't be NullishProps because `texture` is only checked for `!== undefined` */
       config?: InexactPartial<WeatherEffects.WeatherTerrainMaskConfiguration>,
     ): void;
 

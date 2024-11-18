@@ -1,4 +1,4 @@
-import type { InexactPartial, ValueOf } from "../../../../../types/utils.d.mts";
+import type { EmptyObject, InexactPartial, ValueOf } from "../../../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -13,17 +13,17 @@ declare global {
     /**
      * The currently revealed vision.
      */
-    vision: CanvasVisionMask.CanvasVisionContainer;
+    vision: CanvasVisionMask.CanvasVisionContainer | undefined;
 
     /**
      * The exploration container which tracks exploration progress.
      */
-    explored: PIXI.Container;
+    explored: PIXI.Container | undefined;
 
     /**
      * The optional visibility overlay sprite that should be drawn instead of the unexplored color in the fog of war.
      */
-    visibilityOverlay: PIXI.Sprite;
+    visibilityOverlay: PIXI.Sprite | undefined;
 
     /**
      * The active vision source data object
@@ -36,8 +36,8 @@ declare global {
      * ```
      */
     visionModeData: {
-      source: foundry.canvas.sources.PointVisionSource.Any | null;
-      activeLightingOptions: VisionMode["_source"]["lighting"];
+      source: foundry.canvas.sources.PointVisionSource.Any | null | undefined;
+      activeLightingOptions: VisionMode["_source"]["lighting"] | EmptyObject;
     };
 
     /**
@@ -74,17 +74,21 @@ declare global {
     /**
      * Does the currently viewed Scene support Token field of vision?
      */
-    get tokenVision(): boolean;
+    get tokenVision(): Scene.ConfiguredInstance["tokenVision"];
 
     /**
      * The configured options used for the saved fog-of-war texture.
      */
-    get textureConfiguration(): FogTextureConfiguration;
+    get textureConfiguration(): VisibilityTextureConfiguration | undefined;
 
     /**
      * Optional overrides for exploration sprite dimensions.
+     *
+     * @privateRemarks Foundry types this parameter as `FogTextureConfiguration`, and
+     * unlike the other place they used this type seeming in error, only `rect`'s
+     * `x, y, width, height` properties are accesses, so I'm assuming they meant Rectangle
      */
-    set explorationRect(rect: FogTextureConfiguration);
+    set explorationRect(rect: Canvas.Rectangle);
 
     /**
      * Initialize all Token vision sources which are present on this layer
@@ -130,6 +134,10 @@ declare global {
      */
     testVisibility(
       point: Canvas.Point,
+      /**
+       * @privateRemarks can't be NullishProps because `tolerance` gets passed directly to
+       * `_createVisibilityTestConfig` which assumes, unchecked, that it's a number
+       * */
       options?: InexactPartial<{
         /**
          * A numeric radial offset which allows for a non-exact match.
@@ -152,6 +160,7 @@ declare global {
      */
     _createVisibilityTestConfig(
       point: Canvas.Point,
+      /** @privateRemarks `tolerance` is assumed, unchecked, to be a number */
       options?: InexactPartial<{
         /**
          * A numeric radial offset which allows for a non-exact match.
@@ -185,7 +194,11 @@ declare global {
     interface TearDownOptions extends CanvasLayer.TearDownOptions {}
   }
 
-  interface FogTextureConfiguration {
+  /**
+   * @privateRemarks This is name foundry has for the return tyoe of `CanvasVisibility#configureVisibilityTexture`
+   * The FogTextureConfiguration references seem to be in error
+   */
+  interface VisibilityTextureConfiguration {
     resolution: number;
     width: number;
     height: number;
