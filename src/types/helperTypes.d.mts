@@ -66,7 +66,10 @@ export type IntentionalPartial<T> = Partial<T>;
 /**
  * This type is used to make a constraint where `T` must be statically known to overlap with `U`.
  */
-export type OverlapsWith<T, U> = [T & U] extends [never] ? U : T;
+export type OverlapsWith<T, U> = Extract<T, U> extends [never] ? U : T;
+
+export type ArrayOverlaps<T, Item> =
+  Extract<T, readonly unknown[]> extends readonly Item[] ? OverlapsWith<T, readonly Item[]> : readonly Item[];
 
 /**
  * Use this whenever a type is given that should match some constraint but is

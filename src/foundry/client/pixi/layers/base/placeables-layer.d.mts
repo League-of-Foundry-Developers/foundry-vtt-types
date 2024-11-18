@@ -1,3 +1,4 @@
+import type { ArrayOverlaps } from "../../../../../types/helperTypes.d.mts";
 import type { ConstructorOf, InexactPartial, NullishProps, ValueOf } from "../../../../../types/utils.d.mts";
 import type Document from "../../../../common/abstract/document.d.mts";
 import type EmbeddedCollection from "../../../../common/abstract/embedded-collection.d.mts";
@@ -46,15 +47,13 @@ declare global {
      * Keep track of an object copied with CTRL+C which can be pasted later
      * @defaultValue `[]`
      */
-    protected _copy: ConcretePlaceableOrPlaceableObject<
-      InstanceType<Document.ConfiguredObjectClassForName<DocumentName>>
-    >[];
+    protected _copy: ConcretePlaceableOrPlaceableObject<Document.ConfiguredObjectInstanceForName<DocumentName>>[];
 
     /**
      * A Quadtree which partitions and organizes Walls into quadrants for efficient target identification.
      */
     quadtree: Quadtree<
-      ConcretePlaceableOrPlaceableObject<InstanceType<Document.ConfiguredObjectClassForName<DocumentName>>>
+      ConcretePlaceableOrPlaceableObject<Document.ConfiguredObjectInstanceForName<DocumentName>>
     > | null;
 
     /**
@@ -92,7 +91,7 @@ declare global {
      * Obtain a reference to the Collection of embedded Document instances within the currently viewed Scene
      */
     get documentCollection(): EmbeddedCollection<
-      InstanceType<Document.ConfiguredClassForName<DocumentName>>,
+      Document.ConfiguredInstanceForName<DocumentName>,
       Scene.ConfiguredInstance
     > | null;
 
@@ -105,17 +104,17 @@ declare global {
      * If objects on this PlaceablesLayer have a HUD UI, provide a reference to its instance
      * @remarks Returns `null` unless overridden
      */
-    get hud(): BasePlaceableHUD<InstanceType<Document.ConfiguredObjectClassForName<DocumentName>>> | null;
+    get hud(): BasePlaceableHUD<Document.ConfiguredObjectInstanceForName<DocumentName>> | null;
 
     /**
      * A convenience method for accessing the placeable object instances contained in this layer
      */
-    get placeables(): InstanceType<Document.ConfiguredObjectClassForName<DocumentName>>[];
+    get placeables(): Document.ConfiguredObjectInstanceForName<DocumentName>[];
 
     /**
      * An Array of placeable objects in this layer which have the _controlled attribute
      */
-    get controlled(): InstanceType<Document.ConfiguredObjectClassForName<DocumentName>>[];
+    get controlled(): Document.ConfiguredObjectInstanceForName<DocumentName>[];
 
     /**
      * Iterates over placeable objects that are eligible for control/select.
@@ -176,8 +175,8 @@ declare global {
      * @param document - The Document instance used to create the placeable object
      */
     createObject(
-      document: InstanceType<Document.ConfiguredClassForName<DocumentName>>,
-    ): InstanceType<Document.ConfiguredObjectClassForName<DocumentName>> | null;
+      document: Document.ConfiguredInstanceForName<DocumentName>,
+    ): Document.ConfiguredObjectInstanceForName<DocumentName>;
 
     override _tearDown(options?: TearDownOptions): Promise<void>;
 
@@ -196,7 +195,7 @@ declare global {
      * @param objectId - The ID of the contained object to retrieve
      * @returns The object instance, or undefined
      */
-    get(objectId: string): InstanceType<Document.ConfiguredObjectClassForName<DocumentName>> | undefined;
+    get(objectId: string): Document.ConfiguredObjectInstanceForName<DocumentName> | undefined;
 
     /**
      * Acquire control over all PlaceableObject instances which are visible and controllable within the layer.
@@ -205,9 +204,7 @@ declare global {
      *                  (default: `{}`)
      * @returns An array of objects that were controlled
      */
-    controlAll(
-      options?: PlaceableObject.ControlOptions,
-    ): InstanceType<Document.ConfiguredObjectClassForName<DocumentName>>[];
+    controlAll(options?: PlaceableObject.ControlOptions): Document.ConfiguredObjectInstanceForName<DocumentName>[];
 
     /**
      * Release all controlled PlaceableObject instance from this layer.
@@ -230,7 +227,7 @@ declare global {
      */
     rotateMany(
       options?: InexactPartial<RotationOptions>,
-    ): Promise<InstanceType<Document.ConfiguredObjectClassForName<DocumentName>>[]>;
+    ): Promise<Document.ConfiguredObjectInstanceForName<DocumentName>[]>;
 
     /**
      * Simultaneously move multiple PlaceableObjects via keyboard movement offsets.
@@ -243,7 +240,7 @@ declare global {
      */
     moveMany(
       options?: InexactPartial<MovementOptions>,
-    ): Promise<InstanceType<Document.ConfiguredObjectClassForName<DocumentName>>[]> | undefined;
+    ): Promise<Document.ConfiguredObjectInstanceForName<DocumentName>[]> | undefined;
 
     /**
      * An internal helper method to identify the array of PlaceableObjects which can be moved or rotated.
@@ -254,8 +251,8 @@ declare global {
      * @remarks Any non-array input for `ids` will default to using currently controlled objects,
      * allowing you to provide `true` to the includeLocked
      */
-    protected _getMovableObjects(
-      ids?: string[] | null,
+    protected _getMovableObjects<T>(
+      ids?: ArrayOverlaps<T, string>,
       includeLocked?: boolean,
     ): Document.ConfiguredObjectInstanceForName<DocumentName>[];
 
@@ -263,30 +260,29 @@ declare global {
      * Undo a change to the objects in this layer
      * This method is typically activated using CTRL+Z while the layer is active
      */
-    undoHistory(): Promise<InstanceType<Document.ConfiguredClassForName<DocumentName>>[]>;
+    undoHistory(): Promise<Document.ConfiguredInstanceForName<DocumentName>[]>;
 
     /**
      * A helper method to prompt for deletion of all PlaceableObject instances within the Scene
      * Renders a confirmation dialogue to confirm with the requester that all objects will be deleted
      * @returns An array of Document objects which were deleted by the operation
+     * @throws An error if the calling user is not a GM or Assistant GM
      */
-    deleteAll(): Promise<InstanceType<Document.ConfiguredClassForName<DocumentName>>[] | false | null>;
+    deleteAll(): Promise<undefined | false | null>;
 
     /**
      * Record a new CRUD event in the history log so that it can be undone later
      * @param type - The event type (create, update, delete)
      * @param data - The object data
+     * @throws An error if any of the objects in the `data` array lack an `_id` key
      */
-    storeHistory(
-      type: PlaceablesLayer.HistoryEventType,
-      data: InstanceType<Document.ConfiguredClassForName<DocumentName>>["_source"],
-    ): void;
+    storeHistory(type: PlaceablesLayer.HistoryEventType, data: Document.ConfiguredSourceForName<DocumentName>[]): void;
 
     /**
      * Copy currently controlled PlaceableObjects to a temporary Array, ready to paste back into the scene later
      * @returns The Array of copied PlaceableObject instances
      */
-    copyObjects(): InstanceType<Document.ConfiguredObjectClassForName<DocumentName>>[];
+    copyObjects(): Document.ConfiguredObjectInstanceForName<DocumentName>[];
 
     /**
      * Paste currently copied PlaceableObjects back to the layer by creating new copies
@@ -309,7 +305,7 @@ declare global {
          */
         snap: boolean;
       }>,
-    ): Promise<InstanceType<Document.ConfiguredClassForName<DocumentName>>[]>;
+    ): Promise<Document.ConfiguredInstanceForName<DocumentName>[]>;
 
     /**
      * Get the data of the copied object pasted at the position given by the offset.
@@ -343,39 +339,21 @@ declare global {
      * @returns A boolean for whether the controlled set was changed in the operation
      */
     selectObjects(
-      options?: InexactPartial<{
-        /**
-         * The top-left x-coordinate of the selection rectangle
-         */
-        x: number;
+      options?: InexactPartial<
+        Canvas.Rectangle & {
+          /**
+           * Optional arguments provided to any called release() method
+           * @defaultValue `{}`
+           */
+          releaseOptions: PlaceableObject.ReleaseOptions;
 
-        /**
-         * The top-left y-coordinate of the selection rectangle
-         */
-        y: number;
-
-        /**
-         * The width of the selection rectangle
-         */
-        width: number;
-
-        /**
-         * The height of the selection rectangle
-         */
-        height: number;
-
-        /**
-         * Optional arguments provided to any called release() method
-         * @defaultValue `{}`
-         */
-        releaseOptions: PlaceableObject.ReleaseOptions;
-
-        /**
-         * Optional arguments provided to any called control() method
-         * @defaultValue `{ releaseOthers: false }`
-         */
-        controlOptions: PlaceableObject.ControlOptions;
-      }>,
+          /**
+           * Optional arguments provided to any called control() method
+           * @defaultValue `{ releaseOthers: false }`
+           */
+          controlOptions: PlaceableObject.ControlOptions;
+        }
+      >,
       secondOptions?: NullishProps<{
         /**
          * Whether to release other selected objects.
@@ -394,16 +372,17 @@ declare global {
      * @param options        - Additional options passed to Document.update
      *                         (default: `{}`)
      * @returns An array of updated data once the operation is complete
+     * @throws An error if the `transformation` paramater is neither a function nor a plain object
      */
     updateAll(
       transformation:
         | ((
-            placeable: InstanceType<Document.ConfiguredObjectClassForName<DocumentName>>,
-          ) => Partial<InstanceType<Document.ConfiguredClassForName<DocumentName>>["_source"]>)
-        | Partial<InstanceType<Document.ConfiguredClassForName<DocumentName>>["_source"]>,
-      condition?: ((placeable: InstanceType<Document.ConfiguredObjectClassForName<DocumentName>>) => boolean) | null,
+            placeable: Document.ConfiguredObjectInstanceForName<DocumentName>,
+          ) => Partial<Document.ConfiguredSourceForName<DocumentName>>)
+        | Partial<Document.ConfiguredSourceForName<DocumentName>>,
+      condition?: ((placeable: Document.ConfiguredObjectInstanceForName<DocumentName>) => boolean) | null,
       options?: Document.OnUpdateOptions<DocumentName>,
-    ): Promise<Array<InstanceType<Document.ConfiguredClassForName<DocumentName>>>>;
+    ): Promise<Array<Document.ConfiguredInstanceForName<DocumentName>>>;
 
     /**
      * Get the world-transformed drop position.
@@ -453,7 +432,7 @@ declare global {
 
     protected override _canDragLeftStart(user: User.ConfiguredInstance, event: PIXI.FederatedEvent): boolean;
 
-    protected override _onDragLeftStart(event: PIXI.FederatedEvent): unknown;
+    protected override _onDragLeftStart(event: PIXI.FederatedEvent): void;
 
     protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
@@ -463,7 +442,7 @@ declare global {
 
     protected override _onClickRight(event: PIXI.FederatedEvent): void;
 
-    protected override _onMouseWheel(event: WheelEvent): void;
+    protected override _onMouseWheel(event: WheelEvent): ReturnType<this["rotateMany"]>;
 
     protected override _onDeleteKey(event: KeyboardEvent): Promise<void>;
 

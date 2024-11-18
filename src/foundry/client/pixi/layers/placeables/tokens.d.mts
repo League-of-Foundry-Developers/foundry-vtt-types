@@ -1,3 +1,4 @@
+import type { ArrayOverlaps } from "../../../../../types/helperTypes.d.mts";
 import type { InexactPartial, NullishProps } from "../../../../../types/utils.d.mts";
 import type Document from "../../../../common/abstract/document.d.mts";
 
@@ -75,7 +76,10 @@ declare global {
       options?: NullishProps<{ hidden: boolean; snap: boolean }>,
     ): Document.ConfiguredSourceForName<"Token">;
 
-    protected override _getMovableObjects(ids: string[] | null, includeLocked: boolean): Token.ConfiguredInstance[];
+    protected override _getMovableObjects<T>(
+      ids?: ArrayOverlaps<T, string>,
+      includeLocked?: boolean,
+    ): Token.ConfiguredInstance[];
 
     /**
      * Target all Token instances which fall within a coordinate rectangle.
