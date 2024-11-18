@@ -174,7 +174,7 @@ declare global {
       user: User.ConfiguredInstance,
       position: Canvas.Point,
       data?: InexactPartial<User.PingData & PingOptions>,
-    ): Promise<boolean>;
+    ): ReturnType<this["drawPing"]>;
 
     /**
      * Draw a ping at the edge of the viewport, pointing to the location of an off-screen ping.
