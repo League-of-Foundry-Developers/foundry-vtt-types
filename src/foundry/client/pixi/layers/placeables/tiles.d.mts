@@ -37,28 +37,31 @@ declare global {
     /**
      * An array of Tile objects which are rendered within the objects container
      */
-    get tiles(): Tile[];
+    get tiles(): Tile.ConfiguredInstance[];
 
-    override controllableObjects(): Generator<Tile>;
+    override controllableObjects(): Generator<Tile.ConfiguredInstance>;
 
     override getSnappedPoint(point: Canvas.Point): Canvas.Point;
 
-    _tearDown(options?: TearDownOptions): ReturnType<PlaceablesLayer<"Tile">["_draw"]>;
+    protected override _tearDown(options?: TearDownOptions): Promise<void>;
 
-    protected _onDragLeftStart(event: PIXI.FederatedEvent): void;
+    protected override _onDragLeftStart(event: PIXI.FederatedEvent): void;
 
-    protected _onDragLeftMove(event: PIXI.FederatedEvent): void;
+    protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
-    protected _onDragLeftDrop(event: PIXI.FederatedEvent): void;
+    protected override _onDragLeftDrop(event: PIXI.FederatedEvent): void;
 
-    protected _onDragLeftCancel(event: PointerEvent): ReturnType<PlaceablesLayer<"Tile">["_onDragLeftCancel"]>;
+    protected override _onDragLeftCancel(event: PointerEvent): void;
 
     /**
      * Handle drop events for Tile data on the Tiles Layer
      * @param event - The concluding drag event
      * @param data  - The extracted Tile data
      */
-    protected _onDropData(event: DragEvent, data: DropData.Any): Promise<TileDocument | false | void>;
+    protected _onDropData(
+      event: DragEvent,
+      data: DropData.Any, //TODO: I don't think this is right. It wants, I think, a TileDocument source?
+    ): Promise<TileDocument.ConfiguredInstance | false | void>;
 
     /**
      * Prepare the data object when a new Tile is dropped onto the canvas
@@ -66,14 +69,18 @@ declare global {
      * @param data  - The extracted Tile data
      * @returns The prepared data to create
      */
-    _getDropData(event: DragEvent, data: TilesLayer.DropData): Promise<DropData.Any>;
+    _getDropData(
+      event: DragEvent,
+      //TODO: I don't think this is right. It wants, I think, a TileDocument source? and also returns one
+      data: TilesLayer.DropData,
+    ): Promise<DropData.Any>;
 
     /**
      * Get an array of overhead Tile objects which are roofs
      * @deprecated since v12 until v14
      * @remarks "TilesLayer#roofs has been deprecated without replacement."
      */
-    get roofs(): Tile[];
+    get roofs(): Tile.ConfiguredInstance[];
 
     /**
      * @deprecated since v11, will be removed in v13

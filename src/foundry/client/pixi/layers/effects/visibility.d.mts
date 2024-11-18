@@ -160,7 +160,7 @@ declare global {
      */
     _createVisibilityTestConfig(
       point: Canvas.Point,
-      /** @privateRemarks `tolerance` is assumed, unchecked, to be a number */
+      /** @privateRemarks Can't be NullishProps because `tolerance` is assumed, unchecked, to be a number */
       options?: InexactPartial<{
         /**
          * A numeric radial offset which allows for a non-exact match.

@@ -1,5 +1,5 @@
 import type { ArrayOverlaps } from "../../../../../types/helperTypes.d.mts";
-import type { InexactPartial, NullishProps } from "../../../../../types/utils.d.mts";
+import type { NullishProps } from "../../../../../types/utils.d.mts";
 import type Document from "../../../../common/abstract/document.d.mts";
 
 declare global {
@@ -13,8 +13,9 @@ declare global {
     /**
      * The current index position in the tab cycle
      * @defaultValue `null`
+     * @remarks Foundry marked \@private but accesses it from Canvas
      */
-    protected _tabIndex: number | null;
+    _tabIndex: number | null;
 
     /**
      * @privateRemarks This is not overridden in foundry but reflects the real behavior.
@@ -62,13 +63,13 @@ declare global {
 
     override getSnappedPoint(point: Canvas.Point): Canvas.Point;
 
-    override _draw(options?: DrawOptions): Promise<void>;
+    protected override _draw(options?: DrawOptions): Promise<void>;
 
-    override _tearDown(options?: TearDownOptions): Promise<void>;
+    protected override _tearDown(options?: TearDownOptions): Promise<void>;
 
-    override _activate(): void;
+    protected override _activate(): void;
 
-    override _deactivate(): void;
+    protected override _deactivate(): void;
 
     override _pasteObject(
       copy: Token.ConfiguredInstance,
@@ -86,7 +87,7 @@ declare global {
      * @param rectangle - The selection rectangle.
      * @param options - Additional options to configure targeting behaviour.
      */
-    targetObjects(rectangle: Canvas.Rectangle, options?: InexactPartial<PlaceableObject.ControlOptions>): number;
+    targetObjects(rectangle: Canvas.Rectangle, options?: NullishProps<PlaceableObject.ControlOptions>): number;
 
     /**
      * Cycle the controlled token by rotating through the list of Owned Tokens that are available within the Scene
@@ -94,7 +95,7 @@ declare global {
      * @param forwards - Which direction to cycle. A truthy value cycles forward, while a false value cycles backwards.
      * @param reset    - Restart the cycle order back at the beginning?
      */
-    cycleTokens(forwards: boolean, reset: boolean): Token | null;
+    cycleTokens(forwards: boolean, reset: boolean): Token.ConfiguredInstance | null;
 
     /**
      * Get the tab cycle order for tokens by sorting observable tokens based on their distance from top-left.
@@ -119,7 +120,7 @@ declare global {
 
     override storeHistory(
       type: PlaceablesLayer.HistoryEventType,
-      data: TokenDocument.ConfiguredInstance["_source"],
+      data: Document.ConfiguredSourceForName<"Token">[],
     ): void;
 
     /**
@@ -131,7 +132,7 @@ declare global {
     ): Promise<ReturnType<Notifications["warn"]> | false | TokenDocument.ConfiguredInstance>;
 
     //TODO: use configured ruler type once it exists
-    protected override _onClickLeft(event: PIXI.FederatedEvent): ReturnType<Ruler["_onClickLeft"]>; // ReturnType<CONFIG.Canvas["rulerClass"]["_onClickLeft"]>;
+    protected override _onClickLeft(event: PIXI.FederatedEvent): ReturnType<Ruler["_onClickLeft"]> | void; // ReturnType<CONFIG.Canvas["rulerClass"]["_onClickLeft"]>;
 
     protected override _onMouseWheel(event: WheelEvent): ReturnType<this["rotateMany"]>;
 

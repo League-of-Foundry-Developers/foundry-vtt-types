@@ -1,3 +1,4 @@
+import type { IntentionalPartial } from "../../../../../types/helperTypes.d.mts";
 import type { InexactPartial, NullishProps } from "../../../../../types/utils.d.mts";
 import type { AmbientSoundEffect } from "../../../../common/documents/_types.d.mts";
 
@@ -161,6 +162,7 @@ declare global {
       src: string,
       origin: Canvas.Point,
       radius: number,
+      /** @privateRemarks Can't be NullishProps because `volume` is assumed to be number */
       options?: InexactPartial<SoundsLayer.PlayAtPositionOptions>,
     ): Promise<foundry.audio.Sound | null>;
 
@@ -169,7 +171,7 @@ declare global {
      * @param args - Arguments passed to SoundsLayer#playAtPosition
      * @returns  A Promise which resolves once playback for the initiating client has completed
      */
-    emitAtPosition(...args: Parameters<SoundsLayer["playAtPosition"]>): Promise<void>;
+    emitAtPosition(...args: Parameters<this["playAtPosition"]>): ReturnType<this["playAtPosition"]>;
 
     /**
      * Handle mouse cursor movements which may cause ambient audio previews to occur
@@ -189,7 +191,10 @@ declare global {
      * @param event - The drag drop event
      * @param data  - The dropped transfer data.
      */
-    protected _onDropData(event: DragEvent, data: SoundsLayer.DropData): Promise<void>;
+    protected _onDropData(
+      event: DragEvent,
+      data: SoundsLayer.DropData,
+    ): Promise<ReturnType<PlaceablesLayer<"AmbientSound">["_createPreview"]> | false>;
   }
 
   namespace SoundsLayer {
@@ -234,8 +239,11 @@ declare global {
       baseEffect: AmbientSoundEffect;
       /** A muffled sound effect to apply to playback, a sound may only be muffled if it is not constrained by walls */
       muffledEffect: AmbientSoundEffect;
-      /** Additional data passed to the SoundSource constructor */
-      sourceData: InexactPartial<PointSourceData>;
+      /**
+       * Additional data passed to the SoundSource constructor
+       * @privateRemarks IntentionalPartial because this is spread into an object with existing keys
+       */
+      sourceData: IntentionalPartial<PointSourceData>;
       /** Additional options passed to Sound#play */
       playbackOptions: foundry.audio.Sound.PlaybackOptions;
     }

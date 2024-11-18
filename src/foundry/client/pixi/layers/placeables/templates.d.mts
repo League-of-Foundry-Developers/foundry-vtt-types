@@ -48,7 +48,10 @@ declare global {
 
     protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
-    protected override _onMouseWheel(event: WheelEvent): void | ReturnType<MeasuredTemplate["rotate"]>;
+    // @ts-expect-error Foundry is changing the return type here from Promise<PlaceableObject[]> to Promise<MeasuredTemplate>
+    protected override _onMouseWheel(
+      event: WheelEvent,
+    ): ReturnType<MeasuredTemplate.ConfiguredInstance["rotate"]> | void;
   }
 
   namespace TemplateLayer {

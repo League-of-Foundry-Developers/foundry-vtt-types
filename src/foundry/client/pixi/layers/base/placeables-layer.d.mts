@@ -168,7 +168,7 @@ declare global {
       | Exclude<this["documentCollection"], null>
       | InstanceType<Document.ConfiguredClassForName<DocumentName>>[];
 
-    override _draw(options?: DrawOptions): Promise<void>;
+    protected override _draw(options?: DrawOptions): Promise<void>;
 
     /**
      * Draw a single placeable object
@@ -178,11 +178,11 @@ declare global {
       document: Document.ConfiguredInstanceForName<DocumentName>,
     ): Document.ConfiguredObjectInstanceForName<DocumentName>;
 
-    override _tearDown(options?: TearDownOptions): Promise<void>;
+    protected override _tearDown(options?: TearDownOptions): Promise<void>;
 
-    override _activate(): void;
+    protected override _activate(): void;
 
-    override _deactivate(): void;
+    protected override _deactivate(): void;
 
     /**
      * Clear the contents of the preview container, restoring visibility of original (non-preview) objects.
@@ -213,6 +213,7 @@ declare global {
      *                  (default: `{}`)
      * @returns The number of PlaceableObject instances which were released
      */
+    //todo: audit release options
     releaseAll(options?: PlaceableObject.ReleaseOptions): number;
 
     /**
@@ -226,6 +227,7 @@ declare global {
      * @throws An error if explicitly provided id is not valid
      */
     rotateMany(
+      /** @privateRemarks Can't be NullishProps because at least one of `angle` or `delta` must be numeric */
       options?: InexactPartial<RotationOptions>,
     ): Promise<Document.ConfiguredObjectInstanceForName<DocumentName>[]>;
 
@@ -239,6 +241,7 @@ declare global {
      * @throws An error if explicitly provided id is not valid
      */
     moveMany(
+      /** @privateRemarks can't be NullishProps becuase `dx` and `dy` must be in `[-1, 0, 1]` */
       options?: InexactPartial<MovementOptions>,
     ): Promise<Document.ConfiguredObjectInstanceForName<DocumentName>[]> | undefined;
 
@@ -339,6 +342,7 @@ declare global {
      * @returns A boolean for whether the controlled set was changed in the operation
      */
     selectObjects(
+      /** @privateRemarks Can't be NullishProps because `PlaceableObject#control` accesses `controlOptions.releaseOthers` without further checks */
       options?: InexactPartial<
         Canvas.Rectangle & {
           /**
@@ -406,7 +410,7 @@ declare global {
      * @returns The created preview object
      */
     protected _createPreview(
-      createData: InstanceType<Document.ConfiguredClassForName<DocumentName>>["_source"],
+      createData: Document.ConfiguredSourceForName<DocumentName>,
       options?: NullishProps<{
         /**
          * Render the preview object config sheet?
@@ -426,7 +430,7 @@ declare global {
          */
         left: number;
       }>,
-    ): Promise<DocumentName>;
+    ): Promise<Document.ConfiguredObjectInstanceForName<DocumentName>>;
 
     protected override _onClickLeft(event: PIXI.FederatedEvent): void;
 

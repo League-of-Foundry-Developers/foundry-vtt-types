@@ -1,7 +1,5 @@
 import type { InexactPartial } from "../../../../../types/utils.d.mts";
 
-export {};
-
 declare global {
   /**
    * The Notes Layer which contains Note canvas objects
@@ -65,6 +63,7 @@ declare global {
      */
     panToNote(
       note: Note,
+      /** @privateRemarks Can't be NullishProps because `duration` is passed to `canvas.animatePan` which assumes it is a number */
       options?: InexactPartial<{
         /**
          * The resulting zoom level.

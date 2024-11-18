@@ -53,7 +53,8 @@ declare global {
 
     protected override _onDragLeftCancel(event: PointerEvent): void;
 
-    protected _onMouseWheel(event: WheelEvent): Promise<AmbientLight>;
+    // @ts-expect-error Foundry is changing the return type here from Promise<PlaceableObject[]> to just Promise<AmbientLight>
+    protected _onMouseWheel(event: WheelEvent): ReturnType<AmbientLight.ConfiguredInstance["rotate"]>;
 
     /**
      * Actions to take when the darkness level of the Scene is changed

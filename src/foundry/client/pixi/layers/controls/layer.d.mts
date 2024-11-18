@@ -1,4 +1,5 @@
-import type { InexactPartial } from "../../../../../types/utils.d.mts";
+import type { IntentionalPartial } from "../../../../../types/helperTypes.d.mts";
+import type { InexactPartial, NullishProps } from "../../../../../types/utils.d.mts";
 import type { LineIntersection } from "../../../../common/utils/geometry.d.mts";
 
 declare global {
@@ -173,7 +174,10 @@ declare global {
     handlePing(
       user: User.ConfiguredInstance,
       position: Canvas.Point,
-      data?: InexactPartial<User.PingData & PingOptions>,
+      /**
+       * @privateRemarks User.PingData is InexactPartial because `zoom` is assumed to be number
+       * PingOptions is IntentionalPartial because it gets `mergeObject`ed with some defaults */
+      data?: InexactPartial<User.PingData> & IntentionalPartial<PingOptions>,
     ): ReturnType<this["drawPing"]>;
 
     /**
@@ -185,8 +189,9 @@ declare global {
      */
     drawOffscreenPing(
       position: Canvas.Point,
-      options?: InexactPartial<
-        PingOptions & {
+      options?: /** @privateRemarks PingOptions gets spread */
+      IntentionalPartial<PingOptions> &
+        NullishProps<{
           /**
            * The style of ping to draw, from CONFIG.Canvas.pings.
            * @defaultValue `"arrow"`
@@ -198,8 +203,7 @@ declare global {
            * The user who pinged.
            */
           user: User.ConfiguredInstance;
-        }
-      >,
+        }>,
     ): ReturnType<this["drawPing"]>;
 
     /**
@@ -211,19 +215,21 @@ declare global {
      */
     drawPing(
       position: PIXI.Point,
-      options?: PingOptions & {
-        /**
-         * The style of ping to draw, from CONFIG.Canvas.pings.
-         * @defaultValue `"pulse"`
-         */
-        //TODO: eventually replace with a type like `keyof CONFIG.Canvas.pings` but something mergable?
-        style?: string;
+      options?: /** @privateRemarks PingOptions gets spread */
+      IntentionalPartial<PingOptions> &
+        NullishProps<{
+          /**
+           * The style of ping to draw, from CONFIG.Canvas.pings.
+           * @defaultValue `"pulse"`
+           */
+          //TODO: eventually replace with a type like `keyof CONFIG.Canvas.pings` but something mergable?
+          style: string;
 
-        /**
-         * The user who pinged.
-         */
-        user?: User.ConfiguredInstance;
-      },
+          /**
+           * The user who pinged.
+           */
+          user: User.ConfiguredInstance;
+        }>,
     ): ReturnType<Ping["animate"]>;
 
     /**

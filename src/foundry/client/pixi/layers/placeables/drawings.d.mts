@@ -42,7 +42,7 @@ declare global {
 
     override get hud(): Exclude<Canvas["hud"], undefined>["drawing"];
 
-    override get hookName(): (typeof DrawingsLayer)["name"];
+    override get hookName(): string;
 
     override getSnappedPoint(point: Canvas.Point): Canvas.Point;
 
@@ -68,6 +68,9 @@ declare global {
 
     protected override _onClickLeft2(event: PIXI.FederatedEvent): void;
 
+    /**
+     * @throws A `DataModelValidationError` if document creation fails
+     */
     protected override _onDragLeftStart(event: PIXI.FederatedEvent): void;
 
     protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
