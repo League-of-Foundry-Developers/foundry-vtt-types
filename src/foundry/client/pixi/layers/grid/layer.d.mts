@@ -16,6 +16,12 @@ declare global {
     static get instance(): Canvas["grid"];
 
     /**
+     * The grid mesh.
+     * @defaultValue `undefined`
+     */
+    mesh: GridMesh | undefined;
+
+    /**
      * The Grid Highlight container
      * @defaultValue `undefined`
      */
@@ -46,15 +52,18 @@ declare global {
     /**
      * Creates the grid mesh.
      */
-    protected _drawMesh(): Promise<GridMesh>;
+    protected _drawMesh(): Promise<ReturnType<GridMesh["initialize"]>>;
 
     /**
      * Initialize the grid mesh appearance and configure the grid shader.
      */
     initializeMesh(
-      options?: NullishProps<{
+      /**
+       * @privateRemarks Can't be NullishProps because ultimately `GridMesh#_initialize` does `!== undefined` checks
+       */
+      options?: InexactPartial<{
         /** The grid style */
-        style: string; // keyof CONFIG["Canvas"]["gridStyles"]; TODO: Update as part of #2572
+        style: string; //TODO: Update as part of #2572 to keyof CONFIG["Canvas"]["gridStyles"];
 
         /** The grid thickness */
         thickness: number;
@@ -96,7 +105,7 @@ declare global {
      * @param name    - The name for the referenced highlight layer
      * @param options - Options for the grid position that should be highlighted
      */
-    highlightPosition(name: string, options?: GridLayer.HighlightPositionOptions): false | void;
+    highlightPosition(name: string, options: GridLayer.HighlightPositionOptions): void;
 
     /**
      * @deprecated since v12, will be removed in v14
@@ -160,7 +169,7 @@ declare global {
       x: number,
       y: number,
       interval?: number,
-      options?: InexactPartial<{
+      options?: NullishProps<{
         /**
          * The token
          */
@@ -248,7 +257,7 @@ declare global {
      * @deprecated since v12, will be removed in v14
      * @remarks Used by {@link foundry.grid.BaseGrid#measureDistances}
      */
-    type MeasureDistancesOptions = InexactPartial<{
+    type MeasureDistancesOptions = NullishProps<{
       /** Return the distance in grid increments rather than the co-ordinate distance. */
       gridSpaces?: boolean;
     }>;
