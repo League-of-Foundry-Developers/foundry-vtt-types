@@ -1,4 +1,4 @@
-import type { ConfiguredDocuments } from "../../../types/configuredDocuments.d.mts";
+import type { ConfiguredDocuments, DefaultDocuments } from "../../../types/configuredDocuments.d.mts";
 import type { DatabaseOperationsFor, GetKey, MakeConform, MustConform } from "../../../types/helperTypes.mts";
 import type {
   AnyObject,
@@ -916,6 +916,11 @@ declare abstract class AnyDocument extends Document<any, any, any> {
   getFlag(scope: never, key: never): any;
 }
 
+// Note(LukeAbby): The point of this class is to show up in intellisense.
+// When something fails to be configured it should be replaced with `typeof ConfigurationFailure & typeof Item` or whatever the relevant class is.
+// This helps to minimize the number of errors that appears in a repo with broken configuration as they can be very misleading and confusing.
+declare abstract class ConfigurationFailure extends AnyDocument {}
+
 declare namespace Document {
   /** Any Document, except for Settings */
   type Any = AnyDocument;
@@ -1031,20 +1036,23 @@ declare namespace Document {
 
   type ConfiguredClass<T extends { metadata: Metadata.Any }> = ConfiguredClassForName<T["metadata"]["name"]>;
 
-  type ConfiguredClassForName<Name extends Type> = MakeConform<ConfiguredDocuments[Name], Document.AnyConstructor>;
+  type ConfiguredClassForName<Name extends Type> = MakeConform<
+    ConfiguredDocuments[Name],
+    typeof ConfigurationFailure & DefaultDocuments[Name]
+  >;
 
   type SubTypesOf<T extends Type> =
     ConfiguredInstanceForName<T> extends { type: infer Types } ? Types : typeof foundry.CONST.BASE_DOCUMENT_TYPE;
 
   type ToConfiguredClass<ConcreteDocument extends Document.Internal.Constructor> = MakeConform<
     ConfiguredDocuments[NameFor<ConcreteDocument>],
-    Document.AnyConstructor
+    typeof ConfigurationFailure & DefaultDocuments[NameFor<ConcreteDocument>]
   >;
 
   type ToConfiguredInstance<ConcreteDocument extends Document.Internal.Constructor> = MakeConform<
     // NOTE(LukeAbby): This avoids calling `Document.ToConfiguredClass` because that checks the static side of the class which can be expensive and even lead to loops.
     InstanceType<ConfiguredDocuments[NameFor<ConcreteDocument>]>,
-    Document.Any
+    ConfigurationFailure & InstanceType<DefaultDocuments[NameFor<ConcreteDocument>]>
   >;
 
   type ToConfiguredStored<D extends Document.Internal.Constructor> = Stored<ToConfiguredInstance<D>>;
