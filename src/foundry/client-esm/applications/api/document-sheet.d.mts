@@ -2,7 +2,11 @@ import type { AnyObject, DeepPartial, EmptyObject } from "../../../../types/util
 import type ApplicationV2 from "./application.d.mts";
 
 declare namespace DocumentSheetV2 {
-  export interface Configuration<Document extends foundry.abstract.Document.Any = foundry.abstract.Document.Any>
+  type Any = DocumentSheetV2<any, any, any, any>;
+
+  type AnyConstructor = typeof AnyDocumentSheetV2;
+
+  interface Configuration<Document extends foundry.abstract.Document.Any = foundry.abstract.Document.Any>
     extends ApplicationV2.Configuration {
     /**
      * The Document instance associated with this sheet
@@ -25,7 +29,7 @@ declare namespace DocumentSheetV2 {
     sheetConfig: boolean;
   }
 
-  export interface RenderOptions extends ApplicationV2.RenderOptions {
+  interface RenderOptions extends ApplicationV2.RenderOptions {
     /** A string with the format "\{operation\}\{documentName\}" providing context */
     renderContext: string;
 
@@ -117,3 +121,7 @@ declare class DocumentSheetV2<
 }
 
 export default DocumentSheetV2;
+
+declare abstract class AnyDocumentSheetV2 extends DocumentSheetV2<any, any, any, any> {
+  constructor(arg0: never, ...args: never[]);
+}
