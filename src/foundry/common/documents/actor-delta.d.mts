@@ -62,7 +62,7 @@ declare namespace BaseActorDelta {
   type Parent = TokenDocument.ConfiguredInstance | null;
 
   // Note that in places like CONFIG the only eligible type is "base"
-  type TypeNames = fields.TypeDataField.TypeNames<typeof documents.BaseActor>;
+  type TypeNames = fields.TypeDataField.TypeNames<"Actor">;
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;
   type UpdateData = fields.SchemaField.InnerAssignmentType<Schema>;

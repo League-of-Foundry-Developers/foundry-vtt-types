@@ -1,11 +1,11 @@
-import type { AnyObject, Merge } from "../../../types/utils.mts";
+import type { AnyObject, InexactPartial, Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
 import type * as fields from "../data/fields.d.mts";
 import type * as documents from "./_module.mts";
 
 /**
- * The Document definition for a ChatMessage.
+ * The ChatMessage Document.
  * Defines the DataSchema and common behaviors for a ChatMessage which are shared between both client and server.
  */
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
@@ -38,16 +38,16 @@ declare class BaseChatMessage extends Document<BaseChatMessage.Schema, BaseChatM
   static #canUpdate(user: documents.BaseUser, doc: BaseChatMessage, data: BaseChatMessage.UpdateData): boolean;
 
   /**
-   * Is a user able to delete an existing chat message?
-   * @internal
-   */
-  static #canDelete(user: documents.BaseUser, doc: BaseChatMessage): boolean;
-
-  /**
    * Validate that Rolls belonging to the ChatMessage document are valid
    * @param rollJSON - The serialized Roll data
    */
   static #validateRoll(rollJSON: string): void;
+
+  override testUserPermission(
+    user: foundry.documents.BaseUser,
+    permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
+    options?: InexactPartial<{ exact: boolean }>,
+  ): boolean;
 
   static override migrateData(source: AnyObject): AnyObject;
 
@@ -61,12 +61,20 @@ declare class BaseChatMessage extends Document<BaseChatMessage.Schema, BaseChatM
       embedded?: boolean;
     },
   ): AnyObject;
+
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks Replaced by `author`
+   */
+  get user(): this["author"];
 }
 
 export default BaseChatMessage;
 
 declare namespace BaseChatMessage {
   type Parent = null;
+
+  type TypeNames = Game.Model.TypeNames<"ChatMessage">;
 
   type Metadata = Merge<
     Document.Metadata.Default,
@@ -79,7 +87,6 @@ declare namespace BaseChatMessage {
       permissions: {
         create: (user: documents.BaseUser, doc: Document.Any) => boolean;
         update: (user: documents.BaseUser, doc: Document.Any, data: UpdateData) => boolean;
-        delete: (user: documents.BaseUser, doc: Document.Any) => boolean;
       };
       schemaVersion: string;
     }
@@ -98,11 +105,15 @@ declare namespace BaseChatMessage {
      */
     _id: fields.DocumentIdField;
 
+    type: fields.DocumentTypeField<typeof BaseChatMessage, { initial: typeof foundry.CONST.BASE_DOCUMENT_TYPE }>;
+
+    system: fields.TypeDataField<typeof BaseChatMessage>;
+
     /**
-     * The message type from CONST.CHAT_MESSAGE_TYPES
-     * @defaultValue `CONST.CHAT_MESSAGE_TYPES.OTHER`
+     * The message type from CONST.CHAT_MESSAGE_STYLES
+     * @defaultValue `CONST.CHAT_MESSAGE_STYLES.OTHER`
      */
-    type: fields.NumberField<{
+    style: fields.NumberField<{
       required: true;
       choices: CONST.CHAT_MESSAGE_STYLES[];
       initial: typeof CONST.CHAT_MESSAGE_STYLES.OTHER;
@@ -113,7 +124,7 @@ declare namespace BaseChatMessage {
      * The _id of the User document who generated this message
      * @defaultValue `game?.user?.id`
      */
-    user: fields.ForeignDocumentField<typeof documents.BaseUser, { nullable: false; initial: () => string }>;
+    author: fields.ForeignDocumentField<typeof documents.BaseUser, { nullable: false; initial: () => string }>;
 
     /**
      * The timestamp at which point this message was generated
@@ -204,5 +215,7 @@ declare namespace BaseChatMessage {
      * @defaultValue `{}`
      */
     flags: fields.ObjectField.FlagsField<"ChatMessage">;
+
+    _stats: fields.DocumentStatsField;
   }
 }

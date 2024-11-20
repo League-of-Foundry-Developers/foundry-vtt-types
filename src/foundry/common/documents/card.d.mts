@@ -1,17 +1,22 @@
-import type { AnyObject, InexactPartial, Merge } from "../../../types/utils.mts";
+import type { InexactPartial, Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
 import type * as fields from "../data/fields.d.mts";
 import type * as documents from "./_module.mts";
 
 /**
- * The Document definition for a Card.
+ * The Card Document.
  * Defines the DataSchema and common behaviors for a Card which are shared between both client and server.
  */
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
 declare class BaseCard extends Document<BaseCard.Schema, BaseCard.Metadata, any> {
+  /**
+   * @privateRemarks Manual override of the return due to TS limitations with static `this`
+   */
+  static get TYPES(): BaseCard.TypeNames[];
+
   /**
    * @param data    - Initial data from which to construct the Card
    * @param context - Construction context options
@@ -34,11 +39,6 @@ declare class BaseCard extends Document<BaseCard.Schema, BaseCard.Metadata, any>
   static DEFAULT_ICON: string;
 
   /**
-   * The allowed set of Card types which may exist
-   */
-  static get TYPES(): BaseCard.TypeNames[];
-
-  /**
    * Is a User able to create a new Card within this parent?
    */
   static #canCreate(user: documents.BaseUser, doc: BaseCard, data: BaseCard.ConstructorData): boolean;
@@ -59,19 +59,6 @@ declare class BaseCard extends Document<BaseCard.Schema, BaseCard.Metadata, any>
       exact: boolean;
     }>,
   ): boolean;
-
-  static override migrateData(source: AnyObject): AnyObject;
-
-  static override shimData(
-    data: AnyObject,
-    options?: {
-      /**
-       * Apply shims to embedded models?
-       * @defaultValue `true`
-       */
-      embedded?: boolean;
-    },
-  ): AnyObject;
 }
 
 export default BaseCard;
@@ -79,13 +66,14 @@ export default BaseCard;
 declare namespace BaseCard {
   type Parent = Cards.ConfiguredInstance | null;
 
-  type TypeNames = fields.TypeDataField.TypeNames<typeof BaseCard>;
+  type TypeNames = Game.Model.TypeNames<"Card">;
 
   type Metadata = Merge<
     Document.Metadata.Default,
     {
       name: "Card";
       collection: "cards";
+      hasTypeData: true;
       indexed: true;
       label: string;
       labelPlural: string;
@@ -93,6 +81,7 @@ declare namespace BaseCard {
         create: () => boolean;
         update: () => boolean;
       };
+      compendiumIndexFields: ["name", "type", "suit", "sort"];
       schemaVersion: string;
     }
   >;
@@ -103,7 +92,7 @@ declare namespace BaseCard {
   type Properties = fields.SchemaField.InnerInitializedType<Schema>;
   type Source = fields.SchemaField.InnerPersistedType<Schema>;
 
-  interface Schema<TypeName extends TypeNames = TypeNames> extends DataSchema {
+  interface Schema extends DataSchema {
     /**
      * The _id which uniquely identifies this Card document
      * @defaultValue `null`
@@ -123,16 +112,11 @@ declare namespace BaseCard {
      * A category of card (for example, a suit) to which this card belongs
      * @defaultValue `BaseCard.TYPES[0]`
      */
-    type: fields.StringField<
+    type: fields.DocumentTypeField<
+      typeof BaseCard,
       {
-        required: true;
-        label: "CARD.Type";
-        choices: () => typeof BaseCard.TYPES;
-        initial: () => (typeof BaseCard.TYPES)[0];
-      },
-      TypeName,
-      TypeName,
-      TypeName
+        initial: typeof foundry.CONST.BASE_DOCUMENT_TYPE;
+      }
     >;
 
     /**
@@ -250,5 +234,7 @@ declare namespace BaseCard {
      * @defaultValue `{}`
      */
     flags: fields.ObjectField.FlagsField<"Card">;
+
+    _stats: fields.DocumentStatsField;
   }
 }

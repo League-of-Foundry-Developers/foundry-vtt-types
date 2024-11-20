@@ -2,9 +2,10 @@ import type { Socket } from "socket.io-client";
 import type {
   ConfiguredDocumentClassForName,
   ConfiguredModule,
+  GetKey,
   ModuleRequiredOrOptional,
 } from "../../types/helperTypes.d.mts";
-import type { ValueOf } from "../../types/utils.d.mts";
+import type { EmptyObject, ValueOf } from "../../types/utils.d.mts";
 import type BasePackage from "../common/packages/base-package.d.mts";
 import type { Document } from "../common/abstract/module.d.mts";
 
@@ -599,6 +600,30 @@ declare global {
       get<T extends string>(id: T): (Module & ConfiguredModule<T>) | Exclude<ModuleRequiredOrOptional<T>, undefined>;
     }
 
+    namespace Model {
+      /**
+       * Get the configured core and system type names for a specific document type.
+       * @typeParam DocumentName - the type of the Document this data is for
+       */
+      type TypeNames<DocumentName extends Document.AnyConstructor> = string & keyof Model[DocumentName];
+    }
+
+    type Model = {
+      [DocumentType in Document.Type]: {
+        // The `& string` is helpful even though there should never be any numeric/symbol keys.
+        // This is because when `keyof Config<...>` is deferred then TypeScript does a bunch of proofs under the assumption that `SystemTypeNames` could be a `string | number` until proven otherwise.
+        // This causes issues where there shouldn't be, for example it has been observed to obstruct the resolution of the `Actor` class.
+        [SubType in
+          | Document.CoreTypesForName<DocumentType>
+          | keyof GetKey<DataModelConfig, DocumentType, unknown>
+          | keyof GetKey<SourceConfig, DocumentType, unknown> as SubType & string]: GetKey<
+          GetKey<SourceConfig, DocumentType>,
+          SubType,
+          EmptyObject
+        >;
+      };
+    };
+
     type Data = {
       activeUsers: string[];
       addresses: {
@@ -661,7 +686,7 @@ declare global {
       documentTypes: Record<foundry.CONST.DOCUMENT_TYPES, string[]>;
       // TODO: This is also inheriting the configured types,
       // but is only filled in if there's `template.json`
-      model: Record<foundry.CONST.DOCUMENT_TYPES, Record<string, object>>;
+      model: Model;
       userId: string;
       world: World["_source"];
     } & {

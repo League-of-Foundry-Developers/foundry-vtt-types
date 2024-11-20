@@ -2790,7 +2790,7 @@ declare namespace ForeignDocumentField {
     ConcreteDocument extends Document.AnyConstructor,
     Opts extends Options,
   > = DataField.DerivedInitializedType<
-    Opts["idOnly"] extends true ? string : Document.ToConfiguredClass<ConcreteDocument>,
+    Opts["idOnly"] extends true ? string : Document.ToConfiguredInstance<ConcreteDocument>,
     MergedOptions<Opts>
   >;
 
@@ -3902,28 +3902,23 @@ declare namespace TypeDataField {
   /**
    * Get the configured core and system type names for a specific document type.
    * @typeParam DocumentType - the type of the Document this data is for
+   * @deprecated Use the Game.Model namespace instead of TypeDataField
    */
-  type TypeNames<DocumentType extends Document.SystemConstructor> =
-    | CoreTypeNames<DocumentType>
-    | SystemTypeNames<DocumentType>;
+  type TypeNames<DocumentType extends Document.SystemConstructor> = Game.Model.TypeNames<DocumentType>;
 
   /**
    * Get the core type names for a specific document type.
    * @typeParam DocumentType - the type of the Document this data is for
+   * @deprecated Use `DocumentType["metadata"]["coreTypes"][number]`
    */
-  type CoreTypeNames<DocumentType extends Document.SystemConstructor> =
-    DocumentType["metadata"]["coreTypes"] extends string[]
-      ? DocumentType["metadata"]["coreTypes"][number] | "base"
-      : "base";
+  type CoreTypeNames<DocumentType extends Document.SystemConstructor> = DocumentType["metadata"]["coreTypes"][number];
 
   /**
    * Get the configured system type names for a specific document type.
    * @typeParam DocumentType - the type of the Document this system data is for
+   * @deprecated Use the Game.Model namespace instead of TypeDataField
    */
-  // The `& string` is helpful even though there should never be any numeric/symbol keys.
-  // This is because when `keyof Config<...>` is deferred then TypeScript does a bunch of proofs under the assumption that `SystemTypeNames` could be a `string | number` until proven otherwise.
-  // This causes issues where there shouldn't be, for example it has been observed to obstruct the resolution of the `Actor` class.
-  type SystemTypeNames<DocumentType extends Document.SystemConstructor> = keyof Config<DocumentType> & string;
+  type SystemTypeNames<DocumentType extends Document.SystemConstructor> = Game.Model.SystemTypeNames<DocumentType["metadata"]["name"]>;
 
   /**
    * A shorthand for the assignment type of a TypeDataField class.

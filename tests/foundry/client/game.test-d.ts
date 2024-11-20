@@ -1,4 +1,5 @@
 import { expectTypeOf, assertType } from "vitest";
+import type { EmptyObject } from "../../../src/types/utils.d.mts";
 
 declare const aGame: Game;
 
@@ -84,4 +85,22 @@ if (game instanceof Game) {
 if (game.ready) {
   expectTypeOf(game.declarationMergingWorks).toEqualTypeOf<number>();
   expectTypeOf(game.onlyInReady).toEqualTypeOf<string>();
+}
+
+// Game model
+declare const itemTypes: keyof Game.Model.ModelForType<typeof Item>;
+expectTypeOf(itemTypes).toEqualTypeOf<"weapon" | "armor" | "base">();
+
+if (game instanceof Game) {
+  const tokenModel = game.model.Token;
+  expectTypeOf(tokenModel.base).toEqualTypeOf<EmptyObject>();
+
+  const itemModel = game.model.Item;
+  expectTypeOf(itemModel.base).toEqualTypeOf<EmptyObject>();
+  expectTypeOf(itemModel.weapon).toEqualTypeOf<EmptyObject>();
+
+  const journalEntryPageModel = game.model.JournalEntryPage;
+  // @ts-expect-error base is not a valid subtype for JournalEntryPage
+  journalEntryPageModel.base
+  expectTypeOf(journalEntryPageModel.text).toEqualTypeOf<EmptyObject>();
 }
