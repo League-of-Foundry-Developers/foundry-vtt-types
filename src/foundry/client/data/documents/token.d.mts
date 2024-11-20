@@ -339,4 +339,28 @@ interface ToggleActiveEffectOptions {
   active: boolean;
 }
 
-export type StatusEffect = foundry.documents.BaseActiveEffect.ConstructorData & { id: string };
+/**
+ * Configured status effects which are recognized by the game system.
+ */
+export type StatusEffect = foundry.documents.BaseActiveEffect.ConstructorData & {
+  id: string;
+
+  /**
+   * Alias for ActiveEffectData#name
+   * @deprecated since v11, will be removed in v13
+   */
+  label?: string;
+
+  /**
+   * Alias for ActiveEffectData#img
+   * @deprecated since v12, will be removed in v14
+   */
+  icon?: string;
+
+  /**
+   * Should this effect be selectable in the Token HUD?
+   * This effect is only selectable in the Token HUD if the Token's Actor sub-type is one of the configured ones.
+   * @defaultValue `true`
+   */
+  hud?: boolean | { actorTypes: string };
+};
