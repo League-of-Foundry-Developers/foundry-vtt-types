@@ -4,7 +4,7 @@ import type * as fields from "../data/fields.d.mts";
 import type * as documents from "./_module.mts";
 
 /**
- * The Document definition for a JournalEntry.
+ * The JournalEntry Document.
  * Defines the DataSchema and common behaviors for a JournalEntry which are shared between both client and server.
  */
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
@@ -25,33 +25,6 @@ declare class BaseJournalEntry extends Document<BaseJournalEntry.Schema, BaseJou
   static override defineSchema(): BaseJournalEntry.Schema;
 
   static override migrateData(source: AnyObject): AnyObject;
-
-  static override shimData(
-    data: AnyObject,
-    options?: {
-      /**
-       * Apply shims to embedded models?
-       * @defaultValue `true`
-       */
-      embedded?: boolean;
-    },
-  ): AnyObject;
-
-  protected override _initializeSource(
-    data: this | BaseJournalEntry.UpdateData,
-    options?: any,
-  ): BaseJournalEntry.Source;
-
-  /**
-   * Migrate old content and img field to individual pages.
-   * @param source - Old source data which will be mutated in-place
-   * @returns Page data that should be added to the document
-   * @deprecated since v10
-   */
-  static migrateContentToPages(source: {
-    img?: string;
-    content?: string;
-  }): documents.BaseJournalEntryPage.ConstructorData[];
 }
 
 export default BaseJournalEntry;

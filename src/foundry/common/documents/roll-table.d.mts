@@ -4,7 +4,7 @@ import type * as fields from "../data/fields.d.mts";
 import type * as documents from "./_module.mts";
 
 /**
- * The Document definition for a RollTable.
+ * The RollTable Document.
  * Defines the DataSchema and common behaviors for a RollTable which are shared between both client and server.
  */
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
@@ -30,17 +30,6 @@ declare class BaseRollTable extends Document<BaseRollTable.Schema, BaseRollTable
   static DEFAULT_ICON: "icons/svg/d20-grey.svg";
 
   static override migrateData(source: AnyObject): AnyObject;
-
-  static override shimData(
-    data: AnyObject,
-    options?: {
-      /**
-       * Apply shims to embedded models?
-       * @defaultValue `true`
-       */
-      embedded?: boolean;
-    },
-  ): AnyObject;
 }
 
 export default BaseRollTable;

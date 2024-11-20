@@ -1,4 +1,4 @@
-import type { ConfiguredDocuments } from "../../../types/configuredDocuments.d.mts";
+import type { ConfiguredDocuments, DefaultDocuments } from "../../../types/configuredDocuments.d.mts";
 import type { DatabaseOperationsFor, GetKey, MakeConform, MustConform } from "../../../types/helperTypes.mts";
 import type {
   AnyObject,
@@ -147,6 +147,7 @@ declare abstract class Document<
 
   /**
    * The allowed types which may exist for this Document class
+   * @remarks Document.TYPES is overly generic so subclasses don't cause problems
    */
   static get TYPES(): string[];
 
@@ -602,9 +603,9 @@ declare abstract class Document<
    * @returns The flag value
    */
   getFlag<
-    S extends Document.FlagKeyOf<Document.FlagsFor<this>>,
-    K extends Document.FlagKeyOf<GetKey<Document.FlagsFor<this>, S>>,
-  >(scope: S, key: K): Document.GetFlag<this, S, K>;
+    S extends Document.FlagKeyOf<Document.ConfiguredFlagsForName<ConcreteMetadata["name"]>>,
+    K extends Document.FlagKeyOf<Document.FlagGetKey<Document.ConfiguredFlagsForName<ConcreteMetadata["name"]>, S>>,
+  >(scope: S, key: K): Document.GetFlag<ConcreteMetadata["name"], S, K>;
 
   /**
    * Assign a "flag" to this document.
@@ -625,9 +626,9 @@ declare abstract class Document<
    * @returns A Promise resolving to the updated document
    */
   setFlag<
-    S extends keyof GetKey<this, "flags">,
-    K extends keyof NonNullable<GetKey<this, "flags">>[S],
-    V extends NonNullable<GetKey<this, "flags">>[S][K],
+    S extends Document.FlagKeyOf<Document.ConfiguredFlagsForName<ConcreteMetadata["name"]>>,
+    K extends Document.FlagKeyOf<Document.FlagGetKey<Document.ConfiguredFlagsForName<ConcreteMetadata["name"]>, S>>,
+    V extends Document.GetFlag<ConcreteMetadata["name"], S, K>,
   >(scope: S, key: K, value: V): Promise<this>;
 
   /**
@@ -911,12 +912,15 @@ declare abstract class AnyDocument extends Document<any, any, any> {
   // This is odd but probably is because it bails from looking up the parent class properties at times or something.
   static [__DocumentBrand]: never;
 
-  // `getFlag` does some unusual introspection on effectively `GetKey<this, "flags">`.
-  // This is because not all documents have flags.
   flags?: unknown;
 
   getFlag(scope: never, key: never): any;
 }
+
+// Note(LukeAbby): The point of this class is to show up in intellisense.
+// When something fails to be configured it should be replaced with `typeof ConfigurationFailure & typeof Item` or whatever the relevant class is.
+// This helps to minimize the number of errors that appears in a repo with broken configuration as they can be very misleading and confusing.
+declare abstract class ConfigurationFailure extends AnyDocument {}
 
 declare namespace Document {
   /** Any Document, except for Settings */
@@ -958,8 +962,20 @@ declare namespace Document {
     | "Token"
     | "Wall";
 
+  type CoreTypesForName<Name extends Type> = string &
+    GetKey<Document.Internal.MetadataFor<ConfiguredInstanceForName<Name>>, "coreTypes", ["base"]>[number];
+
   // TODO: Probably a way to auto-determine this
-  type SystemType = "Actor" | "Card" | "Cards" | "Item" | "JournalEntryPage";
+  type SystemType =
+    | "ActiveEffect"
+    | "Actor"
+    | "Card"
+    | "Cards"
+    | "ChatMessage"
+    | "Combat"
+    | "Combatant"
+    | "Item"
+    | "JournalEntryPage";
 
   type EmbeddableNamesFor<ConcreteDocument extends Document.Internal.Instance.Any> = {
     [K in keyof ConfiguredDocuments]: IsParentOf<ConcreteDocument, InstanceType<ConfiguredDocuments[K]>> extends true
@@ -1028,25 +1044,28 @@ declare namespace Document {
     foundry.data.fields.SchemaField.InnerAssignmentType<Schema>;
 
   type SystemConstructor = AnyConstructor & {
-    metadata: { name: SystemType; coreTypes?: readonly string[] | undefined };
+    metadata: { name: SystemType };
   };
 
   type ConfiguredClass<T extends { metadata: Metadata.Any }> = ConfiguredClassForName<T["metadata"]["name"]>;
 
-  type ConfiguredClassForName<Name extends Type> = MakeConform<ConfiguredDocuments[Name], Document.AnyConstructor>;
+  type ConfiguredClassForName<Name extends Type> = MakeConform<
+    ConfiguredDocuments[Name],
+    typeof ConfigurationFailure & DefaultDocuments[Name]
+  >;
 
   type SubTypesOf<T extends Type> =
     ConfiguredInstanceForName<T> extends { type: infer Types } ? Types : typeof foundry.CONST.BASE_DOCUMENT_TYPE;
 
   type ToConfiguredClass<ConcreteDocument extends Document.Internal.Constructor> = MakeConform<
     ConfiguredDocuments[NameFor<ConcreteDocument>],
-    Document.AnyConstructor
+    typeof ConfigurationFailure & DefaultDocuments[NameFor<ConcreteDocument>]
   >;
 
   type ToConfiguredInstance<ConcreteDocument extends Document.Internal.Constructor> = MakeConform<
     // NOTE(LukeAbby): This avoids calling `Document.ToConfiguredClass` because that checks the static side of the class which can be expensive and even lead to loops.
     InstanceType<ConfiguredDocuments[NameFor<ConcreteDocument>]>,
-    Document.Any
+    ConfigurationFailure & InstanceType<DefaultDocuments[NameFor<ConcreteDocument>]>
   >;
 
   type ToConfiguredStored<D extends Document.Internal.Constructor> = Stored<ToConfiguredInstance<D>>;
@@ -1114,23 +1133,28 @@ declare namespace Document {
     RemoveIndexSignatures<Schema> extends OptionsInFlags<infer Options> ? DataField.InitializedType<Options> : never;
 
   // Like `keyof` but handles properties desirable for flags:
-  // - `never` returns `never` (instead of `PropertyKey`)
-  // - `unknown` returns `string` (instead of `never`)
+  // - `never` returns `never` (instead of `PropertyKey`).
+  // - `unknown` returns `string` (instead of `never`).
+  // - Allows any key in a union of objects (instead of just the common keys).
   // - Strips out non string keys.
-  type FlagKeyOf<T> = unknown extends T ? string : [T] extends [never] ? never : keyof T & string;
+  type FlagKeyOf<T> = unknown extends T
+    ? string
+    : [T] extends [never]
+      ? never
+      : T extends unknown
+        ? keyof T & string
+        : never;
 
-  type FlagGetKey<T, K extends PropertyKey> = K extends keyof T ? T[K] : never;
+  type FlagGetKey<T, K extends PropertyKey> = T extends unknown ? (K extends keyof T ? T[K] : never) : never;
 
-  // Note(LukeAbby): It's at times been very important for `GetFlag` to be covariant over `ConcreteDocument`.
+  // Note(LukeAbby): It's at times been very important for `GetFlag` to be covariant over `ConcreteSchema`.
   // If it isn't then issues arise where the `Document` type ends up becoming invaraint.
-  // Currently it is actually contravariant over `ConcreteDocument` and this may cause issues (because of the usage of `keyof`).
+  // Currently it is actually contravariant over `ConcreteSchema` and this may cause issues (because of the usage of `keyof`).
   // Unfortunately it's not easy to avoid because the typical `GetKey` trick has issues between `never`, not defined at all, and `unknown` etc.
-  type GetFlag<ConcreteDocument extends Internal.Instance.Any, S extends string, K extends string> = FlagGetKey<
-    FlagGetKey<Document.FlagsFor<ConcreteDocument>, S>,
+  type GetFlag<Name extends Document.Type, S extends string, K extends string> = FlagGetKey<
+    FlagGetKey<Document.ConfiguredFlagsForName<Name>, S>,
     K
   >;
-
-  type FlagsFor<ConcreteDocument extends Internal.Instance.Any> = GetKey<ConcreteDocument, "flags", never>;
 
   /** @remarks Copied from `resources/app/common/types.mjs` */
   interface ConstructionContext<Parent extends Document.Any | null> {
@@ -1275,7 +1299,7 @@ declare namespace Document {
     indexed?: boolean | undefined;
     compendiumIndexFields?: string[] | undefined;
     label: string;
-    coreTypes?: readonly string[] | undefined;
+    coreTypes: readonly string[];
     embedded: Record<string, string>;
     permissions: {
       create:
@@ -1309,6 +1333,7 @@ declare namespace Document {
       name: "Document";
       collection: "documents";
       label: "DOCUMENT.Document";
+      coreTypes: [typeof foundry.CONST.BASE_DOCUMENT_TYPE];
       types: [];
       embedded: EmptyObject;
       hasSystemData: false;

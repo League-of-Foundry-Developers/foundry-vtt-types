@@ -5,7 +5,7 @@ import type * as fields from "../data/fields.d.mts";
 import type * as documents from "./_module.mts";
 
 /**
- * The Document definition for a TableResult.
+ * The TableResult Document.
  * Defines the DataSchema and common behaviors for a TableResult which are shared between both client and server.
  */
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
@@ -38,17 +38,6 @@ declare class BaseTableResult extends Document<BaseTableResult.Schema, BaseTable
   ): boolean;
 
   static override migrateData(source: AnyObject): AnyObject;
-
-  static override shimData(
-    data: AnyObject,
-    options?: {
-      /**
-       * Apply shims to embedded models?
-       * @defaultValue `true`
-       */
-      embedded?: boolean;
-    },
-  ): AnyObject;
 }
 
 export default BaseTableResult;
@@ -56,8 +45,7 @@ export default BaseTableResult;
 declare namespace BaseTableResult {
   type Parent = RollTable.ConfiguredInstance | null;
 
-  // TODO: Remove "base" in v12
-  type TypeNames = (typeof foundry.documents.BaseMacro)["metadata"]["coreTypes"][number] | "base";
+  type TypeNames = Game.Model.TypeNames<"TableResult">;
 
   type Metadata = Merge<
     Document.Metadata.Default,
@@ -66,10 +54,11 @@ declare namespace BaseTableResult {
       collection: "results";
       label: string;
       labelPlural: string;
-      coreTypes: ["0", "1", "2"];
+      coreTypes: foundry.CONST.TABLE_RESULT_TYPES[];
       permissions: {
         update: (user: documents.BaseUser, doc: Document.Any, data: UpdateData) => boolean;
       };
+      compendiumIndexFields: ["type"];
       schemaVersion: string;
     }
   >;
@@ -91,12 +80,12 @@ declare namespace BaseTableResult {
      * A result subtype from CONST.TABLE_RESULT_TYPES
      * @defaultValue `CONST.TABLE_RESULT_TYPES.TEXT`
      */
-    type: fields.StringField<{
-      required: true;
-      choices: CONST.TABLE_RESULT_TYPES[];
-      initial: typeof CONST.TABLE_RESULT_TYPES.TEXT;
-      validationError: "must be a value in CONST.TABLE_RESULT_TYPES";
-    }>;
+    type: fields.DocumentTypeField<
+      typeof BaseTableResult,
+      {
+        initial: typeof CONST.TABLE_RESULT_TYPES.TEXT;
+      }
+    >;
 
     /**
      * The text which describes the table result
