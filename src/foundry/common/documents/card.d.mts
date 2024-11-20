@@ -66,7 +66,7 @@ export default BaseCard;
 declare namespace BaseCard {
   type Parent = Cards.ConfiguredInstance | null;
 
-  type TypeNames = Game.Model.TypeNames<typeof BaseCard>;
+  type TypeNames = Game.Model.TypeNames<"Card">;
 
   type Metadata = Merge<
     Document.Metadata.Default,

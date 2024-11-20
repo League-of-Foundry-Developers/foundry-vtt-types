@@ -39,7 +39,7 @@ export default BaseJournalEntryPage;
 declare namespace BaseJournalEntryPage {
   type Parent = Scene.ConfiguredInstance | null;
 
-  type TypeNames = Game.Model.TypeNames<typeof BaseJournalEntryPage>;
+  type TypeNames = Game.Model.TypeNames<"JournalEntryPage">;
 
   type Metadata = Merge<
     Document.Metadata.Default,

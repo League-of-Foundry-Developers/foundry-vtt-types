@@ -959,6 +959,9 @@ declare namespace Document {
     | "Token"
     | "Wall";
 
+  type CoreTypesForName<Name extends Type> = string &
+    GetKey<Document.Internal.MetadataFor<ConfiguredInstanceForName<Name>>, "coreTypes", ["base"]>[number];
+
   // TODO: Probably a way to auto-determine this
   type SystemType =
     | "ActiveEffect"

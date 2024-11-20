@@ -52,7 +52,7 @@ export default BaseCombat;
 declare namespace BaseCombat {
   type Parent = null;
 
-  type TypeNames = Game.Model.TypeNames<typeof BaseCombat>;
+  type TypeNames = Game.Model.TypeNames<"Combat">;
 
   type Metadata = Merge<
     Document.Metadata.Default,

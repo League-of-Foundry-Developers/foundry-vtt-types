@@ -45,7 +45,7 @@ export default BaseTableResult;
 declare namespace BaseTableResult {
   type Parent = RollTable.ConfiguredInstance | null;
 
-  type TypeNames = Game.Model.TypeNames<typeof BaseTableResult>;
+  type TypeNames = Game.Model.TypeNames<"TableResult">;
 
   type Metadata = Merge<
     Document.Metadata.Default,

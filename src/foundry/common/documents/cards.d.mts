@@ -45,7 +45,7 @@ export default BaseCards;
 declare namespace BaseCards {
   type Parent = null;
 
-  type TypeNames = Game.Model.TypeNames<typeof BaseCards>;
+  type TypeNames = Game.Model.TypeNames<"Cards">;
 
   type Metadata = Merge<
     Document.Metadata.Default,
@@ -83,7 +83,7 @@ declare namespace BaseCards {
      * The type of this stack, in BaseCards.metadata.types
      * @defaultValue `BaseCards.TYPES[0]`
      */
-    type: fields.DocumentTypeField< typeof BaseCards>;
+    type: fields.DocumentTypeField<typeof BaseCards>;
 
     /**
      * A text description of this stack
