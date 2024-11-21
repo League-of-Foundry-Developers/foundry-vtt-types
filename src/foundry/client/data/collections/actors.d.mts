@@ -29,7 +29,15 @@ declare global {
       IdOpt extends boolean = false,
     >(
       document: Actor.ConfiguredInstance | foundry.documents.BaseActor.ConstructorData,
-      options?: InexactPartial<WorldCollection.FromCompendiumOptions<FolderOpt, SortOpt, OwnershipOpt, IdOpt>>,
+      options?: InexactPartial<
+        WorldCollection.FromCompendiumOptions<FolderOpt, SortOpt, OwnershipOpt, IdOpt> & {
+          /**
+           * Clear prototype token data to allow default token settings to be applied.
+           * @defaultValue `true`
+           */
+          clearPrototypeToken: boolean;
+        }
+      >,
     ): Omit<
       Actor["_source"],
       | ClientDocument.OmitProperty<FolderOpt, "folder">
