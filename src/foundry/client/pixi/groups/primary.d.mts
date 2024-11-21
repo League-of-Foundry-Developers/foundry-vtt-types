@@ -3,13 +3,6 @@ import type { Renderer } from "pixi.js";
 // Included to match Foundry's documented types
 type PrimaryCanvasObject = ReturnType<typeof PrimaryCanvasObjectMixin>;
 
-// TODO: remove after #2855
-type PrimarySpriteMesh = unknown;
-type PrimaryGraphics = unknown;
-
-// TODO: remove after #2570
-type PrimaryCanvasGroupAmbienceFilter = unknown;
-
 declare global {
   /**
    * The primary Canvas group which generally contains tangible physical objects which exist within the Scene.
