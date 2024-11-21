@@ -289,7 +289,7 @@ declare global {
      * @remarks `TokenDocument#toggleActiveEffect is deprecated in favor of Actor#toggleStatusEffect"`
      */
     toggleActiveEffect(
-      effectData: StatusEffect,
+      effectData: CONFIG.StatusEffect,
       options?: InexactPartial<ToggleActiveEffectOptions> | undefined,
     ): Promise<boolean>;
   }
@@ -340,27 +340,6 @@ interface ToggleActiveEffectOptions {
 }
 
 /**
- * Configured status effects which are recognized by the game system.
+ * @deprecated See {@link CONFIG.StatusEffect}
  */
-export type StatusEffect = foundry.documents.BaseActiveEffect.ConstructorData & {
-  id: string;
-
-  /**
-   * Alias for ActiveEffectData#name
-   * @deprecated since v11, will be removed in v13
-   */
-  label?: string | undefined | null;
-
-  /**
-   * Alias for ActiveEffectData#img
-   * @deprecated since v12, will be removed in v14
-   */
-  icon?: string | undefined | null;
-
-  /**
-   * Should this effect be selectable in the Token HUD?
-   * This effect is only selectable in the Token HUD if the Token's Actor sub-type is one of the configured ones.
-   * @defaultValue `true`
-   */
-  hud?: boolean | { actorTypes: string[] } | undefined | null;
-};
+export type StatusEffect = CONFIG.StatusEffect;

@@ -1,6 +1,5 @@
 import type { GetKey, HandleEmptyObject, InterfaceToObject } from "../../types/helperTypes.d.mts";
 import type * as CONST from "../common/constants.d.mts";
-import type { StatusEffect } from "./data/documents/token.d.mts";
 import type { DataModel, Document } from "../common/abstract/module.d.mts";
 import type PointLightSource from "../client-esm/canvas/sources/point-light-source.d.mts";
 import type { AnyObject, MaybePromise } from "../../types/utils.d.mts";
@@ -38,7 +37,7 @@ declare global {
         label: string;
 
         /** An icon to represent the fulfillment method. */
-        icon?: string |  undefined | null;
+        icon?: string | undefined | null;
 
         /** Whether this method requires input from the user or if it is fulfilled entirely programmatically. */
         interactive?: boolean | undefined | null;
@@ -127,6 +126,35 @@ declare global {
        */
       fulfillment: CONFIG.Dice.FulfillmentConfiguration;
     }
+
+    /**
+     * Configured status effects which are recognized by the game system
+     */
+    type StatusEffect = foundry.documents.BaseActiveEffect.ConstructorData & {
+      /**
+       * A string identifier for the effect
+       */
+      id: string;
+
+      /**
+       * Alias for ActiveEffectData#name
+       * @deprecated since v11, will be removed in v13
+       */
+      label?: string | undefined | null;
+
+      /**
+       * Alias for ActiveEffectData#img
+       * @deprecated since v12, will be removed in v14
+       */
+      icon?: string | undefined | null;
+
+      /**
+       * Should this effect be selectable in the Token HUD?
+       * This effect is only selectable in the Token HUD if the Token's Actor sub-type is one of the configured ones.
+       * @defaultValue `true`
+       */
+      hud?: boolean | { actorTypes: string[] } | undefined | null;
+    };
   }
 
   /**
@@ -1985,7 +2013,7 @@ declare global {
      * ]
      * ```
      */
-    statusEffects: StatusEffect[];
+    statusEffects: CONFIG.StatusEffect[];
 
     /**
      * A mapping of status effect IDs which provide some additional mechanical integration.
@@ -2751,10 +2779,10 @@ declare global {
      * An enumeration of sound effects which can be applied to Sound instances.
      */
     soundEffects: {
-      lowPass: { label: string, effectClass: typeof AudioNode }
-      highpass: { label: string, effectClass: typeof AudioNode }
-      reverb: { label: string, effectClass: typeof AudioNode }
-    }
+      lowPass: { label: string; effectClass: typeof AudioNode };
+      highpass: { label: string; effectClass: typeof AudioNode };
+      reverb: { label: string; effectClass: typeof AudioNode };
+    };
 
     /**
      * Default configuration options for TinyMCE editors
