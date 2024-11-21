@@ -3,7 +3,7 @@ import type * as CONST from "../common/constants.d.mts";
 import type { StatusEffect } from "./data/documents/token.d.mts";
 import type { DataModel, Document } from "../common/abstract/module.d.mts";
 import type PointLightSource from "../client-esm/canvas/sources/point-light-source.d.mts";
-import type { AnyObject } from "../../types/utils.d.mts";
+import type { AnyObject, MaybePromise } from "../../types/utils.d.mts";
 
 declare global {
   namespace CONFIG {
@@ -38,13 +38,13 @@ declare global {
         label: string;
 
         /** An icon to represent the fulfillment method. */
-        icon?: string;
+        icon?: string |  undefined | null;
 
         /** Whether this method requires input from the user or if it is fulfilled entirely programmatically. */
-        interactive?: boolean;
+        interactive?: boolean | undefined | null;
 
         /** A function to invoke to programmatically fulfil a given term for non-interactive fulfillment methods. */
-        handler?: FulfillmentHandler;
+        handler?: FulfillmentHandler | undefined | null;
 
         /**
          * A custom RollResolver implementation. If the only interactive methods
@@ -68,7 +68,7 @@ declare global {
         options?: AnyObject,
       ) => Promise<number | void>;
 
-      type RollFunction = (...args: any) => Promise<number> | number;
+      type RollFunction = (arg0: never, ...args: never[]) => MaybePromise<number>;
     }
 
     interface Dice {

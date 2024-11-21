@@ -349,18 +349,18 @@ export type StatusEffect = foundry.documents.BaseActiveEffect.ConstructorData & 
    * Alias for ActiveEffectData#name
    * @deprecated since v11, will be removed in v13
    */
-  label?: string;
+  label?: string | undefined | null;
 
   /**
    * Alias for ActiveEffectData#img
    * @deprecated since v12, will be removed in v14
    */
-  icon?: string;
+  icon?: string | undefined | null;
 
   /**
    * Should this effect be selectable in the Token HUD?
    * This effect is only selectable in the Token HUD if the Token's Actor sub-type is one of the configured ones.
    * @defaultValue `true`
    */
-  hud?: boolean | { actorTypes: string };
+  hud?: boolean | { actorTypes: string[] } | undefined | null;
 };
