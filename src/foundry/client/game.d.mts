@@ -32,6 +32,10 @@ type MaybeInitialized<
   RunEvents extends InitializationEvent,
 > = GameInitialized<Data, MustRun, HooksRan<RunEvents>, Data | undefined>;
 
+/**
+ * @privateRemarks In v12 many of these properties were mistakenly stripped of their readonly quality;
+ *                 This is preserved in the types despite them being technically writable
+ */
 declare class InternalGame<RunEvents extends InitializationEvent> {
   /**
    * @param view      - The named view which is active for this game instance.
@@ -45,49 +49,49 @@ declare class InternalGame<RunEvents extends InitializationEvent> {
    * The named view which is currently active.
    * @remarks The full type includes `"join"|"setup"|"players"|"license"` but these views do not run package code.
    */
-  view: Game.View;
+  readonly view: Game.View;
 
   /**
    * The object of world data passed from the server
    */
-  data: Game.Data;
+  readonly data: Game.Data;
 
   /**
    * The client session id which is currently active.
    */
-  sessionId: string;
+  readonly sessionId: string;
 
   /**
    * A reference to the open Socket.io connection
    */
-  socket: io.Socket;
+  readonly socket: io.Socket;
 
   /**
    * The id of the active World user, if any
    */
-  userId: string | null;
+  readonly userId: string | null;
 
   /**
    * The game World which is currently active.
    */
-  world: World;
+  readonly world: World;
 
   /**
    * The System which is used to power this game World.
    */
-  system: System;
+  readonly system: System;
 
   /**
    * A Map of active Modules which are currently eligible to be enabled in this World.
    * The subset of Modules which are designated as active are currently enabled.
    */
-  modules: Game.ModuleCollection;
+  readonly modules: Game.ModuleCollection;
 
   /**
    * A mapping of CompendiumCollection instances, one per Compendium pack.
    * @remarks Initialized just before the `"setup"` hook event is called.
    */
-  packs: GameInitialized<CompendiumPacks, "setup", RunEvents>;
+  readonly packs: GameInitialized<CompendiumPacks, "setup", RunEvents>;
 
   /**
    * A registry of document sub-types and their respective data models.
@@ -117,7 +121,7 @@ declare class InternalGame<RunEvents extends InitializationEvent> {
    * The UUID redirects tree.
    * @remarks Initialized just before the `"ready"` hook event is called.
    */
-  compendiumUUIDRedirects: foundry.utils.StringTree<string[]>;
+  readonly compendiumUUIDRedirects: foundry.utils.StringTree<string[]>;
 
   /**
    * A mapping of WorldCollection instances, one per primary Document type.
@@ -133,78 +137,78 @@ declare class InternalGame<RunEvents extends InitializationEvent> {
    * The collection of Actor documents which exists in the World.
    * @remarks Initialized just before the `"setup"` hook event.
    */
-  actors: GameInitialized<ConfiguredCollectionClassForName<"Actor">, "setup", RunEvents>;
+  readonly actors: GameInitialized<ConfiguredCollectionClassForName<"Actor">, "setup", RunEvents>;
 
   /**
    * The collection of Cards documents which exists in the World.
    * @remarks Initialized just before the `"setup"` hook event.
    */
-  cards: GameInitialized<ConfiguredCollectionClassForName<"Cards">, "setup", RunEvents>;
+  readonly cards: GameInitialized<ConfiguredCollectionClassForName<"Cards">, "setup", RunEvents>;
 
   /**
    * The collection of Combat documents which exists in the World.
    * @remarks Initialized just before the `"setup"` hook event.
    */
-  combats: GameInitialized<ConfiguredCollectionClassForName<"Combat">, "setup", RunEvents>;
+  readonly combats: GameInitialized<ConfiguredCollectionClassForName<"Combat">, "setup", RunEvents>;
 
   /**
    * The collection of Folder documents which exists in the World.
    * @remarks Initialized just before the `"setup"` hook event.
    */
-  folders: GameInitialized<ConfiguredCollectionClassForName<"Folder">, "setup", RunEvents>;
+  readonly folders: GameInitialized<ConfiguredCollectionClassForName<"Folder">, "setup", RunEvents>;
 
   /**
    * The collection of Item documents which exists in the World.
    * @remarks Initialized just before the `"setup"` hook event.
    */
-  items: GameInitialized<ConfiguredCollectionClassForName<"Item">, "setup", RunEvents>;
+  readonly items: GameInitialized<ConfiguredCollectionClassForName<"Item">, "setup", RunEvents>;
 
   /**
    * The collection of JournalEntry documents which exists in the World.
    * @remarks Initialized just before the `"setup"` hook event.
    */
-  journal: GameInitialized<ConfiguredCollectionClassForName<"JournalEntry">, "setup", RunEvents>;
+  readonly journal: GameInitialized<ConfiguredCollectionClassForName<"JournalEntry">, "setup", RunEvents>;
 
   /**
    * The collection of Macro documents which exists in the World.
    * @remarks Initialized just before the `"setup"` hook event.
    */
-  macros: GameInitialized<ConfiguredCollectionClassForName<"Macro">, "setup", RunEvents>;
+  readonly macros: GameInitialized<ConfiguredCollectionClassForName<"Macro">, "setup", RunEvents>;
 
   /**
    * The collection of ChatMessage documents which exists in the World.
    * @remarks Initialized just before the `"setup"` hook event.
    */
-  messages: GameInitialized<ConfiguredCollectionClassForName<"ChatMessage">, "setup", RunEvents>;
+  readonly messages: GameInitialized<ConfiguredCollectionClassForName<"ChatMessage">, "setup", RunEvents>;
 
   /**
    * The collection of Playlist documents which exists in the World.
    * @remarks Initialized just before the `"setup"` hook event.
    */
-  playlists: GameInitialized<ConfiguredCollectionClassForName<"Playlist">, "setup", RunEvents>;
+  readonly playlists: GameInitialized<ConfiguredCollectionClassForName<"Playlist">, "setup", RunEvents>;
 
   /**
    * The collection of Scene documents which exists in the World.
    * @remarks Initialized just before the `"setup"` hook event.
    */
-  scenes: GameInitialized<ConfiguredCollectionClassForName<"Scene">, "setup", RunEvents>;
+  readonly scenes: GameInitialized<ConfiguredCollectionClassForName<"Scene">, "setup", RunEvents>;
 
   /**
    * The collection of RollTable documents which exists in the World.
    * @remarks Initialized just before the `"setup"` hook event.
    */
-  tables: GameInitialized<ConfiguredCollectionClassForName<"RollTable">, "setup", RunEvents>;
+  readonly tables: GameInitialized<ConfiguredCollectionClassForName<"RollTable">, "setup", RunEvents>;
 
   /**
    * The collection of User documents which exists in the World.
    * @remarks Initialized just before the `"setup"` hook event.
    */
-  users: GameInitialized<ConfiguredCollectionClassForName<"User">, "setup", RunEvents>;
+  readonly users: GameInitialized<ConfiguredCollectionClassForName<"User">, "setup", RunEvents>;
 
   /**
    * The Release data for this version of Foundry
    */
-  release: foundry.config.ReleaseData;
+  readonly release: foundry.config.ReleaseData;
 
   /**
    * Returns the current version of the Release, usable for comparisons using isNewerVersion
@@ -215,122 +219,122 @@ declare class InternalGame<RunEvents extends InitializationEvent> {
    * Whether the Game is running in debug mode
    * @defaultValue `false`
    */
-  debug: boolean;
+  readonly debug: boolean;
 
   /**
    * A flag for whether texture assets for the game canvas are currently loading
    * @defaultValue `false`
    */
-  loading: boolean;
+  readonly loading: boolean;
 
   /**
    * The user role permissions setting
    * @remarks Initialized just before the `"setup"` hook event.
    */
-  permissions: GameInitialized<Game.Permissions, "setup", RunEvents>;
+  readonly permissions: GameInitialized<Game.Permissions, "setup", RunEvents>;
 
   /**
    * A flag for whether the Game has successfully reached the "ready" hook
    * @defaultValue `false`
    */
-  ready: GameInitialized<true, "ready", RunEvents, false>;
+  readonly ready: GameInitialized<true, "ready", RunEvents, false>;
 
   /**
    * The singleton compendium art manager.
    * @remarks Initialized just before the `"setup"` hook event.
    */
-  compendiumArt: foundry.helpers.CompendiumArt;
+  readonly compendiumArt: foundry.helpers.CompendiumArt;
 
   /**
    * A singleton instance of the Audio Helper class
    */
-  audio: foundry.audio.AudioHelper;
+  readonly audio: foundry.audio.AudioHelper;
 
   /**
    * A singleton reference to the Canvas object which may be used.
    * @remarks Initialized just before the `"ready"` hook event.
    */
-  canvas: GameInitialized<Canvas, "ready", RunEvents>;
+  readonly canvas: GameInitialized<Canvas, "ready", RunEvents>;
 
   /**
    * The singleton Clipboard Helper.
    */
-  clipboard: ClipboardHelper;
+  readonly clipboard: ClipboardHelper;
 
   /**
    * Localization support
    * @remarks Initialized just before the `"i18nInit"` hook event.
    */
-  i18n: GameInitialized<Localization, "i18nInit", RunEvents>;
+  readonly i18n: GameInitialized<Localization, "i18nInit", RunEvents>;
 
   /**
    * The singleton instance of the ClientIssues manager.
    */
-  issues: ClientIssues;
+  readonly issues: ClientIssues;
 
   /**
    * The Gamepad Manager
    * @remarks Initialized just before the `"ready"` hook event.
    */
-  gamepad: GameInitialized<GamepadManager, "ready", RunEvents>;
+  readonly gamepad: GameInitialized<GamepadManager, "ready", RunEvents>;
 
   /**
    * The Keyboard Manager
    * @remarks Initialized just before the `"ready"` hook event.
    */
-  keyboard: GameInitialized<KeyboardManager, "ready", RunEvents>;
+  readonly keyboard: GameInitialized<KeyboardManager, "ready", RunEvents>;
 
   /**
    * Client keybindings which are used to configure application behavior
    * @remarks Initialized just before the `"ready"` hook event.
    */
-  keybindings: GameInitialized<ClientKeybindings, "ready", RunEvents>;
+  readonly keybindings: GameInitialized<ClientKeybindings, "ready", RunEvents>;
 
   /**
    * The Mouse Manager
    * @remarks Initialized just before the `"ready"` hook event.
    */
-  mouse: GameInitialized<MouseManager, "ready", RunEvents>;
+  readonly mouse: GameInitialized<MouseManager, "ready", RunEvents>;
 
   /**
    * The New User Experience manager.
    * @remarks Initialized just after the `"ready"` hook event.
    */
-  nue: NewUserExperience;
+  readonly nue: NewUserExperience;
 
   /**
    * Client settings which are used to configure application behavior
    * @remarks Settings are registered between `"init"` and `"i18nInit"` hook events.
    */
-  settings: ClientSettings;
+  readonly settings: ClientSettings;
 
   /**
    * A singleton GameTime instance which manages the progression of time within the game world.
    */
-  time: GameTime;
+  readonly time: GameTime;
 
   /**
    * A singleton instance of the TooltipManager class
    * @remarks Initialized just before the `"setup"` hook events is called.
    */
-  tooltip: GameInitialized<TooltipManager, "setup", RunEvents>;
+  readonly tooltip: GameInitialized<TooltipManager, "setup", RunEvents>;
 
   /**
    * A singleton instance of the Tour collection class
    * @remarks Initialized just before the `"setup"` hook events is called.
    */
-  tours: GameInitialized<Tours, "setup", RunEvents>;
+  readonly tours: GameInitialized<Tours, "setup", RunEvents>;
 
   /**
    * A singleton instance of the Video Helper class
    * @remarks Initialized just before the `"setup"` hook events is called.
    */
-  video: GameInitialized<VideoHelper, "setup", RunEvents>;
+  readonly video: GameInitialized<VideoHelper, "setup", RunEvents>;
 
   /**
    * A singleton web Worker manager.
    */
-  workers: WorkerManager;
+  readonly workers: WorkerManager;
 
   /**
    * Fetch World data and return a Game instance
