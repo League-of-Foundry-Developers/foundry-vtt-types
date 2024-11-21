@@ -6,10 +6,11 @@ declare global {
    */
   class GridLayer extends CanvasLayer {
     /**
-     * @remarks Due to the grid rework in v12 this points to a BaseGrid subclass rather than a GridLayer instance
+     * @remarks Due to the grid rework in v12 this points to a BaseGrid subclass rather than a GridLayer instance,
+     *          however to avoid inheritance-based issues this is left as the intended GridLayer instance
      * @privateRemarks This is not overridden in foundry but reflects the real behavior.
      */
-    static get instance(): Canvas["grid"];
+    static get instance(): GridLayer;
 
     /**
      * The Grid Highlight container

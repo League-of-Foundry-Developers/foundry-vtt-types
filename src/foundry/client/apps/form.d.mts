@@ -91,7 +91,7 @@ declare global {
     /**
      * An array of custom element tag names that should be listened to for changes.
      */
-    protected static _customElements: string[]
+    protected static _customElements: string[];
 
     /**
      * Assign the default options which are supported by the entity edit sheet.
@@ -284,6 +284,8 @@ declare global {
   namespace FormApplication {
     type Any = FormApplication<any, any>;
 
+    type AnyConstructor = typeof AnyFormApplication;
+
     interface CloseOptions extends Application.CloseOptions {
       submit?: boolean;
     }
@@ -475,4 +477,8 @@ declare global {
       document: DocumentSheet<Options, ConcreteDocument>["document"];
     }
   }
+}
+
+declare abstract class AnyFormApplication extends FormApplication<any, any> {
+  constructor(arg0: never, ...args: never[]);
 }

@@ -1,4 +1,5 @@
 import type { ConstructorOf, GetDataReturnType, MaybePromise } from "../../../../types/utils.d.mts";
+import type DocumentSheetV2 from "../../../client-esm/applications/api/document-sheet.d.mts";
 import type { Document } from "../../../common/abstract/module.d.mts";
 
 declare global {
@@ -70,7 +71,7 @@ declare global {
     static registerSheet(
       documentClass: Document.AnyConstructor,
       scope: string,
-      sheetClass: typeof FormApplication,
+      sheetClass: FormApplication.AnyConstructor | DocumentSheetV2.AnyConstructor,
       config?: DocumentSheetConfig.RegisterSheetOptions,
     ): void;
 
