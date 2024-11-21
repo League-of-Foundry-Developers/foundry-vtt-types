@@ -110,7 +110,7 @@ declare class InternalGame<RunEvents extends InitializationEvent> {
    * A registry of document types supported by the active world.
    */
   get documentTypes(): {
-    [K in Document.Type]: Game.Model.TypeNames<Document.ConfiguredClassForName<K>>[];
+    [K in Document.Type]: Game.Model.TypeNames<K>[];
   };
 
   /**
@@ -662,7 +662,7 @@ declare global {
        * Get the configured core and system type names for a specific document type.
        * @typeParam DocumentName - the type of the Document this data is for
        */
-      type TypeNames<DocumentName extends Document.AnyConstructor> = string & keyof Model[DocumentName];
+      type TypeNames<DocumentName extends Document.Type> = string & keyof Model[DocumentName];
     }
 
     type Model = {
