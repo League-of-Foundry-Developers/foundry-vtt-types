@@ -130,7 +130,6 @@ declare global {
 
     /**
      * The visibility configuration of this compendium pack.
-     * A value in CONST.USER_ROLES
      * */
     get ownership(): foundry.packages.BasePackage.OwnershipRecord;
 

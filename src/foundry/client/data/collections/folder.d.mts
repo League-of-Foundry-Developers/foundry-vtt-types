@@ -1,4 +1,4 @@
-import type Document from "../../../common/abstract/document.d.mts";
+import type { DatabaseAction, DatabaseOperationMap } from "../../../common/abstract/_types.d.mts";
 
 declare global {
   /**
@@ -8,20 +8,26 @@ declare global {
    * @see {@link Folder} The Folder document
    */
   class Folders extends WorldCollection<typeof foundry.documents.BaseFolder, "Folders"> {
-    constructor(data?: Document.Stored<Folder.ConfiguredInstance>["_source"][]);
+    static documentName: "Folder";
 
     /**
      * Track which Folders are currently expanded in the UI
      */
-    protected _expanded: Partial<Record<string, boolean>>;
+    _expanded: Partial<Record<string, boolean>>;
 
-    static documentName: "Folder";
-
-    render(force?: boolean, context?: ApplicationOptions): void;
+    _onModifyContents<A extends DatabaseAction>(
+      action: A,
+      documents: Folder.ConfiguredInstance[],
+      result: foundry.documents.BaseFolder.UpdateData[] | readonly string[],
+      operation: DatabaseOperationMap[A],
+      user: User.ConfiguredInstance,
+    ): void;
 
     /**
      * Refresh the display of any active JournalSheet instances where the folder list will change.
      */
     protected _refreshJournalEntrySheets(): void;
+
+    render(force?: boolean, context?: ApplicationOptions): void;
   }
 }
