@@ -23,6 +23,8 @@ declare global {
      * If the force parameter is passed, the document will be shown to all players regardless of normal permission.
      * @param doc     - The JournalEntry or JournalEntryPage to show.
      * @param options - Additional options to configure behaviour.
+     * @returns A Promise that resolves back to the shown document once the request is processed.
+     * @throws If the user does not own the document they are trying to show.
      */
     static show<T extends JournalEntry | JournalEntryPage>(
       doc: T,
@@ -36,7 +38,7 @@ declare global {
          */
         users: string[];
       }>,
-    ): Promise<T>;
+    ): Promise<T | void>;
 
     /**
      * Share an image with connected players.
