@@ -31,7 +31,7 @@ declare global {
     get players(): ReturnType<this["filter"]>;
 
     /**
-     * Get one User who is an active Gamemaster, or null if no active GM is available.
+     * Get one User who is an active Gamemaster (non-assistant if possible), or null if no active GM is available.
      * This can be useful for workflows which occur on all clients, but where only one user should take action.
      */
     get activeGM(): User.ConfiguredInstance | null;
