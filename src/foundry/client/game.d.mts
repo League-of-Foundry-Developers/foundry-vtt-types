@@ -34,7 +34,8 @@ type MaybeInitialized<
 
 /**
  * @privateRemarks In v12 many of these properties were mistakenly stripped of their readonly quality;
- *                 This is preserved in the types despite them being technically writable
+ *                 This is preserved in the types despite them being technically writable.
+ *                 See https://github.com/foundryvtt/foundryvtt/issues/11813
  */
 declare class InternalGame<RunEvents extends InitializationEvent> {
   /**
