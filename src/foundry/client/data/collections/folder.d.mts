@@ -1,4 +1,3 @@
-import type { AnyObject } from "../../../../types/utils.d.mts";
 import type { DatabaseAction, DatabaseOperationMap } from "../../../common/abstract/_types.d.mts";
 
 declare global {
@@ -19,7 +18,7 @@ declare global {
     _onModifyContents<A extends DatabaseAction>(
       action: A,
       documents: Folder.ConfiguredInstance[],
-      result: AnyObject[] | readonly string[],
+      result: foundry.documents.BaseFolder.UpdateData[] | readonly string[],
       operation: DatabaseOperationMap[A],
       user: User.ConfiguredInstance,
     ): void;
