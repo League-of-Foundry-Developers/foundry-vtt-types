@@ -74,7 +74,7 @@ export default BaseChatMessage;
 declare namespace BaseChatMessage {
   type Parent = null;
 
-  type TypeNames = Game.Model.TypeNames<typeof BaseChatMessage>;
+  type TypeNames = Game.Model.TypeNames<"ChatMessage">;
 
   type Metadata = Merge<
     Document.Metadata.Default,

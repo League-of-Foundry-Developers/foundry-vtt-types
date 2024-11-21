@@ -4,7 +4,7 @@
 
 import { expectTypeOf } from "vitest";
 
-type CustomItemClass = new () => Item;
+class CustomItemClass extends Item {}
 
 declare global {
   interface DocumentClassConfig {

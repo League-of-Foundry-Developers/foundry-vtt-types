@@ -289,7 +289,7 @@ declare global {
      * @remarks `TokenDocument#toggleActiveEffect is deprecated in favor of Actor#toggleStatusEffect"`
      */
     toggleActiveEffect(
-      effectData: StatusEffect,
+      effectData: CONFIG.StatusEffect,
       options?: InexactPartial<ToggleActiveEffectOptions> | undefined,
     ): Promise<boolean>;
   }
@@ -339,4 +339,7 @@ interface ToggleActiveEffectOptions {
   active: boolean;
 }
 
-export type StatusEffect = foundry.documents.BaseActiveEffect.ConstructorData & { id: string };
+/**
+ * @deprecated See {@link CONFIG.StatusEffect}
+ */
+export type StatusEffect = CONFIG.StatusEffect;

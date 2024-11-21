@@ -65,7 +65,7 @@ export default BaseItem;
 declare namespace BaseItem {
   type Parent = Actor.ConfiguredInstance | null;
 
-  type TypeNames = Game.Model.TypeNames<typeof BaseItem>;
+  type TypeNames = Game.Model.TypeNames<"Item">;
 
   type Metadata = Merge<
     Document.Metadata.Default,

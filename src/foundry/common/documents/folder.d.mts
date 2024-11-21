@@ -46,7 +46,7 @@ export default BaseFolder;
 declare namespace BaseFolder {
   type Parent = null;
 
-  type TypeNames = Game.Model.TypeNames<typeof BaseFolder>;
+  type TypeNames = Game.Model.TypeNames<"Folder">;
 
   type Metadata = Merge<
     Document.Metadata.Default,

@@ -2,6 +2,8 @@ import { expectTypeOf } from "vitest";
 import type EmbeddedCollection from "../../../../src/foundry/common/abstract/embedded-collection.d.mts";
 import type { AnyObject } from "../../../../src/types/utils.d.mts";
 
+import BaseItem = foundry.documents.BaseItem;
+
 // @ts-expect-error Item requires a name and type
 new foundry.documents.BaseItem();
 
@@ -25,7 +27,7 @@ type ItemFlags = {
 
   "yet-another-system": {
     randomKey: string;
-  }
+  };
 };
 
 // Flags for Actor, Item, Card, and Cards documents can be configured via the FlagConfig. This is tested here.
@@ -65,3 +67,27 @@ baseItem.setFlag("my-system", "unknown-key", 2);
 
 // returns `this`
 expectTypeOf(baseItem.setFlag("my-system", "countable", true)).toEqualTypeOf<Promise<foundry.documents.BaseItem>>();
+
+// This test is necessary because seemingly more DRY ways of writing `getFlag` or `setFlag` will fail to typecheck.
+// For example `ConcreteMetadata["name"]` is written a lot instead of `this` because `this` is inherently "generic-like" in its safety requirements.
+// By comparison since the generic parameter for `ConcreteMetadata` is passed a constant value it will allow treating it as a constant.
+class _TestFlags extends Item {
+  testFlags() {
+    expectTypeOf(this.getFlag("my-system", "countable")).toEqualTypeOf<boolean>();
+    expectTypeOf(this.setFlag("my-system", "countable", false)).toEqualTypeOf<Promise<this>>();
+  }
+}
+
+class _TestFlagsFail<ConcreteMetadata extends BaseItem.Metadata> extends foundry.abstract.Document<
+  BaseItem.Schema,
+  ConcreteMetadata,
+  any
+> {
+  testFlagsFail() {
+    // @ts-expect-error - Because `ConcreteMetadata` is passed in a generic fashion suddenly the safety of generic parameters kick in and make this unusable.
+    this.getFlag("my-system", "countable");
+
+    // @ts-expect-error - Because `ConcreteMetadata` is passed in a generic fashion suddenly the safety of generic parameters kick in and make this unusable.
+    this.setFlag("my-system", "countable", true);
+  }
+}

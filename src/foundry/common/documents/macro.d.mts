@@ -63,7 +63,7 @@ export default BaseMacro;
 declare namespace BaseMacro {
   type Parent = null;
 
-  type TypeNames = Game.Model.TypeNames<typeof BaseMacro>;
+  type TypeNames = Game.Model.TypeNames<"Macro">;
 
   type Metadata = Merge<
     Document.Metadata.Default,
@@ -111,10 +111,13 @@ declare namespace BaseMacro {
      * A Macro subtype from CONST.MACRO_TYPES
      * @defaultValue `CONST.MACRO_TYPES.CHAT`
      */
-    type: fields.DocumentTypeField<typeof BaseMacro, {
-      initial: typeof CONST.MACRO_TYPES.CHAT;
-      label: "Type";
-    }>;
+    type: fields.DocumentTypeField<
+      typeof BaseMacro,
+      {
+        initial: typeof CONST.MACRO_TYPES.CHAT;
+        label: "Type";
+      }
+    >;
 
     /**
      * The _id of a User document which created this Macro *

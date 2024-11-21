@@ -80,7 +80,7 @@ declare class BaseActor extends Document<BaseActor.Schema, BaseActor.Metadata, a
 declare namespace BaseActor {
   type Parent = null;
 
-  type TypeNames = Game.Model.TypeNames<typeof BaseActor>;
+  type TypeNames = Game.Model.TypeNames<"Actor">;
 
   type Metadata = Merge<
     Document.Metadata.Default,

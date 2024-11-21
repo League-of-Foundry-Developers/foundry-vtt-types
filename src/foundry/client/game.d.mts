@@ -2,6 +2,7 @@ import type { Socket } from "socket.io-client";
 import type {
   ConfiguredDocumentClassForName,
   ConfiguredModule,
+  GetKey,
   ModuleRequiredOrOptional,
 } from "../../types/helperTypes.d.mts";
 import type { EmptyObject, ValueOf } from "../../types/utils.d.mts";
@@ -658,48 +659,26 @@ declare global {
 
     namespace Model {
       /**
-       * Get the system DataModel configuration for a specific document type.
-       * @typeParam DocumentType - the type of the Document this model data is for
-       */
-      type DataModelTypes<DocumentType extends Document.SystemType> = DocumentType extends keyof DataModelConfig
-        ? DataModelConfig[DocumentType]
-        : EmptyObject;
-
-      /**
-       * Get the template.json configuration for a specific document type.
-       * @typeParam DocumentType - the type of the Document this model data is for
-       */
-      type TemplateTypes<DocumentType extends Document.SystemType> = DocumentType extends keyof SourceConfig
-        ? DataModelConfig[DocumentType]["data"]
-        : EmptyObject;
-
-      /**
        * Get the configured core and system type names for a specific document type.
-       * @typeParam DocumentType - the type of the Document this data is for
+       * @typeParam DocumentName - the type of the Document this data is for
        */
-      type TypeNames<DocumentType extends Document.AnyConstructor> =
-        | DocumentType["metadata"]["coreTypes"][number]
-        | (DocumentType["metadata"]["name"] extends Document.SystemType
-            ? SystemTypeNames<DocumentType["metadata"]["name"]>
-            : never);
-
-      /**
-       * Get the configured system type names for a specific document type.
-       * @typeParam DocumentType - the type of the Document this system data is for
-       */
-      // The `& string` is helpful even though there should never be any numeric/symbol keys.
-      // This is because when `keyof Config<...>` is deferred then TypeScript does a bunch of proofs under the assumption that `SystemTypeNames` could be a `string | number` until proven otherwise.
-      // This causes issues where there shouldn't be, for example it has been observed to obstruct the resolution of the `Actor` class.
-      type SystemTypeNames<DocumentType extends Document.SystemType> = string &
-        (keyof DataModelTypes<DocumentType> | TemplateTypes<DocumentType>["type"]);
-
-      type ModelForType<DocumentType extends Document.AnyConstructor> = {
-        [K in TypeNames<DocumentType>]: EmptyObject;
-      };
+      type TypeNames<DocumentName extends Document.AnyConstructor> = string & keyof Model[DocumentName];
     }
 
     type Model = {
-      [K in Document.Type]: Model.ModelForType<Document.ConfiguredClassForName<K>>;
+      [DocumentType in Document.Type]: {
+        // The `& string` is helpful even though there should never be any numeric/symbol keys.
+        // This is because when `keyof Config<...>` is deferred then TypeScript does a bunch of proofs under the assumption that `SystemTypeNames` could be a `string | number` until proven otherwise.
+        // This causes issues where there shouldn't be, for example it has been observed to obstruct the resolution of the `Actor` class.
+        [SubType in
+          | Document.CoreTypesForName<DocumentType>
+          | keyof GetKey<DataModelConfig, DocumentType, unknown>
+          | keyof GetKey<SourceConfig, DocumentType, unknown> as SubType & string]: GetKey<
+          GetKey<SourceConfig, DocumentType>,
+          SubType,
+          EmptyObject
+        >;
+      };
     };
 
     type Data = {

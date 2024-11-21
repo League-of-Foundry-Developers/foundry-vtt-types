@@ -45,7 +45,7 @@ export default BaseCombatant;
 declare namespace BaseCombatant {
   type Parent = Combat.ConfiguredInstance | null;
 
-  type TypeNames = Game.Model.TypeNames<typeof BaseCombatant>;
+  type TypeNames = Game.Model.TypeNames<"Combatant">;
 
   type Metadata = Merge<
     Document.Metadata.Default,
