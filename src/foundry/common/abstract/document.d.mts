@@ -7,6 +7,7 @@ import type {
   InexactPartial,
   RemoveIndexSignatures,
 } from "../../../types/utils.mts";
+import type { documents } from "../../client-esm/client.d.mts";
 import type * as CONST from "../constants.mts";
 import type { DataField, EmbeddedCollectionField, EmbeddedDocumentField } from "../data/fields.d.mts";
 import type { fields } from "../data/module.mts";
@@ -306,7 +307,7 @@ declare abstract class Document<
    */
   static createDocuments<T extends Document.AnyConstructor, Temporary extends boolean | undefined>(
     this: T,
-    data: Array<fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]> & Record<string, unknown>>,
+    data: Array<Document.ConstructorDataFor<T>>,
     operation?: InexactPartial<Omit<DatabaseOperationsFor<T["metadata"]["name"], "create">, "data">> & {
       temporary?: Temporary;
     },
@@ -545,7 +546,7 @@ declare abstract class Document<
     Temporary extends boolean | undefined,
   >(
     embeddedName: EmbeddedName,
-    data?: Array<AnyObject>,
+    data?: Array<Document.ConstructorDataForName<Extract<EmbeddedName, Document.Type>>>,
     operation?: InexactPartial<DatabaseOperationsFor<Extract<EmbeddedName, Document.Type>, "create">> & {
       temporary?: Temporary;
     },
@@ -921,6 +922,39 @@ declare abstract class AnyDocument extends Document<any, any, any> {
 // This helps to minimize the number of errors that appears in a repo with broken configuration as they can be very misleading and confusing.
 declare abstract class ConfigurationFailure extends AnyDocument {}
 
+interface ConstructorDataMap {
+  ActiveEffect: documents.BaseActiveEffect.ConstructorData;
+  ActorDelta: documents.BaseActorDelta.ConstructorData;
+  Actor: documents.BaseActor.ConstructorData;
+  Adventure: documents.BaseAdventure.ConstructorData;
+  Card: documents.BaseCard.ConstructorData;
+  Cards: documents.BaseCards.ConstructorData;
+  ChatMessage: documents.BaseChatMessage.ConstructorData;
+  Combat: documents.BaseCombat.ConstructorData;
+  Combatant: documents.BaseCombatant.ConstructorData;
+  FogExploration: documents.BaseFogExploration.ConstructorData;
+  Folder: documents.BaseFolder.ConstructorData;
+  Item: documents.BaseItem.ConstructorData;
+  JournalEntryPage: documents.BaseJournalEntryPage.ConstructorData;
+  JournalEntry: documents.BaseJournalEntry.ConstructorData;
+  Macro: documents.BaseMacro.ConstructorData;
+  PlaylistSound: documents.BasePlaylistSound.ConstructorData;
+  Playlist: documents.BasePlaylist.ConstructorData;
+  RollTable: documents.BaseRollTable.ConstructorData;
+  Scene: documents.BaseScene.ConstructorData;
+  Setting: documents.BaseSetting.ConstructorData;
+  TableResult: documents.BaseTableResult.ConstructorData;
+  User: documents.BaseUser.ConstructorData;
+  AmbientLight: documents.BaseAmbientLight.ConstructorData;
+  AmbientSound: documents.BaseAmbientSound.ConstructorData;
+  Drawing: documents.BaseDrawing.ConstructorData;
+  MeasuredTemplate: documents.BaseMeasuredTemplate.ConstructorData;
+  Note: documents.BaseNote.ConstructorData;
+  Tile: documents.BaseTile.ConstructorData;
+  Token: documents.BaseToken.ConstructorData;
+  Wall: documents.BaseWall.ConstructorData;
+}
+
 declare namespace Document {
   /** Any Document, except for Settings */
   type Any = AnyDocument;
@@ -1026,6 +1060,8 @@ declare namespace Document {
   type ConstructorDataFor<T extends Document.Internal.Constructor> = ConstructorDataForSchema<
     T extends { defineSchema: () => infer R extends DataSchema } ? R : never
   >;
+
+  type ConstructorDataForName<T extends Document.Type> = ConstructorDataMap[T];
 
   type ConstructorDataForSchema<Schema extends DataSchema> =
     foundry.data.fields.SchemaField.InnerAssignmentType<Schema>;
