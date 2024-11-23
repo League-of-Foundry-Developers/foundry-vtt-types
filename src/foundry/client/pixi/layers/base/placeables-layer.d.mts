@@ -213,7 +213,6 @@ declare global {
      *                  (default: `{}`)
      * @returns The number of PlaceableObject instances which were released
      */
-    //todo: audit release options
     releaseAll(options?: PlaceableObject.ReleaseOptions): number;
 
     /**

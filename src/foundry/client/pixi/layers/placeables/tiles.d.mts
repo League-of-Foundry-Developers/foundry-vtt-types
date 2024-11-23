@@ -1,4 +1,4 @@
-import type { DropData } from "../../../data/abstract/client-document.d.mts";
+import type BaseTile from "../../../../common/documents/tile.d.mts";
 
 declare global {
   /**
@@ -60,7 +60,7 @@ declare global {
      */
     protected _onDropData(
       event: DragEvent,
-      data: DropData.Any, //TODO: I don't think this is right. It wants, I think, a TileDocument source?
+      data: BaseTile.ConstructorData,
     ): Promise<TileDocument.ConfiguredInstance | false | void>;
 
     /**
@@ -69,11 +69,7 @@ declare global {
      * @param data  - The extracted Tile data
      * @returns The prepared data to create
      */
-    _getDropData(
-      event: DragEvent,
-      //TODO: I don't think this is right. It wants, I think, a TileDocument source? and also returns one
-      data: TilesLayer.DropData,
-    ): Promise<DropData.Any>;
+    _getDropData(event: DragEvent, data: BaseTile.ConstructorData): Promise<BaseTile.ConstructorData>;
 
     /**
      * Get an array of overhead Tile objects which are roofs

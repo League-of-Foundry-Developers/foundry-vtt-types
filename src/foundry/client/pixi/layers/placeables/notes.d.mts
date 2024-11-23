@@ -21,7 +21,6 @@ declare global {
      *  zIndex: 800
      * })
      * ```
-     * @remarks The TODO is foundry internal
      */
     static override get layerOptions(): NotesLayer.LayerOptions;
 

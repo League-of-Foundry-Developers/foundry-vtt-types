@@ -196,8 +196,7 @@ declare global {
            * The style of ping to draw, from CONFIG.Canvas.pings.
            * @defaultValue `"arrow"`
            */
-          //TODO: eventually replace with a type like `keyof CONFIG.Canvas.pings` but something mergable?
-          style: string;
+          style: keyof RemoveIndexSignatures<typeof CONFIG.Canvas.pings.styles>;
 
           /**
            * The user who pinged.
