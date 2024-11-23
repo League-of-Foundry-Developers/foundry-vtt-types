@@ -549,7 +549,7 @@ declare abstract class Document<
     operation?: InexactPartial<DatabaseOperationsFor<Extract<EmbeddedName, Document.Type>, "create">> & {
       temporary?: Temporary;
     },
-  ): Promise<Array<Document.ConfiguredClassForName<Extract<EmbeddedName, Document.Type>>> | undefined>;
+  ): Promise<Array<Document.ConfiguredInstanceForName<Extract<EmbeddedName, Document.Type>>> | undefined>;
 
   /**
    * Update multiple embedded Document instances within a parent Document using provided differential data.
