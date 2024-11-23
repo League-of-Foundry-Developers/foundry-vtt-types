@@ -9,6 +9,7 @@ import type { DropData } from "./data/abstract/client-document.d.mts";
 import type ProseMirrorMenu from "../common/prosemirror/menu.d.mts";
 import type PointVisionSource from "../client-esm/canvas/sources/point-vision-source.d.mts";
 import type RenderedEffectSource from "../client-esm/canvas/sources/rendered-effect-source.d.mts";
+import type { CompendiumArtInfo } from "../client-esm/helpers/_types.d.mts";
 
 declare global {
   /**
@@ -117,7 +118,6 @@ declare global {
        * @remarks This is called by {@link Hooks.callAll}.
        * @see {@link GameTime#onUpdateWorldTime}
        */
-      // Note: Double-listed in the official docs, possible this moves to under Socket
       updateWorldTime: (worldTime: number, delta: number) => void;
 
       /** CanvasLifecycle */
@@ -239,28 +239,6 @@ declare global {
        */
       changeSidebarTab: (app: SidebarTab) => void;
 
-      /** EffectsCanvasGroup */
-
-      /**
-       * A hook event that fires in the {@link EffectsCanvasGroup} #createLayers private method.
-       * @param group - The EffectsCanvasGroup instance
-       * @remarks This is called by {@link Hooks.callAll}.
-       */
-      createEffectsCanvasGroup: (group: EffectsCanvasGroup) => void;
-
-      /**
-       * A hook event that fires in the {@link EffectsCanvasGroup} draw method.
-       * @param group - The EffectsCanvasGroup instance
-       * @remarks This is called by {@link Hooks.callAll}.
-       */
-      drawEffectsCanvasGroup: (group: EffectsCanvasGroup) => void;
-
-      /**
-       * A hook event that fires in the {@link EffectsCanvasGroup} tearDown method.
-       * @param group - The EffectsCanvasGroup instance
-       */
-      tearDownEffectsCanvasGroup: (group: EffectsCanvasGroup) => void;
-
       /** Active Effects */
 
       /**
@@ -303,7 +281,7 @@ declare global {
       applyTokenStatusEffect: (token: Token.ConfiguredInstance, statusId: string, active: boolean) => void;
 
       /**
-       * A hook event that fires when a chat bubble is rendered.
+       * A hook event that fires when a chat bubble is initially configured.
        * @param token   - The speaking token
        * @param html    - The HTML for the chat bubble
        * @param message - The spoken message text
@@ -417,6 +395,25 @@ declare global {
         context: Cards.ReturnContext,
       ) => boolean | void;
 
+      /** Actor */
+
+      /**
+       * A hook even that fires when package-provided art is applied to a compendium Document.
+       * @param documentClass - The Document class.
+       * @param source        - The Document's source data.
+       * @param pack          - The Document's compendium.
+       * @param art           - The art being applied.
+       * @remarks Called as part of _initializeSource, after data migration, cleaning, and shims
+       * @remarks Currently only called by Actor but comments are more generic
+       * @remarks This is called by {@link Hooks.callAll}.
+       */
+      applyCompendiumArt: (
+        documentClass: Actor.ConfiguredClass,
+        source: foundry.documents.BaseActor.ConstructorData,
+        pack: CompendiumCollection.Any,
+        art: CompendiumArtInfo,
+      ) => void;
+
       /** ActorSheet */
 
       /**
@@ -452,6 +449,13 @@ declare global {
       lightingRefresh: (layer: LightingLayer) => void;
 
       /**
+       * A hook event that fires when visibility is refreshed.
+       * @param visibility - The CanvasVisibility instance
+       * @remarks This is called by {@link Hooks.callAll}.
+       */
+      visibilityRefresh: (visibility: CanvasVisibility) => void;
+
+      /**
        * A hook event that fires during light source initialization.
        * This hook can be used to add programmatic light sources to the Scene.
        * @param source - The EffectsCanvasGroup where light sources are initialized
@@ -459,6 +463,14 @@ declare global {
        * @see {@link EffectsCanvasGroup#initializeLightSources}
        */
       initializeLightSources: (group: EffectsCanvasGroup) => void;
+
+      /**
+       * A hook event that fires during darkness source initialization.
+       * This hook can be used to add programmatic darkness sources to the Scene.
+       * @param group - The EffectsCanvasGroup where darkness sources are initialized
+       * @remarks This is called by {@link Hooks.callAll}.
+       */
+      initializeDarknessSources: (group: EffectsCanvasGroup) => void;
 
       /**
        * A hook event that fires when the CanvasVisibility layer has been refreshed.
@@ -529,7 +541,22 @@ declare global {
       /** Combat */
 
       /**
+       *  A hook event which fires when the turn order of a Combat encounter is progressed.
+       * This event fires on all clients after the database update has occurred for the Combat.
+       * @param combat  - The Combat encounter for which the turn order has changed
+       * @param prior   - The prior turn state
+       * @param current - The new turn state
+       * @remarks This is called by {@link Hooks.callAll}.
+       */
+      combatTurnChange: (
+        combat: Combat.ConfiguredInstance,
+        prior: Combat.HistoryData,
+        current: Combat.HistoryData,
+      ) => void;
+
+      /**
        * A hook event that fires when a Combat encounter is started.
+       * This event fires on the initiating client before any database update occurs.
        * @param combat     - The Combat encounter which is starting
        * @param updateData - An object which contains Combat properties that will be updated. Can be mutated.
        */
@@ -545,6 +572,7 @@ declare global {
 
       /**
        * A hook event that fires when the turn of the Combat encounter changes.
+       * This event fires on the initiating client before any database update occurs.
        * @param combat        - The Combat encounter which is advancing or rewinding its turn
        * @param updateData    - An object which contains Combat properties that will be updated. Can be mutated.
        * @param updateOptions - An object which contains options provided to the update method. Can be mutated.
@@ -657,7 +685,7 @@ declare global {
         chatLog: ChatLog,
         message: string,
         chatData: {
-          /** The User sending the message */
+          /** The id of the User sending the message */
           user: string;
 
           /** The identified speaker data, see {@link ChatMessage.getSpeaker} */
@@ -742,6 +770,13 @@ declare global {
         data: object,
       ) => boolean | void;
 
+      /**
+       * A hook event that allows to pass custom dynamic ring configurations.
+       * @param ringConfig - The ring configuration instance
+       * @remarks This is called by {@link Hooks.callAll}.
+       */
+      initializeDynamicTokenRingConfig: (ringConfig: foundry.canvas.tokens.TokenRingConfig) => void;
+
       /** Specific implementations of GetEntryContext */
 
       /**
@@ -810,10 +845,30 @@ declare global {
      */
     type CloseApplication<A extends Application = Application> = (app: A, html: JQuery) => boolean | void;
 
+    /** EffectsCanvasGroup */
+
+    /**
+     * A hook event that fires when a {@link CanvasGroup} is drawn.
+     * The dispatched event name replaces "Group" with the named CanvasGroup subclass, i.e. "drawPrimaryCanvasGroup".
+     * @param group - The group being drawn
+     */
+    type DrawGroup<
+      G extends ReturnType<typeof CanvasGroupMixin> = ReturnType<typeof CanvasGroupMixin<CanvasGroupMixin.BaseClass>>,
+    > = (group: G) => void;
+
+    /**
+     * A hook event that fires when a {@link CanvasGroup} is deconstructed.
+     * The dispatched event name replaces "Group" with the named CanvasGroup subclass, i.e. "tearDownPrimaryCanvasGroup".
+     * @param group - The group being deconstructed
+     */
+    type TearDownGroup<
+      G extends ReturnType<typeof CanvasGroupMixin> = ReturnType<typeof CanvasGroupMixin<CanvasGroupMixin.BaseClass>>,
+    > = (group: G) => void;
+
     /** CanvasLayer */
 
     /**
-     * A hook event that fires with a {@link CanvasLayer} is initially drawn.
+     * A hook event that fires when a {@link CanvasLayer} is initially drawn.
      * The dispatched event name replaces "Layer" with the named CanvasLayer subclass, i.e. "drawTokensLayer".
      * @param layer - The layer being drawn
      * @typeParam L - the type of the CanvasLayer
@@ -821,7 +876,7 @@ declare global {
     type DrawLayer<L extends CanvasLayer = CanvasLayer> = (layer: L) => void;
 
     /**
-     * A hook event that fires with a {@link CanvasLayer} is deconstructed.
+     * A hook event that fires when a {@link CanvasLayer} is deconstructed.
      * The dispatched event name replaces "Layer" with the named CanvasLayer subclass, i.e. "tearDownTokensLayer".
      * @param layer - The layer being deconstructed
      * @typeParam L - the type of the CanvasLayer
@@ -941,7 +996,7 @@ declare global {
      * that data or prevent the workflow entirely by explicitly returning false.
      *
      * @param document - The Document instance being updated
-     * @param change   - Differential data that will be used to update the document
+     * @param changed  - Differential data that will be used to update the document
      * @param options  - Additional options which modify the update request
      * @param userId   - The ID of the requesting user, always game.user.id
      * @typeParam D    - the type of the Document constructor
@@ -953,7 +1008,7 @@ declare global {
      */
     type PreUpdateDocument<D extends Document.AnyConstructor = Document.AnyConstructor> = (
       document: Document.ToConfiguredInstance<D>,
-      change: DeepPartial<ConstructorParameters<D>[0]>,
+      changed: DeepPartial<ConstructorParameters<D>[0]>,
       options: Document.PreUpdateOptions<InstanceType<D>["documentName"]>,
       userId: string,
     ) => boolean | void;
@@ -1053,7 +1108,7 @@ declare global {
      * @remarks The name for this hook is dynamically created by wrapping the type name of the shader in `initialize` and `Shaders`.
      * @remarks This is called by {@link Hooks.callAll}.
      */
-    type InitializeRenderedPointSourceShaders<RPS extends RenderedEffectSource.Any = RenderedEffectSource.Any> = (
+    type InitializeRenderedEffectSourceShaders<RPS extends RenderedEffectSource.Any = RenderedEffectSource.Any> = (
       source: RPS,
     ) => void;
 
@@ -1114,6 +1169,8 @@ declare global {
       | RenderApplication
       | GetApplicationHeaderButtons
       | CloseApplication
+      | DrawGroup
+      | TearDownGroup
       | DrawLayer
       | TearDownLayer
       | PastePlaceableObject
@@ -1127,7 +1184,7 @@ declare global {
       | CreateDocument
       | UpdateDocument
       | DeleteDocument
-      | InitializeRenderedPointSourceShaders
+      | InitializeRenderedEffectSourceShaders
       | ActivateLayer
       | DeactivateLayer
       | GetEntryContext
