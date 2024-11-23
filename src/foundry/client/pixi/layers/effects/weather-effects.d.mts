@@ -61,7 +61,7 @@ declare global {
      * This configuration is automatically passed to WeatherShaderEffect#configureTerrainMask upon construction.
      *
      * @privateRemarks This property is passed to `WeatherEffects.configureOcclusionMask` in two places, but both times
-     * as `|| {enabled: true}`, and it is never set as far as I can tell.
+     * as `this.occlusionMaskConfig || {enabled: true}`, and it is never set as far as I can tell.
      */
     occlusionMaskConfig: WeatherEffects.WeatherOcclusionMaskConfiguration | undefined;
 
@@ -72,7 +72,7 @@ declare global {
 
     /**
      * The elevation of this object.
-     * @throws The setter throws an error if passed NaN or a non-number
+     * @throws The setter throws an error if passed NaN
      */
     get elevation(): number;
 
@@ -81,7 +81,7 @@ declare global {
     /**
      * A key which resolves ties amongst objects at the same elevation of different layers.
      * @defaultValue `PrimaryCanvasGroup.SORT_LAYERS.WEATHER`
-     * @throws The setter throws an error if passed NaN or a non-number
+     * @throws The setter throws an error if passed NaN
      */
     get sortLayer(): number;
 
@@ -90,7 +90,7 @@ declare global {
     /**
      * A key which resolves ties amongst objects at the same elevation within the same layer.
      * @defaultValue `0`
-     * @throws The setter throws an error if passed NaN or a non-number
+     * @throws The setter throws an error if passed NaN
      */
     get sort(): number;
 
@@ -98,7 +98,7 @@ declare global {
 
     /**
      * A key which resolves ties amongst objects at the same elevation within the same layer and same sort.
-     * @throws The setter throws an error if passed NaN or a non-number
+     * @throws The setter throws an error if passed NaN
      */
     get zIndex(): number;
 
@@ -128,7 +128,7 @@ declare global {
      */
     protected static configureOcclusionMask(
       context: PIXI.Shader,
-      /** @privateRemarks can't be NullishProps because `texture` is only checked for `!== undefined` */
+      /** @remarks Can't be NullishProps because `texture` is only checked for `!== undefined` */
       config?: InexactPartial<WeatherEffects.WeatherOcclusionMaskConfiguration>,
     ): void;
 
@@ -139,7 +139,7 @@ declare global {
      */
     protected static configureTerrainMask(
       context: PIXI.Shader,
-      /** @privateRemarks can't be NullishProps because `texture` is only checked for `!== undefined` */
+      /** @remarks Can't be NullishProps because `texture` is only checked for `!== undefined` */
       config?: InexactPartial<WeatherEffects.WeatherTerrainMaskConfiguration>,
     ): void;
 

@@ -63,7 +63,7 @@ declare global {
      */
     panToNote(
       note: Note,
-      /** @privateRemarks Can't be NullishProps because `duration` is passed to `canvas.animatePan` which assumes it is a number */
+      /** @remarks Can't be NullishProps because `duration` is passed to `canvas.animatePan` which only provides a default for `undefined` with `{ duration=250 }`, and must be numeric */
       options?: InexactPartial<{
         /**
          * The resulting zoom level.

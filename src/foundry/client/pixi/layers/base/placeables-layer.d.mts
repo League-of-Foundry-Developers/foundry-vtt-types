@@ -225,11 +225,10 @@ declare global {
      *                  (default: `{}`)
      * @returns An array of objects which were rotated
      * @throws An error if explicitly provided id is not valid
+     * @remarks Overload is necessary to ensure that one of `angle` or `delta` are numeric in `options`
      */
-    rotateMany(
-      /** @privateRemarks Can't be NullishProps because at least one of `angle` or `delta` must be numeric */
-      options?: InexactPartial<RotationOptions>,
-    ): Promise<Document.ConfiguredObjectInstanceForName<DocumentName>[]>;
+    rotateMany(options?: RotationOptionsWithAngle): Promise<Document.ConfiguredObjectInstanceForName<DocumentName>[]>;
+    rotateMany(options?: RotationOptionsWithDelta): Promise<Document.ConfiguredObjectInstanceForName<DocumentName>[]>;
 
     /**
      * Simultaneously move multiple PlaceableObjects via keyboard movement offsets.
@@ -241,7 +240,7 @@ declare global {
      * @throws An error if explicitly provided id is not valid
      */
     moveMany(
-      /** @privateRemarks can't be NullishProps becuase `dx` and `dy` must be in `[-1, 0, 1]` */
+      /** @remarks can't be NullishProps becuase `dx` and `dy` must be in `[-1, 0, 1]` */
       options?: InexactPartial<MovementOptions>,
     ): Promise<Document.ConfiguredObjectInstanceForName<DocumentName>[]> | undefined;
 
@@ -342,7 +341,10 @@ declare global {
      * @returns A boolean for whether the controlled set was changed in the operation
      */
     selectObjects(
-      /** @privateRemarks Can't be NullishProps because `PlaceableObject#control` accesses `controlOptions.releaseOthers` without further checks */
+      /**
+       * @remarks Can't be NullishProps because `controlOptions` is passed on to `PlaceableObject#control`
+       * which provides  a default of `{}` and then checks for `.releaseOthers` without further checks
+       * */
       options?: InexactPartial<
         Canvas.Rectangle & {
           /**
@@ -553,11 +555,11 @@ declare abstract class AnyPlaceablesLayer extends PlaceablesLayer<any> {
   constructor(arg0: never, ...args: never[]);
 }
 
-interface RotationOptions {
+interface RotationOptionsWithDelta {
   /**
    * A target angle of rotation (in degrees) where zero faces "south"
    */
-  angle: number;
+  angle?: number | null | undefined;
 
   /**
    * An incremental angle of rotation (in degrees)
@@ -567,18 +569,46 @@ interface RotationOptions {
   /**
    * Snap the resulting angle to a multiple of some increment (in degrees)
    */
-  snap: number;
+  snap?: number | null | undefined;
 
   /**
    * An Array of object IDs to target for rotation
    */
-  ids: string[];
+  ids?: string[] | null | undefined;
 
   /**
    * Rotate objects whose documents are locked?
    * @defaultValue `false`
    */
-  includeLocked: boolean;
+  includeLocked?: boolean | null | undefined;
+}
+
+interface RotationOptionsWithAngle {
+  /**
+   * A target angle of rotation (in degrees) where zero faces "south"
+   */
+  angle: number;
+
+  /**
+   * An incremental angle of rotation (in degrees)
+   */
+  delta?: number | null | undefined;
+
+  /**
+   * Snap the resulting angle to a multiple of some increment (in degrees)
+   */
+  snap?: number | null | undefined;
+
+  /**
+   * An Array of object IDs to target for rotation
+   */
+  ids?: string[] | null | undefined;
+
+  /**
+   * Rotate objects whose documents are locked?
+   * @defaultValue `false`
+   */
+  includeLocked?: boolean | null | undefined;
 }
 
 interface MovementOptions {

@@ -1,5 +1,5 @@
 import type { IntentionalPartial } from "../../../../../types/helperTypes.d.mts";
-import type { InexactPartial, NullishProps } from "../../../../../types/utils.d.mts";
+import type { InexactPartial, NullishProps, RemoveIndexSignatures } from "../../../../../types/utils.d.mts";
 import type { LineIntersection } from "../../../../common/utils/geometry.d.mts";
 
 declare global {
@@ -189,7 +189,7 @@ declare global {
      */
     drawOffscreenPing(
       position: Canvas.Point,
-      options?: /** @privateRemarks PingOptions gets spread */
+      options?: /** @remarks Can't be NullishProps or InexactPartial because PingOptions gets spread into an object with existing values for some keys */
       IntentionalPartial<PingOptions> &
         NullishProps<{
           /**
@@ -215,15 +215,14 @@ declare global {
      */
     drawPing(
       position: PIXI.Point,
-      options?: /** @privateRemarks PingOptions gets spread */
+      options?: /** @remarks Can't be NullishProps or InexactPartial because PingOptions gets `mergeObject`ed */
       IntentionalPartial<PingOptions> &
         NullishProps<{
           /**
            * The style of ping to draw, from CONFIG.Canvas.pings.
            * @defaultValue `"pulse"`
            */
-          //TODO: eventually replace with a type like `keyof CONFIG.Canvas.pings` but something mergable?
-          style: string;
+          style: keyof RemoveIndexSignatures<typeof CONFIG.Canvas.pings.styles>;
 
           /**
            * The user who pinged.

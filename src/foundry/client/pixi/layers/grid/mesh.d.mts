@@ -38,7 +38,7 @@ declare global {
     /**
      * Initialize the data of this mesh given the (partial) data.
      * @param data - The (partial) data.
-     * @privateRemarks Can't be NullishProps because of `!== undefined` tests
+     * @remarks Can't be NullishProps because of `!== undefined` tests
      */
     protected _initialize(data: InexactPartial<GridMesh.Data>): void;
   }

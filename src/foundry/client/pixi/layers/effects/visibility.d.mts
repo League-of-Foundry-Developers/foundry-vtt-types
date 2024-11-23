@@ -86,7 +86,7 @@ declare global {
      *
      * @privateRemarks Foundry types this parameter as `FogTextureConfiguration`, and
      * unlike the other place they used this type seeming in error, only `rect`'s
-     * `x, y, width, height` properties are accesses, so I'm assuming they meant Rectangle
+     * `x, y, width, height` properties are accessed, so I'm assuming they meant Rectangle
      */
     set explorationRect(rect: Canvas.Rectangle);
 
@@ -135,8 +135,8 @@ declare global {
     testVisibility(
       point: Canvas.Point,
       /**
-       * @privateRemarks can't be NullishProps because `tolerance` gets passed directly to
-       * `_createVisibilityTestConfig` which assumes, unchecked, that it's a number
+       * @remarks Can't be NullishProps because `tolerance` gets passed directly to `_createVisibilityTestConfig`,
+       * where a default is provided only for `undefined` with `{ tolerance=2 }`, which must be numeric
        * */
       options?: InexactPartial<{
         /**
@@ -160,7 +160,7 @@ declare global {
      */
     _createVisibilityTestConfig(
       point: Canvas.Point,
-      /** @privateRemarks Can't be NullishProps because `tolerance` is assumed, unchecked, to be a number */
+      /** @remarks Can't be NullishProps because a default for `tolerance` is provided only for `undefined` with `{ tolerance=2 }`, which must be numeric */
       options?: InexactPartial<{
         /**
          * A numeric radial offset which allows for a non-exact match.

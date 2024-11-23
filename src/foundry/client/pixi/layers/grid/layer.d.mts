@@ -4,7 +4,6 @@ declare global {
   /**
    * A CanvasLayer responsible for drawing a square grid
    */
-  // @ts-expect-error see https://github.com/foundryvtt/foundryvtt/issues/11794
   class GridLayer<
     DrawOptions extends GridLayer.DrawOptions = GridLayer.DrawOptions,
     TearDownOptions extends CanvasLayer.TearDownOptions = CanvasLayer.TearDownOptions,
@@ -60,7 +59,7 @@ declare global {
      */
     initializeMesh(
       /**
-       * @privateRemarks Can't be NullishProps because ultimately `GridMesh#_initialize` does `!== undefined` checks
+       * @remarks Can't be NullishProps because ultimately `GridMesh#_initialize` does `!== undefined` checks
        */
       options?: InexactPartial<{
         /** The grid style */
