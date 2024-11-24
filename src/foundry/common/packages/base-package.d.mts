@@ -261,12 +261,12 @@ declare namespace BasePackage {
     /**
      * The human-readable package title, containing spaces and special characters
      */
-    title: fields.StringField;
+    title: fields.StringField<{ required: true; blank: false }>;
 
     /**
      * An optional package description, may contain HTML
      */
-    description: fields.StringField;
+    description: fields.StringField<{ required: true }>;
 
     /**
      * An array of author objects who are co-authors of this package. Preferred to the singular author field.
@@ -289,7 +289,7 @@ declare namespace BasePackage {
     readme: fields.StringField<OptionalString>;
 
     /**
-     *  A web url where bug reports may be submitted and tracked
+     * A web url where bug reports may be submitted and tracked
      */
     bugs: fields.StringField<OptionalString>;
 
@@ -318,7 +318,7 @@ declare namespace BasePackage {
      */
     scripts: fields.SetField<fields.StringField<{ required: true; blank: false }>>;
 
-    /***
+    /**
      * An array of urls or relative file paths for ESModule files which should be included
      */
     esmodules: fields.SetField<fields.StringField<{ required: true; blank: false }>>;
