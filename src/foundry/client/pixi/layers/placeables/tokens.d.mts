@@ -77,7 +77,7 @@ declare global {
       options?: NullishProps<{ hidden: boolean; snap: boolean }>,
     ): Document.ConfiguredSourceForName<"Token">;
 
-    protected override _getMovableObjects<T>(
+    protected override _getMovableObjects<const T>(
       ids?: ArrayOverlaps<T, string>,
       includeLocked?: boolean,
     ): Token.ConfiguredInstance[];

@@ -252,7 +252,7 @@ declare global {
      * @remarks Any non-array input for `ids` will default to using currently controlled objects,
      * allowing you to provide `true` to the includeLocked
      */
-    protected _getMovableObjects<T>(
+    protected _getMovableObjects<const T>(
       ids?: ArrayOverlaps<T, string>,
       includeLocked?: boolean,
     ): Document.ConfiguredObjectInstanceForName<DocumentName>[];

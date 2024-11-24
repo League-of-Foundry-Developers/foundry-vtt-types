@@ -17,7 +17,7 @@ declare global {
      * @param other - Some other array against which to test equality
      * @returns Are the two arrays element-wise equal?
      */
-    equals<O>(other: OverlapsWith<O, T>[]): boolean;
+    equals<const O>(other: OverlapsWith<O, T>[]): boolean;
 
     /**
      * Partition an original array into two children array based on a logical test
