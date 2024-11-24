@@ -28,10 +28,11 @@ declare global {
      * Subclasses can override this method for more advanced configurations.
      * @param options - Options provided to the ParticleEffect constructor which can be used to customize
      *                  configuration values for created emitters. (default: `{}`)
+     * @throws An error if `foundry.utils.isEmpty(options)`
      */
     getParticleEmitters(options: PIXI.particles.EmitterConfigV3): PIXI.particles.Emitter[];
 
-    override destroy(options?: boolean | PIXI.IDestroyOptions): void;
+    override destroy(options?: PIXI.DisplayObject.DestroyOptions): void;
 
     /**
      * Begin animation for the configured emitters.

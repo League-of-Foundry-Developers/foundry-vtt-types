@@ -1,10 +1,13 @@
-import type { DropData } from "../../../data/abstract/client-document.d.mts";
+import type BaseTile from "../../../../common/documents/tile.d.mts";
 
 declare global {
   /**
    * A PlaceablesLayer designed for rendering the visual Scene for a specific vertical cross-section.
    */
-  class TilesLayer extends PlaceablesLayer<"Tile"> {
+  class TilesLayer<
+    DrawOptions extends PlaceablesLayer.DrawOptions = PlaceablesLayer.DrawOptions,
+    TearDownOptions extends TilesLayer.TearDownOptions = TilesLayer.TearDownOptions,
+  > extends PlaceablesLayer<"Tile", DrawOptions, TearDownOptions> {
     /**
      * @privateRemarks This is not overridden in foundry but reflects the real behavior.
      */
@@ -19,10 +22,9 @@ declare global {
      * ```js
      * foundry.utils.mergeObject(super.layerOptions, {
      *    name: "tiles",
-     *    zIndex: 0,
+     *    zIndex: 300,
      *    controllableObjects: true,
      *    rotatableObjects: true,
-     *    elevationSorting: true
      * })
      * ```
      */
@@ -35,52 +37,31 @@ declare global {
     /**
      * An array of Tile objects which are rendered within the objects container
      */
-    get tiles(): Tile[];
+    get tiles(): Tile.ConfiguredInstance[];
 
-    /**
-     * Get an array of overhead Tile objects which are roofs
-     */
-    get roofs(): Tile[];
+    override controllableObjects(): Generator<Tile.ConfiguredInstance>;
 
-    /**
-     * Determine whether to display roofs
-     */
-    get displayRoofs(): boolean;
+    override getSnappedPoint(point: Canvas.Point): Canvas.Point;
 
-    /**
-     * A convenience reference to the tile occlusion mask on the primary canvas group.
-     */
-    get depthMask(): CachedContainer;
+    protected override _tearDown(options?: TearDownOptions): Promise<void>;
 
-    override controllableObjects(): Generator<Tile>;
+    protected override _onDragLeftStart(event: PIXI.FederatedEvent): void;
 
-    override _activate(): void;
+    protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
-    override _deactivate(): void;
+    protected override _onDragLeftDrop(event: PIXI.FederatedEvent): void;
 
-    /**
-     * Activate a sublayer of the tiles layer, which controls interactivity of placeables and release controlled objects.
-     * @param foreground - Which sublayer need to be activated? Foreground or background?
-     *                     (default: `false`)
-     */
-    protected _activateSubLayer(foreground?: boolean): void;
-
-    _tearDown(options?: Record<string, unknown>): Promise<void>;
-
-    protected _onDragLeftStart(event: PIXI.FederatedEvent): Promise<unknown>;
-
-    protected _onDragLeftMove(event: PIXI.FederatedEvent): void;
-
-    protected _onDragLeftDrop(event: PIXI.FederatedEvent): Promise<void>;
-
-    protected _onDragLeftCancel(event: PointerEvent): void;
+    protected override _onDragLeftCancel(event: PointerEvent): void;
 
     /**
      * Handle drop events for Tile data on the Tiles Layer
      * @param event - The concluding drag event
      * @param data  - The extracted Tile data
      */
-    protected _onDropData(event: DragEvent, data: DropData.Any): Promise<void>;
+    protected _onDropData(
+      event: DragEvent,
+      data: BaseTile.ConstructorData,
+    ): Promise<TileDocument.ConfiguredInstance | false | void>;
 
     /**
      * Prepare the data object when a new Tile is dropped onto the canvas
@@ -88,22 +69,39 @@ declare global {
      * @param data  - The extracted Tile data
      * @returns The prepared data to create
      */
-    _getDropData(event: DragEvent, data: TilesLayer.DropData): Promise<DropData.Any>;
+    _getDropData(event: DragEvent, data: BaseTile.ConstructorData): Promise<BaseTile.ConstructorData>;
+
+    /**
+     * Get an array of overhead Tile objects which are roofs
+     * @deprecated since v12 until v14
+     * @remarks "TilesLayer#roofs has been deprecated without replacement."
+     */
+    get roofs(): Tile.ConfiguredInstance[];
 
     /**
      * @deprecated since v11, will be removed in v13
      * @remarks "TilesLayer#textureDataMap has moved to TextureLoader.textureBufferDataMap"
      */
     get textureDataMap(): (typeof TextureLoader)["textureBufferDataMap"];
+
+    /**
+     * A convenience reference to the tile occlusion mask on the primary canvas group.
+     * @deprecated since v11 until v13
+     * @remarks "TilesLayer#depthMask is deprecated without replacement. Use canvas.masks.depth instead"
+     */
+    get depthMask(): CachedContainer;
   }
 
   namespace TilesLayer {
+    type AnyConstructor = typeof AnyTilesLayer;
+
+    interface TearDownOptions extends PlaceablesLayer.TearDownOptions {}
+
     interface LayerOptions extends PlaceablesLayer.LayerOptions<"Tile"> {
       name: "tiles";
-      zIndex: 0;
+      zIndex: 300;
       controllableObjects: true;
       rotatableObjects: true;
-      elevationSorting: true;
     }
 
     interface DropData extends Canvas.DropPosition {
@@ -111,4 +109,8 @@ declare global {
       uuid: string;
     }
   }
+}
+
+declare abstract class AnyTilesLayer extends TilesLayer {
+  constructor(arg0: never, ...args: never[]);
 }

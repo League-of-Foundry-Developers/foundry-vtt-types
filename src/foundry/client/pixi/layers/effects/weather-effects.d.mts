@@ -1,10 +1,13 @@
-export {};
+import type { InexactPartial } from "../../../../../types/utils.d.mts";
 
 declare global {
   /**
    * A CanvasLayer for displaying visual effects like weather, transitions, flashes, or more
    */
-  class WeatherEffects extends FullCanvasObjectMixin(CanvasLayer) {
+  class WeatherEffects<
+    DrawOptions extends WeatherEffects.DrawOptions = WeatherEffects.DrawOptions,
+    TearDownOptions extends WeatherEffects.TearDownOptions = WeatherEffects.TearDownOptions,
+  > extends FullCanvasObjectMixin(CanvasLayer) {
     /**
      * @privateRemarks This is not overridden in foundry but reflects the real behavior.
      */
@@ -35,9 +38,9 @@ declare global {
     /**
      * @defaultValue `foundry.utils.mergeObject(super.layerOptions, { name: "effects" })`
      */
-    static override get layerOptions(): WeatherLayer.LayerOptions;
+    static override get layerOptions(): WeatherEffects.LayerOptions;
 
-    override options: WeatherLayer.LayerOptions;
+    override options: WeatherEffects.LayerOptions;
 
     /**
      * Array of weather effects linked to this weather container.
@@ -47,14 +50,20 @@ declare global {
     /**
      * A default configuration of the terrain mask that is automatically applied to any shader-based weather effects.
      * This configuration is automatically passed to WeatherShaderEffect#configureTerrainMask upon construction.
+     *
+     * @privateRemarks This property is checked and conditionally passed in two places in this file,
+     * but never set as far as I can tell. It is not initialized to a value.
      */
-    terrainMaskConfig: WeatherLayer.WeatherTerrainMaskConfiguration;
+    terrainMaskConfig: WeatherEffects.WeatherTerrainMaskConfiguration | undefined;
 
     /**
      * A default configuration of the terrain mask that is automatically applied to any shader-based weather effects.
      * This configuration is automatically passed to WeatherShaderEffect#configureTerrainMask upon construction.
+     *
+     * @privateRemarks This property is passed to `WeatherEffects.configureOcclusionMask` in two places, but both times
+     * as `this.occlusionMaskConfig || {enabled: true}`, and it is never set as far as I can tell.
      */
-    occlusionMaskConfig: WeatherLayer.WeatherOcclusionMaskConfiguration;
+    occlusionMaskConfig: WeatherEffects.WeatherOcclusionMaskConfiguration | undefined;
 
     /**
      * The inverse occlusion mask filter bound to this container.
@@ -63,14 +72,16 @@ declare global {
 
     /**
      * The elevation of this object.
+     * @throws The setter throws an error if passed NaN
      */
     get elevation(): number;
 
-    set elevation(value);
+    set elevation(value: number);
 
     /**
      * A key which resolves ties amongst objects at the same elevation of different layers.
      * @defaultValue `PrimaryCanvasGroup.SORT_LAYERS.WEATHER`
+     * @throws The setter throws an error if passed NaN
      */
     get sortLayer(): number;
 
@@ -79,27 +90,31 @@ declare global {
     /**
      * A key which resolves ties amongst objects at the same elevation within the same layer.
      * @defaultValue `0`
+     * @throws The setter throws an error if passed NaN
      */
     get sort(): number;
 
-    set sort(value);
+    set sort(value: number);
 
     /**
      * A key which resolves ties amongst objects at the same elevation within the same layer and same sort.
+     * @throws The setter throws an error if passed NaN
      */
     get zIndex(): number;
 
-    set zIndex(value);
+    set zIndex(value: number);
 
-    protected override _draw(options?: Record<string, unknown>): Promise<void>;
+    protected override _draw(options?: DrawOptions): Promise<void>;
 
-    protected override _tearDown(options?: Record<string, unknown>): Promise<void>;
+    protected override _tearDown(options?: TearDownOptions): Promise<void>;
 
     /**
      * Initialize the weather container from a weather config object.
      * @param weatherEffectsConfig - Weather config object (or null/undefined to clear the container).
+     *
+     * @privateRemarks Foundry has this typed as just `object`, but explicitly calls it with null and implicitly with undefined
      */
-    initializeEffects(weatherEffectsConfig?: WeatherLayer.WeatherEffectsConfig | null): void;
+    initializeEffects(weatherEffectsConfig?: WeatherEffects.WeatherEffectsConfig | null | undefined): void;
 
     /**
      * Clear the weather container.
@@ -113,7 +128,8 @@ declare global {
      */
     protected static configureOcclusionMask(
       context: PIXI.Shader,
-      config: WeatherLayer.WeatherOcclusionMaskConfiguration,
+      /** @remarks Can't be NullishProps because `texture` is only checked for `!== undefined` */
+      config?: InexactPartial<WeatherEffects.WeatherOcclusionMaskConfiguration>,
     ): void;
 
     /**
@@ -123,7 +139,8 @@ declare global {
      */
     protected static configureTerrainMask(
       context: PIXI.Shader,
-      config: WeatherLayer.WeatherTerrainMaskConfiguration,
+      /** @remarks Can't be NullishProps because `texture` is only checked for `!== undefined` */
+      config?: InexactPartial<WeatherEffects.WeatherTerrainMaskConfiguration>,
     ): void;
 
     /**
@@ -133,10 +150,16 @@ declare global {
     get weather(): this;
   }
 
-  namespace WeatherLayer {
+  namespace WeatherEffects {
+    type AnyConstructor = typeof AnyWeatherEffects;
+
     interface LayerOptions extends CanvasLayer.LayerOptions {
       name: "effects";
     }
+
+    interface DrawOptions extends CanvasLayer.DrawOptions {}
+
+    interface TearDownOptions extends CanvasLayer.TearDownOptions {}
 
     interface WeatherTerrainMaskConfiguration {
       /**
@@ -197,4 +220,8 @@ declare global {
       filter: PIXI.Filter;
     }
   }
+}
+
+declare abstract class AnyWeatherEffects extends WeatherEffects {
+  constructor(arg0: never, ...args: never[]);
 }

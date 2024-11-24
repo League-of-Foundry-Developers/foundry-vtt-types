@@ -44,7 +44,7 @@ type _GetKey<T, K extends PropertyKey, D> = T extends { readonly [_ in K]?: infe
  * - Use `IntentionalPartial` when an explicit `undefined` is problematic but
  *   leaving off the property entirely is fine. This primarily occurs when
  *   patterns like `options = { ...defaultOptions, ...options }`,
- *   `Object.apply({}, defaultOptions, options)`,
+ *   `Object.assign({}, defaultOptions, options)`,
  *   `foundry.utils.mergeObject(defaultOptions, options)`, or so on.
  *
  *   Note that {@link foundry.utils.mergeObject | `foundry.utils.mergeObject`}
@@ -66,7 +66,10 @@ export type IntentionalPartial<T> = Partial<T>;
 /**
  * This type is used to make a constraint where `T` must be statically known to overlap with `U`.
  */
-export type OverlapsWith<T, U> = [T & U] extends [never] ? U : T;
+export type OverlapsWith<T, U> = Extract<T, U> extends [never] ? U : T;
+
+export type ArrayOverlaps<T, Item> =
+  Extract<T, readonly unknown[]> extends readonly Item[] ? OverlapsWith<T, readonly Item[]> : readonly Item[];
 
 /**
  * Use this whenever a type is given that should match some constraint but is

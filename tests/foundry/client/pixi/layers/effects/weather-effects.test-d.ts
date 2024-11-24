@@ -1,7 +1,7 @@
 import { expectTypeOf } from "vitest";
 
 expectTypeOf(WeatherEffects.instance).toEqualTypeOf<EffectsCanvasGroup | undefined>();
-expectTypeOf(WeatherEffects.layerOptions).toEqualTypeOf<WeatherLayer.LayerOptions>();
+expectTypeOf(WeatherEffects.layerOptions).toEqualTypeOf<WeatherEffects.LayerOptions>();
 expectTypeOf(WeatherEffects.layerOptions.name).toEqualTypeOf<"effects">();
 
 const layer = new WeatherEffects();

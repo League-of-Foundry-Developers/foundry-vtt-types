@@ -1,16 +1,17 @@
 import type { NullishProps } from "../../../../../types/utils.d.mts";
 
-export {};
-
 declare global {
   /**
    * A CanvasLayer for displaying illumination visual effects
    */
-  class CanvasIlluminationEffects extends CanvasLayer {
+  class CanvasIlluminationEffects<
+    DrawOptions extends CanvasIlluminationEffects.DrawOptions = CanvasIlluminationEffects.DrawOptions,
+    TearDownOptions extends CanvasIlluminationEffects.TearDownOptions = CanvasIlluminationEffects.TearDownOptions,
+  > extends CanvasLayer<DrawOptions, TearDownOptions> {
     /**
      * The filter used to mask visual effects on this layer
      */
-    filter: VisualEffectsMaskingFilter;
+    filter: VisualEffectsMaskingFilter | undefined;
 
     /**
      * The container holding the lights.
@@ -78,9 +79,10 @@ declare global {
 
     override render(renderer: PIXI.Renderer): void;
 
-    protected override _draw(options?: Record<string, unknown>): Promise<void>;
+    protected override _draw(options?: DrawOptions): Promise<void>;
 
-    protected override _tearDown(options?: Record<string, unknown>): Promise<void>;
+    protected override _tearDown(options?: TearDownOptions): Promise<void>;
+
     /**
      * @deprecated since v11, will be removed in v13
      * @remarks "CanvasIlluminationEffects#updateGlobalLight has been deprecated."
@@ -90,13 +92,21 @@ declare global {
     /**
      * @deprecated since v12, will be removed in v14
      */
-    background: PIXI.LegacyGraphics;
+    background: null;
 
     /**
      * @deprecated since v12, will be removed in v14
      * @remarks `"CanvasIlluminationEffects#globalLight has been deprecated without replacement. Check the canvas.environment.globalLightSource.active instead."`
      */
     get globalLight(): boolean;
+  }
+
+  namespace CanvasIlluminationEffects {
+    type AnyConstructor = typeof AnyCanvasIlluminationEffects;
+
+    interface DrawOptions extends CanvasLayer.DrawOptions {}
+
+    interface TearDownOptions extends CanvasLayer.TearDownOptions {}
   }
 
   /**
@@ -126,4 +136,16 @@ declare global {
     /** @privateRemarks Including to protect duck typing due to overall similarities b/w DarknessLevelContainer and CachedContainer */
     #onChildChange(): void;
   }
+
+  namespace DarknessLevelContainer {
+    type AnyConstructor = typeof AnyCanvasIlluminationEffects;
+  }
+}
+
+declare abstract class AnyCanvasIlluminationEffects extends CanvasIlluminationEffects {
+  constructor(arg0: never, ...args: never[]);
+}
+
+declare abstract class AnyDarknessLevelContainer extends DarknessLevelContainer {
+  constructor(arg0: never, ...args: never[]);
 }

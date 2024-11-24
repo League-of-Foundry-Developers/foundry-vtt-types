@@ -1,16 +1,25 @@
-import type { AnyObject, InexactPartial, NullishProps } from "../../../../../types/utils.d.mts";
+import type { InexactPartial, NullishProps } from "../../../../../types/utils.d.mts";
 
 declare global {
   /**
    * A CanvasLayer responsible for drawing a square grid
    */
-  class GridLayer extends CanvasLayer {
+  class GridLayer<
+    DrawOptions extends GridLayer.DrawOptions = GridLayer.DrawOptions,
+    TearDownOptions extends CanvasLayer.TearDownOptions = CanvasLayer.TearDownOptions,
+  > extends CanvasLayer<DrawOptions, TearDownOptions> {
     /**
      * @remarks Due to the grid rework in v12 this points to a BaseGrid subclass rather than a GridLayer instance,
      *          however to avoid inheritance-based issues this is left as the intended GridLayer instance
      * @privateRemarks This is not overridden in foundry but reflects the real behavior.
      */
     static get instance(): GridLayer;
+
+    /**
+     * The grid mesh.
+     * @defaultValue `undefined`
+     */
+    mesh: GridMesh | undefined;
 
     /**
      * The Grid Highlight container
@@ -38,20 +47,23 @@ declare global {
      * Draw the grid
      * @param options - Override settings used in place of those saved to the Scene data
      */
-    _draw(options?: AnyObject): Promise<void>;
+    _draw(options?: DrawOptions): Promise<void>;
 
     /**
      * Creates the grid mesh.
      */
-    protected _drawMesh(): Promise<GridMesh>;
+    protected _drawMesh(): Promise<ReturnType<GridMesh["initialize"]>>;
 
     /**
      * Initialize the grid mesh appearance and configure the grid shader.
      */
     initializeMesh(
-      options?: NullishProps<{
+      /**
+       * @remarks Can't be NullishProps because ultimately `GridMesh#_initialize` does `!== undefined` checks
+       */
+      options?: InexactPartial<{
         /** The grid style */
-        style: string; // keyof CONFIG["Canvas"]["gridStyles"]; TODO: Update as part of #2572
+        style: string; //TODO: Update as part of #2572 to keyof CONFIG["Canvas"]["gridStyles"];
 
         /** The grid thickness */
         thickness: number;
@@ -93,7 +105,7 @@ declare global {
      * @param name    - The name for the referenced highlight layer
      * @param options - Options for the grid position that should be highlighted
      */
-    highlightPosition(name: string, options?: GridLayer.HighlightPositionOptions): false | void;
+    highlightPosition(name: string, options: GridLayer.HighlightPositionOptions): void;
 
     /**
      * @deprecated since v12, will be removed in v14
@@ -157,7 +169,7 @@ declare global {
       x: number,
       y: number,
       interval?: number,
-      options?: InexactPartial<{
+      options?: NullishProps<{
         /**
          * The token
          */
@@ -183,6 +195,12 @@ declare global {
   }
 
   namespace GridLayer {
+    type AnyConstructor = typeof AnyGridLayer;
+
+    interface DrawOptions extends CanvasLayer.DrawOptions {}
+
+    interface TearDownOptions extends CanvasLayer.TearDownOptions {}
+
     interface LayerOptions extends CanvasLayer.LayerOptions {
       name: "grid";
     }
@@ -239,9 +257,13 @@ declare global {
      * @deprecated since v12, will be removed in v14
      * @remarks Used by {@link foundry.grid.BaseGrid#measureDistances}
      */
-    type MeasureDistancesOptions = InexactPartial<{
+    type MeasureDistancesOptions = NullishProps<{
       /** Return the distance in grid increments rather than the co-ordinate distance. */
       gridSpaces?: boolean;
     }>;
   }
+}
+
+declare abstract class AnyGridLayer extends GridLayer {
+  constructor(arg0: never, ...args: never[]);
 }

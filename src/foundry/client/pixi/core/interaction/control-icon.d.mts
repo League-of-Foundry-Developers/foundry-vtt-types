@@ -37,7 +37,7 @@ declare global {
     /**
      * @defaultValue `static`
      */
-    override eventMode: "none" | "passive" | "auto" | "static" | "dynamic";
+    override eventMode: PIXI.EventMode;
 
     /**
      * @defaultValue `false`

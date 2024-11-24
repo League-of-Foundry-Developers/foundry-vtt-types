@@ -1,4 +1,5 @@
-import type { InexactPartial } from "../../../../../types/utils.d.mts";
+import type { IntentionalPartial } from "../../../../../types/helperTypes.d.mts";
+import type { InexactPartial, NullishProps, RemoveIndexSignatures } from "../../../../../types/utils.d.mts";
 import type { LineIntersection } from "../../../../common/utils/geometry.d.mts";
 
 declare global {
@@ -10,7 +11,10 @@ declare global {
    * 2) Ruler measurement
    * 3) Map pings
    */
-  class ControlsLayer extends InteractionLayer {
+  class ControlsLayer<
+    DrawOptions extends ControlsLayer.DrawOptions = ControlsLayer.DrawOptions,
+    TearDownOptions extends ControlsLayer.TearDownOptions = ControlsLayer.TearDownOptions,
+  > extends InteractionLayer<DrawOptions, TearDownOptions> {
     constructor();
 
     /**
@@ -26,6 +30,7 @@ declare global {
 
     /**
      * Always interactive even if disabled for doors controls
+     * @defaultValue `true`
      */
     override interactiveChildren: boolean;
 
@@ -75,21 +80,30 @@ declare global {
 
     override options: ControlsLayer.LayerOptions;
 
+    /**
+     * @defaultValue
+     * ```js
+     * foundry.utils.mergeObject(super.layerOptions, {
+     *   name: "controls",
+     *   zIndex: 1000
+     * }
+     * ```
+     */
     static override get layerOptions(): ControlsLayer.LayerOptions;
 
     /**
      * A convenience accessor to the Ruler for the active game user
      */
-    get ruler(): ReturnType<ControlsLayer["getRulerForUser"]>;
+    get ruler(): ReturnType<this["getRulerForUser"]>;
 
     /**
      * Get the Ruler display for a specific User ID
      */
     getRulerForUser(userId: string): Ruler | null;
 
-    override _draw(): Promise<void>;
+    override _draw(options?: DrawOptions): Promise<void>;
 
-    override _tearDown(): Promise<void>;
+    override _tearDown(options?: TearDownOptions): Promise<void>;
 
     /**
      * Draw the cursors container
@@ -110,7 +124,7 @@ declare global {
      * Draw the select rectangle given an event originated within the base canvas layer
      * @param coords - The rectangle coordinates of the form `{x, y, width, height}`
      */
-    drawSelect(coords: { x: number; y: number; width: number; height: number }): void;
+    drawSelect(coords: Canvas.Rectangle): void;
 
     override _deactivate(): void;
 
@@ -124,7 +138,7 @@ declare global {
      * @param event   - The triggering canvas interaction event.
      * @param origin  - The local canvas coordinates of the mousepress.
      */
-    protected _onLongPress(event: PIXI.FederatedEvent, origin: PIXI.Point): void;
+    protected _onLongPress(event: PIXI.FederatedEvent, origin: PIXI.Point): ReturnType<Canvas["ping"]>;
 
     /**
      * Handle the canvas panning to a new view.
@@ -157,7 +171,14 @@ declare global {
      * @param data     - The broadcast ping data.
      * @returns A promise which resolves once the Ping has been drawn and animated
      */
-    handlePing(user: User.ConfiguredInstance, position: Canvas.Point, data?: User.PingData): Promise<boolean>;
+    handlePing(
+      user: User.ConfiguredInstance,
+      position: Canvas.Point,
+      /**
+       * @privateRemarks User.PingData is InexactPartial because `zoom` is assumed to be number
+       * PingOptions is IntentionalPartial because it gets `mergeObject`ed with some defaults */
+      data?: InexactPartial<User.PingData> & IntentionalPartial<PingOptions>,
+    ): ReturnType<this["drawPing"]>;
 
     /**
      * Draw a ping at the edge of the viewport, pointing to the location of an off-screen ping.
@@ -168,21 +189,21 @@ declare global {
      */
     drawOffscreenPing(
       position: Canvas.Point,
-      options?: InexactPartial<
-        PingOptions & {
+      options?: /** @remarks Can't be NullishProps or InexactPartial because PingOptions gets spread into an object with existing values for some keys */
+      IntentionalPartial<PingOptions> &
+        NullishProps<{
           /**
            * The style of ping to draw, from CONFIG.Canvas.pings.
            * @defaultValue `"arrow"`
            */
-          style: string;
+          style: keyof RemoveIndexSignatures<typeof CONFIG.Canvas.pings.styles>;
 
           /**
            * The user who pinged.
            */
           user: User.ConfiguredInstance;
-        }
-      >,
-    ): Promise<boolean>;
+        }>,
+    ): ReturnType<this["drawPing"]>;
 
     /**
      * Draw a ping on the canvas
@@ -193,19 +214,21 @@ declare global {
      */
     drawPing(
       position: PIXI.Point,
-      options?: PingOptions & {
-        /**
-         * The style of ping to draw, from CONFIG.Canvas.pings.
-         * @defaultValue `"pulse"`
-         */
-        style?: string;
+      options?: /** @remarks Can't be NullishProps or InexactPartial because PingOptions gets `mergeObject`ed */
+      IntentionalPartial<PingOptions> &
+        NullishProps<{
+          /**
+           * The style of ping to draw, from CONFIG.Canvas.pings.
+           * @defaultValue `"pulse"`
+           */
+          style: keyof RemoveIndexSignatures<typeof CONFIG.Canvas.pings.styles>;
 
-        /**
-         * The user who pinged.
-         */
-        user?: User.ConfiguredInstance;
-      },
-    ): Promise<boolean>;
+          /**
+           * The user who pinged.
+           */
+          user: User.ConfiguredInstance;
+        }>,
+    ): ReturnType<Ping["animate"]>;
 
     /**
      * Given off-screen coordinates, determine the closest point at the edge of the viewport to these coordinates.
@@ -221,9 +244,19 @@ declare global {
   }
 
   namespace ControlsLayer {
+    type AnyConstructor = typeof AnyControlsLayer;
+
+    interface DrawOptions extends InteractionLayer.DrawOptions {}
+
+    interface TearDownOptions extends CanvasLayer.TearDownOptions {}
+
     interface LayerOptions extends InteractionLayer.LayerOptions {
       name: "controls";
       zIndex: 1000;
     }
   }
+}
+
+declare abstract class AnyControlsLayer extends ControlsLayer {
+  constructor(arg0: never, ...args: never[]);
 }
