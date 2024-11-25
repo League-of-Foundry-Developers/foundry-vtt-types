@@ -43,7 +43,7 @@ declare global {
 
     /**
      * Allow objects to be culled when off-screen
-     * @defaultValue `false`
+     * @defaultValue `true`
      */
     cullable: boolean;
 
@@ -141,7 +141,7 @@ declare global {
      */
     get hover(): boolean;
 
-    set hover(state);
+    set hover(state: boolean);
 
     /**
      * Is the HUD display active for this Placeable?
@@ -170,7 +170,7 @@ declare global {
      */
     clear(): this | void;
 
-    override destroy(options?: Parameters<PIXI.Container["destroy"]>[0]): void;
+    override destroy(options?: PIXI.DisplayObject.DestroyOptions): void;
 
     /**
      * The inner _destroy method which may optionally be defined by each PlaceableObject subclass.
