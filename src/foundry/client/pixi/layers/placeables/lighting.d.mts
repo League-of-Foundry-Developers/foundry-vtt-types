@@ -4,7 +4,10 @@ export {};
  * The Lighting Layer which ambient light sources as part of the CanvasEffectsGroup.
  */
 declare global {
-  class LightingLayer extends PlaceablesLayer<"AmbientLight"> {
+  class LightingLayer<
+    DrawOptions extends LightingLayer.DrawOptions = LightingLayer.DrawOptions,
+    TearDownOptions extends LightingLayer.TearDownOptions = LightingLayer.TearDownOptions,
+  > extends PlaceablesLayer<"AmbientLight", DrawOptions, TearDownOptions> {
     /**
      * @privateRemarks This is not overridden in foundry but reflects the real behavior.
      */
@@ -23,7 +26,7 @@ declare global {
      * foundry.utils.mergeObject(super.layerOptions, {
      *  name: "lighting",
      *  rotatableObjects: true,
-     *  zIndex: 300
+     *  zIndex: 900
      * })
      * ```
      */
@@ -31,107 +34,50 @@ declare global {
 
     override get hookName(): string;
 
+    override _draw(options?: DrawOptions): Promise<void>;
+
+    override _tearDown(options?: TearDownOptions): Promise<void>;
+
+    /**
+     * Refresh the fields of all the ambient lights on this scene.
+     */
+    refreshFields(): void;
+
     override _activate(): void;
 
-    protected override _onDragLeftStart(event: PIXI.FederatedEvent): ReturnType<AmbientLight["draw"]>;
+    protected override _canDragLeftStart(user: User.ConfiguredInstance, event: PIXI.FederatedEvent): boolean;
 
-    protected override _onDragLeftMove(event: PIXI.FederatedEvent): Promise<void>;
+    protected override _onDragLeftStart(event: PIXI.FederatedEvent): void;
 
-    protected override _onDragLeftCancel(event: PointerEvent): Promise<void>;
+    protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
-    protected _onMouseWheel(event: WheelEvent): void;
+    protected override _onDragLeftCancel(event: PointerEvent): void;
+
+    // @ts-expect-error Foundry is changing the return type here from Promise<PlaceableObject[]> to just Promise<AmbientLight>
+    protected _onMouseWheel(event: WheelEvent): ReturnType<AmbientLight.ConfiguredInstance["rotate"]>;
 
     /**
      * Actions to take when the darkness level of the Scene is changed
-     * @param darkness - The new darkness level
-     * @param prior    - The prior darkness level
+     * @param event - An event
      */
-    protected _onDarknessChange(darkness: number, prior: number): void;
-
-    /**
-     * @deprecated since v10, will be removed in v12
-     * @remarks "LightingLayer#background has been refactored to EffectsCanvasGroup#background"
-     */
-    get background(): EffectsCanvasGroup["background"];
-
-    /**
-     * @deprecated since v10, will be removed in v12
-     * @remarks "LightingLayer#illumination has been refactored to EffectsCanvasGroup#illumination"
-     */
-    get illumination(): EffectsCanvasGroup["illumination"];
-
-    /**
-     * @deprecated since v10, will be removed in v12
-     * @remarks "LightingLayer#channels has been refactored to EffectsCanvasGroup#lightingChannelColors"
-     * @remarks lightingChannelColors was removed in v11 without this deprecation being updated
-     */
-    get channels(): undefined;
-
-    /**
-     * @deprecated since v10, will be removed in v12
-     * @remarks "LightingLayer#coloration has been refactored to EffectsCanvasGroup#coloration"
-     */
-    get coloration(): EffectsCanvasGroup["coloration"];
-
-    /**
-     * @deprecated since v10, will be removed in v12
-     * @remarks "LightingLayer#darknessLevel has been refactored to Canvas#darknessLevel"
-     */
-    get darknessLevel(): Canvas["darknessLevel"];
-
-    /**
-     * @deprecated since v10, will be removed in v12
-     * @remarks "LightingLayer#globalLight has been refactored to CanvasIlluminationEffects#globalLight"
-     */
-    get globalLight(): CanvasIlluminationEffects["globalLight"];
-
-    /**
-     * @deprecated since v10, will be removed in v12
-     * @remarks "LightingLayer#sources has been refactored to EffectsCanvasGroup#lightSources"
-     */
-    get sources(): EffectsCanvasGroup["lightSources"];
-
-    /**
-     * @deprecated since v10, will be removed in v12
-     * @remarks "LightingLayer#version has been refactored to EffectsCanvasGroup#lightingVersion"
-     * @remarks lightingVersion was removed in v11 without this deprecation being updated
-     */
-    get version(): undefined;
-
-    /**
-     * @deprecated since v10, will be removed in v12
-     * @remarks "LightingLayer#activateAnimation has been refactored to EffectsCanvasGroup#activateAnimation"
-     */
-    activateAnimation(): void;
-
-    /**
-     * @deprecated since v10, will be removed in v12
-     * @remarks "LightingLayer#deactivateAnimation has been refactored to EffectsCanvasGroup#deactivateAnimation"
-     */
-    deactivateAnimation(): void;
-
-    /**
-     * @deprecated since v10, will be removed in v12
-     * @remarks "LightingLayer#animateDarkness has been refactored to EffectsCanvasGroup#animateDarkness"
-     */
-    animateDarkness: EffectsCanvasGroup["animateDarkness"];
-
-    /**
-     * @deprecated since v10, will be removed in v12
-     * @remarks "LightingLayer#initializeSources has been refactored to EffectsCanvasGroup#initializeLightSources"
-     */
-    initializeSources(): ReturnType<EffectsCanvasGroup["initializeLightSources"]>;
-
-    /**
-     * @deprecated since v10, will be removed in v12
-     * @remarks "LightingLayer#refresh has been refactored to EffectsCanvasGroup#refreshLighting"
-     */
-    refresh: EffectsCanvasGroup["refreshLighting"];
+    protected _onDarknessChange(event: PIXI.FederatedEvent): void;
   }
 
   namespace LightingLayer {
+    type AnyConstructor = typeof AnyLightingLayer;
+
+    interface DrawOptions extends PlaceablesLayer.DrawOptions {}
+
+    interface TearDownOptions extends PlaceablesLayer.TearDownOptions {}
+
     interface LayerOptions extends PlaceablesLayer.LayerOptions<"AmbientLight"> {
       name: "lighting";
+      rotatableObjects: true;
+      zIndex: 900;
     }
   }
+}
+
+declare abstract class AnyLightingLayer extends LightingLayer {
+  constructor(arg0: never, ...args: never[]);
 }

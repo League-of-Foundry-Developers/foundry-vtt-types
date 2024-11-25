@@ -593,6 +593,11 @@ declare global {
       releaseOthers?: boolean;
     }
 
+    /**
+     * @privateRemarks `PlaceableObject#_onDelete` is the only place in foundry code that calls `PlaceableObject#release` with any options at all,
+     * where it passes `{trigger: false}`. This is passed on to `PlaceableObject#_onRelease`, which does not check for any options, including trigger.
+     * `Drawing`, `Region`, and `Token` extend `_onRelease` and pass the options back to `super`, but do no further checks.
+     * */
     interface ReleaseOptions {
       trigger?: boolean;
     }

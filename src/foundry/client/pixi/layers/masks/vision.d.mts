@@ -26,15 +26,23 @@ declare global {
      */
     override clearColor: [r: number, g: number, b: number, a: number];
 
+    /**
+     * @defaultValue `false`
+     */
     override autoRender: boolean;
 
-    vision: CanvasVisionMask.CanvasVisionContainer;
+    /**
+     * The current vision Container.
+     * @defaultValue `undefined`
+     */
+    vision: CanvasVisionMask.CanvasVisionContainer | undefined;
 
     /**
      * The BlurFilter which applies to the vision mask texture.
      * This filter applies a NORMAL blend mode to the container.
+     * @defaultValue `undefined`
      */
-    blurFilter: AlphaBlurFilter;
+    blurFilter: AlphaBlurFilter | undefined;
 
     draw(): Promise<void>;
 
@@ -56,7 +64,7 @@ declare global {
      */
     get filter(): this["blurFilter"];
 
-    set filter(f);
+    set filter(f: AlphaBlurFilter);
   }
 
   namespace CanvasVisionMask {

@@ -35,7 +35,7 @@ declare global {
     /**
      * The configured options used for the saved fog-of-war texture.
      */
-    get textureConfiguration(): FogTextureConfiguration;
+    get textureConfiguration(): VisibilityTextureConfiguration;
 
     /**
      * Does the currently viewed Scene support Token field of vision?
@@ -50,7 +50,7 @@ declare global {
     /**
      * Create the exploration display object with or without a provided texture.
      */
-    protected _createExplorationObject(tex?: PIXI.Texture | PIXI.RenderTexture): DisplayObject
+    protected _createExplorationObject(tex?: PIXI.Texture | PIXI.RenderTexture): DisplayObject;
 
     /**
      * Initialize fog of war - resetting it when switching scenes or re-drawing the canvas

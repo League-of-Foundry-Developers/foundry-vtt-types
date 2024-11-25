@@ -70,24 +70,30 @@ type MergePartial<T, U> = Omit<T, keyof U> & {
   [K in keyof U as K extends PartialMergeKeys<T, U> ? never : K]: InnerMerge<U, K, T>;
 };
 
-type RequiredKeys<T> = {
-  [K in keyof T]-?: T extends { readonly [_ in K]: any } ? K : never;
-}[keyof T];
+// Note(LukeAbby): The addition of `PropertyKey` seems to help simplify tsc's type checking.
+// This will likely not be necessary after 
+type RequiredKeys<T> = PropertyKey &
+  {
+    [K in keyof T]-?: T extends { readonly [_ in K]: any } ? K : never;
+  }[keyof T];
 
 // Returns all the keys of U that should be partial when merged into T.
 // Only if both `T[K]` and `U[K]` are required and both are objects should a key be required.
 // This is because essentially only the most deep keys that are merged in need to be optional.
-type PartialMergeKeys<T, U> = {
-  [K in keyof U]-?: K extends RequiredKeys<U>
-    ? K extends RequiredKeys<T>
-      ? IsObject<T[K]> extends true
-        ? IsObject<U[K]> extends true
-          ? never
+//
+// Note(LukeAbby): The addition of `PropertyKey` seems to help simplify tsc's type checking.
+type PartialMergeKeys<T, U> = PropertyKey &
+  {
+    [K in keyof U]-?: K extends RequiredKeys<U>
+      ? K extends RequiredKeys<T>
+        ? IsObject<T[K]> extends true
+          ? IsObject<U[K]> extends true
+            ? never
+            : K
           : K
         : K
-      : K
-    : K;
-}[keyof U];
+      : K;
+  }[keyof U];
 
 // Merges `U[K]` into `T[K]` if they're both objects, returns `U[K]` otherwise.
 type InnerMerge<U, K extends keyof U, T> = T extends { readonly [_ in K]?: infer V }

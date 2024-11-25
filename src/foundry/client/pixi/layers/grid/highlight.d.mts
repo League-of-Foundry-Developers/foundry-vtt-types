@@ -27,6 +27,7 @@ declare global {
 
     override clear(): this;
 
-    override destroy(...args: Parameters<PIXI.Graphics["destroy"]>): void;
+    /** @privateRemarks Foundry handles this by passing `(...args)` directly to super, but it only takes the one */
+    override destroy(options?: PIXI.DisplayObject.DestroyOptions): void;
   }
 }

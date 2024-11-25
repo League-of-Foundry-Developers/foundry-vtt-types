@@ -1,4 +1,4 @@
-import type { InexactPartial, ValueOf } from "../../../../../types/utils.d.mts";
+import type { EmptyObject, InexactPartial, ValueOf } from "../../../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -6,21 +6,24 @@ declare global {
    * This layer uses an event-driven workflow to perform the minimal required calculation in response to changes.
    * @see {@link PointSource}
    */
-  class CanvasVisibility extends CanvasLayer {
+  class CanvasVisibility<
+    DrawOptions extends CanvasVisibility.DrawOptions = CanvasVisibility.DrawOptions,
+    TearDownOptions extends CanvasVisibility.TearDownOptions = CanvasVisibility.TearDownOptions,
+  > extends CanvasLayer<DrawOptions, TearDownOptions> {
     /**
      * The currently revealed vision.
      */
-    vision: CanvasVisionMask.CanvasVisionContainer;
+    vision: CanvasVisionMask.CanvasVisionContainer | undefined;
 
     /**
      * The exploration container which tracks exploration progress.
      */
-    explored: PIXI.Container;
+    explored: PIXI.Container | undefined;
 
     /**
      * The optional visibility overlay sprite that should be drawn instead of the unexplored color in the fog of war.
      */
-    visibilityOverlay: PIXI.Sprite;
+    visibilityOverlay: PIXI.Sprite | undefined;
 
     /**
      * The active vision source data object
@@ -33,8 +36,8 @@ declare global {
      * ```
      */
     visionModeData: {
-      source: foundry.canvas.sources.PointVisionSource.Any | null;
-      activeLightingOptions: VisionMode["_source"]["lighting"];
+      source: foundry.canvas.sources.PointVisionSource.Any | null | undefined;
+      activeLightingOptions: VisionMode["_source"]["lighting"] | EmptyObject;
     };
 
     /**
@@ -71,17 +74,21 @@ declare global {
     /**
      * Does the currently viewed Scene support Token field of vision?
      */
-    get tokenVision(): boolean;
+    get tokenVision(): Scene.ConfiguredInstance["tokenVision"];
 
     /**
      * The configured options used for the saved fog-of-war texture.
      */
-    get textureConfiguration(): FogTextureConfiguration;
+    get textureConfiguration(): VisibilityTextureConfiguration | undefined;
 
     /**
      * Optional overrides for exploration sprite dimensions.
+     *
+     * @privateRemarks Foundry types this parameter as `FogTextureConfiguration`, and
+     * unlike the other place they used this type seeming in error, only `rect`'s
+     * `x, y, width, height` properties are accessed, so I'm assuming they meant Rectangle
      */
-    set explorationRect(rect: FogTextureConfiguration);
+    set explorationRect(rect: Canvas.Rectangle);
 
     /**
      * Initialize all Token vision sources which are present on this layer
@@ -93,9 +100,9 @@ declare global {
      */
     initializeVisionMode(): void;
 
-    protected override _draw(options?: Record<string, unknown>): Promise<void>;
+    protected override _draw(options?: DrawOptions): Promise<void>;
 
-    protected override _tearDown(options?: Record<string, unknown>): Promise<void>;
+    protected override _tearDown(options?: TearDownOptions): Promise<void>;
 
     /**
      * Update the display of the sight layer.
@@ -127,6 +134,10 @@ declare global {
      */
     testVisibility(
       point: Canvas.Point,
+      /**
+       * @remarks Can't be NullishProps because `tolerance` gets passed directly to `_createVisibilityTestConfig`,
+       * where a default is provided only for `undefined` with `{ tolerance=2 }`, which must be numeric
+       * */
       options?: InexactPartial<{
         /**
          * A numeric radial offset which allows for a non-exact match.
@@ -149,6 +160,7 @@ declare global {
      */
     _createVisibilityTestConfig(
       point: Canvas.Point,
+      /** @remarks Can't be NullishProps because a default for `tolerance` is provided only for `undefined` with `{ tolerance=2 }`, which must be numeric */
       options?: InexactPartial<{
         /**
          * A numeric radial offset which allows for a non-exact match.
@@ -173,10 +185,20 @@ declare global {
   }
 
   namespace CanvasVisibility {
+    type AnyConstructor = typeof AnyCanvasVisibility;
+
     type LightingVisibility = ValueOf<typeof VisionMode.LIGHTING_VISIBILITY>;
+
+    interface DrawOptions extends CanvasLayer.DrawOptions {}
+
+    interface TearDownOptions extends CanvasLayer.TearDownOptions {}
   }
 
-  interface FogTextureConfiguration {
+  /**
+   * @privateRemarks This is name foundry has for the return tyoe of `CanvasVisibility#configureVisibilityTexture`
+   * The FogTextureConfiguration references seem to be in error
+   */
+  interface VisibilityTextureConfiguration {
     resolution: number;
     width: number;
     height: number;
@@ -196,4 +218,8 @@ declare global {
     object: PlaceableObject | null;
     tests: CanvasVisibilityTest[];
   }
+}
+
+declare abstract class AnyCanvasVisibility extends CanvasVisibility {
+  constructor(arg0: never, ...args: never[]);
 }

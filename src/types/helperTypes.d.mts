@@ -44,7 +44,7 @@ type _GetKey<T, K extends PropertyKey, D> = T extends { readonly [_ in K]?: infe
  * - Use `IntentionalPartial` when an explicit `undefined` is problematic but
  *   leaving off the property entirely is fine. This primarily occurs when
  *   patterns like `options = { ...defaultOptions, ...options }`,
- *   `Object.apply({}, defaultOptions, options)`,
+ *   `Object.assign({}, defaultOptions, options)`,
  *   `foundry.utils.mergeObject(defaultOptions, options)`, or so on.
  *
  *   Note that {@link foundry.utils.mergeObject | `foundry.utils.mergeObject`}
@@ -65,8 +65,61 @@ export type IntentionalPartial<T> = Partial<T>;
 
 /**
  * This type is used to make a constraint where `T` must be statically known to overlap with `U`.
+ *
+ * @example
+ * ```ts
+ * // The `const T` allows inference to be a bit more specific. This is useful for a utility type like this.`
+ * function takesNumber<const T>(input: OverlapsWith<T, number>): void {
+ *   // This function body is an example of a method this might be useful for.
+ *   // If the input isn't an number it simply returns in this case.
+ *   if (typeof input !== "number") {
+ *       return;
+ *   }
+ *
+ *   // Assumes, unchecked, that `element` is a number.
+ *   // This means an input like `number[] | string[]` would be unsound as it could be a string.
+ *   element + 1;
+ * }
+ *
+ * takesNumber(1); // Ok!
+ * takesNumber("foo"); // Error, statically known to never an number and so presumed to be a mistake.
+ * takesNumber(Math.random() > 0.5 ? 1 : "foo"); // Ok, `"foo"` doesn't actually cause any runtime issues, it was just disallowed above because then it'd never do anything useful.
+ * ```
  */
-export type OverlapsWith<T, U> = [T & U] extends [never] ? U : T;
+export type OverlapsWith<T, U> = [Extract<T, U>, any] extends [U, Extract<T, U>] ? T : U extends T ? T : U;
+
+/**
+ * Used to build a constraint where `T` to overlap with `Item[]` but disallows unrelated arrays.
+ * This is safer than what `OverlapsWith` provides as it ensures that if the type is an array it is an array of `Item`.
+ * Assumes readonly arrays are permitted.
+ *
+ * Note that `never[]` and `any[]` are still accepted due to the unsoundness of those types.
+ *
+ * @example
+ * ```ts
+ * // The `const T` allows inference to be a bit more specific. This is useful for a utility type like this.`
+ * function takesNumericArray<const T>(input: ArrayOverlaps<T, number>): void {
+ *   // This function body is an example of a method this might be useful for.
+ *   // If the input isn't an array it simply returns in this case.
+ *   if (!Array.isArray(input)) {
+ *       return;
+ *   }
+ *
+ *   for (const element of input) {
+ *       // Assumes, unchecked, that `element` is a number.
+ *       // This means an input like `number[] | string[]` would be unsound as it could be a string.
+ *       element + 1;
+ *   }
+ * }
+ *
+ * takesNumericArray([1, 2, 3]); // Ok!
+ * takesNumericArray("foo"); // Error, statically known to never an array and so presumed to be a mistake.
+ * takesNumericArray(Math.random() > 0.5 ? [1, 2, 3] : "foo"); // Ok, `"foo"` doesn't actually cause any runtime issues, it was just disallowed above because then it'd never do anything useful.
+ * takesNumericArray(Math.random() > 0.5 ? [1, 2, 3] : ["foo", "bar"]); // Error, at runtime it could be an array of the wrong type and that isn't handled. Notably this would succeed with `OverlapsWith`.
+ * ```
+ */
+export type ArrayOverlaps<T, Item> =
+  Extract<T, readonly unknown[]> extends readonly Item[] ? OverlapsWith<T, readonly Item[]> : readonly Item[];
 
 /**
  * Use this whenever a type is given that should match some constraint but is

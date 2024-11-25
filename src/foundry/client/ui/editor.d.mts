@@ -176,7 +176,7 @@ declare global {
      * Helper method to create an anchor element.
      * @param options - Options to configure the anchor's construction.
      */
-    static createAchor(options?: TextEditor.EnrichmentAnchorOptions): HTMLAnchorElement;
+    static createAnchor(options?: TextEditor.EnrichmentAnchorOptions): HTMLAnchorElement;
 
     /**
      * Embed content from another Document.
