@@ -1,5 +1,5 @@
 import type { InterfaceToObject } from "../../../../types/helperTypes.d.mts";
-import type { AnyObject, DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
+import type { AnyObject, DeepPartial } from "../../../../types/utils.d.mts";
 import type ApplicationV2 from "../api/application.d.mts";
 import type DocumentSheetV2 from "../api/document-sheet.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
@@ -39,7 +39,7 @@ declare class AmbientLightConfig<
 
   protected override _prepareContext(options: DeepPartial<RenderOptions>): Promise<RenderContext>;
 
-  override changeTab(tab: string, group: string, options?: InexactPartial<ApplicationV2.ChangeTabOptions>): void;
+  override changeTab(tab: string, group: string, options?: ApplicationV2.ChangeTabOptions): void;
 
   override _onChangeForm(formConfig: ApplicationV2.FormConfiguration, event: Event): void;
 
@@ -53,13 +53,18 @@ declare class AmbientLightConfig<
    * Restore the true data for the AmbientLight document when the form is submitted or closed.
    */
   protected _resetPreview(): void;
+
+  /**
+   * @privateRemarks Prevents duck typing
+   */
+  #private: true;
 }
 
 declare namespace AmbientLightConfig {
   interface RenderContext {
     light: AmbientLightDocument.ConfiguredInstance;
     source: foundry.documents.BaseAmbientLight.Source;
-    fields: AmbientLightDocument["schema"]["fields"];
+    fields: foundry.documents.BaseAmbientLight.Schema;
     colorationTechniques: typeof AdaptiveLightingShader["SHADER_TECHNIQUES"];
     gridUnits: string;
     isDarkness: boolean;

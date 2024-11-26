@@ -301,7 +301,7 @@ declare namespace ApplicationV2 {
     disabled?: boolean | undefined;
   }
 
-  interface ChangeTabOptions {
+  interface ChangeTabOptions extends InexactPartial<{
     /**
      * An interaction event which caused the tab change, if any
      */
@@ -320,7 +320,7 @@ declare namespace ApplicationV2 {
      * @defaultValue `false`
      */
     updatePosition: boolean;
-  }
+  }> {}
 }
 
 /**
@@ -589,7 +589,7 @@ declare class ApplicationV2<
    * @remarks InexactPartial is used over NullishProps because event/navElement are not called with null as a possible value,
    *          and null interferes with the defaults of force/updatePosition
    */
-  changeTab(tab: string, group: string, options?: InexactPartial<ApplicationV2.ChangeTabOptions>): void;
+  changeTab(tab: string, group: string, options?: ApplicationV2.ChangeTabOptions): void;
 
   /**
    * Test whether this Application is allowed to be rendered.

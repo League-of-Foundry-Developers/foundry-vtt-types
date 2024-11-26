@@ -25,13 +25,18 @@ declare class UserConfig<
   get title(): string;
 
   protected override _prepareContext(options: DeepPartial<RenderOptions>): Promise<RenderContext>;
+
+  /**
+   * @privateRemarks Prevents duck typing
+   */
+  #private: true;
 }
 
 declare namespace UserConfig {
   interface RenderContext {
     user: User.ConfiguredInstance;
     source: foundry.documents.BaseUser.Source;
-    fields: User["schema"]["fields"];
+    fields: foundry.documents.BaseUser.Schema;
     characterWidget: CustomFormGroup;
   }
 }

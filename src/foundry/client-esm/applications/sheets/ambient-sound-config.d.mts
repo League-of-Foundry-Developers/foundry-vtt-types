@@ -31,13 +31,18 @@ declare class AmbientSoundConfig<
   protected override _onClose(options: DeepPartial<RenderOptions>): void;
 
   override _onChangeForm(formConfig: ApplicationV2.FormConfiguration, event: Event): void;
+
+  /**
+   * @privateRemarks Prevents duck typing
+   */
+  #private: true;
 }
 
 declare namespace AmbientSoundConfig {
   interface RenderContext {
     sound: AmbientSoundDocument.ConfiguredInstance;
     source: foundry.documents.BaseAmbientSound.Source;
-    fields: AmbientSoundDocument["schema"]["fields"];
+    fields: foundry.documents.BaseAmbientSound.Schema;
     gridUnits: string;
     soundEffects: unknown; // TODO: Update after CONFIG updated
     buttons: ApplicationV2.FormFooterButton[];
