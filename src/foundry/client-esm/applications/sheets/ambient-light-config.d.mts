@@ -18,7 +18,7 @@ declare class AmbientLightConfig<
   Configuration,
   RenderOptions
 > {
-  static override DEFAULT_OPTIONS: DeepPartial<ApplicationV2.Configuration>;
+  static override DEFAULT_OPTIONS: DocumentSheetV2.Configuration<AmbientLightDocument.ConfiguredInstance>;
 
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
