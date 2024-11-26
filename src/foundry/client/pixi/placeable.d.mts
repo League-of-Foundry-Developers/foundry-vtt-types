@@ -1,5 +1,5 @@
 import type { MakeConform } from "../../../types/helperTypes.d.mts";
-import type { ValueOf } from "../../../types/utils.d.mts";
+import type { NullishProps, ValueOf } from "../../../types/utils.d.mts";
 import type ApplicationV2 from "../../client-esm/applications/api/application.d.mts";
 import type { Document } from "../../common/abstract/module.d.mts";
 
@@ -170,7 +170,7 @@ declare global {
      */
     clear(): this | void;
 
-    override destroy(options?: PIXI.DisplayObject.DestroyOptions): void;
+    override destroy(options?: PIXI.IDestroyOptions | boolean): void;
 
     /**
      * The inner _destroy method which may optionally be defined by each PlaceableObject subclass.
@@ -281,7 +281,7 @@ declare global {
      * If you plan to use it permanently you should call the create method.
      * @returns A new object with identical data
      */
-    clone(): PlaceableObject;
+    clone(): this;
 
     /**
      * Rotate the PlaceableObject to a certain angle of facing
@@ -294,19 +294,19 @@ declare global {
     /**
      * Determine a new angle of rotation for a PlaceableObject either from an explicit angle or from a delta offset.
      * @param options - An object which defines the rotation update parameters
-     * @param angle - An explicit angle, either this or delta must be provided
-     *                (default: `null`)
-     * @param delta - A relative angle delta, either this or the angle must be provided
-     *                (default: `0`)
-     * @param snap  - A precision (in degrees) to which the resulting angle should snap.
-     *                (default: `0`)
+     * @param angle   - An explicit angle, either this or delta must be provided
+     *                  (default: `null`)
+     * @param delta   - A relative angle delta, either this or the angle must be provided
+     *                  (default: `0`)
+     * @param snap    - A precision (in degrees) to which the resulting angle should snap.
+     *                  (default: `0`)
      * @returns The new rotation angle for the object
      */
     protected _updateRotation({
       angle,
       delta,
       snap,
-    }?: {
+    }?: NullishProps<{
       /**
        * An explicit angle, either this or delta must be provided
        * @defaultValue `undefined`
@@ -324,7 +324,7 @@ declare global {
        * @defaultValue `0`
        */
       snap?: number;
-    }): number;
+    }>): number;
 
     /**
      * Obtain a shifted position for the Placeable Object
@@ -352,7 +352,18 @@ declare global {
      */
     can(
       user: User.ConfiguredInstance,
-      action: "HUD" | "configure" | "control" | "view" | "create" | "drag" | "hover" | "update" | "delete" | string,
+      action:
+        | "HUD"
+        | "configure"
+        | "control"
+        | "view"
+        | "create"
+        | "drag"
+        | "dragLeftStart"
+        | "hover"
+        | "update"
+        | "delete"
+        | string,
     ): boolean;
 
     /**
@@ -443,7 +454,7 @@ declare global {
      * @param options - Options which customize event handling
      *                  (default: `{}`)
      */
-    protected _onHoverIn(event: PIXI.FederatedEvent, options?: PlaceableObject.HoverInOptions): false | void;
+    protected _onHoverIn(event: PIXI.FederatedEvent, options?: NullishProps<PlaceableObject.HoverInOptions>): void;
 
     /**
      * Actions that should be taken for this Placeable Object when a mouseout event occurs
@@ -451,7 +462,7 @@ declare global {
      * @param event - The triggering canvas interaction event
      * @returns True if the event was handled, otherwise false
      */
-    protected _onHoverOut(event: PIXI.FederatedEvent): boolean | void;
+    protected _onHoverOut(event: PIXI.FederatedEvent): void;
 
     /**
      * Should the placeable propagate left click downstream?
@@ -467,6 +478,12 @@ declare global {
     protected _onClickLeft(event: PIXI.FederatedEvent): void;
 
     /**
+     * Callback actions which occur on a single left-unclick event to assume control of the object
+     * @param event - The triggering canvas interaction event
+     */
+    protected _onUnclickLeft(event: PIXI.FederatedEvent): void;
+
+    /**
      * Callback actions which occur on a double left-click event to activate
      * @see MouseInteractionManager##handleClickLeft2
      * @param event - The triggering canvas interaction event
@@ -474,11 +491,23 @@ declare global {
     protected _onClickLeft2(event: PIXI.FederatedEvent): void;
 
     /**
+     * Should the placeable propagate right click downstream?
+     * @param event - The triggering canvas interaction event
+     */
+    protected _propagateRightClick(event: PIXI.FederatedEvent): void;
+
+    /**
      * Callback actions which occur on a single right-click event to configure properties of the object
      * @see MouseInteractionManager##handleClickRight
      * @param event - The triggering canvas interaction event
      */
     protected _onClickRight(event: PIXI.FederatedEvent): void;
+
+    /**
+     * Callback actions which occur on a single right-unclick event
+     * @param event - The triggering canvas interaction event
+     */
+    protected _onUnclickRight(event: PIXI.FederatedEvent): void;
 
     /**
      * Callback actions which occur on a double right-click event to configure properties of the object
@@ -524,10 +553,11 @@ declare global {
      * Perform the database updates that should occur as the result of a drag-left-drop operation.
      * @param event - The triggering canvas interaction event
      * @returns An array of database updates to perform for documents in this collection
+     * @privateRemarks Foundry types this as possibly returning null, but it can't, as far as I can tell.
      */
     _prepareDragLeftDropUpdates(
       event: PIXI.FederatedEvent,
-    ): foundry.data.fields.SchemaField.InnerAssignmentType<D["schema"]["fields"]>[] | null;
+    ): foundry.data.fields.SchemaField.InnerAssignmentType<D["schema"]["fields"]>[];
 
     /**
      * Callback actions which occur on a mouse-move operation.
@@ -541,28 +571,28 @@ declare global {
      * @see MouseInteractionManager##handleDragStart
      * @param event - The triggering mouse click event
      */
-    protected _onDragRightStart(event: PIXI.FederatedEvent): void;
+    protected _onDragRightStart(event: PIXI.FederatedEvent): ReturnType<Canvas["_onDragRightStart"]>;
 
     /**
      * Callback actions which occur on a right mouse-drag operation.
      * @see MouseInteractionManager##handleDragMove
      * @param event - The triggering canvas interaction event
      */
-    protected _onDragRightMove(event: PIXI.FederatedEvent): void;
+    protected _onDragRightMove(event: PIXI.FederatedEvent): ReturnType<Canvas["_onDragRightMove"]>;
 
     /**
      * Callback actions which occur on a right mouse-drag operation.
      * @see MouseInteractionManager##handleDragDrop
      * @param event - The triggering canvas interaction event
      */
-    protected _onDragRightDrop(event: PIXI.FederatedEvent): void;
+    protected _onDragRightDrop(event: PIXI.FederatedEvent): ReturnType<Canvas["_onDragRightDrop"]>;
 
     /**
      * Callback actions which occur on a right mouse-drag operation.
      * @see MouseInteractionManager##handleDragDrop
      * @param event - The triggering mouse click event
      */
-    protected _onDragRightCancel(event: PIXI.FederatedEvent): void;
+    protected _onDragRightCancel(event: PIXI.FederatedEvent): ReturnType<Canvas["_onDragRightCancel"]>;
 
     /**
      * Callback action which occurs on a long press.
@@ -570,7 +600,7 @@ declare global {
      * @param event  - The triggering canvas interaction event
      * @param origin - The local canvas coordinates of the mousepress.
      */
-    protected _onLongPress(event: PIXI.FederatedEvent, origin: PIXI.Point): void;
+    protected _onLongPress(event: PIXI.FederatedEvent, origin: PIXI.Point): ReturnType<ControlsLayer["_onLongPress"]>;
   }
 
   namespace PlaceableObject {
@@ -610,20 +640,6 @@ declare global {
       hoverOutOthers: boolean;
     }
   }
-}
-
-interface Vision {
-  /**
-   * @privateRemarks Documentation says PIXI.Circle, but determined by Atropos to be out of date.
-   * Likely to be removed in future version as it's no longer used generally.
-   */
-  fov?: PIXI.Polygon | undefined;
-
-  /**
-   * @remarks
-   * This is required but has been set to optional because of PointSource
-   */
-  los?: PointSourcePolygon | undefined;
 }
 
 declare abstract class AnyPlaceableObject extends PlaceableObject<any> {
