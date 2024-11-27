@@ -74,7 +74,7 @@ declare global {
 
     protected override _initializeSource(
       data: this | Actor.UpdateData,
-      options?: unknown,
+      options?: foundry.abstract.DataModel.ConstructorOptions<foundry.abstract.DataModel.Any>,
     ): Actor.Source;
 
     /**
