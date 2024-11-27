@@ -1,5 +1,5 @@
 import type { SchemaField } from "../../../common/data/fields.d.mts";
-import type { BaseActor } from "../../../common/documents/_module.d.mts";
+import type { BaseActor, BaseActorDelta } from "../../../common/documents/_module.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 
@@ -9,6 +9,13 @@ declare global {
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"ActorDelta">;
 
     interface DatabaseOperations extends DocumentDatabaseOperations<ActorDelta> {}
+
+    // Helpful aliases
+    type TypeNames = BaseActorDelta.TypeNames;
+    type ConstructorData = BaseActorDelta.ConstructorData;
+    type UpdateData = BaseActorDelta.UpdateData;
+    type Schema = BaseActorDelta.Schema;
+    type Source = BaseActorDelta.Source;
   }
 
   /**

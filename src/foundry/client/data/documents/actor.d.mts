@@ -1,8 +1,7 @@
 import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
-import type { SchemaField } from "../../../common/data/fields.d.mts";
-import type { BaseActor } from "../../../common/documents/_module.d.mts";
+import type BaseActor from "../../../common/documents/actor.d.mts";
 
 declare global {
   namespace Actor {
@@ -10,6 +9,13 @@ declare global {
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Actor">;
 
     interface DatabaseOperations extends DocumentDatabaseOperations<Actor> {}
+
+    // Helpful aliases
+    type TypeNames = BaseActor.TypeNames;
+    type ConstructorData = BaseActor.ConstructorData;
+    type UpdateData = BaseActor.UpdateData;
+    type Schema = BaseActor.Schema;
+    type Source = BaseActor.Source;
 
     interface RollInitiativeOptions {
       /**
@@ -67,9 +73,9 @@ declare global {
     >;
 
     protected override _initializeSource(
-      data: this | SchemaField.InnerAssignmentType<BaseActor.Schema>,
+      data: this | Actor.UpdateData,
       options?: unknown,
-    ): SchemaField.InnerPersistedType<BaseActor.Schema>;
+    ): Actor.Source;
 
     /**
      * An object that tracks which tracks the changes to the data model which were applied by active effects

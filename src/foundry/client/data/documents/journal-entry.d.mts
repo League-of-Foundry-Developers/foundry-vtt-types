@@ -1,4 +1,4 @@
-import type { BaseUser } from "../../../common/documents/_module.d.mts";
+import type { BaseJournalEntry, BaseUser } from "../../../common/documents/_module.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 
@@ -8,6 +8,12 @@ declare global {
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"JournalEntry">;
 
     interface DatabaseOperations extends DocumentDatabaseOperations<JournalEntry> {}
+
+    // Helpful aliases
+    type ConstructorData = BaseJournalEntry.ConstructorData;
+    type UpdateData = BaseJournalEntry.UpdateData;
+    type Schema = BaseJournalEntry.Schema;
+    type Source = BaseJournalEntry.Source;
   }
 
   /**

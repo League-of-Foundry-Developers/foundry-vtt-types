@@ -1,6 +1,9 @@
 import type { InexactPartial } from "../../../../types/utils.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
+import type BaseMacro from "../../../common/documents/macro.d.mts";
+
+type RegionEvent = unknown;
 
 declare global {
   namespace Macro {
@@ -8,6 +11,13 @@ declare global {
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Macro">;
 
     interface DatabaseOperations extends DocumentDatabaseOperations<Macro> {}
+
+    // Helpful aliases
+    type TypeNames = BaseMacro.TypeNames;
+    type ConstructorData = BaseMacro.ConstructorData;
+    type UpdateData = BaseMacro.UpdateData;
+    type Schema = BaseMacro.Schema;
+    type Source = BaseMacro.Source;
 
     interface Scope {
       /** An Actor who is the protagonist of the executed action. */

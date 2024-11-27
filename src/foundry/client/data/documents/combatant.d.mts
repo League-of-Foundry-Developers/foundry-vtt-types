@@ -1,6 +1,7 @@
 import type { ValueOf } from "../../../../types/utils.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
+import type BaseCombatant from "../../../common/documents/combatant.d.mts";
 
 declare global {
   namespace Combatant {
@@ -14,6 +15,13 @@ declare global {
         { combatTurn: number },
         { combatTurn: number }
       > {}
+
+    // Helpful aliases
+    // type TypeNames = BaseCombatant.TypeNames; // TODO: Un-comment after subtype updates are merged
+    type ConstructorData = BaseCombatant.ConstructorData;
+    type UpdateData = BaseCombatant.UpdateData;
+    type Schema = BaseCombatant.Schema;
+    type Source = BaseCombatant.Source;
   }
 
   /**

@@ -1,6 +1,7 @@
 import type { ConstructorOf, InexactPartial } from "../../../../types/utils.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
+import type BaseCombat from "../../../common/documents/combat.d.mts";
 
 declare global {
   namespace Combat {
@@ -16,6 +17,13 @@ declare global {
         {}
       > {}
     /* eslint-enable @typescript-eslint/no-empty-object-type */
+
+    // Helpful aliases
+    // type TypeNames = BaseCombat.TypeNames; // TODO: Un-comment after subtype updates are merged
+    type ConstructorData = BaseCombat.ConstructorData;
+    type UpdateData = BaseCombat.UpdateData;
+    type Schema = BaseCombat.Schema;
+    type Source = BaseCombat.Source;
 
     interface InitiativeOptions {
       /**
