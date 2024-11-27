@@ -1,6 +1,7 @@
 import type { InexactPartial } from "../../../../types/utils.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 import type { Document } from "../../../common/abstract/module.d.mts";
+import type BasePlaylist from "../../../common/documents/playlist.d.mts";
 import type { ClientDocument } from "../abstract/client-document.d.mts";
 
 declare global {
@@ -9,6 +10,12 @@ declare global {
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Playlist">;
 
     interface DatabaseOperations extends DocumentDatabaseOperations<Playlist> {}
+
+    // Helpful aliases
+    type ConstructorData = BasePlaylist.ConstructorData;
+    type UpdateData = BasePlaylist.UpdateData;
+    type Schema = BasePlaylist.Schema;
+    type Source = BasePlaylist.Source;
 
     interface PlayNextOptions {
       /**

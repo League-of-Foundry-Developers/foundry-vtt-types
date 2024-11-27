@@ -2,6 +2,7 @@ import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts"
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 import type { CardFaceData } from "../../../common/documents/_types.d.mts";
+import type BaseCard from "../../../common/documents/card.d.mts";
 
 declare global {
   namespace Card {
@@ -9,6 +10,13 @@ declare global {
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Card">;
 
     interface DatabaseOperations extends DocumentDatabaseOperations<Card> {}
+
+    // Helpful aliases
+    type TypeNames = BaseCard.TypeNames;
+    type ConstructorData = BaseCard.ConstructorData;
+    type UpdateData = BaseCard.UpdateData;
+    type Schema = BaseCard.Schema;
+    type Source = BaseCard.Source;
   }
 
   /**

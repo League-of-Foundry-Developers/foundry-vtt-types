@@ -1,6 +1,7 @@
 import type { InexactPartial } from "../../../../types/utils.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
+import type BaseChatMessage from "../../../common/documents/chat-message.d.mts";
 
 declare global {
   namespace ChatMessage {
@@ -16,6 +17,13 @@ declare global {
         {}
       > {}
     /* eslint-enable @typescript-eslint/no-empty-object-type */
+
+    // Helpful aliases
+    // type TypeNames = BaseChatMessage.TypeNames; // TODO: Un-comment after subtype updates are merged
+    type ConstructorData = BaseChatMessage.ConstructorData;
+    type UpdateData = BaseChatMessage.UpdateData;
+    type Schema = BaseChatMessage.Schema;
+    type Source = BaseChatMessage.Source;
 
     interface GetSpeakerOptions {
       /** The Scene in which the speaker resides */

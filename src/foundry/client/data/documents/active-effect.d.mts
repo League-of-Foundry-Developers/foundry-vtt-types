@@ -4,6 +4,7 @@ import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 import type { DataField } from "../../../common/data/fields.d.mts";
 import type { ActiveEffectData, EffectChangeData, EffectDurationData } from "../../../common/documents/_types.d.mts";
+import type BaseActiveEffect from "../../../common/documents/active-effect.d.mts";
 
 declare global {
   namespace ActiveEffect {
@@ -17,6 +18,13 @@ declare global {
         { animate: boolean },
         { animate: boolean }
       > {}
+
+    // Helpful aliases
+    // type TypeNames = BaseActiveEffect.TypeNames; // TODO: Un-comment after subtype updates are merged
+    type ConstructorData = BaseActiveEffect.ConstructorData;
+    type UpdateData = BaseActiveEffect.UpdateData;
+    type Schema = BaseActiveEffect.Schema;
+    type Source = BaseActiveEffect.Source;
   }
 
   /**

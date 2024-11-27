@@ -1,5 +1,6 @@
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
+import type BaseMeasuredTemplate from "../../../common/documents/measured-template.d.mts";
 
 declare global {
   namespace MeasuredTemplateDocument {
@@ -7,6 +8,12 @@ declare global {
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"MeasuredTemplate">;
 
     interface DatabaseOperations extends DocumentDatabaseOperations<MeasuredTemplateDocument> {}
+
+    // Helpful aliases
+    type ConstructorData = BaseMeasuredTemplate.ConstructorData;
+    type UpdateData = BaseMeasuredTemplate.UpdateData;
+    type Schema = BaseMeasuredTemplate.Schema;
+    type Source = BaseMeasuredTemplate.Source;
   }
 
   /**

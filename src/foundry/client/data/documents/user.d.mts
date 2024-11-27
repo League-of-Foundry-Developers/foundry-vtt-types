@@ -1,6 +1,7 @@
 import type { InexactPartial } from "../../../../types/utils.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
+import type BaseUser from "../../../common/documents/user.d.mts";
 
 declare global {
   namespace User {
@@ -8,6 +9,12 @@ declare global {
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"User">;
 
     interface DatabaseOperations extends DocumentDatabaseOperations<User> {}
+
+    // Helpful aliases
+    type ConstructorData = BaseUser.ConstructorData;
+    type UpdateData = BaseUser.UpdateData;
+    type Schema = BaseUser.Schema;
+    type Source = BaseUser.Source;
 
     interface PingData {
       /**
@@ -39,7 +46,7 @@ declare global {
       cursor: { x: number; y: number } | null;
 
       /** The state of the user's ruler, if they are currently using one. */
-      ruler: RulerData | null;
+      ruler: Ruler.MeasurementData | null;
 
       /** The IDs of the tokens the user has targeted in the currently viewed */
       targets: string[];

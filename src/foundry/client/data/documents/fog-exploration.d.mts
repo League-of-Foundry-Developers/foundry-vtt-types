@@ -2,6 +2,7 @@ import type { InexactPartial } from "../../../../types/utils.d.mts";
 import type { DatabaseGetOperation } from "../../../common/abstract/_types.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
+import type BaseFogExploration from "../../../common/documents/fog-exploration.d.mts";
 
 declare global {
   namespace FogExploration {
@@ -15,6 +16,12 @@ declare global {
         { loadFog: boolean },
         { loadFog: boolean }
       > {}
+
+    // Helpful aliases
+    type ConstructorData = BaseFogExploration.ConstructorData;
+    type UpdateData = BaseFogExploration.UpdateData;
+    type Schema = BaseFogExploration.Schema;
+    type Source = BaseFogExploration.Source;
   }
 
   /**

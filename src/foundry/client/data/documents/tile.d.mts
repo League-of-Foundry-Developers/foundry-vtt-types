@@ -1,5 +1,6 @@
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
+import type BaseTile from "../../../common/documents/tile.d.mts";
 
 declare global {
   namespace TileDocument {
@@ -7,6 +8,12 @@ declare global {
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Tile">;
 
     interface DatabaseOperations extends DocumentDatabaseOperations<TileDocument> {}
+
+    // Helpful aliases
+    type ConstructorData = BaseTile.ConstructorData;
+    type UpdateData = BaseTile.UpdateData;
+    type Schema = BaseTile.Schema;
+    type Source = BaseTile.Source;
   }
 
   /**
