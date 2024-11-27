@@ -165,7 +165,7 @@ declare class BaseActor extends Document<BaseActor.Schema, BaseActor.Metadata, a
 
   protected override _initializeSource(
     data: fields.SchemaField.InnerAssignmentType<documents.BaseActor.Schema> | this,
-    options?: foundry.abstract.DataModel.ConstructorOptions<foundry.abstract.DataModel.Any>,
+    options?: Omit<foundry.abstract.DataModel.ConstructorOptions, "parent">,
   ): fields.SchemaField.InnerPersistedType<documents.BaseActor.Schema>;
 
   static override canUserCreate(user: documents.BaseUser): boolean;

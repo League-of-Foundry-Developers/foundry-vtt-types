@@ -39,7 +39,7 @@ declare class BaseJournalEntry extends Document<BaseJournalEntry.Schema, BaseJou
 
   protected override _initializeSource(
     data: this | BaseJournalEntry.UpdateData,
-    options?: foundry.abstract.DataModel.ConstructorOptions<foundry.abstract.DataModel.Any>,
+    options?: Omit<foundry.abstract.DataModel.ConstructorOptions, "parent">,
   ): BaseJournalEntry.Source;
 
   /**

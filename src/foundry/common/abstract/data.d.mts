@@ -133,7 +133,7 @@ declare abstract class DataModel<
    */
   protected _initializeSource(
     data: fields.SchemaField.InnerAssignmentType<Schema> | this,
-    options?: DataModel.ConstructorOptions<Parent>,
+    options?: Omit<DataModel.ConstructorOptions, "parent">,
   ): fields.SchemaField.InnerPersistedType<Schema>;
 
   /**
