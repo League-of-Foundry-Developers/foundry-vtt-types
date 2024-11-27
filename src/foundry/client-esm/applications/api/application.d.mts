@@ -1,5 +1,11 @@
 import type { MustConform } from "../../../../types/helperTypes.d.mts";
-import type { AnyObject, DeepPartial, EmptyObject, InexactPartial, MaybePromise } from "../../../../types/utils.d.mts";
+import type {
+  AnyObject,
+  DeepPartial,
+  EmptyObject,
+  InexactPartial,
+  MaybePromise,
+} from "../../../../types/utils.d.mts";
 import type EventEmitterMixin from "../../../common/utils/event-emitter.d.mts";
 
 // TODO: Investigate use of DeepPartial vs Partial vs InexactPartial
@@ -294,6 +300,27 @@ declare namespace ApplicationV2 {
     /** @defaultValue `false` */
     disabled?: boolean | undefined;
   }
+
+  interface ChangeTabOptions extends InexactPartial<{
+    /**
+     * An interaction event which caused the tab change, if any
+     */
+    event: Event;
+    /**
+     * An explicit navigation element being modified
+     */
+    navElement: HTMLElement;
+    /**
+     * Force changing the tab even if the new tab is already active
+     * @defaultValue `false`
+     */
+    force: boolean;
+    /**
+     * Update application position after changing the tab?
+     * @defaultValue `false`
+     */
+    updatePosition: boolean;
+  }> {}
 }
 
 /**
@@ -559,31 +586,10 @@ declare class ApplicationV2<
    * @param tab     - The name of the tab which should become active
    * @param group   - The name of the tab group which defines the set of tabs
    * @param options - Additional options which affect tab navigation
+   * @remarks InexactPartial is used over NullishProps because event/navElement are not called with null as a possible value,
+   *          and null interferes with the defaults of force/updatePosition
    */
-  changeTab(
-    tab: string,
-    group: string,
-    options?: InexactPartial<{
-      /**
-       * An interaction event which caused the tab change, if any
-       */
-      event: Event;
-      /**
-       * An explicit navigation element being modified
-       */
-      navElement: HTMLElement;
-      /**
-       * Force changing the tab even if the new tab is already active
-       * @defaultValue `false`
-       */
-      force: boolean;
-      /**
-       * Update application position after changing the tab?
-       * @defaultValue `false`
-       */
-      updatePosition: boolean;
-    }>,
-  ): void;
+  changeTab(tab: string, group: string, options?: ApplicationV2.ChangeTabOptions): void;
 
   /**
    * Test whether this Application is allowed to be rendered.

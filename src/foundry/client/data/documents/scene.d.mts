@@ -1,6 +1,7 @@
 import type { InexactPartial } from "../../../../types/utils.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
+import type BaseScene from "../../../common/documents/scene.d.mts";
 
 declare global {
   namespace Scene {
@@ -16,6 +17,12 @@ declare global {
         {}
       > {}
     /* eslint-enable @typescript-eslint/no-empty-object-type */
+
+    // Helpful aliases
+    type ConstructorData = BaseScene.ConstructorData;
+    type UpdateData = BaseScene.UpdateData;
+    type Schema = BaseScene.Schema;
+    type Source = BaseScene.Source;
   }
 
   /**

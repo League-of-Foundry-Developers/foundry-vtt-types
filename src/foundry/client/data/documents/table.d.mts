@@ -1,6 +1,7 @@
 import type { InexactPartial } from "../../../../types/utils.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
+import type BaseRollTable from "../../../common/documents/roll-table.d.mts";
 
 declare global {
   namespace RollTable {
@@ -8,6 +9,12 @@ declare global {
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"RollTable">;
 
     interface DatabaseOperations extends DocumentDatabaseOperations<RollTable> {}
+
+    // Helpful aliases
+    type ConstructorData = BaseRollTable.ConstructorData;
+    type UpdateData = BaseRollTable.UpdateData;
+    type Schema = BaseRollTable.Schema;
+    type Source = BaseRollTable.Source;
 
     /**
      * Optional arguments which customize the draw

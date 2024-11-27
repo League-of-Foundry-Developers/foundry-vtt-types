@@ -1,5 +1,6 @@
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
+import type BaseAmbientSound from "../../../common/documents/ambient-sound.d.mts";
 
 declare global {
   namespace AmbientSoundDocument {
@@ -7,6 +8,12 @@ declare global {
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"AmbientSound">;
 
     interface DatabaseOperations extends DocumentDatabaseOperations<AmbientSoundDocument> {}
+
+    // Helpful aliases
+    type ConstructorData = BaseAmbientSound.ConstructorData;
+    type UpdateData = BaseAmbientSound.UpdateData;
+    type Schema = BaseAmbientSound.Schema;
+    type Source = BaseAmbientSound.Source;
   }
 
   /**

@@ -1,6 +1,7 @@
 import type { InexactPartial } from "../../../../types/utils.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
+import type BaseJournalEntryPage from "../../../common/documents/journal-entry-page.d.mts";
 
 declare global {
   namespace JournalEntryPage {
@@ -8,6 +9,13 @@ declare global {
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"JournalEntryPage">;
 
     interface DatabaseOperations extends DocumentDatabaseOperations<JournalEntryPage> {}
+
+    // Helpful aliases
+    type TypeNames = BaseJournalEntryPage.TypeNames;
+    type ConstructorData = BaseJournalEntryPage.ConstructorData;
+    type UpdateData = BaseJournalEntryPage.UpdateData;
+    type Schema = BaseJournalEntryPage.Schema;
+    type Source = BaseJournalEntryPage.Source;
 
     interface JournalEntryPageHeading {
       /** The heading level, 1-6. */

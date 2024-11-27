@@ -1,6 +1,7 @@
 import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
+import type BaseFolder from "../../../common/documents/folder.d.mts";
 
 declare global {
   namespace Folder {
@@ -8,6 +9,13 @@ declare global {
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Folder">;
 
     interface DatabaseOperations extends DocumentDatabaseOperations<Folder> {}
+
+    // Helpful aliases
+    // type TypeNames = BaseFolder.TypeNames;  // TODO: Un-comment after subtype updates are merged
+    type ConstructorData = BaseFolder.ConstructorData;
+    type UpdateData = BaseFolder.UpdateData;
+    type Schema = BaseFolder.Schema;
+    type Source = BaseFolder.Source;
 
     interface ExportToCompendiumOptions {
       /** Update existing entries in the Compendium pack, matching by name */

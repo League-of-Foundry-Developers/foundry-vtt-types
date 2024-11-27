@@ -5,6 +5,7 @@ import type DataModel from "../../../common/abstract/data.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
+import type BaseAdventure from "../../../common/documents/adventure.d.mts";
 
 declare global {
   namespace Adventure {
@@ -12,6 +13,12 @@ declare global {
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Adventure">;
 
     interface DatabaseOperations extends DocumentDatabaseOperations<Adventure> {}
+
+    // Helpful aliases
+    type ConstructorData = BaseAdventure.ConstructorData;
+    type UpdateData = BaseAdventure.UpdateData;
+    type Schema = BaseAdventure.Schema;
+    type Source = BaseAdventure.Source;
 
     interface PrepareImportOptions {
       /**

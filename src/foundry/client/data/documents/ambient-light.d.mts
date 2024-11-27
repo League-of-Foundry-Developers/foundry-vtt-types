@@ -1,5 +1,6 @@
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
+import type BaseAmbientLight from "../../../common/documents/ambient-light.d.mts";
 
 declare global {
   namespace AmbientLightDocument {
@@ -10,6 +11,12 @@ declare global {
     interface DatabaseOperations
       extends DocumentDatabaseOperations<AmbientLightDocument, {}, { animate: boolean }, {}> {}
     /* eslint-enable @typescript-eslint/no-empty-object-type */
+
+    // Helpful aliases
+    type ConstructorData = BaseAmbientLight.ConstructorData;
+    type UpdateData = BaseAmbientLight.UpdateData;
+    type Schema = BaseAmbientLight.Schema;
+    type Source = BaseAmbientLight.Source;
   }
 
   /**
