@@ -132,7 +132,7 @@ declare abstract class DataModel<
    * @returns Migrated and cleaned source data which will be stored to the model instance
    */
   protected _initializeSource(
-    data: fields.SchemaField.InnerAssignmentType<Schema> | this,
+    data: fields.SchemaField.InnerConstructorType<Schema> | this,
     options?: Omit<DataModel.ConstructorOptions, "parent">,
   ): fields.SchemaField.InnerPersistedType<Schema>;
 
