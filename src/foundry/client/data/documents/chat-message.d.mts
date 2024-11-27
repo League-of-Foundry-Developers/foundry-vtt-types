@@ -19,7 +19,7 @@ declare global {
     /* eslint-enable @typescript-eslint/no-empty-object-type */
 
     // Helpful aliases
-    // type TypeNames = BaseChatMessage.TypeNames; // TODO: Un-comment after subtype updates are merged
+    type TypeNames = BaseChatMessage.TypeNames;
     type ConstructorData = BaseChatMessage.ConstructorData;
     type UpdateData = BaseChatMessage.UpdateData;
     type Schema = BaseChatMessage.Schema;

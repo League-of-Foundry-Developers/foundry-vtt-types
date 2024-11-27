@@ -19,7 +19,7 @@ declare global {
     /* eslint-enable @typescript-eslint/no-empty-object-type */
 
     // Helpful aliases
-    // type TypeNames = BaseCombat.TypeNames; // TODO: Un-comment after subtype updates are merged
+    type TypeNames = BaseCombat.TypeNames;
     type ConstructorData = BaseCombat.ConstructorData;
     type UpdateData = BaseCombat.UpdateData;
     type Schema = BaseCombat.Schema;

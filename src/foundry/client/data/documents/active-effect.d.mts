@@ -20,7 +20,7 @@ declare global {
       > {}
 
     // Helpful aliases
-    // type TypeNames = BaseActiveEffect.TypeNames; // TODO: Un-comment after subtype updates are merged
+    type TypeNames = BaseActiveEffect.TypeNames;
     type ConstructorData = BaseActiveEffect.ConstructorData;
     type UpdateData = BaseActiveEffect.UpdateData;
     type Schema = BaseActiveEffect.Schema;

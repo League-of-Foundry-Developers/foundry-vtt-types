@@ -17,7 +17,7 @@ declare global {
       > {}
 
     // Helpful aliases
-    // type TypeNames = BaseCombatant.TypeNames; // TODO: Un-comment after subtype updates are merged
+    type TypeNames = BaseCombatant.TypeNames;
     type ConstructorData = BaseCombatant.ConstructorData;
     type UpdateData = BaseCombatant.UpdateData;
     type Schema = BaseCombatant.Schema;
