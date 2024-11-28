@@ -1,4 +1,3 @@
-import type { Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type * as fields from "../data/fields.d.mts";
 import type * as documents from "./_module.mts";
@@ -10,7 +9,7 @@ import type * as documents from "./_module.mts";
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
-declare class BaseFogExploration extends Document<BaseFogExploration.Schema, BaseFogExploration.Metadata, any> {
+declare class BaseFogExploration extends Document<"FogExploration", BaseFogExploration.Schema, any> {
   /**
    * @param data    - Initial data from which to construct the FogExploration
    * @param context - Construction context options
@@ -40,22 +39,7 @@ export default BaseFogExploration;
 declare namespace BaseFogExploration {
   type Parent = null;
 
-  type Metadata = Merge<
-    Document.Metadata.Default,
-    {
-      name: "FogExploration";
-      collection: "fog";
-      label: string;
-      labelPlural: string;
-      isPrimary: true;
-      permissions: {
-        create: "PLAYER";
-        update: (user: documents.BaseUser, doc: Document.Any, data: UpdateData) => boolean;
-        delete: (user: documents.BaseUser, doc: Document.Any, data: UpdateData) => boolean;
-      };
-      schemaVersion: string;
-    }
-  >;
+  type Metadata = Document.MetadataForName<"FogExploration">;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;
@@ -74,8 +58,7 @@ declare namespace BaseFogExploration {
      * The _id of the Scene document to which this fog applies
      * @defaultValue `canvas?.scene?.id`
      */
-    // FIXME: Initial should be able to return undefined
-    scene: fields.ForeignDocumentField<typeof documents.BaseScene, { initial: () => string }>;
+    scene: fields.ForeignDocumentField<typeof documents.BaseScene, { initial: () => string | undefined }>;
 
     /**
      * The _id of the User document to which this fog applies

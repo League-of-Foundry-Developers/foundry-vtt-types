@@ -609,10 +609,10 @@ declare global {
   // This means that `BaseClass extends Document.Internal.Constructor` is actually too permissive.
   // However this easily leads to circularities.
   //
-  // Note(LukeAbby): The seemingly redundant merging in of `AnyDocument` makes it easier for tsc to recognize that anything extending `ClientDocumentMixin` is also a document.
+  // Note(LukeAbby): The seemingly redundant merging in of `typeof AnyDocument` makes it easier for tsc to recognize that anything extending `ClientDocumentMixin` is also a document.
   function ClientDocumentMixin<BaseClass extends Document.Internal.Constructor>(
     Base: BaseClass,
-  ): AnyDocument & Mixin<typeof ClientDocument<InstanceType<BaseClass>>, BaseClass>;
+  ): typeof AnyDocument & Mixin<typeof ClientDocument<InstanceType<BaseClass>>, BaseClass>;
 
   namespace ClientDocument {
     interface SortOptions<T, SortKey extends string = "sort"> extends SortingHelpers.SortOptions<T, SortKey> {

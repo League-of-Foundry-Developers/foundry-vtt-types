@@ -1,4 +1,3 @@
-import type { Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type * as fields from "../data/fields.d.mts";
 import type * as documents from "./_module.mts";
@@ -7,7 +6,7 @@ import type * as documents from "./_module.mts";
  * The JournalEntryPage Document.
  * Defines the DataSchema and common behaviors for a JournalEntryPage which are shared between both client and server.
  */
-declare class BaseJournalEntryPage extends Document<BaseJournalEntryPage.Schema, BaseJournalEntryPage.Metadata, any> {
+declare class BaseJournalEntryPage extends Document<"JournalEntryPage", BaseJournalEntryPage.Schema, any> {
   /**
    * @privateRemarks Manual override of the return due to TS limitations with static `this`
    */
@@ -41,20 +40,7 @@ declare namespace BaseJournalEntryPage {
 
   type TypeNames = Game.Model.TypeNames<"JournalEntryPage">;
 
-  type Metadata = Merge<
-    Document.Metadata.Default,
-    {
-      name: "JournalEntryPage";
-      collection: "pages";
-      hasTypeData: true;
-      indexed: true;
-      label: string;
-      labelPlural: string;
-      coreTypes: ["text", "image", "pdf", "video"];
-      compendiumIndexFields: ["name", "type", "sort"];
-      schemaVersion: string;
-    }
-  >;
+  type Metadata = Document.MetadataForName<"JournalEntryPage">;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;

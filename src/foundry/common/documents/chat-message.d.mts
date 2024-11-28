@@ -1,4 +1,4 @@
-import type { AnyObject, InexactPartial, Merge } from "../../../types/utils.mts";
+import type { AnyObject, InexactPartial } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
 import type * as fields from "../data/fields.d.mts";
@@ -11,7 +11,7 @@ import type * as documents from "./_module.mts";
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
-declare class BaseChatMessage extends Document<BaseChatMessage.Schema, BaseChatMessage.Metadata, any> {
+declare class BaseChatMessage extends Document<"ChatMessage", BaseChatMessage.Schema, any> {
   /**
    * @param data    - Initial data from which to construct the ChatMessage
    * @param context - Construction context options
@@ -76,21 +76,7 @@ declare namespace BaseChatMessage {
 
   type TypeNames = Game.Model.TypeNames<"ChatMessage">;
 
-  type Metadata = Merge<
-    Document.Metadata.Default,
-    {
-      name: "ChatMessage";
-      collection: "messages";
-      label: string;
-      labelPlural: string;
-      isPrimary: true;
-      permissions: {
-        create: (user: documents.BaseUser, doc: Document.Any) => boolean;
-        update: (user: documents.BaseUser, doc: Document.Any, data: UpdateData) => boolean;
-      };
-      schemaVersion: string;
-    }
-  >;
+  type Metadata = Document.MetadataForName<"ChatMessage">;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;

@@ -1,5 +1,5 @@
 import type { InterfaceToObject } from "../../../types/helperTypes.d.mts";
-import type { AnyObject, InexactPartial, Merge } from "../../../types/utils.mts";
+import type { AnyObject, InexactPartial } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
 import type * as fields from "../data/fields.d.mts";
@@ -11,7 +11,7 @@ import type * as documents from "./_module.mts";
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
-declare class BaseActiveEffect extends Document<BaseActiveEffect.Schema, BaseActiveEffect.Metadata, any> {
+declare class BaseActiveEffect extends Document<"ActiveEffect", BaseActiveEffect.Schema, any> {
   /**
    * @param data    - Initial data from which to construct the ActiveEffect
    * @param context - Construction context options
@@ -68,19 +68,9 @@ export default BaseActiveEffect;
 declare namespace BaseActiveEffect {
   type Parent = Actor.ConfiguredInstance | Item.ConfiguredInstance | null;
 
-  type TypeNames = Game.Model.TypeNames<typeof BaseActiveEffect>;
+  type TypeNames = Game.Model.TypeNames<"ActiveEffect">;
 
-  type Metadata = Merge<
-    Document.Metadata.Default,
-    {
-      name: "ActiveEffect";
-      collection: "effects";
-      hasTypeData: true;
-      label: string;
-      labelPlural: string;
-      schemaVersion: string;
-    }
-  >;
+  type Metadata = Document.MetadataForName<"ActiveEffect">;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;

@@ -1,8 +1,7 @@
-import type { AnyObject, InexactPartial, Merge } from "../../../types/utils.mts";
+import type { AnyObject, InexactPartial } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
 import type * as fields from "../data/fields.d.mts";
-import type * as documents from "./_module.mts";
 
 /**
  * The TableResult Document.
@@ -11,7 +10,7 @@ import type * as documents from "./_module.mts";
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
-declare class BaseTableResult extends Document<BaseTableResult.Schema, BaseTableResult.Metadata, any> {
+declare class BaseTableResult extends Document<"TableResult", BaseTableResult.Schema, any> {
   /**
    * @param data    - Initial data from which to construct the Table Result
    * @param context - Construction context options
@@ -47,21 +46,7 @@ declare namespace BaseTableResult {
 
   type TypeNames = Game.Model.TypeNames<"TableResult">;
 
-  type Metadata = Merge<
-    Document.Metadata.Default,
-    {
-      name: "TableResult";
-      collection: "results";
-      label: string;
-      labelPlural: string;
-      coreTypes: foundry.CONST.TABLE_RESULT_TYPES[];
-      permissions: {
-        update: (user: documents.BaseUser, doc: Document.Any, data: UpdateData) => boolean;
-      };
-      compendiumIndexFields: ["type"];
-      schemaVersion: string;
-    }
-  >;
+  type Metadata = Document.MetadataForName<"TableResult">;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;

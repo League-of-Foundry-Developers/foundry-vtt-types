@@ -1,4 +1,4 @@
-import type { AnyObject, Merge } from "../../../types/utils.mts";
+import type { AnyObject } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type * as fields from "../data/fields.d.mts";
 import type * as documents from "./_module.mts";
@@ -10,7 +10,7 @@ import type * as documents from "./_module.mts";
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
-declare class BaseJournalEntry extends Document<BaseJournalEntry.Schema, BaseJournalEntry.Metadata, any> {
+declare class BaseJournalEntry extends Document<"JournalEntry", BaseJournalEntry.Schema, any> {
   /**
    * @param data    - Initial data from which to construct the JournalEntry
    * @param context - Construction context options
@@ -32,22 +32,7 @@ export default BaseJournalEntry;
 declare namespace BaseJournalEntry {
   type Parent = null;
 
-  type Metadata = Merge<
-    Document.Metadata.Default,
-    {
-      name: "JournalEntry";
-      collection: "journal";
-      indexed: true;
-      compendiumIndexFields: ["_id", "name", "sort", "folder"];
-      embedded: { JournalEntryPage: "pages" };
-      label: string;
-      labelPlural: string;
-      permissions: {
-        create: "JOURNAL_CREATE";
-      };
-      schemaVersion: string;
-    }
-  >;
+  type Metadata = Document.MetadataForName<"JournalEntry">;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;

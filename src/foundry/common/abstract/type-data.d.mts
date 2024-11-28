@@ -13,7 +13,7 @@ import type BaseUser from "../documents/user.d.mts";
 import type { DataModel } from "./data.d.mts";
 import type Document from "./document.d.mts";
 
-type StaticDataModel = typeof DataModel<DataSchema, Document<DataSchema, any, any>>;
+type StaticDataModel = typeof DataModel<DataSchema, Document<any, DataSchema, any>>;
 
 interface _InternalTypeDataModelInterface extends StaticDataModel {
   new <Schema extends DataSchema, Parent extends Document.Any, _ComputedInstance extends DataModel<Schema, Parent>>(
@@ -26,7 +26,7 @@ declare const _InternalTypeDataModelConst: _InternalTypeDataModelInterface;
 // @ts-expect-error Ignore the error, this is a workaround for a dynamic class.
 declare class _InternalTypeDataModel<
   Schema extends DataSchema,
-  Parent extends Document<DataSchema, any, any>,
+  Parent extends Document<any, DataSchema, any>,
   BaseData extends AnyObject = EmptyObject,
   DerivedData extends AnyObject = EmptyObject,
   // This does not work if inlined. It's weird to put it here but it works.
@@ -71,7 +71,7 @@ type MergePartial<T, U> = Omit<T, keyof U> & {
 };
 
 // Note(LukeAbby): The addition of `PropertyKey` seems to help simplify tsc's type checking.
-// This will likely not be necessary after 
+// This will likely not be necessary after
 type RequiredKeys<T> = PropertyKey &
   {
     [K in keyof T]-?: T extends { readonly [_ in K]: any } ? K : never;

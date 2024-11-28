@@ -3,6 +3,7 @@ import type EmbeddedCollection from "../../../../src/foundry/common/abstract/emb
 import type { AnyObject } from "../../../../src/types/utils.d.mts";
 
 import BaseItem = foundry.documents.BaseItem;
+import Document = foundry.abstract.Document;
 
 // @ts-expect-error Item requires a name and type
 new foundry.documents.BaseItem();
@@ -78,11 +79,7 @@ class _TestFlags extends Item {
   }
 }
 
-class _TestFlagsFail<ConcreteMetadata extends BaseItem.Metadata> extends foundry.abstract.Document<
-  BaseItem.Schema,
-  ConcreteMetadata,
-  any
-> {
+class _TestFlagsFail<Type extends Document.Type> extends Document<Type, BaseItem.Schema, any> {
   testFlagsFail() {
     // @ts-expect-error - Because `ConcreteMetadata` is passed in a generic fashion suddenly the safety of generic parameters kick in and make this unusable.
     this.getFlag("my-system", "countable");

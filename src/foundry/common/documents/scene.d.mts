@@ -1,4 +1,4 @@
-import type { AnyObject, Merge } from "../../../types/utils.mts";
+import type { AnyObject } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
 import type { TextureData } from "../data/data.mts";
@@ -12,7 +12,7 @@ import type * as documents from "./_module.mts";
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
-declare class BaseScene extends Document<BaseScene.Schema, BaseScene.Metadata, any> {
+declare class BaseScene extends Document<"Scene", BaseScene.Schema, any> {
   /**
    * @param data    - Initial data from which to construct the Scene
    * @param context - Construction context options
@@ -45,29 +45,7 @@ export default BaseScene;
 declare namespace BaseScene {
   type Parent = null;
 
-  type Metadata = Merge<
-    Document.Metadata.Default,
-    {
-      name: "Scene";
-      collection: "scenes";
-      indexed: true;
-      compendiumIndexFields: ["_id", "name", "thumb", "sort", "folder"];
-      embedded: {
-        AmbientLight: "lights";
-        AmbientSound: "sounds";
-        Drawing: "drawings";
-        MeasuredTemplate: "templates";
-        Note: "notes";
-        Tile: "tiles";
-        Token: "tokens";
-        Wall: "walls";
-      };
-      label: string;
-      labelPlural: string;
-      preserveOnImport: ["_id", "sort", "ownership", "active"];
-      schemaVersion: string;
-    }
-  >;
+  type Metadata = Document.MetadataForName<"Scene">;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;

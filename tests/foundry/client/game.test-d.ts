@@ -88,7 +88,7 @@ if (game.ready) {
 }
 
 // Game model
-declare const itemTypes: Game.Model.TypeNames<typeof Item>;
+declare const itemTypes: Game.Model.TypeNames<"Item">;
 expectTypeOf(itemTypes).toEqualTypeOf<"weapon" | "armor" | "base">();
 declare const itemCls: foundry.abstract.Document.ConfiguredClassForName<"Item">;
 expectTypeOf(itemCls).toEqualTypeOf<typeof Item>();
@@ -106,6 +106,6 @@ if (game instanceof Game) {
 
   const journalEntryPageModel = game.model.JournalEntryPage;
   // @ts-expect-error base is not a valid subtype for JournalEntryPage
-  journalEntryPageModel.base
+  journalEntryPageModel.base;
   expectTypeOf(journalEntryPageModel.text).toEqualTypeOf<EmptyObject>();
 }

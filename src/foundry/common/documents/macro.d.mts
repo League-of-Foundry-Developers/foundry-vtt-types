@@ -1,4 +1,4 @@
-import type { AnyObject, InexactPartial, Merge } from "../../../types/utils.d.mts";
+import type { AnyObject, InexactPartial } from "../../../types/utils.d.mts";
 import type Document from "../abstract/document.d.mts";
 import type * as CONST from "../constants.mts";
 import type * as fields from "../data/fields.d.mts";
@@ -11,7 +11,7 @@ import type * as documents from "./_module.mts";
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
-declare class BaseMacro extends Document<BaseMacro.Schema, BaseMacro.Metadata, any> {
+declare class BaseMacro extends Document<"Macro", BaseMacro.Schema, any> {
   /**
    * @privateRemarks Manual override of the return due to TS limitations with static `this`
    */
@@ -65,23 +65,7 @@ declare namespace BaseMacro {
 
   type TypeNames = Game.Model.TypeNames<"Macro">;
 
-  type Metadata = Merge<
-    Document.Metadata.Default,
-    {
-      name: "Macro";
-      collection: "macros";
-      indexed: true;
-      compendiumIndexFields: ["_id", "name", "img", "sort", "folder"];
-      label: string;
-      labelPlural: string;
-      coreTypes: CONST.MACRO_TYPES[];
-      permissions: {
-        create: (user: documents.BaseUser, doc: Document.Any) => boolean;
-        update: (user: documents.BaseUser, doc: Document.Any) => boolean;
-      };
-      schemaVersion: string;
-    }
-  >;
+  type Metadata = Document.MetadataForName<"Macro">;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;

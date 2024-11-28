@@ -31,9 +31,9 @@ declare global {
     /** Pass-through the type from the synthetic Actor, if it exists. */
     _type: string;
 
-    get type(): string;
+    get type(): ActorDelta.TypeNames | Actor.TypeNames;
 
-    set type(type: string);
+    set type(type: ActorDelta.TypeNames | Actor.TypeNames);
 
     /**
      * Apply this ActorDelta to the base Actor and return a synthetic Actor.

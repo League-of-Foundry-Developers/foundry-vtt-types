@@ -1,4 +1,4 @@
-import type { AnyObject, InexactPartial, Merge } from "../../../types/utils.mts";
+import type { AnyObject, InexactPartial } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
 import type * as fields from "../data/fields.d.mts";
@@ -11,7 +11,7 @@ import type BaseActor from "./actor.mts";
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
-declare class BaseUser extends Document<BaseUser.Schema, BaseUser.Metadata, any> {
+declare class BaseUser extends Document<"User", BaseUser.Schema, any> {
   /**
    * @param data    - Initial data from which to construct the User
    * @param context - Construction context options
@@ -119,21 +119,7 @@ export default BaseUser;
 declare namespace BaseUser {
   type Parent = null;
 
-  type Metadata = Merge<
-    Document.Metadata.Default,
-    {
-      name: "User";
-      collection: "users";
-      label: string;
-      labelPlural: string;
-      permissions: {
-        create: (user: BaseUser, doc: Document.Any, data?: UpdateData) => boolean;
-        update: (user: BaseUser, doc: Document.Any, changes: UpdateData) => boolean;
-        delete: (user: BaseUser, doc: Document.Any) => boolean;
-      };
-      schemaVersion: string;
-    }
-  >;
+  type Metadata = Document.MetadataForName<"User">;
 
   type Hotbar = Record<number | `${number}`, string>;
   type Permissions = Record<keyof typeof CONST.USER_PERMISSIONS, boolean>;

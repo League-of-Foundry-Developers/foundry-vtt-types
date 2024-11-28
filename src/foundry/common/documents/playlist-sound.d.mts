@@ -1,4 +1,4 @@
-import type { InexactPartial, Merge } from "../../../types/utils.mts";
+import type { InexactPartial } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type * as fields from "../data/fields.d.mts";
 
@@ -9,7 +9,7 @@ import type * as fields from "../data/fields.d.mts";
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
-declare class BasePlaylistSound extends Document<BasePlaylistSound.Schema, BasePlaylistSound.Metadata, any> {
+declare class BasePlaylistSound extends Document<"PlaylistSound", BasePlaylistSound.Schema, any> {
   /**
    * @param data    - Initial data from which to construct the PlaylistSound
    * @param context - Construction context options
@@ -44,18 +44,7 @@ export default BasePlaylistSound;
 declare namespace BasePlaylistSound {
   type Parent = Playlist.ConfiguredInstance | null;
 
-  type Metadata = Merge<
-    Document.Metadata.Default,
-    {
-      name: "PlaylistSound";
-      collection: "sounds";
-      indexed: true;
-      label: string;
-      labelPlural: string;
-      compendiumIndexFields: ["name", "sort"];
-      schemaVersion: string;
-    }
-  >;
+  type Metadata = Document.MetadataForName<"PlaylistSound">;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;

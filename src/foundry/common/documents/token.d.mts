@@ -1,4 +1,4 @@
-import type { AnyObject, InexactPartial, Merge } from "../../../types/utils.mts";
+import type { AnyObject, InexactPartial } from "../../../types/utils.mts";
 import type { DataModel } from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
@@ -13,7 +13,7 @@ import type { TokenDetectionMode } from "./_types.d.mts";
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
-declare class BaseToken extends Document<BaseToken.Schema, BaseToken.Metadata, any> {
+declare class BaseToken extends Document<"Token", BaseToken.Schema, any> {
   // TODO(LukeAbby): This constructor is causing a circular error.
   // constructor(data?: BaseToken.ConstructorData, context?: Document.ConstructionContext<BaseToken.Parent>);
 
@@ -98,25 +98,7 @@ export default BaseToken;
 declare namespace BaseToken {
   type Parent = Scene.ConfiguredInstance | null;
 
-  type Metadata = Merge<
-    Document.Metadata.Default,
-    {
-      name: "Token";
-      collection: "tokens";
-      label: string;
-      labelPlural: string;
-      isEmbedded: true;
-      embedded: {
-        ActorDelta: "delta";
-      };
-      permissions: {
-        create: "TOKEN_CREATE";
-        update: (user: documents.BaseUser, doc: Document.Any, data: UpdateData) => boolean;
-        delete: "TOKEN_DELETE";
-      };
-      schemaVersion: string;
-    }
-  >;
+  type Metadata = Document.MetadataForName<"Token">;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;

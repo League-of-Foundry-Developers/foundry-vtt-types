@@ -1,4 +1,4 @@
-import type { InexactPartial, Merge } from "../../../types/utils.mts";
+import type { InexactPartial } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
 import type * as fields from "../data/fields.d.mts";
@@ -11,7 +11,7 @@ import type * as documents from "./_module.mts";
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
-declare class BaseCard extends Document<BaseCard.Schema, BaseCard.Metadata, any> {
+declare class BaseCard extends Document<"Card", BaseCard.Schema, any> {
   /**
    * @privateRemarks Manual override of the return due to TS limitations with static `this`
    */
@@ -68,23 +68,7 @@ declare namespace BaseCard {
 
   type TypeNames = Game.Model.TypeNames<"Card">;
 
-  type Metadata = Merge<
-    Document.Metadata.Default,
-    {
-      name: "Card";
-      collection: "cards";
-      hasTypeData: true;
-      indexed: true;
-      label: string;
-      labelPlural: string;
-      permissions: {
-        create: () => boolean;
-        update: () => boolean;
-      };
-      compendiumIndexFields: ["name", "type", "suit", "sort"];
-      schemaVersion: string;
-    }
-  >;
+  type Metadata = Document.MetadataForName<"Card">;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;

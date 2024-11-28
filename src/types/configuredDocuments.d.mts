@@ -1,5 +1,20 @@
+import type { CONST } from "../foundry/client-esm/client.d.mts";
 import type { Document } from "../foundry/common/abstract/module.d.mts";
+import type BaseActor from "../foundry/common/documents/actor.d.mts";
+import type BaseChatMessage from "../foundry/common/documents/chat-message.d.mts";
+import type BaseCombat from "../foundry/common/documents/combat.d.mts";
+import type BaseCombatant from "../foundry/common/documents/combatant.d.mts";
+import type BaseDrawing from "../foundry/common/documents/drawing.d.mts";
+import type BaseFogExploration from "../foundry/common/documents/fog-exploration.d.mts";
+import type BaseMacro from "../foundry/common/documents/macro.d.mts";
+import type BaseMeasuredTemplate from "../foundry/common/documents/measured-template.d.mts";
+import type BaseSetting from "../foundry/common/documents/setting.d.mts";
+import type BaseTableResult from "../foundry/common/documents/table-result.d.mts";
+import type BaseToken from "../foundry/common/documents/token.d.mts";
+import type BaseUser from "../foundry/common/documents/user.d.mts";
+import type BaseWall from "../foundry/common/documents/wall.d.mts";
 import type { ConformRecord, InterfaceToObject, MakeConform, MustConform } from "./helperTypes.d.mts";
+import type { Merge } from "./utils.d.mts";
 
 type DocumentConform<T> = MakeConform<T, Document.AnyConstructor>;
 
@@ -100,4 +115,463 @@ type TestConfiguredDocumentsValid = MustConform<
 
 type ConformedConfigured = ConformRecord<_ConfiguredDocuments, Document.AnyConstructor>;
 
-export interface ConfiguredDocuments extends _ConfiguredDocuments {}
+export interface ConfiguredDocuments extends ConformedConfigured {}
+
+interface _ConfiguredMetadata {
+  ActiveEffect: Merge<
+    Document.Metadata.Default,
+    {
+      name: "ActiveEffect";
+      collection: "effects";
+      hasTypeData: true;
+      label: string;
+      labelPlural: string;
+      schemaVersion: string;
+    }
+  >;
+  ActorDelta: Merge<
+    Document.Metadata.Default,
+    {
+      name: "ActorDelta";
+      collection: "delta";
+      label: string;
+      labelPlural: string;
+      isEmbedded: true;
+      embedded: {
+        Item: "items";
+        ActiveEffect: "effects";
+      };
+      schemaVersion: string;
+    }
+  >;
+  Actor: Merge<
+    Document.Metadata.Default,
+    {
+      name: "Actor";
+      collection: "actors";
+      indexed: true;
+      compendiumIndexFields: ["_id", "name", "img", "type", "sort", "folder"];
+      embedded: { ActiveEffect: "effects"; Item: "items" };
+      hasTypeData: true;
+      label: string;
+      labelPlural: string;
+      permissions: {
+        create: (user: BaseUser, doc: BaseActor) => boolean;
+        update: (user: BaseUser, doc: BaseActor, data: BaseActor.UpdateData) => boolean;
+      };
+      schemaVersion: string;
+    }
+  >;
+  Adventure: Merge<
+    Document.Metadata.Default,
+    {
+      name: "Adventure";
+      collection: "adventures";
+      compendiumIndexFields: ["_id", "name", "img", "sort", "folder"];
+      label: string;
+      labelPlural: string;
+      schemaVersion: string;
+    }
+  >;
+  AmbientLight: Merge<
+    Document.Metadata.Default,
+    {
+      name: "AmbientLight";
+      collection: "lights";
+      label: string;
+      labelPlural: string;
+      schemaVersion: string;
+    }
+  >;
+  AmbientSound: Merge<
+    Document.Metadata.Default,
+    {
+      name: "AmbientSound";
+      collection: "sounds";
+      label: string;
+      labelPlural: string;
+      isEmbedded: true;
+      schemaVersion: string;
+    }
+  >;
+  Card: Merge<
+    Document.Metadata.Default,
+    {
+      name: "Card";
+      collection: "cards";
+      hasTypeData: true;
+      indexed: true;
+      label: string;
+      labelPlural: string;
+      permissions: {
+        create: () => boolean;
+        update: () => boolean;
+      };
+      compendiumIndexFields: ["name", "type", "suit", "sort"];
+      schemaVersion: string;
+    }
+  >;
+  Cards: Merge<
+    Document.Metadata.Default,
+    {
+      name: "Cards";
+      collection: "cards";
+      indexed: true;
+      compendiumIndexFields: ["_id", "name", "description", "img", "type", "sort", "folder"];
+      embedded: { Card: "cards" };
+      hasTypeData: true;
+      label: string;
+      labelPlural: string;
+      coreTypes: ["deck", "hand", "pile"];
+      schemaVersion: string;
+    }
+  >;
+  ChatMessage: Merge<
+    Document.Metadata.Default,
+    {
+      name: "ChatMessage";
+      collection: "messages";
+      label: string;
+      labelPlural: string;
+      isPrimary: true;
+      permissions: {
+        create: (user: BaseUser, doc: BaseChatMessage) => boolean;
+        update: (user: BaseUser, doc: BaseChatMessage, data: BaseChatMessage.UpdateData) => boolean;
+      };
+      schemaVersion: string;
+    }
+  >;
+  Combat: Merge<
+    Document.Metadata.Default,
+    {
+      name: "Combat";
+      collection: "combats";
+      label: string;
+      labelPlural: string;
+      embedded: {
+        Combatant: "combatants";
+      };
+      hasTypeData: true;
+      permissions: {
+        update: (user: BaseUser, doc: BaseCombat, data: BaseCombat.UpdateData) => boolean;
+      };
+      schemaVersion: string;
+    }
+  >;
+  Combatant: Merge<
+    Document.Metadata.Default,
+    {
+      name: "Combatant";
+      collection: "combatants";
+      label: string;
+      labelPlural: string;
+      isEmbedded: true;
+      hasTypeData: true;
+      schemaVersion: string;
+      permissions: {
+        create: (user: BaseUser, doc: BaseCombatant) => boolean;
+        update: (user: BaseUser, doc: BaseCombatant, data: BaseCombatant.UpdateData) => boolean;
+      };
+    }
+  >;
+  Drawing: Merge<
+    Document.Metadata.Default,
+    {
+      name: "Drawing";
+      collection: "drawings";
+      label: string;
+      labelPlural: string;
+      isEmbedded: true;
+      permissions: {
+        create: "DRAWING_CREATE";
+        update: (user: BaseUser, doc: BaseDrawing, data: BaseDrawing.UpdateData) => boolean;
+        delete: (user: BaseUser, doc: BaseDrawing, data: BaseDrawing.UpdateData) => boolean;
+      };
+      schemaVersion: string;
+    }
+  >;
+  FogExploration: Merge<
+    Document.Metadata.Default,
+    {
+      name: "FogExploration";
+      collection: "fog";
+      label: string;
+      labelPlural: string;
+      isPrimary: true;
+      permissions: {
+        create: "PLAYER";
+        update: (user: BaseUser, doc: BaseFogExploration, data: BaseFogExploration.UpdateData) => boolean;
+        delete: (user: BaseUser, doc: BaseFogExploration, data: BaseFogExploration.UpdateData) => boolean;
+      };
+      schemaVersion: string;
+    }
+  >;
+  Folder: Merge<
+    Document.Metadata.Default,
+    {
+      name: "Folder";
+      collection: "folders";
+      label: string;
+      labelPlural: string;
+      coreTypes: typeof CONST.FOLDER_DOCUMENT_TYPES;
+      schemaVersion: string;
+    }
+  >;
+  Item: Merge<
+    Document.Metadata.Default,
+    {
+      name: "Item";
+      collection: "items";
+      hasTypeData: true;
+      indexed: true;
+      compendiumIndexFields: ["_id", "name", "img", "type", "sort", "folder"];
+      embedded: { ActiveEffect: "effects" };
+      label: string;
+      labelPlural: string;
+      permissions: { create: "ITEM_CREATE" };
+      schemaVersion: string;
+    }
+  >;
+  JournalEntryPage: Merge<
+    Document.Metadata.Default,
+    {
+      name: "JournalEntryPage";
+      collection: "pages";
+      hasTypeData: true;
+      indexed: true;
+      label: string;
+      labelPlural: string;
+      coreTypes: ["text", "image", "pdf", "video"];
+      compendiumIndexFields: ["name", "type", "sort"];
+      schemaVersion: string;
+    }
+  >;
+  JournalEntry: Merge<
+    Document.Metadata.Default,
+    {
+      name: "JournalEntry";
+      collection: "journal";
+      indexed: true;
+      compendiumIndexFields: ["_id", "name", "sort", "folder"];
+      embedded: { JournalEntryPage: "pages" };
+      label: string;
+      labelPlural: string;
+      permissions: {
+        create: "JOURNAL_CREATE";
+      };
+      schemaVersion: string;
+    }
+  >;
+  Macro: Merge<
+    Document.Metadata.Default,
+    {
+      name: "Macro";
+      collection: "macros";
+      indexed: true;
+      compendiumIndexFields: ["_id", "name", "img", "sort", "folder"];
+      label: string;
+      labelPlural: string;
+      coreTypes: CONST.MACRO_TYPES[];
+      permissions: {
+        create: (user: BaseUser, doc: BaseMacro) => boolean;
+        update: (user: BaseUser, doc: BaseMacro) => boolean;
+      };
+      schemaVersion: string;
+    }
+  >;
+  MeasuredTemplate: Merge<
+    Document.Metadata.Default,
+    {
+      name: "MeasuredTemplate";
+      collection: "templates";
+      label: string;
+      labelPlural: string;
+      isEmbedded: true;
+      permissions: {
+        create: (user: BaseUser, doc: BaseMeasuredTemplate) => boolean;
+        update: (user: BaseUser, doc: BaseMeasuredTemplate, data: BaseMeasuredTemplate.UpdateData) => boolean;
+        delete: (user: BaseUser, doc: BaseMeasuredTemplate, data: BaseMeasuredTemplate.UpdateData) => boolean;
+      };
+      schemaVersion: string;
+    }
+  >;
+  Note: Merge<
+    Document.Metadata.Default,
+    {
+      name: "Note";
+      collection: "notes";
+      label: string;
+      labelPlural: string;
+      permissions: {
+        create: "NOTE_CREATE";
+      };
+      schemaVersion: string;
+    }
+  >;
+  PlaylistSound: Merge<
+    Document.Metadata.Default,
+    {
+      name: "PlaylistSound";
+      collection: "sounds";
+      indexed: true;
+      label: string;
+      labelPlural: string;
+      compendiumIndexFields: ["name", "sort"];
+      schemaVersion: string;
+    }
+  >;
+  Playlist: Merge<
+    Document.Metadata.Default,
+    {
+      name: "Playlist";
+      collection: "playlists";
+      indexed: true;
+      compendiumIndexFields: ["_id", "name", "sort", "folder"];
+      embedded: { PlaylistSound: "sounds" };
+      label: string;
+      labelPlural: string;
+      permissions: {
+        create: "PLAYLIST_CREATE";
+      };
+      schemaVersion: string;
+    }
+  >;
+  RollTable: Merge<
+    Document.Metadata.Default,
+    {
+      name: "RollTable";
+      collection: "tables";
+      indexed: true;
+      compendiumIndexFields: ["_id", "name", "img", "sort", "folder"];
+      embedded: { TableResult: "results" };
+      label: string;
+      labelPlural: string;
+      schemaVersion: string;
+    }
+  >;
+  Scene: Merge<
+    Document.Metadata.Default,
+    {
+      name: "Scene";
+      collection: "scenes";
+      indexed: true;
+      compendiumIndexFields: ["_id", "name", "thumb", "sort", "folder"];
+      embedded: {
+        AmbientLight: "lights";
+        AmbientSound: "sounds";
+        Drawing: "drawings";
+        MeasuredTemplate: "templates";
+        Note: "notes";
+        Tile: "tiles";
+        Token: "tokens";
+        Wall: "walls";
+      };
+      label: string;
+      labelPlural: string;
+      preserveOnImport: ["_id", "sort", "ownership", "active"];
+      schemaVersion: string;
+    }
+  >;
+  Setting: Merge<
+    Document.Metadata.Default,
+    {
+      name: "Setting";
+      collection: "settings";
+      label: string;
+      labelPlural: string;
+      permissions: {
+        create: (user: BaseUser, doc: BaseSetting, data: BaseSetting.UpdateData) => boolean;
+        update: (user: BaseUser, doc: BaseSetting, data: BaseSetting.UpdateData) => boolean;
+        delete: (user: BaseUser, doc: BaseSetting, data: BaseSetting.UpdateData) => boolean;
+      };
+      schemaVersion: string;
+    }
+  >;
+  TableResult: Merge<
+    Document.Metadata.Default,
+    {
+      name: "TableResult";
+      collection: "results";
+      label: string;
+      labelPlural: string;
+      coreTypes: foundry.CONST.TABLE_RESULT_TYPES[];
+      permissions: {
+        update: (user: BaseUser, doc: BaseTableResult, data: BaseTableResult.UpdateData) => boolean;
+      };
+      compendiumIndexFields: ["type"];
+      schemaVersion: string;
+    }
+  >;
+  Tile: Merge<
+    Document.Metadata.Default,
+    {
+      name: "Tile";
+      collection: "tiles";
+      label: string;
+      labelPlural: string;
+      schemaVersion: string;
+    }
+  >;
+  Token: Merge<
+    Document.Metadata.Default,
+    {
+      name: "Token";
+      collection: "tokens";
+      label: string;
+      labelPlural: string;
+      isEmbedded: true;
+      embedded: {
+        ActorDelta: "delta";
+      };
+      permissions: {
+        create: "TOKEN_CREATE";
+        update: (user: BaseUser, doc: BaseToken, data: BaseToken.UpdateData) => boolean;
+        delete: "TOKEN_DELETE";
+      };
+      schemaVersion: string;
+    }
+  >;
+  User: Merge<
+    Document.Metadata.Default,
+    {
+      name: "User";
+      collection: "users";
+      label: string;
+      labelPlural: string;
+      permissions: {
+        create: (user: BaseUser, doc: BaseUser, data?: BaseUser.UpdateData) => boolean;
+        update: (user: BaseUser, doc: BaseUser, changes: BaseUser.UpdateData) => boolean;
+        delete: (user: BaseUser, doc: BaseUser) => boolean;
+      };
+      schemaVersion: string;
+    }
+  >;
+  Wall: Merge<
+    Document.Metadata.Default,
+    {
+      name: "Wall";
+      collection: "walls";
+      label: string;
+      labelPlural: string;
+      permissions: {
+        update: (user: BaseUser, doc: BaseWall, data: BaseWall.UpdateData) => boolean;
+      };
+      schemaVersion: string;
+    }
+  >;
+}
+
+type MetadataShape = {
+  [Name in Document.Type]: Document.Metadata<Document.ConfiguredInstanceForName<Name>>;
+};
+
+type TestConfiguredMetadataValid = MustConform<InterfaceToObject<_ConfiguredMetadata>, MetadataShape>;
+
+type ConformedConfiguredMetadata = {
+  [Name in Document.Type]: MakeConform<
+    _ConfiguredMetadata[Name],
+    Document.Metadata<Document.ConfiguredInstanceForName<Name>>
+  >;
+};
+
+export interface ConfiguredMetadata extends ConformedConfiguredMetadata {}
