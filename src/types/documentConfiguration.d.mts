@@ -1,4 +1,4 @@
-import type { CONST } from "../foundry/client-esm/client.d.mts";
+import type { CONST, documents } from "../foundry/client-esm/client.d.mts";
 import type { Document } from "../foundry/common/abstract/module.d.mts";
 import type BaseActor from "../foundry/common/documents/actor.d.mts";
 import type BaseChatMessage from "../foundry/common/documents/chat-message.d.mts";
@@ -539,7 +539,7 @@ interface _ConfiguredMetadata {
       label: string;
       labelPlural: string;
       permissions: {
-        create: (user: BaseUser, doc: BaseUser, data?: BaseUser.UpdateData) => boolean;
+        create: (user: BaseUser, doc: BaseUser, dat: BaseUser.UpdateData) => boolean;
         update: (user: BaseUser, doc: BaseUser, changes: BaseUser.UpdateData) => boolean;
         delete: (user: BaseUser, doc: BaseUser) => boolean;
       };
@@ -562,16 +562,44 @@ interface _ConfiguredMetadata {
 }
 
 type MetadataShape = {
-  [Name in Document.Type]: Document.Metadata<Document.ConfiguredInstanceForName<Name>>;
+  [Name in Document.Type]: Document.Metadata<Name>;
 };
 
 type TestConfiguredMetadataValid = MustConform<InterfaceToObject<_ConfiguredMetadata>, MetadataShape>;
 
-type ConformedConfiguredMetadata = {
-  [Name in Document.Type]: MakeConform<
-    _ConfiguredMetadata[Name],
-    Document.Metadata<Document.ConfiguredInstanceForName<Name>>
-  >;
-};
+// Metadata is not conformed because it's not user configurable. The test above should be sufficient for fvtt-types internal correctness.
+// Secondarily, it also causes problems to be 
+export interface ConfiguredMetadata extends _ConfiguredMetadata {}
 
-export interface ConfiguredMetadata extends ConformedConfiguredMetadata {}
+export interface ConstructorData {
+  ActiveEffect: documents.BaseActiveEffect.ConstructorData;
+  ActorDelta: documents.BaseActorDelta.ConstructorData;
+  Actor: documents.BaseActor.ConstructorData;
+  Adventure: documents.BaseAdventure.ConstructorData;
+  Card: documents.BaseCard.ConstructorData;
+  Cards: documents.BaseCards.ConstructorData;
+  ChatMessage: documents.BaseChatMessage.ConstructorData;
+  Combat: documents.BaseCombat.ConstructorData;
+  Combatant: documents.BaseCombatant.ConstructorData;
+  FogExploration: documents.BaseFogExploration.ConstructorData;
+  Folder: documents.BaseFolder.ConstructorData;
+  Item: documents.BaseItem.ConstructorData;
+  JournalEntryPage: documents.BaseJournalEntryPage.ConstructorData;
+  JournalEntry: documents.BaseJournalEntry.ConstructorData;
+  Macro: documents.BaseMacro.ConstructorData;
+  PlaylistSound: documents.BasePlaylistSound.ConstructorData;
+  Playlist: documents.BasePlaylist.ConstructorData;
+  RollTable: documents.BaseRollTable.ConstructorData;
+  Scene: documents.BaseScene.ConstructorData;
+  Setting: documents.BaseSetting.ConstructorData;
+  TableResult: documents.BaseTableResult.ConstructorData;
+  User: documents.BaseUser.ConstructorData;
+  AmbientLight: documents.BaseAmbientLight.ConstructorData;
+  AmbientSound: documents.BaseAmbientSound.ConstructorData;
+  Drawing: documents.BaseDrawing.ConstructorData;
+  MeasuredTemplate: documents.BaseMeasuredTemplate.ConstructorData;
+  Note: documents.BaseNote.ConstructorData;
+  Tile: documents.BaseTile.ConstructorData;
+  Token: documents.BaseToken.ConstructorData;
+  Wall: documents.BaseWall.ConstructorData;
+}

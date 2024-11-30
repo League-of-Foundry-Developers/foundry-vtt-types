@@ -2,7 +2,8 @@ import type {
   ConfiguredDocuments,
   ConfiguredMetadata,
   DefaultDocuments,
-} from "../../../types/configuredDocuments.d.mts";
+  ConstructorData,
+} from "../../../types/documentConfiguration.d.mts";
 import type {
   DatabaseOperationsFor,
   GetKey,
@@ -936,39 +937,6 @@ declare abstract class AnyDocument extends Document<any, any, any> {
 // This helps to minimize the number of errors that appears in a repo with broken configuration as they can be very misleading and confusing.
 declare abstract class ConfigurationFailure extends AnyDocument {}
 
-interface ConstructorDataMap {
-  ActiveEffect: documents.BaseActiveEffect.ConstructorData;
-  ActorDelta: documents.BaseActorDelta.ConstructorData;
-  Actor: documents.BaseActor.ConstructorData;
-  Adventure: documents.BaseAdventure.ConstructorData;
-  Card: documents.BaseCard.ConstructorData;
-  Cards: documents.BaseCards.ConstructorData;
-  ChatMessage: documents.BaseChatMessage.ConstructorData;
-  Combat: documents.BaseCombat.ConstructorData;
-  Combatant: documents.BaseCombatant.ConstructorData;
-  FogExploration: documents.BaseFogExploration.ConstructorData;
-  Folder: documents.BaseFolder.ConstructorData;
-  Item: documents.BaseItem.ConstructorData;
-  JournalEntryPage: documents.BaseJournalEntryPage.ConstructorData;
-  JournalEntry: documents.BaseJournalEntry.ConstructorData;
-  Macro: documents.BaseMacro.ConstructorData;
-  PlaylistSound: documents.BasePlaylistSound.ConstructorData;
-  Playlist: documents.BasePlaylist.ConstructorData;
-  RollTable: documents.BaseRollTable.ConstructorData;
-  Scene: documents.BaseScene.ConstructorData;
-  Setting: documents.BaseSetting.ConstructorData;
-  TableResult: documents.BaseTableResult.ConstructorData;
-  User: documents.BaseUser.ConstructorData;
-  AmbientLight: documents.BaseAmbientLight.ConstructorData;
-  AmbientSound: documents.BaseAmbientSound.ConstructorData;
-  Drawing: documents.BaseDrawing.ConstructorData;
-  MeasuredTemplate: documents.BaseMeasuredTemplate.ConstructorData;
-  Note: documents.BaseNote.ConstructorData;
-  Tile: documents.BaseTile.ConstructorData;
-  Token: documents.BaseToken.ConstructorData;
-  Wall: documents.BaseWall.ConstructorData;
-}
-
 declare namespace Document {
   /** Any Document, except for Settings */
   type Any = AnyDocument;
@@ -1087,7 +1055,9 @@ declare namespace Document {
     T extends { defineSchema: () => infer R extends DataSchema } ? R : never
   >;
 
-  type ConstructorDataForName<T extends Document.Type> = ConstructorDataMap[T];
+  // These helper types exist to help break a loop
+  type ConstructorDataForName<T extends Document.Type> = ConstructorData[T];
+  type UpdateDataForName<T extends Document.Type> = ConstructorData[T];
 
   type ConstructorDataForSchema<Schema extends DataSchema> =
     foundry.data.fields.SchemaField.InnerAssignmentType<Schema>;
@@ -1348,8 +1318,8 @@ declare namespace Document {
   type PreUpsertOptions<Name extends Type> = PreCreateOptions<Name> | PreUpdateOptions<Name>;
   type OnUpsertOptions<Name extends Type> = OnCreateOptions<Name> | OnUpdateOptions<Name>;
 
-  interface Metadata<ConcreteDocument extends Document.Any> {
-    name: Document.Type;
+  interface Metadata<Type extends Document.Type> {
+    name: Type;
     collection: string;
     indexed?: boolean | undefined;
     compendiumIndexFields?: string[] | undefined;
@@ -1361,17 +1331,17 @@ declare namespace Document {
         | string
         | ((
             user: foundry.documents.BaseUser,
-            doc: ConcreteDocument,
-            data: fields.SchemaField.InnerAssignmentType<ConcreteDocument["schema"]["fields"]>,
+            doc: Document.ConfiguredInstanceForName<Type>,
+            data: Document.ConstructorDataForName<Type>,
           ) => boolean);
       update:
         | string
         | ((
             user: foundry.documents.BaseUser,
-            doc: ConcreteDocument,
-            data: fields.SchemaField.InnerAssignmentType<ConcreteDocument["schema"]["fields"]>,
+            doc: Document.ConfiguredInstanceForName<Type>,
+            data: Document.UpdateDataForName<Type>,
           ) => boolean);
-      delete: string | ((user: foundry.documents.BaseUser, doc: ConcreteDocument, data: EmptyObject) => boolean);
+      delete: string | ((user: foundry.documents.BaseUser, doc: Document.ConfiguredInstanceForName<Type>, data: EmptyObject) => boolean);
     };
     preserveOnImport?: string[];
     schemaVersion: string | undefined;
