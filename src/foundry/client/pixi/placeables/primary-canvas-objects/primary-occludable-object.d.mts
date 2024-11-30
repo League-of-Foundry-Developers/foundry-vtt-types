@@ -1,4 +1,4 @@
-import type { InexactPartial, Mixin } from "../../../../../types/utils.d.mts";
+import type { Mixin, NullishProps } from "../../../../../types/utils.d.mts";
 
 declare class PrimaryOccludableObject {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
@@ -86,7 +86,7 @@ declare class PrimaryOccludableObject {
 
   updateCanvasTransform(): void;
 
-  _shouldRenderDepth: boolean;
+  get _shouldRenderDepth(): boolean;
 
   /**
    * Test whether a specific Token occludes this PCO.
@@ -97,7 +97,7 @@ declare class PrimaryOccludableObject {
    */
   testOcclusion(
     token: Token,
-    options?: InexactPartial<{
+    options?: NullishProps<{
       /** Test corners of the hit-box in addition to the token center? */
       corners: boolean;
     }>,
@@ -111,7 +111,7 @@ declare class PrimaryOccludableObject {
   /**
    * @deprecated since v12, will be removed in v14
    */
-  containsPixel(x: number, y: number, alphaThreshold: number): boolean;
+  containsPixel(x: number, y: number, alphaThreshold?: number): boolean;
 
   /**
    * @deprecated since v11, will be removed in v13
@@ -125,6 +125,8 @@ declare global {
   ): Mixin<typeof PrimaryOccludableObject, ReturnType<typeof PrimaryCanvasObjectMixin<BaseClass>>>;
 
   namespace PrimaryOccludableObjectMixin {
+    type AnyConstructor = typeof AnyPrimaryOccludableObject;
+
     type MixinClass = typeof PrimaryOccludableObject;
 
     interface OcclusionState {
@@ -158,4 +160,8 @@ declare global {
       occlusion: number;
     }
   }
+}
+
+declare abstract class AnyPrimaryOccludableObject extends PrimaryOccludableObject {
+  constructor(arg0: never, ...args: never[]);
 }
