@@ -44,4 +44,12 @@ declare global {
 
     protected static override _batchFragmentShader: string;
   }
+
+  namespace TokenRingSamplerShader {
+    type AnyConstructor = typeof AnyTokenRingSamplerShader;
+  }
+}
+
+declare abstract class AnyTokenRingSamplerShader extends TokenRingSamplerShader {
+  constructor(arg0: never, ...args: never[]);
 }

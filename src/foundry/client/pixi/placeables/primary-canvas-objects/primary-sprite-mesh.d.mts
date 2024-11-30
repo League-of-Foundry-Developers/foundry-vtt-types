@@ -1,12 +1,5 @@
 import type { InexactPartial } from "../../../../../types/utils.d.mts";
 
-// TODO: Remove when #2570 is completed
-declare const PrimaryBaseSamplerShader: BaseSamplerShader;
-
-declare namespace PrimaryBaseSamplerShader {
-  type AnyConstructor = unknown;
-}
-
 declare global {
   /**
    * A basic PCO sprite mesh which is handling occlusion and depth.
