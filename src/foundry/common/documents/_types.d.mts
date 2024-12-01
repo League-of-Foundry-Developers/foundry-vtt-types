@@ -36,6 +36,7 @@ export type EffectDurationData = BaseActiveEffect.Properties["duration"];
 // TODO(LukeAbby): This understandably adds a circular loop because `DataField` depends on `EffectChangeData`.
 // export type EffectChangeData = BaseActiveEffect.Properties["changes"][number];
 
+// TODO(LukeAbby): Audit. This is used both as an assignment, constructor, and initialized type. It's likely this isn't
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type EffectChangeData = {
   /**
@@ -54,13 +55,13 @@ export type EffectChangeData = {
    * The modification mode with which the change is applied
    * @defaultValue `CONST.ACTIVE_EFFECT_MODES.ADD`
    */
-  mode: number;
+  mode: number | null;
 
   /**
    * The priority level with which this change is applied
    * @defaultValue `null`
    */
-  priority: number;
+  priority: number | null;
 };
 
 export type ActorData = BaseActor.Properties;

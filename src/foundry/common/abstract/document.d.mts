@@ -1119,8 +1119,12 @@ declare namespace Document {
   type SchemaFor<ConcreteDocument extends Internal.Instance.Any> =
     ConcreteDocument extends Internal.Instance<infer Schema, any> ? Schema : never;
 
-  type MetadataFor<ConcreteDocument extends Document.Any> =
-    ConfiguredMetadata<ConcreteDocument>[ConcreteDocument["documentName"]];
+  type MetadataFor<ConcreteDocument extends Document.Internal.Instance.Any> =
+    ConfiguredMetadata<ConcreteDocument>[ConcreteDocument extends {
+      readonly documentName: infer Name extends Document.Type;
+    }
+      ? Name
+      : never];
 
   type CollectionRecord<Schema extends DataSchema> = {
     [Key in keyof Schema]: Schema[Key] extends fields.EmbeddedCollectionField.Any ? Schema[Key] : never;
