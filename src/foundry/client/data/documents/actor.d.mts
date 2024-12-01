@@ -76,7 +76,10 @@ declare global {
       TokenDocument.ConfiguredInstance
     >;
 
-    protected override _initializeSource(data: this | Actor.UpdateData, options?: unknown): Actor.Source;
+    protected override _initializeSource(
+      data: this | Actor.ConstructorData,
+      options?: Omit<foundry.abstract.DataModel.DataValidationOptions, "parent">,
+    ): Actor.Source;
 
     /**
      * An object that tracks which tracks the changes to the data model which were applied by active effects

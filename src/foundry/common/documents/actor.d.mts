@@ -46,9 +46,9 @@ declare class BaseActor extends Document<"Actor", BaseActor.Schema, any> {
   };
 
   protected override _initializeSource(
-    data: fields.SchemaField.InnerAssignmentType<documents.BaseActor.Schema> | this,
-    options?: any,
-  ): fields.SchemaField.InnerPersistedType<documents.BaseActor.Schema>;
+    data: BaseActor.ConstructorData | this,
+    options?: Omit<foundry.abstract.DataModel.DataValidationOptions, "parent">,
+  ): BaseActor.Source;
 
   static override canUserCreate(user: documents.BaseUser): boolean;
 
