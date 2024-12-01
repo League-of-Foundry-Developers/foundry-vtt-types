@@ -17,8 +17,8 @@ class EmbeddedInSceneDocument extends CanvasDocumentMixin(BaseEmbeddedInSceneDoc
 }
 
 class OnePlaceable extends PlaceableObject<EmbeddedInSceneDocument> {
-  get bounds(): Rectangle {
-    return null as unknown as Rectangle;
+  get bounds(): PIXI.Rectangle {
+    return null as unknown as PIXI.Rectangle;
   }
 
   protected async _draw(): Promise<void> {}
