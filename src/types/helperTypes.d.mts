@@ -194,8 +194,8 @@ export type InterfaceToObject<T extends object> = {
  * ```
  */
 export type HandleEmptyObject<
-  T extends Record<string, unknown>,
-  D extends Record<string, unknown> = Record<string, never>,
+  T extends object,
+  D extends object = Record<string, never>,
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 > = [{}] extends [T] ? D : T;
 

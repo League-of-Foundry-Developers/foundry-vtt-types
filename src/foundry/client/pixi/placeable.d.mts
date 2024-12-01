@@ -1,4 +1,4 @@
-import type { MakeConform } from "../../../types/helperTypes.d.mts";
+import type { HandleEmptyObject, MakeConform } from "../../../types/helperTypes.d.mts";
 import type { NullishProps, ValueOf } from "../../../types/utils.d.mts";
 import type ApplicationV2 from "../../client-esm/applications/api/application.d.mts";
 import type { Document } from "../../common/abstract/module.d.mts";
@@ -11,12 +11,20 @@ declare global {
    * An Abstract Base Class which defines a Placeable Object which represents a Document placed on the Canvas
    */
   abstract class PlaceableObject<
-    D extends Document<any, any, Scene.ConfiguredInstance | null> = Document<any, any, Scene.ConfiguredInstance | null>,
+    CanvasDocument extends Document<any, any, Scene.ConfiguredInstance | null> = Document<
+      any,
+      any,
+      Scene.ConfiguredInstance | null
+    >,
+    ControlOptions extends PlaceableObject.ControlOptions = PlaceableObject.ControlOptions,
+    DestroyOptions extends PlaceableObject.DestroyOptions | boolean = PlaceableObject.DestroyOptions | boolean,
+    DrawOptions extends PlaceableObject.DrawOptions = PlaceableObject.DrawOptions,
+    ReleaseOptions extends PlaceableObject.ReleaseOptions = PlaceableObject.ReleaseOptions,
   > extends RenderFlagsMixin(PIXI.Container) {
     /**
      * @param document - The Document instance which is represented by this object
      */
-    constructor(document: D);
+    constructor(document: CanvasDocument);
 
     /**
      * Retain a reference to the Scene within which this Placeable Object resides
@@ -26,7 +34,7 @@ declare global {
     /**
      * A reference to the Scene embedded Document instance which this object represents
      */
-    document: D;
+    document: CanvasDocument;
 
     /**
      * A control icon for interacting with the object
@@ -123,13 +131,13 @@ declare global {
     /**
      * Provide a reference to the CanvasLayer which contains this PlaceableObject.
      */
-    get layer(): GetKeyWithShape<D, "layer", PIXI.Container>;
+    get layer(): GetKeyWithShape<CanvasDocument, "layer", PIXI.Container>;
 
     /**
      * A Form Application which is used to configure the properties of this Placeable Object or the Document it
      * represents.
      */
-    get sheet(): GetKeyWithShape<D, "sheet", FormApplication | ApplicationV2.Any | null>;
+    get sheet(): GetKeyWithShape<CanvasDocument, "sheet", FormApplication | ApplicationV2.Any | null>;
 
     /**
      * An indicator for whether the object is currently controlled
@@ -170,25 +178,25 @@ declare global {
      */
     clear(): this | void;
 
-    override destroy(options?: PIXI.IDestroyOptions | boolean): void;
+    override destroy(options?: DestroyOptions): void;
 
     /**
      * The inner _destroy method which may optionally be defined by each PlaceableObject subclass.
      * @param options - Options passed to the initial destroy call
      */
-    protected _destroy(options?: PIXI.IDestroyOptions | boolean): void;
+    protected _destroy(options?: DestroyOptions): void;
 
     /**
      * Draw the placeable object into its parent container
      * @returns The drawn object
      */
-    draw(options?: Record<string, unknown>): Promise<this>;
+    draw(options?: HandleEmptyObject<DrawOptions>): Promise<this>;
 
     /**
      * The inner _draw method which must be defined by each PlaceableObject subclass.
      * @param options - Options which may modify the draw workflow
      */
-    protected abstract _draw(options?: Record<string, unknown>): Promise<void>;
+    protected abstract _draw(options?: HandleEmptyObject<DrawOptions>): Promise<void>;
 
     /**
      * Execute a partial draw.
@@ -203,7 +211,7 @@ declare global {
      * @param options - Options which may modify the refresh workflow
      * @returns The refreshed object
      */
-    refresh(options?: Record<string, unknown>): this;
+    refresh(options?: HandleEmptyObject<PlaceableObject.RefreshOptions>): this;
 
     /**
      * Update the quadtree.
@@ -227,8 +235,8 @@ declare global {
      * Register pending canvas operations which should occur after a new PlaceableObject of this type is created
      */
     protected _onCreate(
-      data: foundry.data.fields.SchemaField.InnerAssignmentType<D["schema"]["fields"]>,
-      options: Document.OnCreateOptions<D["documentName"]>,
+      data: foundry.data.fields.SchemaField.InnerAssignmentType<CanvasDocument["schema"]["fields"]>,
+      options: Document.OnCreateOptions<CanvasDocument["documentName"]>,
       userId: string,
     ): void;
 
@@ -237,15 +245,15 @@ declare global {
      * @remarks Called without options and userId in Drawing._onUpdate
      */
     protected _onUpdate(
-      changed: foundry.data.fields.SchemaField.InnerAssignmentType<D["schema"]["fields"]>,
-      options?: Document.OnUpdateOptions<D["documentName"]>,
+      changed: foundry.data.fields.SchemaField.InnerAssignmentType<CanvasDocument["schema"]["fields"]>,
+      options?: Document.OnUpdateOptions<CanvasDocument["documentName"]>,
       userId?: string,
     ): void;
 
     /**
      * Define additional steps taken when an existing placeable object of this type is deleted
      */
-    protected _onDelete(options: Document.OnDeleteOptions<D["documentName"]>, userId: string): void;
+    protected _onDelete(options: Document.OnDeleteOptions<CanvasDocument["documentName"]>, userId: string): void;
 
     /**
      * Assume control over a PlaceableObject, flagging it as controlled and enabling downstream behaviors
@@ -253,27 +261,29 @@ declare global {
      *                  (default: `{}`)
      * @returns A flag denoting whether control was successful
      */
-    control(options?: PlaceableObject.ControlOptions): boolean;
+    control(options?: ControlOptions): boolean;
 
     /**
      * Additional events which trigger once control of the object is established
      * @param options - Optional parameters which apply for specific implementations
      */
-    protected _onControl(options?: PlaceableObject.ControlOptions): void;
+    protected _onControl(options?: ControlOptions): void;
 
     /**
      * Release control over a PlaceableObject, removing it from the controlled set
      * @param options - Options which modify the releasing workflow
      *                  (default: `{}`)
      * @returns A Boolean flag confirming the object was released.
+     * @remarks This is HandleEmptyObject'd because the only property of the interface is unused and liable to disappear in future
      */
-    release(options?: PlaceableObject.ReleaseOptions): boolean;
+    release(options?: HandleEmptyObject<ReleaseOptions>): boolean;
 
     /**
      * Additional events which trigger once control of the object is released
      * @param options - Options which modify the releasing workflow
+     * @remarks This is HandleEmptyObject'd because the only property of the interface is unused and liable to disappear in future
      */
-    protected _onRelease(options?: PlaceableObject.ReleaseOptions): void;
+    protected _onRelease(options?: HandleEmptyObject<ReleaseOptions>): void;
 
     /**
      * Clone the placeable object, returning a new object with identical attributes.
@@ -557,7 +567,7 @@ declare global {
      */
     _prepareDragLeftDropUpdates(
       event: PIXI.FederatedEvent,
-    ): foundry.data.fields.SchemaField.InnerAssignmentType<D["schema"]["fields"]>[];
+    ): foundry.data.fields.SchemaField.InnerAssignmentType<CanvasDocument["schema"]["fields"]>[];
 
     /**
      * Callback actions which occur on a mouse-move operation.
@@ -608,16 +618,6 @@ declare global {
 
     type AnyConstructor = typeof AnyPlaceableObject;
 
-    interface DestroyOptions extends PIXI.IDestroyOptions {}
-
-    interface RenderFlags {
-      redraw: boolean;
-
-      refresh: boolean;
-
-      refreshState: boolean;
-    }
-
     interface ControlOptions {
       /**
        * Release any other controlled objects first
@@ -625,10 +625,19 @@ declare global {
       releaseOthers?: boolean;
     }
 
+    interface DestroyOptions extends PIXI.IDestroyOptions {}
+
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    interface DrawOptions {}
+
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    interface RefreshOptions {}
+
     /**
      * @privateRemarks `PlaceableObject#_onDelete` is the only place in foundry code that calls `PlaceableObject#release` with any options at all,
-     * where it passes `{trigger: false}`. This is passed on to `PlaceableObject#_onRelease`, which does not check for any options, including trigger.
+     * where it passes `{trigger: false}`. This is passed on to `PlaceableObject#_onRelease`, which does not check for any options, including `trigger`.
      * `Drawing`, `Region`, and `Token` extend `_onRelease` and pass the options back to `super`, but do no further checks.
+     * This could be an empty interface and not change runtime behaviour.
      * */
     interface ReleaseOptions {
       trigger?: boolean;
@@ -640,6 +649,14 @@ declare global {
        * @defaultValue `false`
        */
       hoverOutOthers: boolean;
+    }
+
+    interface RenderFlags {
+      redraw: boolean;
+
+      refresh: boolean;
+
+      refreshState: boolean;
     }
   }
 }
