@@ -18,7 +18,7 @@ declare global {
       refreshText: boolean;
     }
 
-    interface ObjectHUD extends globalThis.ObjectHUD {
+    interface ObjectHUD extends globalThisObjectHUD {
       /**
        * Template control icon
        */

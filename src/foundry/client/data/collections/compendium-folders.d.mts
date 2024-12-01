@@ -1,4 +1,4 @@
-import type { DeepPartial } from "../../../../types/utils.d.mts";
+export {};
 
 declare global {
   /**
@@ -16,14 +16,12 @@ declare global {
     /**
      * @privateRemarks Possible this causes depth issues, this is just a small extension in the code with no meaningful transformations
      */
-    updateAll(
-      transformation:
-        | DeepPartial<Folder["_source"]>
-        | ((doc: foundry.abstract.Document.Stored<Folder>) => DeepPartial<Folder["_source"]>),
-      condition?: ((obj: foundry.abstract.Document.Stored<Folder>) => boolean) | null,
-      options?: foundry.abstract.Document.OnUpdateOptions<"Folder">,
-    ): Promise<Folder.ConfiguredInstance[]>;
+    // updateAll(
+    //   transformation:
+    //     | DeepPartial<Folder["_source"]>
+    //     | ((doc: foundry.abstract.Document.Stored<Folder>) => DeepPartial<Folder["_source"]>),
+    //   condition?: ((obj: foundry.abstract.Document.Stored<Folder>) => boolean) | null,
+    //   options?: foundry.abstract.Document.OnUpdateOptions<"Folder">,
+    // ): Promise<Folder.ConfiguredInstance[]>;
   }
 }
-
-export {};

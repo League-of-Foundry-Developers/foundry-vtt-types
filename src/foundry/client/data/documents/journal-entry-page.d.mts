@@ -5,6 +5,8 @@ import type BaseJournalEntryPage from "../../../common/documents/journal-entry-p
 
 declare global {
   namespace JournalEntryPage {
+    type Metadata = Document.MetadataFor<JournalEntryPage>;
+
     type ConfiguredClass = Document.ConfiguredClassForName<"JournalEntryPage">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"JournalEntryPage">;
 
@@ -44,6 +46,8 @@ declare global {
    * @see {@link JournalEntry}  The JournalEntry document type which contains JournalEntryPage embedded documents.
    */
   class JournalEntryPage extends ClientDocumentMixin(foundry.documents.BaseJournalEntryPage) {
+    static override metadata: JournalEntryPage.Metadata;
+
     /**
      * The cached table of contents for this JournalEntryPage.
      */

@@ -7,6 +7,8 @@ import type BaseCards from "../../../common/documents/cards.d.mts";
 
 declare global {
   namespace Cards {
+    type Metadata = Document.MetadataFor<Cards>;
+
     type ConfiguredClass = Document.ConfiguredClassForName<"Cards">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Cards">;
 
@@ -149,6 +151,8 @@ declare global {
    * @see {@link CardsConfig}                       The Cards configuration application
    */
   class Cards extends ClientDocumentMixin(foundry.documents.BaseCards) {
+    static override metadata: Cards.Metadata;
+
     /**
      * Provide a thumbnail image path used to represent this document.
      */

@@ -1,4 +1,4 @@
-import type { AnyObject, InexactPartial, Merge } from "../../../types/utils.d.mts";
+import type { AnyObject, InexactPartial } from "../../../types/utils.d.mts";
 import type Document from "../abstract/document.mts";
 import type { fields } from "../data/module.d.mts";
 import type { CONST, documents } from "../../client-esm/client.d.mts";
@@ -11,7 +11,7 @@ import type { CONST, documents } from "../../client-esm/client.d.mts";
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
-declare class BaseActorDelta extends Document<BaseActorDelta.Schema, BaseActorDelta.Metadata, any> {
+declare class BaseActorDelta extends Document<"ActorDelta", BaseActorDelta.Schema, any> {
   // TODO(LukeAbby): This constructor is a symptom of a circular error.
   // constructor(data?: BaseActorDelta.ConstructorData, context?: Document.ConstructionContext<BaseActorDelta.Parent>);
 
@@ -19,7 +19,7 @@ declare class BaseActorDelta extends Document<BaseActorDelta.Schema, BaseActorDe
 
   override _source: BaseActorDelta.Source;
 
-  static override metadata: Readonly<BaseActorDelta.Metadata>;
+  static override metadata: BaseActorDelta.Metadata;
 
   static override defineSchema(): BaseActorDelta.Schema;
 
@@ -62,28 +62,14 @@ declare namespace BaseActorDelta {
   type Parent = TokenDocument.ConfiguredInstance | null;
 
   // Note that in places like CONFIG the only eligible type is "base"
-  type TypeNames = fields.TypeDataField.TypeNames<typeof documents.BaseActor>;
+  type TypeNames = Game.Model.TypeNames<"Actor">;
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;
   type UpdateData = fields.SchemaField.InnerAssignmentType<Schema>;
   type Properties = fields.SchemaField.InnerInitializedType<Schema>;
   type Source = fields.SchemaField.InnerPersistedType<Schema>;
 
-  type Metadata = Merge<
-    Document.Metadata.Default,
-    {
-      name: "ActorDelta";
-      collection: "delta";
-      label: string;
-      labelPlural: string;
-      isEmbedded: true;
-      embedded: {
-        Item: "items";
-        ActiveEffect: "effects";
-      };
-      schemaVersion: string;
-    }
-  >;
+  type Metadata = Document.MetadataFor<BaseActorDelta>;
 
   interface Schema<TypeName extends TypeNames = TypeNames> extends DataSchema {
     /**

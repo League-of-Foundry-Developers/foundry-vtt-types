@@ -1,17 +1,17 @@
 import type { InterfaceToObject } from "../../../types/helperTypes.d.mts";
-import type { AnyObject, InexactPartial, Merge } from "../../../types/utils.mts";
+import type { AnyObject, InexactPartial } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
 import type * as fields from "../data/fields.d.mts";
 import type * as documents from "./_module.mts";
 
 /**
- * The data schema for an ActiveEffect document.
+ * The ActiveEffect Document.
  */
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
-declare class BaseActiveEffect extends Document<BaseActiveEffect.Schema, BaseActiveEffect.Metadata, any> {
+declare class BaseActiveEffect extends Document<"ActiveEffect", BaseActiveEffect.Schema, any> {
   /**
    * @param data    - Initial data from which to construct the ActiveEffect
    * @param context - Construction context options
@@ -23,7 +23,7 @@ declare class BaseActiveEffect extends Document<BaseActiveEffect.Schema, BaseAct
 
   override canUserModify(user: documents.BaseUser, action: "create" | "update" | "delete", data?: AnyObject): boolean;
 
-  static override metadata: Readonly<BaseActiveEffect.Metadata>;
+  static override metadata: BaseActiveEffect.Metadata;
 
   static override defineSchema(): BaseActiveEffect.Schema;
 
@@ -44,15 +44,23 @@ declare class BaseActiveEffect extends Document<BaseActiveEffect.Schema, BaseAct
    * For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
    */
 
-  protected override _initialize(options?: any): void;
-
   static override migrateData(source: AnyObject): AnyObject;
 
   /**
    * @deprecated since v11, will be removed in v13
-   * @remarks Replaced by name
+   * @remarks Replaced by `name`
    */
-  get label(): string;
+  get label(): this["name"];
+
+  set label(value);
+
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks Replaced by `img`
+   */
+  get icon(): this["img"];
+
+  set icon(value);
 }
 
 export default BaseActiveEffect;
@@ -60,16 +68,9 @@ export default BaseActiveEffect;
 declare namespace BaseActiveEffect {
   type Parent = Actor.ConfiguredInstance | Item.ConfiguredInstance | null;
 
-  type Metadata = Merge<
-    Document.Metadata.Default,
-    {
-      name: "ActiveEffect";
-      collection: "effects";
-      label: string;
-      labelPlural: string;
-      schemaVersion: string;
-    }
-  >;
+  type TypeNames = Game.Model.TypeNames<"ActiveEffect">;
+
+  type Metadata = Document.MetadataFor<BaseActiveEffect>;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;
@@ -83,6 +84,22 @@ declare namespace BaseActiveEffect {
      * @defaultValue `null`
      */
     _id: fields.DocumentIdField;
+
+    /**
+     * The name of the ActiveEffect
+     * @defaultValue `""`
+     */
+    name: fields.StringField<{ required: true; label: "EFFECT.Label" }>;
+
+    /**
+     * An image path used to depict the ActiveEffect as an icon
+     * @defaultValue `null`
+     */
+    img: fields.FilePathField<{ categories: "IMAGE"[]; label: "EFFECT.Image" }>;
+
+    type: fields.DocumentTypeField<typeof BaseActiveEffect, { initial: typeof foundry.CONST.BASE_DOCUMENT_TYPE }>;
+
+    system: fields.TypeDataField<typeof BaseActiveEffect>;
 
     /**
      * The array of EffectChangeData objects which the ActiveEffect applies
@@ -181,18 +198,6 @@ declare namespace BaseActiveEffect {
     description: fields.HTMLField<{ label: "EFFECT.Description"; textSearch: true }>;
 
     /**
-     * An icon image path used to depict the ActiveEffect
-     * @defaultValue `null`
-     */
-    icon: fields.FilePathField<{ categories: "IMAGE"[]; label: "EFFECT.Icon" }>;
-
-    /**
-     * The name of the ActiveEffect
-     * @defaultValue `""`
-     */
-    name: fields.StringField<{ required: true; label: "EFFECT.Label" }>;
-
-    /**
      * A UUID reference to the document from which this ActiveEffect originated
      * @defaultValue `null`
      */
@@ -200,9 +205,9 @@ declare namespace BaseActiveEffect {
 
     /**
      * A color string which applies a tint to the ActiveEffect icon
-     * @defaultValue `null`
+     * @defaultValue `"#ffffff"`
      */
-    tint: fields.ColorField<{ label: "EFFECT.IconTint" }>;
+    tint: fields.ColorField<{ nullable: false; initial: "#ffffff"; label: "EFFECT.IconTint" }>;
 
     /**
      * Does this ActiveEffect automatically transfer from an Item to an Actor?
@@ -216,11 +221,15 @@ declare namespace BaseActiveEffect {
      */
     statuses: fields.SetField<fields.StringField<{ required: true; blank: false }>>;
 
+    sort: fields.IntegerSortField;
+
     /**
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
     flags: fields.ObjectField.FlagsField<"ActiveEffect", InterfaceToObject<CoreFlags>>;
+
+    _stats: fields.DocumentStatsField;
   }
 
   interface CoreFlags {

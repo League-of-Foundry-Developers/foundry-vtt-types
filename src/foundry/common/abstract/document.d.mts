@@ -1,5 +1,17 @@
-import type { ConfiguredDocuments, DefaultDocuments } from "../../../types/configuredDocuments.d.mts";
-import type { DatabaseOperationsFor, GetKey, MakeConform, MustConform } from "../../../types/helperTypes.mts";
+import type {
+  ConfiguredDocuments,
+  ConfiguredMetadata,
+  DefaultDocuments,
+  ConstructorData,
+} from "../../../types/documentConfiguration.d.mts";
+import type {
+  DatabaseOperationsFor,
+  GetKey,
+  InterfaceToObject,
+  MakeConform,
+  MustConform,
+  ToMethod,
+} from "../../../types/helperTypes.mts";
 import type {
   AnyObject,
   DeepPartial,
@@ -25,7 +37,6 @@ export default Document;
 declare const __DocumentBrand: unique symbol;
 
 declare const __Schema: unique symbol;
-declare const __ConcreteMetadata: unique symbol;
 declare const __Parent: unique symbol;
 
 type _ClassMustBeAssignableToInternal = MustConform<typeof Document, Document.Internal.Constructor>;
@@ -36,14 +47,13 @@ type _InstanceMustBeAssignableToInternal = MustConform<Document.Any, Document.In
  * Documents are special in that they are persisted to the database and referenced by _id.
  */
 declare abstract class Document<
+  DocumentName extends Document.Type,
   Schema extends DataSchema,
-  ConcreteMetadata extends Document.Metadata.Any = Document.Metadata.Any,
   Parent extends Document.Any | null = null,
-> extends DataModel<Schema, Parent> {
+> extends DataModel<Schema, Parent, InterfaceToObject<Document.ConstructionContext<Parent>>> {
   static [__DocumentBrand]: never;
 
   [__Schema]: Schema;
-  [__ConcreteMetadata]: ConcreteMetadata;
   [__Parent]: Parent;
 
   /**
@@ -54,7 +64,10 @@ declare abstract class Document<
 
   override parent: Parent;
 
-  protected override _configure(options?: { pack?: string | null }): void;
+  protected override _configure(options?: {
+    pack?: string | null | undefined;
+    parentCollection?: string | null | undefined;
+  }): void;
 
   /**
    * An immutable reverse-reference to the name of the collection that this Document exists in on its parent, if any.
@@ -107,7 +120,7 @@ declare abstract class Document<
    * }
    * ```
    */
-  static metadata: Document.Metadata.Any;
+  static metadata: Readonly<Document.Metadata.Any>;
 
   /**
    * The database backend used to execute operations and handle results
@@ -134,7 +147,7 @@ declare abstract class Document<
   /**
    * The named collection to which this Document belongs.
    */
-  get collectionName(): ConcreteMetadata["collection"];
+  get collectionName(): Document.Internal.SimpleMetadata<DocumentName>["collection"];
 
   /**
    * The canonical name of this Document type, for example "Actor".
@@ -144,10 +157,11 @@ declare abstract class Document<
   /**
    * The canonical name of this Document type, for example "Actor".
    */
-  get documentName(): ConcreteMetadata["name"];
+  get documentName(): Document.Internal.SimpleMetadata<DocumentName>["name"];
 
   /**
    * The allowed types which may exist for this Document class
+   * @remarks Document.TYPES is overly generic so subclasses don't cause problems
    */
   static get TYPES(): string[];
 
@@ -350,7 +364,7 @@ declare abstract class Document<
    */
   static updateDocuments<T extends Document.AnyConstructor>(
     this: T,
-    updates?: Array<DeepPartial<Document.ConstructorDataFor<T> & Record<string, unknown>>>,
+    updates?: Array<DeepPartial<Document.UpdateDataFor<T>>>,
     operation?: InexactPartial<Omit<DatabaseOperationsFor<InstanceType<T>["documentName"], "update">, "updates">>,
   ): Promise<Document.ToConfiguredInstance<T>[]>;
 
@@ -448,7 +462,7 @@ declare abstract class Document<
   update(
     // TODO: Determine if this is Partial, DeepPartial, or InexactPartial.
     data?: Partial<Document.ConstructorDataForSchema<Schema>>,
-    operation?: InexactPartial<Omit<DatabaseOperationsFor<ConcreteMetadata["name"], "update">, "updates">>,
+    operation?: InexactPartial<Omit<DatabaseOperationsFor<DocumentName, "update">, "updates">>,
   ): Promise<this | undefined>;
 
   /**
@@ -461,7 +475,7 @@ declare abstract class Document<
    * @remarks If no document has actually been deleted, the returned {@link Promise} resolves to `undefined`.
    */
   delete(
-    operation?: InexactPartial<Omit<DatabaseOperationsFor<ConcreteMetadata["name"], "delete">, "ids">>,
+    operation?: InexactPartial<Omit<DatabaseOperationsFor<DocumentName, "delete">, "ids">>,
   ): Promise<this | undefined>;
 
   /**
@@ -584,7 +598,7 @@ declare abstract class Document<
   >(
     embeddedName: EmbeddedName,
     ids: Array<string>,
-    operation?: DatabaseOperationsFor<ConcreteMetadata["name"], "delete">,
+    operation?: DatabaseOperationsFor<DocumentName, "delete">,
   ): Promise<Array<Document.Stored<Document.ConfiguredInstanceForName<EmbeddedName>>>>;
 
   /**
@@ -603,9 +617,9 @@ declare abstract class Document<
    * @returns The flag value
    */
   getFlag<
-    S extends Document.FlagKeyOf<Document.ConfiguredFlagsForName<ConcreteMetadata["name"]>>,
-    K extends Document.FlagKeyOf<Document.FlagGetKey<Document.ConfiguredFlagsForName<ConcreteMetadata["name"]>, S>>,
-  >(scope: S, key: K): Document.GetFlag<ConcreteMetadata["name"], S, K>;
+    S extends Document.FlagKeyOf<Document.ConfiguredFlagsForName<DocumentName>>,
+    K extends Document.FlagKeyOf<Document.FlagGetKey<Document.ConfiguredFlagsForName<DocumentName>, S>>,
+  >(scope: S, key: K): Document.GetFlag<DocumentName, S, K>;
 
   /**
    * Assign a "flag" to this document.
@@ -626,9 +640,9 @@ declare abstract class Document<
    * @returns A Promise resolving to the updated document
    */
   setFlag<
-    S extends Document.FlagKeyOf<Document.ConfiguredFlagsForName<ConcreteMetadata["name"]>>,
-    K extends Document.FlagKeyOf<Document.FlagGetKey<Document.ConfiguredFlagsForName<ConcreteMetadata["name"]>, S>>,
-    V extends Document.GetFlag<ConcreteMetadata["name"], S, K>,
+    S extends Document.FlagKeyOf<Document.ConfiguredFlagsForName<DocumentName>>,
+    K extends Document.FlagKeyOf<Document.FlagGetKey<Document.ConfiguredFlagsForName<DocumentName>, S>>,
+    V extends Document.GetFlag<DocumentName, S, K>,
   >(scope: S, key: K, value: V): Promise<this>;
 
   /**
@@ -650,7 +664,7 @@ declare abstract class Document<
    */
   protected _preCreate(
     data: fields.SchemaField.AssignmentType<Schema>,
-    options: Document.PreCreateOptions<ConcreteMetadata["name"]>,
+    options: Document.PreCreateOptions<DocumentName>,
     user: foundry.documents.BaseUser,
   ): Promise<boolean | void>;
 
@@ -663,7 +677,7 @@ declare abstract class Document<
    */
   protected _onCreate(
     data: fields.SchemaField.InnerAssignmentType<Schema>,
-    options: Document.OnCreateOptions<ConcreteMetadata["name"]>,
+    options: Document.OnCreateOptions<DocumentName>,
     userId: string,
   ): void;
 
@@ -715,7 +729,7 @@ declare abstract class Document<
    */
   protected _preUpdate(
     changed: fields.SchemaField.AssignmentType<Schema>,
-    options: Document.PreUpdateOptions<ConcreteMetadata["name"]>,
+    options: Document.PreUpdateOptions<DocumentName>,
     user: foundry.documents.BaseUser,
   ): Promise<boolean | void>;
 
@@ -728,7 +742,7 @@ declare abstract class Document<
    */
   protected _onUpdate(
     changed: fields.SchemaField.InnerAssignmentType<Schema>,
-    options: Document.OnUpdateOptions<ConcreteMetadata["name"]>,
+    options: Document.OnUpdateOptions<DocumentName>,
     userId: string,
   ): void;
 
@@ -779,7 +793,7 @@ declare abstract class Document<
    * @returns A return value of false indicates the delete operation should be cancelled
    */
   protected _preDelete(
-    options: Document.PreDeleteOptions<ConcreteMetadata["name"]>,
+    options: Document.PreDeleteOptions<DocumentName>,
     user: foundry.documents.BaseUser,
   ): Promise<boolean | void>;
 
@@ -789,7 +803,7 @@ declare abstract class Document<
    * @param options - Additional options which modify the deletion request
    * @param userId  - The id of the User requesting the document update
    */
-  protected _onDelete(options: Document.OnDeleteOptions<ConcreteMetadata["name"]>, userId: string): void;
+  protected _onDelete(options: Document.OnDeleteOptions<DocumentName>, userId: string): void;
 
   /**
    * Pre-process a deletion operation, potentially altering its instructions or input data. Pre-operation events only
@@ -922,39 +936,6 @@ declare abstract class AnyDocument extends Document<any, any, any> {
 // This helps to minimize the number of errors that appears in a repo with broken configuration as they can be very misleading and confusing.
 declare abstract class ConfigurationFailure extends AnyDocument {}
 
-interface ConstructorDataMap {
-  ActiveEffect: documents.BaseActiveEffect.ConstructorData;
-  ActorDelta: documents.BaseActorDelta.ConstructorData;
-  Actor: documents.BaseActor.ConstructorData;
-  Adventure: documents.BaseAdventure.ConstructorData;
-  Card: documents.BaseCard.ConstructorData;
-  Cards: documents.BaseCards.ConstructorData;
-  ChatMessage: documents.BaseChatMessage.ConstructorData;
-  Combat: documents.BaseCombat.ConstructorData;
-  Combatant: documents.BaseCombatant.ConstructorData;
-  FogExploration: documents.BaseFogExploration.ConstructorData;
-  Folder: documents.BaseFolder.ConstructorData;
-  Item: documents.BaseItem.ConstructorData;
-  JournalEntryPage: documents.BaseJournalEntryPage.ConstructorData;
-  JournalEntry: documents.BaseJournalEntry.ConstructorData;
-  Macro: documents.BaseMacro.ConstructorData;
-  PlaylistSound: documents.BasePlaylistSound.ConstructorData;
-  Playlist: documents.BasePlaylist.ConstructorData;
-  RollTable: documents.BaseRollTable.ConstructorData;
-  Scene: documents.BaseScene.ConstructorData;
-  Setting: documents.BaseSetting.ConstructorData;
-  TableResult: documents.BaseTableResult.ConstructorData;
-  User: documents.BaseUser.ConstructorData;
-  AmbientLight: documents.BaseAmbientLight.ConstructorData;
-  AmbientSound: documents.BaseAmbientSound.ConstructorData;
-  Drawing: documents.BaseDrawing.ConstructorData;
-  MeasuredTemplate: documents.BaseMeasuredTemplate.ConstructorData;
-  Note: documents.BaseNote.ConstructorData;
-  Tile: documents.BaseTile.ConstructorData;
-  Token: documents.BaseToken.ConstructorData;
-  Wall: documents.BaseWall.ConstructorData;
-}
-
 declare namespace Document {
   /** Any Document, except for Settings */
   type Any = AnyDocument;
@@ -995,8 +976,20 @@ declare namespace Document {
     | "Token"
     | "Wall";
 
+  type CoreTypesForName<Name extends Type> = string &
+    GetKey<Document.Internal.SimpleMetadata<Name>, "coreTypes", ["base"]>[number];
+
   // TODO: Probably a way to auto-determine this
-  type SystemType = "Actor" | "Card" | "Cards" | "Item" | "JournalEntryPage";
+  type SystemType =
+    | "ActiveEffect"
+    | "Actor"
+    | "Card"
+    | "Cards"
+    | "ChatMessage"
+    | "Combat"
+    | "Combatant"
+    | "Item"
+    | "JournalEntryPage";
 
   type EmbeddableNamesFor<ConcreteDocument extends Document.Internal.Instance.Any> = {
     [K in keyof ConfiguredDocuments]: IsParentOf<ConcreteDocument, InstanceType<ConfiguredDocuments[K]>> extends true
@@ -1004,46 +997,30 @@ declare namespace Document {
       : never;
   };
 
-  type ParentOf<ConcreteDocument extends Document.Internal.Instance.Any> =
-    ConcreteDocument extends Document.Internal.Instance<any, any, infer Parent> ? Parent : never;
-
-  type NameOf<ConcreteDocument extends Document.Internal.Instance.Any> =
-    ConcreteDocument extends Document.Internal.Instance<any, infer ConcreteMetadata, any>
-      ? ConcreteMetadata["name"]
-      : never;
-
   type IsParentOf<
     ParentDocument extends Document.Internal.Instance.Any,
     ChildDocument extends Document.Internal.Instance.Any,
-  > = NameOf<ParentDocument> extends NameOf<ParentOf<ChildDocument>> ? true : false;
+  > = ParentDocument extends Internal.ParentFor<ChildDocument> ? true : false;
 
   // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
   namespace Internal {
+    type SimpleMetadata<Name extends Document.Type> = ConfiguredMetadata<Document.Any>[Name];
+
     type Constructor = (abstract new (arg0: never, ...args: never[]) => Instance.Any) & {
       [__DocumentBrand]: never;
     };
 
-    interface Instance<
-      Schema extends DataSchema,
-      ConcreteMetadata extends Metadata.Any,
-      Parent extends Document.Internal.Instance.Any | null,
-    > {
+    interface Instance<Schema extends DataSchema, Parent extends Document.Internal.Instance.Any | null> {
       [__Schema]: Schema;
-      [__ConcreteMetadata]: ConcreteMetadata;
       [__Parent]: Parent;
     }
 
-    type SchemaFor<ConcreteInstance extends Instance.Any> =
-      ConcreteInstance extends Instance<infer Schema, any, any> ? Schema : never;
+    type SchemaFor<ConcreteInstance extends Instance.Any> = ConcreteInstance[typeof __Schema];
 
-    type MetadataFor<ConcreteInstance extends Instance.Any> =
-      ConcreteInstance extends Instance<any, infer ConcreteMetadata, any> ? ConcreteMetadata : never;
-
-    type ParentFor<ConcreteInstance extends Instance.Any> =
-      ConcreteInstance extends Instance<any, infer Parent, any> ? Parent : never;
+    type ParentFor<ConcreteInstance extends Instance.Any> = ConcreteInstance[typeof __Parent];
 
     namespace Instance {
-      type Any = Instance<any, any, any>;
+      type Any = Instance<any, any>;
 
       type Complete<T extends Any> = T extends Document.Any ? T : never;
     }
@@ -1061,13 +1038,20 @@ declare namespace Document {
     T extends { defineSchema: () => infer R extends DataSchema } ? R : never
   >;
 
-  type ConstructorDataForName<T extends Document.Type> = ConstructorDataMap[T];
+  // TODO(LukeAbby): Actually make this distinguishable from `Document.ConstructorDataFor` and `Document.ConstructorDataForSchema`.
+  type UpdateDataFor<T extends Document.Internal.Constructor> = ConstructorDataForSchema<
+    T extends { defineSchema: () => infer R extends DataSchema } ? R : never
+  >;
+
+  // These helper types exist to help break a loop
+  type ConstructorDataForName<T extends Document.Type> = ConstructorData[T];
+  type UpdateDataForName<T extends Document.Type> = ConstructorData[T];
 
   type ConstructorDataForSchema<Schema extends DataSchema> =
     foundry.data.fields.SchemaField.InnerAssignmentType<Schema>;
 
   type SystemConstructor = AnyConstructor & {
-    metadata: { name: SystemType; coreTypes?: readonly string[] | undefined };
+    metadata: { name: SystemType };
   };
 
   type ConfiguredClass<T extends { metadata: Metadata.Any }> = ConfiguredClassForName<T["metadata"]["name"]>;
@@ -1133,10 +1117,10 @@ declare namespace Document {
     : T;
 
   type SchemaFor<ConcreteDocument extends Internal.Instance.Any> =
-    ConcreteDocument extends Internal.Instance<infer Schema, any, any> ? Schema : never;
+    ConcreteDocument extends Internal.Instance<infer Schema, any> ? Schema : never;
 
-  type MetadataFor<ConcreteDocument extends Internal.Instance.Any> =
-    ConcreteDocument extends Internal.Instance<any, infer ConcreteMetadata, any> ? ConcreteMetadata : never;
+  type MetadataFor<ConcreteDocument extends Document.Any> =
+    ConfiguredMetadata<ConcreteDocument>[ConcreteDocument["documentName"]];
 
   type CollectionRecord<Schema extends DataSchema> = {
     [Key in keyof Schema]: Schema[Key] extends fields.EmbeddedCollectionField.Any ? Schema[Key] : never;
@@ -1179,7 +1163,6 @@ declare namespace Document {
     K
   >;
 
-  /** @remarks Copied from `resources/app/common/types.mjs` */
   interface ConstructionContext<Parent extends Document.Any | null> {
     /**
      * The parent Document of this one, if this one is embedded
@@ -1197,7 +1180,12 @@ declare namespace Document {
      * Whether to validate initial data strictly?
      * @defaultValue `true`
      */
-    strict?: boolean | undefined;
+    strict?: boolean | null | undefined;
+
+    /**
+     * An immutable reverse-reference to the name of the collection that thi8s Document exists in on its parent, if any.
+     */
+    parentCollection?: string | null | undefined;
   }
 
   interface ModificationContext<Parent extends Document.Any | null> {
@@ -1316,37 +1304,32 @@ declare namespace Document {
   type PreUpsertOptions<Name extends Type> = PreCreateOptions<Name> | PreUpdateOptions<Name>;
   type OnUpsertOptions<Name extends Type> = OnCreateOptions<Name> | OnUpdateOptions<Name>;
 
-  interface Metadata<ConcreteDocument extends Document.Any> {
-    name: Document.Type;
-    collection: string;
-    indexed?: boolean | undefined;
-    compendiumIndexFields?: string[] | undefined;
-    label: string;
-    coreTypes?: readonly string[] | undefined;
-    embedded: Record<string, string>;
-    permissions: {
+  interface Metadata<out ThisType extends Document.Any> {
+    readonly name: ThisType["documentName"];
+    readonly collection: string;
+    readonly indexed?: boolean | undefined;
+    readonly compendiumIndexFields?: readonly string[] | undefined;
+    readonly label: string;
+    readonly coreTypes: readonly string[];
+    readonly embedded: Record<string, string>;
+    readonly permissions: {
       create:
         | string
-        | ((
-            user: foundry.documents.BaseUser,
-            doc: ConcreteDocument,
-            data: fields.SchemaField.InnerAssignmentType<ConcreteDocument["schema"]["fields"]>,
-          ) => boolean);
+        | ToMethod<
+            (user: foundry.documents.BaseUser, doc: ThisType, data: Document.ConstructorDataForName<Type>) => boolean
+          >;
       update:
         | string
-        | ((
-            user: foundry.documents.BaseUser,
-            doc: ConcreteDocument,
-            data: fields.SchemaField.InnerAssignmentType<ConcreteDocument["schema"]["fields"]>,
-          ) => boolean);
-      delete: string | ((user: foundry.documents.BaseUser, doc: ConcreteDocument, data: EmptyObject) => boolean);
+        | ToMethod<
+            (user: foundry.documents.BaseUser, doc: ThisType, data: Document.UpdateDataForName<Type>) => boolean
+          >;
+      delete: string | ToMethod<(user: foundry.documents.BaseUser, doc: ThisType, data: EmptyObject) => boolean>;
     };
-    preserveOnImport?: string[];
-    schemaVersion: string | undefined;
-    labelPlural: string; // This is not set for the Document class but every class that implements Document actually provides it.
-    types: readonly string[];
-    hasSystemData: boolean;
-    pack: any;
+    readonly preserveOnImport?: readonly string[] | undefined;
+    readonly schemaVersion: string | undefined;
+    readonly labelPlural: string; // This is not set for the Document class but every class that implements Document actually provides it.
+    readonly types: readonly string[];
+    readonly hasSystemData: boolean;
   }
 
   namespace Metadata {
@@ -1356,6 +1339,7 @@ declare namespace Document {
       name: "Document";
       collection: "documents";
       label: "DOCUMENT.Document";
+      coreTypes: [typeof foundry.CONST.BASE_DOCUMENT_TYPE];
       types: [];
       embedded: EmptyObject;
       hasSystemData: false;

@@ -1,4 +1,4 @@
-import type { AnyObject, Merge } from "../../../types/utils.mts";
+import type { AnyObject } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type * as fields from "../data/fields.d.mts";
 import type * as documents from "./_module.mts";
@@ -10,7 +10,7 @@ import type * as documents from "./_module.mts";
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
-declare class BasePlaylist extends Document<BasePlaylist.Schema, BasePlaylist.Metadata, any> {
+declare class BasePlaylist extends Document<"Playlist", BasePlaylist.Schema, any> {
   /**
    * @param data    - Initial data from which to construct the Playlist
    * @param context - Construction context options
@@ -20,7 +20,7 @@ declare class BasePlaylist extends Document<BasePlaylist.Schema, BasePlaylist.Me
 
   override parent: BasePlaylist.Parent;
 
-  static override metadata: Readonly<BasePlaylist.Metadata>;
+  static override metadata: BasePlaylist.Metadata;
 
   static override defineSchema(): BasePlaylist.Schema;
 
@@ -43,22 +43,7 @@ export default BasePlaylist;
 declare namespace BasePlaylist {
   type Parent = null;
 
-  type Metadata = Merge<
-    Document.Metadata.Default,
-    {
-      name: "Playlist";
-      collection: "playlists";
-      indexed: true;
-      compendiumIndexFields: ["_id", "name", "sort", "folder"];
-      embedded: { PlaylistSound: "sounds" };
-      label: string;
-      labelPlural: string;
-      permissions: {
-        create: "PLAYLIST_CREATE";
-      };
-      schemaVersion: string;
-    }
-  >;
+  type Metadata = Document.MetadataFor<BasePlaylist>;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;

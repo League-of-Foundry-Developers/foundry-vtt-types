@@ -5,6 +5,8 @@ import type BaseChatMessage from "../../../common/documents/chat-message.d.mts";
 
 declare global {
   namespace ChatMessage {
+    type Metadata = Document.MetadataFor<ChatMessage>;
+
     type ConfiguredClass = Document.ConfiguredClassForName<"ChatMessage">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"ChatMessage">;
 
@@ -19,7 +21,7 @@ declare global {
     /* eslint-enable @typescript-eslint/no-empty-object-type */
 
     // Helpful aliases
-    // type TypeNames = BaseChatMessage.TypeNames; // TODO: Un-comment after subtype updates are merged
+    type TypeNames = BaseChatMessage.TypeNames;
     type ConstructorData = BaseChatMessage.ConstructorData;
     type UpdateData = BaseChatMessage.UpdateData;
     type Schema = BaseChatMessage.Schema;
@@ -59,6 +61,8 @@ declare global {
    *
    */
   class ChatMessage extends ClientDocumentMixin(foundry.documents.BaseChatMessage) {
+    static override metadata: ChatMessage.Metadata;
+
     /**
      * Is the display of dice rolls in this message collapsed (false) or expanded (true)
      * @defaultValue `false`

@@ -4,6 +4,8 @@ import type BaseTableResult from "../../../common/documents/table-result.d.mts";
 
 declare global {
   namespace TableResult {
+    type Metadata = Document.MetadataFor<TableResult>;
+
     type ConfiguredClass = Document.ConfiguredClassForName<"TableResult">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"TableResult">;
 
@@ -23,6 +25,8 @@ declare global {
    * @see {@link RollTable}         The RollTable document which contains TableResult embedded documents
    */
   class TableResult extends ClientDocumentMixin(foundry.documents.BaseTableResult) {
+    static override metadata: TableResult.Metadata;
+
     /**
      * A path reference to the icon image used to represent this result
      */

@@ -2,7 +2,6 @@ import type { AnyObject, EmptyObject } from "../../../types/utils.d.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
 import type { fields } from "../data/module.d.mts";
 import type { DataModelValidationFailure } from "../data/validation-failure.d.mts";
-import type Document from "./document.d.mts";
 
 declare global {
   type DataSchema = Record<string, DataField.Any>;
@@ -53,6 +52,9 @@ export default DataModel;
 declare abstract class DataModel<
   Schema extends DataSchema,
   Parent extends DataModel.Any | null = null,
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  ExtraConstructorOptions extends AnyObject = {},
 > extends _InternalDataModel<Schema> {
   /**
    * @param data    - Initial data used to construct the data object. The provided object
@@ -62,13 +64,13 @@ declare abstract class DataModel<
   // TODO(LukeAbby): Make only optional if `{}` is assignable to `InnerAssignmentType`.
   constructor(
     data?: DataModel.ConstructorData<Schema>,
-    { parent, strict, ...options }?: DataModel.ConstructorOptions<Parent>,
+    { parent, strict, ...options }?: DataModel.DataValidationOptions<Parent> & ExtraConstructorOptions,
   );
 
   /**
    * Configure the data model instance before validation and initialization workflows are performed.
    */
-  protected _configure(options?: { pack?: string | null }): void;
+  protected _configure(options?: ExtraConstructorOptions): void;
 
   /**
    * The source data object for this DataModel instance.
@@ -385,24 +387,46 @@ declare namespace DataModel {
 
   type ConstructorDataFor<ConcreteDataModel extends DataModel.Any> = ConstructorData<SchemaOf<ConcreteDataModel>>;
 
-  interface ConstructorOptions<Parent extends Any | null = null> {
+  /**
+   * @deprecated {@link DataModel.DataValidationOptions | `DataModel.DataValidationOptions`}
+   */
+  type ConstructorOptions<Parent extends Any | null = null> = DataValidationOptions<Parent>;
+
+  interface DataValidationOptions<Parent extends Any | null = null> {
+    /**
+     * Throw an error if validation fails.
+     * @defaultValue `true`
+     */
+    strict?: boolean | null | undefined;
+
+    /**
+     * Attempt to replace invalid values with valid defaults?
+     *
+     * @defaultValue `false`
+     */
+    fallback?: boolean | null | undefined;
+
+    /**
+     * Allow partial source data, ignoring absent fields?
+     *
+     * @defaultValue `false`
+     */
+    partial?: boolean | null | undefined;
+
+    /**
+     * If true, invalid embedded documents will emit a warning and be
+     * placed in the invalidDocuments collection rather than causing the
+     * parent to be considered invalid.
+     *
+     * @defaultValue `false`
+     */
+    dropInvalidEmbedded?: boolean | null | undefined;
+
     /**
      * A parent DataModel instance to which this DataModel belongs
      * @defaultValue `null`
      */
-    parent?: Parent;
-
-    /**
-     * Control the strictness of validation for initially provided data
-     * @defaultValue `true`
-     */
-    strict?: Document.ConstructionContext<Document.Any | null>["strict"];
-
-    /**
-     * The compendium collection ID which contains this Document, if any
-     * @defaultValue `null`
-     */
-    pack?: Document.ConstructionContext<Document.Any | null>["pack"];
+    parent?: Parent | null | undefined;
   }
 
   type Any = DataModel<DataSchema, any>;

@@ -1,4 +1,5 @@
 import { expectTypeOf, assertType } from "vitest";
+import type { EmptyObject } from "../../../src/types/utils.d.mts";
 
 declare const aGame: Game;
 
@@ -84,4 +85,27 @@ if (game instanceof Game) {
 if (game.ready) {
   expectTypeOf(game.declarationMergingWorks).toEqualTypeOf<number>();
   expectTypeOf(game.onlyInReady).toEqualTypeOf<string>();
+}
+
+// Game model
+declare const itemTypes: Game.Model.TypeNames<"Item">;
+expectTypeOf(itemTypes).toEqualTypeOf<"weapon" | "armor" | "base">();
+declare const itemCls: foundry.abstract.Document.ConfiguredClassForName<"Item">;
+expectTypeOf(itemCls).toEqualTypeOf<typeof Item>();
+declare const itemTypes2: Game.Model.TypeNames<foundry.abstract.Document.ConfiguredClassForName<"Item">>;
+expectTypeOf(itemTypes2).toEqualTypeOf<"weapon" | "armor" | "base">();
+expectTypeOf(game.documentTypes!.Item).toEqualTypeOf<Array<"weapon" | "armor" | "base">>();
+
+if (game instanceof Game) {
+  const tokenModel = game.model.Token;
+  expectTypeOf(tokenModel.base).toEqualTypeOf<EmptyObject>();
+
+  const itemModel = game.model.Item;
+  expectTypeOf(itemModel.base).toEqualTypeOf<EmptyObject>();
+  expectTypeOf(itemModel.weapon).toEqualTypeOf<EmptyObject>();
+
+  const journalEntryPageModel = game.model.JournalEntryPage;
+  // @ts-expect-error base is not a valid subtype for JournalEntryPage
+  journalEntryPageModel.base;
+  expectTypeOf(journalEntryPageModel.text).toEqualTypeOf<EmptyObject>();
 }

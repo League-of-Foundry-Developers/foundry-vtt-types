@@ -4,6 +4,8 @@ import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace JournalEntry {
+    type Metadata = Document.MetadataFor<JournalEntry>;
+
     type ConfiguredClass = Document.ConfiguredClassForName<"JournalEntry">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"JournalEntry">;
 
@@ -23,6 +25,8 @@ declare global {
    * @see {@link JournalSheet}          The JournalEntry configuration application
    */
   class JournalEntry extends ClientDocumentMixin(foundry.documents.BaseJournalEntry) {
+    static override metadata: JournalEntry.Metadata;
+
     /**
      * A boolean indicator for whether or not the JournalEntry is visible to the current user in the directory sidebar
      */

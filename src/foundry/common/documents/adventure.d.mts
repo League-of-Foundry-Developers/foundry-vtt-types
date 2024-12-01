@@ -1,4 +1,3 @@
-import type { Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type * as fields from "../data/fields.d.mts";
 
@@ -9,7 +8,7 @@ import type * as fields from "../data/fields.d.mts";
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
-declare class BaseAdventure extends Document<BaseAdventure.Schema, BaseAdventure.Metadata, any> {
+declare class BaseAdventure extends Document<"Adventure", BaseAdventure.Schema, any> {
   /**
    * @param data    - Initial data from which to construct the Actor
    * @param context - Construction context options
@@ -19,7 +18,7 @@ declare class BaseAdventure extends Document<BaseAdventure.Schema, BaseAdventure
 
   override parent: BaseAdventure.Parent;
 
-  static override metadata: Readonly<BaseAdventure.Metadata>;
+  static override metadata: BaseAdventure.Metadata;
 
   static override defineSchema(): BaseAdventure.Schema;
 
@@ -39,17 +38,7 @@ export default BaseAdventure;
 declare namespace BaseAdventure {
   type Parent = null;
 
-  type Metadata = Merge<
-    Document.Metadata.Default,
-    {
-      name: "Adventure";
-      collection: "adventures";
-      compendiumIndexFields: ["_id", "name", "img", "sort", "folder"];
-      label: string;
-      labelPlural: string;
-      schemaVersion: string;
-    }
-  >;
+  type Metadata = Document.MetadataFor<BaseAdventure>;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;

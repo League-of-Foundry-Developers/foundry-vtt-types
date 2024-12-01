@@ -1,4 +1,4 @@
-import type { AnyObject, Merge } from "../../../types/utils.mts";
+import type { AnyObject } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
 import type { TextureData } from "../data/data.mts";
@@ -11,7 +11,7 @@ import type * as fields from "../data/fields.d.mts";
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
-declare class BaseTile extends Document<BaseTile.Schema, BaseTile.Metadata, any> {
+declare class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
   /**
    * @param data    - Initial data from which to construct the Tile
    * @param context - Construction context options
@@ -21,7 +21,7 @@ declare class BaseTile extends Document<BaseTile.Schema, BaseTile.Metadata, any>
 
   override parent: BaseTile.Parent;
 
-  static override metadata: Readonly<BaseTile.Metadata>;
+  static override metadata: BaseTile.Metadata;
 
   static override defineSchema(): BaseTile.Schema;
 
@@ -44,16 +44,7 @@ export default BaseTile;
 declare namespace BaseTile {
   type Parent = Scene.ConfiguredInstance | null;
 
-  type Metadata = Merge<
-    Document.Metadata.Default,
-    {
-      name: "Tile";
-      collection: "tiles";
-      label: string;
-      labelPlural: string;
-      schemaVersion: string;
-    }
-  >;
+  type Metadata = Document.MetadataFor<BaseTile>;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;

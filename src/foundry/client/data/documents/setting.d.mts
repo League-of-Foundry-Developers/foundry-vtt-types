@@ -4,10 +4,12 @@ import type BaseSetting from "../../../common/documents/setting.d.mts";
 
 declare global {
   namespace Setting {
+    type Metadata = Document.MetadataFor<Setting>;
+
     type ConfiguredClass = Document.ConfiguredClassForName<"Setting">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Setting">;
 
-    export interface DatabaseOperations extends DocumentDatabaseOperations<Setting> {}
+    interface DatabaseOperations extends DocumentDatabaseOperations<Setting> {}
 
     // Helpful aliases
     type ConstructorData = BaseSetting.ConstructorData;
@@ -22,6 +24,8 @@ declare global {
    * @see {@link WorldSettings}       The world-level collection of Setting documents
    */
   class Setting extends ClientDocumentMixin(foundry.documents.BaseSetting) {
+    static override metadata: Setting.Metadata;
+
     /**
      * @privateRemarks This exists to let ts know that this class has a private property
      */

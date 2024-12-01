@@ -59,5 +59,12 @@ declare global {
    */
   function CanvasDocumentMixin<BaseClass extends Document.Internal.Constructor>(
     Base: BaseClass,
-  ): Mixin<typeof CanvasDocument<InstanceType<BaseClass>>, BaseClass>;
+  ): typeof AnyDocument & Mixin<typeof CanvasDocument<InstanceType<BaseClass>>, BaseClass>;
+}
+
+// This is yet another `AnyDocument` type.
+// It exists specifically because the `Document.AnyConstructor` type is too safe to be merged in with a mixin.
+// The `arg0: never, ...args: never[]` trick trips up the base constructor check and so this one with an actual `...args: any[]` one is used instead.
+declare class AnyDocument extends Document<any, any, any> {
+  constructor(...args: any[]);
 }

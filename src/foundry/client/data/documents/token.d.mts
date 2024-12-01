@@ -6,6 +6,8 @@ import type BaseToken from "../../../common/documents/token.d.mts";
 
 declare global {
   namespace TokenDocument {
+    type Metadata = Document.MetadataFor<TokenDocument>;
+
     type ConfiguredClass = Document.ConfiguredClassForName<"Token">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
@@ -47,6 +49,8 @@ declare global {
    * @see {@link TokenConfig}      The Token configuration application
    */
   class TokenDocument extends CanvasDocumentMixin(foundry.documents.BaseToken) {
+    static override metadata: TokenDocument.Metadata;
+
     /**
      * A singleton collection which holds a reference to the synthetic token actor by its base actor's ID.
      */
@@ -296,7 +300,7 @@ declare global {
      * @remarks `TokenDocument#toggleActiveEffect is deprecated in favor of Actor#toggleStatusEffect"`
      */
     toggleActiveEffect(
-      effectData: StatusEffect,
+      effectData: CONFIG.StatusEffect,
       options?: InexactPartial<ToggleActiveEffectOptions> | undefined,
     ): Promise<boolean>;
   }
@@ -346,4 +350,7 @@ interface ToggleActiveEffectOptions {
   active: boolean;
 }
 
-export type StatusEffect = foundry.documents.BaseActiveEffect.ConstructorData & { id: string };
+/**
+ * @deprecated See {@link CONFIG.StatusEffect}
+ */
+export type StatusEffect = CONFIG.StatusEffect;

@@ -6,6 +6,8 @@ import type BaseFogExploration from "../../../common/documents/fog-exploration.d
 
 declare global {
   namespace FogExploration {
+    type Metadata = Document.MetadataFor<FogExploration>;
+
     type ConfiguredClass = Document.ConfiguredClassForName<"FogExploration">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"FogExploration">;
 
@@ -28,6 +30,8 @@ declare global {
    * The client-side FogExploration document which extends the common BaseFogExploration model.
    */
   class FogExploration extends ClientDocumentMixin(foundry.documents.BaseFogExploration) {
+    static override metadata: FogExploration.Metadata;
+
     /**
      * Obtain the fog of war exploration progress for a specific Scene and User.
      * @param query      - Parameters for which FogExploration document is retrieved
