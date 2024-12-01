@@ -1,4 +1,4 @@
-import type { ValueOf } from "../../../../types/utils.d.mts";
+import type { AnyFunction, ValueOf } from "../../../../types/utils.d.mts";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
@@ -89,6 +89,15 @@ declare global {
      */
     static readonly SHAPE_TYPES: (typeof foundry.data.ShapeData)["TYPES"];
 
+    /**
+     * A convenient reference for whether the current User is the author of the Drawing document.
+     */
+    get isAuthor(): boolean;
+
+    /**
+     * Is this Drawing currently visible on the Canvas?   */
+    get isVisible(): boolean;
+
     override get bounds(): PIXI.Rectangle;
 
     override get center(): PIXI.Point;
@@ -113,7 +122,9 @@ declare global {
      */
     get type(): ValueOf<(typeof foundry.data.ShapeData)["TYPES"]>;
 
-    override clear(): this;
+    protected _pendingText: string;
+
+    protected _onkeydown: AnyFunction | null;
 
     protected override _destroy(options?: PIXI.IDestroyOptions | boolean): void;
 

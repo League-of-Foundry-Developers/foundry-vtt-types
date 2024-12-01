@@ -38,8 +38,6 @@ declare global {
 
     namespace DisplayObject {
       type AnyConstructor = typeof AnyDisplayObject;
-
-      type DestroyOptions = _PIXI.IDestroyOptions | boolean;
     }
 
     export import Filter = _PIXI.Filter;

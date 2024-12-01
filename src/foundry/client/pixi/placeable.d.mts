@@ -608,6 +608,8 @@ declare global {
 
     type AnyConstructor = typeof AnyPlaceableObject;
 
+    interface DestroyOptions extends PIXI.IDestroyOptions {}
+
     interface RenderFlags {
       redraw: boolean;
 
