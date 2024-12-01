@@ -1,4 +1,4 @@
-import type { InexactPartial } from "../../../../../types/utils.d.mts";
+import type { InexactPartial, NullishProps } from "../../../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -7,7 +7,7 @@ declare global {
   class PrimarySpriteMesh extends PrimaryOccludableObjectMixin(SpriteMesh) {
     constructor(
       options?:
-        | InexactPartial<{
+        | NullishProps<{
             /** Texture passed to the SpriteMesh. */
             texture: PIXI.Texture;
 
@@ -24,7 +24,7 @@ declare global {
     /**
      * The texture alpha data.
      */
-    _textureAlphaData: TextureLoader.TextureAlphaData | null;
+    protected _textureAlphaData: TextureLoader.TextureAlphaData | null;
 
     /**
      * The texture alpha threshold used for point containment tests.
@@ -60,18 +60,32 @@ declare global {
      * @param baseWidth  - The base width used for computations.
      * @param baseHeight - The base height used for computations.
      * @param options    - The options.
+     * @throws If either `baseWidth` or `baseHeight` are less than 0, or if `options.fit` is not a FitType
      */
     resize(
       baseWidth: number,
       baseHeight: number,
+      /**
+       * @remarks Can't be NullishProps because `fit` is only provided a default via `{fit="fill"}`
+       * and the method throws if it's not a valid FitType
+       */
       options?: InexactPartial<{
-        /** The fit type. */
-        fit: "fill" | "cover" | "contain" | "width" | "height";
+        /**
+         * The fit type.
+         * @defaultValue `"fill"`
+         * */
+        fit: PrimarySpriteMesh.FitType;
 
-        /** The scale on X axis. */
+        /**
+         * The scale on X axis.
+         * @defaultValue `1`
+         */
         scaleX: number;
 
-        /** The scale on Y axis. */
+        /**
+         * The scale on Y axis.
+         * @defaultValue `1`
+         */
         scaleY: number;
       }>,
     ): void;
@@ -87,6 +101,13 @@ declare global {
      */
     containsCanvasPoint(point: PIXI.IPointData, textureAlphaThreshold?: number): boolean;
 
+    /**
+     * Is the given point in world space contained in this object?
+     * @param point                 - The point in world space
+     * @param textureAlphaThreshold - The minimum texture alpha required for containment
+     */
+    containsPoint(point: PIXI.IPointData, textureAlphaThreshold?: number): boolean;
+
     override renderDepthData(renderer: PIXI.Renderer): void;
 
     /**
@@ -100,5 +121,25 @@ declare global {
      * @deprecated since v12, will be removed in v14
      */
     getPixelAlpha(x: number, y: number): number;
+
+    /**
+     * @deprecated since v12, until v14
+     */
+    _getAlphaBounds(): PIXI.Rectangle;
+
+    /**
+     * @deprecated since v12, until v14
+     */
+    _getTextureCoordinate(testX: number, testY: number): PIXI.IPointData;
   }
+
+  namespace PrimarySpriteMesh {
+    type AnyConstructor = typeof AnyPrimarySpriteMesh;
+
+    type FitType = "fill" | "cover" | "contain" | "width" | "height";
+  }
+}
+
+declare abstract class AnyPrimarySpriteMesh extends PrimarySpriteMesh {
+  constructor(arg0: never, ...args: never[]);
 }
