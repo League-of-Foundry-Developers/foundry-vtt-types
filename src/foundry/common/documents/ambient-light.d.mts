@@ -20,7 +20,7 @@ declare class BaseAmbientLight extends Document<"AmbientLight", BaseAmbientLight
 
   override parent: BaseAmbientLight.Parent;
 
-  static override metadata: Readonly<BaseAmbientLight.Metadata>;
+  static override metadata: BaseAmbientLight.Metadata;
 
   static override defineSchema(): BaseAmbientLight.Schema;
 
@@ -32,7 +32,7 @@ export default BaseAmbientLight;
 declare namespace BaseAmbientLight {
   type Parent = Scene.ConfiguredInstance | null;
 
-  type Metadata = Document.MetadataForName<"AmbientLight">;
+  type Metadata = Document.MetadataFor<BaseAmbientLight>;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;

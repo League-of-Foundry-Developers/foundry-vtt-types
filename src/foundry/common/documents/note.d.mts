@@ -21,7 +21,7 @@ declare class BaseNote extends Document<"Note", BaseNote.Schema, any> {
 
   override parent: BaseNote.Parent;
 
-  static override metadata: Readonly<BaseNote.Metadata>;
+  static override metadata: BaseNote.Metadata;
 
   static override defineSchema(): BaseNote.Schema;
 
@@ -62,7 +62,7 @@ export default BaseNote;
 declare namespace BaseNote {
   type Parent = Scene.ConfiguredInstance | null;
 
-  type Metadata = Document.MetadataForName<"Note">;
+  type Metadata = Document.MetadataFor<BaseNote>;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;

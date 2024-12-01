@@ -26,7 +26,7 @@ declare class BaseJournalEntryPage extends Document<"JournalEntryPage", BaseJour
 
   _source: BaseJournalEntryPage.Source;
 
-  static override metadata: Readonly<BaseJournalEntryPage.Metadata>;
+  static override metadata: BaseJournalEntryPage.Metadata;
 
   static override defineSchema(): BaseJournalEntryPage.Schema;
 
@@ -40,7 +40,7 @@ declare namespace BaseJournalEntryPage {
 
   type TypeNames = Game.Model.TypeNames<"JournalEntryPage">;
 
-  type Metadata = Document.MetadataForName<"JournalEntryPage">;
+  type Metadata = Document.MetadataFor<BaseJournalEntryPage>;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;

@@ -19,7 +19,7 @@ declare class BaseToken extends Document<"Token", BaseToken.Schema, any> {
 
   override parent: BaseToken.Parent;
 
-  static override metadata: Readonly<BaseToken.Metadata>;
+  static override metadata: BaseToken.Metadata;
 
   static override defineSchema(): BaseToken.Schema;
 
@@ -98,7 +98,7 @@ export default BaseToken;
 declare namespace BaseToken {
   type Parent = Scene.ConfiguredInstance | null;
 
-  type Metadata = Document.MetadataForName<"Token">;
+  type Metadata = Document.MetadataFor<BaseToken>;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;

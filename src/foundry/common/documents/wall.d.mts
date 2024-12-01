@@ -20,7 +20,7 @@ declare class BaseWall extends Document<"Wall", BaseWall.Schema, any> {
 
   override parent: BaseWall.Parent;
 
-  static override metadata: Readonly<BaseWall.Metadata>;
+  static override metadata: BaseWall.Metadata;
 
   static override defineSchema(): BaseWall.Schema;
 
@@ -32,7 +32,7 @@ export default BaseWall;
 declare namespace BaseWall {
   type Parent = Scene.ConfiguredInstance | null;
 
-  type Metadata = Document.MetadataForName<"Wall">;
+  type Metadata = Document.MetadataFor<BaseWall>;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;

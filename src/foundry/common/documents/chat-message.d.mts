@@ -21,7 +21,7 @@ declare class BaseChatMessage extends Document<"ChatMessage", BaseChatMessage.Sc
 
   override parent: BaseChatMessage.Parent;
 
-  static override metadata: Readonly<BaseChatMessage.Metadata>;
+  static override metadata: BaseChatMessage.Metadata;
 
   static override defineSchema(): BaseChatMessage.Schema;
 
@@ -76,7 +76,7 @@ declare namespace BaseChatMessage {
 
   type TypeNames = Game.Model.TypeNames<"ChatMessage">;
 
-  type Metadata = Document.MetadataForName<"ChatMessage">;
+  type Metadata = Document.MetadataFor<BaseChatMessage>;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;

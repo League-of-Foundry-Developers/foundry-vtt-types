@@ -26,7 +26,7 @@ declare class BaseActor extends Document<"Actor", BaseActor.Schema, any> {
 
   override parent: BaseActor.Parent;
 
-  static override metadata: Readonly<BaseActor.Metadata>;
+  static override metadata: BaseActor.Metadata;
 
   static override defineSchema(): BaseActor.Schema;
 
@@ -82,7 +82,7 @@ declare namespace BaseActor {
 
   type TypeNames = Game.Model.TypeNames<"Actor">;
 
-  type Metadata = Document.MetadataForName<"Actor">;
+  type Metadata = Document.MetadataFor<BaseActor>;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;

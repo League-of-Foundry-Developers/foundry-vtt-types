@@ -8,6 +8,8 @@ import type BaseActiveEffect from "../../../common/documents/active-effect.d.mts
 
 declare global {
   namespace ActiveEffect {
+    type Metadata = Document.MetadataFor<ActiveEffect>;
+
     type ConfiguredClass = Document.ConfiguredClassForName<"ActiveEffect">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"ActiveEffect">;
 
@@ -37,6 +39,8 @@ declare global {
    * @see {@link Item}                      The Item document which contains ActiveEffect embedded documents
    */
   class ActiveEffect extends ClientDocumentMixin(foundry.documents.BaseActiveEffect) {
+    static override metadata: ActiveEffect.Metadata;
+
     /**
      * Create an ActiveEffect instance from some status effect ID.
      * Delegates to {@link ActiveEffect._fromStatusEffect} to create the ActiveEffect instance

@@ -21,7 +21,7 @@ declare class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
 
   override parent: BaseTile.Parent;
 
-  static override metadata: Readonly<BaseTile.Metadata>;
+  static override metadata: BaseTile.Metadata;
 
   static override defineSchema(): BaseTile.Schema;
 
@@ -44,7 +44,7 @@ export default BaseTile;
 declare namespace BaseTile {
   type Parent = Scene.ConfiguredInstance | null;
 
-  type Metadata = Document.MetadataForName<"Tile">;
+  type Metadata = Document.MetadataFor<BaseTile>;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;

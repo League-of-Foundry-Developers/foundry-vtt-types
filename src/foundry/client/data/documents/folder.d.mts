@@ -5,6 +5,8 @@ import type BaseFolder from "../../../common/documents/folder.d.mts";
 
 declare global {
   namespace Folder {
+    type Metadata = Document.MetadataFor<Folder>;
+
     type ConfiguredClass = Document.ConfiguredClassForName<"Folder">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Folder">;
 
@@ -30,6 +32,8 @@ declare global {
    * @see {@link FolderConfig}       The Folder configuration application
    */
   class Folder extends ClientDocumentMixin(foundry.documents.BaseFolder) {
+    static override metadata: Folder.Metadata;
+
     /**
      * The depth of this folder in its sidebar tree
      *

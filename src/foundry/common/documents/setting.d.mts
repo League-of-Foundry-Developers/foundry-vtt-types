@@ -19,7 +19,7 @@ declare class BaseSetting extends Document<"Setting", BaseSetting.Schema, any> {
 
   override parent: BaseSetting.Parent;
 
-  static override metadata: Readonly<BaseSetting.Metadata>;
+  static override metadata: BaseSetting.Metadata;
 
   static override defineSchema(): BaseSetting.Schema;
 
@@ -31,7 +31,7 @@ export default BaseSetting;
 declare namespace BaseSetting {
   type Parent = null;
 
-  type Metadata = Document.MetadataForName<"Setting">;
+  type Metadata = Document.MetadataFor<BaseSetting>;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;

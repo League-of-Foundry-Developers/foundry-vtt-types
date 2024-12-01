@@ -23,7 +23,7 @@ declare class BaseActiveEffect extends Document<"ActiveEffect", BaseActiveEffect
 
   override canUserModify(user: documents.BaseUser, action: "create" | "update" | "delete", data?: AnyObject): boolean;
 
-  static override metadata: Readonly<BaseActiveEffect.Metadata>;
+  static override metadata: BaseActiveEffect.Metadata;
 
   static override defineSchema(): BaseActiveEffect.Schema;
 
@@ -70,7 +70,7 @@ declare namespace BaseActiveEffect {
 
   type TypeNames = Game.Model.TypeNames<"ActiveEffect">;
 
-  type Metadata = Document.MetadataForName<"ActiveEffect">;
+  type Metadata = Document.MetadataFor<BaseActiveEffect>;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;

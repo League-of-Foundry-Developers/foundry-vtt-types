@@ -5,6 +5,8 @@ import type BaseRollTable from "../../../common/documents/roll-table.d.mts";
 
 declare global {
   namespace RollTable {
+    type Metadata = Document.MetadataFor<RollTable>;
+
     type ConfiguredClass = Document.ConfiguredClassForName<"RollTable">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"RollTable">;
 
@@ -107,6 +109,8 @@ declare global {
    * @see {@link RollTableConfig}    The RollTable configuration application
    */
   class RollTable extends ClientDocumentMixin(foundry.documents.BaseRollTable) {
+    static override metadata: RollTable.Metadata;
+
     /**
      * Provide a thumbnail image path used to represent this document.
      */

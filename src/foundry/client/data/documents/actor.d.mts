@@ -5,6 +5,8 @@ import type BaseActor from "../../../common/documents/actor.d.mts";
 
 declare global {
   namespace Actor {
+    type Metadata = Document.MetadataFor<Actor>;
+
     type ConfiguredClass = Document.ConfiguredClassForName<"Actor">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Actor">;
 
@@ -62,6 +64,8 @@ declare global {
    * ```
    */
   class Actor extends ClientDocumentMixin(foundry.documents.BaseActor) {
+    static override metadata: Actor.Metadata;
+
     protected override _configure(options?: { pack?: string | null }): void;
 
     /**
@@ -72,10 +76,7 @@ declare global {
       TokenDocument.ConfiguredInstance
     >;
 
-    protected override _initializeSource(
-      data: this | Actor.UpdateData,
-      options?: unknown,
-    ): Actor.Source;
+    protected override _initializeSource(data: this | Actor.UpdateData, options?: unknown): Actor.Source;
 
     /**
      * An object that tracks which tracks the changes to the data model which were applied by active effects

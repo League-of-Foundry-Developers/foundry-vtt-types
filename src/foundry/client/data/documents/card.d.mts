@@ -6,6 +6,8 @@ import type BaseCard from "../../../common/documents/card.d.mts";
 
 declare global {
   namespace Card {
+    type Metadata = Document.MetadataFor<Card>;
+
     type ConfiguredClass = Document.ConfiguredClassForName<"Card">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Card">;
 
@@ -25,6 +27,8 @@ declare global {
    * @see {@link Cards}                    The Cards document type which contains Card embedded documents
    */
   class Card extends ClientDocumentMixin(foundry.documents.BaseCard) {
+    static override metadata: Card.Metadata;
+
     /**
      * The current card face
      */

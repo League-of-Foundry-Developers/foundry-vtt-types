@@ -10,6 +10,7 @@ import type {
   InterfaceToObject,
   MakeConform,
   MustConform,
+  ToMethod,
 } from "../../../types/helperTypes.mts";
 import type {
   AnyObject,
@@ -36,7 +37,6 @@ export default Document;
 declare const __DocumentBrand: unique symbol;
 
 declare const __Schema: unique symbol;
-declare const __ConcreteMetadata: unique symbol;
 declare const __Parent: unique symbol;
 
 type _ClassMustBeAssignableToInternal = MustConform<typeof Document, Document.Internal.Constructor>;
@@ -54,7 +54,6 @@ declare abstract class Document<
   static [__DocumentBrand]: never;
 
   [__Schema]: Schema;
-  [__ConcreteMetadata]: Document.MetadataForName<DocumentName>;
   [__Parent]: Parent;
 
   /**
@@ -121,7 +120,7 @@ declare abstract class Document<
    * }
    * ```
    */
-  static metadata: Document.Metadata.Any;
+  static metadata: Readonly<Document.Metadata.Any>;
 
   /**
    * The database backend used to execute operations and handle results
@@ -148,7 +147,7 @@ declare abstract class Document<
   /**
    * The named collection to which this Document belongs.
    */
-  get collectionName(): Document.MetadataForName<DocumentName>["collection"];
+  get collectionName(): Document.Internal.SimpleMetadata<DocumentName>["collection"];
 
   /**
    * The canonical name of this Document type, for example "Actor".
@@ -158,7 +157,7 @@ declare abstract class Document<
   /**
    * The canonical name of this Document type, for example "Actor".
    */
-  get documentName(): Document.MetadataForName<DocumentName>["name"];
+  get documentName(): Document.Internal.SimpleMetadata<DocumentName>["name"];
 
   /**
    * The allowed types which may exist for this Document class
@@ -978,7 +977,7 @@ declare namespace Document {
     | "Wall";
 
   type CoreTypesForName<Name extends Type> = string &
-    GetKey<Document.MetadataForName<Name>, "coreTypes", ["base"]>[number];
+    GetKey<Document.Internal.SimpleMetadata<Name>, "coreTypes", ["base"]>[number];
 
   // TODO: Probably a way to auto-determine this
   type SystemType =
@@ -998,41 +997,30 @@ declare namespace Document {
       : never;
   };
 
-  type ParentOf<ConcreteDocument extends Document.Internal.Instance.Any> =
-    ConcreteDocument extends Document.Internal.Instance<any, any, infer Parent> ? Parent : never;
-
-  type NameOf<ConcreteDocument extends Document.Internal.Instance.Any> =
-    ConcreteDocument extends Document.Internal.Instance<infer DocumentName, any, any> ? DocumentName : never;
-
   type IsParentOf<
     ParentDocument extends Document.Internal.Instance.Any,
     ChildDocument extends Document.Internal.Instance.Any,
-  > = NameOf<ParentDocument> extends NameOf<ParentOf<ChildDocument>> ? true : false;
+  > = ParentDocument extends Internal.ParentFor<ChildDocument> ? true : false;
 
   // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
   namespace Internal {
+    type SimpleMetadata<Name extends Document.Type> = ConfiguredMetadata<Document.Any>[Name];
+
     type Constructor = (abstract new (arg0: never, ...args: never[]) => Instance.Any) & {
       [__DocumentBrand]: never;
     };
 
-    interface Instance<
-      Schema extends DataSchema,
-      ConcreteMetadata extends Metadata.Any,
-      Parent extends Document.Internal.Instance.Any | null,
-    > {
+    interface Instance<Schema extends DataSchema, Parent extends Document.Internal.Instance.Any | null> {
       [__Schema]: Schema;
-      [__ConcreteMetadata]: ConcreteMetadata;
       [__Parent]: Parent;
     }
 
     type SchemaFor<ConcreteInstance extends Instance.Any> = ConcreteInstance[typeof __Schema];
 
-    type MetadataFor<ConcreteInstance extends Instance.Any> = ConcreteInstance[typeof __ConcreteMetadata];
-
     type ParentFor<ConcreteInstance extends Instance.Any> = ConcreteInstance[typeof __Parent];
 
     namespace Instance {
-      type Any = Instance<any, any, any>;
+      type Any = Instance<any, any>;
 
       type Complete<T extends Any> = T extends Document.Any ? T : never;
     }
@@ -1072,8 +1060,6 @@ declare namespace Document {
     ConfiguredDocuments[Name],
     typeof ConfigurationFailure & DefaultDocuments[Name]
   >;
-
-  type MetadataForName<Name extends Type> = ConfiguredMetadata[Name];
 
   type SubTypesOf<T extends Type> =
     ConfiguredInstanceForName<T> extends { type: infer Types } ? Types : typeof foundry.CONST.BASE_DOCUMENT_TYPE;
@@ -1131,10 +1117,10 @@ declare namespace Document {
     : T;
 
   type SchemaFor<ConcreteDocument extends Internal.Instance.Any> =
-    ConcreteDocument extends Internal.Instance<infer Schema, any, any> ? Schema : never;
+    ConcreteDocument extends Internal.Instance<infer Schema, any> ? Schema : never;
 
-  type MetadataFor<ConcreteDocument extends Internal.Instance.Any> =
-    ConcreteDocument extends Internal.Instance<any, infer ConcreteMetadata, any> ? ConcreteMetadata : never;
+  type MetadataFor<ConcreteDocument extends Document.Any> =
+    ConfiguredMetadata<ConcreteDocument>[ConcreteDocument["documentName"]];
 
   type CollectionRecord<Schema extends DataSchema> = {
     [Key in keyof Schema]: Schema[Key] extends fields.EmbeddedCollectionField.Any ? Schema[Key] : never;
@@ -1318,36 +1304,32 @@ declare namespace Document {
   type PreUpsertOptions<Name extends Type> = PreCreateOptions<Name> | PreUpdateOptions<Name>;
   type OnUpsertOptions<Name extends Type> = OnCreateOptions<Name> | OnUpdateOptions<Name>;
 
-  interface Metadata<Type extends Document.Type> {
-    name: Type;
-    collection: string;
-    indexed?: boolean | undefined;
-    compendiumIndexFields?: string[] | undefined;
-    label: string;
-    coreTypes: readonly string[];
-    embedded: Record<string, string>;
-    permissions: {
+  interface Metadata<out ThisType extends Document.Any> {
+    readonly name: ThisType["documentName"];
+    readonly collection: string;
+    readonly indexed?: boolean | undefined;
+    readonly compendiumIndexFields?: readonly string[] | undefined;
+    readonly label: string;
+    readonly coreTypes: readonly string[];
+    readonly embedded: Record<string, string>;
+    readonly permissions: {
       create:
         | string
-        | ((
-            user: foundry.documents.BaseUser,
-            doc: Document.ConfiguredInstanceForName<Type>,
-            data: Document.ConstructorDataForName<Type>,
-          ) => boolean);
+        | ToMethod<
+            (user: foundry.documents.BaseUser, doc: ThisType, data: Document.ConstructorDataForName<Type>) => boolean
+          >;
       update:
         | string
-        | ((
-            user: foundry.documents.BaseUser,
-            doc: Document.ConfiguredInstanceForName<Type>,
-            data: Document.UpdateDataForName<Type>,
-          ) => boolean);
-      delete: string | ((user: foundry.documents.BaseUser, doc: Document.ConfiguredInstanceForName<Type>, data: EmptyObject) => boolean);
+        | ToMethod<
+            (user: foundry.documents.BaseUser, doc: ThisType, data: Document.UpdateDataForName<Type>) => boolean
+          >;
+      delete: string | ToMethod<(user: foundry.documents.BaseUser, doc: ThisType, data: EmptyObject) => boolean>;
     };
-    preserveOnImport?: string[];
-    schemaVersion: string | undefined;
-    labelPlural: string; // This is not set for the Document class but every class that implements Document actually provides it.
-    types: readonly string[];
-    hasSystemData: boolean;
+    readonly preserveOnImport?: readonly string[] | undefined;
+    readonly schemaVersion: string | undefined;
+    readonly labelPlural: string; // This is not set for the Document class but every class that implements Document actually provides it.
+    readonly types: readonly string[];
+    readonly hasSystemData: boolean;
   }
 
   namespace Metadata {

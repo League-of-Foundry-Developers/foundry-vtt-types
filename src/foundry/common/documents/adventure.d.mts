@@ -18,7 +18,7 @@ declare class BaseAdventure extends Document<"Adventure", BaseAdventure.Schema, 
 
   override parent: BaseAdventure.Parent;
 
-  static override metadata: Readonly<BaseAdventure.Metadata>;
+  static override metadata: BaseAdventure.Metadata;
 
   static override defineSchema(): BaseAdventure.Schema;
 
@@ -38,7 +38,7 @@ export default BaseAdventure;
 declare namespace BaseAdventure {
   type Parent = null;
 
-  type Metadata = Document.MetadataForName<"Adventure">;
+  type Metadata = Document.MetadataFor<BaseAdventure>;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;

@@ -26,7 +26,7 @@ declare class BaseMacro extends Document<"Macro", BaseMacro.Schema, any> {
 
   override parent: BaseMacro.Parent;
 
-  static override metadata: Readonly<BaseMacro.Metadata>;
+  static override metadata: BaseMacro.Metadata;
 
   static override defineSchema(): BaseMacro.Schema;
 
@@ -65,7 +65,7 @@ declare namespace BaseMacro {
 
   type TypeNames = Game.Model.TypeNames<"Macro">;
 
-  type Metadata = Document.MetadataForName<"Macro">;
+  type Metadata = Document.MetadataFor<BaseMacro>;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;

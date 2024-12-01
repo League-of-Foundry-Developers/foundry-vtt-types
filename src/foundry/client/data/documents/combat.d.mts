@@ -1,10 +1,12 @@
-import type { ConstructorOf, InexactPartial } from "../../../../types/utils.d.mts";
+import type { InexactPartial } from "../../../../types/utils.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 import type BaseCombat from "../../../common/documents/combat.d.mts";
 
 declare global {
   namespace Combat {
+    type Metadata = Document.MetadataFor<Combat>;
+
     type ConfiguredClass = Document.ConfiguredClassForName<"Combat">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Combat">;
 
@@ -63,13 +65,16 @@ declare global {
    * @see {@link CombatConfig}                  The Combat configuration application
    */
   class Combat extends ClientDocumentMixin(foundry.documents.BaseCombat) {
+    static override metadata: Combat.Metadata;
+
     /**
      * @param data - Initial data provided to construct the Combat document
      */
-    constructor(
-      data?: ConstructorParameters<ConstructorOf<foundry.documents.BaseCombat>>[0],
-      context?: ConstructorParameters<ConstructorOf<foundry.documents.BaseCombat>>[1],
-    );
+    // Note(LukeAbby): TODO, this constructor just copies from the parent. Should this just be removed?
+    // constructor(
+    //   data?: ConstructorParameters<typeof foundry.documents.BaseCombat>[0],
+    //   context?: ConstructorParameters<typeof foundry.documents.BaseCombat>[1],
+    // );
 
     /** Track the sorted turn order of this combat encounter */
     turns: Combatant.ConfiguredInstance[];

@@ -20,7 +20,7 @@ declare class BasePlaylist extends Document<"Playlist", BasePlaylist.Schema, any
 
   override parent: BasePlaylist.Parent;
 
-  static override metadata: Readonly<BasePlaylist.Metadata>;
+  static override metadata: BasePlaylist.Metadata;
 
   static override defineSchema(): BasePlaylist.Schema;
 
@@ -43,7 +43,7 @@ export default BasePlaylist;
 declare namespace BasePlaylist {
   type Parent = null;
 
-  type Metadata = Document.MetadataForName<"Playlist">;
+  type Metadata = Document.MetadataFor<BasePlaylist>;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;

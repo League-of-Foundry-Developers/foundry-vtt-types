@@ -1,4 +1,3 @@
-import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
 import type { MaybePromise } from "../../../../types/utils.d.mts";
 
 declare global {
@@ -7,8 +6,9 @@ declare global {
    * @typeParam Options - the type of the options object
    */
   class NoteConfig<
-    Options extends DocumentSheetOptions<NoteDocument> = DocumentSheetOptions<NoteDocument>,
-  > extends DocumentSheet<Options, InstanceType<ConfiguredDocumentClassForName<"Note">>> {
+    Options extends
+      DocumentSheetOptions<NoteDocument.ConfiguredInstance> = DocumentSheetOptions<NoteDocument.ConfiguredInstance>,
+  > extends DocumentSheet<Options, NoteDocument.ConfiguredInstance> {
     /**
      * @defaultValue
      * ```typescript

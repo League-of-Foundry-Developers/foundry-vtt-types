@@ -23,7 +23,7 @@ declare class BaseFolder extends Document<"Folder", BaseFolder.Schema, any> {
 
   override parent: BaseFolder.Parent;
 
-  static override metadata: Readonly<BaseFolder.Metadata>;
+  static override metadata: BaseFolder.Metadata;
 
   static override defineSchema(): BaseFolder.Schema;
 
@@ -47,7 +47,7 @@ declare namespace BaseFolder {
 
   type TypeNames = Game.Model.TypeNames<"Folder">;
 
-  type Metadata = Document.MetadataForName<"Folder">;
+  type Metadata = Document.MetadataFor<BaseFolder>;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;

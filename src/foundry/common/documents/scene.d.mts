@@ -22,7 +22,7 @@ declare class BaseScene extends Document<"Scene", BaseScene.Schema, any> {
 
   override parent: BaseScene.Parent;
 
-  static override metadata: Readonly<BaseScene.Metadata>;
+  static override metadata: BaseScene.Metadata;
 
   static override defineSchema(): BaseScene.Schema;
 
@@ -45,7 +45,7 @@ export default BaseScene;
 declare namespace BaseScene {
   type Parent = null;
 
-  type Metadata = Document.MetadataForName<"Scene">;
+  type Metadata = Document.MetadataFor<BaseScene>;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;

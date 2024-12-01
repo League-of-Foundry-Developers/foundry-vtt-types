@@ -19,7 +19,7 @@ declare class BaseActorDelta extends Document<"ActorDelta", BaseActorDelta.Schem
 
   override _source: BaseActorDelta.Source;
 
-  static override metadata: Readonly<BaseActorDelta.Metadata>;
+  static override metadata: BaseActorDelta.Metadata;
 
   static override defineSchema(): BaseActorDelta.Schema;
 
@@ -69,7 +69,7 @@ declare namespace BaseActorDelta {
   type Properties = fields.SchemaField.InnerInitializedType<Schema>;
   type Source = fields.SchemaField.InnerPersistedType<Schema>;
 
-  type Metadata = Document.MetadataForName<"ActorDelta">;
+  type Metadata = Document.MetadataFor<BaseActorDelta>;
 
   interface Schema<TypeName extends TypeNames = TypeNames> extends DataSchema {
     /**

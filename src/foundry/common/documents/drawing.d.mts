@@ -22,7 +22,7 @@ declare class BaseDrawing extends Document<"Drawing", BaseDrawing.Schema, any> {
 
   override parent: BaseDrawing.Parent;
 
-  static override metadata: Readonly<BaseDrawing.Metadata>;
+  static override metadata: BaseDrawing.Metadata;
 
   static override defineSchema(): BaseDrawing.Schema;
 
@@ -72,7 +72,7 @@ export default BaseDrawing;
 declare namespace BaseDrawing {
   type Parent = Scene.ConfiguredInstance | null;
 
-  type Metadata = Document.MetadataForName<"Drawing">;
+  type Metadata = Document.MetadataFor<BaseDrawing>;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;

@@ -20,7 +20,7 @@ declare class BaseJournalEntry extends Document<"JournalEntry", BaseJournalEntry
 
   override parent: BaseJournalEntry.Parent;
 
-  static override metadata: Readonly<BaseJournalEntry.Metadata>;
+  static override metadata: BaseJournalEntry.Metadata;
 
   static override defineSchema(): BaseJournalEntry.Schema;
 
@@ -32,7 +32,7 @@ export default BaseJournalEntry;
 declare namespace BaseJournalEntry {
   type Parent = null;
 
-  type Metadata = Document.MetadataForName<"JournalEntry">;
+  type Metadata = Document.MetadataFor<BaseJournalEntry>;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;

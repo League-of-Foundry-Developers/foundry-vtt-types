@@ -23,7 +23,7 @@ declare class BaseMeasuredTemplate extends Document<"MeasuredTemplate", BaseMeas
 
   override parent: BaseMeasuredTemplate.Parent;
 
-  static override metadata: Readonly<BaseMeasuredTemplate.Metadata>;
+  static override metadata: BaseMeasuredTemplate.Metadata;
 
   static override defineSchema(): BaseMeasuredTemplate.Schema;
 
@@ -66,7 +66,7 @@ export default BaseMeasuredTemplate;
 declare namespace BaseMeasuredTemplate {
   type Parent = Scene.ConfiguredInstance | null;
 
-  type Metadata = Document.MetadataForName<"MeasuredTemplate">;
+  type Metadata = Document.MetadataFor<BaseMeasuredTemplate>;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;

@@ -5,6 +5,8 @@ import type BaseChatMessage from "../../../common/documents/chat-message.d.mts";
 
 declare global {
   namespace ChatMessage {
+    type Metadata = Document.MetadataFor<ChatMessage>;
+
     type ConfiguredClass = Document.ConfiguredClassForName<"ChatMessage">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"ChatMessage">;
 
@@ -59,6 +61,8 @@ declare global {
    *
    */
   class ChatMessage extends ClientDocumentMixin(foundry.documents.BaseChatMessage) {
+    static override metadata: ChatMessage.Metadata;
+
     /**
      * Is the display of dice rolls in this message collapsed (false) or expanded (true)
      * @defaultValue `false`

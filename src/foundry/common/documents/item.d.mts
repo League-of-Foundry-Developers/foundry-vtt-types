@@ -26,7 +26,7 @@ declare class BaseItem extends Document<"Item", BaseItem.Schema, any> {
 
   override _source: BaseItem.Source;
 
-  static override metadata: Readonly<BaseItem.Metadata>;
+  static override metadata: BaseItem.Metadata;
 
   static override defineSchema(): BaseItem.Schema;
 
@@ -67,7 +67,7 @@ declare namespace BaseItem {
 
   type TypeNames = Game.Model.TypeNames<"Item">;
 
-  type Metadata = Document.MetadataForName<"Item">;
+  type Metadata = Document.MetadataFor<BaseItem>;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;

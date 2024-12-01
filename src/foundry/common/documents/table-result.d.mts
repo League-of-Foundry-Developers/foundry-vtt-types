@@ -20,7 +20,7 @@ declare class BaseTableResult extends Document<"TableResult", BaseTableResult.Sc
 
   override parent: BaseTableResult.Parent;
 
-  static override metadata: Readonly<BaseTableResult.Metadata>;
+  static override metadata: BaseTableResult.Metadata;
 
   static override defineSchema(): BaseTableResult.Schema;
 
@@ -46,7 +46,7 @@ declare namespace BaseTableResult {
 
   type TypeNames = Game.Model.TypeNames<"TableResult">;
 
-  type Metadata = Document.MetadataForName<"TableResult">;
+  type Metadata = Document.MetadataFor<BaseTableResult>;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;

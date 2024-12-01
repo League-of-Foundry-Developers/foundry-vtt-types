@@ -22,7 +22,7 @@ declare class BaseFogExploration extends Document<"FogExploration", BaseFogExplo
 
   override parent: BaseFogExploration.Parent;
 
-  static override metadata: Readonly<BaseFogExploration.Metadata>;
+  static override metadata: BaseFogExploration.Metadata;
 
   static override defineSchema(): BaseFogExploration.Schema;
 
@@ -39,7 +39,7 @@ export default BaseFogExploration;
 declare namespace BaseFogExploration {
   type Parent = null;
 
-  type Metadata = Document.MetadataForName<"FogExploration">;
+  type Metadata = Document.MetadataFor<BaseFogExploration>;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;

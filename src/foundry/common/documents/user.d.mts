@@ -21,7 +21,7 @@ declare class BaseUser extends Document<"User", BaseUser.Schema, any> {
 
   override parent: BaseUser.Parent;
 
-  static override metadata: Readonly<BaseUser.Metadata>;
+  static override metadata: Readonly<Document.MetadataFor<BaseUser>>;
 
   static override defineSchema(): BaseUser.Schema;
 
@@ -119,7 +119,7 @@ export default BaseUser;
 declare namespace BaseUser {
   type Parent = null;
 
-  type Metadata = Document.MetadataForName<"User">;
+  type Metadata = Document.MetadataFor<BaseUser>;
 
   type Hotbar = Record<number | `${number}`, string>;
   type Permissions = Record<keyof typeof CONST.USER_PERMISSIONS, boolean>;

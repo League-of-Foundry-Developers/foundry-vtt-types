@@ -4,6 +4,8 @@ import type BaseNote from "../../../common/documents/note.d.mts";
 
 declare global {
   namespace NoteDocument {
+    type Metadata = Document.MetadataFor<NoteDocument>;
+
     type ConfiguredClass = Document.ConfiguredClassForName<"Note">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Note">;
 
@@ -24,6 +26,8 @@ declare global {
    * @see {@link NoteConfig}          The Note configuration application
    */
   class NoteDocument extends CanvasDocumentMixin(foundry.documents.BaseNote) {
+    static override metadata: NoteDocument.Metadata;
+
     /**
      * The associated JournalEntry which is referenced by this Note
      */

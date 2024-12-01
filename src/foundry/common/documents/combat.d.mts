@@ -19,7 +19,7 @@ declare class BaseCombat extends Document<"Combat", BaseCombat.Schema, any> {
 
   override parent: BaseCombat.Parent;
 
-  static override metadata: Readonly<BaseCombat.Metadata>;
+  static override metadata: BaseCombat.Metadata;
 
   static override defineSchema(): BaseCombat.Schema;
 
@@ -53,7 +53,7 @@ declare namespace BaseCombat {
 
   type TypeNames = Game.Model.TypeNames<"Combat">;
 
-  type Metadata = Document.MetadataForName<"Combat">;
+  type Metadata = Document.MetadataFor<BaseCombat>;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;

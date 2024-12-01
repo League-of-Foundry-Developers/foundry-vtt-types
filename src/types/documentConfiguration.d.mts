@@ -6,7 +6,6 @@ import type BaseCombat from "../foundry/common/documents/combat.d.mts";
 import type BaseCombatant from "../foundry/common/documents/combatant.d.mts";
 import type BaseDrawing from "../foundry/common/documents/drawing.d.mts";
 import type BaseFogExploration from "../foundry/common/documents/fog-exploration.d.mts";
-import type BaseMacro from "../foundry/common/documents/macro.d.mts";
 import type BaseMeasuredTemplate from "../foundry/common/documents/measured-template.d.mts";
 import type BaseSetting from "../foundry/common/documents/setting.d.mts";
 import type BaseTableResult from "../foundry/common/documents/table-result.d.mts";
@@ -117,7 +116,7 @@ type ConformedConfigured = ConformRecord<_ConfiguredDocuments, Document.AnyConst
 
 export interface ConfiguredDocuments extends ConformedConfigured {}
 
-interface _ConfiguredMetadata {
+interface _ConfiguredMetadata<ThisType extends Document.Any> {
   ActiveEffect: Merge<
     Document.Metadata.Default,
     {
@@ -156,8 +155,8 @@ interface _ConfiguredMetadata {
       label: string;
       labelPlural: string;
       permissions: {
-        create: (user: BaseUser, doc: BaseActor) => boolean;
-        update: (user: BaseUser, doc: BaseActor, data: BaseActor.UpdateData) => boolean;
+        create: (user: BaseUser, doc: ThisType) => boolean;
+        update: (user: BaseUser, doc: ThisType, data: BaseActor.UpdateData) => boolean;
       };
       schemaVersion: string;
     }
@@ -235,8 +234,8 @@ interface _ConfiguredMetadata {
       labelPlural: string;
       isPrimary: true;
       permissions: {
-        create: (user: BaseUser, doc: BaseChatMessage) => boolean;
-        update: (user: BaseUser, doc: BaseChatMessage, data: BaseChatMessage.UpdateData) => boolean;
+        create: (user: BaseUser, doc: ThisType) => boolean;
+        update: (user: BaseUser, doc: ThisType, data: BaseChatMessage.UpdateData) => boolean;
       };
       schemaVersion: string;
     }
@@ -253,7 +252,7 @@ interface _ConfiguredMetadata {
       };
       hasTypeData: true;
       permissions: {
-        update: (user: BaseUser, doc: BaseCombat, data: BaseCombat.UpdateData) => boolean;
+        update: (user: BaseUser, doc: ThisType, data: BaseCombat.UpdateData) => boolean;
       };
       schemaVersion: string;
     }
@@ -269,8 +268,8 @@ interface _ConfiguredMetadata {
       hasTypeData: true;
       schemaVersion: string;
       permissions: {
-        create: (user: BaseUser, doc: BaseCombatant) => boolean;
-        update: (user: BaseUser, doc: BaseCombatant, data: BaseCombatant.UpdateData) => boolean;
+        create: (user: BaseUser, doc: ThisType) => boolean;
+        update: (user: BaseUser, doc: ThisType, data: BaseCombatant.UpdateData) => boolean;
       };
     }
   >;
@@ -284,8 +283,8 @@ interface _ConfiguredMetadata {
       isEmbedded: true;
       permissions: {
         create: "DRAWING_CREATE";
-        update: (user: BaseUser, doc: BaseDrawing, data: BaseDrawing.UpdateData) => boolean;
-        delete: (user: BaseUser, doc: BaseDrawing, data: BaseDrawing.UpdateData) => boolean;
+        update: (user: BaseUser, doc: ThisType, data: BaseDrawing.UpdateData) => boolean;
+        delete: (user: BaseUser, doc: ThisType, data: BaseDrawing.UpdateData) => boolean;
       };
       schemaVersion: string;
     }
@@ -300,8 +299,8 @@ interface _ConfiguredMetadata {
       isPrimary: true;
       permissions: {
         create: "PLAYER";
-        update: (user: BaseUser, doc: BaseFogExploration, data: BaseFogExploration.UpdateData) => boolean;
-        delete: (user: BaseUser, doc: BaseFogExploration, data: BaseFogExploration.UpdateData) => boolean;
+        update: (user: BaseUser, doc: ThisType, data: BaseFogExploration.UpdateData) => boolean;
+        delete: (user: BaseUser, doc: ThisType, data: BaseFogExploration.UpdateData) => boolean;
       };
       schemaVersion: string;
     }
@@ -373,8 +372,8 @@ interface _ConfiguredMetadata {
       labelPlural: string;
       coreTypes: CONST.MACRO_TYPES[];
       permissions: {
-        create: (user: BaseUser, doc: BaseMacro) => boolean;
-        update: (user: BaseUser, doc: BaseMacro) => boolean;
+        create: (user: BaseUser, doc: ThisType) => boolean;
+        update: (user: BaseUser, doc: ThisType) => boolean;
       };
       schemaVersion: string;
     }
@@ -388,9 +387,9 @@ interface _ConfiguredMetadata {
       labelPlural: string;
       isEmbedded: true;
       permissions: {
-        create: (user: BaseUser, doc: BaseMeasuredTemplate) => boolean;
-        update: (user: BaseUser, doc: BaseMeasuredTemplate, data: BaseMeasuredTemplate.UpdateData) => boolean;
-        delete: (user: BaseUser, doc: BaseMeasuredTemplate, data: BaseMeasuredTemplate.UpdateData) => boolean;
+        create: (user: BaseUser, doc: ThisType) => boolean;
+        update: (user: BaseUser, doc: ThisType, data: BaseMeasuredTemplate.UpdateData) => boolean;
+        delete: (user: BaseUser, doc: ThisType, data: BaseMeasuredTemplate.UpdateData) => boolean;
       };
       schemaVersion: string;
     }
@@ -480,9 +479,9 @@ interface _ConfiguredMetadata {
       label: string;
       labelPlural: string;
       permissions: {
-        create: (user: BaseUser, doc: BaseSetting, data: BaseSetting.UpdateData) => boolean;
-        update: (user: BaseUser, doc: BaseSetting, data: BaseSetting.UpdateData) => boolean;
-        delete: (user: BaseUser, doc: BaseSetting, data: BaseSetting.UpdateData) => boolean;
+        create: (user: BaseUser, doc: ThisType, data: BaseSetting.UpdateData) => boolean;
+        update: (user: BaseUser, doc: ThisType, data: BaseSetting.UpdateData) => boolean;
+        delete: (user: BaseUser, doc: ThisType, data: BaseSetting.UpdateData) => boolean;
       };
       schemaVersion: string;
     }
@@ -496,7 +495,7 @@ interface _ConfiguredMetadata {
       labelPlural: string;
       coreTypes: foundry.CONST.TABLE_RESULT_TYPES[];
       permissions: {
-        update: (user: BaseUser, doc: BaseTableResult, data: BaseTableResult.UpdateData) => boolean;
+        update: (user: BaseUser, doc: ThisType, data: BaseTableResult.UpdateData) => boolean;
       };
       compendiumIndexFields: ["type"];
       schemaVersion: string;
@@ -525,7 +524,7 @@ interface _ConfiguredMetadata {
       };
       permissions: {
         create: "TOKEN_CREATE";
-        update: (user: BaseUser, doc: BaseToken, data: BaseToken.UpdateData) => boolean;
+        update: (user: BaseUser, doc: ThisType, data: BaseToken.UpdateData) => boolean;
         delete: "TOKEN_DELETE";
       };
       schemaVersion: string;
@@ -539,9 +538,9 @@ interface _ConfiguredMetadata {
       label: string;
       labelPlural: string;
       permissions: {
-        create: (user: BaseUser, doc: BaseUser, dat: BaseUser.UpdateData) => boolean;
-        update: (user: BaseUser, doc: BaseUser, changes: BaseUser.UpdateData) => boolean;
-        delete: (user: BaseUser, doc: BaseUser) => boolean;
+        create: (user: BaseUser, doc: ThisType, data: BaseUser.UpdateData) => boolean;
+        update: (user: BaseUser, doc: ThisType, changes: BaseUser.UpdateData) => boolean;
+        delete: (user: BaseUser, doc: ThisType) => boolean;
       };
       schemaVersion: string;
     }
@@ -554,22 +553,24 @@ interface _ConfiguredMetadata {
       label: string;
       labelPlural: string;
       permissions: {
-        update: (user: BaseUser, doc: BaseWall, data: BaseWall.UpdateData) => boolean;
+        update: (user: BaseUser, doc: ThisType, data: BaseWall.UpdateData) => boolean;
       };
       schemaVersion: string;
     }
   >;
 }
 
-type MetadataShape = {
-  [Name in Document.Type]: Document.Metadata<Name>;
+type ReadonlyMetadata<ThisType extends Document.Any> = {
+  [K in keyof _ConfiguredMetadata<ThisType>]: Readonly<_ConfiguredMetadata<ThisType>[K]>;
 };
 
-type TestConfiguredMetadataValid = MustConform<InterfaceToObject<_ConfiguredMetadata>, MetadataShape>;
+interface ConfiguredMetadata<ThisType extends Document.Any> extends ReadonlyMetadata<ThisType> {}
 
-// Metadata is not conformed because it's not user configurable. The test above should be sufficient for fvtt-types internal correctness.
-// Secondarily, it also causes problems to be 
-export interface ConfiguredMetadata extends _ConfiguredMetadata {}
+type MetadataShape = {
+  [Name in Document.Type]: Document.Metadata<Document.Any>;
+};
+
+type TestConfiguredMetadataValid = MustConform<InterfaceToObject<ConfiguredMetadata<Document.Any>>, MetadataShape>;
 
 export interface ConstructorData {
   ActiveEffect: documents.BaseActiveEffect.ConstructorData;

@@ -20,7 +20,7 @@ declare class BaseRollTable extends Document<"RollTable", BaseRollTable.Schema, 
 
   override parent: BaseRollTable.Parent;
 
-  static override metadata: Readonly<BaseRollTable.Metadata>;
+  static override metadata: BaseRollTable.Metadata;
 
   static override defineSchema(): BaseRollTable.Schema;
 
@@ -37,7 +37,7 @@ export default BaseRollTable;
 declare namespace BaseRollTable {
   type Parent = null;
 
-  type Metadata = Document.MetadataForName<"RollTable">;
+  type Metadata = Document.MetadataFor<BaseRollTable>;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;

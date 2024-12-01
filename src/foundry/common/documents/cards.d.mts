@@ -27,7 +27,7 @@ declare class BaseCards extends Document<"Cards", BaseCards.Schema, any> {
 
   override _source: BaseCards.Source;
 
-  static override metadata: Readonly<BaseCards.Metadata>;
+  static override metadata: BaseCards.Metadata;
 
   static override defineSchema(): BaseCards.Schema;
 
@@ -47,7 +47,7 @@ declare namespace BaseCards {
 
   type TypeNames = Game.Model.TypeNames<"Cards">;
 
-  type Metadata = Document.MetadataForName<"Cards">;
+  type Metadata = Document.MetadataFor<BaseCards>;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;

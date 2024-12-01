@@ -6,6 +6,8 @@ import type BaseToken from "../../../common/documents/token.d.mts";
 
 declare global {
   namespace TokenDocument {
+    type Metadata = Document.MetadataFor<TokenDocument>;
+
     type ConfiguredClass = Document.ConfiguredClassForName<"Token">;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
@@ -47,6 +49,8 @@ declare global {
    * @see {@link TokenConfig}      The Token configuration application
    */
   class TokenDocument extends CanvasDocumentMixin(foundry.documents.BaseToken) {
+    static override metadata: TokenDocument.Metadata;
+
     /**
      * A singleton collection which holds a reference to the synthetic token actor by its base actor's ID.
      */

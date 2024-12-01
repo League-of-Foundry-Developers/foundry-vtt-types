@@ -19,7 +19,7 @@ declare class BaseAmbientSound extends Document<"AmbientSound", BaseAmbientSound
 
   override parent: BaseAmbientSound.Parent;
 
-  static override metadata: Readonly<BaseAmbientSound.Metadata>;
+  static override metadata: BaseAmbientSound.Metadata;
 
   static override defineSchema(): BaseAmbientSound.Schema;
 
@@ -31,7 +31,7 @@ export default BaseAmbientSound;
 declare namespace BaseAmbientSound {
   type Parent = Scene.ConfiguredInstance | null;
 
-  type Metadata = Document.MetadataForName<"AmbientSound">;
+  type Metadata = Document.MetadataFor<BaseAmbientSound>;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;

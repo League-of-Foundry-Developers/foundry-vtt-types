@@ -22,7 +22,7 @@ declare class BasePlaylistSound extends Document<"PlaylistSound", BasePlaylistSo
 
   override parent: BasePlaylistSound.Parent;
 
-  static override metadata: Readonly<BasePlaylistSound.Metadata>;
+  static override metadata: BasePlaylistSound.Metadata;
 
   static override defineSchema(): BasePlaylistSound.Schema;
 
@@ -44,7 +44,7 @@ export default BasePlaylistSound;
 declare namespace BasePlaylistSound {
   type Parent = Playlist.ConfiguredInstance | null;
 
-  type Metadata = Document.MetadataForName<"PlaylistSound">;
+  type Metadata = Document.MetadataFor<BasePlaylistSound>;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;
