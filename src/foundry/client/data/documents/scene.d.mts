@@ -5,6 +5,8 @@ import type BaseScene from "../../../common/documents/scene.d.mts";
 
 declare global {
   namespace Scene {
+    type Metadata = Document.MetadataFor<Scene>;
+
     type ConfiguredClass = Document.ConfiguredClassForName<"Scene">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Scene">;
 
@@ -33,6 +35,8 @@ declare global {
    *
    */
   class Scene extends ClientDocumentMixin(foundry.documents.BaseScene) {
+    static override metadata: Scene.Metadata;
+
     /**
      * Track the viewed position of each scene (while in memory only, not persisted)
      * When switching back to a previously viewed scene, we can automatically pan to the previous position.

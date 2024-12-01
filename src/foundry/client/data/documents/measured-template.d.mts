@@ -4,6 +4,8 @@ import type BaseMeasuredTemplate from "../../../common/documents/measured-templa
 
 declare global {
   namespace MeasuredTemplateDocument {
+    type Metadata = Document.MetadataFor<MeasuredTemplateDocument>;
+
     type ConfiguredClass = Document.ConfiguredClassForName<"MeasuredTemplate">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"MeasuredTemplate">;
 
@@ -23,6 +25,8 @@ declare global {
    * @see {@link MeasuredTemplateConfig}    The MeasuredTemplate configuration application
    */
   class MeasuredTemplateDocument extends CanvasDocumentMixin(foundry.documents.BaseMeasuredTemplate) {
+    static override metadata: MeasuredTemplateDocument.Metadata;
+
     /**
      * Rotation is an alias for direction
      */

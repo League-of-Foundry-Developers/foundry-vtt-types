@@ -1,4 +1,4 @@
-import type { AnyObject, InexactPartial, Merge } from "../../../types/utils.mts";
+import type { AnyObject, InexactPartial } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type * as fields from "../data/fields.d.mts";
 import type * as documents from "./_module.mts";
@@ -10,7 +10,11 @@ import type * as documents from "./_module.mts";
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
-declare class BaseItem extends Document<BaseItem.Schema, BaseItem.Metadata, any> {
+declare class BaseItem extends Document<"Item", BaseItem.Schema, any> {
+  /**
+   * @privateRemarks Manual override of the return due to TS limitations with static `this`
+   */
+  static get TYPES(): BaseItem.TypeNames[];
   /**
    * @param data    - Initial data from which to construct the Item
    * @param context - Construction context options
@@ -22,7 +26,7 @@ declare class BaseItem extends Document<BaseItem.Schema, BaseItem.Metadata, any>
 
   override _source: BaseItem.Source;
 
-  static override metadata: Readonly<BaseItem.Metadata>;
+  static override metadata: BaseItem.Metadata;
 
   static override defineSchema(): BaseItem.Schema;
 
@@ -39,11 +43,6 @@ declare class BaseItem extends Document<BaseItem.Schema, BaseItem.Metadata, any>
    */
   static getDefaultArtwork(itemData: BaseItem.ConstructorData): { img: string };
 
-  /**
-   * The allowed set of Item types which may exist.
-   */
-  static get TYPES(): BaseItem.TypeNames[];
-
   override canUserModify(user: documents.BaseUser, action: "create" | "delete" | "update", data?: AnyObject): boolean;
 
   override testUserPermission(
@@ -59,17 +58,6 @@ declare class BaseItem extends Document<BaseItem.Schema, BaseItem.Metadata, any>
   ): boolean;
 
   static override migrateData(source: AnyObject): AnyObject;
-
-  static override shimData(
-    data: AnyObject,
-    options: {
-      /**
-       * Apply shims to embedded models?
-       * @defaultValue `true`
-       */
-      embedded?: boolean;
-    },
-  ): AnyObject;
 }
 
 export default BaseItem;
@@ -77,27 +65,9 @@ export default BaseItem;
 declare namespace BaseItem {
   type Parent = Actor.ConfiguredInstance | null;
 
-  type TypeNames = fields.TypeDataField.TypeNames<typeof BaseItem>;
+  type TypeNames = Game.Model.TypeNames<"Item">;
 
-  type Metadata = Merge<
-    Document.Metadata.Default,
-    {
-      name: "Item";
-      collection: "items";
-      indexed: true;
-      compendiumIndexFields: ["_id", "name", "img", "type", "sort", "folder"];
-      embedded: { ActiveEffect: "effects" };
-      label: string;
-      labelPlural: string;
-      permissions: { create: "ITEM_CREATE" };
-      schemaVersion: string;
-
-      /**
-       * @deprecated since v10, BaseItem.metadata.types is deprecated since v10 in favor of BaseItem.TYPES.
-       */
-      types: typeof BaseItem.TYPES;
-    }
-  >;
+  type Metadata = Document.MetadataFor<BaseItem>;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;
@@ -105,7 +75,7 @@ declare namespace BaseItem {
   type Properties = fields.SchemaField.InnerInitializedType<Schema>;
   type Source = fields.SchemaField.InnerPersistedType<Schema>;
 
-  interface Schema<TypeName extends TypeNames = TypeNames> extends DataSchema {
+  interface Schema extends DataSchema {
     /**
      * The _id which uniquely identifies this Item document
      * @defaultValue `null`
@@ -116,16 +86,7 @@ declare namespace BaseItem {
     name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
     /** An Item subtype which configures the system data model applied */
-    type: fields.StringField<
-      {
-        required: true;
-        choices: () => typeof BaseItem.TYPES;
-        validationError: "must be in the array of Item types defined by the game system";
-      },
-      TypeName,
-      TypeName,
-      TypeName
-    >;
+    type: fields.DocumentTypeField<typeof BaseItem>;
 
     /**
      * An image file path which provides the artwork for this Item

@@ -1,13 +1,17 @@
-import type { Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type * as fields from "../data/fields.d.mts";
 import type * as documents from "./_module.mts";
 
 /**
- * The Document definition for a JournalEntryPage.
- * Defines the data schema and common behaviours for a JournalEntryPage which are shared between both client and server.
+ * The JournalEntryPage Document.
+ * Defines the DataSchema and common behaviors for a JournalEntryPage which are shared between both client and server.
  */
-declare class BaseJournalEntryPage extends Document<BaseJournalEntryPage.Schema, BaseJournalEntryPage.Metadata, any> {
+declare class BaseJournalEntryPage extends Document<"JournalEntryPage", BaseJournalEntryPage.Schema, any> {
+  /**
+   * @privateRemarks Manual override of the return due to TS limitations with static `this`
+   */
+  static get TYPES(): BaseJournalEntryPage.TypeNames[];
+
   /**
    * @param data    - Initial data from which to construct the JournalEntryPage.
    * @param context - Construction context options.
@@ -22,14 +26,9 @@ declare class BaseJournalEntryPage extends Document<BaseJournalEntryPage.Schema,
 
   _source: BaseJournalEntryPage.Source;
 
-  static override metadata: Readonly<BaseJournalEntryPage.Metadata>;
+  static override metadata: BaseJournalEntryPage.Metadata;
 
   static override defineSchema(): BaseJournalEntryPage.Schema;
-
-  /**
-   * The allowed set of JournalEntryPageData types which may exist.
-   */
-  static get TYPES(): BaseJournalEntryPage.TypeNames[];
 
   override getUserLevel(user: documents.BaseUser): foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
 }
@@ -39,20 +38,9 @@ export default BaseJournalEntryPage;
 declare namespace BaseJournalEntryPage {
   type Parent = Scene.ConfiguredInstance | null;
 
-  type TypeNames = fields.TypeDataField.TypeNames<typeof BaseJournalEntryPage>;
+  type TypeNames = Game.Model.TypeNames<"JournalEntryPage">;
 
-  type Metadata = Merge<
-    Document.Metadata.Default,
-    {
-      name: "JournalEntryPage";
-      collection: "pages";
-      indexed: true;
-      label: string;
-      labelPlural: string;
-      coreTypes: ["image", "pdf", "text", "video"];
-      schemaVersion: string;
-    }
-  >;
+  type Metadata = Document.MetadataFor<BaseJournalEntryPage>;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;
@@ -60,7 +48,7 @@ declare namespace BaseJournalEntryPage {
   type Properties = fields.SchemaField.InnerInitializedType<Schema>;
   type Source = fields.SchemaField.InnerPersistedType<Schema>;
 
-  interface Schema<TypeName extends TypeNames = TypeNames> extends DataSchema {
+  interface Schema extends DataSchema {
     /**
      * The _id which uniquely identifies this JournalEntryPage embedded document.
      * @defaultValue `null`
@@ -76,18 +64,18 @@ declare namespace BaseJournalEntryPage {
      * The type of this page, in {@link BaseJournalEntryPage.TYPES}.
      * @defaultValue `"text"`
      */
-    type: fields.StringField<
+    type: fields.DocumentTypeField<
+      typeof BaseJournalEntryPage,
       {
-        required: true;
-        label: "JOURNALENTRYPAGE.Type";
-        choices: () => typeof BaseJournalEntryPage.TYPES;
         initial: "text";
-        validationError: "The JournalEntryPage type must be in the array of types supported by the game system.";
-      },
-      TypeName,
-      TypeName,
-      TypeName
+      }
     >;
+
+    /**
+     * System-specific data.
+     * @defaultValue `{}`
+     */
+    system: fields.TypeDataField<typeof BaseJournalEntryPage>;
 
     /**
      * Data that control's the display of this page's title.
@@ -199,12 +187,6 @@ declare namespace BaseJournalEntryPage {
       initial: null;
       label: "JOURNALENTRYPAGE.Source";
     }>;
-
-    /**
-     * System-specific data.
-     * @defaultValue `{}`
-     */
-    system: fields.TypeDataField<typeof BaseJournalEntryPage>;
 
     /**
      * The numeric sort value which orders this page relative to its siblings.

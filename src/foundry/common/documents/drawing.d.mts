@@ -1,4 +1,4 @@
-import type { AnyObject, InexactPartial, Merge } from "../../../types/utils.mts";
+import type { AnyObject, InexactPartial } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
 import type * as fields from "../data/fields.d.mts";
@@ -12,7 +12,7 @@ import type * as documents from "./_module.mts";
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
-declare class BaseDrawing extends Document<BaseDrawing.Schema, BaseDrawing.Metadata, any> {
+declare class BaseDrawing extends Document<"Drawing", BaseDrawing.Schema, any> {
   /**
    * @param data    - Initial data from which to construct the Drawing
    * @param context - Construction context options
@@ -22,7 +22,7 @@ declare class BaseDrawing extends Document<BaseDrawing.Schema, BaseDrawing.Metad
 
   override parent: BaseDrawing.Parent;
 
-  static override metadata: Readonly<BaseDrawing.Metadata>;
+  static override metadata: BaseDrawing.Metadata;
 
   static override defineSchema(): BaseDrawing.Schema;
 
@@ -72,22 +72,7 @@ export default BaseDrawing;
 declare namespace BaseDrawing {
   type Parent = Scene.ConfiguredInstance | null;
 
-  type Metadata = Merge<
-    Document.Metadata.Default,
-    {
-      name: "Drawing";
-      collection: "drawings";
-      label: string;
-      labelPlural: string;
-      isEmbedded: true;
-      permissions: {
-        create: "DRAWING_CREATE";
-        update: (user: documents.BaseUser, doc: Document.Any, data: UpdateData) => boolean;
-        delete: (user: documents.BaseUser, doc: Document.Any, data: UpdateData) => boolean;
-      };
-      schemaVersion: string;
-    }
-  >;
+  type Metadata = Document.MetadataFor<BaseDrawing>;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;

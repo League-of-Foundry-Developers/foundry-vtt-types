@@ -1,16 +1,16 @@
-import type { AnyObject, Merge } from "../../../types/utils.mts";
+import type { AnyObject } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type * as fields from "../data/fields.d.mts";
 import type * as documents from "./_module.mts";
 
 /**
- * The Document definition for a RollTable.
+ * The RollTable Document.
  * Defines the DataSchema and common behaviors for a RollTable which are shared between both client and server.
  */
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
-declare class BaseRollTable extends Document<BaseRollTable.Schema, BaseRollTable.Metadata, any> {
+declare class BaseRollTable extends Document<"RollTable", BaseRollTable.Schema, any> {
   /**
    * @param data    - Initial data from which to construct the Roll Table
    * @param context - Construction context options
@@ -20,7 +20,7 @@ declare class BaseRollTable extends Document<BaseRollTable.Schema, BaseRollTable
 
   override parent: BaseRollTable.Parent;
 
-  static override metadata: Readonly<BaseRollTable.Metadata>;
+  static override metadata: BaseRollTable.Metadata;
 
   static override defineSchema(): BaseRollTable.Schema;
 
@@ -30,17 +30,6 @@ declare class BaseRollTable extends Document<BaseRollTable.Schema, BaseRollTable
   static DEFAULT_ICON: "icons/svg/d20-grey.svg";
 
   static override migrateData(source: AnyObject): AnyObject;
-
-  static override shimData(
-    data: AnyObject,
-    options?: {
-      /**
-       * Apply shims to embedded models?
-       * @defaultValue `true`
-       */
-      embedded?: boolean;
-    },
-  ): AnyObject;
 }
 
 export default BaseRollTable;
@@ -48,19 +37,7 @@ export default BaseRollTable;
 declare namespace BaseRollTable {
   type Parent = null;
 
-  type Metadata = Merge<
-    Document.Metadata.Default,
-    {
-      name: "RollTable";
-      collection: "tables";
-      indexed: true;
-      compendiumIndexFields: ["_id", "name", "img", "sort", "folder"];
-      embedded: { TableResult: "results" };
-      label: string;
-      labelPlural: string;
-      schemaVersion: string;
-    }
-  >;
+  type Metadata = Document.MetadataFor<BaseRollTable>;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;

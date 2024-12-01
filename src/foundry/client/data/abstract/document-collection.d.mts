@@ -60,10 +60,9 @@ declare global {
      * @param context - Document creation context
      */
     createDocument(
-      // TODO: This probably needs refinement for mandatory assignment fields like name
-      data: DeepPartial<InstanceType<T>["_source"]>,
-      context: Document.ConstructionContext<Document.Any | null>,
-    ): InstanceType<T>;
+      data: Document.ConstructorDataFor<T>,
+      context: Document.ConstructionContext<InstanceType<T>>,
+    ): Document.ToConfiguredInstance<T>;
 
     /**
      * Obtain a temporary Document instance for a document id which currently has invalid source data.
@@ -163,9 +162,7 @@ declare global {
      * @returns An array of updated data once the operation is complete
      */
     updateAll(
-      transformation:
-        | DeepPartial<Document.ToConfiguredInstance<T>["_source"]>
-        | ((doc: Document.ToConfiguredStored<T>) => DeepPartial<Document.ToConfiguredInstance<T>["_source"]>),
+      transformation: Document.UpdateDataFor<T> | ((doc: Document.ToConfiguredStored<T>) => Document.UpdateDataFor<T>),
       condition?: ((obj: Document.ToConfiguredStored<T>) => boolean) | null,
       options?: Document.OnUpdateOptions<T["metadata"]["name"]>,
     ): ReturnType<this["documentClass"]["updateDocuments"]>;

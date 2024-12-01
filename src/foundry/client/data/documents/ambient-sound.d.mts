@@ -4,6 +4,8 @@ import type BaseAmbientSound from "../../../common/documents/ambient-sound.d.mts
 
 declare global {
   namespace AmbientSoundDocument {
+    type Metadata = Document.MetadataFor<AmbientSoundDocument>;
+
     type ConfiguredClass = Document.ConfiguredClassForName<"AmbientSound">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"AmbientSound">;
 
@@ -22,5 +24,7 @@ declare global {
    * @see {@link Scene}                   The Scene document type which contains AmbientSound documents
    * @see {@link AmbientSoundConfig}      The AmbientSound configuration application
    */
-  class AmbientSoundDocument extends CanvasDocumentMixin(foundry.documents.BaseAmbientSound) {}
+  class AmbientSoundDocument extends CanvasDocumentMixin(foundry.documents.BaseAmbientSound) {
+    static override metadata: AmbientSoundDocument.Metadata;
+  }
 }

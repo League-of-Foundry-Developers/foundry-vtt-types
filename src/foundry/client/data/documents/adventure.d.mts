@@ -9,6 +9,8 @@ import type BaseAdventure from "../../../common/documents/adventure.d.mts";
 
 declare global {
   namespace Adventure {
+    type Metadata = Document.MetadataFor<Adventure>;
+
     type ConfiguredClass = Document.ConfiguredClassForName<"Adventure">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Adventure">;
 
@@ -41,6 +43,8 @@ declare global {
    * The client-side Adventure document which extends the common {@link foundry.documents.BaseAdventure} model.
    */
   class Adventure extends ClientDocumentMixin(foundry.documents.BaseAdventure) {
+    static override metadata: Adventure.Metadata;
+
     static fromSource<Schema extends DataSchema>(
       source: fields.SchemaField.InnerAssignmentType<Schema>,
       {

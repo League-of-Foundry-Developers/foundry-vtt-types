@@ -4,6 +4,8 @@ import type BaseItem from "../../../common/documents/item.d.mts";
 
 declare global {
   namespace Item {
+    type Metadata = Document.MetadataFor<Item>;
+
     type ConfiguredClass = Document.ConfiguredClassForName<"Item">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Item">;
 
@@ -28,6 +30,8 @@ declare global {
    * @param context - The document context, see {@link foundry.abstract.Document}
    */
   class Item extends ClientDocumentMixin(foundry.documents.BaseItem) {
+    static override metadata: Item.Metadata;
+
     /**
      * A convenience alias of Item#parent which is more semantically intuitive
      */

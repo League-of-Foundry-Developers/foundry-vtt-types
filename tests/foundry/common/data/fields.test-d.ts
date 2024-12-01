@@ -29,8 +29,8 @@ new foundry.documents.BaseNote({ textAnchor: 2 });
 new foundry.documents.BaseMeasuredTemplate({ t: "foobar" });
 
 // TypeDataField
-declare const JEPCoreTypes: foundry.data.fields.TypeDataField.CoreTypeNames<typeof JournalEntryPage>;
-declare const JEPSystemTypes: foundry.data.fields.TypeDataField.SystemTypeNames<typeof JournalEntryPage>;
+declare const JEPCoreTypes: JournalEntryPage.TypeNames;
+declare const JEPSystemTypes: Game.Model.TypeNames<"JournalEntryPage">;
 
 declare global {
   interface DataModelConfig {

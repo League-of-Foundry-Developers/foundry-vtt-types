@@ -3,7 +3,6 @@ import type { FunctionRollParseNode } from "../_types.d.mts";
 
 import type RollTerm from "./term.d.mts";
 import type DiceTerm from "./dice.d.mts";
-import type { RollFunction } from "../../../client/config.d.mts";
 
 /**
  * A type of RollTerm used to apply a function.
@@ -39,7 +38,7 @@ declare class FunctionTerm extends RollTerm {
 
   override get expression(): string;
 
-  get function(): RollFunction; // TODO: Implement this
+  get function(): CONFIG.Dice.RollFunction; // TODO: Implement this
 
   override get isDeterministic(): boolean;
 

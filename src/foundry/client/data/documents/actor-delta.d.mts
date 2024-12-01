@@ -5,6 +5,8 @@ import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace ActorDelta {
+    type Metadata = Document.MetadataFor<ActiveEffect>;
+
     type ConfiguredClass = Document.ConfiguredClassForName<"ActorDelta">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"ActorDelta">;
 
@@ -23,6 +25,8 @@ declare global {
    * @see {@link TokenDocument}  The TokenDocument document type which contains ActorDelta embedded documents.
    */
   class ActorDelta extends ClientDocumentMixin(foundry.documents.BaseActorDelta) {
+    static override metadata: ActorDelta.Metadata;
+
     protected override _configure(options?: { pack?: string | null }): void;
 
     protected override _initialize(options?: any): void;
@@ -31,9 +35,9 @@ declare global {
     /** Pass-through the type from the synthetic Actor, if it exists. */
     _type: string;
 
-    get type(): string;
+    get type(): ActorDelta.TypeNames | Actor.TypeNames;
 
-    set type(type: string);
+    set type(type: ActorDelta.TypeNames | Actor.TypeNames);
 
     /**
      * Apply this ActorDelta to the base Actor and return a synthetic Actor.

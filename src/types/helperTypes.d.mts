@@ -1,6 +1,6 @@
 import type { DatabaseOperationMap, Operation } from "../foundry/common/abstract/document.d.mts";
 import type Document from "../foundry/common/abstract/document.d.mts";
-import type { ConfiguredDocuments } from "./configuredDocuments.d.mts";
+import type { ConfiguredDocuments } from "./documentConfiguration.d.mts";
 import type { AnyFunction, AnyObject, EmptyObject } from "./utils.d.mts";
 
 export type ModuleRequiredOrOptional<Name extends string> = Name extends keyof RequiredModules ? never : undefined;
@@ -130,7 +130,7 @@ export type ArrayOverlaps<T, Item> =
  * See `MustConform` for a version that throws a compilation error when the type
  * cannot be statically known to conform.
  */
-export type MakeConform<T, ConformTo> = T extends ConformTo ? T : ConformTo;
+export type MakeConform<T, ConformTo> = [T] extends [ConformTo] ? T : ConformTo;
 
 /**
  * This is useful when you want to ensure that a type conforms to a certain
