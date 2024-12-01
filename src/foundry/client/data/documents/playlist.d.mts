@@ -6,6 +6,8 @@ import type { ClientDocument } from "../abstract/client-document.d.mts";
 
 declare global {
   namespace Playlist {
+    type Metadata = Document.MetadataFor<Playlist>;
+
     type ConfiguredClass = Document.ConfiguredClassForName<"Playlist">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Playlist">;
 
@@ -35,6 +37,8 @@ declare global {
    *
    */
   class Playlist extends ClientDocumentMixin(foundry.documents.BasePlaylist) {
+    static override metadata: Playlist.Metadata;
+
     /**
      * Playlists may have a playback order which defines the sequence of Playlist Sounds
      * @defaultValue `undefined`

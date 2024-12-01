@@ -1,16 +1,21 @@
-import type { AnyObject, Merge } from "../../../types/utils.mts";
+import type { AnyObject } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type * as fields from "../data/fields.d.mts";
 import type * as documents from "./_module.mts";
 
 /**
- * The Document definition for Cards.
- * Defines the DataSchema and common behaviors for Cards which are shared between both client and server.
+ * The Cards Document.
+ * Defines the DataSchema and common behaviors for a Cards Document which are shared between both client and server.
  */
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
-declare class BaseCards extends Document<BaseCards.Schema, BaseCards.Metadata, any> {
+declare class BaseCards extends Document<"Cards", BaseCards.Schema, any> {
+  /**
+   * @privateRemarks Manual override of the return due to TS limitations with static `this`
+   */
+  static get TYPES(): BaseCards.TypeNames[];
+
   /**
    * @param data    - Initial data from which to construct the Cards
    * @param context - Construction context options
@@ -22,7 +27,7 @@ declare class BaseCards extends Document<BaseCards.Schema, BaseCards.Metadata, a
 
   override _source: BaseCards.Source;
 
-  static override metadata: Readonly<BaseCards.Metadata>;
+  static override metadata: BaseCards.Metadata;
 
   static override defineSchema(): BaseCards.Schema;
 
@@ -32,23 +37,7 @@ declare class BaseCards extends Document<BaseCards.Schema, BaseCards.Metadata, a
    */
   static DEFAULT_ICON: string;
 
-  /**
-   * The allowed set of CardsData types which may exist
-   */
-  static get TYPES(): BaseCards.TypeNames[];
-
   static override migrateData(source: AnyObject): AnyObject;
-
-  static override shimData(
-    data: AnyObject,
-    options?: {
-      /**
-       * Apply shims to embedded models?
-       * @defaultValue `true`
-       */
-      embedded?: boolean;
-    },
-  ): AnyObject;
 }
 
 export default BaseCards;
@@ -56,22 +45,9 @@ export default BaseCards;
 declare namespace BaseCards {
   type Parent = null;
 
-  type TypeNames = fields.TypeDataField.TypeNames<typeof BaseCards>;
+  type TypeNames = Game.Model.TypeNames<"Cards">;
 
-  type Metadata = Merge<
-    Document.Metadata.Default,
-    {
-      name: "Cards";
-      collection: "cards";
-      indexed: true;
-      compendiumIndexFields: ["_id", "name", "description", "img", "type", "sort", "folder"];
-      embedded: { Card: "cards" };
-      label: string;
-      labelPlural: string;
-      coreTypes: ["deck", "hand", "pile"];
-      schemaVersion: string;
-    }
-  >;
+  type Metadata = Document.MetadataFor<BaseCards>;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;
@@ -79,7 +55,7 @@ declare namespace BaseCards {
   type Properties = fields.SchemaField.InnerInitializedType<Schema>;
   type Source = fields.SchemaField.InnerPersistedType<Schema>;
 
-  interface Schema<TypeName extends TypeNames = TypeNames> extends DataSchema {
+  interface Schema extends DataSchema {
     /**
      * The _id which uniquely identifies this stack of Cards document
      * @defaultValue `null`
@@ -93,18 +69,7 @@ declare namespace BaseCards {
      * The type of this stack, in BaseCards.metadata.types
      * @defaultValue `BaseCards.TYPES[0]`
      */
-    type: fields.StringField<
-      {
-        required: true;
-        label: "CARDS.Type";
-        choices: () => typeof BaseCards.TYPES;
-        initial: () => (typeof BaseCards.TYPES)[0];
-        validationError: "The Cards type must be in the array of types supported by the game system";
-      },
-      TypeName,
-      TypeName,
-      TypeName
-    >;
+    type: fields.DocumentTypeField<typeof BaseCards>;
 
     /**
      * A text description of this stack

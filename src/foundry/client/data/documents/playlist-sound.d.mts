@@ -6,6 +6,8 @@ import type BasePlaylistSound from "../../../common/documents/playlist-sound.d.m
 
 declare global {
   namespace PlaylistSound {
+    type Metadata = Document.MetadataFor<PlaylistSound>;
+
     type ConfiguredClass = Document.ConfiguredClassForName<"PlaylistSound">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"PlaylistSound">;
 
@@ -28,10 +30,13 @@ declare global {
    *
    */
   class PlaylistSound extends ClientDocumentMixin(foundry.documents.BasePlaylistSound) {
-    constructor(
-      data: ConstructorParameters<typeof foundry.documents.BasePlaylistSound>[0],
-      context?: ConstructorParameters<typeof foundry.documents.BasePlaylistSound>[1],
-    );
+    static override metadata: PlaylistSound.Metadata;
+
+    // Note(LukeAbby): TODO, this constructor just copies from the parent. Should this just be removed?
+    // constructor(
+    //   data: ConstructorParameters<typeof foundry.documents.BasePlaylistSound>[0],
+    //   context?: ConstructorParameters<typeof foundry.documents.BasePlaylistSound>[1],
+    // );
 
     /**
      * The debounce tolerance for processing rapid volume changes into database updates in milliseconds

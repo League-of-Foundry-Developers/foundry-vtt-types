@@ -4,6 +4,8 @@ import type BaseTile from "../../../common/documents/tile.d.mts";
 
 declare global {
   namespace TileDocument {
+    type Metadata = Document.MetadataFor<TileDocument>;
+
     type ConfiguredClass = Document.ConfiguredClassForName<"Tile">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Tile">;
 
@@ -23,6 +25,8 @@ declare global {
    * @see {@link TileConfig}       The Tile configuration application
    */
   class TileDocument extends CanvasDocumentMixin(foundry.documents.BaseTile) {
+    static override metadata: TileDocument.Metadata;
+
     override prepareDerivedData(): void;
   }
 }

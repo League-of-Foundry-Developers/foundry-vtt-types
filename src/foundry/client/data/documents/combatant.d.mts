@@ -5,6 +5,8 @@ import type BaseCombatant from "../../../common/documents/combatant.d.mts";
 
 declare global {
   namespace Combatant {
+    type Metadata = Document.MetadataFor<Combatant>;
+
     type ConfiguredClass = Document.ConfiguredClassForName<"Combatant">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Combatant">;
 
@@ -17,7 +19,7 @@ declare global {
       > {}
 
     // Helpful aliases
-    // type TypeNames = BaseCombatant.TypeNames; // TODO: Un-comment after subtype updates are merged
+    type TypeNames = BaseCombatant.TypeNames;
     type ConstructorData = BaseCombatant.ConstructorData;
     type UpdateData = BaseCombatant.UpdateData;
     type Schema = BaseCombatant.Schema;
@@ -31,6 +33,8 @@ declare global {
    * @see {@link CombatantConfig}        The Combatant configuration application
    */
   class Combatant extends ClientDocumentMixin(foundry.documents.BaseCombatant) {
+    static override metadata: Combatant.Metadata;
+
     /**
      * The token video source image (if any)
      */

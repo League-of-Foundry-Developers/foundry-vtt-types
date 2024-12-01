@@ -5,6 +5,8 @@ import type BaseUser from "../../../common/documents/user.d.mts";
 
 declare global {
   namespace User {
+    type Metadata = Document.Metadata
+
     type ConfiguredClass = Document.ConfiguredClassForName<"User">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"User">;
 
@@ -70,6 +72,8 @@ declare global {
    * @see {@link UserConfig}     The User configuration application
    */
   class User extends ClientDocumentMixin(foundry.documents.BaseUser) {
+    static override metadata: User.Metadata;
+
     /**
      * Track whether the user is currently active in the game
      * @defaultValue `false`

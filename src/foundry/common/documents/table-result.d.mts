@@ -1,17 +1,16 @@
-import type { AnyObject, InexactPartial, Merge } from "../../../types/utils.mts";
+import type { AnyObject, InexactPartial } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
 import type * as fields from "../data/fields.d.mts";
-import type * as documents from "./_module.mts";
 
 /**
- * The Document definition for a TableResult.
+ * The TableResult Document.
  * Defines the DataSchema and common behaviors for a TableResult which are shared between both client and server.
  */
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
-declare class BaseTableResult extends Document<BaseTableResult.Schema, BaseTableResult.Metadata, any> {
+declare class BaseTableResult extends Document<"TableResult", BaseTableResult.Schema, any> {
   /**
    * @param data    - Initial data from which to construct the Table Result
    * @param context - Construction context options
@@ -21,7 +20,7 @@ declare class BaseTableResult extends Document<BaseTableResult.Schema, BaseTable
 
   override parent: BaseTableResult.Parent;
 
-  static override metadata: Readonly<BaseTableResult.Metadata>;
+  static override metadata: BaseTableResult.Metadata;
 
   static override defineSchema(): BaseTableResult.Schema;
 
@@ -38,17 +37,6 @@ declare class BaseTableResult extends Document<BaseTableResult.Schema, BaseTable
   ): boolean;
 
   static override migrateData(source: AnyObject): AnyObject;
-
-  static override shimData(
-    data: AnyObject,
-    options?: {
-      /**
-       * Apply shims to embedded models?
-       * @defaultValue `true`
-       */
-      embedded?: boolean;
-    },
-  ): AnyObject;
 }
 
 export default BaseTableResult;
@@ -56,23 +44,9 @@ export default BaseTableResult;
 declare namespace BaseTableResult {
   type Parent = RollTable.ConfiguredInstance | null;
 
-  // TODO: Remove "base" in v12
-  type TypeNames = (typeof foundry.documents.BaseMacro)["metadata"]["coreTypes"][number] | "base";
+  type TypeNames = Game.Model.TypeNames<"TableResult">;
 
-  type Metadata = Merge<
-    Document.Metadata.Default,
-    {
-      name: "TableResult";
-      collection: "results";
-      label: string;
-      labelPlural: string;
-      coreTypes: ["0", "1", "2"];
-      permissions: {
-        update: (user: documents.BaseUser, doc: Document.Any, data: UpdateData) => boolean;
-      };
-      schemaVersion: string;
-    }
-  >;
+  type Metadata = Document.MetadataFor<BaseTableResult>;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;
@@ -91,12 +65,12 @@ declare namespace BaseTableResult {
      * A result subtype from CONST.TABLE_RESULT_TYPES
      * @defaultValue `CONST.TABLE_RESULT_TYPES.TEXT`
      */
-    type: fields.StringField<{
-      required: true;
-      choices: CONST.TABLE_RESULT_TYPES[];
-      initial: typeof CONST.TABLE_RESULT_TYPES.TEXT;
-      validationError: "must be a value in CONST.TABLE_RESULT_TYPES";
-    }>;
+    type: fields.DocumentTypeField<
+      typeof BaseTableResult,
+      {
+        initial: typeof CONST.TABLE_RESULT_TYPES.TEXT;
+      }
+    >;
 
     /**
      * The text which describes the table result

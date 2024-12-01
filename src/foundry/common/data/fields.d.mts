@@ -1714,7 +1714,7 @@ declare namespace ArrayField {
   type AssignmentElementType<ElementFieldType extends DataField.Any | Document.AnyConstructor> =
     ElementFieldType extends DataField<any, infer Assign, any, any>
       ? Assign
-      : ElementFieldType extends new (...args: any[]) => Document<infer Schema extends DataSchema, any, any>
+      : ElementFieldType extends new (...args: any[]) => Document<any, infer Schema extends DataSchema, any>
         ? SchemaField.InnerAssignmentType<Schema>
         : never;
 
@@ -1725,7 +1725,7 @@ declare namespace ArrayField {
   type InitializedElementType<ElementFieldType extends DataField.Any | Document.AnyConstructor> =
     ElementFieldType extends DataField<any, any, infer Init, any>
       ? Init
-      : ElementFieldType extends new (...args: any[]) => Document<infer Schema extends DataSchema, any, any>
+      : ElementFieldType extends new (...args: any[]) => Document<any, infer Schema extends DataSchema, any>
         ? SchemaField.InnerInitializedType<Schema>
         : never;
 
@@ -1736,7 +1736,7 @@ declare namespace ArrayField {
   type PersistedElementType<ElementFieldType extends DataField.Any | Document.AnyConstructor> =
     ElementFieldType extends DataField<any, any, any, infer Persist>
       ? Persist
-      : ElementFieldType extends new (...args: any[]) => Document<infer Schema extends DataSchema, any, any>
+      : ElementFieldType extends new (...args: any[]) => Document<any, infer Schema extends DataSchema, any>
         ? SchemaField.InnerPersistedType<Schema>
         : never;
 
@@ -2180,7 +2180,7 @@ declare namespace EmbeddedCollectionField {
    */
   type AssignmentElementType<ElementFieldType extends Document.AnyConstructor> = ElementFieldType extends new (
     ...args: any[]
-  ) => Document<infer Schema extends DataSchema, any, any>
+  ) => Document<any, infer Schema extends DataSchema, any>
     ? SchemaField.InnerAssignmentType<Schema>
     : never;
 
@@ -2197,7 +2197,7 @@ declare namespace EmbeddedCollectionField {
    */
   type PersistedElementType<ElementFieldType extends Document.AnyConstructor> = ElementFieldType extends new (
     ...args: any[]
-  ) => Document<infer Schema extends DataSchema, any, any>
+  ) => Document<any, infer Schema extends DataSchema, any>
     ? SchemaField.InnerPersistedType<Schema>
     : never;
 
@@ -2331,7 +2331,7 @@ declare namespace EmbeddedCollectionDeltaField {
    */
   type AssignmentElementType<ElementFieldType extends Document.AnyConstructor> = ElementFieldType extends new (
     ...args: any[]
-  ) => Document<infer Schema extends DataSchema, any, any>
+  ) => Document<any, infer Schema extends DataSchema, any>
     ? SchemaField.InnerAssignmentType<Schema>
     : never;
 
@@ -2348,7 +2348,7 @@ declare namespace EmbeddedCollectionDeltaField {
    */
   type PersistedElementType<ElementFieldType extends Document.AnyConstructor> = ElementFieldType extends new (
     ...args: any[]
-  ) => Document<infer Schema extends DataSchema, any, any>
+  ) => Document<any, infer Schema extends DataSchema, any>
     ? SchemaField.InnerPersistedType<Schema>
     : never;
 
@@ -2791,7 +2791,7 @@ declare namespace ForeignDocumentField {
     ConcreteDocument extends Document.AnyConstructor,
     Opts extends Options,
   > = DataField.DerivedInitializedType<
-    Opts["idOnly"] extends true ? string : Document.ToConfiguredClass<ConcreteDocument>,
+    Opts["idOnly"] extends true ? string : Document.ToConfiguredInstance<ConcreteDocument>,
     MergedOptions<Opts>
   >;
 
@@ -3902,29 +3902,19 @@ declare namespace TypeDataField {
 
   /**
    * Get the configured core and system type names for a specific document type.
-   * @typeParam DocumentType - the type of the Document this data is for
+   * @typeParam ConcreteDocument - the type of the Document this data is for
+   * @deprecated Use the Game.Model namespace instead of TypeDataField
    */
-  type TypeNames<DocumentType extends Document.SystemConstructor> =
-    | CoreTypeNames<DocumentType>
-    | SystemTypeNames<DocumentType>;
+  type TypeNames<ConcreteDocument extends Document.SystemConstructor> = Game.Model.TypeNames<
+    ConcreteDocument["metadata"]["name"]
+  >;
 
   /**
    * Get the core type names for a specific document type.
    * @typeParam DocumentType - the type of the Document this data is for
+   * @deprecated Use `DocumentType["metadata"]["coreTypes"][number]`
    */
-  type CoreTypeNames<DocumentType extends Document.SystemConstructor> =
-    DocumentType["metadata"]["coreTypes"] extends string[]
-      ? DocumentType["metadata"]["coreTypes"][number] | "base"
-      : "base";
-
-  /**
-   * Get the configured system type names for a specific document type.
-   * @typeParam DocumentType - the type of the Document this system data is for
-   */
-  // The `& string` is helpful even though there should never be any numeric/symbol keys.
-  // This is because when `keyof Config<...>` is deferred then TypeScript does a bunch of proofs under the assumption that `SystemTypeNames` could be a `string | number` until proven otherwise.
-  // This causes issues where there shouldn't be, for example it has been observed to obstruct the resolution of the `Actor` class.
-  type SystemTypeNames<DocumentType extends Document.SystemConstructor> = keyof Config<DocumentType> & string;
+  type CoreTypeNames<DocumentType extends Document.SystemConstructor> = DocumentType["metadata"]["coreTypes"][number];
 
   /**
    * A shorthand for the assignment type of a TypeDataField class.

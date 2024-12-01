@@ -1,9 +1,6 @@
 import type { InexactPartial } from "../../../../types/utils.d.mts";
 import type RenderedEffectSource from "./rendered-effect-source.d.mts";
 
-// TODO: Adjust after client/config.js is updated
-type LightSourceAnimationConfig = unknown;
-
 /**
  * A specialized subclass of BaseEffectSource which deals with the rendering of light or darkness.
  */
@@ -34,7 +31,7 @@ declare class BaseLightSource<
   /**
    * The corresponding animation config.
    */
-  protected static get ANIMATIONS(): LightSourceAnimationConfig;
+  protected static get ANIMATIONS(): CONFIG.Canvas.LightSourceAnimationConfig;
 
   /**
    * @defaultValue

@@ -4,6 +4,8 @@ import type BaseWall from "../../../common/documents/wall.d.mts";
 
 declare global {
   namespace WallDocument {
+    type Metadata = Document.MetadataFor<WallDocument>;
+
     type ConfiguredClass = Document.ConfiguredClassForName<"Wall">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Wall">;
 
@@ -22,5 +24,7 @@ declare global {
    * @see {@link Scene}            The Scene document type which contains Wall embedded documents
    * @see {@link WallConfig}       The Wall configuration application
    */
-  class WallDocument extends CanvasDocumentMixin(foundry.documents.BaseWall) {}
+  class WallDocument extends CanvasDocumentMixin(foundry.documents.BaseWall) {
+    static override metadata: WallDocument.Metadata;
+  }
 }

@@ -4,6 +4,8 @@ import type BaseDrawing from "../../../common/documents/drawing.d.mts";
 
 declare global {
   namespace DrawingDocument {
+    type Metadata = Document.MetadataFor<DrawingDocument>;
+
     type ConfiguredClass = Document.ConfiguredClassForName<"Drawing">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Drawing">;
 
@@ -23,6 +25,8 @@ declare global {
    * @see {@link DrawingConfig}       The Drawing configuration application
    */
   class DrawingDocument extends CanvasDocumentMixin(foundry.documents.BaseDrawing) {
+    static override metadata: DrawingDocument.Metadata;
+
     /**
      * Is the current User the author of this drawing?
      */

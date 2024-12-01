@@ -4,6 +4,8 @@ import type BaseAmbientLight from "../../../common/documents/ambient-light.d.mts
 
 declare global {
   namespace AmbientLightDocument {
+    type Metadata = Document.MetadataFor<AmbientLightDocument>;
+
     type ConfiguredClass = Document.ConfiguredClassForName<"AmbientLight">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"AmbientLight">;
 
@@ -26,6 +28,8 @@ declare global {
    * @see {@link AmbientLightConfig}        The AmbientLight configuration application
    */
   class AmbientLightDocument extends CanvasDocumentMixin(foundry.documents.BaseAmbientLight) {
+    static override metadata: AmbientLightDocument.Metadata;
+
     /**
      * @privateRemarks _onUpdate is overridden but with no signature changes.
      * For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.

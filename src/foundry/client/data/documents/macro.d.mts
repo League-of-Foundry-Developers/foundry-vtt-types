@@ -7,6 +7,8 @@ type RegionEvent = unknown;
 
 declare global {
   namespace Macro {
+    type Metadata = Document.MetadataFor<Macro>;
+
     type ConfiguredClass = Document.ConfiguredClassForName<"Macro">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Macro">;
 
@@ -45,6 +47,8 @@ declare global {
    * @param data - Initial data provided to construct the Macro document
    */
   class Macro extends ClientDocumentMixin(foundry.documents.BaseMacro) {
+    static override metadata: Macro.Metadata;
+
     /**
      * Is the current User the author of this macro?
      */

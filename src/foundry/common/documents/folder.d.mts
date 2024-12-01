@@ -1,15 +1,19 @@
-import type { AnyObject, Merge } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type * as fields from "../data/fields.d.mts";
 
 /**
- * The Document definition for a Folder.
+ * The Folder Document.
  * Defines the DataSchema and common behaviors for a Folder which are shared between both client and server.
  */
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
-declare class BaseFolder extends Document<BaseFolder.Schema, BaseFolder.Metadata, any> {
+declare class BaseFolder extends Document<"Folder", BaseFolder.Schema, any> {
+  /**
+   * @privateRemarks Manual override of the return due to TS limitations with static `this`
+   */
+  static get TYPES(): BaseFolder.TypeNames[];
+
   /**
    * @param data    - Initial data from which to construct the Folder
    * @param context - Construction context options
@@ -19,7 +23,7 @@ declare class BaseFolder extends Document<BaseFolder.Schema, BaseFolder.Metadata
 
   override parent: BaseFolder.Parent;
 
-  static override metadata: Readonly<BaseFolder.Metadata>;
+  static override metadata: BaseFolder.Metadata;
 
   static override defineSchema(): BaseFolder.Schema;
 
@@ -32,21 +36,8 @@ declare class BaseFolder extends Document<BaseFolder.Schema, BaseFolder.Metadata
    */
   static SORTING_MODES: ("a" | "m")[];
 
-  static override migrateData(source: AnyObject): AnyObject;
-
-  static override shimData(
-    data: AnyObject,
-    options?: {
-      /**
-       * Apply shims to embedded models?
-       * @defaultValue `true`
-       */
-      embedded?: boolean;
-    },
-  ): AnyObject;
-
-  // TODO: `Return type annotation circularly references itself.`
-  // static override get(documentId: string, options: InexactPartial<{ pack: string }>): Folder.ConfiguredInstance | null;
+  // Doesn't affect type, "Return Type circularly references itself"
+  // static override get(documentId: string, options: NullishProps<{ pack: string }>): Folder.ConfiguredInstance | null;
 }
 
 export default BaseFolder;
@@ -54,17 +45,9 @@ export default BaseFolder;
 declare namespace BaseFolder {
   type Parent = null;
 
-  type Metadata = Merge<
-    Document.Metadata.Default,
-    {
-      name: "Folder";
-      collection: "folders";
-      label: string;
-      labelPlural: string;
-      coreTypes: typeof CONST.FOLDER_DOCUMENT_TYPES;
-      schemaVersion: string;
-    }
-  >;
+  type TypeNames = Game.Model.TypeNames<"Folder">;
+
+  type Metadata = Document.MetadataFor<BaseFolder>;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;
@@ -83,13 +66,13 @@ declare namespace BaseFolder {
     name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
     /** The document type which this Folder contains, from CONST.FOLDER_DOCUMENT_TYPES */
-    type: fields.StringField<{ required: true; choices: foundry.CONST.FOLDER_DOCUMENT_TYPES[] }>;
+    type: fields.DocumentTypeField<typeof BaseFolder>;
 
     /**
      * An HTML description of the contents of this folder
      * @defaultValue `""`
      */
-    description: fields.StringField<{ textSearch: true }>;
+    description: fields.HTMLField<{ textSearch: true }>;
 
     /**
      * The _id of a parent Folder which contains this Folder

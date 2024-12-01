@@ -1,4 +1,4 @@
-import type { AnyObject, Merge } from "../../../types/utils.mts";
+import type { AnyObject } from "../../../types/utils.mts";
 import type Document from "../abstract/document.mts";
 import type * as fields from "../data/fields.d.mts";
 
@@ -9,7 +9,7 @@ import type * as fields from "../data/fields.d.mts";
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
-declare class BaseAmbientSound extends Document<BaseAmbientSound.Schema, BaseAmbientSound.Metadata, any> {
+declare class BaseAmbientSound extends Document<"AmbientSound", BaseAmbientSound.Schema, any> {
   /**
    * @param data    - Initial data from which to construct the AmbientSound
    * @param context - Construction context options
@@ -19,7 +19,7 @@ declare class BaseAmbientSound extends Document<BaseAmbientSound.Schema, BaseAmb
 
   override parent: BaseAmbientSound.Parent;
 
-  static override metadata: Readonly<BaseAmbientSound.Metadata>;
+  static override metadata: BaseAmbientSound.Metadata;
 
   static override defineSchema(): BaseAmbientSound.Schema;
 
@@ -31,17 +31,7 @@ export default BaseAmbientSound;
 declare namespace BaseAmbientSound {
   type Parent = Scene.ConfiguredInstance | null;
 
-  type Metadata = Merge<
-    Document.Metadata.Default,
-    {
-      name: "AmbientSound";
-      collection: "sounds";
-      label: string;
-      labelPlural: string;
-      isEmbedded: true;
-      schemaVersion: string;
-    }
-  >;
+  type Metadata = Document.MetadataFor<BaseAmbientSound>;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;
