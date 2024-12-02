@@ -2,225 +2,23 @@ import type { RequiredProps } from "../../../../types/utils.d.mts";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
-  namespace Token {
-    type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof Token>;
-    type ConfiguredInstance = InstanceType<ConfiguredClass>;
-
-    interface RenderFlags extends PlaceableObject.RenderFlags {
-      redrawEffects: boolean;
-
-      refreshSize: boolean;
-
-      refreshPosition: boolean;
-
-      refreshElevation: boolean;
-
-      refreshVisibility: boolean;
-
-      refreshEffects: boolean;
-
-      refreshMesh: boolean;
-
-      refreshShader: boolean;
-
-      refreshBars: boolean;
-
-      refreshNameplate: boolean;
-
-      refreshBorder: boolean;
-
-      refreshTarget: boolean;
-    }
-
-    interface ReticuleOptions {
-      /**
-       * The amount of margin between the targeting arrows and the token's bounding box, expressed as a fraction of an arrow's size.
-       * @defaultValue `0`
-       */
-      margin?: number;
-
-      /**
-       * The alpha value of the arrows.
-       * @defaultValue `1`
-       */
-      alpha?: number;
-
-      /**
-       * The size of the arrows as a proportion of grid size.
-       * @defaultValue `0.15`
-       */
-      size?: number;
-
-      /**
-       * The color of the arrows.
-       * @defaultValue `0xFF6400`
-       */
-      color?: number;
-
-      /** The arrows' border style configuration. */
-      border?: {
-        /**
-         * The border color.
-         * @defaultValue `0`
-         */
-        color?: number;
-
-        /**
-         * The border width.
-         * @defaultValue `2`
-         */
-        width?: number;
-      };
-    }
-
-    type SourceType = "move" | "sight" | "light" | "sound";
-
-    interface Bar {
-      attribute: string;
-    }
-
-    interface Velocity {
-      dx: number;
-      sx: number;
-      dy: number;
-      sy: number;
-    }
-
-    /** The UI frame container which depicts Token metadata and status, displayed in the ControlsLayer. */
-    interface ObjectHUD extends globalThis.ObjectHUD {
-      /** Token health bars */
-      bars?: PIXI.Container;
-
-      /** Token nameplate */
-      nameplate?: PreciseText;
-
-      /** Token elevation tooltip */
-      tooltip?: PreciseText;
-
-      /** Token status effects */
-      effects?: PIXI.Container;
-
-      /** Token target marker */
-      target?: PIXI.Graphics;
-    }
-
-    type InitializedObjectHUD = RequiredProps<ObjectHUD, "bars" | "nameplate" | "tooltip" | "effects" | "target">;
-
-    interface UpdateLightSourceOptions {
-      /**
-       * Defer updating perception to manually update it later.
-       * @defaultValue `false`
-       */
-      defer?: boolean | undefined;
-
-      /**
-       * Indicate that this light source has been deleted.
-       * @defaultValue `false`
-       */
-      deleted?: boolean | undefined;
-    }
-
-    interface UpdateVisionSourceOptions {
-      /**
-       * Defer updating perception to manually update it later.
-       * @defaultValue `false`
-       */
-      defer?: boolean | undefined;
-
-      /**
-       * Indicate that this vision source has been deleted.
-       * @defaultValue `false`
-       */
-      deleted?: boolean | undefined;
-    }
-
-    type UpdateSourceOptions = UpdateLightSourceOptions & UpdateVisionSourceOptions;
-
-    interface PlayOptions {
-      /**
-       * Should the video loop?
-       * @defaultValue `true`
-       */
-      loop?: boolean | undefined;
-
-      /**
-       * A specific timestamp between 0 and the video duration to begin playback
-       * @defaultValue `0`
-       */
-      offset?: number | undefined;
-
-      /**
-       * Desired volume level of the video's audio channel (if any)
-       * @defaultValue `0`
-       */
-      volume?: number | undefined;
-    }
-
-    interface DrawOverlayOptions {
-      src?: string | undefined;
-      tint?: number | undefined;
-    }
-
-    interface PositionOptions {
-      /**
-       * Animate the movement path
-       * @defaultValue `true`
-       */
-      animate?: boolean;
-
-      /**
-       * Automatically re-center the view if token movement goes off-screen
-       * @defaultValue `true`
-       */
-      recenter?: boolean | undefined;
-    }
-
-    interface EffectToggleOptions {
-      /**
-       * Force a certain active state for the effect
-       * @defaultValue `false`
-       */
-      active?: boolean | undefined;
-
-      /**
-       * Whether to set the effect as the overlay effect?
-       * @defaultValue `false`
-       */
-      overlay?: boolean | undefined;
-    }
-
-    interface SetTargetContext {
-      /**
-       * Assign the token as a target for a specific User
-       * @defaultValue `null`
-       */
-      user?: User.ConfiguredInstance | null | undefined;
-
-      /**
-       * Release other active targets for the same player?
-       * @defaultValue `true`
-       */
-      releaseOthers?: boolean | undefined;
-
-      /**
-       * Is this target being set as part of a group selection workflow?
-       * @defaultValue `Is this target being set as part of a group selection workflow?`
-       */
-      groupSelection?: boolean | undefined;
-    }
-
-    interface ControlOptions extends PlaceableObject.ControlOptions {
-      /** @defaultValue `false` */
-      pan?: boolean;
-    }
-  }
-
   /**
    * A Token is an implementation of PlaceableObject which represents an Actor within a viewed Scene on the game canvas.
    * @see TokenDocument
    * @see TokenLayer
    */
-  class Token extends PlaceableObject<TokenDocument.ConfiguredInstance> {
+  class Token<
+    ControlOptions extends Token.ControlOptions = Token.ControlOptions,
+    DestroyOptions extends Token.DestroyOptions | boolean = Token.DestroyOptions | boolean,
+    DrawOptions extends Token.DrawOptions = Token.DrawOptions,
+    ReleaseOptions extends Token.ReleaseOptions = Token.ReleaseOptions,
+  > extends PlaceableObject<
+    TokenDocument.ConfiguredInstance,
+    ControlOptions,
+    DestroyOptions,
+    DrawOptions,
+    ReleaseOptions
+  > {
     static override embeddedName: "Token";
 
     static override RENDER_FLAGS: {
@@ -230,76 +28,136 @@ declare global {
       /** @defaultValue `{}` */
       redrawEffects: RenderFlag<Partial<Token.RenderFlags>>;
 
-      /** @defaultValue `{ propagate: ["refreshState", "refreshSize", "refreshPosition", "refreshElevation", "refreshBars", "refreshNameplate", "refreshBorder", "refreshShader"], alias: true }` */
+      /** @defaultValue `{ propagate: ["refreshState", "refreshTransform", "refreshMesh", "refreshNameplate", "refreshElevation", "refreshRingVisuals"], alias: true }` */
       refresh: RenderFlag<Partial<Token.RenderFlags>>;
 
-      /** @defaultValue `{ propagate: ["refreshVisibility", "refreshBorder"] }` */
+      /** @defaultValue `{ propagate: ["refreshVisibility", "refreshTarget"] }` */
       refreshState: RenderFlag<Partial<Token.RenderFlags>>;
-
-      /** @defaultValue `{ propagate: ["refreshMesh", "refreshBorder", "refreshBars", "refreshPosition", "refreshTarget", "refreshEffects"] }` */
-      refreshSize: RenderFlag<Partial<Token.RenderFlags>>;
-
-      /** @defaultValue `{ propagate: ["refreshMesh", "refreshVisibility"] }` */
-      refreshPosition: RenderFlag<Partial<Token.RenderFlags>>;
-
-      /** @defaultValue `{ propagate: ["refreshMesh"] }` */
-      refreshElevation: RenderFlag<Partial<Token.RenderFlags>>;
 
       /** @defaultValue `{}` */
       refreshVisibility: RenderFlag<Partial<Token.RenderFlags>>;
 
-      /** @defaultValue `{}` */
-      refreshEffects: RenderFlag<Partial<Token.RenderFlags>>;
+      /** @defaultValue `{ propagate: ["refreshPosition", "refreshRotation", "refreshSize"], alias: true }` */
+      refreshTransform: RenderFlag<Partial<Token.RenderFlags>>;
 
       /** @defaultValue `{}` */
+      refreshPosition: RenderFlag<Partial<Token.RenderFlags>>;
+
+      /** @defaultValue `{}` */
+      refreshRotation: RenderFlag<Partial<Token.RenderFlags>>;
+
+      /** @defaultValue `{ propagate: ["refreshPosition", "refreshShape", "refreshBars", "refreshEffects", "refreshNameplate", "refreshTarget", "refreshTooltip"] }` */
+      refreshSize: RenderFlag<Partial<Token.RenderFlags>>;
+
+      /** @defaultValue `{ propagate: ["refreshTooltip"] }` */
+      refreshElevation: RenderFlag<Partial<Token.RenderFlags>>;
+
+      /** @defaultValue `{ propagate: ["refreshShader"] }` */
       refreshMesh: RenderFlag<Partial<Token.RenderFlags>>;
 
       /** @defaultValue `{}` */
       refreshShader: RenderFlag<Partial<Token.RenderFlags>>;
 
-      /** @defaultValue `{}` */
-      refreshBars: RenderFlag<Partial<Token.RenderFlags>>;
-
-      /** @defaultValue `{}` */
-      refreshNameplate: RenderFlag<Partial<Token.RenderFlags>>;
+      /** @defaultValue `{ propagate: ["refreshVisibility", "refreshPosition", "refreshBorder", "refreshEffects"] }` */
+      refreshShape: RenderFlag<Partial<Token.RenderFlags>>;
 
       /** @defaultValue `{}` */
       refreshBorder: RenderFlag<Partial<Token.RenderFlags>>;
 
       /** @defaultValue `{}` */
+      refreshBars: RenderFlag<Partial<Token.RenderFlags>>;
+
+      /** @defaultValue `{}` */
+      refreshEffects: RenderFlag<Partial<Token.RenderFlags>>;
+
+      /** @defaultValue `{}` */
+      refreshNameplate: RenderFlag<Partial<Token.RenderFlags>>;
+
+      /** @defaultValue `{}` */
       refreshTarget: RenderFlag<Partial<Token.RenderFlags>>;
+
+      /** @defaultValue `{}` */
+      refreshTooltip: RenderFlag<Partial<Token.RenderFlags>>;
+
+      /** @defaultValue `{}` */
+      refreshRingVisuals: RenderFlag<Partial<Token.RenderFlags>>;
+
+      /**
+       * @deprecated since v12, until v14
+       * @defaultValue `{}`
+       */
+      recoverFromPreview: RenderFlag<Partial<Token.RenderFlags>>;
     };
+
+    /**
+     * The shape of this token.
+     */
+    shape: PIXI.Rectangle | PIXI.Polygon | PIXI.Circle | undefined;
 
     /**
      * Defines the filter to use for detection.
      */
-    detectionFilter?: PIXI.Filter | null;
+    detectionFilter: PIXI.Filter | null;
 
     /**
      * A Graphics instance which renders the border frame for this Token inside the GridLayer.
-     * @defaultValue `undefined`
-     * */
-    border?: PIXI.Graphics;
+     */
+    border: PIXI.Graphics | undefined;
+
+    /**
+     * The effects icons of temporary ActiveEffects that are applied to the Actor of this Token.
+     */
+    effects: PIXI.Container | undefined;
+
+    /**
+     * The attribute bars of this Token.
+     */
+    bars: PIXI.Container | undefined;
+
+    /**
+     * The tooltip text of this Token, which contains its elevation.
+     */
+    tooltip: PreciseText | undefined;
+
+    /**
+     * The nameplate of this Token, which displays its name.
+     */
+    nameplate: PreciseText | undefined;
 
     /**
      * Track the set of User documents which are currently targeting this Token
      */
-    targeted: Set<User>;
+    targeted: Set<User.ConfiguredInstance>;
 
     /**
      * A reference to the SpriteMesh which displays this Token in the PrimaryCanvasGroup.
      */
-    mesh: PrimarySpriteMesh;
+    mesh: PrimarySpriteMesh | undefined;
+
+    /**
+     * Renders the mesh of this Token with ERASE blending in the Token.
+     */
+    voidMesh: PIXI.DisplayObject | undefined;
+
+    /**
+     * Renders the mesh of with the detection filter.
+     */
+    detectionFilterMesh: PIXI.DisplayObject | undefined;
+
+    /**
+     * The texture of this Token, which is used by its mesh.
+     */
+    texture: PIXI.Texture | undefined;
 
     /**
      * A reference to the VisionSource object which defines this vision source area of effect
      */
-    vision: foundry.canvas.sources.PointVisionSource.Any;
+    vision: foundry.canvas.sources.PointVisionSource.Any | undefined;
 
     /**
      * A reference to the LightSource object which defines this light source area of effect
      */
-    light: foundry.canvas.sources.PointLightSource;
+    light: foundry.canvas.sources.PointLightSource | undefined;
 
     /**
      * A reference to an animation that is currently in progress for this Token, if any
@@ -812,9 +670,249 @@ declare global {
     refreshHUD(options?: Token.ObjectHUD): void;
   }
 
+  namespace Token {
+    type AnyConstructor = typeof AnyToken;
+
+    interface ControlOptions extends PlaceableObject.ControlOptions {}
+
+    interface DestroyOptions extends PlaceableObject.DestroyOptions {}
+
+    interface DrawOptions extends PlaceableObject.DrawOptions {}
+
+    interface ReleaseOptions extends PlaceableObject.ReleaseOptions {}
+
+    type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof Token>;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    interface RenderFlags extends PlaceableObject.RenderFlags {
+      redrawEffects: boolean;
+
+      refreshVisibility: boolean;
+
+      refreshTransform: boolean;
+
+      refreshPosition: boolean;
+
+      refreshRotation: boolean;
+
+      refreshSize: boolean;
+
+      refreshElevation: boolean;
+
+      refreshMesh: boolean;
+
+      refreshShader: boolean;
+
+      refreshShape: boolean;
+
+      refreshBorder: boolean;
+
+      refreshBars: boolean;
+
+      refreshEffects: boolean;
+
+      refreshNameplate: boolean;
+
+      refreshTarget: boolean;
+
+      refreshTooltip: boolean;
+
+      refreshRingVisuals: boolean;
+
+      /** @deprecated since v12 Stable 4, until v14 */
+      recoverFromPreview: boolean;
+    }
+
+    interface ReticuleOptions {
+      /**
+       * The amount of margin between the targeting arrows and the token's bounding box, expressed as a fraction of an arrow's size.
+       * @defaultValue `0`
+       */
+      margin?: number;
+
+      /**
+       * The alpha value of the arrows.
+       * @defaultValue `1`
+       */
+      alpha?: number;
+
+      /**
+       * The size of the arrows as a proportion of grid size.
+       * @defaultValue `0.15`
+       */
+      size?: number;
+
+      /**
+       * The color of the arrows.
+       * @defaultValue `0xFF6400`
+       */
+      color?: number;
+
+      /** The arrows' border style configuration. */
+      border?: {
+        /**
+         * The border color.
+         * @defaultValue `0`
+         */
+        color?: number;
+
+        /**
+         * The border width.
+         * @defaultValue `2`
+         */
+        width?: number;
+      };
+    }
+
+    type SourceType = "move" | "sight" | "light" | "sound";
+
+    interface Bar {
+      attribute: string;
+    }
+
+    interface Velocity {
+      dx: number;
+      sx: number;
+      dy: number;
+      sy: number;
+    }
+
+    /** The UI frame container which depicts Token metadata and status, displayed in the ControlsLayer. */
+    interface ObjectHUD extends globalThis.ObjectHUD {
+      /** Token health bars */
+      bars?: PIXI.Container;
+
+      /** Token nameplate */
+      nameplate?: PreciseText;
+
+      /** Token elevation tooltip */
+      tooltip?: PreciseText;
+
+      /** Token status effects */
+      effects?: PIXI.Container;
+
+      /** Token target marker */
+      target?: PIXI.Graphics;
+    }
+
+    type InitializedObjectHUD = RequiredProps<ObjectHUD, "bars" | "nameplate" | "tooltip" | "effects" | "target">;
+
+    interface UpdateLightSourceOptions {
+      /**
+       * Defer updating perception to manually update it later.
+       * @defaultValue `false`
+       */
+      defer?: boolean | undefined;
+
+      /**
+       * Indicate that this light source has been deleted.
+       * @defaultValue `false`
+       */
+      deleted?: boolean | undefined;
+    }
+
+    interface UpdateVisionSourceOptions {
+      /**
+       * Defer updating perception to manually update it later.
+       * @defaultValue `false`
+       */
+      defer?: boolean | undefined;
+
+      /**
+       * Indicate that this vision source has been deleted.
+       * @defaultValue `false`
+       */
+      deleted?: boolean | undefined;
+    }
+
+    type UpdateSourceOptions = UpdateLightSourceOptions & UpdateVisionSourceOptions;
+
+    interface PlayOptions {
+      /**
+       * Should the video loop?
+       * @defaultValue `true`
+       */
+      loop?: boolean | undefined;
+
+      /**
+       * A specific timestamp between 0 and the video duration to begin playback
+       * @defaultValue `0`
+       */
+      offset?: number | undefined;
+
+      /**
+       * Desired volume level of the video's audio channel (if any)
+       * @defaultValue `0`
+       */
+      volume?: number | undefined;
+    }
+
+    interface DrawOverlayOptions {
+      src?: string | undefined;
+      tint?: number | undefined;
+    }
+
+    interface PositionOptions {
+      /**
+       * Animate the movement path
+       * @defaultValue `true`
+       */
+      animate?: boolean;
+
+      /**
+       * Automatically re-center the view if token movement goes off-screen
+       * @defaultValue `true`
+       */
+      recenter?: boolean | undefined;
+    }
+
+    interface EffectToggleOptions {
+      /**
+       * Force a certain active state for the effect
+       * @defaultValue `false`
+       */
+      active?: boolean | undefined;
+
+      /**
+       * Whether to set the effect as the overlay effect?
+       * @defaultValue `false`
+       */
+      overlay?: boolean | undefined;
+    }
+
+    interface SetTargetContext {
+      /**
+       * Assign the token as a target for a specific User
+       * @defaultValue `null`
+       */
+      user?: User.ConfiguredInstance | null | undefined;
+
+      /**
+       * Release other active targets for the same player?
+       * @defaultValue `true`
+       */
+      releaseOthers?: boolean | undefined;
+
+      /**
+       * Is this target being set as part of a group selection workflow?
+       * @defaultValue `Is this target being set as part of a group selection workflow?`
+       */
+      groupSelection?: boolean | undefined;
+    }
+
+    interface ControlOptions extends PlaceableObject.ControlOptions {
+      /** @defaultValue `false` */
+      pan?: boolean;
+    }
+  }
+
   /**
    * A "secret" global to help debug attributes of the currently controlled Token.
    * This is only for debugging, and may be removed in the future, so it's not safe to use.
    */
   let _token: Token.ConfiguredInstance | null;
+}
+
+declare abstract class AnyToken extends Token {
+  constructor(arg0: never, ...args: never[]);
 }
