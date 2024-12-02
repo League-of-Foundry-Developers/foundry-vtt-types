@@ -155,16 +155,17 @@ declare global {
 
     /**
      * Update the LightSource associated with this AmbientLight object.
+     * @param options - Options which modify how the source is updated
      */
-    initializeLightSource({
-      deleted,
-    }?: NullishProps<{
-      /**
-       * Indicate that this light source has been deleted
-       * @defaultValue `false`
-       */
-      deleted: boolean;
-    }>): void;
+    initializeLightSource(
+      options?: NullishProps<{
+        /**
+         * Indicate that this light source has been deleted
+         * @defaultValue `false`
+         */
+        deleted: boolean;
+      }>,
+    ): void;
 
     /**
      * Get the light source data.
