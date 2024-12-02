@@ -1,38 +1,42 @@
+import type { HandleEmptyObject } from "../../../../types/helperTypes.d.mts";
+import type { NullishProps } from "../../../../types/utils.d.mts";
+import type PointDarknessSource from "../../../client-esm/canvas/sources/point-darkness-source.d.mts";
+import type PointLightSource from "../../../client-esm/canvas/sources/point-light-source.d.mts";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 // TODO: Remove when the whole class is updated
 type LightSource = unknown;
 
 declare global {
-  namespace AmbientLight {
-    type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof AmbientLight>;
-    type ConfiguredInstance = InstanceType<ConfiguredClass>;
-
-    interface RenderFlags extends PlaceableObject.RenderFlags {
-      refreshField: boolean;
-
-      refreshPosition: boolean;
-    }
-  }
-
   /**
    * An AmbientLight is an implementation of PlaceableObject which represents a dynamic light source within the Scene.
    * @see {@link AmbientLightDocument}
    * @see {@link LightingLayer}
    */
-  class AmbientLight extends PlaceableObject<AmbientLightDocument.ConfiguredInstance> {
+  class AmbientLight<
+    ControlOptions extends AmbientLight.ControlOptions = AmbientLight.ControlOptions,
+    DestroyOptions extends AmbientLight.DestroyOptions | boolean = AmbientLight.DestroyOptions | boolean,
+    DrawOptions extends AmbientLight.DrawOptions = AmbientLight.DrawOptions,
+    ReleaseOptions extends AmbientLight.ReleaseOptions = AmbientLight.ReleaseOptions,
+  > extends PlaceableObject<
+    AmbientLightDocument.ConfiguredInstance,
+    ControlOptions,
+    DestroyOptions,
+    DrawOptions,
+    ReleaseOptions
+  > {
     constructor(document: AmbientLightDocument.ConfiguredInstance);
 
     /**
-     * A reference to the PointSource object which defines this light source area of effect
+     * The area that is affected by this light.
      */
-    source: LightSource;
+    field: PIXI.Graphics | undefined;
 
     /**
-     * A reference to the ControlIcon used to configure this light
-     * @defaultValue `undefined`
+     * A reference to the PointSource object which defines this light or darkness area of effect.
+     * This is undefined if the AmbientLight does not provide an active source of light.
      */
-    controlIcon: ControlIcon | undefined;
+    lightSource: PointLightSource | PointDarknessSource | undefined;
 
     static override embeddedName: "AmbientLight";
 
@@ -40,10 +44,10 @@ declare global {
       /** @defaultValue `{ propagate: ["refresh"] }` */
       redraw: RenderFlag<Partial<AmbientLight.RenderFlags>>;
 
-      /** @defaultValue `{ propagate: ["refreshField"], alias: true }` */
+      /** @defaultValue `{ propagate: ["refreshState", "refreshField", "refreshElevation"], alias: true }` */
       refresh: RenderFlag<Partial<AmbientLight.RenderFlags>>;
 
-      /** @defaultValue `{ propagate: ["refreshPosition", "refreshState"] }` */
+      /** @defaultValue `{ propagate: ["refreshPosition"] }` */
       refreshField: RenderFlag<Partial<AmbientLight.RenderFlags>>;
 
       /** @defaultValue `{}` */
@@ -51,9 +55,14 @@ declare global {
 
       /** @defaultValue `{}` */
       refreshState: RenderFlag<Partial<AmbientLight.RenderFlags>>;
+
+      /** @defaultValue `{}` */
+      refreshElevation: RenderFlag<Partial<AmbientLight.RenderFlags>>;
     };
 
     override get bounds(): PIXI.Rectangle;
+
+    override get sourceId(): string;
 
     /**
      * A convenience accessor to the LightData configuration object
@@ -87,15 +96,57 @@ declare global {
     get isVisible(): boolean;
 
     /**
-     * Does this Ambient Light actively emit light given its properties and the current darkness level of the Scene?
+     * Check if the point source is a LightSource instance
+     */
+    get isLightSource(): boolean;
+
+    /**
+     * Check if the point source is a DarknessSource instance
+     */
+    get isDarknessSource(): boolean;
+
+    /**
+     * Is the source of this Ambient Light disabled?
+     */
+    protected _isLightSourceDisabled(): boolean;
+
+    /**
+     * Does this Ambient Light actively emit darkness light given
+     * its properties and the current darkness level of the Scene?
+     */
+    get emitsDarkness(): boolean;
+
+    /**
+     * Does this Ambient Light actively emit positive light given
+     * its properties and the current darkness level of the Scene?
      */
     get emitsLight(): boolean;
 
-    protected override _destroy(options?: PIXI.IDestroyOptions | boolean): void;
+    protected override _destroy(options?: DestroyOptions): void;
 
-    protected override _draw(options?: Record<string, unknown>): Promise<void>;
+    protected override _draw(options?: HandleEmptyObject<DrawOptions>): Promise<void>;
 
-    protected override _applyRenderFlags(flags: AmbientLight.RenderFlags): void;
+    protected override _applyRenderFlags(flags: NullishProps<AmbientLight.RenderFlags>): void;
+
+    /**
+     * Refresh the shape of the light field-of-effect. This is refreshed when the AmbientLight fov polygon changes.
+     */
+    protected _refreshField(): void;
+
+    /**
+     * Refresh the position of the AmbientLight. Called with the coordinates change.
+     */
+    protected _refreshPosition(): void;
+
+    /**
+     * Refresh the elevation of the control icon.
+     */
+    protected _refreshElevation(): void;
+
+    /**
+     * Refresh the state of the light. Called when the disabled state or darkness conditions change.
+     */
+    protected _refreshState(): void;
 
     /**
      * Refresh the display of the ControlIcon for this AmbientLight source
@@ -103,38 +154,88 @@ declare global {
     refreshControl(): void;
 
     /**
-     * Update the source object associated with this light
-     * @param options - Options which modify how the source is updated
+     * Update the LightSource associated with this AmbientLight object.
      */
-    updateSource(options?: {
-      /**
-       * Defer updating perception to manually update it later
-       * @defaultValue `false`
-       */
-      defer?: boolean;
-
+    initializeLightSource({
+      deleted,
+    }?: NullishProps<{
       /**
        * Indicate that this light source has been deleted
        * @defaultValue `false`
        */
-      deleted?: boolean;
-    }): void;
+      deleted: boolean;
+    }>): void;
+
+    /**
+     * Get the light source data.
+     */
+    protected _getLightSourceData(): foundry.data.LightData;
 
     /**
      * @privateRemarks _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
      * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
      */
 
-    protected override _canHUD(user: User.ConfiguredInstance, event?: any): boolean;
+    protected override _canHUD(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
 
-    protected override _canConfigure(user: User.ConfiguredInstance, event?: any): boolean;
+    protected override _canConfigure(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
 
-    protected override _onClickRight(event: PIXI.FederatedEvent): Promise<this>;
+    protected _canDragLeftStart(
+      user: User.ConfiguredInstance,
+      event: DragEvent,
+    ): ReturnType<PlaceableObject<AmbientLightDocument.ConfiguredInstance>["_canDragLeftStart"]>;
 
-    protected override _onDragLeftStart(event: PIXI.FederatedEvent): void;
+    protected override _onClickRight(event: PIXI.FederatedEvent): void;
 
     protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
-    protected override _onDragLeftCancel(event: PIXI.FederatedEvent): void;
+    /**
+     * Update the source object associated with this light
+     * @param options - Options which modify how the source is updated
+     * @deprecated since v12, until v14
+     * @remarks "AmbientLight#updateSource has been deprecated in favor of AmbientLight#initializeLightSource"
+     */
+    updateSource(
+      options?: NullishProps<{
+        /**
+         * Indicate that this light source has been deleted
+         * @defaultValue `false`
+         */
+        deleted?: boolean;
+      }>,
+    ): void;
+
+    /**
+     * @deprecated since v12, until v14
+     * @remarks "AmbientLight#source has been deprecated in favor of AmbientLight#lightSource"
+     */
+    get source(): this["lightSource"];
   }
+
+  namespace AmbientLight {
+    type AnyConstructor = typeof AnyAmbientLight;
+
+    type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof AmbientLight>;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    interface ControlOptions extends PlaceableObject.ControlOptions {}
+
+    interface DestroyOptions extends PlaceableObject.DestroyOptions {}
+
+    interface DrawOptions extends PlaceableObject.DrawOptions {}
+
+    interface ReleaseOptions extends PlaceableObject.ReleaseOptions {}
+
+    interface RenderFlags extends PlaceableObject.RenderFlags {
+      refreshField: boolean;
+
+      refreshPosition: boolean;
+
+      refreshElevation: boolean;
+    }
+  }
+}
+
+declare abstract class AnyAmbientLight extends AmbientLight {
+  constructor(arg0: never, ...args: never[]);
 }

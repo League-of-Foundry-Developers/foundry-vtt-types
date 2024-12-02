@@ -1,4 +1,5 @@
-import type { AnyFunction, ValueOf } from "../../../../types/utils.d.mts";
+import type { HandleEmptyObject } from "../../../../types/helperTypes.d.mts";
+import type { AnyFunction, NullishProps, ValueOf } from "../../../../types/utils.d.mts";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
@@ -6,7 +7,18 @@ declare global {
    * The Drawing object is an implementation of the PlaceableObject container.
    * Each Drawing is a placeable object in the DrawingsLayer.
    */
-  class Drawing extends PlaceableObject<DrawingDocument.ConfiguredInstance> {
+  class Drawing<
+    ControlOptions extends Drawing.ControlOptions = Drawing.ControlOptions,
+    DestroyOptions extends Drawing.DestroyOptions | boolean = Drawing.DestroyOptions | boolean,
+    DrawOptions extends Drawing.DrawOptions = Drawing.DrawOptions,
+    ReleaseOptions extends Drawing.ReleaseOptions = Drawing.ReleaseOptions,
+  > extends PlaceableObject<
+    DrawingDocument.ConfiguredInstance,
+    ControlOptions,
+    DestroyOptions,
+    DrawOptions,
+    ReleaseOptions
+  > {
     /**
      * The texture that is used to fill this Drawing, if any.
      */
@@ -126,22 +138,65 @@ declare global {
 
     protected _onkeydown: AnyFunction | null;
 
-    protected override _destroy(options?: PIXI.IDestroyOptions | boolean): void;
+    protected override _destroy(options?: DestroyOptions): void;
 
-    protected override _draw(options?: Record<string, unknown>): Promise<void>;
+    protected override _draw(options?: HandleEmptyObject<DrawOptions>): Promise<void>;
+
+    /**
+     * Get the line style used for drawing the shape of this Drawing.
+     */
+    protected _getLineStyle(): PIXI.ILineStyleOptions;
+
+    /**
+     * Get the fill style used for drawing the shape of this Drawing.
+     */
+    protected _getFillStyle(): PIXI.IFillStyleOptions;
 
     /**
      * Prepare the text style used to instantiate a PIXI.Text or PreciseText instance for this Drawing document.
      */
     protected _getTextStyle(): PIXI.TextStyle;
 
-    protected override _applyRenderFlags(flags: Drawing.RenderFlags): void;
+    override clone(): this;
+
+    protected override _applyRenderFlags(flags: NullishProps<Drawing.RenderFlags>): void;
 
     /**
-     * Draw ellipsoid shapes
-     * @internal
+     * Refresh the position.
      */
-    protected _drawEllipse(): void;
+    protected _refreshPosition(): void;
+
+    /**
+     * Refresh the rotation.
+     */
+    protected _refreshRotation(): void;
+
+    /**
+     * Refresh the displayed state of the Drawing.
+     * Used to update aspects of the Drawing which change based on the user interaction state.
+     */
+    protected _refreshState(): void;
+
+    /**
+     * Clear and then draw the shape.
+     */
+    protected _refreshShape(): void;
+
+    /**
+     * Update sorting of this Drawing relative to other PrimaryCanvasGroup siblings.
+     * Called when the elevation or sort order for the Drawing changes.
+     */
+    protected _refreshElevation(): void;
+
+    /**
+     * Refresh the border frame that encloses the Drawing.
+     */
+    protected _refreshFrame(): void;
+
+    /**
+     * Refresh the content and appearance of text.
+     */
+    protected _refreshText(): void;
 
     /**
      * Add a new polygon point to the drawing, ensuring it differs from the last one
@@ -151,7 +206,7 @@ declare global {
      */
     protected _addPoint(
       position: Canvas.Point,
-      options?: {
+      options?: NullishProps<{
         /**
          * Should the point be rounded to integer coordinates?
          * @defaultValue `false`
@@ -169,7 +224,7 @@ declare global {
          * @defaultValue `false`
          */
         temporary?: boolean;
-      },
+      }>,
     ): void;
 
     /**
@@ -178,9 +233,16 @@ declare global {
      */
     protected _removePoint(): void;
 
-    protected override _onControl(options: PlaceableObject.ControlOptions & Drawing.TextEditingOptions): void;
+    protected override _onControl(options: ControlOptions): void;
 
-    protected override _onRelease(options: PlaceableObject.ReleaseOptions): void;
+    protected override _onRelease(options: HandleEmptyObject<ReleaseOptions>): void;
+
+    protected override _overlapsSelection(rectangle: PIXI.Rectangle): boolean;
+
+    /**
+     * Enable text editing for this drawing.
+     */
+    enableTextEditing(options?: NullishProps<Drawing.TextEditingOptions>): void;
 
     /**
      * @privateRemarks _onDelete and _onUpdate are overridden but with no signature changes.
@@ -192,13 +254,13 @@ declare global {
     /**
      * @param event - unused
      */
-    protected override _canControl(user: User.ConfiguredInstance, event?: any): boolean;
+    protected override _canControl(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
 
     /**
      * @param user  - unused
      * @param event - unused
      */
-    protected override _canConfigure(user: User.ConfiguredInstance, event?: any): boolean;
+    protected override _canConfigure(user?: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
 
     /**
      * Handle mouse movement which modifies the dimensions of the drawn shape
@@ -206,13 +268,33 @@ declare global {
      */
     protected _onMouseDraw(event: PIXI.FederatedEvent): void;
 
-    protected override _onDragLeftStart(event: PIXI.FederatedEvent): void;
+    protected _onClickLeft(
+      event: PIXI.FederatedEvent,
+    ): ReturnType<PlaceableObject<DrawingDocument.ConfiguredInstance>["_onClickLeft"]>;
 
-    protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
+    /**
+     * @remarks either returns `super._onDragLeftStart` or `this._onHandleDragStart`, the latter being `void`
+     * would be `ReturnType<A> | ReturnType<B>` but you can't do `this["_protectedMethod"]` so the latter
+     * void is inlined as undefined
+     * */
+    protected override _onDragLeftStart(
+      event: PIXI.FederatedEvent,
+    ): ReturnType<PlaceableObject<DrawingDocument.ConfiguredInstance>["_onDragLeftStart"]> | undefined;
 
-    protected override _onDragLeftDrop(event: PIXI.FederatedEvent): Promise<unknown>;
+    /** @remarks As above, but with `_onDragLeftMove`/`_onHandleDragMove` */
+    protected override _onDragLeftMove(
+      event: PIXI.FederatedEvent,
+    ): ReturnType<PlaceableObject<DrawingDocument.ConfiguredInstance>["_onDragLeftMove"]> | undefined;
 
-    protected override _onDragLeftCancel(event: PIXI.FederatedEvent): void;
+    /** @remarks As above, but with `_onDragLeftDrop`/`_onHandleDragDrop` */
+    protected override _onDragLeftDrop(
+      event: PIXI.FederatedEvent,
+    ): ReturnType<PlaceableObject<DrawingDocument.ConfiguredInstance>["_onDragLeftDrop"]> | undefined;
+
+    /** @remarks As above, but with `_onDragLeftCancel`/`_onHandleDragCancel` */
+    protected override _onDragLeftCancel(
+      event: PIXI.FederatedEvent,
+    ): ReturnType<PlaceableObject<DrawingDocument.ConfiguredInstance>["_onDragLeftCancel"]> | undefined;
 
     /**
      * Handle mouse-over event on a control handle
@@ -227,13 +309,6 @@ declare global {
      * @internal
      */
     protected _onHandleHoverOut(event: PIXI.FederatedEvent): void;
-
-    /**
-     * When clicking the resize handle, initialize the drag property.
-     * @param event - The mousedown event
-     * @internal
-     */
-    protected _onHandleMouseDown(event: PIXI.FederatedEvent): void;
 
     /**
      * Starting the resize handle drag event, initialize the original data.
@@ -253,7 +328,7 @@ declare global {
      * @param event - The mouseup event
      * @internal
      */
-    protected _onHandleDragDrop(event: PIXI.FederatedEvent): ReturnType<DrawingDocument.ConfiguredInstance["update"]>;
+    protected _onHandleDragDrop(event: PIXI.FederatedEvent): void;
 
     /**
      * Handle cancellation of a drag event for one of the resizing handles
@@ -292,6 +367,21 @@ declare global {
     type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof Drawing>;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 
+    interface TextEditingOptions {
+      forceTextEditing?: boolean;
+
+      isNew?: boolean;
+    }
+
+    /** @remarks Drawing#_onControl passes its whole options object on the Drawing#enableTextEditing */
+    interface ControlOptions extends TextEditingOptions, PlaceableObject.ControlOptions {}
+
+    interface DestroyOptions extends PlaceableObject.DestroyOptions {}
+
+    interface DrawOptions extends PlaceableObject.DrawOptions {}
+
+    interface ReleaseOptions extends PlaceableObject.ReleaseOptions {}
+
     interface RenderFlags extends PlaceableObject.RenderFlags {
       refreshTransform: boolean;
       refreshPosition: boolean;
@@ -307,17 +397,12 @@ declare global {
       refreshMesh: boolean;
     }
 
-    interface TextEditingOptions {
-      forceTextEditing?: boolean;
-
-      isNew?: boolean;
-    }
-
     interface AdjustableShape {
       shape: {
         width: number;
         height: number;
-        points: Canvas.Point[];
+        points?: Canvas.Point[] | null;
+        type?: ValueOf<(typeof Drawing)["SHAPE_TYPES"]> | null;
       };
       x: number;
       y: number;

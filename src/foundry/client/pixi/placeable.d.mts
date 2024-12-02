@@ -169,7 +169,7 @@ declare global {
      * Apply render flags before a render occurs.
      * @param flags - The render flags which must be applied
      */
-    protected _applyRenderFlags(flags: PlaceableObject.RenderFlags): void;
+    protected _applyRenderFlags(flags: NullishProps<PlaceableObject.RenderFlags>): void;
 
     /**
      * Clear the display of the existing object
@@ -557,7 +557,7 @@ declare global {
      * @see MouseInteractionManager##handleDragDrop
      * @param event - The triggering canvas interaction event
      */
-    protected _onDragLeftDrop(event: PIXI.FederatedEvent): void;
+    protected _onDragLeftDrop(event: PIXI.FederatedEvent): false | undefined;
 
     /**
      * Perform the database updates that should occur as the result of a drag-left-drop operation.
