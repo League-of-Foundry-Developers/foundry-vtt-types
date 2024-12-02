@@ -384,13 +384,21 @@ declare global {
 
     interface RenderFlags extends PlaceableObject.RenderFlags {
       refreshTransform: boolean;
+
       refreshPosition: boolean;
+
       refreshRotation: boolean;
+
       refreshSize: boolean;
+
       refreshShape: boolean;
+
       refreshFrame: boolean;
+
       refreshText: boolean;
+
       refreshElevation: boolean;
+
       /**
        * @deprecated since v12, until v14
        */

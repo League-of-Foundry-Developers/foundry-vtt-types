@@ -189,6 +189,8 @@ declare global {
   }
 
   namespace AmbientSound {
+    type AnyConstructor = typeof AnyAmbientSound;
+
     type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof AmbientSound>;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
 

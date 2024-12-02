@@ -1,47 +1,27 @@
-import type { RequiredProps } from "../../../../types/utils.d.mts";
+import type { HandleEmptyObject } from "../../../../types/helperTypes.d.mts";
+import type { NullishProps } from "../../../../types/utils.d.mts";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
-  namespace MeasuredTemplate {
-    type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof MeasuredTemplate>;
-    type ConfiguredInstance = InstanceType<ConfiguredClass>;
-
-    interface RenderFlags extends PlaceableObject.RenderFlags {
-      refreshShape: boolean;
-
-      refreshTemplate: boolean;
-
-      refreshPosition: boolean;
-
-      refreshGrid: boolean;
-
-      refreshText: boolean;
-    }
-
-    interface ObjectHUD extends globalThisObjectHUD {
-      /**
-       * Template control icon
-       */
-      icon?: ControlIcon;
-
-      /**
-       * Ruler text tooltip
-       */
-      ruler?: PreciseText;
-    }
-
-    type InitializedObjectHUD = RequiredProps<ObjectHUD, "icon" | "ruler">;
-  }
-
   /**
    * A type of Placeable Object which highlights an area of the grid as covered by some area of effect.
    * @see {@link MeasuredTemplateDocument}
    * @see {@link TemplateLayer}
    */
-  class MeasuredTemplate extends PlaceableObject<MeasuredTemplateDocument.ConfiguredInstance> {
+  class MeasuredTemplate<
+    ControlOptions extends MeasuredTemplate.ControlOptions = MeasuredTemplate.ControlOptions,
+    DestroyOptions extends MeasuredTemplate.DestroyOptions | boolean = MeasuredTemplate.DestroyOptions | boolean,
+    DrawOptions extends MeasuredTemplate.DrawOptions = MeasuredTemplate.DrawOptions,
+    ReleaseOptions extends MeasuredTemplate.ReleaseOptions = MeasuredTemplate.ReleaseOptions,
+  > extends PlaceableObject<
+    MeasuredTemplateDocument.ConfiguredInstance,
+    ControlOptions,
+    DestroyOptions,
+    DrawOptions,
+    ReleaseOptions
+  > {
     /**
      * The geometry shape used for testing point intersection
-     * @defaultValue `undefined`
      */
     shape: PIXI.Circle | PIXI.Ellipse | PIXI.Polygon | PIXI.Rectangle | PIXI.RoundedRectangle | undefined;
 
@@ -52,19 +32,13 @@ declare global {
 
     /**
      * The template graphics
-     * @defaultValue `undefined`
      */
     template: PIXI.Graphics | undefined;
 
     /**
-     * The template control icon
-     */
-    controlIcon: ControlIcon | undefined;
-
-    /**
      * The measurement ruler label
      */
-    ruler: PreciseText;
+    ruler: PreciseText | undefined;
 
     /**
      * Internal property used to configure the control border thickness
@@ -78,44 +52,37 @@ declare global {
       /** @defaultValue `{ propagate: ["refresh"] }` */
       redraw: RenderFlag<Partial<MeasuredTemplate.RenderFlags>>;
 
-      /** @defaultValue `{ propagate: ["refreshState", "refreshShape"], alias: true }` */
+      /** @defaultValue `{ propagate: ["refreshState", "refreshPosition", "refreshShape", "refreshElevation"], alias: true }` */
       refresh: RenderFlag<Partial<MeasuredTemplate.RenderFlags>>;
 
       /** @defaultValue `{}` */
       refreshState: RenderFlag<Partial<MeasuredTemplate.RenderFlags>>;
 
-      /** @defaultValue `{ propagate: ["refreshPosition", "refreshGrid", "refreshText", "refreshTemplate"] }` */
+      /** @defaultValue `{ propagate: ["refreshGrid"] }` */
+      refreshPosition: RenderFlag<Partial<MeasuredTemplate.RenderFlags>>;
+
+      /** @defaultValue `{ propagate: ["refreshTemplate", "refreshGrid", "refreshText"] }` */
       refreshShape: RenderFlag<Partial<MeasuredTemplate.RenderFlags>>;
 
       /** @defaultValue `{}` */
       refreshTemplate: RenderFlag<Partial<MeasuredTemplate.RenderFlags>>;
-
-      /** @defaultValue `{ propagate: ["refreshGrid"] }` */
-      refreshPosition: RenderFlag<Partial<MeasuredTemplate.RenderFlags>>;
 
       /** @defaultValue `{}` */
       refreshGrid: RenderFlag<Partial<MeasuredTemplate.RenderFlags>>;
 
       /** @defaultValue `{}` */
       refreshText: RenderFlag<Partial<MeasuredTemplate.RenderFlags>>;
+
+      /** @defaultValue `{}` */
+      refreshElevation: RenderFlag<Partial<MeasuredTemplate.RenderFlags>>;
     };
 
+    /**
+     * A convenient reference for whether the current User is the author of the MeasuredTemplate document.
+     */
+    get isAuthor(): boolean;
+
     override get bounds(): PIXI.Rectangle;
-
-    /**
-     * A convenience accessor for the border color as a numeric hex code
-     */
-    get borderColor(): string | number;
-
-    /**
-     * A convenience accessor for the fill color as a numeric hex code
-     */
-    get fillColor(): string | number;
-
-    /**
-     * A flag for whether the current User has full ownership over the MeasuredTemplate document.
-     */
-    get owner(): boolean;
 
     /**
      * Is this MeasuredTemplate currently visible on the Canvas?
@@ -127,13 +94,34 @@ declare global {
      */
     get highlightId(): string;
 
-    protected override _draw(): Promise<void>;
+    protected override _draw(options?: HandleEmptyObject<DrawOptions>): Promise<void>;
 
-    protected override _destroy(options?: PIXI.IDestroyOptions | boolean): void;
+    protected override _destroy(options?: DestroyOptions): void;
 
-    protected _applyRenderFlags(flags: MeasuredTemplate.RenderFlags): void;
+    protected _applyRenderFlags(flags: NullishProps<MeasuredTemplate.RenderFlags>): void;
+
+    /**
+     * Refresh the displayed state of the MeasuredTemplate.
+     * This refresh occurs when the user interaction state changes.
+     */
+    protected _refreshState(): void;
+
+    /**
+     * Refresh the elevation of the control icon.
+     */
+    protected _refreshElevation(): void;
 
     protected override _getTargetAlpha(): number;
+
+    /**
+     * Refresh the position of the MeasuredTemplate
+     */
+    protected _refreshPosition(): void;
+
+    /**
+     * Refresh the underlying geometric shape of the MeasuredTemplate.
+     */
+    protected _refreshShape(): void;
 
     /**
      * Compute the geometry for the template using its document data.
@@ -149,25 +137,30 @@ declare global {
 
     /**
      * Get a Circular area of effect given a radius of effect
-     * @internal
+     * @param distance - The radius of the circle in grid units
      */
-    static getCircleShape(distance: number): PIXI.Circle;
+    static getCircleShape(distance: number): PIXI.Circle | PIXI.Polygon;
 
     /**
      * Get a Conical area of effect given a direction, angle, and distance
-     * @internal
+     * @param distance  - The radius of the cone in grid units
+     * @param direction - The direction of the cone in degrees
+     * @param angle     - The angle of the cone in degrees
      */
-    static getConeShape(direction: number, angle: number, distance: number): PIXI.Polygon;
+    static getConeShape(direction: number, angle: number, distance: number): PIXI.Polygon | PIXI.Circle;
 
     /**
      * Get a Rectangular area of effect given a width and height
-     * @internal
+     * @param distance  - The length of the diagonal in grid units
+     * @param direction - The direction of the diagonal in degrees
      */
     static getRectShape(direction: number, distance: number): PIXI.Rectangle;
 
     /**
      * Get a rotated Rectangular area of effect given a width, height, and direction
-     * @internal
+     * @param distance  - The length of the ray in grid units
+     * @param direction - The direction of the ray in degrees
+     * @param width     - The width of the ray in grid units
      */
     static getRayShape(direction: number, distance: number, width: number): PIXI.Polygon;
 
@@ -193,19 +186,73 @@ declare global {
 
     override rotate(angle: number, snap: number): Promise<this>;
 
-    protected override _canControl(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
-
-    protected override _canConfigure(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
-
-    protected override _canView(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
-
     /**
      * @privateRemarks _onUpdate is overridden but with no signature changes.
      * For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
      */
 
-    protected override _canHUD(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
+    protected override _canControl(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
+
+    protected override _canHUD(user?: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
+
+    protected override _canConfigure(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
+
+    protected override _canView(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
 
     protected override _onClickRight(event: PIXI.FederatedEvent): void;
+
+    /**
+     * A convenience accessor for the border color as a numeric hex code
+     * @deprecated since v12, until v14
+     * @remarks "MeasuredTemplate#borderColor has been deprecated. Use MeasuredTemplate#document#borderColor instead."
+     */
+    get borderColor(): string | number;
+
+    /**
+     * A convenience accessor for the fill color as a numeric hex code
+     * @deprecated since v12, until v14
+     * @remarks "MeasuredTemplate#fillColor has been deprecated. Use MeasuredTemplate#document#fillColor instead."
+     */
+    get fillColor(): string | number;
+
+    /**
+     * A flag for whether the current User has full ownership over the MeasuredTemplate document.
+     * @deprecated since v12, until v14
+     * @remarks "MeasuredTemplate#owner has been deprecated. Use MeasuredTemplate#isOwner instead."
+     */
+    get owner(): boolean;
   }
+
+  namespace MeasuredTemplate {
+    type AnyConstructor = typeof AnyMeasuredTemplate;
+
+    type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof MeasuredTemplate>;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    interface ControlOptions extends PlaceableObject.ControlOptions {}
+
+    interface DestroyOptions extends PlaceableObject.DestroyOptions {}
+
+    interface DrawOptions extends PlaceableObject.DrawOptions {}
+
+    interface ReleaseOptions extends PlaceableObject.ReleaseOptions {}
+
+    interface RenderFlags extends PlaceableObject.RenderFlags {
+      refreshPosition: boolean;
+
+      refreshShape: boolean;
+
+      refreshTemplate: boolean;
+
+      refreshGrid: boolean;
+
+      refreshText: boolean;
+
+      refreshElevation: boolean;
+    }
+  }
+}
+
+declare abstract class AnyMeasuredTemplate extends MeasuredTemplate {
+  constructor(arg0: never, ...args: never[]);
 }
