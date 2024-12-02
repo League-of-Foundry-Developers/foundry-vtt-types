@@ -27,7 +27,7 @@ declare global {
     /**
      * The border frame and resizing handles for the drawing.
      */
-    frame: PIXI.Container | undefined;
+    frame: PlaceableObject.Frame | undefined;
 
     /**
      * A text label that may be displayed as part of the interface layer for the Drawing.
@@ -268,33 +268,15 @@ declare global {
      */
     protected _onMouseDraw(event: PIXI.FederatedEvent): void;
 
-    protected _onClickLeft(
-      event: PIXI.FederatedEvent,
-    ): ReturnType<PlaceableObject<DrawingDocument.ConfiguredInstance>["_onClickLeft"]>;
+    protected _onClickLeft(event: PIXI.FederatedEvent): void;
 
-    /**
-     * @remarks either returns `super._onDragLeftStart` or `this._onHandleDragStart`, the latter being `void`
-     * would be `ReturnType<A> | ReturnType<B>` but you can't do `this["_protectedMethod"]` so the latter
-     * void is inlined as undefined
-     * */
-    protected override _onDragLeftStart(
-      event: PIXI.FederatedEvent,
-    ): ReturnType<PlaceableObject<DrawingDocument.ConfiguredInstance>["_onDragLeftStart"]> | undefined;
+    protected override _onDragLeftStart(event: PIXI.FederatedEvent): void;
 
-    /** @remarks As above, but with `_onDragLeftMove`/`_onHandleDragMove` */
-    protected override _onDragLeftMove(
-      event: PIXI.FederatedEvent,
-    ): ReturnType<PlaceableObject<DrawingDocument.ConfiguredInstance>["_onDragLeftMove"]> | undefined;
+    protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
-    /** @remarks As above, but with `_onDragLeftDrop`/`_onHandleDragDrop` */
-    protected override _onDragLeftDrop(
-      event: PIXI.FederatedEvent,
-    ): ReturnType<PlaceableObject<DrawingDocument.ConfiguredInstance>["_onDragLeftDrop"]> | undefined;
+    protected override _onDragLeftDrop(event: PIXI.FederatedEvent): false | void;
 
-    /** @remarks As above, but with `_onDragLeftCancel`/`_onHandleDragCancel` */
-    protected override _onDragLeftCancel(
-      event: PIXI.FederatedEvent,
-    ): ReturnType<PlaceableObject<DrawingDocument.ConfiguredInstance>["_onDragLeftCancel"]> | undefined;
+    protected override _onDragLeftCancel(event: PIXI.FederatedEvent): void;
 
     /**
      * Handle mouse-over event on a control handle

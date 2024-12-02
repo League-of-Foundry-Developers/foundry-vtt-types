@@ -1,64 +1,8 @@
+import type { HandleEmptyObject } from "../../../../types/helperTypes.d.mts";
+import type { NullishProps } from "../../../../types/utils.d.mts";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
-  namespace Tile {
-    type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof Tile>;
-    type ConfiguredInstance = InstanceType<ConfiguredClass>;
-
-    interface RenderFlags extends PlaceableObject.RenderFlags {
-      refreshShape: boolean;
-
-      refreshMesh: boolean;
-
-      refreshFrame: boolean;
-
-      refreshElevation: boolean;
-
-      refreshPerception: boolean;
-
-      refreshVideo: boolean;
-    }
-
-    interface RefreshOptions {
-      /**
-       * Also refresh the perception layer.
-       * @defaultValue `false`
-       */
-      refreshPerception?: boolean | undefined;
-    }
-
-    interface PlayOptions {
-      /** Should the video loop? */
-      loop?: boolean | undefined;
-      /** A specific timestamp between 0 and the video duration to begin playback */
-      offset?: number | undefined;
-      /** Desired volume level of the video's audio channel (if any) */
-      volume?: number | undefined;
-    }
-
-    interface OcclusionOptions {
-      /**
-       * Test corners of the hit-box in addition to the token center?
-       * @defaultValue `true`
-       */
-      corners?: boolean | undefined;
-    }
-
-    interface AlphaMapOptions {
-      /**
-       * Keep the Uint8Array of pixel alphas?
-       * @defaultValue `false`
-       */
-      keepPixels?: boolean | undefined;
-
-      /**
-       * Keep the pure white RenderTexture?
-       * @defaultValue `false`
-       */
-      keepTexture?: boolean | undefined;
-    }
-  }
-
   /**
    * A Tile is an implementation of PlaceableObject which represents a static piece of artwork or prop within the Scene.
    * Tiles are drawn inside the {@link TilesLayer} container.
@@ -66,21 +10,41 @@ declare global {
    * @see {@link TileDocument}
    * @see {@link TilesLayer}
    */
-  class Tile extends PlaceableObject<TileDocument.ConfiguredInstance> {
+  class Tile<
+    ControlOptions extends Tile.ControlOptions = Tile.ControlOptions,
+    DestroyOptions extends Tile.DestroyOptions | boolean = Tile.DestroyOptions | boolean,
+    DrawOptions extends Tile.DrawOptions = Tile.DrawOptions,
+    ReleaseOptions extends Tile.ReleaseOptions = Tile.ReleaseOptions,
+  > extends PlaceableObject<
+    TileDocument.ConfiguredInstance,
+    ControlOptions,
+    DestroyOptions,
+    DrawOptions,
+    ReleaseOptions
+  > {
     static override embeddedName: "Tile";
 
     static override RENDER_FLAGS: {
       /** @defaultValue `{ propagate: ["refresh"] }` */
       redraw: RenderFlag<Partial<Tile.RenderFlags>>;
 
-      /** @defaultValue `{ propagate: ["refreshState", "refreshShape", "refreshElevation", "refreshVideo"], alias: true }` */
+      /** @defaultValue `{ propagate: ["refreshState", "refreshTransform", "refreshMesh", "refreshElevation", "refreshVideo"], alias: true }` */
       refresh: RenderFlag<Partial<Tile.RenderFlags>>;
 
-      /** @defaultValue `{ propagate: ["refreshFrame"] }` */
+      /** @defaultValue `{ propagate: ["refreshPerception"] }` */
       refreshState: RenderFlag<Partial<Tile.RenderFlags>>;
 
-      /** @defaultValue `{ propagate: ["refreshMesh", "refreshPerception", "refreshFrame"] }` */
-      refreshShape: RenderFlag<Partial<Tile.RenderFlags>>;
+      /** @defaultValue `{ propagate: ["refreshPosition", "refreshRotation", "refreshSize"], alias: true }` */
+      refreshTransform: RenderFlag<Partial<Tile.RenderFlags>>;
+
+      /** @defaultValue `{ propagate: ["refreshPerception"] }` */
+      refreshPosition: RenderFlag<Partial<Tile.RenderFlags>>;
+
+      /** @defaultValue `{ propagate: ["refreshPerception", "refreshFrame"] }` */
+      refreshRotation: RenderFlag<Partial<Tile.RenderFlags>>;
+
+      /** @defaultValue `{ propagate: ["refreshPosition", "refreshFrame"] }` */
+      refreshSize: RenderFlag<Partial<Tile.RenderFlags>>;
 
       /** @defaultValue `{}` */
       refreshMesh: RenderFlag<Partial<Tile.RenderFlags>>;
@@ -88,7 +52,7 @@ declare global {
       /** @defaultValue `{}` */
       refreshFrame: RenderFlag<Partial<Tile.RenderFlags>>;
 
-      /** @defaultValue `{ propagate: ["refreshMesh"] }` */
+      /** @defaultValue `{ propagate: ["refreshPerception"] }` */
       refreshElevation: RenderFlag<Partial<Tile.RenderFlags>>;
 
       /** @defaultValue `{}` */
@@ -96,41 +60,33 @@ declare global {
 
       /** @defaultValue `{}` */
       refreshVideo: RenderFlag<Partial<Tile.RenderFlags>>;
+
+      /**
+       * @defaultValue `{ propagate: ["refreshTransform", "refreshMesh", "refreshElevation"] }`
+       * @deprecated since v12, until v14
+       */
+      refreshShape: RenderFlag<Partial<Tile.RenderFlags>>;
     };
 
     /**
      * The Tile border frame
      */
-    frame:
-      | (PIXI.Container & {
-          border: PIXI.Graphics;
-          handle: ResizeHandle;
-        })
-      | undefined;
+    frame: PlaceableObject.Frame | undefined;
 
     /**
      * The primary tile image texture
-     * @defaultValue `undefined`
      */
     texture: PIXI.Texture | undefined;
 
     /**
-     * The Tile image sprite
-     * @defaultValue `undefined`
-     */
-    tile: PIXI.Sprite | undefined;
-
-    /**
      * A Tile background which is displayed if no valid image texture is present
-     * @defaultValue `undefined`
      */
     bg: PIXI.Graphics | undefined;
 
     /**
-     * A flag which tracks if the Tile is currently playing
-     * @defaultValue `false`
+     * A reference to the SpriteMesh which displays this Tile in the PrimaryCanvasGroup.
      */
-    playing: boolean;
+    mesh: PrimarySpriteMesh | undefined;
 
     /**
      * Get the native aspect ratio of the base texture for the Tile sprite
@@ -150,9 +106,9 @@ declare global {
     get isVideo(): boolean;
 
     /**
-     * Is this tile a roof?
+     * Is this Tile currently visible on the Canvas?
      */
-    get isRoof(): boolean;
+    get isVisible(): boolean;
 
     /**
      * Is this tile occluded?
@@ -161,14 +117,16 @@ declare global {
     get occluded(): boolean;
 
     /**
+     * Is the tile video playing?
+     */
+    get playing(): boolean;
+
+    /**
      * The effective volume at which this Tile should be playing, including the global ambient volume modifier
      */
     get volume(): number;
 
-    /**
-     * Debounce assignment of the Tile occluded state to avoid cases like animated token movement which can rapidly
-     */
-    debounceSetOcclusion(occluded: boolean): void;
+    protected override _overlapsSelection(rectangle: PIXI.Rectangle): boolean;
 
     /**
      * Create a preview tile with a background texture instead of an image
@@ -176,38 +134,69 @@ declare global {
      */
     static createPreview(data: foundry.documents.BaseTile.ConstructorData): Tile.ConfiguredInstance;
 
-    protected override _draw(options?: Record<string, unknown>): Promise<void>;
+    protected override _draw(options?: HandleEmptyObject<DrawOptions>): Promise<void>;
 
     override clear(): void;
 
-    protected override _destroy(options?: PIXI.IDestroyOptions | boolean): void;
+    protected override _destroy(options?: DestroyOptions): void;
 
-    protected override _applyRenderFlags(flags: Tile.RenderFlags): void;
+    protected override _applyRenderFlags(flags: NullishProps<Tile.RenderFlags>): void;
 
     /**
-     * Refresh the display of the Tile resizing handle.
-     * Shift the position of the drag handle from the bottom-right (default) depending on which way we are dragging.
+     * Refresh the position.
      */
-    protected _refreshHandle(b: Canvas.Rectangle): void;
+    protected _refreshPosition(): void;
 
     /**
-     * @privateRemarks _onUpdate and _onDelete are all overridden but with no signature changes.
-     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+     * Refresh the rotation.
+     */
+    protected _refreshRotation(): void;
+
+    /**
+     * Refresh the size.
+     */
+    protected _refreshSize(): void;
+
+    /**
+     * Refresh the displayed state of the Tile.
+     * Updated when the tile interaction state changes, when it is hidden, or when its elevation changes.
+     */
+    protected _refreshState(): void;
+
+    /**
+     * Refresh the appearance of the tile.
+     */
+    protected _refreshMesh(): void;
+
+    /**
+     * Refresh the elevation.
+     */
+    protected _refreshElevation(): void;
+
+    /**
+     * Refresh the border frame that encloses the Tile.
+     */
+    protected _refreshFrame(): void;
+
+    /**
+     * Refresh changes to the video playback state.
+     */
+    protected _refreshVideo(): void;
+
+    /**
+     * @privateRemarks _onUpdate is overridden but with no signature changes.
+     * For type simplicity it is left off. This method historically has been the source of a large amount of computation from tsc.
      */
 
     override activateListeners(): void;
 
-    protected override _canConfigure(user: User, event?: PIXI.FederatedEvent): boolean;
-
     protected override _onClickLeft(event: PIXI.FederatedEvent): void;
-
-    protected override _onClickLeft2(event: PIXI.FederatedEvent): void;
 
     protected override _onDragLeftStart(event: PIXI.FederatedEvent): void;
 
     protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
-    protected override _onDragLeftDrop(event: PIXI.FederatedEvent): Promise<unknown>;
+    protected override _onDragLeftDrop(event: PIXI.FederatedEvent): false | undefined;
 
     protected override _onDragLeftCancel(event: PIXI.FederatedEvent): void;
 
@@ -245,7 +234,7 @@ declare global {
      * Handle mouseup after dragging a tile scale handler
      * @param event - The mouseup event
      */
-    protected _onHandleDragDrop(event: PIXI.FederatedEvent): Promise<this>;
+    protected _onHandleDragDrop(event: PIXI.FederatedEvent): void;
 
     /**
      * Handle cancellation of a drag event for one of the resizing handles
@@ -253,10 +242,26 @@ declare global {
     protected _onHandleDragCancel(event: PIXI.FederatedEvent): void;
 
     /**
+     * Is this tile a roof?
+     * @deprecated since v12, until v14
+     * @remarks "Tile#isRoof has been deprecated without replacement."
+     */
+    get isRoof(): boolean;
+
+    /**
      * @deprecated since v11, will be removed in v13
      * @remarks "Tile#testOcclusion has been deprecated in favor of PrimaryCanvasObject#testOcclusion"
      */
-    testOcclusion(token: Token.ConfiguredInstance, options?: Tile.OcclusionOptions): boolean;
+    testOcclusion(
+      token: Token.ConfiguredInstance,
+      options?: NullishProps<{
+        /**
+         * Test corners of the hit-box in addition to the token center?
+         * @defaultValue `true`
+         */
+        corners: boolean;
+      }>,
+    ): boolean;
 
     /**
      * @deprecated since v11, will be removed in v13
@@ -275,10 +280,47 @@ declare global {
      * @remarks "Tile#_getAlphaBounds has been deprecated in favor of PrimaryCanvasObject#_getAlphaBounds"
      */
     _getAlphaBounds(): unknown;
-
-    /**
-     * @remarks Not used
-     */
-    controlIcon: null;
   }
+
+  namespace Tile {
+    type AnyConstructor = typeof AnyTile;
+
+    type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof Tile>;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    interface ControlOptions extends PlaceableObject.ControlOptions {}
+
+    interface DestroyOptions extends PlaceableObject.DestroyOptions {}
+
+    interface DrawOptions extends PlaceableObject.DrawOptions {}
+
+    interface ReleaseOptions extends PlaceableObject.ReleaseOptions {}
+
+    interface RenderFlags extends PlaceableObject.RenderFlags {
+      refreshTransform: boolean;
+
+      refreshPosition: boolean;
+
+      refreshRotation: boolean;
+
+      refreshSize: boolean;
+
+      refreshMesh: boolean;
+
+      refreshFrame: boolean;
+
+      refreshElevation: boolean;
+
+      refreshPerception: boolean;
+
+      refreshVideo: boolean;
+
+      /** @deprecated since v12, until v14 */
+      refreshShape: boolean;
+    }
+  }
+}
+
+declare abstract class AnyTile extends Tile {
+  constructor(arg0: never, ...args: never[]);
 }

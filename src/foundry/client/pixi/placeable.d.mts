@@ -557,13 +557,13 @@ declare global {
      * @see MouseInteractionManager##handleDragDrop
      * @param event - The triggering canvas interaction event
      */
-    protected _onDragLeftDrop(event: PIXI.FederatedEvent): false | undefined;
+    protected _onDragLeftDrop(event: PIXI.FederatedEvent): false | void;
 
     /**
      * Perform the database updates that should occur as the result of a drag-left-drop operation.
      * @param event - The triggering canvas interaction event
      * @returns An array of database updates to perform for documents in this collection
-     * @privateRemarks Foundry types this as possibly returning null, but it can't, as far as I can tell.
+     * @privateRemarks Foundry types this as possibly returning null, but it can't, as far as I can tell, so I've left it off.
      */
     _prepareDragLeftDropUpdates(
       event: PIXI.FederatedEvent,
@@ -581,28 +581,28 @@ declare global {
      * @see MouseInteractionManager##handleDragStart
      * @param event - The triggering mouse click event
      */
-    protected _onDragRightStart(event: PIXI.FederatedEvent): ReturnType<Canvas["_onDragRightStart"]>;
+    protected _onDragRightStart(event: PIXI.FederatedEvent): void;
 
     /**
      * Callback actions which occur on a right mouse-drag operation.
      * @see MouseInteractionManager##handleDragMove
      * @param event - The triggering canvas interaction event
      */
-    protected _onDragRightMove(event: PIXI.FederatedEvent): ReturnType<Canvas["_onDragRightMove"]>;
+    protected _onDragRightMove(event: PIXI.FederatedEvent): void;
 
     /**
      * Callback actions which occur on a right mouse-drag operation.
      * @see MouseInteractionManager##handleDragDrop
      * @param event - The triggering canvas interaction event
      */
-    protected _onDragRightDrop(event: PIXI.FederatedEvent): ReturnType<Canvas["_onDragRightDrop"]>;
+    protected _onDragRightDrop(event: PIXI.FederatedEvent): void;
 
     /**
      * Callback actions which occur on a right mouse-drag operation.
      * @see MouseInteractionManager##handleDragDrop
      * @param event - The triggering mouse click event
      */
-    protected _onDragRightCancel(event: PIXI.FederatedEvent): ReturnType<Canvas["_onDragRightCancel"]>;
+    protected _onDragRightCancel(event: PIXI.FederatedEvent): void;
 
     /**
      * Callback action which occurs on a long press.
@@ -610,13 +610,19 @@ declare global {
      * @param event  - The triggering canvas interaction event
      * @param origin - The local canvas coordinates of the mousepress.
      */
-    protected _onLongPress(event: PIXI.FederatedEvent, origin: PIXI.Point): ReturnType<ControlsLayer["_onLongPress"]>;
+    protected _onLongPress(event: PIXI.FederatedEvent, origin: PIXI.Point): Promise<boolean>;
   }
 
   namespace PlaceableObject {
     type Any = PlaceableObject<any>;
 
     type AnyConstructor = typeof AnyPlaceableObject;
+
+    /** @privateRemarks Used by Drawings and Tiles */
+    type Frame = PIXI.Container & {
+      border: PIXI.Graphics;
+      handle: ResizeHandle;
+    };
 
     interface ControlOptions {
       /**

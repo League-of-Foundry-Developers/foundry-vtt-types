@@ -96,7 +96,7 @@ declare class PrimaryOccludableObject {
    * @returns Is the Token occluded by the PCO?
    */
   testOcclusion(
-    token: Token,
+    token: Token.ConfiguredInstance,
     options?: NullishProps<{
       /** Test corners of the hit-box in addition to the token center? */
       corners: boolean;
