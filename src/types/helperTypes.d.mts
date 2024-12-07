@@ -159,47 +159,6 @@ export type InterfaceToObject<T extends object> = {
 };
 
 /**
- * Replaces the type `{}` with `Record<string, never>` which is usually a better
- * representation of an empty object. The type `{}` actually allows any type be
- * assigned to it except for `null` and `undefined`.
- *
- * The theory behind this is that all non-nullish types allow
- * you to access any property on them without erroring. Primitive types like
- * `number` will not store the property but it still will not error to simply
- * try to get and set properties.
- *
- * The type `{}` can appear for example after operations like `Omit` if it
- * removes all properties rom an object, because an empty interface was given,
- * or so on.
- *
- * @example
- * ```ts
- * type ObjectArray<T extends Record<string, unknown>> = T[];
- *
- * // As you would hope a union can't be assigned. It errors with:
- * // "type 'string' is not assignable to type 'Record<string, unknown>'."
- * type UnionErrors = ObjectArray<string | { x: number }>;
- *
- * // However, this works.
- * type EmptyObjectArray = ObjectArray<{}>;
- *
- * // But it allows likely unsound behavior like this:
- * const emptyObject: EmptyObjectArray = [1, "foo", () => 3];
- *
- * // So it may be better to define `ObjectArray` like so:
- * type ObjectArray<T extends Record<string, unknown>> = HandleEmptyObject<T>[];
- *
- * // If it were, then this line would error appropriately!
- * const emptyObject: EmptyObjectArray = [1, "foo", () => 3];
- * ```
- */
-export type HandleEmptyObject<
-  T extends Record<string, unknown>,
-  D extends Record<string, unknown> = Record<string, never>,
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-> = [{}] extends [T] ? D : T;
-
-/**
  * This is a helper type that allows you to ensure that a record conforms to a
  * certain shape. This is useful when you want to ensure that a record has all
  * keys of a certain type.
