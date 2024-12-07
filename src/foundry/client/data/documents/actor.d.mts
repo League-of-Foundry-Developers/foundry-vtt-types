@@ -12,6 +12,18 @@ declare global {
 
     interface DatabaseOperations extends DocumentDatabaseOperations<Actor> {}
 
+    type ItemTypes = {
+      [K in Game.Model.TypeNames<"Item">]: Array<
+        // TODO(LukeAbby): Looks like a `Item.OfType` helper would be useful.
+        Item.ConfiguredInstance & {
+          type: K;
+        } & (DataModelConfig extends { Item: { readonly [_ in K]?: infer SystemData } }
+            ? { system: SystemData }
+            : // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+              {})
+      >;
+    };
+
     // Helpful aliases
     type TypeNames = BaseActor.TypeNames;
     type ConstructorData = BaseActor.ConstructorData;
@@ -113,15 +125,7 @@ declare global {
     /**
      * Provide an object which organizes all embedded Item instances by their type
      */
-    get itemTypes(): {
-      [K in foundry.documents.BaseItem["type"]]: Array<
-        Item.ConfiguredInstance & {
-          type: K;
-          // TODO: It's the "extends cannot be used to replicate in problem" again
-          // system: "Item" extends keyof DataModelConfig ? DataModelConfig["Item"][K] : never;
-        }
-      >;
-    };
+    get itemTypes(): Actor.ItemTypes;
     /**
      * Test whether an Actor document is a synthetic representation of a Token (if true) or a full Document (if false)
      */
