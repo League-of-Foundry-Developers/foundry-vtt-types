@@ -5,6 +5,7 @@ import type {
   DatabaseUpdateOperation,
 } from "../../../common/abstract/_types.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
+import type { ObjectField } from '../../../common/data/fields.d.mts';
 import type { DirectoryCollectionMixin_DocumentCollection_Interface } from "../abstract/directory-collection-mixin.d.mts";
 
 declare const DirectoryCollectionMixin_DocumentCollection: DirectoryCollectionMixin_DocumentCollection_Interface;
@@ -50,7 +51,7 @@ declare global {
     T extends CompendiumCollection.Metadata,
   > extends DirectoryCollectionMixin_DocumentCollection<Document.ConfiguredClassForName<T["type"]>, T["name"]> {
     /** @param metadata - The compendium metadata, an object provided by game.data */
-    constructor(metadata: T);
+    constructor(metadata: CompendiumCollection.ConstructorMetadata<T["type"]>);
 
     /** The compendium metadata which defines the compendium content and location */
     metadata: T;
@@ -330,10 +331,10 @@ declare global {
      * @param options - Additional options which modify the Compendium creation request
      *                  default `{}`
      */
-    static createCompendium<T extends CompendiumCollection.Metadata>(
-      metadata: T,
-      options?: Document.OnCreateOptions<T["type"]>,
-    ): Promise<CompendiumCollection<T>>;
+    static createCompendium<T extends foundry.CONST.COMPENDIUM_DOCUMENT_TYPES>(
+      metadata: CompendiumCollection.CreateCompendiumMetadata<T>,
+      options?: Document.OnCreateOptions<T>,
+    ): Promise<CompendiumCollection<CompendiumCollection.Metadata<T>>>;
 
     /**
      * Generate a UUID for a given primary document ID within this Compendium pack
@@ -419,31 +420,51 @@ declare global {
       ownership: foundry.packages.BasePackage.OwnershipRecord;
       locked: boolean;
     }
-    interface Metadata {
-      type: foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
-      name: string;
+
+    // The type that's passed to `createCompendium`.
+    interface CreateCompendiumMetadata<T extends foundry.CONST.COMPENDIUM_DOCUMENT_TYPES> {
+      type: T;
       label: string;
+      name?: string | null | undefined;
+    }
+
+    // The type that's passed to `new CompendiumCollection(...)`
+    interface ConstructorMetadata<T extends foundry.CONST.COMPENDIUM_DOCUMENT_TYPES> {
+      type: T;
+
+      index: IndexTypeForMetadata<T>;
+      folders: Folder[];
+    }
+
+    // The type that appears in `compendium.metadata` after initialization.
+    interface Metadata<T extends foundry.CONST.COMPENDIUM_DOCUMENT_TYPES> {
+      type: T;
+      label: string;
+      name: string;
+
+      flags: ObjectField.FlagsField<T>,
+      ownership: foundry.packages.BasePackage.OwnershipRecord;
       path: string;
-      private: boolean;
       package: string;
-      system?: string;
+      system: string;
+
       /** Added by PackageCompendiumPacks#initialize */
       id: string;
       packageType: string;
       packageName: string;
     }
 
-    interface GetIndexOptions<T extends CompendiumCollection.Metadata> {
+    interface GetIndexOptions<T extends foundry.CONST.COMPENDIUM_DOCUMENT_TYPES> {
       /**
        * An array of fields to return as part of the index
        * @defaultValue `[]`
        */
-      fields?: (keyof Document.ConfiguredInstanceForName<T["type"]>["_source"])[];
+      fields?: (keyof Document.ConfiguredInstanceForName<T>["_source"])[];
     }
 
     // TODO: Improve automatic index properties based on document type
-    type IndexEntry<T extends CompendiumCollection.Metadata> = { _id: string; uuid: string } & DeepPartial<
-      Document.ConfiguredInstanceForName<T["type"]>["_source"]
+    type IndexEntry<T extends foundry.CONST.COMPENDIUM_DOCUMENT_TYPES> = { _id: string; uuid: string } & DeepPartial<
+      Document.ConfiguredInstanceForName<T>["_source"]
     >;
   }
 }
@@ -466,6 +487,6 @@ interface ImportAllOptions {
   options?: (Document.ModificationContext<Document.Any | null> & WorldCollection.FromCompendiumOptions) | undefined;
 }
 
-type IndexTypeForMetadata<T extends CompendiumCollection.Metadata> = foundry.utils.Collection<
+type IndexTypeForMetadata<T extends foundry.CONST.COMPENDIUM_DOCUMENT_TYPES> = foundry.utils.Collection<
   CompendiumCollection.IndexEntry<T>
 >;
