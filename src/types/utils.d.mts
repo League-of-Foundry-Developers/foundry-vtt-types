@@ -248,6 +248,7 @@ export type GetDataReturnType<T extends object> = GetDataConfigOptions<T>[GetDat
  * removes all properties rom an object, because an empty interface was given,
  * or so on.
  *
+ * Params extend `object` instead of `AnyObject` to allow interfaces
  * @example
  * ```ts
  * type ObjectArray<T extends Record<string, unknown>> = T[];
@@ -270,7 +271,7 @@ export type GetDataReturnType<T extends object> = GetDataConfigOptions<T>[GetDat
  * ```
  */
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export type HandleEmptyObject<T extends AnyObject, D extends AnyObject = EmptyObject> = [{}] extends [T] ? D : T;
+export type HandleEmptyObject<T extends object, D extends object = EmptyObject> = [{}] extends [T] ? D : T;
 
 /**
  * This type allows any plain objects. In other words it disallows functions

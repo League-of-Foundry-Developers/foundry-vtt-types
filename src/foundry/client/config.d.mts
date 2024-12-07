@@ -1,8 +1,8 @@
-import type { GetKey, HandleEmptyObject, InterfaceToObject } from "../../types/helperTypes.d.mts";
+import type { GetKey } from "../../types/helperTypes.d.mts";
 import type * as CONST from "../common/constants.d.mts";
 import type { DataModel, Document } from "../common/abstract/module.d.mts";
 import type PointLightSource from "../client-esm/canvas/sources/point-light-source.d.mts";
-import type { AnyObject, MaybePromise } from "../../types/utils.d.mts";
+import type { AnyObject, HandleEmptyObject, MaybePromise } from "../../types/utils.d.mts";
 
 declare global {
   namespace CONFIG {
@@ -2019,10 +2019,7 @@ declare global {
      * A mapping of status effect IDs which provide some additional mechanical integration.
      * @defaultValue `{ DEFEATED: "dead", INVISIBLE: "invisible", BLIND: "blind", BURROW: "burrow", HOVER: "hover", FLY: "fly" }`
      */
-    specialStatusEffects: HandleEmptyObject<
-      InterfaceToObject<CONFIG.SpecialStatusEffects>,
-      InterfaceToObject<CONFIG.DefaultSpecialStatusEffects>
-    >;
+    specialStatusEffects: HandleEmptyObject<CONFIG.SpecialStatusEffects, CONFIG.DefaultSpecialStatusEffects>;
 
     /**
      * A mapping of core audio effects used which can be replaced by systems or mods
