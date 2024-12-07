@@ -1,7 +1,9 @@
 import type { HandleEmptyObject, MakeConform } from "../../../types/helperTypes.d.mts";
 import type { NullishProps, ValueOf } from "../../../types/utils.d.mts";
 import type ApplicationV2 from "../../client-esm/applications/api/application.d.mts";
-import type { Document } from "../../common/abstract/module.d.mts";
+import type PointEffectSourceMixin from "../../client-esm/canvas/sources/point-effect-source.d.mts";
+import type RenderedEffectSource from "../../client-esm/canvas/sources/rendered-effect-source.d.mts";
+import type { DataModel, Document } from "../../common/abstract/module.d.mts";
 
 // Gets a key with a required shape to conform to which is also used as a fallback when the key doesn't exist.
 type GetKeyWithShape<T, K, S> = K extends keyof T ? MakeConform<T[K], S> : S;
@@ -624,11 +626,15 @@ declare global {
       handle: ResizeHandle;
     };
 
+    type ExtendedLightSourceData = DataModel.ConstructorData<foundry.data.LightData.Schema> &
+      Pick<PointEffectSourceMixin.PointEffectSourceData, "rotation" | "externalRadius"> &
+      Pick<RenderedEffectSource.RenderedEffectSourceData, "seed" | "preview">;
+
     interface ControlOptions {
       /**
        * Release any other controlled objects first
        */
-      releaseOthers?: boolean;
+      releaseOthers?: boolean | null | undefined;
     }
 
     interface DestroyOptions extends PIXI.IDestroyOptions {}

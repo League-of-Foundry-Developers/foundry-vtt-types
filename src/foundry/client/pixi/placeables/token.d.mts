@@ -1,4 +1,5 @@
-import type { RequiredProps } from "../../../../types/utils.d.mts";
+import type { IntentionalPartial } from "../../../../types/helperTypes.d.mts";
+import type { NullishProps, RequiredProps } from "../../../../types/utils.d.mts";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
@@ -160,22 +161,25 @@ declare global {
     light: foundry.canvas.sources.PointLightSource | undefined;
 
     /**
-     * A reference to an animation that is currently in progress for this Token, if any
-     * @internal
+     * The current animations of this Token.
      */
-    protected _animation: Promise<number> | null;
+    get animationContexts(): Map<string, Token.AnimationContext>;
+
+    /**
+     * A TokenRing instance which is used if this Token applies a dynamic ring.
+     * This property is null if the Token does not use a dynamic ring.
+     */
+    get ring(): foundry.canvas.tokens.TokenRing | null;
+
+    /**
+     * A convenience boolean to test whether the Token is using a dynamic ring.
+     */
+    get hasDynamicRing(): boolean;
 
     /**
      * A convenient reference to the Actor object associated with the Token embedded document.
      */
-    get actor(): this["document"]["actor"];
-
-    /**
-     * A convenient reference for whether the current User has full control over the Token document.
-     */
-    get owner(): boolean;
-
-    get isOwner(): boolean;
+    get actor(): Actor.ConfiguredInstance | null;
 
     /**
      * A boolean flag for whether the current game User has observer permission for the Token
@@ -183,16 +187,9 @@ declare global {
     get observer(): boolean;
 
     /**
-     * Is the HUD display active for this token?
-     */
-    get hasActiveHUD(): boolean;
-
-    /**
      * Convenience access to the token's nameplate string
-     * @remarks
-     * This is actually a getter that returns data.name
      */
-    readonly name: string;
+    get name(): string;
 
     override get bounds(): PIXI.Rectangle;
 
@@ -209,12 +206,15 @@ declare global {
     /**
      * The Token's current central position
      */
-    get center(): Canvas.Point;
+    get center(): PIXI.Point;
 
     /**
      * The Token's central position, adjusted in each direction by one or zero pixels to offset it relative to walls.
      */
-    getMovementAdjustedPoint(point: Canvas.Point, offset?: { offsetX: number; offsetY: number }): Canvas.Point;
+    getMovementAdjustedPoint(
+      point: Canvas.Point,
+      offset?: NullishProps<{ offsetX: number; offsetY: number }>,
+    ): Canvas.Point;
 
     /**
      * The HTML source element for the primary Tile texture
@@ -246,7 +246,7 @@ declare global {
     /**
      * Return a reference to the detection modes array.
      */
-    get detectionModes(): Array<DetectionMode>;
+    get detectionModes(): DetectionMode[];
 
     /**
      * Determine whether the Token is visible to the calling user's perspective.
@@ -270,7 +270,21 @@ declare global {
     get hasSight(): boolean;
 
     /**
-     * Test whether the Token emits light (or darkness) at any radius
+     * Does this Token actively emit light given its properties and the current darkness level of the Scene?
+     */
+    protected _isLightSource(): boolean;
+
+    /**
+     * Does this Ambient Light[sic] actively emit darkness given
+     * its properties and the current darkness level of the Scene?
+     * @remarks The above error is in the Foundry JSDoc; clearly they meant Token.
+     */
+    get emitsDarkness(): boolean;
+
+    /**
+     * Does this Ambient Light[sic] actively emit light given
+     * its properties and the current darkness level of the Scene?
+     * @remarks The above error is in the Foundry JSDoc; clearly they meant Token.
      */
     get emitsLight(): boolean;
 
@@ -290,6 +304,16 @@ declare global {
     get brightRadius(): number;
 
     /**
+     * The maximum radius in pixels of the light field
+     */
+    get radius(): number;
+
+    /**
+     * The range of this token's light perception in pixels.
+     */
+    get lightPerceptionRange(): number;
+
+    /**
      * Translate the token's vision range in units into a radius in pixels.
      */
     get sightRange(): number;
@@ -298,6 +322,66 @@ declare global {
      * Translate the token's maximum vision range that takes into account lights.
      */
     get optimalSightRange(): number;
+
+    /**
+     * Update the light and vision source objects associated with this Token.
+     * @param options - Options which configure how perception sources are updated
+     */
+    initializeSources(
+      options?: NullishProps<{
+        /**
+         * Indicate that this light and vision source has been deleted
+         * @defaultValue `false`
+         */
+        deleted: boolean;
+      }>,
+    ): void;
+
+    /**
+     * Update an emitted light source associated with this Token.
+     * @param options - Options which affect how the light source is updated
+     */
+    initializeLightSource(
+      options?: NullishProps<{
+        /**
+         * Indicate that this light source has been deleted.
+         * @defaultValue `false`
+         */
+        deleted: boolean;
+      }>,
+    ): void;
+
+    //TODO: reevaluate after auditing the _Source classes
+    /**
+     * Get the light source data.
+     */
+    protected _getLightSourceData(): PlaceableObject.ExtendedLightSourceData;
+
+    /**
+     * Update the VisionSource instance associated with this Token.
+     * @param options - Options which affect how the vision source is updated
+     */
+    initializeVisionSource(
+      options?: NullishProps<{
+        /**
+         * Indicate that this vision source has been deleted.
+         * @defaultValue `false`
+         */
+        deleted: boolean;
+      }>,
+    ): void;
+
+    /**
+     * Returns a record of blinding state.
+     */
+    protected _getVisionBlindedStates(): Record<string, boolean>;
+
+    /**
+     * Get the vision source data.
+     * @remarks IntentionalPartial because while it contains all the keys of the Foundry typedef for VisionSourceData (which this is set as returning in their types)
+     * and more, it omits `animation` and `walls` keys at least from our - more accurate - interface
+     */
+    protected _getVisionSourceData(): IntentionalPartial<foundry.canvas.sources.PointVisionSource.VisionSourceData>;
 
     // TODO(LukeAbby): This override appears to fail because it creates a circular dependency that tsc can't resolve for some reason. Bug report?
     // `Token` is a `PlaceableObject` if it properly extends `PlaceableObject` however `clone` is a proper override of `PlaceableObject.clone` only if its return value extends `PlaceableObject`.
@@ -638,12 +722,6 @@ declare global {
 
     /**
      * @deprecated since v10, will be removed in v12
-     * @remarks `"Token#hasLimitedVisionAngle has been renamed to Token#hasLimitedSourceAngle"`
-     */
-    get hasLimitedVisionAngle(): boolean;
-
-    /**
-     * @deprecated since v10, will be removed in v12
      * @remarks `"Token#getSightOrigin has been deprecated in favor of Token#getMovementAdjustedPoint"`
      */
     getSightOrigin(): {
@@ -668,6 +746,13 @@ declare global {
      * @remarks "Token#refreshHUD is deprecated in favor of token.renderFlags.set()"
      */
     refreshHUD(options?: Token.ObjectHUD): void;
+
+    /**
+     * A convenient reference for whether the current User has full control over the Token document.
+     * @deprecated since v12, until v14
+     * @remarks "Token#owner has been deprecated. Use Token#isOwner instead."
+     */
+    get owner(): boolean;
   }
 
   namespace Token {
@@ -721,6 +806,93 @@ declare global {
 
       /** @deprecated since v12 Stable 4, until v14 */
       recoverFromPreview: boolean;
+    }
+
+    interface AnimationData {
+      /** The x position in pixels */
+      x: number;
+
+      /** The x position in pixels */
+      y: number;
+
+      /** The width in grid spaces */
+      width: number;
+
+      /** The height in grid spaces */
+      height: number;
+
+      /** The alpha value */
+      alpha: number;
+
+      /** The rotation in degrees */
+      rotation: number;
+
+      /** The texture data */
+      texture: {
+        /** The texture file path */
+        src: string;
+
+        /** The texture anchor X*/
+        anchorX: number;
+
+        /** The texture anchor Y*/
+        anchorY: number;
+
+        /** The texture scale X*/
+        scaleX: number;
+
+        /** The texture scale Y*/
+        scaleY: number;
+
+        /** The texture tint*/
+        tint: Color;
+      };
+
+      /** The ring data */
+      ring: {
+        /** The ring subject data */
+        subject: {
+          /** The ring subject texture */
+          texture: string;
+
+          /** The ring subject scale */
+          scale: number;
+        };
+      };
+    }
+
+    interface AnimationContext {
+      /** The name of the animation */
+      name: string | symbol;
+
+      //todo: find out if this can be InexactPartial (NullishProps unlikely)
+      /** The final animation state */
+      to: IntentionalPartial<AnimationData>;
+
+      /** The duration of the animation */
+      duration: number;
+
+      /** The current time of the animation */
+      time: number;
+
+      /** Asynchronous functions that are executed before the animation starts */
+      preAnimate: ((context: AnimationContext) => Promise<void>)[];
+
+      /**
+       * Synchronous functions that are executed after the animation ended.
+       * They may be executed before the preAnimate functions have finished  if the animation is terminated.
+       */
+      postAnimate: ((context: AnimationContext) => void)[];
+
+      /** Synchronous functions that are executed each frame after `ontick` and before {@link Token#_onAnimationUpdate} */
+      onAnimate: ((context: AnimationContext) => void)[];
+
+      /**
+       * The promise of the animation, which resolves to true if the animation
+       * completed, to false if it was terminated, and rejects if an error occurred.
+       * Undefined in the first frame (at time 0) of the animation.
+       */
+      promise: Promise<boolean> | undefined;
     }
 
     interface ReticuleOptions {

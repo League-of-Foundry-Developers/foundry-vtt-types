@@ -211,19 +211,19 @@ declare global {
          * Should the point be rounded to integer coordinates?
          * @defaultValue `false`
          */
-        round?: boolean;
+        round: boolean;
 
         /**
          * Should the point be snapped to grid precision?
          * @defaultValue `false`
          */
-        snap?: boolean;
+        snap: boolean;
 
         /**
          * Is this a temporary control point?
          * @defaultValue `false`
          */
-        temporary?: boolean;
+        temporary: boolean;
       }>,
     ): void;
 
@@ -274,7 +274,7 @@ declare global {
 
     protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
-    protected override _onDragLeftDrop(event: PIXI.FederatedEvent): false | void;
+    protected override _onDragLeftDrop(event: PIXI.FederatedEvent): false | undefined;
 
     protected override _onDragLeftCancel(event: PIXI.FederatedEvent): void;
 
@@ -310,7 +310,7 @@ declare global {
      * @param event - The mouseup event
      * @internal
      */
-    protected _onHandleDragDrop(event: PIXI.FederatedEvent): void;
+    protected _onHandleDragDrop(event: PIXI.FederatedEvent): foundry.data.ShapeData;
 
     /**
      * Handle cancellation of a drag event for one of the resizing handles
@@ -391,7 +391,7 @@ declare global {
       shape: {
         width: number;
         height: number;
-        points?: Canvas.Point[] | null;
+        points?: Canvas.Point[] | undefined | null;
         type?: ValueOf<(typeof Drawing)["SHAPE_TYPES"]> | null;
       };
       x: number;

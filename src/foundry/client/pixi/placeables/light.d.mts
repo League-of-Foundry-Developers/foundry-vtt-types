@@ -1,11 +1,9 @@
 import type { HandleEmptyObject } from "../../../../types/helperTypes.d.mts";
 import type { NullishProps } from "../../../../types/utils.d.mts";
 import type PointDarknessSource from "../../../client-esm/canvas/sources/point-darkness-source.d.mts";
+import type { LightSourceData } from "../../../client-esm/canvas/sources/point-light-source.d.mts";
 import type PointLightSource from "../../../client-esm/canvas/sources/point-light-source.d.mts";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
-
-// TODO: Remove when the whole class is updated
-type LightSource = unknown;
 
 declare global {
   /**
@@ -170,7 +168,7 @@ declare global {
     /**
      * Get the light source data.
      */
-    protected _getLightSourceData(): foundry.data.LightData;
+    protected _getLightSourceData(): LightSourceData;
 
     /**
      * @privateRemarks _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.

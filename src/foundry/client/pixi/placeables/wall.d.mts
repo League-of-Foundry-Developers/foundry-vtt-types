@@ -1,29 +1,9 @@
-import type { LineIntersection } from "../../../common/utils/geometry.d.mts";
+import type { HandleEmptyObject } from "../../../../types/helperTypes.d.mts";
+import type { NullishProps, ValueOf } from "../../../../types/utils.d.mts";
+import type Edge from "../../../client-esm/canvas/edges/edge.d.mts";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
-  namespace Wall {
-    type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof Wall>;
-    type ConfiguredInstance = InstanceType<ConfiguredClass>;
-
-    interface RenderFlags extends PlaceableObject.RenderFlags {
-      refreshLine: boolean;
-
-      refreshEndpoints: boolean;
-
-      refreshDirection: boolean;
-
-      refreshHighlight: boolean;
-    }
-
-    interface ControlOptions extends PlaceableObject.ControlOptions {
-      /** @defaultValue `false` */
-      chain: boolean;
-    }
-
-    type DoorInteraction = "open" | "close" | "lock" | "unlock" | "test";
-  }
-
   /**
    * A Wall is an implementation of PlaceableObject which represents a physical or visual barrier within the Scene.
    * Walls are used to restrict Token movement or visibility as well as to define the areas of effect for ambient lights
@@ -32,7 +12,18 @@ declare global {
    * @see {@link WallDocument}
    * @see {@link WallsLayer}
    */
-  class Wall extends PlaceableObject<WallDocument.ConfiguredInstance> {
+  class Wall<
+    ControlOptions extends Wall.ControlOptions = Wall.ControlOptions,
+    DestroyOptions extends Wall.DestroyOptions | boolean = Wall.DestroyOptions | boolean,
+    DrawOptions extends Wall.DrawOptions = Wall.DrawOptions,
+    ReleaseOptions extends Wall.ReleaseOptions = Wall.ReleaseOptions,
+  > extends PlaceableObject<
+    WallDocument.ConfiguredInstance,
+    ControlOptions,
+    DestroyOptions,
+    DrawOptions,
+    ReleaseOptions
+  > {
     static override embeddedName: "Wall";
 
     static override RENDER_FLAGS: {
@@ -60,15 +51,23 @@ declare global {
 
     /**
      * A reference the Door Control icon associated with this Wall, if any
-     * @defaultValue `undefined`
      */
-    protected doorControl: DoorControl | undefined | null;
+    doorControl: DoorControl | undefined | null;
 
     /**
-     * A reference to an overhead Tile that is a roof, interior to which this wall is contained
-     * @defaultValue `undefined`
+     * The line segment that represents the Wall.
      */
-    roof: Tile.ConfiguredInstance | undefined;
+    line: PIXI.Graphics | undefined;
+
+    /**
+     * The endpoints of the Wall line segment.
+     */
+    endpoints: PIXI.Graphics | undefined;
+
+    /**
+     * The icon that indicates the direction of the Wall.
+     */
+    directionIcon: PIXI.Sprite | null | undefined;
 
     /**
      * A Graphics object used to highlight this wall segment. Only used when the wall is controlled.
@@ -76,34 +75,15 @@ declare global {
     highlight: PIXI.Graphics | undefined;
 
     /**
-     * A set which tracks other Wall instances that this Wall intersects with (excluding shared endpoints)
-     */
-    intersectsWith: Map<Wall.ConfiguredInstance, LineIntersection>;
-
-    /**
      * A convenience reference to the coordinates Array for the Wall endpoints, [x0,y0,x1,y1].
      */
-    get coords(): Wall["document"]["c"];
+    get coords(): Wall.ConfiguredInstance["document"]["c"];
 
     /**
-     * The endpoints of the wall expressed as {@link foundry.canvas.edges.PolygonVertex} instances.
+     * The Edge instance which represents this Wall.
+     * The Edge is re-created when data for the Wall changes.
      */
-    get vertices(): { a: foundry.canvas.edges.PolygonVertex; b: foundry.canvas.edges.PolygonVertex };
-
-    /**
-     * The initial endpoint of the Wall
-     */
-    get A(): Canvas.Point;
-
-    /**
-     * The second endpoint of the Wall
-     */
-    get B(): Canvas.Point;
-
-    /**
-     * A set of vertex sort keys which identify this Wall's endpoints.
-     */
-    get wallKeys(): Set<number>;
+    get edge(): Edge;
 
     override get bounds(): PIXI.Rectangle;
 
@@ -116,11 +96,6 @@ declare global {
      * A boolean for whether the wall contains an open door
      */
     get isOpen(): boolean;
-
-    /**
-     * Is this Wall interior to a non-occluded roof Tile?
-     */
-    get hasActiveRoof(): boolean;
 
     /**
      * Return the coordinates [x,y] at the midpoint of the wall segment
@@ -136,47 +111,48 @@ declare global {
     get direction(): number | null;
 
     /**
+     * @throws If called at all
+     * @remarks "Wall#getSnappedPosition is not supported: WallDocument does not have a (x, y) position"
+     */
+    override getSnappedPosition(position?: Canvas.Point): Canvas.Point;
+
+    /**
+     * Initialize the edge which represents this Wall.
+     * @param options - Options which modify how the edge is initialized
+     */
+    initializeEdge(
+      options?: NullishProps<{
+        /**
+         * Has the edge been deleted?
+         * @defaultValue `false`
+         */
+        deleted: boolean;
+      }>,
+    ): void;
+
+    /**
      * This helper converts the wall segment to a Ray
      * @returns The wall in Ray representation
      */
     toRay(): Ray;
 
-    protected override _draw(): Promise<void>;
+    protected override _draw(options?: HandleEmptyObject<DrawOptions>): Promise<void>;
 
     override clear(): this;
 
     /**
      * Draw a control icon that is used to manipulate the door's open/closed state
      */
-    createDoorControl(): DoorControl;
+    createDoorControl(): InstanceType<typeof CONFIG.Canvas.doorControlClass> | null;
 
     /**
      * Clear the door control if it exists.
      */
     clearDoorControl(): void;
 
-    /**
-     * Determine the orientation of this wall with respect to a reference point
-     * @param point - Some reference point, relative to which orientation is determined
-     * @returns An orientation in CONST.WALL_DIRECTIONS which indicates whether the Point is left,
-     *          right, or collinear (both) with the Wall
-     */
-    orientPoint(point: Canvas.Point): number;
+    override control(options?: ControlOptions): boolean;
 
-    /**
-     * Test whether to apply a configured threshold of this wall.
-     * When the proximity threshold is met, this wall is excluded as an edge in perception calculations.
-     * @param sourceType     - Sense type for the source
-     * @param sourceOrigin   - The origin or position of the source on the canvas
-     * @param externalRadius - The external radius of the source
-     *                         (default: `0`)
-     * @returns True if the wall has a threshold greater than 0 for the source type, and the source type is within that distance.
-     */
-    applyThreshold(sourceType: string, sourceOrigin: Canvas.Point, externalRadius: number): boolean;
-
-    override control(options?: Wall.ControlOptions): boolean;
-
-    protected override _destroy(options?: PIXI.IDestroyOptions | boolean): void;
+    protected override _destroy(options?: DestroyOptions): void;
 
     /**
      * Test whether the Wall direction lies between two provided angles
@@ -202,11 +178,6 @@ declare global {
       walls: WallsLayer["placeables"];
       endpoints: Array<[x: number, y: number]>;
     };
-
-    /**
-     * Determine whether this wall is beneath a roof tile, and is considered "interior", or not.
-     */
-    identifyInteriorState(): void;
 
     /**
      * Update any intersections with this wall.
@@ -271,5 +242,103 @@ declare global {
      * @remarks Not used
      */
     controlIcon: null;
+
+    /**
+     * @deprecated since v12, until v14
+     * @remarks "Wall#roof has been deprecated. There's no replacement"
+     */
+    get roof(): null;
+
+    /**
+     * Is this Wall interior to a non-occluded roof Tile?
+     * @deprecated since v12, until v14
+     * @remarks "Wall#hasActiveRoof has been deprecated. There's no replacement"
+     */
+    get hasActiveRoof(): boolean;
+
+    /**
+     * Determine whether this wall is beneath a roof tile, and is considered "interior", or not.
+     * @deprecated since v12, until v14
+     * @remarks "Wall#identifyInteriorState has been deprecated. It has no effect anymore and there's no replacement."
+     */
+    identifyInteriorState(): void;
+
+    /**
+     * Determine the orientation of this wall with respect to a reference point
+     * @param point - Some reference point, relative to which orientation is determined
+     * @returns An orientation in CONST.WALL_DIRECTIONS which indicates whether the Point is left,
+     *          right, or collinear (both) with the Wall
+     * @deprecated since v12, until v14
+     * @remarks "Wall#orientPoint has been moved to foundry.canvas.edges.Edge#orientPoint"
+     */
+    orientPoint(point: Canvas.Point): ValueOf<foundry.CONST.WALL_DIRECTIONS>;
+
+    /**
+     * Test whether to apply a configured threshold of this wall.
+     * When the proximity threshold is met, this wall is excluded as an edge in perception calculations.
+     * @param sourceType     - Sense type for the source
+     * @param sourceOrigin   - The origin or position of the source on the canvas
+     * @param externalRadius - The external radius of the source
+     *                         (default: `0`)
+     * @returns True if the wall has a threshold greater than 0 for the source type, and the source type is within that distance.
+     * @deprecated since v12, until v14
+     * @remarks "Wall#applyThreshold has been moved to foundry.canvas.edges.Edge#applyThreshold"
+     */
+    applyThreshold(sourceType: string, sourceOrigin: Canvas.Point, externalRadius: number): boolean;
+
+    /**
+     * The endpoints of the wall expressed as {@link foundry.canvas.edges.PolygonVertex} instances.
+     * @deprecated since v12, until v14
+     * @remarks "Wall#vertices is replaced by Wall#edge"
+     */
+    get vertices(): { a: foundry.canvas.edges.PolygonVertex; b: foundry.canvas.edges.PolygonVertex };
+
+    /**
+     * The initial endpoint of the Wall
+     * @deprecated since v12, until v14
+     * @remarks "Wall#A is replaced by Wall#edge#a"
+     */
+    get A(): Canvas.Point;
+
+    /**
+     * The second endpoint of the Wall
+     * @deprecated since v12, until v14
+     * @remarks "Wall#A is replaced by Wall#edge#b"
+     */
+    get B(): Canvas.Point;
   }
+
+  namespace Wall {
+    type AnyConstructor = typeof AnyWall;
+
+    interface ControlOptions extends PlaceableObject.ControlOptions {
+      /** @defaultValue `false` */
+      chain?: boolean | null | undefined;
+    }
+
+    interface DestroyOptions extends PlaceableObject.DestroyOptions {}
+
+    interface DrawOptions extends PlaceableObject.DrawOptions {}
+
+    interface ReleaseOptions extends PlaceableObject.ReleaseOptions {}
+
+    type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof Wall>;
+    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    interface RenderFlags extends PlaceableObject.RenderFlags {
+      refreshLine: boolean;
+
+      refreshEndpoints: boolean;
+
+      refreshDirection: boolean;
+
+      refreshHighlight: boolean;
+    }
+
+    type DoorInteraction = "open" | "close" | "lock" | "unlock" | "test";
+  }
+}
+
+declare abstract class AnyWall extends Wall {
+  constructor(arg0: never, ...args: never[]);
 }

@@ -1,4 +1,5 @@
 import type { HandleEmptyObject, InexactPartial, NullishProps } from "../../../../types/utils.d.mts";
+import type PointEffectSourceMixin from "../../../client-esm/canvas/sources/point-effect-source.d.mts";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
@@ -144,10 +145,14 @@ declare global {
       }>,
     ): void;
 
+    //TODO: reevaluate after auditing the _Source classes
     /**
      * Get the light source data.
      */
-    protected _getLightSourceData(): foundry.data.LightData;
+    protected _getLightSourceData(): Pick<
+      PointEffectSourceMixin.PointEffectSourceData,
+      "x" | "y" | "disabled" | "elevation" | "radius" | "walls"
+    >;
 
     /**
      * @privateRemarks _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
@@ -177,13 +182,13 @@ declare global {
          * @defaultValue `false`
          * @remarks Non-functional since the deprecation
          */
-        defer?: boolean | undefined;
+        defer?: boolean;
 
         /**
          * Indicate that this SoundSource has been deleted.
          * @defaultValue `false`
          */
-        deleted?: boolean | undefined;
+        deleted?: boolean;
       }>,
     ): void;
   }
