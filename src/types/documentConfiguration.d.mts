@@ -116,7 +116,7 @@ type ConformedConfigured = ConformRecord<_ConfiguredDocuments, Document.AnyConst
 
 export interface ConfiguredDocuments extends ConformedConfigured {}
 
-interface _ConfiguredMetadata<ThisType extends Document.Any> {
+interface _ConfiguredMetadata<ThisType extends Document.Internal.Instance.Any> {
   ActiveEffect: Merge<
     Document.Metadata.Default,
     {
@@ -560,11 +560,11 @@ interface _ConfiguredMetadata<ThisType extends Document.Any> {
   >;
 }
 
-type ReadonlyMetadata<ThisType extends Document.Any> = {
+type ReadonlyMetadata<ThisType extends Document.Internal.Instance.Any> = {
   [K in keyof _ConfiguredMetadata<ThisType>]: Readonly<_ConfiguredMetadata<ThisType>[K]>;
 };
 
-interface ConfiguredMetadata<ThisType extends Document.Any> extends ReadonlyMetadata<ThisType> {}
+interface ConfiguredMetadata<ThisType extends Document.Internal.Instance.Any> extends ReadonlyMetadata<ThisType> {}
 
 type MetadataShape = {
   [Name in Document.Type]: Document.Metadata<Document.Any>;

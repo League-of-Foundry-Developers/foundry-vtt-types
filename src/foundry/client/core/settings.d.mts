@@ -24,7 +24,7 @@ declare global {
     /**
      * A object of registered game settings for this scope
      */
-    settings: Map<string, SettingConfig>;
+    settings: Map<keyof _SettingConfigRecord & string, ClientSettings.SettingConfig>;
 
     /**
      * Registered settings menus which trigger secondary applications
@@ -199,6 +199,9 @@ declare global {
       SettingType<T> | (T extends DataModel.Any ? T : never)
     >;
 
+    /**
+     * @internal
+     */
     interface _SettingConfig<RuntimeType extends ClientSettings.RuntimeType, AssignmentType> {
       /** A unique machine-readable id for the setting */
       key: string;
@@ -333,7 +336,10 @@ type PrimitiveConstructorToSettingType<T extends PRIMITIVE_TYPES[number]> = T ex
     ? AnyObject
     : ReturnType<T>;
 
-type ConfiguredType<N extends ClientSettings.Namespace, K extends ClientSettings.Key> = _SettingConfigRecord[`${N}.${K}`];
+type ConfiguredType<
+  N extends ClientSettings.Namespace,
+  K extends ClientSettings.Key,
+> = _SettingConfigRecord[`${N}.${K}`];
 
 type SettingType<T extends ClientSettings.Type> =
   // Note(LukeAbby): This isn't written as `T extends ClientSettings.TypeScriptType ? T : never` because then types like `DataField.Any` would be matched.

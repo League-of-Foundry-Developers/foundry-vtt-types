@@ -2,7 +2,7 @@ import type { ConstructorOf, DeepPartial, InexactPartial, Mixin, ValueOf } from 
 import type { DatabaseCreateOperation } from "../../../common/abstract/_types.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 
-declare class ClientDocument<BaseDocument extends Document.Any = Document.Any> {
+declare class ClientDocument<BaseDocument extends Document.Internal.Instance.Any = Document.Any> {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
   constructor(...args: any[]);
 
