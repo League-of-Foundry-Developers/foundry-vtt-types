@@ -26,10 +26,7 @@ declare global {
       WEATHER: number;
     };
 
-    /**
-     * @defaultValue `"primary"`
-     */
-    static override groupName: string;
+    static override groupName: "primary";
 
     static override textureConfiguration: {
       scaleMode: PIXI.SCALE_MODES;

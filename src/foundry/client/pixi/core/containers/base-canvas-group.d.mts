@@ -1,6 +1,9 @@
-import type { AnyObject, Mixin } from "../../../../../types/utils.d.mts";
+import type { HandleEmptyObject, Mixin } from "../../../../../types/utils.d.mts";
 
-declare class CanvasGroup {
+declare class CanvasGroup<
+  DrawOptions extends CanvasGroupMixin.DrawOptions = CanvasGroupMixin.DrawOptions,
+  TearDownOptions extends CanvasGroupMixin.TearDownOptions = CanvasGroupMixin.TearDownOptions,
+> {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
   constructor(...args: any[]);
 
@@ -11,10 +14,11 @@ declare class CanvasGroup {
    * The name of this canvas group
    * @remarks Foundry marked as abstract
    */
-  static groupName: string;
+  static groupName: keyof CONFIG.Canvas.Groups;
 
   /**
    * If this canvas group should teardown non-layers children.
+   * @defaultValue `true`
    */
   static tearDownChildren: boolean;
 
@@ -31,32 +35,32 @@ declare class CanvasGroup {
 
   /**
    * A mapping of CanvasLayer classes which belong to this group.
-   * @remarks Default value defined by this._createLayers, which pulls from CONFIG.Canvas.layers
+   * @remarks Default value defined by this._createLayers, which is called in the constructor, and   pulls from CONFIG.Canvas.layers
    */
   layers: Record<string, CanvasLayer>;
 
   /**
    * Create CanvasLayer instances which belong to the canvas group.
    */
-  _createLayers(): Record<string, CanvasLayer>;
+  protected _createLayers(): Record<string, CanvasLayer>;
 
   /** Draw the canvas group and all its component layers. */
-  draw(options: CanvasGroupMixin.DrawOptions): Promise<void>;
+  draw(options?: HandleEmptyObject<DrawOptions>): Promise<void>;
 
   /**
    * Draw the canvas group and all its component layers.
    */
-  protected _draw(options: CanvasGroupMixin.DrawOptions): Promise<void>;
+  protected _draw(options?: DrawOptions): Promise<void>;
 
   /**
    * Remove and destroy all layers from the base canvas.
    */
-  tearDown(options: CanvasGroupMixin.TearDownOptions): Promise<void>;
+  tearDown(options: TearDownOptions): Promise<void>;
 
   /**
    * Remove and destroy all layers from the base canvas.
    */
-  protected _tearDown(options: CanvasGroupMixin.TearDownOptions): Promise<void>;
+  protected _tearDown(options: TearDownOptions): Promise<void>;
 }
 
 declare global {
@@ -65,19 +69,25 @@ declare global {
    * @param ContainerClass - The parent Container class being mixed.
    * @returns A ContainerClass subclass mixed with BaseCanvasMixin features.
    */
-  function CanvasGroupMixin<BaseClass extends CanvasGroupMixin.BaseClass>(
-    ContainerClass: BaseClass,
-  ): Mixin<typeof CanvasGroup, BaseClass>;
+  function CanvasGroupMixin<
+    BaseClass extends CanvasGroupMixin.BaseClass,
+    DrawOptions extends CanvasGroupMixin.DrawOptions = CanvasGroupMixin.DrawOptions,
+    TearDownOptions extends CanvasGroupMixin.TearDownOptions = CanvasGroupMixin.TearDownOptions,
+  >(ContainerClass: BaseClass): Mixin<typeof CanvasGroup<DrawOptions, TearDownOptions>, BaseClass>;
 
   namespace CanvasGroupMixin {
-    type BaseClass = typeof AnyPIXIContainer;
+    type AnyConstructor = typeof AnyCanvasGroup;
 
-    type DrawOptions = AnyObject;
+    type BaseClass = PIXI.Container.AnyConstructor;
 
-    type TearDownOptions = AnyObject;
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    interface DrawOptions {}
+
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    interface TearDownOptions {}
   }
 }
 
-declare abstract class AnyPIXIContainer extends PIXI.Container<any> {
+declare abstract class AnyCanvasGroup extends CanvasGroup {
   constructor(arg0: never, ...args: never[]);
 }
