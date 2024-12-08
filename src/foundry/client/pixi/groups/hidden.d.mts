@@ -1,24 +1,25 @@
-import type { EventMode } from "pixi.js";
+import type { HandleEmptyObject } from "../../../../types/utils.d.mts";
 
 declare global {
   /**
    * A specialized canvas group for rendering hidden containers before all others (like masks).
    */
-  class HiddenCanvasGroup extends CanvasGroupMixin(PIXI.Container) {
+  class HiddenCanvasGroup<
+    DrawOptions extends HiddenCanvasGroup.DrawOptions = HiddenCanvasGroup.DrawOptions,
+    TearDownOptions extends HiddenCanvasGroup.TearDownOptions = HiddenCanvasGroup.TearDownOptions,
+  > extends CanvasGroupMixin(PIXI.Container)<DrawOptions, TearDownOptions> {
     /**
      * @defaultValue `"none"`
+     * @remarks Actually an override of `PIXI.Container#eventMode`
      */
-    override eventMode: EventMode;
+    eventMode: PIXI.EventMode;
 
     /**
      * The container which hold masks.
      */
     masks: PIXI.Container;
 
-    /**
-     * @defaultValue `"hidden"`
-     */
-    static override groupName: string;
+    static override groupName: "hidden";
 
     /**
      * Add a mask to this group.
@@ -33,8 +34,18 @@ declare global {
      */
     invalidateMasks(): void;
 
-    protected override _draw(options: CanvasGroupMixin.DrawOptions): Promise<void>;
+    protected override _draw(options: HandleEmptyObject<DrawOptions>): Promise<void>;
 
-    protected override _tearDown(options: CanvasGroupMixin.TearDownOptions): Promise<void>;
+    protected override _tearDown(options: HandleEmptyObject<TearDownOptions>): Promise<void>;
   }
+
+  namespace HiddenCanvasGroup {
+    interface DrawOptions extends CanvasGroupMixin.DrawOptions {}
+
+    interface TearDownOptions extends CanvasGroupMixin.TearDownOptions {}
+  }
+}
+
+declare abstract class AnyHiddenCanvasGroup extends HiddenCanvasGroup {
+  constructor(arg0: never, ...args: never[]);
 }
