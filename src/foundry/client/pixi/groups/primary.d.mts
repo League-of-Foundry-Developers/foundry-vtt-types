@@ -1,4 +1,5 @@
 import type { Renderer } from "pixi.js";
+import type { HandleEmptyObject } from "../../../../types/utils.d.mts";
 
 // Included to match Foundry's documented types
 type PrimaryCanvasObject = ReturnType<typeof PrimaryCanvasObjectMixin>;
@@ -9,7 +10,10 @@ declare global {
    * This group is a {@link CachedContainer} which is rendered to the Scene as a {@link SpriteMesh}.
    * This allows the rendered result of the Primary Canvas Group to be affected by a {@link BaseSamplerShader}.
    */
-  class PrimaryCanvasGroup extends CanvasGroupMixin(CachedContainer) {
+  class PrimaryCanvasGroup<
+    DrawOptions extends PrimaryCanvasGroup.DrawOptions = PrimaryCanvasGroup.DrawOptions,
+    TearDownOptions extends PrimaryCanvasGroup.TearDownOptions = PrimaryCanvasGroup.TearDownOptions,
+  > extends CanvasGroupMixin(CachedContainer)<DrawOptions, TearDownOptions> {
     /**
      * @param sprite - (default: `new SpriteMesh(undefined, BaseSamplerShader)`)
      */
@@ -18,13 +22,7 @@ declare global {
     /**
      * Sort order to break ties on the group/layer level.
      */
-    static readonly SORT_LAYERS: {
-      SCENE: number;
-      TILES: number;
-      DRAWINGS: number;
-      TOKENS: number;
-      WEATHER: number;
-    };
+    static readonly SORT_LAYERS: PrimaryCanvasGroup.SORT_LAYERS;
 
     static override groupName: "primary";
 
@@ -35,19 +33,14 @@ declare global {
     };
 
     /**
-     * @defaultValue `"none"`
-     */
-    override eventMode: PIXI.EventMode;
-
-    /**
      * @defaultValue `[0, 0, 0, 0]`
      */
-    override clearColor: [r: number, g: number, b: number, a: number];
+    clearColor: [r: number, g: number, b: number, a: number];
 
     /**
      * The background color in RGB.
      */
-    _backgroundColor?: [red: number, green: number, blue: number];
+    _backgroundColor: [red: number, green: number, blue: number] | undefined;
 
     /**
      * Track the set of HTMLVideoElements which are currently playing as part of this group.
@@ -56,6 +49,7 @@ declare global {
 
     /**
      * Occludable objects above this elevation are faded on hover.
+     * @defaultValue `0`
      */
     hoverFadeElevation: number;
 
@@ -68,12 +62,12 @@ declare global {
     /**
      * The primary background image configured for the Scene, rendered as a SpriteMesh.
      */
-    background: SpriteMesh;
+    background: SpriteMesh | undefined;
 
     /**
      * The primary foreground image configured for the Scene, rendered as a SpriteMesh.
      */
-    foreground: SpriteMesh;
+    foreground: SpriteMesh | undefined;
 
     /**
      * A Quadtree which partitions and organizes primary canvas objects.
@@ -82,39 +76,38 @@ declare global {
 
     /**
      * The collection of PrimaryDrawingContainer objects which are rendered in the Scene.
+     * @privateRemarks Foundry types this as `Collection<PrimaryDrawingContainer>`, which doesn't exist. It's `PrimaryGraphics` in practice.
      */
     drawings: Collection<PrimaryGraphics>;
 
     /**
      * The collection of SpriteMesh objects which are rendered in the Scene.
+     * @privateRemarks Foundry types this as `Collection<TokenMesh>`, which doesn't exist. In practice it's `PrimarySpriteMesh`
      */
     tokens: Collection<PrimarySpriteMesh>;
 
     /**
      * The collection of SpriteMesh objects which are rendered in the Scene.
+     * @privateRemarks Foundry types this as `Collection<PrimarySpriteMesh|TileSprite>`, but `TileSprite` doens't exist. In practice it's all `PrimarySpriteMesh`.
      */
     tiles: Collection<PrimarySpriteMesh>;
 
     /**
      * The ambience filter which is applying post-processing effects.
      */
-    _ambienceFilter: PrimaryCanvasGroupAmbienceFilter;
-
-    /**
-     * Render all tokens in their own render texture.
-     * @param renderer - The renderer to use.
-     */
-    _renderTokens(renderer: PIXI.Renderer): void;
+    _ambienceFilter: PrimaryCanvasGroupAmbienceFilter | undefined;
 
     /**
      * Return the base HTML image or video element which provides the background texture.
+     * @privateRemarks Foundry does not indicate the possibility of a null return
      */
-    get backgroundSource(): HTMLImageElement | HTMLVideoElement;
+    get backgroundSource(): HTMLImageElement | HTMLVideoElement | null;
 
     /**
      * Return the base HTML image or video element which provides the foreground texture.
+     * @privateRemarks Foundry does not indicate the possibility of a null return
      */
-    get foregroundSource(): HTMLImageElement | HTMLVideoElement;
+    get foregroundSource(): HTMLImageElement | HTMLVideoElement | null;
 
     /**
      * Refresh the primary mesh.
@@ -126,11 +119,12 @@ declare global {
      */
     update(): void;
 
-    protected override _draw(options: CanvasGroupMixin.DrawOptions): Promise<void>;
+    protected override _draw(options: HandleEmptyObject<DrawOptions>): Promise<void>;
 
-    protected override _render(_renderer: Renderer): void;
+    /** @privateRemarks Actually an override of the method in PIXI.Container */
+    protected _render(_renderer: Renderer): void;
 
-    protected override _tearDown(options: CanvasGroupMixin.TearDownOptions): Promise<void>;
+    protected override _tearDown(options: HandleEmptyObject<TearDownOptions>): Promise<void>;
 
     /**
      * Draw the SpriteMesh for a specific Token object.
@@ -194,4 +188,24 @@ declare global {
      */
     mapElevationAlpha(elevation: number): number;
   }
+
+  namespace PrimaryCanvasGroup {
+    type AnyConstructor = typeof AnyPrimaryCanvasGroup;
+
+    interface DrawOptions extends CanvasGroupMixin.DrawOptions {}
+
+    interface TearDownOptions extends CanvasGroupMixin.TearDownOptions {}
+
+    interface SORT_LAYERS {
+      readonly SCENE: 0;
+      readonly TILES: 500;
+      readonly DRAWINGS: 600;
+      readonly TOKENS: 700;
+      readonly WEATHER: 1000;
+    }
+  }
+}
+
+declare abstract class AnyPrimaryCanvasGroup extends PrimaryCanvasGroup {
+  constructor(arg0: never, ...args: never[]);
 }

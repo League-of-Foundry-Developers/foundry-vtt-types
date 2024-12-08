@@ -45,22 +45,22 @@ declare class CanvasGroup<
   protected _createLayers(): Record<string, CanvasLayer>;
 
   /** Draw the canvas group and all its component layers. */
-  draw(options?: HandleEmptyObject<DrawOptions>): Promise<void>;
+  draw(options?: HandleEmptyObject<DrawOptions>): Promise<this>;
 
   /**
    * Draw the canvas group and all its component layers.
    */
-  protected _draw(options?: DrawOptions): Promise<void>;
+  protected _draw(options?: HandleEmptyObject<DrawOptions>): Promise<void>;
 
   /**
    * Remove and destroy all layers from the base canvas.
    */
-  tearDown(options: TearDownOptions): Promise<void>;
+  tearDown(options: HandleEmptyObject<TearDownOptions>): Promise<this>;
 
   /**
    * Remove and destroy all layers from the base canvas.
    */
-  protected _tearDown(options: TearDownOptions): Promise<void>;
+  protected _tearDown(options: HandleEmptyObject<TearDownOptions>): Promise<void>;
 }
 
 declare global {
@@ -69,11 +69,9 @@ declare global {
    * @param ContainerClass - The parent Container class being mixed.
    * @returns A ContainerClass subclass mixed with BaseCanvasMixin features.
    */
-  function CanvasGroupMixin<
-    BaseClass extends CanvasGroupMixin.BaseClass,
-    DrawOptions extends CanvasGroupMixin.DrawOptions = CanvasGroupMixin.DrawOptions,
-    TearDownOptions extends CanvasGroupMixin.TearDownOptions = CanvasGroupMixin.TearDownOptions,
-  >(ContainerClass: BaseClass): Mixin<typeof CanvasGroup<DrawOptions, TearDownOptions>, BaseClass>;
+  function CanvasGroupMixin<BaseClass extends CanvasGroupMixin.BaseClass>(
+    ContainerClass: BaseClass,
+  ): Mixin<typeof CanvasGroup, BaseClass>;
 
   namespace CanvasGroupMixin {
     type AnyConstructor = typeof AnyCanvasGroup;
