@@ -1,31 +1,37 @@
+import type { ValueOf } from "../../../../../types/utils.d.mts";
+
 export {};
 
 declare global {
   /**
    * An extension of PIXI.Mesh which emulate a PIXI.Sprite with a specific shader.
    */
-  class SpriteMesh extends PIXI.Container {
+  class SpriteMesh<
+    ShaderClass extends BaseSamplerShader.AnyConstructor = typeof BaseSamplerShader,
+  > extends PIXI.Container {
     /**
      * @param texture   - Texture bound to this sprite mesh.
      *                    (default: `PIXI.Texture.EMPTY`)
      * @param shaderCls - Shader class used by this sprite mesh.
      *                    (default: `BaseSamplerShader`)
      */
-    constructor(texture?: PIXI.Texture, shaderCls?: typeof BaseSamplerShader);
+    constructor(texture?: PIXI.Texture, shaderClass?: ShaderClass);
 
+    /** @defaultValue `true` */
     override isSprite: boolean;
 
     /**
      * Snapshot of some parameters of this display object to render in batched mode.
      */
     protected _batchData: {
-      _tintRGB: number;
-      _texture: PIXI.Texture;
+      _tintRGB: number | undefined;
+      _texture: PIXI.Texture | undefined | null;
       indices: number[];
       uvs: number[];
-      blendMode: PIXI.BLEND_MODES;
+      blendMode: ValueOf<PIXI.BLEND_MODES> | undefined;
       vertexData: number[];
-      worldAlpha: number;
+      worldAlpha: number | undefined;
+      object: SpriteMesh<ShaderClass>;
     };
 
     /**
@@ -48,7 +54,7 @@ declare global {
     /**
      * The texture that the sprite is using.
      */
-    protected _texture: PIXI.Texture;
+    protected _texture: PIXI.Texture | undefined | null;
 
     /**
      * The texture ID
@@ -58,6 +64,7 @@ declare global {
 
     /**
      * Cached tint value so we can tell when the tint is changed.
+     * @defaultValue `[1, 1, 1, 1]`
      */
     protected _cachedTint: [red: number, green: number, blue: number, alpha: number];
 
@@ -65,7 +72,7 @@ declare global {
      * The texture trimmed ID.
      * @defaultValue `-1`
      */
-    _textureTrimmedID: number;
+    protected _textureTrimmedID: number;
 
     /**
      * This is used to store the uvs data of the sprite, assigned at the same time
@@ -102,6 +109,7 @@ declare global {
 
     /**
      * The transform ID.
+     * @defaultValue `-1`
      */
     private _transformID: number;
 
@@ -139,12 +147,12 @@ declare global {
     /**
      * The shader bound to this mesh.
      */
-    get shader(): BaseSamplerShader;
+    get shader(): InstanceType<ShaderClass>;
 
     /**
      * The shader bound to this mesh.
      */
-    protected _shader: BaseSamplerShader;
+    protected _shader: InstanceType<ShaderClass>;
 
     /**
      * The x padding in pixels (must be a non-negative value.)
@@ -323,4 +331,12 @@ declare global {
       shaderClass?: typeof AbstractBaseShader,
     ): SpriteMesh;
   }
+
+  namespace SpriteMesh {
+    type AnyConstructor = typeof AnySpriteMesh;
+  }
+}
+
+declare abstract class AnySpriteMesh extends SpriteMesh {
+  constructor(arg0: never, ...args: never[]);
 }
