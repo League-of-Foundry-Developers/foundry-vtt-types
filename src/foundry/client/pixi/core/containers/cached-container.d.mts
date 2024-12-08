@@ -1,6 +1,5 @@
-import type { NullishProps } from "../../../../../types/utils.d.mts";
-
-export {};
+import type { IntentionalPartial } from "../../../../../types/helperTypes.d.mts";
+import type { NullishProps, ValueOf } from "../../../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -12,7 +11,7 @@ declare global {
      * Construct a CachedContainer.
      * @param sprite - A specific sprite to bind to this CachedContainer and its renderTexture.
      */
-    constructor(sprite: PIXI.Sprite | SpriteMesh);
+    constructor(sprite?: PIXI.Sprite | SpriteMesh);
 
     /**
      * The texture configuration to use for this cached container
@@ -63,12 +62,12 @@ declare global {
     /**
      * Set the alpha mode of the cached container render texture.
      */
-    set alphaMode(mode: PIXI.ALPHA_MODES);
+    set alphaMode(mode: ValueOf<PIXI.ALPHA_MODES>);
 
     /**
      * A bound Sprite which uses this container's render texture
      */
-    get sprite(): PIXI.Sprite | SpriteMesh;
+    get sprite(): PIXI.Sprite | SpriteMesh | undefined;
 
     set sprite(sprite: PIXI.Sprite | SpriteMesh);
 
@@ -76,8 +75,10 @@ declare global {
      * Create a render texture, provide a render method and an optional clear color.
      * @param options - Optional parameters.
      * @returns A reference to the created render texture.
+     * @remarks IntentionalPartial beacuse the interface already accounts for `| null | undefined`, but the
+     *          keys aren't optional in the `_renderPaths` map entries, so they're not in the interface
      */
-    createRenderTexture(options?: CachedContainer.RenderOptions): PIXI.RenderTexture;
+    createRenderTexture(options?: IntentionalPartial<CachedContainer.RenderOptions>): PIXI.RenderTexture;
 
     /**
      * Remove a previously created render texture.
@@ -95,7 +96,7 @@ declare global {
      */
     clear(destroy?: boolean): CachedContainer | void;
 
-    override destroy(options?: boolean | PIXI.IDestroyOptions): void;
+    override destroy(options?: PIXI.IDestroyOptions | boolean): void;
 
     override render(renderer: PIXI.Renderer): void;
 
@@ -108,11 +109,17 @@ declare global {
   }
 
   namespace CachedContainer {
+    type AnyConstructor = typeof AnyCachedContainer;
+
     interface RenderOptions {
       /** Render function that will be called to render into the RT. */
-      renderFunction?: (renderer: PIXI.Renderer) => void;
+      renderFunction: (renderer: PIXI.Renderer) => void | null | undefined;
       /** An optional clear color to clear the RT before rendering into it. */
-      clearColor?: number[];
+      clearColor: [r: number, g: number, b: number, a: number] | null | undefined;
     }
   }
+}
+
+declare abstract class AnyCachedContainer extends CachedContainer {
+  constructor(arg0: never, ...args: never[]);
 }
