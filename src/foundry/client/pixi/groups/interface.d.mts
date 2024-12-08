@@ -1,29 +1,29 @@
-import type { InexactPartial } from "../../../../types/utils.d.mts";
+import type { HandleEmptyObject, InexactPartial, NullishProps } from "../../../../types/utils.d.mts";
 
 declare global {
   /**
    * A container group which displays interface elements rendered above other canvas groups.
    */
-  class InterfaceCanvasGroup extends CanvasGroupMixin(PIXI.Container) {
-    /**
-     * @defaultValue `"interface"`
-     */
-    static override groupName: string;
+  class InterfaceCanvasGroup<
+    DrawOptions extends InterfaceCanvasGroup.DrawOptions = InterfaceCanvasGroup.DrawOptions,
+    TearDownOptions extends InterfaceCanvasGroup.TearDownOptions = InterfaceCanvasGroup.TearDownOptions,
+  > extends CanvasGroupMixin(PIXI.Container)<DrawOptions, TearDownOptions> {
+    static override groupName: "interface";
 
     /**
      * Add a PrimaryGraphics to the group.
      * @param drawing - The Drawing being added
      * @returns The created Graphics instance
      */
-    addDrawing(drawing: Drawing): PIXI.Graphics;
+    addDrawing(drawing: Drawing.ConfiguredInstance): PIXI.Graphics;
 
     /**
      * Remove a PrimaryGraphics from the group.
      * @param drawing - The Drawing being removed
      */
-    removeDrawing(drawing: Drawing): void;
+    removeDrawing(drawing: Drawing.ConfiguredInstance): void;
 
-    protected override _draw(options: CanvasGroupMixin.DrawOptions): Promise<void>;
+    protected override _draw(options: HandleEmptyObject<DrawOptions>): Promise<void>;
 
     /**
      * Display scrolling status text originating from this ObjectHUD container.
@@ -35,18 +35,17 @@ declare global {
     createScrollingText(
       origin: Canvas.Point,
       content: string,
-      options?: {
+      options?: NullishProps<{
         /**
          * The duration of the scrolling effect in milliseconds
          * @defaultValue `2000`
          */
-        duration?: number;
+        duration: number;
 
         /**
          * The distance in pixels that the scrolling text should travel
-         * @defaultValue (2 * text.width)
          */
-        distance?: number;
+        distance: number;
 
         /**
          * The original anchor point where the text appears
@@ -63,12 +62,24 @@ declare global {
          * @defaultValue `0`
          */
         jitter: number;
-
+      }> &
         /**
          * Additional parameters of PIXI.TextStyle which are applied to the text
+         * @remarks Excess keys are collected as `{...textStyle}` and passed to `PreciseText.getTextStyle` which checks for `!== undefined`, so this can't be NullishProps
          */
-        textStyle: InexactPartial<PIXI.ITextStyle>;
-      },
+        InexactPartial<PIXI.ITextStyle>,
     ): Promise<PreciseText | null>;
   }
+
+  namespace InterfaceCanvasGroup {
+    type AnyConstructor = typeof AnyInterfaceCanvasGroup;
+
+    interface DrawOptions extends CanvasGroupMixin.DrawOptions {}
+
+    interface TearDownOptions extends CanvasGroupMixin.TearDownOptions {}
+  }
+}
+
+declare abstract class AnyInterfaceCanvasGroup extends InterfaceCanvasGroup {
+  constructor(arg0: never, ...args: never[]);
 }
