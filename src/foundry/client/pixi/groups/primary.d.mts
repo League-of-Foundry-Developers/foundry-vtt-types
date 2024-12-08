@@ -34,6 +34,7 @@ declare global {
 
     /**
      * @defaultValue `[0, 0, 0, 0]`
+     * @remarks Actually an override of `CachedContainer#clearColor`
      */
     clearColor: [r: number, g: number, b: number, a: number];
 
@@ -121,7 +122,7 @@ declare global {
 
     protected override _draw(options: HandleEmptyObject<DrawOptions>): Promise<void>;
 
-    /** @privateRemarks Actually an override of the method in PIXI.Container */
+    /** @remarks Actually an override `PIXI.Container#_render` */
     protected _render(_renderer: Renderer): void;
 
     protected override _tearDown(options: HandleEmptyObject<TearDownOptions>): Promise<void>;
@@ -131,50 +132,51 @@ declare global {
      * @param token - The Token being added
      * @returns The added PrimarySpriteMesh
      */
-    addToken(token: Token): PrimarySpriteMesh;
+    addToken(token: Token.ConfiguredInstance): PrimarySpriteMesh;
 
     /**
      * Remove a TokenMesh from the group.
      * @param token - The Token being removed
      */
-    removeToken(token: Token): void;
+    removeToken(token: Token.ConfiguredInstance): void;
 
     /**
      * Draw the SpriteMesh for a specific Token object.
      * @param tile - The Tile being added
      * @returns The added PrimarySpriteMesh
      */
-    addTile(tile: Tile): PrimarySpriteMesh;
+    addTile(tile: Tile.ConfiguredInstance): PrimarySpriteMesh;
 
     /**
      * Remove a TokenMesh from the group.
      * @param tile - The Tile being removed
      */
-    removeTile(tile: Tile): void;
+    removeTile(tile: Tile.ConfiguredInstance): void;
 
     /**
      * Add a PrimaryGraphics to the group.
      * @param drawing - The Drawing being added
      * @returns The created PrimaryGraphics instance
      */
-    addDrawing(drawing: Drawing): PrimaryGraphics;
+    addDrawing(drawing: Drawing.ConfiguredInstance): PrimaryGraphics;
 
     /**
      * Remove a PrimaryGraphics from the group.
      * @param drawing - The Drawing being removed
      */
-    removeDrawing(drawing: Drawing): void;
+    removeDrawing(drawing: Drawing.ConfiguredInstance): void;
 
     /**
      * Override the default PIXI.Container behavior for how objects in this container are sorted.
-     * @override
+     * @remarks Actually an override of `PIXI.Container#sortChildren`
      */
     sortChildren(): void;
 
     /**
      * Handle mousemove events on the primary group to update the hovered state of its children.
+     * @remarks Public on purpose, called from `Canvas##onMouseMove`
      */
-    protected _onMouseMove(): void;
+    _onMouseMove(): void;
 
     /**
      * @deprecated since v12, will be removed in v14
