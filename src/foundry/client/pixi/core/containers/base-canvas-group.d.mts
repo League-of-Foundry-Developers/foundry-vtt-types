@@ -1,4 +1,4 @@
-import type { HandleEmptyObject, Mixin } from "../../../../../types/utils.d.mts";
+import type { HandleEmptyObject } from "../../../../../types/utils.d.mts";
 
 declare class CanvasGroup<
   DrawOptions extends CanvasGroupMixin.DrawOptions = CanvasGroupMixin.DrawOptions,
@@ -63,6 +63,25 @@ declare class CanvasGroup<
   protected _tearDown(options: HandleEmptyObject<TearDownOptions>): Promise<void>;
 }
 
+type StaticCanvasGroup = typeof CanvasGroup;
+
+// @ts-expect-error - Note(LukeAbby): This pattern is inherently an error. Specifically it errors with:
+//   Interface 'CanvasGroupMixinReturn<BaseClass>' cannot simultaneously extend types 'typeof CanvasGroup' and 'BaseClass'.
+//     Named property 'prototype' of types 'typeof CanvasGroup' and 'BaseClass' are not identical.
+//
+// There are workarounds to get this error to go away but then the error turns into this:
+//   Interface 'CanvasGroupMixinReturn<BaseClass>' incorrectly extends interface 'BaseClass'.
+//     'CanvasGroupMixinReturn<BaseClass>' is assignable to the constraint of type 'BaseClass', but 'BaseClass' could be instantiated with a different subtype of constraint 'typeof AnyPIXIContainer'.
+//
+// Which fundamentally cannot be fixed. Fortunately this error appears to be benign.
+//
+// The reason why this is helper is necessary is because `CanvasGroup` itself is generic.
+// The only time that tsc accepts a generic constructor in a mixin is when the non-generic class has _exactly_ the signature `constructor(...args: any[])`. Not `constructor(...args: never[])` nor `constructor()` or seemingly anything.
+// However in actual usage plenty of classes with concrete constructors are passed in.
+interface CanvasGroupMixinReturn<BaseClass extends CanvasGroupMixin.BaseClass> extends StaticCanvasGroup, BaseClass {
+  new (...args: ConstructorParameters<BaseClass>): CanvasGroup & BaseClass;
+}
+
 declare global {
   /**
    * A mixin which decorates any container with base canvas common properties.
@@ -71,7 +90,7 @@ declare global {
    */
   function CanvasGroupMixin<BaseClass extends CanvasGroupMixin.BaseClass>(
     ContainerClass: BaseClass,
-  ): Mixin<typeof CanvasGroup, BaseClass>;
+  ): CanvasGroupMixinReturn<BaseClass>;
 
   namespace CanvasGroupMixin {
     type AnyConstructor = typeof AnyCanvasGroup;
