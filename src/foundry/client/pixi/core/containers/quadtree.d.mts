@@ -1,3 +1,5 @@
+import type { NullishProps } from "../../../../../types/utils.d.mts";
+
 export {};
 
 declare global {
@@ -15,7 +17,7 @@ declare global {
      * @param bounds  - The outer bounds of the region
      * @param options - Additional options which configure the Quadtree
      */
-    constructor(bounds: PIXI.Rectangle, options?: Quadtree.Options<T>);
+    constructor(bounds: NullishProps<Canvas.Rectangle>, options?: Quadtree.Options<T>);
 
     /**
      * The bounding rectangle of the region
@@ -59,12 +61,13 @@ declare global {
 
     /**
      * A constant that enumerates the index order of the quadtree nodes from top-left to bottom-right.
+     * @defaultValue `{tl: 0, tr: 1, bl: 2, br: 3}`
      */
-    static readonly INDICES: {
-      tl: 0;
-      tr: 1;
-      bl: 2;
-      br: 3;
+    static INDICES: {
+      tl: number;
+      tr: number;
+      bl: number;
+      br: number;
     };
 
     /**
@@ -174,26 +177,26 @@ declare global {
        * The maximum number of objects per node
        * @defaultValue `20`
        */
-      maxObjects?: number;
+      maxObjects?: number | undefined;
 
       /**
        * The maximum number of levels within the root Quadtree
        * @defaultValue `4`
        */
-      maxDepth?: number;
+      maxDepth?: number | undefined;
 
       /**
        * The depth level of the sub-tree. For internal use
        * @defaultValue `0`
        * @internal
        */
-      _depth?: number;
+      _depth?: number | undefined;
 
       /**
        * The root of the quadtree. For internal use
        * @internal
        */
-      _root?: Quadtree<T>;
+      _root?: Quadtree<T> | undefined | null;
     }
   }
 }
