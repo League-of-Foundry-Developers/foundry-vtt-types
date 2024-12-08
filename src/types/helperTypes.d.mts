@@ -387,3 +387,26 @@ export type ToObjectFalseType<T> = Document.ToObjectFalseType<MakeConform<T, Doc
  * @deprecated {@link PropertyKey | `PropertyKey`}
  */
 export type AnyKey = keyof any;
+
+declare class Branded<in out BrandName extends string> {
+  #brand: BrandName;
+}
+
+/**
+ * Brand a type with a particular name. This is useful to make ensure that a type is only used in a particular context.
+ *
+ * @example
+ * ```ts
+ * type NUMBER_ENUM = Brand<number, "NUMBER_ENUM">;
+ *
+ * const NUMBER_ENUM: {
+ *     X: NUMBER_ENUM,
+ *     Y: NUMBER_ENUM
+ * };
+ *
+ * function useNumberEnum(value: NUMBER_ENUM) { ... }
+ * usesNumberEnum(NUMBER_ENUM.X); // Works.
+ * usesNumberEnum(1); // Error.
+ * ```
+ */
+export type Brand<BaseType, BrandName extends string> = BaseType & Branded<BrandName>;
