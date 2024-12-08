@@ -1,4 +1,4 @@
-export {};
+import type { ValueOf } from "../../../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -9,7 +9,7 @@ declare global {
     /**
      * @param shaderClass - The shader class to use.
      */
-    constructor(shaderClass: typeof AbstractBaseShader);
+    constructor(shaderClass: AbstractBaseShader.AnyConstructor);
 
     /**
      * The shader bound to this mesh.
@@ -19,15 +19,15 @@ declare global {
     /**
      * Assigned blend mode to this mesh.
      */
-    get blendMode(): PIXI.BLEND_MODES;
+    get blendMode(): ValueOf<PIXI.BLEND_MODES>;
 
-    set blendMode(value: PIXI.BLEND_MODES);
+    set blendMode(value);
 
     /**
      * Initialize shader based on the shader class type.
      * @param shaderClass - Shader class used. Must inherit from AbstractBaseShader.
      */
-    setShaderClass(shaderClass: typeof AbstractBaseShader): void;
+    setShaderClass(shaderClass: AbstractBaseShader.AnyConstructor): void;
 
     protected override _render(_renderer: PIXI.Renderer): void;
 
@@ -38,6 +38,14 @@ declare global {
      */
     containsPoint(point: PIXI.IPointData): boolean;
 
-    override destroy(options?: boolean | PIXI.IDestroyOptions): void;
+    override destroy(options?: PIXI.IDestroyOptions | boolean): void;
   }
+
+  namespace QuadMesh {
+    type AnyConstructor = typeof AnyQuadMesh;
+  }
+}
+
+declare abstract class AnyQuadMesh extends QuadMesh {
+  constructor(arg0: never, ...args: never[]);
 }
