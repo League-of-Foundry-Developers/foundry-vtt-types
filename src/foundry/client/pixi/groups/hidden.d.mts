@@ -28,7 +28,7 @@ declare global {
      * @param position      - Position of the mask.
      * @throws If `displayObject` doesn't implement a `clear` method, or if `name` is an empty string
      */
-    addMask(name: string, displayObject: PIXI.DisplayObject, position?: number): void;
+    addMask(name: string, displayObject: PIXI.DisplayObject, position?: number | null): void;
 
     /**
      * Invalidate the masks: flag them for rerendering.
