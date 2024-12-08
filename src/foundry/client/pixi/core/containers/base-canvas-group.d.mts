@@ -71,7 +71,7 @@ type StaticCanvasGroup = typeof CanvasGroup;
 //
 // There are workarounds to get this error to go away but then the error turns into this:
 //   Interface 'CanvasGroupMixinReturn<BaseClass>' incorrectly extends interface 'BaseClass'.
-//  'CanvasGroupMixinReturn<BaseClass>' is assignable to the constraint of type 'BaseClass', but 'BaseClass' could be instantiated with a different subtype of constraint 'typeof AnyPIXIContainer'.
+//     'CanvasGroupMixinReturn<BaseClass>' is assignable to the constraint of type 'BaseClass', but 'BaseClass' could be instantiated with a different subtype of constraint 'typeof AnyPIXIContainer'.
 //
 // Which fundamentally cannot be fixed. Fortunately this error appears to be benign.
 //
