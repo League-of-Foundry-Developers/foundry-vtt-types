@@ -1,8 +1,6 @@
 import type { Brand } from "../../../../../types/helperTypes.d.mts";
 import type { NullishProps } from "../../../../../types/utils.d.mts";
 
-export {};
-
 declare global {
   interface QuadtreeObject<T> {
     r: Canvas.Rectangle;
@@ -156,9 +154,9 @@ declare global {
   }
 
   namespace Quadtree {
-    type INDICES = Brand<number, "Quadtree.INDICIES">;
-
     type AnyConstructor = typeof AnyQuadtree;
+
+    type INDICES = Brand<number, "Quadtree.INDICIES">;
 
     /**
      * Additional options which configure the Quadtree
