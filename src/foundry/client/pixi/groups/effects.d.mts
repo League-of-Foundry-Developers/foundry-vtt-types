@@ -1,19 +1,31 @@
-import type { ValueOf } from "../../../../types/utils.d.mts";
+import type { HandleEmptyObject, ValueOf } from "../../../../types/utils.d.mts";
 
 declare global {
   /**
    * A container group which contains visual effects rendered above the primary group.
+   *
+   * TODO:
+   *  The effects canvas group is now only performing shape initialization, logic that needs to happen at
+   *  the placeable or object level is now their burden.
+   *  - [DONE] Adding or removing a source from the EffectsCanvasGroup collection.
+   *  - [TODO] A change in a darkness source should re-initialize all overlaping light and vision source.
+   *
+   * ### Hook Events
+   * - {@link hookEvents.lightingRefresh}
    */
-  class EffectsCanvasGroup extends CanvasGroupMixin(PIXI.Container) {
-    constructor();
-
+  class EffectsCanvasGroup<
+    DrawOptions extends EffectsCanvasGroup.DrawOptions = EffectsCanvasGroup.DrawOptions,
+    TearDownOptions extends EffectsCanvasGroup.TearDownOptions = EffectsCanvasGroup.TearDownOptions,
+  > extends CanvasGroupMixin(PIXI.Container)<DrawOptions, TearDownOptions> {
     /**
      * Whether to currently animate light sources.
+     * @defaultValue `true`
      */
     animateLightSources: boolean;
 
     /**
      * Whether to currently animate vision sources.
+     * @defaultValue `true`
      */
     animateVisionSources: boolean;
 
@@ -73,7 +85,7 @@ declare global {
      */
     clearEffects(): void;
 
-    protected override _draw(options: CanvasGroupMixin.DrawOptions): Promise<void>;
+    protected override _draw(options: HandleEmptyObject<DrawOptions>): Promise<void>;
 
     /**
      * Initialize positive light sources which exist within the active Scene.
@@ -92,17 +104,17 @@ declare global {
     /**
      * Refresh the state and uniforms of all light sources and darkness sources objects.
      */
-    refreshLightSources(): boolean;
+    refreshLightSources(): void;
 
     /**
      * Refresh the state and uniforms of all VisionSource objects.
      */
-    refreshVisionSources(): boolean;
+    refreshVisionSources(): void;
 
     /**
      * Refresh the active display of lighting.
      */
-    refreshLighting(): boolean;
+    refreshLighting(): void;
 
     /**
      * Test whether the point is inside light.
@@ -128,7 +140,7 @@ declare global {
      */
     getDarknessLevel(point: Canvas.Point, elevation: number): number;
 
-    override _tearDown(options: CanvasGroupMixin.TearDownOptions): Promise<void>;
+    override _tearDown(options: HandleEmptyObject<TearDownOptions>): Promise<void>;
 
     /**
      * Activate vision masking for visual effects
@@ -182,5 +194,35 @@ declare global {
         duration?: number;
       },
     ): ReturnType<(typeof CanvasAnimation)["animate"]>;
+
+    /**
+     * @deprecated since v12, until v14
+     * @remarks "EffectsCanvasGroup#visibility has been deprecated and moved to Canvas#visibility."
+     */
+    get visibility(): Canvas["visibility"];
+
+    /**
+     * @deprecated since v12, until v14
+     * @remarks "EffectsCanvasGroup#globalLightSource has been deprecated and moved to EnvironmentCanvasGroup#globalLightSource."
+     */
+    get globalLightSource(): Canvas["environment"]["globalLightSource"];
+
+    /**
+     * @deprecated since v12
+     * @remarks "EffectsCanvasGroup#updateGlobalLightSource has been deprecated and is part of EnvironmentCanvasGroup#initialize workflow."
+     */
+    updateGlobalLightSource(): void;
   }
+
+  namespace EffectsCanvasGroup {
+    type AnyConstructor = typeof AnyEffectsCanvasGroup;
+
+    interface DrawOptions extends CanvasGroupMixin.DrawOptions {}
+
+    interface TearDownOptions extends CanvasGroupMixin.TearDownOptions {}
+  }
+}
+
+declare abstract class AnyEffectsCanvasGroup extends EffectsCanvasGroup {
+  constructor(arg0: never, ...args: never[]);
 }
