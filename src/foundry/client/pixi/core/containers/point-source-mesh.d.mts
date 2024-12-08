@@ -1,4 +1,4 @@
-export {};
+import type { ValueOf } from "../../../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -15,12 +15,12 @@ declare global {
     /**
      * To store the previous blend mode of the last renderer PointSourceMesh.
      */
-    protected static _priorBlendMode: PIXI.BLEND_MODES;
+    protected static _priorBlendMode: ValueOf<PIXI.BLEND_MODES> | undefined;
 
     /**
      * The current texture used by the mesh.
      */
-    protected static _currentTexture: PIXI.Texture;
+    protected static _currentTexture: PIXI.Texture | undefined;
 
     /**
      * The transform world ID of the bounds.
@@ -44,12 +44,6 @@ declare global {
     /** @throws You can't add children to a PointSourceMesh. */
     override addChildAt(): never;
 
-    /**
-     * @throws You can't add children to a PointSourceMesh.
-     * @privateRemarks This method is meant to be an override, but the PIXI.Mesh class does not have an addChildren() method
-     */
-    addChildren(): never;
-
     protected override _render(renderer: PIXI.Renderer): void;
 
     override calculateBounds(): void;
@@ -57,6 +51,14 @@ declare global {
     protected override _calculateBounds(): void;
 
     /** The local bounds need to be drawn from the underlying geometry. */
-    override getLocalBounds(rect?: PIXI.Rectangle): PIXI.Rectangle;
+    override getLocalBounds(rect?: PIXI.Rectangle | null): PIXI.Rectangle;
   }
+
+  namespace PointSourceMesh {
+    type AnyConstructor = typeof AnyPointSourceMesh;
+  }
+}
+
+declare abstract class AnyPointSourceMesh extends PointSourceMesh {
+  constructor(arg0: never, ...args: never[]);
 }
