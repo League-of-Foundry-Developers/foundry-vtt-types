@@ -1,3 +1,4 @@
+import type { Brand } from "../../../../../types/helperTypes.d.mts";
 import type { NullishProps } from "../../../../../types/utils.d.mts";
 
 export {};
@@ -63,12 +64,7 @@ declare global {
      * A constant that enumerates the index order of the quadtree nodes from top-left to bottom-right.
      * @defaultValue `{tl: 0, tr: 1, bl: 2, br: 3}`
      */
-    static INDICES: {
-      tl: number;
-      tr: number;
-      bl: number;
-      br: number;
-    };
+    static INDICES: Record<"tl" | "tr" | "bl" | "br", Quadtree.INDICES>;
 
     /**
      * Return an array of all the objects in the Quadtree (recursive)
@@ -116,7 +112,7 @@ declare global {
      */
     getObjects(
       rect: Canvas.Rectangle,
-      options?: {
+      options?: NullishProps<{
         /* Function to further refine objects to return
          * after a potential collision is found. Parameters are the object and rect, and the
          * function should return true if the object should be added to the result set.
@@ -127,7 +123,7 @@ declare global {
          *  (default: `new Set<T>()`)
          */
         _s?: Set<T>;
-      },
+      }>,
     ): Set<T>;
 
     /**
@@ -156,19 +152,14 @@ declare global {
      * @param objects - Visualize the rectangular bounds of objects in the Quadtree. Default is false.
      *                  (default: `false`)
      */
-    visualize({ objects }?: { objects?: boolean }): void;
-  }
-
-  /**
-   * A subclass of Quadtree specifically intended for classifying the location of objects on the game canvas.
-   */
-  class CanvasQuadtree extends Quadtree<object> {
-    constructor(options?: Quadtree.Options<object>);
-
-    readonly bounds: PIXI.Rectangle;
+    visualize({ objects }?: NullishProps<{ objects: boolean }>): void;
   }
 
   namespace Quadtree {
+    type INDICES = Brand<number, "Quadtree.INDICIES">;
+
+    type AnyConstructor = typeof AnyQuadtree;
+
     /**
      * Additional options which configure the Quadtree
      */
@@ -199,4 +190,16 @@ declare global {
       _root?: Quadtree<T> | undefined | null;
     }
   }
+  /**
+   * A subclass of Quadtree specifically intended for classifying the location of objects on the game canvas.
+   */
+  class CanvasQuadtree extends Quadtree<object> {
+    constructor(options?: Quadtree.Options<object>);
+
+    readonly bounds: PIXI.Rectangle;
+  }
+}
+
+declare abstract class AnyQuadtree extends Quadtree<any> {
+  constructor(arg0: never, ...args: never[]);
 }
