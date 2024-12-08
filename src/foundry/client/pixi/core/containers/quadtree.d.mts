@@ -196,6 +196,10 @@ declare global {
 
     readonly bounds: PIXI.Rectangle;
   }
+
+  namespace CanvasQuadtree {
+    type AnyConstructor = typeof AnyCanvasQuadtree;
+  }
 }
 
 declare abstract class AnyQuadtree extends Quadtree<any> {
