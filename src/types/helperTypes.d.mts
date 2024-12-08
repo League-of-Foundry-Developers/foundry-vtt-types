@@ -387,3 +387,67 @@ export type ToObjectFalseType<T> = Document.ToObjectFalseType<MakeConform<T, Doc
  * @deprecated {@link PropertyKey | `PropertyKey`}
  */
 export type AnyKey = keyof any;
+
+declare class Branded<in out BrandName extends string> {
+  #brand: BrandName;
+}
+
+/**
+ * Brands a type such that is behaves just like the input type while preventing
+ * assignment to it. This is useful to create types that indicate a specific
+ * invariant that the type must adhere to that a more basic type wouldn't have.
+ *
+ * Note: You can brand most types but due to its implementation this
+ * helper is incompatible with `any`, `unknown`, and `never`. See "Brand Implementation"
+ * for more details.
+ *
+ * For example enum members can be branded to prevent an arbitrary number from
+ * being mistakenly used in their place:
+ *
+ * @example
+ * ```ts
+ * type NUMBER_ENUM = Brand<number, "NUMBER_ENUM">;
+ *
+ * const NUMBER_ENUM: {
+ *     X: NUMBER_ENUM,
+ *     Y: NUMBER_ENUM
+ * };
+ *
+ * function useNumberEnum(value: NUMBER_ENUM) { ... }
+ * usesNumberEnum(NUMBER_ENUM.X); // Works.
+ * usesNumberEnum(1); // Error.
+ * ```
+ *
+ * ### Brand Implementation
+ *
+ * The fundamental trick of the implementation is that it intersects the base
+ * type with a compile-time only marker property. This marker property will not
+ * exist on the base type and so prevents assignment just like how `{ foo: string }`
+ * can't be assigned to `{ foo: string; bar: number }` because it's missing a property.
+ *
+ * A more basic implementation might look like this:
+ *
+ * ```ts
+ * type Brand<BaseType, BrandName extends string> = BaseType & { brandType: BrandName };
+ * ```
+ *
+ * But this has two problems:
+ * - In theory anyone can add this `brandType` property.
+ * - The `brandType` property is accessible and visible, e.g.
+ *   `keyof Brand<BaseType, BrandName>` would include `brandType` because it's a visible property.
+ *
+ * The implementation here solves both of these problems by using a private class field.
+ * This class is unexported and so due to the way that private class properties work this
+ * means there is no other way to create a compatible property (outside of `any`). Using a
+ * class also has the added benefit that the type parameter can be specifically marked as
+ * invariant for a bit of extra protection.
+ *
+ * This does mean that `Brand` only works with types where an intersection is meaningful.
+ * These are the problematic types:
+ * - `any` will become `any` still because `any & T` is still `any`. This makes `Brand` useless.
+ * - `never` stays `never` because `never & T` is `never`. This makes `Brand` useless.
+ * - `unknown` becomes `Branded` because `unknown & T` is `T`. This is a problem because `unknown` can be any type, e.g. `number` but `Branded<unknown, BrandName>` is always an object.
+ *
+ * Unfortunately there aren't really good workarounds either.
+ */
+export type Brand<BaseType, BrandName extends string> = BaseType & Branded<BrandName>;
