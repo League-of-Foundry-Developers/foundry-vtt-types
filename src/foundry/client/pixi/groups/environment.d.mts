@@ -1,22 +1,20 @@
-import type { InexactPartial } from "../../../../types/utils.d.mts";
-
-// TODO: Remove when this is typed as part of #2674
-type SceneEnvironmentData = unknown;
+import type { HandleEmptyObject, NullishProps } from "../../../../types/utils.d.mts";
+import type { SceneEnvironmentData } from "../../../common/documents/_types.d.mts";
 
 declare global {
   /**
    * A container group which contains the primary canvas group and the effects canvas group.
    */
-  class EnvironmentCanvasGroup extends CanvasGroupMixin(PIXI.Container) {
+  class EnvironmentCanvasGroup<
+    DrawOptions extends EnvironmentCanvasGroup.DrawOptions = EnvironmentCanvasGroup.DrawOptions,
+    TearDownOptions extends EnvironmentCanvasGroup.TearDownOptions = EnvironmentCanvasGroup.TearDownOptions,
+  > extends CanvasGroupMixin(PIXI.Container)<DrawOptions, TearDownOptions> {
     /**
      * The global light source attached to the environment
      */
-    globalLightSource(): foundry.canvas.sources.GlobalLightSource;
+    readonly globalLightSource: InstanceType<(typeof CONFIG.Canvas)["globalLightSourceClass"]>;
 
-    /**
-     * @defaultValue `"environment"`
-     */
-    static override groupName: string;
+    static override groupName: "environment";
 
     /**
      * @defaultValue `false`
@@ -38,13 +36,14 @@ declare global {
      */
     get darknessLevel(): number;
 
-    protected override _draw(options: CanvasGroupMixin.DrawOptions): Promise<void>;
+    protected override _draw(options: HandleEmptyObject<DrawOptions>): Promise<void>;
 
     /**
      * Initialize the scene environment options.
      * @remarks `@fires PIXI.FederatedEvent type: "darknessChange" - event: {environmentData: {darknessLevel, priorDarknessLevel}}`
+     * @remarks Can't be NullishProps because a default for `environment` is only provided by `{environment={}}`,
      */
-    initialize(config: InexactPartial<EnvironmentCanvasGroup.InitializeConfig>): void;
+    initialize(config?: EnvironmentCanvasGroup.InitializeOptions): void;
 
     /**
      * @deprecated since v12, will be removed in v14
@@ -54,7 +53,16 @@ declare global {
   }
 
   namespace EnvironmentCanvasGroup {
-    interface InitializeConfig {
+    type AnyConstructor = typeof AnyEnvironmentCanvasGroup;
+
+    interface DrawOptions extends CanvasGroupMixin.DrawOptions {}
+
+    interface TearDownOptions extends CanvasGroupMixin.TearDownOptions {}
+
+    /**
+     * @remarks This is separated like this because `#initalize` won't accept `environment: null` without throwing
+     */
+    type InitializeOptions = NullishProps<{
       /** The background canvas color */
       backgroundColor: Color.Source;
 
@@ -72,9 +80,13 @@ declare global {
 
       /** The color applied to unexplored areas */
       fogUnexploredColor: Color.Source;
-
+    }> & {
       /** The scene environment data */
-      environment: SceneEnvironmentData;
-    }
+      environment?: NullishProps<SceneEnvironmentData> | undefined;
+    };
   }
+}
+
+declare abstract class AnyEnvironmentCanvasGroup extends EnvironmentCanvasGroup {
+  constructor(arg0: never, ...args: never[]);
 }

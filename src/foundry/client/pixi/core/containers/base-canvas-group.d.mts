@@ -14,7 +14,7 @@ declare class CanvasGroup<
    * The name of this canvas group
    * @remarks Foundry marked as abstract
    */
-  static groupName: keyof CONFIG.Canvas.Groups;
+  static groupName: keyof CONFIG.Canvas.Groups | undefined;
 
   /**
    * If this canvas group should teardown non-layers children.
