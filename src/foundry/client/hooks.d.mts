@@ -1,4 +1,4 @@
-import type { EditorState } from "prosemirror-state";
+import type { EditorState, Plugin } from "prosemirror-state";
 import type { DeepPartial, EmptyObject, ValueOf } from "../../types/utils.d.mts";
 import type Document from "../common/abstract/document.d.mts";
 import type { EffectChangeData } from "../common/documents/_types.d.mts";
