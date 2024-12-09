@@ -488,7 +488,7 @@ interface ResolvedUUID {
   /**
    * The type of Document referenced. Legacy compendium UUIDs will not populate this field if the compendium is not active in the World.
    */
-  type?: DocumentType;
+  type?: Document.Type;
 
   /**
    * The ID of the Document referenced.
