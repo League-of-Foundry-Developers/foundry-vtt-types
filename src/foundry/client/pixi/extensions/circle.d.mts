@@ -1,4 +1,4 @@
-import type { InexactPartial } from "../../../../types/utils.d.mts";
+import type { NullishProps } from "../../../../types/utils.d.mts";
 
 declare module "pixi.js" {
   interface Circle {
@@ -84,22 +84,7 @@ declare module "pixi.js" {
      * @param options - Options which configure how the intersection is computed
      * @returns The intersected polygon
      */
-    intersectPolygon(
-      polygon: PIXI.Polygon,
-      options?: InexactPartial<{
-        /** The number of points which defines the density of approximation */
-        density: number;
-
-        /** The clipper clip type */
-        clipType: number;
-
-        /**
-         * Use the Weiler-Atherton algorithm. Otherwise, use Clipper.
-         * (default: `true`)
-         * */
-        weilerAtherton: boolean;
-      }>,
-    ): PIXI.Polygon;
+    intersectPolygon(polygon: PIXI.Polygon, options?: NullishProps<PIXI.Circle.IntersectPolygonOptions>): PIXI.Polygon;
 
     /**
      * Intersect this PIXI.Circle with an array of ClipperPoints.
@@ -124,9 +109,23 @@ declare module "pixi.js" {
       includeEndpoints: boolean;
     }
 
+    interface IntersectPolygonOptions {
+      /** The number of points which defines the density of approximation */
+      density: number;
+
+      /** The clipper clip type */
+      clipType: number;
+
+      /**
+       * Use the Weiler-Atherton algorithm. Otherwise, use Clipper.
+       * (default: `true`)
+       * */
+      weilerAtherton: boolean;
+    }
+
     interface IntersectClipperOptions extends PIXI.Polygon.IntersectClipperOptions {
-          /** The number of points which defines the density of approximation */
-          density?: number | undefined;
+      /** The number of points which defines the density of approximation */
+      density?: number | undefined;
     }
   }
 }
