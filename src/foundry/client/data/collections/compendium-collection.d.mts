@@ -331,7 +331,8 @@ declare global {
      *                  default `{}`
      */
     static createCompendium<T extends CompendiumCollection.Metadata>(
-      metadata: CompendiumCollection.CreateCompendiumMetadata<T>,
+      this: abstract new (arg0: never, ...args: never[]) => CompendiumCollection<T>,
+      metadata: CompendiumCollection.CreateCompendiumMetadata<NoInfer<T>>,
       options?: Document.OnCreateOptions<T["type"]>,
     ): Promise<CompendiumCollection<T>>;
 
