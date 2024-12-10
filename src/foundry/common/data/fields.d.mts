@@ -1562,9 +1562,11 @@ declare namespace ObjectField {
  */
 declare class ArrayField<
   const ElementFieldType extends DataField.Any | Document.AnyConstructor,
+  const Options extends ArrayField.Options<AssignmentElementType> = ArrayField.DefaultOptions<
+    ArrayField.AssignmentElementType<ElementFieldType>
+  >,
   const AssignmentElementType = ArrayField.AssignmentElementType<ElementFieldType>,
   const InitializedElementType = ArrayField.InitializedElementType<ElementFieldType>,
-  const Options extends ArrayField.Options<AssignmentElementType> = ArrayField.DefaultOptions<AssignmentElementType>,
   const AssignmentType = ArrayField.AssignmentType<AssignmentElementType, Options>,
   const InitializedType = ArrayField.InitializedType<AssignmentElementType, InitializedElementType, Options>,
   const PersistedElementType = ArrayField.PersistedElementType<ElementFieldType>,
@@ -1798,9 +1800,11 @@ declare namespace ArrayField {
  */
 declare class SetField<
   ElementFieldType extends DataField.Any,
+  Options extends SetField.Options<AssignmentElementType> = SetField.DefaultOptions<
+    ArrayField.AssignmentElementType<ElementFieldType>
+  >,
   AssignmentElementType = ArrayField.AssignmentElementType<ElementFieldType>,
   InitializedElementType = ArrayField.InitializedElementType<ElementFieldType>,
-  Options extends SetField.Options<AssignmentElementType> = SetField.DefaultOptions<AssignmentElementType>,
   AssignmentType = SetField.AssignmentType<AssignmentElementType, Options>,
   InitializedType = SetField.InitializedType<AssignmentElementType, InitializedElementType, Options>,
   PersistedElementType = ArrayField.PersistedElementType<ElementFieldType>,
@@ -1811,9 +1815,9 @@ declare class SetField<
   >,
 > extends ArrayField<
   ElementFieldType,
+  Options,
   AssignmentElementType,
   InitializedElementType,
-  Options,
   AssignmentType,
   InitializedType,
   PersistedElementType,
@@ -2057,11 +2061,13 @@ declare namespace EmbeddedDataField {
  */
 declare class EmbeddedCollectionField<
   ElementFieldType extends Document.AnyConstructor,
+  // TODO(LukeAbby): See if `ParentDataModel` can be made redundant by automatically inferring.
   ParentDataModel extends Document.Any,
+  Options extends EmbeddedCollectionField.Options<any> = EmbeddedCollectionField.DefaultOptions<
+    EmbeddedCollectionField.AssignmentElementType<ElementFieldType>
+  >,
   AssignmentElementType = EmbeddedCollectionField.AssignmentElementType<ElementFieldType>,
   InitializedElementType extends Document.Any = EmbeddedCollectionField.InitializedElementType<ElementFieldType>,
-  Options extends
-    EmbeddedCollectionField.Options<AssignmentElementType> = EmbeddedCollectionField.DefaultOptions<AssignmentElementType>,
   AssignmentType = EmbeddedCollectionField.AssignmentType<AssignmentElementType, Options>,
   InitializedType = EmbeddedCollectionField.InitializedType<
     AssignmentElementType,
@@ -2077,9 +2083,9 @@ declare class EmbeddedCollectionField<
   >,
 > extends ArrayField<
   ElementFieldType,
+  Options,
   AssignmentElementType,
   InitializedElementType,
-  Options,
   AssignmentType,
   InitializedType,
   PersistedElementType,
@@ -2264,10 +2270,11 @@ declare namespace EmbeddedCollectionField {
 declare class EmbeddedCollectionDeltaField<
   ElementFieldType extends Document.AnyConstructor,
   ParentDataModel extends Document.Any,
+  Options extends EmbeddedCollectionDeltaField.Options<any> = EmbeddedCollectionDeltaField.DefaultOptions<
+    EmbeddedCollectionDeltaField.AssignmentElementType<ElementFieldType>
+  >,
   AssignmentElementType = EmbeddedCollectionDeltaField.AssignmentElementType<ElementFieldType>,
   InitializedElementType extends Document.Any = EmbeddedCollectionDeltaField.InitializedElementType<ElementFieldType>,
-  Options extends
-    EmbeddedCollectionDeltaField.Options<AssignmentElementType> = EmbeddedCollectionDeltaField.DefaultOptions<AssignmentElementType>,
   AssignmentType = EmbeddedCollectionDeltaField.AssignmentType<AssignmentElementType, Options>,
   InitializedType = EmbeddedCollectionDeltaField.InitializedType<
     AssignmentElementType,
@@ -2284,9 +2291,9 @@ declare class EmbeddedCollectionDeltaField<
 > extends EmbeddedCollectionField<
   ElementFieldType,
   ParentDataModel,
+  Options,
   AssignmentElementType,
   InitializedElementType,
-  Options,
   AssignmentType,
   InitializedType,
   PersistedElementType,

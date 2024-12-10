@@ -80,11 +80,12 @@ declare namespace BaseWall {
     /**
      * The wall coordinates, a length-4 array of finite numbers [x0,y0,x1,y1]
      */
+    // TODO(LukeAbby): Make the array shape easier to override.
     c: fields.ArrayField<
       fields.NumberField<CoordinateOptions>,
+      fields.ArrayField.DefaultOptions<fields.ArrayField.AssignmentElementType<fields.NumberField<CoordinateOptions>>>,
       fields.ArrayField.AssignmentElementType<fields.NumberField<CoordinateOptions>>,
       fields.ArrayField.InitializedElementType<fields.NumberField<CoordinateOptions>>,
-      fields.ArrayField.DefaultOptions<fields.ArrayField.AssignmentElementType<fields.NumberField<CoordinateOptions>>>,
       [x0: number, y0: number, x1: number, y1: number],
       [x0: number, y0: number, x1: number, y1: number],
       fields.ArrayField.PersistedElementType<fields.NumberField<CoordinateOptions>>,

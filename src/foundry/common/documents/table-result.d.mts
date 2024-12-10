@@ -108,8 +108,6 @@ declare namespace BaseTableResult {
      */
     range: fields.ArrayField<
       fields.NumberField<{ integer: true }>,
-      fields.ArrayField.AssignmentElementType<fields.NumberField<{ integer: true }>>,
-      fields.ArrayField.InitializedElementType<fields.NumberField<{ integer: true }>>,
       {
         validate: (r: [start: number, end: number]) => boolean;
         validationError: "must be a length-2 array of ascending integers";
