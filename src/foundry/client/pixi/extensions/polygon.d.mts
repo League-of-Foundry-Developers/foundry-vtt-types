@@ -89,7 +89,11 @@ declare module "pixi.js" {
      * @param options - Options which configure how the intersection is computed
      * @returns The intersected polygon
      */
-    intersectPolygon(other: PIXI.Polygon, options: PIXI.Polygon.IntersectClipperOptions): PIXI.Polygon;
+    intersectPolygon(
+      other: PIXI.Polygon,
+
+      options?: PIXI.Polygon.IntersectPolygonOptions,
+    ): PIXI.Polygon;
 
     /**
      * Intersect this PIXI.Polygon with an array of ClipperPoints.
@@ -128,7 +132,10 @@ declare module "pixi.js" {
       Y: number;
     }
 
-    /** @internal Helper type for interface to simplify InexactPartial usage */
+    /**
+     * @internal Helper type for interface to simplify InexactPartial usage
+     * @remarks Can't be NullishProps because `scalingFactor` is passed to functions that only provide defaults as `{scalingFactor=1}`
+     */
     type _IntersectClipperOptions = InexactPartial<{
       /** The clipper clip type */
       clipType: number;
@@ -138,5 +145,11 @@ declare module "pixi.js" {
     }>;
 
     interface IntersectClipperOptions extends _IntersectClipperOptions {}
+
+    /**
+     * @privateRemarks Created just so the name matches for use elsewhere (`PointSourcePolygon` at least)
+     * TODO: come up with a cleaner, consistent solution
+     */
+    interface IntersectPolygonOptions extends _IntersectClipperOptions {}
   }
 }
