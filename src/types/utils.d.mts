@@ -97,8 +97,27 @@ export type NullishProps<T extends object, K extends AllKeysOf<T> = AllKeysOf<T>
 };
 
 /**
- * References the constructor of type `T`
- * @internal
+ * @deprecated - Deprecated with no replacement. This type is almost always an anti-pattern because
+ * going from the instance-side of a class to a constructor loses static properties. Where you would
+ * reach for `ConstructorOf<T>` you should instead generally use the class directly. Specifically use
+ * `ClassName.AnyConstructor` if that exists or make `AnyConstructor` yourself.
+ *
+ * The `AnyConstructor` type differentiates itself from `typeof ClassName` by truly allowing any
+ * constructor, including abstract ones unlike `ConstructorOf`. Writing `AnyConstructor` is a manual
+ * process and is likely impossible to ergonomically automate.
+ *
+ * The reason why `AnyConstructor` has to be written manually is because of a few reasons that
+ * culminate in a human authorship being required. Firstly the type parameters must be given the most
+ * appropriate supertype. For most type parameters this is their constraint.
+ *
+ * For example `T extends number` in most cases should probably be substituted with `number`. However
+ * formally speaking this depends on the variance of `T`. `never` is more appropriate for contravariant
+ * type parameters and `any` is the only appropriate type for invariant type parameters.
+ *
+ * This determination could be done automatically in a type but a lack of first class higher-kinded type
+ * support makes it impossible to pass a generic constructor of any size and operate over its type parameters
+ * and bounds. There are in theory ways more limited ways involving passing it through a `HKT` interface but
+ * would require breaking the signature of `ConstructorOf` anyways and is probably more boilerplate than its worth.
  */
 export type ConstructorOf<T> = new (arg0: never, ...args: never[]) => T;
 
