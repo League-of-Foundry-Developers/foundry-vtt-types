@@ -50,7 +50,7 @@ declare global {
     T extends CompendiumCollection.Metadata,
   > extends DirectoryCollectionMixin_DocumentCollection<Document.ConfiguredClassForName<T["type"]>, T["name"]> {
     /** @param metadata - The compendium metadata, an object provided by game.data */
-    constructor(metadata: T);
+    constructor(metadata: CompendiumCollection.ConstructorMetadata<T>);
 
     /** The compendium metadata which defines the compendium content and location */
     metadata: T;
@@ -131,7 +131,7 @@ declare global {
     /**
      * The visibility configuration of this compendium pack.
      * */
-    get ownership(): foundry.packages.BasePackage.OwnershipRecord;
+    get ownership(): InexactPartial<foundry.packages.BasePackage.OwnershipRecord>;
 
     /** Is this Compendium pack visible to the current game User? */
     get visible(): boolean;
@@ -315,7 +315,7 @@ declare global {
      * Prompt the gamemaster with a dialog to configure ownership of this Compendium pack.
      * @returns The configured ownership for the pack
      */
-    configureOwnershipDialog(): Promise<foundry.packages.BasePackage.OwnershipRecord>;
+    configureOwnershipDialog(): Promise<InexactPartial<foundry.packages.BasePackage.OwnershipRecord>>;
 
     /**
      * Activate the Socket event listeners used to receive responses to compendium management events.
@@ -331,7 +331,8 @@ declare global {
      *                  default `{}`
      */
     static createCompendium<T extends CompendiumCollection.Metadata>(
-      metadata: T,
+      this: abstract new (arg0: never, ...args: never[]) => CompendiumCollection<T>,
+      metadata: CompendiumCollection.CreateCompendiumMetadata<NoInfer<T>>,
       options?: Document.OnCreateOptions<T["type"]>,
     ): Promise<CompendiumCollection<T>>;
 
@@ -416,17 +417,35 @@ declare global {
     type Any = CompendiumCollection<any>;
 
     interface Configuration {
-      ownership: foundry.packages.BasePackage.OwnershipRecord;
+      ownership: InexactPartial<foundry.packages.BasePackage.OwnershipRecord>;
       locked: boolean;
     }
+
+    // The type that's passed to `createCompendium`.
+    interface CreateCompendiumMetadata<T extends CompendiumCollection.Metadata> {
+      type: T["type"];
+      label: string;
+      name?: string | null | undefined;
+    }
+
+    // The type that's passed to `new CompendiumCollection(...)`
+    type ConstructorMetadata<T extends CompendiumCollection.Metadata> = T & {
+      index: IndexTypeForMetadata<T>;
+      folders: Folder[];
+    }
+
+    // The type that appears in `compendium.metadata` after initialization.
     interface Metadata {
       type: foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
-      name: string;
       label: string;
+      name: string;
+
+      flags: Record<string, never>;    // created by the server, but always empty and no way to change it in a way that is s
+      ownership: InexactPartial<foundry.packages.BasePackage.OwnershipRecord>;
       path: string;
-      private: boolean;
       package: string;
-      system?: string;
+      system: string;
+
       /** Added by PackageCompendiumPacks#initialize */
       id: string;
       packageType: string;

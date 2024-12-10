@@ -2,17 +2,42 @@ import { expectTypeOf } from "vitest";
 import type { DeepPartial } from "../../../../../src/types/utils.d.mts";
 import type Document from "../../../../../src/foundry/common/abstract/document.d.mts";
 
-const metadata = {
+const compendiumCollection = await CompendiumCollection.createCompendium({
   type: "JournalEntry" as const,
   label: "Important Plotholes",
-  id: "world.plotholes",
   name: "plotholes",
-  package: "some-package",
-  path: "path/to/file",
-  private: false,
+});
+
+expectTypeOf(compendiumCollection).toEqualTypeOf<CompendiumCollection<CompendiumCollection.Metadata>>();
+expectTypeOf(compendiumCollection.metadata).toEqualTypeOf<CompendiumCollection.Metadata>();
+
+const metadata: CompendiumCollection.Metadata = {
+  name: "plotholes",
+  type: "JournalEntry" as const,
+  label: "Important Plotholes",
+  flags: {},
+  id: "plotholes",
+  system: "core",
+  package: "plotholes",
+  packageName: "plotholes",
+  packageType: "module",
+  path: "path",
+  ownership: {
+    PLAYER: "OWNER",
+  }
 };
 
-const compendiumCollection = new CompendiumCollection(metadata);
+const constructorMetadata: CompendiumCollection.ConstructorMetadata<typeof metadata> = {
+  ...(metadata as CompendiumCollection.Metadata),
+  index: new foundry.utils.Collection(),
+  folders: [],
+};
+
+const compendium2 = new CompendiumCollection(constructorMetadata);
+
+expectTypeOf(compendium2).toEqualTypeOf<CompendiumCollection<CompendiumCollection.Metadata>>();
+expectTypeOf(compendium2.metadata).toEqualTypeOf<CompendiumCollection.Metadata>();
+
 expectTypeOf(compendiumCollection.get("", { strict: true })).toEqualTypeOf<Document.Stored<JournalEntry>>();
 // expectTypeOf(compendiumCollection.toJSON()).toEqualTypeOf<
 //   Array<Document.Stored<foundry.documents.BaseJournalEntry>["_source"]>
@@ -36,13 +61,10 @@ expectTypeOf((await compendiumCollection.getIndex()).get("some id", { strict: tr
 expectTypeOf(compendiumCollection.documentClass).toEqualTypeOf<typeof JournalEntry>();
 
 const itemCollection = new CompendiumCollection({
-  type: "Item",
-  label: "Important items",
-  id: "world.items",
-  name: "items",
-  package: "other-package",
-  path: "path/to/items",
-  private: false,
+  ...metadata,
+  type: "Item" as const,
+  index: new foundry.utils.Collection(),
+  folders: [],
 });
 expectTypeOf((await itemCollection.getIndex()).get("some id", { strict: true })).toEqualTypeOf<
   { _id: string; uuid: string } & DeepPartial<foundry.documents.BaseItem["_source"]>
