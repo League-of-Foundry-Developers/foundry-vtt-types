@@ -2023,7 +2023,7 @@ declare namespace EmbeddedDataField {
     ModelType extends DataModel.AnyConstructor,
     Opts extends Options<ModelType>,
   > = DataField.DerivedInitializedType<
-    SchemaField.InnerInitializedType<DataModel.SchemaOfClass<ModelType>>,
+    InstanceType<ModelType>,
     MergedOptions<ModelType, Opts>
   >;
 
