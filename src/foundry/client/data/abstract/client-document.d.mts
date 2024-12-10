@@ -336,8 +336,8 @@ declare class ClientDocument<BaseDocument extends Document.Internal.Instance.Any
    */
   static createDialog<T extends Document.AnyConstructor>(
     this: T,
-    data?: DeepPartial<Document.ConstructorDataFor<T> & Record<string, unknown>>,
-    context?: Pick<DatabaseCreateOperation<InstanceType<T>>, "parent" | "pack"> &
+    data?: DeepPartial<Document.ConstructorDataFor<NoInfer<T>> & Record<string, unknown>>,
+    context?: Pick<DatabaseCreateOperation<InstanceType<NoInfer<T>>>, "parent" | "pack"> &
       InexactPartial<
         DialogOptions & {
           /** A restriction the selectable sub-types of the Dialog. */
@@ -378,7 +378,7 @@ declare class ClientDocument<BaseDocument extends Document.Internal.Instance.Any
    */
   static fromDropData<T extends Document.AnyConstructor>(
     this: T,
-    data: DropData<InstanceType<T>>,
+    data: DropData<InstanceType<NoInfer<T>>>,
     options?: FromDropDataOptions,
   ): Promise<Document.ToConfiguredInstance<T> | undefined>;
 

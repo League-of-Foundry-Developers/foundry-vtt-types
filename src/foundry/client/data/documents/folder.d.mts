@@ -92,7 +92,7 @@ declare global {
 
     static createDialog<T extends Document.AnyConstructor>(
       this: T,
-      data?: DeepPartial<Document.ConstructorDataFor<T> | (Document.ConstructorDataFor<T> & Record<string, unknown>)>,
+      data?: DeepPartial<Document.ConstructorDataFor<NoInfer<T>>>,
       context?: InexactPartial<Omit<FolderConfig.Options, "resolve">>,
     ): Promise<Document.ToConfiguredInstance<T> | null | undefined>;
 

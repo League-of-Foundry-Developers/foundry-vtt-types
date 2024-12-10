@@ -180,8 +180,8 @@ declare global {
 
     static createDocuments<T extends Document.AnyConstructor, Temporary extends boolean | undefined>(
       this: T,
-      data: Array<fields.SchemaField.AssignmentType<InstanceType<T>["schema"]["fields"]> & Record<string, unknown>>,
-      operation?: InexactPartial<Omit<DatabaseOperationsFor<T["metadata"]["name"], "create">, "data">> & {
+      data: Array<fields.SchemaField.AssignmentType<InstanceType<NoInfer<T>>["schema"]["fields"]> & Record<string, unknown>>,
+      operation?: InexactPartial<Omit<DatabaseOperationsFor<NoInfer<T>["metadata"]["name"], "create">, "data">> & {
         temporary?: Temporary;
       },
     ): Promise<Document.ToStoredIf<T, Temporary>[] | undefined>;
@@ -341,7 +341,7 @@ declare global {
 
     static override createDialog<T extends Document.AnyConstructor>(
       this: T,
-      data?: DeepPartial<Document.ConstructorDataFor<T> & Record<string, unknown>>,
+      data?: DeepPartial<Document.ConstructorDataFor<NoInfer<T>> & Record<string, unknown>>,
       context?: Pick<DatabaseOperationsFor<Cards["documentName"], "create">, "parent" | "pack"> &
         InexactPartial<
           DialogOptions & {

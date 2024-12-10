@@ -60,7 +60,7 @@ declare global {
     static create<T extends ConstructorOf<PointSourcePolygon>>(
       this: T,
       origin: Canvas.Point,
-      config?: Parameters<InstanceType<T>["initialize"]>[1],
+      config?: Parameters<InstanceType<NoInfer<T>>["initialize"]>[1],
     ): InstanceType<T>;
 
     /**
