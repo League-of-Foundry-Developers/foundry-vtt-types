@@ -1,4 +1,5 @@
-import type { InexactPartial } from "../../../../types/utils.d.mts";
+import type { InexactPartial, NullishProps } from "../../../../types/utils.d.mts";
+import type { LineCircleIntersection } from "../../../common/utils/geometry.d.mts";
 
 declare module "pixi.js" {
   interface Circle {
@@ -6,7 +7,7 @@ declare module "pixi.js" {
      * Determine the center of the circle.
      * Trivial, but used to match center method for other shapes.
      */
-    get circle(): PIXI.Point;
+    get center(): PIXI.Point;
 
     /**
      * Determine if a point is on or nearly on this circle.
@@ -24,7 +25,7 @@ declare module "pixi.js" {
      * @param b - The second endpoint on segment A|B
      * @returns Points where the segment A|B intersects the circle
      */
-    segmentIntersections(a: Canvas.Point, b: Canvas.Point): [Canvas.Point?, Canvas.Point?];
+    segmentIntersections(a: Canvas.Point, b: Canvas.Point): LineCircleIntersection["intersections"];
 
     /**
      * Calculate an x,y point on this circle's circumference given an angle
@@ -47,7 +48,7 @@ declare module "pixi.js" {
      * @param options - Options passed on to the pointsForArc method
      * @returns An array of points arranged clockwise from start to end
      */
-    pointsBetween(a: Canvas.Point, b: Canvas.Point, options?: Circle.PointsForArcOptions): Canvas.Point[];
+    pointsBetween(a: Canvas.Point, b: Canvas.Point, options?: NullishProps<Circle.PointsForArcOptions>): Canvas.Point[];
 
     /**
      * Get the points that would approximate a circular arc along this circle, given a starting and ending angle.
@@ -57,14 +58,18 @@ declare module "pixi.js" {
      * @param options   - Options which affect how the circle is converted
      * @returns An array of points along the requested arc
      */
-    pointsForArc(fromAngle: number, toAngle: number, options?: Circle.PointsForArcOptions): Canvas.Point[];
+    pointsForArc(
+      fromAngle: number,
+      toAngle: number,
+      options?: NullishProps<Circle.PointsForArcOptions>,
+    ): Canvas.Point[];
 
     /**
      * Approximate this PIXI.Circle as a PIXI.Polygon
      * @param options - Options forwarded on to the pointsForArc method
      * @returns The Circle expressed as a PIXI.Polygon
      */
-    toPolygon(options?: Circle.PointsForArcOptions): PIXI.Polygon;
+    toPolygon(options?: NullishProps<Circle.PointsForArcOptions>): PIXI.Polygon;
 
     /**
      * The recommended vertex density for the regular polygon approximation of a circle of a given radius.
@@ -73,7 +78,7 @@ declare module "pixi.js" {
      * https://math.stackexchange.com/questions/4132060/compute-number-of-regular-polgy-sides-to-approximate-circle-to-defined-precision
      * @param radius  - Circle radius
      * @param epsilon - The maximum tolerable distance between an approximated line segment and the true radius.
-     *                            A larger epsilon results in fewer points for a given radius.
+     *                  A larger epsilon results in fewer points for a given radius. (default: `1`)
      * @returns The number of points for the approximated polygon
      */
     approximateVertexDensity(radius: number, epsilon?: number): number;
@@ -125,8 +130,8 @@ declare module "pixi.js" {
     }
 
     interface IntersectClipperOptions extends PIXI.Polygon.IntersectClipperOptions {
-          /** The number of points which defines the density of approximation */
-          density?: number | undefined;
+      /** The number of points which defines the density of approximation */
+      density?: number | undefined;
     }
   }
 }
