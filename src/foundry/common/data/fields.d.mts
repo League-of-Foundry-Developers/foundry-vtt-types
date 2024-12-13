@@ -807,15 +807,17 @@ declare namespace SchemaField {
    * @typeParam Fields - the DataSchema fields of the SchemaField
    */
   type InnerAssignmentType<Fields extends DataSchema> = RemoveIndexSignatures<{
-    [Key in keyof Fields]?: Fields[Key] extends DataField<any, infer AssignType, any, any>
-      ? Fields[Key] extends SchemaField<infer SubSchema, any, any, any, any>
+    [Key in keyof Fields]?: Fields[Key] extends EmbeddedDataField<any, any, infer AssignmentType, any, any>
+      ? AssignmentType
+      : Fields[Key] extends SchemaField<infer SubSchema, any, any, any, any>
         ? // FIXME(LukeAbby): This is a quick hack into InnerAssignmentType that assumes that the `initial` of `SchemaField` is not changed from the default of `{}`
           // This will be fixed with the refactoring of the types
           EmptyObject extends InnerAssignmentType<SubSchema>
           ? InnerAssignmentType<SubSchema> | undefined | null
           : InnerAssignmentType<SubSchema>
-        : AssignType
-      : never;
+        : Fields[Key] extends DataField<any, infer AssignType, any, any>
+          ? AssignType
+          : never;
   }>;
 
   /**
@@ -823,13 +825,13 @@ declare namespace SchemaField {
    * @typeParam Fields - the DataSchema fields of the SchemaField
    */
   type InnerInitializedType<Fields extends DataSchema> = RemoveIndexSignatures<{
-    [Key in keyof Fields]: Fields[Key] extends DataField<any, any, infer InitType, any>
-      ? Fields[Key] extends EmbeddedDataField<infer Model, any, any, any, any>
-        ? InstanceType<Model>
-        : Fields[Key] extends SchemaField<infer SubSchema, any, any, any, any>
-          ? InnerInitializedType<SubSchema>
-          : InitType
-      : never;
+    [Key in keyof Fields]: Fields[Key] extends EmbeddedDataField<infer Model, any, any, any, any>
+      ? InstanceType<Model>
+      : Fields[Key] extends SchemaField<infer SubSchema, any, any, any, any>
+        ? InnerInitializedType<SubSchema>
+        : Fields[Key] extends DataField<any, any, infer InitType, any>
+          ? InitType
+          : never;
   }>;
 
   /**
@@ -837,11 +839,13 @@ declare namespace SchemaField {
    * @typeParam Fields - the DataSchema fields of the SchemaField
    */
   type InnerPersistedType<Fields extends DataSchema> = RemoveIndexSignatures<{
-    [Key in keyof Fields]: Fields[Key] extends DataField<any, any, any, infer PersistType>
-      ? Fields[Key] extends SchemaField<infer SubSchema, any, any, any, any>
+    [Key in keyof Fields]: Fields[Key] extends EmbeddedDataField<any, any, any, any, infer PersistType>
+      ? PersistType
+      : Fields[Key] extends SchemaField<infer SubSchema, any, any, any, any>
         ? InnerPersistedType<SubSchema>
-        : PersistType
-      : never;
+        : Fields[Key] extends DataField<any, any, any, infer PersistType>
+          ? PersistType
+          : never;
   }>;
 
   /** The type of the default options for the {@link SchemaField} class. */
@@ -2022,10 +2026,7 @@ declare namespace EmbeddedDataField {
   type InitializedType<
     ModelType extends DataModel.AnyConstructor,
     Opts extends Options<ModelType>,
-  > = DataField.DerivedInitializedType<
-    InstanceType<ModelType>,
-    MergedOptions<ModelType, Opts>
-  >;
+  > = DataField.DerivedInitializedType<InstanceType<ModelType>, MergedOptions<ModelType, Opts>>;
 
   /**
    * A shorthand for the persisted type of an EmbeddedDataField class.
