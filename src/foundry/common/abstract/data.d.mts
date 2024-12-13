@@ -52,7 +52,6 @@ export default DataModel;
 declare abstract class DataModel<
   Schema extends DataSchema,
   Parent extends DataModel.Any | null = null,
-
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   ExtraConstructorOptions extends AnyObject = {},
 > extends _InternalDataModel<Schema> {
@@ -310,14 +309,14 @@ declare abstract class DataModel<
    *                 (default: `true`)
    * @returns The extracted primitive object
    */
-  toObject(source: true): this["_source"];
+  toObject(source: true): fields.SchemaField.InnerPersistedType<Schema>;
   toObject(source?: boolean): ReturnType<this["schema"]["toObject"]>;
 
   /**
    * Extract the source data for the DataModel into a simple object format that can be serialized.
    * @returns The document source data expressed as a plain object
    */
-  toJSON(): this["_source"];
+  toJSON(): fields.SchemaField.InnerPersistedType<Schema>;
 
   /**
    * Create a new instance of this DataModel from a source record.
