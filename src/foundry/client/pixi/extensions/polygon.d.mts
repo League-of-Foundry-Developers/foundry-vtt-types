@@ -31,7 +31,7 @@ declare module "pixi.js" {
      * Note: references to the old points array will not be affected.
      * @returns This polygon with its orientation reversed
      */
-    reverseOrientation(): PIXI.Polygon;
+    reverseOrientation(): this;
 
     /**
      * Add a de-duplicated point to the Polygon.
@@ -130,8 +130,11 @@ declare module "pixi.js" {
 
     /** @internal Helper type for interface to simplify InexactPartial usage */
     type _IntersectClipperOptions = InexactPartial<{
-      /** The clipper clip type */
-      clipType: number;
+      /**
+       * The clipper clip type
+       * @remarks ClipperLib functions require a `ClipperLib.ClipType` value, but the Foundry functions have `??=` guards for this.
+       */
+      clipType: ClipperLib.ClipType | null;
 
       /** A scaling factor passed to Polygon#toClipperPoints to preserve precision */
       scalingFactor: number;
