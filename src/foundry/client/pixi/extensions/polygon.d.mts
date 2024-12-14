@@ -70,6 +70,7 @@ declare module "pixi.js" {
 
     /**
      * Determine whether the PIXI.Polygon is closed, defined by having the same starting and ending point.
+     * @remarks Non-enumerable
      */
     get isClosed(): boolean;
 
@@ -79,7 +80,7 @@ declare module "pixi.js" {
      * @param options - Options which configure how the intersection is computed
      * @returns The intersected polygon
      */
-    intersectPolygon(other: PIXI.Polygon, options: PIXI.Polygon.IntersectClipperOptions): PIXI.Polygon;
+    intersectPolygon(other: PIXI.Polygon, options?: PIXI.Polygon.IntersectClipperOptions): PIXI.Polygon;
 
     /**
      * Intersect this PIXI.Polygon with an array of ClipperPoints.
@@ -126,10 +127,14 @@ declare module "pixi.js" {
       /**
        * The clipper clip type
        * @remarks ClipperLib functions require a `ClipperLib.ClipType` value, but the Foundry functions have `??=` guards for this.
+       * @defaultValue `ClipperLib.ClipType.ctIntersection`
        */
       clipType: ClipperLib.ClipType | null;
 
-      /** A scaling factor passed to Polygon#toClipperPoints to preserve precision */
+      /**
+       * A scaling factor passed to Polygon#toClipperPoints to preserve precision
+       * @defaultValue `1`
+       */
       scalingFactor: number;
     }>;
 

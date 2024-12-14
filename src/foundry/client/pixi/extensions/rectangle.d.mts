@@ -1,3 +1,4 @@
+import type { Brand } from "../../../../types/helperTypes.d.mts";
 import type { InexactPartial } from "../../../../types/utils.d.mts";
 
 declare module "pixi.js" {
@@ -10,17 +11,10 @@ declare module "pixi.js" {
      * central  0001    0000      0010
      * bottom   0101    0100      0110
      */
-    CS_ZONES: {
-      INSIDE: 0x0000;
-      LEFT: 0x0001;
-      RIGHT: 0x0010;
-      TOP: 0x1000;
-      BOTTOM: 0x0100;
-      TOPLEFT: 0x1001;
-      TOPRIGHT: 0x1010;
-      BOTTOMRIGHT: 0x0110;
-      BOTTOMLEFT: 0x0101;
-    };
+    CS_ZONES: Record<
+      "INSIDE" | "LEFT" | "RIGHT" | "TOP" | "BOTTOM" | "TOPLEFT" | "TOPRIGHT" | "BOTTOMRIGHT" | "BOTTOMLEFT",
+      PIXI.Rectangle.CS_ZONES
+    >;
 
     /**
      * Calculate center of this rectangle.
@@ -47,7 +41,7 @@ declare module "pixi.js" {
      * @param point - A point to test for location relative to the rectangle
      * @returns Which edge zone does the point belong to?
      */
-    _getEdgeZone(point: Canvas.Point): PIXI.Rectangle["CS_ZONES"];
+    _getEdgeZone(point: Canvas.Point): PIXI.Rectangle.CS_ZONES;
 
     /**
      * Get all the points (corners) for a polygon approximation of a rectangle between two points on the rectangle.
@@ -132,7 +126,7 @@ declare module "pixi.js" {
      *
      * @param p - Point to test for location relative to the rectangle
      */
-    _getZone(p: Canvas.Point): PIXI.Rectangle["CS_ZONES"];
+    _getZone(p: Canvas.Point): PIXI.Rectangle.CS_ZONES;
 
     /**
      * Test whether a line segment AB intersects this rectangle.
@@ -144,10 +138,14 @@ declare module "pixi.js" {
     lineSegmentIntersects(
       a: Canvas.Point,
       b: Canvas.Point,
-      options?: {
-        /** If true, a line contained within the rectangle will return true */
-        inside?: boolean;
-      },
+      /** @remarks Can't be NullishProps because `inside` only has a default via `{inside=false}` and it can be returned directly */
+      options?: InexactPartial<{
+        /**
+         * If true, a line contained within the rectangle will return true
+         * @defaultValue `false`
+         */
+        inside: boolean;
+      }>,
     ): boolean;
 
     /**
@@ -217,13 +215,15 @@ declare module "pixi.js" {
   }
 
   namespace Rectangle {
+    type CS_ZONES = Brand<number, "PIXI.Rectangle.CS_ZONES">;
+
     /** @internal Helper type for interface to simplify InexactPartial usage */
     type _IntersectPolygonOptions = InexactPartial<{
       /** The number of points which defines the density of approximation */
       density: number;
 
       /** The clipper clip type */
-      clipType: number;
+      clipType: ClipperLib.ClipType;
 
       /**
        * Use the Weiler-Atherton algorithm. Otherwise, use Clipper.

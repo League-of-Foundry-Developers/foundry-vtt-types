@@ -48,7 +48,7 @@ declare module "pixi.js" {
      * @param options - Options passed on to the pointsForArc method
      * @returns An array of points arranged clockwise from start to end
      */
-    pointsBetween(a: Canvas.Point, b: Canvas.Point, options?: NullishProps<Circle.PointsForArcOptions>): Canvas.Point[];
+    pointsBetween(a: Canvas.Point, b: Canvas.Point, options?: Circle.PointsForArcOptions): Canvas.Point[];
 
     /**
      * Get the points that would approximate a circular arc along this circle, given a starting and ending angle.
@@ -58,18 +58,14 @@ declare module "pixi.js" {
      * @param options   - Options which affect how the circle is converted
      * @returns An array of points along the requested arc
      */
-    pointsForArc(
-      fromAngle: number,
-      toAngle: number,
-      options?: NullishProps<Circle.PointsForArcOptions>,
-    ): Canvas.Point[];
+    pointsForArc(fromAngle: number, toAngle: number, options?: Circle.PointsForArcOptions): Canvas.Point[];
 
     /**
      * Approximate this PIXI.Circle as a PIXI.Polygon
      * @param options - Options forwarded on to the pointsForArc method
      * @returns The Circle expressed as a PIXI.Polygon
      */
-    toPolygon(options?: NullishProps<Circle.PointsForArcOptions>): PIXI.Polygon;
+    toPolygon(options?: Circle.PointsForArcOptions): PIXI.Polygon;
 
     /**
      * The recommended vertex density for the regular polygon approximation of a circle of a given radius.
@@ -121,13 +117,16 @@ declare module "pixi.js" {
   }
 
   namespace Circle {
-    interface PointsForArcOptions {
+    /** @internal Helper type for simplifying NullishProps usage */
+    type _PointsForArcOptions = NullishProps<{
       /** The number of points which defines the density of approximation */
       density: number;
 
       /** Whether to include points at the circle where the arc starts and ends */
       includeEndpoints: boolean;
-    }
+    }>;
+
+    interface PointsForArcOptions extends _PointsForArcOptions {}
 
     interface IntersectClipperOptions extends PIXI.Polygon.IntersectClipperOptions {
       /** The number of points which defines the density of approximation */
