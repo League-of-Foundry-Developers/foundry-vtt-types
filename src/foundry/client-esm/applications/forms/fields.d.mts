@@ -224,6 +224,11 @@ export interface SelectInputConfig extends NullishProps<_SelectInputConfig> {
   options: FormSelectOption[];
 }
 
+/**
+ * Create a `<select>` element for a StringField.
+ */
+export function createSelectInput(config: SelectInputConfig & FormInputConfig<string>): HTMLSelectElement;
+
 export interface TextAreaInputConfig extends FormInputConfig<string> {
   rows: number;
 }
