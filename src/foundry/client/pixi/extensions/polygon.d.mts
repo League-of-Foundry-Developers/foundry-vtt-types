@@ -56,13 +56,7 @@ declare module "pixi.js" {
      */
     fromClipperPoints(
       points: PIXI.Polygon.ClipperPoint[],
-      options?: InexactPartial<{
-        /**
-         * A scaling factor used to preserve floating point precision
-         * @defaultValue `1`
-         */
-        scalingFactor: number;
-      }>,
+      options?: Pick<PIXI.Polygon.IntersectClipperOptions, "scalingFactor">,
     ): PIXI.Polygon;
 
     /**
@@ -72,11 +66,7 @@ declare module "pixi.js" {
      * @param options - Options which affect how clipper points are generated
      * @returns An array of points to be used by clipper
      */
-    toClipperPoints(options?: {
-      /** A scaling factor used to preserve floating point precision
-       *  (default: `1`) */
-      scalingFactor: number;
-    }): PIXI.Polygon.ClipperPoint[];
+    toClipperPoints(options?: Pick<PIXI.Polygon.IntersectClipperOptions, "scalingFactor">): PIXI.Polygon.ClipperPoint[];
 
     /**
      * Determine whether the PIXI.Polygon is closed, defined by having the same starting and ending point.
@@ -123,6 +113,9 @@ declare module "pixi.js" {
   }
 
   namespace Polygon {
+    /**
+     * @privateRemarks Foundry uses this type instead of full `ClipperLib.IntPoint` objects
+     */
     interface ClipperPoint {
       X: number;
       Y: number;
@@ -140,6 +133,7 @@ declare module "pixi.js" {
       scalingFactor: number;
     }>;
 
+    /** @remarks `scalingFactor` can't be null as it only has defaults provided by `{scalingFactor=1}` where it has any */
     interface IntersectClipperOptions extends _IntersectClipperOptions {}
   }
 }
