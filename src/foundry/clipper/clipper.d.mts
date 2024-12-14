@@ -1,3 +1,4 @@
+import type { Brand } from "../../types/helperTypes.d.mts";
 import type { ValueOf } from "../../types/utils.d.mts";
 
 declare global {
@@ -163,55 +164,26 @@ declare global {
       constructor(l: number, t: number, r: number, b: number);
     }
 
-    const ClipType: {
-      ctIntersection: 0;
-      ctUnion: 1;
-      ctDifference: 2;
-      ctXor: 3;
-    };
-    type ClipType = ValueOf<typeof ClipType>;
+    type ClipType = Brand<number, "ClipperLib.ClipType">;
+    const ClipType: Record<"ctIntersection" | "ctUnion" | "ctDifference" | "ctXor", ClipType>;
 
-    const PolyType: {
-      ptSubject: 0;
-      ptClip: 1;
-    };
-    type PolyType = ValueOf<typeof PolyType>;
+    type PolyType = Brand<number, "ClipperLib.PolyType">;
+    const PolyType: Record<"ptSubject" | "ptClip", PolyType>;
 
-    const PolyFillType: {
-      pftEvenOdd: 0;
-      pftNonZero: 1;
-      pftPositive: 2;
-      pftNegative: 3;
-    };
-    type PolyFillType = ValueOf<typeof PolyFillType>;
+    type PolyFillType = Brand<number, "ClipperLib.PolyFillType">;
+    const PolyFillType: Record<"pftEvenOdd" | "pftNonZero" | "pftPositive" | "pftNegative", PolyFillType>;
 
-    const JoinType: {
-      jtSquare: 0;
-      jtRound: 1;
-      jtMiter: 2;
-    };
-    type JoinType = ValueOf<typeof JoinType>;
+    type JoinType = Brand<number, "ClipperLib.JoinType">;
+    const JoinType: Record<"jtSquare" | "jtRound" | "jtMiter", JoinType>;
 
-    const EndType: {
-      etOpenSquare: 0;
-      etOpenRound: 1;
-      etOpenButt: 2;
-      etClosedLine: 3;
-      etClosedPolygon: 4;
-    };
-    type EndType = ValueOf<typeof EndType>;
+    type EndType = Brand<number, "ClipperLib.EndType">;
+    const EndType: Record<"etOpenSquare" | "etOpenRound" | "etOpenButt" | "etClosedLine" | "etClosedPolygon", EndType>;
 
-    const EdgeSide: {
-      esLeft: 0;
-      esRight: 1;
-    };
-    type EdgeSide = ValueOf<typeof EdgeSide>;
+    type EdgeSide = Brand<number, "ClipperLib.EdgeSide">;
+    const EdgeSide: Record<"esLeft" | "esRight", EdgeSide>;
 
-    const Direction: {
-      dRightToLeft: 0;
-      dLeftToRight: 1;
-    };
-    type Direction = ValueOf<typeof Direction>;
+    type Direction = Brand<number, "Direction">;
+    const Direction: Record<"dRightToLeft" | "dLeftToRight", Direction>;
 
     class TEdge {
       Bot: IntPoint;
