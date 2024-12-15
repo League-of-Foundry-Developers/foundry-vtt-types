@@ -1,4 +1,4 @@
-import type { InexactPartial } from "../../../../types/utils.d.mts";
+import type { InexactPartial, NullishProps } from "../../../../types/utils.d.mts";
 
 /**
  * TODO - Re-document after ESM refactor.
@@ -14,15 +14,17 @@ import type { InexactPartial } from "../../../../types/utils.d.mts";
  * ```
  * @privateRemarks The TODO is foundry's
  */
-declare class BaseEffectSource<
+declare abstract class BaseEffectSource<
   SourceData extends BaseEffectSource.BaseEffectSourceData,
   SourceShape extends PIXI.Polygon,
 > {
   /**
    * An effect source is constructed by providing configuration options.
    * @param options - Options which modify the base effect source instance
+   * @remarks Passing a PlaceableObject is deprecated, and will be removed in v13
    */
-  constructor(options?: BaseEffectSource.BaseEffectSourceOptions);
+  constructor(options?: PlaceableObject);
+  constructor(options?: BaseEffectSource.BaseEffectSourceOptions | PlaceableObject);
 
   /**
    * The type of source represented by this data structure.
@@ -56,8 +58,9 @@ declare class BaseEffectSource<
 
   /**
    * The source id linked to this effect source.
+   * @remarks Foundry types this as Readonly<string>, but does nothing to that effect at runtime
    */
-  readonly sourceId: string;
+  sourceId: string;
 
   /**
    * The data of this source.
@@ -130,13 +133,13 @@ declare class BaseEffectSource<
    */
   initialize(
     data?: InexactPartial<SourceData>,
-    options?: InexactPartial<{
+    options?: NullishProps<{
       // The type def references a behaviors object that is not even passed into the function
       /**
        * Should source data be reset to default values before applying changes?
        * @defaultValue `false`
        */
-      reset?: boolean;
+      reset: boolean;
     }>,
   ): this;
 
