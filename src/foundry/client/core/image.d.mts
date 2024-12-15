@@ -142,6 +142,8 @@ declare global {
      */
     interface CompositeOptions extends _CompositeOptions {}
 
+    type Format = "image/png" | "image/jpeg" | "image/webp";
+
     /**
      * @internal Helper type to simplify NullishProps usage
      * @remarks Letting this be NullishProps, as, after testing, passing null values to `HTMLCanvasElement#toBlob()`,
@@ -152,7 +154,7 @@ declare global {
        * Image format, e.g. "image/jpeg" or "image/webp".
        * @defaultValue `"image/png"`
        */
-      format: foundry.CONST.IMAGE_FILE_EXTENSIONS;
+      format: Format;
 
       /**
        * JPEG or WEBP compression from 0 to 1. Default is 0.92.
