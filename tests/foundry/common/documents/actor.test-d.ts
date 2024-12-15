@@ -248,7 +248,7 @@ expectTypeOf(boilerplateCharacter.extra.deep.derived.prop).toEqualTypeOf<string>
 declare global {
   interface DataModelConfig {
     Actor: {
-      character: BoilerplateCharacter;
+      character: typeof BoilerplateCharacter;
     };
   }
 }

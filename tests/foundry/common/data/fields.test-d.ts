@@ -35,7 +35,7 @@ declare const JEPSystemTypes: Game.Model.TypeNames<"JournalEntryPage">;
 declare global {
   interface DataModelConfig {
     JournalEntryPage: {
-      headquarters: foundry.abstract.TypeDataModel<DataSchema, JournalEntryPage>;
+      headquarters: typeof foundry.abstract.TypeDataModel<DataSchema, JournalEntryPage>;
     };
   }
 }
