@@ -100,7 +100,7 @@
     "typescript": "^5.4"
   },
   "overrides": {
-    "@types/css-font-loading-module": "^0.0.12s"
+    "@types/css-font-loading-module": "^0.0.14"
   },
   "resolutions": {
     "@types/earcut": "patch:@types/earcut@2.1.4#./patches/@types+earcut+2.1.4.patch"

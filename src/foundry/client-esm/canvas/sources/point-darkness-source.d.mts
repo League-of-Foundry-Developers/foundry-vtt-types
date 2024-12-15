@@ -2,9 +2,6 @@ import type BaseLightSource from "./base-light-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
 import type RenderedEffectSource from "./rendered-effect-source.d.mts";
 
-// TODO: Adjust after client/config.js is updated
-type LightSourceAnimationConfig = unknown;
-
 type DarknessSourceData = BaseLightSource.LightSourceData & PointEffectSourceMixin.PointEffectSourceData;
 
 // Interface causes errors
@@ -30,7 +27,7 @@ export default class PointDarknessSource<
   static override _brightLightingLevel: foundry.CONST.LIGHTING_LEVELS;
 
   /** @defaultValue `CONFIG.Canvas.darknessAnimations` */
-  static get ANIMATIONS(): LightSourceAnimationConfig;
+  static get ANIMATIONS(): CONFIG.Canvas.LightSourceAnimationConfig;
 
   static override get _layers(): Record<string, foundry.canvas.sources.RenderedEffectSource.RenderedEffectLayerConfig>;
 

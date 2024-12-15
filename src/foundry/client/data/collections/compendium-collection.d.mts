@@ -153,7 +153,9 @@ declare global {
 
     // Note(LukeAbby): The overrides for `get` become unreasonably long and don't add any changes and so have been omitted.
 
-    set(id: string, document: Document.Stored<Document.ConfiguredInstanceForName<T["type"]>>): this;
+    // NOTE(LukeAbby): This override was disabled for the time being because it's erroring.
+    // Thankfully it doesn't actually change its parent class's signature.
+    // set(id: string, document: Document.Stored<Document.ConfiguredInstanceForName<T["type"]>>): this;
 
     delete: (id: string) => boolean;
 

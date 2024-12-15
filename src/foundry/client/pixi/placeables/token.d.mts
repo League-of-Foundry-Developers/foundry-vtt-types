@@ -87,7 +87,8 @@ declare global {
     }
 
     /** The UI frame container which depicts Token metadata and status, displayed in the ControlsLayer. */
-    interface ObjectHUD extends globalThis.ObjectHUD {
+    // TODO: Fix globalThis.ObjectHUD #2962
+    interface ObjectHUD {
       /** Token health bars */
       bars?: PIXI.Container;
 
