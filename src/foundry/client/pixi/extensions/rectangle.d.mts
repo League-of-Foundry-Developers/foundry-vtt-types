@@ -1,5 +1,5 @@
 import type { Brand } from "../../../../types/helperTypes.d.mts";
-import type { InexactPartial } from "../../../../types/utils.d.mts";
+import type { InexactPartial, NullishProps } from "../../../../types/utils.d.mts";
 
 declare module "pixi.js" {
   interface Rectangle {
@@ -217,13 +217,23 @@ declare module "pixi.js" {
   namespace Rectangle {
     type CS_ZONES = Brand<number, "PIXI.Rectangle.CS_ZONES">;
 
+    /** @remarks Options for `weilerAtherton: true` */
+    type WACIntersectPolygonOptions = {
+      weilerAtherton: true;
+    } & WeilerAthertonClipper._CombineOptions;
+
+    /** @remarks Options for a falsey `weilerAtherton`. Only `clipType` has NullishProps applied, as `scalingFactor` still can't be null  */
+    type ClipperLibIntersectPolygonOptions = {
+      weilerAtherton: false | undefined | null;
+    } & NullishProps<PIXI.Polygon.IntersectClipperOptions, "clipType">;
+
     /** @internal Helper type for interface to simplify InexactPartial usage */
     type _IntersectPolygonOptions = InexactPartial<{
-      /** The number of points which defines the density of approximation */
-      density: number;
-
-      /** The clipper clip type */
-      clipType: ClipperLib.ClipType;
+      /**
+       * The clipper clip type
+       * @remarks Which type this should be depends on the value of `weilerAtherton`
+       */
+      clipType: ClipperLib.ClipType | WeilerAthertonClipper.CLIP_TYPES;
 
       /**
        * Use the Weiler-Atherton algorithm. Otherwise, use Clipper.
@@ -237,12 +247,4 @@ declare module "pixi.js" {
 
     interface IntersectPolygonOptions extends _IntersectPolygonOptions {}
   }
-}
-
-declare global {
-  /**
-   * A PIXI.Rectangle where the width and height are always positive and the x and y are always the top-left
-   * @deprecated You are using the NormalizedRectangle class which has been deprecated in favor of PIXI.Rectangle.prototype.normalize
-   */
-  class NormalizedRectangle extends PIXI.Rectangle {}
 }

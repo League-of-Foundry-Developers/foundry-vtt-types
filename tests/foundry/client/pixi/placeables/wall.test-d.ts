@@ -9,7 +9,6 @@ const wall = new Wall(doc);
 expectTypeOf(wall.mouseInteractionManager).toEqualTypeOf<MouseInteractionManager<Wall> | null>();
 expectTypeOf(wall.roof).toEqualTypeOf<Tile | undefined>();
 expectTypeOf(wall.coords).toEqualTypeOf<[number, number, number, number]>();
-expectTypeOf(wall.bounds).toEqualTypeOf<NormalizedRectangle>();
 expectTypeOf(wall.midpoint).toEqualTypeOf<[number, number]>();
 expectTypeOf(wall.center).toEqualTypeOf<PIXI.Point>();
 expectTypeOf(wall.direction).toEqualTypeOf<number | null>();

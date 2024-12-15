@@ -1,4 +1,5 @@
 import type { Brand } from "../../../../types/helperTypes.d.mts";
+import type { NullishProps } from "../../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -103,17 +104,7 @@ declare global {
       polygon: PIXI.Polygon,
       clipObject: PIXI.Rectangle | PIXI.Circle,
       /** @remarks A valid clipType *must* be passed or it throws, so despite this param being `={}` it is actually required */
-      options: {
-        /**
-         * One of CLIP_TYPES
-         */
-        clipType: WeilerAthertonClipper.CLIP_TYPES;
-
-        /**
-         * If the WeilerAtherton constructor could mutate or not the subject polygon points
-         */
-        canMutate?: boolean | undefined | null;
-      } & WeilerAthertonClipper.ClipOpts,
+      options: WeilerAthertonClipper.CombineOptions,
     ): PIXI.Polygon[];
 
     /**
@@ -142,8 +133,26 @@ declare global {
 
     type INTERSECTION_TYPES = Brand<number, "WeilerAthertonClipper.INTERSECTION_TYPES">;
 
+    /** @internal clipType is required, so only `canMutate` has NullishProps applied*/
+    type _CombineOptions = NullishProps<
+      {
+        /**
+         * One of CLIP_TYPES
+         */
+        clipType: WeilerAthertonClipper.CLIP_TYPES;
+
+        /**
+         * If the WeilerAtherton constructor could mutate or not the subject polygon points
+         */
+        canMutate: boolean;
+      },
+      "canMutate"
+    >;
+
+    interface CombineOptions extends _CombineOptions, ClipOpts {}
+
     /**
-     * @remarks These are ultimately only consumed only by the `#toPolygon` and `#pointsBetween` methods
+     * @remarks These are ultimately only consumed by the `#toPolygon` and `#pointsBetween` methods
      * of `PIXI.Rectangle` or `PIXI.Circle`. Only the `Circle` methods actually take options and those are
      * only passed on to `#pointsForArc`.
      */
