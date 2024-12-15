@@ -773,9 +773,14 @@ declare class SchemaField<
 
   override toObject(value: InitializedType): PersistedType;
 
+  override apply<Options, Return>(
+    fn: keyof this | ((this: this, value: undefined | null, options: Options) => Return),
+    value?: undefined | null,
+    options?: Options,
+  ): Return;
   override apply<Value, Options, Return>(
     fn: keyof this | ((this: this, value: Value, options: Options) => Return),
-    value?: Value,
+    value: Value,
     options?: Options,
   ): Return;
 
