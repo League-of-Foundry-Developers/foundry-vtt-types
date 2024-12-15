@@ -775,7 +775,7 @@ declare class SchemaField<
 
   override apply<Value, Options, Return>(
     fn: keyof this | ((this: this, value: Value, options: Options) => Return),
-    value: Value,
+    value?: Value,
     options?: Options,
   ): Return;
 
@@ -1760,10 +1760,7 @@ declare namespace ArrayField {
    * @typeParam AssignmentElementType - the assignment type of the elements of the ArrayField
    * @typeParam Opts                  - the options that override the default options
    */
-  type AssignmentType<
-    AssignmentElementType,
-    Opts extends AnyOptions,
-  > = DataField.DerivedAssignmentType<
+  type AssignmentType<AssignmentElementType, Opts extends AnyOptions> = DataField.DerivedAssignmentType<
     BaseAssignmentType<AssignmentElementType>,
     MergedOptions<AssignmentElementType, Opts>
   >;
@@ -1813,9 +1810,7 @@ declare namespace ArrayField {
  */
 declare class SetField<
   ElementFieldType extends DataField.Any,
-  Options extends SetField.AnyOptions = SetField.DefaultOptions<
-    ArrayField.AssignmentElementType<ElementFieldType>
-  >,
+  Options extends SetField.AnyOptions = SetField.DefaultOptions<ArrayField.AssignmentElementType<ElementFieldType>>,
   AssignmentElementType = ArrayField.AssignmentElementType<ElementFieldType>,
   InitializedElementType = ArrayField.InitializedElementType<ElementFieldType>,
   AssignmentType = SetField.AssignmentType<AssignmentElementType, Options>,
@@ -1900,10 +1895,7 @@ declare namespace SetField {
    * @typeParam AssignmentElementType - the assignment type of the elements of the SetField
    * @typeParam Opts                  - the options that override the default options
    */
-  type AssignmentType<
-    AssignmentElementType,
-    Opts extends AnyOptions,
-  > = DataField.DerivedAssignmentType<
+  type AssignmentType<AssignmentElementType, Opts extends AnyOptions> = DataField.DerivedAssignmentType<
     BaseAssignmentType<AssignmentElementType>,
     MergedOptions<AssignmentElementType, Opts>
   >;
