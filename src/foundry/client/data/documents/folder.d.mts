@@ -9,6 +9,7 @@ declare global {
 
     type ConfiguredClass = Document.ConfiguredClassForName<"Folder">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Folder">;
+    type Stored = Document.Stored<ConfiguredInstance>;
 
     interface DatabaseOperations extends DocumentDatabaseOperations<Folder> {}
 

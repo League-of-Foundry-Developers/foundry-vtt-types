@@ -32,7 +32,7 @@ declare class DirectoryCollection<T extends DirectoryCollection.DirectoryTypes> 
   /**
    * Reference the set of Folders which contain documents in this collection
    */
-  get folders(): Collection<Folder>;
+  get folders(): Collection<Folder.Stored>;
 
   /**
    * The built tree structure of the DocumentCollection
