@@ -428,7 +428,7 @@ declare namespace DataModel {
     parent?: Parent | null | undefined;
   }
 
-  type Any = DataModel<DataSchema, any>;
+  type Any = DataModel<DataSchema, DataModel.Any | null, AnyObject>;
 
   type AnyConstructor = typeof AnyDataModel;
 
@@ -438,7 +438,16 @@ declare namespace DataModel {
    */
   type SchemaOf<ModelType extends DataModel.Any> = ModelType["schema"]["fields"];
 
-  type SchemaOfClass<ConcreteClass extends DataModel.AnyConstructor> = SchemaOf<InstanceType<ConcreteClass>>;
+  // Note(LukeAbby): This avoids writing `SchemaOf<InstanceType<ConcreteClass>>` to be robust to an issue with this snippet:
+  // ```ts
+  // EmbeddedDataField<typeof DataModel<{}>> extends SchemaField<infer SubSchema> ? SubSchema : never
+  // ```
+  type SchemaOfClass<ConcreteClass extends DataModel.AnyConstructor> = ConcreteClass extends abstract new (
+    arg0: never,
+    ...args: never[]
+  ) => { schema: { fields: infer Fields extends DataSchema } }
+    ? Fields
+    : never;
 
   interface UpdateOptions {
     dryRun?: boolean;
@@ -452,7 +461,7 @@ declare namespace DataModel {
   }
 }
 
-declare abstract class AnyDataModel extends DataModel<any, any> {
+declare abstract class AnyDataModel extends DataModel<DataSchema, DataModel.Any | null, AnyObject> {
   constructor(arg0: never, ...args: never[]);
 }
 

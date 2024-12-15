@@ -689,7 +689,7 @@ declare global {
           user: string;
 
           /** The identified speaker data, see {@link ChatMessage.getSpeaker} */
-          speaker: ReturnType<Document.ToConfiguredClass<typeof ChatMessage>["getSpeaker"]>;
+          speaker: ReturnType<ChatMessage.ConfiguredClass["getSpeaker"]>;
         },
       ) => boolean | void;
 

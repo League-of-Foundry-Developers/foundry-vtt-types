@@ -17,7 +17,7 @@ declare global {
     /**
      * Reference the set of Folders which contain documents in this collection
      */
-    get folders(): Collection<Folder>;
+    get folders(): Collection<Folder.Stored>;
 
     /**
      * Return a reference to the SidebarDirectory application for this WorldCollection.

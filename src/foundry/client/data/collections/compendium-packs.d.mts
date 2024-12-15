@@ -7,7 +7,7 @@ declare global {
     /**
      * Get a Collection of Folders which contain Compendium Packs
      */
-    get folders(): Collection<Folder>;
+    get folders(): Collection<Folder.Stored>;
 
     protected override _getVisibleTreeContents(): CompendiumCollection<CompendiumCollection.Metadata>[];
 

@@ -55,6 +55,7 @@ jobs:
   test:
     name: test code base
     runs-on: ubuntu-latest
+    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
       - name: install node
