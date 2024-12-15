@@ -1,24 +1,36 @@
-import type { ConstructorOf, InexactPartial } from "../../../../../types/utils.d.mts";
+import type { Brand } from "../../../../../types/helperTypes.d.mts";
+import type { NullishProps } from "../../../../../types/utils.d.mts";
 import type PointEffectSourceMixin from "../../../../client-esm/canvas/sources/point-effect-source.d.mts";
 
 declare global {
-  interface PointSourcePolygonConfig extends PointSourcePolygon._Config {
-    /** The type of polygon being computed */
-    type: PointSourcePolygon.PolygonType;
-  }
+  /** @remarks Keys whose value when passed is not respected have been omitted from the global type */
+  type PointSourcePolygonConfig = NullishProps<
+    PointSourcePolygon._PassableConfig,
+    /**
+     * @privateRemarks Reasons for exclusion from nullishness:
+     * - `type` is the only truly non-optional property in the typedef
+     * - `externalRadius` is alraedy optional, but does not have any defaults applied, so must be numeric if provided.
+     * - `source` is already optional, but does not have any defaults applied, so probably shouldn't be nullish. As far as I can tell, nothing
+     *   accesses this property in v12, in v13 it is used to provide a fallback `elevation` if one is not provided with `origin`
+     */
+    Exclude<"externalRadius" | "type" | "source", keyof PointSourcePolygon._PassableConfig>
+  >;
 
   /**
    * An extension of the default PIXI.Polygon which is used to represent the line of sight for a point source.
    */
   abstract class PointSourcePolygon extends PIXI.Polygon {
     /**
+     * @remarks This is protected because `new PointSourcePolygon` does not sufficiently initalize the class; Use the static `create` method instead.
+     */
+    protected constructor(...args: ConstructorParameters<typeof PIXI.Polygon>);
+
+    /**
      * Customize how wall direction of one-way walls is applied
      */
-    static readonly WALL_DIRECTION_MODES: Readonly<{
-      NORMAL: 0;
-      REVERSED: 1;
-      BOTH: 2;
-    }>;
+    static WALL_DIRECTION_MODES: Readonly<
+      Record<"NORMAL" | "REVERSED" | "BOTH", PointSourcePolygon.WALL_DIRECTION_MODES>
+    >;
 
     /**
      * The rectangular bounds of this polygon
@@ -28,14 +40,15 @@ declare global {
 
     /**
      * The origin point of the source polygon.
+     * @remarks Not initalized to any value, but immediately set by `PointSourcePolygon#initalize`
      */
     origin: Canvas.Point;
 
     /**
      * The configuration of this polygon.
-     * @defaultValue `{}`
+     * @remarks Initialized as `{}` but immediately filled by `PointSourcePolygon#initalize`
      */
-    config: PointSourcePolygonConfig;
+    config: PointSourcePolygon.StoredConfig;
 
     /**
      * An indicator for whether this polygon is constrained by some boundary shape?
@@ -57,7 +70,7 @@ declare global {
      *                 (default: `{}`)
      * @returns The computed polygon instance
      */
-    static create<T extends ConstructorOf<PointSourcePolygon>>(
+    static create<T extends PointSourcePolygon.AnyConstructor>(
       this: T,
       origin: Canvas.Point,
       config?: Parameters<InstanceType<NoInfer<T>>["initialize"]>[1],
@@ -97,11 +110,21 @@ declare global {
      * @returns A new constrained polygon
      */
     applyConstraint(
-      constraint: PIXI.Circle | PIXI.Rectangle | PIXI.Polygon,
-      intersectionOptions?: Record<string, unknown>,
+      constraint: PIXI.Polygon,
+      /** @privateRemarks pre-InexactPartialed for now */
+      intersectionOptions?: PIXI.Polygon.IntersectPolygonOptions,
+    ): PointSourcePolygon;
+    applyConstraint(
+      constraint: PIXI.Circle,
+      intersectionOptions?: NullishProps<PIXI.Circle.IntersectPolygonOptions>,
+    ): PointSourcePolygon;
+    applyConstraint(
+      constraint: PIXI.Rectangle,
+      /** @privateRemarks pre-InexactPartialed for now */
+      intersectionOptions?: PIXI.Rectangle.IntersectPolygonOptions,
     ): PointSourcePolygon;
 
-    contains(x: number, y: number): boolean;
+    override contains(x: number, y: number): boolean;
 
     /**
      * Constrain polygon points by applying boundary shapes.
@@ -180,22 +203,72 @@ declare global {
   }
 
   namespace PointSourcePolygon {
-    /** @internal */
-    type _Config = InexactPartial<{
-      /** The angle of emission, if limited */
+    type AnyConstructor = typeof AnyPointSourcePolygon;
+
+    type WALL_DIRECTION_MODES = Brand<number, "PointSourcePolygon.WALL_DIRECTION_MODES">;
+
+    type StoredConfig = _PassableConfig & _PassableConfig;
+    /**
+     * @internal
+     * @remarks The properties of `PointSourcePolygonConfig` that are always computed and never respect passed values
+     */
+    interface _ComputedConfig {
+      /**
+       * Does this polygon have a limited radius?
+       * @remarks Always computed by `PointSourcePolygon#initialize`, it is overwritten if passed. Is `true` if `radius` is non-zero but smaller
+       *          than `canvas.dimensions.maxR`
+       */
+      hasLimitedRadius: boolean;
+
+      /**
+       * Does this polygon have a limited angle?
+       * @remarks Always computed by `PointSourcePolygon#initialize`, it is overwritten if passed. Is `true` if `angle !== 360`.
+       */
+      hasLimitedAngle: boolean;
+
+      /**
+       * The computed bounding box for the polygon
+       * @remarks Only exists in `ClockwiseSweepPolygon`s, where it is always computed and overwritten if passed
+       */
+      boundingBox?: PIXI.Rectangle;
+    }
+
+    /**
+     * @internal
+     */
+    interface _PassableConfig {
+      /** The type of polygon being computed */
+      type: PointSourcePolygon.PolygonType;
+
+      /**
+       * The angle of emission, if limited
+       * @defaultValue `360`
+       */
       angle: number;
 
-      /** The desired density of padding rays, a number per PI */
+      /**
+       * The desired density of padding rays, a number per PI
+       * @defaultValue `PIXI.Circle.approximateVertexDensity(cfg.radius)`
+       */
       density: number;
 
-      /** A limited radius of the resulting polygon */
+      /**
+       * A limited radius of the resulting polygon
+       * @defaultValue `canvas.dimensions.maxR`
+       */
       radius: number;
 
-      /** The direction of facing, required if the angle is limited */
+      /**
+       * The direction of facing, required if the angle is limited
+       * @defaultValue `0`
+       */
       rotation: number;
 
-      /** Customize how wall direction of one-way walls is applied */
-      wallDirectionMode: number;
+      /**
+       * Customize how wall direction of one-way walls is applied
+       * @defaultValue `PointSourcePolygon.WALL_DIRECTION_MODES.NORMAL`
+       */
+      wallDirectionMode: PointSourcePolygon.WALL_DIRECTION_MODES;
 
       /**
        * Compute the polygon with threshold wall constraints applied
@@ -209,30 +282,43 @@ declare global {
        */
       includeDarkness: boolean;
 
-      /** Priority when it comes to ignore edges from darkness sources */
-      priority: number;
+      /**
+       * Priority when it comes to ignore edges from darkness sources
+       * @remarks Seemingly not in use in practice
+       */
+      priority?: number;
 
-      /** Display debugging visualization and logging for the polygon */
-      debug: boolean;
+      /**
+       * Display debugging visualization and logging for the polygon
+       * @remarks `initialize` adds this key as `true` if `CONFIG.debug.polygons` is truthy, otherwise it is omitted. Effectively defaults `false`.
+       */
+      debug?: boolean;
 
-      /** The object (if any) that spawned this polygon. */
-      source: PointEffectSourceMixin.AnyMixed;
+      /**
+       * The object (if any) that spawned this polygon.
+       * @remarks Not guaranteed by `PointSourcePolygon#initalize` but will exist in all configs created by `PointSourceMixin` subclasses
+       */
+      source?: PointEffectSourceMixin.AnyMixed;
 
-      /** Limiting polygon boundary shapes */
+      /**
+       * Limiting polygon boundary shapes
+       * @defaultValue `[]`
+       */
       boundaryShapes: Array<PIXI.Rectangle | PIXI.Circle | PIXI.Polygon>;
 
-      /** Does this polygon use the Scene inner or outer bounding rectangle */
-      readonly useInnerBounds: boolean;
+      /**
+       * Does this polygon use the Scene inner or outer bounding rectangle
+       * @remarks Computed by `PointSourcePolygon#initialize` if not provided or passed nullish. Is `false` unless `type` is `"sight"` and
+       *          the origin point is inside `canvas.dimensions.sceneRect`
+       */
+      useInnerBounds: boolean;
 
-      /** Does this polygon have a limited radius? */
-      readonly hasLimitedRadius: boolean;
-
-      /** Does this polygon have a limited angle? */
-      readonly hasLimitedAngle: boolean;
-
-      /** The computed bounding box for the polygon */
-      readonly boundingBox: PIXI.Rectangle;
-    }>;
+      /**
+       * The external radius of the source
+       * @remarks Not in foundry's typedef, inferred from usage. It is in the object returned by `PointEffectSource#_getPolygonConfiguration`
+       */
+      externalRadius?: number;
+    }
 
     type PolygonType = "light" | "sight" | "sound" | "move" | "universal";
 
@@ -246,4 +332,8 @@ declare global {
 
     type TestCollision<Mode extends CollisionModes> = CollisionTypes[Mode];
   }
+}
+
+declare abstract class AnyPointSourcePolygon extends PointSourcePolygon {
+  constructor(arg0: never, ...args: never[]);
 }

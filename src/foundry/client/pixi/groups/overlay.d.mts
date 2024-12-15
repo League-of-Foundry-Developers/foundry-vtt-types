@@ -4,15 +4,27 @@ declare global {
   /**
    * A container group which is not bound to the stage world transform.
    */
-  class OverlayCanvasGroup extends CanvasGroupMixin(UnboundContainer) {
-    /**
-     * @defaultValue `"overlay"`
-     */
-    static override groupName: string;
+  class OverlayCanvasGroup<
+    DrawOptions extends OverlayCanvasGroup.DrawOptions = OverlayCanvasGroup.DrawOptions,
+    TearDownOptions extends OverlayCanvasGroup.TearDownOptions = OverlayCanvasGroup.TearDownOptions,
+  > extends CanvasGroupMixin(UnboundContainer)<DrawOptions, TearDownOptions> {
+    static override groupName: "overlay";
 
     /**
      * @defaultValue `false`
      */
     static override tearDownChildren: boolean;
   }
+
+  namespace OverlayCanvasGroup {
+    type AnyConstructor = typeof AnyOverlayCanvasGroup;
+
+    interface DrawOptions extends CanvasGroupMixin.DrawOptions {}
+
+    interface TearDownOptions extends CanvasGroupMixin.TearDownOptions {}
+  }
+}
+
+declare abstract class AnyOverlayCanvasGroup extends OverlayCanvasGroup {
+  constructor(arg0: never, ...args: never[]);
 }
