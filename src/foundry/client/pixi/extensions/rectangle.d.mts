@@ -218,13 +218,13 @@ declare module "pixi.js" {
   namespace Rectangle {
     type CS_ZONES = Brand<number, "PIXI.Rectangle.CS_ZONES">;
 
-    /** @remarks Options for `weilerAtherton: true` */
+    /** @remarks Options for `weilerAtherton: true` (or not provided) */
     interface WACIntersectPolygonOptions extends WeilerAthertonClipper._CombineOptions {
       weilerAtherton?: true;
     }
 
     /**
-     * @remarks Options for a falsey `weilerAtherton`. Only `clipType` has NullishProps applied,
+     * @remarks Options for `weilerAtherton: false`. Only `clipType` has NullishProps applied,
      * as `scalingFactor` still can't be null due to exlusively `{scalingFactor=1}` defaults
      */
     interface ClipperLibIntersectPolygonOptions extends NullishProps<PIXI.Polygon.IntersectClipperOptions, "clipType"> {

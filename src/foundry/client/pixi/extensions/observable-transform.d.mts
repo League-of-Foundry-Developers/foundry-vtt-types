@@ -5,7 +5,7 @@ declare global {
    * A custom Transform class allowing to observe changes with a callback.
    * @privateRemarks Scope extends object is intentional; `"The scope bound to an ObservableTransform class must be a valid object/class."`
    */
-  class ObservableTransform<Scope extends AnyObject, CB extends (this: Scope) => unknown> extends PIXI.Transform {
+  class ObservableTransform<CB extends (this: Scope) => unknown, Scope extends AnyObject> extends PIXI.Transform {
     /**
      *
      * @param callback - The callback called to observe changes.
