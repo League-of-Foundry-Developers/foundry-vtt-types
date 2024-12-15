@@ -120,7 +120,7 @@ declare global {
  * @typeParam PersistedType   - the type of the persisted values of the DataField
  * @remarks
  * Defaults:
- * AssignmentType: `any | null | undefined`
+ * AssignmentType: `unknown | null | undefined`
  * InitializedType: `unknown | undefined`
  * PersistedType: `unknown | undefined`
  * InitialValue: `undefined`
@@ -131,6 +131,9 @@ declare abstract class DataField<
   const InitializedType = DataField.InitializedType<Options>,
   const PersistedType extends unknown | null | undefined = InitializedType,
 > {
+  // Prevent from being bivariant.
+  #assignmentType: AssignmentType;
+
   /**
    * @param options - Options which configure the behavior of the field
    */
@@ -498,7 +501,7 @@ declare abstract class DataField<
 
 declare namespace DataField {
   /** Any DataField. */
-  type Any = DataField<any, any, any, any>;
+  type Any = DataField<DataFieldOptions.Any, unknown, unknown, unknown>;
 
   type AnyConstructor = typeof AnyDataField;
 
@@ -1566,7 +1569,7 @@ declare namespace ObjectField {
  */
 declare class ArrayField<
   const ElementFieldType extends DataField.Any | Document.AnyConstructor,
-  const Options extends ArrayField.Options<AssignmentElementType> = ArrayField.DefaultOptions<
+  const Options extends ArrayField.AnyOptions = ArrayField.DefaultOptions<
     ArrayField.AssignmentElementType<ElementFieldType>
   >,
   const AssignmentElementType = ArrayField.AssignmentElementType<ElementFieldType>,
@@ -1680,6 +1683,8 @@ declare namespace ArrayField {
    */
   type Options<AssignmentElementType> = DataFieldOptions<BaseAssignmentType<AssignmentElementType>>;
 
+  type AnyOptions = Options<unknown>;
+
   /**
    * The base assignment type for the {@link ArrayField} class.
    * @typeParam AssignmentElementType - the assignment type of the elements in the array
@@ -1708,7 +1713,7 @@ declare namespace ArrayField {
    * @typeParam AssignmentElementType - the assignment type of the elements of the ArrayField
    * @typeParam Opts                  - the options that override the default options
    */
-  type MergedOptions<AssignmentElementType, Opts extends Options<AssignmentElementType>> = SimpleMerge<
+  type MergedOptions<AssignmentElementType, Opts extends AnyOptions> = SimpleMerge<
     DefaultOptions<AssignmentElementType>,
     Opts
   >;
@@ -1753,7 +1758,7 @@ declare namespace ArrayField {
    */
   type AssignmentType<
     AssignmentElementType,
-    Opts extends Options<AssignmentElementType>,
+    Opts extends AnyOptions,
   > = DataField.DerivedAssignmentType<
     BaseAssignmentType<AssignmentElementType>,
     MergedOptions<AssignmentElementType, Opts>
@@ -1768,7 +1773,7 @@ declare namespace ArrayField {
   type InitializedType<
     AssignmentElementType,
     InitializedElementType,
-    Opts extends Options<AssignmentElementType>,
+    Opts extends AnyOptions,
   > = DataField.DerivedInitializedType<InitializedElementType[], MergedOptions<AssignmentElementType, Opts>>;
 
   /**
@@ -1780,7 +1785,7 @@ declare namespace ArrayField {
   type PersistedType<
     AssignmentElementType,
     PersistedElementType,
-    Opts extends Options<AssignmentElementType>,
+    Opts extends AnyOptions,
   > = DataField.DerivedInitializedType<PersistedElementType[], MergedOptions<AssignmentElementType, Opts>>;
 }
 
@@ -1804,7 +1809,7 @@ declare namespace ArrayField {
  */
 declare class SetField<
   ElementFieldType extends DataField.Any,
-  Options extends SetField.Options<AssignmentElementType> = SetField.DefaultOptions<
+  Options extends SetField.AnyOptions = SetField.DefaultOptions<
     ArrayField.AssignmentElementType<ElementFieldType>
   >,
   AssignmentElementType = ArrayField.AssignmentElementType<ElementFieldType>,
@@ -1862,6 +1867,8 @@ declare namespace SetField {
    */
   type Options<AssignmentElementType> = DataFieldOptions<SetField.BaseAssignmentType<AssignmentElementType>>;
 
+  type AnyOptions = Options<unknown>;
+
   /**
    * The base assignment type for the {@link SetField} class.
    * @typeParam AssignmentElementType - the assignment type of the elements in the array
@@ -1879,7 +1886,7 @@ declare namespace SetField {
    * @typeParam AssignmentElementType - the assignment type of the elements of the SetField
    * @typeParam Opts                  - the options that override the default options
    */
-  type MergedOptions<AssignmentElementType, Opts extends Options<AssignmentElementType>> = SimpleMerge<
+  type MergedOptions<AssignmentElementType, Opts extends AnyOptions> = SimpleMerge<
     DefaultOptions<AssignmentElementType>,
     Opts
   >;
@@ -1891,7 +1898,7 @@ declare namespace SetField {
    */
   type AssignmentType<
     AssignmentElementType,
-    Opts extends Options<AssignmentElementType>,
+    Opts extends AnyOptions,
   > = DataField.DerivedAssignmentType<
     BaseAssignmentType<AssignmentElementType>,
     MergedOptions<AssignmentElementType, Opts>
@@ -1906,7 +1913,7 @@ declare namespace SetField {
   type InitializedType<
     AssignmentElementType,
     InitializedElementType,
-    Opts extends Options<AssignmentElementType>,
+    Opts extends AnyOptions,
   > = DataField.DerivedInitializedType<Set<InitializedElementType>, MergedOptions<AssignmentElementType, Opts>>;
 
   /**
@@ -1918,7 +1925,7 @@ declare namespace SetField {
   type PersistedType<
     AssignmentElementType,
     PersistedElementType,
-    Opts extends Options<AssignmentElementType>,
+    Opts extends AnyOptions,
   > = DataField.DerivedInitializedType<PersistedElementType[], MergedOptions<AssignmentElementType, Opts>>;
 
   type ToInputConfig<ElementFieldType extends DataField.Any, InitializedType> = ElementFieldType extends {
@@ -1962,7 +1969,7 @@ declare class EmbeddedDataField<
    */
   model: ModelType;
 
-  protected override _initialize(fields: DataSchema): DataSchema;
+  protected override _initialize(fields: DataModel.SchemaOfClass<ModelType>): DataModel.SchemaOfClass<ModelType>;
 
   override initialize(
     value: PersistedType,

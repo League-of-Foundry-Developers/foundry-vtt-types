@@ -428,7 +428,7 @@ declare namespace DataModel {
     parent?: Parent | null | undefined;
   }
 
-  type Any = DataModel<DataSchema, any>;
+  type Any = DataModel<DataSchema, DataModel.Any | null, AnyObject>;
 
   type AnyConstructor = typeof AnyDataModel;
 
@@ -461,7 +461,7 @@ declare namespace DataModel {
   }
 }
 
-declare abstract class AnyDataModel extends DataModel<any, any> {
+declare abstract class AnyDataModel extends DataModel<DataSchema, DataModel.Any | null, AnyObject> {
   constructor(arg0: never, ...args: never[]);
 }
 
