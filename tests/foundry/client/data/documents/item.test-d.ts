@@ -19,8 +19,8 @@ export class WeaponData extends foundry.abstract.TypeDataModel<WeaponData.Schema
 declare global {
   interface DataModelConfig {
     Item: {
-      armor: ArmorData;
-      weapon: WeaponData;
+      armor: typeof ArmorData;
+      weapon: typeof WeaponData;
     };
   }
 }

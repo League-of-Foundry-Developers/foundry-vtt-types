@@ -316,7 +316,8 @@ declare global {
 type ValidDataModel = {
   readonly [DocumentName in foundry.abstract.Document.SystemType]?: {
     // Recommended to be a TypeDataModel subclass but DataModel is also technically valid.
-    readonly [DocumentType in string]?: foundry.abstract.DataModel.Any;
+    // Note: We used to ask for instances of the class here. This is now deprecated. `AnyConstructor` is the correct signature.
+    readonly [DocumentType in string]?: foundry.abstract.DataModel.Any | foundry.abstract.DataModel.AnyConstructor;
   };
 };
 

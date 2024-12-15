@@ -107,6 +107,9 @@ type InnerMerge<U, K extends keyof U, T> = T extends { readonly [_ in K]?: infer
 declare namespace TypeDataModel {
   type Any = TypeDataModel<any, any, any, any>;
 
+  type ConfigurationFailure = InstanceType<ConfigurationFailureClass>;
+  type ConfigurationFailureClass = typeof ConfigurationFailure;
+
   // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
   namespace Internal {
     type Constructor = (abstract new (arg0: never, ...args: never[]) => Instance.Any) & {
@@ -339,5 +342,7 @@ declare abstract class TypeDataModel<
    */
   protected _onDelete(options: Document.OnDeleteOptions<any>, userId: string): void;
 }
+
+declare class ConfigurationFailure extends TypeDataModel<any, any, any, any> {}
 
 export default TypeDataModel;
