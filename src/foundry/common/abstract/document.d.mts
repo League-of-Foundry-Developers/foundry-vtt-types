@@ -697,7 +697,7 @@ declare abstract class Document<
    */
   protected static _preCreateOperation<T extends Document.AnyConstructor>(
     this: T,
-    documents: InstanceType<Document.ConfiguredClass<T>>[],
+    documents: Document.ToConfiguredInstance<T>[],
     operation: DatabaseOperationsFor<T["metadata"]["name"], "create">,
     user: foundry.documents.BaseUser,
   ): Promise<boolean | void>;
@@ -1054,6 +1054,7 @@ declare namespace Document {
     metadata: { name: SystemType };
   };
 
+  // TODO(LukeAbby): Look into this. Inconsistent name, deprecate?
   type ConfiguredClass<T extends { metadata: Metadata.Any }> = ConfiguredClassForName<T["metadata"]["name"]>;
 
   type ConfiguredClassForName<Name extends Type> = MakeConform<
