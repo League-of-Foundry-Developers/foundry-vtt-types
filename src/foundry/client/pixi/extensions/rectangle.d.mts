@@ -219,17 +219,17 @@ declare module "pixi.js" {
     type CS_ZONES = Brand<number, "PIXI.Rectangle.CS_ZONES">;
 
     /** @remarks Options for `weilerAtherton: true` */
-    type WACIntersectPolygonOptions = {
+    interface WACIntersectPolygonOptions extends WeilerAthertonClipper._CombineOptions {
       weilerAtherton?: true;
-    } & WeilerAthertonClipper._CombineOptions;
+    }
 
     /**
      * @remarks Options for a falsey `weilerAtherton`. Only `clipType` has NullishProps applied,
      * as `scalingFactor` still can't be null due to exlusively `{scalingFactor=1}` defaults
      */
-    type ClipperLibIntersectPolygonOptions = {
-      weilerAtherton: false | undefined | null;
-    } & NullishProps<PIXI.Polygon.IntersectClipperOptions, "clipType">;
+    interface ClipperLibIntersectPolygonOptions extends NullishProps<PIXI.Polygon.IntersectClipperOptions, "clipType"> {
+      weilerAtherton: false;
+    }
 
     /** @internal Helper type for interface to simplify InexactPartial & NullishProps usage */
     type _IntersectPolygonOptions = NullishProps<{
