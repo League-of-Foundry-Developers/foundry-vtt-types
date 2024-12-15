@@ -73,7 +73,11 @@ declare global {
 
   namespace DataFieldOptions {
     /** Any DataFieldOptions. */
-    type Any = DataFieldOptions<any>;
+    // Note(LukeAbby): This `& object` is intentional. Its purpose is to allow options like `{ integer: true }` to be assigned.
+    // This is an issue because `{ integer: true }` does not extend `{ required?: boolean }` because they have properties in common.
+    // Even though `{ integer: true, required: undefined }` would extend `{ required?: boolean }` following the regular rules of surplus properties being allowed.
+    // `object` was chosen over `AnyObject` so that people may pass in interfa
+    type Any = DataFieldOptions<any> & object;
 
     /**
      * A helper type for the {@link DataFieldOptions.initial} option.

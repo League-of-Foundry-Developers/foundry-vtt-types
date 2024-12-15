@@ -157,7 +157,7 @@ declare abstract class Document<
   /**
    * The canonical name of this Document type, for example "Actor".
    */
-  get documentName(): Document.Internal.SimpleMetadata<DocumentName>["name"];
+  get documentName(): DocumentName;
 
   /**
    * The allowed types which may exist for this Document class
@@ -1064,16 +1064,31 @@ declare namespace Document {
   type SubTypesOf<T extends Type> =
     ConfiguredInstanceForName<T> extends { type: infer Types } ? Types : typeof foundry.CONST.BASE_DOCUMENT_TYPE;
 
-  type ToConfiguredClass<ConcreteDocument extends Document.Internal.Constructor> = MakeConform<
-    ConfiguredDocuments[NameFor<ConcreteDocument>],
-    typeof ConfigurationFailure & DefaultDocuments[NameFor<ConcreteDocument>]
-  >;
+  // NOTE(LukeAbby): This type is less DRY than it could be to avoid undue complexity in such a critical helpeer.
+  // This has _many_ times been seen to cause loops so this type is written in an intentionally more paranoid way.
+  // The reason for the verbosity and repetition is to avoid eagerly evaluating any branches that might cause a loop.
+  type ToConfiguredClass<ConcreteDocument extends Document.Internal.Constructor> =
+    NameFor<ConcreteDocument> extends keyof DocumentClassConfig
+      ? MakeConform<
+          ConfiguredDocuments[NameFor<ConcreteDocument>],
+          typeof ConfigurationFailure & DefaultDocuments[NameFor<ConcreteDocument>]
+        >
+      : DefaultDocuments[NameFor<ConcreteDocument>];
 
-  type ToConfiguredInstance<ConcreteDocument extends Document.Internal.Constructor> = MakeConform<
-    // NOTE(LukeAbby): This avoids calling `Document.ToConfiguredClass` because that checks the static side of the class which can be expensive and even lead to loops.
-    InstanceType<ConfiguredDocuments[NameFor<ConcreteDocument>]>,
-    ConfigurationFailure & InstanceType<DefaultDocuments[NameFor<ConcreteDocument>]>
-  >;
+  type ToConfiguredInstance<ConcreteDocument extends Document.Internal.Constructor> =
+    ConfiguredDocuments[NameFor<ConcreteDocument>] extends Document.AnyConstructor
+      ? _CheckConfiguredInstance<
+          NameFor<ConcreteDocument>,
+          InstanceType<ConfiguredDocuments[NameFor<ConcreteDocument>]>
+        >
+      : InstanceType<DefaultDocuments[NameFor<ConcreteDocument>]>;
+
+  /**
+   * @internal
+   */
+  type _CheckConfiguredInstance<Name extends Document.Type, T> = T extends Document.Any
+    ? T
+    : ConfigurationFailure & DefaultDocuments[Name];
 
   type ToConfiguredStored<D extends Document.Internal.Constructor> = Stored<ToConfiguredInstance<D>>;
 
