@@ -169,7 +169,7 @@ declare global {
      * @param data - (default: `{}`)
      * @returns The created thumbnail data.
      */
-    createThumbnail(data?: InexactPartial<ThumbnailCreationData>): ReturnType<(typeof ImageHelper)["createThumbnail"]>;
+    createThumbnail(data?: ThumbnailCreationData): ReturnType<typeof ImageHelper.createThumbnail>;
   }
 
   interface SceneDimensions {
@@ -223,10 +223,12 @@ declare global {
   }
 }
 
-interface ThumbnailCreationData extends ImageHelper.TextureToImageOptions {
+interface _ThumbnailCreationData extends ImageHelper.TextureToImageOptions {
   /**
    * A background image to use for thumbnail creation, otherwise the current scene
    * background is used.
+   *
+   * @remarks This cannot be `null` because Foundry writes `const newImage = img !== undefined;`.
    */
   img: string;
 
@@ -234,23 +236,28 @@ interface ThumbnailCreationData extends ImageHelper.TextureToImageOptions {
    * The desired thumbnail width. Default is 300px
    * @defaultValue `300`
    */
-  width: number;
+  width: number | null;
 
   /**
    * The desired thumbnail height. Default is 100px;
    * @defaultValue `100`
    */
-  height: number;
+  height: number | null;
 
   /**
-   * Which image format should be used? image/png, image/jpg, or image/webp
+   * Which image format should be used? image/png, image/jpeg, or image/webp
    * @defaultValue `"image/webp"`
+   *
+   * @remarks Foundry writes `image/jpg` but this functions the same as `image/png  `.
+   * The correct MIME type is `image/jpeg`.
    */
-  format: "image/png" | "image/jpg" | "image/webp";
+  format: ImageHelper.Format | null;
 
   /**
    * What compression quality should be used for jpeg or webp, between 0 and 1
    * @defaultValue `0.8`
    */
-  quality: number;
+  quality: number | null;
 }
+
+interface ThumbnailCreationData extends InexactPartial<_ThumbnailCreationData> {}
