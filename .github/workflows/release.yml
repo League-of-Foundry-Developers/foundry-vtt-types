@@ -9,29 +9,29 @@ env:
   node_version: 18
 
 jobs:
-  # Note(LukeAbby): Currently the beta releases don't pass verification.
-  # This will be enabled again once the branch builds successfully and tests are passing.
-  #
-  # verify:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - name: Use Node.js ${{ env.node_version }}
-  #       uses: actions/setup-node@v4
-  #       with:
-  #         node-version: ${{ env.node_version }}
-  #     - name: Cache Node.js modules
-  #       uses: actions/cache@v4
-  #       with:
-  #         path: .npm
-  #         key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
-  #         restore-keys: |
-  #           ${{ runner.OS }}-node-
-  #           ${{ runner.OS }}-
-  #     - run: npm ci --cache .npm --prefer-offline
-  #     - run: npm run typecheck
-  #     - run: npm run lint:ci
-  #     - run: npm test
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ env.node_version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.node_version }}
+      - name: Cache Node.js modules
+        uses: actions/cache@v4
+        with:
+          path: .npm
+          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-node-
+            ${{ runner.OS }}-
+      - run: npm ci --cache .npm --prefer-offline
+      - run: npm run typecheck
+      - run: npm run lint:ci
+
+      # Note(LukeAbby): Currently the beta releases doesn't pass the tests.
+      # This will be enabled again once tests are passing.
+      # - run: npm test
 
   publish:
     # needs: verify
