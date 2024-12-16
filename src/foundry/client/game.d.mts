@@ -660,9 +660,12 @@ declare global {
     namespace Model {
       /**
        * Get the configured core and system type names for a specific document type.
+       *
+       * Because of module subtypes, extra types of the form `${moduleName}.${subtype}` are always a possibility.
+       *
        * @typeParam DocumentName - the type of the Document this data is for
        */
-      type TypeNames<DocumentName extends Document.Type> = string & keyof Model[DocumentName];
+      type TypeNames<DocumentName extends Document.Type> = string & keyof Model[DocumentName] | (`${string}.${string}` & {});
     }
 
     type Model = {
