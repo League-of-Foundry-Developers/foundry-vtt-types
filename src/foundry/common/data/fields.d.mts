@@ -615,7 +615,7 @@ declare namespace DataField {
    * An Error may be thrown which provides a custom error message explaining the reason the value is invalid.
    */
   // TODO(LukeAbby): `value: never` is a stopgap because of emergent errors. Pass back in `BaseAssignmentType` instead of `value: never` which is too lenient.
-  type Validator = (this: DataField, value: never, options: ValidationOptions<DataField>) => boolean | void;
+  type Validator = (this: DataField, value: never, options: ValidationOptions<DataField>) => DataModelValidationFailure  | boolean | void;
 
   /**
    * An interface for the options of the {@link DataField} validation functions.
