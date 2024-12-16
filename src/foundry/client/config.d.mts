@@ -2920,8 +2920,6 @@ declare global {
 
         /** @defaultValue `{ groupClass: OverlayCanvasGroup, parent: "stage" }` */
         overlay: CONFIG.Canvas.GroupDefinition<typeof OverlayCanvasGroup>;
-
-        [key: string]: CONFIG.Canvas.GroupDefinition;
       }
 
       interface Layers {
