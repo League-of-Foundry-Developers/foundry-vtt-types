@@ -661,7 +661,9 @@ declare namespace DataField {
   interface GroupConfig extends NullishProps<FormGroupConfig, "label" | "hint" | "input"> {}
 }
 
-declare abstract class AnyDataField extends DataField<any, any, any, any> {}
+declare abstract class AnyDataField extends DataField<any, any, any, any> {
+  constructor(arg0: never, ...args: never[]);
+}
 
 /**
  * A special class of {@link DataField} which defines a data schema.
