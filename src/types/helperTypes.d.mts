@@ -451,3 +451,133 @@ declare class Branded<in out BrandName extends string> {
  * Unfortunately there aren't really good workarounds either.
  */
 export type Brand<BaseType, BrandName extends string> = BaseType & Branded<BrandName>;
+
+/**
+ * An at a best effort level expands a type from something complex that shows up like
+ * `DeepPartial<{ x: { y: number } }>` in intellisense to `{ x?: { y?: number } }`.
+ * This is useful for when you want to see what a type looks like in a more human
+ * readable form.
+ *
+ * Using this type is a performance tradeoff, might increase the likelihood of
+ * circularities, and technically in some extremely niche cases changes the type behavior.
+ * ```@example
+ * // The implementation of this type is outside the scope of this example.
+ * // See UnionToIntersection.
+ * type UnionToIntersection<U> = (U extends unknown ? (arg: U) => void : never) extends (arg: infer I) => void ? I : never;
+ *
+ * type ObjectIntersection = UnionToIntersection<{ x: string } | { y: number }>;
+ * //   ^ { x: string } & { y: number }
+ *
+ * type PrettyObjectIntersection = PrettifyType<ObjectIntersection>;
+ * //   ^ { x: string, y: number }
+ *
+ * function example<T extends { someProp: number } | { anotherProp: string }>(t: T) {
+ *   Object.assign(t, { a: "foo" }, {b: 2}) satisfies ObjectIntersection
+ *   Object.assign(t, { a: "foo" }, {b: 2}) satisfies PrettyObjectIntersection
+ *   //                                     ^ Type 'T & { a: string; } & { b: number; }' does not satisfy the expected type '{ a: string; b: number; }'.
+ *   // This is an example of changing type behavior. The first line is allowed but the second errors.
+ *   // This type of situation will realistically never come up in real code because it's so contrived.
+ *   // Note that this difference only appears when generic, specifically `T extends Object | NonObject`.
+ *   // See https://github.com/microsoft/TypeScript/pull/60726 for some context.
+ * }
+ * ```
+ */
+export type PrettifyType<T> = T extends AnyObject
+  ? {
+      [K in keyof T]: T[K];
+    }
+  : T & unknown;
+
+/**
+ * This behaves the same as {@link PrettifyType | `PrettifyType`} except instead
+ * of prettifying only the first level it prettifies all levels of an object. of prettifying only the first level it prettifies all levels of an object.
+ */
+export type PrettifyTypeDeep<T> = T extends AnyObject
+  ? {
+      [K in keyof T]: PrettifyTypeDeep<T[K]>;
+    }
+  : T & unknown;
+
+/**
+ * Convert a union of the form `T1 | T2 | T3 | ...` into an intersection of the form `T1 & T2 & T3 & ...`.
+ *
+ * ### Implementation Details
+ *
+ * Breaking this type down into steps evaluation begins with the expression
+ * `U extends unknown ? ... : never`. Note that `U` is a "bare type parameter",
+ * that is written directly as opposed to being wrapped like `U[]`. Because of
+ * this the type is distributive.
+ *
+ * Distributivity means that `U extends unknown ? (arg: U) => void : never` turns the input
+ * of the form `T1 | T2 | T3 | ...` into `((arg: T1) => void) | ((arg: T2) => void) | ((arg: T3) => void)`.
+ * Let's call this new union `FunctionUnion`
+ *
+ * Finally `FunctionUnion extends (arg: infer I) => void ? I : never` is evaluated.
+ * This results in `T1 & T2 & T3 | ...` as promised... but why? Even with distributivity
+ * in play, normally `(T extends unknown ? F<T> : never) extends F<infer T> ? T : never`
+ * would just be a complex way of writing `T`.
+ *
+ * The complete answer is fairly deep and is unlikely to make sense unless you are
+ * already well versed in this area. In particular it lies in what happens when `F<T>`
+ * puts `T` into a contravariant position. In this case inferring `T` back out
+ * requires an intersection effectively because the covariant assignment rules
+ * are flipped.
+ *
+ * That explanation is unlikely to have helped much and so let's run through two
+ * examples.
+ *
+ * First, a refresher:
+ * ```ts
+ * function takesX(arg: { x: number }): number { ... }
+ * function takesY(arg: { y: string }): string { ... }
+ *
+ * let output = ...;
+ * if (Math.random() > 0.5) {
+ *    output = takesX({ x: 1 });
+ * } else {
+ *    output = takesY({ y: "example" });
+ * }
+ * ```
+ *
+ * What is the best type for `output` in this case? Of course, it'd be `number | string`.
+ *
+ * What about this example?
+ * ```ts
+ * function takesX(arg: { x: number }): number { ... }
+ * function takesY(arg: { y: string }): string { ... }
+ *
+ * let input = ...;
+ * if (Math.random() > 0.5) {
+ *    takesX(input);
+ * } else {
+ *    takesY(input);
+ * }
+ * ```
+ *
+ * What is the best type for `input` in this case? It might be tempting to say `{ x: number } | { y: string }`
+ * similarly to how `output` was `number | string`. But that's not quite right. The correct type for `input` is
+ * actually `{ x: number } & { y: string }`. The reason why this is the case is that it's unpredictable whether
+ * `takesX` or `takesY` will be called. This means that `input` must be able to used to call both functions.
+ *
+ * This is analogous to asking these two questions at the type level:
+ * ```ts
+ * type Functions = typeof takesX | typeof takesY;
+ * type Output = Functions extends (...args: any[]) => infer Output ? Output : never;
+ * //   ^ number | string
+ * type Input = Functions extends (arg: infer Input) => any ? Input : never;
+ * //   ^ { x: number } & { y: string }
+ * ```
+ *
+ * And if you reflect on the inciting code, `FunctionUnion extends (arg: infer I) => void ? I : never`
+ * you'll see that it's effectively doing the same thing.
+ *
+ * If you want to read more see TypeScript's handbook section on
+ * [Distributive Conditional Types](https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types)
+ * for more information on distributivity. There is also a section on
+ * [Variance](https://www.typescriptlang.org/docs/handbook/2/generics.html#variance-annotations)
+ * in general but it unfortunately doesn't touch too much on specific details and
+ * the emergent behavior of variance like this.
+ */
+export type UnionToIntersection<U> = (U extends unknown ? (arg: U) => void : never) extends (arg: infer I) => void
+  ? I
+  : never;
