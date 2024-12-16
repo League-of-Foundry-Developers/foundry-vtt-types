@@ -23,6 +23,7 @@ import type {
   SelectInputConfig,
   TextAreaInputConfig,
 } from "../../client-esm/applications/forms/fields.d.mts";
+import type { ToMethod } from "../../../types/helperTypes.d.mts";
 
 declare global {
   /**
@@ -55,7 +56,7 @@ declare global {
       | undefined;
 
     /** A data validation function which accepts one argument with the current value. */
-    validate?: DataField.Validator | undefined;
+    validate?: DataField.Validator<BaseAssignmentType> | undefined;
 
     /** A localizable label displayed on forms which render this field. */
     label?: string | undefined;
@@ -614,8 +615,14 @@ declare namespace DataField {
    *
    * An Error may be thrown which provides a custom error message explaining the reason the value is invalid.
    */
-  // TODO(LukeAbby): `value: never` is a stopgap because of emergent errors. Pass back in `BaseAssignmentType` instead of `value: never` which is too lenient.
-  type Validator = (this: DataField, value: never, options: ValidationOptions<DataField>) => boolean | void;
+  type Validator<BaseAssignmentType> = ToMethod<
+    (
+      this: DataField,
+      // TODO(LukeAbby): Always allowing `null | undefined` may be too lenient but it's probably the best type for the time being.
+      value: BaseAssignmentType | null | undefined,
+      options: ValidationOptions<DataField>,
+    ) => DataModelValidationFailure | boolean | void
+  >;
 
   /**
    * An interface for the options of the {@link DataField} validation functions.
@@ -623,7 +630,7 @@ declare namespace DataField {
    */
   interface ValidationOptions<DataField extends DataField.Any> extends DataValidationOptions {
     source?: AnyObject;
-    validate?: Validator;
+    validate?: Validator<DataField.AssignmentTypeFor<DataField>>;
   }
 
   interface Context {
@@ -654,7 +661,9 @@ declare namespace DataField {
   interface GroupConfig extends NullishProps<FormGroupConfig, "label" | "hint" | "input"> {}
 }
 
-declare abstract class AnyDataField extends DataField<any, any, any, any> {}
+declare abstract class AnyDataField extends DataField<any, any, any, any> {
+  constructor(arg0: never, ...args: never[]);
+}
 
 /**
  * A special class of {@link DataField} which defines a data schema.

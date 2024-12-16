@@ -1,5 +1,33 @@
-import type { Brand } from "../../../../types/helperTypes.d.mts";
+import type { UnionToIntersection, Brand } from "../../../../types/helperTypes.d.mts";
 import type { InexactPartial, NullishProps } from "../../../../types/utils.d.mts";
+
+/**
+ * Typically in a mapped type TypeScript associates your type to the original.
+ * This means you keep modifiers (`readonly` and `?`), go to definition takes you
+ * to the original type not the mapped type, and comments are inherited.
+ *
+ * This utility type disables all of that by effectively tricking TypeScript into
+ * not associating them anymore. Writing `{ [_ in string as K]: ... }` is the primary
+ * trick used in this type.
+ *
+ * The reason why this type is so verbose though is because it's trying to preserve
+ * modifiers which means it has to check for all 4 possibilities:
+ * - mutable and optional
+ * - mutable and required
+ * - readonly and optional
+ * - readonly and required
+ */
+type RemoveComments<T extends object> = UnionToIntersection<
+  {
+    [K in keyof T]-?: T extends { [_ in string as K]: unknown }
+      ? T extends { [_ in string as K]?: unknown }
+        ? { [_ in string as K]?: T[K] }
+        : { [_ in string as K]: T[K] }
+      : T extends { readonly [_ in string as K]?: unknown }
+        ? { readonly [_ in string as K]?: T[K] }
+        : { readonly [_ in string as K]: T[K] };
+  }[keyof T]
+>;
 
 declare module "pixi.js" {
   interface Rectangle {

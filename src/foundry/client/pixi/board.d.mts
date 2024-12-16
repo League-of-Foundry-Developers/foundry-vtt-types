@@ -2,6 +2,15 @@ import type { InexactPartial, NullishProps } from "../../../types/utils.d.mts";
 import type Document from "../../common/abstract/document.d.mts";
 import type { CANVAS_PERFORMANCE_MODES } from "../../common/constants.d.mts";
 
+type InternalCanvas = new (
+  arg0: never,
+  ...args: never[]
+) => {
+  readonly [K in keyof CONFIG.Canvas.Groups]?: InstanceType<CONFIG.Canvas.Groups[K]["groupClass"]> | undefined;
+};
+
+declare const _InternalCanvas: InternalCanvas;
+
 declare global {
   /**
    * The virtual tabletop environment is implemented using a WebGL powered HTML 5 canvas using the powerful PIXI.js
@@ -29,7 +38,7 @@ declare global {
    * canvas.recenter(); // Re-center the canvas on the currently controlled Token.
    * ```
    */
-  class Canvas {
+  class Canvas extends _InternalCanvas {
     constructor();
 
     /**
@@ -672,9 +681,6 @@ declare global {
     get colorManager(): this["environment"];
   }
 
-  // Most canvas group properties have explicit type definitions, but some are left off
-  interface Canvas extends CanvasGroups {}
-
   interface CanvasPerformanceSettings {
     /** The performance mode in CONST.CANVAS_PERFORMANCE_MODES */
     mode: CANVAS_PERFORMANCE_MODES;
@@ -806,15 +812,4 @@ interface CollectionNameToLayerMap {
   tiles: Canvas["tiles"];
   tokens: Canvas["tokens"];
   walls: Canvas["walls"];
-}
-
-// TODO: Find a way to make this more dynamic
-interface CanvasGroups {
-  // readonly [GroupName in keyof CONFIG.Canvas.Groups]?: CONFIG.Canvas.Groups[GroupName]["groupClass"];
-
-  readonly hidden?: HiddenCanvasGroup;
-
-  readonly rendered?: RenderedCanvasGroup;
-
-  readonly environment?: EnvironmentCanvasGroup;
 }
