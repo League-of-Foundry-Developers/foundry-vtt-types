@@ -265,7 +265,7 @@ declare module "pixi.js" {
       weilerAtherton: false;
     }
 
-    /** @internal Intermediary type to simplify use of optionality-modifying helpers */
+    /** @internal Intermediary type to simplify use of optionality- and nullish-permissiveness-modifying helpers */
     type _IntersectPolygonOptions = NullishProps<{
       /**
        * The clipper clip type

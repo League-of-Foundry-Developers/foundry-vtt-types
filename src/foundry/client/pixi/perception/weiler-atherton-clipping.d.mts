@@ -133,7 +133,7 @@ declare global {
 
     type INTERSECTION_TYPES = Brand<number, "WeilerAthertonClipper.INTERSECTION_TYPES">;
 
-    /** @internal Helper type to simplify use of optionality-modifying helpers */
+    /** @internal Helper type to simplify use of optionality- and nullish-permissiveness-modifying helpers */
     type _CombineOptions = NullishProps<{
       /**
        * If the WeilerAtherton constructor could mutate or not the subject polygon points

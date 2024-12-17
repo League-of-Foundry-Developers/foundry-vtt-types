@@ -120,7 +120,7 @@ declare module "pixi.js" {
       Y: number;
     }
 
-    /** @internal Intermediary type to simplify use of optionality-modifying helpers */
+    /** @internal Intermediary type to simplify use of optionality- and nullish-permissiveness-modifying helpers */
     type _IntersectClipperOptions = InexactPartial<{
       /**
        * A scaling factor passed to Polygon#toClipperPoints to preserve precision

@@ -116,7 +116,7 @@ declare module "pixi.js" {
       density: number;
     }
 
-    /** @internal Helper type to simplify use of optionality-modifying helpers */
+    /** @internal Helper type to simplify use of optionality- and nullish-permissiveness-modifying helpers */
     type _PointsForArcOptions = NullishProps<{
       /**
        * The number of points which defines the density of approximation
