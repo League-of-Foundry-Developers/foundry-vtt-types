@@ -144,10 +144,7 @@ declare global {
       uniforms: fields.ObjectField;
     }>;
 
-    type LightingLevels = Record<
-      ValueOf<typeof CONST.LIGHTING_LEVELS>,
-      ValueOf<typeof CONST.LIGHTING_LEVELS>
-    >;
+    type LightingLevels = Record<ValueOf<typeof CONST.LIGHTING_LEVELS>, ValueOf<typeof CONST.LIGHTING_LEVELS>>;
     type LightingMultipliers = Record<ValueOf<typeof VisionMode.LIGHTING_LEVELS>, number>;
 
     interface Schema extends DataSchema {
@@ -189,11 +186,29 @@ declare global {
           adaptive: fields.BooleanField<{ initial: true }>;
         }>;
         defaults: fields.SchemaField<{
-          color: fields.ColorField<{required: false, initial: undefined}>;
-          attenuation: fields.AlphaField<{required: false, initial: undefined}>;
-          brightness: fields.NumberField<{required: false, initial: undefined, nullable: false, min: number, max: number}>;
-          saturation: fields.NumberField<{required: false, initial: undefined, nullable: false, min: number, max: number}>;
-          contrast: fields.NumberField<{required: false, initial: undefined, nullable: false, min: number, max: number}>;
+          color: fields.ColorField<{ required: false; initial: undefined }>;
+          attenuation: fields.AlphaField<{ required: false; initial: undefined }>;
+          brightness: fields.NumberField<{
+            required: false;
+            initial: undefined;
+            nullable: false;
+            min: number;
+            max: number;
+          }>;
+          saturation: fields.NumberField<{
+            required: false;
+            initial: undefined;
+            nullable: false;
+            min: number;
+            max: number;
+          }>;
+          contrast: fields.NumberField<{
+            required: false;
+            initial: undefined;
+            nullable: false;
+            min: number;
+            max: number;
+          }>;
         }>;
         preferred: fields.BooleanField<{ initial: false }>;
       }>;

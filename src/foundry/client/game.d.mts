@@ -665,7 +665,9 @@ declare global {
        *
        * @typeParam DocumentName - the type of the Document this data is for
        */
-      type TypeNames<DocumentName extends Document.Type> = string & keyof Model[DocumentName] | (`${string}.${string}` & {});
+      type TypeNames<DocumentName extends Document.Type> =
+        | (string & keyof Model[DocumentName])
+        | (`${string}.${string}` & {});
     }
 
     type Model = {

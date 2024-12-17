@@ -108,10 +108,11 @@ declare class AudioHelper {
    */
   play(
     src: string,
-    options?: Sound.PlaybackOptions & InexactPartial<{
-      /** A specific AudioContext within which to play */
-      context: AudioContext;
-    }>,
+    options?: Sound.PlaybackOptions &
+      InexactPartial<{
+        /** A specific AudioContext within which to play */
+        context: AudioContext;
+      }>,
   ): Promise<Sound>;
 
   /**

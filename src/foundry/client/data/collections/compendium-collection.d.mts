@@ -434,7 +434,7 @@ declare global {
     type ConstructorMetadata<T extends CompendiumCollection.Metadata> = T & {
       index: IndexTypeForMetadata<T>;
       folders: Folder[];
-    }
+    };
 
     // The type that appears in `compendium.metadata` after initialization.
     interface Metadata {
@@ -442,7 +442,7 @@ declare global {
       label: string;
       name: string;
 
-      flags: Record<string, never>;    // created by the server, but always empty and no way to change it in a way that is s
+      flags: Record<string, never>; // created by the server, but always empty and no way to change it in a way that is s
       ownership: InexactPartial<foundry.packages.BasePackage.OwnershipRecord>;
       path: string;
       package: string;

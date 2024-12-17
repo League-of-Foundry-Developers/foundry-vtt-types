@@ -29,9 +29,12 @@ declare class AmbientLightConfig<
 
   override tabGroups: {
     sheet: string;
-  }
+  };
 
-  protected override _preRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): Promise<void>;
+  protected override _preRender(
+    context: DeepPartial<RenderContext>,
+    options: DeepPartial<RenderOptions>,
+  ): Promise<void>;
 
   protected override _onRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): Promise<void>;
 
@@ -65,7 +68,7 @@ declare namespace AmbientLightConfig {
     light: AmbientLightDocument.ConfiguredInstance;
     source: foundry.documents.BaseAmbientLight.Source;
     fields: foundry.documents.BaseAmbientLight.Schema;
-    colorationTechniques: typeof AdaptiveLightingShader["SHADER_TECHNIQUES"];
+    colorationTechniques: (typeof AdaptiveLightingShader)["SHADER_TECHNIQUES"];
     gridUnits: string;
     isDarkness: boolean;
     lightAnimations: unknown; // TODO: Update after CONFIG updated

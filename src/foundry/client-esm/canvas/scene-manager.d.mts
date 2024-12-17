@@ -56,12 +56,12 @@ declare class SceneManager {
   /**
    * Additional behaviors to perform when the Canvas is first initialized for the Scene.
    */
-  protected _onInit(): Promise<void>
+  protected _onInit(): Promise<void>;
 
   /**
    * Additional behaviors to perform after core groups and layers are drawn to the canvas.
    */
-  protected _onDraw(): Promise<void>
+  protected _onDraw(): Promise<void>;
 
   /**
    * Additional behaviors to perform after the Canvas is fully initialized for the Scene.
@@ -71,7 +71,7 @@ declare class SceneManager {
   /**
    * Additional behaviors to perform when the Scene is deactivated.
    */
-  protected _onTearDown(): Promise<void>
+  protected _onTearDown(): Promise<void>;
 
   /**
    * Register additional hook functions are only used while this Scene is active and is automatically deactivated.

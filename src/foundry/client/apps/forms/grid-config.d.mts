@@ -10,11 +10,7 @@ declare global {
     Options,
     Scene.ConfiguredInstance
   > {
-    constructor(
-      scene: Scene.ConfiguredInstance,
-      sheet: GridConfig["sheet"],
-      options?: Partial<Options>,
-    );
+    constructor(scene: Scene.ConfiguredInstance, sheet: GridConfig["sheet"], options?: Partial<Options>);
 
     /**
      * Track the Scene Configuration sheet reference

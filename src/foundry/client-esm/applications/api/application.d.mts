@@ -1,11 +1,5 @@
 import type { MustConform } from "../../../../types/helperTypes.d.mts";
-import type {
-  AnyObject,
-  DeepPartial,
-  EmptyObject,
-  InexactPartial,
-  MaybePromise,
-} from "../../../../types/utils.d.mts";
+import type { AnyObject, DeepPartial, EmptyObject, InexactPartial, MaybePromise } from "../../../../types/utils.d.mts";
 import type EventEmitterMixin from "../../../common/utils/event-emitter.d.mts";
 
 // TODO: Investigate use of DeepPartial vs Partial vs InexactPartial
@@ -301,26 +295,27 @@ declare namespace ApplicationV2 {
     disabled?: boolean | undefined;
   }
 
-  interface ChangeTabOptions extends InexactPartial<{
-    /**
-     * An interaction event which caused the tab change, if any
-     */
-    event: Event;
-    /**
-     * An explicit navigation element being modified
-     */
-    navElement: HTMLElement;
-    /**
-     * Force changing the tab even if the new tab is already active
-     * @defaultValue `false`
-     */
-    force: boolean;
-    /**
-     * Update application position after changing the tab?
-     * @defaultValue `false`
-     */
-    updatePosition: boolean;
-  }> {}
+  interface ChangeTabOptions
+    extends InexactPartial<{
+      /**
+       * An interaction event which caused the tab change, if any
+       */
+      event: Event;
+      /**
+       * An explicit navigation element being modified
+       */
+      navElement: HTMLElement;
+      /**
+       * Force changing the tab even if the new tab is already active
+       * @defaultValue `false`
+       */
+      force: boolean;
+      /**
+       * Update application position after changing the tab?
+       * @defaultValue `false`
+       */
+      updatePosition: boolean;
+    }> {}
 }
 
 /**

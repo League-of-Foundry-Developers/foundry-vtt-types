@@ -180,7 +180,9 @@ declare global {
 
     static createDocuments<T extends Document.AnyConstructor, Temporary extends boolean | undefined>(
       this: T,
-      data: Array<fields.SchemaField.AssignmentType<InstanceType<NoInfer<T>>["schema"]["fields"]> & Record<string, unknown>>,
+      data: Array<
+        fields.SchemaField.AssignmentType<InstanceType<NoInfer<T>>["schema"]["fields"]> & Record<string, unknown>
+      >,
       operation?: InexactPartial<Omit<DatabaseOperationsFor<NoInfer<T>["metadata"]["name"], "create">, "data">> & {
         temporary?: Temporary;
       },

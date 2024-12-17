@@ -51,7 +51,7 @@ declare class AudioTimeout<CallbackReturn = unknown> {
    * @param delayMS - A desired delay timing in milliseconds
    * @param options - Additional options which modify timeout behavior
    */
-  constructor(delayMS: number, options?: AudioTimeout.Options<CallbackReturn>)
+  constructor(delayMS: number, options?: AudioTimeout.Options<CallbackReturn>);
 
   /**
    * Is the timeout complete?
@@ -76,7 +76,10 @@ declare class AudioTimeout<CallbackReturn = unknown> {
    * @param options - Additional options which modify timeout behavior
    * @returns A promise which resolves as a returned value of the callback or void
    */
-  static wait<CallbackReturn = unknown>(delayMS: number, options?: AudioTimeout.Options<CallbackReturn>): Promise<CallbackReturn>;
+  static wait<CallbackReturn = unknown>(
+    delayMS: number,
+    options?: AudioTimeout.Options<CallbackReturn>,
+  ): Promise<CallbackReturn>;
 }
 
 export default AudioTimeout;

@@ -84,18 +84,21 @@ declare global {
      * }
      * ```
      */
-    static localizeDataModel(model: foundry.abstract.DataModel.AnyConstructor, options?: InexactPartial<{
-      /**
-       * An array of localization key prefixes to use. If not specified, prefixes
-       * are learned from the DataModel.LOCALIZATION_PREFIXES static property.
-       */
-      prefixes: string[];
+    static localizeDataModel(
+      model: foundry.abstract.DataModel.AnyConstructor,
+      options?: InexactPartial<{
+        /**
+         * An array of localization key prefixes to use. If not specified, prefixes
+         * are learned from the DataModel.LOCALIZATION_PREFIXES static property.
+         */
+        prefixes: string[];
 
-      /**
-       * A localization path prefix used to prefix all field names within this model. This is generally not required.
-       */
-      prefixPath: string;
-    }>): void;
+        /**
+         * A localization path prefix used to prefix all field names within this model. This is generally not required.
+         */
+        prefixPath: string;
+      }>,
+    ): void;
 
     /**
      * Set a language as the active translation source for the session

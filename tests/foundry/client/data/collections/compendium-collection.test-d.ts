@@ -24,7 +24,7 @@ const metadata: CompendiumCollection.Metadata = {
   path: "path",
   ownership: {
     PLAYER: "OWNER",
-  }
+  },
 };
 
 const constructorMetadata: CompendiumCollection.ConstructorMetadata<typeof metadata> = {

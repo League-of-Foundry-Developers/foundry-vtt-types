@@ -60,7 +60,6 @@ type _RenderFlags<Flags> = InexactPartial<{
 }>;
 
 declare global {
-
   interface RenderFlag<Flags> extends _RenderFlags<Flags> {}
 
   namespace RenderFlag {
