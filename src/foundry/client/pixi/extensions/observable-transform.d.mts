@@ -27,4 +27,11 @@ declare global {
 
     protected override updateSkew(): void;
   }
+  namespace ObservableTransform {
+    type AnyConstructor = typeof AnyObservableTransform;
+  }
+}
+
+declare abstract class AnyObservableTransform extends ObservableTransform<any, any> {
+  constructor(arg0: never, ...args: never[]);
 }

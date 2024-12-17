@@ -103,7 +103,7 @@ declare global {
     static combine(
       polygon: PIXI.Polygon,
       clipObject: PIXI.Rectangle | PIXI.Circle,
-      /** @remarks A valid clipType *must* be passed or it throws, so despite this param being `={}` it is actually required */
+      /** @remarks Despite foundry marking this parameter optional, if an object with a valid `clipType` property is not passed, this will throw */
       options: WeilerAthertonClipper.CombineOptions,
     ): PIXI.Polygon[];
 
@@ -133,23 +133,20 @@ declare global {
 
     type INTERSECTION_TYPES = Brand<number, "WeilerAthertonClipper.INTERSECTION_TYPES">;
 
-    /** @internal clipType is required, so only `canMutate` has NullishProps applied*/
-    type _CombineOptions = NullishProps<
-      {
-        /**
-         * One of CLIP_TYPES
-         */
-        clipType: WeilerAthertonClipper.CLIP_TYPES;
+    /** @internal Helper type to simplify use of optionality-modifying helpers */
+    type _CombineOptions = NullishProps<{
+      /**
+       * If the WeilerAtherton constructor could mutate or not the subject polygon points
+       */
+      canMutate: boolean;
+    }>;
 
-        /**
-         * If the WeilerAtherton constructor could mutate or not the subject polygon points
-         */
-        canMutate: boolean;
-      },
-      "canMutate"
-    >;
-
-    interface CombineOptions extends _CombineOptions, ClipOpts {}
+    interface CombineOptions extends _CombineOptions, ClipOpts {
+      /**
+       * One of CLIP_TYPES
+       */
+      clipType: WeilerAthertonClipper.CLIP_TYPES;
+    }
 
     /**
      * @remarks These are ultimately only consumed by the `#toPolygon` and `#pointsBetween` methods

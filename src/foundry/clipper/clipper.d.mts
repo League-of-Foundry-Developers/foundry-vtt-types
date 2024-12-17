@@ -1,5 +1,4 @@
 import type { Brand } from "../../types/helperTypes.d.mts";
-import type { ValueOf } from "../../types/utils.d.mts";
 
 declare global {
   namespace ClipperLib {
@@ -749,15 +748,11 @@ declare global {
 
       ClosedPathsFromPolyTree(polytree: PolyTree): Paths;
 
-      static NodeType: {
-        ntAny: 0;
-        ntOpen: 1;
-        ntClosed: 2;
-      };
+      static NodeType: Record<"ntAny" | "ntOpen" | "ntClosed", Clipper.NodeType>;
     }
 
     namespace Clipper {
-      type NodeType = ValueOf<typeof Clipper.NodeType>;
+      type NodeType = Brand<number, "ClipperLib.Clipper.NodeType">;
     }
 
     class ClipperOffset {

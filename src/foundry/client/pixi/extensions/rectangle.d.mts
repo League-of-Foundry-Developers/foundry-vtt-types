@@ -246,25 +246,34 @@ declare module "pixi.js" {
   namespace Rectangle {
     type CS_ZONES = Brand<number, "PIXI.Rectangle.CS_ZONES">;
 
-    /** @remarks Options for `weilerAtherton: true` (or not provided) */
-    interface WACIntersectPolygonOptions extends WeilerAthertonClipper._CombineOptions {
+    /**
+     *  @privateRemarks The options for `intersectPolygon` when `weilerAtherton` is true (or not provided)
+     * Property descriptions have been omitted and `RemoveComments` is in use here to avoid redundant
+     * instellisense on overloaded method.
+     */
+    interface WACIntersectPolygonOptions
+      extends RemoveComments<Omit<WeilerAthertonClipper.CombineOptions, keyof WeilerAthertonClipper.ClipOpts>> {
       weilerAtherton?: true;
     }
 
     /**
-     * @remarks Options for `weilerAtherton: false`. Only `clipType` has NullishProps applied,
-     * as `scalingFactor` still can't be null due to exlusively `{scalingFactor=1}` defaults
+     * @privateRemarks The options for `intersectPolygon` when `weilerAtherton` is false.
+     * Property descriptions have been omitted and `RemoveComments` is in use here to avoid redundant
+     * instellisense on overloaded method.
      */
-    interface ClipperLibIntersectPolygonOptions extends NullishProps<PIXI.Polygon.IntersectClipperOptions, "clipType"> {
+    interface ClipperLibIntersectPolygonOptions extends RemoveComments<PIXI.Polygon.IntersectClipperOptions> {
       weilerAtherton: false;
     }
 
-    /** @internal Helper type for interface to simplify InexactPartial & NullishProps usage */
+    /** @internal Intermediary type to simplify use of optionality-modifying helpers */
     type _IntersectPolygonOptions = NullishProps<{
       /**
        * The clipper clip type
-       * @remarks Which type this should be depends on the value of `weilerAtherton`. If `weilerAtherton` is *not* true,
-       * `clipType` must *not* be `ClipperLib.ClipTypes.ctDifference` or `.ctXor`, as these don't map to the WAC enum.
+       * @remarks If `weilerAtherton` is truthy or not provided, this must be one of the two `WeilerAthertonClipper.CLIP_TYPES`.
+       * However, the first two entries in `ClipperLib.ClipType` map 1:1 with the two `CLIP_TYPES`, so the main restriction is
+       * that a combination of a truthy `weilerAtherton` and a `clipType` that is either `ClipperLib.ClipTypes.ctDifference` or
+       * `.ctXor` is not allowed.
+       * @defaultValue `ClipperLib.ClipType.ctIntersection` (equivalent to `WeilerAthertonClipper.CLIP_TYPES.INTERSECTION`)
        */
       clipType: ClipperLib.ClipType | WeilerAthertonClipper.CLIP_TYPES;
 
@@ -275,7 +284,7 @@ declare module "pixi.js" {
       weilerAtherton: boolean;
     }> &
       Pick<PIXI.Polygon.IntersectClipperOptions, "scalingFactor"> &
-      Pick<WeilerAthertonClipper._CombineOptions, "canMutate">;
+      Pick<WeilerAthertonClipper.CombineOptions, "canMutate">;
 
     interface IntersectPolygonOptions extends _IntersectPolygonOptions {}
   }

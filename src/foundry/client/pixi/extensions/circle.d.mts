@@ -106,15 +106,17 @@ declare module "pixi.js" {
   namespace Circle {
     interface WACIntersectPolygonOptions extends PIXI.Rectangle.WACIntersectPolygonOptions {}
 
-    interface ClipperLibIntersectPolygonOptions
-      extends PIXI.Rectangle.ClipperLibIntersectPolygonOptions,
-        Pick<PIXI.Circle.PointsForArcOptions, "density"> {}
+    /** @privateRemarks Property description intentionally omitted to avoid redundant intellisense on overloaded method */
+    interface ClipperLibIntersectPolygonOptions extends PIXI.Rectangle.ClipperLibIntersectPolygonOptions {
+      density: number;
+    }
 
-    interface IntsectPolygonOptions
-      extends PIXI.Rectangle.IntersectPolygonOptions,
-        Pick<PIXI.Circle.PointsForArcOptions, "density"> {}
+    /** @privateRemarks Property description intentionally omitted to avoid redundant intellisense on overloaded method */
+    interface IntsectPolygonOptions extends PIXI.Rectangle.IntersectPolygonOptions {
+      density: number;
+    }
 
-    /** @internal Helper type for simplifying NullishProps usage */
+    /** @internal Helper type to simplify use of optionality-modifying helpers */
     type _PointsForArcOptions = NullishProps<{
       /**
        * The number of points which defines the density of approximation

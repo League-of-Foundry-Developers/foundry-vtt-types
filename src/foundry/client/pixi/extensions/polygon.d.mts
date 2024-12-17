@@ -1,4 +1,4 @@
-import type { InexactPartial } from "../../../../types/utils.d.mts";
+import type { InexactPartial, NullishProps } from "../../../../types/utils.d.mts";
 
 declare module "pixi.js" {
   interface Polygon {
@@ -114,31 +114,30 @@ declare module "pixi.js" {
   }
 
   namespace Polygon {
-    /**
-     * @privateRemarks Foundry uses this type instead of full `ClipperLib.IntPoint` objects
-     */
+    /** @privateRemarks Foundry uses this type instead of full `ClipperLib.IntPoint` objects */
     interface ClipperPoint {
       X: number;
       Y: number;
     }
 
-    /** @internal Helper type for interface to simplify InexactPartial usage */
+    /** @internal Intermediary type to simplify use of optionality-modifying helpers */
     type _IntersectClipperOptions = InexactPartial<{
       /**
-       * The clipper clip type
-       * @remarks ClipperLib functions require a `ClipperLib.ClipType` value, but the Foundry functions have `??=` guards for this.
-       * @defaultValue `ClipperLib.ClipType.ctIntersection`
-       */
-      clipType: ClipperLib.ClipType | null;
-
-      /**
        * A scaling factor passed to Polygon#toClipperPoints to preserve precision
+       * @remarks Can't be null as, where it has any, it only has defaults provided by `{scalingFactor=1}={}`
        * @defaultValue `1`
        */
       scalingFactor: number;
-    }>;
+    }> &
+      NullishProps<{
+        /**
+         * The clipper clip type
+         * @remarks ClipperLib functions require a non-nullish `ClipperLib.ClipType` value, but the Foundry functions have `??=` guards for this.
+         * @defaultValue `ClipperLib.ClipType.ctIntersection`
+         */
+        clipType: ClipperLib.ClipType;
+      }>;
 
-    /** @remarks `scalingFactor` can't be null as it only has defaults provided by `{scalingFactor=1}` where it has any */
     interface IntersectClipperOptions extends _IntersectClipperOptions {}
   }
 }
