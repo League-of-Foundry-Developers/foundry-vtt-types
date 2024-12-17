@@ -84,6 +84,9 @@ declare global {
   class Actor extends ClientDocumentMixin(foundry.documents.BaseActor) {
     static override metadata: Actor.Metadata;
 
+    // NOTE(LukeAbby): Helps stymy circularity.
+    // get documentName(): "Actor";
+
     protected override _configure(options?: { pack?: string | null }): void;
 
     /**
