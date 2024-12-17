@@ -4,6 +4,7 @@ name: checks
 on: # yamllint disable-line rule:truthy
   - push
   - pull_request
+  - merge_group
 
 env:
   node_version: 18
