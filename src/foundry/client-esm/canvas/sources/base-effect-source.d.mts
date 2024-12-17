@@ -24,8 +24,6 @@ declare abstract class BaseEffectSource<
    * @param options - Options which modify the base effect source instance
    * @remarks Passing a PlaceableObject is deprecated, and will be removed in v13
    */
-  constructor(options?: PlaceableObject);
-  constructor(options?: BaseEffectSource.BaseEffectSourceOptions);
   constructor(options?: BaseEffectSource.BaseEffectSourceOptions | PlaceableObject);
 
   /**
@@ -62,7 +60,7 @@ declare abstract class BaseEffectSource<
    * The source id linked to this effect source.
    * @remarks Foundry types this as Readonly<string>, but does nothing to that effect at runtime
    */
-  sourceId: string;
+  sourceId: string | undefined;
 
   /**
    * The data of this source.
@@ -163,8 +161,9 @@ declare abstract class BaseEffectSource<
    * Subclass specific configuration steps. Occurs after data initialization and shape computation.
    * Only called if the source is attached and not disabled.
    * @param changes - Changes to the source data which were applied
+   * @remarks This is actually passed *flattened* partial data
    */
-  protected _configure(changes: Partial<SourceData>): void;
+  protected _configure(changes: IntentionalPartial<SourceData>): void;
 
   /**
    * Refresh the state and uniforms of the source.
@@ -219,7 +218,7 @@ declare abstract class BaseEffectSource<
 declare namespace BaseEffectSource {
   type AnyConstructor = typeof AnyBaseEffectSource;
 
-  /** @internal Intermediary type to simplify use of optionality- and nullish-permissiveness-modifiying helpers */
+  /** @internal */
   type _BaseEffectSourceOptions = NullishProps<{
     /**
      * An optional PlaceableObject which is responsible for this source
@@ -231,6 +230,8 @@ declare namespace BaseEffectSource {
     /**
      * A unique ID for this source. This will be set automatically if an
      * object is provided, otherwise is required.
+     * @remarks The above is misleading; sourceId will *not* be inferred if you pass in `{object: PlaceableObject}`,
+     * only if you pass a `PlaceableObject` *instead* of an options object to the constructor.
      */
     sourceId?: string;
   }
