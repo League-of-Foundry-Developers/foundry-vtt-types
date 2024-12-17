@@ -1,4 +1,5 @@
-import type { InexactPartial, NullishProps } from "../../../../types/utils.d.mts";
+import type { IntentionalPartial } from "../../../../types/helperTypes.d.mts";
+import type { NullishProps } from "../../../../types/utils.d.mts";
 
 /**
  * TODO - Re-document after ESM refactor.
@@ -24,6 +25,7 @@ declare abstract class BaseEffectSource<
    * @remarks Passing a PlaceableObject is deprecated, and will be removed in v13
    */
   constructor(options?: PlaceableObject);
+  constructor(options?: BaseEffectSource.BaseEffectSourceOptions);
   constructor(options?: BaseEffectSource.BaseEffectSourceOptions | PlaceableObject);
 
   /**
@@ -132,9 +134,9 @@ declare abstract class BaseEffectSource<
    * @returns The initialized source
    */
   initialize(
-    data?: InexactPartial<SourceData>,
+    data?: NullishProps<SourceData>,
+    /** @privateRemarks Foundry describes an `options.behaviors` key, but it is neither checked for nor used at runtime */
     options?: NullishProps<{
-      // The type def references a behaviors object that is not even passed into the function
       /**
        * Should source data be reset to default values before applying changes?
        * @defaultValue `false`
@@ -147,7 +149,10 @@ declare abstract class BaseEffectSource<
    * Subclass specific data initialization steps.
    * @param data - Provided data for configuration
    */
-  _initialize(data: Partial<SourceData>): void;
+  _initialize(
+    /** @remarks IntentionalPartial because `this.initialize` has filtered invalid keys and replaced any nullish values before calling this */
+    data: IntentionalPartial<SourceData>,
+  ): void;
 
   /**
    * Create the polygon shape (or shapes) for this source using configured data.
@@ -214,16 +219,20 @@ declare abstract class BaseEffectSource<
 declare namespace BaseEffectSource {
   type AnyConstructor = typeof AnyBaseEffectSource;
 
-  interface BaseEffectSourceOptions {
+  /** @internal Intermediary type to simplify use of optionality- and nullish-permissiveness-modifiying helpers */
+  type _BaseEffectSourceOptions = NullishProps<{
     /**
      * An optional PlaceableObject which is responsible for this source
      */
-    object?: PlaceableObject | undefined;
+    object: PlaceableObject;
+  }>;
+
+  interface BaseEffectSourceOptions extends _BaseEffectSourceOptions {
     /**
      * A unique ID for this source. This will be set automatically if an
      * object is provided, otherwise is required.
      */
-    sourceId?: string | undefined;
+    sourceId?: string;
   }
 
   interface BaseEffectSourceData {
