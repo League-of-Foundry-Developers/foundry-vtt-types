@@ -113,42 +113,52 @@ declare namespace BaseLightSource {
      * An opacity for the emitted light, if any
      */
     alpha: number;
+
     /**
      * The allowed radius of bright vision or illumination
      */
     bright: number;
+
     /**
      * The coloration technique applied in the shader
      */
     coloration: number;
+
     /**
      * The amount of contrast this light applies to the background texture
      */
     contrast: number;
+
     /**
      * The allowed radius of dim vision or illumination
      */
     dim: number;
+
     /**
      * Strength of the attenuation between bright, dim, and dark
      */
     attenuation: number;
+
     /**
      * The luminosity applied in the shader
      */
     luminosity: number;
+
     /**
      * The amount of color saturation this light applies to the background texture
      */
     saturation: number;
+
     /**
      * The depth of shadows this light applies to the background texture
      */
     shadows: number;
+
     /**
      * Whether or not this source provides a source of vision
      */
     vision: boolean;
+
     /**
      * Strength of this source to beat or not negative/positive sources
      */

@@ -1,9 +1,6 @@
 import type { AnyFunction, InexactPartial } from "../../../../types/utils.d.mts";
 import type BaseEffectSource from "./base-effect-source.d.mts";
 
-// TODO: Remove after shaders are done
-type AdaptiveDarknessShader = unknown;
-
 /**
  * An abstract class which extends the base PointSource to provide common functionality for rendering.
  * This class is extended by both the LightSource and VisionSource subclasses.
@@ -214,14 +211,17 @@ declare namespace RenderedEffectSource {
      * An animation configuration for the source
      */
     animation: object;
+
     /**
      * A color applied to the rendered effect
      */
     color: number | null;
+
     /**
      * An integer seed to synchronize (or de-synchronize) animations
      */
     seed: number | null;
+
     /**
      * Is this source a temporary preview?
      */
@@ -253,31 +253,38 @@ declare namespace RenderedEffectSource {
      * The human-readable (localized) label for the animation
      */
     label?: string | undefined;
+
     /**
      * The animation function that runs every frame
      * @privateRemarks TODO: Figure out if there's a better way to define the function
      */
     animation?: AnyFunction | undefined;
+
     /**
      * A custom illumination shader used by this animation
      */
     illuminationShader?: AdaptiveIlluminationShader | undefined;
+
     /**
      * A custom coloration shader used by this animation
      */
     colorationShader?: AdaptiveColorationShader | undefined;
+
     /**
      * A custom background shader used by this animation
      */
     backgroundShader?: AdaptiveBackgroundShader | undefined;
+
     /**
      * A custom darkness shader used by this animation
      */
     darknessShader?: AdaptiveDarknessShader | undefined;
+
     /**
      * The animation seed
      */
     seed?: number | undefined;
+
     /**
      * The animation time
      */
@@ -312,10 +319,11 @@ declare namespace RenderedEffectSource {
      * The default shader used by this layer
      */
     defaultShader: AdaptiveLightingShader;
+
     /**
      * The blend mode used by this layer
      */
-    blendMode: PIXI.BLEND_MODES;
+    blendMode: keyof typeof PIXI.BLEND_MODES;
   }
 
   // Interface causes errors
