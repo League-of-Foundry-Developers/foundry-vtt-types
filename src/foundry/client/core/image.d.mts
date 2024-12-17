@@ -163,7 +163,7 @@ declare global {
 
     interface TextureToImageOptions extends _TextureToImageOptions {}
 
-    /** @internal Intermediary type to simplify use of optionality-modifying helpers */
+    /** @internal Intermediary type to simplify use of optionality- and nullish-permissiveness-modifying helpers */
     type _UploadBase64Options = InexactPartial<{
       /**
        * The data storage location to which the file should be uploaded
