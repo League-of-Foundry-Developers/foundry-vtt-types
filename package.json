@@ -6,9 +6,9 @@
   "type": "module",
   "types": "./index.d.mts",
   "scripts": {
-    "lint": "./node_modules/typescript/bin/tsc; eslint .",
-    "lint:fix": "eslint --fix .",
-    "lint:ci": "eslint .",
+    "lint": "./node_modules/typescript/bin/tsc; eslint .; prettier -c .",
+    "lint:fix": "eslint --fix .; prettier -w .",
+    "lint:ci": "eslint .; pretttier -c .",
     "eslint:report": "eslint --output-file eslint_report.json --format json .",
     "test": "vitest --typecheck",
     "typecheck": "./node_modules/typescript/bin/tsc",

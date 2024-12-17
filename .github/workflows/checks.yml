@@ -49,7 +49,7 @@ jobs:
             ${{ runner.OS }}-node-
             ${{ runner.OS }}-
       - run: npm ci
-      - name: run eslint
+      - name: run lints
         run: npm run lint:ci
 
   test:
