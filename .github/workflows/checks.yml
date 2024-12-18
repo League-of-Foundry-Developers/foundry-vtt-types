@@ -1,5 +1,5 @@
 ---
-name: checks
+name: Checks
 
 on: # yamllint disable-line rule:truthy
   push:
@@ -16,15 +16,26 @@ env:
 
 jobs:
   typecheck:
+    # Can run arbitrary code so disable all permissions.
+    permissions: {}
     name: type check code base
     runs-on: ubuntu-latest
     steps:
-      - name: checkout code
+      # This pattern is reused a couple of times.
+      # It's so verbose because of `pull_request_target` which by default won't check out the branch the PR is coming from.
+      - name: Checkout Branch
         uses: actions/checkout@v4
-      - name: install node
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.head_ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 1
+
+      - name: Install Node
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.node_version }}
+
       - name: Cache Node.js modules
         uses: actions/cache@v4
         with:
@@ -33,19 +44,31 @@ jobs:
           restore-keys: |
             ${{ runner.OS }}-node-
             ${{ runner.OS }}-
+
       - run: npm ci --cache .npm --prefer-offline
+
       - name: compile typescript
         run: npm run typecheck
 
   lint:
+    # Can run arbitrary code so disable all permissions.
+    permissions: {}
     name: lint code base
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Branch
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.head_ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 1
+
       - name: install node
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.node_version }}
+
       - name: Cache Node.js modules
         uses: actions/cache@v4
         with:
@@ -54,20 +77,31 @@ jobs:
           restore-keys: |
             ${{ runner.OS }}-node-
             ${{ runner.OS }}-
+
       - run: npm ci --cache .npm --prefer-offline
       - name: run lints
         run: npm run lint:ci
 
   test:
+    # Can run arbitrary code so disable all permissions.
+    permissions: {}
     name: test code base
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Branch
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.head_ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 1
+
       - name: install node
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.node_version }}
+
       - name: Cache Node.js modules
         uses: actions/cache@v4
         with:
@@ -76,20 +110,24 @@ jobs:
           restore-keys: |
             ${{ runner.OS }}-node-
             ${{ runner.OS }}-
+
       - run: npm ci --cache .npm --prefer-offline
+
       - name: execute tests
         run: npm test -- --run --reporter github-actions --reporter=./.github/workflows/testsReporter.ts
-      - name: Cache Main Test Results
+
+      - name: Upload Main Test Results
         if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: actions/cache/save@v4
+        uses: actions/upload-artifact@v4
         with:
+          name: main-test-results
           path: test-results/vitest-report.json
-          key: main-test-results
+
       - name: Upload Test Results
         if: always() && github.event_name == 'pull_request_target' && github.head_ref != 'refs/heads/main'
         uses: actions/upload-artifact@v4
         with:
-          name: test-results
+          name: pr-test-results
           path: test-results/vitest-report.json
 
   reportTestResults:
@@ -98,18 +136,25 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request_target' || (github.event_name == 'push' && github.event.pull_request != null)
     steps:
+      # This must check out main.
+      # If it didn't someone could edit `postOrUpdateTestsReport.js` to easily run arbitrary code.
       - uses: actions/checkout@v4
-      - name: Get Main Test Results File
-        uses: actions/cache/restore@v4
         with:
-          path: test-results/vitest-report.json
-          key: main-test-results
+          ref: refs/heads/main
+          fetch-depth: 1
+
+      - name: Download Main Test Results
+        uses: dawidd6/action-download-artifact@v7
+        with:
+          branch: main
+          name: main-test-results
+          path: main-test-results
 
       - name: Download Test Results
         uses: actions/download-artifact@v4
         with:
-          name: test-results
-          path: new-test-results
+          name: pr-test-results
+          path: pr-test-results
 
       - name: Post or Update Report
         uses: actions/github-script@v7

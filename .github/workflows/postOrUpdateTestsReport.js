@@ -12,7 +12,7 @@ export default async ({ github, context, core }) => {
 
   let mainResults;
   try {
-    const contents = await fs.readFile("test-results/vitest-report.json", "utf-8");
+    const contents = await fs.readFile("main-test-results/vitest-report.json", "utf-8");
     mainResults = JSON.parse(contents);
   } catch (e) {
     console.error(e.message, e.stack);
@@ -20,7 +20,7 @@ export default async ({ github, context, core }) => {
     return;
   }
 
-  const contents = await fs.readFile("new-test-results/vitest-report.json", "utf-8");
+  const contents = await fs.readFile("pr-test-results/vitest-report.json", "utf-8");
   const pullRequestResults = JSON.parse(contents);
 
   let fileInformation = {};
@@ -33,20 +33,20 @@ export default async ({ github, context, core }) => {
 
     const errorCounts = {};
 
-    for (const error of pullRequestErrors) {
-      errorCounts[error.message] ??= {
+    for (const error of mainErrors) {
+      errorCounts[error] ??= {
         oldCount: 0,
         newCount: 0,
       };
-      errorCounts[error.message].oldCount++;
+      errorCounts[error].oldCount++;
     }
 
-    for (const error of mainErrors) {
-      errorCounts[error.message] ??= {
+    for (const error of pullRequestErrors) {
+      errorCounts[error] ??= {
         oldCount: 0,
         newCount: 0,
       };
-      errorCounts[error.message].newCount++;
+      errorCounts[error].newCount++;
     }
 
     let newErrors = 0;
@@ -56,10 +56,9 @@ export default async ({ github, context, core }) => {
     for (const error of Object.values(errorCounts)) {
       const difference = error.oldCount - error.newCount;
 
-      unfixedErrors += error.newCount;
-
       if (difference > 0) {
         fixedErrors += difference;
+        unfixedErrors += error.newCount;
       } else {
         newErrors += -difference;
       }
@@ -82,7 +81,7 @@ export default async ({ github, context, core }) => {
     };
   }
 
-  const files = Object.keys(fileInformation);
+  const files = Object.keys(fileInformation).sort();
 
   let reportTable = `|Changed File|Fixed Errors|New Errors|Unfixed Errors|
 |-|-|-|-|
@@ -115,14 +114,6 @@ export default async ({ github, context, core }) => {
     reportTable += `|${file}|${fixedErrors}|${newErrors}|${unfixedErrors}|\n`;
   }
 
-  const comments = await github.rest.issues.listComments({
-    owner: context.repo.owner,
-    repo: context.repo.repo,
-    issue_number: pullRequestNumber,
-  });
-
-  const existingTestReport = comments.data.find((comment) => comment.body.includes("<!-- vitest-status -->"));
-
   let report;
   if (hasChanges) {
     report = `Test results:\n${reportTable}`;
@@ -136,13 +127,21 @@ export default async ({ github, context, core }) => {
     }
 
     if (noChangesInFiles > 0) {
-      report += `\n${noChangesInFiles} files have no changes in errors.`;
+      report += `\n${noChangesInFiles} tests have no changes.`;
     }
   } else {
     report = "No test files have any fixed errors or new errors.";
   }
 
   const newReport = `<!-- vitest-status -->\n\n${report}\n\n<sub>*This comment will be automatically updated whenever you push a commit.*</sub>`;
+
+  const comments = await github.rest.issues.listComments({
+    owner: context.repo.owner,
+    repo: context.repo.repo,
+    issue_number: pullRequestNumber,
+  });
+
+  const existingTestReport = comments.data.find((comment) => comment.body.includes("<!-- vitest-status -->"));
 
   if (existingTestReport?.body === newReport) {
     return;
