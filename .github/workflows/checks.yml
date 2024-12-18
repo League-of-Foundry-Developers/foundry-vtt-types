@@ -2,9 +2,14 @@
 name: checks
 
 on: # yamllint disable-line rule:truthy
-  - push
-  - pull_request
-  - merge_group
+  push:
+    branches:
+      - main
+  pull_request:
+    types:
+      - opened
+      - synchronize
+  merge_group:
 
 env:
   node_version: 18
@@ -73,4 +78,44 @@ jobs:
             ${{ runner.OS }}-
       - run: npm ci
       - name: execute tests
-        run: npm test
+        run: npm test -- --run --reporter github-actions --reporter=./.github/workflows/testsReporter.ts
+      - name: Cache Main Test Results
+        if: always() && github.ref == 'refs/heads/main'
+        uses: actions/cache/save@v4
+        with:
+          path: test-results/vitest-report.json
+          key: main-test-results
+      - name: Upload Test Results
+        if: always() && github.ref != 'refs/heads/main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: test-results/vitest-report.json
+
+  reportTestResults:
+    name: report test results
+    needs: ["test"]
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request' || (github.event_name == 'push' && github.event.pull_request != null) }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Get Main Test Results File
+        uses: actions/cache/restore@v4
+        with:
+          path: test-results/vitest-report.json
+          key: main-test-results
+
+      - name: Download Test Results
+        uses: actions/download-artifact@v4
+        with:
+          name: test-results
+          path: new-test-results
+
+      - name: Post or Update Report
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { default: postOrUpdateTestsReport } = await import("/home/runner/work/foundry-vtt-types/foundry-vtt-types/.github/workflows/postOrUpdateTestsReport.js");
+            await postOrUpdateTestsReport({ github, context, core });
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
