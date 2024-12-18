@@ -33,7 +33,7 @@ jobs:
           restore-keys: |
             ${{ runner.OS }}-node-
             ${{ runner.OS }}-
-      - run: npm ci
+      - run: npm ci --cache .npm --prefer-offline
       - name: compile typescript
         run: npm run typecheck
 
@@ -54,7 +54,7 @@ jobs:
           restore-keys: |
             ${{ runner.OS }}-node-
             ${{ runner.OS }}-
-      - run: npm ci
+      - run: npm ci --cache .npm --prefer-offline
       - name: run lints
         run: npm run lint:ci
 
@@ -76,7 +76,7 @@ jobs:
           restore-keys: |
             ${{ runner.OS }}-node-
             ${{ runner.OS }}-
-      - run: npm ci
+      - run: npm ci --cache .npm --prefer-offline
       - name: execute tests
         run: npm test -- --run --reporter github-actions --reporter=./.github/workflows/testsReporter.ts
       - name: Cache Main Test Results
