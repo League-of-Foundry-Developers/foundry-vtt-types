@@ -115,7 +115,7 @@ export default async ({ github, context, core }) => {
     report = "No test files have any fixed errors or new errors.";
   }
 
-  const newReport = `<!-- vitest-status -->\n\n${report}\n\n---\n*This comment will be automatically updated whenever you push a commit.*`;
+  const newReport = `<!-- vitest-status -->\n\n${report}\n\n<sup>*This comment will be automatically updated whenever you push a commit.*</sup>`;
 
   if (existingTestReport?.body === newReport) {
     return;
