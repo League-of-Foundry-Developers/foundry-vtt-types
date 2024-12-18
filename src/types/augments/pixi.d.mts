@@ -1,7 +1,14 @@
 import * as _PIXI from "pixi.js";
-import * as pixiParticles from "@pixi/particle-emitter";
-import * as graphicsSmooth from "@pixi/graphics-smooth";
 import type { Brand } from "../helperTypes.d.mts";
+
+// Note(LukeAbby): The `smooth.d.mts` and `smooth.d.mts` files exist to make it DRY to selectively tweak PIXI sub-namespaces.
+// Each of them write `export * from "..."` and then selectively shadow or augment the exports.
+
+// eslint-disable-next-line import/extensions
+import * as _smooth from "./smooth.mjs";
+
+// eslint-disable-next-line import/extensions
+import * as _particles from "./particles.mjs";
 
 export * from "pixi.js";
 
@@ -97,24 +104,8 @@ declare global {
     type WRAP_MODES = Brand<number, "PIXI.WRAP_MODES">;
     const WRAP_MODES: Record<keyof typeof _PIXI.WRAP_MODES, PIXI.WRAP_MODES>;
 
-    //TODO: Figure out how to make this not break
-    // namespace particles {
-    //   namespace behaviors {
-    //     type BehaviorOrder = Brand<number, "PIXI.particles.behaviors.BehaviorOrder">;
-    //     const BehaviorOrder: Record<keyof typeof pixiParticles.behaviors.BehaviorOrder, BehaviorOrder>;
-    //   }
-    // }
-
-    // namespace smooth {
-    //   type JOINT_TYPE = Brand<number, "PIXI.smooth.JOINT_TYPE">;
-    //   const JOINT_TYPE: Record<keyof typeof graphicsSmooth.JOINT_TYPE, PIXI.smooth.JOINT_TYPE>;
-
-    //   type LINE_SCALE_MODE = Brand<number, "PIXI.smooth.LINE_SCALE_MODE">;
-    //   const LINE_SCALE_MODE: Record<keyof typeof graphicsSmooth.LINE_SCALE_MODE, PIXI.smooth.LINE_SCALE_MODE>;
-    // }
-
-    export import smooth = graphicsSmooth;
-    export import particles = pixiParticles;
+    export import smooth = _smooth;
+    export import particles = _particles;
 
     export class Graphics extends PIXI.smooth.SmoothGraphics {}
 
