@@ -97,6 +97,8 @@ jobs:
     needs: ["test"]
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'pull_request' || (github.event_name == 'push' && github.event.pull_request != null) }}
+    permissions:
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
       - name: Get Main Test Results File
