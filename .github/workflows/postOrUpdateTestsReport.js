@@ -21,25 +21,31 @@ export default async ({ github, context, core }) => {
   }
 
   const contents = await fs.readFile("new-test-results/vitest-report.json", "utf-8");
-  const prResults = JSON.parse(contents);
+  const pullRequestResults = JSON.parse(contents);
 
   let fileInformation = {};
   for (const [fileName, mainErrors] of Object.entries(mainResults)) {
-    const pullRequestErrors = prResults[fileName];
+    const pullRequestErrors = pullRequestResults[fileName];
     if (pullRequestErrors == null) {
-      fileInformation[fileName] = { type: "removed" };
+      fileInformation[fileName] = { type: "deleted", oldCount: 0, newCount: 0 };
       continue;
     }
 
     const errorCounts = {};
 
     for (const error of pullRequestErrors) {
-      errorCounts[error.message] ??= { oldCount: 0, newCount: 0, firstLine: 0 };
+      errorCounts[error.message] ??= {
+        oldCount: 0,
+        newCount: 0,
+      };
       errorCounts[error.message].oldCount++;
     }
 
     for (const error of mainErrors) {
-      errorCounts[error.message] ??= { oldCount: 0, newCount: 0, firstLine: 0 };
+      errorCounts[error.message] ??= {
+        oldCount: 0,
+        newCount: 0,
+      };
       errorCounts[error.message].newCount++;
     }
 
@@ -59,10 +65,24 @@ export default async ({ github, context, core }) => {
       }
     }
 
-    fileInformation[fileName] = { fixedErrors, newErrors, unfixedErrors };
+    fileInformation[fileName] = {
+      type: "in-both",
+      fixedErrors,
+      newErrors,
+      unfixedErrors,
+    };
   }
 
-  const files = Object.keys(fileInformation).sort();
+  for (const [fileName, pullRequestResultErrors] of Object.entries(pullRequestResults)) {
+    fileInformation[fileName] ??= {
+      type: "new",
+      fixedErrors: 0,
+      newErrors: pullRequestResultErrors.length,
+      unfixedErrors: 0,
+    };
+  }
+
+  const files = Object.keys(fileInformation);
 
   let reportTable = `|Changed File|Fixed Errors|New Errors|Unfixed Errors|
 |-|-|-|-|
@@ -74,9 +94,16 @@ export default async ({ github, context, core }) => {
   let hasChanges = false;
   let noChangesInFiles = 0;
   for (const file of files) {
-    const { fixedErrors, newErrors, unfixedErrors } = fileInformation[file];
+    const { type, fixedErrors, newErrors, unfixedErrors } = fileInformation[file];
 
-    if (fixedErrors === 0 && newErrors === 0) {
+    if (type === "deleted") {
+      reportTable += `|${file} - ***DELETED***|-|-|-|\n`;
+      hasChanges = true;
+      continue;
+    } else if (type === "new") {
+      reportTable += `|${file} - ***NEW***|-|${newErrors}|-|\n`;
+      continue;
+    } else if (fixedErrors === 0 && newErrors === 0) {
       noChangesInFiles++;
       continue;
     }

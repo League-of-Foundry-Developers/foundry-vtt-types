@@ -15,11 +15,18 @@ export default class JSONReporter implements Reporter {
 
     for (const file of files) {
       const filePath = relative(this.ctx.config.root, file.filepath);
+      fileToErrors[filePath] ??= [];
 
-      const errors = file.result?.errors ?? [];
+      const errors =
+        file.result?.errors?.map((error) => {
+          if (error.nameStr != null) {
+            return `${error.nameStr}: ${error.message}`;
+          }
+
+          return error.message;
+        }) ?? [];
 
       if (errors.length > 0) {
-        fileToErrors[filePath] ??= [];
         fileToErrors[filePath].push(...errors);
       }
     }
