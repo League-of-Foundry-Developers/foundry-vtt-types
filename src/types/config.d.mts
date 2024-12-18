@@ -200,7 +200,7 @@ declare global {
   interface WebRTCConfig {}
 
   /**
-   * Injects extra data for modules from `game.module.get("module-id")`.
+   * Injects extra data for modules from `game.modules.get("module-id")`.
    * @see {@link RequiredModules} for removing the `undefined` type for required modules.
    *  @example
    * ```typescript
@@ -209,14 +209,14 @@ declare global {
    *     api: APIObject;
    *   };
    * }
-   * const moduleApi: APIObject | undefined = game.module.get("module-id")?.api;
+   * const moduleApi: APIObject | undefined = game.modules.get("module-id")?.api;
    * ```
    */
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface ModuleConfig {}
 
   /**
-   * Removes `undefined` for modules listed as keys here from the return type of `game.module.get`.
+   * Removes `undefined` for modules listed as keys here from the return type of `game.modules.get`.
    * Useful if a module is a required dependency.
    * @see {@link ModuleConfig} for adding useful properties to the returned modules, like APIs.
    * @example
@@ -224,7 +224,7 @@ declare global {
    * interface RequiredModules {
    *   "module-id": true;
    * }
-   * const module: Game.ModuleData<foundry.packages.ModuleData> = game.module.get("module-id");
+   * const module: Game.ModuleData<foundry.packages.ModuleData> = game.modules.get("module-id");
    * ```
    */
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type
