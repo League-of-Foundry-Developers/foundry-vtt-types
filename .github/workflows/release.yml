@@ -6,7 +6,7 @@ on: # yamllint disable-line rule:truthy
     types: [created]
 
 env:
-  node_version: 18
+  node_version: 23
 
 jobs:
   verify:
