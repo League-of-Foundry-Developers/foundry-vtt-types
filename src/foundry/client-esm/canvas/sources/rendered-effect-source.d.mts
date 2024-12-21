@@ -1,5 +1,5 @@
 import type { IntentionalPartial } from "../../../../types/helperTypes.d.mts";
-import type { AnyFunction, InexactPartial } from "../../../../types/utils.d.mts";
+import type { InexactPartial } from "../../../../types/utils.d.mts";
 import type BaseEffectSource from "./base-effect-source.d.mts";
 
 /**
@@ -175,7 +175,7 @@ declare class RenderedEffectSource<
    * @param dt      - Delta time.
    * @param options - Options which affect the time animation
    */
-  animateTime(dt: number, options?: RenderedEffectSource.AnimationOptions): void;
+  animateTime(dt: number, options?: RenderedEffectSource.AnimationFunctionOptions): void;
 
   /**
    * Get corrected level according to level and active vision mode data.
@@ -233,7 +233,15 @@ declare namespace RenderedEffectSource {
     preview: boolean;
   }
 
-  type _AnimationOptions = InexactPartial<{
+  type AnimationFunction = (
+    this: foundry.canvas.sources.RenderedEffectSource,
+    /** Delta time */
+    dt: number,
+    options?: AnimationFunctionOptions,
+  ) => void;
+
+  /** @internal */
+  type _AnimationFunctionOptions = InexactPartial<{
     /**
      * The animation speed, from 0 to 10
      * @defaultValue `5`
@@ -255,51 +263,59 @@ declare namespace RenderedEffectSource {
     reverse: boolean | null;
   }>;
 
-  interface AnimationOptions extends _AnimationOptions {}
+  /** Shared options for the {@link LightAnimationFunction}s provided by `_Source` classes */
+  interface AnimationFunctionOptions extends _AnimationFunctionOptions {}
 
-  interface RenderedEffectSourceAnimationConfig {
+  /** @internal */
+  type _RenderedEffectSourceAnimationConfig = InexactPartial<{
     /**
      * The human-readable (localized) label for the animation
      */
-    label?: string | undefined;
+    label: string;
 
     /**
      * The animation function that runs every frame
      * @privateRemarks TODO: Figure out if there's a better way to define the function
      */
-    animation?: AnyFunction | undefined;
+    animation: RenderedEffectSource.AnimationFunction;
 
     /**
      * A custom illumination shader used by this animation
      */
-    illuminationShader?: AdaptiveIlluminationShader | undefined;
+    illuminationShader: typeof AdaptiveIlluminationShader;
 
     /**
      * A custom coloration shader used by this animation
      */
-    colorationShader?: AdaptiveColorationShader | undefined;
+    colorationShader: typeof AdaptiveColorationShader;
 
     /**
      * A custom background shader used by this animation
      */
-    backgroundShader?: AdaptiveBackgroundShader | undefined;
+    backgroundShader: typeof AdaptiveBackgroundShader;
 
     /**
      * A custom darkness shader used by this animation
      */
-    darknessShader?: AdaptiveDarknessShader | undefined;
+    darknessShader: typeof AdaptiveDarknessShader;
 
     /**
      * The animation seed
      */
-    seed?: number | undefined;
+    seed: number;
 
     /**
      * The animation time
      */
-    time?: number | undefined;
-  }
+    time: number;
+  }>;
 
+  interface RenderedEffectSourceAnimationConfig extends _RenderedEffectSourceAnimationConfig {}
+
+  /**
+   * @remarks `mesh` and `shader` are given values during initialization *if* the Source has a valid `Placeable` as its `object`.
+   * `vmUniforms` is only provided for `PointVisionSource` layers.
+   */
   interface RenderedEffectSourceLayer extends RenderedEffectLayerConfig {
     /**
      * Is this layer actively rendered?

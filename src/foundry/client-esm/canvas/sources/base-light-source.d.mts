@@ -1,10 +1,11 @@
+import type { IntentionalPartial } from "../../../../types/helperTypes.d.mts";
 import type { InexactPartial } from "../../../../types/utils.d.mts";
 import type RenderedEffectSource from "./rendered-effect-source.d.mts";
 
 /**
  * A specialized subclass of BaseEffectSource which deals with the rendering of light or darkness.
  */
-declare class BaseLightSource<
+declare abstract class BaseLightSource<
   SourceData extends BaseLightSource.LightSourceData = BaseLightSource.LightSourceData,
   SourceShape extends PIXI.Polygon = PIXI.Polygon,
   RenderingLayers extends Record<string, RenderedEffectSource.RenderedEffectSourceLayer> = RenderedEffectSource.Layers,
@@ -20,17 +21,20 @@ declare class BaseLightSource<
 
   /**
    * The corresponding lighting levels for dim light.
+   * @defaultValue `foundry.CONST.LIGHTING_LEVELS.DIM`
    */
   protected static _dimLightingLevel: foundry.CONST.LIGHTING_LEVELS;
 
   /**
    * The corresponding lighting levels for bright light.
+   * @defaultValue `foundry.CONST.LIGHTING_LEVELS.BRIGHT`
    */
   protected static _brightLightingLevel: foundry.CONST.LIGHTING_LEVELS;
 
   /**
    * The corresponding animation config.
    */
+  //TODO: convert when index signatures are removed from CONFIG
   protected static get ANIMATIONS(): CONFIG.Canvas.LightSourceAnimationConfig;
 
   /**
@@ -59,7 +63,7 @@ declare class BaseLightSource<
    */
   ratio: number;
 
-  override _initialize(data: Partial<SourceData>): void;
+  override _initialize(data: IntentionalPartial<SourceData>): void;
 
   override _updateColorationUniforms(): void;
 
@@ -74,7 +78,7 @@ declare class BaseLightSource<
    * @param dt      - Delta time
    * @param options - Additional options which modify the torch animation
    */
-  animateTorch(dt: number, options?: InexactPartial<RenderedEffectSource.AnimationOptions>): void;
+  animateTorch(dt: number, options?: RenderedEffectSource.AnimationFunctionOptions): void;
 
   /**
    * An animation with flickering ratio and light intensity
@@ -83,23 +87,28 @@ declare class BaseLightSource<
    */
   animateFlickering(
     dt: number,
-    options?: InexactPartial<
-      RenderedEffectSource.AnimationOptions & {
+    options?: RenderedEffectSource.AnimationFunctionOptions &
+      InexactPartial<{
         /**
          * Noise amplification (\>1) or dampening (\<1)
          * @defaultValue `1`
          */
         amplification: number;
-      }
-    >,
+      }>,
   ): void;
+
+  /**
+   * @remarks This property will be generated on any class that is `animateFlickering`'s `this` when it is called
+   * Foundry does not document it.
+   */
+  _noise?: SmoothNoise;
 
   /**
    * A basic "pulse" animation which expands and contracts.
    * @param dt      - Delta time
    * @param options - Additional options which modify the pulse animation
    */
-  animatePulse(dt: number, options?: InexactPartial<RenderedEffectSource.AnimationOptions>): void;
+  animatePulse(dt: number, options?: RenderedEffectSource.AnimationFunctionOptions): void;
 
   /**
    * @deprecated since v12
@@ -108,6 +117,12 @@ declare class BaseLightSource<
 }
 
 declare namespace BaseLightSource {
+  type LightAnimationFunction = (
+    this: BaseLightSource,
+    dt: number,
+    options?: RenderedEffectSource.AnimationFunctionOptions,
+  ) => void;
+
   interface LightSourceData extends RenderedEffectSource.RenderedEffectSourceData {
     /**
      * An opacity for the emitted light, if any
@@ -164,6 +179,10 @@ declare namespace BaseLightSource {
      */
     priority: number;
   }
+}
+
+declare abstract class AnyBaseLightSource extends BaseLightSource {
+  constructor(arg0: never, ...args: never[]);
 }
 
 export default BaseLightSource;
