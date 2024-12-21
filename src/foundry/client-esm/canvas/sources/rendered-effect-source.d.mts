@@ -165,8 +165,8 @@ declare class RenderedEffectSource<
   /**
    * Animate the PointSource, if an animation is enabled and if it currently has rendered containers.
    * @param dt - Delta time.
-   * @privateRemarks In core this will return `void`, as the `this.animation.animation` function will  be a {@link LightAnimationFunction}
-   * such as `RenderedEffectSource#animateTime` below, but it could technically be set to any function
+   * @privateRemarks In core this will return `void`, as the `this.animation.animation` function will  be a {@link BaseLightSource.LightAnimationFunction}
+   * and in fact most of the time will be `RenderedEffectSource#animateTime`, but it could technically be set to any function
    */
   animate(dt: number): this["animation"]["animation"] extends (...args: any) => infer Return ? Return : void;
 
@@ -234,7 +234,7 @@ declare namespace RenderedEffectSource {
   }
 
   type AnimationFunction = (
-    this: foundry.canvas.sources.RenderedEffectSource,
+    this: RenderedEffectSource,
     /** Delta time */
     dt: number,
     options?: AnimationFunctionOptions,
@@ -263,7 +263,7 @@ declare namespace RenderedEffectSource {
     reverse: boolean | null;
   }>;
 
-  /** Shared options for the {@link LightAnimationFunction}s provided by `_Source` classes */
+  /** Shared options for the {@link AnimationFunction}s provided by `_Source` classes */
   interface AnimationFunctionOptions extends _AnimationFunctionOptions {}
 
   /** @internal */
