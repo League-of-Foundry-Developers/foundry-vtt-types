@@ -26,7 +26,7 @@ export default class GlobalLightSource extends BaseLightSource {
    * }
    * ```
    */
-  static override defaultData: BaseLightSource.LightSourceData;
+  static override defaultData: BaseLightSource.BaseLightSourceData;
 
   /**
    * Name of this global light source.

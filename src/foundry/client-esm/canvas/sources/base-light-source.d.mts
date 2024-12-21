@@ -6,7 +6,7 @@ import type RenderedEffectSource from "./rendered-effect-source.d.mts";
  * A specialized subclass of BaseEffectSource which deals with the rendering of light or darkness.
  */
 declare abstract class BaseLightSource<
-  SourceData extends BaseLightSource.LightSourceData = BaseLightSource.LightSourceData,
+  SourceData extends BaseLightSource.BaseLightSourceData = BaseLightSource.BaseLightSourceData,
   SourceShape extends PIXI.Polygon = PIXI.Polygon,
   RenderingLayers extends Record<string, RenderedEffectSource.RenderedEffectSourceLayer> = RenderedEffectSource.Layers,
 > extends RenderedEffectSource<SourceData, SourceShape, RenderingLayers> {
@@ -56,7 +56,7 @@ declare abstract class BaseLightSource<
    * }
    * ```
    */
-  static override defaultData: RenderedEffectSource.RenderedEffectSourceData;
+  static override defaultData: BaseLightSource.BaseLightSourceData;
 
   /**
    * A ratio of dim:bright as part of the source radius
@@ -123,7 +123,7 @@ declare namespace BaseLightSource {
     options?: RenderedEffectSource.AnimationFunctionOptions,
   ) => void;
 
-  interface LightSourceData extends RenderedEffectSource.RenderedEffectSourceData {
+  interface BaseLightSourceData extends RenderedEffectSource.RenderedEffectSourceData {
     /**
      * An opacity for the emitted light, if any
      */

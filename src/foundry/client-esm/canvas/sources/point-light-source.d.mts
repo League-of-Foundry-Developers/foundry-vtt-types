@@ -1,7 +1,7 @@
 import type BaseLightSource from "./base-light-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
 
-type LightSourceData = PointEffectSourceMixin.PointEffectSourceData & BaseLightSource.LightSourceData;
+type LightSourceData = PointEffectSourceMixin.PointEffectSourceData & BaseLightSource.BaseLightSourceData;
 
 /**
  * A specialized subclass of the BaseLightSource which renders a source of light as a point-based effect.

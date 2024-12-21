@@ -2,7 +2,7 @@ import type BaseLightSource from "./base-light-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
 import type RenderedEffectSource from "./rendered-effect-source.d.mts";
 
-type DarknessSourceData = BaseLightSource.LightSourceData & PointEffectSourceMixin.PointEffectSourceData;
+type DarknessSourceData = BaseLightSource.BaseLightSourceData & PointEffectSourceMixin.PointEffectSourceData;
 
 // Interface causes errors
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
