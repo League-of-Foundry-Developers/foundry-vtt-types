@@ -30,12 +30,14 @@ export default class GlobalLightSource extends BaseLightSource {
 
   /**
    * Name of this global light source.
-   * @defaultValue GlobalLightSource.sourceType
+   * @defaultValue `GlobalLightSource.sourceType`
    */
   name: string;
 
   /**
    * A custom polygon placeholder.
+   * @defaultValue `null`
+   * @remarks This is not set anywhere in Foundry code, so will always be null barring system/module/user action
    */
   customPolygon: PIXI.Polygon | number[] | null;
 
@@ -44,4 +46,6 @@ export default class GlobalLightSource extends BaseLightSource {
   override _initializeSoftEdges(): void;
 
   override _updateGeometry(): void;
+
+  override _updateCommonUniforms(shader: AbstractBaseShader): void;
 }
