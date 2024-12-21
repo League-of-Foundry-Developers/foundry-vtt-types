@@ -73,6 +73,12 @@ declare abstract class BaseLightSource<
 
   override _updateCommonUniforms(shader: AbstractBaseShader): void;
 
+  /** @remarks This property is undocumented, and only defined during `_updateCommonUniforms` */
+  cachededAttentuation?: number;
+
+  /** @remarks This property is undocumented, and only defined during `_updateCommonUniforms` */
+  computedAttentuation?: number;
+
   /**
    * An animation with flickering ratio and light intensity.
    * @param dt      - Delta time
@@ -98,7 +104,7 @@ declare abstract class BaseLightSource<
   ): void;
 
   /**
-   * @remarks This property will be generated on any class that is `animateFlickering`'s `this` when it is called
+   * @remarks This property will be generated on any class that is `animateFlickering`'s `this` when it is called.
    * Foundry does not document it.
    */
   _noise?: SmoothNoise;
@@ -111,12 +117,15 @@ declare abstract class BaseLightSource<
   animatePulse(dt: number, options?: RenderedEffectSource.AnimationFunctionOptions): void;
 
   /**
-   * @deprecated since v12
+   * @deprecated since v12, until v14
+   * @remarks "BaseLightSource#isDarkness is now obsolete. Use DarknessSource instead."
    */
-  get isDarkness(): boolean;
+  get isDarkness(): false;
 }
 
 declare namespace BaseLightSource {
+  type AnyConstructor = typeof AnyBaseLightSource;
+
   type LightAnimationFunction = (
     this: BaseLightSource,
     dt: number,
