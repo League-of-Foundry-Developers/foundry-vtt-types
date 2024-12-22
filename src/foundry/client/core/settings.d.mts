@@ -190,7 +190,10 @@ declare global {
     type ToSettingAssignmentType<T extends Type> = ReplaceUndefinedWithNull<
       | SettingType<T>
       // TODO(LukeAbby): The `fromSource` function is called with `strict` which changes how fallback behaviour works. See `ClientSettings#set`
-      | (T extends DataModel.AnyConstructor ? DataModel.ConstructorDataFor<InstanceType<T>> : never)
+      // Note(LukeAbby): This doesn't use `InstanceType` because of this TypeScript issue: https://github.com/microsoft/TypeScript/issues/60839
+      | (T extends (abstract new (arg0: never, ...args: never[]) => infer Instance extends DataModel.Any)
+          ? DataModel.ConstructorDataFor<Instance>
+          : never)
     >;
 
     type SettingInitializedType<N extends Namespace, K extends Key> = ToSettingInitializedType<ConfiguredType<N, K>>;
