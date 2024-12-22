@@ -1,5 +1,5 @@
 import * as _PIXI from "pixi.js";
-import type { Brand } from "../helperTypes.d.mts";
+import type { Brand } from "src/utils/index.d.mts";
 
 // Note(LukeAbby): The `smooth.d.mts` and `smooth.d.mts` files exist to make it DRY to selectively tweak PIXI sub-namespaces.
 // Each of them write `export * from "..."` and then selectively shadow or augment the exports.
