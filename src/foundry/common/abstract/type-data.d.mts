@@ -13,12 +13,20 @@ import type BaseUser from "../documents/user.d.mts";
 import type { DataModel } from "./data.d.mts";
 import type Document from "./document.d.mts";
 
-type StaticDataModel = typeof DataModel<DataSchema, Document<any, DataSchema, any>>;
+declare class AnyDataModel extends DataModel<any, any, any> {
+  constructor(...args: any[]);
+}
+
+type StaticDataModel = typeof AnyDataModel;
 
 interface _InternalTypeDataModelInterface extends StaticDataModel {
   new <Schema extends DataSchema, Parent extends Document.Any, _ComputedInstance extends DataModel<Schema, Parent>>(
     ...args: ConstructorParameters<typeof DataModel<Schema, Parent>>
-  ): _ComputedInstance;
+
+    // Note(LukeAbby): This seemingly redundant `DataModel<Schema, Parent>` is to
+    // Ensure that TypeScript allows overriding `protected` methods in subclasses.
+    // See: https://gist.github.com/LukeAbby/b9fd57eeba778a25297721e88b3e6bdd
+  ): DataModel<Schema, Parent> & _ComputedInstance;
 }
 
 declare const _InternalTypeDataModelConst: _InternalTypeDataModelInterface;
