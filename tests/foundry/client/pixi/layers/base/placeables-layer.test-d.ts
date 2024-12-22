@@ -64,11 +64,11 @@ expectTypeOf(layer.rotateMany({ angle: 10, delta: 20, snap: 20, ids: ["abc", "de
 >();
 expectTypeOf(layer.moveMany()).toEqualTypeOf<Promise<AmbientLight[]> | undefined>();
 expectTypeOf(layer.moveMany({})).toEqualTypeOf<Promise<AmbientLight[]> | undefined>();
-expectTypeOf(layer.moveMany({ dx: 100, dy: 100, rotate: true, ids: ["abc", "def"] })).toEqualTypeOf<
+expectTypeOf(layer.moveMany({ dx: 1, dy: -1, rotate: true, ids: ["abc", "def"] })).toEqualTypeOf<
   Promise<AmbientLight[]> | undefined
 >();
 expectTypeOf(layer.undoHistory()).toEqualTypeOf<Promise<AmbientLightDocument[]>>();
-expectTypeOf(layer.deleteAll()).toEqualTypeOf<Promise<AmbientLightDocument[] | false | null>>();
+expectTypeOf(layer.deleteAll()).toEqualTypeOf<Promise<undefined | false | null>>();
 expectTypeOf(layer.storeHistory("create", new AmbientLightDocument()["_source"])).toEqualTypeOf<void>();
 expectTypeOf(layer.storeHistory("update", new AmbientLightDocument()["_source"])).toEqualTypeOf<void>();
 expectTypeOf(layer.storeHistory("delete", new AmbientLightDocument()["_source"])).toEqualTypeOf<void>();
