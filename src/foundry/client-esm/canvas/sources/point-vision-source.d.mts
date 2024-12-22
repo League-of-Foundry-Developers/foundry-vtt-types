@@ -6,7 +6,9 @@ import type PointEffectSourceMixin from "./point-effect-source.d.mts";
  */
 declare class PointVisionSource<
   SourceData extends PointVisionSource.VisionSourceData = PointVisionSource.VisionSourceData,
-> extends PointEffectSourceMixin(RenderedEffectSource)<SourceData> {
+  SourceShape extends PointSourcePolygon = PointSourcePolygon,
+  RenderingLayers extends RenderedEffectSource.Layers = RenderedEffectSource.Layers,
+> extends PointEffectSourceMixin(RenderedEffectSource)<SourceData, SourceShape, RenderingLayers> {
   /** @defaultValue `"sight"` */
   static override sourceType: string;
 
@@ -112,8 +114,6 @@ declare class PointVisionSource<
 
   override _createShapes(): void;
 
-  override shape: PointSourcePolygon;
-
   /**
    * Responsible for assigning the Vision Mode and calling the activation and deactivation handlers.
    */
@@ -121,7 +121,7 @@ declare class PointVisionSource<
 
   override _configure(changes: Partial<SourceData>): void;
 
-  override _configureLayer(layer: Record<string, unknown>, layerId: string): void;
+  override _configureLayer(layer: RenderedEffectSource.SourceLayer, layerId: string): void;
 
   override _getPolygonConfiguration(): PointSourcePolygonConfig;
 
@@ -141,11 +141,7 @@ declare class PointVisionSource<
    */
   protected _createRestrictedPolygon(): PointSourcePolygon;
 
-  override _configureShaders(): {
-    background: AdaptiveLightingShader;
-    coloration: AdaptiveLightingShader;
-    illumination: AdaptiveLightingShader;
-  };
+  override _configureShaders(): Record<keyof RenderingLayers, typeof AdaptiveLightingShader>;
 
   override _updateColorationUniforms(): void;
 

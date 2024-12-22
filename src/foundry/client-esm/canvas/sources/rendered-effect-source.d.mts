@@ -25,10 +25,7 @@ declare class RenderedEffectSource<
    * Layers handled by this rendered source.
    * @remarks Keys should match the keys of RenderingLayers
    */
-  protected static get _layers(): Record<
-    "background" | "coloration" | "illumination",
-    RenderedEffectSource.LayerConfig
-  >;
+  protected static get _layers(): Record<string, RenderedEffectSource.LayerConfig>;
 
   /**
    * The offset in pixels applied to create soft edges.
@@ -266,8 +263,7 @@ declare namespace RenderedEffectSource {
   /** Shared options for the {@link AnimationFunction}s provided by `_Source` classes */
   interface AnimationFunctionOptions extends _AnimationFunctionOptions {}
 
-  /** @internal */
-  type _AnimationConfig = InexactPartial<{
+  type AnimationConfig = InexactPartial<{
     /**
      * The human-readable (localized) label for the animation
      */
@@ -310,11 +306,9 @@ declare namespace RenderedEffectSource {
     time: number;
   }>;
 
-  interface AnimationConfig extends _AnimationConfig {}
-
   /**
-   * @remarks `mesh` and `shader` are given values during initialization *if* the Source has a valid `Placeable` as its `object`.
-   * `vmUniforms` is only provided for `PointVisionSource` layers.
+   * @remarks The properties `mesh` and `shader` from `LayerConfig` are not documented as being part of the typedef. They are given values
+   * during initialization *if* the Source has a valid `Placeable` as its `object`. `vmUniforms` is only provided a value for `PointVisionSource` layers.
    */
   interface SourceLayer extends LayerConfig {
     /**
@@ -358,7 +352,7 @@ declare namespace RenderedEffectSource {
     blendMode: keyof typeof PIXI.BLEND_MODES;
   }
 
-  // Interface causes errors
+  // Interface would require `RenderingLayers extends ... = InterfaceToObject<Layers>` in every subclass signature
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   type Layers = {
     background: RenderedEffectSource.SourceLayer;

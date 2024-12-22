@@ -34,6 +34,7 @@ declare abstract class BaseLightSource<
   /**
    * The corresponding animation config.
    * @remarks More broad than it should be to accomodate {@link foundry.canvas.sources.PointDarknessSource}
+   * TODO: Reevaluate after CONFIG has been gone over
    */
   protected static get ANIMATIONS(): typeof CONFIG.Canvas.lightAnimations | typeof CONFIG.Canvas.darknessAnimations;
 
@@ -120,12 +121,16 @@ declare abstract class BaseLightSource<
    * @deprecated since v12, until v14
    * @remarks "BaseLightSource#isDarkness is now obsolete. Use DarknessSource instead."
    */
-  get isDarkness(): false;
+  get isDarkness(): boolean;
 }
 
 declare namespace BaseLightSource {
   type AnyConstructor = typeof AnyBaseLightSource;
 
+  /**
+   * @privateRemarks This `this` is a concession to practicality (could really be a `RenderedEffectSource`,
+   * technically) but I didn't want to move the typing of `_noise`
+   */
   type LightAnimationFunction = (
     this: BaseLightSource,
     dt: number,

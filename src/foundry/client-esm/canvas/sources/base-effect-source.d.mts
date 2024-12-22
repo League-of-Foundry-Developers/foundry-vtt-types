@@ -70,7 +70,7 @@ declare abstract class BaseEffectSource<
   /**
    * The geometric shape of the effect source which is generated later.
    */
-  shape: SourceShape;
+  shape: SourceShape | undefined;
 
   /**
    * A collection of boolean flags which control rendering and refresh behavior for the source.
