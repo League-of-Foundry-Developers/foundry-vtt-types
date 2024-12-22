@@ -24,10 +24,10 @@ Currently v12 is still in beta. There are known bugs, issues in the ergonomics, 
 The recommended way to install for v12 is this command:
 
 ```sh
-npm add --include=dev github:League-of-Foundry-Developers/foundry-vtt-types#main
+npm add -D fvtt-types@github:League-of-Foundry-Developers/foundry-vtt-types#main
 ```
 
-Alternatively, if you're using yarn you'll need to use the command `yarn add --dev foundry-vtt-types@github:League-of-Foundry-Developers/foundry-vtt-types#main`.
+Alternatively, if you're using yarn you'll need to use the command `yarn add --dev fvtt-types@github:League-of-Foundry-Developers/foundry-vtt-types#main`.
 
 This will add the current commit on `main` as a dependency. Both npm and yarn's lockfile will store the commit you initially installed this command and so updates to your dependency will not happen automatically or even after a fresh install. To update you will need to be rerun the prior command periodically to update as improvements are added frequently.
 
@@ -40,19 +40,19 @@ You can install historical versions of foundry-vtt-types from the [npm registry]
 In order to install the latest stable version (v9), run
 
 ```sh
-npm install --save-dev @league-of-foundry-developers/foundry-vtt-types
+npm add --save-dev fvtt-types@npm:@league-of-foundry-developers/foundry-vtt-types
 ```
 
 In order to install a specific version run
 
 ```sh
-npm install --save-dev @league-of-foundry-developers/foundry-vtt-types@<version>
+npm add --save-dev fvtt-types@npm:@league-of-foundry-developers/foundry-vtt-types@<version>
 ```
 
 For example, to install version `9.268.0`, run
 
 ```sh
-npm install --save-dev @league-of-foundry-developers/foundry-vtt-types@9.268.0
+npm add --save-dev fvtt-types@npm:@league-of-foundry-developers/foundry-vtt-types@9.268.0
 ```
 
 You can then update foundry-vtt-types using the regular update mechanism for npm
@@ -85,7 +85,7 @@ Add foundry-vtt-types to your types section in your `tsconfig.json`:
 ```json
 {
   "compilerOptions": {
-    "types": ["@league-of-foundry-developers/foundry-vtt-types"],
+    "types": ["fvtt-types"],
     "module": "esnext",
     "moduleResolution": "bundler",
     "strict": true
