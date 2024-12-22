@@ -1,4 +1,4 @@
-import type { Mixin } from "../../../../utils/index.d.mts";
+import type { Mixin, IntentionalPartial } from "../../../../utils/index.d.mts";
 import type BaseEffectSource from "./base-effect-source.d.mts";
 
 declare class PointEffectSource {
@@ -17,21 +17,27 @@ declare class PointEffectSource {
    * walls: true
    * }
    * ```
+   * @privateRemarks This will only be accurate for classes extending `PointEffectSourceMixin(BaseEffectSource)`.
+   * Other subclasses must override this.
    */
-  static defaultData: PointEffectSourceMixin.PointEffectSourceData;
+  static defaultData: PointEffectSourceMixin.MixedSourceData;
+
+  /** @privateRemarks This is not in Foundry's code, but the mixin class loses access to the type parameter that would otherwise be here */
+  shape: PointSourcePolygon;
 
   /**
    * A convenience reference to the radius of the source.
    */
   get radius(): number;
 
-  _initialize(data: Partial<PointEffectSourceMixin.PointEffectSourceData>): void;
+  _initialize(data: IntentionalPartial<PointEffectSourceMixin.MixedSourceData>): void;
 
   _initializeSoftEdges(): void;
 
   /**
    * Configure the parameters of the polygon that is generated for this source.
    */
+  //TODO: Make sure this is accurate as part of work on "pixi leftovers"
   protected _getPolygonConfiguration(): PointSourcePolygonConfig;
 
   _createShapes(): void;
@@ -66,7 +72,9 @@ declare function PointEffectSourceMixin<BaseClass extends BaseEffectSource.AnyCo
 declare namespace PointEffectSourceMixin {
   type AnyMixed = ReturnType<typeof PointEffectSourceMixin<BaseEffectSource.AnyConstructor>>;
 
-  interface PointEffectSourceData extends BaseEffectSource.BaseEffectSourceData {
+  type MixedSourceData = SourceData & BaseEffectSource.SourceData;
+
+  interface SourceData {
     /**
      * The radius of the source
      */

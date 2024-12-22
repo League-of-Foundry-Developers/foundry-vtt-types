@@ -1,17 +1,14 @@
-import type { AnyFunction, InexactPartial } from "../../../../utils/index.d.mts";
+import type { InexactPartial, IntentionalPartial } from "../../../../utils/index.d.mts";
 import type BaseEffectSource from "./base-effect-source.d.mts";
-
-// TODO: Remove after shaders are done
-type AdaptiveDarknessShader = unknown;
 
 /**
  * An abstract class which extends the base PointSource to provide common functionality for rendering.
  * This class is extended by both the LightSource and VisionSource subclasses.
  */
 declare class RenderedEffectSource<
-  SourceData extends RenderedEffectSource.RenderedEffectSourceData = RenderedEffectSource.RenderedEffectSourceData,
+  SourceData extends RenderedEffectSource.SourceData = RenderedEffectSource.SourceData,
   SourceShape extends PIXI.Polygon = PIXI.Polygon,
-  RenderingLayers extends Record<string, RenderedEffectSource.RenderedEffectSourceLayer> = RenderedEffectSource.Layers,
+  RenderingLayers extends Record<string, RenderedEffectSource.SourceLayer> = RenderedEffectSource.Layers,
 > extends BaseEffectSource<SourceData, SourceShape> {
   /**
    * Keys of the data object which require shaders to be re-initialized.
@@ -27,7 +24,7 @@ declare class RenderedEffectSource<
    * Layers handled by this rendered source.
    * @remarks Keys should match the keys of RenderingLayers
    */
-  protected static get _layers(): Record<string, RenderedEffectSource.RenderedEffectLayerConfig>;
+  protected static get _layers(): Record<string, RenderedEffectSource.LayerConfig>;
 
   /**
    * The offset in pixels applied to create soft edges.
@@ -47,13 +44,13 @@ declare class RenderedEffectSource<
    * }
    * ```
    */
-  static defaultData: RenderedEffectSource.RenderedEffectSourceData;
+  static defaultData: RenderedEffectSource.SourceData;
 
   /**
    * The animation configuration applied to this source
    * @defaultValue `{}`
    */
-  animation: RenderedEffectSource.RenderedEffectSourceAnimationConfig;
+  animation: RenderedEffectSource.AnimationConfig;
 
   /**
    * Track the status of rendering layers
@@ -100,29 +97,25 @@ declare class RenderedEffectSource<
    */
   get illumination(): PointSourceMesh;
 
-  _initialize(data: Partial<SourceData>): void;
+  override _initialize(data: IntentionalPartial<SourceData>): void;
 
   /**
    * Decide whether to render soft edges with a blur.
    */
   protected _initializeSoftEdges(): void;
 
-  override _configure(changes: Partial<SourceData>): void;
+  override _configure(changes: IntentionalPartial<SourceData>): void;
 
   /**
    * Configure which shaders are used for each rendered layer.
    * @privateRemarks Foundry marks this as private then overrides it in `PointVisionSource`
    */
-  protected _configureShaders(): {
-    background: AdaptiveLightingShader;
-    coloration: AdaptiveLightingShader;
-    illumination: AdaptiveLightingShader;
-  };
+  protected _configureShaders(): Record<keyof RenderingLayers, typeof AdaptiveLightingShader>;
 
   /**
    * Specific configuration for a layer.
    */
-  protected _configureLayer(layer: Record<string, unknown>, layerId: string): void;
+  protected _configureLayer(layer: RenderedEffectSource.SourceLayer, layerId: string): void;
 
   /**
    * Create the geometry for the source shape that is used in shaders and compute its bounds for culling purpose.
@@ -134,11 +127,8 @@ declare class RenderedEffectSource<
   /**
    * Render the containers used to represent this light source within the LightingLayer
    */
-  drawMeshes(): {
-    background: PIXI.Mesh;
-    coloration: PIXI.Mesh;
-    illumination: PIXI.Mesh;
-  };
+  drawMeshes(): Record<keyof RenderingLayers, PIXI.Mesh | null>;
+
   /**
    * Create a Mesh for a certain rendered layer of this source.
    * @param layerId - The layer key in layers to draw
@@ -166,9 +156,13 @@ declare class RenderedEffectSource<
    */
   protected _updateIlluminationUniforms(): void;
 
+  protected override _destroy(): void;
+
   /**
    * Animate the PointSource, if an animation is enabled and if it currently has rendered containers.
    * @param dt - Delta time.
+   * @privateRemarks In core this will return `void`, as the `this.animation.animation` function will  be a {@link BaseLightSource.LightAnimationFunction}
+   * and in fact most of the time will be `RenderedEffectSource#animateTime`, but it could technically be set to any function
    */
   animate(dt: number): this["animation"]["animation"] extends (...args: any) => infer Return ? Return : void;
 
@@ -177,7 +171,7 @@ declare class RenderedEffectSource<
    * @param dt      - Delta time.
    * @param options - Options which affect the time animation
    */
-  animateTime(dt: number, options?: InexactPartial<RenderedEffectSource.AnimationOptions>): void;
+  animateTime(dt: number, options?: RenderedEffectSource.AnimationFunctionOptions): void;
 
   /**
    * Get corrected level according to level and active vision mode data.
@@ -196,12 +190,14 @@ declare class RenderedEffectSource<
   ): Color;
 
   /**
-   * @deprecated since v11
+   * @deprecated since v11, until v13
+   * @remarks "The RenderedEffectSource#preview is deprecated. Use RenderedEffectSource#isPreview instead."
    */
   set preview(preview: boolean);
 
   /**
-   * @deprecated since v11
+   * @deprecated since v11, until v13
+   * @remarks "The RenderedEffectSource#preview is deprecated. Set RenderedEffectSource#preview as part of RenderedEffectSource#initialize instead."
    */
   get preview(): boolean;
 }
@@ -209,122 +205,163 @@ declare class RenderedEffectSource<
 declare namespace RenderedEffectSource {
   type Any = RenderedEffectSource<any, any, any>;
 
-  interface RenderedEffectSourceData extends BaseEffectSource.BaseEffectSourceData {
+  type AnyConstructor = typeof AnyRenderedEffectSource;
+
+  interface SourceData extends BaseEffectSource.SourceData {
     /**
      * An animation configuration for the source
      */
     animation: object;
+
     /**
      * A color applied to the rendered effect
      */
     color: number | null;
+
     /**
      * An integer seed to synchronize (or de-synchronize) animations
      */
     seed: number | null;
+
     /**
      * Is this source a temporary preview?
      */
     preview: boolean;
   }
 
-  interface AnimationOptions {
+  type AnimationFunction = (
+    this: RenderedEffectSource,
+    /** Delta time */
+    dt: number,
+    options?: AnimationFunctionOptions,
+  ) => void;
+
+  /** @internal */
+  type _AnimationFunctionOptions = InexactPartial<{
     /**
      * The animation speed, from 0 to 10
      * @defaultValue `5`
+     * @remarks Can't be null due to only having default via signature
      */
-    speed?: number;
+    speed: number;
 
     /**
      * The animation intensity, from 1 to 10
      * @defaultValue `5`
+     * @remarks Can't be null due to only having default via signature
      */
-    intensity?: number;
+    intensity: number;
 
     /**
      * Reverse the animation direction
      * @defaultValue `false`
      */
-    reverse?: boolean;
-  }
+    reverse: boolean | null;
+  }>;
 
-  interface RenderedEffectSourceAnimationConfig {
+  /** Shared options for the {@link AnimationFunction}s provided by `_Source` classes */
+  interface AnimationFunctionOptions extends _AnimationFunctionOptions {}
+
+  type AnimationConfig = InexactPartial<{
     /**
      * The human-readable (localized) label for the animation
      */
-    label?: string | undefined;
+    label: string;
+
     /**
      * The animation function that runs every frame
      * @privateRemarks TODO: Figure out if there's a better way to define the function
      */
-    animation?: AnyFunction | undefined;
+    animation: RenderedEffectSource.AnimationFunction;
+
     /**
      * A custom illumination shader used by this animation
      */
-    illuminationShader?: AdaptiveIlluminationShader | undefined;
+    illuminationShader: typeof AdaptiveIlluminationShader;
+
     /**
      * A custom coloration shader used by this animation
      */
-    colorationShader?: AdaptiveColorationShader | undefined;
+    colorationShader: typeof AdaptiveColorationShader;
+
     /**
      * A custom background shader used by this animation
      */
-    backgroundShader?: AdaptiveBackgroundShader | undefined;
+    backgroundShader: typeof AdaptiveBackgroundShader;
+
     /**
      * A custom darkness shader used by this animation
      */
-    darknessShader?: AdaptiveDarknessShader | undefined;
+    darknessShader: typeof AdaptiveDarknessShader;
+
     /**
      * The animation seed
      */
-    seed?: number | undefined;
+    seed: number;
+
     /**
      * The animation time
      */
-    time?: number | undefined;
-  }
+    time: number;
+  }>;
 
-  interface RenderedEffectSourceLayer {
+  /**
+   * @remarks The properties `mesh` and `shader` from `LayerConfig` are not documented as being part of the typedef. They are given values
+   * during initialization *if* the Source has a valid `Placeable` as its `object`. `vmUniforms` is only provided a value for `PointVisionSource` layers.
+   */
+  interface SourceLayer extends LayerConfig {
     /**
      * Is this layer actively rendered?
      */
     active: boolean;
+
     /**
      * Do uniforms need to be reset?
      */
     reset: boolean;
+
     /**
      * Is this layer temporarily suppressed?
      */
     suppressed: boolean;
+
     /**
      * The rendered mesh for this layer
      */
-    mesh: PointSourceMesh;
+    mesh: PointSourceMesh | undefined;
+
     /**
      * The shader instance used for the layer
      */
-    shader: AdaptiveLightingShader;
+    shader: AdaptiveLightingShader | undefined;
+
+    /** @remarks Foundry does not include this in the typedef but is in the initalization of `RenderedEffectSource#layers` */
+    vmUniforms: AbstractBaseShader.Uniforms | undefined;
   }
 
-  interface RenderedEffectLayerConfig {
+  interface LayerConfig {
     /**
      * The default shader used by this layer
      */
-    defaultShader: AdaptiveLightingShader;
+    defaultShader: typeof AdaptiveLightingShader;
+
     /**
      * The blend mode used by this layer
      */
-    blendMode: PIXI.BLEND_MODES;
+    blendMode: keyof typeof PIXI.BLEND_MODES;
   }
 
-  // Interface causes errors
+  // Interface would require `RenderingLayers extends ... = InterfaceToObject<Layers>` in every subclass signature
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   type Layers = {
-    background: RenderedEffectSource.RenderedEffectSourceLayer;
-    coloration: RenderedEffectSource.RenderedEffectSourceLayer;
-    illumination: RenderedEffectSource.RenderedEffectSourceLayer;
+    background: RenderedEffectSource.SourceLayer;
+    coloration: RenderedEffectSource.SourceLayer;
+    illumination: RenderedEffectSource.SourceLayer;
   };
+}
+
+declare abstract class AnyRenderedEffectSource extends RenderedEffectSource<any, any, any> {
+  constructor(arg0: never, ...args: never[]);
 }
 
 export default RenderedEffectSource;

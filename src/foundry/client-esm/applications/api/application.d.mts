@@ -1,4 +1,11 @@
-import type { MustConform, AnyObject, DeepPartial, EmptyObject, InexactPartial, MaybePromise } from "../../../../utils/index.d.mts";
+import type {
+  MustConform,
+  AnyObject,
+  DeepPartial,
+  EmptyObject,
+  InexactPartial,
+  MaybePromise,
+} from "../../../../utils/index.d.mts";
 import type EventEmitterMixin from "../../../common/utils/event-emitter.d.mts";
 
 // TODO: Investigate use of DeepPartial vs Partial vs InexactPartial

@@ -88,7 +88,10 @@ declare class ClientDocument<BaseDocument extends Document.Internal.Instance.Any
   /**
    * Obtain the FormApplication class constructor which should be used to configure this Document.
    */
-  protected _getSheetClass(): FormApplication.AnyConstructor | foundry.applications.api.ApplicationV2.AnyConstructor | null;
+  protected _getSheetClass():
+    | FormApplication.AnyConstructor
+    | foundry.applications.api.ApplicationV2.AnyConstructor
+    | null;
 
   /**
    * Safely prepare data for a Document, catching any errors.
