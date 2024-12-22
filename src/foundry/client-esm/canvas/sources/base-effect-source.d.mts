@@ -1,4 +1,4 @@
-import type { InexactPartial } from "../../../../utils/index.d.mts";
+import type { NullishProps, IntentionalPartial } from "../../../../utils/index.d.mts";
 
 /**
  * TODO - Re-document after ESM refactor.
@@ -14,15 +14,16 @@ import type { InexactPartial } from "../../../../utils/index.d.mts";
  * ```
  * @privateRemarks The TODO is foundry's
  */
-declare class BaseEffectSource<
-  SourceData extends BaseEffectSource.BaseEffectSourceData,
+declare abstract class BaseEffectSource<
+  SourceData extends BaseEffectSource.SourceData,
   SourceShape extends PIXI.Polygon,
 > {
   /**
    * An effect source is constructed by providing configuration options.
    * @param options - Options which modify the base effect source instance
+   * @remarks Passing a PlaceableObject is deprecated, and will be removed in v13
    */
-  constructor(options?: BaseEffectSource.BaseEffectSourceOptions);
+  constructor(options?: BaseEffectSource.SourceOptions | PlaceableObject);
 
   /**
    * The type of source represented by this data structure.
@@ -47,7 +48,7 @@ declare class BaseEffectSource<
    * }
    * ```
    */
-  static defaultData: BaseEffectSource.BaseEffectSourceData;
+  static defaultData: BaseEffectSource.SourceData;
 
   /**
    * Some other object which is responsible for this source.
@@ -56,8 +57,9 @@ declare class BaseEffectSource<
 
   /**
    * The source id linked to this effect source.
+   * @remarks Foundry types this as Readonly<string>, but does nothing to that effect at runtime
    */
-  readonly sourceId: string;
+  sourceId: string | undefined;
 
   /**
    * The data of this source.
@@ -66,8 +68,9 @@ declare class BaseEffectSource<
 
   /**
    * The geometric shape of the effect source which is generated later.
+   * @remarks This only isn't `undefined` in subclasses implementing `_createShapes()`, usually via {@link PointEffectSourceMixin}
    */
-  shape: SourceShape;
+  shape: SourceShape | undefined;
 
   /**
    * A collection of boolean flags which control rendering and refresh behavior for the source.
@@ -129,14 +132,14 @@ declare class BaseEffectSource<
    * @returns The initialized source
    */
   initialize(
-    data?: InexactPartial<SourceData>,
-    options?: InexactPartial<{
-      // The type def references a behaviors object that is not even passed into the function
+    data?: NullishProps<SourceData>,
+    /** @privateRemarks Foundry describes an `options.behaviors` key, but it is neither checked for nor used at runtime */
+    options?: NullishProps<{
       /**
        * Should source data be reset to default values before applying changes?
        * @defaultValue `false`
        */
-      reset?: boolean;
+      reset: boolean;
     }>,
   ): this;
 
@@ -144,7 +147,10 @@ declare class BaseEffectSource<
    * Subclass specific data initialization steps.
    * @param data - Provided data for configuration
    */
-  _initialize(data: Partial<SourceData>): void;
+  _initialize(
+    /** @remarks IntentionalPartial because `this.initialize` has filtered invalid keys and replaced any nullish values before calling this */
+    data: IntentionalPartial<SourceData>,
+  ): void;
 
   /**
    * Create the polygon shape (or shapes) for this source using configured data.
@@ -155,8 +161,9 @@ declare class BaseEffectSource<
    * Subclass specific configuration steps. Occurs after data initialization and shape computation.
    * Only called if the source is attached and not disabled.
    * @param changes - Changes to the source data which were applied
+   * @remarks This is actually passed *flattened* partial data
    */
-  protected _configure(changes: Partial<SourceData>): void;
+  protected _configure(changes: IntentionalPartial<SourceData>): void;
 
   /**
    * Refresh the state and uniforms of the source.
@@ -211,19 +218,25 @@ declare class BaseEffectSource<
 declare namespace BaseEffectSource {
   type AnyConstructor = typeof AnyBaseEffectSource;
 
-  interface BaseEffectSourceOptions {
+  /** @internal */
+  type _SourceOptions = NullishProps<{
     /**
      * An optional PlaceableObject which is responsible for this source
      */
-    object?: PlaceableObject | undefined;
+    object: PlaceableObject;
+  }>;
+
+  interface SourceOptions extends _SourceOptions {
     /**
      * A unique ID for this source. This will be set automatically if an
      * object is provided, otherwise is required.
+     * @remarks The above is misleading; sourceId will *not* be inferred if you pass in `{object: PlaceableObject}`,
+     * only if you pass a `PlaceableObject` *instead* of an options object to the constructor.
      */
-    sourceId?: string | undefined;
+    sourceId?: string;
   }
 
-  interface BaseEffectSourceData {
+  interface SourceData {
     /**
      * The x-coordinate of the source location
      */

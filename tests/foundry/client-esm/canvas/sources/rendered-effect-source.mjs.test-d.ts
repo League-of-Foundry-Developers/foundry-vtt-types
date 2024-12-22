@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
 
 const mySource = new foundry.canvas.sources.RenderedEffectSource();
-
+const meshes = mySource.drawMeshes();
 expectTypeOf(mySource.active).toEqualTypeOf<boolean>();
-expectTypeOf(mySource.drawMeshes().background.visible).toEqualTypeOf<boolean>();
+expectTypeOf(meshes.background?.visible).toEqualTypeOf<boolean | undefined>();

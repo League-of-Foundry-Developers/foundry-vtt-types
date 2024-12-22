@@ -1,4 +1,9 @@
-import type { IntentionalPartial, InexactPartial, NullishProps, RemoveIndexSignatures } from "../../../../../utils/index.d.mts";
+import type {
+  IntentionalPartial,
+  InexactPartial,
+  NullishProps,
+  RemoveIndexSignatures,
+} from "../../../../../utils/index.d.mts";
 import type { LineIntersection } from "../../../../common/utils/geometry.d.mts";
 
 declare global {

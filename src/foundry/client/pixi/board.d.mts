@@ -167,7 +167,7 @@ declare global {
     /**
      * The singleton FogManager instance.
      */
-    fog: FogManager;
+    fog: InstanceType<typeof CONFIG.Canvas.fogManager>;
 
     /**
      * A perception manager interface for batching lighting, sight, and sound updates

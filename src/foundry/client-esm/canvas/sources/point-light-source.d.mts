@@ -1,23 +1,28 @@
+import type { IntentionalPartial } from "../../../../utils/index.d.mts";
 import type BaseLightSource from "./base-light-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
-
-type LightSourceData = PointEffectSourceMixin.PointEffectSourceData & BaseLightSource.LightSourceData;
 
 /**
  * A specialized subclass of the BaseLightSource which renders a source of light as a point-based effect.
  */
-export default class PointLightSource<
-  SourceData extends LightSourceData = LightSourceData,
+declare class PointLightSource<
+  SourceData extends PointLightSource.SourceData = PointLightSource.SourceData,
   SourceShape extends PointSourcePolygon = PointSourcePolygon,
 > extends PointEffectSourceMixin(BaseLightSource)<SourceData, SourceShape> {
   /** @defaultValue `"lightSources"` */
   static override effectsCollection: string;
 
-  override _initialize(data: Partial<SourceData>): void;
+  /**
+   * @privateRemarks This is not in foundry's code, but since this class (and its parent) implements `_createShapes`,
+   * and we are counting what happens in `initialize` as 'the constructor', this gets to be declared never undefined.
+   */
+  override shape: SourceShape;
+
+  override _initialize(data: IntentionalPartial<SourceData>): void;
 
   override _createShapes(): void;
 
-  override _configure(changes: Partial<SourceData>): void;
+  override _configure(changes: IntentionalPartial<SourceData>): void;
 
   override _getPolygonConfiguration(): PointSourcePolygonConfig;
 
@@ -26,12 +31,7 @@ export default class PointLightSource<
    * @param config - The visibility test configuration
    * @returns Is the target object visible to this source?
    */
-  testVisibility(config: {
-    /** The sequence of tests to perform */
-    tests: CanvasVisibilityTest[];
-    /** The target object being tested */
-    object: PlaceableObject;
-  }): boolean;
+  testVisibility(config?: CanvasVisibilityTestConfig): boolean;
 
   /**
    * Can this LightSource theoretically detect a certain object based on its properties?
@@ -39,5 +39,17 @@ export default class PointLightSource<
    * @param target - The target object being tested
    * @returns Can the target object theoretically be detected by this vision source?
    */
-  _canDetectObject(target: PlaceableObject): boolean;
+  _canDetectObject(target?: PlaceableObject | null): boolean;
 }
+
+declare namespace PointLightSource {
+  type AnyConstructor = typeof AnyPointLightSource;
+
+  type SourceData = PointEffectSourceMixin.SourceData & BaseLightSource.SourceData;
+}
+
+declare abstract class AnyPointLightSource extends PointLightSource {
+  constructor(arg0: never, ...args: never[]);
+}
+
+export default PointLightSource;
