@@ -16,7 +16,7 @@ import type { NullishProps } from "../../../../types/utils.d.mts";
  * @privateRemarks The TODO is foundry's
  */
 declare abstract class BaseEffectSource<
-  SourceData extends BaseEffectSource.BaseEffectSourceData,
+  SourceData extends BaseEffectSource.SourceData,
   SourceShape extends PIXI.Polygon,
 > {
   /**
@@ -24,7 +24,7 @@ declare abstract class BaseEffectSource<
    * @param options - Options which modify the base effect source instance
    * @remarks Passing a PlaceableObject is deprecated, and will be removed in v13
    */
-  constructor(options?: BaseEffectSource.BaseEffectSourceOptions | PlaceableObject);
+  constructor(options?: BaseEffectSource.SourceOptions | PlaceableObject);
 
   /**
    * The type of source represented by this data structure.
@@ -49,7 +49,7 @@ declare abstract class BaseEffectSource<
    * }
    * ```
    */
-  static defaultData: BaseEffectSource.BaseEffectSourceData;
+  static defaultData: BaseEffectSource.SourceData;
 
   /**
    * Some other object which is responsible for this source.
@@ -219,14 +219,14 @@ declare namespace BaseEffectSource {
   type AnyConstructor = typeof AnyBaseEffectSource;
 
   /** @internal */
-  type _BaseEffectSourceOptions = NullishProps<{
+  type _SourceOptions = NullishProps<{
     /**
      * An optional PlaceableObject which is responsible for this source
      */
     object: PlaceableObject;
   }>;
 
-  interface BaseEffectSourceOptions extends _BaseEffectSourceOptions {
+  interface SourceOptions extends _SourceOptions {
     /**
      * A unique ID for this source. This will be set automatically if an
      * object is provided, otherwise is required.
@@ -236,7 +236,7 @@ declare namespace BaseEffectSource {
     sourceId?: string;
   }
 
-  interface BaseEffectSourceData {
+  interface SourceData {
     /**
      * The x-coordinate of the source location
      */

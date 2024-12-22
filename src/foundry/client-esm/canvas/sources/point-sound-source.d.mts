@@ -1,7 +1,7 @@
 import type BaseEffectSource from "./base-effect-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
 
-type SoundSourceData = PointEffectSourceMixin.PointEffectSourceData & BaseEffectSource.BaseEffectSourceData;
+type SoundSourceData = PointEffectSourceMixin.SourceData & BaseEffectSource.SourceData;
 
 /**
  * A specialized subclass of the BaseEffectSource which describes a point-based source of sound.

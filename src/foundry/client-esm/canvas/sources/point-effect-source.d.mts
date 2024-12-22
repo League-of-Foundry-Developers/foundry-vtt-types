@@ -18,14 +18,14 @@ declare class PointEffectSource {
    * }
    * ```
    */
-  static defaultData: PointEffectSourceMixin.PointEffectSourceData;
+  static defaultData: PointEffectSourceMixin.SourceData;
 
   /**
    * A convenience reference to the radius of the source.
    */
   get radius(): number;
 
-  _initialize(data: Partial<PointEffectSourceMixin.PointEffectSourceData>): void;
+  _initialize(data: Partial<PointEffectSourceMixin.SourceData>): void;
 
   _initializeSoftEdges(): void;
 
@@ -66,7 +66,7 @@ declare function PointEffectSourceMixin<BaseClass extends BaseEffectSource.AnyCo
 declare namespace PointEffectSourceMixin {
   type AnyMixed = ReturnType<typeof PointEffectSourceMixin<BaseEffectSource.AnyConstructor>>;
 
-  interface PointEffectSourceData extends BaseEffectSource.BaseEffectSourceData {
+  interface SourceData extends BaseEffectSource.SourceData {
     /**
      * The radius of the source
      */

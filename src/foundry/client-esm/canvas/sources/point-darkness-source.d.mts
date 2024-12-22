@@ -2,12 +2,12 @@ import type BaseLightSource from "./base-light-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
 import type RenderedEffectSource from "./rendered-effect-source.d.mts";
 
-type DarknessSourceData = BaseLightSource.BaseLightSourceData & PointEffectSourceMixin.PointEffectSourceData;
+type DarknessSourceData = BaseLightSource.SourceData & PointEffectSourceMixin.SourceData;
 
 // Interface causes errors
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 type DarknessLayers = {
-  darkness: RenderedEffectSource.RenderedEffectSourceLayer;
+  darkness: RenderedEffectSource.SourceLayer;
 };
 
 /**
@@ -29,7 +29,7 @@ export default class PointDarknessSource<
   /** @defaultValue `CONFIG.Canvas.darknessAnimations` */
   static get ANIMATIONS(): CONFIG.Canvas.LightSourceAnimationConfig;
 
-  static override get _layers(): Record<string, foundry.canvas.sources.RenderedEffectSource.RenderedEffectLayerConfig>;
+  static override get _layers(): Record<string, foundry.canvas.sources.RenderedEffectSource.LayerConfig>;
 
   /**
    * The optional geometric shape is solely utilized for visual representation regarding darkness sources.

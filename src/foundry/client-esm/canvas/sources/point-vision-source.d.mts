@@ -47,7 +47,7 @@ declare class PointVisionSource<
    */
   static override defaultData: PointVisionSourceData;
 
-  static get _layers(): Record<string, RenderedEffectSource.RenderedEffectLayerConfig>;
+  static get _layers(): Record<string, RenderedEffectSource.LayerConfig>;
 
   /**
    * The vision mode linked to this VisionSource
@@ -166,9 +166,7 @@ declare class PointVisionSource<
 declare namespace PointVisionSource {
   type Any = PointVisionSource<VisionSourceData>;
 
-  interface VisionSourceData
-    extends RenderedEffectSource.RenderedEffectSourceData,
-      PointEffectSourceMixin.PointEffectSourceData {
+  interface VisionSourceData extends RenderedEffectSource.SourceData, PointEffectSourceMixin.SourceData {
     /**
      * The amount of contrast
      */
@@ -206,7 +204,6 @@ declare namespace PointVisionSource {
   }
 }
 
-type PointVisionSourceData = PointEffectSourceMixin.PointEffectSourceData &
-  RenderedEffectSource.RenderedEffectSourceData;
+type PointVisionSourceData = PointEffectSourceMixin.SourceData & RenderedEffectSource.SourceData;
 
 export default PointVisionSource;

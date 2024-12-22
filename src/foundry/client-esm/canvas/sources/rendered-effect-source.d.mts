@@ -7,9 +7,9 @@ import type BaseEffectSource from "./base-effect-source.d.mts";
  * This class is extended by both the LightSource and VisionSource subclasses.
  */
 declare class RenderedEffectSource<
-  SourceData extends RenderedEffectSource.RenderedEffectSourceData = RenderedEffectSource.RenderedEffectSourceData,
+  SourceData extends RenderedEffectSource.SourceData = RenderedEffectSource.SourceData,
   SourceShape extends PIXI.Polygon = PIXI.Polygon,
-  RenderingLayers extends Record<string, RenderedEffectSource.RenderedEffectSourceLayer> = RenderedEffectSource.Layers,
+  RenderingLayers extends Record<string, RenderedEffectSource.SourceLayer> = RenderedEffectSource.Layers,
 > extends BaseEffectSource<SourceData, SourceShape> {
   /**
    * Keys of the data object which require shaders to be re-initialized.
@@ -27,7 +27,7 @@ declare class RenderedEffectSource<
    */
   protected static get _layers(): Record<
     "background" | "coloration" | "illumination",
-    RenderedEffectSource.RenderedEffectLayerConfig
+    RenderedEffectSource.LayerConfig
   >;
 
   /**
@@ -48,13 +48,13 @@ declare class RenderedEffectSource<
    * }
    * ```
    */
-  static defaultData: RenderedEffectSource.RenderedEffectSourceData;
+  static defaultData: RenderedEffectSource.SourceData;
 
   /**
    * The animation configuration applied to this source
    * @defaultValue `{}`
    */
-  animation: RenderedEffectSource.RenderedEffectSourceAnimationConfig;
+  animation: RenderedEffectSource.AnimationConfig;
 
   /**
    * Track the status of rendering layers
@@ -119,7 +119,7 @@ declare class RenderedEffectSource<
   /**
    * Specific configuration for a layer.
    */
-  protected _configureLayer(layer: RenderedEffectSource.RenderedEffectSourceLayer, layerId: string): void;
+  protected _configureLayer(layer: RenderedEffectSource.SourceLayer, layerId: string): void;
 
   /**
    * Create the geometry for the source shape that is used in shaders and compute its bounds for culling purpose.
@@ -211,7 +211,7 @@ declare namespace RenderedEffectSource {
 
   type AnyConstructor = typeof AnyRenderedEffectSource;
 
-  interface RenderedEffectSourceData extends BaseEffectSource.BaseEffectSourceData {
+  interface SourceData extends BaseEffectSource.SourceData {
     /**
      * An animation configuration for the source
      */
@@ -267,7 +267,7 @@ declare namespace RenderedEffectSource {
   interface AnimationFunctionOptions extends _AnimationFunctionOptions {}
 
   /** @internal */
-  type _RenderedEffectSourceAnimationConfig = InexactPartial<{
+  type _AnimationConfig = InexactPartial<{
     /**
      * The human-readable (localized) label for the animation
      */
@@ -310,13 +310,13 @@ declare namespace RenderedEffectSource {
     time: number;
   }>;
 
-  interface RenderedEffectSourceAnimationConfig extends _RenderedEffectSourceAnimationConfig {}
+  interface AnimationConfig extends _AnimationConfig {}
 
   /**
    * @remarks `mesh` and `shader` are given values during initialization *if* the Source has a valid `Placeable` as its `object`.
    * `vmUniforms` is only provided for `PointVisionSource` layers.
    */
-  interface RenderedEffectSourceLayer extends RenderedEffectLayerConfig {
+  interface SourceLayer extends LayerConfig {
     /**
      * Is this layer actively rendered?
      */
@@ -346,7 +346,7 @@ declare namespace RenderedEffectSource {
     vmUniforms: AbstractBaseShader.Uniforms | undefined;
   }
 
-  interface RenderedEffectLayerConfig {
+  interface LayerConfig {
     /**
      * The default shader used by this layer
      */
@@ -361,9 +361,9 @@ declare namespace RenderedEffectSource {
   // Interface causes errors
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   type Layers = {
-    background: RenderedEffectSource.RenderedEffectSourceLayer;
-    coloration: RenderedEffectSource.RenderedEffectSourceLayer;
-    illumination: RenderedEffectSource.RenderedEffectSourceLayer;
+    background: RenderedEffectSource.SourceLayer;
+    coloration: RenderedEffectSource.SourceLayer;
+    illumination: RenderedEffectSource.SourceLayer;
   };
 }
 
