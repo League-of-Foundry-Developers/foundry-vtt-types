@@ -182,9 +182,15 @@ jobs:
 
           echo "Checking if $range can be cherry-picked onto the maintenance branch."
 
+          # Using cherry-pick preserves the history of the commits so it's normally ideal.
           git cherry-pick --allow-empty --no-commit -m 1 "$range" || (
-            echo "Merge conflicts detected with the maintenance branch!" && exit 1
+            git cherry-pick --abort
+            echo "Cannot cherry-pick onto the maintenance branch! Will try git apply."
           )
+
+          # But if an intermediary commit fails to merge cleanly then cherry-pick fails.
+          # So use a 3-way merge to apply the changes.
+          git diff c33b7c566118dfc9179a66d312f5ef36bb8a5167..526a3c747d76c1b2f61221ec56ed1e132b5e416e | git apply --3wa
 
       - name: Install Node
         if: steps.should_skip.outputs.should_skip != 'true'
@@ -239,9 +245,18 @@ jobs:
           echo "Cherry picking $range onto the maintenance branch."
 
           # Pick the freshly added commits onto the maintenance branch.
-          git cherry-pick --allow-empty -m 1 "$range" || (
-            echo "Merge conflicts detected with maintenance branch! This can only happen if there is a bug in checkCanMergeToMaintenance or mergeToMaintenance or someone pushed in between!" && exit 1
+          if git cherry-pick --allow-empty -m 1 "$range"; then
+            exit 1
+          else
+            git cherry-pick --abort
+            echo "Falling back to 3way apply!"
+          fi
+
+          git diff c33b7c566118dfc9179a66d312f5ef36bb8a5167..526a3c747d76c1b2f61221ec56ed1e132b5e416e | git apply --3wa || (
+            echo "Both cherry-pick and 3way apply failed! This can only happen if there is a bug in checkCanMergeToMaintenance or mergeToMaintenance or someone pushed in between!" && exit 1
           )
+
+          git commit -m "Applied c33b7c566118dfc9179a66d312f5ef36bb8a5167..526a3c747d76c1b2f61221ec56ed1e132b5e416e"
 
       - name: Push changes
         uses: ad-m/github-push-action@master
