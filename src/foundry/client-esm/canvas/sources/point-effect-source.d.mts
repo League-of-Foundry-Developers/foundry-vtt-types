@@ -1,3 +1,4 @@
+import type { IntentionalPartial } from "../../../../types/helperTypes.d.mts";
 import type { Mixin } from "../../../../types/utils.d.mts";
 import type BaseEffectSource from "./base-effect-source.d.mts";
 
@@ -17,21 +18,24 @@ declare class PointEffectSource {
    * walls: true
    * }
    * ```
+   * @privateRemarks This will only be accurate for classes extending `PointEffectSourceMixin(BaseEffectSource)`.
+   * Other subclasses must override this.
    */
-  static defaultData: PointEffectSourceMixin.SourceData;
+  static defaultData: PointEffectSourceMixin.SourceData & BaseEffectSource.SourceData;
 
   /**
    * A convenience reference to the radius of the source.
    */
   get radius(): number;
 
-  _initialize(data: Partial<PointEffectSourceMixin.SourceData>): void;
+  _initialize(data: IntentionalPartial<PointEffectSourceMixin.SourceData>): void;
 
   _initializeSoftEdges(): void;
 
   /**
    * Configure the parameters of the polygon that is generated for this source.
    */
+  //TODO: Make sure this is accurate as part of work on "pixi leftovers"
   protected _getPolygonConfiguration(): PointSourcePolygonConfig;
 
   _createShapes(): void;

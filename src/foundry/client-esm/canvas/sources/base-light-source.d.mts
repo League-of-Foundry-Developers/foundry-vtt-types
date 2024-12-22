@@ -33,9 +33,9 @@ declare abstract class BaseLightSource<
 
   /**
    * The corresponding animation config.
+   * @remarks More broad than it should be to accomodate {@link foundry.canvas.sources.PointDarknessSource}
    */
-  //TODO: convert when index signatures are removed from CONFIG
-  protected static get ANIMATIONS(): CONFIG.Canvas.LightSourceAnimationConfig;
+  protected static get ANIMATIONS(): typeof CONFIG.Canvas.lightAnimations | typeof CONFIG.Canvas.darknessAnimations;
 
   /**
    * @defaultValue
