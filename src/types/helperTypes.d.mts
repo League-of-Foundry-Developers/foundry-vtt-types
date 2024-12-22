@@ -100,7 +100,9 @@ export type UnionToIntersection<U> = (U extends unknown ? (arg: U) => void : nev
 /**
  * @deprecated {@link Document.ConfiguredSheetClassFor | `Document.ConfiguredSheetClassFor`}
  */
-export type ConfiguredSheetClass<T extends Document.AnyConstructor> = Document.ConfiguredSheetClassFor<T["metadata"]["name"]>
+export type ConfiguredSheetClass<T extends Document.AnyConstructor> = Document.ConfiguredSheetClassFor<
+  T["metadata"]["name"]
+>;
 
 /**
  * @deprecated {@link Document.ConfiguredObjectClassFor | `Document.ConfiguredObjectClassFor`}
@@ -199,17 +201,23 @@ export type ConfiguredLayerClassForName<Name extends Document.PlaceableType> = C
 /**
  * @deprecated {@link Document.ConfiguredDataForName | `Document.ConfiguredDataForName`}.
  */
-export type ConfiguredData<Name extends string> = Document.ConfiguredDataForName<utils.MakeConform<Name, Document.Type>>;
+export type ConfiguredData<Name extends string> = Document.ConfiguredDataForName<
+  utils.MakeConform<Name, Document.Type>
+>;
 
 /**
  * @deprecated {@link Document.ConfiguredDataForName | `Document.ConfiguredDataForName`}.
  */
-export type ConfiguredSource<Name extends string> = Document.ConfiguredDataForName<utils.MakeConform<Name, Document.Type>>;
+export type ConfiguredSource<Name extends string> = Document.ConfiguredDataForName<
+  utils.MakeConform<Name, Document.Type>
+>;
 
 /**
  * @deprecated {@link Document.ConfiguredFlagsForName | `Document.ConfiguredFlagsForName`}.
  */
-export type ConfiguredFlags<Name extends string> = Document.ConfiguredFlagsForName<utils.MakeConform<Name, Document.Type>>;
+export type ConfiguredFlags<Name extends string> = Document.ConfiguredFlagsForName<
+  utils.MakeConform<Name, Document.Type>
+>;
 
 /**
  * @deprecated {@link Document.ToObjectFalseType | `Document.ToObjectFalseType`}.
