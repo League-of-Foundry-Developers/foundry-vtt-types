@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type Document from "../../../../../src/foundry/common/abstract/document.d.mts";
+import Document = foundry.abstract.Document;
 
 const actors = new Actors([]);
 expectTypeOf(actors.get("", { strict: true })).toEqualTypeOf<Document.Stored<Actor>>();

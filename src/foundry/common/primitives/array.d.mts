@@ -1,4 +1,4 @@
-import type { OverlapsWith } from "../../../types/helperTypes.d.mts";
+import type { OverlapsWith } from "../../../utils/index.d.mts";
 
 declare global {
   namespace Array {

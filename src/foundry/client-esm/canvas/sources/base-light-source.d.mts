@@ -1,5 +1,4 @@
-import type { IntentionalPartial } from "../../../../types/helperTypes.d.mts";
-import type { InexactPartial } from "../../../../types/utils.d.mts";
+import type { InexactPartial, IntentionalPartial } from "../../../../utils/index.d.mts";
 import type RenderedEffectSource from "./rendered-effect-source.d.mts";
 
 /**

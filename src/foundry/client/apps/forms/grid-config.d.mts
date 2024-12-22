@@ -1,5 +1,4 @@
-import type { InterfaceToObject } from "../../../../types/helperTypes.d.mts";
-import type { AnyObject, GetDataReturnType, MaybePromise } from "../../../../types/utils.d.mts";
+import type { InterfaceToObject, AnyObject, GetDataReturnType, MaybePromise } from "../../../../utils/index.d.mts";
 
 declare global {
   /**
@@ -10,11 +9,7 @@ declare global {
     Options,
     Scene.ConfiguredInstance
   > {
-    constructor(
-      scene: Scene.ConfiguredInstance,
-      sheet: GridConfig["sheet"],
-      options?: Partial<Options>,
-    );
+    constructor(scene: Scene.ConfiguredInstance, sheet: GridConfig["sheet"], options?: Partial<Options>);
 
     /**
      * Track the Scene Configuration sheet reference

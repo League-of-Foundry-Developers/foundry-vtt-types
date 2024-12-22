@@ -2,11 +2,12 @@
   "$schema": "https://json.schemastore.org/tsconfig.json",
   "extends": "../tsconfig.json",
   "compilerOptions": {
+    "types": ["fvtt-types"],
     "outDir": ".typescript-build",
     "composite": true,
     "noEmit": false,
     "emitDeclarationOnly": true,
-    "typeRoots": ["../node_modules/@fvtt-types"]
+    "typeRoots": ["../node_modules"]
   },
   "include": ["**/*.test-d.ts", "**/*.d.ts"]
 }

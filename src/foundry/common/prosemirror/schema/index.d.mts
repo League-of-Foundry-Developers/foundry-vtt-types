@@ -9,4 +9,4 @@ import "./other.d.mts";
 import "./schema-definition.d.mts";
 import "./secret-node.d.mts";
 import "./tables.d.mts";
-import "./utils.d.mts";
+import "../../../../utils/index.d.mts";

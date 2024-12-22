@@ -1,4 +1,4 @@
-import type { AnyObject, EmptyObject } from "../../../../types/utils.d.mts";
+import type { AnyObject, EmptyObject } from "../../../../utils/index.d.mts";
 import type ApplicationV2 from "../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
 

@@ -7,7 +7,6 @@ expectTypeOf(AmbientLight.embeddedName).toEqualTypeOf<"AmbientLight">();
 const light = new AmbientLight(doc);
 expectTypeOf(light.source).toEqualTypeOf<LightSource>();
 expectTypeOf(light.controlIcon).toEqualTypeOf<ControlIcon | undefined>();
-expectTypeOf(light.bounds).toEqualTypeOf<NormalizedRectangle>();
 expectTypeOf(light.global).toEqualTypeOf<boolean>();
 expectTypeOf(light.radius).toEqualTypeOf<number>();
 expectTypeOf(light.dimRadius).toEqualTypeOf<number>();

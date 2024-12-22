@@ -37,6 +37,7 @@ module.exports = {
       },
     ],
     "@typescript-eslint/prefer-namespace-keyword": "error",
+
     "import/consistent-type-specifier-style": ["warn", "prefer-top-level"],
     "import/extensions": ["error", "always"],
     "import/first": "warn",
@@ -55,6 +56,7 @@ module.exports = {
     "import/no-unused-modules": "warn",
     "import/no-useless-path-segments": "warn",
     "import/no-webpack-loader-syntax": "error",
+
     "tsdoc/syntax": "warn",
   },
   settings: {

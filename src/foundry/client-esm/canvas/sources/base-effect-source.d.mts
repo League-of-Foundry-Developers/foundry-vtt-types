@@ -1,5 +1,4 @@
-import type { IntentionalPartial } from "../../../../types/helperTypes.d.mts";
-import type { NullishProps } from "../../../../types/utils.d.mts";
+import type { NullishProps, IntentionalPartial } from "../../../../utils/index.d.mts";
 
 /**
  * TODO - Re-document after ESM refactor.

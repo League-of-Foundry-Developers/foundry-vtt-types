@@ -1,4 +1,4 @@
-import type { ConstructorOf, InexactPartial } from "../../../../../types/utils.d.mts";
+import type { InexactPartial } from "../../../../../utils/index.d.mts";
 import type PointEffectSourceMixin from "../../../../client-esm/canvas/sources/point-effect-source.d.mts";
 
 declare global {
@@ -57,7 +57,7 @@ declare global {
      *                 (default: `{}`)
      * @returns The computed polygon instance
      */
-    static create<T extends ConstructorOf<PointSourcePolygon>>(
+    static create<T extends PointSourcePolygon.AnyConstructor>(
       this: T,
       origin: Canvas.Point,
       config?: Parameters<InstanceType<NoInfer<T>>["initialize"]>[1],
@@ -180,6 +180,8 @@ declare global {
   }
 
   namespace PointSourcePolygon {
+    type AnyConstructor = typeof AnyPointSourcePolygon;
+
     /** @internal */
     type _Config = InexactPartial<{
       /** The angle of emission, if limited */
@@ -246,4 +248,8 @@ declare global {
 
     type TestCollision<Mode extends CollisionModes> = CollisionTypes[Mode];
   }
+}
+
+declare abstract class AnyPointSourcePolygon extends PointSourcePolygon {
+  constructor(arg0: never, ...args: never[]);
 }

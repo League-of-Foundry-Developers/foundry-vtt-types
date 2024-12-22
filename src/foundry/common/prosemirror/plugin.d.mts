@@ -1,6 +1,6 @@
 import type { Schema } from "prosemirror-model";
 import type { Plugin } from "prosemirror-state";
-import type { AnyObject } from "../../../types/utils.d.mts";
+import type { AnyObject } from "../../../utils/index.d.mts";
 
 export default ProseMirrorPlugin;
 declare abstract class ProseMirrorPlugin {

@@ -1,4 +1,4 @@
-import type { AnyObject } from "../../../src/types/utils.d.mts";
+import type { AnyObject } from "fvtt-types/utils";
 
 class D20Roll<D extends AnyObject> extends Roll<D> {}
 

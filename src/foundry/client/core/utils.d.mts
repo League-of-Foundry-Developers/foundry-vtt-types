@@ -1,4 +1,4 @@
-import type { GetKey } from "../../../types/helperTypes.d.mts";
+import type { GetKey } from "../../../utils/index.d.mts";
 
 declare global {
   /**

@@ -1,8 +1,7 @@
 import { assertType, expectTypeOf } from "vitest";
-import type { ConstructorOf } from "../../../../src/types/utils.d.mts";
 
 const myCanvas = new Canvas();
-assertType<Record<string, CONFIG.Canvas.LayerDefinition<ConstructorOf<CanvasLayer>>>>(Canvas.layers);
+assertType<Record<string, CONFIG.Canvas.LayerDefinition<CanvasLayer.AnyConstructor>>>(Canvas.layers);
 expectTypeOf(myCanvas.draw(new Scene({ name: "My Scene" }))).toEqualTypeOf<Promise<Canvas>>();
 
 expectTypeOf(myCanvas.getLayerByEmbeddedName("AmbientLight")).toEqualTypeOf<LightingLayer | null>();

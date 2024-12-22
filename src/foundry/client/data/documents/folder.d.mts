@@ -1,4 +1,4 @@
-import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
+import type { DeepPartial, InexactPartial } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 import type BaseFolder from "../../../common/documents/folder.d.mts";
@@ -19,6 +19,11 @@ declare global {
     type UpdateData = BaseFolder.UpdateData;
     type Schema = BaseFolder.Schema;
     type Source = BaseFolder.Source;
+
+    /**
+     * Actual document types that go in folders
+     */
+    type DocumentType = Exclude<foundry.CONST.FOLDER_DOCUMENT_TYPES, "Compendium">;
 
     interface ExportToCompendiumOptions {
       /** Update existing entries in the Compendium pack, matching by name */

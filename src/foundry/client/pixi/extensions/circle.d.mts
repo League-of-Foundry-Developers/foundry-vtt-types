@@ -1,4 +1,5 @@
-import type { InexactPartial } from "../../../../types/utils.d.mts";
+import type { NullishProps } from "../../../../utils/index.d.mts";
+import type { LineCircleIntersection } from "../../../common/utils/geometry.d.mts";
 
 declare module "pixi.js" {
   interface Circle {
@@ -6,7 +7,7 @@ declare module "pixi.js" {
      * Determine the center of the circle.
      * Trivial, but used to match center method for other shapes.
      */
-    get circle(): PIXI.Point;
+    get center(): PIXI.Point;
 
     /**
      * Determine if a point is on or nearly on this circle.
@@ -24,7 +25,7 @@ declare module "pixi.js" {
      * @param b - The second endpoint on segment A|B
      * @returns Points where the segment A|B intersects the circle
      */
-    segmentIntersections(a: Canvas.Point, b: Canvas.Point): [Canvas.Point?, Canvas.Point?];
+    segmentIntersections(a: Canvas.Point, b: Canvas.Point): LineCircleIntersection["intersections"];
 
     /**
      * Calculate an x,y point on this circle's circumference given an angle
@@ -73,7 +74,7 @@ declare module "pixi.js" {
      * https://math.stackexchange.com/questions/4132060/compute-number-of-regular-polgy-sides-to-approximate-circle-to-defined-precision
      * @param radius  - Circle radius
      * @param epsilon - The maximum tolerable distance between an approximated line segment and the true radius.
-     *                            A larger epsilon results in fewer points for a given radius.
+     *                  A larger epsilon results in fewer points for a given radius. (default: `1`)
      * @returns The number of points for the approximated polygon
      */
     approximateVertexDensity(radius: number, epsilon?: number): number;
@@ -84,22 +85,9 @@ declare module "pixi.js" {
      * @param options - Options which configure how the intersection is computed
      * @returns The intersected polygon
      */
-    intersectPolygon(
-      polygon: PIXI.Polygon,
-      options?: InexactPartial<{
-        /** The number of points which defines the density of approximation */
-        density: number;
-
-        /** The clipper clip type */
-        clipType: number;
-
-        /**
-         * Use the Weiler-Atherton algorithm. Otherwise, use Clipper.
-         * (default: `true`)
-         * */
-        weilerAtherton: boolean;
-      }>,
-    ): PIXI.Polygon;
+    intersectPolygon(polygon: PIXI.Polygon, options?: PIXI.Circle.WACIntersectPolygonOptions): PIXI.Polygon;
+    intersectPolygon(polygon: PIXI.Polygon, options?: PIXI.Circle.ClipperLibIntersectPolygonOptions): PIXI.Polygon;
+    intersectPolygon(polygon: PIXI.Polygon, options?: PIXI.Circle.IntersectClipperOptions): PIXI.Polygon;
 
     /**
      * Intersect this PIXI.Circle with an array of ClipperPoints.
@@ -116,17 +104,37 @@ declare module "pixi.js" {
   }
 
   namespace Circle {
-    interface PointsForArcOptions {
-      /** The number of points which defines the density of approximation */
+    interface WACIntersectPolygonOptions extends PIXI.Rectangle.WACIntersectPolygonOptions {}
+
+    /** @privateRemarks Property description intentionally omitted to avoid redundant intellisense on overloaded method */
+    interface ClipperLibIntersectPolygonOptions extends PIXI.Rectangle.ClipperLibIntersectPolygonOptions {
+      density: number;
+    }
+
+    /** @privateRemarks Property description intentionally omitted to avoid redundant intellisense on overloaded method */
+    interface IntsectPolygonOptions extends PIXI.Rectangle.IntersectPolygonOptions {
+      density: number;
+    }
+
+    /** @internal Helper type to simplify use of optionality- and nullish-permissiveness-modifying helpers */
+    type _PointsForArcOptions = NullishProps<{
+      /**
+       * The number of points which defines the density of approximation
+       * @defaultValue `this.constructor.approximateVertexDensity(this.radius)`
+       */
       density: number;
 
-      /** Whether to include points at the circle where the arc starts and ends */
+      /**
+       * Whether to include points at the circle where the arc starts and ends
+       * @defaultValue `true`
+       */
       includeEndpoints: boolean;
-    }
+    }>;
 
-    interface IntersectClipperOptions extends PIXI.Polygon.IntersectClipperOptions {
-          /** The number of points which defines the density of approximation */
-          density?: number | undefined;
-    }
+    interface PointsForArcOptions extends _PointsForArcOptions {}
+
+    interface IntersectClipperOptions
+      extends PIXI.Polygon.IntersectClipperOptions,
+        Pick<PIXI.Circle.PointsForArcOptions, "density"> {}
   }
 }

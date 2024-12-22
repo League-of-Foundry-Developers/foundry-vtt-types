@@ -26,7 +26,12 @@ export declare function orient2dFast(a: Canvas.Point, b: Canvas.Point, c: Canvas
  *
  * @returns Do the line segments intersect?
  */
-export declare function lineSegmentIntersects(a: Canvas.Point, b: Canvas.Point, c: Canvas.Point, d: Canvas.Point): boolean;
+export declare function lineSegmentIntersects(
+  a: Canvas.Point,
+  b: Canvas.Point,
+  c: Canvas.Point,
+  d: Canvas.Point,
+): boolean;
 
 export interface LineIntersection {
   /** The x-coordinate of intersection */
@@ -182,7 +187,12 @@ export declare function polygonCentroid(points: Points): Canvas.Point;
  * @param radius    - The radius of the circle
  * @returns         - Whether the circle intersect the path
  */
-export declare function pathCircleIntersects(points: Points, close: boolean, center: Canvas.Point, radius: number): boolean;
+export declare function pathCircleIntersects(
+  points: Points,
+  close: boolean,
+  center: Canvas.Point,
+  radius: number,
+): boolean;
 
 /**
  * Test whether two circles (with position and radius) intersect.

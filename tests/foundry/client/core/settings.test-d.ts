@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { MaybeEmpty } from "../../../../src/types/helperTypes.d.mts";
+import type { MaybeEmpty } from "fvtt-types/utils";
 
 const clientSettings = new ClientSettings([]);
 

@@ -1,4 +1,4 @@
-import type { ConstructorOf, NullishProps } from "../../../../../types/utils.d.mts";
+import type { NullishProps } from "../../../../../utils/index.d.mts";
 import type Document from "../../../../common/abstract/document.d.mts";
 
 declare global {
@@ -197,7 +197,7 @@ declare global {
       controllableObjects: true;
       objectClass: typeof Wall;
       quadtree: true;
-      sheetClass: ConstructorOf<FormApplication>;
+      sheetClass: FormApplication.AnyConstructor;
       sortActiveTop: boolean;
       zIndex: number;
     }

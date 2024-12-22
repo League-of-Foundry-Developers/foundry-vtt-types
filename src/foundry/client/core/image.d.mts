@@ -1,4 +1,4 @@
-import type { InexactPartial, NullishProps } from "../../../types/utils.d.mts";
+import type { InexactPartial, NullishProps } from "../../../utils/index.d.mts";
 
 declare global {
   /**
@@ -165,18 +165,16 @@ declare global {
 
     interface TextureToImageOptions extends _TextureToImageOptions {}
 
-    /**
-     * @internal Helper type to simplify NP/IP usage.
-     * @remarks `storage` is passed directly to `FilePicker.upload` which expects string, so the double wrapping is necessary
-     */
-    type _UploadBase64Options = NullishProps<
-      InexactPartial<{
-        /**
-         * The data storage location to which the file should be uploaded
-         * @defaultValue `"data"`
-         */
-        storage: string;
-
+    /** @internal Intermediary type to simplify use of optionality- and nullish-permissiveness-modifying helpers */
+    type _UploadBase64Options = InexactPartial<{
+      /**
+       * The data storage location to which the file should be uploaded
+       * @remarks Can't be null because it's passed directly to `FilePicker.upload` and its only default is via signature default value
+       * @defaultValue `"data"`
+       */
+      storage: FilePicker.SourceType;
+    }> &
+      NullishProps<{
         /**
          * The MIME type of the file being uploaded
          * @remarks Will be extracted from the base64 data, if not provided.
@@ -188,9 +186,7 @@ declare global {
          * @defaultValue `true`
          */
         notify: boolean;
-      }>,
-      "type" | "notify"
-    >;
+      }>;
 
     interface UploadBase64Options extends _UploadBase64Options {}
 

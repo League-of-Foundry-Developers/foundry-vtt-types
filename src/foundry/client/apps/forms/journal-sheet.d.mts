@@ -1,4 +1,4 @@
-import type { MaybePromise, InexactPartial } from "../../../../types/utils.d.mts";
+import type { MaybePromise, InexactPartial } from "../../../../utils/index.d.mts";
 
 declare global {
   interface JournalSheetOptions extends DocumentSheetOptions<JournalEntry> {

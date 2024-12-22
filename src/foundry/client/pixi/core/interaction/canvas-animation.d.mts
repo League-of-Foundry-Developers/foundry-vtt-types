@@ -1,5 +1,4 @@
-import type { ValueOf } from "../../../../../types/utils.d.mts";
-import type { PropertiesOfType } from "../../../../../types/helperTypes.d.mts";
+import type { ValueOf, PropertiesOfType } from "../../../../../utils/index.d.mts";
 
 declare global {
   namespace CanvasAnimation {

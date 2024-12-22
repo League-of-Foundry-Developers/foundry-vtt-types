@@ -1,4 +1,4 @@
-import type { AnyConstructor, InexactPartial, Mixin } from "../../../../../types/utils.d.mts";
+import type { AnyConstructor, InexactPartial, Mixin } from "../../../../../utils/index.d.mts";
 import type { LogCompatibilityWarningOptions } from "../../../../common/utils/logging.d.mts";
 
 declare class RenderFlagObject {
@@ -60,7 +60,6 @@ type _RenderFlags<Flags> = InexactPartial<{
 }>;
 
 declare global {
-
   interface RenderFlag<Flags> extends _RenderFlags<Flags> {}
 
   namespace RenderFlag {

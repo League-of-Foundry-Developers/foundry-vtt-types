@@ -1,4 +1,4 @@
-import type { ConstructorOf, GetDataReturnType, MaybePromise } from "../../../../types/utils.d.mts";
+import type { GetDataReturnType, MaybePromise } from "../../../../utils/index.d.mts";
 import type DocumentSheetV2 from "../../../client-esm/applications/api/document-sheet.d.mts";
 import type { Document } from "../../../common/abstract/module.d.mts";
 
@@ -92,7 +92,7 @@ declare global {
     static unregisterSheet(
       documentClass: Document.AnyConstructor,
       scope: string,
-      sheetClass: ConstructorOf<FormApplication<FormApplicationOptions, any>>,
+      sheetClass: typeof FormApplication<FormApplicationOptions, any>,
       { types }?: { types?: string[] },
     ): void;
 
@@ -131,7 +131,7 @@ declare global {
       label: string;
 
       /** The sheet class definition being registered */
-      sheetClass: ConstructorOf<Application>;
+      sheetClass: Application.AnyConstructor;
 
       /** An array of types for which this sheet is added */
       types: string[];

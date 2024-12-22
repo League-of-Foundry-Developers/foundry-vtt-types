@@ -1,5 +1,4 @@
-import type { GetKey } from "../../../types/helperTypes.d.mts";
-import type { ValueOf } from "../../../types/utils.d.mts";
+import type { GetKey, ValueOf } from "../../../utils/index.d.mts";
 
 declare global {
   interface AVSettingsData {

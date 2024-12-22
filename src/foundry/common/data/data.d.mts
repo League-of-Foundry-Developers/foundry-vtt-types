@@ -2,7 +2,7 @@ import type { DatabaseBackend } from "../abstract/module.d.mts";
 import type { DataModel } from "../abstract/data.d.mts";
 import type { fields } from "./module.d.mts";
 import type * as documents from "../documents/_module.d.mts";
-import type { AnyObject, EmptyObject, ValueOf } from "../../../types/utils.d.mts";
+import type { AnyObject, EmptyObject, ToMethod, ValueOf } from "../../../utils/index.d.mts"
 
 // TODO: Implement all of the necessary options
 
@@ -619,11 +619,12 @@ declare class PrototypeToken extends DataModel<PrototypeToken.Schema, any> {
    */
   get isOwner(): boolean;
 
-  // Monkey patched in from `token.js`, put here due to issues with the merge process
   /**
    * @see TokenDocument#getBarAttribute
+   *
+   * @remarks This is monkey patched in from `token.js`, put here due to issues with the merge process
    */
-  getBarAttribute: TokenDocument["getBarAttribute"];
+  getBarAttribute: ToMethod<TokenDocument["getBarAttribute"]>;
 }
 
 declare namespace TombstoneData {

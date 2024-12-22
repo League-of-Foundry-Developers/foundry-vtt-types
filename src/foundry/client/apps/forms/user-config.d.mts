@@ -1,4 +1,4 @@
-import type { GetDataReturnType, MaybePromise } from "../../../../types/utils.d.mts";
+import type { GetDataReturnType, MaybePromise } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {

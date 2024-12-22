@@ -1,4 +1,4 @@
-export {}
+export {};
 
 // After seeing that none of these types add anything or are even exported a
 // very reasonable question may be: Why on earth does this file exist?

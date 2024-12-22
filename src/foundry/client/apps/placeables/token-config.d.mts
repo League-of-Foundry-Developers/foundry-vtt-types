@@ -1,5 +1,4 @@
-import type { InterfaceToObject } from "../../../../types/helperTypes.d.mts";
-import type { AnyObject } from "../../../../types/utils.d.mts";
+import type { InterfaceToObject, AnyObject } from "../../../../utils/index.d.mts";
 import type StringTerm from "../../../client-esm/dice/terms/string.d.mts";
 
 declare global {

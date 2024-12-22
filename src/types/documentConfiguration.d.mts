@@ -12,8 +12,7 @@ import type BaseTableResult from "../foundry/common/documents/table-result.d.mts
 import type BaseToken from "../foundry/common/documents/token.d.mts";
 import type BaseUser from "../foundry/common/documents/user.d.mts";
 import type BaseWall from "../foundry/common/documents/wall.d.mts";
-import type { ConformRecord, InterfaceToObject, MakeConform, MustConform } from "./helperTypes.d.mts";
-import type { Merge } from "./utils.d.mts";
+import type { ConformRecord, InterfaceToObject, MakeConform, MustConform, Merge } from "../utils/index.d.mts";
 
 type DocumentConform<T> = MakeConform<T, Document.AnyConstructor>;
 
