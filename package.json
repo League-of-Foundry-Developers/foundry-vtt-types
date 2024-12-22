@@ -5,6 +5,14 @@
   "description": "TypeScript type definitions for Foundry VTT",
   "type": "module",
   "types": "./index.d.mts",
+  "exports": {
+    ".": {
+      "types": "./index.d.mts"
+    },
+    "./utils": {
+      "types": "./src/utils/index.d.mts"
+    }
+  },
   "scripts": {
     "lint": "./node_modules/typescript/bin/tsc; eslint .; prettier -c .",
     "lint:fix": "eslint --fix .; prettier -l -w .",
