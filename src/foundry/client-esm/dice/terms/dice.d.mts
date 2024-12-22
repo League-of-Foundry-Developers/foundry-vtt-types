@@ -315,7 +315,10 @@ declare abstract class DiceTerm extends RollTerm {
   /*  Serialization & Loading                     */
   /* -------------------------------------------- */
 
-  protected static _fromData<T extends RollTerm.AnyConstructor>(this: T, data: Record<string, unknown>): InstanceType<T>;
+  protected static _fromData<T extends RollTerm.AnyConstructor>(
+    this: T,
+    data: Record<string, unknown>,
+  ): InstanceType<T>;
 
   override toJSON(): Record<string, unknown>;
 }
