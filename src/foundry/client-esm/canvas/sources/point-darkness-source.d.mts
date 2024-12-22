@@ -1,4 +1,4 @@
-import type { IntentionalPartial } from "../../../../types/helperTypes.d.mts";
+import type { IntentionalPartial } from "../../../../utils/index.d.mts";
 import type BaseLightSource from "./base-light-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
 import type RenderedEffectSource from "./rendered-effect-source.d.mts";

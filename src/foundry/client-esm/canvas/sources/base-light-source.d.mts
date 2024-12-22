@@ -126,10 +126,6 @@ declare abstract class BaseLightSource<
 declare namespace BaseLightSource {
   type AnyConstructor = typeof AnyBaseLightSource;
 
-  /**
-   * @privateRemarks This `this` is a concession to practicality (could really be a `RenderedEffectSource`,
-   * technically) but I didn't want to move the typing of `_noise`
-   */
   type LightAnimationFunction = (
     this: BaseLightSource,
     dt: number,
