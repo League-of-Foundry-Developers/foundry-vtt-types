@@ -1,4 +1,4 @@
-import type { AnyObject, Mixin } from "../../../../../types/utils.d.mts";
+import type { AnyObject, Mixin } from "../../../../../utils/index.d.mts";
 
 declare class CanvasGroup {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */

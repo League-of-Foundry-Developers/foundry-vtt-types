@@ -1,4 +1,4 @@
-import type { Mixin } from "../../../../../types/utils.d.mts";
+import type { Mixin } from "../../../../../utils/index.d.mts";
 import type Document from "../../../../common/abstract/document.d.mts";
 
 declare class PrimaryCanvasObject {

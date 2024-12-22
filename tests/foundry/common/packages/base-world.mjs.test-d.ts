@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { DataModelValidationFailure } from "../../../../src/foundry/common/data/validation-failure.d.mts";
+import DataModelValidationFailure = foundry.data.DataModelValidationFailure;
 
 const myWorld = new foundry.packages.BaseWorld({
   changelog: "Test",

@@ -1,5 +1,4 @@
-import type { InterfaceToObject } from "../../../../types/helperTypes.d.mts";
-import type { AnyObject, GetDataReturnType, MaybePromise } from "../../../../types/utils.d.mts";
+import type { InterfaceToObject, AnyObject, GetDataReturnType, MaybePromise } from "../../../../utils/index.d.mts";
 
 declare global {
   /**

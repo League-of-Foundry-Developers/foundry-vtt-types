@@ -1,4 +1,4 @@
-import type { AnyObject, EmptyObject } from "../../../../types/utils.d.mts";
+import type { AnyObject, EmptyObject } from "../../../../utils/index.d.mts";
 import type DocumentSheetV2 from "../api/document-sheet.d.mts";
 
 /**

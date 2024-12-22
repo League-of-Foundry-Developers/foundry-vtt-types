@@ -1,5 +1,6 @@
 import { assertType, expectTypeOf } from "vitest";
-import type Document from "../../../../../src/foundry/common/abstract/document.d.mts";
+
+import Document = foundry.abstract.Document;
 
 const doc = new AmbientLightDocument();
 

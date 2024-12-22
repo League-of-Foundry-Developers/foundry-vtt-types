@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { types } from "../../../../src/foundry/client-esm/helpers/_module.d.mts";
+import types = foundry.helpers;
 
 const caInfo = { actor: "actorId", token: { randomImg: false }, credit: "Me" };
 expectTypeOf(caInfo).toMatchTypeOf<types.CompendiumArtInfo>;

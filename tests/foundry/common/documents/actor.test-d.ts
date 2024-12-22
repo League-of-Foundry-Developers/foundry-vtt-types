@@ -1,7 +1,9 @@
 import { expectTypeOf } from "vitest";
-import type EmbeddedCollection from "../../../../src/foundry/common/abstract/embedded-collection.d.mts";
-import type { NumberField, SchemaField } from "../../../../src/foundry/common/data/fields.d.mts";
-import type { AnyMutableObject, AnyObject, EmptyObject } from "../../../../src/types/utils.d.mts";
+import type { AnyMutableObject, AnyObject, EmptyObject } from "fvtt-types/utils";
+import EmbeddedCollection = foundry.abstract.EmbeddedCollection;
+import fields = foundry.data.fields;
+import NumberField = fields.NumberField;
+import SchemaField = fields.SchemaField;
 
 import TypeDataModel = foundry.abstract.TypeDataModel;
 

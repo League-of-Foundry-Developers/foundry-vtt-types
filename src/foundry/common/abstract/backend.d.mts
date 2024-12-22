@@ -1,4 +1,4 @@
-import type { ConstructorOf, InexactPartial } from "../../../types/utils.d.mts";
+import type { InexactPartial, LoggingLevels } from "../../../utils/index.d.mts";
 import type BaseUser from "../documents/user.d.mts";
 import type Document from "./document.d.mts";
 import type {
@@ -8,7 +8,6 @@ import type {
   DatabaseOperation,
   DatabaseUpdateOperation,
 } from "./_types.d.mts";
-import type { LoggingLevels } from "../../../types/helperTypes.d.mts";
 
 /**
  * An abstract base class extended on both the client and server which defines how Documents are retrieved, created,
@@ -22,11 +21,11 @@ declare abstract class DatabaseBackend {
    * @param user          - The requesting User
    * @returns An array of retrieved Document instances or index objects
    */
-  get<T extends Document.Any>(
-    documentClass: ConstructorOf<T>,
+  get<T extends Document.AnyConstructor>(
+    documentClass: T,
     operation: DatabaseGetOperation,
     user?: BaseUser,
-  ): Promise<T>[];
+  ): Promise<InstanceType<T>>[];
 
   /**
    * Retrieve Document instances using the specified operation parameters.
@@ -35,11 +34,11 @@ declare abstract class DatabaseBackend {
    * @param user           - The requesting User
    * @returns An array of retrieved Document instances or index objects
    */
-  protected abstract _getDocuments<T extends Document.Any>(
-    documentClass: ConstructorOf<T>,
+  protected abstract _getDocuments<T extends Document.AnyConstructor>(
+    documentClass: T,
     operation: DatabaseGetOperation,
     user?: BaseUser,
-  ): Promise<T[]>;
+  ): Promise<InstanceType<T>[]>;
 
   /**
    * Create new Documents using provided data and context.
@@ -50,11 +49,11 @@ declare abstract class DatabaseBackend {
    * @param user          - The requesting User
    * @returns An array of created Document instances
    */
-  create<T extends Document.Any>(
-    documentClass: ConstructorOf<T>,
-    operation: DatabaseCreateOperation<T>,
+  create<T extends Document.AnyConstructor>(
+    documentClass: T,
+    operation: DatabaseCreateOperation<InstanceType<T>>,
     user?: BaseUser,
-  ): Promise<T[]>;
+  ): Promise<InstanceType<T>[]>;
 
   /**
    * Create Document instances using provided data and operation parameters.
@@ -63,11 +62,11 @@ declare abstract class DatabaseBackend {
    * @param user          - The requesting User
    * @returns An array of created Document instances
    */
-  protected abstract _createDocuments<T extends Document.Any>(
-    documentClass: ConstructorOf<T>,
-    operation: DatabaseCreateOperation<T>,
+  protected abstract _createDocuments<T extends Document.AnyConstructor>(
+    documentClass: T,
+    operation: DatabaseCreateOperation<InstanceType<T>>,
     user?: BaseUser,
-  ): Promise<T[]>;
+  ): Promise<InstanceType<T>[]>;
 
   /**
    * Update Documents using provided data and context.
@@ -78,11 +77,11 @@ declare abstract class DatabaseBackend {
    * @param user          - The requesting User
    * @returns  An array of updated Document instances
    */
-  update<T extends Document.Any>(
-    documentClass: ConstructorOf<T>,
-    operation: DatabaseUpdateOperation<T>,
+  update<T extends Document.AnyConstructor>(
+    documentClass: T,
+    operation: DatabaseUpdateOperation<InstanceType<T>>,
     user?: BaseUser,
-  ): Promise<T[]>;
+  ): Promise<InstanceType<T>[]>;
 
   /**
    * Update Document instances using provided data and operation parameters.
@@ -91,11 +90,11 @@ declare abstract class DatabaseBackend {
    * @param user          - The requesting User
    * @returns  An array of updated Document instances
    */
-  protected abstract _updateDocuments<T extends Document.Any>(
-    documentClass: ConstructorOf<T>,
-    operation: DatabaseUpdateOperation<T>,
+  protected abstract _updateDocuments<T extends Document.AnyConstructor>(
+    documentClass: T,
+    operation: DatabaseUpdateOperation<InstanceType<T>>,
     user: BaseUser,
-  ): Promise<T[]>;
+  ): Promise<InstanceType<T>[]>;
 
   /**
    * Delete Documents using provided ids and context.
@@ -106,11 +105,11 @@ declare abstract class DatabaseBackend {
    * @param user          - The requesting User
    * @returns The deleted Document instances
    */
-  delete<T extends Document.Any>(
-    documentClass: ConstructorOf<T>,
+  delete<T extends Document.AnyConstructor>(
+    documentClass: T,
     operation: DatabaseDeleteOperation,
     user?: BaseUser,
-  ): Promise<T[]>;
+  ): Promise<InstanceType<T>[]>;
 
   /**
    * Delete Document instances using provided ids and operation parameters.
@@ -118,11 +117,11 @@ declare abstract class DatabaseBackend {
    * @param operation     - Parameters of the delete operation
    * @param user          - The requesting User
    */
-  protected abstract _deleteDocuments<T extends Document.Any>(
-    documentClass: ConstructorOf<T>,
+  protected abstract _deleteDocuments<T extends Document.AnyConstructor>(
+    documentClass: T,
     operation: DatabaseDeleteOperation,
     user: BaseUser,
-  ): Promise<T[]>;
+  ): Promise<InstanceType<T>[]>;
 
   /**
    * Get the parent Document (if any) associated with a request context.

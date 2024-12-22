@@ -1,5 +1,4 @@
-import type { IntentionalPartial } from "../../../../../types/helperTypes.d.mts";
-import type { InexactPartial, NullishProps } from "../../../../../types/utils.d.mts";
+import type { IntentionalPartial, InexactPartial, NullishProps } from "../../../../../utils/index.d.mts";
 import type { AmbientSoundEffect } from "../../../../common/documents/_types.d.mts";
 
 declare global {

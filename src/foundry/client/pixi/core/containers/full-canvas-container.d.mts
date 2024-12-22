@@ -1,4 +1,4 @@
-import type { Mixin } from "../../../../../types/utils.d.mts";
+import type { Mixin } from "../../../../../utils/index.d.mts";
 
 declare class FullCanvasObject {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */

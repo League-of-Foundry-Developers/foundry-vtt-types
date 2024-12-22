@@ -1,5 +1,4 @@
-import type { ConformRecord, InterfaceToObject, MustConform } from "../../../../types/helperTypes.d.mts";
-import type { DeepPartial } from "../../../../types/utils.d.mts";
+import type { ConformRecord, InterfaceToObject, MustConform, DeepPartial } from "../../../../utils/index.d.mts";
 import type { UserPermission } from "../../../common/constants.d.mts";
 import type { CONST } from "../../client.d.mts";
 import type ApplicationV2 from "../api/application.d.mts";

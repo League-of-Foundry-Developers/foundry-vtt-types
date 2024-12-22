@@ -1,4 +1,4 @@
-import type { GetDataReturnType, MaybePromise, SimpleMerge, ValueOf } from "../../../../types/utils.d.mts";
+import type { GetDataReturnType, MaybePromise, SimpleMerge, ValueOf } from "../../../../utils/index.d.mts";
 
 declare global {
   /**

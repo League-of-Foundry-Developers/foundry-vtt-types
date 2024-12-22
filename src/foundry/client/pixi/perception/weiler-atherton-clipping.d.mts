@@ -1,5 +1,4 @@
-import type { Brand } from "../../../../types/helperTypes.d.mts";
-import type { NullishProps } from "../../../../types/utils.d.mts";
+import type { Brand, NullishProps } from "../../../../utils/index.d.mts";
 
 declare global {
   /**

@@ -1,8 +1,7 @@
-import type { GetKey } from "../../types/helperTypes.d.mts";
 import type * as CONST from "../common/constants.d.mts";
 import type { DataModel, Document } from "../common/abstract/module.d.mts";
 import type PointLightSource from "../client-esm/canvas/sources/point-light-source.d.mts";
-import type { AnyObject, HandleEmptyObject, MaybePromise } from "../../types/utils.d.mts";
+import type { GetKey, AnyObject, HandleEmptyObject, MaybePromise } from "../../utils/index.d.mts";
 
 declare global {
   namespace CONFIG {
@@ -2971,7 +2970,7 @@ declare global {
         zIndexScrollingText?: number;
       }
 
-      interface LayerDefinition<LayerClass extends typeof CanvasLayer = typeof CanvasLayer> {
+      interface LayerDefinition<LayerClass extends CanvasLayer.AnyConstructor = typeof CanvasLayer> {
         layerClass: LayerClass;
         group: keyof CONFIG["Canvas"]["groups"];
       }

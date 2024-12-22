@@ -1,4 +1,4 @@
-import type { Mixin } from "../../../../types/utils.d.mts";
+import type { Mixin } from "../../../../utils/index.d.mts";
 import type BaseEffectSource from "./base-effect-source.d.mts";
 
 declare class PointEffectSource {

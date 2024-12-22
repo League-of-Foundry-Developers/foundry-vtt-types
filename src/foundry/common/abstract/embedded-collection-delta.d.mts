@@ -1,4 +1,4 @@
-import type { InexactPartial } from "../../../types/utils.d.mts";
+import type { InexactPartial } from "../../../utils/index.d.mts";
 import type Document from "./document.d.mts";
 import type EmbeddedCollection from "./embedded-collection.d.mts";
 

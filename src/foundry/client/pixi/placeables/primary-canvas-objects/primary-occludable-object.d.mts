@@ -1,4 +1,4 @@
-import type { InexactPartial, Mixin } from "../../../../../types/utils.d.mts";
+import type { InexactPartial, Mixin } from "../../../../../utils/index.d.mts";
 
 declare class PrimaryOccludableObject {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */

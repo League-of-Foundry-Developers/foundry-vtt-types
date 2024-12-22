@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
-import type Document from "../../../../../src/foundry/common/abstract/document.d.mts";
-import type { ChatSpeakerData } from "../../../../../src/foundry/common/documents/_types.d.mts";
+import Document = foundry.abstract.Document;
+import ChatSpeakerData = foundry.data.ChatSpeakerData;
 
 expectTypeOf(new ChatMessage()).toEqualTypeOf<ChatMessage>();
 expectTypeOf(new ChatMessage({})).toEqualTypeOf<ChatMessage>();

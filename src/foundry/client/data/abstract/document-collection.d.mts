@@ -1,4 +1,4 @@
-import type { AnyObject, DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
+import type { AnyObject, DeepPartial, InexactPartial } from "../../../../utils/index.d.mts";
 import type { DatabaseAction, DatabaseOperationMap } from "../../../common/abstract/_types.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 

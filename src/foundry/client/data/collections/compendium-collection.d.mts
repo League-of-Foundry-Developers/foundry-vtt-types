@@ -1,4 +1,4 @@
-import type { DeepPartial, EmptyObject, InexactPartial } from "../../../../types/utils.d.mts";
+import type { DeepPartial, EmptyObject, InexactPartial } from "../../../../utils/index.d.mts";
 import type {
   DatabaseCreateOperation,
   DatabaseDeleteOperation,

@@ -1,4 +1,4 @@
-import type { InexactPartial } from "../../../../../types/utils.d.mts";
+import type { InexactPartial } from "../../../../../utils/index.d.mts";
 
 declare abstract class AnyTextureExtractor extends TextureExtractor {
   constructor(arg0: never, ...args: never[]);

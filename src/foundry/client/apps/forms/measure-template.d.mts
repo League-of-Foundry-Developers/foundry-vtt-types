@@ -1,5 +1,4 @@
-import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
-import type { GetDataReturnType, MaybePromise, ValueOf } from "../../../../types/utils.d.mts";
+import type { GetDataReturnType, MaybePromise, ValueOf } from "../../../../utils/index.d.mts";
 
 declare global {
   /**
@@ -7,8 +6,9 @@ declare global {
    * @typeParam Options - the type of the options object
    */
   class MeasuredTemplateConfig<
-    Options extends DocumentSheetOptions<MeasuredTemplateDocument> = DocumentSheetOptions<MeasuredTemplateDocument>,
-  > extends DocumentSheet<Options, InstanceType<ConfiguredDocumentClassForName<"MeasuredTemplate">>> {
+    Options extends
+      DocumentSheetOptions<MeasuredTemplateDocument.ConfiguredInstance> = DocumentSheetOptions<MeasuredTemplateDocument.ConfiguredInstance>,
+  > extends DocumentSheet<Options, MeasuredTemplateDocument.ConfiguredInstance> {
     /**
      * @defaultValue
      * ```typescript
@@ -21,7 +21,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): DocumentSheetOptions<MeasuredTemplateDocument>;
+    static override get defaultOptions(): DocumentSheetOptions<MeasuredTemplateDocument.ConfiguredInstance>;
 
     override getData(): MaybePromise<GetDataReturnType<MeasuredTemplateConfig.MeasuredTemplateConfigData>>;
 
@@ -46,11 +46,9 @@ declare global {
     }
 
     interface MeasuredTemplateConfigData<
-      Options extends DocumentSheetOptions<MeasuredTemplateDocument> = DocumentSheetOptions<MeasuredTemplateDocument>,
-    > extends DocumentSheet.DocumentSheetData<
-        Options,
-        InstanceType<ConfiguredDocumentClassForName<"MeasuredTemplate">>
-      > {
+      Options extends
+        DocumentSheetOptions<MeasuredTemplateDocument.ConfiguredInstance> = DocumentSheetOptions<MeasuredTemplateDocument.ConfiguredInstance>,
+    > extends DocumentSheet.DocumentSheetData<Options, MeasuredTemplateDocument.ConfiguredInstance> {
       templateTypes: Record<foundry.CONST.MEASURED_TEMPLATE_TYPES, string>;
       gridUnits: string;
       submitText: string;

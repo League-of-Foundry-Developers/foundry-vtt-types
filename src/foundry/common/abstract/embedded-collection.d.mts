@@ -1,4 +1,4 @@
-import type { ConstructorOf, InexactPartial } from "../../../types/utils.d.mts";
+import type { InexactPartial } from "../../../utils/index.d.mts";
 import type _Collection from "../utils/collection.d.mts";
 import type { DatabaseAction, DatabaseOperation } from "./_types.d.mts";
 import type Document from "./document.d.mts";
@@ -37,7 +37,7 @@ declare class EmbeddedCollection<
   /**
    * The Document implementation used to construct instances within this collection
    */
-  readonly documentClass: ConstructorOf<ContainedDocument>;
+  readonly documentClass: abstract new (arg0: never, ...args: never) => ContainedDocument;
 
   /**
    * The name of this collection in the parent Document.

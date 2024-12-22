@@ -7,7 +7,8 @@ import type {
   NullishProps,
   InexactPartial,
   AnyConstructor,
-} from "../../../types/utils.d.mts";
+  ToMethod,
+} from "../../../utils/index.d.mts";
 import type { DataModel } from "../abstract/data.mts";
 import type Document from "../abstract/document.mts";
 import type { EmbeddedCollection, EmbeddedCollectionDelta, TypeDataModel } from "../abstract/module.d.mts";
@@ -23,7 +24,6 @@ import type {
   SelectInputConfig,
   TextAreaInputConfig,
 } from "../../client-esm/applications/forms/fields.d.mts";
-import type { ToMethod } from "../../../types/helperTypes.d.mts";
 
 declare global {
   /**

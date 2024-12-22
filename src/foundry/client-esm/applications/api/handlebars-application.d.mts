@@ -1,4 +1,4 @@
-import type { DeepPartial, Mixin } from "../../../../types/utils.d.mts";
+import type { DeepPartial, Mixin } from "../../../../utils/index.d.mts";
 import type ApplicationV2 from "./application.d.mts";
 
 declare namespace HandlebarsApplication {

@@ -1,5 +1,5 @@
-import type { MustConform } from "../../../types/helperTypes.d.mts";
 import type {
+  MustConform,
   AnyObject,
   EmptyObject,
   DeepPartial,
@@ -7,7 +7,7 @@ import type {
   Merge,
   RemoveIndexSignatures,
   SimpleMerge,
-} from "../../../types/utils.d.mts";
+} from "../../../utils/index.d.mts";
 import type { SchemaField } from "../data/fields.d.mts";
 import type BaseUser from "../documents/user.d.mts";
 import type { DataModel } from "./data.d.mts";

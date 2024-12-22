@@ -1,4 +1,4 @@
-import type { InexactPartial, Mixin } from "../../../types/utils.d.mts";
+import type { InexactPartial, Mixin } from "../../../utils/index.d.mts";
 import type { CONST } from "../../client-esm/client.d.mts";
 import type BasePackage from "../../common/packages/base-package.d.mts";
 
