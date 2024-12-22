@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { CardFaceData } from "../../../../src/foundry/common/documents/_types.d.mts";
+import CardFaceData = foundry.types.CardFaceData;
 
 // @ts-expect-error Name is required
 new foundry.documents.BaseCard();

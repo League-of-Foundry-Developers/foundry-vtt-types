@@ -1,4 +1,4 @@
-import type { NullishProps } from "../../../../../types/utils.d.mts";
+import type { NullishProps } from "../../../../../utils/index.d.mts";
 
 export {};
 

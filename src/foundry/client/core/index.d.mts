@@ -16,6 +16,6 @@ import "./time.d.mts";
 import "./tooltip.d.mts";
 import "./tour.d.mts";
 import "./tours.d.mts";
-import "./utils.d.mts";
+import "../../../utils/index.d.mts";
 import "./video.d.mts";
 import "./workers.d.mts";

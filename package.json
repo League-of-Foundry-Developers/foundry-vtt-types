@@ -7,7 +7,7 @@
   "types": "./index.d.mts",
   "scripts": {
     "lint": "./node_modules/typescript/bin/tsc; eslint .; prettier -c .",
-    "lint:fix": "eslint --fix .; prettier -w .",
+    "lint:fix": "eslint --fix .; prettier -l -w .",
     "lint:ci": "eslint .; prettier -c .",
     "eslint:report": "eslint --output-file eslint_report.json --format json .",
     "test": "vitest --typecheck",
@@ -20,6 +20,9 @@
     "url": "https://github.com/League-of-Foundry-Developers/foundry-vtt-types"
   },
   "contributors": [
+    {
+      "name": "LukeAbby"
+    },
     {
       "name": "Kai Moschcau"
     },
@@ -81,7 +84,6 @@
     "tinymce": "^6.8.3"
   },
   "devDependencies": {
-    "@fvtt-types/fvtt-types": "file:.",
     "@typescript-eslint/eslint-plugin": "^8.12.2",
     "@typescript-eslint/parser": "^8.12.2",
     "eslint": "^8.57.1",
@@ -89,6 +91,7 @@
     "eslint-import-resolver-typescript": "^3.6.1",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-tsdoc": "^0.4.0",
+    "fvtt-types": "file:.",
     "husky": "^9.1.4",
     "is-ci": "^4.1.0",
     "lint-staged": "^15.2.10",

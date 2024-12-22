@@ -1,7 +1,7 @@
 import { expectTypeOf } from "vitest";
-import type EmbeddedCollection from "../../../../../../src/foundry/common/abstract/embedded-collection.d.mts";
-import type { ConstructorOf } from "../../../../../../src/types/utils.d.mts";
 import type { Container, DisplayObject } from "pixi.js";
+
+import EmbeddedCollection = foundry.abstract.EmbeddedCollection;
 
 class SomeLightLayer extends PlaceablesLayer<"AmbientLight"> {
   static override get layerOptions() {
@@ -20,7 +20,7 @@ expectTypeOf(SomeLightLayer.layerOptions.objectClass).toEqualTypeOf<any>(); // T
 expectTypeOf(PlaceablesLayer.documentName).toEqualTypeOf<
   "AmbientLight" | "AmbientSound" | "Drawing" | "MeasuredTemplate" | "Note" | "Tile" | "Token" | "Wall"
 >();
-expectTypeOf(PlaceablesLayer.placeableClass).toEqualTypeOf<ConstructorOf<PlaceableObject>>();
+expectTypeOf(PlaceablesLayer.placeableClass).toEqualTypeOf<PlaceableObject.AnyConstructor>();
 
 const layer = new SomeLightLayer();
 expectTypeOf(layer.options.objectClass).toEqualTypeOf<typeof AmbientLight>();

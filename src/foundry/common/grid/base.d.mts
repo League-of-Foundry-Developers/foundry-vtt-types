@@ -1,4 +1,4 @@
-import type { AnyObject, InexactPartial } from "../../../types/utils.d.mts";
+import type { AnyObject, InexactPartial } from "../../../utils/index.d.mts";
 
 /**
  * The base grid class.

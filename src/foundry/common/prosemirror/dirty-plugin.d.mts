@@ -1,7 +1,7 @@
 import type { Schema } from "prosemirror-model";
 import type { Plugin } from "prosemirror-state";
 import type ProseMirrorPlugin from "./plugin.d.mts";
-import type { EmptyObject } from "../../../types/utils.d.mts";
+import type { EmptyObject } from "../../../utils/index.d.mts";
 
 export default ProseMirrorDirtyPlugin;
 

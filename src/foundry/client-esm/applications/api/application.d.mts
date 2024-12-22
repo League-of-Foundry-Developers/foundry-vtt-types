@@ -1,5 +1,4 @@
-import type { MustConform } from "../../../../types/helperTypes.d.mts";
-import type { AnyObject, DeepPartial, EmptyObject, InexactPartial, MaybePromise } from "../../../../types/utils.d.mts";
+import type { MustConform, AnyObject, DeepPartial, EmptyObject, InexactPartial, MaybePromise } from "../../../../utils/index.d.mts";
 import type EventEmitterMixin from "../../../common/utils/event-emitter.d.mts";
 
 // TODO: Investigate use of DeepPartial vs Partial vs InexactPartial
@@ -15,6 +14,7 @@ type _InstanceMustBeAssignableToInternal = MustConform<ApplicationV2, Applicatio
 
 declare namespace ApplicationV2 {
   type Any = ApplicationV2<any, any, any>;
+  type AnyConstructor = typeof AnyApplicationV2;
 
   // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
   namespace Internal {
@@ -701,6 +701,10 @@ declare class ApplicationV2<
    * @remarks `"ApplicationV2#bringToTop is not a valid function and redirects to ApplicationV2#bringToFront. This shim will be removed in v14."`
    */
   bringToTop(): void;
+}
+
+declare abstract class AnyApplicationV2 extends ApplicationV2<any, any, any> {
+  constructor(arg0: never, ...args: never[]);
 }
 
 export default ApplicationV2;

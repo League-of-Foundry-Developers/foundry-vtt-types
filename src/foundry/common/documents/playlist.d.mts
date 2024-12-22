@@ -1,4 +1,4 @@
-import type { AnyObject } from "../../../types/utils.mts";
+import type { AnyObject } from "../../../utils/index.d.mts";
 import type Document from "../abstract/document.mts";
 import type * as fields from "../data/fields.d.mts";
 import type * as documents from "./_module.mts";

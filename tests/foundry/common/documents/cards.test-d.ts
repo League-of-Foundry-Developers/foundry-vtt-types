@@ -1,6 +1,8 @@
 import { expectTypeOf } from "vitest";
-import type EmbeddedCollection from "../../../../src/foundry/common/abstract/embedded-collection.d.mts";
-import type { CardData, CardFaceData } from "../../../../src/foundry/common/documents/_types.d.mts";
+
+import EmbeddedCollection = foundry.abstract.EmbeddedCollection;
+import CardData = foundry.documents.CardData;
+import CardFaceData = foundry.types.CardFaceData;
 
 // @ts-expect-error data argument is non-optional
 const baseCards = new foundry.documents.BaseCards();

@@ -1,4 +1,4 @@
-import type { AnyObject, Mixin, ShapeWithIndexSignature } from "../../../../../types/utils.d.mts";
+import type { AnyObject, Mixin, ShapeWithIndexSignature } from "../../../../../utils/index.d.mts";
 
 declare abstract class AnyAdaptiveFragmentChannel extends AdaptiveFragmentChannel {
   constructor(arg0: never, ...args: never[]);

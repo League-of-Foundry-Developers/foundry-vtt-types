@@ -1,8 +1,9 @@
 import { expectTypeOf } from "vitest";
-import type { fields } from "../../../../src/foundry/common/data/module.d.mts";
-import type BaseJournalEntryPage from "../../../../src/foundry/common/documents/journal-entry-page.d.mts";
-import type BaseUser from "../../../../src/foundry/common/documents/user.d.mts";
-import type { DeepPartial, EmptyObject } from "../../../../src/types/utils.d.mts";
+import type { DeepPartial, EmptyObject } from "fvtt-types/utils";
+
+import fields = foundry.data.fields;
+import BaseUser = foundry.documents.BaseUser;
+import BaseJournalEntryPage = foundry.documents.BaseJournalEntryPage;
 
 import TypeDataModel = foundry.abstract.TypeDataModel;
 

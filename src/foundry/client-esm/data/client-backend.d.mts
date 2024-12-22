@@ -1,4 +1,4 @@
-import type { ConstructorOf } from "../../../types/utils.d.mts";
+import type { LoggingLevels } from "../../../utils/index.d.mts";
 import type Document from "../../common/abstract/document.d.mts";
 import type {
   DatabaseGetOperation,
@@ -6,35 +6,34 @@ import type {
   DatabaseUpdateOperation,
   DatabaseDeleteOperation,
 } from "../../common/abstract/_types.d.mts";
-import type { LoggingLevels } from "../../../types/helperTypes.d.mts";
 
 /**
  * The client-side database backend implementation which handles Document modification operations.
  */
 declare class ClientDatabaseBackend extends foundry.abstract.DatabaseBackend {
-  protected override _getDocuments<T extends Document.Any>(
-    documentClass: ConstructorOf<T>,
+  protected override _getDocuments<T extends Document.AnyConstructor>(
+    documentClass: T,
     request: DatabaseGetOperation,
     user: User.ConfiguredInstance,
-  ): Promise<T[]>;
+  ): Promise<InstanceType<T>[]>;
 
-  protected override _createDocuments<T extends Document.Any>(
-    documentClass: ConstructorOf<T>,
-    request: DatabaseCreateOperation<T>,
+  protected override _createDocuments<T extends Document.AnyConstructor>(
+    documentClass: T,
+    request: DatabaseCreateOperation<InstanceType<T>>,
     user: User.ConfiguredInstance,
-  ): Promise<T[]>;
+  ): Promise<InstanceType<T>[]>;
 
-  protected override _updateDocuments<T extends Document.Any>(
-    documentClass: ConstructorOf<T>,
-    request: DatabaseUpdateOperation<T>,
+  protected override _updateDocuments<T extends Document.AnyConstructor>(
+    documentClass: T,
+    request: DatabaseUpdateOperation<InstanceType<T>>,
     user: User.ConfiguredInstance,
-  ): Promise<T[]>;
+  ): Promise<InstanceType<T>[]>;
 
-  protected override _deleteDocuments<T extends Document.Any>(
-    documentClass: ConstructorOf<T>,
+  protected override _deleteDocuments<T extends Document.AnyConstructor>(
+    documentClass: T,
     request: DatabaseDeleteOperation,
     user: User.ConfiguredInstance,
-  ): Promise<T[]>;
+  ): Promise<InstanceType<T>[]>;
 
   /**
    * Activate the Socket event listeners used to receive responses from events which modify database documents

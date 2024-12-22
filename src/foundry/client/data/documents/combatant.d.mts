@@ -1,4 +1,4 @@
-import type { ValueOf } from "../../../../types/utils.d.mts";
+import type { ValueOf } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 import type BaseCombatant from "../../../common/documents/combatant.d.mts";

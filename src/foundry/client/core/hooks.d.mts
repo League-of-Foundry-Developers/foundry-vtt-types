@@ -1,4 +1,4 @@
-import type { AnyFunction } from "../../../types/utils.d.mts";
+import type { AnyFunction } from "../../../utils/index.d.mts";
 
 export {};
 

@@ -1,4 +1,4 @@
-import type { ConstructorOf, InexactPartial } from "../../../../types/utils.d.mts";
+import type { InexactPartial } from "../../../../utils/index.d.mts";
 import type { DiceRollParseNode } from "../_types.d.mts";
 
 import type RollTerm from "./term.d.mts";
@@ -315,7 +315,7 @@ declare abstract class DiceTerm extends RollTerm {
   /*  Serialization & Loading                     */
   /* -------------------------------------------- */
 
-  protected static _fromData<T extends RollTerm>(this: ConstructorOf<T>, data: Record<string, unknown>): T;
+  protected static _fromData<T extends RollTerm.AnyConstructor>(this: T, data: Record<string, unknown>): InstanceType<T>;
 
   override toJSON(): Record<string, unknown>;
 }

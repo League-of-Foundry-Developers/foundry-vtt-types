@@ -1,5 +1,4 @@
-import type { InterfaceToObject } from "../../../../../../types/helperTypes.d.mts";
-import type { AnyObject, RemoveIndexSignatures } from "../../../../../../types/utils.d.mts";
+import type { InterfaceToObject, AnyObject, RemoveIndexSignatures } from "../../../../../../utils/index.d.mts";
 
 declare abstract class AnyAbstractWeatherShader extends AbstractWeatherShader {
   constructor(arg0: never, ...args: never[]);

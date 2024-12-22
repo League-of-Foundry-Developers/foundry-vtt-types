@@ -1,4 +1,4 @@
-import type { AnyObject, EmptyObject } from "../../../types/utils.d.mts";
+import type { AnyObject, EmptyObject } from "../../../utils/index.d.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
 import type { fields } from "../data/module.d.mts";
 import type { DataModelValidationFailure } from "../data/validation-failure.d.mts";

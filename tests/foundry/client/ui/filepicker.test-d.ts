@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { EmptyObject, MaybePromise } from "../../../../src/types/utils.d.mts";
+import type { EmptyObject, MaybePromise } from "fvtt-types/utils";
 
 const filepicker = new FilePicker();
 expectTypeOf(filepicker).toEqualTypeOf<FilePicker>();

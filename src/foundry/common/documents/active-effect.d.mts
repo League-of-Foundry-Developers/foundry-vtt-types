@@ -1,5 +1,4 @@
-import type { InterfaceToObject } from "../../../types/helperTypes.d.mts";
-import type { AnyObject, InexactPartial } from "../../../types/utils.mts";
+import type { InterfaceToObject, AnyObject, InexactPartial } from "../../../utils/index.d.mts";
 import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
 import type * as fields from "../data/fields.d.mts";

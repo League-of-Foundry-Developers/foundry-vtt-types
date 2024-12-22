@@ -1,7 +1,6 @@
 import type Document from "../foundry/common/abstract/document.d.mts";
 import type { fields } from "../foundry/common/data/module.d.mts";
-import type { InterfaceToObject, MaybeEmpty, MustConform } from "./helperTypes.d.mts";
-import type { DeepPartial } from "./utils.d.mts";
+import type { InterfaceToObject, MaybeEmpty, MustConform, DeepPartial } from "../utils/index.d.mts";
 
 declare global {
   /**

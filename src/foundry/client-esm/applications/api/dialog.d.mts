@@ -1,4 +1,4 @@
-import type { AnyFunction, DeepPartial, EmptyObject } from "../../../../types/utils.d.mts";
+import type { AnyFunction, DeepPartial, EmptyObject } from "../../../../utils/index.d.mts";
 import type ApplicationV2 from "./application.d.mts";
 
 /**

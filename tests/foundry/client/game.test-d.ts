@@ -1,5 +1,5 @@
 import { expectTypeOf, assertType } from "vitest";
-import type { EmptyObject } from "../../../src/types/utils.d.mts";
+import type { EmptyObject } from "fvtt-types/utils";
 
 declare const aGame: Game;
 

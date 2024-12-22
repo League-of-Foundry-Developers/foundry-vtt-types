@@ -1,5 +1,5 @@
 import { expectTypeOf, assertType } from "vitest";
-import type { AnyFunction, NonNullish } from "../../../../src/types/utils.d.mts";
+import type { AnyFunction, NonNullish } from "fvtt-types/utils";
 
 // Global export test
 expectTypeOf(benchmark).toEqualTypeOf(foundry.utils.benchmark);

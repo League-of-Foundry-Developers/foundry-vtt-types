@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type BaseGrid from "../../../../../../src/foundry/common/grid/base.d.mts";
+import BaseGrid = foundry.documents.BaseGrid;
 
 expectTypeOf(GridLayer.instance).toEqualTypeOf<GridLayer | undefined>();
 expectTypeOf(GridLayer.layerOptions).toEqualTypeOf<GridLayer.LayerOptions>();

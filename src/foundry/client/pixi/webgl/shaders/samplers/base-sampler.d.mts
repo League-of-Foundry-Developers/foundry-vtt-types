@@ -1,4 +1,4 @@
-import type { InexactPartial, Mixin } from "../../../../../../types/utils.d.mts";
+import type { InexactPartial, Mixin } from "../../../../../../utils/index.d.mts";
 
 declare abstract class AnyBaseSamplerShader extends BaseSamplerShader {
   constructor(arg0: never, ...args: never[]);

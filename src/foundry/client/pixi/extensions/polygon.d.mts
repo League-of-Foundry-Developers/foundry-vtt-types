@@ -1,4 +1,4 @@
-import type { InexactPartial, NullishProps } from "../../../../types/utils.d.mts";
+import type { InexactPartial, NullishProps } from "../../../../utils/index.d.mts";
 
 declare module "pixi.js" {
   interface Polygon {

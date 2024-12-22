@@ -19,7 +19,7 @@ At the moment, versions 0.7, 0.8, and 9 are fully supported with partial support
 
 ## V12 Installation
 
-Currently v12 is still in beta. There are known bugs, issues in the ergonomics, and major unfinished work in the current implementation. To get a direct line of communication about the current status of development as well as to help us understand what areas need to be prioritizated first, join the [League of Extraordinary FoundryVTT Developers Discord](https://discord.gg/73HTMuK7dT) or file an issue.
+Currently v12 is still in beta. There are known bugs, issues in the ergonomics, and major unfinished work in the current implementation. To get a direct line of communication about the current status of development as well as to help us understand what areas need to be prioritized first, join the [League of Extraordinary FoundryVTT Developers Discord](https://discord.gg/73HTMuK7dT) or file an issue.
 
 The recommended way to install for v12 is this command:
 
@@ -30,6 +30,8 @@ npm add --include=dev github:League-of-Foundry-Developers/foundry-vtt-types#main
 Alternatively, if you're using yarn you'll need to use the command `yarn add --dev foundry-vtt-types@github:League-of-Foundry-Developers/foundry-vtt-types#main`.
 
 This will add the current commit on `main` as a dependency. Both npm and yarn's lockfile will store the commit you initially installed this command and so updates to your dependency will not happen automatically or even after a fresh install. To update you will need to be rerun the prior command periodically to update as improvements are added frequently.
+
+If you've been using the types for a few months now, the best branch would be `maintenance` instead. `main` will have a number of backwards incompatible breaking changes going forward.
 
 ## Installation
 
@@ -84,22 +86,16 @@ Add foundry-vtt-types to your types section in your `tsconfig.json`:
 {
   "compilerOptions": {
     "types": ["@league-of-foundry-developers/foundry-vtt-types"],
-    "module": "node16",
-    "moduleResolution": "node16",
-    "esModuleInterop": true,
-    "strictNullChecks": true
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "strict": true
   }
 }
 ```
 
 This will make the type definitions available globally in your project.
 
-Make sure you are using at least `"module": "node16"` and `"moduleResolution": "node16"`, too. It is required for some
-imports to be resolved correctly, such as `@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mts`.
-
-Also make sure to set `"strictNullChecks": true` because otherwise, some conditional types used in the type definitions
-resolve incorrectly, and you will see a lot of errors. Alternatively, you can just set `"strict": true`, which
-implicitly sets `strictNullChecks`. This is actually what we **recommend**, but it's not required.
+We recommend using `"strict": true` because it enables a whole host of useful options. However if you want to check that your config supports foundry-vtt-types, the most important settings under `strict` would be `strictNullChecks` and `strictFunctionTypes` are the most important.
 
 You can find some information about how to actually work with the type definitions in the
 [Wiki](https://github.com/League-of-Foundry-Developers/foundry-vtt-types/wiki). A good starting point is

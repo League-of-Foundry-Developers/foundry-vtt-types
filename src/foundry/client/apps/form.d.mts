@@ -1,6 +1,6 @@
 import type { EditorView } from "prosemirror-view";
 import type { Editor } from "tinymce";
-import type { AnyObject, GetDataReturnType, InexactPartial, MaybePromise } from "../../../types/utils.d.mts";
+import type { AnyObject, GetDataReturnType, InexactPartial, MaybePromise } from "../../../utils/index.d.mts";
 import type { ProseMirrorKeyMaps, ProseMirrorMenu } from "../../common/prosemirror/_module.d.mts";
 import type Document from "../../common/abstract/document.d.mts";
 

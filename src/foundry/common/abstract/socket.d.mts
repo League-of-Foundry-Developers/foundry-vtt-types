@@ -1,4 +1,4 @@
-import type { AnyObject } from "../../../types/utils.d.mts";
+import type { AnyObject } from "../../../utils/index.d.mts";
 import type { DatabaseAction, DatabaseOperation, DocumentSocketRequest } from "./_types.d.mts";
 
 /**

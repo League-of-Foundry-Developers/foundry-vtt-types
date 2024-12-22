@@ -1,11 +1,5 @@
 import type { Socket } from "socket.io-client";
-import type {
-  ConfiguredDocumentClassForName,
-  ConfiguredModule,
-  GetKey,
-  ModuleRequiredOrOptional,
-} from "../../types/helperTypes.d.mts";
-import type { EmptyObject, ValueOf } from "../../types/utils.d.mts";
+import type { ConfiguredModule, GetKey, EmptyObject, ValueOf } from "../../utils/index.d.mts";
 import type BasePackage from "../common/packages/base-package.d.mts";
 import type { Document } from "../common/abstract/module.d.mts";
 
@@ -654,7 +648,7 @@ declare global {
        * @see {@link RequiredModules} to remove `undefined` from the return type for a given module
        * @param id - The module ID to look up
        */
-      get<T extends string>(id: T): (Module & ConfiguredModule<T>) | Exclude<ModuleRequiredOrOptional<T>, undefined>;
+      get<T extends string>(id: T): Module & ConfiguredModule<T>;
     }
 
     namespace Model {
@@ -753,8 +747,8 @@ declare global {
     } & {
       [DocumentType in
         | foundry.CONST.DOCUMENT_TYPES
-        | "Setting" as ConfiguredDocumentClassForName<DocumentType>["metadata"]["collection"]]?: InstanceType<
-        ConfiguredDocumentClassForName<DocumentType>
+        | "Setting" as Document.ConfiguredClassForName<DocumentType>["metadata"]["collection"]]?: InstanceType<
+        Document.ConfiguredClassForName<DocumentType>
       >["_source"][];
     };
 

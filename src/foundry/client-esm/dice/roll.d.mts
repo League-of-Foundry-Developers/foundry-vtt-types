@@ -1,4 +1,4 @@
-import type { AnyObject, ConstructorOf, EmptyObject, InexactPartial } from "../../../types/utils.d.mts";
+import type { AnyObject, EmptyObject, InexactPartial } from "../../../utils/index.d.mts";
 
 import type { RollParseNode } from "./_types.d.mts";
 import type DiceTerm from "./terms/dice.d.mts";
@@ -551,7 +551,7 @@ declare class Roll<D extends AnyObject = AnyObject> {
    * @param data - Unpacked data representing the Roll
    * @returns A reconstructed Roll instance
    */
-  static fromData<T extends Roll<any>>(this: ConstructorOf<T>, data: Roll.Data): T;
+  static fromData<T extends Roll.AnyConstructor>(this: T, data: Roll.Data): InstanceType<T>;
 
   /**
    * Recreate a Roll instance using a provided JSON string
@@ -575,14 +575,17 @@ declare class Roll<D extends AnyObject = AnyObject> {
    * roll.formula; // 4d8 + 8
    * ```
    */
-  static fromTerms<T extends Roll<any>>(
-    this: ConstructorOf<T>,
+  static fromTerms<T extends Roll.AnyConstructor>(
+    this: T,
     terms: RollTerm[],
     options?: InexactPartial<Roll.Options>,
-  ): T;
+  ): InstanceType<T>;
 }
 
 declare namespace Roll {
+  type Any = Roll<any>;
+  type AnyConstructor = typeof AnyRoll;
+
   interface Options extends RollTerm.EvaluationOptions {
     /**
      * If false, force the use of non-interactive rolls and do not prompt the user to make manual rolls.
@@ -640,6 +643,10 @@ declare namespace Roll {
   };
 
   type Evaluated<T extends Roll> = T & { _evaluated: true; _total: number; get total(): number };
+}
+
+declare abstract class AnyRoll extends Roll<any> {
+  constructor(arg0: never, ...args: never[]);
 }
 
 export default Roll;

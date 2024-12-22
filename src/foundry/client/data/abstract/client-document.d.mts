@@ -1,4 +1,4 @@
-import type { ConstructorOf, DeepPartial, InexactPartial, Mixin, ValueOf } from "../../../../types/utils.d.mts";
+import type { DeepPartial, InexactPartial, Mixin, ValueOf } from "../../../../utils/index.d.mts";
 import type { DatabaseCreateOperation } from "../../../common/abstract/_types.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 
@@ -88,7 +88,7 @@ declare class ClientDocument<BaseDocument extends Document.Internal.Instance.Any
   /**
    * Obtain the FormApplication class constructor which should be used to configure this Document.
    */
-  protected _getSheetClass(): ConstructorOf<FormApplication | foundry.applications.api.ApplicationV2> | null;
+  protected _getSheetClass(): FormApplication.AnyConstructor | foundry.applications.api.ApplicationV2.AnyConstructor | null;
 
   /**
    * Safely prepare data for a Document, catching any errors.

@@ -1,4 +1,4 @@
-import type { MaybePromise } from "../../../../types/utils.d.mts";
+import type { MaybePromise } from "../../../../utils/index.d.mts";
 
 declare global {
   interface DrawingConfigOptions extends FormApplicationOptions {

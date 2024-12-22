@@ -1,4 +1,4 @@
-import type { InexactPartial, Mixin } from "../../../types/utils.d.mts";
+import type { InexactPartial, Mixin } from "../../../utils/index.d.mts";
 
 /**
  * A mixin class which implements the behavior of EventTarget.

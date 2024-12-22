@@ -1,4 +1,4 @@
-import type { EmptyObject, InexactPartial, ValueOf } from "../../../../../types/utils.d.mts";
+import type { EmptyObject, InexactPartial, ValueOf } from "../../../../../utils/index.d.mts";
 
 declare global {
   /**

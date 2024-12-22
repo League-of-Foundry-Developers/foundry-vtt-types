@@ -1,5 +1,4 @@
-import type { ArrayOverlaps } from "../../../../../types/helperTypes.d.mts";
-import type { ConstructorOf, InexactPartial, NullishProps, ValueOf } from "../../../../../types/utils.d.mts";
+import type { ArrayOverlaps, InexactPartial, NullishProps, ValueOf } from "../../../../../utils/index.d.mts";
 import type Document from "../../../../common/abstract/document.d.mts";
 import type EmbeddedCollection from "../../../../common/abstract/embedded-collection.d.mts";
 
@@ -98,7 +97,7 @@ declare global {
     /**
      * Define a Container implementation used to render placeable objects contained in this layer
      */
-    static get placeableClass(): ConstructorOf<PlaceableObject>;
+    static get placeableClass(): PlaceableObject.AnyConstructor;
 
     /**
      * If objects on this PlaceablesLayer have a HUD UI, provide a reference to its instance

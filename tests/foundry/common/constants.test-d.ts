@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { ValueOf } from "../../../src/types/utils.d.mts";
+import type { ValueOf } from "fvtt-types/utils";
 
 expectTypeOf<foundry.CONST.ACTIVE_EFFECT_MODES>().toMatchTypeOf<number>();
 expectTypeOf<foundry.CONST.CARD_DRAW_MODES>().toMatchTypeOf<number>();

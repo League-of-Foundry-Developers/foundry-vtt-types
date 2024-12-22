@@ -1,5 +1,4 @@
-import type { ToMethod } from "../../../../../types/helperTypes.d.mts";
-import type { InexactPartial } from "../../../../../types/utils.d.mts";
+import type { ToMethod, InexactPartial } from "../../../../../utils/index.d.mts";
 
 declare abstract class AnyBatchRenderer extends BatchRenderer {
   constructor(arg0: never, ...args: never[]);

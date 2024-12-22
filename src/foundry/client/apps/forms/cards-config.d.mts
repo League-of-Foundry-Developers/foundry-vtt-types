@@ -1,5 +1,5 @@
-import type { ConfiguredDocumentClassForName } from "../../../../types/helperTypes.d.mts";
-import type { GetDataReturnType, MaybePromise } from "../../../../types/utils.d.mts";
+import type { GetDataReturnType, MaybePromise } from "../../../../utils/index.d.mts";
+import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
   /**
@@ -11,7 +11,7 @@ declare global {
     Options,
     Cards.ConfiguredInstance
   > {
-    constructor(object: ConfiguredDocumentClassForName<"Cards">, options: Options);
+    constructor(object: Document.ConfiguredClassForName<"Cards">, options: Options);
 
     /**
      * The allowed sorting methods which can be used for this sheet

@@ -1,6 +1,8 @@
 import { expectTypeOf } from "vitest";
-import type { DataModel, Document } from "../../../../../src/foundry/common/abstract/module.d.mts";
-import type { EffectChangeData } from "../../../../../src/foundry/common/documents/_types.d.mts";
+
+import DataModel = foundry.abstract.DataModel;
+import Document = foundry.abstract.Document;
+import EffectChangeData = foundry.types.EffectChangeData;
 
 // @ts-expect-error - ActiveEffect requires name.
 new ActiveEffect();

@@ -1,5 +1,4 @@
-import type { ArrayOverlaps } from "../../../../../types/helperTypes.d.mts";
-import type { NullishProps } from "../../../../../types/utils.d.mts";
+import type { ArrayOverlaps, NullishProps } from "../../../../../utils/index.d.mts";
 import type Document from "../../../../common/abstract/document.d.mts";
 
 declare global {

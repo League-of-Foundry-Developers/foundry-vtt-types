@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type EmbeddedCollectionDelta from "../../../../src/foundry/common/abstract/embedded-collection-delta.d.mts";
+import EmbeddedCollectionDelta = foundry.abstract.EmbeddedCollectionDelta;
 
 const myDelta = new foundry.documents.BaseActorDelta();
 

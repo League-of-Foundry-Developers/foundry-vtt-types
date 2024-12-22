@@ -1,7 +1,6 @@
 import { expectTypeOf } from "vitest";
-import type EmbeddedCollection from "../../../../src/foundry/common/abstract/embedded-collection.d.mts";
-import type { AnyObject } from "../../../../src/types/utils.d.mts";
-
+import type { AnyObject } from "fvtt-types/utils";
+import EmbeddedCollection = foundry.abstract.EmbeddedCollection;
 import BaseItem = foundry.documents.BaseItem;
 import Document = foundry.abstract.Document;
 

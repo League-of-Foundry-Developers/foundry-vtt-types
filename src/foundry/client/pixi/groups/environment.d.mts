@@ -1,4 +1,4 @@
-import type { InexactPartial } from "../../../../types/utils.d.mts";
+import type { InexactPartial } from "../../../../utils/index.d.mts";
 
 // TODO: Remove when this is typed as part of #2674
 type SceneEnvironmentData = unknown;

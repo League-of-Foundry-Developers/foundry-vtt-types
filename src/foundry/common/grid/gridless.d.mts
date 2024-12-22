@@ -1,6 +1,6 @@
 import type BaseGrid from "./base.d.mts";
 
-import type { InexactPartial } from "../../../types/utils.d.mts";
+import type { InexactPartial } from "../../../utils/index.d.mts";
 
 declare class Gridless extends BaseGrid {
   override type: number;

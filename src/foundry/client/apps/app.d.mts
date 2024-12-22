@@ -1,4 +1,4 @@
-import type { MaybePromise, ValueOf } from "../../../types/utils.d.mts";
+import type { MaybePromise, ValueOf } from "../../../utils/index.d.mts";
 
 declare global {
   /**

@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { CompendiumOwnershipField } from "../../../../src/foundry/common/packages/base-package.d.mts";
+import CompendiumOwnershipField = foundry.common.packages.CompendiumOwnershipField;
 
 const myPackage = new foundry.packages.BasePackage({
   id: "foobar",

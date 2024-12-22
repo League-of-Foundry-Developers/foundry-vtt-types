@@ -1,4 +1,4 @@
-import type { ConstructorOf, InexactPartial } from "../../../../types/utils.mts";
+import type { InexactPartial } from "../../../../utils/index.d.mts";
 import type { RollParseNode } from "../_types.mts";
 
 import type RollResolver from "../../applications/dice/roll-resolver.d.mts";
@@ -109,7 +109,10 @@ declare abstract class RollTerm {
    * @param data - The de-serialized term data
    * @returns The re-constructed RollTerm object
    */
-  protected static _fromData<T extends RollTerm>(this: ConstructorOf<T>, data: Record<string, unknown>): T;
+  protected static _fromData<T extends RollTerm.AnyConstructor>(
+    this: T,
+    data: Record<string, unknown>,
+  ): InstanceType<T>;
 
   /**
    * Reconstruct a RollTerm instance from a provided JSON string
@@ -126,6 +129,8 @@ declare abstract class RollTerm {
 }
 
 declare namespace RollTerm {
+  type AnyConstructor = typeof AnyRollTerm;
+
   interface Options {
     flavor?: string | unknown;
   }
@@ -155,6 +160,10 @@ declare namespace RollTerm {
     evaluated: boolean;
     options: Options;
   }
+}
+
+declare abstract class AnyRollTerm {
+  constructor(arg0: never, ...args: never[]);
 }
 
 export default RollTerm;

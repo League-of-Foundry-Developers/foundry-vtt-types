@@ -1,4 +1,4 @@
-import type { ConstructorOf, InexactPartial } from "../../../../types/utils.d.mts";
+import type { InexactPartial } from "../../../../utils/index.d.mts";
 import type { PoolRollParseNode } from "../_types.d.mts";
 
 import type RollTerm from "./term.d.mts";
@@ -137,7 +137,10 @@ declare class PoolTerm extends RollTerm {
   /*  Saving and Loading                          */
   /* -------------------------------------------- */
 
-  protected static override _fromData<T extends RollTerm>(this: ConstructorOf<T>, data: Record<string, unknown>): T;
+  protected static override _fromData<T extends RollTerm.AnyConstructor>(
+    this: T,
+    data: Record<string, unknown>,
+  ): InstanceType<T>;
 
   /* -------------------------------------------- */
 
@@ -151,18 +154,18 @@ declare class PoolTerm extends RollTerm {
    * @param options - Additional options applied to the PoolTerm
    * @returns The evaluated PoolTerm object or null if the formula is invalid
    */
-  static fromExpression<T extends RollTerm>(
-    this: ConstructorOf<T>,
+  static fromExpression<T extends RollTerm.AnyConstructor>(
+    this: T,
     formula: string,
     options?: RollTerm.Options,
-  ): T | null;
+  ): InstanceType<T> | null;
 
   /**
    * Create a PoolTerm by providing an array of existing Roll objects
    * @param rolls - An array of Roll objects from which to create the pool
    * @returns The constructed PoolTerm comprised of the provided rolls
    */
-  static fromRolls<T extends PoolTerm>(this: ConstructorOf<T>, rolls?: Roll[]): T;
+  static fromRolls<T extends PoolTerm.AnyConstructor>(this: T, rolls?: Roll[]): InstanceType<T>;
 
   /* -------------------------------------------- */
 
@@ -227,6 +230,8 @@ declare class PoolTerm extends RollTerm {
 }
 
 declare namespace PoolTerm {
+  type AnyConstructor = typeof AnyPoolTerm;
+
   /**
    * @remarks This interface is not defined by foundry itself. It only exists
    * to allow module and system authors to use it for declaration merging,
@@ -273,6 +278,10 @@ declare namespace PoolTerm {
      */
     options?: RollTerm.Options | undefined;
   }
+}
+
+declare abstract class AnyPoolTerm extends PoolTerm {
+  constructor(arg0: never, ...args: never[]);
 }
 
 export default PoolTerm;

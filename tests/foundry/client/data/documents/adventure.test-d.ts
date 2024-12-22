@@ -1,6 +1,7 @@
 import { expectTypeOf } from "vitest";
-import type { DataModel } from "../../../../../src/foundry/common/abstract/module.d.mts";
-import type { fields } from "../../../../../src/foundry/common/data/module.d.mts";
+
+import DataModel = foundry.abstract.DataModel;
+import fields = foundry.data.fields;
 
 // @ts-expect-error - Adventure requires name.
 new Adventure();

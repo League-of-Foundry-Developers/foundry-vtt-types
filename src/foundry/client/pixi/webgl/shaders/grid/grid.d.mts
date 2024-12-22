@@ -1,4 +1,4 @@
-import type { IntentionalPartial } from "../../../../../../types/helperTypes.d.mts";
+import type { IntentionalPartial } from "../../../../../../utils/index.d.mts";
 
 declare abstract class AnyGridShader extends GridShader {
   constructor(arg0: never, ...args: never[]);

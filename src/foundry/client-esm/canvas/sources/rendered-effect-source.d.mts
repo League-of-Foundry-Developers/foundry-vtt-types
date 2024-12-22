@@ -1,4 +1,4 @@
-import type { AnyFunction, InexactPartial } from "../../../../types/utils.d.mts";
+import type { AnyFunction, InexactPartial } from "../../../../utils/index.d.mts";
 import type BaseEffectSource from "./base-effect-source.d.mts";
 
 // TODO: Remove after shaders are done

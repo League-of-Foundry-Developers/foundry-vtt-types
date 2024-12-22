@@ -1,6 +1,6 @@
 import type { CLEAR_MODES, FilterState, FilterSystem, RenderTexture } from "pixi.js";
 
-import type { InexactPartial } from "../../../../types/utils.d.mts";
+import type { InexactPartial } from "../../../../utils/index.d.mts";
 
 declare class SMAAFilter extends PIXI.Filter {
   /**

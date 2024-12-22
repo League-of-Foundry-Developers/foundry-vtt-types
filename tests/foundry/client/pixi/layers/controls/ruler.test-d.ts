@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type Color from "../../../../../../src/foundry/common/utils/color.d.mts";
+import Color = foundry.utils.Color;
 
 if (game instanceof Game) {
   expectTypeOf(new Ruler(undefined)).toEqualTypeOf<Ruler>();
