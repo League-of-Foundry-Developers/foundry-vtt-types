@@ -34,6 +34,12 @@ declare class PointDarknessSource<
   protected _visualShape: SourceShape | null;
 
   /**
+   * @privateRemarks This is not in foundry's code, but since this class (and its parent) implements `_createShapes`,
+   * and we are counting what happens in `initialize` as 'the constructor', this gets to be declared never undefined.
+   */
+  override shape: SourceShape;
+
+  /**
    * Padding applied on the darkness source shape for visual appearance only.
    * Note: for now, padding is increased radius. It might evolve in a future release.
    * @defaultValue `(CONFIG.Canvas.darknessSourcePaddingMultiplier ?? 0) * canvas.grid.size`

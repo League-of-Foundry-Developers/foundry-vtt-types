@@ -23,6 +23,9 @@ declare class PointEffectSource {
    */
   static defaultData: PointEffectSourceMixin.SourceData & BaseEffectSource.SourceData;
 
+  /** @privateRemarks This is not in Foundry's code, but the mixin class loses access to the type parameter that would otherwise be here */
+  shape: PointSourcePolygon;
+
   /**
    * A convenience reference to the radius of the source.
    */

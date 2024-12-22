@@ -211,11 +211,15 @@ declare global {
 
   interface CanvasVisibilityTest {
     point: PIXI.Point;
+    elevation: number;
     los: Map<foundry.canvas.sources.PointVisionSource.Any, boolean>;
   }
 
   interface CanvasVisibilityTestConfig {
+    /** The target object */
     object: PlaceableObject | null;
+
+    /** An array of visibility tests */
     tests: CanvasVisibilityTest[];
   }
 }
