@@ -2,13 +2,11 @@ import type { IntentionalPartial } from "../../../../types/helperTypes.d.mts";
 import type BaseLightSource from "./base-light-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
 
-type LightSourceData = PointEffectSourceMixin.SourceData & BaseLightSource.SourceData;
-
 /**
  * A specialized subclass of the BaseLightSource which renders a source of light as a point-based effect.
  */
-export default class PointLightSource<
-  SourceData extends LightSourceData = LightSourceData,
+declare class PointLightSource<
+  SourceData extends PointLightSource.SourceData = PointLightSource.SourceData,
   SourceShape extends PointSourcePolygon = PointSourcePolygon,
 > extends PointEffectSourceMixin(BaseLightSource)<SourceData, SourceShape> {
   /** @defaultValue `"lightSources"` */
@@ -43,3 +41,15 @@ export default class PointLightSource<
    */
   _canDetectObject(target?: PlaceableObject | null): boolean;
 }
+
+declare namespace PointLightSource {
+  type AnyConstructor = typeof AnyPointLightSource;
+
+  type SourceData = PointEffectSourceMixin.SourceData & BaseLightSource.SourceData;
+}
+
+declare abstract class AnyPointLightSource extends PointLightSource {
+  constructor(arg0: never, ...args: never[]);
+}
+
+export default PointLightSource;

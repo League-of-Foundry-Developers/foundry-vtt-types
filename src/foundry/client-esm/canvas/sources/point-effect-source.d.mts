@@ -21,7 +21,7 @@ declare class PointEffectSource {
    * @privateRemarks This will only be accurate for classes extending `PointEffectSourceMixin(BaseEffectSource)`.
    * Other subclasses must override this.
    */
-  static defaultData: PointEffectSourceMixin.SourceData & BaseEffectSource.SourceData;
+  static defaultData: PointEffectSourceMixin.MixedSourceData;
 
   /** @privateRemarks This is not in Foundry's code, but the mixin class loses access to the type parameter that would otherwise be here */
   shape: PointSourcePolygon;
@@ -31,7 +31,7 @@ declare class PointEffectSource {
    */
   get radius(): number;
 
-  _initialize(data: IntentionalPartial<PointEffectSourceMixin.SourceData>): void;
+  _initialize(data: IntentionalPartial<PointEffectSourceMixin.MixedSourceData>): void;
 
   _initializeSoftEdges(): void;
 
@@ -73,7 +73,9 @@ declare function PointEffectSourceMixin<BaseClass extends BaseEffectSource.AnyCo
 declare namespace PointEffectSourceMixin {
   type AnyMixed = ReturnType<typeof PointEffectSourceMixin<BaseEffectSource.AnyConstructor>>;
 
-  interface SourceData extends BaseEffectSource.SourceData {
+  type MixedSourceData = SourceData & BaseEffectSource.SourceData;
+
+  interface SourceData {
     /**
      * The radius of the source
      */
