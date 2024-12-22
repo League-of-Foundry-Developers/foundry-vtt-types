@@ -29,6 +29,12 @@ type DerivedQuestData = { totalSteps: number };
 class QuestModel extends TypeDataModel<QuestSchema, BaseJournalEntryPage, BaseQuestData, DerivedQuestData> {
   otherMethod() {}
 
+  // This override may seem random but it's a regression test for this error:
+  //   Class 'QuestModel' incorrectly extends base class 'TypeDataModel<QuestSchema, BaseJournalEntryPage, BaseQuestData, DerivedQuestData>'.
+  //     Property '_initialize' is protected but type 'QuestModel' is not a class derived from 'DataModel<Schema, Parent, ExtraConstructorOptions>'.
+  // See: https://gist.github.com/LukeAbby/b9fd57eeba778a25297721e88b3e6bdd
+  override _initialize(): void {}
+
   override prepareBaseData(this: TypeDataModel.PrepareBaseDataThis<this>): void {
     this.otherMethod();
 
