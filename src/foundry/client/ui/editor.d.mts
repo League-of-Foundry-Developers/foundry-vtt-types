@@ -1,6 +1,6 @@
 import type { EditorView } from "prosemirror-view";
-import type { AnyObject, InexactPartial, MaybePromise } from "../../../types/utils.d.mts";
-import type { ConfiguredDocumentClassForName } from "../../../types/helperTypes.d.mts";
+import type { AnyObject, InexactPartial, MaybePromise } from "../../../utils/index.d.mts";
+import type Document from "../../common/abstract/document.d.mts";
 
 declare global {
   /**
@@ -290,7 +290,7 @@ declare global {
      */
     static getDragEventData(
       event: DragEvent,
-    ): PlaceableObject | number | Promise<ConfiguredDocumentClassForName<"User">>;
+    ): PlaceableObject | number | Promise<Document.ConfiguredClassForName<"User">>;
 
     /**
      * Given a Drop event, returns a Content link if possible such as `@Actor[ABC123]`, else null

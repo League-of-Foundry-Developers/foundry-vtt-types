@@ -1,4 +1,3 @@
-
 /**
  * Token Ring configuration Singleton Class.
  *

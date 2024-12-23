@@ -1,4 +1,4 @@
-import type { GetDataReturnType } from "../../../../types/utils.d.mts";
+import type { GetDataReturnType } from "../../../../utils/index.d.mts";
 
 declare global {
   /**

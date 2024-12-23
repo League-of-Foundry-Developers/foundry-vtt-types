@@ -1,8 +1,9 @@
 import { expectTypeOf } from "vitest";
-import type { fields } from "../../../../src/foundry/common/data/module.d.mts";
-import type BaseJournalEntryPage from "../../../../src/foundry/common/documents/journal-entry-page.d.mts";
-import type BaseUser from "../../../../src/foundry/common/documents/user.d.mts";
-import type { DeepPartial, EmptyObject } from "../../../../src/types/utils.d.mts";
+import type { DeepPartial, EmptyObject } from "fvtt-types/utils";
+
+import fields = foundry.data.fields;
+import BaseUser = foundry.documents.BaseUser;
+import BaseJournalEntryPage = foundry.documents.BaseJournalEntryPage;
 
 import TypeDataModel = foundry.abstract.TypeDataModel;
 
@@ -27,6 +28,12 @@ type DerivedQuestData = { totalSteps: number };
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 class QuestModel extends TypeDataModel<QuestSchema, BaseJournalEntryPage, BaseQuestData, DerivedQuestData> {
   otherMethod() {}
+
+  // This override may seem random but it's a regression test for this error:
+  //   Class 'QuestModel' incorrectly extends base class 'TypeDataModel<QuestSchema, BaseJournalEntryPage, BaseQuestData, DerivedQuestData>'.
+  //     Property '_initialize' is protected but type 'QuestModel' is not a class derived from 'DataModel<Schema, Parent, ExtraConstructorOptions>'.
+  // See: https://gist.github.com/LukeAbby/b9fd57eeba778a25297721e88b3e6bdd
+  override _initialize(): void {}
 
   override prepareBaseData(this: TypeDataModel.PrepareBaseDataThis<this>): void {
     this.otherMethod();

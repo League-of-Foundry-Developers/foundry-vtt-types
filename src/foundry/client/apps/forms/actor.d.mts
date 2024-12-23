@@ -1,4 +1,4 @@
-import type { GetDataReturnType, MaybePromise } from "../../../../types/utils.d.mts";
+import type { GetDataReturnType, MaybePromise } from "../../../../utils/index.d.mts";
 import type { DropData as ClientDocumentMixinDropData } from "../../data/abstract/client-document.d.mts";
 
 declare global {

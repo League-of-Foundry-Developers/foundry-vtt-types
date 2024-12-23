@@ -1,48 +1,48 @@
+import type { IntentionalPartial } from "../../../../utils/index.d.mts";
 import type BaseLightSource from "./base-light-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
 import type RenderedEffectSource from "./rendered-effect-source.d.mts";
 
-// TODO: Adjust after client/config.js is updated
-type LightSourceAnimationConfig = unknown;
-
-type DarknessSourceData = BaseLightSource.LightSourceData & PointEffectSourceMixin.PointEffectSourceData;
-
-// Interface causes errors
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-type DarknessLayers = {
-  darkness: RenderedEffectSource.RenderedEffectSourceLayer;
-};
-
 /**
  * A specialized subclass of the BaseLightSource which renders a source of darkness as a point-based effect.
  */
-export default class PointDarknessSource<
-  SourceData extends DarknessSourceData = DarknessSourceData,
+declare class PointDarknessSource<
+  SourceData extends PointDarknessSource.SourceData = PointDarknessSource.SourceData,
   SourceShape extends PointSourcePolygon = PointSourcePolygon,
-> extends PointEffectSourceMixin(BaseLightSource)<SourceData, SourceShape, DarknessLayers> {
+> extends PointEffectSourceMixin(BaseLightSource)<SourceData, SourceShape, PointDarknessSource.Layers> {
   /** @defaultValue `"darknessSources"` */
   static override effectsCollection: string;
 
-  /** @defaultValue `LIGHTING_LEVELS.HALFDARK` */
+  /** @defaultValue `foundry.CONST.LIGHTING_LEVELS.HALFDARK` */
   static override _dimLightingLevel: foundry.CONST.LIGHTING_LEVELS;
 
-  /** @defaultValue `LIGHTING_LEVELS.DARKNESS` */
+  /** @defaultValue `foundry.CONST.LIGHTING_LEVELS.DARKNESS` */
   static override _brightLightingLevel: foundry.CONST.LIGHTING_LEVELS;
 
   /** @defaultValue `CONFIG.Canvas.darknessAnimations` */
-  static get ANIMATIONS(): LightSourceAnimationConfig;
+  static get ANIMATIONS(): typeof CONFIG.Canvas.darknessAnimations;
 
-  static override get _layers(): Record<string, foundry.canvas.sources.RenderedEffectSource.RenderedEffectLayerConfig>;
+  static override get _layers(): Record<string, foundry.canvas.sources.RenderedEffectSource.LayerConfig>;
+
+  /** @privateRemarks This is not in Foundry's code, but accounts for the mixin class's static property's inability to be generic */
+  static override defaultData: PointDarknessSource.SourceData;
 
   /**
    * The optional geometric shape is solely utilized for visual representation regarding darkness sources.
    * Used only when an additional radius is added for visuals.
    */
-  protected _visualShape: SourceShape;
+  protected _visualShape: SourceShape | null;
+
+  /**
+   * @privateRemarks This is not in foundry's code, but since this class (and its parent) implements `_createShapes`,
+   * and we are counting what happens in `initialize` as 'the constructor', this gets to be declared never undefined.
+   */
+  override shape: SourceShape;
 
   /**
    * Padding applied on the darkness source shape for visual appearance only.
    * Note: for now, padding is increased radius. It might evolve in a future release.
+   * @defaultValue `(CONFIG.Canvas.darknessSourcePaddingMultiplier ?? 0) * canvas.grid.size`
    */
   protected _padding: number;
 
@@ -51,9 +51,16 @@ export default class PointDarknessSource<
    */
   edges: foundry.canvas.edges.Edge[];
 
+  /**
+   * A convenience accessor to the darkness layer mesh.
+   */
+  get darkness(): this["layers"]["darkness"]["mesh"];
+
+  override _initialize(data: IntentionalPartial<SourceData>): void;
+
   override _createShapes(): void;
 
-  override _configure(changes: Partial<SourceData>): void;
+  override _configure(changes: IntentionalPartial<SourceData>): void;
 
   override _getPolygonConfiguration(): PointSourcePolygonConfig;
 
@@ -69,9 +76,26 @@ export default class PointDarknessSource<
   override _destroy(): void;
 
   /**
-   * A convenience accessor to the darkness layer mesh.
    * @deprecated since v12, until v14
    * @remarks `"BaseLightSource#isDarkness is now obsolete. Use DarknessSource instead."`
    */
-  get darkness(): PointSourceMesh;
+  get isDarkness(): boolean;
 }
+
+declare namespace PointDarknessSource {
+  type AnyConstructor = typeof AnyPointDarknessSource;
+
+  type SourceData = BaseLightSource.SourceData & PointEffectSourceMixin.SourceData;
+
+  // Interface would require `RenderingLayers extends ... = InterfaceToObject<Layers>` in every subclass signature
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+  type Layers = {
+    darkness: RenderedEffectSource.SourceLayer;
+  };
+}
+
+declare abstract class AnyPointDarknessSource extends PointDarknessSource {
+  constructor(arg0: never, ...args: never[]);
+}
+
+export default PointDarknessSource;

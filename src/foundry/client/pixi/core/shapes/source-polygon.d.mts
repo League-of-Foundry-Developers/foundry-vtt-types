@@ -1,11 +1,10 @@
-import type { Brand } from "../../../../../types/helperTypes.d.mts";
-import type { NullishProps } from "../../../../../types/utils.d.mts";
+import type { Brand, InexactPartial, NullishProps } from "../../../../../utils/index.d.mts";
 import type PointEffectSourceMixin from "../../../../client-esm/canvas/sources/point-effect-source.d.mts";
 
 declare global {
   /** @remarks Keys whose value when passed is not respected have been omitted from the global type */
   type PointSourcePolygonConfig = NullishProps<
-    PointSourcePolygon._PassableConfig,
+    PointSourcePolygon._Config,
     /**
      * @privateRemarks Reasons for exclusion from nullishness:
      * - `type` is the only truly non-optional property in the typedef
@@ -13,7 +12,7 @@ declare global {
      * - `source` is already optional, but does not have any defaults applied, so probably shouldn't be nullish. As far as I can tell, nothing
      *   accesses this property in v12, in v13 it is used to provide a fallback `elevation` if one is not provided with `origin`
      */
-    Exclude<"externalRadius" | "type" | "source", keyof PointSourcePolygon._PassableConfig>
+    Exclude<keyof PointSourcePolygon._Config, "externalRadius" | "type" | "source">
   >;
 
   /**
@@ -48,7 +47,7 @@ declare global {
      * The configuration of this polygon.
      * @remarks Initialized as `{}` but immediately filled by `PointSourcePolygon#initalize`
      */
-    config: PointSourcePolygon.StoredConfig;
+    config: PointSourcePolygon._Config;
 
     /**
      * An indicator for whether this polygon is constrained by some boundary shape?
@@ -207,43 +206,9 @@ declare global {
 
     type WALL_DIRECTION_MODES = Brand<number, "PointSourcePolygon.WALL_DIRECTION_MODES">;
 
-    type StoredConfig = _PassableConfig & _PassableConfig;
-    /**
-     * @internal
-     * @remarks The properties of `PointSourcePolygonConfig` that are always computed and never respect passed values
-     */
-    interface _ComputedConfig {
-      /**
-       * Does this polygon have a limited radius?
-       * @remarks Always computed by `PointSourcePolygon#initialize`, it is overwritten if passed. Is `true` if `radius` is non-zero but smaller
-       *          than `canvas.dimensions.maxR`
-       */
-      hasLimitedRadius: boolean;
-
-      /**
-       * Does this polygon have a limited angle?
-       * @remarks Always computed by `PointSourcePolygon#initialize`, it is overwritten if passed. Is `true` if `angle !== 360`.
-       */
-      hasLimitedAngle: boolean;
-
-      /**
-       * The computed bounding box for the polygon
-       * @remarks Only exists in `ClockwiseSweepPolygon`s, where it is always computed and overwritten if passed
-       */
-      boundingBox?: PIXI.Rectangle;
-    }
-
-    /**
-     * @internal
-     */
-    interface _PassableConfig {
-      /** The type of polygon being computed */
-      type: PointSourcePolygon.PolygonType;
-
-      /**
-       * The angle of emission, if limited
-       * @defaultValue `360`
-       */
+    /** @internal */
+    type _Config = InexactPartial<{
+      /** The angle of emission, if limited */
       angle: number;
 
       /**
@@ -318,7 +283,7 @@ declare global {
        * @remarks Not in foundry's typedef, inferred from usage. It is in the object returned by `PointEffectSource#_getPolygonConfiguration`
        */
       externalRadius?: number;
-    }
+    }>;
 
     type PolygonType = "light" | "sight" | "sound" | "move" | "universal";
 

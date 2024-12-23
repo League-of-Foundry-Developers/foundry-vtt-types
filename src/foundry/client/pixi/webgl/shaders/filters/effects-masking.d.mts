@@ -1,4 +1,4 @@
-import type { AnyObject,  ShapeWithIndexSignature } from "../../../../../../types/utils.d.mts";
+import type { AnyObject, ShapeWithIndexSignature } from "../../../../../../utils/index.d.mts";
 
 declare abstract class AnyVisualEffectsMaskingFilter extends VisualEffectsMaskingFilter {
   constructor(arg0: never, ...args: never[]);
@@ -47,7 +47,7 @@ declare global {
     /**
      * Masking modes.
      */
-    static readonly FILTER_MODES: VisualEffectsMaskingFilter.FILTER_MODES
+    static readonly FILTER_MODES: VisualEffectsMaskingFilter.FILTER_MODES;
 
     /**
      * @defaultValue

@@ -1,4 +1,4 @@
-import type { DeepPartial, EmptyObject, InexactPartial } from "../../../../types/utils.d.mts";
+import type { DeepPartial, EmptyObject, InexactPartial } from "../../../../utils/index.d.mts";
 import type {
   DatabaseCreateOperation,
   DatabaseDeleteOperation,
@@ -153,7 +153,9 @@ declare global {
 
     // Note(LukeAbby): The overrides for `get` become unreasonably long and don't add any changes and so have been omitted.
 
-    set(id: string, document: Document.Stored<Document.ConfiguredInstanceForName<T["type"]>>): this;
+    // NOTE(LukeAbby): This override was disabled for the time being because it's erroring.
+    // Thankfully it doesn't actually change its parent class's signature.
+    // set(id: string, document: Document.Stored<Document.ConfiguredInstanceForName<T["type"]>>): this;
 
     delete: (id: string) => boolean;
 
@@ -432,7 +434,7 @@ declare global {
     type ConstructorMetadata<T extends CompendiumCollection.Metadata> = T & {
       index: IndexTypeForMetadata<T>;
       folders: Folder[];
-    }
+    };
 
     // The type that appears in `compendium.metadata` after initialization.
     interface Metadata {
@@ -440,7 +442,7 @@ declare global {
       label: string;
       name: string;
 
-      flags: Record<string, never>;    // created by the server, but always empty and no way to change it in a way that is s
+      flags: Record<string, never>; // created by the server, but always empty and no way to change it in a way that is s
       ownership: InexactPartial<foundry.packages.BasePackage.OwnershipRecord>;
       path: string;
       package: string;

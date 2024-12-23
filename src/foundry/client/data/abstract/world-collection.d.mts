@@ -1,4 +1,4 @@
-import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
+import type { DeepPartial, InexactPartial } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DirectoryCollectionMixin_DocumentCollection_Interface } from "./directory-collection-mixin.d.mts";
 
@@ -17,7 +17,7 @@ declare global {
     /**
      * Reference the set of Folders which contain documents in this collection
      */
-    get folders(): Collection<Folder>;
+    get folders(): Collection<Folder.Stored>;
 
     /**
      * Return a reference to the SidebarDirectory application for this WorldCollection.

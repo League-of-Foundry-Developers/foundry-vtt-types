@@ -1,4 +1,4 @@
-import type { InexactPartial, ValueOf } from "../../../../types/utils.d.mts";
+import type { Brand, NullishProps } from "../../../../utils/index.d.mts";
 
 declare global {
   /**
@@ -29,7 +29,7 @@ declare global {
     constructor(
       polygon: PIXI.Polygon,
       clipObject: PIXI.Rectangle | PIXI.Circle,
-      clipType?: ValueOf<(typeof WeilerAthertonClipper)["CLIP_TYPES"]>,
+      clipType?: WeilerAthertonClipper.CLIP_TYPES,
       clipOpts?: WeilerAthertonClipper.ClipOpts,
     );
 
@@ -37,19 +37,14 @@ declare global {
      * The supported clip types.
      * Values are equivalent to those in ClipperLib.ClipType.
      */
-    static readonly CLIP_TYPES: Readonly<{
-      INTERSECT: 0;
-      UNION: 1;
-    }>;
+    static CLIP_TYPES: Readonly<Record<"INTERSECT" | "UNION", WeilerAthertonClipper.CLIP_TYPES>>;
 
     /**
      * The supported intersection types.
      */
-    static readonly INTERSECTION_TYPES: Readonly<{
-      OUT_IN: -1;
-      IN_OUT: 1;
-      TANGENT: 0;
-    }>;
+    static INTERSECTION_TYPES: Readonly<
+      Record<"OUT_IN" | "IN_OUT" | "TANGENT", WeilerAthertonClipper.INTERSECTION_TYPES>
+    >;
 
     polygon: PIXI.Polygon;
 
@@ -57,14 +52,13 @@ declare global {
 
     /**
      * Configuration settings
-     * @param clipType  - One of CLIP_TYPES
-     * @param clipOpts  - Object passed to the clippingObject methods
-     *                    toPolygon and pointsBetween
-     * @defaultValue `{}`
+     * @param clipType  - One of CLIP_TYPES (default: `WeilerAthertonClipper.CLIP_TYPES.INTERSECT`)
+     * @param clipOpts  - Object passed to the clippingObject methods toPolygon and pointsBetween
+     *                    (default: `{}`)
      */
     config: {
-      clipType?: typeof WeilerAthertonClipper.CLIP_TYPES;
-      clipOpts?: WeilerAthertonClipper.ClipOpts;
+      clipType: WeilerAthertonClipper.CLIP_TYPES;
+      clipOpts: WeilerAthertonClipper.ClipOpts;
     };
 
     /**
@@ -77,7 +71,7 @@ declare global {
     static union(
       polygon: PIXI.Polygon,
       clipObject: PIXI.Rectangle | PIXI.Circle,
-      clipOpts: WeilerAthertonClipper.ClipOpts,
+      clipOpts?: WeilerAthertonClipper.ClipOpts,
     ): PIXI.Polygon[];
 
     /**
@@ -90,7 +84,7 @@ declare global {
     static intersect(
       polygon: PIXI.Polygon,
       clipObject: PIXI.Rectangle | PIXI.Circle,
-      clipOpts: WeilerAthertonClipper.ClipOpts,
+      clipOpts?: WeilerAthertonClipper.ClipOpts,
     ): PIXI.Polygon[];
 
     /**
@@ -108,23 +102,8 @@ declare global {
     static combine(
       polygon: PIXI.Polygon,
       clipObject: PIXI.Rectangle | PIXI.Circle,
-      options?: InexactPartial<{
-        /**
-         * One of CLIP_TYPES
-         * @defaultValue `0`
-         */
-        clipType: ValueOf<typeof WeilerAthertonClipper.CLIP_TYPES>;
-
-        /**
-         * If the WeilerAtherton constructor could mutate or not the subject polygon points
-         */
-        canMutate: boolean;
-
-        /**
-         * Options passed to the WeilerAthertonClipper constructor
-         */
-        clipOpts: WeilerAthertonClipper.ClipOpts;
-      }>,
+      /** @remarks Despite foundry marking this parameter optional, if an object with a valid `clipType` property is not passed, this will throw */
+      options: WeilerAthertonClipper.CombineOptions,
     ): PIXI.Polygon[];
 
     /**
@@ -141,12 +120,42 @@ declare global {
     static testForEnvelopment(
       polygon: PIXI.Polygon,
       clipObject: PIXI.Rectangle | PIXI.Circle,
-      clipType: typeof WeilerAthertonClipper.CLIP_TYPES,
+      clipType: WeilerAthertonClipper.CLIP_TYPES,
       clipOpts: WeilerAthertonClipper.ClipOpts,
     ): PIXI.Polygon[];
   }
 
   namespace WeilerAthertonClipper {
+    type AnyConstructor = typeof AnyWeilerAthertonClipper;
+
+    type CLIP_TYPES = Brand<number, "WeilerAthertonClipper.CLIP_TYPES">;
+
+    type INTERSECTION_TYPES = Brand<number, "WeilerAthertonClipper.INTERSECTION_TYPES">;
+
+    /** @internal Helper type to simplify use of optionality- and nullish-permissiveness-modifying helpers */
+    type _CombineOptions = NullishProps<{
+      /**
+       * If the WeilerAtherton constructor could mutate or not the subject polygon points
+       */
+      canMutate: boolean;
+    }>;
+
+    interface CombineOptions extends _CombineOptions, ClipOpts {
+      /**
+       * One of CLIP_TYPES
+       */
+      clipType: WeilerAthertonClipper.CLIP_TYPES;
+    }
+
+    /**
+     * @remarks These are ultimately only consumed by the `#toPolygon` and `#pointsBetween` methods
+     * of `PIXI.Rectangle` or `PIXI.Circle`. Only the `Circle` methods actually take options and those are
+     * only passed on to `#pointsForArc`.
+     */
     type ClipOpts = PIXI.Circle.PointsForArcOptions;
   }
+}
+
+declare abstract class AnyWeilerAthertonClipper extends WeilerAthertonClipper {
+  constructor(arg0: never, ...args: never[]);
 }

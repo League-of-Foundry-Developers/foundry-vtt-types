@@ -1,4 +1,4 @@
-import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
+import type { DeepPartial, InexactPartial } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 import type { SchemaField } from "../../../common/data/fields.d.mts";
@@ -9,11 +9,7 @@ declare global {
     type Metadata = Document.MetadataFor<TokenDocument>;
 
     type ConfiguredClass = Document.ConfiguredClassForName<"Token">;
-    type ConfiguredInstance = InstanceType<ConfiguredClass>;
-
-    // TODO(LukeAbby): This causes a circularity that's likely latent.
-    // Look into this.
-    // type ConfiguredInstance = ConfiguredDocumentInstanceForName<"Token">;
+    type ConfiguredInstance = Document.ConfiguredInstanceForName<"Token">;
 
     type ObjectClass = Document.ConfiguredObjectClassForName<"Token">;
     type ObjectInstance = Document.ConfiguredObjectInstanceForName<"Token">;

@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { MaybePromise } from "../../../../src/types/utils.d.mts";
+import type { MaybePromise } from "fvtt-types/utils";
 
 expectTypeOf(Application.defaultOptions).toEqualTypeOf<ApplicationOptions>();
 

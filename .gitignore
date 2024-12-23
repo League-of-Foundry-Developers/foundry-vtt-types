@@ -1,6 +1,5 @@
 /node_modules/
 /.idea/
-/.vscode
 tsconfig.vitest-temp.json
 tsconfig.tsbuildinfo
 .typescript-build

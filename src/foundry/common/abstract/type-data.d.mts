@@ -1,5 +1,5 @@
-import type { MustConform } from "../../../types/helperTypes.d.mts";
 import type {
+  MustConform,
   AnyObject,
   EmptyObject,
   DeepPartial,
@@ -7,18 +7,26 @@ import type {
   Merge,
   RemoveIndexSignatures,
   SimpleMerge,
-} from "../../../types/utils.d.mts";
+} from "../../../utils/index.d.mts";
 import type { SchemaField } from "../data/fields.d.mts";
 import type BaseUser from "../documents/user.d.mts";
 import type { DataModel } from "./data.d.mts";
 import type Document from "./document.d.mts";
 
-type StaticDataModel = typeof DataModel<DataSchema, Document<any, DataSchema, any>>;
+declare class AnyDataModel extends DataModel<any, any, any> {
+  constructor(...args: any[]);
+}
+
+type StaticDataModel = typeof AnyDataModel;
 
 interface _InternalTypeDataModelInterface extends StaticDataModel {
   new <Schema extends DataSchema, Parent extends Document.Any, _ComputedInstance extends DataModel<Schema, Parent>>(
     ...args: ConstructorParameters<typeof DataModel<Schema, Parent>>
-  ): _ComputedInstance;
+
+    // Note(LukeAbby): This seemingly redundant `DataModel<Schema, Parent>` is to
+    // Ensure that TypeScript allows overriding `protected` methods in subclasses.
+    // See: https://gist.github.com/LukeAbby/b9fd57eeba778a25297721e88b3e6bdd
+  ): DataModel<Schema, Parent> & _ComputedInstance;
 }
 
 declare const _InternalTypeDataModelConst: _InternalTypeDataModelInterface;
@@ -106,6 +114,9 @@ type InnerMerge<U, K extends keyof U, T> = T extends { readonly [_ in K]?: infer
 
 declare namespace TypeDataModel {
   type Any = TypeDataModel<any, any, any, any>;
+
+  type ConfigurationFailure = InstanceType<ConfigurationFailureClass>;
+  type ConfigurationFailureClass = typeof ConfigurationFailure;
 
   // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
   namespace Internal {
@@ -339,5 +350,7 @@ declare abstract class TypeDataModel<
    */
   protected _onDelete(options: Document.OnDeleteOptions<any>, userId: string): void;
 }
+
+declare class ConfigurationFailure extends TypeDataModel<any, any, any, any> {}
 
 export default TypeDataModel;

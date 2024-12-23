@@ -1,4 +1,4 @@
-import type { RequiredProps } from "../../../../types/utils.d.mts";
+import type { RequiredProps } from "../../../../utils/index.d.mts";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
@@ -18,7 +18,8 @@ declare global {
       refreshText: boolean;
     }
 
-    interface ObjectHUD extends globalThisObjectHUD {
+    // TODO: Fix globalThis.ObjectHUD #2962
+    interface ObjectHUD {
       /**
        * Template control icon
        */

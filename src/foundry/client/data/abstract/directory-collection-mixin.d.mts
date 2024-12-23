@@ -1,4 +1,4 @@
-import type { Mixin } from "../../../../types/utils.d.mts";
+import type { Mixin } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 
 type DirectoryCollectionMixin_DocumentCollection_Static = DirectoryCollection<DirectoryCollection.DirectoryTypes> &
@@ -32,7 +32,7 @@ declare class DirectoryCollection<T extends DirectoryCollection.DirectoryTypes> 
   /**
    * Reference the set of Folders which contain documents in this collection
    */
-  get folders(): Collection<Folder>;
+  get folders(): Collection<Folder.Stored>;
 
   /**
    * The built tree structure of the DocumentCollection

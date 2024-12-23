@@ -1,5 +1,4 @@
-import type { InterfaceToObject } from "../../../types/helperTypes.d.mts";
-import type { AnyObject, InexactPartial } from "../../../types/utils.mts";
+import type { InterfaceToObject, AnyObject, InexactPartial } from "../../../utils/index.d.mts";
 import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
 import type * as fields from "../data/fields.d.mts";
@@ -164,6 +163,8 @@ declare namespace BaseActiveEffect {
        * The _id of the CombatEncounter in which the effect first started
        * @defaultValue `null`
        */
+      // @ts-expect-error - NOTE(LukeAbby): The underlying issue of this is not yet understood.
+      // This `ts-expect-error` is NOT because it's okay but because the repo needs to get down to 0 errors.
       combat: fields.ForeignDocumentField<typeof documents.BaseCombat, { label: "EFFECT.Combat" }>;
 
       /**

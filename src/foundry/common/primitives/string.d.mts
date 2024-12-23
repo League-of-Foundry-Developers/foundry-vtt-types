@@ -1,4 +1,4 @@
-import type { Titlecase } from "../../../types/utils.d.mts";
+import type { Titlecase } from "../../../utils/index.d.mts";
 
 declare global {
   interface String {

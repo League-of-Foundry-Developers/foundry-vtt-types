@@ -1,5 +1,4 @@
-import type { GetKey } from "../../../types/helperTypes.d.mts";
-import type { AnyObject, InexactPartial } from "../../../types/utils.d.mts";
+import type { GetKey, AnyObject, InexactPartial } from "../../../utils/index.d.mts";
 // eslint-disable-next-line import/no-named-as-default
 import type DataModel from "../abstract/data.d.mts";
 import type { ReleaseData } from "../config.d.mts";

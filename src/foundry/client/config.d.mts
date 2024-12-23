@@ -1,8 +1,7 @@
-import type { GetKey } from "../../types/helperTypes.d.mts";
 import type * as CONST from "../common/constants.d.mts";
 import type { DataModel, Document } from "../common/abstract/module.d.mts";
-import type PointLightSource from "../client-esm/canvas/sources/point-light-source.d.mts";
-import type { AnyObject, HandleEmptyObject, MaybePromise } from "../../types/utils.d.mts";
+import type { GetKey, AnyObject, HandleEmptyObject, MaybePromise } from "../../utils/index.d.mts";
+import type BaseLightSource from "../client-esm/canvas/sources/base-light-source.d.mts";
 
 declare global {
   namespace CONFIG {
@@ -1028,13 +1027,13 @@ declare global {
           label: string;
 
           /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateFlickering` */
-          animation: CONFIG.Canvas.LightAnimationFunction;
+          animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `FlameIlluminationShader` */
-          illuminationShader: typeof AbstractBaseShader;
+          illuminationShader: typeof AdaptiveIlluminationShader;
 
           /** @defaultValue `FlameColorationShader` */
-          colorationShader: typeof AbstractBaseShader;
+          colorationShader: typeof AdaptiveColorationShader;
         };
 
         torch: {
@@ -1042,13 +1041,13 @@ declare global {
           label: string;
 
           /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTorch` */
-          animation: CONFIG.Canvas.LightAnimationFunction;
+          animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `TorchIlluminationShader` */
-          illuminationShader: typeof AbstractBaseShader;
+          illuminationShader: typeof AdaptiveIlluminationShader;
 
           /** @defaultValue `TorchColorationShader` */
-          colorationShader: typeof AbstractBaseShader;
+          colorationShader: typeof AdaptiveColorationShader;
         };
 
         revolving: {
@@ -1056,10 +1055,10 @@ declare global {
           label: string;
 
           /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: CONFIG.Canvas.LightAnimationFunction;
+          animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `RevolvingColorationShader` */
-          colorationShader: typeof AbstractBaseShader;
+          colorationShader: typeof AdaptiveColorationShader;
         };
 
         siren: {
@@ -1067,13 +1066,13 @@ declare global {
           label: string;
 
           /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTorch` */
-          animation: CONFIG.Canvas.LightAnimationFunction;
+          animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `SirenIlluminationShader` */
-          illuminationShader: typeof AbstractBaseShader;
+          illuminationShader: typeof AdaptiveIlluminationShader;
 
           /** @defaultValue `SirenIlluminationShader` */
-          colorationShader: typeof AbstractBaseShader;
+          colorationShader: typeof AdaptiveColorationShader;
         };
 
         pulse: {
@@ -1081,13 +1080,13 @@ declare global {
           label: string;
 
           /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animatePulse` */
-          animation: CONFIG.Canvas.LightAnimationFunction;
+          animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `PulseIlluminationShader` */
-          illuminationShader: typeof AbstractBaseShader;
+          illuminationShader: typeof AdaptiveIlluminationShader;
 
           /** @defaultValue `PulseColorationShader` */
-          colorationShader: typeof AbstractBaseShader;
+          colorationShader: typeof AdaptiveColorationShader;
         };
 
         chroma: {
@@ -1095,10 +1094,10 @@ declare global {
           label: string;
 
           /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: CONFIG.Canvas.LightAnimationFunction;
+          animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `ChromaColorationShader` */
-          colorationShader: typeof AbstractBaseShader;
+          colorationShader: typeof AdaptiveColorationShader;
         };
 
         wave: {
@@ -1106,13 +1105,13 @@ declare global {
           label: string;
 
           /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: CONFIG.Canvas.LightAnimationFunction;
+          animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `WaveIlluminationShader` */
-          illuminationShader: typeof AbstractBaseShader;
+          illuminationShader: typeof AdaptiveIlluminationShader;
 
           /** @defaultValue `WaveColorationShader` */
-          colorationShader: typeof AbstractBaseShader;
+          colorationShader: typeof AdaptiveColorationShader;
         };
 
         fog: {
@@ -1120,10 +1119,10 @@ declare global {
           label: string;
 
           /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: CONFIG.Canvas.LightAnimationFunction;
+          animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `FogColorationShader` */
-          colorationShader: typeof AbstractBaseShader;
+          colorationShader: typeof AdaptiveColorationShader;
         };
 
         sunburst: {
@@ -1131,13 +1130,13 @@ declare global {
           label: string;
 
           /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: CONFIG.Canvas.LightAnimationFunction;
+          animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `SunburstIlluminationShader` */
-          illuminationShader: typeof AbstractBaseShader;
+          illuminationShader: typeof AdaptiveIlluminationShader;
 
           /** @defaultValue `SunburstColorationShader` */
-          colorationShader: typeof AbstractBaseShader;
+          colorationShader: typeof AdaptiveColorationShader;
         };
 
         dome: {
@@ -1145,10 +1144,10 @@ declare global {
           label: string;
 
           /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: CONFIG.Canvas.LightAnimationFunction;
+          animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `LightDomeColorationShader` */
-          colorationShader: typeof AbstractBaseShader;
+          colorationShader: typeof AdaptiveColorationShader;
         };
 
         emanation: {
@@ -1156,10 +1155,10 @@ declare global {
           label: string;
 
           /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: CONFIG.Canvas.LightAnimationFunction;
+          animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `EmanationColorationShader` */
-          colorationShader: typeof AbstractBaseShader;
+          colorationShader: typeof AdaptiveColorationShader;
         };
 
         hexa: {
@@ -1167,10 +1166,10 @@ declare global {
           label: string;
 
           /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: CONFIG.Canvas.LightAnimationFunction;
+          animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `HexaDomeColorationShader` */
-          colorationShader: typeof AbstractBaseShader;
+          colorationShader: typeof AdaptiveColorationShader;
         };
 
         ghost: {
@@ -1178,13 +1177,13 @@ declare global {
           label: string;
 
           /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: CONFIG.Canvas.LightAnimationFunction;
+          animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `GhostLightIlluminationShader` */
-          illuminationShader: typeof AbstractBaseShader;
+          illuminationShader: typeof AdaptiveIlluminationShader;
 
           /** @defaultValue `GhostLightColorationShader` */
-          colorationShader: typeof AbstractBaseShader;
+          colorationShader: typeof AdaptiveColorationShader;
         };
 
         energy: {
@@ -1192,10 +1191,10 @@ declare global {
           label: string;
 
           /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: CONFIG.Canvas.LightAnimationFunction;
+          animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `EnergyFieldColorationShader` */
-          colorationShader: typeof AbstractBaseShader;
+          colorationShader: typeof AdaptiveColorationShader;
         };
 
         vortex: {
@@ -1203,13 +1202,13 @@ declare global {
           label: string;
 
           /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: CONFIG.Canvas.LightAnimationFunction;
+          animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `VortexIlluminationShader` */
-          illuminationShader: typeof AbstractBaseShader;
+          illuminationShader: typeof AdaptiveIlluminationShader;
 
           /** @defaultValue `VortexColorationShader` */
-          colorationShader: typeof AbstractBaseShader;
+          colorationShader: typeof AdaptiveColorationShader;
         };
 
         witchwave: {
@@ -1217,13 +1216,13 @@ declare global {
           label: string;
 
           /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: CONFIG.Canvas.LightAnimationFunction;
+          animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `BewitchingWaveIlluminationShader` */
-          illuminationShader: typeof AbstractBaseShader;
+          illuminationShader: typeof AdaptiveIlluminationShader;
 
           /** @defaultValue `BewitchingWaveColorationShader` */
-          colorationShader: typeof AbstractBaseShader;
+          colorationShader: typeof AdaptiveColorationShader;
         };
 
         rainbowswirl: {
@@ -1231,10 +1230,10 @@ declare global {
           label: string;
 
           /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: CONFIG.Canvas.LightAnimationFunction;
+          animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `SwirlingRainbowColorationShader` */
-          colorationShader: typeof AbstractBaseShader;
+          colorationShader: typeof AdaptiveColorationShader;
         };
 
         radialrainbow: {
@@ -1242,10 +1241,10 @@ declare global {
           label: string;
 
           /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: CONFIG.Canvas.LightAnimationFunction;
+          animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `RadialRainbowColorationShader` */
-          colorationShader: typeof AbstractBaseShader;
+          colorationShader: typeof AdaptiveColorationShader;
         };
 
         fairy: {
@@ -1253,13 +1252,13 @@ declare global {
           label: string;
 
           /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: CONFIG.Canvas.LightAnimationFunction;
+          animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `FairyLightIlluminationShader` */
-          illuminationShader: typeof AbstractBaseShader;
+          illuminationShader: typeof AdaptiveIlluminationShader;
 
           /** @defaultValue `FairyLightColorationShader` */
-          colorationShader: typeof AbstractBaseShader;
+          colorationShader: typeof AdaptiveColorationShader;
         };
       };
 
@@ -2971,7 +2970,7 @@ declare global {
         zIndexScrollingText?: number;
       }
 
-      interface LayerDefinition<LayerClass extends typeof CanvasLayer = typeof CanvasLayer> {
+      interface LayerDefinition<LayerClass extends CanvasLayer.AnyConstructor = typeof CanvasLayer> {
         layerClass: LayerClass;
         group: keyof CONFIG["Canvas"]["groups"];
       }
@@ -2991,10 +2990,10 @@ declare global {
         string,
         {
           label: string;
-          animation: LightAnimationFunction;
+          animation: BaseLightSource.LightAnimationFunction;
           backgroundShader?: typeof AdaptiveBackgroundShader;
-          illuminationShader?: typeof AbstractBaseShader;
-          colorationShader?: typeof AbstractBaseShader;
+          illuminationShader?: typeof AdaptiveIlluminationShader;
+          colorationShader?: typeof AdaptiveColorationShader;
         }
       >;
 
@@ -3003,17 +3002,12 @@ declare global {
        */
       type DarknessSourceAnimationConfig = Record<
         string,
-        { label: string; animation: LightAnimationFunction; darknessShader: typeof AdaptiveDarknessShader }
+        {
+          label: string;
+          animation: BaseLightSource.LightAnimationFunction;
+          darknessShader: typeof AdaptiveDarknessShader;
+        }
       >;
-
-      type LightAnimationFunction = (
-        // `this` is technically not a `PointLightSource`.
-        // Instead it is `foundry.canvas.sources.Pointfoundry.canvas.sources.LightSource.prototype`.
-        // However differentiating this would be a lot of work for little gain as nothing critical happens in the constructor.
-        this: PointLightSource,
-        dt: number,
-        properties?: { speed?: number; intensity?: number; reverse?: false },
-      ) => void;
 
       namespace Pings {
         interface Style {

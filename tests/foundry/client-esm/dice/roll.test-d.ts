@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { EmptyObject } from "../../../../src/types/utils.d.mts";
+import type { EmptyObject } from "fvtt-types/utils";
 
 class CustomRoll<D extends Record<string, unknown> = EmptyObject> extends Roll<D> {}
 

@@ -1,12 +1,15 @@
 import type RenderedEffectSource from "./rendered-effect-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
+import type { IntentionalPartial } from "../../../../utils/index.d.mts";
 
 /**
  * A specialized subclass of RenderedEffectSource which represents a source of point-based vision.
  */
 declare class PointVisionSource<
-  SourceData extends PointVisionSource.VisionSourceData = PointVisionSource.VisionSourceData,
-> extends PointEffectSourceMixin(RenderedEffectSource)<SourceData> {
+  SourceData extends PointVisionSource.SourceData = PointVisionSource.SourceData,
+  SourceShape extends PointSourcePolygon = PointSourcePolygon,
+  RenderingLayers extends RenderedEffectSource.Layers = RenderedEffectSource.Layers,
+> extends PointEffectSourceMixin(RenderedEffectSource)<SourceData, SourceShape, RenderingLayers> {
   /** @defaultValue `"sight"` */
   static override sourceType: string;
 
@@ -18,15 +21,17 @@ declare class PointVisionSource<
 
   /**
    * The corresponding lighting levels for dim light.
-   * @defaultValue `LIGHTING_LEVELS.DIM`
+   * @defaultValue `foundry.CONST.LIGHTING_LEVELS.DIM`
    */
   protected static _dimLightingLevel: foundry.CONST.LIGHTING_LEVELS;
 
   /**
    * The corresponding lighting levels for bright light.
-   * @defaultValue `LIGHTING_LEVELS.BRIGHT`
+   * @defaultValue `foundry.CONST.LIGHTING_LEVELS.BRIGHT`
    */
   protected static _brightLightingLevel: foundry.CONST.LIGHTING_LEVELS;
+
+  static override EDGE_OFFSET: number;
 
   /** @defaultValue `"visionSources"` */
   static override effectsCollection: string;
@@ -45,9 +50,10 @@ declare class PointVisionSource<
    * }
    * ```
    */
-  static override defaultData: PointVisionSourceData;
+  static override defaultData: PointVisionSource.SourceData;
 
-  static get _layers(): Record<string, RenderedEffectSource.RenderedEffectLayerConfig>;
+  /** @remarks Overrides `Adaptive*Shader` references with `*VisionShader` ones */
+  static get _layers(): Record<string, RenderedEffectSource.LayerConfig>;
 
   /**
    * The vision mode linked to this VisionSource
@@ -78,7 +84,7 @@ declare class PointVisionSource<
   /**
    * If this vision source background is rendered into the lighting container.
    */
-  get preferred(): boolean;
+  get preferred(): boolean | undefined;
 
   /**
    * Is the rendered source animated?
@@ -108,20 +114,18 @@ declare class PointVisionSource<
    */
   visionModeOverrides: object;
 
-  override _initialize(data: Partial<SourceData>): void;
+  override _initialize(data: IntentionalPartial<SourceData>): void;
 
   override _createShapes(): void;
-
-  override shape: PointSourcePolygon;
 
   /**
    * Responsible for assigning the Vision Mode and calling the activation and deactivation handlers.
    */
   protected _updateVisionMode(): void;
 
-  override _configure(changes: Partial<SourceData>): void;
+  override _configure(changes: IntentionalPartial<SourceData>): void;
 
-  override _configureLayer(layer: Record<string, unknown>, layerId: string): void;
+  override _configureLayer(layer: RenderedEffectSource.SourceLayer, layerId: string): void;
 
   override _getPolygonConfiguration(): PointSourcePolygonConfig;
 
@@ -141,11 +145,7 @@ declare class PointVisionSource<
    */
   protected _createRestrictedPolygon(): PointSourcePolygon;
 
-  override _configureShaders(): {
-    background: AdaptiveLightingShader;
-    coloration: AdaptiveLightingShader;
-    illumination: AdaptiveLightingShader;
-  };
+  override _configureShaders(): Record<keyof RenderingLayers, typeof AdaptiveVisionShader>;
 
   override _updateColorationUniforms(): void;
 
@@ -164,11 +164,11 @@ declare class PointVisionSource<
 }
 
 declare namespace PointVisionSource {
-  type Any = PointVisionSource<VisionSourceData>;
+  type Any = PointVisionSource<SourceData>;
 
-  interface VisionSourceData
-    extends RenderedEffectSource.RenderedEffectSourceData,
-      PointEffectSourceMixin.PointEffectSourceData {
+  type AnyConstructor = typeof AnyPointVisionSource;
+
+  interface SourceData extends RenderedEffectSource.SourceData, PointEffectSourceMixin.SourceData {
     /**
      * The amount of contrast
      */
@@ -197,7 +197,7 @@ declare namespace PointVisionSource {
     /**
      * The range of light perception.
      */
-    lightRadius: number;
+    lightRadius: number | null;
 
     /**
      * Is this vision source blinded?
@@ -206,7 +206,8 @@ declare namespace PointVisionSource {
   }
 }
 
-type PointVisionSourceData = PointEffectSourceMixin.PointEffectSourceData &
-  RenderedEffectSource.RenderedEffectSourceData;
+declare abstract class AnyPointVisionSource extends PointVisionSource {
+  constructor(arg0: never, ...args: never[]);
+}
 
 export default PointVisionSource;

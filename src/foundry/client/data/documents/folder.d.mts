@@ -1,4 +1,4 @@
-import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
+import type { DeepPartial, InexactPartial } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 import type BaseFolder from "../../../common/documents/folder.d.mts";
@@ -9,6 +9,7 @@ declare global {
 
     type ConfiguredClass = Document.ConfiguredClassForName<"Folder">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Folder">;
+    type Stored = Document.Stored<ConfiguredInstance>;
 
     interface DatabaseOperations extends DocumentDatabaseOperations<Folder> {}
 
@@ -18,6 +19,11 @@ declare global {
     type UpdateData = BaseFolder.UpdateData;
     type Schema = BaseFolder.Schema;
     type Source = BaseFolder.Source;
+
+    /**
+     * Actual document types that go in folders
+     */
+    type DocumentType = Exclude<foundry.CONST.FOLDER_DOCUMENT_TYPES, "Compendium">;
 
     interface ExportToCompendiumOptions {
       /** Update existing entries in the Compendium pack, matching by name */
@@ -33,6 +39,10 @@ declare global {
    */
   class Folder extends ClientDocumentMixin(foundry.documents.BaseFolder) {
     static override metadata: Folder.Metadata;
+
+    // TODO(LukeAbby): This random override is a symptom of a greater issue.
+    // Namely that `ClientDocumentMixin` incidentally erases some properties and breaks configuration.
+    documentName: "Folder";
 
     /**
      * The depth of this folder in its sidebar tree

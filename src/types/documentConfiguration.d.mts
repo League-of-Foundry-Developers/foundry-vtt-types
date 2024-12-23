@@ -12,8 +12,7 @@ import type BaseTableResult from "../foundry/common/documents/table-result.d.mts
 import type BaseToken from "../foundry/common/documents/token.d.mts";
 import type BaseUser from "../foundry/common/documents/user.d.mts";
 import type BaseWall from "../foundry/common/documents/wall.d.mts";
-import type { ConformRecord, InterfaceToObject, MakeConform, MustConform } from "./helperTypes.d.mts";
-import type { Merge } from "./utils.d.mts";
+import type { ConformRecord, InterfaceToObject, MakeConform, MustConform, Merge } from "../utils/index.d.mts";
 
 type DocumentConform<T> = MakeConform<T, Document.AnyConstructor>;
 
@@ -155,8 +154,8 @@ interface _ConfiguredMetadata<ThisType extends Document.Internal.Instance.Any> {
       label: string;
       labelPlural: string;
       permissions: {
-        create: (user: BaseUser, doc: ThisType) => boolean;
-        update: (user: BaseUser, doc: ThisType, data: BaseActor.UpdateData) => boolean;
+        create(user: BaseUser, doc: ThisType): boolean;
+        update(user: BaseUser, doc: ThisType, data: BaseActor.UpdateData): boolean;
       };
       schemaVersion: string;
     }
@@ -234,8 +233,8 @@ interface _ConfiguredMetadata<ThisType extends Document.Internal.Instance.Any> {
       labelPlural: string;
       isPrimary: true;
       permissions: {
-        create: (user: BaseUser, doc: ThisType) => boolean;
-        update: (user: BaseUser, doc: ThisType, data: BaseChatMessage.UpdateData) => boolean;
+        create(user: BaseUser, doc: ThisType): boolean;
+        update(user: BaseUser, doc: ThisType, data: BaseChatMessage.UpdateData): boolean;
       };
       schemaVersion: string;
     }
@@ -252,7 +251,7 @@ interface _ConfiguredMetadata<ThisType extends Document.Internal.Instance.Any> {
       };
       hasTypeData: true;
       permissions: {
-        update: (user: BaseUser, doc: ThisType, data: BaseCombat.UpdateData) => boolean;
+        update(user: BaseUser, doc: ThisType, data: BaseCombat.UpdateData): boolean;
       };
       schemaVersion: string;
     }
@@ -268,8 +267,8 @@ interface _ConfiguredMetadata<ThisType extends Document.Internal.Instance.Any> {
       hasTypeData: true;
       schemaVersion: string;
       permissions: {
-        create: (user: BaseUser, doc: ThisType) => boolean;
-        update: (user: BaseUser, doc: ThisType, data: BaseCombatant.UpdateData) => boolean;
+        create(user: BaseUser, doc: ThisType): boolean;
+        update(user: BaseUser, doc: ThisType, data: BaseCombatant.UpdateData): boolean;
       };
     }
   >;
@@ -283,8 +282,8 @@ interface _ConfiguredMetadata<ThisType extends Document.Internal.Instance.Any> {
       isEmbedded: true;
       permissions: {
         create: "DRAWING_CREATE";
-        update: (user: BaseUser, doc: ThisType, data: BaseDrawing.UpdateData) => boolean;
-        delete: (user: BaseUser, doc: ThisType, data: BaseDrawing.UpdateData) => boolean;
+        update(user: BaseUser, doc: ThisType, data: BaseDrawing.UpdateData): boolean;
+        delete(user: BaseUser, doc: ThisType, data: BaseDrawing.UpdateData): boolean;
       };
       schemaVersion: string;
     }
@@ -299,8 +298,8 @@ interface _ConfiguredMetadata<ThisType extends Document.Internal.Instance.Any> {
       isPrimary: true;
       permissions: {
         create: "PLAYER";
-        update: (user: BaseUser, doc: ThisType, data: BaseFogExploration.UpdateData) => boolean;
-        delete: (user: BaseUser, doc: ThisType, data: BaseFogExploration.UpdateData) => boolean;
+        update(user: BaseUser, doc: ThisType, data: BaseFogExploration.UpdateData): boolean;
+        delete(user: BaseUser, doc: ThisType, data: BaseFogExploration.UpdateData): boolean;
       };
       schemaVersion: string;
     }
@@ -372,8 +371,8 @@ interface _ConfiguredMetadata<ThisType extends Document.Internal.Instance.Any> {
       labelPlural: string;
       coreTypes: CONST.MACRO_TYPES[];
       permissions: {
-        create: (user: BaseUser, doc: ThisType) => boolean;
-        update: (user: BaseUser, doc: ThisType) => boolean;
+        create(user: BaseUser, doc: ThisType): boolean;
+        update(user: BaseUser, doc: ThisType): boolean;
       };
       schemaVersion: string;
     }
@@ -387,9 +386,9 @@ interface _ConfiguredMetadata<ThisType extends Document.Internal.Instance.Any> {
       labelPlural: string;
       isEmbedded: true;
       permissions: {
-        create: (user: BaseUser, doc: ThisType) => boolean;
-        update: (user: BaseUser, doc: ThisType, data: BaseMeasuredTemplate.UpdateData) => boolean;
-        delete: (user: BaseUser, doc: ThisType, data: BaseMeasuredTemplate.UpdateData) => boolean;
+        create(user: BaseUser, doc: ThisType): boolean;
+        update(user: BaseUser, doc: ThisType, data: BaseMeasuredTemplate.UpdateData): boolean;
+        delete(user: BaseUser, doc: ThisType, data: BaseMeasuredTemplate.UpdateData): boolean;
       };
       schemaVersion: string;
     }
@@ -479,9 +478,9 @@ interface _ConfiguredMetadata<ThisType extends Document.Internal.Instance.Any> {
       label: string;
       labelPlural: string;
       permissions: {
-        create: (user: BaseUser, doc: ThisType, data: BaseSetting.UpdateData) => boolean;
-        update: (user: BaseUser, doc: ThisType, data: BaseSetting.UpdateData) => boolean;
-        delete: (user: BaseUser, doc: ThisType, data: BaseSetting.UpdateData) => boolean;
+        create(user: BaseUser, doc: ThisType, data: BaseSetting.UpdateData): boolean;
+        update(user: BaseUser, doc: ThisType, data: BaseSetting.UpdateData): boolean;
+        delete(user: BaseUser, doc: ThisType, data: BaseSetting.UpdateData): boolean;
       };
       schemaVersion: string;
     }
@@ -495,7 +494,7 @@ interface _ConfiguredMetadata<ThisType extends Document.Internal.Instance.Any> {
       labelPlural: string;
       coreTypes: foundry.CONST.TABLE_RESULT_TYPES[];
       permissions: {
-        update: (user: BaseUser, doc: ThisType, data: BaseTableResult.UpdateData) => boolean;
+        update(user: BaseUser, doc: ThisType, data: BaseTableResult.UpdateData): boolean;
       };
       compendiumIndexFields: ["type"];
       schemaVersion: string;
@@ -524,7 +523,7 @@ interface _ConfiguredMetadata<ThisType extends Document.Internal.Instance.Any> {
       };
       permissions: {
         create: "TOKEN_CREATE";
-        update: (user: BaseUser, doc: ThisType, data: BaseToken.UpdateData) => boolean;
+        update(user: BaseUser, doc: ThisType, data: BaseToken.UpdateData): boolean;
         delete: "TOKEN_DELETE";
       };
       schemaVersion: string;
@@ -538,9 +537,9 @@ interface _ConfiguredMetadata<ThisType extends Document.Internal.Instance.Any> {
       label: string;
       labelPlural: string;
       permissions: {
-        create: (user: BaseUser, doc: ThisType, data: BaseUser.UpdateData) => boolean;
-        update: (user: BaseUser, doc: ThisType, changes: BaseUser.UpdateData) => boolean;
-        delete: (user: BaseUser, doc: ThisType) => boolean;
+        create(user: BaseUser, doc: ThisType, data: BaseUser.UpdateData): boolean;
+        update(user: BaseUser, doc: ThisType, changes: BaseUser.UpdateData): boolean;
+        delete(user: BaseUser, doc: ThisType): boolean;
       };
       schemaVersion: string;
     }
@@ -553,7 +552,7 @@ interface _ConfiguredMetadata<ThisType extends Document.Internal.Instance.Any> {
       label: string;
       labelPlural: string;
       permissions: {
-        update: (user: BaseUser, doc: ThisType, data: BaseWall.UpdateData) => boolean;
+        update(user: BaseUser, doc: ThisType, data: BaseWall.UpdateData): boolean;
       };
       schemaVersion: string;
     }

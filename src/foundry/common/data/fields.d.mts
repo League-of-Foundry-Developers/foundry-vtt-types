@@ -6,10 +6,12 @@ import type {
   EmptyObject,
   NullishProps,
   InexactPartial,
-} from "../../../types/utils.d.mts";
+  AnyConstructor,
+  ToMethod,
+} from "../../../utils/index.d.mts";
 import type { DataModel } from "../abstract/data.mts";
 import type Document from "../abstract/document.mts";
-import type { EmbeddedCollection, EmbeddedCollectionDelta } from "../abstract/module.d.mts";
+import type { EmbeddedCollection, EmbeddedCollectionDelta, TypeDataModel } from "../abstract/module.d.mts";
 import type { DOCUMENT_OWNERSHIP_LEVELS } from "../constants.d.mts";
 import type { CONST } from "../../client-esm/client.d.mts";
 import type { DataModelValidationFailure } from "./validation-failure.mts";
@@ -54,7 +56,7 @@ declare global {
       | undefined;
 
     /** A data validation function which accepts one argument with the current value. */
-    validate?: DataField.Validator | undefined;
+    validate?: DataField.Validator<BaseAssignmentType> | undefined;
 
     /** A localizable label displayed on forms which render this field. */
     label?: string | undefined;
@@ -73,7 +75,11 @@ declare global {
 
   namespace DataFieldOptions {
     /** Any DataFieldOptions. */
-    type Any = DataFieldOptions<any>;
+    // Note(LukeAbby): This `& object` is intentional. Its purpose is to allow options like `{ integer: true }` to be assigned.
+    // This is an issue because `{ integer: true }` does not extend `{ required?: boolean }` because they have properties in common.
+    // Even though `{ integer: true, required: undefined }` would extend `{ required?: boolean }` following the regular rules of surplus properties being allowed.
+    // `object` was chosen over `AnyObject` so that people may pass in interfa
+    type Any = DataFieldOptions<any> & object;
 
     /**
      * A helper type for the {@link DataFieldOptions.initial} option.
@@ -120,7 +126,7 @@ declare global {
  * @typeParam PersistedType   - the type of the persisted values of the DataField
  * @remarks
  * Defaults:
- * AssignmentType: `any | null | undefined`
+ * AssignmentType: `unknown | null | undefined`
  * InitializedType: `unknown | undefined`
  * PersistedType: `unknown | undefined`
  * InitialValue: `undefined`
@@ -131,6 +137,9 @@ declare abstract class DataField<
   const InitializedType = DataField.InitializedType<Options>,
   const PersistedType extends unknown | null | undefined = InitializedType,
 > {
+  // Prevent from being bivariant.
+  #assignmentType: AssignmentType;
+
   /**
    * @param options - Options which configure the behavior of the field
    */
@@ -498,7 +507,7 @@ declare abstract class DataField<
 
 declare namespace DataField {
   /** Any DataField. */
-  type Any = DataField<any, any, any, any>;
+  type Any = DataField<DataFieldOptions.Any, unknown, unknown, unknown>;
 
   type AnyConstructor = typeof AnyDataField;
 
@@ -606,8 +615,14 @@ declare namespace DataField {
    *
    * An Error may be thrown which provides a custom error message explaining the reason the value is invalid.
    */
-  // TODO(LukeAbby): `value: never` is a stopgap because of emergent errors. Pass back in `BaseAssignmentType` instead of `value: never` which is too lenient.
-  type Validator = (this: DataField, value: never, options: ValidationOptions<DataField>) => boolean | void;
+  type Validator<BaseAssignmentType> = ToMethod<
+    (
+      this: DataField,
+      // TODO(LukeAbby): Always allowing `null | undefined` may be too lenient but it's probably the best type for the time being.
+      value: BaseAssignmentType | null | undefined,
+      options: ValidationOptions<DataField>,
+    ) => DataModelValidationFailure | boolean | void
+  >;
 
   /**
    * An interface for the options of the {@link DataField} validation functions.
@@ -615,7 +630,7 @@ declare namespace DataField {
    */
   interface ValidationOptions<DataField extends DataField.Any> extends DataValidationOptions {
     source?: AnyObject;
-    validate?: Validator;
+    validate?: Validator<DataField.AssignmentTypeFor<DataField>>;
   }
 
   interface Context {
@@ -646,7 +661,9 @@ declare namespace DataField {
   interface GroupConfig extends NullishProps<FormGroupConfig, "label" | "hint" | "input"> {}
 }
 
-declare abstract class AnyDataField extends DataField<any, any, any, any> {}
+declare abstract class AnyDataField extends DataField<any, any, any, any> {
+  constructor(arg0: never, ...args: never[]);
+}
 
 /**
  * A special class of {@link DataField} which defines a data schema.
@@ -766,6 +783,11 @@ declare class SchemaField<
 
   override toObject(value: InitializedType): PersistedType;
 
+  override apply<Options, Return>(
+    fn: keyof this | ((this: this, value: undefined | null, options: Options) => Return),
+    value?: undefined | null,
+    options?: Options,
+  ): Return;
   override apply<Value, Options, Return>(
     fn: keyof this | ((this: this, value: Value, options: Options) => Return),
     value: Value,
@@ -1566,7 +1588,7 @@ declare namespace ObjectField {
  */
 declare class ArrayField<
   const ElementFieldType extends DataField.Any | Document.AnyConstructor,
-  const Options extends ArrayField.Options<AssignmentElementType> = ArrayField.DefaultOptions<
+  const Options extends ArrayField.AnyOptions = ArrayField.DefaultOptions<
     ArrayField.AssignmentElementType<ElementFieldType>
   >,
   const AssignmentElementType = ArrayField.AssignmentElementType<ElementFieldType>,
@@ -1680,6 +1702,8 @@ declare namespace ArrayField {
    */
   type Options<AssignmentElementType> = DataFieldOptions<BaseAssignmentType<AssignmentElementType>>;
 
+  type AnyOptions = Options<unknown>;
+
   /**
    * The base assignment type for the {@link ArrayField} class.
    * @typeParam AssignmentElementType - the assignment type of the elements in the array
@@ -1708,7 +1732,7 @@ declare namespace ArrayField {
    * @typeParam AssignmentElementType - the assignment type of the elements of the ArrayField
    * @typeParam Opts                  - the options that override the default options
    */
-  type MergedOptions<AssignmentElementType, Opts extends Options<AssignmentElementType>> = SimpleMerge<
+  type MergedOptions<AssignmentElementType, Opts extends AnyOptions> = SimpleMerge<
     DefaultOptions<AssignmentElementType>,
     Opts
   >;
@@ -1751,10 +1775,7 @@ declare namespace ArrayField {
    * @typeParam AssignmentElementType - the assignment type of the elements of the ArrayField
    * @typeParam Opts                  - the options that override the default options
    */
-  type AssignmentType<
-    AssignmentElementType,
-    Opts extends Options<AssignmentElementType>,
-  > = DataField.DerivedAssignmentType<
+  type AssignmentType<AssignmentElementType, Opts extends AnyOptions> = DataField.DerivedAssignmentType<
     BaseAssignmentType<AssignmentElementType>,
     MergedOptions<AssignmentElementType, Opts>
   >;
@@ -1768,7 +1789,7 @@ declare namespace ArrayField {
   type InitializedType<
     AssignmentElementType,
     InitializedElementType,
-    Opts extends Options<AssignmentElementType>,
+    Opts extends AnyOptions,
   > = DataField.DerivedInitializedType<InitializedElementType[], MergedOptions<AssignmentElementType, Opts>>;
 
   /**
@@ -1780,7 +1801,7 @@ declare namespace ArrayField {
   type PersistedType<
     AssignmentElementType,
     PersistedElementType,
-    Opts extends Options<AssignmentElementType>,
+    Opts extends AnyOptions,
   > = DataField.DerivedInitializedType<PersistedElementType[], MergedOptions<AssignmentElementType, Opts>>;
 }
 
@@ -1804,9 +1825,7 @@ declare namespace ArrayField {
  */
 declare class SetField<
   ElementFieldType extends DataField.Any,
-  Options extends SetField.Options<AssignmentElementType> = SetField.DefaultOptions<
-    ArrayField.AssignmentElementType<ElementFieldType>
-  >,
+  Options extends SetField.AnyOptions = SetField.DefaultOptions<ArrayField.AssignmentElementType<ElementFieldType>>,
   AssignmentElementType = ArrayField.AssignmentElementType<ElementFieldType>,
   InitializedElementType = ArrayField.InitializedElementType<ElementFieldType>,
   AssignmentType = SetField.AssignmentType<AssignmentElementType, Options>,
@@ -1862,6 +1881,8 @@ declare namespace SetField {
    */
   type Options<AssignmentElementType> = DataFieldOptions<SetField.BaseAssignmentType<AssignmentElementType>>;
 
+  type AnyOptions = Options<unknown>;
+
   /**
    * The base assignment type for the {@link SetField} class.
    * @typeParam AssignmentElementType - the assignment type of the elements in the array
@@ -1879,7 +1900,7 @@ declare namespace SetField {
    * @typeParam AssignmentElementType - the assignment type of the elements of the SetField
    * @typeParam Opts                  - the options that override the default options
    */
-  type MergedOptions<AssignmentElementType, Opts extends Options<AssignmentElementType>> = SimpleMerge<
+  type MergedOptions<AssignmentElementType, Opts extends AnyOptions> = SimpleMerge<
     DefaultOptions<AssignmentElementType>,
     Opts
   >;
@@ -1889,10 +1910,7 @@ declare namespace SetField {
    * @typeParam AssignmentElementType - the assignment type of the elements of the SetField
    * @typeParam Opts                  - the options that override the default options
    */
-  type AssignmentType<
-    AssignmentElementType,
-    Opts extends Options<AssignmentElementType>,
-  > = DataField.DerivedAssignmentType<
+  type AssignmentType<AssignmentElementType, Opts extends AnyOptions> = DataField.DerivedAssignmentType<
     BaseAssignmentType<AssignmentElementType>,
     MergedOptions<AssignmentElementType, Opts>
   >;
@@ -1906,7 +1924,7 @@ declare namespace SetField {
   type InitializedType<
     AssignmentElementType,
     InitializedElementType,
-    Opts extends Options<AssignmentElementType>,
+    Opts extends AnyOptions,
   > = DataField.DerivedInitializedType<Set<InitializedElementType>, MergedOptions<AssignmentElementType, Opts>>;
 
   /**
@@ -1918,7 +1936,7 @@ declare namespace SetField {
   type PersistedType<
     AssignmentElementType,
     PersistedElementType,
-    Opts extends Options<AssignmentElementType>,
+    Opts extends AnyOptions,
   > = DataField.DerivedInitializedType<PersistedElementType[], MergedOptions<AssignmentElementType, Opts>>;
 
   type ToInputConfig<ElementFieldType extends DataField.Any, InitializedType> = ElementFieldType extends {
@@ -1962,7 +1980,7 @@ declare class EmbeddedDataField<
    */
   model: ModelType;
 
-  protected override _initialize(fields: DataSchema): DataSchema;
+  protected override _initialize(fields: DataModel.SchemaOfClass<ModelType>): DataModel.SchemaOfClass<ModelType>;
 
   override initialize(
     value: PersistedType,
@@ -3902,11 +3920,53 @@ declare namespace TypeDataField {
   /**
    * Get the system DataModel configuration for a specific document type.
    * @typeParam DocumentType - the type of the Document this system data is for
+   *
+   * @deprecated - This helper is from a time where {@link DataModelConfig | `DataModelConfig`}
+   * was still recommended to use instances. This will always return instances but
+   * its name is now misleading. For a replacement see {@link DataModelInstances | `DataModelInstances`}.
+   * If you want to get the class see {@link DataModelClasses | `DataModelClasses`}.
    */
-  type Config<DocumentType extends Document.SystemConstructor> =
-    DocumentType["metadata"]["name"] extends keyof DataModelConfig
-      ? DataModelConfig[DocumentType["metadata"]["name"]]
-      : EmptyObject;
+  type Config<DocumentType extends Document.SystemConstructor> = DataModelInstances<DocumentType["metadata"]["name"]>;
+
+  type DataModelInstances<DocumentType extends Document.Type> = DocumentType extends keyof DataModelConfig
+    ? _ToInstances<DataModelConfig[DocumentType]>
+    : EmptyObject;
+
+  /**
+   * @internal
+   */
+  type _ToInstances<T extends AnyObject> = {
+    [K in keyof T]: T[K] extends AnyConstructor ? InstanceType<T[K]> : T[K];
+  };
+
+  type DataModelClasses<DocumentType extends Document.Type> = DocumentType extends keyof DataModelConfig
+    ? _ToClasses<DataModelConfig[DocumentType]>
+    : EmptyObject;
+
+  /**
+   * @internal
+   */
+  type _ToClasses<T extends AnyObject> = {
+    [K in keyof T]: _ToClass<T[K]>;
+  };
+
+  /**
+   * @internal
+   * This method must go from an instance to a static side we know nothing about.
+   * This means its inherently lossy and full of assumptions.
+   * This is to support old configuration styles relatively gracefully.
+   */
+  type _ToClass<T> = T extends AnyConstructor
+    ? T
+    : T extends TypeDataModel<infer Schema, infer Parent, infer BaseData, infer DerivedData>
+      ? TypeDataModel.ConfigurationFailureClass &
+          (abstract new (...args: any[]) => T) &
+          typeof TypeDataModel<Schema, Parent, BaseData, DerivedData>
+      : T extends DataModel<infer Schema, infer Parent, infer ExtraConstructorOptions>
+        ? TypeDataModel.ConfigurationFailureClass &
+            (abstract new (...args: any[]) => T) &
+            typeof DataModel<Schema, Parent, ExtraConstructorOptions>
+        : TypeDataModel.ConfigurationFailureClass;
 
   /**
    * Get the configured core and system type names for a specific document type.
@@ -3943,9 +4003,46 @@ declare namespace TypeDataField {
     SystemDocumentConstructor extends Document.SystemConstructor,
     Opts extends Options<InstanceType<SystemDocumentConstructor>>,
   > = DataField.DerivedInitializedType<
-    ValueOf<Config<SystemDocumentConstructor>> | AnyObject,
+    ValueOf<DataModelInstances<SystemDocumentConstructor["metadata"]["name"]>> | UnknownSystem,
     MergedOptions<InstanceType<SystemDocumentConstructor>, Opts>
   >;
+
+  /**
+   * With the existence of custom module subtypes a system can no longer rely on their configured types being the only ones.
+   * A module can provide its own custom type though it is always of the form `${moduleName}.${subType}` so the `.` is a pretty
+   * strong indicator.
+   *
+   * `UnknownSourceData` covers the case where it's configured without a data model.
+   * See {@link UnknownSystem | `UnknownSystem`} for other possibilities.
+   */
+  interface UnknownSourceData extends AnyObject {
+    type: `${string}.${string}`;
+  }
+
+  /**
+   * With the existence of custom module subtypes a system can no longer rely on their configured types being the only ones.
+   * A module can provide its own custom type though it is always of the form `${moduleName}.${subType}` so the `.` is a pretty
+   * strong indicator.
+   *
+   * `UnknownTypeDataModel` covers the case where it's configured with a {@link TypeDataModel | `TypeDataModel`}.
+   * See {@link UnknownSystem | `UnknownSystem`} for other possibilities.
+   */
+  interface UnknownTypeDataModel extends TypeDataModel<any, any, any, any> {}
+
+  /**
+   * With the existence of custom module subtypes a system can no longer rely on their configured types being the only ones.
+   *
+   * `UnknownDataModel` covers the case where it's configured with a {@link DataModel | `DataModel`}.
+   * Using a {@link TypeDataModel | `TypeDataModel`} is recommended by Foundry but a {@link DataModel | `DataModel`} is
+   * always possible.
+   * See {@link UnknownSystem | `UnknownSystem`} for other possibilities.
+   */
+  interface UnknownDataModel extends DataModel<any, any, any> {}
+
+  /**
+   * With the existence of custom module subtypes a system can no longer rely on their configured types being the only ones.
+   */
+  type UnknownSystem = UnknownSourceData | UnknownTypeDataModel | UnknownDataModel;
 
   /**
    * A shorthand for the persisted type of a TypeDataField class.

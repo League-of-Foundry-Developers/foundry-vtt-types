@@ -1,5 +1,4 @@
-import type { DatabaseOperationsFor } from "../../../../types/helperTypes.d.mts";
-import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
+import type { DeepPartial, InexactPartial } from "../../../../utils/index.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
@@ -180,8 +179,12 @@ declare global {
 
     static createDocuments<T extends Document.AnyConstructor, Temporary extends boolean | undefined>(
       this: T,
-      data: Array<fields.SchemaField.AssignmentType<InstanceType<NoInfer<T>>["schema"]["fields"]> & Record<string, unknown>>,
-      operation?: InexactPartial<Omit<DatabaseOperationsFor<NoInfer<T>["metadata"]["name"], "create">, "data">> & {
+      data: Array<
+        fields.SchemaField.AssignmentType<InstanceType<NoInfer<T>>["schema"]["fields"]> & Record<string, unknown>
+      >,
+      operation?: InexactPartial<
+        Omit<Document.DatabaseOperationsFor<NoInfer<T>["metadata"]["name"], "create">, "data">
+      > & {
         temporary?: Temporary;
       },
     ): Promise<Document.ToStoredIf<T, Temporary>[] | undefined>;
@@ -342,7 +345,7 @@ declare global {
     static override createDialog<T extends Document.AnyConstructor>(
       this: T,
       data?: DeepPartial<Document.ConstructorDataFor<NoInfer<T>> & Record<string, unknown>>,
-      context?: Pick<DatabaseOperationsFor<Cards["documentName"], "create">, "parent" | "pack"> &
+      context?: Pick<Document.DatabaseOperationsFor<Cards["documentName"], "create">, "parent" | "pack"> &
         InexactPartial<
           DialogOptions & {
             /** A restriction the selectable sub-types of the Dialog. */

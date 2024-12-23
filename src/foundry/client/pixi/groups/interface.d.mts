@@ -1,4 +1,4 @@
-import type { HandleEmptyObject, InexactPartial, NullishProps } from "../../../../types/utils.d.mts";
+import type { HandleEmptyObject, InexactPartial, NullishProps } from "../../../../utils/index.d.mts";
 
 declare global {
   /**

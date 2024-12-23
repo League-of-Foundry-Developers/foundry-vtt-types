@@ -1,4 +1,4 @@
-import type { InexactPartial, ValueOf } from "../../../../../../types/utils.d.mts";
+import type { InexactPartial, ValueOf } from "../../../../../../utils/index.d.mts";
 
 declare abstract class AnyTextureTransitionFilter extends TextureTransitionFilter {
   constructor(arg0: never, ...args: never[]);

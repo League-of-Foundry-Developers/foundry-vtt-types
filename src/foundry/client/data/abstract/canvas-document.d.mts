@@ -1,10 +1,9 @@
-import type { Mixin } from "../../../../types/utils.d.mts";
+import type { Mixin } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { ClientDocument } from "./client-document.d.mts";
 
 declare class CanvasDocument<
-  // TODO(LukeAbby): Setting this to `Scene.ConfiguredInstance` causes a lot of circular errors.
-  BaseDocument extends Document<any, any, Scene | null>,
+  BaseDocument extends Document<any, any, Scene.ConfiguredInstance | null>,
 > extends ClientDocument<BaseDocument> {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
   constructor(...args: any[]);

@@ -1,4 +1,4 @@
-import type { AnyObject } from "../../../types/utils.d.mts";
+import type { AnyObject } from "../../../utils/index.d.mts";
 import type { DatabaseOperationMap, DocumentSocketRequest } from "../../common/abstract/_types.d.mts";
 
 declare global {

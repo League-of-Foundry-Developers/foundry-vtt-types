@@ -1,5 +1,6 @@
-import type { IntentionalPartial } from "../../../../../types/helperTypes.d.mts";
-import type { NullishProps, ValueOf } from "../../../../../types/utils.d.mts";
+import type { NullishProps, IntentionalPartial, ValueOf } from "../../../../../utils/index.d.mts";
+
+export {};
 
 declare global {
   /**

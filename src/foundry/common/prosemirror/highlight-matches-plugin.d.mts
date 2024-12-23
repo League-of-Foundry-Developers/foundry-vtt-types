@@ -3,7 +3,7 @@ import type ProseMirrorPlugin from "./plugin.d.mts";
 import type { ProseMirrorMenu } from "./menu.d.mts";
 import { EditorState, Plugin } from "prosemirror-state";
 import { EditorView } from "prosemirror-view";
-import type { EmptyObject, InexactPartial } from "../../../types/utils.d.mts";
+import type { EmptyObject, InexactPartial } from "../../../utils/index.d.mts";
 
 declare namespace ProseMirrorHighlightMatchesPlugin {
   /**

@@ -1,14 +1,22 @@
 {
   "$schema": "https://json.schemastore.org/package.json",
   "name": "@league-of-foundry-developers/foundry-vtt-types",
-  "version": "12.331.2-beta",
+  "version": "12.331.3-beta",
   "description": "TypeScript type definitions for Foundry VTT",
   "type": "module",
   "types": "./index.d.mts",
+  "exports": {
+    ".": {
+      "types": "./index.d.mts"
+    },
+    "./utils": {
+      "types": "./src/utils/index.d.mts"
+    }
+  },
   "scripts": {
-    "lint": "./node_modules/typescript/bin/tsc; eslint .",
-    "lint:fix": "eslint --fix .",
-    "lint:ci": "eslint .",
+    "lint": "./node_modules/typescript/bin/tsc; eslint .; prettier -c .",
+    "lint:fix": "eslint --fix .; prettier -l -w .",
+    "lint:ci": "eslint .; prettier -c .",
     "eslint:report": "eslint --output-file eslint_report.json --format json .",
     "test": "vitest --typecheck",
     "typecheck": "./node_modules/typescript/bin/tsc",
@@ -20,6 +28,9 @@
     "url": "https://github.com/League-of-Foundry-Developers/foundry-vtt-types"
   },
   "contributors": [
+    {
+      "name": "LukeAbby"
+    },
     {
       "name": "Kai Moschcau"
     },
@@ -81,7 +92,6 @@
     "tinymce": "^6.8.3"
   },
   "devDependencies": {
-    "@fvtt-types/fvtt-types": "file:.",
     "@typescript-eslint/eslint-plugin": "^8.12.2",
     "@typescript-eslint/parser": "^8.12.2",
     "eslint": "^8.57.1",
@@ -89,18 +99,19 @@
     "eslint-import-resolver-typescript": "^3.6.1",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-tsdoc": "^0.4.0",
+    "fvtt-types": "file:.",
     "husky": "^9.1.4",
     "is-ci": "^4.1.0",
     "lint-staged": "^15.2.10",
     "prettier": "^3.0.3",
     "typescript": "~5.7",
-    "vitest": "^2.1.4"
+    "vitest": "^2.1.8"
   },
   "peerDependencies": {
     "typescript": "^5.4"
   },
   "overrides": {
-    "@types/css-font-loading-module": "^0.0.12s"
+    "@types/css-font-loading-module": "^0.0.14"
   },
   "resolutions": {
     "@types/earcut": "patch:@types/earcut@2.1.4#./patches/@types+earcut+2.1.4.patch"
@@ -121,6 +132,5 @@
   ],
   "publishConfig": {
     "access": "public"
-  },
-  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+  }
 }

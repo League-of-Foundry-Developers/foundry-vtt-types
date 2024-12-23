@@ -149,7 +149,7 @@ declare class ActorSheet<Options extends ActorSheet.Options = ActorSheet.Options
 
 #### Type for a class being used as a value (e.g. assigned to a variable)
 
-If the type is not configurable by the user, it should most likely be `ConstructorOf<NameOfTheClass>`. This will also
+If the type is not configurable by the user, it should most likely be `NameOfTheClass.AnyConstructor`. This will also
 allow deriving classes to be used as value. In rare occasions (i.e. when really only instances of this specific class
 may be assigned, no deriving classes), `typeof NameOfTheClass` can be used.
 
@@ -168,7 +168,7 @@ Actor: {
   /**
    * @defaultValue `Actors`
    */
-  collection: ConstructorOf<Actors>;
+  collection: Actors.AnyConstructor;
 }
 ```
 

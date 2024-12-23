@@ -1,4 +1,4 @@
-import type { DeepPartial, InexactPartial } from "../../../../types/utils.d.mts";
+import type { DeepPartial, InexactPartial } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 import type BaseActor from "../../../common/documents/actor.d.mts";
@@ -18,7 +18,13 @@ declare global {
         Item.ConfiguredInstance & {
           type: K;
         } & (DataModelConfig extends { Item: { readonly [_ in K]?: infer SystemData } }
-            ? { system: SystemData }
+            ? {
+                // For backwards compatability both instances and classes are supported for the time being.
+                // Only constructors are valid however.
+                system: SystemData extends abstract new (arg0: never, ...args: never[]) => infer Instance
+                  ? Instance
+                  : SystemData;
+              }
             : // eslint-disable-next-line @typescript-eslint/no-empty-object-type
               {})
       >;
@@ -77,6 +83,9 @@ declare global {
    */
   class Actor extends ClientDocumentMixin(foundry.documents.BaseActor) {
     static override metadata: Actor.Metadata;
+
+    // NOTE(LukeAbby): Helps stymy circularity.
+    // get documentName(): "Actor";
 
     protected override _configure(options?: { pack?: string | null }): void;
 

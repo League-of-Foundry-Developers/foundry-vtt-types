@@ -1,6 +1,6 @@
 import type BaseGrid from "./base.d.mts";
 
-import type { InexactPartial } from "../../../types/utils.d.mts";
+import type { InexactPartial } from "../../../utils/index.d.mts";
 
 declare class HexagonalGrid extends BaseGrid {
   /**
@@ -320,7 +320,11 @@ declare class HexagonalGrid extends BaseGrid {
    * @returns The offset coordinate
    * @deprecated Since v12 until v14. No Replacement
    */
-  static pixelsToOffset(point: Canvas.Point, config: HexagonalGrid.Configuration, method?: keyof Math): HexagonalGrid.Coordinates;
+  static pixelsToOffset(
+    point: Canvas.Point,
+    config: HexagonalGrid.Configuration,
+    method?: keyof Math,
+  ): HexagonalGrid.Coordinates;
 
   /**
    * Compute the shortest path between two hexagons using the A-star algorithm.

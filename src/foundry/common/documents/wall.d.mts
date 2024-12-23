@@ -1,4 +1,4 @@
-import type { AnyObject } from "../../../types/utils.mts";
+import type { AnyObject } from "../../../utils/index.d.mts";
 import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
 import type * as fields from "../data/fields.d.mts";
@@ -61,15 +61,6 @@ declare namespace BaseWall {
      */
     attenuation: fields.BooleanField;
   }
-
-  interface CoordinateOptions {
-    required: true;
-    integer: true;
-    nullable: false;
-    validate: (c: [x0: number, y0: number, x1: number, y1: number]) => boolean;
-    validationError: "must be a length-4 array of integer coordinates";
-  }
-
   interface Schema extends DataSchema {
     /**
      * The _id which uniquely identifies this BaseWall embedded document
@@ -80,15 +71,18 @@ declare namespace BaseWall {
     /**
      * The wall coordinates, a length-4 array of finite numbers [x0,y0,x1,y1]
      */
-    // TODO(LukeAbby): Make the array shape easier to override.
     c: fields.ArrayField<
-      fields.NumberField<CoordinateOptions>,
-      fields.ArrayField.DefaultOptions<fields.ArrayField.AssignmentElementType<fields.NumberField<CoordinateOptions>>>,
-      fields.ArrayField.AssignmentElementType<fields.NumberField<CoordinateOptions>>,
-      fields.ArrayField.InitializedElementType<fields.NumberField<CoordinateOptions>>,
+      fields.NumberField<{ required: true; integer: true; nullable: false }>,
+      {
+        validate: (c: [x0: number, y0: number, x1: number, y1: number]) => boolean;
+        validationError: "must be a length-4 array of integer coordinates";
+      },
+      // TODO(LukeAbby): Make the array shape easier to override.
+      fields.ArrayField.AssignmentElementType<fields.NumberField<{ required: true; integer: true; nullable: false }>>,
+      fields.ArrayField.InitializedElementType<fields.NumberField<{ required: true; integer: true; nullable: false }>>,
       [x0: number, y0: number, x1: number, y1: number],
       [x0: number, y0: number, x1: number, y1: number],
-      fields.ArrayField.PersistedElementType<fields.NumberField<CoordinateOptions>>,
+      fields.ArrayField.PersistedElementType<fields.NumberField<{ required: true; integer: true; nullable: false }>>,
       [x0: number, y0: number, x1: number, y1: number]
     >;
 

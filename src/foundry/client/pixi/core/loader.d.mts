@@ -1,4 +1,4 @@
-import type { AnyObject } from "../../../../types/utils.d.mts";
+import type { AnyObject } from "../../../../utils/index.d.mts";
 
 declare global {
   /**
@@ -138,7 +138,7 @@ declare global {
      * @remarks `"TextureLoader.textureBufferDataMap is deprecated without replacement. Use TextureLoader.getTextureAlphaData`
      * `to create a texture data map and cache it automatically, or create your own caching system."`
      */
-    static get textureBufferDataMap(): Map<string, AnyObject>
+    static get textureBufferDataMap(): Map<string, AnyObject>;
 
     /**
      * A global reference to the singleton texture loader

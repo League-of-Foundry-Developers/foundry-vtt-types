@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
-import type { AnyObject } from "../../../../src/types/utils.d.mts";
-import type AdditionalTypesField from "../../../../src/foundry/common/packages/sub-types.d.mts";
+import type { AnyObject } from "fvtt-types/utils";
+import AdditionalTypesField = foundry.common.packages.subTypes.AdditionalTypesField;
 
 const mySystem = new foundry.packages.BaseModule({
   changelog: "Test",

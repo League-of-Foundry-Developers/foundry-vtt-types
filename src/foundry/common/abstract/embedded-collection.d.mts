@@ -1,4 +1,4 @@
-import type { ConstructorOf, InexactPartial } from "../../../types/utils.d.mts";
+import type { InexactPartial } from "../../../utils/index.d.mts";
 import type _Collection from "../utils/collection.d.mts";
 import type { DatabaseAction, DatabaseOperation } from "./_types.d.mts";
 import type Document from "./document.d.mts";
@@ -23,19 +23,21 @@ declare const Collection: CollectionConstructor;
  */
 declare class EmbeddedCollection<
   ContainedDocument extends foundry.abstract.Document.Any,
-  ParentDataModel extends foundry.abstract.Document.Any,
+  ParentDocument extends foundry.abstract.Document.Any,
 > extends Collection<ContainedDocument> {
   /**
    * @param name          - The name of this collection in the parent Document.
-   * @param parent        - The parent DataModel instance to which this collection belongs
+   * @param parent        - The parent Document instance to which this collection belongs
    * @param sourceArray   - The source data array for the collection in the parent Document data
+   *
+   * @remarks Foundry documents parent as being a `DataModel` but it actually has to be a `Document`.
    */
-  constructor(name: string, parent: ParentDataModel, sourceArray: ContainedDocument["_source"][]);
+  constructor(name: string, parent: ParentDocument, sourceArray: ContainedDocument["_source"][]);
 
   /**
    * The Document implementation used to construct instances within this collection
    */
-  readonly documentClass: ConstructorOf<ContainedDocument>;
+  readonly documentClass: abstract new (arg0: never, ...args: never) => ContainedDocument;
 
   /**
    * The name of this collection in the parent Document.
@@ -45,7 +47,7 @@ declare class EmbeddedCollection<
   /**
    * The parent DataModel to which this EmbeddedCollection instance belongs.
    */
-  readonly model: ParentDataModel;
+  readonly model: ParentDocument;
 
   /**
    * Has this embedded collection been initialized as a one-time workflow?
@@ -247,6 +249,34 @@ declare class EmbeddedCollection<
     operation: DatabaseOperation,
     user: foundry.documents.BaseUser,
   ): void;
+
+  /**
+   * Find all Documents which match a given search term using a full-text search against their indexed HTML fields and their name.
+   * If filters are provided, results are filtered to only those that match the provided values.
+   * @param search   - An object configuring the search
+   *
+   * @remarks This is added in `Game#setupGame` through monkeypatching; `foundry.abstract.EmbeddedCollection.prototype.search = DocumentCollection.prototype.search;`
+   * this technically means it's not set until right after init.
+   */
+  search(
+    search?: InexactPartial<{
+      /**
+       * A case-insensitive search string
+       * @defaultValue `""`
+       */
+      query: string;
+      /**
+       * An array of filters to apply
+       * @defaultValue `[]`
+       */
+      filters: FieldFilter[];
+      /**
+       * An array of document IDs to exclude from search results
+       * @defaultValue `[]`
+       */
+      exclude: string[];
+    }>,
+  ): ContainedDocument[];
 }
 
 export default EmbeddedCollection;

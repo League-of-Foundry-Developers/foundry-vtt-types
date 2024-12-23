@@ -21,7 +21,7 @@ import * as _canvas from "./canvas/_module.mjs";
 import * as _helpers from "./helpers/_module.mjs";
 import * as _data from "./data/_module.mjs";
 import * as _dice from "./dice/_module.mjs";
-import type { AnyObject } from "../../types/utils.d.mts";
+import type { AnyObject } from "../../utils/index.d.mts";
 
 /**
  * Constant definitions used throughout the Foundry Virtual Tabletop framework.

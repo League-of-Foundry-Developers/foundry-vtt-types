@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { ValueOf } from "../../../../../../src/types/utils.d.mts";
+import type { ValueOf } from "fvtt-types/utils";
 
 () => {
   const myCanvas = new Canvas();

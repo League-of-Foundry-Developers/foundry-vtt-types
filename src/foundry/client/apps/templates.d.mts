@@ -1,4 +1,8 @@
-import type { FormInputConfig, NumberInputConfig, SelectInputConfig } from "../../client-esm/applications/forms/fields.d.mts";
+import type {
+  FormInputConfig,
+  NumberInputConfig,
+  SelectInputConfig,
+} from "../../client-esm/applications/forms/fields.d.mts";
 
 declare global {
   /**

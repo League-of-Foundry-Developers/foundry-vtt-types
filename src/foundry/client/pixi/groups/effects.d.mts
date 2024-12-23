@@ -1,4 +1,4 @@
-import type { HandleEmptyObject, ValueOf } from "../../../../types/utils.d.mts";
+import type { HandleEmptyObject, ValueOf } from "../../../../utils/index.d.mts";
 
 declare global {
   /**

@@ -1,24 +1,42 @@
 ---
-name: checks
+name: Checks
 
 on: # yamllint disable-line rule:truthy
-  - push
-  - pull_request
+  push:
+    branches:
+      - main
+  pull_request_target:
+    types:
+      - opened
+      - synchronize
+  merge_group:
 
 env:
-  node_version: 18
+  node_version: 23
 
 jobs:
   typecheck:
-    name: type check code base
+    # Can run untrusted code so disable all permissions.
+    permissions: {}
+    name: Type Check Code Base
     runs-on: ubuntu-latest
     steps:
-      - name: checkout code
+      # This pattern is reused a couple of times.
+      # It's so verbose because of `pull_request_target`.
+      # For security reasons by deafult it won't check out the branch the PR is coming from.
+      - name: Checkout Branch
         uses: actions/checkout@v4
-      - name: install node
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.head_ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 1
+
+      - name: Install Node
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.node_version }}
+
       - name: Cache Node.js modules
         uses: actions/cache@v4
         with:
@@ -27,19 +45,31 @@ jobs:
           restore-keys: |
             ${{ runner.OS }}-node-
             ${{ runner.OS }}-
-      - run: npm ci
-      - name: compile typescript
+
+      - run: npm ci --cache .npm --prefer-offline
+
+      - name: Type Check
         run: npm run typecheck
 
   lint:
-    name: lint code base
+    # Can run untrusted code so disable all permissions.
+    permissions: {}
+    name: Lint Code Base
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: install node
+      - name: Checkout Branch
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.head_ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 1
+
+      - name: Install Node
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.node_version }}
+
       - name: Cache Node.js modules
         uses: actions/cache@v4
         with:
@@ -48,19 +78,32 @@ jobs:
           restore-keys: |
             ${{ runner.OS }}-node-
             ${{ runner.OS }}-
-      - run: npm ci
-      - name: run eslint
+
+      - run: npm ci --cache .npm --prefer-offline
+
+      - name: Run Lints
         run: npm run lint:ci
 
   test:
-    name: test code base
+    # Can run untrusted code so disable all permissions.
+    permissions: {}
+    name: Test Code Base
     runs-on: ubuntu-latest
+    continue-on-error: true
     steps:
-      - uses: actions/checkout@v4
-      - name: install node
+      - name: Checkout Branch
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.head_ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 1
+
+      - name: Install Node
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.node_version }}
+
       - name: Cache Node.js modules
         uses: actions/cache@v4
         with:
@@ -69,6 +112,189 @@ jobs:
           restore-keys: |
             ${{ runner.OS }}-node-
             ${{ runner.OS }}-
-      - run: npm ci
-      - name: execute tests
-        run: npm test
+
+      - run: npm ci --cache .npm --prefer-offline
+
+      - name: Execute Tests
+        run: npm test -- --run --reporter github-actions --reporter=./.github/workflows/testsReporter.ts
+
+      - name: Upload Main Test Results
+        if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: main-test-results
+          path: test-results/vitest-report.json
+
+      - name: Upload Test Results
+        if: always() && github.event_name == 'pull_request_target' && github.head_ref != 'refs/heads/main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-test-results
+          path: test-results/vitest-report.json
+
+  checkCanMergeToMaintenance:
+    # Can run untrusted code so disable all permissions.
+    permissions: {}
+    name: Check Merge to Maintenance
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event.pull_request != null && !contains(github.event.pull_request.labels.*.name, 'breaking'))
+    outputs:
+      should_skip: ${{ steps.should_skip.outputs.should_skip }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: 8BitJonny/gh-get-current-pr@3.0.0
+        if: github.event.pull_request == null
+        id: PR
+
+      # Sets should_skip if this change wasn't made through a PR or if the PR is labeled as breaking.
+      - name: Check if should skip
+        id: should_skip
+        if: github.event.pull_request == null && (steps.PR.outputs.pr_found == 'false' || contains(steps.PR.outputs.pr_labels.*.name, 'breaking'))
+        run: |
+          echo "Skipping the rest of the job because this change wasn't made through a PR or the PR is labeled as breaking."
+          echo "should_skip=true" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@v4
+        if: steps.should_skip.outputs.should_skip != 'true'
+        with:
+          ref: ${{ github.head_ref || github.ref }}
+          fetch-depth: 0
+          fetch-tags: false
+
+      - name: Check for conflicts with maintenance
+        if: steps.should_skip.outputs.should_skip != 'true'
+        run: |
+          git remote add upstream https://github.com/${{ github.repository }}
+          git fetch --no-tags upstream main maintenance
+
+          # This is its own command so that if the current branch is `maintenance` it'll be overridden.
+          git checkout -B maintenance upstream/maintenance
+
+          baseRef="${{github.head_ref}}"
+          before=""
+
+          if [[ $baseRef != "" ]]; then
+            before=$(git merge-base upstream/main "$baseRef")
+          else
+            before="${{ github.event.before }}"
+          fi
+
+          range="$before..${{ github.event.pull_request.head.sha || github.event.after }}"
+
+          echo "Checking if $range can be cherry-picked onto the maintenance branch."
+
+          # Using cherry-pick preserves the history of the commits so it's normally ideal.
+          git cherry-pick --allow-empty --no-commit -m 1 "$range" || (
+            git cherry-pick --abort
+            echo "Cannot cherry-pick onto the maintenance branch! Will try git apply."
+          )
+
+          # But if an intermediary commit fails to merge cleanly then cherry-pick fails.
+          # So use a 3-way merge to apply the changes.
+          git diff c33b7c566118dfc9179a66d312f5ef36bb8a5167..526a3c747d76c1b2f61221ec56ed1e132b5e416e | git apply --3wa
+
+      - name: Install Node
+        if: steps.should_skip.outputs.should_skip != 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.node_version }}
+
+      - name: Cache Node.js modules
+        if: steps.should_skip.outputs.should_skip != 'true'
+        uses: actions/cache@v4
+        with:
+          path: .npm
+          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-node-
+            ${{ runner.OS }}-
+
+      - if: steps.should_skip.outputs.should_skip != 'true'
+        run: npm ci --cache .npm --prefer-offline
+
+      - name: Run Lints on maintenance
+        if: steps.should_skip.outputs.should_skip != 'true'
+        run: npm run lint:ci
+
+      - name: Type Check maintenance
+        if: steps.should_skip.outputs.should_skip != 'true'
+        run: npm run typecheck
+
+  mergeToMaintenance:
+    name: Merge To Maintenance
+    needs: [checkCanMergeToMaintenance]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.checkCanMergeToMaintenance.outputs.should_skip != 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: false
+
+      - name: Cherry pick commits onto maintenance
+        run: |
+          git fetch origin maintenance:maintenance
+
+          git switch maintenance
+
+          # Commit using the GitHub Actions bot user.
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          range="${{ github.event.before }}..${{ github.event.after }}"
+
+          echo "Cherry picking $range onto the maintenance branch."
+
+          # Pick the freshly added commits onto the maintenance branch.
+          if git cherry-pick --allow-empty -m 1 "$range"; then
+            exit 1
+          else
+            git cherry-pick --abort
+            echo "Falling back to 3way apply!"
+          fi
+
+          git diff c33b7c566118dfc9179a66d312f5ef36bb8a5167..526a3c747d76c1b2f61221ec56ed1e132b5e416e | git apply --3wa || (
+            echo "Both cherry-pick and 3way apply failed! This can only happen if there is a bug in checkCanMergeToMaintenance or mergeToMaintenance or someone pushed in between!" && exit 1
+          )
+
+          git commit -m "Applied c33b7c566118dfc9179a66d312f5ef36bb8a5167..526a3c747d76c1b2f61221ec56ed1e132b5e416e"
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          branch: maintenance
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+  reportTestResults:
+    name: Report Test Results
+    needs: [test]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request_target' || (github.event_name == 'push' && github.event.pull_request != null)
+    steps:
+      # This must check out main.
+      # If it didn't someone could edit `postOrUpdateTestsReport.js` to easily run arbitrary code.
+      - uses: actions/checkout@v4
+        with:
+          ref: refs/heads/main
+          fetch-depth: 1
+
+      - name: Download Main Test Results
+        uses: dawidd6/action-download-artifact@v7
+        with:
+          branch: main
+          name: main-test-results
+          path: main-test-results
+
+      - name: Download Test Results
+        uses: actions/download-artifact@v4
+        with:
+          name: pr-test-results
+          path: pr-test-results
+
+      - name: Post or Update Report
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { default: postOrUpdateTestsReport } = await import("/home/runner/work/foundry-vtt-types/foundry-vtt-types/.github/workflows/postOrUpdateTestsReport.js");
+            await postOrUpdateTestsReport({ github, context, core });
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

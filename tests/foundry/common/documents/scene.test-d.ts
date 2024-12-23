@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
-import type EmbeddedCollection from "../../../../src/foundry/common/abstract/embedded-collection.d.mts";
-import type Document from "../../../../src/foundry/common/abstract/document.d.mts";
+import EmbeddedCollection = foundry.abstract.EmbeddedCollection;
+import Document = foundry.abstract.Document;
 
 // @ts-expect-error - A BaseScene requires data.
 foundry.documents.BaseScene.create();

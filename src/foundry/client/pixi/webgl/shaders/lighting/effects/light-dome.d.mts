@@ -5,7 +5,7 @@ declare abstract class AnyLightDomeColorationShader extends LightDomeColorationS
 }
 
 declare global {
-  namespace LightDomeColorationShader  {
+  namespace LightDomeColorationShader {
     type AnyConstructor = typeof AnyLightDomeColorationShader;
   }
 

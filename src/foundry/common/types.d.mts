@@ -1,4 +1,4 @@
-import type { AnyConcreteConstructor, AnyConstructor, AnyFunction } from "../../types/utils.d.mts";
+import type { AnyConcreteConstructor, AnyConstructor, AnyFunction } from "../../utils/index.d.mts";
 import type { Document } from "./abstract/module.d.mts";
 
 // After seeing that none of these types add anything or are even exported a

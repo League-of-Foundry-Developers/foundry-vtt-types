@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
-import type Document from "../../../../../src/foundry/common/abstract/document.d.mts";
-import type { AnyObject } from "../../../../../src/types/utils.d.mts";
+import Document = foundry.abstract.Document;
+import type { AnyObject } from "fvtt-types/utils";
 
 // @ts-expect-error - requires key
 new Setting();

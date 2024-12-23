@@ -1,4 +1,4 @@
-import type { InexactPartial } from "../../../types/utils.d.mts";
+import type { InexactPartial, NullishProps } from "../../../utils/index.d.mts";
 
 declare global {
   /**
@@ -15,8 +15,15 @@ declare global {
      */
     static createThumbnail(
       src: string | PIXI.DisplayObject,
-      options?: InexactPartial<ImageHelper.CompositeOptions & ImageHelper.TextureToImageOptions>,
-    ): Promise<ImageHelper.ThumbnailReturn>;
+      options?: ImageHelper.CompositeOptions & ImageHelper.TextureToImageOptions,
+    ): Promise<ImageHelper.ThumbnailReturn> | null;
+
+    /**
+     * Test whether a source file has a supported image extension type
+     * @param src - A requested image source path
+     * @returns Does the filename end with a valid image extension?
+     */
+    static hasImageExtension(src: string): boolean;
 
     /**
      * Composite a canvas object by rendering it to a single texture
@@ -25,10 +32,7 @@ declare global {
      *                  (default: `{}`)
      * @returns The composite Texture object
      */
-    static compositeCanvasTexture(
-      object: PIXI.DisplayObject,
-      options?: InexactPartial<ImageHelper.CompositeOptions>,
-    ): PIXI.Texture;
+    static compositeCanvasTexture(object: PIXI.DisplayObject, options?: ImageHelper.CompositeOptions): PIXI.Texture;
 
     /**
      * Extract a texture to a base64 PNG string
@@ -36,10 +40,7 @@ declare global {
      * @param options - (default: `{}`)
      * @returns A base64 png string of the texture
      */
-    static textureToImage(
-      texture: PIXI.Texture,
-      options?: InexactPartial<ImageHelper.TextureToImageOptions>,
-    ): Promise<string>;
+    static textureToImage(texture: PIXI.Texture, options?: ImageHelper.TextureToImageOptions): Promise<string>;
 
     /**
      * Asynchronously convert a DisplayObject container to base64 using Canvas#toBlob and FileReader
@@ -47,12 +48,18 @@ declare global {
      * @param type    - The requested mime type of the output, default is image/png
      * @param quality - A number between 0 and 1 for image quality if image/jpeg or image/webp
      * @returns A processed base64 string
+     * @privateRemarks Foundry doesn't mark `type` or `quality` as optional, but they're passed directly to `this.canvasToBase64`, where they *are* optional.
      */
-    static pixiToBase64(target: PIXI.DisplayObject, type: string, quality: number): Promise<string>;
+    static pixiToBase64(
+      target: PIXI.DisplayObject,
+      type?: foundry.CONST.IMAGE_FILE_EXTENSIONS,
+      quality?: number,
+    ): Promise<string>;
 
     /**
      * Asynchronously convert a canvas element to base64.
-     * @param type    - (default: `["image/png"]`)
+     * @param type    - (default: `"image/png"`)
+     * @param quality - JPEG or WEBP compression from 0 to 1. Default is 0.92.
      * @returns The base64 string of the canvas.
      */
     static canvasToBase64(
@@ -73,14 +80,7 @@ declare global {
       base64: string,
       fileName: string,
       filePath: string,
-      options?: {
-        /** The data storage location to which the file should be uploaded (default: `"data"`) */
-        storage: string;
-        /** The MIME type of the file being uploaded */
-        type?: foundry.CONST.IMAGE_FILE_EXTENSIONS;
-        /** Display a UI notification when the upload is processed. (default: `true`)  */
-        notify: boolean;
-      },
+      options?: ImageHelper.UploadBase64Options,
     ): Promise<ReturnType<(typeof FilePicker)["upload"]>>;
 
     /**
@@ -93,16 +93,18 @@ declare global {
       pixels: Uint8ClampedArray,
       width: number,
       height: number,
-      options: InexactPartial<ImageHelper.PixelsToCanvasOptions>,
+      options: ImageHelper.PixelsToCanvasOptions,
     ): HTMLCanvasElement;
   }
 
   namespace ImageHelper {
     /**
-     * An interface for options for the {@link ImageHelper.createThumbnail} and {@link ImageHelper.compositeCanvasTexture}
-     * methods.
+     * @internal Helper type to simplify NullishProps usage.
+     * @remarks Letting this be NullishProps instead of InexactPartial because despite `tx` and `ty` only
+     * having defaults via `{=0}`, they either get overwritten or `*=`ed which casts null to `0`, their default anyway.
+     *
      */
-    interface CompositeOptions {
+    type _CompositeOptions = NullishProps<{
       /**
        * Center the texture in the rendered frame?
        * @defaultValue `true`
@@ -132,21 +134,61 @@ declare global {
        * @defaultValue The width of the object passed to {@link ImageHelper.compositeCanvasTexture}
        */
       width: number;
-    }
+    }>;
 
-    interface TextureToImageOptions {
+    /**
+     * An interface for options for the {@link ImageHelper.createThumbnail} and {@link ImageHelper.compositeCanvasTexture}
+     * methods.
+     */
+    interface CompositeOptions extends _CompositeOptions {}
+
+    type Format = "image/png" | "image/jpeg" | "image/webp";
+
+    /**
+     * @internal Helper type to simplify NullishProps usage
+     * @remarks Letting this be NullishProps, as, after testing, passing null values to `HTMLCanvasElement#toBlob()`,
+     * where these eventually end up, doesn't break anything and seems to apply the defaults
+     */
+    type _TextureToImageOptions = NullishProps<{
       /**
        * Image format, e.g. "image/jpeg" or "image/webp".
        * @defaultValue `"image/png"`
        */
-      format: string;
+      format: Format;
 
       /**
        * JPEG or WEBP compression from 0 to 1. Default is 0.92.
        * @defaultValue `0.92`
        */
       quality: number;
-    }
+    }>;
+
+    interface TextureToImageOptions extends _TextureToImageOptions {}
+
+    /** @internal Intermediary type to simplify use of optionality- and nullish-permissiveness-modifying helpers */
+    type _UploadBase64Options = InexactPartial<{
+      /**
+       * The data storage location to which the file should be uploaded
+       * @remarks Can't be null because it's passed directly to `FilePicker.upload` and its only default is via signature default value
+       * @defaultValue `"data"`
+       */
+      storage: FilePicker.SourceType;
+    }> &
+      NullishProps<{
+        /**
+         * The MIME type of the file being uploaded
+         * @remarks Will be extracted from the base64 data, if not provided.
+         */
+        type: foundry.CONST.IMAGE_FILE_EXTENSIONS;
+
+        /**
+         * Display a UI notification when the upload is processed.
+         * @defaultValue `true`
+         */
+        notify: boolean;
+      }>;
+
+    interface UploadBase64Options extends _UploadBase64Options {}
 
     /**
      * An interface for return values of the {@link ImageHelper.createThumbnail} method.
@@ -178,13 +220,20 @@ declare global {
       width: number;
     }
 
-    interface PixelsToCanvasOptions {
-      /** The element to use. */
+    type _PixelsToCanvasOptions = NullishProps<{
+      /**
+       * The element to use.
+       * @remarks If not provided, a new HTMLCanvasElement is created.
+       */
       element: HTMLCanvasElement;
+
       /** Specified width for the element (default to buffer image width). */
       ew: number;
+
       /** Specified height for the element (default to buffer image height). */
       eh: number;
-    }
+    }>;
+
+    interface PixelsToCanvasOptions extends _PixelsToCanvasOptions {}
   }
 }

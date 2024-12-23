@@ -1,4 +1,4 @@
-import type { HandleEmptyObject, Mixin } from "../../../../../types/utils.d.mts";
+import type { HandleEmptyObject, Mixin } from "../../../../../utils/index.d.mts";
 
 declare class CanvasGroup<
   DrawOptions extends CanvasGroupMixin.DrawOptions = CanvasGroupMixin.DrawOptions,

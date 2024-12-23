@@ -1,4 +1,4 @@
-import type { InexactPartial } from "../../../../types/utils.d.mts";
+import type { InexactPartial, NullishProps } from "../../../../utils/index.d.mts";
 
 declare module "pixi.js" {
   interface Polygon {
@@ -31,7 +31,7 @@ declare module "pixi.js" {
      * Note: references to the old points array will not be affected.
      * @returns This polygon with its orientation reversed
      */
-    reverseOrientation(): PIXI.Polygon;
+    reverseOrientation(): this;
 
     /**
      * Add a de-duplicated point to the Polygon.
@@ -56,13 +56,7 @@ declare module "pixi.js" {
      */
     fromClipperPoints(
       points: PIXI.Polygon.ClipperPoint[],
-      options?: InexactPartial<{
-        /**
-         * A scaling factor used to preserve floating point precision
-         * @defaultValue `1`
-         */
-        scalingFactor: number;
-      }>,
+      options?: Pick<PIXI.Polygon.IntersectClipperOptions, "scalingFactor">,
     ): PIXI.Polygon;
 
     /**
@@ -72,14 +66,11 @@ declare module "pixi.js" {
      * @param options - Options which affect how clipper points are generated
      * @returns An array of points to be used by clipper
      */
-    toClipperPoints(options?: {
-      /** A scaling factor used to preserve floating point precision
-       *  (default: `1`) */
-      scalingFactor: number;
-    }): PIXI.Polygon.ClipperPoint[];
+    toClipperPoints(options?: Pick<PIXI.Polygon.IntersectClipperOptions, "scalingFactor">): PIXI.Polygon.ClipperPoint[];
 
     /**
      * Determine whether the PIXI.Polygon is closed, defined by having the same starting and ending point.
+     * @remarks Non-enumerable
      */
     get isClosed(): boolean;
 
@@ -89,11 +80,7 @@ declare module "pixi.js" {
      * @param options - Options which configure how the intersection is computed
      * @returns The intersected polygon
      */
-    intersectPolygon(
-      other: PIXI.Polygon,
-
-      options?: PIXI.Polygon.IntersectPolygonOptions,
-    ): PIXI.Polygon;
+    intersectPolygon(other: PIXI.Polygon, options?: PIXI.Polygon.IntersectClipperOptions): PIXI.Polygon;
 
     /**
      * Intersect this PIXI.Polygon with an array of ClipperPoints.
@@ -127,6 +114,7 @@ declare module "pixi.js" {
   }
 
   namespace Polygon {
+    /** @privateRemarks Foundry uses this type instead of full `ClipperLib.IntPoint` objects */
     interface ClipperPoint {
       X: number;
       Y: number;
@@ -137,12 +125,21 @@ declare module "pixi.js" {
      * @remarks Can't be NullishProps because `scalingFactor` is passed to functions that only provide defaults as `{scalingFactor=1}`
      */
     type _IntersectClipperOptions = InexactPartial<{
-      /** The clipper clip type */
-      clipType: number;
-
-      /** A scaling factor passed to Polygon#toClipperPoints to preserve precision */
+      /**
+       * A scaling factor passed to Polygon#toClipperPoints to preserve precision
+       * @remarks Can't be null as, where it has any, it only has defaults provided by `{scalingFactor=1}={}`
+       * @defaultValue `1`
+       */
       scalingFactor: number;
-    }>;
+    }> &
+      NullishProps<{
+        /**
+         * The clipper clip type
+         * @remarks ClipperLib functions require a non-nullish `ClipperLib.ClipType` value, but the Foundry functions have `??=` guards for this.
+         * @defaultValue `ClipperLib.ClipType.ctIntersection`
+         */
+        clipType: ClipperLib.ClipType;
+      }>;
 
     interface IntersectClipperOptions extends _IntersectClipperOptions {}
 

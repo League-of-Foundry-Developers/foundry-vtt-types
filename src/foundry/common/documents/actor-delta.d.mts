@@ -1,4 +1,4 @@
-import type { AnyObject, InexactPartial } from "../../../types/utils.d.mts";
+import type { AnyObject, InexactPartial } from "../../../utils/index.d.mts";
 import type Document from "../abstract/document.mts";
 import type { fields } from "../data/module.d.mts";
 import type { CONST, documents } from "../../client-esm/client.d.mts";

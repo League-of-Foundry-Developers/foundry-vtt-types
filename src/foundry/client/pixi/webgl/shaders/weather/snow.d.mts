@@ -1,4 +1,4 @@
-import type { InterfaceToObject } from "../../../../../../types/helperTypes.d.mts";
+import type { InterfaceToObject } from "../../../../../../utils/index.d.mts";
 
 declare abstract class AnySnowShader extends SnowShader {
   constructor(arg0: never, ...args: never[]);

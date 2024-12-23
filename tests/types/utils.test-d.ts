@@ -1,6 +1,6 @@
 import { assertType, expectTypeOf } from "vitest";
-import type { DeepPartial, Expanded, MaybePromise, RequiredProps, Titlecase } from "../../src/types/utils.d.mts";
-import type Document from "../../src/foundry/common/abstract/document.d.mts";
+import type { DeepPartial, Expanded, MaybePromise, RequiredProps, Titlecase } from "fvtt-types/utils";
+import Document = foundry.abstract.Document;
 
 declare const membersBecomeOptional: DeepPartial<{ a: string }>;
 expectTypeOf(membersBecomeOptional).toEqualTypeOf<{ a?: string }>();
