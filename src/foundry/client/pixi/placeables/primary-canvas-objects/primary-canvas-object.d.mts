@@ -10,6 +10,7 @@ declare class PrimaryCanvasObject {
    * @defaultValue `true`
    */
   cullable: boolean;
+
   /**
    * An optional reference to the object that owns this PCO.
    * This property does not affect the behavior of the PCO itself.
