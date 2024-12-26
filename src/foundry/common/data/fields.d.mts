@@ -1,12 +1,10 @@
 import type {
   RemoveIndexSignatures,
   SimpleMerge,
-  ValueOf,
   AnyObject,
   EmptyObject,
   NullishProps,
   InexactPartial,
-  AnyConstructor,
   ToMethod,
 } from "../../../utils/index.d.mts";
 import type { DataModel } from "../abstract/data.mts";
@@ -3917,56 +3915,9 @@ declare namespace TypeDataField {
     Opts
   >;
 
-  /**
-   * Get the system DataModel configuration for a specific document type.
-   * @typeParam DocumentType - the type of the Document this system data is for
-   *
-   * @deprecated - This helper is from a time where {@link DataModelConfig | `DataModelConfig`}
-   * was still recommended to use instances. This will always return instances but
-   * its name is now misleading. For a replacement see {@link DataModelInstances | `DataModelInstances`}.
-   * If you want to get the class see {@link DataModelClasses | `DataModelClasses`}.
-   */
-  type Config<DocumentType extends Document.SystemConstructor> = DataModelInstances<DocumentType["metadata"]["name"]>;
-
-  type DataModelInstances<DocumentType extends Document.Type> = DocumentType extends keyof DataModelConfig
-    ? _ToInstances<DataModelConfig[DocumentType]>
+  type DataModelsFor<DocumentType extends Document.Type> = DocumentType extends keyof DataModelConfig
+    ? DataModelConfig[DocumentType]
     : EmptyObject;
-
-  /**
-   * @internal
-   */
-  type _ToInstances<T extends AnyObject> = {
-    [K in keyof T]: T[K] extends AnyConstructor ? InstanceType<T[K]> : T[K];
-  };
-
-  type DataModelClasses<DocumentType extends Document.Type> = DocumentType extends keyof DataModelConfig
-    ? _ToClasses<DataModelConfig[DocumentType]>
-    : EmptyObject;
-
-  /**
-   * @internal
-   */
-  type _ToClasses<T extends AnyObject> = {
-    [K in keyof T]: _ToClass<T[K]>;
-  };
-
-  /**
-   * @internal
-   * This method must go from an instance to a static side we know nothing about.
-   * This means its inherently lossy and full of assumptions.
-   * This is to support old configuration styles relatively gracefully.
-   */
-  type _ToClass<T> = T extends AnyConstructor
-    ? T
-    : T extends TypeDataModel<infer Schema, infer Parent, infer BaseData, infer DerivedData>
-      ? TypeDataModel.ConfigurationFailureClass &
-          (abstract new (...args: any[]) => T) &
-          typeof TypeDataModel<Schema, Parent, BaseData, DerivedData>
-      : T extends DataModel<infer Schema, infer Parent, infer ExtraConstructorOptions>
-        ? TypeDataModel.ConfigurationFailureClass &
-            (abstract new (...args: any[]) => T) &
-            typeof DataModel<Schema, Parent, ExtraConstructorOptions>
-        : TypeDataModel.ConfigurationFailureClass;
 
   /**
    * Get the configured core and system type names for a specific document type.
@@ -4003,9 +3954,15 @@ declare namespace TypeDataField {
     SystemDocumentConstructor extends Document.SystemConstructor,
     Opts extends Options<InstanceType<SystemDocumentConstructor>>,
   > = DataField.DerivedInitializedType<
-    ValueOf<DataModelInstances<SystemDocumentConstructor["metadata"]["name"]>> | UnknownSystem,
+    _Instances<DataModelsFor<SystemDocumentConstructor["metadata"]["name"]>> | UnknownSystem,
     MergedOptions<InstanceType<SystemDocumentConstructor>, Opts>
   >;
+
+  type _Instances<T> = {
+    [K in keyof T]: T[K] extends (abstract new (arg0: never, ...args: never[]) => infer U extends DataModel.Any)
+      ? U
+      : never;
+  };
 
   /**
    * With the existence of custom module subtypes a system can no longer rely on their configured types being the only ones.
