@@ -18,9 +18,9 @@ declare global {
 
     /**
      * Initialize the basis transcoder for PIXI.Assets
-     * @privateRemarks This should be `ReturnType<typeof PIXI.TranscoderWorker.loadTranscoder>` but we lack types for `@pixi/basis`
+     * @privateRemarks This should be `ReturnType<typeof PIXI.TranscoderWorker.loadTranscoder> | Promise<void>` but we lack types for `@pixi/basis`
      */
-    static initializeBasisTranscoder(): Promise<[void, void]>;
+    static initializeBasisTranscoder(): Promise<[void, void] | void>;
 
     /**
      * Check if a source has a text file extension.
