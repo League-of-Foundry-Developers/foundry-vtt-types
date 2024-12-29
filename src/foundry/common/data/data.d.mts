@@ -5,6 +5,8 @@ import type * as documents from "../documents/_module.d.mts";
 import type { AnyObject, EmptyObject, ToMethod, ValueOf } from "../../../utils/index.d.mts";
 import type { FilePathField } from "./fields.d.mts";
 
+type DataSchema = foundry.data.fields.DataSchema;
+
 // TODO: Implement all of the necessary options
 
 declare global {

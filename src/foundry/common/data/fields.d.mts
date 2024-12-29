@@ -23,6 +23,8 @@ import type {
   TextAreaInputConfig,
 } from "../../client-esm/applications/forms/fields.d.mts";
 
+export type DataSchema = Record<string, DataField.Any>;
+
 /**
  * An abstract class that defines the base pattern for a data field within a data schema.
  * @typeParam Options         - the options of the DataField instance

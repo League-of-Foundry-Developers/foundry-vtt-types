@@ -7,6 +7,8 @@ import SchemaField = fields.SchemaField;
 
 import TypeDataModel = foundry.abstract.TypeDataModel;
 
+type DataSchema = foundry.data.fields.DataSchema;
+
 // @ts-expect-error name and type are required
 new foundry.documents.BaseActor();
 

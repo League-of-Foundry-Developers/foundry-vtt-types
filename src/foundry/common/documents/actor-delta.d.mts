@@ -3,6 +3,8 @@ import type Document from "../abstract/document.mts";
 import type { fields } from "../data/module.d.mts";
 import type { CONST, documents } from "../../client-esm/client.d.mts";
 
+type DataSchema = foundry.data.fields.DataSchema;
+
 /**
  * The ActorDelta Document.
  * Defines the DataSchema and common behaviors for an ActorDelta which are shared between both client and server.

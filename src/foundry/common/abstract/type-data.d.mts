@@ -13,6 +13,8 @@ import type BaseUser from "../documents/user.d.mts";
 import type { DataModel } from "./data.d.mts";
 import type Document from "./document.d.mts";
 
+type DataSchema = foundry.data.fields.DataSchema;
+
 declare class AnyDataModel extends DataModel<any, any, any> {
   constructor(...args: any[]);
 }

@@ -3,36 +3,14 @@ import type { DataField, SchemaField } from "../data/fields.d.mts";
 import type { fields } from "../data/module.d.mts";
 import type { DataModelValidationFailure } from "../data/validation-failure.d.mts";
 
+type DataSchema = foundry.data.fields.DataSchema;
+
 declare global {
+  /** @deprecated {@link foundry.data.fields.DataSchema | `foundry.data.fields.DataSchema`} */
   type DataSchema = Record<string, DataField.Any>;
 
-  interface DataValidationOptions {
-    /**
-     * Throw an error if validation fails.
-     * @defaultValue `true`
-     */
-    strict?: boolean | undefined;
-
-    /**
-     * Attempt to replace invalid values with valid defaults?
-     * @defaultValue `false`
-     */
-    fallback?: boolean | undefined;
-
-    /**
-     * Allow partial source data, ignoring absent fields?
-     * @defaultValue `false`
-     */
-    partial?: boolean | undefined;
-
-    /**
-     * If true, invalid embedded documents will emit a warning and be
-     * placed in the invalidDocuments collection rather than causing the
-     * parent to be considered invalid.
-     * @defaultValue `false`
-     */
-    dropInvalidEmbedded?: boolean | undefined;
-  }
+  /** @deprecated {@link DataModel.DataValidationOptions | `DataModel.DataValidationOptions`} */
+  type DataValidationOptions = DataModel.DataValidationOptions;
 }
 
 declare const DynamicClass: new <_Computed extends object>(arg0: never, ...args: never[]) => _Computed;

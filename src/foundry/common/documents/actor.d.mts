@@ -4,6 +4,8 @@ import type { PrototypeToken } from "../data/data.mts";
 import type * as fields from "../data/fields.d.mts";
 import type * as documents from "./_module.d.mts";
 
+type DataSchema = foundry.data.fields.DataSchema;
+
 /**
  * The Actor Document.
  * Defines the DataSchema and common behaviors for an Actor which are shared between both client and server.

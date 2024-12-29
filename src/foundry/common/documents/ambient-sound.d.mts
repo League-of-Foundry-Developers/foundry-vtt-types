@@ -2,6 +2,8 @@ import type { AnyObject } from "../../../utils/index.d.mts";
 import type Document from "../abstract/document.mts";
 import type * as fields from "../data/fields.d.mts";
 
+type DataSchema = foundry.data.fields.DataSchema;
+
 /**
  * The Document definition for an AmbientSound.
  * Defines the DataSchema and common behaviors for an AmbientSound which are shared between both client and server.

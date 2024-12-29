@@ -2,6 +2,8 @@ import type { InexactPartial } from "../../../utils/index.d.mts";
 import type Document from "../abstract/document.mts";
 import type * as fields from "../data/fields.d.mts";
 
+type DataSchema = foundry.data.fields.DataSchema;
+
 /**
  * The PlaylistSound Document.
  * Defines the DataSchema and common behaviors for a PlaylistSound which are shared between both client and server.

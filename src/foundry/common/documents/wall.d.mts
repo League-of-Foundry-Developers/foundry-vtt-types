@@ -3,6 +3,8 @@ import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
 import type * as fields from "../data/fields.d.mts";
 
+type DataSchema = foundry.data.fields.DataSchema;
+
 /**
  * The Document definition for a Wall.
  * Defines the DataSchema and common behaviors for a Wall which are shared between both client and server.

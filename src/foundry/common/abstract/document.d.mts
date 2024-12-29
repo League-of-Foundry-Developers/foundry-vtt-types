@@ -31,6 +31,8 @@ import type {
 import type DataModel from "./data.mts";
 import type DocumentSocketResponse from "./socket.d.mts";
 
+type DataSchema = foundry.data.fields.DataSchema;
+
 export default Document;
 
 declare const __DocumentBrand: unique symbol;

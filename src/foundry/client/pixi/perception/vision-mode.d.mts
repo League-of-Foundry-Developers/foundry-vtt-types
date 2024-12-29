@@ -2,6 +2,8 @@ import type { AnyObject, InexactPartial, SimpleMerge, ValueOf } from "../../../.
 import type { fields } from "../../../common/data/module.d.mts";
 import DataField = foundry.data.fields.DataField;
 
+type DataSchema = foundry.data.fields.DataSchema;
+
 declare global {
   class ShaderField<
     const Options extends ShaderField.Options = ShaderField.DefaultOptions,

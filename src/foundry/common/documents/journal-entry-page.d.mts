@@ -2,6 +2,8 @@ import type Document from "../abstract/document.mts";
 import type * as fields from "../data/fields.d.mts";
 import type * as documents from "./_module.mts";
 
+type DataSchema = foundry.data.fields.DataSchema;
+
 /**
  * The JournalEntryPage Document.
  * Defines the DataSchema and common behaviors for a JournalEntryPage which are shared between both client and server.

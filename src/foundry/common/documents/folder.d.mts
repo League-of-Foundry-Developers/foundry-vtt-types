@@ -1,6 +1,8 @@
 import type Document from "../abstract/document.mts";
 import type * as fields from "../data/fields.d.mts";
 
+type DataSchema = foundry.data.fields.DataSchema;
+
 /**
  * The Folder Document.
  * Defines the DataSchema and common behaviors for a Folder which are shared between both client and server.
