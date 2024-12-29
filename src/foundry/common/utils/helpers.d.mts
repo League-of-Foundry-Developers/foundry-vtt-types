@@ -523,7 +523,7 @@ interface ResolvedUUID {
   /**
    * Either the document type or the parent type. Retained for backwards compatibility.
    */
-  documentType?: DocumentType;
+  documentType?: Document.Type;
 
   /**
    * Either the document id or the parent id. Retained for backwards compatibility.
