@@ -301,11 +301,6 @@ declare global {
     }
 
     type RegisterSubmenu = Omit<SettingSubmenuConfig, "key" | "namespace">;
-
-    /**
-     * @deprecated - {@link globalThis.SettingConfig | `SettingConfig`}
-     */
-    interface Values extends globalThis.SettingConfig {}
   }
 }
 

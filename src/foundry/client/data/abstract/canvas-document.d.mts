@@ -49,11 +49,6 @@ declare namespace CanvasDocument {
 
 declare global {
   /**
-   * @deprecated {@link CanvasDocument.Any | `CanvasDocument.Any`}
-   */
-  type CanvasDocument = ReturnType<typeof CanvasDocumentMixin>;
-
-  /**
    * A specialized sub-class of the ClientDocumentMixin which is used for document types that are intended to be represented upon the game Canvas.
    */
   function CanvasDocumentMixin<BaseClass extends Document.Internal.Constructor>(

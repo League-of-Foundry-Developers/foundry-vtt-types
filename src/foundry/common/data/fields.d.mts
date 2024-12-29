@@ -3904,22 +3904,6 @@ declare namespace TypeDataField {
     : EmptyObject;
 
   /**
-   * Get the configured core and system type names for a specific document type.
-   * @typeParam ConcreteDocument - the type of the Document this data is for
-   * @deprecated Use the Game.Model namespace instead of TypeDataField
-   */
-  type TypeNames<ConcreteDocument extends Document.SystemConstructor> = Game.Model.TypeNames<
-    ConcreteDocument["metadata"]["name"]
-  >;
-
-  /**
-   * Get the core type names for a specific document type.
-   * @typeParam DocumentType - the type of the Document this data is for
-   * @deprecated Use `DocumentType["metadata"]["coreTypes"][number]`
-   */
-  type CoreTypeNames<DocumentType extends Document.SystemConstructor> = DocumentType["metadata"]["coreTypes"][number];
-
-  /**
    * A shorthand for the assignment type of a TypeDataField class.
    * @typeParam DocumentType - the type of the embedded Document
    * @typeParam Options - the options that override the default options

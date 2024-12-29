@@ -345,8 +345,3 @@ interface ToggleActiveEffectOptions {
   /** Force a certain active state for the effect. */
   active: boolean;
 }
-
-/**
- * @deprecated See {@link CONFIG.StatusEffect}
- */
-export type StatusEffect = CONFIG.StatusEffect;

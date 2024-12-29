@@ -5,14 +5,6 @@ import type { DataModelValidationFailure } from "../data/validation-failure.d.mt
 
 type DataSchema = foundry.data.fields.DataSchema;
 
-declare global {
-  /** @deprecated {@link foundry.data.fields.DataSchema | `foundry.data.fields.DataSchema`} */
-  type DataSchema = Record<string, DataField.Any>;
-
-  /** @deprecated {@link DataModel.DataValidationOptions | `DataModel.DataValidationOptions`} */
-  type DataValidationOptions = DataModel.DataValidationOptions;
-}
-
 declare const DynamicClass: new <_Computed extends object>(arg0: never, ...args: never[]) => _Computed;
 
 // @ts-expect-error - This is a workaround to allow for dynamic top level properties in a class.
@@ -363,11 +355,6 @@ declare namespace DataModel {
     | DataModel<Schema, any>;
 
   type ConstructorDataFor<ConcreteDataModel extends DataModel.Any> = ConstructorData<SchemaOf<ConcreteDataModel>>;
-
-  /**
-   * @deprecated {@link DataModel.DataValidationOptions | `DataModel.DataValidationOptions`}
-   */
-  type ConstructorOptions<Parent extends Any | null = null> = DataValidationOptions<Parent>;
 
   interface DataValidationOptions<Parent extends Any | null = null> {
     /**
