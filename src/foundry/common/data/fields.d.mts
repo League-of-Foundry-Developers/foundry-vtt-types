@@ -6,6 +6,7 @@ import type {
   NullishProps,
   InexactPartial,
   ToMethod,
+  ValueOf,
 } from "../../../utils/index.d.mts";
 import type { DataModel } from "../abstract/data.mts";
 import type Document from "../abstract/document.mts";
@@ -3977,7 +3978,7 @@ declare namespace TypeDataField {
   type PersistedType<
     SystemDocumentConstructor extends Document.SystemConstructor,
     Opts extends Options<InstanceType<SystemDocumentConstructor>>,
-  > = DataField.DerivedInitializedType<AnyObject, MergedOptions<InstanceType<SystemDocumentConstructor>, Opts>>;
+  > = DataField.DerivedInitializedType<AnyObject, MergedOptions<SystemDocumentConstructor, Opts>>;
 }
 
 /**
@@ -3985,7 +3986,7 @@ declare namespace TypeDataField {
  */
 declare class TypedSchemaField<
   const Types extends TypedSchemaField.Types,
-  const Options extends TypedSchemaField.DefaultOptions = TypedSchemaField.DefaultOptions,
+  const Options extends TypedSchemaField.Options<Types> = TypedSchemaField.DefaultOptions,
   const AssignmentType = TypedSchemaField.AssignmentType<Types, Options>,
   const InitializedType = TypedSchemaField.InitializedType<Types, Options>,
   const PersistedType extends unknown | null | undefined = TypedSchemaField.PersistedType<Types, Options>,
@@ -4031,6 +4032,8 @@ declare class TypedSchemaField<
 }
 
 declare namespace TypedSchemaField {
+  interface Options<T extends Types> extends DataField.Options<ValueOf<ToConfiguredTypes<T>>> {}
+
   type DefaultOptions = SimpleMerge<
     DataField.DefaultOptions,
     {
@@ -4038,31 +4041,36 @@ declare namespace TypedSchemaField {
     }
   >;
 
-  type ValidField = DataField<
-    {
-      required: true;
-      nullable: false;
-    },
-    any,
-    any,
-    any
-  >;
-
+  /**
+   * A `ValidDataSchema` must pass the checks in `#configureTypes`. Namely:
+   * - No `name` property.
+   * - No `parent`.
+   *
+   * Additionally the `type` property (if any):
+   * - Must be a `StringField`.
+   * - Must be `required`
+   * - Must not be `nullable`.
+   * - Must not be `blank`.
+   * - Must allow the corresponding type as a valid value.
+   */
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   type ValidDataSchema = {
-    readonly [field: string]: ValidField;
+    readonly [field: string]: DataField.Any;
   };
 
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   type Types = {
     [type: string]:
       | ValidDataSchema
-      | SchemaField<ValidDataSchema, any, any, any, any>
-      | typeof DataModel<ValidDataSchema, any>;
+      | SchemaField<DataSchema, { required: true; nullable: false }, any, any, any>
+      | typeof DataModel<DataSchema, null>;
   };
 
   type ToConfiguredTypes<Types extends TypedSchemaField.Types> = {
-    [K in keyof Types]: Types[K] extends DataModel.AnyConstructor ? EmbeddedDataField<Types[K]> : never;
+    [K in keyof Types]:
+      | (Types[K] extends ValidDataSchema ? SchemaField<Types[K]> : never)
+      | (Types[K] extends SchemaField.Any ? Types[K] : never)
+      | (Types[K] extends DataModel.AnyConstructor ? EmbeddedDataField<Types[K]> : never);
   };
 
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
@@ -4079,7 +4087,7 @@ declare namespace TypedSchemaField {
 
   type AssignmentType<
     Types extends TypedSchemaField.Types,
-    Options extends TypedSchemaField.DefaultOptions,
+    Options extends TypedSchemaField.Options<Types>,
   > = DataField.DerivedAssignmentType<_AssignmentType<ToConfiguredTypes<Types>>, Options>;
 
   /**
@@ -4091,7 +4099,7 @@ declare namespace TypedSchemaField {
 
   type InitializedType<
     Types extends TypedSchemaField.Types,
-    Options extends TypedSchemaField.DefaultOptions,
+    Options extends TypedSchemaField.Options<Types>,
   > = DataField.DerivedInitializedType<_InitializedType<ToConfiguredTypes<Types>>, Options>;
 
   /**
@@ -4103,8 +4111,8 @@ declare namespace TypedSchemaField {
 
   type PersistedType<
     Types extends TypedSchemaField.Types,
-    _Options extends TypedSchemaField.DefaultOptions,
-  > = DataField.DerivedInitializedType<_PersistedType<ToConfiguredTypes<Types>>, _Options>;
+    Options extends TypedSchemaField.Options<Types>,
+  > = DataField.DerivedInitializedType<_PersistedType<ToConfiguredTypes<Types>>, Options>;
 }
 
 /**
