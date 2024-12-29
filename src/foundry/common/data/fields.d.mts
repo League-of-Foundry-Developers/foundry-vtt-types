@@ -1,7 +1,6 @@
 import type {
   RemoveIndexSignatures,
   SimpleMerge,
-  ValueOf,
   AnyObject,
   EmptyObject,
   NullishProps,
@@ -4140,7 +4139,7 @@ declare class TypedSchemaField<
 }
 
 declare namespace TypedSchemaField {
-  interface Options<T extends Types> extends DataField.Options<ValueOf<ToConfiguredTypes<T>>> {}
+  interface Options<T extends Types> extends DataField.Options<_AssignmentType<ToConfiguredTypes<T>>> {}
 
   type DefaultOptions = SimpleMerge<
     DataField.DefaultOptions,
@@ -4190,7 +4189,7 @@ declare namespace TypedSchemaField {
    * @internal
    */
   type _AssignmentType<Types extends ConfiguredTypes> = {
-    [K in keyof Types]: DataField.AssignmentTypeFor<Types[K]>;
+    [K in keyof Types]: DataField.AssignmentTypeFor<Types[K]> & { type: K };
   }[keyof Types];
 
   type AssignmentType<
@@ -4202,7 +4201,7 @@ declare namespace TypedSchemaField {
    * @internal
    */
   type _InitializedType<Types extends ConfiguredTypes> = {
-    [K in keyof Types]: DataField.InitializedTypeFor<Types[K]>;
+    [K in keyof Types]: DataField.InitializedTypeFor<Types[K]> & { type: K };
   }[keyof Types];
 
   type InitializedType<
@@ -4214,7 +4213,7 @@ declare namespace TypedSchemaField {
    * @internal
    */
   type _PersistedType<Types extends ConfiguredTypes> = {
-    [K in keyof Types]: DataField.PersistedTypeFor<Types[K]>;
+    [K in keyof Types]: DataField.PersistedTypeFor<Types[K]> & { type: K };
   }[keyof Types];
 
   type PersistedType<
