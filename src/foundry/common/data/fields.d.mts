@@ -23,33 +23,6 @@ import type {
   TextAreaInputConfig,
 } from "../../client-esm/applications/forms/fields.d.mts";
 
-declare global {
-  /**
-   * @deprecated {@link DataField.Options | DataField.Options}
-   */
-  type DataFieldOptions<BaseAssignmentType> = DataField.Options<BaseAssignmentType>;
-
-  namespace DataFieldOptions {
-    /** @deprecated {@link DataField.Options.Any | `DataField.Options.Any`} */
-    type Any = DataField.Options.Any;
-
-    /** @deprecated {@link DataField.Options.InitialType | `DataField.Options.InitialType`} */
-    type InitialType<ReturnType> = DataField.Options.InitialType<ReturnType>;
-
-    /** @deprecated {@link DataField.Options.InitialReturnType | `DataField.Options.InitialReturnType`} */
-    type InitialReturnType<BaseAssignmentType, NullableOption, RequiredOption> = DataField.Options.InitialReturnType<
-      BaseAssignmentType,
-      NullableOption,
-      RequiredOption
-    >;
-  }
-
-  /**
-   * @deprecated {@link DataField.DataValidationOptions | DataField.DataValidationOptions}
-   */
-  type DataFieldValidationOptions = DataField.DataValidationOptions;
-}
-
 /**
  * An abstract class that defines the base pattern for a data field within a data schema.
  * @typeParam Options         - the options of the DataField instance
@@ -1014,11 +987,6 @@ declare namespace BooleanField {
   type InitializedType<Opts extends Options> = DataField.DerivedInitializedType<boolean, MergedOptions<Opts>>;
 }
 
-declare global {
-  /** @deprecated {@link NumberField.Options | `NumberField.Options`} */
-  type NumberFieldOptions = NumberField.Options;
-}
-
 /**
  * A subclass of [DataField]{@link DataField} which deals with number-typed data.
  * @typeParam Options         - the options of the NumberField instance
@@ -1252,11 +1220,6 @@ declare namespace NumberField {
     | _ToInputConfig<InitializedType>
     | ToInputConfigWithChoices<InitializedType, Choices>
     | ToInputConfigWithOptions<InitializedType>;
-}
-
-declare global {
-  /** @deprecated {@link StringField.Options | `StringField.Options`} */
-  type StringFieldOptions = StringField.Options;
 }
 
 /**
@@ -2941,13 +2904,6 @@ declare namespace ColorField {
   >;
 }
 
-declare global {
-  /**
-   * @deprecated {@link FilePathField.Options | `FilePathField.Options`}
-   */
-  type FilePathFieldOptions = FilePathField.Options;
-}
-
 /**
  * A special [StringField]{@link StringField} which records a file path or inline base64 data.
  * @typeParam Options         - the options of the FilePathField instance
@@ -3637,11 +3593,6 @@ declare namespace IntegerSortField {
     number,
     MergedOptions<Options>
   >;
-}
-
-declare global {
-  /** @deprecated {@link DocumentStatsField.Properties | `DocumentStatsField.Properties`} */
-  type DocumentStats = DocumentStatsField.Properties;
 }
 
 /**
