@@ -5,6 +5,8 @@ import type * as fields from "../data/fields.d.mts";
 import type { ShapeData } from "../data/module.mts";
 import type * as documents from "./_module.mts";
 
+type DataSchema = foundry.data.fields.DataSchema;
+
 /**
  * The Document definition for a Drawing.
  * Defines the DataSchema and common behaviors for a Drawing which are shared between both client and server.

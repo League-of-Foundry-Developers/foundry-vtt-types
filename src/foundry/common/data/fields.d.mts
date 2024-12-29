@@ -25,6 +25,8 @@ import type {
   TextAreaInputConfig,
 } from "../../client-esm/applications/forms/fields.d.mts";
 
+export type DataSchema = Record<string, DataField.Any>;
+
 declare global {
   /**
    * @deprecated {@link DataField.Options | DataField.Options}

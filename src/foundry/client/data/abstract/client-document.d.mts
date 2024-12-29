@@ -1,3 +1,4 @@
+import type DataModel from "src/foundry/common/abstract/data.d.mts";
 import type { DeepPartial, InexactPartial, Mixin, ValueOf } from "../../../../utils/index.d.mts";
 import type { DatabaseCreateOperation } from "../../../common/abstract/_types.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
@@ -405,7 +406,7 @@ declare class ClientDocument<BaseDocument extends Document.Internal.Instance.Any
   static fromImport<T extends Document.AnyConstructor>(
     this: T,
     source: Record<string, unknown>,
-    context?: Document.ConstructionContext<Document.Any | null> & DataValidationOptions,
+    context?: Document.ConstructionContext<Document.Any | null> & DataModel.DataValidationOptions,
   ): Promise<InstanceType<T>>;
   /**
    * Update this Document using a provided JSON string.

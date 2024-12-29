@@ -4,6 +4,8 @@ import type * as CONST from "../constants.mts";
 import type * as fields from "../data/fields.d.mts";
 import type * as documents from "./_module.mts";
 
+type DataSchema = foundry.data.fields.DataSchema;
+
 /**
  * The ChatMessage Document.
  * Defines the DataSchema and common behaviors for a ChatMessage which are shared between both client and server.

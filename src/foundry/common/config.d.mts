@@ -3,6 +3,8 @@ import type * as fields from "./data/fields.d.mts";
 import type { SOFTWARE_UPDATE_CHANNELS } from "./constants.d.mts";
 import type { AnyObject } from "../../utils/index.d.mts";
 
+type DataSchema = foundry.data.fields.DataSchema;
+
 declare namespace ApplicationConfiguration {
   interface Schema extends DataSchema {
     /**

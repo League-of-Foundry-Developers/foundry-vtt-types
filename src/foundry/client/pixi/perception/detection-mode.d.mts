@@ -2,6 +2,8 @@ import type { InexactPartial, ValueOf } from "../../../../utils/index.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
 import type { TokenDetectionMode } from "../../../common/documents/_types.d.mts";
 
+type DataSchema = foundry.data.fields.DataSchema;
+
 declare global {
   namespace DetectionMode {
     interface Schema extends DataSchema {

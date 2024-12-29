@@ -4,6 +4,8 @@ import type * as CONST from "../constants.mts";
 import type * as fields from "../data/fields.d.mts";
 import type * as documents from "./_module.mts";
 
+type DataSchema = foundry.data.fields.DataSchema;
+
 /**
  * The Macro Document.
  * Defines the DataSchema and common behaviors for a Macro which are shared between both client and server.

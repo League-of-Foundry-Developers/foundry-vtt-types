@@ -3,6 +3,8 @@ import type Document from "../abstract/document.mts";
 import type { LightData } from "../data/data.mts";
 import type * as fields from "../data/fields.d.mts";
 
+type DataSchema = foundry.data.fields.DataSchema;
+
 /**
  * The Document definition for an AmbientLight.
  * Defines the DataSchema and common behaviors for an AmbientLight which are shared between both client and server.

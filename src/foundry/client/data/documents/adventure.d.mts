@@ -6,6 +6,8 @@ import type { DocumentDatabaseOperations } from "../../../common/abstract/docume
 import type Document from "../../../common/abstract/document.d.mts";
 import type BaseAdventure from "../../../common/documents/adventure.d.mts";
 
+type DataSchema = foundry.data.fields.DataSchema;
+
 declare global {
   namespace Adventure {
     type Metadata = Document.MetadataFor<Adventure>;
