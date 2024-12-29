@@ -1158,11 +1158,12 @@ declare namespace Document {
 
   type Flags<ConcreteDocument extends Internal.Instance.Any> = OptionsForSchema<SchemaFor<ConcreteDocument>>;
 
-  interface OptionsInFlags<Options extends DataFieldOptions.Any> {
+  /** @internal */
+  interface OptionsInFlags<Options extends DataField.Options.Any> {
     readonly flags?: DataField<Options, any>;
   }
 
-  // These  types only exists to simplify solving the `Document` type. Using `Document.Flags<this>` means the constraint `this extends Document.Any` has to be proved.
+  // These types only exists to simplify solving the `Document` type. Using `Document.Flags<this>` means the constraint `this extends Document.Any` has to be proved.
   // This is much more complex than proving the constraint for `Document.FlagsInternal<Schema>` that `Schema extends DataSchema`.
 
   // TODO: This needs to use the derived flags not just how they're initialized.
