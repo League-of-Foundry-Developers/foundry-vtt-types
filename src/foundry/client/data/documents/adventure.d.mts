@@ -51,7 +51,7 @@ declare global {
       {
         strict,
         ...context
-      }?: DataModel.ConstructorOptions & {
+      }?: DataModel.DataValidationOptions & {
         /**
          * Models created from trusted source data are validated non-strictly
          * @defaultValue `false`

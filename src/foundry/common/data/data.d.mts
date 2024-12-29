@@ -558,7 +558,7 @@ declare namespace PrototypeToken {
  * Extend the base TokenData to define a PrototypeToken which exists within a parent Actor.
  */
 declare class PrototypeToken extends DataModel<PrototypeToken.Schema, any> {
-  constructor(data?: PrototypeToken.ConstructorData, options?: DataModel.ConstructorOptions<PrototypeToken.Parent>);
+  constructor(data?: PrototypeToken.ConstructorData, options?: DataModel.DataValidationOptions<PrototypeToken.Parent>);
 
   declare parent: PrototypeToken.Parent;
 

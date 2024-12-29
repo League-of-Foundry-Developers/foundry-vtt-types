@@ -89,7 +89,7 @@ export class ActorDeltaField<
   override initialize(
     value: fields.EmbeddedDocumentField.PersistedType<DocumentType, Options>,
     model: DataModel.Any,
-    options?: InexactPartial<DataModel.ConstructorOptions>,
+    options?: InexactPartial<DataModel.DataValidationOptions>,
   ):
     | fields.EmbeddedDocumentField.InitializedType<DocumentType, Options>
     | (() => fields.EmbeddedDocumentField.InitializedType<DocumentType, Options> | null);

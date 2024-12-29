@@ -141,7 +141,7 @@ declare abstract class DataModel<
    */
   clone(
     data?: fields.SchemaField.InnerAssignmentType<Schema>,
-    context?: DataModel.ConstructorOptions<Parent>,
+    context?: DataModel.DataValidationOptions<Parent>,
   ): this | Promise<this>;
 
   /**
@@ -300,7 +300,7 @@ declare abstract class DataModel<
     {
       strict,
       ...context
-    }?: DataModel.ConstructorOptions & {
+    }?: DataModel.DataValidationOptions & {
       /**
        * Models created from trusted source data are validated non-strictly
        * @defaultValue `false`

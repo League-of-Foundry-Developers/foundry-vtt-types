@@ -1,4 +1,4 @@
-import type { ConformRecord, AnyArray, AnyObject, DeepPartial, InexactPartial } from "../../../utils/index.d.mts";
+import type { AnyArray, AnyObject, DeepPartial, InexactPartial } from "../../../utils/index.d.mts";
 import type ApplicationV2 from "../../client-esm/applications/api/application.d.mts";
 import type { CustomFormInput } from "../../client-esm/applications/forms/fields.d.mts";
 import type DataModel from "../../common/abstract/data.d.mts";
@@ -23,7 +23,7 @@ declare global {
     /**
      * A object of registered game settings for this scope
      */
-    settings: Map<keyof _SettingConfigRecord & string, ClientSettings.SettingConfig>;
+    settings: Map<keyof globalThis.SettingConfig & string, ClientSettings.SettingConfig>;
 
     /**
      * Registered settings menus which trigger secondary applications
@@ -90,7 +90,7 @@ declare global {
       namespace: N,
       key: K,
       data: ClientSettings.Type extends T
-        ? ClientSettings.RegisterOptions<_SettingConfigRecord[`${N}.${K}`]>
+        ? ClientSettings.RegisterOptions<globalThis.SettingConfig[`${N}.${K}`]>
         : ClientSettings.RegisterOptions<NoInfer<T>>,
     ): void;
 
@@ -162,8 +162,8 @@ declare global {
   }
 
   namespace ClientSettings {
-    type Namespace = GetNamespaces<keyof _SettingConfigRecord>;
-    type Key = GetKeys<keyof _SettingConfigRecord>;
+    type Namespace = GetNamespaces<keyof globalThis.SettingConfig>;
+    type Key = GetKeys<keyof globalThis.SettingConfig>;
 
     /**
      * A compile type is a type for a setting that only exists at compile time.
@@ -336,12 +336,12 @@ type PrimitiveConstructorToSettingType<T extends PRIMITIVE_TYPES[number]> = T ex
 type ConfiguredType<
   N extends ClientSettings.Namespace,
   K extends ClientSettings.Key,
-> = _SettingConfigRecord[`${N}.${K}`];
+> = globalThis.SettingConfig[`${N}.${K}`];
 
 type SettingType<T extends ClientSettings.Type> =
   // Note(LukeAbby): This isn't written as `T extends ClientSettings.TypeScriptType ? T : never` because then types like `DataField.Any` would be matched.
   | (T extends ClientSettings.RuntimeType ? never : T)
-  // TODO(LukeAbby): The `validate` function is called with `strict` which changes how fallback behaviour works. See `ClientSettings#set`
+  // TODO(LukeAbby): The `validate` function is called with `strict` which changes how fallback behavior works. See `ClientSettings#set`
   | (T extends DataField.Any ? DataField.AssignmentTypeFor<T> : never)
   | (T extends SettingConstructor ? ConstructorToSettingType<T> : T extends SettingFunction ? ReturnType<T> : never);
 
@@ -350,9 +350,3 @@ type ReplaceUndefinedWithNull<T> = T extends undefined ? null : T;
 
 type GetNamespaces<SettingPath extends PropertyKey> = SettingPath extends `${infer Scope}.${string}` ? Scope : never;
 type GetKeys<SettingPath extends PropertyKey> = SettingPath extends `${string}.${infer Name}` ? Name : never;
-
-type _SettingConfigRecord = ConformRecord<
-  // Refers to the deprecated interface so that merging works both ways.
-  ClientSettings.Values,
-  ClientSettings.Type
->;

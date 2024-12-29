@@ -16,7 +16,7 @@ declare global {
      */
     static get settings(): ClientSettings.SettingInitializedType<"core", Combat.CONFIG_SETTING>;
 
-    override get directory(): (typeof ui)["combat"];
+    override get directory(): typeof ui.combat;
 
     /**
      * Get an Array of Combat instances which apply to the current canvas scene
