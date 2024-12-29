@@ -162,17 +162,14 @@ declare namespace TypeDataModel {
         >
       : never;
 
-  type ParentAssignmentType<BaseThis extends Internal.Instance.Any> =
-    BaseThis extends Internal.Instance<infer Schema, infer Parent, any, any, any>
-      ? SimpleMerge<
-          SchemaField.InitializedType<Document.SchemaFor<Parent>>,
-          {
-            // FIXME(LukeAbby): Callers handle making this partial when obvious.
-            // However also should make system partial using the regular rules: if `initial` is assignable to the field or if `required` is false etc.
-            system: SchemaField.InitializedType<Schema>;
-          }
-        >
-      : never;
+  type ParentAssignmentType<Schema extends DataSchema, Parent extends Document.Internal.Instance.Any> = SimpleMerge<
+    SchemaField.InitializedType<Document.SchemaFor<Parent>>,
+    {
+      // FIXME(LukeAbby): Callers handle making this partial when obvious.
+      // However also should make system partial using the regular rules: if `initial` is assignable to the field or if `required` is false etc.
+      system: SchemaField.InitializedType<Schema>;
+    }
+  >;
 }
 
 declare abstract class AnyTypeDataModel extends TypeDataModel<any, any, any, any> {
@@ -295,7 +292,7 @@ declare abstract class TypeDataModel<
    * @returns Return false to exclude this Document from the creation operation
    */
   protected _preCreate(
-    data: TypeDataModel.ParentAssignmentType<this>,
+    data: TypeDataModel.ParentAssignmentType<Schema, Parent>,
     options: Document.PreCreateOptions<any>,
     user: BaseUser,
   ): Promise<boolean | void>;
@@ -308,7 +305,7 @@ declare abstract class TypeDataModel<
    * @param userId  - The id of the User requesting the document update
    */
   protected _onCreate(
-    data: TypeDataModel.ParentAssignmentType<this>,
+    data: TypeDataModel.ParentAssignmentType<Schema, Parent>,
     options: Document.OnCreateOptions<any>,
     userId: string,
   ): void;
@@ -322,7 +319,7 @@ declare abstract class TypeDataModel<
    * @returns A return value of false indicates the update operation should be cancelled.
    */
   protected _preUpdate(
-    changes: DeepPartial<TypeDataModel.ParentAssignmentType<this>>,
+    changes: DeepPartial<TypeDataModel.ParentAssignmentType<Schema, Parent>>,
     options: Document.PreUpdateOptions<any>,
     userId: string,
   ): Promise<boolean | void>;
@@ -335,7 +332,7 @@ declare abstract class TypeDataModel<
    * @param userId  - The id of the User requesting the document update
    */
   protected _onUpdate(
-    changed: DeepPartial<TypeDataModel.ParentAssignmentType<this>>,
+    changed: DeepPartial<TypeDataModel.ParentAssignmentType<Schema, Parent>>,
     options: Document.OnUpdateOptions<any>,
     userId: string,
   ): void;
