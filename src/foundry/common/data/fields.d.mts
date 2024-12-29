@@ -3738,7 +3738,7 @@ declare class DocumentTypeField<
    * @param options - Options which configure the behavior of the field
    * @param context - Additional context which describes the field
    */
-  constructor(documentClass: ConcreteDocumentClass, options: DocumentTypeField.Options, context?: DataField.Context);
+  constructor(documentClass: ConcreteDocumentClass, options?: DocumentTypeField.Options, context?: DataField.Context);
 
   static override get _defaults(): DocumentTypeField.Options;
 
@@ -3995,7 +3995,7 @@ declare class TypedSchemaField<
    * @param options - Options which configure the behavior of the field
    * @param context - Additional context which describes the field
    */
-  constructor(types: Types, options: Options, context?: DataField.Context);
+  constructor(types: Types, options?: Options, context?: DataField.Context);
 
   static get _defaults(): DataField.Options.Any;
 

@@ -116,6 +116,7 @@ type InnerMerge<U, K extends keyof U, T> = T extends { readonly [_ in K]?: infer
 
 declare namespace TypeDataModel {
   type Any = TypeDataModel<any, any, any, any>;
+  type AnyConstructor = typeof AnyTypeDataModel;
 
   type ConfigurationFailure = InstanceType<ConfigurationFailureClass>;
   type ConfigurationFailureClass = typeof ConfigurationFailure;
@@ -172,6 +173,10 @@ declare namespace TypeDataModel {
           }
         >
       : never;
+}
+
+declare abstract class AnyTypeDataModel extends TypeDataModel<any, any, any, any> {
+  constructor(arg0: never, ...args: never[]);
 }
 
 /**
