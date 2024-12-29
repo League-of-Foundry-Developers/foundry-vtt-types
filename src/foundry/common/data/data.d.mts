@@ -3,6 +3,7 @@ import type { DataModel } from "../abstract/data.d.mts";
 import type { fields } from "./module.d.mts";
 import type * as documents from "../documents/_module.d.mts";
 import type { AnyObject, EmptyObject, ToMethod, ValueOf } from "../../../utils/index.d.mts";
+import type { FilePathField } from "./fields.d.mts";
 
 // TODO: Implement all of the necessary options
 
@@ -439,7 +440,7 @@ declare namespace TextureData {
     label: "";
   }
 
-  interface Schema<SrcOptions extends FilePathFieldOptions> extends DataSchema {
+  interface Schema<SrcOptions extends FilePathField.Options> extends DataSchema {
     /**
      * The URL of the texture source.
      * @defaultValue `initial.src ?? null`
@@ -512,7 +513,7 @@ declare namespace TextureData {
  * A {@link fields.SchemaField} subclass used to represent texture data.
  */
 declare class TextureData<
-  SrcOptions extends FilePathFieldOptions = TextureData.DefaultOptions,
+  SrcOptions extends FilePathField.Options = TextureData.DefaultOptions,
   SchemaOptions extends fields.SchemaField.Options<TextureData.Schema<SrcOptions>> = EmptyObject,
 > extends fields.SchemaField<TextureData.Schema<SrcOptions>, SchemaOptions> {
   /**

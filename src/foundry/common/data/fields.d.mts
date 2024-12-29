@@ -27,95 +27,29 @@ import type {
 
 declare global {
   /**
-   * @typeParam BaseAssignmentType - the base assignment type for a DataField, without null or undefined
+   * @deprecated {@link DataField.Options | DataField.Options}
    */
-  interface DataFieldOptions<BaseAssignmentType> {
-    /**
-     * Is this field required to be populated?
-     * @defaultValue `false`
-     */
-    required?: boolean | undefined;
-
-    /**
-     * Can this field have null values?
-     * @defaultValue `false`
-     */
-    nullable?: boolean | undefined;
-
-    /**
-     * Can this field only be modified by a gamemaster or assistant gamemaster?
-     * @defaultValue `false`
-     */
-    gmOnly?: boolean | undefined;
-
-    /** The initial value of a field, or a function which assigns that initial value. */
-    initial?:
-      | DataFieldOptions.InitialType<
-          DataFieldOptions.InitialReturnType<BaseAssignmentType, this["nullable"], this["required"]>
-        >
-      | undefined;
-
-    /** A data validation function which accepts one argument with the current value. */
-    validate?: DataField.Validator<BaseAssignmentType> | undefined;
-
-    /** A localizable label displayed on forms which render this field. */
-    label?: string | undefined;
-
-    /** Localizable help text displayed on forms which render this field. */
-    hint?: string | undefined;
-
-    /**
-     * A custom validation error string. When displayed will be prepended with the
-     * document name, field name, and candidate value. This error string is only
-     * used when the return type of the validate function is a boolean. If an Error
-     * is thrown in the validate function, the string message of that Error is used.
-     */
-    validationError?: string | undefined;
-  }
+  type DataFieldOptions<BaseAssignmentType> = DataField.Options<BaseAssignmentType>;
 
   namespace DataFieldOptions {
-    /** Any DataFieldOptions. */
-    // Note(LukeAbby): This `& object` is intentional. Its purpose is to allow options like `{ integer: true }` to be assigned.
-    // This is an issue because `{ integer: true }` does not extend `{ required?: boolean }` because they have properties in common.
-    // Even though `{ integer: true, required: undefined }` would extend `{ required?: boolean }` following the regular rules of surplus properties being allowed.
-    // `object` was chosen over `AnyObject` so that people may pass in interfa
-    type Any = DataFieldOptions<any> & object;
+    /** @deprecated {@link DataField.Options.Any | `DataField.Options.Any`} */
+    type Any = DataField.Options.Any;
 
-    /**
-     * A helper type for the {@link DataFieldOptions.initial} option.
-     * @typeParam ReturnType - the return type of the option
-     */
-    type InitialType<ReturnType> = ReturnType | ((initialData: unknown) => ReturnType);
+    /** @deprecated {@link DataField.Options.InitialType | `DataField.Options.InitialType`} */
+    type InitialType<ReturnType> = DataField.Options.InitialType<ReturnType>;
 
-    /**
-     * The decorated return type for the {@link DataFieldOptions.initial} option.
-     * @typeParam BaseAssignmentType - the base assignment type for a DataField
-     * @typeParam NullableOption     - the value of the nullable option
-     * @typeParam RequiredOption     - the value of the required option
-     */
-    type InitialReturnType<BaseAssignmentType, NullableOption, RequiredOption> =
-      | Exclude<BaseAssignmentType, null | undefined>
-      | (NullableOption extends true ? null : never)
-      | (RequiredOption extends true ? never : undefined);
+    /** @deprecated {@link DataField.Options.InitialReturnType | `DataField.Options.InitialReturnType`} */
+    type InitialReturnType<BaseAssignmentType, NullableOption, RequiredOption> = DataField.Options.InitialReturnType<
+      BaseAssignmentType,
+      NullableOption,
+      RequiredOption
+    >;
   }
 
-  interface DataFieldValidationOptions {
-    /** Whether this is a partial schema validation, or a complete one. */
-    partial?: boolean;
-
-    /** Whether to allow replacing invalid values with valid fallbacks. */
-    fallback?: boolean;
-
-    /** The full source object being evaluated. */
-    source?: AnyObject;
-
-    /**
-     * If true, invalid embedded documents will emit a warning and be placed in
-     * the invalidDocuments collection rather than causing the parent to be
-     * considered invalid.
-     */
-    dropInvalidEmbedded?: boolean;
-  }
+  /**
+   * @deprecated {@link DataField.DataValidationOptions | DataField.DataValidationOptions}
+   */
+  type DataFieldValidationOptions = DataField.DataValidationOptions;
 }
 
 /**
@@ -132,7 +66,7 @@ declare global {
  * InitialValue: `undefined`
  */
 declare abstract class DataField<
-  const Options extends DataFieldOptions.Any = DataField.DefaultOptions,
+  const Options extends DataField.Options.Any = DataField.DefaultOptions,
   const AssignmentType = DataField.AssignmentType<Options>,
   const InitializedType = DataField.InitializedType<Options>,
   const PersistedType extends unknown | null | undefined = InitializedType,
@@ -170,7 +104,7 @@ declare abstract class DataField<
    * The initial value of a field, or a function which assigns that initial value.
    * @defaultValue `undefined`
    */
-  initial: DataFieldOptions.InitialType<InitializedType>;
+  initial: DataField.Options.InitialType<InitializedType>;
 
   /**
    * Should the prepared value of the field be read-only, preventing it from being
@@ -234,7 +168,7 @@ declare abstract class DataField<
    * Default parameters for this field type
    * @remarks This is not entirely type-safe, overrides should specify a more concrete return type.
    */
-  protected static get _defaults(): DataFieldOptions.Any;
+  protected static get _defaults(): DataField.Options.Any;
 
   /**
    * A dot-separated string representation of the field path within the parent schema.
@@ -507,7 +441,7 @@ declare abstract class DataField<
 
 declare namespace DataField {
   /** Any DataField. */
-  type Any = DataField<DataFieldOptions.Any, unknown, unknown, unknown>;
+  type Any = DataField<DataField.Options.Any, unknown, unknown, unknown>;
 
   type AnyConstructor = typeof AnyDataField;
 
@@ -535,18 +469,106 @@ declare namespace DataField {
     validationError: "is not a valid value";
   }
 
+  interface Options<BaseAssignmentType> {
+    /**
+     * Is this field required to be populated?
+     * @defaultValue `false`
+     */
+    required?: boolean | undefined;
+
+    /**
+     * Can this field have null values?
+     * @defaultValue `false`
+     */
+    nullable?: boolean | undefined;
+
+    /**
+     * Can this field only be modified by a gamemaster or assistant gamemaster?
+     * @defaultValue `false`
+     */
+    gmOnly?: boolean | undefined;
+
+    /** The initial value of a field, or a function which assigns that initial value. */
+    initial?:
+      | DataField.Options.InitialType<
+          DataField.Options.InitialReturnType<BaseAssignmentType, this["nullable"], this["required"]>
+        >
+      | undefined;
+
+    /** A data validation function which accepts one argument with the current value. */
+    validate?: DataField.Validator<BaseAssignmentType> | undefined;
+
+    /** A localizable label displayed on forms which render this field. */
+    label?: string | undefined;
+
+    /** Localizable help text displayed on forms which render this field. */
+    hint?: string | undefined;
+
+    /**
+     * A custom validation error string. When displayed will be prepended with the
+     * document name, field name, and candidate value. This error string is only
+     * used when the return type of the validate function is a boolean. If an Error
+     * is thrown in the validate function, the string message of that Error is used.
+     */
+    validationError?: string | undefined;
+  }
+
+  namespace Options {
+    /** Any DataField.Options. */
+    // Note(LukeAbby): This `& object` is intentional. Its purpose is to allow options like `{ integer: true }` to be assigned.
+    // This is an issue because `{ integer: true }` does not extend `{ required?: boolean }` because they have properties in common.
+    // Even though `{ integer: true, required: undefined }` would extend `{ required?: boolean }` following the regular rules of surplus properties being allowed.
+    // `object` was chosen over `AnyObject` so that people may pass in interfa
+    type Any = DataField.Options<any> & object;
+
+    /**
+     * A helper type for the {@link DataField.Options.initial} option.
+     * @typeParam ReturnType - the return type of the option
+     */
+    type InitialType<ReturnType> = ReturnType | ((initialData: unknown) => ReturnType);
+
+    /**
+     * The decorated return type for the {@link DataField.Options.initial} option.
+     * @typeParam BaseAssignmentType - the base assignment type for a DataField
+     * @typeParam NullableOption     - the value of the nullable option
+     * @typeParam RequiredOption     - the value of the required option
+     */
+    type InitialReturnType<BaseAssignmentType, NullableOption, RequiredOption> =
+      | Exclude<BaseAssignmentType, null | undefined>
+      | (NullableOption extends true ? null : never)
+      | (RequiredOption extends true ? never : undefined);
+  }
+
+  interface DataValidationOptions {
+    /** Whether this is a partial schema validation, or a complete one. */
+    partial?: boolean;
+
+    /** Whether to allow replacing invalid values with valid fallbacks. */
+    fallback?: boolean;
+
+    /** The full source object being evaluated. */
+    source?: AnyObject;
+
+    /**
+     * If true, invalid embedded documents will emit a warning and be placed in
+     * the invalidDocuments collection rather than causing the parent to be
+     * considered invalid.
+     */
+    dropInvalidEmbedded?: boolean;
+  }
+
   /**
    * A helper type for the given options type merged into the default options of the DataField class.
    * @typeParam Options - the options that override the default options
    */
-  type MergedOptions<Options extends DataFieldOptions.Any> = SimpleMerge<DefaultOptions, Options>;
+  type MergedOptions<Options extends DataField.Options.Any> = SimpleMerge<DefaultOptions, Options>;
 
   /**
    * A type to decorate the base assignment type to a DataField, based on the options of the field.
    * @typeParam BaseAssignmentType - the base assignment type of the DataField, without null or undefined
    * @typeParam Options            - the options of the DataField
    */
-  type DerivedAssignmentType<BaseAssignmentType, Options extends DataFieldOptions.Any> =
+  type DerivedAssignmentType<BaseAssignmentType, Options extends DataField.Options.Any> =
     | Exclude<BaseAssignmentType, null | undefined> // Always include the base type
     | (Options["nullable"] extends true // determine whether null is in the union
         ? // when nullable, null is always allowed
@@ -576,7 +598,7 @@ declare namespace DataField {
    * @typeParam BaseInitializedType - the base initialized type of the DataField, without null or undefined
    * @typeParam Options             - the options of the DataField
    */
-  type DerivedInitializedType<BaseInitializedType, Options extends DataFieldOptions.Any> =
+  type DerivedInitializedType<BaseInitializedType, Options extends DataField.Options.Any> =
     | Exclude<BaseInitializedType, null | undefined>
     | (Options["nullable"] extends true ? null : never)
     | (Options["required"] extends true ? never : undefined);
@@ -585,13 +607,13 @@ declare namespace DataField {
    * A shorthand for the assignment type of a DataField class.
    * @typeParam Options - the options overriding the defaults
    */
-  type AssignmentType<Options extends DataFieldOptions.Any> = DerivedAssignmentType<any, MergedOptions<Options>>;
+  type AssignmentType<Options extends DataField.Options.Any> = DerivedAssignmentType<any, MergedOptions<Options>>;
 
   /**
    * A shorthand for the initialized type of a DataField class.
    * @typeParam Options - the options overriding the defaults
    */
-  type InitializedType<Options extends DataFieldOptions.Any> = DerivedInitializedType<any, MergedOptions<Options>>;
+  type InitializedType<Options extends DataField.Options.Any> = DerivedInitializedType<any, MergedOptions<Options>>;
 
   /** An interface for the options of the {@link DataField} clean functions. */
   interface CleanOptions {
@@ -702,7 +724,7 @@ declare class SchemaField<
   override nullable: boolean;
 
   /** @defaultValue `() => this.clean({})` */
-  override initial: DataFieldOptions.InitialType<InitializedType>;
+  override initial: DataField.Options.InitialType<InitializedType>;
 
   protected static override get _defaults(): SchemaField.Options<DataSchema>;
 
@@ -813,7 +835,7 @@ declare namespace SchemaField {
    * A shorthand for the options of a SchemaField class.
    * @typeParam Fields - the DataSchema fields of the SchemaField
    */
-  type Options<Fields extends DataSchema> = DataFieldOptions<InnerAssignmentType<Fields> | __SchemaFieldInitial>;
+  type Options<Fields extends DataSchema> = DataField.Options<InnerAssignmentType<Fields> | __SchemaFieldInitial>;
 
   /** Any SchemaField. */
   type Any = SchemaField<any, any, any, any, any>;
@@ -947,7 +969,7 @@ declare class BooleanField<
   override nullable: boolean;
 
   /** @defaultValue `false` */
-  override initial: DataFieldOptions.InitialType<InitializedType>;
+  override initial: DataField.Options.InitialType<InitializedType>;
 
   protected static override get _defaults(): BooleanField.Options;
 
@@ -963,7 +985,7 @@ declare class BooleanField<
 
 declare namespace BooleanField {
   /** A shorthand for the options of a BooleanField class. */
-  type Options = DataFieldOptions<boolean>;
+  type Options = DataField.Options<boolean>;
 
   /** The type of the default options for the {@link BooleanField} class. */
   type DefaultOptions = SimpleMerge<
@@ -995,45 +1017,8 @@ declare namespace BooleanField {
 }
 
 declare global {
-  interface NumberFieldOptions extends DataFieldOptions<number> {
-    /**
-     * A minimum allowed value
-     * @defaultValue `undefined`
-     */
-    min?: number | undefined;
-
-    /**
-     * A maximum allowed value
-     * @defaultValue `undefined`
-     */
-    max?: number | undefined;
-
-    /**
-     * A permitted step size
-     * @defaultValue `undefined`
-     */
-    step?: number | undefined;
-
-    /**
-     * Must the number be an integer?
-     * @defaultValue `false`
-     */
-    integer?: boolean | undefined;
-
-    /**
-     * Must the number be positive?
-     * @defaultValue `false`
-     */
-    positive?: boolean | undefined;
-
-    /**
-     * An array of values or an object of values/labels which represent
-     * allowed choices for the field. A function may be provided which dynamically
-     * returns the array of choices.
-     * @defaultValue `undefined`
-     */
-    choices?: NumberField.Choices | undefined;
-  }
+  /** @deprecated {@link NumberField.Options | `NumberField.Options`} */
+  type NumberFieldOptions = NumberField.Options;
 }
 
 /**
@@ -1050,7 +1035,7 @@ declare global {
  * InitialValue: `null`
  */
 declare class NumberField<
-  const Options extends NumberFieldOptions = NumberField.DefaultOptions,
+  const Options extends NumberField.Options = NumberField.DefaultOptions,
   const AssignmentType = NumberField.AssignmentType<Options>,
   const InitializedType = NumberField.InitializedType<Options>,
   const PersistedType extends number | null | undefined = NumberField.InitializedType<Options>,
@@ -1061,7 +1046,7 @@ declare class NumberField<
   constructor(options?: Options, context?: DataField.Context);
 
   /** @defaultValue `null` */
-  override initial: DataFieldOptions.InitialType<InitializedType>;
+  override initial: DataField.Options.InitialType<InitializedType>;
 
   /** @defaultValue `true` */
   override nullable: boolean;
@@ -1104,7 +1089,7 @@ declare class NumberField<
    */
   choices: number[] | Record<number, string> | (() => number[] | Record<number, string>) | undefined;
 
-  protected static override get _defaults(): NumberFieldOptions;
+  protected static override get _defaults(): NumberField.Options;
 
   protected override _cast(value: AssignmentType): InitializedType;
 
@@ -1170,6 +1155,46 @@ declare namespace NumberField {
     }
   >;
 
+  interface Options extends DataField.Options<number> {
+    /**
+     * A minimum allowed value
+     * @defaultValue `undefined`
+     */
+    min?: number | undefined;
+
+    /**
+     * A maximum allowed value
+     * @defaultValue `undefined`
+     */
+    max?: number | undefined;
+
+    /**
+     * A permitted step size
+     * @defaultValue `undefined`
+     */
+    step?: number | undefined;
+
+    /**
+     * Must the number be an integer?
+     * @defaultValue `false`
+     */
+    integer?: boolean | undefined;
+
+    /**
+     * Must the number be positive?
+     * @defaultValue `false`
+     */
+    positive?: boolean | undefined;
+
+    /**
+     * An array of values or an object of values/labels which represent
+     * allowed choices for the field. A function may be provided which dynamically
+     * returns the array of choices.
+     * @defaultValue `undefined`
+     */
+    choices?: NumberField.Choices | undefined;
+  }
+
   /** The type of the default options for the {@link NumberField} class when choices are provided. */
   type DefaultOptionsWhenChoicesProvided = SimpleMerge<DefaultOptions, { nullable: false }>;
 
@@ -1177,7 +1202,7 @@ declare namespace NumberField {
    * A helper type for the given options type merged into the default options of the NumberField class.
    * @typeParam Options - the options that override the default options
    */
-  type MergedOptions<Options extends NumberFieldOptions> = SimpleMerge<
+  type MergedOptions<Options extends NumberField.Options> = SimpleMerge<
     undefined extends Options["choices"] ? DefaultOptions : DefaultOptionsWhenChoicesProvided,
     Options
   >;
@@ -1186,7 +1211,7 @@ declare namespace NumberField {
    * A shorthand for the assignment type of a NumberField class.
    * @typeParam Options - the options that override the default options
    */
-  type AssignmentType<Options extends NumberFieldOptions> = DataField.DerivedAssignmentType<
+  type AssignmentType<Options extends NumberField.Options> = DataField.DerivedAssignmentType<
     number,
     MergedOptions<Options>
   >;
@@ -1195,7 +1220,7 @@ declare namespace NumberField {
    * A shorthand for the initialized type of a NumberField class.
    * @typeParam Options - the options that override the default options
    */
-  type InitializedType<Options extends NumberFieldOptions> = DataField.DerivedInitializedType<
+  type InitializedType<Options extends NumberField.Options> = DataField.DerivedInitializedType<
     number,
     MergedOptions<Options>
   >;
@@ -1232,32 +1257,8 @@ declare namespace NumberField {
 }
 
 declare global {
-  interface StringFieldOptions extends DataFieldOptions<string> {
-    /**
-     * Is the string allowed to be blank (empty)?
-     * @defaultValue `true`
-     */
-    blank?: boolean | undefined;
-
-    /**
-     * Should any provided string be trimmed as part of cleaning?
-     * @defaultValue `true`
-     */
-    trim?: boolean | undefined;
-
-    /**
-     * An array of values or an object of values/labels which represent
-     * allowed choices for the field. A function may be provided which dynamically
-     * returns the array of choices.
-     * @defaultValue `undefined`
-     */
-    choices?: StringField.Choices | undefined;
-
-    /**
-     * @defaultValue `false`
-     */
-    textSearch?: boolean | undefined;
-  }
+  /** @deprecated {@link StringField.Options | `StringField.Options`} */
+  type StringFieldOptions = StringField.Options;
 }
 
 /**
@@ -1274,7 +1275,7 @@ declare global {
  * InitialValue: `""`
  */
 declare class StringField<
-  const Options extends StringFieldOptions = StringField.DefaultOptions,
+  const Options extends StringField.Options = StringField.DefaultOptions,
   const AssignmentType = StringField.AssignmentType<Options>,
   const InitializedType = StringField.InitializedType<Options>,
   const PersistedType extends string | null | undefined = StringField.InitializedType<Options>,
@@ -1285,7 +1286,7 @@ declare class StringField<
   constructor(options?: Options, context?: DataField.Context);
 
   /** @defaultValue `undefined` */
-  override initial: DataFieldOptions.InitialType<InitializedType>;
+  override initial: DataField.Options.InitialType<InitializedType>;
 
   /**
    * Is the string allowed to be blank (empty)?
@@ -1313,7 +1314,7 @@ declare class StringField<
   /** @defaultValue `false` */
   textSearch: boolean;
 
-  protected static override get _defaults(): StringFieldOptions;
+  protected static override get _defaults(): StringField.Options;
 
   override clean(value: AssignmentType, options?: DataField.CleanOptions): InitializedType;
 
@@ -1376,6 +1377,33 @@ declare namespace StringField {
     }
   >;
 
+  interface Options extends DataField.Options<string> {
+    /**
+     * Is the string allowed to be blank (empty)?
+     * @defaultValue `true`
+     */
+    blank?: boolean | undefined;
+
+    /**
+     * Should any provided string be trimmed as part of cleaning?
+     * @defaultValue `true`
+     */
+    trim?: boolean | undefined;
+
+    /**
+     * An array of values or an object of values/labels which represent
+     * allowed choices for the field. A function may be provided which dynamically
+     * returns the array of choices.
+     * @defaultValue `undefined`
+     */
+    choices?: StringField.Choices | undefined;
+
+    /**
+     * @defaultValue `false`
+     */
+    textSearch?: boolean | undefined;
+  }
+
   /** The type of the default options for the {@link StringField} class when choices are provided. */
   type DefaultOptionsWhenChoicesProvided = SimpleMerge<DefaultOptions, { nullable: false; blank: false }>;
 
@@ -1383,21 +1411,21 @@ declare namespace StringField {
    * A helper type for the given options type merged into the default options of the StringField class.
    * @typeParam Options - the options that override the default options
    */
-  type MergedOptions<Options extends StringFieldOptions> = SimpleMerge<
+  type MergedOptions<Options extends StringField.Options> = SimpleMerge<
     _OptionsForInitial<_OptionsForChoices<Options["choices"]>>,
     Options
   >;
 
-  type _OptionsForChoices<Choices extends StringFieldOptions["choices"]> = undefined extends Choices
+  type _OptionsForChoices<Choices extends StringField.Options["choices"]> = undefined extends Choices
     ? DefaultOptions
     : DefaultOptionsWhenChoicesProvided;
 
   // FIXME: `"initial" extends keyof Options` does not work for modeling `"initial" in options`.
-  type _OptionsForInitial<Options extends StringFieldOptions> = "initial" extends keyof Options
+  type _OptionsForInitial<Options extends StringField.Options> = "initial" extends keyof Options
     ? Options
     : SimpleMerge<Options, { initial: _InitialForOptions<Options> }>;
 
-  type _InitialForOptions<Options extends StringFieldOptions> = Options["required"] extends false | undefined
+  type _InitialForOptions<Options extends StringField.Options> = Options["required"] extends false | undefined
     ? undefined
     : Options["blank"] extends true
       ? string
@@ -1407,7 +1435,7 @@ declare namespace StringField {
 
   // choices?: string[] | Record<string, string> | (() => string[] | Record<string, string>) | undefined;
 
-  type ValidChoice<Options extends StringFieldOptions> = Options["choices"] extends undefined
+  type ValidChoice<Options extends StringField.Options> = Options["choices"] extends undefined
     ? string
     : Options["choices"] extends (...args: any) => infer Choices
       ? FixedChoice<Choices>
@@ -1419,7 +1447,7 @@ declare namespace StringField {
    * A shorthand for the assignment type of a StringField class.
    * @typeParam Options - the options that override the default options
    */
-  type AssignmentType<Options extends StringFieldOptions> = DataField.DerivedAssignmentType<
+  type AssignmentType<Options extends StringField.Options> = DataField.DerivedAssignmentType<
     ValidChoice<Options>,
     MergedOptions<Options>
   >;
@@ -1428,7 +1456,7 @@ declare namespace StringField {
    * A shorthand for the initialized type of a StringField class.
    * @typeParam Options - the options that override the default options
    */
-  type InitializedType<Options extends StringFieldOptions> = DataField.DerivedInitializedType<
+  type InitializedType<Options extends StringField.Options> = DataField.DerivedInitializedType<
     // TODO(LukeAbby): This is a workaround for how `ValidChoice` is defined ignorant of the `StringField`/`NumberField` divide.
     ValidChoice<Options> & (string | null | undefined),
     MergedOptions<Options>
@@ -1483,7 +1511,7 @@ declare namespace StringField {
  * InitialValue: `{}`
  */
 declare class ObjectField<
-  const Options extends DataFieldOptions<AnyObject> = ObjectField.DefaultOptions,
+  const Options extends DataField.Options<AnyObject> = ObjectField.DefaultOptions,
   const AssignmentType = ObjectField.AssignmentType<Options>,
   const InitializedType = ObjectField.InitializedType<Options>,
   const PersistedType extends AnyObject | null | undefined = ObjectField.InitializedType<Options>,
@@ -1495,9 +1523,9 @@ declare class ObjectField<
   override nullable: boolean;
 
   /** @defaultValue `() => ({})` */
-  override initial: DataFieldOptions.InitialType<InitializedType>;
+  override initial: DataField.Options.InitialType<InitializedType>;
 
-  protected static override get _defaults(): DataFieldOptions<AnyObject>;
+  protected static override get _defaults(): DataField.Options<AnyObject>;
 
   protected override _cast(value: AssignmentType): InitializedType;
 
@@ -1529,13 +1557,13 @@ declare namespace ObjectField {
    * A helper type for the given options type merged into the default options of the ObjectField class.
    * @typeParam Options - the options that override the default options
    */
-  type MergedOptions<Options extends DataFieldOptions<AnyObject>> = SimpleMerge<DefaultOptions, Options>;
+  type MergedOptions<Options extends DataField.Options<AnyObject>> = SimpleMerge<DefaultOptions, Options>;
 
   /**
    * A shorthand for the assignment type of a ObjectField class.
    * @typeParam Options - the options that override the default options
    */
-  type AssignmentType<Options extends DataFieldOptions<AnyObject>> = DataField.DerivedAssignmentType<
+  type AssignmentType<Options extends DataField.Options<AnyObject>> = DataField.DerivedAssignmentType<
     AnyObject,
     MergedOptions<Options>
   >;
@@ -1544,7 +1572,7 @@ declare namespace ObjectField {
    * A shorthand for the initialized type of a ObjectField class.
    * @typeParam Options - the options that override the default options
    */
-  type InitializedType<Options extends DataFieldOptions<AnyObject>> = DataField.DerivedInitializedType<
+  type InitializedType<Options extends DataField.Options<AnyObject>> = DataField.DerivedInitializedType<
     AnyObject,
     MergedOptions<Options>
   >;
@@ -1560,7 +1588,7 @@ declare namespace ObjectField {
     // The type `{}` is useful here because in an intersection it reduces down to nothing unlike `EmptyObject`.
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     ExtensionFlags extends AnyObject = {},
-    Options extends DataFieldOptions.Any = ObjectField.DefaultOptions,
+    Options extends DataField.Options.Any = ObjectField.DefaultOptions,
   > = ObjectField<
     Options,
     DataField.DerivedAssignmentType<Document.ConfiguredFlagsForName<Name> & ExtensionFlags, MergedOptions<Options>>,
@@ -1615,7 +1643,7 @@ declare class ArrayField<
   override nullable: boolean;
 
   /** @defaultValue `() => []` */
-  override initial: DataFieldOptions.InitialType<InitializedType>;
+  override initial: DataField.Options.InitialType<InitializedType>;
 
   /**
    * The data type of each element in this array
@@ -1700,7 +1728,7 @@ declare namespace ArrayField {
    * A shorthand for the options of an ArrayField class.
    * @typeParam AssignmentElementType - the assignment type of the elements in the array
    */
-  type Options<AssignmentElementType> = DataFieldOptions<BaseAssignmentType<AssignmentElementType>>;
+  type Options<AssignmentElementType> = DataField.Options<BaseAssignmentType<AssignmentElementType>>;
 
   type AnyOptions = Options<unknown>;
 
@@ -1879,7 +1907,7 @@ declare namespace SetField {
    * A shorthand for the options of a SetField class.
    * @typeParam AssignmentElementType - the assignment type of the elements in the array
    */
-  type Options<AssignmentElementType> = DataFieldOptions<SetField.BaseAssignmentType<AssignmentElementType>>;
+  type Options<AssignmentElementType> = DataField.Options<SetField.BaseAssignmentType<AssignmentElementType>>;
 
   type AnyOptions = Options<unknown>;
 
@@ -2005,7 +2033,7 @@ declare namespace EmbeddedDataField {
    * A shorthand for the options of an EmbeddedDataField class.
    * @typeParam ModelType - the DataModel for the embedded data
    */
-  type Options<ModelType extends DataModel.AnyConstructor> = DataFieldOptions<
+  type Options<ModelType extends DataModel.AnyConstructor> = DataField.Options<
     SchemaField.InnerAssignmentType<DataModel.SchemaOfClass<ModelType>> | __SchemaFieldInitial
   >;
 
@@ -2181,7 +2209,7 @@ declare namespace EmbeddedCollectionField {
    * A shorthand for the options of an EmbeddedCollectionField class.
    * @typeParam AssignmentElementType - the assignment type of the elements of the EmbeddedCollectionField
    */
-  type Options<AssignmentElementType> = DataFieldOptions<ArrayField.BaseAssignmentType<AssignmentElementType>>;
+  type Options<AssignmentElementType> = DataField.Options<ArrayField.BaseAssignmentType<AssignmentElementType>>;
 
   /**
    * The type of the default options for the {@link EmbeddedCollectionField} class.
@@ -2333,7 +2361,7 @@ declare namespace EmbeddedCollectionDeltaField {
    * A shorthand for the options of an EmbeddedCollectionDeltaField class.
    * @typeParam AssignmentElementType - the assignment type of the elements of the EmbeddedCollectionDeltaField
    */
-  type Options<AssignmentElementType> = DataFieldOptions<ArrayField.BaseAssignmentType<AssignmentElementType>>;
+  type Options<AssignmentElementType> = DataField.Options<ArrayField.BaseAssignmentType<AssignmentElementType>>;
 
   /**
    * The type of the default options for the {@link EmbeddedCollectionDeltaField} class.
@@ -2473,7 +2501,7 @@ declare namespace EmbeddedDocumentField {
    * A shorthand for the options of an EmbeddedDocumentField class.
    * @typeParam DocumentType - the type of the embedded Document
    */
-  type Options<DocumentType extends Document.AnyConstructor> = DataFieldOptions<
+  type Options<DocumentType extends Document.AnyConstructor> = DataField.Options<
     SchemaField.InnerAssignmentType<DataModel.SchemaOfClass<DocumentType>> | __SchemaFieldInitial
   >;
 
@@ -2550,7 +2578,7 @@ declare namespace EmbeddedDocumentField {
  * InitialValue: `null`
  */
 declare class DocumentIdField<
-  Options extends StringFieldOptions = DocumentIdField.DefaultOptions,
+  Options extends StringField.Options = DocumentIdField.DefaultOptions,
   AssignmentType = DocumentIdField.AssignmentType<Options>,
   InitializedType = DocumentIdField.InitializedType<Options>,
   PersistedType extends string | null | undefined = DocumentIdField.InitializedType<Options>,
@@ -2565,7 +2593,7 @@ declare class DocumentIdField<
   override nullable: boolean;
 
   /** @defaultValue `null` */
-  override initial: DataFieldOptions.InitialType<InitializedType>;
+  override initial: DataField.Options.InitialType<InitializedType>;
 
   /** @defaultValue `true` */
   override readonly: boolean;
@@ -2573,7 +2601,7 @@ declare class DocumentIdField<
   /** @defaultValue `"is not a valid Document ID string"` */
   override validationError: string;
 
-  protected static override get _defaults(): StringFieldOptions;
+  protected static override get _defaults(): StringField.Options;
 
   protected override _cast(value: AssignmentType): InitializedType;
 
@@ -2601,13 +2629,13 @@ declare namespace DocumentIdField {
    * A helper type for the given options type merged into the default options of the DocumentIdField class.
    * @typeParam Options - the options that override the default options
    */
-  type MergedOptions<Options extends StringFieldOptions> = SimpleMerge<DefaultOptions, Options>;
+  type MergedOptions<Options extends StringField.Options> = SimpleMerge<DefaultOptions, Options>;
 
   /**
    * A shorthand for the assignment type of a StringField class.
    * @typeParam Options - the options that override the default options
    */
-  type AssignmentType<Options extends StringFieldOptions> = DataField.DerivedAssignmentType<
+  type AssignmentType<Options extends StringField.Options> = DataField.DerivedAssignmentType<
     string | Document.Any,
     MergedOptions<Options>
   >;
@@ -2616,7 +2644,7 @@ declare namespace DocumentIdField {
    * A shorthand for the initialized type of a StringField class.
    * @typeParam Options - the options that override the default options
    */
-  type InitializedType<Options extends StringFieldOptions> = DataField.DerivedInitializedType<
+  type InitializedType<Options extends StringField.Options> = DataField.DerivedInitializedType<
     string,
     MergedOptions<Options>
   >;
@@ -2681,8 +2709,8 @@ declare class DocumentUUIDField<
 }
 
 declare namespace DocumentUUIDField {
-  type Options = StringFieldOptions &
-    StringFieldOptions & {
+  type Options = StringField.Options &
+    StringField.Options & {
       /* A specific document type in CONST.ALL_DOCUMENT_TYPES required by this field */
       type?: Document.Type | undefined;
 
@@ -2778,8 +2806,8 @@ declare class ForeignDocumentField<
 
 declare namespace ForeignDocumentField {
   /** The options for the ForeignDocumentField class. */
-  type Options = StringFieldOptions &
-    DataFieldOptions<string | Document.Any> & {
+  type Options = StringField.Options &
+    DataField.Options<string | Document.Any> & {
       // Making this ---------^ more concrete leads to excessively deep instantiation
       idOnly?: boolean;
     };
@@ -2842,7 +2870,7 @@ declare namespace ForeignDocumentField {
  * InitialValue: `null`
  */
 declare class ColorField<
-  Options extends StringFieldOptions = ColorField.DefaultOptions,
+  Options extends StringField.Options = ColorField.DefaultOptions,
   AssignmentType = ColorField.AssignmentType<Options>,
   InitializedType = ColorField.InitializedType<Options>,
   PersistedType extends string | null | undefined = ColorField.PersistedType<Options>,
@@ -2851,7 +2879,7 @@ declare class ColorField<
   override nullable: boolean;
 
   /** @defaultValue `null` */
-  override initial: DataFieldOptions.InitialType<InitializedType>;
+  override initial: DataField.Options.InitialType<InitializedType>;
 
   /** @defaultValue `false` */
   override blank: boolean;
@@ -2859,7 +2887,7 @@ declare class ColorField<
   /** @defaultValue `"is not a valid hexadecimal color string"` */
   override validationError: string;
 
-  protected static override get _defaults(): StringFieldOptions;
+  protected static override get _defaults(): StringField.Options;
 
   override clean(value: AssignmentType, options?: DataField.CleanOptions): InitializedType;
 
@@ -2885,13 +2913,13 @@ declare namespace ColorField {
    * A helper type for the given options type merged into the default options of the ColorField class.
    * @typeParam Options - the options that override the default options
    */
-  type MergedOptions<Options extends StringFieldOptions> = SimpleMerge<DefaultOptions, Options>;
+  type MergedOptions<Options extends StringField.Options> = SimpleMerge<DefaultOptions, Options>;
 
   /**
    * A shorthand for the assignment type of a ColorField class.
    * @typeParam Options - the options that override the default options
    */
-  type AssignmentType<Options extends StringFieldOptions> = DataField.DerivedAssignmentType<
+  type AssignmentType<Options extends StringField.Options> = DataField.DerivedAssignmentType<
     string,
     MergedOptions<Options>
   >;
@@ -2900,7 +2928,7 @@ declare namespace ColorField {
    * A shorthand for the initialized type of a ColorField class.
    * @typeParam Options - the options that override the default options
    */
-  type InitializedType<Options extends StringFieldOptions> = DataField.DerivedInitializedType<
+  type InitializedType<Options extends StringField.Options> = DataField.DerivedInitializedType<
     Color,
     MergedOptions<Options>
   >;
@@ -2909,7 +2937,7 @@ declare namespace ColorField {
    * A shorthand for the persisted type of a ColorField class.
    * @typeParam Options - the options that override the default options
    */
-  type PersistedType<Options extends StringFieldOptions> = DataField.DerivedInitializedType<
+  type PersistedType<Options extends StringField.Options> = DataField.DerivedInitializedType<
     string,
     MergedOptions<Options>
   >;
@@ -2917,27 +2945,9 @@ declare namespace ColorField {
 
 declare global {
   /**
-   * @typeParam Value  - the type of the value of the field
+   * @deprecated {@link FilePathField.Options | `FilePathField.Options`}
    */
-  interface FilePathFieldOptions extends StringFieldOptions {
-    /**
-     * A set of categories in CONST.FILE_CATEGORIES which this field supports
-     * @defaultValue `[]`
-     */
-    categories?: (keyof typeof CONST.FILE_CATEGORIES)[];
-
-    /**
-     * Is embedded base64 data supported in lieu of a file path?
-     * @defaultValue `false`
-     */
-    base64?: boolean;
-
-    /**
-     * Does this file path field allow wildcard characters?
-     * @defaultValue `false`
-     */
-    wildcard?: boolean;
-  }
+  type FilePathFieldOptions = FilePathField.Options;
 }
 
 /**
@@ -2954,7 +2964,7 @@ declare global {
  * InitialValue: `null`
  */
 declare class FilePathField<
-  Options extends FilePathFieldOptions = FilePathField.DefaultOptions,
+  Options extends FilePathField.Options = FilePathField.DefaultOptions,
   AssignmentType = FilePathField.AssignmentType<Options>,
   InitializedType = FilePathField.InitializedType<Options>,
   PersistedType extends string | null | undefined = FilePathField.InitializedType<Options>,
@@ -2989,9 +2999,9 @@ declare class FilePathField<
   override blank: boolean;
 
   /** @defaultValue `null` */
-  override initial: DataFieldOptions.InitialType<InitializedType>;
+  override initial: DataField.Options.InitialType<InitializedType>;
 
-  protected static override get _defaults(): FilePathFieldOptions;
+  protected static override get _defaults(): FilePathField.Options;
 
   override clean(value: AssignmentType, options?: DataField.CleanOptions): InitializedType;
 
@@ -3015,17 +3025,37 @@ declare namespace FilePathField {
     }
   >;
 
+  interface Options extends StringField.Options {
+    /**
+     * A set of categories in CONST.FILE_CATEGORIES which this field supports
+     * @defaultValue `[]`
+     */
+    categories?: (keyof typeof CONST.FILE_CATEGORIES)[];
+
+    /**
+     * Is embedded base64 data supported in lieu of a file path?
+     * @defaultValue `false`
+     */
+    base64?: boolean;
+
+    /**
+     * Does this file path field allow wildcard characters?
+     * @defaultValue `false`
+     */
+    wildcard?: boolean;
+  }
+
   /**
    * A helper type for the given options type merged into the default options of the FilePathField class.
    * @typeParam Options - the options that override the default options
    */
-  type MergedOptions<Options extends StringFieldOptions> = SimpleMerge<DefaultOptions, Options>;
+  type MergedOptions<Options extends StringField.Options> = SimpleMerge<DefaultOptions, Options>;
 
   /**
    * A shorthand for the assignment type of a FilePathField class.
    * @typeParam Options - the options that override the default options
    */
-  type AssignmentType<Options extends StringFieldOptions> = DataField.DerivedAssignmentType<
+  type AssignmentType<Options extends StringField.Options> = DataField.DerivedAssignmentType<
     string,
     MergedOptions<Options>
   >;
@@ -3034,7 +3064,7 @@ declare namespace FilePathField {
    * A shorthand for the initialized type of a FilePathField class.
    * @typeParam Options - the options that override the default options
    */
-  type InitializedType<Options extends StringFieldOptions> = DataField.DerivedInitializedType<
+  type InitializedType<Options extends StringField.Options> = DataField.DerivedInitializedType<
     string,
     MergedOptions<Options>
   >;
@@ -3054,7 +3084,7 @@ declare namespace FilePathField {
  * InitialValue: `0`
  */
 declare class AngleField<
-  Options extends NumberFieldOptions = AngleField.DefaultOptions,
+  Options extends NumberField.Options = AngleField.DefaultOptions,
   AssignmentType = AngleField.AssignmentType<Options>,
   InitializedType = AngleField.InitializedType<Options>,
   PersistedType extends number | null | undefined = AngleField.InitializedType<Options>,
@@ -3066,7 +3096,7 @@ declare class AngleField<
   override nullable: boolean;
 
   /** @defaultValue `0` */
-  override initial: DataFieldOptions.InitialType<InitializedType>;
+  override initial: DataField.Options.InitialType<InitializedType>;
 
   /** @defaultValue `0` */
   base: number;
@@ -3080,7 +3110,7 @@ declare class AngleField<
   /** @defaultValue `"is not a number between 0 and 360"` */
   override validationError: string;
 
-  protected static override get _defaults(): NumberFieldOptions;
+  protected static override get _defaults(): NumberField.Options;
 
   protected override _cast(value: AssignmentType): InitializedType;
 }
@@ -3104,13 +3134,13 @@ declare namespace AngleField {
    * A helper type for the given options type merged into the default options of the AngleField class.
    * @typeParam Options - the options that override the default options
    */
-  type MergedOptions<Options extends NumberFieldOptions> = SimpleMerge<DefaultOptions, Options>;
+  type MergedOptions<Options extends NumberField.Options> = SimpleMerge<DefaultOptions, Options>;
 
   /**
    * A shorthand for the assignment type of a AngleField class.
    * @typeParam Options - the options that override the default options
    */
-  type AssignmentType<Options extends NumberFieldOptions> = DataField.DerivedAssignmentType<
+  type AssignmentType<Options extends NumberField.Options> = DataField.DerivedAssignmentType<
     number,
     MergedOptions<Options>
   >;
@@ -3119,7 +3149,7 @@ declare namespace AngleField {
    * A shorthand for the initialized type of a AngleField class.
    * @typeParam Options - the options that override the default options
    */
-  type InitializedType<Options extends NumberFieldOptions> = DataField.DerivedInitializedType<
+  type InitializedType<Options extends NumberField.Options> = DataField.DerivedInitializedType<
     number,
     MergedOptions<Options>
   >;
@@ -3139,7 +3169,7 @@ declare namespace AngleField {
  * InitialValue: `1`
  */
 declare class AlphaField<
-  Options extends NumberFieldOptions = AlphaField.DefaultOptions,
+  Options extends NumberField.Options = AlphaField.DefaultOptions,
   AssignmentType = AlphaField.AssignmentType<Options>,
   InitializedType = AlphaField.InitializedType<Options>,
   PersistedType extends number | null | undefined = AlphaField.InitializedType<Options>,
@@ -3151,7 +3181,7 @@ declare class AlphaField<
   override nullable: boolean;
 
   /** @defaultValue `1` */
-  override initial: DataFieldOptions.InitialType<InitializedType>;
+  override initial: DataField.Options.InitialType<InitializedType>;
 
   /** @defaultValue `0` */
   override min: number | undefined;
@@ -3162,7 +3192,7 @@ declare class AlphaField<
   /** @defaultValue `"is not a number between 0 and 1"` */
   override validationError: string;
 
-  protected static override get _defaults(): NumberFieldOptions;
+  protected static override get _defaults(): NumberField.Options;
 }
 
 declare namespace AlphaField {
@@ -3183,13 +3213,13 @@ declare namespace AlphaField {
    * A helper type for the given options type merged into the default options of the AlphaField class.
    * @typeParam Options - the options that override the default options
    */
-  type MergedOptions<Options extends NumberFieldOptions> = SimpleMerge<DefaultOptions, Options>;
+  type MergedOptions<Options extends NumberField.Options> = SimpleMerge<DefaultOptions, Options>;
 
   /**
    * A shorthand for the assignment type of a AlphaField class.
    * @typeParam Options - the options that override the default options
    */
-  type AssignmentType<Options extends NumberFieldOptions> = DataField.DerivedAssignmentType<
+  type AssignmentType<Options extends NumberField.Options> = DataField.DerivedAssignmentType<
     number,
     MergedOptions<Options>
   >;
@@ -3198,7 +3228,7 @@ declare namespace AlphaField {
    * A shorthand for the initialized type of a AlphaField class.
    * @typeParam Options - the options that override the default options
    */
-  type InitializedType<Options extends NumberFieldOptions> = DataField.DerivedInitializedType<
+  type InitializedType<Options extends NumberField.Options> = DataField.DerivedInitializedType<
     number,
     MergedOptions<Options>
   >;
@@ -3209,7 +3239,7 @@ declare namespace AlphaField {
  * Its values are normalized (modulo 1) to the range [0, 1) instead of being clamped.
  */
 declare class HueField<
-  const Options extends NumberFieldOptions = NumberField.DefaultOptions,
+  const Options extends NumberField.Options = NumberField.DefaultOptions,
   const AssignmentType = NumberField.AssignmentType<Options>,
   const InitializedType = NumberField.InitializedType<Options>,
   const PersistedType extends number | null | undefined = NumberField.InitializedType<Options>,
@@ -3220,7 +3250,7 @@ declare class HueField<
 }
 
 declare namespace HueField {
-  type Options = NumberFieldOptions;
+  type Options = NumberField.Options;
 
   type DefaultOptions = SimpleMerge<
     NumberField.DefaultOptions,
@@ -3258,7 +3288,7 @@ declare class DocumentOwnershipField<
     | undefined = DocumentOwnershipField.InitializedType<Options>,
 > extends ObjectField<Options, AssignmentType, InitializedType, PersistedType> {
   /** @defaultValue `{"default": DOCUMENT_OWNERSHIP_LEVELS.NONE}` */
-  override initial: DataFieldOptions.InitialType<InitializedType>;
+  override initial: DataField.Options.InitialType<InitializedType>;
 
   /** @defaultValue `"is not a mapping of user IDs and document permission levels"` */
   override validationError: string;
@@ -3273,7 +3303,7 @@ declare class DocumentOwnershipField<
 
 declare namespace DocumentOwnershipField {
   /** A shorthand for the options of a DocumentOwnershipField class. */
-  type Options = DataFieldOptions<Record<string, DOCUMENT_OWNERSHIP_LEVELS>>;
+  type Options = DataField.Options<Record<string, DOCUMENT_OWNERSHIP_LEVELS>>;
 
   /** The type of the default options for the {@link DocumentOwnershipField} class. */
   type DefaultOptions = SimpleMerge<
@@ -3324,7 +3354,7 @@ declare namespace DocumentOwnershipField {
  */
 declare class JSONField<
   // TODO(LukeAbby): Due to the unconditional setting of `blank`, `trim`, and `choices` setting them is meaningless which basically means they're removed from the options.
-  Options extends StringFieldOptions = JSONField.DefaultOptions,
+  Options extends StringField.Options = JSONField.DefaultOptions,
   AssignmentType = JSONField.AssignmentType<Options>,
   InitializedType = JSONField.InitializedType<Options>,
   PersistedType extends string | null | undefined = JSONField.PersistedType<Options>,
@@ -3335,12 +3365,12 @@ declare class JSONField<
   override blank: boolean;
 
   /** @defaultValue `undefined` */
-  override initial: DataFieldOptions.InitialType<InitializedType>;
+  override initial: DataField.Options.InitialType<InitializedType>;
 
   /** @defaultValue `"is not a valid JSON string"` */
   override validationError: string;
 
-  protected static override get _defaults(): StringFieldOptions;
+  protected static override get _defaults(): StringField.Options;
 
   override clean(value: AssignmentType, options?: DataField.CleanOptions): InitializedType;
 
@@ -3397,13 +3427,13 @@ declare namespace JSONField {
    * A helper type for the given options type merged into the default options of the JSONField class.
    * @typeParam Options - the options that override the default options
    */
-  type MergedOptions<Options extends StringFieldOptions> = SimpleMerge<DefaultOptions, Options>;
+  type MergedOptions<Options extends StringField.Options> = SimpleMerge<DefaultOptions, Options>;
 
   /**
    * A shorthand for the assignment type of a JSONField class.
    * @typeParam Options - the options that override the default options
    */
-  type AssignmentType<Options extends StringFieldOptions> = DataField.DerivedAssignmentType<
+  type AssignmentType<Options extends StringField.Options> = DataField.DerivedAssignmentType<
     string,
     MergedOptions<Options>
   >;
@@ -3412,7 +3442,7 @@ declare namespace JSONField {
    * A shorthand for the initialized type of a JSONField class.
    * @typeParam Options - the options that override the default options
    */
-  type InitializedType<Options extends StringFieldOptions> = DataField.DerivedInitializedType<
+  type InitializedType<Options extends StringField.Options> = DataField.DerivedInitializedType<
     AnyObject,
     MergedOptions<Options>
   >;
@@ -3421,7 +3451,7 @@ declare namespace JSONField {
    * A shorthand for the persisted type of a JSONField class.
    * @typeParam Options - the options that override the default options
    */
-  type PersistedType<Options extends StringFieldOptions> = DataField.DerivedInitializedType<
+  type PersistedType<Options extends StringField.Options> = DataField.DerivedInitializedType<
     string,
     MergedOptions<Options>
   >;
@@ -3433,7 +3463,7 @@ declare namespace JSONField {
  * It is not recommended to use this class except for very specific circumstances.
  */
 // TODO(LukeAbby): This field effectively removes all options because there's no point asking for an options when none of them do anything.
-declare class AnyField extends DataField<DataFieldOptions.Any, unknown, unknown, unknown> {
+declare class AnyField extends DataField<DataField.Options.Any, unknown, unknown, unknown> {
   override _cast(value: unknown): unknown;
 
   protected override _validateType(
@@ -3458,7 +3488,7 @@ declare class AnyField extends DataField<DataFieldOptions.Any, unknown, unknown,
  * InitialValue: `""`
  */
 declare class HTMLField<
-  Options extends StringFieldOptions = HTMLField.DefaultOptions,
+  Options extends StringField.Options = HTMLField.DefaultOptions,
   AssignmentType = HTMLField.AssignmentType<Options>,
   InitializedType = HTMLField.InitializedType<Options>,
   PersistedType extends string | null | undefined = HTMLField.InitializedType<Options>,
@@ -3469,7 +3499,7 @@ declare class HTMLField<
   /** @defaultValue `true` */
   override blank: boolean;
 
-  protected static override get _defaults(): StringFieldOptions;
+  protected static override get _defaults(): StringField.Options;
 
   // These verbose overloads are because otherwise there would be a misleading errors about `choices` being required without mentioning `options` or vice versa.
   toFormGroup(
@@ -3510,13 +3540,13 @@ declare namespace HTMLField {
    * A helper type for the given options type merged into the default options of the HTMLField class.
    * @typeParam Options - the options that override the default options
    */
-  type MergedOptions<Options extends StringFieldOptions> = SimpleMerge<DefaultOptions, Options>;
+  type MergedOptions<Options extends StringField.Options> = SimpleMerge<DefaultOptions, Options>;
 
   /**
    * A shorthand for the assignment type of a HTMLField class.
    * @typeParam Options - the options that override the default options
    */
-  type AssignmentType<Options extends StringFieldOptions> = DataField.DerivedAssignmentType<
+  type AssignmentType<Options extends StringField.Options> = DataField.DerivedAssignmentType<
     string,
     MergedOptions<Options>
   >;
@@ -3525,7 +3555,7 @@ declare namespace HTMLField {
    * A shorthand for the initialized type of a HTMLField class.
    * @typeParam Options - the options that override the default options
    */
-  type InitializedType<Options extends StringFieldOptions> = DataField.DerivedInitializedType<
+  type InitializedType<Options extends StringField.Options> = DataField.DerivedInitializedType<
     string,
     MergedOptions<Options>
   >;
@@ -3548,7 +3578,7 @@ declare namespace HTMLField {
  * InitialValue: `0`
  */
 declare class IntegerSortField<
-  Options extends NumberFieldOptions = IntegerSortField.DefaultOptions,
+  Options extends NumberField.Options = IntegerSortField.DefaultOptions,
   AssignmentType = IntegerSortField.AssignmentType<Options>,
   InitializedType = IntegerSortField.InitializedType<Options>,
   PersistedType extends number | null | undefined = IntegerSortField.InitializedType<Options>,
@@ -3563,7 +3593,7 @@ declare class IntegerSortField<
   override integer: boolean;
 
   /** @defaultValue `0` */
-  override initial: DataFieldOptions.InitialType<InitializedType>;
+  override initial: DataField.Options.InitialType<InitializedType>;
 
   /** @defaultValue `"FOLDER.DocumentSort"` */
   override label: string;
@@ -3590,13 +3620,13 @@ declare namespace IntegerSortField {
    * A helper type for the given options type merged into the default options of the IntegerSortField class.
    * @typeParam Options - the options that override the default options
    */
-  type MergedOptions<Options extends NumberFieldOptions> = SimpleMerge<DefaultOptions, Options>;
+  type MergedOptions<Options extends NumberField.Options> = SimpleMerge<DefaultOptions, Options>;
 
   /**
    * A shorthand for the assignment type of a IntegerSortField class.
    * @typeParam Options - the options that override the default options
    */
-  type AssignmentType<Options extends NumberFieldOptions> = DataField.DerivedAssignmentType<
+  type AssignmentType<Options extends NumberField.Options> = DataField.DerivedAssignmentType<
     number,
     MergedOptions<Options>
   >;
@@ -3605,13 +3635,14 @@ declare namespace IntegerSortField {
    * A shorthand for the initialized type of a IntegerSortField class.
    * @typeParam Options - the options that override the default options
    */
-  type InitializedType<Options extends NumberFieldOptions> = DataField.DerivedInitializedType<
+  type InitializedType<Options extends NumberField.Options> = DataField.DerivedInitializedType<
     number,
     MergedOptions<Options>
   >;
 }
 
 declare global {
+  /** @deprecated {@link DocumentStatsField.Properties | `DocumentStatsField.Properties`} */
   type DocumentStats = DocumentStatsField.Properties;
 }
 
@@ -3649,7 +3680,7 @@ declare class DocumentStatsField<
 
 declare namespace DocumentStatsField {
   /** A shorthand for the options of a DocumentStatsField class. */
-  type Options = DataFieldOptions<SchemaField.InnerAssignmentType<Schema>>;
+  type Options = DataField.Options<SchemaField.InnerAssignmentType<Schema>>;
 
   /** The type of the default options for the {@link DocumentStatsField} class. */
   type DefaultOptions = SimpleMerge<SchemaField.DefaultOptions, { initial: SchemaField.InnerAssignmentType<Schema> }>;
@@ -3777,12 +3808,12 @@ declare namespace DocumentTypeField {
     }
   >;
 
-  interface Options extends StringFieldOptions {}
+  interface Options extends StringField.Options {}
 
   // TODO(LukeAbby): This class has effectively removed `choices` and `validationError` since they're unconditionally set in the constructor.
   type MergedOptions<
     ConcreteDocumentClass extends Document.AnyConstructor,
-    Options extends StringFieldOptions,
+    Options extends StringField.Options,
   > = SimpleMerge<
     SimpleMerge<DefaultOptions, Options>,
     {
@@ -3793,15 +3824,15 @@ declare namespace DocumentTypeField {
 
   type AssignmentType<
     ConcreteDocumentClass extends Document.AnyConstructor,
-    Options extends StringFieldOptions,
+    Options extends StringField.Options,
   > = StringField.AssignmentType<MergedOptions<ConcreteDocumentClass, Options>>;
   type InitializedType<
     ConcreteDocumentClass extends Document.AnyConstructor,
-    Options extends StringFieldOptions,
+    Options extends StringField.Options,
   > = StringField.InitializedType<MergedOptions<ConcreteDocumentClass, Options>>;
   type PersistedType<
     ConcreteDocumentClass extends Document.AnyConstructor,
-    Options extends StringFieldOptions,
+    Options extends StringField.Options,
   > = StringField.InitializedType<MergedOptions<ConcreteDocumentClass, Options>>;
 }
 
@@ -3895,7 +3926,7 @@ declare namespace TypeDataField {
    * A shorthand for the options of a TypeDataField class.
    * @typeParam DocumentType - the type of the embedded Document
    */
-  type Options<DocumentType extends Document.SystemConstructor> = DataFieldOptions<
+  type Options<DocumentType extends Document.SystemConstructor> = DataField.Options<
     SchemaField.InnerAssignmentType<DataModel.SchemaOfClass<DocumentType>>
   >;
 
@@ -4072,7 +4103,7 @@ declare class TypedSchemaField<
    */
   constructor(types: Types, options: Options, context?: DataField.Context);
 
-  static get _defaults(): DataFieldOptions.Any;
+  static get _defaults(): DataField.Options.Any;
 
   /**
    * The types of this field.
@@ -4255,7 +4286,7 @@ declare class JavaScriptField<
 
 declare namespace JavaScriptField {
   // TODO(LukeAbby): `choices` is effectively deleted due to being unconditionally set to `undefined` in the constructor.
-  type Options = StringFieldOptions & {
+  type Options = StringField.Options & {
     /**
      * Does the field allow async code?
      * @defaultValue `false`
@@ -4264,7 +4295,7 @@ declare namespace JavaScriptField {
   };
 
   type DefaultOptions = SimpleMerge<
-    StringFieldOptions,
+    StringField.Options,
     {
       async: false;
     }
