@@ -267,7 +267,7 @@ declare global {
       parent: ClientDocument,
       collection: string,
       documents: ClientDocument[],
-      ids: string,
+      ids: string[],
       options: Document.OnDeleteOptions<"TableResult">,
       userId: string,
     ): void;
