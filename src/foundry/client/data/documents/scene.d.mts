@@ -37,6 +37,8 @@ declare global {
   class Scene extends ClientDocumentMixin(foundry.documents.BaseScene) {
     static override metadata: Scene.Metadata;
 
+    static get implementation(): Scene.ConfiguredClass;
+
     /**
      * Track the viewed position of each scene (while in memory only, not persisted)
      * When switching back to a previously viewed scene, we can automatically pan to the previous position.

@@ -41,6 +41,8 @@ declare global {
   class ActiveEffect extends ClientDocumentMixin(foundry.documents.BaseActiveEffect) {
     static override metadata: ActiveEffect.Metadata;
 
+    static get implementation(): ActiveEffect.ConfiguredClass;
+
     /**
      * Create an ActiveEffect instance from some status effect ID.
      * Delegates to {@link ActiveEffect._fromStatusEffect} to create the ActiveEffect instance

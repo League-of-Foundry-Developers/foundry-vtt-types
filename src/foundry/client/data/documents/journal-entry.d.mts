@@ -27,6 +27,8 @@ declare global {
   class JournalEntry extends ClientDocumentMixin(foundry.documents.BaseJournalEntry) {
     static override metadata: JournalEntry.Metadata;
 
+    static get implementation(): JournalEntry.ConfiguredClass;
+
     /**
      * A boolean indicator for whether or not the JournalEntry is visible to the current user in the directory sidebar
      */

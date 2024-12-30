@@ -111,6 +111,8 @@ declare global {
   class RollTable extends ClientDocumentMixin(foundry.documents.BaseRollTable) {
     static override metadata: RollTable.Metadata;
 
+    static get implementation(): RollTable.ConfiguredClass;
+
     /**
      * Provide a thumbnail image path used to represent this document.
      */

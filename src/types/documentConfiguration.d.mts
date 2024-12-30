@@ -58,7 +58,7 @@ type TestDefaultDocumentsValid = MustConform<
   Record<string, Document.AnyConstructor>
 >;
 
-type ConformedDefault = ConformRecord<_DefaultDocuments, Document.AnyConstructor>;
+type ConformedDefault = ConformRecord<_DefaultDocuments, Document.Internal.Constructor>;
 
 export interface DefaultDocuments extends ConformedDefault {}
 
@@ -111,7 +111,7 @@ type TestConfiguredDocumentsValid = MustConform<
   Record<string, Document.AnyConstructor>
 >;
 
-type ConformedConfigured = ConformRecord<_ConfiguredDocuments, Document.AnyConstructor>;
+type ConformedConfigured = ConformRecord<_ConfiguredDocuments, Document.Internal.Constructor>;
 
 export interface ConfiguredDocuments extends ConformedConfigured {}
 

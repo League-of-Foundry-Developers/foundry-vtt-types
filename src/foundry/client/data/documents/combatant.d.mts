@@ -35,6 +35,8 @@ declare global {
   class Combatant extends ClientDocumentMixin(foundry.documents.BaseCombatant) {
     static override metadata: Combatant.Metadata;
 
+    static get implementation(): Combatant.ConfiguredClass;
+
     /**
      * The token video source image (if any)
      */

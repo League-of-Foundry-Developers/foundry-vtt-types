@@ -46,6 +46,8 @@ declare global {
   class Adventure extends ClientDocumentMixin(foundry.documents.BaseAdventure) {
     static override metadata: Adventure.Metadata;
 
+    static get implementation(): Adventure.ConfiguredClass;
+
     static fromSource<Schema extends DataSchema>(
       source: fields.SchemaField.InnerAssignmentType<Schema>,
       {
