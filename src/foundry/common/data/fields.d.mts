@@ -5,7 +5,7 @@ import type {
   EmptyObject,
   NullishProps,
   InexactPartial,
-  ToMethod
+  ToMethod,
 } from "../../../utils/index.d.mts";
 import type { DataModel } from "../abstract/data.mts";
 import type Document from "../abstract/document.mts";

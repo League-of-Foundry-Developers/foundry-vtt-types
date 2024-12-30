@@ -102,7 +102,7 @@
     "fvtt-types": "file:.",
     "husky": "^9.1.4",
     "is-ci": "^4.1.0",
-    "lint-staged": "^15.2.10",
+    "lint-staged": "^15.3.0",
     "prettier": "^3.0.3",
     "typescript": "~5.7",
     "vitest": "^2.1.8"
@@ -116,14 +116,9 @@
   "resolutions": {
     "@types/earcut": "patch:@types/earcut@2.1.4#./patches/@types+earcut+2.1.4.patch"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
   "lint-staged": {
-    "*.(d.mts|test-d.ts)": "eslint --fix",
-    "*.(js|json|yml)": "prettier --write"
+    "*.{c,m,}{ts,js}": "eslint --cache --fix",
+    "*.({c,m,}{ts,js}|{css,md})": "prettier --write"
   },
   "files": [
     "index.d.mts",
