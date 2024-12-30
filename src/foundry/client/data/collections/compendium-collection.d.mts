@@ -1,9 +1,5 @@
-import type { DeepPartial, EmptyObject, InexactPartial } from "../../../../utils/index.d.mts";
-import type {
-  DatabaseCreateOperation,
-  DatabaseDeleteOperation,
-  DatabaseUpdateOperation,
-} from "../../../common/abstract/_types.d.mts";
+import type { AnyObject, DeepPartial, EmptyObject, InexactPartial } from "../../../../utils/index.d.mts";
+import type { DatabaseAction, DatabaseOperationMap } from "../../../common/abstract/_types.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DirectoryCollectionMixin_DocumentCollection_Interface } from "../abstract/directory-collection-mixin.d.mts";
 
@@ -380,26 +376,12 @@ declare global {
      * Follow-up actions taken when Documents within this Compendium pack are modified
      * @internal
      */
-    _onModifyContents(
-      action: "create",
-      documents: ClientDocument[],
-      result: Record<string, unknown>[],
-      operation: DatabaseCreateOperation<Document.ConfiguredInstanceForName<T["type"]>>,
-      user: User,
-    ): void;
-    _onModifyContents(
-      action: "update",
-      documents: ClientDocument[],
-      result: Record<string, unknown>[],
-      operation: DatabaseUpdateOperation<Document.ConfiguredInstanceForName<T["type"]>>,
-      user: User,
-    ): void;
-    _onModifyContents(
-      action: "delete",
-      documents: ClientDocument[],
-      result: string[],
-      operation: DatabaseDeleteOperation,
-      user: User,
+    _onModifyContents<A extends DatabaseAction>(
+      action: A,
+      documents: Document.ConfiguredInstanceForName<T["type"]>[],
+      result: AnyObject[] | readonly string[],
+      operation: DatabaseOperationMap[A],
+      user: User.ConfiguredInstance,
     ): void;
 
     /**

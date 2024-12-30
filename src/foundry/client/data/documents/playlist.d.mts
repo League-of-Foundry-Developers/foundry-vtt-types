@@ -138,7 +138,7 @@ declare global {
     override _onClickDocumentLink(event: MouseEvent): ReturnType<this["playAll" | "stopAll"]>;
 
     /**
-     * @privateRemarks _preUpdate, _onUpdate, _onDelete, _onCreateDescendantDocuments, _onUpdateDescendantDocuments, and _onDeleteDescendantDocuments are all overridden but with no signature changes.
+     * @privateRemarks _preUpdate, _onUpdate, _onDelete are all overridden but with no signature changes.
      * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
      */
 
@@ -164,7 +164,7 @@ declare global {
       parent: ClientDocument,
       collection: string,
       documents: ClientDocument[],
-      ids: string,
+      ids: string[],
       options: Document.OnDeleteOptions<"PlaylistSound">,
       userId: string,
     ): void;

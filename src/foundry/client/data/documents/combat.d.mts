@@ -253,7 +253,7 @@ declare global {
       parent: ClientDocument,
       collection: string,
       documents: ClientDocument[],
-      ids: string,
+      ids: string[],
       options: Document.OnDeleteOptions<"Combatant"> & InexactPartial<{ combatTurn: number; turnEvents: boolean }>,
       userId: string,
     ): void;
