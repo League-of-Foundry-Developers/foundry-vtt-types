@@ -47,6 +47,8 @@ declare global {
   class TokenDocument extends CanvasDocumentMixin(foundry.documents.BaseToken) {
     static override metadata: TokenDocument.Metadata;
 
+    static get implementation(): TokenDocument.ConfiguredClass;
+
     /**
      * A singleton collection which holds a reference to the synthetic token actor by its base actor's ID.
      */

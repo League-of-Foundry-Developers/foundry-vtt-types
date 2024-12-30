@@ -32,6 +32,8 @@ declare global {
   class FogExploration extends ClientDocumentMixin(foundry.documents.BaseFogExploration) {
     static override metadata: FogExploration.Metadata;
 
+    static get implementation(): FogExploration.ConfiguredClass;
+
     /**
      * Obtain the fog of war exploration progress for a specific Scene and User.
      * @param query      - Parameters for which FogExploration document is retrieved

@@ -39,6 +39,8 @@ declare global {
   class Playlist extends ClientDocumentMixin(foundry.documents.BasePlaylist) {
     static override metadata: Playlist.Metadata;
 
+    static get implementation(): Playlist.ConfiguredClass;
+
     /**
      * Playlists may have a playback order which defines the sequence of Playlist Sounds
      * @defaultValue `undefined`

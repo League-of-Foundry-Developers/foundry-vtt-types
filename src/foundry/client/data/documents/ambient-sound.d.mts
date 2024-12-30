@@ -26,5 +26,7 @@ declare global {
    */
   class AmbientSoundDocument extends CanvasDocumentMixin(foundry.documents.BaseAmbientSound) {
     static override metadata: AmbientSoundDocument.Metadata;
+
+    static get implementation(): AmbientSoundDocument.ConfiguredClass;
   }
 }

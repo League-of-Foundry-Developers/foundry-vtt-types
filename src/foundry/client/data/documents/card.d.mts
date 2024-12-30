@@ -29,6 +29,8 @@ declare global {
   class Card extends ClientDocumentMixin(foundry.documents.BaseCard) {
     static override metadata: Card.Metadata;
 
+    static get implementation(): Card.ConfiguredClass;
+
     /**
      * The current card face
      */

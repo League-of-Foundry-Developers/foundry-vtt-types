@@ -40,6 +40,8 @@ declare global {
   class Folder extends ClientDocumentMixin(foundry.documents.BaseFolder) {
     static override metadata: Folder.Metadata;
 
+    static get implementation(): Folder.ConfiguredClass;
+
     // TODO(LukeAbby): This random override is a symptom of a greater issue.
     // Namely that `ClientDocumentMixin` incidentally erases some properties and breaks configuration.
     documentName: "Folder";

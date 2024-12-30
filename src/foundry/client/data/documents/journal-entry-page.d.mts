@@ -48,6 +48,8 @@ declare global {
   class JournalEntryPage extends ClientDocumentMixin(foundry.documents.BaseJournalEntryPage) {
     static override metadata: JournalEntryPage.Metadata;
 
+    static get implementation(): JournalEntryPage.ConfiguredClass;
+
     /**
      * The cached table of contents for this JournalEntryPage.
      */

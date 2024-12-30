@@ -152,6 +152,8 @@ declare global {
   class Cards extends ClientDocumentMixin(foundry.documents.BaseCards) {
     static override metadata: Cards.Metadata;
 
+    static get implementation(): Cards.ConfiguredClass;
+
     /**
      * Provide a thumbnail image path used to represent this document.
      */

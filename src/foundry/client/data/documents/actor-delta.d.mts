@@ -5,7 +5,7 @@ import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace ActorDelta {
-    type Metadata = Document.MetadataFor<ActiveEffect>;
+    type Metadata = Document.MetadataFor<ActorDelta>;
 
     type ConfiguredClass = Document.ConfiguredClassForName<"ActorDelta">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"ActorDelta">;
@@ -26,6 +26,8 @@ declare global {
    */
   class ActorDelta extends ClientDocumentMixin(foundry.documents.BaseActorDelta) {
     static override metadata: ActorDelta.Metadata;
+
+    static get implementation(): ActorDelta.ConfiguredClass;
 
     protected override _configure(options?: { pack?: string | null }): void;
 

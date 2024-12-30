@@ -74,6 +74,8 @@ declare global {
   class User extends ClientDocumentMixin(foundry.documents.BaseUser) {
     static override metadata: User.Metadata;
 
+    static get implementation(): User.ConfiguredClass;
+
     /**
      * Track whether the user is currently active in the game
      * @defaultValue `false`

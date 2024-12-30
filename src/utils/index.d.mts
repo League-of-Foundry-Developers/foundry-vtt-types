@@ -122,7 +122,7 @@ export type ArrayOverlaps<T, Item> =
  * See `MustConform` for a version that throws a compilation error when the type
  * cannot be statically known to conform.
  */
-export type MakeConform<T, ConformTo> = [T] extends [ConformTo] ? T : ConformTo;
+export type MakeConform<T, ConformTo, D extends ConformTo = ConformTo> = [T] extends [ConformTo] ? T : D;
 
 /**
  * This is useful when you want to ensure that a type conforms to a certain

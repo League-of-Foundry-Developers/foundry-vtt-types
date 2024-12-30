@@ -35,6 +35,8 @@ declare global {
 
     static override metadata: Item.Metadata;
 
+    static get implementation(): Item.ConfiguredClass;
+
     /**
      * A convenience alias of Item#parent which is more semantically intuitive
      */

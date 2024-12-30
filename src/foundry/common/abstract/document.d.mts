@@ -131,8 +131,6 @@ declare abstract class Document<
   /**
    * Return a reference to the implemented subclass of this base document type.
    */
-  // Referencing the concrete class the config is not possible because accessors cannot be generic and there is not
-  // static polymorphic this type
   static get implementation(): Document.AnyConstructor;
 
   /**
@@ -1071,6 +1069,7 @@ declare namespace Document {
 
   type ConfiguredClassForName<Name extends Type> = MakeConform<
     ConfiguredDocuments[Name],
+    Document.Internal.Constructor,
     typeof ConfigurationFailure & DefaultDocuments[Name]
   >;
 

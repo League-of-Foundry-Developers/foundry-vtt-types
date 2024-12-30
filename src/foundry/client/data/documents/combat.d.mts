@@ -67,6 +67,8 @@ declare global {
   class Combat extends ClientDocumentMixin(foundry.documents.BaseCombat) {
     static override metadata: Combat.Metadata;
 
+    static get implementation(): Combat.ConfiguredClass;
+
     /**
      * @param data - Initial data provided to construct the Combat document
      */

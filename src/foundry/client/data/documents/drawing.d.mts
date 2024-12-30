@@ -27,6 +27,8 @@ declare global {
   class DrawingDocument extends CanvasDocumentMixin(foundry.documents.BaseDrawing) {
     static override metadata: DrawingDocument.Metadata;
 
+    static get implementation(): DrawingDocument.ConfiguredClass;
+
     /**
      * Is the current User the author of this drawing?
      */
