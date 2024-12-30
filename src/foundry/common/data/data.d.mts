@@ -14,7 +14,9 @@ declare global {
 }
 
 declare namespace LightData {
-  export interface LightAnimationDataSchema extends DataSchema {
+  type Parent = TokenDocument | AmbientLightDocument;
+
+  interface LightAnimationDataSchema extends DataSchema {
     /**
      * The animation type which is applied
      * @defaultValue `null`
@@ -56,7 +58,7 @@ declare namespace LightData {
     reverse: fields.BooleanField;
   }
 
-  export interface DarknessSchema extends DataSchema {
+  interface DarknessSchema extends DataSchema {
     /**
      * @defaultValue `0`
      */
@@ -170,7 +172,7 @@ declare namespace LightData {
  * A reusable document structure for the internal data used to render the appearance of a light source.
  * This is re-used by both the AmbientLightData and TokenData classes.
  */
-declare class LightData extends DataModel<LightData.Schema> {
+declare class LightData extends DataModel<LightData.Schema, LightData.Parent> {
   static override defineSchema(): LightData.Schema;
 
   /**
