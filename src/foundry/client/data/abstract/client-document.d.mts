@@ -1,4 +1,4 @@
-import type { DeepPartial, InexactPartial, Mixin, ValueOf } from "../../../../utils/index.d.mts";
+import type { DeepPartial, InexactPartial, Mixin } from "../../../../utils/index.d.mts";
 import type { DatabaseCreateOperation } from "../../../common/abstract/_types.d.mts";
 import type DataModel from "../../../common/abstract/data.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
@@ -73,7 +73,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * actor.permission; // 2
    * ```
    */
-  get permission(): ValueOf<typeof CONST.DOCUMENT_OWNERSHIP_LEVELS>;
+  get permission(): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   /**
    * Lazily obtain a FormApplication instance used to configure this Document, or null if no sheet is available.
