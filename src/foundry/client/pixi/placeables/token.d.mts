@@ -1,4 +1,4 @@
-import type { RequiredProps } from "../../../../utils/index.d.mts";
+import type { NullishProps, RequiredProps } from "../../../../utils/index.d.mts";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
@@ -214,6 +214,110 @@ declare global {
       /** @defaultValue `false` */
       pan?: boolean;
     }
+
+    interface AnimationContext {
+      /** The name of the animation */
+      name: string | symbol;
+
+      /** The final animation state */
+      to: NullishProps<Token.AnimationData>;
+
+      /** The duration of the animation */
+      duration: number;
+
+      /** The current time of the animation */
+      time: number;
+
+      /** Asynchronous functions that are executed before the animation starts */
+      preAnimate: ((context: Token.AnimationContext) => Promise<void>)[];
+
+      /** Synchronous functions that are executed after the animation ended */
+      postAnimate: ((context: Token.AnimationContext) => void)[];
+
+      /** Synchronous functions that are executed each frame after `ontick` and before {@link Token#_onAnimationUpdate} */
+      onAnimate: ((context: Token.AnimationContext) => void)[];
+
+      /**
+       * The promise of the animation, which resolves to true if the animation
+       * completed, to false if it was terminated, and rejects if an error occurred.
+       * Undefined in the first frame (at time 0) of the animation.
+       */
+      promise?: Promise<boolean> | undefined;
+    }
+
+    /**
+     * The texture data for a token animation.
+     */
+    interface TextureData {
+      /** The texture file path. */
+      src: string;
+
+      /** The texture anchor X. */
+      anchorX: number;
+
+      /** The texture anchor Y. */
+      anchorY: number;
+
+      /** The texture scale X. */
+      scaleX: number;
+
+      /** The texture scale Y. */
+      scaleY: number;
+
+      /** The texture tint. */
+      tint: Color;
+    }
+
+    /**
+     * The ring subject data.
+     */
+    interface RingSubjectData {
+      /** The ring subject texture. */
+      texture: string;
+
+      /** The ring subject scale. */
+      scale: number;
+    }
+
+    /**
+     * The ring data.
+     */
+    interface RingData {
+      /** The ring subject data. */
+      subject: RingSubjectData;
+    }
+
+    /**
+     * Token animation data.
+     */
+    interface AnimationData {
+      /** The x position in pixels. */
+      x: number;
+
+      /** The y position in pixels. */
+      y: number;
+
+      /** The width in grid spaces. */
+      width: number;
+
+      /** The height in grid spaces. */
+      height: number;
+
+      /** The alpha value. */
+      alpha: number;
+
+      /** The rotation in degrees. */
+      rotation: number;
+
+      /** The texture data. */
+      texture: TextureData;
+
+      /** The ring data. */
+      ring: RingData;
+
+      /** The elevation in grid units */
+      elevation?: number | undefined;
+    }
   }
 
   /**
@@ -301,6 +405,11 @@ declare global {
      * A reference to the LightSource object which defines this light source area of effect
      */
     light: foundry.canvas.sources.PointLightSource;
+
+    /**
+     * The current animations of this Token.
+     */
+    get animationContexts(): Map<string, Token.AnimationContext>;
 
     /**
      * A reference to an animation that is currently in progress for this Token, if any
@@ -572,6 +681,12 @@ declare global {
      * Draw a status effect icon
      */
     protected _drawEffect(src: string, tint: number | null): Promise<PIXI.Sprite | undefined>;
+
+    /**
+     * Draw the effect icons for ActiveEffect documents which apply to the Token's Actor.
+     * Called by {@link Token#drawEffects}.
+     */
+    protected _drawEffects(): Promise<void>;
 
     /**
      * Draw the overlay effect icon
