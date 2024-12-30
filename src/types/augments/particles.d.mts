@@ -1,7 +1,7 @@
 /* eslint-disable import/export */
 
 import * as pixiParticles from "@pixi/particle-emitter";
-import type { Brand } from "src/utils/index.d.mts";
+import type { Brand } from "../../utils/index.d.mts";
 
 export namespace behaviors {
   type BehaviorOrder = Brand<number, "PIXI.particles.behaviors.BehaviorOrder">;

@@ -1,6 +1,6 @@
-import type DataModel from "src/foundry/common/abstract/data.d.mts";
 import type { DeepPartial, InexactPartial, Mixin, ValueOf } from "../../../../utils/index.d.mts";
 import type { DatabaseCreateOperation } from "../../../common/abstract/_types.d.mts";
+import type DataModel from "../../../common/abstract/data.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 
 declare class InternalClientDocument<BaseDocument extends Document.Internal.Instance.Any = Document.Any> {
