@@ -282,10 +282,13 @@ declare global {
       nullable: true;
       initial: null;
       choices: {
-        [CONST.CANVAS_PERFORMANCE_MODES.LOW]: "SETTINGS.PerformanceModeLow";
-        [CONST.CANVAS_PERFORMANCE_MODES.MED]: "SETTINGS.PerformanceModeMed";
-        [CONST.CANVAS_PERFORMANCE_MODES.HIGH]: "SETTINGS.PerformanceModeHigh";
-        [CONST.CANVAS_PERFORMANCE_MODES.MAX]: "SETTINGS.PerformanceModeMax";
+        [_ in typeof CONST.CANVAS_PERFORMANCE_MODES.LOW]: "SETTINGS.PerformanceModeLow";
+      } & {
+        [_ in typeof CONST.CANVAS_PERFORMANCE_MODES.MED]: "SETTINGS.PerformanceModeMed";
+      } & {
+        [_ in typeof CONST.CANVAS_PERFORMANCE_MODES.HIGH]: "SETTINGS.PerformanceModeHigh";
+      } & {
+        [_ in typeof CONST.CANVAS_PERFORMANCE_MODES.MAX]: "SETTINGS.PerformanceModeMax";
       };
     }>;
     "core.permissions": Game.Permissions;

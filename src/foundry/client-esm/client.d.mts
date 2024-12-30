@@ -170,10 +170,11 @@ declare global {
      */
     export import dice = _dice;
   }
+
   /**
    * Constant definitions used throughout the Foundry Virtual Tabletop framework.
    */
-  const CONST: typeof _CONST;
+  export import CONST = _CONST;
 
   // Color is currently handled in src/foundry/client/head.d.mts
 
