@@ -231,6 +231,7 @@ interface _ConfiguredMetadata<ThisType extends Document.Internal.Instance.Any> {
       collection: "messages";
       label: string;
       labelPlural: string;
+      hasTypeData: true;
       isPrimary: true;
       permissions: {
         create(user: BaseUser, doc: ThisType): boolean;

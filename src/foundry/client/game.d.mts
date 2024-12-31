@@ -655,13 +655,16 @@ declare global {
       /**
        * Get the configured core and system type names for a specific document type.
        *
-       * Because of module subtypes, extra types of the form `${moduleName}.${subtype}` are always a possibility.
+       * Because of module subtypes, extra types of the form `${moduleName}.${subtype}` are
+       * possible when `hasTypeData` is true.
        *
        * @typeParam DocumentName - the type of the Document this data is for
        */
       type TypeNames<DocumentName extends Document.Type> =
         | (string & keyof Model[DocumentName])
-        | (`${string}.${string}` & {});
+        | (Document.Internal.SimpleMetadata<DocumentName> extends { hasTypeData: true }
+            ? `${string}.${string}` & {}
+            : never);
     }
 
     type Model = {

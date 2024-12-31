@@ -1014,6 +1014,9 @@ declare namespace Document {
 
   // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
   namespace Internal {
+    // This metadata is called "simple" because where there should be proper references to the
+    // current document there is instead `Document.Any`. This helps simplify loops.
+    // Use cases should be limited to when these references aren't needed.
     type SimpleMetadata<Name extends Document.Type> = ConfiguredMetadata<Document.Any>[Name];
 
     type Constructor = (abstract new (arg0: never, ...args: never[]) => Instance.Any) & {
