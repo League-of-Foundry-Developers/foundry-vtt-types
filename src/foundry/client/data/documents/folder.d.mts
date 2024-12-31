@@ -14,7 +14,7 @@ declare global {
     interface DatabaseOperations extends DocumentDatabaseOperations<Folder> {}
 
     // Helpful aliases
-    // type TypeNames = BaseFolder.TypeNames;  // TODO: Un-comment after subtype updates are merged
+    type TypeNames = BaseFolder.TypeNames;
     type ConstructorData = BaseFolder.ConstructorData;
     type UpdateData = BaseFolder.UpdateData;
     type Schema = BaseFolder.Schema;
@@ -37,7 +37,9 @@ declare global {
    * @see {@link Folders}            The world-level collection of Folder documents
    * @see {@link FolderConfig}       The Folder configuration application
    */
-  class Folder extends ClientDocumentMixin(foundry.documents.BaseFolder) {
+  class Folder<Type extends BaseFolder.TypeNames = BaseFolder.TypeNames> extends ClientDocumentMixin(
+    foundry.documents.BaseFolder,
+  )<Type> {
     static override metadata: Folder.Metadata;
 
     static get implementation(): Folder.ConfiguredClass;
@@ -70,14 +72,16 @@ declare global {
      * unless it's a Folder inside a Compendium pack, in which case it's the array
      * of objects inside the index of the pack that are contained in this Folder.
      */
-    get contents(): this["type"] extends Document.Type ? Document.ConfiguredInstanceForName<this["type"]>[] : never;
+    // TODO: Handle compendium. This requires the index to be configured.
+    get contents(): Document.ConfiguredInstanceForName<Extract<Type, Document.Type>>[];
 
     set contents(value);
 
     /**
      * The reference to the Document type which is contained within this Folder.
      */
-    get documentClass(): this["type"] extends Document.Type ? Document.ConfiguredClassForName<this["type"]> : never;
+    // TODO: Compendium Pack index
+    get documentClass(): Document.ConfiguredClassForName<Extract<Type, Document.Type>>;
 
     /**
      * The reference to the WorldCollection instance which provides Documents to this Folder,
