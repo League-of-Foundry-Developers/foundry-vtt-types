@@ -1067,11 +1067,6 @@ declare namespace Document {
     metadata: { name: SystemType };
   };
 
-  /**
-   * @deprecated - Use `Document.ToConfiguredClass` instead.
-   */
-  type ConfiguredClass<T extends { metadata: Metadata.Any }> = ConfiguredClassForName<T["metadata"]["name"]>;
-
   type ConfiguredClassForName<Name extends Type> = MakeConform<
     ConfiguredDocuments[Name],
     Document.Internal.Constructor,
