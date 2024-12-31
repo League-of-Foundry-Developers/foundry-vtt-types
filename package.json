@@ -117,7 +117,7 @@
     "@types/earcut": "patch:@types/earcut@2.1.4#./patches/@types+earcut+2.1.4.patch"
   },
   "lint-staged": {
-    "*.{c,m,}{ts,js}": "eslint --cache --fix",
+    "*.{c,m,}{ts,js}": "eslint --cache",
     "*.({c,m,}{ts,js}|{css,md})": "prettier --write"
   },
   "files": [
