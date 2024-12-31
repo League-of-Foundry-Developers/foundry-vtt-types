@@ -721,7 +721,7 @@ declare abstract class Document<
    */
   protected static _onCreateOperation<T extends Document.AnyConstructor>(
     this: T,
-    documents: InstanceType<Document.ConfiguredClass<NoInfer<T>>>[],
+    documents: Document.ToConfiguredClass<NoInfer<T>>[],
     operation: Document.DatabaseOperationsFor<NoInfer<T>["metadata"]["name"], "create">,
     user: foundry.documents.BaseUser,
   ): Promise<void>;
@@ -770,7 +770,7 @@ declare abstract class Document<
    */
   protected static _preUpdateOperation<T extends Document.AnyConstructor>(
     this: T,
-    documents: InstanceType<Document.ConfiguredClass<NoInfer<T>>>[],
+    documents: Document.ToConfiguredInstance<NoInfer<T>>[],
     operation: Document.DatabaseOperationsFor<InstanceType<NoInfer<T>>["documentName"], "update">,
     user: foundry.documents.BaseUser,
   ): Promise<boolean | void>;
@@ -787,7 +787,7 @@ declare abstract class Document<
    */
   protected static _onUpdateOperation<T extends Document.AnyConstructor>(
     this: T,
-    documents: InstanceType<Document.ConfiguredClass<NoInfer<T>>>[],
+    documents: Document.ToConfiguredInstance<NoInfer<T>>[],
     operation: Document.DatabaseOperationsFor<InstanceType<NoInfer<T>>["documentName"], "update">,
     user: foundry.documents.BaseUser,
   ): Promise<void>;
@@ -1067,7 +1067,9 @@ declare namespace Document {
     metadata: { name: SystemType };
   };
 
-  // TODO(LukeAbby): Look into this. Inconsistent name, deprecate?
+  /**
+   * @deprecated - Use `Document.ToConfiguredClass` instead.
+   */
   type ConfiguredClass<T extends { metadata: Metadata.Any }> = ConfiguredClassForName<T["metadata"]["name"]>;
 
   type ConfiguredClassForName<Name extends Type> = MakeConform<
