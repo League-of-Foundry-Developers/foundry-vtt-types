@@ -19,7 +19,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): DocumentSheetOptions<NoteDocument>;
+    static override get defaultOptions(): DocumentSheetOptions<NoteDocument.ConfiguredInstance>;
 
     override getData(options?: Partial<Options>): MaybePromise<object>; // TODO: Implement GetDataReturnType
 

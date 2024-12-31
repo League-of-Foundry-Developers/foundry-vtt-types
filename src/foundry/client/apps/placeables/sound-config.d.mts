@@ -6,7 +6,8 @@ declare global {
    * @typeParam Options - the type of the options object
    */
   class AmbientSoundConfig<
-    Options extends DocumentSheetOptions<AmbientSoundDocument> = DocumentSheetOptions<AmbientSoundDocument>,
+    Options extends
+      DocumentSheetOptions<AmbientSoundDocument.ConfiguredInstance> = DocumentSheetOptions<AmbientSoundDocument.ConfiguredInstance>,
   > extends DocumentSheet<Options, AmbientSoundDocument.ConfiguredInstance> {
     /**
      * @defaultValue
@@ -18,7 +19,7 @@ declare global {
      * });
      * ```
      */
-    static get defaultOptions(): DocumentSheetOptions<AmbientSoundDocument>;
+    static get defaultOptions(): DocumentSheetOptions<AmbientSoundDocument.ConfiguredInstance>;
 
     override get title(): string;
 
