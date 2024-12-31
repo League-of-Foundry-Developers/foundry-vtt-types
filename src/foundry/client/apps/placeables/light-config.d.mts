@@ -6,7 +6,8 @@ declare global {
    * @typeParam Options - the type of the options object
    */
   class AmbientLightConfig<
-    Options extends DocumentSheetOptions<AmbientLightDocument> = DocumentSheetOptions<AmbientLightDocument>,
+    Options extends
+      DocumentSheetOptions<AmbientLightDocument.ConfiguredInstance> = DocumentSheetOptions<AmbientLightDocument.ConfiguredInstance>,
   > extends DocumentSheet<Options, AmbientLightDocument.ConfiguredInstance> {
     /**
      * Maintain a copy of the original to show a real-time preview of changes.
@@ -27,7 +28,7 @@ declare global {
      * });
      * ```
      */
-    static override get defaultOptions(): DocumentSheetOptions<AmbientLightDocument>;
+    static override get defaultOptions(): DocumentSheetOptions<AmbientLightDocument.ConfiguredInstance>;
 
     protected override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 

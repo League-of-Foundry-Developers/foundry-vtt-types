@@ -1,5 +1,4 @@
 import type { GetDataReturnType, MaybePromise } from "../../../../utils/index.d.mts";
-import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
   /**
@@ -38,7 +37,7 @@ declare global {
   namespace UserConfig {
     type Any = UserConfig<any>;
 
-    interface Options extends DocumentSheetOptions<User> {
+    interface Options extends DocumentSheetOptions<User.ConfiguredInstance> {
       /**
        * @defaultValue `["sheet", "user-config"]`
        */
@@ -60,9 +59,11 @@ declare global {
       height: DocumentSheetOptions["height"];
     }
 
-    interface UserConfigData<Options extends DocumentSheetOptions<User> = DocumentSheetOptions<User>> {
+    interface UserConfigData<
+      Options extends DocumentSheetOptions<User.ConfiguredInstance> = DocumentSheetOptions<User.ConfiguredInstance>,
+    > {
       user: UserConfig<Options>["object"];
-      actors: Document.ToConfiguredClass<typeof Actor>[];
+      actors: Actor.ConfiguredClass[];
       options: UserConfig<Options>["options"];
     }
   }

@@ -6,7 +6,8 @@ declare global {
    * @typeParam Options - The type of the options object
    */
   class WallConfig<
-    Options extends DocumentSheetOptions<WallDocument> = DocumentSheetOptions<WallDocument>,
+    Options extends
+      DocumentSheetOptions<WallDocument.ConfiguredInstance> = DocumentSheetOptions<WallDocument.ConfiguredInstance>,
   > extends DocumentSheet<Options, WallDocument.ConfiguredInstance> {
     /**
      * @defaultValue
@@ -19,7 +20,7 @@ declare global {
      * return options;
      * ```
      */
-    static get defaultOptions(): DocumentSheetOptions<WallDocument>;
+    static get defaultOptions(): DocumentSheetOptions<WallDocument.ConfiguredInstance>;
 
     /**
      * An array of Wall ids that should all be edited when changes to this config form are submitted

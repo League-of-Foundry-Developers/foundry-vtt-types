@@ -748,7 +748,7 @@ declare abstract class Document<
    * @param userId  - The id of the User requesting the document update
    */
   protected _onUpdate(
-    changed: fields.SchemaField.InnerAssignmentType<Schema>,
+    changed: fields.SchemaField.InnerUpdateData<Schema>,
     options: Document.OnUpdateOptions<DocumentName>,
     userId: string,
   ): void;

@@ -162,7 +162,7 @@ declare global {
       }
     }
 
-    interface Options extends DocumentSheetOptions<Actor> {
+    interface Options extends DocumentSheetOptions<Actor.ConfiguredInstance> {
       token?: TokenDocument.ConfiguredInstance | null;
     }
 

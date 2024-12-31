@@ -6,10 +6,9 @@ declare global {
    * The Application responsible for configuring a single Scene document.   *
    * @typeParam Options - the type of the options object
    */
-  class SceneConfig<Options extends DocumentSheetOptions<Scene> = DocumentSheetOptions<Scene>> extends DocumentSheet<
-    Options,
-    Scene.ConfiguredInstance
-  > {
+  class SceneConfig<
+    Options extends DocumentSheetOptions<Scene.ConfiguredInstance> = DocumentSheetOptions<Scene.ConfiguredInstance>,
+  > extends DocumentSheet<Options, Scene.ConfiguredInstance> {
     /**
      * @defaultValue
      * ```typescript
@@ -23,7 +22,7 @@ declare global {
      * });
      * ```
      */
-    static override get defaultOptions(): DocumentSheetOptions<Scene>;
+    static override get defaultOptions(): DocumentSheetOptions<Scene.ConfiguredInstance>;
 
     /**
      * Indicates if width / height should change together to maintain aspect ratio

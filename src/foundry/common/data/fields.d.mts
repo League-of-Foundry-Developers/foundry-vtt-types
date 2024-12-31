@@ -837,6 +837,8 @@ declare namespace SchemaField {
           : never;
   }>;
 
+  type InnerUpdateData<Fields extends DataSchema> = InnerAssignmentType<Fields>;
+
   /**
    * Get the inner initialized type for the given DataSchema.
    * @typeParam Fields - the DataSchema fields of the SchemaField
