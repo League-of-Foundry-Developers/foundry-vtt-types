@@ -208,7 +208,7 @@ declare abstract class DataField<
   validate(
     value: AssignmentType,
     options?: DataField.ValidationOptions<DataField.Any>,
-  ): DataModelValidationFailure | undefined;
+  ): DataModelValidationFailure | void;
 
   /**
    * Special validation rules which supersede regular field validation.
