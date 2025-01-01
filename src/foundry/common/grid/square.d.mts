@@ -8,7 +8,7 @@ declare class SquareGrid extends BaseGrid {
    */
   constructor(config: SquareGrid.Configuration);
 
-  override type: number;
+  override type: CONST.GRID_TYPES;
 
   diagonals: number;
 

@@ -28,7 +28,7 @@ declare abstract class BaseGrid {
   /**
    * The grid type (see {@link CONST.GRID_TYPES}).
    */
-  type: number;
+  type: CONST.GRID_TYPES;
 
   get isGridless(): boolean;
 
