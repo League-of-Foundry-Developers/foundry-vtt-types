@@ -139,10 +139,7 @@ declare abstract class DataModel<
    * @param context - Context options passed to the data model constructor
    * @returns The cloned Document instance
    */
-  clone(
-    data?: fields.SchemaField.InnerAssignmentType<Schema>,
-    context?: DataModel.DataValidationOptions<Parent>,
-  ): this | Promise<this>;
+  clone(data?: fields.SchemaField.InnerAssignmentType<Schema>, context?: DataModel.DataValidationOptions<Parent>): this;
 
   /**
    * Validate the data contained in the document to check for type and content
