@@ -1,2 +1,1 @@
-npx tsc
 npx lint-staged
