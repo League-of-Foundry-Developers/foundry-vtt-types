@@ -21,7 +21,6 @@ import * as _canvas from "./canvas/_module.mjs";
 import * as _helpers from "./helpers/_module.mjs";
 import * as _data from "./data/_module.mjs";
 import * as _dice from "./dice/_module.mjs";
-import type { AnyObject } from "../../utils/index.d.mts";
 
 /**
  * Constant definitions used throughout the Foundry Virtual Tabletop framework.
@@ -178,110 +177,105 @@ declare global {
 
   // Color is currently handled in src/foundry/client/head.d.mts
 
-  type Collection<T> = _utils.Collection<T>;
-  var Collection: typeof _utils.Collection; // eslint-disable-line no-var
+  export import Collection = _utils.Collection;
 
-  type Roll<D extends Record<string, unknown> = AnyObject> = _dice.Roll<D>;
-  var Roll: typeof _dice.Roll; // eslint-disable-line no-var
+  export import Roll = _dice.Roll;
 
   // Deprecated global namespace dump; done programmatically by fvtt
-  type Semaphore = _utils.Semaphore;
   /** @deprecated since v12 will be removed in v14 */
-  var Semaphore: typeof _utils.Semaphore; // eslint-disable-line no-var
+  export import Semaphore = _utils.Semaphore;
 
-  type IterableWeakMap<K extends WeakKey, V> = _utils.IterableWeakMap<K, V>;
   /** @deprecated since v12 will be removed in v14 */
-  var IterableWeakMap: typeof _utils.IterableWeakMap; // eslint-disable-line no-var
+  export import IterableWeakMap = _utils.IterableWeakMap;
 
-  type IterableWeakSet<T extends WeakKey> = _utils.IterableWeakSet<T>;
   /** @deprecated since v12 will be removed in v14 */
-  var IterableWeakSet: typeof _utils.IterableWeakSet; // eslint-disable-line no-var
+  export import IterableWeakSet = _utils.IterableWeakSet;
 
   /* eslint-disable no-var */
   /* --- geometry --- */
   /** @deprecated since v12 will be removed in v14 */
-  var orient2dFast: typeof _utils.orient2dFast;
+  export import orient2dFast = _utils.orient2dFast;
   /** @deprecated since v12 will be removed in v14 */
-  var lineSegmentIntersects: typeof _utils.lineSegmentIntersects;
+  export import lineSegmentIntersects = _utils.lineSegmentIntersects;
   /** @deprecated since v12 will be removed in v14 */
-  var lineLineIntersection: typeof _utils.lineLineIntersection;
+  export import lineLineIntersection = _utils.lineLineIntersection;
   /** @deprecated since v12 will be removed in v14 */
-  var lineSegmentIntersection: typeof _utils.lineSegmentIntersection;
+  export import lineSegmentIntersection = _utils.lineSegmentIntersection;
   /** @deprecated since v12 will be removed in v14 */
-  var lineCircleIntersection: typeof _utils.lineCircleIntersection;
+  export import lineCircleIntersection = _utils.lineCircleIntersection;
   /** @deprecated since v12 will be removed in v14 */
-  var closestPointToSegment: typeof _utils.closestPointToSegment;
+  export import closestPointToSegment = _utils.closestPointToSegment;
   /** @deprecated since v12 will be removed in v14 */
-  var quadraticIntersection: typeof _utils.quadraticIntersection;
+  export import quadraticIntersection = _utils.quadraticIntersection;
 
   /* --- helpers --- */
   /** @deprecated since v12 will be removed in v14 */
-  var benchmark: typeof _utils.benchmark;
+  export import benchmark = _utils.benchmark;
   /** @deprecated since v12 will be removed in v14 */
-  var threadLock: typeof _utils.threadLock;
+  export import threadLock = _utils.threadLock;
   /** @deprecated since v12 will be removed in v14 */
-  var debounce: typeof _utils.debounce;
+  export import debounce = _utils.debounce;
   /** @deprecated since v12 will be removed in v14 */
-  var debouncedReload: typeof _utils.debouncedReload;
+  export import debouncedReload = _utils.debouncedReload;
   /** @deprecated since v12 will be removed in v14 */
-  var deepClone: typeof _utils.deepClone;
+  export import deepClone = _utils.deepClone;
   /** @deprecated since v12 will be removed in v14 */
-  var diffObject: typeof _utils.diffObject;
+  export import diffObject = _utils.diffObject;
   /** @deprecated since v12 will be removed in v14 */
-  var objectsEqual: typeof _utils.objectsEqual;
+  export import objectsEqual = _utils.objectsEqual;
   /** @deprecated since v12 will be removed in v14 */
-  var duplicate: typeof _utils.duplicate;
+  export import duplicate = _utils.duplicate;
   /** @deprecated since v12 will be removed in v14 */
-  var isSubclass: typeof _utils.isSubclass;
+  export import isSubclass = _utils.isSubclass;
   /** @deprecated since v12 will be removed in v14 */
-  var getDefiningClass: typeof _utils.getDefiningClass;
+  export import getDefiningClass = _utils.getDefiningClass;
   /** @deprecated since v12 will be removed in v14 */
-  var encodeURL: typeof _utils.encodeURL;
+  export import encodeURL = _utils.encodeURL;
   /** @deprecated since v12 will be removed in v14 */
-  var expandObject: typeof _utils.expandObject;
+  export import expandObject = _utils.expandObject;
   /** @deprecated since v12 will be removed in v14 */
-  var filterObject: typeof _utils.filterObject;
+  export import filterObject = _utils.filterObject;
   /** @deprecated since v12 will be removed in v14 */
-  var flattenObject: typeof _utils.flattenObject;
+  export import flattenObject = _utils.flattenObject;
   /** @deprecated since v12 will be removed in v14 */
-  var getParentClasses: typeof _utils.getParentClasses;
+  export import getParentClasses = _utils.getParentClasses;
   /** @deprecated since v12 will be removed in v14 */
-  var getRoute: typeof _utils.getRoute;
+  export import getRoute = _utils.getRoute;
   /** @deprecated since v12 will be removed in v14 */
-  var getType: typeof _utils.getType;
+  export import getType = _utils.getType;
   /** @deprecated since v12 will be removed in v14 */
-  var hasProperty: typeof _utils.hasProperty;
+  export import hasProperty = _utils.hasProperty;
   /** @deprecated since v12 will be removed in v14 */
-  var getProperty: typeof _utils.getProperty;
+  export import getProperty = _utils.getProperty;
   /** @deprecated since v12 will be removed in v14 */
-  var setProperty: typeof _utils.setProperty;
+  export import setProperty = _utils.setProperty;
   /** @deprecated since v12 will be removed in v14 */
-  var invertObject: typeof _utils.invertObject;
+  export import invertObject = _utils.invertObject;
   /** @deprecated since v12 will be removed in v14 */
-  var isEmpty: typeof _utils.isEmpty;
+  export import isEmpty = _utils.isEmpty;
   /** @deprecated since v12 will be removed in v14 */
-  var mergeObject: typeof _utils.mergeObject;
+  export import mergeObject = _utils.mergeObject;
   /** @deprecated since v12 will be removed in v14 */
-  var parseS3URL: typeof _utils.parseS3URL;
+  export import parseS3URL = _utils.parseS3URL;
   /** @deprecated since v12 will be removed in v14 */
-  var randomID: typeof _utils.randomID;
+  export import randomID = _utils.randomID;
   /** @deprecated since v12 will be removed in v14 */
-  var timeSince: typeof _utils.timeSince;
+  export import timeSince = _utils.timeSince;
   /** @deprecated since v12 will be removed in v14 */
-  var formatFileSize: typeof _utils.formatFileSize;
+  export import formatFileSize = _utils.formatFileSize;
   /** @deprecated since v12 will be removed in v14 */
-  var parseUuid: typeof _utils.parseUuid;
+  export import parseUuid = _utils.parseUuid;
 
   /* --- http --- */
 
   /** @deprecated since v12 will be removed in v14 */
-  var fetchWithTimeout: typeof _utils.fetchWithTimeout;
+  export import fetchWithTimeout = _utils.fetchWithTimeout;
   /** @deprecated since v12 will be removed in v14 */
-  var fetchJsonWithTimeout: typeof _utils.fetchJsonWithTimeout;
+  export import fetchJsonWithTimeout = _utils.fetchJsonWithTimeout;
 
   /* --- logging --- */
 
   /** @deprecated since v12 will be removed in v14 */
-  var logCompatibilityWarning: typeof _utils.logCompatibilityWarning;
+  export import logCompatibilityWarning = _utils.logCompatibilityWarning;
   /* eslint-enable no-var */
 }
