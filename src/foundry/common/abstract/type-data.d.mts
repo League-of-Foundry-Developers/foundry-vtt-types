@@ -7,6 +7,7 @@ import type {
   Merge,
   RemoveIndexSignatures,
   SimpleMerge,
+  InstanceType,
 } from "../../../utils/index.d.mts";
 import type { SchemaField } from "../data/fields.d.mts";
 import type BaseUser from "../documents/user.d.mts";

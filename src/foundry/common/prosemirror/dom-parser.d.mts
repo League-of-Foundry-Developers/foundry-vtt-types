@@ -1,4 +1,5 @@
 import { DOMParser as BaseDOMParser, Node, ParseOptions, Schema } from "prosemirror-model";
+import type { InstanceType } from "../../../utils/index.d.mts";
 
 export default DOMParser;
 

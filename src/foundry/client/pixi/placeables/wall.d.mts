@@ -1,3 +1,4 @@
+import type { InstanceType } from "../../../../utils/index.d.mts";
 import type { LineIntersection } from "../../../common/utils/geometry.d.mts";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 

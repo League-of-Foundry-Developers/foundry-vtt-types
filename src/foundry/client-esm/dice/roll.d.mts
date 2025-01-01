@@ -1,4 +1,4 @@
-import type { AnyObject, EmptyObject, InexactPartial } from "../../../utils/index.d.mts";
+import type { AnyObject, EmptyObject, InexactPartial, InstanceType } from "../../../utils/index.d.mts";
 
 import type { RollParseNode } from "./_types.d.mts";
 import type DiceTerm from "./terms/dice.d.mts";

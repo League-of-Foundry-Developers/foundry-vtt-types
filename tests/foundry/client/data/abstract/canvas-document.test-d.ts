@@ -1,4 +1,5 @@
 import { assertType, expectTypeOf } from "vitest";
+import type { InstanceType } from "../../../../../src/utils/index.d.mts";
 
 import Document = foundry.abstract.Document;
 

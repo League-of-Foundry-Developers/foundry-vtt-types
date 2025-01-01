@@ -1,4 +1,4 @@
-import type { InexactPartial } from "../../../../../utils/index.d.mts";
+import type { InexactPartial, InstanceType } from "../../../../../utils/index.d.mts";
 import type PointEffectSourceMixin from "../../../../client-esm/canvas/sources/point-effect-source.d.mts";
 
 declare global {

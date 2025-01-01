@@ -1,4 +1,4 @@
-import type { FolderDocumentTypes, InexactPartial } from "../../../../utils/index.d.mts";
+import type { FolderDocumentTypes, InexactPartial, InstanceType } from "../../../../utils/index.d.mts";
 // eslint-disable-next-line import/no-named-as-default
 import type DataModel from "../../../common/abstract/data.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";

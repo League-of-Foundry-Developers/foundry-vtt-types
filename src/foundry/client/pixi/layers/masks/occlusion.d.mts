@@ -1,4 +1,4 @@
-export {};
+import type { InstanceType } from "../../../../../utils/index.d.mts";
 
 declare global {
   /**

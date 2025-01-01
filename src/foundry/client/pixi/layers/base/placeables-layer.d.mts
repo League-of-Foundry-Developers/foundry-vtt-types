@@ -1,4 +1,10 @@
-import type { ArrayOverlaps, InexactPartial, NullishProps, ValueOf } from "../../../../../utils/index.d.mts";
+import type {
+  ArrayOverlaps,
+  InexactPartial,
+  NullishProps,
+  ValueOf,
+  InstanceType,
+} from "../../../../../utils/index.d.mts";
 import type Document from "../../../../common/abstract/document.d.mts";
 import type EmbeddedCollection from "../../../../common/abstract/embedded-collection.d.mts";
 
