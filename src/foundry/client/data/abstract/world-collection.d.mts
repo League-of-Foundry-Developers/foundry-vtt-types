@@ -162,4 +162,4 @@ declare global {
   }
 }
 
-type DropFirst<T extends Array<unknown>> = T extends [unknown, ...infer V] ? V : T;
+type DropFirst<T extends Array<unknown>> = T extends [infer _1, ...infer V] ? V : T;

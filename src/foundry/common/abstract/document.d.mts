@@ -1143,7 +1143,7 @@ declare namespace Document {
     : T;
 
   type SchemaFor<ConcreteDocument extends Internal.Instance.Any> =
-    ConcreteDocument extends Internal.Instance<any, infer Schema, any> ? Schema : never;
+    ConcreteDocument extends Internal.Instance<infer _1, infer Schema, infer _2> ? Schema : never;
 
   type MetadataFor<ConcreteDocument extends Document.Internal.Instance.Any> =
     ConfiguredMetadata<ConcreteDocument>[ConcreteDocument extends {

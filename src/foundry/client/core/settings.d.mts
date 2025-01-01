@@ -191,7 +191,7 @@ declare global {
       | SettingType<T>
       // TODO(LukeAbby): The `fromSource` function is called with `strict` which changes how fallback behaviour works. See `ClientSettings#set`
       // Note(LukeAbby): This doesn't use `InstanceType` because of this TypeScript issue: https://github.com/microsoft/TypeScript/issues/60839
-      | (T extends (abstract new (arg0: never, ...args: never[]) => infer Instance extends DataModel.Any)
+      | (T extends (abstract new (...args: infer _1) => infer Instance extends DataModel.Any)
           ? DataModel.ConstructorDataFor<Instance>
           : never)
     >;

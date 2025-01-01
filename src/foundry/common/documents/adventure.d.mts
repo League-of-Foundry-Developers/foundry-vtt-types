@@ -175,8 +175,17 @@ declare namespace BaseAdventure {
   type ContentFields = {
     [Key in keyof BaseAdventure.Schema as BaseAdventure.Schema[Key] extends fields.SetField.Any
       ? Key
-      : never]: BaseAdventure.Schema[Key] extends fields.SetField<infer ElementType, any, any, any, any, any, any, any>
-      ? ElementType extends fields.EmbeddedDataField<infer ModelType, any, any, any, any>
+      : never]: BaseAdventure.Schema[Key] extends fields.SetField<
+      infer ElementType,
+      infer _1,
+      infer _2,
+      infer _3,
+      infer _4,
+      infer _5,
+      infer _6,
+      infer _7
+    >
+      ? ElementType extends fields.EmbeddedDataField<infer ModelType, infer _8, infer _9, infer _10, infer _11>
         ? ModelType extends Document.AnyConstructor // TODO: This doesn't seem to quite work to ensure it's the configured class
           ? ModelType["implementation"]
           : ModelType

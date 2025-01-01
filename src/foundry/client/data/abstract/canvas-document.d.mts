@@ -64,6 +64,9 @@ declare global {
 // This is yet another `AnyDocument` type.
 // It exists specifically because the `Document.AnyConstructor` type is too safe to be merged in with a mixin.
 // The `arg0: never, ...args: never[]` trick trips up the base constructor check and so this one with an actual `...args: any[]` one is used instead.
-declare class AnyDocument extends Document<any, any, any> {
+//
+// `{}` is used to avoid merging `DataSchema` with the real schema.
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+declare class AnyDocument extends Document<any, {}, Document.Any | null> {
   constructor(...args: any[]);
 }
