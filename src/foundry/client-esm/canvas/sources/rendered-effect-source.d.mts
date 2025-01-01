@@ -164,7 +164,7 @@ declare class RenderedEffectSource<
    * @privateRemarks In core this will return `void`, as the `this.animation.animation` function will  be a {@link BaseLightSource.LightAnimationFunction}
    * and in fact most of the time will be `RenderedEffectSource#animateTime`, but it could technically be set to any function
    */
-  animate(dt: number): this["animation"]["animation"] extends (...args: any) => infer Return ? Return : void;
+  animate(dt: number): this["animation"]["animation"] extends (...args: infer _1) => infer Return ? Return : void;
 
   /**
    * Generic time-based animation used for Rendered Point Sources.

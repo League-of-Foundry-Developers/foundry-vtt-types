@@ -4,13 +4,13 @@ import type ApplicationV2 from "./application.d.mts";
 declare namespace HandlebarsApplication {
   // Note(LukeAbby): `unknown` is returned in the false case instead of `never` because otherwise errors will crop up at usage sites like "any cannot be assigned to `never`".
   type ConfigurationFor<Instance extends HandlebarsApplication> =
-    Instance extends ApplicationV2.Internal.Instance<infer Configuration, any, any> ? Configuration : unknown;
+    Instance extends ApplicationV2.Internal.Instance<infer Configuration, infer _1, infer _2> ? Configuration : unknown;
 
   type RenderOptionsFor<Instance extends HandlebarsApplication> =
-    Instance extends ApplicationV2.Internal.Instance<any, infer RenderOptions, any> ? RenderOptions : unknown;
+    Instance extends ApplicationV2.Internal.Instance<infer _1, infer RenderOptions, infer _2> ? RenderOptions : unknown;
 
   type RenderContextFor<Instance extends HandlebarsApplication> =
-    Instance extends ApplicationV2.Internal.Instance<any, any, infer RenderContext> ? RenderContext : unknown;
+    Instance extends ApplicationV2.Internal.Instance<infer _1, infer _2, infer RenderContext> ? RenderContext : unknown;
 }
 
 /**

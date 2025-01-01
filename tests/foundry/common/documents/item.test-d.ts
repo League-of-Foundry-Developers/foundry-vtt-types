@@ -80,10 +80,10 @@ class _TestFlags extends Item {
 
 class _TestFlagsFail<Type extends Document.Type> extends Document<Type, BaseItem.Schema, any> {
   testFlagsFail() {
-    // @ts-expect-error - Because `ConcreteMetadata` is passed in a generic fashion suddenly the safety of generic parameters kick in and make this unusable.
+    // @ts-expect-error - Because `Type` is passed in a generic fashion suddenly the safety of generic parameters kick in and make this unusable.
     this.getFlag("my-system", "countable");
 
-    // @ts-expect-error - Because `ConcreteMetadata` is passed in a generic fashion suddenly the safety of generic parameters kick in and make this unusable.
+    // @ts-expect-error - Because `Type` is passed in a generic fashion suddenly the safety of generic parameters kick in and make this unusable.
     this.setFlag("my-system", "countable", true);
   }
 }

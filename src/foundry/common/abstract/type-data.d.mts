@@ -151,12 +151,12 @@ declare namespace TypeDataModel {
   }
 
   type PrepareBaseDataThis<BaseThis extends Internal.Instance.Any> =
-    BaseThis extends Internal.Instance<any, any, infer BaseModel, infer BaseData, infer DerivedData>
+    BaseThis extends Internal.Instance<infer _1, infer _2, infer BaseModel, infer BaseData, infer DerivedData>
       ? MergePartial<Omit<RemoveDerived<BaseThis, BaseModel, BaseData, DerivedData>, "prepareBaseData">, BaseData>
       : never;
 
   type PrepareDerivedDataThis<BaseThis extends Internal.Instance.Any> =
-    BaseThis extends Internal.Instance<any, any, infer BaseModel, infer BaseData, infer DerivedData>
+    BaseThis extends Internal.Instance<infer _1, infer _2, infer BaseModel, infer BaseData, infer DerivedData>
       ? MergePartial<
           SimpleMerge<Omit<RemoveDerived<BaseThis, BaseModel, BaseData, DerivedData>, "prepareDerivedData">, BaseData>,
           DerivedData

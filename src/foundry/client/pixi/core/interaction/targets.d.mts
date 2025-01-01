@@ -9,8 +9,8 @@ interface SetReplacementMembers<T> {
 type PatchedSet<T> = Omit<Set<T>, "add" | "delete" | "clear"> & SetReplacementMembers<T>;
 
 interface PatchedSetConstructor {
-  new <T = any>(values?: readonly T[] | null): PatchedSet<T>;
-  readonly prototype: PatchedSet<any>;
+  new <T = unknown>(values?: readonly T[] | null): PatchedSet<T>;
+  readonly prototype: PatchedSet<unknown>;
 }
 
 declare const Set: PatchedSetConstructor;

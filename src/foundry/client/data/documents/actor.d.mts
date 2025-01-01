@@ -21,9 +21,7 @@ declare global {
             ? {
                 // For backwards compatability both instances and classes are supported for the time being.
                 // Only constructors are valid however.
-                system: SystemData extends abstract new (arg0: never, ...args: never[]) => infer Instance
-                  ? Instance
-                  : SystemData;
+                system: SystemData extends abstract new (...args: infer _1) => infer Instance ? Instance : SystemData;
               }
             : // eslint-disable-next-line @typescript-eslint/no-empty-object-type
               {})
