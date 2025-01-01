@@ -1,4 +1,4 @@
-export {};
+import type { InstanceType } from "../../../../../../utils/index.d.mts";
 
 declare abstract class AnyVisionMaskFilter extends VisionMaskFilter {
   constructor(arg0: never, ...args: never[]);

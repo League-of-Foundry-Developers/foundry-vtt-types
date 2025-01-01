@@ -1,4 +1,5 @@
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
+import type { InstanceType } from "../../../../utils/index.d.mts";
 
 // TODO: Remove when the whole class is updated
 type LightSource = unknown;

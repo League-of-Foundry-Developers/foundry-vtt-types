@@ -1,4 +1,4 @@
-import type { DeepPartial, InexactPartial, Mixin } from "../../../../utils/index.d.mts";
+import type { DeepPartial, InexactPartial, Mixin, InstanceType } from "../../../../utils/index.d.mts";
 import type { DatabaseCreateOperation } from "../../../common/abstract/_types.d.mts";
 import type DataModel from "../../../common/abstract/data.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";

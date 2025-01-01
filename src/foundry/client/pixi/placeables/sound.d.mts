@@ -1,5 +1,6 @@
 import type Sound from "../../../client-esm/audio/sound.d.mts";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
+import type { InstanceType } from "../../../../utils/index.d.mts";
 
 declare global {
   namespace AmbientSound {

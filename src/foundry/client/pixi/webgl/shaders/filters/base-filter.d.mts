@@ -1,4 +1,4 @@
-export {};
+import type { InstanceType } from "../../../../../../utils/index.d.mts";
 
 declare abstract class AnyAbstractBaseFilter extends AbstractBaseFilter {
   constructor(arg0: never, ...args: never[]);

@@ -1,4 +1,5 @@
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
+import type { InstanceType } from "../../../../utils/index.d.mts";
 
 declare global {
   namespace Tile {

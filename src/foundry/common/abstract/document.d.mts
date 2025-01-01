@@ -15,6 +15,7 @@ import type {
   EmptyObject,
   InexactPartial,
   RemoveIndexSignatures,
+  InstanceType,
 } from "../../../utils/index.d.mts";
 import type * as CONST from "../constants.mts";
 import type { DataField, EmbeddedCollectionField, EmbeddedDocumentField } from "../data/fields.d.mts";
@@ -37,6 +38,7 @@ export default Document;
 
 declare const __DocumentBrand: unique symbol;
 
+declare const __DocumentName: unique symbol;
 declare const __Schema: unique symbol;
 declare const __Parent: unique symbol;
 
@@ -54,6 +56,7 @@ declare abstract class Document<
 > extends DataModel<Schema, Parent, InterfaceToObject<Document.ConstructionContext<Parent>>> {
   static [__DocumentBrand]: never;
 
+  [__DocumentName]: DocumentName;
   [__Schema]: Schema;
   [__Parent]: Parent;
 
@@ -1023,17 +1026,24 @@ declare namespace Document {
       [__DocumentBrand]: never;
     };
 
-    interface Instance<Schema extends DataSchema, Parent extends Document.Internal.Instance.Any | null> {
+    interface Instance<
+      DocumentName extends Document.Type,
+      Schema extends DataSchema,
+      Parent extends Document.Internal.Instance.Any | null,
+    > {
+      [__DocumentName]: DocumentName;
       [__Schema]: Schema;
       [__Parent]: Parent;
     }
+
+    type DocumentNameFor<ConcreteInstance extends Instance.Any> = ConcreteInstance[typeof __DocumentName];
 
     type SchemaFor<ConcreteInstance extends Instance.Any> = ConcreteInstance[typeof __Schema];
 
     type ParentFor<ConcreteInstance extends Instance.Any> = ConcreteInstance[typeof __Parent];
 
     namespace Instance {
-      type Any = Instance<any, any>;
+      type Any = Instance<any, any, any>;
 
       type Complete<T extends Any> = T extends Document.Any ? T : never;
     }
@@ -1079,28 +1089,17 @@ declare namespace Document {
   // NOTE(LukeAbby): This type is less DRY than it could be to avoid undue complexity in such a critical helpeer.
   // This has _many_ times been seen to cause loops so this type is written in an intentionally more paranoid way.
   // The reason for the verbosity and repetition is to avoid eagerly evaluating any branches that might cause a loop.
-  type ToConfiguredClass<ConcreteDocument extends Document.Internal.Constructor> =
-    NameFor<ConcreteDocument> extends keyof DocumentClassConfig
-      ? MakeConform<
-          ConfiguredDocuments[NameFor<ConcreteDocument>],
-          typeof ConfigurationFailure & DefaultDocuments[NameFor<ConcreteDocument>]
-        >
-      : DefaultDocuments[NameFor<ConcreteDocument>];
+  type ToConfiguredClass<ConcreteDocument extends Document.Internal.Constructor> = MakeConform<
+    ConfiguredDocuments[NameFor<ConcreteDocument>],
+    Document.AnyConstructor,
+    typeof ConfigurationFailure & DefaultDocuments[NameFor<ConcreteDocument>]
+  >;
 
-  type ToConfiguredInstance<ConcreteDocument extends Document.Internal.Constructor> =
-    ConfiguredDocuments[NameFor<ConcreteDocument>] extends Document.AnyConstructor
-      ? _CheckConfiguredInstance<
-          NameFor<ConcreteDocument>,
-          InstanceType<ConfiguredDocuments[NameFor<ConcreteDocument>]>
-        >
-      : InstanceType<DefaultDocuments[NameFor<ConcreteDocument>]>;
-
-  /**
-   * @internal
-   */
-  type _CheckConfiguredInstance<Name extends Document.Type, T> = T extends Document.Any
-    ? T
-    : ConfigurationFailure & DefaultDocuments[Name];
+  type ToConfiguredInstance<ConcreteDocument extends Document.Internal.Constructor> = MakeConform<
+    InstanceType<ConfiguredDocuments[NameFor<ConcreteDocument>]>,
+    Document.Any,
+    ConfigurationFailure & InstanceType<DefaultDocuments[NameFor<ConcreteDocument>]>
+  >;
 
   type ToConfiguredStored<D extends Document.Internal.Constructor> = Stored<ToConfiguredInstance<D>>;
 
@@ -1144,7 +1143,7 @@ declare namespace Document {
     : T;
 
   type SchemaFor<ConcreteDocument extends Internal.Instance.Any> =
-    ConcreteDocument extends Internal.Instance<infer Schema, any> ? Schema : never;
+    ConcreteDocument extends Internal.Instance<any, infer Schema, any> ? Schema : never;
 
   type MetadataFor<ConcreteDocument extends Document.Internal.Instance.Any> =
     ConfiguredMetadata<ConcreteDocument>[ConcreteDocument extends {

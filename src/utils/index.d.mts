@@ -2,6 +2,12 @@ import type { Document } from "../foundry/common/abstract/module.d.mts";
 
 type ConfiguredModuleData<Name extends string> = Name extends keyof ModuleConfig ? ModuleConfig[Name] : EmptyObject;
 
+/**
+ * This type exists due to https://github.com/microsoft/TypeScript/issues/55667
+ * This will be deprecated once this issue is solved.
+ */
+export type InstanceType<T extends AnyConstructor> = T extends abstract new (...args: infer _) => infer R ? R : never;
+
 export type ConfiguredModule<Name extends string> = Name extends keyof RequiredModules
   ? ConfiguredModuleData<Name>
   :

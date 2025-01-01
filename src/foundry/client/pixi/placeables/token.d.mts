@@ -1,4 +1,4 @@
-import type { NullishProps, RequiredProps } from "../../../../utils/index.d.mts";
+import type { NullishProps, RequiredProps , InstanceType } from "../../../../utils/index.d.mts";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {

@@ -1,3 +1,4 @@
+import type { InstanceType } from "../../utils/index.d.mts";
 import type { EarlierEvents, InitializationEvent } from "./game.d.mts";
 
 type ValidRanHooks = Extract<keyof AssumeHookRan, InitializationEvent>;

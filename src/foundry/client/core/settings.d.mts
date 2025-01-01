@@ -1,4 +1,4 @@
-import type { AnyArray, AnyObject, DeepPartial, InexactPartial } from "../../../utils/index.d.mts";
+import type { AnyArray, AnyObject, DeepPartial, InexactPartial, InstanceType } from "../../../utils/index.d.mts";
 import type ApplicationV2 from "../../client-esm/applications/api/application.d.mts";
 import type { CustomFormInput } from "../../client-esm/applications/forms/fields.d.mts";
 import type DataModel from "../../common/abstract/data.d.mts";

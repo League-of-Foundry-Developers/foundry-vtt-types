@@ -6,6 +6,7 @@ import type {
   NullishProps,
   InexactPartial,
   ToMethod,
+  InstanceType,
 } from "../../../utils/index.d.mts";
 import type { DataModel } from "../abstract/data.mts";
 import type Document from "../abstract/document.mts";
@@ -3912,8 +3913,8 @@ declare namespace TypeDataField {
    */
   type AssignmentType<
     SystemDocumentConstructor extends Document.SystemConstructor,
-    Opts extends Options<InstanceType<SystemDocumentConstructor>>,
-  > = DataField.DerivedAssignmentType<AnyObject, MergedOptions<InstanceType<SystemDocumentConstructor>, Opts>>;
+    Opts extends Options<SystemDocumentConstructor>,
+  > = DataField.DerivedAssignmentType<AnyObject, MergedOptions<SystemDocumentConstructor, Opts>>;
 
   /**
    * A shorthand for the initialized type of a TypeDataField class.
@@ -3922,10 +3923,10 @@ declare namespace TypeDataField {
    */
   type InitializedType<
     SystemDocumentConstructor extends Document.SystemConstructor,
-    Opts extends Options<InstanceType<SystemDocumentConstructor>>,
+    Opts extends Options<SystemDocumentConstructor>,
   > = DataField.DerivedInitializedType<
     _Instances<DataModelsFor<SystemDocumentConstructor["metadata"]["name"]>> | UnknownSystem,
-    MergedOptions<InstanceType<SystemDocumentConstructor>, Opts>
+    MergedOptions<SystemDocumentConstructor, Opts>
   >;
 
   type _Instances<T> = {
@@ -3977,9 +3978,9 @@ declare namespace TypeDataField {
    * @typeParam Opts         - the options that override the default options
    */
   type PersistedType<
-    SystemDocumentConstructor extends Document.SystemConstructor,
-    Opts extends Options<InstanceType<SystemDocumentConstructor>>,
-  > = DataField.DerivedInitializedType<AnyObject, MergedOptions<SystemDocumentConstructor, Opts>>;
+    ConcreteDocument extends Document.SystemConstructor,
+    Opts extends Options<ConcreteDocument>,
+  > = DataField.DerivedInitializedType<AnyObject, MergedOptions<ConcreteDocument, Opts>>;
 }
 
 /**
