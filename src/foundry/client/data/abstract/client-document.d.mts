@@ -3,7 +3,7 @@ import type { DatabaseCreateOperation } from "../../../common/abstract/_types.d.
 import type DataModel from "../../../common/abstract/data.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 
-declare class ClientDocument<BaseDocument extends Document.Internal.Instance.Any = Document.Any> {
+declare class InternalClientDocument<BaseDocument extends Document.Internal.Instance.Any = Document.Any> {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
   constructor(...args: any[]);
 
@@ -600,10 +600,18 @@ declare class ClientDocument<BaseDocument extends Document.Internal.Instance.Any
   ): void;
 }
 
-declare const _ClientDocument: ClientDocument;
+type _ClientDocumentType = InternalClientDocument & Document.AnyConstructor;
+declare const _ClientDocument: _ClientDocumentType;
+
+type ClientDocumentMixinBaseClass = Document.Internal.Constructor;
 
 declare global {
-  type ClientDocument = typeof _ClientDocument;
+  class ClientDocument extends _ClientDocument {
+    // This may have be removed at some point in the future if it causes issues but the idea is to
+    // prevent operations like `new ClientDocument()` or `extends ClientDocument` because this does
+    // is not a class that really exists at runtime.
+    private constructor(...args: any[]);
+  }
 
   /**
    * A mixin which extends each Document definition with specialized client-side behaviors.
@@ -616,7 +624,7 @@ declare global {
   // Note(LukeAbby): The seemingly redundant merging in of `typeof AnyDocument` makes it easier for tsc to recognize that anything extending `ClientDocumentMixin` is also a document.
   function ClientDocumentMixin<BaseClass extends Document.Internal.Constructor>(
     Base: BaseClass,
-  ): typeof AnyDocument & Mixin<typeof ClientDocument<InstanceType<BaseClass>>, BaseClass>;
+  ): typeof AnyDocument & Mixin<typeof InternalClientDocument<InstanceType<BaseClass>>, BaseClass>;
 
   namespace ClientDocument {
     interface SortOptions<T, SortKey extends string = "sort"> extends SortingHelpers.SortOptions<T, SortKey> {

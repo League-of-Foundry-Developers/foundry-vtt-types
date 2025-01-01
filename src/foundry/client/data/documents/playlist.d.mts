@@ -2,7 +2,6 @@ import type { InexactPartial } from "../../../../utils/index.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 import type { Document } from "../../../common/abstract/module.d.mts";
 import type BasePlaylist from "../../../common/documents/playlist.d.mts";
-import type { ClientDocument } from "../abstract/client-document.d.mts";
 
 declare global {
   namespace Playlist {
@@ -144,27 +143,27 @@ declare global {
      */
 
     protected override _onCreateDescendantDocuments(
-      parent: ClientDocument<Document.Any>,
+      parent: ClientDocument,
       collection: string,
-      documents: ClientDocument<Document.Any>[],
+      documents: ClientDocument[],
       data: unknown[],
       options: Document.OnCreateOptions<"PlaylistSound">,
       userId: string,
     ): void;
 
     protected override _onUpdateDescendantDocuments(
-      parent: ClientDocument<Document.Any>,
+      parent: ClientDocument,
       collection: string,
-      documents: ClientDocument<Document.Any>[],
+      documents: ClientDocument[],
       changes: unknown[],
       options: Document.OnUpdateOptions<"PlaylistSound">,
       userId: string,
     ): void;
 
     protected override _onDeleteDescendantDocuments(
-      parent: ClientDocument<Document.Any>,
+      parent: ClientDocument,
       collection: string,
-      documents: ClientDocument<Document.Any>[],
+      documents: ClientDocument[],
       ids: string,
       options: Document.OnDeleteOptions<"PlaylistSound">,
       userId: string,

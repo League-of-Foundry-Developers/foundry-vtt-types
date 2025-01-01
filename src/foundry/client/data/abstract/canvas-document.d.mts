@@ -1,10 +1,10 @@
 import type { Mixin } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
-import type { ClientDocument } from "./client-document.d.mts";
+import type { InternalClientDocument } from "./client-document.d.mts";
 
 declare class CanvasDocument<
   BaseDocument extends Document<any, any, Scene.ConfiguredInstance | null>,
-> extends ClientDocument<BaseDocument> {
+> extends InternalClientDocument<BaseDocument> {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
   constructor(...args: any[]);
 
