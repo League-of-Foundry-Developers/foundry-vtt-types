@@ -2,7 +2,6 @@ import type { InexactPartial } from "../../../../utils/index.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 import type { Document } from "../../../common/abstract/module.d.mts";
 import type BasePlaylist from "../../../common/documents/playlist.d.mts";
-import type { ClientDocument } from "../abstract/client-document.d.mts";
 
 declare global {
   namespace Playlist {

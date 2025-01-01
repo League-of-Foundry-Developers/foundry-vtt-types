@@ -600,10 +600,18 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
   ): void;
 }
 
-declare const ClientDocument: InternalClientDocument & Document.AnyConstructor;
+type _ClientDocumentType = InternalClientDocument & Document.AnyConstructor;
+declare const _ClientDocument: _ClientDocumentType;
+
+type ClientDocumentMixinBaseClass = Document.Internal.Constructor;
 
 declare global {
-  type ClientDocument = typeof ClientDocument;
+  class ClientDocument extends _ClientDocument {
+    // This may have be removed at some point in the future if it causes issues but the idea is to
+    // prevent operations like `new ClientDocument()` or `extends ClientDocument` because this does
+    // is not a class that really exists at runtime.
+    private constructor(...args: any[]);
+  }
 
   /**
    * A mixin which extends each Document definition with specialized client-side behaviors.
