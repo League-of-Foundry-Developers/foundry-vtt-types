@@ -19,9 +19,7 @@ declare global {
           type: K;
         } & (DataModelConfig extends { Item: { readonly [_ in K]?: infer SystemData } }
             ? {
-                // For backwards compatability both instances and classes are supported for the time being.
-                // Only constructors are valid however.
-                system: SystemData extends abstract new (...args: infer _1) => infer Instance ? Instance : SystemData;
+                system: SystemData;
               }
             : // eslint-disable-next-line @typescript-eslint/no-empty-object-type
               {})
