@@ -21,11 +21,14 @@ type GameInitialized<Data, MustRun extends InitializationEvent, RunEvents extend
 type HooksRan<T extends InitializationEvent> = EarlierEvents[T] | T;
 
 // May be called with just one hook.
-type MaybeInitialized<
+type MaybeInitialized<Data, MustRun extends InitializationEvent> = GameInitialized<
   Data,
-  MustRun extends InitializationEvent,
-  RunEvents extends InitializationEvent,
-> = GameInitialized<Data, MustRun, HooksRan<RunEvents>, Data | undefined>;
+  MustRun,
+  HooksRan<ValidHooksRan>,
+  Data | undefined
+>;
+
+type ValidHooksRan = Extract<keyof AssumeHookRan, InitializationEvent>;
 
 /**
  * @privateRemarks In v12 many of these properties were mistakenly stripped of their readonly quality;
@@ -766,13 +769,13 @@ declare global {
    * @defaultValue `undefined`
    * Initialized just before the `"init"` hook event.
    */
-  let canvas: MaybeInitialized<Canvas, "init", keyof AssumeHookRan>;
+  let canvas: MaybeInitialized<Canvas, "init">;
 
   /**
    * @defaultValue `undefined`
    * Initialized just before the `"ready"` hook event.
    */
-  let keyboard: MaybeInitialized<KeyboardManager, "ready", keyof AssumeHookRan>;
+  let keyboard: MaybeInitialized<KeyboardManager, "ready">;
 }
 
 type ConfiguredCollectionClassForName<Name extends foundry.CONST.DOCUMENT_TYPES> = InstanceType<

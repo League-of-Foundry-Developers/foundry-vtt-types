@@ -17,7 +17,7 @@ declare global {
    *
    * The currently supported hooks are:
    * - init
-   * - i18nReady
+   * - i18nInit
    * - setup
    * - ready
    *
