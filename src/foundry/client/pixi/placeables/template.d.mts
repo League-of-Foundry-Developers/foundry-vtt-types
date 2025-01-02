@@ -1,4 +1,4 @@
-import type { RequiredProps , InstanceType } from "../../../../utils/index.d.mts";
+import type { RequiredProps, InstanceType } from "../../../../utils/index.d.mts";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
