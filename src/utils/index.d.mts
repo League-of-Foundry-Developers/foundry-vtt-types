@@ -500,11 +500,7 @@ export type DeepPartial<T extends object> = {
 };
 
 // This type has to be factored out for distributivity.
-type _DeepPartial<T> = T extends AnyObject
-  ? T extends AnyArray | AnyFunction | AnyConstructor
-    ? T
-    : DeepPartial<T>
-  : T;
+type _DeepPartial<T> = T extends object ? (T extends AnyArray | AnyFunction | AnyConstructor ? T : DeepPartial<T>) : T;
 
 /**
  * Gets all possible keys of `T`. This is useful because if `T` is a union type
