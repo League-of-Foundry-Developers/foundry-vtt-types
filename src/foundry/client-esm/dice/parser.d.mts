@@ -202,4 +202,12 @@ declare class RollParser {
   static formatDebug(method: string, ...args: RollParseArg[]): string;
 }
 
+declare namespace RollParser {
+  type AnyConstructor = typeof AnyRollParser;
+}
+
+declare abstract class AnyRollParser extends RollParser {
+  constructor(arg0: never, ...args: never[]);
+}
+
 export default RollParser;

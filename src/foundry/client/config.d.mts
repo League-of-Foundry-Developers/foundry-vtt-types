@@ -74,7 +74,7 @@ declare global {
        * The Dice types which are supported.
        * @defaultValue `[foundry.dice.terms.Die, foundry.dice.terms.FateDie]`
        */
-      types: Array<typeof foundry.dice.terms.DiceTerm>;
+      types: Array<foundry.dice.terms.DiceTerm.AnyConstructor>;
 
       rollModes: CONFIG.Dice.RollModes;
 
@@ -82,7 +82,7 @@ declare global {
        * Configured Roll class definitions
        * @defaultValue `[Roll]`
        */
-      rolls: Array<typeof foundry.dice.Roll>;
+      rolls: Array<foundry.dice.Roll.AnyConstructor>;
 
       /**
        * Configured DiceTerm class definitions
@@ -99,14 +99,14 @@ declare global {
        * }
        * ```
        */
-      termTypes: Record<string, typeof foundry.dice.terms.RollTerm>;
+      termTypes: Record<string, foundry.dice.terms.RollTerm.AnyConstructor>;
 
       /** Configured roll terms and the classes they map to. */
       terms: {
         c: typeof foundry.dice.terms.Coin;
         d: typeof foundry.dice.terms.Die;
         f: typeof foundry.dice.terms.FateDie;
-      } & Record<string, typeof foundry.dice.terms.DiceTerm>;
+      } & Record<string, foundry.dice.terms.DiceTerm.AnyConstructor>;
 
       /**
        * A function used to provide random uniform values.
@@ -115,7 +115,7 @@ declare global {
       randomUniform: () => number;
 
       /** A parser implementation for parsing Roll expressions. */
-      parser: typeof foundry.dice.RollParser;
+      parser: foundry.dice.RollParser.AnyConstructor;
 
       /** A collection of custom functions that can be included in roll expressions.*/
       functions: Record<string, CONFIG.Dice.RollFunction>;
