@@ -121,7 +121,7 @@ declare global {
      *                    (default: `"EntryContext"`)
      */
     static create(
-      app: Application | ApplicationV2,
+      app: Application.Any | ApplicationV2.Any,
       html: JQuery | HTMLElement,
       selector: string,
       menuItems: ContextMenuEntry[],

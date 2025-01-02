@@ -22,4 +22,4 @@ expectTypeOf(playlist.stopAll()).toEqualTypeOf<Promise<Playlist | undefined>>();
 expectTypeOf(playlist.cycleMode()).toEqualTypeOf<Promise<Playlist | undefined>>();
 expectTypeOf(playlist.toAnchor()).toEqualTypeOf<HTMLAnchorElement>();
 
-expectTypeOf(playlist.sheet).toEqualTypeOf<FormApplication | foundry.applications.api.ApplicationV2 | null>();
+expectTypeOf(playlist.sheet).toEqualTypeOf<FormApplication.Any | foundry.applications.api.ApplicationV2.Any | null>();

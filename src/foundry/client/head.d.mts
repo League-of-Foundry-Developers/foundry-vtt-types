@@ -68,7 +68,7 @@ declare global {
     /**
      * @defaultValue `{}`
      */
-    windows: Record<number, Application>;
+    windows: Record<number, Application.Any>;
   } & MaybeUI;
 
   /**

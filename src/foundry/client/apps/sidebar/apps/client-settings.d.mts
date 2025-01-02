@@ -20,7 +20,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): (typeof FormApplication)["defaultOptions"];
+    static override get defaultOptions(): typeof FormApplication.defaultOptions;
 
     override _prepareCategoryData(): SettingsConfig.CategoryData;
 

@@ -34,7 +34,9 @@ if (myMacro.type === "chat") {
 }
 
 // properties and functions of `ClientDocumentMixin`
-expectTypeOf(myMacro.apps).toEqualTypeOf<Record<string, Application | foundry.applications.api.ApplicationV2>>();
+expectTypeOf(myMacro.apps).toEqualTypeOf<
+  Record<string, Application.Any | foundry.applications.api.ApplicationV2.Any>
+>();
 expectTypeOf(myMacro.collection).toEqualTypeOf<Collection<Macro>>();
 expectTypeOf(myMacro.folder).toEqualTypeOf<Folder | null>();
 expectTypeOf(myMacro.isOwner).toEqualTypeOf<boolean>();

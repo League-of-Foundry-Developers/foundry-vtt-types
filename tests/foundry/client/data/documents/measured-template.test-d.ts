@@ -6,4 +6,4 @@ expectTypeOf(doc.isAuthor).toEqualTypeOf<boolean>();
 expectTypeOf(doc.layer).toEqualTypeOf<TemplateLayer>();
 expectTypeOf(doc.rotation).toEqualTypeOf<MeasuredTemplateDocument["direction"]>();
 
-expectTypeOf(doc.sheet).toEqualTypeOf<FormApplication | foundry.applications.api.ApplicationV2 | null>();
+expectTypeOf(doc.sheet).toEqualTypeOf<FormApplication.Any | foundry.applications.api.ApplicationV2.Any | null>();

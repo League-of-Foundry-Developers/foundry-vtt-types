@@ -133,4 +133,4 @@ expectTypeOf(cards.playDialog(new Card({ name: "Some Card" }))).toEqualTypeOf<Pr
 expectTypeOf(cards.resetDialog()).toEqualTypeOf<Promise<Cards | false | null>>();
 
 // TODO: Modify to Playlist | null once data can be grabbed from CONFIG
-expectTypeOf(cards.sheet).toEqualTypeOf<FormApplication | foundry.applications.api.ApplicationV2 | null>();
+expectTypeOf(cards.sheet).toEqualTypeOf<FormApplication.Any | foundry.applications.api.ApplicationV2.Any | null>();

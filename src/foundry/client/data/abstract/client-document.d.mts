@@ -14,13 +14,13 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * @see {@link Document#render}
    * @defaultValue `{}`
    */
-  readonly apps: Record<string, Application | foundry.applications.api.ApplicationV2>;
+  readonly apps: Record<string, Application.Any | foundry.applications.api.ApplicationV2.Any>;
 
   /**
    * A cached reference to the FormApplication instance used to configure this Document.
    * @defaultValue `null`
    */
-  protected readonly _sheet: FormApplication | null; // TODO: Replace with InstanceType<ConfiguredSheetClass<T>> once the circular reference problem has been solved
+  protected readonly _sheet: FormApplication.Any | null; // TODO: Replace with InstanceType<ConfiguredSheetClass<T>> once the circular reference problem has been solved
 
   static name: "ClientDocumentMixin";
 
@@ -78,7 +78,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
   /**
    * Lazily obtain a FormApplication instance used to configure this Document, or null if no sheet is available.
    */
-  get sheet(): FormApplication | foundry.applications.api.ApplicationV2 | null;
+  get sheet(): FormApplication.Any | foundry.applications.api.ApplicationV2.Any | null;
 
   /**
    * A boolean indicator for whether or not the current game User has at least limited visibility for this Document.

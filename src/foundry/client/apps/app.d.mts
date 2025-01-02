@@ -310,7 +310,7 @@ declare global {
      * Return the inheritance chain for this Application class up to (and including) it's base Application class.
      * @internal
      */
-    protected static _getInheritanceChain(): (typeof Application)[];
+    protected static _getInheritanceChain(): Application.AnyConstructor[];
 
     /**
      * Call all hooks for all applications in the inheritance chain.
@@ -593,7 +593,7 @@ declare global {
     /**
      * @see {@link Application.RENDER_STATES}
      */
-    type RenderState = ValueOf<(typeof Application)["RENDER_STATES"]>;
+    type RenderState = ValueOf<typeof Application.RENDER_STATES>;
   }
 }
 

@@ -63,7 +63,7 @@ declare global {
      * return options;
      * ```
      */
-    static override get defaultOptions(): (typeof Application)["defaultOptions"];
+    static override get defaultOptions(): typeof Application.defaultOptions;
 
     override getData(options?: Partial<Options>): Promise<{ src: string }>;
 

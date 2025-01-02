@@ -20,7 +20,7 @@ declare global {
      * An Array of application references which will be automatically updated when the collection content changes
      * @defaultValue `[]`
      */
-    apps: Application[];
+    apps: Application.Any[];
 
     /**
      * Initialize the DocumentCollection by constructing any initially provided Document instances
