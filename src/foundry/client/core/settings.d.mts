@@ -93,11 +93,11 @@ declare global {
      * });
      * ```
      */
-    register<N extends ClientSettings.Namespace, K extends ClientSettings.Key, T extends ClientSettings.Type>(
+    register<N extends ClientSettings.Namespace, K extends ClientSettings.KeyFor<N>, T extends ClientSettings.Type>(
       namespace: N,
       key: K,
       data: ClientSettings.Type extends T
-        ? ClientSettings.RegisterOptions<_SettingConfigRecord[`${N}.${K}`]>
+        ? ClientSettings.RegisterOptions<_SettingConfigRecord[`${N}.${K}` & keyof SettingConfig]>
         : ClientSettings.RegisterOptions<NoInfer<T>>,
     ): void;
 
@@ -137,7 +137,7 @@ declare global {
      * game.settings.get("myModule", "myClientSetting");
      * ```
      */
-    get<N extends ClientSettings.Namespace, K extends ClientSettings.Key>(
+    get<N extends ClientSettings.Namespace, K extends ClientSettings.KeyFor<N>>(
       namespace: N,
       key: K,
     ): ClientSettings.SettingInitializedType<N, K>;
@@ -160,7 +160,7 @@ declare global {
      * game.settings.set("myModule", "myClientSetting", "b");
      * ```
      */
-    set<N extends ClientSettings.Namespace, K extends ClientSettings.Key>(
+    set<N extends ClientSettings.Namespace, K extends ClientSettings.KeyFor<N>>(
       namespace: N,
       key: K,
       value: ClientSettings.SettingAssignmentType<N, K>,
@@ -170,7 +170,7 @@ declare global {
 
   namespace ClientSettings {
     type Namespace = GetNamespaces<keyof _SettingConfigRecord>;
-    type Key = GetKeys<keyof _SettingConfigRecord>;
+    type KeyFor<N extends Namespace> = GetKeys<N, keyof _SettingConfigRecord>;
 
     /**
      * A compile type is a type for a setting that only exists at compile time.
@@ -193,7 +193,9 @@ declare global {
       | (T extends readonly (infer V)[] ? typeof Array<V> : never)
       | (T extends AnyObject ? typeof Object : never);
 
-    type SettingAssignmentType<N extends Namespace, K extends Key> = ToSettingAssignmentType<ConfiguredType<N, K>>;
+    type SettingAssignmentType<N extends Namespace, K extends KeyFor<N>> = ToSettingAssignmentType<
+      ConfiguredType<N, K>
+    >;
     type ToSettingAssignmentType<T extends Type> = ReplaceUndefinedWithNull<
       | SettingType<T>
       // TODO(LukeAbby): The `fromSource` function is called with `strict` which changes how fallback behaviour works. See `ClientSettings#set`
@@ -203,7 +205,9 @@ declare global {
           : never)
     >;
 
-    type SettingInitializedType<N extends Namespace, K extends Key> = ToSettingInitializedType<ConfiguredType<N, K>>;
+    type SettingInitializedType<N extends Namespace, K extends KeyFor<N>> = ToSettingInitializedType<
+      ConfiguredType<N, K>
+    >;
     type ToSettingInitializedType<T extends Type> = ReplaceUndefinedWithNull<
       SettingType<T> | (T extends DataModel.Any ? T : never)
     >;
@@ -345,10 +349,13 @@ type PrimitiveConstructorToSettingType<T extends PRIMITIVE_TYPES[number]> = T ex
     ? AnyObject
     : ReturnType<T>;
 
+// The `& keyof SettingConfig` is necessary because otherwise the fact that `K` depends on `N`
+// will confuse TypeScript and make it think that `${N}.${K}` can be invalid keys like
+// "core.moduleSetting" but in reality that would be disallowed by the dependent constraint of `K`.
 type ConfiguredType<
   N extends ClientSettings.Namespace,
-  K extends ClientSettings.Key,
-> = _SettingConfigRecord[`${N}.${K}`];
+  K extends ClientSettings.KeyFor<N>,
+> = _SettingConfigRecord[`${N}.${K}` & keyof SettingConfig];
 
 type SettingType<T extends ClientSettings.Type> =
   // Note(LukeAbby): This isn't written as `T extends ClientSettings.TypeScriptType ? T : never` because then types like `DataField.Any` would be matched.
@@ -361,7 +368,9 @@ type SettingType<T extends ClientSettings.Type> =
 type ReplaceUndefinedWithNull<T> = T extends undefined ? null : T;
 
 type GetNamespaces<SettingPath extends PropertyKey> = SettingPath extends `${infer Scope}.${string}` ? Scope : never;
-type GetKeys<SettingPath extends PropertyKey> = SettingPath extends `${string}.${infer Name}` ? Name : never;
+type GetKeys<N extends string, SettingPath extends PropertyKey> = SettingPath extends `${N}.${infer Name}`
+  ? Name
+  : never;
 
 type _SettingConfigRecord = ConformRecord<
   // Refers to the deprecated interface so that merging works both ways.
