@@ -7,7 +7,6 @@ import type {
   Merge,
   RemoveIndexSignatures,
   SimpleMerge,
-  InstanceType,
 } from "../../../utils/index.d.mts";
 import type { SchemaField } from "../data/fields.d.mts";
 import type BaseUser from "../documents/user.d.mts";
@@ -119,7 +118,7 @@ declare namespace TypeDataModel {
   type Any = TypeDataModel<any, any, any, any>;
   type AnyConstructor = typeof AnyTypeDataModel;
 
-  type ConfigurationFailure = InstanceType<ConfigurationFailureClass>;
+  type ConfigurationFailureInstance = ConfigurationFailure;
   type ConfigurationFailureClass = typeof ConfigurationFailure;
 
   // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98

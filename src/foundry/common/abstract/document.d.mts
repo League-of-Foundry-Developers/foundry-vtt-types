@@ -950,6 +950,9 @@ declare namespace Document {
   /** Any Document, except for Settings */
   type Any = AnyDocument;
 
+  type ConfigurationFailureClass = typeof ConfigurationFailure;
+  type ConfigurationFailureInstance = ConfigurationFailure;
+
   type Type =
     | "ActiveEffect"
     | "ActorDelta"

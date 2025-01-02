@@ -164,8 +164,8 @@ export type InterfaceToObject<T extends object> = {
  * When a value does not conform it is replaced with `never` to indicate that
  * there is an issue.
  */
-export type ConformRecord<T extends object, V> = {
-  [K in keyof T]: T[K] extends V ? T[K] : never;
+export type ConformRecord<T extends object, V, D extends V = V> = {
+  [K in keyof T]: T[K] extends V ? T[K] : D;
 };
 
 /**
@@ -979,3 +979,43 @@ export type ShapeWithIndexSignature<
  * The use cases for this are extremely advanced. In essence they have to do with breaking cycles in evaluation.
  */
 export type Defer<T> = [T][T extends any ? 0 : never];
+
+export type MustBeValidUuid<Uuid extends string, Type extends Document.Type = Document.Type> = _MustBeValidUuid<
+  Uuid,
+  Uuid,
+  Type
+>;
+
+/**
+ * Quotes a string for human readability. This is useful for error messages.
+ *
+ * @example
+ * ```ts
+ * type Quote1 = Quote<"foo">;
+ * //   ^ "'foo'"
+ *
+ * type Quote2 = Quote<"can't">;
+ * //   ^ "'can\\'t'"
+ * ```
+ */
+export type Quote<T extends string> = T extends `${string}'${string}` ? `'${Escape<T>}'` : `'${T}'`;
+
+type Escape<T extends string> = T extends `${infer Prefix}'${infer Suffix}` ? `${Prefix}\\'${Escape<Suffix>}` : T;
+
+declare class InvalidUuid<OriginalUuid extends string> {
+  #invalidUuid: true;
+
+  message: `The UUID ${Quote<OriginalUuid>} is invalid .`;
+}
+
+type _MustBeValidUuid<
+  Uuid extends string,
+  OriginalUuid extends string,
+  Type extends Document.Type,
+> = Uuid extends `${string}.${string}.${infer Rest}`
+  ? _MustBeValidUuid<Rest, OriginalUuid, Type>
+  : Uuid extends `${string}.${string}`
+    ? Uuid extends `${Type}.${string}`
+      ? OriginalUuid
+      : InvalidUuid<OriginalUuid>
+    : `${Type}.${string}` | `${string}.${string}.${Type}.${string}`;
