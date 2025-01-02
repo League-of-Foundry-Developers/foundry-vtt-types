@@ -153,4 +153,13 @@ declare global {
      */
     protected _onConfigureCombatant(li: JQuery): void;
   }
+
+  namespace CombatTracker {
+    type Any = AnyCombatTracker;
+    type AnyConstructor = typeof AnyCombatTracker;
+  }
+}
+
+declare abstract class AnyCombatTracker extends CombatTracker<ApplicationOptions> {
+  constructor(arg0: never, ...args: never[]);
 }

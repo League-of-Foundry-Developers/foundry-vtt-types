@@ -32,6 +32,11 @@ declare global {
   }
 
   namespace TileHUD {
-    type Any = TileHUD<any>;
+    type Any = AnyTileHUD;
+    type AnyConstructor = typeof AnyTileHUD;
   }
+}
+
+declare abstract class AnyTileHUD extends TileHUD<ApplicationOptions> {
+  constructor(arg0: never, ...args: never[]);
 }

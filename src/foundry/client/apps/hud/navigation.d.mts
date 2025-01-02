@@ -84,7 +84,8 @@ declare global {
   }
 
   namespace SceneNavigation {
-    type Any = SceneNavigation<any>;
+    type Any = AnySceneNavigation;
+    type AnyConstructor = typeof AnySceneNavigation;
 
     interface SceneData {
       id: string;
@@ -113,4 +114,8 @@ declare global {
       pct: number;
     }
   }
+}
+
+declare abstract class AnySceneNavigation extends SceneNavigation<ApplicationOptions> {
+  constructor(arg0: never, ...args: never[]);
 }

@@ -46,4 +46,13 @@ declare global {
       | (IdOpt extends false ? "_id" : never)
     >;
   }
+
+  namespace Actors {
+    type Any = AnyActors;
+    type AnyConstructor = typeof AnyActors;
+  }
+}
+
+declare abstract class AnyActors extends Actors {
+  constructor(arg0: never, ...args: never[]);
 }

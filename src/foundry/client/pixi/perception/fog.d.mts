@@ -127,4 +127,13 @@ declare global {
      */
     get resolution(): CanvasVisibility["textureConfiguration"];
   }
+
+  namespace FogManager {
+    type Any = AnyFogManager;
+    type AnyConstructor = typeof AnyFogManager;
+  }
+}
+
+declare abstract class AnyFogManager extends FogManager {
+  constructor(arg0: never, ...args: never[]);
 }

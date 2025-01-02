@@ -61,4 +61,13 @@ declare global {
      */
     protected static _showEntry(uuid: string, force?: boolean): Promise<void>;
   }
+
+  namespace Journal {
+    type Any = AnyJournal;
+    type AnyConstructor = typeof AnyJournal;
+  }
+}
+
+declare abstract class AnyJournal extends Journal {
+  constructor(arg0: never, ...args: never[]);
 }

@@ -3,7 +3,7 @@ import type BaseLightSource from "./base-light-source.d.mts";
 /**
  * A specialized subclass of the BaseLightSource which is used to render global light source linked to the scene.
  */
-export default class GlobalLightSource extends BaseLightSource {
+declare class GlobalLightSource extends BaseLightSource {
   /** @defaultValue `"GlobalLight"` */
   static override sourceType: string;
 
@@ -49,3 +49,14 @@ export default class GlobalLightSource extends BaseLightSource {
 
   override _updateCommonUniforms(shader: AbstractBaseShader): void;
 }
+
+declare namespace GlobalLightSource {
+  type Any = AnyGlobalLightSource;
+  type AnyConstructor = typeof AnyGlobalLightSource;
+}
+
+declare abstract class AnyGlobalLightSource extends GlobalLightSource {
+  constructor(arg0: never, ...args: never[]);
+}
+
+export default GlobalLightSource;

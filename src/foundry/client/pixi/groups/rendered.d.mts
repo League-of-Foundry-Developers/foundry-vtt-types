@@ -15,4 +15,13 @@ declare global {
      */
     static override tearDownChildren: boolean;
   }
+
+  namespace RenderedCanvasGroup {
+    type Any = AnyRenderedCanvasGroup;
+    type AnyConstructor = typeof AnyRenderedCanvasGroup;
+  }
+}
+
+declare abstract class AnyRenderedCanvasGroup extends RenderedCanvasGroup {
+  constructor(arg0: never, ...args: never[]);
 }

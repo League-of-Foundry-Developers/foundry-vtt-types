@@ -249,7 +249,10 @@ declare global {
   }
 
   namespace PlaylistDirectory {
-    type PlaylistData = Document.ToObjectFalseType<Playlist.ConfiguredInstance> & {
+    type Any = AnyPlaylistDirectory;
+    type AnyConstructor = typeof AnyPlaylistDirectory;
+
+    interface PlaylistData extends Document.ToObjectFalseType<Playlist.ConfiguredInstance> {
       modeTooltip: string;
       modeIcon: string;
       disabled: boolean;
@@ -257,9 +260,9 @@ declare global {
       css: string;
       controlCSS: string;
       sounds: SoundData[];
-    };
+    }
 
-    type SoundData = Document.ToObjectFalseType<PlaylistSound.ConfiguredInstance> & {
+    interface SoundData extends Document.ToObjectFalseType<PlaylistSound.ConfiguredInstance> {
       playlistId: string | null;
       css: string;
       controlCSS: string;
@@ -270,6 +273,10 @@ declare global {
       lvolume?: number;
       currentTime?: string;
       durationTime?: string;
-    };
+    }
   }
+}
+
+declare abstract class AnyPlaylistDirectory extends PlaylistDirectory<DocumentDirectoryOptions> {
+  constructor(arg0: never, ...args: never[]);
 }

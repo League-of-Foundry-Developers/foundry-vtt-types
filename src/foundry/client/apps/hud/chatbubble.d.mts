@@ -98,6 +98,9 @@ declare global {
   }
 
   namespace ChatBubbles {
+    type Any = AnyChatBubbles;
+    type AnyConstructor = typeof AnyChatBubbles;
+
     interface Dimensions {
       width: number;
       height: number;
@@ -110,4 +113,8 @@ declare global {
       requireVisible: false;
     }
   }
+}
+
+declare abstract class AnyChatBubbles extends ChatBubbles {
+  constructor(arg0: never, ...args: never[]);
 }

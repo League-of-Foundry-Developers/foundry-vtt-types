@@ -102,4 +102,13 @@ declare global {
       pack: CompendiumCollection<CompendiumCollection.Metadata>,
     ): Promise<CompendiumCollection<CompendiumCollection.Metadata> | void>;
   }
+
+  namespace CompendiumDirectory {
+    type Any = AnyCompendiumDirectory;
+    type AnyConstructor = typeof AnyCompendiumDirectory;
+  }
+}
+
+declare abstract class AnyCompendiumDirectory extends CompendiumDirectory<ApplicationOptions> {
+  constructor(...args: ConstructorParameters<typeof CompendiumDirectory>);
 }

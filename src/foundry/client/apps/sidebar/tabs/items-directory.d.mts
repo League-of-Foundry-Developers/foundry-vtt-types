@@ -11,4 +11,13 @@ declare global {
 
     protected override _getEntryContextOptions(): ContextMenuEntry[];
   }
+
+  namespace ItemDirectory {
+    type Any = AnyItemDirectory;
+    type AnyConstructor = typeof AnyItemDirectory;
+  }
+}
+
+declare abstract class AnyItemDirectory extends ItemDirectory {
+  constructor(arg0: never, ...args: never[]);
 }

@@ -65,6 +65,9 @@ declare global {
   }
 
   namespace MainMenu {
+    type Any = AnyMainMenu;
+    type AnyConstructor = typeof AnyMainMenu;
+
     interface MenuItem {
       label: string;
       icon: string;
@@ -74,4 +77,8 @@ declare global {
 
     type MenuStructure = Record<string, MenuItem>;
   }
+}
+
+declare abstract class AnyMainMenu extends MainMenu {
+  constructor(arg0: never, ...args: never[]);
 }

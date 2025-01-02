@@ -211,8 +211,11 @@ declare class Die extends DiceTerm {
 }
 
 declare namespace Die {
+  type Any = AnyDie;
+  type AnyConstructor = typeof AnyDie;
+
   interface TermData extends DiceTerm.TermData {
-    modifiers: Array<keyof (typeof Die)["MODIFIERS"]>;
+    modifiers: Array<keyof typeof Die.MODIFIERS>;
   }
 
   interface Modifiers {
@@ -236,6 +239,10 @@ declare namespace Die {
     sf: "subtractFailures";
     ms: "marginSuccess";
   }
+}
+
+declare abstract class AnyDie extends Die {
+  constructor(arg0: never, ...args: never[]);
 }
 
 export default Die;

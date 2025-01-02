@@ -11,4 +11,13 @@ declare global {
   class Items extends WorldCollection<typeof foundry.documents.BaseItem, "Items"> {
     static documentName: "Item";
   }
+
+  namespace Items {
+    type Any = AnyItems;
+    type AnyConstructor = typeof AnyItems;
+  }
+}
+
+declare abstract class AnyItems extends Items {
+  constructor(arg0: never, ...args: never[]);
 }

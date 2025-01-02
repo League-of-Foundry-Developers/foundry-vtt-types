@@ -54,6 +54,9 @@ declare global {
   }
 
   namespace EnvironmentCanvasGroup {
+    type Any = AnyEnvironmentCanvasGroup;
+    type AnyConstructor = typeof AnyEnvironmentCanvasGroup;
+
     interface InitializeConfig {
       /** The background canvas color */
       backgroundColor: Color.Source;
@@ -77,4 +80,8 @@ declare global {
       environment: SceneEnvironmentData;
     }
   }
+}
+
+declare abstract class AnyEnvironmentCanvasGroup extends EnvironmentCanvasGroup {
+  constructor(arg0: never, ...args: never[]);
 }

@@ -71,4 +71,13 @@ declare global {
       },
     ): Promise<PreciseText | null>;
   }
+
+  namespace InterfaceCanvasGroup {
+    type Any = AnyInterfaceCanvasGroup;
+    type AnyConstructor = typeof AnyInterfaceCanvasGroup;
+  }
+}
+
+declare abstract class AnyInterfaceCanvasGroup extends InterfaceCanvasGroup {
+  constructor(arg0: never, ...args: never[]);
 }

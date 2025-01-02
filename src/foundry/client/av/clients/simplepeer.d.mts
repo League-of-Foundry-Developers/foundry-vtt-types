@@ -152,4 +152,13 @@ declare global {
 
     override updateLocalStream(): Promise<void>;
   }
+
+  namespace SimplePeerAVClient {
+    type Any = AnySimplePeerAVClient;
+    type AnyConstructor = typeof AnySimplePeerAVClient;
+  }
+}
+
+declare abstract class AnySimplePeerAVClient extends SimplePeerAVClient {
+  constructor(arg0: never, ...args: never[]);
 }

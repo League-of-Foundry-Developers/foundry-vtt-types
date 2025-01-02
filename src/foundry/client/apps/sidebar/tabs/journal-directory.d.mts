@@ -10,4 +10,13 @@ declare global {
 
     protected override _getEntryContextOptions(): ContextMenuEntry[];
   }
+
+  namespace JournalDirectory {
+    type Any = AnyJournalDirectory;
+    type AnyConstructor = typeof AnyJournalDirectory;
+  }
+}
+
+declare abstract class AnyJournalDirectory extends JournalDirectory {
+  constructor(arg0: never, ...args: never[]);
 }

@@ -15,4 +15,13 @@ declare global {
      */
     static override tearDownChildren: boolean;
   }
+
+  namespace OverlayCanvasGroup {
+    type Any = AnyOverlayCanvasGroup;
+    type AnyConstructor = typeof AnyOverlayCanvasGroup;
+  }
+}
+
+declare abstract class AnyOverlayCanvasGroup extends OverlayCanvasGroup {
+  constructor(arg0: never, ...args: never[]);
 }

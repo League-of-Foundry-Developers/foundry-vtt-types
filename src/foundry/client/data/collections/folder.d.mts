@@ -30,4 +30,13 @@ declare global {
 
     render(force?: boolean, context?: ApplicationOptions): void;
   }
+
+  namespace Folders {
+    type Any = AnyFolders;
+    type AnyConstructor = typeof AnyFolders;
+  }
+}
+
+declare abstract class AnyFolders extends Folders {
+  constructor(arg0: never, ...args: never[]);
 }
