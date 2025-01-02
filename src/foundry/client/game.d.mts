@@ -470,8 +470,10 @@ declare class InternalGame<RunEvents extends InitializationEvent> {
 
   /**
    * The currently connected User entity, or null if Users is not yet initialized
+   *
+   * @remarks Initialized just before the `"setup"` hook event.
    */
-  get user(): Document.Stored<User.ConfiguredInstance> | null;
+  get user(): GameInitialized<Document.Stored<User.ConfiguredInstance>, "setup", RunEvents, null>;
 
   /**
    * A convenience accessor for the currently viewed Combat encounter
