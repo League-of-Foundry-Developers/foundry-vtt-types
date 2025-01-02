@@ -4,7 +4,7 @@ import type * as utils from "../utils/index.d.mts";
 /**
  * @deprecated import from `fvtt-types/utils` instead.
  */
-export type DeepPartial<T> = utils.DeepPartial<T>;
+export type DeepPartial<T extends object> = utils.DeepPartial<T>;
 
 /**
  * @deprecated import from `fvtt-types/utils` instead.

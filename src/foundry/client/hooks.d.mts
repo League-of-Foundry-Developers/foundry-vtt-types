@@ -3,7 +3,6 @@ import type { DeepPartial, EmptyObject, InstanceType, ValueOf } from "../../util
 import type Document from "../common/abstract/document.d.mts";
 import type { EffectChangeData } from "../common/documents/_types.d.mts";
 import type { ProseMirrorDropDown } from "../common/prosemirror/menu.d.mts";
-import type { DropData } from "./data/abstract/client-document.d.mts";
 
 // eslint-disable-next-line import/no-named-as-default
 import type ProseMirrorMenu from "../common/prosemirror/menu.d.mts";
@@ -209,7 +208,7 @@ declare global {
        * @remarks An explicit return value of `false` prevents the Document being created.
        * @see {@link Hotbar#_onDrop}
        */
-      hotbarDrop: (hotbar: Hotbar, data: DropData<Macro.ConfiguredInstance>, slot: number) => boolean | void;
+      hotbarDrop: (hotbar: Hotbar, data: Document.DropData<Macro.ConfiguredInstance>, slot: number) => boolean | void;
 
       /**
        * A hook event that fires when the SceneNavigation menu is expanded or collapsed.
