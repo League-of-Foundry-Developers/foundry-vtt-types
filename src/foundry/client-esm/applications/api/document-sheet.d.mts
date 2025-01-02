@@ -49,7 +49,9 @@ declare class DocumentSheetV2<
 > extends ApplicationV2<RenderContext, Configuration, RenderOptions> {
   constructor(options: DeepPartial<Configuration> & { document: Document });
 
-  static DEFAULT_OPTIONS: DeepPartial<DocumentSheetV2.Configuration>;
+  // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
+  // Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.
+  static DEFAULT_OPTIONS: DeepPartial<DocumentSheetV2.Configuration> & object;
 
   get document(): Document;
 
