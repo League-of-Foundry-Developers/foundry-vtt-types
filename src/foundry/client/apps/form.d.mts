@@ -360,11 +360,10 @@ declare global {
   > extends FormApplication<Options, ConcreteDocument> {
     /**
      * @param object  - A Document instance which should be managed by this form.
-     *                  (default: `{}`)
      * @param options - Optional configuration parameters for how the form behaves.
      *                  (default: `{}`)
      */
-    constructor(object?: ConcreteDocument, options?: Partial<Options>);
+    constructor(object: ConcreteDocument, options?: Partial<Options>);
 
     /** The list of handlers for secret block functionality. */
     protected _secrets: HTMLSecret<ConcreteDocument>[];
