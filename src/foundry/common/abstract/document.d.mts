@@ -1397,6 +1397,23 @@ declare namespace Document {
   type ConfiguredObjectClassFor<Name extends Document.Type> = GetKey<GetKey<CONFIG, Name>, "objectClass">;
 
   type ConfiguredLayerClassFor<Name extends Document.Type> = GetKey<GetKey<CONFIG, Name>, "layerClass">;
+
+  type DropData<T extends Document.Any> = T extends { id: string | undefined }
+    ? DropData.Data<T> & DropData.UUID
+    : DropData.Data<T>;
+
+  namespace DropData {
+    type Any = DropData<any>;
+
+    interface Data<T extends Document.Any> {
+      type: T["documentName"];
+      data: T["_source"];
+    }
+
+    interface UUID {
+      uuid: string;
+    }
+  }
 }
 
 export type Operation = "create" | "update" | "delete";

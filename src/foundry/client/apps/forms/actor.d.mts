@@ -1,5 +1,5 @@
 import type { GetDataReturnType, MaybePromise } from "../../../../utils/index.d.mts";
-import type { DropData as ClientDocumentMixinDropData } from "../../data/abstract/client-document.d.mts";
+import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
   /**
@@ -151,7 +151,7 @@ declare global {
         type: "Actor";
       }
 
-      type Item = ClientDocumentMixinDropData<Item.ConfiguredInstance> & {
+      type Item = Document.DropData<Item.ConfiguredInstance> & {
         type: "Item";
       };
 

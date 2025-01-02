@@ -367,7 +367,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
   /**
    * Serialize salient information about this Document when dragging it.
    */
-  toDragData(): DropData<BaseDocument>;
+  toDragData(): Document.DropData<Document.Internal.Instance.Complete<BaseDocument>>;
 
   /**
    * A helper function to handle obtaining the relevant Document from dropped data provided via a DataTransfer event.
@@ -382,7 +382,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    */
   static fromDropData<T extends Document.AnyConstructor>(
     this: T,
-    data: DropData<InstanceType<NoInfer<T>>>,
+    data: Document.DropData<InstanceType<NoInfer<T>>>,
     options?: FromDropDataOptions,
   ): Promise<Document.ToConfiguredInstance<T> | undefined>;
 
@@ -606,6 +606,9 @@ declare const _ClientDocument: _ClientDocumentType;
 type ClientDocumentMixinBaseClass = Document.Internal.Constructor;
 
 declare global {
+  /**
+   * This class does not really exist at runtime. It's here for types only.
+   */
   class ClientDocument extends _ClientDocument {
     // This may have be removed at some point in the future if it causes issues but the idea is to
     // prevent operations like `new ClientDocument()` or `extends ClientDocument` because this does
@@ -694,22 +697,8 @@ declare global {
   }
 }
 
-export type DropData<T extends Document.Internal.Instance.Any> = T extends { id: string | undefined }
-  ? InternalData<T> & DropData.UUID
-  : InternalData<T>;
-
-declare namespace DropData {
-  type Any = DropData<any>;
-
-  interface Data<T extends Document.Any> {
-    type: T["documentName"];
-    data: T["_source"];
-  }
-
-  interface UUID {
-    uuid: string;
-  }
-}
+/** @deprecated {@link Document.DropData | `Document.DropData`} */
+export type DropData<T extends Document.Any> = Document.DropData<T>;
 
 // This is yet another `AnyDocument` type.
 // It exists specifically because the `Document.AnyConstructor` type is too safe to be merged in with a mixin.
@@ -720,8 +709,6 @@ declare namespace DropData {
 declare class AnyDocument extends Document<any, {}, any> {
   constructor(...args: any[]);
 }
-
-type InternalData<T extends Document.Internal.Instance.Any> = DropData.Data<Document.Internal.Instance.Complete<T>>;
 
 interface FromDropDataOptions {
   /**
