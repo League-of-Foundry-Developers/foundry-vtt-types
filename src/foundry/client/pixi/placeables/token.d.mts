@@ -1,10 +1,22 @@
-import type { NullishProps, RequiredProps , InstanceType } from "../../../../utils/index.d.mts";
+import type { NullishProps, RequiredProps, InstanceType } from "../../../../utils/index.d.mts";
+import type BaseToken from "../../../common/documents/token.d.mts";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
   namespace Token {
     type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof Token>;
     type ConfiguredInstance = InstanceType<ConfiguredClass>;
+
+    type Schema = BaseToken.Schema;
+    type Parent = BaseToken.Parent;
+
+    type Metadata = BaseToken.Metadata;
+
+    type SchemaField = BaseToken.SchemaField;
+    type ConstructorData = BaseToken.ConstructorData;
+    type UpdateData = BaseToken.UpdateData;
+    type Properties = BaseToken.Properties;
+    type Source = BaseToken.Source;
 
     interface RenderFlags extends PlaceableObject.RenderFlags {
       redrawEffects: boolean;
