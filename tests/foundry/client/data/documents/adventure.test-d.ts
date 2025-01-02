@@ -16,7 +16,7 @@ expectTypeOf(adventure.import()).toEqualTypeOf<Promise<AdventureImportResult>>()
 expectTypeOf(adventure.prepareImport()).toEqualTypeOf<Promise<AdventureImportData>>();
 expectTypeOf(adventure.importContent()).toEqualTypeOf<Promise<AdventureImportResult>>();
 
-expectTypeOf(adventure.sheet).toEqualTypeOf<FormApplication | foundry.applications.api.ApplicationV2 | null>();
+expectTypeOf(adventure.sheet).toEqualTypeOf<FormApplication.Any | foundry.applications.api.ApplicationV2.Any | null>();
 
 declare const source: fields.SchemaField.InnerAssignmentType<DataSchema>;
 

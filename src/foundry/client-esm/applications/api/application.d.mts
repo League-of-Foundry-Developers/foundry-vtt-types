@@ -438,7 +438,7 @@ declare class ApplicationV2<
    * Iterate over the inheritance chain of this Application.
    * The chain includes this Application itself and all parents until the base application is encountered.
    */
-  static inheritanceChain(): Generator<typeof ApplicationV2>;
+  static inheritanceChain(): Generator<ApplicationV2.AnyConstructor>;
 
   /**
    * Initialize configuration options for the Application instance.

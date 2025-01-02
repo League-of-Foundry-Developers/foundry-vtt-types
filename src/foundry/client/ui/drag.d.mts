@@ -14,7 +14,7 @@ declare global {
      */
     constructor(app: Draggable["app"], element: JQuery, handle: Draggable["handle"], resizable?: R);
 
-    app: Application;
+    app: Application.Any;
 
     element: HTMLElement;
 

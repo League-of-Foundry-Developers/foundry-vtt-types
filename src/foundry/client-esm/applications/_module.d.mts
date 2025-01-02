@@ -15,7 +15,7 @@ export * as ui from "./ui/_module.mjs";
 /**
  * A registry of currently rendered ApplicationV2 instances.
  */
-export const instances: Map<string, foundry.applications.api.ApplicationV2>;
+export const instances: Map<string, foundry.applications.api.ApplicationV2.Any>;
 
 /**
  * Parse an HTML string, returning a processed HTMLElement or HTMLCollection.

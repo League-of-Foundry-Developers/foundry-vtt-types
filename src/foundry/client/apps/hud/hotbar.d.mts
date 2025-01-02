@@ -153,7 +153,7 @@ declare global {
      * @param uuid - The Document UUID to display
      * @remarks Returns a ui notification number if doc could not be found
      */
-    static toggleDocumentSheet(uuid: string): Promise<void> | Application | number;
+    static toggleDocumentSheet(uuid: string): Promise<void> | Application.Any | number;
   }
 
   namespace Hotbar {

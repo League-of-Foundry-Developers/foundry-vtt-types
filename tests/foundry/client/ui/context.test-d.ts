@@ -24,7 +24,7 @@ expectTypeOf(contextMenu.onOpen).toEqualTypeOf<ContextMenu.ContextMenuCallback>(
 expectTypeOf(contextMenu.onClose).toEqualTypeOf<ContextMenu.ContextMenuCallback>();
 expectTypeOf(contextMenu.menu).toEqualTypeOf<JQuery>();
 
-declare const app: foundry.applications.api.ApplicationV2;
+declare const app: foundry.applications.api.ApplicationV2.Any;
 expectTypeOf(ContextMenu.create(app, new HTMLElement(), ".class", [])).toEqualTypeOf<ContextMenu>();
 expectTypeOf(contextMenu.bind()).toEqualTypeOf<void>();
 expectTypeOf(contextMenu.close()).toEqualTypeOf<Promise<void>>();

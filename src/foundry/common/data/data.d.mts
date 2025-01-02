@@ -565,7 +565,7 @@ declare class PrototypeToken extends DataModel<PrototypeToken.Schema, any> {
   declare parent: PrototypeToken.Parent;
 
   /** @defaultValue `{}` */
-  apps: Record<string, Application>;
+  apps: Record<string, Application.Any>;
 
   static override defineSchema(): PrototypeToken.Schema;
 

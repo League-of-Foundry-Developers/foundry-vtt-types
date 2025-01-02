@@ -812,7 +812,7 @@ declare global {
      * @remarks This is called by {@link Hooks.callAll}.
      * @see {@link Application#_render}
      */
-    type RenderApplication<A extends Application = Application> = (
+    type RenderApplication<A extends Application.Any = Application.Any> = (
       app: A,
       html: JQuery,
       data: ReturnType<A["getData"]> extends Promise<infer T> ? T : ReturnType<A["getData"]>,
@@ -828,7 +828,7 @@ declare global {
      * @remarks This is called by {@link Hooks.call}.
      * @see {@link Application#_getHeaderButtons}
      */
-    type GetApplicationHeaderButtons<A extends Application = Application> = (
+    type GetApplicationHeaderButtons<A extends Application.Any = Application.Any> = (
       app: A,
       buttons: Application.HeaderButton[],
     ) => boolean | void;
@@ -842,7 +842,7 @@ declare global {
      * @remarks This is called by {@link Hooks.call}.
      * @see {@link Application#close}
      */
-    type CloseApplication<A extends Application = Application> = (app: A, html: JQuery) => boolean | void;
+    type CloseApplication<A extends Application.Any = Application.Any> = (app: A, html: JQuery) => boolean | void;
 
     /** EffectsCanvasGroup */
 

@@ -29,7 +29,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): (typeof FormApplication)["defaultOptions"];
+    static override get defaultOptions(): typeof FormApplication.defaultOptions;
 
     protected override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
