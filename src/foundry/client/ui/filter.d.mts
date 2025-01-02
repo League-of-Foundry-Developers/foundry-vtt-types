@@ -79,7 +79,7 @@ declare global {
     /**
      * A callback function to trigger when the tab is changed
      */
-    callback: (event: KeyboardEvent, query: string, rgx: RegExp, content: string) => void;
+    callback: (event: KeyboardEvent, query: string, rgx: RegExp, content: HTMLElement | null) => void;
 
     /**
      * The regular expression corresponding to the query that should be matched against
