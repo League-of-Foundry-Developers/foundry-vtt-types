@@ -697,9 +697,6 @@ declare global {
   }
 }
 
-/** @deprecated {@link Document.DropData | `Document.DropData`} */
-export type DropData<T extends Document.Any> = Document.DropData<T>;
-
 // This is yet another `AnyDocument` type.
 // It exists specifically because the `Document.AnyConstructor` type is too safe to be merged in with a mixin.
 // The `arg0: never, ...args: never[]` trick trips up the base constructor check and so this one with an actual `...args: any[]` one is used instead.
