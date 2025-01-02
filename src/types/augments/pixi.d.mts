@@ -149,6 +149,26 @@ declare global {
   }
 }
 
+declare module "@pixi/events" {
+  interface FederatedPointerEvent {
+    /**
+     * The angle in radians of a pointer or stylus measuring the vertical angle between
+     * the device's surface to the pointer or stylus.
+     * A stylus at 0 degrees would be directly parallel whereas at π/2 degrees it would be perpendicular.
+     * @see https://developer.mozilla.org/docs/Web/API/PointerEvent/altitudeAngle)
+     */
+    altitudeAngle: number;
+
+    /**
+     * The angle in radians of a pointer or stylus measuring an arc from the X axis of the device to
+     * the pointer or stylus projected onto the screen's plane.
+     * A stylus at 0 degrees would be pointing to the "0 o'clock" whereas at π/2 degrees it would be pointing at "6 o'clock".
+     * @see https://developer.mozilla.org/docs/Web/API/PointerEvent/azimuthAngle)
+     */
+    azimuthAngle: number;
+  }
+}
+
 declare module "pixi.js" {
   export import LegacyGraphics = _PIXI.Graphics;
 
