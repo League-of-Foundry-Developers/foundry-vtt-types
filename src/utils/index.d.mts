@@ -486,15 +486,24 @@ export type UnionToIntersection<U> = (U extends unknown ? (arg: U) => void : nev
 // Helper Types
 
 /**
- * Recursively sets keys of an object to optional. Used primarily for update methods
- * @internal
+ * Recursively sets keys of an object to optional. Used primarily for update methods.
+ *
+ * Note: This function is intended to work with plain objects. It takes any object only because
+ * otherwise it makes it more difficult to pass in interfaces.
+ *
+ * Its behavior is unspecified when run on a non-plain object.
  */
-export type DeepPartial<T> = T extends unknown
-  ? IsObject<T> extends true
-    ? {
-        [P in keyof T]?: DeepPartial<T[P]>;
-      }
-    : T
+// Allowing passing any `object` is done because it's more convenient for the end user.
+// Note that `{}` should always be assignable to `DeepPartial<T>`.
+export type DeepPartial<T extends object> = {
+  [K in keyof T]?: _DeepPartial<T[K]>;
+};
+
+// This type has to be factored out for distributivity.
+type _DeepPartial<T> = T extends AnyObject
+  ? T extends AnyArray | AnyFunction | AnyConstructor
+    ? T
+    : DeepPartial<T>
   : T;
 
 /**

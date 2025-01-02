@@ -7,10 +7,10 @@ declare namespace HandlebarsApplication {
     Instance extends ApplicationV2.Internal.Instance<infer Configuration, infer _1, infer _2> ? Configuration : unknown;
 
   type RenderOptionsFor<Instance extends HandlebarsApplication> =
-    Instance extends ApplicationV2.Internal.Instance<infer _1, infer RenderOptions, infer _2> ? RenderOptions : unknown;
+    Instance extends ApplicationV2.Internal.Instance<infer _1, infer RenderOptions, infer _2> ? RenderOptions : object;
 
   type RenderContextFor<Instance extends HandlebarsApplication> =
-    Instance extends ApplicationV2.Internal.Instance<infer _1, infer _2, infer RenderContext> ? RenderContext : unknown;
+    Instance extends ApplicationV2.Internal.Instance<infer _1, infer _2, infer RenderContext> ? RenderContext : object;
 }
 
 /**
