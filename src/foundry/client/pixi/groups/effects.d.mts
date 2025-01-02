@@ -181,6 +181,15 @@ declare global {
          */
         duration?: number;
       },
-    ): ReturnType<(typeof CanvasAnimation)["animate"]>;
+    ): ReturnType<typeof CanvasAnimation.animate>;
   }
+
+  namespace EffectsCanvasGroup {
+    type Any = AnyEffectsCanvasGroup;
+    type AnyConstructor = typeof AnyEffectsCanvasGroup;
+  }
+}
+
+declare abstract class AnyEffectsCanvasGroup extends EffectsCanvasGroup {
+  constructor(arg0: never, ...args: never[]);
 }

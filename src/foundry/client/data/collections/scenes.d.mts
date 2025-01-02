@@ -65,4 +65,13 @@ declare global {
       | ClientDocument.OmitProperty<StateOpt, "active">
     >;
   }
+
+  namespace Scenes {
+    type Any = AnyScenes;
+    type AnyConstructor = typeof AnyScenes;
+  }
+}
+
+declare abstract class AnyScenes extends Scenes {
+  constructor(arg0: never, ...args: never[]);
 }

@@ -90,4 +90,13 @@ declare class SceneManager {
   protected _deactivateHooks(): void;
 }
 
+declare namespace SceneManager {
+  type Any = AnySceneManager;
+  type AnyConstructor = typeof AnySceneManager;
+}
+
+declare abstract class AnySceneManager extends SceneManager {
+  constructor(arg0: never, ...args: never[]);
+}
+
 export default SceneManager;

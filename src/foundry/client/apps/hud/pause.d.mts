@@ -23,10 +23,15 @@ declare global {
   }
 
   namespace Pause {
-    type Any = Pause<any>;
+    type Any = AnyPause;
+    type AnyConstructor = typeof AnyPause;
 
     interface PauseData {
       paused: boolean;
     }
   }
+}
+
+declare abstract class AnyPause extends Pause<ApplicationOptions> {
+  constructor(arg0: never, ...args: never[]);
 }

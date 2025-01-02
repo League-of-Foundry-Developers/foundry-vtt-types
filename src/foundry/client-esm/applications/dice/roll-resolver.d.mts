@@ -87,12 +87,23 @@ declare class RollResolver<
 }
 
 declare namespace RollResolver {
+  type Any = AnyRollResolver;
+  type AnyConstructor = typeof AnyRollResolver;
+
   interface DiceTermFulfillmentDescriptor {
     id: string;
     term: foundry.dice.terms.DiceTerm;
     method: string;
     isNew?: boolean | undefined;
   }
+}
+
+declare abstract class AnyRollResolver extends RollResolver<
+  AnyObject,
+  ApplicationV2.Configuration,
+  ApplicationV2.RenderOptions
+> {
+  constructor(arg0: never, ...args: never[]);
 }
 
 export default RollResolver;

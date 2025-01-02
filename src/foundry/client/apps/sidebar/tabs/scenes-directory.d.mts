@@ -31,4 +31,13 @@ declare global {
 
     protected override _getFolderContextOptions(): ContextMenuEntry[];
   }
+
+  namespace SceneDirectory {
+    type Any = AnySceneDirectory;
+    type AnyConstructor = typeof AnySceneDirectory;
+  }
+}
+
+declare abstract class AnySceneDirectory extends SceneDirectory {
+  constructor(arg0: never, ...args: never[]);
 }

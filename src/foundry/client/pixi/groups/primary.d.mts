@@ -197,4 +197,13 @@ declare global {
      */
     mapElevationAlpha(elevation: number): number;
   }
+
+  namespace PrimaryCanvasGroup {
+    type Any = AnyPrimaryCanvasGroup;
+    type AnyConstructor = typeof AnyPrimaryCanvasGroup;
+  }
+}
+
+declare abstract class AnyPrimaryCanvasGroup extends PrimaryCanvasGroup {
+  constructor(arg0: never, ...args: never[]);
 }

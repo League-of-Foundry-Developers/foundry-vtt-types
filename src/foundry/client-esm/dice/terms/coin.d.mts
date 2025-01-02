@@ -56,6 +56,9 @@ declare class Coin extends DiceTerm {
 }
 
 declare namespace Coin {
+  type Any = AnyCoin;
+  type AnyConstructor = typeof AnyCoin;
+
   interface TermData extends DiceTerm.TermData {
     modifiers: Array<keyof Modifiers>;
   }
@@ -63,6 +66,10 @@ declare namespace Coin {
   interface Modifiers {
     c: "call";
   }
+}
+
+declare abstract class AnyCoin extends Coin {
+  constructor(arg0: never, ...args: never[]);
 }
 
 export default Coin;

@@ -157,7 +157,8 @@ declare global {
   }
 
   namespace Hotbar {
-    type Any = Hotbar<any>;
+    type Any = AnyHotbar;
+    type AnyConstructor = typeof AnyHotbar;
 
     interface HotbarData {
       page: Hotbar["page"];
@@ -166,4 +167,8 @@ declare global {
       locked: boolean;
     }
   }
+}
+
+declare abstract class AnyHotbar extends Hotbar {
+  constructor(arg0: never, ...args: never[]);
 }

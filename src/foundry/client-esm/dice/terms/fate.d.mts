@@ -31,8 +31,11 @@ declare class FateDie extends DiceTerm {
 }
 
 declare namespace FateDie {
+  type Any = AnyFateDie;
+  type AnyConstructor = typeof AnyFateDie;
+
   interface TermData extends DiceTerm.TermData {
-    modifiers: Array<keyof (typeof FateDie)["MODIFIERS"]>;
+    modifiers: Array<keyof typeof FateDie.MODIFIERS>;
   }
 
   interface Modifiers {
@@ -45,6 +48,10 @@ declare namespace FateDie {
     dh: Die["drop"];
     dl: Die["drop"];
   }
+}
+
+declare abstract class AnyFateDie extends FateDie {
+  constructor(arg0: never, ...args: never[]);
 }
 
 export default FateDie;

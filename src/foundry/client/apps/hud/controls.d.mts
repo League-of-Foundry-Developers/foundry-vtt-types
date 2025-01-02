@@ -144,7 +144,8 @@ declare global {
   }
 
   namespace SceneControls {
-    type Any = SceneControls<any>;
+    type Any = AnySceneControls;
+    type AnyConstructor = typeof AnySceneControls;
   }
 
   interface InitializeOptions {
@@ -163,4 +164,8 @@ declare global {
      */
     tool?: string;
   }
+}
+
+declare abstract class AnySceneControls extends SceneControls<ApplicationOptions> {
+  constructor(arg0: never, ...args: never[]);
 }

@@ -138,7 +138,8 @@ declare global {
   }
 
   namespace TokenConfig {
-    type Any = TokenConfig<any>;
+    type Any = AnyTokenConfig;
+    type AnyConstructor = typeof AnyTokenConfig;
 
     interface FormData {
       // TODO: Update
@@ -238,6 +239,17 @@ declare global {
   }
 
   namespace DefaultTokenConfig {
-    type Any = DefaultTokenConfig<any>;
+    type Any = AnyDefaultTokenConfig;
+    type AnyConstructor = typeof AnyDefaultTokenConfig;
   }
+}
+
+declare abstract class AnyTokenConfig extends TokenConfig<DocumentSheetOptions<TokenDocument.ConfiguredInstance>> {
+  constructor(arg0: never, ...args: never[]);
+}
+
+declare abstract class AnyDefaultTokenConfig extends DefaultTokenConfig<
+  DocumentSheetOptions<TokenDocument.ConfiguredInstance>
+> {
+  constructor(arg0: never, ...args: never[]);
 }

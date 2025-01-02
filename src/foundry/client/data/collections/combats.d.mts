@@ -40,4 +40,13 @@ declare global {
      */
     protected _onDeleteToken(sceneId: string, tokenId: string): Promise<void>;
   }
+
+  namespace CombatEncounters {
+    type Any = AnyCombatEncounters;
+    type AnyConstructor = typeof AnyCombatEncounters;
+  }
+}
+
+declare abstract class AnyCombatEncounters extends CombatEncounters {
+  constructor(arg0: never, ...args: never[]);
 }

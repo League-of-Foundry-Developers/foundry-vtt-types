@@ -32,4 +32,13 @@ declare global {
      */
     flush(): Promise<Promise<Document.Stored<ChatMessage.ConfiguredInstance>[]> | false | null>;
   }
+
+  namespace Messages {
+    type Any = AnyMessages;
+    type AnyConstructor = typeof AnyMessages;
+  }
+}
+
+declare abstract class AnyMessages extends Messages {
+  constructor(arg0: never, ...args: never[]);
 }

@@ -26,4 +26,13 @@ declare global {
      */
     getItem(key: string): string | null;
   }
+
+  namespace WorldSettings {
+    type Any = AnyWorldSettings;
+    type AnyConstructor = typeof AnyWorldSettings;
+  }
+}
+
+declare abstract class AnyWorldSettings extends WorldSettings {
+  constructor(arg0: never, ...args: never[]);
 }

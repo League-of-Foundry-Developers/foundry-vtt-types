@@ -129,6 +129,11 @@ declare global {
   }
 
   namespace TokenHUD {
-    type Any = TokenHUD<any>;
+    type Any = AnyTokenHUD;
+    type AnyConstructor = typeof AnyTokenHUD;
   }
+}
+
+declare abstract class AnyTokenHUD extends TokenHUD<ApplicationOptions> {
+  constructor(arg0: never, ...args: never[]);
 }

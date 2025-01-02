@@ -17,4 +17,13 @@ declare global {
 
     protected override _getEntryContextOptions(): ContextMenuEntry[];
   }
+
+  namespace ActorDirectory {
+    type Any = AnyActorDirectory;
+    type AnyConstructor = typeof AnyActorDirectory;
+  }
+}
+
+declare abstract class AnyActorDirectory extends ActorDirectory {
+  constructor(arg0: never, ...args: never[]);
 }

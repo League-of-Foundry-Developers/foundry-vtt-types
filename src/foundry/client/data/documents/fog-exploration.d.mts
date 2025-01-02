@@ -61,4 +61,13 @@ declare global {
      * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
      */
   }
+
+  namespace FogExploration {
+    type Any = AnyFogExploration;
+    type AnyConstructor = typeof AnyFogExploration;
+  }
+}
+
+declare abstract class AnyFogExploration extends FogExploration {
+  constructor(arg0: never, ...args: never[]);
 }

@@ -1,6 +1,6 @@
 import type * as CONST from "../common/constants.d.mts";
 import type { DataModel, Document } from "../common/abstract/module.d.mts";
-import type { GetKey, AnyObject, HandleEmptyObject, MaybePromise, InstanceType } from "../../utils/index.d.mts";
+import type { GetKey, AnyObject, HandleEmptyObject, MaybePromise } from "../../utils/index.d.mts";
 import type BaseLightSource from "../client-esm/canvas/sources/base-light-source.d.mts";
 
 declare global {
@@ -51,7 +51,7 @@ declare global {
          * resolver. This resolver must therefore be capable of handling manual
          * rolls.
          */
-        resolver: typeof foundry.applications.dice.RollResolver;
+        resolver: foundry.applications.dice.RollResolver.AnyConstructor;
       }
 
       /**
@@ -103,9 +103,9 @@ declare global {
 
       /** Configured roll terms and the classes they map to. */
       terms: {
-        c: typeof foundry.dice.terms.Coin;
-        d: typeof foundry.dice.terms.Die;
-        f: typeof foundry.dice.terms.FateDie;
+        c: foundry.dice.terms.Coin.AnyConstructor;
+        d: foundry.dice.terms.Die.AnyConstructor;
+        f: foundry.dice.terms.FateDie.AnyConstructor;
       } & Record<string, foundry.dice.terms.DiceTerm.AnyConstructor>;
 
       /**
@@ -295,7 +295,7 @@ declare global {
       documentClass: Document.ConfiguredClassForName<"Actor">;
 
       /** @defaultValue `Actors` */
-      collection: typeof Actors;
+      collection: Actors.AnyConstructor;
 
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
@@ -364,7 +364,7 @@ declare global {
      */
     Cards: {
       /** @defaultValue `CardStacks` */
-      collection: typeof CardStacks;
+      collection: CardStacks.AnyConstructor;
 
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
@@ -431,7 +431,7 @@ declare global {
       documentClass: Document.ConfiguredClassForName<"ChatMessage">;
 
       /** @defaultValue `Messages` */
-      collection: typeof Messages;
+      collection: Messages.AnyConstructor;
 
       /** @defaultValue `"templates/sidebar/chat-message.html"` */
       template: string;
@@ -471,7 +471,7 @@ declare global {
       documentClass: Document.ConfiguredClassForName<"Combat">;
 
       /** @defaultValue `CombatEncounters` */
-      collection: typeof CombatEncounters;
+      collection: CombatEncounters.AnyConstructor;
 
       /** @defaultValue `"fas fa-swords"` */
       sidebarIcon: string;
@@ -549,7 +549,7 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `FogExplorations` */
-      collection: typeof FogExplorations;
+      collection: FogExplorations.AnyConstructor;
     };
 
     /**
@@ -560,7 +560,7 @@ declare global {
       documentClass: Document.ConfiguredClassForName<"Folder">;
 
       /** @defaultValue `Folders` */
-      collection: typeof Folders;
+      collection: Folders.AnyConstructor;
 
       /** @defaultValue `"fas fa-folder"` */
       sidebarIcon: string;
@@ -584,7 +584,7 @@ declare global {
       documentClass: Document.ConfiguredClassForName<"Item">;
 
       /** @defaultValue `Items` */
-      collection: typeof Items;
+      collection: Items.AnyConstructor;
 
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
@@ -631,7 +631,7 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `Journal` */
-      collection: typeof Journal;
+      collection: Journal.AnyConstructor;
 
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
@@ -744,7 +744,7 @@ declare global {
       typeLabels?: Record<foundry.documents.BaseMacro.TypeNames, string>;
 
       /** @defaultValue `Macros` */
-      collection: typeof Macros;
+      collection: Macros.AnyConstructor;
 
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
@@ -774,7 +774,7 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `Playlists` */
-      collection: typeof Playlists;
+      collection: Playlists.AnyConstructor;
 
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
@@ -807,7 +807,7 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `RollTables` */
-      collection: typeof RollTables;
+      collection: RollTables.AnyConstructor;
 
       /** @defaultValue `["formula"]` */
       compendiumIndexFields: string[];
@@ -843,7 +843,7 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `Scenes` */
-      collection: typeof Scenes;
+      collection: Scenes.AnyConstructor;
 
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
@@ -870,7 +870,7 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `WorldSettings` */
-      collection: typeof WorldSettings;
+      collection: WorldSettings.AnyConstructor;
     };
 
     /**
@@ -891,7 +891,7 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `Users` */
-      collection: typeof Users;
+      collection: Users.AnyConstructor;
     };
 
     /**
@@ -913,7 +913,7 @@ declare global {
       /** @defaultValue `0xffffff` */
       brightestColor: number;
 
-      chatBubblesClass: typeof ChatBubbles;
+      chatBubblesClass: ChatBubbles.AnyConstructor;
 
       /** @defaultValue `0.25` */
       darknessLightPenalty: number;
@@ -944,7 +944,7 @@ declare global {
       /**
        * The class used to render door control icons
        */
-      doorControlClass: typeof DoorControl;
+      doorControlClass: DoorControl.AnyConstructor;
 
       /** @defaultValue `0x000000` */
       exploredColor: number;
@@ -958,15 +958,15 @@ declare global {
       /** @defaultValue `10000` */
       daylightToDarknessAnimationMS: number;
 
-      darknessSourceClass: typeof foundry.canvas.sources.PointDarknessSource;
+      darknessSourceClass: foundry.canvas.sources.PointDarknessSource.AnyConstructor;
 
-      lightSourceClass: typeof foundry.canvas.sources.PointLightSource;
+      lightSourceClass: foundry.canvas.sources.PointLightSource.AnyConstructor;
 
-      globalLightSourceClass: typeof foundry.canvas.sources.GlobalLightSource;
+      globalLightSourceClass: foundry.canvas.sources.GlobalLightSource.AnyConstructor;
 
-      visionSourceClass: typeof foundry.canvas.sources.PointVisionSource;
+      visionSourceClass: foundry.canvas.sources.PointVisionSource.AnyConstructor;
 
-      soundSourceClass: typeof foundry.canvas.sources.PointSoundSource;
+      soundSourceClass: foundry.canvas.sources.PointSoundSource.AnyConstructor;
 
       groups: CONFIG.Canvas.Groups;
 
@@ -987,28 +987,28 @@ declare global {
       };
 
       /** @defaultValue `FogManager` */
-      fogManager: typeof FogManager;
+      fogManager: FogManager.AnyConstructor;
 
       polygonBackends: {
         /** @defaultValue `typeof ClockwiseSweepPolygon` */
-        sight: typeof PointSourcePolygon;
+        sight: PointSourcePolygon.AnyConstructor;
         /** @defaultValue `typeof ClockwiseSweepPolygon` */
-        light: typeof PointSourcePolygon;
+        light: PointSourcePolygon.AnyConstructor;
         /** @defaultValue `typeof ClockwiseSweepPolygon` */
-        sound: typeof PointSourcePolygon;
+        sound: PointSourcePolygon.AnyConstructor;
         /** @defaultValue `typeof ClockwiseSweepPolygon` */
-        move: typeof PointSourcePolygon;
+        move: PointSourcePolygon.AnyConstructor;
       };
 
       /** @defaultValue `number` */
       darknessSourcePaddingMultiplier: number;
 
-      visibilityFilter: typeof VisibilityFilter;
+      visibilityFilter: VisibilityFilter.AnyConstructor;
 
-      visualEffectsMaskingFilter: typeof VisualEffectsMaskingFilter;
+      visualEffectsMaskingFilter: VisualEffectsMaskingFilter.AnyConstructor;
 
       /** @defaultValue `Ruler` */
-      rulerClass: typeof Ruler;
+      rulerClass: Ruler.AnyConstructor;
 
       /** @defaultValue `0.8` */
       dragSpeedModifier: number;
@@ -1030,10 +1030,10 @@ declare global {
           animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `FlameIlluminationShader` */
-          illuminationShader: typeof AdaptiveIlluminationShader;
+          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
 
           /** @defaultValue `FlameColorationShader` */
-          colorationShader: typeof AdaptiveColorationShader;
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
         };
 
         torch: {
@@ -1044,10 +1044,10 @@ declare global {
           animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `TorchIlluminationShader` */
-          illuminationShader: typeof AdaptiveIlluminationShader;
+          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
 
           /** @defaultValue `TorchColorationShader` */
-          colorationShader: typeof AdaptiveColorationShader;
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
         };
 
         revolving: {
@@ -1058,7 +1058,7 @@ declare global {
           animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `RevolvingColorationShader` */
-          colorationShader: typeof AdaptiveColorationShader;
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
         };
 
         siren: {
@@ -1069,10 +1069,10 @@ declare global {
           animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `SirenIlluminationShader` */
-          illuminationShader: typeof AdaptiveIlluminationShader;
+          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
 
           /** @defaultValue `SirenIlluminationShader` */
-          colorationShader: typeof AdaptiveColorationShader;
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
         };
 
         pulse: {
@@ -1083,10 +1083,10 @@ declare global {
           animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `PulseIlluminationShader` */
-          illuminationShader: typeof AdaptiveIlluminationShader;
+          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
 
           /** @defaultValue `PulseColorationShader` */
-          colorationShader: typeof AdaptiveColorationShader;
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
         };
 
         chroma: {
@@ -1097,7 +1097,7 @@ declare global {
           animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `ChromaColorationShader` */
-          colorationShader: typeof AdaptiveColorationShader;
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
         };
 
         wave: {
@@ -1108,10 +1108,10 @@ declare global {
           animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `WaveIlluminationShader` */
-          illuminationShader: typeof AdaptiveIlluminationShader;
+          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
 
           /** @defaultValue `WaveColorationShader` */
-          colorationShader: typeof AdaptiveColorationShader;
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
         };
 
         fog: {
@@ -1122,7 +1122,7 @@ declare global {
           animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `FogColorationShader` */
-          colorationShader: typeof AdaptiveColorationShader;
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
         };
 
         sunburst: {
@@ -1133,10 +1133,10 @@ declare global {
           animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `SunburstIlluminationShader` */
-          illuminationShader: typeof AdaptiveIlluminationShader;
+          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
 
           /** @defaultValue `SunburstColorationShader` */
-          colorationShader: typeof AdaptiveColorationShader;
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
         };
 
         dome: {
@@ -1147,7 +1147,7 @@ declare global {
           animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `LightDomeColorationShader` */
-          colorationShader: typeof AdaptiveColorationShader;
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
         };
 
         emanation: {
@@ -1158,7 +1158,7 @@ declare global {
           animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `EmanationColorationShader` */
-          colorationShader: typeof AdaptiveColorationShader;
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
         };
 
         hexa: {
@@ -1169,7 +1169,7 @@ declare global {
           animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `HexaDomeColorationShader` */
-          colorationShader: typeof AdaptiveColorationShader;
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
         };
 
         ghost: {
@@ -1180,10 +1180,10 @@ declare global {
           animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `GhostLightIlluminationShader` */
-          illuminationShader: typeof AdaptiveIlluminationShader;
+          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
 
           /** @defaultValue `GhostLightColorationShader` */
-          colorationShader: typeof AdaptiveColorationShader;
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
         };
 
         energy: {
@@ -1194,7 +1194,7 @@ declare global {
           animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `EnergyFieldColorationShader` */
-          colorationShader: typeof AdaptiveColorationShader;
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
         };
 
         vortex: {
@@ -1205,10 +1205,10 @@ declare global {
           animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `VortexIlluminationShader` */
-          illuminationShader: typeof AdaptiveIlluminationShader;
+          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
 
           /** @defaultValue `VortexColorationShader` */
-          colorationShader: typeof AdaptiveColorationShader;
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
         };
 
         witchwave: {
@@ -1219,10 +1219,10 @@ declare global {
           animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `BewitchingWaveIlluminationShader` */
-          illuminationShader: typeof AdaptiveIlluminationShader;
+          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
 
           /** @defaultValue `BewitchingWaveColorationShader` */
-          colorationShader: typeof AdaptiveColorationShader;
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
         };
 
         rainbowswirl: {
@@ -1233,7 +1233,7 @@ declare global {
           animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `SwirlingRainbowColorationShader` */
-          colorationShader: typeof AdaptiveColorationShader;
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
         };
 
         radialrainbow: {
@@ -1244,7 +1244,7 @@ declare global {
           animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `RadialRainbowColorationShader` */
-          colorationShader: typeof AdaptiveColorationShader;
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
         };
 
         fairy: {
@@ -1255,10 +1255,10 @@ declare global {
           animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `FairyLightIlluminationShader` */
-          illuminationShader: typeof AdaptiveIlluminationShader;
+          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
 
           /** @defaultValue `FairyLightColorationShader` */
-          colorationShader: typeof AdaptiveColorationShader;
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
         };
       };
 
@@ -1267,6 +1267,7 @@ declare global {
       /**
        * A registry of Scenes which are managed by a specific SceneManager class.
        */
+      // `typeof foundry.canvas.SceneManager` is used because
       managedScenes: Record<string, typeof foundry.canvas.SceneManager>;
 
       pings: {
@@ -2246,11 +2247,11 @@ declare global {
        */
       typeLabels?: Record<"base", string>;
 
-      /** @defaultValue `AmbientLightDocument` */
+      /** @defaultValue `typeof AmbientLightDocument` */
       objectClass: ConfiguredObjectClassOrDefault<typeof AmbientLight>;
 
-      /** @defaultValue `LightingLayer` */
-      layerClass: typeof LightingLayer;
+      /** @defaultValue `typeof LightingLayer` */
+      layerClass: LightingLayer.AnyConstructor;
     };
 
     /**
@@ -2270,11 +2271,11 @@ declare global {
        */
       typeLabels?: Record<"base", string>;
 
-      /** @defaultValue `AmbientSound` */
+      /** @defaultValue `typeof AmbientSound` */
       objectClass: ConfiguredObjectClassOrDefault<typeof AmbientSound>;
 
-      /** @defaultValue `SoundsLayer` */
-      layerClass: typeof SoundsLayer;
+      /** @defaultValue `typeof SoundsLayer` */
+      layerClass: SoundsLayer.AnyConstructor;
     };
 
     /**
@@ -2322,13 +2323,13 @@ declare global {
        */
       typeLabels?: Record<"base", string>;
 
-      /** @defaultValue `Drawing` */
+      /** @defaultValue `typeof Drawing` */
       objectClass: ConfiguredObjectClassOrDefault<typeof Drawing>;
 
-      /** @defaultValue `DrawingsLayer` */
+      /** @defaultValue `typeof DrawingsLayer` */
       layerClass: typeof DrawingsLayer;
 
-      /** @defaultValue `DrawingHUD` */
+      /** @defaultValue `typeof DrawingHUD` */
       hudClass: typeof DrawingHUD;
     };
 
@@ -2371,10 +2372,10 @@ declare global {
        */
       typeLabels?: Record<"base", string>;
 
-      /** @defaultValue `MeasuredTemplate` */
+      /** @defaultValue `typeof MeasuredTemplate` */
       objectClass: ConfiguredObjectClassOrDefault<typeof MeasuredTemplate>;
 
-      /** @defaultValue `TemplateLayer` */
+      /** @defaultValue `typeof TemplateLayer` */
       layerClass: typeof TemplateLayer;
     };
 
@@ -2395,11 +2396,11 @@ declare global {
        */
       typeLabels?: Record<"base", string>;
 
-      /** @defaultValue `Note` */
+      /** @defaultValue `typeof Note` */
       objectClass: ConfiguredObjectClassOrDefault<typeof Note>;
 
-      /** @defaultValue `NotesLayer` */
-      layerClass: typeof NotesLayer;
+      /** @defaultValue `typeof NotesLayer` */
+      layerClass: NotesLayer.AnyConstructor;
     };
 
     // TODO: Regions
@@ -2421,14 +2422,14 @@ declare global {
        */
       typeLabels?: Record<"base", string>;
 
-      /** @defaultValue `Tile` */
+      /** @defaultValue `typeof Tile` */
       objectClass: ConfiguredObjectClassOrDefault<typeof Tile>;
 
-      /** @defaultValue `TilesLayer` */
-      layerClass: typeof TilesLayer;
+      /** @defaultValue `typeof TilesLayer` */
+      layerClass: TilesLayer.AnyConstructor;
 
-      /** @defaultValue `TileHUD` */
-      hudClass: typeof TileHUD;
+      /** @defaultValue `typeof TileHUD` */
+      hudClass: TileHUD.AnyConstructor;
     };
 
     /**
@@ -2448,17 +2449,17 @@ declare global {
        */
       typeLabels?: Record<"base", string>;
 
-      /** @defaultValue `Token` */
+      /** @defaultValue `typeof Token` */
       objectClass: ConfiguredObjectClassOrDefault<typeof Token>;
 
-      /** @defaultValue `TokenLayer` */
-      layerClass: typeof TokenLayer;
+      /** @defaultValue `typeof TokenLayer` */
+      layerClass: TokenLayer.AnyConstructor;
 
-      /** @defaultValue `TokenConfig` */
-      prototypeSheetClass: typeof TokenConfig;
+      /** @defaultValue `typeof TokenConfig` */
+      prototypeSheetClass: TokenConfig.AnyConstructor;
 
-      /** @defaultValue `TokenHUD` */
-      hudClass: typeof TokenHUD;
+      /** @defaultValue `typeof TokenHUD` */
+      hudClass: TokenHUD.AnyConstructor;
 
       /** @defaultValue `"TOKEN.Adjectives"` */
       adjectivesPrefix: string;
@@ -2487,11 +2488,11 @@ declare global {
        */
       typeLabels?: Record<"base", string>;
 
-      /** @defaultValue `Wall` */
+      /** @defaultValue `typeof Wall` */
       objectClass: ConfiguredObjectClassOrDefault<typeof Wall>;
 
-      /** @defaultValue `WallsLayer` */
-      layerClass: typeof WallsLayer;
+      /** @defaultValue `typeof WallsLayer` */
+      layerClass: WallsLayer.AnyConstructor;
 
       /** @defaultValue `1` */
       thresholdAttenuationMultiplier: number;
@@ -2775,9 +2776,9 @@ declare global {
      * An enumeration of sound effects which can be applied to Sound instances.
      */
     soundEffects: {
-      lowPass: { label: string; effectClass: typeof AudioNode };
-      highpass: { label: string; effectClass: typeof AudioNode };
-      reverb: { label: string; effectClass: typeof AudioNode };
+      lowPass: { label: string; effectClass: AudioNode.AnyConstructor };
+      highpass: { label: string; effectClass: AudioNode.AnyConstructor };
+      reverb: { label: string; effectClass: AudioNode.AnyConstructor };
     };
 
     /**
@@ -2801,7 +2802,7 @@ declare global {
      */
     WebRTC: {
       /** @defaultValue `SimplePeerAVClient` */
-      clientClass: GetKey<WebRTCConfig, "clientClass", typeof SimplePeerAVClient>;
+      clientClass: GetKey<WebRTCConfig, "clientClass", SimplePeerAVClient.AnyConstructor>;
 
       /** @defaultValue `50` */
       detectPeerVolumeInterval: number;
@@ -2831,67 +2832,67 @@ declare global {
   namespace CONFIG {
     interface UI {
       /** @defaultValue `MainMenu` */
-      menu: typeof MainMenu;
+      menu: MainMenu.AnyConstructor;
 
       /** @defaultValue `Sidebar` */
-      sidebar: typeof Sidebar;
+      sidebar: Sidebar.AnyConstructor;
 
       /** @defaultValue `Pause` */
-      pause: typeof Pause;
+      pause: Pause.AnyConstructor;
 
       /** @defaultValue `SceneNavigation` */
-      nav: typeof SceneNavigation;
+      nav: SceneNavigation.AnyConstructor;
 
       /** @defaultValue `Notifications` */
-      notifications: typeof Notifications;
+      notifications: Notifications.AnyConstructor;
 
       /** @defaultValue `ActorDirectory` */
-      actors: typeof ActorDirectory;
+      actors: ActorDirectory.AnyConstructor;
 
       /** @defaultValue `CardsDirectory` */
-      cards: typeof CardsDirectory;
+      cards: CardsDirectory.AnyConstructor;
 
       /** @defaultValue `ChatLog` */
-      chat: typeof ChatLog;
+      chat: ChatLog.AnyConstructor;
 
       /** @defaultValue `CombatTracker` */
-      combat: typeof CombatTracker;
+      combat: CombatTracker.AnyConstructor;
 
       /** @defaultValue `CompendiumDirectory` */
-      compendium: typeof CompendiumDirectory;
+      compendium: CompendiumDirectory.AnyConstructor;
 
       /** @defaultValue `SceneControls` */
-      controls: typeof SceneControls;
+      controls: SceneControls.AnyConstructor;
 
       /** @defaultValue `Hotbar` */
-      hotbar: typeof Hotbar;
+      hotbar: Hotbar.AnyConstructor;
 
       /** @defaultValue `ItemDirectory` */
-      items: typeof ItemDirectory;
+      items: ItemDirectory.AnyConstructor;
 
       /** @defaultValue `JournalDirectory` */
-      journal: typeof JournalDirectory;
+      journal: JournalDirectory.AnyConstructor;
 
       /** @defaultValue `MacroDirectory` */
-      macros: typeof MacroDirectory;
+      macros: MacroDirectory.AnyConstructor;
 
       /** @defaultValue `PlayerList` */
-      players: typeof PlayerList;
+      players: PlayerList.AnyConstructor;
 
       /** @defaultValue `PlaylistDirectory` */
-      playlists: typeof PlaylistDirectory;
+      playlists: PlaylistDirectory.AnyConstructor;
 
       /** @defaultValue `SceneDirectory` */
-      scenes: typeof SceneDirectory;
+      scenes: SceneDirectory.AnyConstructor;
 
       /** @defaultValue `Settings` */
-      settings: typeof Settings;
+      settings: Settings.AnyConstructor;
 
       /** @defaultValue `RollTableDirectory` */
-      tables: typeof RollTableDirectory;
+      tables: RollTableDirectory.AnyConstructor;
 
       /** @defaultValue `CameraViews` */
-      webrtc: typeof CameraViews;
+      webrtc: CameraViews.AnyConstructor;
     }
 
     namespace Canvas {
@@ -2961,23 +2962,23 @@ declare global {
         [key: string]: LayerDefinition;
       }
 
-      interface GroupDefinition<
-        GroupClass extends ToSpriteConstructor<CanvasGroupConstructor> = ToSpriteConstructor<CanvasGroupConstructor>,
-      > {
+      // This requires `CanvasGroupConstructor` because `Canvas##createGroups` assumes there's no parameters.
+      interface GroupDefinition<GroupClass extends CanvasGroupConstructor = CanvasGroupConstructor> {
         groupClass: GroupClass;
         parent: string;
         zIndexDrawings?: number;
         zIndexScrollingText?: number;
       }
 
-      interface LayerDefinition<LayerClass extends CanvasLayer.AnyConstructor = typeof CanvasLayer> {
+      // This requires `typeof CanvasLayer` because `CanvasGroupMixin#_createLayers` assumes there's no parameters.
+      interface LayerDefinition<LayerClass extends typeof CanvasLayer = typeof CanvasLayer> {
         layerClass: LayerClass;
         group: keyof CONFIG["Canvas"]["groups"];
       }
 
       interface GridStyle {
         label: string;
-        shaderClass: typeof GridShader;
+        shaderClass: GridShader.AnyConstructor;
         shaderOptions: {
           style: number;
         };
@@ -2991,9 +2992,9 @@ declare global {
         {
           label: string;
           animation: BaseLightSource.LightAnimationFunction;
-          backgroundShader?: typeof AdaptiveBackgroundShader;
-          illuminationShader?: typeof AdaptiveIlluminationShader;
-          colorationShader?: typeof AdaptiveColorationShader;
+          backgroundShader?: AdaptiveBackgroundShader.AnyConstructor;
+          illuminationShader?: AdaptiveIlluminationShader.AnyConstructor;
+          colorationShader?: AdaptiveColorationShader.AnyConstructor;
         }
       >;
 
@@ -3005,7 +3006,7 @@ declare global {
         {
           label: string;
           animation: BaseLightSource.LightAnimationFunction;
-          darknessShader: typeof AdaptiveDarknessShader;
+          darknessShader: AdaptiveDarknessShader.AnyConstructor;
         }
       >;
 
@@ -3031,7 +3032,7 @@ declare global {
 
     interface WeatherEffectConfiguration {
       id: string;
-      effectClass: typeof ParticleEffect | typeof WeatherShaderEffect;
+      effectClass: ParticleEffect | WeatherShaderEffect.AnyConstructor;
       blendMode: PIXI.BLEND_MODES;
       config: Record<string, unknown>;
     }
@@ -3122,7 +3123,7 @@ interface SheetClassConfig {
 
   canConfigure: boolean;
 
-  cls: typeof DocumentSheet;
+  cls: DocumentSheet.AnyConstructor;
 
   default: boolean;
 
@@ -3131,7 +3132,7 @@ interface SheetClassConfig {
   label: string;
 }
 
-type PixiContainerConstructor = typeof PIXI.Container;
+type PixiContainerConstructor = PIXI.Container.AnyConstructor;
 interface CanvasGroup extends PIXI.Container {
   sortableChildren: boolean;
 }
@@ -3144,13 +3145,4 @@ interface CanvasGroupConstructor extends PixiContainerConstructor {
    * @remarks Not used in EffectsCanvasGroup in v11
    */
   groupName?: string;
-}
-
-type AnySpriteClass = abstract new (sprite?: SpriteMesh) => unknown;
-
-type ToSpriteConstructor<Class extends AnySpriteClass> = ToSpriteConstructorInterface<Class>;
-
-// @ts-expect-error - Ignore the "incorrectly extends interface" error inherent to this pattern.
-interface ToSpriteConstructorInterface<T extends AnySpriteClass> extends T {
-  new (sprite: SpriteMesh): InstanceType<T>;
 }

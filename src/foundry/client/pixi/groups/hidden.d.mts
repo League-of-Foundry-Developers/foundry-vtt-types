@@ -37,4 +37,13 @@ declare global {
 
     protected override _tearDown(options: CanvasGroupMixin.TearDownOptions): Promise<void>;
   }
+
+  namespace HiddenCanvasGroup {
+    type Any = AnyHiddenCanvasGroup;
+    type AnyConstructor = typeof AnyHiddenCanvasGroup;
+  }
+}
+
+declare abstract class AnyHiddenCanvasGroup extends HiddenCanvasGroup {
+  constructor(arg0: never, ...args: never[]);
 }

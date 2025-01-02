@@ -29,4 +29,13 @@ declare global {
       | (IdOpt extends false ? "_id" : never)
     >;
   }
+
+  namespace Macros {
+    type Any = AnyMacros;
+    type AnyConstructor = typeof AnyMacros;
+  }
+}
+
+declare abstract class AnyMacros extends Macros {
+  constructor(arg0: never, ...args: never[]);
 }

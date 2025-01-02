@@ -13,4 +13,13 @@ declare global {
 
     static override documentName: "Macro";
   }
+
+  namespace MacroDirectory {
+    type Any = AnyMacroDirectory;
+    type AnyConstructor = typeof AnyMacroDirectory;
+  }
+}
+
+declare abstract class AnyMacroDirectory extends MacroDirectory {
+  constructor(arg0: never, ...args: never[]);
 }

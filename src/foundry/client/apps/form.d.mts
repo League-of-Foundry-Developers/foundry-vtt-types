@@ -460,7 +460,8 @@ declare global {
   }
 
   namespace DocumentSheet {
-    type Any = DocumentSheet<any, any>;
+    type Any = AnyDocumentSheet;
+    type AnyConstructor = typeof AnyDocumentSheet;
 
     interface DocumentSheetData<
       Options extends DocumentSheetOptions<ConcreteDocument>,
@@ -479,5 +480,12 @@ declare global {
 }
 
 declare abstract class AnyFormApplication extends FormApplication<any, any> {
+  constructor(arg0: never, ...args: never[]);
+}
+
+declare abstract class AnyDocumentSheet extends DocumentSheet<
+  DocumentSheetOptions<foundry.abstract.Document.Any>,
+  foundry.abstract.Document.Any
+> {
   constructor(arg0: never, ...args: never[]);
 }
