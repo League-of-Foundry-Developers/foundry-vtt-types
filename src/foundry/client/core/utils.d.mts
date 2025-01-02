@@ -1,4 +1,27 @@
-import type { GetKey } from "../../../utils/index.d.mts";
+import type { AnyObject, GetKey, MustBeValidUuid } from "../../../utils/index.d.mts";
+import type Document from "../../common/abstract/document.d.mts";
+
+declare const __Unset: unique symbol;
+
+type __UnsetDocument = Document.Any & {
+  [__Unset]: true;
+};
+
+declare class InvalidUuid extends foundry.abstract.Document<any, any, any> {}
+
+type FromUuid<Uuid extends string> = Uuid extends `${string}.${string}.${infer Rest}`
+  ? FromUuid<Rest>
+  : Uuid extends `${infer DocumentType extends Document.Type}.${string}`
+    ? Document.ConfiguredInstanceForName<DocumentType>
+    : InvalidUuid;
+
+// TODO(LukeAbby): The condition `ConcreteDocument extends __UnsetDocument` will not be necessary once `Document.Any` is more type safe.
+type FromUuidValidate<
+  ConcreteDocument extends Document.Any,
+  Uuid extends string,
+> = ConcreteDocument extends __UnsetDocument
+  ? MustBeValidUuid<Uuid, Document.Type> // Only necessary because `Document.Any` is of type `any` not `Document.Type`.
+  : MustBeValidUuid<Uuid, ConcreteDocument["documentName"]>;
 
 declare global {
   /**
@@ -21,15 +44,15 @@ declare global {
    * @param uuid    - The uuid of the Entity or Embedded Entity to retrieve
    * @param options - Options to configure how a UUID is resolved.
    */
-  function fromUuid(
-    uuid: string,
+  function fromUuid<ConcreteDocument extends Document.Any = __UnsetDocument, const Uuid extends string = string>(
+    uuid: FromUuidValidate<ConcreteDocument, Uuid> | null | undefined,
     options?: {
       /** A Document to resolve relative UUIDs against. */
       relative?: ClientDocument;
       /** Allow retrieving an invalid Document. (default: `false`) */
       invalid?: boolean;
     },
-  ): Promise<foundry.abstract.Document.Any | null>;
+  ): Promise<(__UnsetDocument extends ConcreteDocument ? FromUuid<Uuid> : ConcreteDocument) | null>;
 
   /**
    * Retrieve a Document by its Universally Unique Identifier (uuid) synchronously. If the uuid resolves to a compendium
@@ -39,8 +62,8 @@ declare global {
    * @returns The Document or its index entry if it resides in a Compendium, otherwise null.
    * @throws If the uuid resolves to a Document that cannot be retrieved synchronously.
    */
-  function fromUuidSync(
-    uuid: string,
+  function fromUuidSync<ConcreteDocument extends Document.Any = __UnsetDocument, const Uuid extends string = string>(
+    uuid: FromUuidValidate<ConcreteDocument, Uuid> | null | undefined,
     options?: {
       /** A Document to resolve relative UUIDs against. */
       relative?: ClientDocument;
@@ -49,7 +72,7 @@ declare global {
       /** Throw an error if the UUID cannot be resolved synchronously. (default: `true`) */
       strict?: boolean;
     },
-  ): foundry.abstract.Document.Any | Record<string, unknown> | null;
+  ): (__UnsetDocument extends ConcreteDocument ? FromUuid<Uuid> : ConcreteDocument) | AnyObject | null;
 
   /**
    * Resolve a series of embedded document UUID parts against a parent Document.

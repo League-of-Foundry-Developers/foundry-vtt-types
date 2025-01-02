@@ -4,12 +4,12 @@
 
 import { expectTypeOf } from "vitest";
 
-class CustomItemClass extends Item {}
+class _CustomItemClass extends Item {}
 
 declare global {
   interface DocumentClassConfig {
-    Item: CustomItemClass;
+    Item: typeof _CustomItemClass;
   }
 }
 
-expectTypeOf(CONFIG.Item.documentClass).toEqualTypeOf<CustomItemClass>();
+expectTypeOf(CONFIG.Item.documentClass).toEqualTypeOf<typeof _CustomItemClass>();
