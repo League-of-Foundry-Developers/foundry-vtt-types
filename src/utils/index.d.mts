@@ -149,8 +149,8 @@ export type MustConform<T extends ConformTo, ConformTo> = T;
  * and arrays etc. This is crucial to allow interfaces to be given to this type.
  */
 export type InterfaceToObject<T extends object> = {
-  // Mapped types are no-ops on most types (even primitives like string) but for
-  // functions, classes, and arrays they convert them to "proper" objects by
+  // This mapped type would be a no-op on most types (even primitives like string)
+  // but for functions, classes, and arrays they convert them to "proper" objects by
   // stripping constructors/function signatures. One side effect is a type like
   // `() => number` will result in `{}`.
   [K in keyof T]: T[K];
@@ -195,7 +195,8 @@ export type ConformRecord<T extends object, V> = {
  *
  * // TypeScript allows this without any errors.
  * declare class MethodSubclassing extends ExampleBaseClass {
- *     // It's a very common thing for subclasses to ask for extra arguments.
+ *     // It's a very common thing for subclasses to ask for extra properties.
+ *     // This appears in the DOM APIs.
  *     methodOne(arg: { x: string; y: string }): number;
  *
  *     // Only taking `"foo" | "bar"` should seem pretty unsound.
@@ -203,9 +204,10 @@ export type ConformRecord<T extends object, V> = {
  *     methodTwo(arg: "foo" | "bar"): number;
  * }
  *
+ * // This is allowed. If it wasn't subclassing would be less useful.
  * const exampleMethodSubclass: ExampleBaseClass = new MethodSubclassing();
  *
- * // This is allowed, however at runtime `MethodSubclassing#methodOne` could
+ * // TypeScript does not error here. However at runtime `MethodSubclassing#methodOne`
  * // will almost certainly error as it has the required property `y`.
  * // The reason why there's no errors is an intentional unsoundness in TypeScript.
  * exampleMethodSubclass.methodOne({ x: "foo" });
@@ -234,7 +236,7 @@ export type ConformRecord<T extends object, V> = {
  *     functionProperty: (arg: "foo" | "bar") => number;
  * }
  *
- * declare class MethodLikeSubclassing {
+ * declare class MethodLikeSubclassing extends ExampleBaseClass {
  *     // This is unsound but by using the `ToMethod` in the parent class it's allowed.
  *     methodLikeProperty: (arg: "foo" | "bar") => number;
  * }
