@@ -1,4 +1,4 @@
-export {};
+import "youtube";
 
 declare global {
   /**
