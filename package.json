@@ -20,8 +20,11 @@
     "eslint:report": "eslint --output-file eslint_report.json --format json .",
     "test": "vitest --typecheck",
     "typecheck": "./node_modules/typescript/bin/tsc",
-    "prepare": "is-ci || husky",
-    "postinstall": "patch-package"
+    "prepare": "run-s hello-world setup-husky patch-package",
+    "hello-world": "echo HELLO WORLD",
+    "setup-husky": "is-ci || husky",
+    "patch-package": "patch-package",
+    "postinstall": "run-s hello-world patch-package"
   },
   "repository": {
     "type": "git",
@@ -72,6 +75,7 @@
     "@types/simple-peer": "~9.11.1",
     "@types/youtube": "~0.0.48",
     "handlebars": "^4.7.8",
+    "npm-run-all": "^4.1.5",
     "patch-package": "^8.0.0",
     "pixi.js": "^7.4.2",
     "postinstall-postinstall": "^2.1.0",
@@ -123,5 +127,6 @@
   ],
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }
