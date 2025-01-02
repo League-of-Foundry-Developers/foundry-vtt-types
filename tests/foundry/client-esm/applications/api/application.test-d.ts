@@ -20,10 +20,16 @@ class _UnrelatedOptions extends ApplicationV2 {
 }
 
 // Regression test for `DeepPartial` not making interfaces partial.
-class _DeeplyOptional extends ApplicationV2 {
+class DeeplyOptional extends ApplicationV2 {
   static override DEFAULT_OPTIONS = {
     window: {
       minimizable: true,
     },
   };
 }
+
+declare const x: DeeplyOptional;
+
+x.render({
+  parts: ["part-name"],
+});

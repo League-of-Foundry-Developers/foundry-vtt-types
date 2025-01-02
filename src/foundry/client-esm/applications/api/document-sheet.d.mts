@@ -69,9 +69,7 @@ declare class DocumentSheetV2<
    */
   get isEditable(): boolean;
 
-  protected _initializeApplicationOptions(
-    options: DeepPartial<Configuration>,
-  ): DeepPartial<Configuration> & Record<string, unknown>;
+  protected _initializeApplicationOptions(options: DeepPartial<Configuration>): Configuration;
 
   protected override _headerControlsButtons(): Generator<ApplicationV2.HeaderControlsEntry>;
 

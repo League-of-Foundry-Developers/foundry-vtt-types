@@ -66,7 +66,7 @@ declare class DialogV2 extends ApplicationV2<EmptyObject, DialogV2.Configuration
 
   protected override _initializeApplicationOptions(
     options: DeepPartial<DialogV2.Configuration>,
-  ): DeepPartial<DialogV2.Configuration>;
+  ): DialogV2.Configuration;
 
   protected override _renderHTML(_context: unknown, _options: ApplicationV2.RenderOptions): Promise<HTMLFormElement>;
 
