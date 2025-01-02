@@ -168,7 +168,7 @@ declare namespace HandlebarsApplicationMixin {
      * be persisted during a re-render operation. A blank string is used
      * to denote that the root level of the part is scrollable.
      */
-    scrollabe?: string[];
+    scrollable?: string[];
 
     /**
      * A registry of forms selectors and submission handlers.
