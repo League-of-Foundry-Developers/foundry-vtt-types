@@ -1,4 +1,4 @@
-import type { AnyArray, AnyObject, DeepPartial, InexactPartial, InstanceType } from "../../../utils/index.d.mts";
+import type { AnyArray, AnyObject, InexactPartial, InstanceType } from "../../../utils/index.d.mts";
 import type ApplicationV2 from "../../client-esm/applications/api/application.d.mts";
 import type { CustomFormInput } from "../../client-esm/applications/forms/fields.d.mts";
 import type DataModel from "../../common/abstract/data.d.mts";
@@ -300,9 +300,8 @@ declare global {
       icon?: string | undefined;
 
       /** The FormApplication or ApplicationV2 to render */
-      type:
-        | (new () => FormApplication.Any)
-        | (new (options?: DeepPartial<ApplicationV2.Configuration>) => ApplicationV2.Any);
+      // In SettingsConfig#_onClickSubmenu this type is constructed and not given any options.
+      type: (new () => FormApplication.Any) | (new () => ApplicationV2.Any);
 
       /** If true, only a GM can edit this Setting */
       restricted?: boolean | undefined;
