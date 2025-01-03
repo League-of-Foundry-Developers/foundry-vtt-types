@@ -20,7 +20,9 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * A cached reference to the FormApplication instance used to configure this Document.
    * @defaultValue `null`
    */
-  protected readonly _sheet: FormApplication.Any | null; // TODO: Replace with InstanceType<ConfiguredSheetClass<T>> once the circular reference problem has been solved
+  protected readonly _sheet: InstanceType<
+    Document.ConfiguredSheetClassFor<Document.Internal.DocumentNameFor<BaseDocument>>
+  > | null;
 
   static name: "ClientDocumentMixin";
 
