@@ -533,12 +533,7 @@ declare namespace BaseGrid {
     j: number;
   }
 
-  interface OffsetRange {
-    i0: number;
-    j0: number;
-    i1: number;
-    j1: number;
-  }
+  type OffsetRange = [i0: number, j0: number, i1: number, j1: number];
 
   type Coordinates = Offset | Canvas.Point;
 
