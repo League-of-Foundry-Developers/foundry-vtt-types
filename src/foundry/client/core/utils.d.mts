@@ -15,13 +15,15 @@ type FromUuid<Uuid extends string> = Uuid extends `${string}.${string}.${infer R
     ? Document.ConfiguredInstanceForName<DocumentType>
     : InvalidUuid;
 
-// TODO(LukeAbby): The condition `ConcreteDocument extends __UnsetDocument` will not be necessary once `Document.Any` is more type safe.
+// TODO(LukeAbby): The usage of `Document.Type` when it's unset will not be necessary once `Document.Any` is more type safe.
 type FromUuidValidate<
   ConcreteDocument extends Document.Any,
   Uuid extends string,
-> = ConcreteDocument extends __UnsetDocument
-  ? MustBeValidUuid<Uuid, Document.Type> // Only necessary because `Document.Any` is of type `any` not `Document.Type`.
-  : MustBeValidUuid<Uuid, ConcreteDocument["documentName"]>;
+> = __UnsetDocument extends ConcreteDocument
+  ? MustBeValidUuid<Uuid, Document.Type>
+  : string extends Uuid
+    ? string
+    : MustBeValidUuid<Uuid, ConcreteDocument["documentName"]>;
 
 declare global {
   /**
