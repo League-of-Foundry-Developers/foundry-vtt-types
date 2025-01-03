@@ -341,7 +341,7 @@ declare class ApplicationV2<
   [__RenderOptions]: RenderOptions;
   [__RenderContext]: RenderContext;
 
-  constructor(options: DeepPartial<Configuration>);
+  constructor(options?: DeepPartial<Configuration>);
 
   static BASE_APPLICATION: typeof ApplicationV2;
 
