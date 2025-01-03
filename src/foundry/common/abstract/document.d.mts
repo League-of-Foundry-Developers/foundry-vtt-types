@@ -1395,7 +1395,10 @@ declare namespace Document {
     ConcreteOperation extends Operation,
   > = DatabaseOperationMap[Name][ConcreteOperation];
 
-  type ConfiguredSheetClassFor<Name extends Document.Type> = GetKey<GetKey<CONFIG, Name>, "sheetClass">;
+  type ConfiguredSheetClassFor<Name extends Document.Type> = MakeConform<
+    GetKey<GetKey<CONFIG, Name>, "sheetClass">,
+    AnyConstructor
+  >;
 
   type ConfiguredObjectClassFor<Name extends Document.Type> = GetKey<GetKey<CONFIG, Name>, "objectClass">;
 
