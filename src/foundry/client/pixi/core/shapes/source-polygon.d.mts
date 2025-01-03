@@ -126,6 +126,8 @@ declare global {
       destination: Canvas.Point,
       {
         mode,
+
+        /** The configuration that defines a certain Polygon type */
         ...config
       }: {
         /**
@@ -133,10 +135,7 @@ declare global {
          * (default: "all")
          */
         mode?: Mode;
-
-        /** The configuration that defines a certain Polygon type */
-        config?: PointSourcePolygonConfig;
-      },
+      } & PointSourcePolygonConfig,
     ): PointSourcePolygon.TestCollision<Mode>;
 
     /**
