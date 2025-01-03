@@ -2924,42 +2924,40 @@ declare global {
 
       interface Layers {
         /** @defaultValue `{ layerClass: WeatherLayer, group: "primary" }` */
-        weather: LayerDefinition<typeof WeatherEffects>;
+        weather: LayerDefinition<typeof WeatherEffects, "primary">;
 
         /** @defaultValue `{ layerClass: GridLayer, group: "interface" }` */
-        grid: LayerDefinition<typeof GridLayer>;
+        grid: LayerDefinition<typeof GridLayer, "interface">;
 
         /** @defaultValue `{ layerClass: RegionLayer, group: "interface" }` */
-        // regions: LayerDefinition<typeof RegionLayer>;
+        // regions: LayerDefinition<typeof RegionLayer, "interface">;
 
         /** @defaultValue `{ layerClass: DrawingsLayer, group: "interface" }` */
-        drawings: LayerDefinition<typeof DrawingsLayer>;
+        drawings: LayerDefinition<typeof DrawingsLayer, "interface">;
 
         /** @defaultValue `{ layerClass: TemplateLayer, group: "interface" }` */
-        templates: LayerDefinition<typeof TemplateLayer>;
+        templates: LayerDefinition<typeof TemplateLayer, "interface">;
 
         /** @defaultValue `{ layerClass: TokenLayer, group: "interface" }` */
-        tiles: LayerDefinition<typeof TilesLayer>;
+        tiles: LayerDefinition<typeof TilesLayer, "interface">;
 
         /** @defaultValue `{ layerClass: WallsLayer, group: "interface" }` */
-        walls: LayerDefinition<typeof WallsLayer>;
+        walls: LayerDefinition<typeof WallsLayer, "interface">;
 
         /** @defaultValue `{ layerClass: TokenLayer, group: "interface" }` */
-        tokens: LayerDefinition<typeof TokenLayer>;
+        tokens: LayerDefinition<typeof TokenLayer, "interface">;
 
         /** @defaultValue `{ layerClass: SoundsLayer, group: "interface" }` */
-        sounds: LayerDefinition<typeof SoundsLayer>;
+        sounds: LayerDefinition<typeof SoundsLayer, "interface">;
 
         /** @defaultValue `{ layerClass: LightingLayer, group: "interface" }` */
-        lighting: LayerDefinition<typeof LightingLayer>;
+        lighting: LayerDefinition<typeof LightingLayer, "interface">;
 
         /** @defaultValue `{ layerClass: NotesLayer, group: "interface" }` */
-        notes: LayerDefinition<typeof NotesLayer>;
+        notes: LayerDefinition<typeof NotesLayer, "interface">;
 
         /** @defaultValue `{ layerClass: ControlsLayer, group: "interface" }` */
-        controls: LayerDefinition<typeof ControlsLayer>;
-
-        [key: string]: LayerDefinition;
+        controls: LayerDefinition<typeof ControlsLayer, "interface">;
       }
 
       // This requires `CanvasGroupConstructor` because `Canvas##createGroups` assumes there's no parameters.
@@ -2971,9 +2969,9 @@ declare global {
       }
 
       // This requires `typeof CanvasLayer` because `CanvasGroupMixin#_createLayers` assumes there's no parameters.
-      interface LayerDefinition<LayerClass extends typeof CanvasLayer = typeof CanvasLayer> {
+      interface LayerDefinition<LayerClass extends typeof CanvasLayer, Group extends keyof CONFIG["Canvas"]["groups"]> {
         layerClass: LayerClass;
-        group: keyof CONFIG["Canvas"]["groups"];
+        group: Group;
       }
 
       interface GridStyle {

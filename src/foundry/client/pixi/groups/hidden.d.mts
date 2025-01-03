@@ -4,7 +4,7 @@ declare global {
   /**
    * A specialized canvas group for rendering hidden containers before all others (like masks).
    */
-  class HiddenCanvasGroup extends CanvasGroupMixin(PIXI.Container) {
+  class HiddenCanvasGroup extends CanvasGroupMixin<typeof PIXI.Container, "hidden">(PIXI.Container) {
     /**
      * @defaultValue `"none"`
      */
@@ -14,11 +14,6 @@ declare global {
      * The container which hold masks.
      */
     masks: PIXI.Container;
-
-    /**
-     * @defaultValue `"hidden"`
-     */
-    static override groupName: string;
 
     /**
      * Add a mask to this group.

@@ -7,16 +7,11 @@ declare global {
   /**
    * A container group which contains the primary canvas group and the effects canvas group.
    */
-  class EnvironmentCanvasGroup extends CanvasGroupMixin(PIXI.Container) {
+  class EnvironmentCanvasGroup extends CanvasGroupMixin<typeof PIXI.Container, "environment">(PIXI.Container) {
     /**
      * The global light source attached to the environment
      */
     globalLightSource(): foundry.canvas.sources.GlobalLightSource;
-
-    /**
-     * @defaultValue `"environment"`
-     */
-    static override groupName: string;
 
     /**
      * @defaultValue `false`
