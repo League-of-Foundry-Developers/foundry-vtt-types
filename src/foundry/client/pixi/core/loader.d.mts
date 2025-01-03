@@ -1,4 +1,5 @@
 import type { InexactPartial, NullishProps } from "../../../../utils/index.d.mts";
+import type { TranscoderWorker } from "@pixi/basis";
 
 declare global {
   /**
@@ -19,9 +20,8 @@ declare global {
 
     /**
      * Initialize the basis transcoder for PIXI.Assets
-     * @privateRemarks This should be `ReturnType<typeof PIXI.TranscoderWorker.loadTranscoder> | Promise<void>` but we lack types for `@pixi/basis`
      */
-    static initializeBasisTranscoder(): Promise<[void, void] | void>;
+    static initializeBasisTranscoder(): ReturnType<typeof TranscoderWorker.loadTranscoder> | Promise<void>;
 
     /**
      * Check if a source has a text file extension.
