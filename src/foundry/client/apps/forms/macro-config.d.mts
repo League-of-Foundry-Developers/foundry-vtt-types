@@ -21,7 +21,7 @@ declare global {
      * });
      * ```
      */
-    static override get defaultOptions(): DocumentSheetOptions<Macro>;
+    static override get defaultOptions(): DocumentSheetOptions<Macro.ConfiguredInstance>;
 
     override getData(options?: Partial<Options>): MaybePromise<GetDataReturnType<MacroConfig.MacroConfigData>>;
 

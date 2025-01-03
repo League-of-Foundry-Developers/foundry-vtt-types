@@ -153,11 +153,12 @@ declare global {
      * @param uuid - The Document UUID to display
      * @remarks Returns a ui notification number if doc could not be found
      */
-    static toggleDocumentSheet(uuid: string): Promise<void> | Application | number;
+    static toggleDocumentSheet(uuid: string): Promise<void> | Application.Any | number;
   }
 
   namespace Hotbar {
-    type Any = Hotbar<any>;
+    type Any = AnyHotbar;
+    type AnyConstructor = typeof AnyHotbar;
 
     interface HotbarData {
       page: Hotbar["page"];
@@ -166,4 +167,8 @@ declare global {
       locked: boolean;
     }
   }
+}
+
+declare abstract class AnyHotbar extends Hotbar {
+  constructor(arg0: never, ...args: never[]);
 }

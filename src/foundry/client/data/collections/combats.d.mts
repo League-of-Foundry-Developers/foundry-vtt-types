@@ -16,7 +16,7 @@ declare global {
      */
     static get settings(): ClientSettings.SettingInitializedType<"core", Combat.CONFIG_SETTING>;
 
-    override get directory(): (typeof ui)["combat"];
+    override get directory(): typeof ui.combat;
 
     /**
      * Get an Array of Combat instances which apply to the current canvas scene
@@ -40,4 +40,13 @@ declare global {
      */
     protected _onDeleteToken(sceneId: string, tokenId: string): Promise<void>;
   }
+
+  namespace CombatEncounters {
+    type Any = AnyCombatEncounters;
+    type AnyConstructor = typeof AnyCombatEncounters;
+  }
+}
+
+declare abstract class AnyCombatEncounters extends CombatEncounters {
+  constructor(arg0: never, ...args: never[]);
 }

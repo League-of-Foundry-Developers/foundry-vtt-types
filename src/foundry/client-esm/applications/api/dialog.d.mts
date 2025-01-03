@@ -1,4 +1,4 @@
-import type { AnyFunction, DeepPartial, EmptyObject } from "../../../../utils/index.d.mts";
+import type { AnyFunction, DeepPartial, EmptyObject, MaybePromise } from "../../../../utils/index.d.mts";
 import type ApplicationV2 from "./application.d.mts";
 
 /**
@@ -66,7 +66,7 @@ declare class DialogV2 extends ApplicationV2<EmptyObject, DialogV2.Configuration
 
   protected override _initializeApplicationOptions(
     options: DeepPartial<DialogV2.Configuration>,
-  ): DeepPartial<DialogV2.Configuration>;
+  ): DialogV2.Configuration;
 
   protected override _renderHTML(_context: unknown, _options: ApplicationV2.RenderOptions): Promise<HTMLFormElement>;
 
@@ -125,10 +125,10 @@ declare class DialogV2 extends ApplicationV2<EmptyObject, DialogV2.Configuration
    *             or the value returned by that button's callback. If the dialog was
    *             dismissed, and rejectClose is false, the Promise resolves to null.
    */
-  static prompt<Options extends Partial<DialogV2.WaitOptions>, OKReturn = string>(
+  static prompt<Options extends DeepPartial<DialogV2.WaitOptions>, OKReturn = string>(
     options?: Options & {
       /** Options to overwrite the default confirmation button configuration. */
-      ok?: Partial<DialogV2.Button<OKReturn>>;
+      ok?: DeepPartial<DialogV2.Button<OKReturn>>;
     },
   ): Promise<OKReturn | InferButtonReturnTypes<Options> | InferDismissType<Options>>;
 
@@ -156,7 +156,7 @@ declare class DialogV2 extends ApplicationV2<EmptyObject, DialogV2.Configuration
 }
 
 declare namespace DialogV2 {
-  export interface Button<CallBackReturn> {
+  export interface Button<CallbackReturn> {
     /**
      * The button action identifier.
      */
@@ -189,14 +189,14 @@ declare namespace DialogV2 {
      * from this function will be used as the dialog's submitted value.
      * Otherwise, the button's identifier is used.
      */
-    callback?: ButtonCallback<CallBackReturn>;
+    callback?: ButtonCallback<CallbackReturn>;
   }
 
   export type ButtonCallback<T> = (
     event: PointerEvent | SubmitEvent,
     button: HTMLButtonElement,
     dialog: HTMLDialogElement,
-  ) => Promise<T>;
+  ) => MaybePromise<T>;
 
   export interface Configuration extends ApplicationV2.Configuration {
     /**
@@ -250,19 +250,17 @@ declare namespace DialogV2 {
   }
 }
 
-type InferDismissType<Options extends Partial<DialogV2.WaitOptions>> = Options["rejectClose"] extends boolean
+type InferDismissType<Options extends DeepPartial<DialogV2.WaitOptions>> = Options["rejectClose"] extends boolean
   ? Options["rejectClose"] extends true
     ? never
     : null
   : never;
 
-type InferButtonReturnTypes<Options extends Partial<DialogV2.WaitOptions>> =
-  Options["buttons"] extends Array<infer Button>
-    ? Button extends DialogV2.Button<infer Callback>
-      ? Button["callback"] extends AnyFunction
-        ? Callback
-        : string
-      : never
+type InferButtonReturnTypes<Options extends DeepPartial<DialogV2.WaitOptions>> =
+  Options["buttons"] extends ReadonlyArray<DialogV2.Button<infer Callback>>
+    ? Callback extends AnyFunction
+      ? Callback
+      : string
     : never;
 
 export default DialogV2;

@@ -111,6 +111,8 @@ declare global {
   class RollTable extends ClientDocumentMixin(foundry.documents.BaseRollTable) {
     static override metadata: RollTable.Metadata;
 
+    static get implementation(): RollTable.ConfiguredClass;
+
     /**
      * Provide a thumbnail image path used to represent this document.
      */
@@ -265,7 +267,7 @@ declare global {
       parent: ClientDocument,
       collection: string,
       documents: ClientDocument[],
-      ids: string,
+      ids: string[],
       options: Document.OnDeleteOptions<"TableResult">,
       userId: string,
     ): void;

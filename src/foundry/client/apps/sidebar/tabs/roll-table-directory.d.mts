@@ -10,4 +10,13 @@ declare global {
 
     protected override _getEntryContextOptions(): ContextMenuEntry[];
   }
+
+  namespace RollTableDirectory {
+    type Any = AnyRollTableDirectory;
+    type AnyConstructor = typeof AnyRollTableDirectory;
+  }
+}
+
+declare abstract class AnyRollTableDirectory extends RollTableDirectory {
+  constructor(arg0: never, ...args: never[]);
 }

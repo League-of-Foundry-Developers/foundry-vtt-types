@@ -39,6 +39,11 @@ declare global {
     protected _onUpdateNotificationClick(event: JQuery.ClickEvent): void;
   }
 
+  namespace Settings {
+    type Any = AnySettings;
+    type AnyConstructor = typeof AnySettings;
+  }
+
   /**
    * A simple window application which shows the built documentation pages within an iframe
    * @typeParam Options - the type of the options object
@@ -63,10 +68,23 @@ declare global {
      * return options;
      * ```
      */
-    static override get defaultOptions(): (typeof Application)["defaultOptions"];
+    static override get defaultOptions(): typeof Application.defaultOptions;
 
     override getData(options?: Partial<Options>): Promise<{ src: string }>;
 
     override close(options?: Application.CloseOptions): ReturnType<Application["close"]>;
   }
+
+  namespace FrameViewer {
+    type Any = AnyFrameViewer;
+    type AnyConstructor = typeof AnyFrameViewer;
+  }
+}
+
+declare abstract class AnySettings extends Settings<ApplicationOptions> {
+  constructor(arg0: never, ...args: never[]);
+}
+
+declare abstract class AnyFrameViewer extends FrameViewer<ApplicationOptions> {
+  constructor(arg0: never, ...args: never[]);
 }

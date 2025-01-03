@@ -9,10 +9,9 @@ declare global {
    *
    * @typeParam Options - the type of the options object
    */
-  class ItemSheet<Options extends DocumentSheetOptions<Item> = DocumentSheetOptions<Item>> extends DocumentSheet<
-    Options,
-    Item.ConfiguredInstance
-  > {
+  class ItemSheet<
+    Options extends DocumentSheetOptions<Item.ConfiguredInstance> = DocumentSheetOptions<Item.ConfiguredInstance>,
+  > extends DocumentSheet<Options, Item.ConfiguredInstance> {
     /**
      * @defaultValue
      * ```typescript
@@ -29,7 +28,7 @@ declare global {
      * })
      * ```
      */
-    static get defaultOptions(): DocumentSheetOptions<Item>;
+    static get defaultOptions(): DocumentSheetOptions<Item.ConfiguredInstance>;
 
     override get title(): string;
 
@@ -50,8 +49,9 @@ declare global {
   namespace ItemSheet {
     type Any = ItemSheet<any>;
 
-    interface ItemSheetData<Options extends DocumentSheetOptions<Item> = DocumentSheetOptions<Item>>
-      extends DocumentSheet.DocumentSheetData<Options, Item.ConfiguredInstance> {
+    interface ItemSheetData<
+      Options extends DocumentSheetOptions<Item.ConfiguredInstance> = DocumentSheetOptions<Item.ConfiguredInstance>,
+    > extends DocumentSheet.DocumentSheetData<Options, Item.ConfiguredInstance> {
       item: this["document"];
     }
   }

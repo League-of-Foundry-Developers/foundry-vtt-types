@@ -21,11 +21,14 @@ type GameInitialized<Data, MustRun extends InitializationEvent, RunEvents extend
 type HooksRan<T extends InitializationEvent> = EarlierEvents[T] | T;
 
 // May be called with just one hook.
-type MaybeInitialized<
+type MaybeInitialized<Data, MustRun extends InitializationEvent> = GameInitialized<
   Data,
-  MustRun extends InitializationEvent,
-  RunEvents extends InitializationEvent,
-> = GameInitialized<Data, MustRun, HooksRan<RunEvents>, Data | undefined>;
+  MustRun,
+  HooksRan<ValidHooksRan>,
+  Data | undefined
+>;
+
+type ValidHooksRan = Extract<keyof AssumeHookRan, InitializationEvent>;
 
 /**
  * @privateRemarks In v12 many of these properties were mistakenly stripped of their readonly quality;
@@ -467,8 +470,10 @@ declare class InternalGame<RunEvents extends InitializationEvent> {
 
   /**
    * The currently connected User entity, or null if Users is not yet initialized
+   *
+   * @remarks Initialized just before the `"setup"` hook event.
    */
-  get user(): Document.Stored<User.ConfiguredInstance> | null;
+  get user(): GameInitialized<Document.Stored<User.ConfiguredInstance>, "setup", RunEvents, null>;
 
   /**
    * A convenience accessor for the currently viewed Combat encounter
@@ -655,13 +660,16 @@ declare global {
       /**
        * Get the configured core and system type names for a specific document type.
        *
-       * Because of module subtypes, extra types of the form `${moduleName}.${subtype}` are always a possibility.
+       * Because of module subtypes, extra types of the form `${moduleName}.${subtype}` are
+       * possible when `hasTypeData` is true.
        *
        * @typeParam DocumentName - the type of the Document this data is for
        */
       type TypeNames<DocumentName extends Document.Type> =
         | (string & keyof Model[DocumentName])
-        | (`${string}.${string}` & {});
+        | (Document.Internal.SimpleMetadata<DocumentName> extends { hasTypeData: true }
+            ? `${string}.${string}` & {}
+            : never);
     }
 
     type Model = {
@@ -763,13 +771,13 @@ declare global {
    * @defaultValue `undefined`
    * Initialized just before the `"init"` hook event.
    */
-  let canvas: MaybeInitialized<Canvas, "init", keyof AssumeHookRan>;
+  let canvas: MaybeInitialized<Canvas, "init">;
 
   /**
    * @defaultValue `undefined`
    * Initialized just before the `"ready"` hook event.
    */
-  let keyboard: MaybeInitialized<KeyboardManager, "ready", keyof AssumeHookRan>;
+  let keyboard: MaybeInitialized<KeyboardManager, "ready">;
 }
 
 type ConfiguredCollectionClassForName<Name extends foundry.CONST.DOCUMENT_TYPES> = InstanceType<

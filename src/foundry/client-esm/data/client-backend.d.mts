@@ -1,4 +1,4 @@
-import type { LoggingLevels } from "../../../utils/index.d.mts";
+import type { InstanceType, LoggingLevels } from "../../../utils/index.d.mts";
 import type Document from "../../common/abstract/document.d.mts";
 import type {
   DatabaseGetOperation,

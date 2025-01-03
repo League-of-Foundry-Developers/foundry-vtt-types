@@ -61,7 +61,8 @@ declare global {
   }
 
   namespace PlayerList {
-    type Any = PlayerList<any>;
+    type Any = AnyPlayerList;
+    type AnyConstructor = typeof AnyPlayerList;
 
     interface UserData {
       active: User["active"];
@@ -79,4 +80,8 @@ declare global {
       hide: boolean;
     }
   }
+}
+
+declare abstract class AnyPlayerList extends PlayerList<ApplicationOptions> {
+  constructor(arg0: never, ...args: never[]);
 }

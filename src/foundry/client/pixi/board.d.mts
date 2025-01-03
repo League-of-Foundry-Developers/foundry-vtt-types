@@ -1,4 +1,4 @@
-import type { InexactPartial, NullishProps } from "../../../utils/index.d.mts";
+import type { InexactPartial, NullishProps, InstanceType } from "../../../utils/index.d.mts";
 import type Document from "../../common/abstract/document.d.mts";
 import type { CANVAS_PERFORMANCE_MODES } from "../../common/constants.d.mts";
 

@@ -121,7 +121,7 @@ declare global {
      * This is documented to return only {@link DocumentSheet}s but {@link DrawingConfig} is just a
      * {@link FormApplication}. See https://gitlab.com/foundrynet/foundryvtt/-/issues/6454.
      */
-    static get registeredSheets(): FormApplication[];
+    static get registeredSheets(): FormApplication.Any[];
   }
 
   namespace WorldCollection {
@@ -162,4 +162,4 @@ declare global {
   }
 }
 
-type DropFirst<T extends Array<unknown>> = T extends [unknown, ...infer V] ? V : T;
+type DropFirst<T extends Array<unknown>> = T extends [infer _1, ...infer V] ? V : T;

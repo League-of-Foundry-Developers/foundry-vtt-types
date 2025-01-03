@@ -1,4 +1,4 @@
-import type { ValueOf } from "../../../../utils/index.d.mts";
+import type { ValueOf, InstanceType } from "../../../../utils/index.d.mts";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
@@ -36,34 +36,34 @@ declare global {
       redraw: RenderFlag<Partial<Drawing.RenderFlags>>;
 
       /** @defaultValue `{ propagate: ["refreshState", "refreshTransform", "refreshText", "refreshElevation"], alias: true }` */
-      refresh: RenderFlag<Partial<Drawing.RenderFlags>>;
+      refresh: RenderFlag<Drawing.RenderFlags>;
 
       /** @defaultValue `{}` */
       refreshState: RenderFlag<Partial<Drawing.RenderFlags>>;
 
       /** @defaultValue `{ propagate: ["refreshPosition", "refreshRotation", "refreshSize"], alias: true }` */
-      refreshTransform: RenderFlag<Partial<Drawing.RenderFlags>>;
+      refreshTransform: RenderFlag<Drawing.RenderFlags>;
 
       /** @defaultValue `{}` */
-      refreshPosition: RenderFlag<Partial<Drawing.RenderFlags>>;
+      refreshPosition: RenderFlag<Drawing.RenderFlags>;
 
       /** @defaultValue `{ propagate: ["refreshFrame"] }` */
-      refreshRotation: RenderFlag<Partial<Drawing.RenderFlags>>;
+      refreshRotation: RenderFlag<Drawing.RenderFlags>;
 
       /** @defaultValue `{ propagate: ["refreshPosition", "refreshFrame", "refreshShape", "refreshText"] }` */
-      refreshSize: RenderFlag<Partial<Drawing.RenderFlags>>;
+      refreshSize: RenderFlag<Drawing.RenderFlags>;
 
       /** @defaultValue `{ propagate: ["refreshFrame", "refreshText", "refreshMesh"] }` */
-      refreshShape: RenderFlag<Partial<Drawing.RenderFlags>>;
+      refreshShape: RenderFlag<Drawing.RenderFlags>;
 
       /** @defaultValue `{}` */
-      refreshText: RenderFlag<Partial<Drawing.RenderFlags>>;
+      refreshText: RenderFlag<Drawing.RenderFlags>;
 
       /** @defaultValue `{}` */
-      refreshFrame: RenderFlag<Partial<Drawing.RenderFlags>>;
+      refreshFrame: RenderFlag<Drawing.RenderFlags>;
 
       /** @defaultValue `{}` */
-      refreshElevation: RenderFlag<Partial<Drawing.RenderFlags>>;
+      refreshElevation: RenderFlag<Drawing.RenderFlags>;
 
       /**
        * @defaultValue
@@ -75,7 +75,7 @@ declare global {
        * ```
        * @deprecated since v12 until v14
        */
-      refreshMesh: RenderFlag<Partial<Drawing.RenderFlags>>;
+      refreshMesh: RenderFlag<Drawing.RenderFlags>;
     };
 
     /**

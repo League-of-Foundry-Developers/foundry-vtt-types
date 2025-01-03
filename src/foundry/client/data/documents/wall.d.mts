@@ -26,5 +26,7 @@ declare global {
    */
   class WallDocument extends CanvasDocumentMixin(foundry.documents.BaseWall) {
     static override metadata: WallDocument.Metadata;
+
+    static get implementation(): WallDocument.ConfiguredClass;
   }
 }

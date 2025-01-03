@@ -1,4 +1,4 @@
-import type { InexactPartial, LoggingLevels } from "../../../utils/index.d.mts";
+import type { InexactPartial, InstanceType, LoggingLevels } from "../../../utils/index.d.mts";
 import type BaseUser from "../documents/user.d.mts";
 import type Document from "./document.d.mts";
 import type {

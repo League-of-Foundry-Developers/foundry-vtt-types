@@ -19,11 +19,7 @@ declare global {
           type: K;
         } & (DataModelConfig extends { Item: { readonly [_ in K]?: infer SystemData } }
             ? {
-                // For backwards compatability both instances and classes are supported for the time being.
-                // Only constructors are valid however.
-                system: SystemData extends abstract new (arg0: never, ...args: never[]) => infer Instance
-                  ? Instance
-                  : SystemData;
+                system: SystemData;
               }
             : // eslint-disable-next-line @typescript-eslint/no-empty-object-type
               {})
@@ -84,8 +80,7 @@ declare global {
   class Actor extends ClientDocumentMixin(foundry.documents.BaseActor) {
     static override metadata: Actor.Metadata;
 
-    // NOTE(LukeAbby): Helps stymy circularity.
-    // get documentName(): "Actor";
+    static get implementation(): Actor.ConfiguredClass;
 
     protected override _configure(options?: { pack?: string | null }): void;
 

@@ -3,6 +3,9 @@ import type { DataModel } from "../abstract/data.d.mts";
 import type { fields } from "./module.d.mts";
 import type * as documents from "../documents/_module.d.mts";
 import type { AnyObject, EmptyObject, ToMethod, ValueOf } from "../../../utils/index.d.mts";
+import type { FilePathField } from "./fields.d.mts";
+
+type DataSchema = foundry.data.fields.DataSchema;
 
 // TODO: Implement all of the necessary options
 
@@ -11,7 +14,9 @@ declare global {
 }
 
 declare namespace LightData {
-  export interface LightAnimationDataSchema extends DataSchema {
+  type Parent = TokenDocument | AmbientLightDocument;
+
+  interface LightAnimationDataSchema extends DataSchema {
     /**
      * The animation type which is applied
      * @defaultValue `null`
@@ -53,7 +58,7 @@ declare namespace LightData {
     reverse: fields.BooleanField;
   }
 
-  export interface DarknessSchema extends DataSchema {
+  interface DarknessSchema extends DataSchema {
     /**
      * @defaultValue `0`
      */
@@ -167,7 +172,7 @@ declare namespace LightData {
  * A reusable document structure for the internal data used to render the appearance of a light source.
  * This is re-used by both the AmbientLightData and TokenData classes.
  */
-declare class LightData extends DataModel<LightData.Schema> {
+declare class LightData extends DataModel<LightData.Schema, LightData.Parent> {
   static override defineSchema(): LightData.Schema;
 
   /**
@@ -439,7 +444,7 @@ declare namespace TextureData {
     label: "";
   }
 
-  interface Schema<SrcOptions extends FilePathFieldOptions> extends DataSchema {
+  interface Schema<SrcOptions extends FilePathField.Options> extends DataSchema {
     /**
      * The URL of the texture source.
      * @defaultValue `initial.src ?? null`
@@ -512,7 +517,7 @@ declare namespace TextureData {
  * A {@link fields.SchemaField} subclass used to represent texture data.
  */
 declare class TextureData<
-  SrcOptions extends FilePathFieldOptions = TextureData.DefaultOptions,
+  SrcOptions extends FilePathField.Options = TextureData.DefaultOptions,
   SchemaOptions extends fields.SchemaField.Options<TextureData.Schema<SrcOptions>> = EmptyObject,
 > extends fields.SchemaField<TextureData.Schema<SrcOptions>, SchemaOptions> {
   /**
@@ -555,12 +560,12 @@ declare namespace PrototypeToken {
  * Extend the base TokenData to define a PrototypeToken which exists within a parent Actor.
  */
 declare class PrototypeToken extends DataModel<PrototypeToken.Schema, any> {
-  constructor(data?: PrototypeToken.ConstructorData, options?: DataModel.ConstructorOptions<PrototypeToken.Parent>);
+  constructor(data?: PrototypeToken.ConstructorData, options?: DataModel.DataValidationOptions<PrototypeToken.Parent>);
 
   declare parent: PrototypeToken.Parent;
 
   /** @defaultValue `{}` */
-  apps: Record<string, Application>;
+  apps: Record<string, Application.Any>;
 
   static override defineSchema(): PrototypeToken.Schema;
 

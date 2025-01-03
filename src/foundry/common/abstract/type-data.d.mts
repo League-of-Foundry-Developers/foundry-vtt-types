@@ -13,6 +13,8 @@ import type BaseUser from "../documents/user.d.mts";
 import type { DataModel } from "./data.d.mts";
 import type Document from "./document.d.mts";
 
+type DataSchema = foundry.data.fields.DataSchema;
+
 declare class AnyDataModel extends DataModel<any, any, any> {
   constructor(...args: any[]);
 }
@@ -114,8 +116,9 @@ type InnerMerge<U, K extends keyof U, T> = T extends { readonly [_ in K]?: infer
 
 declare namespace TypeDataModel {
   type Any = TypeDataModel<any, any, any, any>;
+  type AnyConstructor = typeof AnyTypeDataModel;
 
-  type ConfigurationFailure = InstanceType<ConfigurationFailureClass>;
+  type ConfigurationFailureInstance = ConfigurationFailure;
   type ConfigurationFailureClass = typeof ConfigurationFailure;
 
   // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
@@ -147,29 +150,30 @@ declare namespace TypeDataModel {
   }
 
   type PrepareBaseDataThis<BaseThis extends Internal.Instance.Any> =
-    BaseThis extends Internal.Instance<any, any, infer BaseModel, infer BaseData, infer DerivedData>
+    BaseThis extends Internal.Instance<infer _1, infer _2, infer BaseModel, infer BaseData, infer DerivedData>
       ? MergePartial<Omit<RemoveDerived<BaseThis, BaseModel, BaseData, DerivedData>, "prepareBaseData">, BaseData>
       : never;
 
   type PrepareDerivedDataThis<BaseThis extends Internal.Instance.Any> =
-    BaseThis extends Internal.Instance<any, any, infer BaseModel, infer BaseData, infer DerivedData>
+    BaseThis extends Internal.Instance<infer _1, infer _2, infer BaseModel, infer BaseData, infer DerivedData>
       ? MergePartial<
           SimpleMerge<Omit<RemoveDerived<BaseThis, BaseModel, BaseData, DerivedData>, "prepareDerivedData">, BaseData>,
           DerivedData
         >
       : never;
 
-  type ParentAssignmentType<BaseThis extends Internal.Instance.Any> =
-    BaseThis extends Internal.Instance<infer Schema, infer Parent, any, any, any>
-      ? SimpleMerge<
-          SchemaField.InitializedType<Document.SchemaFor<Parent>>,
-          {
-            // FIXME(LukeAbby): Callers handle making this partial when obvious.
-            // However also should make system partial using the regular rules: if `initial` is assignable to the field or if `required` is false etc.
-            system: SchemaField.InitializedType<Schema>;
-          }
-        >
-      : never;
+  type ParentAssignmentType<Schema extends DataSchema, Parent extends Document.Internal.Instance.Any> = SimpleMerge<
+    SchemaField.InitializedType<Document.SchemaFor<Parent>>,
+    {
+      // FIXME(LukeAbby): Callers handle making this partial when obvious.
+      // However also should make system partial using the regular rules: if `initial` is assignable to the field or if `required` is false etc.
+      system: SchemaField.InitializedType<Schema>;
+    }
+  >;
+}
+
+declare abstract class AnyTypeDataModel extends TypeDataModel<any, any, any, any> {
+  constructor(arg0: never, ...args: never[]);
 }
 
 /**
@@ -288,7 +292,7 @@ declare abstract class TypeDataModel<
    * @returns Return false to exclude this Document from the creation operation
    */
   protected _preCreate(
-    data: TypeDataModel.ParentAssignmentType<this>,
+    data: TypeDataModel.ParentAssignmentType<Schema, Parent>,
     options: Document.PreCreateOptions<any>,
     user: BaseUser,
   ): Promise<boolean | void>;
@@ -301,7 +305,7 @@ declare abstract class TypeDataModel<
    * @param userId  - The id of the User requesting the document update
    */
   protected _onCreate(
-    data: TypeDataModel.ParentAssignmentType<this>,
+    data: TypeDataModel.ParentAssignmentType<Schema, Parent>,
     options: Document.OnCreateOptions<any>,
     userId: string,
   ): void;
@@ -315,7 +319,7 @@ declare abstract class TypeDataModel<
    * @returns A return value of false indicates the update operation should be cancelled.
    */
   protected _preUpdate(
-    changes: DeepPartial<TypeDataModel.ParentAssignmentType<this>>,
+    changes: DeepPartial<TypeDataModel.ParentAssignmentType<Schema, Parent>>,
     options: Document.PreUpdateOptions<any>,
     userId: string,
   ): Promise<boolean | void>;
@@ -328,7 +332,7 @@ declare abstract class TypeDataModel<
    * @param userId  - The id of the User requesting the document update
    */
   protected _onUpdate(
-    changed: DeepPartial<TypeDataModel.ParentAssignmentType<this>>,
+    changed: DeepPartial<TypeDataModel.ParentAssignmentType<Schema, Parent>>,
     options: Document.OnUpdateOptions<any>,
     userId: string,
   ): void;

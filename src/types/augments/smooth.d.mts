@@ -1,4 +1,4 @@
-import type { Brand } from "src/utils/index.d.mts";
+import type { Brand } from "../../utils/index.d.mts";
 import * as graphicsSmooth from "@pixi/graphics-smooth";
 
 type JOINT_TYPE = Brand<number, "PIXI.smooth.JOINT_TYPE">;

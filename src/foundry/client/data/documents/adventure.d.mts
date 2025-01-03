@@ -1,10 +1,12 @@
-import type { FolderDocumentTypes, InexactPartial } from "../../../../utils/index.d.mts";
+import type { FolderDocumentTypes, InexactPartial, InstanceType } from "../../../../utils/index.d.mts";
 // eslint-disable-next-line import/no-named-as-default
 import type DataModel from "../../../common/abstract/data.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type BaseAdventure from "../../../common/documents/adventure.d.mts";
+
+type DataSchema = foundry.data.fields.DataSchema;
 
 declare global {
   namespace Adventure {
@@ -44,12 +46,14 @@ declare global {
   class Adventure extends ClientDocumentMixin(foundry.documents.BaseAdventure) {
     static override metadata: Adventure.Metadata;
 
+    static get implementation(): Adventure.ConfiguredClass;
+
     static fromSource<Schema extends DataSchema>(
       source: fields.SchemaField.InnerAssignmentType<Schema>,
       {
         strict,
         ...context
-      }?: DataModel.ConstructorOptions & {
+      }?: DataModel.DataValidationOptions & {
         /**
          * Models created from trusted source data are validated non-strictly
          * @defaultValue `false`

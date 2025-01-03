@@ -161,7 +161,8 @@ declare global {
   }
 
   namespace CameraViews {
-    type Any = CameraViews<any>;
+    type Any = AnyCameraViews;
+    type AnyConstructor = typeof AnyCameraViews;
 
     interface User {
       user: Document.Stored<globalThis.User>;
@@ -186,4 +187,8 @@ declare global {
       };
     }
   }
+}
+
+declare abstract class AnyCameraViews extends CameraViews<ApplicationOptions> {
+  constructor(arg0: never, ...args: never[]);
 }

@@ -1,4 +1,4 @@
-import type { Brand, InexactPartial, NullishProps } from "../../../../../utils/index.d.mts";
+import type { Brand, InexactPartial, InstanceType, NullishProps } from "../../../../../utils/index.d.mts";
 import type PointEffectSourceMixin from "../../../../client-esm/canvas/sources/point-effect-source.d.mts";
 
 declare global {
@@ -148,6 +148,8 @@ declare global {
       destination: Canvas.Point,
       {
         mode,
+
+        /** The configuration that defines a certain Polygon type */
         ...config
       }: {
         /**
@@ -155,10 +157,7 @@ declare global {
          * (default: "all")
          */
         mode?: Mode;
-
-        /** The configuration that defines a certain Polygon type */
-        config?: PointSourcePolygonConfig;
-      },
+      } & PointSourcePolygonConfig,
     ): PointSourcePolygon.TestCollision<Mode>;
 
     /**

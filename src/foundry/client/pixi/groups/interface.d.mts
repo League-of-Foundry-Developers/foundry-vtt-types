@@ -7,9 +7,7 @@ declare global {
   class InterfaceCanvasGroup<
     DrawOptions extends InterfaceCanvasGroup.DrawOptions = InterfaceCanvasGroup.DrawOptions,
     TearDownOptions extends InterfaceCanvasGroup.TearDownOptions = InterfaceCanvasGroup.TearDownOptions,
-  > extends CanvasGroupMixin(PIXI.Container)<DrawOptions, TearDownOptions> {
-    static override groupName: "interface";
-
+  > extends CanvasGroupMixin<typeof PIXI.Container, "interface">(PIXI.Container)<DrawOptions, TearDownOptions> {
     /**
      * Add a PrimaryGraphics to the group.
      * @param drawing - The Drawing being added
@@ -72,6 +70,7 @@ declare global {
   }
 
   namespace InterfaceCanvasGroup {
+    type Any = AnyInterfaceCanvasGroup;
     type AnyConstructor = typeof AnyInterfaceCanvasGroup;
 
     interface DrawOptions extends CanvasGroupMixin.DrawOptions {}

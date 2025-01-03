@@ -5,6 +5,8 @@ import type { TextureData } from "../data/data.mts";
 import type * as fields from "../data/fields.d.mts";
 import type * as documents from "./_module.mts";
 
+type DataSchema = foundry.data.fields.DataSchema;
+
 /**
  * The Document definition for a Scene.
  * Defines the DataSchema and common behaviors for a Scene which are shared between both client and server.

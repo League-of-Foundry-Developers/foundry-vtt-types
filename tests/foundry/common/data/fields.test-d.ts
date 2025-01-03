@@ -1,5 +1,7 @@
 import { expectTypeOf } from "vitest";
 
+type DataSchema = foundry.data.fields.DataSchema;
+
 // #2554 Null and undefined for SchemaField and EmbeddedDataField
 
 new foundry.documents.BaseAmbientSound({

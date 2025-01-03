@@ -90,6 +90,11 @@ declare global {
   }
 
   namespace Sidebar {
-    type Any = Sidebar<any>;
+    type Any = AnySidebar;
+    type AnyConstructor = typeof AnySidebar;
   }
+}
+
+declare abstract class AnySidebar extends Sidebar<ApplicationOptions> {
+  constructor(arg0: never, ...args: never[]);
 }

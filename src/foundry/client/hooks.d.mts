@@ -1,9 +1,8 @@
 import type { EditorState, Plugin } from "prosemirror-state";
-import type { DeepPartial, EmptyObject, ValueOf } from "../../utils/index.d.mts";
+import type { DeepPartial, EmptyObject, InstanceType, ValueOf } from "../../utils/index.d.mts";
 import type Document from "../common/abstract/document.d.mts";
 import type { EffectChangeData } from "../common/documents/_types.d.mts";
 import type { ProseMirrorDropDown } from "../common/prosemirror/menu.d.mts";
-import type { DropData } from "./data/abstract/client-document.d.mts";
 
 // eslint-disable-next-line import/no-named-as-default
 import type ProseMirrorMenu from "../common/prosemirror/menu.d.mts";
@@ -209,7 +208,7 @@ declare global {
        * @remarks An explicit return value of `false` prevents the Document being created.
        * @see {@link Hotbar#_onDrop}
        */
-      hotbarDrop: (hotbar: Hotbar, data: DropData<Macro.ConfiguredInstance>, slot: number) => boolean | void;
+      hotbarDrop: (hotbar: Hotbar, data: Document.DropData<Macro.ConfiguredInstance>, slot: number) => boolean | void;
 
       /**
        * A hook event that fires when the SceneNavigation menu is expanded or collapsed.
@@ -813,7 +812,7 @@ declare global {
      * @remarks This is called by {@link Hooks.callAll}.
      * @see {@link Application#_render}
      */
-    type RenderApplication<A extends Application = Application> = (
+    type RenderApplication<A extends Application.Any = Application.Any> = (
       app: A,
       html: JQuery,
       data: ReturnType<A["getData"]> extends Promise<infer T> ? T : ReturnType<A["getData"]>,
@@ -829,7 +828,7 @@ declare global {
      * @remarks This is called by {@link Hooks.call}.
      * @see {@link Application#_getHeaderButtons}
      */
-    type GetApplicationHeaderButtons<A extends Application = Application> = (
+    type GetApplicationHeaderButtons<A extends Application.Any = Application.Any> = (
       app: A,
       buttons: Application.HeaderButton[],
     ) => boolean | void;
@@ -843,7 +842,7 @@ declare global {
      * @remarks This is called by {@link Hooks.call}.
      * @see {@link Application#close}
      */
-    type CloseApplication<A extends Application = Application> = (app: A, html: JQuery) => boolean | void;
+    type CloseApplication<A extends Application.Any = Application.Any> = (app: A, html: JQuery) => boolean | void;
 
     /** EffectsCanvasGroup */
 
@@ -852,18 +851,16 @@ declare global {
      * The dispatched event name replaces "Group" with the named CanvasGroup subclass, i.e. "drawPrimaryCanvasGroup".
      * @param group - The group being drawn
      */
-    type DrawGroup<
-      G extends ReturnType<typeof CanvasGroupMixin> = ReturnType<typeof CanvasGroupMixin<CanvasGroupMixin.BaseClass>>,
-    > = (group: G) => void;
+    type DrawGroup<G extends CanvasGroupMixin.AnyConstructor = CanvasGroupMixin.AnyConstructor> = (group: G) => void;
 
     /**
      * A hook event that fires when a {@link CanvasGroup} is deconstructed.
      * The dispatched event name replaces "Group" with the named CanvasGroup subclass, i.e. "tearDownPrimaryCanvasGroup".
      * @param group - The group being deconstructed
      */
-    type TearDownGroup<
-      G extends ReturnType<typeof CanvasGroupMixin> = ReturnType<typeof CanvasGroupMixin<CanvasGroupMixin.BaseClass>>,
-    > = (group: G) => void;
+    type TearDownGroup<G extends CanvasGroupMixin.AnyConstructor = CanvasGroupMixin.AnyConstructor> = (
+      group: G,
+    ) => void;
 
     /** CanvasLayer */
 

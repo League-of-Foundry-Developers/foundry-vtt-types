@@ -1,3 +1,4 @@
+import type { InstanceType } from "../../utils/index.d.mts";
 import type { EarlierEvents, InitializationEvent } from "./game.d.mts";
 
 type ValidRanHooks = Extract<keyof AssumeHookRan, InitializationEvent>;
@@ -16,9 +17,9 @@ interface Games {
 }
 
 // Needs to include the current hook as well as all hooks that can run after it.
-type GameHooks = Exclude<InitializationEvent, EarlierEvents[keyof AssumeHookRan]>;
+type GameHooks = Exclude<InitializationEvent, EarlierEvents[ValidRanHooks]>;
 
-type MaybeUI = Extract<keyof AssumeHookRan, "ready"> extends never ? Partial<UiApplications> : UiApplications;
+type MaybeUI = Extract<ValidRanHooks, "ready"> extends never ? Partial<UiApplications> : UiApplications;
 
 declare global {
   /**
@@ -67,7 +68,7 @@ declare global {
     /**
      * @defaultValue `{}`
      */
-    windows: Record<number, Application>;
+    windows: Record<number, Application.Any>;
   } & MaybeUI;
 
   /**

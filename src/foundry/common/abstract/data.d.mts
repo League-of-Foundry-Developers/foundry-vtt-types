@@ -3,37 +3,7 @@ import type { DataField, SchemaField } from "../data/fields.d.mts";
 import type { fields } from "../data/module.d.mts";
 import type { DataModelValidationFailure } from "../data/validation-failure.d.mts";
 
-declare global {
-  type DataSchema = Record<string, DataField.Any>;
-
-  interface DataValidationOptions {
-    /**
-     * Throw an error if validation fails.
-     * @defaultValue `true`
-     */
-    strict?: boolean | undefined;
-
-    /**
-     * Attempt to replace invalid values with valid defaults?
-     * @defaultValue `false`
-     */
-    fallback?: boolean | undefined;
-
-    /**
-     * Allow partial source data, ignoring absent fields?
-     * @defaultValue `false`
-     */
-    partial?: boolean | undefined;
-
-    /**
-     * If true, invalid embedded documents will emit a warning and be
-     * placed in the invalidDocuments collection rather than causing the
-     * parent to be considered invalid.
-     * @defaultValue `false`
-     */
-    dropInvalidEmbedded?: boolean | undefined;
-  }
-}
+type DataSchema = foundry.data.fields.DataSchema;
 
 declare const DynamicClass: new <_Computed extends object>(arg0: never, ...args: never[]) => _Computed;
 
@@ -169,10 +139,7 @@ declare abstract class DataModel<
    * @param context - Context options passed to the data model constructor
    * @returns The cloned Document instance
    */
-  clone(
-    data?: fields.SchemaField.InnerAssignmentType<Schema>,
-    context?: DataModel.ConstructorOptions<Parent>,
-  ): this | Promise<this>;
+  clone(data?: fields.SchemaField.InnerAssignmentType<Schema>, context?: DataModel.DataValidationOptions<Parent>): this;
 
   /**
    * Validate the data contained in the document to check for type and content
@@ -330,7 +297,7 @@ declare abstract class DataModel<
     {
       strict,
       ...context
-    }?: DataModel.ConstructorOptions & {
+    }?: DataModel.DataValidationOptions & {
       /**
        * Models created from trusted source data are validated non-strictly
        * @defaultValue `false`
@@ -385,11 +352,6 @@ declare namespace DataModel {
     | DataModel<Schema, any>;
 
   type ConstructorDataFor<ConcreteDataModel extends DataModel.Any> = ConstructorData<SchemaOf<ConcreteDataModel>>;
-
-  /**
-   * @deprecated {@link DataModel.DataValidationOptions | `DataModel.DataValidationOptions`}
-   */
-  type ConstructorOptions<Parent extends Any | null = null> = DataValidationOptions<Parent>;
 
   interface DataValidationOptions<Parent extends Any | null = null> {
     /**

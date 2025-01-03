@@ -1,7 +1,7 @@
 import type { MaybePromise, InexactPartial } from "../../../../utils/index.d.mts";
 
 declare global {
-  interface JournalSheetOptions extends DocumentSheetOptions<JournalEntry> {
+  interface JournalSheetOptions extends DocumentSheetOptions<JournalEntry.ConfiguredInstance> {
     /** The current display mode of the journal. Either "text" or "image". */
     sheetMode?: JournalSheet.SheetMode | null;
   }

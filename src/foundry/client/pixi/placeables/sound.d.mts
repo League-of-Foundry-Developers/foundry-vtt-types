@@ -1,5 +1,6 @@
 import type Sound from "../../../client-esm/audio/sound.d.mts";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
+import type { InstanceType } from "../../../../utils/index.d.mts";
 
 declare global {
   namespace AmbientSound {
@@ -57,19 +58,19 @@ declare global {
 
     static override RENDER_FLAGS: {
       /** @defaultValue `{ propagate: ["refresh"] }` */
-      redraw: RenderFlag<Partial<AmbientSound.RenderFlags>>;
+      redraw: RenderFlag<AmbientSound.RenderFlags>;
 
       /** @defaultValue `{ propagate: ["refreshField"], alias: true }` */
-      refresh: RenderFlag<Partial<AmbientSound.RenderFlags>>;
+      refresh: RenderFlag<AmbientSound.RenderFlags>;
 
       /** @defaultValue `{ propagate: ["refreshPosition", "refreshState"] }` */
-      refreshField: RenderFlag<Partial<AmbientSound.RenderFlags>>;
+      refreshField: RenderFlag<AmbientSound.RenderFlags>;
 
       /** @defaultValue `{}` */
-      refreshPosition: RenderFlag<Partial<AmbientSound.RenderFlags>>;
+      refreshPosition: RenderFlag<AmbientSound.RenderFlags>;
 
       /** @defaultValue `{}` */
-      refreshState: RenderFlag<Partial<AmbientSound.RenderFlags>>;
+      refreshState: RenderFlag<AmbientSound.RenderFlags>;
     };
 
     /**

@@ -2,7 +2,6 @@ import type { InexactPartial } from "../../../../utils/index.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 import type { Document } from "../../../common/abstract/module.d.mts";
 import type BasePlaylist from "../../../common/documents/playlist.d.mts";
-import type { ClientDocument } from "../abstract/client-document.d.mts";
 
 declare global {
   namespace Playlist {
@@ -38,6 +37,8 @@ declare global {
    */
   class Playlist extends ClientDocumentMixin(foundry.documents.BasePlaylist) {
     static override metadata: Playlist.Metadata;
+
+    static get implementation(): Playlist.ConfiguredClass;
 
     /**
      * Playlists may have a playback order which defines the sequence of Playlist Sounds
@@ -137,33 +138,33 @@ declare global {
     override _onClickDocumentLink(event: MouseEvent): ReturnType<this["playAll" | "stopAll"]>;
 
     /**
-     * @privateRemarks _preUpdate, _onUpdate, _onDelete, _onCreateDescendantDocuments, _onUpdateDescendantDocuments, and _onDeleteDescendantDocuments are all overridden but with no signature changes.
+     * @privateRemarks _preUpdate, _onUpdate, _onDelete are all overridden but with no signature changes.
      * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
      */
 
     protected override _onCreateDescendantDocuments(
-      parent: ClientDocument<Document.Any>,
+      parent: ClientDocument,
       collection: string,
-      documents: ClientDocument<Document.Any>[],
+      documents: ClientDocument[],
       data: unknown[],
       options: Document.OnCreateOptions<"PlaylistSound">,
       userId: string,
     ): void;
 
     protected override _onUpdateDescendantDocuments(
-      parent: ClientDocument<Document.Any>,
+      parent: ClientDocument,
       collection: string,
-      documents: ClientDocument<Document.Any>[],
+      documents: ClientDocument[],
       changes: unknown[],
       options: Document.OnUpdateOptions<"PlaylistSound">,
       userId: string,
     ): void;
 
     protected override _onDeleteDescendantDocuments(
-      parent: ClientDocument<Document.Any>,
+      parent: ClientDocument,
       collection: string,
-      documents: ClientDocument<Document.Any>[],
-      ids: string,
+      documents: ClientDocument[],
+      ids: string[],
       options: Document.OnDeleteOptions<"PlaylistSound">,
       userId: string,
     ): void;

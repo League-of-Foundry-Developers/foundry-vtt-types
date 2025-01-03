@@ -27,6 +27,8 @@ declare global {
   class TableResult extends ClientDocumentMixin(foundry.documents.BaseTableResult) {
     static override metadata: TableResult.Metadata;
 
+    static get implementation(): TableResult.ConfiguredClass;
+
     /**
      * A path reference to the icon image used to represent this result
      */

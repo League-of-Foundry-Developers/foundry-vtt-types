@@ -6,9 +6,9 @@ declare global {
    * Renders the sidebar directory of compendium packs
    * @typeParam Options - The type of the options object
    */
-  class CompendiumDirectory<Options extends ApplicationOptions = ApplicationOptions> extends DirectoryApplicationMixin(
-    SidebarTab,
-  ) {
+  class CompendiumDirectory<
+    Options extends DocumentDirectoryOptions = DocumentDirectoryOptions,
+  > extends DirectoryApplicationMixin(SidebarTab)<Options> {
     /**
      * @defaultValue
      * ```typescript
@@ -21,7 +21,7 @@ declare global {
      * });
      * ```
      */
-    static override get defaultOptions(): ApplicationOptions;
+    static override get defaultOptions(): DocumentDirectoryOptions;
 
     get activeFilters(): string[];
 
@@ -77,10 +77,7 @@ declare global {
     // TODO: Implement GetDataReturnType
     override getData(options?: Partial<Options>): Promise<object>;
 
-    override render(
-      force?: boolean,
-      options?: Application.RenderOptions<ApplicationOptions> | undefined,
-    ): Promise<unknown>;
+    override render(force?: boolean, options?: Application.RenderOptions<Options> | undefined): Promise<unknown>;
 
     /**
      * Get the sidebar directory entry context options
@@ -102,4 +99,13 @@ declare global {
       pack: CompendiumCollection<CompendiumCollection.Metadata>,
     ): Promise<CompendiumCollection<CompendiumCollection.Metadata> | void>;
   }
+
+  namespace CompendiumDirectory {
+    type Any = AnyCompendiumDirectory;
+    type AnyConstructor = typeof AnyCompendiumDirectory;
+  }
+}
+
+declare abstract class AnyCompendiumDirectory extends CompendiumDirectory<DocumentDirectoryOptions> {
+  constructor(...args: ConstructorParameters<typeof CompendiumDirectory>);
 }

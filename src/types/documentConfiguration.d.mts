@@ -58,7 +58,11 @@ type TestDefaultDocumentsValid = MustConform<
   Record<string, Document.AnyConstructor>
 >;
 
-type ConformedDefault = ConformRecord<_DefaultDocuments, Document.AnyConstructor>;
+type ConformedDefault = ConformRecord<
+  _DefaultDocuments,
+  Document.Internal.Constructor,
+  Document.ConfigurationFailureClass
+>;
 
 export interface DefaultDocuments extends ConformedDefault {}
 
@@ -111,7 +115,13 @@ type TestConfiguredDocumentsValid = MustConform<
   Record<string, Document.AnyConstructor>
 >;
 
-type ConformedConfigured = ConformRecord<_ConfiguredDocuments, Document.AnyConstructor>;
+type ConformedConfigured = {
+  [K in keyof _ConfiguredDocuments]: MakeConform<
+    _ConfiguredDocuments[K],
+    Document.Internal.Constructor,
+    Document.ConfigurationFailureClass & DefaultDocuments[K]
+  >;
+};
 
 export interface ConfiguredDocuments extends ConformedConfigured {}
 
@@ -231,6 +241,7 @@ interface _ConfiguredMetadata<ThisType extends Document.Internal.Instance.Any> {
       collection: "messages";
       label: string;
       labelPlural: string;
+      hasTypeData: true;
       isPrimary: true;
       permissions: {
         create(user: BaseUser, doc: ThisType): boolean;

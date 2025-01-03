@@ -28,7 +28,7 @@ declare abstract class BaseGrid {
   /**
    * The grid type (see {@link CONST.GRID_TYPES}).
    */
-  type: number;
+  type: CONST.GRID_TYPES;
 
   get isGridless(): boolean;
 
@@ -533,12 +533,7 @@ declare namespace BaseGrid {
     j: number;
   }
 
-  interface OffsetRange {
-    i0: number;
-    j0: number;
-    i1: number;
-    j1: number;
-  }
+  type OffsetRange = [i0: number, j0: number, i1: number, j1: number];
 
   type Coordinates = Offset | Canvas.Point;
 

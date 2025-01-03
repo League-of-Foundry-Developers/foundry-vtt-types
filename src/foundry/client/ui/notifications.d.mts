@@ -105,6 +105,9 @@ declare global {
   }
 
   namespace Notifications {
+    type Any = AnyNotifications;
+    type AnyConstructor = typeof AnyNotifications;
+
     interface NotifyOptions {
       /**
        * Should the notification be permanently displayed until dismissed
@@ -133,4 +136,8 @@ declare global {
       console: boolean;
     }
   }
+}
+
+declare abstract class AnyNotifications extends Notifications<ApplicationOptions> {
+  constructor(arg0: never, ...args: never[]);
 }

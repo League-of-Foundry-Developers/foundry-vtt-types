@@ -28,7 +28,7 @@ declare global {
       options?: Hooks.OnOptions,
     ): number;
     static on<H extends Hooks.DynamicCallbacks>(hook: string, fn: H, options?: Hooks.OnOptions): number;
-    static on<H extends (...args: any) => any>(hook: string, fn: H, options?: Hooks.OnOptions): number;
+    static on<H extends AnyFunction>(hook: string, fn: H, options?: Hooks.OnOptions): number;
 
     /**
      * Register a callback handler for an event which is only triggered once the first time the event occurs.

@@ -2,6 +2,12 @@ import type { Document } from "../foundry/common/abstract/module.d.mts";
 
 type ConfiguredModuleData<Name extends string> = Name extends keyof ModuleConfig ? ModuleConfig[Name] : EmptyObject;
 
+/**
+ * This type exists due to https://github.com/microsoft/TypeScript/issues/55667
+ * This will be deprecated once this issue is solved.
+ */
+export type InstanceType<T extends AnyConstructor> = T extends abstract new (...args: infer _) => infer R ? R : never;
+
 export type ConfiguredModule<Name extends string> = Name extends keyof RequiredModules
   ? ConfiguredModuleData<Name>
   :
@@ -122,7 +128,7 @@ export type ArrayOverlaps<T, Item> =
  * See `MustConform` for a version that throws a compilation error when the type
  * cannot be statically known to conform.
  */
-export type MakeConform<T, ConformTo> = [T] extends [ConformTo] ? T : ConformTo;
+export type MakeConform<T, ConformTo, D extends ConformTo = ConformTo> = [T] extends [ConformTo] ? T : D;
 
 /**
  * This is useful when you want to ensure that a type conforms to a certain
@@ -143,8 +149,8 @@ export type MustConform<T extends ConformTo, ConformTo> = T;
  * and arrays etc. This is crucial to allow interfaces to be given to this type.
  */
 export type InterfaceToObject<T extends object> = {
-  // Mapped types are no-ops on most types (even primitives like string) but for
-  // functions, classes, and arrays they convert them to "proper" objects by
+  // This mapped type would be a no-op on most types (even primitives like string)
+  // but for functions, classes, and arrays they convert them to "proper" objects by
   // stripping constructors/function signatures. One side effect is a type like
   // `() => number` will result in `{}`.
   [K in keyof T]: T[K];
@@ -158,8 +164,8 @@ export type InterfaceToObject<T extends object> = {
  * When a value does not conform it is replaced with `never` to indicate that
  * there is an issue.
  */
-export type ConformRecord<T extends object, V> = {
-  [K in keyof T]: T[K] extends V ? T[K] : never;
+export type ConformRecord<T extends object, V, D extends V = V> = {
+  [K in keyof T]: T[K] extends V ? T[K] : D;
 };
 
 /**
@@ -189,7 +195,8 @@ export type ConformRecord<T extends object, V> = {
  *
  * // TypeScript allows this without any errors.
  * declare class MethodSubclassing extends ExampleBaseClass {
- *     // It's a very common thing for subclasses to ask for extra arguments.
+ *     // It's a very common thing for subclasses to ask for extra properties.
+ *     // This appears in the DOM APIs.
  *     methodOne(arg: { x: string; y: string }): number;
  *
  *     // Only taking `"foo" | "bar"` should seem pretty unsound.
@@ -197,9 +204,10 @@ export type ConformRecord<T extends object, V> = {
  *     methodTwo(arg: "foo" | "bar"): number;
  * }
  *
+ * // This is allowed. If it wasn't subclassing would be less useful.
  * const exampleMethodSubclass: ExampleBaseClass = new MethodSubclassing();
  *
- * // This is allowed, however at runtime `MethodSubclassing#methodOne` could
+ * // TypeScript does not error here. However at runtime `MethodSubclassing#methodOne`
  * // will almost certainly error as it has the required property `y`.
  * // The reason why there's no errors is an intentional unsoundness in TypeScript.
  * exampleMethodSubclass.methodOne({ x: "foo" });
@@ -228,7 +236,7 @@ export type ConformRecord<T extends object, V> = {
  *     functionProperty: (arg: "foo" | "bar") => number;
  * }
  *
- * declare class MethodLikeSubclassing {
+ * declare class MethodLikeSubclassing extends ExampleBaseClass {
  *     // This is unsound but by using the `ToMethod` in the parent class it's allowed.
  *     methodLikeProperty: (arg: "foo" | "bar") => number;
  * }
@@ -478,16 +486,21 @@ export type UnionToIntersection<U> = (U extends unknown ? (arg: U) => void : nev
 // Helper Types
 
 /**
- * Recursively sets keys of an object to optional. Used primarily for update methods
- * @internal
+ * Recursively sets keys of an object to optional. Used primarily for update methods.
+ *
+ * Note: This function is intended to work with plain objects. It takes any object only because
+ * otherwise it makes it more difficult to pass in interfaces.
+ *
+ * Its behavior is unspecified when run on a non-plain object.
  */
-export type DeepPartial<T> = T extends unknown
-  ? IsObject<T> extends true
-    ? {
-        [P in keyof T]?: DeepPartial<T[P]>;
-      }
-    : T
-  : T;
+// Allowing passing any `object` is done because it's more convenient for the end user.
+// Note that `{}` should always be assignable to `DeepPartial<T>`.
+export type DeepPartial<T extends object> = {
+  [K in keyof T]?: _DeepPartial<T[K]>;
+};
+
+// This type has to be factored out for distributivity.
+type _DeepPartial<T> = T extends object ? (T extends AnyArray | AnyFunction | AnyConstructor ? T : DeepPartial<T>) : T;
 
 /**
  * Gets all possible keys of `T`. This is useful because if `T` is a union type
@@ -966,3 +979,43 @@ export type ShapeWithIndexSignature<
  * The use cases for this are extremely advanced. In essence they have to do with breaking cycles in evaluation.
  */
 export type Defer<T> = [T][T extends any ? 0 : never];
+
+export type MustBeValidUuid<Uuid extends string, Type extends Document.Type = Document.Type> = _MustBeValidUuid<
+  Uuid,
+  Uuid,
+  Type
+>;
+
+/**
+ * Quotes a string for human readability. This is useful for error messages.
+ *
+ * @example
+ * ```ts
+ * type Quote1 = Quote<"foo">;
+ * //   ^ "'foo'"
+ *
+ * type Quote2 = Quote<"can't">;
+ * //   ^ "'can\\'t'"
+ * ```
+ */
+export type Quote<T extends string> = T extends `${string}'${string}` ? `'${Escape<T>}'` : `'${T}'`;
+
+type Escape<T extends string> = T extends `${infer Prefix}'${infer Suffix}` ? `${Prefix}\\'${Escape<Suffix>}` : T;
+
+declare class InvalidUuid<OriginalUuid extends string> {
+  #invalidUuid: true;
+
+  message: `The UUID ${Quote<OriginalUuid>} is invalid .`;
+}
+
+type _MustBeValidUuid<
+  Uuid extends string,
+  OriginalUuid extends string,
+  Type extends Document.Type,
+> = Uuid extends `${string}.${string}.${infer Rest}`
+  ? _MustBeValidUuid<Rest, OriginalUuid, Type>
+  : Uuid extends `${string}.${string}`
+    ? Uuid extends `${Type}.${string}`
+      ? OriginalUuid
+      : InvalidUuid<OriginalUuid>
+    : `${Type}.${string}` | `${string}.${string}.${Type}.${string}`;

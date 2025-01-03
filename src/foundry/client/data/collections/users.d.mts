@@ -47,4 +47,13 @@ declare global {
      */
     protected static _handleUserActivity(userId: string, activityData?: InexactPartial<User.ActivityData>): void;
   }
+
+  namespace Users {
+    type Any = AnyUsers;
+    type AnyConstructor = typeof AnyUsers;
+  }
+}
+
+declare abstract class AnyUsers extends Users {
+  constructor(arg0: never, ...args: never[]);
 }

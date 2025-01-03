@@ -1,4 +1,4 @@
-import type { ValueOf } from "../../utils/index.d.mts";
+import type { Brand, ValueOf } from "../../utils/index.d.mts";
 
 /**
  * The shortened software name
@@ -39,14 +39,14 @@ export declare const ACTIVE_EFFECT_MODES: Readonly<{
   /**
    * Used to denote that the handling of the effect is programmatically provided by a system or module.
    */
-  CUSTOM: 0;
+  CUSTOM: 0 & ACTIVE_EFFECT_MODES;
 
   /**
    * Multiplies a numeric base value by the numeric effect value
    * @example
    * 2 (base value) * 3 (effect value) = 6 (derived value)
    */
-  MULTIPLY: 1;
+  MULTIPLY: 1 & ACTIVE_EFFECT_MODES;
 
   /**
    * Adds a numeric base value to a numeric effect value, or concatenates strings
@@ -55,7 +55,7 @@ export declare const ACTIVE_EFFECT_MODES: Readonly<{
    * @example
    * "Hello" (base value) + " World" (effect value) = "Hello World"
    */
-  ADD: 2;
+  ADD: 2 & ACTIVE_EFFECT_MODES;
 
   /**
    * Keeps the lower value of the base value and the effect value
@@ -64,7 +64,7 @@ export declare const ACTIVE_EFFECT_MODES: Readonly<{
    * @example
    * 2 (base value), 3 (effect value) = 2 (derived value)
    */
-  DOWNGRADE: 3;
+  DOWNGRADE: 3 & ACTIVE_EFFECT_MODES;
 
   /**
    * Keeps the greater value of the base value and the effect value
@@ -73,16 +73,16 @@ export declare const ACTIVE_EFFECT_MODES: Readonly<{
    * @example
    * 2 (base value), 1 (effect value) = 2 (derived value)
    */
-  UPGRADE: 4;
+  UPGRADE: 4 & ACTIVE_EFFECT_MODES;
 
   /**
    * Directly replaces the base value with the effect value
    * @example
    * 2 (base value), 4 (effect value) = 4 (derived value)
    */
-  OVERRIDE: 5;
+  OVERRIDE: 5 & ACTIVE_EFFECT_MODES;
 }>;
-export type ACTIVE_EFFECT_MODES = ValueOf<typeof ACTIVE_EFFECT_MODES>;
+export type ACTIVE_EFFECT_MODES = Brand<number, "constants.ACTIVE_EFFECT_MODES">;
 
 /**
  * Define the string name used for the base document type when specific sub-types are not defined by the system
@@ -98,43 +98,43 @@ export declare const CARD_DRAW_MODES: Readonly<{
    * Draw the first card from the stack
    * Synonymous with @see CARD_DRAW_MODES.TOP
    */
-  FIRST: 0;
+  FIRST: 0 & CARD_DRAW_MODES;
 
   /**
    * Draw the top card from the stack
    * Synonymous with @see CARD_DRAW_MODES.FIRST
    */
-  TOP: 0;
+  TOP: 0 & CARD_DRAW_MODES;
 
   /**
    * Draw the last card from the stack
    * Synonymous with @see CARD_DRAW_MODES.BOTTOM
    */
-  LAST: 1;
+  LAST: 1 & CARD_DRAW_MODES;
 
   /**
    * Draw the bottom card from the stack
    * Synonymous with @see CARD_DRAW_MODES.LAST
    */
-  BOTTOM: 1;
+  BOTTOM: 1 & CARD_DRAW_MODES;
 
   /**
    * Draw a random card from the stack
    */
-  RANDOM: 2;
+  RANDOM: 2 & CARD_DRAW_MODES;
 }>;
-export type CARD_DRAW_MODES = ValueOf<typeof CARD_DRAW_MODES>;
+export type CARD_DRAW_MODES = Brand<number, "constants.CARD_DRAW_MODES">;
 
 /**
  * An enumeration of canvas performance modes.
  */
 export declare const CANVAS_PERFORMANCE_MODES: Readonly<{
-  LOW: 0;
-  MED: 1;
-  HIGH: 2;
-  MAX: 3;
+  LOW: 0 & CANVAS_PERFORMANCE_MODES;
+  MED: 1 & CANVAS_PERFORMANCE_MODES;
+  HIGH: 2 & CANVAS_PERFORMANCE_MODES;
+  MAX: 3 & CANVAS_PERFORMANCE_MODES;
 }>;
-export type CANVAS_PERFORMANCE_MODES = ValueOf<typeof CANVAS_PERFORMANCE_MODES>;
+export type CANVAS_PERFORMANCE_MODES = Brand<number, "constants.CANVAS_PERFORMANCE_MODES">;
 
 /**
  * Valid Chat Message styles which affect how the message is presented in the chat log.
@@ -143,40 +143,40 @@ export declare const CHAT_MESSAGE_STYLES: Readonly<{
   /**
    * An uncategorized chat message
    */
-  OTHER: 0;
+  OTHER: 0 & CHAT_MESSAGE_STYLES;
 
   /**
    * The message is spoken out of character (OOC).
    * OOC messages will be outlined by the player's color to make them more easily recognizable.
    */
-  OOC: 1;
+  OOC: 1 & CHAT_MESSAGE_STYLES;
 
   /**
    * The message is spoken by an associated character.
    */
-  IC: 2;
+  IC: 2 & CHAT_MESSAGE_STYLES;
 
   /**
    * The message is an emote performed by the selected character.
    * Entering "/emote waves his hand." while controlling a character named Simon will send the message, "Simon waves his hand."
    */
-  EMOTE: 3;
+  EMOTE: 3 & CHAT_MESSAGE_STYLES;
 
   /**
    * @deprecated since v12
    *
    * @remarks Define rolls directly in ChatMessage#rolls instead.
    */
-  ROLL: 0;
+  ROLL: 0 & CHAT_MESSAGE_STYLES;
 
   /**
    * @deprecated since v12
    *
    * @remarks Define whispers directly in ChatMessage#whisper instead.
    */
-  WHISPER: 0;
+  WHISPER: 0 & CHAT_MESSAGE_STYLES;
 }>;
-export type CHAT_MESSAGE_STYLES = ValueOf<typeof CHAT_MESSAGE_STYLES>;
+export type CHAT_MESSAGE_STYLES = Brand<number, "constants.CHAT_MESSAGE_STYLES">;
 
 /**
  * Define the set of languages which have built-in support in the core software
@@ -190,37 +190,37 @@ export declare const COMPATIBILITY_MODES: Readonly<{
   /**
    * Nothing will be logged
    */
-  SILENT: 0;
+  SILENT: 0 & COMPATIBILITY_MODES;
 
   /**
    * A message will be logged at the "warn" level
    */
-  WARNING: 1;
+  WARNING: 1 & COMPATIBILITY_MODES;
 
   /**
    * A message will be logged at the "error" level
    */
-  ERROR: 2;
+  ERROR: 2 & COMPATIBILITY_MODES;
 
   /**
    * An Error will be thrown
    */
-  FAILURE: 3;
+  FAILURE: 3 & COMPATIBILITY_MODES;
 }>;
-export type COMPATIBILITY_MODES = ValueOf<typeof COMPATIBILITY_MODES>;
+export type COMPATIBILITY_MODES = Brand<number, "constants.COMPATIBILITY_MODES">;
 
 /**
  * The lighting illumination levels which are supported.
  */
 export declare const LIGHTING_LEVELS: Readonly<{
-  DARKNESS: -2;
-  HALFDARK: -1;
-  UNLIT: 0;
-  DIM: 1;
-  BRIGHT: 2;
-  BRIGHTEST: 3;
+  DARKNESS: -2 & LIGHTING_LEVELS;
+  HALFDARK: -1 & LIGHTING_LEVELS;
+  UNLIT: 0 & LIGHTING_LEVELS;
+  DIM: 1 & LIGHTING_LEVELS;
+  BRIGHT: 2 & LIGHTING_LEVELS;
+  BRIGHTEST: 3 & LIGHTING_LEVELS;
 }>;
-export type LIGHTING_LEVELS = ValueOf<typeof LIGHTING_LEVELS>;
+export type LIGHTING_LEVELS = Brand<number, "constants.LIGHTING_LEVELS">;
 
 /**
  * The CSS themes which are currently supported for the V11 Setup menu.
@@ -337,38 +337,38 @@ export declare const DOCUMENT_OWNERSHIP_LEVELS: Readonly<{
   /**
    * The User inherits permissions from the parent Folder.
    */
-  INHERIT: -1;
+  INHERIT: -1 & DOCUMENT_OWNERSHIP_LEVELS;
 
   /**
    * Restricts the associated Document so that it may not be seen by this User.
    */
-  NONE: 0;
+  NONE: 0 & DOCUMENT_OWNERSHIP_LEVELS;
 
   /**
    * Allows the User to interact with the Document in basic ways, allowing them to see it in sidebars and see only limited aspects of its contents. The limits of this interaction are defined by the game system being used.
    */
-  LIMITED: 1;
+  LIMITED: 1 & DOCUMENT_OWNERSHIP_LEVELS;
 
   /**
    * Allows the User to view this Document as if they were owner, but prevents them from making any changes to it.
    */
-  OBSERVER: 2;
+  OBSERVER: 2 & DOCUMENT_OWNERSHIP_LEVELS;
 
   /**
    * Allows the User to view and make changes to the Document as its owner. Owned documents cannot be deleted by anyone other than a gamemaster level User.
    */
-  OWNER: 3;
+  OWNER: 3 & DOCUMENT_OWNERSHIP_LEVELS;
 }>;
-export type DOCUMENT_OWNERSHIP_LEVELS = ValueOf<typeof DOCUMENT_OWNERSHIP_LEVELS>;
+export type DOCUMENT_OWNERSHIP_LEVELS = Brand<number, "constants.DOCUMENT_OWNERSHIP_LEVELS">;
 
 /**
  * Meta ownership levels that are used in the UI but never stored.
  */
 export declare const DOCUMENT_META_OWNERSHIP_LEVELS: Readonly<{
-  DEFAULT: -20;
-  NOCHANGE: -10;
+  DEFAULT: -20 & DOCUMENT_META_OWNERSHIP_LEVELS;
+  NOCHANGE: -10 & DOCUMENT_META_OWNERSHIP_LEVELS;
 }>;
-export type DOCUMENT_META_OWNERSHIP_LEVELS = ValueOf<typeof DOCUMENT_META_OWNERSHIP_LEVELS>;
+export type DOCUMENT_META_OWNERSHIP_LEVELS = Brand<number, "constants.DOCUMENT_META_OWNERSHIP_LEVELS">;
 
 /**
  * Define the allowed Document types which may be dynamically linked in chat
@@ -420,19 +420,19 @@ export declare const DRAWING_FILL_TYPES: Readonly<{
   /**
    * The drawing is not filled
    */
-  NONE: 0;
+  NONE: 0 & DRAWING_FILL_TYPES;
 
   /**
    * The drawing is filled with a solid color
    */
-  SOLID: 1;
+  SOLID: 1 & DRAWING_FILL_TYPES;
 
   /**
    * The drawing is filled with a tiled image pattern
    */
-  PATTERN: 2;
+  PATTERN: 2 & DRAWING_FILL_TYPES;
 }>;
-export type DRAWING_FILL_TYPES = ValueOf<typeof DRAWING_FILL_TYPES>;
+export type DRAWING_FILL_TYPES = Brand<number, "constants.DRAWING_FILL_TYPES">;
 
 /**
  * Define the allowed Document types which Folders may contain
@@ -454,7 +454,7 @@ export type FOLDER_DOCUMENT_TYPES = ValueOf<typeof FOLDER_DOCUMENT_TYPES>;
 /**
  * The maximum allowed level of depth for Folder nesting
  */
-export declare const FOLDER_MAX_DEPTH: 4;
+export declare const FOLDER_MAX_DEPTH: number;
 
 /**
  * A list of allowed game URL names
@@ -465,21 +465,21 @@ export declare const GAME_VIEWS: readonly ["game", "stream"];
  * The directions of movement.
  */
 export declare const MOVEMENT_DIRECTIONS: Readonly<{
-  UP: 0x1;
-  DOWN: 0x2;
-  LEFT: 0x4;
-  RIGHT: 0x8;
-  UP_LEFT: 0x1 | 0x4;
-  UP_RIGHT: 0x1 | 0x8;
-  DOWN_LEFT: 0x2 | 0x4;
-  DOWN_RIGHT: 0x2 | 0x8;
+  UP: 0x1 & MOVEMENT_DIRECTIONS;
+  DOWN: 0x2 & MOVEMENT_DIRECTIONS;
+  LEFT: 0x4 & MOVEMENT_DIRECTIONS;
+  RIGHT: 0x8 & MOVEMENT_DIRECTIONS;
+  UP_LEFT: 0x5 & MOVEMENT_DIRECTIONS;
+  UP_RIGHT: 0x9 & MOVEMENT_DIRECTIONS;
+  DOWN_LEFT: 0x6 & MOVEMENT_DIRECTIONS;
+  DOWN_RIGHT: 0xa & MOVEMENT_DIRECTIONS;
 }>;
-export type MOVEMENT_DIRECTIONS = ValueOf<typeof MOVEMENT_DIRECTIONS>;
+export type MOVEMENT_DIRECTIONS = Brand<number, "constants.MOVEMENT_DIRECTIONS">;
 
 /**
  * The minimum allowed grid size which is supported by the software
  */
-export declare const GRID_MIN_SIZE: 20;
+export declare const GRID_MIN_SIZE: number;
 
 /**
  * The allowed Grid types which are supported by the software
@@ -489,34 +489,34 @@ export declare const GRID_TYPES: Readonly<{
   /**
    * No fixed grid is used on this Scene allowing free-form point-to-point measurement without grid lines.
    */
-  GRIDLESS: 0;
+  GRIDLESS: 0 & GRID_TYPES;
 
   /**
    * A square grid is used with width and height of each grid space equal to the chosen grid size.
    */
-  SQUARE: 1;
+  SQUARE: 1 & GRID_TYPES;
 
   /**
    * A row-wise hexagon grid (pointy-topped) where odd-numbered rows are offset.
    */
-  HEXODDR: 2;
+  HEXODDR: 2 & GRID_TYPES;
 
   /**
    * A row-wise hexagon grid (pointy-topped) where even-numbered rows are offset.
    */
-  HEXEVENR: 3;
+  HEXEVENR: 3 & GRID_TYPES;
 
   /**
    * A column-wise hexagon grid (flat-topped) where odd-numbered columns are offset.
    */
-  HEXODDQ: 4;
+  HEXODDQ: 4 & GRID_TYPES;
 
   /**
    * A column-wise hexagon grid (flat-topped) where even-numbered columns are offset.
    */
-  HEXEVENQ: 5;
+  HEXEVENQ: 5 & GRID_TYPES;
 }>;
-export type GRID_TYPES = ValueOf<typeof GRID_TYPES>;
+export type GRID_TYPES = Brand<number, "constants.GRID_TYPES">;
 
 /**
  * The different rules to define and measure diagonal distance/cost in a square grid.
@@ -526,22 +526,22 @@ export declare const GRID_DIAGONALS: Readonly<{
   /**
    * The diagonal distance is 1. Diagonal movement costs the same as horizontal/vertical movement.
    */
-  EQUIDISTANT: 0;
+  EQUIDISTANT: 0 & GRID_DIAGONALS;
 
   /**
    * The diagonal distance is √2. Diagonal movement costs √2 times as much as horizontal/vertical movement.
    */
-  EXACT: 1;
+  EXACT: 1 & GRID_DIAGONALS;
 
   /**
    * The diagonal distance is 1.5. Diagonal movement costs 1.5 times as much as horizontal/vertical movement.
    */
-  APPROXIMATE: 2;
+  APPROXIMATE: 2 & GRID_DIAGONALS;
 
   /**
    * The diagonal distance is 2. Diagonal movement costs 2 times as much as horizontal/vertical movement.
    */
-  RECTILINEAR: 3;
+  RECTILINEAR: 3 & GRID_DIAGONALS;
 
   /**
    * The diagonal distance alternates between 1 and 2 starting at 1.
@@ -549,7 +549,7 @@ export declare const GRID_DIAGONALS: Readonly<{
    * The second diagonal movement costs 2 times as much as horizontal/vertical movement.
    * And so on...
    */
-  ALTERNATING_1: 4;
+  ALTERNATING_1: 4 & GRID_DIAGONALS;
 
   /**
    * The diagonal distance alternates between 2 and 1 starting at 2.
@@ -557,14 +557,14 @@ export declare const GRID_DIAGONALS: Readonly<{
    * The second diagonal movement costs the same as horizontal/vertical movement.
    * And so on...
    */
-  ALTERNATING_2: 5;
+  ALTERNATING_2: 5 & GRID_DIAGONALS;
 
   /**
    * The diagonal distance is ∞. Diagonal movement is not allowed/possible.
    */
-  ILLEGAL: 6;
+  ILLEGAL: 6 & GRID_DIAGONALS;
 }>;
-export type GRID_DIAGONALS = ValueOf<typeof GRID_DIAGONALS>;
+export type GRID_DIAGONALS = Brand<number, "constants.GRID_DIAGONALS">;
 
 /**
  * The grid snapping modes.
@@ -573,92 +573,92 @@ export declare const GRID_SNAPPING_MODES: Readonly<{
   /**
    * Nearest center point.
    */
-  CENTER: 0x1;
+  CENTER: 0x1 & GRID_SNAPPING_MODES;
 
   /**
    * Nearest edge midpoint.
    */
-  EDGE_MIDPOINT: 0x2;
+  EDGE_MIDPOINT: 0x2 & GRID_SNAPPING_MODES;
 
   /**
    * Nearest top-left vertex.
    */
-  TOP_LEFT_VERTEX: 0x10;
+  TOP_LEFT_VERTEX: 0x10 & GRID_SNAPPING_MODES;
 
   /**
    * Nearest top-right vertex.
    */
-  TOP_RIGHT_VERTEX: 0x20;
+  TOP_RIGHT_VERTEX: 0x20 & GRID_SNAPPING_MODES;
 
   /**
    * Nearest bottom-left vertex.
    */
-  BOTTOM_LEFT_VERTEX: 0x40;
+  BOTTOM_LEFT_VERTEX: 0x40 & GRID_SNAPPING_MODES;
 
   /**
    * Nearest bottom-right vertex.
    */
-  BOTTOM_RIGHT_VERTEX: 0x80;
+  BOTTOM_RIGHT_VERTEX: 0x80 & GRID_SNAPPING_MODES;
 
   /**
    * Nearest vertex.
    * Alias for `TOP_LEFT_VERTEX | TOP_RIGHT_VERTEX | BOTTOM_LEFT_VERTEX | BOTTOM_RIGHT_VERTEX`.
    */
-  VERTEX: 0xf0;
+  VERTEX: 0xf0 & GRID_SNAPPING_MODES;
 
   /**
    * Nearest top-left corner.
    */
-  TOP_LEFT_CORNER: 0x100;
+  TOP_LEFT_CORNER: 0x100 & GRID_SNAPPING_MODES;
 
   /**
    * Nearest top-right corner.
    */
-  TOP_RIGHT_CORNER: 0x200;
+  TOP_RIGHT_CORNER: 0x200 & GRID_SNAPPING_MODES;
 
   /**
    * Nearest bottom-left corner.
    */
-  BOTTOM_LEFT_CORNER: 0x400;
+  BOTTOM_LEFT_CORNER: 0x400 & GRID_SNAPPING_MODES;
 
   /**
    * Nearest bottom-right corner.
    */
-  BOTTOM_RIGHT_CORNER: 0x800;
+  BOTTOM_RIGHT_CORNER: 0x800 & GRID_SNAPPING_MODES;
 
   /**
    * Nearest corner.
    * Alias for `TOP_LEFT_CORNER | TOP_RIGHT_CORNER | BOTTOM_LEFT_CORNER | BOTTOM_RIGHT_CORNER`.
    */
-  CORNER: 0xf00;
+  CORNER: 0xf00 & GRID_SNAPPING_MODES;
 
   /**
    * Nearest top side midpoint.
    */
-  TOP_SIDE_MIDPOINT: 0x1000;
+  TOP_SIDE_MIDPOINT: 0x1000 & GRID_SNAPPING_MODES;
 
   /**
    * Nearest bottom side midpoint.
    */
-  BOTTOM_SIDE_MIDPOINT: 0x2000;
+  BOTTOM_SIDE_MIDPOINT: 0x2000 & GRID_SNAPPING_MODES;
 
   /**
    * Nearest left side midpoint.
    */
-  LEFT_SIDE_MIDPOINT: 0x4000;
+  LEFT_SIDE_MIDPOINT: 0x4000 & GRID_SNAPPING_MODES;
 
   /**
    * Nearest right side midpoint.
    */
-  RIGHT_SIDE_MIDPOINT: 0x8000;
+  RIGHT_SIDE_MIDPOINT: 0x8000 & GRID_SNAPPING_MODES;
 
   /**
    * Nearest side midpoint.
    * Alias for `TOP_SIDE_MIDPOINT | BOTTOM_SIDE_MIDPOINT | LEFT_SIDE_MIDPOINT | RIGHT_SIDE_MIDPOINT`.
    */
-  SIDE_MIDPOINT: 0xf000;
+  SIDE_MIDPOINT: 0xf000 & GRID_SNAPPING_MODES;
 }>;
-export type GRID_SNAPPING_MODES = ValueOf<typeof GRID_SNAPPING_MODES>;
+export type GRID_SNAPPING_MODES = Brand<number, "constants.GRID_SNAPPING_MODES">;
 
 /**
  * A list of supported setup URL names
@@ -706,24 +706,24 @@ export declare const PLAYLIST_MODES: Readonly<{
   /**
    * The playlist does not play on its own, only individual Sound tracks played as a soundboard.
    */
-  DISABLED: -1;
+  DISABLED: -1 & PLAYLIST_MODES;
 
   /**
    * The playlist plays sounds one at a time in sequence.
    */
-  SEQUENTIAL: 0;
+  SEQUENTIAL: 0 & PLAYLIST_MODES;
 
   /**
    * The playlist plays sounds one at a time in randomized order.
    */
-  SHUFFLE: 1;
+  SHUFFLE: 1 & PLAYLIST_MODES;
 
   /**
    * The playlist plays all contained sounds at the same time.
    */
-  SIMULTANEOUS: 2;
+  SIMULTANEOUS: 2 & PLAYLIST_MODES;
 }>;
-export type PLAYLIST_MODES = ValueOf<typeof PLAYLIST_MODES>;
+export type PLAYLIST_MODES = Brand<number, "constants.PLAYLIST_MODES">;
 
 /**
  * The available sort modes for an audio Playlist.
@@ -766,59 +766,59 @@ export declare const PACKAGE_AVAILABILITY_CODES: Readonly<{
   /**
    * Package availability could not be determined
    */
-  UNKNOWN: 0;
+  UNKNOWN: 0 & PACKAGE_AVAILABILITY_CODES;
 
   /**
    * The Package is verified to be compatible with the current core software build
    */
-  VERIFIED: 1;
+  VERIFIED: 1 & PACKAGE_AVAILABILITY_CODES;
 
   /**
    * Package is available for use, but not verified for the current core software build
    */
-  UNVERIFIED_BUILD: 2;
+  UNVERIFIED_BUILD: 2 & PACKAGE_AVAILABILITY_CODES;
 
   /**
    * One or more installed system is incompatible with the Package.
    */
-  UNVERIFIED_SYSTEM: 3;
+  UNVERIFIED_SYSTEM: 3 & PACKAGE_AVAILABILITY_CODES;
 
   /**
    * Package is available for use, but not verified for the current core software generation
    */
-  UNVERIFIED_GENERATION: 4;
+  UNVERIFIED_GENERATION: 4 & PACKAGE_AVAILABILITY_CODES;
 
   /**
    * The System that the Package relies on is not available
    */
-  MISSING_SYSTEM: 5;
+  MISSING_SYSTEM: 5 & PACKAGE_AVAILABILITY_CODES;
 
   /**
    * A dependency of the Package is not available
    */
-  MISSING_DEPENDENCY: 6;
+  MISSING_DEPENDENCY: 6 & PACKAGE_AVAILABILITY_CODES;
 
   /**
    * The Package is compatible with an older version of Foundry than the currently installed version
    */
-  REQUIRES_CORE_DOWNGRADE: 7;
+  REQUIRES_CORE_DOWNGRADE: 7 & PACKAGE_AVAILABILITY_CODES;
 
   /**
    * The Package is compatible with a newer version of Foundry than the currently installed version, and that version is Stable
    */
-  REQUIRES_CORE_UPGRADE_STABLE: 8;
+  REQUIRES_CORE_UPGRADE_STABLE: 8 & PACKAGE_AVAILABILITY_CODES;
 
   /**
    * The Package is compatible with a newer version of Foundry than the currently installed version, and that version is not yet Stable
    */
-  REQUIRES_CORE_UPGRADE_UNSTABLE: 9;
+  REQUIRES_CORE_UPGRADE_UNSTABLE: 9 & PACKAGE_AVAILABILITY_CODES;
 
   /**
    * A required dependency is not compatible with the current version of Foundry
    */
-  REQUIRES_DEPENDENCY_UPDATE: 10;
+  REQUIRES_DEPENDENCY_UPDATE: 10 & PACKAGE_AVAILABILITY_CODES;
 }>;
-export type PACKAGE_AVAILABILITY_CODES = ValueOf<typeof PACKAGE_AVAILABILITY_CODES>;
+export type PACKAGE_AVAILABILITY_CODES = Brand<number, "constants.PACKAGE_AVAILABILITY_CODES">;
 
 /**
  * A safe password string which can be displayed
@@ -854,7 +854,7 @@ export type SOFTWARE_UPDATE_CHANNELS = ValueOf<typeof SOFTWARE_UPDATE_CHANNELS>;
 /**
  * The default sorting density for manually ordering child objects within a parent
  */
-export declare const SORT_INTEGER_DENSITY: 100000;
+export declare const SORT_INTEGER_DENSITY: number;
 
 /**
  * The allowed types of a TableResult document
@@ -886,14 +886,14 @@ export declare const JOURNAL_ENTRY_PAGE_FORMATS: Readonly<{
   /**
    * The page is formatted as HTML.
    */
-  HTML: 1;
+  HTML: 1 & JOURNAL_ENTRY_PAGE_FORMATS;
 
   /**
    * The page is formatted as Markdown.
    */
-  MARKDOWN: 2;
+  MARKDOWN: 2 & JOURNAL_ENTRY_PAGE_FORMATS;
 }>;
-export type JOURNAL_ENTRY_PAGE_FORMATS = ValueOf<typeof JOURNAL_ENTRY_PAGE_FORMATS>;
+export type JOURNAL_ENTRY_PAGE_FORMATS = Brand<number, "constants.JOURNAL_ENTRY_PAGE_FORMATS">;
 
 /**
  * Define the valid anchor locations for a Tooltip displayed on a Placeable Object
@@ -903,29 +903,29 @@ export declare const TEXT_ANCHOR_POINTS: Readonly<{
   /**
    * Anchor the tooltip to the center of the element.
    */
-  CENTER: 0;
+  CENTER: TEXT_ANCHOR_POINTS;
 
   /**
    * Anchor the tooltip to the bottom of the element.
    */
-  BOTTOM: 1;
+  BOTTOM: 1 & TEXT_ANCHOR_POINTS;
 
   /**
    * Anchor the tooltip to the top of the element.
    */
-  TOP: 2;
+  TOP: 2 & TEXT_ANCHOR_POINTS;
 
   /**
    * Anchor the tooltip to the left of the element.
    */
-  LEFT: 3;
+  LEFT: 3 & TEXT_ANCHOR_POINTS;
 
   /**
    * Anchor the tooltip to the right of the element.
    */
-  RIGHT: 4;
+  RIGHT: 4 & TEXT_ANCHOR_POINTS;
 }>;
-export type TEXT_ANCHOR_POINTS = ValueOf<typeof TEXT_ANCHOR_POINTS>;
+export type TEXT_ANCHOR_POINTS = Brand<number, "constants.TEXT_ANCHOR_POINTS">;
 
 /**
  * Define the valid occlusion modes which a tile can use
@@ -936,34 +936,36 @@ export declare const OCCLUSION_MODES: Readonly<{
   /**
    * Turns off occlusion, making the tile never fade while tokens are under it.
    */
-  NONE: 0;
+  NONE: 0 & OCCLUSION_MODES;
 
   /**
    * Causes the whole tile to fade when an actor token moves under it.
    * @defaultValue
    */
-  FADE: 1;
+  FADE: 1 & OCCLUSION_MODES;
 
   // ROOF: 2;  This mode is no longer supported so we don't use 2 for any other mode
 
   /**
    * Causes the tile to reveal the background in the vicinity of an actor token under it. The radius is determined by the token's size.
    */
-  RADIAL: 3;
+  RADIAL: 3 & OCCLUSION_MODES;
 
   /**
    * Causes the tile to be partially revealed based on the vision of the actor, which does not need to be under the tile to see what's beneath it.
    * @remarks (by Foundry) This is useful for rooves on buildings where players could see through a window or door, viewing only a portion of what is obscured by the roof itself.
    */
-  VISION: 4;
+  VISION: 4 & OCCLUSION_MODES;
 }>;
-export type OCCLUSION_MODES = ValueOf<typeof OCCLUSION_MODES>;
+export type OCCLUSION_MODES = Brand<number, "constants.OCCLUSION_MODES">;
 
 /**
  * Alias for old tile occlusion modes definition
  */
-export declare const TILE_OCCLUSION_MODES: typeof OCCLUSION_MODES;
-export type TILE_OCCLUSION_MODES = ValueOf<typeof TILE_OCCLUSION_MODES>;
+export declare const TILE_OCCLUSION_MODES: {
+  [K in keyof typeof OCCLUSION_MODES]: TILE_OCCLUSION_MODES;
+};
+export type TILE_OCCLUSION_MODES = Brand<number, "constants.TILE_OCCLUSION_MODES">;
 
 /**
  * The occlusion modes that define the set of tokens that trigger occlusion.
@@ -972,29 +974,29 @@ export declare const TOKEN_OCCLUSION_MODES: Readonly<{
   /**
    * Owned tokens that aren't hidden.
    */
-  OWNED: 0x1;
+  OWNED: 0x1 & TOKEN_OCCLUSION_MODES;
 
   /**
    * Controlled tokens.
    */
-  CONTROLLED: 0x2;
+  CONTROLLED: 0x2 & TOKEN_OCCLUSION_MODES;
 
   /**
    * Hovered tokens that are visible.
    */
-  HOVERED: 0x4;
+  HOVERED: 0x4 & TOKEN_OCCLUSION_MODES;
 
   /**
    * Highlighted tokens that are visible.
    */
-  HIGHLIGHTED: 0x8;
+  HIGHLIGHTED: 0x8 & TOKEN_OCCLUSION_MODES;
 
   /**
    * All visible tokens.
    */
-  VISIBLE: 0x10;
+  VISIBLE: 0x10 & TOKEN_OCCLUSION_MODES;
 }>;
-export type TOKEN_OCCLUSION_MODES = ValueOf<typeof TOKEN_OCCLUSION_MODES>;
+export type TOKEN_OCCLUSION_MODES = Brand<number, "constants.TOKEN_OCCLUSION_MODES">;
 
 /**
  * Describe the various thresholds of token control upon which to show certain pieces of information
@@ -1004,34 +1006,34 @@ export declare const TOKEN_DISPLAY_MODES: Readonly<{
   /**
    * No information is displayed.
    */
-  NONE: 0;
+  NONE: 0 & TOKEN_DISPLAY_MODES;
 
   /**
    * Displayed when the token is controlled.
    */
-  CONTROL: 10;
+  CONTROL: 10 & TOKEN_DISPLAY_MODES;
 
   /**
    * Displayed when hovered by a GM or a user who owns the actor.
    */
-  OWNER_HOVER: 20;
+  OWNER_HOVER: 20 & TOKEN_DISPLAY_MODES;
 
   /**
    * Displayed when hovered by any user.
    */
-  HOVER: 30;
+  HOVER: 30 & TOKEN_DISPLAY_MODES;
 
   /**
    * Always displayed for a GM or for a user who owns the actor.
    */
-  OWNER: 40;
+  OWNER: 40 & TOKEN_DISPLAY_MODES;
 
   /**
    * Always displayed for everyone.
    */
-  ALWAYS: 50;
+  ALWAYS: 50 & TOKEN_DISPLAY_MODES;
 }>;
-export type TOKEN_DISPLAY_MODES = ValueOf<typeof TOKEN_DISPLAY_MODES>;
+export type TOKEN_DISPLAY_MODES = Brand<number, "constants.TOKEN_DISPLAY_MODES">;
 
 /**
  * The allowed Token disposition types
@@ -1041,24 +1043,24 @@ export declare const TOKEN_DISPOSITIONS: Readonly<{
   /**
    * Displayed with a purple borders for owners and with no borders for others (and no pointer change).
    */
-  SECRET: -2;
+  SECRET: -2 & TOKEN_DISPOSITIONS;
 
   /**
    * Displayed as an enemy with a red border.
    */
-  HOSTILE: -1;
+  HOSTILE: -1 & TOKEN_DISPOSITIONS;
 
   /**
    * Displayed as neutral with a yellow border.
    */
-  NEUTRAL: 0;
+  NEUTRAL: 0 & TOKEN_DISPOSITIONS;
 
   /**
    * Displayed as an ally with a cyan border.
    */
-  FRIENDLY: 1;
+  FRIENDLY: 1 & TOKEN_DISPOSITIONS;
 }>;
-export type TOKEN_DISPOSITIONS = ValueOf<typeof TOKEN_DISPOSITIONS>;
+export type TOKEN_DISPOSITIONS = Brand<number, "constants.TOKEN_DISPOSITIONS">;
 
 /**
  * The possible shapes of Tokens in hexagonal grids.
@@ -1067,34 +1069,34 @@ export declare const TOKEN_HEXAGONAL_SHAPES: Readonly<{
   /**
    * Ellipse (Variant 1)
    */
-  ELLIPSE_1: 0;
+  ELLIPSE_1: 0 & TOKEN_HEXAGONAL_SHAPES;
 
   /**
    * Ellipse (Variant 2)
    */
-  ELLIPSE_2: 1;
+  ELLIPSE_2: 1 & TOKEN_HEXAGONAL_SHAPES;
 
   /**
    * Trapezoid (Variant 1)
    */
-  TRAPEZOID_1: 2;
+  TRAPEZOID_1: 2 & TOKEN_HEXAGONAL_SHAPES;
 
   /**
    * Trapezoid (Variant 2)
    */
-  TRAPEZOID_2: 3;
+  TRAPEZOID_2: 3 & TOKEN_HEXAGONAL_SHAPES;
 
   /**
    * Rectangle (Variant 1)
    */
-  RECTANGLE_1: 4;
+  RECTANGLE_1: 4 & TOKEN_HEXAGONAL_SHAPES;
 
   /**
    * Rectangle (Variant 2)
    */
-  RECTANGLE_2: 5;
+  RECTANGLE_2: 5 & TOKEN_HEXAGONAL_SHAPES;
 }>;
-export type TOKEN_HEXAGONAL_SHAPES = ValueOf<typeof TOKEN_HEXAGONAL_SHAPES>;
+export type TOKEN_HEXAGONAL_SHAPES = Brand<number, "constants.TOKEN_HEXAGONAL_SHAPES">;
 
 /**
  * Define the allowed User permission levels.
@@ -1106,31 +1108,31 @@ export declare const USER_ROLES: Readonly<{
    * The User is blocked from taking actions in Foundry Virtual Tabletop.
    * You can use this role to temporarily or permanently ban a user from joining the game.
    */
-  NONE: 0;
+  NONE: 0 & USER_ROLES;
 
   /**
    * The User is able to join the game with permissions available to a standard player.
    * They cannot take some more advanced actions which require Trusted permissions, but they have the basic functionalities needed to operate in the virtual tabletop.
    */
-  PLAYER: 1;
+  PLAYER: 1 & USER_ROLES;
 
   /**
    * Similar to the Player role, except a Trusted User has the ability to perform some more advanced actions like create drawings, measured templates, or even to (optionally) upload media files to the server.
    */
-  TRUSTED: 2;
+  TRUSTED: 2 & USER_ROLES;
 
   /**
    * A special User who has many of the same in-game controls as a Game Master User, but does not have the ability to perform administrative actions like changing User roles or modifying World-level settings.
    */
-  ASSISTANT: 3;
+  ASSISTANT: 3 & USER_ROLES;
 
   /**
    *  A special User who has administrative control over this specific World.
    *  Game Masters behave quite differently than Players in that they have the ability to see all Documents and Objects within the world as well as the capability to configure World settings.
    */
-  GAMEMASTER: 4;
+  GAMEMASTER: 4 & USER_ROLES;
 }>;
-export type USER_ROLES = ValueOf<typeof USER_ROLES>;
+export type USER_ROLES = Brand<number, "constants.USER_ROLES">;
 
 /**
  * Invert the User Role mapping to recover role names from a role integer
@@ -1485,19 +1487,19 @@ export declare const WALL_DIRECTIONS: Readonly<{
   /**
    * The wall collides from both directions.
    */
-  BOTH: 0;
+  BOTH: 0 & WALL_DIRECTIONS;
 
   /**
    * The wall collides only when a ray strikes its left side.
    */
-  LEFT: 1;
+  LEFT: 1 & WALL_DIRECTIONS;
 
   /**
    * The wall collides only when a ray strikes its right side.
    */
-  RIGHT: 2;
+  RIGHT: 2 & WALL_DIRECTIONS;
 }>;
-export type WALL_DIRECTIONS = ValueOf<typeof WALL_DIRECTIONS>;
+export type WALL_DIRECTIONS = Brand<number, "constants.WALL_DIRECTIONS">;
 
 /**
  * The allowed door types which a Wall may contain
@@ -1507,19 +1509,19 @@ export declare const WALL_DOOR_TYPES: Readonly<{
   /**
    * The wall does not contain a door.
    */
-  NONE: 0;
+  NONE: 0 & WALL_DOOR_TYPES;
 
   /**
    *  The wall contains a regular door.
    */
-  DOOR: 1;
+  DOOR: 1 & WALL_DOOR_TYPES;
 
   /**
    * The wall contains a secret door.
    */
-  SECRET: 2;
+  SECRET: 2 & WALL_DOOR_TYPES;
 }>;
-export type WALL_DOOR_TYPES = ValueOf<typeof WALL_DOOR_TYPES>;
+export type WALL_DOOR_TYPES = Brand<number, "constants.WALL_DOOR_TYPES">;
 
 /**
  * The allowed door states which may describe a Wall that contains a door
@@ -1529,19 +1531,19 @@ export declare const WALL_DOOR_STATES: Readonly<{
   /**
    * The door is closed.
    */
-  CLOSED: 0;
+  CLOSED: 0 & WALL_DOOR_STATES;
 
   /**
    * The door is open.
    */
-  OPEN: 1;
+  OPEN: 1 & WALL_DOOR_STATES;
 
   /**
    * The door is closed and locked.
    */
-  LOCKED: 2;
+  LOCKED: 2 & WALL_DOOR_STATES;
 }>;
-export type WALL_DOOR_STATES = ValueOf<typeof WALL_DOOR_STATES>;
+export type WALL_DOOR_STATES = Brand<number, "constants.WALL_DOOR_STATES">;
 
 /**
  * The possible ways to interact with a door
@@ -1563,29 +1565,29 @@ export declare const WALL_SENSE_TYPES: Readonly<{
   /**
    * Senses do not collide with this wall.
    */
-  NONE: 0;
+  NONE: 0 & WALL_SENSE_TYPES;
 
   /**
    * Senses collide with this wall.
    */
-  LIMITED: 10;
+  LIMITED: 10 & WALL_SENSE_TYPES;
 
   /**
    * Senses collide with the second intersection, bypassing the first.
    */
-  NORMAL: 20;
+  NORMAL: 20 & WALL_SENSE_TYPES;
 
   /**
    * Senses bypass the wall within a certain proximity threshold.
    */
-  PROXIMITY: 30;
+  PROXIMITY: 30 & WALL_SENSE_TYPES;
 
   /**
    * Senses bypass the wall outside a certain proximity threshold.
    */
-  DISTANCE: 40;
+  DISTANCE: 40 & WALL_SENSE_TYPES;
 }>;
-export type WALL_SENSE_TYPES = ValueOf<typeof WALL_SENSE_TYPES>;
+export type WALL_SENSE_TYPES = Brand<number, "constants.WALL_SENSE_TYPES">;
 
 /**
  * The types of movement collision which a Wall may impose
@@ -1612,19 +1614,19 @@ export declare const KEYBINDING_PRECEDENCE: Readonly<{
   /**
    * Runs in the first group along with other PRIORITY keybindings.
    */
-  PRIORITY: 0;
+  PRIORITY: 0 & KEYBINDING_PRECEDENCE;
 
   /**
    * Runs after the PRIORITY group along with other NORMAL keybindings.
    */
-  NORMAL: 1;
+  NORMAL: 1 & KEYBINDING_PRECEDENCE;
 
   /**
    * Runs in the last group along with other DEFERRED keybindings.
    */
-  DEFERRED: 2;
+  DEFERRED: 2 & KEYBINDING_PRECEDENCE;
 }>;
-export type KEYBINDING_PRECEDENCE = ValueOf<typeof KEYBINDING_PRECEDENCE>;
+export type KEYBINDING_PRECEDENCE = Brand<number, "constants.KEYBINDING_PRECEDENCE">;
 
 /**
  * The allowed set of HTML template extensions
@@ -1761,17 +1763,17 @@ export declare const FILE_CATEGORIES: {
  * A font weight to name mapping.
  */
 export declare const FONT_WEIGHTS: {
-  Thin: 100;
-  ExtraLight: 200;
-  Light: 300;
-  Regular: 400;
-  Medium: 500;
-  SemiBold: 600;
-  Bold: 700;
-  ExtraBold: 800;
-  Black: 900;
+  Thin: 100 & FONT_WEIGHTS;
+  ExtraLight: 200 & FONT_WEIGHTS;
+  Light: 300 & FONT_WEIGHTS;
+  Regular: 400 & FONT_WEIGHTS;
+  Medium: 500 & FONT_WEIGHTS;
+  SemiBold: 600 & FONT_WEIGHTS;
+  Bold: 700 & FONT_WEIGHTS;
+  ExtraBold: 800 & FONT_WEIGHTS;
+  Black: 900 & FONT_WEIGHTS;
 };
-export type FONT_WEIGHTS = ValueOf<typeof FONT_WEIGHTS>;
+export type FONT_WEIGHTS = Brand<number, "constants.FONT_WEIGHTS">;
 
 /**
  * Stores shared commonly used timeouts, measured in MS
@@ -1780,19 +1782,19 @@ export declare const TIMEOUTS: Readonly<{
   /**
    * The default timeout for interacting with the foundryvtt.com API.
    */
-  FOUNDRY_WEBSITE: 10000;
+  FOUNDRY_WEBSITE: 10000 & TIMEOUTS;
 
   /**
    * The specific timeout for loading the list of packages from the foundryvtt.com API.
    */
-  PACKAGE_REPOSITORY: 5000;
+  PACKAGE_REPOSITORY: 5000 & TIMEOUTS;
 
   /**
    * The specific timeout for the IP address lookup service.
    */
-  IP_DISCOVERY: 5000;
+  IP_DISCOVERY: 5000 & TIMEOUTS;
 }>;
-export type TIMEOUTS = ValueOf<typeof TIMEOUTS>;
+export type TIMEOUTS = Brand<number, "constants.TIMEOUTS">;
 
 /**
  * A subset of Compendium types which require a specific system to be designated
@@ -1811,7 +1813,6 @@ export declare const SHOWDOWN_OPTIONS: Readonly<{
   tables: true;
   tablesHeaderId: true;
 }>;
-export type SHOWDOWN_OPTIONS = ValueOf<typeof SHOWDOWN_OPTIONS>;
 
 /**
  * The list of allowed attributes in HTML elements.
@@ -1959,7 +1960,7 @@ export type TEXTURE_DATA_FIT_MODES = ValueOf<typeof TEXTURE_DATA_FIT_MODES>;
 /**
  * The maximum depth to recurse to when embedding enriched text.
  */
-export const TEXT_ENRICH_EMBED_MAX_DEPTH = 5;
+export const TEXT_ENRICH_EMBED_MAX_DEPTH: number;
 
 /**
  * The Region events that are supported by core.
@@ -2034,19 +2035,19 @@ export declare const REGION_VISIBILITY: Readonly<{
   /**
    * Only visible on the RegionLayer.
    */
-  LAYER: 0;
+  LAYER: 0 & REGION_VISIBILITY;
 
   /**
    * Only visible to Gamemasters.
    */
-  GAMEMASTER: 1;
+  GAMEMASTER: 1 & REGION_VISIBILITY;
 
   /**
    * Visible to anyone.
    */
-  ALWAYS: 2;
+  ALWAYS: 2 & REGION_VISIBILITY;
 }>;
-export type REGION_VISIBILITY = ValueOf<typeof REGION_VISIBILITY>;
+export type REGION_VISIBILITY = Brand<number, "constants.REGION_VISIBILITY">;
 
 /**
  * @deprecated since v12

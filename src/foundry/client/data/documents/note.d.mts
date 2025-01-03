@@ -28,6 +28,8 @@ declare global {
   class NoteDocument extends CanvasDocumentMixin(foundry.documents.BaseNote) {
     static override metadata: NoteDocument.Metadata;
 
+    static get implementation(): NoteDocument.ConfiguredClass;
+
     /**
      * The associated JournalEntry which is referenced by this Note
      */

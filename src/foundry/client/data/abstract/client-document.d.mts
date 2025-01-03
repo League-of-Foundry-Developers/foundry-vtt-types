@@ -1,8 +1,9 @@
-import type { DeepPartial, InexactPartial, Mixin, ValueOf } from "../../../../utils/index.d.mts";
+import type { DeepPartial, InexactPartial, Mixin, InstanceType } from "../../../../utils/index.d.mts";
 import type { DatabaseCreateOperation } from "../../../common/abstract/_types.d.mts";
+import type DataModel from "../../../common/abstract/data.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 
-declare class ClientDocument<BaseDocument extends Document.Internal.Instance.Any = Document.Any> {
+declare class InternalClientDocument<BaseDocument extends Document.Internal.Instance.Any = Document.Any> {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
   constructor(...args: any[]);
 
@@ -13,13 +14,15 @@ declare class ClientDocument<BaseDocument extends Document.Internal.Instance.Any
    * @see {@link Document#render}
    * @defaultValue `{}`
    */
-  readonly apps: Record<string, Application | foundry.applications.api.ApplicationV2>;
+  readonly apps: Record<string, Application.Any | foundry.applications.api.ApplicationV2.Any>;
 
   /**
    * A cached reference to the FormApplication instance used to configure this Document.
    * @defaultValue `null`
    */
-  protected readonly _sheet: FormApplication | null; // TODO: Replace with InstanceType<ConfiguredSheetClass<T>> once the circular reference problem has been solved
+  protected readonly _sheet: InstanceType<
+    Document.ConfiguredSheetClassFor<Document.Internal.DocumentNameFor<BaseDocument>>
+  > | null;
 
   static name: "ClientDocumentMixin";
 
@@ -72,12 +75,12 @@ declare class ClientDocument<BaseDocument extends Document.Internal.Instance.Any
    * actor.permission; // 2
    * ```
    */
-  get permission(): ValueOf<typeof CONST.DOCUMENT_OWNERSHIP_LEVELS>;
+  get permission(): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   /**
    * Lazily obtain a FormApplication instance used to configure this Document, or null if no sheet is available.
    */
-  get sheet(): FormApplication | foundry.applications.api.ApplicationV2 | null;
+  get sheet(): FormApplication.Any | foundry.applications.api.ApplicationV2.Any | null;
 
   /**
    * A boolean indicator for whether or not the current game User has at least limited visibility for this Document.
@@ -293,7 +296,7 @@ declare class ClientDocument<BaseDocument extends Document.Internal.Instance.Any
     parent: ClientDocument,
     collection: string,
     documents: ClientDocument[],
-    ids: string,
+    ids: string[],
     options: Document.OnDeleteOptions<any> & InexactPartial<{ render: boolean }>,
     userId: string,
   ): void;
@@ -366,7 +369,7 @@ declare class ClientDocument<BaseDocument extends Document.Internal.Instance.Any
   /**
    * Serialize salient information about this Document when dragging it.
    */
-  toDragData(): DropData<BaseDocument>;
+  toDragData(): Document.DropData<Document.Internal.Instance.Complete<BaseDocument>>;
 
   /**
    * A helper function to handle obtaining the relevant Document from dropped data provided via a DataTransfer event.
@@ -381,7 +384,7 @@ declare class ClientDocument<BaseDocument extends Document.Internal.Instance.Any
    */
   static fromDropData<T extends Document.AnyConstructor>(
     this: T,
-    data: DropData<InstanceType<NoInfer<T>>>,
+    data: Document.DropData<InstanceType<NoInfer<T>>>,
     options?: FromDropDataOptions,
   ): Promise<Document.ToConfiguredInstance<T> | undefined>;
 
@@ -405,7 +408,7 @@ declare class ClientDocument<BaseDocument extends Document.Internal.Instance.Any
   static fromImport<T extends Document.AnyConstructor>(
     this: T,
     source: Record<string, unknown>,
-    context?: Document.ConstructionContext<Document.Any | null> & DataValidationOptions,
+    context?: Document.ConstructionContext<Document.Any | null> & DataModel.DataValidationOptions,
   ): Promise<InstanceType<T>>;
   /**
    * Update this Document using a provided JSON string.
@@ -599,10 +602,21 @@ declare class ClientDocument<BaseDocument extends Document.Internal.Instance.Any
   ): void;
 }
 
-declare const _ClientDocument: ClientDocument;
+type _ClientDocumentType = InternalClientDocument & Document.AnyConstructor;
+declare const _ClientDocument: _ClientDocumentType;
+
+type ClientDocumentMixinBaseClass = Document.Internal.Constructor;
 
 declare global {
-  type ClientDocument = typeof _ClientDocument;
+  /**
+   * This class does not really exist at runtime. It's here for types only.
+   */
+  class ClientDocument extends _ClientDocument {
+    // This may have be removed at some point in the future if it causes issues but the idea is to
+    // prevent operations like `new ClientDocument()` or `extends ClientDocument` because this does
+    // is not a class that really exists at runtime.
+    private constructor(...args: any[]);
+  }
 
   /**
    * A mixin which extends each Document definition with specialized client-side behaviors.
@@ -615,7 +629,7 @@ declare global {
   // Note(LukeAbby): The seemingly redundant merging in of `typeof AnyDocument` makes it easier for tsc to recognize that anything extending `ClientDocumentMixin` is also a document.
   function ClientDocumentMixin<BaseClass extends Document.Internal.Constructor>(
     Base: BaseClass,
-  ): typeof AnyDocument & Mixin<typeof ClientDocument<InstanceType<BaseClass>>, BaseClass>;
+  ): typeof AnyDocument & Mixin<typeof InternalClientDocument<InstanceType<BaseClass>>, BaseClass>;
 
   namespace ClientDocument {
     interface SortOptions<T, SortKey extends string = "sort"> extends SortingHelpers.SortOptions<T, SortKey> {
@@ -685,31 +699,15 @@ declare global {
   }
 }
 
-export type DropData<T extends Document.Internal.Instance.Any> = T extends { id: string | undefined }
-  ? InternalData<T> & DropData.UUID
-  : InternalData<T>;
-
-declare namespace DropData {
-  type Any = DropData<any>;
-
-  interface Data<T extends Document.Any> {
-    type: T["documentName"];
-    data: T["_source"];
-  }
-
-  interface UUID {
-    uuid: string;
-  }
-}
-
 // This is yet another `AnyDocument` type.
 // It exists specifically because the `Document.AnyConstructor` type is too safe to be merged in with a mixin.
 // The `arg0: never, ...args: never[]` trick trips up the base constructor check and so this one with an actual `...args: any[]` one is used instead.
-declare class AnyDocument extends Document<any, any, any> {
+//
+// `{}` is used to avoid merging `DataSchema` with the real schema.
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+declare class AnyDocument extends Document<any, {}, any> {
   constructor(...args: any[]);
 }
-
-type InternalData<T extends Document.Internal.Instance.Any> = DropData.Data<Document.Internal.Instance.Complete<T>>;
 
 interface FromDropDataOptions {
   /**

@@ -1,5 +1,7 @@
 import { expectTypeOf } from "vitest";
 
+type DataSchema = foundry.data.fields.DataSchema;
+
 declare namespace ArmorData {
   interface Schema extends DataSchema {
     defense: foundry.data.fields.NumberField;

@@ -8,13 +8,11 @@ declare global {
   class EnvironmentCanvasGroup<
     DrawOptions extends EnvironmentCanvasGroup.DrawOptions = EnvironmentCanvasGroup.DrawOptions,
     TearDownOptions extends EnvironmentCanvasGroup.TearDownOptions = EnvironmentCanvasGroup.TearDownOptions,
-  > extends CanvasGroupMixin(PIXI.Container)<DrawOptions, TearDownOptions> {
+  > extends CanvasGroupMixin<typeof PIXI.Container, "environment">(PIXI.Container)<DrawOptions, TearDownOptions> {
     /**
      * The global light source attached to the environment
      */
     readonly globalLightSource: InstanceType<(typeof CONFIG.Canvas)["globalLightSourceClass"]>;
-
-    static override groupName: "environment";
 
     /**
      * @defaultValue `false`
@@ -53,6 +51,7 @@ declare global {
   }
 
   namespace EnvironmentCanvasGroup {
+    type Any = AnyEnvironmentCanvasGroup;
     type AnyConstructor = typeof AnyEnvironmentCanvasGroup;
 
     interface DrawOptions extends CanvasGroupMixin.DrawOptions {}

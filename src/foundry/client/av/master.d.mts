@@ -1,4 +1,4 @@
-import type { DeepPartial } from "../../../utils/index.d.mts";
+import type { DeepPartial, InstanceType } from "../../../utils/index.d.mts";
 
 declare global {
   /**

@@ -314,6 +314,9 @@ declare global {
   }
 
   namespace ChatLog {
+    type Any = AnyChatLog;
+    type AnyConstructor = typeof AnyChatLog;
+
     type Command =
       | "roll"
       | "gmroll"
@@ -361,4 +364,8 @@ declare global {
       notify?: boolean | undefined;
     }
   }
+}
+
+declare abstract class AnyChatLog extends ChatLog {
+  constructor(arg0: never, ...args: never[]);
 }

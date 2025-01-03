@@ -14,4 +14,13 @@ declare global {
      */
     static _activateSocketListeners(socket: Game["socket"]): void;
   }
+
+  namespace FogExplorations {
+    type Any = AnyFogExplorations;
+    type AnyConstructor = typeof AnyFogExplorations;
+  }
+}
+
+declare abstract class AnyFogExplorations extends FogExplorations {
+  constructor(arg0: never, ...args: never[]);
 }

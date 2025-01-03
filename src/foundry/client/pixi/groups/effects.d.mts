@@ -193,7 +193,7 @@ declare global {
          */
         duration?: number;
       },
-    ): ReturnType<(typeof CanvasAnimation)["animate"]>;
+    ): ReturnType<typeof CanvasAnimation.animate>;
 
     /**
      * @deprecated since v12, until v14
@@ -215,6 +215,7 @@ declare global {
   }
 
   namespace EffectsCanvasGroup {
+    type Any = AnyEffectsCanvasGroup;
     type AnyConstructor = typeof AnyEffectsCanvasGroup;
 
     interface DrawOptions extends CanvasGroupMixin.DrawOptions {}

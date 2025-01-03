@@ -2,6 +2,8 @@ import type Document from "../abstract/document.mts";
 import type * as fields from "../data/fields.d.mts";
 import type BaseUser from "./user.d.mts";
 
+type DataSchema = foundry.data.fields.DataSchema;
+
 /**
  * The Setting Document.
  * Defines the DataSchema and common behaviors for a Setting which are shared between both client and server.

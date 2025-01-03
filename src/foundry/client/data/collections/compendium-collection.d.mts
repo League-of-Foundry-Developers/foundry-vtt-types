@@ -1,9 +1,4 @@
 import type { DeepPartial, EmptyObject, InexactPartial } from "../../../../utils/index.d.mts";
-import type {
-  DatabaseCreateOperation,
-  DatabaseDeleteOperation,
-  DatabaseUpdateOperation,
-} from "../../../common/abstract/_types.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DirectoryCollectionMixin_DocumentCollection_Interface } from "../abstract/directory-collection-mixin.d.mts";
 
@@ -374,33 +369,7 @@ declare global {
      */
     migrate(): Promise<this>;
 
-    // Note(LukeAbby): The override for `updateAll` become unreasonably long and don't add any changes and so has been omitted.
-
-    /**
-     * Follow-up actions taken when Documents within this Compendium pack are modified
-     * @internal
-     */
-    _onModifyContents(
-      action: "create",
-      documents: ClientDocument[],
-      result: Record<string, unknown>[],
-      operation: DatabaseCreateOperation<Document.ConfiguredInstanceForName<T["type"]>>,
-      user: User,
-    ): void;
-    _onModifyContents(
-      action: "update",
-      documents: ClientDocument[],
-      result: Record<string, unknown>[],
-      operation: DatabaseUpdateOperation<Document.ConfiguredInstanceForName<T["type"]>>,
-      user: User,
-    ): void;
-    _onModifyContents(
-      action: "delete",
-      documents: ClientDocument[],
-      result: string[],
-      operation: DatabaseDeleteOperation,
-      user: User,
-    ): void;
+    // Note(LukeAbby): The override for `updateAll` and `_onModifyContents` become unreasonably long and don't add any changes and so has been omitted.
 
     /**
      * @deprecated since v11, will be removed in v13

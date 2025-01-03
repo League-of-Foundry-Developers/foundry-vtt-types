@@ -63,6 +63,8 @@ declare global {
   class ChatMessage extends ClientDocumentMixin(foundry.documents.BaseChatMessage) {
     static override metadata: ChatMessage.Metadata;
 
+    static get implementation(): ChatMessage.ConfiguredClass;
+
     /**
      * Is the display of dice rolls in this message collapsed (false) or expanded (true)
      * @defaultValue `false`

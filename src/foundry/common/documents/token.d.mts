@@ -7,6 +7,8 @@ import type { fields } from "../data/module.d.mts";
 import type * as documents from "./_module.mts";
 import type { TokenDetectionMode } from "./_types.d.mts";
 
+type DataSchema = foundry.data.fields.DataSchema;
+
 /**
  * The base Token model definition which defines common behavior of an Token document between both client and server.
  */
@@ -87,7 +89,7 @@ export class ActorDeltaField<
   override initialize(
     value: fields.EmbeddedDocumentField.PersistedType<DocumentType, Options>,
     model: DataModel.Any,
-    options?: InexactPartial<DataModel.ConstructorOptions>,
+    options?: InexactPartial<DataModel.DataValidationOptions>,
   ):
     | fields.EmbeddedDocumentField.InitializedType<DocumentType, Options>
     | (() => fields.EmbeddedDocumentField.InitializedType<DocumentType, Options> | null);

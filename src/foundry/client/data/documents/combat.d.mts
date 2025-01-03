@@ -67,6 +67,8 @@ declare global {
   class Combat extends ClientDocumentMixin(foundry.documents.BaseCombat) {
     static override metadata: Combat.Metadata;
 
+    static get implementation(): Combat.ConfiguredClass;
+
     /**
      * @param data - Initial data provided to construct the Combat document
      */
@@ -251,7 +253,7 @@ declare global {
       parent: ClientDocument,
       collection: string,
       documents: ClientDocument[],
-      ids: string,
+      ids: string[],
       options: Document.OnDeleteOptions<"Combatant"> & InexactPartial<{ combatTurn: number; turnEvents: boolean }>,
       userId: string,
     ): void;

@@ -9,4 +9,13 @@ declare global {
 
     protected override _getEntryContextOptions(): ContextMenuEntry[];
   }
+
+  namespace CardsDirectory {
+    type Any = AnyCardsDirectory;
+    type AnyConstructor = typeof AnyCardsDirectory;
+  }
+}
+
+declare abstract class AnyCardsDirectory extends CardsDirectory {
+  constructor(arg0: never, ...args: never[]);
 }

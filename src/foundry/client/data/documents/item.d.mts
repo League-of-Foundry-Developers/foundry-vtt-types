@@ -30,7 +30,12 @@ declare global {
    * @param context - The document context, see {@link foundry.abstract.Document}
    */
   class Item extends ClientDocumentMixin(foundry.documents.BaseItem) {
+    // Note(LukeAbby): Temporary fix, look into solving this at the root of the issue.
+    documentName: "Item";
+
     static override metadata: Item.Metadata;
+
+    static get implementation(): Item.ConfiguredClass;
 
     /**
      * A convenience alias of Item#parent which is more semantically intuitive

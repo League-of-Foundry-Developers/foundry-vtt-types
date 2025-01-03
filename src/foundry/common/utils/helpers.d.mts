@@ -488,7 +488,7 @@ interface ResolvedUUID {
   /**
    * The type of Document referenced. Legacy compendium UUIDs will not populate this field if the compendium is not active in the World.
    */
-  type?: Document.Type;
+  type?: Document.Type | undefined;
 
   /**
    * The ID of the Document referenced.
@@ -498,17 +498,17 @@ interface ResolvedUUID {
   /**
    * The primary Document type of this UUID. Only present if the Document is embedded.
    */
-  primaryType?: foundry.CONST.PRIMARY_DOCUMENT_TYPES;
+  primaryType?: foundry.CONST.PRIMARY_DOCUMENT_TYPES | undefined;
 
   /**
    * The primary Document ID of this UUID. Only present if the Document is embedded.
    */
-  primaryId?: string;
+  primaryId?: string | undefined;
 
   /**
    * The collection that the primary Document belongs to.
    */
-  collection?: DocumentCollection.Any;
+  collection?: DocumentCollection.Any | undefined;
 
   /**
    * Additional Embedded Document parts.
@@ -518,17 +518,17 @@ interface ResolvedUUID {
   /**
    * An already-resolved parent Document.
    */
-  doc?: Document.Any;
+  doc?: Document.Any | undefined;
 
   /**
    * Either the document type or the parent type. Retained for backwards compatibility.
    */
-  documentType?: DocumentType;
+  documentType?: Document.Type | undefined;
 
   /**
    * Either the document id or the parent id. Retained for backwards compatibility.
    */
-  documentId?: string;
+  documentId?: string | undefined;
 }
 
 interface ParseUUIDOptions {

@@ -7,7 +7,7 @@ declare global {
   class HiddenCanvasGroup<
     DrawOptions extends HiddenCanvasGroup.DrawOptions = HiddenCanvasGroup.DrawOptions,
     TearDownOptions extends HiddenCanvasGroup.TearDownOptions = HiddenCanvasGroup.TearDownOptions,
-  > extends CanvasGroupMixin(PIXI.Container)<DrawOptions, TearDownOptions> {
+  > extends CanvasGroupMixin<typeof PIXI.Container, "hidden">(PIXI.Container)<DrawOptions, TearDownOptions> {
     /**
      * @defaultValue `"none"`
      * @remarks Actually an override of `PIXI.Container#eventMode`
@@ -18,8 +18,6 @@ declare global {
      * The container which hold masks.
      */
     masks: PIXI.Container;
-
-    static override groupName: "hidden";
 
     /**
      * Add a mask to this group.
@@ -41,6 +39,7 @@ declare global {
   }
 
   namespace HiddenCanvasGroup {
+    type Any = AnyHiddenCanvasGroup;
     type AnyConstructor = typeof AnyHiddenCanvasGroup;
 
     interface DrawOptions extends CanvasGroupMixin.DrawOptions {}

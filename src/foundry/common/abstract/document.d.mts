@@ -15,6 +15,7 @@ import type {
   EmptyObject,
   InexactPartial,
   RemoveIndexSignatures,
+  InstanceType,
 } from "../../../utils/index.d.mts";
 import type * as CONST from "../constants.mts";
 import type { DataField, EmbeddedCollectionField, EmbeddedDocumentField } from "../data/fields.d.mts";
@@ -31,10 +32,13 @@ import type {
 import type DataModel from "./data.mts";
 import type DocumentSocketResponse from "./socket.d.mts";
 
+type DataSchema = foundry.data.fields.DataSchema;
+
 export default Document;
 
 declare const __DocumentBrand: unique symbol;
 
+declare const __DocumentName: unique symbol;
 declare const __Schema: unique symbol;
 declare const __Parent: unique symbol;
 
@@ -52,6 +56,7 @@ declare abstract class Document<
 > extends DataModel<Schema, Parent, InterfaceToObject<Document.ConstructionContext<Parent>>> {
   static [__DocumentBrand]: never;
 
+  [__DocumentName]: DocumentName;
   [__Schema]: Schema;
   [__Parent]: Parent;
 
@@ -129,8 +134,6 @@ declare abstract class Document<
   /**
    * Return a reference to the implemented subclass of this base document type.
    */
-  // Referencing the concrete class the config is not possible because accessors cannot be generic and there is not
-  // static polymorphic this type
   static get implementation(): Document.AnyConstructor;
 
   /**
@@ -721,7 +724,7 @@ declare abstract class Document<
    */
   protected static _onCreateOperation<T extends Document.AnyConstructor>(
     this: T,
-    documents: InstanceType<Document.ConfiguredClass<NoInfer<T>>>[],
+    documents: Document.ToConfiguredClass<NoInfer<T>>[],
     operation: Document.DatabaseOperationsFor<NoInfer<T>["metadata"]["name"], "create">,
     user: foundry.documents.BaseUser,
   ): Promise<void>;
@@ -748,7 +751,7 @@ declare abstract class Document<
    * @param userId  - The id of the User requesting the document update
    */
   protected _onUpdate(
-    changed: fields.SchemaField.InnerAssignmentType<Schema>,
+    changed: fields.SchemaField.InnerUpdateData<Schema>,
     options: Document.OnUpdateOptions<DocumentName>,
     userId: string,
   ): void;
@@ -770,7 +773,7 @@ declare abstract class Document<
    */
   protected static _preUpdateOperation<T extends Document.AnyConstructor>(
     this: T,
-    documents: InstanceType<Document.ConfiguredClass<NoInfer<T>>>[],
+    documents: Document.ToConfiguredInstance<NoInfer<T>>[],
     operation: Document.DatabaseOperationsFor<InstanceType<NoInfer<T>>["documentName"], "update">,
     user: foundry.documents.BaseUser,
   ): Promise<boolean | void>;
@@ -787,7 +790,7 @@ declare abstract class Document<
    */
   protected static _onUpdateOperation<T extends Document.AnyConstructor>(
     this: T,
-    documents: InstanceType<Document.ConfiguredClass<NoInfer<T>>>[],
+    documents: Document.ToConfiguredInstance<NoInfer<T>>[],
     operation: Document.DatabaseOperationsFor<InstanceType<NoInfer<T>>["documentName"], "update">,
     user: foundry.documents.BaseUser,
   ): Promise<void>;
@@ -947,6 +950,9 @@ declare namespace Document {
   /** Any Document, except for Settings */
   type Any = AnyDocument;
 
+  type ConfigurationFailureClass = typeof ConfigurationFailure;
+  type ConfigurationFailureInstance = ConfigurationFailure;
+
   type Type =
     | "ActiveEffect"
     | "ActorDelta"
@@ -1014,23 +1020,33 @@ declare namespace Document {
 
   // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
   namespace Internal {
+    // This metadata is called "simple" because where there should be proper references to the
+    // current document there is instead `Document.Any`. This helps simplify loops.
+    // Use cases should be limited to when these references aren't needed.
     type SimpleMetadata<Name extends Document.Type> = ConfiguredMetadata<Document.Any>[Name];
 
     type Constructor = (abstract new (arg0: never, ...args: never[]) => Instance.Any) & {
       [__DocumentBrand]: never;
     };
 
-    interface Instance<Schema extends DataSchema, Parent extends Document.Internal.Instance.Any | null> {
+    interface Instance<
+      DocumentName extends Document.Type,
+      Schema extends DataSchema,
+      Parent extends Document.Internal.Instance.Any | null,
+    > {
+      [__DocumentName]: DocumentName;
       [__Schema]: Schema;
       [__Parent]: Parent;
     }
+
+    type DocumentNameFor<ConcreteInstance extends Instance.Any> = ConcreteInstance[typeof __DocumentName];
 
     type SchemaFor<ConcreteInstance extends Instance.Any> = ConcreteInstance[typeof __Schema];
 
     type ParentFor<ConcreteInstance extends Instance.Any> = ConcreteInstance[typeof __Parent];
 
     namespace Instance {
-      type Any = Instance<any, any>;
+      type Any = Instance<any, any, any>;
 
       type Complete<T extends Any> = T extends Document.Any ? T : never;
     }
@@ -1064,11 +1080,9 @@ declare namespace Document {
     metadata: { name: SystemType };
   };
 
-  // TODO(LukeAbby): Look into this. Inconsistent name, deprecate?
-  type ConfiguredClass<T extends { metadata: Metadata.Any }> = ConfiguredClassForName<T["metadata"]["name"]>;
-
   type ConfiguredClassForName<Name extends Type> = MakeConform<
     ConfiguredDocuments[Name],
+    Document.Internal.Constructor,
     typeof ConfigurationFailure & DefaultDocuments[Name]
   >;
 
@@ -1078,28 +1092,17 @@ declare namespace Document {
   // NOTE(LukeAbby): This type is less DRY than it could be to avoid undue complexity in such a critical helpeer.
   // This has _many_ times been seen to cause loops so this type is written in an intentionally more paranoid way.
   // The reason for the verbosity and repetition is to avoid eagerly evaluating any branches that might cause a loop.
-  type ToConfiguredClass<ConcreteDocument extends Document.Internal.Constructor> =
-    NameFor<ConcreteDocument> extends keyof DocumentClassConfig
-      ? MakeConform<
-          ConfiguredDocuments[NameFor<ConcreteDocument>],
-          typeof ConfigurationFailure & DefaultDocuments[NameFor<ConcreteDocument>]
-        >
-      : DefaultDocuments[NameFor<ConcreteDocument>];
+  type ToConfiguredClass<ConcreteDocument extends Document.Internal.Constructor> = MakeConform<
+    ConfiguredDocuments[NameFor<ConcreteDocument>],
+    Document.AnyConstructor,
+    typeof ConfigurationFailure & DefaultDocuments[NameFor<ConcreteDocument>]
+  >;
 
-  type ToConfiguredInstance<ConcreteDocument extends Document.Internal.Constructor> =
-    ConfiguredDocuments[NameFor<ConcreteDocument>] extends Document.AnyConstructor
-      ? _CheckConfiguredInstance<
-          NameFor<ConcreteDocument>,
-          InstanceType<ConfiguredDocuments[NameFor<ConcreteDocument>]>
-        >
-      : InstanceType<DefaultDocuments[NameFor<ConcreteDocument>]>;
-
-  /**
-   * @internal
-   */
-  type _CheckConfiguredInstance<Name extends Document.Type, T> = T extends Document.Any
-    ? T
-    : ConfigurationFailure & DefaultDocuments[Name];
+  type ToConfiguredInstance<ConcreteDocument extends Document.Internal.Constructor> = MakeConform<
+    InstanceType<ConfiguredDocuments[NameFor<ConcreteDocument>]>,
+    Document.Any,
+    ConfigurationFailure & InstanceType<DefaultDocuments[NameFor<ConcreteDocument>]>
+  >;
 
   type ToConfiguredStored<D extends Document.Internal.Constructor> = Stored<ToConfiguredInstance<D>>;
 
@@ -1143,7 +1146,7 @@ declare namespace Document {
     : T;
 
   type SchemaFor<ConcreteDocument extends Internal.Instance.Any> =
-    ConcreteDocument extends Internal.Instance<infer Schema, any> ? Schema : never;
+    ConcreteDocument extends Internal.Instance<infer _1, infer Schema, infer _2> ? Schema : never;
 
   type MetadataFor<ConcreteDocument extends Document.Internal.Instance.Any> =
     ConfiguredMetadata<ConcreteDocument>[ConcreteDocument extends {
@@ -1158,11 +1161,12 @@ declare namespace Document {
 
   type Flags<ConcreteDocument extends Internal.Instance.Any> = OptionsForSchema<SchemaFor<ConcreteDocument>>;
 
-  interface OptionsInFlags<Options extends DataFieldOptions.Any> {
+  /** @internal */
+  interface OptionsInFlags<Options extends DataField.Options.Any> {
     readonly flags?: DataField<Options, any>;
   }
 
-  // These  types only exists to simplify solving the `Document` type. Using `Document.Flags<this>` means the constraint `this extends Document.Any` has to be proved.
+  // These types only exists to simplify solving the `Document` type. Using `Document.Flags<this>` means the constraint `this extends Document.Any` has to be proved.
   // This is much more complex than proving the constraint for `Document.FlagsInternal<Schema>` that `Schema extends DataSchema`.
 
   // TODO: This needs to use the derived flags not just how they're initialized.
@@ -1391,11 +1395,31 @@ declare namespace Document {
     ConcreteOperation extends Operation,
   > = DatabaseOperationMap[Name][ConcreteOperation];
 
-  type ConfiguredSheetClassFor<Name extends Document.Type> = GetKey<GetKey<CONFIG, Name>, "sheetClass">;
+  type ConfiguredSheetClassFor<Name extends Document.Type> = MakeConform<
+    GetKey<GetKey<CONFIG, Name>, "sheetClass">,
+    AnyConstructor
+  >;
 
   type ConfiguredObjectClassFor<Name extends Document.Type> = GetKey<GetKey<CONFIG, Name>, "objectClass">;
 
   type ConfiguredLayerClassFor<Name extends Document.Type> = GetKey<GetKey<CONFIG, Name>, "layerClass">;
+
+  type DropData<T extends Document.Any> = T extends { id: string | undefined }
+    ? DropData.Data<T> & DropData.UUID
+    : DropData.Data<T>;
+
+  namespace DropData {
+    type Any = DropData<any>;
+
+    interface Data<T extends Document.Any> {
+      type: T["documentName"];
+      data: T["_source"];
+    }
+
+    interface UUID {
+      uuid: string;
+    }
+  }
 }
 
 export type Operation = "create" | "update" | "delete";

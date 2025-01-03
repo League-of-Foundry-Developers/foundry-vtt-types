@@ -341,11 +341,13 @@ declare class ApplicationV2<
   [__RenderOptions]: RenderOptions;
   [__RenderContext]: RenderContext;
 
-  constructor(options: DeepPartial<Configuration>);
+  constructor(options?: DeepPartial<Configuration>);
 
   static BASE_APPLICATION: typeof ApplicationV2;
 
-  static DEFAULT_OPTIONS: DeepPartial<ApplicationV2.Configuration>;
+  // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
+  // Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.
+  static DEFAULT_OPTIONS: DeepPartial<ApplicationV2.Configuration> & object;
 
   static readonly RENDER_STATES: {
     ERROR: -3;
@@ -361,7 +363,7 @@ declare class ApplicationV2<
   /**
    * Application instance configuration options.
    */
-  options: Readonly<DeepPartial<Configuration>>;
+  options: Readonly<Configuration>;
 
   /**
    * Convenience references to window header elements.
@@ -436,7 +438,7 @@ declare class ApplicationV2<
    * Iterate over the inheritance chain of this Application.
    * The chain includes this Application itself and all parents until the base application is encountered.
    */
-  static inheritanceChain(): Generator<typeof ApplicationV2>;
+  static inheritanceChain(): Generator<ApplicationV2.AnyConstructor>;
 
   /**
    * Initialize configuration options for the Application instance.
@@ -447,20 +449,23 @@ declare class ApplicationV2<
    * @param options - Options provided directly to the constructor
    * @returns Configured options for the application instance
    */
-  protected _initializeApplicationOptions(
-    options: DeepPartial<Configuration>,
-  ): DeepPartial<Configuration> & Record<string, unknown>;
+  protected _initializeApplicationOptions(options: DeepPartial<Configuration>): Configuration;
 
   /**
    * Render the Application, creating its HTMLElement and replacing its innerHTML.
    * Add it to the DOM if it is not currently rendered and rendering is forced. Otherwise, re-render its contents.
    * @param options  - Options which configure application rendering behavior.
    *                   A boolean is interpreted as the "force" option.
-   * @param _options - Legacy options for backwards-compatibility with the original
-   *                   ApplicationV1#render signature.
    * @returns A Promise which resolves to the rendered Application instance
    */
-  render(options?: DeepPartial<Configuration> | boolean, _options?: DeepPartial<RenderOptions>): Promise<this>;
+  render(options?: DeepPartial<RenderOptions>): Promise<this>;
+
+  /**
+   * @deprecated Exists for backwards compatability with the original `ApplicationV1#render` signature.
+   *
+   * @param _options - Legacy options for backwards-compatibility with the original ApplicationV1#render signature.
+   */
+  render(options: boolean, _options?: DeepPartial<RenderOptions>): Promise<this>;
 
   /**
    * Modify the provided options passed to a render request.
@@ -473,7 +478,7 @@ declare class ApplicationV2<
    * @param options - Options which configure application rendering behavior
    * @returns Context data for the render operation
    */
-  protected _prepareContext(options: DeepPartial<RenderOptions>): Promise<RenderContext>;
+  protected _prepareContext(options: DeepPartial<RenderOptions> & { isFirstRender: boolean }): Promise<RenderContext>;
 
   /**
    * Configure the array of header control menu options

@@ -11,11 +11,20 @@ declare global {
   class RollTables extends WorldCollection<typeof foundry.documents.BaseRollTable, "RollTables"> {
     static documentName: "RollTable";
 
-    override get directory(): (typeof ui)["tables"];
+    override get directory(): typeof ui.tables;
 
     /**
      * Register world settings related to RollTable documents
      */
     static registerSettings(): void;
   }
+
+  namespace RollTables {
+    type Any = AnyRollTables;
+    type AnyConstructor = typeof AnyRollTables;
+  }
+}
+
+declare abstract class AnyRollTables extends RollTables {
+  constructor(arg0: never, ...args: never[]);
 }

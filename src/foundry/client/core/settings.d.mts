@@ -1,4 +1,4 @@
-import type { ConformRecord, AnyArray, AnyObject, DeepPartial, InexactPartial } from "../../../utils/index.d.mts";
+import type { AnyArray, AnyObject, InexactPartial, InstanceType } from "../../../utils/index.d.mts";
 import type ApplicationV2 from "../../client-esm/applications/api/application.d.mts";
 import type { CustomFormInput } from "../../client-esm/applications/forms/fields.d.mts";
 import type DataModel from "../../common/abstract/data.d.mts";
@@ -23,7 +23,7 @@ declare global {
     /**
      * A object of registered game settings for this scope
      */
-    settings: Map<keyof _SettingConfigRecord & string, ClientSettings.SettingConfig>;
+    settings: Map<keyof globalThis.SettingConfig & string, ClientSettings.SettingConfig>;
 
     /**
      * Registered settings menus which trigger secondary applications
@@ -86,11 +86,15 @@ declare global {
      * });
      * ```
      */
-    register<N extends ClientSettings.Namespace, K extends ClientSettings.Key, T extends ClientSettings.Type>(
+    register<
+      T extends ClientSettings.Type,
+      N extends ClientSettings.Namespace = ClientSettings.Namespace,
+      K extends ClientSettings.KeyFor<N> = ClientSettings.KeyFor<N>,
+    >(
       namespace: N,
       key: K,
       data: ClientSettings.Type extends T
-        ? ClientSettings.RegisterOptions<_SettingConfigRecord[`${N}.${K}`]>
+        ? ClientSettings.RegisterOptions<globalThis.SettingConfig[`${N}.${K}` & keyof SettingConfig]>
         : ClientSettings.RegisterOptions<NoInfer<T>>,
     ): void;
 
@@ -130,7 +134,7 @@ declare global {
      * game.settings.get("myModule", "myClientSetting");
      * ```
      */
-    get<N extends ClientSettings.Namespace, K extends ClientSettings.Key>(
+    get<N extends ClientSettings.Namespace, K extends ClientSettings.KeyFor<N>>(
       namespace: N,
       key: K,
     ): ClientSettings.SettingInitializedType<N, K>;
@@ -153,7 +157,7 @@ declare global {
      * game.settings.set("myModule", "myClientSetting", "b");
      * ```
      */
-    set<N extends ClientSettings.Namespace, K extends ClientSettings.Key>(
+    set<N extends ClientSettings.Namespace, K extends ClientSettings.KeyFor<N>>(
       namespace: N,
       key: K,
       value: ClientSettings.SettingAssignmentType<N, K>,
@@ -162,8 +166,8 @@ declare global {
   }
 
   namespace ClientSettings {
-    type Namespace = GetNamespaces<keyof _SettingConfigRecord>;
-    type Key = GetKeys<keyof _SettingConfigRecord>;
+    type Namespace = GetNamespaces<keyof globalThis.SettingConfig>;
+    type KeyFor<N extends Namespace> = GetKeys<N, keyof globalThis.SettingConfig>;
 
     /**
      * A compile type is a type for a setting that only exists at compile time.
@@ -186,17 +190,21 @@ declare global {
       | (T extends readonly (infer V)[] ? typeof Array<V> : never)
       | (T extends AnyObject ? typeof Object : never);
 
-    type SettingAssignmentType<N extends Namespace, K extends Key> = ToSettingAssignmentType<ConfiguredType<N, K>>;
+    type SettingAssignmentType<N extends Namespace, K extends KeyFor<N>> = ToSettingAssignmentType<
+      ConfiguredType<N, K>
+    >;
     type ToSettingAssignmentType<T extends Type> = ReplaceUndefinedWithNull<
       | SettingType<T>
       // TODO(LukeAbby): The `fromSource` function is called with `strict` which changes how fallback behaviour works. See `ClientSettings#set`
       // Note(LukeAbby): This doesn't use `InstanceType` because of this TypeScript issue: https://github.com/microsoft/TypeScript/issues/60839
-      | (T extends (abstract new (arg0: never, ...args: never[]) => infer Instance extends DataModel.Any)
+      | (T extends (abstract new (...args: infer _1) => infer Instance extends DataModel.Any)
           ? DataModel.ConstructorDataFor<Instance>
           : never)
     >;
 
-    type SettingInitializedType<N extends Namespace, K extends Key> = ToSettingInitializedType<ConfiguredType<N, K>>;
+    type SettingInitializedType<N extends Namespace, K extends KeyFor<N>> = ToSettingInitializedType<
+      ConfiguredType<N, K>
+    >;
     type ToSettingInitializedType<T extends Type> = ReplaceUndefinedWithNull<
       SettingType<T> | (T extends DataModel.Any ? T : never)
     >;
@@ -292,20 +300,14 @@ declare global {
       icon?: string | undefined;
 
       /** The FormApplication or ApplicationV2 to render */
-      type:
-        | (new () => FormApplication.Any)
-        | (new (options?: DeepPartial<ApplicationV2.Configuration>) => ApplicationV2.Any);
+      // In SettingsConfig#_onClickSubmenu this type is constructed and not given any options.
+      type: (new () => FormApplication.Any) | (new () => ApplicationV2.Any);
 
       /** If true, only a GM can edit this Setting */
       restricted?: boolean | undefined;
     }
 
     type RegisterSubmenu = Omit<SettingSubmenuConfig, "key" | "namespace">;
-
-    /**
-     * @deprecated - {@link globalThis.SettingConfig | `SettingConfig`}
-     */
-    interface Values extends globalThis.SettingConfig {}
   }
 }
 
@@ -338,15 +340,18 @@ type PrimitiveConstructorToSettingType<T extends PRIMITIVE_TYPES[number]> = T ex
     ? AnyObject
     : ReturnType<T>;
 
+// The `& keyof SettingConfig` is necessary because otherwise the fact that `K` depends on `N`
+// will confuse TypeScript and make it think that `${N}.${K}` can be invalid keys like
+// "core.moduleSetting" but in reality that would be disallowed by the dependent constraint of `K`.
 type ConfiguredType<
   N extends ClientSettings.Namespace,
-  K extends ClientSettings.Key,
-> = _SettingConfigRecord[`${N}.${K}`];
+  K extends ClientSettings.KeyFor<N>,
+> = globalThis.SettingConfig[`${N}.${K}` & keyof SettingConfig];
 
 type SettingType<T extends ClientSettings.Type> =
   // Note(LukeAbby): This isn't written as `T extends ClientSettings.TypeScriptType ? T : never` because then types like `DataField.Any` would be matched.
   | (T extends ClientSettings.RuntimeType ? never : T)
-  // TODO(LukeAbby): The `validate` function is called with `strict` which changes how fallback behaviour works. See `ClientSettings#set`
+  // TODO(LukeAbby): The `validate` function is called with `strict` which changes how fallback behavior works. See `ClientSettings#set`
   | (T extends DataField.Any ? DataField.AssignmentTypeFor<T> : never)
   | (T extends SettingConstructor ? ConstructorToSettingType<T> : T extends SettingFunction ? ReturnType<T> : never);
 
@@ -354,10 +359,6 @@ type SettingType<T extends ClientSettings.Type> =
 type ReplaceUndefinedWithNull<T> = T extends undefined ? null : T;
 
 type GetNamespaces<SettingPath extends PropertyKey> = SettingPath extends `${infer Scope}.${string}` ? Scope : never;
-type GetKeys<SettingPath extends PropertyKey> = SettingPath extends `${string}.${infer Name}` ? Name : never;
-
-type _SettingConfigRecord = ConformRecord<
-  // Refers to the deprecated interface so that merging works both ways.
-  ClientSettings.Values,
-  ClientSettings.Type
->;
+type GetKeys<N extends string, SettingPath extends PropertyKey> = SettingPath extends `${N}.${infer Name}`
+  ? Name
+  : never;

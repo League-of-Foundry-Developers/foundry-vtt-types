@@ -21,7 +21,7 @@ user.assignHotbarMacro(new Macro({ name: "Foo" }), 1);
 expectTypeOf(user._id).toEqualTypeOf<string | null>();
 expectTypeOf(user.avatar).toEqualTypeOf<string | null | undefined>();
 
-expectTypeOf(user.sheet).toEqualTypeOf<FormApplication | foundry.applications.api.ApplicationV2 | null>();
+expectTypeOf(user.sheet).toEqualTypeOf<FormApplication.Any | foundry.applications.api.ApplicationV2.Any | null>();
 
 expectTypeOf(user.color).toEqualTypeOf<string>();
 

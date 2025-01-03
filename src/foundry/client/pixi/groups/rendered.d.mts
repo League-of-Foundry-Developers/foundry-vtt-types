@@ -7,9 +7,7 @@ declare global {
   class RenderedCanvasGroup<
     DrawOptions extends RenderedCanvasGroup.DrawOptions = RenderedCanvasGroup.DrawOptions,
     TearDownOptions extends RenderedCanvasGroup.TearDownOptions = RenderedCanvasGroup.TearDownOptions,
-  > extends CanvasGroupMixin(PIXI.Container)<DrawOptions, TearDownOptions> {
-    static override groupName: "rendered";
-
+  > extends CanvasGroupMixin<typeof PIXI.Container, "rendered">(PIXI.Container)<DrawOptions, TearDownOptions> {
     /**
      * @defaultValue `false`
      */
@@ -17,6 +15,7 @@ declare global {
   }
 
   namespace RenderedCanvasGroup {
+    type Any = AnyRenderedCanvasGroup;
     type AnyConstructor = typeof AnyRenderedCanvasGroup;
 
     interface DrawOptions extends CanvasGroupMixin.DrawOptions {}

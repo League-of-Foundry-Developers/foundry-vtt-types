@@ -7,6 +7,8 @@ import type { DataModelValidationFailure } from "../data/validation-failure.d.mt
 import type { BaseFolder } from "../documents/_module.d.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
+type DataSchema = foundry.data.fields.DataSchema;
+
 declare const __BasePackageBrand: unique symbol;
 
 declare const __PackageSchema: unique symbol;

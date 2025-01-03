@@ -1,4 +1,4 @@
-import type { InexactPartial } from "../../../../../../utils/index.d.mts";
+import type { InexactPartial, InstanceType } from "../../../../../../utils/index.d.mts";
 
 declare abstract class AnyVisibilityFilter extends VisibilityFilter {
   constructor(arg0: never, ...args: never[]);

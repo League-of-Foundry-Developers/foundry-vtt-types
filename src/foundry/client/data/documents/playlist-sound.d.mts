@@ -32,6 +32,8 @@ declare global {
   class PlaylistSound extends ClientDocumentMixin(foundry.documents.BasePlaylistSound) {
     static override metadata: PlaylistSound.Metadata;
 
+    static get implementation(): PlaylistSound.ConfiguredClass;
+
     // Note(LukeAbby): TODO, this constructor just copies from the parent. Should this just be removed?
     // constructor(
     //   data: ConstructorParameters<typeof foundry.documents.BasePlaylistSound>[0],

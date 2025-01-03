@@ -6,7 +6,8 @@ declare global {
    * @typeParam Options - the type of the options object
    */
   class RollTableConfig<
-    Options extends DocumentSheetOptions<RollTable> = DocumentSheetOptions<RollTable>,
+    Options extends
+      DocumentSheetOptions<RollTable.ConfiguredInstance> = DocumentSheetOptions<RollTable.ConfiguredInstance>,
   > extends DocumentSheet<Options, RollTable.ConfiguredInstance> {
     /**
      * @defaultValue
@@ -23,7 +24,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): DocumentSheetOptions<RollTable>;
+    static override get defaultOptions(): DocumentSheetOptions<RollTable.ConfiguredInstance>;
 
     override get title(): string;
 

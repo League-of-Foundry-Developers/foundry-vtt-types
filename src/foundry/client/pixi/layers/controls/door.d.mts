@@ -65,4 +65,13 @@ declare global {
      */
     protected _onRightDown(event: PIXI.FederatedEvent): undefined | Promise<WallDocument.ConfiguredInstance>;
   }
+
+  namespace DoorControl {
+    type Any = AnyDoorControl;
+    type AnyConstructor = typeof AnyDoorControl;
+  }
+}
+
+declare abstract class AnyDoorControl extends DoorControl {
+  constructor(arg0: never, ...args: never[]);
 }

@@ -13,7 +13,7 @@ declare global {
   class PrimaryCanvasGroup<
     DrawOptions extends PrimaryCanvasGroup.DrawOptions = PrimaryCanvasGroup.DrawOptions,
     TearDownOptions extends PrimaryCanvasGroup.TearDownOptions = PrimaryCanvasGroup.TearDownOptions,
-  > extends CanvasGroupMixin(CachedContainer)<DrawOptions, TearDownOptions> {
+  > extends CanvasGroupMixin<typeof CachedContainer, "primary">(CachedContainer)<DrawOptions, TearDownOptions> {
     /**
      * @param sprite - (default: `new SpriteMesh(undefined, BaseSamplerShader)`)
      */
@@ -23,8 +23,6 @@ declare global {
      * Sort order to break ties on the group/layer level.
      */
     static readonly SORT_LAYERS: PrimaryCanvasGroup.SORT_LAYERS;
-
-    static override groupName: "primary";
 
     static override textureConfiguration: {
       scaleMode: PIXI.SCALE_MODES;
@@ -192,6 +190,7 @@ declare global {
   }
 
   namespace PrimaryCanvasGroup {
+    type Any = AnyPrimaryCanvasGroup;
     type AnyConstructor = typeof AnyPrimaryCanvasGroup;
 
     interface DrawOptions extends CanvasGroupMixin.DrawOptions {}

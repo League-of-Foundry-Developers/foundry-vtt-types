@@ -1,4 +1,4 @@
-import type { RequiredProps } from "../../../../utils/index.d.mts";
+import type { RequiredProps, InstanceType } from "../../../../utils/index.d.mts";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
@@ -77,28 +77,28 @@ declare global {
 
     static override RENDER_FLAGS: {
       /** @defaultValue `{ propagate: ["refresh"] }` */
-      redraw: RenderFlag<Partial<MeasuredTemplate.RenderFlags>>;
+      redraw: RenderFlag<MeasuredTemplate.RenderFlags>;
 
       /** @defaultValue `{ propagate: ["refreshState", "refreshShape"], alias: true }` */
-      refresh: RenderFlag<Partial<MeasuredTemplate.RenderFlags>>;
+      refresh: RenderFlag<MeasuredTemplate.RenderFlags>;
 
       /** @defaultValue `{}` */
-      refreshState: RenderFlag<Partial<MeasuredTemplate.RenderFlags>>;
+      refreshState: RenderFlag<MeasuredTemplate.RenderFlags>;
 
       /** @defaultValue `{ propagate: ["refreshPosition", "refreshGrid", "refreshText", "refreshTemplate"] }` */
-      refreshShape: RenderFlag<Partial<MeasuredTemplate.RenderFlags>>;
+      refreshShape: RenderFlag<MeasuredTemplate.RenderFlags>;
 
       /** @defaultValue `{}` */
-      refreshTemplate: RenderFlag<Partial<MeasuredTemplate.RenderFlags>>;
+      refreshTemplate: RenderFlag<MeasuredTemplate.RenderFlags>;
 
       /** @defaultValue `{ propagate: ["refreshGrid"] }` */
-      refreshPosition: RenderFlag<Partial<MeasuredTemplate.RenderFlags>>;
+      refreshPosition: RenderFlag<MeasuredTemplate.RenderFlags>;
 
       /** @defaultValue `{}` */
-      refreshGrid: RenderFlag<Partial<MeasuredTemplate.RenderFlags>>;
+      refreshGrid: RenderFlag<MeasuredTemplate.RenderFlags>;
 
       /** @defaultValue `{}` */
-      refreshText: RenderFlag<Partial<MeasuredTemplate.RenderFlags>>;
+      refreshText: RenderFlag<MeasuredTemplate.RenderFlags>;
     };
 
     override get bounds(): PIXI.Rectangle;

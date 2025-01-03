@@ -29,4 +29,13 @@ declare global {
      */
     protected _onChangeScene(scene: Document.Stored<Scene>, data: DeepPartial<Scene["_source"]>): Promise<void>;
   }
+
+  namespace Playlists {
+    type Any = AnyPlaylists;
+    type AnyConstructor = typeof AnyPlaylists;
+  }
+}
+
+declare abstract class AnyPlaylists extends Playlists {
+  constructor(arg0: never, ...args: never[]);
 }

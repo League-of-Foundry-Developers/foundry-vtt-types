@@ -41,7 +41,7 @@ declare global {
      * Handle button click to reset default settings
      * @param event - The initial button click event
      */
-    protected _onResetDefaults(event: JQuery.ClickEvent): Promise<Application>;
+    protected _onResetDefaults(event: JQuery.ClickEvent): Promise<Application.Any>;
 
     protected override _onSubmit(
       event: Event,
