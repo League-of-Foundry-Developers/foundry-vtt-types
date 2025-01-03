@@ -10,7 +10,10 @@ declare global {
     /**
      * List of compression that could be applied with extraction
      */
-    static COMPRESSION_MODES: Record<"NONE" | "BASE64", TextureExtractor.COMPRESSION_MODES>;
+    static COMPRESSION_MODES: {
+      NONE: 0 & TextureExtractor.COMPRESSION_MODES;
+      BASE64: 1 & TextureExtractor.COMPRESSION_MODES;
+    };
 
     /**
      * Debug flag.
