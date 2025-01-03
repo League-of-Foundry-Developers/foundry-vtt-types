@@ -1403,11 +1403,16 @@ declare namespace StringField {
 
   type ValidChoice<Options extends StringField.Options> = Options["choices"] extends undefined
     ? string
-    : Options["choices"] extends (...args: any) => infer Choices
+    : Options["choices"] extends (...args: infer _1) => infer Choices
       ? FixedChoice<Choices>
       : FixedChoice<Options["choices"]>;
 
-  type FixedChoice<Choices> = Choices extends Array<infer U> ? U : Choices extends Record<infer K, any> ? K : string;
+  type FixedChoice<Choices> =
+    Choices extends ReadonlyArray<infer U>
+      ? U
+      : Choices extends { readonly [_ in infer K]: infer _1 }
+        ? K & string
+        : string;
 
   /**
    * A shorthand for the assignment type of a StringField class.
