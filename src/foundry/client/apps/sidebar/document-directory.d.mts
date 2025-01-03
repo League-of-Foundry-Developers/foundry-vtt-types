@@ -17,6 +17,8 @@ declare global {
      * The CSS selector for the clickable area of an entry in the tab.
      */
     entryClickSelector?: string;
+
+    collection: DocumentCollection.Any;
   }
 
   class DocumentDirectory<
@@ -63,6 +65,11 @@ declare global {
     override get tabName(): string;
 
     static get collection(): WorldCollection<Document.AnyConstructor, string>;
+
+    /**
+     * The collection of Documents which are displayed in this Sidebar Directory
+     */
+    get collection(): Options["collection"];
 
     /**
      * Initialize the content of the directory by categorizing folders and documents into a hierarchical tree structure.

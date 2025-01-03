@@ -15,8 +15,6 @@ declare global {
      */
     constructor(options: Partial<Options>);
 
-    collection: CompendiumCollection<Metadata>;
-
     override get entryType(): Metadata["type"];
 
     static override entryPartial: string;
