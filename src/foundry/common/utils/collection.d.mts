@@ -1,31 +1,17 @@
-interface MapReplacementMembers<K, V> {
-  set(key: K, value: V): this;
+// This class exists make it as sound as possible to override these parts of the class and make them
+// completely unrelated. It's done this way specifically to avoid situations like
+declare class LenientMap<K, V> extends Map<K, V> {
+  [Symbol.iterator](): any;
+  forEach(...args: any[]): any;
 }
-
-type PatchedMap<K, V> = Omit<Map<K, V>, "forEach" | typeof Symbol.iterator | "get" | "set"> &
-  MapReplacementMembers<K, V>;
-
-declare namespace PatchedMap {
-  type Any = PatchedMap<any, any>;
-}
-
-interface PatchedMapConstructor {
-  new (): PatchedMap.Any;
-  new <K, V>(entries?: readonly (readonly [K, V])[] | null): PatchedMap<K, V>;
-  new <K, V>(iterable: Iterable<readonly [K, V]>): PatchedMap<K, V>;
-  readonly [Symbol.species]: PatchedMapConstructor;
-  readonly prototype: PatchedMap.Any;
-}
-
-declare const Map: PatchedMapConstructor;
 
 /**
  * A reusable storage concept which blends the functionality of an Array with the efficient key-based lookup of a Map.
  * This concept is reused throughout Foundry VTT where a collection of uniquely identified elements is required.
  * @typeParam T - The type of the objects contained in the Collection
  */
-declare class Collection<V> extends Map<string, V> {
-  constructor(entries?: readonly (readonly [string, V])[] | null);
+declare class Collection<V> extends LenientMap<string, V> {
+  constructor(entries?: Iterable<readonly [string, V]> | null);
 
   /**
    * When iterating over a Collection, we should iterate over its values instead of over its entries

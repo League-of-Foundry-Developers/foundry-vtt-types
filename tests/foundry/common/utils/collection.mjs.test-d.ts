@@ -15,8 +15,25 @@ function isString(e: string | null): e is string {
 }
 
 const cn = new Collection<string | null>();
-expectTypeOf(cn.filter((each) => typeof each === "string")).toEqualTypeOf<Array<string | null>>();
-expectTypeOf(cn.find((each) => typeof each === "string")).toEqualTypeOf<string | null | undefined>();
+expectTypeOf(cn.filter((each) => typeof each === "string")).toEqualTypeOf<Array<string>>();
+expectTypeOf(cn.find((each) => typeof each === "string")).toEqualTypeOf<string | undefined>();
 
 expectTypeOf(cn.filter(isString)).toEqualTypeOf<string[]>();
 expectTypeOf(cn.find(isString)).toEqualTypeOf<string | undefined>();
+
+// This is a regression test for the error:
+//    Class '...' defines instance member property '...', but extended class '...' defines it as instance member function.
+// This occurred because of how `Map` was patched to allow the unsound subclassing of `Collection`.
+class CustomCollection extends Collection<string> {
+  override clear(): void {}
+
+  override delete(_key: string): boolean {
+    return true;
+  }
+}
+
+declare const customCollection: CustomCollection;
+
+if (customCollection instanceof Map) {
+  expectTypeOf(customCollection).toEqualTypeOf<CustomCollection>();
+}
