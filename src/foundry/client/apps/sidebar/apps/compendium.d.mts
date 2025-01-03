@@ -15,8 +15,6 @@ declare global {
      */
     constructor(options: Partial<Options>);
 
-    collection: CompendiumCollection<Metadata>;
-
     override get entryType(): Metadata["type"];
 
     static override entryPartial: string;
@@ -34,7 +32,7 @@ declare global {
      * });
      * ```
      */
-    static override get defaultOptions(): ApplicationOptions;
+    static override get defaultOptions(): Compendium.Options<CompendiumCollection.Metadata>;
 
     override get id(): string;
 
@@ -85,9 +83,10 @@ declare global {
   namespace Compendium {
     type Any = Compendium<any, any>;
 
-    interface Options<Metadata extends CompendiumCollection.Metadata = CompendiumCollection.Metadata>
+    interface Options<_Metadata extends CompendiumCollection.Metadata = CompendiumCollection.Metadata>
       extends DocumentDirectoryOptions {
-      collection: CompendiumCollection<Metadata>;
+      // Note(LukeAbby): Replacing `any` with `Metadata` causes an OOM within TypeScript.
+      collection: CompendiumCollection<any>;
     }
   }
 }
