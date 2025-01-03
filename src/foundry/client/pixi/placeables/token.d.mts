@@ -342,49 +342,49 @@ declare global {
 
     static override RENDER_FLAGS: {
       /** @defaultValue `{ propagate: ["refresh"] }` */
-      redraw: RenderFlag<Partial<Token.RenderFlags>>;
+      redraw: RenderFlag<Token.RenderFlags>;
 
       /** @defaultValue `{}` */
-      redrawEffects: RenderFlag<Partial<Token.RenderFlags>>;
+      redrawEffects: RenderFlag<Token.RenderFlags>;
 
       /** @defaultValue `{ propagate: ["refreshState", "refreshSize", "refreshPosition", "refreshElevation", "refreshBars", "refreshNameplate", "refreshBorder", "refreshShader"], alias: true }` */
-      refresh: RenderFlag<Partial<Token.RenderFlags>>;
+      refresh: RenderFlag<Token.RenderFlags>;
 
       /** @defaultValue `{ propagate: ["refreshVisibility", "refreshBorder"] }` */
-      refreshState: RenderFlag<Partial<Token.RenderFlags>>;
+      refreshState: RenderFlag<Token.RenderFlags>;
 
       /** @defaultValue `{ propagate: ["refreshMesh", "refreshBorder", "refreshBars", "refreshPosition", "refreshTarget", "refreshEffects"] }` */
-      refreshSize: RenderFlag<Partial<Token.RenderFlags>>;
+      refreshSize: RenderFlag<Token.RenderFlags>;
 
       /** @defaultValue `{ propagate: ["refreshMesh", "refreshVisibility"] }` */
-      refreshPosition: RenderFlag<Partial<Token.RenderFlags>>;
+      refreshPosition: RenderFlag<Token.RenderFlags>;
 
       /** @defaultValue `{ propagate: ["refreshMesh"] }` */
-      refreshElevation: RenderFlag<Partial<Token.RenderFlags>>;
+      refreshElevation: RenderFlag<Token.RenderFlags>;
 
       /** @defaultValue `{}` */
-      refreshVisibility: RenderFlag<Partial<Token.RenderFlags>>;
+      refreshVisibility: RenderFlag<Token.RenderFlags>;
 
       /** @defaultValue `{}` */
-      refreshEffects: RenderFlag<Partial<Token.RenderFlags>>;
+      refreshEffects: RenderFlag<Token.RenderFlags>;
 
       /** @defaultValue `{}` */
-      refreshMesh: RenderFlag<Partial<Token.RenderFlags>>;
+      refreshMesh: RenderFlag<Token.RenderFlags>;
 
       /** @defaultValue `{}` */
-      refreshShader: RenderFlag<Partial<Token.RenderFlags>>;
+      refreshShader: RenderFlag<Token.RenderFlags>;
 
       /** @defaultValue `{}` */
-      refreshBars: RenderFlag<Partial<Token.RenderFlags>>;
+      refreshBars: RenderFlag<Token.RenderFlags>;
 
       /** @defaultValue `{}` */
-      refreshNameplate: RenderFlag<Partial<Token.RenderFlags>>;
+      refreshNameplate: RenderFlag<Token.RenderFlags>;
 
       /** @defaultValue `{}` */
-      refreshBorder: RenderFlag<Partial<Token.RenderFlags>>;
+      refreshBorder: RenderFlag<Token.RenderFlags>;
 
       /** @defaultValue `{}` */
-      refreshTarget: RenderFlag<Partial<Token.RenderFlags>>;
+      refreshTarget: RenderFlag<Token.RenderFlags>;
     };
 
     /**

@@ -72,31 +72,31 @@ declare global {
 
     static override RENDER_FLAGS: {
       /** @defaultValue `{ propagate: ["refresh"] }` */
-      redraw: RenderFlag<Partial<Tile.RenderFlags>>;
+      redraw: RenderFlag<Tile.RenderFlags>;
 
       /** @defaultValue `{ propagate: ["refreshState", "refreshShape", "refreshElevation", "refreshVideo"], alias: true }` */
-      refresh: RenderFlag<Partial<Tile.RenderFlags>>;
+      refresh: RenderFlag<Tile.RenderFlags>;
 
       /** @defaultValue `{ propagate: ["refreshFrame"] }` */
-      refreshState: RenderFlag<Partial<Tile.RenderFlags>>;
+      refreshState: RenderFlag<Tile.RenderFlags>;
 
       /** @defaultValue `{ propagate: ["refreshMesh", "refreshPerception", "refreshFrame"] }` */
-      refreshShape: RenderFlag<Partial<Tile.RenderFlags>>;
+      refreshShape: RenderFlag<Tile.RenderFlags>;
 
       /** @defaultValue `{}` */
-      refreshMesh: RenderFlag<Partial<Tile.RenderFlags>>;
+      refreshMesh: RenderFlag<Tile.RenderFlags>;
 
       /** @defaultValue `{}` */
-      refreshFrame: RenderFlag<Partial<Tile.RenderFlags>>;
+      refreshFrame: RenderFlag<Tile.RenderFlags>;
 
       /** @defaultValue `{ propagate: ["refreshMesh"] }` */
-      refreshElevation: RenderFlag<Partial<Tile.RenderFlags>>;
+      refreshElevation: RenderFlag<Tile.RenderFlags>;
 
       /** @defaultValue `{}` */
-      refreshPerception: RenderFlag<Partial<Tile.RenderFlags>>;
+      refreshPerception: RenderFlag<Tile.RenderFlags>;
 
       /** @defaultValue `{}` */
-      refreshVideo: RenderFlag<Partial<Tile.RenderFlags>>;
+      refreshVideo: RenderFlag<Tile.RenderFlags>;
     };
 
     /**
