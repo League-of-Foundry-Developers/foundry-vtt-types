@@ -26,22 +26,22 @@ declare global {
 
     static override RENDER_FLAGS: {
       /** @defaultValue `{ propagate: ["refresh"] }` */
-      redraw: RenderFlag<Partial<Note.RenderFlags>>;
+      redraw: RenderFlag<Note.RenderFlags>;
 
       /** @defaultValue `{ propagate: ["refreshState", "refreshPosition", "refreshText"], alias: true }` */
-      refresh: RenderFlag<Partial<Note.RenderFlags>>;
+      refresh: RenderFlag<Note.RenderFlags>;
 
       /** @defaultValue `{ propagate: ["refreshVisibility"] }` */
-      refreshPosition: RenderFlag<Partial<Note.RenderFlags>>;
+      refreshPosition: RenderFlag<Note.RenderFlags>;
 
       /** @defaultValue `{ propagate: ["refreshVisibility"] }` */
-      refreshState: RenderFlag<Partial<Note.RenderFlags>>;
+      refreshState: RenderFlag<Note.RenderFlags>;
 
       /** @defaultValue `{}` */
-      refreshVisibility: RenderFlag<Partial<Note.RenderFlags>>;
+      refreshVisibility: RenderFlag<Note.RenderFlags>;
 
       /** @defaultValue `{}` */
-      refreshText: RenderFlag<Partial<Note.RenderFlags>>;
+      refreshText: RenderFlag<Note.RenderFlags>;
     };
 
     override get bounds(): PIXI.Rectangle;

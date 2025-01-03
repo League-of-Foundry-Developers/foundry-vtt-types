@@ -37,10 +37,10 @@ declare class RenderFlagObject {
  */
 type _RenderFlags<Flags> = InexactPartial<{
   /** Activating this flag also sets these flags to true */
-  propagate: Array<Partial<keyof Flags>>;
+  propagate: Array<keyof Flags>;
 
   /** Activating this flag resets these flags to false */
-  reset: Array<Partial<keyof Flags>>;
+  reset: Array<keyof Flags>;
 
   /**
    * Is this flag deprecated? The deprecation options are passed to
@@ -60,7 +60,10 @@ type _RenderFlags<Flags> = InexactPartial<{
 }>;
 
 declare global {
-  interface RenderFlag<Flags> extends _RenderFlags<Flags> {}
+  // @ts-expect-error - RenderFlag is built around willfully violating subclassing rules.
+  // The primary issue at hand is that each value can refer to the keys, thus making it technically
+  // unsound to apply a subclass to its superclass.
+  interface RenderFlag<out Flags> extends _RenderFlags<Flags> {}
 
   namespace RenderFlag {
     type Any = RenderFlag<any>;

@@ -72,25 +72,25 @@ declare global {
 
     static override RENDER_FLAGS: {
       /** @defaultValue `{ propagate: ["refresh"] }` */
-      redraw: RenderFlag<Partial<Drawing.RenderFlags>>;
+      redraw: RenderFlag<Drawing.RenderFlags>;
 
       /** @defaultValue `{ propagate: ["refreshState", "refreshShape"], alias: true }` */
-      refresh: RenderFlag<Partial<Drawing.RenderFlags>>;
+      refresh: RenderFlag<Drawing.RenderFlags>;
 
       /** @defaultValue `{ propagate: ["refreshFrame"] }` */
-      refreshState: RenderFlag<Partial<Drawing.RenderFlags>>;
+      refreshState: RenderFlag<Drawing.RenderFlags>;
 
       /** @defaultValue `{ propagate: ["refreshFrame", "refreshText", "refreshMesh"] }` */
-      refreshShape: RenderFlag<Partial<Drawing.RenderFlags>>;
+      refreshShape: RenderFlag<Drawing.RenderFlags>;
 
       /** @defaultValue `{}` */
-      refreshFrame: RenderFlag<Partial<Drawing.RenderFlags>>;
+      refreshFrame: RenderFlag<Drawing.RenderFlags>;
 
       /** @defaultValue `{}` */
-      refreshText: RenderFlag<Partial<Drawing.RenderFlags>>;
+      refreshText: RenderFlag<Drawing.RenderFlags>;
 
       /** @defaultValue `{}` */
-      refreshMesh: RenderFlag<Partial<Drawing.RenderFlags>>;
+      refreshMesh: RenderFlag<Drawing.RenderFlags>;
     };
 
     /**
