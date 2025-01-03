@@ -86,7 +86,11 @@ declare global {
      * });
      * ```
      */
-    register<N extends ClientSettings.Namespace, K extends ClientSettings.KeyFor<N>, T extends ClientSettings.Type>(
+    register<
+      T extends ClientSettings.Type,
+      N extends ClientSettings.Namespace = ClientSettings.Namespace,
+      K extends ClientSettings.KeyFor<N> = ClientSettings.KeyFor<N>,
+    >(
       namespace: N,
       key: K,
       data: ClientSettings.Type extends T
