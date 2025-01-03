@@ -7,6 +7,7 @@ declare global {
   class TextureLoader {
     /**
      * A global reference to the singleton texture loader
+     * @privateRemarks This is set outside the class via `TextureLoader.loader = new TextureLoader();`
      */
     static loader: TextureLoader;
 
