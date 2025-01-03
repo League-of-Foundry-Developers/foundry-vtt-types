@@ -9,7 +9,7 @@ declare global {
    * This group is a {@link CachedContainer} which is rendered to the Scene as a {@link SpriteMesh}.
    * This allows the rendered result of the Primary Canvas Group to be affected by a {@link BaseSamplerShader}.
    */
-  class PrimaryCanvasGroup extends CanvasGroupMixin(CachedContainer) {
+  class PrimaryCanvasGroup extends CanvasGroupMixin<typeof CachedContainer, "primary">(CachedContainer) {
     /**
      * @param sprite - (default: `new SpriteMesh(undefined, BaseSamplerShader)`)
      */
@@ -25,11 +25,6 @@ declare global {
       TOKENS: number;
       WEATHER: number;
     };
-
-    /**
-     * @defaultValue `"primary"`
-     */
-    static override groupName: string;
 
     static override textureConfiguration: {
       scaleMode: PIXI.SCALE_MODES;

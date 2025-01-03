@@ -4,12 +4,7 @@ declare global {
   /**
    * A container group which displays interface elements rendered above other canvas groups.
    */
-  class InterfaceCanvasGroup extends CanvasGroupMixin(PIXI.Container) {
-    /**
-     * @defaultValue `"interface"`
-     */
-    static override groupName: string;
-
+  class InterfaceCanvasGroup extends CanvasGroupMixin<typeof PIXI.Container<any>, "interface">(PIXI.Container) {
     /**
      * Add a PrimaryGraphics to the group.
      * @param drawing - The Drawing being added

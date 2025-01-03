@@ -4,12 +4,7 @@ declare global {
   /**
    * A container group which contains the environment canvas group and the interface canvas group.
    */
-  class RenderedCanvasGroup extends CanvasGroupMixin(PIXI.Container) {
-    /**
-     * @defaultValue `"rendered"`
-     */
-    static override groupName: string;
-
+  class RenderedCanvasGroup extends CanvasGroupMixin<typeof PIXI.Container, "rendered">(PIXI.Container) {
     /**
      * @defaultValue `false`
      */
