@@ -1,28 +1,6 @@
 import type { InexactPartial } from "../../../../../utils/index.d.mts";
 
 declare global {
-  namespace SmoothNoise {
-    interface ConstructorOptions {
-      /**
-       * The generated noise will be on the range [0, amplitude].
-       * @defaultValue `1`
-       */
-      amplitude: number;
-
-      /**
-       * An adjustment factor for the input x values which place them on an appropriate range.
-       * @defaultValue `1`
-       */
-      scale: number;
-
-      /**
-       * The number of pre-generated random numbers to generate.
-       * @defaultValue `256`
-       */
-      maxReferences: number;
-    }
-  }
-
   /**
    * A smooth noise generator for one-dimensional values.
    */
@@ -30,7 +8,7 @@ declare global {
     /**
      * @param options - Configuration options for the noise process.
      */
-    constructor({ amplitude, scale, maxReferences }?: InexactPartial<SmoothNoise.ConstructorOptions>);
+    constructor(options?: SmoothNoise.ConstructorOptions);
 
     _maxReferences: number;
 
@@ -62,4 +40,40 @@ declare global {
      */
     generate(x: number): number;
   }
+
+  namespace SmoothNoise {
+    type AnyConstructor = typeof AnySmoothNoise;
+
+    /** @internal */
+    type _ConstructorOptions = InexactPartial<{
+      /**
+       * The generated noise will be on the range [0, amplitude].
+       * @defaultValue `1`
+       * @remarks Can't be null because it only has a signature-provided default
+       */
+      amplitude: number;
+
+      /**
+       * An adjustment factor for the input x values which place them on an appropriate range.
+       * @defaultValue `1`
+       * @remarks Can't be null because it only has a signature-provided default
+       */
+      scale: number;
+
+      /**
+       * The number of pre-generated random numbers to generate.
+       * @defaultValue `256`
+       * @remarks Must be a power of 2 or construction throws.
+       * Can't be null because it only has a signature-provided default
+       */
+      maxReferences: number;
+    }>;
+
+    /** Options for the {@link SmoothNoise} constructor */
+    interface ConstructorOptions extends _ConstructorOptions {}
+  }
+}
+
+declare abstract class AnySmoothNoise extends SmoothNoise {
+  constructor(arg0: never, ...args: never[]);
 }

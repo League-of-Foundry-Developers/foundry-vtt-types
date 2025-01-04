@@ -1,4 +1,4 @@
-import type { InexactPartial } from "../../../../../utils/index.d.mts";
+import type { NullishProps } from "../../../../../utils/index.d.mts";
 
 declare global {
   /**
@@ -9,16 +9,18 @@ declare global {
      * @param options - A config object
      */
     constructor(
-      options?: InexactPartial<{
-        /** A geometry passed to the graphics. */
-        geometry: PIXI.GraphicsGeometry;
+      options?:
+        | PIXI.GraphicsGeometry
+        | NullishProps<{
+            /** A geometry passed to the graphics. */
+            geometry: PIXI.GraphicsGeometry;
 
-        /** The name of the PCO. */
-        name: string;
+            /** The name of the PCO. */
+            name: string;
 
-        /** Any object that owns this PCO. */
-        object: PlaceableObject;
-      }>,
+            /** Any object that owns this PCO. */
+            object: PlaceableObject;
+          }>,
     );
 
     override _calculateCanvasBounds(): void;
@@ -27,4 +29,12 @@ declare global {
 
     override containsCanvasPoint(point: PIXI.IPointData): boolean;
   }
+
+  namespace PrimaryGraphics {
+    type AnyConstructor = typeof AnyPrimaryGraphics;
+  }
+}
+
+declare abstract class AnyPrimaryGraphics extends PrimaryGraphics {
+  constructor(arg0: never, ...args: never[]);
 }

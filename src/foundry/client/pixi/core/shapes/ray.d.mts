@@ -71,14 +71,14 @@ declare global {
     /**
      * The cached angle, computed lazily in Ray#angle
      * @defaultValue `undefined`
-     * @internal
+     * @privateRemarks Foundry marked private
      */
     protected _angle: number | undefined;
 
     /**
      * The cached distance, computed lazily in Ray#distance
      * @defaultValue `undefined`
-     * @internal
+     * @privateRemarks Foundry marked private
      */
     protected _distance: number | undefined;
 
@@ -154,7 +154,7 @@ declare global {
      * @param distance - A distance the new ray should project, otherwise uses the same distance.
      * @returns A new Ray with an offset angle
      */
-    shiftAngle(angleOffset: number, distance?: number): Ray;
+    shiftAngle(offset: number, distance?: number): Ray;
 
     /**
      * Find the point I[x,y] and distance t* on ray R(t) which intersects another ray
@@ -162,4 +162,12 @@ declare global {
      */
     intersectSegment(coords: [x0: number, y0: number, x1: number, y1: number]): LineIntersection | null;
   }
+
+  namespace Ray {
+    type AnyConstructor = typeof AnyRay;
+  }
+}
+
+declare abstract class AnyRay extends Ray {
+  constructor(arg0: never, ...args: never[]);
 }

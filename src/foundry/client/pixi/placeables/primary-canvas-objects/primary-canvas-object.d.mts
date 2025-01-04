@@ -6,11 +6,18 @@ declare class PrimaryCanvasObject {
   constructor(...args: any[]);
 
   /**
+   * @remarks Undocumented property set during construction
+   * @defaultValue `true`
+   */
+  cullable: boolean;
+
+  /**
    * An optional reference to the object that owns this PCO.
    * This property does not affect the behavior of the PCO itself.
+   * @remarks Foundry types as `*`, in practice, it will only ever be a `PlaceableObject` or the `PrimaryCanvasGroup`
    * @defaultValue `null`
    */
-  object: PlaceableObject | null;
+  object: PlaceableObject | PrimaryCanvasGroup | null;
 
   /**
    * The elevation of this object.
@@ -153,12 +160,15 @@ declare global {
    * A mixin which decorates a DisplayObject with additional properties expected for rendering in the PrimaryCanvasGroup.
    * @param DisplayObject - The parent DisplayObject class being mixed
    * @returns A DisplayObject subclass mixed with PrimaryCanvasObject features
+   * @privateRemarks Despite naming the argument "DisplayObject", it's typed as only taking `PIXI.Container`s, which matches core's usage
    */
-  function PrimaryCanvasObjectMixin<BaseClass extends PIXI.DisplayObject.AnyConstructor>(
+  function PrimaryCanvasObjectMixin<BaseClass extends PIXI.Container.AnyConstructor>(
     DisplayObject: BaseClass,
   ): Mixin<typeof PrimaryCanvasObject, ReturnType<typeof CanvasTransformMixin<BaseClass>>>;
 
   namespace PrimaryCanvasObjectMixin {
+    type AnyMixed = ReturnType<typeof PrimaryCanvasObjectMixin<PIXI.Container.AnyConstructor>>;
+
     type MixinClass = typeof PrimaryCanvasObject;
   }
 
@@ -166,12 +176,15 @@ declare global {
    * A mixin which decorates a DisplayObject with additional properties for canvas transforms and bounds.
    * @param DisplayObject - The parent DisplayObject class being mixed
    * @returns A DisplayObject subclass mixed with CanvasTransformMixin features
+   * @privateRemarks Despite naming the argument "DisplayObject", it's typed as only taking `PIXI.Container`s, which matches core's usage
    */
-  function CanvasTransformMixin<BaseClass extends PIXI.DisplayObject.AnyConstructor>(
+  function CanvasTransformMixin<BaseClass extends PIXI.Container.AnyConstructor>(
     DisplayObject: BaseClass,
   ): Mixin<typeof CanvasTransformMixinClass, BaseClass>;
 
   namespace CanvasTransformMixin {
+    type AnyMixed = ReturnType<typeof CanvasTransformMixin<PIXI.Container.AnyConstructor>>;
+
     type MixinClass = typeof CanvasTransformMixinClass;
   }
 }

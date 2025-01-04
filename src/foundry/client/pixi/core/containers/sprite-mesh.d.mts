@@ -1,3 +1,5 @@
+import type { ValueOf } from "../../../../../types/utils.d.mts";
+
 export {};
 
 declare global {
@@ -11,21 +13,23 @@ declare global {
      * @param shaderCls - Shader class used by this sprite mesh.
      *                    (default: `BaseSamplerShader`)
      */
-    constructor(texture?: PIXI.Texture, shaderCls?: typeof BaseSamplerShader);
+    constructor(texture?: PIXI.Texture | null, shaderClass?: BaseSamplerShader.AnyConstructor);
 
+    /** @defaultValue `true` */
     override isSprite: boolean;
 
     /**
      * Snapshot of some parameters of this display object to render in batched mode.
      */
     protected _batchData: {
-      _tintRGB: number;
-      _texture: PIXI.Texture;
+      _tintRGB: number | undefined;
+      _texture: PIXI.Texture | undefined | null;
       indices: number[];
       uvs: number[];
-      blendMode: PIXI.BLEND_MODES;
+      blendMode: ValueOf<PIXI.BLEND_MODES> | undefined;
       vertexData: number[];
-      worldAlpha: number;
+      worldAlpha: number | undefined;
+      object: SpriteMesh;
     };
 
     /**
@@ -48,7 +52,7 @@ declare global {
     /**
      * The texture that the sprite is using.
      */
-    protected _texture: PIXI.Texture;
+    protected _texture: PIXI.Texture | null;
 
     /**
      * The texture ID
@@ -58,6 +62,7 @@ declare global {
 
     /**
      * Cached tint value so we can tell when the tint is changed.
+     * @defaultValue `[1, 1, 1, 1]`
      */
     protected _cachedTint: [red: number, green: number, blue: number, alpha: number];
 
@@ -65,7 +70,7 @@ declare global {
      * The texture trimmed ID.
      * @defaultValue `-1`
      */
-    _textureTrimmedID: number;
+    protected _textureTrimmedID: number;
 
     /**
      * This is used to store the uvs data of the sprite, assigned at the same time
@@ -102,6 +107,7 @@ declare global {
 
     /**
      * The transform ID.
+     * @defaultValue `-1`
      */
     private _transformID: number;
 
@@ -181,7 +187,7 @@ declare global {
      * The blend mode applied to the SpriteMesh.
      * @defaultValue `PIXI.BLEND_MODES.NORMAL`
      */
-    set blendMode(value: PIXI.BLEND_MODES);
+    set blendMode(value: ValueOf<PIXI.BLEND_MODES>);
 
     get blendMode();
 
@@ -201,7 +207,7 @@ declare global {
      * If this property is non null, this value will replace the texture alphaMode when computing color channels.
      * Affects how tint, worldAlpha and alpha are computed each others.
      */
-    get alphaMode(): PIXI.ALPHA_MODES;
+    get alphaMode(): ValueOf<PIXI.ALPHA_MODES>;
 
     set alphaMode(mode);
 
@@ -220,7 +226,7 @@ declare global {
     /**
      * The texture that the sprite is using
      */
-    get texture(): PIXI.Texture;
+    get texture(): PIXI.Texture | null;
 
     set texture(texture);
 
@@ -246,7 +252,7 @@ declare global {
      * A value of 0xFFFFFF will remove any tint effect.
      * @defaultValue `0xFFFFFF`
      */
-    get tint(): PIXI.ColorSource;
+    get tint(): number;
 
     set tint(tint);
 
@@ -263,12 +269,12 @@ declare global {
     /**
      * When the texture is updated, this event will fire to update the scale and frame.
      */
-    _onTextureUpdate(): void;
+    protected _onTextureUpdate(): void;
 
     /**
      * Called when the anchor position updates.
      */
-    _onAnchorUpdate(): void;
+    protected _onAnchorUpdate(): void;
 
     /**
      * Update uvs and push vertices and uv buffers on GPU if necessary.
@@ -277,9 +283,9 @@ declare global {
 
     /**
      * Initialize shader based on the shader class type.
-     * @param shaderClass - Shader class used. Must inherit from AbstractBaseShader.
+     * @param shaderClass - The shader class
      */
-    setShaderClass(shaderClass: typeof AbstractBaseShader): void;
+    setShaderClass(shaderClass: BaseSamplerShader.AnyConstructor): void;
 
     override updateTransform(): void;
 
@@ -306,6 +312,7 @@ declare global {
 
     override getLocalBounds(rect: PIXI.Rectangle): PIXI.Rectangle;
 
+    /** @privateRemarks Foundry still marks this `@override` from when this class used to extend `PIXI.Mesh` */
     containsPoint(point: PIXI.IPointData): boolean;
 
     override destroy(options: PIXI.IDestroyOptions | boolean): void;
@@ -318,9 +325,17 @@ declare global {
      * @param shaderClass    - The shader class to use. BaseSamplerShader by default.
      */
     static from(
-      source: string | PIXI.Texture | HTMLCanvasElement | HTMLVideoElement,
+      source: PIXI.Texture | Parameters<(typeof PIXI.Texture)["from"]>[0],
       textureOptions?: PIXI.IBaseTextureOptions,
-      shaderClass?: typeof AbstractBaseShader,
+      shaderClass?: BaseSamplerShader.AnyConstructor,
     ): SpriteMesh;
   }
+
+  namespace SpriteMesh {
+    type AnyConstructor = typeof AnySpriteMesh;
+  }
+}
+
+declare abstract class AnySpriteMesh extends SpriteMesh {
+  constructor(arg0: never, ...args: never[]);
 }

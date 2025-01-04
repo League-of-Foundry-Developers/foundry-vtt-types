@@ -1,4 +1,4 @@
-import type { AnyObject, Mixin, PrettifyType, RemoveIndexSignatures } from "../../../../../utils/index.d.mts";
+import type { HandleEmptyObject, Mixin, PrettifyType, RemoveIndexSignatures } from "../../../../../utils/index.d.mts";
 
 declare const DynamicClass: new <_Computed extends object>(arg0: never, ...args: never[]) => _Computed;
 
@@ -14,7 +14,11 @@ type GroupFor<Group extends CanvasGroupMixin.LayerGroup | NoLayerGroup> = Group 
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     {};
 
-declare class CanvasGroup<Group extends CanvasGroupMixin.LayerGroup | NoLayerGroup> extends LayersClass<Group> {
+declare class CanvasGroup<
+  Group extends CanvasGroupMixin.LayerGroup | NoLayerGroup,
+  DrawOptions extends CanvasGroupMixin.DrawOptions = CanvasGroupMixin.DrawOptions,
+  TearDownOptions extends CanvasGroupMixin.TearDownOptions = CanvasGroupMixin.TearDownOptions,
+> extends LayersClass<Group> {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
   constructor(...args: any[]);
 
@@ -25,10 +29,11 @@ declare class CanvasGroup<Group extends CanvasGroupMixin.LayerGroup | NoLayerGro
    * The name of this canvas group
    * @remarks Foundry marked as abstract
    */
-  static groupName: string;
+  static groupName: keyof CONFIG.Canvas.Groups | undefined;
 
   /**
    * If this canvas group should teardown non-layers children.
+   * @defaultValue `true`
    */
   static tearDownChildren: boolean;
 
@@ -45,32 +50,33 @@ declare class CanvasGroup<Group extends CanvasGroupMixin.LayerGroup | NoLayerGro
 
   /**
    * A mapping of CanvasLayer classes which belong to this group.
-   * @remarks Default value defined by this._createLayers, which pulls from CONFIG.Canvas.layers
+   * @remarks Default value defined by this._createLayers, which is called in the constructor, and   pulls from CONFIG.Canvas.layers
    */
   layers: GroupFor<Group>;
 
   /**
    * Create CanvasLayer instances which belong to the canvas group.
    */
+  //TODO check if protected is valid
   _createLayers(): GroupFor<Group>;
 
   /** Draw the canvas group and all its component layers. */
-  draw(options: CanvasGroupMixin.DrawOptions): Promise<void>;
+  draw(options?: HandleEmptyObject<DrawOptions>): Promise<this>;
 
   /**
    * Draw the canvas group and all its component layers.
    */
-  protected _draw(options: CanvasGroupMixin.DrawOptions): Promise<void>;
+  protected _draw(options?: HandleEmptyObject<DrawOptions>): Promise<void>;
 
   /**
    * Remove and destroy all layers from the base canvas.
    */
-  tearDown(options: CanvasGroupMixin.TearDownOptions): Promise<void>;
+  tearDown(options: HandleEmptyObject<TearDownOptions>): Promise<this>;
 
   /**
    * Remove and destroy all layers from the base canvas.
    */
-  protected _tearDown(options: CanvasGroupMixin.TearDownOptions): Promise<void>;
+  protected _tearDown(options: HandleEmptyObject<TearDownOptions>): Promise<void>;
 }
 
 declare const _NoLayerGroup: unique symbol;
@@ -84,7 +90,7 @@ declare global {
    */
   function CanvasGroupMixin<
     BaseClass extends CanvasGroupMixin.BaseClass,
-    // In `_createLayers` the co`de assigns top level properties to the class.
+    // In `_createLayers` the code assigns top level properties to the class.
     // This is why Group exists.`
     Group extends CanvasGroupMixin.LayerGroup | NoLayerGroup = NoLayerGroup,
   >(
@@ -92,13 +98,15 @@ declare global {
   ): Mixin<typeof CanvasGroup<Group>, BaseClass> & { groupName: Group extends NoLayerGroup ? string : Group };
 
   namespace CanvasGroupMixin {
-    type BaseClass = typeof AnyPIXIContainer;
     type AnyConstructor = typeof AnyCanvasGroup;
-    type Any = AnyCanvasGroup;
 
-    type DrawOptions = AnyObject;
+    type BaseClass = PIXI.Container.AnyConstructor;
 
-    type TearDownOptions = AnyObject;
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    interface DrawOptions {}
+
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    interface TearDownOptions {}
 
     interface Layers {
       readonly [key: string]: CanvasLayer;
@@ -125,9 +133,5 @@ declare global {
 }
 
 declare abstract class AnyCanvasGroup extends CanvasGroup<NoLayerGroup> {
-  constructor(arg0: never, ...args: never[]);
-}
-
-declare abstract class AnyPIXIContainer extends PIXI.Container<any> {
   constructor(arg0: never, ...args: never[]);
 }

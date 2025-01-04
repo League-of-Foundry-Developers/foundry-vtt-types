@@ -65,6 +65,7 @@
   ],
   "dependencies": {
     "@types/earcut": "github:LukeAbby/earcut-types#main",
+    "@pixi/basis": "^7.4.2",
     "@pixi/graphics-smooth": "^1.1.0",
     "@pixi/particle-emitter": "^5.0.8",
     "@types/jquery": "~3.5.22",

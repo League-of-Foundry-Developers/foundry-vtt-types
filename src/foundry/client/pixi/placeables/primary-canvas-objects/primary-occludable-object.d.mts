@@ -1,4 +1,4 @@
-import type { InexactPartial, Mixin } from "../../../../../utils/index.d.mts";
+import type { Mixin, NullishProps, ValueOf } from "../../../../../utils/index.d.mts";
 
 declare class PrimaryOccludableObject {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
@@ -20,7 +20,7 @@ declare class PrimaryOccludableObject {
    * The occlusion mode of this occludable object.
    * @defaultValue `CONST.OCCLUSION_MODES.NONE`
    */
-  occlusionMode: typeof CONST.OCCLUSION_MODES;
+  occlusionMode: ValueOf<typeof CONST.OCCLUSION_MODES>;
 
   /**
    * The unoccluded alpha of this object.
@@ -44,11 +44,30 @@ declare class PrimaryOccludableObject {
 
   /**
    * The amount of rendered FADE, RADIAL, and VISION occlusion.
+   * @defaultValue
+   * ```js
+   * {
+   *   fade: 0.0,
+   *   radial: 0.0,
+   *   vision: 0.0
+   * }
+   * ```
    */
   protected _occlusionState: PrimaryOccludableObjectMixin.OcclusionState;
 
   /**
    * The state of hover-fading.
+   * @defaultValue
+   * ```js
+   * {
+   *   hovered: false,
+   *   hoveredTime: 0,
+   *   faded: false,
+   *   fading: false,
+   *   fadingTime: 0,
+   *   occlusion: 0.0
+   * }
+   * ```
    */
   protected _hoverFadeState: PrimaryOccludableObjectMixin.HoverFadeState;
 
@@ -82,11 +101,11 @@ declare class PrimaryOccludableObject {
    * Uses a 50ms debounce threshold.
    * Objects which are in the hovered state remain occluded until their hovered state ends.
    */
-  debounceSetOcclusion: (occluded: boolean) => void;
+  debounceSetOcclusion: (occluded: boolean) => boolean;
 
   updateCanvasTransform(): void;
 
-  _shouldRenderDepth: boolean;
+  _shouldRenderDepth(): boolean;
 
   /**
    * Test whether a specific Token occludes this PCO.
@@ -96,8 +115,8 @@ declare class PrimaryOccludableObject {
    * @returns Is the Token occluded by the PCO?
    */
   testOcclusion(
-    token: Token,
-    options?: InexactPartial<{
+    token: Token.ConfiguredInstance,
+    options?: NullishProps<{
       /** Test corners of the hit-box in addition to the token center? */
       corners: boolean;
     }>,
@@ -105,26 +124,37 @@ declare class PrimaryOccludableObject {
 
   /**
    * @deprecated since v12, will be removed in v14
+   * @remarks "`#roof` is deprecated in favor of more granular options: `#restrictsLight` and `#resrictsWeather`"
    */
   get roof(): boolean;
 
   /**
+   * @deprecated since v12, until v14
+   * @remarks "#roof is deprecated in favor of more granular options: #restrictsLight and #resrictsWeather"
+   */
+  set roof(enabled);
+
+  /**
    * @deprecated since v12, will be removed in v14
+   * @remarks "#containsPixel is deprecated. Use #containsCanvasPoint instead."
    */
   containsPixel(x: number, y: number, alphaThreshold: number): boolean;
 
   /**
    * @deprecated since v11, will be removed in v13
+   * @remarks "PrimaryCanvasObject#renderOcclusion is deprecated in favor of PrimaryCanvasObject#renderDepth"
    */
   renderOcclusion(renderer: PIXI.Renderer): void;
 }
 
 declare global {
-  function PrimaryOccludableObjectMixin<BaseClass extends PIXI.DisplayObject.AnyConstructor>(
+  function PrimaryOccludableObjectMixin<BaseClass extends PIXI.Container.AnyConstructor>(
     DisplayObject: BaseClass,
   ): Mixin<typeof PrimaryOccludableObject, ReturnType<typeof PrimaryCanvasObjectMixin<BaseClass>>>;
 
   namespace PrimaryOccludableObjectMixin {
+    type AnyMixed = ReturnType<typeof PrimaryOccludableObjectMixin<PIXI.Container.AnyConstructor>>;
+
     type MixinClass = typeof PrimaryOccludableObject;
 
     interface OcclusionState {

@@ -112,7 +112,7 @@ declare module "pixi.js" {
     }
 
     /** @privateRemarks Property description intentionally omitted to avoid redundant intellisense on overloaded method */
-    interface IntsectPolygonOptions extends PIXI.Rectangle.IntersectPolygonOptions {
+    interface IntersectPolygonOptions extends PIXI.Rectangle.IntersectPolygonOptions {
       density: number;
     }
 
