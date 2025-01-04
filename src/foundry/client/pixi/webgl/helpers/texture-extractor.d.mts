@@ -86,12 +86,16 @@ declare global {
 
       /**
        * The optional image mime type.
-       * @privateRemarks Allowed to be null because it has an `??` default in `TextureExtractor##compressBufferWorker` via `##compressBuffer`, the only place it is actually used, despite being passed
+       * @privateRemarks Allowed to be null because it has an `??` default in `TextureExtractor##compressBufferWorker`
+       * via `##compressBuffer`, the only place it is actually used, despite being passed to other functions as well
        */
       type: string | null;
 
-      /** The optional image quality. */
-      quality: string;
+      /**
+       * The optional image quality.
+       *  @privateRemarks Foundry types as `string` but is clearly meant to be `number` by usage
+       */
+      quality: number;
 
       /** The optional debug flag to use. */
       debug: boolean | null;
