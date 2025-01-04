@@ -152,7 +152,7 @@ declare class DirectoryApplication {
    * @param sortData        - The sort data for the Folder
    */
   protected _handleDroppedForeignFolder(
-    folder: Folder,
+    folder: Folder.ConfiguredInstance,
     closestFolderId: string,
     sortData: {
       /**
