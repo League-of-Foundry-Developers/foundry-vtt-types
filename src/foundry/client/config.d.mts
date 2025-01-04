@@ -2081,7 +2081,7 @@ declare global {
        * @defaultValue `{}`
        * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
        */
-      dataModels: Record<string, typeof DataModel<any, ChatMessage>>;
+      dataModels: Record<string, typeof DataModel<any, ActiveEffect>>;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -2289,7 +2289,7 @@ declare global {
        * @defaultValue `{}`
        * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
        */
-      dataModels: Record<string, typeof DataModel<any, ChatMessage>>;
+      dataModels: Record<string, typeof DataModel<any, Combatant>>;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
