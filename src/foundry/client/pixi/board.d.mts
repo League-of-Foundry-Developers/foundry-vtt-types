@@ -1,4 +1,4 @@
-import type { InexactPartial, NullishProps, InstanceType } from "../../../utils/index.d.mts";
+import type { InexactPartial, NullishProps, FixedInstanceType } from "../../../utils/index.d.mts";
 import type Document from "../../common/abstract/document.d.mts";
 import type { CANVAS_PERFORMANCE_MODES } from "../../common/constants.d.mts";
 
@@ -6,7 +6,7 @@ type InternalCanvas = new (
   arg0: never,
   ...args: never[]
 ) => {
-  readonly [K in keyof CONFIG.Canvas.Groups]?: InstanceType<CONFIG.Canvas.Groups[K]["groupClass"]> | undefined;
+  readonly [K in keyof CONFIG.Canvas.Groups]?: FixedInstanceType<CONFIG.Canvas.Groups[K]["groupClass"]> | undefined;
 };
 
 declare const _InternalCanvas: InternalCanvas;
@@ -167,7 +167,7 @@ declare global {
     /**
      * The singleton FogManager instance.
      */
-    fog: InstanceType<typeof CONFIG.Canvas.fogManager>;
+    fog: FixedInstanceType<typeof CONFIG.Canvas.fogManager>;
 
     /**
      * A perception manager interface for batching lighting, sight, and sound updates
@@ -650,8 +650,8 @@ declare global {
      * Track objects which have pending render flags.
      */
     readonly pendingRenderFlags: {
-      OBJECTS: Set<InstanceType<ReturnType<typeof RenderFlagsMixin>>>;
-      PERCEPTION: Set<InstanceType<ReturnType<typeof RenderFlagsMixin>>>;
+      OBJECTS: Set<FixedInstanceType<ReturnType<typeof RenderFlagsMixin>>>;
+      PERCEPTION: Set<FixedInstanceType<ReturnType<typeof RenderFlagsMixin>>>;
     };
 
     /**

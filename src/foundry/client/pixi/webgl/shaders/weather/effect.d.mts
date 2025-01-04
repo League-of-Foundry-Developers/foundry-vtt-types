@@ -1,4 +1,4 @@
-import type { InexactPartial, InstanceType } from "../../../../../../utils/index.d.mts";
+import type { InexactPartial, FixedInstanceType } from "../../../../../../utils/index.d.mts";
 
 declare abstract class AnyWeatherShaderEffect extends WeatherShaderEffect<any> {
   constructor(arg0: never, ...args: never[]);
@@ -17,7 +17,7 @@ declare const InternalWeatherShaderEffect_Const: InternalWeatherShaderEffect_Int
 // @ts-expect-error - This pattern inherently requires a ts-expect-error as the base class is dynamic.
 class InternalWeatherShaderEffect<
   ShaderClass extends AbstractBaseShader.AnyConstructor,
-  _ShaderClassInstance extends object = InstanceType<ShaderClass>,
+  _ShaderClassInstance extends object = FixedInstanceType<ShaderClass>,
 > extends InternalWeatherShaderEffect_Const<_ShaderClassInstance> {}
 
 declare global {

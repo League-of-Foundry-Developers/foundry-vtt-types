@@ -1,4 +1,4 @@
-import type { InstanceType, ToMethod } from "../../../../../utils/index.d.mts";
+import type { FixedInstanceType, ToMethod } from "../../../../../utils/index.d.mts";
 
 declare abstract class AnyAbstractBaseShader extends AbstractBaseShader {
   constructor(arg0: never, ...args: never[]);
@@ -64,7 +64,7 @@ declare global {
     static create<ThisType extends AbstractBaseShader.AnyConstructor>(
       this: ThisType,
       initialUniforms: AbstractBaseShader.Uniforms,
-    ): InstanceType<ThisType>;
+    ): FixedInstanceType<ThisType>;
 
     /**
      * Reset the shader uniforms back to their initial values.

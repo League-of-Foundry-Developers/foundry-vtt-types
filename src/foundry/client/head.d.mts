@@ -1,4 +1,4 @@
-import type { InstanceType } from "../../utils/index.d.mts";
+import type { FixedInstanceType } from "../../utils/index.d.mts";
 import type { EarlierEvents, InitializationEvent } from "./game.d.mts";
 
 type ValidRanHooks = Extract<keyof AssumeHookRan, InitializationEvent>;
@@ -83,5 +83,5 @@ declare global {
 }
 
 type UiApplications = {
-  [Key in keyof CONFIG["ui"]]: InstanceType<CONFIG["ui"][Key]>;
+  [Key in keyof CONFIG["ui"]]: FixedInstanceType<CONFIG["ui"][Key]>;
 };

@@ -1,4 +1,4 @@
-import type { InexactPartial, InstanceType, LoggingLevels } from "../../../utils/index.d.mts";
+import type { InexactPartial, FixedInstanceType, LoggingLevels } from "../../../utils/index.d.mts";
 import type BaseUser from "../documents/user.d.mts";
 import type Document from "./document.d.mts";
 import type {
@@ -25,7 +25,7 @@ declare abstract class DatabaseBackend {
     documentClass: T,
     operation: DatabaseGetOperation,
     user?: BaseUser,
-  ): Promise<InstanceType<T>>[];
+  ): Promise<FixedInstanceType<T>>[];
 
   /**
    * Retrieve Document instances using the specified operation parameters.
@@ -38,7 +38,7 @@ declare abstract class DatabaseBackend {
     documentClass: T,
     operation: DatabaseGetOperation,
     user?: BaseUser,
-  ): Promise<InstanceType<T>[]>;
+  ): Promise<FixedInstanceType<T>[]>;
 
   /**
    * Create new Documents using provided data and context.
@@ -51,9 +51,9 @@ declare abstract class DatabaseBackend {
    */
   create<T extends Document.AnyConstructor>(
     documentClass: T,
-    operation: DatabaseCreateOperation<InstanceType<T>>,
+    operation: DatabaseCreateOperation<FixedInstanceType<T>>,
     user?: BaseUser,
-  ): Promise<InstanceType<T>[]>;
+  ): Promise<FixedInstanceType<T>[]>;
 
   /**
    * Create Document instances using provided data and operation parameters.
@@ -64,9 +64,9 @@ declare abstract class DatabaseBackend {
    */
   protected abstract _createDocuments<T extends Document.AnyConstructor>(
     documentClass: T,
-    operation: DatabaseCreateOperation<InstanceType<T>>,
+    operation: DatabaseCreateOperation<FixedInstanceType<T>>,
     user?: BaseUser,
-  ): Promise<InstanceType<T>[]>;
+  ): Promise<FixedInstanceType<T>[]>;
 
   /**
    * Update Documents using provided data and context.
@@ -79,9 +79,9 @@ declare abstract class DatabaseBackend {
    */
   update<T extends Document.AnyConstructor>(
     documentClass: T,
-    operation: DatabaseUpdateOperation<InstanceType<T>>,
+    operation: DatabaseUpdateOperation<FixedInstanceType<T>>,
     user?: BaseUser,
-  ): Promise<InstanceType<T>[]>;
+  ): Promise<FixedInstanceType<T>[]>;
 
   /**
    * Update Document instances using provided data and operation parameters.
@@ -92,9 +92,9 @@ declare abstract class DatabaseBackend {
    */
   protected abstract _updateDocuments<T extends Document.AnyConstructor>(
     documentClass: T,
-    operation: DatabaseUpdateOperation<InstanceType<T>>,
+    operation: DatabaseUpdateOperation<FixedInstanceType<T>>,
     user: BaseUser,
-  ): Promise<InstanceType<T>[]>;
+  ): Promise<FixedInstanceType<T>[]>;
 
   /**
    * Delete Documents using provided ids and context.
@@ -109,7 +109,7 @@ declare abstract class DatabaseBackend {
     documentClass: T,
     operation: DatabaseDeleteOperation,
     user?: BaseUser,
-  ): Promise<InstanceType<T>[]>;
+  ): Promise<FixedInstanceType<T>[]>;
 
   /**
    * Delete Document instances using provided ids and operation parameters.
@@ -121,7 +121,7 @@ declare abstract class DatabaseBackend {
     documentClass: T,
     operation: DatabaseDeleteOperation,
     user: BaseUser,
-  ): Promise<InstanceType<T>[]>;
+  ): Promise<FixedInstanceType<T>[]>;
 
   /**
    * Get the parent Document (if any) associated with a request context.

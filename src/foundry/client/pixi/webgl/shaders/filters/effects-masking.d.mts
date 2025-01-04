@@ -1,4 +1,4 @@
-import type { AnyObject, InstanceType, ShapeWithIndexSignature } from "../../../../../../utils/index.d.mts";
+import type { AnyObject, FixedInstanceType, ShapeWithIndexSignature } from "../../../../../../utils/index.d.mts";
 
 declare abstract class AnyVisualEffectsMaskingFilter extends VisualEffectsMaskingFilter {
   constructor(arg0: never, ...args: never[]);
@@ -42,7 +42,7 @@ declare global {
         string,
         AbstractBaseShader.UniformValue
       >,
-    ): InstanceType<ThisType>;
+    ): FixedInstanceType<ThisType>;
 
     /**
      * Masking modes.

@@ -2,7 +2,7 @@ import type {
   InterfaceToObject,
   AnyObject,
   RemoveIndexSignatures,
-  InstanceType,
+  FixedInstanceType,
 } from "../../../../../../utils/index.d.mts";
 
 declare abstract class AnyAbstractWeatherShader extends AbstractWeatherShader {
@@ -79,7 +79,7 @@ declare global {
     static override create<ThisType extends AbstractBaseShader.AnyConstructor>(
       this: ThisType,
       initialUniforms?: AbstractBaseShader.Uniforms,
-    ): InstanceType<ThisType>;
+    ): FixedInstanceType<ThisType>;
 
     /**
      * Create the shader program.

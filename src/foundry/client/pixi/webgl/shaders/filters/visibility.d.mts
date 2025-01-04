@@ -1,4 +1,4 @@
-import type { InexactPartial, InstanceType } from "../../../../../../utils/index.d.mts";
+import type { InexactPartial, FixedInstanceType } from "../../../../../../utils/index.d.mts";
 
 declare abstract class AnyVisibilityFilter extends VisibilityFilter {
   constructor(arg0: never, ...args: never[]);
@@ -41,7 +41,7 @@ declare global {
       this: ThisType,
       initiaUniforms?: AbstractBaseShader.Uniforms,
       options?: InexactPartial<VisibilityFilter.FragmentShaderOptions>,
-    ): InstanceType<ThisType>;
+    ): FixedInstanceType<ThisType>;
 
     static override vertexShader: string;
 

@@ -1,4 +1,4 @@
-import type { InstanceType } from "../../../../../../utils/index.d.mts";
+import type { FixedInstanceType } from "../../../../../../utils/index.d.mts";
 
 declare abstract class AnyGlowOverlayFilter extends GlowOverlayFilter {
   constructor(arg0: never, ...args: never[]);
@@ -63,7 +63,7 @@ declare global {
     static override create<ThisType extends AbstractBaseFilter.AnyConstructor>(
       this: ThisType,
       initialUniforms?: AbstractBaseShader.Uniforms,
-    ): InstanceType<ThisType>;
+    ): FixedInstanceType<ThisType>;
 
     override apply(
       filterManager: PIXI.FilterSystem,

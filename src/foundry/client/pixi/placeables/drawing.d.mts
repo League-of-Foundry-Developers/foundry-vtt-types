@@ -1,10 +1,10 @@
-import type { ValueOf, InstanceType } from "../../../../utils/index.d.mts";
+import type { ValueOf, FixedInstanceType } from "../../../../utils/index.d.mts";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
   namespace Drawing {
     type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof Drawing>;
-    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+    type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;
 
     interface RenderFlags extends PlaceableObject.RenderFlags {
       refreshShape: boolean;

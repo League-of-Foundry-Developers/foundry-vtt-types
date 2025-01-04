@@ -1,4 +1,4 @@
-import type { DeepPartial, InstanceType } from "../../../utils/index.d.mts";
+import type { DeepPartial, FixedInstanceType } from "../../../utils/index.d.mts";
 
 declare global {
   /**
@@ -15,7 +15,7 @@ declare global {
     /**
      * The Audio/Video client class
      */
-    client: InstanceType<CONFIG["WebRTC"]["clientClass"]>;
+    client: FixedInstanceType<CONFIG["WebRTC"]["clientClass"]>;
 
     /**
      * A flag to track whether the current user is actively broadcasting their microphone.

@@ -1,10 +1,10 @@
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
-import type { InstanceType } from "../../../../utils/index.d.mts";
+import type { FixedInstanceType } from "../../../../utils/index.d.mts";
 
 declare global {
   namespace Note {
     type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof Note>;
-    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+    type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;
 
     interface RenderFlags extends PlaceableObject.RenderFlags {
       refreshPosition: boolean;

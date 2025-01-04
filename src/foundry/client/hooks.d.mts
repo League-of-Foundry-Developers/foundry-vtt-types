@@ -1,5 +1,5 @@
 import type { EditorState, Plugin } from "prosemirror-state";
-import type { DeepPartial, EmptyObject, InstanceType, ValueOf } from "../../utils/index.d.mts";
+import type { DeepPartial, EmptyObject, FixedInstanceType, ValueOf } from "../../utils/index.d.mts";
 import type Document from "../common/abstract/document.d.mts";
 import type { EffectChangeData } from "../common/documents/_types.d.mts";
 import type { ProseMirrorDropDown } from "../common/prosemirror/menu.d.mts";
@@ -980,7 +980,7 @@ declare global {
     type PreCreateDocument<D extends Document.AnyConstructor = Document.AnyConstructor> = (
       document: Document.ToConfiguredInstance<D>,
       data: ConstructorParameters<D>[0],
-      options: Document.PreCreateOptions<InstanceType<D>["documentName"]>,
+      options: Document.PreCreateOptions<FixedInstanceType<D>["documentName"]>,
       userId: string,
     ) => boolean | void;
 
@@ -1006,7 +1006,7 @@ declare global {
     type PreUpdateDocument<D extends Document.AnyConstructor = Document.AnyConstructor> = (
       document: Document.ToConfiguredInstance<D>,
       changed: DeepPartial<ConstructorParameters<D>[0]>,
-      options: Document.PreUpdateOptions<InstanceType<D>["documentName"]>,
+      options: Document.PreUpdateOptions<FixedInstanceType<D>["documentName"]>,
       userId: string,
     ) => boolean | void;
 
@@ -1030,7 +1030,7 @@ declare global {
      */
     type PreDeleteDocument<D extends Document.AnyConstructor = Document.AnyConstructor> = (
       document: Document.ToConfiguredInstance<D>,
-      options: Document.PreDeleteOptions<InstanceType<D>["documentName"]>,
+      options: Document.PreDeleteOptions<FixedInstanceType<D>["documentName"]>,
       userId: string,
     ) => boolean | void;
 
@@ -1050,7 +1050,7 @@ declare global {
      */
     type CreateDocument<D extends Document.AnyConstructor = Document.AnyConstructor> = (
       document: Document.ToConfiguredInstance<D>,
-      options: Document.OnCreateOptions<InstanceType<D>["documentName"]>,
+      options: Document.OnCreateOptions<FixedInstanceType<D>["documentName"]>,
       userId: string,
     ) => void;
 
@@ -1072,7 +1072,7 @@ declare global {
     type UpdateDocument<D extends Document.AnyConstructor = Document.AnyConstructor> = (
       document: Document.ToConfiguredInstance<D>,
       change: DeepPartial<ConstructorParameters<D>[0]>,
-      options: Document.OnUpdateOptions<InstanceType<D>["documentName"]>,
+      options: Document.OnUpdateOptions<FixedInstanceType<D>["documentName"]>,
       userId: string,
     ) => void;
 
@@ -1092,7 +1092,7 @@ declare global {
      */
     type DeleteDocument<D extends Document.AnyConstructor = Document.AnyConstructor> = (
       document: Document.ToConfiguredInstance<D>,
-      options: Document.OnDeleteOptions<InstanceType<D>["documentName"]>,
+      options: Document.OnDeleteOptions<FixedInstanceType<D>["documentName"]>,
       userId: string,
     ) => void;
 
