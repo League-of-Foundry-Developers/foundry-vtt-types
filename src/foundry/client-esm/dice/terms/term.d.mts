@@ -1,4 +1,4 @@
-import type { InexactPartial, InstanceType } from "../../../../utils/index.d.mts";
+import type { InexactPartial, FixedInstanceType } from "../../../../utils/index.d.mts";
 import type { RollParseNode } from "../_types.mts";
 
 import type RollResolver from "../../applications/dice/roll-resolver.d.mts";
@@ -112,7 +112,7 @@ declare abstract class RollTerm {
   protected static _fromData<T extends RollTerm.AnyConstructor>(
     this: T,
     data: Record<string, unknown>,
-  ): InstanceType<T>;
+  ): FixedInstanceType<T>;
 
   /**
    * Reconstruct a RollTerm instance from a provided JSON string

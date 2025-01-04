@@ -1,4 +1,4 @@
-import type { AnyObject, DeepPartial, InexactPartial, InstanceType } from "../../../../utils/index.d.mts";
+import type { AnyObject, DeepPartial, InexactPartial, FixedInstanceType } from "../../../../utils/index.d.mts";
 import type { DatabaseAction, DatabaseOperationMap } from "../../../common/abstract/_types.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 
@@ -9,12 +9,12 @@ declare global {
   class DocumentCollection<T extends Document.AnyConstructor, Name extends string> extends foundry.utils.Collection<
     Document.ToConfiguredStored<T>
   > {
-    constructor(data: InstanceType<T>["_source"][]);
+    constructor(data: FixedInstanceType<T>["_source"][]);
 
     /**
      * The source data array from which the Documents in the WorldCollection are created
      */
-    _source: InstanceType<T>["_source"][];
+    _source: FixedInstanceType<T>["_source"][];
 
     /**
      * An Array of application references which will be automatically updated when the collection content changes
@@ -61,7 +61,7 @@ declare global {
      */
     createDocument(
       data: Document.ConstructorDataFor<T>,
-      context: Document.ConstructionContext<InstanceType<T>>,
+      context: Document.ConstructionContext<FixedInstanceType<T>>,
     ): Document.ToConfiguredInstance<T>;
 
     /**
@@ -177,7 +177,7 @@ declare global {
      */
     _onModifyContents<A extends DatabaseAction>(
       action: A,
-      documents: InstanceType<T>[],
+      documents: FixedInstanceType<T>[],
       result: AnyObject[] | readonly string[],
       operation: DatabaseOperationMap[A],
       user: User.ConfiguredInstance,
@@ -201,12 +201,12 @@ declare global {
 
       interface Create<T extends Document.AnyConstructor> extends Base<T> {
         action: "create";
-        data: (InstanceType<T>["_source"] & { _id: string })[];
+        data: (FixedInstanceType<T>["_source"] & { _id: string })[];
       }
 
       interface Update<T extends Document.AnyConstructor> extends Base<T> {
         action: "update";
-        data: (DeepPartial<InstanceType<T>["_source"]> & { _id: string })[];
+        data: (DeepPartial<FixedInstanceType<T>["_source"]> & { _id: string })[];
       }
 
       interface Delete<T extends Document.AnyConstructor> extends Base<T> {

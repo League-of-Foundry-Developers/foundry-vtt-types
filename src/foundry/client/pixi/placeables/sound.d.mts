@@ -1,11 +1,11 @@
 import type Sound from "../../../client-esm/audio/sound.d.mts";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
-import type { InstanceType } from "../../../../utils/index.d.mts";
+import type { FixedInstanceType } from "../../../../utils/index.d.mts";
 
 declare global {
   namespace AmbientSound {
     type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof AmbientSound>;
-    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+    type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;
 
     interface RenderFlags extends PlaceableObject.RenderFlags {
       refreshField: boolean;

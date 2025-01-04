@@ -1,4 +1,4 @@
-import type { InstanceType, Mixin } from "../../../../utils/index.d.mts";
+import type { FixedInstanceType, Mixin } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { InternalClientDocument } from "./client-document.d.mts";
 
@@ -34,7 +34,7 @@ declare class CanvasDocument<
   /**
    * A reference to the CanvasLayer which contains Document objects of this type.
    */
-  get layer(): InstanceType<PlaceablesLayer.ConfiguredClassForName<PlaceableType>>;
+  get layer(): FixedInstanceType<PlaceablesLayer.ConfiguredClassForName<PlaceableType>>;
 
   /**
    * An indicator for whether this document is currently rendered on the game canvas.
@@ -58,7 +58,7 @@ declare global {
   // TODO(LukeAbby): The constraint here should ideally be something like `Document<Document.PlaceableType, any, Scene.ConfiguredInstance | null>` but this causes circularities.
   function CanvasDocumentMixin<BaseClass extends Document.Internal.Constructor>(
     Base: BaseClass,
-  ): typeof AnyDocument & Mixin<typeof CanvasDocument<InstanceType<BaseClass>>, BaseClass>;
+  ): typeof AnyDocument & Mixin<typeof CanvasDocument<FixedInstanceType<BaseClass>>, BaseClass>;
 }
 
 // This is yet another `AnyDocument` type.

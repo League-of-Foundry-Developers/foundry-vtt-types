@@ -1,4 +1,4 @@
-import type { AnyArray, AnyObject, InexactPartial, InstanceType } from "../../../utils/index.d.mts";
+import type { AnyArray, AnyObject, InexactPartial, FixedInstanceType } from "../../../utils/index.d.mts";
 import type ApplicationV2 from "../../client-esm/applications/api/application.d.mts";
 import type { CustomFormInput } from "../../client-esm/applications/forms/fields.d.mts";
 import type DataModel from "../../common/abstract/data.d.mts";
@@ -329,7 +329,7 @@ type PRIMITIVE_TYPES = readonly [
 // Foundry prioritizes the constructor over the function unless it's in `Setting#PRIMITIVE_TYPES`.
 type ConstructorToSettingType<T extends SettingConstructor> = T extends PRIMITIVE_TYPES[number]
   ? PrimitiveConstructorToSettingType<T>
-  : InstanceType<T>;
+  : FixedInstanceType<T>;
 
 // In theory this is just the `ReturnType<T>`.
 // However the function end of `Array` returns `any[]` while `Object` returns `any`.

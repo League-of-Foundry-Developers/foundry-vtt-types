@@ -1,4 +1,4 @@
-import type { DeepPartial, InexactPartial, InstanceType } from "../../../../utils/index.d.mts";
+import type { DeepPartial, InexactPartial, FixedInstanceType } from "../../../../utils/index.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
@@ -182,7 +182,7 @@ declare global {
     static createDocuments<T extends Document.AnyConstructor, Temporary extends boolean | undefined>(
       this: T,
       data: Array<
-        fields.SchemaField.AssignmentType<InstanceType<NoInfer<T>>["schema"]["fields"]> & Record<string, unknown>
+        fields.SchemaField.AssignmentType<FixedInstanceType<NoInfer<T>>["schema"]["fields"]> & Record<string, unknown>
       >,
       operation?: InexactPartial<
         Omit<Document.DatabaseOperationsFor<NoInfer<T>["metadata"]["name"], "create">, "data">

@@ -1,5 +1,5 @@
 import type { Socket } from "socket.io-client";
-import type { ConfiguredModule, GetKey, EmptyObject, ValueOf, InstanceType } from "../../utils/index.d.mts";
+import type { ConfiguredModule, GetKey, EmptyObject, ValueOf, FixedInstanceType } from "../../utils/index.d.mts";
 import type BasePackage from "../common/packages/base-package.d.mts";
 import type { Document } from "../common/abstract/module.d.mts";
 
@@ -755,7 +755,7 @@ declare global {
     } & {
       [DocumentType in
         | foundry.CONST.DOCUMENT_TYPES
-        | "Setting" as Document.ConfiguredClassForName<DocumentType>["metadata"]["collection"]]?: InstanceType<
+        | "Setting" as Document.ConfiguredClassForName<DocumentType>["metadata"]["collection"]]?: FixedInstanceType<
         Document.ConfiguredClassForName<DocumentType>
       >["_source"][];
     };
@@ -780,7 +780,7 @@ declare global {
   let keyboard: MaybeInitialized<KeyboardManager, "ready">;
 }
 
-type ConfiguredCollectionClassForName<Name extends foundry.CONST.DOCUMENT_TYPES> = InstanceType<
+type ConfiguredCollectionClassForName<Name extends foundry.CONST.DOCUMENT_TYPES> = FixedInstanceType<
   CONFIG[Name]["collection"]
 >;
 

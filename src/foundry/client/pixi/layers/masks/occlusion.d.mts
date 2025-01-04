@@ -1,4 +1,4 @@
-import type { InstanceType } from "../../../../../utils/index.d.mts";
+import type { FixedInstanceType } from "../../../../../utils/index.d.mts";
 
 declare global {
   /**
@@ -80,7 +80,7 @@ declare global {
      */
     protected _identifyOccludedObjects(
       tokens: Token.ConfiguredInstance[],
-    ): Set<InstanceType<ReturnType<typeof PrimaryCanvasObjectMixin>>>;
+    ): Set<FixedInstanceType<ReturnType<typeof PrimaryCanvasObjectMixin>>>;
 
     /**
      * @deprecated since v11, will be removed in v13

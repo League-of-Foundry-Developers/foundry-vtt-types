@@ -1,4 +1,4 @@
-import type { DeepPartial, InexactPartial, Mixin, InstanceType } from "../../../../utils/index.d.mts";
+import type { DeepPartial, InexactPartial, Mixin, FixedInstanceType } from "../../../../utils/index.d.mts";
 import type { DatabaseCreateOperation } from "../../../common/abstract/_types.d.mts";
 import type DataModel from "../../../common/abstract/data.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
@@ -20,7 +20,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * A cached reference to the FormApplication instance used to configure this Document.
    * @defaultValue `null`
    */
-  protected readonly _sheet: InstanceType<
+  protected readonly _sheet: FixedInstanceType<
     Document.ConfiguredSheetClassFor<Document.Internal.DocumentNameFor<BaseDocument>>
   > | null;
 
@@ -343,7 +343,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
   static createDialog<T extends Document.AnyConstructor>(
     this: T,
     data?: DeepPartial<Document.ConstructorDataFor<NoInfer<T>> & Record<string, unknown>>,
-    context?: Pick<DatabaseCreateOperation<InstanceType<NoInfer<T>>>, "parent" | "pack"> &
+    context?: Pick<DatabaseCreateOperation<FixedInstanceType<NoInfer<T>>>, "parent" | "pack"> &
       InexactPartial<
         DialogOptions & {
           /** A restriction the selectable sub-types of the Dialog. */
@@ -384,7 +384,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    */
   static fromDropData<T extends Document.AnyConstructor>(
     this: T,
-    data: Document.DropData<InstanceType<NoInfer<T>>>,
+    data: Document.DropData<FixedInstanceType<NoInfer<T>>>,
     options?: FromDropDataOptions,
   ): Promise<Document.ToConfiguredInstance<T> | undefined>;
 
@@ -409,7 +409,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
     this: T,
     source: Record<string, unknown>,
     context?: Document.ConstructionContext<Document.Any | null> & DataModel.DataValidationOptions,
-  ): Promise<InstanceType<T>>;
+  ): Promise<FixedInstanceType<T>>;
   /**
    * Update this Document using a provided JSON string.
    * @param json - JSON data string
@@ -629,7 +629,7 @@ declare global {
   // Note(LukeAbby): The seemingly redundant merging in of `typeof AnyDocument` makes it easier for tsc to recognize that anything extending `ClientDocumentMixin` is also a document.
   function ClientDocumentMixin<BaseClass extends Document.Internal.Constructor>(
     Base: BaseClass,
-  ): typeof AnyDocument & Mixin<typeof InternalClientDocument<InstanceType<BaseClass>>, BaseClass>;
+  ): typeof AnyDocument & Mixin<typeof InternalClientDocument<FixedInstanceType<BaseClass>>, BaseClass>;
 
   namespace ClientDocument {
     interface SortOptions<T, SortKey extends string = "sort"> extends SortingHelpers.SortOptions<T, SortKey> {

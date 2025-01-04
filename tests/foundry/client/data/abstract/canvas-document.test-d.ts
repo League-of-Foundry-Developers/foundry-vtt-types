@@ -1,5 +1,5 @@
 import { assertType, expectTypeOf } from "vitest";
-import type { InstanceType } from "../../../../../src/utils/index.d.mts";
+import type { FixedInstanceType } from "../../../../../src/utils/index.d.mts";
 
 import Document = foundry.abstract.Document;
 
@@ -19,6 +19,6 @@ expectTypeOf(AmbientLightDocument.documentName).toEqualTypeOf<string>(); // Docu
 expectTypeOf(AmbientLightDocument.createDialog()).toEqualTypeOf<Promise<AmbientLightDocument | null | undefined>>(); // ClientDocumentMixin
 
 // Test the props
-assertType<InstanceType<Document.ConfiguredObjectClassForName<"AmbientLight">> | null>(doc.object);
-assertType<InstanceType<PlaceablesLayer.ConfiguredClassForName<"AmbientLight">> | null>(doc.layer);
+assertType<FixedInstanceType<Document.ConfiguredObjectClassForName<"AmbientLight">> | null>(doc.object);
+assertType<FixedInstanceType<PlaceablesLayer.ConfiguredClassForName<"AmbientLight">> | null>(doc.layer);
 expectTypeOf(doc.rendered).toEqualTypeOf<boolean>();

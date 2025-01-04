@@ -15,7 +15,7 @@ import type {
   EmptyObject,
   InexactPartial,
   RemoveIndexSignatures,
-  InstanceType,
+  FixedInstanceType,
 } from "../../../utils/index.d.mts";
 import type * as CONST from "../constants.mts";
 import type { DataField, EmbeddedCollectionField, EmbeddedDocumentField } from "../data/fields.d.mts";
@@ -370,7 +370,7 @@ declare abstract class Document<
     this: T,
     updates?: Array<DeepPartial<Document.UpdateDataFor<NoInfer<T>>>>,
     operation?: InexactPartial<
-      Omit<Document.DatabaseOperationsFor<InstanceType<NoInfer<T>>["documentName"], "update">, "updates">
+      Omit<Document.DatabaseOperationsFor<FixedInstanceType<NoInfer<T>>["documentName"], "update">, "updates">
     >,
   ): Promise<Document.ToConfiguredInstance<T>[]>;
 
@@ -415,7 +415,7 @@ declare abstract class Document<
     this: T,
     ids?: string[],
     operation?: InexactPartial<
-      Omit<Document.DatabaseOperationsFor<InstanceType<NoInfer<T>>["documentName"], "delete">, "ids">
+      Omit<Document.DatabaseOperationsFor<FixedInstanceType<NoInfer<T>>["documentName"], "delete">, "ids">
     >,
   ): Promise<Document.ToConfiguredInstance<T>[]>;
 
@@ -774,7 +774,7 @@ declare abstract class Document<
   protected static _preUpdateOperation<T extends Document.AnyConstructor>(
     this: T,
     documents: Document.ToConfiguredInstance<NoInfer<T>>[],
-    operation: Document.DatabaseOperationsFor<InstanceType<NoInfer<T>>["documentName"], "update">,
+    operation: Document.DatabaseOperationsFor<FixedInstanceType<NoInfer<T>>["documentName"], "update">,
     user: foundry.documents.BaseUser,
   ): Promise<boolean | void>;
 
@@ -791,7 +791,7 @@ declare abstract class Document<
   protected static _onUpdateOperation<T extends Document.AnyConstructor>(
     this: T,
     documents: Document.ToConfiguredInstance<NoInfer<T>>[],
-    operation: Document.DatabaseOperationsFor<InstanceType<NoInfer<T>>["documentName"], "update">,
+    operation: Document.DatabaseOperationsFor<FixedInstanceType<NoInfer<T>>["documentName"], "update">,
     user: foundry.documents.BaseUser,
   ): Promise<void>;
 
@@ -834,7 +834,7 @@ declare abstract class Document<
   protected static _preDeleteOperation<T extends Document.AnyConstructor>(
     this: T,
     documents: Array<Document.ToConfiguredInstance<NoInfer<T>>>,
-    operation: Document.DatabaseOperationsFor<InstanceType<NoInfer<T>>["documentName"], "delete">,
+    operation: Document.DatabaseOperationsFor<FixedInstanceType<NoInfer<T>>["documentName"], "delete">,
     user: foundry.documents.BaseUser,
   ): Promise<unknown>;
 
@@ -851,7 +851,7 @@ declare abstract class Document<
   protected static _onDeleteOperation<T extends Document.AnyConstructor>(
     this: T,
     documents: Array<Document.ToConfiguredInstance<NoInfer<T>>>,
-    operation: Document.DatabaseOperationsFor<InstanceType<NoInfer<T>>["documentName"], "delete">,
+    operation: Document.DatabaseOperationsFor<FixedInstanceType<NoInfer<T>>["documentName"], "delete">,
     user: foundry.documents.BaseUser,
   ): Promise<unknown>;
 
@@ -1005,7 +1005,10 @@ declare namespace Document {
     | "JournalEntryPage";
 
   type EmbeddableNamesFor<ConcreteDocument extends Document.Internal.Instance.Any> = {
-    [K in keyof ConfiguredDocuments]: IsParentOf<ConcreteDocument, InstanceType<ConfiguredDocuments[K]>> extends true
+    [K in keyof ConfiguredDocuments]: IsParentOf<
+      ConcreteDocument,
+      FixedInstanceType<ConfiguredDocuments[K]>
+    > extends true
       ? K
       : never;
   };
@@ -1099,9 +1102,9 @@ declare namespace Document {
   >;
 
   type ToConfiguredInstance<ConcreteDocument extends Document.Internal.Constructor> = MakeConform<
-    InstanceType<ConfiguredDocuments[NameFor<ConcreteDocument>]>,
+    FixedInstanceType<ConfiguredDocuments[NameFor<ConcreteDocument>]>,
     Document.Any,
-    ConfigurationFailure & InstanceType<DefaultDocuments[NameFor<ConcreteDocument>]>
+    ConfigurationFailure & FixedInstanceType<DefaultDocuments[NameFor<ConcreteDocument>]>
   >;
 
   type ToConfiguredStored<D extends Document.Internal.Constructor> = Stored<ToConfiguredInstance<D>>;
@@ -1126,12 +1129,12 @@ declare namespace Document {
     : never;
 
   type ConfiguredInstanceForName<Name extends Type> = MakeConform<
-    InstanceType<ConfiguredDocuments[Name]>,
+    FixedInstanceType<ConfiguredDocuments[Name]>,
     Document.Any
   >;
 
   type ConfiguredObjectClassForName<Name extends PlaceableType> = CONFIG[Name]["objectClass"];
-  type ConfiguredObjectInstanceForName<Name extends PlaceableType> = InstanceType<CONFIG[Name]["objectClass"]>;
+  type ConfiguredObjectInstanceForName<Name extends PlaceableType> = FixedInstanceType<CONFIG[Name]["objectClass"]>;
 
   type ConfiguredDataForName<Name extends Type> = GetKey<DataConfig, Name, EmptyObject>;
 
