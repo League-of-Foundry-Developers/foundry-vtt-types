@@ -1,5 +1,5 @@
 import type { Socket } from "socket.io-client";
-import type { ConfiguredModule, GetKey, EmptyObject, ValueOf } from "../../utils/index.d.mts";
+import type { ConfiguredModule, GetKey, EmptyObject, ValueOf, InstanceType } from "../../utils/index.d.mts";
 import type BasePackage from "../common/packages/base-package.d.mts";
 import type { Document } from "../common/abstract/module.d.mts";
 
