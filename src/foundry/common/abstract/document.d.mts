@@ -36,12 +36,6 @@ type DataSchema = foundry.data.fields.DataSchema;
 
 export default Document;
 
-declare const __DocumentBrand: unique symbol;
-
-declare const __DocumentName: unique symbol;
-declare const __Schema: unique symbol;
-declare const __Parent: unique symbol;
-
 type _ClassMustBeAssignableToInternal = MustConform<typeof Document, Document.Internal.Constructor>;
 type _InstanceMustBeAssignableToInternal = MustConform<Document.Any, Document.Internal.Instance.Any>;
 
@@ -54,11 +48,11 @@ declare abstract class Document<
   Schema extends DataSchema,
   Parent extends Document.Any | null = null,
 > extends DataModel<Schema, Parent, InterfaceToObject<Document.ConstructionContext<Parent>>> {
-  static [__DocumentBrand]: never;
+  static [Document.Internal.DocumentBrand]: true;
 
-  [__DocumentName]: DocumentName;
-  [__Schema]: Schema;
-  [__Parent]: Parent;
+  [Document.Internal.DocumentName]: DocumentName;
+  [Document.Internal.Schema]: Schema;
+  [Document.Internal.Parent]: Parent;
 
   /**
    * @param data    - Initial data provided to construct the Document
@@ -932,9 +926,9 @@ declare abstract class Document<
 declare abstract class AnyDocument extends Document<any, any, any> {
   constructor(arg0: never, ...args: never[]);
 
-  // Note(LukeAbby): Specifically adding the `__DocumentBrand` should be redundant but in practice it seems to help tsc more efficiently deduce that it's actually inheriting from `Document`.
+  // Note(LukeAbby): Specifically adding the `DocumentBrand` should be redundant but in practice it seems to help tsc more efficiently deduce that it's actually inheriting from `Document`.
   // This is odd but probably is because it bails from looking up the parent class properties at times or something.
-  static [__DocumentBrand]: never;
+  static [Document.Internal.DocumentBrand]: true;
 
   flags?: unknown;
 
@@ -944,11 +938,14 @@ declare abstract class AnyDocument extends Document<any, any, any> {
 // Note(LukeAbby): The point of this class is to show up in intellisense.
 // When something fails to be configured it should be replaced with `typeof ConfigurationFailure & typeof Item` or whatever the relevant class is.
 // This helps to minimize the number of errors that appears in a repo with broken configuration as they can be very misleading and confusing.
-declare abstract class ConfigurationFailure extends AnyDocument {}
+declare abstract class ConfigurationFailure extends AnyDocument {
+  static [Document.Internal.DocumentBrand]: true;
+}
 
 declare namespace Document {
   /** Any Document, except for Settings */
   type Any = AnyDocument;
+  type AnyConstructor = typeof AnyDocument;
 
   type ConfigurationFailureClass = typeof ConfigurationFailure;
   type ConfigurationFailureInstance = ConfigurationFailure;
@@ -1023,13 +1020,19 @@ declare namespace Document {
 
   // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
   namespace Internal {
+    const DocumentBrand: unique symbol;
+
+    const DocumentName: unique symbol;
+    const Schema: unique symbol;
+    const Parent: unique symbol;
+
     // This metadata is called "simple" because where there should be proper references to the
     // current document there is instead `Document.Any`. This helps simplify loops.
     // Use cases should be limited to when these references aren't needed.
     type SimpleMetadata<Name extends Document.Type> = ConfiguredMetadata<Document.Any>[Name];
 
     type Constructor = (abstract new (arg0: never, ...args: never[]) => Instance.Any) & {
-      [__DocumentBrand]: never;
+      [DocumentBrand]: true;
     };
 
     interface Instance<
@@ -1037,16 +1040,16 @@ declare namespace Document {
       Schema extends DataSchema,
       Parent extends Document.Internal.Instance.Any | null,
     > {
-      [__DocumentName]: DocumentName;
-      [__Schema]: Schema;
-      [__Parent]: Parent;
+      [DocumentName]: DocumentName;
+      [Schema]: Schema;
+      [Parent]: Parent;
     }
 
-    type DocumentNameFor<ConcreteInstance extends Instance.Any> = ConcreteInstance[typeof __DocumentName];
+    type DocumentNameFor<ConcreteInstance extends Instance.Any> = ConcreteInstance[typeof DocumentName];
 
-    type SchemaFor<ConcreteInstance extends Instance.Any> = ConcreteInstance[typeof __Schema];
+    type SchemaFor<ConcreteInstance extends Instance.Any> = ConcreteInstance[typeof Schema];
 
-    type ParentFor<ConcreteInstance extends Instance.Any> = ConcreteInstance[typeof __Parent];
+    type ParentFor<ConcreteInstance extends Instance.Any> = ConcreteInstance[typeof Parent];
 
     namespace Instance {
       type Any = Instance<any, any, any>;
@@ -1057,8 +1060,6 @@ declare namespace Document {
 
   /** Any Document, that is a child of the given parent Document. */
   type AnyChild<Parent extends Any | null> = Document<any, any, Parent>;
-
-  type AnyConstructor = typeof AnyDocument;
 
   /**
    * Returns the type of the constructor data for the given {@link foundry.abstract.Document}.
