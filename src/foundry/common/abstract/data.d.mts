@@ -423,7 +423,8 @@ declare namespace DataModel {
   }
 }
 
-declare abstract class AnyDataModel extends DataModel<DataSchema, DataModel.Any | null, AnyObject> {
+// This uses `any` because `Schema` and `Parent` are invariant
+declare abstract class AnyDataModel extends DataModel<any, any, AnyObject> {
   constructor(arg0: never, ...args: never[]);
 }
 

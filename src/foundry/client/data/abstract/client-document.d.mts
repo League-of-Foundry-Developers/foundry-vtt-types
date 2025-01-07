@@ -707,6 +707,14 @@ declare global {
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 declare class AnyDocument extends Document<any, {}, any> {
   constructor(...args: any[]);
+
+  // Note(LukeAbby): Specifically adding the `DocumentBrand` should be redundant but in practice it seems to help tsc more efficiently deduce that it's actually inheriting from `Document`.
+  // This is odd but probably is because it bails from looking up the parent class properties at times or something.
+  static [Document.Internal.DocumentBrand]: true;
+
+  flags?: unknown;
+
+  getFlag(scope: never, key: never): any;
 }
 
 interface FromDropDataOptions {
