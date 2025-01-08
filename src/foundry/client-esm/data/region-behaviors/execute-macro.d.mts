@@ -11,6 +11,7 @@ declare namespace ExecuteMacroRegionBehaviorType {
   }
 }
 
+/** The data model for a behavior that executes a Macro. */
 declare class ExecuteMacroRegionBehaviorType extends RegionBehaviorType<ExecuteMacroRegionBehaviorType.Schema> {
   /** @defaultValue `["BEHAVIOR.TYPES.executeMacro", "BEHAVIOR.TYPES.base"]` */
   static override LOCALIZATION_PREFIXES: string[];

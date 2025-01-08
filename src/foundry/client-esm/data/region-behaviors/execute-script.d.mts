@@ -10,6 +10,7 @@ declare namespace ExecuteScriptRegionBehaviorType {
   }
 }
 
+/** The data model for a behavior that executes a script. */
 declare class ExecuteScriptRegionBehaviorType extends RegionBehaviorType<ExecuteScriptRegionBehaviorType.Schema> {
   /** @defaultValue `["BEHAVIOR.TYPES.executeScript", "BEHAVIOR.TYPES.base"]` */
   static override LOCALIZATION_PREFIXES: string[];

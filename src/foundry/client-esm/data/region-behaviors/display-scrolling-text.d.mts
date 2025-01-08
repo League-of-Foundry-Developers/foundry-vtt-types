@@ -35,6 +35,7 @@ declare namespace DisplayScrollingTextRegionBehaviorType {
   }
 }
 
+/** The data model for a behavior that displays scrolling text above a token when one of the subscribed events occurs. */
 declare class DisplayScrollingTextRegionBehaviorType extends RegionBehaviorType<DisplayScrollingTextRegionBehaviorType.Schema> {
   /** @defaultValue `["BEHAVIOR.TYPES.displayScrollingText", "BEHAVIOR.TYPES.base"]` */
   static override LOCALIZATION_PREFIXES: string[];
