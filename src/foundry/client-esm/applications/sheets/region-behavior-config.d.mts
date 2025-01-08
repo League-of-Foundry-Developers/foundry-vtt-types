@@ -17,11 +17,10 @@ export default class RegionBehaviorConfig<
   Configuration,
   RenderOptions
 > {
-  /**
-   * @privateRemarks Eon: While constructor, DEFAULT_OPTIONS and PARTS are overriden in core,
-   * due to the (static) nature of these properties and the fact that the typing doesn't change
-   * I've elected not to include them in the typing here.
-   */
+  constructor(options: DeepPartial<Configuration> & { document: Document });
+
+  static override DEFAULT_OPTIONS: DocumentSheetV2.Configuration<RegionBehavior.ConfiguredInstance>;
+  static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   protected override _prepareContext(
     options: DeepPartial<RenderOptions> & { isFirstRender: boolean },
@@ -31,7 +30,7 @@ export default class RegionBehaviorConfig<
   protected _getFields(): FormNode[];
 
   /** Get footer buttons for this behavior config sheet. */
-  _getButtons(): Partial<FormFooterButton>[];
+  _getButtons(): FormFooterButton[];
 
   #regionBehaviorConfig: true;
 }

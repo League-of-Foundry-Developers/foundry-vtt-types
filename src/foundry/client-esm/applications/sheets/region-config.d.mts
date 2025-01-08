@@ -16,11 +16,8 @@ export default class RegionConfig<
   Configuration,
   RenderOptions
 > {
-  /**
-   * @privateRemarks Eon: While DEFAULT_OPTIONS and PARTS are overriden in core,
-   * due to the static nature of these properties and the fact that the typing doesn't change
-   * I've elected not to include them in the typing here.
-   */
+  static override DEFAULT_OPTIONS: DocumentSheetV2.Configuration<RegionDocument.ConfiguredInstance>;
+  static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   override tabGroups: {
     /** @defaultValue `"identity"` */
