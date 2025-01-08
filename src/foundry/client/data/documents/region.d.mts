@@ -10,7 +10,7 @@ declare global {
     type ConfiguredClass = Document.ConfiguredClassForName<"Region">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Region">;
 
-    interface DatabaseOperations extends DocumentDatabaseOperations<RegionDocument> { }
+    interface DatabaseOperations extends DocumentDatabaseOperations<RegionDocument> {}
 
     // Helpful aliases
     type ConstructorData = BaseRegion.ConstructorData;
@@ -26,7 +26,7 @@ declare global {
       /** The Region the event was triggered on */
       region: RegionDocument;
       /** The User that triggered the event */
-      user: User
+      user: User;
     }
 
     interface SocketRegionEvent {
@@ -39,7 +39,7 @@ declare global {
       /** The data of the event */
       eventData: object;
       /** The keys of the event data that are Documents */
-      eventDataUuids: string[]
+      eventDataUuids: string[];
     }
   }
 
@@ -60,31 +60,34 @@ declare global {
 
     /**
      * Handle the Region event received via the socket.
-     * @param socketEvent    The socket Region event
+     * @param socketEvent     - The socket Region event
      */
     static #onSocketEvent(socketEvent: RegionDocument.SocketRegionEvent): Promise<void>;
 
     /**
      * Update the tokens of the given regions.
      * @param regions   - The regions to update the tokens for
-     * @remarks 
+     * @remarks
      *  If called during Region/Scene create/update/delete workflows, the Token documents are always reset and
      *  so never in an animated state, which means the reset option may be false. It is important that the
      *  containment test is not done in an animated state.
      * @internal
      */
-    static _updateTokens(regions: RegionDocument[], options?: InexactPartial<{
-      /**
-       * Are the Region documents deleted?
-       * @defaultValue `false`
-       */
-      deleted: boolean;
-      /**
-       * Reset the Token document if animated?
-       * @defaultValue `true`
-       */
-      reset: boolean;
-    }>): Promise<void>;
+    static _updateTokens(
+      regions: RegionDocument[],
+      options?: InexactPartial<{
+        /**
+         * Are the Region documents deleted?
+         * @defaultValue `false`
+         */
+        deleted: boolean;
+        /**
+         * Reset the Token document if animated?
+         * @defaultValue `true`
+         */
+        reset: boolean;
+      }>,
+    ): Promise<void>;
 
     // TODO(Eon): Core overrides these three methods, but the override types are very complex so
     // I'm unsure if they are needed here, and if so how to type them.

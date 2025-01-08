@@ -8,10 +8,15 @@ import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts
  */
 export default class RegionConfig<
   RenderContext extends AnyObject = EmptyObject,
-  Configuration extends DocumentSheetV2.Configuration<RegionDocument.ConfiguredInstance> = DocumentSheetV2.Configuration<RegionDocument.ConfiguredInstance>,
+  Configuration extends
+    DocumentSheetV2.Configuration<RegionDocument.ConfiguredInstance> = DocumentSheetV2.Configuration<RegionDocument.ConfiguredInstance>,
   RenderOptions extends DocumentSheetV2.RenderOptions = DocumentSheetV2.RenderOptions,
-> extends HandlebarsApplicationMixin(DocumentSheetV2)<RegionDocument.ConfiguredInstance, RenderContext, Configuration, RenderOptions> {
-
+> extends HandlebarsApplicationMixin(DocumentSheetV2)<
+  RegionDocument.ConfiguredInstance,
+  RenderContext,
+  Configuration,
+  RenderOptions
+> {
   /**
    * @privateRemarks Eon: While DEFAULT_OPTIONS and PARTS are overriden in core,
    * due to the static nature of these properties and the fact that the typing doesn't change
@@ -21,11 +26,17 @@ export default class RegionConfig<
   override tabGroups: {
     /** @defaultValue `"identity"` */
     sheet: string;
-  }
+  };
 
-  protected override _prepareContext(options: DeepPartial<RenderOptions> & { isFirstRender: boolean; }): Promise<RenderContext>;
+  protected override _prepareContext(
+    options: DeepPartial<RenderOptions> & { isFirstRender: boolean },
+  ): Promise<RenderContext>;
 
-  protected override _preparePartContext(partId: string, context: HandlebarsApplicationMixin.HandlebarsApplication.RenderContextFor<this>, options: DeepPartial<HandlebarsApplicationMixin.HandlebarsRenderOptions>): Promise<HandlebarsApplicationMixin.HandlebarsApplication.RenderContextFor<this>>;
+  protected override _preparePartContext(
+    partId: string,
+    context: HandlebarsApplicationMixin.HandlebarsApplication.RenderContextFor<this>,
+    options: DeepPartial<HandlebarsApplicationMixin.HandlebarsRenderOptions>,
+  ): Promise<HandlebarsApplicationMixin.HandlebarsApplication.RenderContextFor<this>>;
 
   protected override _onRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): void;
 
@@ -40,7 +51,7 @@ export default class RegionConfig<
   /** Handle mouse-hover events on a shape */
   #onShapeHoverIn(event: MouseEvent): void;
 
-  /** Handle mouse-unhover events for shape. */  
+  /** Handle mouse-unhover events for shape. */
   #onShapeHoverOut(event: MouseEvent): void;
 
   /** Handle button clicks to move the shape up. */
@@ -58,7 +69,7 @@ export default class RegionConfig<
   /** Handle button clicks to remove a shape */
   static #onShapeRemove(this: RegionConfig, event: PointerEvent): Promise<boolean | string | null>;
 
-  /** 
+  /**
    * Get the shape index from a control button click.
    * @param event     - The button-click event
    * @returns         - The shape index
@@ -66,7 +77,7 @@ export default class RegionConfig<
   #getControlShapeIndex(event: PointerEvent): number;
 
   /** Handle button clicks to create a new behavior. */
-  static #onBehaviorCreate(this: RegionConfig, _event: PointerEvent): Promise<void>
+  static #onBehaviorCreate(this: RegionConfig, _event: PointerEvent): Promise<void>;
 
   /** Handle button clicks to delete a behavior. */
   static #onBehaviorDelete(this: RegionConfig, event: PointerEvent): Promise<void>;
@@ -77,7 +88,7 @@ export default class RegionConfig<
   /** Handle button clicks to toggle a behavior. */
   static #onBehaviorToggle(this: RegionConfig, event: PointerEvent): Promise<void>;
 
-  /** 
+  /**
    * Get the RegionBehavior document from a control button click.
    * @param event     - The button-click event
    * @returns         - The RegionBehavior document

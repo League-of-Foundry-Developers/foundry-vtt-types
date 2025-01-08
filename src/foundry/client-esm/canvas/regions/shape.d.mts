@@ -1,4 +1,10 @@
-import type { BaseShapeData, CircleShapeData, EllipseShapeData, PolygonShapeData, RectangleShapeData } from "../../data/_module.d.mts";
+import type {
+  BaseShapeData,
+  CircleShapeData,
+  EllipseShapeData,
+  PolygonShapeData,
+  RectangleShapeData,
+} from "../../data/_module.d.mts";
 
 declare namespace RegionShape {
   type Any = RegionShape<any>;
@@ -6,8 +12,7 @@ declare namespace RegionShape {
 
 /** A shape of a {@link Region} */
 declare abstract class RegionShape<ShapeData extends BaseShapeData> {
-
-  /** 
+  /**
    * Create the RegionShape from the shape data.
    * @param data    - The shape data.
    */
@@ -60,7 +65,6 @@ declare abstract class RegionShape<ShapeData extends BaseShapeData> {
 
 /** A circle of a {@link Region} */
 declare class RegionCircle extends RegionShape<CircleShapeData> {
-  
   constructor(data: CircleShapeData);
 
   /** The vertex density epsilon used to create a polygon approximation of the circle. */

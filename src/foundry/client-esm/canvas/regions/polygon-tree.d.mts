@@ -2,7 +2,6 @@ import type { Point } from "../../../common/types.d.mts";
 
 /** The node of a {@link RegionPolygonTree}.*/
 declare class RegionPolygonTreeNode {
-
   /**
    * Create a RegionPolygonTreeNode.
    * @param parent    - The parent node.
@@ -16,7 +15,10 @@ declare class RegionPolygonTreeNode {
    * @param parent        - The parent node or `null` if root.
    * @internal
    */
-  static _fromClipperPath(clipperPath: ClipperLib.IntPoint[], parent: RegionPolygonTreeNode | null): RegionPolygonTreeNode;
+  static _fromClipperPath(
+    clipperPath: ClipperLib.IntPoint[],
+    parent: RegionPolygonTreeNode | null,
+  ): RegionPolygonTreeNode;
 
   /** The parent of this node or `null` if this is the root node. */
   get parent(): RegionPolygonTreeNode | null;
@@ -51,7 +53,7 @@ declare class RegionPolygonTreeNode {
    * The polygon of this node.
    * It is `null` in case of the root node.
    */
-  get polygon(): PIXI.Polygon | null
+  get polygon(): PIXI.Polygon | null;
   #polygon: PIXI.Polygon | null;
 
   /**
@@ -86,7 +88,6 @@ declare class RegionPolygonTreeNode {
    */
   #testPoint(point: Point): 0 | 1 | 2;
 
-
   /**
    * Test circle containment/intersection with this node.
    * @param center    - The center point of the circle.
@@ -116,7 +117,6 @@ declare class RegionPolygonTreeNode {
 
 /** The polygon tree of a {@link Region}. */
 declare class RegionPolygonTree extends RegionPolygonTreeNode {
-
   /**
    * Create a RegionPolygonTree
    * @internal
@@ -127,7 +127,7 @@ declare class RegionPolygonTree extends RegionPolygonTreeNode {
    * Create the tree from a Clipper polygon tree.
    * @internal
    */
-  static _fromClipperPolyTree(clipperPolyTree: ClipperLib.PolyTree): RegionPolygonTree
+  static _fromClipperPolyTree(clipperPolyTree: ClipperLib.PolyTree): RegionPolygonTree;
 }
 
 export default RegionPolygonTree;

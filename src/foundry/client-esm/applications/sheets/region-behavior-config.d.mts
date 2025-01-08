@@ -8,23 +8,35 @@ import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts
  */
 export default class RegionBehaviorConfig<
   RenderContext extends AnyObject = EmptyObject,
-  Configuration extends DocumentSheetV2.Configuration<RegionBehavior.ConfiguredInstance> = DocumentSheetV2.Configuration<RegionBehavior.ConfiguredInstance>,
+  Configuration extends
+    DocumentSheetV2.Configuration<RegionBehavior.ConfiguredInstance> = DocumentSheetV2.Configuration<RegionBehavior.ConfiguredInstance>,
   RenderOptions extends DocumentSheetV2.RenderOptions = DocumentSheetV2.RenderOptions,
-> extends HandlebarsApplicationMixin(DocumentSheetV2)<RegionBehavior.ConfiguredInstance, RenderContext, Configuration, RenderOptions> {
-
+> extends HandlebarsApplicationMixin(DocumentSheetV2)<
+  RegionBehavior.ConfiguredInstance,
+  RenderContext,
+  Configuration,
+  RenderOptions
+> {
   /**
    * @privateRemarks Eon: While constructor, DEFAULT_OPTIONS and PARTS are overriden in core,
    * due to the (static) nature of these properties and the fact that the typing doesn't change
    * I've elected not to include them in the typing here.
    */
 
-  protected override _prepareContext(options: DeepPartial<RenderOptions> & { isFirstRender: boolean; }): Promise<RenderContext>;
+  protected override _prepareContext(
+    options: DeepPartial<RenderOptions> & { isFirstRender: boolean },
+  ): Promise<RenderContext>;
 
   /** Prepare form field structure for rendering. */
   protected _getFields(): FormNode[];
 
   /** Recursively add system model fields to the fieldset. */
-  #addSystemFields(fieldset: FormNode[], schema: foundry.data.fields.DataSchema, source: RegionBehavior.Source, _path?: string): void;
+  #addSystemFields(
+    fieldset: FormNode[],
+    schema: foundry.data.fields.DataSchema,
+    source: RegionBehavior.Source,
+    _path?: string,
+  ): void;
 
   /** Get footer buttons for this behavior config sheet. */
   _getButtons(): Partial<FormFooterButton>[];

@@ -1,5 +1,4 @@
 import type RegionBehaviorType from "./base.d.mts";
-import fields = foundry.data.fields;
 
 declare namespace SuppressWeatherRegionBehaviorType {
   interface Schema extends foundry.data.fields.DataSchema {}

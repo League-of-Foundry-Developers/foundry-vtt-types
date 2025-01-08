@@ -4,7 +4,7 @@ import fields = foundry.data.fields;
 declare namespace TeleportTokenRegionBehaviorType {
   interface Schema extends foundry.data.fields.DataSchema {
     /** The destination Region the Token is teleported to. */
-    destination: fields.DocumentUUIDField<{type: "Region"}>;
+    destination: fields.DocumentUUIDField<{ type: "Region" }>;
     choice: fields.BooleanField;
   }
 }
@@ -31,7 +31,11 @@ declare class TeleportTokenRegionBehaviorType extends RegionBehaviorType<Telepor
    * @param user            - The user that moved the token.
    * @returns               - Should the current user teleport the token?
    */
-  static #shouldTeleport(token: TokenDocument.ConfiguredInstance, destination: RegionDocument.ConfiguredInstance, user: User.ConfiguredInstance): boolean;
+  static #shouldTeleport(
+    token: TokenDocument.ConfiguredInstance,
+    destination: RegionDocument.ConfiguredInstance,
+    user: User.ConfiguredInstance,
+  ): boolean;
 
   /**
    * Get a destination for the Token within the Region that places the token and its center point inside it.
@@ -39,7 +43,10 @@ declare class TeleportTokenRegionBehaviorType extends RegionBehaviorType<Telepor
    * @param token       - The token that is teleported.
    * @returns           - The destination.
    */
-  static #getDestinatino(region: RegionDocument.ConfiguredInstance, token: TokenDocument.ConfiguredInstance): {x: number, y: number, elevation: number};
+  static #getDestinatino(
+    region: RegionDocument.ConfiguredInstance,
+    token: TokenDocument.ConfiguredInstance,
+  ): { x: number; y: number; elevation: number };
 
   /**
    * Activate the Socket event listeners.
@@ -51,11 +58,20 @@ declare class TeleportTokenRegionBehaviorType extends RegionBehaviorType<Telepor
   /**
    * Handle the socket event that handles teleporation confirmation.
    * @param data                      - The socket data.
-   * @param data.tokenUuid            - The UUID of the Token that is teleported.
-   * @param data.destinationUuid      - The UUID of the Region that is the destination of the teleportation.
    * @param ack                       - The acknowledgement function to return the result of the confirmation to the server.
    */
-  static #onSocketEvent({behaviorUuid, tokenUuid}: {behaviorUuid: string, tokenUuid: string}, ack: Function): Promise<void>;
+  static #onSocketEvent(
+    {
+      behaviorUuid,
+      tokenUuid,
+    }: {
+      /** The UUID of the Token that is teleported. */
+      behaviorUuid: string;
+      /** The UUID of the Region that is the destination of the teleportation. */
+      tokenUuid: string;
+    },
+    ack: (continued: boolean) => void,
+  ): Promise<void>;
 
   /**
    * Display a dialog to confirm the teleportation?
@@ -63,7 +79,10 @@ declare class TeleportTokenRegionBehaviorType extends RegionBehaviorType<Telepor
    * @param destination     - The destination region.
    * @returns               - The result of the dialog.
    */
-  static #confirmDialog(token: TokenDocument.ConfiguredInstance, destination: RegionDocument.ConfiguredInstance): Promise<boolean>;
+  static #confirmDialog(
+    token: TokenDocument.ConfiguredInstance,
+    destination: RegionDocument.ConfiguredInstance,
+  ): Promise<boolean>;
 }
 
 export default TeleportTokenRegionBehaviorType;

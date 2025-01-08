@@ -5,7 +5,7 @@ declare namespace ExecuteMacroRegionBehaviorType {
   interface Schema extends foundry.data.fields.DataSchema {
     events: RegionBehaviorType.EventsField;
     /** The Macro UUID */
-    uuid: fields.DocumentUUIDField<{type: "Macro"}>;
+    uuid: fields.DocumentUUIDField<{ type: "Macro" }>;
     everyone: fields.BooleanField;
   }
 }
