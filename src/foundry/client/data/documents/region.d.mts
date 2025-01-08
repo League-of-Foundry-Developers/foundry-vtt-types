@@ -86,6 +86,7 @@ declare global {
         }
       | _EventData;
 
+    /** @internal */
     interface _EventData {
       readonly [K: string]: Document.Any | _EventData | _EventData[];
     }
