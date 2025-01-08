@@ -1,7 +1,6 @@
 import type { AnyObject } from "../../../../utils/index.d.mts";
 import type { DataModel } from "../../../common/abstract/data.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
-import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 import type { DataField } from "../../../common/data/fields.d.mts";
 import type { ActiveEffectData, EffectChangeData, EffectDurationData } from "../../../common/documents/_types.d.mts";
 import type BaseActiveEffect from "../../../common/documents/active-effect.d.mts";
@@ -14,7 +13,7 @@ declare global {
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"ActiveEffect">;
 
     interface DatabaseOperations
-      extends DocumentDatabaseOperations<
+      extends Document.Database.Operations<
         ActiveEffect,
         { animate: boolean },
         { animate: boolean },

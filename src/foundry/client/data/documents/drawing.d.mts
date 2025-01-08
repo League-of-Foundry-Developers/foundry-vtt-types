@@ -1,5 +1,4 @@
 import type Document from "../../../common/abstract/document.d.mts";
-import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 import type BaseDrawing from "../../../common/documents/drawing.d.mts";
 
 declare global {
@@ -9,7 +8,7 @@ declare global {
     type ConfiguredClass = Document.ConfiguredClassForName<"Drawing">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Drawing">;
 
-    interface DatabaseOperations extends DocumentDatabaseOperations<DrawingDocument> {}
+    interface DatabaseOperations extends Document.Database.Operations<DrawingDocument> {}
 
     // Helpful aliases
     type ConstructorData = BaseDrawing.ConstructorData;

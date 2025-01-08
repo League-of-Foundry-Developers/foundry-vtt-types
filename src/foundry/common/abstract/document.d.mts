@@ -319,7 +319,7 @@ declare abstract class Document<
     this: T,
     data: Array<Document.ConstructorDataFor<NoInfer<T>>>,
     operation?: InexactPartial<
-      Omit<Document.DatabaseOperationsFor<NoInfer<T>["metadata"]["name"], "create">, "data">
+      Omit<Document.Database.OperationOf<NoInfer<T>["metadata"]["name"], "create">, "data">
     > & {
       temporary?: Temporary;
     },
@@ -364,7 +364,7 @@ declare abstract class Document<
     this: T,
     updates?: Array<DeepPartial<Document.UpdateDataFor<NoInfer<T>>>>,
     operation?: InexactPartial<
-      Omit<Document.DatabaseOperationsFor<FixedInstanceType<NoInfer<T>>["documentName"], "update">, "updates">
+      Omit<Document.Database.OperationOf<FixedInstanceType<NoInfer<T>>["documentName"], "update">, "updates">
     >,
   ): Promise<Document.ToConfiguredInstance<T>[]>;
 
@@ -409,7 +409,7 @@ declare abstract class Document<
     this: T,
     ids?: string[],
     operation?: InexactPartial<
-      Omit<Document.DatabaseOperationsFor<FixedInstanceType<NoInfer<T>>["documentName"], "delete">, "ids">
+      Omit<Document.Database.OperationOf<FixedInstanceType<NoInfer<T>>["documentName"], "delete">, "ids">
     >,
   ): Promise<Document.ToConfiguredInstance<T>[]>;
 
@@ -446,7 +446,7 @@ declare abstract class Document<
     this: T,
     data: Document.ConstructorDataFor<NoInfer<T>> | Document.ConstructorDataFor<NoInfer<T>>[],
     operation?: InexactPartial<
-      Omit<Document.DatabaseOperationsFor<NoInfer<T>["metadata"]["name"], "create">, "data">
+      Omit<Document.Database.OperationOf<NoInfer<T>["metadata"]["name"], "create">, "data">
     > & {
       temporary?: Temporary;
     },
@@ -466,7 +466,7 @@ declare abstract class Document<
   update(
     // TODO: Determine if this is Partial, DeepPartial, or InexactPartial.
     data?: Partial<Document.ConstructorDataForSchema<Schema>>,
-    operation?: InexactPartial<Omit<Document.DatabaseOperationsFor<DocumentName, "update">, "updates">>,
+    operation?: InexactPartial<Omit<Document.Database.OperationOf<DocumentName, "update">, "updates">>,
   ): Promise<this | undefined>;
 
   /**
@@ -479,7 +479,7 @@ declare abstract class Document<
    * @remarks If no document has actually been deleted, the returned {@link Promise} resolves to `undefined`.
    */
   delete(
-    operation?: InexactPartial<Omit<Document.DatabaseOperationsFor<DocumentName, "delete">, "ids">>,
+    operation?: InexactPartial<Omit<Document.Database.OperationOf<DocumentName, "delete">, "ids">>,
   ): Promise<this | undefined>;
 
   /**
@@ -565,7 +565,7 @@ declare abstract class Document<
   >(
     embeddedName: EmbeddedName,
     data?: Array<Document.ConstructorDataForName<Extract<EmbeddedName, Document.Type>>>,
-    operation?: InexactPartial<Document.DatabaseOperationsFor<Extract<EmbeddedName, Document.Type>, "create">> & {
+    operation?: InexactPartial<Document.Database.OperationOf<Extract<EmbeddedName, Document.Type>, "create">> & {
       temporary?: Temporary;
     },
   ): Promise<Array<Document.ConfiguredInstanceForName<Extract<EmbeddedName, Document.Type>>> | undefined>;
@@ -602,7 +602,7 @@ declare abstract class Document<
   >(
     embeddedName: EmbeddedName,
     ids: Array<string>,
-    operation?: Document.DatabaseOperationsFor<DocumentName, "delete">,
+    operation?: Document.Database.OperationOf<DocumentName, "delete">,
   ): Promise<Array<Document.Stored<Document.ConfiguredInstanceForName<EmbeddedName>>>>;
 
   /**
@@ -702,7 +702,7 @@ declare abstract class Document<
   protected static _preCreateOperation<T extends Document.AnyConstructor>(
     this: T,
     documents: Document.ToConfiguredInstance<NoInfer<T>>[],
-    operation: Document.DatabaseOperationsFor<NoInfer<T>["metadata"]["name"], "create">,
+    operation: Document.Database.OperationOf<NoInfer<T>["metadata"]["name"], "create">,
     user: foundry.documents.BaseUser,
   ): Promise<boolean | void>;
 
@@ -719,7 +719,7 @@ declare abstract class Document<
   protected static _onCreateOperation<T extends Document.AnyConstructor>(
     this: T,
     documents: Document.ToConfiguredClass<NoInfer<T>>[],
-    operation: Document.DatabaseOperationsFor<NoInfer<T>["metadata"]["name"], "create">,
+    operation: Document.Database.OperationOf<NoInfer<T>["metadata"]["name"], "create">,
     user: foundry.documents.BaseUser,
   ): Promise<void>;
 
@@ -768,7 +768,7 @@ declare abstract class Document<
   protected static _preUpdateOperation<T extends Document.AnyConstructor>(
     this: T,
     documents: Document.ToConfiguredInstance<NoInfer<T>>[],
-    operation: Document.DatabaseOperationsFor<FixedInstanceType<NoInfer<T>>["documentName"], "update">,
+    operation: Document.Database.OperationOf<FixedInstanceType<NoInfer<T>>["documentName"], "update">,
     user: foundry.documents.BaseUser,
   ): Promise<boolean | void>;
 
@@ -785,7 +785,7 @@ declare abstract class Document<
   protected static _onUpdateOperation<T extends Document.AnyConstructor>(
     this: T,
     documents: Document.ToConfiguredInstance<NoInfer<T>>[],
-    operation: Document.DatabaseOperationsFor<FixedInstanceType<NoInfer<T>>["documentName"], "update">,
+    operation: Document.Database.OperationOf<FixedInstanceType<NoInfer<T>>["documentName"], "update">,
     user: foundry.documents.BaseUser,
   ): Promise<void>;
 
@@ -828,7 +828,7 @@ declare abstract class Document<
   protected static _preDeleteOperation<T extends Document.AnyConstructor>(
     this: T,
     documents: Array<Document.ToConfiguredInstance<NoInfer<T>>>,
-    operation: Document.DatabaseOperationsFor<FixedInstanceType<NoInfer<T>>["documentName"], "delete">,
+    operation: Document.Database.OperationOf<FixedInstanceType<NoInfer<T>>["documentName"], "delete">,
     user: foundry.documents.BaseUser,
   ): Promise<unknown>;
 
@@ -845,7 +845,7 @@ declare abstract class Document<
   protected static _onDeleteOperation<T extends Document.AnyConstructor>(
     this: T,
     documents: Array<Document.ToConfiguredInstance<NoInfer<T>>>,
-    operation: Document.DatabaseOperationsFor<FixedInstanceType<NoInfer<T>>["documentName"], "delete">,
+    operation: Document.Database.OperationOf<FixedInstanceType<NoInfer<T>>["documentName"], "delete">,
     user: foundry.documents.BaseUser,
   ): Promise<unknown>;
 
@@ -1391,13 +1391,12 @@ declare namespace Document {
   }
 
   /**
-   * This is a helper type that gets the right DatabaseOperation (including the
-   * proper options) for a particular Document type.
+   * @deprecated {@link Document.Database.OperationOf | `Document.Database.OperationOf`}
    */
   type DatabaseOperationsFor<
     Name extends Document.Type,
-    ConcreteOperation extends Operation,
-  > = DatabaseOperationMap[Name][ConcreteOperation];
+    ConcreteOperation extends Document.Database.Operation,
+  > = Document.Database.OperationOf<Name, ConcreteOperation>;
 
   type ConfiguredSheetClassFor<Name extends Document.Type> = MakeConform<
     GetKey<GetKey<CONFIG, Name>, "sheetClass">,
@@ -1424,23 +1423,50 @@ declare namespace Document {
       uuid: string;
     }
   }
+
+  namespace Database {
+    type Operation = "create" | "update" | "delete";
+
+    /* eslint-disable @typescript-eslint/no-empty-object-type */
+    interface Operations<
+      T extends Document.Internal.Instance.Any = Document.Internal.Instance.Any,
+      ExtraCreateOptions extends AnyObject = {},
+      ExtraUpdateOptions extends AnyObject = {},
+      ExtraDeleteOptions extends AnyObject = {},
+    > {
+      create: DatabaseCreateOperation<T> & InexactPartial<ExtraCreateOptions>;
+      update: DatabaseUpdateOperation<T> & InexactPartial<ExtraUpdateOptions>;
+      delete: DatabaseDeleteOperation & InexactPartial<ExtraDeleteOptions>;
+    }
+    /* eslint-enable @typescript-eslint/no-empty-object-type */
+
+    /**
+     * This is a helper type that gets the right DatabaseOperation (including the
+     * proper options) for a particular Document type.
+     */
+    type OperationOf<
+      T extends Document.Type,
+      Operation extends Database.Operation,
+    > = DatabaseOperationMap[T][Operation];
+  }
 }
 
-export type Operation = "create" | "update" | "delete";
+/** @deprecated {@link Document.Database.Operation | `Document.Database.Operation`} */
+export type Operation = Document.Database.Operation;
 
 /* eslint-disable @typescript-eslint/no-empty-object-type */
-export interface DocumentDatabaseOperations<
+/** @deprecated {@link Document.Database.Operations | `Document.Database.Operations`} */
+export type DocumentDatabaseOperations<
   T extends Document.Internal.Instance.Any = Document.Internal.Instance.Any,
   ExtraCreateOptions extends AnyObject = {},
   ExtraUpdateOptions extends AnyObject = {},
   ExtraDeleteOptions extends AnyObject = {},
-> {
-  create: DatabaseCreateOperation<T> & InexactPartial<ExtraCreateOptions>;
-  update: DatabaseUpdateOperation<T> & InexactPartial<ExtraUpdateOptions>;
-  delete: DatabaseDeleteOperation & InexactPartial<ExtraDeleteOptions>;
-}
+> = Document.Database.Operations<T, ExtraCreateOptions, ExtraUpdateOptions, ExtraDeleteOptions>;
 /* eslint-enable @typescript-eslint/no-empty-object-type */
 
+/**
+ * @deprecated if you want to get individual operations see {@link Document.Database.OperationOf | `Document.Database.OperationOf`}
+ */
 export interface DatabaseOperationMap {
   ActiveEffect: ActiveEffect.DatabaseOperations;
   Actor: Actor.DatabaseOperations;

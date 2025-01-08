@@ -1,6 +1,5 @@
 import type { DeepPartial, InexactPartial } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
-import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 import type { CardFaceData } from "../../../common/documents/_types.d.mts";
 import type BaseCard from "../../../common/documents/card.d.mts";
 
@@ -11,7 +10,7 @@ declare global {
     type ConfiguredClass = Document.ConfiguredClassForName<"Card">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Card">;
 
-    interface DatabaseOperations extends DocumentDatabaseOperations<Card> {}
+    interface DatabaseOperations extends Document.Database.Operations<Card> {}
 
     // Helpful aliases
     type TypeNames = BaseCard.TypeNames;

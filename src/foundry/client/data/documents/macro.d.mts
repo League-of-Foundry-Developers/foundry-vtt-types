@@ -1,6 +1,5 @@
 import type { InexactPartial } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
-import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 import type BaseMacro from "../../../common/documents/macro.d.mts";
 
 type RegionEvent = unknown;
@@ -12,7 +11,7 @@ declare global {
     type ConfiguredClass = Document.ConfiguredClassForName<"Macro">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Macro">;
 
-    interface DatabaseOperations extends DocumentDatabaseOperations<Macro> {}
+    interface DatabaseOperations extends Document.Database.Operations<Macro> {}
 
     // Helpful aliases
     type TypeNames = BaseMacro.TypeNames;

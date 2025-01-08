@@ -1,6 +1,5 @@
 import type { InexactPartial } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
-import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 import type BaseRollTable from "../../../common/documents/roll-table.d.mts";
 
 declare global {
@@ -10,7 +9,7 @@ declare global {
     type ConfiguredClass = Document.ConfiguredClassForName<"RollTable">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"RollTable">;
 
-    interface DatabaseOperations extends DocumentDatabaseOperations<RollTable> {}
+    interface DatabaseOperations extends Document.Database.Operations<RollTable> {}
 
     // Helpful aliases
     type ConstructorData = BaseRollTable.ConstructorData;
