@@ -257,11 +257,11 @@ declare namespace BaseShapeData {
     hole: fields.BooleanField;
   }
 
-  interface Types {
-    rectangle: RectangleShapeData;
-    circle: CircleShapeData;
-    ellipse: EllipseShapeData;
-    polygon: PolygonShapeData;
+  interface Types extends foundry.data.fields.TypedSchemaField.Types {
+    rectangle: typeof RectangleShapeData;
+    circle: typeof CircleShapeData;
+    ellipse: typeof EllipseShapeData;
+    polygon: typeof PolygonShapeData;
   }
 }
 
