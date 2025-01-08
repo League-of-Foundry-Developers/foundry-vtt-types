@@ -293,6 +293,12 @@ declare namespace BaseScene {
     sounds: fields.EmbeddedCollectionField<typeof documents.BaseAmbientSound, Scene.ConfiguredInstance>;
 
     /**
+     * A collection of embedded Region documents.
+     * @defaultValue `[]`
+     */
+    regions: fields.EmbeddedCollectionField<typeof documents.BaseRegion, Scene.ConfiguredInstance>;
+
+    /**
      * A collection of embedded AmbientSound objects.
      * @defaultValue `[]`
      */

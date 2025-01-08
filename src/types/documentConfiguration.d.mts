@@ -507,6 +507,7 @@ interface _ConfiguredMetadata<ThisType extends Document.Internal.Instance.Any> {
         Drawing: "drawings";
         MeasuredTemplate: "templates";
         Note: "notes";
+        Region: "regions";
         Tile: "tiles";
         Token: "tokens";
         Wall: "walls";
