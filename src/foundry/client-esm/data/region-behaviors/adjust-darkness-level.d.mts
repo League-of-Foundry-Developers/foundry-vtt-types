@@ -28,6 +28,7 @@ declare namespace AdjustDarknessLevelRegionBehaviorType {
   }
 }
 
+/** The data model for a behavior that allows to suppress weather effects within the Region */
 declare class AdjustDarknessLevelRegionBehaviorType extends RegionBehaviorType<AdjustDarknessLevelRegionBehaviorType.Schema> {
   /** @defaultValue `["BEHAVIOR.TYPES.adjustDarknessLevel", "BEHAVIOR.TYPES.base"]` */
   static override LOCALIZATION_PREFIXES: string[];

@@ -9,6 +9,7 @@ declare namespace RegionBehaviorType {
   type EventsField = fields.SetField<fields.StringField<{ required: true, choices: Record<CONST.REGION_EVENTS, string> }>, { label: string, hint: string }>;
 }
 
+/** The data model for a behavior that receives Region events. */
 declare class RegionBehaviorType<
   Schema extends foundry.data.fields.DataSchema,
   Parent extends RegionBehavior.ConfiguredInstance = RegionBehavior.ConfiguredInstance,
