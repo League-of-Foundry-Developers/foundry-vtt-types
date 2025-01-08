@@ -14,14 +14,14 @@ declare namespace ExecuteMacroRegionBehaviorType {
 
 /** The data model for a behavior that executes a Macro. */
 declare class ExecuteMacroRegionBehaviorType extends RegionBehaviorType<ExecuteMacroRegionBehaviorType.Schema> {
+  #executeMacroRegionBehaviorType: true;
+
   /** @defaultValue `["BEHAVIOR.TYPES.executeMacro", "BEHAVIOR.TYPES.base"]` */
   static override LOCALIZATION_PREFIXES: string[];
 
   static override defineSchema(): ExecuteMacroRegionBehaviorType.Schema;
 
   protected override _handleRegionEvent(event: RegionDocument.RegionEvent): Promise<void>;
-
-  #executeMacroRegionBehaviorType: true;
 }
 
 export default ExecuteMacroRegionBehaviorType;

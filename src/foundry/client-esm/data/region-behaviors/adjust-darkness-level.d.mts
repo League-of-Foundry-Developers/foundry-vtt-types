@@ -4,24 +4,24 @@ import fields = foundry.data.fields;
 import type { InvertObject } from "../../../common/utils/helpers.d.mts";
 
 declare namespace AdjustDarknessLevelRegionBehaviorType {
-  type _MODES = Brand<number, "AdjustDarknessLevelRegionBehaviorType.Modes">;
+  type MODES = Brand<number, "AdjustDarknessLevelRegionBehaviorType.MODES">;
 
   interface Modes
     extends Readonly<{
       /**
        * Override the darkness level with the modifier.
        */
-      OVERRIDE: 0 & _MODES;
+      OVERRIDE: 0 & MODES;
 
       /**
        * Brighten the darkness level: `darknessLevel * (1 - modifier)`
        */
-      BRIGHTEN: 1 & _MODES;
+      BRIGHTEN: 1 & MODES;
 
       /**
        * Darken the darkness level: `1 - (1 - darknessLevel) * (1 - modifier)`.
        */
-      DARKEN: 2 & _MODES;
+      DARKEN: 2 & MODES;
     }> {}
 
   interface Schema extends foundry.data.fields.DataSchema {
@@ -37,6 +37,8 @@ declare namespace AdjustDarknessLevelRegionBehaviorType {
 
 /** The data model for a behavior that allows to suppress weather effects within the Region */
 declare class AdjustDarknessLevelRegionBehaviorType extends RegionBehaviorType<AdjustDarknessLevelRegionBehaviorType.Schema> {
+  #adjustDarknessLevelRegionBehaviorType: true;
+
   /** @defaultValue `["BEHAVIOR.TYPES.adjustDarknessLevel", "BEHAVIOR.TYPES.base"]` */
   static override LOCALIZATION_PREFIXES: string[];
 
@@ -51,7 +53,5 @@ declare class AdjustDarknessLevelRegionBehaviorType extends RegionBehaviorType<A
    * @privateRemarks _onUpdate is overridden but without signature changes.
    * For type simplicity it is left off. Methods like this historically have been the source of a large amount of computation from tsc.
    */
-
-  #adjustDarknessLevelRegionBehaviorType: true;
 }
 export default AdjustDarknessLevelRegionBehaviorType;

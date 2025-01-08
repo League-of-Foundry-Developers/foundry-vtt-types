@@ -12,6 +12,8 @@ declare namespace TeleportTokenRegionBehaviorType {
 
 /** The data model for a behavior that teleports Token that enter the Region to a preset destination Region. */
 declare class TeleportTokenRegionBehaviorType extends RegionBehaviorType<TeleportTokenRegionBehaviorType.Schema> {
+  #teleportTokenRegionBehavior: true;
+
   /** @defaultValue `["BEHAVIOR.TYPES.teleportToken", "BEHAVIOR.TYPES.base"]` */
   static override LOCALIZATION_PREFIXES: string[];
 
@@ -25,8 +27,6 @@ declare class TeleportTokenRegionBehaviorType extends RegionBehaviorType<Telepor
    * @internal
    */
   protected static _activateSocketListeners(socket: WebSocket): void;
-
-  #teleportTokenRegionBehavior: true;
 }
 
 export default TeleportTokenRegionBehaviorType;

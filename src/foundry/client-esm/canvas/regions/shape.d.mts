@@ -18,6 +18,8 @@ declare namespace RegionShape {
 
 /** A shape of a {@link Region} */
 declare abstract class RegionShape<ShapeData extends RegionShape.ShapeData> {
+  #regionShape: true;
+
   /**
    * Create the RegionShape from the shape data.
    * @param data    - The shape data.
@@ -62,39 +64,37 @@ declare abstract class RegionShape<ShapeData extends RegionShape.ShapeData> {
    * @internal
    */
   protected abstract _drawShape(graphics: PIXI.Graphics): void;
-
-  #regionShape: true;
 }
 
 /**
  * A circle of a {@link Region}
- * @privateRemarks Technically this should extend CircleShapeData, but it's easier to instantiate if it's RegionShape.ShapeData.
+ * @privateRemarks Technically `ShapeData` should extend `CircleShapeData`, but it's easier to instantiate if it's `RegionShape.ShapeData`.
  */
 declare class RegionCircle<ShapeData extends RegionShape.ShapeData> extends RegionShape<ShapeData> {
+  #regionCircle: true;
+
   constructor(data: ShapeData);
 
   protected override _createClipperPolyTree(): ClipperLib.PolyTree | ClipperLib.IntPoint[];
 
   protected override _drawShape(graphics: PIXI.Graphics): void;
-
-  #regionCircle: true;
 }
 /**
  * An ellipse of a {@link Region}
- * @privateRemarks Technically this should extend CircleShapeData, but it's easier to instantiate if it's RegionShape.ShapeData.
+ * @privateRemarks Technically `ShapeData` should extend `EllipseShapeData`, but it's easier to instantiate if it's `RegionShape.ShapeData`.
  */
 declare class RegionEllipse<ShapeData extends RegionShape.ShapeData> extends RegionShape<ShapeData> {
+  #regionEllipse: true;
+
   constructor(data: ShapeData);
 
   protected override _createClipperPolyTree(): ClipperLib.PolyTree | ClipperLib.IntPoint[];
 
   protected override _drawShape(graphics: PIXI.Graphics): void;
-
-  #regionEllipse: true;
 }
 /**
  * A polygon of a {@link Region}
- * @privateRemarks Technically this should extend CircleShapeData, but it's easier to instantiate if it's RegionShape.ShapeData.
+ * @privateRemarks Technically `ShapeData` should extend `PolygonShapeData`, but it's easier to instantiate if it's `RegionShape.ShapeData`.
  */
 declare class RegionPolygon<ShapeData extends RegionShape.ShapeData> extends RegionShape<ShapeData> {
   constructor(params: ShapeData);
@@ -105,7 +105,7 @@ declare class RegionPolygon<ShapeData extends RegionShape.ShapeData> extends Reg
 }
 /**
  * A rectangle of a {@link Region}
- * @privateRemarks Technically this should extend CircleShapeData, but it's easier to instantiate if it's RegionShape.ShapeData.
+ * @privateRemarks Technically `ShapeData` should extend `RectangleShapeData`, but it's easier to instantiate if it's `RegionShape.ShapeData`.
  */
 declare class RegionRectangle<ShapeData extends RegionShape.ShapeData> extends RegionShape<ShapeData> {
   constructor(params: ShapeData);

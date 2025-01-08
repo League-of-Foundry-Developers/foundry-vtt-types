@@ -1,5 +1,5 @@
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
-import type { FixedInstanceType, ValueOf } from "../../../../utils/index.d.mts";
+import type { Brand, FixedInstanceType } from "../../../../utils/index.d.mts";
 import type RegionShape from "../../../client-esm/canvas/regions/shape.d.mts";
 import type RegionPolygonTree from "../../../client-esm/canvas/regions/polygon-tree.d.mts";
 import type RegionGeometry from "../../../client-esm/canvas/regions/geometry.d.mts";
@@ -24,7 +24,7 @@ declare global {
     }
 
     interface RegionMovementSegment {
-      /** The type of htis segment (see {@link Region.MOVEMENT_SEGMENT_TYPES}) */
+      /** The type of htis segment (see {@link Region.MovementSegmentTypes}) */
       type: number;
 
       /** The waypoint that this segment starts from */
@@ -34,26 +34,30 @@ declare global {
       to: RegionMovementWaypoint;
     }
 
-    const _MOVEMENT_SEGMENT_TYPES: Readonly<{
-      /**
-       * The segment crosses the boundary of the region and exits it.
-       */
-      EXIT: -1;
+    type MOVEMENT_SEGMENT_TYPES = Brand<number, "Region.MOVEMENT_SEGMENT_TYPES">;
 
-      /**
-       * The segment does not cross the boundary of the region and is contained within it.
-       */
-      MOVE: 0;
+    interface MovementSegmentTypes
+      extends Readonly<{
+        /**
+         * The segment crosses the boundary of the region and exits it.
+         */
+        EXIT: -1 & MOVEMENT_SEGMENT_TYPES;
 
-      /**
-       * The segment crosses the boundary of the region and enters it.
-       */
-      ENTER: 1;
-    }>;
-    type MOVEMENT_SEGMENT_TYPES = ValueOf<typeof _MOVEMENT_SEGMENT_TYPES>;
+        /**
+         * The segment does not cross the boundary of the region and is contained within it.
+         */
+        MOVE: 0 & MOVEMENT_SEGMENT_TYPES;
+
+        /**
+         * The segment crosses the boundary of the region and enters it.
+         */
+        ENTER: 1 & MOVEMENT_SEGMENT_TYPES;
+      }> {}
   }
 
   class Region extends PlaceableObject<RegionDocument.ConfiguredInstance> {
+    #region: true;
+
     constructor(document: RegionDocument.ConfiguredInstance);
 
     static override embeddedName: "Region";
@@ -73,7 +77,7 @@ declare global {
     };
 
     static CLIPPER_SCALING_FACTOR: number;
-    static MOVEMENT_SEGMENT_TYPES: typeof Region._MOVEMENT_SEGMENT_TYPES;
+    static MOVEMENT_SEGMENT_TYPES: Region.MOVEMENT_SEGMENT_TYPES;
 
     get shapes(): ReadonlyArray<RegionShape.Any>;
 
@@ -169,7 +173,5 @@ declare global {
      * @privateRemarks _onUpdate is overridden but with no signature changes.
      * For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
      */
-
-    #region: true;
   }
 }

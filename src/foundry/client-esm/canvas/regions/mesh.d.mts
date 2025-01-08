@@ -1,5 +1,7 @@
 /** A mesh of a {@link Region} */
 declare class RegionMesh extends PIXI.Container {
+  #regionMesh: true;
+
   /**
    * Create a RegionMesh
    * @param region        - The Region to create the RegionMesh from.
@@ -54,8 +56,6 @@ declare class RegionMesh extends PIXI.Container {
   containsPoint(point: PIXI.IPointData): boolean;
 
   override destroy(options?: PIXI.DisplayObject.DestroyOptions): void;
-
-  #regionMesh: true;
 }
 
 export default RegionMesh;

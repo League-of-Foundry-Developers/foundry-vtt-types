@@ -49,7 +49,7 @@ declare global {
       eventDataUuids: string[];
     }
 
-    interface _UpdateTokenOptions {
+    interface UpdateTokenOptions {
       /**
        * Are the Region documents deleted?
        * @defaultValue `false`
@@ -105,7 +105,7 @@ declare global {
      * @param socket    - The active game socket
      * @internal
      */
-    static _activateSocketListeners(socket: WebSocket): void;
+    protected static _activateSocketListeners(socket: WebSocket): void;
 
     /**
      * Update the tokens of the given regions.
@@ -116,9 +116,9 @@ declare global {
      *  containment test is not done in an animated state.
      * @internal
      */
-    static _updateTokens(
+    protected static _updateTokens(
       regions: RegionDocument[],
-      options?: InexactPartial<RegionDocument._UpdateTokenOptions>,
+      options?: InexactPartial<RegionDocument.UpdateTokenOptions>,
     ): Promise<void>;
 
     // TODO(Eon): Core overrides these three methods, but the override types are very complex so

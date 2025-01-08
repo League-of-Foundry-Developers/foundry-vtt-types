@@ -8,6 +8,8 @@ declare global {
     DrawOptions extends RegionLayer.DrawOptions = RegionLayer.DrawOptions,
     TearDownOptions extends PlaceablesLayer.TearDownOptions = PlaceablesLayer.TearDownOptions,
   > extends PlaceablesLayer<"Region", DrawOptions, TearDownOptions> {
+    #regionLayer: true;
+
     /**
      * @privateRemarks This is not overridden in foundry but reflects the real behavior.
      */
@@ -84,8 +86,6 @@ declare global {
     protected override _onDragLeftCancel(event: PointerEvent): void;
 
     protected override _onClickRight(event: PIXI.FederatedEvent): void;
-
-    #regionLayer: true;
   }
 
   namespace RegionLayer {

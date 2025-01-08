@@ -2,6 +2,8 @@ import type { Point } from "../../../common/types.d.mts";
 
 /** The node of a {@link RegionPolygonTree}.*/
 declare class RegionPolygonTreeNode {
+  #regionPolygonTreeNode: true;
+
   /**
    * Create a RegionPolygonTreeNode.
    * @param parent    - The parent node.
@@ -79,8 +81,6 @@ declare class RegionPolygonTreeNode {
    *                  - 1: the circle is in the interior and does not intersect the boundary.
    */
   testCircle(center: Point, radius: number): -1 | 0 | 1;
-
-  #regionPolygonTreeNode: true;
 }
 
 /** The polygon tree of a {@link Region}. */
