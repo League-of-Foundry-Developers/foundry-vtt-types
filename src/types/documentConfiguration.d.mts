@@ -37,6 +37,8 @@ interface _DefaultDocuments {
   Macro: typeof Macro;
   PlaylistSound: typeof PlaylistSound;
   Playlist: typeof Playlist;
+  RegionBehavior: typeof RegionBehavior;
+  Region: typeof RegionDocument;
   RollTable: typeof RollTable;
   Scene: typeof Scene;
   Setting: typeof Setting;
@@ -72,8 +74,8 @@ export interface DefaultDocuments extends ConformedDefault {}
 // See https://gist.github.com/LukeAbby/f9561689e5cad8a4b1e9cb92a8c63982 for more information.
 type ConfiguredDocument<ConcreteDocumentType extends Document.Type> =
   ConcreteDocumentType extends keyof DocumentClassConfig
-    ? DocumentClassConfig[ConcreteDocumentType]
-    : DefaultDocuments[ConcreteDocumentType];
+  ? DocumentClassConfig[ConcreteDocumentType]
+  : DefaultDocuments[ConcreteDocumentType];
 
 // This interface exists as a way to catch circular errors easier.
 // This makes it more verbose than it might seem it has to be but it's important to stay this way.
@@ -95,6 +97,8 @@ interface _ConfiguredDocuments {
   Macro: ConfiguredDocument<"Macro">;
   PlaylistSound: ConfiguredDocument<"PlaylistSound">;
   Playlist: ConfiguredDocument<"Playlist">;
+  RegionBehavior: ConfiguredDocument<"RegionBehavior">;
+  Region: ConfiguredDocument<"Region">;
   RollTable: ConfiguredDocument<"RollTable">;
   Scene: ConfiguredDocument<"Scene">;
   Setting: ConfiguredDocument<"Setting">;
@@ -418,6 +422,34 @@ interface _ConfiguredMetadata<ThisType extends Document.Internal.Instance.Any> {
       schemaVersion: string;
     }
   >;
+  PlaylistSound: Merge<
+    Document.Metadata.Default,
+    {
+      name: "PlaylistSound";
+      collection: "sounds";
+      indexed: true;
+      label: string;
+      labelPlural: string;
+      compendiumIndexFields: ["name", "sort"];
+      schemaVersion: string;
+    }
+  >;
+  Playlist: Merge<
+    Document.Metadata.Default,
+    {
+      name: "Playlist";
+      collection: "playlists";
+      indexed: true;
+      compendiumIndexFields: ["_id", "name", "sort", "folder"];
+      embedded: { PlaylistSound: "sounds" };
+      label: string;
+      labelPlural: string;
+      permissions: {
+        create: "PLAYLIST_CREATE";
+      };
+      schemaVersion: string;
+    }
+  >;
   RegionBehavior: Merge<
     Document.Metadata.Default,
     {
@@ -446,34 +478,6 @@ interface _ConfiguredMetadata<ThisType extends Document.Internal.Instance.Any> {
       embedded: {
         RegionBehavior: "behaviors";
       }
-      schemaVersion: string;
-    }
-  >;
-  PlaylistSound: Merge<
-    Document.Metadata.Default,
-    {
-      name: "PlaylistSound";
-      collection: "sounds";
-      indexed: true;
-      label: string;
-      labelPlural: string;
-      compendiumIndexFields: ["name", "sort"];
-      schemaVersion: string;
-    }
-  >;
-  Playlist: Merge<
-    Document.Metadata.Default,
-    {
-      name: "Playlist";
-      collection: "playlists";
-      indexed: true;
-      compendiumIndexFields: ["_id", "name", "sort", "folder"];
-      embedded: { PlaylistSound: "sounds" };
-      label: string;
-      labelPlural: string;
-      permissions: {
-        create: "PLAYLIST_CREATE";
-      };
       schemaVersion: string;
     }
   >;
@@ -632,6 +636,8 @@ export interface ConstructorData {
   Macro: documents.BaseMacro.ConstructorData;
   PlaylistSound: documents.BasePlaylistSound.ConstructorData;
   Playlist: documents.BasePlaylist.ConstructorData;
+  RegionBehavior: documents.BaseRegionBehavior.ConstructorData;
+  Region: documents.BaseRegion.ConstructorData;
   RollTable: documents.BaseRollTable.ConstructorData;
   Scene: documents.BaseScene.ConstructorData;
   Setting: documents.BaseSetting.ConstructorData;
