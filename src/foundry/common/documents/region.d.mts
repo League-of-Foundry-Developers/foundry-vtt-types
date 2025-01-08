@@ -83,7 +83,7 @@ declare namespace BaseRegion {
     /**
      * A collection of embedded RegionBehavior objects
      */
-    behaviors: fields.EmbeddedCollectionField<typeof documents.BaseRegionBehavior, Region.ConfiguredInstance, { label: string, hint: string }>;
+    behaviors: fields.EmbeddedCollectionField<typeof documents.BaseRegionBehavior, RegionDocument.ConfiguredInstance, { label: string, hint: string }>;
 
     visibility: fields.NumberField<{
       required: true,
