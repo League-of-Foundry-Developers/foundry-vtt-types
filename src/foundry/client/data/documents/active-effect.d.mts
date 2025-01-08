@@ -26,6 +26,34 @@ declare global {
     type UpdateData = BaseActiveEffect.UpdateData;
     type Schema = BaseActiveEffect.Schema;
     type Source = BaseActiveEffect.Source;
+
+    // TODO(LukeAbby): Audit. This is used both as an assignment, constructor, and initialized type.
+    // It's likely this isn't really supposed to be used in fvtt-types.
+    interface EffectChangeData {
+      /**
+       * The attribute path in the Actor or Item data which the change modifies
+       * @defaultValue `""`
+       */
+      key: string;
+
+      /**
+       * The value of the change effect
+       * @defaultValue `""`
+       */
+      value: string;
+
+      /**
+       * The modification mode with which the change is applied
+       * @defaultValue `CONST.ACTIVE_EFFECT_MODES.ADD`
+       */
+      mode: number | null;
+
+      /**
+       * The priority level with which this change is applied
+       * @defaultValue `null`
+       */
+      priority: number | null;
+    }
   }
 
   /**
@@ -148,7 +176,7 @@ declare global {
      * @param field  - The field. If not supplied, it will be retrieved from the supplied model.
      * @returns The updated value.
      */
-    static applyField(model: DataModel.Any, change: EffectChangeData, field?: DataField.Any): unknown;
+    static applyField(model: DataModel.Any, change: ActiveEffect.EffectChangeData, field?: DataField.Any): unknown;
 
     /**
      * Apply this ActiveEffect to a provided Actor.
