@@ -7,6 +7,7 @@ import type BaseCombatant from "../foundry/common/documents/combatant.d.mts";
 import type BaseDrawing from "../foundry/common/documents/drawing.d.mts";
 import type BaseFogExploration from "../foundry/common/documents/fog-exploration.d.mts";
 import type BaseMeasuredTemplate from "../foundry/common/documents/measured-template.d.mts";
+import type BaseRegionBehavior from "../foundry/common/documents/region-behavior.d.mts";
 import type BaseSetting from "../foundry/common/documents/setting.d.mts";
 import type BaseTableResult from "../foundry/common/documents/table-result.d.mts";
 import type BaseToken from "../foundry/common/documents/token.d.mts";
@@ -36,6 +37,8 @@ interface _DefaultDocuments {
   Macro: typeof Macro;
   PlaylistSound: typeof PlaylistSound;
   Playlist: typeof Playlist;
+  RegionBehavior: typeof RegionBehavior;
+  Region: typeof RegionDocument;
   RollTable: typeof RollTable;
   Scene: typeof Scene;
   Setting: typeof Setting;
@@ -94,6 +97,8 @@ interface _ConfiguredDocuments {
   Macro: ConfiguredDocument<"Macro">;
   PlaylistSound: ConfiguredDocument<"PlaylistSound">;
   Playlist: ConfiguredDocument<"Playlist">;
+  RegionBehavior: ConfiguredDocument<"RegionBehavior">;
+  Region: ConfiguredDocument<"Region">;
   RollTable: ConfiguredDocument<"RollTable">;
   Scene: ConfiguredDocument<"Scene">;
   Setting: ConfiguredDocument<"Setting">;
@@ -445,6 +450,46 @@ interface _ConfiguredMetadata<ThisType extends Document.Internal.Instance.Any> {
       schemaVersion: string;
     }
   >;
+  RegionBehavior: Merge<
+    Document.Metadata.Default,
+    {
+      name: "RegionBehavior";
+      collection: "behaviors";
+      label: string;
+      labelPlural: string;
+      coreTypes: [
+        "adjustDarknessLevel",
+        "displayScrollingText",
+        "executeMacro",
+        "executeScript",
+        "pauseGame",
+        "suppressWeather",
+        "teleportToken",
+        "toggleBehavior",
+      ];
+      hasTypeData: true;
+      isEmbedded: true;
+      permissions: {
+        create(user: BaseUser, doc: ThisType): boolean;
+        update(user: BaseUser, doc: ThisType, data: BaseRegionBehavior.UpdateData): boolean;
+      };
+      schemaVersion: string;
+    }
+  >;
+  Region: Merge<
+    Document.Metadata.Default,
+    {
+      name: "Region";
+      collection: "regions";
+      label: string;
+      labelPlural: string;
+      isEmbedded: true;
+      embedded: {
+        RegionBehavior: "behaviors";
+      };
+      schemaVersion: string;
+    }
+  >;
   RollTable: Merge<
     Document.Metadata.Default,
     {
@@ -471,6 +516,7 @@ interface _ConfiguredMetadata<ThisType extends Document.Internal.Instance.Any> {
         Drawing: "drawings";
         MeasuredTemplate: "templates";
         Note: "notes";
+        Region: "regions";
         Tile: "tiles";
         Token: "tokens";
         Wall: "walls";
@@ -600,6 +646,8 @@ export interface ConstructorData {
   Macro: documents.BaseMacro.ConstructorData;
   PlaylistSound: documents.BasePlaylistSound.ConstructorData;
   Playlist: documents.BasePlaylist.ConstructorData;
+  RegionBehavior: documents.BaseRegionBehavior.ConstructorData;
+  Region: documents.BaseRegion.ConstructorData;
   RollTable: documents.BaseRollTable.ConstructorData;
   Scene: documents.BaseScene.ConstructorData;
   Setting: documents.BaseSetting.ConstructorData;

@@ -46,9 +46,8 @@ declare global {
     /**
      * The darkness level adjustment mode.
      * @defaultValue `foundry.data.regionBehaviors.AdjustDarknessLevelRegionBehaviorType.MODES.OVERRIDE`
-     * TODO: make into typeof... when referenced class is available
      */
-    mode: number;
+    mode: foundry.data.regionBehaviors.AdjustDarknessLevelRegionBehaviorType.Modes;
 
     /**
      * The darkness level modifier.
@@ -68,6 +67,27 @@ declare global {
    * Render the RegionMesh with darkness level adjustments.
    */
   class AdjustDarknessLevelRegionShader extends AbstractDarknessLevelRegionShader {
+    /**
+     * @defaultValue
+     * ```
+     *  `
+     *   precision ${PIXI.settings.PRECISION_FRAGMENT} float;
+     *
+     *   uniform sampler2D depthTexture;
+     *   uniform float darknessLevel;
+     *   uniform float top;
+     *   uniform float bottom;
+     *   uniform vec4 tintAlpha;
+     *   varying vec2 vScreenCoord;
+     *
+     *   void main() {
+     *     vec2 depthColor = texture2D(depthTexture, vScreenCoord).rg;
+     *     float depth = step(depthColor.g, top) * step(bottom, (254.5 / 255.0) - depthColor.r);
+     *     gl_FragColor = vec4(darknessLevel, 0.0, 0.0, 1.0) * tintAlpha * depth;
+     *   }
+     *  `
+     * ```
+     */
     static override fragmentShader: string;
 
     /**
@@ -88,6 +108,26 @@ declare global {
    * Render the RegionMesh with darkness level adjustments.
    */
   class IlluminationDarknessLevelRegionShader extends AbstractDarknessLevelRegionShader {
+    /**
+     * @defaultValue
+     * ```
+     *  `
+     *   precision ${PIXI.settings.PRECISION_FRAGMENT} float;
+     *
+     *   uniform sampler2D depthTexture;
+     *   uniform float top;
+     *   uniform float bottom;
+     *   uniform vec4 tintAlpha;
+     *   varying vec2 vScreenCoord;
+     *
+     *   void main() {
+     *     vec2 depthColor = texture2D(depthTexture, vScreenCoord).rg;
+     *     float depth = step(depthColor.g, top) * step(bottom, (254.5 / 255.0) - depthColor.r);
+     *     gl_FragColor = vec4(1.0) * tintAlpha * depth;
+     *   }
+     *  `
+     * ```
+     */
     static override fragmentShader: string;
   }
 }

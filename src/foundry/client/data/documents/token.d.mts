@@ -93,9 +93,8 @@ declare global {
 
     /**
      * The Regions this Token is currently in.
-     * @privateRemarks TODO: Change Set<any> to Set<RegionDocuments> when RegionDocuments are implemented
      */
-    regions: Set<any> | null;
+    regions: Set<RegionDocument.ConfiguredInstance> | null;
 
     // TODO: Same as `DataModel._initialize`
     protected override _initialize(options?: any): void;

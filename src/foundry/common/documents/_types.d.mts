@@ -15,6 +15,8 @@ import type BaseMeasuredTemplate from "./measured-template.d.mts";
 import type BaseNote from "./note.d.mts";
 import type BasePlaylistSound from "./playlist-sound.d.mts";
 import type BasePlaylist from "./playlist.d.mts";
+import type BaseRegionBehavior from "./region-behavior.d.mts";
+import type BaseRegion from "./region.d.mts";
 import type BaseRollTable from "./roll-table.d.mts";
 import type BaseScene from "./scene.d.mts";
 import type BaseSetting from "./setting.d.mts";
@@ -110,9 +112,9 @@ export type GlobalLightData = BaseScene.Properties["environment"]["globalLight"]
 // @ts-expect-error This still has to be typed
 export type SceneEnvironmentData = BaseScene.Properties["environment"];
 
-export type RegionData = unknown; // TODO: Add when BaseRegion's schema is added.
+export type RegionData = BaseRegion.Properties;
 
-export type RegionBehaviorData = unknown; // TODO: Add when BaseRegionBehavior's schema is added.
+export type RegionBehaviorData = BaseRegionBehavior.Properties;
 
 export type SettingData = BaseSetting.Properties;
 

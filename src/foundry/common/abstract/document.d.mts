@@ -515,10 +515,9 @@ declare abstract class Document<
    * @returns The Collection instance of embedded Documents of the requested type
    * @remarks Usually returns some form of DocumentCollection, but not always (e.g. Token["actors"])
    */
-  // TODO: After regions are defined, change first parameter to `extends foundry.CONST.EMBEDDED_DOCUMENT_TYPES`
-  getEmbeddedCollection<
-    EmbeddedName extends Exclude<foundry.CONST.EMBEDDED_DOCUMENT_TYPES, "Region" | "RegionBehavior">,
-  >(embeddedName: EmbeddedName): Collection<Document.ConfiguredInstanceForName<EmbeddedName>>;
+  getEmbeddedCollection<EmbeddedName extends foundry.CONST.EMBEDDED_DOCUMENT_TYPES>(
+    embeddedName: EmbeddedName,
+  ): Collection<Document.ConfiguredInstanceForName<EmbeddedName>>;
 
   /**
    * Get an embedded document by its id from a named collection in the parent document.
@@ -555,7 +554,6 @@ declare abstract class Document<
    *                       (default: `{}`)
    * @returns An array of created Document instances
    */
-  // TODO: After regions are defined, change first parameter to `extends foundry.CONST.EMBEDDED_DOCUMENT_TYPES`
   // TODO: I think we could do a better job on all the embedded methods of limiting the types here based on the
   //   allowed embedded types of the parent (vs. allowing any document to create embedded
   //   documents of any type)
@@ -580,7 +578,6 @@ declare abstract class Document<
    *                       (default: `{}`)
    * @returns An array of updated Document instances
    */
-  // TODO: After regions are defined, change first parameter to `extends foundry.CONST.EMBEDDED_DOCUMENT_TYPES`
   updateEmbeddedDocuments<EmbeddedName extends foundry.CONST.EMBEDDED_DOCUMENT_TYPES>(
     embeddedName: EmbeddedName,
     updates?: Array<AnyObject>,
@@ -596,10 +593,7 @@ declare abstract class Document<
    *                       (default: `{}`)
    * @returns An array of deleted Document instances
    */
-  // TODO: After regions are defined, change first parameter to `extends foundry.CONST.EMBEDDED_DOCUMENT_TYPES`
-  deleteEmbeddedDocuments<
-    EmbeddedName extends Exclude<foundry.CONST.EMBEDDED_DOCUMENT_TYPES, "Region" | "RegionBehavior">,
-  >(
+  deleteEmbeddedDocuments<EmbeddedName extends foundry.CONST.EMBEDDED_DOCUMENT_TYPES>(
     embeddedName: EmbeddedName,
     ids: Array<string>,
     operation?: Document.Database.OperationOf<DocumentName, "delete">,
@@ -968,6 +962,8 @@ declare namespace Document {
     | "Macro"
     | "PlaylistSound"
     | "Playlist"
+    | "RegionBehavior"
+    | "Region"
     | "RollTable"
     | "Scene"
     | "Setting"
@@ -982,6 +978,7 @@ declare namespace Document {
     | "Drawing"
     | "MeasuredTemplate"
     | "Note"
+    | "Region"
     | "Tile"
     | "Token"
     | "Wall";
@@ -999,7 +996,8 @@ declare namespace Document {
     | "Combat"
     | "Combatant"
     | "Item"
-    | "JournalEntryPage";
+    | "JournalEntryPage"
+    | "RegionBehavior";
 
   type EmbeddableNamesFor<ConcreteDocument extends Document.Internal.Instance.Any> = {
     [K in keyof ConfiguredDocuments]: IsParentOf<
@@ -1490,9 +1488,8 @@ export interface DatabaseOperationMap {
   Note: NoteDocument.DatabaseOperations;
   Playlist: Playlist.DatabaseOperations;
   PlaylistSound: PlaylistSound.DatabaseOperations;
-  // TODO: Add these once documents are done
-  // Region: ActiveEffect.DatabaseOperations;
-  // RegionBehavior: ActiveEffect.DatabaseOperations;
+  Region: ActiveEffect.DatabaseOperations;
+  RegionBehavior: ActiveEffect.DatabaseOperations;
   RollTable: RollTable.DatabaseOperations;
   Scene: Scene.DatabaseOperations;
   Setting: Setting.DatabaseOperations;

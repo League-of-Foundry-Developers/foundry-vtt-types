@@ -25,6 +25,8 @@ export { default as BaseMeasuredTemplate } from "./measured-template.mjs";
 export { default as BaseNote } from "./note.mjs";
 export { default as BasePlaylist } from "./playlist.mjs";
 export { default as BasePlaylistSound } from "./playlist-sound.mjs";
+export { default as BaseRegionBehavior } from "./region-behavior.mjs";
+export { default as BaseRegion } from "./region.mjs";
 export { default as BaseRollTable } from "./roll-table.mjs";
 export { default as BaseScene } from "./scene.mjs";
 export { default as BaseSetting } from "./setting.mjs";
