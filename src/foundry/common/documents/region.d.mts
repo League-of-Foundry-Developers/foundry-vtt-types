@@ -27,8 +27,7 @@ declare class BaseRegion extends Document<"Region", BaseRegion.Schema, any> {
 export default BaseRegion;
 
 declare namespace BaseRegion {
-  //TODO(Eon): Figure out what parent a region is supposed to have. This is purely a guess.
-  //type Parent = Scene.ConfiguredInstance | null
+  type Parent = Scene.ConfiguredInstance | null
 
   type Metadata = Document.MetadataFor<BaseRegion>
 
