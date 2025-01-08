@@ -1,2 +1,22 @@
-declare class ExecuteScriptRegionBehaviorType extends RegionBehaviorType {}
+import type RegionBehaviorType from "./base.d.mts";
+import fields = foundry.data.fields;
+
+/** The data model for a behavior that displays scrolling text above a token when one of the subscribed events occurs. */
+declare namespace ExecuteScriptRegionBehaviorType {
+  interface Schema extends foundry.data.fields.DataSchema {
+    events: RegionBehaviorType.EventsField;
+    /** The source code of the script */
+    source: fields.JavaScriptField<{ async: true, gmOnly: true }>;
+  }
+}
+
+declare class ExecuteScriptRegionBehaviorType extends RegionBehaviorType<ExecuteScriptRegionBehaviorType.Schema> {
+  /** @defaultValue `["BEHAVIOR.TYPES.executeScript", "BEHAVIOR.TYPES.base"]` */
+  static override LOCALIZATION_PREFIXES: string[];
+
+  static override defineSchema(): ExecuteScriptRegionBehaviorType.Schema;
+
+  protected override _handleRegionEvent(event: RegionDocument.RegionEvent): Promise<void>;
+}
+
 export default ExecuteScriptRegionBehaviorType;
