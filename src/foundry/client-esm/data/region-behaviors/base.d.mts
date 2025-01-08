@@ -6,7 +6,10 @@ import fields = foundry.data.fields;
 declare namespace RegionBehaviorType {
   type EventBehaviorStaticHandler = (event: RegionDocument.RegionEvent) => Promise<void>;
 
-  type EventsField = fields.SetField<fields.StringField<{ required: true, choices: Record<CONST.REGION_EVENTS, string> }>, { label: string, hint: string }>;
+  type EventsField = fields.SetField<
+    fields.StringField<{ required: true; choices: Record<CONST.REGION_EVENTS, string> }>,
+    { label: string; hint: string }
+  >;
 }
 
 /** The data model for a behavior that receives Region events. */
@@ -19,9 +22,9 @@ declare class RegionBehaviorType<
   /** Create the events field. */
   protected static _createEventsField(options?: {
     /** The event names to restrict to. */
-    events?: string[],
+    events?: string[];
     /** The initial set of events that should be default for the field */
-    initial?: string[]
+    initial?: string[];
   }): RegionBehaviorType.EventsField;
 
   /**
@@ -37,7 +40,7 @@ declare class RegionBehaviorType<
   events: Set<string>;
 
   /** A convenience reference to the RegionBehavior which contains this behavior sub-type */
-  get behavior(): RegionBehavior.ConfiguredInstance | null
+  get behavior(): RegionBehavior.ConfiguredInstance | null;
 
   /** A convenience reference to the RegionDocument which contains this behavior sub-type.*/
   get region(): RegionDocument.ConfiguredInstance | null;

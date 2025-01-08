@@ -7,28 +7,33 @@ declare namespace DisplayScrollingTextRegionBehaviorType {
     /**
      * Display only for gamemaster users
      */
-    GAMEMASTER: 0,
+    GAMEMASTER: 0;
 
     /**
      * Display only for users with observer permissions on the triggering token (and for the GM)
      */
-    OBSERVER: 1,
+    OBSERVER: 1;
 
     /**
      * Display for all users
      */
-    ANYONE: 2,
-  }>
+    ANYONE: 2;
+  }>;
   type VISIBILITY_MODES = ValueOf<typeof _VISIBILITY_MODES>;
 
   interface Schema extends foundry.data.fields.DataSchema {
     events: RegionBehaviorType.EventsField;
     /** The text to display */
-    text: fields.StringField<{required: true}>;
+    text: fields.StringField<{ required: true }>;
     /** Optional color setting for the text */
-    color: fields.ColorField<{required: true, nullable: false, initial: string}>;
+    color: fields.ColorField<{ required: true; nullable: false; initial: string }>;
     /** Which users the scrolling text will display for (see {@link VISIBILITY_MODES}) */
-    visibility: fields.NumberField<{required: true, choices: Record<VISIBILITY_MODES, string>, initial: typeof _VISIBILITY_MODES.GAMEMASTER, validationError: string}>;
+    visibility: fields.NumberField<{
+      required: true;
+      choices: Record<VISIBILITY_MODES, string>;
+      initial: typeof _VISIBILITY_MODES.GAMEMASTER;
+      validationError: string;
+    }>;
     /** Disable the behavior after it triggers once */
     once: fields.BooleanField;
   }

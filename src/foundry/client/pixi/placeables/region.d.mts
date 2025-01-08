@@ -1,5 +1,5 @@
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
-import type { FixedInstanceType } from "../../../../utils/index.d.mts";
+import type { FixedInstanceType, ValueOf } from "../../../../utils/index.d.mts";
 import type RegionShape from "../../../client-esm/canvas/regions/shape.d.mts";
 import type RegionPolygonTree from "../../../client-esm/canvas/regions/polygon-tree.d.mts";
 import type RegionGeometry from "../../../client-esm/canvas/regions/geometry.d.mts";
@@ -11,7 +11,7 @@ declare global {
     type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof Region>;
     type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;
 
-    interface RenderFlags extends PlaceableObject.RenderFlags { }
+    interface RenderFlags extends PlaceableObject.RenderFlags {}
 
     interface RegionMovementWaypoint {
       /** The x-coordinates in pixels (integer) */
@@ -30,6 +30,24 @@ declare global {
       /** The waypoint that this segment goes to */
       to: RegionMovementWaypoint;
     }
+
+    const _MOVEMENT_SEGMENT_TYPES: Readonly<{
+      /**
+       * The segment crosses the boundary of the region and exits it.
+       */
+      EXIT: -1;
+
+      /**
+       * The segment does not cross the boundary of the region and is contained within it.
+       */
+      MOVE: 0;
+
+      /**
+       * The segment crosses the boundary of the region and enters it.
+       */
+      ENTER: 1;
+    }>;
+    type MOVEMENT_SEGMENT_TYPES = ValueOf<typeof _MOVEMENT_SEGMENT_TYPES>;
   }
 
   class Region extends PlaceableObject<RegionDocument.ConfiguredInstance> {
@@ -49,14 +67,15 @@ declare global {
 
       /** @defaultValue `{}` */
       refreshBorder: RenderFlag<Region.RenderFlags>;
-    }
+    };
 
-    // TODO(Eon): Figure out what and how to type the `static { ... }` block
+    static CLIPPER_SCALING_FACTOR: number;
+    static MOVEMENT_SEGMENT_TYPES: typeof Region._MOVEMENT_SEGMENT_TYPES;
 
     /** A temporary point used by this class. */
     static #SHARED_POINT: PIXI.Point;
 
-    get shapes(): ReadonlyArray<RegionShape.Any>
+    get shapes(): ReadonlyArray<RegionShape.Any>;
     #shapes: ReadonlyArray<RegionShape.Any>;
 
     /** The bottom elevation of this Region. */
@@ -78,8 +97,8 @@ declare global {
     #clipperPaths: ReadonlyArray<ReadonlyArray<ClipperLib.IntPoint>> | undefined;
 
     /** The triangulation of this Region */
-    get triangulation(): ReadonlyArray<{ vertices: Float32Array, indices: Uint16Array | Uint32Array }>;
-    #triangulation: ReadonlyArray<{ vertices: Float32Array, indices: Uint16Array | Uint32Array }> | undefined;
+    get triangulation(): ReadonlyArray<{ vertices: Float32Array; indices: Uint16Array | Uint32Array }>;
+    #triangulation: ReadonlyArray<{ vertices: Float32Array; indices: Uint16Array | Uint32Array }> | undefined;
 
     /** The geometry of this Region */
     get geometry(): RegionGeometry;
@@ -100,9 +119,9 @@ declare global {
     #border: PIXI.Graphics | undefined;
 
     /**
-     * @throws {Error}  - Region#getSnappedPosition is not supported: RegionDocument does not have a (x, y) position
+     * @throws      - Region#getSnappedPosition is not supported: RegionDocument does not have a (x, y) position
      */
-    override getSnappedPosition(position?: Canvas.Point): never
+    override getSnappedPosition(position?: Canvas.Point): never;
 
     /** Initialize the region */
     #initialize(): void;
@@ -140,13 +159,17 @@ declare global {
     testPoint(point: Point, elevation?: number): boolean;
 
     /** Update the shapes of this region. */
-    #updateShapes(): void
+    #updateShapes(): void;
 
     /** Create the Clipper polygon tree for this Region. */
     #createClipperPolyTree(): ClipperLib.PolyTree;
 
     /** Build the Clipper batches. */
-    #buildClipperBatches(): { paths: ClipperLib.IntPoint[][], fillType: ClipperLib.PolyFillType, clipType: ClipperLib.ClipType }[];
+    #buildClipperBatches(): {
+      paths: ClipperLib.IntPoint[][];
+      fillType: ClipperLib.PolyFillType;
+      clipType: ClipperLib.ClipType;
+    }[];
 
     /**
      * Split the movement into its segments.
@@ -160,12 +183,12 @@ declare global {
       waypoints: Region.RegionMovementWaypoint[],
       samples: Point[],
       options?: {
-        /** 
+        /**
          * Is it teleportation?
          * @defaultValue `false`
          */
-        teleport?: boolean
-      }
+        teleport?: boolean;
+      },
     ): Region.RegionMovementSegment[];
 
     /**
@@ -180,7 +203,7 @@ declare global {
       origin: Region.RegionMovementWaypoint,
       destination: Region.RegionMovementWaypoint,
       samples: Point[],
-      teleport: boolean
+      teleport: boolean,
     ): Region.RegionMovementSegment[];
 
     /**
@@ -201,7 +224,7 @@ declare global {
       destinationX: number,
       destinationY: number,
       destinationElevation: number,
-      samples: Point[]
+      samples: Point[],
     ): Region.RegionMovementSegment | void;
 
     /**
@@ -211,7 +234,7 @@ declare global {
      * @param samples   - The samples relative to the position.
      * @returns         - Is one of the samples contained within this Region?
      */
-    #testSamples(x: number, y: number, samples: Point[]): boolean
+    #testSamples(x: number, y: number, samples: Point[]): boolean;
 
     /**
      * Split the movement into its segments.
@@ -224,7 +247,15 @@ declare global {
      * @param samples                 - The samples relative to the position.
      * @returns                       - The intervals where we have an intersection.
      */
-    #getMovementSegments(originX: number, originY: number, originElevation: number, destinationX: number, destinationY: number, destinationElevation: number, samples: Point[]): { start: number; end: number; }[]
+    #getMovementSegments(
+      originX: number,
+      originY: number,
+      originElevation: number,
+      destinationX: number,
+      destinationY: number,
+      destinationElevation: number,
+      samples: Point[],
+    ): { start: number; end: number }[];
 
     /**
      * Test whether the movement could intersect this Region.
@@ -235,7 +266,13 @@ declare global {
      * @param samples         - The samples relative to the position.
      * @returns               - Could the movement intersect?
      */
-    #couldMovementIntersect(originX: number, originY: number, destinationX: number, destinationY: number, samples: Point[]): boolean
+    #couldMovementIntersect(
+      originX: number,
+      originY: number,
+      destinationX: number,
+      destinationY: number,
+      samples: Point[],
+    ): boolean;
 
     /**
      * Compute the intervals of intersection of the movement.
@@ -246,7 +283,13 @@ declare global {
      * @param samples         - The samples relative to the position.
      * @returns               - The intervals where we have an intersection.
      */
-    #computeSegmentIntervals(originX: number, originY: number, destinationX: number, destinationY: number, samples: Point[]): { start: number; end: number; }[]
+    #computeSegmentIntervals(
+      originX: number,
+      originY: number,
+      destinationX: number,
+      destinationY: number,
+      samples: Point[],
+    ): { start: number; end: number }[];
 
     /**
      * Find the crossing (enter or exit) at the current position between the start and end position, if possible.
@@ -262,7 +305,16 @@ declare global {
      * @param samples     - The samples.
      * @param enter       - Find enter? Otherwise find exit.
      */
-    #findBoundaryCrossing(startX: number, startY: number, currentX: number, currentY: number, endX: number, endY: number, samples: boolean, enter: boolean): [from: { x: number; y: number; inside: boolean; }, to: { x: number; y: number; inside: boolean; }] 
+    #findBoundaryCrossing(
+      startX: number,
+      startY: number,
+      currentX: number,
+      currentY: number,
+      endX: number,
+      endY: number,
+      samples: boolean,
+      enter: boolean,
+    ): [from: { x: number; y: number; inside: boolean }, to: { x: number; y: number; inside: boolean }];
 
     /**
      * @privateRemarks _onUpdate is overridden but with no signature changes.

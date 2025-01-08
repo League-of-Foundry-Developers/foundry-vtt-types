@@ -1,6 +1,5 @@
-import type { ValueOf } from "../../../utils/index.d.mts";
 import type Document from "../abstract/document.mts";
-import type { BaseShapeData, fields } from "../data/module.d.mts";
+import type { fields } from "../data/module.d.mts";
 import type * as documents from "./_module.d.mts";
 
 type DataSchema = foundry.data.fields.DataSchema;
@@ -8,13 +7,12 @@ type DataSchema = foundry.data.fields.DataSchema;
 /**
  * The RegionBehavior Document.
  * Defines the DataSchema and common behaviors for a RegionBehavior which are shared between both client and server.
- * @mixes SceneRegionData
  */
-declare class BaseRegionBehavior extends Document<"Region", BaseRegionBehavior.Schema, any> {
+declare class BaseRegionBehavior extends Document<"RegionBehavior", BaseRegionBehavior.Schema, any> {
   /**
    * Construct a Region document using provided data and context.
-   * @param {Partial<RegionData>} data         Initial data from which to construct the Region
-   * @param {DocumentConstructionContext} context   Construction context options
+   * @param data        - Initial data from which to construct the Region
+   * @param context     - Construction context options
    */
   // TODO(Eon): Every other document constructor I checked (Token, AE, Actor) have been commented out for circularity errors, so I'm leaving this one commented out as well.
   // constructor(data: Partial<BaseRegionBehavior.ConstructorData>, context?: Document.ConstructionContext<BaseRegionBehavior.Parent>);
@@ -41,12 +39,12 @@ declare class BaseRegionBehavior extends Document<"Region", BaseRegionBehavior.S
 export default BaseRegionBehavior;
 
 declare namespace BaseRegionBehavior {
-  type Parent = RegionDocument.ConfiguredInstance | null
+  type Parent = RegionDocument.ConfiguredInstance | null;
 
-  type Metadata = Document.MetadataFor<BaseRegionBehavior>
+  type Metadata = Document.MetadataFor<BaseRegionBehavior>;
 
-  type SchemaField = fields.SchemaField<Schema>
-  type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>
+  type SchemaField = fields.SchemaField<Schema>;
+  type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;
   type UpdateData = fields.SchemaField.InnerAssignmentType<Schema>;
   type Properties = fields.SchemaField.InnerInitializedType<Schema>;
   type Source = fields.SchemaField.InnerPersistedType<Schema>;
@@ -62,7 +60,7 @@ declare namespace BaseRegionBehavior {
      * The name used to describe the RegionBehavior
      * @defaultValue `""`
      */
-    name: fields.StringField<{ required: true, blank: true, label: string, textSearch: true }>;
+    name: fields.StringField<{ required: true; blank: true; label: string; textSearch: true }>;
 
     /**
      * An RegionBehavior subtype which configures the system data model applied
@@ -78,7 +76,7 @@ declare namespace BaseRegionBehavior {
      * Is the RegionBehavior currently disabled?
      * @defaultValue `false`
      */
-    disabled: fields.BooleanField<{label: string, hint: string}>
+    disabled: fields.BooleanField<{ label: string; hint: string }>;
 
     /**
      * An object of optional key/value flags

@@ -8,13 +8,12 @@ type DataSchema = foundry.data.fields.DataSchema;
 /**
  * The Region Document.
  * Defines the DataSchema and common behaviors for a Region which are shared between both client and server.
- * @mixes RegionData
  */
 declare class BaseRegion extends Document<"Region", BaseRegion.Schema, any> {
   /**
    * Construct a Region document using provided data and context.
-   * @param {Partial<RegionData>} data         Initial data from which to construct the Region
-   * @param {DocumentConstructionContext} context   Construction context options
+   * @param data        - Initial data from which to construct the Region
+   * @param context     - Construction context options
    */
   // TODO(Eon): Every other document constructor I checked (Token, AE, Actor) have been commented out for circularity errors, so I'm leaving this one commented out as well.
   // constructor(data: Partial<BaseRegion.ConstructorData>, context?: Document.ConstructionContext<BaseRegion.Parent>);
@@ -27,12 +26,12 @@ declare class BaseRegion extends Document<"Region", BaseRegion.Schema, any> {
 export default BaseRegion;
 
 declare namespace BaseRegion {
-  type Parent = Scene.ConfiguredInstance | null
+  type Parent = Scene.ConfiguredInstance | null;
 
-  type Metadata = Document.MetadataFor<BaseRegion>
+  type Metadata = Document.MetadataFor<BaseRegion>;
 
-  type SchemaField = fields.SchemaField<Schema>
-  type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>
+  type SchemaField = fields.SchemaField<Schema>;
+  type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;
   type UpdateData = fields.SchemaField.InnerAssignmentType<Schema>;
   type Properties = fields.SchemaField.InnerInitializedType<Schema>;
   type Source = fields.SchemaField.InnerPersistedType<Schema>;
@@ -48,12 +47,12 @@ declare namespace BaseRegion {
     /**
      * The name used to describe the Region
      */
-    name: fields.StringField<{ required: true, blank: false, label: string, textSearch: true }>;
+    name: fields.StringField<{ required: true; blank: false; label: string; textSearch: true }>;
 
     /**
      * The color used to highlight the Region
      */
-    color: fields.ColorField<{ required: true, nullable: false, initial: () => string, label: string, hint: string }>;
+    color: fields.ColorField<{ required: true; nullable: false; initial: () => string; label: string; hint: string }>;
 
     /**
      * The shapes that make up the Region
@@ -64,32 +63,39 @@ declare namespace BaseRegion {
      * A RegionElevation object which defines the elevation levels where the Region takes effect
      * @defaultValue see properties
      */
-    elevation: fields.SchemaField<{
-      /**
-       * The bottom elevation level where the Region begins to take effect
-       * @remarks if bottom is `null`, it is treated as `-Infinity`
-       * @defaultValue `null`
-       */
-      bottom: fields.NumberField<{ required: true, label: string, hint: string }>,
-      /**
-       * The top elevation level where the Region's effect ends
-       * @remarks if top is `null`, it is treated as `Infinity`
-       * @defaultValue `null`
-       */
-      top: fields.NumberField<{ required: true, label: string, hint: string }>
-    }, { label: string, hint: string, validate: (d: any) => boolean, validationError: string }>
+    elevation: fields.SchemaField<
+      {
+        /**
+         * The bottom elevation level where the Region begins to take effect
+         * @remarks if bottom is `null`, it is treated as `-Infinity`
+         * @defaultValue `null`
+         */
+        bottom: fields.NumberField<{ required: true; label: string; hint: string }>;
+        /**
+         * The top elevation level where the Region's effect ends
+         * @remarks if top is `null`, it is treated as `Infinity`
+         * @defaultValue `null`
+         */
+        top: fields.NumberField<{ required: true; label: string; hint: string }>;
+      },
+      { label: string; hint: string; validate: (d: any) => boolean; validationError: string }
+    >;
 
     /**
      * A collection of embedded RegionBehavior objects
      */
-    behaviors: fields.EmbeddedCollectionField<typeof documents.BaseRegionBehavior, RegionDocument.ConfiguredInstance, { label: string, hint: string }>;
+    behaviors: fields.EmbeddedCollectionField<
+      typeof documents.BaseRegionBehavior,
+      RegionDocument.ConfiguredInstance,
+      { label: string; hint: string }
+    >;
 
     visibility: fields.NumberField<{
-      required: true,
-      initial: typeof CONST.REGION_VISIBILITY.LAYER,
-      choices: ValueOf<typeof CONST.REGION_VISIBILITY>[],
-      label: string,
-      hint: string
+      required: true;
+      initial: typeof CONST.REGION_VISIBILITY.LAYER;
+      choices: ValueOf<typeof CONST.REGION_VISIBILITY>[];
+      label: string;
+      hint: string;
     }>;
 
     locked: fields.BooleanField;

@@ -55,10 +55,10 @@ declare global {
      * @defaultValue `false`
      * @internal
      */
-    _holeMode: boolean
+    _holeMode: boolean;
 
     protected override _activate(): void;
-    
+
     protected override _deactivate(): void;
 
     override storeHistory(type: PlaceablesLayer.HistoryEventType, data: EmptyObject[]): void;

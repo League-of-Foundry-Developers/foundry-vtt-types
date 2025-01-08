@@ -14,21 +14,23 @@ declare global {
    */
   class RegionShader extends AbstractBaseShader {
     /**
-     * @defaultValue `
+     * @defaultValue
+     * ```
+     *  `
      *   precision ${PIXI.settings.PRECISION_VERTEX} float;
-     * 
+     *
      *   attribute vec2 aVertexPosition;
-     * 
+     *
      *   uniform mat3 translationMatrix;
      *   uniform mat3 projectionMatrix;
      *   uniform vec2 canvasDimensions;
      *   uniform vec4 sceneDimensions;
      *   uniform vec2 screenDimensions;
-     * 
+     *
      *   varying vec2 vCanvasCoord; // normalized canvas coordinates
      *   varying vec2 vSceneCoord; // normalized scene coordinates
      *   varying vec2 vScreenCoord; // normalized screen coordinates
-     * 
+     *
      *   void main() {
      *     vec2 pixelCoord = aVertexPosition;
      *     vCanvasCoord = pixelCoord / canvasDimensions;
@@ -37,20 +39,24 @@ declare global {
      *     vScreenCoord = tPos.xy / screenDimensions;
      *     gl_Position = vec4((projectionMatrix * tPos).xy, 0.0, 1.0);
      *   }
-     * `
+     *  `
+     * ```
      */
     static override vertexShader: string;
 
     /**
-     * @defaultValue `
+     * @defaultValue
+     * ```
+     *  `
      *   precision ${PIXI.settings.PRECISION_FRAGMENT} float;
      *
      *   uniform vec4 tintAlpha;
-     * 
+     *
      *   void main() {
      *     gl_FragColor = tintAlpha;
      *   }
-     * `
+     *  `
+     * ```
      */
     static override fragmentShader: string;
 

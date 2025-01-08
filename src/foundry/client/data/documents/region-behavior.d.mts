@@ -1,4 +1,3 @@
-import type { InexactPartial } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 import type BaseRegionBehavior from "../../../common/documents/region-behavior.d.mts";
@@ -10,7 +9,7 @@ declare global {
     type ConfiguredClass = Document.ConfiguredClassForName<"RegionBehavior">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"RegionBehavior">;
 
-    interface DatabaseOperations extends DocumentDatabaseOperations<RegionBehavior> { }
+    interface DatabaseOperations extends DocumentDatabaseOperations<RegionBehavior> {}
 
     // Helpful aliases
     type ConstructorData = BaseRegionBehavior.ConstructorData;
@@ -52,7 +51,7 @@ declare global {
      * @param event     - The Region event
      * @internal
      */
-    protected _handleRegionEvent(event: RegionDocument.RegionEvent): void;    
+    protected _handleRegionEvent(event: RegionDocument.RegionEvent): void;
 
     /**
      * @privateRemarks _onCreate, _preUpdate, _onUpdate, _onDelete, preCreateOperation, _preUpdateOperation, _onCreateOperation,

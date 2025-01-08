@@ -515,9 +515,9 @@ declare abstract class Document<
    * @returns The Collection instance of embedded Documents of the requested type
    * @remarks Usually returns some form of DocumentCollection, but not always (e.g. Token["actors"])
    */
-  getEmbeddedCollection<
-    EmbeddedName extends foundry.CONST.EMBEDDED_DOCUMENT_TYPES,
-  >(embeddedName: EmbeddedName): Collection<Document.ConfiguredInstanceForName<EmbeddedName>>;
+  getEmbeddedCollection<EmbeddedName extends foundry.CONST.EMBEDDED_DOCUMENT_TYPES>(
+    embeddedName: EmbeddedName,
+  ): Collection<Document.ConfiguredInstanceForName<EmbeddedName>>;
 
   /**
    * Get an embedded document by its id from a named collection in the parent document.
@@ -593,9 +593,7 @@ declare abstract class Document<
    *                       (default: `{}`)
    * @returns An array of deleted Document instances
    */
-  deleteEmbeddedDocuments<
-    EmbeddedName extends foundry.CONST.EMBEDDED_DOCUMENT_TYPES,
-  >(
+  deleteEmbeddedDocuments<EmbeddedName extends foundry.CONST.EMBEDDED_DOCUMENT_TYPES>(
     embeddedName: EmbeddedName,
     ids: Array<string>,
     operation?: Document.DatabaseOperationsFor<DocumentName, "delete">,
@@ -998,7 +996,8 @@ declare namespace Document {
     | "Combat"
     | "Combatant"
     | "Item"
-    | "JournalEntryPage";
+    | "JournalEntryPage"
+    | "RegionBehavior";
 
   type EmbeddableNamesFor<ConcreteDocument extends Document.Internal.Instance.Any> = {
     [K in keyof ConfiguredDocuments]: IsParentOf<

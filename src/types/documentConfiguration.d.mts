@@ -74,8 +74,8 @@ export interface DefaultDocuments extends ConformedDefault {}
 // See https://gist.github.com/LukeAbby/f9561689e5cad8a4b1e9cb92a8c63982 for more information.
 type ConfiguredDocument<ConcreteDocumentType extends Document.Type> =
   ConcreteDocumentType extends keyof DocumentClassConfig
-  ? DocumentClassConfig[ConcreteDocumentType]
-  : DefaultDocuments[ConcreteDocumentType];
+    ? DocumentClassConfig[ConcreteDocumentType]
+    : DefaultDocuments[ConcreteDocumentType];
 
 // This interface exists as a way to catch circular errors easier.
 // This makes it more verbose than it might seem it has to be but it's important to stay this way.
@@ -457,27 +457,36 @@ interface _ConfiguredMetadata<ThisType extends Document.Internal.Instance.Any> {
       collection: "behaviors";
       label: string;
       labelPlural: string;
-      coreTypes: ["adjustDarknessLevel", "displayScrollingText", "executeMacro", "executeScript", "pauseGame", "suppressWeather", "teleportToken", "toggleBehavior"];
+      coreTypes: [
+        "adjustDarknessLevel",
+        "displayScrollingText",
+        "executeMacro",
+        "executeScript",
+        "pauseGame",
+        "suppressWeather",
+        "teleportToken",
+        "toggleBehavior",
+      ];
       hasTypeData: true;
       isEmbedded: true;
       permissions: {
         create(user: BaseUser, doc: ThisType): boolean;
         update(user: BaseUser, doc: ThisType, data: BaseRegionBehavior.UpdateData): boolean;
-      }
+      };
       schemaVersion: string;
     }
   >;
   Region: Merge<
     Document.Metadata.Default,
     {
-      name: "Region",
+      name: "Region";
       collection: "regions";
       label: string;
       labelPlural: string;
-      isEmbedded: true,
+      isEmbedded: true;
       embedded: {
         RegionBehavior: "behaviors";
-      }
+      };
       schemaVersion: string;
     }
   >;

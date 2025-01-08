@@ -1,11 +1,11 @@
 /** A mesh of a {@link Region} */
 declare class RegionMesh extends PIXI.Container {
-  /**  
-   * Create a RegionMesh 
+  /**
+   * Create a RegionMesh
    * @param region        - The Region to create the RegionMesh from.
    * @param shaderClass   - The shader class to use. @defaultValue `RegionShader`
    */
-  constructor(region: Region.ConfiguredInstance, shaderClass?: AbstractBaseShader)
+  constructor(region: Region.ConfiguredInstance, shaderClass?: AbstractBaseShader);
 
   /** Shared point instance */
   static #SHARED_POINT: PIXI.Point;
@@ -38,10 +38,9 @@ declare class RegionMesh extends PIXI.Container {
 
   /**
    * Cached tint value for the shader uniforms
-   * @type {[red: number, green: number, blue: number, alpha: number]}
    * @internal
    */
-  protected _cachedTint: number[];
+  protected _cachedTint: [red: number, green: number, blue: number, alpha: number];
 
   /** Used to track a tint or alpha change to execute a recomputation of _cachedTint. */
   protected _tintAlphaDirty: boolean;

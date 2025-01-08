@@ -7,23 +7,28 @@ declare namespace AdjustDarknessLevelRegionBehaviorType {
     /**
      * Override the darkness level with the modifier.
      */
-    OVERRIDE: 0,
+    OVERRIDE: 0;
 
     /**
      * Brighten the darkness level: `darknessLevel * (1 - modifier)`
      */
-    BRIGHTEN: 1,
+    BRIGHTEN: 1;
 
     /**
      * Darken the darkness level: `1 - (1 - darknessLevel) * (1 - modifier)`.
      */
-    DARKEN: 2
-  }>
+    DARKEN: 2;
+  }>;
   type MODES = ValueOf<typeof _MODES>;
 
   interface Schema extends foundry.data.fields.DataSchema {
-    mode: fields.NumberField<{ required: true, choices: Record<MODES, string>, initial: typeof _MODES.OVERRIDE, validationError: string}>
-    modifier: fields.AlphaField<{initial: number, step: number}>
+    mode: fields.NumberField<{
+      required: true;
+      choices: Record<MODES, string>;
+      initial: typeof _MODES.OVERRIDE;
+      validationError: string;
+    }>;
+    modifier: fields.AlphaField<{ initial: number; step: number }>;
   }
 }
 
@@ -39,10 +44,16 @@ declare class AdjustDarknessLevelRegionBehaviorType extends RegionBehaviorType<A
   static override defineSchema(): AdjustDarknessLevelRegionBehaviorType.Schema;
 
   /** Called when the status of the weather behavior is changed. */
-  static #onBehaviorStatus(this: AdjustDarknessLevelRegionBehaviorType, event: RegionDocument.RegionEvent): Promise<void>;
+  static #onBehaviorStatus(
+    this: AdjustDarknessLevelRegionBehaviorType,
+    event: RegionDocument.RegionEvent,
+  ): Promise<void>;
 
   /** Called when the boundary of an event has changed. */
-  static #onRegionBoundary(this: AdjustDarknessLevelRegionBehaviorType, event: RegionDocument.RegionEvent): Promise<void>;
+  static #onRegionBoundary(
+    this: AdjustDarknessLevelRegionBehaviorType,
+    event: RegionDocument.RegionEvent,
+  ): Promise<void>;
 
   static override events: Record<string, RegionBehaviorType.EventBehaviorStaticHandler>;
 
