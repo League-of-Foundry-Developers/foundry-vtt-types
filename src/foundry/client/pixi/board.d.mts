@@ -444,6 +444,8 @@ declare global {
 
     readonly notes?: NotesLayer;
 
+    readonly regions?: RegionLayer;
+
     readonly controls?: ControlsLayer;
 
     /**
