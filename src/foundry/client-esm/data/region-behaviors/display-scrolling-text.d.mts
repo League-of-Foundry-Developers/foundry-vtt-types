@@ -2,7 +2,6 @@ import type RegionBehaviorType from "./base.d.mts";
 import type { ValueOf } from "../../../../utils/index.d.mts";
 import fields = foundry.data.fields;
 
-/** The data model for a behavior that displays scrolling text above a token when one of the subscribed events occurs. */
 declare namespace DisplayScrollingTextRegionBehaviorType {
   const _VISIBILITY_MODES: Readonly<{
     /**
