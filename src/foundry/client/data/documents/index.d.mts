@@ -20,6 +20,8 @@ import "./measured-template.d.mts";
 import "./note.d.mts";
 import "./playlist-sound.d.mts";
 import "./playlist.d.mts";
+import "./region-behavior.d.mts";
+import "./region.d.mts";
 import "./scene.d.mts";
 import "./setting.d.mts";
 import "./table-result.d.mts";

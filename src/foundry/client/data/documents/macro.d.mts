@@ -2,8 +2,6 @@ import type { InexactPartial } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type BaseMacro from "../../../common/documents/macro.d.mts";
 
-type RegionEvent = unknown;
-
 declare global {
   namespace Macro {
     type Metadata = Document.MetadataFor<Macro>;
@@ -28,7 +26,7 @@ declare global {
       token: Token;
 
       /** An optional event passed to the executed macro. */
-      event: Event | RegionEvent;
+      event: Event | RegionDocument.RegionEvent;
 
       /**
        * @remarks Additional arguments passed as part of the scope
