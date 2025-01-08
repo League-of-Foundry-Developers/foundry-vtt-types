@@ -45,7 +45,7 @@ declare global {
      * @defaultValue `false`
      * @internal
      */
-    _holeMode: boolean;
+    protected _holeMode: boolean;
 
     protected override _activate(): void;
 
@@ -53,21 +53,21 @@ declare global {
 
     override storeHistory(type: PlaceablesLayer.HistoryEventType, data: EmptyObject[]): void;
 
-    /** @remarks Prevent copy & paste */
-    override copyObjects(): never[];
+    /** @remarks Core overrides this returning an empty array to prevent copy & paste behavior. */
+    override copyObjects(): [];
 
     override getSnappedPoint(point: Canvas.Point): Canvas.Point;
 
     override getZIndex(): number;
 
-    protected override _draw(options?: DrawOptions | undefined): Promise<void>;
+    protected override _draw(options?: DrawOptions): Promise<void>;
 
     /**
      * Highlight the shape or clear the highlight.
-     * @param data    - The shape to highlight, or null to clear the highlight
+     * @param data - The shape to highlight, or null to clear the highlight
      * @internal
      */
-    _highlightShape(data: foundry.data.BaseShapeData | null): void;
+    protected _highlightShape(data?: foundry.data.BaseShapeData | null): void;
 
     protected override _onClickLeft(event: PIXI.FederatedEvent): void;
 
@@ -90,6 +90,7 @@ declare global {
 
   namespace RegionLayer {
     type AnyConstructor = typeof AnyRegionLayer;
+    type Any = AnyRegionLayer;
 
     interface DrawOptions extends PlaceablesLayer.DrawOptions {}
 
@@ -97,6 +98,6 @@ declare global {
   }
 }
 
-declare abstract class AnyRegionLayer extends RegionLayer {
+declare abstract class AnyRegionLayer extends RegionLayer<RegionLayer.DrawOptions, PlaceablesLayer.TearDownOptions> {
   constructor(arg0: never, ...args: never[]);
 }

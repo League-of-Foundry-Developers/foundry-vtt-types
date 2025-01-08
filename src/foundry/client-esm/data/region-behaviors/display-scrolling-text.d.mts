@@ -1,6 +1,7 @@
 import type RegionBehaviorType from "./base.d.mts";
 import type { ValueOf } from "../../../../utils/index.d.mts";
 import fields = foundry.data.fields;
+import type { InvertObject } from "../../../common/utils/helpers.d.mts";
 
 declare namespace DisplayScrollingTextRegionBehaviorType {
   const _VISIBILITY_MODES: Readonly<{
@@ -33,7 +34,7 @@ declare namespace DisplayScrollingTextRegionBehaviorType {
     /** Which users the scrolling text will display for (see {@link VISIBILITY_MODES}) */
     visibility: fields.NumberField<{
       required: true;
-      choices: Record<VISIBILITY_MODES, string>;
+      choices: InvertObject<typeof _VISIBILITY_MODES>;
       initial: typeof _VISIBILITY_MODES.GAMEMASTER;
       validationError: string;
     }>;

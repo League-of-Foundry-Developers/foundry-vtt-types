@@ -14,7 +14,7 @@ declare class BaseRegionBehavior extends Document<"RegionBehavior", BaseRegionBe
    * @param data        - Initial data from which to construct the Region
    * @param context     - Construction context options
    */
-  // TODO(Eon): Every other document constructor I checked (Token, AE, Actor) have been commented out for circularity errors, so I'm leaving this one commented out as well.
+  // TODO(LukeAbby): This constructor is causing a circular error.
   // constructor(data: Partial<BaseRegionBehavior.ConstructorData>, context?: Document.ConstructionContext<BaseRegionBehavior.Parent>);
 
   static override metadata: BaseRegionBehavior.Metadata;

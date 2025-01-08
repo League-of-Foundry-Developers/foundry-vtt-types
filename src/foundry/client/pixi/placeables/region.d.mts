@@ -139,6 +139,7 @@ declare global {
      * @param point       - The point.
      * @param elevation   - The elevation of the point.
      * @returns           - Is the point (at the given elevation) inside this Region?
+     * @remarks elevation cannot be null because it is explicitly checked against undefined (===) in function body.
      */
     testPoint(point: Point, elevation?: number): boolean;
 
@@ -156,9 +157,10 @@ declare global {
       options?: {
         /**
          * Is it teleportation?
+         * @remarks options cannot accept null because defaults are provided with `options={}` in the parameters.
          * @defaultValue `false`
          */
-        teleport?: boolean;
+        teleport?: boolean | undefined;
       },
     ): Region.RegionMovementSegment[];
 

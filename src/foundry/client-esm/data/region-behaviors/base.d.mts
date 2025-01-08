@@ -45,12 +45,8 @@ declare class RegionBehaviorType<
   /** A convenience reference to the RegionDocument which contains this behavior sub-type.*/
   get region(): RegionDocument.ConfiguredInstance | null;
 
-  /* ---------------------------------------- */
-
   /** A convenience reference to the Scene which contains this behavior sub-type. */
   get scene(): Scene.ConfiguredInstance | null;
-
-  /* ---------------------------------------- */
 
   /**
    * Handle the Region event.
