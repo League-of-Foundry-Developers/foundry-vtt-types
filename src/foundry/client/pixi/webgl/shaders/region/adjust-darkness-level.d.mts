@@ -46,9 +46,8 @@ declare global {
     /**
      * The darkness level adjustment mode.
      * @defaultValue `foundry.data.regionBehaviors.AdjustDarknessLevelRegionBehaviorType.MODES.OVERRIDE`
-     * TODO: make into typeof... when referenced class is available
      */
-    mode: number;
+    mode: foundry.data.regionBehaviors.AdjustDarknessLevelRegionBehaviorType.MODES;
 
     /**
      * The darkness level modifier.
