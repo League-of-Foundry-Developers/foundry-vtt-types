@@ -9,10 +9,9 @@ declare class SuppressWeatherRegionBehaviorType extends RegionBehaviorType<Suppr
   /** @defaultValue `["BEHAVIOR.TYPES.suppressWeather", "BEHAVIOR.TYPES.base"]` */
   static override LOCALIZATION_PREFIXES: string[];
 
-  /** Called when the status of the weather behavior is changed. */
-  static #onBehaviorStatus(this: SuppressWeatherRegionBehaviorType, event: RegionDocument.RegionEvent): Promise<void>;
-
   static override events: Record<string, RegionBehaviorType.EventBehaviorStaticHandler>;
+
+  #suppressWeatherRegionBehaviorType: true;
 }
 
 export default SuppressWeatherRegionBehaviorType;

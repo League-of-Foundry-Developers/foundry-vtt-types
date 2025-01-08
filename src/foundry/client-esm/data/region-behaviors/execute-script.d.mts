@@ -4,6 +4,7 @@ import fields = foundry.data.fields;
 declare namespace ExecuteScriptRegionBehaviorType {
   interface Schema extends foundry.data.fields.DataSchema {
     events: RegionBehaviorType.EventsField;
+
     /** The source code of the script */
     source: fields.JavaScriptField<{ async: true; gmOnly: true }>;
   }

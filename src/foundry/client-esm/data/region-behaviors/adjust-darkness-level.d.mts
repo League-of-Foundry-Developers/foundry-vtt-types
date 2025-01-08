@@ -39,21 +39,8 @@ declare class AdjustDarknessLevelRegionBehaviorType extends RegionBehaviorType<A
 
   /** Darkness level behavior modes. */
   static get MODES(): typeof AdjustDarknessLevelRegionBehaviorType._MODES;
-  static #MODES: typeof AdjustDarknessLevelRegionBehaviorType._MODES;
 
   static override defineSchema(): AdjustDarknessLevelRegionBehaviorType.Schema;
-
-  /** Called when the status of the weather behavior is changed. */
-  static #onBehaviorStatus(
-    this: AdjustDarknessLevelRegionBehaviorType,
-    event: RegionDocument.RegionEvent,
-  ): Promise<void>;
-
-  /** Called when the boundary of an event has changed. */
-  static #onRegionBoundary(
-    this: AdjustDarknessLevelRegionBehaviorType,
-    event: RegionDocument.RegionEvent,
-  ): Promise<void>;
 
   static override events: Record<string, RegionBehaviorType.EventBehaviorStaticHandler>;
 
@@ -61,5 +48,7 @@ declare class AdjustDarknessLevelRegionBehaviorType extends RegionBehaviorType<A
    * @privateRemarks _onUpdate is overridden but without signature changes.
    * For type simplicity it is left off. Methods like this historically have been the source of a large amount of computation from tsc.
    */
+
+  #adjustDarknessLevelRegionBehaviorType: true;
 }
 export default AdjustDarknessLevelRegionBehaviorType;

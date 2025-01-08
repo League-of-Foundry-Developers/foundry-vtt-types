@@ -30,14 +30,8 @@ export default class RegionBehaviorConfig<
   /** Prepare form field structure for rendering. */
   protected _getFields(): FormNode[];
 
-  /** Recursively add system model fields to the fieldset. */
-  #addSystemFields(
-    fieldset: FormNode[],
-    schema: foundry.data.fields.DataSchema,
-    source: RegionBehavior.Source,
-    _path?: string,
-  ): void;
-
   /** Get footer buttons for this behavior config sheet. */
   _getButtons(): Partial<FormFooterButton>[];
+
+  #regionBehaviorConfig: true;
 }
