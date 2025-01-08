@@ -91,3 +91,5 @@ declare global {
     static override fragmentShader: string;
   }
 }
+
+//Region Placeholder
