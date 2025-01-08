@@ -1,17 +1,23 @@
-import type {
-  BaseShapeData,
-  CircleShapeData,
-  EllipseShapeData,
-  PolygonShapeData,
-  RectangleShapeData,
-} from "../../data/_module.d.mts";
+import type { CircleShapeData, EllipseShapeData, PolygonShapeData, RectangleShapeData } from "../../data/_module.d.mts";
 
 declare namespace RegionShape {
   type Any = RegionShape<any>;
+
+  type ShapeData = CircleShapeData | EllipseShapeData | PolygonShapeData | RectangleShapeData;
+  type ShapeType = ShapeData["type"];
+
+  type CreatedRegionShape<ShapeData extends RegionShape.ShapeData> = _CreateReturnType<ShapeData, ShapeData["type"]>;
+
+  /** @internal */
+  type _CreateReturnType<ShapeData extends RegionShape.ShapeData, ShapeType extends RegionShape.ShapeType> =
+    | (ShapeType extends "circle" ? RegionCircle<ShapeData> : never)
+    | (ShapeType extends "ellipse" ? RegionEllipse<ShapeData> : never)
+    | (ShapeType extends "polygon" ? RegionPolygon<ShapeData> : never)
+    | (ShapeType extends "rectangle" ? RegionRectangle<ShapeData> : never);
 }
 
 /** A shape of a {@link Region} */
-declare abstract class RegionShape<ShapeData extends BaseShapeData> {
+declare abstract class RegionShape<ShapeData extends RegionShape.ShapeData> {
   /**
    * Create the RegionShape from the shape data.
    * @param data    - The shape data.
@@ -22,7 +28,7 @@ declare abstract class RegionShape<ShapeData extends BaseShapeData> {
    * Create the RegionShape from the shape data.
    * @param data    - The shape data.
    */
-  static create<ShapeData extends BaseShapeData>(data: ShapeData): RegionShape<ShapeData>;
+  static create<ShapeData extends RegionShape.ShapeData>(data: ShapeData): RegionShape.CreatedRegionShape<ShapeData>;
 
   /**
    * The data of this shape.
@@ -60,9 +66,12 @@ declare abstract class RegionShape<ShapeData extends BaseShapeData> {
   #regionShape: true;
 }
 
-/** A circle of a {@link Region} */
-declare class RegionCircle extends RegionShape<CircleShapeData> {
-  constructor(data: CircleShapeData);
+/**
+ * A circle of a {@link Region}
+ * @privateRemarks Technically this should extend CircleShapeData, but it's easier to instantiate if it's RegionShape.ShapeData.
+ */
+declare class RegionCircle<ShapeData extends RegionShape.ShapeData> extends RegionShape<ShapeData> {
+  constructor(data: ShapeData);
 
   protected override _createClipperPolyTree(): ClipperLib.PolyTree | ClipperLib.IntPoint[];
 
@@ -70,9 +79,12 @@ declare class RegionCircle extends RegionShape<CircleShapeData> {
 
   #regionCircle: true;
 }
-/** An ellipse of a {@link Region} */
-declare class RegionEllipse extends RegionShape<EllipseShapeData> {
-  constructor(data: EllipseShapeData);
+/**
+ * An ellipse of a {@link Region}
+ * @privateRemarks Technically this should extend CircleShapeData, but it's easier to instantiate if it's RegionShape.ShapeData.
+ */
+declare class RegionEllipse<ShapeData extends RegionShape.ShapeData> extends RegionShape<ShapeData> {
+  constructor(data: ShapeData);
 
   protected override _createClipperPolyTree(): ClipperLib.PolyTree | ClipperLib.IntPoint[];
 
@@ -80,17 +92,23 @@ declare class RegionEllipse extends RegionShape<EllipseShapeData> {
 
   #regionEllipse: true;
 }
-/** A polygon of a {@link Region} */
-declare class RegionPolygon extends RegionShape<PolygonShapeData> {
-  constructor(params: PolygonShapeData);
+/**
+ * A polygon of a {@link Region}
+ * @privateRemarks Technically this should extend CircleShapeData, but it's easier to instantiate if it's RegionShape.ShapeData.
+ */
+declare class RegionPolygon<ShapeData extends RegionShape.ShapeData> extends RegionShape<ShapeData> {
+  constructor(params: ShapeData);
 
   protected override _createClipperPolyTree(): ClipperLib.PolyTree | ClipperLib.IntPoint[];
 
   protected override _drawShape(graphics: PIXI.Graphics): void;
 }
-/** A rectangle of a {@link Region} */
-declare class RegionRectangle extends RegionShape<RectangleShapeData> {
-  constructor(params: RectangleShapeData);
+/**
+ * A rectangle of a {@link Region}
+ * @privateRemarks Technically this should extend CircleShapeData, but it's easier to instantiate if it's RegionShape.ShapeData.
+ */
+declare class RegionRectangle<ShapeData extends RegionShape.ShapeData> extends RegionShape<ShapeData> {
+  constructor(params: ShapeData);
 
   protected override _createClipperPolyTree(): ClipperLib.PolyTree | ClipperLib.IntPoint[];
 

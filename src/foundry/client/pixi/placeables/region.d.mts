@@ -120,14 +120,15 @@ declare global {
     /** Refreshes the border of the Region. */
     protected _refreshBorder(): void;
 
-    protected override _canDrag(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
+    protected override _canDrag(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent | null): boolean;
 
-    protected override _canHUD(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
+    protected override _canHUD(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent | null): boolean;
 
-    protected override _onControl(options?: PlaceableObject.ControlOptions): void;
+    protected override _onControl(options?: PlaceableObject.ControlOptions | null): void;
 
-    protected override _onRelease(options?: PlaceableObject.ReleaseOptions): void;
+    protected override _onRelease(options?: PlaceableObject.ReleaseOptions | null): void;
 
+    /** @remarks options cannot accept null because defaults are provided with `options={}` in the parameters  */
     protected override _onHoverIn(event: PIXI.FederatedEvent, options?: PlaceableObject.HoverInOptions): false | void;
 
     protected override _onHoverOut(event: PIXI.FederatedEvent): boolean | void;
