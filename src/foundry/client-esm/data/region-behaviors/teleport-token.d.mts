@@ -1,0 +1,2 @@
+declare class TeleportTokenRegionBehaviorType extends RegionBehaviorType {}
+export default TeleportTokenRegionBehaviorType;

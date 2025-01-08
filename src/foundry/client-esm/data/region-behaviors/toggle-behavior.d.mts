@@ -1,0 +1,2 @@
+declare class ToggleBehaviorRegionBehaviorType extends RegionBehaviorType {}
+export default ToggleBehaviorRegionBehaviorType;

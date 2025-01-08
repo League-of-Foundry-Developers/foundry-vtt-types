@@ -1,0 +1,2 @@
+declare class ExecuteMacroRegionBehaviorType extends RegionBehaviorType {}
+export default ExecuteMacroRegionBehaviorType;
