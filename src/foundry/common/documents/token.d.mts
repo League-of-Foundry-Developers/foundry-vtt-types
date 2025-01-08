@@ -433,6 +433,12 @@ declare namespace BaseToken {
     }>;
 
     /**
+     * @internal
+     */
+    // TODO(Eon): Causes an 'Excessively Deep' error.
+    //_regions: fields.ArrayField<fields.ForeignDocumentField<typeof documents.BaseRegion, {idOnly: true}>>;
+
+    /**
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
