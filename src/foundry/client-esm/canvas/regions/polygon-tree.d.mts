@@ -67,9 +67,7 @@ declare class RegionPolygonTreeNode {
   get bounds(): PIXI.Rectangle | null;
   #bounds: PIXI.Rectangle | null;
 
-  // TODO(Eon): "Generators are not allowed in an Ambient Context"
-  // How are we supposed to type this?
-  // *[Symbol.iterator](): IterableIterator<RegionPolygonTreeNode>;
+  [Symbol.iterator](): Generator<RegionPolygonTreeNode>;
 
   /**
    * Test whether given point is contained within this node.
