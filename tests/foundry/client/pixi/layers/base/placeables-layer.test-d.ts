@@ -18,7 +18,7 @@ expectTypeOf(SomeLightLayer.instance).toEqualTypeOf<CanvasLayer | Container<Disp
 // expectTypeOf(SomeLightLayer.layerOptions).toEqualTypeOf<PlaceablesLayer.LayerOptions<"AmbientLight">>();
 expectTypeOf(SomeLightLayer.layerOptions.objectClass).toEqualTypeOf<any>(); // TODO: Can this be typed to Document.AnyConstructor?
 expectTypeOf(PlaceablesLayer.documentName).toEqualTypeOf<
-  "AmbientLight" | "AmbientSound" | "Drawing" | "MeasuredTemplate" | "Note" | "Tile" | "Token" | "Wall"
+  "AmbientLight" | "AmbientSound" | "Drawing" | "MeasuredTemplate" | "Note" | "Region" | "Tile" | "Token" | "Wall"
 >();
 expectTypeOf(PlaceablesLayer.placeableClass).toEqualTypeOf<PlaceableObject.AnyConstructor>();
 
