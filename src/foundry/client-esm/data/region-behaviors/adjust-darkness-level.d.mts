@@ -1,0 +1,2 @@
+declare class AdjustDarknessLevelRegionBehaviorType extends RegionBehaviorType {}
+export default AdjustDarknessLevelRegionBehaviorType;

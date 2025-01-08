@@ -3,7 +3,6 @@
 // While `.mts` could work, to avoid `import/no-unresolved` from erroring `.mjs` is used.
 /* eslint-disable import/extensions */
 
-// TODO: Implement these files.
 export { default as RegionGeometry } from "./geometry.mjs";
 export { default as RegionMesh } from "./mesh.mjs";
 export { default as RegionPolygonTree } from "./polygon-tree.mjs";

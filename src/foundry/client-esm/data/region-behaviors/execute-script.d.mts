@@ -1,0 +1,2 @@
+declare class ExecuteScriptRegionBehaviorType extends RegionBehaviorType {}
+export default ExecuteScriptRegionBehaviorType;

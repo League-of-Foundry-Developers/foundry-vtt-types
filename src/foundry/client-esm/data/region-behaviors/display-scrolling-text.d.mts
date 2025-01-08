@@ -1,0 +1,2 @@
+declare class DisplayScrollingTextRegionBehaviorType extends RegionBehaviorType {}
+export default DisplayScrollingTextRegionBehaviorType;

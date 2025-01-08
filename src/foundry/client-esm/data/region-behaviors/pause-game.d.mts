@@ -1,0 +1,2 @@
+declare class PauseGameRegionBehaviorType extends RegionBehaviorType {}
+export default PauseGameRegionBehaviorType;

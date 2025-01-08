@@ -1,0 +1,2 @@
+declare class SuppressWeatherRegionBehaviorType extends RegionBehaviorType {}
+export default SuppressWeatherRegionBehaviorType;
