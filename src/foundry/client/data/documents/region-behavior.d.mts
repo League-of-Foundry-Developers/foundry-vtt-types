@@ -1,3 +1,5 @@
+import type { DeepPartial, FixedInstanceType, InexactPartial } from "../../../../utils/index.d.mts";
+import type { DatabaseCreateOperation } from "../../../common/abstract/_types.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 import type BaseRegionBehavior from "../../../common/documents/region-behavior.d.mts";
@@ -53,14 +55,23 @@ declare global {
      */
     protected _handleRegionEvent(event: RegionDocument.RegionEvent): void;
 
+    static createDialog<T extends Document.AnyConstructor>(
+      this: T,
+      data?: DeepPartial<Document.ConstructorDataFor<NoInfer<T>> & Record<string, unknown>>,
+      context?: Pick<DatabaseCreateOperation<FixedInstanceType<NoInfer<T>>>, "parent" | "pack"> &
+        InexactPartial<
+          DialogOptions & {
+            /** A restriction the selectable sub-types of the Dialog. */
+            types: string[];
+          }
+        >,
+    ): Promise<Document.ToConfiguredInstance<T> | null | undefined>;
+
     /**
      * @privateRemarks _onCreate, _preUpdate, _onUpdate, _onDelete, preCreateOperation, _preUpdateOperation, _onCreateOperation,
      * _onUpdateOperation, _onDeleteOperation, _preCreateDescendantDocuments, _preUpdateDescendantDocuments, _preDeleteDescendantDocuments,
      * _onUpdateDescendantDocuments, and _onDeleteDescendantDocuments are all overridden but with no signature changes.
      * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
      */
-
-    // TODO(Eon): Type the below method
-    // static override createDialog(data, options): Promise<any>;
   }
 }

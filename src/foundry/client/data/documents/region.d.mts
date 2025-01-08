@@ -1,7 +1,7 @@
 import type { InexactPartial } from "../../../../utils/index.d.mts";
-import type Document from "../../../common/abstract/document.d.mts";
 import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 import type BaseRegion from "../../../common/documents/region.d.mts";
+import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace RegionDocument {
@@ -62,6 +62,33 @@ declare global {
        */
       reset: boolean;
     }
+
+    type EventData =
+      | {
+          token: TokenDocument.ConfiguredInstance;
+          origin?: {
+            x: number;
+            y: number;
+            elevation: number;
+          };
+          destination: {
+            x: number;
+            y: number;
+            elevation: number;
+          };
+          teleport: boolean;
+          forced: boolean;
+          segments: Region.RegionMovementSegment[];
+        }
+      | {
+          token: TokenDocument.ConfiguredInstance;
+          combatant: Combatant.ConfiguredInstance;
+        }
+      | _EventData;
+
+    interface _EventData {
+      readonly [K: string]: Document.Any | _EventData | _EventData[];
+    }
   }
 
   /**
@@ -110,7 +137,7 @@ declare global {
      * @param eventData     - The event data
      * @internal
      */
-    protected _triggerEvent(eventName: string, eventData: object): Promise<void>;
+    protected _triggerEvent(eventName: string, eventData: RegionDocument.EventData): Promise<void>;
 
     /**
      * Handle the Region event.
