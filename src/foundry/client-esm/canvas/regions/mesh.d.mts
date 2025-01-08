@@ -7,22 +7,15 @@ declare class RegionMesh extends PIXI.Container {
    */
   constructor(region: Region.ConfiguredInstance, shaderClass?: AbstractBaseShader);
 
-  /** Shared point instance */
-  static #SHARED_POINT: PIXI.Point;
-
   /** The Region of this RegionMesh */
   get region(): Region.ConfiguredInstance;
-  #region: Region.ConfiguredInstance;
 
   /** The shader bound to this RegionMesh */
   get shader(): AbstractBaseShader;
-  #shader: AbstractBaseShader;
 
   /** The blend mode assigned tot his RegionMesh */
   get blendMode(): PIXI.BLEND_MODES;
   set blendMode(value: PIXI.BLEND_MODES);
-
-  #state: PIXI.State;
 
   /**
    * The tint applied to the mesh. This is a hex value.
@@ -53,16 +46,16 @@ declare class RegionMesh extends PIXI.Container {
 
   override updateTransform(): void;
 
-  #worldAlpha: PIXI.DisplayObject["worldAlpha"];
+  protected override _render(renderer: PIXI.Renderer): void;
 
-  override _render(renderer: PIXI.Renderer): void;
-
-  override _calculateBounds(): void;
+  protected override _calculateBounds(): void;
 
   /** Tests if a point is indie this RegionMesh */
   containsPoint(point: PIXI.IPointData): boolean;
 
   override destroy(options?: PIXI.DisplayObject.DestroyOptions): void;
+
+  #regionMesh: true;
 }
 
 export default RegionMesh;

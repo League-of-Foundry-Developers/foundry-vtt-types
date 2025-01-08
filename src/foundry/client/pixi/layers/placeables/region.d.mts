@@ -35,20 +35,10 @@ declare global {
 
     static override documentName: "Region";
 
-    /** The method to sort the Regions. */
-    static #sortRegions: () => void;
-
     override get hookName(): string;
 
     /** The RegionLegend application of this RegionLayer */
     get legend(): foundry.applications.ui.RegionLegend;
-    #legend: foundry.applications.ui.RegionLegend | undefined;
-
-    /** The graphics used to draw the highlighted shape. */
-    #highlight: PIXI.Graphics | undefined;
-
-    /** The graphics used to draw the preview of the shape that is drawn. */
-    #preview: PIXI.Graphics | undefined;
 
     /**
      * Draw shapes as holes?
@@ -79,24 +69,6 @@ declare global {
      */
     _highlightShape(data: foundry.data.BaseShapeData | null): void;
 
-    /** Refresh the preview shape. */
-    #refreshPreview(event: PIXI.FederatedEvent): void;
-
-    /** Draw the preview shape. */
-    #drawPreviewShape(event: PIXI.FederatedEvent): void;
-
-    /** Create the shape data. */
-    #createShapeData(event: PIXI.FederatedEvent): object | void;
-
-    /** Create the rectangle shape data */
-    #createRectangleData(event: PIXI.FederatedEvent): object | void;
-
-    /** Create the circle or ellipse shape data */
-    #createCircleOrEllipseData(event: PIXI.FederatedEvent): object | void;
-
-    /** Create the polygon shape data */
-    #createPolygonData(event: PIXI.FederatedEvent): object | void;
-
     protected override _onClickLeft(event: PIXI.FederatedEvent): void;
 
     protected override _onClickLeft2(event: PIXI.FederatedEvent): void;
@@ -112,6 +84,8 @@ declare global {
     protected override _onDragLeftCancel(event: PointerEvent): void;
 
     protected override _onClickRight(event: PIXI.FederatedEvent): void;
+
+    #regionLayer: true;
   }
 
   namespace RegionLayer {

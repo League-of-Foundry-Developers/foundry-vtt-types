@@ -15,13 +15,9 @@ declare class PauseGameRegionBehaviorType extends RegionBehaviorType<PauseGameRe
 
   static override defineSchema(): PauseGameRegionBehaviorType.Schema;
 
-  /** Pause the game if a player-controlled Token moves into the Region. */
-  static #onTokenMoveIn(this: PauseGameRegionBehaviorType, event: RegionDocument.RegionEvent): Promise<void>;
-
-  /** Stop movement after a player-controlled Token enters the Region. */
-  static #onTokenPreMove(this: PauseGameRegionBehaviorType, event: RegionDocument.RegionEvent): Promise<void>;
-
   static override events: Record<string, RegionBehaviorType.EventBehaviorStaticHandler>;
+
+  #pauseGameRegionBehaviorType: true;
 }
 
 export default PauseGameRegionBehaviorType;

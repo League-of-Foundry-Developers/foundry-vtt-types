@@ -21,10 +21,13 @@ declare global {
     interface RegionEvent {
       /** The name of the event */
       name: string;
+
       /** The data of the event */
       data: object;
+
       /** The Region the event was triggered on */
       region: RegionDocument;
+
       /** The User that triggered the event */
       user: User;
     }
@@ -32,12 +35,16 @@ declare global {
     interface SocketRegionEvent {
       /** The UUID of the Region the event was triggered on */
       regionUuid: string;
+
       /** The ID of the User that triggered the event */
       userId: string;
+
       /** The name of the event */
       eventName: string;
+
       /** The data of the event */
       eventData: object;
+
       /** The keys of the event data that are Documents */
       eventDataUuids: string[];
     }
@@ -57,12 +64,6 @@ declare global {
      * @internal
      */
     static _activateSocketListeners(socket: WebSocket): void;
-
-    /**
-     * Handle the Region event received via the socket.
-     * @param socketEvent     - The socket Region event
-     */
-    static #onSocketEvent(socketEvent: RegionDocument.SocketRegionEvent): Promise<void>;
 
     /**
      * Update the tokens of the given regions.
@@ -121,5 +122,7 @@ declare global {
      * _onUpdateDescendantDocuments, and _onDeleteDescendantDocuments are all overridden but with no signature changes.
      * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
      */
+
+    #regionDocument: true;
   }
 }

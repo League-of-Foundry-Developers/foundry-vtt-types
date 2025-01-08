@@ -23,17 +23,7 @@ declare class BaseRegionBehavior extends Document<"RegionBehavior", BaseRegionBe
 
   static override canUserCreate(user: foundry.documents.BaseUser): boolean;
 
-  /**
-   * Is a user able to update the RegionBehavior document?
-   * @internal
-   */
-  static #canCreate(user: documents.BaseUser, doc: BaseRegionBehavior): boolean;
-
-  /**
-   * Is a user able to update the RegionBehavior document?
-   * @internal
-   */
-  static #canUpdate(user: documents.BaseUser, doc: BaseRegionBehavior, data: BaseRegionBehavior.UpdateData): boolean;
+  #baseRegionBehavior: true;
 }
 
 export default BaseRegionBehavior;

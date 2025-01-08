@@ -29,7 +29,6 @@ declare abstract class RegionShape<ShapeData extends BaseShapeData> {
    * It is owned by the shape and must not be modified.
    */
   get data(): ShapeData;
-  #data: ShapeData;
 
   /** Is this a hole? */
   get isHole(): boolean;
@@ -39,11 +38,9 @@ declare abstract class RegionShape<ShapeData extends BaseShapeData> {
    * The winding numbers are 1 or 0.
    */
   get clipperPaths(): ReadonlyArray<ReadonlyArray<ClipperLib.IntPoint>>;
-  #clipperPaths: ReadonlyArray<ReadonlyArray<ClipperLib.IntPoint>>;
 
   /** The Clipper polygon tree of this shape */
   get clipperPolyTree(): ClipperLib.PolyTree;
-  #clipperPolyTree: ClipperLib.PolyTree;
 
   /**
    * Create the Clipper polygon tree of this shape.
@@ -59,31 +56,29 @@ declare abstract class RegionShape<ShapeData extends BaseShapeData> {
    * @internal
    */
   protected abstract _drawShape(graphics: PIXI.Graphics): void;
-}
 
-// TODO(Eon): Is this even necessary? It's unexported in core.
+  #regionShape: true;
+}
 
 /** A circle of a {@link Region} */
 declare class RegionCircle extends RegionShape<CircleShapeData> {
   constructor(data: CircleShapeData);
 
-  /** The vertex density epsilon used to create a polygon approximation of the circle. */
-  static #VERTEX_DENSITY_EPSILON: number;
-
   protected override _createClipperPolyTree(): ClipperLib.PolyTree | ClipperLib.IntPoint[];
 
   protected override _drawShape(graphics: PIXI.Graphics): void;
+
+  #regionCircle: true;
 }
 /** An ellipse of a {@link Region} */
 declare class RegionEllipse extends RegionShape<EllipseShapeData> {
   constructor(data: EllipseShapeData);
 
-  /** The vertex density epsilon used to create a polygon approximation of the ellipse. */
-  static #VERTEX_DENSITY_EPSILON: number;
-
   protected override _createClipperPolyTree(): ClipperLib.PolyTree | ClipperLib.IntPoint[];
 
   protected override _drawShape(graphics: PIXI.Graphics): void;
+
+  #regionEllipse: true;
 }
 /** A polygon of a {@link Region} */
 declare class RegionPolygon extends RegionShape<PolygonShapeData> {

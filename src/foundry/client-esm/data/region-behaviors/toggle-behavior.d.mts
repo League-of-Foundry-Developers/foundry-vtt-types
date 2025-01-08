@@ -4,8 +4,10 @@ import fields = foundry.data.fields;
 declare namespace ToggleBehaviorRegionBehaviorType {
   interface Schema extends foundry.data.fields.DataSchema {
     events: RegionBehaviorType.EventsField;
+
     /** The Region Behavior UUIDs that are enabled. */
     enable: fields.SetField<fields.DocumentUUIDField<{ type: "RegionBehavior" }>>;
+
     /** The Region Behavior UUIDs that are disabled. */
     disable: fields.SetField<fields.DocumentUUIDField<{ type: "RegionBehavior" }>>;
   }

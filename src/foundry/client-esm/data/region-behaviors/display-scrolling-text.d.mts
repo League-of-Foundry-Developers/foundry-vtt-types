@@ -23,10 +23,13 @@ declare namespace DisplayScrollingTextRegionBehaviorType {
 
   interface Schema extends foundry.data.fields.DataSchema {
     events: RegionBehaviorType.EventsField;
+
     /** The text to display */
     text: fields.StringField<{ required: true }>;
+
     /** Optional color setting for the text */
     color: fields.ColorField<{ required: true; nullable: false; initial: string }>;
+
     /** Which users the scrolling text will display for (see {@link VISIBILITY_MODES}) */
     visibility: fields.NumberField<{
       required: true;
@@ -34,6 +37,7 @@ declare namespace DisplayScrollingTextRegionBehaviorType {
       initial: typeof _VISIBILITY_MODES.GAMEMASTER;
       validationError: string;
     }>;
+
     /** Disable the behavior after it triggers once */
     once: fields.BooleanField;
   }
@@ -46,18 +50,12 @@ declare class DisplayScrollingTextRegionBehaviorType extends RegionBehaviorType<
 
   /** Darkness level behavior modes. */
   static get VISIBILITY_MODES(): typeof DisplayScrollingTextRegionBehaviorType._VISIBILITY_MODES;
-  static #VISIBILITY_MODES: typeof DisplayScrollingTextRegionBehaviorType._VISIBILITY_MODES;
 
   static override defineSchema(): DisplayScrollingTextRegionBehaviorType.Schema;
 
-  /**
-   * Display the scrolling text to the current User?
-   * @param event     - The Region event.
-   * @returns         - Display the scrolling text to the current User?
-   */
-  #canView(event: RegionDocument.RegionEvent): boolean;
-
   protected override _handleRegionEvent(event: RegionDocument.RegionEvent): Promise<void>;
+
+  #displayScrollingTextRegionBehaviorType: true;
 }
 
 export default DisplayScrollingTextRegionBehaviorType;

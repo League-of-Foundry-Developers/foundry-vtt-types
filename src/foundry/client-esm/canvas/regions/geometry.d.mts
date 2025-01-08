@@ -12,25 +12,20 @@ declare class RegionGeometry extends PIXI.Geometry {
 
   /** The Region this geometry belongs to */
   get region(): Region.ConfiguredInstance;
-  #region: Region.ConfiguredInstance;
-
-  /**
-   * Do the buffers need to be updated?
-   * @defaultValue `true`
-   */
-  #invalidBuffers: boolean;
 
   /**
    * Update the buffers
    * @internal
    */
-  _clearBuffers(): void;
+  protected _clearBuffers(): void;
 
   /**
    * Update the buffers
    * @internal
    */
-  _updateBuffers(): void;
+  protected _updateBuffers(): void;
+
+  #regionGeometry: true;
 }
 
 export default RegionGeometry;
