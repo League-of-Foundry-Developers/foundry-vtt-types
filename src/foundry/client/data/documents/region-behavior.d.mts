@@ -60,8 +60,7 @@ declare global {
      * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
      */
 
-    // TODO(Eon): The above remark was copied from other Document implementations; one not listed here is `createDialog`.
-    // Unsure if that is intentional or not, so I've included the 'JS' version commented out for now:
+    // TODO(Eon): Type the below method
     // static override createDialog(data, options): Promise<any>;
   }
 }

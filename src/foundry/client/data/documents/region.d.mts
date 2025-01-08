@@ -48,6 +48,20 @@ declare global {
       /** The keys of the event data that are Documents */
       eventDataUuids: string[];
     }
+
+    interface _UpdateTokenOptions {
+      /**
+       * Are the Region documents deleted?
+       * @defaultValue `false`
+       */
+      deleted: boolean;
+
+      /**
+       * Reset the Token document if animated?
+       * @defaultValue `true`
+       */
+      reset: boolean;
+    }
   }
 
   /**
@@ -76,18 +90,7 @@ declare global {
      */
     static _updateTokens(
       regions: RegionDocument[],
-      options?: InexactPartial<{
-        /**
-         * Are the Region documents deleted?
-         * @defaultValue `false`
-         */
-        deleted: boolean;
-        /**
-         * Reset the Token document if animated?
-         * @defaultValue `true`
-         */
-        reset: boolean;
-      }>,
+      options?: InexactPartial<RegionDocument._UpdateTokenOptions>,
     ): Promise<void>;
 
     // TODO(Eon): Core overrides these three methods, but the override types are very complex so
