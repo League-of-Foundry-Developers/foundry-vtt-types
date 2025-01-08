@@ -1,9 +1,4 @@
 import type BaseActiveEffect from "./active-effect.d.mts";
-import type BaseActorDelta from "./actor-delta.d.mts";
-import type BaseActor from "./actor.d.mts";
-import type BaseAdventure from "./adventure.d.mts";
-import type BaseAmbientLight from "./ambient-light.d.mts";
-import type BaseAmbientSound from "./ambient-sound.d.mts";
 import type BaseCard from "./card.d.mts";
 import type BaseCards from "./cards.d.mts";
 import type BaseChatMessage from "./chat-message.d.mts";
@@ -36,44 +31,13 @@ export type EffectDurationData = BaseActiveEffect.Properties["duration"];
 // TODO(LukeAbby): This understandably adds a circular loop because `DataField` depends on `EffectChangeData`.
 // export type EffectChangeData = BaseActiveEffect.Properties["changes"][number];
 
-// TODO(LukeAbby): Audit. This is used both as an assignment, constructor, and initialized type. It's likely this isn't
+// TODO(LukeAbby): Audit. This is used both as an assignment, constructor, and initialized type.
+// It's likely this isn't really supposed to be used in fvtt-types.
+/**
+ * @deprecated {@link ActiveEffect.EffectChangeData | `ActiveEffect.EffectChangeData`}
+ */
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export type EffectChangeData = {
-  /**
-   * The attribute path in the Actor or Item data which the change modifies
-   * @defaultValue `""`
-   */
-  key: string;
-
-  /**
-   * The value of the change effect
-   * @defaultValue `""`
-   */
-  value: string;
-
-  /**
-   * The modification mode with which the change is applied
-   * @defaultValue `CONST.ACTIVE_EFFECT_MODES.ADD`
-   */
-  mode: number | null;
-
-  /**
-   * The priority level with which this change is applied
-   * @defaultValue `null`
-   */
-  priority: number | null;
-};
-
-export type ActorData = BaseActor.Properties;
-
-export type ActorDeltaData = BaseActorDelta.Properties;
-
-export type AdventureData = BaseAdventure.Properties;
-
-export type AmbientLightData = BaseAmbientLight.Properties;
-
-export type AmbientSoundData = BaseAmbientSound.Properties;
-
+export type EffectChangeData = ActiveEffect.EffectChangeData;
 export interface AmbientSoundEffect {
   type: string;
   intensity: number;
