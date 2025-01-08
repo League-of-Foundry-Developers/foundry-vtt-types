@@ -273,7 +273,12 @@ export function getProperty(object: object, key: string): any;
  */
 export function setProperty(object: object, key: string, value: any): boolean;
 
-export type InvertableObject = Record<string | number | symbol, string | number | symbol>;
+// Merging into this would be antithetical to its purpose.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+export type InvertableObject = {
+  readonly [K: PropertyKey]: PropertyKey;
+};
+
 export type InvertObject<in out T extends InvertableObject> = { [Key in keyof T as T[Key]]: Key };
 
 /**
@@ -415,7 +420,7 @@ export interface MergeObjectOptions {
  */
 declare function _mergeInsert(
   original: object,
-  k: string | number | symbol,
+  k: PropertyKey,
   v: any,
   options?: Pick<MergeObjectOptions, "insertKeys" | "insertValues" | "performDeletions">,
   _d?: number,
