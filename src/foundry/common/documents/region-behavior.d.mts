@@ -10,6 +10,11 @@ type DataSchema = foundry.data.fields.DataSchema;
  */
 declare class BaseRegionBehavior extends Document<"RegionBehavior", BaseRegionBehavior.Schema, any> {
   /**
+   * @privateRemarks Manual override of the return due to TS limitations with static `this`
+   */
+  static get TYPES(): BaseRegionBehavior.TypeNames[];
+
+  /**
    * Construct a Region document using provided data and context.
    * @param data        - Initial data from which to construct the Region
    * @param context     - Construction context options
@@ -30,6 +35,8 @@ export default BaseRegionBehavior;
 
 declare namespace BaseRegionBehavior {
   type Parent = RegionDocument.ConfiguredInstance | null;
+
+  type TypeNames = Game.Model.TypeNames<"RegionBehavior">;
 
   type Metadata = Document.MetadataFor<BaseRegionBehavior>;
 
