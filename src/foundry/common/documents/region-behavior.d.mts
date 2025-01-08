@@ -9,6 +9,8 @@ type DataSchema = foundry.data.fields.DataSchema;
  * Defines the DataSchema and common behaviors for a RegionBehavior which are shared between both client and server.
  */
 declare class BaseRegionBehavior extends Document<"RegionBehavior", BaseRegionBehavior.Schema, any> {
+  #baseRegionBehavior: true;
+
   /**
    * @privateRemarks Manual override of the return due to TS limitations with static `this`
    */
@@ -27,8 +29,6 @@ declare class BaseRegionBehavior extends Document<"RegionBehavior", BaseRegionBe
   static override defineSchema(): BaseRegionBehavior.Schema;
 
   static override canUserCreate(user: foundry.documents.BaseUser): boolean;
-
-  #baseRegionBehavior: true;
 }
 
 export default BaseRegionBehavior;
