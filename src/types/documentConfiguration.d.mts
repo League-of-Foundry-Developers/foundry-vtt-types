@@ -7,6 +7,7 @@ import type BaseCombatant from "../foundry/common/documents/combatant.d.mts";
 import type BaseDrawing from "../foundry/common/documents/drawing.d.mts";
 import type BaseFogExploration from "../foundry/common/documents/fog-exploration.d.mts";
 import type BaseMeasuredTemplate from "../foundry/common/documents/measured-template.d.mts";
+import type BaseRegionBehavior from "../foundry/common/documents/region-behavior.d.mts";
 import type BaseSetting from "../foundry/common/documents/setting.d.mts";
 import type BaseTableResult from "../foundry/common/documents/table-result.d.mts";
 import type BaseToken from "../foundry/common/documents/token.d.mts";
@@ -414,6 +415,37 @@ interface _ConfiguredMetadata<ThisType extends Document.Internal.Instance.Any> {
       permissions: {
         create: "NOTE_CREATE";
       };
+      schemaVersion: string;
+    }
+  >;
+  RegionBehavior: Merge<
+    Document.Metadata.Default,
+    {
+      name: "RegionBehavior";
+      collection: "behaviors";
+      label: string;
+      labelPlural: string;
+      coreTypes: ["adjustDarknessLevel", "displayScrollingText", "executeMacro", "executeScript", "pauseGame", "suppressWeather", "teleportToken", "toggleBehavior"];
+      hasTypeData: true;
+      isEmbedded: true;
+      permissions: {
+        create(user: BaseUser, doc: ThisType): boolean;
+        update(user: BaseUser, doc: ThisType, data: BaseRegionBehavior.UpdateData): boolean;
+      }
+      schemaVersion: string;
+    }
+  >;
+  Region: Merge<
+    Document.Metadata.Default,
+    {
+      name: "Region",
+      collection: "regions";
+      label: string;
+      labelPlural: string;
+      isEmbedded: true,
+      embedded: {
+        RegionBehavior: "behaviors";
+      }
       schemaVersion: string;
     }
   >;
