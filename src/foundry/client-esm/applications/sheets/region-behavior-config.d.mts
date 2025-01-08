@@ -11,3 +11,5 @@ export default class RegionBehaviorConfig<
   Configuration extends DocumentSheetV2.Configuration<Document> = DocumentSheetV2.Configuration<Document>,
   RenderOptions extends DocumentSheetV2.RenderOptions = DocumentSheetV2.RenderOptions,
 > extends HandlebarsApplicationMixin(DocumentSheetV2)<Document, RenderContext, Configuration, RenderOptions> {}
+
+//Region Placeholder

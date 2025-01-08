@@ -33,3 +33,5 @@ declare global {
     protected override _preRender: AbstractBaseShader.PreRenderFunction;
   }
 }
+
+//Region Placeholder
