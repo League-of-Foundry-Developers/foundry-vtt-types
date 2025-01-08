@@ -1,26 +1,28 @@
 import type RegionBehaviorType from "./base.d.mts";
-import type { ValueOf } from "../../../../utils/index.d.mts";
+import type { Brand } from "../../../../utils/index.d.mts";
 import fields = foundry.data.fields;
 import type { InvertObject } from "../../../common/utils/helpers.d.mts";
 
 declare namespace DisplayScrollingTextRegionBehaviorType {
-  const _VISIBILITY_MODES: Readonly<{
-    /**
-     * Display only for gamemaster users
-     */
-    GAMEMASTER: 0;
+  type _VISIBILITY_MODES = Brand<number, "DisplayScrollingTextRegionBehaviorType.Modes">;
 
-    /**
-     * Display only for users with observer permissions on the triggering token (and for the GM)
-     */
-    OBSERVER: 1;
+  interface VisibilityModes
+    extends Readonly<{
+      /**
+       * Display only for gamemaster users
+       */
+      GAMEMASTER: 0;
 
-    /**
-     * Display for all users
-     */
-    ANYONE: 2;
-  }>;
-  type VISIBILITY_MODES = ValueOf<typeof _VISIBILITY_MODES>;
+      /**
+       * Display only for users with observer permissions on the triggering token (and for the GM)
+       */
+      OBSERVER: 1;
+
+      /**
+       * Display for all users
+       */
+      ANYONE: 2;
+    }> {}
 
   interface Schema extends foundry.data.fields.DataSchema {
     events: RegionBehaviorType.EventsField;
@@ -34,8 +36,8 @@ declare namespace DisplayScrollingTextRegionBehaviorType {
     /** Which users the scrolling text will display for (see {@link VISIBILITY_MODES}) */
     visibility: fields.NumberField<{
       required: true;
-      choices: InvertObject<typeof _VISIBILITY_MODES>;
-      initial: typeof _VISIBILITY_MODES.GAMEMASTER;
+      choices: InvertObject<VisibilityModes>;
+      initial: typeof DisplayScrollingTextRegionBehaviorType.VISIBILITY_MODES.GAMEMASTER;
       validationError: string;
     }>;
 
@@ -50,7 +52,7 @@ declare class DisplayScrollingTextRegionBehaviorType extends RegionBehaviorType<
   static override LOCALIZATION_PREFIXES: string[];
 
   /** Darkness level behavior modes. */
-  static get VISIBILITY_MODES(): typeof DisplayScrollingTextRegionBehaviorType._VISIBILITY_MODES;
+  static get VISIBILITY_MODES(): DisplayScrollingTextRegionBehaviorType.VisibilityModes;
 
   static override defineSchema(): DisplayScrollingTextRegionBehaviorType.Schema;
 

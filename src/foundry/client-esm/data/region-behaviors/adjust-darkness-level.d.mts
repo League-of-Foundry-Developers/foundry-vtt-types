@@ -1,31 +1,34 @@
 import type RegionBehaviorType from "./base.d.mts";
-import type { ValueOf } from "../../../../utils/index.d.mts";
+import type { Brand } from "../../../../utils/index.d.mts";
 import fields = foundry.data.fields;
+import type { InvertObject } from "../../../common/utils/helpers.d.mts";
 
 declare namespace AdjustDarknessLevelRegionBehaviorType {
-  const _MODES: Readonly<{
-    /**
-     * Override the darkness level with the modifier.
-     */
-    OVERRIDE: 0;
+  type _MODES = Brand<number, "AdjustDarknessLevelRegionBehaviorType.Modes">;
 
-    /**
-     * Brighten the darkness level: `darknessLevel * (1 - modifier)`
-     */
-    BRIGHTEN: 1;
+  interface Modes
+    extends Readonly<{
+      /**
+       * Override the darkness level with the modifier.
+       */
+      OVERRIDE: 0 & _MODES;
 
-    /**
-     * Darken the darkness level: `1 - (1 - darknessLevel) * (1 - modifier)`.
-     */
-    DARKEN: 2;
-  }>;
-  type MODES = ValueOf<typeof _MODES>;
+      /**
+       * Brighten the darkness level: `darknessLevel * (1 - modifier)`
+       */
+      BRIGHTEN: 1 & _MODES;
+
+      /**
+       * Darken the darkness level: `1 - (1 - darknessLevel) * (1 - modifier)`.
+       */
+      DARKEN: 2 & _MODES;
+    }> {}
 
   interface Schema extends foundry.data.fields.DataSchema {
     mode: fields.NumberField<{
       required: true;
-      choices: Record<MODES, string>;
-      initial: typeof _MODES.OVERRIDE;
+      choices: InvertObject<Modes>;
+      initial: typeof AdjustDarknessLevelRegionBehaviorType.MODES.OVERRIDE;
       validationError: string;
     }>;
     modifier: fields.AlphaField<{ initial: number; step: number }>;
@@ -38,7 +41,7 @@ declare class AdjustDarknessLevelRegionBehaviorType extends RegionBehaviorType<A
   static override LOCALIZATION_PREFIXES: string[];
 
   /** Darkness level behavior modes. */
-  static get MODES(): typeof AdjustDarknessLevelRegionBehaviorType._MODES;
+  static get MODES(): AdjustDarknessLevelRegionBehaviorType.Modes;
 
   static override defineSchema(): AdjustDarknessLevelRegionBehaviorType.Schema;
 
