@@ -41,8 +41,7 @@ declare class BaseRegionBehavior extends Document<"Region", BaseRegionBehavior.S
 export default BaseRegionBehavior;
 
 declare namespace BaseRegionBehavior {
-  //TODO(Eon): Figure out what parent a RegionBehavior is supposed to have. This is purely a guess.
-  //type Parent = Region.ConfiguredInstance | null
+  type Parent = RegionDocument.ConfiguredInstance | null
 
   type Metadata = Document.MetadataFor<BaseRegionBehavior>
 
