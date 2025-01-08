@@ -1,7 +1,8 @@
 import type RegionBehaviorType from "./base.d.mts";
-import fields = foundry.data.fields;
 import type { ValueOf } from "../../../../utils/index.d.mts";
+import fields = foundry.data.fields;
 
+/** The data model for a behavior that allows to suppress weather effects within the Region */
 declare namespace AdjustDarknessLevelRegionBehaviorType {
   const _MODES: Readonly<{
     /**
