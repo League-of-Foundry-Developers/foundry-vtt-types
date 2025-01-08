@@ -980,6 +980,7 @@ declare namespace Document {
     | "Drawing"
     | "MeasuredTemplate"
     | "Note"
+    | "Region"
     | "Tile"
     | "Token"
     | "Wall";

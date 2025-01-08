@@ -1,6 +1,7 @@
 import "./drawings.d.mts";
 import "./lighting.d.mts";
 import "./notes.d.mts";
+import "./region.d.mts";
 import "./sounds.d.mts";
 import "./templates.d.mts";
 import "./tiles.d.mts";
