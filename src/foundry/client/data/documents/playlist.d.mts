@@ -1,5 +1,4 @@
 import type { InexactPartial } from "../../../../utils/index.d.mts";
-import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 import type { Document } from "../../../common/abstract/module.d.mts";
 import type BasePlaylist from "../../../common/documents/playlist.d.mts";
 
@@ -10,7 +9,7 @@ declare global {
     type ConfiguredClass = Document.ConfiguredClassForName<"Playlist">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Playlist">;
 
-    interface DatabaseOperations extends DocumentDatabaseOperations<Playlist> {}
+    interface DatabaseOperations extends Document.Database.Operations<Playlist> {}
 
     // Helpful aliases
     type ConstructorData = BasePlaylist.ConstructorData;

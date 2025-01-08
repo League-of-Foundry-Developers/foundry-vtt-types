@@ -1,6 +1,5 @@
 import type { DeepPartial, InexactPartial } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
-import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 import type BaseFolder from "../../../common/documents/folder.d.mts";
 
 declare global {
@@ -11,7 +10,7 @@ declare global {
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Folder">;
     type Stored = Document.Stored<ConfiguredInstance>;
 
-    interface DatabaseOperations extends DocumentDatabaseOperations<Folder> {}
+    interface DatabaseOperations extends Document.Database.Operations<Folder> {}
 
     // Helpful aliases
     type TypeNames = BaseFolder.TypeNames;

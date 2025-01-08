@@ -1,5 +1,4 @@
 import type Document from "../../../common/abstract/document.d.mts";
-import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 import type BaseTableResult from "../../../common/documents/table-result.d.mts";
 
 declare global {
@@ -9,7 +8,7 @@ declare global {
     type ConfiguredClass = Document.ConfiguredClassForName<"TableResult">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"TableResult">;
 
-    interface DatabaseOperations extends DocumentDatabaseOperations<TableResult> {}
+    interface DatabaseOperations extends Document.Database.Operations<TableResult> {}
 
     // Helpful aliases
     type TypeNames = BaseTableResult.TypeNames;

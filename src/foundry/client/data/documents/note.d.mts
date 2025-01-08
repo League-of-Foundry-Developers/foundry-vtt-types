@@ -1,5 +1,4 @@
 import type Document from "../../../common/abstract/document.d.mts";
-import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 import type BaseNote from "../../../common/documents/note.d.mts";
 
 declare global {
@@ -9,7 +8,7 @@ declare global {
     type ConfiguredClass = Document.ConfiguredClassForName<"Note">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Note">;
 
-    interface DatabaseOperations extends DocumentDatabaseOperations<NoteDocument> {}
+    interface DatabaseOperations extends Document.Database.Operations<NoteDocument> {}
 
     // Helpful aliases
     type ConstructorData = BaseNote.ConstructorData;

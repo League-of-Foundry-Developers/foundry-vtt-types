@@ -1,5 +1,4 @@
 import type Document from "../../../common/abstract/document.d.mts";
-import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 import type BaseAmbientLight from "../../../common/documents/ambient-light.d.mts";
 
 declare global {
@@ -11,7 +10,7 @@ declare global {
 
     /* eslint-disable @typescript-eslint/no-empty-object-type */
     interface DatabaseOperations
-      extends DocumentDatabaseOperations<AmbientLightDocument, {}, { animate: boolean }, {}> {}
+      extends Document.Database.Operations<AmbientLightDocument, {}, { animate: boolean }, {}> {}
     /* eslint-enable @typescript-eslint/no-empty-object-type */
 
     // Helpful aliases

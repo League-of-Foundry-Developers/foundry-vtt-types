@@ -1,7 +1,6 @@
 import type { InexactPartial } from "../../../../utils/index.d.mts";
 import type { DatabaseGetOperation } from "../../../common/abstract/_types.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
-import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 import type BaseFogExploration from "../../../common/documents/fog-exploration.d.mts";
 
 declare global {
@@ -12,7 +11,7 @@ declare global {
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"FogExploration">;
 
     interface DatabaseOperations
-      extends DocumentDatabaseOperations<
+      extends Document.Database.Operations<
         FogExploration,
         { loadFog: boolean },
         { loadFog: boolean },

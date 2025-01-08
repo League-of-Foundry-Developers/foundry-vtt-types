@@ -1,6 +1,5 @@
 import type { ValueOf } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
-import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 import type BaseCombatant from "../../../common/documents/combatant.d.mts";
 
 declare global {
@@ -11,7 +10,7 @@ declare global {
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Combatant">;
 
     interface DatabaseOperations
-      extends DocumentDatabaseOperations<
+      extends Document.Database.Operations<
         Combatant,
         { combatTurn: number },
         { combatTurn: number },

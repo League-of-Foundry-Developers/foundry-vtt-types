@@ -1,6 +1,5 @@
 import type { InexactPartial } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
-import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 import type BaseJournalEntryPage from "../../../common/documents/journal-entry-page.d.mts";
 
 declare global {
@@ -10,7 +9,7 @@ declare global {
     type ConfiguredClass = Document.ConfiguredClassForName<"JournalEntryPage">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"JournalEntryPage">;
 
-    interface DatabaseOperations extends DocumentDatabaseOperations<JournalEntryPage> {}
+    interface DatabaseOperations extends Document.Database.Operations<JournalEntryPage> {}
 
     // Helpful aliases
     type TypeNames = BaseJournalEntryPage.TypeNames;

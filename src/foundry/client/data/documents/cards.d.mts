@@ -1,6 +1,5 @@
 import type { DeepPartial, InexactPartial, FixedInstanceType } from "../../../../utils/index.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
-import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type BaseCards from "../../../common/documents/cards.d.mts";
 
@@ -11,7 +10,7 @@ declare global {
     type ConfiguredClass = Document.ConfiguredClassForName<"Cards">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Cards">;
 
-    interface DatabaseOperations extends DocumentDatabaseOperations<Cards> {}
+    interface DatabaseOperations extends Document.Database.Operations<Cards> {}
 
     // Helpful aliases
     type TypeNames = BaseCards.TypeNames;
@@ -185,7 +184,7 @@ declare global {
         fields.SchemaField.AssignmentType<FixedInstanceType<NoInfer<T>>["schema"]["fields"]> & Record<string, unknown>
       >,
       operation?: InexactPartial<
-        Omit<Document.DatabaseOperationsFor<NoInfer<T>["metadata"]["name"], "create">, "data">
+        Omit<Document.Database.OperationOf<NoInfer<T>["metadata"]["name"], "create">, "data">
       > & {
         temporary?: Temporary;
       },
@@ -347,7 +346,7 @@ declare global {
     static override createDialog<T extends Document.AnyConstructor>(
       this: T,
       data?: DeepPartial<Document.ConstructorDataFor<NoInfer<T>> & Record<string, unknown>>,
-      context?: Pick<Document.DatabaseOperationsFor<Cards["documentName"], "create">, "parent" | "pack"> &
+      context?: Pick<Document.Database.OperationOf<Cards["documentName"], "create">, "parent" | "pack"> &
         InexactPartial<
           DialogOptions & {
             /** A restriction the selectable sub-types of the Dialog. */

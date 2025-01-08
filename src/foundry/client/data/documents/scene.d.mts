@@ -1,6 +1,5 @@
 import type { InexactPartial } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
-import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 import type BaseScene from "../../../common/documents/scene.d.mts";
 
 declare global {
@@ -12,7 +11,7 @@ declare global {
 
     /* eslint-disable @typescript-eslint/no-empty-object-type */
     export interface DatabaseOperations
-      extends DocumentDatabaseOperations<
+      extends Document.Database.Operations<
         Scene,
         {},
         { thumb: (string | null)[]; autoReposition: boolean; animateDarkness: number },

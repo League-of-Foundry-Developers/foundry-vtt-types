@@ -1,7 +1,6 @@
 import type { InexactPartial } from "../../../../utils/index.d.mts";
 import type Sound from "../../../client-esm/audio/sound.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
-import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 import type BasePlaylistSound from "../../../common/documents/playlist-sound.d.mts";
 
 declare global {
@@ -11,7 +10,7 @@ declare global {
     type ConfiguredClass = Document.ConfiguredClassForName<"PlaylistSound">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"PlaylistSound">;
 
-    interface DatabaseOperations extends DocumentDatabaseOperations<PlaylistSound> {}
+    interface DatabaseOperations extends Document.Database.Operations<PlaylistSound> {}
 
     // Helpful aliases
     type ConstructorData = BasePlaylistSound.ConstructorData;
