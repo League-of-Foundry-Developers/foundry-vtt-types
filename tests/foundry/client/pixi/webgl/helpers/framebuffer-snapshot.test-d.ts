@@ -1,4 +1,6 @@
-//TODO: figure out why it can't find FramebufferSnapshot
+import { expectTypeOf } from "vitest";
 
-// import { expectTypeOf } from "vitest";
-// const myFBS = new FramebufferSnapshot();
+const myFBS = new FramebufferSnapshot();
+declare const someRenderer: PIXI.Renderer;
+
+expectTypeOf(myFBS.getFramebufferTexture(someRenderer)).toEqualTypeOf<PIXI.RenderTexture>();

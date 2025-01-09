@@ -6,5 +6,5 @@ const mySN = new SmoothNoise({
   scale: 1,
 });
 
-expectTypeOf(mySN._amplitude).toEqualTypeOf<number>();
+expectTypeOf(mySN.amplitude).toEqualTypeOf<number>();
 expectTypeOf(mySN.generate(5)).toEqualTypeOf<number>();

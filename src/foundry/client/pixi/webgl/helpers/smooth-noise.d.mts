@@ -42,6 +42,7 @@ declare global {
   }
 
   namespace SmoothNoise {
+    type Any = AnySmoothNoise;
     type AnyConstructor = typeof AnySmoothNoise;
 
     /** @internal */

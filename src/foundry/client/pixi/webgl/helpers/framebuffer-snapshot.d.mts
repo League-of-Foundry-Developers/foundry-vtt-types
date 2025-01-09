@@ -21,6 +21,7 @@ declare global {
   }
 
   namespace FramebufferSnapshot {
+    type Any = AnyFramebufferSnapshot;
     type AnyConstructor = typeof AnyFramebufferSnapshot;
   }
 }

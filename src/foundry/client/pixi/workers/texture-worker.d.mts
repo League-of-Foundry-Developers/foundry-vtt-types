@@ -1,3 +1,5 @@
+import type { NullishProps } from "../../../../utils/index.d.mts";
+
 export {};
 
 declare global {
@@ -54,29 +56,38 @@ declare global {
   }
 
   namespace TextureCompressor {
-    interface ConstructorOptions {
+    type Any = AnyTextureCompressor;
+    type AnyConstructor = typeof AnyTextureCompressor;
+
+    /** @internal */
+    type _ConstructorOptions = NullishProps<{
       /**
        * Should the worker run in debug mode?
        * @defaultValue `false`
        */
-      debug?: boolean;
+      debug: boolean;
 
       /**
        * @defaultValue `["./workers/image-compressor.js", "./spark-md5.min.js"]`
+       * @remarks Undocumented by Foundry
        */
-      scripts?: string[];
+      scripts: string[];
 
       /**
        * @defaultValue `false`
+       * @remarks Undocumented by Foundry
        */
-      loadPrimitives?: boolean;
+      loadPrimitives: boolean;
 
       /**
        * Do we need to control the hash?
        * @defaultValue `false`
        */
       controlHash?: boolean;
-    }
+    }>;
+
+    /** Options for the {@link TextureCompressor} constructor */
+    interface ConstructorOptions extends _ConstructorOptions {}
 
     interface compressBase64Options {
       /**
@@ -122,4 +133,8 @@ declare global {
       quality: number;
     }
   }
+}
+
+declare abstract class AnyTextureCompressor extends TextureCompressor {
+  constructor(arg0: never, ...args: never[]);
 }
