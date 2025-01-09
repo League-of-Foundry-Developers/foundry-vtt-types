@@ -1,5 +1,5 @@
-import type { ValueOf } from "src/utils/index.d.mts";
 import { expectTypeOf } from "vitest";
+import type { ValueOf } from "../../../../../../src/utils/index.d.mts";
 
 declare const someToken: Token.ConfiguredInstance;
 

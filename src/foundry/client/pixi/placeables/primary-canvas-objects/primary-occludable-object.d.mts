@@ -124,13 +124,13 @@ declare class PrimaryOccludableObject {
 
   /**
    * @deprecated since v12, will be removed in v14
-   * @remarks "`#roof` is deprecated in favor of more granular options: `#restrictsLight` and `#resrictsWeather`"
+   * @remarks "`#roof` is deprecated in favor of more granular options: `#restrictsLight` and `#restrictsWeather`"
    */
   get roof(): boolean;
 
   /**
    * @deprecated since v12, until v14
-   * @remarks "#roof is deprecated in favor of more granular options: #restrictsLight and #resrictsWeather"
+   * @remarks "#roof is deprecated in favor of more granular options: #restrictsLight and #restrictsWeather"
    */
   set roof(enabled);
 
