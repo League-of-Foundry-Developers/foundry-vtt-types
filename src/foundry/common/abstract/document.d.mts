@@ -39,6 +39,9 @@ export default Document;
 type _ClassMustBeAssignableToInternal = MustConform<typeof Document, Document.Internal.Constructor>;
 type _InstanceMustBeAssignableToInternal = MustConform<Document.Any, Document.Internal.Instance.Any>;
 
+type _ConfigurationFailureClassMustBeAssignableToInternal = MustConform<Document.ConfigurationFailureClass, Document.Internal.Constructor>;
+type _ConfigurationFailureInstanceMustBeAssignableToInternal = MustConform<Document.ConfigurationFailureInstance, Document.Internal.Instance.Any>;
+
 /**
  * An extension of the base DataModel which defines a Document.
  * Documents are special in that they are persisted to the database and referenced by _id.
