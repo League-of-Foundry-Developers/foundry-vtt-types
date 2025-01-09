@@ -164,15 +164,6 @@ declare class TokenRingConfig {
 }
 
 declare namespace TokenRingConfig {
-  /** The start and end radii of the token ring color band. */
-  interface RingColorBand {
-    /** The starting normalized radius of the token ring color band. */
-    startRadius: number;
-
-    /** The ending normalized radius of the token ring color band. */
-    endRadius: number;
-  }
-
   /** Token ring fit modes for dynamic token ring visualization */
   interface RingFitMode {
     /** The fit mode identifier. */
@@ -182,12 +173,15 @@ declare namespace TokenRingConfig {
     label: string;
   }
 
+  /** Dynamic ring id. */
+  type DynamicRingId = string;
+
   /**
    * Core token rings used in Foundry VTT.
    * Each key is a string identifier for a ring, and the value is an object containing the ring's data.
    * This object is frozen to prevent any modifications.
    */
-  interface CoreTokenRings extends Readonly<Record<string, DynamicRingData.RingData>> {}
+  interface CoreTokenRings extends Readonly<Record<DynamicRingId, DynamicRingData.RingData>> {}
 
   /** Core token rings fit modes used in Foundry VTT. */
   interface CoreTokenRingsFitModes extends Readonly<Record<string, RingFitMode>> {}
