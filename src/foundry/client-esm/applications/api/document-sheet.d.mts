@@ -1,4 +1,4 @@
-import type { AnyObject, DeepPartial, EmptyObject } from "../../../../utils/index.d.mts";
+import type { AnyObject, DeepPartial, EmptyObject, SimpleMerge } from "../../../../utils/index.d.mts";
 import type ApplicationV2 from "./application.d.mts";
 
 declare namespace DocumentSheetV2 {
@@ -47,7 +47,8 @@ declare class DocumentSheetV2<
   Configuration extends DocumentSheetV2.Configuration<Document> = DocumentSheetV2.Configuration<Document>,
   RenderOptions extends DocumentSheetV2.RenderOptions = DocumentSheetV2.RenderOptions,
 > extends ApplicationV2<RenderContext, Configuration, RenderOptions> {
-  constructor(options: DeepPartial<Configuration> & { document: Document });
+  // Note(LukeAbby): This is a fix for https://github.com/microsoft/TypeScript/issues/60927
+  constructor(options: SimpleMerge<DeepPartial<Configuration>, { document: Document }>);
 
   // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
   // Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.
