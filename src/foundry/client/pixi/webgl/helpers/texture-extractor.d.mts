@@ -29,7 +29,7 @@ declare global {
      * Extract a rectangular block of pixels from the texture (without un-pre-multiplying).
      * @param options - Options which configure extraction behavior
      */
-    extract(options: TextureExtractor.TextureExtractionOptions): ReturnType<Semaphore["add"]>;
+    extract(options?: TextureExtractor.TextureExtractionOptions): Promise<string | Uint8ClampedArray>;
 
     /**
      * Free all the bound objects.
@@ -41,7 +41,9 @@ declare global {
      */
     contextChange(): void;
   }
+
   namespace TextureExtractor {
+    type Any = AnyTextureExtractor;
     type AnyConstructor = typeof AnyTextureExtractor;
 
     /** @internal */
@@ -62,10 +64,11 @@ declare global {
       /**
        * The PIXI Format this TextureExtractor uses
        * @defaultValue `PIXI.FORMATS.RED`
-       * @remarks Construction throws if this isn't `.RED` or `.RGBA`
+       * @remarks Construction throws if this isn't `.RED` or `.RGBA`, so can't be null
        */
       format: PIXI.FORMATS;
     }>;
+
     /** Options for the constructor of {@link TextureExtractor} */
     interface ConstructorOptions extends _ConstructorOptions {}
 
@@ -93,13 +96,15 @@ declare global {
 
       /**
        * The optional image quality.
-       *  @privateRemarks Foundry types as `string` but is clearly meant to be `number` by usage
+       *  @privateRemarks Foundry types as `string` but is clearly meant to be `number` by usage. Allowing null due to
+       * it having a `??` default in the path any browser someone is realistically using for Foundry will take.
        */
-      quality: number;
+      quality: number | null;
 
       /** The optional debug flag to use. */
       debug: boolean | null;
     }>;
+
     /** Options for {@link TextureExtractor#extract} */
     interface TextureExtractionOptions extends _ExtractOptions {}
 
