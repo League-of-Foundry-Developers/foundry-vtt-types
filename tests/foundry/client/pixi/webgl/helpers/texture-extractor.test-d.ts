@@ -6,4 +6,4 @@ declare const someTexture: PIXI.Texture;
 expectTypeOf(myTE.pixelBuffer).toEqualTypeOf<Uint8ClampedArray>();
 expectTypeOf(
   myTE.extract({ texture: someTexture, compression: TextureExtractor.COMPRESSION_MODES.BASE64 }),
-).toEqualTypeOf<>();
+).toEqualTypeOf<Promise<string | Uint8ClampedArray>>();
