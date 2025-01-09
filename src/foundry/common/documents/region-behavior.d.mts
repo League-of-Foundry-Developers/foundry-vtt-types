@@ -1,6 +1,5 @@
 import type Document from "../abstract/document.mts";
 import type { fields } from "../data/module.d.mts";
-import type * as documents from "./_module.d.mts";
 
 type DataSchema = foundry.data.fields.DataSchema;
 
