@@ -111,7 +111,7 @@ declare class TokenRingConfig {
    * Get the current ring class.
    */
   get ringClass(): typeof TokenRing;
-  set ringClass(value: typeof TokenRing);
+  set ringClass(value);
 
   /** Get the current effects. */
   get effects(): Record<string, string>;
@@ -121,7 +121,7 @@ declare class TokenRingConfig {
 
   /** Get the current shader class. */
   get shaderClass(): typeof PrimaryBaseSamplerShader;
-  set shaderClass(value: typeof PrimaryBaseSamplerShader);
+  set shaderClass(value);
 
   /** Get the current localized label */
   get label(): string;

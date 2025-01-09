@@ -35,7 +35,18 @@ declare namespace DynamicRingData {
      * }
      * ```
      */
-    effects: fields.ObjectField<{ initial: Record<string, string> }, Record<string, string>, Record<string, string>>;
+    effects: fields.ObjectField<
+      {
+        initial: {
+          RING_PULSE: "TOKEN.RING.EFFECTS.RING_PULSE";
+          RING_GRADIENT: "TOKEN.RING.EFFECTS.RING_GRADIENT";
+          BKG_WAVE: "TOKEN.RING.EFFECTS.BKG_WAVE";
+          INVISIBILITY: "TOKEN.RING.EFFECTS.INVISIBILITY";
+        };
+      },
+      Record<string, string>,
+      Record<string, string>
+    >;
 
     framework: fields.SchemaField<{
       /**

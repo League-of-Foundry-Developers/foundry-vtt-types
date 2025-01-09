@@ -1,3 +1,5 @@
+import type { MaybeInitialized } from "../../../client/game.d.mts";
+
 /**
  * Dynamic Token Ring Manager.
  */
@@ -11,7 +13,7 @@ declare class TokenRing {
   static effects: TokenRing.Effects;
 
   /** Is the token rings framework enabled? Will be `null` if the system hasn't initialized yet. */
-  static get initialized(): boolean | null;
+  static get initialized(): MaybeInitialized<boolean, "init">;
 
   /** Token Rings sprite sheet base texture. */
   static baseTexture: PIXI.BaseTexture;
@@ -20,7 +22,7 @@ declare class TokenRing {
   static texturesData: Record<string, { UVs: Float32Array; center: { x: number; y: number } }>;
 
   /** The token ring shader class definition. */
-  static tokenRingSamplerShader: typeof TokenRingSamplerShader;
+  static tokenRingSamplerShader: TokenRing.SampleShaderClass;
 
   /** Initialize the Token Rings system, registering the batch plugin and patching `PrimaryCanvasGroup#addToken`. */
   static initialize(): void;
@@ -41,7 +43,7 @@ declare class TokenRing {
    * Get ring and background names for a given size.
    * @param size  - The size to match (grid size dimension)
    */
-  static getRingDataBySize(size: number): { bkgName: string; ringName: string; colorBand: TokenRing.RingColorBand };
+  static getRingDataBySize(size: number): TokenRing.RingDataBySizeReturnType;
 
   ringName: string;
 
@@ -64,11 +66,13 @@ declare class TokenRing {
   bkgColorLittleEndian: number;
 
   /**
+   * Cannot be undefined as core explicitly checks for null.
    * @defaultValue `null`
    */
   defaultRingColorLittleEndian: number | null;
 
   /**
+   * Cannot be undefined as core explicitly checks for null.
    * @defaultValue `null`
    */
   defaultBackgroundColorLittleEndian: number | null;
@@ -106,7 +110,7 @@ declare class TokenRing {
   colorBand: TokenRing.RingColorBand;
 
   /** Reference to the token that should be animated */
-  get token(): Token.ConfiguredInstance | void;
+  get token(): MaybeInitialized<Token.ConfiguredInstance, "init">;
 
   /**
    * Configure the sprite mesh.
@@ -157,6 +161,14 @@ declare class TokenRing {
 }
 
 declare namespace TokenRing {
+  type SampleShaderClass = NonNullable<CONFIG["Token"]["ring"]>["shaderClass"];
+
+  interface RingDataBySizeReturnType {
+    bkgName: string;
+    ringName: string;
+    colorBand: TokenRing.RingColorBand;
+  }
+
   /** The start and end radii of the token ring color band. */
   interface RingColorBand {
     /** The starting normalized radius of the token ring color band. */
