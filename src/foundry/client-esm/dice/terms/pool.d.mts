@@ -1,4 +1,4 @@
-import type { InexactPartial, InstanceType } from "../../../../utils/index.d.mts";
+import type { InexactPartial, FixedInstanceType } from "../../../../utils/index.d.mts";
 import type { PoolRollParseNode } from "../_types.d.mts";
 
 import type RollTerm from "./term.d.mts";
@@ -140,7 +140,7 @@ declare class PoolTerm extends RollTerm {
   protected static override _fromData<T extends RollTerm.AnyConstructor>(
     this: T,
     data: Record<string, unknown>,
-  ): InstanceType<T>;
+  ): FixedInstanceType<T>;
 
   /* -------------------------------------------- */
 
@@ -158,14 +158,14 @@ declare class PoolTerm extends RollTerm {
     this: T,
     formula: string,
     options?: RollTerm.Options,
-  ): InstanceType<T> | null;
+  ): FixedInstanceType<T> | null;
 
   /**
    * Create a PoolTerm by providing an array of existing Roll objects
    * @param rolls - An array of Roll objects from which to create the pool
    * @returns The constructed PoolTerm comprised of the provided rolls
    */
-  static fromRolls<T extends PoolTerm.AnyConstructor>(this: T, rolls?: Roll[]): InstanceType<T>;
+  static fromRolls<T extends PoolTerm.AnyConstructor>(this: T, rolls?: Roll[]): FixedInstanceType<T>;
 
   /* -------------------------------------------- */
 

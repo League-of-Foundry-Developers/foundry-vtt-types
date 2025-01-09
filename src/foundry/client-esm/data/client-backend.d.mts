@@ -1,4 +1,4 @@
-import type { InstanceType, LoggingLevels } from "../../../utils/index.d.mts";
+import type { FixedInstanceType, LoggingLevels } from "../../../utils/index.d.mts";
 import type Document from "../../common/abstract/document.d.mts";
 import type {
   DatabaseGetOperation,
@@ -15,25 +15,25 @@ declare class ClientDatabaseBackend extends foundry.abstract.DatabaseBackend {
     documentClass: T,
     request: DatabaseGetOperation,
     user: User.ConfiguredInstance,
-  ): Promise<InstanceType<T>[]>;
+  ): Promise<FixedInstanceType<T>[]>;
 
   protected override _createDocuments<T extends Document.AnyConstructor>(
     documentClass: T,
-    request: DatabaseCreateOperation<InstanceType<T>>,
+    request: DatabaseCreateOperation<FixedInstanceType<T>>,
     user: User.ConfiguredInstance,
-  ): Promise<InstanceType<T>[]>;
+  ): Promise<FixedInstanceType<T>[]>;
 
   protected override _updateDocuments<T extends Document.AnyConstructor>(
     documentClass: T,
-    request: DatabaseUpdateOperation<InstanceType<T>>,
+    request: DatabaseUpdateOperation<FixedInstanceType<T>>,
     user: User.ConfiguredInstance,
-  ): Promise<InstanceType<T>[]>;
+  ): Promise<FixedInstanceType<T>[]>;
 
   protected override _deleteDocuments<T extends Document.AnyConstructor>(
     documentClass: T,
     request: DatabaseDeleteOperation,
     user: User.ConfiguredInstance,
-  ): Promise<InstanceType<T>[]>;
+  ): Promise<FixedInstanceType<T>[]>;
 
   /**
    * Activate the Socket event listeners used to receive responses from events which modify database documents

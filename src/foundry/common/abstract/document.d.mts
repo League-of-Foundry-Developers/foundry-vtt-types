@@ -15,7 +15,7 @@ import type {
   EmptyObject,
   InexactPartial,
   RemoveIndexSignatures,
-  InstanceType,
+  FixedInstanceType,
 } from "../../../utils/index.d.mts";
 import type * as CONST from "../constants.mts";
 import type { DataField, EmbeddedCollectionField, EmbeddedDocumentField } from "../data/fields.d.mts";
@@ -36,12 +36,6 @@ type DataSchema = foundry.data.fields.DataSchema;
 
 export default Document;
 
-declare const __DocumentBrand: unique symbol;
-
-declare const __DocumentName: unique symbol;
-declare const __Schema: unique symbol;
-declare const __Parent: unique symbol;
-
 type _ClassMustBeAssignableToInternal = MustConform<typeof Document, Document.Internal.Constructor>;
 type _InstanceMustBeAssignableToInternal = MustConform<Document.Any, Document.Internal.Instance.Any>;
 
@@ -54,11 +48,11 @@ declare abstract class Document<
   Schema extends DataSchema,
   Parent extends Document.Any | null = null,
 > extends DataModel<Schema, Parent, InterfaceToObject<Document.ConstructionContext<Parent>>> {
-  static [__DocumentBrand]: never;
+  static [Document.Internal.DocumentBrand]: true;
 
-  [__DocumentName]: DocumentName;
-  [__Schema]: Schema;
-  [__Parent]: Parent;
+  [Document.Internal.DocumentName]: DocumentName;
+  [Document.Internal.Schema]: Schema;
+  [Document.Internal.Parent]: Parent;
 
   /**
    * @param data    - Initial data provided to construct the Document
@@ -325,7 +319,7 @@ declare abstract class Document<
     this: T,
     data: Array<Document.ConstructorDataFor<NoInfer<T>>>,
     operation?: InexactPartial<
-      Omit<Document.DatabaseOperationsFor<NoInfer<T>["metadata"]["name"], "create">, "data">
+      Omit<Document.Database.OperationOf<NoInfer<T>["metadata"]["name"], "create">, "data">
     > & {
       temporary?: Temporary;
     },
@@ -370,7 +364,7 @@ declare abstract class Document<
     this: T,
     updates?: Array<DeepPartial<Document.UpdateDataFor<NoInfer<T>>>>,
     operation?: InexactPartial<
-      Omit<Document.DatabaseOperationsFor<InstanceType<NoInfer<T>>["documentName"], "update">, "updates">
+      Omit<Document.Database.OperationOf<FixedInstanceType<NoInfer<T>>["documentName"], "update">, "updates">
     >,
   ): Promise<Document.ToConfiguredInstance<T>[]>;
 
@@ -415,7 +409,7 @@ declare abstract class Document<
     this: T,
     ids?: string[],
     operation?: InexactPartial<
-      Omit<Document.DatabaseOperationsFor<InstanceType<NoInfer<T>>["documentName"], "delete">, "ids">
+      Omit<Document.Database.OperationOf<FixedInstanceType<NoInfer<T>>["documentName"], "delete">, "ids">
     >,
   ): Promise<Document.ToConfiguredInstance<T>[]>;
 
@@ -452,7 +446,7 @@ declare abstract class Document<
     this: T,
     data: Document.ConstructorDataFor<NoInfer<T>> | Document.ConstructorDataFor<NoInfer<T>>[],
     operation?: InexactPartial<
-      Omit<Document.DatabaseOperationsFor<NoInfer<T>["metadata"]["name"], "create">, "data">
+      Omit<Document.Database.OperationOf<NoInfer<T>["metadata"]["name"], "create">, "data">
     > & {
       temporary?: Temporary;
     },
@@ -472,7 +466,7 @@ declare abstract class Document<
   update(
     // TODO: Determine if this is Partial, DeepPartial, or InexactPartial.
     data?: Partial<Document.ConstructorDataForSchema<Schema>>,
-    operation?: InexactPartial<Omit<Document.DatabaseOperationsFor<DocumentName, "update">, "updates">>,
+    operation?: InexactPartial<Omit<Document.Database.OperationOf<DocumentName, "update">, "updates">>,
   ): Promise<this | undefined>;
 
   /**
@@ -485,7 +479,7 @@ declare abstract class Document<
    * @remarks If no document has actually been deleted, the returned {@link Promise} resolves to `undefined`.
    */
   delete(
-    operation?: InexactPartial<Omit<Document.DatabaseOperationsFor<DocumentName, "delete">, "ids">>,
+    operation?: InexactPartial<Omit<Document.Database.OperationOf<DocumentName, "delete">, "ids">>,
   ): Promise<this | undefined>;
 
   /**
@@ -521,10 +515,9 @@ declare abstract class Document<
    * @returns The Collection instance of embedded Documents of the requested type
    * @remarks Usually returns some form of DocumentCollection, but not always (e.g. Token["actors"])
    */
-  // TODO: After regions are defined, change first parameter to `extends foundry.CONST.EMBEDDED_DOCUMENT_TYPES`
-  getEmbeddedCollection<
-    EmbeddedName extends Exclude<foundry.CONST.EMBEDDED_DOCUMENT_TYPES, "Region" | "RegionBehavior">,
-  >(embeddedName: EmbeddedName): Collection<Document.ConfiguredInstanceForName<EmbeddedName>>;
+  getEmbeddedCollection<EmbeddedName extends foundry.CONST.EMBEDDED_DOCUMENT_TYPES>(
+    embeddedName: EmbeddedName,
+  ): Collection<Document.ConfiguredInstanceForName<EmbeddedName>>;
 
   /**
    * Get an embedded document by its id from a named collection in the parent document.
@@ -561,7 +554,6 @@ declare abstract class Document<
    *                       (default: `{}`)
    * @returns An array of created Document instances
    */
-  // TODO: After regions are defined, change first parameter to `extends foundry.CONST.EMBEDDED_DOCUMENT_TYPES`
   // TODO: I think we could do a better job on all the embedded methods of limiting the types here based on the
   //   allowed embedded types of the parent (vs. allowing any document to create embedded
   //   documents of any type)
@@ -571,7 +563,7 @@ declare abstract class Document<
   >(
     embeddedName: EmbeddedName,
     data?: Array<Document.ConstructorDataForName<Extract<EmbeddedName, Document.Type>>>,
-    operation?: InexactPartial<Document.DatabaseOperationsFor<Extract<EmbeddedName, Document.Type>, "create">> & {
+    operation?: InexactPartial<Document.Database.OperationOf<Extract<EmbeddedName, Document.Type>, "create">> & {
       temporary?: Temporary;
     },
   ): Promise<Array<Document.ConfiguredInstanceForName<Extract<EmbeddedName, Document.Type>>> | undefined>;
@@ -586,7 +578,6 @@ declare abstract class Document<
    *                       (default: `{}`)
    * @returns An array of updated Document instances
    */
-  // TODO: After regions are defined, change first parameter to `extends foundry.CONST.EMBEDDED_DOCUMENT_TYPES`
   updateEmbeddedDocuments<EmbeddedName extends foundry.CONST.EMBEDDED_DOCUMENT_TYPES>(
     embeddedName: EmbeddedName,
     updates?: Array<AnyObject>,
@@ -602,13 +593,10 @@ declare abstract class Document<
    *                       (default: `{}`)
    * @returns An array of deleted Document instances
    */
-  // TODO: After regions are defined, change first parameter to `extends foundry.CONST.EMBEDDED_DOCUMENT_TYPES`
-  deleteEmbeddedDocuments<
-    EmbeddedName extends Exclude<foundry.CONST.EMBEDDED_DOCUMENT_TYPES, "Region" | "RegionBehavior">,
-  >(
+  deleteEmbeddedDocuments<EmbeddedName extends foundry.CONST.EMBEDDED_DOCUMENT_TYPES>(
     embeddedName: EmbeddedName,
     ids: Array<string>,
-    operation?: Document.DatabaseOperationsFor<DocumentName, "delete">,
+    operation?: Document.Database.OperationOf<DocumentName, "delete">,
   ): Promise<Array<Document.Stored<Document.ConfiguredInstanceForName<EmbeddedName>>>>;
 
   /**
@@ -708,7 +696,7 @@ declare abstract class Document<
   protected static _preCreateOperation<T extends Document.AnyConstructor>(
     this: T,
     documents: Document.ToConfiguredInstance<NoInfer<T>>[],
-    operation: Document.DatabaseOperationsFor<NoInfer<T>["metadata"]["name"], "create">,
+    operation: Document.Database.OperationOf<NoInfer<T>["metadata"]["name"], "create">,
     user: foundry.documents.BaseUser,
   ): Promise<boolean | void>;
 
@@ -725,7 +713,7 @@ declare abstract class Document<
   protected static _onCreateOperation<T extends Document.AnyConstructor>(
     this: T,
     documents: Document.ToConfiguredClass<NoInfer<T>>[],
-    operation: Document.DatabaseOperationsFor<NoInfer<T>["metadata"]["name"], "create">,
+    operation: Document.Database.OperationOf<NoInfer<T>["metadata"]["name"], "create">,
     user: foundry.documents.BaseUser,
   ): Promise<void>;
 
@@ -774,7 +762,7 @@ declare abstract class Document<
   protected static _preUpdateOperation<T extends Document.AnyConstructor>(
     this: T,
     documents: Document.ToConfiguredInstance<NoInfer<T>>[],
-    operation: Document.DatabaseOperationsFor<InstanceType<NoInfer<T>>["documentName"], "update">,
+    operation: Document.Database.OperationOf<FixedInstanceType<NoInfer<T>>["documentName"], "update">,
     user: foundry.documents.BaseUser,
   ): Promise<boolean | void>;
 
@@ -791,7 +779,7 @@ declare abstract class Document<
   protected static _onUpdateOperation<T extends Document.AnyConstructor>(
     this: T,
     documents: Document.ToConfiguredInstance<NoInfer<T>>[],
-    operation: Document.DatabaseOperationsFor<InstanceType<NoInfer<T>>["documentName"], "update">,
+    operation: Document.Database.OperationOf<FixedInstanceType<NoInfer<T>>["documentName"], "update">,
     user: foundry.documents.BaseUser,
   ): Promise<void>;
 
@@ -834,7 +822,7 @@ declare abstract class Document<
   protected static _preDeleteOperation<T extends Document.AnyConstructor>(
     this: T,
     documents: Array<Document.ToConfiguredInstance<NoInfer<T>>>,
-    operation: Document.DatabaseOperationsFor<InstanceType<NoInfer<T>>["documentName"], "delete">,
+    operation: Document.Database.OperationOf<FixedInstanceType<NoInfer<T>>["documentName"], "delete">,
     user: foundry.documents.BaseUser,
   ): Promise<unknown>;
 
@@ -851,7 +839,7 @@ declare abstract class Document<
   protected static _onDeleteOperation<T extends Document.AnyConstructor>(
     this: T,
     documents: Array<Document.ToConfiguredInstance<NoInfer<T>>>,
-    operation: Document.DatabaseOperationsFor<InstanceType<NoInfer<T>>["documentName"], "delete">,
+    operation: Document.Database.OperationOf<FixedInstanceType<NoInfer<T>>["documentName"], "delete">,
     user: foundry.documents.BaseUser,
   ): Promise<unknown>;
 
@@ -932,9 +920,9 @@ declare abstract class Document<
 declare abstract class AnyDocument extends Document<any, any, any> {
   constructor(arg0: never, ...args: never[]);
 
-  // Note(LukeAbby): Specifically adding the `__DocumentBrand` should be redundant but in practice it seems to help tsc more efficiently deduce that it's actually inheriting from `Document`.
+  // Note(LukeAbby): Specifically adding the `DocumentBrand` should be redundant but in practice it seems to help tsc more efficiently deduce that it's actually inheriting from `Document`.
   // This is odd but probably is because it bails from looking up the parent class properties at times or something.
-  static [__DocumentBrand]: never;
+  static [Document.Internal.DocumentBrand]: true;
 
   flags?: unknown;
 
@@ -944,11 +932,14 @@ declare abstract class AnyDocument extends Document<any, any, any> {
 // Note(LukeAbby): The point of this class is to show up in intellisense.
 // When something fails to be configured it should be replaced with `typeof ConfigurationFailure & typeof Item` or whatever the relevant class is.
 // This helps to minimize the number of errors that appears in a repo with broken configuration as they can be very misleading and confusing.
-declare abstract class ConfigurationFailure extends AnyDocument {}
+declare abstract class ConfigurationFailure extends AnyDocument {
+  static [Document.Internal.DocumentBrand]: true;
+}
 
 declare namespace Document {
   /** Any Document, except for Settings */
   type Any = AnyDocument;
+  type AnyConstructor = typeof AnyDocument;
 
   type ConfigurationFailureClass = typeof ConfigurationFailure;
   type ConfigurationFailureInstance = ConfigurationFailure;
@@ -971,6 +962,8 @@ declare namespace Document {
     | "Macro"
     | "PlaylistSound"
     | "Playlist"
+    | "RegionBehavior"
+    | "Region"
     | "RollTable"
     | "Scene"
     | "Setting"
@@ -985,6 +978,7 @@ declare namespace Document {
     | "Drawing"
     | "MeasuredTemplate"
     | "Note"
+    | "Region"
     | "Tile"
     | "Token"
     | "Wall";
@@ -1002,10 +996,14 @@ declare namespace Document {
     | "Combat"
     | "Combatant"
     | "Item"
-    | "JournalEntryPage";
+    | "JournalEntryPage"
+    | "RegionBehavior";
 
   type EmbeddableNamesFor<ConcreteDocument extends Document.Internal.Instance.Any> = {
-    [K in keyof ConfiguredDocuments]: IsParentOf<ConcreteDocument, InstanceType<ConfiguredDocuments[K]>> extends true
+    [K in keyof ConfiguredDocuments]: IsParentOf<
+      ConcreteDocument,
+      FixedInstanceType<ConfiguredDocuments[K]>
+    > extends true
       ? K
       : never;
   };
@@ -1020,13 +1018,19 @@ declare namespace Document {
 
   // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
   namespace Internal {
+    const DocumentBrand: unique symbol;
+
+    const DocumentName: unique symbol;
+    const Schema: unique symbol;
+    const Parent: unique symbol;
+
     // This metadata is called "simple" because where there should be proper references to the
     // current document there is instead `Document.Any`. This helps simplify loops.
     // Use cases should be limited to when these references aren't needed.
     type SimpleMetadata<Name extends Document.Type> = ConfiguredMetadata<Document.Any>[Name];
 
     type Constructor = (abstract new (arg0: never, ...args: never[]) => Instance.Any) & {
-      [__DocumentBrand]: never;
+      [DocumentBrand]: true;
     };
 
     interface Instance<
@@ -1034,16 +1038,16 @@ declare namespace Document {
       Schema extends DataSchema,
       Parent extends Document.Internal.Instance.Any | null,
     > {
-      [__DocumentName]: DocumentName;
-      [__Schema]: Schema;
-      [__Parent]: Parent;
+      [DocumentName]: DocumentName;
+      [Schema]: Schema;
+      [Parent]: Parent;
     }
 
-    type DocumentNameFor<ConcreteInstance extends Instance.Any> = ConcreteInstance[typeof __DocumentName];
+    type DocumentNameFor<ConcreteInstance extends Instance.Any> = ConcreteInstance[typeof DocumentName];
 
-    type SchemaFor<ConcreteInstance extends Instance.Any> = ConcreteInstance[typeof __Schema];
+    type SchemaFor<ConcreteInstance extends Instance.Any> = ConcreteInstance[typeof Schema];
 
-    type ParentFor<ConcreteInstance extends Instance.Any> = ConcreteInstance[typeof __Parent];
+    type ParentFor<ConcreteInstance extends Instance.Any> = ConcreteInstance[typeof Parent];
 
     namespace Instance {
       type Any = Instance<any, any, any>;
@@ -1054,8 +1058,6 @@ declare namespace Document {
 
   /** Any Document, that is a child of the given parent Document. */
   type AnyChild<Parent extends Any | null> = Document<any, any, Parent>;
-
-  type AnyConstructor = typeof AnyDocument;
 
   /**
    * Returns the type of the constructor data for the given {@link foundry.abstract.Document}.
@@ -1099,9 +1101,9 @@ declare namespace Document {
   >;
 
   type ToConfiguredInstance<ConcreteDocument extends Document.Internal.Constructor> = MakeConform<
-    InstanceType<ConfiguredDocuments[NameFor<ConcreteDocument>]>,
+    FixedInstanceType<ConfiguredDocuments[NameFor<ConcreteDocument>]>,
     Document.Any,
-    ConfigurationFailure & InstanceType<DefaultDocuments[NameFor<ConcreteDocument>]>
+    ConfigurationFailure & FixedInstanceType<DefaultDocuments[NameFor<ConcreteDocument>]>
   >;
 
   type ToConfiguredStored<D extends Document.Internal.Constructor> = Stored<ToConfiguredInstance<D>>;
@@ -1126,12 +1128,12 @@ declare namespace Document {
     : never;
 
   type ConfiguredInstanceForName<Name extends Type> = MakeConform<
-    InstanceType<ConfiguredDocuments[Name]>,
+    FixedInstanceType<ConfiguredDocuments[Name]>,
     Document.Any
   >;
 
   type ConfiguredObjectClassForName<Name extends PlaceableType> = CONFIG[Name]["objectClass"];
-  type ConfiguredObjectInstanceForName<Name extends PlaceableType> = InstanceType<CONFIG[Name]["objectClass"]>;
+  type ConfiguredObjectInstanceForName<Name extends PlaceableType> = FixedInstanceType<CONFIG[Name]["objectClass"]>;
 
   type ConfiguredDataForName<Name extends Type> = GetKey<DataConfig, Name, EmptyObject>;
 
@@ -1387,13 +1389,12 @@ declare namespace Document {
   }
 
   /**
-   * This is a helper type that gets the right DatabaseOperation (including the
-   * proper options) for a particular Document type.
+   * @deprecated {@link Document.Database.OperationOf | `Document.Database.OperationOf`}
    */
   type DatabaseOperationsFor<
     Name extends Document.Type,
-    ConcreteOperation extends Operation,
-  > = DatabaseOperationMap[Name][ConcreteOperation];
+    ConcreteOperation extends Document.Database.Operation,
+  > = Document.Database.OperationOf<Name, ConcreteOperation>;
 
   type ConfiguredSheetClassFor<Name extends Document.Type> = MakeConform<
     GetKey<GetKey<CONFIG, Name>, "sheetClass">,
@@ -1420,23 +1421,50 @@ declare namespace Document {
       uuid: string;
     }
   }
+
+  namespace Database {
+    type Operation = "create" | "update" | "delete";
+
+    /* eslint-disable @typescript-eslint/no-empty-object-type */
+    interface Operations<
+      T extends Document.Internal.Instance.Any = Document.Internal.Instance.Any,
+      ExtraCreateOptions extends AnyObject = {},
+      ExtraUpdateOptions extends AnyObject = {},
+      ExtraDeleteOptions extends AnyObject = {},
+    > {
+      create: DatabaseCreateOperation<T> & InexactPartial<ExtraCreateOptions>;
+      update: DatabaseUpdateOperation<T> & InexactPartial<ExtraUpdateOptions>;
+      delete: DatabaseDeleteOperation & InexactPartial<ExtraDeleteOptions>;
+    }
+    /* eslint-enable @typescript-eslint/no-empty-object-type */
+
+    /**
+     * This is a helper type that gets the right DatabaseOperation (including the
+     * proper options) for a particular Document type.
+     */
+    type OperationOf<
+      T extends Document.Type,
+      Operation extends Database.Operation,
+    > = DatabaseOperationMap[T][Operation];
+  }
 }
 
-export type Operation = "create" | "update" | "delete";
+/** @deprecated {@link Document.Database.Operation | `Document.Database.Operation`} */
+export type Operation = Document.Database.Operation;
 
 /* eslint-disable @typescript-eslint/no-empty-object-type */
-export interface DocumentDatabaseOperations<
+/** @deprecated {@link Document.Database.Operations | `Document.Database.Operations`} */
+export type DocumentDatabaseOperations<
   T extends Document.Internal.Instance.Any = Document.Internal.Instance.Any,
   ExtraCreateOptions extends AnyObject = {},
   ExtraUpdateOptions extends AnyObject = {},
   ExtraDeleteOptions extends AnyObject = {},
-> {
-  create: DatabaseCreateOperation<T> & InexactPartial<ExtraCreateOptions>;
-  update: DatabaseUpdateOperation<T> & InexactPartial<ExtraUpdateOptions>;
-  delete: DatabaseDeleteOperation & InexactPartial<ExtraDeleteOptions>;
-}
+> = Document.Database.Operations<T, ExtraCreateOptions, ExtraUpdateOptions, ExtraDeleteOptions>;
 /* eslint-enable @typescript-eslint/no-empty-object-type */
 
+/**
+ * @deprecated if you want to get individual operations see {@link Document.Database.OperationOf | `Document.Database.OperationOf`}
+ */
 export interface DatabaseOperationMap {
   ActiveEffect: ActiveEffect.DatabaseOperations;
   Actor: Actor.DatabaseOperations;
@@ -1460,9 +1488,8 @@ export interface DatabaseOperationMap {
   Note: NoteDocument.DatabaseOperations;
   Playlist: Playlist.DatabaseOperations;
   PlaylistSound: PlaylistSound.DatabaseOperations;
-  // TODO: Add these once documents are done
-  // Region: ActiveEffect.DatabaseOperations;
-  // RegionBehavior: ActiveEffect.DatabaseOperations;
+  Region: ActiveEffect.DatabaseOperations;
+  RegionBehavior: ActiveEffect.DatabaseOperations;
   RollTable: RollTable.DatabaseOperations;
   Scene: Scene.DatabaseOperations;
   Setting: Setting.DatabaseOperations;

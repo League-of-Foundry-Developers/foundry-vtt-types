@@ -1,5 +1,5 @@
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
-import type { InstanceType } from "../../../../utils/index.d.mts";
+import type { FixedInstanceType } from "../../../../utils/index.d.mts";
 
 // TODO: Remove when the whole class is updated
 type LightSource = unknown;
@@ -7,7 +7,7 @@ type LightSource = unknown;
 declare global {
   namespace AmbientLight {
     type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof AmbientLight>;
-    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+    type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;
 
     interface RenderFlags extends PlaceableObject.RenderFlags {
       refreshField: boolean;

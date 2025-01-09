@@ -68,6 +68,7 @@
     "@pixi/basis": "^7.4.2",
     "@pixi/graphics-smooth": "^1.1.0",
     "@pixi/particle-emitter": "^5.0.8",
+    "@types/earcut": "github:LukeAbby/earcut-types#main",
     "@types/jquery": "~3.5.22",
     "@types/showdown": "~2.0.6",
     "@types/simple-peer": "~9.11.1",
@@ -92,8 +93,8 @@
     "tinymce": "^6.8.3"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^8.12.2",
-    "@typescript-eslint/parser": "^8.12.2",
+    "@typescript-eslint/eslint-plugin": "^8.19.1",
+    "@typescript-eslint/parser": "^8.19.1",
     "eslint": "^8.57.1",
     "eslint-config-prettier": "^9.1.0",
     "eslint-import-resolver-typescript": "^3.6.1",

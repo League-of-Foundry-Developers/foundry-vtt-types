@@ -1,6 +1,5 @@
 import type { DeepPartial, InexactPartial } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
-import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 import type BaseActor from "../../../common/documents/actor.d.mts";
 
 declare global {
@@ -10,7 +9,7 @@ declare global {
     type ConfiguredClass = Document.ConfiguredClassForName<"Actor">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Actor">;
 
-    interface DatabaseOperations extends DocumentDatabaseOperations<Actor> {}
+    interface DatabaseOperations extends Document.Database.Operations<Actor> {}
 
     type ItemTypes = {
       [K in Game.Model.TypeNames<"Item">]: Array<

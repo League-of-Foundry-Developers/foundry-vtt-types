@@ -1,6 +1,5 @@
 import type { DeepPartial, InexactPartial } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
-import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 import type { SchemaField } from "../../../common/data/fields.d.mts";
 import type BaseToken from "../../../common/documents/token.d.mts";
 
@@ -16,7 +15,7 @@ declare global {
 
     /* eslint-disable @typescript-eslint/no-empty-object-type */
     interface DatabaseOperations
-      extends DocumentDatabaseOperations<
+      extends Document.Database.Operations<
         TokenDocument,
         {},
         {
@@ -94,9 +93,8 @@ declare global {
 
     /**
      * The Regions this Token is currently in.
-     * @privateRemarks TODO: Change Set<any> to Set<RegionDocuments> when RegionDocuments are implemented
      */
-    regions: Set<any> | null;
+    regions: Set<RegionDocument.ConfiguredInstance> | null;
 
     // TODO: Same as `DataModel._initialize`
     protected override _initialize(options?: any): void;

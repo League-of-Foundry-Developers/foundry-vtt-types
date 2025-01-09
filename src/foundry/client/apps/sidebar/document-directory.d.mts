@@ -107,7 +107,7 @@ declare global {
       folder: Folder.ConfiguredInstance,
       closestFolderId: string,
       sortData: { sortKey: string; sortBefore: boolean },
-    ): Promise<{ folder: Folder; sortNeeded: boolean } | null>;
+    ): Promise<{ folder: Folder.ConfiguredInstance; sortNeeded: boolean } | null>;
 
     /**
      * Create a dropped Folder and its children in this Collection, if they do not already exist

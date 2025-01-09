@@ -1,4 +1,4 @@
-import type { InstanceType, Mixin } from "../../../../utils/index.d.mts";
+import type { FixedInstanceType, Mixin } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { InternalClientDocument } from "./client-document.d.mts";
 
@@ -34,7 +34,7 @@ declare class CanvasDocument<
   /**
    * A reference to the CanvasLayer which contains Document objects of this type.
    */
-  get layer(): InstanceType<PlaceablesLayer.ConfiguredClassForName<PlaceableType>>;
+  get layer(): FixedInstanceType<PlaceablesLayer.ConfiguredClassForName<PlaceableType>>;
 
   /**
    * An indicator for whether this document is currently rendered on the game canvas.
@@ -58,7 +58,7 @@ declare global {
   // TODO(LukeAbby): The constraint here should ideally be something like `Document<Document.PlaceableType, any, Scene.ConfiguredInstance | null>` but this causes circularities.
   function CanvasDocumentMixin<BaseClass extends Document.Internal.Constructor>(
     Base: BaseClass,
-  ): typeof AnyDocument & Mixin<typeof CanvasDocument<InstanceType<BaseClass>>, BaseClass>;
+  ): typeof AnyDocument & Mixin<typeof CanvasDocument<FixedInstanceType<BaseClass>>, BaseClass>;
 }
 
 // This is yet another `AnyDocument` type.
@@ -69,4 +69,12 @@ declare global {
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 declare class AnyDocument extends Document<any, {}, Document.Any | null> {
   constructor(...args: any[]);
+
+  // Note(LukeAbby): Specifically adding the `DocumentBrand` should be redundant but in practice it seems to help tsc more efficiently deduce that it's actually inheriting from `Document`.
+  // This is odd but probably is because it bails from looking up the parent class properties at times or something.
+  static [Document.Internal.DocumentBrand]: true;
+
+  flags?: unknown;
+
+  getFlag(scope: never, key: never): any;
 }

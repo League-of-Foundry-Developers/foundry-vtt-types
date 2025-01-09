@@ -1,4 +1,4 @@
-import type { AnyObject, GetKey, MustBeValidUuid } from "../../../utils/index.d.mts";
+import type { AnyObject, MustBeValidUuid } from "../../../utils/index.d.mts";
 import type Document from "../../common/abstract/document.d.mts";
 
 declare const __Unset: unique symbol;
@@ -90,7 +90,5 @@ declare global {
    * @param documentName - The canonical Document name, for example "Actor"
    * @returns configured Document class implementation
    */
-  function getDocumentClass<DocumentName extends string>(
-    documentName: DocumentName,
-  ): GetKey<GetKey<CONFIG, DocumentName, never>, "documentClass", undefined>;
+  function getDocumentClass<Name extends Document.Type>(documentName: Name): Document.ConfiguredClassForName<Name>;
 }

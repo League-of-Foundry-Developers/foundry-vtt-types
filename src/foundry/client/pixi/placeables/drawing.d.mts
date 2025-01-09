@@ -1,7 +1,38 @@
-import type { ValueOf, InstanceType } from "../../../../utils/index.d.mts";
+import type { ValueOf, FixedInstanceType } from "../../../../utils/index.d.mts";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
+  namespace Drawing {
+    type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof Drawing>;
+    type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;
+
+    interface RenderFlags extends PlaceableObject.RenderFlags {
+      refreshShape: boolean;
+
+      refreshFrame: boolean;
+
+      refreshText: boolean;
+
+      refreshMesh: boolean;
+    }
+
+    interface TextEditingOptions {
+      forceTextEditing?: boolean;
+
+      isNew?: boolean;
+    }
+
+    interface AdjustableShape {
+      shape: {
+        width: number;
+        height: number;
+        points: Canvas.Point[];
+      };
+      x: number;
+      y: number;
+    }
+  }
+
   /**
    * The Drawing object is an implementation of the PlaceableObject container.
    * Each Drawing is a placeable object in the DrawingsLayer.

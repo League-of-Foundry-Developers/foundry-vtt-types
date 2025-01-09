@@ -1,4 +1,4 @@
-import type { Brand, InexactPartial, InstanceType, NullishProps } from "../../../../../utils/index.d.mts";
+import type { Brand, InexactPartial, FixedInstanceType, NullishProps } from "../../../../../utils/index.d.mts";
 import type PointEffectSourceMixin from "../../../../client-esm/canvas/sources/point-effect-source.d.mts";
 
 declare global {
@@ -72,8 +72,8 @@ declare global {
     static create<T extends PointSourcePolygon.AnyConstructor>(
       this: T,
       origin: Canvas.Point,
-      config?: Parameters<InstanceType<NoInfer<T>>["initialize"]>[1],
-    ): InstanceType<T>;
+      config?: Parameters<FixedInstanceType<NoInfer<T>>["initialize"]>[1],
+    ): FixedInstanceType<T>;
 
     /**
      * Create a clone of this polygon.

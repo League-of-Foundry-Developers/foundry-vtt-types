@@ -3,7 +3,7 @@ import type {
   InexactPartial,
   NullishProps,
   ValueOf,
-  InstanceType,
+  FixedInstanceType,
 } from "../../../../../utils/index.d.mts";
 import type Document from "../../../../common/abstract/document.d.mts";
 import type EmbeddedCollection from "../../../../common/abstract/embedded-collection.d.mts";
@@ -171,7 +171,7 @@ declare global {
      */
     getDocuments():
       | Exclude<this["documentCollection"], null>
-      | InstanceType<Document.ConfiguredClassForName<DocumentName>>[];
+      | FixedInstanceType<Document.ConfiguredClassForName<DocumentName>>[];
 
     protected override _draw(options?: DrawOptions): Promise<void>;
 
@@ -484,7 +484,7 @@ declare global {
     /**
      * The data corresponding to the action which may later be un-done
      */
-    data: InstanceType<Document.ConfiguredClassForName<DocumentName>>["_source"][];
+    data: FixedInstanceType<Document.ConfiguredClassForName<DocumentName>>["_source"][];
   }
 
   type PlaceablesLayerOptions<DocumentName extends Document.PlaceableType> = PlaceablesLayer.LayerOptions<DocumentName>;

@@ -1,9 +1,4 @@
 import type BaseActiveEffect from "./active-effect.d.mts";
-import type BaseActorDelta from "./actor-delta.d.mts";
-import type BaseActor from "./actor.d.mts";
-import type BaseAdventure from "./adventure.d.mts";
-import type BaseAmbientLight from "./ambient-light.d.mts";
-import type BaseAmbientSound from "./ambient-sound.d.mts";
 import type BaseCard from "./card.d.mts";
 import type BaseCards from "./cards.d.mts";
 import type BaseChatMessage from "./chat-message.d.mts";
@@ -20,6 +15,8 @@ import type BaseMeasuredTemplate from "./measured-template.d.mts";
 import type BaseNote from "./note.d.mts";
 import type BasePlaylistSound from "./playlist-sound.d.mts";
 import type BasePlaylist from "./playlist.d.mts";
+import type BaseRegionBehavior from "./region-behavior.d.mts";
+import type BaseRegion from "./region.d.mts";
 import type BaseRollTable from "./roll-table.d.mts";
 import type BaseScene from "./scene.d.mts";
 import type BaseSetting from "./setting.d.mts";
@@ -36,44 +33,13 @@ export type EffectDurationData = BaseActiveEffect.Properties["duration"];
 // TODO(LukeAbby): This understandably adds a circular loop because `DataField` depends on `EffectChangeData`.
 // export type EffectChangeData = BaseActiveEffect.Properties["changes"][number];
 
-// TODO(LukeAbby): Audit. This is used both as an assignment, constructor, and initialized type. It's likely this isn't
+// TODO(LukeAbby): Audit. This is used both as an assignment, constructor, and initialized type.
+// It's likely this isn't really supposed to be used in fvtt-types.
+/**
+ * @deprecated {@link ActiveEffect.EffectChangeData | `ActiveEffect.EffectChangeData`}
+ */
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export type EffectChangeData = {
-  /**
-   * The attribute path in the Actor or Item data which the change modifies
-   * @defaultValue `""`
-   */
-  key: string;
-
-  /**
-   * The value of the change effect
-   * @defaultValue `""`
-   */
-  value: string;
-
-  /**
-   * The modification mode with which the change is applied
-   * @defaultValue `CONST.ACTIVE_EFFECT_MODES.ADD`
-   */
-  mode: number | null;
-
-  /**
-   * The priority level with which this change is applied
-   * @defaultValue `null`
-   */
-  priority: number | null;
-};
-
-export type ActorData = BaseActor.Properties;
-
-export type ActorDeltaData = BaseActorDelta.Properties;
-
-export type AdventureData = BaseAdventure.Properties;
-
-export type AmbientLightData = BaseAmbientLight.Properties;
-
-export type AmbientSoundData = BaseAmbientSound.Properties;
-
+export type EffectChangeData = ActiveEffect.EffectChangeData;
 export interface AmbientSoundEffect {
   type: string;
   intensity: number;
@@ -146,9 +112,9 @@ export type GlobalLightData = BaseScene.Properties["environment"]["globalLight"]
 // @ts-expect-error This still has to be typed
 export type SceneEnvironmentData = BaseScene.Properties["environment"];
 
-export type RegionData = unknown; // TODO: Add when BaseRegion's schema is added.
+export type RegionData = BaseRegion.Properties;
 
-export type RegionBehaviorData = unknown; // TODO: Add when BaseRegionBehavior's schema is added.
+export type RegionBehaviorData = BaseRegionBehavior.Properties;
 
 export type SettingData = BaseSetting.Properties;
 

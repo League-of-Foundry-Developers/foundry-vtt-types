@@ -6,7 +6,7 @@ import type {
   NullishProps,
   InexactPartial,
   ToMethod,
-  InstanceType,
+  FixedInstanceType,
 } from "../../../utils/index.d.mts";
 import type { DataModel } from "../abstract/data.mts";
 import type Document from "../abstract/document.mts";
@@ -846,7 +846,7 @@ declare namespace SchemaField {
    */
   type InnerInitializedType<Fields extends DataSchema> = RemoveIndexSignatures<{
     [Key in keyof Fields]: Fields[Key] extends EmbeddedDataField<infer Model, any, any, any, any>
-      ? InstanceType<Model>
+      ? FixedInstanceType<Model>
       : Fields[Key] extends SchemaField<infer SubSchema, any, any, any, any>
         ? InnerInitializedType<SubSchema>
         : Fields[Key] extends DataField<any, any, infer InitType, any>
@@ -2043,7 +2043,7 @@ declare namespace EmbeddedDataField {
   type InitializedType<
     ModelType extends DataModel.AnyConstructor,
     Opts extends Options<ModelType>,
-  > = DataField.DerivedInitializedType<InstanceType<ModelType>, MergedOptions<ModelType, Opts>>;
+  > = DataField.DerivedInitializedType<FixedInstanceType<ModelType>, MergedOptions<ModelType, Opts>>;
 
   /**
    * A shorthand for the persisted type of an EmbeddedDataField class.

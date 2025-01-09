@@ -1,4 +1,4 @@
-import type { AnyObject, EmptyObject, InexactPartial, InstanceType } from "../../../utils/index.d.mts";
+import type { AnyObject, EmptyObject, InexactPartial, FixedInstanceType } from "../../../utils/index.d.mts";
 
 import type { RollParseNode } from "./_types.d.mts";
 import type DiceTerm from "./terms/dice.d.mts";
@@ -551,7 +551,7 @@ declare class Roll<D extends AnyObject = AnyObject> {
    * @param data - Unpacked data representing the Roll
    * @returns A reconstructed Roll instance
    */
-  static fromData<T extends Roll.AnyConstructor>(this: T, data: Roll.Data): InstanceType<T>;
+  static fromData<T extends Roll.AnyConstructor>(this: T, data: Roll.Data): FixedInstanceType<T>;
 
   /**
    * Recreate a Roll instance using a provided JSON string
@@ -579,7 +579,7 @@ declare class Roll<D extends AnyObject = AnyObject> {
     this: T,
     terms: RollTerm[],
     options?: InexactPartial<Roll.Options>,
-  ): InstanceType<T>;
+  ): FixedInstanceType<T>;
 }
 
 declare namespace Roll {

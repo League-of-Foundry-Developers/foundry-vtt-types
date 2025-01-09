@@ -1,8 +1,7 @@
-import type { FolderDocumentTypes, InexactPartial, InstanceType } from "../../../../utils/index.d.mts";
+import type { FolderDocumentTypes, InexactPartial, FixedInstanceType } from "../../../../utils/index.d.mts";
 // eslint-disable-next-line import/no-named-as-default
 import type DataModel from "../../../common/abstract/data.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
-import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type BaseAdventure from "../../../common/documents/adventure.d.mts";
 
@@ -15,7 +14,7 @@ declare global {
     type ConfiguredClass = Document.ConfiguredClassForName<"Adventure">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Adventure">;
 
-    interface DatabaseOperations extends DocumentDatabaseOperations<Adventure> {}
+    interface DatabaseOperations extends Document.Database.Operations<Adventure> {}
 
     // Helpful aliases
     type ConstructorData = BaseAdventure.ConstructorData;
@@ -102,7 +101,7 @@ type DocumentDataRecord = {
 };
 
 type DocumentResult = {
-  [K in AdventureDocumentTypes]?: InstanceType<Document.ConfiguredClassForName<K>>[];
+  [K in AdventureDocumentTypes]?: FixedInstanceType<Document.ConfiguredClassForName<K>>[];
 };
 
 type AdventureDocumentTypes = Exclude<FolderDocumentTypes, "Adventure"> | "Folder";

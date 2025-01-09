@@ -1,6 +1,5 @@
 import type { InexactPartial } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
-import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
 import type BaseChatMessage from "../../../common/documents/chat-message.d.mts";
 
 declare global {
@@ -12,7 +11,7 @@ declare global {
 
     /* eslint-disable @typescript-eslint/no-empty-object-type */
     interface DatabaseOperations
-      extends DocumentDatabaseOperations<
+      extends Document.Database.Operations<
         ChatMessage,
         { rollMode: foundry.CONST.DICE_ROLL_MODES; chatBubble: boolean },
         {},

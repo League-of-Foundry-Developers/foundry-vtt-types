@@ -2081,7 +2081,7 @@ declare global {
        * @defaultValue `{}`
        * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
        */
-      dataModels: Record<string, typeof DataModel<any, ChatMessage>>;
+      dataModels: Record<string, typeof DataModel<any, ActiveEffect>>;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -2289,7 +2289,7 @@ declare global {
        * @defaultValue `{}`
        * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
        */
-      dataModels: Record<string, typeof DataModel<any, ChatMessage>>;
+      dataModels: Record<string, typeof DataModel<any, Combatant>>;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -2403,7 +2403,26 @@ declare global {
       layerClass: NotesLayer.AnyConstructor;
     };
 
-    // TODO: Regions
+    Region: {
+      /** @defaultValue `RegionDocument` */
+      documentClass: Document.ConfiguredClassForName<"Region">;
+
+      /** @defaultValue `Region` */
+      objectClass: ConfiguredObjectClassOrDefault<typeof Region>;
+
+      /** @defaultValue `RegionLayer` */
+      layerClass: RegionLayer.AnyConstructor;
+
+      /**
+       * @remarks added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       */
+      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+
+      /**
+       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
+       */
+      typeLabels?: Record<"base", string>;
+    };
 
     /**
      * Configuration for the Tile embedded document type and its representation on the game Canvas

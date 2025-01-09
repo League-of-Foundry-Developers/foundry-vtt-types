@@ -1,10 +1,10 @@
-import type { RequiredProps, InstanceType } from "../../../../utils/index.d.mts";
+import type { RequiredProps, FixedInstanceType } from "../../../../utils/index.d.mts";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
   namespace MeasuredTemplate {
     type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof MeasuredTemplate>;
-    type ConfiguredInstance = InstanceType<ConfiguredClass>;
+    type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;
 
     interface RenderFlags extends PlaceableObject.RenderFlags {
       refreshShape: boolean;
