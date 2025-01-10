@@ -44,11 +44,7 @@ declare class BaseMeasuredTemplate extends Document<"MeasuredTemplate", BaseMeas
    * @param data - Data being changed.
    * @internal
    */
-  static #canModify(
-    user: User,
-    doc: BaseMeasuredTemplate,
-    data?: BaseMeasuredTemplate.UpdateData,
-  ): boolean;
+  static #canModify(user: User, doc: BaseMeasuredTemplate, data?: BaseMeasuredTemplate.UpdateData): boolean;
 
   override testUserPermission(
     user: User,
