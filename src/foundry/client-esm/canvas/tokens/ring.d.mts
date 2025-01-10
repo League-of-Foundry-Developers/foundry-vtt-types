@@ -161,7 +161,7 @@ declare class TokenRing {
 }
 
 declare namespace TokenRing {
-  type SampleShaderClass = NonNullable<CONFIG["Token"]["ring"]>["shaderClass"];
+  type SampleShaderClass = CONFIG["Token"]["ring"]["shaderClass"];
 
   interface RingDataBySizeReturnType {
     bkgName: string;
