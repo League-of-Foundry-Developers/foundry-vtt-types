@@ -11,14 +11,13 @@ import type {
   MustConform,
   ToMethod,
   AnyObject,
-  DeepPartial,
   EmptyObject,
   InexactPartial,
   RemoveIndexSignatures,
   FixedInstanceType,
 } from "../../../utils/index.d.mts";
 import type * as CONST from "../constants.mts";
-import type { DataField, EmbeddedCollectionField, EmbeddedDocumentField } from "../data/fields.d.mts";
+import type { DataField, EmbeddedCollectionField, EmbeddedDocumentField, TypeDataField } from "../data/fields.d.mts";
 import type { fields } from "../data/module.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.mts";
 import type {
@@ -254,29 +253,10 @@ declare abstract class Document<
    * @param context - Additional context options passed to the create method
    * @returns The cloned Document instance
    */
+  // FIXME(LukeAbby): Adding Document.Stored to the return causes a recursive type error in Scene
   override clone<Save extends boolean = false>(
-    data?: fields.SchemaField.AssignmentType<Schema, EmptyObject>,
-    context?: InexactPartial<
-      {
-        /**
-         * Save the clone to the World database?
-         * @defaultValue `false`
-         */
-        save: Save;
-
-        /**
-         * Keep the same ID of the original document
-         * @defaultValue `false`
-         */
-        keepId: boolean;
-
-        /**
-         * Track the clone source
-         * @defaultValue `false`
-         */
-        addSource: boolean;
-      } & Document.ConstructionContext<this["parent"]>
-    >, // FIXME(LukeAbby): Adding Document.Stored to the return causes a recursive type error in Scene
+    data?: fields.SchemaField.UpdateData<Schema>,
+    context?: Document.CloneContext<Save> & InexactPartial<Document.ConstructionContext<this["parent"]>>,
   ): Save extends true ? Promise<this> : this;
 
   /**
@@ -323,16 +303,12 @@ declare abstract class Document<
    * const data = [{name: "Compendium Actor", type: "character", img: "path/to/profile.jpg"}];
    * const created = await Actor.createDocuments(data, {pack: "mymodule.mypack"});
    * ```
+   *
+   * @remarks If a document is skipped by a hook or `_preCreate` then that element is skipped in the
+   * return type. This means that you receive only documents that were actually created.
    */
-  static createDocuments<T extends Document.AnyConstructor, Temporary extends boolean | undefined>(
-    this: T,
-    data: Array<Document.ConstructorDataFor<NoInfer<T>>>,
-    operation?: InexactPartial<
-      Omit<Document.Database.OperationOf<NoInfer<T>["metadata"]["name"], "create">, "data">
-    > & {
-      temporary?: Temporary;
-    },
-  ): Promise<Document.ToStoredIf<T, Temporary>[] | undefined>;
+  // Note: This is overly broad because it must be overridden by the child class.
+  static createDocuments(data: AnyObject[] | undefined, operation?: AnyObject): Promise<Document.Any[]>;
 
   /**
    * Update multiple Document instances using provided differential data.
@@ -368,14 +344,12 @@ declare abstract class Document<
    * const actor = await pack.getDocument(documentId);
    * const updated = await Actor.updateDocuments([{_id: actor.id, name: "New Name"}], {pack: "mymodule.mypack"});
    * ```
+   *
+   * @remarks If a document is skipped by a hook or `_preCreate` then that element is skipped in the
+   * return type. This means that you receive only documents that were actually updated.
    */
-  static updateDocuments<T extends Document.AnyConstructor>(
-    this: T,
-    updates?: Array<DeepPartial<Document.UpdateDataFor<NoInfer<T>>>>,
-    operation?: InexactPartial<
-      Omit<Document.Database.OperationOf<FixedInstanceType<NoInfer<T>>["documentName"], "update">, "updates">
-    >,
-  ): Promise<Document.ToConfiguredInstance<T>[]>;
+  // Note: This is overly broad because it must be overridden by the child class.
+  static updateDocuments(updates: AnyObject[] | undefined, operation?: AnyObject): Promise<Document.Any[]>;
 
   /**
    * Delete one or multiple existing Documents using an array of provided ids.
@@ -413,14 +387,12 @@ declare abstract class Document<
    * const actor = await pack.getDocument(documentId);
    * const deleted = await Actor.deleteDocuments([actor.id], {pack: "mymodule.mypack"});
    * ```
+   *
+   * @remarks If a document is skipped by a hook or `_preDelete` then that element is skipped in the
+   * return type. This means that you receive only documents that were actually deleted.
    */
-  static deleteDocuments<T extends Document.AnyConstructor>(
-    this: T,
-    ids?: string[],
-    operation?: InexactPartial<
-      Omit<Document.Database.OperationOf<FixedInstanceType<NoInfer<T>>["documentName"], "delete">, "ids">
-    >,
-  ): Promise<Document.ToConfiguredInstance<T>[]>;
+  // Note: This is overly broad because it must be overridden by the child class.
+  static deleteDocuments(ids?: readonly string[], operation?: AnyObject): Promise<Document.Any[]>;
 
   /**
    * Create a new Document using provided input data, saving it to the database.
@@ -449,17 +421,10 @@ declare abstract class Document<
    * const created = await Item.create(data, {pack: "mymodule.mypack"});
    * ```
    *
-   * @remarks If no document has actually been created, the returned {@link Promise} resolves to `undefined`.
+   * @remarks If the document creation is skipped by a hook or `_preCreate` then `undefined` is
+   * returned.
    */
-  static create<T extends Document.AnyConstructor, Temporary extends boolean | undefined>(
-    this: T,
-    data: Document.ConstructorDataFor<NoInfer<T>> | Document.ConstructorDataFor<NoInfer<T>>[],
-    operation?: InexactPartial<
-      Omit<Document.Database.OperationOf<NoInfer<T>["metadata"]["name"], "create">, "data">
-    > & {
-      temporary?: Temporary;
-    },
-  ): Promise<Document.ToStoredIf<T, Temporary> | undefined>;
+  static create(data: AnyObject | AnyObject[], operation?: AnyObject): Promise<Document.Any | undefined>;
 
   /**
    * Update this Document using incremental data, saving it to the database.
@@ -470,11 +435,11 @@ declare abstract class Document<
    *                    (default: `{}`)
    * @returns The updated Document instance
    *
-   * @remarks If no document has actually been updated, the returned {@link Promise} resolves to `undefined`.
+   * @remarks If the document update is skipped by a hook or `_preUpdate` then `undefined` is
+   * returned.
    */
   update(
-    // TODO: Determine if this is Partial, DeepPartial, or InexactPartial.
-    data?: Partial<Document.ConstructorDataForSchema<Schema>>,
+    data: SchemaField.UpdateData<Schema> | undefined,
     operation?: InexactPartial<Omit<Document.Database.OperationOf<DocumentName, "update">, "updates">>,
   ): Promise<this | undefined>;
 
@@ -485,7 +450,8 @@ declare abstract class Document<
    *                    (default: `{}`)
    * @returns The deleted Document instance
    *
-   * @remarks If no document has actually been deleted, the returned {@link Promise} resolves to `undefined`.
+   * @remarks If the document deletion is skipped by a hook or `_preUpdate` then `undefined` is
+   * returned.
    */
   delete(
     operation?: InexactPartial<Omit<Document.Database.OperationOf<DocumentName, "delete">, "ids">>,
@@ -702,11 +668,10 @@ declare abstract class Document<
    * @param user      - The User requesting the creation operation
    * @returns Return false to cancel the creation operation entirely
    */
-  protected static _preCreateOperation<T extends Document.AnyConstructor>(
-    this: T,
-    documents: Document.ToConfiguredInstance<NoInfer<T>>[],
-    operation: Document.Database.OperationOf<NoInfer<T>["metadata"]["name"], "create">,
-    user: User,
+  protected static _preCreateOperation(
+    documents: AnyObject[],
+    operation: AnyObject,
+    user: User.ConfiguredInstance,
   ): Promise<boolean | void>;
 
   /**
@@ -719,11 +684,10 @@ declare abstract class Document<
    * @param operation - Parameters of the database creation operation
    * @param user      - The User who performed the creation operation
    */
-  protected static _onCreateOperation<T extends Document.AnyConstructor>(
-    this: T,
-    documents: Document.ToConfiguredInstance<NoInfer<T>>[],
-    operation: Document.Database.OperationOf<NoInfer<T>["metadata"]["name"], "create">,
-    user: User,
+  protected static _onCreateOperation(
+    documents: AnyObject[],
+    operation: AnyObject,
+    user: User.ConfiguredInstance,
   ): Promise<void>;
 
   /**
@@ -735,7 +699,7 @@ declare abstract class Document<
    * @returns A return value of false indicates the update operation should be cancelled
    */
   protected _preUpdate(
-    changed: fields.SchemaField.AssignmentType<Schema>,
+    changed: fields.SchemaField.UpdateData<Schema>,
     options: Document.PreUpdateOptions<DocumentName>,
     user: User,
   ): Promise<boolean | void>;
@@ -768,11 +732,10 @@ declare abstract class Document<
    * @param user      - The User requesting the update operation
    * @returns Return false to cancel the update operation entirely
    */
-  protected static _preUpdateOperation<T extends Document.AnyConstructor>(
-    this: T,
-    documents: Document.ToConfiguredInstance<NoInfer<T>>[],
-    operation: Document.Database.OperationOf<FixedInstanceType<NoInfer<T>>["documentName"], "update">,
-    user: User,
+  protected static _preUpdateOperation(
+    documents: AnyObject[],
+    operation: AnyObject,
+    user: User.ConfiguredInstance,
   ): Promise<boolean | void>;
 
   /**
@@ -785,11 +748,10 @@ declare abstract class Document<
    * @param operation - Parameters of the database update operation
    * @param user      - The User who performed the update operation
    */
-  protected static _onUpdateOperation<T extends Document.AnyConstructor>(
-    this: T,
-    documents: Document.ToConfiguredInstance<NoInfer<T>>[],
-    operation: Document.Database.OperationOf<FixedInstanceType<NoInfer<T>>["documentName"], "update">,
-    user: User,
+  protected static _onUpdateOperation(
+    documents: AnyObject[],
+    operation: AnyObject,
+    user: User.ConfiguredInstance,
   ): Promise<void>;
 
   /**
@@ -825,11 +787,10 @@ declare abstract class Document<
    * @returns Return false to cancel the deletion operation entirely
    * @internal
    */
-  protected static _preDeleteOperation<T extends Document.AnyConstructor>(
-    this: T,
-    documents: Document.ToConfiguredInstance<NoInfer<T>>[],
-    operation: Document.Database.OperationOf<FixedInstanceType<NoInfer<T>>["documentName"], "delete">,
-    user: User,
+  protected static _preDeleteOperation(
+    documents: AnyObject[],
+    operation: AnyObject,
+    user: User.ConfiguredInstance,
   ): Promise<unknown>;
 
   /**
@@ -844,9 +805,9 @@ declare abstract class Document<
    */
   protected static _onDeleteOperation<T extends Document.AnyConstructor>(
     this: T,
-    documents: Document.ToConfiguredInstance<NoInfer<T>>[],
-    operation: Document.Database.OperationOf<FixedInstanceType<NoInfer<T>>["documentName"], "delete">,
-    user: User,
+    documents: AnyObject[],
+    operation: AnyObject,
+    user: User.ConfiguredInstance,
   ): Promise<unknown>;
 
   /**
@@ -863,12 +824,17 @@ declare abstract class Document<
   /**
    * A reusable helper for adding migration shims.
    */
-  protected static _addDataFieldShims(data: object, shims: object, options: object): unknown;
+  protected static _addDataFieldShims(data: AnyObject, shims: AnyObject, options?: Document.DataFieldShimOptions): void;
 
   /**
    * A reusable helper for adding a migration shim
    */
-  protected static _addDataFieldShim(data: object, oldKey: string, newKey: string, options?: object): unknown;
+  protected static _addDataFieldShim(
+    data: AnyObject,
+    oldKey: string,
+    newKey: string,
+    options?: Document.DataFieldShimOptions,
+  ): void;
 
   /**
    * Define a simple migration from one field name to another.
@@ -880,10 +846,10 @@ declare abstract class Document<
    * @internal
    */
   protected static _addDataFieldMigration(
-    data: object,
+    data: AnyObject,
     oldKey: string,
     newKey: string,
-    apply?: (data: object) => any,
+    apply?: (data: AnyObject) => unknown,
   ): unknown;
 
   protected static _logDataFieldMigration(
@@ -896,9 +862,8 @@ declare abstract class Document<
    * @deprecated since v12, will be removed in v14
    * @remarks `"The Document._onCreateDocuments static method is deprecated in favor of Document._onCreateOperation"`
    */
-  protected static _onCreateDocuments<T extends Document.AnyConstructor>(
-    this: T,
-    documents: Array<Document.ToConfiguredInstance<NoInfer<T>>>,
+  protected static _onCreateDocuments(
+    documents: AnyObject[],
     context: Document.ModificationContext<Document.Any | null>,
   ): Promise<void>;
 
@@ -906,9 +871,8 @@ declare abstract class Document<
    * @deprecated since v12, will be removed in v14
    * @remarks `"The Document._onUpdateDocuments static method is deprecated in favor of Document._onUpdateOperation"`
    */
-  protected static _onUpdateDocuments<T extends Document.AnyConstructor>(
-    this: T,
-    documents: Array<Document.ToConfiguredInstance<NoInfer<T>>>,
+  protected static _onUpdateDocuments(
+    documents: AnyObject[],
     context: Document.ModificationContext<Document.Any | null>,
   ): Promise<unknown>;
 
@@ -916,9 +880,8 @@ declare abstract class Document<
    * @deprecated since v12, will be removed in v14
    * @remarks `"The Document._onDeleteDocuments static method is deprecated in favor of Document._onDeleteOperation"`
    */
-  protected static _onDeleteDocuments<T extends Document.AnyConstructor>(
-    this: T,
-    documents: Array<Document.ToConfiguredInstance<NoInfer<T>>>,
+  protected static _onDeleteDocuments(
+    documents: AnyObject[],
     context: Document.ModificationContext<Document.Any | null>,
   ): Promise<unknown>;
 }
@@ -991,6 +954,59 @@ declare namespace Document {
 
   type CoreTypesForName<Name extends Type> = string &
     GetKey<Document.Internal.SimpleMetadata<Name>, "coreTypes", ["base"]>[number];
+
+  type SubTypesOf<Name extends Type> = Game.Model.TypeNames<Name>;
+
+  type ModuleSubtype = `${string}.${string}`;
+
+  type OfType<Name extends Type, SubType extends SubTypesOf<Name>> =
+    | (Name extends "ActiveEffect" ? ActiveEffect.OfType<SubType & ActiveEffect.SubType> : never)
+    | (Name extends "Item" ? Item.OfType<SubType & Item.SubType> : never);
+
+  type SystemFor<Name extends Type, SubType extends SubTypesOf<Name>> = SystemData extends {
+    readonly [K in Name]: { readonly [_ in SubType]: infer Model };
+  }
+    ? Model
+    : UnknownSystem;
+
+  interface SystemData extends _SystemData {}
+
+  /** @internal */
+  type _SystemData = {
+    [Name in Type]: {
+      [SubType in SubTypesOf<Name>]: DataModelConfig extends _SubTypeShape<
+        Name,
+        SubType,
+        abstract new (...args: infer _) => infer Model
+      >
+        ? Model
+        : SourceConfig extends _SubTypeShape<Name, SubType, infer Source>
+          ? Source
+          : UnknownSystem;
+    };
+  };
+
+  /** @internal */
+  type _SubTypeShape<Name extends PropertyKey, SubType extends PropertyKey, T> = {
+    readonly [_ in Name]: { readonly [_ in SubType]: T };
+  };
+
+  /**
+   * With the existence of custom module subtypes a system can no longer rely on their configured types being the only ones.
+   * A module can provide its own custom type though it is always of the form `${moduleName}.${subType}` so the `.` is a pretty
+   * strong indicator.
+   *
+   * `UnknownSourceData` covers the case where it's configured without a data model.
+   * See {@link UnknownSystem | `UnknownSystem`} for other possibilities.
+   */
+  interface UnknownSourceData extends AnyObject {
+    type: `${string}.${string}`;
+  }
+
+  /**
+   * With the existence of custom module subtypes a system can no longer rely on their configured types being the only ones.
+   */
+  type UnknownSystem = UnknownSourceData | TypeDataField.UnknownTypeDataModel | DataModel.UnknownDataModel;
 
   // TODO: Probably a way to auto-determine this
   type SystemType =
@@ -1094,9 +1110,6 @@ declare namespace Document {
     typeof ConfigurationFailure & DefaultDocuments[Name]
   >;
 
-  type SubTypesOf<T extends Type> =
-    ConfiguredInstanceForName<T> extends { type: infer Types } ? Types : typeof foundry.CONST.BASE_DOCUMENT_TYPE;
-
   // NOTE(LukeAbby): This type is less DRY than it could be to avoid undue complexity in such a critical helpeer.
   // This has _many_ times been seen to cause loops so this type is written in an intentionally more paranoid way.
   // The reason for the verbosity and repetition is to avoid eagerly evaluating any branches that might cause a loop.
@@ -1124,6 +1137,8 @@ declare namespace Document {
     D extends Document.Internal.Constructor,
     Temporary extends boolean | undefined,
   > = Temporary extends true ? ToConfiguredStored<D> : ToConfiguredInstance<D>;
+
+  type StoredIf<D extends Document.Any, Temporary extends boolean | undefined> = Temporary extends true ? Stored<D> : D;
 
   type Temporary<D extends Document.Internal.Instance.Any> = D extends Stored<infer U> ? U : D;
 
@@ -1314,6 +1329,26 @@ declare namespace Document {
     deleteAll?: boolean | undefined;
   }
 
+  interface CloneContext<Save extends boolean | undefined = boolean | undefined> {
+    /**
+     * Save the clone to the World database?
+     * @defaultValue `false`
+     */
+    save?: Save;
+
+    /**
+     * Keep the same ID of the original document
+     * @defaultValue `false`
+     */
+    keepId?: boolean | undefined;
+
+    /**
+     * Track the clone source
+     * @defaultValue `false`
+     */
+    addSource?: boolean | undefined;
+  }
+
   type ModificationOptions = Omit<Document.ModificationContext<Document.Any | null>, "parent" | "pack">;
 
   type PreCreateOptions<Name extends Type> = Omit<
@@ -1444,6 +1479,18 @@ declare namespace Document {
       T extends Document.Type,
       Operation extends Database.Operation,
     > = DatabaseOperationMap[T][Operation];
+  }
+
+  interface DataFieldShimOptions {
+    /**
+     * Apply shims to embedded models?
+     */
+    warning?: string | null | undefined;
+
+    /**
+     * @remarks Foundry uses `if ("value" in options)` to determine whether to override the default value.
+     */
+    value?: unknown;
   }
 }
 

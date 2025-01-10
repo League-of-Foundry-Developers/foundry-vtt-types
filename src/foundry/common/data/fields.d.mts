@@ -3930,27 +3930,16 @@ declare namespace TypeDataField {
     SystemDocumentConstructor extends Document.SystemConstructor,
     Opts extends Options<SystemDocumentConstructor>,
   > = DataField.DerivedInitializedType<
-    _Instances<DataModelsFor<SystemDocumentConstructor["metadata"]["name"]>> | UnknownSystem,
+    _Instances<DataModelsFor<SystemDocumentConstructor["metadata"]["name"]>> | Document.UnknownSystem,
     MergedOptions<SystemDocumentConstructor, Opts>
   >;
 
+  /** @internal */
   type _Instances<T> = {
     [K in keyof T]: T[K] extends (abstract new (arg0: never, ...args: never[]) => infer U extends DataModel.Any)
       ? U
       : never;
-  };
-
-  /**
-   * With the existence of custom module subtypes a system can no longer rely on their configured types being the only ones.
-   * A module can provide its own custom type though it is always of the form `${moduleName}.${subType}` so the `.` is a pretty
-   * strong indicator.
-   *
-   * `UnknownSourceData` covers the case where it's configured without a data model.
-   * See {@link UnknownSystem | `UnknownSystem`} for other possibilities.
-   */
-  interface UnknownSourceData extends AnyObject {
-    type: `${string}.${string}`;
-  }
+  }[keyof T];
 
   /**
    * With the existence of custom module subtypes a system can no longer rely on their configured types being the only ones.
@@ -3961,21 +3950,6 @@ declare namespace TypeDataField {
    * See {@link UnknownSystem | `UnknownSystem`} for other possibilities.
    */
   interface UnknownTypeDataModel extends TypeDataModel<any, any, any, any> {}
-
-  /**
-   * With the existence of custom module subtypes a system can no longer rely on their configured types being the only ones.
-   *
-   * `UnknownDataModel` covers the case where it's configured with a {@link DataModel | `DataModel`}.
-   * Using a {@link TypeDataModel | `TypeDataModel`} is recommended by Foundry but a {@link DataModel | `DataModel`} is
-   * always possible.
-   * See {@link UnknownSystem | `UnknownSystem`} for other possibilities.
-   */
-  interface UnknownDataModel extends DataModel<any, any, any> {}
-
-  /**
-   * With the existence of custom module subtypes a system can no longer rely on their configured types being the only ones.
-   */
-  type UnknownSystem = UnknownSourceData | UnknownTypeDataModel | UnknownDataModel;
 
   /**
    * A shorthand for the persisted type of a TypeDataField class.

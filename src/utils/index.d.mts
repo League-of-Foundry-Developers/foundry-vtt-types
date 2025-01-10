@@ -26,8 +26,8 @@ export type LoggingLevels = "debug" | "log" | "info" | "warn" | "error";
  */
 // Note(LukeAbby): There are two tricky cases:
 // - `T = {}` would regularly always return `unknown`. The fix here adding a single dummy property `{ _?: any } & T`.
-// - `T = never` would regularly always return `unknown`. The fix here is adding `_GetKey` which makes the type distributive and therefore `never` as an input becomes `never` in the output.
-export type GetKey<T, K extends PropertyKey, D = never> = _GetKey<{ _?: any } & T, K, D>;
+// - `T = never` would regularly always return `unknown`. The fix here is checking if `any` is assignable to it.
+export type GetKey<T, K extends PropertyKey, D = never> = [any] extends [T] ? _GetKey<{ _?: any } & T, K, D> : D;
 
 type _GetKey<T, K extends PropertyKey, D> = T extends { readonly [_ in K]?: infer V } ? V : D;
 

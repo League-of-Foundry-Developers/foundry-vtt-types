@@ -353,6 +353,16 @@ declare namespace DataModel {
 
   type ConstructorDataFor<ConcreteDataModel extends DataModel.Any> = ConstructorData<SchemaOf<ConcreteDataModel>>;
 
+  /**
+   * With the existence of custom module subtypes a system can no longer rely on their configured types being the only ones.
+   *
+   * `UnknownDataModel` covers the case where it's configured with a {@link DataModel | `DataModel`}.
+   * Using a {@link TypeDataModel | `TypeDataModel`} is recommended by Foundry but a {@link DataModel | `DataModel`} is
+   * always possible.
+   * See {@link UnknownSystem | `UnknownSystem`} for other possibilities.
+   */
+  interface UnknownDataModel extends DataModel<any, any, any> {}
+
   interface DataValidationOptions<Parent extends Any | null = null> {
     /**
      * Throw an error if validation fails.
