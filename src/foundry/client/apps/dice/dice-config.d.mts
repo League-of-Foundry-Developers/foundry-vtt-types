@@ -1,6 +1,4 @@
-import type { MaybePromise, GetDataReturnType } from "../../../../utils/index.d.mts";
-
-export {};
+import type { MaybePromise, GetDataReturnType, EmptyObject } from "../../../../utils/index.d.mts";
 
 declare global {
   /**
@@ -34,7 +32,7 @@ declare global {
     interface DiceConfigData {
       dice: DiceConfigDiceData[];
       methods: Record<string, CONFIG.Dice.FulfillmentMethod>;
-      object: never;
+      object: EmptyObject;
     }
 
     interface DiceConfigDiceData {
