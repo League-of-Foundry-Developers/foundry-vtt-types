@@ -89,12 +89,12 @@ if (game.ready) {
 
 // Game model
 declare const itemTypes: Game.Model.TypeNames<"Item">;
-expectTypeOf(itemTypes).toEqualTypeOf<"weapon" | "armor" | "base">();
+expectTypeOf(itemTypes).toEqualTypeOf<"weapon" | "armor" | "base" | `${string}.${string}`>();
 declare const itemCls: foundry.abstract.Document.ConfiguredClassForName<"Item">;
 expectTypeOf(itemCls).toEqualTypeOf<typeof Item>();
 declare const itemTypes2: Game.Model.TypeNames<foundry.abstract.Document.ConfiguredClassForName<"Item">>;
-expectTypeOf(itemTypes2).toEqualTypeOf<"weapon" | "armor" | "base">();
-expectTypeOf(game.documentTypes!.Item).toEqualTypeOf<Array<"weapon" | "armor" | "base">>();
+expectTypeOf(itemTypes2).toEqualTypeOf<"weapon" | "armor" | "base" | `${string}.${string}`>();
+expectTypeOf(game.documentTypes!.Item).toEqualTypeOf<Array<"weapon" | "armor" | "base" | `${string}.${string}`>>();
 
 if (game instanceof Game) {
   const tokenModel = game.model.Token;

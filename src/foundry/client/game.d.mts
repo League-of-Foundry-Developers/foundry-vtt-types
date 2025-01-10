@@ -667,7 +667,7 @@ declare global {
        */
       type TypeNames<DocumentName extends Document.Type> =
         | (string & keyof Model[DocumentName])
-        | (Document.Internal.SimpleMetadata<DocumentName> extends { hasTypeData: true }
+        | (Document.Internal.SimpleMetadata<DocumentName> extends { readonly hasTypeData: true }
             ? `${string}.${string}` & {}
             : never);
     }
