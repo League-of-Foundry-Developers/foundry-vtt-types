@@ -28,7 +28,7 @@ declare class BaseFogExploration extends Document<"FogExploration", BaseFogExplo
 
   static override defineSchema(): BaseFogExploration.Schema;
 
-  static #canModify(user: documents.BaseUser, doc: BaseFogExploration);
+  static #canModify(user: User, doc: BaseFogExploration);
 
   /**
    * @privateRemarks _preUpdate is overridden but with no signature changes.

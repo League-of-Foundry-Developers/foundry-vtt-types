@@ -27,7 +27,7 @@ declare class BaseRegionBehavior extends Document<"RegionBehavior", BaseRegionBe
 
   static override defineSchema(): BaseRegionBehavior.Schema;
 
-  static override canUserCreate(user: foundry.documents.BaseUser): boolean;
+  static override canUserCreate(user: User): boolean;
 }
 
 export default BaseRegionBehavior;

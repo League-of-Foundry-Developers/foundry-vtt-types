@@ -29,7 +29,7 @@ declare class BasePlaylistSound extends Document<"PlaylistSound", BasePlaylistSo
   static override defineSchema(): BasePlaylistSound.Schema;
 
   override testUserPermission(
-    user: foundry.documents.BaseUser,
+    user: User,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS,
     options?: InexactPartial<{
       /**

@@ -41,10 +41,10 @@ declare class BaseMacro extends Document<"Macro", BaseMacro.Schema, any> {
 
   static override validateJoint(data: Record<string, unknown>): void;
 
-  static override canUserCreate(user: foundry.documents.BaseUser): boolean;
+  static override canUserCreate(user: User): boolean;
 
   override testUserPermission(
-    user: documents.BaseUser,
+    user: User,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
     options?: InexactPartial<{
       /**

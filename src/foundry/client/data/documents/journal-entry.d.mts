@@ -1,4 +1,4 @@
-import type { BaseJournalEntry, BaseUser } from "../../../common/documents/_module.d.mts";
+import type { BaseJournalEntry } from "../../../common/documents/_module.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
@@ -33,7 +33,7 @@ declare global {
      */
     get visible(): boolean;
 
-    override getUserLevel(user: BaseUser): foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
+    override getUserLevel(user?: User): foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
 
     /**
      * Return a reference to the Note instance for this Journal Entry in the current Scene, if any.

@@ -61,7 +61,7 @@ declare class BaseUser extends Document<"User", BaseUser.Schema, any> {
    */
   can(action: keyof typeof CONST.USER_PERMISSIONS | CONST.USER_ROLE_NAMES | CONST.USER_ROLES): boolean;
 
-  override getUserLevel(user: BaseUser): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
+  override getUserLevel(user?: User): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
 
   /**
    * Test whether the User has at least a specific permission
@@ -95,7 +95,7 @@ declare class BaseUser extends Document<"User", BaseUser.Schema, any> {
    * @param data - The supplied creation data.
    * @internal
    */
-  static #canCreate(user: BaseUser, doc: BaseUser, data?: BaseUser.ConstructorData): boolean;
+  static #canCreate(user: User, doc: BaseUser, data?: BaseUser.ConstructorData): boolean;
 
   /**
    * Is a user able to update an existing User?
@@ -104,7 +104,7 @@ declare class BaseUser extends Document<"User", BaseUser.Schema, any> {
    * @param changes - Proposed changes.
    * @internal
    */
-  static #canUpdate(user: BaseUser, doc: BaseUser, changes: BaseUser.ConstructorData): boolean;
+  static #canUpdate(user: User, doc: BaseUser, changes: BaseUser.ConstructorData): boolean;
 
   /**
    * Is a user able to delete an existing User?
@@ -113,7 +113,7 @@ declare class BaseUser extends Document<"User", BaseUser.Schema, any> {
    * @param doc  - The User document being deleted.
    * @internal
    */
-  static #canDelete(user: BaseUser, doc: BaseUser): boolean;
+  static #canDelete(user: User, doc: BaseUser): boolean;
 }
 
 export default BaseUser;
