@@ -721,7 +721,7 @@ declare abstract class Document<
    */
   protected static _onCreateOperation<T extends Document.AnyConstructor>(
     this: T,
-    documents: Document.ToConfiguredClass<NoInfer<T>>[],
+    documents: Document.ToConfiguredInstance<NoInfer<T>>[],
     operation: Document.Database.OperationOf<NoInfer<T>["metadata"]["name"], "create">,
     user: User,
   ): Promise<void>;
@@ -799,10 +799,7 @@ declare abstract class Document<
    * @param user    - The User requesting the document deletion
    * @returns A return value of false indicates the delete operation should be cancelled
    */
-  protected _preDelete(
-    options: Document.PreDeleteOptions<DocumentName>,
-    user: User,
-  ): Promise<boolean | void>;
+  protected _preDelete(options: Document.PreDeleteOptions<DocumentName>, user: User): Promise<boolean | void>;
 
   /**
    * Perform follow-up operations after a Document of this type is deleted.
@@ -830,7 +827,7 @@ declare abstract class Document<
    */
   protected static _preDeleteOperation<T extends Document.AnyConstructor>(
     this: T,
-    documents: Array<Document.ToConfiguredInstance<NoInfer<T>>>,
+    documents: Document.ToConfiguredInstance<NoInfer<T>>[],
     operation: Document.Database.OperationOf<FixedInstanceType<NoInfer<T>>["documentName"], "delete">,
     user: User,
   ): Promise<unknown>;
@@ -847,7 +844,7 @@ declare abstract class Document<
    */
   protected static _onDeleteOperation<T extends Document.AnyConstructor>(
     this: T,
-    documents: Array<Document.ToConfiguredInstance<NoInfer<T>>>,
+    documents: Document.ToConfiguredInstance<NoInfer<T>>[],
     operation: Document.Database.OperationOf<FixedInstanceType<NoInfer<T>>["documentName"], "delete">,
     user: User,
   ): Promise<unknown>;
@@ -1358,16 +1355,8 @@ declare namespace Document {
     readonly coreTypes: readonly string[];
     readonly embedded: Record<string, string>;
     readonly permissions: {
-      create:
-        | string
-        | ToMethod<
-            (user: User, doc: ThisType, data: Document.ConstructorDataForName<Type>) => boolean
-          >;
-      update:
-        | string
-        | ToMethod<
-            (user: User, doc: ThisType, data: Document.UpdateDataForName<Type>) => boolean
-          >;
+      create: string | ToMethod<(user: User, doc: ThisType, data: Document.ConstructorDataForName<Type>) => boolean>;
+      update: string | ToMethod<(user: User, doc: ThisType, data: Document.UpdateDataForName<Type>) => boolean>;
       delete: string | ToMethod<(user: User, doc: ThisType, data: EmptyObject) => boolean>;
     };
     readonly preserveOnImport?: readonly string[] | undefined;

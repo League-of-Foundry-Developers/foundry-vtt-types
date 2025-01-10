@@ -178,11 +178,7 @@ declare abstract class DatabaseBackend {
   /**
    * Construct a standardized error message given the context of an attempted operation
    */
-  protected _logError(
-    user: User,
-    action: string,
-    { parent, pack }?: { parent?: Document.Any; pack?: string },
-  ): string;
+  protected _logError(user: User, action: string, { parent, pack }?: { parent?: Document.Any; pack?: string }): string;
 }
 
 export default DatabaseBackend;
