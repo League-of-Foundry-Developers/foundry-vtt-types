@@ -39,10 +39,10 @@ declare class BaseDrawing extends Document<"Drawing", BaseDrawing.Schema, any> {
    * Is a user able to update or delete an existing Drawing document??
    * @internal
    */
-  static #canModify(user: documents.BaseUser, doc: BaseDrawing, data: BaseDrawing.UpdateData): boolean;
+  static #canModify(user: User, doc: BaseDrawing, data: BaseDrawing.UpdateData): boolean;
 
   override testUserPermission(
-    user: documents.BaseUser,
+    user: User,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
     options?: InexactPartial<{
       /**

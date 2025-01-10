@@ -29,7 +29,7 @@ declare class BaseCombat extends Document<"Combat", BaseCombat.Schema, any> {
    * Is a user able to update an existing Combat?
    * @internal
    */
-  static #canUpdate(user: documents.BaseUser, doc: BaseCombat, data: BaseCombat.UpdateData): boolean;
+  static #canUpdate(user: User, doc: BaseCombat, data: BaseCombat.UpdateData): boolean;
 
   /**
    * Can a certain User change the Combat round?

@@ -247,7 +247,7 @@ declare class EmbeddedCollection<
     documents: foundry.abstract.Document.Any[],
     result: unknown,
     operation: DatabaseOperation,
-    user: foundry.documents.BaseUser,
+    user: User,
   ): void;
 
   /**
