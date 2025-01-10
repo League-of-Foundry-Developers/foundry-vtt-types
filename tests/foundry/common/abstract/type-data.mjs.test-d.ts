@@ -79,7 +79,7 @@ class QuestModel extends TypeDataModel<QuestSchema, BaseJournalEntryPage, BaseQu
   protected override async _preCreate(
     data: TypeDataModel.ParentAssignmentType<this>,
     options: TypeDataModel.TypeDataModelModificationOptions,
-    user: BaseUser,
+    user: User,
   ): Promise<boolean | void> {
     expectTypeOf(data.system.steps).toEqualTypeOf<string[]>();
 

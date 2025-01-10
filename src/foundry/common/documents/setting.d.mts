@@ -1,6 +1,5 @@
 import type Document from "../abstract/document.mts";
 import type * as fields from "../data/fields.d.mts";
-import type BaseUser from "./user.d.mts";
 
 type DataSchema = foundry.data.fields.DataSchema;
 
@@ -25,7 +24,7 @@ declare class BaseSetting extends Document<"Setting", BaseSetting.Schema, any> {
 
   static override defineSchema(): BaseSetting.Schema;
 
-  static canUserCreate(user: BaseUser): boolean;
+  static canUserCreate(user: User): boolean;
 }
 
 export default BaseSetting;
