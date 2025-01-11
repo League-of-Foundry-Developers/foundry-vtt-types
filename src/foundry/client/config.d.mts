@@ -2489,7 +2489,7 @@ declare global {
        * @defaultValue `foundry.canvas.tokens.TokenRingConfig`
        * @remarks `"ring property is initialized in foundry.canvas.tokens.TokenRingConfig.initialize"`
        */
-      ring?: foundry.canvas.tokens.TokenRingConfig;
+      readonly ring: foundry.canvas.tokens.TokenRingConfig;
     };
 
     /**
