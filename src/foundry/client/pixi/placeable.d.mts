@@ -226,7 +226,7 @@ declare global {
      * Register pending canvas operations which should occur after a new PlaceableObject of this type is created
      */
     protected _onCreate(
-      data: foundry.data.fields.SchemaField.InnerAssignmentType<D["schema"]["fields"]>,
+      data: foundry.data.fields.SchemaField.AssignmentData<D["schema"]["fields"]>,
       options: Document.OnCreateOptions<D["documentName"]>,
       userId: string,
     ): void;
@@ -236,7 +236,7 @@ declare global {
      * @remarks Called without options and userId in Drawing._onUpdate
      */
     protected _onUpdate(
-      changed: foundry.data.fields.SchemaField.InnerAssignmentType<D["schema"]["fields"]>,
+      changed: foundry.data.fields.SchemaField.AssignmentData<D["schema"]["fields"]>,
       options?: Document.OnUpdateOptions<D["documentName"]>,
       userId?: string,
     ): void;
@@ -526,7 +526,7 @@ declare global {
      */
     _prepareDragLeftDropUpdates(
       event: PIXI.FederatedEvent,
-    ): foundry.data.fields.SchemaField.InnerAssignmentType<D["schema"]["fields"]>[] | null;
+    ): foundry.data.fields.SchemaField.AssignmentData<D["schema"]["fields"]>[] | null;
 
     /**
      * Callback actions which occur on a mouse-move operation.

@@ -44,10 +44,10 @@ declare namespace BaseJournalEntryPage {
   type Metadata = Document.MetadataFor<BaseJournalEntryPage>;
 
   type SchemaField = fields.SchemaField<Schema>;
-  type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;
-  type UpdateData = fields.SchemaField.InnerAssignmentType<Schema>;
-  type Properties = fields.SchemaField.InnerInitializedType<Schema>;
-  type Source = fields.SchemaField.InnerPersistedType<Schema>;
+  type ConstructorData = fields.SchemaField.CreateData<Schema>;
+  type UpdateData = fields.SchemaField.AssignmentData<Schema>;
+  type Properties = fields.SchemaField.InitializedData<Schema>;
+  type Source = fields.SchemaField.PersistedData<Schema>;
 
   interface Schema extends DataSchema {
     /**

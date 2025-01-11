@@ -48,7 +48,7 @@ declare global {
     static get implementation(): Adventure.ConfiguredClass;
 
     static fromSource<Schema extends DataSchema>(
-      source: fields.SchemaField.InnerAssignmentType<Schema>,
+      source: fields.SchemaField.AssignmentData<Schema>,
       {
         strict,
         ...context
@@ -95,7 +95,7 @@ declare global {
 }
 
 type DocumentDataRecord = {
-  [K in AdventureDocumentTypes]?: foundry.data.fields.SchemaField.InnerAssignmentType<
+  [K in AdventureDocumentTypes]?: foundry.data.fields.SchemaField.AssignmentData<
     ReturnType<Document.ConfiguredClassForName<K>["defineSchema"]>
   >[];
 };

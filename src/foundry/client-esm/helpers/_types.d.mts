@@ -10,7 +10,7 @@ export interface CompendiumArtInfo {
   /**
    * The path to the token image, or an object to merge into the Actor's prototype token.
    */
-  token?: string | SchemaField.InnerAssignmentType<PrototypeToken.Schema> | undefined;
+  token?: string | SchemaField.AssignmentData<PrototypeToken.Schema> | undefined;
 
   /**
    *An optional credit string for use by the game system to apply in an appropriate place.

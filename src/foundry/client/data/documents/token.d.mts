@@ -205,9 +205,7 @@ declare global {
      * @returns Could this Token update change Region containment?
      */
 
-    protected _couldRegionsChange(
-      changes: SchemaField.InnerAssignmentType<foundry.documents.BaseToken.Schema>,
-    ): boolean;
+    protected _couldRegionsChange(changes: SchemaField.AssignmentData<foundry.documents.BaseToken.Schema>): boolean;
 
     /**
      * When the base Actor for a TokenDocument changes, we may need to update its Actor instance

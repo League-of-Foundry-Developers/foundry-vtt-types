@@ -33,7 +33,7 @@ declare class BaseDrawing extends Document<"Drawing", BaseDrawing.Schema, any> {
    */
   static #validateVisibleContent(data: BaseDrawing.UpdateData): boolean;
 
-  static override validateJoint(data: fields.SchemaField.InnerAssignmentType<documents.BaseDrawing.Schema>): void;
+  static override validateJoint(data: fields.SchemaField.AssignmentData<documents.BaseDrawing.Schema>): void;
 
   /**
    * Is a user able to update or delete an existing Drawing document??
@@ -77,10 +77,10 @@ declare namespace BaseDrawing {
   type Metadata = Document.MetadataFor<BaseDrawing>;
 
   type SchemaField = fields.SchemaField<Schema>;
-  type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;
-  type UpdateData = fields.SchemaField.InnerAssignmentType<Schema>;
-  type Properties = fields.SchemaField.InnerInitializedType<Schema>;
-  type Source = fields.SchemaField.InnerPersistedType<Schema>;
+  type ConstructorData = fields.SchemaField.CreateData<Schema>;
+  type UpdateData = fields.SchemaField.AssignmentData<Schema>;
+  type Properties = fields.SchemaField.InitializedData<Schema>;
+  type Source = fields.SchemaField.PersistedData<Schema>;
 
   interface Schema extends DataSchema {
     /**

@@ -10,7 +10,7 @@ type DataSchema = foundry.data.fields.DataSchema;
 // TODO: Implement all of the necessary options
 
 declare global {
-  type LightAnimationData = fields.SchemaField.InnerInitializedType<LightData.LightAnimationDataSchema>;
+  type LightAnimationData = fields.SchemaField.InitializedData<LightData.LightAnimationDataSchema>;
 }
 
 declare namespace LightData {
@@ -161,7 +161,7 @@ declare namespace LightData {
     darkness: fields.SchemaField<
       DarknessSchema,
       {
-        validate: (d: fields.SchemaField.InnerAssignmentType<DarknessSchema>) => boolean;
+        validate: (d: fields.SchemaField.AssignmentData<DarknessSchema>) => boolean;
         validationError: "darkness.max may not be less than darkness.min";
       }
     >;
@@ -553,7 +553,7 @@ declare namespace PrototypeToken {
     randomImg: fields.BooleanField;
   }
 
-  type ConstructorData = fields.SchemaField.InnerAssignmentType<Schema>;
+  type ConstructorData = fields.SchemaField.AssignmentData<Schema>;
 }
 
 /**

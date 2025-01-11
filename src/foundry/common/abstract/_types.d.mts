@@ -46,7 +46,7 @@ export interface DatabaseCreateOperation<T extends Document.Internal.Instance.An
   /**
    * An array of data objects from which to create Documents
    */
-  data: foundry.data.fields.SchemaField.InnerAssignmentType<Document.Internal.SchemaFor<T>>[];
+  data: foundry.data.fields.SchemaField.AssignmentData<Document.Internal.SchemaFor<T>>[];
 
   /**
    * Retain the _id values of provided data instead of generating new ids
@@ -134,7 +134,7 @@ export interface DatabaseUpdateOperation<T extends Document.Internal.Instance.An
    * An array of data objects used to update existing Documents.
    * Each update object must contain the _id of the target Document
    */
-  updates: foundry.data.fields.SchemaField.InnerAssignmentType<Document.Internal.SchemaFor<T>>[];
+  updates: foundry.data.fields.SchemaField.AssignmentData<Document.Internal.SchemaFor<T>>[];
 
   /**
    * Difference each update object against current Document data and only use

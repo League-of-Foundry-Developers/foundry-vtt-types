@@ -677,9 +677,9 @@ declare abstract class AnyDataField extends DataField<any, any, any, any> {
 declare class SchemaField<
   Fields extends DataSchema,
   Options extends SchemaField.Options<Fields> = SchemaField.DefaultOptions,
-  AssignmentType = SchemaField.AssignmentType<Fields, SimpleMerge<Options, SchemaField.DefaultOptions>>,
-  InitializedType = SchemaField.InitializedType<Fields, SimpleMerge<Options, SchemaField.DefaultOptions>>,
-  PersistedType extends AnyObject | null | undefined = SchemaField.PersistedType<
+  AssignmentType = SchemaField.Internal.AssignmentType<Fields, SimpleMerge<Options, SchemaField.DefaultOptions>>,
+  InitializedType = SchemaField.Internal.InitializedType<Fields, SimpleMerge<Options, SchemaField.DefaultOptions>>,
+  PersistedType extends AnyObject | null | undefined = SchemaField.Internal.PersistedType<
     Fields,
     SimpleMerge<Options, SchemaField.DefaultOptions>
   >,
@@ -809,7 +809,7 @@ declare namespace SchemaField {
    * A shorthand for the options of a SchemaField class.
    * @typeParam Fields - the DataSchema fields of the SchemaField
    */
-  type Options<Fields extends DataSchema> = DataField.Options<InnerAssignmentType<Fields> | __SchemaFieldInitial>;
+  type Options<Fields extends DataSchema> = DataField.Options<AssignmentData<Fields> | __SchemaFieldInitial>;
 
   /** Any SchemaField. */
   type Any = SchemaField<any, any, any, any, any>;
@@ -818,51 +818,59 @@ declare namespace SchemaField {
    * Get the constructor type for the given DataSchema.
    * @typeParam Fields - the DataSchema fields of the SchemaField
    */
-  type InnerConstructorType<Fields extends DataSchema> = InnerAssignmentType<Fields>;
+  // Note(LukeAbby): Currently this is identical to the assignment type. The intent is to make this
+  // More accurate in the future, e.g. requiring some requisite properties.
+  type CreateData<Fields extends DataSchema> = AssignmentData<Fields>;
 
   /**
    * Get the inner assignment type for the given DataSchema.
    * @typeParam Fields - the DataSchema fields of the SchemaField
    */
-  type InnerAssignmentType<Fields extends DataSchema> = RemoveIndexSignatures<{
+  type AssignmentData<Fields extends DataSchema> = RemoveIndexSignatures<{
     [Key in keyof Fields]?: Fields[Key] extends EmbeddedDataField<any, any, infer AssignmentType, any, any>
       ? AssignmentType
       : Fields[Key] extends SchemaField<infer SubSchema, any, any, any, any>
-        ? // FIXME(LukeAbby): This is a quick hack into InnerAssignmentType that assumes that the `initial` of `SchemaField` is not changed from the default of `{}`
+        ? // FIXME(LukeAbby): This is a quick hack into AssignmentData that assumes that the `initial` of `SchemaField` is not changed from the default of `{}`
           // This will be fixed with the refactoring of the types
-          EmptyObject extends InnerAssignmentType<SubSchema>
-          ? InnerAssignmentType<SubSchema> | undefined | null
-          : InnerAssignmentType<SubSchema>
+          EmptyObject extends AssignmentData<SubSchema>
+          ? AssignmentData<SubSchema> | undefined | null
+          : AssignmentData<SubSchema>
         : Fields[Key] extends DataField<any, infer AssignType, any, any>
           ? AssignType
           : never;
   }>;
 
-  type InnerUpdateData<Fields extends DataSchema> = InnerAssignmentType<Fields>;
-
   /**
-   * Get the inner initialized type for the given DataSchema.
+   * The required type of data used when updating a document.
    * @typeParam Fields - the DataSchema fields of the SchemaField
    */
-  type InnerInitializedType<Fields extends DataSchema> = RemoveIndexSignatures<{
+  // Note(LukeAbby): Currently this is identical to `AssignmentData` but the intent is to make it
+  // more accurate in the future.
+  type UpdateData<Fields extends DataSchema> = AssignmentData<Fields>;
+
+  /**
+   * Gets the initialized version of a schema. This means a
+   * @typeParam Fields - the DataSchema fields of the SchemaField
+   */
+  type InitializedData<Fields extends DataSchema> = RemoveIndexSignatures<{
     [Key in keyof Fields]: Fields[Key] extends EmbeddedDataField<infer Model, any, any, any, any>
       ? FixedInstanceType<Model>
       : Fields[Key] extends SchemaField<infer SubSchema, any, any, any, any>
-        ? InnerInitializedType<SubSchema>
+        ? InitializedData<SubSchema>
         : Fields[Key] extends DataField<any, any, infer InitType, any>
           ? InitType
           : never;
   }>;
 
   /**
-   * Get the inner persisted type for the given DataSchema.
+   * Get the persisted type for the given DataSchema. This is the type used for source.
    * @typeParam Fields - the DataSchema fields of the SchemaField
    */
-  type InnerPersistedType<Fields extends DataSchema> = RemoveIndexSignatures<{
+  type PersistedData<Fields extends DataSchema> = RemoveIndexSignatures<{
     [Key in keyof Fields]: Fields[Key] extends EmbeddedDataField<any, any, any, any, infer PersistType>
       ? PersistType
       : Fields[Key] extends SchemaField<infer SubSchema, any, any, any, any>
-        ? InnerPersistedType<SubSchema>
+        ? PersistedData<SubSchema>
         : Fields[Key] extends DataField<any, any, any, infer PersistType>
           ? PersistType
           : never;
@@ -885,36 +893,93 @@ declare namespace SchemaField {
    */
   type MergedOptions<Fields extends DataSchema, Opts extends Options<Fields>> = SimpleMerge<DefaultOptions, Opts>;
 
-  // FIXME: null or undefined should be permissible, cast as the initialized type
+  // These exist for calculating the type of schema field with options.
+  // This will be deleted once fields are refactored.
+  // The names are also confusing. Hence these it's put into `Internal.
+  namespace Internal {
+    // FIXME: null or undefined should be permissible, cast as the initialized type
+    /**
+     * A shorthand for the assignment type of a SchemaField class.
+     * @typeParam Fields - the DataSchema fields of the SchemaField
+     * @typeParam Opts   - the options that override the default options
+     */
+    type AssignmentType<
+      Fields extends DataSchema,
+      Opts extends Options<Fields> = DefaultOptions,
+    > = DataField.DerivedAssignmentType<AssignmentData<Fields>, MergedOptions<Fields, Opts>>;
+
+    /**
+     * A shorthand for the assignment type of a SchemaField class.
+     * @typeParam Fields - the DataSchema fields of the SchemaField
+     * @typeParam Opts   - the options that override the default options
+     */
+    type InitializedType<
+      Fields extends DataSchema,
+      Opts extends Options<Fields> = DefaultOptions,
+    > = DataField.DerivedInitializedType<InitializedData<Fields>, MergedOptions<Fields, Opts>>;
+
+    /**
+     * A shorthand for the assignment type of a SchemaField class.
+     * @typeParam Fields - the DataSchema fields of the SchemaField
+     * @typeParam Opts   - the options that override the default options
+     */
+    type PersistedType<
+      Fields extends DataSchema,
+      Opts extends Options<Fields> = DefaultOptions,
+    > = DataField.DerivedInitializedType<PersistedData<Fields>, MergedOptions<Fields, Opts>>;
+  }
+
   /**
-   * A shorthand for the assignment type of a SchemaField class.
-   * @typeParam Fields - the DataSchema fields of the SchemaField
-   * @typeParam Opts   - the options that override the default options
+   * This is deprecated because of likely confusion between `SchemaField.AssignmentData` and `SchemaField.AssignmentType`.
+   * @deprecated {@link SchemaField.Internal.AssignmentType | `SchemaField.Internal.AssignmentType`}
    */
   type AssignmentType<
     Fields extends DataSchema,
     Opts extends Options<Fields> = DefaultOptions,
-  > = DataField.DerivedAssignmentType<InnerAssignmentType<Fields>, MergedOptions<Fields, Opts>>;
+  > = Internal.AssignmentType<Fields, Opts>;
 
   /**
-   * A shorthand for the assignment type of a SchemaField class.
-   * @typeParam Fields - the DataSchema fields of the SchemaField
-   * @typeParam Opts   - the options that override the default options
+   * This is deprecated because of likely confusion between `SchemaField.InitializedData` and `SchemaField.InitializedType`.
+   * @deprecated {@link SchemaField.Internal.InitializedType | `SchemaField.Internal.InitializedType`}
    */
   type InitializedType<
     Fields extends DataSchema,
     Opts extends Options<Fields> = DefaultOptions,
-  > = DataField.DerivedInitializedType<InnerInitializedType<Fields>, MergedOptions<Fields, Opts>>;
+  > = Internal.InitializedType<Fields, Opts>;
 
   /**
-   * A shorthand for the assignment type of a SchemaField class.
-   * @typeParam Fields - the DataSchema fields of the SchemaField
-   * @typeParam Opts   - the options that override the default options
+   * This is deprecated because of likely confusion between `SchemaField.PersistedData` and `SchemaField.PersistedType`.
+   * @deprecated {@link SchemaField.Internal.PersistedType | `SchemaField.Internal.PersistedType`}
    */
-  type PersistedType<
-    Fields extends DataSchema,
-    Opts extends Options<Fields> = DefaultOptions,
-  > = DataField.DerivedInitializedType<InnerPersistedType<Fields>, MergedOptions<Fields, Opts>>;
+  type PersistedType<Fields extends DataSchema, Opts extends Options<Fields> = DefaultOptions> = Internal.PersistedType<
+    Fields,
+    Opts
+  >;
+
+  /**
+   * @deprecated {@link SchemaField.CreateData | `SchemaField.CreateData`}
+   */
+  type InnerConstructorType<Fields extends DataSchema> = CreateData<Fields>;
+
+  /**
+   * @deprecated {@link SchemaField.AssignmentData | `SchemaField.AssignmentData`}
+   */
+  type InnerAssignmentType<Fields extends DataSchema> = AssignmentData<Fields>;
+
+  /**
+   * @deprecated {@link SchemaField.InitializedData | `SchemaField.InitializedData`}
+   */
+  type InnerInitializedType<Fields extends DataSchema> = InitializedData<Fields>;
+
+  /**
+   * @deprecated {@link SchemaField.UpdateData | `SchemaField.UpdateData`}
+   */
+  type InnerUpdateData<Fields extends DataSchema> = UpdateData<Fields>;
+
+  /**
+   * @deprecated {@link SchemaField.PersistedData | `SchemaField.PersistedData`}
+   */
+  type InnerPersistedType<Fields extends DataSchema> = PersistedData<Fields>;
 }
 
 /**
@@ -1744,7 +1809,7 @@ declare namespace ArrayField {
     ElementFieldType extends DataField<any, infer Assign, any, any>
       ? Assign
       : ElementFieldType extends new (...args: any[]) => Document<any, infer Schema extends DataSchema, any>
-        ? SchemaField.InnerAssignmentType<Schema>
+        ? SchemaField.AssignmentData<Schema>
         : never;
 
   /**
@@ -1755,7 +1820,7 @@ declare namespace ArrayField {
     ElementFieldType extends DataField<any, any, infer Init, any>
       ? Init
       : ElementFieldType extends new (...args: any[]) => Document<any, infer Schema extends DataSchema, any>
-        ? SchemaField.InnerInitializedType<Schema>
+        ? SchemaField.InitializedData<Schema>
         : never;
 
   /**
@@ -1766,7 +1831,7 @@ declare namespace ArrayField {
     ElementFieldType extends DataField<any, any, any, infer Persist>
       ? Persist
       : ElementFieldType extends new (...args: any[]) => Document<any, infer Schema extends DataSchema, any>
-        ? SchemaField.InnerPersistedType<Schema>
+        ? SchemaField.PersistedData<Schema>
         : never;
 
   /**
@@ -2005,7 +2070,7 @@ declare namespace EmbeddedDataField {
    * @typeParam ModelType - the DataModel for the embedded data
    */
   type Options<ModelType extends DataModel.AnyConstructor> = DataField.Options<
-    SchemaField.InnerAssignmentType<DataModel.SchemaOfClass<ModelType>> | __SchemaFieldInitial
+    SchemaField.AssignmentData<DataModel.SchemaOfClass<ModelType>> | __SchemaFieldInitial
   >;
 
   /** The type of the default options for the {@link EmbeddedDataField} class. */
@@ -2030,7 +2095,7 @@ declare namespace EmbeddedDataField {
     ModelType extends DataModel.AnyConstructor,
     Opts extends Options<ModelType>,
   > = DataField.DerivedAssignmentType<
-    SchemaField.InnerAssignmentType<DataModel.SchemaOfClass<ModelType>>,
+    SchemaField.AssignmentData<DataModel.SchemaOfClass<ModelType>>,
     MergedOptions<ModelType, Opts>
   >;
 
@@ -2054,7 +2119,7 @@ declare namespace EmbeddedDataField {
     ModelType extends DataModel.AnyConstructor,
     Opts extends Options<ModelType>,
   > = DataField.DerivedInitializedType<
-    SchemaField.InnerPersistedType<DataModel.SchemaOfClass<ModelType>>,
+    SchemaField.PersistedData<DataModel.SchemaOfClass<ModelType>>,
     MergedOptions<ModelType, Opts>
   >;
 }
@@ -2205,7 +2270,7 @@ declare namespace EmbeddedCollectionField {
   type AssignmentElementType<ElementFieldType extends Document.AnyConstructor> = ElementFieldType extends new (
     ...args: any[]
   ) => Document<any, infer Schema extends DataSchema, any>
-    ? SchemaField.InnerAssignmentType<Schema>
+    ? SchemaField.AssignmentData<Schema>
     : never;
 
   /**
@@ -2222,7 +2287,7 @@ declare namespace EmbeddedCollectionField {
   type PersistedElementType<ElementFieldType extends Document.AnyConstructor> = ElementFieldType extends new (
     ...args: any[]
   ) => Document<any, infer Schema extends DataSchema, any>
-    ? SchemaField.InnerPersistedType<Schema>
+    ? SchemaField.PersistedData<Schema>
     : never;
 
   /**
@@ -2357,7 +2422,7 @@ declare namespace EmbeddedCollectionDeltaField {
   type AssignmentElementType<ElementFieldType extends Document.AnyConstructor> = ElementFieldType extends new (
     ...args: any[]
   ) => Document<any, infer Schema extends DataSchema, any>
-    ? SchemaField.InnerAssignmentType<Schema>
+    ? SchemaField.AssignmentData<Schema>
     : never;
 
   /**
@@ -2374,7 +2439,7 @@ declare namespace EmbeddedCollectionDeltaField {
   type PersistedElementType<ElementFieldType extends Document.AnyConstructor> = ElementFieldType extends new (
     ...args: any[]
   ) => Document<any, infer Schema extends DataSchema, any>
-    ? SchemaField.InnerPersistedType<Schema>
+    ? SchemaField.PersistedData<Schema>
     : never;
 
   /**
@@ -2473,7 +2538,7 @@ declare namespace EmbeddedDocumentField {
    * @typeParam DocumentType - the type of the embedded Document
    */
   type Options<DocumentType extends Document.AnyConstructor> = DataField.Options<
-    SchemaField.InnerAssignmentType<DataModel.SchemaOfClass<DocumentType>> | __SchemaFieldInitial
+    SchemaField.AssignmentData<DataModel.SchemaOfClass<DocumentType>> | __SchemaFieldInitial
   >;
 
   /** The type of the default options for the {@link EmbeddedDocumentField} class. */
@@ -2503,7 +2568,7 @@ declare namespace EmbeddedDocumentField {
     DocumentType extends Document.AnyConstructor,
     Opts extends Options<DocumentType>,
   > = DataField.DerivedAssignmentType<
-    SchemaField.InnerAssignmentType<DataModel.SchemaOfClass<DocumentType>>,
+    SchemaField.AssignmentData<DataModel.SchemaOfClass<DocumentType>>,
     MergedOptions<DocumentType, Opts>
   >;
 
@@ -2516,7 +2581,7 @@ declare namespace EmbeddedDocumentField {
     DocumentType extends Document.AnyConstructor,
     Opts extends Options<DocumentType>,
   > = DataField.DerivedInitializedType<
-    SchemaField.InnerInitializedType<DataModel.SchemaOfClass<DocumentType>>,
+    SchemaField.InitializedData<DataModel.SchemaOfClass<DocumentType>>,
     MergedOptions<DocumentType, Opts>
   >;
 
@@ -2529,7 +2594,7 @@ declare namespace EmbeddedDocumentField {
     DocumentType extends Document.AnyConstructor,
     Opts extends Options<DocumentType>,
   > = DataField.DerivedInitializedType<
-    SchemaField.InnerPersistedType<DataModel.SchemaOfClass<DocumentType>>,
+    SchemaField.PersistedData<DataModel.SchemaOfClass<DocumentType>>,
     MergedOptions<DocumentType, Opts>
   >;
 }
@@ -3639,10 +3704,10 @@ declare class DocumentStatsField<
 
 declare namespace DocumentStatsField {
   /** A shorthand for the options of a DocumentStatsField class. */
-  type Options = DataField.Options<SchemaField.InnerAssignmentType<Schema>>;
+  type Options = DataField.Options<SchemaField.AssignmentData<Schema>>;
 
   /** The type of the default options for the {@link DocumentStatsField} class. */
-  type DefaultOptions = SimpleMerge<SchemaField.DefaultOptions, { initial: SchemaField.InnerAssignmentType<Schema> }>;
+  type DefaultOptions = SimpleMerge<SchemaField.DefaultOptions, { initial: SchemaField.AssignmentData<Schema> }>;
 
   /**
    * A helper type for the given options type merged into the default options of the {@link DocumentStatsField} class.
@@ -3655,7 +3720,7 @@ declare namespace DocumentStatsField {
    * @typeParam Opts - the options that override the default options
    */
   type AssignmentType<Opts extends Options = DefaultOptions> = DataField.DerivedAssignmentType<
-    SchemaField.InnerAssignmentType<Schema>,
+    SchemaField.AssignmentData<Schema>,
     MergedOptions<Opts>
   >;
 
@@ -3664,7 +3729,7 @@ declare namespace DocumentStatsField {
    * @typeParam Opts - the options that override the default options
    */
   type InitializedType<Opts extends Options = DefaultOptions> = DataField.DerivedInitializedType<
-    SchemaField.InnerInitializedType<Schema>,
+    SchemaField.InitializedData<Schema>,
     MergedOptions<Opts>
   >;
 
@@ -3673,13 +3738,13 @@ declare namespace DocumentStatsField {
    * @typeParam Opts - the options that override the default options
    */
   type PersistedType<Opts extends Options = DefaultOptions> = DataField.DerivedInitializedType<
-    SchemaField.InnerPersistedType<Schema>,
+    SchemaField.PersistedData<Schema>,
     MergedOptions<Opts>
   >;
 
-  type ConstructorData = SchemaField.InnerConstructorType<Schema>;
-  type Properties = SchemaField.InnerInitializedType<Schema>;
-  type Source = SchemaField.InnerPersistedType<Schema>;
+  type ConstructorData = SchemaField.CreateData<Schema>;
+  type Properties = SchemaField.InitializedData<Schema>;
+  type Source = SchemaField.PersistedData<Schema>;
 
   interface Schema extends DataSchema {
     /**
@@ -3886,7 +3951,7 @@ declare namespace TypeDataField {
    * @typeParam DocumentType - the type of the embedded Document
    */
   type Options<DocumentType extends Document.SystemConstructor> = DataField.Options<
-    SchemaField.InnerAssignmentType<DataModel.SchemaOfClass<DocumentType>>
+    SchemaField.AssignmentData<DataModel.SchemaOfClass<DocumentType>>
   >;
 
   /** The type of the default options for the {@link TypeDataField} class. */

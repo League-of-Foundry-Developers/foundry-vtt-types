@@ -17,7 +17,13 @@ import type {
   FixedInstanceType,
 } from "../../../utils/index.d.mts";
 import type * as CONST from "../constants.mts";
-import type { DataField, EmbeddedCollectionField, EmbeddedDocumentField, TypeDataField } from "../data/fields.d.mts";
+import type {
+  DataField,
+  EmbeddedCollectionField,
+  EmbeddedDocumentField,
+  SchemaField,
+  TypeDataField,
+} from "../data/fields.d.mts";
 import type { fields } from "../data/module.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.mts";
 import type {
@@ -66,7 +72,7 @@ declare abstract class Document<
    * @param data    - Initial data provided to construct the Document
    * @param context - Construction context options
    */
-  constructor(data?: fields.SchemaField.InnerConstructorType<Schema>, context?: Document.ConstructionContext<Parent>);
+  constructor(data?: fields.SchemaField.CreateData<Schema>, context?: Document.ConstructionContext<Parent>);
 
   override parent: Parent;
 
@@ -649,7 +655,7 @@ declare abstract class Document<
    * @param userId  - The id of the User requesting the document update
    */
   protected _onCreate(
-    data: fields.SchemaField.InnerAssignmentType<Schema>,
+    data: fields.SchemaField.AssignmentData<Schema>,
     options: Document.OnCreateOptions<DocumentName>,
     userId: string,
   ): void;
@@ -712,7 +718,7 @@ declare abstract class Document<
    * @param userId  - The id of the User requesting the document update
    */
   protected _onUpdate(
-    changed: fields.SchemaField.InnerUpdateData<Schema>,
+    changed: fields.SchemaField.UpdateData<Schema>,
     options: Document.OnUpdateOptions<DocumentName>,
     userId: string,
   ): void;
@@ -1097,8 +1103,10 @@ declare namespace Document {
   type ConstructorDataForName<T extends Document.Type> = ConstructorData[T];
   type UpdateDataForName<T extends Document.Type> = ConstructorData[T];
 
-  type ConstructorDataForSchema<Schema extends DataSchema> =
-    foundry.data.fields.SchemaField.InnerAssignmentType<Schema>;
+  /**
+   * @deprecated {@link SchemaField.CreateData | `SchemaField.CreateData`}
+   */
+  type ConstructorDataForSchema<Schema extends DataSchema> = SchemaField.CreateData<Schema>;
 
   type SystemConstructor = AnyConstructor & {
     metadata: { name: SystemType };

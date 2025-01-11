@@ -66,10 +66,10 @@ declare namespace BaseActorDelta {
   // Note that in places like CONFIG the only eligible type is "base"
   type TypeNames = Game.Model.TypeNames<"Actor">;
   type SchemaField = fields.SchemaField<Schema>;
-  type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;
-  type UpdateData = fields.SchemaField.InnerAssignmentType<Schema>;
-  type Properties = fields.SchemaField.InnerInitializedType<Schema>;
-  type Source = fields.SchemaField.InnerPersistedType<Schema>;
+  type ConstructorData = fields.SchemaField.CreateData<Schema>;
+  type UpdateData = fields.SchemaField.AssignmentData<Schema>;
+  type Properties = fields.SchemaField.InitializedData<Schema>;
+  type Source = fields.SchemaField.PersistedData<Schema>;
 
   type Metadata = Document.MetadataFor<BaseActorDelta>;
 

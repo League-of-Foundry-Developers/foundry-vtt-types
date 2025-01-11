@@ -50,7 +50,7 @@ declare global {
     override prepareEmbeddedDocuments(): void;
 
     override updateSource(
-      changes?: SchemaField.InnerAssignmentType<BaseActor.Schema>,
+      changes?: SchemaField.AssignmentData<BaseActor.Schema>,
       options?: { dryRun?: boolean; fallback?: boolean; recursive?: boolean },
     ): object;
 

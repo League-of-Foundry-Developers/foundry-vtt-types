@@ -11,7 +11,7 @@ declare const DynamicClass: new <_Computed extends object>(arg0: never, ...args:
 declare class _InternalDataModel<
   out Schema extends DataSchema,
   // Do not inline. Being a type parameter is an important part of the circumvention of TypeScript's detection of dynamic classes.
-  out _Computed extends object = SchemaField.InnerInitializedType<Schema>,
+  out _Computed extends object = SchemaField.InitializedData<Schema>,
 > extends DynamicClass<_Computed> {}
 
 export default DataModel;
@@ -30,9 +30,9 @@ declare abstract class DataModel<
    *                  will be owned by the constructed model instance and may be mutated.
    * @param options - Options which affect DataModel construction
    */
-  // TODO(LukeAbby): Make only optional if `{}` is assignable to `InnerAssignmentType`.
+  // TODO(LukeAbby): Make only optional if `{}` is assignable to `AssignmentData`.
   constructor(
-    data?: DataModel.ConstructorData<Schema>,
+    data?: DataModel.CreateData<Schema>,
     { parent, strict, ...options }?: DataModel.DataValidationOptions<Parent> & ExtraConstructorOptions,
   );
 
@@ -45,7 +45,7 @@ declare abstract class DataModel<
    * The source data object for this DataModel instance.
    * Once constructed, the source object is sealed such that no keys may be added nor removed.
    */
-  readonly _source: Readonly<fields.SchemaField.InnerPersistedType<Schema>>;
+  readonly _source: Readonly<fields.SchemaField.PersistedData<Schema>>;
 
   /**
    * The defined and cached Data Schema for all instances of this DataModel.
@@ -103,9 +103,9 @@ declare abstract class DataModel<
    * @returns Migrated and cleaned source data which will be stored to the model instance
    */
   protected _initializeSource(
-    data: fields.SchemaField.InnerConstructorType<Schema> | this,
+    data: fields.SchemaField.CreateData<Schema> | this,
     options?: Omit<DataModel.DataValidationOptions, "parent">,
-  ): fields.SchemaField.InnerPersistedType<Schema>;
+  ): fields.SchemaField.PersistedData<Schema>;
 
   /**
    * Clean a data source object to conform to a specific provided schema.
@@ -139,7 +139,7 @@ declare abstract class DataModel<
    * @param context - Context options passed to the data model constructor
    * @returns The cloned Document instance
    */
-  clone(data?: fields.SchemaField.InnerAssignmentType<Schema>, context?: DataModel.DataValidationOptions<Parent>): this;
+  clone(data?: fields.SchemaField.AssignmentData<Schema>, context?: DataModel.DataValidationOptions<Parent>): this;
 
   /**
    * Validate the data contained in the document to check for type and content
@@ -159,7 +159,7 @@ declare abstract class DataModel<
     /**
      * A specific set of proposed changes to validate, rather than the full source data of the model.
      */
-    changes?: fields.SchemaField.InnerAssignmentType<Schema>;
+    changes?: fields.SchemaField.AssignmentData<Schema>;
 
     /**
      * If changes are provided, attempt to clean the changes before validating them?
@@ -217,7 +217,7 @@ declare abstract class DataModel<
    * @deprecated since v11; Use the validateJoint static method instead.
    */
   // TODO(LukeAbby): Should be SourceType
-  protected _validateModel(data: fields.SchemaField.InnerAssignmentType<Schema>): void;
+  protected _validateModel(data: fields.SchemaField.AssignmentData<Schema>): void;
 
   /**
    * Update the DataModel locally by applying an object of changes to its source data.
@@ -231,7 +231,7 @@ declare abstract class DataModel<
    */
   // TODO(LukeAbby): Should be SourceType
   updateSource(
-    changes?: fields.SchemaField.InnerAssignmentType<Schema>,
+    changes?: fields.SchemaField.AssignmentData<Schema>,
     options?: { dryRun?: boolean; fallback?: boolean; recursive?: boolean },
   ): object;
 
@@ -276,14 +276,14 @@ declare abstract class DataModel<
    *                 (default: `true`)
    * @returns The extracted primitive object
    */
-  toObject(source: true): fields.SchemaField.InnerPersistedType<Schema>;
+  toObject(source: true): fields.SchemaField.PersistedData<Schema>;
   toObject(source?: boolean): ReturnType<this["schema"]["toObject"]>;
 
   /**
    * Extract the source data for the DataModel into a simple object format that can be serialized.
    * @returns The document source data expressed as a plain object
    */
-  toJSON(): fields.SchemaField.InnerPersistedType<Schema>;
+  toJSON(): fields.SchemaField.PersistedData<Schema>;
 
   /**
    * Create a new instance of this DataModel from a source record.
@@ -293,7 +293,7 @@ declare abstract class DataModel<
    * @remarks The generic parameters should fit the DataModel implementation that this method is called on.
    */
   static fromSource<Schema extends DataSchema>(
-    source: fields.SchemaField.InnerAssignmentType<Schema>,
+    source: fields.SchemaField.AssignmentData<Schema>,
     {
       strict,
       ...context
@@ -347,11 +347,9 @@ declare abstract class DataModel<
 }
 
 declare namespace DataModel {
-  type ConstructorData<Schema extends DataSchema> =
-    | fields.SchemaField.InnerAssignmentType<Schema>
-    | DataModel<Schema, any>;
+  type CreateData<Schema extends DataSchema> = fields.SchemaField.AssignmentData<Schema> | DataModel<Schema, any>;
 
-  type ConstructorDataFor<ConcreteDataModel extends DataModel.Any> = ConstructorData<SchemaOf<ConcreteDataModel>>;
+  type ConstructorDataFor<ConcreteDataModel extends DataModel.Any> = CreateData<SchemaOf<ConcreteDataModel>>;
 
   /**
    * With the existence of custom module subtypes a system can no longer rely on their configured types being the only ones.

@@ -224,7 +224,7 @@ declare namespace ReleaseData {
       nullable: false;
       integer: true;
       min: 1;
-      // initial: () => fields.SchemaField.InnerInitializedType<Schema["generation"]>;
+      // initial: () => fields.SchemaField.InitializedData<Schema["generation"]>;
     }>;
 
     /**

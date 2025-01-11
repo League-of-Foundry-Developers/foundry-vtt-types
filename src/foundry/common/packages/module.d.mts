@@ -12,17 +12,17 @@ export { default as BaseModule } from "./base-module.mjs";
 export { PackageCompatibility, RelatedPackage } from "./base-package.mjs";
 
 declare global {
-  type PackageAuthorData = SchemaField.InnerAssignmentType<foundry.packages.BasePackage.PackageAuthorSchema>;
+  type PackageAuthorData = SchemaField.AssignmentData<foundry.packages.BasePackage.PackageAuthorSchema>;
 
-  type PackageCompendiumData = SchemaField.InnerAssignmentType<foundry.packages.BasePackage.PackageCompendiumSchema>;
+  type PackageCompendiumData = SchemaField.AssignmentData<foundry.packages.BasePackage.PackageCompendiumSchema>;
 
-  type PackageLanguageData = SchemaField.InnerAssignmentType<foundry.packages.BasePackage.PackageLanguageSchema>;
+  type PackageLanguageData = SchemaField.AssignmentData<foundry.packages.BasePackage.PackageLanguageSchema>;
 
-  type RelatedPackage = SchemaField.InnerAssignmentType<foundry.packages.BasePackage.RelatedPackageSchema>;
+  type RelatedPackage = SchemaField.AssignmentData<foundry.packages.BasePackage.RelatedPackageSchema>;
 
   /*
    * The data structure of a package manifest. This data structure is extended by BasePackage subclasses to add additional
    * type-specific fields.
    */
-  interface PackageManifestData extends SchemaField.InnerAssignmentType<foundry.packages.BasePackage.Schema> {}
+  interface PackageManifestData extends SchemaField.AssignmentData<foundry.packages.BasePackage.Schema> {}
 }

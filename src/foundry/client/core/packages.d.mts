@@ -121,12 +121,12 @@ declare global {
     }
 
     interface ModuleConstructorData
-      extends foundry.data.fields.SchemaField.InnerAssignmentType<foundry.packages.BaseModule.Schema> {
+      extends foundry.data.fields.SchemaField.AssignmentData<foundry.packages.BaseModule.Schema> {
       active: boolean;
     }
 
     interface SystemConstructorData
-      extends foundry.data.fields.SchemaField.InnerAssignmentType<foundry.packages.BaseSystem.Schema> {
+      extends foundry.data.fields.SchemaField.AssignmentData<foundry.packages.BaseSystem.Schema> {
       strictDataCleaning?: boolean;
     }
   }

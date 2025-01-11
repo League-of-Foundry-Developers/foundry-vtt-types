@@ -77,7 +77,7 @@ expectTypeOf(embeddedModel["schema"]["fields"]["color"]).toEqualTypeOf<
 declare const embeddedLightField: foundry.data.fields.EmbeddedDataField<typeof foundry.data.LightData>;
 expectTypeOf(embeddedLightField.model).toEqualTypeOf<typeof foundry.data.LightData>();
 
-declare const schemaWithLight: foundry.data.fields.SchemaField.InnerInitializedType<{
+declare const schemaWithLight: foundry.data.fields.SchemaField.InitializedData<{
   light: typeof embeddedLightField;
 }>;
 expectTypeOf(schemaWithLight.light).toEqualTypeOf<foundry.data.LightData>();
