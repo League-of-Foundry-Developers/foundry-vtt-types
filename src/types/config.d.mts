@@ -256,6 +256,7 @@ declare global {
     }>;
     "core.defaultDrawingConfig": MaybeEmpty<foundry.documents.BaseDrawing["_source"]>;
     "core.defaultToken": DeepPartial<foundry.documents.BaseToken>;
+    "core.diceConfiguration": Record<CONFIG.Dice.DTermDiceStrings, string>;
     "core.disableResolutionScaling": boolean;
     "core.fontSize": number;
     "core.fpsMeter": boolean;

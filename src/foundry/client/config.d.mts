@@ -67,6 +67,8 @@ declare global {
       ) => Promise<number | void>;
 
       type RollFunction = (arg0: never, ...args: never[]) => MaybePromise<number>;
+
+      type DTermDiceStrings = "d4" | "d6" | "d8" | "d10" | "d12" | "d20" | "d100";
     }
 
     interface Dice {

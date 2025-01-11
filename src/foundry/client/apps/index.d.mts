@@ -8,3 +8,4 @@ import "./i18n.d.mts";
 import "./placeables/index.d.mts";
 import "./sidebar/index.d.mts";
 import "./templates.d.mts";
+import "./dice/index.d.mts";
