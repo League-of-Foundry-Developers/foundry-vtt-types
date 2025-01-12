@@ -1,5 +1,4 @@
 import type { AnyObject, InexactPartial } from "../../../utils/index.d.mts";
-import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type * as fields from "../data/fields.d.mts";
 
@@ -73,17 +72,17 @@ declare class BaseItem<SubType extends Item.SubType = Item.SubType> extends Docu
   static updateDocuments(
     updates: Item.UpdateData[] | undefined,
     operation?: Item.DatabaseOperation.Update,
-  ): Promise<Item[]>;
+  ): Promise<Item.ConfiguredInstance[]>;
 
   static deleteDocuments(
     ids: readonly string[] | undefined,
     operation?: Item.DatabaseOperation.Delete,
-  ): Promise<Item.ConfiguredInstance[] | undefined>;
+  ): Promise<Item.ConfiguredInstance[]>;
 
   static create<Temporary extends boolean | undefined>(
     data: Item.CreateData | Item.CreateData[],
-    operation: Item.DatabaseOperation.Create<Temporary>,
-  ): Promise<Item.ConfiguredInstance[] | undefined>;
+    operation?: Item.DatabaseOperation.Create<Temporary>,
+  ): Promise<Item.ConfiguredInstance | undefined>;
 
   static get(documentId: string, options?: Item.DatabaseOperation.Get): Item.ConfiguredInstance | null;
 
@@ -137,29 +136,6 @@ declare class BaseItem<SubType extends Item.SubType = Item.SubType> extends Docu
     documents: Item.ConfiguredInstance[],
     context: Document.ModificationContext<Item.Parent>,
   ): Promise<void>;
-
-  static override defaultName(context?: Document.DefaultNameContext<Item.SubType, Item.Parent>): string;
-
-  static override createDialog(
-    data: Item.CreateData,
-    context?: Pick<Document.Database.OperationOf<Cards["documentName"], "create">, "parent" | "pack"> &
-      InexactPartial<
-        DialogOptions & {
-          /** A restriction the selectable sub-types of the Dialog. */
-          types: Item.SubType[];
-        }
-      >,
-  ): Promise<Item.ConfiguredInstance | null | undefined>;
-
-  static override fromDropData(
-    data: Document.DropData<Item.ConfiguredInstance>,
-    options?: Document.FromDropDataOptions,
-  ): Promise<Item.ConfiguredInstance | undefined>;
-
-  static override fromImport(
-    source: Item.Source,
-    context?: Document.ConstructionContext<Item.Parent> & DataModel.DataValidationOptions,
-  ): Promise<Item.ConfiguredInstance>;
 }
 
 export default BaseItem;

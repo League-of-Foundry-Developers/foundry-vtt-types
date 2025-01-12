@@ -62,7 +62,7 @@ declare abstract class Document<
   Schema extends DataSchema,
   Parent extends Document.Any | null = null,
 > extends DataModel<Schema, Parent, InterfaceToObject<Document.ConstructionContext<Parent>>> {
-  static [Document.Internal.DocumentBrand]: true;
+  [Document.Internal.DocumentBrand]: true;
 
   [Document.Internal.DocumentName]: DocumentName;
   [Document.Internal.Schema]: Schema;
@@ -675,9 +675,10 @@ declare abstract class Document<
    * @param user      - The User requesting the creation operation
    * @returns Return false to cancel the creation operation entirely
    */
+  // Note: This uses `never` because it's unsound to try to do `Document._preCreateOperation` directly.
   protected static _preCreateOperation(
-    documents: AnyObject[],
-    operation: AnyObject,
+    documents: never[],
+    operation: never,
     user: User.ConfiguredInstance,
   ): Promise<boolean | void>;
 
@@ -691,11 +692,8 @@ declare abstract class Document<
    * @param operation - Parameters of the database creation operation
    * @param user      - The User who performed the creation operation
    */
-  protected static _onCreateOperation(
-    documents: AnyObject[],
-    operation: AnyObject,
-    user: User.ConfiguredInstance,
-  ): Promise<void>;
+  // Note: This uses `never` because it's unsound to try to do `Document._onCreateOperation` directly.
+  protected static _onCreateOperation(documents: never, operation: never, user: User.ConfiguredInstance): Promise<void>;
 
   /**
    * Perform preliminary operations before a Document of this type is updated.
@@ -739,9 +737,10 @@ declare abstract class Document<
    * @param user      - The User requesting the update operation
    * @returns Return false to cancel the update operation entirely
    */
+  // Note: This uses `never` because it's unsound to try to do `Document._preUpdateOperation` directly.
   protected static _preUpdateOperation(
-    documents: AnyObject[],
-    operation: AnyObject,
+    documents: never,
+    operation: never,
     user: User.ConfiguredInstance,
   ): Promise<boolean | void>;
 
@@ -755,11 +754,8 @@ declare abstract class Document<
    * @param operation - Parameters of the database update operation
    * @param user      - The User who performed the update operation
    */
-  protected static _onUpdateOperation(
-    documents: AnyObject[],
-    operation: AnyObject,
-    user: User.ConfiguredInstance,
-  ): Promise<void>;
+  // Note: This uses `never` because it's unsound to try to do `Document._onUpdateOperation` directly.
+  protected static _onUpdateOperation(documents: never, operation: never, user: User.ConfiguredInstance): Promise<void>;
 
   /**
    * Perform preliminary operations before a Document of this type is deleted.
@@ -794,9 +790,10 @@ declare abstract class Document<
    * @returns Return false to cancel the deletion operation entirely
    * @internal
    */
+  // Note: This uses `never` because it's unsound to try to do `Document._preDeleteOperation` directly.
   protected static _preDeleteOperation(
-    documents: AnyObject[],
-    operation: AnyObject,
+    documents: never,
+    operation: never,
     user: User.ConfiguredInstance,
   ): Promise<unknown>;
 
@@ -810,10 +807,10 @@ declare abstract class Document<
    * @param operation - Parameters of the database deletion operation
    * @param user      - The User who performed the deletion operation
    */
-  protected static _onDeleteOperation<T extends Document.AnyConstructor>(
-    this: T,
-    documents: AnyObject[],
-    operation: AnyObject,
+  // Note: This uses `never` because it's unsound to try to do `Document._onDeleteOperation` directly.
+  protected static _onDeleteOperation(
+    documents: never,
+    operation: never,
     user: User.ConfiguredInstance,
   ): Promise<unknown>;
 
@@ -869,8 +866,9 @@ declare abstract class Document<
    * @deprecated since v12, will be removed in v14
    * @remarks `"The Document._onCreateDocuments static method is deprecated in favor of Document._onCreateOperation"`
    */
+  // Note: This uses `never` because it's unsound to try to do `Document._onCreateDocuments` directly.
   protected static _onCreateDocuments(
-    documents: AnyObject[],
+    documents: never,
     context: Document.ModificationContext<Document.Any | null>,
   ): Promise<void>;
 
@@ -878,8 +876,9 @@ declare abstract class Document<
    * @deprecated since v12, will be removed in v14
    * @remarks `"The Document._onUpdateDocuments static method is deprecated in favor of Document._onUpdateOperation"`
    */
+  // Note: This uses `never` because it's unsound to try to do `Document._onUpdateDocuments` directly.
   protected static _onUpdateDocuments(
-    documents: AnyObject[],
+    documents: never,
     context: Document.ModificationContext<Document.Any | null>,
   ): Promise<unknown>;
 
@@ -887,8 +886,9 @@ declare abstract class Document<
    * @deprecated since v12, will be removed in v14
    * @remarks `"The Document._onDeleteDocuments static method is deprecated in favor of Document._onDeleteOperation"`
    */
+  // Note: This uses `never` because it's unsound to try to do `Document._onDeleteDocuments` directly.
   protected static _onDeleteDocuments(
-    documents: AnyObject[],
+    documents: never,
     context: Document.ModificationContext<Document.Any | null>,
   ): Promise<unknown>;
 }
@@ -898,7 +898,7 @@ declare abstract class AnyDocument extends Document<any, any, any> {
 
   // Note(LukeAbby): Specifically adding the `DocumentBrand` should be redundant but in practice it seems to help tsc more efficiently deduce that it's actually inheriting from `Document`.
   // This is odd but probably is because it bails from looking up the parent class properties at times or something.
-  static [Document.Internal.DocumentBrand]: true;
+  [Document.Internal.DocumentBrand]: true;
 
   flags?: unknown;
 
@@ -909,7 +909,7 @@ declare abstract class AnyDocument extends Document<any, any, any> {
 // When something fails to be configured it should be replaced with `typeof ConfigurationFailure & typeof Item` or whatever the relevant class is.
 // This helps to minimize the number of errors that appears in a repo with broken configuration as they can be very misleading and confusing.
 declare abstract class ConfigurationFailure extends AnyDocument {
-  static [Document.Internal.DocumentBrand]: true;
+  [Document.Internal.DocumentBrand]: true;
 }
 
 declare namespace Document {
@@ -1058,15 +1058,14 @@ declare namespace Document {
     // Use cases should be limited to when these references aren't needed.
     type SimpleMetadata<Name extends Document.Type> = ConfiguredMetadata<Document.Any>[Name];
 
-    type Constructor = (abstract new (arg0: never, ...args: never[]) => Instance.Any) & {
-      [Document.Internal.DocumentBrand]: true;
-    };
+    type Constructor = abstract new (arg0: never, ...args: never[]) => Instance.Any;
 
     interface Instance<
       DocumentName extends Document.Type,
       Schema extends DataSchema,
       Parent extends Document.Internal.Instance.Any | null,
     > {
+      [DocumentBrand]: true;
       [DocumentName]: DocumentName;
       [Schema]: Schema;
       [Parent]: Parent;

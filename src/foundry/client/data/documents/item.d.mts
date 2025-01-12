@@ -1,5 +1,7 @@
 import type { ConfiguredItem } from "../../../../configuration";
-import type { HandleEmptyObject } from "../../../../utils/index.d.mts";
+import type { HandleEmptyObject, InexactPartial } from "../../../../utils/index.d.mts";
+import type { documents } from "../../../client-esm/client.d.mts";
+import type DataModel from "../../../common/abstract/data.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
 import type { DataSchema } from "./adventure.d.mts";
@@ -100,7 +102,7 @@ declare global {
       name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
       /** An Item subtype which configures the system data model applied */
-      type: fields.DocumentTypeField<typeof BaseItem>;
+      type: fields.DocumentTypeField<typeof documents.BaseItem>;
 
       /**
        * An image file path which provides the artwork for this Item
@@ -115,7 +117,7 @@ declare global {
        * The system data object which is defined by the system template.json model
        * @defaultValue `{}`
        */
-      system: fields.TypeDataField<typeof BaseItem>;
+      system: fields.TypeDataField<typeof documents.BaseItem>;
 
       /**
        * A collection of ActiveEffect embedded Documents
@@ -228,5 +230,28 @@ declare global {
      * @privateRemarks _preCreate, _onCreateDocuments and _onDeleteDocuments are all overridden but with no signature changes.
      * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
      */
+
+    static override defaultName(context?: Document.DefaultNameContext<Item.SubType, Item.Parent>): string;
+
+    static override createDialog(
+      data: Item.CreateData,
+      context?: Pick<Item.DatabaseOperation.Create, "parent" | "pack"> &
+        InexactPartial<
+          DialogOptions & {
+            /** A restriction the selectable sub-types of the Dialog. */
+            types: Item.SubType[];
+          }
+        >,
+    ): Promise<Item.ConfiguredInstance | null | undefined>;
+
+    static override fromDropData(
+      data: Document.DropData<Item.ConfiguredInstance>,
+      options?: Document.FromDropDataOptions,
+    ): Promise<Item.ConfiguredInstance | undefined>;
+
+    static override fromImport(
+      source: Item.Source,
+      context?: Document.ConstructionContext<Item.Parent> & DataModel.DataValidationOptions,
+    ): Promise<Item.ConfiguredInstance>;
   }
 }
