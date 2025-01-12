@@ -211,7 +211,7 @@ declare abstract class Document<
    * @param user - The User being tested
    * @returns Does the User have a sufficient role to create?
    */
-  static canUserCreate(user: User): boolean;
+  static canUserCreate(user: User.ConfiguredInstance): boolean;
 
   /**
    * Get the explicit permission level that a specific User has over this Document, a value in CONST.DOCUMENT_OWNERSHIP_LEVELS.
@@ -221,7 +221,7 @@ declare abstract class Document<
    *               (default: `game.user`)
    * @returns A numeric permission level from CONST.DOCUMENT_OWNERSHIP_LEVELS or null
    */
-  getUserLevel(user?: User): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
+  getUserLevel(user?: User.ConfiguredInstance): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
 
   /**
    * Test whether a certain User has a requested permission level (or greater) over the Document
@@ -313,8 +313,8 @@ declare abstract class Document<
    * @remarks If a document is skipped by a hook or `_preCreate` then that element is skipped in the
    * return type. This means that you receive only documents that were actually created.
    */
-  // Note: This is overly broad because it must be overridden by the child class.
-  static createDocuments(data: AnyObject[] | undefined, operation?: AnyObject): Promise<Document.Any[]>;
+  // Note: This uses `never` because it's unsound to try to do `Document.createDocuments` directly.
+  static createDocuments(data: never, operation?: never): Promise<Document.Any[]>;
 
   /**
    * Update multiple Document instances using provided differential data.
@@ -354,8 +354,8 @@ declare abstract class Document<
    * @remarks If a document is skipped by a hook or `_preCreate` then that element is skipped in the
    * return type. This means that you receive only documents that were actually updated.
    */
-  // Note: This is overly broad because it must be overridden by the child class.
-  static updateDocuments(updates: AnyObject[] | undefined, operation?: AnyObject): Promise<Document.Any[]>;
+  // Note: This uses `never` because it's unsound to try to do `Document.updateDocuments`
+  static updateDocuments(updates: never, operation?: never): Promise<Document.Any[]>;
 
   /**
    * Delete one or multiple existing Documents using an array of provided ids.
@@ -397,8 +397,8 @@ declare abstract class Document<
    * @remarks If a document is skipped by a hook or `_preDelete` then that element is skipped in the
    * return type. This means that you receive only documents that were actually deleted.
    */
-  // Note: This is overly broad because it must be overridden by the child class.
-  static deleteDocuments(ids?: readonly string[], operation?: AnyObject): Promise<Document.Any[]>;
+  // Note: This uses `never` because it's unsound to try to pass the operation for `Document.deleteDocument`
+  static deleteDocuments(ids?: readonly string[], operation?: never): Promise<Document.Any[]>;
 
   /**
    * Create a new Document using provided input data, saving it to the database.
@@ -430,7 +430,8 @@ declare abstract class Document<
    * @remarks If the document creation is skipped by a hook or `_preCreate` then `undefined` is
    * returned.
    */
-  static create(data: AnyObject | AnyObject[], operation?: AnyObject): Promise<Document.Any | undefined>;
+  // Note: This uses `never` because it's unsound to try to call `Document.create`.
+  static create(data: never, operation?: never): Promise<Document.Any | undefined>;
 
   /**
    * Update this Document using incremental data, saving it to the database.
@@ -1058,7 +1059,7 @@ declare namespace Document {
     type SimpleMetadata<Name extends Document.Type> = ConfiguredMetadata<Document.Any>[Name];
 
     type Constructor = (abstract new (arg0: never, ...args: never[]) => Instance.Any) & {
-      [DocumentBrand]: true;
+      [Document.Internal.DocumentBrand]: true;
     };
 
     interface Instance<
@@ -1499,6 +1500,25 @@ declare namespace Document {
      * @remarks Foundry uses `if ("value" in options)` to determine whether to override the default value.
      */
     value?: unknown;
+  }
+
+  interface DefaultNameContext<SubType extends string, Parent extends Document.Any | null> {
+    /** The sub-type of the document */
+    type: SubType;
+
+    /** A parent document within which the created Document should belong */
+    parent: Parent;
+
+    /** A compendium pack within which the Document should be created */
+    pack: string;
+  }
+
+  interface FromDropDataOptions {
+    /**
+     * Import the provided document data into the World, if it is not already a World-level Document reference
+     * @defaultValue `false`
+     */
+    importWorld?: boolean;
   }
 }
 
