@@ -38,7 +38,7 @@ declare global {
      *                     (default: `1`)
      * @returns The texture data if the texture is valid, else undefined.
      */
-    static getTextureAlphaData(texture: PIXI.Texture, resolution?: number): TextureLoader.TextureAlphaData | undefined;
+    static getTextureAlphaData(texture: PIXI.Texture, resolution?: number): TextureLoader.TextureAlphaData | void;
 
     /**
      * Load all the textures which are required for a particular Scene
@@ -58,7 +58,7 @@ declare global {
      *                  (default: `{}`)
      * @returns A Promise which resolves once all textures are loaded
      */
-    load(sources: string[], options?: Partial<TextureLoader.LoadOptions>): Promise<void>;
+    load(sources: string[], options?: TextureLoader.LoadOptions): Promise<void>;
 
     /**
      * Load a single texture on-demand from a given source URL path
@@ -130,6 +130,7 @@ declare global {
   }
 
   namespace TextureLoader {
+    type Any = AnyTextureLoader;
     type AnyConstructor = typeof AnyTextureLoader;
 
     interface TextureAlphaData {
@@ -167,8 +168,9 @@ declare global {
        * Additional sources to load during canvas initialize
        * @defaultValue `[]`
        * @remarks Can't be null because it only has a signature-provided default.
+       * @privateRemarks Foundry types this as `boolean`, not even as an array, as of 13.334
        */
-      additionalSources: Array<boolean>;
+      additionalSources: string[];
 
       /**
        * The maximum number of textures that can be loaded concurrently
@@ -178,31 +180,29 @@ declare global {
       maxConcurrent: number;
     }>;
 
-    /**
-     * Options for {@link TextureLoader.loadSceneTextures}
-     */
+    /** Options for {@link TextureLoader.loadSceneTextures}*/
     interface LoadSceneTexturesOptions extends _LoadSceneTexturesOptions {}
 
     /** @internal */
-    type _LoadOptions = InexactPartial<{
+    type _LoadOptions = NullishProps<{
       /**
        * The status message to display in the load bar
        * @remarks Allowed to be null or undefined because ultimately `HTMLElement.textContent = undefined`
        * or `= null` (via {@link SceneNavigation.displayProgressBar}) does not error and simply blanks textContent.
        */
-      message: string | null;
+      message: string;
 
       /**
        * Expire other cached textures?
        * @defaultValue `false`
        */
-      expireCache: boolean | null;
+      expireCache: boolean;
 
       /**
        * Display loading progress bar?
        * @defaultValue `true`
        */
-      displayProgress: boolean | null;
+      displayProgress: boolean;
     }> &
       /** @privateRemarks Can't Pick `expireCache` as it has a different default here */
       Pick<LoadSceneTexturesOptions, "maxConcurrent">;
@@ -233,10 +233,10 @@ declare global {
    */
   function loadTexture(
     src: string,
-    options?: {
+    options?: NullishProps<{
       /** A fallback texture URL to use if the requested source is unavailable */
-      fallback?: string;
-    },
+      fallback: string;
+    }>,
   ): Promise<PIXI.Texture | PIXI.Spritesheet | null>;
 }
 
