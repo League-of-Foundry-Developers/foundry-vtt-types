@@ -1,17 +1,7 @@
 import { expectTypeOf } from "vitest";
 import type { EmptyObject } from "../../../../../src/utils/index.d.mts";
-
-const {
-  processBufferToBase64,
-  processBufferRedToBufferRGBA,
-  controlHashes,
-  pixelsToOffscreenCanvas,
-  offscreenToBase64,
-  blobToBase64,
-  expandBuffer,
-  reduceBuffer,
-  FORMATS,
-} = ImageCompressorWorkerFunctions;
+// eslint-disable-next-line import/extensions
+import "fvtt-types/worker";
 
 declare const someBlob: Blob;
 declare const someBuffer: Uint8ClampedArray;
@@ -27,7 +17,7 @@ expectTypeOf(
     format: FORMATS.RED,
     debug: true,
   }),
-).toEqualTypeOf<Promise<ImageCompressorWorkerFunctions.ProcessBufferToBase64Return>>();
+).toEqualTypeOf<Promise<ProcessBufferToBase64Return>>();
 
 expectTypeOf(
   processBufferRedToBufferRGBA({
@@ -36,7 +26,7 @@ expectTypeOf(
     height: 500,
     debug: true,
   }),
-).toEqualTypeOf<Promise<ImageCompressorWorkerFunctions.ProcessBufferRedToBufferRGBAReturn>>();
+).toEqualTypeOf<Promise<ProcessBufferRedToBufferRGBAReturn>>();
 
 expectTypeOf(controlHashes(someBuffer)).toEqualTypeOf<EmptyObject>();
 expectTypeOf(controlHashes(someBuffer, "some hash")).toEqualTypeOf<{ same: boolean; hash: string }>();
