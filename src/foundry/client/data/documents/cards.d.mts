@@ -178,18 +178,6 @@ declare global {
      */
     get canClone(): boolean;
 
-    static createDocuments<T extends Document.AnyConstructor, Temporary extends boolean | undefined>(
-      this: T,
-      data: Array<
-        fields.SchemaField.AssignmentType<FixedInstanceType<NoInfer<T>>["schema"]["fields"]> & Record<string, unknown>
-      >,
-      operation?: InexactPartial<
-        Omit<Document.Database.OperationOf<NoInfer<T>["metadata"]["name"], "create">, "data">
-      > & {
-        temporary?: Temporary;
-      },
-    ): Promise<Document.ToStoredIf<T, Temporary>[] | undefined>;
-
     /**
      * Deal one or more cards from this Cards document to each of a provided array of Cards destinations.
      * Cards are allocated from the top of the deck in cyclical order until the required number of Cards have been dealt.
@@ -342,17 +330,5 @@ declare global {
     resetDialog(): Promise<Cards.ConfiguredInstance | false | null>;
 
     override deleteDialog(options?: Partial<DialogOptions>): Promise<this | false | null | undefined>;
-
-    static override createDialog<T extends Document.AnyConstructor>(
-      this: T,
-      data?: DeepPartial<Document.ConstructorDataFor<NoInfer<T>> & Record<string, unknown>>,
-      context?: Pick<Document.Database.OperationOf<Cards["documentName"], "create">, "parent" | "pack"> &
-        InexactPartial<
-          DialogOptions & {
-            /** A restriction the selectable sub-types of the Dialog. */
-            types: string[];
-          }
-        >,
-    ): Promise<Document.ToConfiguredInstance<T> | null | undefined>;
   }
 }

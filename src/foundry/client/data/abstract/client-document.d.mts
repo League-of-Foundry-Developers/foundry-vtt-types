@@ -1,5 +1,4 @@
-import type { DeepPartial, InexactPartial, Mixin, FixedInstanceType } from "../../../../utils/index.d.mts";
-import type { DatabaseCreateOperation } from "../../../common/abstract/_types.d.mts";
+import type { InexactPartial, Mixin, FixedInstanceType, AnyObject } from "../../../../utils/index.d.mts";
 import type DataModel from "../../../common/abstract/data.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 
@@ -318,17 +317,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * Gets the default new name for a Document
    * @param context - The context for which to create the Document name.
    */
-  static defaultName(
-    context?: InexactPartial<{
-      /** The sub-type of the document */
-      // TODO: See if the valid strings can be inferred from this type
-      type: string;
-      /** A parent document within which the created Document should belong */
-      parent: foundry.abstract.Document.Any;
-      /** A compendium pack within which the Document should be created */
-      pack: string;
-    }>,
-  ): string;
+  static defaultName(context?: Document.DefaultNameContext<string, never>): string;
 
   /**
    * Present a Dialog form to create a new Document of this type.
@@ -340,17 +329,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * @returns A Promise which resolves to the created Document, or null if the dialog was
    *          closed.
    */
-  static createDialog<T extends Document.AnyConstructor>(
-    this: T,
-    data?: DeepPartial<Document.ConstructorDataFor<NoInfer<T>> & Record<string, unknown>>,
-    context?: Pick<DatabaseCreateOperation<FixedInstanceType<NoInfer<T>>>, "parent" | "pack"> &
-      InexactPartial<
-        DialogOptions & {
-          /** A restriction the selectable sub-types of the Dialog. */
-          types: string[];
-        }
-      >,
-  ): Promise<Document.ToConfiguredInstance<T> | null | undefined>;
+  static createDialog(data: never, context?: never): Promise<Document.Any | null | undefined>;
 
   /**
    * Present a Dialog form to confirm deletion of this Document.
@@ -382,11 +361,10 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * @returns The resolved Document
    * @throws If a Document could not be retrieved from the provided data.
    */
-  static fromDropData<T extends Document.AnyConstructor>(
-    this: T,
-    data: Document.DropData<FixedInstanceType<NoInfer<T>>>,
-    options?: FromDropDataOptions,
-  ): Promise<Document.ToConfiguredInstance<T> | undefined>;
+  static fromDropData(
+    data: Document.DropData<never>,
+    options?: Document.FromDropDataOptions,
+  ): Promise<Document.Any | undefined>;
 
   /**
    * Create the Document from the given source with migration applied to it.
@@ -405,11 +383,11 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * @param context - The model construction context passed to {@link Document.fromSource}.
    *                  (default: `context.strict=true`) Strict validation is enabled by default.
    */
-  static fromImport<T extends Document.AnyConstructor>(
-    this: T,
-    source: Record<string, unknown>,
-    context?: Document.ConstructionContext<Document.Any | null> & DataModel.DataValidationOptions,
-  ): Promise<FixedInstanceType<T>>;
+  static fromImport(
+    source: never,
+    context?: Document.ConstructionContext<never> & DataModel.DataValidationOptions,
+  ): Promise<Document.Any>;
+
   /**
    * Update this Document using a provided JSON string.
    * @param json - JSON data string
@@ -715,12 +693,4 @@ declare class AnyDocument extends Document<any, {}, any> {
   flags?: unknown;
 
   getFlag(scope: never, key: never): any;
-}
-
-interface FromDropDataOptions {
-  /**
-   * Import the provided document data into the World, if it is not already a World-level Document reference
-   * @defaultValue `false`
-   */
-  importWorld?: boolean;
 }
