@@ -1,4 +1,9 @@
-import type { HandleEmptyObject, Mixin, PrettifyType, RemoveIndexSignatures } from "../../../../../utils/index.d.mts";
+import type {
+  FixedInstanceType,
+  HandleEmptyObject,
+  PrettifyType,
+  RemoveIndexSignatures,
+} from "../../../../../utils/index.d.mts";
 
 declare const DynamicClass: new <_Computed extends object>(arg0: never, ...args: never[]) => _Computed;
 
@@ -14,16 +19,12 @@ type GroupFor<Group extends CanvasGroupMixin.LayerGroup | NoLayerGroup> = Group 
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     {};
 
-declare class CanvasGroupMixinClass extends CanvasGroup<
-  CanvasGroupMixin.LayerGroup | NoLayerGroup,
-  CanvasGroupMixin.DrawOptions,
-  CanvasGroupMixin.TeardownOptions
-> {
-  constructor(...args: any[]);
-}
-
 declare namespace CanvasGroup {
-  type MixinClass = typeof CanvasGroupMixin;
+  type MixinClass = typeof CanvasGroup<
+    CanvasGroupMixin.LayerGroup | NoLayerGroup,
+    CanvasGroupMixin.DrawOptions,
+    CanvasGroupMixin.TeardownOptions
+  >;
 }
 
 declare class CanvasGroup<
@@ -99,7 +100,7 @@ type ApplyGroup<
   Group extends CanvasGroupMixin.LayerGroup | NoLayerGroup,
 > = new <DrawOptions extends CanvasGroupMixin.DrawOptions, TeardownOptions extends CanvasGroupMixin.TeardownOptions>(
   ...args: ConstructorParameters<BaseClass>
-) => CanvasGroup<Group, DrawOptions, TeardownOptions> & InstanceType<BaseClass>;
+) => CanvasGroup<Group, DrawOptions, TeardownOptions> & FixedInstanceType<BaseClass>;
 
 declare global {
   /**
