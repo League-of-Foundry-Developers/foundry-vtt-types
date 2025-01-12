@@ -12,13 +12,19 @@ type DataSchema = foundry.data.fields.DataSchema;
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
-declare class BaseActiveEffect extends Document<"ActiveEffect", BaseActiveEffect.Schema, any> {
+declare class BaseActiveEffect<SubType extends BaseActiveEffect.SubType = BaseActiveEffect.SubType> extends Document<
+  "ActiveEffect",
+  BaseActiveEffect._Schema,
+  any
+> {
   /**
    * @param data    - Initial data from which to construct the ActiveEffect
    * @param context - Construction context options
    */
   // TODO(LukeAbby): This constructor is causing a circular error.
   // constructor(data?: BaseActiveEffect.ConstructorData, context?: Document.ConstructionContext<BaseActiveEffect.Parent>);
+
+  override system: Document.SystemFor<"ActiveEffect", SubType>;
 
   override parent: BaseActiveEffect.Parent;
 
@@ -67,17 +73,26 @@ declare class BaseActiveEffect extends Document<"ActiveEffect", BaseActiveEffect
 export default BaseActiveEffect;
 
 declare namespace BaseActiveEffect {
-  type Parent = Actor.ConfiguredInstance | Item.ConfiguredInstance | null;
-
-  type TypeNames = Game.Model.TypeNames<"ActiveEffect">;
-
+  /**
+   * A document's metadata is special information about the document ranging anywhere from its name,
+   * whether it's indexed, or to the permissions a user has over it.
+   */
   type Metadata = Document.MetadataFor<BaseActiveEffect>;
 
-  type SchemaField = fields.SchemaField<Schema>;
-  type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;
-  type UpdateData = fields.SchemaField.InnerAssignmentType<Schema>;
-  type Properties = fields.SchemaField.InnerInitializedType<Schema>;
-  type Source = fields.SchemaField.InnerPersistedType<Schema>;
+  type SubType = Game.Model.TypeNames<"ActiveEffect">;
+  type OfType<Type extends SubType> = Document.OfType<"ActiveEffect", Type>;
+
+  /**
+   * A document's parent is something that can contain it.
+   * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
+   */
+  type Parent = Actor.ConfiguredInstance | Item.ConfiguredInstance | null;
+
+  type Source = fields.SchemaField.PersistedData<Schema>;
+  type PersistedData = fields.SchemaField.PersistedData<Schema>;
+  type CreateData = fields.SchemaField.CreateData<Schema>;
+  type InitializedData = fields.SchemaField.InitializedData<Schema>;
+  type UpdateData = fields.SchemaField.UpdateData<Schema>;
 
   interface Schema extends DataSchema {
     /**
@@ -235,7 +250,34 @@ declare namespace BaseActiveEffect {
     _stats: fields.DocumentStatsField;
   }
 
+  // The document subclasses override `system` anyways.
+  // There's no point in doing expensive computation work comparing the base class system.
+  /** @internal */
+  interface _Schema extends Schema {
+    system: any;
+  }
+
   interface CoreFlags {
     core?: { statusId?: string; overlay?: boolean };
   }
+
+  /**
+   * @deprecated This type is used by Foundry too vaguely.
+   * In one context the most correct type is after initialization whereas in another one it should be
+   * before but Foundry uses it interchangeably.
+   */
+  type Properties = fields.SchemaField.InitializedData<Schema>;
+
+  /** @deprecated {@link BaseActiveEffect.SubType | `BaseActiveEffect.SubType`} */
+  type TypeNames = SubType;
+
+  /**
+   * @deprecated {@link fields.SchemaField | `SchemaField<BaseActiveEffect.Schema>`}
+   */
+  type SchemaField = fields.SchemaField<Schema>;
+
+  /**
+   * @deprecated {@link BaseActiveEffect.CreateData | `BaseActiveEffect.CreateData`}
+   */
+  type ConstructorData = BaseActiveEffect.CreateData;
 }

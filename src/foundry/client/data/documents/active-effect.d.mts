@@ -1,4 +1,5 @@
-import type { AnyObject } from "../../../../utils/index.d.mts";
+import type { ConfiguredActiveEffect } from "../../../../configuration";
+import type { AnyObject, HandleEmptyObject } from "../../../../utils/index.d.mts";
 import type { DataModel } from "../../../common/abstract/data.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataField } from "../../../common/data/fields.d.mts";
@@ -7,10 +8,10 @@ import type BaseActiveEffect from "../../../common/documents/active-effect.d.mts
 
 declare global {
   namespace ActiveEffect {
-    type Metadata = Document.MetadataFor<ActiveEffect>;
-
     type ConfiguredClass = Document.ConfiguredClassForName<"ActiveEffect">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"ActiveEffect">;
+
+    type Metadata = Document.MetadataFor<ActiveEffect>;
 
     interface DatabaseOperations
       extends Document.Database.Operations<
@@ -21,11 +22,22 @@ declare global {
       > {}
 
     // Helpful aliases
-    type TypeNames = BaseActiveEffect.TypeNames;
-    type ConstructorData = BaseActiveEffect.ConstructorData;
-    type UpdateData = BaseActiveEffect.UpdateData;
+    type SubType = BaseActiveEffect.SubType;
+    type Parent = ActiveEffect.Parent;
+    type OfType<Type extends SubType> = HandleEmptyObject<ConfiguredActiveEffect<Type>, ActiveEffect<SubType>>;
     type Schema = BaseActiveEffect.Schema;
+
     type Source = BaseActiveEffect.Source;
+    type PersistedData = BaseActiveEffect.PersistedData;
+    type CreateData = BaseActiveEffect.CreateData;
+    type InitializedData = BaseActiveEffect.InitializedData;
+    type UpdateData = BaseActiveEffect.UpdateData;
+
+    /** @deprecated {@link ActiveEffect.SubType | `ActiveEffect.SubType`} */
+    type TypeNames = BaseActiveEffect.SubType;
+
+    /** @deprecated {@link ActiveEffect.CreateData | `ActiveEffect.CreateData`} */
+    type ConstructorData = BaseActiveEffect.ConstructorData;
 
     // TODO(LukeAbby): Audit. This is used both as an assignment, constructor, and initialized type.
     // It's likely this isn't really supposed to be used in fvtt-types.
@@ -65,7 +77,9 @@ declare global {
    * @see {@link Actor}                     The Actor document which contains ActiveEffect embedded documents
    * @see {@link Item}                      The Item document which contains ActiveEffect embedded documents
    */
-  class ActiveEffect extends ClientDocumentMixin(foundry.documents.BaseActiveEffect) {
+  class ActiveEffect<SubType extends ActiveEffect.SubType = ActiveEffect.SubType> extends ClientDocumentMixin(
+    foundry.documents.BaseActiveEffect,
+  )<SubType> {
     static override metadata: ActiveEffect.Metadata;
 
     static get implementation(): ActiveEffect.ConfiguredClass;
