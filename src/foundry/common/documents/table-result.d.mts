@@ -27,7 +27,7 @@ declare class BaseTableResult extends Document<"TableResult", BaseTableResult.Sc
   static override defineSchema(): BaseTableResult.Schema;
 
   override testUserPermission(
-    user: foundry.documents.BaseUser,
+    user: User,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
     options?: InexactPartial<{
       /**

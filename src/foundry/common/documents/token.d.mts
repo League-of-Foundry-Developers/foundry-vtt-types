@@ -42,10 +42,10 @@ declare class BaseToken extends Document<"Token", BaseToken.Schema, any> {
    * Is a user able to update an existing Token?
    * @internal
    */
-  static #canUpdate(user: documents.BaseUser, doc: BaseToken, data: BaseToken.UpdateData): boolean;
+  static #canUpdate(user: User, doc: BaseToken, data: BaseToken.UpdateData): boolean;
 
   override testUserPermission(
-    user: documents.BaseUser,
+    user: User,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
     options?: InexactPartial<{
       /**
@@ -436,7 +436,7 @@ declare namespace BaseToken {
      * @internal
      */
     // TODO(Eon): Causes an 'Excessively Deep' error.
-    //_regions: fields.ArrayField<fields.ForeignDocumentField<typeof documents.BaseRegion, {idOnly: true}>>;
+    _regions: fields.ArrayField<fields.ForeignDocumentField<typeof documents.BaseRegion, { idOnly: true }>>;
 
     /**
      * An object of optional key/value flags

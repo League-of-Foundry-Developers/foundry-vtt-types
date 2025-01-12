@@ -30,15 +30,15 @@ declare class BaseCombatant extends Document<"Combatant", BaseCombatant.Schema, 
    * Is a user able to update an existing Combatant?
    * @internal
    */
-  static #canUpdate(user: documents.BaseUser, doc: BaseCombatant, data: BaseCombatant.UpdateData): boolean;
+  static #canUpdate(user: User, doc: BaseCombatant, data: BaseCombatant.UpdateData): boolean;
 
   /**
    * Is a user able to create this Combatant?
    * @internal
    */
-  static #canCreate(user: documents.BaseUser, doc: BaseCombatant, data: BaseCombatant.ConstructorData): boolean;
+  static #canCreate(user: User, doc: BaseCombatant, data: BaseCombatant.ConstructorData): boolean;
 
-  override getUserLevel(user?: documents.BaseUser): DOCUMENT_OWNERSHIP_LEVELS | null;
+  override getUserLevel(user?: User): DOCUMENT_OWNERSHIP_LEVELS | null;
 }
 
 export default BaseCombatant;

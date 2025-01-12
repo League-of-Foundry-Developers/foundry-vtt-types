@@ -39,6 +39,15 @@ export default Document;
 type _ClassMustBeAssignableToInternal = MustConform<typeof Document, Document.Internal.Constructor>;
 type _InstanceMustBeAssignableToInternal = MustConform<Document.Any, Document.Internal.Instance.Any>;
 
+type _ConfigurationFailureClassMustBeAssignableToInternal = MustConform<
+  Document.ConfigurationFailureClass,
+  Document.Internal.Constructor
+>;
+type _ConfigurationFailureInstanceMustBeAssignableToInternal = MustConform<
+  Document.ConfigurationFailureInstance,
+  Document.Internal.Instance.Any
+>;
+
 /**
  * An extension of the base DataModel which defines a Document.
  * Documents are special in that they are persisted to the database and referenced by _id.
@@ -197,7 +206,7 @@ declare abstract class Document<
    * @param user - The User being tested
    * @returns Does the User have a sufficient role to create?
    */
-  static canUserCreate(user: foundry.documents.BaseUser): boolean;
+  static canUserCreate(user: User): boolean;
 
   /**
    * Get the explicit permission level that a specific User has over this Document, a value in CONST.DOCUMENT_OWNERSHIP_LEVELS.
@@ -207,7 +216,7 @@ declare abstract class Document<
    *               (default: `game.user`)
    * @returns A numeric permission level from CONST.DOCUMENT_OWNERSHIP_LEVELS or null
    */
-  getUserLevel(user?: foundry.documents.BaseUser): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
+  getUserLevel(user?: User): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
 
   /**
    * Test whether a certain User has a requested permission level (or greater) over the Document
@@ -217,7 +226,7 @@ declare abstract class Document<
    * @returns Does the user have this permission level over the Document?
    */
   testUserPermission(
-    user: foundry.documents.BaseUser,
+    user: User,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
     options?: InexactPartial<{
       /**
@@ -236,7 +245,7 @@ declare abstract class Document<
    *                 (default: `{}`)
    * @returns Does the User have permission?
    */
-  canUserModify(user: foundry.documents.BaseUser, action: "create" | "update" | "delete", data?: object): boolean;
+  canUserModify(user: User, action: "create" | "update" | "delete", data?: object): boolean;
 
   /**
    * Clone a document, creating a new document by combining current data with provided overrides.
@@ -663,7 +672,7 @@ declare abstract class Document<
   protected _preCreate(
     data: fields.SchemaField.AssignmentType<Schema>,
     options: Document.PreCreateOptions<DocumentName>,
-    user: foundry.documents.BaseUser,
+    user: User,
   ): Promise<boolean | void>;
 
   /**
@@ -697,7 +706,7 @@ declare abstract class Document<
     this: T,
     documents: Document.ToConfiguredInstance<NoInfer<T>>[],
     operation: Document.Database.OperationOf<NoInfer<T>["metadata"]["name"], "create">,
-    user: foundry.documents.BaseUser,
+    user: User,
   ): Promise<boolean | void>;
 
   /**
@@ -712,9 +721,9 @@ declare abstract class Document<
    */
   protected static _onCreateOperation<T extends Document.AnyConstructor>(
     this: T,
-    documents: Document.ToConfiguredClass<NoInfer<T>>[],
+    documents: Document.ToConfiguredInstance<NoInfer<T>>[],
     operation: Document.Database.OperationOf<NoInfer<T>["metadata"]["name"], "create">,
-    user: foundry.documents.BaseUser,
+    user: User,
   ): Promise<void>;
 
   /**
@@ -728,7 +737,7 @@ declare abstract class Document<
   protected _preUpdate(
     changed: fields.SchemaField.AssignmentType<Schema>,
     options: Document.PreUpdateOptions<DocumentName>,
-    user: foundry.documents.BaseUser,
+    user: User,
   ): Promise<boolean | void>;
 
   /**
@@ -763,7 +772,7 @@ declare abstract class Document<
     this: T,
     documents: Document.ToConfiguredInstance<NoInfer<T>>[],
     operation: Document.Database.OperationOf<FixedInstanceType<NoInfer<T>>["documentName"], "update">,
-    user: foundry.documents.BaseUser,
+    user: User,
   ): Promise<boolean | void>;
 
   /**
@@ -780,7 +789,7 @@ declare abstract class Document<
     this: T,
     documents: Document.ToConfiguredInstance<NoInfer<T>>[],
     operation: Document.Database.OperationOf<FixedInstanceType<NoInfer<T>>["documentName"], "update">,
-    user: foundry.documents.BaseUser,
+    user: User,
   ): Promise<void>;
 
   /**
@@ -790,10 +799,7 @@ declare abstract class Document<
    * @param user    - The User requesting the document deletion
    * @returns A return value of false indicates the delete operation should be cancelled
    */
-  protected _preDelete(
-    options: Document.PreDeleteOptions<DocumentName>,
-    user: foundry.documents.BaseUser,
-  ): Promise<boolean | void>;
+  protected _preDelete(options: Document.PreDeleteOptions<DocumentName>, user: User): Promise<boolean | void>;
 
   /**
    * Perform follow-up operations after a Document of this type is deleted.
@@ -821,9 +827,9 @@ declare abstract class Document<
    */
   protected static _preDeleteOperation<T extends Document.AnyConstructor>(
     this: T,
-    documents: Array<Document.ToConfiguredInstance<NoInfer<T>>>,
+    documents: Document.ToConfiguredInstance<NoInfer<T>>[],
     operation: Document.Database.OperationOf<FixedInstanceType<NoInfer<T>>["documentName"], "delete">,
-    user: foundry.documents.BaseUser,
+    user: User,
   ): Promise<unknown>;
 
   /**
@@ -838,9 +844,9 @@ declare abstract class Document<
    */
   protected static _onDeleteOperation<T extends Document.AnyConstructor>(
     this: T,
-    documents: Array<Document.ToConfiguredInstance<NoInfer<T>>>,
+    documents: Document.ToConfiguredInstance<NoInfer<T>>[],
     operation: Document.Database.OperationOf<FixedInstanceType<NoInfer<T>>["documentName"], "delete">,
-    user: foundry.documents.BaseUser,
+    user: User,
   ): Promise<unknown>;
 
   /**
@@ -1349,17 +1355,9 @@ declare namespace Document {
     readonly coreTypes: readonly string[];
     readonly embedded: Record<string, string>;
     readonly permissions: {
-      create:
-        | string
-        | ToMethod<
-            (user: foundry.documents.BaseUser, doc: ThisType, data: Document.ConstructorDataForName<Type>) => boolean
-          >;
-      update:
-        | string
-        | ToMethod<
-            (user: foundry.documents.BaseUser, doc: ThisType, data: Document.UpdateDataForName<Type>) => boolean
-          >;
-      delete: string | ToMethod<(user: foundry.documents.BaseUser, doc: ThisType, data: EmptyObject) => boolean>;
+      create: string | ToMethod<(user: User, doc: ThisType, data: Document.ConstructorDataForName<Type>) => boolean>;
+      update: string | ToMethod<(user: User, doc: ThisType, data: Document.UpdateDataForName<Type>) => boolean>;
+      delete: string | ToMethod<(user: User, doc: ThisType, data: EmptyObject) => boolean>;
     };
     readonly preserveOnImport?: readonly string[] | undefined;
     readonly schemaVersion: string | undefined;

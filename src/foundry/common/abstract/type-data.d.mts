@@ -9,7 +9,6 @@ import type {
   SimpleMerge,
 } from "../../../utils/index.d.mts";
 import type { SchemaField } from "../data/fields.d.mts";
-import type BaseUser from "../documents/user.d.mts";
 import type { DataModel } from "./data.d.mts";
 import type Document from "./document.d.mts";
 
@@ -294,7 +293,7 @@ declare abstract class TypeDataModel<
   protected _preCreate(
     data: TypeDataModel.ParentAssignmentType<Schema, Parent>,
     options: Document.PreCreateOptions<any>,
-    user: BaseUser,
+    user: User,
   ): Promise<boolean | void>;
 
   /**
@@ -344,7 +343,7 @@ declare abstract class TypeDataModel<
    * @param user    - The User requesting the document deletion
    * @returns A return value of false indicates the deletion operation should be cancelled.
    */
-  protected _preDelete(options: Document.PreDeleteOptions<any>, user: BaseUser): Promise<boolean | void>;
+  protected _preDelete(options: Document.PreDeleteOptions<any>, user: User): Promise<boolean | void>;
 
   /**
    * Called by {@link ClientDocument#_onDelete}.

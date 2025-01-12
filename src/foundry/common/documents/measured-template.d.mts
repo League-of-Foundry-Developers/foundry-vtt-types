@@ -35,7 +35,7 @@ declare class BaseMeasuredTemplate extends Document<"MeasuredTemplate", BaseMeas
    * @param doc  - The MeasuredTemplate being created.
    * @internal
    */
-  static #canCreate(user: documents.BaseUser, doc: BaseMeasuredTemplate): boolean;
+  static #canCreate(user: User, doc: BaseMeasuredTemplate): boolean;
 
   /**
    * Is a user able to modify an existing MeasuredTemplate?
@@ -44,14 +44,10 @@ declare class BaseMeasuredTemplate extends Document<"MeasuredTemplate", BaseMeas
    * @param data - Data being changed.
    * @internal
    */
-  static #canModify(
-    user: documents.BaseUser,
-    doc: BaseMeasuredTemplate,
-    data?: BaseMeasuredTemplate.UpdateData,
-  ): boolean;
+  static #canModify(user: User, doc: BaseMeasuredTemplate, data?: BaseMeasuredTemplate.UpdateData): boolean;
 
   override testUserPermission(
-    user: foundry.documents.BaseUser,
+    user: User,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS,
     options?: InexactPartial<{
       /**

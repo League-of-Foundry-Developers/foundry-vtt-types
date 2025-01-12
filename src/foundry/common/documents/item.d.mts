@@ -45,10 +45,10 @@ declare class BaseItem extends Document<"Item", BaseItem.Schema, any> {
    */
   static getDefaultArtwork(itemData: BaseItem.ConstructorData): { img: string };
 
-  override canUserModify(user: documents.BaseUser, action: "create" | "delete" | "update", data?: AnyObject): boolean;
+  override canUserModify(user: User, action: "create" | "delete" | "update", data?: AnyObject): boolean;
 
   override testUserPermission(
-    user: documents.BaseUser,
+    user: User,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS,
     options?: InexactPartial<{
       /**

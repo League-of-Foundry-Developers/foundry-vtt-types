@@ -22,14 +22,14 @@ declare class BaseActiveEffect extends Document<"ActiveEffect", BaseActiveEffect
 
   override parent: BaseActiveEffect.Parent;
 
-  override canUserModify(user: documents.BaseUser, action: "create" | "update" | "delete", data?: AnyObject): boolean;
+  override canUserModify(user: User, action: "create" | "update" | "delete", data?: AnyObject): boolean;
 
   static override metadata: BaseActiveEffect.Metadata;
 
   static override defineSchema(): BaseActiveEffect.Schema;
 
   override testUserPermission(
-    user: documents.BaseUser,
+    user: User,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
     options?: InexactPartial<{
       /**
