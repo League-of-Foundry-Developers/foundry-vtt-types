@@ -54,6 +54,8 @@ declare class BaseItem<SubType extends Item.SubType = Item.SubType> extends Docu
    * defined DRY-ly while also being easily overrideable.
    */
 
+  override parent: Item.Parent;
+
   override system: Document.SystemFor<"ActiveEffect", SubType>;
 
   static get TYPES(): BaseItem.SubType[];
@@ -135,14 +137,10 @@ declare class BaseItem<SubType extends Item.SubType = Item.SubType> extends Docu
 export default BaseItem;
 
 declare namespace BaseItem {
-  /**
-   * A document's metadata is special information about the document ranging anywhere from its name,
-   * whether it's indexed, or to the permissions a user has over it.
-   */
-  interface Metadata extends Document.MetadataFor<BaseItem> {}
-
+  export import Metadata = Item.Metadata;
   export import SubType = Item.SubType;
   export import Parent = Item.Parent;
+  export import Stored = Item.Stored;
   export import Source = Item.Source;
   export import PersistedData = Item.PersistedData;
   export import CreateData = Item.CreateData;

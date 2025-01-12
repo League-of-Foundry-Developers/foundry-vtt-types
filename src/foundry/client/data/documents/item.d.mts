@@ -41,6 +41,11 @@ declare global {
     type Parent = Actor.ConfiguredInstance | null;
 
     /**
+     * An instance of `Item` that comes from the database.
+     */
+    interface Stored extends Document.Stored<Item.ConfiguredInstance> {}
+
+    /**
      * The data put in {@link Document._source | `Document._source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
