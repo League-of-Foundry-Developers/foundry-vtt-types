@@ -7,7 +7,7 @@ type DataSchema = foundry.data.fields.DataSchema;
  * The JournalEntryPage Document.
  * Defines the DataSchema and common behaviors for a JournalEntryPage which are shared between both client and server.
  */
-declare class BaseJournalEntryPage extends Document<"JournalEntryPage", BaseJournalEntryPage.Schema, any> {
+declare abstract class BaseJournalEntryPage extends Document<"JournalEntryPage", BaseJournalEntryPage.Schema, any> {
   /**
    * @privateRemarks Manual override of the return due to TS limitations with static `this`
    */

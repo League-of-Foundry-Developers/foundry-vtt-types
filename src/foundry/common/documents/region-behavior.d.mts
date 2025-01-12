@@ -7,7 +7,7 @@ type DataSchema = foundry.data.fields.DataSchema;
  * The RegionBehavior Document.
  * Defines the DataSchema and common behaviors for a RegionBehavior which are shared between both client and server.
  */
-declare class BaseRegionBehavior extends Document<"RegionBehavior", BaseRegionBehavior.Schema, any> {
+declare abstract class BaseRegionBehavior extends Document<"RegionBehavior", BaseRegionBehavior.Schema, any> {
   #baseRegionBehavior: true;
 
   /**

@@ -13,7 +13,7 @@ type DataSchema = foundry.data.fields.DataSchema;
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
-declare class BaseActorDelta extends Document<"ActorDelta", BaseActorDelta.Schema, any> {
+declare abstract class BaseActorDelta extends Document<"ActorDelta", BaseActorDelta.Schema, any> {
   // TODO(LukeAbby): This constructor is a symptom of a circular error.
   // constructor(data?: BaseActorDelta.ConstructorData, context?: Document.ConstructionContext<BaseActorDelta.Parent>);
 

@@ -9,7 +9,7 @@ type DataSchema = foundry.data.fields.DataSchema;
  * The Region Document.
  * Defines the DataSchema and common behaviors for a Region which are shared between both client and server.
  */
-declare class BaseRegion extends Document<"Region", BaseRegion.Schema, any> {
+declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, any> {
   /**
    * Construct a Region document using provided data and context.
    * @param data        - Initial data from which to construct the Region

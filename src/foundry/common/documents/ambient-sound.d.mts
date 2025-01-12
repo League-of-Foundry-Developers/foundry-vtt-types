@@ -11,7 +11,7 @@ type DataSchema = foundry.data.fields.DataSchema;
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
-declare class BaseAmbientSound extends Document<"AmbientSound", BaseAmbientSound.Schema, any> {
+declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmbientSound.Schema, any> {
   /**
    * @param data    - Initial data from which to construct the AmbientSound
    * @param context - Construction context options
