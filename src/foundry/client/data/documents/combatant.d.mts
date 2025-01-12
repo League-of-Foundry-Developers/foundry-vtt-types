@@ -74,7 +74,7 @@ declare global {
     get isDefeated(): boolean;
 
     override testUserPermission(
-      user: User,
+      user: User.ConfiguredInstance,
       permission: keyof typeof foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS,
       { exact }?: { exact?: boolean },
     ): boolean;

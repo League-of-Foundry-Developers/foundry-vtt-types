@@ -170,8 +170,8 @@ interface _ConfiguredMetadata<ThisType extends Document.Internal.Instance.Any> {
       label: string;
       labelPlural: string;
       permissions: {
-        create(user: User, doc: ThisType): boolean;
-        update(user: User, doc: ThisType, data: BaseActor.UpdateData): boolean;
+        create(user: User.ConfiguredInstance, doc: ThisType): boolean;
+        update(user: User.ConfiguredInstance, doc: ThisType, data: BaseActor.UpdateData): boolean;
       };
       schemaVersion: string;
     }
@@ -218,8 +218,8 @@ interface _ConfiguredMetadata<ThisType extends Document.Internal.Instance.Any> {
       label: string;
       labelPlural: string;
       permissions: {
-        create(user: User, doc: ThisType, data: BaseCard.UpdateData): boolean;
-        update(user: User, doc: ThisType, data: BaseCard.UpdateData): boolean;
+        create(user: User.ConfiguredInstance, doc: ThisType, data: BaseCard.UpdateData): boolean;
+        update(user: User.ConfiguredInstance, doc: ThisType, data: BaseCard.UpdateData): boolean;
       };
       compendiumIndexFields: ["name", "type", "suit", "sort"];
       schemaVersion: string;
@@ -250,8 +250,8 @@ interface _ConfiguredMetadata<ThisType extends Document.Internal.Instance.Any> {
       hasTypeData: true;
       isPrimary: true;
       permissions: {
-        create(user: User, doc: ThisType): boolean;
-        update(user: User, doc: ThisType, data: BaseChatMessage.UpdateData): boolean;
+        create(user: User.ConfiguredInstance, doc: ThisType): boolean;
+        update(user: User.ConfiguredInstance, doc: ThisType, data: BaseChatMessage.UpdateData): boolean;
       };
       schemaVersion: string;
     }
@@ -268,7 +268,7 @@ interface _ConfiguredMetadata<ThisType extends Document.Internal.Instance.Any> {
       };
       hasTypeData: true;
       permissions: {
-        update(user: User, doc: ThisType, data: BaseCombat.UpdateData): boolean;
+        update(user: User.ConfiguredInstance, doc: ThisType, data: BaseCombat.UpdateData): boolean;
       };
       schemaVersion: string;
     }
@@ -284,8 +284,8 @@ interface _ConfiguredMetadata<ThisType extends Document.Internal.Instance.Any> {
       hasTypeData: true;
       schemaVersion: string;
       permissions: {
-        create(user: User, doc: ThisType): boolean;
-        update(user: User, doc: ThisType, data: BaseCombatant.UpdateData): boolean;
+        create(user: User.ConfiguredInstance, doc: ThisType): boolean;
+        update(user: User.ConfiguredInstance, doc: ThisType, data: BaseCombatant.UpdateData): boolean;
       };
     }
   >;
@@ -299,8 +299,8 @@ interface _ConfiguredMetadata<ThisType extends Document.Internal.Instance.Any> {
       isEmbedded: true;
       permissions: {
         create: "DRAWING_CREATE";
-        update(user: User, doc: ThisType, data: BaseDrawing.UpdateData): boolean;
-        delete(user: User, doc: ThisType, data: BaseDrawing.UpdateData): boolean;
+        update(user: User.ConfiguredInstance, doc: ThisType, data: BaseDrawing.UpdateData): boolean;
+        delete(user: User.ConfiguredInstance, doc: ThisType, data: BaseDrawing.UpdateData): boolean;
       };
       schemaVersion: string;
     }
@@ -315,8 +315,8 @@ interface _ConfiguredMetadata<ThisType extends Document.Internal.Instance.Any> {
       isPrimary: true;
       permissions: {
         create: "PLAYER";
-        update(user: User, doc: ThisType, data: BaseFogExploration.UpdateData): boolean;
-        delete(user: User, doc: ThisType, data: BaseFogExploration.UpdateData): boolean;
+        update(user: User.ConfiguredInstance, doc: ThisType, data: BaseFogExploration.UpdateData): boolean;
+        delete(user: User.ConfiguredInstance, doc: ThisType, data: BaseFogExploration.UpdateData): boolean;
       };
       schemaVersion: string;
     }
@@ -388,8 +388,8 @@ interface _ConfiguredMetadata<ThisType extends Document.Internal.Instance.Any> {
       labelPlural: string;
       coreTypes: CONST.MACRO_TYPES[];
       permissions: {
-        create(user: User, doc: ThisType): boolean;
-        update(user: User, doc: ThisType): boolean;
+        create(user: User.ConfiguredInstance, doc: ThisType): boolean;
+        update(user: User.ConfiguredInstance, doc: ThisType): boolean;
       };
       schemaVersion: string;
     }
@@ -403,9 +403,9 @@ interface _ConfiguredMetadata<ThisType extends Document.Internal.Instance.Any> {
       labelPlural: string;
       isEmbedded: true;
       permissions: {
-        create(user: User, doc: ThisType): boolean;
-        update(user: User, doc: ThisType, data: BaseMeasuredTemplate.UpdateData): boolean;
-        delete(user: User, doc: ThisType, data: BaseMeasuredTemplate.UpdateData): boolean;
+        create(user: User.ConfiguredInstance, doc: ThisType): boolean;
+        update(user: User.ConfiguredInstance, doc: ThisType, data: BaseMeasuredTemplate.UpdateData): boolean;
+        delete(user: User.ConfiguredInstance, doc: ThisType, data: BaseMeasuredTemplate.UpdateData): boolean;
       };
       schemaVersion: string;
     }
@@ -471,8 +471,8 @@ interface _ConfiguredMetadata<ThisType extends Document.Internal.Instance.Any> {
       hasTypeData: true;
       isEmbedded: true;
       permissions: {
-        create(user: User, doc: ThisType): boolean;
-        update(user: User, doc: ThisType, data: BaseRegionBehavior.UpdateData): boolean;
+        create(user: User.ConfiguredInstance, doc: ThisType): boolean;
+        update(user: User.ConfiguredInstance, doc: ThisType, data: BaseRegionBehavior.UpdateData): boolean;
       };
       schemaVersion: string;
     }
@@ -536,9 +536,9 @@ interface _ConfiguredMetadata<ThisType extends Document.Internal.Instance.Any> {
       label: string;
       labelPlural: string;
       permissions: {
-        create(user: User, doc: ThisType, data: BaseSetting.UpdateData): boolean;
-        update(user: User, doc: ThisType, data: BaseSetting.UpdateData): boolean;
-        delete(user: User, doc: ThisType, data: BaseSetting.UpdateData): boolean;
+        create(user: User.ConfiguredInstance, doc: ThisType, data: BaseSetting.UpdateData): boolean;
+        update(user: User.ConfiguredInstance, doc: ThisType, data: BaseSetting.UpdateData): boolean;
+        delete(user: User.ConfiguredInstance, doc: ThisType, data: BaseSetting.UpdateData): boolean;
       };
       schemaVersion: string;
     }
@@ -552,7 +552,7 @@ interface _ConfiguredMetadata<ThisType extends Document.Internal.Instance.Any> {
       labelPlural: string;
       coreTypes: foundry.CONST.TABLE_RESULT_TYPES[];
       permissions: {
-        update(user: User, doc: ThisType, data: BaseTableResult.UpdateData): boolean;
+        update(user: User.ConfiguredInstance, doc: ThisType, data: BaseTableResult.UpdateData): boolean;
       };
       compendiumIndexFields: ["type"];
       schemaVersion: string;
@@ -581,7 +581,7 @@ interface _ConfiguredMetadata<ThisType extends Document.Internal.Instance.Any> {
       };
       permissions: {
         create: "TOKEN_CREATE";
-        update(user: User, doc: ThisType, data: BaseToken.UpdateData): boolean;
+        update(user: User.ConfiguredInstance, doc: ThisType, data: BaseToken.UpdateData): boolean;
         delete: "TOKEN_DELETE";
       };
       schemaVersion: string;
@@ -595,9 +595,9 @@ interface _ConfiguredMetadata<ThisType extends Document.Internal.Instance.Any> {
       label: string;
       labelPlural: string;
       permissions: {
-        create(user: User, doc: ThisType, data: BaseUser.UpdateData): boolean;
-        update(user: User, doc: ThisType, changes: BaseUser.UpdateData): boolean;
-        delete(user: User, doc: ThisType): boolean;
+        create(user: ThisType, doc: ThisType, data: BaseUser.UpdateData): boolean;
+        update(user: ThisType, doc: ThisType, changes: BaseUser.UpdateData): boolean;
+        delete(user: ThisType, doc: ThisType): boolean;
       };
       schemaVersion: string;
     }
@@ -610,7 +610,7 @@ interface _ConfiguredMetadata<ThisType extends Document.Internal.Instance.Any> {
       label: string;
       labelPlural: string;
       permissions: {
-        update(user: User, doc: ThisType, data: BaseWall.UpdateData): boolean;
+        update(user: User.ConfiguredInstance, doc: ThisType, data: BaseWall.UpdateData): boolean;
       };
       schemaVersion: string;
     }

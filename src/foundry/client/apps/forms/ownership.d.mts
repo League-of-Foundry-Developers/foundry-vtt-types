@@ -57,7 +57,7 @@ declare global {
       playerLevels: { level: number; label: string }[];
       isFolder: boolean;
       users: {
-        user: User;
+        user: User.ConfiguredInstance;
         level: number;
         isAuthor: boolean;
       }[];

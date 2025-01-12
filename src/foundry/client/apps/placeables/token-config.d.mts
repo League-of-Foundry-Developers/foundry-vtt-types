@@ -64,7 +64,7 @@ declare global {
      */
     protected _handleTokenPreview(force: boolean, options?: Options): Promise<void>;
 
-    protected override _canUserView(user: User): boolean;
+    protected override _canUserView(user: User.ConfiguredInstance): boolean;
 
     override getData(options?: Partial<Options>): Promise<object>; // TODO: Implement GetDataReturnType
 
@@ -214,7 +214,7 @@ declare global {
 
     override get isEditable(): boolean;
 
-    protected override _canUserView(user: User): boolean;
+    protected override _canUserView(user: User.ConfiguredInstance): boolean;
 
     override getData(options: unknown): Promise<object>; // TODO: Implement GetDataReturnType
 

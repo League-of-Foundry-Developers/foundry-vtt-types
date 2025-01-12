@@ -31,7 +31,7 @@ declare class BaseJournalEntryPage extends Document<"JournalEntryPage", BaseJour
 
   static override defineSchema(): BaseJournalEntryPage.Schema;
 
-  override getUserLevel(user?: User): foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
+  override getUserLevel(user?: User.ConfiguredInstance): foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
 }
 
 export default BaseJournalEntryPage;

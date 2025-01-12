@@ -198,7 +198,7 @@ declare global {
 
     override activateListeners(): void;
 
-    protected override _canConfigure(user: User, event?: PIXI.FederatedEvent): boolean;
+    protected override _canConfigure(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
 
     protected override _onClickLeft(event: PIXI.FederatedEvent): void;
 

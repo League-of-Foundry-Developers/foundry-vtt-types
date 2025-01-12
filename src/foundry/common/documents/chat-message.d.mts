@@ -31,13 +31,13 @@ declare class BaseChatMessage extends Document<"ChatMessage", BaseChatMessage.Sc
    * Is a user able to create a new chat message?
    * @internal
    */
-  static #canCreate(user: User, doc: BaseChatMessage): boolean;
+  static #canCreate(user: User.ConfiguredInstance, doc: BaseChatMessage): boolean;
 
   /**
    * Is a user able to update an existing chat message?
    * @internal
    */
-  static #canUpdate(user: User, doc: BaseChatMessage, data: BaseChatMessage.UpdateData): boolean;
+  static #canUpdate(user: User.ConfiguredInstance, doc: BaseChatMessage, data: BaseChatMessage.UpdateData): boolean;
 
   /**
    * Validate that Rolls belonging to the ChatMessage document are valid
@@ -46,7 +46,7 @@ declare class BaseChatMessage extends Document<"ChatMessage", BaseChatMessage.Sc
   static #validateRoll(rollJSON: string): void;
 
   override testUserPermission(
-    user: User,
+    user: User.ConfiguredInstance,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
     options?: InexactPartial<{ exact: boolean }>,
   ): boolean;

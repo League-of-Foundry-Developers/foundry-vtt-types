@@ -34,10 +34,14 @@ declare class BaseItem<SubType extends Item.SubType = Item.SubType> extends Docu
    */
   static getDefaultArtwork(itemData: BaseItem.CreateData): { img: string };
 
-  override canUserModify(user: User, action: "create" | "delete" | "update", data?: AnyObject): boolean;
+  override canUserModify(
+    user: User.ConfiguredInstance,
+    action: "create" | "delete" | "update",
+    data?: AnyObject,
+  ): boolean;
 
   override testUserPermission(
-    user: User,
+    user: User.ConfiguredInstance,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS,
     options?: Document.TestUserPermissionOptions,
   ): boolean;

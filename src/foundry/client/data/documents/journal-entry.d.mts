@@ -33,7 +33,7 @@ declare global {
      */
     get visible(): boolean;
 
-    override getUserLevel(user?: User): foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
+    override getUserLevel(user?: User.ConfiguredInstance): foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
 
     /**
      * Return a reference to the Note instance for this Journal Entry in the current Scene, if any.

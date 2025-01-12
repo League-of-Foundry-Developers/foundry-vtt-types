@@ -39,7 +39,7 @@ declare global {
     /**
      * Prepare a displayed name string for the User which includes their name, pronouns, character, or GM tag.
      */
-    protected _getDisplayName(user: User): string;
+    protected _getDisplayName(user: User.ConfiguredInstance): string;
 
     /**
      * Position this Application in the main DOM appropriately.
@@ -65,9 +65,9 @@ declare global {
     type AnyConstructor = typeof AnyPlayerList;
 
     interface UserData {
-      active: User["active"];
-      isGM: User["isGM"];
-      isSelf: User["isSelf"];
+      active: User.ConfiguredInstance["active"];
+      isGM: User.ConfiguredInstance["isGM"];
+      isSelf: User.ConfiguredInstance["isSelf"];
       charname: string;
       color: string;
       border: string;

@@ -39,15 +39,15 @@ declare class BaseCard extends Document<"Card", BaseCard.Schema, any> {
   /**
    * Is a User able to create a new Card within this parent?
    */
-  static #canCreate(user: User, doc: BaseCard, data: BaseCard.ConstructorData): boolean;
+  static #canCreate(user: User.ConfiguredInstance, doc: BaseCard, data: BaseCard.ConstructorData): boolean;
 
   /**
    * Is a user able to update an existing Card?
    */
-  static #canUpdate(user: User, doc: BaseCard, data: BaseCard.UpdateData): boolean;
+  static #canUpdate(user: User.ConfiguredInstance, doc: BaseCard, data: BaseCard.UpdateData): boolean;
 
   override testUserPermission(
-    user: User,
+    user: User.ConfiguredInstance,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
     options?: InexactPartial<{
       /**

@@ -9,7 +9,7 @@ declare global {
    * @see {@link User} The User document
    */
   class Users extends WorldCollection<typeof foundry.documents.BaseUser, "Users"> {
-    constructor(data?: User["_source"][]);
+    constructor(data?: User.ConfiguredInstance["_source"][]);
 
     /**
      * The User document of the currently connected user

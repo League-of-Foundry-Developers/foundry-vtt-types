@@ -28,14 +28,18 @@ declare class BaseActiveEffect<SubType extends BaseActiveEffect.SubType = BaseAc
 
   override parent: BaseActiveEffect.Parent;
 
-  override canUserModify(user: User, action: "create" | "update" | "delete", data?: AnyObject): boolean;
+  override canUserModify(
+    user: User.ConfiguredInstance,
+    action: "create" | "update" | "delete",
+    data?: AnyObject,
+  ): boolean;
 
   static override metadata: BaseActiveEffect.Metadata;
 
   static override defineSchema(): BaseActiveEffect.Schema;
 
   override testUserPermission(
-    user: User,
+    user: User.ConfiguredInstance,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
     options?: InexactPartial<{
       /**

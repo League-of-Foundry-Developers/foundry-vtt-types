@@ -41,10 +41,10 @@ declare class BaseMacro extends Document<"Macro", BaseMacro.Schema, any> {
 
   static override validateJoint(data: Record<string, unknown>): void;
 
-  static override canUserCreate(user: User): boolean;
+  static override canUserCreate(user: User.ConfiguredInstance): boolean;
 
   override testUserPermission(
-    user: User,
+    user: User.ConfiguredInstance,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
     options?: InexactPartial<{
       /**

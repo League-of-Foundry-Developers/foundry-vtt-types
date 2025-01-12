@@ -53,7 +53,7 @@ expectTypeOf(ChatMessage.getSpeaker({ token: new TokenDocument() })).toEqualType
 expectTypeOf(ChatMessage.getSpeaker({ alias: "Mario" })).toEqualTypeOf<ChatSpeakerData>();
 
 expectTypeOf(ChatMessage.getSpeakerActor(ChatMessage.getSpeaker())).toEqualTypeOf<Actor | null>();
-expectTypeOf(ChatMessage.getWhisperRecipients("Mario")).toEqualTypeOf<Document.Stored<User>[]>();
+expectTypeOf(ChatMessage.getWhisperRecipients("Mario")).toEqualTypeOf<Document.Stored<User.ConfiguredInstance>[]>();
 
 const chat = new ChatMessage();
 expectTypeOf(chat.alias).toEqualTypeOf<string>();
@@ -62,7 +62,7 @@ expectTypeOf(chat.isContentVisible).toEqualTypeOf<boolean>();
 expectTypeOf(chat.isRoll).toEqualTypeOf<boolean>();
 expectTypeOf(chat.rolls).toEqualTypeOf<Roll[]>();
 expectTypeOf(chat.visible).toEqualTypeOf<boolean>();
-expectTypeOf(chat.user).toEqualTypeOf<User>(); // TODO: This seems off? Possible issue with ForeignDocumentField
+expectTypeOf(chat.user).toEqualTypeOf<User.ConfiguredInstance>(); // TODO: This seems off? Possible issue with ForeignDocumentField
 expectTypeOf(chat.prepareData()).toEqualTypeOf<void>();
 expectTypeOf(chat.applyRollMode(CONST.DICE_ROLL_MODES.BLIND)).toEqualTypeOf<void>();
 expectTypeOf(chat.applyRollMode(CONST.DICE_ROLL_MODES.PRIVATE)).toEqualTypeOf<void>();

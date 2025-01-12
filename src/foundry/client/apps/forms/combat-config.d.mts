@@ -45,7 +45,7 @@ declare global {
       attributeChoices: ReturnType<(typeof TokenDocument)["getTrackedAttributeChoices"]>;
       combatTheme: ClientSettings.SettingConfig<string>;
       selectedTheme: SettingConfig["core.combatTheme"];
-      user: User;
+      user: User.ConfiguredInstance;
     }
   }
 }

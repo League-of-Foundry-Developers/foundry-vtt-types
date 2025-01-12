@@ -401,7 +401,7 @@ declare global {
     /**
      * Track the set of User documents which are currently targeting this Token
      */
-    targeted: Set<User>;
+    targeted: Set<User.ConfiguredInstance>;
 
     /**
      * A reference to the SpriteMesh which displays this Token in the PrimaryCanvasGroup.

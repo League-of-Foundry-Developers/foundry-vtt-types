@@ -1,12 +1,12 @@
 import { assertType, expectTypeOf } from "vitest";
 
 // @ts-expect-error - requires a name.
-new User();
+new User.implementation();
 
 // @ts-expect-error - requires a name.
-new User({});
+new User.implementation({});
 
-const user = new User({ name: "Test" });
+const user = new User.implementation({ name: "Test" });
 
 expectTypeOf(user.active).toEqualTypeOf<boolean>();
 expectTypeOf(user.targets).toEqualTypeOf<UserTargets>();

@@ -27,7 +27,7 @@ declare class BaseRegionBehavior extends Document<"RegionBehavior", BaseRegionBe
 
   static override defineSchema(): BaseRegionBehavior.Schema;
 
-  static override canUserCreate(user: User): boolean;
+  static override canUserCreate(user: User.ConfiguredInstance): boolean;
 }
 
 export default BaseRegionBehavior;

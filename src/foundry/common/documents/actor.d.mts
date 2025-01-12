@@ -52,7 +52,7 @@ declare class BaseActor extends Document<"Actor", BaseActor.Schema, any> {
     options?: Omit<foundry.abstract.DataModel.DataValidationOptions, "parent">,
   ): BaseActor.Source;
 
-  static override canUserCreate(user: User): boolean;
+  static override canUserCreate(user: User.ConfiguredInstance): boolean;
 
   /**
    * Is a user able to create this actor?
@@ -60,7 +60,7 @@ declare class BaseActor extends Document<"Actor", BaseActor.Schema, any> {
    * @param doc  - The Actor being created.
    * @internal
    */
-  static #canCreate(user: User, doc: BaseActor): boolean;
+  static #canCreate(user: User.ConfiguredInstance, doc: BaseActor): boolean;
 
   /**
    * Is a user able to update an existing actor?
@@ -69,7 +69,7 @@ declare class BaseActor extends Document<"Actor", BaseActor.Schema, any> {
    * @param data - The update delta being applied.
    * @internal
    */
-  static #canUpdate(user: User, doc: BaseActor, data: BaseActor.UpdateData): boolean;
+  static #canUpdate(user: User.ConfiguredInstance, doc: BaseActor, data: BaseActor.UpdateData): boolean;
 
   /**
    * @privateRemarks _preCreate and _preUpdate are overridden but with no signature changes.

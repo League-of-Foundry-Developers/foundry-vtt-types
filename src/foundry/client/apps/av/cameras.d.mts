@@ -165,9 +165,9 @@ declare global {
     type AnyConstructor = typeof AnyCameraViews;
 
     interface User {
-      user: Document.Stored<globalThis.User>;
+      user: Document.Stored<globalThis.User.ConfiguredInstance>;
       settings: AVSettings.UserSettings;
-      local: Document.Stored<globalThis.User>["isSelf"];
+      local: Document.Stored<globalThis.User.ConfiguredInstance>["isSelf"];
       charname: string;
       volume: number;
       cameraViewClass: string;

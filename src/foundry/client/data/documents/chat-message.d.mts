@@ -174,7 +174,7 @@ declare global {
       scene?: Scene | undefined;
 
       /** The User who is speaking */
-      user: User;
+      user: User.ConfiguredInstance;
 
       /** The name of the speaker to display */
       alias?: string | undefined;

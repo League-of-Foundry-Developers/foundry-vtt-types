@@ -29,7 +29,7 @@ declare global {
       region: RegionDocument;
 
       /** The User that triggered the event */
-      user: User;
+      user: User.ConfiguredInstance;
     }
 
     interface SocketRegionEvent {

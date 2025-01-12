@@ -26,11 +26,7 @@ import type {
 } from "../data/fields.d.mts";
 import type { fields } from "../data/module.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.mts";
-import type {
-  DatabaseAction,
-  DatabaseGetOperation,
-  DocumentSocketRequest,
-} from "./_types.d.mts";
+import type { DatabaseAction, DatabaseGetOperation, DocumentSocketRequest } from "./_types.d.mts";
 import type DataModel from "./data.mts";
 import type DocumentSocketResponse from "./socket.d.mts";
 
@@ -228,7 +224,7 @@ declare abstract class Document<
    * @returns Does the user have this permission level over the Document?
    */
   testUserPermission(
-    user: User,
+    user: User.ConfiguredInstance,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
     options?: InexactPartial<{
       /**
@@ -247,7 +243,7 @@ declare abstract class Document<
    *                 (default: `{}`)
    * @returns Does the User have permission?
    */
-  canUserModify(user: User, action: "create" | "update" | "delete", data?: object): boolean;
+  canUserModify(user: User.ConfiguredInstance, action: "create" | "update" | "delete", data?: object): boolean;
 
   /**
    * Clone a document, creating a new document by combining current data with provided overrides.
@@ -642,7 +638,7 @@ declare abstract class Document<
   protected _preCreate(
     data: fields.SchemaField.AssignmentType<Schema>,
     options: Document.PreCreateOptions<DocumentName>,
-    user: User,
+    user: User.ConfiguredInstance,
   ): Promise<boolean | void>;
 
   /**
@@ -703,7 +699,7 @@ declare abstract class Document<
   protected _preUpdate(
     changed: fields.SchemaField.UpdateData<Schema>,
     options: Document.PreUpdateOptions<DocumentName>,
-    user: User,
+    user: User.ConfiguredInstance,
   ): Promise<boolean | void>;
 
   /**
@@ -1395,9 +1391,15 @@ declare namespace Document {
     readonly coreTypes: readonly string[];
     readonly embedded: Record<string, string>;
     readonly permissions: {
-      create: string | ToMethod<(user: User, doc: ThisType, data: Document.ConstructorDataForName<Type>) => boolean>;
-      update: string | ToMethod<(user: User, doc: ThisType, data: Document.UpdateDataForName<Type>) => boolean>;
-      delete: string | ToMethod<(user: User, doc: ThisType, data: EmptyObject) => boolean>;
+      create:
+        | string
+        | ToMethod<
+            (user: User.ConfiguredInstance, doc: ThisType, data: Document.ConstructorDataForName<Type>) => boolean
+          >;
+      update:
+        | string
+        | ToMethod<(user: User.ConfiguredInstance, doc: ThisType, data: Document.UpdateDataForName<Type>) => boolean>;
+      delete: string | ToMethod<(user: User.ConfiguredInstance, doc: ThisType, data: EmptyObject) => boolean>;
     };
     readonly preserveOnImport?: readonly string[] | undefined;
     readonly schemaVersion: string | undefined;

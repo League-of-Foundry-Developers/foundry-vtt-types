@@ -21,10 +21,14 @@ declare class BaseActorDelta extends Document<"ActorDelta", BaseActorDelta.Schem
 
   static override defineSchema(): BaseActorDelta.Schema;
 
-  override canUserModify(user: User, action: "create" | "update" | "delete", data?: AnyObject): boolean;
+  override canUserModify(
+    user: User.ConfiguredInstance,
+    action: "create" | "update" | "delete",
+    data?: AnyObject,
+  ): boolean;
 
   override testUserPermission(
-    user: User,
+    user: User.ConfiguredInstance,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
     options?: InexactPartial<{
       /**

@@ -68,7 +68,7 @@ declare global {
      * @param user - The User to test.
      * @returns Can this User execute this Macro?
      */
-    canUserExecute(user: User): boolean;
+    canUserExecute(user: User.ConfiguredInstance): boolean;
 
     /**
      * Execute the Macro command.

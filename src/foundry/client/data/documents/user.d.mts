@@ -4,12 +4,12 @@ import type BaseUser from "../../../common/documents/user.d.mts";
 
 declare global {
   namespace User {
-    type Metadata = Document.MetadataFor<User>;
+    type Metadata = Document.MetadataFor<User.ConfiguredInstance>;
 
     type ConfiguredClass = Document.ConfiguredClassForName<"User">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"User">;
 
-    interface DatabaseOperations extends Document.Database.Operations<User> {}
+    interface DatabaseOperations extends Document.Database.Operations<User.ConfiguredInstance> {}
 
     // Helpful aliases
     type ConstructorData = BaseUser.ConstructorData;

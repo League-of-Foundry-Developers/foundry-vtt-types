@@ -74,7 +74,7 @@ expectTypeOf(
 
 expectTypeOf(
   new foundry.documents.BaseDrawing({
-    author: new User({ name: "foo" }),
+    author: new User.implementation({ name: "foo" }),
     bezierFactor: 0,
     fillAlpha: 0.5,
     fillColor: "#FFFFFF",

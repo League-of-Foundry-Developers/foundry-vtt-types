@@ -50,7 +50,7 @@ expectTypeOf(foundry.documents.BaseMacro.createDocuments([], { temporary: false 
 
 expectTypeOf(foundry.documents.BaseMacro.updateDocuments([])).toEqualTypeOf<Promise<Macro[]>>();
 expectTypeOf(foundry.documents.BaseMacro.deleteDocuments([])).toEqualTypeOf<Promise<Macro[]>>();
-const user = await User.create({ name: "Some User" });
+const user = await User.implementation.create({ name: "Some User" });
 if (user) {
   expectTypeOf(user.testUserPermission(user, "NONE")).toEqualTypeOf<boolean>();
   expectTypeOf(user.testUserPermission(user, "OBSERVER", {})).toEqualTypeOf<boolean>();

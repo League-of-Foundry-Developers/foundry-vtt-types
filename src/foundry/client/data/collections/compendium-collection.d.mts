@@ -200,7 +200,7 @@ declare global {
      * @param user - The user being tested
      * @returns The ownership level in CONST.DOCUMENT_OWNERSHIP_LEVELS
      */
-    getUserLevel(user?: User): foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS;
+    getUserLevel(user?: User.ConfiguredInstance): foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
     /**
      * Test whether a certain User has a requested permission level (or greater) over the Compendium pack
@@ -210,7 +210,7 @@ declare global {
      * @returns Does the user have this permission level over the Compendium pack?
      */
     testUserPermission(
-      user: User,
+      user: User.ConfiguredInstance,
       permission: string | number,
       options?: InexactPartial<{
         /**

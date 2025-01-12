@@ -92,7 +92,7 @@ declare global {
       active: boolean;
       name: string;
       tooltip: string | null;
-      users: { letter: string; color: User["color"] }[];
+      users: { letter: string; color: User.ConfiguredInstance["color"] }[];
       visible: boolean;
       css: string;
     }

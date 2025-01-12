@@ -24,7 +24,7 @@ declare class BaseSetting extends Document<"Setting", BaseSetting.Schema, any> {
 
   static override defineSchema(): BaseSetting.Schema;
 
-  static canUserCreate(user: User): boolean;
+  static canUserCreate(user: User.ConfiguredInstance): boolean;
 }
 
 export default BaseSetting;

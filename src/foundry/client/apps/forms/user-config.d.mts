@@ -69,4 +69,4 @@ declare global {
   }
 }
 
-type FormData = Pick<User["_source"], "avatar" | "character" | "color">;
+type FormData = Pick<User.ConfiguredInstance["_source"], "avatar" | "character" | "color">;
