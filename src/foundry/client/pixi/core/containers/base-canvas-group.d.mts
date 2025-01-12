@@ -14,10 +14,22 @@ type GroupFor<Group extends CanvasGroupMixin.LayerGroup | NoLayerGroup> = Group 
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     {};
 
+declare class CanvasGroupMixinClass extends CanvasGroup<
+  CanvasGroupMixin.LayerGroup | NoLayerGroup,
+  CanvasGroupMixin.DrawOptions,
+  CanvasGroupMixin.TeardownOptions
+> {
+  constructor(...args: any[]);
+}
+
+declare namespace CanvasGroup {
+  type MixinClass = typeof CanvasGroupMixin;
+}
+
 declare class CanvasGroup<
   Group extends CanvasGroupMixin.LayerGroup | NoLayerGroup,
   DrawOptions extends CanvasGroupMixin.DrawOptions = CanvasGroupMixin.DrawOptions,
-  TearDownOptions extends CanvasGroupMixin.TearDownOptions = CanvasGroupMixin.TearDownOptions,
+  TearDownOptions extends CanvasGroupMixin.TeardownOptions = CanvasGroupMixin.TeardownOptions,
 > extends LayersClass<Group> {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
   constructor(...args: any[]);
@@ -82,6 +94,13 @@ declare class CanvasGroup<
 declare const _NoLayerGroup: unique symbol;
 type NoLayerGroup = typeof _NoLayerGroup;
 
+type ApplyGroup<
+  BaseClass extends CanvasGroupMixin.BaseClass,
+  Group extends CanvasGroupMixin.LayerGroup | NoLayerGroup,
+> = new <DrawOptions extends CanvasGroupMixin.DrawOptions, TeardownOptions extends CanvasGroupMixin.TeardownOptions>(
+  ...args: ConstructorParameters<BaseClass>
+) => CanvasGroup<Group, DrawOptions, TeardownOptions> & InstanceType<BaseClass>;
+
 declare global {
   /**
    * A mixin which decorates any container with base canvas common properties.
@@ -93,20 +112,27 @@ declare global {
     // In `_createLayers` the code assigns top level properties to the class.
     // This is why Group exists.`
     Group extends CanvasGroupMixin.LayerGroup | NoLayerGroup = NoLayerGroup,
-  >(
-    ContainerClass: BaseClass,
-  ): Mixin<typeof CanvasGroup<Group>, BaseClass> & { groupName: Group extends NoLayerGroup ? string : Group };
+  >(ContainerClass: BaseClass): CanvasGroupMixin.Mixed<BaseClass, Group>;
 
   namespace CanvasGroupMixin {
     type AnyConstructor = typeof AnyCanvasGroup;
 
     type BaseClass = PIXI.Container.AnyConstructor;
 
+    type Mixed<
+      BaseClass extends CanvasGroupMixin.BaseClass,
+      Group extends CanvasGroupMixin.LayerGroup | NoLayerGroup,
+    > = BaseClass &
+      CanvasGroup.MixinClass &
+      ApplyGroup<BaseClass, Group> & {
+        groupName: Group extends NoLayerGroup ? string : Group;
+      };
+
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     interface DrawOptions {}
 
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    interface TearDownOptions {}
+    interface TeardownOptions {}
 
     interface Layers {
       readonly [key: string]: CanvasLayer;
