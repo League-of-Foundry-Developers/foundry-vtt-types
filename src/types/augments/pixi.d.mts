@@ -19,10 +19,6 @@ export as namespace PIXI;
 
 declare global {
   namespace PIXI {
-    /* =========================
-       Enum to Brand conversions
-       ========================= */
-
     type ALPHA_MODES = Brand<number, "PIXI.ALPHA_MODES">;
 
     /** How to treat textures with premultiplied alpha */
@@ -51,8 +47,6 @@ declare global {
       /** Source is already premultiplied. Example: spine atlases with `_pma` suffix. */
       PREMULTIPLIED_ALPHA: 2 & ALPHA_MODES;
     };
-
-    /* -------------------------- */
 
     type BLEND_MODES = Brand<number, "PIXI.BLEND_MODES">;
 
@@ -227,8 +221,6 @@ declare global {
       MIN_ALL: 32 & BLEND_MODES;
     };
 
-    /* -------------------------- */
-
     type BUFFER_BITS = Brand<number, "PIXI.BUFFER_BITS">;
 
     /** Bitwise OR of masks that indicate the buffers to be cleared. */
@@ -252,8 +244,6 @@ declare global {
       STENCIL: 1024 & PIXI.BUFFER_BITS;
     };
 
-    /* -------------------------- */
-
     type BUFFER_TYPE = Brand<number, "PIXI.BUFFER_TYPE">;
 
     /** Constants for various buffer types in Pixi */
@@ -276,8 +266,6 @@ declare global {
        */
       UNIFORM_BUFFER: 35345 & BUFFER_TYPE;
     };
-
-    /* -------------------------- */
 
     type CLEAR_MODES = Brand<number, "PIXI.CLEAR_MODES">;
 
@@ -307,8 +295,6 @@ declare global {
       BLIT: 2 & CLEAR_MODES;
     };
 
-    /* -------------------------- */
-
     type COLOR_MASK_BITS = Brand<number, "PIXI.COLOR_MASK_BITS">;
 
     /** Bitwise OR of masks that indicate the color channels that are rendered to. */
@@ -325,8 +311,6 @@ declare global {
       /** Alpha channel. */
       ALPHA: 8 & COLOR_MASK_BITS;
     };
-
-    /* -------------------------- */
 
     type DRAW_MODES = Brand<number, "PIXI.DRAW_MODES">;
 
@@ -357,8 +341,6 @@ declare global {
       TRIANGLE_FAN: 6 & DRAW_MODES;
     };
 
-    /* -------------------------- */
-
     type ENV = Brand<number, "PIXI.ENV">;
 
     /** Different types of environments for WebGL. */
@@ -375,8 +357,6 @@ declare global {
       /** Version 2 of WebGL */
       WEBGL2: 2 & ENV;
     };
-
-    /* -------------------------- */
 
     type ExtensionType = Brand<string, "PIXI.ExtensionType">;
 
@@ -410,8 +390,6 @@ declare global {
 
       DetectionParser: "detection-parser" & ExtensionType;
     };
-
-    /* -------------------------- */
 
     type FORMATS = Brand<number, "PIXI.FORMATS">;
 
@@ -457,8 +435,6 @@ declare global {
       DEPTH_STENCIL: 34041 & FORMATS;
     };
 
-    /* -------------------------- */
-
     type GC_MODES = Brand<number, "PIXI.GC_MODES">;
 
     /**
@@ -468,7 +444,7 @@ declare global {
      * If set to GC_MODE, the renderer will occasionally check textures usage. If they are not
      * used for a specified period of time they will be removed from the GPU. They will of course
      * be uploaded again when they are required. This is a silent behind the scenes process that
-     * should ensure that the GPU does not  get filled up.
+     * should ensure that the GPU does not get filled up.
      *
      * Handy for mobile devices!
      * This property only affects WebGL.
@@ -480,8 +456,6 @@ declare global {
       /** Garbage collection will need to be called manually */
       MANUAL: 1 & GC_MODES;
     };
-
-    /* -------------------------- */
 
     type INTERNAL_FORMATS = Brand<number, "PIXI.INTERNAL_FORMATS">;
 
@@ -581,8 +555,6 @@ declare global {
       COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT_EXT: 36495 & INTERNAL_FORMATS;
     };
 
-    /* -------------------------- */
-
     type LINE_CAP = Brand<string, "PIXI.LINE_CAP">;
 
     /** Support line caps in `PIXI.LineStyle` for graphics. */
@@ -596,8 +568,6 @@ declare global {
       /** 'square': add square at end (like `BUTT` except more length at end) */
       SQUARE: "square" & LINE_CAP;
     };
-
-    /* -------------------------- */
 
     type LINE_JOIN = Brand<string, "PIXI.LINE_JOIN">;
 
@@ -617,8 +587,6 @@ declare global {
       ROUND: "round" & LINE_JOIN;
     };
 
-    /* -------------------------- */
-
     type LoaderParserPriority = Brand<number, "PIXI.LoaderParserPriority">;
 
     /**
@@ -636,8 +604,6 @@ declare global {
       /** Specific texture types: svg, png, ktx, dds, basis */
       High: 2 & LoaderParserPriority;
     };
-
-    /* -------------------------- */
 
     type MASK_TYPES = Brand<number, "PIXI.MASK_TYPES">;
 
@@ -661,8 +627,6 @@ declare global {
       /** Color mask (RGBA) */
       COLOR: 4 & MASK_TYPES;
     };
-
-    /* -------------------------- */
 
     type MIPMAP_MODES = Brand<number, "PIXI.MIPMAP_MODES">;
 
@@ -694,8 +658,6 @@ declare global {
       ON_MANUAL: 3 & MIPMAP_MODES;
     };
 
-    /* -------------------------- */
-
     type MSAA_QUALITY = Brand<number, "PIXI.MSAA_QUALITY">;
 
     /** Constants for multi-sampling antialiasing. */
@@ -712,8 +674,6 @@ declare global {
       /** Try 8 samples */
       HIGH: 8 & MSAA_QUALITY;
     };
-
-    /* -------------------------- */
 
     type PRECISION = Brand<string, "PIXI.PRECISION">;
 
@@ -741,8 +701,6 @@ declare global {
       HIGH: "highp" & PRECISION;
     };
 
-    /* -------------------------- */
-
     type RENDERER_TYPE = Brand<number, "PIXI.RENDERER_TYPE">;
 
     /**
@@ -759,8 +717,6 @@ declare global {
       CANVAS: 2 & RENDERER_TYPE;
     };
 
-    /* -------------------------- */
-
     type SAMPLER_TYPES = Brand<number, "PIXI.SAMPLER_TYPES">;
 
     /**
@@ -774,8 +730,6 @@ declare global {
 
       UINT: 2 & SAMPLER_TYPES;
     };
-
-    /* -------------------------- */
 
     type SCALE_MODES = Brand<number, "PIXI.SCALE_MODES">;
 
@@ -793,8 +747,6 @@ declare global {
       LINEAR: 1 & SCALE_MODES;
     };
 
-    /* -------------------------- */
-
     type SHAPES = Brand<number, "PIXI.SHAPES">;
 
     /** Constants that identify shapes, mainly to prevent `instanceof` calls. */
@@ -805,8 +757,6 @@ declare global {
       ELIP: 3 & SHAPES;
       RREC: 4 & SHAPES;
     };
-
-    /* -------------------------- */
 
     type TARGETS = Brand<number, "PIXI.TARGETS">;
 
@@ -869,8 +819,6 @@ declare global {
       TEXTURE_CUBE_MAP_NEGATIVE_Z: 34074 & TARGETS;
     };
 
-    /* -------------------------- */
-
     type TEXT_GRADIENT = Brand<number, "PIXI.TEXT_GRADIENT">;
 
     /** Constants that define the type of gradient on text. */
@@ -884,8 +832,6 @@ declare global {
        */
       LINEAR_HORIZONTAL: 1 & TEXT_GRADIENT;
     };
-
-    /* -------------------------- */
 
     type TYPES = Brand<number, "PIXI.TYPES">;
 
@@ -952,8 +898,6 @@ declare global {
       HALF_FLOAT: 36193 & TYPES;
     };
 
-    /* -------------------------- */
-
     type UPDATE_PRIORITY = Brand<number, "PIXI.UPDATE_PRIORITY">;
 
     /**
@@ -977,8 +921,6 @@ declare global {
       /** Lowest priority used for {@link PIXI.BasePrepare} utility. */
       UTILITY: 50 & UPDATE_PRIORITY;
     };
-
-    /* -------------------------- */
 
     type WRAP_MODES = Brand<number, "PIXI.WRAP_MODES">;
 
@@ -1011,8 +953,6 @@ declare global {
        */
       MIRRORED_REPEAT: 33648 & WRAP_MODES;
     };
-
-    /* -------------------------- */
 
     export import smooth = _smooth;
     export import particles = _particles;
