@@ -28,10 +28,7 @@ import type { fields } from "../data/module.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.mts";
 import type {
   DatabaseAction,
-  DatabaseCreateOperation,
-  DatabaseDeleteOperation,
   DatabaseGetOperation,
-  DatabaseUpdateOperation,
   DocumentSocketRequest,
 } from "./_types.d.mts";
 import type DataModel from "./data.mts";
@@ -1233,7 +1230,7 @@ declare namespace Document {
      * The parent Document of this one, if this one is embedded
      * @defaultValue `null`
      */
-    parent?: Parent | undefined;
+    parent?: Parent | null | undefined;
 
     /**
      * The compendium collection ID which contains this Document, if any
@@ -1466,18 +1463,19 @@ declare namespace Document {
   namespace Database {
     type Operation = "create" | "update" | "delete";
 
-    /* eslint-disable @typescript-eslint/no-empty-object-type */
+    /**
+     * @deprecated - TODO: Delete this once it's been fully removed.
+     */
     interface Operations<
-      T extends Document.Internal.Instance.Any = Document.Internal.Instance.Any,
-      ExtraCreateOptions extends AnyObject = {},
-      ExtraUpdateOptions extends AnyObject = {},
-      ExtraDeleteOptions extends AnyObject = {},
+      _T extends Document.Internal.Instance.Any = Document.Internal.Instance.Any,
+      _ExtraCreateOptions extends AnyObject = any,
+      _ExtraUpdateOptions extends AnyObject = any,
+      _ExtraDeleteOptions extends AnyObject = any,
     > {
-      create: DatabaseCreateOperation<T> & InexactPartial<ExtraCreateOptions>;
-      update: DatabaseUpdateOperation<T> & InexactPartial<ExtraUpdateOptions>;
-      delete: DatabaseDeleteOperation & InexactPartial<ExtraDeleteOptions>;
+      create: AnyObject;
+      update: AnyObject;
+      delete: AnyObject;
     }
-    /* eslint-enable @typescript-eslint/no-empty-object-type */
 
     /**
      * This is a helper type that gets the right DatabaseOperation (including the
@@ -1518,6 +1516,32 @@ declare namespace Document {
      * @defaultValue `false`
      */
     importWorld?: boolean;
+  }
+
+  interface CreateDialogContext<SubType extends string, Parent extends Document.Any | null>
+    extends InexactPartial<DialogOptions> {
+    /** A parent document within which the created Document should belong */
+    parent?: Parent | null | undefined;
+
+    /**
+     * A compendium pack within which the Document should be created
+     */
+    pack?: string | null | undefined;
+
+    /** A restriction the selectable sub-types of the Dialog. */
+    types?: SubType[] | null | undefined;
+  }
+
+  interface FromImportContext<Parent extends Document.Any | null>
+    extends ConstructionContext<Parent>,
+      DataModel.DataValidationOptions<Parent> {}
+
+  interface TestUserPermissionOptions {
+    /**
+     * Require the exact permission level requested?
+     * @defaultValue `false`
+     */
+    exact?: boolean | undefined;
   }
 }
 

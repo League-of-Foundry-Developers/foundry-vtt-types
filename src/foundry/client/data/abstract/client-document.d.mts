@@ -1,4 +1,4 @@
-import type { InexactPartial, Mixin, FixedInstanceType, AnyObject } from "../../../../utils/index.d.mts";
+import type { InexactPartial, Mixin, FixedInstanceType } from "../../../../utils/index.d.mts";
 import type DataModel from "../../../common/abstract/data.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 
@@ -607,7 +607,7 @@ declare global {
   // Note(LukeAbby): The seemingly redundant merging in of `typeof AnyDocument` makes it easier for tsc to recognize that anything extending `ClientDocumentMixin` is also a document.
   function ClientDocumentMixin<BaseClass extends Document.Internal.Constructor>(
     Base: BaseClass,
-  ): typeof AnyDocument & Mixin<typeof InternalClientDocument<FixedInstanceType<BaseClass>>, BaseClass>;
+  ): Mixin<typeof InternalClientDocument<FixedInstanceType<BaseClass>>, BaseClass>;
 
   namespace ClientDocument {
     interface SortOptions<T, SortKey extends string = "sort"> extends SortingHelpers.SortOptions<T, SortKey> {

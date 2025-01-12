@@ -43,10 +43,6 @@ declare global {
 
     static get implementation(): Folder.ConfiguredClass;
 
-    // TODO(LukeAbby): This random override is a symptom of a greater issue.
-    // Namely that `ClientDocumentMixin` incidentally erases some properties and breaks configuration.
-    documentName: "Folder";
-
     /**
      * The depth of this folder in its sidebar tree
      *

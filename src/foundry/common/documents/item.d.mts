@@ -1,4 +1,4 @@
-import type { AnyObject, InexactPartial } from "../../../utils/index.d.mts";
+import type { AnyObject } from "../../../utils/index.d.mts";
 import type Document from "../abstract/document.mts";
 import type * as fields from "../data/fields.d.mts";
 
@@ -17,12 +17,6 @@ declare class BaseItem<SubType extends Item.SubType = Item.SubType> extends Docu
   // TODO(LukeAbby): This constructor is causing a circular error.
   // constructor(data: BaseItem.ConstructorData, context?: Document.ConstructionContext<BaseItem.Parent>);
 
-  override system: Document.SystemFor<"ActiveEffect", SubType>;
-
-  override parent: BaseItem.Parent;
-
-  override _source: BaseItem.Source;
-
   static override metadata: BaseItem.Metadata;
 
   static override defineSchema(): BaseItem.Schema;
@@ -38,20 +32,14 @@ declare class BaseItem<SubType extends Item.SubType = Item.SubType> extends Docu
    * @param itemData - The source item data
    * @returns Candidate item image
    */
-  static getDefaultArtwork(itemData: BaseItem.ConstructorData): { img: string };
+  static getDefaultArtwork(itemData: BaseItem.CreateData): { img: string };
 
   override canUserModify(user: User, action: "create" | "delete" | "update", data?: AnyObject): boolean;
 
   override testUserPermission(
     user: User,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS,
-    options?: InexactPartial<{
-      /**
-       * Require the exact permission level requested?
-       * @defaultValue `false`
-       */
-      exact: boolean;
-    }>,
+    options?: Document.TestUserPermissionOptions,
   ): boolean;
 
   static override migrateData(source: AnyObject): AnyObject;
@@ -61,6 +49,8 @@ declare class BaseItem<SubType extends Item.SubType = Item.SubType> extends Docu
    * They are here because they're static properties but depend on the instance and so can't be
    * defined DRY-ly while also being easily overrideable.
    */
+
+  override system: Document.SystemFor<"ActiveEffect", SubType>;
 
   static get TYPES(): BaseItem.SubType[];
 

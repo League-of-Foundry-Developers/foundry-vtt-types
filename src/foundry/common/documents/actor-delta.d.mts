@@ -17,10 +17,6 @@ declare class BaseActorDelta extends Document<"ActorDelta", BaseActorDelta.Schem
   // TODO(LukeAbby): This constructor is a symptom of a circular error.
   // constructor(data?: BaseActorDelta.ConstructorData, context?: Document.ConstructionContext<BaseActorDelta.Parent>);
 
-  override parent: BaseActorDelta.Parent;
-
-  override _source: BaseActorDelta.Source;
-
   static override metadata: BaseActorDelta.Metadata;
 
   static override defineSchema(): BaseActorDelta.Schema;

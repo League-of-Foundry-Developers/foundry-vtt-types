@@ -361,7 +361,7 @@ declare namespace DataModel {
    */
   interface UnknownDataModel extends DataModel<any, any, any> {}
 
-  interface DataValidationOptions<Parent extends Any | null = null> {
+  interface DataValidationOptions<Parent extends Any | null = Any | null> {
     /**
      * Throw an error if validation fails.
      * @defaultValue `true`

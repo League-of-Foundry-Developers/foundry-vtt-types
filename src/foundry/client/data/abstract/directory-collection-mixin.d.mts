@@ -6,7 +6,7 @@ type DirectoryCollectionMixin_DocumentCollection_Static = DirectoryCollection<Di
 
 export interface DirectoryCollectionMixin_DocumentCollection_Interface
   extends DirectoryCollectionMixin_DocumentCollection_Static {
-  new <T extends Document.AnyConstructor, Name extends string>(
+  new <T extends Document.Internal.Constructor, Name extends string>(
     ...args: ConstructorParameters<typeof DocumentCollection>
   ): DirectoryCollection<Document.ToConfiguredInstance<T>> & DocumentCollection<Document.ToConfiguredClass<T>, Name>;
 }

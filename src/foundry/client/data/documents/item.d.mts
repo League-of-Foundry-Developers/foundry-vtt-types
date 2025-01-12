@@ -1,7 +1,12 @@
 import type { ConfiguredItem } from "../../../../configuration";
-import type { HandleEmptyObject, InexactPartial } from "../../../../utils/index.d.mts";
+import type { HandleEmptyObject } from "../../../../utils/index.d.mts";
 import type { documents } from "../../../client-esm/client.d.mts";
-import type DataModel from "../../../common/abstract/data.d.mts";
+import type {
+  DatabaseCreateOperation,
+  DatabaseDeleteOperation,
+  DatabaseGetOperation,
+  DatabaseUpdateOperation,
+} from "../../../common/abstract/_types.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
 import type { DataSchema } from "./adventure.d.mts";
@@ -157,10 +162,11 @@ declare global {
     }
 
     namespace DatabaseOperation {
-      interface Get {}
-      interface Create<Temporary extends boolean | undefined = boolean | undefined> {}
-      interface Delete {}
-      interface Update {}
+      interface Get extends DatabaseGetOperation<Item.Parent> {}
+      interface Create<Temporary extends boolean | undefined = boolean | undefined>
+        extends DatabaseCreateOperation<Item.CreateData, Item.Parent, Temporary> {}
+      interface Delete extends DatabaseDeleteOperation<Item.Parent> {}
+      interface Update extends DatabaseUpdateOperation<Item.UpdateData, Item.Parent> {}
     }
 
     /**
@@ -192,9 +198,6 @@ declare global {
   class Item<SubType extends Item.SubType = Item.SubType> extends ClientDocumentMixin(
     foundry.documents.BaseItem,
   )<SubType> {
-    // Note(LukeAbby): Temporary fix, look into solving this at the root of the issue.
-    documentName: "Item";
-
     static override metadata: Item.Metadata;
 
     static get implementation(): Item.ConfiguredClass;
@@ -235,13 +238,7 @@ declare global {
 
     static override createDialog(
       data: Item.CreateData,
-      context?: Pick<Item.DatabaseOperation.Create, "parent" | "pack"> &
-        InexactPartial<
-          DialogOptions & {
-            /** A restriction the selectable sub-types of the Dialog. */
-            types: Item.SubType[];
-          }
-        >,
+      context?: Document.CreateDialogContext<Item.SubType, Item.Parent>,
     ): Promise<Item.ConfiguredInstance | null | undefined>;
 
     static override fromDropData(
@@ -251,7 +248,7 @@ declare global {
 
     static override fromImport(
       source: Item.Source,
-      context?: Document.ConstructionContext<Item.Parent> & DataModel.DataValidationOptions,
+      context?: Document.FromImportContext<Item.Parent>,
     ): Promise<Item.ConfiguredInstance>;
   }
 }

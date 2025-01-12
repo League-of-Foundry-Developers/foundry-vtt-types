@@ -1,6 +1,6 @@
 import type Document from "./document.d.mts";
 
-export interface DatabaseGetOperation {
+export interface DatabaseGetOperation<Parent extends Document.Any | null = Document.Any | null> {
   /**
    * A query object which identifies the set of Documents retrieved
    */
@@ -29,7 +29,7 @@ export interface DatabaseGetOperation {
   /**
    * A parent Document within which Documents are embedded
    */
-  parent?: foundry.abstract.Document.Any | undefined;
+  parent?: Parent | null | undefined;
 
   /**
    * A parent Document UUID provided when the parent instance is unavailable
@@ -37,7 +37,11 @@ export interface DatabaseGetOperation {
   parentUuid?: string | undefined;
 }
 
-export interface DatabaseCreateOperation<T extends Document.Internal.Instance.Any = Document.Internal.Instance.Any> {
+export interface DatabaseCreateOperation<
+  CreateData extends object | null | undefined = object | null | undefined,
+  Parent extends Document.Any | null = Document.Any | null,
+  Temporary extends boolean | undefined = boolean | undefined,
+> {
   /**
    * Whether the database operation is broadcast to other connected clients
    */
@@ -46,7 +50,7 @@ export interface DatabaseCreateOperation<T extends Document.Internal.Instance.An
   /**
    * An array of data objects from which to create Documents
    */
-  data: foundry.data.fields.SchemaField.AssignmentData<Document.Internal.SchemaFor<T>>[];
+  data: CreateData[];
 
   /**
    * Retain the _id values of provided data instead of generating new ids
@@ -82,7 +86,7 @@ export interface DatabaseCreateOperation<T extends Document.Internal.Instance.An
   /**
    * A parent Document within which Documents are embedded
    */
-  parent?: foundry.abstract.Document.Any | undefined;
+  parent?: Parent | null | undefined;
 
   /**
    * A compendium collection ID which contains the Documents
@@ -119,12 +123,14 @@ export interface DatabaseCreateOperation<T extends Document.Internal.Instance.An
 
   /**
    * @deprecated `"It is no longer supported to create temporary documents using the Document.createDocuments API. Use the new Document() constructor instead."`
-   * @remarks No explicit undefined because deprecation message checks `"temporary" in operation`
    */
-  temporary?: boolean | undefined;
+  temporary?: Temporary | undefined;
 }
 
-export interface DatabaseUpdateOperation<T extends Document.Internal.Instance.Any = Document.Internal.Instance.Any> {
+export interface DatabaseUpdateOperation<
+  UpdateData extends object | null | undefined = object | null | undefined,
+  Parent extends Document.Any | null = Document.Any | null,
+> {
   /**
    * Whether the database operation is broadcast to other connected clients
    */
@@ -134,7 +140,7 @@ export interface DatabaseUpdateOperation<T extends Document.Internal.Instance.An
    * An array of data objects used to update existing Documents.
    * Each update object must contain the _id of the target Document
    */
-  updates: foundry.data.fields.SchemaField.AssignmentData<Document.Internal.SchemaFor<T>>[];
+  updates: UpdateData[];
 
   /**
    * Difference each update object against current Document data and only use
@@ -166,7 +172,7 @@ export interface DatabaseUpdateOperation<T extends Document.Internal.Instance.An
   /**
    * A parent Document within which Documents are embedded
    */
-  parent?: foundry.abstract.Document.Any | undefined;
+  parent?: Parent | null | undefined;
 
   /**
    * A compendium collection ID which contains the Documents
@@ -184,7 +190,7 @@ export interface DatabaseUpdateOperation<T extends Document.Internal.Instance.An
   _result?: (string | Record<string, unknown>)[] | undefined;
 }
 
-export interface DatabaseDeleteOperation {
+export interface DatabaseDeleteOperation<Parent extends Document.Any | null = Document.Any | null> {
   /**
    * Whether the database operation is broadcast to other connected clients
    */
@@ -218,7 +224,7 @@ export interface DatabaseDeleteOperation {
   /**
    * A parent Document within which Documents are embedded
    */
-  parent?: foundry.abstract.Document.Any | undefined;
+  parent?: Parent | null | undefined;
 
   /**
    * A compendium collection ID which contains the Documents

@@ -25,10 +25,6 @@ declare class BaseCards extends Document<"Cards", BaseCards.Schema, any> {
   // TODO(LukeAbby): This constructor is a symptom of a circular error.
   // constructor(data: BaseCards.ConstructorData, context?: Document.ConstructionContext<BaseCards.Parent>);
 
-  override parent: BaseCards.Parent;
-
-  override _source: BaseCards.Source;
-
   static override metadata: BaseCards.Metadata;
 
   static override defineSchema(): BaseCards.Schema;
