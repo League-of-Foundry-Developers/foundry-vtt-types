@@ -11,6 +11,9 @@
     },
     "./utils": {
       "types": "./src/utils/index.d.mts"
+    },
+    "./configuration": {
+      "types": "./src/configuration/index.d.mts"
     }
   },
   "scripts": {
