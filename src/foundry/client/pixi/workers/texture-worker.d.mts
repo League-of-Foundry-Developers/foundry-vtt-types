@@ -1,6 +1,9 @@
 import type { NullishProps } from "../../../../utils/index.d.mts";
-
-export {};
+import type {
+  _ProcessBufferToBase64Options,
+  Debug,
+  ProcessBufferToBase64Return,
+} from "../../../../types/workers/image-compressor";
 
 declare global {
   /**
@@ -25,8 +28,8 @@ declare global {
       buffer: Uint8ClampedArray,
       width: number,
       height: number,
-      options?: TextureCompressor.compressBase64Options,
-    ): Promise<unknown>;
+      options?: TextureCompressor.CompressBase64Options,
+    ): Promise<ProcessBufferToBase64Return>;
 
     /**
      * Expand a buffer in RED format to a buffer in RGBA format.
@@ -89,27 +92,28 @@ declare global {
     /** Options for the {@link TextureCompressor} constructor */
     interface ConstructorOptions extends _ConstructorOptions {}
 
-    interface compressBase64Options {
-      /**
-       * The required image type.
-       * @defaultValue `"image/png"`
-       */
-      type?: string;
+    interface CompressBase64Options extends _ProcessBufferToBase64Options, Debug {}
+    // interface compressBase64Options {
+    //   /**
+    //    * The required image type.
+    //    * @defaultValue `"image/png"`
+    //    */
+    //   type?: string;
 
-      /**
-       * The required image quality.
-       * @defaultValue `1`
-       */
-      quality?: number;
+    //   /**
+    //    * The required image quality.
+    //    * @defaultValue `1`
+    //    */
+    //   quality?: number;
 
-      /**
-       * The debug option.
-       * @defaultValue `false`
-       */
-      debug?: boolean;
+    //   /**
+    //    * The debug option.
+    //    * @defaultValue `false`
+    //    */
+    //   debug?: boolean;
 
-      readFormat: PIXI.FORMATS;
-    }
+    //   readFormat: PIXI.FORMATS;
+    // }
 
     interface expandRedToRGBAOptions {
       /**

@@ -15,7 +15,7 @@ export interface Debug {
 }
 
 /** @internal */
-type _ProcessBufferToBase64Options = InexactPartial<{
+export type _ProcessBufferToBase64Options = InexactPartial<{
   /**
    * The required image type.
    * @defaultValue `"image/png"`
@@ -40,7 +40,7 @@ type _ProcessBufferToBase64Options = InexactPartial<{
    * The format the buffer is in
    * @remarks Only matters whether it's `FORMATS.RED` or not. Property is undocumented by foundry.
    */
-  format: FORMATS | null;
+  readFormat: FORMATS | null;
 }>;
 
 /** @internal */
