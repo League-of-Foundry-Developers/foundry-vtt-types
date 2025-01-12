@@ -23,17 +23,19 @@ declare namespace CanvasGroup {
   type MixinClass = typeof CanvasGroup<
     CanvasGroupMixin.LayerGroup | NoLayerGroup,
     CanvasGroupMixin.DrawOptions,
-    CanvasGroupMixin.TeardownOptions
+    CanvasGroupMixin.TearDownOptions
   >;
 }
 
 declare class CanvasGroup<
   Group extends CanvasGroupMixin.LayerGroup | NoLayerGroup,
   DrawOptions extends CanvasGroupMixin.DrawOptions = CanvasGroupMixin.DrawOptions,
-  TearDownOptions extends CanvasGroupMixin.TeardownOptions = CanvasGroupMixin.TeardownOptions,
+  TearDownOptions extends CanvasGroupMixin.TearDownOptions = CanvasGroupMixin.TearDownOptions,
 > extends LayersClass<Group> {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
   constructor(...args: any[]);
+
+  #group: Group;
 
   /** @defaultValue `true` */
   sortableChildren: boolean;
@@ -42,7 +44,7 @@ declare class CanvasGroup<
    * The name of this canvas group
    * @remarks Foundry marked as abstract
    */
-  static groupName: keyof CONFIG.Canvas.Groups | undefined;
+  static groupName: string | undefined;
 
   /**
    * If this canvas group should teardown non-layers children.
@@ -70,8 +72,7 @@ declare class CanvasGroup<
   /**
    * Create CanvasLayer instances which belong to the canvas group.
    */
-  //TODO check if protected is valid
-  _createLayers(): GroupFor<Group>;
+  protected _createLayers(): GroupFor<Group>;
 
   /** Draw the canvas group and all its component layers. */
   draw(options?: HandleEmptyObject<DrawOptions>): Promise<this>;
@@ -98,9 +99,9 @@ type NoLayerGroup = typeof _NoLayerGroup;
 type ApplyGroup<
   BaseClass extends CanvasGroupMixin.BaseClass,
   Group extends CanvasGroupMixin.LayerGroup | NoLayerGroup,
-> = new <DrawOptions extends CanvasGroupMixin.DrawOptions, TeardownOptions extends CanvasGroupMixin.TeardownOptions>(
+> = new <DrawOptions extends CanvasGroupMixin.DrawOptions, TearDownOptions extends CanvasGroupMixin.TearDownOptions>(
   ...args: ConstructorParameters<BaseClass>
-) => CanvasGroup<Group, DrawOptions, TeardownOptions> & FixedInstanceType<BaseClass>;
+) => CanvasGroup<Group, DrawOptions, TearDownOptions> & FixedInstanceType<BaseClass>;
 
 declare global {
   /**
@@ -115,6 +116,12 @@ declare global {
     Group extends CanvasGroupMixin.LayerGroup | NoLayerGroup = NoLayerGroup,
   >(ContainerClass: BaseClass): CanvasGroupMixin.Mixed<BaseClass, Group>;
 
+  /**
+   * @deprecated since v12, until 14
+   * @remarks "BaseCanvasMixin is deprecated in favor of CanvasGroupMixin"
+   */
+  const BaseCanvasMixin: typeof CanvasGroupMixin;
+
   namespace CanvasGroupMixin {
     type AnyConstructor = typeof AnyCanvasGroup;
 
@@ -126,14 +133,14 @@ declare global {
     > = BaseClass &
       CanvasGroup.MixinClass &
       ApplyGroup<BaseClass, Group> & {
-        groupName: Group extends NoLayerGroup ? string : Group;
+        groupName: Group extends NoLayerGroup ? undefined : Group;
       };
 
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     interface DrawOptions {}
 
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    interface TeardownOptions {}
+    interface TearDownOptions {}
 
     interface Layers {
       readonly [key: string]: CanvasLayer;

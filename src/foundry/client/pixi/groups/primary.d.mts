@@ -1,5 +1,5 @@
 import type { Renderer } from "pixi.js";
-import type { HandleEmptyObject } from "../../../../types/utils.d.mts";
+import type { HandleEmptyObject } from "../../../../utils/index.d.mts";
 
 // Included to match Foundry's documented types
 type PrimaryCanvasObject = ReturnType<typeof PrimaryCanvasObjectMixin>;
@@ -195,7 +195,7 @@ declare global {
 
     interface DrawOptions extends CanvasGroupMixin.DrawOptions {}
 
-    interface TearDownOptions extends CanvasGroupMixin.TeardownOptions {}
+    interface TearDownOptions extends CanvasGroupMixin.TearDownOptions {}
 
     interface SORT_LAYERS {
       readonly SCENE: 0;

@@ -1,6 +1,4 @@
-import type { NullishProps, IntentionalPartial, ValueOf } from "../../../../../utils/index.d.mts";
-
-export {};
+import type { NullishProps, IntentionalPartial } from "../../../../../utils/index.d.mts";
 
 declare global {
   /**
@@ -33,7 +31,7 @@ declare global {
      * An RGBA array used to define the clear color of the RenderTexture
      * @defaultValue `[0, 0, 0, 1]`
      */
-    clearColor: [r: number, g: number, b: number, a: number];
+    clearColor: Color.RGBAColorVector;
 
     /**
      * Should our Container also be displayed on screen, in addition to being drawn to the cached RenderTexture?
@@ -63,7 +61,7 @@ declare global {
     /**
      * Set the alpha mode of the cached container render texture.
      */
-    set alphaMode(mode: ValueOf<PIXI.ALPHA_MODES>);
+    set alphaMode(mode: PIXI.ALPHA_MODES);
 
     /**
      * A bound Sprite which uses this container's render texture
@@ -110,13 +108,15 @@ declare global {
   }
 
   namespace CachedContainer {
+    type Any = AnyCachedContainer;
     type AnyConstructor = typeof AnyCachedContainer;
 
     interface RenderOptions {
       /** Render function that will be called to render into the RT. */
-      renderFunction: (renderer: PIXI.Renderer) => void | null | undefined;
+      renderFunction: ((renderer: PIXI.Renderer) => void) | null | undefined;
+
       /** An optional clear color to clear the RT before rendering into it. */
-      clearColor: [r: number, g: number, b: number, a: number] | null | undefined;
+      clearColor: Color.RGBAColorVector | null | undefined;
     }
   }
 }
