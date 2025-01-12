@@ -1,21 +1,180 @@
+import type { ConfiguredItem } from "../../../../configuration";
+import type { HandleEmptyObject } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
-import type BaseItem from "../../../common/documents/item.d.mts";
+import type { fields } from "../../../common/data/module.d.mts";
+import type { DataSchema } from "./adventure.d.mts";
 
 declare global {
   namespace Item {
-    type Metadata = Document.MetadataFor<Item>;
+    /**
+     * The implementation of the Item document configured through `CONFIG.Item.documentClass` in Foundry and
+     * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
+     */
+    interface ConfiguredClass extends Document.ConfiguredClassForName<"Item"> {}
 
-    type ConfiguredClass = Document.ConfiguredClassForName<"Item">;
-    type ConfiguredInstance = Document.ConfiguredInstanceForName<"Item">;
+    /**
+     * The implementation of the Item document instance configured through `CONFIG.Item.documentClass` in Foundry and
+     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredItem | `configuration/ConfiguredItem`} in fvtt-types.
+     */
+    interface ConfiguredInstance extends Document.ConfiguredInstanceForName<"Item"> {}
 
+    /**
+     * A document's metadata is special information about the document ranging anywhere from its name,
+     * whether it's indexed, or to the permissions a user has over it.
+     */
+    interface Metadata extends Document.MetadataFor<Item> {}
+
+    type SubType = Game.Model.TypeNames<"Item">;
+    type OfType<Type extends SubType> = HandleEmptyObject<ConfiguredItem<Type>, Item<SubType>>;
+
+    /**
+     * A document's parent is something that can contain it.
+     * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
+     */
+    type Parent = Actor.ConfiguredInstance | null;
+
+    /**
+     * The data put in {@link Document._source | `Document._source`}. This data is what was
+     * persisted to the database and therefore it must be valid JSON.
+     *
+     * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+     * but initialized as a {@link Set | `Set`}.
+     *
+     * Both `Source` and `PersistedData` are equivalent.
+     */
+    interface Source extends PersistedData {}
+
+    /**
+     * The data put in {@link Item._source | `Item._source`}. This data is what was
+     * persisted to the database and therefore it must be valid JSON.
+     *
+     * Both `Source` and `PersistedData` are equivalent.
+     */
+    interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
+
+    /**
+     * The data necessary to create a document. Used in places like {@link Item.create | `Item.create`}
+     * and {@link Item | `new Item(...)`}.
+     *
+     * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
+     * with the right values. This means you can pass a `Set` instance, an array of values,
+     * a generator, or any other iterable.
+     */
+    interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+
+    /**
+     * The data after a {@link Document | `Document`} has been initialized, for example
+     * {@link Item.name | `Item#name`}.
+     *
+     * This is data transformed from {@link Item.Source | `Item.Source`} and turned into more
+     * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+     * persisted to the database as an array of values but at runtime it is a `Set` instance.
+     */
+    interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
+
+    /**
+     * The data used to update a document, for example {@link Item.update | `Item#update`}.
+     * It is a distinct type from {@link Item.CreateData | `DeepPartial<Item.CreateData>`} because
+     * it has different rules for `null` and `undefined`.
+     */
+    interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+    /**
+     * The schema for {@link Item | `Item`}. This is the source of truth for how an Item document
+     * must be structured.
+     *
+     * Foundry uses this schema to validate the structure of the {@link Item | `Item`}. For example
+     * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
+     * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+     * starting as an array in the database, initialized as a set, and allows updates with any
+     * iterable.
+     */
+    interface Schema extends DataSchema {
+      /**
+       * The _id which uniquely identifies this Item document
+       * @defaultValue `null`
+       */
+      _id: fields.DocumentIdField;
+
+      /** The name of this Item */
+      name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
+
+      /** An Item subtype which configures the system data model applied */
+      type: fields.DocumentTypeField<typeof BaseItem>;
+
+      /**
+       * An image file path which provides the artwork for this Item
+       * @defaultValue `null`
+       */
+      img: fields.FilePathField<{
+        categories: "IMAGE"[];
+        initial: (data: unknown) => string;
+      }>;
+
+      /**
+       * The system data object which is defined by the system template.json model
+       * @defaultValue `{}`
+       */
+      system: fields.TypeDataField<typeof BaseItem>;
+
+      /**
+       * A collection of ActiveEffect embedded Documents
+       * @defaultValue `[]`
+       */
+      effects: fields.EmbeddedCollectionField<typeof documents.BaseActiveEffect, Item.ConfiguredInstance>;
+
+      /**
+       * The _id of a Folder which contains this Item
+       * @defaultValue `null`
+       */
+      folder: fields.ForeignDocumentField<typeof documents.BaseFolder>;
+
+      /**
+       * The numeric sort value which orders this Item relative to its siblings
+       * @defaultValue `0`
+       */
+      sort: fields.IntegerSortField;
+
+      /**
+       * An object which configures ownership of this Item
+       * @defaultValue see {@link fields.DocumentOwnershipField}
+       */
+      ownership: fields.DocumentOwnershipField;
+
+      /**
+       * An object of optional key/value flags
+       * @defaultValue `{}`
+       */
+      flags: fields.ObjectField.FlagsField<"Item">;
+
+      /**
+       * An object of creation and access information
+       * @defaultValue see {@link fields.DocumentStatsField}
+       */
+      _stats: fields.DocumentStatsField;
+    }
+
+    namespace DatabaseOperation {
+      interface Get {}
+      interface Create<Temporary extends boolean | undefined = boolean | undefined> {}
+      interface Delete {}
+      interface Update {}
+    }
+
+    /**
+     * @deprecated - {@link Item.DatabaseOperation}
+     */
     interface DatabaseOperations extends Document.Database.Operations<Item> {}
 
-    // Helpful aliases
-    type TypeNames = BaseItem.TypeNames;
-    type ConstructorData = BaseItem.ConstructorData;
-    type UpdateData = BaseItem.UpdateData;
-    type Schema = BaseItem.Schema;
-    type Source = BaseItem.Source;
+    /**
+     * @deprecated {@link Item.Types | `Item.SubType`}
+     */
+    type TypeNames = Item.SubType;
+
+    /**
+     * @deprecated {@link Item.CreateData | `Item.CreateData`}
+     */
+    interface ConstructorData extends Item.CreateData {}
   }
 
   /**
@@ -28,7 +187,9 @@ declare global {
    * @param data    - Initial data provided to construct the Item document
    * @param context - The document context, see {@link foundry.abstract.Document}
    */
-  class Item extends ClientDocumentMixin(foundry.documents.BaseItem) {
+  class Item<SubType extends Item.SubType = Item.SubType> extends ClientDocumentMixin(
+    foundry.documents.BaseItem,
+  )<SubType> {
     // Note(LukeAbby): Temporary fix, look into solving this at the root of the issue.
     documentName: "Item";
 
