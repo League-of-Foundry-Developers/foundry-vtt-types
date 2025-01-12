@@ -1,9 +1,8 @@
-import type { Brand, EmptyObject, InexactPartial } from "../../utils/index.d.mts";
+import type { EmptyObject, InexactPartial } from "../../utils/index.d.mts";
 
-export type FORMATS = Brand<number, "ImageCompressorWorkerFunctions.FORMATS">;
 export declare const FORMATS: {
-  RED: 6403 & FORMATS;
-  RGBA: 6408 & FORMATS;
+  RED: typeof PIXI.FORMATS.RED;
+  RGBA: typeof PIXI.FORMATS.RGBA;
 };
 
 export interface Debug {
@@ -40,7 +39,7 @@ export type _ProcessBufferToBase64Options = InexactPartial<{
    * The format the buffer is in
    * @remarks Only matters whether it's `FORMATS.RED` or not. Property is undocumented by foundry.
    */
-  readFormat: FORMATS | null;
+  readFormat: PIXI.FORMATS | null;
 }>;
 
 /** @internal */
@@ -58,7 +57,7 @@ type _BaseBufferOptions = {
 
 export interface ProcessBufferToBase64Options extends _BaseBufferOptions, _ProcessBufferToBase64Options, Debug {}
 
-export interface ProcessBufferRedtoBufferRGBAOptions
+export interface ExpandOrReduceBufferOptions
   extends _BaseBufferOptions,
     Debug,
     Pick<_ProcessBufferToBase64Options, "hash"> {}
@@ -69,7 +68,7 @@ export type ProcessBufferToBase64Return = [
     buffer: Uint8ClampedArray;
     hash: string | undefined;
   },
-  [Uint8ClampedArray["buffer"]],
+  [bufferBuffer: ArrayBufferLike],
 ];
 
 export type ProcessBufferRedToBufferRGBAReturn = [
@@ -78,8 +77,18 @@ export type ProcessBufferRedToBufferRGBAReturn = [
     buffer: Uint8ClampedArray;
     hash: string | undefined;
   },
-  Array<Uint8ClampedArray["buffer"]>,
+  [rgbaBufferBuffer: ArrayBufferLike, bufferBuffer: ArrayBufferLike],
 ];
+
+export type ProcessBufferRGBAToBufferREDReturn = [
+  {
+    redBuffer: Uint8ClampedArray | undefined;
+    buffer: Uint8ClampedArray;
+    hash: string | undefined;
+  },
+  [bufferBuffer: ArrayBufferLike],
+];
+
 /**
  * Process the image compression.
  */
@@ -92,8 +101,16 @@ export declare function processBufferToBase64(
  * The created RGBA buffer is transfered.
  */
 export declare function processBufferRedToBufferRGBA(
-  options: ProcessBufferRedtoBufferRGBAOptions,
+  options: ExpandOrReduceBufferOptions,
 ): Promise<ProcessBufferRedToBufferRGBAReturn>;
+
+/**
+ * Reduce a RGBA buffer into a single RED buffer and returns it to the main thread.
+ * The created RGBA buffer is transfered.
+ */
+export declare function processBufferRGBAToBufferRED(
+  options: ExpandOrReduceBufferOptions,
+): Promise<ProcessBufferRGBAToBufferREDReturn>;
 
 /**
  * Control the hash of a provided buffer.

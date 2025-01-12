@@ -8,16 +8,19 @@ declare global {
   export import Debug = worker.Debug;
 
   export import ProcessBufferToBase64Options = worker.ProcessBufferToBase64Options;
-  export import ProcessBufferRedtoBufferRGBAOptions = worker.ProcessBufferRedtoBufferRGBAOptions;
+  export import ExpandOrReduceBufferOptions = worker.ExpandOrReduceBufferOptions;
 
   export import ProcessBufferToBase64Return = worker.ProcessBufferToBase64Return;
   export import ProcessBufferRedToBufferRGBAReturn = worker.ProcessBufferRedToBufferRGBAReturn;
+  export import ProcessBufferRGBAToBufferREDReturn = worker.ProcessBufferRGBAToBufferREDReturn;
 
   // FUNCTIONS:
 
   export import processBufferToBase64 = worker.processBufferToBase64;
 
   export import processBufferRedToBufferRGBA = worker.processBufferRedToBufferRGBA;
+
+  export import processBufferRGBAToBufferRED = worker.processBufferRGBAToBufferRED;
 
   export import controlHashes = worker.controlHashes;
 

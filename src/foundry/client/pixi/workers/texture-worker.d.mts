@@ -2,6 +2,8 @@ import type { NullishProps } from "../../../../utils/index.d.mts";
 import type {
   _ProcessBufferToBase64Options,
   Debug,
+  ProcessBufferRedToBufferRGBAReturn,
+  ProcessBufferRGBAToBufferREDReturn,
   ProcessBufferToBase64Return,
 } from "../../../../types/workers/image-compressor";
 
@@ -41,8 +43,8 @@ declare global {
       buffer: Uint8ClampedArray,
       width: number,
       height: number,
-      options?: TextureCompressor.expandRedToRGBAOptions,
-    ): Promise<unknown>;
+      options?: TextureCompressor.ExpandOrReduceBufferOptions,
+    ): Promise<ProcessBufferRedToBufferRGBAReturn>;
 
     /**
      * Expand a buffer in RED format to a buffer in RGBA format.
@@ -54,8 +56,8 @@ declare global {
       buffer: Uint8ClampedArray,
       width: number,
       height: number,
-      options?: TextureCompressor.reduceRGBAToRedOptions,
-    ): Promise<unknown>;
+      options?: TextureCompressor.ExpandOrReduceBufferOptions,
+    ): Promise<ProcessBufferRGBAToBufferREDReturn>;
   }
 
   namespace TextureCompressor {
@@ -93,49 +95,8 @@ declare global {
     interface ConstructorOptions extends _ConstructorOptions {}
 
     interface CompressBase64Options extends _ProcessBufferToBase64Options, Debug {}
-    // interface compressBase64Options {
-    //   /**
-    //    * The required image type.
-    //    * @defaultValue `"image/png"`
-    //    */
-    //   type?: string;
 
-    //   /**
-    //    * The required image quality.
-    //    * @defaultValue `1`
-    //    */
-    //   quality?: number;
-
-    //   /**
-    //    * The debug option.
-    //    * @defaultValue `false`
-    //    */
-    //   debug?: boolean;
-
-    //   readFormat: PIXI.FORMATS;
-    // }
-
-    interface expandRedToRGBAOptions {
-      /**
-       * The debug option
-       * @defaultValue `false`
-       */
-      debug: boolean;
-    }
-
-    interface reduceRGBAToRedOptions {
-      /**
-       * The debug option
-       * @defaultValue `false`
-       */
-      debug?: boolean;
-
-      compression: (typeof TextureExtractor)["COMPRESSION_MODES"];
-
-      type: string;
-
-      quality: number;
-    }
+    interface ExpandOrReduceBufferOptions extends Pick<_ProcessBufferToBase64Options, "hash">, Debug {}
   }
 }
 

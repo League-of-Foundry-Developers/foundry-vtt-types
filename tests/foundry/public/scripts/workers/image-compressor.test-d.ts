@@ -14,8 +14,9 @@ expectTypeOf(
     height: 500,
     type: "image/webp",
     quality: 0.8,
-    format: FORMATS.RED,
+    readFormat: PIXI.FORMATS.RED,
     debug: true,
+    hash: "asdageherhr",
   }),
 ).toEqualTypeOf<Promise<ProcessBufferToBase64Return>>();
 
@@ -25,8 +26,19 @@ expectTypeOf(
     width: 500,
     height: 500,
     debug: true,
+    hash: "asfasfgdgha",
   }),
 ).toEqualTypeOf<Promise<ProcessBufferRedToBufferRGBAReturn>>();
+
+expectTypeOf(
+  processBufferRGBAToBufferRED({
+    buffer: someBuffer,
+    width: 500,
+    height: 500,
+    debug: true,
+    hash: "asdfasdf",
+  }),
+).toEqualTypeOf<Promise<ProcessBufferRGBAToBufferREDReturn>>();
 
 expectTypeOf(controlHashes(someBuffer)).toEqualTypeOf<EmptyObject>();
 expectTypeOf(controlHashes(someBuffer, "some hash")).toEqualTypeOf<{ same: boolean; hash: string }>();
