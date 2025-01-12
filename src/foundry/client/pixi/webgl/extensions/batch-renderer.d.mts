@@ -1,36 +1,6 @@
 import type { ToMethod, InexactPartial } from "../../../../../utils/index.d.mts";
 
-declare abstract class AnyBatchRenderer extends BatchRenderer {
-  constructor(arg0: never, ...args: never[]);
-}
-
 declare global {
-  namespace BatchRenderer {
-    type AnyConstructor = typeof AnyBatchRenderer;
-
-    type PackInterleavedGeometryFunction = ToMethod<
-      (
-        element: PIXI.IBatchableElement,
-        attributeBuffer: PIXI.ViewableBuffer,
-        indexBuffer: Uint16Array,
-        aIndex: number,
-        iIndex: number,
-      ) => void
-    >;
-
-    type PreRenderBatchFunction = ToMethod<(batchRenderer: typeof BatchRenderer) => void>;
-
-    type BatchDefaultUniformsFunction = ToMethod<(maxTextures: number) => AbstractBaseShader.Uniforms>;
-
-    type ReservedTextureUnits = 0 | 1 | 2 | 3 | 4;
-
-    interface ShaderGeneratorOptions {
-      vertex: typeof BatchRenderer.defaultVertexSrc;
-      fragment: typeof BatchRenderer.defaultFragmentTemplate;
-      uniforms: typeof BatchRenderer.defaultUniforms;
-    }
-  }
-
   /**
    * A batch renderer with a customizable data transfer function to packed geometries.
    */
@@ -69,7 +39,7 @@ declare global {
      */
     get reservedTextureUnits(): BatchRenderer.ReservedTextureUnits;
 
-    override setShaderGenerator(options?: InexactPartial<BatchRenderer.ShaderGeneratorOptions>): void;
+    override setShaderGenerator(options?: BatchRenderer.ShaderGeneratorOptions): void;
 
     /**
      * This override allows to allocate a given number of texture units reserved for a custom batched shader.
@@ -91,4 +61,55 @@ declare global {
      */
     static hasPlugin(name: string): boolean;
   }
+
+  namespace BatchRenderer {
+    type AnyConstructor = typeof AnyBatchRenderer;
+
+    type PackInterleavedGeometryFunction = ToMethod<
+      (
+        element: PIXI.IBatchableElement,
+        attributeBuffer: PIXI.ViewableBuffer,
+        indexBuffer: Uint16Array,
+        aIndex: number,
+        iIndex: number,
+      ) => void
+    >;
+
+    type PreRenderBatchFunction = ToMethod<(batchRenderer: typeof BatchRenderer) => void>;
+
+    type BatchDefaultUniformsFunction = ToMethod<(maxTextures: number) => AbstractBaseShader.Uniforms>;
+
+    type ReservedTextureUnits = 0 | 1 | 2 | 3 | 4;
+
+    /** @internal */
+    type _ShaderGeneratorOptions = InexactPartial<{
+      /**
+       * The vertex shader source
+       * @remarks Can't be null as only a signature default is provided
+       */
+      vertex: typeof BatchRenderer.defaultVertexSrc;
+
+      /**
+       * The fragment shader source template
+       * @remarks Can't be null as only a signature default is provided
+       */
+      fragment: typeof BatchRenderer.defaultFragmentTemplate;
+
+      /**
+       * Additional Uniforms
+       * @remarks Can't be null as only a signature default is provided
+       */
+      uniforms: typeof BatchRenderer.defaultUniforms;
+    }>;
+
+    /**
+     * Options for {@link BatchRenderer#setShaderGenerator} (and ultimately the
+     * constructor of whatever's set as {@link BatchRenderer.shaderGeneratorClass})
+     */
+    interface ShaderGeneratorOptions extends _ShaderGeneratorOptions {}
+  }
+}
+
+declare abstract class AnyBatchRenderer extends BatchRenderer {
+  constructor(arg0: never, ...args: never[]);
 }

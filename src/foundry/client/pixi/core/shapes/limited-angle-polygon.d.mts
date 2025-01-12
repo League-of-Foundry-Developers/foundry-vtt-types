@@ -60,6 +60,11 @@ declare global {
     aMax: number;
 
     /**
+     * The bounding box of the circle defined by the externalRadius, if any
+     */
+    externalBounds: PIXI.Rectangle | undefined;
+
+    /**
      * Restrict the edges which should be included in a PointSourcePolygon based on this specialized shape.
      * We use two tests to jointly keep or reject edges.
      * 1. If this shape uses an externalRadius, keep edges which collide with the bounding box of that circle.
@@ -67,7 +72,6 @@ declare global {
      * @param a - The first edge vertex
      * @param b - The second edge vertex
      * @returns Should the edge be included in the PointSourcePolygon computation?
-     * @internal
      */
     protected _includeEdge(a: Canvas.Point, b: Canvas.Point): boolean;
 
@@ -85,6 +89,8 @@ declare global {
   }
 
   namespace LimitedAnglePolygon {
+    type AnyConstructor = typeof AnyLimitedAnglePolygon;
+
     interface ConstructorOptions {
       /**
        * The radius of the emitted cone.
@@ -95,25 +101,29 @@ declare global {
        * The angle of the Polygon in degrees.
        * @defaultValue `360`
        */
-      angle?: number;
+      angle?: number | undefined;
 
       /**
        * The direction of rotation at the center of the emitted angle in degrees.
        * @defaultValue `0`
        */
-      rotation?: number;
+      rotation?: number | undefined;
 
       /**
        * The density of rays which approximate the cone, defined as rays per PI.
        * @defaultValue `PIXI.Circle.approximateVertexDensity(this.radius)`
        */
-      density?: number;
+      density?: number | undefined | null;
 
       /**
        * An optional "external radius" which is included in the polygon for the supplementary area outside the cone.
        * @defaultValue `0`
        */
-      externalRadius?: number;
+      externalRadius?: number | undefined | null;
     }
   }
+}
+
+declare abstract class AnyLimitedAnglePolygon extends LimitedAnglePolygon {
+  constructor(arg0: never, ...args: never[]);
 }

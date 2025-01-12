@@ -1,4 +1,4 @@
-export {};
+import type { InexactPartial } from "../../../../../types/utils.d.mts";
 
 declare global {
   /**
@@ -20,8 +20,18 @@ declare global {
     static getTextStyle({
       anchor,
       ...options
-    }?: { anchor?: foundry.CONST.TEXT_ANCHOR_POINTS } & ConstructorParameters<
-      typeof PIXI.TextStyle
-    >[0]): PIXI.TextStyle;
+    }?: {
+      anchor?: foundry.CONST.TEXT_ANCHOR_POINTS;
+    } /**
+     * @remarks Can't be NullishProps because keys are only checked for `!== undefined`
+     */ & InexactPartial<PIXI.ITextStyle>): PIXI.TextStyle;
   }
+
+  namespace PreciseText {
+    type AnyConstructor = typeof AnyPreciseText;
+  }
+}
+
+declare abstract class AnyPreciseText extends PreciseText {
+  constructor(arg0: never, ...args: never[]);
 }

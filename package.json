@@ -11,6 +11,9 @@
     },
     "./utils": {
       "types": "./src/utils/index.d.mts"
+    },
+    "./worker": {
+      "types": "./src/foundry/public/scripts/workers/index.d.mts"
     }
   },
   "scripts": {
@@ -64,6 +67,7 @@
     "typescript"
   ],
   "dependencies": {
+    "@pixi/basis": "^7.4.2",
     "@pixi/graphics-smooth": "^1.1.0",
     "@pixi/particle-emitter": "^5.0.8",
     "@types/earcut": "github:LukeAbby/earcut-types#main",

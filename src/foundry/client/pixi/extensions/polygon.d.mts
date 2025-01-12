@@ -120,7 +120,10 @@ declare module "pixi.js" {
       Y: number;
     }
 
-    /** @internal Intermediary type to simplify use of optionality- and nullish-permissiveness-modifying helpers */
+    /**
+     * @internal Helper type for interface to simplify InexactPartial usage
+     * @remarks Can't be NullishProps because `scalingFactor` is passed to functions that only provide defaults as `{scalingFactor=1}`
+     */
     type _IntersectClipperOptions = InexactPartial<{
       /**
        * A scaling factor passed to Polygon#toClipperPoints to preserve precision
@@ -139,5 +142,11 @@ declare module "pixi.js" {
       }>;
 
     interface IntersectClipperOptions extends _IntersectClipperOptions {}
+
+    /**
+     * @privateRemarks Created just so the name matches for use elsewhere (`PointSourcePolygon` at least)
+     * TODO: come up with a cleaner, consistent solution
+     */
+    interface IntersectPolygonOptions extends _IntersectClipperOptions {}
   }
 }
