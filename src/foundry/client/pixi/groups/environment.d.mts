@@ -56,7 +56,7 @@ declare global {
 
     interface DrawOptions extends CanvasGroupMixin.DrawOptions {}
 
-    interface TearDownOptions extends CanvasGroupMixin.TearDownOptions {}
+    interface TearDownOptions extends CanvasGroupMixin.TeardownOptions {}
 
     /**
      * @remarks This is separated like this because `#initalize` won't accept `environment: null` without throwing

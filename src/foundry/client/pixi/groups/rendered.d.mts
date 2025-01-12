@@ -20,7 +20,7 @@ declare global {
 
     interface DrawOptions extends CanvasGroupMixin.DrawOptions {}
 
-    interface TearDownOptions extends CanvasGroupMixin.TearDownOptions {}
+    interface TearDownOptions extends CanvasGroupMixin.TeardownOptions {}
   }
 }
 
