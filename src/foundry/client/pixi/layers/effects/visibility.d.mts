@@ -185,6 +185,7 @@ declare global {
   }
 
   namespace CanvasVisibility {
+    type Any = AnyCanvasVisibility;
     type AnyConstructor = typeof AnyCanvasVisibility;
 
     type LightingVisibility = ValueOf<typeof VisionMode.LIGHTING_VISIBILITY>;
@@ -224,6 +225,9 @@ declare global {
   }
 }
 
-declare abstract class AnyCanvasVisibility extends CanvasVisibility {
+declare abstract class AnyCanvasVisibility extends CanvasVisibility<
+  CanvasVisibility.DrawOptions,
+  CanvasVisibility.TearDownOptions
+> {
   constructor(arg0: never, ...args: never[]);
 }
