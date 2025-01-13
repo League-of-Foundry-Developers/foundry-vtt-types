@@ -1,35 +1,11 @@
 import type { FixedInstanceType, ToMethod } from "../../../../../utils/index.d.mts";
 
-declare abstract class AnyAbstractBaseShader extends AbstractBaseShader {
-  constructor(arg0: never, ...args: never[]);
-}
-
 declare global {
-  namespace AbstractBaseShader {
-    type AnyConstructor = typeof AnyAbstractBaseShader;
-
-    type Coordinates =
-      | { x: number; y: number }
-      | { x: number; y: number; z: number }
-      | { x: number; y: number; z: number; w: number };
-
-    type UniformValue = boolean | number | Int32List | Float32List | Coordinates | Coordinates[] | PIXI.Texture;
-
-    // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-    type Uniforms = {
-      readonly [K: string]: AbstractBaseShader.UniformValue;
-    };
-
-    type FragmentShaderFunction = ToMethod<(arg0: never) => string>;
-
-    type PreRenderFunction = ToMethod<(mesh: PIXI.DisplayObject, renderer: PIXI.Renderer) => void>;
-  }
-
   /**
    * This class defines an interface which all shaders utilize
    */
   abstract class AbstractBaseShader extends BaseShaderMixin(PIXI.Shader) {
-    constructor(program: PIXI.Program, uniforms: AbstractBaseShader.Uniforms);
+    constructor(program: PIXI.Program, uniforms?: AbstractBaseShader.Uniforms);
 
     /**
      * The raw vertex shader used by this class.
@@ -91,4 +67,28 @@ declare global {
      */
     protected get _defaults(): AbstractBaseShader.Uniforms;
   }
+
+  namespace AbstractBaseShader {
+    type AnyConstructor = typeof AnyAbstractBaseShader;
+
+    type Coordinates =
+      | { x: number; y: number }
+      | { x: number; y: number; z: number }
+      | { x: number; y: number; z: number; w: number };
+
+    type UniformValue = boolean | number | Int32List | Float32List | Coordinates | Coordinates[] | PIXI.Texture;
+
+    // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+    type Uniforms = {
+      readonly [K: string]: AbstractBaseShader.UniformValue;
+    };
+
+    type FragmentShaderFunction = ToMethod<(arg0: never) => string>;
+
+    type PreRenderFunction = ToMethod<(mesh: PIXI.DisplayObject, renderer: PIXI.Renderer) => void>;
+  }
+}
+
+declare abstract class AnyAbstractBaseShader extends AbstractBaseShader {
+  constructor(arg0: never, ...args: never[]);
 }

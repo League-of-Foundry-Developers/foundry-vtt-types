@@ -1,14 +1,6 @@
 export {};
 
-declare abstract class AnyInvisibilityFilter extends InvisibilityFilter {
-  constructor(arg0: never, ...args: never[]);
-}
-
 declare global {
-  namespace InvisibilityFilter {
-    type AnyConstructor = typeof AnyInvisibilityFilter;
-  }
-
   /**
    * Invisibility effect filter for placeables.
    */
@@ -26,4 +18,13 @@ declare global {
      */
     static override defaultUniforms: AbstractBaseShader.Uniforms;
   }
+
+  namespace InvisibilityFilter {
+    type Any = AnyInvisibilityFilter;
+    type AnyConstructor = typeof AnyInvisibilityFilter;
+  }
+}
+
+declare abstract class AnyInvisibilityFilter extends InvisibilityFilter {
+  constructor(arg0: never, ...args: never[]);
 }

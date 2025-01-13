@@ -1,14 +1,6 @@
 import type { FixedInstanceType } from "../../../../../../utils/index.d.mts";
 
-declare abstract class AnyAbstractBaseFilter extends AbstractBaseFilter {
-  constructor(arg0: never, ...args: never[]);
-}
-
 declare global {
-  namespace AbstractBaseFilter {
-    type AnyConstructor = typeof AnyAbstractBaseFilter;
-  }
-
   /**
    * An abstract filter which provides a framework for reusable definition
    */
@@ -44,4 +36,13 @@ declare global {
       initialUniforms?: AbstractBaseShader.Uniforms,
     ): FixedInstanceType<ThisType>;
   }
+
+  namespace AbstractBaseFilter {
+    type Any = AnyAbstractBaseFilter;
+    type AnyConstructor = typeof AnyAbstractBaseFilter;
+  }
+}
+
+declare abstract class AnyAbstractBaseFilter extends AbstractBaseFilter {
+  constructor(arg0: never, ...args: never[]);
 }

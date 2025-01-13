@@ -1,14 +1,6 @@
 import type { FixedInstanceType } from "../../../../../../utils/index.d.mts";
 
-declare abstract class AnyOutlineOverlayFilter extends OutlineOverlayFilter {
-  constructor(arg0: never, ...args: never[]);
-}
-
 declare global {
-  namespace OutlineOverlayFilter {
-    type AnyConstructor = typeof AnyOutlineOverlayFilter;
-  }
-
   /**
    * A filter which implements an outline.
    * Inspired from https://github.com/pixijs/filters/tree/main/filters/outline
@@ -83,4 +75,13 @@ declare global {
      */
     set animate(v);
   }
+
+  namespace OutlineOverlayFilter {
+    type Any = AnyOutlineOverlayFilter;
+    type AnyConstructor = typeof AnyOutlineOverlayFilter;
+  }
+}
+
+declare abstract class AnyOutlineOverlayFilter extends OutlineOverlayFilter {
+  constructor(arg0: never, ...args: never[]);
 }
