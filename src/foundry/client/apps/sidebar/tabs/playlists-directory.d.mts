@@ -252,7 +252,7 @@ declare global {
     type Any = AnyPlaylistDirectory;
     type AnyConstructor = typeof AnyPlaylistDirectory;
 
-    interface PlaylistData extends Document.ToObjectFalseType<Playlist.ConfiguredInstance> {
+    interface PlaylistData extends Playlist.PersistedData {
       modeTooltip: string;
       modeIcon: string;
       disabled: boolean;
@@ -262,7 +262,7 @@ declare global {
       sounds: SoundData[];
     }
 
-    interface SoundData extends Document.ToObjectFalseType<PlaylistSound.ConfiguredInstance> {
+    interface SoundData extends PlaylistSound.PersistedData {
       playlistId: string | null;
       css: string;
       controlCSS: string;

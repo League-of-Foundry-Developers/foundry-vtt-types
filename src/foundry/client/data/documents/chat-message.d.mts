@@ -1,5 +1,6 @@
 import type { InexactPartial } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
+import type { SchemaField } from "../../../common/data/fields.d.mts";
 import type BaseChatMessage from "../../../common/documents/chat-message.d.mts";
 
 declare global {
@@ -25,6 +26,7 @@ declare global {
     type UpdateData = BaseChatMessage.UpdateData;
     type Schema = BaseChatMessage.Schema;
     type Source = BaseChatMessage.Source;
+    interface PersistedData extends SchemaField.PersistedData<Schema> {}
 
     interface GetSpeakerOptions {
       /** The Scene in which the speaker resides */
@@ -41,7 +43,7 @@ declare global {
     }
 
     interface MessageData {
-      message: Document.ToObjectFalseType<ChatMessage>;
+      message: ChatMessage.PersistedData;
       user: Document.Stored<User.ConfiguredInstance>;
       author: User.ConfiguredInstance | undefined;
       alias: string;

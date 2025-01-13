@@ -125,7 +125,7 @@ declare abstract class Document<
    * }
    * ```
    */
-  static metadata: Readonly<Document.Metadata.Any>;
+  static metadata: Document.Metadata.Any;
 
   /**
    * The database backend used to execute operations and handle results
@@ -204,7 +204,7 @@ declare abstract class Document<
    * @param user - The User being tested
    * @returns Does the User have a sufficient role to create?
    */
-  static canUserCreate(user: User.ConfiguredInstance): boolean;
+  static canUserCreate(user: User.Internal.ConfiguredInstance): boolean;
 
   /**
    * Get the explicit permission level that a specific User has over this Document, a value in CONST.DOCUMENT_OWNERSHIP_LEVELS.
@@ -214,7 +214,7 @@ declare abstract class Document<
    *               (default: `game.user`)
    * @returns A numeric permission level from CONST.DOCUMENT_OWNERSHIP_LEVELS or null
    */
-  getUserLevel(user?: User.ConfiguredInstance): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
+  getUserLevel(user?: User.Internal.ConfiguredInstance): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
 
   /**
    * Test whether a certain User has a requested permission level (or greater) over the Document
@@ -224,7 +224,7 @@ declare abstract class Document<
    * @returns Does the user have this permission level over the Document?
    */
   testUserPermission(
-    user: User.ConfiguredInstance,
+    user: User.Internal.ConfiguredInstance,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
     options?: InexactPartial<{
       /**
@@ -243,7 +243,7 @@ declare abstract class Document<
    *                 (default: `{}`)
    * @returns Does the User have permission?
    */
-  canUserModify(user: User.ConfiguredInstance, action: "create" | "update" | "delete", data?: object): boolean;
+  canUserModify(user: User.Internal.ConfiguredInstance, action: "create" | "update" | "delete", data?: object): boolean;
 
   /**
    * Clone a document, creating a new document by combining current data with provided overrides.
@@ -265,8 +265,9 @@ declare abstract class Document<
    */
   migrateSystemData(): object;
 
-  override toObject(source: true): this["_source"];
-  override toObject(source?: boolean): ReturnType<this["schema"]["toObject"]>;
+  override toObject<Source extends boolean | undefined>(
+    source?: Source,
+  ): Source extends false ? SchemaField.PersistedData<Schema> : Readonly<SchemaField.PersistedData<Schema>>;
 
   /**
    * Create multiple Documents using provided input data.
@@ -638,7 +639,7 @@ declare abstract class Document<
   protected _preCreate(
     data: fields.SchemaField.AssignmentType<Schema>,
     options: Document.PreCreateOptions<DocumentName>,
-    user: User.ConfiguredInstance,
+    user: User.Internal.ConfiguredInstance,
   ): Promise<boolean | void>;
 
   /**
@@ -672,7 +673,7 @@ declare abstract class Document<
   protected static _preCreateOperation(
     documents: never[],
     operation: never,
-    user: User.ConfiguredInstance,
+    user: User.Internal.ConfiguredInstance,
   ): Promise<boolean | void>;
 
   /**
@@ -686,7 +687,11 @@ declare abstract class Document<
    * @param user      - The User who performed the creation operation
    */
   // Note: This uses `never` because it's unsound to try to do `Document._onCreateOperation` directly.
-  protected static _onCreateOperation(documents: never, operation: never, user: User.ConfiguredInstance): Promise<void>;
+  protected static _onCreateOperation(
+    documents: never,
+    operation: never,
+    user: User.Internal.ConfiguredInstance,
+  ): Promise<void>;
 
   /**
    * Perform preliminary operations before a Document of this type is updated.
@@ -699,7 +704,7 @@ declare abstract class Document<
   protected _preUpdate(
     changed: fields.SchemaField.UpdateData<Schema>,
     options: Document.PreUpdateOptions<DocumentName>,
-    user: User.ConfiguredInstance,
+    user: User.Internal.ConfiguredInstance,
   ): Promise<boolean | void>;
 
   /**
@@ -734,7 +739,7 @@ declare abstract class Document<
   protected static _preUpdateOperation(
     documents: never,
     operation: never,
-    user: User.ConfiguredInstance,
+    user: User.Internal.ConfiguredInstance,
   ): Promise<boolean | void>;
 
   /**
@@ -748,7 +753,11 @@ declare abstract class Document<
    * @param user      - The User who performed the update operation
    */
   // Note: This uses `never` because it's unsound to try to do `Document._onUpdateOperation` directly.
-  protected static _onUpdateOperation(documents: never, operation: never, user: User.ConfiguredInstance): Promise<void>;
+  protected static _onUpdateOperation(
+    documents: never,
+    operation: never,
+    user: User.Internal.ConfiguredInstance,
+  ): Promise<void>;
 
   /**
    * Perform preliminary operations before a Document of this type is deleted.
@@ -787,7 +796,7 @@ declare abstract class Document<
   protected static _preDeleteOperation(
     documents: never,
     operation: never,
-    user: User.ConfiguredInstance,
+    user: User.Internal.ConfiguredInstance,
   ): Promise<unknown>;
 
   /**
@@ -804,7 +813,7 @@ declare abstract class Document<
   protected static _onDeleteOperation(
     documents: never,
     operation: never,
-    user: User.ConfiguredInstance,
+    user: User.Internal.ConfiguredInstance,
   ): Promise<unknown>;
 
   /**
@@ -1163,6 +1172,9 @@ declare namespace Document {
 
   type ConfiguredFlagsForName<Name extends Type> = GetKey<FlagConfig, Name, EmptyObject>;
 
+  /**
+   * @deprecated {@link SchemaField.PersistedData | `SchemaField.PersistedData<Schema>``}
+   */
   type ToObjectFalseType<T extends Document.Internal.Instance.Any> = T extends {
     toObject: (source: false) => infer U;
   }
@@ -1385,8 +1397,8 @@ declare namespace Document {
   interface Metadata<out ThisType extends Document.Any> {
     readonly name: ThisType["documentName"];
     readonly collection: string;
-    readonly indexed?: boolean | undefined;
-    readonly compendiumIndexFields?: readonly string[] | undefined;
+    readonly indexed: boolean;
+    readonly compendiumIndexFields: readonly string[];
     readonly label: string;
     readonly coreTypes: readonly string[];
     readonly embedded: Record<string, string>;
@@ -1394,37 +1406,43 @@ declare namespace Document {
       create:
         | string
         | ToMethod<
-            (user: User.ConfiguredInstance, doc: ThisType, data: Document.ConstructorDataForName<Type>) => boolean
+            (
+              user: User.Internal.ConfiguredInstance,
+              doc: ThisType,
+              data: Document.ConstructorDataForName<Type>,
+            ) => boolean
           >;
       update:
         | string
-        | ToMethod<(user: User.ConfiguredInstance, doc: ThisType, data: Document.UpdateDataForName<Type>) => boolean>;
-      delete: string | ToMethod<(user: User.ConfiguredInstance, doc: ThisType, data: EmptyObject) => boolean>;
+        | ToMethod<
+            (user: User.Internal.ConfiguredInstance, doc: ThisType, data: Document.UpdateDataForName<Type>) => boolean
+          >;
+      delete: string | ToMethod<(user: User.Internal.ConfiguredInstance, doc: ThisType, data: EmptyObject) => boolean>;
     };
-    readonly preserveOnImport?: readonly string[] | undefined;
-    readonly schemaVersion: string | undefined;
-    readonly labelPlural: string; // This is not set for the Document class but every class that implements Document actually provides it.
-    readonly types: readonly string[];
-    readonly hasSystemData: boolean;
+    readonly preserveOnImport: readonly string[];
+    readonly schemaVersion?: string | undefined;
+    readonly labelPlural?: string; // This is not set for the Document class but every class that implements Document actually provides it.
+    readonly types?: readonly string[];
+    readonly hasSystemData?: boolean;
   }
 
   namespace Metadata {
     type Any = Metadata<any>;
 
     export interface Default {
-      name: "Document";
-      collection: "documents";
-      label: "DOCUMENT.Document";
-      coreTypes: [typeof foundry.CONST.BASE_DOCUMENT_TYPE];
-      types: [];
-      embedded: EmptyObject;
-      hasSystemData: false;
-      permissions: {
+      readonly name: "Document";
+      readonly collection: "documents";
+      readonly indexed: false;
+      readonly compendiumIndexFields: [];
+      readonly label: "DOCUMENT.Document";
+      readonly coreTypes: [];
+      readonly embedded: EmptyObject;
+      readonly permissions: {
         create: "ASSISTANT";
         update: "ASSISTANT";
         delete: "ASSISTANT";
       };
-      pack: null;
+      readonly preserveOnImport: ["_id", "sort", "ownership"];
     }
   }
 

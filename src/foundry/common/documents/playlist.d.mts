@@ -52,6 +52,7 @@ declare namespace BasePlaylist {
   type UpdateData = fields.SchemaField.AssignmentData<Schema>;
   type Properties = fields.SchemaField.InitializedData<Schema>;
   type Source = fields.SchemaField.PersistedData<Schema>;
+  interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
 
   interface Schema extends DataSchema {
     /**

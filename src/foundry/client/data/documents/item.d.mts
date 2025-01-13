@@ -203,10 +203,6 @@ declare global {
   class Item<SubType extends Item.SubType = Item.SubType> extends ClientDocumentMixin(
     foundry.documents.BaseItem,
   )<SubType> {
-    static override metadata: Item.Metadata;
-
-    static get implementation(): Item.ConfiguredClass;
-
     /**
      * A convenience alias of Item#parent which is more semantically intuitive
      */
@@ -238,6 +234,16 @@ declare global {
      * @privateRemarks _preCreate, _onCreateDocuments and _onDeleteDocuments are all overridden but with no signature changes.
      * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
      */
+
+    /**
+     * After this point these are not really overridden methods.
+     * They are here because they're static properties but depend on the instance and so can't be
+     * defined DRY-ly while also being easily overrideable.
+     */
+
+    static override metadata: Item.Metadata;
+
+    static get implementation(): Item.ConfiguredClass;
 
     static override defaultName(context?: Document.DefaultNameContext<Item.SubType, Item.Parent>): string;
 

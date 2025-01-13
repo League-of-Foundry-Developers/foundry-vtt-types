@@ -1,6 +1,7 @@
 import type { InexactPartial } from "../../../../utils/index.d.mts";
 import type Sound from "../../../client-esm/audio/sound.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
+import type { SchemaField } from "../../../common/data/fields.d.mts";
 import type BasePlaylistSound from "../../../common/documents/playlist-sound.d.mts";
 
 declare global {
@@ -17,6 +18,7 @@ declare global {
     type UpdateData = BasePlaylistSound.UpdateData;
     type Schema = BasePlaylistSound.Schema;
     type Source = BasePlaylistSound.Source;
+    interface PersistedData extends SchemaField.PersistedData<Schema> {}
   }
 
   /**

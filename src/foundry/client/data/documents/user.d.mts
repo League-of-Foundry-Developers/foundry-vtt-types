@@ -1,5 +1,7 @@
-import type { InexactPartial } from "../../../../utils/index.d.mts";
+import type { ConfiguredDocuments } from "../../../../types/documentConfiguration.d.mts";
+import type { FixedInstanceType, InexactPartial } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
+import type { SchemaField } from "../../../common/data/fields.d.mts";
 import type BaseUser from "../../../common/documents/user.d.mts";
 
 declare global {
@@ -9,13 +11,21 @@ declare global {
     type ConfiguredClass = Document.ConfiguredClassForName<"User">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"User">;
 
-    interface DatabaseOperations extends Document.Database.Operations<User.ConfiguredInstance> {}
+    // Note(LukeAbby): This namespace exists to break cycles because of extensive usage of `User` in
+    // the `Document` class itself.
+    namespace Internal {
+      type ConfiguredClass = ConfiguredDocuments["User"];
+      type ConfiguredInstance = FixedInstanceType<ConfiguredDocuments["User"]>;
+    }
+
+    interface DatabaseOperations extends Document.Database.Operations<User.Internal.ConfiguredInstance> {}
 
     // Helpful aliases
     type ConstructorData = BaseUser.ConstructorData;
     type UpdateData = BaseUser.UpdateData;
     type Schema = BaseUser.Schema;
     type Source = BaseUser.Source;
+    interface PersistedData extends SchemaField.PersistedData<Schema> {}
 
     interface PingData {
       /**

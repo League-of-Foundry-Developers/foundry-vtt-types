@@ -276,8 +276,9 @@ declare abstract class DataModel<
    *                 (default: `true`)
    * @returns The extracted primitive object
    */
-  toObject(source: true): fields.SchemaField.PersistedData<Schema>;
-  toObject(source?: boolean): ReturnType<this["schema"]["toObject"]>;
+  toObject<Source extends boolean | undefined>(
+    source?: Source,
+  ): Source extends false ? SchemaField.PersistedData<Schema> : Readonly<SchemaField.PersistedData<Schema>>;
 
   /**
    * Extract the source data for the DataModel into a simple object format that can be serialized.

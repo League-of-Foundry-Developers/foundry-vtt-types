@@ -1,5 +1,6 @@
 import type { InexactPartial } from "../../../../utils/index.d.mts";
 import type { Document } from "../../../common/abstract/module.d.mts";
+import type { SchemaField } from "../../../common/data/fields.d.mts";
 import type BasePlaylist from "../../../common/documents/playlist.d.mts";
 
 declare global {
@@ -16,6 +17,7 @@ declare global {
     type UpdateData = BasePlaylist.UpdateData;
     type Schema = BasePlaylist.Schema;
     type Source = BasePlaylist.Source;
+    interface PersistedData extends SchemaField.PersistedData<Schema> {}
 
     interface PlayNextOptions {
       /**

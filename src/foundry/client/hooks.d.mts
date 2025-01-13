@@ -705,7 +705,7 @@ declare global {
         message: ChatMessage,
         html: JQuery,
         messageData: {
-          message: Document.ToObjectFalseType<ChatMessage.ConfiguredInstance>;
+          message: ChatMessage.PersistedData;
           user: Game["user"];
           author: ChatMessage.ConfiguredInstance["user"];
           alias: ChatMessage.ConfiguredInstance["alias"];

@@ -61,7 +61,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
    */
   can(action: keyof typeof CONST.USER_PERMISSIONS | CONST.USER_ROLE_NAMES | CONST.USER_ROLES): boolean;
 
-  override getUserLevel(user?: User.ConfiguredInstance): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
+  override getUserLevel(user?: User.Internal.ConfiguredInstance): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
 
   /**
    * Test whether the User has at least a specific permission

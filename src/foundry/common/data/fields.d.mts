@@ -1805,10 +1805,11 @@ declare namespace ArrayField {
    * A type to infer the assignment element type of an ArrayField from its ElementFieldType.
    * @typeParam ElementFieldType - the DataField type of the elements in the ArrayField
    */
+  // Note(LukeAbby): For some reason checking `extends Document` causes issues where `extends DataModel` doesn't.
   type AssignmentElementType<ElementFieldType extends DataField.Any | Document.AnyConstructor> =
-    ElementFieldType extends DataField<any, infer Assign, any, any>
+    ElementFieldType extends DataField<infer _1, infer Assign, infer _2, infer _3>
       ? Assign
-      : ElementFieldType extends new (...args: any[]) => Document<any, infer Schema extends DataSchema, any>
+      : ElementFieldType extends abstract new (...args: infer _1) => DataModel<infer Schema, infer _2, infer _3>
         ? SchemaField.AssignmentData<Schema>
         : never;
 
@@ -1816,10 +1817,11 @@ declare namespace ArrayField {
    * A type to infer the initialized element type of an ArrayField from its ElementFieldType.
    * @typeParam ElementFieldType - the DataField type of the elements in the ArrayField
    */
+  // Note(LukeAbby): For some reason checking `extends Document` causes issues where `extends DataModel` doesn't.
   type InitializedElementType<ElementFieldType extends DataField.Any | Document.AnyConstructor> =
-    ElementFieldType extends DataField<any, any, infer Init, any>
+    ElementFieldType extends DataField<infer _1, infer _2, infer Init, infer _3>
       ? Init
-      : ElementFieldType extends new (...args: any[]) => Document<any, infer Schema extends DataSchema, any>
+      : ElementFieldType extends abstract new (...args: infer _4) => DataModel<infer Schema, infer _5, infer _6>
         ? SchemaField.InitializedData<Schema>
         : never;
 
@@ -1827,10 +1829,11 @@ declare namespace ArrayField {
    * A type to infer the initialized element type of an ArrayField from its ElementFieldType.
    * @typeParam ElementFieldType - the DataField type of the elements in the ArrayField
    */
+  // Note(LukeAbby): For some reason checking `extends Document` causes issues where `extends DataModel` doesn't.
   type PersistedElementType<ElementFieldType extends DataField.Any | Document.AnyConstructor> =
-    ElementFieldType extends DataField<any, any, any, infer Persist>
+    ElementFieldType extends DataField<infer _1, infer _2, infer _3, infer Persist>
       ? Persist
-      : ElementFieldType extends new (...args: any[]) => Document<any, infer Schema extends DataSchema, any>
+      : ElementFieldType extends abstract new (...args: infer _4) => DataModel<infer Schema, infer _5, infer _6>
         ? SchemaField.PersistedData<Schema>
         : never;
 
@@ -2267,9 +2270,10 @@ declare namespace EmbeddedCollectionField {
    * A type to infer the assignment element type of an EmbeddedCollectionField from its ElementFieldType.
    * @typeParam ElementFieldType - the DataField type of the elements in the EmbeddedCollectionField
    */
-  type AssignmentElementType<ElementFieldType extends Document.AnyConstructor> = ElementFieldType extends new (
-    ...args: any[]
-  ) => Document<any, infer Schema extends DataSchema, any>
+  // Note(LukeAbby): For some reason checking `extends Document` causes issues where `extends DataModel` doesn't.
+  type AssignmentElementType<ElementFieldType extends Document.AnyConstructor> = ElementFieldType extends abstract new (
+    ...args: infer _1
+  ) => DataModel<infer Schema, infer _2, infer _3>
     ? SchemaField.AssignmentData<Schema>
     : never;
 
@@ -2284,9 +2288,10 @@ declare namespace EmbeddedCollectionField {
    * A type to infer the initialized element type of an EmbeddedCollectionField from its ElementFieldType.
    * @typeParam ElementFieldType - the DataField type of the elements in the EmbeddedCollectionField
    */
-  type PersistedElementType<ElementFieldType extends Document.AnyConstructor> = ElementFieldType extends new (
-    ...args: any[]
-  ) => Document<any, infer Schema extends DataSchema, any>
+  // Note(LukeAbby): For some reason checking `extends Document` causes issues where `extends DataModel` doesn't.
+  type PersistedElementType<ElementFieldType extends Document.AnyConstructor> = ElementFieldType extends abstract new (
+    ...args: infer _1
+  ) => DataModel<infer Schema, infer _2, infer _3>
     ? SchemaField.PersistedData<Schema>
     : never;
 
@@ -2419,9 +2424,9 @@ declare namespace EmbeddedCollectionDeltaField {
    * A type to infer the assignment element type of an EmbeddedCollectionDeltaField from its ElementFieldType.
    * @typeParam ElementFieldType - the DataField type of the elements in the EmbeddedCollectionDeltaField
    */
-  type AssignmentElementType<ElementFieldType extends Document.AnyConstructor> = ElementFieldType extends new (
-    ...args: any[]
-  ) => Document<any, infer Schema extends DataSchema, any>
+  type AssignmentElementType<ElementFieldType extends Document.AnyConstructor> = ElementFieldType extends abstract new (
+    ...args: infer _1
+  ) => DataModel<infer Schema, infer _2, infer _3>
     ? SchemaField.AssignmentData<Schema>
     : never;
 
@@ -2436,9 +2441,10 @@ declare namespace EmbeddedCollectionDeltaField {
    * A type to infer the initialized element type of an EmbeddedCollectionDeltaField from its ElementFieldType.
    * @typeParam ElementFieldType - the DataField type of the elements in the EmbeddedCollectionDeltaField
    */
-  type PersistedElementType<ElementFieldType extends Document.AnyConstructor> = ElementFieldType extends new (
-    ...args: any[]
-  ) => Document<any, infer Schema extends DataSchema, any>
+  // Note(LukeAbby): For some reason checking `extends Document` causes issues where `extends DataModel` doesn't.
+  type PersistedElementType<ElementFieldType extends Document.AnyConstructor> = ElementFieldType extends abstract new (
+    ...args: infer _1
+  ) => DataModel<infer Schema, infer _2, infer _3>
     ? SchemaField.PersistedData<Schema>
     : never;
 
