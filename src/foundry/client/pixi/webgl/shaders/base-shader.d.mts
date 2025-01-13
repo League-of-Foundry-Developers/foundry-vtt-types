@@ -39,7 +39,7 @@ declare global {
      */
     static create<ThisType extends AbstractBaseShader.AnyConstructor>(
       this: ThisType,
-      initialUniforms: AbstractBaseShader.Uniforms,
+      initialUniforms?: AbstractBaseShader.Uniforms,
     ): FixedInstanceType<ThisType>;
 
     /**
@@ -57,8 +57,9 @@ declare global {
      * Perform operations which are required before binding the Shader to the Renderer.
      * @param mesh - The mesh display object linked to this shader.
      * @param renderer - The renderer
+     * @remarks Foundry marks this as protected but it gets called from `QuadMesh#_render`
      */
-    protected _preRender: AbstractBaseShader.PreRenderFunction;
+    _preRender: AbstractBaseShader.PreRenderFunction;
 
     /**
      * The initial default values of shader uniforms

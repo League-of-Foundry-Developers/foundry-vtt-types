@@ -1,22 +1,6 @@
 export {};
 
-declare abstract class AnyFairyLightColorationShader extends FairyLightColorationShader {
-  constructor(arg0: never, ...args: never[]);
-}
-
-declare abstract class AnyFairyLightIlluminationShader extends FairyLightIlluminationShader {
-  constructor(arg0: never, ...args: never[]);
-}
-
 declare global {
-  namespace FairyLightColorationShader {
-    type AnyConstructor = typeof AnyFairyLightColorationShader;
-  }
-
-  namespace FairyLightIlluminationShader {
-    type AnyConstructor = typeof AnyFairyLightIlluminationShader;
-  }
-
   /**
    * Fairy light animation coloration shader
    */
@@ -29,10 +13,28 @@ declare global {
     static override fragmentShader: string;
   }
 
+  namespace FairyLightColorationShader {
+    type Any = AnyFairyLightColorationShader;
+    type AnyConstructor = typeof AnyFairyLightColorationShader;
+  }
+
   /**
    * Fairy light animation illumination shader
    */
   class FairyLightIlluminationShader extends AdaptiveIlluminationShader {
     static override fragmentShader: string;
   }
+
+  namespace FairyLightIlluminationShader {
+    type Any = AnyFairyLightColorationShader;
+    type AnyConstructor = typeof AnyFairyLightIlluminationShader;
+  }
+}
+
+declare abstract class AnyFairyLightColorationShader extends FairyLightColorationShader {
+  constructor(arg0: never, ...args: never[]);
+}
+
+declare abstract class AnyFairyLightIlluminationShader extends FairyLightIlluminationShader {
+  constructor(arg0: never, ...args: never[]);
 }

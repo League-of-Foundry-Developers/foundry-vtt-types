@@ -1,14 +1,6 @@
 export {};
 
-declare abstract class AnyFogColorationShader extends FogColorationShader {
-  constructor(arg0: never, ...args: never[]);
-}
-
 declare global {
-  namespace FogColorationShader {
-    type AnyConstructor = typeof AnyFogColorationShader;
-  }
-
   /**
    * Fog animation coloration shader
    */
@@ -20,4 +12,13 @@ declare global {
 
     static override fragmentShader: string;
   }
+
+  namespace FogColorationShader {
+    type Any = AnyFogColorationShader;
+    type AnyConstructor = typeof AnyFogColorationShader;
+  }
+}
+
+declare abstract class AnyFogColorationShader extends FogColorationShader {
+  constructor(arg0: never, ...args: never[]);
 }

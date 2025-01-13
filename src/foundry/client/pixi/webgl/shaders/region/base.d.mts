@@ -1,14 +1,6 @@
 export {};
 
-declare abstract class AnyRegionShader extends RegionShader {
-  constructor(arg0: never, ...args: never[]);
-}
-
 declare global {
-  namespace RegionShader {
-    type AnyConstructor = typeof AnyRegionShader;
-  }
-
   /**
    * The shader used by {@link RegionMesh}.
    */
@@ -73,6 +65,15 @@ declare global {
      */
     static override defaultUniforms: AbstractBaseShader.Uniforms;
 
-    protected override _preRender: AbstractBaseShader.PreRenderFunction;
+    override _preRender: AbstractBaseShader.PreRenderFunction;
   }
+
+  namespace RegionShader {
+    type Any = AnyRegionShader;
+    type AnyConstructor = typeof AnyRegionShader;
+  }
+}
+
+declare abstract class AnyRegionShader extends RegionShader {
+  constructor(arg0: never, ...args: never[]);
 }

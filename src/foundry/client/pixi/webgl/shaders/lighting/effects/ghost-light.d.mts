@@ -1,27 +1,16 @@
 export {};
 
-declare abstract class AnyGhostLightIlluminationShader extends GhostLightIlluminationShader {
-  constructor(arg0: never, ...args: never[]);
-}
-
-declare abstract class AnyGhostLightColorationShader extends GhostLightColorationShader {
-  constructor(arg0: never, ...args: never[]);
-}
-
 declare global {
-  namespace GhostLightIlluminationShader {
-    type AnyConstructor = typeof AnyGhostLightIlluminationShader;
-  }
-
-  namespace GhostLightColorationShader {
-    type AnyConstructor = typeof AnyGhostLightColorationShader;
-  }
-
   /**
    * Ghost light animation illumination shader
    */
   class GhostLightIlluminationShader extends AdaptiveIlluminationShader {
     static override fragmentShader: string;
+  }
+
+  namespace GhostLightIlluminationShader {
+    type Any = AnyGhostLightIlluminationShader;
+    type AnyConstructor = typeof AnyGhostLightIlluminationShader;
   }
 
   /**
@@ -30,4 +19,17 @@ declare global {
   class GhostLightColorationShader extends AdaptiveColorationShader {
     static override fragmentShader: string;
   }
+
+  namespace GhostLightColorationShader {
+    type Any = AnyGhostLightColorationShader;
+    type AnyConstructor = typeof AnyGhostLightColorationShader;
+  }
+}
+
+declare abstract class AnyGhostLightIlluminationShader extends GhostLightIlluminationShader {
+  constructor(arg0: never, ...args: never[]);
+}
+
+declare abstract class AnyGhostLightColorationShader extends GhostLightColorationShader {
+  constructor(arg0: never, ...args: never[]);
 }

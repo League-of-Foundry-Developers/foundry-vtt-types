@@ -1,14 +1,6 @@
 export {};
 
-declare abstract class AnyAdaptiveDarknessShader extends AdaptiveDarknessShader {
-  constructor(arg0: never, ...args: never[]);
-}
-
 declare global {
-  namespace AdaptiveDarknessShader {
-    type AnyConstructor = typeof AnyAdaptiveDarknessShader;
-  }
-
   /**
    * The default coloration shader used by standard rendering and animations.
    * A fragment shader which creates a solid light source.
@@ -70,4 +62,13 @@ declare global {
 
     static override fragmentShader: string;
   }
+
+  namespace AdaptiveDarknessShader {
+    type Any = AnyAdaptiveDarknessShader;
+    type AnyConstructor = typeof AnyAdaptiveDarknessShader;
+  }
+}
+
+declare abstract class AnyAdaptiveDarknessShader extends AdaptiveDarknessShader {
+  constructor(arg0: never, ...args: never[]);
 }

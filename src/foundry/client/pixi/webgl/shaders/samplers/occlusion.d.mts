@@ -99,6 +99,6 @@ declare global {
 
     static override defaultUniforms: AbstractBaseShader.Uniforms;
 
-    protected override _preRender: AbstractBaseShader.PreRenderFunction;
+    override _preRender: AbstractBaseShader.PreRenderFunction;
   }
 }

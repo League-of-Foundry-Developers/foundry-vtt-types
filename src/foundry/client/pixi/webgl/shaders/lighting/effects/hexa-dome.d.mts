@@ -1,14 +1,6 @@
 export {};
 
-declare abstract class AnyHexaDomeColorationShader extends HexaDomeColorationShader {
-  constructor(arg0: never, ...args: never[]);
-}
-
 declare global {
-  namespace HexaDomeColorationShader {
-    type AnyConstructor = typeof AnyHexaDomeColorationShader;
-  }
-
   /**
    * Hexagonal dome animation coloration shader
    */
@@ -20,4 +12,13 @@ declare global {
 
     static override fragmentShader: string;
   }
+
+  namespace HexaDomeColorationShader {
+    type Any = AnyHexaDomeColorationShader;
+    type AnyConstructor = typeof AnyHexaDomeColorationShader;
+  }
+}
+
+declare abstract class AnyHexaDomeColorationShader extends HexaDomeColorationShader {
+  constructor(arg0: never, ...args: never[]);
 }
