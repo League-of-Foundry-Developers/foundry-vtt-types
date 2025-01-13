@@ -1,9 +1,10 @@
 import { expectTypeOf } from "vitest";
 
-const myQuadTree = new CanvasQuadtree();
+const myCanvasQuadTree = new CanvasQuadtree();
 
-let myTokenDocument: any;
+declare const myToken: Token.ConfiguredInstance;
+declare const collisionTest: (o: QuadtreeObject<object>, rect: Canvas.Rectangle) => boolean;
 
-const myToken = new Token(myTokenDocument);
-
-expectTypeOf(myQuadTree.getObjects(myToken.bounds)).toEqualTypeOf<Set<object>>();
+expectTypeOf(myCanvasQuadTree.getObjects(myToken.bounds, { collisionTest })).toEqualTypeOf<Set<object>>();
+expectTypeOf(myCanvasQuadTree.getAdjacentNodes()).toEqualTypeOf<Quadtree<object>[]>();
+expectTypeOf(CanvasQuadtree.INDICES).toMatchTypeOf<Record<string, number & Quadtree.INDICES>>();

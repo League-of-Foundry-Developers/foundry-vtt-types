@@ -1,5 +1,3 @@
-import type { ValueOf } from "../../../../../types/utils.d.mts";
-
 export {};
 
 declare global {
@@ -21,16 +19,7 @@ declare global {
     /**
      * Snapshot of some parameters of this display object to render in batched mode.
      */
-    protected _batchData: {
-      _tintRGB: number | undefined;
-      _texture: PIXI.Texture | undefined | null;
-      indices: number[];
-      uvs: number[];
-      blendMode: ValueOf<PIXI.BLEND_MODES> | undefined;
-      vertexData: number[];
-      worldAlpha: number | undefined;
-      object: SpriteMesh;
-    };
+    protected _batchData: SpriteMesh.BatchData;
 
     /**
      * The indices of the geometry.
@@ -64,7 +53,7 @@ declare global {
      * Cached tint value so we can tell when the tint is changed.
      * @defaultValue `[1, 1, 1, 1]`
      */
-    protected _cachedTint: [red: number, green: number, blue: number, alpha: number];
+    protected _cachedTint: Color.RGBAColorVector;
 
     /**
      * The texture trimmed ID.
@@ -171,6 +160,7 @@ declare global {
      */
     get padding(): number;
 
+    /** @throws If `value < 0` */
     set padding(value);
 
     /**
@@ -187,7 +177,7 @@ declare global {
      * The blend mode applied to the SpriteMesh.
      * @defaultValue `PIXI.BLEND_MODES.NORMAL`
      */
-    set blendMode(value: ValueOf<PIXI.BLEND_MODES>);
+    set blendMode(value: PIXI.BLEND_MODES);
 
     get blendMode();
 
@@ -207,13 +197,14 @@ declare global {
      * If this property is non null, this value will replace the texture alphaMode when computing color channels.
      * Affects how tint, worldAlpha and alpha are computed each others.
      */
-    get alphaMode(): ValueOf<PIXI.ALPHA_MODES>;
+    get alphaMode(): PIXI.ALPHA_MODES;
 
     set alphaMode(mode);
 
     /**
      * Returns the SpriteMesh associated batch plugin. By default the returned plugin is that of the associated shader.
      * If a plugin is forced, it will returns the forced plugin.
+     * @defaultValue `this._shader.pluginName`
      */
     get pluginName(): string;
 
@@ -258,6 +249,7 @@ declare global {
 
     /**
      * The HTML source element for this SpriteMesh texture.
+     * @privateRemarks This could possibly be `PIXI.ImageSource | null`, but the below is Foundry's typing, which I think is accurate in practice
      */
     get sourceElement(): HTMLImageElement | HTMLVideoElement | null;
 
@@ -315,7 +307,7 @@ declare global {
     /** @privateRemarks Foundry still marks this `@override` from when this class used to extend `PIXI.Mesh` */
     containsPoint(point: PIXI.IPointData): boolean;
 
-    override destroy(options: PIXI.IDestroyOptions | boolean): void;
+    override destroy(options?: PIXI.IDestroyOptions | boolean): void;
 
     /**
      * Create a SpriteMesh from another source.
@@ -325,14 +317,49 @@ declare global {
      * @param shaderClass    - The shader class to use. BaseSamplerShader by default.
      */
     static from(
-      source: PIXI.Texture | Parameters<(typeof PIXI.Texture)["from"]>[0],
+      source: PIXI.Texture | HTMLImageElement | HTMLVideoElement | string,
       textureOptions?: PIXI.IBaseTextureOptions,
       shaderClass?: BaseSamplerShader.AnyConstructor,
     ): SpriteMesh;
   }
 
   namespace SpriteMesh {
+    type Any = AnySpriteMesh;
     type AnyConstructor = typeof AnySpriteMesh;
+
+    /** Snapshot of some parameters of this display object to render in batched mode. */
+    interface BatchData {
+      _tintRGB: number | undefined;
+      _texture: PIXI.Texture | undefined | null;
+
+      /**
+       * @defaultValue `this.#geometry.indexBuffer.data`
+       * @remarks Set during construction
+       */
+      indices: number[];
+
+      /**
+       * @defaultValue `this.#geometry.buffers[1].data`
+       * @remarks Set during construction
+       */
+      uvs: number[];
+
+      blendMode: PIXI.BLEND_MODES | undefined;
+
+      /**
+       * @defaultValue `this.#geometry.buffers[0].data`
+       * @remarks Set during construction
+       */
+      vertexData: number[];
+
+      worldAlpha: number | undefined;
+
+      /**
+       * @defaultValue `this`
+       * @remarks Set during construction
+       */
+      object: SpriteMesh;
+    }
   }
 }
 

@@ -1,4 +1,4 @@
-import type { ValueOf } from "../../../../../types/utils.d.mts";
+export {};
 
 declare global {
   /**
@@ -15,7 +15,7 @@ declare global {
     /**
      * To store the previous blend mode of the last renderer PointSourceMesh.
      */
-    protected static _priorBlendMode: ValueOf<PIXI.BLEND_MODES> | undefined;
+    protected static _priorBlendMode: PIXI.BLEND_MODES | undefined;
 
     /**
      * The current texture used by the mesh.
@@ -55,6 +55,7 @@ declare global {
   }
 
   namespace PointSourceMesh {
+    type Any = AnyPointSourceMesh;
     type AnyConstructor = typeof AnyPointSourceMesh;
   }
 }

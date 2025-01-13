@@ -63,7 +63,7 @@ declare global {
      */
     static create<ThisType extends AbstractBaseShader.AnyConstructor>(
       this: ThisType,
-      initialUniforms: AbstractBaseShader.Uniforms,
+      initialUniforms?: AbstractBaseShader.Uniforms,
     ): FixedInstanceType<ThisType>;
 
     /**

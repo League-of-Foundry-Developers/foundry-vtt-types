@@ -1,4 +1,4 @@
-import type { ValueOf } from "../../../../../types/utils.d.mts";
+export {};
 
 declare global {
   /**
@@ -19,7 +19,7 @@ declare global {
     /**
      * Assigned blend mode to this mesh.
      */
-    get blendMode(): ValueOf<PIXI.BLEND_MODES>;
+    get blendMode(): PIXI.BLEND_MODES;
 
     set blendMode(value);
 
@@ -42,6 +42,7 @@ declare global {
   }
 
   namespace QuadMesh {
+    type Any = AnyQuadMesh;
     type AnyConstructor = typeof AnyQuadMesh;
   }
 }

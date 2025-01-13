@@ -1,5 +1,4 @@
-import type { Brand } from "../../../../../types/helperTypes.d.mts";
-import type { NullishProps } from "../../../../../types/utils.d.mts";
+import type { Brand, InexactPartial, NullishProps } from "../../../../../utils/index.d.mts";
 
 declare global {
   interface QuadtreeObject<T> {
@@ -15,6 +14,7 @@ declare global {
     /**
      * @param bounds  - The outer bounds of the region
      * @param options - Additional options which configure the Quadtree
+     * @remarks `bounds` is NullishProps because `PIXI.Rectangle`'s constructor casts `null`/`undefined` to `0`
      */
     constructor(bounds: NullishProps<Canvas.Rectangle>, options?: Quadtree.Options<T>);
 
@@ -62,7 +62,12 @@ declare global {
      * A constant that enumerates the index order of the quadtree nodes from top-left to bottom-right.
      * @defaultValue `{tl: 0, tr: 1, bl: 2, br: 3}`
      */
-    static INDICES: Record<"tl" | "tr" | "bl" | "br", Quadtree.INDICES>;
+    static INDICES: {
+      tl: 0 & Quadtree.INDICES;
+      tr: 1 & Quadtree.INDICES;
+      bl: 2 & Quadtree.INDICES;
+      br: 3 & Quadtree.INDICES;
+    };
 
     /**
      * Return an array of all the objects in the Quadtree (recursive)
@@ -111,7 +116,8 @@ declare global {
     getObjects(
       rect: Canvas.Rectangle,
       options?: NullishProps<{
-        /* Function to further refine objects to return
+        /**
+         * Function to further refine objects to return
          * after a potential collision is found. Parameters are the object and rect, and the
          * function should return true if the object should be added to the result set.
          */
@@ -119,8 +125,9 @@ declare global {
 
         /** The existing result set, for internal use.
          *  (default: `new Set<T>()`)
+         * @internal
          */
-        _s?: Set<T>;
+        _s: Set<T>;
       }>,
     ): Set<T>;
 
@@ -154,39 +161,46 @@ declare global {
   }
 
   namespace Quadtree {
+    type Any = AnyQuadtree;
     type AnyConstructor = typeof AnyQuadtree;
 
     type INDICES = Brand<number, "Quadtree.INDICIES">;
 
-    /**
-     * Additional options which configure the Quadtree
-     */
-    interface Options<T> {
+    /** @internal */
+    type _Options<T> = InexactPartial<{
       /**
        * The maximum number of objects per node
        * @defaultValue `20`
+       * @remarks Can't be null because it only has a signature-provided default.
        */
-      maxObjects?: number | undefined;
+      maxObjects: number;
 
       /**
        * The maximum number of levels within the root Quadtree
        * @defaultValue `4`
+       * @remarks Can't be null because it only has a signature-provided default.
        */
-      maxDepth?: number | undefined;
+      maxDepth: number;
 
       /**
        * The depth level of the sub-tree. For internal use
        * @defaultValue `0`
+       * @remarks Can't be null because of an `=== 0` check in `#visualize()`, and it only has a signature-provided default
        * @internal
        */
-      _depth?: number | undefined;
+      _depth: number;
 
       /**
        * The root of the quadtree. For internal use
        * @internal
        */
-      _root?: Quadtree<T> | undefined | null;
-    }
+      _root: Quadtree<T> | null;
+    }>;
+
+    /**
+     * Additional options which configure the Quadtree
+     */
+    interface Options<T> extends _Options<T> {}
   }
   /**
    * A subclass of Quadtree specifically intended for classifying the location of objects on the game canvas.
@@ -198,11 +212,12 @@ declare global {
   }
 
   namespace CanvasQuadtree {
+    type Any = AnyCanvasQuadtree;
     type AnyConstructor = typeof AnyCanvasQuadtree;
   }
 }
 
-declare abstract class AnyQuadtree extends Quadtree<any> {
+declare abstract class AnyQuadtree extends Quadtree<unknown> {
   constructor(arg0: never, ...args: never[]);
 }
 

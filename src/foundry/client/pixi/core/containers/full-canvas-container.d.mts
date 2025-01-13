@@ -4,7 +4,7 @@ declare class FullCanvasObject {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
   constructor(...args: any[]);
 
-  /** @remarks Overrides the mixed in class */
+  /** @remarks Overrides the mixed-in class */
   calculateBounds(): void;
 }
 
@@ -20,6 +20,7 @@ declare global {
   ): Mixin<typeof FullCanvasObject, BaseClass>;
 
   namespace FullCanvasObject {
+    type AnyMixed = ReturnType<typeof FullCanvasObjectMixin<BaseClass>>;
     type AnyConstructor = typeof AnyFullCanvasObject;
 
     type BaseClass = PIXI.DisplayObject.AnyConstructor;
