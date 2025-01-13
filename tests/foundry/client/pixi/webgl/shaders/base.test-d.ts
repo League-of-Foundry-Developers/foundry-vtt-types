@@ -1,18 +1,16 @@
 import { expectTypeOf } from "vitest";
 
-class TestShader extends AbstractBaseShader {
-  constructor(program: PIXI.Program, uniforms: AbstractBaseShader.Uniforms) {
-    super(program, uniforms);
-    this.defaults = this._defaults;
-  }
-
-  defaults: AbstractBaseShader["_defaults"];
-}
+class TestShader extends AbstractBaseShader {}
 
 expectTypeOf(TestShader.defaultUniforms.foo).toEqualTypeOf<AbstractBaseShader.UniformValue>();
 expectTypeOf(TestShader.defaultUniforms.bar).toEqualTypeOf<AbstractBaseShader.UniformValue>();
 
-const testShader2 = TestShader.create({
+//BaseShaderMixin tests
+expectTypeOf(TestShader.WAVE()).toEqualTypeOf<string>();
+expectTypeOf(TestShader.FBM(2, 1.6)).toEqualTypeOf<string>();
+expectTypeOf(TestShader.VORONOI).toEqualTypeOf<string>();
+
+const testShaderInstance = TestShader.create({
   alpha: 1.0,
   ratio: 0.5,
   colorDim: [0.5, 0.5, 0.5],
@@ -20,7 +18,7 @@ const testShader2 = TestShader.create({
   time: 0,
   intensity: 5,
 });
-testShader2.uniforms.darkness = false;
+testShaderInstance.uniforms.darkness = false;
 
-// @ts-expect-error - create requires a constructor for TestShader
+// @ts-expect-error - string is not a valid UniformValue
 TestShader.create({ foo: "bar" });

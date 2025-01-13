@@ -1,14 +1,6 @@
 export {};
 
-declare abstract class AnyPrimaryCanvasGroupAmbienceFilter extends PrimaryCanvasGroupAmbienceFilter {
-  constructor(arg0: never, ...args: never[]);
-}
-
 declare global {
-  namespace PrimaryCanvasGroupAmbienceFilter {
-    type AnyConstructor = typeof AnyPrimaryCanvasGroupAmbienceFilter;
-  }
-
   /**
    * A filter used to apply color adjustments and other modifications to the environment.
    */
@@ -37,4 +29,13 @@ declare global {
      */
     static override defaultUniforms: AbstractBaseShader.Uniforms;
   }
+
+  namespace PrimaryCanvasGroupAmbienceFilter {
+    type Any = AnyPrimaryCanvasGroupAmbienceFilter;
+    type AnyConstructor = typeof AnyPrimaryCanvasGroupAmbienceFilter;
+  }
+}
+
+declare abstract class AnyPrimaryCanvasGroupAmbienceFilter extends PrimaryCanvasGroupAmbienceFilter {
+  constructor(arg0: never, ...args: never[]);
 }

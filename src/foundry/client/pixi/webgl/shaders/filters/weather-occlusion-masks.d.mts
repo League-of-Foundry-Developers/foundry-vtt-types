@@ -1,14 +1,6 @@
 export {};
 
-declare abstract class AnyWeatherOcclusionMaskFilter extends WeatherOcclusionMaskFilter {
-  constructor(arg0: never, ...args: never[]);
-}
-
 declare global {
-  namespace WeatherOcclusionMaskFilter {
-    type AnyConstructor = typeof AnyWeatherOcclusionMaskFilter;
-  }
-
   /**
    * The filter used by the weather layer to mask weather above occluded roofs.
    * @see {@link WeatherEffects}
@@ -53,4 +45,13 @@ declare global {
       currentState: PIXI.FilterState,
     ): void;
   }
+
+  namespace WeatherOcclusionMaskFilter {
+    type Any = AnyWeatherOcclusionMaskFilter;
+    type AnyConstructor = typeof AnyWeatherOcclusionMaskFilter;
+  }
+}
+
+declare abstract class AnyWeatherOcclusionMaskFilter extends WeatherOcclusionMaskFilter {
+  constructor(arg0: never, ...args: never[]);
 }

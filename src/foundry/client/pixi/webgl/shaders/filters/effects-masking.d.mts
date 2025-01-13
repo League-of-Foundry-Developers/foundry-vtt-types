@@ -1,32 +1,6 @@
-import type { AnyObject, FixedInstanceType, ShapeWithIndexSignature } from "../../../../../../utils/index.d.mts";
-
-declare abstract class AnyVisualEffectsMaskingFilter extends VisualEffectsMaskingFilter {
-  constructor(arg0: never, ...args: never[]);
-}
+import type { AnyObject, Brand, FixedInstanceType, ShapeWithIndexSignature } from "../../../../../../utils/index.d.mts";
 
 declare global {
-  namespace VisualEffectsMaskingFilter {
-    type AnyConstructor = typeof AnyVisualEffectsMaskingFilter;
-
-    type PostProcessModes = Array<keyof VisualEffectsMaskingFilter.POST_PROCESS_TECHNIQUES>;
-
-    interface ConcreteCreateOptions {
-      postProcessModes?: PostProcessModes | undefined;
-    }
-
-    interface FILTER_MODES {
-      readonly BACKGROUND: 0;
-      readonly ILLUMINATION: 1;
-      readonly COLORATION: 2;
-    }
-
-    interface POST_PROCESS_TECHNIQUES {
-      EXPOSURE: { id: string; glsl: string };
-      CONTRAST: { id: string; glsl: string };
-      SATURATION: { id: string; glsl: string };
-    }
-  }
-
   /**
    * This filter handles masking and post-processing for visual effects.
    */
@@ -46,8 +20,13 @@ declare global {
 
     /**
      * Masking modes.
+     * @remarks Object is frozen
      */
-    static readonly FILTER_MODES: VisualEffectsMaskingFilter.FILTER_MODES;
+    static FILTER_MODES: {
+      readonly BACKGROUND: 0 & VisualEffectsMaskingFilter.FILTER_MODES;
+      readonly ILLUMINATION: 1 & VisualEffectsMaskingFilter.FILTER_MODES;
+      readonly COLORATION: 2 & VisualEffectsMaskingFilter.FILTER_MODES;
+    };
 
     /**
      * @defaultValue
@@ -90,14 +69,17 @@ declare global {
       input: PIXI.RenderTexture,
       output: PIXI.RenderTexture,
       clear: PIXI.CLEAR_MODES,
-      currentState: PIXI.FilterState,
+      currentState?: PIXI.FilterState,
     ): void;
 
     /**
      * Filter post-process techniques.
      */
-    static POST_PROCESS_TECHNIQUES: VisualEffectsMaskingFilter.POST_PROCESS_TECHNIQUES;
-
+    static POST_PROCESS_TECHNIQUES: {
+      EXPOSURE: { id: "EXPOSURE" & VisualEffectsMaskingFilter.POST_PROCESS_TECHNIQUES_ID; glsl: string };
+      CONTRAST: { id: "CONTRAST" & VisualEffectsMaskingFilter.POST_PROCESS_TECHNIQUES_ID; glsl: string };
+      SATURATION: { id: "SATURATION" & VisualEffectsMaskingFilter.POST_PROCESS_TECHNIQUES_ID; glsl: string };
+    };
     /**
      * Memory allocations and headers for the VisualEffectsMaskingFilter
      */
@@ -118,4 +100,23 @@ declare global {
      */
     static override fragmentShader(postProcessModes?: VisualEffectsMaskingFilter.PostProcessModes): string;
   }
+
+  namespace VisualEffectsMaskingFilter {
+    type Any = AnyVisualEffectsMaskingFilter;
+    type AnyConstructor = typeof AnyVisualEffectsMaskingFilter;
+
+    type PostProcessModes = Array<keyof typeof VisualEffectsMaskingFilter.POST_PROCESS_TECHNIQUES>;
+
+    interface ConcreteCreateOptions {
+      postProcessModes?: PostProcessModes | undefined;
+    }
+
+    type FILTER_MODES = Brand<number, "VisualEffectsMaskingFilter.FILTER_MODES">;
+
+    type POST_PROCESS_TECHNIQUES_ID = Brand<string, "VisualEffectsMaskingFilter.POST_PROCESS_TECHNIQUES.ID">;
+  }
+}
+
+declare abstract class AnyVisualEffectsMaskingFilter extends VisualEffectsMaskingFilter {
+  constructor(arg0: never, ...args: never[]);
 }
