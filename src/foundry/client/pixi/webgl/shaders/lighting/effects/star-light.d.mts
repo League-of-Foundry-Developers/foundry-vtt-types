@@ -1,14 +1,6 @@
 export {};
 
-declare abstract class AnyStarLightColorationShader extends StarLightColorationShader {
-  constructor(arg0: never, ...args: never[]);
-}
-
 declare global {
-  namespace StarLightColorationShader {
-    type AnyConstructor = typeof AnyStarLightColorationShader;
-  }
-
   /**
    * A disco like star light.
    */
@@ -20,4 +12,13 @@ declare global {
 
     static override fragmentShader: string;
   }
+
+  namespace StarLightColorationShader {
+    type Any = AnyStarLightColorationShader;
+    type AnyConstructor = typeof AnyStarLightColorationShader;
+  }
+}
+
+declare abstract class AnyStarLightColorationShader extends StarLightColorationShader {
+  constructor(arg0: never, ...args: never[]);
 }

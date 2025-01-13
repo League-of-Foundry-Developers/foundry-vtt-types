@@ -1,22 +1,6 @@
 export {};
 
-declare abstract class AnyFlameIlluminationShader extends FlameIlluminationShader {
-  constructor(arg0: never, ...args: never[]);
-}
-
-declare abstract class AnyFlameColorationShader extends FlameColorationShader {
-  constructor(arg0: never, ...args: never[]);
-}
-
 declare global {
-  namespace FlameIlluminationShader {
-    type AnyConstructor = typeof AnyFlameIlluminationShader;
-  }
-
-  namespace FlameColorationShader {
-    type AnyConstructor = typeof AnyFlameColorationShader;
-  }
-
   /**
    * Alternative torch illumination shader
    */
@@ -33,6 +17,11 @@ declare global {
      * ```
      */
     static override defaultUniforms: AbstractBaseShader.Uniforms;
+  }
+
+  namespace FlameIlluminationShader {
+    type Any = AnyFlameIlluminationShader;
+    type AnyConstructor = typeof AnyFlameIlluminationShader;
   }
 
   /**
@@ -52,4 +41,17 @@ declare global {
      */
     static override defaultUniforms: AbstractBaseShader.Uniforms;
   }
+
+  namespace FlameColorationShader {
+    type Any = AnyFlameColorationShader;
+    type AnyConstructor = typeof AnyFlameColorationShader;
+  }
+}
+
+declare abstract class AnyFlameIlluminationShader extends FlameIlluminationShader {
+  constructor(arg0: never, ...args: never[]);
+}
+
+declare abstract class AnyFlameColorationShader extends FlameColorationShader {
+  constructor(arg0: never, ...args: never[]);
 }

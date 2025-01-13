@@ -98,6 +98,6 @@ declare global {
      */
     protected static _fragmentShader: string;
 
-    protected override _preRender: AbstractBaseShader.PreRenderFunction;
+    override _preRender: AbstractBaseShader.PreRenderFunction;
   }
 }

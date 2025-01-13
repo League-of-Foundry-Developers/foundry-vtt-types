@@ -1,35 +1,6 @@
 export {};
 
-declare abstract class AnyAdaptiveLightingShader extends AdaptiveLightingShader {
-  constructor(arg0: never, ...args: never[]);
-}
-
 declare global {
-  namespace AdaptiveLightingShader {
-    type AnyConstructor = typeof AnyAdaptiveLightingShader;
-
-    type TechniqueReturn = ReturnType<(typeof AdaptiveLightingShader)["getShaderTechniques"]>;
-
-    type ShaderTypes = "coloration" | "illumination" | "background" | (string & {});
-
-    interface ShaderTechnique {
-      /** The numeric identifier of the technique */
-      id: number;
-
-      /** The localization string that labels the technique */
-      label: string;
-
-      /**  The coloration shader fragment when the technique is used */
-      coloration?: string | undefined;
-
-      /** The illumination shader fragment when the technique is used */
-      illumination?: string | undefined;
-
-      /** The background shader fragment when the technique is used */
-      background?: string | undefined;
-    }
-  }
-
   /**
    * This class defines an interface which all adaptive lighting shaders extend.
    */
@@ -91,17 +62,17 @@ declare global {
     /**
      * The coloration technique coloration shader fragment
      */
-    static get COLORATION_TECHNIQUES(): AdaptiveLightingShader.TechniqueReturn;
+    static get COLORATION_TECHNIQUES(): string;
 
     /**
      * The coloration technique illumination shader fragment
      */
-    static get ILLUMINATION_TECHNIQUES(): AdaptiveLightingShader.TechniqueReturn;
+    static get ILLUMINATION_TECHNIQUES(): string;
 
     /**
      * The coloration technique background shader fragment
      */
-    static get BACKGROUND_TECHNIQUES(): AdaptiveLightingShader.TechniqueReturn;
+    static get BACKGROUND_TECHNIQUES(): string;
 
     /**
      * The adjustments made into fragment shaders
@@ -161,6 +132,7 @@ declare global {
 
     /**
      * A mapping of available coloration techniques
+     * @privateRemarks This type would have at least the `id` keys Branded if not for subclasses overriding the entries
      */
     static SHADER_TECHNIQUES: Record<string, AdaptiveLightingShader.ShaderTechnique>;
 
@@ -175,4 +147,32 @@ declare global {
      */
     getDarknessPenalty(darknessLevel: number, luminosity: number): number;
   }
+
+  namespace AdaptiveLightingShader {
+    type Any = AnyAdaptiveLightingShader;
+    type AnyConstructor = typeof AnyAdaptiveLightingShader;
+
+    type ShaderTypes = "coloration" | "illumination" | "background" | (string & {});
+
+    interface ShaderTechnique {
+      /** The numeric identifier of the technique */
+      id: number;
+
+      /** The localization string that labels the technique */
+      label: string;
+
+      /**  The coloration shader fragment when the technique is used */
+      coloration?: string | undefined;
+
+      /** The illumination shader fragment when the technique is used */
+      illumination?: string | undefined;
+
+      /** The background shader fragment when the technique is used */
+      background?: string | undefined;
+    }
+  }
+}
+
+declare abstract class AnyAdaptiveLightingShader extends AdaptiveLightingShader {
+  constructor(arg0: never, ...args: never[]);
 }

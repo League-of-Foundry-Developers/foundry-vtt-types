@@ -105,6 +105,6 @@ declare global {
      */
     speed: number;
 
-    protected override _preRender: AbstractBaseShader.PreRenderFunction;
+    override _preRender: AbstractBaseShader.PreRenderFunction;
   }
 }
