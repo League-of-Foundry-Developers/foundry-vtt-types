@@ -10,21 +10,23 @@ declare const DynamicClass: new <_Computed extends object>(arg0: never, ...args:
 // @ts-expect-error - This is a workaround to allow for dynamic top level properties in a class.
 declare class LayersClass<
   Group extends CanvasGroupMixin.LayerGroup | NoLayerGroup,
-  Instance extends object = RemoveIndexSignatures<GroupFor<Group>>,
+  Instance extends object = RemoveIndexSignatures<CanvasGroupMixin.LayersFor<Group>>,
 > extends DynamicClass<Instance> {}
 
-type GroupFor<Group extends CanvasGroupMixin.LayerGroup | NoLayerGroup> = Group extends CanvasGroupMixin.LayerGroup
-  ? CanvasGroupMixin.LayersFor<Group>
-  : // The empty object is useful to merge nothing in when necessary.
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    {};
+// Note(LukeAbby): This interface has been separated out to simplify the constructor edge cases.
+// By avoiding having the instance side it makes the class more malleable and allows generics.
+interface CanvasGroupStatic<Group extends CanvasGroupMixin.LayerGroup | NoLayerGroup> {
+  /**
+   * The name of this canvas group
+   * @remarks Foundry marked as abstract
+   */
+  groupName: Group extends NoLayerGroup ? undefined : Group;
 
-declare namespace CanvasGroup {
-  type MixinClass = typeof CanvasGroup<
-    CanvasGroupMixin.LayerGroup | NoLayerGroup,
-    CanvasGroupMixin.DrawOptions,
-    CanvasGroupMixin.TearDownOptions
-  >;
+  /**
+   * If this canvas group should teardown non-layers children.
+   * @defaultValue `true`
+   */
+  tearDownChildren: boolean;
 }
 
 declare class CanvasGroup<
@@ -35,22 +37,8 @@ declare class CanvasGroup<
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
   constructor(...args: any[]);
 
-  #group: Group;
-
   /** @defaultValue `true` */
   sortableChildren: boolean;
-
-  /**
-   * The name of this canvas group
-   * @remarks Foundry marked as abstract
-   */
-  static groupName: string | undefined;
-
-  /**
-   * If this canvas group should teardown non-layers children.
-   * @defaultValue `true`
-   */
-  static tearDownChildren: boolean;
 
   /**
    * The canonical name of the canvas group is the name of the constructor that is the immediate child of the defined base class.
@@ -67,12 +55,12 @@ declare class CanvasGroup<
    * A mapping of CanvasLayer classes which belong to this group.
    * @remarks Default value defined by this._createLayers, which is called in the constructor, and   pulls from CONFIG.Canvas.layers
    */
-  layers: GroupFor<Group>;
+  layers: CanvasGroupMixin.LayersFor<Group>;
 
   /**
    * Create CanvasLayer instances which belong to the canvas group.
    */
-  protected _createLayers(): GroupFor<Group>;
+  protected _createLayers(): CanvasGroupMixin.LayersFor<Group>;
 
   /** Draw the canvas group and all its component layers. */
   draw(options?: HandleEmptyObject<DrawOptions>): Promise<this>;
@@ -99,9 +87,10 @@ type NoLayerGroup = typeof _NoLayerGroup;
 type ApplyGroup<
   BaseClass extends CanvasGroupMixin.BaseClass,
   Group extends CanvasGroupMixin.LayerGroup | NoLayerGroup,
-> = new <DrawOptions extends CanvasGroupMixin.DrawOptions, TearDownOptions extends CanvasGroupMixin.TearDownOptions>(
-  ...args: ConstructorParameters<BaseClass>
-) => CanvasGroup<Group, DrawOptions, TearDownOptions> & FixedInstanceType<BaseClass>;
+> = CanvasGroupStatic<Group> &
+  (new <DrawOptions extends CanvasGroupMixin.DrawOptions, TearDownOptions extends CanvasGroupMixin.TearDownOptions>(
+    ...args: ConstructorParameters<BaseClass>
+  ) => CanvasGroup<Group, DrawOptions, TearDownOptions> & FixedInstanceType<BaseClass>);
 
 declare global {
   /**
@@ -130,11 +119,7 @@ declare global {
     type Mixed<
       BaseClass extends CanvasGroupMixin.BaseClass,
       Group extends CanvasGroupMixin.LayerGroup | NoLayerGroup,
-    > = BaseClass &
-      CanvasGroup.MixinClass &
-      ApplyGroup<BaseClass, Group> & {
-        groupName: Group extends NoLayerGroup ? undefined : Group;
-      };
+    > = BaseClass & ApplyGroup<BaseClass, Group>;
 
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     interface DrawOptions {}
@@ -148,7 +133,7 @@ declare global {
 
     type LayerGroup = keyof CONFIG["Canvas"]["groups"];
 
-    type LayersFor<T extends LayerGroup> = PrettifyType<
+    type LayersFor<T extends LayerGroup | NoLayerGroup> = PrettifyType<
       _FilterOutNever<{
         readonly [K in keyof typeof Canvas.layers]: (typeof Canvas.layers)[K] extends {
           readonly layerClass?: abstract new (...args: infer _1) => infer LayerInstance extends CanvasLayer;
