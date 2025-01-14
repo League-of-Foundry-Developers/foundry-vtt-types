@@ -1,8 +1,10 @@
 import type {
-  ConfiguredDocuments,
+  ConfiguredDocumentClass,
+  ConfiguredDocumentInstance,
   ConfiguredMetadata,
-  DefaultDocuments,
-  ConstructorData,
+  CreateData,
+  DefaultDocumentClass,
+  DefaultDocumentInstance,
 } from "../../../types/documentConfiguration.d.mts";
 import type {
   GetKey,
@@ -16,6 +18,7 @@ import type {
   RemoveIndexSignatures,
   FixedInstanceType,
 } from "../../../utils/index.d.mts";
+import type { documents } from "../../client-esm/client.d.mts";
 import type * as CONST from "../constants.mts";
 import type {
   DataField,
@@ -55,6 +58,8 @@ declare abstract class Document<
   Schema extends DataSchema,
   Parent extends Document.Any | null = null,
 > extends DataModel<Schema, Parent, InterfaceToObject<Document.ConstructionContext<Parent>>> {
+  static [Document.Internal.DocumentName]: Document.Type;
+
   [Document.Internal.DocumentBrand]: true;
 
   [Document.Internal.DocumentName]: DocumentName;
@@ -1031,9 +1036,9 @@ declare namespace Document {
     | "RegionBehavior";
 
   type EmbeddableNamesFor<ConcreteDocument extends Document.Internal.Instance.Any> = {
-    [K in keyof ConfiguredDocuments]: IsParentOf<
+    [K in keyof ConfiguredDocumentClass]: IsParentOf<
       ConcreteDocument,
-      FixedInstanceType<ConfiguredDocuments[K]>
+      FixedInstanceType<ConfiguredDocumentClass[K]>
     > extends true
       ? K
       : never;
@@ -1058,9 +1063,14 @@ declare namespace Document {
     // This metadata is called "simple" because where there should be proper references to the
     // current document there is instead `Document.Any`. This helps simplify loops.
     // Use cases should be limited to when these references aren't needed.
-    type SimpleMetadata<Name extends Document.Type> = ConfiguredMetadata<Document.Any>[Name];
+    type SimpleMetadata<Name extends Document.Type> = ConfiguredMetadata<Document.Any, Name>;
 
-    type Constructor = abstract new (arg0: never, ...args: never[]) => Instance.Any;
+    type Constructor = abstract new (
+      arg0: never,
+      ...args: never[]
+    ) => Instance.Any & {
+      [DocumentName]: Document.Type;
+    };
 
     interface Instance<
       DocumentName extends Document.Type,
@@ -1102,8 +1112,47 @@ declare namespace Document {
   >;
 
   // These helper types exist to help break a loop
-  type ConstructorDataForName<T extends Document.Type> = ConstructorData[T];
-  type UpdateDataForName<T extends Document.Type> = ConstructorData[T];
+  /**
+   * @deprecated - {@link CreateDataForName}
+   */
+  type ConstructorDataForName<T extends Document.Type> = CreateData[T];
+
+  // TODO(LukeAbby): Actually make this distinguishable from `CreateDataForName`.
+  type UpdateDataForName<T extends Document.Type> = CreateData[T];
+
+  type CreateDataForName<DocumentType extends Document.Type> =
+    | (DocumentType extends "ActiveEffect" ? documents.BaseActiveEffect.ConstructorData : never)
+    | (DocumentType extends "ActorDelta" ? documents.BaseActorDelta.ConstructorData : never)
+    | (DocumentType extends "Actor" ? documents.BaseActor.ConstructorData : never)
+    | (DocumentType extends "Adventure" ? documents.BaseAdventure.ConstructorData : never)
+    | (DocumentType extends "Card" ? documents.BaseCard.ConstructorData : never)
+    | (DocumentType extends "Cards" ? documents.BaseCards.ConstructorData : never)
+    | (DocumentType extends "ChatMessage" ? documents.BaseChatMessage.ConstructorData : never)
+    | (DocumentType extends "Combat" ? documents.BaseCombat.ConstructorData : never)
+    | (DocumentType extends "Combatant" ? documents.BaseCombatant.ConstructorData : never)
+    | (DocumentType extends "FogExploration" ? documents.BaseFogExploration.ConstructorData : never)
+    | (DocumentType extends "Folder" ? documents.BaseFolder.ConstructorData : never)
+    | (DocumentType extends "Item" ? documents.BaseItem.ConstructorData : never)
+    | (DocumentType extends "JournalEntryPage" ? documents.BaseJournalEntryPage.ConstructorData : never)
+    | (DocumentType extends "JournalEntry" ? documents.BaseJournalEntry.ConstructorData : never)
+    | (DocumentType extends "Macro" ? documents.BaseMacro.ConstructorData : never)
+    | (DocumentType extends "PlaylistSound" ? documents.BasePlaylistSound.ConstructorData : never)
+    | (DocumentType extends "Playlist" ? documents.BasePlaylist.ConstructorData : never)
+    | (DocumentType extends "RegionBehavior" ? documents.BaseRegionBehavior.ConstructorData : never)
+    | (DocumentType extends "Region" ? documents.BaseRegion.ConstructorData : never)
+    | (DocumentType extends "RollTable" ? documents.BaseRollTable.ConstructorData : never)
+    | (DocumentType extends "Scene" ? documents.BaseScene.ConstructorData : never)
+    | (DocumentType extends "Setting" ? documents.BaseSetting.ConstructorData : never)
+    | (DocumentType extends "TableResult" ? documents.BaseTableResult.ConstructorData : never)
+    | (DocumentType extends "User" ? documents.BaseUser.ConstructorData : never)
+    | (DocumentType extends "AmbientLight" ? documents.BaseAmbientLight.ConstructorData : never)
+    | (DocumentType extends "AmbientSound" ? documents.BaseAmbientSound.ConstructorData : never)
+    | (DocumentType extends "Drawing" ? documents.BaseDrawing.ConstructorData : never)
+    | (DocumentType extends "MeasuredTemplate" ? documents.BaseMeasuredTemplate.ConstructorData : never)
+    | (DocumentType extends "Note" ? documents.BaseNote.ConstructorData : never)
+    | (DocumentType extends "Tile" ? documents.BaseTile.ConstructorData : never)
+    | (DocumentType extends "Token" ? documents.BaseToken.ConstructorData : never)
+    | (DocumentType extends "Wall" ? documents.BaseWall.ConstructorData : never);
 
   /**
    * @deprecated {@link SchemaField.CreateData | `SchemaField.CreateData`}
@@ -1115,24 +1164,24 @@ declare namespace Document {
   };
 
   type ConfiguredClassForName<Name extends Type> = MakeConform<
-    ConfiguredDocuments[Name],
-    Document.Internal.Constructor,
-    typeof ConfigurationFailure & DefaultDocuments[Name]
+    ConfiguredDocumentClass[Name],
+    Document.AnyConstructor,
+    typeof ConfigurationFailure & DefaultDocumentClass<Name>
   >;
 
   // NOTE(LukeAbby): This type is less DRY than it could be to avoid undue complexity in such a critical helpeer.
   // This has _many_ times been seen to cause loops so this type is written in an intentionally more paranoid way.
   // The reason for the verbosity and repetition is to avoid eagerly evaluating any branches that might cause a loop.
   type ToConfiguredClass<ConcreteDocument extends Document.Internal.Constructor> = MakeConform<
-    ConfiguredDocuments[NameFor<ConcreteDocument>],
+    ConfiguredDocumentClass[NameFor<ConcreteDocument>],
     Document.AnyConstructor,
-    typeof ConfigurationFailure & DefaultDocuments[NameFor<ConcreteDocument>]
+    typeof ConfigurationFailure & DefaultDocumentClass<NameFor<ConcreteDocument>>
   >;
 
   type ToConfiguredInstance<ConcreteDocument extends Document.Internal.Constructor> = MakeConform<
-    FixedInstanceType<ConfiguredDocuments[NameFor<ConcreteDocument>]>,
+    FixedInstanceType<ConfiguredDocumentClass[NameFor<ConcreteDocument>]>,
     Document.Any,
-    ConfigurationFailure & FixedInstanceType<DefaultDocuments[NameFor<ConcreteDocument>]>
+    ConfigurationFailure & DefaultDocumentInstance<NameFor<ConcreteDocument>>
   >;
 
   type ToConfiguredStored<D extends Document.Internal.Constructor> = Stored<ToConfiguredInstance<D>>;
@@ -1152,16 +1201,10 @@ declare namespace Document {
 
   type Temporary<D extends Document.Internal.Instance.Any> = D extends Stored<infer U> ? U : D;
 
-  type NameFor<ConcreteDocument extends Document.Internal.Constructor> = ConcreteDocument extends {
-    readonly metadata: { readonly name: infer Name extends Type };
-  }
-    ? Name
-    : never;
+  type NameFor<ConcreteDocument extends Document.Internal.Constructor> =
+    ConcreteDocument[Document.Internal.DocumentName];
 
-  type ConfiguredInstanceForName<Name extends Type> = MakeConform<
-    FixedInstanceType<ConfiguredDocuments[Name]>,
-    Document.Any
-  >;
+  type ConfiguredInstanceForName<Name extends Type> = MakeConform<ConfiguredDocumentInstance[Name], Document.Any>;
 
   type ConfiguredObjectClassForName<Name extends PlaceableType> = CONFIG[Name]["objectClass"];
   type ConfiguredObjectInstanceForName<Name extends PlaceableType> = FixedInstanceType<CONFIG[Name]["objectClass"]>;
@@ -1184,12 +1227,7 @@ declare namespace Document {
   type SchemaFor<ConcreteDocument extends Internal.Instance.Any> =
     ConcreteDocument extends Internal.Instance<infer _1, infer Schema, infer _2> ? Schema : never;
 
-  type MetadataFor<ConcreteDocument extends Document.Internal.Instance.Any> =
-    ConfiguredMetadata<ConcreteDocument>[ConcreteDocument extends {
-      readonly documentName: infer Name extends Document.Type;
-    }
-      ? Name
-      : never];
+  type MetadataFor<ConcreteDocument extends Document.Internal.Instance.Any> = ConfiguredMetadata<ConcreteDocument>;
 
   type CollectionRecord<Schema extends DataSchema> = {
     [Key in keyof Schema]: Schema[Key] extends fields.EmbeddedCollectionField.Any ? Schema[Key] : never;
@@ -1403,20 +1441,8 @@ declare namespace Document {
     readonly coreTypes: readonly string[];
     readonly embedded: Record<string, string>;
     readonly permissions: {
-      create:
-        | string
-        | ToMethod<
-            (
-              user: User.Internal.ConfiguredInstance,
-              doc: ThisType,
-              data: Document.ConstructorDataForName<Type>,
-            ) => boolean
-          >;
-      update:
-        | string
-        | ToMethod<
-            (user: User.Internal.ConfiguredInstance, doc: ThisType, data: Document.UpdateDataForName<Type>) => boolean
-          >;
+      create: string | ToMethod<(user: User.Internal.ConfiguredInstance, doc: ThisType, data: AnyObject) => boolean>;
+      update: string | ToMethod<(user: User.Internal.ConfiguredInstance, doc: ThisType, data: AnyObject) => boolean>;
       delete: string | ToMethod<(user: User.Internal.ConfiguredInstance, doc: ThisType, data: EmptyObject) => boolean>;
     };
     readonly preserveOnImport: readonly string[];

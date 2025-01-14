@@ -46,6 +46,8 @@ declare abstract class BaseCombat extends Document<"Combat", BaseCombat.Schema, 
   protected _canChangeTurn(user: User.ConfiguredInstance): boolean;
 
   // BaseCombat implements _preUpdate but leaving out here for type computation reasons
+
+  static [Document.Internal.DocumentName]: "Combat";
 }
 
 export default BaseCombat;

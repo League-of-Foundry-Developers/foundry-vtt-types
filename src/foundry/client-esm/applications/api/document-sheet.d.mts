@@ -1,17 +1,21 @@
-import type { AnyObject, DeepPartial, EmptyObject, SimpleMerge } from "../../../../utils/index.d.mts";
+import type { AnyObject, DeepPartial, EmptyObject } from "../../../../utils/index.d.mts";
 import type ApplicationV2 from "./application.d.mts";
+
+declare const unsetDocument: unique symbol;
 
 declare namespace DocumentSheetV2 {
   type Any = DocumentSheetV2<any, any, any, any>;
 
   type AnyConstructor = typeof AnyDocumentSheetV2;
 
-  interface Configuration<Document extends foundry.abstract.Document.Any = foundry.abstract.Document.Any>
+  type UnsetDocument = typeof unsetDocument;
+
+  interface Configuration<Document extends foundry.abstract.Document.Any | UnsetDocument = UnsetDocument>
     extends ApplicationV2.Configuration {
     /**
      * The Document instance associated with this sheet
      */
-    document: Document;
+    document: Document extends foundry.abstract.Document.Any ? Document : foundry.abstract.Document.Any;
 
     /**
      * A permission level in CONST.DOCUMENT_OWNERSHIP_LEVELS
@@ -29,6 +33,15 @@ declare namespace DocumentSheetV2 {
     sheetConfig: boolean;
   }
 
+  type PartialConfiguration<
+    Configuration extends DocumentSheetV2.Configuration<foundry.abstract.Document.Any | UnsetDocument>,
+  > = DeepPartial<Omit<Configuration, "document">> &
+    (Configuration extends DocumentSheetV2.Configuration<infer _ extends foundry.abstract.Document.Any>
+      ? // If a document is already specified in the config, don't allow it to be set in subclasses
+        // because `Object.apply(new Item(...), new Actor(...))` is clearly nonsensical
+        { document?: never }
+      : { document?: foundry.abstract.Document.Any | undefined });
+
   interface RenderOptions extends ApplicationV2.RenderOptions {
     /** A string with the format "\{operation\}\{documentName\}" providing context */
     renderContext: string;
@@ -42,17 +55,17 @@ declare namespace DocumentSheetV2 {
  * The Application class is responsible for rendering an HTMLElement into the Foundry Virtual Tabletop user interface.
  */
 declare class DocumentSheetV2<
-  Document extends foundry.abstract.Document.Any,
+  Document extends foundry.abstract.Document.Any | DocumentSheetV2.UnsetDocument,
   RenderContext extends AnyObject = EmptyObject,
   Configuration extends DocumentSheetV2.Configuration<Document> = DocumentSheetV2.Configuration<Document>,
   RenderOptions extends DocumentSheetV2.RenderOptions = DocumentSheetV2.RenderOptions,
 > extends ApplicationV2<RenderContext, Configuration, RenderOptions> {
   // Note(LukeAbby): This is a fix for https://github.com/microsoft/TypeScript/issues/60927
-  constructor(options: SimpleMerge<DeepPartial<Configuration>, { document: Document }>);
+  constructor(options: DocumentSheetV2.PartialConfiguration<Configuration>);
 
   // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
   // Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.
-  static DEFAULT_OPTIONS: DeepPartial<DocumentSheetV2.Configuration> & object;
+  static DEFAULT_OPTIONS: DocumentSheetV2.PartialConfiguration<DocumentSheetV2.Configuration> & object;
 
   get document(): Document;
 
@@ -70,7 +83,7 @@ declare class DocumentSheetV2<
    */
   get isEditable(): boolean;
 
-  protected _initializeApplicationOptions(options: DeepPartial<Configuration>): Configuration;
+  protected _initializeApplicationOptions(options: DocumentSheetV2.PartialConfiguration<Configuration>): Configuration;
 
   protected override _headerControlsButtons(): Generator<ApplicationV2.HeaderControlsEntry>;
 

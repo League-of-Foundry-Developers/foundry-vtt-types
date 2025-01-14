@@ -34,6 +34,8 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
    * @privateRemarks _preUpdate is overridden but with no signature changes.
    * For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
    */
+
+  static [Document.Internal.DocumentName]: "FogExploration";
 }
 
 export default BaseFogExploration;

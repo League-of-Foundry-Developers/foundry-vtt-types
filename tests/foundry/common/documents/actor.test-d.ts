@@ -9,13 +9,16 @@ import TypeDataModel = foundry.abstract.TypeDataModel;
 
 type DataSchema = foundry.data.fields.DataSchema;
 
-// @ts-expect-error name and type are required
-new foundry.documents.BaseActor();
+// This exists to make the class non-abstract.
+declare class TestBaseActor extends foundry.documents.BaseActor {}
 
 // @ts-expect-error name and type are required
-new foundry.documents.BaseActor({});
+new TestBaseActor();
 
-const baseActor = new foundry.documents.BaseActor({ name: "foo", type: "character" });
+// @ts-expect-error name and type are required
+new TestBaseActor({});
+
+const baseActor = new TestBaseActor({ name: "foo", type: "character" });
 expectTypeOf(baseActor.name).toEqualTypeOf<string>();
 expectTypeOf(baseActor.effects).toEqualTypeOf<
   EmbeddedCollection<ActiveEffect.ConfiguredInstance, Actor.ConfiguredInstance>

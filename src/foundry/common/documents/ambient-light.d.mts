@@ -27,6 +27,8 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
   static override defineSchema(): BaseAmbientLight.Schema;
 
   static override migrateData(source: AnyObject): AnyObject;
+
+  static [Document.Internal.DocumentName]: "AmbientLight";
 }
 
 export default BaseAmbientLight;

@@ -39,6 +39,8 @@ declare abstract class BaseTableResult extends Document<"TableResult", BaseTable
   ): boolean;
 
   static override migrateData(source: AnyObject): AnyObject;
+
+  static [Document.Internal.DocumentName]: "TableResult";
 }
 
 export default BaseTableResult;

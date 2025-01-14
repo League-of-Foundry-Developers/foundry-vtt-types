@@ -59,6 +59,8 @@ declare abstract class BaseMacro extends Document<"Macro", BaseMacro.Schema, any
    * @privateRemarks _preCreate all overridden but with no signature changes.
    * For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
    */
+
+  static [Document.Internal.DocumentName]: "Macro";
 }
 export default BaseMacro;
 

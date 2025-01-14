@@ -36,6 +36,8 @@ declare abstract class BaseCards extends Document<"Cards", BaseCards.Schema, any
   static DEFAULT_ICON: string;
 
   static override migrateData(source: AnyObject): AnyObject;
+
+  static [Document.Internal.DocumentName]: "Cards";
 }
 
 export default BaseCards;

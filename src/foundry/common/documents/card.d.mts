@@ -57,6 +57,8 @@ declare abstract class BaseCard extends Document<"Card", BaseCard.Schema, any> {
       exact: boolean;
     }>,
   ): boolean;
+
+  static [Document.Internal.DocumentName]: "Card";
 }
 
 export default BaseCard;

@@ -33,6 +33,8 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
    * Provide a thumbnail image path used to represent the Adventure document.
    */
   get thumbnail(): string;
+
+  static [Document.Internal.DocumentName]: "Adventure";
 }
 
 export default BaseAdventure;

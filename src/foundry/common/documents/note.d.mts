@@ -57,6 +57,8 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
       embedded?: boolean;
     },
   ): AnyObject;
+
+  static [Document.Internal.DocumentName]: "Note";
 }
 
 export default BaseNote;

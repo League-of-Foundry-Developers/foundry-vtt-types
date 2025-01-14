@@ -39,6 +39,8 @@ declare abstract class BaseCombatant extends Document<"Combatant", BaseCombatant
   static #canCreate(user: User.ConfiguredInstance, doc: BaseCombatant, data: BaseCombatant.ConstructorData): boolean;
 
   override getUserLevel(user?: User.ConfiguredInstance): DOCUMENT_OWNERSHIP_LEVELS | null;
+
+  static [Document.Internal.DocumentName]: "Combatant";
 }
 
 export default BaseCombatant;

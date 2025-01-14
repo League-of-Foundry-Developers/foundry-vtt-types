@@ -1,4 +1,4 @@
-import type { ConfiguredDocuments } from "../../../../types/documentConfiguration.d.mts";
+import type { ConfiguredDocumentClass } from "../../../../types/documentConfiguration.d.mts";
 import type { FixedInstanceType, InexactPartial } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { SchemaField } from "../../../common/data/fields.d.mts";
@@ -14,8 +14,8 @@ declare global {
     // Note(LukeAbby): This namespace exists to break cycles because of extensive usage of `User` in
     // the `Document` class itself.
     namespace Internal {
-      type ConfiguredClass = ConfiguredDocuments["User"];
-      type ConfiguredInstance = FixedInstanceType<ConfiguredDocuments["User"]>;
+      type ConfiguredClass = ConfiguredDocumentClass["User"];
+      type ConfiguredInstance = FixedInstanceType<ConfiguredDocumentClass["User"]>;
     }
 
     interface DatabaseOperations extends Document.Database.Operations<User.Internal.ConfiguredInstance> {}

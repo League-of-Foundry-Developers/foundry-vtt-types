@@ -39,6 +39,8 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
       embedded?: boolean;
     },
   ): AnyObject;
+
+  static [Document.Internal.DocumentName]: "Tile";
 }
 
 export default BaseTile;

@@ -67,6 +67,8 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
       embedded?: boolean;
     },
   ): AnyObject;
+
+  static [Document.Internal.DocumentName]: "Drawing";
 }
 
 export default BaseDrawing;

@@ -32,6 +32,8 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
   static DEFAULT_ICON: "icons/svg/d20-grey.svg";
 
   static override migrateData(source: AnyObject): AnyObject;
+
+  static [Document.Internal.DocumentName]: "RollTable";
 }
 
 export default BaseRollTable;

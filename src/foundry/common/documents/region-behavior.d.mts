@@ -28,6 +28,8 @@ declare abstract class BaseRegionBehavior extends Document<"RegionBehavior", Bas
   static override defineSchema(): BaseRegionBehavior.Schema;
 
   static override canUserCreate(user: User.ConfiguredInstance): boolean;
+
+  static [Document.Internal.DocumentName]: "RegionBehavior";
 }
 
 export default BaseRegionBehavior;

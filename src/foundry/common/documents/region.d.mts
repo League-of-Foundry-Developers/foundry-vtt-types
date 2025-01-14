@@ -1,4 +1,3 @@
-import type { ValueOf } from "../../../utils/index.d.mts";
 import type Document from "../abstract/document.mts";
 import type { BaseShapeData, fields } from "../data/module.d.mts";
 import type * as documents from "./_module.d.mts";
@@ -21,6 +20,8 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
   static override metadata: BaseRegion.Metadata;
 
   static override defineSchema(): BaseRegion.Schema;
+
+  static [Document.Internal.DocumentName]: "Region";
 }
 
 export default BaseRegion;
@@ -93,7 +94,7 @@ declare namespace BaseRegion {
     visibility: fields.NumberField<{
       required: true;
       initial: typeof CONST.REGION_VISIBILITY.LAYER;
-      choices: ValueOf<typeof CONST.REGION_VISIBILITY>[];
+      choices: CONST.REGION_VISIBILITY[];
       label: string;
       hint: string;
     }>;

@@ -25,6 +25,8 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
   static override defineSchema(): BaseSetting.Schema;
 
   static canUserCreate(user: User.ConfiguredInstance): boolean;
+
+  static [Document.Internal.DocumentName]: "Setting";
 }
 
 export default BaseSetting;

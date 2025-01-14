@@ -40,6 +40,8 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
       embedded?: boolean;
     },
   ): AnyObject;
+
+  static [Document.Internal.DocumentName]: "Scene";
 }
 
 export default BaseScene;

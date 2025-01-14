@@ -17,7 +17,8 @@ declare class AmbientSoundConfig<
   Configuration,
   RenderOptions
 > {
-  static override DEFAULT_OPTIONS: DeepPartial<DocumentSheetV2.Configuration<AmbientSoundDocument.ConfiguredInstance>>;
+  static override DEFAULT_OPTIONS: object &
+    DocumentSheetV2.PartialConfiguration<DocumentSheetV2.Configuration<AmbientSoundDocument.ConfiguredInstance>>;
 
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 

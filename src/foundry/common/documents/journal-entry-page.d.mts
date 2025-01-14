@@ -23,6 +23,8 @@ declare abstract class BaseJournalEntryPage extends Document<"JournalEntryPage",
   //   context?: Document.ConstructionContext<BaseJournalEntryPage.Parent>,
   // );
 
+  static [Document.Internal.DocumentName]: "JournalEntryPage";
+
   override parent: BaseJournalEntryPage.Parent;
 
   _source: BaseJournalEntryPage.Source;

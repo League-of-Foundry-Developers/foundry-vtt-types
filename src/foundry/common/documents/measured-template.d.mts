@@ -61,6 +61,8 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
       exact: boolean;
     }>,
   ): boolean;
+
+  static [Document.Internal.DocumentName]: "MeasuredTemplate";
 }
 
 export default BaseMeasuredTemplate;

@@ -389,17 +389,17 @@ export type PrettifyType<T> = T extends AnyObject
   ? {
       [K in keyof T]: T[K];
     }
-  : T & unknown;
+  : T;
 
 /**
  * This behaves the same as {@link PrettifyType | `PrettifyType`} except instead
- * of prettifying only the first level it prettifies all levels of an object. of prettifying only the first level it prettifies all levels of an object.
+ * of prettifying only the first level it prettifies all levels of an object.
  */
 export type PrettifyTypeDeep<T> = T extends AnyObject
   ? {
       [K in keyof T]: PrettifyTypeDeep<T[K]>;
     }
-  : T & unknown;
+  : T;
 
 /**
  * Convert a union of the form `T1 | T2 | T3 | ...` into an intersection of the form `T1 & T2 & T3 & ...`.
@@ -603,7 +603,7 @@ export type Expanded<O> = O extends AnyObject
  * Union type of the types of the values in `T`
  * @internal
  */
-export type ValueOf<T> = T extends ReadonlyArray<infer V> ? V : T[keyof T];
+export type ValueOf<T extends object> = T extends ReadonlyArray<infer V> ? V : T[keyof T];
 
 type OmitIndex<K extends PropertyKey> = string extends K
   ? never

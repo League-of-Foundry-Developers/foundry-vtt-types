@@ -38,6 +38,8 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
       embedded?: boolean;
     },
   ): AnyObject;
+
+  static [Document.Internal.DocumentName]: "Playlist";
 }
 
 export default BasePlaylist;

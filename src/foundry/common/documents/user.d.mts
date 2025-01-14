@@ -23,7 +23,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
 
   override parent: BaseUser.Parent;
 
-  static override metadata: Readonly<Document.MetadataFor<BaseUser>>;
+  static override metadata: User.Metadata;
 
   static override defineSchema(): BaseUser.Schema;
 
@@ -114,6 +114,8 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
    * @internal
    */
   static #canDelete(user: User.ConfiguredInstance, doc: BaseUser): boolean;
+
+  static [Document.Internal.DocumentName]: "User";
 }
 
 export default BaseUser;
@@ -182,7 +184,7 @@ declare namespace BaseUser {
      * A linked Actor document that is this user's impersonated character.
      * @defaultValue `null`
      */
-    character: fields.ForeignDocumentField<typeof BaseActor>;
+    // character: fields.ForeignDocumentField<typeof BaseActor>;
 
     /**
      * A color to represent this user.

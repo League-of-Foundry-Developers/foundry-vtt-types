@@ -27,6 +27,8 @@ declare abstract class BaseWall extends Document<"Wall", BaseWall.Schema, any> {
   static override defineSchema(): BaseWall.Schema;
 
   static override migrateData(source: AnyObject): AnyObject;
+
+  static [Document.Internal.DocumentName]: "Wall";
 }
 
 export default BaseWall;

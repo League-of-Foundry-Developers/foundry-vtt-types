@@ -39,6 +39,8 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
       exact: boolean;
     }>,
   ): boolean;
+
+  static [Document.Internal.DocumentName]: "PlaylistSound";
 }
 
 export default BasePlaylistSound;

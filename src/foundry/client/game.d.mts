@@ -665,28 +665,24 @@ declare global {
        *
        * @typeParam DocumentName - the type of the Document this data is for
        */
-      type TypeNames<DocumentName extends Document.Type> =
-        | (string & keyof Model[DocumentName])
-        | (Document.Internal.SimpleMetadata<DocumentName> extends { readonly hasTypeData: true }
+      type TypeNames<DocumentType extends Document.Type> =
+        | Document.CoreTypesForName<DocumentType>
+        | keyof GetKey<DataModelConfig, DocumentType, unknown>
+        | keyof GetKey<SourceConfig, DocumentType, unknown>
+        | (Document.Internal.SimpleMetadata<DocumentType> extends { readonly hasTypeData: true }
             ? Document.ModuleSubtype
             : never);
     }
 
-    type Model = {
+    type _Model = {
       [DocumentType in Document.Type]: {
         // The `& string` is helpful even though there should never be any numeric/symbol keys.
         // This is because when `keyof Config<...>` is deferred then TypeScript does a bunch of proofs under the assumption that `SystemTypeNames` could be a `string | number` until proven otherwise.
         // This causes issues where there shouldn't be, for example it has been observed to obstruct the resolution of the `Actor` class.
-        [SubType in
-          | Document.CoreTypesForName<DocumentType>
-          | keyof GetKey<DataModelConfig, DocumentType, unknown>
-          | keyof GetKey<SourceConfig, DocumentType, unknown> as SubType & string]: GetKey<
-          GetKey<SourceConfig, DocumentType>,
-          SubType,
-          EmptyObject
-        >;
+        [SubType in Model.TypeNames<DocumentType>]: GetKey<GetKey<SourceConfig, DocumentType>, SubType, EmptyObject>;
       };
     };
+    interface Model extends _Model {}
 
     type Data = {
       activeUsers: string[];

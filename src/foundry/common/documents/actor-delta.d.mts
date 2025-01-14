@@ -56,6 +56,8 @@ declare abstract class BaseActorDelta extends Document<"ActorDelta", BaseActorDe
   //TODO: Figure out if this override still applies
   toObject(source: true): this["_source"];
   toObject(source?: boolean): ReturnType<this["schema"]["toObject"]>;
+
+  static [Document.Internal.DocumentName]: "ActorDelta";
 }
 
 export default BaseActorDelta;

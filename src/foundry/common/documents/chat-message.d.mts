@@ -69,6 +69,8 @@ declare abstract class BaseChatMessage extends Document<"ChatMessage", BaseChatM
    * @remarks Replaced by `author`
    */
   get user(): this["author"];
+
+  static [Document.Internal.DocumentName]: "ChatMessage";
 }
 
 export default BaseChatMessage;

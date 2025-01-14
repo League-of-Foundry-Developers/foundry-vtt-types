@@ -27,6 +27,8 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
   static override defineSchema(): BaseJournalEntry.Schema;
 
   static override migrateData(source: AnyObject): AnyObject;
+
+  static [Document.Internal.DocumentName]: "JournalEntry";
 }
 
 export default BaseJournalEntry;

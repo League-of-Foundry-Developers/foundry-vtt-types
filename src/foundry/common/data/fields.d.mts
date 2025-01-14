@@ -7,6 +7,7 @@ import type {
   InexactPartial,
   ToMethod,
   FixedInstanceType,
+  PrettifyTypeDeep,
 } from "../../../utils/index.d.mts";
 import type { DataModel } from "../abstract/data.mts";
 import type Document from "../abstract/document.mts";
@@ -826,19 +827,21 @@ declare namespace SchemaField {
    * Get the inner assignment type for the given DataSchema.
    * @typeParam Fields - the DataSchema fields of the SchemaField
    */
-  type AssignmentData<Fields extends DataSchema> = RemoveIndexSignatures<{
-    [Key in keyof Fields]?: Fields[Key] extends EmbeddedDataField<any, any, infer AssignmentType, any, any>
-      ? AssignmentType
-      : Fields[Key] extends SchemaField<infer SubSchema, any, any, any, any>
-        ? // FIXME(LukeAbby): This is a quick hack into AssignmentData that assumes that the `initial` of `SchemaField` is not changed from the default of `{}`
-          // This will be fixed with the refactoring of the types
-          EmptyObject extends AssignmentData<SubSchema>
-          ? AssignmentData<SubSchema> | undefined | null
-          : AssignmentData<SubSchema>
-        : Fields[Key] extends DataField<any, infer AssignType, any, any>
-          ? AssignType
-          : never;
-  }>;
+  type AssignmentData<Fields extends DataSchema> = PrettifyTypeDeep<
+    RemoveIndexSignatures<{
+      [Key in keyof Fields]?: Fields[Key] extends EmbeddedDataField<any, any, infer AssignmentType, any, any>
+        ? AssignmentType
+        : Fields[Key] extends SchemaField<infer SubSchema, any, any, any, any>
+          ? // FIXME(LukeAbby): This is a quick hack into AssignmentData that assumes that the `initial` of `SchemaField` is not changed from the default of `{}`
+            // This will be fixed with the refactoring of the types
+            EmptyObject extends AssignmentData<SubSchema>
+            ? AssignmentData<SubSchema> | undefined | null
+            : AssignmentData<SubSchema>
+          : Fields[Key] extends DataField<any, infer AssignType, any, any>
+            ? AssignType
+            : never;
+    }>
+  >;
 
   /**
    * The required type of data used when updating a document.
@@ -852,29 +855,33 @@ declare namespace SchemaField {
    * Gets the initialized version of a schema. This means a
    * @typeParam Fields - the DataSchema fields of the SchemaField
    */
-  type InitializedData<Fields extends DataSchema> = RemoveIndexSignatures<{
-    [Key in keyof Fields]: Fields[Key] extends EmbeddedDataField<infer Model, any, any, any, any>
-      ? FixedInstanceType<Model>
-      : Fields[Key] extends SchemaField<infer SubSchema, any, any, any, any>
-        ? InitializedData<SubSchema>
-        : Fields[Key] extends DataField<any, any, infer InitType, any>
-          ? InitType
-          : never;
-  }>;
+  type InitializedData<Fields extends DataSchema> = PrettifyTypeDeep<
+    RemoveIndexSignatures<{
+      [Key in keyof Fields]: Fields[Key] extends EmbeddedDataField<infer Model, any, any, any, any>
+        ? FixedInstanceType<Model>
+        : Fields[Key] extends SchemaField<infer SubSchema, any, any, any, any>
+          ? InitializedData<SubSchema>
+          : Fields[Key] extends DataField<any, any, infer InitType, any>
+            ? InitType
+            : never;
+    }>
+  >;
 
   /**
    * Get the persisted type for the given DataSchema. This is the type used for source.
    * @typeParam Fields - the DataSchema fields of the SchemaField
    */
-  type PersistedData<Fields extends DataSchema> = RemoveIndexSignatures<{
-    [Key in keyof Fields]: Fields[Key] extends EmbeddedDataField<any, any, any, any, infer PersistType>
-      ? PersistType
-      : Fields[Key] extends SchemaField<infer SubSchema, any, any, any, any>
-        ? PersistedData<SubSchema>
-        : Fields[Key] extends DataField<any, any, any, infer PersistType>
-          ? PersistType
-          : never;
-  }>;
+  type PersistedData<Fields extends DataSchema> = PrettifyTypeDeep<
+    RemoveIndexSignatures<{
+      [Key in keyof Fields]: Fields[Key] extends EmbeddedDataField<any, any, any, any, infer PersistType>
+        ? PersistType
+        : Fields[Key] extends SchemaField<infer SubSchema, any, any, any, any>
+          ? PersistedData<SubSchema>
+          : Fields[Key] extends DataField<any, any, any, infer PersistType>
+            ? PersistType
+            : never;
+    }>
+  >;
 
   /** The type of the default options for the {@link SchemaField} class. */
   type DefaultOptions = SimpleMerge<

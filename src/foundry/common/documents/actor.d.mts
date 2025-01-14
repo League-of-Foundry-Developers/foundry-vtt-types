@@ -77,6 +77,8 @@ declare abstract class BaseActor extends Document<"Actor", BaseActor.Schema, any
    */
 
   static override migrateData(source: AnyObject): AnyObject;
+
+  static [Document.Internal.DocumentName]: "Actor";
 }
 
 declare namespace BaseActor {

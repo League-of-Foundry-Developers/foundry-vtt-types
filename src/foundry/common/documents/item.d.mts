@@ -58,6 +58,8 @@ declare abstract class BaseItem<SubType extends Item.SubType = Item.SubType> ext
    * defined DRY-ly while also being easily overrideable.
    */
 
+  static [Document.Internal.DocumentName]: "Item";
+
   override parent: Item.Parent;
 
   override system: Document.SystemFor<"ActiveEffect", SubType>;
