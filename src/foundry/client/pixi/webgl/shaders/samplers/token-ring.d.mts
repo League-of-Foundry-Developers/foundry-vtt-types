@@ -33,7 +33,8 @@ declare global {
     protected static override _preRenderBatch: BatchRenderer.PreRenderBatchFunction;
 
     protected static override _packInterleavedGeometry(
-      element: PIXI.IBatchableElement,
+      /** @privateRemarks Calls super, which is the grandparent class in this case, with no new keys */
+      element: OccludableSamplerShader.OccludableBatchData,
       attributeBuffer: PIXI.ViewableBuffer,
       indexBuffer: Uint16Array,
       aIndex: number,
@@ -44,4 +45,13 @@ declare global {
 
     protected static override _batchFragmentShader: string;
   }
+
+  namespace TokenRingSamplerShader {
+    type Any = AnyTokenRingSamplerShader;
+    type AnyConstructor = typeof AnyTokenRingSamplerShader;
+  }
+}
+
+declare abstract class AnyTokenRingSamplerShader extends TokenRingSamplerShader {
+  constructor(arg0: never, ...args: never[]);
 }

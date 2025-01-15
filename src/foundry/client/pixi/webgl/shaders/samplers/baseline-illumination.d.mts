@@ -1,14 +1,6 @@
 export {};
 
-declare abstract class AnyBaselineIlluminationSamplerShader extends BaselineIlluminationSamplerShader {
-  constructor(arg0: never, ...args: never[]);
-}
-
 declare global {
-  namespace BaselineIlluminationSamplerShader {
-    type AnyConstructor = typeof AnyBaselineIlluminationSamplerShader;
-  }
-
   /**
    * Compute baseline illumination according to darkness level encoded texture.
    */
@@ -35,4 +27,13 @@ declare global {
 
     override _preRender: AbstractBaseShader.PreRenderFunction;
   }
+
+  namespace BaselineIlluminationSamplerShader {
+    type Any = AnyBaselineIlluminationSamplerShader;
+    type AnyConstructor = typeof AnyBaselineIlluminationSamplerShader;
+  }
+}
+
+declare abstract class AnyBaselineIlluminationSamplerShader extends BaselineIlluminationSamplerShader {
+  constructor(arg0: never, ...args: never[]);
 }

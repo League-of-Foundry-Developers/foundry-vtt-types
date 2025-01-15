@@ -23,4 +23,13 @@ declare global {
      */
     protected _configureDepthShader(depthShader: DepthSamplerShader): void;
   }
+
+  namespace PrimaryBaseSamplerShader {
+    type Any = AnyPrimaryBaseSamplerShader;
+    type AnyConstructor = typeof AnyPrimaryBaseSamplerShader;
+  }
+}
+
+declare abstract class AnyPrimaryBaseSamplerShader extends PrimaryBaseSamplerShader {
+  constructor(arg0: never, ...args: never[]);
 }
