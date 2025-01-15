@@ -1,22 +1,6 @@
 export {};
 
-declare abstract class AnyColorAdjustmentsSamplerShader extends ColorAdjustmentsSamplerShader {
-  constructor(arg0: never, ...args: never[]);
-}
-
-declare abstract class AnyAmplificationSamplerShader extends AmplificationSamplerShader {
-  constructor(arg0: never, ...args: never[]);
-}
-
 declare global {
-  namespace ColorAdjustmentsSamplerShader {
-    type AnyConstructor = typeof AnyColorAdjustmentsSamplerShader;
-  }
-
-  namespace AmplificationSamplerShader {
-    type AnyConstructor = typeof AnyAmplificationSamplerShader;
-  }
-
   /**
    * A color adjustment shader.
    */
@@ -26,6 +10,8 @@ declare global {
      */
     static override classPluginName: string | null;
 
+    static override vertexShader: string;
+
     static override fragmentShader: string;
 
     /**
@@ -33,7 +19,8 @@ declare global {
      * ```js
      * {
      *   tintAlpha: [1, 1, 1, 1],
-     *   tint: [1, 1, 1],  contrast: 0,
+     *   tint: [1, 1, 1],
+     *   contrast: 0,
      *   saturation: 0,
      *   exposure: 0,
      *   sampler: null,
@@ -45,21 +32,30 @@ declare global {
      */
     static override defaultUniforms: AbstractBaseShader.Uniforms;
 
-    get linkedToDarknessLevel(): AbstractBaseShader.UniformValue;
+    /** @privateRemarks Inferred from defaultUniforms */
+    get linkedToDarknessLevel(): boolean;
 
-    set linkedToDarknessLevel(link: AbstractBaseShader.UniformValue);
+    set linkedToDarknessLevel(link);
 
-    get contrast(): AbstractBaseShader.UniformValue;
+    /** @privateRemarks Inferred from defaultUniforms */
+    get contrast(): number;
 
-    set contrast(contrast: AbstractBaseShader.UniformValue);
+    set contrast(contrast);
 
-    get exposure(): AbstractBaseShader.UniformValue;
+    /** @privateRemarks Inferred from defaultUniforms */
+    get exposure(): number;
 
-    set exposure(exposure: AbstractBaseShader.UniformValue);
+    set exposure(exposure);
 
-    get saturation(): AbstractBaseShader.UniformValue;
+    /** @privateRemarks Inferred from defaultUniforms */
+    get saturation(): number;
 
-    set saturation(saturation: AbstractBaseShader.UniformValue);
+    set saturation(saturation);
+  }
+
+  namespace ColorAdjustmentsSamplerShader {
+    type Any = AnyColorAdjustmentsSamplerShader;
+    type AnyConstructor = typeof AnyColorAdjustmentsSamplerShader;
   }
 
   /**
@@ -95,15 +91,28 @@ declare global {
      */
     get brightness(): number;
 
-    set brightness(brightness: AbstractBaseShader.UniformValue);
+    set brightness(brightness);
 
     /**
      * Tint color applied to Light Amplification.
      * Light Amplification tint
      * @defaultValue `[0.48, 1.0, 0.48]`
      */
-    get colorTint(): number[];
+    get colorTint(): Color.RGBColorVector;
 
-    set colorTint(color: AbstractBaseShader.UniformValue);
+    set colorTint(color);
   }
+
+  namespace AmplificationSamplerShader {
+    type Any = AnyAmplificationSamplerShader;
+    type AnyConstructor = typeof AnyAmplificationSamplerShader;
+  }
+}
+
+declare abstract class AnyColorAdjustmentsSamplerShader extends ColorAdjustmentsSamplerShader {
+  constructor(arg0: never, ...args: never[]);
+}
+
+declare abstract class AnyAmplificationSamplerShader extends AmplificationSamplerShader {
+  constructor(arg0: never, ...args: never[]);
 }

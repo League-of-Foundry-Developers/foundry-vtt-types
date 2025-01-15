@@ -1,9 +1,5 @@
 import type { InexactPartial, Mixin } from "../../../../../../utils/index.d.mts";
 
-declare abstract class AnyBaseSamplerShader extends BaseSamplerShader {
-  constructor(arg0: never, ...args: never[]);
-}
-
 declare class BatchPlugin<BaseSamplerShaderClass extends BaseSamplerShader.AnyConstructor> {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
   constructor(...args: any[]);
@@ -26,24 +22,6 @@ declare class BatchGeometry extends PIXI.Geometry {
 }
 
 declare global {
-  namespace BaseSamplerShader {
-    type AnyConstructor = typeof AnyBaseSamplerShader;
-
-    type PluginName = (typeof BaseSamplerShader)["classPluginName"];
-
-    interface BatchGeometryData {
-      id: string;
-      size: number;
-      normalized: boolean;
-      type: PIXI.TYPES;
-    }
-
-    type ToGeometryClass<G extends PIXI.BatchGeometry.AnyConstructor | BaseSamplerShader.BatchGeometryData[]> =
-      G extends readonly unknown[] ? typeof BatchGeometry : G;
-
-    type BatchGeometry = typeof PIXI.BatchGeometry | BaseSamplerShader.BatchGeometryData[];
-  }
-
   /**
    * A simple shader to emulate a PIXI.Sprite with a PIXI.Mesh (but faster!)
    */
@@ -64,7 +42,7 @@ declare global {
      * The plugin name associated for this instance, if any.
      * Returns "batch" if the shader is disabled.
      */
-    get pluginName(): BaseSamplerShader.PluginName;
+    get pluginName(): (typeof BaseSamplerShader)["classPluginName"];
 
     /**
      * Activate or deactivate this sampler. If set to false, the batch rendering is redirected to "batch".
@@ -203,4 +181,25 @@ declare global {
 
     override _preRender: AbstractBaseShader.PreRenderFunction;
   }
+
+  namespace BaseSamplerShader {
+    type Any = AnyBaseSamplerShader;
+    type AnyConstructor = typeof AnyBaseSamplerShader;
+
+    interface BatchGeometryData {
+      id: string;
+      size: number;
+      normalized: boolean;
+      type: PIXI.TYPES;
+    }
+
+    type ToGeometryClass<G extends PIXI.BatchGeometry.AnyConstructor | BaseSamplerShader.BatchGeometryData[]> =
+      G extends readonly unknown[] ? typeof BatchGeometry : G;
+
+    type BatchGeometry = typeof PIXI.BatchGeometry | BaseSamplerShader.BatchGeometryData[];
+  }
+}
+
+declare abstract class AnyBaseSamplerShader extends BaseSamplerShader {
+  constructor(arg0: never, ...args: never[]);
 }

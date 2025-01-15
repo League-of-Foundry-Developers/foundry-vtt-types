@@ -1,23 +1,6 @@
 export {};
 
-declare abstract class AnyOccludableSamplerShader extends OccludableSamplerShader {
-  constructor(arg0: never, ...args: never[]);
-}
-
 declare global {
-  namespace OccludableSamplerShader {
-    type AnyConstructor = typeof AnyOccludableSamplerShader;
-
-    interface OccludableBatchData extends PIXI.IBatchableElement {
-      elevation: number;
-      unoccludedAlpha: number;
-      occludedAlpha: number;
-      fadeOcclusion: number;
-      radialOcclusion: number;
-      visionOcclusion: number;
-    }
-  }
-
   /**
    * An occlusion shader to reveal certain area with elevation comparisons.
    * This shader is also working as a batched plugin.
@@ -101,4 +84,23 @@ declare global {
 
     override _preRender: AbstractBaseShader.PreRenderFunction;
   }
+
+  namespace OccludableSamplerShader {
+    type Any = AnyOccludableSamplerShader;
+    type AnyConstructor = typeof AnyOccludableSamplerShader;
+
+    /** @privateRemarks Unlike `DepthSamplerShader`, this class uses every `IBatchableElement` key */
+    interface OccludableBatchData extends PIXI.IBatchableElement {
+      elevation: number;
+      unoccludedAlpha: number;
+      occludedAlpha: number;
+      fadeOcclusion: number;
+      radialOcclusion: number;
+      visionOcclusion: number;
+    }
+  }
+}
+
+declare abstract class AnyOccludableSamplerShader extends OccludableSamplerShader {
+  constructor(arg0: never, ...args: never[]);
 }

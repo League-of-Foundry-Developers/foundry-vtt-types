@@ -1,19 +1,19 @@
 import { expectTypeOf } from "vitest";
 
-const OSS = OccludableSamplerShader;
-let myOSS;
+const TRSS = TokenRingSamplerShader;
+let myTRSS;
 
 declare const someVB: PIXI.ViewableBuffer;
 declare const someU16Array: Uint16Array;
 declare const someF32Array: Float32Array;
 declare const someTex: PIXI.Texture;
 
-expectTypeOf(OSS.reservedTextureUnits).toEqualTypeOf<number>();
-expectTypeOf(OSS.classPluginName).toEqualTypeOf<string>();
-expectTypeOf(OSS.fragmentShader).toEqualTypeOf<string>();
-expectTypeOf(OSS.batchDefaultUniforms).toEqualTypeOf<BatchRenderer.BatchDefaultUniformsFunction>();
+expectTypeOf(TRSS.nullUvs).toEqualTypeOf<Float32Array>();
+expectTypeOf(TRSS.classPluginName).toEqualTypeOf<string>();
+expectTypeOf(TRSS["_batchFragmentShader"]).toEqualTypeOf<string>();
+expectTypeOf(TRSS.batchDefaultUniforms).toEqualTypeOf<BatchRenderer.BatchDefaultUniformsFunction>();
 expectTypeOf(
-  OSS["_packInterleavedGeometry"](
+  TRSS["_packInterleavedGeometry"](
     {
       _texture: someTex,
       elevation: 0,
@@ -35,7 +35,7 @@ expectTypeOf(
     0,
   ),
 ).toEqualTypeOf<void>();
-expectTypeOf((myOSS = OSS.create())).toEqualTypeOf<OccludableSamplerShader>();
+expectTypeOf((myTRSS = TRSS.create())).toEqualTypeOf<TokenRingSamplerShader>();
 
-expectTypeOf(myOSS.paused).toEqualTypeOf<boolean>;
-expectTypeOf(myOSS.pluginName).toEqualTypeOf<string | null>();
+expectTypeOf(myTRSS.paused).toEqualTypeOf<boolean>;
+expectTypeOf(myTRSS.pluginName).toEqualTypeOf<string | null>();

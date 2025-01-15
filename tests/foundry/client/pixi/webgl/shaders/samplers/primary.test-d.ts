@@ -1,19 +1,19 @@
 import { expectTypeOf } from "vitest";
 
-const OSS = OccludableSamplerShader;
-let myOSS;
+const PBSS = PrimaryBaseSamplerShader;
+let myPBSS;
 
 declare const someVB: PIXI.ViewableBuffer;
 declare const someU16Array: Uint16Array;
 declare const someF32Array: Float32Array;
 declare const someTex: PIXI.Texture;
 
-expectTypeOf(OSS.reservedTextureUnits).toEqualTypeOf<number>();
-expectTypeOf(OSS.classPluginName).toEqualTypeOf<string>();
-expectTypeOf(OSS.fragmentShader).toEqualTypeOf<string>();
-expectTypeOf(OSS.batchDefaultUniforms).toEqualTypeOf<BatchRenderer.BatchDefaultUniformsFunction>();
+expectTypeOf(PBSS.reservedTextureUnits).toEqualTypeOf<number>();
+expectTypeOf(PBSS.classPluginName).toEqualTypeOf<string>();
+expectTypeOf(PBSS.fragmentShader).toEqualTypeOf<string>();
+expectTypeOf(PBSS.batchDefaultUniforms).toEqualTypeOf<BatchRenderer.BatchDefaultUniformsFunction>();
 expectTypeOf(
-  OSS["_packInterleavedGeometry"](
+  PBSS["_packInterleavedGeometry"](
     {
       _texture: someTex,
       elevation: 0,
@@ -35,7 +35,7 @@ expectTypeOf(
     0,
   ),
 ).toEqualTypeOf<void>();
-expectTypeOf((myOSS = OSS.create())).toEqualTypeOf<OccludableSamplerShader>();
+expectTypeOf((myPBSS = PBSS.create())).toEqualTypeOf<PrimaryBaseSamplerShader>();
 
-expectTypeOf(myOSS.paused).toEqualTypeOf<boolean>;
-expectTypeOf(myOSS.pluginName).toEqualTypeOf<string | null>();
+expectTypeOf(myPBSS.paused).toEqualTypeOf<boolean>;
+expectTypeOf(myPBSS.pluginName).toEqualTypeOf<string | null>();
