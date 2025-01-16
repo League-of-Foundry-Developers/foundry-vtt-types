@@ -1,14 +1,6 @@
 export {};
 
-declare abstract class AnyBatchShaderGenerator extends BatchShaderGenerator {
-  constructor(arg0: never, ...args: never[]);
-}
-
 declare global {
-  namespace BatchShaderGenerator {
-    type AnyConstructor = typeof AnyBatchShaderGenerator;
-  }
-
   /**
    * A batch shader generator that could handle extra uniforms during initialization.
    * @param vertexSrc    - The vertex shader source
@@ -27,4 +19,13 @@ declare global {
 
     override generateShader(maxTextures: number): PIXI.Shader;
   }
+
+  namespace BatchShaderGenerator {
+    interface Any extends AnyBatchShaderGenerator {}
+    type AnyConstructor = typeof AnyBatchShaderGenerator;
+  }
+}
+
+declare abstract class AnyBatchShaderGenerator extends BatchShaderGenerator {
+  constructor(arg0: never, ...args: never[]);
 }
