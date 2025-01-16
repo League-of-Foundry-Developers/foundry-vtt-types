@@ -1,22 +1,6 @@
 export {};
 
-declare abstract class AnyWaveBackgroundVisionShader extends WaveBackgroundVisionShader {
-  constructor(arg0: never, ...args: never[]);
-}
-
-declare abstract class AnyWaveColorationVisionShader extends WaveColorationVisionShader {
-  constructor(arg0: never, ...args: never[]);
-}
-
 declare global {
-  namespace WaveBackgroundVisionShader {
-    type AnyConstructor = typeof AnyWaveBackgroundVisionShader;
-  }
-
-  namespace WaveColorationVisionShader {
-    type AnyConstructor = typeof AnyWaveColorationVisionShader;
-  }
-
   /**
    * Shader specialized in wave like senses (tremorsenses)
    */
@@ -35,6 +19,11 @@ declare global {
     static override defaultUniforms: AbstractBaseShader.Uniforms;
 
     override get isRequired(): boolean;
+  }
+
+  namespace WaveBackgroundVisionShader {
+    type Any = AnyWaveBackgroundVisionShader;
+    type AnyConstructor = typeof AnyWaveBackgroundVisionShader;
   }
 
   /**
@@ -56,4 +45,17 @@ declare global {
 
     override get isRequired(): boolean;
   }
+
+  namespace WaveColorationVisionShader {
+    type Any = AnyWaveColorationVisionShader;
+    type AnyConstructor = typeof AnyWaveColorationVisionShader;
+  }
+}
+
+declare abstract class AnyWaveBackgroundVisionShader extends WaveBackgroundVisionShader {
+  constructor(arg0: never, ...args: never[]);
+}
+
+declare abstract class AnyWaveColorationVisionShader extends WaveColorationVisionShader {
+  constructor(arg0: never, ...args: never[]);
 }
