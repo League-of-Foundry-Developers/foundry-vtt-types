@@ -72,7 +72,7 @@ declare global {
   namespace AbstractBaseShader {
     type AnyConstructor = typeof AnyAbstractBaseShader;
 
-    type Coordinates = { x: number; y: number; z?: number } | { x: number; y: number; z: number; w: number };
+    type Coordinates = { x: number; y: number; z?: number } | { x: number; y: number; z: number; w?: number };
 
     type UniformValue =
       | boolean
