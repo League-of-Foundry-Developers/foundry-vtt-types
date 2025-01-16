@@ -8,7 +8,7 @@ declare global {
   }
 
   namespace SmokePatchColorationShader {
-    type Any = AnySmokePatchColorationShader;
+    interface Any extends AnySmokePatchColorationShader {}
     type AnyConstructor = typeof AnySmokePatchColorationShader;
   }
 
@@ -20,7 +20,7 @@ declare global {
   }
 
   namespace SmokePatchIlluminationShader {
-    type Any = AnySmokePatchIlluminationShader;
+    interface Any extends AnySmokePatchIlluminationShader {}
     type AnyConstructor = typeof AnySmokePatchIlluminationShader;
   }
 }

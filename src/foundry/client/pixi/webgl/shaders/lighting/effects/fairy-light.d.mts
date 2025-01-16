@@ -14,7 +14,7 @@ declare global {
   }
 
   namespace FairyLightColorationShader {
-    type Any = AnyFairyLightColorationShader;
+    interface Any extends AnyFairyLightColorationShader {}
     type AnyConstructor = typeof AnyFairyLightColorationShader;
   }
 
@@ -26,7 +26,7 @@ declare global {
   }
 
   namespace FairyLightIlluminationShader {
-    type Any = AnyFairyLightColorationShader;
+    interface Any extends AnyFairyLightColorationShader {}
     type AnyConstructor = typeof AnyFairyLightIlluminationShader;
   }
 }

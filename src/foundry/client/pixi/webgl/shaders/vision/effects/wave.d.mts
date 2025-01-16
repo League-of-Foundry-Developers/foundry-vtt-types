@@ -22,7 +22,7 @@ declare global {
   }
 
   namespace WaveBackgroundVisionShader {
-    type Any = AnyWaveBackgroundVisionShader;
+    interface Any extends AnyWaveBackgroundVisionShader {}
     type AnyConstructor = typeof AnyWaveBackgroundVisionShader;
   }
 
@@ -47,7 +47,7 @@ declare global {
   }
 
   namespace WaveColorationVisionShader {
-    type Any = AnyWaveColorationVisionShader;
+    interface Any extends AnyWaveColorationVisionShader {}
     type AnyConstructor = typeof AnyWaveColorationVisionShader;
   }
 }

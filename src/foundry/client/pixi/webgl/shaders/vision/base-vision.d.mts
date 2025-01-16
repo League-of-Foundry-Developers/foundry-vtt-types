@@ -23,7 +23,7 @@ declare global {
   }
 
   namespace AdaptiveVisionShader {
-    type Any = AnyAdaptiveVisionShader;
+    interface Any extends AnyAdaptiveVisionShader {}
     type AnyConstructor = typeof AnyAdaptiveVisionShader;
   }
 }

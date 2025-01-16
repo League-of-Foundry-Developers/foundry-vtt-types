@@ -9,7 +9,7 @@ declare global {
   }
 
   namespace TorchIlluminationShader {
-    type Any = AnyTorchIlluminationShader;
+    interface Any extends AnyTorchIlluminationShader {}
     type AnyConstructor = typeof AnyTorchIlluminationShader;
   }
 
@@ -33,7 +33,7 @@ declare global {
   }
 
   namespace TorchColorationShader {
-    type Any = AnyTorchColorationShader;
+    interface Any extends AnyTorchColorationShader {}
     type AnyConstructor = typeof AnyTorchColorationShader;
   }
 }

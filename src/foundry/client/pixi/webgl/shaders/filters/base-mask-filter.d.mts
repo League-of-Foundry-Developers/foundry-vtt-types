@@ -21,7 +21,7 @@ declare global {
   }
 
   namespace AbstractBaseMaskFilter {
-    type Any = AnyAbstractBaseMaskFilter;
+    interface Any extends AnyAbstractBaseMaskFilter {}
     type AnyConstructor = typeof AnyAbstractBaseMaskFilter;
   }
 }

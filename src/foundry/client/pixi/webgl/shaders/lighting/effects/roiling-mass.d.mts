@@ -9,7 +9,7 @@ declare global {
   }
 
   namespace RoilingDarknessShader {
-    type Any = AnyRoilingDarknessShader;
+    interface Any extends AnyRoilingDarknessShader {}
     type AnyConstructor = typeof AnyRoilingDarknessShader;
   }
 }

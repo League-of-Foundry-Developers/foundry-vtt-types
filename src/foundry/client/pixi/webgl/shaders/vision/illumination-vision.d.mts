@@ -27,7 +27,7 @@ declare global {
   }
 
   namespace IlluminationVisionShader {
-    type Any = AnyIlluminationVisionShader;
+    interface Any extends AnyIlluminationVisionShader {}
     type AnyConstructor = typeof AnyIlluminationVisionShader;
   }
 }

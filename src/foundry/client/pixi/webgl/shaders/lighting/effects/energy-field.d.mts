@@ -14,7 +14,7 @@ declare global {
   }
 
   namespace EnergyFieldColorationShader {
-    type Any = AnyEnergyFieldColorationShader;
+    interface Any extends AnyEnergyFieldColorationShader {}
     type AnyConstructor = typeof AnyEnergyFieldColorationShader;
   }
 }

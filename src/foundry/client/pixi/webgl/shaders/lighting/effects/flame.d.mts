@@ -20,7 +20,7 @@ declare global {
   }
 
   namespace FlameIlluminationShader {
-    type Any = AnyFlameIlluminationShader;
+    interface Any extends AnyFlameIlluminationShader {}
     type AnyConstructor = typeof AnyFlameIlluminationShader;
   }
 
@@ -43,7 +43,7 @@ declare global {
   }
 
   namespace FlameColorationShader {
-    type Any = AnyFlameColorationShader;
+    interface Any extends AnyFlameColorationShader {}
     type AnyConstructor = typeof AnyFlameColorationShader;
   }
 }

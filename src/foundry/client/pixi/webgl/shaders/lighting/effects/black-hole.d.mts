@@ -9,7 +9,7 @@ declare global {
   }
 
   namespace BlackHoleDarknessShader {
-    type Any = AnyBlackHoleDarknessShader;
+    interface Any extends AnyBlackHoleDarknessShader {}
     type AnyConstructor = typeof AnyBlackHoleDarknessShader;
   }
 }

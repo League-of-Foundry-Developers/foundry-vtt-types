@@ -56,7 +56,7 @@ declare global {
   }
 
   namespace AdaptiveBackgroundShader {
-    type Any = AnyAdaptiveBackgroundShader;
+    interface Any extends AnyAdaptiveBackgroundShader {}
     type AnyConstructor = typeof AnyAdaptiveBackgroundShader;
   }
 }

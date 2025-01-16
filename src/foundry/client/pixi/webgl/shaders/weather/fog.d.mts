@@ -35,7 +35,7 @@ declare global {
   }
 
   namespace FogShader {
-    type Any = AnyFogShader;
+    interface Any extends AnyFogShader {}
     type AnyConstructor = typeof AnyFogShader;
 
     interface DefaultUniforms extends AbstractBaseShader.Uniforms, AbstractWeatherShader.DefaultUniforms {

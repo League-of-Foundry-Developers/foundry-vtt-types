@@ -183,7 +183,7 @@ declare global {
   }
 
   namespace BaseSamplerShader {
-    type Any = AnyBaseSamplerShader;
+    interface Any extends AnyBaseSamplerShader {}
     type AnyConstructor = typeof AnyBaseSamplerShader;
 
     interface BatchGeometryData {

@@ -14,7 +14,7 @@ declare global {
   }
 
   namespace RadialRainbowColorationShader {
-    type Any = AnyRadialRainbowColorationShader;
+    interface Any extends AnyRadialRainbowColorationShader {}
     type AnyConstructor = typeof AnyRadialRainbowColorationShader;
   }
 }

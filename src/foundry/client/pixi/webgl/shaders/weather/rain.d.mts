@@ -25,7 +25,7 @@ declare global {
   }
 
   namespace RainShader {
-    type Any = AnyRainShader;
+    interface Any extends AnyRainShader {}
     type AnyConstructor = typeof AnyRainShader;
 
     interface DefaultUniforms extends AbstractBaseShader.Uniforms {

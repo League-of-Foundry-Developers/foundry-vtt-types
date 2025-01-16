@@ -14,7 +14,7 @@ declare global {
   }
 
   namespace VortexColorationShader {
-    type Any = AnyVortexColorationShader;
+    interface Any extends AnyVortexColorationShader {}
     type AnyConstructor = typeof AnyVortexColorationShader;
   }
 
@@ -26,7 +26,7 @@ declare global {
   }
 
   namespace VortexIlluminationShader {
-    type Any = AnyVortexIlluminationShader;
+    interface Any extends AnyVortexIlluminationShader {}
     type AnyConstructor = typeof AnyVortexIlluminationShader;
   }
 }

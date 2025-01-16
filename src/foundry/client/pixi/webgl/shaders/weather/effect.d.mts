@@ -51,7 +51,7 @@ declare global {
   }
 
   namespace WeatherShaderEffect {
-    type Any = AnyWeatherShaderEffect;
+    interface Any extends AnyWeatherShaderEffect {}
     type AnyConstructor = typeof AnyWeatherShaderEffect;
 
     type WeatherShaderEffectConfig = InexactPartial<AbstractBaseShader.Uniforms & WeatherShaderEffect["shader"]>;

@@ -47,7 +47,7 @@ declare global {
   }
 
   namespace TokenRingSamplerShader {
-    type Any = AnyTokenRingSamplerShader;
+    interface Any extends AnyTokenRingSamplerShader {}
     type AnyConstructor = typeof AnyTokenRingSamplerShader;
   }
 }

@@ -13,7 +13,7 @@ declare global {
   }
 
   namespace SwirlingRainbowColorationShader {
-    type Any = AnySwirlingRainbowColorationShader;
+    interface Any extends AnySwirlingRainbowColorationShader {}
     type AnyConstructor = typeof AnySwirlingRainbowColorationShader;
   }
 }

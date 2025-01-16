@@ -15,7 +15,7 @@ declare global {
   }
 
   namespace FogSamplerShader {
-    type Any = AnyFogSamplerShader;
+    interface Any extends AnyFogSamplerShader {}
     type AnyConstructor = typeof AnyFogSamplerShader;
   }
 }

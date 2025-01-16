@@ -23,7 +23,7 @@ declare global {
   }
 
   namespace AmplificationBackgroundVisionShader {
-    type Any = AnyAmplificationBackgroundVisionShader;
+    interface Any extends AnyAmplificationBackgroundVisionShader {}
     type AnyConstructor = typeof AnyAmplificationBackgroundVisionShader;
   }
 }

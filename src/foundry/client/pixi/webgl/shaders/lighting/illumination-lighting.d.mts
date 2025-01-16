@@ -70,7 +70,7 @@ declare global {
   }
 
   namespace AdaptiveIlluminationShader {
-    type Any = AnyAdaptiveIlluminationShader;
+    interface Any extends AnyAdaptiveIlluminationShader {}
     type AnyConstructor = typeof AnyAdaptiveIlluminationShader;
   }
 }

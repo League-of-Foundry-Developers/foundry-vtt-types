@@ -14,7 +14,7 @@ declare global {
   }
 
   namespace ChromaColorationShader {
-    type Any = AnyChromaColorationShader;
+    interface Any extends AnyChromaColorationShader {}
     type AnyConstructor = typeof AnyChromaColorationShader;
   }
 }

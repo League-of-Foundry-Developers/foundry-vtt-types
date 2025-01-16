@@ -31,7 +31,7 @@ declare global {
   }
 
   namespace PrimaryCanvasGroupAmbienceFilter {
-    type Any = AnyPrimaryCanvasGroupAmbienceFilter;
+    interface Any extends AnyPrimaryCanvasGroupAmbienceFilter {}
     type AnyConstructor = typeof AnyPrimaryCanvasGroupAmbienceFilter;
   }
 }

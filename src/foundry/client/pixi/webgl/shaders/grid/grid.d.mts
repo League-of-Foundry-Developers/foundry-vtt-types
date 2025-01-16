@@ -103,7 +103,7 @@ declare global {
   }
 
   namespace GridShader {
-    type Any = AnyGridShader;
+    interface Any extends AnyGridShader {}
     type AnyConstructor = typeof AnyGridShader;
   }
 }

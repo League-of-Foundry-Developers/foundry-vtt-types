@@ -14,7 +14,7 @@ declare global {
   }
 
   namespace HexaDomeColorationShader {
-    type Any = AnyHexaDomeColorationShader;
+    interface Any extends AnyHexaDomeColorationShader {}
     type AnyConstructor = typeof AnyHexaDomeColorationShader;
   }
 }

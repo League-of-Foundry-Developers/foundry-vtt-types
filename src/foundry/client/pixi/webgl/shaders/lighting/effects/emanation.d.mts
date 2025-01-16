@@ -14,7 +14,7 @@ declare global {
   }
 
   namespace EmanationColorationShader {
-    type Any = AnyEmanationColorationShader;
+    interface Any extends AnyEmanationColorationShader {}
     type AnyConstructor = typeof AnyEmanationColorationShader;
   }
 }

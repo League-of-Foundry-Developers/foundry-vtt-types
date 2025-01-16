@@ -9,7 +9,7 @@ declare global {
   }
 
   namespace WaveIlluminationShader {
-    type Any = AnyWaveIlluminationShader;
+    interface Any extends AnyWaveIlluminationShader {}
     type AnyConstructor = typeof AnyWaveIlluminationShader;
   }
 
@@ -21,7 +21,7 @@ declare global {
   }
 
   namespace WaveColorationShader {
-    type Any = AnyWaveColorationShader;
+    interface Any extends AnyWaveColorationShader {}
     type AnyConstructor = typeof AnyWaveColorationShader;
   }
 }

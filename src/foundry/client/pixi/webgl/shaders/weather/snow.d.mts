@@ -21,7 +21,7 @@ declare global {
   }
 
   namespace SnowShader {
-    type Any = AnySnowShader;
+    interface Any extends AnySnowShader {}
     type AnyConstructor = typeof AnySnowShader;
 
     interface DefaultUniforms extends AbstractBaseShader.Uniforms {

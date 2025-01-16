@@ -9,7 +9,7 @@ declare global {
   }
 
   namespace MagicalGloomDarknessShader {
-    type Any = AnyMagicalGloomDarknessShader;
+    interface Any extends AnyMagicalGloomDarknessShader {}
     type AnyConstructor = typeof AnyMagicalGloomDarknessShader;
   }
 }

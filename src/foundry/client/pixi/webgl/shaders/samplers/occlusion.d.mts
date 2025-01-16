@@ -86,7 +86,7 @@ declare global {
   }
 
   namespace OccludableSamplerShader {
-    type Any = AnyOccludableSamplerShader;
+    interface Any extends AnyOccludableSamplerShader {}
     type AnyConstructor = typeof AnyOccludableSamplerShader;
 
     /** @privateRemarks Unlike `DepthSamplerShader`, this class uses every `IBatchableElement` key */

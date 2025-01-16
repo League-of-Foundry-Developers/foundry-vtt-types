@@ -14,7 +14,7 @@ declare global {
   }
 
   namespace StarLightColorationShader {
-    type Any = AnyStarLightColorationShader;
+    interface Any extends AnyStarLightColorationShader {}
     type AnyConstructor = typeof AnyStarLightColorationShader;
   }
 }
