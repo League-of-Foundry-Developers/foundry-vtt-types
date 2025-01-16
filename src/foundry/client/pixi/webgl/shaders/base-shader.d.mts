@@ -77,7 +77,16 @@ declare global {
       | { x: number; y: number; z: number }
       | { x: number; y: number; z: number; w: number };
 
-    type UniformValue = boolean | number | Int32List | Float32List | Coordinates | Coordinates[] | PIXI.Texture;
+    type UniformValue =
+      | boolean
+      | number
+      | Int32List
+      | Float32List
+      | Coordinates
+      | Coordinates[]
+      | PIXI.Texture
+      | Color.RGBColorVector
+      | Color.RGVAColorVector;
 
     // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
     type Uniforms = {

@@ -1,20 +1,6 @@
 import type { InterfaceToObject } from "../../../../../../utils/index.d.mts";
 
-declare abstract class AnyFogShader extends FogShader {
-  constructor(arg0: never, ...args: never[]);
-}
-
 declare global {
-  namespace FogShader {
-    type AnyConstructor = typeof AnyFogShader;
-
-    interface DefaultUniforms extends AbstractBaseShader.Uniforms {
-      intensity: number;
-      rotation: number;
-      slope: number;
-    }
-  }
-
   /**
    * Fog shader effect.
    */
@@ -47,4 +33,19 @@ declare global {
 
     static override fragmentShader(mode: number): string;
   }
+
+  namespace FogShader {
+    type Any = AnyFogShader;
+    type AnyConstructor = typeof AnyFogShader;
+
+    interface DefaultUniforms extends AbstractBaseShader.Uniforms, AbstractWeatherShader.DefaultUniforms {
+      intensity: number;
+      rotation: number;
+      slope: number;
+    }
+  }
+}
+
+declare abstract class AnyFogShader extends FogShader {
+  constructor(arg0: never, ...args: never[]);
 }
