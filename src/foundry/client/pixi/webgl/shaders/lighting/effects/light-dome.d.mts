@@ -14,7 +14,7 @@ declare global {
   }
 
   namespace LightDomeColorationShader {
-    type Any = AnyLightDomeColorationShader;
+    interface Any extends AnyLightDomeColorationShader {}
     type AnyConstructor = typeof AnyLightDomeColorationShader;
   }
 }

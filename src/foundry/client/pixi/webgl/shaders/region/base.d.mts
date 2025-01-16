@@ -69,7 +69,7 @@ declare global {
   }
 
   namespace RegionShader {
-    type Any = AnyRegionShader;
+    interface Any extends AnyRegionShader {}
     type AnyConstructor = typeof AnyRegionShader;
   }
 }

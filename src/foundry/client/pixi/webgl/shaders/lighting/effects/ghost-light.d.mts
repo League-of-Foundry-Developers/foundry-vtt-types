@@ -9,7 +9,7 @@ declare global {
   }
 
   namespace GhostLightIlluminationShader {
-    type Any = AnyGhostLightIlluminationShader;
+    interface Any extends AnyGhostLightIlluminationShader {}
     type AnyConstructor = typeof AnyGhostLightIlluminationShader;
   }
 
@@ -21,7 +21,7 @@ declare global {
   }
 
   namespace GhostLightColorationShader {
-    type Any = AnyGhostLightColorationShader;
+    interface Any extends AnyGhostLightColorationShader {}
     type AnyConstructor = typeof AnyGhostLightColorationShader;
   }
 }

@@ -47,7 +47,7 @@ declare global {
   }
 
   namespace WeatherOcclusionMaskFilter {
-    type Any = AnyWeatherOcclusionMaskFilter;
+    interface Any extends AnyWeatherOcclusionMaskFilter {}
     type AnyConstructor = typeof AnyWeatherOcclusionMaskFilter;
   }
 }

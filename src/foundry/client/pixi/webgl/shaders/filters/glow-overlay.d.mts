@@ -66,7 +66,7 @@ declare global {
   }
 
   namespace GlowOverlayFilter {
-    type Any = AnyGlowOverlayFilter;
+    interface Any extends AnyGlowOverlayFilter {}
     type AnyConstructor = typeof AnyGlowOverlayFilter;
   }
 }

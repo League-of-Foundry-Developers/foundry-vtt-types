@@ -29,7 +29,7 @@ declare global {
   }
 
   namespace BaselineIlluminationSamplerShader {
-    type Any = AnyBaselineIlluminationSamplerShader;
+    interface Any extends AnyBaselineIlluminationSamplerShader {}
     type AnyConstructor = typeof AnyBaselineIlluminationSamplerShader;
   }
 }

@@ -149,7 +149,7 @@ declare global {
   }
 
   namespace AdaptiveLightingShader {
-    type Any = AnyAdaptiveLightingShader;
+    interface Any extends AnyAdaptiveLightingShader {}
     type AnyConstructor = typeof AnyAdaptiveLightingShader;
 
     type ShaderTypes = "coloration" | "illumination" | "background" | (string & {});

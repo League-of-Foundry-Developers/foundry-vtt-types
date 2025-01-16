@@ -82,7 +82,7 @@ declare global {
   }
 
   namespace TextureTransitionFilter {
-    type Any = AnyTextureTransitionFilter;
+    interface Any extends AnyTextureTransitionFilter {}
     type AnyConstructor = typeof AnyTextureTransitionFilter;
 
     type TYPES = Brand<string, "TextureTransitionFilter.TYPES">;

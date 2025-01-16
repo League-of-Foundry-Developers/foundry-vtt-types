@@ -32,7 +32,7 @@ declare global {
   }
 
   namespace ColorationVisionShader {
-    type Any = AnyColorationVisionShader;
+    interface Any extends AnyColorationVisionShader {}
     type AnyConstructor = typeof AnyColorationVisionShader;
   }
 }

@@ -80,7 +80,7 @@ declare global {
   }
 
   namespace AbstractWeatherShader {
-    type Any = AnyAbstractWeatherShader;
+    interface Any extends AnyAbstractWeatherShader {}
     type AnyConstructor = typeof AnyAbstractWeatherShader;
 
     interface CommonUniforms {

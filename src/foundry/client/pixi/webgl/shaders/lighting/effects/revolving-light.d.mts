@@ -27,7 +27,7 @@ declare global {
   }
 
   namespace RevolvingColorationShader {
-    type Any = AnyRevolvingColorationShader;
+    interface Any extends AnyRevolvingColorationShader {}
     type AnyConstructor = typeof AnyRevolvingColorationShader;
   }
 }

@@ -39,7 +39,7 @@ declare global {
   }
 
   namespace AbstractDarknessLevelRegionShader {
-    type Any = AnyAbstractDarknessLevelRegionShader;
+    interface Any extends AnyAbstractDarknessLevelRegionShader {}
     type AnyConstructor = typeof AnyAbstractDarknessLevelRegionShader;
   }
 
@@ -85,7 +85,7 @@ declare global {
   }
 
   namespace AdjustDarknessLevelRegionShader {
-    type Any = AnyAdjustDarknessLevelRegionShader;
+    interface Any extends AnyAdjustDarknessLevelRegionShader {}
     type AnyConstructor = typeof AnyAdjustDarknessLevelRegionShader;
   }
 
@@ -117,7 +117,7 @@ declare global {
   }
 
   namespace IlluminationDarknessLevelRegionShader {
-    type Any = AnyIlluminationDarknessLevelRegionShader;
+    interface Any extends AnyIlluminationDarknessLevelRegionShader {}
     type AnyConstructor = typeof AnyIlluminationDarknessLevelRegionShader;
   }
 }

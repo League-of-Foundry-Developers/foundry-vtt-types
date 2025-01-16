@@ -25,7 +25,7 @@ declare global {
   }
 
   namespace PrimaryBaseSamplerShader {
-    type Any = AnyPrimaryBaseSamplerShader;
+    interface Any extends AnyPrimaryBaseSamplerShader {}
     type AnyConstructor = typeof AnyPrimaryBaseSamplerShader;
   }
 }

@@ -77,7 +77,7 @@ declare global {
   }
 
   namespace OutlineOverlayFilter {
-    type Any = AnyOutlineOverlayFilter;
+    interface Any extends AnyOutlineOverlayFilter {}
     type AnyConstructor = typeof AnyOutlineOverlayFilter;
   }
 }

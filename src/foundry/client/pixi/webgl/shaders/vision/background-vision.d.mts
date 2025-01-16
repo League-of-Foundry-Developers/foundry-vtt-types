@@ -33,7 +33,7 @@ declare global {
   }
 
   namespace BackgroundVisionShader {
-    type Any = AnyBackgroundVisionShader;
+    interface Any extends AnyBackgroundVisionShader {}
     type AnyConstructor = typeof AnyBackgroundVisionShader;
   }
 }

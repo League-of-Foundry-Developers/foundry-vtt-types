@@ -26,7 +26,7 @@ declare global {
   }
 
   namespace VisionMaskFilter {
-    type Any = AnyVisionMaskFilter;
+    interface Any extends AnyVisionMaskFilter {}
     type AnyConstructor = typeof AnyVisionMaskFilter;
   }
 }

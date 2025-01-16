@@ -14,7 +14,7 @@ declare global {
   }
 
   namespace FogColorationShader {
-    type Any = AnyFogColorationShader;
+    interface Any extends AnyFogColorationShader {}
     type AnyConstructor = typeof AnyFogColorationShader;
   }
 }

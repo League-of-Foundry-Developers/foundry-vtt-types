@@ -85,7 +85,7 @@ declare global {
   }
 
   namespace HighlightRegionShader {
-    type Any = AnyHighlightRegionShader;
+    interface Any extends AnyHighlightRegionShader {}
     type AnyConstructor = typeof AnyHighlightRegionShader;
   }
 }

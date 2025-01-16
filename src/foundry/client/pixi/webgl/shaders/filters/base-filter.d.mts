@@ -38,7 +38,7 @@ declare global {
   }
 
   namespace AbstractBaseFilter {
-    type Any = AnyAbstractBaseFilter;
+    interface Any extends AnyAbstractBaseFilter {}
     type AnyConstructor = typeof AnyAbstractBaseFilter;
   }
 }

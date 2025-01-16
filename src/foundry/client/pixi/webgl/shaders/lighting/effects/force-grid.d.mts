@@ -14,7 +14,7 @@ declare global {
   }
 
   namespace ForceGridColorationShader {
-    type Any = AnyForceGridColorationShader;
+    interface Any extends AnyForceGridColorationShader {}
     type AnyConstructor = typeof AnyForceGridColorationShader;
   }
 }

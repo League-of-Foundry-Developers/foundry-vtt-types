@@ -20,7 +20,7 @@ declare global {
   }
 
   namespace InvisibilityFilter {
-    type Any = AnyInvisibilityFilter;
+    interface Any extends AnyInvisibilityFilter {}
     type AnyConstructor = typeof AnyInvisibilityFilter;
   }
 }

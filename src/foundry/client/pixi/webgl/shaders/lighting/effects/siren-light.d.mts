@@ -24,7 +24,7 @@ declare global {
   }
 
   namespace SirenColorationShader {
-    type Any = AnySirenColorationShader;
+    interface Any extends AnySirenColorationShader {}
     type AnyConstructor = typeof AnySirenColorationShader;
   }
 
@@ -49,7 +49,7 @@ declare global {
   }
 
   namespace SirenIlluminationShader {
-    type Any = AnySirenIlluminationShader;
+    interface Any extends AnySirenIlluminationShader {}
     type AnyConstructor = typeof AnySirenIlluminationShader;
   }
 }

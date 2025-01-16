@@ -9,7 +9,7 @@ declare global {
   }
 
   namespace BewitchingWaveColorationShader {
-    type Any = AnyBewitchingWaveColorationShader;
+    interface Any extends AnyBewitchingWaveColorationShader {}
     type AnyConstructor = typeof AnyBewitchingWaveColorationShader;
   }
 
@@ -21,7 +21,7 @@ declare global {
   }
 
   namespace BewitchingWaveIlluminationShader {
-    type Any = AnyBewitchingWaveIlluminationShader;
+    interface Any extends AnyBewitchingWaveIlluminationShader {}
     type AnyConstructor = typeof AnyBewitchingWaveIlluminationShader;
   }
 }

@@ -57,7 +57,7 @@ declare global {
   }
 
   namespace VisibilityFilter {
-    type Any = AnyVisibilityFilter;
+    interface Any extends AnyVisibilityFilter {}
     type AnyConstructor = typeof AnyVisibilityFilter;
 
     /** @internal */

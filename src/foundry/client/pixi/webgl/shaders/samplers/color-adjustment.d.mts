@@ -54,7 +54,7 @@ declare global {
   }
 
   namespace ColorAdjustmentsSamplerShader {
-    type Any = AnyColorAdjustmentsSamplerShader;
+    interface Any extends AnyColorAdjustmentsSamplerShader {}
     type AnyConstructor = typeof AnyColorAdjustmentsSamplerShader;
   }
 
@@ -104,7 +104,7 @@ declare global {
   }
 
   namespace AmplificationSamplerShader {
-    type Any = AnyAmplificationSamplerShader;
+    interface Any extends AnyAmplificationSamplerShader {}
     type AnyConstructor = typeof AnyAmplificationSamplerShader;
   }
 }

@@ -64,7 +64,7 @@ declare global {
   }
 
   namespace AdaptiveDarknessShader {
-    type Any = AnyAdaptiveDarknessShader;
+    interface Any extends AnyAdaptiveDarknessShader {}
     type AnyConstructor = typeof AnyAdaptiveDarknessShader;
   }
 }

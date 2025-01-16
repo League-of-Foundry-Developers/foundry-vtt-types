@@ -91,7 +91,7 @@ declare global {
   }
 
   namespace AlphaBlurFilterPass {
-    type Any = AnyAlphaBlurFilterPass;
+    interface Any extends AnyAlphaBlurFilterPass {}
     type AnyConstructor = typeof AnyAlphaBlurFilterPass;
   }
 
@@ -173,7 +173,7 @@ declare global {
   }
 
   namespace AlphaBlurFilter {
-    type Any = AnyAlphaBlurFilter;
+    interface Any extends AnyAlphaBlurFilter {}
     type AnyConstructor = typeof AnyAlphaBlurFilter;
   }
 }

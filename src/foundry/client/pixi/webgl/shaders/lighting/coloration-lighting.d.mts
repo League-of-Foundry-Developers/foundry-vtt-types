@@ -64,7 +64,7 @@ declare global {
   }
 
   namespace AdaptiveColorationShader {
-    type Any = AnyAdaptiveColorationShader;
+    interface Any extends AnyAdaptiveColorationShader {}
     type AnyConstructor = typeof AnyAdaptiveColorationShader;
   }
 }

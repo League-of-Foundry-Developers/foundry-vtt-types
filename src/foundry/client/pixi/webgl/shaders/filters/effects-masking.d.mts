@@ -102,7 +102,7 @@ declare global {
   }
 
   namespace VisualEffectsMaskingFilter {
-    type Any = AnyVisualEffectsMaskingFilter;
+    interface Any extends AnyVisualEffectsMaskingFilter {}
     type AnyConstructor = typeof AnyVisualEffectsMaskingFilter;
 
     type PostProcessModes = Array<keyof typeof VisualEffectsMaskingFilter.POST_PROCESS_TECHNIQUES>;

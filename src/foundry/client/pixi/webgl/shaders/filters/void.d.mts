@@ -9,7 +9,7 @@ declare global {
   }
 
   namespace VoidFilter {
-    type Any = AnyVoidFilter;
+    interface Any extends AnyVoidFilter {}
     type AnyConstructor = typeof AnyVoidFilter;
   }
 }

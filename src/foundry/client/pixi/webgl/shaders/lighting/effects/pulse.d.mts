@@ -9,7 +9,7 @@ declare global {
   }
 
   namespace PulseIlluminationShader {
-    type Any = AnyPulseIlluminationShader;
+    interface Any extends AnyPulseIlluminationShader {}
     type AnyConstructor = typeof AnyPulseIlluminationShader;
   }
 
@@ -32,7 +32,7 @@ declare global {
   }
 
   namespace PulseColorationShader {
-    type Any = AnyPulseColorationShader;
+    interface Any extends AnyPulseColorationShader {}
     type AnyConstructor = typeof AnyPulseColorationShader;
   }
 }

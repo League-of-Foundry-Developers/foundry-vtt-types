@@ -9,7 +9,7 @@ declare global {
   }
 
   namespace SunburstIlluminationShader {
-    type Any = AnySunburstIlluminationShader;
+    interface Any extends AnySunburstIlluminationShader {}
     type AnyConstructor = typeof AnySunburstIlluminationShader;
   }
 
@@ -21,7 +21,7 @@ declare global {
   }
 
   namespace SunburstColorationShader {
-    type Any = AnySunburstColorationShader;
+    interface Any extends AnySunburstColorationShader {}
     type AnyConstructor = typeof AnySunburstColorationShader;
   }
 }

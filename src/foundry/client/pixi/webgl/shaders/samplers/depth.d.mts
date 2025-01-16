@@ -86,7 +86,7 @@ declare global {
   }
 
   namespace DepthSamplerShader {
-    type Any = AnyDepthSamplerShader;
+    interface Any extends AnyDepthSamplerShader {}
     type AnyConstructor = typeof AnyDepthSamplerShader;
 
     /** @internal */
