@@ -76,7 +76,7 @@ declare global {
      */
     speed: number;
 
-    override _preRender: AbstractBaseShader.PreRenderFunction;
+    protected override _preRender: AbstractBaseShader.PreRenderFunction;
   }
 
   namespace AbstractWeatherShader {

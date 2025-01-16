@@ -179,7 +179,7 @@ declare global {
       }>,
     ): void;
 
-    override _preRender: AbstractBaseShader.PreRenderFunction;
+    protected override _preRender: AbstractBaseShader.PreRenderFunction;
   }
 
   namespace BaseSamplerShader {

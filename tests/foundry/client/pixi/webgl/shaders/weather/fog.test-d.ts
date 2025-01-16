@@ -10,4 +10,4 @@ expectTypeOf(FS.OCTAVES(4)).toEqualTypeOf<string>();
 expectTypeOf((myFS = FS.create())).toEqualTypeOf<FogShader>();
 
 expectTypeOf(myFS.speed).toEqualTypeOf<number>();
-expectTypeOf(myFS._preRender).toEqualTypeOf<AbstractBaseShader.PreRenderFunction>();
+expectTypeOf(myFS["_preRender"]).toEqualTypeOf<AbstractBaseShader.PreRenderFunction>();

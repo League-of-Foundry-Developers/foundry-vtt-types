@@ -35,7 +35,7 @@ declare global {
      */
     get darknessLevel(): number;
 
-    override _preRender: AbstractBaseShader.PreRenderFunction;
+    protected override _preRender: AbstractBaseShader.PreRenderFunction;
   }
 
   namespace AbstractDarknessLevelRegionShader {
@@ -81,7 +81,7 @@ declare global {
      */
     static override defaultUniforms: AbstractBaseShader.Uniforms;
 
-    override _preRender: AbstractBaseShader.PreRenderFunction;
+    protected override _preRender: AbstractBaseShader.PreRenderFunction;
   }
 
   namespace AdjustDarknessLevelRegionShader {

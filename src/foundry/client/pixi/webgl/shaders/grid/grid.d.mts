@@ -99,7 +99,7 @@ declare global {
      */
     configure(options?: NullishProps<{ style: AbstractBaseShader.UniformValue }>): void;
 
-    override _preRender: AbstractBaseShader.PreRenderFunction;
+    protected override _preRender: AbstractBaseShader.PreRenderFunction;
   }
 
   namespace GridShader {

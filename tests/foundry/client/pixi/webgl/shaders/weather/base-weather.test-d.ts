@@ -9,4 +9,4 @@ expectTypeOf(AWS.vertexShader).toEqualTypeOf<string>();
 expectTypeOf((myAWS = AWS.create())).toEqualTypeOf<AbstractWeatherShader>();
 
 expectTypeOf(myAWS.speed).toEqualTypeOf<number>();
-expectTypeOf(myAWS._preRender).toEqualTypeOf<AbstractBaseShader.PreRenderFunction>();
+expectTypeOf(myAWS["_preRender"]).toEqualTypeOf<AbstractBaseShader.PreRenderFunction>();

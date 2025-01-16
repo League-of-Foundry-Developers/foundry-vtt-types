@@ -81,7 +81,7 @@ declare global {
      */
     static override defaultUniforms: AbstractBaseShader.Uniforms;
 
-    override _preRender: AbstractBaseShader.PreRenderFunction;
+    protected override _preRender: AbstractBaseShader.PreRenderFunction;
   }
 
   namespace HighlightRegionShader {

@@ -57,9 +57,9 @@ declare global {
      * Perform operations which are required before binding the Shader to the Renderer.
      * @param mesh - The mesh display object linked to this shader.
      * @param renderer - The renderer
-     * @remarks Foundry marks this as protected but it gets called from `QuadMesh#_render`
+     * @privateRemarks Foundry marks this as protected despite it getting called from `QuadMesh#_render`
      */
-    _preRender: AbstractBaseShader.PreRenderFunction;
+    protected _preRender: AbstractBaseShader.PreRenderFunction;
 
     /**
      * The initial default values of shader uniforms

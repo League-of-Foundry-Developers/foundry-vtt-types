@@ -82,7 +82,7 @@ declare global {
      */
     protected static _fragmentShader: string;
 
-    override _preRender: AbstractBaseShader.PreRenderFunction;
+    protected override _preRender: AbstractBaseShader.PreRenderFunction;
   }
 
   namespace DepthSamplerShader {
