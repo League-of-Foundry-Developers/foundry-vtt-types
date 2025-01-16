@@ -1,14 +1,6 @@
 export {};
 
-declare abstract class AnyBackgroundVisionShader extends BackgroundVisionShader {
-  constructor(arg0: never, ...args: never[]);
-}
-
 declare global {
-  namespace BackgroundVisionShader {
-    type AnyConstructor = typeof AnyBackgroundVisionShader;
-  }
-
   /**
    * The default background shader used for vision sources
    */
@@ -39,4 +31,13 @@ declare global {
      */
     get isRequired(): boolean;
   }
+
+  namespace BackgroundVisionShader {
+    type Any = AnyBackgroundVisionShader;
+    type AnyConstructor = typeof AnyBackgroundVisionShader;
+  }
+}
+
+declare abstract class AnyBackgroundVisionShader extends BackgroundVisionShader {
+  constructor(arg0: never, ...args: never[]);
 }
