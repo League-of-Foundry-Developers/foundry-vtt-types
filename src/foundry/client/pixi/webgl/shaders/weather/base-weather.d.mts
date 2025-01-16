@@ -5,10 +5,6 @@ import type {
   FixedInstanceType,
 } from "../../../../../../utils/index.d.mts";
 
-declare abstract class AnyAbstractWeatherShader extends AbstractWeatherShader {
-  constructor(arg0: never, ...args: never[]);
-}
-
 type AbstractBaseShaderClass = typeof AbstractBaseShader;
 
 interface InternalAbstractWeatherShader_Interface extends AbstractBaseShaderClass {
@@ -26,31 +22,6 @@ class InternalAbstractWeatherShader<
 > extends InternalAbstractWeatherShader_Const<_ComputedUniforms> {}
 
 declare global {
-  namespace AbstractWeatherShader {
-    type AnyConstructor = typeof AnyAbstractWeatherShader;
-
-    interface CommonUniforms {
-      terrainUvMatrix: PIXI.Matrix;
-      useOcclusion: boolean;
-      occlusionTexture: PIXI.Matrix | null;
-      reverseOcclusion: boolean;
-      occlusionWeights: number[];
-      useTerrain: boolean;
-      terrainTexture: PIXI.Texture | null;
-      reverseTerrain: boolean;
-      terrainWeights: number[];
-      alpha: number;
-      tint: number[];
-      screenDimensions: [number, number];
-      effectDimensions: [number, number];
-      depthElevation: number;
-      time: number;
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    interface DefaultUniforms {}
-  }
-
   /**
    * The base shader class for weather shaders.
    */
@@ -107,4 +78,34 @@ declare global {
 
     override _preRender: AbstractBaseShader.PreRenderFunction;
   }
+
+  namespace AbstractWeatherShader {
+    type Any = AnyAbstractWeatherShader;
+    type AnyConstructor = typeof AnyAbstractWeatherShader;
+
+    interface CommonUniforms {
+      terrainUvMatrix: PIXI.Matrix;
+      useOcclusion: boolean;
+      occlusionTexture: PIXI.Matrix | null;
+      reverseOcclusion: boolean;
+      occlusionWeights: number[];
+      useTerrain: boolean;
+      terrainTexture: PIXI.Texture | null;
+      reverseTerrain: boolean;
+      terrainWeights: number[];
+      alpha: number;
+      tint: Color.RGBColorVector;
+      screenDimensions: [number, number];
+      effectDimensions: [number, number];
+      depthElevation: number;
+      time: number;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    interface DefaultUniforms {}
+  }
+}
+
+declare abstract class AnyAbstractWeatherShader extends AbstractWeatherShader {
+  constructor(arg0: never, ...args: never[]);
 }
