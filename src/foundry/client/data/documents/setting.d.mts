@@ -3,7 +3,7 @@ import type BaseSetting from "../../../common/documents/setting.d.mts";
 
 declare global {
   namespace Setting {
-    type Metadata = Document.MetadataFor<Setting>;
+    type Metadata = Document.MetadataFor<"Setting">;
 
     type ConfiguredClass = Document.ConfiguredClassForName<"Setting">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Setting">;

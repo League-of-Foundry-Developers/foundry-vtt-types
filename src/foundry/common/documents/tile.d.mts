@@ -48,7 +48,7 @@ export default BaseTile;
 declare namespace BaseTile {
   type Parent = Scene.ConfiguredInstance | null;
 
-  type Metadata = Document.MetadataFor<BaseTile>;
+  type Metadata = Document.MetadataFor<"Tile">;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.CreateData<Schema>;

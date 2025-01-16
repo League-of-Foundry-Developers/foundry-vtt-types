@@ -5,7 +5,7 @@ import type BaseFogExploration from "../../../common/documents/fog-exploration.d
 
 declare global {
   namespace FogExploration {
-    type Metadata = Document.MetadataFor<FogExploration>;
+    type Metadata = Document.MetadataFor<"FogExploration">;
 
     type ConfiguredClass = Document.ConfiguredClassForName<"FogExploration">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"FogExploration">;

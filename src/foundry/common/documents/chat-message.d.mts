@@ -80,7 +80,7 @@ declare namespace BaseChatMessage {
 
   type TypeNames = Game.Model.TypeNames<"ChatMessage">;
 
-  type Metadata = Document.MetadataFor<BaseChatMessage>;
+  type Metadata = Document.MetadataFor<"ChatMessage">;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.CreateData<Schema>;

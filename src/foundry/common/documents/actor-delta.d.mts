@@ -73,7 +73,7 @@ declare namespace BaseActorDelta {
   type Properties = fields.SchemaField.InitializedData<Schema>;
   type Source = fields.SchemaField.PersistedData<Schema>;
 
-  type Metadata = Document.MetadataFor<BaseActorDelta>;
+  type Metadata = Document.MetadataFor<"ActorDelta">;
 
   interface Schema<TypeName extends TypeNames = TypeNames> extends DataSchema {
     /**

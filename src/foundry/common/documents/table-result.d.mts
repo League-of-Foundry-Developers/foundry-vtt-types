@@ -50,7 +50,7 @@ declare namespace BaseTableResult {
 
   type TypeNames = Game.Model.TypeNames<"TableResult">;
 
-  type Metadata = Document.MetadataFor<BaseTableResult>;
+  type Metadata = Document.MetadataFor<"TableResult">;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.CreateData<Schema>;

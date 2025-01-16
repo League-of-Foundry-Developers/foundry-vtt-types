@@ -3,7 +3,9 @@ import type BaseWall from "../../../common/documents/wall.d.mts";
 
 declare global {
   namespace WallDocument {
-    type Metadata = Document.MetadataFor<WallDocument>;
+    type Metadata = Document.MetadataFor<"Wall">;
+
+    type A = WallDocument extends { readonly documentName: infer Name extends Document.Type } ? Name : never;
 
     type ConfiguredClass = Document.ConfiguredClassForName<"Wall">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Wall">;

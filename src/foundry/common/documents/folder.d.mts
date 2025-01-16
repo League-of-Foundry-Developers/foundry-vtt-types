@@ -57,7 +57,7 @@ declare namespace BaseFolder {
 
   type TypeNames = Game.Model.TypeNames<"Folder">;
 
-  type Metadata = Document.MetadataFor<BaseFolder>;
+  type Metadata = Document.MetadataFor<"Folder">;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.CreateData<Schema>;

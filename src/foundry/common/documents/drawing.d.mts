@@ -76,7 +76,7 @@ export default BaseDrawing;
 declare namespace BaseDrawing {
   type Parent = Scene.ConfiguredInstance | null;
 
-  type Metadata = Document.MetadataFor<BaseDrawing>;
+  type Metadata = Document.MetadataFor<"Drawing">;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.CreateData<Schema>;

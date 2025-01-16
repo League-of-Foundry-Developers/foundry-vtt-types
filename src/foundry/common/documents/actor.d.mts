@@ -86,7 +86,7 @@ declare namespace BaseActor {
 
   type TypeNames = Game.Model.TypeNames<"Actor">;
 
-  type Metadata = Document.MetadataFor<BaseActor>;
+  type Metadata = Document.MetadataFor<"Actor">;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.CreateData<Schema>;

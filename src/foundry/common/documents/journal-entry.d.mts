@@ -36,7 +36,7 @@ export default BaseJournalEntry;
 declare namespace BaseJournalEntry {
   type Parent = null;
 
-  type Metadata = Document.MetadataFor<BaseJournalEntry>;
+  type Metadata = Document.MetadataFor<"JournalEntry">;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.CreateData<Schema>;

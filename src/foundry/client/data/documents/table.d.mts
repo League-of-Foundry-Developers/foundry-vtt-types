@@ -4,7 +4,7 @@ import type BaseRollTable from "../../../common/documents/roll-table.d.mts";
 
 declare global {
   namespace RollTable {
-    type Metadata = Document.MetadataFor<RollTable>;
+    type Metadata = Document.MetadataFor<"RollTable">;
 
     type ConfiguredClass = Document.ConfiguredClassForName<"RollTable">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"RollTable">;

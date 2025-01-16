@@ -5,7 +5,7 @@ import type BaseCard from "../../../common/documents/card.d.mts";
 
 declare global {
   namespace Card {
-    type Metadata = Document.MetadataFor<Card>;
+    type Metadata = Document.MetadataFor<"Card">;
 
     type ConfiguredClass = Document.ConfiguredClassForName<"Card">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Card">;

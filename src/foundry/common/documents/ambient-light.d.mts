@@ -36,7 +36,7 @@ export default BaseAmbientLight;
 declare namespace BaseAmbientLight {
   type Parent = Scene.ConfiguredInstance | null;
 
-  type Metadata = Document.MetadataFor<BaseAmbientLight>;
+  type Metadata = Document.MetadataFor<"AmbientLight">;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.CreateData<Schema>;

@@ -29,7 +29,7 @@ export default BaseRegion;
 declare namespace BaseRegion {
   type Parent = Scene.ConfiguredInstance | null;
 
-  type Metadata = Document.MetadataFor<BaseRegion>;
+  type Metadata = Document.MetadataFor<"Region">;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.CreateData<Schema>;

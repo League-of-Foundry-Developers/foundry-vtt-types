@@ -1,11 +1,10 @@
-import type { DeepPartial, InexactPartial, FixedInstanceType } from "../../../../utils/index.d.mts";
-import type { fields } from "../../../common/data/module.d.mts";
+import type { DeepPartial, InexactPartial } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type BaseCards from "../../../common/documents/cards.d.mts";
 
 declare global {
   namespace Cards {
-    type Metadata = Document.MetadataFor<Cards>;
+    type Metadata = Document.MetadataFor<"Cards">;
 
     type ConfiguredClass = Document.ConfiguredClassForName<"Cards">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Cards">;

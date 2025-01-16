@@ -68,7 +68,7 @@ declare namespace BaseCard {
 
   type TypeNames = Game.Model.TypeNames<"Card">;
 
-  type Metadata = Document.MetadataFor<BaseCard>;
+  type Metadata = Document.MetadataFor<"Card">;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.CreateData<Schema>;

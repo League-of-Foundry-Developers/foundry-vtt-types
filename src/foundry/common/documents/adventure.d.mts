@@ -42,7 +42,7 @@ export default BaseAdventure;
 declare namespace BaseAdventure {
   type Parent = null;
 
-  type Metadata = Document.MetadataFor<BaseAdventure>;
+  type Metadata = Document.MetadataFor<"Adventure">;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.CreateData<Schema>;

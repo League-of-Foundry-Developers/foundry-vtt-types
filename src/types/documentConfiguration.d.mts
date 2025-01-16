@@ -191,7 +191,7 @@ type ConformedConfiguredClass = {
   [K in keyof _ConfiguredDocumentClass]: MakeConform<
     _ConfiguredDocumentClass[K],
     Document.Internal.Constructor,
-    Document.ConfigurationFailureClass & DefaultDocumentClass<K>
+    ConfigurationFailure[K]
   >;
 };
 
@@ -228,7 +228,7 @@ interface ActorDeltaMetadata
     }>
   > {}
 
-interface ActorMetadata<ThisType extends Document.Internal.Instance.Any>
+interface ActorMetadata
   extends Merge<
     Document.Metadata.Default,
     Readonly<{
@@ -241,8 +241,12 @@ interface ActorMetadata<ThisType extends Document.Internal.Instance.Any>
       label: string;
       labelPlural: string;
       permissions: {
-        create(user: User.Internal.ConfiguredInstance, doc: ThisType): boolean;
-        update(user: User.Internal.ConfiguredInstance, doc: ThisType, data: BaseActor.UpdateData): boolean;
+        create(user: User.Internal.ConfiguredInstance, doc: Actor.ConfiguredInstance): boolean;
+        update(
+          user: User.Internal.ConfiguredInstance,
+          doc: Actor.ConfiguredInstance,
+          data: BaseActor.UpdateData,
+        ): boolean;
       };
       schemaVersion: string;
     }>
@@ -286,7 +290,7 @@ interface AmbientSoundMetadata
     }>
   > {}
 
-interface CardMetadata<ThisType extends Document.Internal.Instance.Any>
+interface CardMetadata
   extends Merge<
     Document.Metadata.Default,
     Readonly<{
@@ -297,8 +301,16 @@ interface CardMetadata<ThisType extends Document.Internal.Instance.Any>
       label: string;
       labelPlural: string;
       permissions: {
-        create(user: User.Internal.ConfiguredInstance, doc: ThisType, data: BaseCard.UpdateData): boolean;
-        update(user: User.Internal.ConfiguredInstance, doc: ThisType, data: BaseCard.UpdateData): boolean;
+        create(
+          user: User.Internal.ConfiguredInstance,
+          doc: Card.ConfiguredInstance,
+          data: BaseCard.UpdateData,
+        ): boolean;
+        update(
+          user: User.Internal.ConfiguredInstance,
+          doc: Card.ConfiguredInstance,
+          data: BaseCard.UpdateData,
+        ): boolean;
       };
       compendiumIndexFields: ["name", "type", "suit", "sort"];
       schemaVersion: string;
@@ -322,7 +334,7 @@ interface CardsMetadata
     }>
   > {}
 
-interface ChatMessageMetadata<ThisType extends Document.Internal.Instance.Any>
+interface ChatMessageMetadata
   extends Merge<
     Document.Metadata.Default,
     Readonly<{
@@ -333,14 +345,18 @@ interface ChatMessageMetadata<ThisType extends Document.Internal.Instance.Any>
       hasTypeData: true;
       isPrimary: true;
       permissions: {
-        create(user: User.Internal.ConfiguredInstance, doc: ThisType): boolean;
-        update(user: User.Internal.ConfiguredInstance, doc: ThisType, data: BaseChatMessage.UpdateData): boolean;
+        create(user: User.Internal.ConfiguredInstance, doc: ChatMessage.ConfiguredInstance): boolean;
+        update(
+          user: User.Internal.ConfiguredInstance,
+          doc: ChatMessage.ConfiguredInstance,
+          data: BaseChatMessage.UpdateData,
+        ): boolean;
       };
       schemaVersion: string;
     }>
   > {}
 
-interface CombatMetadata<ThisType extends Document.Internal.Instance.Any>
+interface CombatMetadata
   extends Merge<
     Document.Metadata.Default,
     Readonly<{
@@ -353,13 +369,17 @@ interface CombatMetadata<ThisType extends Document.Internal.Instance.Any>
       };
       hasTypeData: true;
       permissions: {
-        update(user: User.Internal.ConfiguredInstance, doc: ThisType, data: BaseCombat.UpdateData): boolean;
+        update(
+          user: User.Internal.ConfiguredInstance,
+          doc: Combat.ConfiguredInstance,
+          data: BaseCombat.UpdateData,
+        ): boolean;
       };
       schemaVersion: string;
     }>
   > {}
 
-interface CombatantMetadata<ThisType extends Document.Internal.Instance.Any>
+interface CombatantMetadata
   extends Merge<
     Document.Metadata.Default,
     Readonly<{
@@ -371,13 +391,17 @@ interface CombatantMetadata<ThisType extends Document.Internal.Instance.Any>
       hasTypeData: true;
       schemaVersion: string;
       permissions: {
-        create(user: User.Internal.ConfiguredInstance, doc: ThisType): boolean;
-        update(user: User.Internal.ConfiguredInstance, doc: ThisType, data: BaseCombatant.UpdateData): boolean;
+        create(user: User.Internal.ConfiguredInstance, doc: Combatant.ConfiguredInstance): boolean;
+        update(
+          user: User.Internal.ConfiguredInstance,
+          doc: Combatant.ConfiguredInstance,
+          data: BaseCombatant.UpdateData,
+        ): boolean;
       };
     }>
   > {}
 
-interface DrawingMetadata<ThisType extends Document.Internal.Instance.Any>
+interface DrawingMetadata
   extends Merge<
     Document.Metadata.Default,
     Readonly<{
@@ -388,14 +412,22 @@ interface DrawingMetadata<ThisType extends Document.Internal.Instance.Any>
       isEmbedded: true;
       permissions: {
         create: "DRAWING_CREATE";
-        update(user: User.Internal.ConfiguredInstance, doc: ThisType, data: BaseDrawing.UpdateData): boolean;
-        delete(user: User.Internal.ConfiguredInstance, doc: ThisType, data: BaseDrawing.UpdateData): boolean;
+        update(
+          user: User.Internal.ConfiguredInstance,
+          doc: DrawingDocument.ConfiguredInstance,
+          data: BaseDrawing.UpdateData,
+        ): boolean;
+        delete(
+          user: User.Internal.ConfiguredInstance,
+          doc: DrawingDocument.ConfiguredInstance,
+          data: BaseDrawing.UpdateData,
+        ): boolean;
       };
       schemaVersion: string;
     }>
   > {}
 
-interface FogExplorationMetadata<ThisType extends Document.Internal.Instance.Any>
+interface FogExplorationMetadata
   extends Merge<
     Document.Metadata.Default,
     Readonly<{
@@ -406,8 +438,16 @@ interface FogExplorationMetadata<ThisType extends Document.Internal.Instance.Any
       isPrimary: true;
       permissions: {
         create: "PLAYER";
-        update(user: User.Internal.ConfiguredInstance, doc: ThisType, data: BaseFogExploration.UpdateData): boolean;
-        delete(user: User.Internal.ConfiguredInstance, doc: ThisType, data: BaseFogExploration.UpdateData): boolean;
+        update(
+          user: User.Internal.ConfiguredInstance,
+          doc: FogExploration.ConfiguredInstance,
+          data: BaseFogExploration.UpdateData,
+        ): boolean;
+        delete(
+          user: User.Internal.ConfiguredInstance,
+          doc: FogExploration.ConfiguredInstance,
+          data: BaseFogExploration.UpdateData,
+        ): boolean;
       };
       schemaVersion: string;
     }>
@@ -477,7 +517,7 @@ interface JournalEntryMetadata
     }>
   > {}
 
-interface MacroMetadata<ThisType extends Document.Internal.Instance.Any>
+interface MacroMetadata
   extends Merge<
     Document.Metadata.Default,
     Readonly<{
@@ -489,14 +529,14 @@ interface MacroMetadata<ThisType extends Document.Internal.Instance.Any>
       labelPlural: string;
       coreTypes: CONST.MACRO_TYPES[];
       permissions: {
-        create(user: User.Internal.ConfiguredInstance, doc: ThisType): boolean;
-        update(user: User.Internal.ConfiguredInstance, doc: ThisType): boolean;
+        create(user: User.Internal.ConfiguredInstance, doc: Macro.ConfiguredInstance): boolean;
+        update(user: User.Internal.ConfiguredInstance, doc: Macro.ConfiguredInstance): boolean;
       };
       schemaVersion: string;
     }>
   > {}
 
-interface MeasuredTemplateMetadata<ThisType extends Document.Internal.Instance.Any>
+interface MeasuredTemplateMetadata
   extends Merge<
     Document.Metadata.Default,
     Readonly<{
@@ -506,9 +546,17 @@ interface MeasuredTemplateMetadata<ThisType extends Document.Internal.Instance.A
       labelPlural: string;
       isEmbedded: true;
       permissions: {
-        create(user: User.Internal.ConfiguredInstance, doc: ThisType): boolean;
-        update(user: User.Internal.ConfiguredInstance, doc: ThisType, data: BaseMeasuredTemplate.UpdateData): boolean;
-        delete(user: User.Internal.ConfiguredInstance, doc: ThisType, data: BaseMeasuredTemplate.UpdateData): boolean;
+        create(user: User.Internal.ConfiguredInstance, doc: MeasuredTemplateDocument.ConfiguredInstance): boolean;
+        update(
+          user: User.Internal.ConfiguredInstance,
+          doc: MeasuredTemplateDocument.ConfiguredInstance,
+          data: BaseMeasuredTemplate.UpdateData,
+        ): boolean;
+        delete(
+          user: User.Internal.ConfiguredInstance,
+          doc: MeasuredTemplateDocument.ConfiguredInstance,
+          data: BaseMeasuredTemplate.UpdateData,
+        ): boolean;
       };
       schemaVersion: string;
     }>
@@ -561,7 +609,7 @@ interface PlaylistMetadata
     }>
   > {}
 
-interface RegionBehaviorMetadata<ThisType extends Document.Internal.Instance.Any>
+interface RegionBehaviorMetadata
   extends Merge<
     Document.Metadata.Default,
     Readonly<{
@@ -582,8 +630,12 @@ interface RegionBehaviorMetadata<ThisType extends Document.Internal.Instance.Any
       hasTypeData: true;
       isEmbedded: true;
       permissions: {
-        create(user: User.Internal.ConfiguredInstance, doc: ThisType): boolean;
-        update(user: User.Internal.ConfiguredInstance, doc: ThisType, data: BaseRegionBehavior.UpdateData): boolean;
+        create(user: User.Internal.ConfiguredInstance, doc: RegionBehavior.ConfiguredInstance): boolean;
+        update(
+          user: User.Internal.ConfiguredInstance,
+          doc: RegionBehavior.ConfiguredInstance,
+          data: BaseRegionBehavior.UpdateData,
+        ): boolean;
       };
       schemaVersion: string;
     }>
@@ -646,7 +698,7 @@ interface SceneMetadata
     }>
   > {}
 
-interface SettingMetadata<ThisType extends Document.Internal.Instance.Any>
+interface SettingMetadata
   extends Merge<
     Document.Metadata.Default,
     Readonly<{
@@ -655,15 +707,27 @@ interface SettingMetadata<ThisType extends Document.Internal.Instance.Any>
       label: string;
       labelPlural: string;
       permissions: {
-        create(user: User.Internal.ConfiguredInstance, doc: ThisType, data: BaseSetting.UpdateData): boolean;
-        update(user: User.Internal.ConfiguredInstance, doc: ThisType, data: BaseSetting.UpdateData): boolean;
-        delete(user: User.Internal.ConfiguredInstance, doc: ThisType, data: BaseSetting.UpdateData): boolean;
+        create(
+          user: User.Internal.ConfiguredInstance,
+          doc: Setting.ConfiguredInstance,
+          data: BaseSetting.UpdateData,
+        ): boolean;
+        update(
+          user: User.Internal.ConfiguredInstance,
+          doc: Setting.ConfiguredInstance,
+          data: BaseSetting.UpdateData,
+        ): boolean;
+        delete(
+          user: User.Internal.ConfiguredInstance,
+          doc: Setting.ConfiguredInstance,
+          data: BaseSetting.UpdateData,
+        ): boolean;
       };
       schemaVersion: string;
     }>
   > {}
 
-interface TableResultMetadata<ThisType extends Document.Internal.Instance.Any>
+interface TableResultMetadata
   extends Merge<
     Document.Metadata.Default,
     Readonly<{
@@ -673,7 +737,11 @@ interface TableResultMetadata<ThisType extends Document.Internal.Instance.Any>
       labelPlural: string;
       coreTypes: foundry.CONST.TABLE_RESULT_TYPES[];
       permissions: {
-        update(user: User.Internal.ConfiguredInstance, doc: ThisType, data: BaseTableResult.UpdateData): boolean;
+        update(
+          user: User.Internal.ConfiguredInstance,
+          doc: TableResult.ConfiguredInstance,
+          data: BaseTableResult.UpdateData,
+        ): boolean;
       };
       compendiumIndexFields: ["type"];
       schemaVersion: string;
@@ -692,7 +760,7 @@ interface TileMetadata
     }>
   > {}
 
-interface TokenMetadata<ThisType extends Document.Internal.Instance.Any>
+interface TokenMetadata
   extends Merge<
     Document.Metadata.Default,
     Readonly<{
@@ -706,14 +774,18 @@ interface TokenMetadata<ThisType extends Document.Internal.Instance.Any>
       };
       permissions: {
         create: "TOKEN_CREATE";
-        update(user: User.Internal.ConfiguredInstance, doc: ThisType, data: BaseToken.UpdateData): boolean;
+        update(
+          user: User.Internal.ConfiguredInstance,
+          doc: TokenDocument.ConfiguredInstance,
+          data: BaseToken.UpdateData,
+        ): boolean;
         delete: "TOKEN_DELETE";
       };
       schemaVersion: string;
     }>
   > {}
 
-interface UserMetadata<ThisType extends Document.Internal.Instance.Any>
+interface UserMetadata
   extends Merge<
     Document.Metadata.Default,
     Readonly<{
@@ -722,15 +794,23 @@ interface UserMetadata<ThisType extends Document.Internal.Instance.Any>
       label: string;
       labelPlural: string;
       permissions: {
-        create(user: User.Internal.ConfiguredInstance, doc: ThisType, data: BaseUser.UpdateData): boolean;
-        update(user: User.Internal.ConfiguredInstance, doc: ThisType, changes: BaseUser.UpdateData): boolean;
-        delete(user: User.Internal.ConfiguredInstance, doc: ThisType): boolean;
+        create(
+          user: User.Internal.ConfiguredInstance,
+          doc: User.Internal.ConfiguredInstance,
+          data: BaseUser.UpdateData,
+        ): boolean;
+        update(
+          user: User.Internal.ConfiguredInstance,
+          doc: User.Internal.ConfiguredInstance,
+          changes: BaseUser.UpdateData,
+        ): boolean;
+        delete(user: User.Internal.ConfiguredInstance, doc: User.Internal.ConfiguredInstance): boolean;
       };
       schemaVersion: string;
     }>
   > {}
 
-interface WallMetadata<ThisType extends Document.Internal.Instance.Any>
+interface WallMetadata
   extends Merge<
     Document.Metadata.Default,
     Readonly<{
@@ -739,62 +819,56 @@ interface WallMetadata<ThisType extends Document.Internal.Instance.Any>
       label: string;
       labelPlural: string;
       permissions: {
-        update(user: User.Internal.ConfiguredInstance, doc: ThisType, data: BaseWall.UpdateData): boolean;
+        update(
+          user: User.Internal.ConfiguredInstance,
+          doc: WallDocument.ConfiguredInstance,
+          data: BaseWall.UpdateData,
+        ): boolean;
       };
       schemaVersion: string;
     }>
   > {}
 
-type ConfiguredMetadata<
-  ThisType extends Document.Internal.Instance.Any,
-  DocumentType extends Document.Type = ThisType extends {
-    readonly documentName: infer Name extends Document.Type;
-  }
-    ? Name
-    : never,
-> =
-  | (DocumentType extends "ActiveEffect" ? ActiveEffectMetadata : never)
-  | (DocumentType extends "ActorDelta" ? ActorDeltaMetadata : never)
-  | (DocumentType extends "Actor" ? ActorMetadata<ThisType> : never)
-  | (DocumentType extends "Adventure" ? AdventureMetadata : never)
-  | (DocumentType extends "AmbientLight" ? AmbientLightMetadata : never)
-  | (DocumentType extends "AmbientSound" ? AmbientSoundMetadata : never)
-  | (DocumentType extends "Card" ? CardMetadata<ThisType> : never)
-  | (DocumentType extends "Cards" ? CardsMetadata : never)
-  | (DocumentType extends "ChatMessage" ? ChatMessageMetadata<ThisType> : never)
-  | (DocumentType extends "Combat" ? CombatMetadata<ThisType> : never)
-  | (DocumentType extends "Combatant" ? CombatantMetadata<ThisType> : never)
-  | (DocumentType extends "Drawing" ? DrawingMetadata<ThisType> : never)
-  | (DocumentType extends "FogExploration" ? FogExplorationMetadata<ThisType> : never)
-  | (DocumentType extends "Folder" ? FolderMetadata : never)
-  | (DocumentType extends "Item" ? ItemMetadata : never)
-  | (DocumentType extends "JournalEntryPage" ? JournalEntryPageMetadata : never)
-  | (DocumentType extends "JournalEntry" ? JournalEntryMetadata : never)
-  | (DocumentType extends "Macro" ? MacroMetadata<ThisType> : never)
-  | (DocumentType extends "MeasuredTemplate" ? MeasuredTemplateMetadata<ThisType> : never)
-  | (DocumentType extends "Note" ? NoteMetadata : never)
-  | (DocumentType extends "PlaylistSound" ? PlaylistSoundMetadata : never)
-  | (DocumentType extends "Playlist" ? PlaylistMetadata : never)
-  | (DocumentType extends "RegionBehavior" ? RegionBehaviorMetadata<ThisType> : never)
-  | (DocumentType extends "Region" ? RegionMetadata : never)
-  | (DocumentType extends "RollTable" ? RollTableMetadata : never)
-  | (DocumentType extends "Scene" ? SceneMetadata : never)
-  | (DocumentType extends "Setting" ? SettingMetadata<ThisType> : never)
-  | (DocumentType extends "TableResult" ? TableResultMetadata<ThisType> : never)
-  | (DocumentType extends "Tile" ? TileMetadata : never)
-  | (DocumentType extends "Token" ? TokenMetadata<ThisType> : never)
-  | (DocumentType extends "User" ? UserMetadata<ThisType> : never)
-  | (DocumentType extends "Wall" ? WallMetadata<ThisType> : never);
-
-type ResolvedMetadata = {
-  [Name in Document.Type]: ConfiguredMetadata<Document.Internal.Instance.Any, Name>;
-};
+export interface ConfiguredMetadata {
+  ActiveEffect: ActiveEffectMetadata;
+  ActorDelta: ActorDeltaMetadata;
+  Actor: ActorMetadata;
+  Adventure: AdventureMetadata;
+  AmbientLight: AmbientLightMetadata;
+  AmbientSound: AmbientSoundMetadata;
+  Card: CardMetadata;
+  Cards: CardsMetadata;
+  ChatMessage: ChatMessageMetadata;
+  Combat: CombatMetadata;
+  Combatant: CombatantMetadata;
+  Drawing: DrawingMetadata;
+  FogExploration: FogExplorationMetadata;
+  Folder: FolderMetadata;
+  Item: ItemMetadata;
+  JournalEntryPage: JournalEntryPageMetadata;
+  JournalEntry: JournalEntryMetadata;
+  Macro: MacroMetadata;
+  MeasuredTemplate: MeasuredTemplateMetadata;
+  Note: NoteMetadata;
+  PlaylistSound: PlaylistSoundMetadata;
+  Playlist: PlaylistMetadata;
+  RegionBehavior: RegionBehaviorMetadata;
+  Region: RegionMetadata;
+  RollTable: RollTableMetadata;
+  Scene: SceneMetadata;
+  Setting: SettingMetadata;
+  TableResult: TableResultMetadata;
+  Tile: TileMetadata;
+  Token: TokenMetadata;
+  User: UserMetadata;
+  Wall: WallMetadata;
+}
 
 type MetadataShape = {
   [Name in Document.Type]: Document.Metadata<Document.Any>;
 };
 
-type TestConfiguredMetadataValid = MustConform<ResolvedMetadata, MetadataShape>;
+type TestConfiguredMetadataValid = MustConform<ConfiguredMetadata, MetadataShape>;
 
 export interface CreateData {
   ActiveEffect: documents.BaseActiveEffect.ConstructorData;
@@ -829,4 +903,113 @@ export interface CreateData {
   Tile: documents.BaseTile.ConstructorData;
   Token: documents.BaseToken.ConstructorData;
   Wall: documents.BaseWall.ConstructorData;
+}
+
+// This is a more paranoid version of `MakeConform` that catches `any`, `errorType`, etc. and returns
+// `Document.AnyConstructor` instead of letting them cascade.
+type ConformToDocumentConstructor<T> = [T] extends [Document.AnyConstructor]
+  ? [1 & T] extends [2]
+    ? Document.AnyConstructor
+    : T
+  : Document.AnyConstructor;
+
+type ActiveEffectClass = ConformToDocumentConstructor<typeof ActiveEffect>;
+type ActorDeltaClass = ConformToDocumentConstructor<typeof ActorDelta>;
+type ActorClass = ConformToDocumentConstructor<typeof Actor>;
+type AdventureClass = ConformToDocumentConstructor<typeof Adventure>;
+type CardClass = ConformToDocumentConstructor<typeof Card>;
+type CardsClass = ConformToDocumentConstructor<typeof Cards>;
+type ChatMessageClass = ConformToDocumentConstructor<typeof ChatMessage>;
+type CombatClass = ConformToDocumentConstructor<typeof Combat>;
+type CombatantClass = ConformToDocumentConstructor<typeof Combatant>;
+type FogExplorationClass = ConformToDocumentConstructor<typeof FogExploration>;
+type FolderClass = ConformToDocumentConstructor<typeof Folder>;
+type ItemClass = ConformToDocumentConstructor<typeof Item>;
+type JournalEntryPageClass = ConformToDocumentConstructor<typeof JournalEntryPage>;
+type JournalEntryClass = ConformToDocumentConstructor<typeof JournalEntry>;
+type MacroClass = ConformToDocumentConstructor<typeof Macro>;
+type PlaylistSoundClass = ConformToDocumentConstructor<typeof PlaylistSound>;
+type PlaylistClass = ConformToDocumentConstructor<typeof Playlist>;
+type RegionBehaviorClass = ConformToDocumentConstructor<typeof RegionBehavior>;
+type RegionClass = ConformToDocumentConstructor<typeof Region>;
+type RollTableClass = ConformToDocumentConstructor<typeof RollTable>;
+type SceneClass = ConformToDocumentConstructor<typeof Scene>;
+type SettingClass = ConformToDocumentConstructor<typeof Setting>;
+type TableResultClass = ConformToDocumentConstructor<typeof TableResult>;
+type UserClass = ConformToDocumentConstructor<typeof User>;
+type AmbientLightClass = ConformToDocumentConstructor<typeof AmbientLight>;
+type AmbientSoundClass = ConformToDocumentConstructor<typeof AmbientSound>;
+type DrawingClass = ConformToDocumentConstructor<typeof Drawing>;
+type MeasuredTemplateClass = ConformToDocumentConstructor<typeof MeasuredTemplate>;
+type NoteClass = ConformToDocumentConstructor<typeof Note>;
+type TileClass = ConformToDocumentConstructor<typeof Tile>;
+type TokenClass = ConformToDocumentConstructor<typeof Token>;
+type WallClass = ConformToDocumentConstructor<typeof Wall>;
+
+interface MisconfiguredActiveEffect extends ActiveEffectClass {}
+interface MisconfiguredActorDelta extends ActorDeltaClass {}
+interface MisconfiguredActor extends ActorClass {}
+interface MisconfiguredAdventure extends AdventureClass {}
+interface MisconfiguredCard extends CardClass {}
+interface MisconfiguredCards extends CardsClass {}
+interface MisconfiguredChatMessage extends ChatMessageClass {}
+interface MisconfiguredCombat extends CombatClass {}
+interface MisconfiguredCombatant extends CombatantClass {}
+interface MisconfiguredFogExploration extends FogExplorationClass {}
+interface MisconfiguredFolder extends FolderClass {}
+interface MisconfiguredItem extends ItemClass {}
+interface MisconfiguredJournalEntryPage extends JournalEntryPageClass {}
+interface MisconfiguredJournalEntry extends JournalEntryClass {}
+interface MisconfiguredMacro extends MacroClass {}
+interface MisconfiguredPlaylistSound extends PlaylistSoundClass {}
+interface MisconfiguredPlaylist extends PlaylistClass {}
+interface MisconfiguredRegionBehavior extends RegionBehaviorClass {}
+interface MisconfiguredRegion extends RegionClass {}
+interface MisconfiguredRollTable extends RollTableClass {}
+interface MisconfiguredScene extends SceneClass {}
+interface MisconfiguredSetting extends SettingClass {}
+interface MisconfiguredTableResult extends TableResultClass {}
+interface MisconfiguredUser extends UserClass {}
+interface MisconfiguredAmbientLight extends AmbientLightClass {}
+interface MisconfiguredAmbientSound extends AmbientSoundClass {}
+interface MisconfiguredDrawing extends DrawingClass {}
+interface MisconfiguredMeasuredTemplate extends MeasuredTemplateClass {}
+interface MisconfiguredNote extends NoteClass {}
+interface MisconfiguredTile extends TileClass {}
+interface MisconfiguredToken extends TokenClass {}
+interface MisconfiguredWall extends WallClass {}
+
+export interface ConfigurationFailure {
+  ActiveEffect: MisconfiguredActiveEffect;
+  ActorDelta: MisconfiguredActorDelta;
+  Actor: MisconfiguredActor;
+  Adventure: MisconfiguredAdventure;
+  Card: MisconfiguredCard;
+  Cards: MisconfiguredCards;
+  ChatMessage: MisconfiguredChatMessage;
+  Combat: MisconfiguredCombat;
+  Combatant: MisconfiguredCombatant;
+  FogExploration: MisconfiguredFogExploration;
+  Folder: MisconfiguredFolder;
+  Item: MisconfiguredItem;
+  JournalEntryPage: MisconfiguredJournalEntryPage;
+  JournalEntry: MisconfiguredJournalEntry;
+  Macro: MisconfiguredMacro;
+  PlaylistSound: MisconfiguredPlaylistSound;
+  Playlist: MisconfiguredPlaylist;
+  RegionBehavior: MisconfiguredRegionBehavior;
+  Region: MisconfiguredRegion;
+  RollTable: MisconfiguredRollTable;
+  Scene: MisconfiguredScene;
+  Setting: MisconfiguredSetting;
+  TableResult: MisconfiguredTableResult;
+  User: MisconfiguredUser;
+  AmbientLight: MisconfiguredAmbientLight;
+  AmbientSound: MisconfiguredAmbientSound;
+  Drawing: MisconfiguredDrawing;
+  MeasuredTemplate: MisconfiguredMeasuredTemplate;
+  Note: MisconfiguredNote;
+  Tile: MisconfiguredTile;
+  Token: MisconfiguredToken;
+  Wall: MisconfiguredWall;
 }

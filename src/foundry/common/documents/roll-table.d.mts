@@ -41,7 +41,7 @@ export default BaseRollTable;
 declare namespace BaseRollTable {
   type Parent = null;
 
-  type Metadata = Document.MetadataFor<BaseRollTable>;
+  type Metadata = Document.MetadataFor<"RollTable">;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.CreateData<Schema>;

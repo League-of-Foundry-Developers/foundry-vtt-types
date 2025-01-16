@@ -3,7 +3,7 @@ import type BaseDrawing from "../../../common/documents/drawing.d.mts";
 
 declare global {
   namespace DrawingDocument {
-    type Metadata = Document.MetadataFor<DrawingDocument>;
+    type Metadata = Document.MetadataFor<"Drawing">;
 
     type ConfiguredClass = Document.ConfiguredClassForName<"Drawing">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Drawing">;

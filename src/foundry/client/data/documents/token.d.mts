@@ -5,7 +5,7 @@ import type BaseToken from "../../../common/documents/token.d.mts";
 
 declare global {
   namespace TokenDocument {
-    type Metadata = Document.MetadataFor<TokenDocument>;
+    type Metadata = Document.MetadataFor<"Token">;
 
     type ConfiguredClass = Document.ConfiguredClassForName<"Token">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Token">;

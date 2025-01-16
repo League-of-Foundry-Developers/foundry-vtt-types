@@ -70,7 +70,7 @@ export default BaseMeasuredTemplate;
 declare namespace BaseMeasuredTemplate {
   type Parent = Scene.ConfiguredInstance | null;
 
-  type Metadata = Document.MetadataFor<BaseMeasuredTemplate>;
+  type Metadata = Document.MetadataFor<"MeasuredTemplate">;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.CreateData<Schema>;

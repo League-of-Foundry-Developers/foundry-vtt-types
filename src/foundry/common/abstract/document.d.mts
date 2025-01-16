@@ -1,10 +1,9 @@
 import type {
+  ConfigurationFailure,
   ConfiguredDocumentClass,
   ConfiguredDocumentInstance,
   ConfiguredMetadata,
   CreateData,
-  DefaultDocumentClass,
-  DefaultDocumentInstance,
 } from "../../../types/documentConfiguration.d.mts";
 import type {
   GetKey,
@@ -39,15 +38,6 @@ export default Document;
 
 type _ClassMustBeAssignableToInternal = MustConform<typeof Document, Document.Internal.Constructor>;
 type _InstanceMustBeAssignableToInternal = MustConform<Document.Any, Document.Internal.Instance.Any>;
-
-type _ConfigurationFailureClassMustBeAssignableToInternal = MustConform<
-  Document.ConfigurationFailureClass,
-  Document.Internal.Constructor
->;
-type _ConfigurationFailureInstanceMustBeAssignableToInternal = MustConform<
-  Document.ConfigurationFailureInstance,
-  Document.Internal.Instance.Any
->;
 
 /**
  * An extension of the base DataModel which defines a Document.
@@ -906,26 +896,19 @@ declare abstract class AnyDocument extends Document<any, any, any> {
   // Note(LukeAbby): Specifically adding the `DocumentBrand` should be redundant but in practice it seems to help tsc more efficiently deduce that it's actually inheriting from `Document`.
   // This is odd but probably is because it bails from looking up the parent class properties at times or something.
   [Document.Internal.DocumentBrand]: true;
+  static [Document.Internal.DocumentName]: Document.Type;
 
   flags?: unknown;
 
   getFlag(scope: never, key: never): any;
 }
 
-// Note(LukeAbby): The point of this class is to show up in intellisense.
-// When something fails to be configured it should be replaced with `typeof ConfigurationFailure & typeof Item` or whatever the relevant class is.
-// This helps to minimize the number of errors that appears in a repo with broken configuration as they can be very misleading and confusing.
-declare abstract class ConfigurationFailure extends AnyDocument {
-  [Document.Internal.DocumentBrand]: true;
-}
+type AnyDocumentClass = typeof AnyDocument;
 
 declare namespace Document {
   /** Any Document, except for Settings */
-  type Any = AnyDocument;
-  type AnyConstructor = typeof AnyDocument;
-
-  type ConfigurationFailureClass = typeof ConfigurationFailure;
-  type ConfigurationFailureInstance = ConfigurationFailure;
+  interface Any extends AnyDocument {}
+  interface AnyConstructor extends AnyDocumentClass {}
 
   type Type =
     | "ActiveEffect"
@@ -1054,21 +1037,18 @@ declare namespace Document {
 
   // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
   namespace Internal {
-    const DocumentBrand: unique symbol;
+    export const DocumentBrand: unique symbol;
 
-    const DocumentName: unique symbol;
-    const Schema: unique symbol;
-    const Parent: unique symbol;
+    export const DocumentName: unique symbol;
+    export const Schema: unique symbol;
+    export const Parent: unique symbol;
 
     // This metadata is called "simple" because where there should be proper references to the
     // current document there is instead `Document.Any`. This helps simplify loops.
     // Use cases should be limited to when these references aren't needed.
     type SimpleMetadata<Name extends Document.Type> = ConfiguredMetadata<Document.Any, Name>;
 
-    type Constructor = abstract new (
-      arg0: never,
-      ...args: never[]
-    ) => Instance.Any & {
+    type Constructor = (abstract new (arg0: never, ...args: never[]) => Instance.Any) & {
       [DocumentName]: Document.Type;
     };
 
@@ -1166,7 +1146,7 @@ declare namespace Document {
   type ConfiguredClassForName<Name extends Type> = MakeConform<
     ConfiguredDocumentClass[Name],
     Document.AnyConstructor,
-    typeof ConfigurationFailure & DefaultDocumentClass<Name>
+    ConfigurationFailure[Name]
   >;
 
   // NOTE(LukeAbby): This type is less DRY than it could be to avoid undue complexity in such a critical helpeer.
@@ -1175,13 +1155,17 @@ declare namespace Document {
   type ToConfiguredClass<ConcreteDocument extends Document.Internal.Constructor> = MakeConform<
     ConfiguredDocumentClass[NameFor<ConcreteDocument>],
     Document.AnyConstructor,
-    typeof ConfigurationFailure & DefaultDocumentClass<NameFor<ConcreteDocument>>
+    ConfigurationFailure[NameFor<ConcreteDocument>]
   >;
 
   type ToConfiguredInstance<ConcreteDocument extends Document.Internal.Constructor> = MakeConform<
     FixedInstanceType<ConfiguredDocumentClass[NameFor<ConcreteDocument>]>,
     Document.Any,
-    ConfigurationFailure & DefaultDocumentInstance<NameFor<ConcreteDocument>>
+    ConfigurationFailure[NameFor<ConcreteDocument>] extends (abstract new (
+      ...args: infer _
+    ) => infer D extends Document.Any)
+      ? D
+      : never
   >;
 
   type ToConfiguredStored<D extends Document.Internal.Constructor> = Stored<ToConfiguredInstance<D>>;
@@ -1201,8 +1185,11 @@ declare namespace Document {
 
   type Temporary<D extends Document.Internal.Instance.Any> = D extends Stored<infer U> ? U : D;
 
-  type NameFor<ConcreteDocument extends Document.Internal.Constructor> =
-    ConcreteDocument[Document.Internal.DocumentName];
+  type NameFor<ConcreteDocument extends Document.Internal.Constructor> = ConcreteDocument extends {
+    [Document.Internal.DocumentName]: infer Name;
+  }
+    ? Name
+    : never;
 
   type ConfiguredInstanceForName<Name extends Type> = MakeConform<ConfiguredDocumentInstance[Name], Document.Any>;
 
@@ -1227,7 +1214,7 @@ declare namespace Document {
   type SchemaFor<ConcreteDocument extends Internal.Instance.Any> =
     ConcreteDocument extends Internal.Instance<infer _1, infer Schema, infer _2> ? Schema : never;
 
-  type MetadataFor<ConcreteDocument extends Document.Internal.Instance.Any> = ConfiguredMetadata<ConcreteDocument>;
+  type MetadataFor<Name extends Document.Type> = ConfiguredMetadata[Name];
 
   type CollectionRecord<Schema extends DataSchema> = {
     [Key in keyof Schema]: Schema[Key] extends fields.EmbeddedCollectionField.Any ? Schema[Key] : never;

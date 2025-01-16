@@ -36,7 +36,7 @@ export default BaseWall;
 declare namespace BaseWall {
   type Parent = Scene.ConfiguredInstance | null;
 
-  type Metadata = Document.MetadataFor<BaseWall>;
+  type Metadata = Document.MetadataFor<"Wall">;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.CreateData<Schema>;

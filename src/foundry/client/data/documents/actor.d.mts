@@ -1,10 +1,11 @@
 import type { DeepPartial, InexactPartial } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
+import type EmbeddedCollection from "../../../common/abstract/embedded-collection.d.mts";
 import type BaseActor from "../../../common/documents/actor.d.mts";
 
 declare global {
   namespace Actor {
-    type Metadata = Document.MetadataFor<Actor>;
+    type Metadata = Document.MetadataFor<"Actor">;
 
     type ConfiguredClass = Document.ConfiguredClassForName<"Actor">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Actor">;
@@ -129,6 +130,7 @@ declare global {
      * Provide an object which organizes all embedded Item instances by their type
      */
     get itemTypes(): Actor.ItemTypes;
+
     /**
      * Test whether an Actor document is a synthetic representation of a Token (if true) or a full Document (if false)
      */
@@ -142,7 +144,7 @@ declare global {
     /**
      * An array of ActiveEffect instances which are present on the Actor which have a limited duration.
      */
-    get temporaryEffects(): ReturnType<this["effects"]["filter"]>;
+    get temporaryEffects(): EmbeddedCollection<ActiveEffect.ConfiguredInstance, Actor.ConfiguredInstance>;
 
     /**
      * Return a reference to the TokenDocument which owns this Actor as a synthetic override

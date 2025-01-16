@@ -3,7 +3,7 @@ import type BaseTile from "../../../common/documents/tile.d.mts";
 
 declare global {
   namespace TileDocument {
-    type Metadata = Document.MetadataFor<TileDocument>;
+    type Metadata = Document.MetadataFor<"Tile">;
 
     type ConfiguredClass = Document.ConfiguredClassForName<"Tile">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Tile">;

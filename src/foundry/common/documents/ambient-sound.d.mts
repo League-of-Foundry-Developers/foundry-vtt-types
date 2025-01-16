@@ -35,7 +35,7 @@ export default BaseAmbientSound;
 declare namespace BaseAmbientSound {
   type Parent = Scene.ConfiguredInstance | null;
 
-  type Metadata = Document.MetadataFor<BaseAmbientSound>;
+  type Metadata = Document.MetadataFor<"AmbientSound">;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.CreateData<Schema>;

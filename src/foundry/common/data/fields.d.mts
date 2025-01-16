@@ -2856,6 +2856,7 @@ declare class ForeignDocumentField<
 declare namespace ForeignDocumentField {
   /** The options for the ForeignDocumentField class. */
   type Options = StringField.Options &
+    // TODO(LukeAbby)
     DataField.Options<string | Document.Any> & {
       // Making this ---------^ more concrete leads to excessively deep instantiation
       idOnly?: boolean;

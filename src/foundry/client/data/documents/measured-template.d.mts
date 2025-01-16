@@ -3,7 +3,7 @@ import type BaseMeasuredTemplate from "../../../common/documents/measured-templa
 
 declare global {
   namespace MeasuredTemplateDocument {
-    type Metadata = Document.MetadataFor<MeasuredTemplateDocument>;
+    type Metadata = Document.MetadataFor<"MeasuredTemplate">;
 
     type ConfiguredClass = Document.ConfiguredClassForName<"MeasuredTemplate">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"MeasuredTemplate">;

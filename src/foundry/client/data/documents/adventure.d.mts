@@ -9,7 +9,7 @@ type DataSchema = foundry.data.fields.DataSchema;
 
 declare global {
   namespace Adventure {
-    type Metadata = Document.MetadataFor<Adventure>;
+    type Metadata = Document.MetadataFor<"Adventure">;
 
     type ConfiguredClass = Document.ConfiguredClassForName<"Adventure">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Adventure">;

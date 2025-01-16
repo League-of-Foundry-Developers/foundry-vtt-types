@@ -47,7 +47,7 @@ export default BasePlaylist;
 declare namespace BasePlaylist {
   type Parent = null;
 
-  type Metadata = Document.MetadataFor<BasePlaylist>;
+  type Metadata = Document.MetadataFor<"Playlist">;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.CreateData<Schema>;

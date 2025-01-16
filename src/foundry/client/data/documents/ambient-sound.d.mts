@@ -3,7 +3,7 @@ import type BaseAmbientSound from "../../../common/documents/ambient-sound.d.mts
 
 declare global {
   namespace AmbientSoundDocument {
-    type Metadata = Document.MetadataFor<AmbientSoundDocument>;
+    type Metadata = Document.MetadataFor<"AmbientSound">;
 
     type ConfiguredClass = Document.ConfiguredClassForName<"AmbientSound">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"AmbientSound">;

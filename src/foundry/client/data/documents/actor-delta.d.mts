@@ -4,7 +4,7 @@ import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace ActorDelta {
-    type Metadata = Document.MetadataFor<ActorDelta>;
+    type Metadata = Document.MetadataFor<"ActorDelta">;
 
     type ConfiguredClass = Document.ConfiguredClassForName<"ActorDelta">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"ActorDelta">;

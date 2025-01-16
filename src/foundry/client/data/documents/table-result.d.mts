@@ -3,7 +3,7 @@ import type BaseTableResult from "../../../common/documents/table-result.d.mts";
 
 declare global {
   namespace TableResult {
-    type Metadata = Document.MetadataFor<TableResult>;
+    type Metadata = Document.MetadataFor<"TableResult">;
 
     type ConfiguredClass = Document.ConfiguredClassForName<"TableResult">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"TableResult">;

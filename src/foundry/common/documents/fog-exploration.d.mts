@@ -43,7 +43,7 @@ export default BaseFogExploration;
 declare namespace BaseFogExploration {
   type Parent = null;
 
-  type Metadata = Document.MetadataFor<BaseFogExploration>;
+  type Metadata = Document.MetadataFor<"FogExploration">;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.CreateData<Schema>;

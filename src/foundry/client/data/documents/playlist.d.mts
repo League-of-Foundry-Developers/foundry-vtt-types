@@ -5,7 +5,7 @@ import type BasePlaylist from "../../../common/documents/playlist.d.mts";
 
 declare global {
   namespace Playlist {
-    type Metadata = Document.MetadataFor<Playlist>;
+    type Metadata = Document.MetadataFor<"Playlist">;
 
     type ConfiguredClass = Document.ConfiguredClassForName<"Playlist">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Playlist">;

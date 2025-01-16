@@ -6,7 +6,7 @@ import type BaseRegionBehavior from "../../../common/documents/region-behavior.d
 
 declare global {
   namespace RegionBehavior {
-    type Metadata = Document.MetadataFor<RegionBehavior>;
+    type Metadata = Document.MetadataFor<"RegionBehavior">;
 
     type ConfiguredClass = Document.ConfiguredClassForName<"RegionBehavior">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"RegionBehavior">;

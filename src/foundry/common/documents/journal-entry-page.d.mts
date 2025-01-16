@@ -43,7 +43,7 @@ declare namespace BaseJournalEntryPage {
 
   type TypeNames = Game.Model.TypeNames<"JournalEntryPage">;
 
-  type Metadata = Document.MetadataFor<BaseJournalEntryPage>;
+  type Metadata = Document.MetadataFor<"JournalEntryPage">;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.CreateData<Schema>;

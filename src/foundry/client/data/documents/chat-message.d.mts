@@ -5,7 +5,7 @@ import type BaseChatMessage from "../../../common/documents/chat-message.d.mts";
 
 declare global {
   namespace ChatMessage {
-    type Metadata = Document.MetadataFor<ChatMessage>;
+    type Metadata = Document.MetadataFor<"ChatMessage">;
 
     type ConfiguredClass = Document.ConfiguredClassForName<"ChatMessage">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"ChatMessage">;

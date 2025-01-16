@@ -3,7 +3,7 @@ import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace JournalEntry {
-    type Metadata = Document.MetadataFor<JournalEntry>;
+    type Metadata = Document.MetadataFor<"JournalEntry">;
 
     type ConfiguredClass = Document.ConfiguredClassForName<"JournalEntry">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"JournalEntry">;

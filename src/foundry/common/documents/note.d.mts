@@ -66,7 +66,7 @@ export default BaseNote;
 declare namespace BaseNote {
   type Parent = Scene.ConfiguredInstance | null;
 
-  type Metadata = Document.MetadataFor<BaseNote>;
+  type Metadata = Document.MetadataFor<"Note">;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.CreateData<Schema>;

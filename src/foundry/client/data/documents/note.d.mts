@@ -3,7 +3,7 @@ import type BaseNote from "../../../common/documents/note.d.mts";
 
 declare global {
   namespace NoteDocument {
-    type Metadata = Document.MetadataFor<NoteDocument>;
+    type Metadata = Document.MetadataFor<"Note">;
 
     type ConfiguredClass = Document.ConfiguredClassForName<"Note">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Note">;

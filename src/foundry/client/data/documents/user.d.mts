@@ -6,7 +6,7 @@ import type BaseUser from "../../../common/documents/user.d.mts";
 
 declare global {
   namespace User {
-    type Metadata = Document.MetadataFor<User.ConfiguredInstance>;
+    type Metadata = Document.MetadataFor<"User">;
 
     type ConfiguredClass = Document.ConfiguredClassForName<"User">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"User">;

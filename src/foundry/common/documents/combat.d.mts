@@ -57,7 +57,7 @@ declare namespace BaseCombat {
 
   type TypeNames = Game.Model.TypeNames<"Combat">;
 
-  type Metadata = Document.MetadataFor<BaseCombat>;
+  type Metadata = Document.MetadataFor<"Combat">;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.CreateData<Schema>;

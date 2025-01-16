@@ -49,7 +49,7 @@ export default BaseScene;
 declare namespace BaseScene {
   type Parent = null;
 
-  type Metadata = Document.MetadataFor<BaseScene>;
+  type Metadata = Document.MetadataFor<"Scene">;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.CreateData<Schema>;

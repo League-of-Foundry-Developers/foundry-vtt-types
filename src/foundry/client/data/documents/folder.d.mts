@@ -4,7 +4,7 @@ import type BaseFolder from "../../../common/documents/folder.d.mts";
 
 declare global {
   namespace Folder {
-    type Metadata = Document.MetadataFor<Folder>;
+    type Metadata = Document.MetadataFor<"Folder">;
 
     type ConfiguredClass = Document.ConfiguredClassForName<"Folder">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Folder">;

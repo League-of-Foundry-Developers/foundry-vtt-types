@@ -3,7 +3,7 @@ import type BaseAmbientLight from "../../../common/documents/ambient-light.d.mts
 
 declare global {
   namespace AmbientLightDocument {
-    type Metadata = Document.MetadataFor<AmbientLightDocument>;
+    type Metadata = Document.MetadataFor<"AmbientLight">;
 
     type ConfiguredClass = Document.ConfiguredClassForName<"AmbientLight">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"AmbientLight">;

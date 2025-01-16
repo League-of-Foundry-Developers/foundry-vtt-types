@@ -5,7 +5,7 @@ import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
   namespace RegionDocument {
-    type Metadata = Document.MetadataFor<RegionDocument>;
+    type Metadata = Document.MetadataFor<"Region">;
 
     type ConfiguredClass = Document.ConfiguredClassForName<"Region">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Region">;

@@ -50,7 +50,7 @@ declare namespace BaseCombatant {
 
   type TypeNames = Game.Model.TypeNames<"Combatant">;
 
-  type Metadata = Document.MetadataFor<BaseCombatant>;
+  type Metadata = Document.MetadataFor<"Combatant">;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.CreateData<Schema>;

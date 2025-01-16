@@ -4,7 +4,7 @@ import type BaseJournalEntryPage from "../../../common/documents/journal-entry-p
 
 declare global {
   namespace JournalEntryPage {
-    type Metadata = Document.MetadataFor<JournalEntryPage>;
+    type Metadata = Document.MetadataFor<"JournalEntryPage">;
 
     type ConfiguredClass = Document.ConfiguredClassForName<"JournalEntryPage">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"JournalEntryPage">;

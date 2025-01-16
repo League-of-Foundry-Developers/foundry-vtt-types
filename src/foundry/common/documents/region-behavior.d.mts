@@ -39,7 +39,7 @@ declare namespace BaseRegionBehavior {
 
   type TypeNames = Game.Model.TypeNames<"RegionBehavior">;
 
-  type Metadata = Document.MetadataFor<BaseRegionBehavior>;
+  type Metadata = Document.MetadataFor<"RegionBehavior">;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.CreateData<Schema>;

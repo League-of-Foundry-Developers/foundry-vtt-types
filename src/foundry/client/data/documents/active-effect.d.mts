@@ -11,7 +11,7 @@ declare global {
     type ConfiguredClass = Document.ConfiguredClassForName<"ActiveEffect">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"ActiveEffect">;
 
-    type Metadata = Document.MetadataFor<ActiveEffect>;
+    type Metadata = Document.MetadataFor<"ActiveEffect">;
 
     interface DatabaseOperations
       extends Document.Database.Operations<

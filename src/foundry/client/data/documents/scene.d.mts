@@ -4,7 +4,7 @@ import type BaseScene from "../../../common/documents/scene.d.mts";
 
 declare global {
   namespace Scene {
-    type Metadata = Document.MetadataFor<Scene>;
+    type Metadata = Document.MetadataFor<"Scene">;
 
     type ConfiguredClass = Document.ConfiguredClassForName<"Scene">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Scene">;

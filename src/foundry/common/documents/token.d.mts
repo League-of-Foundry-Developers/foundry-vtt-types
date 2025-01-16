@@ -102,7 +102,7 @@ export default BaseToken;
 declare namespace BaseToken {
   type Parent = Scene.ConfiguredInstance | null;
 
-  type Metadata = Document.MetadataFor<BaseToken>;
+  type Metadata = Document.MetadataFor<"Token">;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.CreateData<Schema>;

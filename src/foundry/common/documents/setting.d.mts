@@ -34,7 +34,7 @@ export default BaseSetting;
 declare namespace BaseSetting {
   type Parent = null;
 
-  type Metadata = Document.MetadataFor<BaseSetting>;
+  type Metadata = Document.MetadataFor<"Setting">;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.CreateData<Schema>;

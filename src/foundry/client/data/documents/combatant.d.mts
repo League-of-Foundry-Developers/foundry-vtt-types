@@ -4,7 +4,7 @@ import type BaseCombatant from "../../../common/documents/combatant.d.mts";
 
 declare global {
   namespace Combatant {
-    type Metadata = Document.MetadataFor<Combatant>;
+    type Metadata = Document.MetadataFor<"Combatant">;
 
     type ConfiguredClass = Document.ConfiguredClassForName<"Combatant">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Combatant">;

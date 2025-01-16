@@ -69,7 +69,7 @@ declare namespace BaseMacro {
 
   type TypeNames = Game.Model.TypeNames<"Macro">;
 
-  type Metadata = Document.MetadataFor<BaseMacro>;
+  type Metadata = Document.MetadataFor<"Macro">;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.CreateData<Schema>;

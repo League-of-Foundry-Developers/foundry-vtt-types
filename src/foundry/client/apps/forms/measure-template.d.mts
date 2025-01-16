@@ -1,4 +1,4 @@
-import type { GetDataReturnType, MaybePromise, ValueOf } from "../../../../utils/index.d.mts";
+import type { GetDataReturnType, MaybePromise } from "../../../../utils/index.d.mts";
 
 declare global {
   /**
@@ -38,7 +38,7 @@ declare global {
       distance: number | null;
       fillColor: string;
       hidden: boolean;
-      t: ValueOf<foundry.CONST.MEASURED_TEMPLATE_TYPES>;
+      t: foundry.CONST.MEASURED_TEMPLATE_TYPES;
       texture: string;
       width: number | null;
       x: number | null;

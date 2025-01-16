@@ -48,7 +48,7 @@ export default BasePlaylistSound;
 declare namespace BasePlaylistSound {
   type Parent = Playlist.ConfiguredInstance | null;
 
-  type Metadata = Document.MetadataFor<BasePlaylistSound>;
+  type Metadata = Document.MetadataFor<"PlaylistSound">;
 
   type SchemaField = fields.SchemaField<Schema>;
   type ConstructorData = fields.SchemaField.CreateData<Schema>;

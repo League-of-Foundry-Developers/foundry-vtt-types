@@ -4,7 +4,7 @@ import type BaseMacro from "../../../common/documents/macro.d.mts";
 
 declare global {
   namespace Macro {
-    type Metadata = Document.MetadataFor<Macro>;
+    type Metadata = Document.MetadataFor<"Macro">;
 
     type ConfiguredClass = Document.ConfiguredClassForName<"Macro">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"Macro">;

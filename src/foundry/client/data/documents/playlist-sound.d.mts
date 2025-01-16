@@ -6,7 +6,7 @@ import type BasePlaylistSound from "../../../common/documents/playlist-sound.d.m
 
 declare global {
   namespace PlaylistSound {
-    type Metadata = Document.MetadataFor<PlaylistSound>;
+    type Metadata = Document.MetadataFor<"PlaylistSound">;
 
     type ConfiguredClass = Document.ConfiguredClassForName<"PlaylistSound">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"PlaylistSound">;

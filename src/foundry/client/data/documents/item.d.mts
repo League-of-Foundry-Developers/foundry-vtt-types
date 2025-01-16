@@ -29,7 +29,7 @@ declare global {
      * A document's metadata is special information about the document ranging anywhere from its name,
      * whether it's indexed, or to the permissions a user has over it.
      */
-    interface Metadata extends Document.MetadataFor<Item.ConfiguredInstance> {}
+    interface Metadata extends Document.MetadataFor<"Item"> {}
 
     type SubType = Game.Model.TypeNames<"Item">;
     type OfType<Type extends SubType> = HandleEmptyObject<ConfiguredItem<Type>, Item<SubType>>;

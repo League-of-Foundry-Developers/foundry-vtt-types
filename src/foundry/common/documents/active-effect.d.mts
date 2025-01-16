@@ -81,7 +81,7 @@ declare namespace BaseActiveEffect {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  type Metadata = Document.MetadataFor<BaseActiveEffect>;
+  type Metadata = Document.MetadataFor<"ActiveEffect">;
 
   type SubType = Game.Model.TypeNames<"ActiveEffect">;
   type OfType<Type extends SubType> = Document.OfType<"ActiveEffect", Type>;
