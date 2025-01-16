@@ -1,41 +1,6 @@
 import type { ToMethod, InexactPartial, IntentionalPartial } from "../../../../../utils/index.d.mts";
 
-declare abstract class AnyBatchRenderer extends BatchRenderer {
-  constructor(arg0: never, ...args: never[]);
-}
-
 declare global {
-  namespace BatchRenderer {
-    type AnyConstructor = typeof AnyBatchRenderer;
-
-    type PackInterleavedGeometryFunction = ToMethod<
-      (
-        /**
-         * @privateRemarks IntentionalPartial to allow `DepthSamplerShader.DepthBatchData`,
-         * which is the type of `DepthSamplerShader._packInterleavedGeometry`'s first param,
-         * to leave off some keys of IBatchableData
-         */
-        element: IntentionalPartial<PIXI.IBatchableElement>,
-        attributeBuffer: PIXI.ViewableBuffer,
-        indexBuffer: Uint16Array,
-        aIndex: number,
-        iIndex: number,
-      ) => void
-    >;
-
-    type PreRenderBatchFunction = ToMethod<(batchRenderer: typeof BatchRenderer) => void>;
-
-    type BatchDefaultUniformsFunction = ToMethod<(maxTextures: number) => AbstractBaseShader.Uniforms>;
-
-    type ReservedTextureUnits = 0 | 1 | 2 | 3 | 4;
-
-    interface ShaderGeneratorOptions {
-      vertex: typeof BatchRenderer.defaultVertexSrc;
-      fragment: typeof BatchRenderer.defaultFragmentTemplate;
-      uniforms: typeof BatchRenderer.defaultUniforms;
-    }
-  }
-
   /**
    * A batch renderer with a customizable data transfer function to packed geometries.
    */
@@ -96,4 +61,40 @@ declare global {
      */
     static hasPlugin(name: string): boolean;
   }
+
+  namespace BatchRenderer {
+    interface Any extends AnyBatchRenderer {}
+    type AnyConstructor = typeof AnyBatchRenderer;
+
+    type PackInterleavedGeometryFunction = ToMethod<
+      (
+        /**
+         * @privateRemarks IntentionalPartial to allow `DepthSamplerShader.DepthBatchData`,
+         * which is the type of `DepthSamplerShader._packInterleavedGeometry`'s first param,
+         * to leave off some keys of IBatchableData
+         */
+        element: IntentionalPartial<PIXI.IBatchableElement>,
+        attributeBuffer: PIXI.ViewableBuffer,
+        indexBuffer: Uint16Array,
+        aIndex: number,
+        iIndex: number,
+      ) => void
+    >;
+
+    type PreRenderBatchFunction = ToMethod<(batchRenderer: typeof BatchRenderer) => void>;
+
+    type BatchDefaultUniformsFunction = ToMethod<(maxTextures: number) => AbstractBaseShader.Uniforms>;
+
+    type ReservedTextureUnits = 0 | 1 | 2 | 3 | 4;
+
+    interface ShaderGeneratorOptions {
+      vertex: typeof BatchRenderer.defaultVertexSrc;
+      fragment: typeof BatchRenderer.defaultFragmentTemplate;
+      uniforms: typeof BatchRenderer.defaultUniforms;
+    }
+  }
+}
+
+declare abstract class AnyBatchRenderer extends BatchRenderer {
+  constructor(arg0: never, ...args: never[]);
 }

@@ -1,14 +1,6 @@
 export {};
 
-declare abstract class AnyFramebufferSnapshot extends FramebufferSnapshot {
-  constructor(arg0: never, ...args: never[]);
-}
-
 declare global {
-  namespace FramebufferSnapshot {
-    type AnyConstructor = typeof AnyFramebufferSnapshot;
-  }
-
   /**
    * Provide the necessary methods to get a snapshot of the framebuffer into a render texture.
    * Class meant to be used as a singleton.
@@ -27,4 +19,13 @@ declare global {
      */
     getFramebufferTexture(renderer: PIXI.Renderer): PIXI.RenderTexture;
   }
+
+  namespace FramebufferSnapshot {
+    interface Any extends AnyFramebufferSnapshot {}
+    type AnyConstructor = typeof AnyFramebufferSnapshot;
+  }
+}
+
+declare abstract class AnyFramebufferSnapshot extends FramebufferSnapshot {
+  constructor(arg0: never, ...args: never[]);
 }
