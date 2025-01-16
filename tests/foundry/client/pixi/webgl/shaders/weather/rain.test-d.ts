@@ -8,4 +8,4 @@ expectTypeOf(RS.createProgram()).toEqualTypeOf<PIXI.Program>();
 expectTypeOf((myRS = RS.create())).toEqualTypeOf<RainShader>();
 
 expectTypeOf(myRS.speed).toEqualTypeOf<number>();
-expectTypeOf(myRS._preRender).toEqualTypeOf<AbstractBaseShader.PreRenderFunction>();
+expectTypeOf(myRS["_preRender"]).toEqualTypeOf<AbstractBaseShader.PreRenderFunction>();

@@ -8,4 +8,4 @@ expectTypeOf(SS.createProgram()).toEqualTypeOf<PIXI.Program>();
 expectTypeOf((mySS = SS.create())).toEqualTypeOf<SnowShader>();
 
 expectTypeOf(mySS.speed).toEqualTypeOf<number>();
-expectTypeOf(mySS._preRender).toEqualTypeOf<AbstractBaseShader.PreRenderFunction>();
+expectTypeOf(mySS["_preRender"]).toEqualTypeOf<AbstractBaseShader.PreRenderFunction>();

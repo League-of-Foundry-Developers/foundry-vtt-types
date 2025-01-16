@@ -8,4 +8,4 @@ expectTypeOf(ABVS.SHADER_HEADER).toEqualTypeOf<string>();
 expectTypeOf((myABVS = ABVS.create())).toEqualTypeOf<AmplificationBackgroundVisionShader>();
 
 expectTypeOf(myABVS.isRequired).toEqualTypeOf<boolean>();
-expectTypeOf(myABVS._preRender).toEqualTypeOf<AbstractBaseShader.PreRenderFunction>();
+expectTypeOf(myABVS["_preRender"]).toEqualTypeOf<AbstractBaseShader.PreRenderFunction>();
