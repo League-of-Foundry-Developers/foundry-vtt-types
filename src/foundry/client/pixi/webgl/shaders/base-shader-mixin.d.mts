@@ -110,8 +110,7 @@ declare global {
   ): Mixin<typeof BaseShader, BaseClass>;
 
   namespace BaseShader {
-    // Filter extends Shader, so Shader is the broadest option
-    type AnyMixed = ReturnType<typeof BaseShaderMixin<PIXI.Shader.AnyConstructor>>;
+    type AnyMixed = ReturnType<typeof BaseShaderMixin<PIXI.Shader.AnyConstructor | PIXI.Filter.AnyConstructor>>;
     type AnyConstructor = typeof AnyBaseShader;
   }
 }
