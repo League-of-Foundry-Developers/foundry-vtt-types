@@ -12,7 +12,7 @@ declare global {
       (
         /**
          * @privateRemarks IntentionalPartial to allow `DepthSamplerShader.DepthBatchData`,
-         * which is the type of `DepthSamplerShader._packInterleavedGeometry`'s first poram,
+         * which is the type of `DepthSamplerShader._packInterleavedGeometry`'s first param,
          * to leave off some keys of IBatchableData
          */
         element: IntentionalPartial<PIXI.IBatchableElement>,
