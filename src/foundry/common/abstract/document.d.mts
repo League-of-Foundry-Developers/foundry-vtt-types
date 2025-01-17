@@ -1,5 +1,4 @@
 import type {
-  ConfigurationFailure,
   ConfiguredDocumentClass,
   ConfiguredDocumentInstance,
   ConfiguredMetadata,
@@ -48,13 +47,11 @@ declare abstract class Document<
   Schema extends DataSchema,
   Parent extends Document.Any | null = null,
 > extends DataModel<Schema, Parent, InterfaceToObject<Document.ConstructionContext<Parent>>> {
-  static [Document.Internal.DocumentName]: Document.Type;
+  static " __fvtt_types_internal_document_type": Document.Type;
 
-  [Document.Internal.DocumentBrand]: true;
-
-  [Document.Internal.DocumentName]: DocumentName;
-  [Document.Internal.Schema]: Schema;
-  [Document.Internal.Parent]: Parent;
+  " __fvtt_types_internal_document_name": DocumentName;
+  " __fvtt_types_internal_document_schema": Schema;
+  " __fvtt_types_internal_document_parent": Parent;
 
   /**
    * @param data    - Initial data provided to construct the Document
@@ -898,11 +895,6 @@ declare abstract class AnyDocument extends Document<Document.Type, {}, Document.
   // the involved types which can cause a loop.
   _source: object;
 
-  // Note(LukeAbby): Specifically adding the `DocumentBrand` should be redundant but in practice it seems to help tsc more efficiently deduce that it's actually inheriting from `Document`.
-  // This is odd but probably is because it bails from looking up the parent class properties at times or something.
-  [Document.Internal.DocumentBrand]: true;
-  static [Document.Internal.DocumentName]: Document.Type;
-
   flags?: unknown;
 
   getFlag(scope: never, key: never): any;
@@ -1041,14 +1033,8 @@ declare namespace Document {
 
   // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
   namespace Internal {
-    export const DocumentBrand: unique symbol;
-
-    export const DocumentName: unique symbol;
-    export const Schema: unique symbol;
-    export const Parent: unique symbol;
-
     type Constructor = (abstract new (arg0: never, ...args: never[]) => Instance.Any) & {
-      [DocumentName]: Document.Type;
+      " __fvtt_types_internal_document_type": Document.Type;
     };
 
     interface Instance<
@@ -1056,17 +1042,17 @@ declare namespace Document {
       Schema extends DataSchema,
       Parent extends Document.Internal.Instance.Any | null,
     > {
-      [DocumentBrand]: true;
-      [DocumentName]: DocumentName;
-      [Schema]: Schema;
-      [Parent]: Parent;
+      " __fvtt_types_internal_document_name": DocumentName;
+      " __fvtt_types_internal_document_schema": Schema;
+      " __fvtt_types_internal_document_parent": Parent;
     }
 
-    type DocumentNameFor<ConcreteInstance extends Instance.Any> = ConcreteInstance[typeof DocumentName];
+    type DocumentNameFor<ConcreteInstance extends Instance.Any> =
+      ConcreteInstance[" __fvtt_types_internal_document_name"];
 
-    type SchemaFor<ConcreteInstance extends Instance.Any> = ConcreteInstance[typeof Schema];
+    type SchemaFor<ConcreteInstance extends Instance.Any> = ConcreteInstance[" __fvtt_types_internal_document_schema"];
 
-    type ParentFor<ConcreteInstance extends Instance.Any> = ConcreteInstance[typeof Parent];
+    type ParentFor<ConcreteInstance extends Instance.Any> = ConcreteInstance[" __fvtt_types_internal_document_parent"];
 
     namespace Instance {
       type Any = Instance<any, any, any>;
@@ -1076,7 +1062,9 @@ declare namespace Document {
   }
 
   /** Any Document, that is a child of the given parent Document. */
-  type AnyChild<Parent extends Any | null> = Document<any, any, Parent>;
+  // An empty schema is the most appropriate type due to removing index signatures.
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  type AnyChild<Parent extends Any | null> = Document<Document.Type, {}, Parent>;
 
   /**
    * Returns the type of the constructor data for the given {@link foundry.abstract.Document}.
@@ -1149,12 +1137,7 @@ declare namespace Document {
 
   type ToConfiguredInstance<ConcreteDocument extends Document.Internal.Constructor> = MakeConform<
     FixedInstanceType<ConfiguredDocumentClass[NameFor<ConcreteDocument>]>,
-    Document.Any,
-    ConfigurationFailure[NameFor<ConcreteDocument>] extends (abstract new (
-      ...args: infer _
-    ) => infer D extends Document.Any)
-      ? D
-      : never
+    Document.Any
   >;
 
   type ToConfiguredStored<D extends Document.AnyConstructor> = Stored<ToConfiguredInstance<D>>;
@@ -1167,20 +1150,16 @@ declare namespace Document {
 
   type ToStored<D extends Document.AnyConstructor> = Stored<FixedInstanceType<D>>;
 
-  type ToStoredIf<
-    D extends Document.AnyConstructor,
-    Temporary extends boolean | undefined,
-  > = Temporary extends true ? ToConfiguredStored<D> : FixedInstanceType<D>;
+  type ToStoredIf<D extends Document.AnyConstructor, Temporary extends boolean | undefined> = Temporary extends true
+    ? ToConfiguredStored<D>
+    : FixedInstanceType<D>;
 
   type StoredIf<D extends Document.Any, Temporary extends boolean | undefined> = Temporary extends true ? Stored<D> : D;
 
   type Temporary<D extends Document.Any> = D extends Stored<infer U> ? U : D;
 
-  type NameFor<ConcreteDocument extends Document.Internal.Constructor> = ConcreteDocument extends {
-    [Document.Internal.DocumentName]: infer Name;
-  }
-    ? Name
-    : never;
+  type NameFor<ConcreteDocument extends Document.Internal.Constructor> =
+    ConcreteDocument[" __fvtt_types_internal_document_type"];
 
   type ConfiguredInstanceForName<Name extends Type> = MakeConform<ConfiguredDocumentInstance[Name], Document.Any>;
 

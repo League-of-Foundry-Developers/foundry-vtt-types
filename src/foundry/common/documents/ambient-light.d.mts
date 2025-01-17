@@ -28,7 +28,7 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
 
   static override migrateData(source: AnyObject): AnyObject;
 
-  static [Document.Internal.DocumentName]: "AmbientLight";
+  static " __fvtt_types_internal_document_name": "AmbientLight";
 }
 
 export default BaseAmbientLight;

@@ -58,7 +58,7 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
     },
   ): AnyObject;
 
-  static [Document.Internal.DocumentName]: "Note";
+  static " __fvtt_types_internal_document_name": "Note";
 }
 
 export default BaseNote;

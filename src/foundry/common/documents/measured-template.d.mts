@@ -62,7 +62,7 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
     }>,
   ): boolean;
 
-  static [Document.Internal.DocumentName]: "MeasuredTemplate";
+  static " __fvtt_types_internal_document_name": "MeasuredTemplate";
 }
 
 export default BaseMeasuredTemplate;

@@ -27,7 +27,7 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
 
   static override migrateData(source: AnyObject): AnyObject;
 
-  static [Document.Internal.DocumentName]: "AmbientSound";
+  static " __fvtt_types_internal_document_name": "AmbientSound";
 }
 
 export default BaseAmbientSound;

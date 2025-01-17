@@ -3,7 +3,7 @@ import type { AnyObject, HandleEmptyObject } from "../../../../utils/index.d.mts
 import type { DataModel } from "../../../common/abstract/data.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataField } from "../../../common/data/fields.d.mts";
-import type { ActiveEffectData, EffectChangeData, EffectDurationData } from "../../../common/documents/_types.d.mts";
+import type { ActiveEffectData, EffectDurationData } from "../../../common/documents/_types.d.mts";
 import type BaseActiveEffect from "../../../common/documents/active-effect.d.mts";
 
 declare global {
@@ -39,8 +39,6 @@ declare global {
     /** @deprecated {@link ActiveEffect.CreateData | `ActiveEffect.CreateData`} */
     type ConstructorData = BaseActiveEffect.ConstructorData;
 
-    // TODO(LukeAbby): Audit. This is used both as an assignment, constructor, and initialized type.
-    // It's likely this isn't really supposed to be used in fvtt-types.
     interface EffectChangeData {
       /**
        * The attribute path in the Actor or Item data which the change modifies
@@ -143,7 +141,7 @@ declare global {
      * Update derived Active Effect duration data.
      * Configure the remaining and label properties to be getters which lazily recompute only when necessary.
      */
-    updateDuration(): ActiveEffectDuration;
+    updateDuration(): ActiveEffect.Duration;
 
     /**
      * Determine whether the ActiveEffect requires a duration update.
@@ -152,7 +150,7 @@ declare global {
      */
     protected _requiresDurationUpdate(): boolean;
 
-    protected _prepareDuration(): Omit<ActiveEffectDuration, keyof EffectDurationData>;
+    protected _prepareDuration(): Omit<ActiveEffect.Duration, keyof EffectDurationData>;
 
     /**
      * Format a round+turn combination as a decimal
@@ -200,7 +198,7 @@ declare global {
      * @param change - The change data being applied
      * @returns The resulting applied value
      */
-    apply(actor: Actor.ConfiguredInstance, change: EffectChangeData): unknown;
+    apply(actor: Actor.ConfiguredInstance, change: ActiveEffect.EffectChangeData): unknown;
 
     /**
      * Apply this ActiveEffect to a provided Actor using a heuristic to infer the value types based on the current value
@@ -252,7 +250,7 @@ declare global {
      */
     protected _applyAdd(
       actor: Actor.ConfiguredInstance,
-      change: EffectChangeData,
+      change: ActiveEffect.EffectChangeData,
       current: any,
       delta: any,
       changes: AnyObject,
@@ -270,9 +268,9 @@ declare global {
      */
     protected _applyMultiply(
       actor: Actor.ConfiguredInstance,
-      change: EffectChangeData,
-      current: any,
-      delta: any,
+      change: ActiveEffect.EffectChangeData,
+      current: unknown,
+      delta: unknown,
       changes: AnyObject,
     ): void;
 
@@ -288,9 +286,9 @@ declare global {
      */
     protected _applyOverride(
       actor: Actor.ConfiguredInstance,
-      change: EffectChangeData,
-      current: any,
-      delta: any,
+      change: ActiveEffect.EffectChangeData,
+      current: unknown,
+      delta: unknown,
       changes: AnyObject,
     ): void;
 
@@ -306,9 +304,9 @@ declare global {
      */
     protected _applyUpgrade(
       actor: Actor.ConfiguredInstance,
-      change: EffectChangeData,
-      current: any,
-      delta: any,
+      change: ActiveEffect.EffectChangeData,
+      current: unknown,
+      delta: unknown,
       changes: AnyObject,
     ): void;
 
@@ -323,9 +321,9 @@ declare global {
      */
     protected _applyCustom(
       actor: Actor.ConfiguredInstance,
-      change: EffectChangeData,
-      current: any,
-      delta: any,
+      change: ActiveEffect.EffectChangeData,
+      current: unknown,
+      delta: unknown,
       changes: AnyObject,
     ): void;
 
@@ -354,10 +352,6 @@ declare global {
      */
     protected _displayScrollingStatus(enabled: boolean): void;
 
-    /* -------------------------------------------- */
-    /*  Deprecations and Compatibility              */
-    /* -------------------------------------------- */
-
     /**
      * Get the name of the source of the Active Effect
      * @deprecated since v11, will be removed in v13
@@ -366,38 +360,54 @@ declare global {
     _getSourceName(): Promise<string>;
   }
 
-  interface ActiveEffect {
-    duration: ActiveEffectDuration;
-  }
+  /**
+   * @deprecated {@link ActiveEffect.Duration | `ActiveEffect.Duration`}
+   */
+  type ActiveEffectDuration = ActiveEffect.Duration;
 
-  interface ActiveEffectDuration extends EffectDurationData {
-    /**
-     * The duration type, either "seconds", "turns", or "none"
-     */
-    type: "seconds" | "turns" | "none";
+  namespace ActiveEffect {
+    interface DurationData {
+      /** The world time when the active effect first started */
+      startTime?: number | null | undefined;
 
-    /**
-     * The total effect duration, in seconds of world time or as a decimal
-     * number with the format `{rounds}.{turns}`
-     */
-    duration: number | null;
+      /** The maximum duration of the effect, in seconds */
+      seconds?: number | null | undefined;
 
-    /**
-     * The remaining effect duration, in seconds of world time or as a decimal
-     * number with the format `{rounds}.{turns}`
-     */
-    remaining: number | null;
+      /** The _id of the CombatEncounter in which the effect first started */
+      combat?: string | null | undefined;
 
-    label: string;
+      /** The maximum duration of the effect, in combat rounds */
+      rounds?: number | null | undefined;
 
-    /**
-     * An internal flag used determine when to recompute seconds-based duration
-     */
-    _worldTime: number;
+      /** The maximum duration of the effect, in combat turns */
+      turns?: number | null | undefined;
 
-    /**
-     * An internal flag used determine when to recompute turns-based duration
-     */
-    _combatTime: number;
+      /** The round of the CombatEncounter in which the effect first started */
+      startRound?: number | null | undefined;
+
+      /** The turn of the CombatEncounter in which the effect first started */
+      startTurn?: number | null | undefined;
+    }
+
+    // Must be kept in sync with
+    interface Duration extends DurationData {
+      /** The duration type, either "seconds", "turns", or "none" */
+      type: "seconds" | "turns" | "none";
+
+      /** The total effect duration, in seconds of world time or as a decimal number with the format \{rounds\}.\{turns\} */
+      duration: number;
+
+      /** The remaining effect duration, in seconds of world time or as a decimal number with the format \{rounds\}.\{turns\} */
+      remaining: number;
+
+      /** A formatted string label that represents the remaining duration */
+      label: string;
+
+      /** An internal flag used determine when to recompute seconds-based duration */
+      _worldTime?: number;
+
+      /** An internal flag used determine when to recompute turns-based duration */
+      _combatTime?: number;
+    }
   }
 }

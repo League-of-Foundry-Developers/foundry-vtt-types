@@ -40,7 +40,7 @@ declare abstract class BaseTableResult extends Document<"TableResult", BaseTable
 
   static override migrateData(source: AnyObject): AnyObject;
 
-  static [Document.Internal.DocumentName]: "TableResult";
+  static " __fvtt_types_internal_document_name": "TableResult";
 }
 
 export default BaseTableResult;

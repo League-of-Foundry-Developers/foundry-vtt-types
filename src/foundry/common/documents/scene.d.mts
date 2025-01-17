@@ -41,7 +41,7 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
     },
   ): AnyObject;
 
-  static [Document.Internal.DocumentName]: "Scene";
+  static " __fvtt_types_internal_document_name": "Scene";
 }
 
 export default BaseScene;

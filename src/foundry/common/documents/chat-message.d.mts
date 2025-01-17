@@ -70,7 +70,7 @@ declare abstract class BaseChatMessage extends Document<"ChatMessage", BaseChatM
    */
   get user(): this["author"];
 
-  static [Document.Internal.DocumentName]: "ChatMessage";
+  static " __fvtt_types_internal_document_name": "ChatMessage";
 }
 
 export default BaseChatMessage;

@@ -40,7 +40,7 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
     },
   ): AnyObject;
 
-  static [Document.Internal.DocumentName]: "Tile";
+  static " __fvtt_types_internal_document_name": "Tile";
 }
 
 export default BaseTile;

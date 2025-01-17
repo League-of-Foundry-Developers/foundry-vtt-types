@@ -28,7 +28,7 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
 
   static override migrateData(source: AnyObject): AnyObject;
 
-  static [Document.Internal.DocumentName]: "JournalEntry";
+  static " __fvtt_types_internal_document_name": "JournalEntry";
 }
 
 export default BaseJournalEntry;

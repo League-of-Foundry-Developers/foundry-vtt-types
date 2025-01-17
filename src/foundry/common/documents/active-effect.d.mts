@@ -71,7 +71,7 @@ declare abstract class BaseActiveEffect<
 
   set icon(value);
 
-  static [Document.Internal.DocumentName]: "ActiveEffect";
+  static " __fvtt_types_internal_document_name": "ActiveEffect";
 }
 
 export default BaseActiveEffect;
@@ -184,8 +184,6 @@ declare namespace BaseActiveEffect {
        * The _id of the CombatEncounter in which the effect first started
        * @defaultValue `null`
        */
-      // @ts-expect-error - NOTE(LukeAbby): The underlying issue of this is not yet understood.
-      // This `ts-expect-error` is NOT because it's okay but because the repo needs to get down to 0 errors.
       combat: fields.ForeignDocumentField<typeof documents.BaseCombat, { label: "EFFECT.Combat" }>;
 
       /**

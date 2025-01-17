@@ -26,17 +26,19 @@ import type BaseToken from "./token.d.mts";
 import type BaseUser from "./user.d.mts";
 import type BaseWall from "./wall.d.mts";
 
+/**
+ * @deprecated - This does not specify whether this is for source, initialized, or update data and
+ * is used interchangeably with all of those.
+ */
 export type ActiveEffectData = BaseActiveEffect.Properties;
 
-export type EffectDurationData = BaseActiveEffect.Properties["duration"];
-
-// TODO(LukeAbby): This understandably adds a circular loop because `DataField` depends on `EffectChangeData`.
-// export type EffectChangeData = BaseActiveEffect.Properties["changes"][number];
-
-// TODO(LukeAbby): Audit. This is used both as an assignment, constructor, and initialized type.
-// It's likely this isn't really supposed to be used in fvtt-types.
 /**
- * @deprecated {@link ActiveEffect.EffectChangeData | `ActiveEffect.EffectChangeData`}
+ * @deprecated {@link ActiveEffect.DurationData | `ActiveEffect.DurationData`}
+ */
+export type EffectDurationData = ActiveEffect.DurationData;
+
+/**
+ * @deprecated {@link ActiveEffect.Duration | `ActiveEffect.Duration`}
  */
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type EffectChangeData = ActiveEffect.EffectChangeData;

@@ -35,7 +35,7 @@ declare const _InternalTypeDataModelConst: _InternalTypeDataModelInterface;
 // @ts-expect-error Ignore the error, this is a workaround for a dynamic class.
 declare class _InternalTypeDataModel<
   Schema extends DataSchema,
-  Parent extends Document<any, DataSchema, any>,
+  Parent extends Document<Document.Type, DataSchema, Document.Any | null>,
   BaseData extends AnyObject = EmptyObject,
   DerivedData extends AnyObject = EmptyObject,
   // This does not work if inlined. It's weird to put it here but it works.

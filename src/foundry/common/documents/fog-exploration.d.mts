@@ -35,7 +35,7 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
    * For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
    */
 
-  static [Document.Internal.DocumentName]: "FogExploration";
+  static " __fvtt_types_internal_document_name": "FogExploration";
 }
 
 export default BaseFogExploration;

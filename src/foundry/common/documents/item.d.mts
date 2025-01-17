@@ -58,7 +58,7 @@ declare abstract class BaseItem<SubType extends Item.SubType = Item.SubType> ext
    * defined DRY-ly while also being easily overrideable.
    */
 
-  static [Document.Internal.DocumentName]: "Item";
+  static " __fvtt_types_internal_document_name": "Item";
 
   override parent: Item.Parent;
 

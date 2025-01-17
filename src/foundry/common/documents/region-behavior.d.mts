@@ -29,7 +29,7 @@ declare abstract class BaseRegionBehavior extends Document<"RegionBehavior", Bas
 
   static override canUserCreate(user: User.ConfiguredInstance): boolean;
 
-  static [Document.Internal.DocumentName]: "RegionBehavior";
+  static " __fvtt_types_internal_document_name": "RegionBehavior";
 }
 
 export default BaseRegionBehavior;

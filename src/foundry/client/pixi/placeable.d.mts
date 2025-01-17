@@ -10,7 +10,7 @@ declare global {
    * An Abstract Base Class which defines a Placeable Object which represents a Document placed on the Canvas
    */
   abstract class PlaceableObject<
-    D extends Document<any, any, Scene.ConfiguredInstance | null> = Document<any, any, Scene.ConfiguredInstance | null>,
+    D extends Document.AnyChild<Scene.ConfiguredInstance | null> = Document.AnyChild<Scene.ConfiguredInstance | null>,
   > extends RenderFlagsMixin(PIXI.Container) {
     /**
      * @param document - The Document instance which is represented by this object

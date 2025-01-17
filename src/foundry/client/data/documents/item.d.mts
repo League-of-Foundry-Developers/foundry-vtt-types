@@ -133,7 +133,7 @@ declare global {
        * A collection of ActiveEffect embedded Documents
        * @defaultValue `[]`
        */
-      effects: fields.EmbeddedCollectionField<typeof documents.BaseActiveEffect, Item.ConfiguredInstance>;
+      effects: fields.EmbeddedCollectionField<typeof documents.BaseActiveEffect, Item.Implementation>;
 
       /**
        * The _id of a Folder which contains this Item

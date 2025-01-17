@@ -47,7 +47,7 @@ declare abstract class BaseFolder<SubType extends BaseFolder.TypeNames = BaseFol
   // Doesn't affect type, "Return Type circularly references itself"
   // static override get(documentId: string, options: NullishProps<{ pack: string }>): Folder.ConfiguredInstance | null;
 
-  static [Document.Internal.DocumentName]: "Folder";
+  static " __fvtt_types_internal_document_name": "Folder";
 }
 
 export default BaseFolder;

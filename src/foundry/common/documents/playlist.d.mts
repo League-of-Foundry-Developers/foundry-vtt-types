@@ -39,7 +39,7 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
     },
   ): AnyObject;
 
-  static [Document.Internal.DocumentName]: "Playlist";
+  static " __fvtt_types_internal_document_name": "Playlist";
 }
 
 export default BasePlaylist;
