@@ -181,7 +181,7 @@ interface _ConfiguredDocumentInstance {
   Wall: GetDocumentInstance<"Wall">;
 }
 
-type TestConfiguredDocumentsValid = MustConform<
+type TestConfiguredClassesValid = MustConform<
   InterfaceToObject<_ConfiguredDocumentClass>,
   Record<string, Document.AnyConstructor>
 >;
@@ -194,8 +194,17 @@ type ConformedConfiguredClass = {
   >;
 };
 
+type TestConfiguredInstanceValid = MustConform<
+  InterfaceToObject<_ConfiguredDocumentInstance>,
+  Record<string, Document.Any>
+>;
+
+type ConformedConfiguredInstance = {
+  [K in keyof _ConfiguredDocumentInstance]: MakeConform<_ConfiguredDocumentInstance[K], Document.Any>;
+};
+
 export interface ConfiguredDocumentClass extends ConformedConfiguredClass {}
-export interface ConfiguredDocumentInstance extends _ConfiguredDocumentInstance {}
+export interface ConfiguredDocumentInstance extends ConformedConfiguredInstance {}
 
 interface ActiveEffectMetadata
   extends Merge<

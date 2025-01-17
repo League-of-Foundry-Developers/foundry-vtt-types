@@ -11,7 +11,7 @@ declare global {
     Options extends Compendium.Options<Metadata> = Compendium.Options<Metadata>,
   > extends DocumentDirectory<"Compendium", Options> {
     /**
-     * @param options    - Compendium configuration options.
+     * @param options - Compendium configuration options.
      */
     constructor(options: Partial<Options>);
 
