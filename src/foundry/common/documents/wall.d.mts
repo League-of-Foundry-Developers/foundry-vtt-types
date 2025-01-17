@@ -28,7 +28,7 @@ declare abstract class BaseWall extends Document<"Wall", BaseWall.Schema, any> {
 
   static override migrateData(source: AnyObject): AnyObject;
 
-  static " __fvtt_types_internal_document_name": "Wall";
+  static " __fvtt_types_internal_document_name_static": "Wall";
 }
 
 export default BaseWall;

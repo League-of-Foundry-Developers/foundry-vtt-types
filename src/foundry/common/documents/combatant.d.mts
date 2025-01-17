@@ -40,7 +40,7 @@ declare abstract class BaseCombatant extends Document<"Combatant", BaseCombatant
 
   override getUserLevel(user?: User.ConfiguredInstance): DOCUMENT_OWNERSHIP_LEVELS | null;
 
-  static " __fvtt_types_internal_document_name": "Combatant";
+  static " __fvtt_types_internal_document_name_static": "Combatant";
 }
 
 export default BaseCombatant;

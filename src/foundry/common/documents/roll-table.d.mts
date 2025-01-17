@@ -33,7 +33,7 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
 
   static override migrateData(source: AnyObject): AnyObject;
 
-  static " __fvtt_types_internal_document_name": "RollTable";
+  static " __fvtt_types_internal_document_name_static": "RollTable";
 }
 
 export default BaseRollTable;

@@ -78,7 +78,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   toObject(source: true): this["_source"];
   toObject(source?: boolean): ReturnType<this["schema"]["toObject"]>;
 
-  static " __fvtt_types_internal_document_name": "Token";
+  static " __fvtt_types_internal_document_name_static": "Token";
 }
 
 /**

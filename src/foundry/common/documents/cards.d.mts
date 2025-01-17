@@ -37,7 +37,7 @@ declare abstract class BaseCards extends Document<"Cards", BaseCards.Schema, any
 
   static override migrateData(source: AnyObject): AnyObject;
 
-  static " __fvtt_types_internal_document_name": "Cards";
+  static " __fvtt_types_internal_document_name_static": "Cards";
 }
 
 export default BaseCards;

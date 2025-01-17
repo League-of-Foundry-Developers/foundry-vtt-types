@@ -71,7 +71,7 @@ declare abstract class BaseActiveEffect<
 
   set icon(value);
 
-  static " __fvtt_types_internal_document_name": "ActiveEffect";
+  static " __fvtt_types_internal_document_name_static": "ActiveEffect";
 }
 
 export default BaseActiveEffect;

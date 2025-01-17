@@ -23,7 +23,7 @@ declare abstract class BaseJournalEntryPage extends Document<"JournalEntryPage",
   //   context?: Document.ConstructionContext<BaseJournalEntryPage.Parent>,
   // );
 
-  static " __fvtt_types_internal_document_name": "JournalEntryPage";
+  static " __fvtt_types_internal_document_name_static": "JournalEntryPage";
 
   override parent: BaseJournalEntryPage.Parent;
 

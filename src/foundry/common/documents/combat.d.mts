@@ -47,7 +47,7 @@ declare abstract class BaseCombat extends Document<"Combat", BaseCombat.Schema, 
 
   // BaseCombat implements _preUpdate but leaving out here for type computation reasons
 
-  static " __fvtt_types_internal_document_name": "Combat";
+  static " __fvtt_types_internal_document_name_static": "Combat";
 }
 
 export default BaseCombat;

@@ -68,7 +68,7 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
     },
   ): AnyObject;
 
-  static " __fvtt_types_internal_document_name": "Drawing";
+  static " __fvtt_types_internal_document_name_static": "Drawing";
 }
 
 export default BaseDrawing;

@@ -78,7 +78,7 @@ declare abstract class BaseActor extends Document<"Actor", BaseActor.Schema, any
 
   static override migrateData(source: AnyObject): AnyObject;
 
-  static " __fvtt_types_internal_document_name": "Actor";
+  static " __fvtt_types_internal_document_name_static": "Actor";
 }
 
 declare namespace BaseActor {

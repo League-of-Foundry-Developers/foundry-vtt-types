@@ -47,7 +47,7 @@ declare abstract class Document<
   Schema extends DataSchema,
   Parent extends Document.Any | null = null,
 > extends DataModel<Schema, Parent, InterfaceToObject<Document.ConstructionContext<Parent>>> {
-  static " __fvtt_types_internal_document_type": Document.Type;
+  static " __fvtt_types_internal_document_name_static": Document.Type;
 
   " __fvtt_types_internal_document_name": DocumentName;
   " __fvtt_types_internal_document_schema": Schema;
@@ -1041,7 +1041,7 @@ declare namespace Document {
   // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
   namespace Internal {
     type Constructor = (abstract new (arg0: never, ...args: never[]) => Instance.Any) & {
-      " __fvtt_types_internal_document_type": Document.Type;
+      " __fvtt_types_internal_document_name_static": Document.Type;
     };
 
     interface Instance<
@@ -1166,7 +1166,7 @@ declare namespace Document {
   type Temporary<D extends Document.Any> = D extends Stored<infer U> ? U : D;
 
   type NameFor<ConcreteDocument extends Document.Internal.Constructor> =
-    ConcreteDocument[" __fvtt_types_internal_document_type"];
+    ConcreteDocument[" __fvtt_types_internal_document_name_static"];
 
   type ConfiguredInstanceForName<Name extends Type> = MakeConform<ConfiguredDocumentInstance[Name], Document.Any>;
 

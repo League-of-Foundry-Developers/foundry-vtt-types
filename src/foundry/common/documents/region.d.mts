@@ -21,7 +21,7 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
 
   static override defineSchema(): BaseRegion.Schema;
 
-  static " __fvtt_types_internal_document_name": "Region";
+  static " __fvtt_types_internal_document_name_static": "Region";
 }
 
 export default BaseRegion;

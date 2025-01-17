@@ -35,7 +35,7 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
    */
   get thumbnail(): string;
 
-  static " __fvtt_types_internal_document_name": "Adventure";
+  static " __fvtt_types_internal_document_name_static": "Adventure";
 }
 
 export default BaseAdventure;

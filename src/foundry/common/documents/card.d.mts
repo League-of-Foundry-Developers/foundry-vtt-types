@@ -58,7 +58,7 @@ declare abstract class BaseCard extends Document<"Card", BaseCard.Schema, any> {
     }>,
   ): boolean;
 
-  static " __fvtt_types_internal_document_name": "Card";
+  static " __fvtt_types_internal_document_name_static": "Card";
 }
 
 export default BaseCard;

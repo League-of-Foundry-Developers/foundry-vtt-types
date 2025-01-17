@@ -10,7 +10,7 @@ type DataSchema = foundry.data.fields.DataSchema;
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
-declare abstract class BaseFolder<SubType extends BaseFolder.TypeNames = BaseFolder.TypeNames> extends Document<
+declare abstract class BaseFolder<out SubType extends BaseFolder.TypeNames = BaseFolder.TypeNames> extends Document<
   "Folder",
   BaseFolder.Schema,
   any
@@ -47,7 +47,7 @@ declare abstract class BaseFolder<SubType extends BaseFolder.TypeNames = BaseFol
   // Doesn't affect type, "Return Type circularly references itself"
   // static override get(documentId: string, options: NullishProps<{ pack: string }>): Folder.ConfiguredInstance | null;
 
-  static " __fvtt_types_internal_document_name": "Folder";
+  static " __fvtt_types_internal_document_name_static": "Folder";
 }
 
 export default BaseFolder;

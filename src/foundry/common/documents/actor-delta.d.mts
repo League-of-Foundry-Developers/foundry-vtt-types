@@ -57,7 +57,7 @@ declare abstract class BaseActorDelta extends Document<"ActorDelta", BaseActorDe
   toObject(source: true): this["_source"];
   toObject(source?: boolean): ReturnType<this["schema"]["toObject"]>;
 
-  static " __fvtt_types_internal_document_name": "ActorDelta";
+  static " __fvtt_types_internal_document_name_static": "ActorDelta";
 }
 
 export default BaseActorDelta;

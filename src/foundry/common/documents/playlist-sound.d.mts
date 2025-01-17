@@ -40,7 +40,7 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
     }>,
   ): boolean;
 
-  static " __fvtt_types_internal_document_name": "PlaylistSound";
+  static " __fvtt_types_internal_document_name_static": "PlaylistSound";
 }
 
 export default BasePlaylistSound;

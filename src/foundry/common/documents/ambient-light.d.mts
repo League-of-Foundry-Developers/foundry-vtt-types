@@ -28,7 +28,7 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
 
   static override migrateData(source: AnyObject): AnyObject;
 
-  static " __fvtt_types_internal_document_name": "AmbientLight";
+  static " __fvtt_types_internal_document_name_static": "AmbientLight";
 }
 
 export default BaseAmbientLight;

@@ -26,7 +26,7 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
 
   static canUserCreate(user: User.ConfiguredInstance): boolean;
 
-  static " __fvtt_types_internal_document_name": "Setting";
+  static " __fvtt_types_internal_document_name_static": "Setting";
 }
 
 export default BaseSetting;

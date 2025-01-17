@@ -60,7 +60,7 @@ declare abstract class BaseMacro extends Document<"Macro", BaseMacro.Schema, any
    * For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
    */
 
-  static " __fvtt_types_internal_document_name": "Macro";
+  static " __fvtt_types_internal_document_name_static": "Macro";
 }
 export default BaseMacro;
 

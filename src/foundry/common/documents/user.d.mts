@@ -115,7 +115,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
    */
   static #canDelete(user: User.ConfiguredInstance, doc: BaseUser): boolean;
 
-  static " __fvtt_types_internal_document_name": "User";
+  static " __fvtt_types_internal_document_name_static": "User";
 }
 
 export default BaseUser;
