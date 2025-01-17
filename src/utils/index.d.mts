@@ -385,35 +385,10 @@ export type Brand<BaseType, BrandName extends string> = BaseType & Branded<Brand
  * }
  * ```
  */
-// Note(LukeAbby): PrettifyType operates off of plain objects only. Functions and constructors
-// comparatively rarely need prettifying but more importantly run into problems with overloading etc.
-// It's technically doable but expensive.
-// This is why it goes out of its way to exclude `AnyConstructor` and `AnyFunction`. As for why it
-// doesn't write the seemingly simpler constraint of `extends Record<string, unknown>` the reasons
-// are twofold:
-// 1. Interfaces wouldn't ever count as a plain object. Technically this could be seen as a benefit
-//    And it's debatable whether the better DX is to expand them or not.
-// 2. It's been seen to reduce circularities. See https://tsplay.dev/NDpRRN
-export type PrettifyType<T> = T extends object
-  ? T extends AnyConstructor | AnyFunction
-    ? T
-    : {
-        [K in keyof T]: T[K];
-      }
-  : T & unknown;
-
-/**
- * This behaves the same as {@link PrettifyType | `PrettifyType`} except instead
- * of prettifying only the first level it prettifies all levels of an object.
- */
-// Note(LukeAbby): See `PrettifyType`'s note for more information.
-export type PrettifyTypeDeep<T> = T extends object
-  ? T extends AnyConstructor | AnyFunction
-    ? T
-    : {
-        [K in keyof T]: PrettifyTypeDeep<T[K]>;
-      }
-  : T & unknown;
+// Note(LukeAbby): This uses `AnyObject` as a constraint rather than in the body due to this circularity: https://tsplay.dev/NDpRRN
+export type PrettifyType<T extends AnyObject> = {
+  [K in keyof T]: T[K];
+};
 
 /**
  * Convert a union of the form `T1 | T2 | T3 | ...` into an intersection of the form `T1 & T2 & T3 & ...`.
