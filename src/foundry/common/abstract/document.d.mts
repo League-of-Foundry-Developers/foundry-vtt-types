@@ -948,7 +948,11 @@ declare namespace Document {
 
   type CoreTypesForName<Name extends Type> = string & GetKey<Document.MetadataFor<Name>, "coreTypes", ["base"]>[number];
 
-  type SubTypesOf<Name extends Type> = Game.Model.TypeNames<Name>;
+  type SubTypesOf<Name extends Type> =
+    | Document.CoreTypesForName<Name>
+    | keyof GetKey<DataModelConfig, Name, unknown>
+    | keyof GetKey<SourceConfig, Name, unknown>
+    | (Document.MetadataFor<Name> extends { readonly hasTypeData: true } ? Document.ModuleSubtype : never);
 
   type ModuleSubtype = `${string}.${string}`;
 
@@ -956,10 +960,13 @@ declare namespace Document {
     | (Name extends "ActiveEffect" ? ActiveEffect.OfType<SubType & ActiveEffect.SubType> : never)
     | (Name extends "Item" ? Item.OfType<SubType & Item.SubType> : never);
 
+  // Note(LukeAbby): This is written this way to make it more obviously covariant over `SubType`.
   type SystemFor<Name extends Type, SubType extends SubTypesOf<Name>> = SystemData extends {
-    readonly [K in Name]: { readonly [_ in SubType]: infer Model };
+    readonly [K in Name]: infer Data;
   }
-    ? Model
+    ? SubType extends keyof Data
+      ? Data[SubType]
+      : UnknownSystem
     : UnknownSystem;
 
   interface SystemData extends _SystemData {}
@@ -1418,7 +1425,7 @@ declare namespace Document {
       readonly indexed: false;
       readonly compendiumIndexFields: [];
       readonly label: "DOCUMENT.Document";
-      readonly coreTypes: [];
+      readonly coreTypes: [CONST.BASE_DOCUMENT_TYPE];
       readonly embedded: EmptyObject;
       readonly permissions: {
         create: "ASSISTANT";

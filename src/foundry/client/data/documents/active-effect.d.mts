@@ -75,7 +75,7 @@ declare global {
    * @see {@link Actor}                     The Actor document which contains ActiveEffect embedded documents
    * @see {@link Item}                      The Item document which contains ActiveEffect embedded documents
    */
-  class ActiveEffect<SubType extends ActiveEffect.SubType = ActiveEffect.SubType> extends ClientDocumentMixin(
+  class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffect.SubType> extends ClientDocumentMixin(
     foundry.documents.BaseActiveEffect,
   )<SubType> {
     static override metadata: ActiveEffect.Metadata;

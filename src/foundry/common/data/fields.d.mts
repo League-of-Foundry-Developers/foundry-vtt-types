@@ -7,7 +7,7 @@ import type {
   InexactPartial,
   ToMethod,
   FixedInstanceType,
-  PrettifyTypeDeep,
+  PrettifyType,
 } from "../../../utils/index.d.mts";
 import type { DataModel } from "../abstract/data.mts";
 import type Document from "../abstract/document.mts";
@@ -827,7 +827,7 @@ declare namespace SchemaField {
    * Get the inner assignment type for the given DataSchema.
    * @typeParam Fields - the DataSchema fields of the SchemaField
    */
-  type AssignmentData<Fields extends DataSchema> = PrettifyTypeDeep<
+  type AssignmentData<Fields extends DataSchema> = PrettifyType<
     RemoveIndexSignatures<{
       [Key in keyof Fields]?: Fields[Key] extends EmbeddedDataField<any, any, infer AssignmentType, any, any>
         ? AssignmentType
@@ -855,7 +855,7 @@ declare namespace SchemaField {
    * Gets the initialized version of a schema. This means a
    * @typeParam Fields - the DataSchema fields of the SchemaField
    */
-  type InitializedData<Fields extends DataSchema> = PrettifyTypeDeep<
+  type InitializedData<Fields extends DataSchema> = PrettifyType<
     RemoveIndexSignatures<{
       [Key in keyof Fields]: Fields[Key] extends EmbeddedDataField<infer Model, any, any, any, any>
         ? FixedInstanceType<Model>
@@ -871,7 +871,7 @@ declare namespace SchemaField {
    * Get the persisted type for the given DataSchema. This is the type used for source.
    * @typeParam Fields - the DataSchema fields of the SchemaField
    */
-  type PersistedData<Fields extends DataSchema> = PrettifyTypeDeep<
+  type PersistedData<Fields extends DataSchema> = PrettifyType<
     RemoveIndexSignatures<{
       [Key in keyof Fields]: Fields[Key] extends EmbeddedDataField<any, any, any, any, infer PersistType>
         ? PersistType

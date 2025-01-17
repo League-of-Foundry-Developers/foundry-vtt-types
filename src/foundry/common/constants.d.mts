@@ -88,6 +88,7 @@ export type ACTIVE_EFFECT_MODES = Brand<number, "constants.ACTIVE_EFFECT_MODES">
  * Define the string name used for the base document type when specific sub-types are not defined by the system
  */
 export declare const BASE_DOCUMENT_TYPE: "base";
+export type BASE_DOCUMENT_TYPE = "base";
 
 /**
  * Define the methods by which a Card can be drawn from a Cards stack

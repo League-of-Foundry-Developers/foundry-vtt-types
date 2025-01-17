@@ -36,7 +36,7 @@ declare global {
    * @see {@link Folders}            The world-level collection of Folder documents
    * @see {@link FolderConfig}       The Folder configuration application
    */
-  class Folder<Type extends BaseFolder.TypeNames = BaseFolder.TypeNames> extends ClientDocumentMixin(
+  class Folder<out Type extends BaseFolder.TypeNames = BaseFolder.TypeNames> extends ClientDocumentMixin(
     foundry.documents.BaseFolder,
   )<Type> {
     static override metadata: Folder.Metadata;

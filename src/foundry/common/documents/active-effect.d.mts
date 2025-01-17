@@ -13,7 +13,7 @@ type DataSchema = foundry.data.fields.DataSchema;
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
 declare abstract class BaseActiveEffect<
-  SubType extends BaseActiveEffect.SubType = BaseActiveEffect.SubType,
+  out SubType extends BaseActiveEffect.SubType = BaseActiveEffect.SubType,
 > extends Document<"ActiveEffect", BaseActiveEffect._Schema, any> {
   /**
    * @param data    - Initial data from which to construct the ActiveEffect

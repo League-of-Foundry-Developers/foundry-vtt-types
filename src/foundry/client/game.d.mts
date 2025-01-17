@@ -665,11 +665,7 @@ declare global {
        *
        * @typeParam DocumentName - the type of the Document this data is for
        */
-      type TypeNames<DocumentType extends Document.Type> =
-        | Document.CoreTypesForName<DocumentType>
-        | keyof GetKey<DataModelConfig, DocumentType, unknown>
-        | keyof GetKey<SourceConfig, DocumentType, unknown>
-        | (Document.MetadataFor<DocumentType> extends { readonly hasTypeData: true } ? Document.ModuleSubtype : never);
+      type TypeNames<DocumentType extends Document.Type> = Document.SubTypesOf<DocumentType>
     }
 
     type _Model = {
