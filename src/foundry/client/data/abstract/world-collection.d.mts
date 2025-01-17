@@ -1,8 +1,5 @@
 import type { DeepPartial, InexactPartial } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
-import type { DirectoryCollectionMixin_DocumentCollection_Interface } from "./directory-collection-mixin.d.mts";
-
-declare const DirectoryCollectionMixin_DocumentCollection: DirectoryCollectionMixin_DocumentCollection_Interface;
 
 declare global {
   /**
@@ -13,7 +10,7 @@ declare global {
   abstract class WorldCollection<
     T extends Document.AnyConstructor,
     Name extends string,
-  > extends DirectoryCollectionMixin_DocumentCollection<T, Name> {
+  > extends DirectoryCollectionMixin(DocumentCollection)<T, Name> {
     /**
      * Reference the set of Folders which contain documents in this collection
      */
@@ -40,7 +37,9 @@ declare global {
      */
     static get instance(): WorldCollection<Document.AnyConstructor, any>; // TODO: Find a way to type this more concretely. One option would be to separate the static and non static side of this class, which allows accessing the the static this type to use the `documentName`.
 
-    protected override _getVisibleTreeContents(): Document.ToConfiguredInstance<T>[];
+    // Note(LukeAbby): Due to the usage of `this["contents"]` in the parent class the override has
+    // to stay like this.
+    protected override _getVisibleTreeContents(): this["contents"];
 
     /**
      * Import a Document from a Compendium collection, adding it to the current World.

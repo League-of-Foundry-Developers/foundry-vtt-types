@@ -1,33 +1,15 @@
 import type { Mixin } from "../../../../utils/index.d.mts";
-import type Document from "../../../common/abstract/document.d.mts";
-
-type DirectoryCollectionMixin_DocumentCollection_Static = DirectoryCollection<DirectoryCollection.DirectoryTypes> &
-  DocumentCollection<Document.AnyConstructor, string>;
-
-export interface DirectoryCollectionMixin_DocumentCollection_Interface
-  extends DirectoryCollectionMixin_DocumentCollection_Static {
-  new <T extends Document.AnyConstructor, Name extends string>(
-    ...args: ConstructorParameters<typeof DocumentCollection>
-  ): DirectoryCollection<T> & DocumentCollection<T, Name>;
-}
-
-type DirectoryCollectionMixin_Collection_Static = DirectoryCollection<DirectoryCollection.DirectoryTypes> &
-  Collection<CompendiumCollection<CompendiumCollection.Metadata>>;
-
-export interface DirectoryCollectionMixin_Collection_Interface extends DirectoryCollectionMixin_Collection_Static {
-  new (
-    ...args: ConstructorParameters<typeof Collection>
-  ): DirectoryCollection<CompendiumCollection<CompendiumCollection.Metadata>> &
-    Collection<CompendiumCollection<CompendiumCollection.Metadata>>;
-}
 
 /**
  * An extension of the Collection class which adds behaviors specific to tree-based collections of entries and folders.
  */
-// TODO: T should probably extend a subset of documents | CompendiumCollection
-declare class DirectoryCollection<T extends DirectoryCollection.DirectoryTypes> {
+declare class DirectoryCollection {
   /** @privateRemarks All mixin classses need a constructor like this */
   constructor(...args: any[]);
+
+  // Note(LukeAbby): This isn't really a property on this class but rather it exists on `Collection`.
+  // However since this is only used when merged with a Collection class, it's fine to define it here.
+  contents: readonly unknown[];
 
   /**
    * Reference the set of Folders which contain documents in this collection
@@ -37,7 +19,7 @@ declare class DirectoryCollection<T extends DirectoryCollection.DirectoryTypes> 
   /**
    * The built tree structure of the DocumentCollection
    */
-  get tree(): DirectoryCollection.TreeNode<T>;
+  get tree(): DirectoryCollection.TreeNode<this["contents"]>;
 
   /**
    * The current search mode for this collection
@@ -69,7 +51,7 @@ declare class DirectoryCollection<T extends DirectoryCollection.DirectoryTypes> 
   /**
    * Return a reference to list of entries which are visible to the User in this tree
    */
-  protected _getVisibleTreeContents(): T[];
+  protected _getVisibleTreeContents(): this["contents"];
 
   /**
    * Initialize the tree by categorizing folders and entries into a hierarchical tree structure.
@@ -111,15 +93,11 @@ declare global {
    * @param BaseCollection - The base collection class to extend
    * @returns A Collection mixed with DirectoryCollection functionality
    */
-  function DirectoryCollectionMixin<
-    T extends DirectoryCollection.DirectoryTypes,
-    BaseCollection extends foundry.utils.Collection.AnyConstructor,
-  >(BaseCollection: BaseCollection): Mixin<typeof DirectoryCollection<T>, BaseCollection>;
+  function DirectoryCollectionMixin<BaseCollection extends foundry.utils.Collection.AnyConstructor>(
+    BaseCollection: BaseCollection,
+  ): Mixin<typeof DirectoryCollection, BaseCollection>;
 
   namespace DirectoryCollection {
-    // TODO: Refine type based on CONST.FOLDER_DOCUMENT_TYPES
-    type DirectoryTypes = object;
-
     interface TreeNode<T> {
       children: TreeNode<T>[];
       depth: number;

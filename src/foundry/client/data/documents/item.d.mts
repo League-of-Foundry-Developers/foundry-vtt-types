@@ -14,16 +14,16 @@ import type { DataSchema } from "./adventure.d.mts";
 declare global {
   namespace Item {
     /**
-     * The implementation of the Item document configured through `CONFIG.Item.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
-     */
-    interface ConfiguredClass extends Document.ConfiguredClassForName<"Item"> {}
-
-    /**
      * The implementation of the Item document instance configured through `CONFIG.Item.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredItem | `configuration/ConfiguredItem`} in fvtt-types.
      */
-    interface ConfiguredInstance extends Document.ConfiguredInstanceForName<"Item"> {}
+    interface Implementation extends Document.ConfiguredInstanceForName<"Item"> {}
+
+    /**
+     * The implementation of the Item document configured through `CONFIG.Item.documentClass` in Foundry and
+     * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
+     */
+    interface ImplementationClass extends Document.ConfiguredClassForName<"Item"> {}
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,
@@ -188,6 +188,16 @@ declare global {
      * @deprecated {@link Item.CreateData | `Item.CreateData`}
      */
     interface ConstructorData extends Item.CreateData {}
+
+    /**
+     * @deprecated {@link Item.implementation | `Item.ImplementationClass`}
+     */
+    interface ConfiguredClass extends ImplementationClass {}
+
+    /**
+     * @deprecated {@link Item.Implementation | `Item.Implementation`}
+     */
+    interface ConfiguredInstance extends Implementation {}
   }
 
   /**
@@ -243,7 +253,7 @@ declare global {
 
     static override metadata: Item.Metadata;
 
-    static get implementation(): Item.ConfiguredClass;
+    static get implementation(): Item.ImplementationClass;
 
     static override defaultName(context?: Document.DefaultNameContext<Item.SubType, Item.Parent>): string;
 

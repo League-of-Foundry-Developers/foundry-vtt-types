@@ -69,4 +69,4 @@ declare global {
   }
 }
 
-type FormData = Pick<User.ConfiguredInstance["_source"], "avatar" | "character" | "color">;
+interface FormData extends Pick<User.ConfiguredInstance["_source"], "avatar" | "character" | "color"> {}

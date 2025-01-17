@@ -38,8 +38,10 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
   /**
    * A reference to the Compendium Collection which contains this Document, if any, otherwise undefined.
    */
-  get compendium(): Document.MetadataFor<BaseDocument> extends CompendiumCollection.Metadata
-    ? CompendiumCollection<Document.MetadataFor<BaseDocument>>
+  get compendium(): Document.MetadataFor<
+    Document.Internal.DocumentNameFor<BaseDocument>
+  > extends CompendiumCollection.Metadata
+    ? CompendiumCollection<Document.MetadataFor<Document.Internal.DocumentNameFor<BaseDocument>>>
     : undefined;
 
   /**

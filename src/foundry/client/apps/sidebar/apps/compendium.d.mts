@@ -1,4 +1,4 @@
-export {};
+import type Document from "../../../../common/abstract/document.d.mts";
 
 declare global {
   /**
@@ -83,10 +83,10 @@ declare global {
   namespace Compendium {
     type Any = Compendium<any, any>;
 
-    interface Options<_Metadata extends CompendiumCollection.Metadata = CompendiumCollection.Metadata>
-      extends DocumentDirectoryOptions {
+    interface Options<Metadata extends CompendiumCollection.Metadata = CompendiumCollection.Metadata>
+      extends DocumentDirectoryOptions<Document.ConfiguredClassForName<Metadata["type"]>> {
       // Note(LukeAbby): Replacing `any` with `Metadata` causes an OOM within TypeScript.
-      collection: CompendiumCollection<any>;
+      collection: CompendiumCollection<Metadata>;
     }
   }
 }

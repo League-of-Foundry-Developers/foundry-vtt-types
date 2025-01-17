@@ -669,9 +669,7 @@ declare global {
         | Document.CoreTypesForName<DocumentType>
         | keyof GetKey<DataModelConfig, DocumentType, unknown>
         | keyof GetKey<SourceConfig, DocumentType, unknown>
-        | (Document.Internal.SimpleMetadata<DocumentType> extends { readonly hasTypeData: true }
-            ? Document.ModuleSubtype
-            : never);
+        | (Document.MetadataFor<DocumentType> extends { readonly hasTypeData: true } ? Document.ModuleSubtype : never);
     }
 
     type _Model = {

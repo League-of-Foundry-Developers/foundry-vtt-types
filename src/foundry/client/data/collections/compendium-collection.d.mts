@@ -1,8 +1,5 @@
 import type { DeepPartial, EmptyObject, InexactPartial } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
-import type { DirectoryCollectionMixin_DocumentCollection_Interface } from "../abstract/directory-collection-mixin.d.mts";
-
-declare const DirectoryCollectionMixin_DocumentCollection: DirectoryCollectionMixin_DocumentCollection_Interface;
 
 declare global {
   interface ManageCompendiumRequest extends SocketInterface.SocketRequest {
@@ -41,9 +38,9 @@ declare global {
    *
    * @see {@link Game#packs}
    */
-  class CompendiumCollection<
-    T extends CompendiumCollection.Metadata,
-  > extends DirectoryCollectionMixin_DocumentCollection<Document.ConfiguredClassForName<T["type"]>, T["name"]> {
+  class CompendiumCollection<T extends CompendiumCollection.Metadata> extends DirectoryCollectionMixin(
+    DocumentCollection,
+  )<Document.ConfiguredClassForName<T["type"]>, T["name"]> {
     /** @param metadata - The compendium metadata, an object provided by game.data */
     constructor(metadata: CompendiumCollection.ConstructorMetadata<T>);
 
@@ -113,7 +110,7 @@ declare global {
 
     // Note(LukeAbby): The override for `_getVisibleTreeContents` become unreasonably long and don't add any changes and so has been omitted.
 
-    static _sortStandard(a: number, b: number): number;
+    static _sortStandard(a: DirectoryCollection.StandardSortEntry, b: DirectoryCollection.StandardSortEntry): number;
 
     /** Access the compendium configuration data for this pack */
     get config(): CompendiumCollection.Configuration | EmptyObject;

@@ -7,7 +7,7 @@ declare global {
    * An abstract subclass of the Collection container which defines a collection of Document instances.
    */
   class DocumentCollection<T extends Document.AnyConstructor, Name extends string> extends foundry.utils.Collection<
-    Document.ToConfiguredStored<T>
+    Document.ToStored<T>
   > {
     constructor(data: FixedInstanceType<T>["_source"][]);
 
@@ -31,13 +31,13 @@ declare global {
     /**
      * A reference to the Document class definition which is contained within this DocumentCollection.
      */
-    get documentClass(): Document.ToConfiguredClass<T>;
+    get documentClass(): T;
 
     /**
      * A reference to the named Document class which is contained within this DocumentCollection.
      * @remarks This accessor is abstract: A subclass of DocumentCollection must implement the documentName getter
      */
-    get documentName(): Document.ToConfiguredClass<T>["metadata"]["name"];
+    get documentName(): T["metadata"]["name"];
 
     /**
      * The base Document type which is contained within this DocumentCollection
@@ -61,8 +61,9 @@ declare global {
      */
     createDocument(
       data: Document.ConstructorDataFor<T>,
-      context: Document.ConstructionContext<FixedInstanceType<T>>,
-    ): Document.ToConfiguredInstance<T>;
+      // TODO: Should be `Document.ParentOf<T>` or some equivalent.
+      context: Document.ConstructionContext<Document.Any | null>,
+    ): T;
 
     /**
      * Obtain a temporary Document instance for a document id which currently has invalid source data.
@@ -95,14 +96,14 @@ declare global {
          */
         invalid: false;
       }>,
-    ): Document.ToConfiguredStored<T> | undefined;
-    get(key: string, options: { strict: true; invalid?: false }): Document.ToConfiguredStored<T>;
+    ): Document.ToStored<T> | undefined;
+    get(key: string, options: { strict: true; invalid?: false }): Document.ToStored<T>;
     get(key: string, options: { strict?: boolean; invalid: true }): unknown;
 
     /**
      * @remarks The parameter `id` is ignored, instead `document.id` is used as the key.
      */
-    set(id: string, document: Document.ToConfiguredStored<T>): this;
+    set(id: string, document: Document.ToStored<T>): this;
 
     /** @remarks Actually returns void */
     delete: (id: string) => boolean;
@@ -131,25 +132,7 @@ declare global {
      * If filters are provided, results are filtered to only those that match the provided values.
      * @param search   - An object configuring the search
      */
-    search(
-      search?: InexactPartial<{
-        /**
-         * A case-insensitive search string
-         * @defaultValue `""`
-         */
-        query: string;
-        /**
-         * An array of filters to apply
-         * @defaultValue `[]`
-         */
-        filters: FieldFilter[];
-        /**
-         * An array of document IDs to exclude from search results
-         * @defaultValue `[]`
-         */
-        exclude: string[];
-      }>,
-    ): Document.ToConfiguredInstance<T>[];
+    search(search?: DocumentCollection.SearchOptions): FixedInstanceType<T>[];
 
     /**
      * Update all objects in this DocumentCollection with a provided transformation.
@@ -162,8 +145,8 @@ declare global {
      * @returns An array of updated data once the operation is complete
      */
     updateAll(
-      transformation: Document.UpdateDataFor<T> | ((doc: Document.ToConfiguredStored<T>) => Document.UpdateDataFor<T>),
-      condition?: ((obj: Document.ToConfiguredStored<T>) => boolean) | null,
+      transformation: Document.UpdateDataFor<T> | ((doc: Document.ToStored<T>) => Document.UpdateDataFor<T>),
+      condition?: ((obj: Document.ToStored<T>) => boolean) | null,
       options?: Document.OnUpdateOptions<T["metadata"]["name"]>,
     ): ReturnType<this["documentClass"]["updateDocuments"]>;
 
@@ -177,8 +160,8 @@ declare global {
      */
     _onModifyContents<A extends DatabaseAction>(
       action: A,
-      documents: FixedInstanceType<T>[],
-      result: AnyObject[] | readonly string[],
+      documents: Document.ToStored<T>[],
+      result: readonly AnyObject[] | readonly string[],
       operation: DatabaseOperationMap[A],
       user: User.ConfiguredInstance,
     ): void;
@@ -214,5 +197,28 @@ declare global {
         data: string[];
       }
     }
+
+    /** @internal */
+    interface _SearchOptions {
+      /**
+       * A case-insensitive search string
+       * @defaultValue `""`
+       */
+      query: string;
+
+      /**
+       * An array of filters to apply
+       * @defaultValue `[]`
+       */
+      filters: FieldFilter[];
+
+      /**
+       * An array of document IDs to exclude from search results
+       * @defaultValue `[]`
+       */
+      exclude: string[];
+    }
+
+    interface SearchOptions extends InexactPartial<_SearchOptions> {}
   }
 }

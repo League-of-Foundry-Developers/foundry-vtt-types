@@ -2,7 +2,7 @@ import type { AnyObject, InexactPartial } from "../../../utils/index.d.mts";
 import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
 import type * as fields from "../data/fields.d.mts";
-import type BaseActor from "./actor.mts";
+import type BaseActor from "./actor.d.mts";
 
 type DataSchema = foundry.data.fields.DataSchema;
 
@@ -184,7 +184,7 @@ declare namespace BaseUser {
      * A linked Actor document that is this user's impersonated character.
      * @defaultValue `null`
      */
-    // character: fields.ForeignDocumentField<typeof BaseActor>;
+    character: fields.ForeignDocumentField<typeof BaseActor>;
 
     /**
      * A color to represent this user.

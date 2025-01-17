@@ -24,6 +24,7 @@ declare global {
     type UpdateData = BaseScene.UpdateData;
     type Schema = BaseScene.Schema;
     type Source = BaseScene.Source;
+    type Parent = BaseScene.Parent;
   }
 
   /**
@@ -88,22 +89,8 @@ declare global {
      * @param options    - (default: `{}`)
      */
     override clone<Save extends boolean = false>(
-      createData?: foundry.documents.BaseScene.ConstructorData,
-      context?: InexactPartial<
-        {
-          /**
-           * Save the clone to the World database?
-           * @defaultValue `false`
-           */
-          save: Save;
-
-          /**
-           * Keep the same ID of the original document
-           * @defaultValue `false`
-           */
-          keepId: boolean;
-        } & Document.ConstructionContext<this["parent"]>
-      >,
+      createData?: Scene.ConstructorData,
+      context?: Document.CloneContext<Save> & InexactPartial<Document.ConstructionContext<Scene.Parent>>,
     ): Save extends true ? Promise<this> : this;
 
     override reset(): void;

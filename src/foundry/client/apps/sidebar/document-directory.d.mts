@@ -1,7 +1,8 @@
 import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
-  interface DocumentDirectoryOptions extends ApplicationOptions {
+  interface DocumentDirectoryOptions<T extends Document.AnyConstructor = Document.AnyConstructor>
+    extends ApplicationOptions {
     /**
      * A list of data property keys that will trigger a rerender of the tab if
      * they are updated on a Document that this tab is responsible for.
@@ -18,7 +19,7 @@ declare global {
      */
     entryClickSelector?: string;
 
-    collection: DocumentCollection.Any;
+    collection: DocumentCollection<T, string>;
   }
 
   class DocumentDirectory<

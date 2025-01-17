@@ -145,7 +145,7 @@ declare abstract class Document<
   /**
    * The named collection to which this Document belongs.
    */
-  get collectionName(): Document.Internal.SimpleMetadata<DocumentName>["collection"];
+  get collectionName(): Document.MetadataFor<DocumentName>["collection"];
 
   /**
    * The canonical name of this Document type, for example "Actor".
@@ -247,10 +247,9 @@ declare abstract class Document<
    * @param context - Additional context options passed to the create method
    * @returns The cloned Document instance
    */
-  // FIXME(LukeAbby): Adding Document.Stored to the return causes a recursive type error in Scene
   override clone<Save extends boolean = false>(
     data?: fields.SchemaField.UpdateData<Schema>,
-    context?: Document.CloneContext<Save> & InexactPartial<Document.ConstructionContext<this["parent"]>>,
+    context?: Document.CloneContext<Save> & InexactPartial<Document.ConstructionContext<Parent>>,
   ): Save extends true ? Promise<this> : this;
 
   /**
@@ -552,7 +551,7 @@ declare abstract class Document<
   updateEmbeddedDocuments<EmbeddedName extends foundry.CONST.EMBEDDED_DOCUMENT_TYPES>(
     embeddedName: EmbeddedName,
     updates?: Array<AnyObject>,
-    context?: Document.ModificationContext<this["parent"]>,
+    context?: Document.ModificationContext<Parent>,
   ): Promise<Array<Document.Stored<Document.ConfiguredInstanceForName<Extract<EmbeddedName, Document.Type>>>>>;
 
   /**
@@ -890,8 +889,14 @@ declare abstract class Document<
   ): Promise<unknown>;
 }
 
-declare abstract class AnyDocument extends Document<any, any, any> {
+// An empty schema is the most accurate because index signatures are stripped.
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+declare abstract class AnyDocument extends Document<Document.Type, {}, Document.Any | null> {
   constructor(arg0: never, ...args: never[]);
+
+  // Note(LukeAbby): This uses `object` instead of `AnyObject` to avoid more thorough evaluation of
+  // the involved types which can cause a loop.
+  _source: object;
 
   // Note(LukeAbby): Specifically adding the `DocumentBrand` should be redundant but in practice it seems to help tsc more efficiently deduce that it's actually inheriting from `Document`.
   // This is odd but probably is because it bails from looking up the parent class properties at times or something.
@@ -949,8 +954,7 @@ declare namespace Document {
     | "Token"
     | "Wall";
 
-  type CoreTypesForName<Name extends Type> = string &
-    GetKey<Document.Internal.SimpleMetadata<Name>, "coreTypes", ["base"]>[number];
+  type CoreTypesForName<Name extends Type> = string & GetKey<Document.MetadataFor<Name>, "coreTypes", ["base"]>[number];
 
   type SubTypesOf<Name extends Type> = Game.Model.TypeNames<Name>;
 
@@ -1042,11 +1046,6 @@ declare namespace Document {
     export const DocumentName: unique symbol;
     export const Schema: unique symbol;
     export const Parent: unique symbol;
-
-    // This metadata is called "simple" because where there should be proper references to the
-    // current document there is instead `Document.Any`. This helps simplify loops.
-    // Use cases should be limited to when these references aren't needed.
-    type SimpleMetadata<Name extends Document.Type> = ConfiguredMetadata<Document.Any, Name>;
 
     type Constructor = (abstract new (arg0: never, ...args: never[]) => Instance.Any) & {
       [DocumentName]: Document.Type;
@@ -1143,20 +1142,10 @@ declare namespace Document {
     metadata: { name: SystemType };
   };
 
-  type ConfiguredClassForName<Name extends Type> = MakeConform<
-    ConfiguredDocumentClass[Name],
-    Document.AnyConstructor,
-    ConfigurationFailure[Name]
-  >;
+  type ConfiguredClassForName<Name extends Type> = ConfiguredDocumentClass[Name];
 
-  // NOTE(LukeAbby): This type is less DRY than it could be to avoid undue complexity in such a critical helpeer.
-  // This has _many_ times been seen to cause loops so this type is written in an intentionally more paranoid way.
-  // The reason for the verbosity and repetition is to avoid eagerly evaluating any branches that might cause a loop.
-  type ToConfiguredClass<ConcreteDocument extends Document.Internal.Constructor> = MakeConform<
-    ConfiguredDocumentClass[NameFor<ConcreteDocument>],
-    Document.AnyConstructor,
-    ConfigurationFailure[NameFor<ConcreteDocument>]
-  >;
+  type ToConfiguredClass<ConcreteDocument extends Document.Internal.Constructor> =
+    ConfiguredDocumentClass[NameFor<ConcreteDocument>];
 
   type ToConfiguredInstance<ConcreteDocument extends Document.Internal.Constructor> = MakeConform<
     FixedInstanceType<ConfiguredDocumentClass[NameFor<ConcreteDocument>]>,
@@ -1168,22 +1157,24 @@ declare namespace Document {
       : never
   >;
 
-  type ToConfiguredStored<D extends Document.Internal.Constructor> = Stored<ToConfiguredInstance<D>>;
+  type ToConfiguredStored<D extends Document.AnyConstructor> = Stored<ToConfiguredInstance<D>>;
 
-  type Stored<D extends Document.Internal.Instance.Any> = D & {
+  type Stored<D extends Document.Any> = D & {
     id: string;
     _id: string;
     _source: GetKey<D, "_source"> & { _id: string };
   };
 
+  type ToStored<D extends Document.AnyConstructor> = Stored<FixedInstanceType<D>>;
+
   type ToStoredIf<
-    D extends Document.Internal.Constructor,
+    D extends Document.AnyConstructor,
     Temporary extends boolean | undefined,
-  > = Temporary extends true ? ToConfiguredStored<D> : ToConfiguredInstance<D>;
+  > = Temporary extends true ? ToConfiguredStored<D> : FixedInstanceType<D>;
 
   type StoredIf<D extends Document.Any, Temporary extends boolean | undefined> = Temporary extends true ? Stored<D> : D;
 
-  type Temporary<D extends Document.Internal.Instance.Any> = D extends Stored<infer U> ? U : D;
+  type Temporary<D extends Document.Any> = D extends Stored<infer U> ? U : D;
 
   type NameFor<ConcreteDocument extends Document.Internal.Constructor> = ConcreteDocument extends {
     [Document.Internal.DocumentName]: infer Name;

@@ -18,79 +18,78 @@ import type { InterfaceToObject, MakeConform, MustConform, Merge, FixedInstanceT
 
 type DocumentConform<T> = MakeConform<T, Document.AnyConstructor>;
 
-// This is written in a verbose and un-DRY way because it's important to keep the types as simple as possible to help avoid circular errors.
-// For example a more DRY interface could cause apparent data dependencies on other classes that aren't really there.
-// TODO(LukeAbby): Look into this to see if once the circular errors are fixed if this becomes a performance issue.
-type DefaultDocumentClass<Name extends Document.Type> =
-  | (Name extends "ActiveEffect" ? typeof ActiveEffect : never)
-  | (Name extends "ActorDelta" ? typeof ActorDelta : never)
-  | (Name extends "Actor" ? typeof Actor : never)
-  | (Name extends "Adventure" ? typeof Adventure : never)
-  | (Name extends "Card" ? typeof Card : never)
-  | (Name extends "Cards" ? typeof Cards : never)
-  | (Name extends "ChatMessage" ? typeof ChatMessage : never)
-  | (Name extends "Combat" ? typeof Combat : never)
-  | (Name extends "Combatant" ? typeof Combatant : never)
-  | (Name extends "FogExploration" ? typeof FogExploration : never)
-  | (Name extends "Folder" ? typeof Folder : never)
-  | (Name extends "Item" ? typeof Item : never)
-  | (Name extends "JournalEntryPage" ? typeof JournalEntryPage : never)
-  | (Name extends "JournalEntry" ? typeof JournalEntry : never)
-  | (Name extends "Macro" ? typeof Macro : never)
-  | (Name extends "PlaylistSound" ? typeof PlaylistSound : never)
-  | (Name extends "Playlist" ? typeof Playlist : never)
-  | (Name extends "RegionBehavior" ? typeof RegionBehavior : never)
-  | (Name extends "Region" ? typeof RegionDocument : never)
-  | (Name extends "RollTable" ? typeof RollTable : never)
-  | (Name extends "Scene" ? typeof Scene : never)
-  | (Name extends "Setting" ? typeof Setting : never)
-  | (Name extends "TableResult" ? typeof TableResult : never)
-  | (Name extends "User" ? typeof User : never)
-  | (Name extends "AmbientLight" ? typeof AmbientLightDocument : never)
-  | (Name extends "AmbientSound" ? typeof AmbientSoundDocument : never)
-  | (Name extends "Drawing" ? typeof DrawingDocument : never)
-  | (Name extends "MeasuredTemplate" ? typeof MeasuredTemplateDocument : never)
-  | (Name extends "Note" ? typeof NoteDocument : never)
-  | (Name extends "Tile" ? typeof TileDocument : never)
-  | (Name extends "Token" ? typeof TokenDocument : never)
-  | (Name extends "Wall" ? typeof WallDocument : never);
+interface DefaultDocumentClasses {
+  ActiveEffect: typeof ActiveEffect;
+  ActorDelta: typeof ActorDelta;
+  Actor: typeof Actor;
+  Adventure: typeof Adventure;
+  Card: typeof Card;
+  Cards: typeof Cards;
+  ChatMessage: typeof ChatMessage;
+  Combat: typeof Combat;
+  Combatant: typeof Combatant;
+  FogExploration: typeof FogExploration;
+  Folder: typeof Folder;
+  Item: typeof Item;
+  JournalEntryPage: typeof JournalEntryPage;
+  JournalEntry: typeof JournalEntry;
+  Macro: typeof Macro;
+  PlaylistSound: typeof PlaylistSound;
+  Playlist: typeof Playlist;
+  RegionBehavior: typeof RegionBehavior;
+  RollTable: typeof RollTable;
+  Scene: typeof Scene;
+  Setting: typeof Setting;
+  TableResult: typeof TableResult;
+  User: typeof User;
+  AmbientLight: typeof AmbientLightDocument;
+  AmbientSound: typeof AmbientSoundDocument;
+  Drawing: typeof DrawingDocument;
+  MeasuredTemplate: typeof MeasuredTemplateDocument;
+  Region: typeof RegionDocument;
+  Note: typeof NoteDocument;
+  Tile: typeof TileDocument;
+  Token: typeof TokenDocument;
+  Wall: typeof WallDocument;
+}
 
-type DefaultDocumentInstance<Name extends Document.Type> =
-  | (Name extends "ActiveEffect" ? ActiveEffect : never)
-  | (Name extends "ActorDelta" ? ActorDelta : never)
-  | (Name extends "Actor" ? Actor : never)
-  | (Name extends "Adventure" ? Adventure : never)
-  | (Name extends "Card" ? Card : never)
-  | (Name extends "Cards" ? Cards : never)
-  | (Name extends "ChatMessage" ? ChatMessage : never)
-  | (Name extends "Combat" ? Combat : never)
-  | (Name extends "Combatant" ? Combatant : never)
-  | (Name extends "FogExploration" ? FogExploration : never)
-  | (Name extends "Folder" ? Folder : never)
-  | (Name extends "Item" ? Item : never)
-  | (Name extends "JournalEntryPage" ? JournalEntryPage : never)
-  | (Name extends "JournalEntry" ? JournalEntry : never)
-  | (Name extends "Macro" ? Macro : never)
-  | (Name extends "PlaylistSound" ? PlaylistSound : never)
-  | (Name extends "Playlist" ? Playlist : never)
-  | (Name extends "RegionBehavior" ? RegionBehavior : never)
-  | (Name extends "Region" ? RegionDocument : never)
-  | (Name extends "RollTable" ? RollTable : never)
-  | (Name extends "Scene" ? Scene : never)
-  | (Name extends "Setting" ? Setting : never)
-  | (Name extends "TableResult" ? TableResult : never)
-  | (Name extends "User" ? User : never)
-  | (Name extends "AmbientLight" ? AmbientLightDocument : never)
-  | (Name extends "AmbientSound" ? AmbientSoundDocument : never)
-  | (Name extends "Drawing" ? DrawingDocument : never)
-  | (Name extends "MeasuredTemplate" ? MeasuredTemplateDocument : never)
-  | (Name extends "Note" ? NoteDocument : never)
-  | (Name extends "Tile" ? TileDocument : never)
-  | (Name extends "Token" ? TokenDocument : never)
-  | (Name extends "Wall" ? WallDocument : never);
+interface DefaultDocumentInstance {
+  ActiveEffect: ActiveEffect;
+  ActorDelta: ActorDelta;
+  Actor: Actor;
+  Adventure: Adventure;
+  Card: Card;
+  Cards: Cards;
+  ChatMessage: ChatMessage;
+  Combat: Combat;
+  Combatant: Combatant;
+  FogExploration: FogExploration;
+  Folder: Folder;
+  Item: Item;
+  JournalEntryPage: JournalEntryPage;
+  JournalEntry: JournalEntry;
+  Macro: Macro;
+  PlaylistSound: PlaylistSound;
+  Playlist: Playlist;
+  RegionBehavior: RegionBehavior;
+  RollTable: RollTable;
+  Scene: Scene;
+  Setting: Setting;
+  TableResult: TableResult;
+  User: User;
+  AmbientLight: AmbientLightDocument;
+  AmbientSound: AmbientSoundDocument;
+  Drawing: DrawingDocument;
+  MeasuredTemplate: MeasuredTemplateDocument;
+  Note: NoteDocument;
+  Region: RegionDocument;
+  Tile: TileDocument;
+  Token: TokenDocument;
+  Wall: WallDocument;
+}
 
 type ResolvedDefaultDocuments = {
-  [Type in Document.Type]: DefaultDocumentClass<Type>;
+  [Type in Document.Type]: DefaultDocumentClasses[Type];
 };
 
 type TestDefaultDocumentsValid = MustConform<ResolvedDefaultDocuments, Record<string, Document.AnyConstructor>>;
@@ -101,12 +100,12 @@ type TestDefaultDocumentsValid = MustConform<ResolvedDefaultDocuments, Record<st
 type GetDocumentClass<ConcreteDocumentType extends Document.Type> =
   ConcreteDocumentType extends keyof DocumentClassConfig
     ? DocumentClassConfig[ConcreteDocumentType]
-    : DefaultDocumentClass<ConcreteDocumentType>;
+    : DefaultDocumentClasses[ConcreteDocumentType];
 
 type GetDocumentInstance<ConcreteDocumentType extends Document.Type> =
   ConcreteDocumentType extends keyof DocumentClassConfig
     ? FixedInstanceType<DocumentClassConfig[ConcreteDocumentType]>
-    : DefaultDocumentInstance<ConcreteDocumentType>;
+    : DefaultDocumentInstance[ConcreteDocumentType];
 
 // This interface exists as a way to catch circular errors easier.
 // This makes it more verbose than it might seem it has to be but it's important to stay this way.
@@ -889,7 +888,6 @@ export interface CreateData {
   PlaylistSound: documents.BasePlaylistSound.ConstructorData;
   Playlist: documents.BasePlaylist.ConstructorData;
   RegionBehavior: documents.BaseRegionBehavior.ConstructorData;
-  Region: documents.BaseRegion.ConstructorData;
   RollTable: documents.BaseRollTable.ConstructorData;
   Scene: documents.BaseScene.ConstructorData;
   Setting: documents.BaseSetting.ConstructorData;
@@ -900,6 +898,7 @@ export interface CreateData {
   Drawing: documents.BaseDrawing.ConstructorData;
   MeasuredTemplate: documents.BaseMeasuredTemplate.ConstructorData;
   Note: documents.BaseNote.ConstructorData;
+  Region: documents.BaseRegion.ConstructorData;
   Tile: documents.BaseTile.ConstructorData;
   Token: documents.BaseToken.ConstructorData;
   Wall: documents.BaseWall.ConstructorData;
@@ -907,77 +906,44 @@ export interface CreateData {
 
 // This is a more paranoid version of `MakeConform` that catches `any`, `errorType`, etc. and returns
 // `Document.AnyConstructor` instead of letting them cascade.
-type ConformToDocumentConstructor<T> = [T] extends [Document.AnyConstructor]
+type ConformToDocumentConstructor<T extends Document.AnyConstructor> = [T] extends [Document.AnyConstructor]
   ? [1 & T] extends [2]
     ? Document.AnyConstructor
     : T
   : Document.AnyConstructor;
 
-type ActiveEffectClass = ConformToDocumentConstructor<typeof ActiveEffect>;
-type ActorDeltaClass = ConformToDocumentConstructor<typeof ActorDelta>;
-type ActorClass = ConformToDocumentConstructor<typeof Actor>;
-type AdventureClass = ConformToDocumentConstructor<typeof Adventure>;
-type CardClass = ConformToDocumentConstructor<typeof Card>;
-type CardsClass = ConformToDocumentConstructor<typeof Cards>;
-type ChatMessageClass = ConformToDocumentConstructor<typeof ChatMessage>;
-type CombatClass = ConformToDocumentConstructor<typeof Combat>;
-type CombatantClass = ConformToDocumentConstructor<typeof Combatant>;
-type FogExplorationClass = ConformToDocumentConstructor<typeof FogExploration>;
-type FolderClass = ConformToDocumentConstructor<typeof Folder>;
-type ItemClass = ConformToDocumentConstructor<typeof Item>;
-type JournalEntryPageClass = ConformToDocumentConstructor<typeof JournalEntryPage>;
-type JournalEntryClass = ConformToDocumentConstructor<typeof JournalEntry>;
-type MacroClass = ConformToDocumentConstructor<typeof Macro>;
-type PlaylistSoundClass = ConformToDocumentConstructor<typeof PlaylistSound>;
-type PlaylistClass = ConformToDocumentConstructor<typeof Playlist>;
-type RegionBehaviorClass = ConformToDocumentConstructor<typeof RegionBehavior>;
-type RegionClass = ConformToDocumentConstructor<typeof Region>;
-type RollTableClass = ConformToDocumentConstructor<typeof RollTable>;
-type SceneClass = ConformToDocumentConstructor<typeof Scene>;
-type SettingClass = ConformToDocumentConstructor<typeof Setting>;
-type TableResultClass = ConformToDocumentConstructor<typeof TableResult>;
-type UserClass = ConformToDocumentConstructor<typeof User>;
-type AmbientLightClass = ConformToDocumentConstructor<typeof AmbientLight>;
-type AmbientSoundClass = ConformToDocumentConstructor<typeof AmbientSound>;
-type DrawingClass = ConformToDocumentConstructor<typeof Drawing>;
-type MeasuredTemplateClass = ConformToDocumentConstructor<typeof MeasuredTemplate>;
-type NoteClass = ConformToDocumentConstructor<typeof Note>;
-type TileClass = ConformToDocumentConstructor<typeof Tile>;
-type TokenClass = ConformToDocumentConstructor<typeof Token>;
-type WallClass = ConformToDocumentConstructor<typeof Wall>;
-
-interface MisconfiguredActiveEffect extends ActiveEffectClass {}
-interface MisconfiguredActorDelta extends ActorDeltaClass {}
-interface MisconfiguredActor extends ActorClass {}
-interface MisconfiguredAdventure extends AdventureClass {}
-interface MisconfiguredCard extends CardClass {}
-interface MisconfiguredCards extends CardsClass {}
-interface MisconfiguredChatMessage extends ChatMessageClass {}
-interface MisconfiguredCombat extends CombatClass {}
-interface MisconfiguredCombatant extends CombatantClass {}
-interface MisconfiguredFogExploration extends FogExplorationClass {}
-interface MisconfiguredFolder extends FolderClass {}
-interface MisconfiguredItem extends ItemClass {}
-interface MisconfiguredJournalEntryPage extends JournalEntryPageClass {}
-interface MisconfiguredJournalEntry extends JournalEntryClass {}
-interface MisconfiguredMacro extends MacroClass {}
-interface MisconfiguredPlaylistSound extends PlaylistSoundClass {}
-interface MisconfiguredPlaylist extends PlaylistClass {}
-interface MisconfiguredRegionBehavior extends RegionBehaviorClass {}
-interface MisconfiguredRegion extends RegionClass {}
-interface MisconfiguredRollTable extends RollTableClass {}
-interface MisconfiguredScene extends SceneClass {}
-interface MisconfiguredSetting extends SettingClass {}
-interface MisconfiguredTableResult extends TableResultClass {}
-interface MisconfiguredUser extends UserClass {}
-interface MisconfiguredAmbientLight extends AmbientLightClass {}
-interface MisconfiguredAmbientSound extends AmbientSoundClass {}
-interface MisconfiguredDrawing extends DrawingClass {}
-interface MisconfiguredMeasuredTemplate extends MeasuredTemplateClass {}
-interface MisconfiguredNote extends NoteClass {}
-interface MisconfiguredTile extends TileClass {}
-interface MisconfiguredToken extends TokenClass {}
-interface MisconfiguredWall extends WallClass {}
+interface MisconfiguredActiveEffect extends ConformToDocumentConstructor<typeof ActiveEffect> {}
+interface MisconfiguredActorDelta extends ConformToDocumentConstructor<typeof ActorDelta> {}
+interface MisconfiguredActor extends ConformToDocumentConstructor<typeof Actor> {}
+interface MisconfiguredAdventure extends ConformToDocumentConstructor<typeof Adventure> {}
+interface MisconfiguredCard extends ConformToDocumentConstructor<typeof Card> {}
+interface MisconfiguredCards extends ConformToDocumentConstructor<typeof Cards> {}
+interface MisconfiguredChatMessage extends ConformToDocumentConstructor<typeof ChatMessage> {}
+interface MisconfiguredCombat extends ConformToDocumentConstructor<typeof Combat> {}
+interface MisconfiguredCombatant extends ConformToDocumentConstructor<typeof Combatant> {}
+interface MisconfiguredFogExploration extends ConformToDocumentConstructor<typeof FogExploration> {}
+interface MisconfiguredFolder extends ConformToDocumentConstructor<typeof Folder> {}
+interface MisconfiguredItem extends ConformToDocumentConstructor<typeof Item> {}
+interface MisconfiguredJournalEntryPage extends ConformToDocumentConstructor<typeof JournalEntryPage> {}
+interface MisconfiguredJournalEntry extends ConformToDocumentConstructor<typeof JournalEntry> {}
+interface MisconfiguredMacro extends ConformToDocumentConstructor<typeof Macro> {}
+interface MisconfiguredPlaylistSound extends ConformToDocumentConstructor<typeof PlaylistSound> {}
+interface MisconfiguredPlaylist extends ConformToDocumentConstructor<typeof Playlist> {}
+interface MisconfiguredRegionBehavior extends ConformToDocumentConstructor<typeof RegionBehavior> {}
+interface MisconfiguredRollTable extends ConformToDocumentConstructor<typeof RollTable> {}
+interface MisconfiguredScene extends ConformToDocumentConstructor<typeof Scene> {}
+interface MisconfiguredSetting extends ConformToDocumentConstructor<typeof Setting> {}
+interface MisconfiguredTableResult extends ConformToDocumentConstructor<typeof TableResult> {}
+interface MisconfiguredUser extends ConformToDocumentConstructor<typeof User> {}
+interface MisconfiguredAmbientLight extends ConformToDocumentConstructor<typeof AmbientLightDocument> {}
+interface MisconfiguredAmbientSound extends ConformToDocumentConstructor<typeof AmbientSoundDocument> {}
+interface MisconfiguredDrawing extends ConformToDocumentConstructor<typeof DrawingDocument> {}
+interface MisconfiguredMeasuredTemplate extends ConformToDocumentConstructor<typeof MeasuredTemplateDocument> {}
+interface MisconfiguredNote extends ConformToDocumentConstructor<typeof NoteDocument> {}
+interface MisconfiguredRegion extends ConformToDocumentConstructor<typeof RegionDocument> {}
+interface MisconfiguredTile extends ConformToDocumentConstructor<typeof TileDocument> {}
+interface MisconfiguredToken extends ConformToDocumentConstructor<typeof TokenDocument> {}
+interface MisconfiguredWall extends ConformToDocumentConstructor<typeof WallDocument> {}
 
 export interface ConfigurationFailure {
   ActiveEffect: MisconfiguredActiveEffect;
@@ -998,7 +964,6 @@ export interface ConfigurationFailure {
   PlaylistSound: MisconfiguredPlaylistSound;
   Playlist: MisconfiguredPlaylist;
   RegionBehavior: MisconfiguredRegionBehavior;
-  Region: MisconfiguredRegion;
   RollTable: MisconfiguredRollTable;
   Scene: MisconfiguredScene;
   Setting: MisconfiguredSetting;
@@ -1009,6 +974,7 @@ export interface ConfigurationFailure {
   Drawing: MisconfiguredDrawing;
   MeasuredTemplate: MisconfiguredMeasuredTemplate;
   Note: MisconfiguredNote;
+  Region: MisconfiguredRegion;
   Tile: MisconfiguredTile;
   Token: MisconfiguredToken;
   Wall: MisconfiguredWall;

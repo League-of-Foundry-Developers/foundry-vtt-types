@@ -23,7 +23,7 @@ declare global {
 
     // Helpful aliases
     type SubType = BaseActiveEffect.SubType;
-    type Parent = ActiveEffect.Parent;
+    type Parent = BaseActiveEffect.Parent;
     type OfType<Type extends SubType> = HandleEmptyObject<ConfiguredActiveEffect<Type>, ActiveEffect<SubType>>;
     type Schema = BaseActiveEffect.Schema;
 

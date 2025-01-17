@@ -375,12 +375,12 @@ export type Brand<BaseType, BrandName extends string> = BaseType & Branded<Brand
  * //   ^ { x: string, y: number }
  *
  * function example<T extends { someProp: number } | { anotherProp: string }>(t: T) {
- *   Object.assign(t, { a: "foo" }, {b: 2}) satisfies ObjectIntersection
- *   Object.assign(t, { a: "foo" }, {b: 2}) satisfies PrettyObjectIntersection
- *   //                                     ^ Type 'T & { a: string; } & { b: number; }' does not satisfy the expected type '{ a: string; b: number; }'.
+ *   Object.assign(t, { a: "foo" }, { b: 2 }) satisfies ObjectIntersection
+ *   Object.assign(t, { a: "foo" }, { b: 2 }) satisfies PrettyObjectIntersection
+ *   //                                       ^ Type 'T & { a: string; } & { b: number; }' does not satisfy the expected type '{ a: string; b: number; }'.
  *   // This is an example of changing type behavior. The first line is allowed but the second errors.
  *   // This type of situation will realistically never come up in real code because it's so contrived.
- *   // Note that this difference only appears when generic, specifically `T extends Object | NonObject`.
+ *   // Note that this difference only appears when generic, specifically `T extends SomeConcreteObject | U`.
  *   // See https://github.com/microsoft/TypeScript/pull/60726 for some context.
  * }
  * ```
