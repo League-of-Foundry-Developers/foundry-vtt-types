@@ -27,10 +27,10 @@ declare global {
   }
 }
 
-// @ts-expect-error - Item requires name.
+// @ts-expect-error - Item requires name and type.
 new Item();
 
-// @ts-expect-error - Item requires name.
+// @ts-expect-error - Item requires name and type.
 new Item({});
 
 const item = new Item({ name: "Mighty Axe of Killing", type: "weapon" });
@@ -39,5 +39,36 @@ expectTypeOf(item.actor).toEqualTypeOf<Actor | null>();
 expectTypeOf(item.img).toEqualTypeOf<string | null | undefined>();
 expectTypeOf(item.isOwned).toEqualTypeOf<boolean>();
 expectTypeOf(item.transferredEffects).toEqualTypeOf<ActiveEffect[]>();
-expectTypeOf(item.type).toEqualTypeOf<"weapon" | "armor" | "base">();
-expectTypeOf(item.getRollData()).toEqualTypeOf<object>();
+expectTypeOf(item.type).toEqualTypeOf<"weapon" | "armor" | "base" | `${string}.${string}`>();
+expectTypeOf(item.getRollData()).toEqualTypeOf<Record<string, unknown>>();
+
+// Configured Item Usage
+declare global {
+  namespace Item {
+    namespace DatabaseOperation {
+      interface Create {
+        foo?: string;
+      }
+      interface Update {
+        bar?: number;
+      }
+      interface Delete {
+        foobar?: boolean;
+      }
+    }
+  }
+}
+
+Item.createDocuments([{name: "Foo", type: "base"}], {foo: "fizz buzz"})
+Item.deleteDocuments([foundry.utils.randomID()], {foobar: false})
+
+class BoilerplateItem extends Item {
+  protected static override async _onUpdateOperation(documents: Item.Implementation[], operation: Item.DatabaseOperation.Update, user: User.Implementation): Promise<void> {
+    if (operation.bar) {
+      console.log(documents[0].id, operation.diff, user.id);
+    }
+  }
+}
+
+declare const configuredItem: BoilerplateItem
+expectTypeOf(configuredItem.actor).toEqualTypeOf<Actor.ConfiguredInstance | null>();
