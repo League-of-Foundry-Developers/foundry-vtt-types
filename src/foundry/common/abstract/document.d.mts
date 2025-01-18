@@ -1139,12 +1139,15 @@ declare namespace Document {
 
   type ConfiguredClassForName<Name extends Type> = ConfiguredDocumentClass[Name];
 
-  type ToConfiguredClass<ConcreteDocument extends Document.Internal.Constructor> =
-    ConfiguredDocumentClass[NameFor<ConcreteDocument>];
+  type ToConfiguredClass<ConcreteDocument extends Document.Internal.Constructor> = ConfiguredClassForName<
+    NameFor<ConcreteDocument>
+  >;
 
   type ToConfiguredInstance<ConcreteDocument extends Document.Internal.Constructor> = MakeConform<
     FixedInstanceType<ConfiguredDocumentClass[NameFor<ConcreteDocument>]>,
     Document.Any
+    // TODO(LukeAbby): Look into if there's a way to do this without causing circular loops.
+    // FixedInstanceType<ConfigurationFailure[Name]>
   >;
 
   type ToConfiguredStored<D extends Document.AnyConstructor> = Stored<ToConfiguredInstance<D>>;

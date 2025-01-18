@@ -665,7 +665,7 @@ declare global {
        *
        * @typeParam DocumentName - the type of the Document this data is for
        */
-      type TypeNames<DocumentType extends Document.Type> = Document.SubTypesOf<DocumentType>
+      type TypeNames<DocumentType extends Document.Type> = Document.SubTypesOf<DocumentType>;
     }
 
     type _Model = {

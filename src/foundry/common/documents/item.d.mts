@@ -2,6 +2,12 @@ import type { AnyObject } from "../../../utils/index.d.mts";
 import type Document from "../abstract/document.mts";
 import type * as fields from "../data/fields.d.mts";
 
+interface _Schema extends Item.Schema {
+  // For performance reasons don't bother calculating the `system` field.
+  // This is overridden anyways.
+  system: any;
+}
+
 /**
  * The Document definition for an Item.
  * Defines the DataSchema and common behaviors for an Item which are shared between both client and server.
@@ -11,7 +17,7 @@ import type * as fields from "../data/fields.d.mts";
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
 declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType> extends Document<
   "Item",
-  BaseItem.Schema,
+  _Schema,
   any
 > {
   /**
@@ -38,14 +44,10 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
    */
   static getDefaultArtwork(itemData: BaseItem.CreateData): { img: string };
 
-  override canUserModify(
-    user: User.ConfiguredInstance,
-    action: "create" | "delete" | "update",
-    data?: AnyObject,
-  ): boolean;
+  override canUserModify(user: User.Implementation, action: "create" | "delete" | "update", data?: AnyObject): boolean;
 
   override testUserPermission(
-    user: User.ConfiguredInstance,
+    user: User.Implementation,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS,
     options?: Document.TestUserPermissionOptions,
   ): boolean;
@@ -62,80 +64,80 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
 
   override parent: Item.Parent;
 
-  override system: Document.SystemFor<"ActiveEffect", SubType>;
+  override system: Document.SystemFor<"Item", SubType>;
 
   static get TYPES(): BaseItem.SubType[];
 
   static createDocuments<Temporary extends boolean | undefined>(
-    data: Array<Item.ConfiguredInstance | Item.CreateData> | undefined,
+    data: Array<Item.Implementation | Item.CreateData> | undefined,
     operation?: Item.DatabaseOperation.Create<Temporary>,
-  ): Promise<Array<Document.StoredIf<Item.ConfiguredInstance, Temporary>>>;
+  ): Promise<Array<Document.StoredIf<Item.Implementation, Temporary>>>;
 
   static updateDocuments(
     updates: Item.UpdateData[] | undefined,
     operation?: Item.DatabaseOperation.Update,
-  ): Promise<Item.ConfiguredInstance[]>;
+  ): Promise<Item.Implementation[]>;
 
   static deleteDocuments(
     ids: readonly string[] | undefined,
     operation?: Item.DatabaseOperation.Delete,
-  ): Promise<Item.ConfiguredInstance[]>;
+  ): Promise<Item.Implementation[]>;
 
   static create<Temporary extends boolean | undefined>(
     data: Item.CreateData | Item.CreateData[],
     operation?: Item.DatabaseOperation.Create<Temporary>,
-  ): Promise<Item.ConfiguredInstance | undefined>;
+  ): Promise<Item.Implementation | undefined>;
 
-  static get(documentId: string, options?: Item.DatabaseOperation.Get): Item.ConfiguredInstance | null;
+  static get(documentId: string, options?: Item.DatabaseOperation.Get): Item.Implementation | null;
 
   protected static _preCreateOperation(
-    documents: Item.ConfiguredInstance[],
+    documents: Item.Implementation[],
     operation: Item.DatabaseOperation.Create,
-    user: User.ConfiguredInstance,
+    user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static _onCreateOperation(
-    documents: Item.ConfiguredInstance[],
+    documents: Item.Implementation[],
     operation: Item.DatabaseOperation.Create,
-    user: User.ConfiguredInstance,
+    user: User.Implementation,
   ): Promise<void>;
 
   protected static _preUpdateOperation(
-    documents: Item.ConfiguredInstance[],
+    documents: Item.Implementation[],
     operation: Item.DatabaseOperation.Update,
-    user: User.ConfiguredInstance,
+    user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static _onUpdateOperation(
-    documents: Item.ConfiguredInstance[],
+    documents: Item.Implementation[],
     operation: Item.DatabaseOperation.Update,
-    user: User.ConfiguredInstance,
+    user: User.Implementation,
   ): Promise<void>;
 
   protected static _preDeleteOperation(
-    documents: Item.ConfiguredInstance[],
+    documents: Item.Implementation[],
     operation: Item.DatabaseOperation.Delete,
-    user: User.ConfiguredInstance,
+    user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static _onDeleteOperation(
-    documents: Item.ConfiguredInstance[],
+    documents: Item.Implementation[],
     operation: Item.DatabaseOperation.Delete,
-    user: User.ConfiguredInstance,
+    user: User.Implementation,
   ): Promise<void>;
 
   protected static _onCreateDocuments(
-    documents: Item.ConfiguredInstance[],
+    documents: Item.Implementation[],
     context: Document.ModificationContext<Item.Parent>,
   ): Promise<void>;
 
   protected static _onUpdateDocuments(
-    documents: Item.ConfiguredInstance[],
+    documents: Item.Implementation[],
     context: Document.ModificationContext<Item.Parent>,
   ): Promise<void>;
 
   protected static _onDeleteDocuments(
-    documents: Item.ConfiguredInstance[],
+    documents: Item.Implementation[],
     context: Document.ModificationContext<Item.Parent>,
   ): Promise<void>;
 }

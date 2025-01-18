@@ -8,8 +8,11 @@ declare global {
   namespace User {
     type Metadata = Document.MetadataFor<"User">;
 
-    type ConfiguredClass = Document.ConfiguredClassForName<"User">;
-    type ConfiguredInstance = Document.ConfiguredInstanceForName<"User">;
+    type Implementation = Document.ConfiguredInstanceForName<"User">;
+    type ImplementationClass = Document.ConfiguredClassForName<"User">;
+
+    type ConfiguredInstance = Implementation;
+    type ConfiguredClass = ImplementationClass;
 
     // Note(LukeAbby): This namespace exists to break cycles because of extensive usage of `User` in
     // the `Document` class itself.
@@ -83,7 +86,7 @@ declare global {
   class User extends ClientDocumentMixin(foundry.documents.BaseUser) {
     static override metadata: User.Metadata;
 
-    static get implementation(): User.ConfiguredClass;
+    static get implementation(): User.ImplementationClass;
 
     /**
      * Track whether the user is currently active in the game

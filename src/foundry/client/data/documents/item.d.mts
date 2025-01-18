@@ -17,13 +17,13 @@ declare global {
      * The implementation of the Item document instance configured through `CONFIG.Item.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredItem | `configuration/ConfiguredItem`} in fvtt-types.
      */
-    interface Implementation extends Document.ConfiguredInstanceForName<"Item"> {}
+    type Implementation = Document.ConfiguredInstanceForName<"Item">;
 
     /**
      * The implementation of the Item document configured through `CONFIG.Item.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    interface ImplementationClass extends Document.ConfiguredClassForName<"Item"> {}
+    type ImplementationClass = Document.ConfiguredClassForName<"Item">;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,
@@ -192,12 +192,12 @@ declare global {
     /**
      * @deprecated {@link Item.implementation | `Item.ImplementationClass`}
      */
-    interface ConfiguredClass extends ImplementationClass {}
+    type ConfiguredClass = ImplementationClass;
 
     /**
      * @deprecated {@link Item.Implementation | `Item.Implementation`}
      */
-    interface ConfiguredInstance extends Implementation {}
+    type ConfiguredInstance = Implementation;
   }
 
   /**
@@ -260,16 +260,16 @@ declare global {
     static override createDialog(
       data: Item.CreateData,
       context?: Document.CreateDialogContext<Item.SubType, Item.Parent>,
-    ): Promise<Item.ConfiguredInstance | null | undefined>;
+    ): Promise<Item.Implementation | null | undefined>;
 
     static override fromDropData(
-      data: Document.DropData<Item.ConfiguredInstance>,
+      data: Document.DropData<Item.Implementation>,
       options?: Document.FromDropDataOptions,
-    ): Promise<Item.ConfiguredInstance | undefined>;
+    ): Promise<Item.Implementation | undefined>;
 
     static override fromImport(
       source: Item.Source,
       context?: Document.FromImportContext<Item.Parent>,
-    ): Promise<Item.ConfiguredInstance>;
+    ): Promise<Item.Implementation>;
   }
 }
