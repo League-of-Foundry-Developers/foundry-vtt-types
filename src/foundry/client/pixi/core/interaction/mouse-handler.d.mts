@@ -1,4 +1,4 @@
-import type { ValueOf } from "../../../../../utils/index.d.mts";
+import type { Brand, ValueOf } from "../../../../../utils/index.d.mts";
 
 declare global {
   /**
@@ -36,38 +36,34 @@ declare global {
    *  action: dragLeftCancel
    *  action: dragRightCancel
    */
-  class MouseInteractionManager<Object extends PIXI.Container = PIXI.Container> {
+  class MouseInteractionManager {
     /**
      * @param permissions - (default: `{}`)
      * @param callbacks   - (default: `{}`)
      * @param options     - (default: `{}`)
+     * @remarks Foundry does not provide type information for the constructor, everything here is inferred from usage
      */
     constructor(
       object: PIXI.Container,
-      layer: MouseInteractionManager["layer"],
-      permissions?: MouseInteractionManager["permissions"],
-      callbacks?: MouseInteractionManager["callbacks"],
-      options?: MouseInteractionManager["options"],
+      layer: PIXI.Container,
+      permissions?: MouseInteractionManager.Permissions,
+      callbacks?: MouseInteractionManager.Callbacks,
+      options?: MouseInteractionManager.Options,
     );
 
-    object: Object;
+    object: PIXI.Container;
 
     layer: PIXI.Container;
 
     /**
      * @defaultValue `{}`
      */
-    permissions: Partial<
-      Record<
-        MouseInteractionManager.PermissionAction,
-        ((user: Game["user"], event: PIXI.FederatedEvent) => boolean) | boolean
-      >
-    >;
+    permissions: MouseInteractionManager.Permissions;
 
     /**
      * @defaultValue `{}`
      */
-    callbacks: Partial<Record<MouseInteractionManager.Action, ((event: Event | PIXI.FederatedEvent) => void) | null>>;
+    callbacks: MouseInteractionManager.Callbacks;
 
     /**
      * @defaultValue `{}`
@@ -78,7 +74,7 @@ declare global {
      * The current interaction state
      * @defaultValue `MouseInteractionManager.INTERACTION_STATES.NONE`
      */
-    state: ValueOf<(typeof MouseInteractionManager)["INTERACTION_STATES"]>;
+    state: MouseInteractionManager.INTERACTION_STATES;
 
     /**
      * Bound handlers which can be added and removed
@@ -139,7 +135,14 @@ declare global {
      * 4: DRAG - the object is being dragged
      * 5: DROP - the object is being dropped
      */
-    static INTERACTION_STATES: MouseInteractionManager.INTERACTION_STATES;
+    static INTERACTION_STATES: {
+      NONE: 0 & MouseInteractionManager.INTERACTION_STATES;
+      HOVER: 1 & MouseInteractionManager.INTERACTION_STATES;
+      CLICKED: 2 & MouseInteractionManager.INTERACTION_STATES;
+      GRABBED: 3 & MouseInteractionManager.INTERACTION_STATES;
+      DRAG: 4 & MouseInteractionManager.INTERACTION_STATES;
+      DROP: 5 & MouseInteractionManager.INTERACTION_STATES;
+    };
 
     /**
      * The maximum number of milliseconds between two clicks to be considered a double-click.
@@ -202,18 +205,29 @@ declare global {
      * @returns A boolean which may indicate that the event was handled by the callback.
      *          Events which do not specify a callback are assumed to have been handled as no-op.
      */
-    callback(action: MouseInteractionManager.Action, event: Event | PIXI.FederatedEvent, ...args: any[]): boolean;
+    callback(action: MouseInteractionManager.Action, event: Event | PIXI.FederatedEvent, ...args: never[]): boolean;
 
     /**
      * A reference to the possible interaction states which can be observed
      */
-    get states(): MouseInteractionManager.INTERACTION_STATES;
+    get states(): typeof MouseInteractionManager.INTERACTION_STATES;
 
     /**
      * A reference to the possible interaction states which can be observed
      */
-    get handlerOutcomes(): MouseInteractionManager.HANDLER_OUTCOME;
+    get handlerOutcomes(): {
+      /** -2: SKIPPED - the handler has been skipped by previous logic */
+      SKIPPED: -2 & MouseInteractionManager.HANDLER_OUTCOMES;
 
+      /** -1: DISALLOWED - the handler has dissallowed further process */
+      DISALLOWED: -1 & MouseInteractionManager.HANDLER_OUTCOMES;
+
+      /** 1: REFUSED - the handler callback has been processed and is refusing further process */
+      REFUSED: 1 & MouseInteractionManager.HANDLER_OUTCOMES;
+
+      /** 2: ACCEPTED - the handler callback has been processed and is accepting further process */
+      ACCEPTED: 2 & MouseInteractionManager.HANDLER_OUTCOMES;
+    };
     /**
      * A public method to handle directly an event into this manager, according to its type.
      * Note: drag events are not handled.
@@ -240,31 +254,13 @@ declare global {
   }
 
   namespace MouseInteractionManager {
-    /**
-     * Enumerate the states of handle outcome.
-     */
-    interface HANDLER_OUTCOME {
-      /** -2: SKIPPED - the handler has been skipped by previous logic */
-      SKIPPED: -2;
+    interface Any extends AnyMouseInteractionManager {}
+    type AnyConstructor = typeof AnyMouseInteractionManager;
 
-      /** -1: DISALLOWED - the handler has dissallowed further process */
-      DISALLOWED: -1;
+    /** @privateRemarks The private class property is `#HANDLER_OUTCOME` singular, but the getter is `handlerOutcomes`, so I went with plural */
+    type HANDLER_OUTCOMES = Brand<number, "MouseInteractionManager.HANDLER_OUTCOMES">;
 
-      /** 1: REFUSED - the handler callback has been processed and is refusing further process */
-      REFUSED: 1;
-
-      /** 2: ACCEPTED - the handler callback has been processed and is accepting further process */
-      ACCEPTED: 2;
-    }
-
-    interface INTERACTION_STATES {
-      NONE: 0;
-      HOVER: 1;
-      CLICKED: 2;
-      GRABBED: 3;
-      DRAG: 4;
-      DROP: 5;
-    }
+    type INTERACTION_STATES = Brand<number, "MouseInteractionManager.INTERACTION_STATES">;
 
     type PermissionAction =
       | "clickLeft"
@@ -280,7 +276,21 @@ declare global {
       | "hoverIn"
       | "hoverOut";
 
-    type Action = PermissionAction | "dragLeftCancel" | "dragRightCancel";
+    type PermissionFunction = (user: User.ConfiguredInstance, event: PIXI.FederatedEvent) => boolean;
+
+    type Permissions = Partial<Record<PermissionAction, PermissionFunction | boolean>>;
+
+    type Action =
+      | PermissionAction
+      | "dragLeftCancel"
+      | "dragRightCancel"
+      | "unclickLeft"
+      | "unclickRight"
+      | "longPress";
+
+    type CallbackFunction = (event: Event | PIXI.FederatedEvent, ...args: never[]) => boolean | null | void;
+
+    type Callbacks = Partial<Record<Action, CallbackFunction>>;
 
     interface Options {
       target?: PIXI.DisplayObject;
@@ -288,4 +298,8 @@ declare global {
       dragResistance?: number;
     }
   }
+}
+
+declare abstract class AnyMouseInteractionManager extends MouseInteractionManager {
+  constructor(arg0: never, ...args: never[]);
 }
