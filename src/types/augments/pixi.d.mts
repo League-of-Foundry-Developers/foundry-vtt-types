@@ -920,6 +920,15 @@ declare global {
 
       /** Lowest priority used for {@link PIXI.BasePrepare} utility. */
       UTILITY: 50 & UPDATE_PRIORITY;
+
+      /** @remarks Foundry addition, defined as `HIGH - 2` */
+      OBJECTS: 23 & UPDATE_PRIORITY;
+
+      /** @remarks Foundry addition, defined as `NORMAL + 3` */
+      PRIMARY: 3 & UPDATE_PRIORITY;
+
+      /** @remarks Foundry addition, defined as `NORMAL + 2` */
+      PERCEPTION: 2 & UPDATE_PRIORITY;
     };
 
     type WRAP_MODES = Brand<number, "PIXI.WRAP_MODES">;
@@ -1022,16 +1031,42 @@ declare module "@pixi/events" {
 declare module "pixi.js" {
   export import LegacyGraphics = _PIXI.Graphics;
 
+  export enum BLEND_MODES {
+    /**
+     * A custom blend mode equation which chooses the maximum color from each channel within the stack.
+     * @remarks Foundry addition, value is technically dynamic as it's the last PIXI entry at the time + 1, but effectively static
+     */
+    MAX_COLOR = 30,
+
+    /**
+     * A custom blend mode equation which chooses the minimum color from each channel within the stack.
+     * @remarks Foundry addition, value is technically dynamic as it's the last PIXI entry at the time + 1, but effectively static
+     */
+    MIN_COLOR = 31,
+
+    /**
+     * A custom blend mode equation which chooses the minimum color for color channels and min alpha from alpha channel.
+     * @remarks Foundry addition, value is technically dynamic as it's the last PIXI entry at the time + 1, but effectively static
+     */
+    MIN_ALL = 32,
+  }
+
   export enum UPDATE_PRIORITY {
     /**
      * @remarks Foundry defined custom ticker priority
-     * Handled in Canvas##activateTicker
+     * Handled in Canvas##activateTicker, defined as `HIGH - 2`
      */
     OBJECTS = 23,
 
     /**
      * @remarks Foundry defined custom ticker priority
-     * Handled in Canvas##activateTicker
+     * Handled in Canvas##activateTicker, defined as `NORMAL + 3`
+     */
+    PRIMARY = 3,
+
+    /**
+     * @remarks Foundry defined custom ticker priority
+     * Handled in Canvas##activateTicker, defined as `NORMAL + 2`
      */
     PERCEPTION = 2,
   }
