@@ -904,6 +904,7 @@ declare global {
      * Represents the update priorities used by internal PIXI classes when registered with
      * the {@link PIXI.Ticker} object. Higher priority items are updated first and lower
      * priority items, such as render, should go later.
+     * @remarks Includes Foundry's additions of `OBJECTS`, `PRIMARY`, and `PERCEPTION`
      */
     const UPDATE_PRIORITY: {
       /** Highest priority used for interaction events in {@link PIXI.EventSystem} */
