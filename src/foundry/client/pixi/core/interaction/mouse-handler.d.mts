@@ -214,7 +214,9 @@ declare global {
     callback<Action extends keyof Callbacks>(
       action: Action,
       event: Event | PIXI.FederatedEvent,
-      ...args: DropFirst<Parameters<Callbacks[Action]>>
+      ...args: this["callbacks"][Action] extends MouseInteractionManager.CallbackFunction
+        ? DropFirst<Parameters<this["callbacks"][Action]>>
+        : never[]
     ): boolean;
 
     /**
