@@ -172,6 +172,22 @@ declare global {
         extends DatabaseCreateOperation<Item.CreateData, Item.Parent, Temporary> {}
       interface Delete extends DatabaseDeleteOperation<Item.Parent> {}
       interface Update extends DatabaseUpdateOperation<Item.UpdateData, Item.Parent> {}
+
+      type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
+        Document.Database.CreateOperation<Create<Temporary>>;
+      type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
+      type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
+      type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
+
+      type UpdateOperation = Document.Database.UpdateOperation<Update>;
+      type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
+      type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
+      type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
+
+      type DeleteOperation = Document.Database.DeleteOperation<Delete>;
+      type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
+      type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
+      type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 
     /**

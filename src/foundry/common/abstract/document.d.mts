@@ -33,7 +33,6 @@ import type {
   DatabaseAction,
   DatabaseCreateOperation,
   DatabaseDeleteOperation,
-  DatabaseGetOperation,
   DatabaseUpdateOperation,
   DocumentSocketRequest,
 } from "./_types.d.mts";
@@ -636,11 +635,7 @@ declare abstract class Document<
    * @param user    - The User requesting the document creation
    * @returns Return false to exclude this Document from the creation operation
    */
-  protected _preCreate(
-    data: fields.SchemaField.AssignmentType<Schema>,
-    options: Document.PreCreateOptions<DocumentName>,
-    user: User.Internal.ConfiguredInstance,
-  ): Promise<boolean | void>;
+  protected _preCreate(data: never, options: never, user: User.Internal.ConfiguredInstance): Promise<boolean | void>;
 
   /**
    * Post-process a creation operation for a single Document instance.
@@ -649,11 +644,7 @@ declare abstract class Document<
    * @param options - Additional options which modify the creation request
    * @param userId  - The id of the User requesting the document update
    */
-  protected _onCreate(
-    data: fields.SchemaField.AssignmentData<Schema>,
-    options: Document.OnCreateOptions<DocumentName>,
-    userId: string,
-  ): void;
+  protected _onCreate(data: never, options: never, userId: string): void;
 
   /**
    * Pre-process a creation operation, potentially altering its instructions or input data. Pre-operation events only
@@ -701,11 +692,7 @@ declare abstract class Document<
    * @param user    - The User requesting the document update
    * @returns A return value of false indicates the update operation should be cancelled
    */
-  protected _preUpdate(
-    changed: fields.SchemaField.UpdateData<Schema>,
-    options: Document.PreUpdateOptions<DocumentName>,
-    user: User.Internal.ConfiguredInstance,
-  ): Promise<boolean | void>;
+  protected _preUpdate(changed: never, options: never, user: User.Internal.ConfiguredInstance): Promise<boolean | void>;
 
   /**
    * Perform follow-up operations after a Document of this type is updated.
@@ -714,11 +701,7 @@ declare abstract class Document<
    * @param options - Additional options which modify the update request
    * @param userId  - The id of the User requesting the document update
    */
-  protected _onUpdate(
-    changed: fields.SchemaField.UpdateData<Schema>,
-    options: Document.OnUpdateOptions<DocumentName>,
-    userId: string,
-  ): void;
+  protected _onUpdate(changed: never, options: never, userId: string): void;
 
   /**
    * Pre-process an update operation, potentially altering its instructions or input data. Pre-operation events only
@@ -766,7 +749,7 @@ declare abstract class Document<
    * @param user    - The User requesting the document deletion
    * @returns A return value of false indicates the delete operation should be cancelled
    */
-  protected _preDelete(options: Document.PreDeleteOptions<DocumentName>, user: User): Promise<boolean | void>;
+  protected _preDelete(options: never, user: User.Internal.ConfiguredInstance): Promise<boolean | void>;
 
   /**
    * Perform follow-up operations after a Document of this type is deleted.
@@ -774,7 +757,7 @@ declare abstract class Document<
    * @param options - Additional options which modify the deletion request
    * @param userId  - The id of the User requesting the document update
    */
-  protected _onDelete(options: Document.OnDeleteOptions<DocumentName>, userId: string): void;
+  protected _onDelete(options: never, userId: string): void;
 
   /**
    * Pre-process a deletion operation, potentially altering its instructions or input data. Pre-operation events only

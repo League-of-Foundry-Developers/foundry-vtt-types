@@ -29,11 +29,16 @@ declare global {
 
 // @ts-expect-error - Item requires name and type.
 new Item();
+// @ts-expect-error - Item requires name and type.
+await Item.create();
 
 // @ts-expect-error - Item requires name and type.
 new Item({});
+// @ts-expect-error - Item requires name and type.
+await Item.create({})
 
 const item = new Item({ name: "Mighty Axe of Killing", type: "weapon" });
+await Item.create({ name: "Mighty Axe of Killing", type: "weapon" })
 
 expectTypeOf(item.actor).toEqualTypeOf<Actor | null>();
 expectTypeOf(item.img).toEqualTypeOf<string | null | undefined>();

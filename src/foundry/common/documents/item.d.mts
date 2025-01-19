@@ -90,6 +90,14 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
 
   static get(documentId: string, options?: Document.Database.GetOperation): Item.Implementation | null;
 
+  protected _preCreate(
+    data: Item.CreateData,
+    options: Item.DatabaseOperation.PreCreateOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onCreate(data: Item.CreateData, options: Item.DatabaseOperation.OnCreateOperation, userId: string): void;
+
   protected static _preCreateOperation(
     documents: Item.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<Item.DatabaseOperation.Create>,
@@ -102,6 +110,18 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
     user: User.Implementation,
   ): Promise<void>;
 
+  protected _preUpdate(
+    changed: Item.UpdateData,
+    options: Item.DatabaseOperation.PreUpdateOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onUpdate(
+    changed: Item.UpdateData,
+    options: Item.DatabaseOperation.OnUpdateOperation,
+    userId: string,
+  ): void;
+
   protected static _preUpdateOperation(
     documents: Item.Implementation[],
     operation: Item.DatabaseOperation.Update,
@@ -113,6 +133,13 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
     operation: Item.DatabaseOperation.Update,
     user: User.Implementation,
   ): Promise<void>;
+
+  protected _preDelete(
+    options: Item.DatabaseOperation.PreDeleteOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onDelete(options: Item.DatabaseOperation.OnDeleteOperation, userId: string): void;
 
   protected static _preDeleteOperation(
     documents: Item.Implementation[],
