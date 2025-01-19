@@ -70,29 +70,29 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
 
   static createDocuments<Temporary extends boolean | undefined>(
     data: Array<Item.Implementation | Item.CreateData> | undefined,
-    operation?: Item.DatabaseOperation.Create<Temporary>,
+    operation?: Document.Database.CreateOperation<Item.DatabaseOperation.Create<Temporary>>,
   ): Promise<Array<Document.StoredIf<Item.Implementation, Temporary>>>;
 
   static updateDocuments(
     updates: Item.UpdateData[] | undefined,
-    operation?: Item.DatabaseOperation.Update,
+    operation?: Document.Database.UpdateOperation<Item.DatabaseOperation.Update>,
   ): Promise<Item.Implementation[]>;
 
   static deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Item.DatabaseOperation.Delete,
+    operation?: Document.Database.DeleteOperation<Item.DatabaseOperation.Delete>,
   ): Promise<Item.Implementation[]>;
 
   static create<Temporary extends boolean | undefined>(
     data: Item.CreateData | Item.CreateData[],
-    operation?: Item.DatabaseOperation.Create<Temporary>,
+    operation?: Document.Database.CreateOperation<Item.DatabaseOperation.Create<Temporary>>,
   ): Promise<Item.Implementation | undefined>;
 
-  static get(documentId: string, options?: Item.DatabaseOperation.Get): Item.Implementation | null;
+  static get(documentId: string, options?: Document.Database.GetOperation): Item.Implementation | null;
 
   protected static _preCreateOperation(
     documents: Item.Implementation[],
-    operation: Item.DatabaseOperation.Create,
+    operation: Document.Database.PreCreateOperationStatic<Item.DatabaseOperation.Create>,
     user: User.Implementation,
   ): Promise<boolean | void>;
 

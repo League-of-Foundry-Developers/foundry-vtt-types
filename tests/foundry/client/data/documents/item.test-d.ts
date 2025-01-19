@@ -58,8 +58,9 @@ declare global {
     }
   }
 }
-
+Item.get(foundry.utils.randomID(), {})
 Item.createDocuments([{name: "Foo", type: "base"}], {foo: "fizz buzz"})
+Item.createDocuments([{_id: foundry.utils.randomID(), name: "Foo", type: "base"}], {foo: "fizz buzz"})
 Item.deleteDocuments([foundry.utils.randomID()], {foobar: false})
 
 class BoilerplateItem extends Item {

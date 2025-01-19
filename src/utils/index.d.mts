@@ -34,6 +34,7 @@ type _GetKey<T, K extends PropertyKey, D> = T extends { readonly [_ in K]?: infe
 /**
  * `Partial` is usually the wrong type.
  * In order to make it easier to audit unintentional uses of `Partial` this type is provided.
+ * Also allows specifying certain keys to make partial.
  *
  * ### Picking the right helper type
  * - Favor `NullishProps` whenever it is valid. Allowing both `null` and
@@ -61,7 +62,12 @@ type _GetKey<T, K extends PropertyKey, D> = T extends { readonly [_ in K]?: infe
  *   The most common time this shows up is with the pattern
  *   `exampleFunction({ prop = "foo" } = {}) { ... }`.
  */
-export type IntentionalPartial<T> = Partial<T>;
+export type IntentionalPartial<T extends object, K extends AllKeysOf<T> = AllKeysOf<T>> = {
+  [K2 in keyof T as Extract<K2, K>]?: T[K2];
+} & {
+  // Note(LukeAbby): This effectively inlines `Omit<T, K>`, hoping for slightly better type display.
+  [K2 in keyof T as Exclude<K2, K>]: T[K2];
+};
 
 /**
  * This type is used to make a constraint where `T` must be statically known to overlap with `U`.

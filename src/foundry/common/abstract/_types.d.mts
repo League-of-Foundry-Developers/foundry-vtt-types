@@ -1,5 +1,10 @@
 import type Document from "./document.d.mts";
 
+// A series of types used by the DatabaseBackend.
+// The operation object is picked apart and restructured several times within the DatabaseBackend and ClientDatabaseBackend methods
+// This means that actual functions must use helper types to properly omit properties or explicit undefined
+// Also, the _result property is intentionally left out as it is never present on the client
+
 export interface DatabaseGetOperation<Parent extends Document.Any | null = Document.Any | null> {
   /**
    * A query object which identifies the set of Documents retrieved
@@ -45,7 +50,7 @@ export interface DatabaseCreateOperation<
   /**
    * Whether the database operation is broadcast to other connected clients
    */
-  broadcast: boolean;
+  broadcast?: boolean;
 
   /**
    * An array of data objects from which to create Documents
@@ -55,76 +60,74 @@ export interface DatabaseCreateOperation<
   /**
    * Retain the _id values of provided data instead of generating new ids
    */
-  keepId?: boolean | undefined;
+  keepId?: boolean;
 
   /**
    * Retain the _id values of embedded document data instead of generating
    *    new ids for each embedded document
    */
-  keepEmbeddedIds?: boolean | undefined;
+  keepEmbeddedIds?: boolean;
 
   /**
    * The timestamp when the operation was performed
+   * @remarks Set in DatabaseBackend##configureOperation
    */
-  modifiedTime?: number | undefined;
+  modifiedTime: number;
 
   /**
    * Block the dispatch of hooks related to this operation
    */
-  noHook?: boolean | undefined;
+  noHook?: boolean;
 
   /**
    * Re-render Applications whose display depends on the created Documents
+   * @defaultValue `true`
    */
-  render?: boolean | undefined;
+  render: boolean;
 
   /**
    * Render the sheet Application for any created Documents
+   * @defaultValue `false`
    */
-  renderSheet?: boolean | undefined;
+  renderSheet: boolean;
 
   /**
    * A parent Document within which Documents are embedded
    */
-  parent?: Parent | null | undefined;
+  parent?: Parent | null;
 
   /**
    * A compendium collection ID which contains the Documents
    */
-  pack: string | null;
+  pack?: string | null;
 
   /**
    * A parent Document UUID provided when the parent instance is unavailable
    */
-  parentUuid?: string | null | undefined;
-
-  /**
-   * An alias for 'data' used internally by the server-side backend
-   */
-  _result?: (string | Record<string, unknown>)[] | undefined;
+  parentUuid?: string | null;
 
   /** @privateRemarks these are added from WorldCollection.importFromCompendium() **/
-  fromCompendium?: boolean | undefined;
+  fromCompendium?: boolean;
 
   /**
    * Clear the currently assigned folder
    */
-  clearFolder?: boolean | undefined;
+  clearFolder?: boolean | null;
 
   /**
    * Clear the current sort order
    */
-  clearSort?: boolean | undefined;
+  clearSort?: boolean | null;
 
   /**
    * Clear Document ownership
    */
-  clearOwnership?: boolean | undefined;
+  clearOwnership?: boolean | null;
 
   /**
    * @deprecated `"It is no longer supported to create temporary documents using the Document.createDocuments API. Use the new Document() constructor instead."`
    */
-  temporary?: Temporary | undefined;
+  temporary?: Temporary;
 }
 
 export interface DatabaseUpdateOperation<
@@ -134,7 +137,7 @@ export interface DatabaseUpdateOperation<
   /**
    * Whether the database operation is broadcast to other connected clients
    */
-  broadcast: boolean;
+  broadcast?: boolean | null;
 
   /**
    * An array of data objects used to update existing Documents.
@@ -145,34 +148,38 @@ export interface DatabaseUpdateOperation<
   /**
    * Difference each update object against current Document data and only use
    * differential data for the update operation
+   * @defaultValue `true`
    */
-  diff?: boolean | undefined;
+  diff: boolean;
 
   /**
    * The timestamp when the operation was performed
+   * @remarks Set in DatabaseBackend##configureOperation
    */
-  modifiedTime?: number | undefined;
+  modifiedTime: number;
 
   /**
    * Merge objects recursively. If false, inner objects will be replaced
    * explicitly. Use with caution!
+   * @defaultValue `true`
    */
-  recursive?: boolean | undefined;
+  recursive: boolean;
 
   /**
    * Re-render Applications whose display depends on the created Documents
+   * @defaultValue `true`
    */
-  render?: boolean | undefined;
+  render: boolean;
 
   /**
    * Block the dispatch of hooks related to this operation
    */
-  noHook?: boolean | undefined;
+  noHook?: boolean | null;
 
   /**
    * A parent Document within which Documents are embedded
    */
-  parent?: Parent | null | undefined;
+  parent?: Parent | null;
 
   /**
    * A compendium collection ID which contains the Documents
@@ -182,19 +189,14 @@ export interface DatabaseUpdateOperation<
   /**
    * A parent Document UUID provided when the parent instance is unavailable
    */
-  parentUuid?: string | null | undefined;
-
-  /**
-   * An alias for 'updates' used internally by the server-side backend
-   */
-  _result?: (string | Record<string, unknown>)[] | undefined;
+  parentUuid?: string | null;
 }
 
 export interface DatabaseDeleteOperation<Parent extends Document.Any | null = Document.Any | null> {
   /**
    * Whether the database operation is broadcast to other connected clients
    */
-  broadcast: boolean;
+  broadcast?: boolean;
 
   /**
    * An array of Document ids which should be deleted
@@ -203,43 +205,41 @@ export interface DatabaseDeleteOperation<Parent extends Document.Any | null = Do
 
   /**
    * Delete all documents in the Collection, regardless of _id
+   * @defaultValue `false`
    */
-  deleteAll?: boolean | undefined;
+  deleteAll: boolean;
 
   /**
    * The timestamp when the operation was performed
+   * @remarks Set in DatabaseBackend##configureOperation
    */
-  modifiedTime?: number | undefined;
+  modifiedTime: number;
 
   /**
    * Block the dispatch of hooks related to this operation
    */
-  noHook?: boolean | undefined;
+  noHook?: boolean | null;
 
   /**
    * Re-render Applications whose display depends on the deleted Documents
+   * @defaultValue `true`
    */
-  render?: boolean | undefined;
+  render: boolean;
 
   /**
    * A parent Document within which Documents are embedded
    */
-  parent?: Parent | null | undefined;
+  parent?: Parent | null;
 
   /**
    * A compendium collection ID which contains the Documents
    */
-  pack: string | null;
+  pack?: string | null;
 
   /**
    * A parent Document UUID provided when the parent instance is unavailable
    */
-  parentUuid?: string | null | undefined;
-
-  /**
-   * An alias for 'ids' used internally by the server-side backend
-   */
-  _result?: (string | Record<string, unknown>)[] | undefined;
+  parentUuid?: string | null;
 }
 
 export interface DatabaseOperationMap {

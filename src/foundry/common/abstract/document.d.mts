@@ -15,6 +15,8 @@ import type {
   InexactPartial,
   RemoveIndexSignatures,
   FixedInstanceType,
+  NullishProps,
+  AllKeysOf,
 } from "../../../utils/index.d.mts";
 import type { documents } from "../../client-esm/client.d.mts";
 import type * as CONST from "../constants.mts";
@@ -27,7 +29,14 @@ import type {
 } from "../data/fields.d.mts";
 import type { fields } from "../data/module.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.mts";
-import type { DatabaseAction, DatabaseGetOperation, DocumentSocketRequest } from "./_types.d.mts";
+import type {
+  DatabaseAction,
+  DatabaseCreateOperation,
+  DatabaseDeleteOperation,
+  DatabaseGetOperation,
+  DatabaseUpdateOperation,
+  DocumentSocketRequest,
+} from "./_types.d.mts";
 import type DataModel from "./data.mts";
 import type DocumentSocketResponse from "./socket.d.mts";
 
@@ -452,10 +461,10 @@ declare abstract class Document<
   /**
    * Get a World-level Document of this type by its id.
    * @param documentId - The Document ID
-   * @param options    - Additional options which customize the request
+   * @param operation    - Additional options which customize the request
    * @returns The retrieved Document, or null
    */
-  static get(documentId: string, options?: InexactPartial<DatabaseGetOperation>): Document.Any | null;
+  static get(documentId: string, operation?: Document.Database.GetOperation): Document.Any | null;
 
   /**
    * A compatibility method that returns the appropriate name of an embedded collection within this Document.
@@ -1475,6 +1484,65 @@ declare namespace Document {
 
   namespace Database {
     type Operation = "create" | "update" | "delete";
+
+    type GetOperation = NullishProps<{ pack: string }>;
+
+    /** Used for {@link Document.createDocuments} */
+    type CreateOperation<Op extends DatabaseCreateOperation> = NullishProps<Omit<Op, "data" | "modifiedTime">>;
+    /** Used for {@link Document._preCreateOperation} */
+    type PreCreateOperationStatic<Op extends DatabaseCreateOperation> = InexactPartial<
+      Op,
+      Exclude<AllKeysOf<Op>, "modifiedTime" | "render" | "renderSheet" | "data" | "noHook" | "pack" | "parent">
+    >;
+    /** Used for {@link Document#_preCreate} */
+    type PreCreateOperationInstance<Op extends DatabaseCreateOperation> = Omit<
+      PreCreateOperationStatic<Op>,
+      "data" | "noHook" | "pack" | "parent"
+    >;
+    /** Used for {@link Document#_onCreate} */
+    type OnCreateOperation<Op extends DatabaseCreateOperation> = Omit<
+      Op,
+      "data" | "pack" | "parentUuid" | "syntheticActorUpdate"
+    >;
+
+    /** Used for {@link Document.updateDocuments} */
+    type UpdateOperation<Op extends DatabaseUpdateOperation> = NullishProps<Omit<Op, "data" | "modifiedTime">>;
+    /** Used for {@link Document._preUpdateOperation} */
+    type PreUpdateOperationStatic<Op extends DatabaseUpdateOperation> = InexactPartial<
+      Op,
+      Exclude<
+        AllKeysOf<Op>,
+        "modifiedTime" | "diff" | "recursive" | "render" | "updates" | "restoreDelta" | "noHook" | "pack" | "parent"
+      >
+    >;
+    /** Used for {@link Document#_preUpdate} */
+    type PreUpdateOperationInstance<Op extends DatabaseUpdateOperation> = Omit<
+      PreUpdateOperationStatic<Op>,
+      "updates" | "restoreDelta" | "noHook" | "pack" | "parent"
+    >;
+    /** Used for {@link Document#_onUpdate} */
+    type OnUpdateOperation<Op extends DatabaseUpdateOperation> = Omit<
+      Op,
+      "updates" | "pack" | "parentUuid" | "syntheticActorUpdate"
+    >;
+
+    /** Used for {@link Document.deleteDocuments} */
+    type DeleteOperation<Op extends DatabaseDeleteOperation> = NullishProps<Omit<Op, "ids" | "modifiedTime">>;
+    /** Used for {@link Document._preDeleteOperation} */
+    type PreDeleteOperationStatic<Op extends DatabaseDeleteOperation> = InexactPartial<
+      Op,
+      Exclude<AllKeysOf<Op>, "modifiedTime" | "render" | "ids" | "deleteAll" | "noHook" | "pack" | "parent">
+    >;
+    /** Used for {@link Document#_preDelete} */
+    type PreDeleteOperationInstance<Op extends DatabaseDeleteOperation> = Omit<
+      InexactPartial<Op, Exclude<AllKeysOf<Op>, "modifiedTime" | "render">>,
+      "ids" | "deleteAll" | "noHook" | "pack" | "parent"
+    >;
+    /** Used for {@link Document#_onDelete} */
+    type OnDeleteOperation<Op extends DatabaseDeleteOperation> = Omit<
+      Op,
+      "ids" | "deleteAll" | "pack" | "parentUuid" | "syntheticActorUpdate"
+    >;
 
     /**
      * @deprecated - TODO: Delete this once it's been fully removed.
