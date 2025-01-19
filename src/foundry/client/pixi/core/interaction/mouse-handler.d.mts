@@ -1,4 +1,4 @@
-import type { Brand, ValueOf } from "../../../../../utils/index.d.mts";
+import type { Brand, DropFirst, EmptyObject, NullishProps } from "../../../../../utils/index.d.mts";
 
 declare global {
   /**
@@ -36,7 +36,12 @@ declare global {
    *  action: dragLeftCancel
    *  action: dragRightCancel
    */
-  class MouseInteractionManager {
+  class MouseInteractionManager<
+    Object extends PIXI.Container = PIXI.Container,
+    Permissions extends MouseInteractionManager.Permissions = EmptyObject,
+    Callbacks extends MouseInteractionManager.Callbacks = EmptyObject,
+    Options extends MouseInteractionManager.Options<Object> = MouseInteractionManager.Options<Object>,
+  > {
     /**
      * @param permissions - (default: `{}`)
      * @param callbacks   - (default: `{}`)
@@ -44,31 +49,31 @@ declare global {
      * @remarks Foundry does not provide type information for the constructor, everything here is inferred from usage
      */
     constructor(
-      object: PIXI.Container,
+      object: Object,
       layer: PIXI.Container,
-      permissions?: MouseInteractionManager.Permissions,
-      callbacks?: MouseInteractionManager.Callbacks,
-      options?: MouseInteractionManager.Options,
+      permissions?: Permissions,
+      callbacks?: Callbacks,
+      options?: Options,
     );
 
-    object: PIXI.Container;
+    object: Object;
 
     layer: PIXI.Container;
 
     /**
      * @defaultValue `{}`
      */
-    permissions: MouseInteractionManager.Permissions;
+    permissions: Permissions;
 
     /**
      * @defaultValue `{}`
      */
-    callbacks: MouseInteractionManager.Callbacks;
+    callbacks: Callbacks;
 
     /**
      * @defaultValue `{}`
      */
-    options: MouseInteractionManager.Options;
+    options: Options;
 
     /**
      * The current interaction state
@@ -80,6 +85,7 @@ declare global {
      * Bound handlers which can be added and removed
      * @defaultValue `{}`
      */
+    //TODO
     interactionData: {
       origin?: PIXI.Point;
       destination?: PIXI.Point;
@@ -108,7 +114,7 @@ declare global {
      * A flag for whether we are right-click dragging
      * @defaultValue `false`
      */
-    protected _dragRight: boolean;
+    _dragRight: boolean;
 
     /**
      * An optional ControlIcon instance for the object
@@ -205,7 +211,11 @@ declare global {
      * @returns A boolean which may indicate that the event was handled by the callback.
      *          Events which do not specify a callback are assumed to have been handled as no-op.
      */
-    callback(action: MouseInteractionManager.Action, event: Event | PIXI.FederatedEvent, ...args: never[]): boolean;
+    callback<Action extends keyof Callbacks>(
+      action: Action,
+      event: Event | PIXI.FederatedEvent,
+      ...args: DropFirst<Parameters<Callbacks[Action]>>
+    ): boolean;
 
     /**
      * A reference to the possible interaction states which can be observed
@@ -244,13 +254,21 @@ declare global {
     /**
      * Reset the mouse manager.
      */
-    reset(options?: {
-      /** Reset the interaction data? */
-      interactionData: boolean;
+    reset(
+      options?: NullishProps<{
+        /**
+         * Reset the interaction data?
+         * @defaultValue `true`
+         */
+        interactionData: boolean;
 
-      /** Reset the state? */
-      state: boolean;
-    }): void;
+        /**
+         * Reset the state?
+         * @defaultValue `true`
+         */
+        state: boolean;
+      }>,
+    ): void;
   }
 
   namespace MouseInteractionManager {
@@ -276,7 +294,7 @@ declare global {
       | "hoverIn"
       | "hoverOut";
 
-    type PermissionFunction = (user: User.ConfiguredInstance, event: PIXI.FederatedEvent) => boolean;
+    type PermissionFunction = (user: User.ConfiguredInstance, event: Event | PIXI.FederatedEvent) => boolean;
 
     type Permissions = Partial<Record<PermissionAction, PermissionFunction | boolean>>;
 
@@ -292,9 +310,13 @@ declare global {
 
     type Callbacks = Partial<Record<Action, CallbackFunction>>;
 
-    interface Options {
-      target?: PIXI.DisplayObject;
+    /** @internal */
+    type _Options<T> = NullishProps<{
+      /** @privateRemarks Despite Foundry typing this as `PIXI.DisplayObject` its one use in practice is as `string | null` */
+      target: keyof T;
+    }>;
 
+    interface Options<T> extends _Options<T> {
       dragResistance?: number;
     }
   }

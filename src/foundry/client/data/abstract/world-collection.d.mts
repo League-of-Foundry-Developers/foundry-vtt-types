@@ -1,4 +1,4 @@
-import type { DeepPartial, InexactPartial } from "../../../../utils/index.d.mts";
+import type { DeepPartial, DropFirst, InexactPartial } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DirectoryCollectionMixin_DocumentCollection_Interface } from "./directory-collection-mixin.d.mts";
 
@@ -161,5 +161,3 @@ declare global {
     }
   }
 }
-
-type DropFirst<T extends Array<unknown>> = T extends [infer _1, ...infer V] ? V : T;
