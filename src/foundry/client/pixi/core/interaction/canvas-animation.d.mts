@@ -1,4 +1,4 @@
-import type { ValueOf, PropertiesOfType, Brand, InexactPartial } from "../../../../../utils/index.d.mts";
+import type { PropertiesOfType, Brand, NullishProps } from "../../../../../utils/index.d.mts";
 
 declare global {
   /**
@@ -31,7 +31,8 @@ declare global {
     /**
      * Track an object of active animations by name, context, and function
      * This allows a currently playing animation to be referenced and terminated
-     * @privateRemarks Foundry does not account for the possibility of Symbol animation names and types the keys as simply `string`
+     * @privateRemarks Foundry does not account for the possibility of Symbol animation names and types the keys as simply `string`,
+     * despite typing `CanvasAnimationOptions.name` as `string | symbol`
      */
     static animations: Record<string | symbol, CanvasAnimationData>;
 
@@ -62,20 +63,20 @@ declare global {
      * CanvasAnimation.animate(attributes, {duration:500});
      * ```
      */
-    static animate(attributes: CanvasAnimationAttribute[], options?: CanvasAnimationOptions): Promise<boolean>;
+    static animate(attributes: CanvasAnimationAttribute[], options?: CanvasAnimationOptions): Promise<boolean | void>;
 
     /**
      * Retrieve an animation currently in progress by its name
      * @param name - The animation name to retrieve
      * @returns The animation data, or undefined
      */
-    static getAnimation(name: string): CanvasAnimationData | undefined;
+    static getAnimation(name: string | symbol): CanvasAnimationData | undefined;
 
     /**
      * If an animation using a certain name already exists, terminate it
      * @param name - The animation name to terminate
      */
-    static terminateAnimation(name: string): void;
+    static terminateAnimation(name: string | symbol): void;
 
     /**
      * Cosine based easing with smooth in-out.
@@ -108,38 +109,62 @@ declare global {
 
     type STATES = Brand<number, "CanvasAnimation.STATES">;
 
+    type OnTickFunction = (dt: number, animation: CanvasAnimationData) => void;
+
     /** @internal */
-    type _AnimationOptions = InexactPartial<{
+    type _AnimationOptions = NullishProps<{
       /**
        * A DisplayObject which defines context to the PIXI.Ticker function
        * @defaultValue `canvas.stage`
-       * @remarks Can be `null`, because despite only having a signature-provided default,
+       * @remarks `null` is allowed here because despite only having a signature-provided default,
        * the (afaict, unexported) PIXI class `TickerListener`'s constructor (where this prop
        * ends up) accepts `null` for context. This is likely never actually desireable, however.
        */
-      context?: PIXI.DisplayObject | null;
+      context: PIXI.DisplayObject;
 
-      /**
-       * A unique name which can be used to reference the in-progress animation
-       * @remarks This is only used if truthy, so `null` is allowed
-       */
-      name?: string | symbol | null;
-
-      /**
-       * A duration in milliseconds over which the animation should occur
-       * @defaultValue `1000`
-       * @remarks Can't be `null` because it only has a signature-provided default, and used as a divisor in `CanvasAnimation.#animateFrame`
-       */
-      duration?: number;
+      /** A unique name which can be used to reference the in-progress animation */
+      name: string | symbol;
 
       /**
        * A priority in PIXI.UPDATE_PRIORITY which defines when the animation
        * should be evaluated related to others
-       * @defaultValue `PIXI.UPDATE_PRIORITY`
-       * @remarks Has
+       * @defaultValue `PIXI.UPDATE_PRIORITY.LOW + 1`
+       * @remarks Default provided by `??=` in function body. Numerical values between `UPDATE_PRIORITY`
+       * levels are valid but must be cast `as PIXI.UPDATE_PRIORITY` due to the Branded enum
        */
-      priority?: PIXI.UPDATE_PRIORITY | null;
+      priority: PIXI.UPDATE_PRIORITY;
+
+      /**
+       * An easing function used to translate animation time or the string name
+       * of a static member of the CanvasAnimation class
+       */
+      easing: CanvasAnimation.EasingFunction;
+
+      /** A callback function which fires after every frame */
+      ontick: OnTickFunction;
+
+      /** The animation isn't started until this promise resolves */
+      wait: Promise<unknown>;
     }>;
+
+    /** @internal */
+    type _AnimationAttribute = NullishProps<{
+      /**
+       * An initial value of the attribute, otherwise parent[attribute] is used
+       * @remarks Will be replaced inside `.animate` with `Color.from(from)` if `to` is a `Color`
+       */
+      from: number | Color;
+    }>;
+  }
+
+  interface CanvasAnimationOptions extends CanvasAnimation._AnimationOptions {
+    /**
+     * A duration in milliseconds over which the animation should occur
+     * @defaultValue `1000`
+     * @remarks Can't be `null` because it only has a signature-provided default, and used as a divisor in `CanvasAnimation.#animateFrame`
+     * @privateRemarks InexactPartial inlined so the rest of the interface can be NullishProps'd
+     */
+    duration?: number | undefined;
   }
 
   interface CanvasAnimationAttribute {
@@ -150,30 +175,27 @@ declare global {
     parent: object;
 
     /** The destination value of the attribute */
-    to: number;
+    to: number | Color;
 
-    /** An initial value of the attribute, otherwise parent[attribute] is used */
-    from?: number;
-
-    /** The computed delta between to and from */
+    /**
+     * The computed delta between to and from
+     * @remarks This key is always overwritten inside `.animate`, its passed value is irrelevant
+     */
     delta?: number;
 
-    /** The amount of the total delta which has been animated */
+    /**
+     * The amount of the total delta which has been animated
+     * @remarks This key is always overwritten inside `.animate`, its passed value is irrelevant
+     */
     done?: number;
 
-    /** Is this a color animation that applies to RGB channels */
-    color?: boolean;
-  }
-
-  interface CanvasAnimationOptions extends CanvasAnimation._AnimationOptions {
     /**
-     * An easing function used to translate animation time or the string name
-     * of a static member of the CanvasAnimation class
+     * Is this a color animation that applies to RGB channels
+     * @remarks When true, `CanvasAnimation.#animateFrame` assumes `to` *and* `from` are
+     * both `Color`s. It's automatically set `true` if `to` is passed as a `Color`, so it
+     * should be unnecessary to set manually.
      */
-    easing?: CanvasAnimation.EasingFunction;
-
-    /** A callback function which fires after every frame */
-    ontick?: (dt: number, animation: CanvasAnimationData) => void;
+    color?: boolean;
   }
 
   interface CanvasAnimationData extends CanvasAnimationOptions {
@@ -187,7 +209,7 @@ declare global {
     attributes: CanvasAnimationAttribute[];
 
     /** The current state of the animation */
-    state: ValueOf<typeof CanvasAnimation.STATES>;
+    state: CanvasAnimation.STATES;
 
     /** A Promise which resolves once the animation is complete */
     promise: Promise<boolean>;
