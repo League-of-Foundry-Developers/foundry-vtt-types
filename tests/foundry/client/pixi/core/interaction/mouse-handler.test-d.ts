@@ -1,12 +1,30 @@
 import { expectTypeOf } from "vitest";
-import type { ValueOf } from "fvtt-types/utils";
 
-() => {
-  const myCanvas = new Canvas();
+expectTypeOf(MouseInteractionManager.INTERACTION_STATES).toMatchTypeOf<
+  Record<string, number & MouseInteractionManager.INTERACTION_STATES>
+>();
 
-  if (!myCanvas.stage) return;
+declare const someEvent: PIXI.FederatedEvent;
 
-  const myMouseHandler = new MouseInteractionManager(myCanvas.stage, myCanvas.stage);
-
-  expectTypeOf(myMouseHandler.state).toEqualTypeOf<ValueOf<(typeof MouseInteractionManager)["INTERACTION_STATES"]>>();
+const permissions = {
+  dragLeftStart: (_user: User.ConfiguredInstance, _e: Event | PIXI.FederatedEvent) => true,
+  dragLeftDrop: (user: User.ConfiguredInstance, _e: Event | PIXI.FederatedEvent) => user.id?.includes("F") ?? false,
+  dragRightStart: false,
 };
+
+const callbacks = {
+  dragLeftStart: (_e: Event | PIXI.FederatedEvent, otherArg: number) => {
+    return otherArg > 4;
+  },
+  dragLeftDrop: (_e: Event | PIXI.FederatedEvent, otherArg: string) => {
+    return otherArg.includes("hello, world");
+  },
+};
+
+const myMouseHandler = new MouseInteractionManager(new PIXI.Container(), new PIXI.Container(), permissions, callbacks, {
+  target: null,
+});
+
+expectTypeOf(myMouseHandler.callback("dragLeftStart", someEvent, 8)).toEqualTypeOf<boolean>;
+expectTypeOf(myMouseHandler.callback("dragLeftDrop", someEvent, "bob"));
+expectTypeOf(myMouseHandler.state).toEqualTypeOf<MouseInteractionManager.INTERACTION_STATES>();
