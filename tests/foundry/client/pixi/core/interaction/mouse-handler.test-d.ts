@@ -5,26 +5,33 @@ expectTypeOf(MouseInteractionManager.INTERACTION_STATES).toMatchTypeOf<
 >();
 
 declare const someEvent: PIXI.FederatedEvent;
+declare const someRegion: Region.ConfiguredInstance;
 
 const permissions = {
   dragLeftStart: (_user: User.ConfiguredInstance, _e: Event | PIXI.FederatedEvent) => true,
-  dragLeftDrop: (user: User.ConfiguredInstance, _e: Event | PIXI.FederatedEvent) => user.id?.includes("F") ?? false,
   dragRightStart: false,
 };
 
 const callbacks = {
-  dragLeftStart: (_e: Event | PIXI.FederatedEvent, otherArg: number) => {
-    return otherArg > 4;
+  hoverIn: (_e: Event | PIXI.FederatedEvent, options: PlaceableObject.HoverInOptions) => {
+    if (options.hoverOutOthers) console.log("stuff");
   },
-  dragLeftDrop: (_e: Event | PIXI.FederatedEvent, otherArg: string) => {
-    return otherArg.includes("hello, world");
+  longPress: (_e: Event | PIXI.FederatedEvent, origin: PIXI.Point) => {
+    return origin.x > 500;
   },
 };
 
-const myMouseHandler = new MouseInteractionManager(new PIXI.Container(), new PIXI.Container(), permissions, callbacks, {
+const myMouseHandler = new MouseInteractionManager(someRegion, new PIXI.Container(), permissions, callbacks, {
   target: null,
 });
 
-expectTypeOf(myMouseHandler.callback("dragLeftStart", someEvent, 8)).toEqualTypeOf<boolean>;
-expectTypeOf(myMouseHandler.callback("dragLeftDrop", someEvent, "bob"));
+expectTypeOf(myMouseHandler.handlerOutcomes).toMatchTypeOf<
+  Record<string, number & MouseInteractionManager.HANDLER_OUTCOMES>
+>();
+
+// Unfortunately the parameters beyond the event are not being typechecked due to complexities in the way manager callbacks are registered
+expectTypeOf(myMouseHandler.callback("hoverIn", someEvent, { hoverOutOthers: true })).toEqualTypeOf<boolean>;
+expectTypeOf(myMouseHandler.callback("longPress", someEvent, new PIXI.Point(1000, 1000)));
+
 expectTypeOf(myMouseHandler.state).toEqualTypeOf<MouseInteractionManager.INTERACTION_STATES>();
+expectTypeOf(myMouseHandler.reset({ interactionData: true, state: false })).toEqualTypeOf<void>();
