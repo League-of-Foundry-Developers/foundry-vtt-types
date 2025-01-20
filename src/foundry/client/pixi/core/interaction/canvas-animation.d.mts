@@ -1,4 +1,4 @@
-import type { PropertiesOfType, Brand, NullishProps } from "../../../../../utils/index.d.mts";
+import type { PropertiesOfType, Brand, NullishProps, AnyObject } from "../../../../../utils/index.d.mts";
 
 declare global {
   /**
@@ -6,22 +6,7 @@ declare global {
    */
   class CanvasAnimation {
     /** @privateRemarks Returns a private class property that is a frozen object, so keys are readonly */
-    static get STATES(): {
-      /** An error occurred during waiting or running the animation. */
-      readonly FAILED: -2 & CanvasAnimation.STATES;
-
-      /** The animation was terminated before it could complete. */
-      readonly TERMINATED: -1 & CanvasAnimation.STATES;
-
-      /** Waiting for the wait promise before the animation is started. */
-      readonly WAITING: 0 & CanvasAnimation.STATES;
-
-      /** The animation has been started and is running. */
-      readonly RUNNING: 1 & CanvasAnimation.STATES;
-
-      /** The animation was completed without errors and without being terminated. */
-      readonly COMPLETED: 2 & CanvasAnimation.STATES;
-    };
+    static get STATES(): CanvasAnimation.States;
 
     /**
      * The ticker used for animations.
@@ -34,7 +19,7 @@ declare global {
      * @privateRemarks Foundry does not account for the possibility of Symbol animation names and types the keys as simply `string`,
      * despite typing `CanvasAnimationOptions.name` as `string | symbol`
      */
-    static animations: Record<string | symbol, CanvasAnimationData>;
+    static animations: Record<PropertyKey, CanvasAnimationData>;
 
     /**
      * Apply an animation from the current value of some attribute to a new value
@@ -70,13 +55,13 @@ declare global {
      * @param name - The animation name to retrieve
      * @returns The animation data, or undefined
      */
-    static getAnimation(name: string | symbol): CanvasAnimationData | undefined;
+    static getAnimation(name: PropertyKey): CanvasAnimationData | undefined;
 
     /**
      * If an animation using a certain name already exists, terminate it
      * @param name - The animation name to terminate
      */
-    static terminateAnimation(name: string | symbol): void;
+    static terminateAnimation(name: PropertyKey): void;
 
     /**
      * Cosine based easing with smooth in-out.
@@ -109,6 +94,23 @@ declare global {
 
     type STATES = Brand<number, "CanvasAnimation.STATES">;
 
+    interface States {
+      /** An error occurred during waiting or running the animation. */
+      readonly FAILED: -2 & CanvasAnimation.STATES;
+
+      /** The animation was terminated before it could complete. */
+      readonly TERMINATED: -1 & CanvasAnimation.STATES;
+
+      /** Waiting for the wait promise before the animation is started. */
+      readonly WAITING: 0 & CanvasAnimation.STATES;
+
+      /** The animation has been started and is running. */
+      readonly RUNNING: 1 & CanvasAnimation.STATES;
+
+      /** The animation was completed without errors and without being terminated. */
+      readonly COMPLETED: 2 & CanvasAnimation.STATES;
+    }
+
     type OnTickFunction = (dt: number, animation: CanvasAnimationData) => void;
 
     /** @internal */
@@ -116,14 +118,14 @@ declare global {
       /**
        * A DisplayObject which defines context to the PIXI.Ticker function
        * @defaultValue `canvas.stage`
-       * @remarks `null` is allowed here because despite only having a signature-provided default,
+       * @remarks `null` is allowed here because despite only having a parameter default,
        * the (afaict, unexported) PIXI class `TickerListener`'s constructor (where this prop
        * ends up) accepts `null` for context. This is likely never actually desireable, however.
        */
       context: PIXI.DisplayObject;
 
       /** A unique name which can be used to reference the in-progress animation */
-      name: string | symbol;
+      name: PropertyKey;
 
       /**
        * A priority in PIXI.UPDATE_PRIORITY which defines when the animation
@@ -161,8 +163,7 @@ declare global {
     /**
      * A duration in milliseconds over which the animation should occur
      * @defaultValue `1000`
-     * @remarks Can't be `null` because it only has a signature-provided default, and used as a divisor in `CanvasAnimation.#animateFrame`
-     * @privateRemarks InexactPartial inlined so the rest of the interface can be NullishProps'd
+     * @remarks Can't be `null` because it only has a parameter default, and used as a divisor in `CanvasAnimation.#animateFrame`
      */
     duration?: number | undefined;
   }
@@ -172,7 +173,7 @@ declare global {
     attribute: string;
 
     /** The object within which the attribute is stored */
-    parent: object;
+    parent: AnyObject;
 
     /** The destination value of the attribute */
     to: number | Color;

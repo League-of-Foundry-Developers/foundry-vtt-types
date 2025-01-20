@@ -26,14 +26,7 @@ declare global {
       current: Canvas.Rectangle,
       origin: Canvas.Rectangle,
       destination: Canvas.Rectangle,
-      options?: NullishProps<{
-        /**
-         * Constrain the aspect ratio
-         * @defaultValue `null`
-         * @remarks If truthy, will enforce the passed ratio, landscape if `width >= height`, portrait otherwise
-         */
-        aspectRatio: number;
-      }>,
+      options?: ResizeHandle.UpdateDimensionsOptions,
     ): Canvas.Rectangle;
 
     activateListeners(): void;
@@ -61,16 +54,26 @@ declare global {
     interface Any extends AnyResizeHandle {}
     type AnyConstructor = typeof AnyResizeHandle;
 
-    /** @remarks Undocumented, inferred from usage */
     type Offsets = [widthOffset: number, heightOffset: number];
 
     /** @internal */
     type _Handlers = NullishProps<{
-      /** @remarks Undocumented, inferred from usage */
-      canDrag: (...args: never[]) => boolean | null | void;
+      canDrag: () => boolean | null | void;
     }>;
 
     interface Handlers extends _Handlers {}
+
+    /** @internal */
+    type _UpdateDimensionsOptions = NullishProps<{
+      /**
+       * Constrain the aspect ratio
+       * @defaultValue `null`
+       * @remarks If truthy, will enforce the passed ratio, landscape if `width >= height`, portrait otherwise
+       */
+      aspectRatio: number;
+    }>;
+
+    interface UpdateDimensionsOptions extends _UpdateDimensionsOptions {}
   }
 }
 
