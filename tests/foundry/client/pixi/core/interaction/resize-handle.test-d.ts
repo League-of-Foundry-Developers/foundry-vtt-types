@@ -1,5 +1,10 @@
 import { expectTypeOf } from "vitest";
 
-const myResizeHandler = new ResizeHandle([2, 3]);
+declare const someRect: Canvas.Rectangle;
 
-expectTypeOf(myResizeHandler.visible).toEqualTypeOf<boolean>();
+const myResizeHandle = new ResizeHandle([2, 3], { canDrag: () => true });
+
+expectTypeOf(myResizeHandle.offset).toEqualTypeOf<[number, number]>();
+expectTypeOf(
+  myResizeHandle.updateDimensions(someRect, someRect, someRect, { aspectRatio: 2 }),
+).toEqualTypeOf<Canvas.Rectangle>();
