@@ -15,7 +15,8 @@ declare global {
 
     _color: Color;
 
-    override destroy(options?: PIXI.IDestroyOptions | boolean): void;
+    /** @remarks `Ping#destroy`'s parameter must be an object if passed, as the body does `options.children = true` */
+    override destroy(options?: PIXI.IDestroyOptions): void;
 
     /**
      * Start the ping animation.
@@ -42,23 +43,28 @@ declare global {
       /**
        * The duration of the animation in milliseconds.
        * @defaultValue `900`
-       * @remarks Can't be `null` or `undefined` because `options` is `mergeObject`ed with an object with this key
+       * @remarks Can't be `null` because `options` is `mergeObject`ed with an object with this key,
+       * and the result is passed on to `CanvasAnimation.animate` in its options
        */
-      duration: number;
+      duration: number | undefined;
 
       /**
        * The size of the ping graphic.
        * @defaultValue `128`
-       * @remarks Can't be `null` or `undefined` because `options` is `mergeObject`ed with an object with this key
+       * @remarks Can't be `null` or `undefined` because `options` is `mergeObject`ed with an object with this key.
+       * This value is not used in the base `Ping` class, but is used by subclasses to define radius and padding in
+       * ways where `undefined` produces `NaN` and values of `0` (ie, cast `null`) are nonsensical
        */
       size: number;
 
       /**
        * The color of the ping graphic.
        * @defaultValue `#ff6400`
-       * @remarks Can't be `null` or `undefined` because `options` is `mergeObject`ed with an object with this key
+       * @remarks Can't be `null` or `undefined` because `options` is `mergeObject`ed with an object with this key,
+       * and passing either to `Color.from` produces a `Color(NaN)`, which may cause breakage in subclasses or when
+       * passed to PIXI methods
        */
-      color: string;
+      color: Color.Source;
 
       /**
        * The name for the ping animation to pass to {@link CanvasAnimation.animate}.

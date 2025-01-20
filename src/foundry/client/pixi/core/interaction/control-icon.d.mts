@@ -6,7 +6,7 @@ declare global {
    */
   class ControlIcon extends PIXI.Container {
     /**
-     * @privateRemarks
+     * @remarks
      * - Despite being an `={}` param, `options` is required (specifically its `texture` property)
      * - Foundry adds a `...args` rest param after `options` and calls `super(...args)`, but `new PIXI.Container()` takes no arguments
      */
@@ -74,7 +74,7 @@ declare global {
     type _Options = InexactPartial<{
       /**
        * @defaultValue `40`
-       * @remarks Can't be `null` as it only has a signature-provided default
+       * @remarks Can't be `null` as it only has a parameter default
        * @privateRemarks It *could* be `null`, as in all the places its used in math, coercing it to `0` does not
        * produce errors, but it pollutes the `this.size` type unnecessarily and is obviously not intended.
        */
@@ -83,9 +83,9 @@ declare global {
       /**
        * @defaultValue `0xFF5500`
        * @remarks Can't be `null` as that's not a valid value for the `PIXI.Color` constructor,
-       * and it only has a signature-provided default
-       * @privateRemarks I'm pretty sure this could be any `PIXI.ColorSource` not just an RGB integer,
-       * but not sure enough to change the type
+       * and it only has a parameter default
+       * @privateRemarks This could probably be any `PIXI.ColorSource` not just an RGB integer,
+       * but proving this would be difficult, and all Foundry uses are numbers
        */
       borderColor: number;
 
@@ -98,7 +98,7 @@ declare global {
       /**
        * @defaultValue `number`
        * @remarks Can't be null as the `ControlIcon#elevation` setter throws if passed anything but a finite number,
-       * and it only has a signature-provided default
+       * and it only has a parameter default
        */
       elevation: number;
     }>;

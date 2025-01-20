@@ -1023,6 +1023,6 @@ type _MustBeValidUuid<
     : `${Type}.${string}` | `${string}.${string}.${Type}.${string}`;
 
 /**
- * Drop the first element of an array
+ * Drops the first element of an array
  */
 type DropFirst<T extends AnyArray> = T extends [infer _1, ...infer V] ? V : T;

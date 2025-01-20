@@ -136,14 +136,7 @@ declare global {
      * 4: DRAG - the object is being dragged
      * 5: DROP - the object is being dropped
      */
-    static INTERACTION_STATES: {
-      NONE: 0 & MouseInteractionManager.INTERACTION_STATES;
-      HOVER: 1 & MouseInteractionManager.INTERACTION_STATES;
-      CLICKED: 2 & MouseInteractionManager.INTERACTION_STATES;
-      GRABBED: 3 & MouseInteractionManager.INTERACTION_STATES;
-      DRAG: 4 & MouseInteractionManager.INTERACTION_STATES;
-      DROP: 5 & MouseInteractionManager.INTERACTION_STATES;
-    };
+    static INTERACTION_STATES: MouseInteractionManager.InteractionStates;
 
     /**
      * The maximum number of milliseconds between two clicks to be considered a double-click.
@@ -217,19 +210,7 @@ declare global {
     /**
      * A reference to the possible interaction states which can be observed
      */
-    get handlerOutcomes(): {
-      /** -2: SKIPPED - the handler has been skipped by previous logic */
-      SKIPPED: -2 & MouseInteractionManager.HANDLER_OUTCOMES;
-
-      /** -1: DISALLOWED - the handler has dissallowed further process */
-      DISALLOWED: -1 & MouseInteractionManager.HANDLER_OUTCOMES;
-
-      /** 1: REFUSED - the handler callback has been processed and is refusing further process */
-      REFUSED: 1 & MouseInteractionManager.HANDLER_OUTCOMES;
-
-      /** 2: ACCEPTED - the handler callback has been processed and is accepting further process */
-      ACCEPTED: 2 & MouseInteractionManager.HANDLER_OUTCOMES;
-    };
+    get handlerOutcomes(): MouseInteractionManager.HandlerOutcomes;
     /**
      * A public method to handle directly an event into this manager, according to its type.
      * Note: drag events are not handled.
@@ -246,31 +227,40 @@ declare global {
     /**
      * Reset the mouse manager.
      */
-    reset(
-      options?: NullishProps<{
-        /**
-         * Reset the interaction data?
-         * @defaultValue `true`
-         */
-        interactionData: boolean;
-
-        /**
-         * Reset the state?
-         * @defaultValue `true`
-         */
-        state: boolean;
-      }>,
-    ): void;
+    reset(options?: MouseInteractionManager.ResetOptions): void;
   }
 
   namespace MouseInteractionManager {
     interface Any extends AnyMouseInteractionManager {}
     type AnyConstructor = typeof AnyMouseInteractionManager;
 
-    /** @privateRemarks The private class property is `#HANDLER_OUTCOME` singular, but the getter is `handlerOutcomes`, so I went with plural */
+    /** @privateRemarks The private class property is `#HANDLER_OUTCOME` singular, but the getter is `handlerOutcomes`, so the brand uses the plural*/
     type HANDLER_OUTCOMES = Brand<number, "MouseInteractionManager.HANDLER_OUTCOMES">;
 
+    interface HandlerOutcomes {
+      /** -2: SKIPPED - the handler has been skipped by previous logic */
+      SKIPPED: -2 & MouseInteractionManager.HANDLER_OUTCOMES;
+
+      /** -1: DISALLOWED - the handler has dissallowed further process */
+      DISALLOWED: -1 & MouseInteractionManager.HANDLER_OUTCOMES;
+
+      /** 1: REFUSED - the handler callback has been processed and is refusing further process */
+      REFUSED: 1 & MouseInteractionManager.HANDLER_OUTCOMES;
+
+      /** 2: ACCEPTED - the handler callback has been processed and is accepting further process */
+      ACCEPTED: 2 & MouseInteractionManager.HANDLER_OUTCOMES;
+    }
+
     type INTERACTION_STATES = Brand<number, "MouseInteractionManager.INTERACTION_STATES">;
+
+    interface InteractionStates {
+      NONE: 0 & MouseInteractionManager.INTERACTION_STATES;
+      HOVER: 1 & MouseInteractionManager.INTERACTION_STATES;
+      CLICKED: 2 & MouseInteractionManager.INTERACTION_STATES;
+      GRABBED: 3 & MouseInteractionManager.INTERACTION_STATES;
+      DRAG: 4 & MouseInteractionManager.INTERACTION_STATES;
+      DROP: 5 & MouseInteractionManager.INTERACTION_STATES;
+    }
 
     /**
      * @remarks The list of actions provided by foundry, minus `dragXCancel`, `unclickX`, and `longPress`, which do not check permissions
@@ -342,6 +332,23 @@ declare global {
      * Interaction options which configure handling workflows
      */
     interface Options extends _Options {}
+
+    /** @internal */
+    type _ResetOptions = NullishProps<{
+      /**
+       * Reset the interaction data?
+       * @defaultValue `true`
+       */
+      interactionData: boolean;
+
+      /**
+       * Reset the state?
+       * @defaultValue `true`
+       */
+      state: boolean;
+    }>;
+
+    interface ResetOptions extends _ResetOptions {}
   }
 }
 
