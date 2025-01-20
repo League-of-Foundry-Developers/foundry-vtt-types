@@ -1,4 +1,5 @@
 import type { InexactPartial, Mixin, FixedInstanceType } from "../../../../utils/index.d.mts";
+import type { DatabaseCreateOperation, DatabaseDeleteOperation, DatabaseUpdateOperation } from "../../../common/abstract/_types.d.mts";
 import type DataModel from "../../../common/abstract/data.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 
@@ -213,7 +214,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
     parent: ClientDocument,
     collection: string,
     data: unknown[],
-    options: Document.PreCreateOptions<any>,
+    options: Document.Database.OnCreateOperation<DatabaseCreateOperation>,
     userId: string,
   ): void;
 
@@ -231,7 +232,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
     collection: string,
     documents: ClientDocument[],
     data: unknown[],
-    options: Document.OnCreateOptions<any> & InexactPartial<{ render: boolean }>,
+    options: Document.Database.OnCreateOperation<DatabaseCreateOperation>,
     userId: string,
   ): void;
   /**
@@ -246,7 +247,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
     parent: ClientDocument,
     collection: string,
     changes: unknown[],
-    options: Document.PreUpdateOptions<any>,
+    options: Document.Database.OnUpdateOperation<DatabaseUpdateOperation>,
     userId: string,
   ): void;
 
@@ -264,7 +265,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
     collection: string,
     documents: ClientDocument[],
     changes: unknown[],
-    options: Document.OnUpdateOptions<any> & InexactPartial<{ render: boolean }>,
+    options: Document.Database.OnUpdateOperation<DatabaseUpdateOperation>,
     userId: string,
   ): void;
 
@@ -280,7 +281,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
     parent: ClientDocument,
     collection: string,
     ids: string[],
-    options: Document.PreDeleteOptions<any>,
+    options: Document.Database.OnDeleteOperation<DatabaseDeleteOperation>,
     userId: string,
   ): void;
 
@@ -298,7 +299,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
     collection: string,
     documents: ClientDocument[],
     ids: string[],
-    options: Document.OnDeleteOptions<any> & InexactPartial<{ render: boolean }>,
+    options: Document.Database.OnDeleteOperation<DatabaseDeleteOperation>,
     userId: string,
   ): void;
 
