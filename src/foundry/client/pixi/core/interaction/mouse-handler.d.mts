@@ -1,4 +1,4 @@
-import type { Brand, DropFirst, EmptyObject, NullishProps } from "../../../../../utils/index.d.mts";
+import type { Brand, NullishProps } from "../../../../../utils/index.d.mts";
 
 declare global {
   /**
@@ -36,12 +36,7 @@ declare global {
    *  action: dragLeftCancel
    *  action: dragRightCancel
    */
-  class MouseInteractionManager<
-    Object extends PIXI.Container = PIXI.Container,
-    Permissions extends MouseInteractionManager.Permissions = EmptyObject,
-    Callbacks extends MouseInteractionManager.Callbacks = EmptyObject,
-    Options extends MouseInteractionManager.Options<Object> = MouseInteractionManager.Options<Object>,
-  > {
+  class MouseInteractionManager<Object extends PIXI.Container = PIXI.Container> {
     /**
      * @param permissions - (default: `{}`)
      * @param callbacks   - (default: `{}`)
@@ -51,9 +46,9 @@ declare global {
     constructor(
       object: Object,
       layer: PIXI.Container,
-      permissions?: Permissions,
-      callbacks?: Callbacks,
-      options?: Options,
+      permissions?: MouseInteractionManager.Permissions,
+      callbacks?: MouseInteractionManager.Callbacks,
+      options?: MouseInteractionManager.Options,
     );
 
     object: Object;
@@ -63,17 +58,17 @@ declare global {
     /**
      * @defaultValue `{}`
      */
-    permissions: Permissions;
+    permissions: MouseInteractionManager.Permissions;
 
     /**
      * @defaultValue `{}`
      */
-    callbacks: Callbacks;
+    callbacks: MouseInteractionManager.Callbacks;
 
     /**
      * @defaultValue `{}`
      */
-    options: Options;
+    options: MouseInteractionManager.Options;
 
     /**
      * The current interaction state
@@ -210,14 +205,9 @@ declare global {
      * @param args   - Additional callback arguments.
      * @returns A boolean which may indicate that the event was handled by the callback.
      *          Events which do not specify a callback are assumed to have been handled as no-op.
+     * @remarks
      */
-    callback<Action extends keyof Callbacks>(
-      action: Action,
-      event: Event | PIXI.FederatedEvent,
-      ...args: this["callbacks"][Action] extends MouseInteractionManager.CallbackFunction
-        ? DropFirst<Parameters<this["callbacks"][Action]>>
-        : never[]
-    ): boolean;
+    callback(action: MouseInteractionManager.Action, event: Event | PIXI.FederatedEvent, ...args: any[]): boolean;
 
     /**
      * A reference to the possible interaction states which can be observed
@@ -282,6 +272,9 @@ declare global {
 
     type INTERACTION_STATES = Brand<number, "MouseInteractionManager.INTERACTION_STATES">;
 
+    /**
+     * @remarks The list of actions provided by foundry, minus `dragXCancel`, `unclickX`, and `longPress`, which do not check permissions
+     */
     type PermissionAction =
       | "clickLeft"
       | "clickLeft2"
@@ -300,6 +293,14 @@ declare global {
 
     type Permissions = Partial<Record<PermissionAction, PermissionFunction | boolean>>;
 
+    /**
+     * @remarks The full list of possible callback actions.
+     *
+     * Three actions get additional, non-event arguments passed by Foundry:
+     * - `hoverIn` on all placeables takes `options: { hoverOutOthers: boolean }` to trigger hover-out behavior on sibling objects
+     *   - For Regions specifically, `hoverOut` takes an `options: { updateLegend: boolean }` object, and that key is also added to Region `hoverIn` options
+     * - `longPress` receives `origin: PIXI.Point`
+     */
     type Action =
       | PermissionAction
       | "dragLeftCancel"
@@ -308,19 +309,39 @@ declare global {
       | "unclickRight"
       | "longPress";
 
-    type CallbackFunction = (event: Event | PIXI.FederatedEvent, ...args: never[]) => boolean | null | void;
+    /**
+     * @remarks Only three actions get additional, non-event arguments passed by Foundry:
+     * - `hoverIn` on all placeables takes `options: { hoverOutOthers: boolean }` to trigger hover-out behavior on sibling objects
+     *   - For Regions specifically, `hoverOut` takes an `options: { updateLegend: boolean }` object, and that key is also added to Region `hoverIn` options
+     * - `longPress` receives `origin: PIXI.Point`
+     */
+    type CallbackFunction = (event: Event | PIXI.FederatedEvent, ...args: any[]) => boolean | null | void;
 
     type Callbacks = Partial<Record<Action, CallbackFunction>>;
 
     /** @internal */
-    type _Options<T> = NullishProps<{
-      /** @privateRemarks Despite Foundry typing this as `PIXI.DisplayObject` its one use in practice is as `string | null` */
-      target: keyof T;
+    type _Options = NullishProps<{
+      /**
+       * @remarks If passed, will set `this.controlIcon` to `Object[target]`; in practice, this should only be `null` or `"controlIcon"`
+       * @privateRemarks Despite Foundry typing this as `PIXI.DisplayObject` its one use in practice is as `string | null`
+       */
+      target: string | null;
+
+      /**
+       * @remarks If falsey, gets replaced with `(canvas.dimensions.size / 4)`
+       */
+      dragResistance: number;
+
+      /**
+       * @remarks Undocumented. Used in the constructor as `this.viewId = (this.options.application ?? canvas.app).view.id`, never passed in practice
+       */
+      application: PIXI.Application;
     }>;
 
-    interface Options<T> extends _Options<T> {
-      dragResistance?: number;
-    }
+    /**
+     * Interaction options which configure handling workflows
+     */
+    interface Options extends _Options {}
   }
 }
 
