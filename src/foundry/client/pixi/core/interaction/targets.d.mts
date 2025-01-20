@@ -1,19 +1,13 @@
 export {};
 
-interface SetReplacementMembers<T> {
-  add(value: T): void;
-  delete(value: T): void;
-  clear(): void;
+// This class exists make it as sound as possible to override these parts of the class and make them
+// completely unrelated. It's done this way specifically to avoid situations with broken inheritance.
+declare class LenientSet<T> extends globalThis.Set<T> {
+  add(value: T): any;
+  delete(value: T): any;
 }
 
-type PatchedSet<T> = Omit<Set<T>, "add" | "delete" | "clear"> & SetReplacementMembers<T>;
-
-interface PatchedSetConstructor {
-  new <T = unknown>(values?: readonly T[] | null): PatchedSet<T>;
-  readonly prototype: PatchedSet<unknown>;
-}
-
-declare const Set: PatchedSetConstructor;
+declare const Set: typeof LenientSet;
 
 declare global {
   /**
