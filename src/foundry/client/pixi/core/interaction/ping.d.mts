@@ -1,4 +1,4 @@
-import type { IntentionalPartial } from "../../../../../utils/index.d.mts";
+import type { InexactPartial } from "../../../../../utils/index.d.mts";
 
 declare global {
   /**
@@ -21,7 +21,7 @@ declare global {
     /**
      * Start the ping animation.
      * @returns Returns true if the animation ran to completion, false otherwise.
-     * @privateRemarks This calls `CanvasAnimation.animate` with an empty array for the first argument,
+     * @privateRemarks This calls `CanvasAnimation.animate` with an empty attribute array for the first argument,
      * meaning no chance of early return, so no `| void` in the return type
      */
     animate(): Promise<boolean>;
@@ -39,7 +39,7 @@ declare global {
     type AnyConstructor = typeof AnyPing;
 
     /** @internal */
-    type _Options = IntentionalPartial<{
+    type _Options = InexactPartial<{
       /**
        * The duration of the animation in milliseconds.
        * @defaultValue `900`
@@ -69,7 +69,7 @@ declare global {
       /**
        * The name for the ping animation to pass to {@link CanvasAnimation.animate}.
        */
-      name?: string | undefined | null;
+      name?: PropertyKey | undefined | null;
     }>;
   }
 
