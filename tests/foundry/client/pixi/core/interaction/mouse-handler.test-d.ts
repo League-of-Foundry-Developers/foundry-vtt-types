@@ -1,8 +1,8 @@
 import { expectTypeOf } from "vitest";
 
-expectTypeOf(MouseInteractionManager.INTERACTION_STATES).toMatchTypeOf<
-  Record<string, number & MouseInteractionManager.INTERACTION_STATES>
->();
+expectTypeOf(
+  MouseInteractionManager.INTERACTION_STATES.CLICKED,
+).toMatchTypeOf<MouseInteractionManager.INTERACTION_STATES>();
 
 declare const someEvent: PIXI.FederatedEvent;
 declare const someRegion: Region.ConfiguredInstance;
@@ -25,9 +25,7 @@ const myMouseHandler = new MouseInteractionManager(someRegion, new PIXI.Containe
   target: null,
 });
 
-expectTypeOf(myMouseHandler.handlerOutcomes).toMatchTypeOf<
-  Record<string, number & MouseInteractionManager.HANDLER_OUTCOMES>
->();
+expectTypeOf(myMouseHandler.handlerOutcomes.ACCEPTED).toMatchTypeOf<MouseInteractionManager.HANDLER_OUTCOMES>();
 
 // Unfortunately the parameters beyond the event are not being typechecked due to complexities in the way manager callbacks are registered
 expectTypeOf(myMouseHandler.callback("hoverIn", someEvent, { hoverOutOthers: true })).toEqualTypeOf<boolean>;

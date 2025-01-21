@@ -74,9 +74,7 @@ declare global {
     type _Options = InexactPartial<{
       /**
        * @defaultValue `40`
-       * @remarks Can't be `null` as it only has a parameter default
-       * @privateRemarks It *could* be `null`, as in all the places its used in math, coercing it to `0` does not
-       * produce errors, but it pollutes the `this.size` type unnecessarily and is obviously not intended.
+       * @remarks Can't be `null` as it only has a parameter default, and `null` coerced to `0` is a nonsensical size value
        */
       size: number;
 
@@ -84,8 +82,6 @@ declare global {
        * @defaultValue `0xFF5500`
        * @remarks Can't be `null` as that's not a valid value for the `PIXI.Color` constructor,
        * and it only has a parameter default
-       * @privateRemarks This could probably be any `PIXI.ColorSource` not just an RGB integer,
-       * but proving this would be difficult, and all Foundry uses are numbers
        */
       borderColor: number;
 
