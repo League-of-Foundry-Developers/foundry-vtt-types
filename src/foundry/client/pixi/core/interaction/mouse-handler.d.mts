@@ -36,7 +36,7 @@ declare global {
    *  action: dragLeftCancel
    *  action: dragRightCancel
    */
-  class MouseInteractionManager<Object extends PIXI.Container = PIXI.Container> {
+  class MouseInteractionManager<ObjectFor extends PIXI.Container = PIXI.Container> {
     /**
      * @param permissions - (default: `{}`)
      * @param callbacks   - (default: `{}`)
@@ -44,14 +44,14 @@ declare global {
      * @remarks Foundry does not provide type information for the constructor, everything here is inferred from usage
      */
     constructor(
-      object: Object,
+      object: ObjectFor,
       layer: PIXI.Container,
       permissions?: MouseInteractionManager.Permissions,
       callbacks?: MouseInteractionManager.Callbacks,
       options?: MouseInteractionManager.Options,
     );
 
-    object: Object;
+    object: ObjectFor;
 
     layer: PIXI.Container;
 
@@ -80,12 +80,7 @@ declare global {
      * Bound handlers which can be added and removed
      * @defaultValue `{}`
      */
-    //TODO
-    interactionData: {
-      origin?: PIXI.Point;
-      destination?: PIXI.Point;
-      object?: Record<string, unknown>;
-    } & Partial<Record<string, unknown>>;
+    interactionData: MouseInteractionManager.InteractionData<ObjectFor>;
 
     /**
      * The drag handling time
@@ -349,6 +344,12 @@ declare global {
     }>;
 
     interface ResetOptions extends _ResetOptions {}
+
+    interface InteractionData<T> {
+      origin?: PIXI.Point;
+      destination?: PIXI.Point;
+      object?: T;
+    }
   }
 }
 

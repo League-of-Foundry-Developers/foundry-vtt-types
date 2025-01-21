@@ -48,7 +48,7 @@ declare global {
      * CanvasAnimation.animate(attributes, {duration:500});
      * ```
      */
-    static animate(attributes: CanvasAnimationAttribute[], options?: CanvasAnimationOptions): Promise<boolean | void>;
+    static animate(attributes: CanvasAnimation.Attribute[], options?: CanvasAnimationOptions): Promise<boolean | void>;
 
     /**
      * Retrieve an animation currently in progress by its name
@@ -157,6 +157,17 @@ declare global {
        */
       from: number | Color;
     }>;
+
+    interface Attribute {
+      /** The attribute name being animated */
+      attribute: string;
+
+      /** The object within which the attribute is stored */
+      parent: AnyObject;
+
+      /** The destination value of the attribute */
+      to: number | Color;
+    }
   }
 
   interface CanvasAnimationOptions extends CanvasAnimation._AnimationOptions {
@@ -168,27 +179,18 @@ declare global {
     duration?: number | undefined;
   }
 
-  interface CanvasAnimationAttribute {
-    /** The attribute name being animated */
-    attribute: string;
-
-    /** The object within which the attribute is stored */
-    parent: AnyObject;
-
-    /** The destination value of the attribute */
-    to: number | Color;
-
+  interface CanvasAnimationAttribute extends CanvasAnimation.Attribute {
     /**
      * The computed delta between to and from
      * @remarks This key is always overwritten inside `.animate`, its passed value is irrelevant
      */
-    delta?: number;
+    delta: number;
 
     /**
      * The amount of the total delta which has been animated
      * @remarks This key is always overwritten inside `.animate`, its passed value is irrelevant
      */
-    done?: number;
+    done: number;
 
     /**
      * Is this a color animation that applies to RGB channels
