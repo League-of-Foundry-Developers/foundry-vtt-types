@@ -1,20 +1,6 @@
-export {};
+import type { InexactPartial, NullishProps } from "../../../../../../utils/index.d.mts";
 
 declare global {
-  interface PulsePingOptions extends PingOptions {
-    /**
-     * The number of rings used in the animation.
-     * (default: `3`)
-     */
-    rings?: number;
-
-    /**
-     * The alternate color that the rings begin at. Use white for a 'flashing' effect.
-     * (default: `#ffffff`)
-     */
-    color2?: string;
-  }
-
   /**
    * A type of ping that produces a pulsing animation.
    */
@@ -25,7 +11,9 @@ declare global {
      */
     constructor(origin: Canvas.Point, options?: PulsePingOptions);
 
-    _color2: Color | number;
+    override options: PulsePingOptions;
+
+    _color2: Color;
 
     /**
      * The radius is half the diameter.
@@ -64,9 +52,9 @@ declare global {
      * @param duration - The length of the transition in milliseconds.
      * @param t        - The current time along the duration.
      * @returns The incremental color between from and to.
-     * @internal
+     * @privateRemarks Foundry marked `@private`, and only types the return as `number`, instead of the more accurate `Color`
      */
-    protected _colorTransition(from: Color, to: Color, duration: number, t: number): number;
+    protected _colorTransition(from: Color, to: Color, duration: number, t: number): Color;
 
     /**
      * Draw the shape for this ping.
@@ -75,8 +63,32 @@ declare global {
      * @param alpha - The alpha of the shape.
      * @param size  - The size of the shape to draw.
      */
-    protected _drawShape(g: PIXI.Graphics, color: number, alph: number, size: number): void;
+    protected _drawShape(g: PIXI.Graphics, color: number | Color, alpha: number, size: number): void;
   }
+
+  namespace PulsePing {
+    interface Any extends AnyPulsePing {}
+    type AnyConstructor = typeof AnyPulsePing;
+
+    /** @internal */
+    type _Options = InexactPartial<{
+      /**
+       * The number of rings used in the animation.
+       * @defaultValue `3`
+       * @remarks Can't be `null` as it only has a parameter default and a coerced `0` ring count is nonsensical
+       */
+      rings?: number;
+
+      /**
+       * The alternate color that the rings begin at. Use white for a 'flashing' effect.
+       * @defaultValue `#ffffff`
+       * @remarks Can't be `null` as it only has a parameter default and `Color(NaN)`s are to be avoided
+       */
+      color2?: Color.Source;
+    }>;
+  }
+
+  interface PulsePingOptions extends PingOptions, PulsePing._Options {}
 
   /**
    * A type of ping that produces an arrow pointing in a given direction.
@@ -86,18 +98,29 @@ declare global {
      * @param origin - The canvas coordinates of the origin of the ping. This becomes the arrow's tip.
      * @param options - Additional options to configure the ping animation.
      */
-    constructor(
-      origin: PIXI.Point,
-      options: PulsePingOptions & {
-        /**
-         * The angle of the arrow in radians.
-         * (default: `0`)
-         */
-        rotation: number;
-      },
-    );
+    constructor(origin: PIXI.Point, options?: ArrowPing.Options);
 
-    protected override _drawShape(g: PIXI.Graphics, color: number, alph: number, size: number): void;
+    // @privateRemarks `options` does not get overridden here as the `rotation` key does not
+    // get passed up to super, so the property is still just `PulsePingOptions`
+
+    protected override _drawShape(g: PIXI.Graphics, color: number | Color, alpha: number, size: number): void;
+  }
+
+  namespace ArrowPing {
+    interface Any extends AnyArrowPing {}
+    type AnyConstructor = typeof AnyArrowPing;
+
+    /** @internal */
+    type _Options = NullishProps<{
+      /**
+       * The angle of the arrow in radians.
+       * @defaultValue `0`
+       * @privateRemarks Null coercion to `0` is fine here, as it's only added to then passed to `Math.normalizeRadians`
+       */
+      rotation: number;
+    }>;
+
+    interface Options extends PulsePingOptions, _Options {}
   }
 
   /**
@@ -108,8 +131,36 @@ declare global {
      * @param origin  - The canvas coordinates of the origin of the ping.
      * @param options - Additional options to configure the ping animation.
      */
-    constructor(origin: PIXI.Point, options: PulsePingOptions);
+    constructor(origin: PIXI.Point, options: AlertPing.Options);
 
-    protected override _drawShape(g: PIXI.Graphics, color: number, alph: number, size: number): void;
+    protected override _drawShape(g: PIXI.Graphics, color: number | Color, alpha: number, size: number): void;
   }
+
+  namespace AlertPing {
+    interface Any extends AnyAlertPing {}
+    type AnyConstructor = typeof AnyAlertPing;
+
+    /** @privateRemarks Only exists to change the default value of `color` */
+    interface Options extends PulsePingOptions {
+      /**
+       * @defaultValue `"#ff0000"`
+       * @remarks Can't be `null` or `undefined` because `options` is `mergeObject`ed with an object with this key,
+       * and passing either to `Color.from` produces a `Color(NaN)`, which may cause breakage in subclasses or when
+       * passed to PIXI methods
+       */
+      color?: PulsePingOptions["color"];
+    }
+  }
+}
+
+declare abstract class AnyPulsePing extends PulsePing {
+  constructor(arg0: never, ...args: never[]);
+}
+
+declare abstract class AnyArrowPing extends ArrowPing {
+  constructor(arg0: never, ...args: never[]);
+}
+
+declare abstract class AnyAlertPing extends AlertPing {
+  constructor(arg0: never, ...args: never[]);
 }
