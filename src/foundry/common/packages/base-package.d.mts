@@ -1,4 +1,4 @@
-import type { GetKey, AnyObject, InexactPartial } from "../../../utils/index.d.mts";
+import type { GetKey, AnyObject, InexactPartial, AnyMutableObject } from "../../../utils/index.d.mts";
 // eslint-disable-next-line import/no-named-as-default
 import type DataModel from "../abstract/data.d.mts";
 import type { ReleaseData } from "../config.d.mts";
@@ -627,11 +627,11 @@ declare class BasePackage<
   static migratedKeys: Set<string>;
 
   static migrateData(
-    data: AnyObject,
+    data: AnyMutableObject,
     logOptions?: InexactPartial<{
       installed: boolean;
     }>,
-  ): AnyObject;
+  ): AnyMutableObject;
 
   protected static _migrateNameToId(data: AnyObject, logOptions: BasePackage.LogOptions): void;
 
