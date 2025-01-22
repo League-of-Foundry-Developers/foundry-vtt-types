@@ -66,14 +66,14 @@
   "dependencies": {
     "@pixi/graphics-smooth": "^1.1.0",
     "@pixi/particle-emitter": "^5.0.8",
+    "@types/earcut": "^3.0.0",
     "@types/jquery": "~3.5.22",
     "@types/showdown": "~2.0.6",
     "@types/simple-peer": "~9.11.1",
     "@types/youtube": "~0.0.48",
+    "earcut": "^3.0.1",
     "handlebars": "^4.7.8",
     "pixi.js": "^7.4.2",
-    "earcut": "^3.0.1",
-    "@types/earcut": "^3.0.0",
     "postinstall-postinstall": "^2.1.0",
     "prosemirror-collab": "^1.3.1",
     "prosemirror-commands": "^1.5.2",
@@ -92,10 +92,10 @@
     "tinymce": "^6.8.3"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^8.19.1",
-    "@typescript-eslint/parser": "^8.19.1",
+    "@typescript-eslint/eslint-plugin": "^8.21.0",
+    "@typescript-eslint/parser": "^8.21.0",
     "eslint": "^8.57.1",
-    "eslint-config-prettier": "^9.1.0",
+    "eslint-config-prettier": "^10.0.1",
     "eslint-import-resolver-typescript": "^3.6.1",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-tsdoc": "^0.4.0",
@@ -105,7 +105,7 @@
     "lint-staged": "^15.3.0",
     "prettier": "^3.0.3",
     "typescript": "~5.7",
-    "vitest": "^2.1.8"
+    "vitest": "^3.0.3"
   },
   "peerDependencies": {
     "typescript": "^5.4"
@@ -123,5 +123,6 @@
   ],
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "packageManager": "npm@10.8.1"
 }
