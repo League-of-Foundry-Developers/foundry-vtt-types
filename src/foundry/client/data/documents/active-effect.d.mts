@@ -1,4 +1,4 @@
-import type { ConfiguredActiveEffect } from "../../../../configuration";
+import type { ConfiguredActiveEffect } from "../../../../configuration/index.d.mts";
 import type { AnyObject, HandleEmptyObject } from "../../../../utils/index.d.mts";
 import type { DataModel } from "../../../common/abstract/data.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";

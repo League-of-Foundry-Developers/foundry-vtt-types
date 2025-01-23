@@ -918,7 +918,6 @@ declare namespace Document {
     | "PlaylistSound"
     | "Playlist"
     | "RegionBehavior"
-    | "Region"
     | "RollTable"
     | "Scene"
     | "Setting"
@@ -950,7 +949,37 @@ declare namespace Document {
 
   type OfType<Name extends Type, SubType extends SubTypesOf<Name>> =
     | (Name extends "ActiveEffect" ? ActiveEffect.OfType<SubType & ActiveEffect.SubType> : never)
-    | (Name extends "Item" ? Item.OfType<SubType & Item.SubType> : never);
+    | (Name extends "ActorDelta" ? ActorDelta.OfType<SubType & ActorDelta.SubType> : never)
+    | (Name extends "Actor" ? Actor.OfType<SubType & Actor.SubType> : never)
+    | (Name extends "Adventure" ? Adventure.OfType<SubType & Adventure.SubType> : never)
+    | (Name extends "Card" ? Card.OfType<SubType & Card.SubType> : never)
+    | (Name extends "Cards" ? Cards.OfType<SubType & Cards.SubType> : never)
+    | (Name extends "ChatMessage" ? ChatMessage.OfType<SubType & ChatMessage.SubType> : never)
+    | (Name extends "Combat" ? Combat.OfType<SubType & Combat.SubType> : never)
+    | (Name extends "Combatant" ? Combatant.OfType<SubType & Combatant.SubType> : never)
+    | (Name extends "FogExploration" ? FogExploration.OfType<SubType & FogExploration.SubType> : never)
+    | (Name extends "Folder" ? Folder.OfType<SubType & Folder.SubType> : never)
+    | (Name extends "Item" ? Item.OfType<SubType & Item.SubType> : never)
+    | (Name extends "JournalEntryPage" ? JournalEntryPage.OfType<SubType & JournalEntryPage.SubType> : never)
+    | (Name extends "JournalEntry" ? JournalEntry.OfType<SubType & JournalEntry.SubType> : never)
+    | (Name extends "Macro" ? Macro.OfType<SubType & Macro.SubType> : never)
+    | (Name extends "PlaylistSound" ? PlaylistSound.OfType<SubType & PlaylistSound.SubType> : never)
+    | (Name extends "Playlist" ? Playlist.OfType<SubType & Playlist.SubType> : never)
+    | (Name extends "RegionBehavior" ? RegionBehavior.OfType<SubType & RegionBehavior.SubType> : never)
+    | (Name extends "RollTable" ? RollTable.OfType<SubType & RollTable.SubType> : never)
+    | (Name extends "Scene" ? Scene.OfType<SubType & Scene.SubType> : never)
+    | (Name extends "Setting" ? Setting.OfType<SubType & Setting.SubType> : never)
+    | (Name extends "TableResult" ? TableResult.OfType<SubType & TableResult.SubType> : never)
+    | (Name extends "User" ? User.OfType<SubType & User.SubType> : never)
+    | (Name extends "AmbientLight" ? AmbientLight.OfType<SubType & AmbientLight.SubType> : never)
+    | (Name extends "AmbientSound" ? AmbientSound.OfType<SubType & AmbientSound.SubType> : never)
+    | (Name extends "Drawing" ? Drawing.OfType<SubType & Drawing.SubType> : never)
+    | (Name extends "MeasuredTemplate" ? MeasuredTemplate.OfType<SubType & MeasuredTemplate.SubType> : never)
+    | (Name extends "Note" ? Note.OfType<SubType & Note.SubType> : never)
+    | (Name extends "Region" ? Region.OfType<SubType & Region.SubType> : never)
+    | (Name extends "Tile" ? Tile.OfType<SubType & Tile.SubType> : never)
+    | (Name extends "Token" ? Token.OfType<SubType & Token.SubType> : never)
+    | (Name extends "Wall" ? Wall.OfType<SubType & Wall.SubType> : never);
 
   // Note(LukeAbby): This is written this way to make it more obviously covariant over `SubType`.
   type SystemFor<Name extends Type, SubType extends SubTypesOf<Name>> = SystemData extends {

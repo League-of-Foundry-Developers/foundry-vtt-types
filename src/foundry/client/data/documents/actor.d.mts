@@ -10,7 +10,7 @@ import type Document from "../../../common/abstract/document.d.mts";
 import type EmbeddedCollection from "../../../common/abstract/embedded-collection.d.mts";
 import type BaseActor from "../../../common/documents/actor.d.mts";
 import type { fields, PrototypeToken } from "../../../common/data/module.d.mts";
-import type { ConfiguredActor } from "../../../../configuration";
+import type { ConfiguredActor } from "../../../../configuration/index.d.mts";
 
 type DataSchema = foundry.data.fields.DataSchema;
 

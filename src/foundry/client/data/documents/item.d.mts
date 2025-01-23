@@ -1,4 +1,4 @@
-import type { ConfiguredItem } from "../../../../configuration";
+import type { ConfiguredItem } from "../../../../configuration/index.d.mts";
 import type { HandleEmptyObject } from "../../../../utils/index.d.mts";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type {
