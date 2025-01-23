@@ -1,10 +1,7 @@
-import type { InterfaceToObject, AnyObject, InexactPartial } from "../../../utils/index.d.mts";
+import type { AnyObject, InexactPartial } from "../../../utils/index.d.mts";
 import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
 import type * as fields from "../data/fields.d.mts";
-import type * as documents from "./_module.mts";
-
-type DataSchema = foundry.data.fields.DataSchema;
 
 /**
  * The ActiveEffect Document.
@@ -21,10 +18,6 @@ declare abstract class BaseActiveEffect<
    */
   // TODO(LukeAbby): This constructor is causing a circular error.
   // constructor(data?: BaseActiveEffect.ConstructorData, context?: Document.ConstructionContext<BaseActiveEffect.Parent>);
-
-  override system: Document.SystemFor<"ActiveEffect", SubType>;
-
-  override parent: BaseActiveEffect.Parent;
 
   override canUserModify(
     user: User.ConfiguredInstance,
@@ -71,196 +64,142 @@ declare abstract class BaseActiveEffect<
 
   set icon(value);
 
+  /**
+   * After this point these are not really overridden methods.
+   * They are here because they're static properties but depend on the instance and so can't be
+   * defined DRY-ly while also being easily overrideable.
+   */
+
   static " __fvtt_types_internal_document_name_static": "ActiveEffect";
+
+  override system: Document.SystemFor<"ActiveEffect", SubType>;
+
+  override parent: BaseActiveEffect.Parent;
+
+  static get TYPES(): BaseActiveEffect.SubType[];
+
+  static createDocuments<Temporary extends boolean | undefined>(
+    data: Array<ActiveEffect.Implementation | ActiveEffect.CreateData> | undefined,
+    operation?: Document.Database.CreateOperation<ActiveEffect.DatabaseOperation.Create<Temporary>>,
+  ): Promise<Array<Document.StoredIf<ActiveEffect.Implementation, Temporary>>>;
+
+  static updateDocuments(
+    updates: ActiveEffect.UpdateData[] | undefined,
+    operation?: Document.Database.UpdateOperation<ActiveEffect.DatabaseOperation.Update>,
+  ): Promise<ActiveEffect.Implementation[]>;
+
+  static deleteDocuments(
+    ids: readonly string[] | undefined,
+    operation?: Document.Database.DeleteOperation<ActiveEffect.DatabaseOperation.Delete>,
+  ): Promise<ActiveEffect.Implementation[]>;
+
+  static create<Temporary extends boolean | undefined>(
+    data: ActiveEffect.CreateData | ActiveEffect.CreateData[],
+    operation?: Document.Database.CreateOperation<ActiveEffect.DatabaseOperation.Create<Temporary>>,
+  ): Promise<ActiveEffect.Implementation | undefined>;
+
+  static get(documentId: string, options?: Document.Database.GetOperation): ActiveEffect.Implementation | null;
+
+  protected _preCreate(
+    data: ActiveEffect.CreateData,
+    options: ActiveEffect.DatabaseOperation.PreCreateOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onCreate(data: ActiveEffect.CreateData, options: ActiveEffect.DatabaseOperation.OnCreateOperation, userId: string): void;
+
+  protected static _preCreateOperation(
+    documents: ActiveEffect.Implementation[],
+    operation: Document.Database.PreCreateOperationStatic<ActiveEffect.DatabaseOperation.Create>,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onCreateOperation(
+    documents: ActiveEffect.Implementation[],
+    operation: ActiveEffect.DatabaseOperation.Create,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected _preUpdate(
+    changed: ActiveEffect.UpdateData,
+    options: ActiveEffect.DatabaseOperation.PreUpdateOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onUpdate(
+    changed: ActiveEffect.UpdateData,
+    options: ActiveEffect.DatabaseOperation.OnUpdateOperation,
+    userId: string,
+  ): void;
+
+  protected static _preUpdateOperation(
+    documents: ActiveEffect.Implementation[],
+    operation: ActiveEffect.DatabaseOperation.Update,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onUpdateOperation(
+    documents: ActiveEffect.Implementation[],
+    operation: ActiveEffect.DatabaseOperation.Update,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected _preDelete(
+    options: ActiveEffect.DatabaseOperation.PreDeleteOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onDelete(options: ActiveEffect.DatabaseOperation.OnDeleteOperation, userId: string): void;
+
+  protected static _preDeleteOperation(
+    documents: ActiveEffect.Implementation[],
+    operation: ActiveEffect.DatabaseOperation.Delete,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onDeleteOperation(
+    documents: ActiveEffect.Implementation[],
+    operation: ActiveEffect.DatabaseOperation.Delete,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected static _onCreateDocuments(
+    documents: ActiveEffect.Implementation[],
+    context: Document.ModificationContext<ActiveEffect.Parent>,
+  ): Promise<void>;
+
+  protected static _onUpdateDocuments(
+    documents: ActiveEffect.Implementation[],
+    context: Document.ModificationContext<ActiveEffect.Parent>,
+  ): Promise<void>;
+
+  protected static _onDeleteDocuments(
+    documents: ActiveEffect.Implementation[],
+    context: Document.ModificationContext<ActiveEffect.Parent>,
+  ): Promise<void>;
 }
 
 export default BaseActiveEffect;
 
 declare namespace BaseActiveEffect {
-  /**
-   * A document's metadata is special information about the document ranging anywhere from its name,
-   * whether it's indexed, or to the permissions a user has over it.
-   */
-  type Metadata = Document.MetadataFor<"ActiveEffect">;
-
-  type SubType = Game.Model.TypeNames<"ActiveEffect">;
-  type OfType<Type extends SubType> = Document.OfType<"ActiveEffect", Type>;
-
-  /**
-   * A document's parent is something that can contain it.
-   * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
-   */
-  type Parent = Actor.ConfiguredInstance | Item.ConfiguredInstance | null;
-
-  type Source = fields.SchemaField.PersistedData<Schema>;
-  type PersistedData = fields.SchemaField.PersistedData<Schema>;
-  type CreateData = fields.SchemaField.CreateData<Schema>;
-  type InitializedData = fields.SchemaField.InitializedData<Schema>;
-  type UpdateData = fields.SchemaField.UpdateData<Schema>;
-
-  interface Schema extends DataSchema {
-    /**
-     * The _id which uniquely identifies the ActiveEffect within a parent Actor or Item
-     * @defaultValue `null`
-     */
-    _id: fields.DocumentIdField;
-
-    /**
-     * The name of the ActiveEffect
-     * @defaultValue `""`
-     */
-    name: fields.StringField<{ required: true; label: "EFFECT.Label" }>;
-
-    /**
-     * An image path used to depict the ActiveEffect as an icon
-     * @defaultValue `null`
-     */
-    img: fields.FilePathField<{ categories: "IMAGE"[]; label: "EFFECT.Image" }>;
-
-    type: fields.DocumentTypeField<typeof BaseActiveEffect, { initial: typeof foundry.CONST.BASE_DOCUMENT_TYPE }>;
-
-    system: fields.TypeDataField<typeof BaseActiveEffect>;
-
-    /**
-     * The array of EffectChangeData objects which the ActiveEffect applies
-     * @defaultValue `[]`
-     */
-    changes: fields.ArrayField<
-      fields.SchemaField<{
-        /**
-         * The attribute path in the Actor or Item data which the change modifies
-         * @defaultValue `""`
-         */
-        key: fields.StringField<{ required: true; label: "EFFECT.ChangeKey" }>;
-
-        /**
-         * The value of the change effect
-         * @defaultValue `""`
-         */
-        value: fields.StringField<{ required: true; label: "EFFECT.ChangeValue" }>;
-
-        /**
-         * The modification mode with which the change is applied
-         * @defaultValue `CONST.ACTIVE_EFFECT_MODES.ADD`
-         */
-        mode: fields.NumberField<{
-          integer: true;
-          initial: typeof CONST.ACTIVE_EFFECT_MODES.ADD;
-          label: "EFFECT.ChangeMode";
-        }>;
-
-        /**
-         * The priority level with which this change is applied
-         * @defaultValue `null`
-         */
-        priority: fields.NumberField;
-      }>
-    >;
-
-    /**
-     * Is this ActiveEffect currently disabled?
-     * @defaultValue `false`
-     */
-    disabled: fields.BooleanField;
-
-    /**
-     * An EffectDurationData object which describes the duration of the ActiveEffect
-     * @defaultValue see properties
-     */
-    duration: fields.SchemaField<{
-      /**
-       * The world time when the active effect first started
-       * @defaultValue `null`
-       */
-      startTime: fields.NumberField<{ initial: null; label: "EFFECT.StartTime" }>;
-
-      /**
-       * The maximum duration of the effect, in seconds
-       * @defaultValue `null`
-       */
-      seconds: fields.NumberField<{ integer: true; min: 0; label: "EFFECT.DurationSecs" }>;
-
-      /**
-       * The _id of the CombatEncounter in which the effect first started
-       * @defaultValue `null`
-       */
-      combat: fields.ForeignDocumentField<typeof documents.BaseCombat, { label: "EFFECT.Combat" }>;
-
-      /**
-       * The maximum duration of the effect, in combat rounds
-       * @defaultValue `null`
-       */
-      rounds: fields.NumberField<{ integer: true; min: 0 }>;
-
-      /**
-       * The maximum duration of the effect, in combat turns
-       * @defaultValue `null`
-       */
-      turns: fields.NumberField<{ integer: true; min: 0; label: "EFFECT.DurationTurns" }>;
-
-      /**
-       * The round of the CombatEncounter in which the effect first started
-       * @defaultValue `null`
-       */
-      startRound: fields.NumberField<{ integer: true; min: 0 }>;
-
-      /**
-       * The turn of the CombatEncounter in which the effect first started
-       * @defaultValue `null`
-       */
-      startTurn: fields.NumberField<{ integer: true; min: 0; label: "EFFECT.StartTurns" }>;
-    }>;
-
-    /**
-     * The HTML text description for this ActiveEffect document.
-     * @defaultValue `""`
-     */
-    description: fields.HTMLField<{ label: "EFFECT.Description"; textSearch: true }>;
-
-    /**
-     * A UUID reference to the document from which this ActiveEffect originated
-     * @defaultValue `null`
-     */
-    origin: fields.StringField<{ nullable: true; blank: false; initial: null; label: "EFFECT.Origin" }>;
-
-    /**
-     * A color string which applies a tint to the ActiveEffect icon
-     * @defaultValue `"#ffffff"`
-     */
-    tint: fields.ColorField<{ nullable: false; initial: "#ffffff"; label: "EFFECT.IconTint" }>;
-
-    /**
-     * Does this ActiveEffect automatically transfer from an Item to an Actor?
-     * @defaultValue `false`
-     */
-    transfer: fields.BooleanField<{ initial: true; label: "EFFECT.Transfer" }>;
-
-    /**
-     * Special status IDs that pertain to this effect
-     * @defaultValue `[]`
-     */
-    statuses: fields.SetField<fields.StringField<{ required: true; blank: false }>>;
-
-    sort: fields.IntegerSortField;
-
-    /**
-     * An object of optional key/value flags
-     * @defaultValue `{}`
-     */
-    flags: fields.ObjectField.FlagsField<"ActiveEffect", InterfaceToObject<CoreFlags>>;
-
-    _stats: fields.DocumentStatsField;
-  }
+  export import Metadata = ActiveEffect.Metadata;
+  export import SubType = ActiveEffect.SubType;
+  export import Parent = ActiveEffect.Parent;
+  export import Stored = ActiveEffect.Stored;
+  export import Source = ActiveEffect.Source;
+  export import PersistedData = ActiveEffect.PersistedData;
+  export import CreateData = ActiveEffect.CreateData;
+  export import InitializedData = ActiveEffect.InitializedData;
+  export import UpdateData = ActiveEffect.UpdateData;
+  export import Schema = ActiveEffect.Schema;
+  export import DatabaseOperation = ActiveEffect.DatabaseOperation;
+  export import CoreFlags = ActiveEffect.CoreFlags;
 
   // The document subclasses override `system` anyways.
   // There's no point in doing expensive computation work comparing the base class system.
   /** @internal */
-  interface _Schema extends Schema {
+  interface _Schema extends ActiveEffect.Schema {
     system: any;
-  }
-
-  interface CoreFlags {
-    core?: { statusId?: string; overlay?: boolean };
   }
 
   /**

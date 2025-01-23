@@ -1,43 +1,328 @@
 import type { ConfiguredActiveEffect } from "../../../../configuration/index.d.mts";
-import type { AnyObject, HandleEmptyObject } from "../../../../utils/index.d.mts";
+import type { AnyObject, HandleEmptyObject, InterfaceToObject } from "../../../../utils/index.d.mts";
 import type { DataModel } from "../../../common/abstract/data.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataField } from "../../../common/data/fields.d.mts";
+import type { fields } from "../../../common/data/module.d.mts";
 import type { ActiveEffectData, EffectDurationData } from "../../../common/documents/_types.d.mts";
 import type BaseActiveEffect from "../../../common/documents/active-effect.d.mts";
+import type { DataSchema } from "./adventure.d.mts";
 
 declare global {
   namespace ActiveEffect {
-    type ConfiguredClass = Document.ConfiguredClassForName<"ActiveEffect">;
-    type ConfiguredInstance = Document.ConfiguredInstanceForName<"ActiveEffect">;
+    /**
+     * The implementation of the ActiveEffect document instance configured through `CONFIG.ActiveEffect.documentClass` in Foundry and
+     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredActiveEffect | `configuration/ConfiguredActiveEffect`} in fvtt-types.
+     */
+    type Implementation = Document.ConfiguredInstanceForName<"ActiveEffect">;
 
-    type Metadata = Document.MetadataFor<"ActiveEffect">;
+    /**
+     * The implementation of the ActiveEffect document configured through `CONFIG.ActiveEffect.documentClass` in Foundry and
+     * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
+     */
+    type ImplementationClass = Document.ConfiguredClassForName<"ActiveEffect">;
 
-    interface DatabaseOperations
-      extends Document.Database.Operations<
-        ActiveEffect,
-        { animate: boolean },
-        { animate: boolean },
-        { animate: boolean }
-      > {}
+    /**
+     * A document's metadata is special information about the document ranging anywhere from its name,
+     * whether it's indexed, or to the permissions a user has over it.
+     */
+    interface Metadata extends Document.MetadataFor<"ActiveEffect"> {}
 
-    // Helpful aliases
-    type SubType = BaseActiveEffect.SubType;
-    type Parent = BaseActiveEffect.Parent;
+    type SubType = Game.Model.TypeNames<"ActiveEffect">;
     type OfType<Type extends SubType> = HandleEmptyObject<ConfiguredActiveEffect<Type>, ActiveEffect<SubType>>;
-    type Schema = BaseActiveEffect.Schema;
 
-    type Source = BaseActiveEffect.Source;
-    type PersistedData = BaseActiveEffect.PersistedData;
-    type CreateData = BaseActiveEffect.CreateData;
-    type InitializedData = BaseActiveEffect.InitializedData;
-    type UpdateData = BaseActiveEffect.UpdateData;
+    /**
+     * A document's parent is something that can contain it.
+     * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
+     */
+    type Parent = Actor.ConfiguredInstance | Item.ConfiguredInstance | null;
 
-    /** @deprecated {@link ActiveEffect.SubType | `ActiveEffect.SubType`} */
-    type TypeNames = BaseActiveEffect.SubType;
+    /**
+     * An instance of `ActiveEffect` that comes from the database.
+     */
+    interface Stored extends Document.Stored<ActiveEffect.ConfiguredInstance> {}
 
-    /** @deprecated {@link ActiveEffect.CreateData | `ActiveEffect.CreateData`} */
-    type ConstructorData = BaseActiveEffect.ConstructorData;
+    /**
+     * The data put in {@link Document._source | `Document._source`}. This data is what was
+     * persisted to the database and therefore it must be valid JSON.
+     *
+     * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+     * but initialized as a {@link Set | `Set`}.
+     *
+     * Both `Source` and `PersistedData` are equivalent.
+     */
+    interface Source extends PersistedData {}
+
+    /**
+     * The data put in {@link ActiveEffect._source | `ActiveEffect._source`}. This data is what was
+     * persisted to the database and therefore it must be valid JSON.
+     *
+     * Both `Source` and `PersistedData` are equivalent.
+     */
+    interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
+
+    /**
+     * The data necessary to create a document. Used in places like {@link ActiveEffect.create | `ActiveEffect.create`}
+     * and {@link ActiveEffect | `new ActiveEffect(...)`}.
+     *
+     * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
+     * with the right values. This means you can pass a `Set` instance, an array of values,
+     * a generator, or any other iterable.
+     */
+    interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+
+    /**
+     * The data after a {@link Document | `Document`} has been initialized, for example
+     * {@link ActiveEffect.name | `ActiveEffect#name`}.
+     *
+     * This is data transformed from {@link ActiveEffect.Source | `ActiveEffect.Source`} and turned into more
+     * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+     * persisted to the database as an array of values but at runtime it is a `Set` instance.
+     */
+    interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
+
+    /**
+     * The data used to update a document, for example {@link ActiveEffect.update | `ActiveEffect#update`}.
+     * It is a distinct type from {@link ActiveEffect.CreateData | `DeepPartial<ActiveEffect.CreateData>`} because
+     * it has different rules for `null` and `undefined`.
+     */
+    interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+    /**
+     * The schema for {@link ActiveEffect | `ActiveEffect`}. This is the source of truth for how an ActiveEffect document
+     * must be structured.
+     *
+     * Foundry uses this schema to validate the structure of the {@link ActiveEffect | `ActiveEffect`}. For example
+     * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
+     * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+     * starting as an array in the database, initialized as a set, and allows updates with any
+     * iterable.
+     */
+    interface Schema extends DataSchema {
+      /**
+       * The _id which uniquely identifies the ActiveEffect within a parent Actor or Item
+       * @defaultValue `null`
+       */
+      _id: fields.DocumentIdField;
+
+      /**
+       * The name of the ActiveEffect
+       * @defaultValue `""`
+       */
+      name: fields.StringField<{ required: true; label: "EFFECT.Label" }>;
+
+      /**
+       * An image path used to depict the ActiveEffect as an icon
+       * @defaultValue `null`
+       */
+      img: fields.FilePathField<{ categories: "IMAGE"[]; label: "EFFECT.Image" }>;
+
+      type: fields.DocumentTypeField<typeof BaseActiveEffect, { initial: typeof foundry.CONST.BASE_DOCUMENT_TYPE }>;
+
+      system: fields.TypeDataField<typeof BaseActiveEffect>;
+
+      /**
+       * The array of EffectChangeData objects which the ActiveEffect applies
+       * @defaultValue `[]`
+       */
+      changes: fields.ArrayField<
+        fields.SchemaField<{
+          /**
+           * The attribute path in the Actor or Item data which the change modifies
+           * @defaultValue `""`
+           */
+          key: fields.StringField<{ required: true; label: "EFFECT.ChangeKey" }>;
+
+          /**
+           * The value of the change effect
+           * @defaultValue `""`
+           */
+          value: fields.StringField<{ required: true; label: "EFFECT.ChangeValue" }>;
+
+          /**
+           * The modification mode with which the change is applied
+           * @defaultValue `CONST.ACTIVE_EFFECT_MODES.ADD`
+           */
+          mode: fields.NumberField<{
+            integer: true;
+            initial: typeof CONST.ACTIVE_EFFECT_MODES.ADD;
+            label: "EFFECT.ChangeMode";
+          }>;
+
+          /**
+           * The priority level with which this change is applied
+           * @defaultValue `null`
+           */
+          priority: fields.NumberField;
+        }>
+      >;
+
+      /**
+       * Is this ActiveEffect currently disabled?
+       * @defaultValue `false`
+       */
+      disabled: fields.BooleanField;
+
+      /**
+       * An EffectDurationData object which describes the duration of the ActiveEffect
+       * @defaultValue see properties
+       */
+      duration: fields.SchemaField<{
+        /**
+         * The world time when the active effect first started
+         * @defaultValue `null`
+         */
+        startTime: fields.NumberField<{ initial: null; label: "EFFECT.StartTime" }>;
+
+        /**
+         * The maximum duration of the effect, in seconds
+         * @defaultValue `null`
+         */
+        seconds: fields.NumberField<{ integer: true; min: 0; label: "EFFECT.DurationSecs" }>;
+
+        /**
+         * The _id of the CombatEncounter in which the effect first started
+         * @defaultValue `null`
+         */
+        combat: fields.ForeignDocumentField<typeof foundry.documents.BaseCombat, { label: "EFFECT.Combat" }>;
+
+        /**
+         * The maximum duration of the effect, in combat rounds
+         * @defaultValue `null`
+         */
+        rounds: fields.NumberField<{ integer: true; min: 0 }>;
+
+        /**
+         * The maximum duration of the effect, in combat turns
+         * @defaultValue `null`
+         */
+        turns: fields.NumberField<{ integer: true; min: 0; label: "EFFECT.DurationTurns" }>;
+
+        /**
+         * The round of the CombatEncounter in which the effect first started
+         * @defaultValue `null`
+         */
+        startRound: fields.NumberField<{ integer: true; min: 0 }>;
+
+        /**
+         * The turn of the CombatEncounter in which the effect first started
+         * @defaultValue `null`
+         */
+        startTurn: fields.NumberField<{ integer: true; min: 0; label: "EFFECT.StartTurns" }>;
+      }>;
+
+      /**
+       * The HTML text description for this ActiveEffect document.
+       * @defaultValue `""`
+       */
+      description: fields.HTMLField<{ label: "EFFECT.Description"; textSearch: true }>;
+
+      /**
+       * A UUID reference to the document from which this ActiveEffect originated
+       * @defaultValue `null`
+       */
+      origin: fields.StringField<{ nullable: true; blank: false; initial: null; label: "EFFECT.Origin" }>;
+
+      /**
+       * A color string which applies a tint to the ActiveEffect icon
+       * @defaultValue `"#ffffff"`
+       */
+      tint: fields.ColorField<{ nullable: false; initial: "#ffffff"; label: "EFFECT.IconTint" }>;
+
+      /**
+       * Does this ActiveEffect automatically transfer from an Item to an Actor?
+       * @defaultValue `false`
+       */
+      transfer: fields.BooleanField<{ initial: true; label: "EFFECT.Transfer" }>;
+
+      /**
+       * Special status IDs that pertain to this effect
+       * @defaultValue `[]`
+       */
+      statuses: fields.SetField<fields.StringField<{ required: true; blank: false }>>;
+
+      sort: fields.IntegerSortField;
+
+      /**
+       * An object of optional key/value flags
+       * @defaultValue `{}`
+       */
+      flags: fields.ObjectField.FlagsField<"ActiveEffect", InterfaceToObject<CoreFlags>>;
+
+      _stats: fields.DocumentStatsField;
+    }
+
+    namespace DatabaseOperation {
+      interface Get extends foundry.abstract.types.DatabaseGetOperation<ActiveEffect.Parent> {}
+      interface Create<Temporary extends boolean | undefined = boolean | undefined>
+        extends foundry.abstract.types.DatabaseCreateOperation<ActiveEffect.CreateData, ActiveEffect.Parent, Temporary> {}
+      interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<ActiveEffect.Parent> {}
+      interface Update extends foundry.abstract.types.DatabaseUpdateOperation<ActiveEffect.UpdateData, ActiveEffect.Parent> {}
+
+      type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
+        Document.Database.CreateOperation<Create<Temporary>>;
+      type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
+      type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
+      type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
+
+      type UpdateOperation = Document.Database.UpdateOperation<Update>;
+      type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
+      type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
+      type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
+
+      type DeleteOperation = Document.Database.DeleteOperation<Delete>;
+      type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
+      type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
+      type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
+    }
+
+    interface CoreFlags {
+      core?: { statusId?: string; overlay?: boolean };
+    }
+
+    interface DurationData {
+      /** The world time when the active effect first started */
+      startTime?: number | null | undefined;
+
+      /** The maximum duration of the effect, in seconds */
+      seconds?: number | null | undefined;
+
+      /** The _id of the CombatEncounter in which the effect first started */
+      combat?: string | null | undefined;
+
+      /** The maximum duration of the effect, in combat rounds */
+      rounds?: number | null | undefined;
+
+      /** The maximum duration of the effect, in combat turns */
+      turns?: number | null | undefined;
+
+      /** The round of the CombatEncounter in which the effect first started */
+      startRound?: number | null | undefined;
+
+      /** The turn of the CombatEncounter in which the effect first started */
+      startTurn?: number | null | undefined;
+    }
+
+    // Must be kept in sync with
+    interface Duration extends DurationData {
+      /** The duration type, either "seconds", "turns", or "none" */
+      type: "seconds" | "turns" | "none";
+
+      /** The total effect duration, in seconds of world time or as a decimal number with the format \{rounds\}.\{turns\} */
+      duration: number;
+
+      /** The remaining effect duration, in seconds of world time or as a decimal number with the format \{rounds\}.\{turns\} */
+      remaining: number;
+
+      /** A formatted string label that represents the remaining duration */
+      label: string;
+
+      /** An internal flag used determine when to recompute seconds-based duration */
+      _worldTime?: number;
+
+      /** An internal flag used determine when to recompute turns-based duration */
+      _combatTime?: number;
+    }
 
     interface EffectChangeData {
       /**
@@ -64,6 +349,37 @@ declare global {
        */
       priority: number | null;
     }
+
+    /**
+     * @deprecated - {@link ActiveEffect.DatabaseOperation}
+     */
+    interface DatabaseOperations
+      extends Document.Database.Operations<
+        ActiveEffect,
+        { animate: boolean },
+        { animate: boolean },
+        { animate: boolean }
+      > {}
+
+    /**
+     * @deprecated {@link ActiveEffect.Types | `ActiveEffect.SubType`}
+     */
+    type TypeNames = ActiveEffect.SubType;
+
+    /**
+     * @deprecated {@link ActiveEffect.CreateData | `ActiveEffect.CreateData`}
+     */
+    interface ConstructorData extends ActiveEffect.CreateData {}
+
+    /**
+     * @deprecated {@link ActiveEffect.implementation | `ActiveEffect.ImplementationClass`}
+     */
+    type ConfiguredClass = ImplementationClass;
+
+    /**
+     * @deprecated {@link ActiveEffect.Implementation | `ActiveEffect.Implementation`}
+     */
+    type ConfiguredInstance = Implementation;
   }
 
   /**
@@ -78,10 +394,6 @@ declare global {
   class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffect.SubType> extends ClientDocumentMixin(
     foundry.documents.BaseActiveEffect,
   )<SubType> {
-    static override metadata: ActiveEffect.Metadata;
-
-    static get implementation(): ActiveEffect.ConfiguredClass;
-
     /**
      * Create an ActiveEffect instance from some status effect ID.
      * Delegates to {@link ActiveEffect._fromStatusEffect} to create the ActiveEffect instance
@@ -358,56 +670,39 @@ declare global {
      * @remarks `"You are accessing ActiveEffect._getSourceName which is deprecated."`
      */
     _getSourceName(): Promise<string>;
+
+    /**
+     * After this point these are not really overridden methods.
+     * They are here because they're static properties but depend on the instance and so can't be
+     * defined DRY-ly while also being easily overrideable.
+     */
+
+    static override metadata: ActiveEffect.Metadata;
+
+    static get implementation(): ActiveEffect.ConfiguredClass;
+
+    static override defaultName(
+      context?: Document.DefaultNameContext<ActiveEffect.SubType, ActiveEffect.Parent>,
+    ): string;
+
+    static override createDialog(
+      data: ActiveEffect.CreateData,
+      context?: Document.CreateDialogContext<ActiveEffect.SubType, ActiveEffect.Parent>,
+    ): Promise<ActiveEffect.Implementation | null | undefined>;
+
+    static override fromDropData(
+      data: Document.DropData<ActiveEffect.Implementation>,
+      options?: Document.FromDropDataOptions,
+    ): Promise<ActiveEffect.Implementation | undefined>;
+
+    static override fromImport(
+      source: ActiveEffect.Source,
+      context?: Document.FromImportContext<ActiveEffect.Parent>,
+    ): Promise<ActiveEffect.Implementation>;
   }
 
   /**
    * @deprecated {@link ActiveEffect.Duration | `ActiveEffect.Duration`}
    */
   type ActiveEffectDuration = ActiveEffect.Duration;
-
-  namespace ActiveEffect {
-    interface DurationData {
-      /** The world time when the active effect first started */
-      startTime?: number | null | undefined;
-
-      /** The maximum duration of the effect, in seconds */
-      seconds?: number | null | undefined;
-
-      /** The _id of the CombatEncounter in which the effect first started */
-      combat?: string | null | undefined;
-
-      /** The maximum duration of the effect, in combat rounds */
-      rounds?: number | null | undefined;
-
-      /** The maximum duration of the effect, in combat turns */
-      turns?: number | null | undefined;
-
-      /** The round of the CombatEncounter in which the effect first started */
-      startRound?: number | null | undefined;
-
-      /** The turn of the CombatEncounter in which the effect first started */
-      startTurn?: number | null | undefined;
-    }
-
-    // Must be kept in sync with
-    interface Duration extends DurationData {
-      /** The duration type, either "seconds", "turns", or "none" */
-      type: "seconds" | "turns" | "none";
-
-      /** The total effect duration, in seconds of world time or as a decimal number with the format \{rounds\}.\{turns\} */
-      duration: number;
-
-      /** The remaining effect duration, in seconds of world time or as a decimal number with the format \{rounds\}.\{turns\} */
-      remaining: number;
-
-      /** A formatted string label that represents the remaining duration */
-      label: string;
-
-      /** An internal flag used determine when to recompute seconds-based duration */
-      _worldTime?: number;
-
-      /** An internal flag used determine when to recompute turns-based duration */
-      _combatTime?: number;
-    }
-  }
 }
