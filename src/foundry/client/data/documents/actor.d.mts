@@ -41,12 +41,12 @@ declare global {
      * A document's parent is something that can contain it.
      * For example an `Actor` can be contained by an `Actor` which makes `Actor` one of its possible parents.
      */
-    type Parent = Actor.ConfiguredInstance | null;
+    type Parent = null;
 
     /**
      * An instance of `Actor` that comes from the database.
      */
-    interface Stored extends Document.Stored<Actor.ConfiguredInstance> {}
+    interface Stored extends Document.Stored<Actor.Implementation> {}
 
     /**
      * The data put in {@link Document._source | `Document._source`}. This data is what was

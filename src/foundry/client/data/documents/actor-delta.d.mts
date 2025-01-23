@@ -41,7 +41,7 @@ declare global {
      * A document's parent is something that can contain it.
      * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
      */
-    type Parent = TokenDocument.ConfiguredInstance | null;
+    type Parent = null;
 
     /**
      * An instance of `ActorDelta` that comes from the database.
@@ -223,7 +223,7 @@ declare global {
      * Apply this ActorDelta to the base Actor and return a synthetic Actor.
      * @param context - Context to supply to synthetic Actor instantiation.
      */
-    apply(context: unknown): Actor.ConfiguredInstance;
+    apply(context: unknown): Actor.Implementation;
 
     /** @remarks `"The synthetic actor prepares its items in the appropriate context of an actor. The actor delta does not need to prepare its items, and would do so in the incorrect context."` */
     override prepareEmbeddedDocuments(): void;
@@ -256,7 +256,7 @@ declare global {
      * Restore this delta to empty, inheriting all its properties from the base actor.
      * @returns The restored synthetic Actor.
      */
-    restore(): Promise<Actor.ConfiguredInstance>;
+    restore(): Promise<Actor.Implementation>;
 
     /**
      * Ensure that the embedded collection delta is managing any entries that have had their descendants updated.
@@ -284,11 +284,9 @@ declare global {
 
     static override metadata: ActorDelta.Metadata;
 
-    static get implementation(): ActorDelta.ConfiguredClass;
+    static get implementation(): ActorDelta.ImplementationClass;
 
-    static override defaultName(
-      context?: Document.DefaultNameContext<ActorDelta.SubType, ActorDelta.Parent>,
-    ): string;
+    static override defaultName(context?: Document.DefaultNameContext<ActorDelta.SubType, ActorDelta.Parent>): string;
 
     static override createDialog(
       data: ActorDelta.CreateData,

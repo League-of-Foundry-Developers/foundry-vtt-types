@@ -35,12 +35,12 @@ declare global {
      * A document's parent is something that can contain it.
      * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
      */
-    type Parent = Actor.ConfiguredInstance | Item.ConfiguredInstance | null;
+    type Parent = Actor.Implementation | Item.Implementation | null;
 
     /**
      * An instance of `ActiveEffect` that comes from the database.
      */
-    interface Stored extends Document.Stored<ActiveEffect.ConfiguredInstance> {}
+    interface Stored extends Document.Stored<Actor.Implementation> {}
 
     /**
      * The data put in {@link Document._source | `Document._source`}. This data is what was
