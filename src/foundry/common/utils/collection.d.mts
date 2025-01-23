@@ -1,16 +1,18 @@
 // This class exists make it as sound as possible to override these parts of the class and make them
-// completely unrelated. It's done this way specifically to avoid situations like
-declare class LenientMap<K, V> extends Map<K, V> {
+// completely unrelated. It's done this way specifically to avoid situations with broken inheritance.
+declare class LenientMap<K, V> extends globalThis.Map<K, V> {
   [Symbol.iterator](): any;
   forEach(...args: any[]): any;
 }
+
+declare const Map: typeof LenientMap;
 
 /**
  * A reusable storage concept which blends the functionality of an Array with the efficient key-based lookup of a Map.
  * This concept is reused throughout Foundry VTT where a collection of uniquely identified elements is required.
  * @typeParam T - The type of the objects contained in the Collection
  */
-declare class Collection<V> extends LenientMap<string, V> {
+declare class Collection<V> extends Map<string, V> {
   constructor(entries?: Iterable<readonly [string, V]> | null);
 
   /**
