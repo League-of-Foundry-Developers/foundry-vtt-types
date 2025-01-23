@@ -6,12 +6,6 @@ import type { HandleEmptyObject } from "../../../../utils/index.d.mts";
 import type { ConfiguredActorDelta } from "../../../../configuration/index.d.mts";
 
 import DataSchema = foundry.data.fields.DataSchema;
-import type {
-  DatabaseCreateOperation,
-  DatabaseDeleteOperation,
-  DatabaseGetOperation,
-  DatabaseUpdateOperation,
-} from "../../../common/abstract/_types.d.mts";
 
 declare global {
   namespace ActorDelta {
@@ -155,11 +149,16 @@ declare global {
     }
 
     namespace DatabaseOperation {
-      interface Get extends DatabaseGetOperation<ActiveEffect.Parent> {}
+      interface Get extends foundry.abstract.types.DatabaseGetOperation<ActiveEffect.Parent> {}
       interface Create<Temporary extends boolean | undefined = boolean | undefined>
-        extends DatabaseCreateOperation<ActiveEffect.CreateData, ActiveEffect.Parent, Temporary> {}
-      interface Delete extends DatabaseDeleteOperation<ActiveEffect.Parent> {}
-      interface Update extends DatabaseUpdateOperation<ActiveEffect.UpdateData, ActiveEffect.Parent> {}
+        extends foundry.abstract.types.DatabaseCreateOperation<
+          ActiveEffect.CreateData,
+          ActiveEffect.Parent,
+          Temporary
+        > {}
+      interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<ActiveEffect.Parent> {}
+      interface Update
+        extends foundry.abstract.types.DatabaseUpdateOperation<ActiveEffect.UpdateData, ActiveEffect.Parent> {}
 
       type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
         Document.Database.CreateOperation<Create<Temporary>>;

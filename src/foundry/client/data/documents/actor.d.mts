@@ -1,11 +1,5 @@
 import type { DeepPartial, HandleEmptyObject, InexactPartial } from "../../../../utils/index.d.mts";
 import type { documents } from "../../../client-esm/client.d.mts";
-import type {
-  DatabaseCreateOperation,
-  DatabaseDeleteOperation,
-  DatabaseGetOperation,
-  DatabaseUpdateOperation,
-} from "../../../common/abstract/_types.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type EmbeddedCollection from "../../../common/abstract/embedded-collection.d.mts";
 import type BaseActor from "../../../common/documents/actor.d.mts";
@@ -179,11 +173,11 @@ declare global {
     }
 
     namespace DatabaseOperation {
-      interface Get extends DatabaseGetOperation<Actor.Parent> {}
+      interface Get extends foundry.abstract.types.DatabaseGetOperation<Actor.Parent> {}
       interface Create<Temporary extends boolean | undefined = boolean | undefined>
-        extends DatabaseCreateOperation<Actor.CreateData, Actor.Parent, Temporary> {}
-      interface Delete extends DatabaseDeleteOperation<Actor.Parent> {}
-      interface Update extends DatabaseUpdateOperation<Actor.UpdateData, Actor.Parent> {}
+        extends foundry.abstract.types.DatabaseCreateOperation<Actor.CreateData, Actor.Parent, Temporary> {}
+      interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<Actor.Parent> {}
+      interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Actor.UpdateData, Actor.Parent> {}
 
       type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
         Document.Database.CreateOperation<Create<Temporary>>;
