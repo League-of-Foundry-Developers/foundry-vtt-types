@@ -1,12 +1,6 @@
 import type { ConfiguredItem } from "../../../../configuration/index.d.mts";
 import type { HandleEmptyObject } from "../../../../utils/index.d.mts";
 import type { documents } from "../../../client-esm/client.d.mts";
-import type {
-  DatabaseCreateOperation,
-  DatabaseDeleteOperation,
-  DatabaseGetOperation,
-  DatabaseUpdateOperation,
-} from "../../../common/abstract/_types.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
 
@@ -168,26 +162,42 @@ declare global {
     }
 
     namespace DatabaseOperation {
-      interface Get extends DatabaseGetOperation<Item.Parent> {}
+      /** Options passed along in Get operations for Items */
+      interface Get extends foundry.abstract.types.DatabaseGetOperation<Item.Parent> {}
+      /** Options passed along in Create operations for Items */
       interface Create<Temporary extends boolean | undefined = boolean | undefined>
-        extends DatabaseCreateOperation<Item.CreateData, Item.Parent, Temporary> {}
-      interface Delete extends DatabaseDeleteOperation<Item.Parent> {}
-      interface Update extends DatabaseUpdateOperation<Item.UpdateData, Item.Parent> {}
+        extends foundry.abstract.types.DatabaseCreateOperation<Item.CreateData, Item.Parent, Temporary> {}
+      /** Options passed along in Delete operations for Items */
+      interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<Item.Parent> {}
+      /** Options passed along in Update operations for Items */
+      interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Item.UpdateData, Item.Parent> {}
 
+      /** Options for {@link Item.createDocuments} */
       type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
         Document.Database.CreateOperation<Create<Temporary>>;
+      /** Options for {@link Item._preCreateOperation} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
+      /** Options for {@link Item#_preCreate} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
+      /** Options for {@link Item#_onCreate} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
+      /** Options for {@link Item.updateDocuments} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
+      /** Options for {@link Item._preUpdateOperation} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
+      /** Options for {@link Item#_preUpdate} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
+      /** Options for {@link Item#_onUpdate} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
+      /** Options for {@link Item.deleteDocuments} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
+      /** Options for {@link Item._preDeleteOperation} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
+      /** Options for {@link Item#_preDelete} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
+      /** Options for {@link Item#_onDelete} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 

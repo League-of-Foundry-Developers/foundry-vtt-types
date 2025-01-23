@@ -232,7 +232,7 @@ declare namespace BaseActor {
   type TypeNames = Game.Model.TypeNames<"Actor">;
 
   /**
-   * @deprecated {@link SchemaField | `SchemaField<BaseActor.Schema>`}
+   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseActor.Schema>`}
    */
   interface SchemaField extends foundry.data.fields.SchemaField<Schema> {}
 

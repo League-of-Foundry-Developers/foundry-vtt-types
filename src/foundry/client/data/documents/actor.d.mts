@@ -179,20 +179,32 @@ declare global {
       interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<Actor.Parent> {}
       interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Actor.UpdateData, Actor.Parent> {}
 
+      /** Options for {@link Actor.createDocuments} */
       type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
         Document.Database.CreateOperation<Create<Temporary>>;
+      /** Options for {@link Actor._preCreateOperation} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
+      /** Options for {@link Actor#_preCreate} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
+      /** Options for {@link Actor#_onCreate} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
+      /** Options for {@link Actor.updateDocuments} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
+      /** Options for {@link Actor._preUpdateOperation} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
+      /** Options for {@link Actor#_preUpdate} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
+      /** Options for {@link Actor#_onUpdate} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
+      /** Options for {@link Actor.deleteDocuments} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
+      /** Options for {@link Actor._preDeleteOperation} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
+      /** Options for {@link Actor#_preDelete} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
+      /** Options for {@link Actor#_onDelete} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 

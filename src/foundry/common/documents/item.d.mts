@@ -1,6 +1,7 @@
 import type { AnyObject } from "../../../utils/index.d.mts";
+import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
-import type * as fields from "../data/fields.d.mts";
+import type { SchemaField } from "../data/fields.d.mts";
 
 interface _Schema extends Item.Schema {
   // For performance reasons don't bother calculating the `system` field.
@@ -167,6 +168,19 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
     documents: Item.Implementation[],
     context: Document.ModificationContext<Item.Parent>,
   ): Promise<void>;
+
+  protected static _schema: SchemaField<Item.Schema>;
+
+  static get schema(): SchemaField<Item.Schema>;
+
+  static validateJoint(data: Item.Source): void;
+
+  static override fromSource(
+    source: Item.UpdateData,
+    { strict, ...context }?: DataModel.FromSourceOptions,
+  ): DataModel<Item.Schema, DataModel.Any | null>;
+
+  static override fromJSON(json: string): DataModel<Item.Schema, DataModel.Any | null>;
 }
 
 export default BaseItem;
@@ -189,7 +203,7 @@ declare namespace BaseItem {
    * In one context the most correct type is after initialization whereas in another one it should be
    * before but Foundry uses it interchangeably.
    */
-  interface Properties extends fields.SchemaField.InitializedData<Schema> {}
+  interface Properties extends SchemaField.InitializedData<Schema> {}
 
   /**
    * @deprecated {@link BaseItem.SubType | `BaseItem.SubType`}
@@ -197,12 +211,12 @@ declare namespace BaseItem {
   type TypeNames = Game.Model.TypeNames<"Item">;
 
   /**
-   * @deprecated {@link fields.SchemaField | `fields.SchemaField<BaseItem.Schema>`}
+   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseItem.Schema>`}
    */
-  interface SchemaField extends fields.SchemaField<Schema> {}
+  interface SchemaField extends foundry.data.fields.SchemaField<Schema> {}
 
   /**
    * @deprecated {@link BaseItem.CreateData | `BaseItem.CreateData`}
    */
-  interface ConstructorData extends fields.SchemaField.CreateData<Schema> {}
+  interface ConstructorData extends SchemaField.CreateData<Schema> {}
 }

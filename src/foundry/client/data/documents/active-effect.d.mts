@@ -253,26 +253,42 @@ declare global {
     }
 
     namespace DatabaseOperation {
+      /** Options passed along in Get operations for ActiveEffects */
       interface Get extends foundry.abstract.types.DatabaseGetOperation<ActiveEffect.Parent> {}
+      /** Options passed along in Create operations for ActiveEffects */
       interface Create<Temporary extends boolean | undefined = boolean | undefined>
         extends foundry.abstract.types.DatabaseCreateOperation<ActiveEffect.CreateData, ActiveEffect.Parent, Temporary> {}
+      /** Options passed along in Delete operations for ActiveEffects */
       interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<ActiveEffect.Parent> {}
+      /** Options passed along in Update operations for ActiveEffects */
       interface Update extends foundry.abstract.types.DatabaseUpdateOperation<ActiveEffect.UpdateData, ActiveEffect.Parent> {}
 
+      /** Options for {@link ActiveEffect.createDocuments} */
       type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
         Document.Database.CreateOperation<Create<Temporary>>;
+      /** Options for {@link ActiveEffect._preCreateOperation} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
+      /** Options for {@link ActiveEffect#_preCreate} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
+      /** Options for {@link ActiveEffect#_onCreate} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
+      /** Options for {@link ActiveEffect.updateDocuments} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
+      /** Options for {@link ActiveEffect._preUpdateOperation} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
+      /** Options for {@link ActiveEffect#_preUpdate} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
+      /** Options for {@link ActiveEffect#_onUpdate} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
+      /** Options for {@link ActiveEffect.deleteDocuments} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
+      /** Options for {@link ActiveEffect._preDeleteOperation} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
+      /** Options for {@link ActiveEffect#_preDelete} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
+      /** Options for {@link ActiveEffect#_onDelete} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 

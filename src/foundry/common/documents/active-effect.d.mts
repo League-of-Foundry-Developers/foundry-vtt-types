@@ -73,7 +73,7 @@ declare abstract class BaseActiveEffect<
 
   static " __fvtt_types_internal_document_name_static": "ActiveEffect";
 
-  static get implementation(): Adventure.ImplementationClass;
+  static get implementation(): ActiveEffect.ImplementationClass;
 
   override system: Document.SystemFor<"ActiveEffect", SubType>;
 
@@ -185,18 +185,18 @@ declare abstract class BaseActiveEffect<
     context: Document.ModificationContext<ActiveEffect.Parent>,
   ): Promise<void>;
 
-  protected static _schema: SchemaField<ActorDelta.Schema>;
+  protected static _schema: SchemaField<ActiveEffect.Schema>;
 
-  static get schema(): SchemaField<ActorDelta.Schema>;
+  static get schema(): SchemaField<ActiveEffect.Schema>;
 
-  static validateJoint(data: ActorDelta.Source): void;
+  static validateJoint(data: ActiveEffect.Source): void;
 
   static override fromSource(
-    source: ActorDelta.UpdateData,
+    source: ActiveEffect.UpdateData,
     { strict, ...context }?: DataModel.FromSourceOptions,
-  ): DataModel<ActorDelta.Schema, DataModel.Any | null>;
+  ): DataModel<ActiveEffect.Schema, DataModel.Any | null>;
 
-  static override fromJSON(json: string): DataModel<ActorDelta.Schema, DataModel.Any | null>;
+  static override fromJSON(json: string): DataModel<ActiveEffect.Schema, DataModel.Any | null>;
 }
 
 export default BaseActiveEffect;
@@ -233,9 +233,9 @@ declare namespace BaseActiveEffect {
   type TypeNames = SubType;
 
   /**
-   * @deprecated {@link fields.SchemaField | `SchemaField<BaseActiveEffect.Schema>`}
+   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseActiveEffect.Schema>`}
    */
-  type SchemaField = SchemaField<Schema>;
+  type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
   /**
    * @deprecated {@link BaseActiveEffect.CreateData | `BaseActiveEffect.CreateData`}
