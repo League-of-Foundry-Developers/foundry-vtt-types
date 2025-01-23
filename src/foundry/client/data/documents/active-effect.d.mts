@@ -293,7 +293,7 @@ declare global {
     }
 
     interface CoreFlags {
-      core?: { statusId?: string; overlay?: boolean };
+      core?: { overlay?: boolean };
     }
 
     interface DurationData {
