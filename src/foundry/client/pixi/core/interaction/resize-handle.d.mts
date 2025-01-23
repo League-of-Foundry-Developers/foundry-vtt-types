@@ -1,15 +1,15 @@
-export {};
+import type { NullishProps } from "../../../../../utils/index.d.mts";
 
 declare global {
   class ResizeHandle extends PIXI.Graphics {
     /**
      * @param handlers - (default: `{}`)
      */
-    constructor(offset: ResizeHandle["offset"], handlers?: ResizeHandle["handlers"]);
+    constructor(offset: ResizeHandle.Offsets, handlers?: ResizeHandle.Handlers);
 
-    offset: [widthOffset: number, heightOffset: number];
+    offset: ResizeHandle.Offsets;
 
-    handlers: { canDrag?: boolean };
+    handlers: ResizeHandle.Handlers;
 
     /**
      * Track whether the handle is being actively used for a drag workflow
@@ -26,7 +26,7 @@ declare global {
       current: Canvas.Rectangle,
       origin: Canvas.Rectangle,
       destination: Canvas.Rectangle,
-      { aspectRatio }?: { aspectRatio?: number | null },
+      options?: ResizeHandle.UpdateDimensionsOptions,
     ): Canvas.Rectangle;
 
     activateListeners(): void;
@@ -49,4 +49,34 @@ declare global {
      */
     protected _onMouseDown(event: PIXI.FederatedEvent): void;
   }
+
+  namespace ResizeHandle {
+    interface Any extends AnyResizeHandle {}
+    type AnyConstructor = typeof AnyResizeHandle;
+
+    type Offsets = [widthOffset: number, heightOffset: number];
+
+    /** @internal */
+    type _Handlers = NullishProps<{
+      canDrag: () => boolean | null | void;
+    }>;
+
+    interface Handlers extends _Handlers {}
+
+    /** @internal */
+    type _UpdateDimensionsOptions = NullishProps<{
+      /**
+       * Constrain the aspect ratio
+       * @defaultValue `null`
+       * @remarks If truthy, will enforce the passed ratio, landscape if `width >= height`, portrait otherwise
+       */
+      aspectRatio: number;
+    }>;
+
+    interface UpdateDimensionsOptions extends _UpdateDimensionsOptions {}
+  }
+}
+
+declare abstract class AnyResizeHandle extends ResizeHandle {
+  constructor(arg0: never, ...args: never[]);
 }

@@ -1,6 +1,6 @@
 import type BasePackage from "./base-package.d.mts";
 import type * as fields from "../data/fields.d.mts";
-import type { AnyObject, InexactPartial, Merge } from "../../../utils/index.d.mts";
+import type { AnyMutableObject, InexactPartial, Merge } from "../../../utils/index.d.mts";
 import type { ReleaseData } from "../config.d.mts";
 
 type BaseWorldSchema = Merge<
@@ -80,7 +80,7 @@ declare class BaseWorld extends BasePackage<BaseWorld.Schema> {
    */
   static icon: string;
 
-  static migrateData(data: AnyObject): AnyObject;
+  static migrateData(data: AnyMutableObject): AnyMutableObject;
 
   static testAvailability(
     data: InexactPartial<PackageManifestData>,

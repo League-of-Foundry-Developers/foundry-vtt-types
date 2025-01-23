@@ -1,7 +1,7 @@
 import { expectTypeOf } from "vitest";
 
 declare const user: User.ConfiguredInstance;
-declare const token: Token;
+declare const token: Token.ConfiguredInstance;
 
 const targets = new UserTargets(user);
 expectTypeOf(targets.user).toEqualTypeOf<User.ConfiguredInstance>();

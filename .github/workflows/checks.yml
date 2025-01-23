@@ -139,6 +139,7 @@ jobs:
     if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event.pull_request != null && !contains(github.event.pull_request.labels.*.name, 'breaking'))
     outputs:
       should_skip: ${{ steps.should_skip.outputs.should_skip }}
+      pr_number: ${{ steps.PR.outputs.PR.number }}
     runs-on: ubuntu-latest
     steps:
       - uses: 8BitJonny/gh-get-current-pr@3.0.0
@@ -189,11 +190,13 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          echo "Checking if can merge $branchName into maintenance"
+          echo "Checking if can merge $branchName ($range) into maintenance"
 
           git checkout -B maintenance upstream/maintenance
 
-          git diff "$branchBase..$branchTip" | git apply --3way <<< "$diff"
+          git cherry-pick --empty=drop --allow-empty-message --allow-empty -m 1 "$range" || (
+            echo "Merge conflicts detected with the maintenance branch!" && exit 1
+          )
 
       - name: Install Node
         if: steps.should_skip.outputs.should_skip != 'true'
@@ -237,11 +240,7 @@ jobs:
         run: |
           git fetch --no-tags origin maintenance main
 
-          branchName=$(git branch --show-current)
-
-          branchName=$(git branch --show-current)
-          branchBase=$(git merge-base upstream/main "$branchName")
-          branchTip=$(git rev-parse "$branchName")
+          range="${{ github.event.before }}..${{ github.event.after }}"
 
           # Commit using the GitHub Actions bot user.
           git config user.name "github-actions[bot]"
@@ -249,18 +248,15 @@ jobs:
 
           git checkout -B maintenance upstream/maintenance
 
-          echo "Merging $branchName into maintenance"
+          echo "Merging PR #${{needs.checkCanMergeToMaintenance.outputs.pr_number }} ($range) into maintenance"
 
           # Commit using the GitHub Actions bot user.
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git diff "$branchBase..$branchTip" | git apply --3way <<< "$diff"
-
-          message=$(git log --format='* %s' "$range")
-          message="Merge $branchName into maintenance\n\n$message"
-
-          git commit -m "$message"
+          git cherry-pick --empty=drop --allow-empty-message --allow-empty -m 1 "$range" || (
+            echo "Merge conflicts detected with maintenance branch! This can only happen if there is a bug in checkCanMergeToMaintenance or mergeToMaintenance or someone pushed in between!" && exit 1
+          )
 
       - name: Push changes
         uses: ad-m/github-push-action@master
@@ -282,7 +278,7 @@ jobs:
           fetch-depth: 1
 
       - name: Download Main Test Results
-        uses: dawidd6/action-download-artifact@v7
+        uses: dawidd6/action-download-artifact@v8
         with:
           branch: main
           name: main-test-results
