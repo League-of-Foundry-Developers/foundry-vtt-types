@@ -17,6 +17,7 @@ import type {
   FixedInstanceType,
   NullishProps,
   AllKeysOf,
+  IntentionalPartial,
 } from "../../../utils/index.d.mts";
 import type { documents } from "../../client-esm/client.d.mts";
 import type * as CONST from "../constants.mts";
@@ -939,11 +940,13 @@ declare namespace Document {
 
   type CoreTypesForName<Name extends Type> = string & GetKey<Document.MetadataFor<Name>, "coreTypes", ["base"]>[number];
 
-  type SubTypesOf<Name extends Type> =
-    | Document.CoreTypesForName<Name>
-    | keyof GetKey<DataModelConfig, Name, unknown>
-    | keyof GetKey<SourceConfig, Name, unknown>
-    | (Document.MetadataFor<Name> extends { readonly hasTypeData: true } ? Document.ModuleSubtype : never);
+  type SubTypesOf<Name extends Type> = Name extends "ActorDelta"
+    ? SubTypesOf<"Actor">
+    :
+        | Document.CoreTypesForName<Name>
+        | keyof GetKey<DataModelConfig, Name, unknown>
+        | keyof GetKey<SourceConfig, Name, unknown>
+        | (Document.MetadataFor<Name> extends { readonly hasTypeData: true } ? Document.ModuleSubtype : never);
 
   type ModuleSubtype = `${string}.${string}`;
 
@@ -982,13 +985,15 @@ declare namespace Document {
     | (Name extends "Wall" ? Wall.OfType<SubType & Wall.SubType> : never);
 
   // Note(LukeAbby): This is written this way to make it more obviously covariant over `SubType`.
-  type SystemFor<Name extends Type, SubType extends SubTypesOf<Name>> = SystemData extends {
-    readonly [K in Name]: infer Data;
-  }
-    ? SubType extends keyof Data
-      ? Data[SubType]
-      : UnknownSystem
-    : UnknownSystem;
+  type SystemFor<Name extends Type, SubType extends SubTypesOf<Name>> = Name extends "ActorDelta"
+    ? IntentionalPartial<SystemFor<"Actor", SubType & ActorDelta.SubType>>
+    : SystemData extends {
+          readonly [K in Name]: infer Data;
+        }
+      ? SubType extends keyof Data
+        ? Data[SubType]
+        : UnknownSystem
+      : UnknownSystem;
 
   interface SystemData extends _SystemData {}
 
