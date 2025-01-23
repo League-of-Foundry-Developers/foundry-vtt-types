@@ -1,6 +1,7 @@
 import type { AnyObject } from "../../../utils/index.d.mts";
+import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
-import type * as fields from "../data/fields.d.mts";
+import type { SchemaField } from "../data/fields.d.mts";
 
 interface _Schema extends Actor.Schema {
   // For performance reasons don't bother calculating the `system` field.
@@ -15,7 +16,11 @@ interface _Schema extends Actor.Schema {
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
-declare abstract class BaseActor<out SubType extends Item.SubType = Item.SubType> extends Document<"Actor", _Schema, any> {
+declare abstract class BaseActor<out SubType extends Item.SubType = Item.SubType> extends Document<
+  "Actor",
+  _Schema,
+  any
+> {
   /**
    * @param data    - Initial data from which to construct the Actor
    * @param context - Construction context options
@@ -186,6 +191,19 @@ declare abstract class BaseActor<out SubType extends Item.SubType = Item.SubType
     documents: Actor.Implementation[],
     context: Document.ModificationContext<Actor.Parent>,
   ): Promise<void>;
+
+  protected static _schema: SchemaField<Actor.Schema>;
+
+  static get schema(): SchemaField<Actor.Schema>;
+
+  static validateJoint(data: Actor.Source): void;
+
+  static override fromSource(
+    source: Actor.UpdateData,
+    { strict, ...context }?: DataModel.FromSourceOptions,
+  ): DataModel<Actor.Schema, DataModel.Any | null>;
+
+  static override fromJSON(json: string): DataModel<Actor.Schema, DataModel.Any | null>;
 }
 
 declare namespace BaseActor {
@@ -206,7 +224,7 @@ declare namespace BaseActor {
    * In one context the most correct type is after initialization whereas in another one it should be
    * before but Foundry uses it interchangeably.
    */
-  interface Properties extends fields.SchemaField.InitializedData<Schema> {}
+  interface Properties extends SchemaField.InitializedData<Schema> {}
 
   /**
    * @deprecated {@link BaseActor.SubType | `BaseActor.SubType`}
@@ -214,14 +232,14 @@ declare namespace BaseActor {
   type TypeNames = Game.Model.TypeNames<"Actor">;
 
   /**
-   * @deprecated {@link fields.SchemaField | `fields.SchemaField<BaseActor.Schema>`}
+   * @deprecated {@link SchemaField | `SchemaField<BaseActor.Schema>`}
    */
-  interface SchemaField extends fields.SchemaField<Schema> {}
+  interface SchemaField extends foundry.data.fields.SchemaField<Schema> {}
 
   /**
    * @deprecated {@link BaseActor.CreateData | `BaseActor.CreateData`}
    */
-  interface ConstructorData extends fields.SchemaField.CreateData<Schema> {}
+  interface ConstructorData extends SchemaField.CreateData<Schema> {}
 }
 
 export default BaseActor;

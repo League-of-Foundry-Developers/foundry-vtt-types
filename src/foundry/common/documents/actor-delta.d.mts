@@ -2,6 +2,8 @@ import type { AnyObject, InexactPartial } from "../../../utils/index.d.mts";
 import type Document from "../abstract/document.mts";
 import type { fields } from "../data/module.d.mts";
 import type { CONST, documents } from "../../client-esm/client.d.mts";
+import type { SchemaField } from "../data/fields.d.mts";
+import type DataModel from "../abstract/data.d.mts";
 
 /**
  * The ActorDelta Document.
@@ -175,6 +177,19 @@ declare abstract class BaseActorDelta<
     documents: ActorDelta.Implementation[],
     context: Document.ModificationContext<ActorDelta.Parent>,
   ): Promise<void>;
+
+  protected static _schema: SchemaField<ActorDelta.Schema>;
+
+  static get schema(): SchemaField<ActorDelta.Schema>;
+
+  static validateJoint(data: ActorDelta.Source): void;
+
+  static override fromSource(
+    source: ActorDelta.UpdateData,
+    { strict, ...context }?: DataModel.FromSourceOptions,
+  ): DataModel<ActorDelta.Schema, DataModel.Any | null>;
+
+  static override fromJSON(json: string): DataModel<ActorDelta.Schema, DataModel.Any | null>;
 }
 
 export default BaseActorDelta;

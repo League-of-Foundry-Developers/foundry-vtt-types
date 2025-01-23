@@ -1,4 +1,4 @@
-import type { AnyObject, EmptyObject } from "../../../utils/index.d.mts";
+import type { AnyMutableObject, AnyObject, EmptyObject } from "../../../utils/index.d.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
 import type { fields } from "../data/module.d.mts";
 import type { DataModelValidationFailure } from "../data/validation-failure.d.mts";
@@ -113,7 +113,7 @@ declare abstract class DataModel<
    * @param options - Additional options which are passed to field cleaning methods
    * @returns The cleaned source data
    */
-  static cleanData(source?: object, options?: Parameters<SchemaField.Any["clean"]>[1]): object;
+  static cleanData(source?: AnyMutableObject, options?: Parameters<SchemaField.Any["clean"]>[1]): AnyMutableObject;
 
   /**
    * A generator that orders the DataFields in the DataSchema into an expected initialization order.
@@ -210,14 +210,13 @@ declare abstract class DataModel<
    * @param data - Candidate data for the model
    * @throws An error if a validation failure is detected
    */
-  // TODO(LukeAbby): Should be SourceType
-  static validateJoint(data: Record<string, unknown>): void;
+  static validateJoint(data: never): void;
 
   /**
    * @deprecated since v11; Use the validateJoint static method instead.
    */
   // TODO(LukeAbby): Should be SourceType
-  protected _validateModel(data: fields.SchemaField.AssignmentData<Schema>): void;
+  protected _validateModel(data: fields.SchemaField.PersistedData<Schema>): void;
 
   /**
    * Update the DataModel locally by applying an object of changes to its source data.
@@ -229,11 +228,10 @@ declare abstract class DataModel<
    * @param options - Options which determine how the new data is merged
    * @returns An object containing the changed keys and values
    */
-  // TODO(LukeAbby): Should be SourceType
   updateSource(
-    changes?: fields.SchemaField.AssignmentData<Schema>,
+    changes?: fields.SchemaField.UpdateData<Schema>,
     options?: { dryRun?: boolean; fallback?: boolean; recursive?: boolean },
-  ): object;
+  ): fields.SchemaField.UpdateData<Schema>;
 
   /**
    * Update the source data for a specific DataSchema.
@@ -293,26 +291,17 @@ declare abstract class DataModel<
    * @param context - Model construction context
    * @remarks The generic parameters should fit the DataModel implementation that this method is called on.
    */
-  static fromSource<Schema extends DataSchema>(
-    source: fields.SchemaField.AssignmentData<Schema>,
-    {
-      strict,
-      ...context
-    }?: DataModel.DataValidationOptions & {
-      /**
-       * Models created from trusted source data are validated non-strictly
-       * @defaultValue `false`
-       */
-      strict?: boolean;
-    },
-  ): DataModel<Schema, DataModel.Any | null>;
+  static fromSource(
+    source: never,
+    { strict, ...context }?: DataModel.FromSourceOptions,
+  ): DataModel<any, DataModel.Any | null>;
 
   /**
    * Create a DataModel instance using a provided serialized JSON string.
    * @param json - Serialized document data in string format
    * @returns A constructed data model instance
    */
-  static fromJSON(json: string): ReturnType<(typeof DataModel)["fromSource"]>;
+  static fromJSON(json: string): ReturnType<typeof DataModel.fromSource>;
 
   /**
    * Migrate candidate source data for this DataModel which may require initial cleaning or transformations.
@@ -335,16 +324,7 @@ declare abstract class DataModel<
    * @param options - Additional shimming options
    * @returns Data with added backwards-compatible properties
    */
-  static shimData(
-    data: object,
-    options?: {
-      /**
-       * Apply shims to embedded models?
-       * @defaultValue `true`
-       */
-      embedded?: boolean;
-    },
-  ): object;
+  static shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 }
 
 declare namespace DataModel {
@@ -429,6 +409,22 @@ declare namespace DataModel {
     _singletons: Record<string, unknown>;
     _diff: Record<string, unknown>;
     _backup: Record<string, unknown>;
+  }
+
+  interface FromSourceOptions extends DataModel.DataValidationOptions {
+    /**
+     * Models created from trusted source data are validated non-strictly
+     * @defaultValue `false`
+     */
+    strict?: boolean;
+  }
+
+  interface ShimDataOptions {
+    /**
+     * Apply shims to embedded models?
+     * @defaultValue `true`
+     */
+    embedded?: boolean;
   }
 }
 

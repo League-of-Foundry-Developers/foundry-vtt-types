@@ -883,6 +883,18 @@ declare namespace SchemaField {
     }>
   >;
 
+  type UpdateSourceData<Fields extends DataSchema> = PrettifyType<
+    RemoveIndexSignatures<{
+      [Key in keyof Fields]: Fields[Key] extends EmbeddedDataField<any, any, any, any, infer PersistType>
+        ? PersistType
+        : Fields[Key] extends SchemaField<infer SubSchema, any, any, any, any>
+          ? PersistedData<SubSchema>
+          : Fields[Key] extends DataField<any, any, any, infer PersistType>
+            ? PersistType
+            : never;
+    }>
+  >;
+
   /** The type of the default options for the {@link SchemaField} class. */
   type DefaultOptions = SimpleMerge<
     DataField.DefaultOptions,

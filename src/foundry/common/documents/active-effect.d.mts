@@ -1,7 +1,8 @@
 import type { AnyObject, InexactPartial } from "../../../utils/index.d.mts";
+import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
-import type * as fields from "../data/fields.d.mts";
+import type { SchemaField } from "../data/fields.d.mts";
 
 /**
  * The ActiveEffect Document.
@@ -106,7 +107,11 @@ declare abstract class BaseActiveEffect<
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onCreate(data: ActiveEffect.CreateData, options: ActiveEffect.DatabaseOperation.OnCreateOperation, userId: string): void;
+  protected _onCreate(
+    data: ActiveEffect.CreateData,
+    options: ActiveEffect.DatabaseOperation.OnCreateOperation,
+    userId: string,
+  ): void;
 
   protected static _preCreateOperation(
     documents: ActiveEffect.Implementation[],
@@ -177,6 +182,19 @@ declare abstract class BaseActiveEffect<
     documents: ActiveEffect.Implementation[],
     context: Document.ModificationContext<ActiveEffect.Parent>,
   ): Promise<void>;
+
+  protected static _schema: SchemaField<ActorDelta.Schema>;
+
+  static get schema(): SchemaField<ActorDelta.Schema>;
+
+  static validateJoint(data: ActorDelta.Source): void;
+
+  static override fromSource(
+    source: ActorDelta.UpdateData,
+    { strict, ...context }?: DataModel.FromSourceOptions,
+  ): DataModel<ActorDelta.Schema, DataModel.Any | null>;
+
+  static override fromJSON(json: string): DataModel<ActorDelta.Schema, DataModel.Any | null>;
 }
 
 export default BaseActiveEffect;
@@ -207,7 +225,7 @@ declare namespace BaseActiveEffect {
    * In one context the most correct type is after initialization whereas in another one it should be
    * before but Foundry uses it interchangeably.
    */
-  type Properties = fields.SchemaField.InitializedData<Schema>;
+  type Properties = SchemaField.InitializedData<Schema>;
 
   /** @deprecated {@link BaseActiveEffect.SubType | `BaseActiveEffect.SubType`} */
   type TypeNames = SubType;
@@ -215,7 +233,7 @@ declare namespace BaseActiveEffect {
   /**
    * @deprecated {@link fields.SchemaField | `SchemaField<BaseActiveEffect.Schema>`}
    */
-  type SchemaField = fields.SchemaField<Schema>;
+  type SchemaField = SchemaField<Schema>;
 
   /**
    * @deprecated {@link BaseActiveEffect.CreateData | `BaseActiveEffect.CreateData`}
