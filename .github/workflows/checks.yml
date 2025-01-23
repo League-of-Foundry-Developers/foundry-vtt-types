@@ -189,11 +189,11 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          echo "Checking if can merge $branchName into maintenance"
+          echo "Checking if can merge $branchName ($branchBase..$branchTip) into maintenance"
 
           git checkout -B maintenance upstream/maintenance
 
-          git diff "$branchBase..$branchTip" | git apply --3way <<< "$diff"
+          git cherry-pick --empty=drop --allow-empty-message --allow-empty -m 1 "$branchBase..$branchTip"
 
       - name: Install Node
         if: steps.should_skip.outputs.should_skip != 'true'
@@ -249,18 +249,13 @@ jobs:
 
           git checkout -B maintenance upstream/maintenance
 
-          echo "Merging $branchName into maintenance"
+          echo "Merging $branchName ($branchBase..$branchTip) into maintenance"
 
           # Commit using the GitHub Actions bot user.
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git diff "$branchBase..$branchTip" | git apply --3way <<< "$diff"
-
-          message=$(git log --format='* %s' "$range")
-          message="Merge $branchName into maintenance\n\n$message"
-
-          git commit -m "$message"
+          git cherry-pick --empty=drop --allow-empty-message --allow-empty -m 1 "$branchBase..$branchTip"
 
       - name: Push changes
         uses: ad-m/github-push-action@master
