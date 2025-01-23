@@ -25,3 +25,16 @@ export interface ConfiguredActiveEffect<_SubType extends ActiveEffect.SubType> {
  * ```
  */
 export interface ConfiguredItem<_SubType extends Item.SubType> {}
+
+/**
+ * Use this interface to configure your custom generic `Actor` implementation.
+ * See also {@link DocumentClassConfig | `DocumentClassConfig`} to configure your class.
+ *
+ * @example
+ * ```typescript
+ * declare module "fvtt-types/configuration" {
+ *     interface ConfiguredActor<SubType extends Actor.SubType> extends CustomActor<SubType> {}
+ * }
+ * ```
+ */
+export interface ConfiguredActor<_SubType extends Actor.SubType> {}

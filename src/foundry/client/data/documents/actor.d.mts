@@ -1,16 +1,231 @@
-import type { DeepPartial, InexactPartial } from "../../../../utils/index.d.mts";
+import type { DeepPartial, HandleEmptyObject, InexactPartial } from "../../../../utils/index.d.mts";
+import type { documents } from "../../../client-esm/client.d.mts";
+import type {
+  DatabaseCreateOperation,
+  DatabaseDeleteOperation,
+  DatabaseGetOperation,
+  DatabaseUpdateOperation,
+} from "../../../common/abstract/_types.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type EmbeddedCollection from "../../../common/abstract/embedded-collection.d.mts";
 import type BaseActor from "../../../common/documents/actor.d.mts";
+import type { fields, PrototypeToken } from "../../../common/data/module.d.mts";
+import type { ConfiguredActor } from "../../../../configuration";
+
+type DataSchema = foundry.data.fields.DataSchema;
 
 declare global {
   namespace Actor {
-    type Metadata = Document.MetadataFor<"Actor">;
+    /**
+     * The implementation of the Actor document instance configured through `CONFIG.Actor.documentClass` in Foundry and
+     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredActor | `configuration/ConfiguredActor`} in fvtt-types.
+     */
+    type Implementation = Document.ConfiguredInstanceForName<"Actor">;
 
-    type ConfiguredClass = Document.ConfiguredClassForName<"Actor">;
-    type ConfiguredInstance = Document.ConfiguredInstanceForName<"Actor">;
+    /**
+     * The implementation of the Actor document configured through `CONFIG.Actor.documentClass` in Foundry and
+     * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
+     */
+    type ImplementationClass = Document.ConfiguredClassForName<"Actor">;
 
+    /**
+     * A document's metadata is special information about the document ranging anywhere from its name,
+     * whether it's indexed, or to the permissions a user has over it.
+     */
+    interface Metadata extends Document.MetadataFor<"Actor"> {}
+
+    type SubType = Game.Model.TypeNames<"Actor">;
+    type OfType<Type extends SubType> = HandleEmptyObject<ConfiguredActor<Type>, Actor<SubType>>;
+
+    /**
+     * A document's parent is something that can contain it.
+     * For example an `Actor` can be contained by an `Actor` which makes `Actor` one of its possible parents.
+     */
+    type Parent = Actor.ConfiguredInstance | null;
+
+    /**
+     * An instance of `Actor` that comes from the database.
+     */
+    interface Stored extends Document.Stored<Actor.ConfiguredInstance> {}
+
+    /**
+     * The data put in {@link Document._source | `Document._source`}. This data is what was
+     * persisted to the database and therefore it must be valid JSON.
+     *
+     * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+     * but initialized as a {@link Set | `Set`}.
+     *
+     * Both `Source` and `PersistedData` are equivalent.
+     */
+    interface Source extends PersistedData {}
+
+    /**
+     * The data put in {@link Actor._source | `Actor._source`}. This data is what was
+     * persisted to the database and therefore it must be valid JSON.
+     *
+     * Both `Source` and `PersistedData` are equivalent.
+     */
+    interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
+
+    /**
+     * The data necessary to create a document. Used in places like {@link Actor.create | `Actor.create`}
+     * and {@link Actor | `new Actor(...)`}.
+     *
+     * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
+     * with the right values. This means you can pass a `Set` instance, an array of values,
+     * a generator, or any other iterable.
+     */
+    interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+
+    /**
+     * The data after a {@link Document | `Document`} has been initialized, for example
+     * {@link Actor.name | `Actor#name`}.
+     *
+     * This is data transformed from {@link Actor.Source | `Actor.Source`} and turned into more
+     * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+     * persisted to the database as an array of values but at runtime it is a `Set` instance.
+     */
+    interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
+
+    /**
+     * The data used to update a document, for example {@link Actor.update | `Actor#update`}.
+     * It is a distinct type from {@link Actor.CreateData | `DeepPartial<Actor.CreateData>`} because
+     * it has different rules for `null` and `undefined`.
+     */
+    interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+    /**
+     * The schema for {@link Actor | `Actor`}. This is the source of truth for how an Actor document
+     * must be structured.
+     *
+     * Foundry uses this schema to validate the structure of the {@link Actor | `Actor`}. For example
+     * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
+     * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+     * starting as an array in the database, initialized as a set, and allows updates with any
+     * iterable.
+     */
+    interface Schema extends DataSchema {
+      /**
+       * The _id which uniquely identifies this Actor document
+       * @defaultValue `null`
+       */
+      _id: fields.DocumentIdField;
+
+      /** The name of this Actor */
+      name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
+
+      /** An Actor subtype which configures the system data model applied */
+      type: fields.DocumentTypeField<typeof BaseActor>;
+
+      /**
+       * An image file path which provides the artwork for this Actor
+       * @defaultValue `null`
+       */
+      img: fields.FilePathField<{ categories: "IMAGE"[]; initial: (data: unknown) => string }>;
+
+      /**
+       * The system data object which is defined by the system template.json model
+       * @defaultValue `{}`
+       */
+      system: fields.TypeDataField<typeof BaseActor>;
+
+      /**
+       * Default Token settings which are used for Tokens created from this Actor
+       * @defaultValue see {@link PrototypeToken}
+       */
+      prototypeToken: fields.EmbeddedDataField<typeof PrototypeToken>;
+
+      /**
+       * A Collection of Item embedded Documents
+       * @defaultValue `[]`
+       */
+      items: fields.EmbeddedCollectionField<typeof documents.BaseItem, Actor.ConfiguredInstance>;
+
+      /**
+       * A Collection of ActiveEffect embedded Documents
+       * @defaultValue `[]`
+       */
+      effects: fields.EmbeddedCollectionField<typeof documents.BaseActiveEffect, Actor.ConfiguredInstance>;
+
+      /**
+       * The _id of a Folder which contains this Actor
+       * @defaultValue `null`
+       */
+      folder: fields.ForeignDocumentField<typeof documents.BaseFolder>;
+
+      /**
+       * The numeric sort value which orders this Actor relative to its siblings
+       * @defaultValue `0`
+       */
+      sort: fields.IntegerSortField;
+
+      /**
+       * An object which configures ownership of this Actor
+       * @defaultValue `{ default: DOCUMENT_OWNERSHIP_LEVELS.NONE }`
+       */
+      ownership: fields.DocumentOwnershipField;
+
+      /**
+       * An object of optional key/value flags
+       * @defaultValue `{}`
+       */
+      flags: fields.ObjectField.FlagsField<"Actor">;
+
+      /**
+       * An object of creation and access information
+       * @defaultValue see {@link fields.DocumentStatsField}
+       */
+      _stats: fields.DocumentStatsField;
+    }
+
+    namespace DatabaseOperation {
+      interface Get extends DatabaseGetOperation<Actor.Parent> {}
+      interface Create<Temporary extends boolean | undefined = boolean | undefined>
+        extends DatabaseCreateOperation<Actor.CreateData, Actor.Parent, Temporary> {}
+      interface Delete extends DatabaseDeleteOperation<Actor.Parent> {}
+      interface Update extends DatabaseUpdateOperation<Actor.UpdateData, Actor.Parent> {}
+
+      type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
+        Document.Database.CreateOperation<Create<Temporary>>;
+      type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
+      type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
+      type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
+
+      type UpdateOperation = Document.Database.UpdateOperation<Update>;
+      type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
+      type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
+      type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
+
+      type DeleteOperation = Document.Database.DeleteOperation<Delete>;
+      type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
+      type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
+      type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
+    }
+
+    /**
+     * @deprecated - {@link Actor.DatabaseOperation}
+     */
     interface DatabaseOperations extends Document.Database.Operations<Actor> {}
+
+    /**
+     * @deprecated {@link Actor.Types | `Actor.SubType`}
+     */
+    type TypeNames = Actor.SubType;
+
+    /**
+     * @deprecated {@link Actor.CreateData | `Actor.CreateData`}
+     */
+    interface ConstructorData extends Actor.CreateData {}
+
+    /**
+     * @deprecated {@link Actor.implementation | `Actor.ImplementationClass`}
+     */
+    type ConfiguredClass = ImplementationClass;
+
+    /**
+     * @deprecated {@link Actor.Implementation | `Actor.Implementation`}
+     */
+    type ConfiguredInstance = Implementation;
 
     type ItemTypes = {
       [K in Game.Model.TypeNames<"Item">]: Array<
@@ -20,18 +235,10 @@ declare global {
         } & (DataModelConfig extends { Item: { readonly [_ in K]?: infer SystemData } }
             ? {
                 system: SystemData;
-              }
-            : // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-              {})
+              } // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+            : {})
       >;
     };
-
-    // Helpful aliases
-    type TypeNames = BaseActor.TypeNames;
-    type ConstructorData = BaseActor.ConstructorData;
-    type UpdateData = BaseActor.UpdateData;
-    type Schema = BaseActor.Schema;
-    type Source = BaseActor.Source;
 
     interface RollInitiativeOptions {
       /**
@@ -77,7 +284,9 @@ declare global {
    * let actor = game.actors.get(actorId);
    * ```
    */
-  class Actor extends ClientDocumentMixin(foundry.documents.BaseActor) {
+  class Actor<out SubType extends Item.SubType = Item.SubType> extends ClientDocumentMixin(
+    foundry.documents.BaseActor,
+  )<SubType> {
     static override metadata: Actor.Metadata;
 
     static get implementation(): Actor.ConfiguredClass;

@@ -9,7 +9,8 @@ import type {
 } from "../../../common/abstract/_types.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
-import type { DataSchema } from "./adventure.d.mts";
+
+type DataSchema = foundry.data.fields.DataSchema;
 
 declare global {
   namespace Item {

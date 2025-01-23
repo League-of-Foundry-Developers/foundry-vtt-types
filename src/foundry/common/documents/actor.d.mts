@@ -1,10 +1,12 @@
 import type { AnyObject } from "../../../utils/index.d.mts";
 import type Document from "../abstract/document.mts";
-import type { PrototypeToken } from "../data/data.mts";
 import type * as fields from "../data/fields.d.mts";
-import type * as documents from "./_module.d.mts";
 
-type DataSchema = foundry.data.fields.DataSchema;
+interface _Schema extends Actor.Schema {
+  // For performance reasons don't bother calculating the `system` field.
+  // This is overridden anyways.
+  system: any;
+}
 
 /**
  * The Actor Document.
@@ -13,20 +15,13 @@ type DataSchema = foundry.data.fields.DataSchema;
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
-declare abstract class BaseActor extends Document<"Actor", BaseActor.Schema, any> {
-  /**
-   * @privateRemarks Manual override of the return due to TS limitations with static `this`
-   */
-  static get TYPES(): BaseActor.TypeNames[];
-
+declare abstract class BaseActor<out SubType extends Item.SubType = Item.SubType> extends Document<"Actor", _Schema, any> {
   /**
    * @param data    - Initial data from which to construct the Actor
    * @param context - Construction context options
    */
   // TODO(LukeAbby): This constructor is causing a circular error.
   // constructor(data: BaseActor.ConstructorData, context?: Document.ConstructionContext<BaseActor.Parent>);
-
-  override parent: BaseActor.Parent;
 
   static override metadata: BaseActor.Metadata;
 
@@ -78,95 +73,155 @@ declare abstract class BaseActor extends Document<"Actor", BaseActor.Schema, any
 
   static override migrateData(source: AnyObject): AnyObject;
 
+  /**
+   * After this point these are not really overridden methods.
+   * They are here because they're static properties but depend on the instance and so can't be
+   * defined DRY-ly while also being easily overridable.
+   */
+
   static " __fvtt_types_internal_document_name_static": "Actor";
+
+  override parent: Actor.Parent;
+
+  override system: Document.SystemFor<"Actor", SubType>;
+
+  static get TYPES(): BaseActor.SubType[];
+
+  static createDocuments<Temporary extends boolean | undefined>(
+    data: Array<Actor.Implementation | Actor.CreateData> | undefined,
+    operation?: Document.Database.CreateOperation<Actor.DatabaseOperation.Create<Temporary>>,
+  ): Promise<Array<Document.StoredIf<Actor.Implementation, Temporary>>>;
+
+  static updateDocuments(
+    updates: Actor.UpdateData[] | undefined,
+    operation?: Document.Database.UpdateOperation<Actor.DatabaseOperation.Update>,
+  ): Promise<Actor.Implementation[]>;
+
+  static deleteDocuments(
+    ids: readonly string[] | undefined,
+    operation?: Document.Database.DeleteOperation<Actor.DatabaseOperation.Delete>,
+  ): Promise<Actor.Implementation[]>;
+
+  static create<Temporary extends boolean | undefined>(
+    data: Actor.CreateData | Actor.CreateData[],
+    operation?: Document.Database.CreateOperation<Actor.DatabaseOperation.Create<Temporary>>,
+  ): Promise<Actor.Implementation | undefined>;
+
+  static get(documentId: string, options?: Document.Database.GetOperation): Actor.Implementation | null;
+
+  protected _preCreate(
+    data: Actor.CreateData,
+    options: Actor.DatabaseOperation.PreCreateOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onCreate(data: Actor.CreateData, options: Actor.DatabaseOperation.OnCreateOperation, userId: string): void;
+
+  protected static _preCreateOperation(
+    documents: Actor.Implementation[],
+    operation: Document.Database.PreCreateOperationStatic<Actor.DatabaseOperation.Create>,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onCreateOperation(
+    documents: Actor.Implementation[],
+    operation: Actor.DatabaseOperation.Create,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected _preUpdate(
+    changed: Actor.UpdateData,
+    options: Actor.DatabaseOperation.PreUpdateOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onUpdate(
+    changed: Actor.UpdateData,
+    options: Actor.DatabaseOperation.OnUpdateOperation,
+    userId: string,
+  ): void;
+
+  protected static _preUpdateOperation(
+    documents: Actor.Implementation[],
+    operation: Actor.DatabaseOperation.Update,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onUpdateOperation(
+    documents: Actor.Implementation[],
+    operation: Actor.DatabaseOperation.Update,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected _preDelete(
+    options: Actor.DatabaseOperation.PreDeleteOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onDelete(options: Actor.DatabaseOperation.OnDeleteOperation, userId: string): void;
+
+  protected static _preDeleteOperation(
+    documents: Actor.Implementation[],
+    operation: Actor.DatabaseOperation.Delete,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onDeleteOperation(
+    documents: Actor.Implementation[],
+    operation: Actor.DatabaseOperation.Delete,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected static _onCreateDocuments(
+    documents: Actor.Implementation[],
+    context: Document.ModificationContext<Actor.Parent>,
+  ): Promise<void>;
+
+  protected static _onUpdateDocuments(
+    documents: Actor.Implementation[],
+    context: Document.ModificationContext<Actor.Parent>,
+  ): Promise<void>;
+
+  protected static _onDeleteDocuments(
+    documents: Actor.Implementation[],
+    context: Document.ModificationContext<Actor.Parent>,
+  ): Promise<void>;
 }
 
 declare namespace BaseActor {
-  type Parent = null;
+  export import Metadata = Actor.Metadata;
+  export import SubType = Actor.SubType;
+  export import Parent = Actor.Parent;
+  export import Stored = Actor.Stored;
+  export import Source = Actor.Source;
+  export import PersistedData = Actor.PersistedData;
+  export import CreateData = Actor.CreateData;
+  export import InitializedData = Actor.InitializedData;
+  export import UpdateData = Actor.UpdateData;
+  export import Schema = Actor.Schema;
+  export import DatabaseOperation = Actor.DatabaseOperation;
 
+  /**
+   * @deprecated This type is used by Foundry too vaguely.
+   * In one context the most correct type is after initialization whereas in another one it should be
+   * before but Foundry uses it interchangeably.
+   */
+  interface Properties extends fields.SchemaField.InitializedData<Schema> {}
+
+  /**
+   * @deprecated {@link BaseActor.SubType | `BaseActor.SubType`}
+   */
   type TypeNames = Game.Model.TypeNames<"Actor">;
 
-  type Metadata = Document.MetadataFor<"Actor">;
+  /**
+   * @deprecated {@link fields.SchemaField | `fields.SchemaField<BaseActor.Schema>`}
+   */
+  interface SchemaField extends fields.SchemaField<Schema> {}
 
-  type SchemaField = fields.SchemaField<Schema>;
-  type ConstructorData = fields.SchemaField.CreateData<Schema>;
-  type UpdateData = fields.SchemaField.AssignmentData<Schema>;
-  type Properties = fields.SchemaField.InitializedData<Schema>;
-  type Source = fields.SchemaField.PersistedData<Schema>;
-
-  interface Schema extends DataSchema {
-    /**
-     * The _id which uniquely identifies this Actor document
-     * @defaultValue `null`
-     */
-    _id: fields.DocumentIdField;
-
-    /** The name of this Actor */
-    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
-
-    /** An Actor subtype which configures the system data model applied */
-    type: fields.DocumentTypeField<typeof BaseActor>;
-
-    /**
-     * An image file path which provides the artwork for this Actor
-     * @defaultValue `null`
-     */
-    img: fields.FilePathField<{ categories: "IMAGE"[]; initial: (data: unknown) => string }>;
-
-    /**
-     * The system data object which is defined by the system template.json model
-     * @defaultValue `{}`
-     */
-    system: fields.TypeDataField<typeof BaseActor>;
-
-    /**
-     * Default Token settings which are used for Tokens created from this Actor
-     * @defaultValue see {@link PrototypeToken}
-     */
-    prototypeToken: fields.EmbeddedDataField<typeof PrototypeToken>;
-
-    /**
-     * A Collection of Item embedded Documents
-     * @defaultValue `[]`
-     */
-    items: fields.EmbeddedCollectionField<typeof documents.BaseItem, Actor.ConfiguredInstance>;
-
-    /**
-     * A Collection of ActiveEffect embedded Documents
-     * @defaultValue `[]`
-     */
-    effects: fields.EmbeddedCollectionField<typeof documents.BaseActiveEffect, Actor.ConfiguredInstance>;
-
-    /**
-     * The _id of a Folder which contains this Actor
-     * @defaultValue `null`
-     */
-    folder: fields.ForeignDocumentField<typeof documents.BaseFolder>;
-
-    /**
-     * The numeric sort value which orders this Actor relative to its siblings
-     * @defaultValue `0`
-     */
-    sort: fields.IntegerSortField;
-
-    /**
-     * An object which configures ownership of this Actor
-     * @defaultValue `{ default: DOCUMENT_OWNERSHIP_LEVELS.NONE }`
-     */
-    ownership: fields.DocumentOwnershipField;
-
-    /**
-     * An object of optional key/value flags
-     * @defaultValue `{}`
-     */
-    flags: fields.ObjectField.FlagsField<"Actor">;
-
-    /**
-     * An object of creation and access information
-     * @defaultValue see {@link fields.DocumentStatsField}
-     */
-    _stats: fields.DocumentStatsField;
-  }
+  /**
+   * @deprecated {@link BaseActor.CreateData | `BaseActor.CreateData`}
+   */
+  interface ConstructorData extends fields.SchemaField.CreateData<Schema> {}
 }
 
 export default BaseActor;
