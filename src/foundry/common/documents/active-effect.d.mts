@@ -65,13 +65,15 @@ declare abstract class BaseActiveEffect<
 
   set icon(value);
 
-  /**
+  /*
    * After this point these are not really overridden methods.
    * They are here because they're static properties but depend on the instance and so can't be
    * defined DRY-ly while also being easily overrideable.
    */
 
   static " __fvtt_types_internal_document_name_static": "ActiveEffect";
+
+  static get implementation(): Adventure.ImplementationClass;
 
   override system: Document.SystemFor<"ActiveEffect", SubType>;
 

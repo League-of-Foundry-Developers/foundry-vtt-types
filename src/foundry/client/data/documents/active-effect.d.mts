@@ -671,15 +671,11 @@ declare global {
      */
     _getSourceName(): Promise<string>;
 
-    /**
+    /*
      * After this point these are not really overridden methods.
      * They are here because they're static properties but depend on the instance and so can't be
      * defined DRY-ly while also being easily overrideable.
      */
-
-    static override metadata: ActiveEffect.Metadata;
-
-    static get implementation(): ActiveEffect.ConfiguredClass;
 
     static override defaultName(
       context?: Document.DefaultNameContext<ActiveEffect.SubType, ActiveEffect.Parent>,

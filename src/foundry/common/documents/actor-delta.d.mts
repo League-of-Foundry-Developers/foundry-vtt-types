@@ -25,13 +25,13 @@ declare abstract class BaseActorDelta<
   static override defineSchema(): BaseActorDelta.Schema;
 
   override canUserModify(
-    user: User.ConfiguredInstance,
+    user: User.Internal.ConfiguredInstance,
     action: "create" | "update" | "delete",
     data?: AnyObject,
   ): boolean;
 
   override testUserPermission(
-    user: User.ConfiguredInstance,
+    user: User.Internal.ConfiguredInstance,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
     options?: InexactPartial<{
       /**
@@ -60,7 +60,7 @@ declare abstract class BaseActorDelta<
   toObject(source: true): this["_source"];
   toObject(source?: boolean): ReturnType<this["schema"]["toObject"]>;
 
-  /**
+  /*
    * After this point these are not really overridden methods.
    * They are here because they're static properties but depend on the instance and so can't be
    * defined DRY-ly while also being easily overrideable.

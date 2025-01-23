@@ -6,7 +6,6 @@ import type { HandleEmptyObject } from "../../../../utils/index.d.mts";
 import type { ConfiguredActorDelta } from "../../../../configuration/index.d.mts";
 
 import DataSchema = foundry.data.fields.DataSchema;
-import type DataModel from "../../../common/abstract/data.d.mts";
 
 declare global {
   namespace ActorDelta {
@@ -272,15 +271,11 @@ declare global {
       _parent: ClientDocument,
     ): void;
 
-    /**
+    /*
      * After this point these are not really overridden methods.
      * They are here because they're static properties but depend on the instance and so can't be
      * defined DRY-ly while also being easily overrideable.
      */
-
-    static override metadata: ActorDelta.Metadata;
-
-    static get implementation(): ActorDelta.ImplementationClass;
 
     static override defaultName(context?: Document.DefaultNameContext<ActorDelta.SubType, ActorDelta.Parent>): string;
 

@@ -58,25 +58,6 @@ export interface ConfiguredActorDelta<_SubType extends ActorDelta.SubType> {}
 export interface ConfiguredActor<_SubType extends Actor.SubType> {}
 
 /**
- * Use this interface to configure your custom generic `Adventure` implementation.
- * See also {@link DocumentClassConfig | `DocumentClassConfig`} to configure your class.
- *
- * @example
- * ```typescript
- * class CustomAdventure<
- *   SubType extends Adventure.SubType
- * > extends Adventure<SubType> {
- *   ...
- * }
- *
- * declare module "fvtt-types/configuration" {
- *     interface ConfiguredAdventure<SubType extends ActiveEffect.SubType> extends CustomAdventure<SubType> {}
- * }
- * ```
- */
-export interface ConfiguredAdventure<_SubType extends Adventure.SubType> {}
-
-/**
  * Use this interface to configure your custom generic `Card` implementation.
  * See also {@link DocumentClassConfig | `DocumentClassConfig`} to configure your class.
  *

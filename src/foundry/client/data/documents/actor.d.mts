@@ -283,8 +283,6 @@ declare global {
   )<SubType> {
     static override metadata: Actor.Metadata;
 
-    static get implementation(): Actor.ConfiguredClass;
-
     protected override _configure(options?: { pack?: string | null }): void;
 
     /**
@@ -519,5 +517,28 @@ declare global {
       update: DeepPartial<TokenDocument["_source"]>,
       options: Document.OnUpdateOptions<"Token">,
     ): void;
+
+    /*
+     * After this point these are not really overridden methods.
+     * They are here because they're static properties but depend on the instance and so can't be
+     * defined DRY-ly while also being easily overrideable.
+     */
+
+    static override defaultName(context?: Document.DefaultNameContext<Actor.SubType, Actor.Parent>): string;
+
+    static override createDialog(
+      data: Actor.CreateData,
+      context?: Document.CreateDialogContext<Actor.SubType, Actor.Parent>,
+    ): Promise<Actor.Implementation | null | undefined>;
+
+    static override fromDropData(
+      data: Document.DropData<Actor.Implementation>,
+      options?: Document.FromDropDataOptions,
+    ): Promise<Actor.Implementation | undefined>;
+
+    static override fromImport(
+      source: Actor.Source,
+      context?: Document.FromImportContext<Actor.Parent>,
+    ): Promise<Actor.Implementation>;
   }
 }

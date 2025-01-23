@@ -54,7 +54,7 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
 
   static override migrateData(source: AnyObject): AnyObject;
 
-  /**
+  /*
    * After this point these are not really overridden methods.
    * They are here because they're static properties but depend on the instance and so can't be
    * defined DRY-ly while also being easily overridable.
