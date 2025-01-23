@@ -320,7 +320,7 @@ declare global {
     /*
      * After this point these are not really overridden methods.
      * They are here because they're static properties but depend on the instance and so can't be
-     * defined DRY-ly while also being easily overrideable.
+     * defined DRY-ly while also being easily overridable.
      */
 
     static override defaultName(context?: Document.DefaultNameContext<"base", Adventure.Parent>): string;

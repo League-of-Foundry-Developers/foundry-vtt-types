@@ -2,7 +2,7 @@ import type { ConfiguredActiveEffect } from "../../../../configuration/index.d.m
 import type { AnyObject, HandleEmptyObject, InterfaceToObject } from "../../../../utils/index.d.mts";
 import type { DataModel } from "../../../common/abstract/data.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
-import type { DataField , DataSchema } from "../../../common/data/fields.d.mts";
+import type { DataField, DataSchema } from "../../../common/data/fields.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
 import type { ActiveEffectData, EffectDurationData } from "../../../common/documents/_types.d.mts";
 import type BaseActiveEffect from "../../../common/documents/active-effect.d.mts";
@@ -256,11 +256,22 @@ declare global {
       interface Get extends foundry.abstract.types.DatabaseGetOperation<ActiveEffect.Parent> {}
       /** Options passed along in Create operations for ActiveEffects */
       interface Create<Temporary extends boolean | undefined = boolean | undefined>
-        extends foundry.abstract.types.DatabaseCreateOperation<ActiveEffect.CreateData, ActiveEffect.Parent, Temporary> {}
+        extends foundry.abstract.types.DatabaseCreateOperation<
+          ActiveEffect.CreateData,
+          ActiveEffect.Parent,
+          Temporary
+        > {
+        animate?: boolean;
+      }
       /** Options passed along in Delete operations for ActiveEffects */
-      interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<ActiveEffect.Parent> {}
+      interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<ActiveEffect.Parent> {
+        animate?: boolean;
+      }
       /** Options passed along in Update operations for ActiveEffects */
-      interface Update extends foundry.abstract.types.DatabaseUpdateOperation<ActiveEffect.UpdateData, ActiveEffect.Parent> {}
+      interface Update
+        extends foundry.abstract.types.DatabaseUpdateOperation<ActiveEffect.UpdateData, ActiveEffect.Parent> {
+        animate?: boolean;
+      }
 
       /** Options for {@link ActiveEffect.createDocuments} */
       type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
@@ -689,7 +700,7 @@ declare global {
     /*
      * After this point these are not really overridden methods.
      * They are here because they're static properties but depend on the instance and so can't be
-     * defined DRY-ly while also being easily overrideable.
+     * defined DRY-ly while also being easily overridable.
      */
 
     static override defaultName(

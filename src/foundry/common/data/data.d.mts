@@ -543,7 +543,7 @@ declare namespace PrototypeToken {
     | "locked"
     | "_regions";
 
-  interface Schema extends foundry.documents.BaseToken.SharedProtoSchema {
+  interface Schema extends TokenDocument.SharedProtoSchema {
     name: fields.StringField<{ required: true; blank: true; textSearch: boolean }>;
 
     /**

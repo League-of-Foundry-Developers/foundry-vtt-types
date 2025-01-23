@@ -1,40 +1,569 @@
 import type { DeepPartial, InexactPartial } from "../../../../utils/index.d.mts";
+import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
-import type { SchemaField } from "../../../common/data/fields.d.mts";
+import type { DataSchema, SchemaField } from "../../../common/data/fields.d.mts";
+import type { fields, LightData, TextureData } from "../../../common/data/module.d.mts";
+import type { ActorDeltaField } from "../../../common/documents/token.d.mts";
 import type BaseToken from "../../../common/documents/token.d.mts";
 
 declare global {
   namespace TokenDocument {
-    type Metadata = Document.MetadataFor<"Token">;
+    /**
+     * The implementation of the TokenDocument document instance configured through `CONFIG.Token.documentClass` in Foundry and
+     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredTokenDocument | `configuration/ConfiguredTokenDocument`} in fvtt-types.
+     */
+    type Implementation = Document.ConfiguredInstanceForName<"Token">;
 
-    type ConfiguredClass = Document.ConfiguredClassForName<"Token">;
-    type ConfiguredInstance = Document.ConfiguredInstanceForName<"Token">;
+    /**
+     * The implementation of the TokenDocument document configured through `CONFIG.Token.documentClass` in Foundry and
+     * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
+     */
+    type ImplementationClass = Document.ConfiguredClassForName<"Token">;
 
-    type ObjectClass = Document.ConfiguredObjectClassForName<"Token">;
-    type ObjectInstance = Document.ConfiguredObjectInstanceForName<"Token">;
+    /**
+     * A document's metadata is special information about the document ranging anywhere from its name,
+     * whether it's indexed, or to the permissions a user has over it.
+     */
+    interface Metadata extends Document.MetadataFor<"Token"> {}
 
-    /* eslint-disable @typescript-eslint/no-empty-object-type */
-    interface DatabaseOperations
-      extends Document.Database.Operations<
-        TokenDocument,
-        {},
+    /**
+     * A document's parent is something that can contain it.
+     * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
+     */
+    type Parent = Scene.Implementation | null;
+
+    /**
+     * An instance of `TokenDocument` that comes from the database.
+     */
+    interface Stored extends Document.Stored<TokenDocument.Implementation> {}
+
+    /**
+     * The data put in {@link Document._source | `Document._source`}. This data is what was
+     * persisted to the database and therefore it must be valid JSON.
+     *
+     * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+     * but initialized as a {@link Set | `Set`}.
+     *
+     * Both `Source` and `PersistedData` are equivalent.
+     */
+    interface Source extends PersistedData {}
+
+    /**
+     * The data put in {@link TokenDocument._source | `TokenDocument._source`}. This data is what was
+     * persisted to the database and therefore it must be valid JSON.
+     *
+     * Both `Source` and `PersistedData` are equivalent.
+     */
+    interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
+
+    /**
+     * The data necessary to create a document. Used in places like {@link TokenDocument.create | `TokenDocument.create`}
+     * and {@link TokenDocument | `new TokenDocument(...)`}.
+     *
+     * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
+     * with the right values. This means you can pass a `Set` instance, an array of values,
+     * a generator, or any other iterable.
+     */
+    interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+
+    /**
+     * The data after a {@link Document | `Document`} has been initialized, for example
+     * {@link TokenDocument.name | `TokenDocument#name`}.
+     *
+     * This is data transformed from {@link TokenDocument.Source | `TokenDocument.Source`} and turned into more
+     * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+     * persisted to the database as an array of values but at runtime it is a `Set` instance.
+     */
+    interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
+
+    /**
+     * The data used to update a document, for example {@link TokenDocument.update | `TokenDocument#update`}.
+     * It is a distinct type from {@link TokenDocument.CreateData | `DeepPartial<TokenDocument.CreateData>`} because
+     * it has different rules for `null` and `undefined`.
+     */
+    interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+    /**
+     * Schema definition shared by {@link foundry.data.PrototypeToken | `PrototypeToken`}.
+     * Foundry technically implements this through deletion, but it's easier for us to do by extension.
+     */
+    interface SharedProtoSchema extends DataSchema {
+      /**
+       * The name used to describe the Token
+       * @defaultValue `""`
+       */
+      name: fields.StringField<{ required: true; blank: true }>;
+
+      /**
+       * The display mode of the Token nameplate, from CONST.TOKEN_DISPLAY_MODES
+       * @defaultValue `CONST.TOKEN_DISPLAY_MODES.NONE`
+       */
+      displayName: fields.NumberField<
         {
-          previousActorId: string | null;
-          animate: boolean;
-          _priorRegions: Record<string, string[]>;
-          _priorPosition: Record<string, { x: number; y: number; elevation: number }>;
-          teleport: boolean;
-          forced: boolean;
+          required: true;
+          initial: typeof CONST.TOKEN_DISPLAY_MODES.NONE;
+          choices: CONST.TOKEN_DISPLAY_MODES[];
+          validationError: "must be a value in CONST.TOKEN_DISPLAY_MODES";
         },
-        {}
-      > {}
-    /* eslint-enable @typescript-eslint/no-empty-object-type */
+        CONST.TOKEN_DISPLAY_MODES | null | undefined,
+        CONST.TOKEN_DISPLAY_MODES,
+        CONST.TOKEN_DISPLAY_MODES
+      >;
 
-    // Helpful aliases
-    type ConstructorData = BaseToken.ConstructorData;
-    type UpdateData = BaseToken.UpdateData;
-    type Schema = BaseToken.Schema;
-    type Source = BaseToken.Source;
+      /**
+       * Does this Token uniquely represent a singular Actor, or is it one of many?
+       * @defaultValue `false`
+       */
+      actorLink: fields.BooleanField;
+
+      appendNumber: fields.BooleanField;
+
+      prependAdjective: fields.BooleanField;
+
+      /**
+       * The width of the Token in grid units
+       * @defaultValue `1`
+       */
+      width: fields.NumberField<{ positive: true; initial: 1; label: "Width" }>;
+
+      /**
+       * The height of the Token in grid units
+       * @defaultValue `1`
+       */
+      height: fields.NumberField<{ positive: true; initial: 1; label: "Height" }>;
+
+      /**
+       * The token's texture on the canvas.
+       * @defaultValue `BaseToken.DEFAULT_ICON`
+       */
+      texture: TextureData<{ initial: () => typeof BaseToken.DEFAULT_ICON; wildcard: true }>;
+
+      /**
+       * @defaultValue `CONST.TOKEN_HEXAGONAL_SHAPES.ELLIPSE_1`
+       */
+      hexagonalShape: fields.NumberField<{
+        initial: typeof CONST.TOKEN_HEXAGONAL_SHAPES.ELLIPSE_1;
+        choices: CONST.TOKEN_HEXAGONAL_SHAPES[];
+      }>;
+
+      /**
+       * Prevent the Token image from visually rotating?
+       * @defaultValue `false`
+       */
+      lockRotation: fields.BooleanField;
+
+      /**
+       * The rotation of the Token in degrees, from 0 to 360. A value of 0 represents a southward-facing Token.
+       * @defaultValue `0`
+       */
+      rotation: fields.AngleField;
+
+      /**
+       * The opacity of the token image
+       * @defaultValue `1`
+       */
+      alpha: fields.AlphaField;
+
+      /**
+       * A displayed Token disposition from CONST.TOKEN_DISPOSITIONS
+       * @defaultValue `CONST.TOKEN_DISPOSITIONS.HOSTILE`
+       */
+      disposition: fields.NumberField<
+        {
+          required: true;
+          choices: CONST.TOKEN_DISPOSITIONS[];
+          initial: typeof CONST.TOKEN_DISPOSITIONS.HOSTILE;
+          validationError: "must be a value in CONST.TOKEN_DISPOSITIONS";
+        },
+        CONST.TOKEN_DISPOSITIONS | null | undefined,
+        CONST.TOKEN_DISPOSITIONS,
+        CONST.TOKEN_DISPOSITIONS
+      >;
+
+      /**
+       * The display mode of Token resource bars, from CONST.TOKEN_DISPLAY_MODES
+       * @defaultValue `CONST.TOKEN_DISPLAY_MODES.NONE`
+       */
+      displayBars: fields.NumberField<
+        {
+          required: true;
+          choices: CONST.TOKEN_DISPLAY_MODES[];
+          initial: typeof CONST.TOKEN_DISPLAY_MODES.NONE;
+          validationError: "must be a value in CONST.TOKEN_DISPLAY_MODES";
+        },
+        CONST.TOKEN_DISPLAY_MODES | null | undefined,
+        CONST.TOKEN_DISPLAY_MODES,
+        CONST.TOKEN_DISPLAY_MODES
+      >;
+
+      /**
+       * The configuration of the Token's primary resource bar
+       * @defaultValue
+       * ```typescript
+       * { attribute: null }
+       * ```
+       */
+      bar1: fields.SchemaField<{
+        /**
+         * The attribute path within the Token's Actor data which should be displayed
+         * @defaultValue `game?.system.primaryTokenAttribute || null`
+         */
+        attribute: fields.StringField<{ required: true; nullable: true; blank: false; initial: () => string | null }>;
+      }>;
+
+      /**
+       * The configuration of the Token's secondary resource bar
+       * @defaultValue
+       * ```typescript
+       * { attribute: null }
+       * ```
+       */
+      bar2: fields.SchemaField<{
+        /**
+         * The attribute path within the Token's Actor data which should be displayed
+         * @defaultValue `game?.system.secondaryTokenAttribute`
+         */
+        attribute: fields.StringField<{ required: true; nullable: true; blank: false; initial: () => string | null }>;
+      }>;
+
+      /**
+       * Configuration of the light source that this Token emits
+       * @defaultValue see {@link LightData}
+       */
+      light: fields.EmbeddedDataField<typeof LightData>;
+
+      /**
+       * Configuration of sight and vision properties for the Token
+       * @defaultValue see properties
+       */
+      sight: fields.SchemaField<{
+        /**
+         * Should vision computation and rendering be active for this Token?
+         * @defaultValue true, when the token's sight range is greater than 0
+         */
+        enabled: fields.BooleanField<{ initial: () => boolean }>;
+
+        /**
+         * How far in distance units the Token can see without the aid of a light source
+         * @defaultValue `null`
+         */
+        range: fields.NumberField<{ required: true; nullable: false; min: 0; step: 0.01; initial: 0 }>;
+
+        /**
+         * An angle at which the Token can see relative to their direction of facing
+         * @defaultValue `360`
+         */
+        angle: fields.AngleField<{ initial: 360; base: 360 }>;
+
+        /**
+         * The vision mode which is used to render the appearance of the visible area
+         * @defaultValue `"basic"`
+         */
+        visionMode: fields.StringField<{
+          required: true;
+          blank: false;
+          initial: "basic";
+          label: "TOKEN.VisionMode";
+          hint: "TOKEN.VisionModeHint";
+        }>;
+
+        /**
+         * A special color which applies a hue to the visible area
+         * @defaultValue `null`
+         */
+        color: fields.ColorField<{ label: "TOKEN.VisionColor" }>;
+
+        /**
+         * A degree of attenuation which gradually fades the edges of the visible area
+         * @defaultValue `0.1`
+         */
+        attenuation: fields.AlphaField<{
+          initial: 0.1;
+          label: "TOKEN.VisionAttenuation";
+          hint: "TOKEN.VisionAttenuationHint";
+        }>;
+
+        /**
+         * An advanced customization for the perceived brightness of the visible area
+         * @defaultValue `0`
+         */
+        brightness: fields.NumberField<{
+          required: true;
+          nullable: false;
+          initial: 0;
+          min: -1;
+          max: 1;
+          label: "TOKEN.VisionBrightness";
+          hint: "TOKEN.VisionBrightnessHint";
+        }>;
+
+        /**
+         * An advanced customization of color saturation within the visible area
+         * @defaultValue `0`
+         */
+        saturation: fields.NumberField<{
+          required: true;
+          nullable: false;
+          initial: 0;
+          min: -1;
+          max: 1;
+          label: "TOKEN.VisionSaturation";
+          hint: "TOKEN.VisionSaturationHint";
+        }>;
+
+        /**
+         * An advanced customization for contrast within the visible area
+         * @defaultValue `0`
+         */
+        contrast: fields.NumberField<{
+          required: true;
+          nullable: false;
+          initial: 0;
+          min: -1;
+          max: 1;
+          label: "TOKEN.VisionContrast";
+          hint: "TOKEN.VisionContrastHint";
+        }>;
+      }>;
+
+      /**
+       * An array of detection modes which are available to this Token
+       * @defaultValue `[]`
+       */
+      detectionModes: fields.ArrayField<
+        fields.SchemaField<{
+          /**
+           * The id of the detection mode, a key from CONFIG.Canvas.detectionModes
+           * @defaultValue `""`
+           */
+          id: fields.StringField;
+
+          /**
+           * Whether or not this detection mode is presently enabled
+           * @defaultValue `true`
+           */
+          enabled: fields.BooleanField<{ initial: true }>;
+
+          /**
+           * The maximum range in distance units at which this mode can detect targets
+           * @defaultValue `0`
+           */
+          range: fields.NumberField<{ required: true; nullable: false; min: 0; step: 0.01; initial: 0 }>;
+        }>,
+        {
+          validate: () => void;
+        }
+      >;
+
+      /**
+       * @defaultValue see properties
+       */
+      occludable: fields.SchemaField<{
+        /**
+         * @defaultValue `0`
+         */
+        radius: fields.NumberField<{ nullable: false; min: 0; step: 0.01; initial: 0 }>;
+      }>;
+
+      /**
+       * @defaultValue see properties
+       */
+      ring: fields.SchemaField<{
+        /**
+         * @defaultValue `false`
+         */
+        enabled: fields.BooleanField;
+
+        /**
+         * @defaultValue see properties
+         */
+        colors: fields.SchemaField<{
+          /**
+           * @defaultValue `null`
+           */
+          ring: fields.ColorField;
+
+          /**
+           * @defaultValue `null`
+           */
+          background: fields.ColorField;
+        }>;
+
+        /**
+         * @defaultValue `1`
+         */
+        effects: fields.NumberField<{ initial: 1; min: 0; max: 8388607; integer: true }>;
+
+        /**
+         * @defaultValue see properties
+         */
+        subject: fields.SchemaField<{
+          /**
+           * @defaultValue `1`
+           */
+          scale: fields.NumberField<{ initial: 1; min: 0.5 }>;
+
+          /**
+           * @defaultValue `null`
+           */
+          texture: fields.FilePathField<{ categories: ["IMAGE"] }>;
+        }>;
+      }>;
+
+      /**
+       * @internal
+       */
+      _regions: fields.ArrayField<fields.ForeignDocumentField<typeof documents.BaseRegion, { idOnly: true }>>;
+
+      /**
+       * An object of optional key/value flags
+       * @defaultValue `{}`
+       */
+      flags: fields.ObjectField.FlagsField<"Token">;
+    }
+
+    /**
+     * The schema for {@link TokenDocument | `TokenDocument`}. This is the source of truth for how an TokenDocument document
+     * must be structured.
+     *
+     * Foundry uses this schema to validate the structure of the {@link TokenDocument | `TokenDocument`}. For example
+     * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
+     * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+     * starting as an array in the database, initialized as a set, and allows updates with any
+     * iterable.
+     */
+    interface Schema extends SharedProtoSchema {
+      /**
+       * The Token _id which uniquely identifies it within its parent Scene
+       * @defaultValue `null`
+       */
+      _id: fields.DocumentIdField;
+
+      /**
+       * The _id of an Actor document which this Token represents
+       * @defaultValue `null`
+       */
+      actorId: fields.ForeignDocumentField<typeof documents.BaseActor, { idOnly: true }>;
+
+      /**
+       * The ActorDelta embedded document which stores the differences between this
+       * token and the base actor it represents.
+       */
+      delta: ActorDeltaField<typeof documents.BaseActor>;
+
+      /**
+       * The x-coordinate of the top-left corner of the Token
+       * @defaultValue `0`
+       */
+      x: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0; label: "XCoord" }>;
+
+      /**
+       * The y-coordinate of the top-left corner of the Token
+       * @defaultValue `0`
+       */
+      y: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0; label: "YCoord" }>;
+
+      /**
+       * The vertical elevation of the Token, in distance units
+       * @defaultValue `0`
+       */
+      elevation: fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
+
+      /**
+       * An array of effect icon paths which are displayed on the Token
+       * @defaultValue `[]`
+       */
+      effects: fields.ArrayField<fields.StringField>;
+
+      /**
+       * A single icon path which is displayed as an overlay on the Token
+       * @defaultValue `""`
+       */
+      overlayEffect: fields.StringField;
+
+      /**
+       * Is the Token currently hidden from player view?
+       * @defaultValue `false`
+       */
+      hidden: fields.BooleanField;
+    }
+
+    namespace DatabaseOperation {
+      /** Options passed along in Get operations for TokenDocuments */
+      interface Get extends foundry.abstract.types.DatabaseGetOperation<TokenDocument.Parent> {}
+      /** Options passed along in Create operations for TokenDocuments */
+      interface Create<Temporary extends boolean | undefined = boolean | undefined>
+        extends foundry.abstract.types.DatabaseCreateOperation<
+          TokenDocument.CreateData,
+          TokenDocument.Parent,
+          Temporary
+        > {}
+      /** Options passed along in Delete operations for TokenDocuments */
+      interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<TokenDocument.Parent> {}
+      /** Options passed along in Update operations for TokenDocuments */
+      interface Update
+        extends foundry.abstract.types.DatabaseUpdateOperation<TokenDocument.UpdateData, TokenDocument.Parent> {
+          previousActorId?: string | null;
+          animate?: boolean;
+          _priorRegions?: Record<string, string[]>;
+          _priorPosition?: Record<string, { x: number; y: number; elevation: number }>;
+          teleport?: boolean;
+          forced?: boolean;
+        }
+
+      /** Options for {@link TokenDocument.createDocuments} */
+      type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
+        Document.Database.CreateOperation<Create<Temporary>>;
+      /** Options for {@link TokenDocument._preCreateOperation} */
+      type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
+      /** Options for {@link TokenDocument#_preCreate} */
+      type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
+      /** Options for {@link TokenDocument#_onCreate} */
+      type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
+
+      /** Options for {@link TokenDocument.updateDocuments} */
+      type UpdateOperation = Document.Database.UpdateOperation<Update>;
+      /** Options for {@link TokenDocument._preUpdateOperation} */
+      type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
+      /** Options for {@link TokenDocument#_preUpdate} */
+      type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
+      /** Options for {@link TokenDocument#_onUpdate} */
+      type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
+
+      /** Options for {@link TokenDocument.deleteDocuments} */
+      type DeleteOperation = Document.Database.DeleteOperation<Delete>;
+      /** Options for {@link TokenDocument._preDeleteOperation} */
+      type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
+      /** Options for {@link TokenDocument#_preDelete} */
+      type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
+      /** Options for {@link TokenDocument#_onDelete} */
+      type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
+    }
+
+    /**
+     * @deprecated - {@link TokenDocument.DatabaseOperation}
+     */
+    interface DatabaseOperations extends Document.Database.Operations<TokenDocument> {}
+
+    /**
+     * @deprecated - {@link TokenDocument.DatabaseOperation}
+     */
+    interface DatabaseOperations extends Document.Database.Operations<TokenDocument> {}
+
+    /**
+     * @deprecated {@link TokenDocument.CreateData | `TokenDocument.CreateData`}
+     */
+    interface ConstructorData extends TokenDocument.CreateData {}
+
+    /**
+     * @deprecated {@link TokenDocument.implementation | `TokenDocument.ImplementationClass`}
+     */
+    type ConfiguredClass = ImplementationClass;
+
+    /**
+     * @deprecated {@link TokenDocument.Implementation | `TokenDocument.Implementation`}
+     */
+    type ConfiguredInstance = Implementation;
   }
 
   /**
@@ -46,19 +575,19 @@ declare global {
   class TokenDocument extends CanvasDocumentMixin(foundry.documents.BaseToken) {
     static override metadata: TokenDocument.Metadata;
 
-    static get implementation(): TokenDocument.ConfiguredClass;
+    static get implementation(): TokenDocument.ImplementationClass;
 
     /**
      * A singleton collection which holds a reference to the synthetic token actor by its base actor's ID.
      */
-    actors(): Collection<Actor.ConfiguredInstance>;
+    actors(): Collection<Actor.Implementation>;
 
     /**
      * A lazily evaluated reference to the Actor this Token modifies.
      * If actorLink is true, then the document is the primary Actor document.
      * Otherwise the Actor document is a synthetic (ephemeral) document constructed using the Token's ActorDelta.
      */
-    get actor(): Actor.ConfiguredInstance | null;
+    get actor(): Actor.Implementation | null;
 
     /**
      * A reference to the base, World-level Actor this token represents.
@@ -94,7 +623,7 @@ declare global {
     /**
      * The Regions this Token is currently in.
      */
-    regions: Set<RegionDocument.ConfiguredInstance> | null;
+    regions: Set<RegionDocument.Implementation> | null;
 
     // TODO: Same as `DataModel._initialize`
     protected override _initialize(options?: any): void;
@@ -221,7 +750,7 @@ declare global {
      * @param options - The options provided to the update.
      */
     protected _onRelatedUpdate(
-      update?: DeepPartial<Actor.ConfiguredInstance["_source"]>,
+      update?: DeepPartial<Actor.Implementation["_source"]>,
       /** @privateRemarks foundry calls this field operation
        * but it's being passed options (and then ignores them)
        */
@@ -234,7 +763,7 @@ declare global {
      */
     // TODO: There's some very complex handling for non-datamodel Actor system implementations if we want
     static getTrackedAttributes(
-      data?: Actor.ConfiguredInstance["system"],
+      data?: Actor.Implementation["system"],
       _path?: string[],
     ): TrackedAttributesDescription;
 
@@ -272,7 +801,7 @@ declare global {
      * `TokenDocument#actor getter to retrieve the Actor instance that the TokenDocument represents, or use`
      * `TokenDocument#delta#apply to generate a new synthetic Actor instance."`
      */
-    getActor(): Actor.ConfiguredInstance;
+    getActor(): Actor.Implementation;
 
     /**
      * @deprecated since v11

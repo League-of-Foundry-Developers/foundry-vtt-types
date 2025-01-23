@@ -177,6 +177,23 @@ declare namespace BaseAdventure {
   export import DatabaseOperation = Adventure.DatabaseOperation;
 
   /**
+   * @deprecated This type is used by Foundry too vaguely.
+   * In one context the most correct type is after initialization whereas in another one it should be
+   * before but Foundry uses it interchangeably.
+   */
+  type Properties = SchemaField.InitializedData<Schema>;
+
+  /**
+   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseAdventure.Schema>`}
+   */
+  type SchemaField = foundry.data.fields.SchemaField<Schema>;
+
+  /**
+   * @deprecated {@link BaseAdventure.CreateData | `BaseAdventure.CreateData`}
+   */
+  type ConstructorData = BaseAdventure.CreateData;
+
+  /**
    * A helper type to extract the return value for {@link BaseAdventure.contentFields}
    */
   type ContentFields = {
