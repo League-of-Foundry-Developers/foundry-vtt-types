@@ -180,9 +180,9 @@ jobs:
 
           range="$before..${{ github.event.pull_request.head.sha || github.event.after }}"
 
-          echo "Checking if $range can be applied onto the maintenance branch."
+          echo "Checking if can merge $branchName ($branchBase..$branchTip) into maintenance"
 
-          git diff "$range" | git apply --3wa
+          git cherry-pick --empty=drop --allow-empty-message --allow-empty -m 1 "$branchBase..$branchTip"
 
       - name: Install Node
         if: steps.should_skip.outputs.should_skip != 'true'
@@ -232,15 +232,15 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          range="${{ github.event.before }}..${{ github.event.after }}"
+          git checkout -B maintenance upstream/maintenance
 
-          echo "Applying $range onto the maintenance branch."
+          echo "Merging $branchName ($branchBase..$branchTip) into maintenance"
 
-          git diff "$range" | git apply --3wa || (
-            echo "Both cherry-pick and 3way apply failed! This can only happen if there is a bug in checkCanMergeToMaintenance or mergeToMaintenance or someone pushed in between!" && exit 1
-          )
+          # Commit using the GitHub Actions bot user.
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git commit -m "Applied "$range""
+          git cherry-pick --empty=drop --allow-empty-message --allow-empty -m 1 "$branchBase..$branchTip"
 
       - name: Push changes
         uses: ad-m/github-push-action@master
