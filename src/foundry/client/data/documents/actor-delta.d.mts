@@ -1,11 +1,9 @@
-import type { SchemaField } from "../../../common/data/fields.d.mts";
+import type { SchemaField , DataSchema } from "../../../common/data/fields.d.mts";
 import type { BaseActor, BaseActorDelta } from "../../../common/documents/_module.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
 import type { HandleEmptyObject } from "../../../../utils/index.d.mts";
 import type { ConfiguredActorDelta } from "../../../../configuration/index.d.mts";
-
-import DataSchema = foundry.data.fields.DataSchema;
 
 declare global {
   namespace ActorDelta {

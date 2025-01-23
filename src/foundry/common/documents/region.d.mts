@@ -1,8 +1,6 @@
+import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
-import type { BaseShapeData, fields } from "../data/module.d.mts";
-import type * as documents from "./_module.d.mts";
-
-type DataSchema = foundry.data.fields.DataSchema;
+import type { SchemaField } from "../data/fields.d.mts";
 
 /**
  * The Region Document.
@@ -21,89 +19,164 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
 
   static override defineSchema(): BaseRegion.Schema;
 
+  /*
+   * After this point these are not really overridden methods.
+   * They are here because they're static properties but depend on the instance and so can't be
+   * defined DRY-ly while also being easily overridable.
+   */
+
   static " __fvtt_types_internal_document_name_static": "Region";
+
+  static get implementation(): RegionDocument.ImplementationClass;
+
+  override parent: BaseRegion.Parent;
+
+  static createDocuments<Temporary extends boolean | undefined>(
+    data: Array<RegionDocument.Implementation | RegionDocument.CreateData> | undefined,
+    operation?: Document.Database.CreateOperation<RegionDocument.DatabaseOperation.Create<Temporary>>,
+  ): Promise<Array<Document.StoredIf<RegionDocument.Implementation, Temporary>>>;
+
+  static updateDocuments(
+    updates: RegionDocument.UpdateData[] | undefined,
+    operation?: Document.Database.UpdateOperation<RegionDocument.DatabaseOperation.Update>,
+  ): Promise<RegionDocument.Implementation[]>;
+
+  static deleteDocuments(
+    ids: readonly string[] | undefined,
+    operation?: Document.Database.DeleteOperation<RegionDocument.DatabaseOperation.Delete>,
+  ): Promise<RegionDocument.Implementation[]>;
+
+  static create<Temporary extends boolean | undefined>(
+    data: RegionDocument.CreateData | RegionDocument.CreateData[],
+    operation?: Document.Database.CreateOperation<RegionDocument.DatabaseOperation.Create<Temporary>>,
+  ): Promise<RegionDocument.Implementation | undefined>;
+
+  static get(documentId: string, options?: Document.Database.GetOperation): RegionDocument.Implementation | null;
+
+  protected _preCreate(
+    data: RegionDocument.CreateData,
+    options: RegionDocument.DatabaseOperation.PreCreateOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onCreate(
+    data: RegionDocument.CreateData,
+    options: RegionDocument.DatabaseOperation.OnCreateOperation,
+    userId: string,
+  ): void;
+
+  protected static _preCreateOperation(
+    documents: RegionDocument.Implementation[],
+    operation: Document.Database.PreCreateOperationStatic<RegionDocument.DatabaseOperation.Create>,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onCreateOperation(
+    documents: RegionDocument.Implementation[],
+    operation: RegionDocument.DatabaseOperation.Create,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected _preUpdate(
+    changed: RegionDocument.UpdateData,
+    options: RegionDocument.DatabaseOperation.PreUpdateOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onUpdate(
+    changed: RegionDocument.UpdateData,
+    options: RegionDocument.DatabaseOperation.OnUpdateOperation,
+    userId: string,
+  ): void;
+
+  protected static _preUpdateOperation(
+    documents: RegionDocument.Implementation[],
+    operation: RegionDocument.DatabaseOperation.Update,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onUpdateOperation(
+    documents: RegionDocument.Implementation[],
+    operation: RegionDocument.DatabaseOperation.Update,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected _preDelete(
+    options: RegionDocument.DatabaseOperation.PreDeleteOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onDelete(options: RegionDocument.DatabaseOperation.OnDeleteOperation, userId: string): void;
+
+  protected static _preDeleteOperation(
+    documents: RegionDocument.Implementation[],
+    operation: RegionDocument.DatabaseOperation.Delete,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onDeleteOperation(
+    documents: RegionDocument.Implementation[],
+    operation: RegionDocument.DatabaseOperation.Delete,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected static _onCreateDocuments(
+    documents: RegionDocument.Implementation[],
+    context: Document.ModificationContext<RegionDocument.Parent>,
+  ): Promise<void>;
+
+  protected static _onUpdateDocuments(
+    documents: RegionDocument.Implementation[],
+    context: Document.ModificationContext<RegionDocument.Parent>,
+  ): Promise<void>;
+
+  protected static _onDeleteDocuments(
+    documents: RegionDocument.Implementation[],
+    context: Document.ModificationContext<RegionDocument.Parent>,
+  ): Promise<void>;
+
+  protected static _schema: SchemaField<RegionDocument.Schema>;
+
+  static get schema(): SchemaField<RegionDocument.Schema>;
+
+  static validateJoint(data: RegionDocument.Source): void;
+
+  static override fromSource(
+    source: RegionDocument.UpdateData,
+    { strict, ...context }?: DataModel.FromSourceOptions,
+  ): DataModel<RegionDocument.Schema, DataModel.Any | null>;
+
+  static override fromJSON(json: string): DataModel<RegionDocument.Schema, DataModel.Any | null>;
 }
 
 export default BaseRegion;
 
 declare namespace BaseRegion {
-  type Parent = Scene.ConfiguredInstance | null;
+  export import Metadata = RegionDocument.Metadata;
+  export import Parent = RegionDocument.Parent;
+  export import Stored = RegionDocument.Stored;
+  export import Source = RegionDocument.Source;
+  export import PersistedData = RegionDocument.PersistedData;
+  export import CreateData = RegionDocument.CreateData;
+  export import InitializedData = RegionDocument.InitializedData;
+  export import UpdateData = RegionDocument.UpdateData;
+  export import Schema = RegionDocument.Schema;
+  export import DatabaseOperation = RegionDocument.DatabaseOperation;
 
-  type Metadata = Document.MetadataFor<"Region">;
+  /**
+   * @deprecated This type is used by Foundry too vaguely.
+   * In one context the most correct type is after initialization whereas in another one it should be
+   * before but Foundry uses it interchangeably.
+   */
+  type Properties = SchemaField.InitializedData<Schema>;
 
-  type SchemaField = fields.SchemaField<Schema>;
-  type ConstructorData = fields.SchemaField.CreateData<Schema>;
-  type UpdateData = fields.SchemaField.AssignmentData<Schema>;
-  type Properties = fields.SchemaField.InitializedData<Schema>;
-  type Source = fields.SchemaField.PersistedData<Schema>;
+  /**
+   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseRegionDocument.Schema>`}
+   */
+  type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
-  interface Schema extends DataSchema {
-    /**
-     * The Region _id which uniquely identifies it within its parent Scene
-     * @defaultValue `null`
-     */
-    _id: fields.DocumentIdField;
-
-    // TODO(Eon): Should label here be string or "Name"?
-    /**
-     * The name used to describe the Region
-     */
-    name: fields.StringField<{ required: true; blank: false; label: string; textSearch: true }>;
-
-    /**
-     * The color used to highlight the Region
-     */
-    color: fields.ColorField<{ required: true; nullable: false; initial: () => string; label: string; hint: string }>;
-
-    /**
-     * The shapes that make up the Region
-     */
-    shapes: fields.ArrayField<fields.TypedSchemaField<BaseShapeData.Types>>;
-
-    /**
-     * A RegionElevation object which defines the elevation levels where the Region takes effect
-     * @defaultValue see properties
-     */
-    elevation: fields.SchemaField<
-      {
-        /**
-         * The bottom elevation level where the Region begins to take effect
-         * @remarks if bottom is `null`, it is treated as `-Infinity`
-         * @defaultValue `null`
-         */
-        bottom: fields.NumberField<{ required: true; label: string; hint: string }>;
-        /**
-         * The top elevation level where the Region's effect ends
-         * @remarks if top is `null`, it is treated as `Infinity`
-         * @defaultValue `null`
-         */
-        top: fields.NumberField<{ required: true; label: string; hint: string }>;
-      },
-      { label: string; hint: string; validate: (d: any) => boolean; validationError: string }
-    >;
-
-    /**
-     * A collection of embedded RegionBehavior objects
-     */
-    behaviors: fields.EmbeddedCollectionField<
-      typeof documents.BaseRegionBehavior,
-      RegionDocument.ConfiguredInstance,
-      { label: string; hint: string }
-    >;
-
-    visibility: fields.NumberField<{
-      required: true;
-      initial: typeof CONST.REGION_VISIBILITY.LAYER;
-      choices: CONST.REGION_VISIBILITY[];
-      label: string;
-      hint: string;
-    }>;
-
-    locked: fields.BooleanField;
-
-    /**
-     * An object of optional key/value flags
-     */
-    flags: fields.ObjectField.FlagsField<"Region">;
-  }
+  /**
+   * @deprecated {@link BaseRegion.CreateData | `BaseRegionDocument.CreateData`}
+   */
+  type ConstructorData = BaseRegion.CreateData;
 }

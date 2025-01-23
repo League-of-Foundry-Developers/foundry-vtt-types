@@ -44,8 +44,6 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
 
   override parent: Adventure.Parent;
 
-  static get TYPES(): BaseAdventure.SubType[];
-
   static createDocuments<Temporary extends boolean | undefined>(
     data: Array<Adventure.Implementation | Adventure.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Adventure.DatabaseOperation.Create<Temporary>>,

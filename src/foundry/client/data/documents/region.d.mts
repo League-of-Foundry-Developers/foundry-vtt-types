@@ -1,22 +1,209 @@
 import type { InexactPartial } from "../../../../utils/index.d.mts";
-import type { DocumentDatabaseOperations } from "../../../common/abstract/document.d.mts";
-import type BaseRegion from "../../../common/documents/region.d.mts";
+import type { BaseShapeData, fields } from "../../../common/data/module.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
+import type { DataSchema } from "../../../common/data/fields.d.mts";
 
 declare global {
   namespace RegionDocument {
-    type Metadata = Document.MetadataFor<"Region">;
+    /**
+     * The implementation of the Region document instance configured through `CONFIG.Region.documentClass` in Foundry and
+     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredRegion | `configuration/ConfiguredRegion`} in fvtt-types.
+     */
+    type Implementation = Document.ConfiguredInstanceForName<"Region">;
 
-    type ConfiguredClass = Document.ConfiguredClassForName<"Region">;
-    type ConfiguredInstance = Document.ConfiguredInstanceForName<"Region">;
+    /**
+     * The implementation of the Region document configured through `CONFIG.Region.documentClass` in Foundry and
+     * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
+     */
+    type ImplementationClass = Document.ConfiguredClassForName<"Region">;
 
-    interface DatabaseOperations extends DocumentDatabaseOperations<RegionDocument> {}
+    /**
+     * A document's metadata is special information about the document ranging anywhere from its name,
+     * whether it's indexed, or to the permissions a user has over it.
+     */
+    interface Metadata extends Document.MetadataFor<"Region"> {}
 
-    // Helpful aliases
-    type ConstructorData = BaseRegion.ConstructorData;
-    type UpdateData = BaseRegion.UpdateData;
-    type Schema = BaseRegion.Schema;
-    type Source = BaseRegion.Source;
+    /**
+     * A document's parent is something that can contain it.
+     * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
+     */
+    type Parent = Scene.Implementation | null;
+
+    /**
+     * An instance of `Region` that comes from the database.
+     */
+    interface Stored extends Document.Stored<RegionDocument.Implementation> {}
+
+    /**
+     * The data put in {@link Document._source | `Document._source`}. This data is what was
+     * persisted to the database and therefore it must be valid JSON.
+     *
+     * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+     * but initialized as a {@link Set | `Set`}.
+     *
+     * Both `Source` and `PersistedData` are equivalent.
+     */
+    interface Source extends PersistedData {}
+
+    /**
+     * The data put in {@link Region._source | `Region._source`}. This data is what was
+     * persisted to the database and therefore it must be valid JSON.
+     *
+     * Both `Source` and `PersistedData` are equivalent.
+     */
+    interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
+
+    /**
+     * The data necessary to create a document. Used in places like {@link Region.create | `Region.create`}
+     * and {@link Region | `new Region(...)`}.
+     *
+     * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
+     * with the right values. This means you can pass a `Set` instance, an array of values,
+     * a generator, or any other iterable.
+     */
+    interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+
+    /**
+     * The data after a {@link Document | `Document`} has been initialized, for example
+     * {@link Region.name | `Region#name`}.
+     *
+     * This is data transformed from {@link Region.Source | `Region.Source`} and turned into more
+     * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+     * persisted to the database as an array of values but at runtime it is a `Set` instance.
+     */
+    interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
+
+    /**
+     * The data used to update a document, for example {@link Region.update | `Region#update`}.
+     * It is a distinct type from {@link Region.CreateData | `DeepPartial<Region.CreateData>`} because
+     * it has different rules for `null` and `undefined`.
+     */
+    interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+    /**
+     * The schema for {@link Region | `Region`}. This is the source of truth for how an Region document
+     * must be structured.
+     *
+     * Foundry uses this schema to validate the structure of the {@link Region | `Region`}. For example
+     * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
+     * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+     * starting as an array in the database, initialized as a set, and allows updates with any
+     * iterable.
+     */
+    interface Schema extends DataSchema {
+      /**
+       * The Region _id which uniquely identifies it within its parent Scene
+       * @defaultValue `null`
+       */
+      _id: fields.DocumentIdField;
+
+      // TODO(Eon): Should label here be string or "Name"?
+      /**
+       * The name used to describe the Region
+       */
+      name: fields.StringField<{ required: true; blank: false; label: string; textSearch: true }>;
+
+      /**
+       * The color used to highlight the Region
+       */
+      color: fields.ColorField<{ required: true; nullable: false; initial: () => string; label: string; hint: string }>;
+
+      /**
+       * The shapes that make up the Region
+       */
+      shapes: fields.ArrayField<fields.TypedSchemaField<BaseShapeData.Types>>;
+
+      /**
+       * A RegionElevation object which defines the elevation levels where the Region takes effect
+       * @defaultValue see properties
+       */
+      elevation: fields.SchemaField<
+        {
+          /**
+           * The bottom elevation level where the Region begins to take effect
+           * @remarks if bottom is `null`, it is treated as `-Infinity`
+           * @defaultValue `null`
+           */
+          bottom: fields.NumberField<{ required: true; label: string; hint: string }>;
+          /**
+           * The top elevation level where the Region's effect ends
+           * @remarks if top is `null`, it is treated as `Infinity`
+           * @defaultValue `null`
+           */
+          top: fields.NumberField<{ required: true; label: string; hint: string }>;
+        },
+        { label: string; hint: string; validate: (d: any) => boolean; validationError: string }
+      >;
+
+      /**
+       * A collection of embedded RegionBehavior objects
+       */
+      behaviors: fields.EmbeddedCollectionField<
+        typeof foundry.documents.BaseRegionBehavior,
+        RegionDocument.Implementation,
+        { label: string; hint: string }
+      >;
+
+      visibility: fields.NumberField<{
+        required: true;
+        initial: typeof CONST.REGION_VISIBILITY.LAYER;
+        choices: CONST.REGION_VISIBILITY[];
+        label: string;
+        hint: string;
+      }>;
+
+      locked: fields.BooleanField;
+
+      /**
+       * An object of optional key/value flags
+       */
+      flags: fields.ObjectField.FlagsField<"Region">;
+    }
+
+    namespace DatabaseOperation {
+      /** Options passed along in Get operations for Regions */
+      interface Get extends foundry.abstract.types.DatabaseGetOperation<RegionDocument.Parent> {}
+      /** Options passed along in Create operations for Regions */
+      interface Create<Temporary extends boolean | undefined = boolean | undefined>
+        extends foundry.abstract.types.DatabaseCreateOperation<
+          RegionDocument.CreateData,
+          RegionDocument.Parent,
+          Temporary
+        > {}
+      /** Options passed along in Delete operations for Regions */
+      interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<RegionDocument.Parent> {}
+      /** Options passed along in Update operations for Regions */
+      interface Update
+        extends foundry.abstract.types.DatabaseUpdateOperation<RegionDocument.UpdateData, RegionDocument.Parent> {}
+
+      /** Options for {@link Region.createDocuments} */
+      type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
+        Document.Database.CreateOperation<Create<Temporary>>;
+      /** Options for {@link Region._preCreateOperation} */
+      type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
+      /** Options for {@link Region#_preCreate} */
+      type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
+      /** Options for {@link Region#_onCreate} */
+      type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
+
+      /** Options for {@link Region.updateDocuments} */
+      type UpdateOperation = Document.Database.UpdateOperation<Update>;
+      /** Options for {@link Region._preUpdateOperation} */
+      type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
+      /** Options for {@link Region#_preUpdate} */
+      type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
+      /** Options for {@link Region#_onUpdate} */
+      type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
+
+      /** Options for {@link Region.deleteDocuments} */
+      type DeleteOperation = Document.Database.DeleteOperation<Delete>;
+      /** Options for {@link Region._preDeleteOperation} */
+      type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
+      /** Options for {@link Region#_preDelete} */
+      type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
+      /** Options for {@link Region#_onDelete} */
+      type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
+    }
 
     interface RegionEvent {
       /** The name of the event */
@@ -98,7 +285,7 @@ declare global {
   class RegionDocument extends ClientDocumentMixin(foundry.documents.BaseRegion) {
     static override metadata: RegionDocument.Metadata;
 
-    static get implementation(): RegionDocument.ConfiguredClass;
+    static get implementation(): RegionDocument.ImplementationClass;
 
     /**
      * Activate the Socket event listeners.

@@ -5,8 +5,7 @@ import type EmbeddedCollection from "../../../common/abstract/embedded-collectio
 import type BaseActor from "../../../common/documents/actor.d.mts";
 import type { fields, PrototypeToken } from "../../../common/data/module.d.mts";
 import type { ConfiguredActor } from "../../../../configuration/index.d.mts";
-
-type DataSchema = foundry.data.fields.DataSchema;
+import type { DataSchema } from "../../../common/data/fields.d.mts";
 
 declare global {
   namespace Actor {

@@ -3,8 +3,7 @@ import type { HandleEmptyObject } from "../../../../utils/index.d.mts";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
-
-type DataSchema = foundry.data.fields.DataSchema;
+import type { DataSchema } from "../../../common/data/fields.d.mts";
 
 declare global {
   namespace Item {

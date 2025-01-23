@@ -30,7 +30,7 @@ declare abstract class BaseRegionBehavior<
   /*
    * After this point these are not really overridden methods.
    * They are here because they're static properties but depend on the instance and so can't be
-   * defined DRY-ly while also being easily overrideable.
+   * defined DRY-ly while also being easily overridable.
    */
 
   static " __fvtt_types_internal_document_name_static": "RegionBehavior";

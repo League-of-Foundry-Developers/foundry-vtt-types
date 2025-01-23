@@ -2,11 +2,10 @@ import type { ConfiguredActiveEffect } from "../../../../configuration/index.d.m
 import type { AnyObject, HandleEmptyObject, InterfaceToObject } from "../../../../utils/index.d.mts";
 import type { DataModel } from "../../../common/abstract/data.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
-import type { DataField } from "../../../common/data/fields.d.mts";
+import type { DataField , DataSchema } from "../../../common/data/fields.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
 import type { ActiveEffectData, EffectDurationData } from "../../../common/documents/_types.d.mts";
 import type BaseActiveEffect from "../../../common/documents/active-effect.d.mts";
-import type { DataSchema } from "./adventure.d.mts";
 
 declare global {
   namespace ActiveEffect {
@@ -40,7 +39,7 @@ declare global {
     /**
      * An instance of `ActiveEffect` that comes from the database.
      */
-    interface Stored extends Document.Stored<Actor.Implementation> {}
+    interface Stored extends Document.Stored<ActiveEffect.Implementation> {}
 
     /**
      * The data put in {@link Document._source | `Document._source`}. This data is what was

@@ -3,8 +3,7 @@ import type { DeepPartial, FixedInstanceType, HandleEmptyObject, InexactPartial 
 import type Document from "../../../common/abstract/document.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
 import type BaseRegionBehavior from "../../../common/documents/region-behavior.d.mts";
-
-type DataSchema = foundry.data.fields.DataSchema;
+import type { DataSchema } from "../../../common/data/fields.d.mts";
 
 declare global {
   namespace RegionBehavior {
@@ -33,12 +32,12 @@ declare global {
      * A document's parent is something that can contain it.
      * For example an `RegionBehavior` can be contained by an `Actor` which makes `Actor` one of its possible parents.
      */
-    type Parent = Region.Implementation | null;
+    type Parent = RegionDocument.Implementation | null;
 
     /**
      * An instance of `RegionBehavior` that comes from the database.
      */
-    interface Stored extends Document.Stored<RegionBehavior.ConfiguredInstance> {}
+    interface Stored extends Document.Stored<RegionBehavior.Implementation> {}
 
     /**
      * The data put in {@link Document._source | `Document._source`}. This data is what was
@@ -215,7 +214,7 @@ declare global {
     foundry.documents.BaseRegionBehavior,
   )<SubType> {
     /** A convenience reference to the RegionDocument which contains this RegionBehavior. */
-    get region(): RegionDocument.ConfiguredInstance | null;
+    get region(): RegionDocument.Implementation | null;
 
     /** A convenience reference to the Scene which contains this RegionBehavior. */
     get scene(): Scene.ConfiguredInstance | null;
