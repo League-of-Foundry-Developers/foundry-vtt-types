@@ -212,31 +212,47 @@ declare global {
     }
 
     namespace DatabaseOperation {
-      interface Get extends foundry.abstract.types.DatabaseGetOperation<Actor.Parent> {}
+      /** Options passed along in Get operations for Adventures */
+      interface Get extends foundry.abstract.types.DatabaseGetOperation<Adventure.Parent> {}
+      /** Options passed along in Create operations for Adventures */
       interface Create<Temporary extends boolean | undefined = boolean | undefined>
-        extends foundry.abstract.types.DatabaseCreateOperation<Actor.CreateData, Actor.Parent, Temporary> {}
-      interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<Actor.Parent> {}
-      interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Actor.UpdateData, Actor.Parent> {}
+        extends foundry.abstract.types.DatabaseCreateOperation<Adventure.CreateData, Adventure.Parent, Temporary> {}
+      /** Options passed along in Delete operations for Adventures */
+      interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<Adventure.Parent> {}
+      /** Options passed along in Update operations for Adventures */
+      interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Adventure.UpdateData, Adventure.Parent> {}
 
+      /** Options for {@link Adventure.createDocuments} */
       type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
         Document.Database.CreateOperation<Create<Temporary>>;
+      /** Options for {@link Adventure._preCreateOperation} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
+      /** Options for {@link Adventure#_preCreate} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
+      /** Options for {@link Adventure#_onCreate} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
+      /** Options for {@link Adventure.updateDocuments} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
+      /** Options for {@link Adventure._preUpdateOperation} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
+      /** Options for {@link Adventure#_preUpdate} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
+      /** Options for {@link Adventure#_onUpdate} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
+      /** Options for {@link Adventure.deleteDocuments} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
+      /** Options for {@link Adventure._preDeleteOperation} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
+      /** Options for {@link Adventure#_preDelete} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
+      /** Options for {@link Adventure#_onDelete} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 
     /**
-     * @deprecated - {@link Actor.DatabaseOperation}
+     * @deprecated - {@link Adventure.DatabaseOperation}
      */
     interface DatabaseOperations extends Document.Database.Operations<Adventure> {}
 
@@ -257,27 +273,22 @@ declare global {
     }
 
     /**
-     * @deprecated - {@link Actor.DatabaseOperation}
+     * @deprecated - {@link Adventure.DatabaseOperation}
      */
-    interface DatabaseOperations extends Document.Database.Operations<Actor> {}
+    interface DatabaseOperations extends Document.Database.Operations<Adventure> {}
 
     /**
-     * @deprecated {@link Actor.Types | `Actor.SubType`}
+     * @deprecated {@link Adventure.CreateData | `Adventure.CreateData`}
      */
-    type TypeNames = Actor.SubType;
+    interface ConstructorData extends Adventure.CreateData {}
 
     /**
-     * @deprecated {@link Actor.CreateData | `Actor.CreateData`}
-     */
-    interface ConstructorData extends Actor.CreateData {}
-
-    /**
-     * @deprecated {@link Actor.implementation | `Actor.ImplementationClass`}
+     * @deprecated {@link Adventure.implementation | `Adventure.ImplementationClass`}
      */
     type ConfiguredClass = ImplementationClass;
 
     /**
-     * @deprecated {@link Actor.Implementation | `Actor.Implementation`}
+     * @deprecated {@link Adventure.Implementation | `Adventure.Implementation`}
      */
     type ConfiguredInstance = Implementation;
   }
