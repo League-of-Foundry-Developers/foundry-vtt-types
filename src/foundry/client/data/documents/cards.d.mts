@@ -1,22 +1,245 @@
-import type { DeepPartial, InexactPartial } from "../../../../utils/index.d.mts";
+import type { ConfiguredCards } from "../../../../configuration/index.d.mts";
+import type { DeepPartial, HandleEmptyObject, InexactPartial } from "../../../../utils/index.d.mts";
+import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
+import type { DataSchema } from "../../../common/data/fields.d.mts";
+import type { fields } from "../../../common/data/module.d.mts";
 import type BaseCards from "../../../common/documents/cards.d.mts";
 
 declare global {
   namespace Cards {
-    type Metadata = Document.MetadataFor<"Cards">;
+    /**
+     * The implementation of the Cards document instance configured through `CONFIG.Cards.documentClass` in Foundry and
+     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredCards | `configuration/ConfiguredCards`} in fvtt-types.
+     */
+    type Implementation = Document.ConfiguredInstanceForName<"Cards">;
 
-    type ConfiguredClass = Document.ConfiguredClassForName<"Cards">;
-    type ConfiguredInstance = Document.ConfiguredInstanceForName<"Cards">;
+    /**
+     * The implementation of the Cards document configured through `CONFIG.Cards.documentClass` in Foundry and
+     * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
+     */
+    type ImplementationClass = Document.ConfiguredClassForName<"Cards">;
 
-    interface DatabaseOperations extends Document.Database.Operations<Cards> {}
+    /**
+     * A document's metadata is special information about the document ranging anywhere from its name,
+     * whether it's indexed, or to the permissions a user has over it.
+     */
+    interface Metadata extends Document.MetadataFor<"Cards"> {}
 
-    // Helpful aliases
-    type TypeNames = BaseCards.TypeNames;
-    type ConstructorData = BaseCards.ConstructorData;
-    type UpdateData = BaseCards.UpdateData;
-    type Schema = BaseCards.Schema;
-    type Source = BaseCards.Source;
+    type SubType = Game.Model.TypeNames<"Cards">;
+    type OfType<Type extends SubType> = HandleEmptyObject<ConfiguredCards<Type>, Cards<SubType>>;
+
+    /**
+     * A document's parent is something that can contain it.
+     * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
+     */
+    type Parent = null;
+
+    /**
+     * An instance of `Cards` that comes from the database.
+     */
+    interface Stored extends Document.Stored<Cards.Implementation> {}
+
+    /**
+     * The data put in {@link Document._source | `Document._source`}. This data is what was
+     * persisted to the database and therefore it must be valid JSON.
+     *
+     * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+     * but initialized as a {@link Set | `Set`}.
+     *
+     * Both `Source` and `PersistedData` are equivalent.
+     */
+    interface Source extends PersistedData {}
+
+    /**
+     * The data put in {@link Cards._source | `Cards._source`}. This data is what was
+     * persisted to the database and therefore it must be valid JSON.
+     *
+     * Both `Source` and `PersistedData` are equivalent.
+     */
+    interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
+
+    /**
+     * The data necessary to create a document. Used in places like {@link Cards.create | `Cards.create`}
+     * and {@link Cards | `new Cards(...)`}.
+     *
+     * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
+     * with the right values. This means you can pass a `Set` instance, an array of values,
+     * a generator, or any other iterable.
+     */
+    interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+
+    /**
+     * The data after a {@link Document | `Document`} has been initialized, for example
+     * {@link Cards.name | `Cards#name`}.
+     *
+     * This is data transformed from {@link Cards.Source | `Cards.Source`} and turned into more
+     * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+     * persisted to the database as an array of values but at runtime it is a `Set` instance.
+     */
+    interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
+
+    /**
+     * The data used to update a document, for example {@link Cards.update | `Cards#update`}.
+     * It is a distinct type from {@link Cards.CreateData | `DeepPartial<Cards.CreateData>`} because
+     * it has different rules for `null` and `undefined`.
+     */
+    interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+    /**
+     * The schema for {@link Cards | `Cards`}. This is the source of truth for how an Cards document
+     * must be structured.
+     *
+     * Foundry uses this schema to validate the structure of the {@link Cards | `Cards`}. For example
+     * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
+     * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+     * starting as an array in the database, initialized as a set, and allows updates with any
+     * iterable.
+     */
+    interface Schema extends DataSchema {
+      /**
+       * The _id which uniquely identifies this stack of Cards document
+       * @defaultValue `null`
+       */
+      _id: fields.DocumentIdField;
+
+      /** The text name of this stack */
+      name: fields.StringField<{ required: true; blank: false; label: "CARDS.Name"; textSearch: true }>;
+
+      /**
+       * The type of this stack, in BaseCards.metadata.types
+       * @defaultValue `BaseCards.TYPES[0]`
+       */
+      type: fields.DocumentTypeField<typeof BaseCards>;
+
+      /**
+       * A text description of this stack
+       * @defaultValue `""`
+       */
+      description: fields.HTMLField<{ label: "CARDS.Description"; textSearch: true }>;
+
+      /**
+       * An image or video which is used to represent the stack of cards
+       * @defaultValue `BaseCards.DEFAULT_ICON`
+       */
+      img: fields.FilePathField<{
+        categories: ["IMAGE", "VIDEO"];
+        initial: () => typeof BaseCards.DEFAULT_ICON;
+        label: "CARDS.Image";
+      }>;
+
+      /**
+       * Game system data which is defined by the system template.json model
+       * @defaultValue `{}`
+       */
+      system: fields.TypeDataField<typeof BaseCards>;
+
+      /**
+       * A collection of Card documents which currently belong to this stack
+       * @defaultValue `[]`
+       */
+      cards: fields.EmbeddedCollectionField<typeof documents.BaseCard, Cards.ConfiguredInstance>;
+
+      /**
+       * The visible width of this stack
+       * @defaultValue `null`
+       */
+      width: fields.NumberField<{ integer: true; positive: true; label: "Width" }>;
+
+      /**
+       * The visible height of this stack
+       * @defaultValue `null`
+       */
+      height: fields.NumberField<{ integer: true; positive: true; label: "Height" }>;
+
+      /**
+       * The angle of rotation of this stack
+       * @defaultValue `0`
+       */
+      rotation: fields.AngleField<{ label: "Rotation" }>;
+
+      /**
+       * Whether or not to publicly display the number of cards in this stack
+       * @defaultValue `false`
+       */
+      displayCount: fields.BooleanField;
+
+      /**
+       * The _id of a Folder which contains this document
+       * @defaultValue `null`
+       */
+      folder: fields.ForeignDocumentField<typeof documents.BaseFolder>;
+
+      /**
+       * The sort order of this stack relative to others in its parent collection
+       * @defaultValue `0`
+       */
+      sort: fields.IntegerSortField;
+
+      /**
+       * An object which configures ownership of this Cards
+       * @defaultValue see {@link fields.DocumentOwnershipField}
+       */
+      ownership: fields.DocumentOwnershipField;
+
+      /**
+       * An object of optional key/value flags
+       * @defaultValue `{}`
+       */
+      flags: fields.ObjectField.FlagsField<"Cards">;
+
+      /**
+       * An object of creation and access information
+       * @defaultValue see {@link fields.DocumentStatsField}
+       */
+      _stats: fields.DocumentStatsField;
+    }
+
+    namespace DatabaseOperation {
+      /** Options passed along in Get operations for Cardss */
+      interface Get extends foundry.abstract.types.DatabaseGetOperation<Cards.Parent> {}
+      /** Options passed along in Create operations for Cardss */
+      interface Create<Temporary extends boolean | undefined = boolean | undefined>
+        extends foundry.abstract.types.DatabaseCreateOperation<Cards.CreateData, Cards.Parent, Temporary> {
+        animate?: boolean;
+      }
+      /** Options passed along in Delete operations for Cardss */
+      interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<Cards.Parent> {
+        animate?: boolean;
+      }
+      /** Options passed along in Update operations for Cardss */
+      interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Cards.UpdateData, Cards.Parent> {
+        animate?: boolean;
+      }
+
+      /** Options for {@link Cards.createDocuments} */
+      type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
+        Document.Database.CreateOperation<Create<Temporary>>;
+      /** Options for {@link Cards._preCreateOperation} */
+      type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
+      /** Options for {@link Cards#_preCreate} */
+      type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
+      /** Options for {@link Cards#_onCreate} */
+      type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
+
+      /** Options for {@link Cards.updateDocuments} */
+      type UpdateOperation = Document.Database.UpdateOperation<Update>;
+      /** Options for {@link Cards._preUpdateOperation} */
+      type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
+      /** Options for {@link Cards#_preUpdate} */
+      type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
+      /** Options for {@link Cards#_onUpdate} */
+      type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
+
+      /** Options for {@link Cards.deleteDocuments} */
+      type DeleteOperation = Document.Database.DeleteOperation<Delete>;
+      /** Options for {@link Cards._preDeleteOperation} */
+      type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
+      /** Options for {@link Cards#_preDelete} */
+      type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
+      /** Options for {@link Cards#_onDelete} */
+      type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
+    }
 
     type CardsAction = "deal" | "pass";
 
@@ -138,6 +361,26 @@ declare global {
        */
       fromDelete: string[];
     }
+
+    /**
+     * @deprecated {@link Cards.Types | `Cards.SubType`}
+     */
+    type TypeNames = Cards.SubType;
+
+    /**
+     * @deprecated {@link Cards.CreateData | `Cards.CreateData`}
+     */
+    interface ConstructorData extends Cards.CreateData {}
+
+    /**
+     * @deprecated {@link Cards.implementation | `Cards.ImplementationClass`}
+     */
+    type ConfiguredClass = ImplementationClass;
+
+    /**
+     * @deprecated {@link Cards.Implementation | `Cards.Implementation`}
+     */
+    type ConfiguredInstance = Implementation;
   }
 
   /**
@@ -147,7 +390,9 @@ declare global {
    * @see {@link CardStacks}                        The world-level collection of Cards documents
    * @see {@link CardsConfig}                       The Cards configuration application
    */
-  class Cards extends ClientDocumentMixin(foundry.documents.BaseCards) {
+  class Cards<out SubType extends Cards.SubType = Cards.SubType> extends ClientDocumentMixin(
+    foundry.documents.BaseCards,
+  )<SubType> {
     static override metadata: Cards.Metadata;
 
     static get implementation(): Cards.ConfiguredClass;
