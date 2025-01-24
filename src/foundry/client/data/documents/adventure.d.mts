@@ -251,11 +251,6 @@ declare global {
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 
-    /**
-     * @deprecated - {@link Adventure.DatabaseOperation}
-     */
-    interface DatabaseOperations extends Document.Database.Operations<Adventure> {}
-
     interface PrepareImportOptions {
       /**
        * A subset of adventure fields to import.

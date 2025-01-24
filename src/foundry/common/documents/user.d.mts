@@ -1,10 +1,8 @@
-import type { AnyObject, InexactPartial } from "../../../utils/index.d.mts";
+import type { AnyObject } from "../../../utils/index.d.mts";
+import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
-import type * as fields from "../data/fields.d.mts";
-import type BaseActor from "./actor.d.mts";
-
-type DataSchema = foundry.data.fields.DataSchema;
+import type { SchemaField } from "../data/fields.d.mts";
 
 /**
  * The User Document.
@@ -20,8 +18,6 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
    */
   // TODO(LukeAbby): This constructor is a symptom of a circular error.
   // constructor(data: BaseUser.ConstructorData, context?: BaseUser.Parent);
-
-  override parent: BaseUser.Parent;
 
   static override metadata: User.Metadata;
 
@@ -115,128 +111,164 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
    */
   static #canDelete(user: User.ConfiguredInstance, doc: BaseUser): boolean;
 
+  /*
+   * After this point these are not really overridden methods.
+   * They are here because they're static properties but depend on the instance and so can't be
+   * defined DRY-ly while also being easily overridable.
+   */
+
   static " __fvtt_types_internal_document_name_static": "User";
+
+  static get implementation(): User.ImplementationClass;
+
+  override parent: User.Parent;
+
+  static createDocuments<Temporary extends boolean | undefined>(
+    data: Array<User.Implementation | User.CreateData> | undefined,
+    operation?: Document.Database.CreateOperation<User.DatabaseOperation.Create<Temporary>>,
+  ): Promise<Array<Document.StoredIf<User.Implementation, Temporary>>>;
+
+  static updateDocuments(
+    updates: User.UpdateData[] | undefined,
+    operation?: Document.Database.UpdateOperation<User.DatabaseOperation.Update>,
+  ): Promise<User.Implementation[]>;
+
+  static deleteDocuments(
+    ids: readonly string[] | undefined,
+    operation?: Document.Database.DeleteOperation<User.DatabaseOperation.Delete>,
+  ): Promise<User.Implementation[]>;
+
+  static create<Temporary extends boolean | undefined>(
+    data: User.CreateData | User.CreateData[],
+    operation?: Document.Database.CreateOperation<User.DatabaseOperation.Create<Temporary>>,
+  ): Promise<User.Implementation | undefined>;
+
+  static get(documentId: string, options?: Document.Database.GetOperation): User.Implementation | null;
+
+  protected _preCreate(
+    data: User.CreateData,
+    options: User.DatabaseOperation.PreCreateOperationInstance,
+    user: User.Internal.ConfiguredInstance,
+  ): Promise<boolean | void>;
+
+  protected _onCreate(
+    data: User.CreateData,
+    options: User.DatabaseOperation.OnCreateOperation,
+    userId: string,
+  ): void;
+
+  protected static _preCreateOperation(
+    documents: User.Implementation[],
+    operation: Document.Database.PreCreateOperationStatic<User.DatabaseOperation.Create>,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onCreateOperation(
+    documents: User.Implementation[],
+    operation: User.DatabaseOperation.Create,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected _preUpdate(
+    changed: User.UpdateData,
+    options: User.DatabaseOperation.PreUpdateOperationInstance,
+    user: User.Internal.ConfiguredInstance,
+  ): Promise<boolean | void>;
+
+  protected _onUpdate(
+    changed: User.UpdateData,
+    options: User.DatabaseOperation.OnUpdateOperation,
+    userId: string,
+  ): void;
+
+  protected static _preUpdateOperation(
+    documents: User.Implementation[],
+    operation: User.DatabaseOperation.Update,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onUpdateOperation(
+    documents: User.Implementation[],
+    operation: User.DatabaseOperation.Update,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected _preDelete(
+    options: User.DatabaseOperation.PreDeleteOperationInstance,
+    user: User.Internal.ConfiguredInstance,
+  ): Promise<boolean | void>;
+
+  protected _onDelete(options: User.DatabaseOperation.OnDeleteOperation, userId: string): void;
+
+  protected static _preDeleteOperation(
+    documents: User.Implementation[],
+    operation: User.DatabaseOperation.Delete,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onDeleteOperation(
+    documents: User.Implementation[],
+    operation: User.DatabaseOperation.Delete,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected static _onCreateDocuments(
+    documents: User.Implementation[],
+    context: Document.ModificationContext<User.Parent>,
+  ): Promise<void>;
+
+  protected static _onUpdateDocuments(
+    documents: User.Implementation[],
+    context: Document.ModificationContext<User.Parent>,
+  ): Promise<void>;
+
+  protected static _onDeleteDocuments(
+    documents: User.Implementation[],
+    context: Document.ModificationContext<User.Parent>,
+  ): Promise<void>;
+
+  protected static _schema: SchemaField<User.Schema>;
+
+  static get schema(): SchemaField<User.Schema>;
+
+  static validateJoint(data: User.Source): void;
+
+  static override fromSource(
+    source: User.UpdateData,
+    { strict, ...context }?: DataModel.FromSourceOptions,
+  ): DataModel<User.Schema, DataModel.Any | null>;
+
+  static override fromJSON(json: string): DataModel<User.Schema, DataModel.Any | null>;
 }
 
 export default BaseUser;
 
 declare namespace BaseUser {
-  type Parent = null;
-
   export import Metadata = User.Metadata;
+  export import Parent = User.Parent;
+  export import Stored = User.Stored;
+  export import Source = User.Source;
+  export import PersistedData = User.PersistedData;
+  export import CreateData = User.CreateData;
+  export import InitializedData = User.InitializedData;
+  export import UpdateData = User.UpdateData;
+  export import Schema = User.Schema;
+  export import DatabaseOperation = User.DatabaseOperation;
 
-  type Hotbar = Record<number | `${number}`, string>;
-  type Permissions = Record<keyof typeof CONST.USER_PERMISSIONS, boolean>;
+  /**
+   * @deprecated This type is used by Foundry too vaguely.
+   * In one context the most correct type is after initialization whereas in another one it should be
+   * before but Foundry uses it interchangeably.
+   */
+  type Properties = SchemaField.InitializedData<Schema>;
 
-  type SchemaField = fields.SchemaField<Schema>;
-  type ConstructorData = fields.SchemaField.CreateData<Schema>;
-  type UpdateData = fields.SchemaField.AssignmentData<Schema>;
-  type Properties = fields.SchemaField.InitializedData<Schema>;
-  type Source = fields.SchemaField.PersistedData<Schema>;
+  /**
+   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseUser.Schema>`}
+   */
+  type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
-  interface Schema extends DataSchema {
-    /**
-     * The _id which uniquely identifies this User document.
-     * @defaultValue `null`
-     */
-    _id: fields.DocumentIdField;
-
-    /**
-     * The user's name.
-     */
-    name: fields.StringField<{ required: true; blank: false; textSearch: true }, string>;
-
-    /**
-     * The user's role, see CONST.USER_ROLES.
-     * @defaultValue `CONST.USER_ROLES.PLAYER`
-     */
-    role: fields.NumberField<
-      {
-        required: true;
-        choices: CONST.USER_ROLES[];
-        initial: typeof CONST.USER_ROLES.PLAYER;
-        readonly: true;
-      },
-      CONST.USER_ROLES | null | undefined,
-      CONST.USER_ROLES,
-      CONST.USER_ROLES
-    >;
-
-    /**
-     * The user's password. Available only on the Server side for security.
-     * @defaultValue `""`
-     */
-    password: fields.StringField<{ required: true; blank: true }>;
-
-    /**
-     * The user's password salt. Available only on the Server side for security.
-     * @defaultValue `""`
-     */
-    passwordSalt: fields.StringField;
-
-    /**
-     * The user's avatar image.
-     * @defaultValue `null`
-     */
-    avatar: fields.FilePathField<{ categories: "IMAGE"[] }>;
-
-    /**
-     * A linked Actor document that is this user's impersonated character.
-     * @defaultValue `null`
-     */
-    character: fields.ForeignDocumentField<typeof BaseActor>;
-
-    /**
-     * A color to represent this user.
-     * @defaultValue a randomly chosen color string
-     */
-    color: fields.ColorField<{ required: true; nullable: false; initial: () => string }>;
-
-    /**
-     *
-     */
-    pronouns: fields.StringField<{ required: true }>;
-
-    /**
-     * A mapping of hotbar slot number to Macro id for the user.
-     * @defaultValue `{}`
-     */
-    hotbar: fields.ObjectField<
-      {
-        required: true;
-        validate: (bar: AnyObject) => boolean;
-        validationError: "must be a mapping of slots to macro identifiers";
-      },
-      Hotbar | null | undefined,
-      Hotbar,
-      Hotbar
-    >;
-
-    /**
-     * The user's individual permission configuration, see CONST.USER_PERMISSIONS.
-     * @defaultValue `{}`
-     */
-    permissions: fields.ObjectField<
-      {
-        required: true;
-        validate: (perms: AnyObject) => boolean;
-        validationError: "must be a mapping of permission names to booleans";
-      },
-      InexactPartial<Permissions> | null | undefined,
-      InexactPartial<Permissions>,
-      InexactPartial<Permissions>
-    >;
-
-    /**
-     * An object of optional key/value flags.
-     * @defaultValue `{}`
-     */
-    flags: fields.ObjectField.FlagsField<"User">;
-
-    /**
-     * An object of creation and access information
-     * @defaultValue see {@link fields.DocumentStatsField}
-     */
-    _stats: fields.DocumentStatsField;
-  }
+  /**
+   * @deprecated {@link BaseUser.CreateData | `BaseUser.CreateData`}
+   */
+  type ConstructorData = BaseUser.CreateData;
 }

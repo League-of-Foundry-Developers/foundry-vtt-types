@@ -1,18 +1,242 @@
 import type { ConfiguredDocumentClass } from "../../../../types/documentConfiguration.d.mts";
-import type { FixedInstanceType, InexactPartial } from "../../../../utils/index.d.mts";
+import type { AnyObject, FixedInstanceType, InexactPartial } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
-import type { SchemaField } from "../../../common/data/fields.d.mts";
-import type BaseUser from "../../../common/documents/user.d.mts";
+import type { DataSchema } from "../../../common/data/fields.d.mts";
+import type { fields } from "../../../common/data/module.d.mts";
+import type { BaseActor } from "../../../common/documents/_module.d.mts";
 
 declare global {
   namespace User {
-    type Metadata = Document.MetadataFor<"User">;
-
+    /**
+     * The implementation of the User document instance configured through `CONFIG.User.documentClass` in Foundry and
+     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredUser | `configuration/ConfiguredUser`} in fvtt-types.
+     */
     type Implementation = Document.ConfiguredInstanceForName<"User">;
+
+    /**
+     * The implementation of the User document configured through `CONFIG.User.documentClass` in Foundry and
+     * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
+     */
     type ImplementationClass = Document.ConfiguredClassForName<"User">;
 
-    type ConfiguredInstance = Implementation;
-    type ConfiguredClass = ImplementationClass;
+    /**
+     * A document's metadata is special information about the document ranging anywhere from its name,
+     * whether it's indexed, or to the permissions a user has over it.
+     */
+    interface Metadata extends Document.MetadataFor<"User"> {}
+
+    /**
+     * A document's parent is something that can contain it.
+     * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
+     */
+    type Parent = null;
+
+    /**
+     * An instance of `User` that comes from the database.
+     */
+    interface Stored extends Document.Stored<User.Implementation> {}
+
+    /**
+     * The data put in {@link Document._source | `Document._source`}. This data is what was
+     * persisted to the database and therefore it must be valid JSON.
+     *
+     * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+     * but initialized as a {@link Set | `Set`}.
+     *
+     * Both `Source` and `PersistedData` are equivalent.
+     */
+    interface Source extends PersistedData {}
+
+    /**
+     * The data put in {@link User._source | `User._source`}. This data is what was
+     * persisted to the database and therefore it must be valid JSON.
+     *
+     * Both `Source` and `PersistedData` are equivalent.
+     */
+    interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
+
+    /**
+     * The data necessary to create a document. Used in places like {@link User.create | `User.create`}
+     * and {@link User | `new User(...)`}.
+     *
+     * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
+     * with the right values. This means you can pass a `Set` instance, an array of values,
+     * a generator, or any other iterable.
+     */
+    interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+
+    /**
+     * The data after a {@link Document | `Document`} has been initialized, for example
+     * {@link User.name | `User#name`}.
+     *
+     * This is data transformed from {@link User.Source | `User.Source`} and turned into more
+     * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+     * persisted to the database as an array of values but at runtime it is a `Set` instance.
+     */
+    interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
+
+    /**
+     * The data used to update a document, for example {@link User.update | `User#update`}.
+     * It is a distinct type from {@link User.CreateData | `DeepPartial<User.CreateData>`} because
+     * it has different rules for `null` and `undefined`.
+     */
+    interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+    /**
+     * The schema for {@link User | `User`}. This is the source of truth for how an User document
+     * must be structured.
+     *
+     * Foundry uses this schema to validate the structure of the {@link User | `User`}. For example
+     * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
+     * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+     * starting as an array in the database, initialized as a set, and allows updates with any
+     * iterable.
+     */
+  interface Schema extends DataSchema {
+    /**
+     * The _id which uniquely identifies this User document.
+     * @defaultValue `null`
+     */
+    _id: fields.DocumentIdField;
+
+    /**
+     * The user's name.
+     */
+    name: fields.StringField<{ required: true; blank: false; textSearch: true }, string>;
+
+    /**
+     * The user's role, see CONST.USER_ROLES.
+     * @defaultValue `CONST.USER_ROLES.PLAYER`
+     */
+    role: fields.NumberField<
+      {
+        required: true;
+        choices: CONST.USER_ROLES[];
+        initial: typeof CONST.USER_ROLES.PLAYER;
+        readonly: true;
+      },
+      CONST.USER_ROLES | null | undefined,
+      CONST.USER_ROLES,
+      CONST.USER_ROLES
+    >;
+
+    /**
+     * The user's password. Available only on the Server side for security.
+     * @defaultValue `""`
+     */
+    password: fields.StringField<{ required: true; blank: true }>;
+
+    /**
+     * The user's password salt. Available only on the Server side for security.
+     * @defaultValue `""`
+     */
+    passwordSalt: fields.StringField;
+
+    /**
+     * The user's avatar image.
+     * @defaultValue `null`
+     */
+    avatar: fields.FilePathField<{ categories: "IMAGE"[] }>;
+
+    /**
+     * A linked Actor document that is this user's impersonated character.
+     * @defaultValue `null`
+     */
+    character: fields.ForeignDocumentField<typeof BaseActor>;
+
+    /**
+     * A color to represent this user.
+     * @defaultValue a randomly chosen color string
+     */
+    color: fields.ColorField<{ required: true; nullable: false; initial: () => string }>;
+
+    /**
+     *
+     */
+    pronouns: fields.StringField<{ required: true }>;
+
+    /**
+     * A mapping of hotbar slot number to Macro id for the user.
+     * @defaultValue `{}`
+     */
+    hotbar: fields.ObjectField<
+      {
+        required: true;
+        validate: (bar: AnyObject) => boolean;
+        validationError: "must be a mapping of slots to macro identifiers";
+      },
+      Hotbar | null | undefined,
+      Hotbar,
+      Hotbar
+    >;
+
+    /**
+     * The user's individual permission configuration, see CONST.USER_PERMISSIONS.
+     * @defaultValue `{}`
+     */
+    permissions: fields.ObjectField<
+      {
+        required: true;
+        validate: (perms: AnyObject) => boolean;
+        validationError: "must be a mapping of permission names to booleans";
+      },
+      InexactPartial<Permissions> | null | undefined,
+      InexactPartial<Permissions>,
+      InexactPartial<Permissions>
+    >;
+
+    /**
+     * An object of optional key/value flags.
+     * @defaultValue `{}`
+     */
+    flags: fields.ObjectField.FlagsField<"User">;
+
+    /**
+     * An object of creation and access information
+     * @defaultValue see {@link fields.DocumentStatsField}
+     */
+    _stats: fields.DocumentStatsField;
+  }
+
+    namespace DatabaseOperation {
+      /** Options passed along in Get operations for Users */
+      interface Get extends foundry.abstract.types.DatabaseGetOperation<User.Parent> {}
+      /** Options passed along in Create operations for Users */
+      interface Create<Temporary extends boolean | undefined = boolean | undefined>
+        extends foundry.abstract.types.DatabaseCreateOperation<User.CreateData, User.Parent, Temporary> {}
+      /** Options passed along in Delete operations for Users */
+      interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<User.Parent> {}
+      /** Options passed along in Update operations for Users */
+      interface Update extends foundry.abstract.types.DatabaseUpdateOperation<User.UpdateData, User.Parent> {}
+
+      /** Options for {@link User.createDocuments} */
+      type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
+        Document.Database.CreateOperation<Create<Temporary>>;
+      /** Options for {@link User._preCreateOperation} */
+      type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
+      /** Options for {@link User#_preCreate} */
+      type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
+      /** Options for {@link User#_onCreate} */
+      type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
+
+      /** Options for {@link User.updateDocuments} */
+      type UpdateOperation = Document.Database.UpdateOperation<Update>;
+      /** Options for {@link User._preUpdateOperation} */
+      type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
+      /** Options for {@link User#_preUpdate} */
+      type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
+      /** Options for {@link User#_onUpdate} */
+      type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
+
+      /** Options for {@link User.deleteDocuments} */
+      type DeleteOperation = Document.Database.DeleteOperation<Delete>;
+      /** Options for {@link User._preDeleteOperation} */
+      type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
+      /** Options for {@link User#_preDelete} */
+      type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
+      /** Options for {@link User#_onDelete} */
+      type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
+    }
 
     // Note(LukeAbby): This namespace exists to break cycles because of extensive usage of `User` in
     // the `Document` class itself.
@@ -20,15 +244,6 @@ declare global {
       type ConfiguredClass = ConfiguredDocumentClass["User"];
       type ConfiguredInstance = FixedInstanceType<ConfiguredDocumentClass["User"]>;
     }
-
-    interface DatabaseOperations extends Document.Database.Operations<User.Internal.ConfiguredInstance> {}
-
-    // Helpful aliases
-    type ConstructorData = BaseUser.ConstructorData;
-    type UpdateData = BaseUser.UpdateData;
-    type Schema = BaseUser.Schema;
-    type Source = BaseUser.Source;
-    interface PersistedData extends SchemaField.PersistedData<Schema> {}
 
     interface PingData {
       /**
@@ -74,6 +289,26 @@ declare global {
       /** The state of the user's AV settings. */
       av: AVSettingsData;
     }
+
+    /**
+     * @deprecated - {@link User.DatabaseOperation}
+     */
+    interface DatabaseOperations extends Document.Database.Operations<User> {}
+
+    /**
+     * @deprecated {@link User.CreateData | `User.CreateData`}
+     */
+    interface ConstructorData extends User.CreateData {}
+
+    /**
+     * @deprecated {@link User.implementation | `User.ImplementationClass`}
+     */
+    type ConfiguredClass = ImplementationClass;
+
+    /**
+     * @deprecated {@link User.Implementation | `User.Implementation`}
+     */
+    type ConfiguredInstance = Implementation;
   }
 
   /**
