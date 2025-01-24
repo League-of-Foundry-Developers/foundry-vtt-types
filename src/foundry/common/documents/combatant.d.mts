@@ -1,7 +1,7 @@
+import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { DOCUMENT_OWNERSHIP_LEVELS } from "../constants.d.mts";
-import type * as fields from "../data/fields.d.mts";
-import type * as documents from "./_module.mts";
+import type { SchemaField } from "../data/fields.d.mts";
 
 type DataSchema = foundry.data.fields.DataSchema;
 
@@ -12,15 +12,15 @@ type DataSchema = foundry.data.fields.DataSchema;
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
-declare abstract class BaseCombatant extends Document<"Combatant", BaseCombatant.Schema, any> {
+declare abstract class BaseCombatant<
+  out SubType extends BaseCombatant.SubType = BaseCombatant.SubType,
+> extends Document<"Combatant", BaseCombatant._Schema, any> {
   /**
    * @param data    - Initial data from which to construct the Combatant
    * @param context - Construction context options
    */
   // TODO(LukeAbby): This constructor is a symptom of a circular error.
   // constructor(data?: BaseCombatant.ConstructorData, context?: Document.ConstructionContext<BaseCombatant.Parent>);
-
-  override parent: BaseCombatant.Parent;
 
   static override metadata: BaseCombatant.Metadata;
 
@@ -40,88 +40,179 @@ declare abstract class BaseCombatant extends Document<"Combatant", BaseCombatant
 
   override getUserLevel(user?: User.ConfiguredInstance): DOCUMENT_OWNERSHIP_LEVELS | null;
 
+  /*
+   * After this point these are not really overridden methods.
+   * They are here because they're static properties but depend on the instance and so can't be
+   * defined DRY-ly while also being easily overridable.
+   */
+
   static " __fvtt_types_internal_document_name_static": "Combatant";
+
+  static get implementation(): Combatant.ImplementationClass;
+
+  override system: Document.SystemFor<"Combatant", SubType>;
+
+  override parent: BaseCombatant.Parent;
+
+  static get TYPES(): BaseCombatant.SubType[];
+
+  static createDocuments<Temporary extends boolean | undefined>(
+    data: Array<Combatant.Implementation | Combatant.CreateData> | undefined,
+    operation?: Document.Database.CreateOperation<Combatant.DatabaseOperation.Create<Temporary>>,
+  ): Promise<Array<Document.StoredIf<Combatant.Implementation, Temporary>>>;
+
+  static updateDocuments(
+    updates: Combatant.UpdateData[] | undefined,
+    operation?: Document.Database.UpdateOperation<Combatant.DatabaseOperation.Update>,
+  ): Promise<Combatant.Implementation[]>;
+
+  static deleteDocuments(
+    ids: readonly string[] | undefined,
+    operation?: Document.Database.DeleteOperation<Combatant.DatabaseOperation.Delete>,
+  ): Promise<Combatant.Implementation[]>;
+
+  static create<Temporary extends boolean | undefined>(
+    data: Combatant.CreateData | Combatant.CreateData[],
+    operation?: Document.Database.CreateOperation<Combatant.DatabaseOperation.Create<Temporary>>,
+  ): Promise<Combatant.Implementation | undefined>;
+
+  static get(documentId: string, options?: Document.Database.GetOperation): Combatant.Implementation | null;
+
+  protected _preCreate(
+    data: Combatant.CreateData,
+    options: Combatant.DatabaseOperation.PreCreateOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onCreate(
+    data: Combatant.CreateData,
+    options: Combatant.DatabaseOperation.OnCreateOperation,
+    userId: string,
+  ): void;
+
+  protected static _preCreateOperation(
+    documents: Combatant.Implementation[],
+    operation: Document.Database.PreCreateOperationStatic<Combatant.DatabaseOperation.Create>,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onCreateOperation(
+    documents: Combatant.Implementation[],
+    operation: Combatant.DatabaseOperation.Create,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected _preUpdate(
+    changed: Combatant.UpdateData,
+    options: Combatant.DatabaseOperation.PreUpdateOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onUpdate(
+    changed: Combatant.UpdateData,
+    options: Combatant.DatabaseOperation.OnUpdateOperation,
+    userId: string,
+  ): void;
+
+  protected static _preUpdateOperation(
+    documents: Combatant.Implementation[],
+    operation: Combatant.DatabaseOperation.Update,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onUpdateOperation(
+    documents: Combatant.Implementation[],
+    operation: Combatant.DatabaseOperation.Update,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected _preDelete(
+    options: Combatant.DatabaseOperation.PreDeleteOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onDelete(options: Combatant.DatabaseOperation.OnDeleteOperation, userId: string): void;
+
+  protected static _preDeleteOperation(
+    documents: Combatant.Implementation[],
+    operation: Combatant.DatabaseOperation.Delete,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onDeleteOperation(
+    documents: Combatant.Implementation[],
+    operation: Combatant.DatabaseOperation.Delete,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected static _onCreateDocuments(
+    documents: Combatant.Implementation[],
+    context: Document.ModificationContext<Combatant.Parent>,
+  ): Promise<void>;
+
+  protected static _onUpdateDocuments(
+    documents: Combatant.Implementation[],
+    context: Document.ModificationContext<Combatant.Parent>,
+  ): Promise<void>;
+
+  protected static _onDeleteDocuments(
+    documents: Combatant.Implementation[],
+    context: Document.ModificationContext<Combatant.Parent>,
+  ): Promise<void>;
+
+  protected static _schema: SchemaField<Combatant.Schema>;
+
+  static get schema(): SchemaField<Combatant.Schema>;
+
+  static validateJoint(data: Combatant.Source): void;
+
+  static override fromSource(
+    source: Combatant.UpdateData,
+    { strict, ...context }?: DataModel.FromSourceOptions,
+  ): DataModel<Combatant.Schema, DataModel.Any | null>;
+
+  static override fromJSON(json: string): DataModel<Combatant.Schema, DataModel.Any | null>;
 }
 
 export default BaseCombatant;
 
 declare namespace BaseCombatant {
-  type Parent = Combat.ConfiguredInstance | null;
+  export import Metadata = Combatant.Metadata;
+  export import SubType = Combatant.SubType;
+  export import Parent = Combatant.Parent;
+  export import Stored = Combatant.Stored;
+  export import Source = Combatant.Source;
+  export import PersistedData = Combatant.PersistedData;
+  export import CreateData = Combatant.CreateData;
+  export import InitializedData = Combatant.InitializedData;
+  export import UpdateData = Combatant.UpdateData;
+  export import Schema = Combatant.Schema;
+  export import DatabaseOperation = Combatant.DatabaseOperation;
 
-  type TypeNames = Game.Model.TypeNames<"Combatant">;
-
-  type Metadata = Document.MetadataFor<"Combatant">;
-
-  type SchemaField = fields.SchemaField<Schema>;
-  type ConstructorData = fields.SchemaField.CreateData<Schema>;
-  type UpdateData = fields.SchemaField.AssignmentData<Schema>;
-  type Properties = fields.SchemaField.InitializedData<Schema>;
-  type Source = fields.SchemaField.PersistedData<Schema>;
-
-  interface Schema extends DataSchema {
-    /**
-     * The _id which uniquely identifies this Combatant embedded document
-     * @defaultValue `null`
-     */
-    _id: fields.DocumentIdField;
-
-    type: fields.DocumentTypeField<typeof BaseCombatant, { initial: typeof foundry.CONST.BASE_DOCUMENT_TYPE }>;
-
-    system: fields.TypeDataField<typeof BaseCombatant>;
-
-    /**
-     * The _id of an Actor associated with this Combatant
-     * @defaultValue `null`
-     */
-    actorId: fields.ForeignDocumentField<typeof documents.BaseActor, { label: "COMBAT.CombatantActor"; idOnly: true }>;
-
-    /**
-     * The _id of a Token associated with this Combatant
-     * @defaultValue `null`
-     */
-    tokenId: fields.ForeignDocumentField<typeof documents.BaseToken, { label: "COMBAT.CombatantToken"; idOnly: true }>;
-
-    /**
-     * @defaultValue `null`
-     */
-    sceneId: fields.ForeignDocumentField<typeof documents.BaseScene, { label: "COMBAT.CombatantScene"; idOnly: true }>;
-
-    /**
-     * A customized name which replaces the name of the Token in the tracker
-     * @defaultValue `""`
-     */
-    name: fields.StringField<{ label: "COMBAT.CombatantName"; textSearch: true }>;
-
-    /**
-     * A customized image which replaces the Token image in the tracker
-     * @defaultValue `null`
-     */
-    img: fields.FilePathField<{ categories: "IMAGE"[]; label: "COMBAT.CombatantImage" }>;
-
-    /**
-     * The initiative score for the Combatant which determines its turn order
-     * @defaultValue `null`
-     */
-    initiative: fields.NumberField<{ label: "COMBAT.CombatantInitiative" }>;
-
-    /**
-     * Is this Combatant currently hidden?
-     * @defaultValue `false`
-     */
-    hidden: fields.BooleanField<{ label: "COMBAT.CombatantHidden" }>;
-
-    /**
-     * Has this Combatant been defeated?
-     * @defaultValue `false`
-     */
-    defeated: fields.BooleanField<{ label: "COMBAT.CombatantDefeated" }>;
-
-    /**
-     * An object of optional key/value flags
-     * @defaultValue `{}`
-     */
-    flags: fields.ObjectField.FlagsField<"Combatant">;
-
-    _stats: fields.DocumentStatsField;
+  // The document subclasses override `system` anyways.
+  // There's no point in doing expensive computation work comparing the base class system.
+  /** @internal */
+  interface _Schema extends Combatant.Schema {
+    system: any;
   }
+
+  /**
+   * @deprecated This type is used by Foundry too vaguely.
+   * In one context the most correct type is after initialization whereas in another one it should be
+   * before but Foundry uses it interchangeably.
+   */
+  type Properties = SchemaField.InitializedData<Schema>;
+
+  /** @deprecated {@link BaseCombatant.SubType | `BaseCombatant.SubType`} */
+  type TypeNames = SubType;
+
+  /**
+   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseCombatant.Schema>`}
+   */
+  type SchemaField = foundry.data.fields.SchemaField<Schema>;
+
+  /**
+   * @deprecated {@link BaseCombatant.CreateData | `BaseCombatant.CreateData`}
+   */
+  type ConstructorData = BaseCombatant.CreateData;
 }

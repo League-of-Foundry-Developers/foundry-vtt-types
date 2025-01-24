@@ -1,14 +1,223 @@
-import type { ValueOf } from "../../../../utils/index.d.mts";
+import type { ConfiguredCombatant } from "../../../../configuration/index.d.mts";
+import type { HandleEmptyObject, ValueOf } from "../../../../utils/index.d.mts";
+import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
+import type { DataSchema } from "../../../common/data/fields.d.mts";
+import type { fields } from "../../../common/data/module.d.mts";
 import type BaseCombatant from "../../../common/documents/combatant.d.mts";
 
 declare global {
   namespace Combatant {
-    type Metadata = Document.MetadataFor<"Combatant">;
+    /**
+     * The implementation of the Combatant document instance configured through `CONFIG.Combatant.documentClass` in Foundry and
+     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredCombatant | `configuration/ConfiguredCombatant`} in fvtt-types.
+     */
+    type Implementation = Document.ConfiguredInstanceForName<"Combatant">;
 
-    type ConfiguredClass = Document.ConfiguredClassForName<"Combatant">;
-    type ConfiguredInstance = Document.ConfiguredInstanceForName<"Combatant">;
+    /**
+     * The implementation of the Combatant document configured through `CONFIG.Combatant.documentClass` in Foundry and
+     * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
+     */
+    type ImplementationClass = Document.ConfiguredClassForName<"Combatant">;
 
+    /**
+     * A document's metadata is special information about the document ranging anywhere from its name,
+     * whether it's indexed, or to the permissions a user has over it.
+     */
+    interface Metadata extends Document.MetadataFor<"Combatant"> {}
+
+    type SubType = Game.Model.TypeNames<"Combatant">;
+    type OfType<Type extends SubType> = HandleEmptyObject<ConfiguredCombatant<Type>, Combatant<SubType>>;
+
+    /**
+     * A document's parent is something that can contain it.
+     * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
+     */
+    type Parent = Combat.Implementation | null;
+
+    /**
+     * An instance of `Combatant` that comes from the database.
+     */
+    interface Stored extends Document.Stored<Combatant.Implementation> {}
+
+    /**
+     * The data put in {@link Document._source | `Document._source`}. This data is what was
+     * persisted to the database and therefore it must be valid JSON.
+     *
+     * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+     * but initialized as a {@link Set | `Set`}.
+     *
+     * Both `Source` and `PersistedData` are equivalent.
+     */
+    interface Source extends PersistedData {}
+
+    /**
+     * The data put in {@link Combatant._source | `Combatant._source`}. This data is what was
+     * persisted to the database and therefore it must be valid JSON.
+     *
+     * Both `Source` and `PersistedData` are equivalent.
+     */
+    interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
+
+    /**
+     * The data necessary to create a document. Used in places like {@link Combatant.create | `Combatant.create`}
+     * and {@link Combatant | `new Combatant(...)`}.
+     *
+     * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
+     * with the right values. This means you can pass a `Set` instance, an array of values,
+     * a generator, or any other iterable.
+     */
+    interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+
+    /**
+     * The data after a {@link Document | `Document`} has been initialized, for example
+     * {@link Combatant.name | `Combatant#name`}.
+     *
+     * This is data transformed from {@link Combatant.Source | `Combatant.Source`} and turned into more
+     * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+     * persisted to the database as an array of values but at runtime it is a `Set` instance.
+     */
+    interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
+
+    /**
+     * The data used to update a document, for example {@link Combatant.update | `Combatant#update`}.
+     * It is a distinct type from {@link Combatant.CreateData | `DeepPartial<Combatant.CreateData>`} because
+     * it has different rules for `null` and `undefined`.
+     */
+    interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+    /**
+     * The schema for {@link Combatant | `Combatant`}. This is the source of truth for how an Combatant document
+     * must be structured.
+     *
+     * Foundry uses this schema to validate the structure of the {@link Combatant | `Combatant`}. For example
+     * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
+     * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+     * starting as an array in the database, initialized as a set, and allows updates with any
+     * iterable.
+     */
+
+  interface Schema extends DataSchema {
+    /**
+     * The _id which uniquely identifies this Combatant embedded document
+     * @defaultValue `null`
+     */
+    _id: fields.DocumentIdField;
+
+    type: fields.DocumentTypeField<typeof BaseCombatant, { initial: typeof foundry.CONST.BASE_DOCUMENT_TYPE }>;
+
+    system: fields.TypeDataField<typeof BaseCombatant>;
+
+    /**
+     * The _id of an Actor associated with this Combatant
+     * @defaultValue `null`
+     */
+    actorId: fields.ForeignDocumentField<typeof documents.BaseActor, { label: "COMBAT.CombatantActor"; idOnly: true }>;
+
+    /**
+     * The _id of a Token associated with this Combatant
+     * @defaultValue `null`
+     */
+    tokenId: fields.ForeignDocumentField<typeof documents.BaseToken, { label: "COMBAT.CombatantToken"; idOnly: true }>;
+
+    /**
+     * @defaultValue `null`
+     */
+    sceneId: fields.ForeignDocumentField<typeof documents.BaseScene, { label: "COMBAT.CombatantScene"; idOnly: true }>;
+
+    /**
+     * A customized name which replaces the name of the Token in the tracker
+     * @defaultValue `""`
+     */
+    name: fields.StringField<{ label: "COMBAT.CombatantName"; textSearch: true }>;
+
+    /**
+     * A customized image which replaces the Token image in the tracker
+     * @defaultValue `null`
+     */
+    img: fields.FilePathField<{ categories: "IMAGE"[]; label: "COMBAT.CombatantImage" }>;
+
+    /**
+     * The initiative score for the Combatant which determines its turn order
+     * @defaultValue `null`
+     */
+    initiative: fields.NumberField<{ label: "COMBAT.CombatantInitiative" }>;
+
+    /**
+     * Is this Combatant currently hidden?
+     * @defaultValue `false`
+     */
+    hidden: fields.BooleanField<{ label: "COMBAT.CombatantHidden" }>;
+
+    /**
+     * Has this Combatant been defeated?
+     * @defaultValue `false`
+     */
+    defeated: fields.BooleanField<{ label: "COMBAT.CombatantDefeated" }>;
+
+    /**
+     * An object of optional key/value flags
+     * @defaultValue `{}`
+     */
+    flags: fields.ObjectField.FlagsField<"Combatant">;
+
+    _stats: fields.DocumentStatsField;
+  }
+
+    namespace DatabaseOperation {
+      /** Options passed along in Get operations for Combatants */
+      interface Get extends foundry.abstract.types.DatabaseGetOperation<Combatant.Parent> {}
+      /** Options passed along in Create operations for Combatants */
+      interface Create<Temporary extends boolean | undefined = boolean | undefined>
+        extends foundry.abstract.types.DatabaseCreateOperation<
+          Combatant.CreateData,
+          Combatant.Parent,
+          Temporary
+        > {
+        combatTurn?: number;
+      }
+      /** Options passed along in Delete operations for Combatants */
+      interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<Combatant.Parent> {
+        combatTurn?: number;
+      }
+      /** Options passed along in Update operations for Combatants */
+      interface Update
+        extends foundry.abstract.types.DatabaseUpdateOperation<Combatant.UpdateData, Combatant.Parent> {
+        combatTurn?: number;
+      }
+
+      /** Options for {@link Combatant.createDocuments} */
+      type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
+        Document.Database.CreateOperation<Create<Temporary>>;
+      /** Options for {@link Combatant._preCreateOperation} */
+      type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
+      /** Options for {@link Combatant#_preCreate} */
+      type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
+      /** Options for {@link Combatant#_onCreate} */
+      type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
+
+      /** Options for {@link Combatant.updateDocuments} */
+      type UpdateOperation = Document.Database.UpdateOperation<Update>;
+      /** Options for {@link Combatant._preUpdateOperation} */
+      type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
+      /** Options for {@link Combatant#_preUpdate} */
+      type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
+      /** Options for {@link Combatant#_onUpdate} */
+      type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
+
+      /** Options for {@link Combatant.deleteDocuments} */
+      type DeleteOperation = Document.Database.DeleteOperation<Delete>;
+      /** Options for {@link Combatant._preDeleteOperation} */
+      type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
+      /** Options for {@link Combatant#_preDelete} */
+      type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
+      /** Options for {@link Combatant#_onDelete} */
+      type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
+    }
+
+    /**
+     * @deprecated - {@link Combatant.DatabaseOperation}
+     */
     interface DatabaseOperations
       extends Document.Database.Operations<
         Combatant,
@@ -17,12 +226,25 @@ declare global {
         { combatTurn: number }
       > {}
 
-    // Helpful aliases
-    type TypeNames = BaseCombatant.TypeNames;
-    type ConstructorData = BaseCombatant.ConstructorData;
-    type UpdateData = BaseCombatant.UpdateData;
-    type Schema = BaseCombatant.Schema;
-    type Source = BaseCombatant.Source;
+    /**
+     * @deprecated {@link Combatant.Types | `Combatant.SubType`}
+     */
+    type TypeNames = Combatant.SubType;
+
+    /**
+     * @deprecated {@link Combatant.CreateData | `Combatant.CreateData`}
+     */
+    interface ConstructorData extends Combatant.CreateData {}
+
+    /**
+     * @deprecated {@link Combatant.implementation | `Combatant.ImplementationClass`}
+     */
+    type ConfiguredClass = ImplementationClass;
+
+    /**
+     * @deprecated {@link Combatant.Implementation | `Combatant.Implementation`}
+     */
+    type ConfiguredInstance = Implementation;
   }
 
   /**
@@ -31,7 +253,9 @@ declare global {
    * @see {@link Combat}                    The Combat document which contains Combatant embedded documents
    * @see {@link CombatantConfig}        The Combatant configuration application
    */
-  class Combatant extends ClientDocumentMixin(foundry.documents.BaseCombatant) {
+  class Combatant<out SubType extends Combatant.SubType = Combatant.SubType> extends ClientDocumentMixin(
+    foundry.documents.BaseCombatant,
+  )<SubType> {
     static override metadata: Combatant.Metadata;
 
     static get implementation(): Combatant.ConfiguredClass;
