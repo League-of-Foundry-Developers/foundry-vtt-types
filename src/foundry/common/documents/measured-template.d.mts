@@ -1,9 +1,7 @@
 import type { InexactPartial } from "../../../utils/index.d.mts";
+import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
-import type * as fields from "../data/fields.d.mts";
-import type * as documents from "./_module.mts";
-
-type DataSchema = foundry.data.fields.DataSchema;
+import type { SchemaField } from "../data/fields.d.mts";
 
 /**
  * The Document definition for a MeasuredTemplate.
@@ -22,8 +20,6 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
   //   data?: BaseMeasuredTemplate.ConstructorData,
   //   context?: Document.ConstructionContext<BaseMeasuredTemplate.Parent>,
   // );
-
-  override parent: BaseMeasuredTemplate.Parent;
 
   static override metadata: BaseMeasuredTemplate.Metadata;
 
@@ -62,111 +58,167 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
     }>,
   ): boolean;
 
+  /*
+   * After this point these are not really overridden methods.
+   * They are here because they're static properties but depend on the instance and so can't be
+   * defined DRY-ly while also being easily overridable.
+   */
+
   static " __fvtt_types_internal_document_name_static": "MeasuredTemplate";
+
+  static get implementation(): MeasuredTemplateDocument.ImplementationClass;
+
+  override parent: MeasuredTemplateDocument.Parent;
+
+  static createDocuments<Temporary extends boolean | undefined>(
+    data: Array<MeasuredTemplateDocument.Implementation | MeasuredTemplateDocument.CreateData> | undefined,
+    operation?: Document.Database.CreateOperation<MeasuredTemplateDocument.DatabaseOperation.Create<Temporary>>,
+  ): Promise<Array<Document.StoredIf<MeasuredTemplateDocument.Implementation, Temporary>>>;
+
+  static updateDocuments(
+    updates: MeasuredTemplateDocument.UpdateData[] | undefined,
+    operation?: Document.Database.UpdateOperation<MeasuredTemplateDocument.DatabaseOperation.Update>,
+  ): Promise<MeasuredTemplateDocument.Implementation[]>;
+
+  static deleteDocuments(
+    ids: readonly string[] | undefined,
+    operation?: Document.Database.DeleteOperation<MeasuredTemplateDocument.DatabaseOperation.Delete>,
+  ): Promise<MeasuredTemplateDocument.Implementation[]>;
+
+  static create<Temporary extends boolean | undefined>(
+    data: MeasuredTemplateDocument.CreateData | MeasuredTemplateDocument.CreateData[],
+    operation?: Document.Database.CreateOperation<MeasuredTemplateDocument.DatabaseOperation.Create<Temporary>>,
+  ): Promise<MeasuredTemplateDocument.Implementation | undefined>;
+
+  static get(
+    documentId: string,
+    options?: Document.Database.GetOperation,
+  ): MeasuredTemplateDocument.Implementation | null;
+
+  protected _preCreate(
+    data: MeasuredTemplateDocument.CreateData,
+    options: MeasuredTemplateDocument.DatabaseOperation.PreCreateOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onCreate(
+    data: MeasuredTemplateDocument.CreateData,
+    options: MeasuredTemplateDocument.DatabaseOperation.OnCreateOperation,
+    userId: string,
+  ): void;
+
+  protected static _preCreateOperation(
+    documents: MeasuredTemplateDocument.Implementation[],
+    operation: Document.Database.PreCreateOperationStatic<MeasuredTemplateDocument.DatabaseOperation.Create>,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onCreateOperation(
+    documents: MeasuredTemplateDocument.Implementation[],
+    operation: MeasuredTemplateDocument.DatabaseOperation.Create,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected _preUpdate(
+    changed: MeasuredTemplateDocument.UpdateData,
+    options: MeasuredTemplateDocument.DatabaseOperation.PreUpdateOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onUpdate(
+    changed: MeasuredTemplateDocument.UpdateData,
+    options: MeasuredTemplateDocument.DatabaseOperation.OnUpdateOperation,
+    userId: string,
+  ): void;
+
+  protected static _preUpdateOperation(
+    documents: MeasuredTemplateDocument.Implementation[],
+    operation: MeasuredTemplateDocument.DatabaseOperation.Update,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onUpdateOperation(
+    documents: MeasuredTemplateDocument.Implementation[],
+    operation: MeasuredTemplateDocument.DatabaseOperation.Update,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected _preDelete(
+    options: MeasuredTemplateDocument.DatabaseOperation.PreDeleteOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onDelete(options: MeasuredTemplateDocument.DatabaseOperation.OnDeleteOperation, userId: string): void;
+
+  protected static _preDeleteOperation(
+    documents: MeasuredTemplateDocument.Implementation[],
+    operation: MeasuredTemplateDocument.DatabaseOperation.Delete,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onDeleteOperation(
+    documents: MeasuredTemplateDocument.Implementation[],
+    operation: MeasuredTemplateDocument.DatabaseOperation.Delete,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected static _onCreateDocuments(
+    documents: MeasuredTemplateDocument.Implementation[],
+    context: Document.ModificationContext<MeasuredTemplateDocument.Parent>,
+  ): Promise<void>;
+
+  protected static _onUpdateDocuments(
+    documents: MeasuredTemplateDocument.Implementation[],
+    context: Document.ModificationContext<MeasuredTemplateDocument.Parent>,
+  ): Promise<void>;
+
+  protected static _onDeleteDocuments(
+    documents: MeasuredTemplateDocument.Implementation[],
+    context: Document.ModificationContext<MeasuredTemplateDocument.Parent>,
+  ): Promise<void>;
+
+  protected static _schema: SchemaField<MeasuredTemplateDocument.Schema>;
+
+  static get schema(): SchemaField<MeasuredTemplateDocument.Schema>;
+
+  static validateJoint(data: MeasuredTemplateDocument.Source): void;
+
+  static override fromSource(
+    source: MeasuredTemplateDocument.UpdateData,
+    { strict, ...context }?: DataModel.FromSourceOptions,
+  ): DataModel<MeasuredTemplateDocument.Schema, DataModel.Any | null>;
+
+  static override fromJSON(json: string): DataModel<MeasuredTemplateDocument.Schema, DataModel.Any | null>;
 }
 
 export default BaseMeasuredTemplate;
 
 declare namespace BaseMeasuredTemplate {
-  type Parent = Scene.ConfiguredInstance | null;
+  export import Metadata = MeasuredTemplateDocument.Metadata;
+  export import Parent = MeasuredTemplateDocument.Parent;
+  export import Stored = MeasuredTemplateDocument.Stored;
+  export import Source = MeasuredTemplateDocument.Source;
+  export import PersistedData = MeasuredTemplateDocument.PersistedData;
+  export import CreateData = MeasuredTemplateDocument.CreateData;
+  export import InitializedData = MeasuredTemplateDocument.InitializedData;
+  export import UpdateData = MeasuredTemplateDocument.UpdateData;
+  export import Schema = MeasuredTemplateDocument.Schema;
+  export import DatabaseOperation = MeasuredTemplateDocument.DatabaseOperation;
 
-  type Metadata = Document.MetadataFor<"MeasuredTemplate">;
+  /**
+   * @deprecated This type is used by Foundry too vaguely.
+   * In one context the most correct type is after initialization whereas in another one it should be
+   * before but Foundry uses it interchangeably.
+   */
+  type Properties = SchemaField.InitializedData<Schema>;
 
-  type SchemaField = fields.SchemaField<Schema>;
-  type ConstructorData = fields.SchemaField.CreateData<Schema>;
-  type UpdateData = fields.SchemaField.AssignmentData<Schema>;
-  type Properties = fields.SchemaField.InitializedData<Schema>;
-  type Source = fields.SchemaField.PersistedData<Schema>;
+  /**
+   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseMeasuredTemplate.Schema>`}
+   */
+  type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
-  interface Schema extends DataSchema {
-    /**
-     * The _id which uniquely identifies this BaseMeasuredTemplate embedded document
-     * @defaultValue `null`
-     */
-    _id: fields.DocumentIdField;
-
-    /**
-     * The _id of the user who created this measured template
-     * @defaultValue `game?.user?.id`
-     */
-    user: fields.ForeignDocumentField<typeof documents.BaseUser, { initial: () => string }>;
-
-    /**
-     * The value in CONST.MEASURED_TEMPLATE_TYPES which defines the geometry type of this template
-     * @defaultValue `CONST.MEASURED_TEMPLATE_TYPES.CIRCLE`
-     */
-    t: fields.StringField<{
-      required: true;
-      choices: foundry.CONST.MEASURED_TEMPLATE_TYPES[];
-      label: "Type";
-      initial: typeof CONST.MEASURED_TEMPLATE_TYPES.CIRCLE;
-      validationError: "must be a value in CONST.MEASURED_TEMPLATE_TYPES";
-    }>;
-
-    /**
-     * The x-coordinate position of the origin of the template effect
-     * @defaultValue `0`
-     */
-    x: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0; label: "XCoord" }>;
-
-    /**
-     * The y-coordinate position of the origin of the template effect
-     * @defaultValue `0`
-     */
-    y: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0; label: "YCoord" }>;
-
-    /**
-     * The distance of the template effect
-     * @defaultValue `1`
-     */
-    distance: fields.NumberField<{ required: true; positive: true; initial: 1; label: "Distance" }>;
-
-    /**
-     * The angle of rotation for the measured template
-     * @defaultValue `0`
-     */
-    direction: fields.AngleField<{ label: "Direction" }>;
-
-    /**
-     * The angle of effect of the measured template, applies to cone types
-     * @defaultValue `0`
-     */
-    angle: fields.AngleField<{ label: "Angle" }>;
-
-    /**
-     * The width of the measured template, applies to ray types
-     * @defaultValue `null`
-     */
-    width: fields.NumberField<{ integer: true; positive: true; label: "Width" }>;
-
-    /**
-     * A color string used to tint the border of the template shape
-     * @defaultValue `#000000`
-     */
-    borderColor: fields.ColorField<{ initial: "#000000" }>;
-
-    /**
-     * A color string used to tint the fill of the template shape
-     * @defaultValue `#FF0000`
-     */
-    fillColor: fields.ColorField<{ initial: "#FF0000" }>;
-
-    /**
-     * A repeatable tiling texture used to add a texture fill to the template shape
-     * @defaultValue `null`
-     */
-    texture: fields.FilePathField<{ categories: ["IMAGE", "VIDEO"] }>;
-
-    /**
-     * Is the template currently hidden?
-     * @defaultValue `false`
-     */
-    hidden: fields.BooleanField<{ label: "Hidden" }>;
-
-    /**
-     * An object of optional key/value flags
-     * @defaultValue `{}`
-     */
-    flags: fields.ObjectField.FlagsField<"MeasuredTemplate">;
-  }
+  /**
+   * @deprecated {@link BaseMeasuredTemplate.CreateData | `BaseMeasuredTemplate.CreateData`}
+   */
+  type ConstructorData = BaseMeasuredTemplate.CreateData;
 }
