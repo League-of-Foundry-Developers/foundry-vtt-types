@@ -1,14 +1,214 @@
-import type { InexactPartial } from "../../../../utils/index.d.mts";
+import type { ConfiguredCombat } from "../../../../configuration/index.d.mts";
+import type { HandleEmptyObject, InexactPartial } from "../../../../utils/index.d.mts";
+import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
+import type { DataSchema } from "../../../common/data/fields.d.mts";
+import type { fields } from "../../../common/data/module.d.mts";
 import type BaseCombat from "../../../common/documents/combat.d.mts";
 
 declare global {
   namespace Combat {
-    type Metadata = Document.MetadataFor<"Combat">;
+    /**
+     * The implementation of the Combat document instance configured through `CONFIG.Combat.documentClass` in Foundry and
+     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredCombat | `configuration/ConfiguredCombat`} in fvtt-types.
+     */
+    type Implementation = Document.ConfiguredInstanceForName<"Combat">;
 
-    type ConfiguredClass = Document.ConfiguredClassForName<"Combat">;
-    type ConfiguredInstance = Document.ConfiguredInstanceForName<"Combat">;
+    /**
+     * The implementation of the Combat document configured through `CONFIG.Combat.documentClass` in Foundry and
+     * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
+     */
+    type ImplementationClass = Document.ConfiguredClassForName<"Combat">;
 
+    /**
+     * A document's metadata is special information about the document ranging anywhere from its name,
+     * whether it's indexed, or to the permissions a user has over it.
+     */
+    interface Metadata extends Document.MetadataFor<"Combat"> {}
+
+    type SubType = Game.Model.TypeNames<"Combat">;
+    type OfType<Type extends SubType> = HandleEmptyObject<ConfiguredCombat<Type>, Combat<SubType>>;
+
+    /**
+     * A document's parent is something that can contain it.
+     * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
+     */
+    type Parent = Actor.Implementation | Item.Implementation | null;
+
+    /**
+     * An instance of `Combat` that comes from the database.
+     */
+    interface Stored extends Document.Stored<Combat.Implementation> {}
+
+    /**
+     * The data put in {@link Document._source | `Document._source`}. This data is what was
+     * persisted to the database and therefore it must be valid JSON.
+     *
+     * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+     * but initialized as a {@link Set | `Set`}.
+     *
+     * Both `Source` and `PersistedData` are equivalent.
+     */
+    interface Source extends PersistedData {}
+
+    /**
+     * The data put in {@link Combat._source | `Combat._source`}. This data is what was
+     * persisted to the database and therefore it must be valid JSON.
+     *
+     * Both `Source` and `PersistedData` are equivalent.
+     */
+    interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
+
+    /**
+     * The data necessary to create a document. Used in places like {@link Combat.create | `Combat.create`}
+     * and {@link Combat | `new Combat(...)`}.
+     *
+     * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
+     * with the right values. This means you can pass a `Set` instance, an array of values,
+     * a generator, or any other iterable.
+     */
+    interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+
+    /**
+     * The data after a {@link Document | `Document`} has been initialized, for example
+     * {@link Combat.name | `Combat#name`}.
+     *
+     * This is data transformed from {@link Combat.Source | `Combat.Source`} and turned into more
+     * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+     * persisted to the database as an array of values but at runtime it is a `Set` instance.
+     */
+    interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
+
+    /**
+     * The data used to update a document, for example {@link Combat.update | `Combat#update`}.
+     * It is a distinct type from {@link Combat.CreateData | `DeepPartial<Combat.CreateData>`} because
+     * it has different rules for `null` and `undefined`.
+     */
+    interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+    /**
+     * The schema for {@link Combat | `Combat`}. This is the source of truth for how an Combat document
+     * must be structured.
+     *
+     * Foundry uses this schema to validate the structure of the {@link Combat | `Combat`}. For example
+     * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
+     * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+     * starting as an array in the database, initialized as a set, and allows updates with any
+     * iterable.
+     */
+    interface Schema extends DataSchema {
+      /**
+       * The _id which uniquely identifies this Combat document
+       * @defaultValue `null`
+       */
+      _id: fields.DocumentIdField;
+
+      type: fields.DocumentTypeField<typeof BaseCombat, { initial: typeof foundry.CONST.BASE_DOCUMENT_TYPE }>;
+
+      system: fields.TypeDataField<typeof BaseCombat>;
+
+      /**
+       * The _id of a Scene within which this Combat occurs
+       * @defaultValue `null`
+       */
+      scene: fields.ForeignDocumentField<typeof documents.BaseScene>;
+
+      /**
+       * A Collection of Combatant embedded Documents
+       * @defaultValue `[]`
+       */
+      combatants: fields.EmbeddedCollectionField<typeof documents.BaseCombatant, Combat.ConfiguredInstance>;
+
+      /**
+       * Is the Combat encounter currently active?
+       * @defaultValue `false`
+       */
+      active: fields.BooleanField;
+
+      /**
+       * The current round of the Combat encounter
+       * @defaultValue `0`
+       */
+      round: fields.NumberField<{
+        required: true;
+        nullable: false;
+        integer: true;
+        min: 0;
+        initial: 0;
+        label: "COMBAT.Round";
+      }>;
+
+      /**
+       * The current turn in the Combat round
+       * @defaultValue `null`
+       */
+      turn: fields.NumberField<{ required: true; integer: true; min: 0; initial: null; label: "COMBAT.Turn" }>;
+
+      /**
+       * The current sort order of this Combat relative to others in the same Scene
+       * @defaultValue `0`
+       */
+      sort: fields.IntegerSortField;
+
+      /**
+       * An object of optional key/value flags
+       * @defaultValue `{}`
+       */
+      flags: fields.ObjectField.FlagsField<"Combat">;
+
+      /**
+       * An object of creation and access information
+       * @defaultValue see {@link fields.DocumentStatsField}
+       */
+      _stats: fields.DocumentStatsField;
+    }
+    namespace DatabaseOperation {
+      /** Options passed along in Get operations for Combats */
+      interface Get extends foundry.abstract.types.DatabaseGetOperation<Combat.Parent> {}
+      /** Options passed along in Create operations for Combats */
+      interface Create<Temporary extends boolean | undefined = boolean | undefined>
+        extends foundry.abstract.types.DatabaseCreateOperation<Combat.CreateData, Combat.Parent, Temporary> {}
+      /** Options passed along in Delete operations for Combats */
+      interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<Combat.Parent> {}
+      /** Options passed along in Update operations for Combats */
+      interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Combat.UpdateData, Combat.Parent> {
+        direction: -1 | 1;
+        worldTime: { delta: number };
+        turnEvents: boolean;
+      }
+
+      /** Options for {@link Combat.createDocuments} */
+      type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
+        Document.Database.CreateOperation<Create<Temporary>>;
+      /** Options for {@link Combat._preCreateOperation} */
+      type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
+      /** Options for {@link Combat#_preCreate} */
+      type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
+      /** Options for {@link Combat#_onCreate} */
+      type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
+
+      /** Options for {@link Combat.updateDocuments} */
+      type UpdateOperation = Document.Database.UpdateOperation<Update>;
+      /** Options for {@link Combat._preUpdateOperation} */
+      type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
+      /** Options for {@link Combat#_preUpdate} */
+      type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
+      /** Options for {@link Combat#_onUpdate} */
+      type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
+
+      /** Options for {@link Combat.deleteDocuments} */
+      type DeleteOperation = Document.Database.DeleteOperation<Delete>;
+      /** Options for {@link Combat._preDeleteOperation} */
+      type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
+      /** Options for {@link Combat#_preDelete} */
+      type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
+      /** Options for {@link Combat#_onDelete} */
+      type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
+    }
+
+    /**
+     * @deprecated - {@link Combat.DatabaseOperation}
+     */
     /* eslint-disable @typescript-eslint/no-empty-object-type */
     interface DatabaseOperations
       extends Document.Database.Operations<
@@ -19,12 +219,25 @@ declare global {
       > {}
     /* eslint-enable @typescript-eslint/no-empty-object-type */
 
-    // Helpful aliases
-    type TypeNames = BaseCombat.TypeNames;
-    type ConstructorData = BaseCombat.ConstructorData;
-    type UpdateData = BaseCombat.UpdateData;
-    type Schema = BaseCombat.Schema;
-    type Source = BaseCombat.Source;
+    /**
+     * @deprecated {@link Combat.Types | `Combat.SubType`}
+     */
+    type TypeNames = Combat.SubType;
+
+    /**
+     * @deprecated {@link Combat.CreateData | `Combat.CreateData`}
+     */
+    interface ConstructorData extends Combat.CreateData {}
+
+    /**
+     * @deprecated {@link Combat.implementation | `Combat.ImplementationClass`}
+     */
+    type ConfiguredClass = ImplementationClass;
+
+    /**
+     * @deprecated {@link Combat.Implementation | `Combat.Implementation`}
+     */
+    type ConfiguredInstance = Implementation;
 
     interface InitiativeOptions {
       /**
@@ -63,7 +276,9 @@ declare global {
    * @see {@link Combatant}                     The Combatant embedded document which exists within a Combat document
    * @see {@link CombatConfig}                  The Combat configuration application
    */
-  class Combat extends ClientDocumentMixin(foundry.documents.BaseCombat) {
+  class Combat<out SubType extends Combat.SubType = Combat.SubType> extends ClientDocumentMixin(
+    foundry.documents.BaseCombat,
+  )<SubType> {
     static override metadata: Combat.Metadata;
 
     static get implementation(): Combat.ConfiguredClass;

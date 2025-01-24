@@ -1,5 +1,5 @@
 import type { ConfiguredChatMessage } from "../../../../configuration/index.d.mts";
-import type { HandleEmptyObject, InexactPartial } from "../../../../utils/index.d.mts";
+import type { HandleEmptyObject, InexactPartial, InterfaceToObject } from "../../../../utils/index.d.mts";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
@@ -212,7 +212,7 @@ declare global {
        * An object of optional key/value flags
        * @defaultValue `{}`
        */
-      flags: fields.ObjectField.FlagsField<"ChatMessage">;
+      flags: fields.ObjectField.FlagsField<"ChatMessage", InterfaceToObject<CoreFlags>>;
 
       _stats: fields.DocumentStatsField;
     }
@@ -260,6 +260,11 @@ declare global {
       /** Options for {@link ChatMessage#_onDelete} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
+
+    interface CoreFlags {
+      core?: { initiativeRoll?: boolean };
+    }
+
     interface GetSpeakerOptions {
       /** The Scene in which the speaker resides */
       scene: Scene | null;

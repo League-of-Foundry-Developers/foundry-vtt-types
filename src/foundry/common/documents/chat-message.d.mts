@@ -216,6 +216,7 @@ declare namespace BaseChatMessage {
   export import UpdateData = ChatMessage.UpdateData;
   export import Schema = ChatMessage.Schema;
   export import DatabaseOperation = ChatMessage.DatabaseOperation;
+  export import CoreFlags = ChatMessage.CoreFlags;
 
   // The document subclasses override `system` anyways.
   // There's no point in doing expensive computation work comparing the base class system.
