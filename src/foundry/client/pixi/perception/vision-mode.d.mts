@@ -1,8 +1,7 @@
 import type { AnyObject, InexactPartial, SimpleMerge, ValueOf } from "../../../../utils/index.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
+import type { DataSchema } from "../../../common/data/fields.d.mts";
 import DataField = foundry.data.fields.DataField;
-
-type DataSchema = foundry.data.fields.DataSchema;
 
 declare global {
   class ShaderField<

@@ -1,18 +1,14 @@
+import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
-import type * as fields from "../data/fields.d.mts";
-
-type DataSchema = foundry.data.fields.DataSchema;
+import type { SchemaField } from "../data/fields.d.mts";
 
 /**
  * The JournalEntryPage Document.
  * Defines the DataSchema and common behaviors for a JournalEntryPage which are shared between both client and server.
  */
-declare abstract class BaseJournalEntryPage extends Document<"JournalEntryPage", BaseJournalEntryPage.Schema, any> {
-  /**
-   * @privateRemarks Manual override of the return due to TS limitations with static `this`
-   */
-  static get TYPES(): BaseJournalEntryPage.TypeNames[];
-
+declare abstract class BaseJournalEntryPage<
+  out SubType extends BaseJournalEntryPage.SubType = BaseJournalEntryPage.SubType,
+> extends Document<"JournalEntryPage", BaseJournalEntryPage._Schema, any> {
   /**
    * @param data    - Initial data from which to construct the JournalEntryPage.
    * @param context - Construction context options.
@@ -23,10 +19,6 @@ declare abstract class BaseJournalEntryPage extends Document<"JournalEntryPage",
   //   context?: Document.ConstructionContext<BaseJournalEntryPage.Parent>,
   // );
 
-  static " __fvtt_types_internal_document_name_static": "JournalEntryPage";
-
-  override parent: BaseJournalEntryPage.Parent;
-
   _source: BaseJournalEntryPage.Source;
 
   static override metadata: BaseJournalEntryPage.Metadata;
@@ -34,181 +26,180 @@ declare abstract class BaseJournalEntryPage extends Document<"JournalEntryPage",
   static override defineSchema(): BaseJournalEntryPage.Schema;
 
   override getUserLevel(user?: User.ConfiguredInstance): foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
+
+  /*
+   * After this point these are not really overridden methods.
+   * They are here because they're static properties but depend on the instance and so can't be
+   * defined DRY-ly while also being easily overridable.
+   */
+
+  static " __fvtt_types_internal_document_name_static": "JournalEntryPage";
+
+  static get implementation(): JournalEntryPage.ImplementationClass;
+
+  override system: Document.SystemFor<"JournalEntryPage", SubType>;
+
+  override parent: BaseJournalEntryPage.Parent;
+
+  static get TYPES(): BaseJournalEntryPage.SubType[];
+
+  static createDocuments<Temporary extends boolean | undefined>(
+    data: Array<JournalEntryPage.Implementation | JournalEntryPage.CreateData> | undefined,
+    operation?: Document.Database.CreateOperation<JournalEntryPage.DatabaseOperation.Create<Temporary>>,
+  ): Promise<Array<Document.StoredIf<JournalEntryPage.Implementation, Temporary>>>;
+
+  static updateDocuments(
+    updates: JournalEntryPage.UpdateData[] | undefined,
+    operation?: Document.Database.UpdateOperation<JournalEntryPage.DatabaseOperation.Update>,
+  ): Promise<JournalEntryPage.Implementation[]>;
+
+  static deleteDocuments(
+    ids: readonly string[] | undefined,
+    operation?: Document.Database.DeleteOperation<JournalEntryPage.DatabaseOperation.Delete>,
+  ): Promise<JournalEntryPage.Implementation[]>;
+
+  static create<Temporary extends boolean | undefined>(
+    data: JournalEntryPage.CreateData | JournalEntryPage.CreateData[],
+    operation?: Document.Database.CreateOperation<JournalEntryPage.DatabaseOperation.Create<Temporary>>,
+  ): Promise<JournalEntryPage.Implementation | undefined>;
+
+  static get(documentId: string, options?: Document.Database.GetOperation): JournalEntryPage.Implementation | null;
+
+  protected _preCreate(
+    data: JournalEntryPage.CreateData,
+    options: JournalEntryPage.DatabaseOperation.PreCreateOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onCreate(
+    data: JournalEntryPage.CreateData,
+    options: JournalEntryPage.DatabaseOperation.OnCreateOperation,
+    userId: string,
+  ): void;
+
+  protected static _preCreateOperation(
+    documents: JournalEntryPage.Implementation[],
+    operation: Document.Database.PreCreateOperationStatic<JournalEntryPage.DatabaseOperation.Create>,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onCreateOperation(
+    documents: JournalEntryPage.Implementation[],
+    operation: JournalEntryPage.DatabaseOperation.Create,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected _preUpdate(
+    changed: JournalEntryPage.UpdateData,
+    options: JournalEntryPage.DatabaseOperation.PreUpdateOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onUpdate(
+    changed: JournalEntryPage.UpdateData,
+    options: JournalEntryPage.DatabaseOperation.OnUpdateOperation,
+    userId: string,
+  ): void;
+
+  protected static _preUpdateOperation(
+    documents: JournalEntryPage.Implementation[],
+    operation: JournalEntryPage.DatabaseOperation.Update,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onUpdateOperation(
+    documents: JournalEntryPage.Implementation[],
+    operation: JournalEntryPage.DatabaseOperation.Update,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected _preDelete(
+    options: JournalEntryPage.DatabaseOperation.PreDeleteOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onDelete(options: JournalEntryPage.DatabaseOperation.OnDeleteOperation, userId: string): void;
+
+  protected static _preDeleteOperation(
+    documents: JournalEntryPage.Implementation[],
+    operation: JournalEntryPage.DatabaseOperation.Delete,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onDeleteOperation(
+    documents: JournalEntryPage.Implementation[],
+    operation: JournalEntryPage.DatabaseOperation.Delete,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected static _onCreateDocuments(
+    documents: JournalEntryPage.Implementation[],
+    context: Document.ModificationContext<JournalEntryPage.Parent>,
+  ): Promise<void>;
+
+  protected static _onUpdateDocuments(
+    documents: JournalEntryPage.Implementation[],
+    context: Document.ModificationContext<JournalEntryPage.Parent>,
+  ): Promise<void>;
+
+  protected static _onDeleteDocuments(
+    documents: JournalEntryPage.Implementation[],
+    context: Document.ModificationContext<JournalEntryPage.Parent>,
+  ): Promise<void>;
+
+  protected static _schema: SchemaField<JournalEntryPage.Schema>;
+
+  static get schema(): SchemaField<JournalEntryPage.Schema>;
+
+  static validateJoint(data: JournalEntryPage.Source): void;
+
+  static override fromSource(
+    source: JournalEntryPage.UpdateData,
+    { strict, ...context }?: DataModel.FromSourceOptions,
+  ): DataModel<JournalEntryPage.Schema, DataModel.Any | null>;
+
+  static override fromJSON(json: string): DataModel<JournalEntryPage.Schema, DataModel.Any | null>;
 }
 
 export default BaseJournalEntryPage;
 
 declare namespace BaseJournalEntryPage {
-  type Parent = Scene.ConfiguredInstance | null;
+  export import Metadata = JournalEntryPage.Metadata;
+  export import SubType = JournalEntryPage.SubType;
+  export import Parent = JournalEntryPage.Parent;
+  export import Stored = JournalEntryPage.Stored;
+  export import Source = JournalEntryPage.Source;
+  export import PersistedData = JournalEntryPage.PersistedData;
+  export import CreateData = JournalEntryPage.CreateData;
+  export import InitializedData = JournalEntryPage.InitializedData;
+  export import UpdateData = JournalEntryPage.UpdateData;
+  export import Schema = JournalEntryPage.Schema;
+  export import DatabaseOperation = JournalEntryPage.DatabaseOperation;
 
-  type TypeNames = Game.Model.TypeNames<"JournalEntryPage">;
-
-  type Metadata = Document.MetadataFor<"JournalEntryPage">;
-
-  type SchemaField = fields.SchemaField<Schema>;
-  type ConstructorData = fields.SchemaField.CreateData<Schema>;
-  type UpdateData = fields.SchemaField.AssignmentData<Schema>;
-  type Properties = fields.SchemaField.InitializedData<Schema>;
-  type Source = fields.SchemaField.PersistedData<Schema>;
-
-  interface Schema extends DataSchema {
-    /**
-     * The _id which uniquely identifies this JournalEntryPage embedded document.
-     * @defaultValue `null`
-     */
-    _id: fields.DocumentIdField;
-
-    /**
-     * The text name of this page.
-     */
-    name: fields.StringField<{ required: true; blank: false; label: "JOURNALENTRYPAGE.PageTitle"; textSearch: true }>;
-
-    /**
-     * The type of this page, in {@link BaseJournalEntryPage.TYPES}.
-     * @defaultValue `"text"`
-     */
-    type: fields.DocumentTypeField<
-      typeof BaseJournalEntryPage,
-      {
-        initial: "text";
-      }
-    >;
-
-    /**
-     * System-specific data.
-     * @defaultValue `{}`
-     */
-    system: fields.TypeDataField<typeof BaseJournalEntryPage>;
-
-    /**
-     * Data that control's the display of this page's title.
-     */
-    title: fields.SchemaField<{
-      /**
-       * Whether to render the page's title in the overall journal view.
-       * @defaultValue `true`
-       */
-      show: fields.BooleanField<{ initial: true }>;
-
-      /**
-       * The heading level to render this page's title at in the overall journal view.
-       * @defaultValue `1`
-       */
-      level: fields.NumberField<{ required: true; initial: 1; min: 1; max: 6; integer: true; nullable: false }>;
-    }>;
-
-    /**
-     * Data particular to image journal entry pages.
-     */
-    image: fields.SchemaField<{
-      /**
-       * A caption for the image.
-       * @defaultValue `undefined`
-       */
-      caption: fields.StringField<{ required: false; initial: undefined }>;
-    }>;
-
-    /**
-     * Data particular to text journal entry pages.
-     */
-    text: fields.SchemaField<{
-      /**
-       * The content of the JournalEntryPage in a format appropriate for its type.
-       * @defaultValue `undefined`
-       */
-      content: fields.HTMLField<{ required: false; initial: undefined; textSearch: true }>;
-
-      /**
-       * The original markdown source, if applicable.
-       * @defaultValue `undefined`
-       */
-      markdown: fields.StringField<{ required: false; initial: undefined }>;
-
-      /**
-       * The format of the page's content, in {@link CONST.JOURNAL_ENTRY_PAGE_FORMATS}.
-       * @defaultValue `CONST.JOURNAL_ENTRY_PAGE_FORMATS.HTML`
-       */
-      format: fields.NumberField<{
-        label: "JOURNALENTRYPAGE.Format";
-        initial: typeof CONST.JOURNAL_ENTRY_PAGE_FORMATS.HTML;
-        choices: foundry.CONST.JOURNAL_ENTRY_PAGE_FORMATS[];
-      }>;
-    }>;
-
-    /**
-     * Data particular to video journal entry pages.
-     */
-    video: fields.SchemaField<{
-      controls: fields.BooleanField<{ initial: true }>;
-
-      /**
-       * Automatically loop the video?
-       * @defaultValue `undefined`
-       */
-      loop: fields.BooleanField<{ required: false; initial: undefined }>;
-
-      /**
-       * Should the video play automatically?
-       * @defaultValue `undefined`
-       */
-      autoplay: fields.BooleanField<{ required: false; initial: undefined }>;
-
-      /**
-       * The volume level of any audio that the video file contains.
-       * @defaultValue `0.5`
-       */
-      volume: fields.AlphaField<{ required: true; step: 0.01; initial: 0.5 }>;
-
-      /**
-       * The starting point of the video, in seconds.
-       * @defaultValue `undefined`
-       */
-      timestamp: fields.NumberField<{ required: false; min: 0; initial: undefined }>;
-
-      /**
-       * The width of the video, otherwise it will fill the available container width.
-       * @defaultValue `undefined`
-       */
-      width: fields.NumberField<{ required: false; positive: true; integer: true; initial: undefined }>;
-
-      /**
-       * The height of the video, otherwise it will use the aspect ratio of the source video, or 16:9 if that aspect
-       * ratio is not available.
-       * @defaultValue `undefined`
-       */
-      height: fields.NumberField<{ required: false; positive: true; integer: true; initial: undefined }>;
-    }>;
-
-    /**
-     * The URI of the image or other external media to be used for this page.
-     * @defaultValue `null`
-     */
-    src: fields.StringField<{
-      required: false;
-      blank: false;
-      nullable: true;
-      initial: null;
-      label: "JOURNALENTRYPAGE.Source";
-    }>;
-
-    /**
-     * The numeric sort value which orders this page relative to its siblings.
-     * @defaultValue `0`
-     */
-    sort: fields.IntegerSortField;
-
-    /**
-     * An object which configures the ownership of this page.
-     * @defaultValue `CONST.DOCUMENT_OWNERSHIP_LEVELS.INHERIT`
-     */
-    ownership: fields.DocumentOwnershipField<{ initial: { default: typeof CONST.DOCUMENT_OWNERSHIP_LEVELS.INHERIT } }>;
-
-    /**
-     * An object of optional key/value flags.
-     * @defaultValue `{}`
-     */
-    flags: fields.ObjectField.FlagsField<"JournalEntryPage">;
-
-    _stats: fields.DocumentStatsField;
+  // The document subclasses override `system` anyways.
+  // There's no point in doing expensive computation work comparing the base class system.
+  /** @internal */
+  interface _Schema extends JournalEntryPage.Schema {
+    system: any;
   }
+
+  /**
+   * @deprecated This type is used by Foundry too vaguely.
+   * In one context the most correct type is after initialization whereas in another one it should be
+   * before but Foundry uses it interchangeably.
+   */
+  type Properties = SchemaField.InitializedData<Schema>;
+
+  /** @deprecated {@link BaseJournalEntryPage.SubType | `BaseJournalEntryPage.SubType`} */
+  type TypeNames = SubType;
+
+  /**
+   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseJournalEntryPage.Schema>`}
+   */
+  type SchemaField = foundry.data.fields.SchemaField<Schema>;
+
+  /**
+   * @deprecated {@link BaseJournalEntryPage.CreateData | `BaseJournalEntryPage.CreateData`}
+   */
+  type ConstructorData = BaseJournalEntryPage.CreateData;
 }
