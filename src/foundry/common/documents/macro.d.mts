@@ -1,10 +1,8 @@
 import type { AnyObject, InexactPartial } from "../../../utils/index.d.mts";
+import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.d.mts";
 import type * as CONST from "../constants.mts";
-import type * as fields from "../data/fields.d.mts";
-import type * as documents from "./_module.mts";
-
-type DataSchema = foundry.data.fields.DataSchema;
+import type { SchemaField } from "../data/fields.d.mts";
 
 /**
  * The Macro Document.
@@ -13,20 +11,17 @@ type DataSchema = foundry.data.fields.DataSchema;
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
-declare abstract class BaseMacro extends Document<"Macro", BaseMacro.Schema, any> {
-  /**
-   * @privateRemarks Manual override of the return due to TS limitations with static `this`
-   */
-  static get TYPES(): BaseMacro.TypeNames[];
-
+declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMacro.SubType> extends Document<
+  "Macro",
+  BaseMacro.Schema,
+  any
+> {
   /**
    * @param data    - Initial data from which to construct the Macro
    * @param context - Construction context options
    */
   // TODO(LukeAbby): This constructor is a symptom of a circular error.
   // constructor(data: BaseMacro.ConstructorData, context?: Document.ConstructionContext<BaseMacro.Parent>);
-
-  override parent: BaseMacro.Parent;
 
   static override metadata: BaseMacro.Metadata;
 
@@ -38,8 +33,6 @@ declare abstract class BaseMacro extends Document<"Macro", BaseMacro.Schema, any
   static DEFAULT_ICON: "icons/svg/dice-target.svg";
 
   static override migrateData(source: AnyObject): AnyObject;
-
-  static override validateJoint(data: Record<string, unknown>): void;
 
   static override canUserCreate(user: User.ConfiguredInstance): boolean;
 
@@ -55,124 +48,165 @@ declare abstract class BaseMacro extends Document<"Macro", BaseMacro.Schema, any
     }>,
   ): boolean;
 
-  /**
-   * @privateRemarks _preCreate all overridden but with no signature changes.
-   * For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
+  /*
+   * After this point these are not really overridden methods.
+   * They are here because they're static properties but depend on the instance and so can't be
+   * defined DRY-ly while also being easily overridable.
    */
 
   static " __fvtt_types_internal_document_name_static": "Macro";
+
+  static get implementation(): Macro.ImplementationClass;
+
+  override parent: BaseMacro.Parent;
+
+  static get TYPES(): BaseMacro.SubType[];
+
+  static createDocuments<Temporary extends boolean | undefined>(
+    data: Array<Macro.Implementation | Macro.CreateData> | undefined,
+    operation?: Document.Database.CreateOperation<Macro.DatabaseOperation.Create<Temporary>>,
+  ): Promise<Array<Document.StoredIf<Macro.Implementation, Temporary>>>;
+
+  static updateDocuments(
+    updates: Macro.UpdateData[] | undefined,
+    operation?: Document.Database.UpdateOperation<Macro.DatabaseOperation.Update>,
+  ): Promise<Macro.Implementation[]>;
+
+  static deleteDocuments(
+    ids: readonly string[] | undefined,
+    operation?: Document.Database.DeleteOperation<Macro.DatabaseOperation.Delete>,
+  ): Promise<Macro.Implementation[]>;
+
+  static create<Temporary extends boolean | undefined>(
+    data: Macro.CreateData | Macro.CreateData[],
+    operation?: Document.Database.CreateOperation<Macro.DatabaseOperation.Create<Temporary>>,
+  ): Promise<Macro.Implementation | undefined>;
+
+  static get(documentId: string, options?: Document.Database.GetOperation): Macro.Implementation | null;
+
+  protected _preCreate(
+    data: Macro.CreateData,
+    options: Macro.DatabaseOperation.PreCreateOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onCreate(data: Macro.CreateData, options: Macro.DatabaseOperation.OnCreateOperation, userId: string): void;
+
+  protected static _preCreateOperation(
+    documents: Macro.Implementation[],
+    operation: Document.Database.PreCreateOperationStatic<Macro.DatabaseOperation.Create>,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onCreateOperation(
+    documents: Macro.Implementation[],
+    operation: Macro.DatabaseOperation.Create,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected _preUpdate(
+    changed: Macro.UpdateData,
+    options: Macro.DatabaseOperation.PreUpdateOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onUpdate(
+    changed: Macro.UpdateData,
+    options: Macro.DatabaseOperation.OnUpdateOperation,
+    userId: string,
+  ): void;
+
+  protected static _preUpdateOperation(
+    documents: Macro.Implementation[],
+    operation: Macro.DatabaseOperation.Update,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onUpdateOperation(
+    documents: Macro.Implementation[],
+    operation: Macro.DatabaseOperation.Update,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected _preDelete(
+    options: Macro.DatabaseOperation.PreDeleteOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onDelete(options: Macro.DatabaseOperation.OnDeleteOperation, userId: string): void;
+
+  protected static _preDeleteOperation(
+    documents: Macro.Implementation[],
+    operation: Macro.DatabaseOperation.Delete,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onDeleteOperation(
+    documents: Macro.Implementation[],
+    operation: Macro.DatabaseOperation.Delete,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected static _onCreateDocuments(
+    documents: Macro.Implementation[],
+    context: Document.ModificationContext<Macro.Parent>,
+  ): Promise<void>;
+
+  protected static _onUpdateDocuments(
+    documents: Macro.Implementation[],
+    context: Document.ModificationContext<Macro.Parent>,
+  ): Promise<void>;
+
+  protected static _onDeleteDocuments(
+    documents: Macro.Implementation[],
+    context: Document.ModificationContext<Macro.Parent>,
+  ): Promise<void>;
+
+  protected static _schema: SchemaField<Macro.Schema>;
+
+  static get schema(): SchemaField<Macro.Schema>;
+
+  static override validateJoint(data: Macro.Source): void;
+
+  static override fromSource(
+    source: Macro.UpdateData,
+    { strict, ...context }?: DataModel.FromSourceOptions,
+  ): DataModel<Macro.Schema, DataModel.Any | null>;
+
+  static override fromJSON(json: string): DataModel<Macro.Schema, DataModel.Any | null>;
 }
 export default BaseMacro;
 
 declare namespace BaseMacro {
-  type Parent = null;
+  export import Metadata = Macro.Metadata;
+  export import SubType = Macro.SubType;
+  export import Parent = Macro.Parent;
+  export import Stored = Macro.Stored;
+  export import Source = Macro.Source;
+  export import PersistedData = Macro.PersistedData;
+  export import CreateData = Macro.CreateData;
+  export import InitializedData = Macro.InitializedData;
+  export import UpdateData = Macro.UpdateData;
+  export import Schema = Macro.Schema;
+  export import DatabaseOperation = Macro.DatabaseOperation;
 
-  type TypeNames = Game.Model.TypeNames<"Macro">;
+  /**
+   * @deprecated This type is used by Foundry too vaguely.
+   * In one context the most correct type is after initialization whereas in another one it should be
+   * before but Foundry uses it interchangeably.
+   */
+  type Properties = SchemaField.InitializedData<Schema>;
 
-  type Metadata = Document.MetadataFor<"Macro">;
+  /** @deprecated {@link BaseMacro.SubType | `BaseMacro.SubType`} */
+  type TypeNames = SubType;
 
-  type SchemaField = fields.SchemaField<Schema>;
-  type ConstructorData = fields.SchemaField.CreateData<Schema>;
-  type UpdateData = fields.SchemaField.AssignmentData<Schema>;
-  type Properties = fields.SchemaField.InitializedData<Schema>;
-  type Source = fields.SchemaField.PersistedData<Schema>;
+  /**
+   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseMacro.Schema>`}
+   */
+  type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
-  interface Schema extends DataSchema {
-    /**
-     * The _id which uniquely identifies this Macro document
-     * @defaultValue `null`
-     */
-    _id: fields.DocumentIdField;
-
-    /**
-     * The name of this Macro
-     * @defaultValue `""`
-     */
-    name: fields.StringField<{
-      required: true;
-      blank: false;
-      label: "Name";
-      textSearch: true;
-    }>;
-
-    /**
-     * A Macro subtype from CONST.MACRO_TYPES
-     * @defaultValue `CONST.MACRO_TYPES.CHAT`
-     */
-    type: fields.DocumentTypeField<
-      typeof BaseMacro,
-      {
-        initial: typeof CONST.MACRO_TYPES.CHAT;
-        label: "Type";
-      }
-    >;
-
-    /**
-     * The _id of a User document which created this Macro *
-     * @defaultValue `game?.user?.id`
-     */
-    author: fields.ForeignDocumentField<typeof documents.BaseUser, { initial: () => string }>;
-
-    /**
-     * An image file path which provides the thumbnail artwork for this Macro
-     * @defaultValue `BaseMacro.DEFAULT_ICON`
-     */
-    img: fields.FilePathField<{
-      categories: ["IMAGE"];
-      initial: () => typeof BaseMacro.DEFAULT_ICON;
-      label: "Image";
-    }>;
-
-    /**
-     * The scope of this Macro application from CONST.MACRO_SCOPES
-     * @defaultValue `"global"`
-     */
-    scope: fields.StringField<{
-      required: true;
-      choices: CONST.MACRO_SCOPES[];
-      initial: (typeof CONST.MACRO_SCOPES)[0];
-      validationError: "must be a value in CONST.MACRO_SCOPES";
-      label: "Scope";
-    }>;
-
-    /**
-     * The string content of the macro command
-     * @defaultValue `""`
-     */
-    command: fields.StringField<{
-      required: true;
-      blank: true;
-      label: "Command";
-    }>;
-
-    /**
-     * The _id of a Folder which contains this Macro
-     * @defaultValue `null`
-     */
-    folder: fields.ForeignDocumentField<typeof documents.BaseFolder>;
-
-    /**
-     * The numeric sort value which orders this Macro relative to its siblings
-     * @defaultValue `0`
-     */
-    sort: fields.IntegerSortField;
-
-    /**
-     * An object which configures ownership of this Macro
-     * @defaultValue see {@link fields.DocumentOwnershipField}
-     */
-    ownership: fields.DocumentOwnershipField;
-
-    /**
-     * An object of optional key/value flags
-     * @defaultValue `{}`
-     */
-    flags: fields.ObjectField.FlagsField<"Macro">;
-
-    /**
-     * An object of creation and access information
-     * @defaultValue see {@link fields.DocumentStatsField}
-     */
-    _stats: fields.DocumentStatsField;
-  }
+  /**
+   * @deprecated {@link BaseMacro.CreateData | `BaseMacro.CreateData`}
+   */
+  type ConstructorData = BaseMacro.CreateData;
 }
