@@ -25,7 +25,7 @@ declare abstract class BaseRegionBehavior<
 
   static override defineSchema(): BaseRegionBehavior.Schema;
 
-  static override canUserCreate(user: User.ConfiguredInstance): boolean;
+  static override canUserCreate(user: User.Implementation): boolean;
 
   /*
    * After this point these are not really overridden methods.

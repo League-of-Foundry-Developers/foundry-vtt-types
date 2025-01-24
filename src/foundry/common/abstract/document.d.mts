@@ -205,7 +205,7 @@ declare abstract class Document<
    * @param user - The User being tested
    * @returns Does the User have a sufficient role to create?
    */
-  static canUserCreate(user: User.Internal.ConfiguredInstance): boolean;
+  static canUserCreate(user: User.Internal.Implementation): boolean;
 
   /**
    * Get the explicit permission level that a specific User has over this Document, a value in CONST.DOCUMENT_OWNERSHIP_LEVELS.
@@ -215,7 +215,7 @@ declare abstract class Document<
    *               (default: `game.user`)
    * @returns A numeric permission level from CONST.DOCUMENT_OWNERSHIP_LEVELS or null
    */
-  getUserLevel(user?: User.Internal.ConfiguredInstance): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
+  getUserLevel(user?: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
 
   /**
    * Test whether a certain User has a requested permission level (or greater) over the Document
@@ -225,7 +225,7 @@ declare abstract class Document<
    * @returns Does the user have this permission level over the Document?
    */
   testUserPermission(
-    user: User.Internal.ConfiguredInstance,
+    user: User.Internal.Implementation,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
     options?: InexactPartial<{
       /**
@@ -244,7 +244,7 @@ declare abstract class Document<
    *                 (default: `{}`)
    * @returns Does the User have permission?
    */
-  canUserModify(user: User.Internal.ConfiguredInstance, action: "create" | "update" | "delete", data?: object): boolean;
+  canUserModify(user: User.Internal.Implementation, action: "create" | "update" | "delete", data?: object): boolean;
 
   /**
    * Clone a document, creating a new document by combining current data with provided overrides.
@@ -538,7 +538,7 @@ declare abstract class Document<
     Temporary extends boolean | undefined,
   >(
     embeddedName: EmbeddedName,
-    data?: Array<Document.ConstructorDataForName<Extract<EmbeddedName, Document.Type>>>,
+    data?: Array<Document.CreateDataForName<Extract<EmbeddedName, Document.Type>>>,
     operation?: InexactPartial<Document.Database.OperationOf<Extract<EmbeddedName, Document.Type>, "create">> & {
       temporary?: Temporary;
     },
@@ -636,7 +636,7 @@ declare abstract class Document<
    * @param user    - The User requesting the document creation
    * @returns Return false to exclude this Document from the creation operation
    */
-  protected _preCreate(data: never, options: never, user: User.Internal.ConfiguredInstance): Promise<boolean | void>;
+  protected _preCreate(data: never, options: never, user: User.Internal.Implementation): Promise<boolean | void>;
 
   /**
    * Post-process a creation operation for a single Document instance.
@@ -665,7 +665,7 @@ declare abstract class Document<
   protected static _preCreateOperation(
     documents: never[],
     operation: never,
-    user: User.Internal.ConfiguredInstance,
+    user: User.Internal.Implementation,
   ): Promise<boolean | void>;
 
   /**
@@ -682,7 +682,7 @@ declare abstract class Document<
   protected static _onCreateOperation(
     documents: never,
     operation: never,
-    user: User.Internal.ConfiguredInstance,
+    user: User.Internal.Implementation,
   ): Promise<void>;
 
   /**
@@ -693,7 +693,7 @@ declare abstract class Document<
    * @param user    - The User requesting the document update
    * @returns A return value of false indicates the update operation should be cancelled
    */
-  protected _preUpdate(changed: never, options: never, user: User.Internal.ConfiguredInstance): Promise<boolean | void>;
+  protected _preUpdate(changed: never, options: never, user: User.Internal.Implementation): Promise<boolean | void>;
 
   /**
    * Perform follow-up operations after a Document of this type is updated.
@@ -723,7 +723,7 @@ declare abstract class Document<
   protected static _preUpdateOperation(
     documents: never,
     operation: never,
-    user: User.Internal.ConfiguredInstance,
+    user: User.Internal.Implementation,
   ): Promise<boolean | void>;
 
   /**
@@ -740,7 +740,7 @@ declare abstract class Document<
   protected static _onUpdateOperation(
     documents: never,
     operation: never,
-    user: User.Internal.ConfiguredInstance,
+    user: User.Internal.Implementation,
   ): Promise<void>;
 
   /**
@@ -750,7 +750,7 @@ declare abstract class Document<
    * @param user    - The User requesting the document deletion
    * @returns A return value of false indicates the delete operation should be cancelled
    */
-  protected _preDelete(options: never, user: User.Internal.ConfiguredInstance): Promise<boolean | void>;
+  protected _preDelete(options: never, user: User.Internal.Implementation): Promise<boolean | void>;
 
   /**
    * Perform follow-up operations after a Document of this type is deleted.
@@ -780,7 +780,7 @@ declare abstract class Document<
   protected static _preDeleteOperation(
     documents: never,
     operation: never,
-    user: User.Internal.ConfiguredInstance,
+    user: User.Internal.Implementation,
   ): Promise<unknown>;
 
   /**
@@ -797,7 +797,7 @@ declare abstract class Document<
   protected static _onDeleteOperation(
     documents: never,
     operation: never,
-    user: User.Internal.ConfiguredInstance,
+    user: User.Internal.Implementation,
   ): Promise<unknown>;
 
   /**
@@ -1099,12 +1099,12 @@ declare namespace Document {
   /**
    * Returns the type of the constructor data for the given {@link foundry.abstract.Document}.
    */
-  type ConstructorDataFor<T extends Document.Internal.Constructor> = ConstructorDataForSchema<
+  type ConstructorDataFor<T extends Document.Internal.Constructor> = SchemaField.CreateData<
     T extends { defineSchema: () => infer R extends DataSchema } ? R : never
   >;
 
   // TODO(LukeAbby): Actually make this distinguishable from `Document.ConstructorDataFor` and `Document.ConstructorDataForSchema`.
-  type UpdateDataFor<T extends Document.Internal.Constructor> = ConstructorDataForSchema<
+  type UpdateDataFor<T extends Document.Internal.Constructor> = SchemaField.CreateData<
     T extends { defineSchema: () => infer R extends DataSchema } ? R : never
   >;
 
@@ -1118,38 +1118,38 @@ declare namespace Document {
   type UpdateDataForName<T extends Document.Type> = CreateData[T];
 
   type CreateDataForName<DocumentType extends Document.Type> =
-    | (DocumentType extends "ActiveEffect" ? documents.BaseActiveEffect.ConstructorData : never)
-    | (DocumentType extends "ActorDelta" ? documents.BaseActorDelta.ConstructorData : never)
-    | (DocumentType extends "Actor" ? documents.BaseActor.ConstructorData : never)
-    | (DocumentType extends "Adventure" ? documents.BaseAdventure.ConstructorData : never)
-    | (DocumentType extends "Card" ? documents.BaseCard.ConstructorData : never)
-    | (DocumentType extends "Cards" ? documents.BaseCards.ConstructorData : never)
-    | (DocumentType extends "ChatMessage" ? documents.BaseChatMessage.ConstructorData : never)
-    | (DocumentType extends "Combat" ? documents.BaseCombat.ConstructorData : never)
-    | (DocumentType extends "Combatant" ? documents.BaseCombatant.ConstructorData : never)
-    | (DocumentType extends "FogExploration" ? documents.BaseFogExploration.ConstructorData : never)
-    | (DocumentType extends "Folder" ? documents.BaseFolder.ConstructorData : never)
-    | (DocumentType extends "Item" ? documents.BaseItem.ConstructorData : never)
-    | (DocumentType extends "JournalEntryPage" ? documents.BaseJournalEntryPage.ConstructorData : never)
-    | (DocumentType extends "JournalEntry" ? documents.BaseJournalEntry.ConstructorData : never)
-    | (DocumentType extends "Macro" ? documents.BaseMacro.ConstructorData : never)
-    | (DocumentType extends "PlaylistSound" ? documents.BasePlaylistSound.ConstructorData : never)
-    | (DocumentType extends "Playlist" ? documents.BasePlaylist.ConstructorData : never)
-    | (DocumentType extends "RegionBehavior" ? documents.BaseRegionBehavior.ConstructorData : never)
-    | (DocumentType extends "Region" ? documents.BaseRegion.ConstructorData : never)
-    | (DocumentType extends "RollTable" ? documents.BaseRollTable.ConstructorData : never)
-    | (DocumentType extends "Scene" ? documents.BaseScene.ConstructorData : never)
-    | (DocumentType extends "Setting" ? documents.BaseSetting.ConstructorData : never)
-    | (DocumentType extends "TableResult" ? documents.BaseTableResult.ConstructorData : never)
-    | (DocumentType extends "User" ? documents.BaseUser.ConstructorData : never)
-    | (DocumentType extends "AmbientLight" ? documents.BaseAmbientLight.ConstructorData : never)
-    | (DocumentType extends "AmbientSound" ? documents.BaseAmbientSound.ConstructorData : never)
-    | (DocumentType extends "Drawing" ? documents.BaseDrawing.ConstructorData : never)
-    | (DocumentType extends "MeasuredTemplate" ? documents.BaseMeasuredTemplate.ConstructorData : never)
-    | (DocumentType extends "Note" ? documents.BaseNote.ConstructorData : never)
-    | (DocumentType extends "Tile" ? documents.BaseTile.ConstructorData : never)
-    | (DocumentType extends "Token" ? documents.BaseToken.ConstructorData : never)
-    | (DocumentType extends "Wall" ? documents.BaseWall.ConstructorData : never);
+    | (DocumentType extends "ActiveEffect" ? documents.BaseActiveEffect.CreateData : never)
+    | (DocumentType extends "ActorDelta" ? documents.BaseActorDelta.CreateData : never)
+    | (DocumentType extends "Actor" ? documents.BaseActor.CreateData : never)
+    | (DocumentType extends "Adventure" ? documents.BaseAdventure.CreateData : never)
+    | (DocumentType extends "Card" ? documents.BaseCard.CreateData : never)
+    | (DocumentType extends "Cards" ? documents.BaseCards.CreateData : never)
+    | (DocumentType extends "ChatMessage" ? documents.BaseChatMessage.CreateData : never)
+    | (DocumentType extends "Combat" ? documents.BaseCombat.CreateData : never)
+    | (DocumentType extends "Combatant" ? documents.BaseCombatant.CreateData : never)
+    | (DocumentType extends "FogExploration" ? documents.BaseFogExploration.CreateData : never)
+    | (DocumentType extends "Folder" ? documents.BaseFolder.CreateData : never)
+    | (DocumentType extends "Item" ? documents.BaseItem.CreateData : never)
+    | (DocumentType extends "JournalEntryPage" ? documents.BaseJournalEntryPage.CreateData : never)
+    | (DocumentType extends "JournalEntry" ? documents.BaseJournalEntry.CreateData : never)
+    | (DocumentType extends "Macro" ? documents.BaseMacro.CreateData : never)
+    | (DocumentType extends "PlaylistSound" ? documents.BasePlaylistSound.CreateData : never)
+    | (DocumentType extends "Playlist" ? documents.BasePlaylist.CreateData : never)
+    | (DocumentType extends "RegionBehavior" ? documents.BaseRegionBehavior.CreateData : never)
+    | (DocumentType extends "Region" ? documents.BaseRegion.CreateData : never)
+    | (DocumentType extends "RollTable" ? documents.BaseRollTable.CreateData : never)
+    | (DocumentType extends "Scene" ? documents.BaseScene.CreateData : never)
+    | (DocumentType extends "Setting" ? documents.BaseSetting.CreateData : never)
+    | (DocumentType extends "TableResult" ? documents.BaseTableResult.CreateData : never)
+    | (DocumentType extends "User" ? documents.BaseUser.CreateData : never)
+    | (DocumentType extends "AmbientLight" ? documents.BaseAmbientLight.CreateData : never)
+    | (DocumentType extends "AmbientSound" ? documents.BaseAmbientSound.CreateData : never)
+    | (DocumentType extends "Drawing" ? documents.BaseDrawing.CreateData : never)
+    | (DocumentType extends "MeasuredTemplate" ? documents.BaseMeasuredTemplate.CreateData : never)
+    | (DocumentType extends "Note" ? documents.BaseNote.CreateData : never)
+    | (DocumentType extends "Tile" ? documents.BaseTile.CreateData : never)
+    | (DocumentType extends "Token" ? documents.BaseToken.CreateData : never)
+    | (DocumentType extends "Wall" ? documents.BaseWall.CreateData : never);
 
   /**
    * @deprecated {@link SchemaField.CreateData | `SchemaField.CreateData`}
@@ -1431,9 +1431,9 @@ declare namespace Document {
     readonly coreTypes: readonly string[];
     readonly embedded: Record<string, string>;
     readonly permissions: {
-      create: string | ToMethod<(user: User.Internal.ConfiguredInstance, doc: ThisType, data: AnyObject) => boolean>;
-      update: string | ToMethod<(user: User.Internal.ConfiguredInstance, doc: ThisType, data: AnyObject) => boolean>;
-      delete: string | ToMethod<(user: User.Internal.ConfiguredInstance, doc: ThisType, data: EmptyObject) => boolean>;
+      create: string | ToMethod<(user: User.Internal.Implementation, doc: ThisType, data: AnyObject) => boolean>;
+      update: string | ToMethod<(user: User.Internal.Implementation, doc: ThisType, data: AnyObject) => boolean>;
+      delete: string | ToMethod<(user: User.Internal.Implementation, doc: ThisType, data: EmptyObject) => boolean>;
     };
     readonly preserveOnImport: readonly string[];
     readonly schemaVersion?: string | undefined;

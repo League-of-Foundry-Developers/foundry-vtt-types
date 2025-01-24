@@ -21,7 +21,7 @@ declare abstract class BaseActiveEffect<
   // constructor(data?: BaseActiveEffect.ConstructorData, context?: Document.ConstructionContext<BaseActiveEffect.Parent>);
 
   override canUserModify(
-    user: User.ConfiguredInstance,
+    user: User.Implementation,
     action: "create" | "update" | "delete",
     data?: AnyObject,
   ): boolean;
@@ -31,7 +31,7 @@ declare abstract class BaseActiveEffect<
   static override defineSchema(): BaseActiveEffect.Schema;
 
   override testUserPermission(
-    user: User.ConfiguredInstance,
+    user: User.Implementation,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
     options?: InexactPartial<{
       /**

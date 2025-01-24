@@ -193,7 +193,7 @@ declare global {
   class Setting extends ClientDocumentMixin(foundry.documents.BaseSetting) {
     static override metadata: Setting.Metadata;
 
-    static get implementation(): Setting.ConfiguredClass;
+    static get implementation(): Setting.ImplementationClass;
 
     /**
      * @privateRemarks This exists to let ts know that this class has a private property

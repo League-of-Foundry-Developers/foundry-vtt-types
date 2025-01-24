@@ -217,7 +217,7 @@ declare global {
     get region(): RegionDocument.Implementation | null;
 
     /** A convenience reference to the Scene which contains this RegionBehavior. */
-    get scene(): Scene.ConfiguredInstance | null;
+    get scene(): Scene.Implementation | null;
 
     /** A RegionBehavior is active if and only if it was created, hasn't been deleted yet, and isn't disabled. */
     get active(): boolean;

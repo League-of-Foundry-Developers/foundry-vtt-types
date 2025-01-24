@@ -30,15 +30,15 @@ declare abstract class BaseCombatant<
    * Is a user able to update an existing Combatant?
    * @internal
    */
-  static #canUpdate(user: User.ConfiguredInstance, doc: BaseCombatant, data: BaseCombatant.UpdateData): boolean;
+  static #canUpdate(user: User.Implementation, doc: BaseCombatant, data: BaseCombatant.UpdateData): boolean;
 
   /**
    * Is a user able to create this Combatant?
    * @internal
    */
-  static #canCreate(user: User.ConfiguredInstance, doc: BaseCombatant, data: BaseCombatant.ConstructorData): boolean;
+  static #canCreate(user: User.Implementation, doc: BaseCombatant, data: BaseCombatant.CreateData): boolean;
 
-  override getUserLevel(user?: User.ConfiguredInstance): DOCUMENT_OWNERSHIP_LEVELS | null;
+  override getUserLevel(user?: User.Implementation): DOCUMENT_OWNERSHIP_LEVELS | null;
 
   /*
    * After this point these are not really overridden methods.

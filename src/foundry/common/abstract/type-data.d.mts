@@ -293,7 +293,7 @@ declare abstract class TypeDataModel<
   protected _preCreate(
     data: TypeDataModel.ParentAssignmentType<Schema, Parent>,
     options: Document.PreCreateOptions<any>,
-    user: User.ConfiguredInstance,
+    user: User.Implementation,
   ): Promise<boolean | void>;
 
   /**
@@ -343,7 +343,7 @@ declare abstract class TypeDataModel<
    * @param user    - The User requesting the document deletion
    * @returns A return value of false indicates the deletion operation should be cancelled.
    */
-  protected _preDelete(options: Document.PreDeleteOptions<any>, user: User.ConfiguredInstance): Promise<boolean | void>;
+  protected _preDelete(options: Document.PreDeleteOptions<any>, user: User.Implementation): Promise<boolean | void>;
 
   /**
    * Called by {@link ClientDocument#_onDelete}.

@@ -259,7 +259,7 @@ declare global {
   class MeasuredTemplateDocument extends CanvasDocumentMixin(foundry.documents.BaseMeasuredTemplate) {
     static override metadata: MeasuredTemplateDocument.Metadata;
 
-    static get implementation(): MeasuredTemplateDocument.ConfiguredClass;
+    static get implementation(): MeasuredTemplateDocument.ImplementationClass;
 
     /**
      * Rotation is an alias for direction

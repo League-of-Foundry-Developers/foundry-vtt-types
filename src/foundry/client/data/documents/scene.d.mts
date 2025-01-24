@@ -490,7 +490,7 @@ declare global {
   class Scene extends ClientDocumentMixin(foundry.documents.BaseScene) {
     static override metadata: Scene.Metadata;
 
-    static get implementation(): Scene.ConfiguredClass;
+    static get implementation(): Scene.ImplementationClass;
 
     /**
      * Track the viewed position of each scene (while in memory only, not persisted)

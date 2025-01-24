@@ -42,17 +42,17 @@ declare abstract class BaseActor<out SubType extends Item.SubType = Item.SubType
    * Determine default artwork based on the provided actor data
    * @param actorData - The source actor data
    */
-  static getDefaultArtwork(actorData: BaseActor.ConstructorData): {
+  static getDefaultArtwork(actorData: BaseActor.CreateData): {
     img: string;
     texture: { src: string };
   };
 
   protected override _initializeSource(
-    data: BaseActor.ConstructorData | this,
+    data: BaseActor.CreateData | this,
     options?: Omit<foundry.abstract.DataModel.DataValidationOptions, "parent">,
   ): BaseActor.Source;
 
-  static override canUserCreate(user: User.ConfiguredInstance): boolean;
+  static override canUserCreate(user: User.Implementation): boolean;
 
   /**
    * Is a user able to create this actor?
@@ -60,7 +60,7 @@ declare abstract class BaseActor<out SubType extends Item.SubType = Item.SubType
    * @param doc  - The Actor being created.
    * @internal
    */
-  static #canCreate(user: User.ConfiguredInstance, doc: BaseActor): boolean;
+  static #canCreate(user: User.Implementation, doc: BaseActor): boolean;
 
   /**
    * Is a user able to update an existing actor?
@@ -69,7 +69,7 @@ declare abstract class BaseActor<out SubType extends Item.SubType = Item.SubType
    * @param data - The update delta being applied.
    * @internal
    */
-  static #canUpdate(user: User.ConfiguredInstance, doc: BaseActor, data: BaseActor.UpdateData): boolean;
+  static #canUpdate(user: User.Implementation, doc: BaseActor, data: BaseActor.UpdateData): boolean;
 
   /**
    * @privateRemarks _preCreate and _preUpdate are overridden but with no signature changes.

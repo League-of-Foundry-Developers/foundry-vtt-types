@@ -26,7 +26,7 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
 
   static override defineSchema(): BaseFogExploration.Schema;
 
-  static #canModify(user: User.ConfiguredInstance, doc: BaseFogExploration);
+  static #canModify(user: User.Implementation, doc: BaseFogExploration);
 
   /*
    * After this point these are not really overridden methods.

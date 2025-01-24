@@ -29,13 +29,13 @@ declare abstract class BaseChatMessage<
    * Is a user able to create a new chat message?
    * @internal
    */
-  static #canCreate(user: User.ConfiguredInstance, doc: BaseChatMessage): boolean;
+  static #canCreate(user: User.Implementation, doc: BaseChatMessage): boolean;
 
   /**
    * Is a user able to update an existing chat message?
    * @internal
    */
-  static #canUpdate(user: User.ConfiguredInstance, doc: BaseChatMessage, data: BaseChatMessage.UpdateData): boolean;
+  static #canUpdate(user: User.Implementation, doc: BaseChatMessage, data: BaseChatMessage.UpdateData): boolean;
 
   /**
    * Validate that Rolls belonging to the ChatMessage document are valid
@@ -44,7 +44,7 @@ declare abstract class BaseChatMessage<
   static #validateRoll(rollJSON: string): void;
 
   override testUserPermission(
-    user: User.ConfiguredInstance,
+    user: User.Implementation,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
     options?: InexactPartial<{ exact: boolean }>,
   ): boolean;

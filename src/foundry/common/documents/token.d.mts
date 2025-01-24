@@ -37,10 +37,10 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    * Is a user able to update an existing Token?
    * @internal
    */
-  static #canUpdate(user: User.ConfiguredInstance, doc: BaseToken, data: BaseToken.UpdateData): boolean;
+  static #canUpdate(user: User.Implementation, doc: BaseToken, data: BaseToken.UpdateData): boolean;
 
   override testUserPermission(
-    user: User.ConfiguredInstance,
+    user: User.Implementation,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
     options?: InexactPartial<{
       /**

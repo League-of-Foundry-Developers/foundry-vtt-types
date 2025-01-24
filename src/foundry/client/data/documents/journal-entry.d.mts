@@ -106,7 +106,7 @@ declare global {
        * The pages contained within this JournalEntry document
        * @defaultValue `[]`
        */
-      pages: fields.EmbeddedCollectionField<typeof documents.BaseJournalEntryPage, JournalEntry.ConfiguredInstance>;
+      pages: fields.EmbeddedCollectionField<typeof documents.BaseJournalEntryPage, JournalEntry.Implementation>;
 
       /**
        * The _id of a Folder which contains this JournalEntry
@@ -214,14 +214,14 @@ declare global {
   class JournalEntry extends ClientDocumentMixin(foundry.documents.BaseJournalEntry) {
     static override metadata: JournalEntry.Metadata;
 
-    static get implementation(): JournalEntry.ConfiguredClass;
+    static get implementation(): JournalEntry.ImplementationClass;
 
     /**
      * A boolean indicator for whether or not the JournalEntry is visible to the current user in the directory sidebar
      */
     get visible(): boolean;
 
-    override getUserLevel(user?: User.ConfiguredInstance): foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
+    override getUserLevel(user?: User.Implementation): foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
 
     /**
      * Return a reference to the Note instance for this Journal Entry in the current Scene, if any.

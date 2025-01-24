@@ -138,7 +138,7 @@ declare global {
        * A collection of Card documents which currently belong to this stack
        * @defaultValue `[]`
        */
-      cards: fields.EmbeddedCollectionField<typeof documents.BaseCard, Cards.ConfiguredInstance>;
+      cards: fields.EmbeddedCollectionField<typeof documents.BaseCard, Cards.Implementation>;
 
       /**
        * The visible width of this stack
@@ -400,7 +400,7 @@ declare global {
   )<SubType> {
     static override metadata: Cards.Metadata;
 
-    static get implementation(): Cards.ConfiguredClass;
+    static get implementation(): Cards.ImplementationClass;
 
     /**
      * Provide a thumbnail image path used to represent this document.
@@ -410,12 +410,12 @@ declare global {
     /**
      * The Card documents within this stack which are able to be drawn.
      */
-    get availableCards(): Card.ConfiguredInstance[];
+    get availableCards(): Card.Implementation[];
 
     /**
      * The Card documents which belong to this stack but have already been drawn.
      */
-    get drawnCards(): Card.ConfiguredInstance[];
+    get drawnCards(): Card.Implementation[];
 
     /**
      * Returns the localized Label for the type of Card Stack this is
@@ -437,10 +437,10 @@ declare global {
      * @returns This Cards document after the deal operation has completed
      */
     deal(
-      to: Cards.ConfiguredInstance[],
+      to: Cards.Implementation[],
       number?: number,
       options?: InexactPartial<Cards.DealOptions>,
-    ): Promise<Cards.ConfiguredInstance>;
+    ): Promise<Cards.Implementation>;
 
     /**
      * Pass an array of specific Card documents from this document to some other Cards stack.
@@ -451,10 +451,10 @@ declare global {
      * @returns An array of the Card embedded documents created within the destination stack
      */
     pass(
-      to: Cards.ConfiguredInstance,
+      to: Cards.Implementation,
       ids: string[],
       options?: InexactPartial<Cards.PassOptions>,
-    ): Promise<Card.ConfiguredInstance[]>;
+    ): Promise<Card.Implementation[]>;
 
     /**
      * Draw one or more cards from some other Cards document.
@@ -465,17 +465,17 @@ declare global {
      * @returns An array of the Card documents which were drawn
      */
     draw(
-      from: Cards.ConfiguredInstance,
+      from: Cards.Implementation,
       number?: number,
       options?: InexactPartial<Cards.DrawOptions>,
-    ): Promise<Card.ConfiguredInstance[]>;
+    ): Promise<Card.Implementation[]>;
 
     /**
      * Shuffle this Cards stack, randomizing the sort order of all the cards it contains.
      * @param options - (default: `{}`)
      * @returns The Cards document after the shuffle operation has completed
      */
-    shuffle(options?: InexactPartial<Cards.ShuffleOptions>): Promise<Cards.ConfiguredInstance>;
+    shuffle(options?: InexactPartial<Cards.ShuffleOptions>): Promise<Cards.Implementation>;
 
     /**
      * Reset the Cards stack, retrieving all original cards from other stacks where they may have been drawn if this is a
@@ -484,7 +484,7 @@ declare global {
      *                  (default: `{}`)
      * @returns The Cards document after the reset operation has completed
      */
-    reset(options?: InexactPartial<Cards.ResetOptions>): Promise<Cards.ConfiguredInstance>;
+    reset(options?: InexactPartial<Cards.ResetOptions>): Promise<Cards.Implementation>;
 
     /**
      * Perform a reset operation for a deck, retrieving all original cards from other stacks where they may have been
@@ -494,7 +494,7 @@ declare global {
      * @returns The Cards document after the reset operation has completed.
      * @internal
      */
-    protected _resetDeck(options?: InexactPartial<Cards.ResetOptions>): Promise<Cards.ConfiguredInstance>;
+    protected _resetDeck(options?: InexactPartial<Cards.ResetOptions>): Promise<Cards.Implementation>;
 
     /**
      * Return all cards in this stack to their original decks.
@@ -503,7 +503,7 @@ declare global {
      * @returns The Cards document after the return operation has completed.
      * @internal
      */
-    protected _resetStack(options?: InexactPartial<Cards.ResetOptions>): Promise<Cards.ConfiguredInstance>;
+    protected _resetStack(options?: InexactPartial<Cards.ResetOptions>): Promise<Cards.Implementation>;
 
     /**
      * A sorting function that is used to determine the standard order of Card documents within an un-shuffled stack.
@@ -525,7 +525,7 @@ declare global {
      * @param how    - A draw mode from CONST.CARD_DRAW_MODES
      * @returns An array of drawn Card documents
      */
-    protected _drawCards(number: number, how: foundry.CONST.CARD_DRAW_MODES): Card.ConfiguredInstance[];
+    protected _drawCards(number: number, how: foundry.CONST.CARD_DRAW_MODES): Card.Implementation[];
 
     /**
      * Create a ChatMessage which provides a notification of the cards operation which was just performed.
@@ -537,10 +537,10 @@ declare global {
      * @internal
      */
     protected _postChatNotification(
-      source: Cards.ConfiguredInstance,
+      source: Cards.Implementation,
       action: string,
       context: Record<string, unknown>,
-    ): Promise<ChatMessage.ConfiguredInstance | undefined>;
+    ): Promise<ChatMessage.Implementation | undefined>;
 
     /**
      * @privateRemarks _preCreate, _onUpdate, and _preDelete are all overridden but with no signature changes.
@@ -551,32 +551,32 @@ declare global {
      * Display a dialog which prompts the user to deal cards to some number of hand-type Cards documents.
      * @see {@link Cards#deal}
      */
-    dealDialog(): Promise<Cards.ConfiguredInstance | null>;
+    dealDialog(): Promise<Cards.Implementation | null>;
 
     /**
      * Display a dialog which prompts the user to draw cards from some other deck-type Cards documents.
      * @see {@link Cards#draw}
      */
-    drawDialog(): Promise<Card.ConfiguredInstance[] | null>;
+    drawDialog(): Promise<Card.Implementation[] | null>;
 
     /**
      * Display a dialog which prompts the user to pass cards from this document to some other other Cards document.
      * @see {@link Cards#deal}
      */
-    passDialog(): Promise<Cards.ConfiguredInstance | null>;
+    passDialog(): Promise<Cards.Implementation | null>;
 
     /**
      * Display a dialog which prompts the user to play a specific Card to some other Cards document
      * @see {@link Cards#pass}
      * @param card - The specific card being played as part of this dialog
      */
-    playDialog(card: Card.ConfiguredInstance): Promise<Card.ConfiguredInstance[] | void | null>;
+    playDialog(card: Card.Implementation): Promise<Card.Implementation[] | void | null>;
 
     /**
      * Display a confirmation dialog for whether or not the user wishes to reset a Cards stack
      * @see {@link Cards#reset}
      */
-    resetDialog(): Promise<Cards.ConfiguredInstance | false | null>;
+    resetDialog(): Promise<Cards.Implementation | false | null>;
 
     override deleteDialog(options?: Partial<DialogOptions>): Promise<this | false | null | undefined>;
   }

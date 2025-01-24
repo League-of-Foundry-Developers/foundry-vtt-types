@@ -21,7 +21,7 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
 
   static override defineSchema(): BaseSetting.Schema;
 
-  static canUserCreate(user: User.ConfiguredInstance): boolean;
+  static canUserCreate(user: User.Implementation): boolean;
 
   /*
    * After this point these are not really overridden methods.

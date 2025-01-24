@@ -57,7 +57,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
    */
   can(action: keyof typeof CONST.USER_PERMISSIONS | CONST.USER_ROLE_NAMES | CONST.USER_ROLES): boolean;
 
-  override getUserLevel(user?: User.Internal.ConfiguredInstance): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
+  override getUserLevel(user?: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
 
   /**
    * Test whether the User has at least a specific permission
@@ -91,7 +91,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
    * @param data - The supplied creation data.
    * @internal
    */
-  static #canCreate(user: User.ConfiguredInstance, doc: BaseUser, data?: BaseUser.ConstructorData): boolean;
+  static #canCreate(user: User.Implementation, doc: BaseUser, data?: BaseUser.CreateData): boolean;
 
   /**
    * Is a user able to update an existing User?
@@ -100,7 +100,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
    * @param changes - Proposed changes.
    * @internal
    */
-  static #canUpdate(user: User.ConfiguredInstance, doc: BaseUser, changes: BaseUser.ConstructorData): boolean;
+  static #canUpdate(user: User.Implementation, doc: BaseUser, changes: BaseUser.CreateData): boolean;
 
   /**
    * Is a user able to delete an existing User?
@@ -109,7 +109,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
    * @param doc  - The User document being deleted.
    * @internal
    */
-  static #canDelete(user: User.ConfiguredInstance, doc: BaseUser): boolean;
+  static #canDelete(user: User.Implementation, doc: BaseUser): boolean;
 
   /*
    * After this point these are not really overridden methods.
@@ -148,7 +148,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
   protected _preCreate(
     data: User.CreateData,
     options: User.DatabaseOperation.PreCreateOperationInstance,
-    user: User.Internal.ConfiguredInstance,
+    user: User.Internal.Implementation,
   ): Promise<boolean | void>;
 
   protected _onCreate(data: User.CreateData, options: User.DatabaseOperation.OnCreateOperation, userId: string): void;
@@ -168,7 +168,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
   protected _preUpdate(
     changed: User.UpdateData,
     options: User.DatabaseOperation.PreUpdateOperationInstance,
-    user: User.Internal.ConfiguredInstance,
+    user: User.Internal.Implementation,
   ): Promise<boolean | void>;
 
   protected _onUpdate(
@@ -191,7 +191,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
 
   protected _preDelete(
     options: User.DatabaseOperation.PreDeleteOperationInstance,
-    user: User.Internal.ConfiguredInstance,
+    user: User.Internal.Implementation,
   ): Promise<boolean | void>;
 
   protected _onDelete(options: User.DatabaseOperation.OnDeleteOperation, userId: string): void;

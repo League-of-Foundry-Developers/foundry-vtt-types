@@ -113,7 +113,7 @@ declare global {
        * A Collection of PlaylistSounds embedded documents which belong to this playlist
        * @defaultValue `[]`
        */
-      sounds: fields.EmbeddedCollectionField<typeof documents.BasePlaylistSound, Playlist.ConfiguredInstance>;
+      sounds: fields.EmbeddedCollectionField<typeof documents.BasePlaylistSound, Playlist.Implementation>;
 
       /**
        * A channel in CONST.AUDIO_CHANNELS where all sounds in this playlist are played
@@ -271,7 +271,7 @@ declare global {
   class Playlist extends ClientDocumentMixin(foundry.documents.BasePlaylist) {
     static override metadata: Playlist.Metadata;
 
-    static get implementation(): Playlist.ConfiguredClass;
+    static get implementation(): Playlist.ImplementationClass;
 
     /**
      * Playlists may have a playback order which defines the sequence of Playlist Sounds
@@ -316,7 +316,7 @@ declare global {
      * @param sound - The desired sound that should play
      * @returns The updated Playlist
      */
-    playSound(sound: PlaylistSound.ConfiguredInstance): Promise<this | undefined>;
+    playSound(sound: PlaylistSound.Implementation): Promise<this | undefined>;
 
     /**
      * Stop playback of a specific Sound within this Playlist.
@@ -324,7 +324,7 @@ declare global {
      * @param sound - The desired sound that should play
      * @returns The updated Playlist
      */
-    stopSound(sound: PlaylistSound.ConfiguredInstance): Promise<this | undefined>;
+    stopSound(sound: PlaylistSound.Implementation): Promise<this | undefined>;
 
     /**
      * End playback for any/all currently playing sounds within the Playlist.
@@ -342,13 +342,13 @@ declare global {
      * Get the next sound in the cached playback order. For internal use.
      * @internal
      */
-    protected _getNextSound(soundId: string): PlaylistSound.ConfiguredInstance | undefined;
+    protected _getNextSound(soundId: string): PlaylistSound.Implementation | undefined;
 
     /**
      * Get the previous sound in the cached playback order. For internal use.
      * @internal
      */
-    protected _getPreviousSound(soundId: string): PlaylistSound.ConfiguredInstance | undefined;
+    protected _getPreviousSound(soundId: string): PlaylistSound.Implementation | undefined;
 
     /**
      * Define the sorting order for the Sounds within this Playlist. For internal use.
@@ -356,7 +356,7 @@ declare global {
      * to ensure the same order on all clients.
      * @internal
      */
-    protected _sortSounds(a: PlaylistSound.ConfiguredInstance, b: PlaylistSound.ConfiguredInstance): number;
+    protected _sortSounds(a: PlaylistSound.Implementation, b: PlaylistSound.Implementation): number;
 
     override toAnchor(
       options?: InexactPartial<{
@@ -406,14 +406,14 @@ declare global {
      * Handle callback logic when an individual sound within the Playlist concludes playback naturally
      * @internal
      */
-    _onSoundEnd(sound: PlaylistSound.ConfiguredInstance): Promise<this | undefined>;
+    _onSoundEnd(sound: PlaylistSound.Implementation): Promise<this | undefined>;
 
     /**
      * Handle callback logic when playback for an individual sound within the Playlist is started.
      * Schedule auto-preload of next track
      * @internal
      */
-    _onSoundStart(sound: PlaylistSound.ConfiguredInstance): Promise<void>;
+    _onSoundStart(sound: PlaylistSound.Implementation): Promise<void>;
 
     override toCompendium<
       FlagsOpt extends boolean = false,

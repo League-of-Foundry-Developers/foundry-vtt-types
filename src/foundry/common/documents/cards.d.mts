@@ -3,8 +3,6 @@ import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { SchemaField } from "../data/fields.d.mts";
 
-type DataSchema = foundry.data.fields.DataSchema;
-
 /**
  * The Cards Document.
  * Defines the DataSchema and common behaviors for a Cards Document which are shared between both client and server.

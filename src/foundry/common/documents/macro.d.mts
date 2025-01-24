@@ -34,10 +34,10 @@ declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMa
 
   static override migrateData(source: AnyObject): AnyObject;
 
-  static override canUserCreate(user: User.ConfiguredInstance): boolean;
+  static override canUserCreate(user: User.Implementation): boolean;
 
   override testUserPermission(
-    user: User.ConfiguredInstance,
+    user: User.Implementation,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
     options?: InexactPartial<{
       /**

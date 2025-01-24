@@ -26,7 +26,7 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
   static override defineSchema(): BasePlaylistSound.Schema;
 
   override testUserPermission(
-    user: User.ConfiguredInstance,
+    user: User.Implementation,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS,
     options?: InexactPartial<{
       /**

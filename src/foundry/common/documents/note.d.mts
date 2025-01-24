@@ -3,8 +3,6 @@ import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { SchemaField } from "../data/fields.d.mts";
 
-type DataSchema = foundry.data.fields.DataSchema;
-
 /**
  * The Document definition for a Note.
  * Defines the DataSchema and common behaviors for a Note which are shared between both client and server.
@@ -31,7 +29,7 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
   static DEFAULT_ICON: string;
 
   override testUserPermission(
-    user: User.ConfiguredInstance,
+    user: User.Implementation,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS,
     options?: InexactPartial<{
       /**

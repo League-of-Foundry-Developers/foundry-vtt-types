@@ -163,7 +163,7 @@ declare global {
       documents: Document.ToStored<T>[],
       result: readonly AnyObject[] | readonly string[],
       operation: DatabaseOperationMap[A],
-      user: User.ConfiguredInstance,
+      user: User.Implementation,
     ): void;
   }
 

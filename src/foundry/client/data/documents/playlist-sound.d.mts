@@ -242,7 +242,7 @@ declare global {
   class PlaylistSound extends ClientDocumentMixin(foundry.documents.BasePlaylistSound) {
     static override metadata: PlaylistSound.Metadata;
 
-    static get implementation(): PlaylistSound.ConfiguredClass;
+    static get implementation(): PlaylistSound.ImplementationClass;
 
     // Note(LukeAbby): TODO, this constructor just copies from the parent. Should this just be removed?
     // constructor(
@@ -304,7 +304,7 @@ declare global {
       }>,
     ): HTMLAnchorElement;
 
-    _onClickDocumentLink(event: MouseEvent): ReturnType<Playlist.ConfiguredInstance["stopSound" | "playSound"]>;
+    _onClickDocumentLink(event: MouseEvent): ReturnType<Playlist.Implementation["stopSound" | "playSound"]>;
 
     /**
      * @privateRemarks _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
@@ -321,7 +321,7 @@ declare global {
      * Special handling that occurs when a PlaylistSound reaches the natural conclusion of its playback.
      * @internal
      */
-    protected _onEnd(): Promise<void | Playlist.ConfiguredInstance | undefined>;
+    protected _onEnd(): Promise<void | Playlist.Implementation | undefined>;
 
     /**
      * Special handling that occurs when a PlaylistSound is manually stopped before its natural conclusion.

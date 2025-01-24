@@ -25,13 +25,13 @@ declare abstract class BaseActorDelta<
   static override defineSchema(): BaseActorDelta.Schema;
 
   override canUserModify(
-    user: User.Internal.ConfiguredInstance,
+    user: User.Internal.Implementation,
     action: "create" | "update" | "delete",
     data?: AnyObject,
   ): boolean;
 
   override testUserPermission(
-    user: User.Internal.ConfiguredInstance,
+    user: User.Internal.Implementation,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
     options?: InexactPartial<{
       /**
@@ -210,7 +210,7 @@ declare namespace BaseActorDelta {
   // The document subclasses override `system` anyways.
   // There's no point in doing expensive computation work comparing the base class system.
   /** @internal */
-  interface _Schema extends ActiveEffect.Schema {
+  interface _Schema extends ActorDelta.Schema {
     system: any;
   }
 
@@ -221,16 +221,16 @@ declare namespace BaseActorDelta {
    */
   type Properties = fields.SchemaField.InitializedData<Schema>;
 
-  /** @deprecated {@link BaseActiveEffect.SubType | `BaseActiveEffect.SubType`} */
+  /** @deprecated {@link BaseActorDelta.SubType | `BaseActorDelta.SubType`} */
   type TypeNames = Game.Model.TypeNames<"Actor">;
 
   /**
-   * @deprecated {@link fields.SchemaField | `SchemaField<BaseActiveEffect.Schema>`}
+   * @deprecated {@link fields.SchemaField | `SchemaField<BaseActorDelta.Schema>`}
    */
   type SchemaField = fields.SchemaField<Schema>;
 
   /**
-   * @deprecated {@link BaseActiveEffect.CreateData | `BaseActiveEffect.CreateData`}
+   * @deprecated {@link BaseActorDelta.CreateData | `BaseActorDelta.CreateData`}
    */
   type ConstructorData = fields.SchemaField.CreateData<Schema>;
 }

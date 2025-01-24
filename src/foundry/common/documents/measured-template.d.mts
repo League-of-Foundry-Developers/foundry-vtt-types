@@ -31,7 +31,7 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
    * @param doc  - The MeasuredTemplate being created.
    * @internal
    */
-  static #canCreate(user: User.ConfiguredInstance, doc: BaseMeasuredTemplate): boolean;
+  static #canCreate(user: User.Implementation, doc: BaseMeasuredTemplate): boolean;
 
   /**
    * Is a user able to modify an existing MeasuredTemplate?
@@ -41,13 +41,13 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
    * @internal
    */
   static #canModify(
-    user: User.ConfiguredInstance,
+    user: User.Implementation,
     doc: BaseMeasuredTemplate,
     data?: BaseMeasuredTemplate.UpdateData,
   ): boolean;
 
   override testUserPermission(
-    user: User.ConfiguredInstance,
+    user: User.Implementation,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS,
     options?: InexactPartial<{
       /**

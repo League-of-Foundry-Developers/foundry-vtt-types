@@ -195,28 +195,26 @@ declare global {
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 
+    /**
+     * @deprecated - {@link AmbientLightDocument.DatabaseOperation}
+     */
     /* eslint-disable @typescript-eslint/no-empty-object-type */
     interface DatabaseOperations
       extends Document.Database.Operations<AmbientLightDocument, {}, { animate: boolean }, {}> {}
     /* eslint-enable @typescript-eslint/no-empty-object-type */
 
     /**
-     * @deprecated {@link ActorDelta.Types | `ActorDelta.SubType`}
+     * @deprecated {@link AmbientLightDocument.CreateData | `AmbientLightDocument.CreateData`}
      */
-    type TypeNames = ActorDelta.SubType;
+    interface ConstructorData extends AmbientLightDocument.CreateData {}
 
     /**
-     * @deprecated {@link ActorDelta.CreateData | `ActorDelta.CreateData`}
-     */
-    interface ConstructorData extends ActorDelta.CreateData {}
-
-    /**
-     * @deprecated {@link ActorDelta.implementation | `ActorDelta.ImplementationClass`}
+     * @deprecated {@link AmbientLightDocument.implementation | `AmbientLightDocument.ImplementationClass`}
      */
     type ConfiguredClass = ImplementationClass;
 
     /**
-     * @deprecated {@link ActorDelta.Implementation | `ActorDelta.Implementation`}
+     * @deprecated {@link AmbientLightDocument.Implementation | `AmbientLightDocument.Implementation`}
      */
     type ConfiguredInstance = Implementation;
   }

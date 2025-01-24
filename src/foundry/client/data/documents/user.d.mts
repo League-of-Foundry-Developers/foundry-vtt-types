@@ -241,8 +241,8 @@ declare global {
     // Note(LukeAbby): This namespace exists to break cycles because of extensive usage of `User` in
     // the `Document` class itself.
     namespace Internal {
-      type ConfiguredClass = ConfiguredDocumentClass["User"];
-      type ConfiguredInstance = FixedInstanceType<ConfiguredDocumentClass["User"]>;
+      type ImplementationClass = ConfiguredDocumentClass["User"];
+      type Implementation = FixedInstanceType<ConfiguredDocumentClass["User"]>;
     }
 
     interface PingData {
@@ -360,7 +360,7 @@ declare global {
      * @returns A Promise which resolves once the User update is complete
      */
     assignHotbarMacro(
-      macro: Macro.ConfiguredInstance | null,
+      macro: Macro.Implementation | null,
       slot: string | number,
       { fromSlot }?: InexactPartial<{ fromSlot: number }>,
     ): Promise<this>;
@@ -396,7 +396,7 @@ declare global {
      * @param page - The hotbar page number
      *               (default: `1`)
      */
-    getHotbarMacros(page?: number): Array<{ slot: number; macro: Macro.ConfiguredInstance | null }>;
+    getHotbarMacros(page?: number): Array<{ slot: number; macro: Macro.Implementation | null }>;
 
     /**
      * Update the set of Token targets for the user given an array of provided Token ids.
