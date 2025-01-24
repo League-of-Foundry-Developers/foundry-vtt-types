@@ -1,9 +1,7 @@
 import type { AnyObject } from "../../../utils/index.d.mts";
+import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
-import type * as fields from "../data/fields.d.mts";
-import type * as documents from "./_module.mts";
-
-type DataSchema = foundry.data.fields.DataSchema;
+import type { SchemaField } from "../data/fields.d.mts";
 
 /**
  * The Playlist Document.
@@ -19,8 +17,6 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
    */
   // TODO(LukeAbby): This constructor is a symptom of a circular error.
   // constructor(data: BasePlaylist.ConstructorData, context?: Document.ConstructionContext<BasePlaylist.Parent>);
-
-  override parent: BasePlaylist.Parent;
 
   static override metadata: BasePlaylist.Metadata;
 
@@ -39,121 +35,164 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
     },
   ): AnyObject;
 
+  /*
+   * After this point these are not really overridden methods.
+   * They are here because they're static properties but depend on the instance and so can't be
+   * defined DRY-ly while also being easily overridable.
+   */
+
   static " __fvtt_types_internal_document_name_static": "Playlist";
+
+  static get implementation(): Playlist.ImplementationClass;
+
+  override parent: Playlist.Parent;
+
+  static createDocuments<Temporary extends boolean | undefined>(
+    data: Array<Playlist.Implementation | Playlist.CreateData> | undefined,
+    operation?: Document.Database.CreateOperation<Playlist.DatabaseOperation.Create<Temporary>>,
+  ): Promise<Array<Document.StoredIf<Playlist.Implementation, Temporary>>>;
+
+  static updateDocuments(
+    updates: Playlist.UpdateData[] | undefined,
+    operation?: Document.Database.UpdateOperation<Playlist.DatabaseOperation.Update>,
+  ): Promise<Playlist.Implementation[]>;
+
+  static deleteDocuments(
+    ids: readonly string[] | undefined,
+    operation?: Document.Database.DeleteOperation<Playlist.DatabaseOperation.Delete>,
+  ): Promise<Playlist.Implementation[]>;
+
+  static create<Temporary extends boolean | undefined>(
+    data: Playlist.CreateData | Playlist.CreateData[],
+    operation?: Document.Database.CreateOperation<Playlist.DatabaseOperation.Create<Temporary>>,
+  ): Promise<Playlist.Implementation | undefined>;
+
+  static get(documentId: string, options?: Document.Database.GetOperation): Playlist.Implementation | null;
+
+  protected _preCreate(
+    data: Playlist.CreateData,
+    options: Playlist.DatabaseOperation.PreCreateOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onCreate(
+    data: Playlist.CreateData,
+    options: Playlist.DatabaseOperation.OnCreateOperation,
+    userId: string,
+  ): void;
+
+  protected static _preCreateOperation(
+    documents: Playlist.Implementation[],
+    operation: Document.Database.PreCreateOperationStatic<Playlist.DatabaseOperation.Create>,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onCreateOperation(
+    documents: Playlist.Implementation[],
+    operation: Playlist.DatabaseOperation.Create,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected _preUpdate(
+    changed: Playlist.UpdateData,
+    options: Playlist.DatabaseOperation.PreUpdateOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onUpdate(
+    changed: Playlist.UpdateData,
+    options: Playlist.DatabaseOperation.OnUpdateOperation,
+    userId: string,
+  ): void;
+
+  protected static _preUpdateOperation(
+    documents: Playlist.Implementation[],
+    operation: Playlist.DatabaseOperation.Update,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onUpdateOperation(
+    documents: Playlist.Implementation[],
+    operation: Playlist.DatabaseOperation.Update,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected _preDelete(
+    options: Playlist.DatabaseOperation.PreDeleteOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onDelete(options: Playlist.DatabaseOperation.OnDeleteOperation, userId: string): void;
+
+  protected static _preDeleteOperation(
+    documents: Playlist.Implementation[],
+    operation: Playlist.DatabaseOperation.Delete,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onDeleteOperation(
+    documents: Playlist.Implementation[],
+    operation: Playlist.DatabaseOperation.Delete,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected static _onCreateDocuments(
+    documents: Playlist.Implementation[],
+    context: Document.ModificationContext<Playlist.Parent>,
+  ): Promise<void>;
+
+  protected static _onUpdateDocuments(
+    documents: Playlist.Implementation[],
+    context: Document.ModificationContext<Playlist.Parent>,
+  ): Promise<void>;
+
+  protected static _onDeleteDocuments(
+    documents: Playlist.Implementation[],
+    context: Document.ModificationContext<Playlist.Parent>,
+  ): Promise<void>;
+
+  protected static _schema: SchemaField<Playlist.Schema>;
+
+  static get schema(): SchemaField<Playlist.Schema>;
+
+  static validateJoint(data: Playlist.Source): void;
+
+  static override fromSource(
+    source: Playlist.UpdateData,
+    { strict, ...context }?: DataModel.FromSourceOptions,
+  ): DataModel<Playlist.Schema, DataModel.Any | null>;
+
+  static override fromJSON(json: string): DataModel<Playlist.Schema, DataModel.Any | null>;
 }
 
 export default BasePlaylist;
 
 declare namespace BasePlaylist {
-  type Parent = null;
+  export import Metadata = Playlist.Metadata;
+  export import Parent = Playlist.Parent;
+  export import Stored = Playlist.Stored;
+  export import Source = Playlist.Source;
+  export import PersistedData = Playlist.PersistedData;
+  export import CreateData = Playlist.CreateData;
+  export import InitializedData = Playlist.InitializedData;
+  export import UpdateData = Playlist.UpdateData;
+  export import Schema = Playlist.Schema;
+  export import DatabaseOperation = Playlist.DatabaseOperation;
 
-  type Metadata = Document.MetadataFor<"Playlist">;
+  /**
+   * @deprecated This type is used by Foundry too vaguely.
+   * In one context the most correct type is after initialization whereas in another one it should be
+   * before but Foundry uses it interchangeably.
+   */
+  type Properties = SchemaField.InitializedData<Schema>;
 
-  type SchemaField = fields.SchemaField<Schema>;
-  type ConstructorData = fields.SchemaField.CreateData<Schema>;
-  type UpdateData = fields.SchemaField.AssignmentData<Schema>;
-  type Properties = fields.SchemaField.InitializedData<Schema>;
-  type Source = fields.SchemaField.PersistedData<Schema>;
-  interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
+  /**
+   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BasePlaylist.Schema>`}
+   */
+  type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
-  interface Schema extends DataSchema {
-    /**
-     * The _id which uniquely identifies this Playlist document
-     * @defaultValue `null`
-     */
-    _id: fields.DocumentIdField;
-
-    /**
-     * The name of this playlist
-     */
-    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
-
-    /**
-     * The description of this playlist
-     * @defaultValue `""`
-     */
-    description: fields.StringField<{ textSearch: true }>;
-
-    /**
-     * A Collection of PlaylistSounds embedded documents which belong to this playlist
-     * @defaultValue `[]`
-     */
-    sounds: fields.EmbeddedCollectionField<typeof documents.BasePlaylistSound, Playlist.ConfiguredInstance>;
-
-    /**
-     * A channel in CONST.AUDIO_CHANNELS where all sounds in this playlist are played
-     * @defaultValue `"music"`
-     */
-    channel: fields.StringField<{ choices: typeof foundry.CONST.AUDIO_CHANNELS; initial: string; blank: false }>;
-
-    /**
-     * The playback mode for sounds in this playlist
-     * @defaultValue `CONST.PLAYLIST_MODES.SEQUENTIAL`
-     */
-    mode: fields.NumberField<{
-      required: true;
-      choices: foundry.CONST.PLAYLIST_MODES[];
-      initial: typeof CONST.PLAYLIST_MODES.SEQUENTIAL;
-      validationError: "must be a value in CONST.PLAYLIST_MODES";
-    }>;
-
-    /**
-     * Is this playlist currently playing?
-     * @defaultValue `false`
-     */
-    playing: fields.BooleanField;
-
-    /**
-     * A duration in milliseconds to fade volume transition
-     * @defaultValue `null`
-     */
-    fade: fields.NumberField<{ positive: true }>;
-
-    /**
-     * The _id of a Folder which contains this playlist
-     * @defaultValue `null`
-     */
-    folder: fields.ForeignDocumentField<typeof documents.BaseFolder>;
-
-    /**
-     * The sorting mode used for this playlist.
-     * @defaultValue `CONST.PLAYLIST_SORT_MODES.ALPHABETICAL`
-     */
-    sorting: fields.StringField<{
-      required: true;
-      choices: foundry.CONST.PLAYLIST_SORT_MODES[];
-      initial: typeof CONST.PLAYLIST_SORT_MODES.ALPHABETICAL;
-      validationError: "must be a value in CONST.PLAYLIST_SORTING_MODES";
-    }>;
-
-    /**
-     * A seed used for playlist randomization to guarantee that all clients generate the same random order.
-     * @defaultValue `null`
-     */
-    seed: fields.NumberField<{ integer: true; min: 0 }>;
-
-    /**
-     * The numeric sort value which orders this playlist relative to its siblings
-     * @defaultValue `0`
-     */
-    sort: fields.IntegerSortField;
-
-    /**
-     * An object which configures ownership of this Playlist
-     * @defaultValue see {@link fields.DocumentOwnershipField}
-     */
-    ownership: fields.DocumentOwnershipField;
-
-    /**
-     * An object of optional key/value flags
-     * @defaultValue `{}`
-     */
-    flags: fields.ObjectField.FlagsField<"Playlist">;
-
-    /**
-     * An object of creation and access information
-     * @defaultValue see {@link fields.DocumentStatsField}
-     */
-    _stats: fields.DocumentStatsField;
-  }
+  /**
+   * @deprecated {@link BasePlaylist.CreateData | `BasePlaylist.CreateData`}
+   */
+  type ConstructorData = BasePlaylist.CreateData;
 }

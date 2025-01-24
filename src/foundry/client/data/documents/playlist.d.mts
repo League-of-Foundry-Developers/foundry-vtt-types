@@ -1,24 +1,256 @@
 import type { InexactPartial } from "../../../../utils/index.d.mts";
+import type { documents } from "../../../client-esm/client.d.mts";
 import type { Document } from "../../../common/abstract/module.d.mts";
-import type { SchemaField } from "../../../common/data/fields.d.mts";
-import type BasePlaylist from "../../../common/documents/playlist.d.mts";
+import type { DataSchema } from "../../../common/data/fields.d.mts";
+import type { fields } from "../../../common/data/module.d.mts";
 
 declare global {
   namespace Playlist {
-    type Metadata = Document.MetadataFor<"Playlist">;
+    /**
+     * The implementation of the Playlist document instance configured through `CONFIG.Playlist.documentClass` in Foundry and
+     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredPlaylist | `configuration/ConfiguredPlaylist`} in fvtt-types.
+     */
+    type Implementation = Document.ConfiguredInstanceForName<"Playlist">;
 
-    type ConfiguredClass = Document.ConfiguredClassForName<"Playlist">;
-    type ConfiguredInstance = Document.ConfiguredInstanceForName<"Playlist">;
+    /**
+     * The implementation of the Playlist document configured through `CONFIG.Playlist.documentClass` in Foundry and
+     * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
+     */
+    type ImplementationClass = Document.ConfiguredClassForName<"Playlist">;
 
+    /**
+     * A document's metadata is special information about the document ranging anywhere from its name,
+     * whether it's indexed, or to the permissions a user has over it.
+     */
+    interface Metadata extends Document.MetadataFor<"Playlist"> {}
+
+    /**
+     * A document's parent is something that can contain it.
+     * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
+     */
+    type Parent = null;
+
+    /**
+     * An instance of `Playlist` that comes from the database.
+     */
+    interface Stored extends Document.Stored<Playlist.Implementation> {}
+
+    /**
+     * The data put in {@link Document._source | `Document._source`}. This data is what was
+     * persisted to the database and therefore it must be valid JSON.
+     *
+     * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+     * but initialized as a {@link Set | `Set`}.
+     *
+     * Both `Source` and `PersistedData` are equivalent.
+     */
+    interface Source extends PersistedData {}
+
+    /**
+     * The data put in {@link Playlist._source | `Playlist._source`}. This data is what was
+     * persisted to the database and therefore it must be valid JSON.
+     *
+     * Both `Source` and `PersistedData` are equivalent.
+     */
+    interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
+
+    /**
+     * The data necessary to create a document. Used in places like {@link Playlist.create | `Playlist.create`}
+     * and {@link Playlist | `new Playlist(...)`}.
+     *
+     * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
+     * with the right values. This means you can pass a `Set` instance, an array of values,
+     * a generator, or any other iterable.
+     */
+    interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+
+    /**
+     * The data after a {@link Document | `Document`} has been initialized, for example
+     * {@link Playlist.name | `Playlist#name`}.
+     *
+     * This is data transformed from {@link Playlist.Source | `Playlist.Source`} and turned into more
+     * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+     * persisted to the database as an array of values but at runtime it is a `Set` instance.
+     */
+    interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
+
+    /**
+     * The data used to update a document, for example {@link Playlist.update | `Playlist#update`}.
+     * It is a distinct type from {@link Playlist.CreateData | `DeepPartial<Playlist.CreateData>`} because
+     * it has different rules for `null` and `undefined`.
+     */
+    interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+    /**
+     * The schema for {@link Playlist | `Playlist`}. This is the source of truth for how an Playlist document
+     * must be structured.
+     *
+     * Foundry uses this schema to validate the structure of the {@link Playlist | `Playlist`}. For example
+     * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
+     * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+     * starting as an array in the database, initialized as a set, and allows updates with any
+     * iterable.
+     */
+    interface Schema extends DataSchema {
+      /**
+       * The _id which uniquely identifies this Playlist document
+       * @defaultValue `null`
+       */
+      _id: fields.DocumentIdField;
+
+      /**
+       * The name of this playlist
+       */
+      name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
+
+      /**
+       * The description of this playlist
+       * @defaultValue `""`
+       */
+      description: fields.StringField<{ textSearch: true }>;
+
+      /**
+       * A Collection of PlaylistSounds embedded documents which belong to this playlist
+       * @defaultValue `[]`
+       */
+      sounds: fields.EmbeddedCollectionField<typeof documents.BasePlaylistSound, Playlist.ConfiguredInstance>;
+
+      /**
+       * A channel in CONST.AUDIO_CHANNELS where all sounds in this playlist are played
+       * @defaultValue `"music"`
+       */
+      channel: fields.StringField<{ choices: typeof foundry.CONST.AUDIO_CHANNELS; initial: string; blank: false }>;
+
+      /**
+       * The playback mode for sounds in this playlist
+       * @defaultValue `CONST.PLAYLIST_MODES.SEQUENTIAL`
+       */
+      mode: fields.NumberField<{
+        required: true;
+        choices: foundry.CONST.PLAYLIST_MODES[];
+        initial: typeof CONST.PLAYLIST_MODES.SEQUENTIAL;
+        validationError: "must be a value in CONST.PLAYLIST_MODES";
+      }>;
+
+      /**
+       * Is this playlist currently playing?
+       * @defaultValue `false`
+       */
+      playing: fields.BooleanField;
+
+      /**
+       * A duration in milliseconds to fade volume transition
+       * @defaultValue `null`
+       */
+      fade: fields.NumberField<{ positive: true }>;
+
+      /**
+       * The _id of a Folder which contains this playlist
+       * @defaultValue `null`
+       */
+      folder: fields.ForeignDocumentField<typeof documents.BaseFolder>;
+
+      /**
+       * The sorting mode used for this playlist.
+       * @defaultValue `CONST.PLAYLIST_SORT_MODES.ALPHABETICAL`
+       */
+      sorting: fields.StringField<{
+        required: true;
+        choices: foundry.CONST.PLAYLIST_SORT_MODES[];
+        initial: typeof CONST.PLAYLIST_SORT_MODES.ALPHABETICAL;
+        validationError: "must be a value in CONST.PLAYLIST_SORTING_MODES";
+      }>;
+
+      /**
+       * A seed used for playlist randomization to guarantee that all clients generate the same random order.
+       * @defaultValue `null`
+       */
+      seed: fields.NumberField<{ integer: true; min: 0 }>;
+
+      /**
+       * The numeric sort value which orders this playlist relative to its siblings
+       * @defaultValue `0`
+       */
+      sort: fields.IntegerSortField;
+
+      /**
+       * An object which configures ownership of this Playlist
+       * @defaultValue see {@link fields.DocumentOwnershipField}
+       */
+      ownership: fields.DocumentOwnershipField;
+
+      /**
+       * An object of optional key/value flags
+       * @defaultValue `{}`
+       */
+      flags: fields.ObjectField.FlagsField<"Playlist">;
+
+      /**
+       * An object of creation and access information
+       * @defaultValue see {@link fields.DocumentStatsField}
+       */
+      _stats: fields.DocumentStatsField;
+    }
+
+    namespace DatabaseOperation {
+      /** Options passed along in Get operations for Playlists */
+      interface Get extends foundry.abstract.types.DatabaseGetOperation<Playlist.Parent> {}
+      /** Options passed along in Create operations for Playlists */
+      interface Create<Temporary extends boolean | undefined = boolean | undefined>
+        extends foundry.abstract.types.DatabaseCreateOperation<Playlist.CreateData, Playlist.Parent, Temporary> {}
+      /** Options passed along in Delete operations for Playlists */
+      interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<Playlist.Parent> {}
+      /** Options passed along in Update operations for Playlists */
+      interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Playlist.UpdateData, Playlist.Parent> {}
+
+      /** Options for {@link Playlist.createDocuments} */
+      type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
+        Document.Database.CreateOperation<Create<Temporary>>;
+      /** Options for {@link Playlist._preCreateOperation} */
+      type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
+      /** Options for {@link Playlist#_preCreate} */
+      type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
+      /** Options for {@link Playlist#_onCreate} */
+      type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
+
+      /** Options for {@link Playlist.updateDocuments} */
+      type UpdateOperation = Document.Database.UpdateOperation<Update>;
+      /** Options for {@link Playlist._preUpdateOperation} */
+      type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
+      /** Options for {@link Playlist#_preUpdate} */
+      type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
+      /** Options for {@link Playlist#_onUpdate} */
+      type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
+
+      /** Options for {@link Playlist.deleteDocuments} */
+      type DeleteOperation = Document.Database.DeleteOperation<Delete>;
+      /** Options for {@link Playlist._preDeleteOperation} */
+      type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
+      /** Options for {@link Playlist#_preDelete} */
+      type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
+      /** Options for {@link Playlist#_onDelete} */
+      type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
+    }
+
+    /**
+     * @deprecated - {@link Playlist.DatabaseOperation}
+     */
     interface DatabaseOperations extends Document.Database.Operations<Playlist> {}
 
-    // Helpful aliases
-    type ConstructorData = BasePlaylist.ConstructorData;
-    type UpdateData = BasePlaylist.UpdateData;
-    type Schema = BasePlaylist.Schema;
-    type Source = BasePlaylist.Source;
-    interface PersistedData extends SchemaField.PersistedData<Schema> {}
+    /**
+     * @deprecated {@link Playlist.CreateData | `Playlist.CreateData`}
+     */
+    interface ConstructorData extends Playlist.CreateData {}
 
+    /**
+     * @deprecated {@link Playlist.implementation | `Playlist.ImplementationClass`}
+     */
+    type ConfiguredClass = ImplementationClass;
+
+    /**
+     * @deprecated {@link Playlist.Implementation | `Playlist.Implementation`}
+     */
+    type ConfiguredInstance = Implementation;
     interface PlayNextOptions {
       /**
        * Whether to advance forward (if 1) or backwards (if -1)
