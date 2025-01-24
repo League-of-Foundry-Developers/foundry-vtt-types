@@ -3,8 +3,38 @@ import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
   namespace Drawing {
-    type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof Drawing>;
-    type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;
+    type ObjectClass = ConfiguredObjectClassOrDefault<typeof Drawing>;
+    type Object = FixedInstanceType<ObjectClass>;
+
+    /**
+     * @deprecated {@link Drawing.ObjectClass | `Drawing.ObjectClass`}
+     */
+    type ConfiguredClass = ObjectClass;
+
+    /**
+     * @deprecated {@link Drawing.Object | `Drawing.Object`}
+     */
+    type ConfiguredInstance = Object;
+
+    /**
+     * This type will permanently exist but is marked deprecated. The reason it exists is because
+     * the confusion between `Drawing` (the `PlaceableObject` that appears on the canvas) and
+     * `DrawingDocument` (the `Document` that represents the data for a `Drawing`) is so common that
+     * it is useful to have type to forward to `DrawingDocument`.
+     *
+     * @deprecated {@link DrawingDocument.Implementation | `DrawingDocument.Implementation`}
+     */
+    type Implementation = DrawingDocument.Implementation;
+
+    /**
+     * This type will permanently exist but is marked deprecated. The reason it exists is because
+     * the confusion between `Drawing` (the `PlaceableObject` that appears on the canvas) and
+     * `DrawingDocument` (the `Document` that represents the data for a `Drawing`) is so common that
+     * it is useful to have type to forward to `DrawingDocument`.
+     *
+     * @deprecated {@link DrawingDocument.ImplementationClass | `DrawingDocument.ImplementationClass`}
+     */
+    type ImplementationClass = DrawingDocument.Implementation;
 
     interface RenderFlags extends PlaceableObject.RenderFlags {
       refreshShape: boolean;

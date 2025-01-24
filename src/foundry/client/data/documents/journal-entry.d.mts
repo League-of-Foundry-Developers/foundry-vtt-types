@@ -90,66 +90,70 @@ declare global {
      * starting as an array in the database, initialized as a set, and allows updates with any
      * iterable.
      */
-  interface Schema extends DataSchema {
-    /**
-     * The _id which uniquely identifies this JournalEntry document
-     * @defaultValue `null`
-     */
-    _id: fields.DocumentIdField;
+    interface Schema extends DataSchema {
+      /**
+       * The _id which uniquely identifies this JournalEntry document
+       * @defaultValue `null`
+       */
+      _id: fields.DocumentIdField;
 
-    /**
-     * The name of this JournalEntry
-     */
-    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
+      /**
+       * The name of this JournalEntry
+       */
+      name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
-    /**
-     * The pages contained within this JournalEntry document
-     * @defaultValue `[]`
-     */
-    pages: fields.EmbeddedCollectionField<typeof documents.BaseJournalEntryPage, JournalEntry.ConfiguredInstance>;
+      /**
+       * The pages contained within this JournalEntry document
+       * @defaultValue `[]`
+       */
+      pages: fields.EmbeddedCollectionField<typeof documents.BaseJournalEntryPage, JournalEntry.ConfiguredInstance>;
 
-    /**
-     * The _id of a Folder which contains this JournalEntry
-     * @defaultValue `null`
-     */
-    folder: fields.ForeignDocumentField<typeof documents.BaseFolder>;
+      /**
+       * The _id of a Folder which contains this JournalEntry
+       * @defaultValue `null`
+       */
+      folder: fields.ForeignDocumentField<typeof documents.BaseFolder>;
 
-    /**
-     * The numeric sort value which orders this JournalEntry relative to its siblings
-     * @defaultValue `0`
-     */
-    sort: fields.IntegerSortField;
+      /**
+       * The numeric sort value which orders this JournalEntry relative to its siblings
+       * @defaultValue `0`
+       */
+      sort: fields.IntegerSortField;
 
-    /**
-     * An object which configures ownership of this JournalEntry
-     * @defaultValue see {@link fields.DocumentOwnershipField}
-     */
-    ownership: fields.DocumentOwnershipField;
+      /**
+       * An object which configures ownership of this JournalEntry
+       * @defaultValue see {@link fields.DocumentOwnershipField}
+       */
+      ownership: fields.DocumentOwnershipField;
 
-    /**
-     * An object of optional key/value flags
-     * @defaultValue `{}`
-     */
-    flags: fields.ObjectField.FlagsField<"JournalEntry">;
+      /**
+       * An object of optional key/value flags
+       * @defaultValue `{}`
+       */
+      flags: fields.ObjectField.FlagsField<"JournalEntry">;
 
-    /**
-     * An object of creation and access information
-     * @defaultValue see {@link fields.DocumentStatsField}
-     */
-    _stats: fields.DocumentStatsField;
-  }
-
+      /**
+       * An object of creation and access information
+       * @defaultValue see {@link fields.DocumentStatsField}
+       */
+      _stats: fields.DocumentStatsField;
+    }
 
     namespace DatabaseOperation {
       /** Options passed along in Get operations for  JournalEntries */
       interface Get extends foundry.abstract.types.DatabaseGetOperation<JournalEntry.Parent> {}
       /** Options passed along in Create operations for  JournalEntries */
       interface Create<Temporary extends boolean | undefined = boolean | undefined>
-        extends foundry.abstract.types.DatabaseCreateOperation<JournalEntry.CreateData, JournalEntry.Parent, Temporary> {}
+        extends foundry.abstract.types.DatabaseCreateOperation<
+          JournalEntry.CreateData,
+          JournalEntry.Parent,
+          Temporary
+        > {}
       /** Options passed along in Delete operations for  JournalEntries */
       interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<JournalEntry.Parent> {}
       /** Options passed along in Update operations for  JournalEntries */
-      interface Update extends foundry.abstract.types.DatabaseUpdateOperation<JournalEntry.UpdateData, JournalEntry.Parent> {}
+      interface Update
+        extends foundry.abstract.types.DatabaseUpdateOperation<JournalEntry.UpdateData, JournalEntry.Parent> {}
 
       /** Options for {@link JournalEntry.createDocuments} */
       type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =

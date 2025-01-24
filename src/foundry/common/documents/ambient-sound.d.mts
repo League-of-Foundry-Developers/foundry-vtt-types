@@ -155,16 +155,16 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
 export default BaseAmbientSound;
 
 declare namespace BaseAmbientSound {
-  export import Metadata = AmbientLightDocument.Metadata;
-  export import Parent = AmbientLightDocument.Parent;
-  export import Stored = AmbientLightDocument.Stored;
-  export import Source = AmbientLightDocument.Source;
-  export import PersistedData = AmbientLightDocument.PersistedData;
-  export import CreateData = AmbientLightDocument.CreateData;
-  export import InitializedData = AmbientLightDocument.InitializedData;
-  export import UpdateData = AmbientLightDocument.UpdateData;
-  export import Schema = AmbientLightDocument.Schema;
-  export import DatabaseOperation = AmbientLightDocument.DatabaseOperation;
+  export import Metadata = AmbientSoundDocument.Metadata;
+  export import Parent = AmbientSoundDocument.Parent;
+  export import Stored = AmbientSoundDocument.Stored;
+  export import Source = AmbientSoundDocument.Source;
+  export import PersistedData = AmbientSoundDocument.PersistedData;
+  export import CreateData = AmbientSoundDocument.CreateData;
+  export import InitializedData = AmbientSoundDocument.InitializedData;
+  export import UpdateData = AmbientSoundDocument.UpdateData;
+  export import Schema = AmbientSoundDocument.Schema;
+  export import DatabaseOperation = AmbientSoundDocument.DatabaseOperation;
 
   /**
    * @deprecated This type is used by Foundry too vaguely.
@@ -174,12 +174,12 @@ declare namespace BaseAmbientSound {
   type Properties = SchemaField.InitializedData<Schema>;
 
   /**
-   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseAmbientLightDocument.Schema>`}
+   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseAmbientSound.Schema>`}
    */
   type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
   /**
-   * @deprecated {@link BaseAmbientLightDocument.CreateData | `BaseAmbientLightDocument.CreateData`}
+   * @deprecated {@link BaseAmbientSound.CreateData | `BaseAmbientSound.CreateData`}
    */
-  type ConstructorData = BaseAmbientLightDocument.CreateData;
+  type ConstructorData = BaseAmbientSound.CreateData;
 }

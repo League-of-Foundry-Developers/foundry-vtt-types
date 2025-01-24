@@ -3,8 +3,38 @@ import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
   namespace MeasuredTemplate {
-    type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof MeasuredTemplate>;
-    type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;
+    type ObjectClass = ConfiguredObjectClassOrDefault<typeof MeasuredTemplate>;
+    type Object = FixedInstanceType<ObjectClass>;
+
+    /**
+     * @deprecated {@link MeasuredTemplate.ObjectClass | `MeasuredTemplate.ObjectClass`}
+     */
+    type ConfiguredClass = ObjectClass;
+
+    /**
+     * @deprecated {@link MeasuredTemplate.Object | `MeasuredTemplate.Object`}
+     */
+    type ConfiguredInstance = Object;
+
+    /**
+     * This type will permanently exist but is marked deprecated. The reason it exists is because
+     * the confusion between `MeasuredTemplate` (the `PlaceableObject` that appears on the canvas) and
+     * `MeasuredTemplateDocument` (the `Document` that represents the data for a `MeasuredTemplate`) is so common that
+     * it is useful to have type to forward to `MeasuredTemplateDocument`.
+     *
+     * @deprecated {@link MeasuredTemplateDocument.Implementation | `MeasuredTemplateDocument.Implementation`}
+     */
+    type Implementation = MeasuredTemplateDocument.Implementation;
+
+    /**
+     * This type will permanently exist but is marked deprecated. The reason it exists is because
+     * the confusion between `MeasuredTemplate` (the `PlaceableObject` that appears on the canvas) and
+     * `MeasuredTemplateDocument` (the `Document` that represents the data for a `MeasuredTemplate`) is so common that
+     * it is useful to have type to forward to `MeasuredTemplateDocument`.
+     *
+     * @deprecated {@link MeasuredTemplateDocument.ImplementationClass | `MeasuredTemplateDocument.ImplementationClass`}
+     */
+    type ImplementationClass = MeasuredTemplateDocument.Implementation;
 
     interface RenderFlags extends PlaceableObject.RenderFlags {
       refreshShape: boolean;

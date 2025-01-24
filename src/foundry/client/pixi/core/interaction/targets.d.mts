@@ -20,10 +20,10 @@ declare global {
    * A subclass of Set which manages the Token ids which the User has targeted.
    * @see User#targets
    */
-  class UserTargets extends Set<TokenDocument.ObjectInstance> {
+  class UserTargets extends Set<Token.Object> {
     constructor(user: UserTargets["user"]);
 
-    user: User.ConfiguredInstance;
+    user: User.Implementation;
 
     /**
      * Return the Token IDs which are user targets
@@ -33,13 +33,13 @@ declare global {
     /**
      * @remarks Returns void, but Set<T>.add returns boolean
      */
-    override add(token: TokenDocument.ObjectInstance): void;
+    override add(token: Token.Object): void;
 
     override clear(): void;
 
     /**
      * @remarks Returns void, but Set<T>.delete returns boolean
      */
-    override delete(token: TokenDocument.ObjectInstance): void;
+    override delete(token: Token.Object): void;
   }
 }

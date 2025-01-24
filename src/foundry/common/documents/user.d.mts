@@ -151,11 +151,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
     user: User.Internal.ConfiguredInstance,
   ): Promise<boolean | void>;
 
-  protected _onCreate(
-    data: User.CreateData,
-    options: User.DatabaseOperation.OnCreateOperation,
-    userId: string,
-  ): void;
+  protected _onCreate(data: User.CreateData, options: User.DatabaseOperation.OnCreateOperation, userId: string): void;
 
   protected static _preCreateOperation(
     documents: User.Implementation[],

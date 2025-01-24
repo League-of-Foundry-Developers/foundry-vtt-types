@@ -200,5 +200,4 @@ declare namespace BaseFolder {
    * @deprecated {@link BaseFolder.CreateData | `BaseFolder.CreateData`}
    */
   type ConstructorData = BaseFolder.CreateData;
-
 }

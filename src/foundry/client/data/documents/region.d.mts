@@ -277,6 +277,31 @@ declare global {
     interface _EventData {
       readonly [K: string]: Document.Any | _EventData | _EventData[];
     }
+
+    /**
+     * @deprecated - {@link RegionDocument.DatabaseOperation}
+     */
+    interface DatabaseOperations extends Document.Database.Operations<RegionDocument> {}
+
+    /**
+     * @deprecated {@link RegionDocument.Types | `RegionDocument.SubType`}
+     */
+    type TypeNames = RegionDocument.SubType;
+
+    /**
+     * @deprecated {@link RegionDocument.CreateData | `RegionDocument.CreateData`}
+     */
+    interface ConstructorData extends RegionDocument.CreateData {}
+
+    /**
+     * @deprecated {@link RegionDocument.implementation | `RegionDocument.ImplementationClass`}
+     */
+    type ConfiguredClass = ImplementationClass;
+
+    /**
+     * @deprecated {@link RegionDocument.Implementation | `RegionDocument.Implementation`}
+     */
+    type ConfiguredInstance = Implementation;
   }
 
   /**

@@ -91,89 +91,94 @@ declare global {
      * starting as an array in the database, initialized as a set, and allows updates with any
      * iterable.
      */
-  interface Schema extends DataSchema {
-    /**
-     * The _id which uniquely identifies this PlaylistSound document
-     * @defaultValue `null`
-     */
-    _id: fields.DocumentIdField;
+    interface Schema extends DataSchema {
+      /**
+       * The _id which uniquely identifies this PlaylistSound document
+       * @defaultValue `null`
+       */
+      _id: fields.DocumentIdField;
 
-    /**
-     * The name of this sound
-     */
-    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
+      /**
+       * The name of this sound
+       */
+      name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
-    /**
-     * The description of this sound
-     * @defaultValue `""`
-     */
-    description: fields.StringField;
+      /**
+       * The description of this sound
+       * @defaultValue `""`
+       */
+      description: fields.StringField;
 
-    /**
-     * The audio file path that is played by this sound
-     * @defaultValue `null`
-     */
-    path: fields.FilePathField<{ categories: ["AUDIO"] }>;
+      /**
+       * The audio file path that is played by this sound
+       * @defaultValue `null`
+       */
+      path: fields.FilePathField<{ categories: ["AUDIO"] }>;
 
-    /**
-     * A channel in CONST.AUDIO_CHANNELS where this sound is are played
-     * @defaultValue `"music"`
-     */
-    channel: fields.StringField<{ choices: typeof foundry.CONST.AUDIO_CHANNELS; initial: string; blank: false }>;
+      /**
+       * A channel in CONST.AUDIO_CHANNELS where this sound is are played
+       * @defaultValue `"music"`
+       */
+      channel: fields.StringField<{ choices: typeof foundry.CONST.AUDIO_CHANNELS; initial: string; blank: false }>;
 
-    /**
-     * Is this sound currently playing?
-     * @defaultValue `false`
-     */
-    playing: fields.BooleanField;
+      /**
+       * Is this sound currently playing?
+       * @defaultValue `false`
+       */
+      playing: fields.BooleanField;
 
-    /**
-     * The time in seconds at which playback was paused
-     * @defaultValue `null`
-     */
-    pausedTime: fields.NumberField<{ min: 0 }>;
+      /**
+       * The time in seconds at which playback was paused
+       * @defaultValue `null`
+       */
+      pausedTime: fields.NumberField<{ min: 0 }>;
 
-    /**
-     * Does this sound loop?
-     * @defaultValue `false`
-     */
-    repeat: fields.BooleanField;
+      /**
+       * Does this sound loop?
+       * @defaultValue `false`
+       */
+      repeat: fields.BooleanField;
 
-    /**
-     * The audio volume of the sound, from 0 to 1
-     * @defaultValue `1`
-     */
-    volume: fields.AlphaField<{ initial: 0.5; step: 0.01 }>;
+      /**
+       * The audio volume of the sound, from 0 to 1
+       * @defaultValue `1`
+       */
+      volume: fields.AlphaField<{ initial: 0.5; step: 0.01 }>;
 
-    /**
-     * A duration in milliseconds to fade volume transition
-     * @defaultValue `null`
-     */
-    fade: fields.NumberField<{ integer: true; min: 0 }>;
+      /**
+       * A duration in milliseconds to fade volume transition
+       * @defaultValue `null`
+       */
+      fade: fields.NumberField<{ integer: true; min: 0 }>;
 
-    /**
-     * The sort order of the PlaylistSound relative to others in the same collection
-     * @defaultValue `0`
-     */
-    sort: fields.IntegerSortField;
+      /**
+       * The sort order of the PlaylistSound relative to others in the same collection
+       * @defaultValue `0`
+       */
+      sort: fields.IntegerSortField;
 
-    /**
-     * An object of optional key/value flags
-     * @defaultValue `{}`
-     */
-    flags: fields.ObjectField.FlagsField<"PlaylistSound">;
-  }
+      /**
+       * An object of optional key/value flags
+       * @defaultValue `{}`
+       */
+      flags: fields.ObjectField.FlagsField<"PlaylistSound">;
+    }
 
     namespace DatabaseOperation {
       /** Options passed along in Get operations for PlaylistSounds */
       interface Get extends foundry.abstract.types.DatabaseGetOperation<PlaylistSound.Parent> {}
       /** Options passed along in Create operations for PlaylistSounds */
       interface Create<Temporary extends boolean | undefined = boolean | undefined>
-        extends foundry.abstract.types.DatabaseCreateOperation<PlaylistSound.CreateData, PlaylistSound.Parent, Temporary> {}
+        extends foundry.abstract.types.DatabaseCreateOperation<
+          PlaylistSound.CreateData,
+          PlaylistSound.Parent,
+          Temporary
+        > {}
       /** Options passed along in Delete operations for PlaylistSounds */
       interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<PlaylistSound.Parent> {}
       /** Options passed along in Update operations for PlaylistSounds */
-      interface Update extends foundry.abstract.types.DatabaseUpdateOperation<PlaylistSound.UpdateData, PlaylistSound.Parent> {}
+      interface Update
+        extends foundry.abstract.types.DatabaseUpdateOperation<PlaylistSound.UpdateData, PlaylistSound.Parent> {}
 
       /** Options for {@link PlaylistSound.createDocuments} */
       type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =

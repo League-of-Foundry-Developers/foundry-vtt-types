@@ -6,8 +6,38 @@ type LightSource = unknown;
 
 declare global {
   namespace AmbientLight {
-    type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof AmbientLight>;
-    type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;
+    type ObjectClass = ConfiguredObjectClassOrDefault<typeof AmbientLight>;
+    type Object = FixedInstanceType<ObjectClass>;
+
+    /**
+     * @deprecated {@link AmbientLight.ObjectClass | `AmbientLight.ObjectClass`}
+     */
+    type ConfiguredClass = ObjectClass;
+
+    /**
+     * @deprecated {@link AmbientLight.Object | `AmbientLight.Object`}
+     */
+    type ConfiguredInstance = Object;
+
+    /**
+     * This type will permanently exist but is marked deprecated. The reason it exists is because
+     * the confusion between `AmbientLight` (the `PlaceableObject` that appears on the canvas) and
+     * `AmbientLightDocument` (the `Document` that represents the data for a `AmbientLight`) is so common that
+     * it is useful to have type to forward to `AmbientLightDocument`.
+     *
+     * @deprecated {@link AmbientLightDocument.Implementation | `AmbientLightDocument.Implementation`}
+     */
+    type Implementation = AmbientLightDocument.Implementation;
+
+    /**
+     * This type will permanently exist but is marked deprecated. The reason it exists is because
+     * the confusion between `AmbientLight` (the `PlaceableObject` that appears on the canvas) and
+     * `AmbientLightDocument` (the `Document` that represents the data for a `AmbientLight`) is so common that
+     * it is useful to have type to forward to `AmbientLightDocument`.
+     *
+     * @deprecated {@link AmbientLightDocument.ImplementationClass | `AmbientLightDocument.ImplementationClass`}
+     */
+    type ImplementationClass = AmbientLightDocument.Implementation;
 
     interface RenderFlags extends PlaceableObject.RenderFlags {
       refreshField: boolean;

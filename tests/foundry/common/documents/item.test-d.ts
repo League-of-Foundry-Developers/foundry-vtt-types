@@ -7,11 +7,9 @@ import Document = foundry.abstract.Document;
 // @ts-expect-error Base Documents should never be directly created so they are marked as abstract in fvtt-types
 new foundry.documents.BaseItem({ name: "foo", type: "base" });
 
-declare const baseItem: foundry.documents.BaseItem
+declare const baseItem: foundry.documents.BaseItem;
 
-expectTypeOf(baseItem.effects).toEqualTypeOf<
-  EmbeddedCollection<ActiveEffect.Implementation, Item.Implementation>
->();
+expectTypeOf(baseItem.effects).toEqualTypeOf<EmbeddedCollection<ActiveEffect.Implementation, Item.Implementation>>();
 expectTypeOf(baseItem._source.effects[0]!.duration.seconds).toEqualTypeOf<number | null | undefined>();
 expectTypeOf(baseItem.type).toEqualTypeOf<"base" | "armor" | "weapon" | `${string}.${string}`>();
 

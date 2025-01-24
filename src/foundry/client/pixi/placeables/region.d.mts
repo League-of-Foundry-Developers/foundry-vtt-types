@@ -7,8 +7,38 @@ import type { Point } from "../../../common/types.d.mts";
 
 declare global {
   namespace Region {
-    type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof Region>;
-    type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;
+    type ObjectClass = ConfiguredObjectClassOrDefault<typeof Region>;
+    type Object = FixedInstanceType<ObjectClass>;
+
+    /**
+     * @deprecated {@link Region.ObjectClass | `Region.ObjectClass`}
+     */
+    type ConfiguredClass = ObjectClass;
+
+    /**
+     * @deprecated {@link Region.Object | `Region.Object`}
+     */
+    type ConfiguredInstance = Object;
+
+    /**
+     * This type will permanently exist but is marked deprecated. The reason it exists is because
+     * the confusion between `Region` (the `PlaceableObject` that appears on the canvas) and
+     * `RegionDocument` (the `Document` that represents the data for a `Region`) is so common that
+     * it is useful to have type to forward to `RegionDocument`.
+     *
+     * @deprecated {@link RegionDocument.Implementation | `RegionDocument.Implementation`}
+     */
+    type Implementation = RegionDocument.Implementation;
+
+    /**
+     * This type will permanently exist but is marked deprecated. The reason it exists is because
+     * the confusion between `Region` (the `PlaceableObject` that appears on the canvas) and
+     * `RegionDocument` (the `Document` that represents the data for a `Region`) is so common that
+     * it is useful to have type to forward to `RegionDocument`.
+     *
+     * @deprecated {@link RegionDocument.ImplementationClass | `RegionDocument.ImplementationClass`}
+     */
+    type ImplementationClass = RegionDocument.Implementation;
 
     interface RenderFlags extends PlaceableObject.RenderFlags {}
 

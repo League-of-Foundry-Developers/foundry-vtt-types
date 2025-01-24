@@ -1,5 +1,9 @@
 import type { InexactPartial, Mixin, FixedInstanceType } from "../../../../utils/index.d.mts";
-import type { DatabaseCreateOperation, DatabaseDeleteOperation, DatabaseUpdateOperation } from "../../../common/abstract/_types.d.mts";
+import type {
+  DatabaseCreateOperation,
+  DatabaseDeleteOperation,
+  DatabaseUpdateOperation,
+} from "../../../common/abstract/_types.d.mts";
 import type DataModel from "../../../common/abstract/data.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 

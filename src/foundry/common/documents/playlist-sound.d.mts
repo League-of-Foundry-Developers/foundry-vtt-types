@@ -197,5 +197,4 @@ declare namespace BasePlaylistSound {
    * @deprecated {@link BasePlaylistSound.CreateData | `BasePlaylistSound.CreateData`}
    */
   type ConstructorData = BasePlaylistSound.CreateData;
-
 }

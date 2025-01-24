@@ -75,11 +75,7 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onCreate(
-    data: Scene.CreateData,
-    options: Scene.DatabaseOperation.OnCreateOperation,
-    userId: string,
-  ): void;
+  protected _onCreate(data: Scene.CreateData, options: Scene.DatabaseOperation.OnCreateOperation, userId: string): void;
 
   protected static _preCreateOperation(
     documents: Scene.Implementation[],

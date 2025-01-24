@@ -92,51 +92,51 @@ declare global {
      * starting as an array in the database, initialized as a set, and allows updates with any
      * iterable.
      */
-  interface Schema extends DataSchema {
-    /**
-     * The _id which uniquely identifies this FogExploration document
-     * @defaultValue `null`
-     */
-    _id: fields.DocumentIdField;
+    interface Schema extends DataSchema {
+      /**
+       * The _id which uniquely identifies this FogExploration document
+       * @defaultValue `null`
+       */
+      _id: fields.DocumentIdField;
 
-    /**
-     * The _id of the Scene document to which this fog applies
-     * @defaultValue `canvas?.scene?.id`
-     */
-    scene: fields.ForeignDocumentField<typeof documents.BaseScene, { initial: () => string | undefined }>;
+      /**
+       * The _id of the Scene document to which this fog applies
+       * @defaultValue `canvas?.scene?.id`
+       */
+      scene: fields.ForeignDocumentField<typeof documents.BaseScene, { initial: () => string | undefined }>;
 
-    /**
-     * The _id of the User document to which this fog applies
-     * @defaultValue `null`
-     */
-    user: fields.ForeignDocumentField<typeof documents.BaseUser, { initial: () => string }>;
+      /**
+       * The _id of the User document to which this fog applies
+       * @defaultValue `null`
+       */
+      user: fields.ForeignDocumentField<typeof documents.BaseUser, { initial: () => string }>;
 
-    /**
-     * The base64 image/jpeg of the explored fog polygon
-     * @defaultValue `null`
-     */
-    explored: fields.FilePathField<{ categories: ["IMAGE"]; required: true; base64: true }>;
+      /**
+       * The base64 image/jpeg of the explored fog polygon
+       * @defaultValue `null`
+       */
+      explored: fields.FilePathField<{ categories: ["IMAGE"]; required: true; base64: true }>;
 
-    /**
-     * The object of scene positions which have been explored at a certain vision radius
-     * @defaultValue `{}`
-     */
-    positions: fields.ObjectField;
+      /**
+       * The object of scene positions which have been explored at a certain vision radius
+       * @defaultValue `{}`
+       */
+      positions: fields.ObjectField;
 
-    /**
-     * The timestamp at which this fog exploration was last updated
-     * @defaultValue `Date.now()`
-     */
-    timestamp: fields.NumberField<{ nullable: false; initial: ReturnType<typeof Date.now> }>;
+      /**
+       * The timestamp at which this fog exploration was last updated
+       * @defaultValue `Date.now()`
+       */
+      timestamp: fields.NumberField<{ nullable: false; initial: ReturnType<typeof Date.now> }>;
 
-    /**
-     * An object of optional key/value flags
-     * @defaultValue `{}`
-     */
-    flags: fields.ObjectField.FlagsField<"FogExploration">;
+      /**
+       * An object of optional key/value flags
+       * @defaultValue `{}`
+       */
+      flags: fields.ObjectField.FlagsField<"FogExploration">;
 
-    _stats: fields.DocumentStatsField;
-  }
+      _stats: fields.DocumentStatsField;
+    }
 
     namespace DatabaseOperation {
       /** Options passed along in Get operations for FogExplorations */

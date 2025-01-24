@@ -503,13 +503,13 @@ declare global {
       /** Options passed along in Update operations for TokenDocuments */
       interface Update
         extends foundry.abstract.types.DatabaseUpdateOperation<TokenDocument.UpdateData, TokenDocument.Parent> {
-          previousActorId?: string | null;
-          animate?: boolean;
-          _priorRegions?: Record<string, string[]>;
-          _priorPosition?: Record<string, { x: number; y: number; elevation: number }>;
-          teleport?: boolean;
-          forced?: boolean;
-        }
+        previousActorId?: string | null;
+        animate?: boolean;
+        _priorRegions?: Record<string, string[]>;
+        _priorPosition?: Record<string, { x: number; y: number; elevation: number }>;
+        teleport?: boolean;
+        forced?: boolean;
+      }
 
       /** Options for {@link TokenDocument.createDocuments} */
       type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
@@ -762,10 +762,7 @@ declare global {
      * @param _path - (default: `[]`)
      */
     // TODO: There's some very complex handling for non-datamodel Actor system implementations if we want
-    static getTrackedAttributes(
-      data?: Actor.Implementation["system"],
-      _path?: string[],
-    ): TrackedAttributesDescription;
+    static getTrackedAttributes(data?: Actor.Implementation["system"], _path?: string[]): TrackedAttributesDescription;
 
     /**
      * Retrieve an Array of attribute choices from a plain object.

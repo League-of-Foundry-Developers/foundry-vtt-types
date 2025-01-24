@@ -92,111 +92,111 @@ declare global {
      * starting as an array in the database, initialized as a set, and allows updates with any
      * iterable.
      */
-  interface Schema extends DataSchema {
-    /**
-     * The _id which uniquely identifies this User document.
-     * @defaultValue `null`
-     */
-    _id: fields.DocumentIdField;
+    interface Schema extends DataSchema {
+      /**
+       * The _id which uniquely identifies this User document.
+       * @defaultValue `null`
+       */
+      _id: fields.DocumentIdField;
 
-    /**
-     * The user's name.
-     */
-    name: fields.StringField<{ required: true; blank: false; textSearch: true }, string>;
+      /**
+       * The user's name.
+       */
+      name: fields.StringField<{ required: true; blank: false; textSearch: true }, string>;
 
-    /**
-     * The user's role, see CONST.USER_ROLES.
-     * @defaultValue `CONST.USER_ROLES.PLAYER`
-     */
-    role: fields.NumberField<
-      {
-        required: true;
-        choices: CONST.USER_ROLES[];
-        initial: typeof CONST.USER_ROLES.PLAYER;
-        readonly: true;
-      },
-      CONST.USER_ROLES | null | undefined,
-      CONST.USER_ROLES,
-      CONST.USER_ROLES
-    >;
+      /**
+       * The user's role, see CONST.USER_ROLES.
+       * @defaultValue `CONST.USER_ROLES.PLAYER`
+       */
+      role: fields.NumberField<
+        {
+          required: true;
+          choices: CONST.USER_ROLES[];
+          initial: typeof CONST.USER_ROLES.PLAYER;
+          readonly: true;
+        },
+        CONST.USER_ROLES | null | undefined,
+        CONST.USER_ROLES,
+        CONST.USER_ROLES
+      >;
 
-    /**
-     * The user's password. Available only on the Server side for security.
-     * @defaultValue `""`
-     */
-    password: fields.StringField<{ required: true; blank: true }>;
+      /**
+       * The user's password. Available only on the Server side for security.
+       * @defaultValue `""`
+       */
+      password: fields.StringField<{ required: true; blank: true }>;
 
-    /**
-     * The user's password salt. Available only on the Server side for security.
-     * @defaultValue `""`
-     */
-    passwordSalt: fields.StringField;
+      /**
+       * The user's password salt. Available only on the Server side for security.
+       * @defaultValue `""`
+       */
+      passwordSalt: fields.StringField;
 
-    /**
-     * The user's avatar image.
-     * @defaultValue `null`
-     */
-    avatar: fields.FilePathField<{ categories: "IMAGE"[] }>;
+      /**
+       * The user's avatar image.
+       * @defaultValue `null`
+       */
+      avatar: fields.FilePathField<{ categories: "IMAGE"[] }>;
 
-    /**
-     * A linked Actor document that is this user's impersonated character.
-     * @defaultValue `null`
-     */
-    character: fields.ForeignDocumentField<typeof BaseActor>;
+      /**
+       * A linked Actor document that is this user's impersonated character.
+       * @defaultValue `null`
+       */
+      character: fields.ForeignDocumentField<typeof BaseActor>;
 
-    /**
-     * A color to represent this user.
-     * @defaultValue a randomly chosen color string
-     */
-    color: fields.ColorField<{ required: true; nullable: false; initial: () => string }>;
+      /**
+       * A color to represent this user.
+       * @defaultValue a randomly chosen color string
+       */
+      color: fields.ColorField<{ required: true; nullable: false; initial: () => string }>;
 
-    /**
-     *
-     */
-    pronouns: fields.StringField<{ required: true }>;
+      /**
+       *
+       */
+      pronouns: fields.StringField<{ required: true }>;
 
-    /**
-     * A mapping of hotbar slot number to Macro id for the user.
-     * @defaultValue `{}`
-     */
-    hotbar: fields.ObjectField<
-      {
-        required: true;
-        validate: (bar: AnyObject) => boolean;
-        validationError: "must be a mapping of slots to macro identifiers";
-      },
-      Hotbar | null | undefined,
-      Hotbar,
-      Hotbar
-    >;
+      /**
+       * A mapping of hotbar slot number to Macro id for the user.
+       * @defaultValue `{}`
+       */
+      hotbar: fields.ObjectField<
+        {
+          required: true;
+          validate: (bar: AnyObject) => boolean;
+          validationError: "must be a mapping of slots to macro identifiers";
+        },
+        Hotbar | null | undefined,
+        Hotbar,
+        Hotbar
+      >;
 
-    /**
-     * The user's individual permission configuration, see CONST.USER_PERMISSIONS.
-     * @defaultValue `{}`
-     */
-    permissions: fields.ObjectField<
-      {
-        required: true;
-        validate: (perms: AnyObject) => boolean;
-        validationError: "must be a mapping of permission names to booleans";
-      },
-      InexactPartial<Permissions> | null | undefined,
-      InexactPartial<Permissions>,
-      InexactPartial<Permissions>
-    >;
+      /**
+       * The user's individual permission configuration, see CONST.USER_PERMISSIONS.
+       * @defaultValue `{}`
+       */
+      permissions: fields.ObjectField<
+        {
+          required: true;
+          validate: (perms: AnyObject) => boolean;
+          validationError: "must be a mapping of permission names to booleans";
+        },
+        InexactPartial<Permissions> | null | undefined,
+        InexactPartial<Permissions>,
+        InexactPartial<Permissions>
+      >;
 
-    /**
-     * An object of optional key/value flags.
-     * @defaultValue `{}`
-     */
-    flags: fields.ObjectField.FlagsField<"User">;
+      /**
+       * An object of optional key/value flags.
+       * @defaultValue `{}`
+       */
+      flags: fields.ObjectField.FlagsField<"User">;
 
-    /**
-     * An object of creation and access information
-     * @defaultValue see {@link fields.DocumentStatsField}
-     */
-    _stats: fields.DocumentStatsField;
-  }
+      /**
+       * An object of creation and access information
+       * @defaultValue see {@link fields.DocumentStatsField}
+       */
+      _stats: fields.DocumentStatsField;
+    }
 
     namespace DatabaseOperation {
       /** Options passed along in Get operations for Users */

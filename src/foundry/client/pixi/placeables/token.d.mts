@@ -4,8 +4,38 @@ import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
   namespace Token {
-    type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof Token>;
-    type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;
+    type ObjectClass = ConfiguredObjectClassOrDefault<typeof Token>;
+    type Object = FixedInstanceType<ObjectClass>;
+
+    /**
+     * @deprecated {@link Token.ObjectClass | `Token.ObjectClass`}
+     */
+    type ConfiguredClass = ObjectClass;
+
+    /**
+     * @deprecated {@link Token.Object | `Token.Object`}
+     */
+    type ConfiguredInstance = Object;
+
+    /**
+     * This type will permanently exist but is marked deprecated. The reason it exists is because
+     * the confusion between `Token` (the `PlaceableObject` that appears on the canvas) and
+     * `TokenDocument` (the `Document` that represents the data for a `Token`) is so common that
+     * it is useful to have type to forward to `TokenDocument`.
+     *
+     * @deprecated {@link TokenDocument.Implementation | `TokenDocument.Implementation`}
+     */
+    type Implementation = TokenDocument.Implementation;
+
+    /**
+     * This type will permanently exist but is marked deprecated. The reason it exists is because
+     * the confusion between `Token` (the `PlaceableObject` that appears on the canvas) and
+     * `TokenDocument` (the `Document` that represents the data for a `Token`) is so common that
+     * it is useful to have type to forward to `TokenDocument`.
+     *
+     * @deprecated {@link TokenDocument.ImplementationClass | `TokenDocument.ImplementationClass`}
+     */
+    type ImplementationClass = TokenDocument.Implementation;
 
     type Schema = BaseToken.Schema;
     type Parent = BaseToken.Parent;

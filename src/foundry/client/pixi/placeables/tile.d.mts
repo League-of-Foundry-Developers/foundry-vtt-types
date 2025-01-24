@@ -3,8 +3,38 @@ import type { FixedInstanceType } from "../../../../utils/index.d.mts";
 
 declare global {
   namespace Tile {
-    type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof Tile>;
-    type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;
+    type ObjectClass = ConfiguredObjectClassOrDefault<typeof Tile>;
+    type Object = FixedInstanceType<ObjectClass>;
+
+    /**
+     * @deprecated {@link Tile.ObjectClass | `Tile.ObjectClass`}
+     */
+    type ConfiguredClass = ObjectClass;
+
+    /**
+     * @deprecated {@link Tile.Object | `Tile.Object`}
+     */
+    type ConfiguredInstance = Object;
+
+    /**
+     * This type will permanently exist but is marked deprecated. The reason it exists is because
+     * the confusion between `Tile` (the `PlaceableObject` that appears on the canvas) and
+     * `TileDocument` (the `Document` that represents the data for a `Tile`) is so common that
+     * it is useful to have type to forward to `TileDocument`.
+     *
+     * @deprecated {@link TileDocument.Implementation | `TileDocument.Implementation`}
+     */
+    type Implementation = TileDocument.Implementation;
+
+    /**
+     * This type will permanently exist but is marked deprecated. The reason it exists is because
+     * the confusion between `Tile` (the `PlaceableObject` that appears on the canvas) and
+     * `TileDocument` (the `Document` that represents the data for a `Tile`) is so common that
+     * it is useful to have type to forward to `TileDocument`.
+     *
+     * @deprecated {@link TileDocument.ImplementationClass | `TileDocument.ImplementationClass`}
+     */
+    type ImplementationClass = TileDocument.Implementation;
 
     interface RenderFlags extends PlaceableObject.RenderFlags {
       refreshShape: boolean;

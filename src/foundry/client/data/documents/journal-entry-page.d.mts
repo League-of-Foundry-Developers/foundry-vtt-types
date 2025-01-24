@@ -359,9 +359,9 @@ declare global {
    *
    * @see {@link JournalEntry}  The JournalEntry document type which contains JournalEntryPage embedded documents.
    */
-  class JournalEntryPage<out SubType extends JournalEntryPage.SubType = JournalEntryPage.SubType> extends ClientDocumentMixin(
-    foundry.documents.BaseJournalEntryPage,
-  )<SubType> {
+  class JournalEntryPage<
+    out SubType extends JournalEntryPage.SubType = JournalEntryPage.SubType,
+  > extends ClientDocumentMixin(foundry.documents.BaseJournalEntryPage)<SubType> {
     /**
      * The cached table of contents for this JournalEntryPage.
      */

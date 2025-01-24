@@ -4,8 +4,38 @@ import type { FixedInstanceType } from "../../../../utils/index.d.mts";
 
 declare global {
   namespace AmbientSound {
-    type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof AmbientSound>;
-    type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;
+    type ObjectClass = ConfiguredObjectClassOrDefault<typeof AmbientSound>;
+    type Object = FixedInstanceType<ObjectClass>;
+
+    /**
+     * @deprecated {@link AmbientSound.ObjectClass | `AmbientSound.ObjectClass`}
+     */
+    type ConfiguredClass = ObjectClass;
+
+    /**
+     * @deprecated {@link AmbientSound.Object | `AmbientSound.Object`}
+     */
+    type ConfiguredInstance = Object;
+
+    /**
+     * This type will permanently exist but is marked deprecated. The reason it exists is because
+     * the confusion between `AmbientSound` (the `PlaceableObject` that appears on the canvas) and
+     * `AmbientSoundDocument` (the `Document` that represents the data for a `AmbientSound`) is so common that
+     * it is useful to have type to forward to `AmbientSoundDocument`.
+     *
+     * @deprecated {@link AmbientSoundDocument.Implementation | `AmbientSoundDocument.Implementation`}
+     */
+    type Implementation = AmbientSoundDocument.Implementation;
+
+    /**
+     * This type will permanently exist but is marked deprecated. The reason it exists is because
+     * the confusion between `AmbientSound` (the `PlaceableObject` that appears on the canvas) and
+     * `AmbientSoundDocument` (the `Document` that represents the data for a `AmbientSound`) is so common that
+     * it is useful to have type to forward to `AmbientSoundDocument`.
+     *
+     * @deprecated {@link AmbientSoundDocument.ImplementationClass | `AmbientSoundDocument.ImplementationClass`}
+     */
+    type ImplementationClass = AmbientSoundDocument.Implementation;
 
     interface RenderFlags extends PlaceableObject.RenderFlags {
       refreshField: boolean;

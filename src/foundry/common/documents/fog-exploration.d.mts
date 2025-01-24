@@ -188,5 +188,4 @@ declare namespace BaseFogExploration {
    * @deprecated {@link BaseFogExploration.CreateData | `BaseFogExploration.CreateData`}
    */
   type ConstructorData = BaseFogExploration.CreateData;
-
 }

@@ -197,6 +197,4 @@ declare namespace BaseTile {
    * @deprecated {@link BaseTile.CreateData | `BaseTile.CreateData`}
    */
   type ConstructorData = BaseTile.CreateData;
-
-
 }

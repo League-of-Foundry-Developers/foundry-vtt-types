@@ -3,8 +3,38 @@ import type { FixedInstanceType } from "../../../../utils/index.d.mts";
 
 declare global {
   namespace Note {
-    type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof Note>;
-    type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;
+    type ObjectClass = ConfiguredObjectClassOrDefault<typeof Note>;
+    type Object = FixedInstanceType<ObjectClass>;
+
+    /**
+     * @deprecated {@link Note.ObjectClass | `Note.ObjectClass`}
+     */
+    type ConfiguredClass = ObjectClass;
+
+    /**
+     * @deprecated {@link Note.Object | `Note.Object`}
+     */
+    type ConfiguredInstance = Object;
+
+    /**
+     * This type will permanently exist but is marked deprecated. The reason it exists is because
+     * the confusion between `Note` (the `PlaceableObject` that appears on the canvas) and
+     * `NoteDocument` (the `Document` that represents the data for a `Note`) is so common that
+     * it is useful to have type to forward to `NoteDocument`.
+     *
+     * @deprecated {@link NoteDocument.Implementation | `NoteDocument.Implementation`}
+     */
+    type Implementation = NoteDocument.Implementation;
+
+    /**
+     * This type will permanently exist but is marked deprecated. The reason it exists is because
+     * the confusion between `Note` (the `PlaceableObject` that appears on the canvas) and
+     * `NoteDocument` (the `Document` that represents the data for a `Note`) is so common that
+     * it is useful to have type to forward to `NoteDocument`.
+     *
+     * @deprecated {@link NoteDocument.ImplementationClass | `NoteDocument.ImplementationClass`}
+     */
+    type ImplementationClass = NoteDocument.Implementation;
 
     interface RenderFlags extends PlaceableObject.RenderFlags {
       refreshPosition: boolean;

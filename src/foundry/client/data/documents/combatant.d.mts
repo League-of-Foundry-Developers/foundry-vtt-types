@@ -97,83 +97,88 @@ declare global {
      * iterable.
      */
 
-  interface Schema extends DataSchema {
-    /**
-     * The _id which uniquely identifies this Combatant embedded document
-     * @defaultValue `null`
-     */
-    _id: fields.DocumentIdField;
+    interface Schema extends DataSchema {
+      /**
+       * The _id which uniquely identifies this Combatant embedded document
+       * @defaultValue `null`
+       */
+      _id: fields.DocumentIdField;
 
-    type: fields.DocumentTypeField<typeof BaseCombatant, { initial: typeof foundry.CONST.BASE_DOCUMENT_TYPE }>;
+      type: fields.DocumentTypeField<typeof BaseCombatant, { initial: typeof foundry.CONST.BASE_DOCUMENT_TYPE }>;
 
-    system: fields.TypeDataField<typeof BaseCombatant>;
+      system: fields.TypeDataField<typeof BaseCombatant>;
 
-    /**
-     * The _id of an Actor associated with this Combatant
-     * @defaultValue `null`
-     */
-    actorId: fields.ForeignDocumentField<typeof documents.BaseActor, { label: "COMBAT.CombatantActor"; idOnly: true }>;
+      /**
+       * The _id of an Actor associated with this Combatant
+       * @defaultValue `null`
+       */
+      actorId: fields.ForeignDocumentField<
+        typeof documents.BaseActor,
+        { label: "COMBAT.CombatantActor"; idOnly: true }
+      >;
 
-    /**
-     * The _id of a Token associated with this Combatant
-     * @defaultValue `null`
-     */
-    tokenId: fields.ForeignDocumentField<typeof documents.BaseToken, { label: "COMBAT.CombatantToken"; idOnly: true }>;
+      /**
+       * The _id of a Token associated with this Combatant
+       * @defaultValue `null`
+       */
+      tokenId: fields.ForeignDocumentField<
+        typeof documents.BaseToken,
+        { label: "COMBAT.CombatantToken"; idOnly: true }
+      >;
 
-    /**
-     * @defaultValue `null`
-     */
-    sceneId: fields.ForeignDocumentField<typeof documents.BaseScene, { label: "COMBAT.CombatantScene"; idOnly: true }>;
+      /**
+       * @defaultValue `null`
+       */
+      sceneId: fields.ForeignDocumentField<
+        typeof documents.BaseScene,
+        { label: "COMBAT.CombatantScene"; idOnly: true }
+      >;
 
-    /**
-     * A customized name which replaces the name of the Token in the tracker
-     * @defaultValue `""`
-     */
-    name: fields.StringField<{ label: "COMBAT.CombatantName"; textSearch: true }>;
+      /**
+       * A customized name which replaces the name of the Token in the tracker
+       * @defaultValue `""`
+       */
+      name: fields.StringField<{ label: "COMBAT.CombatantName"; textSearch: true }>;
 
-    /**
-     * A customized image which replaces the Token image in the tracker
-     * @defaultValue `null`
-     */
-    img: fields.FilePathField<{ categories: "IMAGE"[]; label: "COMBAT.CombatantImage" }>;
+      /**
+       * A customized image which replaces the Token image in the tracker
+       * @defaultValue `null`
+       */
+      img: fields.FilePathField<{ categories: "IMAGE"[]; label: "COMBAT.CombatantImage" }>;
 
-    /**
-     * The initiative score for the Combatant which determines its turn order
-     * @defaultValue `null`
-     */
-    initiative: fields.NumberField<{ label: "COMBAT.CombatantInitiative" }>;
+      /**
+       * The initiative score for the Combatant which determines its turn order
+       * @defaultValue `null`
+       */
+      initiative: fields.NumberField<{ label: "COMBAT.CombatantInitiative" }>;
 
-    /**
-     * Is this Combatant currently hidden?
-     * @defaultValue `false`
-     */
-    hidden: fields.BooleanField<{ label: "COMBAT.CombatantHidden" }>;
+      /**
+       * Is this Combatant currently hidden?
+       * @defaultValue `false`
+       */
+      hidden: fields.BooleanField<{ label: "COMBAT.CombatantHidden" }>;
 
-    /**
-     * Has this Combatant been defeated?
-     * @defaultValue `false`
-     */
-    defeated: fields.BooleanField<{ label: "COMBAT.CombatantDefeated" }>;
+      /**
+       * Has this Combatant been defeated?
+       * @defaultValue `false`
+       */
+      defeated: fields.BooleanField<{ label: "COMBAT.CombatantDefeated" }>;
 
-    /**
-     * An object of optional key/value flags
-     * @defaultValue `{}`
-     */
-    flags: fields.ObjectField.FlagsField<"Combatant">;
+      /**
+       * An object of optional key/value flags
+       * @defaultValue `{}`
+       */
+      flags: fields.ObjectField.FlagsField<"Combatant">;
 
-    _stats: fields.DocumentStatsField;
-  }
+      _stats: fields.DocumentStatsField;
+    }
 
     namespace DatabaseOperation {
       /** Options passed along in Get operations for Combatants */
       interface Get extends foundry.abstract.types.DatabaseGetOperation<Combatant.Parent> {}
       /** Options passed along in Create operations for Combatants */
       interface Create<Temporary extends boolean | undefined = boolean | undefined>
-        extends foundry.abstract.types.DatabaseCreateOperation<
-          Combatant.CreateData,
-          Combatant.Parent,
-          Temporary
-        > {
+        extends foundry.abstract.types.DatabaseCreateOperation<Combatant.CreateData, Combatant.Parent, Temporary> {
         combatTurn?: number;
       }
       /** Options passed along in Delete operations for Combatants */
@@ -181,8 +186,7 @@ declare global {
         combatTurn?: number;
       }
       /** Options passed along in Update operations for Combatants */
-      interface Update
-        extends foundry.abstract.types.DatabaseUpdateOperation<Combatant.UpdateData, Combatant.Parent> {
+      interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Combatant.UpdateData, Combatant.Parent> {
         combatTurn?: number;
       }
 

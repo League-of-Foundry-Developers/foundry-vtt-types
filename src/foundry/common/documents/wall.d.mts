@@ -184,5 +184,4 @@ declare namespace BaseWall {
    * @deprecated {@link BaseWall.CreateData | `BaseWall.CreateData`}
    */
   type ConstructorData = BaseWall.CreateData;
-
 }
