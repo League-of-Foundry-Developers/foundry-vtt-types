@@ -262,7 +262,10 @@ declare global {
     }
 
     interface CoreFlags {
-      core?: { initiativeRoll?: boolean };
+      core?: {
+        initiativeRoll?: boolean;
+        RollTable?: string;
+      };
     }
 
     interface GetSpeakerOptions {

@@ -1,9 +1,8 @@
 import type { AnyObject, InexactPartial } from "../../../utils/index.d.mts";
+import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
-import type * as fields from "../data/fields.d.mts";
-
-type DataSchema = foundry.data.fields.DataSchema;
+import type { SchemaField } from "../data/fields.d.mts";
 
 /**
  * The TableResult Document.
@@ -12,15 +11,15 @@ type DataSchema = foundry.data.fields.DataSchema;
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
-declare abstract class BaseTableResult extends Document<"TableResult", BaseTableResult.Schema, any> {
+declare abstract class BaseTableResult<
+  out _SubType extends BaseTableResult.SubType = BaseTableResult.SubType,
+> extends Document<"TableResult", BaseTableResult.Schema, any> {
   /**
    * @param data    - Initial data from which to construct the Table Result
    * @param context - Construction context options
    */
   // TODO(LukeAbby): This constructor is a symptom of a circular error.
   // constructor(data: BaseTableResult.ConstructorData, context?: Document.ConstructionContext<BaseTableResult.Parent>);
-
-  override parent: BaseTableResult.Parent;
 
   static override metadata: BaseTableResult.Metadata;
 
@@ -40,94 +39,169 @@ declare abstract class BaseTableResult extends Document<"TableResult", BaseTable
 
   static override migrateData(source: AnyObject): AnyObject;
 
+  /*
+   * After this point these are not really overridden methods.
+   * They are here because they're static properties but depend on the instance and so can't be
+   * defined DRY-ly while also being easily overridable.
+   */
+
   static " __fvtt_types_internal_document_name_static": "TableResult";
+
+  static get implementation(): TableResult.ImplementationClass;
+
+  override parent: BaseTableResult.Parent;
+
+  static get TYPES(): BaseTableResult.SubType[];
+
+  static createDocuments<Temporary extends boolean | undefined>(
+    data: Array<TableResult.Implementation | TableResult.CreateData> | undefined,
+    operation?: Document.Database.CreateOperation<TableResult.DatabaseOperation.Create<Temporary>>,
+  ): Promise<Array<Document.StoredIf<TableResult.Implementation, Temporary>>>;
+
+  static updateDocuments(
+    updates: TableResult.UpdateData[] | undefined,
+    operation?: Document.Database.UpdateOperation<TableResult.DatabaseOperation.Update>,
+  ): Promise<TableResult.Implementation[]>;
+
+  static deleteDocuments(
+    ids: readonly string[] | undefined,
+    operation?: Document.Database.DeleteOperation<TableResult.DatabaseOperation.Delete>,
+  ): Promise<TableResult.Implementation[]>;
+
+  static create<Temporary extends boolean | undefined>(
+    data: TableResult.CreateData | TableResult.CreateData[],
+    operation?: Document.Database.CreateOperation<TableResult.DatabaseOperation.Create<Temporary>>,
+  ): Promise<TableResult.Implementation | undefined>;
+
+  static get(documentId: string, options?: Document.Database.GetOperation): TableResult.Implementation | null;
+
+  protected _preCreate(
+    data: TableResult.CreateData,
+    options: TableResult.DatabaseOperation.PreCreateOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onCreate(
+    data: TableResult.CreateData,
+    options: TableResult.DatabaseOperation.OnCreateOperation,
+    userId: string,
+  ): void;
+
+  protected static _preCreateOperation(
+    documents: TableResult.Implementation[],
+    operation: Document.Database.PreCreateOperationStatic<TableResult.DatabaseOperation.Create>,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onCreateOperation(
+    documents: TableResult.Implementation[],
+    operation: TableResult.DatabaseOperation.Create,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected _preUpdate(
+    changed: TableResult.UpdateData,
+    options: TableResult.DatabaseOperation.PreUpdateOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onUpdate(
+    changed: TableResult.UpdateData,
+    options: TableResult.DatabaseOperation.OnUpdateOperation,
+    userId: string,
+  ): void;
+
+  protected static _preUpdateOperation(
+    documents: TableResult.Implementation[],
+    operation: TableResult.DatabaseOperation.Update,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onUpdateOperation(
+    documents: TableResult.Implementation[],
+    operation: TableResult.DatabaseOperation.Update,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected _preDelete(
+    options: TableResult.DatabaseOperation.PreDeleteOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onDelete(options: TableResult.DatabaseOperation.OnDeleteOperation, userId: string): void;
+
+  protected static _preDeleteOperation(
+    documents: TableResult.Implementation[],
+    operation: TableResult.DatabaseOperation.Delete,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onDeleteOperation(
+    documents: TableResult.Implementation[],
+    operation: TableResult.DatabaseOperation.Delete,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected static _onCreateDocuments(
+    documents: TableResult.Implementation[],
+    context: Document.ModificationContext<TableResult.Parent>,
+  ): Promise<void>;
+
+  protected static _onUpdateDocuments(
+    documents: TableResult.Implementation[],
+    context: Document.ModificationContext<TableResult.Parent>,
+  ): Promise<void>;
+
+  protected static _onDeleteDocuments(
+    documents: TableResult.Implementation[],
+    context: Document.ModificationContext<TableResult.Parent>,
+  ): Promise<void>;
+
+  protected static _schema: SchemaField<TableResult.Schema>;
+
+  static get schema(): SchemaField<TableResult.Schema>;
+
+  static validateJoint(data: TableResult.Source): void;
+
+  static override fromSource(
+    source: TableResult.UpdateData,
+    { strict, ...context }?: DataModel.FromSourceOptions,
+  ): DataModel<TableResult.Schema, DataModel.Any | null>;
+
+  static override fromJSON(json: string): DataModel<TableResult.Schema, DataModel.Any | null>;
 }
 
 export default BaseTableResult;
 
 declare namespace BaseTableResult {
-  type Parent = RollTable.ConfiguredInstance | null;
+  export import Metadata = TableResult.Metadata;
+  export import SubType = TableResult.SubType;
+  export import Parent = TableResult.Parent;
+  export import Stored = TableResult.Stored;
+  export import Source = TableResult.Source;
+  export import PersistedData = TableResult.PersistedData;
+  export import CreateData = TableResult.CreateData;
+  export import InitializedData = TableResult.InitializedData;
+  export import UpdateData = TableResult.UpdateData;
+  export import Schema = TableResult.Schema;
+  export import DatabaseOperation = TableResult.DatabaseOperation;
+  /**
+   * @deprecated This type is used by Foundry too vaguely.
+   * In one context the most correct type is after initialization whereas in another one it should be
+   * before but Foundry uses it interchangeably.
+   */
+  type Properties = SchemaField.InitializedData<Schema>;
 
-  type TypeNames = Game.Model.TypeNames<"TableResult">;
+  /** @deprecated {@link BaseTableResult.SubType | `BaseTableResult.SubType`} */
+  type TypeNames = SubType;
 
-  type Metadata = Document.MetadataFor<"TableResult">;
+  /**
+   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseTableResult.Schema>`}
+   */
+  type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
-  type SchemaField = fields.SchemaField<Schema>;
-  type ConstructorData = fields.SchemaField.CreateData<Schema>;
-  type UpdateData = fields.SchemaField.AssignmentData<Schema>;
-  type Properties = fields.SchemaField.InitializedData<Schema>;
-  type Source = fields.SchemaField.PersistedData<Schema>;
-
-  interface Schema extends DataSchema {
-    /**
-     * The _id which uniquely identifies this TableResult embedded document
-     * @defaultValue `null`
-     */
-    _id: fields.DocumentIdField;
-
-    /**
-     * A result subtype from CONST.TABLE_RESULT_TYPES
-     * @defaultValue `CONST.TABLE_RESULT_TYPES.TEXT`
-     */
-    type: fields.DocumentTypeField<
-      typeof BaseTableResult,
-      {
-        initial: typeof CONST.TABLE_RESULT_TYPES.TEXT;
-      }
-    >;
-
-    /**
-     * The text which describes the table result
-     * @defaultValue `""`
-     */
-    text: fields.HTMLField<{ textSearch: true }>;
-
-    /**
-     * An image file url that represents the table result
-     * @defaultValue `null`
-     */
-    img: fields.FilePathField<{ categories: ["IMAGE"] }>;
-
-    /**
-     * A named collection from which this result is drawn
-     * @defaultValue `""`
-     */
-    documentCollection: fields.StringField;
-
-    /**
-     * The _id of a Document within the collection this result references
-     * @defaultValue `null`
-     */
-    documentId: fields.ForeignDocumentField<typeof Document, { idOnly: true }>;
-
-    /**
-     * The probabilistic weight of this result relative to other results
-     * @defaultValue `null`
-     */
-    weight: fields.NumberField<{ required: true; integer: true; positive: true; nullable: false; initial: 1 }>;
-
-    /**
-     * A length 2 array of ascending integers which defines the range of dice roll
-     * @defaultValue `[]`
-     */
-    range: fields.ArrayField<
-      fields.NumberField<{ integer: true }>,
-      {
-        validate: (r: [start: number, end: number]) => boolean;
-        validationError: "must be a length-2 array of ascending integers";
-      }
-    >;
-
-    /**
-     * Has this result already been drawn (without replacement)
-     * @defaultValue `false`
-     */
-    drawn: fields.BooleanField;
-
-    /**
-     * An object of optional key/value flags
-     * @defaultValue `{}`
-     */
-    flags: fields.ObjectField.FlagsField<"TableResult">;
-  }
+  /**
+   * @deprecated {@link BaseTableResult.CreateData | `BaseTableResult.CreateData`}
+   */
+  type ConstructorData = BaseTableResult.CreateData;
 }
