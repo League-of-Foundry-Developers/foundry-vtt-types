@@ -196,18 +196,18 @@ declare global {
     }
 
     namespace DatabaseOperation {
-      /** Options passed along in Get operations for Cardss */
+      /** Options passed along in Get operations for Cards Documents */
       interface Get extends foundry.abstract.types.DatabaseGetOperation<Cards.Parent> {}
-      /** Options passed along in Create operations for Cardss */
+      /** Options passed along in Create operations for Cards Documents */
       interface Create<Temporary extends boolean | undefined = boolean | undefined>
         extends foundry.abstract.types.DatabaseCreateOperation<Cards.CreateData, Cards.Parent, Temporary> {
         animate?: boolean;
       }
-      /** Options passed along in Delete operations for Cardss */
+      /** Options passed along in Delete operations for Cards Documents */
       interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<Cards.Parent> {
         animate?: boolean;
       }
-      /** Options passed along in Update operations for Cardss */
+      /** Options passed along in Update operations for Cards Documents */
       interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Cards.UpdateData, Cards.Parent> {
         animate?: boolean;
       }

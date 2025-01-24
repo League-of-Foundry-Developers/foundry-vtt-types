@@ -1,10 +1,8 @@
 import type { InexactPartial } from "../../../utils/index.d.mts";
+import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
-import type * as fields from "../data/fields.d.mts";
-import type * as documents from "./_module.mts";
-
-type DataSchema = foundry.data.fields.DataSchema;
+import type { SchemaField } from "../data/fields.d.mts";
 
 /**
  * The Card Document.
@@ -13,12 +11,11 @@ type DataSchema = foundry.data.fields.DataSchema;
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
-declare abstract class BaseCard extends Document<"Card", BaseCard.Schema, any> {
-  /**
-   * @privateRemarks Manual override of the return due to TS limitations with static `this`
-   */
-  static get TYPES(): BaseCard.TypeNames[];
-
+declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.SubType> extends Document<
+  "Card",
+  BaseCard._Schema,
+  any
+> {
   /**
    * @param data    - Initial data from which to construct the Card
    * @param context - Construction context options
@@ -58,167 +55,175 @@ declare abstract class BaseCard extends Document<"Card", BaseCard.Schema, any> {
     }>,
   ): boolean;
 
+  /*
+   * After this point these are not really overridden methods.
+   * They are here because they're static properties but depend on the instance and so can't be
+   * defined DRY-ly while also being easily overridable.
+   */
+
   static " __fvtt_types_internal_document_name_static": "Card";
+
+  static get implementation(): Card.ImplementationClass;
+
+  override system: Document.SystemFor<"Card", SubType>;
+
+  override parent: BaseCard.Parent;
+
+  static get TYPES(): BaseCard.SubType[];
+
+  static createDocuments<Temporary extends boolean | undefined>(
+    data: Array<Card.Implementation | Card.CreateData> | undefined,
+    operation?: Document.Database.CreateOperation<Card.DatabaseOperation.Create<Temporary>>,
+  ): Promise<Array<Document.StoredIf<Card.Implementation, Temporary>>>;
+
+  static updateDocuments(
+    updates: Card.UpdateData[] | undefined,
+    operation?: Document.Database.UpdateOperation<Card.DatabaseOperation.Update>,
+  ): Promise<Card.Implementation[]>;
+
+  static deleteDocuments(
+    ids: readonly string[] | undefined,
+    operation?: Document.Database.DeleteOperation<Card.DatabaseOperation.Delete>,
+  ): Promise<Card.Implementation[]>;
+
+  static create<Temporary extends boolean | undefined>(
+    data: Card.CreateData | Card.CreateData[],
+    operation?: Document.Database.CreateOperation<Card.DatabaseOperation.Create<Temporary>>,
+  ): Promise<Card.Implementation | undefined>;
+
+  static get(documentId: string, options?: Document.Database.GetOperation): Card.Implementation | null;
+
+  protected _preCreate(
+    data: Card.CreateData,
+    options: Card.DatabaseOperation.PreCreateOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onCreate(data: Card.CreateData, options: Card.DatabaseOperation.OnCreateOperation, userId: string): void;
+
+  protected static _preCreateOperation(
+    documents: Card.Implementation[],
+    operation: Document.Database.PreCreateOperationStatic<Card.DatabaseOperation.Create>,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onCreateOperation(
+    documents: Card.Implementation[],
+    operation: Card.DatabaseOperation.Create,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected _preUpdate(
+    changed: Card.UpdateData,
+    options: Card.DatabaseOperation.PreUpdateOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onUpdate(
+    changed: Card.UpdateData,
+    options: Card.DatabaseOperation.OnUpdateOperation,
+    userId: string,
+  ): void;
+
+  protected static _preUpdateOperation(
+    documents: Card.Implementation[],
+    operation: Card.DatabaseOperation.Update,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onUpdateOperation(
+    documents: Card.Implementation[],
+    operation: Card.DatabaseOperation.Update,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected _preDelete(
+    options: Card.DatabaseOperation.PreDeleteOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onDelete(options: Card.DatabaseOperation.OnDeleteOperation, userId: string): void;
+
+  protected static _preDeleteOperation(
+    documents: Card.Implementation[],
+    operation: Card.DatabaseOperation.Delete,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onDeleteOperation(
+    documents: Card.Implementation[],
+    operation: Card.DatabaseOperation.Delete,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected static _onCreateDocuments(
+    documents: Card.Implementation[],
+    context: Document.ModificationContext<Card.Parent>,
+  ): Promise<void>;
+
+  protected static _onUpdateDocuments(
+    documents: Card.Implementation[],
+    context: Document.ModificationContext<Card.Parent>,
+  ): Promise<void>;
+
+  protected static _onDeleteDocuments(
+    documents: Card.Implementation[],
+    context: Document.ModificationContext<Card.Parent>,
+  ): Promise<void>;
+
+  protected static _schema: SchemaField<Card.Schema>;
+
+  static get schema(): SchemaField<Card.Schema>;
+
+  static validateJoint(data: Card.Source): void;
+
+  static override fromSource(
+    source: Card.UpdateData,
+    { strict, ...context }?: DataModel.FromSourceOptions,
+  ): DataModel<Card.Schema, DataModel.Any | null>;
+
+  static override fromJSON(json: string): DataModel<Card.Schema, DataModel.Any | null>;
 }
 
 export default BaseCard;
 
 declare namespace BaseCard {
-  type Parent = Cards.ConfiguredInstance | null;
+  export import Metadata = Card.Metadata;
+  export import SubType = Card.SubType;
+  export import Parent = Card.Parent;
+  export import Stored = Card.Stored;
+  export import Source = Card.Source;
+  export import PersistedData = Card.PersistedData;
+  export import CreateData = Card.CreateData;
+  export import InitializedData = Card.InitializedData;
+  export import UpdateData = Card.UpdateData;
+  export import Schema = Card.Schema;
+  export import DatabaseOperation = Card.DatabaseOperation;
 
-  type TypeNames = Game.Model.TypeNames<"Card">;
-
-  type Metadata = Document.MetadataFor<"Card">;
-
-  type SchemaField = fields.SchemaField<Schema>;
-  type ConstructorData = fields.SchemaField.CreateData<Schema>;
-  type UpdateData = fields.SchemaField.AssignmentData<Schema>;
-  type Properties = fields.SchemaField.InitializedData<Schema>;
-  type Source = fields.SchemaField.PersistedData<Schema>;
-
-  interface Schema extends DataSchema {
-    /**
-     * The _id which uniquely identifies this Card document
-     * @defaultValue `null`
-     */
-    _id: fields.DocumentIdField;
-
-    /** The text name of this card */
-    name: fields.StringField<{ required: true; blank: false; label: "CARD.Name" }>;
-
-    /**
-     * A text description of this card which applies to all faces
-     * @defaultValue `""`
-     */
-    description: fields.HTMLField<{ label: "CARD.Description" }>;
-
-    /**
-     * A category of card (for example, a suit) to which this card belongs
-     * @defaultValue `BaseCard.TYPES[0]`
-     */
-    type: fields.DocumentTypeField<
-      typeof BaseCard,
-      {
-        initial: typeof foundry.CONST.BASE_DOCUMENT_TYPE;
-      }
-    >;
-
-    /**
-     * Game system data which is defined by the system template.json model
-     * @defaultValue `{}`
-     */
-    system: fields.TypeDataField<typeof BaseCard>;
-
-    /**
-     * An optional suit designation which is used by default sorting
-     * @defaultValue `""`
-     */
-    suit: fields.StringField<{ label: "CARD.Suit" }>;
-
-    /**
-     * An optional numeric value of the card which is used by default sorting
-     * @defaultValue `null`
-     */
-    value: fields.NumberField<{ label: "CARD.Value" }>;
-
-    /**
-     * An object of face data which describes the back of this card
-     * @defaultValue see properties
-     */
-    back: fields.SchemaField<{
-      /**
-       * A name for this card face
-       * @defaultValue `""`
-       */
-      name: fields.StringField<{ label: "CARD.BackName" }>;
-
-      /**
-       * Displayed text that belongs to this face
-       * @defaultValue `""`
-       */
-      text: fields.HTMLField<{ label: "CARD.BackText" }>;
-
-      /**
-       * A displayed image or video file which depicts the face
-       * @defaultValue `null`
-       */
-      img: fields.FilePathField<{ categories: ["IMAGE", "VIDEO"]; label: "CARD.BackImage" }>;
-    }>;
-
-    faces: fields.ArrayField<
-      fields.SchemaField<{
-        /**
-         * A name for this card face
-         * @defaultValue `""`
-         */
-        name: fields.StringField<{ label: "CARD.FaceName" }>;
-
-        /**
-         * Displayed text that belongs to this face
-         * @defaultValue `""`
-         */
-        text: fields.HTMLField<{ label: "CARD.FaceText" }>;
-
-        /**
-         * A displayed image or video file which depicts the face
-         * @defaultValue `BaseCard.DEFAULT_ICON`
-         */
-        img: fields.FilePathField<{
-          categories: ["IMAGE", "VIDEO"];
-          initial: () => typeof BaseCard.DEFAULT_ICON;
-          label: "CARD.FaceImage";
-        }>;
-      }>
-    >;
-
-    /**
-     * The index of the currently displayed face, or null if the card is face-down
-     * @defaultValue `null`
-     */
-    face: fields.NumberField<{ required: true; initial: null; integer: true; min: 0; label: "CARD.Face" }>;
-
-    /**
-     * Whether this card is currently drawn from its source deck
-     * @defaultValue `false`
-     */
-    drawn: fields.BooleanField<{ label: "CARD.Drawn" }>;
-
-    /**
-     * The document ID of the origin deck to which this card belongs
-     * @defaultValue `null`
-     */
-    origin: fields.ForeignDocumentField<typeof documents.BaseCards>;
-
-    /**
-     * The visible width of this card
-     * @defaultValue `null`
-     */
-    width: fields.NumberField<{ integer: true; positive: true; label: "Width" }>;
-
-    /**
-     * The visible height of this card
-     * @defaultValue `null`
-     */
-    height: fields.NumberField<{ integer: true; positive: true; label: "Height" }>;
-
-    /**
-     * The angle of rotation of this card
-     * @defaultValue `0`
-     */
-    rotation: fields.AngleField<{ label: "Rotation" }>;
-
-    /**
-     * The sort order of this card relative to others in the same stack
-     * @defaultValue `0`
-     */
-    sort: fields.IntegerSortField;
-
-    /**
-     * An object of optional key/value flags
-     * @defaultValue `{}`
-     */
-    flags: fields.ObjectField.FlagsField<"Card">;
-
-    _stats: fields.DocumentStatsField;
+  // The document subclasses override `system` anyways.
+  // There's no point in doing expensive computation work comparing the base class system.
+  /** @internal */
+  interface _Schema extends Card.Schema {
+    system: any;
   }
+
+  /**
+   * @deprecated This type is used by Foundry too vaguely.
+   * In one context the most correct type is after initialization whereas in another one it should be
+   * before but Foundry uses it interchangeably.
+   */
+  type Properties = SchemaField.InitializedData<Schema>;
+
+  /** @deprecated {@link BaseCard.SubType | `BaseCard.SubType`} */
+  type TypeNames = SubType;
+
+  /**
+   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseCard.Schema>`}
+   */
+  type SchemaField = foundry.data.fields.SchemaField<Schema>;
+
+  /**
+   * @deprecated {@link BaseCard.CreateData | `BaseCard.CreateData`}
+   */
+  type ConstructorData = BaseCard.CreateData;
 }
