@@ -1,33 +1,265 @@
-import type { InexactPartial } from "../../../../utils/index.d.mts";
+import type { ConfiguredChatMessage } from "../../../../configuration/index.d.mts";
+import type { HandleEmptyObject, InexactPartial } from "../../../../utils/index.d.mts";
+import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
-import type { SchemaField } from "../../../common/data/fields.d.mts";
+import type { DataSchema } from "../../../common/data/fields.d.mts";
+import type { fields } from "../../../common/data/module.d.mts";
 import type BaseChatMessage from "../../../common/documents/chat-message.d.mts";
 
 declare global {
   namespace ChatMessage {
-    type Metadata = Document.MetadataFor<"ChatMessage">;
+    /**
+     * The implementation of the ChatMessage document instance configured through `CONFIG.ChatMessage.documentClass` in Foundry and
+     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredChatMessage | `configuration/ConfiguredChatMessage`} in fvtt-types.
+     */
+    type Implementation = Document.ConfiguredInstanceForName<"ChatMessage">;
 
-    type ConfiguredClass = Document.ConfiguredClassForName<"ChatMessage">;
-    type ConfiguredInstance = Document.ConfiguredInstanceForName<"ChatMessage">;
+    /**
+     * The implementation of the ChatMessage document configured through `CONFIG.ChatMessage.documentClass` in Foundry and
+     * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
+     */
+    type ImplementationClass = Document.ConfiguredClassForName<"ChatMessage">;
 
-    /* eslint-disable @typescript-eslint/no-empty-object-type */
-    interface DatabaseOperations
-      extends Document.Database.Operations<
-        ChatMessage,
-        { rollMode: foundry.CONST.DICE_ROLL_MODES; chatBubble: boolean },
-        {},
-        {}
-      > {}
-    /* eslint-enable @typescript-eslint/no-empty-object-type */
+    /**
+     * A document's metadata is special information about the document ranging anywhere from its name,
+     * whether it's indexed, or to the permissions a user has over it.
+     */
+    interface Metadata extends Document.MetadataFor<"ChatMessage"> {}
 
-    // Helpful aliases
-    type TypeNames = BaseChatMessage.TypeNames;
-    type ConstructorData = BaseChatMessage.ConstructorData;
-    type UpdateData = BaseChatMessage.UpdateData;
-    type Schema = BaseChatMessage.Schema;
-    type Source = BaseChatMessage.Source;
-    interface PersistedData extends SchemaField.PersistedData<Schema> {}
+    type SubType = Game.Model.TypeNames<"ChatMessage">;
+    type OfType<Type extends SubType> = HandleEmptyObject<ConfiguredChatMessage<Type>, ChatMessage<SubType>>;
 
+    /**
+     * A document's parent is something that can contain it.
+     * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
+     */
+    type Parent = null;
+
+    /**
+     * An instance of `ChatMessage` that comes from the database.
+     */
+    interface Stored extends Document.Stored<ChatMessage.Implementation> {}
+
+    /**
+     * The data put in {@link Document._source | `Document._source`}. This data is what was
+     * persisted to the database and therefore it must be valid JSON.
+     *
+     * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+     * but initialized as a {@link Set | `Set`}.
+     *
+     * Both `Source` and `PersistedData` are equivalent.
+     */
+    interface Source extends PersistedData {}
+
+    /**
+     * The data put in {@link ChatMessage._source | `ChatMessage._source`}. This data is what was
+     * persisted to the database and therefore it must be valid JSON.
+     *
+     * Both `Source` and `PersistedData` are equivalent.
+     */
+    interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
+
+    /**
+     * The data necessary to create a document. Used in places like {@link ChatMessage.create | `ChatMessage.create`}
+     * and {@link ChatMessage | `new ChatMessage(...)`}.
+     *
+     * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
+     * with the right values. This means you can pass a `Set` instance, an array of values,
+     * a generator, or any other iterable.
+     */
+    interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+
+    /**
+     * The data after a {@link Document | `Document`} has been initialized, for example
+     * {@link ChatMessage.name | `ChatMessage#name`}.
+     *
+     * This is data transformed from {@link ChatMessage.Source | `ChatMessage.Source`} and turned into more
+     * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+     * persisted to the database as an array of values but at runtime it is a `Set` instance.
+     */
+    interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
+
+    /**
+     * The data used to update a document, for example {@link ChatMessage.update | `ChatMessage#update`}.
+     * It is a distinct type from {@link ChatMessage.CreateData | `DeepPartial<ChatMessage.CreateData>`} because
+     * it has different rules for `null` and `undefined`.
+     */
+    interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+    /**
+     * The schema for {@link ChatMessage | `ChatMessage`}. This is the source of truth for how an ChatMessage document
+     * must be structured.
+     *
+     * Foundry uses this schema to validate the structure of the {@link ChatMessage | `ChatMessage`}. For example
+     * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
+     * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+     * starting as an array in the database, initialized as a set, and allows updates with any
+     * iterable.
+     */
+    interface Schema extends DataSchema {
+      /**
+       * The _id which uniquely identifies this ChatMessage document
+       * @defaultValue `null`
+       */
+      _id: fields.DocumentIdField;
+
+      type: fields.DocumentTypeField<typeof BaseChatMessage, { initial: typeof foundry.CONST.BASE_DOCUMENT_TYPE }>;
+
+      system: fields.TypeDataField<typeof BaseChatMessage>;
+
+      /**
+       * The message type from CONST.CHAT_MESSAGE_STYLES
+       * @defaultValue `CONST.CHAT_MESSAGE_STYLES.OTHER`
+       */
+      style: fields.NumberField<{
+        required: true;
+        choices: CONST.CHAT_MESSAGE_STYLES[];
+        initial: typeof CONST.CHAT_MESSAGE_STYLES.OTHER;
+        validationError: "must be a value in CONST.CHAT_MESSAGE_TYPES";
+      }>;
+
+      /**
+       * The _id of the User document who generated this message
+       * @defaultValue `game?.user?.id`
+       */
+      author: fields.ForeignDocumentField<typeof documents.BaseUser, { nullable: false; initial: () => string }>;
+
+      /**
+       * The timestamp at which point this message was generated
+       * @defaultValue `Date.now()`
+       */
+      timestamp: fields.NumberField<{ required: true; nullable: false; initial: typeof Date.now }>;
+
+      /**
+       * An optional flavor text message which summarizes this message
+       * @defaultValue `""`
+       */
+      flavor: fields.HTMLField;
+
+      /**
+       * The HTML content of this chat message
+       * @defaultValue `""`
+       */
+      content: fields.HTMLField<{ textSearch: true }>;
+
+      /**
+       * A ChatSpeakerData object which describes the origin of the ChatMessage
+       * @defaultValue see properties
+       */
+      speaker: fields.SchemaField<{
+        /**
+         * The _id of the Scene where this message was created
+         * @defaultValue `null`
+         */
+        scene: fields.ForeignDocumentField<typeof documents.BaseScene, { idOnly: true }>;
+
+        /**
+         * The _id of the Actor who generated this message
+         * @defaultValue `null`
+         */
+        actor: fields.ForeignDocumentField<typeof documents.BaseActor, { idOnly: true }>;
+
+        /**
+         * The _id of the Token who generated this message
+         * @defaultValue `null`
+         */
+        token: fields.ForeignDocumentField<typeof documents.BaseToken, { idOnly: true }>;
+
+        /**
+         * An overridden alias name used instead of the Actor or Token name
+         * @defaultValue `""`
+         */
+        alias: fields.StringField;
+      }>;
+
+      /**
+       * An array of User _id values to whom this message is privately whispered
+       * @defaultValue `[]`
+       */
+      whisper: fields.ArrayField<fields.ForeignDocumentField<typeof documents.BaseUser, { idOnly: true }>>;
+
+      /**
+       * Is this message sent blindly where the creating User cannot see it?
+       * @defaultValue `false`
+       */
+      blind: fields.BooleanField;
+
+      /**
+       * Serialized content of any Roll instances attached to the ChatMessage
+       * @defaultValue `[]`
+       */
+      rolls: fields.ArrayField<
+        fields.JSONField<
+          { validate: (rollJson: string) => void },
+          fields.JSONField.AssignmentType<{ validate: (rollJson: string) => void }>,
+          Roll // TODO: If initialization fails can this possibly be not-roll?
+        >
+      >;
+
+      /**
+       * The URL of an audio file which plays when this message is received
+       * @defaultValue `null`
+       */
+      sound: fields.FilePathField<{ categories: ["AUDIO"] }>;
+
+      /**
+       * Is this message styled as an emote?
+       * @defaultValue `false`
+       */
+      emote: fields.BooleanField;
+
+      /**
+       * An object of optional key/value flags
+       * @defaultValue `{}`
+       */
+      flags: fields.ObjectField.FlagsField<"ChatMessage">;
+
+      _stats: fields.DocumentStatsField;
+    }
+
+    namespace DatabaseOperation {
+      /** Options passed along in Get operations for ChatMessages */
+      interface Get extends foundry.abstract.types.DatabaseGetOperation<ChatMessage.Parent> {}
+      /** Options passed along in Create operations for ChatMessages */
+      interface Create<Temporary extends boolean | undefined = boolean | undefined>
+        extends foundry.abstract.types.DatabaseCreateOperation<ChatMessage.CreateData, ChatMessage.Parent, Temporary> {
+        rollMode?: foundry.CONST.DICE_ROLL_MODES;
+        chatBubble?: boolean;
+      }
+      /** Options passed along in Delete operations for ChatMessages */
+      interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<ChatMessage.Parent> {}
+      /** Options passed along in Update operations for ChatMessages */
+      interface Update
+        extends foundry.abstract.types.DatabaseUpdateOperation<ChatMessage.UpdateData, ChatMessage.Parent> {}
+
+      /** Options for {@link ChatMessage.createDocuments} */
+      type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
+        Document.Database.CreateOperation<Create<Temporary>>;
+      /** Options for {@link ChatMessage._preCreateOperation} */
+      type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
+      /** Options for {@link ChatMessage#_preCreate} */
+      type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
+      /** Options for {@link ChatMessage#_onCreate} */
+      type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
+
+      /** Options for {@link ChatMessage.updateDocuments} */
+      type UpdateOperation = Document.Database.UpdateOperation<Update>;
+      /** Options for {@link ChatMessage._preUpdateOperation} */
+      type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
+      /** Options for {@link ChatMessage#_preUpdate} */
+      type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
+      /** Options for {@link ChatMessage#_onUpdate} */
+      type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
+
+      /** Options for {@link ChatMessage.deleteDocuments} */
+      type DeleteOperation = Document.Database.DeleteOperation<Delete>;
+      /** Options for {@link ChatMessage._preDeleteOperation} */
+      type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
+      /** Options for {@link ChatMessage#_preDelete} */
+      type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
+      /** Options for {@link ChatMessage#_onDelete} */
+      type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
+    }
     interface GetSpeakerOptions {
       /** The Scene in which the speaker resides */
       scene: Scene | null;
@@ -52,6 +284,39 @@ declare global {
       canDelete: boolean;
       whisperTo: string;
     }
+
+    /**
+     * @deprecated - {@link ChatMessage.DatabaseOperation}
+     */
+    /* eslint-disable @typescript-eslint/no-empty-object-type */
+    interface DatabaseOperations
+      extends Document.Database.Operations<
+        ChatMessage,
+        { rollMode: foundry.CONST.DICE_ROLL_MODES; chatBubble: boolean },
+        {},
+        {}
+      > {}
+    /* eslint-enable @typescript-eslint/no-empty-object-type */
+
+    /**
+     * @deprecated {@link ChatMessage.Types | `ChatMessage.SubType`}
+     */
+    type TypeNames = ChatMessage.SubType;
+
+    /**
+     * @deprecated {@link ChatMessage.CreateData | `ChatMessage.CreateData`}
+     */
+    interface ConstructorData extends ChatMessage.CreateData {}
+
+    /**
+     * @deprecated {@link ChatMessage.implementation | `ChatMessage.ImplementationClass`}
+     */
+    type ConfiguredClass = ImplementationClass;
+
+    /**
+     * @deprecated {@link ChatMessage.Implementation | `ChatMessage.Implementation`}
+     */
+    type ConfiguredInstance = Implementation;
   }
 
   /**
@@ -61,7 +326,9 @@ declare global {
    * @see {@link Messages}                The world-level collection of ChatMessage documents
    *
    */
-  class ChatMessage extends ClientDocumentMixin(foundry.documents.BaseChatMessage) {
+  class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.SubType> extends ClientDocumentMixin(
+    foundry.documents.BaseChatMessage,
+  )<SubType> {
     static override metadata: ChatMessage.Metadata;
 
     static get implementation(): ChatMessage.ConfiguredClass;
