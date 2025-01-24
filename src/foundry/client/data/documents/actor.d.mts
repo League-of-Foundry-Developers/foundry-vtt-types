@@ -305,7 +305,7 @@ declare global {
     >;
 
     protected override _initializeSource(
-      data: this | Actor.ConstructorData,
+      data: this | Actor.CreateData,
       options?: Omit<foundry.abstract.DataModel.DataValidationOptions, "parent">,
     ): Actor.Source;
 

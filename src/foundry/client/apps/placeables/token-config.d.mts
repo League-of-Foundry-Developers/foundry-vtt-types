@@ -7,24 +7,24 @@ declare global {
    */
   class TokenConfig<
     Options extends
-      DocumentSheetOptions<TokenDocument.ConfiguredInstance> = DocumentSheetOptions<TokenDocument.ConfiguredInstance>,
-  > extends DocumentSheet<Options, TokenDocument.ConfiguredInstance | Actor.ConfiguredInstance> {
-    constructor(object: TokenDocument.ConfiguredInstance | Actor.ConfiguredInstance, options?: Partial<Options>);
+      DocumentSheetOptions<TokenDocument.Implementation> = DocumentSheetOptions<TokenDocument.Implementation>,
+  > extends DocumentSheet<Options, TokenDocument.Implementation | Actor.Implementation> {
+    constructor(object: TokenDocument.Implementation | Actor.Implementation, options?: Partial<Options>);
 
     /**
      * The placed Token object in the Scene
      */
-    token: TokenDocument.ConfiguredInstance | foundry.data.PrototypeToken;
+    token: TokenDocument.Implementation | foundry.data.PrototypeToken;
 
     /**
      * A reference to the Actor which the token depicts
      */
-    actor: Actor.ConfiguredInstance;
+    actor: Actor.Implementation;
 
     /**
      * Maintain a copy of the original to show a real-time preview of changes.
      */
-    preview: TokenDocument.ConfiguredInstance | foundry.data.PrototypeToken;
+    preview: TokenDocument.Implementation | foundry.data.PrototypeToken;
 
     /**
      * @defaultValue
@@ -44,7 +44,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): DocumentSheetOptions<TokenDocument.ConfiguredInstance>;
+    static override get defaultOptions(): DocumentSheetOptions<TokenDocument.Implementation>;
 
     /**
      * A convenience accessor to test whether we are configuring the prototype Token for an Actor.
@@ -64,7 +64,7 @@ declare global {
      */
     protected _handleTokenPreview(force: boolean, options?: Options): Promise<void>;
 
-    protected override _canUserView(user: User.ConfiguredInstance): boolean;
+    protected override _canUserView(user: User.Implementation): boolean;
 
     override getData(options?: Partial<Options>): Promise<object>; // TODO: Implement GetDataReturnType
 
@@ -185,11 +185,11 @@ declare global {
    */
   class DefaultTokenConfig<
     Options extends
-      DocumentSheetOptions<TokenDocument.ConfiguredInstance> = DocumentSheetOptions<TokenDocument.ConfiguredInstance>,
+      DocumentSheetOptions<TokenDocument.Implementation> = DocumentSheetOptions<TokenDocument.Implementation>,
   > extends TokenConfig<Options> {
     constructor(object?: unknown, options?: Partial<Options>);
 
-    object: TokenDocument.ConfiguredInstance;
+    object: TokenDocument.Implementation;
 
     /**
      * The named world setting that stores the default Token configuration
@@ -206,7 +206,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): DocumentSheetOptions<TokenDocument.ConfiguredInstance>;
+    static override get defaultOptions(): DocumentSheetOptions<TokenDocument.Implementation>;
 
     override get id(): string;
 
@@ -214,7 +214,7 @@ declare global {
 
     override get isEditable(): boolean;
 
-    protected override _canUserView(user: User.ConfiguredInstance): boolean;
+    protected override _canUserView(user: User.Implementation): boolean;
 
     override getData(options: unknown): Promise<object>; // TODO: Implement GetDataReturnType
 
@@ -244,12 +244,12 @@ declare global {
   }
 }
 
-declare abstract class AnyTokenConfig extends TokenConfig<DocumentSheetOptions<TokenDocument.ConfiguredInstance>> {
+declare abstract class AnyTokenConfig extends TokenConfig<DocumentSheetOptions<TokenDocument.Implementation>> {
   constructor(arg0: never, ...args: never[]);
 }
 
 declare abstract class AnyDefaultTokenConfig extends DefaultTokenConfig<
-  DocumentSheetOptions<TokenDocument.ConfiguredInstance>
+  DocumentSheetOptions<TokenDocument.Implementation>
 > {
   constructor(arg0: never, ...args: never[]);
 }

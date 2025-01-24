@@ -17,7 +17,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
    * @param context - Construction context options
    */
   // TODO(LukeAbby): This constructor is a symptom of a circular error.
-  // constructor(data: BaseUser.ConstructorData, context?: BaseUser.Parent);
+  // constructor(data: BaseUser.CreateData, context?: BaseUser.Parent);
 
   static override metadata: User.Metadata;
 

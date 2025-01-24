@@ -10,7 +10,7 @@ declare global {
    * An Abstract Base Class which defines a Placeable Object which represents a Document placed on the Canvas
    */
   abstract class PlaceableObject<
-    D extends Document.AnyChild<Scene.ConfiguredInstance | null> = Document.AnyChild<Scene.ConfiguredInstance | null>,
+    D extends Document.AnyChild<Scene.Implementation | null> = Document.AnyChild<Scene.Implementation | null>,
   > extends RenderFlagsMixin(PIXI.Container) {
     /**
      * @param document - The Document instance which is represented by this object
@@ -20,7 +20,7 @@ declare global {
     /**
      * Retain a reference to the Scene within which this Placeable Object resides
      */
-    scene: Scene.ConfiguredInstance;
+    scene: Scene.Implementation;
 
     /**
      * A reference to the Scene embedded Document instance which this object represents
@@ -350,7 +350,7 @@ declare global {
      * @returns Does the User have rights to perform the action?
      */
     can(
-      user: User.ConfiguredInstance,
+      user: User.Implementation,
       action: "HUD" | "configure" | "control" | "view" | "create" | "drag" | "hover" | "update" | "delete" | string,
     ): boolean;
 
@@ -360,7 +360,7 @@ declare global {
      * @param event - The event object.
      * @returns The returned status.
      */
-    protected _canHUD(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
+    protected _canHUD(user: User.Implementation, event?: PIXI.FederatedEvent): boolean;
 
     /**
      * Does the User have permission to configure the Placeable Object?
@@ -368,7 +368,7 @@ declare global {
      * @param event - The event object.
      * @returns The returned status.
      */
-    protected _canConfigure(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
+    protected _canConfigure(user: User.Implementation, event?: PIXI.FederatedEvent): boolean;
 
     /**
      * Does the User have permission to control the Placeable Object?
@@ -376,7 +376,7 @@ declare global {
      * @param event - The event object.
      * @returns The returned status.
      */
-    protected _canControl(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
+    protected _canControl(user: User.Implementation, event?: PIXI.FederatedEvent): boolean;
 
     /**
      * Does the User have permission to view details of the Placeable Object?
@@ -384,7 +384,7 @@ declare global {
      * @param event - The event object.
      * @returns The returned status.
      */
-    protected _canView(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
+    protected _canView(user: User.Implementation, event?: PIXI.FederatedEvent): boolean;
 
     /**
      * Does the User have permission to create the underlying Document?
@@ -392,7 +392,7 @@ declare global {
      * @param event - The event object.
      * @returns The returned status.
      */
-    protected _canCreate(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
+    protected _canCreate(user: User.Implementation, event?: PIXI.FederatedEvent): boolean;
 
     /**
      * Does the User have permission to drag this Placeable Object?
@@ -400,7 +400,7 @@ declare global {
      * @param event - The event object.
      * @returns The returned status.
      */
-    protected _canDrag(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
+    protected _canDrag(user: User.Implementation, event?: PIXI.FederatedEvent): boolean;
 
     /**
      * Does the User have permission to left-click drag this Placeable Object?
@@ -408,7 +408,7 @@ declare global {
      * @param event - The event object.
      * @returns The returned status
      */
-    protected _canDragLeftStart(user: User.ConfiguredInstance, event: DragEvent): boolean;
+    protected _canDragLeftStart(user: User.Implementation, event: DragEvent): boolean;
 
     /**
      * Does the User have permission to hover on this Placeable Object?
@@ -416,7 +416,7 @@ declare global {
      * @param event - The event object.
      * @returns The returned status.
      */
-    protected _canHover(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
+    protected _canHover(user: User.Implementation, event?: PIXI.FederatedEvent): boolean;
 
     /**
      * Does the User have permission to update the underlying Document?
@@ -424,7 +424,7 @@ declare global {
      * @param event - The event object.
      * @returns The returned status.
      */
-    protected _canUpdate(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
+    protected _canUpdate(user: User.Implementation, event?: PIXI.FederatedEvent): boolean;
 
     /**
      * Does the User have permission to delete the underlying Document?
@@ -432,7 +432,7 @@ declare global {
      * @param event - The event object.
      * @returns The returned status.
      */
-    protected _canDelete(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
+    protected _canDelete(user: User.Implementation, event?: PIXI.FederatedEvent): boolean;
 
     /**
      * Actions that should be taken for this Placeable Object when a mouseover event occurs.

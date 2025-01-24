@@ -21,7 +21,7 @@ declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMa
    * @param context - Construction context options
    */
   // TODO(LukeAbby): This constructor is a symptom of a circular error.
-  // constructor(data: BaseMacro.ConstructorData, context?: Document.ConstructionContext<BaseMacro.Parent>);
+  // constructor(data: BaseMacro.CreateData, context?: Document.ConstructionContext<BaseMacro.Parent>);
 
   static override metadata: BaseMacro.Metadata;
 

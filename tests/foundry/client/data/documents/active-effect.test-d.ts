@@ -16,7 +16,7 @@ expectTypeOf(effect).toEqualTypeOf<ActiveEffect>();
 declare const model: DataModel.Any;
 declare const change: EffectChangeData;
 
-expectTypeOf(ActiveEffect.fromStatusEffect("")).toEqualTypeOf<Promise<ActiveEffect.ConfiguredInstance>>();
+expectTypeOf(ActiveEffect.fromStatusEffect("")).toEqualTypeOf<Promise<ActiveEffect.Implementation>>();
 expectTypeOf(ActiveEffect.applyField(model, change)).toEqualTypeOf<unknown>();
 
 expectTypeOf(effect.isSuppressed).toEqualTypeOf<boolean>();
@@ -29,5 +29,5 @@ expectTypeOf(effect.updateDuration()).toEqualTypeOf<ActiveEffectDuration>();
 expectTypeOf(effect.isTemporary).toEqualTypeOf<boolean>();
 expectTypeOf(effect.sourceName).toEqualTypeOf<string>();
 
-declare const actor: Actor.ConfiguredInstance;
+declare const actor: Actor.Implementation;
 expectTypeOf(effect.apply(actor, change)).toEqualTypeOf<unknown>();

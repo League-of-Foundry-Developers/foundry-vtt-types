@@ -71,8 +71,8 @@ declare global {
    * @see {@link AmbientSoundDocument}
    * @see {@link SoundsLayer}
    */
-  class AmbientSound extends PlaceableObject<AmbientSoundDocument.ConfiguredInstance> {
-    constructor(document: AmbientSoundDocument.ConfiguredInstance);
+  class AmbientSound extends PlaceableObject<AmbientSoundDocument.Implementation> {
+    constructor(document: AmbientSoundDocument.Implementation);
 
     /**
      * The Sound which manages playback for this AmbientSound effect
@@ -152,9 +152,9 @@ declare global {
      * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
      */
 
-    protected override _canHUD(user: User.ConfiguredInstance, event?: any): boolean;
+    protected override _canHUD(user: User.Implementation, event?: any): boolean;
 
-    protected override _canConfigure(user: User.ConfiguredInstance, event?: any): boolean;
+    protected override _canConfigure(user: User.Implementation, event?: any): boolean;
 
     protected override _onClickRight(event: PIXI.FederatedEvent): void;
 

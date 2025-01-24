@@ -14,7 +14,7 @@ expectTypeOf(actor.overrides).toEqualTypeOf<Record<string, unknown>>();
 expectTypeOf(actor.statuses).toEqualTypeOf<Set<string>>();
 expectTypeOf(actor.thumbnail).toEqualTypeOf<typeof actor.img>();
 expectTypeOf(actor.itemTypes).toEqualTypeOf<{
-  [K in foundry.documents.BaseItem["type"]]: Array<Item.ConfiguredInstance & { type: K }>;
+  [K in foundry.documents.BaseItem["type"]]: Array<Item.Implementation & { type: K }>;
 }>();
 
 expectTypeOf(actor.isToken).toEqualTypeOf<boolean>();

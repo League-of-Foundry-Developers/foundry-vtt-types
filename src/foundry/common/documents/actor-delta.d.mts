@@ -18,7 +18,7 @@ declare abstract class BaseActorDelta<
   SubType extends BaseActorDelta.SubType = BaseActorDelta.SubType,
 > extends Document<"ActorDelta", BaseActorDelta._Schema, any> {
   // TODO(LukeAbby): This constructor is a symptom of a circular error.
-  // constructor(data?: BaseActorDelta.ConstructorData, context?: Document.ConstructionContext<BaseActorDelta.Parent>);
+  // constructor(data?: BaseActorDelta.CreateData, context?: Document.ConstructionContext<BaseActorDelta.Parent>);
 
   static override metadata: BaseActorDelta.Metadata;
 

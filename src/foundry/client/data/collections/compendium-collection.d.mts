@@ -94,7 +94,7 @@ declare global {
     /**
      * Get the Folder that this Compendium is displayed within
      */
-    get folder(): (Folder.ConfiguredInstance & { type: "Compendium" }) | null;
+    get folder(): (Folder.Implementation & { type: "Compendium" }) | null;
 
     /**
      * Assign this CompendiumCollection to be organized within a specific Folder.
@@ -197,7 +197,7 @@ declare global {
      * @param user - The user being tested
      * @returns The ownership level in CONST.DOCUMENT_OWNERSHIP_LEVELS
      */
-    getUserLevel(user?: User.ConfiguredInstance): foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS;
+    getUserLevel(user?: User.Implementation): foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
     /**
      * Test whether a certain User has a requested permission level (or greater) over the Compendium pack
@@ -207,7 +207,7 @@ declare global {
      * @returns Does the user have this permission level over the Compendium pack?
      */
     testUserPermission(
-      user: User.ConfiguredInstance,
+      user: User.Implementation,
       permission: string | number,
       options?: InexactPartial<{
         /**

@@ -18,7 +18,7 @@ declare global {
      * A mapping of synthetic Token Actors which are currently active within the viewed Scene.
      * Each Actor is referenced by the Token.id.
      */
-    get tokens(): Partial<Record<string, Actor.ConfiguredInstance>>;
+    get tokens(): Partial<Record<string, Actor.Implementation>>;
 
     static documentName: "Actor";
 
@@ -28,7 +28,7 @@ declare global {
       OwnershipOpt extends boolean = false,
       IdOpt extends boolean = false,
     >(
-      document: Actor.ConfiguredInstance | foundry.documents.BaseActor.ConstructorData,
+      document: Actor.Implementation | foundry.documents.BaseActor.CreateData,
       options?: InexactPartial<
         WorldCollection.FromCompendiumOptions<FolderOpt, SortOpt, OwnershipOpt, IdOpt> & {
           /**

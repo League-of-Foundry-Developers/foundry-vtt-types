@@ -19,7 +19,7 @@ declare abstract class BaseChatMessage<
    * @param context - Construction context options
    */
   // TODO(LukeAbby): This constructor is a symptom of a circular error.
-  // constructor(data?: BaseChatMessage.ConstructorData, context?: Document.ConstructionContext<BaseChatMessage.Parent>);
+  // constructor(data?: BaseChatMessage.CreateData, context?: Document.ConstructionContext<BaseChatMessage.Parent>);
 
   static override metadata: BaseChatMessage.Metadata;
 

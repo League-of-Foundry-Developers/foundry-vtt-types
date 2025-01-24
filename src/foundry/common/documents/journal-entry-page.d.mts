@@ -15,7 +15,7 @@ declare abstract class BaseJournalEntryPage<
    */
   // TODO(LukeAbby): This constructor is a symptom of a circular error.
   // constructor(
-  //   data: BaseJournalEntryPage.ConstructorData,
+  //   data: BaseJournalEntryPage.CreateData,
   //   context?: Document.ConstructionContext<BaseJournalEntryPage.Parent>,
   // );
 

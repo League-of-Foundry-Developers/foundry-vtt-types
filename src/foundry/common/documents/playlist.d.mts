@@ -16,7 +16,7 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
    * @param context - Construction context options
    */
   // TODO(LukeAbby): This constructor is a symptom of a circular error.
-  // constructor(data: BasePlaylist.ConstructorData, context?: Document.ConstructionContext<BasePlaylist.Parent>);
+  // constructor(data: BasePlaylist.CreateData, context?: Document.ConstructionContext<BasePlaylist.Parent>);
 
   static override metadata: BasePlaylist.Metadata;
 

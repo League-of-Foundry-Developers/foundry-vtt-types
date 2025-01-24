@@ -2,13 +2,13 @@ import { expectTypeOf } from "vitest";
 import Document = foundry.abstract.Document;
 
 expectTypeOf(foundry.documents.BaseUser.create({ name: "SomeUser" })).toEqualTypeOf<
-  Promise<Document.Stored<User.ConfiguredInstance> | undefined>
+  Promise<Document.Stored<User.Implementation> | undefined>
 >();
 expectTypeOf(foundry.documents.BaseUser.createDocuments([])).toEqualTypeOf<
-  Promise<Document.Stored<User.ConfiguredInstance>[]>
+  Promise<Document.Stored<User.Implementation>[]>
 >();
-expectTypeOf(foundry.documents.BaseUser.updateDocuments([])).toEqualTypeOf<Promise<User.ConfiguredInstance[]>>();
-expectTypeOf(foundry.documents.BaseUser.deleteDocuments([])).toEqualTypeOf<Promise<User.ConfiguredInstance[]>>();
+expectTypeOf(foundry.documents.BaseUser.updateDocuments([])).toEqualTypeOf<Promise<User.Implementation[]>>();
+expectTypeOf(foundry.documents.BaseUser.deleteDocuments([])).toEqualTypeOf<Promise<User.Implementation[]>>();
 
 const user = await foundry.documents.BaseUser.create({ name: "Another User" }, { temporary: true });
 if (user) {

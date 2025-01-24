@@ -7,7 +7,7 @@ declare global {
    */
   class UserConfig<Options extends UserConfig.Options = UserConfig.Options> extends DocumentSheet<
     Options,
-    User.ConfiguredInstance
+    User.Implementation
   > {
     /**
      * @defaultValue
@@ -37,7 +37,7 @@ declare global {
   namespace UserConfig {
     type Any = UserConfig<any>;
 
-    interface Options extends DocumentSheetOptions<User.ConfiguredInstance> {
+    interface Options extends DocumentSheetOptions<User.Implementation> {
       /**
        * @defaultValue `["sheet", "user-config"]`
        */
@@ -60,13 +60,13 @@ declare global {
     }
 
     interface UserConfigData<
-      Options extends DocumentSheetOptions<User.ConfiguredInstance> = DocumentSheetOptions<User.ConfiguredInstance>,
+      Options extends DocumentSheetOptions<User.Implementation> = DocumentSheetOptions<User.Implementation>,
     > {
       user: UserConfig<Options>["object"];
-      actors: Actor.ConfiguredClass[];
+      actors: Actor.ImplementationClass[];
       options: UserConfig<Options>["options"];
     }
   }
 }
 
-interface FormData extends Pick<User.ConfiguredInstance["_source"], "avatar" | "character" | "color"> {}
+interface FormData extends Pick<User.Implementation["_source"], "avatar" | "character" | "color"> {}

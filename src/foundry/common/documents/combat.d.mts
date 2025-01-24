@@ -19,7 +19,7 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
    * @param context - Construction context options
    */
   // TODO(LukeAbby): This constructor is a symptom of a circular error.
-  // constructor(data?: BaseCombat.ConstructorData, context?: Document.ConstructionContext<BaseCombat.Parent>);
+  // constructor(data?: BaseCombat.CreateData, context?: Document.ConstructionContext<BaseCombat.Parent>);
 
   static override metadata: BaseCombat.Metadata;
 

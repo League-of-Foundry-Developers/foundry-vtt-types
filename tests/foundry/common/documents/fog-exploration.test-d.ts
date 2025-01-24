@@ -16,7 +16,7 @@ const fog = new foundry.documents.BaseFogExploration();
 expectTypeOf(fog.explored).toEqualTypeOf<string | null>();
 
 declare const scene: Scene;
-declare const user: User.ConfiguredInstance;
+declare const user: User.Implementation;
 
 new foundry.documents.BaseFogExploration({});
 new foundry.documents.BaseFogExploration({
@@ -58,5 +58,5 @@ expectTypeOf(data.explored).toEqualTypeOf<string | null>();
 expectTypeOf(data.positions).toEqualTypeOf<object>();
 expectTypeOf(data.scene).toEqualTypeOf<Scene | null>();
 expectTypeOf(data.timestamp).toEqualTypeOf<number>(); // FIXME: Initial prevents undefined results
-expectTypeOf(data.user).toEqualTypeOf<User.ConfiguredInstance | null>();
+expectTypeOf(data.user).toEqualTypeOf<User.Implementation | null>();
 expectTypeOf(data._id).toEqualTypeOf<string | null>();

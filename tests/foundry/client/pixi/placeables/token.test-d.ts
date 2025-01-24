@@ -10,7 +10,7 @@ expectTypeOf(token.document.x).toEqualTypeOf<number>();
 expectTypeOf(token.document.y).toEqualTypeOf<number>();
 expectTypeOf(token.document.hidden).toEqualTypeOf<boolean>();
 expectTypeOf(token.emitsLight).toEqualTypeOf<boolean>();
-expectTypeOf(token.toggleVisibility()).toEqualTypeOf<Promise<TokenDocument.ConfiguredInstance[]>>();
+expectTypeOf(token.toggleVisibility()).toEqualTypeOf<Promise<TokenDocument.Implementation[]>>();
 expectTypeOf(token.toggleEffect(CONFIG.statusEffects[0])).toEqualTypeOf<Promise<boolean>>();
 declare const effect: Document.Stored<ActiveEffect>;
 expectTypeOf(token.toggleEffect(effect)).toEqualTypeOf<Promise<boolean>>();

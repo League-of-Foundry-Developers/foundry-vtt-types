@@ -319,7 +319,7 @@ declare global {
   )<SubType> {
     static override metadata: Card.Metadata;
 
-    static get implementation(): Card.ConfiguredClass;
+    static get implementation(): Card.ImplementationClass;
 
     /**
      * The current card face
@@ -339,7 +339,7 @@ declare global {
     /**
      * A reference to the source Cards document which defines this Card.
      */
-    get source(): Cards.ConfiguredInstance | undefined | null;
+    get source(): Cards.Implementation | undefined | null;
 
     /**
      * A convenience property for whether or not the Card is within its source Cards stack. Cards in decks are always
@@ -371,7 +371,7 @@ declare global {
      * @param face - A specific face to flip the card to
      * @returns A reference to this card after the flip operation is complete
      */
-    flip(face?: number | null): Promise<Card.ConfiguredInstance | undefined>;
+    flip(face?: number | null): Promise<Card.Implementation | undefined>;
 
     /**
      * Pass this Card to some other Cards document.
@@ -379,21 +379,21 @@ declare global {
      * @param options - (default: `{}`)
      * @returns A reference to this card after the it has been passed to another parent document
      */
-    pass(to: Cards.ConfiguredInstance, options?: Cards.PassOptions): Promise<Card.ConfiguredInstance | undefined>;
+    pass(to: Cards.Implementation, options?: Cards.PassOptions): Promise<Card.Implementation | undefined>;
 
     /**
      * Play a specific card to some other Cards document.
      * This method is currently a more semantic alias for Card#pass.
      * @see Card#pass
      */
-    play(to: Cards.ConfiguredInstance, options?: Cards.PassOptions): Promise<Card.ConfiguredInstance | undefined>;
+    play(to: Cards.Implementation, options?: Cards.PassOptions): Promise<Card.Implementation | undefined>;
 
     /**
      * Discard a specific card to some other Cards document.
      * This method is currently a more semantic alias for Card#pass.
      * @see Card#pass
      */
-    discard(to: Cards.ConfiguredInstance, options?: Cards.PassOptions): Promise<Card.ConfiguredInstance | undefined>;
+    discard(to: Cards.Implementation, options?: Cards.PassOptions): Promise<Card.Implementation | undefined>;
 
     /**
      * Recall this Card to its original Cards parent.
@@ -401,7 +401,7 @@ declare global {
      *                  (default: `{}`)
      * @returns A reference to the recallled card belonging to its original parent
      */
-    recall(options?: Cards.ResetOptions): Promise<Card.ConfiguredInstance>;
+    recall(options?: Cards.ResetOptions): Promise<Card.Implementation>;
 
     /**
      * Create a chat message which displays this Card.
@@ -412,8 +412,8 @@ declare global {
      * @returns The created chat message
      */
     toMessage(
-      messageData?: DeepPartial<foundry.documents.BaseChatMessage.ConstructorData>,
+      messageData?: DeepPartial<foundry.documents.BaseChatMessage.CreateData>,
       options?: InexactPartial<Document.OnCreateOptions<"ChatMessage">>,
-    ): Promise<ChatMessage.ConfiguredInstance | undefined>;
+    ): Promise<ChatMessage.Implementation | undefined>;
   }
 }

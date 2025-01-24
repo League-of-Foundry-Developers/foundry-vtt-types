@@ -16,7 +16,7 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
    * @param context - Construction context options
    */
   // TODO(LukeAbby): This constructor is a symptom of a circular error.
-  // constructor(data: BaseScene.ConstructorData, context?: Document.ConstructionContext<BaseScene.Parent>);
+  // constructor(data: BaseScene.CreateData, context?: Document.ConstructionContext<BaseScene.Parent>);
 
   static override metadata: BaseScene.Metadata;
 

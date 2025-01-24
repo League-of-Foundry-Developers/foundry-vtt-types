@@ -18,7 +18,7 @@ declare abstract class BaseActiveEffect<
    * @param context - Construction context options
    */
   // TODO(LukeAbby): This constructor is causing a circular error.
-  // constructor(data?: BaseActiveEffect.ConstructorData, context?: Document.ConstructionContext<BaseActiveEffect.Parent>);
+  // constructor(data?: BaseActiveEffect.CreateData, context?: Document.ConstructionContext<BaseActiveEffect.Parent>);
 
   override canUserModify(
     user: User.Implementation,

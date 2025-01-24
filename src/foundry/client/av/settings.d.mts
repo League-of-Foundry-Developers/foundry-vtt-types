@@ -256,7 +256,7 @@ declare global {
      * Prepare a standardized object of user settings data for a single User
      * @internal
      */
-    protected _getUserSettings(user: User.ConfiguredInstance): AVSettings.UserSettings;
+    protected _getUserSettings(user: User.Implementation): AVSettings.UserSettings;
 
     /**
      * Handle setting changes to either rctClientSettings or rtcWorldSettings.

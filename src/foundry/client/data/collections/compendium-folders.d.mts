@@ -22,6 +22,6 @@ declare global {
     //     | ((doc: foundry.abstract.Document.Stored<Folder>) => DeepPartial<Folder["_source"]>),
     //   condition?: ((obj: foundry.abstract.Document.Stored<Folder>) => boolean) | null,
     //   options?: foundry.abstract.Document.OnUpdateOptions<"Folder">,
-    // ): Promise<Folder.ConfiguredInstance[]>;
+    // ): Promise<Folder.Implementation[]>;
   }
 }

@@ -58,7 +58,7 @@ expectTypeOf(titlecaseWithThreeWords).toEqualTypeOf<"Foo Bar Baz">();
 const numberMaybePromise: MaybePromise<number> = 0;
 expectTypeOf(await numberMaybePromise).toEqualTypeOf<number>();
 
-declare const user: User.ConfiguredInstance;
+declare const user: User.Implementation;
 expectTypeOf(user.id).toEqualTypeOf<string | null>();
 expectTypeOf(user._id).toEqualTypeOf<string | null>();
 expectTypeOf(user._source._id).toEqualTypeOf<string | null>();
@@ -68,10 +68,10 @@ expectTypeOf(user.toObject()._id).toEqualTypeOf<string | null>();
 expectTypeOf(user.toObject()._id).toEqualTypeOf<string | null>();
 expectTypeOf(user.toObject(false)._id).toEqualTypeOf<string | null>();
 expectTypeOf(user.toObject(false)._id).toEqualTypeOf<string | null>();
-expectTypeOf(user.clone()).toEqualTypeOf<User.ConfiguredInstance>();
-expectTypeOf(user.clone({}, { save: true })).toEqualTypeOf<Promise<User.ConfiguredInstance>>();
+expectTypeOf(user.clone()).toEqualTypeOf<User.Implementation>();
+expectTypeOf(user.clone({}, { save: true })).toEqualTypeOf<Promise<User.Implementation>>();
 
-declare const storedUser: Document.Stored<User.ConfiguredInstance>;
+declare const storedUser: Document.Stored<User.Implementation>;
 expectTypeOf(storedUser.id).toEqualTypeOf<string>();
 expectTypeOf(storedUser._id).toEqualTypeOf<string>();
 expectTypeOf(storedUser._source._id).toEqualTypeOf<string>();
@@ -81,7 +81,7 @@ expectTypeOf(storedUser.toJSON()._id).toEqualTypeOf<string>();
 // expectTypeOf(storedUser.toObject()._id).toEqualTypeOf<string>();
 // expectTypeOf(storedUser.toObject(false)._id).toEqualTypeOf<string>();
 // expectTypeOf(storedUser.toObject(false)._id).toEqualTypeOf<string>();
-expectTypeOf(storedUser.clone()).toEqualTypeOf<Document.Stored<User.ConfiguredInstance>>();
+expectTypeOf(storedUser.clone()).toEqualTypeOf<Document.Stored<User.Implementation>>();
 
 declare const actor: Document.Stored<Actor>;
 expectTypeOf(actor.id).toEqualTypeOf<string>();

@@ -473,7 +473,7 @@ declare class InternalGame<RunEvents extends InitializationEvent> {
    *
    * @remarks Initialized just before the `"setup"` hook event.
    */
-  get user(): GameInitialized<Document.Stored<User.ConfiguredInstance>, "setup", RunEvents, null>;
+  get user(): GameInitialized<Document.Stored<User.Implementation>, "setup", RunEvents, null>;
 
   /**
    * A convenience accessor for the currently viewed Combat encounter

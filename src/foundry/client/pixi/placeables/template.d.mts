@@ -69,7 +69,7 @@ declare global {
    * @see {@link MeasuredTemplateDocument}
    * @see {@link TemplateLayer}
    */
-  class MeasuredTemplate extends PlaceableObject<MeasuredTemplateDocument.ConfiguredInstance> {
+  class MeasuredTemplate extends PlaceableObject<MeasuredTemplateDocument.Implementation> {
     /**
      * The geometry shape used for testing point intersection
      * @defaultValue `undefined`
@@ -224,18 +224,18 @@ declare global {
 
     override rotate(angle: number, snap: number): Promise<this>;
 
-    protected override _canControl(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
+    protected override _canControl(user: User.Implementation, event?: PIXI.FederatedEvent): boolean;
 
-    protected override _canConfigure(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
+    protected override _canConfigure(user: User.Implementation, event?: PIXI.FederatedEvent): boolean;
 
-    protected override _canView(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
+    protected override _canView(user: User.Implementation, event?: PIXI.FederatedEvent): boolean;
 
     /**
      * @privateRemarks _onUpdate is overridden but with no signature changes.
      * For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
      */
 
-    protected override _canHUD(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
+    protected override _canHUD(user: User.Implementation, event?: PIXI.FederatedEvent): boolean;
 
     protected override _onClickRight(event: PIXI.FederatedEvent): void;
   }

@@ -19,7 +19,7 @@ declare abstract class BaseRegionBehavior<
    * @param context     - Construction context options
    */
   // TODO(LukeAbby): This constructor is causing a circular error.
-  // constructor(data: Partial<BaseRegionBehavior.ConstructorData>, context?: Document.ConstructionContext<BaseRegionBehavior.Parent>);
+  // constructor(data: Partial<BaseRegionBehavior.CreateData>, context?: Document.ConstructionContext<BaseRegionBehavior.Parent>);
 
   static override metadata: BaseRegionBehavior.Metadata;
 

@@ -15,7 +15,7 @@ declare namespace RegionBehaviorType {
 /** The data model for a behavior that receives Region events. */
 declare class RegionBehaviorType<
   Schema extends foundry.data.fields.DataSchema,
-  Parent extends RegionBehavior.ConfiguredInstance = RegionBehavior.ConfiguredInstance,
+  Parent extends RegionBehavior.Implementation = RegionBehavior.Implementation,
   BaseData extends AnyObject = EmptyObject,
   DerivedData extends AnyObject = EmptyObject,
 > extends TypeDataModel<Schema, Parent, BaseData, DerivedData> {
@@ -40,13 +40,13 @@ declare class RegionBehaviorType<
   events: Set<string>;
 
   /** A convenience reference to the RegionBehavior which contains this behavior sub-type */
-  get behavior(): RegionBehavior.ConfiguredInstance | null;
+  get behavior(): RegionBehavior.Implementation | null;
 
   /** A convenience reference to the RegionDocument which contains this behavior sub-type.*/
-  get region(): RegionDocument.ConfiguredInstance | null;
+  get region(): RegionDocument.Implementation | null;
 
   /** A convenience reference to the Scene which contains this behavior sub-type. */
-  get scene(): Scene.ConfiguredInstance | null;
+  get scene(): Scene.Implementation | null;
 
   /**
    * Handle the Region event.

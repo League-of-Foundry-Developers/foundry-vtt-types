@@ -20,7 +20,7 @@ declare abstract class BaseCombatant<
    * @param context - Construction context options
    */
   // TODO(LukeAbby): This constructor is a symptom of a circular error.
-  // constructor(data?: BaseCombatant.ConstructorData, context?: Document.ConstructionContext<BaseCombatant.Parent>);
+  // constructor(data?: BaseCombatant.CreateData, context?: Document.ConstructionContext<BaseCombatant.Parent>);
 
   static override metadata: BaseCombatant.Metadata;
 

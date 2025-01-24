@@ -26,7 +26,7 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
    * @param context - Construction context options
    */
   // TODO(LukeAbby): This constructor is causing a circular error.
-  // constructor(data: BaseItem.ConstructorData, context?: Document.ConstructionContext<BaseItem.Parent>);
+  // constructor(data: BaseItem.CreateData, context?: Document.ConstructionContext<BaseItem.Parent>);
 
   static override metadata: BaseItem.Metadata;
 

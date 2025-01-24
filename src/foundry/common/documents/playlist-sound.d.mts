@@ -17,7 +17,7 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
    */
   // TODO(LukeAbby): This constructor is a symptom of a circular error.
   // constructor(
-  //   data: BasePlaylistSound.ConstructorData,
+  //   data: BasePlaylistSound.CreateData,
   //   context?: Document.ConstructionContext<BasePlaylistSound.Parent>,
   // );
 

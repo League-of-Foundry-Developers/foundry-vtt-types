@@ -19,7 +19,7 @@ declare abstract class BaseTableResult<
    * @param context - Construction context options
    */
   // TODO(LukeAbby): This constructor is a symptom of a circular error.
-  // constructor(data: BaseTableResult.ConstructorData, context?: Document.ConstructionContext<BaseTableResult.Parent>);
+  // constructor(data: BaseTableResult.CreateData, context?: Document.ConstructionContext<BaseTableResult.Parent>);
 
   static override metadata: BaseTableResult.Metadata;
 

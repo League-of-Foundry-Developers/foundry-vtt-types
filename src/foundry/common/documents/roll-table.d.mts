@@ -18,7 +18,7 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
    * @param context - Construction context options
    */
   // TODO(LukeAbby): This constructor is a symptom of a circular error.
-  // constructor(data: BaseRollTable.ConstructorData, context?: Document.ConstructionContext<BaseRollTable.Parent>);
+  // constructor(data: BaseRollTable.CreateData, context?: Document.ConstructionContext<BaseRollTable.Parent>);
 
   static override metadata: BaseRollTable.Metadata;
 

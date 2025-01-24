@@ -7,8 +7,8 @@ declare global {
    */
   class AmbientSoundConfig<
     Options extends
-      DocumentSheetOptions<AmbientSoundDocument.ConfiguredInstance> = DocumentSheetOptions<AmbientSoundDocument.ConfiguredInstance>,
-  > extends DocumentSheet<Options, AmbientSoundDocument.ConfiguredInstance> {
+      DocumentSheetOptions<AmbientSoundDocument.Implementation> = DocumentSheetOptions<AmbientSoundDocument.Implementation>,
+  > extends DocumentSheet<Options, AmbientSoundDocument.Implementation> {
     /**
      * @defaultValue
      * ```typescript
@@ -19,7 +19,7 @@ declare global {
      * });
      * ```
      */
-    static get defaultOptions(): DocumentSheetOptions<AmbientSoundDocument.ConfiguredInstance>;
+    static get defaultOptions(): DocumentSheetOptions<AmbientSoundDocument.Implementation>;
 
     override get title(): string;
 

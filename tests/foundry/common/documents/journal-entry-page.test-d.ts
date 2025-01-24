@@ -11,7 +11,7 @@ const myJournalEntryPage = new foundry.documents.BaseJournalEntryPage({ name: "f
 
 declare const coreTypeMetadata: foundry.documents.BaseJournalEntryPage.Metadata["coreTypes"][number];
 declare const coreTypes: (typeof foundry.documents.BaseJournalEntryPage)["metadata"]["coreTypes"][number];
-declare const JEPTypes: foundry.documents.BaseJournalEntryPage.TypeNames;
+declare const JEPTypes: foundry.documents.BaseJournalEntryPage.SubType;
 
 expectTypeOf(coreTypeMetadata).toEqualTypeOf<"image" | "pdf" | "text" | "video">();
 expectTypeOf(coreTypes).toEqualTypeOf<"image" | "pdf" | "text" | "video">();

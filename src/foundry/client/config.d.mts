@@ -131,7 +131,7 @@ declare global {
     /**
      * Configured status effects which are recognized by the game system
      */
-    type StatusEffect = foundry.documents.BaseActiveEffect.ConstructorData & {
+    type StatusEffect = foundry.documents.BaseActiveEffect.CreateData & {
       /**
        * A string identifier for the effect
        */
@@ -317,13 +317,13 @@ declare global {
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
        */
-      sheetClasses: Record<foundry.documents.BaseActor.TypeNames, Record<string, SheetClassConfig>>;
+      sheetClasses: Record<foundry.documents.BaseActor.SubType, Record<string, SheetClassConfig>>;
 
       /**
        * @defaultValue `{}`
        * @remarks Initialized by `Localization#initialize`, is an empty object until `i18nInit`
        */
-      typeLabels: Record<foundry.documents.BaseActor.TypeNames, string>;
+      typeLabels: Record<foundry.documents.BaseActor.SubType, string>;
 
       /** @defaultValue `{}` */
       typeIcons: Record<string, string>;
@@ -405,13 +405,13 @@ declare global {
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
        */
-      sheetClasses: Record<foundry.documents.BaseCards.TypeNames, Record<string, SheetClassConfig>>;
+      sheetClasses: Record<foundry.documents.BaseCards.SubType, Record<string, SheetClassConfig>>;
 
       /**
        * @defaultValue `{}`
        * @remarks Initialized by `Localization#initialize`, is an empty object until `i18nInit`
        */
-      typeLabels: Record<foundry.documents.BaseCards.TypeNames, string>;
+      typeLabels: Record<foundry.documents.BaseCards.SubType, string>;
 
       typeIcons: {
         /** @defaultValue `"fas fa-cards"` */
@@ -450,13 +450,13 @@ declare global {
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
        */
-      sheetClasses: Record<foundry.documents.BaseChatMessage.TypeNames, Record<string, SheetClassConfig>>;
+      sheetClasses: Record<foundry.documents.BaseChatMessage.SubType, Record<string, SheetClassConfig>>;
 
       /**
        * @defaultValue `{}`
        * @remarks Initialized by `Localization#initialize`, is an empty object until `i18nInit`
        */
-      typeLabels: Record<foundry.documents.BaseChatMessage.TypeNames, string>;
+      typeLabels: Record<foundry.documents.BaseChatMessage.SubType, string>;
 
       /** @defaultValue `{}` */
       typeIcons: Record<string, string>;
@@ -487,13 +487,13 @@ declare global {
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
        */
-      sheetClasses: Record<foundry.documents.BaseCombat.TypeNames, Record<string, SheetClassConfig>>;
+      sheetClasses: Record<foundry.documents.BaseCombat.SubType, Record<string, SheetClassConfig>>;
 
       /**
        * @defaultValue `{}`
        * @remarks Initialized by `Localization#initialize`, is an empty object until `i18nInit`
        */
-      typeLabels: Record<foundry.documents.BaseCombat.TypeNames, string>;
+      typeLabels: Record<foundry.documents.BaseCombat.SubType, string>;
 
       /** @defaultValue `{}` */
       typeIcons: Record<string, string>;
@@ -607,12 +607,12 @@ declare global {
        * @defaultValue `{}`
        * @remarks Initialized by `Localization#initialize`, is an empty object until `i18nInit`
        */
-      typeLabels: Record<foundry.documents.BaseItem.TypeNames, string>;
+      typeLabels: Record<foundry.documents.BaseItem.SubType, string>;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
        */
-      sheetClasses: Record<foundry.documents.BaseItem.TypeNames, Record<string, SheetClassConfig>>;
+      sheetClasses: Record<foundry.documents.BaseItem.SubType, Record<string, SheetClassConfig>>;
     };
 
     /**
@@ -738,12 +738,12 @@ declare global {
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
        */
-      sheetClasses: Record<foundry.documents.BaseMacro.TypeNames, Record<string, SheetClassConfig>>;
+      sheetClasses: Record<foundry.documents.BaseMacro.SubType, Record<string, SheetClassConfig>>;
 
       /**
        * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
        */
-      typeLabels?: Record<foundry.documents.BaseMacro.TypeNames, string>;
+      typeLabels?: Record<foundry.documents.BaseMacro.SubType, string>;
 
       /** @defaultValue `Macros` */
       collection: Macros.AnyConstructor;
@@ -2088,13 +2088,13 @@ declare global {
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
        */
-      sheetClasses: Record<foundry.documents.BaseActiveEffect.TypeNames, Record<string, SheetClassConfig>>;
+      sheetClasses: Record<foundry.documents.BaseActiveEffect.SubType, Record<string, SheetClassConfig>>;
 
       /**
        * @defaultValue `{}`
        * @remarks Initialized by `Localization#initialize`, is an empty object until `i18nInit`
        */
-      typeLabels: Record<foundry.documents.BaseActiveEffect.TypeNames, string>;
+      typeLabels: Record<foundry.documents.BaseActiveEffect.SubType, string>;
 
       /** @defaultValue `{}` */
       typeIcons: Record<string, string>;
@@ -2143,13 +2143,13 @@ declare global {
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
        */
-      sheetClasses: Record<foundry.documents.BaseCard.TypeNames, Record<string, SheetClassConfig>>;
+      sheetClasses: Record<foundry.documents.BaseCard.SubType, Record<string, SheetClassConfig>>;
 
       /**
        * @defaultValue `{}`
        * @remarks Initialized by `Localization#initialize`, is an empty object until `i18nInit`
        */
-      typeLabels: Record<foundry.documents.BaseCard.TypeNames, string>;
+      typeLabels: Record<foundry.documents.BaseCard.SubType, string>;
 
       /** @defaultValue `{}` */
       typeIcons: Record<string, string>;
@@ -2165,12 +2165,12 @@ declare global {
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
        */
-      sheetClasses: Record<foundry.documents.BaseTableResult.TypeNames, Record<string, SheetClassConfig>>;
+      sheetClasses: Record<foundry.documents.BaseTableResult.SubType, Record<string, SheetClassConfig>>;
 
       /**
        * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
        */
-      typeLabels?: Record<foundry.documents.BaseTableResult.TypeNames, string>;
+      typeLabels?: Record<foundry.documents.BaseTableResult.SubType, string>;
     };
 
     JournalEntryPage: {
@@ -2186,13 +2186,13 @@ declare global {
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
        */
-      sheetClasses: Record<foundry.documents.BaseJournalEntryPage.TypeNames, Record<string, SheetClassConfig>>;
+      sheetClasses: Record<foundry.documents.BaseJournalEntryPage.SubType, Record<string, SheetClassConfig>>;
 
       /**
        * @defaultValue `{}`
        * @remarks Initialized by `Localization#initialize`, is an empty object until `i18nInit`
        */
-      typeLabels: Record<foundry.documents.BaseJournalEntryPage.TypeNames, string>;
+      typeLabels: Record<foundry.documents.BaseJournalEntryPage.SubType, string>;
 
       typeIcons: {
         [type: string]: string;
@@ -2296,13 +2296,13 @@ declare global {
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
        */
-      sheetClasses: Record<foundry.documents.BaseCombatant.TypeNames, Record<string, SheetClassConfig>>;
+      sheetClasses: Record<foundry.documents.BaseCombatant.SubType, Record<string, SheetClassConfig>>;
 
       /**
        * @defaultValue `{}`
        * @remarks Initialized by `Localization#initialize`, is an empty object until `i18nInit`
        */
-      typeLabels: Record<foundry.documents.BaseCombatant.TypeNames, string>;
+      typeLabels: Record<foundry.documents.BaseCombatant.SubType, string>;
 
       /** @defaultValue `{}` */
       typeIcons: Record<string, string>;

@@ -18,7 +18,7 @@ declare global {
      * Record the currently tracked Combat encounter
      * @defaultValue `null`
      */
-    viewed: Document.Stored<Combat.ConfiguredInstance> | null;
+    viewed: Document.Stored<Combat.Implementation> | null;
 
     /**
      * @defaultValue
@@ -36,7 +36,7 @@ declare global {
     /**
      * Return an array of Combat encounters which occur within the current Scene.
      */
-    get combats(): Document.Stored<Combat.ConfiguredInstance>[];
+    get combats(): Document.Stored<Combat.Implementation>[];
 
     override createPopout(): this;
 
@@ -63,7 +63,7 @@ declare global {
      * @param combatant - The combatant queried for image.
      * @returns The source image attributed for this combatant.
      */
-    protected _getCombatantThumbnail(combatant: Combatant.ConfiguredInstance): Promise<string>;
+    protected _getCombatantThumbnail(combatant: Combatant.Implementation): Promise<string>;
 
     override activateListeners(html: JQuery): void;
 
@@ -99,13 +99,13 @@ declare global {
      * @returns A Promise that resolves after all operations are complete
      * @internal
      */
-    protected _onToggleDefeatedStatus(combatant: Combatant.ConfiguredInstance): Promise<void>;
+    protected _onToggleDefeatedStatus(combatant: Combatant.Implementation): Promise<void>;
 
     /**
      * Handle pinging a combatant Token
      * @param combatant - The combatant data
      */
-    protected _onPingCombatant(combatant: Combatant.ConfiguredInstance): Promise<number | undefined>;
+    protected _onPingCombatant(combatant: Combatant.Implementation): Promise<number | undefined>;
 
     /**
      * Handle mouse-down event on a combatant name in the tracker
@@ -132,7 +132,7 @@ declare global {
      * @param combatant - The Combatant
      * @param hover     - Whether they are being hovered in or out.
      */
-    hoverCombatant(combatant: Combatant.ConfiguredInstance, hover: boolean): void;
+    hoverCombatant(combatant: Combatant.Implementation, hover: boolean): void;
     /**
      * Attach context menu options to elements in the tracker
      * @param html - The HTML element to which context options are attached

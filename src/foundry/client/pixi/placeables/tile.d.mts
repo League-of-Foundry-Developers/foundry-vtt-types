@@ -97,7 +97,7 @@ declare global {
    * @see {@link TileDocument}
    * @see {@link TilesLayer}
    */
-  class Tile extends PlaceableObject<TileDocument.ConfiguredInstance> {
+  class Tile extends PlaceableObject<TileDocument.Implementation> {
     static override embeddedName: "Tile";
 
     static override RENDER_FLAGS: {
@@ -228,7 +228,7 @@ declare global {
 
     override activateListeners(): void;
 
-    protected override _canConfigure(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
+    protected override _canConfigure(user: User.Implementation, event?: PIXI.FederatedEvent): boolean;
 
     protected override _onClickLeft(event: PIXI.FederatedEvent): void;
 

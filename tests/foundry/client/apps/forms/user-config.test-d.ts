@@ -4,11 +4,11 @@ import { expectTypeOf } from "vitest";
 new UserConfig(new foundry.documents.BaseUser());
 
 const config = new UserConfig(new User.implementation({ name: "foo" }));
-expectTypeOf(config.object).toEqualTypeOf<User.ConfiguredInstance>();
+expectTypeOf(config.object).toEqualTypeOf<User.Implementation>();
 
-const withCustomOptions = new UserConfig<DocumentSheetOptions<User.ConfiguredInstance> & { custom: true }>(
+const withCustomOptions = new UserConfig<DocumentSheetOptions<User.Implementation> & { custom: true }>(
   new User.implementation({ name: "foo" }),
 );
 expectTypeOf(withCustomOptions.options).toEqualTypeOf<
-  DocumentSheetOptions<User.ConfiguredInstance> & { custom: true }
+  DocumentSheetOptions<User.Implementation> & { custom: true }
 >();

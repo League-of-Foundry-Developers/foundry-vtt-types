@@ -8,8 +8,8 @@ declare global {
    */
   class ActiveEffectConfig<
     Options extends
-      DocumentSheetOptions<ActiveEffect.ConfiguredInstance> = DocumentSheetOptions<ActiveEffect.ConfiguredInstance>,
-  > extends DocumentSheet<Options, ActiveEffect.ConfiguredInstance> {
+      DocumentSheetOptions<ActiveEffect.Implementation> = DocumentSheetOptions<ActiveEffect.Implementation>,
+  > extends DocumentSheet<Options, ActiveEffect.Implementation> {
     /**
      * @defaultValue
      * ```typescript
@@ -22,7 +22,7 @@ declare global {
      * });
      * ```
      */
-    static override get defaultOptions(): DocumentSheetOptions<ActiveEffect.ConfiguredInstance>;
+    static override get defaultOptions(): DocumentSheetOptions<ActiveEffect.Implementation>;
 
     override getData(
       options?: Partial<Options>,
@@ -54,9 +54,9 @@ declare global {
 
     type ActiveEffectConfigData<
       Options extends
-        DocumentSheetOptions<ActiveEffect.ConfiguredInstance> = DocumentSheetOptions<ActiveEffect.ConfiguredInstance>,
+        DocumentSheetOptions<ActiveEffect.Implementation> = DocumentSheetOptions<ActiveEffect.Implementation>,
     > = SimpleMerge<
-      DocumentSheet.DocumentSheetData<Options, ActiveEffect.ConfiguredInstance>,
+      DocumentSheet.DocumentSheetData<Options, ActiveEffect.Implementation>,
       {
         labels: {
           transfer: {

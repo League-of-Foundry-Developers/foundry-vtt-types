@@ -9,7 +9,7 @@ expectTypeOf(combatant.parent).toEqualTypeOf<Combat | null>();
 expectTypeOf(combatant.combat).toEqualTypeOf<Combat | null>();
 expectTypeOf(combatant.actor).toEqualTypeOf<Actor | null>();
 expectTypeOf(combatant.token).toEqualTypeOf<TokenDocument | null>();
-expectTypeOf(combatant.players).toEqualTypeOf<User.ConfiguredInstance[]>();
+expectTypeOf(combatant.players).toEqualTypeOf<User.Implementation[]>();
 expectTypeOf(combatant.isDefeated).toEqualTypeOf<boolean>();
 
 declare const user: foundry.documents.BaseUser;

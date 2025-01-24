@@ -97,7 +97,7 @@ declare global {
      */
     get documentCollection(): EmbeddedCollection<
       Document.ConfiguredInstanceForName<DocumentName>,
-      Scene.ConfiguredInstance
+      Scene.Implementation
     > | null;
 
     /**
@@ -440,7 +440,7 @@ declare global {
 
     protected override _onClickLeft(event: PIXI.FederatedEvent): void;
 
-    protected override _canDragLeftStart(user: User.ConfiguredInstance, event: PIXI.FederatedEvent): boolean;
+    protected override _canDragLeftStart(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
 
     protected override _onDragLeftStart(event: PIXI.FederatedEvent): void;
 

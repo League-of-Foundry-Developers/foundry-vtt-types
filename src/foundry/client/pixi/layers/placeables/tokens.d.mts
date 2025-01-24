@@ -128,7 +128,7 @@ declare global {
     protected _onDropActorData(
       event: DragEvent,
       data: TokenLayer.DropData,
-    ): Promise<ReturnType<Notifications["warn"]> | false | TokenDocument.ConfiguredInstance>;
+    ): Promise<ReturnType<Notifications["warn"]> | false | TokenDocument.Implementation>;
 
     //TODO: use configured ruler type once it exists
     protected override _onClickLeft(event: PIXI.FederatedEvent): ReturnType<Ruler["_onClickLeft"]> | void; // ReturnType<CONFIG.Canvas["rulerClass"]["_onClickLeft"]>;
@@ -153,7 +153,7 @@ declare global {
      */
     toggleCombat(
       state?: boolean,
-      combat?: Combat.ConfiguredInstance | null,
+      combat?: Combat.Implementation | null,
       {
         token,
       }?: {
@@ -163,7 +163,7 @@ declare global {
          */
         token?: Token.ConfiguredInstance | null;
       },
-    ): Promise<Combatant.ConfiguredInstance[]>;
+    ): Promise<Combatant.Implementation[]>;
   }
 
   namespace TokenLayer {

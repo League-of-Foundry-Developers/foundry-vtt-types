@@ -614,7 +614,7 @@ declare class PrototypeToken extends DataModel<PrototypeToken.Schema, any> {
    * @see foundry.abstract.Document#testUserPermission
    */
   testUserPermission(
-    user: User.ConfiguredInstance,
+    user: User.Implementation,
     permission: unknown,
     { exact }: { exact: boolean },
   ): ReturnType<this["actor"]["testUserPermission"]>;

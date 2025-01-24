@@ -18,7 +18,7 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
    */
   // TODO(LukeAbby): This constructor is a symptom of a circular error.
   // constructor(
-  //   data?: BaseFogExploration.ConstructorData,
+  //   data?: BaseFogExploration.CreateData,
   //   context?: Document.ConstructionContext<BaseFogExploration.Parent>,
   // );
 

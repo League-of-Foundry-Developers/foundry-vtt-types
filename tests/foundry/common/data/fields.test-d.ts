@@ -86,13 +86,13 @@ expectTypeOf(schemaWithLight.light).toEqualTypeOf<foundry.data.LightData>();
 
 declare const effectsField: foundry.data.fields.EmbeddedCollectionField<
   typeof foundry.documents.BaseActiveEffect,
-  Actor.ConfiguredInstance
+  Actor.Implementation
 >;
 
 expectTypeOf(effectsField.hint).toEqualTypeOf<string>();
 
 declare const ElementFieldType: typeof foundry.documents.BaseActiveEffect;
-declare const ParentDataModel: Actor.ConfiguredInstance;
+declare const ParentDataModel: Actor.Implementation;
 declare const AssignmentElementType: foundry.data.fields.EmbeddedCollectionField.InitializedElementType<
   typeof ElementFieldType
 >;

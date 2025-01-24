@@ -15,7 +15,6 @@ import type { EmbeddedCollection, EmbeddedCollectionDelta, TypeDataModel } from 
 import type { DOCUMENT_OWNERSHIP_LEVELS } from "../constants.d.mts";
 import type { CONST } from "../../client-esm/client.d.mts";
 import type { DataModelValidationFailure } from "./validation-failure.mts";
-import type { EffectChangeData } from "../documents/_types.d.mts";
 import type {
   FormGroupConfig,
   FormInputConfig,
@@ -312,7 +311,7 @@ declare abstract class DataField<
    * @param change - The change to apply.
    * @returns The updated value.
    */
-  applyChange(value: InitializedType, model: DataModel.Any, change: EffectChangeData): InitializedType;
+  applyChange(value: InitializedType, model: DataModel.Any, change: ActiveEffect.EffectChangeData): InitializedType;
 
   /**
    * Cast a change delta into an appropriate type to be applied to this field.
@@ -335,7 +334,7 @@ declare abstract class DataField<
     value: InitializedType,
     delta: InitializedType,
     model: DataModel.Any,
-    change: EffectChangeData,
+    change: ActiveEffect.EffectChangeData,
   ): InitializedType | undefined;
 
   /**
@@ -350,7 +349,7 @@ declare abstract class DataField<
     value: InitializedType,
     delta: InitializedType,
     model: DataModel.Any,
-    change: EffectChangeData,
+    change: ActiveEffect.EffectChangeData,
   ): InitializedType | undefined;
 
   /**
@@ -365,7 +364,7 @@ declare abstract class DataField<
     value: InitializedType,
     delta: InitializedType,
     model: DataModel.Any,
-    change: EffectChangeData,
+    change: ActiveEffect.EffectChangeData,
   ): InitializedType | undefined;
 
   /**
@@ -380,7 +379,7 @@ declare abstract class DataField<
     value: InitializedType,
     delta: InitializedType,
     model: DataModel.Any,
-    change: EffectChangeData,
+    change: ActiveEffect.EffectChangeData,
   ): InitializedType | undefined;
 
   /**
@@ -395,7 +394,7 @@ declare abstract class DataField<
     value: InitializedType,
     delta: InitializedType,
     model: DataModel.Any,
-    change: EffectChangeData,
+    change: ActiveEffect.EffectChangeData,
   ): InitializedType | undefined;
 
   /**
@@ -410,7 +409,7 @@ declare abstract class DataField<
     value: InitializedType,
     delta: InitializedType,
     model: DataModel.Any,
-    change: EffectChangeData,
+    change: ActiveEffect.EffectChangeData,
   ): InitializedType;
 }
 

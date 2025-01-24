@@ -153,19 +153,19 @@ declare global {
      * Create and draw the Cursor object for a given User
      * @param user - The User document for whom to draw the cursor Container
      */
-    drawCursor(user: User.ConfiguredInstance): Cursor;
+    drawCursor(user: User.Implementation): Cursor;
 
     /**
      * Update the cursor when the user moves to a new position
      * @param user     - The User for whom to update the cursor
      * @param position - The new cursor position
      */
-    updateCursor(user: User.ConfiguredInstance, position: Canvas.Point | null): void;
+    updateCursor(user: User.Implementation, position: Canvas.Point | null): void;
 
     /**
      * Update display of an active Ruler object for a user given provided data
      */
-    updateRuler(user: User.ConfiguredInstance, rulerData: Ruler.MeasurementData | null): void;
+    updateRuler(user: User.Implementation, rulerData: Ruler.MeasurementData | null): void;
 
     /**
      * Handle a broadcast ping.
@@ -176,7 +176,7 @@ declare global {
      * @returns A promise which resolves once the Ping has been drawn and animated
      */
     handlePing(
-      user: User.ConfiguredInstance,
+      user: User.Implementation,
       position: Canvas.Point,
       /**
        * @privateRemarks User.PingData is InexactPartial because `zoom` is assumed to be number
@@ -205,7 +205,7 @@ declare global {
           /**
            * The user who pinged.
            */
-          user: User.ConfiguredInstance;
+          user: User.Implementation;
         }>,
     ): ReturnType<this["drawPing"]>;
 
@@ -230,7 +230,7 @@ declare global {
           /**
            * The user who pinged.
            */
-          user: User.ConfiguredInstance;
+          user: User.Implementation;
         }>,
     ): ReturnType<Ping["animate"]>;
 

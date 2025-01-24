@@ -6,12 +6,12 @@ declare global {
    * @typeParam Options - the type of the options object
    */
   class ChatPopout<Options extends ApplicationOptions = ApplicationOptions> extends Application<Options> {
-    constructor(message: ChatMessage.ConfiguredInstance, options?: Partial<Options>);
+    constructor(message: ChatMessage.Implementation, options?: Partial<Options>);
 
     /**
      * The displayed Chat Message document
      */
-    message: ChatMessage.ConfiguredInstance;
+    message: ChatMessage.Implementation;
 
     /**
      * @defaultValue

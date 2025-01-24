@@ -20,7 +20,7 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
    * @param context - Construction context options
    */
   // TODO(LukeAbby): This constructor is a symptom of a circular error.
-  // constructor(data: BaseCards.ConstructorData, context?: Document.ConstructionContext<BaseCards.Parent>);
+  // constructor(data: BaseCards.CreateData, context?: Document.ConstructionContext<BaseCards.Parent>);
 
   static override metadata: BaseCards.Metadata;
 

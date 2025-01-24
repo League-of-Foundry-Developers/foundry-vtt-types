@@ -7,7 +7,7 @@ declare global {
    */
   class TileConfig<Options extends TileConfig.Options = TileConfig.Options> extends DocumentSheet<
     Options,
-    TileDocument.ConfiguredInstance
+    TileDocument.Implementation
   > {
     /**
      * @defaultValue
@@ -44,7 +44,7 @@ declare global {
       "texture.tint": string;
     };
 
-    interface Options extends DocumentSheetOptions<TileDocument.ConfiguredInstance> {
+    interface Options extends DocumentSheetOptions<TileDocument.Implementation> {
       /**
        * Configure a preview version of a tile which is not yet saved
        */

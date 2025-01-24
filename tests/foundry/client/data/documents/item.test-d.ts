@@ -81,4 +81,4 @@ class BoilerplateItem extends Item {
 }
 
 declare const configuredItem: BoilerplateItem;
-expectTypeOf(configuredItem.actor).toEqualTypeOf<Actor.ConfiguredInstance | null>();
+expectTypeOf(configuredItem.actor).toEqualTypeOf<Actor.Implementation | null>();

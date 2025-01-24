@@ -8,7 +8,7 @@ declare global {
    */
   class FolderConfig<Options extends FolderConfig.Options = FolderConfig.Options> extends DocumentSheet<
     Options,
-    Folder.ConfiguredInstance
+    Folder.Implementation
   > {
     /**
      * @defaultValue
@@ -36,8 +36,8 @@ declare global {
   namespace FolderConfig {
     type Any = FolderConfig<any>;
 
-    interface Options extends DocumentSheetOptions<Folder.ConfiguredInstance> {
-      resolve?: (doc: Folder.ConfiguredInstance) => void;
+    interface Options extends DocumentSheetOptions<Folder.Implementation> {
+      resolve?: (doc: Folder.Implementation) => void;
     }
 
     interface FormData {

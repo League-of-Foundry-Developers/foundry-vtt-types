@@ -51,7 +51,7 @@ declare global {
    * @see {@link NoteDocument}
    * @see {@link NotesLayer}
    */
-  class Note extends PlaceableObject<NoteDocument.ConfiguredInstance> {
+  class Note extends PlaceableObject<NoteDocument.Implementation> {
     static override embeddedName: "Note";
 
     static override RENDER_FLAGS: {
@@ -79,7 +79,7 @@ declare global {
     /**
      * The associated JournalEntry which is described by this note
      */
-    get entry(): JournalEntry.ConfiguredInstance;
+    get entry(): JournalEntry.Implementation;
 
     /**
      * The specific JournalEntryPage within the associated JournalEntry referenced by this Note.
@@ -134,9 +134,9 @@ declare global {
      * For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
      */
 
-    protected override _canHover(user: User.ConfiguredInstance): true;
+    protected override _canHover(user: User.Implementation): true;
 
-    protected override _canView(user: User.ConfiguredInstance): boolean;
+    protected override _canView(user: User.Implementation): boolean;
 
     protected override _onHoverIn(event: PIXI.FederatedEvent, options?: PlaceableObject.HoverInOptions): false | void;
 

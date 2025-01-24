@@ -284,8 +284,8 @@ declare global {
 
     interface MessageData {
       message: ChatMessage.PersistedData;
-      user: Document.Stored<User.ConfiguredInstance>;
-      author: User.ConfiguredInstance | undefined;
+      user: Document.Stored<User.Implementation>;
+      author: User.Implementation | undefined;
       alias: string;
       cssClass: string;
       isWhisper: boolean;
@@ -451,7 +451,7 @@ declare global {
       scene?: Scene | undefined;
 
       /** The User who is speaking */
-      user: User.ConfiguredInstance;
+      user: User.Implementation;
 
       /** The name of the speaker to display */
       alias?: string | undefined;

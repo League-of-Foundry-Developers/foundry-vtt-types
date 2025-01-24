@@ -21,7 +21,7 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
    * @param context - Construction context options
    */
   // TODO(LukeAbby): This constructor is a symptom of a circular error.
-  // constructor(data: BaseCard.ConstructorData, context?: Document.ConstructionContext<BaseCard.Parent>);
+  // constructor(data: BaseCard.CreateData, context?: Document.ConstructionContext<BaseCard.Parent>);
 
   static override metadata: BaseCard.Metadata;
 
@@ -36,7 +36,7 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
   /**
    * Is a User able to create a new Card within this parent?
    */
-  static #canCreate(user: User.Implementation, doc: BaseCard, data: BaseCard.ConstructorData): boolean;
+  static #canCreate(user: User.Implementation, doc: BaseCard, data: BaseCard.CreateData): boolean;
 
   /**
    * Is a user able to update an existing Card?

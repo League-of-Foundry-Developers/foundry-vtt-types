@@ -8,7 +8,7 @@ if (game instanceof Game) {
 }
 
 const ruler = new Ruler();
-expectTypeOf(ruler.user).toEqualTypeOf<User.ConfiguredInstance>();
+expectTypeOf(ruler.user).toEqualTypeOf<User.Implementation>();
 expectTypeOf(ruler.name).toEqualTypeOf<string>();
 expectTypeOf(ruler.color).toEqualTypeOf<Color>();
 expectTypeOf(ruler.waypoints).toEqualTypeOf<PIXI.Point[]>();

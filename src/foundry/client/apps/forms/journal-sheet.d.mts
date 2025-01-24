@@ -1,7 +1,7 @@
 import type { MaybePromise, InexactPartial } from "../../../../utils/index.d.mts";
 
 declare global {
-  interface JournalSheetOptions extends DocumentSheetOptions<JournalEntry.ConfiguredInstance> {
+  interface JournalSheetOptions extends DocumentSheetOptions<JournalEntry.Implementation> {
     /** The current display mode of the journal. Either "text" or "image". */
     sheetMode?: JournalSheet.SheetMode | null;
   }
@@ -12,7 +12,7 @@ declare global {
    */
   class JournalSheet<Options extends JournalSheetOptions = JournalSheetOptions> extends DocumentSheet<
     Options,
-    JournalEntry.ConfiguredInstance
+    JournalEntry.Implementation
   > {
     /**
      * @defaultValue
@@ -41,7 +41,7 @@ declare global {
      * The cached list of processed page entries.
      * This array is populated in the getData method.
      */
-    _pages: JournalEntryPage.ConfiguredInstance[];
+    _pages: JournalEntryPage.Implementation[];
 
     /**
      * Get the journal entry's current view mode.
@@ -105,7 +105,7 @@ declare global {
      * Prepare pages for display.
      * @returns The sorted list of pages.
      */
-    protected _getPageData(): JournalEntryPage.ConfiguredInstance[];
+    protected _getPageData(): JournalEntryPage.Implementation[];
 
     /**
      * Identify which page of the journal sheet should be currently rendered.
@@ -163,7 +163,7 @@ declare global {
     /**
      * Prompt the user with a Dialog for creation of a new JournalEntryPage
      */
-    createPage(): Promise<JournalEntryPage.ConfiguredInstance>;
+    createPage(): Promise<JournalEntryPage.Implementation>;
 
     /**
      * Turn to the previous page.

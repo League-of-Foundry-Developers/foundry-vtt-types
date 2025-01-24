@@ -6,7 +6,7 @@ declare global {
    */
   class AdventureImporter<Options extends AdventureImporter.Options = AdventureImporter.Options> extends DocumentSheet<
     Options,
-    Adventure.ConfiguredInstance
+    Adventure.Implementation
   > {
     /**
      * An alias for the Adventure document
@@ -72,10 +72,10 @@ declare global {
   namespace AdventureImporter {
     type Any = AdventureImporter<any>;
 
-    interface Options extends DocumentSheetOptions<Adventure.ConfiguredInstance> {}
+    interface Options extends DocumentSheetOptions<Adventure.Implementation> {}
 
     interface AdventureImporterData {
-      adventure: Adventure.ConfiguredInstance;
+      adventure: Adventure.Implementation;
 
       contents: ReturnType<AdventureImporter["_getContentList"]>;
 

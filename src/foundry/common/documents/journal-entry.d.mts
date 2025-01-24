@@ -16,7 +16,7 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
    * @param context - Construction context options
    */
   // TODO(LukeAbby): This constructor is a symptom of a circular error.
-  // constructor(data: BaseJournalEntry.ConstructorData, context?: Document.ConstructionContext<BaseJournalEntry.Parent>);
+  // constructor(data: BaseJournalEntry.CreateData, context?: Document.ConstructionContext<BaseJournalEntry.Parent>);
 
   static override metadata: BaseJournalEntry.Metadata;
 

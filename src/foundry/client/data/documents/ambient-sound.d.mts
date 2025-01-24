@@ -258,7 +258,7 @@ declare global {
   class AmbientSoundDocument extends CanvasDocumentMixin(foundry.documents.BaseAmbientSound) {
     static override metadata: AmbientSoundDocument.Metadata;
 
-    static get implementation(): AmbientSoundDocument.ConfiguredClass;
+    static get implementation(): AmbientSoundDocument.ImplementationClass;
 
     /*
      * After this point these are not really overridden methods.
