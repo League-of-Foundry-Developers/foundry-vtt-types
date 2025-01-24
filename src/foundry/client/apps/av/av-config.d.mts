@@ -32,7 +32,7 @@ declare global {
      */
     static override get defaultOptions(): FormApplicationOptions;
 
-    override getData(options: Partial<Options>): MaybePromise<GetDataReturnType<AVConfig.AVConfigData>>;
+    override getData(options?: Partial<Options>): MaybePromise<GetDataReturnType<AVConfig.AVConfigData>>;
 
     override activateListeners(html: JQuery): void;
 
