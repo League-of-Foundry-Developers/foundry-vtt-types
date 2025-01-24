@@ -1,6 +1,6 @@
+import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
-import type * as fields from "../data/fields.d.mts";
-import type * as documents from "./_module.mts";
+import type { SchemaField } from "../data/fields.d.mts";
 
 type DataSchema = foundry.data.fields.DataSchema;
 
@@ -22,78 +22,171 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
   //   context?: Document.ConstructionContext<BaseFogExploration.Parent>,
   // );
 
-  override parent: BaseFogExploration.Parent;
-
   static override metadata: BaseFogExploration.Metadata;
 
   static override defineSchema(): BaseFogExploration.Schema;
 
   static #canModify(user: User.ConfiguredInstance, doc: BaseFogExploration);
 
-  /**
-   * @privateRemarks _preUpdate is overridden but with no signature changes.
-   * For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
+  /*
+   * After this point these are not really overridden methods.
+   * They are here because they're static properties but depend on the instance and so can't be
+   * defined DRY-ly while also being easily overridable.
    */
 
   static " __fvtt_types_internal_document_name_static": "FogExploration";
+
+  static get implementation(): FogExploration.ImplementationClass;
+
+  override parent: FogExploration.Parent;
+
+  static createDocuments<Temporary extends boolean | undefined>(
+    data: Array<FogExploration.Implementation | FogExploration.CreateData> | undefined,
+    operation?: Document.Database.CreateOperation<FogExploration.DatabaseOperation.Create<Temporary>>,
+  ): Promise<Array<Document.StoredIf<FogExploration.Implementation, Temporary>>>;
+
+  static updateDocuments(
+    updates: FogExploration.UpdateData[] | undefined,
+    operation?: Document.Database.UpdateOperation<FogExploration.DatabaseOperation.Update>,
+  ): Promise<FogExploration.Implementation[]>;
+
+  static deleteDocuments(
+    ids: readonly string[] | undefined,
+    operation?: Document.Database.DeleteOperation<FogExploration.DatabaseOperation.Delete>,
+  ): Promise<FogExploration.Implementation[]>;
+
+  static create<Temporary extends boolean | undefined>(
+    data: FogExploration.CreateData | FogExploration.CreateData[],
+    operation?: Document.Database.CreateOperation<FogExploration.DatabaseOperation.Create<Temporary>>,
+  ): Promise<FogExploration.Implementation | undefined>;
+
+  static get(documentId: string, options?: Document.Database.GetOperation): FogExploration.Implementation | null;
+
+  protected _preCreate(
+    data: FogExploration.CreateData,
+    options: FogExploration.DatabaseOperation.PreCreateOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onCreate(
+    data: FogExploration.CreateData,
+    options: FogExploration.DatabaseOperation.OnCreateOperation,
+    userId: string,
+  ): void;
+
+  protected static _preCreateOperation(
+    documents: FogExploration.Implementation[],
+    operation: Document.Database.PreCreateOperationStatic<FogExploration.DatabaseOperation.Create>,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onCreateOperation(
+    documents: FogExploration.Implementation[],
+    operation: FogExploration.DatabaseOperation.Create,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected _preUpdate(
+    changed: FogExploration.UpdateData,
+    options: FogExploration.DatabaseOperation.PreUpdateOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onUpdate(
+    changed: FogExploration.UpdateData,
+    options: FogExploration.DatabaseOperation.OnUpdateOperation,
+    userId: string,
+  ): void;
+
+  protected static _preUpdateOperation(
+    documents: FogExploration.Implementation[],
+    operation: FogExploration.DatabaseOperation.Update,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onUpdateOperation(
+    documents: FogExploration.Implementation[],
+    operation: FogExploration.DatabaseOperation.Update,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected _preDelete(
+    options: FogExploration.DatabaseOperation.PreDeleteOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onDelete(options: FogExploration.DatabaseOperation.OnDeleteOperation, userId: string): void;
+
+  protected static _preDeleteOperation(
+    documents: FogExploration.Implementation[],
+    operation: FogExploration.DatabaseOperation.Delete,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onDeleteOperation(
+    documents: FogExploration.Implementation[],
+    operation: FogExploration.DatabaseOperation.Delete,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected static _onCreateDocuments(
+    documents: FogExploration.Implementation[],
+    context: Document.ModificationContext<FogExploration.Parent>,
+  ): Promise<void>;
+
+  protected static _onUpdateDocuments(
+    documents: FogExploration.Implementation[],
+    context: Document.ModificationContext<FogExploration.Parent>,
+  ): Promise<void>;
+
+  protected static _onDeleteDocuments(
+    documents: FogExploration.Implementation[],
+    context: Document.ModificationContext<FogExploration.Parent>,
+  ): Promise<void>;
+
+  protected static _schema: SchemaField<FogExploration.Schema>;
+
+  static get schema(): SchemaField<FogExploration.Schema>;
+
+  static validateJoint(data: FogExploration.Source): void;
+
+  static override fromSource(
+    source: FogExploration.UpdateData,
+    { strict, ...context }?: DataModel.FromSourceOptions,
+  ): DataModel<FogExploration.Schema, DataModel.Any | null>;
+
+  static override fromJSON(json: string): DataModel<FogExploration.Schema, DataModel.Any | null>;
 }
 
 export default BaseFogExploration;
 
 declare namespace BaseFogExploration {
-  type Parent = null;
+  export import Metadata = FogExploration.Metadata;
+  export import Parent = FogExploration.Parent;
+  export import Stored = FogExploration.Stored;
+  export import Source = FogExploration.Source;
+  export import PersistedData = FogExploration.PersistedData;
+  export import CreateData = FogExploration.CreateData;
+  export import InitializedData = FogExploration.InitializedData;
+  export import UpdateData = FogExploration.UpdateData;
+  export import Schema = FogExploration.Schema;
+  export import DatabaseOperation = FogExploration.DatabaseOperation;
 
-  type Metadata = Document.MetadataFor<"FogExploration">;
+  /**
+   * @deprecated This type is used by Foundry too vaguely.
+   * In one context the most correct type is after initialization whereas in another one it should be
+   * before but Foundry uses it interchangeably.
+   */
+  type Properties = SchemaField.InitializedData<Schema>;
 
-  type SchemaField = fields.SchemaField<Schema>;
-  type ConstructorData = fields.SchemaField.CreateData<Schema>;
-  type UpdateData = fields.SchemaField.AssignmentData<Schema>;
-  type Properties = fields.SchemaField.InitializedData<Schema>;
-  type Source = fields.SchemaField.PersistedData<Schema>;
+  /**
+   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseFogExploration.Schema>`}
+   */
+  type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
-  interface Schema extends DataSchema {
-    /**
-     * The _id which uniquely identifies this FogExploration document
-     * @defaultValue `null`
-     */
-    _id: fields.DocumentIdField;
+  /**
+   * @deprecated {@link BaseFogExploration.CreateData | `BaseFogExploration.CreateData`}
+   */
+  type ConstructorData = BaseFogExploration.CreateData;
 
-    /**
-     * The _id of the Scene document to which this fog applies
-     * @defaultValue `canvas?.scene?.id`
-     */
-    scene: fields.ForeignDocumentField<typeof documents.BaseScene, { initial: () => string | undefined }>;
-
-    /**
-     * The _id of the User document to which this fog applies
-     * @defaultValue `null`
-     */
-    user: fields.ForeignDocumentField<typeof documents.BaseUser, { initial: () => string }>;
-
-    /**
-     * The base64 image/jpeg of the explored fog polygon
-     * @defaultValue `null`
-     */
-    explored: fields.FilePathField<{ categories: ["IMAGE"]; required: true; base64: true }>;
-
-    /**
-     * The object of scene positions which have been explored at a certain vision radius
-     * @defaultValue `{}`
-     */
-    positions: fields.ObjectField;
-
-    /**
-     * The timestamp at which this fog exploration was last updated
-     * @defaultValue `Date.now()`
-     */
-    timestamp: fields.NumberField<{ nullable: false; initial: ReturnType<typeof Date.now> }>;
-
-    /**
-     * An object of optional key/value flags
-     * @defaultValue `{}`
-     */
-    flags: fields.ObjectField.FlagsField<"FogExploration">;
-
-    _stats: fields.DocumentStatsField;
-  }
 }
