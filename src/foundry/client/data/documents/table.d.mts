@@ -1,21 +1,217 @@
 import type { InexactPartial } from "../../../../utils/index.d.mts";
+import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
-import type BaseRollTable from "../../../common/documents/roll-table.d.mts";
+import type { DataSchema } from "../../../common/data/fields.d.mts";
+import type { fields } from "../../../common/data/module.d.mts";
 
 declare global {
   namespace RollTable {
-    type Metadata = Document.MetadataFor<"RollTable">;
+    /**
+     * The implementation of the RollTable document instance configured through `CONFIG.RollTable.documentClass` in Foundry and
+     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredRollTable | `configuration/ConfiguredRollTable`} in fvtt-types.
+     */
+    type Implementation = Document.ConfiguredInstanceForName<"RollTable">;
 
-    type ConfiguredClass = Document.ConfiguredClassForName<"RollTable">;
-    type ConfiguredInstance = Document.ConfiguredInstanceForName<"RollTable">;
+    /**
+     * The implementation of the RollTable document configured through `CONFIG.RollTable.documentClass` in Foundry and
+     * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
+     */
+    type ImplementationClass = Document.ConfiguredClassForName<"RollTable">;
 
-    interface DatabaseOperations extends Document.Database.Operations<RollTable> {}
+    /**
+     * A document's metadata is special information about the document ranging anywhere from its name,
+     * whether it's indexed, or to the permissions a user has over it.
+     */
+    interface Metadata extends Document.MetadataFor<"RollTable"> {}
 
-    // Helpful aliases
-    type ConstructorData = BaseRollTable.ConstructorData;
-    type UpdateData = BaseRollTable.UpdateData;
-    type Schema = BaseRollTable.Schema;
-    type Source = BaseRollTable.Source;
+    /**
+     * A document's parent is something that can contain it.
+     * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
+     */
+    type Parent = null;
+
+    /**
+     * An instance of `RollTable` that comes from the database.
+     */
+    interface Stored extends Document.Stored<RollTable.Implementation> {}
+
+    /**
+     * The data put in {@link Document._source | `Document._source`}. This data is what was
+     * persisted to the database and therefore it must be valid JSON.
+     *
+     * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+     * but initialized as a {@link Set | `Set`}.
+     *
+     * Both `Source` and `PersistedData` are equivalent.
+     */
+    interface Source extends PersistedData {}
+
+    /**
+     * The data put in {@link RollTable._source | `RollTable._source`}. This data is what was
+     * persisted to the database and therefore it must be valid JSON.
+     *
+     * Both `Source` and `PersistedData` are equivalent.
+     */
+    interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
+
+    /**
+     * The data necessary to create a document. Used in places like {@link RollTable.create | `RollTable.create`}
+     * and {@link RollTable | `new RollTable(...)`}.
+     *
+     * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
+     * with the right values. This means you can pass a `Set` instance, an array of values,
+     * a generator, or any other iterable.
+     */
+    interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+
+    /**
+     * The data after a {@link Document | `Document`} has been initialized, for example
+     * {@link RollTable.name | `RollTable#name`}.
+     *
+     * This is data transformed from {@link RollTable.Source | `RollTable.Source`} and turned into more
+     * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+     * persisted to the database as an array of values but at runtime it is a `Set` instance.
+     */
+    interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
+
+    /**
+     * The data used to update a document, for example {@link RollTable.update | `RollTable#update`}.
+     * It is a distinct type from {@link RollTable.CreateData | `DeepPartial<RollTable.CreateData>`} because
+     * it has different rules for `null` and `undefined`.
+     */
+    interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+    /**
+     * The schema for {@link RollTable | `RollTable`}. This is the source of truth for how an RollTable document
+     * must be structured.
+     *
+     * Foundry uses this schema to validate the structure of the {@link RollTable | `RollTable`}. For example
+     * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
+     * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+     * starting as an array in the database, initialized as a set, and allows updates with any
+     * iterable.
+     */
+    interface Schema extends DataSchema {
+      /**
+       * The _id which uniquely identifies this RollTable document
+       * @defaultValue `null`
+       */
+      _id: fields.DocumentIdField;
+
+      /**
+       * The name of this RollTable
+       * @defaultValue `""`
+       */
+      name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
+
+      /**
+       * An image file path which provides the thumbnail artwork for this RollTable
+       * @defaultValue `BaseRollTable.DEFAULT_ICON`
+       */
+      img: fields.FilePathField<{
+        categories: ["IMAGE"];
+        initial: () => typeof documents.BaseRollTable.DEFAULT_ICON;
+      }>;
+
+      /**
+       * The HTML text description for this RollTable document
+       * @defaultValue `""`
+       */
+      description: fields.StringField<{ textSearch: true }>;
+
+      /**
+       * A Collection of TableResult embedded documents which belong to this RollTable
+       * @defaultValue `[]`
+       */
+      results: fields.EmbeddedCollectionField<typeof documents.BaseTableResult, RollTable.Implementation>;
+
+      /**
+       * The Roll formula which determines the results chosen from the table
+       * @defaultValue `""`
+       */
+      formula: fields.StringField;
+
+      /**
+       * Are results from this table drawn with replacement?
+       * @defaultValue `true`
+       */
+      replacement: fields.BooleanField<{ initial: true }>;
+
+      /**
+       * Is the Roll result used to draw from this RollTable displayed in chat?
+       * @defaultValue `true`
+       */
+      displayRoll: fields.BooleanField<{ initial: true }>;
+
+      /**
+       * The _id of a Folder which contains this RollTable
+       * @defaultValue `null`
+       */
+      folder: fields.ForeignDocumentField<typeof documents.BaseFolder>;
+
+      /**
+       * The numeric sort value which orders this RollTable relative to its siblings
+       * @defaultValue `0`
+       */
+      sort: fields.IntegerSortField;
+
+      /**
+       * An object which configures ownership of this RollTable
+       * @defaultValue see {@link fields.DocumentOwnershipField}
+       */
+      ownership: fields.DocumentOwnershipField;
+
+      /**
+       * An object of optional key/value flags
+       * @defaultValue `{}`
+       */
+      flags: fields.ObjectField.FlagsField<"RollTable">;
+
+      /**
+       * An object of creation and access information
+       * @defaultValue see {@link fields.DocumentStatsField}
+       */
+      _stats: fields.DocumentStatsField;
+    }
+    namespace DatabaseOperation {
+      /** Options passed along in Get operations for RollTables */
+      interface Get extends foundry.abstract.types.DatabaseGetOperation<RollTable.Parent> {}
+      /** Options passed along in Create operations for RollTables */
+      interface Create<Temporary extends boolean | undefined = boolean | undefined>
+        extends foundry.abstract.types.DatabaseCreateOperation<RollTable.CreateData, RollTable.Parent, Temporary> {}
+      /** Options passed along in Delete operations for RollTables */
+      interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<RollTable.Parent> {}
+      /** Options passed along in Update operations for RollTables */
+      interface Update extends foundry.abstract.types.DatabaseUpdateOperation<RollTable.UpdateData, RollTable.Parent> {}
+
+      /** Options for {@link RollTable.createDocuments} */
+      type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
+        Document.Database.CreateOperation<Create<Temporary>>;
+      /** Options for {@link RollTable._preCreateOperation} */
+      type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
+      /** Options for {@link RollTable#_preCreate} */
+      type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
+      /** Options for {@link RollTable#_onCreate} */
+      type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
+
+      /** Options for {@link RollTable.updateDocuments} */
+      type UpdateOperation = Document.Database.UpdateOperation<Update>;
+      /** Options for {@link RollTable._preUpdateOperation} */
+      type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
+      /** Options for {@link RollTable#_preUpdate} */
+      type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
+      /** Options for {@link RollTable#_onUpdate} */
+      type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
+
+      /** Options for {@link RollTable.deleteDocuments} */
+      type DeleteOperation = Document.Database.DeleteOperation<Delete>;
+      /** Options for {@link RollTable._preDeleteOperation} */
+      type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
+      /** Options for {@link RollTable#_preDelete} */
+      type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
+      /** Options for {@link RollTable#_onDelete} */
+      type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
+    }
 
     /**
      * Optional arguments which customize the draw
@@ -98,6 +294,26 @@ declare global {
        */
       rollable?: boolean | undefined;
     }
+
+    /**
+     * @deprecated - {@link RollTable.DatabaseOperation}
+     */
+    interface DatabaseOperations extends Document.Database.Operations<RollTable> {}
+
+    /**
+     * @deprecated {@link RollTable.CreateData | `RollTable.CreateData`}
+     */
+    interface ConstructorData extends RollTable.CreateData {}
+
+    /**
+     * @deprecated {@link RollTable.implementation | `RollTable.ImplementationClass`}
+     */
+    type ConfiguredClass = ImplementationClass;
+
+    /**
+     * @deprecated {@link RollTable.Implementation | `RollTable.Implementation`}
+     */
+    type ConfiguredInstance = Implementation;
   }
 
   /**

@@ -32,7 +32,7 @@ declare global {
      * A document's parent is something that can contain it.
      * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
      */
-    type Parent = Actor.Implementation | Item.Implementation | null;
+    type Parent = RollTable.Implementation | null;
 
     /**
      * An instance of `TableResult` that comes from the database.

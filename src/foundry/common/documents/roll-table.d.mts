@@ -1,7 +1,7 @@
 import type { AnyObject } from "../../../utils/index.d.mts";
+import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
-import type * as fields from "../data/fields.d.mts";
-import type * as documents from "./_module.mts";
+import type { SchemaField } from "../data/fields.d.mts";
 
 type DataSchema = foundry.data.fields.DataSchema;
 
@@ -33,102 +33,164 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
 
   static override migrateData(source: AnyObject): AnyObject;
 
+  /*
+   * After this point these are not really overridden methods.
+   * They are here because they're static properties but depend on the instance and so can't be
+   * defined DRY-ly while also being easily overridable.
+   */
+
   static " __fvtt_types_internal_document_name_static": "RollTable";
+
+  static get implementation(): RollTable.ImplementationClass;
+
+  override parent: RollTable.Parent;
+
+  static createDocuments<Temporary extends boolean | undefined>(
+    data: Array<RollTable.Implementation | RollTable.CreateData> | undefined,
+    operation?: Document.Database.CreateOperation<RollTable.DatabaseOperation.Create<Temporary>>,
+  ): Promise<Array<Document.StoredIf<RollTable.Implementation, Temporary>>>;
+
+  static updateDocuments(
+    updates: RollTable.UpdateData[] | undefined,
+    operation?: Document.Database.UpdateOperation<RollTable.DatabaseOperation.Update>,
+  ): Promise<RollTable.Implementation[]>;
+
+  static deleteDocuments(
+    ids: readonly string[] | undefined,
+    operation?: Document.Database.DeleteOperation<RollTable.DatabaseOperation.Delete>,
+  ): Promise<RollTable.Implementation[]>;
+
+  static create<Temporary extends boolean | undefined>(
+    data: RollTable.CreateData | RollTable.CreateData[],
+    operation?: Document.Database.CreateOperation<RollTable.DatabaseOperation.Create<Temporary>>,
+  ): Promise<RollTable.Implementation | undefined>;
+
+  static get(documentId: string, options?: Document.Database.GetOperation): RollTable.Implementation | null;
+
+  protected _preCreate(
+    data: RollTable.CreateData,
+    options: RollTable.DatabaseOperation.PreCreateOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onCreate(
+    data: RollTable.CreateData,
+    options: RollTable.DatabaseOperation.OnCreateOperation,
+    userId: string,
+  ): void;
+
+  protected static _preCreateOperation(
+    documents: RollTable.Implementation[],
+    operation: Document.Database.PreCreateOperationStatic<RollTable.DatabaseOperation.Create>,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onCreateOperation(
+    documents: RollTable.Implementation[],
+    operation: RollTable.DatabaseOperation.Create,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected _preUpdate(
+    changed: RollTable.UpdateData,
+    options: RollTable.DatabaseOperation.PreUpdateOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onUpdate(
+    changed: RollTable.UpdateData,
+    options: RollTable.DatabaseOperation.OnUpdateOperation,
+    userId: string,
+  ): void;
+
+  protected static _preUpdateOperation(
+    documents: RollTable.Implementation[],
+    operation: RollTable.DatabaseOperation.Update,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onUpdateOperation(
+    documents: RollTable.Implementation[],
+    operation: RollTable.DatabaseOperation.Update,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected _preDelete(
+    options: RollTable.DatabaseOperation.PreDeleteOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onDelete(options: RollTable.DatabaseOperation.OnDeleteOperation, userId: string): void;
+
+  protected static _preDeleteOperation(
+    documents: RollTable.Implementation[],
+    operation: RollTable.DatabaseOperation.Delete,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onDeleteOperation(
+    documents: RollTable.Implementation[],
+    operation: RollTable.DatabaseOperation.Delete,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected static _onCreateDocuments(
+    documents: RollTable.Implementation[],
+    context: Document.ModificationContext<RollTable.Parent>,
+  ): Promise<void>;
+
+  protected static _onUpdateDocuments(
+    documents: RollTable.Implementation[],
+    context: Document.ModificationContext<RollTable.Parent>,
+  ): Promise<void>;
+
+  protected static _onDeleteDocuments(
+    documents: RollTable.Implementation[],
+    context: Document.ModificationContext<RollTable.Parent>,
+  ): Promise<void>;
+
+  protected static _schema: SchemaField<RollTable.Schema>;
+
+  static get schema(): SchemaField<RollTable.Schema>;
+
+  static validateJoint(data: RollTable.Source): void;
+
+  static override fromSource(
+    source: RollTable.UpdateData,
+    { strict, ...context }?: DataModel.FromSourceOptions,
+  ): DataModel<RollTable.Schema, DataModel.Any | null>;
+
+  static override fromJSON(json: string): DataModel<RollTable.Schema, DataModel.Any | null>;
 }
 
 export default BaseRollTable;
 
 declare namespace BaseRollTable {
-  type Parent = null;
+  export import Metadata = RollTable.Metadata;
+  export import Parent = RollTable.Parent;
+  export import Stored = RollTable.Stored;
+  export import Source = RollTable.Source;
+  export import PersistedData = RollTable.PersistedData;
+  export import CreateData = RollTable.CreateData;
+  export import InitializedData = RollTable.InitializedData;
+  export import UpdateData = RollTable.UpdateData;
+  export import Schema = RollTable.Schema;
+  export import DatabaseOperation = RollTable.DatabaseOperation;
 
-  type Metadata = Document.MetadataFor<"RollTable">;
+  /**
+   * @deprecated This type is used by Foundry too vaguely.
+   * In one context the most correct type is after initialization whereas in another one it should be
+   * before but Foundry uses it interchangeably.
+   */
+  type Properties = SchemaField.InitializedData<Schema>;
 
-  type SchemaField = fields.SchemaField<Schema>;
-  type ConstructorData = fields.SchemaField.CreateData<Schema>;
-  type UpdateData = fields.SchemaField.AssignmentData<Schema>;
-  type Properties = fields.SchemaField.InitializedData<Schema>;
-  type Source = fields.SchemaField.PersistedData<Schema>;
+  /**
+   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseRollTable.Schema>`}
+   */
+  type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
-  interface Schema extends DataSchema {
-    /**
-     * The _id which uniquely identifies this RollTable document
-     * @defaultValue `null`
-     */
-    _id: fields.DocumentIdField;
-
-    /**
-     * The name of this RollTable
-     * @defaultValue `""`
-     */
-    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
-
-    /**
-     * An image file path which provides the thumbnail artwork for this RollTable
-     * @defaultValue `BaseRollTable.DEFAULT_ICON`
-     */
-    img: fields.FilePathField<{
-      categories: ["IMAGE"];
-      initial: () => typeof BaseRollTable.DEFAULT_ICON;
-    }>;
-
-    /**
-     * The HTML text description for this RollTable document
-     * @defaultValue `""`
-     */
-    description: fields.StringField<{ textSearch: true }>;
-
-    /**
-     * A Collection of TableResult embedded documents which belong to this RollTable
-     * @defaultValue `[]`
-     */
-    results: fields.EmbeddedCollectionField<typeof documents.BaseTableResult, RollTable.ConfiguredInstance>;
-
-    /**
-     * The Roll formula which determines the results chosen from the table
-     * @defaultValue `""`
-     */
-    formula: fields.StringField;
-
-    /**
-     * Are results from this table drawn with replacement?
-     * @defaultValue `true`
-     */
-    replacement: fields.BooleanField<{ initial: true }>;
-
-    /**
-     * Is the Roll result used to draw from this RollTable displayed in chat?
-     * @defaultValue `true`
-     */
-    displayRoll: fields.BooleanField<{ initial: true }>;
-
-    /**
-     * The _id of a Folder which contains this RollTable
-     * @defaultValue `null`
-     */
-    folder: fields.ForeignDocumentField<typeof documents.BaseFolder>;
-
-    /**
-     * The numeric sort value which orders this RollTable relative to its siblings
-     * @defaultValue `0`
-     */
-    sort: fields.IntegerSortField;
-
-    /**
-     * An object which configures ownership of this RollTable
-     * @defaultValue see {@link fields.DocumentOwnershipField}
-     */
-    ownership: fields.DocumentOwnershipField;
-
-    /**
-     * An object of optional key/value flags
-     * @defaultValue `{}`
-     */
-    flags: fields.ObjectField.FlagsField<"RollTable">;
-
-    /**
-     * An object of creation and access information
-     * @defaultValue see {@link fields.DocumentStatsField}
-     */
-    _stats: fields.DocumentStatsField;
-  }
+  /**
+   * @deprecated {@link BaseRollTable.CreateData | `BaseRollTable.CreateData`}
+   */
+  type ConstructorData = BaseRollTable.CreateData;
 }
