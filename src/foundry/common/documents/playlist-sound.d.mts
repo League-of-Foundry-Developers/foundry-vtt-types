@@ -1,8 +1,7 @@
 import type { InexactPartial } from "../../../utils/index.d.mts";
+import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
-import type * as fields from "../data/fields.d.mts";
-
-type DataSchema = foundry.data.fields.DataSchema;
+import type { SchemaField } from "../data/fields.d.mts";
 
 /**
  * The PlaylistSound Document.
@@ -22,8 +21,6 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
   //   context?: Document.ConstructionContext<BasePlaylistSound.Parent>,
   // );
 
-  override parent: BasePlaylistSound.Parent;
-
   static override metadata: BasePlaylistSound.Metadata;
 
   static override defineSchema(): BasePlaylistSound.Schema;
@@ -40,92 +37,165 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
     }>,
   ): boolean;
 
+  /*
+   * After this point these are not really overridden methods.
+   * They are here because they're static properties but depend on the instance and so can't be
+   * defined DRY-ly while also being easily overridable.
+   */
+
   static " __fvtt_types_internal_document_name_static": "PlaylistSound";
+
+  static get implementation(): PlaylistSound.ImplementationClass;
+
+  override parent: PlaylistSound.Parent;
+
+  static createDocuments<Temporary extends boolean | undefined>(
+    data: Array<PlaylistSound.Implementation | PlaylistSound.CreateData> | undefined,
+    operation?: Document.Database.CreateOperation<PlaylistSound.DatabaseOperation.Create<Temporary>>,
+  ): Promise<Array<Document.StoredIf<PlaylistSound.Implementation, Temporary>>>;
+
+  static updateDocuments(
+    updates: PlaylistSound.UpdateData[] | undefined,
+    operation?: Document.Database.UpdateOperation<PlaylistSound.DatabaseOperation.Update>,
+  ): Promise<PlaylistSound.Implementation[]>;
+
+  static deleteDocuments(
+    ids: readonly string[] | undefined,
+    operation?: Document.Database.DeleteOperation<PlaylistSound.DatabaseOperation.Delete>,
+  ): Promise<PlaylistSound.Implementation[]>;
+
+  static create<Temporary extends boolean | undefined>(
+    data: PlaylistSound.CreateData | PlaylistSound.CreateData[],
+    operation?: Document.Database.CreateOperation<PlaylistSound.DatabaseOperation.Create<Temporary>>,
+  ): Promise<PlaylistSound.Implementation | undefined>;
+
+  static get(documentId: string, options?: Document.Database.GetOperation): PlaylistSound.Implementation | null;
+
+  protected _preCreate(
+    data: PlaylistSound.CreateData,
+    options: PlaylistSound.DatabaseOperation.PreCreateOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onCreate(
+    data: PlaylistSound.CreateData,
+    options: PlaylistSound.DatabaseOperation.OnCreateOperation,
+    userId: string,
+  ): void;
+
+  protected static _preCreateOperation(
+    documents: PlaylistSound.Implementation[],
+    operation: Document.Database.PreCreateOperationStatic<PlaylistSound.DatabaseOperation.Create>,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onCreateOperation(
+    documents: PlaylistSound.Implementation[],
+    operation: PlaylistSound.DatabaseOperation.Create,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected _preUpdate(
+    changed: PlaylistSound.UpdateData,
+    options: PlaylistSound.DatabaseOperation.PreUpdateOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onUpdate(
+    changed: PlaylistSound.UpdateData,
+    options: PlaylistSound.DatabaseOperation.OnUpdateOperation,
+    userId: string,
+  ): void;
+
+  protected static _preUpdateOperation(
+    documents: PlaylistSound.Implementation[],
+    operation: PlaylistSound.DatabaseOperation.Update,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onUpdateOperation(
+    documents: PlaylistSound.Implementation[],
+    operation: PlaylistSound.DatabaseOperation.Update,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected _preDelete(
+    options: PlaylistSound.DatabaseOperation.PreDeleteOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onDelete(options: PlaylistSound.DatabaseOperation.OnDeleteOperation, userId: string): void;
+
+  protected static _preDeleteOperation(
+    documents: PlaylistSound.Implementation[],
+    operation: PlaylistSound.DatabaseOperation.Delete,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onDeleteOperation(
+    documents: PlaylistSound.Implementation[],
+    operation: PlaylistSound.DatabaseOperation.Delete,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected static _onCreateDocuments(
+    documents: PlaylistSound.Implementation[],
+    context: Document.ModificationContext<PlaylistSound.Parent>,
+  ): Promise<void>;
+
+  protected static _onUpdateDocuments(
+    documents: PlaylistSound.Implementation[],
+    context: Document.ModificationContext<PlaylistSound.Parent>,
+  ): Promise<void>;
+
+  protected static _onDeleteDocuments(
+    documents: PlaylistSound.Implementation[],
+    context: Document.ModificationContext<PlaylistSound.Parent>,
+  ): Promise<void>;
+
+  protected static _schema: SchemaField<PlaylistSound.Schema>;
+
+  static get schema(): SchemaField<PlaylistSound.Schema>;
+
+  static validateJoint(data: PlaylistSound.Source): void;
+
+  static override fromSource(
+    source: PlaylistSound.UpdateData,
+    { strict, ...context }?: DataModel.FromSourceOptions,
+  ): DataModel<PlaylistSound.Schema, DataModel.Any | null>;
+
+  static override fromJSON(json: string): DataModel<PlaylistSound.Schema, DataModel.Any | null>;
 }
 
 export default BasePlaylistSound;
 
 declare namespace BasePlaylistSound {
-  type Parent = Playlist.ConfiguredInstance | null;
+  export import Metadata = PlaylistSound.Metadata;
+  export import Parent = PlaylistSound.Parent;
+  export import Stored = PlaylistSound.Stored;
+  export import Source = PlaylistSound.Source;
+  export import PersistedData = PlaylistSound.PersistedData;
+  export import CreateData = PlaylistSound.CreateData;
+  export import InitializedData = PlaylistSound.InitializedData;
+  export import UpdateData = PlaylistSound.UpdateData;
+  export import Schema = PlaylistSound.Schema;
+  export import DatabaseOperation = PlaylistSound.DatabaseOperation;
 
-  type Metadata = Document.MetadataFor<"PlaylistSound">;
+  /**
+   * @deprecated This type is used by Foundry too vaguely.
+   * In one context the most correct type is after initialization whereas in another one it should be
+   * before but Foundry uses it interchangeably.
+   */
+  type Properties = SchemaField.InitializedData<Schema>;
 
-  type SchemaField = fields.SchemaField<Schema>;
-  type ConstructorData = fields.SchemaField.CreateData<Schema>;
-  type UpdateData = fields.SchemaField.AssignmentData<Schema>;
-  type Properties = fields.SchemaField.InitializedData<Schema>;
-  type Source = fields.SchemaField.PersistedData<Schema>;
+  /**
+   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BasePlaylistSound.Schema>`}
+   */
+  type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
-  interface Schema extends DataSchema {
-    /**
-     * The _id which uniquely identifies this PlaylistSound document
-     * @defaultValue `null`
-     */
-    _id: fields.DocumentIdField;
+  /**
+   * @deprecated {@link BasePlaylistSound.CreateData | `BasePlaylistSound.CreateData`}
+   */
+  type ConstructorData = BasePlaylistSound.CreateData;
 
-    /**
-     * The name of this sound
-     */
-    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
-
-    /**
-     * The description of this sound
-     * @defaultValue `""`
-     */
-    description: fields.StringField;
-
-    /**
-     * The audio file path that is played by this sound
-     * @defaultValue `null`
-     */
-    path: fields.FilePathField<{ categories: ["AUDIO"] }>;
-
-    /**
-     * A channel in CONST.AUDIO_CHANNELS where this sound is are played
-     * @defaultValue `"music"`
-     */
-    channel: fields.StringField<{ choices: typeof foundry.CONST.AUDIO_CHANNELS; initial: string; blank: false }>;
-
-    /**
-     * Is this sound currently playing?
-     * @defaultValue `false`
-     */
-    playing: fields.BooleanField;
-
-    /**
-     * The time in seconds at which playback was paused
-     * @defaultValue `null`
-     */
-    pausedTime: fields.NumberField<{ min: 0 }>;
-
-    /**
-     * Does this sound loop?
-     * @defaultValue `false`
-     */
-    repeat: fields.BooleanField;
-
-    /**
-     * The audio volume of the sound, from 0 to 1
-     * @defaultValue `1`
-     */
-    volume: fields.AlphaField<{ initial: 0.5; step: 0.01 }>;
-
-    /**
-     * A duration in milliseconds to fade volume transition
-     * @defaultValue `null`
-     */
-    fade: fields.NumberField<{ integer: true; min: 0 }>;
-
-    /**
-     * The sort order of the PlaylistSound relative to others in the same collection
-     * @defaultValue `0`
-     */
-    sort: fields.IntegerSortField;
-
-    /**
-     * An object of optional key/value flags
-     * @defaultValue `{}`
-     */
-    flags: fields.ObjectField.FlagsField<"PlaylistSound">;
-  }
 }
