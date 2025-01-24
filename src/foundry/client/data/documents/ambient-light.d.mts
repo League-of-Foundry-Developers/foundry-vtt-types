@@ -244,21 +244,21 @@ declare global {
      * defined DRY-ly while also being easily overridable.
      */
 
-    static override defaultName(context?: Document.DefaultNameContext<ActorDelta.SubType, ActorDelta.Parent>): string;
+    static override defaultName(context?: Document.DefaultNameContext<"base", AmbientLightDocument.Parent>): string;
 
     static override createDialog(
-      data: ActorDelta.CreateData,
-      context?: Document.CreateDialogContext<ActorDelta.SubType, ActorDelta.Parent>,
-    ): Promise<ActorDelta.Implementation | null | undefined>;
+      data: AmbientLightDocument.CreateData,
+      context?: Document.CreateDialogContext<"base", AmbientLightDocument.Parent>,
+    ): Promise<AmbientLightDocument.Implementation | null | undefined>;
 
     static override fromDropData(
-      data: Document.DropData<ActorDelta.Implementation>,
+      data: Document.DropData<AmbientLightDocument.Implementation>,
       options?: Document.FromDropDataOptions,
-    ): Promise<ActorDelta.Implementation | undefined>;
+    ): Promise<AmbientLightDocument.Implementation | undefined>;
 
     static override fromImport(
-      source: ActorDelta.Source,
-      context?: Document.FromImportContext<ActorDelta.Parent>,
-    ): Promise<ActorDelta.Implementation>;
+      source: AmbientLightDocument.Source,
+      context?: Document.FromImportContext<AmbientLightDocument.Parent>,
+    ): Promise<AmbientLightDocument.Implementation>;
   }
 }

@@ -36,8 +36,6 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
 
   override parent: BaseAmbientLight.Parent;
 
-  static get TYPES(): BaseAmbientLight.SubType[];
-
   static createDocuments<Temporary extends boolean | undefined>(
     data: Array<AmbientLightDocument.Implementation | AmbientLightDocument.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<AmbientLightDocument.DatabaseOperation.Create<Temporary>>,
@@ -159,20 +157,31 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
 export default BaseAmbientLight;
 
 declare namespace BaseAmbientLight {
-  export import Metadata = ActiveEffect.Metadata;
-  export import SubType = ActiveEffect.SubType;
-  export import Parent = ActiveEffect.Parent;
-  export import Stored = ActiveEffect.Stored;
-  export import Source = ActiveEffect.Source;
-  export import PersistedData = ActiveEffect.PersistedData;
-  export import CreateData = ActiveEffect.CreateData;
-  export import InitializedData = ActiveEffect.InitializedData;
-  export import UpdateData = ActiveEffect.UpdateData;
-  export import Schema = ActiveEffect.Schema;
-  export import DatabaseOperation = ActiveEffect.DatabaseOperation;
-  export import CoreFlags = ActiveEffect.CoreFlags;
+  export import Metadata = AmbientLightDocument.Metadata;
+  export import Parent = AmbientLightDocument.Parent;
+  export import Stored = AmbientLightDocument.Stored;
+  export import Source = AmbientLightDocument.Source;
+  export import PersistedData = AmbientLightDocument.PersistedData;
+  export import CreateData = AmbientLightDocument.CreateData;
+  export import InitializedData = AmbientLightDocument.InitializedData;
+  export import UpdateData = AmbientLightDocument.UpdateData;
+  export import Schema = AmbientLightDocument.Schema;
+  export import DatabaseOperation = AmbientLightDocument.DatabaseOperation;
 
-  type SchemaField = foundry.data.fields.SchemaField<Schema>;
-  type ConstructorData = SchemaField.CreateData<Schema>;
+  /**
+   * @deprecated This type is used by Foundry too vaguely.
+   * In one context the most correct type is after initialization whereas in another one it should be
+   * before but Foundry uses it interchangeably.
+   */
   type Properties = SchemaField.InitializedData<Schema>;
+
+  /**
+   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseAmbientLight.Schema>`}
+   */
+  type SchemaField = foundry.data.fields.SchemaField<Schema>;
+
+  /**
+   * @deprecated {@link BaseAmbientLight.CreateData | `BaseAmbientLight.CreateData`}
+   */
+  type ConstructorData = BaseAmbientLight.CreateData;
 }
