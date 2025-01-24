@@ -1,8 +1,7 @@
 import type { AnyObject, InexactPartial } from "../../../utils/index.d.mts";
+import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
-import type { TextureData } from "../data/data.mts";
-import type * as fields from "../data/fields.d.mts";
-import type * as documents from "./_module.mts";
+import type { SchemaField } from "../data/fields.d.mts";
 
 type DataSchema = foundry.data.fields.DataSchema;
 
@@ -20,8 +19,6 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
    */
   // TODO(LukeAbby): This constructor is a symptom of a circular error.
   // constructor(data?: BaseNote.ConstructorData, context?: Document.ConstructionContext<BaseNote.Parent>);
-
-  override parent: BaseNote.Parent;
 
   static override metadata: BaseNote.Metadata;
 
@@ -58,130 +55,164 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
     },
   ): AnyObject;
 
+  /*
+   * After this point these are not really overridden methods.
+   * They are here because they're static properties but depend on the instance and so can't be
+   * defined DRY-ly while also being easily overridable.
+   */
+
   static " __fvtt_types_internal_document_name_static": "Note";
+
+  static get implementation(): NoteDocument.ImplementationClass;
+
+  override parent: NoteDocument.Parent;
+
+  static createDocuments<Temporary extends boolean | undefined>(
+    data: Array<NoteDocument.Implementation | NoteDocument.CreateData> | undefined,
+    operation?: Document.Database.CreateOperation<NoteDocument.DatabaseOperation.Create<Temporary>>,
+  ): Promise<Array<Document.StoredIf<NoteDocument.Implementation, Temporary>>>;
+
+  static updateDocuments(
+    updates: NoteDocument.UpdateData[] | undefined,
+    operation?: Document.Database.UpdateOperation<NoteDocument.DatabaseOperation.Update>,
+  ): Promise<NoteDocument.Implementation[]>;
+
+  static deleteDocuments(
+    ids: readonly string[] | undefined,
+    operation?: Document.Database.DeleteOperation<NoteDocument.DatabaseOperation.Delete>,
+  ): Promise<NoteDocument.Implementation[]>;
+
+  static create<Temporary extends boolean | undefined>(
+    data: NoteDocument.CreateData | NoteDocument.CreateData[],
+    operation?: Document.Database.CreateOperation<NoteDocument.DatabaseOperation.Create<Temporary>>,
+  ): Promise<NoteDocument.Implementation | undefined>;
+
+  static get(documentId: string, options?: Document.Database.GetOperation): NoteDocument.Implementation | null;
+
+  protected _preCreate(
+    data: NoteDocument.CreateData,
+    options: NoteDocument.DatabaseOperation.PreCreateOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onCreate(
+    data: NoteDocument.CreateData,
+    options: NoteDocument.DatabaseOperation.OnCreateOperation,
+    userId: string,
+  ): void;
+
+  protected static _preCreateOperation(
+    documents: NoteDocument.Implementation[],
+    operation: Document.Database.PreCreateOperationStatic<NoteDocument.DatabaseOperation.Create>,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onCreateOperation(
+    documents: NoteDocument.Implementation[],
+    operation: NoteDocument.DatabaseOperation.Create,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected _preUpdate(
+    changed: NoteDocument.UpdateData,
+    options: NoteDocument.DatabaseOperation.PreUpdateOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onUpdate(
+    changed: NoteDocument.UpdateData,
+    options: NoteDocument.DatabaseOperation.OnUpdateOperation,
+    userId: string,
+  ): void;
+
+  protected static _preUpdateOperation(
+    documents: NoteDocument.Implementation[],
+    operation: NoteDocument.DatabaseOperation.Update,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onUpdateOperation(
+    documents: NoteDocument.Implementation[],
+    operation: NoteDocument.DatabaseOperation.Update,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected _preDelete(
+    options: NoteDocument.DatabaseOperation.PreDeleteOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onDelete(options: NoteDocument.DatabaseOperation.OnDeleteOperation, userId: string): void;
+
+  protected static _preDeleteOperation(
+    documents: NoteDocument.Implementation[],
+    operation: NoteDocument.DatabaseOperation.Delete,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onDeleteOperation(
+    documents: NoteDocument.Implementation[],
+    operation: NoteDocument.DatabaseOperation.Delete,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected static _onCreateDocuments(
+    documents: NoteDocument.Implementation[],
+    context: Document.ModificationContext<NoteDocument.Parent>,
+  ): Promise<void>;
+
+  protected static _onUpdateDocuments(
+    documents: NoteDocument.Implementation[],
+    context: Document.ModificationContext<NoteDocument.Parent>,
+  ): Promise<void>;
+
+  protected static _onDeleteDocuments(
+    documents: NoteDocument.Implementation[],
+    context: Document.ModificationContext<NoteDocument.Parent>,
+  ): Promise<void>;
+
+  protected static _schema: SchemaField<NoteDocument.Schema>;
+
+  static get schema(): SchemaField<NoteDocument.Schema>;
+
+  static validateJoint(data: NoteDocument.Source): void;
+
+  static override fromSource(
+    source: NoteDocument.UpdateData,
+    { strict, ...context }?: DataModel.FromSourceOptions,
+  ): DataModel<NoteDocument.Schema, DataModel.Any | null>;
+
+  static override fromJSON(json: string): DataModel<NoteDocument.Schema, DataModel.Any | null>;
 }
 
 export default BaseNote;
 
 declare namespace BaseNote {
-  type Parent = Scene.ConfiguredInstance | null;
+  export import Metadata = NoteDocument.Metadata;
+  export import Parent = NoteDocument.Parent;
+  export import Stored = NoteDocument.Stored;
+  export import Source = NoteDocument.Source;
+  export import PersistedData = NoteDocument.PersistedData;
+  export import CreateData = NoteDocument.CreateData;
+  export import InitializedData = NoteDocument.InitializedData;
+  export import UpdateData = NoteDocument.UpdateData;
+  export import Schema = NoteDocument.Schema;
+  export import DatabaseOperation = NoteDocument.DatabaseOperation;
 
-  type Metadata = Document.MetadataFor<"Note">;
+  /**
+   * @deprecated This type is used by Foundry too vaguely.
+   * In one context the most correct type is after initialization whereas in another one it should be
+   * before but Foundry uses it interchangeably.
+   */
+  type Properties = SchemaField.InitializedData<Schema>;
 
-  type SchemaField = fields.SchemaField<Schema>;
-  type ConstructorData = fields.SchemaField.CreateData<Schema>;
-  type UpdateData = fields.SchemaField.AssignmentData<Schema>;
-  type Properties = fields.SchemaField.InitializedData<Schema>;
-  type Source = fields.SchemaField.PersistedData<Schema>;
+  /**
+   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseNote.Schema>`}
+   */
+  type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
-  interface Schema extends DataSchema {
-    /**
-     * The _id which uniquely identifies this BaseNote embedded document
-     * @defaultValue `null`
-     */
-    _id: fields.DocumentIdField;
-
-    /**
-     * The _id of a JournalEntry document which this Note represents
-     * @defaultValue `null`
-     */
-    entryId: fields.ForeignDocumentField<typeof documents.BaseJournalEntry, { idOnly: true }>;
-
-    /**
-     * The _id of a specific JournalEntryPage document which this Note represents
-     * @defaultValue `null`
-     */
-    pageId: fields.ForeignDocumentField<typeof documents.BaseJournalEntryPage, { idOnly: true }>;
-
-    /**
-     * The x-coordinate position of the center of the note icon
-     * @defaultValue `0`
-     */
-    x: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0; label: "XCoord" }>;
-
-    /**
-     * The y-coordinate position of the center of the note icon
-     * @defaultValue `0`
-     */
-    y: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0; label: "YCoord" }>;
-
-    /**
-     * An image icon used to represent this note
-     * @defaultValue `BaseNote.DEFAULT_ICON`
-     */
-    texture: TextureData<{
-      categories: ["IMAGE"];
-      initial: () => typeof BaseNote.DEFAULT_ICON;
-      label: "NOTE.EntryIcon";
-    }>;
-
-    /**
-     * The pixel size of the map note icon
-     * @defaultValue `40`
-     */
-    iconSize: fields.NumberField<{
-      required: true;
-      integer: true;
-      min: 32;
-      initial: 40;
-      validationError: "must be an integer greater than 32";
-      label: "NOTE.IconSize";
-    }>;
-
-    /**
-     * Optional text which overrides the title of the linked Journal Entry
-     * @defaultValue `""`
-     */
-    text: fields.StringField<{ label: "NOTE.TextLabel"; textSearch: true }>;
-
-    /**
-     * The font family used to display the text label on this note, defaults to CONFIG.defaultFontFamily
-     * @defaultValue `globalThis.CONFIG?.defaultFontFamily || "Signika"`
-     */
-    fontFamily: fields.StringField<{ required: true; label: "NOTE.FontFamily"; initial: () => string }>;
-
-    /**
-     * The font size used to display the text label on this note
-     * @defaultValue `32`
-     */
-    fontSize: fields.NumberField<{
-      required: true;
-      integer: true;
-      min: 8;
-      max: 128;
-      initial: 32;
-      validationError: "must be an integer between 8 and 128";
-      label: "NOTE.FontSize";
-    }>;
-
-    /**
-     * A value in CONST.TEXT_ANCHOR_POINTS which defines where the text label anchors to the note icon.
-     * @defaultValue `CONST.TEXT_ANCHOR_POINTS.BOTTOM`
-     */
-    textAnchor: fields.NumberField<{
-      required: true;
-      choices: foundry.CONST.TEXT_ANCHOR_POINTS[];
-      initial: typeof CONST.TEXT_ANCHOR_POINTS.BOTTOM;
-      label: "NOTE.AnchorPoint";
-      validationError: "must be a value in CONST.TEXT_ANCHOR_POINTS";
-    }>;
-
-    /**
-     * The string that defines the color with which the note text is rendered
-     * @defaultValue `#FFFFFF`
-     */
-    textColor: fields.ColorField<{ initial: "#FFFFFF"; label: "NOTE.TextColor" }>;
-
-    /**
-     * Whether this map pin is globally visible or requires LoS to see.
-     * @defaultValue `false`
-     */
-    global: fields.BooleanField;
-
-    /**
-     * An object of optional key/value flags
-     * @defaultValue `{}`
-     */
-    flags: fields.ObjectField.FlagsField<"Note">;
-  }
+  /**
+   * @deprecated {@link BaseNote.CreateData | `BaseNote.CreateData`}
+   */
+  type ConstructorData = BaseNote.CreateData;
 }
