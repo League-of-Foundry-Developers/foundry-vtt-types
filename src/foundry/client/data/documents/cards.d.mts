@@ -363,6 +363,11 @@ declare global {
     }
 
     /**
+     * @deprecated - {@link Cards.DatabaseOperation}
+     */
+    interface DatabaseOperations extends Document.Database.Operations<Cards> {}
+
+    /**
      * @deprecated {@link Cards.Types | `Cards.SubType`}
      */
     type TypeNames = Cards.SubType;

@@ -1,20 +1,317 @@
+import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
-import type BaseDrawing from "../../../common/documents/drawing.d.mts";
+import type { DataSchema } from "../../../common/data/fields.d.mts";
+import type { fields, ShapeData } from "../../../common/data/module.d.mts";
 
 declare global {
   namespace DrawingDocument {
-    type Metadata = Document.MetadataFor<"Drawing">;
+    /**
+     * The implementation of the DrawingDocument document instance configured through `CONFIG.Drawing.documentClass` in Foundry and
+     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredDrawingDocument | `configuration/ConfiguredDrawingDocument`} in fvtt-types.
+     */
+    type Implementation = Document.ConfiguredInstanceForName<"Drawing">;
 
-    type ConfiguredClass = Document.ConfiguredClassForName<"Drawing">;
-    type ConfiguredInstance = Document.ConfiguredInstanceForName<"Drawing">;
+    /**
+     * The implementation of the DrawingDocument document configured through `CONFIG.DrawingDocument.documentClass` in Foundry and
+     * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
+     */
+    type ImplementationClass = Document.ConfiguredClassForName<"Drawing">;
 
+    /**
+     * A document's metadata is special information about the document ranging anywhere from its name,
+     * whether it's indexed, or to the permissions a user has over it.
+     */
+    interface Metadata extends Document.MetadataFor<"Drawing"> {}
+
+    /**
+     * A document's parent is something that can contain it.
+     * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
+     */
+    type Parent = null;
+
+    /**
+     * An instance of `DrawingDocument` that comes from the database.
+     */
+    interface Stored extends Document.Stored<DrawingDocument.Implementation> {}
+
+    /**
+     * The data put in {@link Document._source | `Document._source`}. This data is what was
+     * persisted to the database and therefore it must be valid JSON.
+     *
+     * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+     * but initialized as a {@link Set | `Set`}.
+     *
+     * Both `Source` and `PersistedData` are equivalent.
+     */
+    interface Source extends PersistedData {}
+
+    /**
+     * The data put in {@link DrawingDocument._source | `DrawingDocument._source`}. This data is what was
+     * persisted to the database and therefore it must be valid JSON.
+     *
+     * Both `Source` and `PersistedData` are equivalent.
+     */
+    interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
+
+    /**
+     * The data necessary to create a document. Used in places like {@link DrawingDocument.create | `DrawingDocument.create`}
+     * and {@link DrawingDocument | `new DrawingDocument(...)`}.
+     *
+     * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
+     * with the right values. This means you can pass a `Set` instance, an array of values,
+     * a generator, or any other iterable.
+     */
+    interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+
+    /**
+     * The data after a {@link Document | `Document`} has been initialized, for example
+     * {@link DrawingDocument.name | `DrawingDocument#name`}.
+     *
+     * This is data transformed from {@link DrawingDocument.Source | `DrawingDocument.Source`} and turned into more
+     * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+     * persisted to the database as an array of values but at runtime it is a `Set` instance.
+     */
+    interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
+
+    /**
+     * The data used to update a document, for example {@link DrawingDocument.update | `DrawingDocument#update`}.
+     * It is a distinct type from {@link DrawingDocument.CreateData | `DeepPartial<DrawingDocument.CreateData>`} because
+     * it has different rules for `null` and `undefined`.
+     */
+    interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+    /**
+     * The schema for {@link DrawingDocument | `DrawingDocument`}. This is the source of truth for how an DrawingDocument document
+     * must be structured.
+     *
+     * Foundry uses this schema to validate the structure of the {@link DrawingDocument | `DrawingDocument`}. For example
+     * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
+     * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+     * starting as an array in the database, initialized as a set, and allows updates with any
+     * iterable.
+     */
+    interface Schema extends DataSchema {
+      /**
+       * The _id which uniquely identifies this BaseDrawing embedded document
+       * @defaultValue `null`
+       */
+      _id: fields.DocumentIdField;
+
+      /**
+       * The _id of the user who created the drawing
+       * @defaultValue `game.user?.id`
+       */
+      author: fields.ForeignDocumentField<typeof documents.BaseUser, { nullable: false; initial: () => string }>;
+
+      /**
+       * The geometric shape of the drawing
+       * @defaultValue see {@link ShapeData.Schema}
+       */
+      shape: fields.EmbeddedDataField<typeof ShapeData>;
+
+      /**
+       * The x-coordinate position of the top-left corner of the drawn shape
+       * @defaultValue `0`
+       */
+      x: fields.NumberField<{ required: true; nullable: false; initial: 0; label: "XCoord" }>;
+
+      /**
+       * The y-coordinate position of the top-left corner of the drawn shape
+       * @defaultValue `0`
+       */
+      y: fields.NumberField<{ required: true; nullable: false; initial: 0; label: "YCoord" }>;
+
+      /**
+       * The z-index of this drawing relative to other siblings
+       * @defaultValue `0`
+       */
+      z: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0; label: "DRAWING.ZIndex" }>;
+
+      /**
+       * The angle of rotation for the drawing figure
+       * @defaultValue `0`
+       */
+      rotation: fields.AngleField<{ label: "DRAWING.Rotation" }>;
+
+      /**
+       * An amount of bezier smoothing applied, between 0 and 1
+       * @defaultValue `0`
+       */
+      bezierFactor: fields.AlphaField<{
+        initial: 0;
+        label: "DRAWING.SmoothingFactor";
+        max: 0.5;
+        hint: "DRAWING.SmoothingFactorHint";
+      }>;
+
+      /**
+       * The fill type of the drawing shape, a value from CONST.DRAWING_FILL_TYPES
+       * @defaultValue `CONST.DRAWING_FILL_TYPES.NONE`
+       */
+      fillType: fields.NumberField<{
+        required: true;
+        initial: typeof CONST.DRAWING_FILL_TYPES.NONE;
+        choices: CONST.DRAWING_FILL_TYPES[];
+        label: "DRAWING.FillTypes";
+        validationError: "must be a value in CONST.DRAWING_FILL_TYPES";
+      }>;
+
+      /**
+       * An optional color string with which to fill the drawing geometry
+       * @defaultValue `game.user?.color`
+       */
+      fillColor: fields.ColorField<{ initial: () => string; label: "DRAWING.FillColor" }>;
+
+      /**
+       * The opacity of the fill applied to the drawing geometry
+       * @defaultValue `0.5`
+       */
+      fillAlpha: fields.AlphaField<{ initial: 0.5; label: "DRAWING.FillOpacity" }>;
+
+      /**
+       * The width in pixels of the boundary lines of the drawing geometry
+       * @defaultValue `8`
+       */
+      strokeWidth: fields.NumberField<{ integer: true; initial: 8; min: 0; label: "DRAWING.LineWidth" }>;
+
+      /**
+       * The color of the boundary lines of the drawing geometry
+       * @defaultValue `game.user?.color`
+       */
+      strokeColor: fields.ColorField<{ initial: () => string; label: "DRAWING.StrokeColor" }>;
+
+      /**
+       * The opacity of the boundary lines of the drawing geometry
+       * @defaultValue `1`
+       */
+      strokeAlpha: fields.AlphaField<{ initial: 1; label: "DRAWING.LineOpacity" }>;
+
+      /**
+       * The path to a tiling image texture used to fill the drawing geometry
+       * @defaultValue `null`
+       */
+      texture: fields.FilePathField<{ categories: ["IMAGE"]; label: "DRAWING.FillTexture" }>;
+
+      /**
+       * Optional text which is displayed overtop of the drawing
+       * @defaultValue `""`
+       */
+      text: fields.StringField<{ label: "DRAWING.TextLabel" }>;
+
+      /**
+       * The font family used to display text within this drawing, defaults to CONFIG.defaultFontFamily
+       * @defaultValue `globalThis.CONFIG?.defaultFontFamily || "Signika"`
+       */
+      fontFamily: fields.StringField<{ blank: false; label: "DRAWING.FontFamily"; initial: () => string }>;
+
+      /**
+       * The font size used to display text within this drawing
+       * @defaultValue `48`
+       */
+      fontSize: fields.NumberField<{
+        integer: true;
+        min: 8;
+        max: 256;
+        initial: 48;
+        label: "DRAWING.FontSize";
+        validationError: "must be an integer between 8 and 256";
+      }>;
+
+      /**
+       * The color of text displayed within this drawing
+       * @defaultValue `#FFFFFF`
+       */
+      textColor: fields.ColorField<{ initial: "#FFFFFF"; label: "DRAWING.TextColor" }>;
+
+      /**
+       * The opacity of text displayed within this drawing
+       * @defaultValue `1`
+       */
+      textAlpha: fields.AlphaField<{ label: "DRAWING.TextOpacity" }>;
+
+      /**
+       * Is the drawing currently hidden?
+       * @defaultValue `false`
+       */
+      hidden: fields.BooleanField;
+
+      /**
+       * Is the drawing currently locked?
+       * @defaultValue `false`
+       */
+      locked: fields.BooleanField;
+
+      /**
+       * An object of optional key/value flags
+       * @defaultValue `{}`
+       */
+      flags: fields.ObjectField.FlagsField<"Drawing">;
+    }
+
+    namespace DatabaseOperation {
+      /** Options passed along in Get operations for DrawingDocuments */
+      interface Get extends foundry.abstract.types.DatabaseGetOperation<DrawingDocument.Parent> {}
+      /** Options passed along in Create operations for DrawingDocuments */
+      interface Create<Temporary extends boolean | undefined = boolean | undefined>
+        extends foundry.abstract.types.DatabaseCreateOperation<
+          DrawingDocument.CreateData,
+          DrawingDocument.Parent,
+          Temporary
+        > {}
+      /** Options passed along in Delete operations for DrawingDocuments */
+      interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<DrawingDocument.Parent> {}
+      /** Options passed along in Update operations for DrawingDocuments */
+      interface Update
+        extends foundry.abstract.types.DatabaseUpdateOperation<DrawingDocument.UpdateData, DrawingDocument.Parent> {}
+
+      /** Options for {@link DrawingDocument.createDocuments} */
+      type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
+        Document.Database.CreateOperation<Create<Temporary>>;
+      /** Options for {@link DrawingDocument._preCreateOperation} */
+      type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
+      /** Options for {@link DrawingDocument#_preCreate} */
+      type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
+      /** Options for {@link DrawingDocument#_onCreate} */
+      type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
+
+      /** Options for {@link DrawingDocument.updateDocuments} */
+      type UpdateOperation = Document.Database.UpdateOperation<Update>;
+      /** Options for {@link DrawingDocument._preUpdateOperation} */
+      type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
+      /** Options for {@link DrawingDocument#_preUpdate} */
+      type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
+      /** Options for {@link DrawingDocument#_onUpdate} */
+      type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
+
+      /** Options for {@link DrawingDocument.deleteDocuments} */
+      type DeleteOperation = Document.Database.DeleteOperation<Delete>;
+      /** Options for {@link DrawingDocument._preDeleteOperation} */
+      type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
+      /** Options for {@link DrawingDocument#_preDelete} */
+      type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
+      /** Options for {@link DrawingDocument#_onDelete} */
+      type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
+    }
+
+    /**
+     * @deprecated - {@link DrawingDocument.DatabaseOperation}
+     */
     interface DatabaseOperations extends Document.Database.Operations<DrawingDocument> {}
 
-    // Helpful aliases
-    type ConstructorData = BaseDrawing.ConstructorData;
-    type UpdateData = BaseDrawing.UpdateData;
-    type Schema = BaseDrawing.Schema;
-    type Source = BaseDrawing.Source;
+    /**
+     * @deprecated {@link DrawingDocument.CreateData | `DrawingDocument.CreateData`}
+     */
+    interface ConstructorData extends DrawingDocument.CreateData {}
+
+    /**
+     * @deprecated {@link DrawingDocument.implementation | `DrawingDocument.ImplementationClass`}
+     */
+    type ConfiguredClass = ImplementationClass;
+
+    /**
+     * @deprecated {@link DrawingDocument.Implementation | `DrawingDocument.Implementation`}
+     */
+    type ConfiguredInstance = Implementation;
   }
 
   /**
