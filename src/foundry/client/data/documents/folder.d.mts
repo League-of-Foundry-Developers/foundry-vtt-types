@@ -1,23 +1,219 @@
-import type { DeepPartial, InexactPartial } from "../../../../utils/index.d.mts";
+import type { ConfiguredFolder } from "../../../../configuration/index.d.mts";
+import type { DeepPartial, HandleEmptyObject, InexactPartial } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
+import type { DataSchema } from "../../../common/data/fields.d.mts";
+import type { fields } from "../../../common/data/module.d.mts";
 import type BaseFolder from "../../../common/documents/folder.d.mts";
 
 declare global {
   namespace Folder {
-    type Metadata = Document.MetadataFor<"Folder">;
+    /**
+     * The implementation of the Folder document instance configured through `CONFIG.Folder.documentClass` in Foundry and
+     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredFolder | `configuration/ConfiguredFolder`} in fvtt-types.
+     */
+    type Implementation = Document.ConfiguredInstanceForName<"Folder">;
 
-    type ConfiguredClass = Document.ConfiguredClassForName<"Folder">;
-    type ConfiguredInstance = Document.ConfiguredInstanceForName<"Folder">;
-    type Stored = Document.Stored<ConfiguredInstance>;
+    /**
+     * The implementation of the Folder document configured through `CONFIG.Folder.documentClass` in Foundry and
+     * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
+     */
+    type ImplementationClass = Document.ConfiguredClassForName<"Folder">;
 
+    /**
+     * A document's metadata is special information about the document ranging anywhere from its name,
+     * whether it's indexed, or to the permissions a user has over it.
+     */
+    interface Metadata extends Document.MetadataFor<"Folder"> {}
+
+    type SubType = Game.Model.TypeNames<"Folder">;
+    type OfType<Type extends SubType> = HandleEmptyObject<ConfiguredFolder<Type>, Folder<SubType>>;
+
+    /**
+     * A document's parent is something that can contain it.
+     * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
+     */
+    type Parent = Actor.Implementation | Item.Implementation | null;
+
+    /**
+     * An instance of `Folder` that comes from the database.
+     */
+    interface Stored extends Document.Stored<Folder.Implementation> {}
+
+    /**
+     * The data put in {@link Document._source | `Document._source`}. This data is what was
+     * persisted to the database and therefore it must be valid JSON.
+     *
+     * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+     * but initialized as a {@link Set | `Set`}.
+     *
+     * Both `Source` and `PersistedData` are equivalent.
+     */
+    interface Source extends PersistedData {}
+
+    /**
+     * The data put in {@link Folder._source | `Folder._source`}. This data is what was
+     * persisted to the database and therefore it must be valid JSON.
+     *
+     * Both `Source` and `PersistedData` are equivalent.
+     */
+    interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
+
+    /**
+     * The data necessary to create a document. Used in places like {@link Folder.create | `Folder.create`}
+     * and {@link Folder | `new Folder(...)`}.
+     *
+     * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
+     * with the right values. This means you can pass a `Set` instance, an array of values,
+     * a generator, or any other iterable.
+     */
+    interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+
+    /**
+     * The data after a {@link Document | `Document`} has been initialized, for example
+     * {@link Folder.name | `Folder#name`}.
+     *
+     * This is data transformed from {@link Folder.Source | `Folder.Source`} and turned into more
+     * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+     * persisted to the database as an array of values but at runtime it is a `Set` instance.
+     */
+    interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
+
+    /**
+     * The data used to update a document, for example {@link Folder.update | `Folder#update`}.
+     * It is a distinct type from {@link Folder.CreateData | `DeepPartial<Folder.CreateData>`} because
+     * it has different rules for `null` and `undefined`.
+     */
+    interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+    /**
+     * The schema for {@link Folder | `Folder`}. This is the source of truth for how an Folder document
+     * must be structured.
+     *
+     * Foundry uses this schema to validate the structure of the {@link Folder | `Folder`}. For example
+     * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
+     * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+     * starting as an array in the database, initialized as a set, and allows updates with any
+     * iterable.
+     */
+    interface Schema extends DataSchema {
+      /**
+       * The _id which uniquely identifies this Folder document
+       * @defaultValue `null`
+       */
+      _id: fields.DocumentIdField;
+
+      /** The name of this Folder */
+      name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
+
+      /** The document type which this Folder contains, from CONST.FOLDER_DOCUMENT_TYPES */
+      type: fields.DocumentTypeField<typeof BaseFolder>;
+
+      /**
+       * An HTML description of the contents of this folder
+       * @defaultValue `""`
+       */
+      description: fields.HTMLField<{ textSearch: true }>;
+
+      /**
+       * The _id of a parent Folder which contains this Folder
+       * @defaultValue `null`
+       */
+      folder: fields.ForeignDocumentField<typeof BaseFolder>;
+
+      /**
+       * The sorting mode used to organize documents within this Folder, in ["a", "m"]
+       * @defaultValue `"a"`
+       */
+      sorting: fields.StringField<{ required: true; initial: "a"; choices: typeof BaseFolder.SORTING_MODES }>;
+
+      /**
+       * The numeric sort value which orders this Folder relative to its siblings
+       * @defaultValue `0`
+       */
+      sort: fields.IntegerSortField;
+
+      /**
+       * A color string used for the background color of this Folder
+       * @defaultValue `null`
+       */
+      color: fields.ColorField;
+
+      /**
+       * An object of optional key/value flags
+       * @defaultValue `{}`
+       */
+      flags: fields.ObjectField.FlagsField<"Folder">;
+
+      /**
+       * An object of creation and access information
+       * @defaultValue see {@link fields.DocumentStatsField}
+       */
+      _stats: fields.DocumentStatsField;
+    }
+    namespace DatabaseOperation {
+      /** Options passed along in Get operations for Folders */
+      interface Get extends foundry.abstract.types.DatabaseGetOperation<Folder.Parent> {}
+      /** Options passed along in Create operations for Folders */
+      interface Create<Temporary extends boolean | undefined = boolean | undefined>
+        extends foundry.abstract.types.DatabaseCreateOperation<Folder.CreateData, Folder.Parent, Temporary> {}
+      /** Options passed along in Delete operations for Folders */
+      interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<Folder.Parent> {}
+      /** Options passed along in Update operations for Folders */
+      interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Folder.UpdateData, Folder.Parent> {}
+
+      /** Options for {@link Folder.createDocuments} */
+      type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
+        Document.Database.CreateOperation<Create<Temporary>>;
+      /** Options for {@link Folder._preCreateOperation} */
+      type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
+      /** Options for {@link Folder#_preCreate} */
+      type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
+      /** Options for {@link Folder#_onCreate} */
+      type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
+
+      /** Options for {@link Folder.updateDocuments} */
+      type UpdateOperation = Document.Database.UpdateOperation<Update>;
+      /** Options for {@link Folder._preUpdateOperation} */
+      type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
+      /** Options for {@link Folder#_preUpdate} */
+      type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
+      /** Options for {@link Folder#_onUpdate} */
+      type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
+
+      /** Options for {@link Folder.deleteDocuments} */
+      type DeleteOperation = Document.Database.DeleteOperation<Delete>;
+      /** Options for {@link Folder._preDeleteOperation} */
+      type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
+      /** Options for {@link Folder#_preDelete} */
+      type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
+      /** Options for {@link Folder#_onDelete} */
+      type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
+    }
+
+    /**
+     * @deprecated - {@link Folder.DatabaseOperation}
+     */
     interface DatabaseOperations extends Document.Database.Operations<Folder> {}
 
-    // Helpful aliases
-    type TypeNames = BaseFolder.TypeNames;
-    type ConstructorData = BaseFolder.ConstructorData;
-    type UpdateData = BaseFolder.UpdateData;
-    type Schema = BaseFolder.Schema;
-    type Source = BaseFolder.Source;
+    /**
+     * @deprecated {@link Folder.Types | `Folder.SubType`}
+     */
+    type TypeNames = Folder.SubType;
+
+    /**
+     * @deprecated {@link Folder.CreateData | `Folder.CreateData`}
+     */
+    interface ConstructorData extends Folder.CreateData {}
+
+    /**
+     * @deprecated {@link Folder.implementation | `Folder.ImplementationClass`}
+     */
+    type ConfiguredClass = ImplementationClass;
+
+    /**
+     * @deprecated {@link Folder.Implementation | `Folder.Implementation`}
+     */
+    type ConfiguredInstance = Implementation;
 
     /**
      * Actual document types that go in folders
@@ -36,9 +232,9 @@ declare global {
    * @see {@link Folders}            The world-level collection of Folder documents
    * @see {@link FolderConfig}       The Folder configuration application
    */
-  class Folder<out Type extends BaseFolder.TypeNames = BaseFolder.TypeNames> extends ClientDocumentMixin(
+  class Folder<out SubType extends Folder.SubType = Folder.SubType> extends ClientDocumentMixin(
     foundry.documents.BaseFolder,
-  )<Type> {
+  )<SubType> {
     static override metadata: Folder.Metadata;
 
     static get implementation(): Folder.ConfiguredClass;
@@ -68,7 +264,7 @@ declare global {
      * of objects inside the index of the pack that are contained in this Folder.
      */
     // TODO: Handle compendium. This requires the index to be configured.
-    get contents(): Document.ConfiguredInstanceForName<Extract<Type, Document.Type>>[];
+    get contents(): Document.ConfiguredInstanceForName<Extract<SubType, Document.Type>>[];
 
     set contents(value);
 
@@ -76,7 +272,7 @@ declare global {
      * The reference to the Document type which is contained within this Folder.
      */
     // TODO: Compendium Pack index
-    get documentClass(): Document.ConfiguredClassForName<Extract<Type, Document.Type>>;
+    get documentClass(): Document.ConfiguredClassForName<Extract<SubType, Document.Type>>;
 
     /**
      * The reference to the WorldCollection instance which provides Documents to this Folder,

@@ -27,7 +27,7 @@ declare global {
      * A document's parent is something that can contain it.
      * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
      */
-    type Parent = null;
+    type Parent = Scene.Implementation | null;
 
     /**
      * An instance of `DrawingDocument` that comes from the database.
