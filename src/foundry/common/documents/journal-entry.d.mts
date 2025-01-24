@@ -1,9 +1,7 @@
 import type { AnyObject } from "../../../utils/index.d.mts";
+import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
-import type * as fields from "../data/fields.d.mts";
-import type * as documents from "./_module.mts";
-
-type DataSchema = foundry.data.fields.DataSchema;
+import type { SchemaField } from "../data/fields.d.mts";
 
 /**
  * The JournalEntry Document.
@@ -20,76 +18,170 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
   // TODO(LukeAbby): This constructor is a symptom of a circular error.
   // constructor(data: BaseJournalEntry.ConstructorData, context?: Document.ConstructionContext<BaseJournalEntry.Parent>);
 
-  override parent: BaseJournalEntry.Parent;
-
   static override metadata: BaseJournalEntry.Metadata;
 
   static override defineSchema(): BaseJournalEntry.Schema;
 
   static override migrateData(source: AnyObject): AnyObject;
 
+  /*
+   * After this point these are not really overridden methods.
+   * They are here because they're static properties but depend on the instance and so can't be
+   * defined DRY-ly while also being easily overridable.
+   */
+
   static " __fvtt_types_internal_document_name_static": "JournalEntry";
+
+  static get implementation(): JournalEntry.ImplementationClass;
+
+  override parent: JournalEntry.Parent;
+
+  static createDocuments<Temporary extends boolean | undefined>(
+    data: Array<JournalEntry.Implementation | JournalEntry.CreateData> | undefined,
+    operation?: Document.Database.CreateOperation<JournalEntry.DatabaseOperation.Create<Temporary>>,
+  ): Promise<Array<Document.StoredIf<JournalEntry.Implementation, Temporary>>>;
+
+  static updateDocuments(
+    updates: JournalEntry.UpdateData[] | undefined,
+    operation?: Document.Database.UpdateOperation<JournalEntry.DatabaseOperation.Update>,
+  ): Promise<JournalEntry.Implementation[]>;
+
+  static deleteDocuments(
+    ids: readonly string[] | undefined,
+    operation?: Document.Database.DeleteOperation<JournalEntry.DatabaseOperation.Delete>,
+  ): Promise<JournalEntry.Implementation[]>;
+
+  static create<Temporary extends boolean | undefined>(
+    data: JournalEntry.CreateData | JournalEntry.CreateData[],
+    operation?: Document.Database.CreateOperation<JournalEntry.DatabaseOperation.Create<Temporary>>,
+  ): Promise<JournalEntry.Implementation | undefined>;
+
+  static get(documentId: string, options?: Document.Database.GetOperation): JournalEntry.Implementation | null;
+
+  protected _preCreate(
+    data: JournalEntry.CreateData,
+    options: JournalEntry.DatabaseOperation.PreCreateOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onCreate(
+    data: JournalEntry.CreateData,
+    options: JournalEntry.DatabaseOperation.OnCreateOperation,
+    userId: string,
+  ): void;
+
+  protected static _preCreateOperation(
+    documents: JournalEntry.Implementation[],
+    operation: Document.Database.PreCreateOperationStatic<JournalEntry.DatabaseOperation.Create>,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onCreateOperation(
+    documents: JournalEntry.Implementation[],
+    operation: JournalEntry.DatabaseOperation.Create,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected _preUpdate(
+    changed: JournalEntry.UpdateData,
+    options: JournalEntry.DatabaseOperation.PreUpdateOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onUpdate(
+    changed: JournalEntry.UpdateData,
+    options: JournalEntry.DatabaseOperation.OnUpdateOperation,
+    userId: string,
+  ): void;
+
+  protected static _preUpdateOperation(
+    documents: JournalEntry.Implementation[],
+    operation: JournalEntry.DatabaseOperation.Update,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onUpdateOperation(
+    documents: JournalEntry.Implementation[],
+    operation: JournalEntry.DatabaseOperation.Update,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected _preDelete(
+    options: JournalEntry.DatabaseOperation.PreDeleteOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onDelete(options: JournalEntry.DatabaseOperation.OnDeleteOperation, userId: string): void;
+
+  protected static _preDeleteOperation(
+    documents: JournalEntry.Implementation[],
+    operation: JournalEntry.DatabaseOperation.Delete,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onDeleteOperation(
+    documents: JournalEntry.Implementation[],
+    operation: JournalEntry.DatabaseOperation.Delete,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected static _onCreateDocuments(
+    documents: JournalEntry.Implementation[],
+    context: Document.ModificationContext<JournalEntry.Parent>,
+  ): Promise<void>;
+
+  protected static _onUpdateDocuments(
+    documents: JournalEntry.Implementation[],
+    context: Document.ModificationContext<JournalEntry.Parent>,
+  ): Promise<void>;
+
+  protected static _onDeleteDocuments(
+    documents: JournalEntry.Implementation[],
+    context: Document.ModificationContext<JournalEntry.Parent>,
+  ): Promise<void>;
+
+  protected static _schema: SchemaField<JournalEntry.Schema>;
+
+  static get schema(): SchemaField<JournalEntry.Schema>;
+
+  static validateJoint(data: JournalEntry.Source): void;
+
+  static override fromSource(
+    source: JournalEntry.UpdateData,
+    { strict, ...context }?: DataModel.FromSourceOptions,
+  ): DataModel<JournalEntry.Schema, DataModel.Any | null>;
+
+  static override fromJSON(json: string): DataModel<JournalEntry.Schema, DataModel.Any | null>;
 }
 
 export default BaseJournalEntry;
 
 declare namespace BaseJournalEntry {
-  type Parent = null;
+  export import Metadata = JournalEntry.Metadata;
+  export import Parent = JournalEntry.Parent;
+  export import Stored = JournalEntry.Stored;
+  export import Source = JournalEntry.Source;
+  export import PersistedData = JournalEntry.PersistedData;
+  export import CreateData = JournalEntry.CreateData;
+  export import InitializedData = JournalEntry.InitializedData;
+  export import UpdateData = JournalEntry.UpdateData;
+  export import Schema = JournalEntry.Schema;
+  export import DatabaseOperation = JournalEntry.DatabaseOperation;
 
-  type Metadata = Document.MetadataFor<"JournalEntry">;
+  /**
+   * @deprecated This type is used by Foundry too vaguely.
+   * In one context the most correct type is after initialization whereas in another one it should be
+   * before but Foundry uses it interchangeably.
+   */
+  type Properties = SchemaField.InitializedData<Schema>;
 
-  type SchemaField = fields.SchemaField<Schema>;
-  type ConstructorData = fields.SchemaField.CreateData<Schema>;
-  type UpdateData = fields.SchemaField.AssignmentData<Schema>;
-  type Properties = fields.SchemaField.InitializedData<Schema>;
-  type Source = fields.SchemaField.PersistedData<Schema>;
+  /**
+   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseJournalEntry.Schema>`}
+   */
+  type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
-  interface Schema extends DataSchema {
-    /**
-     * The _id which uniquely identifies this JournalEntry document
-     * @defaultValue `null`
-     */
-    _id: fields.DocumentIdField;
-
-    /**
-     * The name of this JournalEntry
-     */
-    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
-
-    /**
-     * The pages contained within this JournalEntry document
-     * @defaultValue `[]`
-     */
-    pages: fields.EmbeddedCollectionField<typeof documents.BaseJournalEntryPage, JournalEntry.ConfiguredInstance>;
-
-    /**
-     * The _id of a Folder which contains this JournalEntry
-     * @defaultValue `null`
-     */
-    folder: fields.ForeignDocumentField<typeof documents.BaseFolder>;
-
-    /**
-     * The numeric sort value which orders this JournalEntry relative to its siblings
-     * @defaultValue `0`
-     */
-    sort: fields.IntegerSortField;
-
-    /**
-     * An object which configures ownership of this JournalEntry
-     * @defaultValue see {@link fields.DocumentOwnershipField}
-     */
-    ownership: fields.DocumentOwnershipField;
-
-    /**
-     * An object of optional key/value flags
-     * @defaultValue `{}`
-     */
-    flags: fields.ObjectField.FlagsField<"JournalEntry">;
-
-    /**
-     * An object of creation and access information
-     * @defaultValue see {@link fields.DocumentStatsField}
-     */
-    _stats: fields.DocumentStatsField;
-  }
+  /**
+   * @deprecated {@link BaseJournalEntry.CreateData | `BaseJournalEntry.CreateData`}
+   */
+  type ConstructorData = BaseJournalEntry.CreateData;
 }
