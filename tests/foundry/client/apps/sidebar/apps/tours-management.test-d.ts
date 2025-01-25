@@ -3,7 +3,7 @@ import type { MaybePromise } from "fvtt-types/utils";
 
 const toursManagement = new ToursManagement();
 
-expectTypeOf(toursManagement.object).toEqualTypeOf<undefined>();
+expectTypeOf(toursManagement.object).toEqualTypeOf<object>();
 expectTypeOf(ToursManagement.defaultOptions).toEqualTypeOf<PackageConfiguration.Options>();
 expectTypeOf(toursManagement.options).toEqualTypeOf<PackageConfiguration.Options>();
 expectTypeOf(toursManagement.getData()).toEqualTypeOf<MaybePromise<object>>();

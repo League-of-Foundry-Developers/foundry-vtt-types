@@ -1,7 +1,9 @@
 import { expectTypeOf } from "vitest";
 
-const frameViewer = new FrameViewer("https://foundryvtt.wiki/", {
-  title: "My Title",
-});
+const settings = new Settings();
 
-expectTypeOf(frameViewer.url).toEqualTypeOf<string>();
+expectTypeOf(Settings.defaultOptions).toEqualTypeOf<ApplicationOptions>();
+expectTypeOf(settings.options).toEqualTypeOf<ApplicationOptions>();
+expectTypeOf(settings.getData()).toEqualTypeOf<Promise<object>>();
+expectTypeOf(settings.render(true)).toEqualTypeOf<Settings>();
+expectTypeOf(settings.createPopout()).toEqualTypeOf<Settings>();
