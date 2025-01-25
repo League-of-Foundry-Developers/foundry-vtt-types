@@ -25,7 +25,7 @@ declare global {
     FolderType extends foundry.CONST.FOLDER_DOCUMENT_TYPES,
     Options extends DocumentDirectoryOptions = DocumentDirectoryOptions,
   > extends DirectoryApplicationMixin(SidebarTab)<Options> {
-    constructor(options: Options);
+    constructor(options?: Options);
 
     /**
      * References to the set of Documents which are displayed in the Sidebar
