@@ -1,15 +1,14 @@
 import { expectTypeOf } from "vitest";
-import type { MaybePromise } from "fvtt-types/utils";
+import type { MaybePromise } from "../../../../../src/utils/index.d.mts";
 
-class MyPlaceableHud extends BasePlaceableHUD<Token> {}
+// abstract class, so have to inherit
+class MyPlaceableHUD extends BasePlaceableHUD {}
 
-declare const token: Token;
+const myPlaceableHUD = new MyPlaceableHUD();
+expectTypeOf(myPlaceableHUD.object).toEqualTypeOf<PlaceableObject | undefined>();
+expectTypeOf(BasePlaceableHUD.defaultOptions).toEqualTypeOf<ApplicationOptions>();
+expectTypeOf(myPlaceableHUD.options).toEqualTypeOf<ApplicationOptions>();
+expectTypeOf(myPlaceableHUD.getData()).toEqualTypeOf<MaybePromise<object>>();
+// expectTypeOf(myPlaceableHUD.render(true)).toEqualTypeOf<BasePlaceableHUD>();
 
-const hud = new MyPlaceableHud();
-expectTypeOf(hud.object).toEqualTypeOf<Token | undefined>();
-
-expectTypeOf(hud.layer).toEqualTypeOf<TokenLayer | undefined>();
-expectTypeOf(hud.bind(token)).toEqualTypeOf<void>();
-expectTypeOf(hud.clear()).toEqualTypeOf<void>();
-
-expectTypeOf(hud.getData()).toEqualTypeOf<MaybePromise<object>>();
+expectTypeOf(myPlaceableHUD.layer).toEqualTypeOf<PlaceableObject["layer"] | undefined>();

@@ -7,4 +7,6 @@ expectTypeOf(display.tile).toEqualTypeOf<TileHUD>();
 expectTypeOf(display.drawing).toEqualTypeOf<DrawingHUD>();
 expectTypeOf(display.bubbles).toEqualTypeOf<ChatBubbles>();
 expectTypeOf(display.getData()).toEqualTypeOf<MaybePromise<object>>();
+expectTypeOf(HeadsUpDisplay.defaultOptions).toEqualTypeOf<ApplicationOptions>();
+expectTypeOf(display.options).toEqualTypeOf<ApplicationOptions>();
 expectTypeOf(display.align()).toEqualTypeOf<void>();
