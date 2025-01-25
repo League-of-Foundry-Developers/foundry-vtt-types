@@ -1,4 +1,4 @@
-import type { GetDataReturnType } from "../../../../utils/index.d.mts";
+import type { GetDataReturnType } from "fvtt-types/utils";
 
 declare global {
   /**

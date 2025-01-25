@@ -1,4 +1,4 @@
-import type { InexactPartial, Mixin } from "../../../../../utils/index.d.mts";
+import type { InexactPartial, Mixin } from "fvtt-types/utils";
 
 declare class PrimaryOccludableObject {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */

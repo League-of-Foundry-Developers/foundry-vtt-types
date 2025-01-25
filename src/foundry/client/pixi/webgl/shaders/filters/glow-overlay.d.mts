@@ -1,4 +1,4 @@
-import type { FixedInstanceType } from "../../../../../../utils/index.d.mts";
+import type { FixedInstanceType } from "fvtt-types/utils";
 
 declare abstract class AnyGlowOverlayFilter extends GlowOverlayFilter {
   constructor(arg0: never, ...args: never[]);

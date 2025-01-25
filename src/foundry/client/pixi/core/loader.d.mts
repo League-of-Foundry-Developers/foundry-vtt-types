@@ -1,4 +1,4 @@
-import type { AnyObject } from "../../../../utils/index.d.mts";
+import type { AnyObject } from "fvtt-types/utils";
 
 declare global {
   /**

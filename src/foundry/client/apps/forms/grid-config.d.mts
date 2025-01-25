@@ -1,4 +1,4 @@
-import type { InterfaceToObject, AnyObject, GetDataReturnType, MaybePromise } from "../../../../utils/index.d.mts";
+import type { InterfaceToObject, AnyObject, GetDataReturnType, MaybePromise } from "fvtt-types/utils";
 
 declare global {
   /**

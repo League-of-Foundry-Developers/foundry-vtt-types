@@ -1,4 +1,4 @@
-import type { InexactPartial } from "../../../utils/index.d.mts";
+import type { InexactPartial } from "fvtt-types/utils";
 import type _Collection from "../utils/collection.d.mts";
 import type { DatabaseAction, DatabaseOperation } from "./_types.d.mts";
 import type Document from "./document.d.mts";

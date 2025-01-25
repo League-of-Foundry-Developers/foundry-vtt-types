@@ -1,4 +1,4 @@
-import type { InterfaceToObject } from "../../../../../../utils/index.d.mts";
+import type { InterfaceToObject } from "fvtt-types/utils";
 
 declare abstract class AnyFogShader extends FogShader {
   constructor(arg0: never, ...args: never[]);

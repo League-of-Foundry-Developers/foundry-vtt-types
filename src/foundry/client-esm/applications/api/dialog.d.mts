@@ -1,4 +1,4 @@
-import type { AnyFunction, DeepPartial, EmptyObject, MaybePromise } from "../../../../utils/index.d.mts";
+import type { AnyFunction, DeepPartial, EmptyObject, MaybePromise } from "fvtt-types/utils";
 import type ApplicationV2 from "./application.d.mts";
 
 /**

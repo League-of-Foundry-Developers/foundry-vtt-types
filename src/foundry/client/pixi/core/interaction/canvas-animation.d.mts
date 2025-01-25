@@ -1,4 +1,4 @@
-import type { PropertiesOfType, Brand, NullishProps, AnyObject } from "../../../../../utils/index.d.mts";
+import type { PropertiesOfType, Brand, NullishProps, AnyObject } from "fvtt-types/utils";
 
 declare global {
   /**

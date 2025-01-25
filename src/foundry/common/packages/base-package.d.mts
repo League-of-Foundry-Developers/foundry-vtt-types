@@ -1,4 +1,4 @@
-import type { GetKey, AnyObject, InexactPartial, AnyMutableObject } from "../../../utils/index.d.mts";
+import type { GetKey, AnyObject, InexactPartial, AnyMutableObject } from "fvtt-types/utils";
 // eslint-disable-next-line import/no-named-as-default
 import type DataModel from "../abstract/data.d.mts";
 import type { ReleaseData } from "../config.d.mts";

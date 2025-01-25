@@ -1,4 +1,4 @@
-import type { InexactPartial, NullishProps } from "../../../../utils/index.d.mts";
+import type { InexactPartial, NullishProps } from "fvtt-types/utils";
 
 declare module "pixi.js" {
   interface Polygon {

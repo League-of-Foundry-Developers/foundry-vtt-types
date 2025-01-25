@@ -1,4 +1,4 @@
-import type { DeepPartial, InexactPartial } from "../../../../utils/index.d.mts";
+import type { DeepPartial, InexactPartial } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 import type BaseActor from "../../../common/documents/actor.d.mts";
 

@@ -1,4 +1,4 @@
-import type { AnyObject, FixedInstanceType, ShapeWithIndexSignature } from "../../../../../../utils/index.d.mts";
+import type { AnyObject, FixedInstanceType, ShapeWithIndexSignature } from "fvtt-types/utils";
 
 declare abstract class AnyVisualEffectsMaskingFilter extends VisualEffectsMaskingFilter {
   constructor(arg0: never, ...args: never[]);

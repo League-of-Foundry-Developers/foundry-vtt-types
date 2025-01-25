@@ -1,6 +1,6 @@
 import type Sound from "./sound.d.mts";
 import type AudioBufferCache from "./cache.d.mts";
-import type { InexactPartial } from "../../../utils/index.d.mts";
+import type { InexactPartial } from "fvtt-types/utils";
 
 /**
  * A helper class to provide common functionality for working with the Web Audio API.
