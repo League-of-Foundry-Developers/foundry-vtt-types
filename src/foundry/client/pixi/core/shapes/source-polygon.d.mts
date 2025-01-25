@@ -1,4 +1,4 @@
-import type { InexactPartial, FixedInstanceType } from "../../../../../utils/index.d.mts";
+import type { InexactPartial, FixedInstanceType } from "fvtt-types/utils";
 import type PointEffectSourceMixin from "../../../../client-esm/canvas/sources/point-effect-source.d.mts";
 
 declare global {

@@ -1,4 +1,4 @@
-import type { InexactPartial } from "../../../../utils/index.d.mts";
+import type { InexactPartial } from "fvtt-types/utils";
 import type { WallThresholdData } from "../../../common/documents/_types.d.mts";
 
 /**

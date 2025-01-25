@@ -1,4 +1,4 @@
-import type { InexactPartial, NullishProps, FixedInstanceType } from "../../../utils/index.d.mts";
+import type { InexactPartial, NullishProps, FixedInstanceType } from "fvtt-types/utils";
 import type Document from "../../common/abstract/document.d.mts";
 import type { CANVAS_PERFORMANCE_MODES } from "../../common/constants.d.mts";
 

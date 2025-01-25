@@ -1,4 +1,4 @@
-import type { InexactPartial } from "../../../utils/index.d.mts";
+import type { InexactPartial } from "fvtt-types/utils";
 
 /**
  * A data structure representing a tree of string nodes with arbitrary object leaves.

@@ -1,4 +1,4 @@
-import type { InexactPartial, FixedInstanceType, LoggingLevels } from "../../../utils/index.d.mts";
+import type { InexactPartial, FixedInstanceType, LoggingLevels } from "fvtt-types/utils";
 import type Document from "./document.d.mts";
 import type {
   DatabaseCreateOperation,

@@ -1,6 +1,6 @@
 import type * as CONST from "../common/constants.d.mts";
 import type { DataModel, Document } from "../common/abstract/module.d.mts";
-import type { GetKey, AnyObject, HandleEmptyObject, MaybePromise } from "../../utils/index.d.mts";
+import type { GetKey, AnyObject, HandleEmptyObject, MaybePromise } from "fvtt-types/utils";
 import type BaseLightSource from "../client-esm/canvas/sources/base-light-source.d.mts";
 
 declare global {

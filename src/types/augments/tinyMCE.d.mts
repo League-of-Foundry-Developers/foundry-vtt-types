@@ -1,6 +1,6 @@
 import _tinymce from "tinymce";
 import type * as _tinymceTypes from "tinymce";
-import type { AnyObject } from "../../utils/index.d.mts";
+import type { AnyObject } from "fvtt-types/utils";
 
 declare global {
   let tinyMCE: typeof _tinymce;

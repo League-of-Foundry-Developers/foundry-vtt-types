@@ -1,4 +1,4 @@
-import type { AnyObject, Mixin, PrettifyType, RemoveIndexSignatures } from "../../../../../utils/index.d.mts";
+import type { AnyObject, Mixin, PrettifyType, RemoveIndexSignatures } from "fvtt-types/utils";
 
 declare const DynamicClass: new <_Computed extends object>(arg0: never, ...args: never[]) => _Computed;
 

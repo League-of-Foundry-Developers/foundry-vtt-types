@@ -1,4 +1,4 @@
-import type { UnionToIntersection, Brand, InexactPartial, NullishProps } from "../../../../utils/index.d.mts";
+import type { UnionToIntersection, Brand, InexactPartial, NullishProps } from "fvtt-types/utils";
 
 /**
  * Typically in a mapped type TypeScript associates your type to the original.
