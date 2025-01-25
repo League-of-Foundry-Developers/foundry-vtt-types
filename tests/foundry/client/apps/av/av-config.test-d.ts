@@ -12,8 +12,7 @@ if (game instanceof Game) {
   });
 }
 
-const avMaster = game.webrtc;
-const avConfig = new AVConfig(avMaster);
+const avConfig = new AVConfig();
 
 expectTypeOf(avConfig.object).toEqualTypeOf<AVMaster>();
 expectTypeOf(AVConfig.defaultOptions).toEqualTypeOf<FormApplicationOptions>();

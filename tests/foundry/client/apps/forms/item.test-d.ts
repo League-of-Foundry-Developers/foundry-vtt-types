@@ -1,7 +1,7 @@
 import { expectTypeOf } from "vitest";
 import type { GetDataReturnType, MaybePromise } from "../../../../../src/utils/index.d.mts";
 
-const item = new Item({ name: "Heavy armor", type: "base" });
+declare const item: Item;
 const itemSheet = new ItemSheet(item);
 
 expectTypeOf(itemSheet.object).toEqualTypeOf<Item>();

@@ -1,7 +1,7 @@
 import { expectTypeOf } from "vitest";
 import type { GetDataReturnType, MaybePromise } from "../../../../../src/utils/index.d.mts";
 
-const card = new Card({ name: "cardy" });
+declare const card: Card;
 const cardConfig = new CardConfig(card);
 
 expectTypeOf(cardConfig.object).toEqualTypeOf<Card>();

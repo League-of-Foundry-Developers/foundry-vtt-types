@@ -1,7 +1,7 @@
 import { expectTypeOf } from "vitest";
 import type { MaybePromise } from "../../../../../src/utils/index.d.mts";
 
-const journalEntry = new JournalEntry({ name: "Some Journal Entry" });
+declare const journalEntry: JournalEntry;
 const journalSheet = new JournalSheet(journalEntry);
 
 expectTypeOf(journalSheet.object).toEqualTypeOf<JournalEntry>();
