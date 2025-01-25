@@ -1,4 +1,4 @@
-import type { ToMethod, InexactPartial } from "../../../../../utils/index.d.mts";
+import type { ToMethod, InexactPartial } from "fvtt-types/utils";
 
 declare abstract class AnyBatchRenderer extends BatchRenderer {
   constructor(arg0: never, ...args: never[]);

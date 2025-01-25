@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { GetDataReturnType, MaybePromise } from "../../../../../src/utils/index.d.mts";
+import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
 
 declare const font: NewFontDefinition;
 

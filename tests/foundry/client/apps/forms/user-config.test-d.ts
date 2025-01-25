@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { GetDataReturnType, MaybePromise } from "../../../../../src/utils/index.d.mts";
+import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
 
 // @ts-expect-error - a BaseUser is not a User
 new UserConfig(new foundry.documents.BaseUser());

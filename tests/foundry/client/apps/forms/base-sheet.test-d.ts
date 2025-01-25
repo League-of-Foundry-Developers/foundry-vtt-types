@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { GetDataReturnType } from "../../../../../src/utils/index.d.mts";
+import type { GetDataReturnType } from "fvtt-types/utils";
 
 const actor = new Actor({ name: "Joe", type: "base" });
 const baseSheet = new BaseSheet(actor);

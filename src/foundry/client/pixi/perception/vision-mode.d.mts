@@ -1,4 +1,4 @@
-import type { AnyObject, InexactPartial, SimpleMerge, ValueOf } from "../../../../utils/index.d.mts";
+import type { AnyObject, InexactPartial, SimpleMerge, ValueOf } from "fvtt-types/utils";
 import type { fields } from "../../../common/data/module.d.mts";
 import DataField = foundry.data.fields.DataField;
 

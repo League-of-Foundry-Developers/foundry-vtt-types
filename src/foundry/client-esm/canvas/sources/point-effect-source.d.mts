@@ -1,4 +1,4 @@
-import type { Mixin, IntentionalPartial } from "../../../../utils/index.d.mts";
+import type { Mixin, IntentionalPartial } from "fvtt-types/utils";
 import type BaseEffectSource from "./base-effect-source.d.mts";
 
 declare class PointEffectSource {

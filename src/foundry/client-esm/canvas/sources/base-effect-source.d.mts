@@ -1,4 +1,4 @@
-import type { NullishProps, IntentionalPartial } from "../../../../utils/index.d.mts";
+import type { NullishProps, IntentionalPartial } from "fvtt-types/utils";
 
 /**
  * TODO - Re-document after ESM refactor.

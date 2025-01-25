@@ -1,4 +1,4 @@
-import type { MaybePromise, InexactPartial } from "../../../../utils/index.d.mts";
+import type { MaybePromise, InexactPartial } from "fvtt-types/utils";
 
 declare global {
   interface JournalSheetOptions extends DocumentSheetOptions<JournalEntry.ConfiguredInstance> {

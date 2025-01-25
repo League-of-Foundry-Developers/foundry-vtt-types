@@ -1,4 +1,4 @@
-import type { DeepPartial } from "../../../../utils/index.d.mts";
+import type { DeepPartial } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {

@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { GetDataReturnType } from "../../../../../src/utils/index.d.mts";
+import type { GetDataReturnType } from "fvtt-types/utils";
 
 const adventure = new Adventure({ name: "Fun adventure" });
 const adventureImporter = new AdventureImporter(adventure);

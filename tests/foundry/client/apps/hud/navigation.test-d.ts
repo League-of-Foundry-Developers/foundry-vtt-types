@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { MaybePromise } from "../../../../../src/utils/index.d.mts";
+import type { MaybePromise } from "fvtt-types/utils";
 
 const sceneNavigation = new SceneNavigation();
 

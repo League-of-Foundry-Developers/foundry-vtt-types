@@ -1,4 +1,4 @@
-import type { Brand } from "../../utils/index.d.mts";
+import type { Brand } from "fvtt-types/utils";
 import * as _PIXI from "pixi.js";
 
 // Note(LukeAbby): The `smooth.d.mts` and `smooth.d.mts` files exist to make it DRY to selectively tweak PIXI sub-namespaces.

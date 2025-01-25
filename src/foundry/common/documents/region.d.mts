@@ -1,4 +1,4 @@
-import type { ValueOf } from "../../../utils/index.d.mts";
+import type { ValueOf } from "fvtt-types/utils";
 import type Document from "../abstract/document.mts";
 import type { BaseShapeData, fields } from "../data/module.d.mts";
 import type * as documents from "./_module.d.mts";

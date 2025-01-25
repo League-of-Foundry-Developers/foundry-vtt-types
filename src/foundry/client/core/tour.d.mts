@@ -1,4 +1,4 @@
-import type { ValueOf } from "../../../utils/index.d.mts";
+import type { ValueOf } from "fvtt-types/utils";
 
 export { Tour };
 

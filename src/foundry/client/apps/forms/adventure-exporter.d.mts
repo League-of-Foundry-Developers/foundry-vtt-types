@@ -1,6 +1,6 @@
 import type { EditorView } from "prosemirror-view";
 import type { Editor } from "tinymce";
-import type { GetDataReturnType } from "../../../../utils/index.d.mts";
+import type { GetDataReturnType } from "fvtt-types/utils";
 
 declare global {
   /**

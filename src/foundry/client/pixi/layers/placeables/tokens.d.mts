@@ -1,4 +1,4 @@
-import type { ArrayOverlaps, NullishProps } from "../../../../../utils/index.d.mts";
+import type { ArrayOverlaps, NullishProps } from "fvtt-types/utils";
 import type Document from "../../../../common/abstract/document.d.mts";
 
 declare global {

@@ -1,4 +1,4 @@
-import type { InexactPartial } from "../../../../utils/index.d.mts";
+import type { InexactPartial } from "fvtt-types/utils";
 import type { DatabaseGetOperation } from "../../../common/abstract/_types.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type BaseFogExploration from "../../../common/documents/fog-exploration.d.mts";

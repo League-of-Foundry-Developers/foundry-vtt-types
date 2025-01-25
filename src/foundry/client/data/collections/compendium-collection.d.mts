@@ -1,4 +1,4 @@
-import type { DeepPartial, EmptyObject, InexactPartial } from "../../../../utils/index.d.mts";
+import type { DeepPartial, EmptyObject, InexactPartial } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DirectoryCollectionMixin_DocumentCollection_Interface } from "../abstract/directory-collection-mixin.d.mts";
 

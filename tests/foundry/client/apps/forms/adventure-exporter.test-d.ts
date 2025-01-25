@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { GetDataReturnType } from "../../../../../src/utils/index.d.mts";
+import type { GetDataReturnType } from "fvtt-types/utils";
 
 const adventure = new Adventure({ name: "Some dude" }, { pack: "abc" }) as Adventure & { pack: string };
 const adventureExporter = new AdventureExporter(adventure);

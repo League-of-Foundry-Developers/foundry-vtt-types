@@ -1,4 +1,4 @@
-import type { AnyObject } from "../../../../utils/index.d.mts";
+import type { AnyObject } from "fvtt-types/utils";
 import type { DataModel } from "../../../common/abstract/data.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataField } from "../../../common/data/fields.d.mts";
