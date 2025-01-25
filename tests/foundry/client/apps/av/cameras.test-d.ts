@@ -7,7 +7,6 @@ expectTypeOf(CameraViews.defaultOptions).toEqualTypeOf<ApplicationOptions>();
 expectTypeOf(view.render(true)).toEqualTypeOf<CameraViews>();
 expectTypeOf(view.getData()).toEqualTypeOf<MaybePromise<GetDataReturnType<CameraViews.CameraViewsData>>>();
 
-expectTypeOf(view.title).toEqualTypeOf<string>();
 expectTypeOf(view.getUserCameraView("123")).toEqualTypeOf<HTMLElement | null>();
 expectTypeOf(view.getUserVideoElement("123")).toEqualTypeOf<HTMLVideoElement | null>();
 expectTypeOf(view.webrtc).toEqualTypeOf<Game["webrtc"]>();

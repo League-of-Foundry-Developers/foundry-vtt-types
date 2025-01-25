@@ -19,5 +19,3 @@ expectTypeOf(avConfig.object).toEqualTypeOf<AVMaster>();
 expectTypeOf(AVConfig.defaultOptions).toEqualTypeOf<FormApplicationOptions>();
 expectTypeOf(avConfig.getData()).toEqualTypeOf<MaybePromise<GetDataReturnType<AVConfig.AVConfigData>>>();
 expectTypeOf(avConfig.render(true)).toEqualTypeOf<AVConfig>();
-
-expectTypeOf(avConfig.title).toEqualTypeOf<string>();

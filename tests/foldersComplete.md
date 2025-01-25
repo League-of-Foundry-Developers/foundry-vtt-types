@@ -3,4 +3,6 @@ Folders complete:
 - client
   - apps
     - av
-    - forms - in progress
+    - dialogs
+    - dice
+    - forms - pick up with grid-config
