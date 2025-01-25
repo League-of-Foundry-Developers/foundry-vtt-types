@@ -55,7 +55,7 @@ expectTypeOf(titlecaseWithSpaces).toEqualTypeOf<"Foo  Bar">();
 declare const titlecaseWithThreeWords: Titlecase<"foo bar baz">;
 expectTypeOf(titlecaseWithThreeWords).toEqualTypeOf<"Foo Bar Baz">();
 
-const numberMaybePromise: MaybePromise<number> = 0;
+const numberMaybePromise = 0 as MaybePromise<number>;
 expectTypeOf(await numberMaybePromise).toEqualTypeOf<number>();
 
 declare const user: User;
