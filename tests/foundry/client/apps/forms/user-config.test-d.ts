@@ -16,9 +16,7 @@ expectTypeOf(userConfig.render(true)).toEqualTypeOf<UserConfig>();
 
 expectTypeOf(userConfig.title).toEqualTypeOf<string>();
 
-const withCustomOptions = new UserConfig<DocumentSheetOptions<User.ConfiguredInstance> & { custom: true }>(
-  new User({ name: "foo" }),
-);
+const withCustomOptions = new UserConfig<DocumentSheetOptions<User.ConfiguredInstance> & { custom: true }>(user);
 expectTypeOf(withCustomOptions.options).toEqualTypeOf<
   DocumentSheetOptions<User.ConfiguredInstance> & { custom: true }
 >();

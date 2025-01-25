@@ -1,7 +1,7 @@
 import { expectTypeOf } from "vitest";
 import type { MaybePromise } from "fvtt-types/utils";
 
-const actor = new Actor({ name: "Joe", type: "base" });
+declare const actor: Actor;
 const actorSheet = new ActorSheet(actor);
 
 expectTypeOf(actorSheet.object).toEqualTypeOf<Actor>();

@@ -4,7 +4,7 @@ import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
 // @ts-expect-error - a BaseActiveEffect is not a ActiveEffect
 new ActiveEffectConfig(new foundry.documents.BaseActiveEffect());
 
-const effect = new ActiveEffect({ name: "effect" });
+declare const effect: ActiveEffect;
 const config = new ActiveEffectConfig(effect);
 expectTypeOf(config.object).toEqualTypeOf<ActiveEffect>();
 expectTypeOf(config.object).toEqualTypeOf<ActiveEffect>();

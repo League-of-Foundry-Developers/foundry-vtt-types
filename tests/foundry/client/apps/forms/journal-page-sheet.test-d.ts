@@ -1,7 +1,7 @@
 import { expectTypeOf } from "vitest";
 import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
 
-const journalEntryPage = new JournalEntryPage({ name: "Some Journal Entry" });
+declare const journalEntryPage: JournalEntryPage;
 const journalPageSheet = new JournalPageSheet(journalEntryPage);
 
 expectTypeOf(journalPageSheet.object).toEqualTypeOf<JournalEntryPage>();

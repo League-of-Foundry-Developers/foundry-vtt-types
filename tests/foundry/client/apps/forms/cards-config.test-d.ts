@@ -1,7 +1,7 @@
 import { expectTypeOf } from "vitest";
 import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
 
-const cards = new Cards({ name: "cardies", type: "hand" });
+declare const cards: Cards;
 const cardsConfig = new CardsConfig(cards);
 
 expectTypeOf(cardsConfig.object).toEqualTypeOf<Cards>();

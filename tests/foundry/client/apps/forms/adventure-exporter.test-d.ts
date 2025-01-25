@@ -1,7 +1,7 @@
 import { expectTypeOf } from "vitest";
 import type { GetDataReturnType } from "fvtt-types/utils";
 
-const adventure = new Adventure({ name: "Some dude" }, { pack: "abc" }) as Adventure & { pack: string };
+declare const adventure: Adventure & { pack: string };
 const adventureExporter = new AdventureExporter(adventure);
 
 expectTypeOf(adventureExporter.object).toEqualTypeOf<Adventure>();
