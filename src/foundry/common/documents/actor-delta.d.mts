@@ -1,4 +1,4 @@
-import type { AnyObject, InexactPartial } from "../../../utils/index.d.mts";
+import type { AnyMutableObject, AnyObject, InexactPartial } from "../../../utils/index.d.mts";
 import type Document from "../abstract/document.mts";
 import type { fields } from "../data/module.d.mts";
 import type { CONST, documents } from "../../client-esm/client.d.mts";
@@ -54,7 +54,7 @@ declare abstract class BaseActorDelta<
     context: unknown,
   ): Document.ConfiguredClassForName<"Actor"> | null;
 
-  static migrateData(source: AnyObject): AnyObject;
+  static migrateData(source: AnyMutableObject): AnyMutableObject;
 
   //TODO: Figure out if this override still applies
   toObject(source: true): this["_source"];

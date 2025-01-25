@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
+export * from "./globals.mjs";
 
 /**
  * Use this interface to configure your custom generic `ActiveEffect` implementation.
