@@ -5,4 +5,6 @@ Folders complete:
     - av
     - dialogs
     - dice
-    - forms - pick up with grid-config
+    - forms
+    - hud
+    - placeables - start here

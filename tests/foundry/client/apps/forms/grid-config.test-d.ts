@@ -1,0 +1,14 @@
+import { expectTypeOf } from "vitest";
+import type { GetDataReturnType, MaybePromise } from "../../../../../src/utils/index.d.mts";
+
+declare const scene: Scene.ConfiguredInstance;
+declare const sheet: GridConfig["sheet"];
+
+const gridConfig = new GridConfig(scene, sheet);
+expectTypeOf(gridConfig.object).toEqualTypeOf<Scene>();
+expectTypeOf(GridConfig.defaultOptions).toEqualTypeOf<typeof FormApplication.defaultOptions>();
+expectTypeOf(gridConfig.options).toEqualTypeOf<typeof FormApplication.defaultOptions>();
+expectTypeOf(gridConfig.getData()).toEqualTypeOf<MaybePromise<GetDataReturnType<GridConfig.GridConfigData>>>();
+expectTypeOf(gridConfig.render(true)).toEqualTypeOf<GridConfig>();
+
+expectTypeOf(gridConfig.sheet).toEqualTypeOf<SceneConfig>();
