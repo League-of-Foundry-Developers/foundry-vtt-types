@@ -1,12 +1,13 @@
 import { expectTypeOf } from "vitest";
 import type { MaybePromise } from "fvtt-types/utils";
+import type { Container, DisplayObject } from "pixi.js";
 
-declare const token: Token;
+const tokenHUD = new TokenHUD();
 
-const hud = new TokenHUD();
-expectTypeOf(hud.layer).toEqualTypeOf<TokenLayer | undefined>();
-expectTypeOf(hud.object).toEqualTypeOf<Token | undefined>();
-hud.bind(token);
+expectTypeOf(tokenHUD.object).toEqualTypeOf<Token | undefined>();
+expectTypeOf(TokenHUD.defaultOptions).toEqualTypeOf<ApplicationOptions>();
+expectTypeOf(tokenHUD.options).toEqualTypeOf<ApplicationOptions>();
+expectTypeOf(tokenHUD.getData()).toEqualTypeOf<MaybePromise<object>>();
+expectTypeOf(tokenHUD.render(true)).toEqualTypeOf<TokenHUD>();
 
-expectTypeOf(hud.getData()).toEqualTypeOf<MaybePromise<object>>();
-expectTypeOf(hud.setPosition()).toEqualTypeOf<void>();
+expectTypeOf(tokenHUD.layer).toEqualTypeOf<Container<DisplayObject> | undefined>();

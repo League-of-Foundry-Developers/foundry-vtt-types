@@ -1,12 +1,14 @@
 import { expectTypeOf } from "vitest";
 import type { MaybePromise } from "fvtt-types/utils";
 
-declare const drawing: Drawing;
+const drawingHUD = new DrawingHUD();
 
-const hud = new DrawingHUD();
-// TODO: "Type Instantiation is nxcessively deep and possibly infinite"
-// expectTypeOf(hud.layer).toEqualTypeOf<PlaceablesLayer<any> | undefined>();
-expectTypeOf(hud.object).toEqualTypeOf<Drawing | undefined>();
-hud.bind(drawing);
-expectTypeOf(hud.getData()).toEqualTypeOf<MaybePromise<object>>();
-expectTypeOf(hud.setPosition()).toEqualTypeOf<void>();
+expectTypeOf(drawingHUD.object).toEqualTypeOf<Drawing | undefined>();
+expectTypeOf(DrawingHUD.defaultOptions).toEqualTypeOf<ApplicationOptions>();
+expectTypeOf(drawingHUD.options).toEqualTypeOf<ApplicationOptions>();
+expectTypeOf(drawingHUD.getData()).toEqualTypeOf<MaybePromise<object>>();
+expectTypeOf(drawingHUD.render(true)).toEqualTypeOf<DrawingHUD>();
+
+expectTypeOf(drawingHUD.layer).toEqualTypeOf<
+  DrawingsLayer<DrawingsLayer.DrawOptions, CanvasLayer.TearDownOptions> | undefined
+>();

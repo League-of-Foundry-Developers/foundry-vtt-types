@@ -1,12 +1,13 @@
 import { expectTypeOf } from "vitest";
 import type { MaybePromise } from "fvtt-types/utils";
+import type { Container, DisplayObject } from "pixi.js";
 
-declare const tile: Tile;
+const tileHUD = new TileHUD();
 
-const hud = new TileHUD();
-// TODO: Fix after document updates
-// expectTypeOf(hud.layer).toEqualTypeOf<ForegroundLayer | BackgroundLayer | undefined>();
-expectTypeOf(hud.object).toEqualTypeOf<Tile | undefined>();
-hud.bind(tile);
-expectTypeOf(hud.getData()).toEqualTypeOf<MaybePromise<object>>();
-expectTypeOf(hud.setPosition()).toEqualTypeOf<void>();
+expectTypeOf(tileHUD.object).toEqualTypeOf<Tile | undefined>();
+expectTypeOf(TileHUD.defaultOptions).toEqualTypeOf<ApplicationOptions>();
+expectTypeOf(tileHUD.options).toEqualTypeOf<ApplicationOptions>();
+expectTypeOf(tileHUD.getData()).toEqualTypeOf<MaybePromise<object>>();
+expectTypeOf(tileHUD.render(true)).toEqualTypeOf<TileHUD>();
+
+expectTypeOf(tileHUD.layer).toEqualTypeOf<Container<DisplayObject> | undefined>();
