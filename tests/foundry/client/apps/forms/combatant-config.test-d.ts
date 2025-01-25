@@ -8,8 +8,11 @@ expectTypeOf(CombatantConfig.defaultOptions).toEqualTypeOf<CombatantConfig.Optio
 // @ts-expect-error - a BaseCombatant is not a Combatant
 new CombatantConfig(baseCombatant);
 
-const sheet = new CombatantConfig(combatant);
-expectTypeOf(sheet.document).toEqualTypeOf<Combatant>();
-expectTypeOf(sheet.object).toEqualTypeOf<Combatant>();
-expectTypeOf(sheet.title).toEqualTypeOf<string>();
-expectTypeOf(sheet.options).toEqualTypeOf<CombatantConfig.Options>();
+const combatantConfig = new CombatantConfig(combatant);
+expectTypeOf(combatantConfig.document).toEqualTypeOf<Combatant>();
+expectTypeOf(combatantConfig.object).toEqualTypeOf<Combatant>();
+expectTypeOf(CombatantConfig.defaultOptions).toEqualTypeOf<CombatantConfig.Options>();
+expectTypeOf(combatantConfig.options).toEqualTypeOf<CombatantConfig.Options>();
+expectTypeOf(combatantConfig.options).toEqualTypeOf<CombatantConfig.Options>();
+
+expectTypeOf(combatantConfig.title).toEqualTypeOf<string>();
