@@ -5,4 +5,4 @@ import "showdown";
 import "./src/index.d.mts";
 
 // eslint-disable-next-line import/extensions, import/export
-export * from "./namespaces.mjs";
+export * from "./src/namespaces.mjs";
