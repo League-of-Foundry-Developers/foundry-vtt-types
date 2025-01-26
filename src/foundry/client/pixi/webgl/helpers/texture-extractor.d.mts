@@ -1,19 +1,16 @@
-import type { InexactPartial } from "fvtt-types/utils";
+import type { Brand, InexactPartial } from "fvtt-types/utils";
 
 declare global {
   /**
    * A class or interface that provide support for WebGL async read pixel/texture data extraction.
    */
   class TextureExtractor {
-    constructor(
-      renderer: PIXI.Renderer,
-      { callerName, controlHash, format }?: InexactPartial<TextureExtractor.ConstructorOptions>,
-    );
+    constructor(renderer: PIXI.Renderer, options?: TextureExtractor.ConstructorOptions);
 
     /**
      * List of compression that could be applied with extraction
      */
-    static COMPRESSION_MODES: TextureExtractor.COMPRESSION_MODES;
+    static COMPRESSION_MODES: TextureExtractor.CompressionModes;
 
     /**
      * Debug flag.
@@ -29,7 +26,7 @@ declare global {
      * Extract a rectangular block of pixels from the texture (without un-pre-multiplying).
      * @param options - Options which configure extraction behavior
      */
-    extract(options: InexactPartial<TextureExtractor.TextureExtractionOptions>): ReturnType<Semaphore["add"]>;
+    extract(options?: TextureExtractor.TextureExtractionOptions): Promise<string | Uint8ClampedArray>;
 
     /**
      * Free all the bound objects.
@@ -43,25 +40,43 @@ declare global {
   }
 
   namespace TextureExtractor {
-    interface Any extends AnyTextureExtractor {}
+    type Any = AnyTextureExtractor;
     type AnyConstructor = typeof AnyTextureExtractor;
 
-    interface ConstructorOptions {
-      /** @defaultValue `"TextureExtractor"` */
-      callerName: string;
+    /** @internal */
+    type _ConstructorOptions = InexactPartial<{
+      /**
+       * The caller name associated with this instance of texture extractor (optional, used for debug)
+       * @defaultValue `"TextureExtractor"`
+       * @remarks Default provided by ?? in function body
+       */
+      callerName: string | null;
 
-      controlHash: boolean;
+      /**
+       * Does the TextureCompressor neeed to control the hash?
+       * @remarks Passed to `new TextureCompressor()`, where it is provided a default of `false` if null
+       */
+      controlHash: boolean | null;
 
-      /** @defaultValue `PIXI.FORMATS.RED` */
+      /**
+       * The PIXI Format this TextureExtractor uses
+       * @defaultValue `PIXI.FORMATS.RED`
+       * @remarks Construction throws if this isn't `.RED` or `.RGBA`, so can't be null
+       */
       format: PIXI.FORMATS;
-    }
+    }>;
 
-    interface TextureExtractionOptions {
+    /** Options for the constructor of {@link TextureExtractor} */
+    interface ConstructorOptions extends _ConstructorOptions {}
+
+    /** @internal */
+    type _ExtractOptions = InexactPartial<{
       /**
        * The texture the pixels are extracted from.
        * Otherwise, extract from the renderer.
+       * @remarks Can't be null despite Foundry's typedef claiming it can, as eventually `texture?.baseTexture.resolution` is accessed
        */
-      texture: PIXI.Texture | PIXI.RenderTexture | null;
+      texture: PIXI.Texture | PIXI.RenderTexture;
 
       /** The rectangle which the pixels are extracted from. */
       frame: PIXI.Rectangle;
@@ -69,19 +84,32 @@ declare global {
       /** The compression mode to apply, or NONE */
       compression: TextureExtractor.COMPRESSION_MODES;
 
-      /** The optional image mime type. */
-      type: string;
+      /**
+       * The optional image mime type.
+       * @privateRemarks Allowed to be null because it has an `??` default in `TextureExtractor##compressBufferWorker`
+       * via `##compressBuffer`, the only place it is actually used, despite being passed to other functions as well
+       */
+      type: string | null;
 
-      /** The optional image quality. */
-      quality: string;
+      /**
+       * The optional image quality.
+       *  @privateRemarks Foundry types as `string` but is clearly meant to be `number` by usage. Allowing null due to
+       * it having a `??` default in the path any browser someone is realistically using for Foundry will take.
+       */
+      quality: number | null;
 
       /** The optional debug flag to use. */
-      debug: boolean;
-    }
+      debug: boolean | null;
+    }>;
 
-    interface COMPRESSION_MODES {
-      readonly NONE: 0;
-      readonly BASE64: 1;
+    /** Options for {@link TextureExtractor#extract} */
+    interface TextureExtractionOptions extends _ExtractOptions {}
+
+    type COMPRESSION_MODES = Brand<number, "TextureExtractor.COMPRESSION_MODES">;
+
+    interface CompressionModes {
+      NONE: 0 & COMPRESSION_MODES;
+      BASE64: 1 & COMPRESSION_MODES;
     }
   }
 }
