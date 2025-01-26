@@ -1,4 +1,5 @@
 import type { ToMethod, InexactPartial, IntentionalPartial } from "fvtt-types/utils";
+import type { IBatchableElement, ViewableBuffer } from "pixi.js";
 
 declare global {
   /**
@@ -52,7 +53,18 @@ declare global {
 
     override start(): void;
 
-    override packInterleavedGeometry: BatchRenderer.PackInterleavedGeometryFunction;
+    /**
+     * @privateRemarks This signature must match `PIXI.BatchRenderer#packInterleavedGeometry`, as opposed to being
+     * a `PackInterleavedGeometryFunction`, as these params will be piped there if the subclass in question
+     * doesn't implement `_packInterleavedGeometry`
+     */
+    override packInterleavedGeometry(
+      element: IBatchableElement,
+      attributeBuffer: ViewableBuffer,
+      indexBuffer: Uint16Array,
+      aIndex: number,
+      iIndex: number,
+    ): void;
 
     /**
      * Verify if a PIXI plugin exists. Check by name.
@@ -69,9 +81,9 @@ declare global {
     type PackInterleavedGeometryFunction = ToMethod<
       (
         /**
-         * @privateRemarks IntentionalPartial to allow `DepthSamplerShader.DepthBatchData`,
-         * which is the type of `DepthSamplerShader._packInterleavedGeometry`'s first param,
-         * to leave off some keys of IBatchableData
+         * @privateRemarks The `element` param is `Partial`'d here because at least one `_packInterleavedGeometry` implementation (`DepthSampleShader`'s)
+         * omits properties from the parent PIXI interface. Neither `PIXI.BatchRenderer` nor any Foundry implementations provide any default vaules for
+         * properties of this interface, so no `InexactPartial` or `NullishProps`.
          */
         element: IntentionalPartial<PIXI.IBatchableElement>,
         attributeBuffer: PIXI.ViewableBuffer,

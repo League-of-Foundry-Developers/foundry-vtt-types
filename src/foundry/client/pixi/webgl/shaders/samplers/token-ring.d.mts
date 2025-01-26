@@ -1,3 +1,6 @@
+import type { NullishProps } from "../../../../../../utils/index.d.mts";
+import type TokenRing from "../../../../../client-esm/canvas/tokens/ring.d.mts";
+
 export {};
 
 declare global {
@@ -34,7 +37,7 @@ declare global {
 
     protected static override _packInterleavedGeometry(
       /** @privateRemarks Calls super, which is the grandparent class in this case, with no new keys */
-      element: OccludableSamplerShader.OccludableBatchData,
+      element: TokenRingSamplerShader.BatchData,
       attributeBuffer: PIXI.ViewableBuffer,
       indexBuffer: Uint16Array,
       aIndex: number,
@@ -49,6 +52,21 @@ declare global {
   namespace TokenRingSamplerShader {
     interface Any extends AnyTokenRingSamplerShader {}
     type AnyConstructor = typeof AnyTokenRingSamplerShader;
+
+    /** @internal */
+    type RingContainerObject = NullishProps<{
+      object: NullishProps<{
+        ring: TokenRing;
+      }>;
+    }>;
+
+    interface BatchData extends OccludableSamplerShader.OccludableBatchData {
+      /**
+       * @remarks This key is required to be an object as `TokenRingSamplerShader._packInterleavedGeometry` does `element.object.object || {}`.
+       * All `TokenRing` keys are then accessed via optional chaining with `??` defaults.
+       */
+      object: RingContainerObject;
+    }
   }
 }
 

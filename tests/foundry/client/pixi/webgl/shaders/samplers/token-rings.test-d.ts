@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import type TokenRing from "../../../../../../../src/foundry/client-esm/canvas/tokens/ring.d.mts";
 
 const TRSS = TokenRingSamplerShader;
 let myTRSS;
@@ -7,6 +8,7 @@ declare const someVB: PIXI.ViewableBuffer;
 declare const someU16Array: Uint16Array;
 declare const someF32Array: Float32Array;
 declare const someTex: PIXI.Texture;
+declare const someRing: TokenRing;
 
 expectTypeOf(TRSS.nullUvs).toEqualTypeOf<Float32Array>();
 expectTypeOf(TRSS.classPluginName).toEqualTypeOf<string>();
@@ -15,6 +17,11 @@ expectTypeOf(TRSS.batchDefaultUniforms).toEqualTypeOf<BatchRenderer.BatchDefault
 expectTypeOf(
   TRSS["_packInterleavedGeometry"](
     {
+      object: {
+        object: {
+          ring: someRing,
+        },
+      },
       _texture: someTex,
       elevation: 0,
       fadeOcclusion: 0,
