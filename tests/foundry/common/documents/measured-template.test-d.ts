@@ -1,27 +1,29 @@
 import { expectTypeOf } from "vitest";
 
-const template = new foundry.documents.BaseMeasuredTemplate();
+declare const template: foundry.documents.BaseMeasuredTemplate;
 expectTypeOf(template._id).toEqualTypeOf<string | null>();
 expectTypeOf(template.t).toEqualTypeOf<foundry.CONST.MEASURED_TEMPLATE_TYPES>();
 expectTypeOf(template.parent).toEqualTypeOf<Scene | null>();
 
 const scene = new Scene({ name: "My scene" });
 
-new foundry.documents.BaseMeasuredTemplate();
+class TestBaseMeasuredTemplate extends foundry.documents.BaseMeasuredTemplate {};
 
-new foundry.documents.BaseMeasuredTemplate({ x: 100, y: 100 });
+new TestBaseMeasuredTemplate();
+
+new TestBaseMeasuredTemplate({ x: 100, y: 100 });
 
 expectTypeOf(
-  new foundry.documents.BaseMeasuredTemplate({ x: 100, y: 100 }, scene),
+  new TestBaseMeasuredTemplate({ x: 100, y: 100 }, scene),
 ).toEqualTypeOf<foundry.documents.BaseMeasuredTemplate>();
 expectTypeOf(
-  new foundry.documents.BaseMeasuredTemplate({}, scene),
+  new TestBaseMeasuredTemplate({}, scene),
 ).toEqualTypeOf<foundry.documents.BaseMeasuredTemplate>();
 expectTypeOf(
-  new foundry.documents.BaseMeasuredTemplate(undefined, scene),
+  new TestBaseMeasuredTemplate(undefined, scene),
 ).toEqualTypeOf<foundry.documents.BaseMeasuredTemplate>();
 expectTypeOf(
-  new foundry.documents.BaseMeasuredTemplate(
+  new TestBaseMeasuredTemplate(
     {
       _id: null,
       user: null,
@@ -40,7 +42,7 @@ expectTypeOf(
   ),
 ).toEqualTypeOf<foundry.documents.BaseMeasuredTemplate>();
 expectTypeOf(
-  new foundry.documents.BaseMeasuredTemplate(
+  new TestBaseMeasuredTemplate(
     {
       _id: undefined,
       user: undefined,
@@ -60,7 +62,7 @@ expectTypeOf(
 ).toEqualTypeOf<foundry.documents.BaseMeasuredTemplate>();
 
 expectTypeOf(
-  new foundry.documents.BaseMeasuredTemplate(
+  new TestBaseMeasuredTemplate(
     {
       _id: "10",
       user: "11",

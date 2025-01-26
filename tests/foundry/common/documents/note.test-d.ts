@@ -1,11 +1,13 @@
 import { expectTypeOf } from "vitest";
 
-expectTypeOf(new foundry.documents.BaseNote()).toEqualTypeOf<foundry.documents.BaseNote>();
+class TestBaseNote extends foundry.documents.BaseNote {};
 
-expectTypeOf(new foundry.documents.BaseNote({})).toEqualTypeOf<foundry.documents.BaseNote>();
+expectTypeOf(new TestBaseNote()).toEqualTypeOf<foundry.documents.BaseNote>();
+
+expectTypeOf(new TestBaseNote({})).toEqualTypeOf<foundry.documents.BaseNote>();
 
 expectTypeOf(
-  new foundry.documents.BaseNote({
+  new TestBaseNote({
     _id: undefined,
     entryId: undefined,
     x: undefined,
@@ -22,7 +24,7 @@ expectTypeOf(
 ).toEqualTypeOf<foundry.documents.BaseNote>();
 
 expectTypeOf(
-  new foundry.documents.BaseNote({
+  new TestBaseNote({
     _id: null,
     entryId: null,
     x: null,
@@ -39,7 +41,7 @@ expectTypeOf(
 ).toEqualTypeOf<foundry.documents.BaseNote>();
 
 expectTypeOf(
-  new foundry.documents.BaseNote({
+  new TestBaseNote({
     _id: "bfeabfiea",
     entryId: "bebfegibefaei",
     x: 100,
@@ -59,4 +61,4 @@ expectTypeOf(
 ).toEqualTypeOf<foundry.documents.BaseNote>();
 
 // @ts-expect-error - A textAnchor cannot be an arbitrary number.
-new foundry.documents.BaseNote({ textAnchor: 999 });
+new TestBaseNote({ textAnchor: 999 });

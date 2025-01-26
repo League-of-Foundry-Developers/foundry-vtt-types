@@ -245,7 +245,7 @@ declare global {
     static override defaultName(context?: Document.DefaultNameContext<"base", AmbientLightDocument.Parent>): string;
 
     static override createDialog(
-      data: AmbientLightDocument.CreateData,
+      data?: AmbientLightDocument.CreateData,
       context?: Document.CreateDialogContext<"base", AmbientLightDocument.Parent>,
     ): Promise<AmbientLightDocument.Implementation | null | undefined>;
 

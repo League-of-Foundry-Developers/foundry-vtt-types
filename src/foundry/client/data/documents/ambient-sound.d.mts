@@ -269,7 +269,7 @@ declare global {
     static override defaultName(context?: Document.DefaultNameContext<"base", AmbientSoundDocument.Parent>): string;
 
     static override createDialog(
-      data: AmbientSoundDocument.CreateData,
+      data?: AmbientSoundDocument.CreateData,
       context?: Document.CreateDialogContext<"base", AmbientSoundDocument.Parent>,
     ): Promise<AmbientSoundDocument.Implementation | null | undefined>;
 

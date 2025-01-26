@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
 
-import FilePathField = foundry.common.fields.FilePathField;
+import FilePathField = foundry.data.fields.FilePathField;
 
 // @ts-expect-error - Cards requires name.
 new Cards();

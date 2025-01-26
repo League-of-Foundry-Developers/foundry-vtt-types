@@ -321,7 +321,7 @@ declare global {
     static override defaultName(context?: Document.DefaultNameContext<"base", Adventure.Parent>): string;
 
     static override createDialog(
-      data: Adventure.CreateData,
+      data?: Adventure.CreateData,
       context?: Document.CreateDialogContext<"base", Adventure.Parent>,
     ): Promise<Adventure.Implementation | null | undefined>;
 

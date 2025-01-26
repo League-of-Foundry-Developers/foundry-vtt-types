@@ -708,7 +708,7 @@ declare global {
     ): string;
 
     static override createDialog(
-      data: ActiveEffect.CreateData,
+      data?: ActiveEffect.CreateData,
       context?: Document.CreateDialogContext<ActiveEffect.SubType, ActiveEffect.Parent>,
     ): Promise<ActiveEffect.Implementation | null | undefined>;
 

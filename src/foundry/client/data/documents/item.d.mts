@@ -284,7 +284,7 @@ declare global {
     static override defaultName(context?: Document.DefaultNameContext<Item.SubType, Item.Parent>): string;
 
     static override createDialog(
-      data: Item.CreateData,
+      data?: Item.CreateData,
       context?: Document.CreateDialogContext<Item.SubType, Item.Parent>,
     ): Promise<Item.Implementation | null | undefined>;
 

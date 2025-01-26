@@ -538,7 +538,7 @@ declare global {
     static override defaultName(context?: Document.DefaultNameContext<Actor.SubType, Actor.Parent>): string;
 
     static override createDialog(
-      data: Actor.CreateData,
+      data?: Actor.CreateData,
       context?: Document.CreateDialogContext<Actor.SubType, Actor.Parent>,
     ): Promise<Actor.Implementation | null | undefined>;
 
