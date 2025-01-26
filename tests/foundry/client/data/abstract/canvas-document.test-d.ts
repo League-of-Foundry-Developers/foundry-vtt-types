@@ -1,5 +1,5 @@
 import { assertType, expectTypeOf } from "vitest";
-import type { FixedInstanceType } from "../../../../../src/utils/index.d.mts";
+import type { FixedInstanceType } from "fvtt-types/utils";
 
 import Document = foundry.abstract.Document;
 

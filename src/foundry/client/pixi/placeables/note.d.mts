@@ -1,5 +1,5 @@
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
-import type { FixedInstanceType } from "../../../../utils/index.d.mts";
+import type { FixedInstanceType } from "fvtt-types/utils";
 
 declare global {
   namespace Note {

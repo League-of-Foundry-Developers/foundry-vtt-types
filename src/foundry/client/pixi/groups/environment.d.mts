@@ -1,4 +1,4 @@
-import type { HandleEmptyObject, NullishProps } from "../../../../utils/index.d.mts";
+import type { HandleEmptyObject, NullishProps } from "fvtt-types/utils";
 import type { SceneEnvironmentData } from "../../../common/documents/_types.d.mts";
 
 declare global {

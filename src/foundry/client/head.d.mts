@@ -1,4 +1,4 @@
-import type { FixedInstanceType } from "../../utils/index.d.mts";
+import type { FixedInstanceType } from "fvtt-types/utils";
 import type { EarlierEvents, InitializationEvent } from "./game.d.mts";
 
 type ValidRanHooks = Extract<keyof AssumeHookRan, InitializationEvent>;

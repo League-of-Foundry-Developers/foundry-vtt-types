@@ -1,4 +1,4 @@
-import type { InterfaceToObject, AnyObject } from "../../../../utils/index.d.mts";
+import type { InterfaceToObject, AnyObject } from "fvtt-types/utils";
 import type StringTerm from "../../../client-esm/dice/terms/string.d.mts";
 
 declare global {

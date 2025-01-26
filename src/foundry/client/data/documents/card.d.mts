@@ -1,4 +1,4 @@
-import type { DeepPartial, InexactPartial } from "../../../../utils/index.d.mts";
+import type { DeepPartial, InexactPartial } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { CardFaceData } from "../../../common/documents/_types.d.mts";
 import type BaseCard from "../../../common/documents/card.d.mts";

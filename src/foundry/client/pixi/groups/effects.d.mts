@@ -1,4 +1,4 @@
-import type { HandleEmptyObject, ValueOf } from "../../../../utils/index.d.mts";
+import type { HandleEmptyObject, ValueOf } from "fvtt-types/utils";
 
 declare global {
   /**

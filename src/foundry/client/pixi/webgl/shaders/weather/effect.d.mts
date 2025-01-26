@@ -1,4 +1,4 @@
-import type { InexactPartial, FixedInstanceType } from "../../../../../../utils/index.d.mts";
+import type { InexactPartial, FixedInstanceType } from "fvtt-types/utils";
 
 declare abstract class AnyWeatherShaderEffect extends WeatherShaderEffect<any> {
   constructor(arg0: never, ...args: never[]);

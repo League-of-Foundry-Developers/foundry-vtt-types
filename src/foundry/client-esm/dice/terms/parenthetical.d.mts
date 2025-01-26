@@ -1,4 +1,4 @@
-import type { InexactPartial } from "../../../../utils/index.d.mts";
+import type { InexactPartial } from "fvtt-types/utils";
 import type { ParentheticalRollParseNode } from "../_types.d.mts";
 
 import type RollTerm from "./term.d.mts";

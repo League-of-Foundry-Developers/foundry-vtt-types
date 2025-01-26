@@ -1,4 +1,4 @@
-import type { Mixin, NullishProps, ValueOf } from "../../../../../utils/index.d.mts";
+import type { Mixin, NullishProps, ValueOf } from "fvtt-types/utils";
 
 declare class PrimaryOccludableObject {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */

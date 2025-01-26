@@ -1,4 +1,4 @@
-import type { AnyObject } from "../../../utils/index.d.mts";
+import type { AnyObject } from "fvtt-types/utils";
 import type Document from "../abstract/document.mts";
 import type { LightData } from "../data/data.mts";
 import type * as fields from "../data/fields.d.mts";

@@ -1,12 +1,12 @@
 import type { EditorView } from "prosemirror-view";
 import type { Editor } from "tinymce";
-import type { GetDataReturnType } from "../../../../utils/index.d.mts";
+import type { GetDataReturnType } from "fvtt-types/utils";
 
 declare global {
-  class BaseSheet<Options extends BaseSheet.Options = BaseSheet.Options> extends DocumentSheet<
-    Options,
-    foundry.abstract.Document.Any
-  > {
+  class BaseSheet<
+    ConcreteDocument extends foundry.abstract.Document.Any = foundry.abstract.Document.Any,
+    Options extends BaseSheet.Options<ConcreteDocument> = BaseSheet.Options<ConcreteDocument>,
+  > extends DocumentSheet<Options, ConcreteDocument> {
     /**
      * @defaultValue
      * ```typescript
@@ -33,7 +33,8 @@ declare global {
   namespace BaseSheet {
     type Any = BaseSheet<any>;
 
-    interface Options extends DocumentSheetOptions<Adventure.ConfiguredInstance> {}
+    interface Options<ConcreteDocument extends foundry.abstract.Document.Any = foundry.abstract.Document.Any>
+      extends DocumentSheetOptions<ConcreteDocument> {}
 
     interface BaseSheetData extends DocumentSheet.DocumentSheetData<Options, foundry.abstract.Document.Any> {
       hasName: boolean;

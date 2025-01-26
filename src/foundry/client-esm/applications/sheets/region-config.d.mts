@@ -1,4 +1,4 @@
-import type { AnyObject, DeepPartial, EmptyObject } from "../../../../utils/index.d.mts";
+import type { AnyObject, DeepPartial, EmptyObject } from "fvtt-types/utils";
 import type DocumentSheetV2 from "../api/document-sheet.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
 

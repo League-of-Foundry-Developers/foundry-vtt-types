@@ -1,4 +1,4 @@
-import type { IntentionalPartial } from "../../../../../utils/index.d.mts";
+import type { IntentionalPartial } from "fvtt-types/utils";
 
 declare global {
   /**

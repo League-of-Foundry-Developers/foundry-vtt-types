@@ -1,4 +1,4 @@
-import type { Brand } from "../../utils/index.d.mts";
+import type { Brand } from "fvtt-types/utils";
 
 declare global {
   namespace ClipperLib {

@@ -1,4 +1,4 @@
-import type { AnyFunction } from "../../../utils/index.d.mts";
+import type { AnyFunction } from "fvtt-types/utils";
 
 export {};
 

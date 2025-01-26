@@ -1,4 +1,4 @@
-import type { AnyConstructor, InexactPartial, Mixin } from "../../../../../utils/index.d.mts";
+import type { AnyConstructor, InexactPartial, Mixin } from "fvtt-types/utils";
 import type { LogCompatibilityWarningOptions } from "../../../../common/utils/logging.d.mts";
 
 declare class RenderFlagObject {

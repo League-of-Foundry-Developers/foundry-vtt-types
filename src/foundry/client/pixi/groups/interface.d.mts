@@ -1,4 +1,4 @@
-import type { HandleEmptyObject, InexactPartial, NullishProps } from "../../../../utils/index.d.mts";
+import type { HandleEmptyObject, InexactPartial, NullishProps } from "fvtt-types/utils";
 
 declare global {
   /**

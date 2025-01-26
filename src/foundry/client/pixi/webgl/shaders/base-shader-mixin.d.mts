@@ -1,4 +1,4 @@
-import type { Mixin } from "../../../../../utils/index.d.mts";
+import type { Mixin } from "fvtt-types/utils";
 
 declare abstract class AnyBaseShader extends BaseShader {
   constructor(arg0: never, ...args: never[]);

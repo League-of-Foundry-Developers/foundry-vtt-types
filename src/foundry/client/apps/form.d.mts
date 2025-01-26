@@ -1,6 +1,6 @@
 import type { EditorView } from "prosemirror-view";
 import type { Editor } from "tinymce";
-import type { AnyObject, GetDataReturnType, InexactPartial, MaybePromise } from "../../../utils/index.d.mts";
+import type { AnyObject, GetDataReturnType, InexactPartial, MaybePromise } from "fvtt-types/utils";
 import type { ProseMirrorKeyMaps, ProseMirrorMenu } from "../../common/prosemirror/_module.d.mts";
 import type Document from "../../common/abstract/document.d.mts";
 
@@ -59,6 +59,8 @@ declare global {
   > extends Application<Options> {
     /**
      * @param object  - Some object or entity which is the target to be updated.
+     *                  (default: `{}`)
+     *
      * @param options - Additional options which modify the rendering of the sheet.
      *                  (default: `{}`)
      * @remarks Foundry allows passing no value to the constructor at all.
