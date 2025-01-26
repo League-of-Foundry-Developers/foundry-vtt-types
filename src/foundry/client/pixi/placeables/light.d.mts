@@ -1,5 +1,5 @@
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
-import type { FixedInstanceType } from "../../../../utils/index.d.mts";
+import type { FixedInstanceType } from "fvtt-types/utils";
 
 // TODO: Remove when the whole class is updated
 type LightSource = unknown;

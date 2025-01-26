@@ -1,4 +1,4 @@
-import type { InexactPartial } from "../../../../../utils/index.d.mts";
+import type { InexactPartial } from "fvtt-types/utils";
 
 // TODO: Remove when #2570 is completed
 declare const PrimaryBaseSamplerShader: BaseSamplerShader;

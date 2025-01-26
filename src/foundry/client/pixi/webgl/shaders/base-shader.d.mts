@@ -1,4 +1,4 @@
-import type { FixedInstanceType, ToMethod } from "../../../../../utils/index.d.mts";
+import type { FixedInstanceType, ToMethod } from "fvtt-types/utils";
 
 declare global {
   /**

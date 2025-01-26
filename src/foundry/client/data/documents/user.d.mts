@@ -1,4 +1,4 @@
-import type { InexactPartial } from "../../../../utils/index.d.mts";
+import type { InexactPartial } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 import type BaseUser from "../../../common/documents/user.d.mts";
 

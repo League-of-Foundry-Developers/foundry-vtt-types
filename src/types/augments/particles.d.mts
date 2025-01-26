@@ -1,6 +1,6 @@
 /* eslint-disable import/export */
 
-import type { Brand } from "../../utils/index.d.mts";
+import type { Brand } from "fvtt-types/utils";
 
 export namespace behaviors {
   type BehaviorOrder = Brand<number, "PIXI.particles.behaviors.BehaviorOrder">;

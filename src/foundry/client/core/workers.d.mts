@@ -1,4 +1,4 @@
-import type { ValueOf } from "../../../utils/index.d.mts";
+import type { ValueOf } from "fvtt-types/utils";
 
 // TODO: smarter types for named functions
 declare global {

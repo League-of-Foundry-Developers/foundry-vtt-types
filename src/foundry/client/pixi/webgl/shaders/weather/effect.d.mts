@@ -1,4 +1,4 @@
-import type { InexactPartial, FixedInstanceType } from "../../../../../../utils/index.d.mts";
+import type { InexactPartial, FixedInstanceType } from "fvtt-types/utils";
 
 type QuadMeshClass = typeof QuadMesh;
 

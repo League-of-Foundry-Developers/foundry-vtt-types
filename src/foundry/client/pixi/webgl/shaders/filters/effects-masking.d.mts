@@ -1,4 +1,4 @@
-import type { AnyObject, Brand, FixedInstanceType, ShapeWithIndexSignature } from "../../../../../../utils/index.d.mts";
+import type { AnyObject, Brand, FixedInstanceType, ShapeWithIndexSignature } from "fvtt-types/utils";
 
 declare global {
   /**

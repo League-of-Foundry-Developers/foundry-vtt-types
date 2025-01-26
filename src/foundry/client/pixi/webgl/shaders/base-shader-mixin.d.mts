@@ -1,4 +1,4 @@
-import type { Mixin } from "../../../../../utils/index.d.mts";
+import type { Mixin } from "fvtt-types/utils";
 
 declare class BaseShader {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */

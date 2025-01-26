@@ -1,4 +1,4 @@
-import type { InexactPartial } from "../../../../utils/index.d.mts";
+import type { InexactPartial } from "fvtt-types/utils";
 
 // TODO: Remove when this is typed as part of #2674
 type SceneEnvironmentData = unknown;

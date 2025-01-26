@@ -1,4 +1,4 @@
-import type { InterfaceToObject, AnyObject, DeepPartial, MaybePromise } from "../../../../utils/index.d.mts";
+import type { InterfaceToObject, AnyObject, DeepPartial, MaybePromise } from "fvtt-types/utils";
 
 declare global {
   /**

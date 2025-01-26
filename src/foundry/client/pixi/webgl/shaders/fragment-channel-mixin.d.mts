@@ -1,4 +1,4 @@
-import type { AnyObject, Mixin, ShapeWithIndexSignature } from "../../../../../utils/index.d.mts";
+import type { AnyObject, Mixin, ShapeWithIndexSignature } from "fvtt-types/utils";
 
 declare class AdaptiveFragmentChannel {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */

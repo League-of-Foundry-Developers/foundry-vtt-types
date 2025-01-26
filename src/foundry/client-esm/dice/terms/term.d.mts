@@ -1,4 +1,4 @@
-import type { InexactPartial, FixedInstanceType } from "../../../../utils/index.d.mts";
+import type { InexactPartial, FixedInstanceType } from "fvtt-types/utils";
 import type { RollParseNode } from "../_types.mts";
 
 import type RollResolver from "../../applications/dice/roll-resolver.d.mts";

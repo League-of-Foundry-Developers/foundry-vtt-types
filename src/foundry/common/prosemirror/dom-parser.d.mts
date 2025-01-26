@@ -1,5 +1,5 @@
 import { DOMParser as BaseDOMParser, Node, ParseOptions, Schema } from "prosemirror-model";
-import type { FixedInstanceType } from "../../../utils/index.d.mts";
+import type { FixedInstanceType } from "fvtt-types/utils";
 
 export default DOMParser;
 

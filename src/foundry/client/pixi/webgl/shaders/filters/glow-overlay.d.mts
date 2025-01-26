@@ -1,4 +1,4 @@
-import type { FixedInstanceType } from "../../../../../../utils/index.d.mts";
+import type { FixedInstanceType } from "fvtt-types/utils";
 
 declare global {
   /**

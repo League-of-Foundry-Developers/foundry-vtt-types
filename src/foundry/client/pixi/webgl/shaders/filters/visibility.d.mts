@@ -1,4 +1,4 @@
-import type { FixedInstanceType, NullishProps } from "../../../../../../utils/index.d.mts";
+import type { FixedInstanceType, NullishProps } from "fvtt-types/utils";
 
 declare global {
   /**

@@ -1,4 +1,4 @@
-import type { MaybePromise } from "../../../../../utils/index.d.mts";
+import type { MaybePromise } from "fvtt-types/utils";
 
 declare global {
   /** A management app for configuring which Tours are available or have been completed. */

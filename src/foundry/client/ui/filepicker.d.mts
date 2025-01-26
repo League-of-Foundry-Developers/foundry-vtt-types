@@ -1,4 +1,4 @@
-import type { EmptyObject, MaybePromise, ValueOf } from "../../../utils/index.d.mts";
+import type { EmptyObject, MaybePromise, ValueOf } from "fvtt-types/utils";
 
 declare global {
   interface FilePickerOptions extends ApplicationOptions {

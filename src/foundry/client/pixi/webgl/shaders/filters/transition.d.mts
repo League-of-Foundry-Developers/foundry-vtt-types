@@ -1,4 +1,4 @@
-import type { Brand, InexactPartial } from "../../../../../../utils/index.d.mts";
+import type { Brand, InexactPartial } from "fvtt-types/utils";
 
 declare global {
   /**

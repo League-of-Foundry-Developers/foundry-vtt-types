@@ -2,7 +2,7 @@ import type { DatabaseBackend } from "../abstract/module.d.mts";
 import type { DataModel } from "../abstract/data.d.mts";
 import type { fields } from "./module.d.mts";
 import type * as documents from "../documents/_module.d.mts";
-import type { AnyObject, EmptyObject, ToMethod, ValueOf } from "../../../utils/index.d.mts";
+import type { AnyMutableObject, EmptyObject, ToMethod, ValueOf } from "fvtt-types/utils";
 import type { FilePathField } from "./fields.d.mts";
 
 type DataSchema = foundry.data.fields.DataSchema;
@@ -180,7 +180,7 @@ declare class LightData extends DataModel<LightData.Schema, LightData.Parent> {
    */
   static override LOCALIZATION_PREFIXES: string[];
 
-  static migrateData(source: AnyObject): AnyObject;
+  static migrateData(source: AnyMutableObject): AnyMutableObject;
 }
 
 declare namespace ShapeData {

@@ -1,4 +1,4 @@
-import type { DeepPartial, Mixin } from "../../../../utils/index.d.mts";
+import type { DeepPartial, Mixin } from "fvtt-types/utils";
 import type ApplicationV2 from "./application.d.mts";
 
 /**

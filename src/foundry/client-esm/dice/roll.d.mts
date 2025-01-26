@@ -1,4 +1,4 @@
-import type { AnyObject, EmptyObject, InexactPartial, FixedInstanceType } from "../../../utils/index.d.mts";
+import type { AnyObject, EmptyObject, InexactPartial, FixedInstanceType } from "fvtt-types/utils";
 
 import type { RollParseNode } from "./_types.d.mts";
 import type DiceTerm from "./terms/dice.d.mts";

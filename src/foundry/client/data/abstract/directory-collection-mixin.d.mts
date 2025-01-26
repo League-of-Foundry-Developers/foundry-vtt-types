@@ -1,4 +1,4 @@
-import type { Mixin } from "../../../../utils/index.d.mts";
+import type { Mixin } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 
 type DirectoryCollectionMixin_DocumentCollection_Static = DirectoryCollection<DirectoryCollection.DirectoryTypes> &

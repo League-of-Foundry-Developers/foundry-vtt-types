@@ -1,4 +1,4 @@
-import type { GetDataReturnType, MaybePromise } from "../../../../utils/index.d.mts";
+import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -32,7 +32,7 @@ declare global {
      */
     static override get defaultOptions(): FormApplicationOptions;
 
-    override getData(options: Partial<Options>): MaybePromise<GetDataReturnType<AVConfig.AVConfigData>>;
+    override getData(options?: Partial<Options>): MaybePromise<GetDataReturnType<AVConfig.AVConfigData>>;
 
     override activateListeners(html: JQuery): void;
 

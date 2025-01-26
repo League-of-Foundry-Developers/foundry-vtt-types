@@ -1,5 +1,5 @@
 import type { EditorView } from "prosemirror-view";
-import type { AnyObject, InexactPartial, MaybePromise } from "../../../utils/index.d.mts";
+import type { AnyObject, InexactPartial, MaybePromise } from "fvtt-types/utils";
 import type Document from "../../common/abstract/document.d.mts";
 
 declare global {

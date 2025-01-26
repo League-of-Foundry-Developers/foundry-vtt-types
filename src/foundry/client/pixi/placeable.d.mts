@@ -1,4 +1,4 @@
-import type { MakeConform, ValueOf } from "../../../utils/index.d.mts";
+import type { MakeConform, ValueOf } from "fvtt-types/utils";
 import type ApplicationV2 from "../../client-esm/applications/api/application.d.mts";
 import type { Document } from "../../common/abstract/module.d.mts";
 

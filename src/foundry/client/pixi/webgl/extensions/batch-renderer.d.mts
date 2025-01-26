@@ -1,4 +1,4 @@
-import type { ToMethod, InexactPartial, IntentionalPartial } from "../../../../../utils/index.d.mts";
+import type { ToMethod, InexactPartial, IntentionalPartial } from "fvtt-types/utils";
 
 declare global {
   /**
