@@ -65,7 +65,7 @@ declare global {
      *                  (default: `{}`)
      * @remarks Foundry allows passing no value to the constructor at all.
      */
-    constructor(object?: ConcreteObject, options?: Partial<Options>);
+    constructor(object: ConcreteObject, options?: Partial<Options>);
     constructor(
       ...args: ConcreteObject extends undefined
         ? [ConcreteObject?, Partial<Options>?]
