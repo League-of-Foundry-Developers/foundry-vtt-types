@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
 
-expectTypeOf(BatchRenderer.shaderGeneratorClass).toMatchTypeOf<typeof BatchShaderGenerator>();
+expectTypeOf(BatchRenderer.shaderGeneratorClass).toEqualTypeOf<typeof BatchShaderGenerator>();
 expectTypeOf(BatchRenderer.hasPlugin("bob")).toEqualTypeOf<boolean>;
 
 declare const someRenderer: PIXI.Renderer;
