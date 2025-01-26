@@ -611,7 +611,7 @@ type OmitIndex<K extends PropertyKey> = string extends K
 /**
  * Gets the keys of `T` but excluding index signatures unlike `keyof T`. For example `Record<string, any> & { foo: number }` will produce `string` with `keyof` but `foo` with `ConcreteKeys`.
  */
-export type ConcreteKeys<T> = T extends never
+export type ConcreteKeys<T> = [T] extends [never]
   ? never
   : keyof {
       [K in keyof T as OmitIndex<K>]: never;
@@ -657,7 +657,7 @@ export type Merge<T, U> =
     : U;
 
 /**
- * Returns whether the type is a plain object. Excludes functions and arrays while still being friendly to interfaces.
+ * Returns whether the type is a plain object. Excludes functions, arrays, and constructors while still being friendly to interfaces.
  *
  * @example
  * ```ts
@@ -675,11 +675,7 @@ export type Merge<T, U> =
  * ```
  */
 // eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
-export type IsObject<T> = T extends { readonly [K: string]: any }
-  ? T extends AnyArray | AnyFunction
-    ? false
-    : true
-  : false;
+export type IsObject<T> = T extends object ? (T extends AnyArray | AnyFunction | AnyConstructor ? false : true) : false;
 
 /**
  * A simple, non-recursive merge type.
