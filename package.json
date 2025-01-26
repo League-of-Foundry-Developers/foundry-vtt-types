@@ -17,6 +17,9 @@
     },
     "./worker": {
       "types": "./src/foundry/public/scripts/workers/index.d.mts"
+    },
+    "./worker/image-compressor": {
+      "types": "./src/foundry/public/scripts/workers/image-compressor.d.mts"
     }
   },
   "scripts": {
