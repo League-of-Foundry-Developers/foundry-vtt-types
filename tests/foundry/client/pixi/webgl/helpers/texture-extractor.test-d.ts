@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
 
-//TODO: (esheyw) add static tests on pixi-leftovers-other-than-placeables branch, where branding is already fixed
+expectTypeOf(TextureExtractor.COMPRESSION_MODES.BASE64).toMatchTypeOf<TextureExtractor.COMPRESSION_MODES>();
 
 declare const someRenderer: PIXI.Renderer;
 const myTE = new TextureExtractor(someRenderer, {
@@ -9,5 +9,16 @@ const myTE = new TextureExtractor(someRenderer, {
   format: PIXI.FORMATS.RGBA,
 });
 
+declare const someRect: PIXI.Rectangle;
+declare const someTex: PIXI.Texture;
 expectTypeOf(myTE.pixelBuffer).toEqualTypeOf<Uint8ClampedArray>();
-//TODO: (esheyw) add more tests on pixi-leftovers-other-than-placeables branch
+expectTypeOf(
+  myTE.extract({
+    compression: TextureExtractor.COMPRESSION_MODES.BASE64,
+    frame: someRect,
+    quality: 0.85,
+    type: "image/webp",
+    texture: someTex,
+    debug: false,
+  }),
+).toEqualTypeOf<Promise<string | Uint8ClampedArray>>();
