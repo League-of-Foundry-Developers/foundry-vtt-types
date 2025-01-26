@@ -48,8 +48,10 @@ expectTypeOf(KeyboardManager.KEYCODE_DISPLAY_MAPPING).toEqualTypeOf<{
   Semicolon: ";";
   Slash: "/";
 }>();
-expectTypeOf(KeyboardManager.emulateKeypress(true, "")).toEqualTypeOf<KeyboardEventContext>();
+expectTypeOf(KeyboardManager.emulateKeypress(true, "")).toEqualTypeOf<KeyboardManager.KeyboardEventContext>();
 expectTypeOf(KeyboardManager.getKeycodeDisplayString("")).toEqualTypeOf<string>();
 
 declare const event: KeyboardEvent;
-expectTypeOf(KeyboardManager.getKeyboardEventContext(event, true)).toEqualTypeOf<KeyboardEventContext>();
+expectTypeOf(
+  KeyboardManager.getKeyboardEventContext(event, true),
+).toEqualTypeOf<KeyboardManager.KeyboardEventContext>();
