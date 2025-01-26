@@ -18,20 +18,21 @@ export type _ProcessBufferToBase64Options = InexactPartial<{
   /**
    * The required image type.
    * @defaultValue `"image/png"`
-   * @remarks Can't be null as default is only via signature
+   * @remarks Can't be null as it only has a parameter default
    */
   type: string;
 
   /**
    * The required image quality.
    * @defaultValue `1`
-   * @remarks Can't be null as default is only via signature
+   * @remarks Can't be null as it only has a parameter default
    */
   quality: number;
 
   /**
    * Hash to test.
-   * @remarks Can't be null as it's passed directly to `controlHashes`
+   * @remarks Can't be null as it's passed directly to the `controlHashes` function,
+   * where it is only checked for `=== undefined`
    */
   hash: string;
 
@@ -116,7 +117,7 @@ export declare function processBufferRGBAToBufferRED(
  * Control the hash of a provided buffer.
  * @param buffer - Buffer to control.
  * @param hash   - Hash to test.
- * @returns Returns an empty object if not control is made else returns `{same: <boolean to know if the hashes are the same>, hash: <the previous or the new hash>}`
+ * @returns Returns an empty object if `hash === undefined` else returns `{same: <boolean to know if the hashes are the same>, hash: <the previous or the new hash>}`
  */
 export declare function controlHashes(buffer: Uint8ClampedArray, hash?: undefined): EmptyObject;
 export declare function controlHashes(buffer: Uint8ClampedArray, hash: string): { same: boolean; hash: string };
