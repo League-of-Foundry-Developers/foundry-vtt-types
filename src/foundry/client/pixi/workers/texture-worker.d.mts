@@ -1,4 +1,11 @@
-export {};
+import type { NullishProps } from "../../../../utils/index.d.mts";
+import type {
+  _ProcessBufferToBase64Options,
+  Debug,
+  ProcessBufferRedToBufferRGBAReturn,
+  ProcessBufferRGBAToBufferREDReturn,
+  ProcessBufferToBase64Return,
+} from "../../../../types/workers/image-compressor.d.mts";
 
 declare global {
   /**
@@ -23,8 +30,8 @@ declare global {
       buffer: Uint8ClampedArray,
       width: number,
       height: number,
-      options?: TextureCompressor.compressBase64Options,
-    ): Promise<unknown>;
+      options?: TextureCompressor.CompressBase64Options,
+    ): Promise<ProcessBufferToBase64Return>;
 
     /**
      * Expand a buffer in RED format to a buffer in RGBA format.
@@ -36,8 +43,8 @@ declare global {
       buffer: Uint8ClampedArray,
       width: number,
       height: number,
-      options?: TextureCompressor.expandRedToRGBAOptions,
-    ): Promise<unknown>;
+      options?: TextureCompressor.ExpandOrReduceBufferOptions,
+    ): Promise<ProcessBufferRedToBufferRGBAReturn>;
 
     /**
      * Expand a buffer in RED format to a buffer in RGBA format.
@@ -49,77 +56,50 @@ declare global {
       buffer: Uint8ClampedArray,
       width: number,
       height: number,
-      options?: TextureCompressor.reduceRGBAToRedOptions,
-    ): Promise<unknown>;
+      options?: TextureCompressor.ExpandOrReduceBufferOptions,
+    ): Promise<ProcessBufferRGBAToBufferREDReturn>;
   }
 
   namespace TextureCompressor {
-    interface ConstructorOptions {
+    type Any = AnyTextureCompressor;
+    type AnyConstructor = typeof AnyTextureCompressor;
+
+    /** @internal */
+    type _ConstructorOptions = NullishProps<{
       /**
        * Should the worker run in debug mode?
        * @defaultValue `false`
        */
-      debug?: boolean;
+      debug: boolean;
 
       /**
        * @defaultValue `["./workers/image-compressor.js", "./spark-md5.min.js"]`
+       * @remarks Undocumented by Foundry
        */
-      scripts?: string[];
+      scripts: string[];
 
       /**
        * @defaultValue `false`
+       * @remarks Undocumented by Foundry
        */
-      loadPrimitives?: boolean;
+      loadPrimitives: boolean;
 
       /**
        * Do we need to control the hash?
        * @defaultValue `false`
        */
       controlHash?: boolean;
-    }
+    }>;
 
-    interface compressBase64Options {
-      /**
-       * The required image type.
-       * @defaultValue `"image/png"`
-       */
-      type?: string;
+    /** Options for the {@link TextureCompressor} constructor */
+    interface ConstructorOptions extends _ConstructorOptions {}
 
-      /**
-       * The required image quality.
-       * @defaultValue `1`
-       */
-      quality?: number;
+    interface CompressBase64Options extends _ProcessBufferToBase64Options, Debug {}
 
-      /**
-       * The debug option.
-       * @defaultValue `false`
-       */
-      debug?: boolean;
-
-      readFormat: PIXI.FORMATS;
-    }
-
-    interface expandRedToRGBAOptions {
-      /**
-       * The debug option
-       * @defaultValue `false`
-       */
-      debug: boolean;
-    }
-
-    interface reduceRGBAToRedOptions {
-      /**
-       * The debug option
-       * @defaultValue `false`
-       */
-      debug?: boolean;
-
-      compression: (typeof TextureExtractor)["COMPRESSION_MODES"];
-
-      type: string;
-
-      quality: number;
-    }
+    interface ExpandOrReduceBufferOptions extends Pick<_ProcessBufferToBase64Options, "hash">, Debug {}
   }
+}
+
+declare abstract class AnyTextureCompressor extends TextureCompressor {
+  constructor(arg0: never, ...args: never[]);
 }
