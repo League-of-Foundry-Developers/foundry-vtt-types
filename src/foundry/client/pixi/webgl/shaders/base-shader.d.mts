@@ -85,13 +85,15 @@ declare global {
     type UniformValue =
       | boolean
       | number
+      | null
       | Int32List
       | Float32List
       | Coordinates
       | Coordinates[]
-      | PIXI.Texture
       | Color.RGBColorVector
-      | Color.RGVAColorVector;
+      | Color.RGVAColorVector
+      | PIXI.Texture
+      | PIXI.Matrix;
 
     // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
     type Uniforms = {
