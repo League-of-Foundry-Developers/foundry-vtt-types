@@ -14,6 +14,12 @@
     },
     "./configuration": {
       "types": "./src/configuration/index.d.mts"
+    },
+    "./worker": {
+      "types": "./src/foundry/public/scripts/workers/index.d.mts"
+    },
+    "./worker/image-compressor": {
+      "types": "./src/foundry/public/scripts/workers/image-compressor.d.mts"
     }
   },
   "scripts": {
@@ -67,6 +73,7 @@
     "typescript"
   ],
   "dependencies": {
+    "@pixi/basis": "^7.4.2",
     "@pixi/graphics-smooth": "^1.1.0",
     "@pixi/particle-emitter": "^5.0.8",
     "@types/earcut": "^3.0.0",
