@@ -83,7 +83,7 @@ declare global {
     interface Any extends AnyAbstractWeatherShader {}
     type AnyConstructor = typeof AnyAbstractWeatherShader;
 
-    interface CommonUniforms {
+    interface CommonUniforms extends AbstractBaseShader.Uniforms {
       terrainUvMatrix: PIXI.Matrix;
       useOcclusion: boolean;
       occlusionTexture: PIXI.Matrix | null;
