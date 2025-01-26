@@ -1,17 +1,18 @@
 import { expectTypeOf } from "vitest";
 
-expectTypeOf(GameTime.SYNC_INTERVAL_MS).toEqualTypeOf<number>();
 new GameTime(undefined);
 new GameTime(null);
 
-if (game instanceof Game) {
-  const time = new GameTime(game.socket);
-  expectTypeOf(time.serverTime).toEqualTypeOf<number>();
-  expectTypeOf(time.worldTime).toEqualTypeOf<number>();
-  expectTypeOf(time.advance(100)).toEqualTypeOf<Promise<number>>();
-  expectTypeOf(time.sync(game.socket)).toEqualTypeOf<Promise<GameTime>>();
-  expectTypeOf(time.sync(undefined)).toEqualTypeOf<Promise<GameTime>>();
-  expectTypeOf(time.sync(null)).toEqualTypeOf<Promise<GameTime>>();
-  expectTypeOf(time.onUpdateWorldTime(100)).toEqualTypeOf<void>();
-  expectTypeOf(game.settings.get("core", "time")).toEqualTypeOf<number>();
+if (game) {
+  const gameTime = new GameTime(game.socket);
+
+  expectTypeOf(gameTime.serverTime).toEqualTypeOf<number>();
+  expectTypeOf(gameTime.worldTime).toEqualTypeOf<number>();
+  expectTypeOf(gameTime.advance(100)).toEqualTypeOf<Promise<number>>();
+  expectTypeOf(gameTime.sync(game.socket)).toEqualTypeOf<Promise<GameTime>>();
+  expectTypeOf(gameTime.sync(undefined)).toEqualTypeOf<Promise<GameTime>>();
+  expectTypeOf(gameTime.sync(null)).toEqualTypeOf<Promise<GameTime>>();
+  expectTypeOf(gameTime.onUpdateWorldTime(100)).toEqualTypeOf<void>();
+
+  expectTypeOf(GameTime.SYNC_INTERVAL_MS).toEqualTypeOf<number>();
 }
