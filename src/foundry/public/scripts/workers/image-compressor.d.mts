@@ -1,4 +1,5 @@
-import * as worker from "../../../../types/workers/image-compressor.d.mts";
+// eslint-disable-next-line import/extensions
+import * as worker from "../../../../types/workers/image-compressor.mjs";
 
 declare global {
   // TYPES:
