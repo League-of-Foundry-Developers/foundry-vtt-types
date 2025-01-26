@@ -5,24 +5,7 @@ declare global {
    * A filter specialized for transition effects between a source object and a target texture.
    */
   class TextureTransitionFilter extends AbstractBaseFilter {
-    /**
-     * Transition types for this shader.
-     */
-    static get TYPES(): {
-      readonly FADE: "fade" & TextureTransitionFilter.TYPES;
-      readonly SWIRL: "swirl" & TextureTransitionFilter.TYPES;
-      readonly WATER_DROP: "waterDrop" & TextureTransitionFilter.TYPES;
-      readonly MORPH: "morph" & TextureTransitionFilter.TYPES;
-      readonly CROSSHATCH: "crosshatch" & TextureTransitionFilter.TYPES;
-      readonly WIND: "wind" & TextureTransitionFilter.TYPES;
-      readonly WAVES: "waves" & TextureTransitionFilter.TYPES;
-      readonly WHITE_NOISE: "whiteNoise" & TextureTransitionFilter.TYPES;
-      readonly HOLOGRAM: "hologram" & TextureTransitionFilter.TYPES;
-      readonly HOLE: "hole" & TextureTransitionFilter.TYPES;
-      readonly HOLE_SWIRL: "holeSwirl" & TextureTransitionFilter.TYPES;
-      readonly GLITCH: "glitch" & TextureTransitionFilter.TYPES;
-      readonly DOTS: "dots" & TextureTransitionFilter.TYPES;
-    };
+    static get TYPES(): TextureTransitionFilter.Types;
 
     /**
      * The transition type (see {@link TextureTransitionFilter.TYPES}).
@@ -87,6 +70,25 @@ declare global {
 
     type TYPES = Brand<string, "TextureTransitionFilter.TYPES">;
 
+    /**
+     * Transition types for this shader.
+     */
+    interface Types {
+      readonly FADE: "fade" & TextureTransitionFilter.TYPES;
+      readonly SWIRL: "swirl" & TextureTransitionFilter.TYPES;
+      readonly WATER_DROP: "waterDrop" & TextureTransitionFilter.TYPES;
+      readonly MORPH: "morph" & TextureTransitionFilter.TYPES;
+      readonly CROSSHATCH: "crosshatch" & TextureTransitionFilter.TYPES;
+      readonly WIND: "wind" & TextureTransitionFilter.TYPES;
+      readonly WAVES: "waves" & TextureTransitionFilter.TYPES;
+      readonly WHITE_NOISE: "whiteNoise" & TextureTransitionFilter.TYPES;
+      readonly HOLOGRAM: "hologram" & TextureTransitionFilter.TYPES;
+      readonly HOLE: "hole" & TextureTransitionFilter.TYPES;
+      readonly HOLE_SWIRL: "holeSwirl" & TextureTransitionFilter.TYPES;
+      readonly GLITCH: "glitch" & TextureTransitionFilter.TYPES;
+      readonly DOTS: "dots" & TextureTransitionFilter.TYPES;
+    }
+
     /** @internal */
     type _AnimateOptions = InexactPartial<{
       /**
@@ -100,7 +102,7 @@ declare global {
        * The name of the {@link CanvasAnimation}.
        * @remarks All use of `name` in `CanvasAnimation.animate` is predicated on `if (name)`, so null should be equivalent to leaving it off.
        */
-      name: string | symbol | null;
+      name: PropertyKey | null;
 
       /**
        * The animation duration
