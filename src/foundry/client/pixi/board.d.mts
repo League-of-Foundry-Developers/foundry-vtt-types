@@ -244,7 +244,7 @@ declare global {
     /**
      * A reference to the currently displayed Scene document, or null if the Canvas is currently blank.
      */
-    get scene(): Document.Stored<Scene.Implementation> | null;
+    get scene(): Scene.Stored | null;
 
     /**
      * A SceneManager instance which adds behaviors to this Scene, or null if there is no manager.

@@ -6,7 +6,7 @@ declare const combat: Combat;
 expectTypeOf(CombatTracker.defaultOptions).toEqualTypeOf<ApplicationOptions>();
 
 const tracker = new CombatTracker();
-expectTypeOf(tracker.combats).toEqualTypeOf<Document.Stored<Combat>[]>();
+expectTypeOf(tracker.combats).toEqualTypeOf<Combat.Stored[]>();
 expectTypeOf(tracker.createPopout()).toEqualTypeOf<CombatTracker>();
 
 expectTypeOf(tracker.initialize()).toEqualTypeOf<void>();

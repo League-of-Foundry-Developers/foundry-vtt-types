@@ -9,7 +9,7 @@ foundry.documents.BaseScene.create();
 new foundry.documents.BaseScene({});
 
 expectTypeOf(foundry.documents.BaseScene.create({ name: "My scene" })).toEqualTypeOf<
-  Promise<Document.Stored<Scene> | undefined>
+  Promise<Scene.Stored | undefined>
 >();
 
 const myScene = await foundry.documents.BaseScene.create({ name: "My second scene" }, { temporary: true });

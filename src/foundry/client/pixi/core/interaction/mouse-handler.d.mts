@@ -229,7 +229,7 @@ declare global {
     interface Any extends AnyMouseInteractionManager {}
     type AnyConstructor = typeof AnyMouseInteractionManager;
 
-    /** @privateRemarks The private class property is `#HANDLER_OUTCOME` singular, but the getter is `handlerOutcomes`, so the brand uses the plural*/
+    /** @privateRemarks The private class property is `#HANDLER_OUTCOME` singular, but the getter is `handlerOutcomes`, so the brand uses the plural */
     type HANDLER_OUTCOMES = Brand<number, "MouseInteractionManager.HANDLER_OUTCOMES">;
 
     interface HandlerOutcomes {

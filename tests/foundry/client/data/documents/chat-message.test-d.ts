@@ -53,7 +53,7 @@ expectTypeOf(ChatMessage.getSpeaker({ token: new TokenDocument() })).toEqualType
 expectTypeOf(ChatMessage.getSpeaker({ alias: "Mario" })).toEqualTypeOf<ChatSpeakerData>();
 
 expectTypeOf(ChatMessage.getSpeakerActor(ChatMessage.getSpeaker())).toEqualTypeOf<Actor | null>();
-expectTypeOf(ChatMessage.getWhisperRecipients("Mario")).toEqualTypeOf<Document.Stored<User.Implementation>[]>();
+expectTypeOf(ChatMessage.getWhisperRecipients("Mario")).toEqualTypeOf<User.Stored[]>();
 
 const chat = new ChatMessage();
 expectTypeOf(chat.alias).toEqualTypeOf<string>();

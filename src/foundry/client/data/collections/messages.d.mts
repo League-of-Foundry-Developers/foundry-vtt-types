@@ -30,7 +30,7 @@ declare global {
      * Allow for bulk deletion of all chat messages, confirm first with a yes/no dialog.
      * @see {@link Dialog.confirm}
      */
-    flush(): Promise<Promise<Document.Stored<ChatMessage.Implementation>[]> | false | null>;
+    flush(): Promise<Promise<ChatMessage.Stored[]> | false | null>;
   }
 
   namespace Messages {

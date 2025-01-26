@@ -31,7 +31,7 @@ declare global {
     /**
      * The currently viewed Combat encounter
      */
-    get viewed(): Document.Stored<Combat.Implementation> | null;
+    get viewed(): Combat.Stored | null;
 
     /**
      * When a Token is deleted, remove it as a combatant from any combat encounters which included the Token

@@ -24,8 +24,8 @@ expectTypeOf(combatant.prepareDerivedData()).toEqualTypeOf<void>();
 
 // static properties
 expectTypeOf(Combatant.create({ name: "Some Combatant" })).toEqualTypeOf<
-  Promise<Document.Stored<Combatant> | undefined>
+  Promise<Combatant.Stored | undefined>
 >();
-expectTypeOf(Combatant.createDocuments([])).toEqualTypeOf<Promise<Document.Stored<Combatant>[] | undefined>>();
+expectTypeOf(Combatant.createDocuments([])).toEqualTypeOf<Promise<Combatant.Stored[] | undefined>>();
 expectTypeOf(Combatant.updateDocuments([])).toEqualTypeOf<Promise<Combatant[]>>();
 expectTypeOf(Combatant.deleteDocuments([])).toEqualTypeOf<Promise<Combatant[]>>();

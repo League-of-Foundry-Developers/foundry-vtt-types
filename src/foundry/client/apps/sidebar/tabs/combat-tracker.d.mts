@@ -18,7 +18,7 @@ declare global {
      * Record the currently tracked Combat encounter
      * @defaultValue `null`
      */
-    viewed: Document.Stored<Combat.Implementation> | null;
+    viewed: Combat.Stored | null;
 
     /**
      * @defaultValue
@@ -36,7 +36,7 @@ declare global {
     /**
      * Return an array of Combat encounters which occur within the current Scene.
      */
-    get combats(): Document.Stored<Combat.Implementation>[];
+    get combats(): Combat.Stored[];
 
     override createPopout(): this;
 

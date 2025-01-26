@@ -12,6 +12,6 @@ expectTypeOf(token.document.hidden).toEqualTypeOf<boolean>();
 expectTypeOf(token.emitsLight).toEqualTypeOf<boolean>();
 expectTypeOf(token.toggleVisibility()).toEqualTypeOf<Promise<TokenDocument.Implementation[]>>();
 expectTypeOf(token.toggleEffect(CONFIG.statusEffects[0])).toEqualTypeOf<Promise<boolean>>();
-declare const effect: Document.Stored<ActiveEffect>;
+declare const effect: ActiveEffect.Stored;
 expectTypeOf(token.toggleEffect(effect)).toEqualTypeOf<Promise<boolean>>();
 expectTypeOf(token.toggleEffect("path/to/my/image.png")).toEqualTypeOf<Promise<boolean>>();

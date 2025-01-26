@@ -4,10 +4,10 @@ import Document = foundry.abstract.Document;
 expectTypeOf(new foundry.documents.BaseFogExploration()).toEqualTypeOf<foundry.documents.BaseFogExploration>();
 expectTypeOf(new foundry.documents.BaseFogExploration({})).toEqualTypeOf<foundry.documents.BaseFogExploration>();
 expectTypeOf(foundry.documents.BaseFogExploration.create({})).toEqualTypeOf<
-  Promise<Document.Stored<FogExploration> | undefined>
+  Promise<FogExploration.Stored | undefined>
 >();
 expectTypeOf(foundry.documents.BaseFogExploration.createDocuments()).toEqualTypeOf<
-  Promise<Document.Stored<FogExploration>[]>
+  Promise<FogExploration.Stored[]>
 >();
 expectTypeOf(foundry.documents.BaseFogExploration.updateDocuments()).toEqualTypeOf<Promise<FogExploration[]>>();
 expectTypeOf(foundry.documents.BaseFogExploration.deleteDocuments()).toEqualTypeOf<Promise<FogExploration[]>>();

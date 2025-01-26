@@ -15,7 +15,7 @@ declare global {
      * The User document of the currently connected user
      * @defaultValue `null`
      */
-    current: Document.Stored<User.Implementation> | null;
+    current: User.Stored | null;
 
     /**
      * Initialize the Map object and all its contained documents

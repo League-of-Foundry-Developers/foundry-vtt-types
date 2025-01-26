@@ -15,9 +15,9 @@ expectTypeOf(setting.config).toEqualTypeOf<SettingsConfig | undefined>();
 expectTypeOf(setting.key).toEqualTypeOf<string>();
 expectTypeOf(setting.value).toEqualTypeOf<AnyObject | null>();
 expectTypeOf(Setting.create({ key: "foo.bar", value: "bar" })).toEqualTypeOf<
-  Promise<Document.Stored<Setting> | undefined>
+  Promise<Setting.Stored | undefined>
 >();
-expectTypeOf(Setting.createDocuments([])).toEqualTypeOf<Promise<Document.Stored<Setting>[]>>();
+expectTypeOf(Setting.createDocuments([])).toEqualTypeOf<Promise<Setting.Stored[]>>();
 expectTypeOf(Setting.updateDocuments([])).toEqualTypeOf<Promise<Setting[]>>();
 expectTypeOf(Setting.deleteDocuments([])).toEqualTypeOf<Promise<Setting[]>>();
 

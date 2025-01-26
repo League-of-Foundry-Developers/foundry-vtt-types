@@ -15,18 +15,18 @@ declare global {
     /**
      * Return a reference to the Scene which is currently active
      */
-    get active(): Document.Stored<Scene.Implementation> | undefined;
+    get active(): Scene.Stored | undefined;
 
     /**
      * Return the current Scene target.
      * This is the viewed scene if the canvas is active, otherwise it is the currently active scene.
      */
-    get current(): Document.Stored<Scene.Implementation> | undefined;
+    get current(): Scene.Stored | undefined;
 
     /**
      * Return a reference to the Scene which is currently viewed
      */
-    get viewed(): Document.Stored<Scene.Implementation> | undefined;
+    get viewed(): Scene.Stored | undefined;
 
     /**
      * Handle pre-loading the art assets for a Scene

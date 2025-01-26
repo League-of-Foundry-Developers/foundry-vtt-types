@@ -284,7 +284,7 @@ declare global {
 
     interface MessageData {
       message: ChatMessage.PersistedData;
-      user: Document.Stored<User.Implementation>;
+      user: User.Stored;
       author: User.Implementation | undefined;
       alias: string;
       cssClass: string;
@@ -474,7 +474,7 @@ declare global {
      * @param name - The target name of the whisper target
      * @returns An array of User instances
      */
-    static getWhisperRecipients(name: string): Document.Stored<User.Implementation>[];
+    static getWhisperRecipients(name: string): User.Stored[];
 
     /**
      * Render the HTML for the ChatMessage which should be added to the log
