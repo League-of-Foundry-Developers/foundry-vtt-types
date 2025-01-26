@@ -5,7 +5,15 @@ declare global {
    * This class defines an interface which all shaders utilize
    */
   abstract class AbstractBaseShader extends BaseShaderMixin(PIXI.Shader) {
-    constructor(program: PIXI.Program, uniforms?: AbstractBaseShader.Uniforms);
+    /**
+     * @param program  - The program to use with this shader.
+     * @param uniforms - The current uniforms of the Shader
+     */
+    constructor(
+      program: PIXI.Program,
+      /** @defaultValue `{}` */
+      uniforms?: AbstractBaseShader.Uniforms,
+    );
 
     /**
      * The raw vertex shader used by this class.
