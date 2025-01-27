@@ -1,5 +1,4 @@
 import { expectTypeOf } from "vitest";
-import type { default as HBMixinNamespace } from "../../../../../src/foundry/client-esm/applications/api/handlebars-application.d.mts";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -13,4 +12,6 @@ const hbMixinTest = new HBMixinTest();
 expectTypeOf(hbMixinTest.parts).toEqualTypeOf<Record<string, HTMLElement>>();
 expectTypeOf(hbMixinTest.title).toEqualTypeOf<string>();
 
-expectTypeOf(HBMixinTest.PARTS).toEqualTypeOf<Record<string, HBMixinNamespace.HandlebarsTemplatePart>>();
+expectTypeOf(HBMixinTest.PARTS).toEqualTypeOf<
+  Record<string, foundry.applications.api.HandlebarsApplicationMixin.HandlebarsTemplatePart>
+>();
