@@ -1,7 +1,9 @@
 import { expectTypeOf } from "vitest";
 
-const myBatchShaderGenerator = new BatchShaderGenerator("path/to/vertext/src", "path/to/fragTemplate/src", {
-  someUniform: 5,
+const myBSG = new BatchShaderGenerator("some glsl", "some other glsl", {
+  foo: true,
+  bar: 5,
+  baz: [1, 2, 2],
 });
 
-expectTypeOf(myBatchShaderGenerator.generateShader(1)).toEqualTypeOf<PIXI.Shader>();
+expectTypeOf(myBSG.generateShader(4)).toEqualTypeOf<PIXI.Shader>();

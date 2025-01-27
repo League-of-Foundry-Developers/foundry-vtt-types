@@ -1,15 +1,17 @@
 import { expectTypeOf } from "vitest";
 
-const myBatchRenderer = new BatchRenderer(new PIXI.Renderer());
+expectTypeOf(BatchRenderer.shaderGeneratorClass).toEqualTypeOf<typeof BatchShaderGenerator>();
+expectTypeOf(BatchRenderer.hasPlugin("bob")).toEqualTypeOf<boolean>;
 
-expectTypeOf(myBatchRenderer.uniforms).toEqualTypeOf<AbstractBaseShader.Uniforms | undefined>();
-expectTypeOf(myBatchRenderer.reservedTextureUnits).toEqualTypeOf<BatchRenderer.ReservedTextureUnits>();
+declare const someRenderer: PIXI.Renderer;
+const myBR = new BatchRenderer(someRenderer);
+
+expectTypeOf(myBR.reservedTextureUnits).toEqualTypeOf<BatchRenderer.ReservedTextureUnits>();
+expectTypeOf(myBR.start()).toEqualTypeOf<void>();
 expectTypeOf(
-  myBatchRenderer.setShaderGenerator({
+  myBR.setShaderGenerator({
     vertex: "path/to/vertex",
     fragment: "path/to/fragment",
     uniforms: (maxTex: number) => ({ maxTex }),
   }),
 ).toEqualTypeOf<void>();
-
-expectTypeOf(BatchRenderer.hasPlugin("foo")).toEqualTypeOf<boolean>();

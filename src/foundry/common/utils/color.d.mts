@@ -292,6 +292,7 @@ declare class Color extends Number {
 
 declare namespace Color {
   type RGBColorVector = [r: number, g: number, b: number];
+  type RGVAColorVector = [r: number, g: number, b: number, a: number];
   type HSVColorVector = [h: number, s: number, v: number];
   type HSLColorVector = [h: number, s: number, l: number];
   type RGBAColorVector = [r: number, g: number, b: number, a: number];

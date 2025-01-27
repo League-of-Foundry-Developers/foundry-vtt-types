@@ -1,11 +1,11 @@
-import type { NullishProps } from "../../../../utils/index.d.mts";
+import type { NullishProps } from "fvtt-types/utils";
 import type {
   _ProcessBufferToBase64Options,
   Debug,
   ProcessBufferRedToBufferRGBAReturn,
   ProcessBufferRGBAToBufferREDReturn,
   ProcessBufferToBase64Return,
-} from "../../../../types/workers/image-compressor";
+} from "../../../../types/workers/image-compressor.d.mts";
 
 declare global {
   /**

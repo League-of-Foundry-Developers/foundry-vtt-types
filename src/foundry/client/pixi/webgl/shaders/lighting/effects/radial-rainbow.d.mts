@@ -1,14 +1,6 @@
 export {};
 
-declare abstract class AnyRadialRainbowColorationShader extends RadialRainbowColorationShader {
-  constructor(arg0: never, ...args: never[]);
-}
-
 declare global {
-  namespace RadialRainbowColorationShader {
-    type AnyConstructor = typeof AnyRadialRainbowColorationShader;
-  }
-
   /**
    * Radial rainbow animation coloration shader
    */
@@ -20,4 +12,13 @@ declare global {
 
     static override fragmentShader: string;
   }
+
+  namespace RadialRainbowColorationShader {
+    interface Any extends AnyRadialRainbowColorationShader {}
+    type AnyConstructor = typeof AnyRadialRainbowColorationShader;
+  }
+}
+
+declare abstract class AnyRadialRainbowColorationShader extends RadialRainbowColorationShader {
+  constructor(arg0: never, ...args: never[]);
 }

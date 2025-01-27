@@ -1,18 +1,6 @@
-import type { InexactPartial, FixedInstanceType } from "fvtt-types/utils";
-
-declare abstract class AnyVisibilityFilter extends VisibilityFilter {
-  constructor(arg0: never, ...args: never[]);
-}
+import type { FixedInstanceType, NullishProps } from "fvtt-types/utils";
 
 declare global {
-  namespace VisibilityFilter {
-    type AnyConstructor = typeof AnyVisibilityFilter;
-
-    interface FragmentShaderOptions {
-      persistentVision: boolean;
-    }
-  }
-
   /**
    * Apply visibility coloration according to the baseLine color.
    * Uses very lightweight gaussian vertical and horizontal blur filter passes.
@@ -40,12 +28,12 @@ declare global {
     static override create<ThisType extends AbstractBaseFilter.AnyConstructor>(
       this: ThisType,
       initiaUniforms?: AbstractBaseShader.Uniforms,
-      options?: InexactPartial<VisibilityFilter.FragmentShaderOptions>,
+      options?: VisibilityFilter.FragmentShaderOptions,
     ): FixedInstanceType<ThisType>;
 
     static override vertexShader: string;
 
-    static override fragmentShader(options: InexactPartial<VisibilityFilter.FragmentShaderOptions>): string;
+    static override fragmentShader(options: VisibilityFilter.FragmentShaderOptions): string;
 
     /**
      * Set the blur strength
@@ -67,4 +55,20 @@ declare global {
      */
     calculateMatrix(filterManager: PIXI.FilterSystem): void;
   }
+
+  namespace VisibilityFilter {
+    interface Any extends AnyVisibilityFilter {}
+    type AnyConstructor = typeof AnyVisibilityFilter;
+
+    /** @internal */
+    type _FragmentShaderOptions = NullishProps<{
+      persistentVision: boolean;
+    }>;
+
+    interface FragmentShaderOptions extends _FragmentShaderOptions {}
+  }
+}
+
+declare abstract class AnyVisibilityFilter extends VisibilityFilter {
+  constructor(arg0: never, ...args: never[]);
 }

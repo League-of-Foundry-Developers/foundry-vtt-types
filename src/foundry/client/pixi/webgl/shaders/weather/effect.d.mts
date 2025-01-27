@@ -1,9 +1,5 @@
 import type { InexactPartial, FixedInstanceType } from "fvtt-types/utils";
 
-declare abstract class AnyWeatherShaderEffect extends WeatherShaderEffect<any> {
-  constructor(arg0: never, ...args: never[]);
-}
-
 type QuadMeshClass = typeof QuadMesh;
 
 interface InternalWeatherShaderEffect_Interface extends QuadMeshClass {
@@ -16,17 +12,11 @@ declare const InternalWeatherShaderEffect_Const: InternalWeatherShaderEffect_Int
 
 // @ts-expect-error - This pattern inherently requires a ts-expect-error as the base class is dynamic.
 class InternalWeatherShaderEffect<
-  ShaderClass extends AbstractBaseShader.AnyConstructor,
+  ShaderClass extends AbstractWeatherShader.AnyConstructor,
   _ShaderClassInstance extends object = FixedInstanceType<ShaderClass>,
 > extends InternalWeatherShaderEffect_Const<_ShaderClassInstance> {}
 
 declare global {
-  namespace WeatherShaderEffect {
-    type AnyConstructor = typeof AnyWeatherShaderEffect;
-
-    type WeatherShaderEffectConfig = InexactPartial<AbstractBaseShader.Uniforms & WeatherShaderEffect["shader"]>;
-  }
-
   /**
    * An interface for defining shader-based weather effects
    */
@@ -36,7 +26,7 @@ declare global {
     /**
      * @param config - The config object to create the shader effect
      */
-    constructor(config: WeatherShaderEffect.WeatherShaderEffectConfig, shaderClass: ShaderClass);
+    constructor(config: WeatherShaderEffect.WeatherShaderEffectConfig | undefined, shaderClass: ShaderClass);
 
     /**
      * Set shader parameters.
@@ -59,4 +49,15 @@ declare global {
      */
     protected _initialize(config: WeatherShaderEffect.WeatherShaderEffectConfig): void;
   }
+
+  namespace WeatherShaderEffect {
+    interface Any extends AnyWeatherShaderEffect {}
+    type AnyConstructor = typeof AnyWeatherShaderEffect;
+
+    type WeatherShaderEffectConfig = InexactPartial<AbstractBaseShader.Uniforms & WeatherShaderEffect["shader"]>;
+  }
+}
+
+declare abstract class AnyWeatherShaderEffect extends WeatherShaderEffect<AbstractWeatherShader.AnyConstructor> {
+  constructor(arg0: never, ...args: never[]);
 }

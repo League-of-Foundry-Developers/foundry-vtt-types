@@ -10,10 +10,7 @@ declare global {
     /**
      * List of compression that could be applied with extraction
      */
-    static COMPRESSION_MODES: {
-      NONE: 0 & TextureExtractor.COMPRESSION_MODES;
-      BASE64: 1 & TextureExtractor.COMPRESSION_MODES;
-    };
+    static COMPRESSION_MODES: TextureExtractor.CompressionModes;
 
     /**
      * Debug flag.
@@ -51,7 +48,7 @@ declare global {
       /**
        * The caller name associated with this instance of texture extractor (optional, used for debug)
        * @defaultValue `"TextureExtractor"`
-       * @remarks Default provided if null
+       * @remarks Default provided by ?? in function body
        */
       callerName: string | null;
 
@@ -109,6 +106,11 @@ declare global {
     interface TextureExtractionOptions extends _ExtractOptions {}
 
     type COMPRESSION_MODES = Brand<number, "TextureExtractor.COMPRESSION_MODES">;
+
+    interface CompressionModes {
+      NONE: 0 & COMPRESSION_MODES;
+      BASE64: 1 & COMPRESSION_MODES;
+    }
   }
 }
 

@@ -21,6 +21,7 @@ declare global {
   }
 
   namespace BatchShaderGenerator {
+    interface Any extends AnyBatchShaderGenerator {}
     type AnyConstructor = typeof AnyBatchShaderGenerator;
   }
 }

@@ -1,14 +1,6 @@
 export {};
 
-declare abstract class AnyAdaptiveIlluminationShader extends AdaptiveIlluminationShader {
-  constructor(arg0: never, ...args: never[]);
-}
-
 declare global {
-  namespace AdaptiveIlluminationShader {
-    type AnyConstructor = typeof AnyAdaptiveIlluminationShader;
-  }
-
   /**
    * The default coloration shader used by standard rendering and animations
    * A fragment shader which creates a solid light source.
@@ -76,4 +68,13 @@ declare global {
      */
     get isRequired(): boolean;
   }
+
+  namespace AdaptiveIlluminationShader {
+    interface Any extends AnyAdaptiveIlluminationShader {}
+    type AnyConstructor = typeof AnyAdaptiveIlluminationShader;
+  }
+}
+
+declare abstract class AnyAdaptiveIlluminationShader extends AdaptiveIlluminationShader {
+  constructor(arg0: never, ...args: never[]);
 }

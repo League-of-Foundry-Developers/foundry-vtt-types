@@ -1,14 +1,6 @@
 export {};
 
-declare abstract class AnyColorationVisionShader extends ColorationVisionShader {
-  constructor(arg0: never, ...args: never[]);
-}
-
 declare global {
-  namespace ColorationVisionShader {
-    type AnyConstructor = typeof AnyColorationVisionShader;
-  }
-
   /**
    * The default coloration shader used for vision sources.
    */
@@ -38,4 +30,13 @@ declare global {
      */
     get isRequired(): boolean;
   }
+
+  namespace ColorationVisionShader {
+    interface Any extends AnyColorationVisionShader {}
+    type AnyConstructor = typeof AnyColorationVisionShader;
+  }
+}
+
+declare abstract class AnyColorationVisionShader extends ColorationVisionShader {
+  constructor(arg0: never, ...args: never[]);
 }

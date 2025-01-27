@@ -1,18 +1,6 @@
 import type { InterfaceToObject } from "fvtt-types/utils";
 
-declare abstract class AnySnowShader extends SnowShader {
-  constructor(arg0: never, ...args: never[]);
-}
-
 declare global {
-  namespace SnowShader {
-    type AnyConstructor = typeof AnySnowShader;
-
-    interface DefaultUniforms extends AbstractBaseShader.Uniforms {
-      direction: number;
-    }
-  }
-
   /**
    * Snow shader effect.
    */
@@ -31,4 +19,17 @@ declare global {
 
     static override fragmentShader: string;
   }
+
+  namespace SnowShader {
+    interface Any extends AnySnowShader {}
+    type AnyConstructor = typeof AnySnowShader;
+
+    interface DefaultUniforms extends AbstractBaseShader.Uniforms {
+      direction: number;
+    }
+  }
+}
+
+declare abstract class AnySnowShader extends SnowShader {
+  constructor(arg0: never, ...args: never[]);
 }
