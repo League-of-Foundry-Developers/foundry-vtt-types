@@ -50,7 +50,7 @@ declare abstract class DatabaseBackend {
    */
   create<T extends Document.AnyConstructor>(
     documentClass: T,
-    operation: DatabaseCreateOperation<FixedInstanceType<T>>,
+    operation: Document.Database.CreateOperation<DatabaseCreateOperation<FixedInstanceType<T>>> & { data: FixedInstanceType<T>[] },
     user?: User.Implementation,
   ): Promise<FixedInstanceType<T>[]>;
 
@@ -78,7 +78,7 @@ declare abstract class DatabaseBackend {
    */
   update<T extends Document.AnyConstructor>(
     documentClass: T,
-    operation: DatabaseUpdateOperation<FixedInstanceType<T>>,
+    operation: Document.Database.UpdateOperation<DatabaseUpdateOperation<FixedInstanceType<T>>> & { data: FixedInstanceType<T>[] },
     user?: User.Implementation,
   ): Promise<FixedInstanceType<T>[]>;
 
@@ -106,7 +106,7 @@ declare abstract class DatabaseBackend {
    */
   delete<T extends Document.AnyConstructor>(
     documentClass: T,
-    operation: DatabaseDeleteOperation,
+    operation: Document.Database.DeleteOperation<DatabaseDeleteOperation> & { ids: string[] },
     user?: User.Implementation,
   ): Promise<FixedInstanceType<T>[]>;
 
