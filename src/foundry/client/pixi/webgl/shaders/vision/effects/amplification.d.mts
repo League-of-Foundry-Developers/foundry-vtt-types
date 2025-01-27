@@ -1,14 +1,6 @@
 export {};
 
-declare abstract class AnyAmplificationBackgroundVisionShader extends AmplificationBackgroundVisionShader {
-  constructor(arg0: never, ...args: never[]);
-}
-
 declare global {
-  namespace AmplificationBackgroundVisionShader {
-    type AnyConstructor = typeof AnyAmplificationBackgroundVisionShader;
-  }
-
   /**
    * Shader specialized in light amplification
    */
@@ -29,4 +21,13 @@ declare global {
 
     override get isRequired(): boolean;
   }
+
+  namespace AmplificationBackgroundVisionShader {
+    interface Any extends AnyAmplificationBackgroundVisionShader {}
+    type AnyConstructor = typeof AnyAmplificationBackgroundVisionShader;
+  }
+}
+
+declare abstract class AnyAmplificationBackgroundVisionShader extends AmplificationBackgroundVisionShader {
+  constructor(arg0: never, ...args: never[]);
 }

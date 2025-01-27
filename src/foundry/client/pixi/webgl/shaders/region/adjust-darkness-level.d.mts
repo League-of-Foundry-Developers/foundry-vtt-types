@@ -1,35 +1,10 @@
 export {};
 
-declare abstract class AnyAbstractDarknessLevelRegionShader extends AbstractDarknessLevelRegionShader {
-  constructor(arg0: never, ...args: never[]);
-}
-
-declare abstract class AnyAdjustDarknessLevelRegionShader extends AdjustDarknessLevelRegionShader {
-  constructor(arg0: never, ...args: never[]);
-}
-
-declare abstract class AnyIlluminationDarknessLevelRegionShader extends IlluminationDarknessLevelRegionShader {
-  constructor(arg0: never, ...args: never[]);
-}
-
 declare global {
-  namespace AbstractDarknessLevelRegionShader {
-    type AnyConstructor = typeof AnyAbstractDarknessLevelRegionShader;
-  }
-
-  namespace AdjustDarknessLevelRegionShader {
-    type AnyConstructor = typeof AnyAdjustDarknessLevelRegionShader;
-  }
-
-  namespace IlluminationDarknessLevelRegionShader {
-    type AnyConstructor = typeof AnyIlluminationDarknessLevelRegionShader;
-  }
-
   /**
    * Abstract shader used for Adjust Darkness Level region behavior.
-   * @remarks Foundry labeled as abstract
    */
-  class AbstractDarknessLevelRegionShader extends RegionShader {
+  abstract class AbstractDarknessLevelRegionShader extends RegionShader {
     /**
      * @defaultValue
      * ```js
@@ -47,7 +22,7 @@ declare global {
      * The darkness level adjustment mode.
      * @defaultValue `foundry.data.regionBehaviors.AdjustDarknessLevelRegionBehaviorType.MODES.OVERRIDE`
      */
-    mode: foundry.data.regionBehaviors.AdjustDarknessLevelRegionBehaviorType.Modes;
+    mode: foundry.data.regionBehaviors.AdjustDarknessLevelRegionBehaviorType.MODES;
 
     /**
      * The darkness level modifier.
@@ -61,6 +36,11 @@ declare global {
     get darknessLevel(): number;
 
     protected override _preRender: AbstractBaseShader.PreRenderFunction;
+  }
+
+  namespace AbstractDarknessLevelRegionShader {
+    interface Any extends AnyAbstractDarknessLevelRegionShader {}
+    type AnyConstructor = typeof AnyAbstractDarknessLevelRegionShader;
   }
 
   /**
@@ -104,6 +84,11 @@ declare global {
     protected override _preRender: AbstractBaseShader.PreRenderFunction;
   }
 
+  namespace AdjustDarknessLevelRegionShader {
+    interface Any extends AnyAdjustDarknessLevelRegionShader {}
+    type AnyConstructor = typeof AnyAdjustDarknessLevelRegionShader;
+  }
+
   /**
    * Render the RegionMesh with darkness level adjustments.
    */
@@ -130,4 +115,21 @@ declare global {
      */
     static override fragmentShader: string;
   }
+
+  namespace IlluminationDarknessLevelRegionShader {
+    interface Any extends AnyIlluminationDarknessLevelRegionShader {}
+    type AnyConstructor = typeof AnyIlluminationDarknessLevelRegionShader;
+  }
+}
+
+declare abstract class AnyAbstractDarknessLevelRegionShader extends AbstractDarknessLevelRegionShader {
+  constructor(arg0: never, ...args: never[]);
+}
+
+declare abstract class AnyAdjustDarknessLevelRegionShader extends AdjustDarknessLevelRegionShader {
+  constructor(arg0: never, ...args: never[]);
+}
+
+declare abstract class AnyIlluminationDarknessLevelRegionShader extends IlluminationDarknessLevelRegionShader {
+  constructor(arg0: never, ...args: never[]);
 }

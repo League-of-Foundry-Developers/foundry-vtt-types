@@ -1,14 +1,6 @@
 export {};
 
-declare abstract class AnyAdaptiveBackgroundShader extends AdaptiveBackgroundShader {
-  constructor(arg0: never, ...args: never[]);
-}
-
 declare global {
-  namespace AdaptiveBackgroundShader {
-    type AnyConstructor = typeof AnyAdaptiveBackgroundShader;
-  }
-
   /**
    * The default coloration shader used by standard rendering and animations
    * A fragment shader which creates a solid light source.
@@ -62,4 +54,13 @@ declare global {
      */
     get isRequired(): boolean;
   }
+
+  namespace AdaptiveBackgroundShader {
+    interface Any extends AnyAdaptiveBackgroundShader {}
+    type AnyConstructor = typeof AnyAdaptiveBackgroundShader;
+  }
+}
+
+declare abstract class AnyAdaptiveBackgroundShader extends AdaptiveBackgroundShader {
+  constructor(arg0: never, ...args: never[]);
 }

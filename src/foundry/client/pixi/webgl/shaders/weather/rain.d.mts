@@ -1,22 +1,6 @@
 import type { InterfaceToObject } from "fvtt-types/utils";
 
-declare abstract class AnyRainShader extends RainShader {
-  constructor(arg0: never, ...args: never[]);
-}
-
 declare global {
-  namespace RainShader {
-    type AnyConstructor = typeof AnyRainShader;
-
-    interface DefaultUniforms extends AbstractBaseShader.Uniforms {
-      opacity: number;
-      intensity: number;
-      strength: number;
-      rotation: number;
-      resolution: [number, number];
-    }
-  }
-
   /**
    * Rain shader effect.
    */
@@ -39,4 +23,21 @@ declare global {
 
     static override fragmentShader: string;
   }
+
+  namespace RainShader {
+    interface Any extends AnyRainShader {}
+    type AnyConstructor = typeof AnyRainShader;
+
+    interface DefaultUniforms extends AbstractBaseShader.Uniforms {
+      opacity: number;
+      intensity: number;
+      strength: number;
+      rotation: number;
+      resolution: [number, number];
+    }
+  }
+}
+
+declare abstract class AnyRainShader extends RainShader {
+  constructor(arg0: never, ...args: never[]);
 }

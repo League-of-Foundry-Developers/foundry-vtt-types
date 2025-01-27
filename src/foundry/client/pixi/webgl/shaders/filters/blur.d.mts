@@ -1,22 +1,6 @@
 export {};
 
-declare abstract class AnyAlphaBlurFilterPass extends AlphaBlurFilterPass {
-  constructor(arg0: never, ...args: never[]);
-}
-
-declare abstract class AnyAlphaBlurFilter extends AlphaBlurFilter {
-  constructor(arg0: never, ...args: never[]);
-}
-
 declare global {
-  namespace AlphaBlurFilterPass {
-    type AnyConstructor = typeof AnyAlphaBlurFilterPass;
-  }
-
-  namespace AlphaBlurFilter {
-    type AnyConstructor = typeof AnyAlphaBlurFilter;
-  }
-
   /**
    * Apply a vertical or horizontal gaussian blur going inward by using alpha as the penetrating channel.
    */
@@ -106,6 +90,11 @@ declare global {
     ): void;
   }
 
+  namespace AlphaBlurFilterPass {
+    interface Any extends AnyAlphaBlurFilterPass {}
+    type AnyConstructor = typeof AnyAlphaBlurFilterPass;
+  }
+
   /**
    * Apply a gaussian blur going inward by using alpha as the penetrating channel.
    */
@@ -122,9 +111,9 @@ declare global {
      */
     constructor(strength?: number, quality?: number, resolution?: number, kernelSize?: number);
 
-    blurXFilter: typeof AlphaBlurFilterPass;
+    blurXFilter: AlphaBlurFilterPass;
 
-    blurYFilter: typeof AlphaBlurFilterPass;
+    blurYFilter: AlphaBlurFilterPass;
 
     _repeatEdgePixels: boolean;
 
@@ -178,8 +167,21 @@ declare global {
     /**
      * Provided for completeness with PIXI.BlurFilter
      */
-    get blendMode(): number;
+    get blendMode(): PIXI.BLEND_MODES;
 
     set blendMode(value);
   }
+
+  namespace AlphaBlurFilter {
+    interface Any extends AnyAlphaBlurFilter {}
+    type AnyConstructor = typeof AnyAlphaBlurFilter;
+  }
+}
+
+declare abstract class AnyAlphaBlurFilterPass extends AlphaBlurFilterPass {
+  constructor(arg0: never, ...args: never[]);
+}
+
+declare abstract class AnyAlphaBlurFilter extends AlphaBlurFilter {
+  constructor(arg0: never, ...args: never[]);
 }

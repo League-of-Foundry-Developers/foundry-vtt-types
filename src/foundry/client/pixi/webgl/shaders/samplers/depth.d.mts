@@ -1,22 +1,6 @@
 export {};
 
-declare abstract class AnyDepthSamplerShader extends DepthSamplerShader {
-  constructor(arg0: never, ...args: never[]);
-}
-
 declare global {
-  namespace DepthSamplerShader {
-    type AnyConstructor = typeof AnyDepthSamplerShader;
-
-    interface DepthBatchData extends PIXI.IBatchableElement {
-      elevation: number;
-      textureAlphaThreshold: number;
-      fadeOcclusion: number;
-      radialOcclusion: number;
-      visionOcclusion: number;
-    }
-  }
-
   /**
    * The depth sampler shader.
    */
@@ -100,4 +84,24 @@ declare global {
 
     protected override _preRender: AbstractBaseShader.PreRenderFunction;
   }
+
+  namespace DepthSamplerShader {
+    interface Any extends AnyDepthSamplerShader {}
+    type AnyConstructor = typeof AnyDepthSamplerShader;
+
+    /** @internal */
+    type PartialPIXIBatchable = Pick<PIXI.IBatchableElement, "_texture" | "vertexData" | "indices" | "uvs">;
+
+    interface DepthBatchData extends PartialPIXIBatchable {
+      elevation: number;
+      textureAlphaThreshold: number;
+      fadeOcclusion: number;
+      radialOcclusion: number;
+      visionOcclusion: number;
+    }
+  }
+}
+
+declare abstract class AnyDepthSamplerShader extends DepthSamplerShader {
+  constructor(arg0: never, ...args: never[]);
 }

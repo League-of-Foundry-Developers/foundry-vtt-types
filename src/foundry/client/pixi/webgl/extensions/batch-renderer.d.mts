@@ -1,36 +1,7 @@
-import type { ToMethod, InexactPartial } from "fvtt-types/utils";
-
-declare abstract class AnyBatchRenderer extends BatchRenderer {
-  constructor(arg0: never, ...args: never[]);
-}
+import type { ToMethod, InexactPartial, IntentionalPartial } from "fvtt-types/utils";
+import type { IBatchableElement, ViewableBuffer } from "pixi.js";
 
 declare global {
-  namespace BatchRenderer {
-    type AnyConstructor = typeof AnyBatchRenderer;
-
-    type PackInterleavedGeometryFunction = ToMethod<
-      (
-        element: PIXI.IBatchableElement,
-        attributeBuffer: PIXI.ViewableBuffer,
-        indexBuffer: Uint16Array,
-        aIndex: number,
-        iIndex: number,
-      ) => void
-    >;
-
-    type PreRenderBatchFunction = ToMethod<(batchRenderer: typeof BatchRenderer) => void>;
-
-    type BatchDefaultUniformsFunction = ToMethod<(maxTextures: number) => AbstractBaseShader.Uniforms>;
-
-    type ReservedTextureUnits = 0 | 1 | 2 | 3 | 4;
-
-    interface ShaderGeneratorOptions {
-      vertex: typeof BatchRenderer.defaultVertexSrc;
-      fragment: typeof BatchRenderer.defaultFragmentTemplate;
-      uniforms: typeof BatchRenderer.defaultUniforms;
-    }
-  }
-
   /**
    * A batch renderer with a customizable data transfer function to packed geometries.
    */
@@ -82,7 +53,18 @@ declare global {
 
     override start(): void;
 
-    override packInterleavedGeometry: BatchRenderer.PackInterleavedGeometryFunction;
+    /**
+     * @privateRemarks This signature must match `PIXI.BatchRenderer#packInterleavedGeometry`, as opposed to being
+     * a `PackInterleavedGeometryFunction`, as these params will be piped there if the subclass in question
+     * doesn't implement `_packInterleavedGeometry`
+     */
+    override packInterleavedGeometry(
+      element: IBatchableElement,
+      attributeBuffer: ViewableBuffer,
+      indexBuffer: Uint16Array,
+      aIndex: number,
+      iIndex: number,
+    ): void;
 
     /**
      * Verify if a PIXI plugin exists. Check by name.
@@ -91,4 +73,40 @@ declare global {
      */
     static hasPlugin(name: string): boolean;
   }
+
+  namespace BatchRenderer {
+    interface Any extends AnyBatchRenderer {}
+    type AnyConstructor = typeof AnyBatchRenderer;
+
+    type PackInterleavedGeometryFunction = ToMethod<
+      (
+        /**
+         * @privateRemarks The `element` param is `Partial`'d here because at least one `_packInterleavedGeometry` implementation (`DepthSampleShader`'s)
+         * omits properties from the parent PIXI interface. Neither `PIXI.BatchRenderer` nor any Foundry implementations provide any default vaules for
+         * properties of this interface, so no `InexactPartial` or `NullishProps`.
+         */
+        element: IntentionalPartial<PIXI.IBatchableElement>,
+        attributeBuffer: PIXI.ViewableBuffer,
+        indexBuffer: Uint16Array,
+        aIndex: number,
+        iIndex: number,
+      ) => void
+    >;
+
+    type PreRenderBatchFunction = ToMethod<(batchRenderer: typeof BatchRenderer) => void>;
+
+    type BatchDefaultUniformsFunction = ToMethod<(maxTextures: number) => AbstractBaseShader.Uniforms>;
+
+    type ReservedTextureUnits = 0 | 1 | 2 | 3 | 4;
+
+    interface ShaderGeneratorOptions {
+      vertex: typeof BatchRenderer.defaultVertexSrc;
+      fragment: typeof BatchRenderer.defaultFragmentTemplate;
+      uniforms: typeof BatchRenderer.defaultUniforms;
+    }
+  }
+}
+
+declare abstract class AnyBatchRenderer extends BatchRenderer {
+  constructor(arg0: never, ...args: never[]);
 }

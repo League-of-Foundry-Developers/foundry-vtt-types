@@ -1,13 +1,6 @@
 export {};
 
-declare abstract class AnyForceGridColorationShader extends ForceGridColorationShader {
-  constructor(arg0: never, ...args: never[]);
-}
-
 declare global {
-  namespace ForceGridColorationShader {
-    type AnyConstructor = typeof AnyForceGridColorationShader;
-  }
   /**
    * A futuristic Force Grid animation.
    */
@@ -19,4 +12,13 @@ declare global {
 
     static override fragmentShader: string;
   }
+
+  namespace ForceGridColorationShader {
+    interface Any extends AnyForceGridColorationShader {}
+    type AnyConstructor = typeof AnyForceGridColorationShader;
+  }
+}
+
+declare abstract class AnyForceGridColorationShader extends ForceGridColorationShader {
+  constructor(arg0: never, ...args: never[]);
 }

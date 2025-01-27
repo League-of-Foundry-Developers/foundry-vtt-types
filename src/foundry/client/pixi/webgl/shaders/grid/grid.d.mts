@@ -1,14 +1,6 @@
-import type { IntentionalPartial } from "fvtt-types/utils";
-
-declare abstract class AnyGridShader extends GridShader {
-  constructor(arg0: never, ...args: never[]);
-}
+import type { NullishProps } from "fvtt-types/utils";
 
 declare global {
-  namespace GridShader {
-    type AnyConstructor = typeof AnyGridShader;
-  }
-
   /**
    * The grid shader used by {@link GridMesh}.
    */
@@ -105,8 +97,17 @@ declare global {
     /**
      * Configure the shader.
      */
-    configure(options?: IntentionalPartial<{ style: AbstractBaseShader.UniformValue }>): void;
+    configure(options?: NullishProps<{ style: AbstractBaseShader.UniformValue }>): void;
 
     protected override _preRender: AbstractBaseShader.PreRenderFunction;
   }
+
+  namespace GridShader {
+    interface Any extends AnyGridShader {}
+    type AnyConstructor = typeof AnyGridShader;
+  }
+}
+
+declare abstract class AnyGridShader extends GridShader {
+  constructor(arg0: never, ...args: never[]);
 }
