@@ -97,6 +97,7 @@ declare global {
 
     type BatchDefaultUniformsFunction = ToMethod<(maxTextures: number) => AbstractBaseShader.Uniforms>;
 
+    /** @remarks The `BatchRenderer#reservedTextureUnits` setter throws if passed a value outside of 0-4, and by usage wants an integer */
     type ReservedTextureUnits = 0 | 1 | 2 | 3 | 4;
 
     /** @internal */
