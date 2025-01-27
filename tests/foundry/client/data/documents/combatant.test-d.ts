@@ -12,7 +12,7 @@ expectTypeOf(combatant.token).toEqualTypeOf<TokenDocument.Implementation | null>
 expectTypeOf(combatant.players).toEqualTypeOf<User.Implementation[]>();
 expectTypeOf(combatant.isDefeated).toEqualTypeOf<boolean>();
 
-declare const user: foundry.documents.BaseUser;
+declare const user: User.Implementation;
 expectTypeOf(
   combatant.testUserPermission(user, foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS.INHERIT),
 ).toEqualTypeOf<boolean>();
