@@ -1,6 +1,3 @@
-// eslint-disable-next-line import/extensions
-import { FORMATS } from "../../../../../src/types/workers/image-compressor";
-
 const myWorker = new TextureCompressor("foobar", {
   debug: true,
   scripts: ["./foobar"],
@@ -14,7 +11,7 @@ myWorker.compressBufferBase64(myBuffer, 2, 3, {
   debug: true,
   quality: 1,
   type: "image/png",
-  readFormat: FORMATS.RED,
+  readFormat: PIXI.FORMATS.RED,
 });
 
 myWorker.expandBufferRedToBufferRGBA(myBuffer, 2, 3, {
