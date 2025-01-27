@@ -1,10 +1,9 @@
 import { expectTypeOf } from "vitest";
-import type { default as DocSheetV2Namespace } from "../../../../../src/foundry/client-esm/applications/api/document-sheet.d.mts";
 import type { DeepPartial } from "fvtt-types/utils";
 
-const { DocumentSheetV2 } = foundry.applications.api;
+const DocumentSheetV2 = foundry.applications.api.DocumentSheetV2;
 
-declare const documentSheetV2: InstanceType<typeof DocumentSheetV2>;
+declare const documentSheetV2: foundry.applications.api.DocumentSheetV2<foundry.abstract.Document.Any>;
 
 expectTypeOf(documentSheetV2.document).toEqualTypeOf<foundry.abstract.Document.Any>();
 expectTypeOf(documentSheetV2.title).toEqualTypeOf<string>();
@@ -18,4 +17,6 @@ expectTypeOf(documentSheetV2._processFormData(event, form, formData)).toEqualTyp
 expectTypeOf(documentSheetV2._processSubmitData(event, form, formData)).toEqualTypeOf<Promise<void>>();
 expectTypeOf(documentSheetV2.submit()).toEqualTypeOf<Promise<void>>();
 
-expectTypeOf(DocumentSheetV2.DEFAULT_OPTIONS).toEqualTypeOf<DeepPartial<DocSheetV2Namespace.Configuration> & object>();
+expectTypeOf(DocumentSheetV2.DEFAULT_OPTIONS).toEqualTypeOf<
+  DeepPartial<foundry.applications.api.DocumentSheetV2.Configuration> & object
+>();
