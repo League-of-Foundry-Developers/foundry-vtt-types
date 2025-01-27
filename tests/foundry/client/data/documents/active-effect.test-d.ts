@@ -2,7 +2,6 @@ import { expectTypeOf } from "vitest";
 
 import DataModel = foundry.abstract.DataModel;
 import Document = foundry.abstract.Document;
-import EffectChangeData = foundry.types.EffectChangeData;
 
 // @ts-expect-error - ActiveEffect requires name.
 new ActiveEffect();
@@ -11,10 +10,10 @@ new ActiveEffect();
 new ActiveEffect({});
 
 const effect = new ActiveEffect({ name: "My effect" });
-expectTypeOf(effect).toEqualTypeOf<ActiveEffect>();
+expectTypeOf(effect).toEqualTypeOf<ActiveEffect.Implementation>();
 
 declare const model: DataModel.Any;
-declare const change: EffectChangeData;
+declare const change: ActiveEffect.EffectChangeData;
 
 expectTypeOf(ActiveEffect.fromStatusEffect("")).toEqualTypeOf<Promise<ActiveEffect.Implementation>>();
 expectTypeOf(ActiveEffect.applyField(model, change)).toEqualTypeOf<unknown>();
@@ -25,7 +24,7 @@ expectTypeOf(effect.active).toEqualTypeOf<boolean>();
 expectTypeOf(effect.modifiesActor).toEqualTypeOf<boolean>();
 expectTypeOf(effect.prepareBaseData()).toEqualTypeOf<void>();
 expectTypeOf(effect.prepareDerivedData()).toEqualTypeOf<void>();
-expectTypeOf(effect.updateDuration()).toEqualTypeOf<ActiveEffectDuration>();
+expectTypeOf(effect.updateDuration()).toEqualTypeOf<ActiveEffect.Duration>();
 expectTypeOf(effect.isTemporary).toEqualTypeOf<boolean>();
 expectTypeOf(effect.sourceName).toEqualTypeOf<string>();
 

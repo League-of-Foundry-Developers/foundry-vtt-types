@@ -10,7 +10,7 @@ new Adventure();
 new Adventure({});
 
 const adventure = new Adventure({ name: "My adventure" });
-expectTypeOf(adventure).toEqualTypeOf<Adventure>();
+expectTypeOf(adventure).toEqualTypeOf<Adventure.Implementation>();
 
 expectTypeOf(adventure.import()).toEqualTypeOf<Promise<AdventureImportResult>>();
 expectTypeOf(adventure.prepareImport()).toEqualTypeOf<Promise<AdventureImportData>>();
@@ -18,6 +18,6 @@ expectTypeOf(adventure.importContent()).toEqualTypeOf<Promise<AdventureImportRes
 
 expectTypeOf(adventure.sheet).toEqualTypeOf<FormApplication.Any | foundry.applications.api.ApplicationV2.Any | null>();
 
-declare const source: fields.SchemaField.AssignmentData<DataSchema>;
+declare const source: fields.SchemaField.AssignmentData<fields.DataSchema>;
 
-expectTypeOf(Adventure.fromSource(source)).toEqualTypeOf<DataModel<DataSchema, DataModel.Any | null>>();
+expectTypeOf(Adventure.fromSource(source)).toEqualTypeOf<DataModel<fields.DataSchema, DataModel.Any | null>>();

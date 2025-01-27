@@ -8,7 +8,7 @@ new Actor();
 new Actor({});
 
 const actor = new Actor({ name: "Beren", type: "base" });
-expectTypeOf(actor).toEqualTypeOf<Actor>();
+expectTypeOf(actor).toEqualTypeOf<Actor.Implementation>();
 
 expectTypeOf(actor.overrides).toEqualTypeOf<Record<string, unknown>>();
 expectTypeOf(actor.statuses).toEqualTypeOf<Set<string>>();
@@ -20,11 +20,11 @@ expectTypeOf(actor.itemTypes).toEqualTypeOf<{
 expectTypeOf(actor.isToken).toEqualTypeOf<boolean>();
 expectTypeOf(actor.appliedEffects).toEqualTypeOf<ActiveEffect[]>();
 expectTypeOf(actor.temporaryEffects).toEqualTypeOf<ReturnType<(typeof actor)["effects"]["filter"]>>();
-expectTypeOf(actor.token).toEqualTypeOf<TokenDocument | null>();
+expectTypeOf(actor.token).toEqualTypeOf<TokenDocument.Implementation | null>();
 expectTypeOf(actor.inCombat).toEqualTypeOf<boolean>();
 
 expectTypeOf(actor.applyActiveEffects()).toEqualTypeOf<void>();
-expectTypeOf(actor.getActiveTokens(true, true)).toEqualTypeOf<TokenDocument[]>();
+expectTypeOf(actor.getActiveTokens(true, true)).toEqualTypeOf<TokenDocument.Implementation[]>();
 expectTypeOf(actor.getActiveTokens(true, false)).toEqualTypeOf<Token[]>();
 
 // TODO: Implement #1551 so the `system` properties resolve correctly.
@@ -38,9 +38,9 @@ for (const effect of actor.allApplicableEffects()) {
 
 expectTypeOf(actor.getRollData()).toEqualTypeOf<object>();
 expectTypeOf(actor.getTokenImages()).toEqualTypeOf<Promise<string[]>>();
-expectTypeOf(actor.modifyTokenAttribute("", 2, true, true)).toEqualTypeOf<Promise<Actor | undefined>>();
+expectTypeOf(actor.modifyTokenAttribute("", 2, true, true)).toEqualTypeOf<Promise<Actor.Implementation | undefined>>();
 
 expectTypeOf(actor.prepareEmbeddedDocuments()).toEqualTypeOf<void>();
 
 expectTypeOf(actor.rollInitiative()).toEqualTypeOf<Promise<void>>();
-expectTypeOf(actor.getDependentTokens()).toEqualTypeOf<TokenDocument[]>();
+expectTypeOf(actor.getDependentTokens()).toEqualTypeOf<TokenDocument.Implementation[]>();

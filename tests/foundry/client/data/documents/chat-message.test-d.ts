@@ -2,8 +2,8 @@ import { expectTypeOf } from "vitest";
 import Document = foundry.abstract.Document;
 import ChatSpeakerData = foundry.data.ChatSpeakerData;
 
-expectTypeOf(new ChatMessage()).toEqualTypeOf<ChatMessage>();
-expectTypeOf(new ChatMessage({})).toEqualTypeOf<ChatMessage>();
+expectTypeOf(new ChatMessage()).toEqualTypeOf<ChatMessage.Implementation>();
+expectTypeOf(new ChatMessage({})).toEqualTypeOf<ChatMessage.Implementation>();
 
 expectTypeOf(
   ChatMessage.applyRollMode({}, CONST.DICE_ROLL_MODES.BLIND),
@@ -52,7 +52,7 @@ if (game instanceof Game) {
 expectTypeOf(ChatMessage.getSpeaker({ token: new TokenDocument() })).toEqualTypeOf<ChatSpeakerData>();
 expectTypeOf(ChatMessage.getSpeaker({ alias: "Mario" })).toEqualTypeOf<ChatSpeakerData>();
 
-expectTypeOf(ChatMessage.getSpeakerActor(ChatMessage.getSpeaker())).toEqualTypeOf<Actor | null>();
+expectTypeOf(ChatMessage.getSpeakerActor(ChatMessage.getSpeaker())).toEqualTypeOf<Actor.Implementation | null>();
 expectTypeOf(ChatMessage.getWhisperRecipients("Mario")).toEqualTypeOf<User.Stored[]>();
 
 const chat = new ChatMessage();
