@@ -1,7 +1,7 @@
 import { expectTypeOf } from "vitest";
 import type { ValueOf } from "../../../../src/utils/index.d.mts";
 
-const sound = new foundry.audio.Sound("");
+const sound = new foundry.audio.Sound("a/path/to/some/sound/file.ogg");
 
 expectTypeOf(sound.id).toEqualTypeOf<number>();
 expectTypeOf(sound.src).toEqualTypeOf<string>();
@@ -25,10 +25,18 @@ expectTypeOf(sound.duration).toEqualTypeOf<number>();
 expectTypeOf(sound.currentTime).toEqualTypeOf<number>();
 expectTypeOf(sound.loop).toEqualTypeOf<boolean>();
 expectTypeOf(sound.load()).toEqualTypeOf<Promise<foundry.audio.Sound>>();
+expectTypeOf(
+  sound.load({ autoplay: true, autoplayOptions: { loop: true, offset: 2, volume: 0.7, fade: 3 } }),
+).toEqualTypeOf<Promise<foundry.audio.Sound>>();
+expectTypeOf(sound.play()).toEqualTypeOf<Promise<foundry.audio.Sound>>();
+expectTypeOf(sound.play({ loop: true, offset: 2, volume: 0.7, fade: 3 })).toEqualTypeOf<Promise<foundry.audio.Sound>>();
 expectTypeOf(sound.pause()).toEqualTypeOf<void>();
 expectTypeOf(sound.stop()).toEqualTypeOf<Promise<foundry.audio.Sound>>();
 expectTypeOf(sound.fade(1)).toEqualTypeOf<Promise<void>>();
 expectTypeOf(sound.wait(1)).toEqualTypeOf<Promise<void>>();
+
+declare const soundCallback: (sound: foundry.audio.Sound) => void;
+expectTypeOf(sound.schedule(soundCallback, 42)).toEqualTypeOf<Promise<void>>();
 expectTypeOf(sound.schedule(() => 3, 3)).toEqualTypeOf<Promise<number>>();
 expectTypeOf(sound.schedule(() => "a", 3)).toEqualTypeOf<Promise<string>>();
 expectTypeOf(sound.schedule(async () => "a", 3)).toEqualTypeOf<Promise<string>>();

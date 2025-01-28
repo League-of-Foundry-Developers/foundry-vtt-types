@@ -1,8 +1,5 @@
 import { expectTypeOf } from "vitest";
 
-// note: DocumentDirectory constructor throws an error if called directly
-//   I suspect it is intended to be an abstract class
-// const documentDirectory = new DocumentDirectory<'Actor'>();
 declare const documentDirectory: DocumentDirectory<"Actor">;
 
 expectTypeOf(DocumentDirectory.defaultOptions).toEqualTypeOf<DocumentDirectoryOptions>();
