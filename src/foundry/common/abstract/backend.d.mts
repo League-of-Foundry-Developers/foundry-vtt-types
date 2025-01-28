@@ -50,7 +50,7 @@ declare abstract class DatabaseBackend {
    */
   create<T extends Document.AnyConstructor>(
     documentClass: T,
-    operation: Document.Database.CreateOperation<DatabaseCreateOperation<FixedInstanceType<T>>> & { data: FixedInstanceType<T>[] },
+    operation: DatabaseBackend.CreateOperation<T>,
     user?: User.Implementation,
   ): Promise<FixedInstanceType<T>[]>;
 
@@ -78,7 +78,7 @@ declare abstract class DatabaseBackend {
    */
   update<T extends Document.AnyConstructor>(
     documentClass: T,
-    operation: Document.Database.UpdateOperation<DatabaseUpdateOperation<FixedInstanceType<T>>> & { data: FixedInstanceType<T>[] },
+    operation: DatabaseBackend.UpdateOperation<T>,
     user?: User.Implementation,
   ): Promise<FixedInstanceType<T>[]>;
 
@@ -106,7 +106,7 @@ declare abstract class DatabaseBackend {
    */
   delete<T extends Document.AnyConstructor>(
     documentClass: T,
-    operation: Document.Database.DeleteOperation<DatabaseDeleteOperation> & { ids: string[] },
+    operation: DatabaseBackend.DeleteOperation,
     user?: User.Implementation,
   ): Promise<FixedInstanceType<T>[]>;
 
@@ -183,6 +183,12 @@ declare abstract class DatabaseBackend {
     action: string,
     { parent, pack }?: { parent?: Document.Any; pack?: string },
   ): string;
+}
+
+declare namespace DatabaseBackend {
+  type CreateOperation<T extends Document.AnyConstructor> = Document.Database.CreateOperation<DatabaseCreateOperation<FixedInstanceType<T>>> & { data: FixedInstanceType<T>[] };
+  type UpdateOperation<T extends Document.AnyConstructor> = Document.Database.UpdateOperation<DatabaseUpdateOperation<FixedInstanceType<T>>> & { data: FixedInstanceType<T>[] };
+  type DeleteOperation = Document.Database.DeleteOperation<DatabaseDeleteOperation> & { ids: string[] };
 }
 
 export default DatabaseBackend;
