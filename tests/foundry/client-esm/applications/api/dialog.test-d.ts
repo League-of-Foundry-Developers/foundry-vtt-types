@@ -23,6 +23,8 @@ expectTypeOf(
     rejectClose: false,
   }),
 ).toEqualTypeOf<number | null>();
+
+// note: despite the numeric callback, clicking "ok" returns the string "ok"
 expectTypeOf(
   await DialogV2.prompt({
     ok: okButton,
@@ -40,6 +42,7 @@ expectTypeOf(
     ],
   }),
 ).toEqualTypeOf<number | boolean | string>();
+
 expectTypeOf(
   await DialogV2.prompt({
     ok: okButton,

@@ -6,7 +6,7 @@ import type AbstractFormInputElement from "./form-element.d.mts";
  * Multi-select components return an array of values as part of form submission.
  * Different implementations may provide different experiences around how inputs are presented to the user.
  */
-export class AbstractMultiSelectElement extends AbstractFormInputElement<Set<string> | string[]> {
+export abstract class AbstractMultiSelectElement extends AbstractFormInputElement<Set<string> | string[]> {
   constructor();
 
   protected _value: Set<string>;
@@ -61,14 +61,18 @@ export class AbstractMultiSelectElement extends AbstractFormInputElement<Set<str
  * ```
  */
 export class HTMLMultiSelectElement extends AbstractMultiSelectElement {
+  static override tagName: "multi-select";
+
+  protected override _buildElements(): (HTMLDivElement | HTMLSelectElement)[];
+
+  protected override _refresh(): void;
+
+  protected override _toggleDisabled(disabled: boolean): void;
+
   /**
    * Create a HTMLMultiSelectElement using provided configuration data.
    */
   static create(config: FormInputConfig<string[]> & Omit<SelectInputConfig, "blank">): HTMLMultiSelectElement;
-
-  protected override _buildElements(): (HTMLDivElement | HTMLSelectElement)[];
-
-  protected override _toggleDisabled(disabled: boolean): void;
 }
 /**
  * Provide a multi-select workflow as a grid of input checkbox elements.
@@ -89,7 +93,13 @@ export class HTMLMultiSelectElement extends AbstractMultiSelectElement {
  * ```
  */
 export class HTMLMultiCheckboxElement extends AbstractMultiSelectElement {
+  static override tagName: "multi-checkbox";
+
   protected override _buildElements(): (HTMLFieldSetElement | HTMLLabelElement)[];
+
+  protected override _refresh(): void;
+
+  protected override _activateListeners(): void;
 
   protected override _toggleDisabled(disabled: boolean): void;
 }
