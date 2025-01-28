@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+
 const tagsElement = new foundry.applications.elements.HTMLDocumentTagsElement();
 
 expectTypeOf(tagsElement.type).toEqualTypeOf<string | null>();

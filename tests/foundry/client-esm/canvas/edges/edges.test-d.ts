@@ -4,7 +4,7 @@ const myCanvasEdges = new foundry.canvas.edges.CanvasEdges();
 
 // Calls inside of Canvas
 expectTypeOf(myCanvasEdges.initialize()).toEqualTypeOf<void>();
-expectTypeOf(myCanvasEdges.clear()).toEqualTypeOf<void>();
+expectTypeOf(myCanvasEdges.refresh()).toEqualTypeOf<void>();
 
 for (const [key, edge] of myCanvasEdges) {
   expectTypeOf(key).toEqualTypeOf<string>();
