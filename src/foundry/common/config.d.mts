@@ -1,7 +1,7 @@
 import type { DataModel } from "./abstract/data.d.mts";
 import type * as fields from "./data/fields.d.mts";
 import type { SOFTWARE_UPDATE_CHANNELS } from "./constants.d.mts";
-import type { AnyObject } from "../../utils/index.d.mts";
+import type { AnyMutableObject } from "../../utils/index.d.mts";
 
 type DataSchema = foundry.data.fields.DataSchema;
 
@@ -193,7 +193,7 @@ declare namespace ApplicationConfiguration {
 declare class ApplicationConfiguration extends DataModel<ApplicationConfiguration.Schema> {
   static defineSchema(): ApplicationConfiguration.Schema;
 
-  static override migrateData(source: AnyObject): AnyObject;
+  static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
   /**
    * Validate a port assignment.

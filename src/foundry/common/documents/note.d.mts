@@ -1,9 +1,7 @@
-import type { AnyObject, InexactPartial } from "../../../utils/index.d.mts";
+import type { AnyObject, AnyMutableObject, InexactPartial } from "../../../utils/index.d.mts";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { SchemaField } from "../data/fields.d.mts";
-
-type DataSchema = foundry.data.fields.DataSchema;
 
 /**
  * The Document definition for a Note.
@@ -31,7 +29,7 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
   static DEFAULT_ICON: string;
 
   override testUserPermission(
-    user: User.ConfiguredInstance,
+    user: User.Implementation,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS,
     options?: InexactPartial<{
       /**
@@ -42,7 +40,7 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
     }>,
   ): boolean;
 
-  static override migrateData(source: AnyObject): AnyObject;
+  static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
   static override shimData(
     data: AnyObject,

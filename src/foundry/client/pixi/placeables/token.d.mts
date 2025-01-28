@@ -237,7 +237,7 @@ declare global {
        * Assign the token as a target for a specific User
        * @defaultValue `null`
        */
-      user?: User.ConfiguredInstance | null | undefined;
+      user?: User.Implementation | null | undefined;
 
       /**
        * Release other active targets for the same player?
@@ -367,7 +367,7 @@ declare global {
    * @see TokenDocument
    * @see TokenLayer
    */
-  class Token extends PlaceableObject<TokenDocument.ConfiguredInstance> {
+  class Token extends PlaceableObject<TokenDocument.Implementation> {
     static override embeddedName: "Token";
 
     static override RENDER_FLAGS: {
@@ -431,7 +431,7 @@ declare global {
     /**
      * Track the set of User documents which are currently targeting this Token
      */
-    targeted: Set<User.ConfiguredInstance>;
+    targeted: Set<User.Implementation>;
 
     /**
      * A reference to the SpriteMesh which displays this Token in the PrimaryCanvasGroup.
@@ -530,7 +530,7 @@ declare global {
     /**
      * Return a reference to a Combatant that represents this Token, if one is present in the current encounter.
      */
-    get combatant(): Combatant.ConfiguredInstance | null;
+    get combatant(): Combatant.Implementation | null;
 
     /**
      * An indicator for whether the Token is currently targeted by the active game User
@@ -846,7 +846,7 @@ declare global {
      * @param combat - A specific combat encounter to which this Token should be added
      * @returns The Token which initiated the toggle
      */
-    toggleCombat(combat?: Combat.ConfiguredInstance): Promise<this>;
+    toggleCombat(combat?: Combat.Implementation): Promise<this>;
 
     /**
      * Toggle an active effect by its texture path.
@@ -866,7 +866,7 @@ declare global {
      * Toggle the visibility state of any Tokens in the currently selected set
      * @returns A Promise which resolves to the updated Token documents
      */
-    toggleVisibility(): Promise<TokenDocument.ConfiguredInstance[]>;
+    toggleVisibility(): Promise<TokenDocument.Implementation[]>;
 
     /**
      * The external radius of the token in pixels.
@@ -901,19 +901,19 @@ declare global {
 
     protected override _onRelease(
       options: PlaceableObject.ReleaseOptions,
-    ): Promise<TokenDocument.ConfiguredInstance> | undefined;
+    ): Promise<TokenDocument.Implementation> | undefined;
 
-    protected override _canControl(user?: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
+    protected override _canControl(user?: User.Implementation, event?: PIXI.FederatedEvent): boolean;
 
-    protected override _canHUD(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
+    protected override _canHUD(user: User.Implementation, event?: PIXI.FederatedEvent): boolean;
 
-    protected override _canConfigure(user?: User.ConfiguredInstance, event?: PIXI.FederatedEvent): true;
+    protected override _canConfigure(user?: User.Implementation, event?: PIXI.FederatedEvent): true;
 
-    protected override _canHover(user?: User.ConfiguredInstance, event?: PIXI.FederatedEvent): true;
+    protected override _canHover(user?: User.Implementation, event?: PIXI.FederatedEvent): true;
 
-    protected override _canView(user?: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
+    protected override _canView(user?: User.Implementation, event?: PIXI.FederatedEvent): boolean;
 
-    protected override _canDrag(user: User.ConfiguredInstance, event: PIXI.FederatedEvent): boolean;
+    protected override _canDrag(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
 
     protected override _onHoverIn(event: PIXI.FederatedEvent, options?: { hoverOutOthers?: boolean }): void;
 

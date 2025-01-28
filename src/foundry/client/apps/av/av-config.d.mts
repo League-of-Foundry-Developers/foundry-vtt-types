@@ -69,7 +69,7 @@ declare global {
     type Any = AVConfig<any>;
 
     interface AVConfigData {
-      user: User.ConfiguredInstance;
+      user: User.Implementation;
       modes: Record<AVSettings.AV_MODES, string>;
       voiceModes: Record<AVSettings.VOICE_MODES, string>;
       serverTypes: { FVTT: "WEBRTC.FVTTSignalingServer"; custom: "WEBRTC.CustomSignalingServer" };

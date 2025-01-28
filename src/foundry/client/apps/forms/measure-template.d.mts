@@ -7,8 +7,8 @@ declare global {
    */
   class MeasuredTemplateConfig<
     Options extends
-      DocumentSheetOptions<MeasuredTemplateDocument.ConfiguredInstance> = DocumentSheetOptions<MeasuredTemplateDocument.ConfiguredInstance>,
-  > extends DocumentSheet<Options, MeasuredTemplateDocument.ConfiguredInstance> {
+      DocumentSheetOptions<MeasuredTemplateDocument.Implementation> = DocumentSheetOptions<MeasuredTemplateDocument.Implementation>,
+  > extends DocumentSheet<Options, MeasuredTemplateDocument.Implementation> {
     /**
      * @defaultValue
      * ```typescript
@@ -21,7 +21,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): DocumentSheetOptions<MeasuredTemplateDocument.ConfiguredInstance>;
+    static override get defaultOptions(): DocumentSheetOptions<MeasuredTemplateDocument.Implementation>;
 
     override getData(): MaybePromise<GetDataReturnType<MeasuredTemplateConfig.MeasuredTemplateConfigData>>;
 
@@ -47,8 +47,8 @@ declare global {
 
     interface MeasuredTemplateConfigData<
       Options extends
-        DocumentSheetOptions<MeasuredTemplateDocument.ConfiguredInstance> = DocumentSheetOptions<MeasuredTemplateDocument.ConfiguredInstance>,
-    > extends DocumentSheet.DocumentSheetData<Options, MeasuredTemplateDocument.ConfiguredInstance> {
+        DocumentSheetOptions<MeasuredTemplateDocument.Implementation> = DocumentSheetOptions<MeasuredTemplateDocument.Implementation>,
+    > extends DocumentSheet.DocumentSheetData<Options, MeasuredTemplateDocument.Implementation> {
       templateTypes: Record<foundry.CONST.MEASURED_TEMPLATE_TYPES, string>;
       gridUnits: string;
       submitText: string;

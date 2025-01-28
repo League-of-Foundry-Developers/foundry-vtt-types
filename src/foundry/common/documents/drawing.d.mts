@@ -1,4 +1,4 @@
-import type { AnyObject, InexactPartial } from "../../../utils/index.d.mts";
+import type { AnyObject, AnyMutableObject, InexactPartial } from "../../../utils/index.d.mts";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
@@ -32,10 +32,10 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
    * Is a user able to update or delete an existing Drawing document??
    * @internal
    */
-  static #canModify(user: User.ConfiguredInstance, doc: BaseDrawing, data: BaseDrawing.UpdateData): boolean;
+  static #canModify(user: User.Implementation, doc: BaseDrawing, data: BaseDrawing.UpdateData): boolean;
 
   override testUserPermission(
-    user: User.ConfiguredInstance,
+    user: User.Implementation,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
     options?: InexactPartial<{
       /**
@@ -48,7 +48,7 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
 
   static override cleanData(source?: AnyObject, options?: foundry.data.fields.DataField.CleanOptions): AnyObject;
 
-  static override migrateData(source: AnyObject): AnyObject;
+  static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
   static override shimData(
     data: AnyObject,

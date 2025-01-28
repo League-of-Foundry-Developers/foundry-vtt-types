@@ -1,5 +1,19 @@
 import { expectTypeOf } from "vitest";
 
-const myControlIcon = new ControlIcon({ texture: "foobar" });
+const myControlIcon = new ControlIcon({
+  texture: "foobar",
+  borderColor: 0x00ff00,
+  elevation: 20,
+  size: 64,
+  tint: 0x373964,
+});
 
-expectTypeOf(myControlIcon.border.visible).toEqualTypeOf<boolean>();
+expectTypeOf(myControlIcon.draw()).toEqualTypeOf<Promise<ControlIcon>>();
+expectTypeOf(
+  myControlIcon.refresh({
+    visible: true,
+    iconColor: 0xdeadea,
+    borderColor: 0xff0000,
+    borderVisible: true,
+  }),
+).toEqualTypeOf<ControlIcon>();

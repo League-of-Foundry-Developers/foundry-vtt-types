@@ -74,7 +74,7 @@ declare global {
     /**
      * Does the currently viewed Scene support Token field of vision?
      */
-    get tokenVision(): Scene.ConfiguredInstance["tokenVision"];
+    get tokenVision(): Scene.Implementation["tokenVision"];
 
     /**
      * The configured options used for the saved fog-of-war texture.

@@ -7,8 +7,8 @@ declare global {
    */
   class PlaylistConfig<
     Options extends
-      DocumentSheetOptions<Playlist.ConfiguredInstance> = DocumentSheetOptions<Playlist.ConfiguredInstance>,
-  > extends DocumentSheet<Options, Playlist.ConfiguredInstance> {
+      DocumentSheetOptions<Playlist.Implementation> = DocumentSheetOptions<Playlist.Implementation>,
+  > extends DocumentSheet<Options, Playlist.Implementation> {
     /**
      * @defaultValue
      * ```typescript
@@ -18,7 +18,7 @@ declare global {
      * options.width = 360;
      * ```
      */
-    static get defaultOptions(): DocumentSheetOptions<Playlist.ConfiguredInstance>;
+    static get defaultOptions(): DocumentSheetOptions<Playlist.Implementation>;
 
     override get title(): string;
 
@@ -37,8 +37,8 @@ declare global {
 
     interface PlaylistConfigData<
       Options extends
-        DocumentSheetOptions<Playlist.ConfiguredInstance> = DocumentSheetOptions<Playlist.ConfiguredInstance>,
-    > extends DocumentSheet.DocumentSheetData<Options, Playlist.ConfiguredInstance> {
+        DocumentSheetOptions<Playlist.Implementation> = DocumentSheetOptions<Playlist.Implementation>,
+    > extends DocumentSheet.DocumentSheetData<Options, Playlist.Implementation> {
       modes: Record<ValueOf<typeof foundry.CONST.PLAYLIST_MODES>, string>;
       sorting: Record<ValueOf<typeof foundry.CONST.PLAYLIST_SORT_MODES>, string>;
     }

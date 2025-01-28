@@ -1,37 +1,38 @@
 import { expectTypeOf } from "vitest";
 
 type DataSchema = foundry.data.fields.DataSchema;
+import DataField = foundry.data.fields.DataField;
 
 // #2554 Null and undefined for SchemaField and EmbeddedDataField
 
-new foundry.documents.BaseAmbientSound({
+await foundry.documents.BaseAmbientSound.create({
   darkness: null,
 });
 
-new foundry.documents.BaseAmbientSound({
+await foundry.documents.BaseAmbientSound.create({
   darkness: undefined,
 });
 
-new foundry.documents.BaseNote({
+await foundry.documents.BaseNote.create({
   texture: null,
 });
 
-new foundry.documents.BaseNote({
+await foundry.documents.BaseNote.create({
   texture: undefined,
 });
 
 // #2555 NumberField Choices
 
 // @ts-expect-error - A textAnchor cannot be an arbitrary number.
-new foundry.documents.BaseNote({ textAnchor: 999 });
+await foundry.documents.BaseNote.create({ textAnchor: 999 });
 // Should be correct
-new foundry.documents.BaseNote({ textAnchor: 2 });
+await foundry.documents.BaseNote.create({ textAnchor: 2 });
 
 // @ts-expect-error - t cannot be an arbitrary string.
-new foundry.documents.BaseMeasuredTemplate({ t: "foobar" });
+await foundry.documents.BaseMeasuredTemplate.create({ t: "foobar" });
 
 // TypeDataField
-declare const JEPCoreTypes: JournalEntryPage.TypeNames;
+declare const JEPCoreTypes: JournalEntryPage.SubType;
 declare const JEPSystemTypes: Game.Model.TypeNames<"JournalEntryPage">;
 
 declare global {
@@ -86,13 +87,13 @@ expectTypeOf(schemaWithLight.light).toEqualTypeOf<foundry.data.LightData>();
 
 declare const effectsField: foundry.data.fields.EmbeddedCollectionField<
   typeof foundry.documents.BaseActiveEffect,
-  Actor.ConfiguredInstance
+  Actor.Implementation
 >;
 
 expectTypeOf(effectsField.hint).toEqualTypeOf<string>();
 
 declare const ElementFieldType: typeof foundry.documents.BaseActiveEffect;
-declare const ParentDataModel: Actor.ConfiguredInstance;
+declare const ParentDataModel: Actor.Implementation;
 declare const AssignmentElementType: foundry.data.fields.EmbeddedCollectionField.InitializedElementType<
   typeof ElementFieldType
 >;
@@ -135,9 +136,6 @@ type _NullOptions = DataField.Options<null>;
 
 // @ts-expect-error - Options cannot accept undefined.
 type _UndefinedOptions = DataField.Options<undefined>;
-
-// Options never contains required elements.
-const _emptyOptions = {} satisfies DataField.Options.Default<number>;
 
 // Regression test for issue where label was being constrained to `""`.
 // Reported by @FloRadical on Discord, see https://discord.com/channels/732325252788387980/793933527065690184/1268262811063287869.

@@ -7,8 +7,8 @@ declare global {
    * @typeParam Options - the type of the options object
    */
   class SceneConfig<
-    Options extends DocumentSheetOptions<Scene.ConfiguredInstance> = DocumentSheetOptions<Scene.ConfiguredInstance>,
-  > extends DocumentSheet<Options, Scene.ConfiguredInstance> {
+    Options extends DocumentSheetOptions<Scene.Implementation> = DocumentSheetOptions<Scene.Implementation>,
+  > extends DocumentSheet<Options, Scene.Implementation> {
     /**
      * @defaultValue
      * ```typescript
@@ -22,7 +22,7 @@ declare global {
      * });
      * ```
      */
-    static override get defaultOptions(): DocumentSheetOptions<Scene.ConfiguredInstance>;
+    static override get defaultOptions(): DocumentSheetOptions<Scene.Implementation>;
 
     /**
      * Indicates if width / height should change together to maintain aspect ratio

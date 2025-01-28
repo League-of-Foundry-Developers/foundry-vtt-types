@@ -9,7 +9,7 @@ declare global {
    */
   class JournalPageSheet<Options extends JournalPageSheet.Options = JournalPageSheet.Options> extends DocumentSheet<
     Options,
-    JournalEntryPage.ConfiguredInstance
+    JournalEntryPage.Implementation
   > {
     /**
      * @defaultValue
@@ -66,10 +66,10 @@ declare global {
   namespace JournalPageSheet {
     type Any = JournalPageSheet<any>;
 
-    interface Options extends DocumentSheetOptions<JournalEntryPage.ConfiguredInstance> {}
+    interface Options extends DocumentSheetOptions<JournalEntryPage.Implementation> {}
 
     interface JournalPageSheetData
-      extends DocumentSheet.DocumentSheetData<Options, JournalEntryPage.ConfiguredInstance> {
+      extends DocumentSheet.DocumentSheetData<Options, JournalEntryPage.Implementation> {
       headingLevels: Record<number, string>;
     }
   }

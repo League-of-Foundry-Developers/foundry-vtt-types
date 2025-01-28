@@ -63,7 +63,7 @@ declare global {
    * @see {@link WallDocument}
    * @see {@link WallsLayer}
    */
-  class Wall extends PlaceableObject<WallDocument.ConfiguredInstance> {
+  class Wall extends PlaceableObject<WallDocument.Implementation> {
     static override embeddedName: "Wall";
 
     static override RENDER_FLAGS: {
@@ -248,7 +248,7 @@ declare global {
      * Record the intersection points between this wall and another, if any.
      * @param other - The other wall.
      */
-    protected _identifyIntersectionsWith(other: WallDocument.ConfiguredInstance): void;
+    protected _identifyIntersectionsWith(other: WallDocument.Implementation): void;
 
     protected override _applyRenderFlags(flags: Wall.RenderFlags): void;
 
@@ -274,7 +274,7 @@ declare global {
 
     override activateListeners(): void;
 
-    protected override _canControl(user: User.ConfiguredInstance, event?: any): boolean;
+    protected override _canControl(user: User.Implementation, event?: any): boolean;
 
     protected override _onHoverIn(event: PIXI.FederatedEvent, options?: PlaceableObject.HoverInOptions): false | void;
 

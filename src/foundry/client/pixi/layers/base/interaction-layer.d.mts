@@ -91,7 +91,7 @@ declare global {
      * @param user  - The User performing the action.
      * @param event - The event object.
      */
-    protected _canDragLeftStart(user: User.ConfiguredInstance, event: PIXI.FederatedEvent): boolean;
+    protected _canDragLeftStart(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
 
     /**
      * Start a left-click drag workflow originating from the Canvas stage.

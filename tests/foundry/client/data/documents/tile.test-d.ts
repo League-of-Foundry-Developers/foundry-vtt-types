@@ -7,5 +7,5 @@ new TileDocument();
 new TileDocument({});
 
 const tile = new TileDocument({ width: 400, height: 400 });
-expectTypeOf(tile).toEqualTypeOf<TileDocument>();
+expectTypeOf(tile).toEqualTypeOf<TileDocument.Implementation>();
 expectTypeOf(tile.prepareDerivedData()).toEqualTypeOf<void>();

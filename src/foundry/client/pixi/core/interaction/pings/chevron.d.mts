@@ -41,11 +41,19 @@ declare global {
      */
     _t34: number;
 
+    /** @remarks Doesn't exist before the first `#_createRings()` call, usually via `#animate()` */
+    _inner?: PIXI.Graphics;
+
+    /** @remarks Doesn't exist before the first `#_createRings()` call, usually via `#animate()` */
+    _outer?: PIXI.Graphics;
+
     /**
      * The path to the chevron texture.
-     * @internal
+     * @remarks Unusually for Foundry, this is referred to by `ChevronPing.`, not `this.constructor.`, in
+     * `#_loadChevron()`, which must therefore be overridden to use a different value in a subclass
+     * @privateRemarks Foundry marked `@private`.
      */
-    protected static _CHEVRON_PATH: "icons/pings/chevron.webp";
+    static _CHEVRON_PATH: string;
 
     override animate(): Promise<boolean>;
 
@@ -54,20 +62,20 @@ declare global {
     /**
      * Draw the outer and inner rings.
      * @param a - The alpha.
-     * @internal
+     * @privateRemarks Foundry marked `@private`
      */
-    protected _drawRings(a: number): void;
+    _drawRings(a: number): void;
 
     /**
      * Load the chevron texture.
-     * @internal
+     * @privateRemarks Foundry marked `@private`
      */
-    protected _loadChevron(): Promise<PIXI.Sprite>;
+    _loadChevron(): Promise<PIXI.Sprite>;
 
     /**
      * Draw the two rings that are used as part of the ping animation.
-     * @internal
+     * @privateRemarks Foundry marked `@private`
      */
-    protected _createRings(): PIXI.Graphics[];
+    _createRings(): [PIXI.Graphics, PIXI.Graphics];
   }
 }

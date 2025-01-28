@@ -38,7 +38,7 @@ export type ActiveEffectData = BaseActiveEffect.Properties;
 export type EffectDurationData = ActiveEffect.DurationData;
 
 /**
- * @deprecated {@link ActiveEffect.Duration | `ActiveEffect.Duration`}
+ * @deprecated {@link ActiveEffect.EffectChangeData | `ActiveEffect.EffectChangeData`}
  */
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type EffectChangeData = ActiveEffect.EffectChangeData;

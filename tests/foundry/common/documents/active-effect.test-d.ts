@@ -2,10 +2,10 @@ import { expectTypeOf } from "vitest";
 import Document = foundry.abstract.Document;
 
 expectTypeOf(foundry.documents.BaseActiveEffect.create({})).toEqualTypeOf<
-  Promise<Document.Stored<ActiveEffect> | undefined>
+  Promise<ActiveEffect.Stored | undefined>
 >();
 expectTypeOf(foundry.documents.BaseActiveEffect.createDocuments([])).toEqualTypeOf<
-  Promise<Document.Stored<ActiveEffect>[]>
+  Promise<ActiveEffect.Stored[]>
 >();
 expectTypeOf(foundry.documents.BaseActiveEffect.updateDocuments([])).toEqualTypeOf<Promise<ActiveEffect[]>>();
 expectTypeOf(foundry.documents.BaseActiveEffect.deleteDocuments([])).toEqualTypeOf<Promise<ActiveEffect[]>>();

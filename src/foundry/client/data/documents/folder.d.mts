@@ -237,7 +237,7 @@ declare global {
   )<SubType> {
     static override metadata: Folder.Metadata;
 
-    static get implementation(): Folder.ConfiguredClass;
+    static get implementation(): Folder.ImplementationClass;
 
     /**
      * The depth of this folder in its sidebar tree
@@ -251,7 +251,7 @@ declare global {
      * {@link Folder.getSubfolders} because reports the subset of child folders which  are displayed to the current User
      * in the UI.
      */
-    children: Folder.ConfiguredInstance[];
+    children: Folder.Implementation[];
 
     /**
      * Return whether the folder is displayed in the sidebar to the current User.
@@ -290,7 +290,7 @@ declare global {
     /**
      * Return the list of ancestors of this folder, starting with the parent.
      */
-    get ancestors(): Folder.ConfiguredInstance[];
+    get ancestors(): Folder.Implementation[];
 
     /**
      * @privateRemarks _preCreate overridden but with no signature changes.
@@ -334,12 +334,12 @@ declare global {
      *                    (default: `false`)
      * @returns An array of Folder documents which are subfolders of this one
      */
-    getSubfolders(recursive?: boolean): Folder.ConfiguredInstance[];
+    getSubfolders(recursive?: boolean): Folder.Implementation[];
 
     /**
      * Get the Folder documents which are parent folders of the current folder or any if its parents.
      * @returns An array of Folder documents which are parent folders of this one
      */
-    getParentFolders(): Folder.ConfiguredInstance[];
+    getParentFolders(): Folder.Implementation[];
   }
 }

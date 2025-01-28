@@ -15,7 +15,7 @@ declare abstract class BaseJournalEntryPage<
    */
   // TODO(LukeAbby): This constructor is a symptom of a circular error.
   // constructor(
-  //   data: BaseJournalEntryPage.ConstructorData,
+  //   data: BaseJournalEntryPage.CreateData,
   //   context?: Document.ConstructionContext<BaseJournalEntryPage.Parent>,
   // );
 
@@ -25,7 +25,7 @@ declare abstract class BaseJournalEntryPage<
 
   static override defineSchema(): BaseJournalEntryPage.Schema;
 
-  override getUserLevel(user?: User.ConfiguredInstance): foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
+  override getUserLevel(user?: User.Implementation): foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
 
   /*
    * After this point these are not really overridden methods.

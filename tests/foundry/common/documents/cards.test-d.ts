@@ -6,7 +6,7 @@ import CardFaceData = foundry.types.CardFaceData;
 
 // @ts-expect-error data argument is non-optional
 const baseCards = new foundry.documents.BaseCards();
-expectTypeOf(baseCards.cards).toEqualTypeOf<EmbeddedCollection<Card.ConfiguredInstance, Cards.ConfiguredInstance>>();
+expectTypeOf(baseCards.cards).toEqualTypeOf<EmbeddedCollection<Card.Implementation, Cards.Implementation>>();
 expectTypeOf(baseCards._source.cards[0]._id).toEqualTypeOf<CardData["_id"]>();
 expectTypeOf(baseCards._source.cards[0].faces[0]).toEqualTypeOf<CardFaceData>();
 

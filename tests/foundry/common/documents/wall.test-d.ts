@@ -2,29 +2,25 @@ import { expectTypeOf } from "vitest";
 
 const myScene = new Scene({ name: "foobar" });
 
+class TestBaseWall extends foundry.documents.BaseWall {};
+
 // @ts-expect-error - A BaseWall requires data.
-new foundry.documents.BaseWall();
+new TestBaseWall();
 
 // @ts-expect-error - A BaseWall requires c (coordinates).
-new foundry.documents.BaseWall({});
+new TestBaseWall({});
 
-new foundry.documents.BaseWall({ c: [0, 0, 0, 0] });
-new foundry.documents.BaseWall({ c: [0, 0, 0, 0] }, { parent: myScene });
-
-// @ts-expect-error - a BaseWall requires data.
-new foundry.documents.BaseWall();
-
-// @ts-expect-error - a BaseWall requires c (coordinates).
-new foundry.documents.BaseWall({});
+new TestBaseWall({ c: [0, 0, 0, 0] });
+new TestBaseWall({ c: [0, 0, 0, 0] }, { parent: myScene });
 
 // @ts-expect-error - c must be a length-4 array of integer coordinates
-new foundry.documents.BaseWall({ c: [10, 20] });
+new TestBaseWall({ c: [10, 20] });
 // @ts-expect-error - c must be a length-4 array of integer coordinates
-new foundry.documents.BaseWall({ c: [10, 20, 30, 40, 50] });
+new TestBaseWall({ c: [10, 20, 30, 40, 50] });
 
-expectTypeOf(new foundry.documents.BaseWall({ c: [10, 20, 30, 40] })).toEqualTypeOf<foundry.documents.BaseWall>();
+expectTypeOf(new TestBaseWall({ c: [10, 20, 30, 40] })).toEqualTypeOf<foundry.documents.BaseWall>();
 expectTypeOf(
-  new foundry.documents.BaseWall({
+  new TestBaseWall({
     _id: null,
     c: [10, 20, 30, 40],
     light: null,
@@ -38,7 +34,7 @@ expectTypeOf(
   }),
 ).toEqualTypeOf<foundry.documents.BaseWall>();
 expectTypeOf(
-  new foundry.documents.BaseWall({
+  new TestBaseWall({
     _id: undefined,
     c: [10, 20, 30, 40],
     light: undefined,
@@ -52,7 +48,7 @@ expectTypeOf(
   }),
 ).toEqualTypeOf<foundry.documents.BaseWall>();
 expectTypeOf(
-  new foundry.documents.BaseWall({
+  new TestBaseWall({
     c: [10, 20, 30, 40],
     light: foundry.CONST.WALL_SENSE_TYPES.NORMAL,
     move: foundry.CONST.WALL_MOVEMENT_TYPES.NORMAL,
@@ -65,43 +61,43 @@ expectTypeOf(
   }),
 ).toEqualTypeOf<foundry.documents.BaseWall>();
 
-new foundry.documents.BaseWall({
+new TestBaseWall({
   c: [10, 20, 30, 40],
   // @ts-expect-error - light can't be an arbitrary number
   light: 9999,
 });
 
-new foundry.documents.BaseWall({
+new TestBaseWall({
   c: [10, 20, 30, 40],
   // @ts-expect-error - move can't be an arbitrary number
   move: 9999,
 });
 
-new foundry.documents.BaseWall({
+new TestBaseWall({
   c: [10, 20, 30, 40],
   // @ts-expect-error - sight can't be an arbitrary number
   sight: 9999,
 });
 
-new foundry.documents.BaseWall({
+new TestBaseWall({
   c: [10, 20, 30, 40],
   // @ts-expect-error - sound can't be an arbitrary number
   sound: 9999,
 });
 
-new foundry.documents.BaseWall({
+new TestBaseWall({
   c: [10, 20, 30, 40],
   // @ts-expect-error - dir can't be an arbitrary number
   dir: 9999,
 });
 
-new foundry.documents.BaseWall({
+new TestBaseWall({
   c: [10, 20, 30, 40],
   // @ts-expect-error - door can't be an arbitrary number
   door: 9999,
 });
 
-new foundry.documents.BaseWall({
+new TestBaseWall({
   c: [10, 20, 30, 40],
   // @ts-expect-error - ds can't be an arbitrary number
   ds: 9999,

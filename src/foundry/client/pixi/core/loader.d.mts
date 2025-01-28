@@ -40,7 +40,7 @@ declare global {
      *                  (default: `{}`)
      */
     static loadSceneTextures(
-      scene: Scene.ConfiguredInstance,
+      scene: Scene.Implementation,
       options?: Partial<TextureLoader.LoadSceneTextureOptions>,
     ): Promise<void[]>;
 

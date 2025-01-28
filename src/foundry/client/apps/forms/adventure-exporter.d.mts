@@ -8,9 +8,9 @@ declare global {
    */
   class AdventureExporter<Options extends AdventureExporter.Options = AdventureExporter.Options> extends DocumentSheet<
     Options,
-    Adventure.ConfiguredInstance
+    Adventure.Implementation
   > {
-    constructor(object?: Adventure.ConfiguredInstance & { pack: string }, options?: Partial<Options>);
+    constructor(object?: Adventure.Implementation & { pack: string }, options?: Partial<Options>);
 
     /**
      * @defaultValue
@@ -75,7 +75,7 @@ declare global {
   namespace AdventureExporter {
     type Any = AdventureExporter<any>;
 
-    interface Options extends DocumentSheetOptions<Adventure.ConfiguredInstance> {}
+    interface Options extends DocumentSheetOptions<Adventure.Implementation> {}
 
     interface AdventureContentTreeNode {
       /** An alias for folder.id */
@@ -124,7 +124,7 @@ declare global {
     }
 
     interface AdventureExporterData {
-      adventure: Adventure.ConfiguredInstance;
+      adventure: Adventure.Implementation;
 
       contentTree: AdventureExporter["contentTree"];
     }

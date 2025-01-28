@@ -308,14 +308,14 @@ declare abstract class DataModel<
    * @param source - The candidate source data from which the model will be constructed
    * @returns Migrated source data, if necessary
    */
-  static migrateData(source: AnyObject): AnyObject;
+  static migrateData(source: AnyMutableObject): AnyMutableObject;
 
   /**
    * Wrap data migration in a try/catch which attempts it safely
    * @param source - The candidate source data from which the model will be constructed
    * @returns Migrated source data, if necessary
    */
-  static migrateDataSafe(source: AnyObject): AnyObject;
+  static migrateDataSafe(source: AnyMutableObject): AnyMutableObject;
 
   /**
    * Take data which conforms to the current data schema and add backwards-compatible accessors to it in order to

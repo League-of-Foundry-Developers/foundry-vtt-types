@@ -1,9 +1,11 @@
 import { expectTypeOf } from "vitest";
 
-expectTypeOf(new foundry.documents.BaseAmbientSound()).toEqualTypeOf<foundry.documents.BaseAmbientSound>();
-expectTypeOf(new foundry.documents.BaseAmbientSound({})).toEqualTypeOf<foundry.documents.BaseAmbientSound>();
+class TestBaseAmbientSound extends foundry.documents.BaseAmbientSound {};
+
+expectTypeOf(new TestBaseAmbientSound()).toEqualTypeOf<foundry.documents.BaseAmbientSound>();
+expectTypeOf(new TestBaseAmbientSound({})).toEqualTypeOf<foundry.documents.BaseAmbientSound>();
 expectTypeOf(
-  new foundry.documents.BaseAmbientSound({
+  new TestBaseAmbientSound({
     _id: null,
     x: 10,
     y: 10,
@@ -17,7 +19,7 @@ expectTypeOf(
   }),
 ).toEqualTypeOf<foundry.documents.BaseAmbientSound>();
 expectTypeOf(
-  new foundry.documents.BaseAmbientSound({
+  new TestBaseAmbientSound({
     _id: null,
     x: null,
     y: null,
@@ -31,7 +33,7 @@ expectTypeOf(
   }),
 ).toEqualTypeOf<foundry.documents.BaseAmbientSound>();
 expectTypeOf(
-  new foundry.documents.BaseAmbientSound({
+  new TestBaseAmbientSound({
     _id: undefined,
     x: undefined,
     y: undefined,

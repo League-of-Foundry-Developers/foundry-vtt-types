@@ -19,7 +19,7 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
    * @param context - Construction context options
    */
   // TODO(LukeAbby): This constructor is a symptom of a circular error.
-  // constructor(data?: BaseCombat.ConstructorData, context?: Document.ConstructionContext<BaseCombat.Parent>);
+  // constructor(data?: BaseCombat.CreateData, context?: Document.ConstructionContext<BaseCombat.Parent>);
 
   static override metadata: BaseCombat.Metadata;
 
@@ -29,21 +29,21 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
    * Is a user able to update an existing Combat?
    * @internal
    */
-  static #canUpdate(user: User.ConfiguredInstance, doc: BaseCombat, data: BaseCombat.UpdateData): boolean;
+  static #canUpdate(user: User.Implementation, doc: BaseCombat, data: BaseCombat.UpdateData): boolean;
 
   /**
    * Can a certain User change the Combat round?
    * @param user - The user attempting to change the round
    * @returns Is the user allowed to change the round?
    */
-  protected _canChangeRound(user: User.ConfiguredInstance): boolean;
+  protected _canChangeRound(user: User.Implementation): boolean;
 
   /**
    * Can a certain User change the Combat turn?
    * @param user - The user attempting to change the turn
    * @returns Is the user allowed to change the turn?
    */
-  protected _canChangeTurn(user: User.ConfiguredInstance): boolean;
+  protected _canChangeTurn(user: User.Implementation): boolean;
 
   /*
    * After this point these are not really overridden methods.

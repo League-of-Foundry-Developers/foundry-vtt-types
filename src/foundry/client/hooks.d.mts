@@ -1,7 +1,6 @@
 import type { EditorState, Plugin } from "prosemirror-state";
 import type { DeepPartial, EmptyObject, FixedInstanceType, ValueOf } from "../../utils/index.d.mts";
 import type Document from "../common/abstract/document.d.mts";
-import type { EffectChangeData } from "../common/documents/_types.d.mts";
 import type { ProseMirrorDropDown } from "../common/prosemirror/menu.d.mts";
 
 // eslint-disable-next-line import/no-named-as-default
@@ -208,7 +207,7 @@ declare global {
        * @remarks An explicit return value of `false` prevents the Document being created.
        * @see {@link Hotbar#_onDrop}
        */
-      hotbarDrop: (hotbar: Hotbar, data: Document.DropData<Macro.ConfiguredInstance>, slot: number) => boolean | void;
+      hotbarDrop: (hotbar: Hotbar, data: Document.DropData<Macro.Implementation>, slot: number) => boolean | void;
 
       /**
        * A hook event that fires when the SceneNavigation menu is expanded or collapsed.
@@ -247,7 +246,7 @@ declare global {
        * @remarks This is called by {@link Hooks.call}.
        * @see {@link ActiveEffect#_applyCustom}
        */
-      applyActiveEffect: (actor: Actor.ConfiguredInstance, change: EffectChangeData) => boolean | void;
+      applyActiveEffect: (actor: Actor.Implementation, change: ActiveEffect.EffectChangeData) => boolean | void;
 
       /** Compendium */
 
@@ -335,7 +334,7 @@ declare global {
        * @see {@link UserTargets#_hook}
        */
       targetToken: (
-        user: User.ConfiguredInstance,
+        user: User.Implementation,
         token: Document.ConfiguredObjectClassForName<"Token">,
         targeted: boolean,
       ) => void;
@@ -363,8 +362,8 @@ declare global {
        * @remarks An explicit return value of `false` prevents the operation.
        */
       dealCards: (
-        origin: Cards.ConfiguredInstance,
-        destinations: Cards.ConfiguredInstance[],
+        origin: Cards.Implementation,
+        destinations: Cards.Implementation[],
         context: Cards.DealContext,
       ) => boolean | void;
 
@@ -377,8 +376,8 @@ declare global {
        * @remarks An explicit return value of `false` prevents the operation.
        */
       passCards: (
-        origin: Cards.ConfiguredInstance,
-        destination: Cards.ConfiguredInstance,
+        origin: Cards.Implementation,
+        destination: Cards.Implementation,
         context: Cards.DealContext,
       ) => boolean | void;
 
@@ -389,8 +388,8 @@ declare global {
        * @param context  - Additional context which describes the operation.
        */
       returnCards: (
-        origin: Cards.ConfiguredInstance,
-        returned: Card.ConfiguredInstance[],
+        origin: Cards.Implementation,
+        returned: Card.Implementation[],
         context: Cards.ReturnContext,
       ) => boolean | void;
 
@@ -407,8 +406,8 @@ declare global {
        * @remarks This is called by {@link Hooks.callAll}.
        */
       applyCompendiumArt: (
-        documentClass: Actor.ConfiguredClass,
-        source: foundry.documents.BaseActor.ConstructorData,
+        documentClass: Actor.ImplementationClass,
+        source: foundry.documents.BaseActor.CreateData,
         pack: CompendiumCollection.Any,
         art: CompendiumArtInfo,
       ) => void;
@@ -425,7 +424,7 @@ declare global {
        * @see {@link ActorSheet#_onDrop}
        */
       dropActorSheetData: (
-        actor: Actor.ConfiguredInstance,
+        actor: Actor.Implementation,
         sheet: ActorSheet,
         data: ActorSheet.DropData,
       ) => boolean | void;
@@ -505,7 +504,7 @@ declare global {
        * @remarks This is called by {@link Hooks.call}.
        */
       preImportAdventure: (
-        adventure: Adventure.ConfiguredInstance,
+        adventure: Adventure.Implementation,
         formData: object, // TODO: Improve this. Also relevant to `AdventureImporter#_updateObject`
         toCreate: AdventureImportData["toCreate"],
         toUpdate: AdventureImportData["toUpdate"],
@@ -521,7 +520,7 @@ declare global {
        * @remarks This is called by {@link Hooks.callAll}.
        */
       importAdventure: (
-        adventure: Adventure.ConfiguredInstance,
+        adventure: Adventure.Implementation,
         formData: object, // TODO: Improve this. Also relevant to `AdventureImporter#_updateObject`
         toCreate: AdventureImportData["toCreate"],
         toUpdate: AdventureImportData["toUpdate"],
@@ -535,7 +534,7 @@ declare global {
        * @param connected - Is the user now connected (true) or disconnected (false)
        * @remarks This is called by {@link Hooks.callAll}.
        */
-      userConnected: (user: User.ConfiguredInstance, connected: boolean) => void;
+      userConnected: (user: User.Implementation, connected: boolean) => void;
 
       /** Combat */
 
@@ -548,7 +547,7 @@ declare global {
        * @remarks This is called by {@link Hooks.callAll}.
        */
       combatTurnChange: (
-        combat: Combat.ConfiguredInstance,
+        combat: Combat.Implementation,
         prior: Combat.HistoryData,
         current: Combat.HistoryData,
       ) => void;
@@ -560,7 +559,7 @@ declare global {
        * @param updateData - An object which contains Combat properties that will be updated. Can be mutated.
        */
       combatStart: (
-        combat: Combat.ConfiguredInstance,
+        combat: Combat.Implementation,
         updateData: {
           /** The initial round */
           round: number;
@@ -577,7 +576,7 @@ declare global {
        * @param updateOptions - An object which contains options provided to the update method. Can be mutated.
        */
       combatTurn: (
-        combat: Combat.ConfiguredInstance,
+        combat: Combat.Implementation,
         updateData: {
           /** The current round of combat */
           round: number;
@@ -599,7 +598,7 @@ declare global {
        * @param updateOptions - An object which contains options provided to the update method. Can be mutated.
        */
       combatRound: (
-        combat: Combat.ConfiguredInstance,
+        combat: Combat.Implementation,
         updateData: {
           /** The new round of combat */
           round: number;
@@ -688,7 +687,7 @@ declare global {
           user: string;
 
           /** The identified speaker data, see {@link ChatMessage.getSpeaker} */
-          speaker: ReturnType<ChatMessage.ConfiguredClass["getSpeaker"]>;
+          speaker: ReturnType<ChatMessage.ImplementationClass["getSpeaker"]>;
         },
       ) => boolean | void;
 
@@ -707,8 +706,8 @@ declare global {
         messageData: {
           message: ChatMessage.PersistedData;
           user: Game["user"];
-          author: ChatMessage.ConfiguredInstance["user"];
-          alias: ChatMessage.ConfiguredInstance["alias"];
+          author: ChatMessage.Implementation["user"];
+          alias: ChatMessage.Implementation["alias"];
           cssClass: string;
           isWhisper: boolean;
           canDelete: boolean;
@@ -764,7 +763,7 @@ declare global {
        * @see {@link RollTableConfig#_onDrop}
        */
       dropRollTableSheetData: (
-        table: RollTable.ConfiguredInstance,
+        table: RollTable.Implementation,
         config: RollTableConfig,
         data: object,
       ) => boolean | void;

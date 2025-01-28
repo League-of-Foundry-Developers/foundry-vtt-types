@@ -23,7 +23,7 @@ declare abstract class DatabaseBackend {
   get<T extends Document.AnyConstructor>(
     documentClass: T,
     operation: DatabaseGetOperation,
-    user?: User.ConfiguredInstance,
+    user?: User.Implementation,
   ): Promise<FixedInstanceType<T>>[];
 
   /**
@@ -36,7 +36,7 @@ declare abstract class DatabaseBackend {
   protected abstract _getDocuments<T extends Document.AnyConstructor>(
     documentClass: T,
     operation: DatabaseGetOperation,
-    user?: User.ConfiguredInstance,
+    user?: User.Implementation,
   ): Promise<FixedInstanceType<T>[]>;
 
   /**
@@ -50,8 +50,8 @@ declare abstract class DatabaseBackend {
    */
   create<T extends Document.AnyConstructor>(
     documentClass: T,
-    operation: DatabaseCreateOperation<FixedInstanceType<T>>,
-    user?: User.ConfiguredInstance,
+    operation: DatabaseBackend.CreateOperation<T>,
+    user?: User.Implementation,
   ): Promise<FixedInstanceType<T>[]>;
 
   /**
@@ -64,7 +64,7 @@ declare abstract class DatabaseBackend {
   protected abstract _createDocuments<T extends Document.AnyConstructor>(
     documentClass: T,
     operation: DatabaseCreateOperation<FixedInstanceType<T>>,
-    user?: User.ConfiguredInstance,
+    user?: User.Implementation,
   ): Promise<FixedInstanceType<T>[]>;
 
   /**
@@ -78,8 +78,8 @@ declare abstract class DatabaseBackend {
    */
   update<T extends Document.AnyConstructor>(
     documentClass: T,
-    operation: DatabaseUpdateOperation<FixedInstanceType<T>>,
-    user?: User.ConfiguredInstance,
+    operation: DatabaseBackend.UpdateOperation<T>,
+    user?: User.Implementation,
   ): Promise<FixedInstanceType<T>[]>;
 
   /**
@@ -92,7 +92,7 @@ declare abstract class DatabaseBackend {
   protected abstract _updateDocuments<T extends Document.AnyConstructor>(
     documentClass: T,
     operation: DatabaseUpdateOperation<FixedInstanceType<T>>,
-    user: User.ConfiguredInstance,
+    user: User.Implementation,
   ): Promise<FixedInstanceType<T>[]>;
 
   /**
@@ -106,8 +106,8 @@ declare abstract class DatabaseBackend {
    */
   delete<T extends Document.AnyConstructor>(
     documentClass: T,
-    operation: DatabaseDeleteOperation,
-    user?: User.ConfiguredInstance,
+    operation: DatabaseBackend.DeleteOperation,
+    user?: User.Implementation,
   ): Promise<FixedInstanceType<T>[]>;
 
   /**
@@ -119,7 +119,7 @@ declare abstract class DatabaseBackend {
   protected abstract _deleteDocuments<T extends Document.AnyConstructor>(
     documentClass: T,
     operation: DatabaseDeleteOperation,
-    user: User.ConfiguredInstance,
+    user: User.Implementation,
   ): Promise<FixedInstanceType<T>[]>;
 
   /**
@@ -179,10 +179,16 @@ declare abstract class DatabaseBackend {
    * Construct a standardized error message given the context of an attempted operation
    */
   protected _logError(
-    user: User.ConfiguredInstance,
+    user: User.Implementation,
     action: string,
     { parent, pack }?: { parent?: Document.Any; pack?: string },
   ): string;
+}
+
+declare namespace DatabaseBackend {
+  type CreateOperation<T extends Document.AnyConstructor> = Document.Database.CreateOperation<DatabaseCreateOperation<FixedInstanceType<T>>> & { data: FixedInstanceType<T>[] };
+  type UpdateOperation<T extends Document.AnyConstructor> = Document.Database.UpdateOperation<DatabaseUpdateOperation<FixedInstanceType<T>>> & { data: FixedInstanceType<T>[] };
+  type DeleteOperation = Document.Database.DeleteOperation<DatabaseDeleteOperation> & { ids: string[] };
 }
 
 export default DatabaseBackend;

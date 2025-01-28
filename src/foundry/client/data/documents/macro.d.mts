@@ -290,7 +290,7 @@ declare global {
   )<SubType> {
     static override metadata: Macro.Metadata;
 
-    static get implementation(): Macro.ConfiguredClass;
+    static get implementation(): Macro.ImplementationClass;
 
     /**
      * Is the current User the author of this macro?

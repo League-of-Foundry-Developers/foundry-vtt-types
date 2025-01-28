@@ -251,7 +251,7 @@ declare global {
   )<SubType> {
     static override metadata: TableResult.Metadata;
 
-    static get implementation(): TableResult.ConfiguredClass;
+    static get implementation(): TableResult.ImplementationClass;
 
     /**
      * A path reference to the icon image used to represent this result

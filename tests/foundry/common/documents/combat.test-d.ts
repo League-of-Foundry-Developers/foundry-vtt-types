@@ -4,9 +4,9 @@ import Document = foundry.abstract.Document;
 new foundry.documents.BaseCombat();
 
 expectTypeOf(foundry.documents.BaseCombat.create({ scene: "foo", active: true, sort: 1 })).toEqualTypeOf<
-  Promise<Document.Stored<Combat> | undefined>
+  Promise<Combat.Stored | undefined>
 >();
-expectTypeOf(foundry.documents.BaseCombat.createDocuments([])).toEqualTypeOf<Promise<Document.Stored<Combat>[]>>();
+expectTypeOf(foundry.documents.BaseCombat.createDocuments([])).toEqualTypeOf<Promise<Combat.Stored[]>>();
 expectTypeOf(foundry.documents.BaseCombat.updateDocuments([])).toEqualTypeOf<Promise<Combat[]>>();
 expectTypeOf(foundry.documents.BaseCombat.deleteDocuments([])).toEqualTypeOf<Promise<Combat[]>>();
 

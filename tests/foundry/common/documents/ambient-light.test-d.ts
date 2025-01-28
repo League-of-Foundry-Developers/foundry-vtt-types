@@ -1,8 +1,10 @@
 import { expectTypeOf } from "vitest";
 
-expectTypeOf(new foundry.documents.BaseAmbientLight()).toEqualTypeOf<foundry.documents.BaseAmbientLight>();
-expectTypeOf(new foundry.documents.BaseAmbientLight({})).toEqualTypeOf<foundry.documents.BaseAmbientLight>();
+class TestBaseAmbientLight extends foundry.documents.BaseAmbientLight {};
 
-const myLight = new foundry.documents.BaseAmbientLight();
+expectTypeOf(new TestBaseAmbientLight()).toEqualTypeOf<foundry.documents.BaseAmbientLight>();
+expectTypeOf(new TestBaseAmbientLight({})).toEqualTypeOf<foundry.documents.BaseAmbientLight>();
+
+declare const myLight: foundry.documents.BaseAmbientLight;
 expectTypeOf(myLight.config).toEqualTypeOf<foundry.data.LightData>();
 expectTypeOf(myLight.config.angle).toEqualTypeOf<number>();

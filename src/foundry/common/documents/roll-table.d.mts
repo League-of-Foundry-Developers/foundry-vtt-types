@@ -1,4 +1,4 @@
-import type { AnyObject } from "../../../utils/index.d.mts";
+import type { AnyMutableObject } from "../../../utils/index.d.mts";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { SchemaField } from "../data/fields.d.mts";
@@ -18,7 +18,7 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
    * @param context - Construction context options
    */
   // TODO(LukeAbby): This constructor is a symptom of a circular error.
-  // constructor(data: BaseRollTable.ConstructorData, context?: Document.ConstructionContext<BaseRollTable.Parent>);
+  // constructor(data: BaseRollTable.CreateData, context?: Document.ConstructionContext<BaseRollTable.Parent>);
 
   static override metadata: BaseRollTable.Metadata;
 
@@ -29,7 +29,7 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
    */
   static DEFAULT_ICON: "icons/svg/d20-grey.svg";
 
-  static override migrateData(source: AnyObject): AnyObject;
+  static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
   /*
    * After this point these are not really overridden methods.

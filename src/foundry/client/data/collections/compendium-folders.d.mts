@@ -19,9 +19,9 @@ declare global {
     // updateAll(
     //   transformation:
     //     | DeepPartial<Folder["_source"]>
-    //     | ((doc: foundry.abstract.Document.Stored<Folder>) => DeepPartial<Folder["_source"]>),
-    //   condition?: ((obj: foundry.abstract.Document.Stored<Folder>) => boolean) | null,
+    //     | ((doc: foundry.abstract.Folder.Stored) => DeepPartial<Folder["_source"]>),
+    //   condition?: ((obj: foundry.abstract.Folder.Stored) => boolean) | null,
     //   options?: foundry.abstract.Document.OnUpdateOptions<"Folder">,
-    // ): Promise<Folder.ConfiguredInstance[]>;
+    // ): Promise<Folder.Implementation[]>;
   }
 }

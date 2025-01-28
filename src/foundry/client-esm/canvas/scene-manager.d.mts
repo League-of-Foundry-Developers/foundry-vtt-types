@@ -51,7 +51,7 @@ declare class SceneManager {
   /**
    * The managed Scene
    */
-  get scene(): Scene.ConfiguredInstance;
+  get scene(): Scene.Implementation;
 
   /**
    * Additional behaviors to perform when the Canvas is first initialized for the Scene.

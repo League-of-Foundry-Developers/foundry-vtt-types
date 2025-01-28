@@ -19,7 +19,7 @@ declare global {
       OwnershipOpt extends boolean = false,
       IdOpt extends boolean = false,
     >(
-      document: Macro.ConfiguredInstance | foundry.documents.BaseMacro.ConstructorData,
+      document: Macro.Implementation | foundry.documents.BaseMacro.CreateData,
       options?: InexactPartial<WorldCollection.FromCompendiumOptions<FolderOpt, SortOpt, OwnershipOpt, IdOpt>>,
     ): Omit<
       Macro["_source"],

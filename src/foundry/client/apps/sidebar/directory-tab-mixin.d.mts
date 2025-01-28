@@ -46,7 +46,7 @@ declare class DirectoryApplication {
    */
   protected _matchSearchFolders(
     query: RegExp,
-    includeFolder: (folder: Folder.ConfiguredInstance, autoExpand?: boolean) => boolean,
+    includeFolder: (folder: Folder.Implementation, autoExpand?: boolean) => boolean,
   ): void;
 
   /**
@@ -61,7 +61,7 @@ declare class DirectoryApplication {
     query: RegExp,
     entryIds: Set<string>,
     folderIds: Set<string>,
-    includeFolder: (folder: Folder.ConfiguredInstance, autoExpand?: boolean) => boolean,
+    includeFolder: (folder: Folder.Implementation, autoExpand?: boolean) => boolean,
   ): void;
 
   /**
@@ -152,7 +152,7 @@ declare class DirectoryApplication {
    * @param sortData        - The sort data for the Folder
    */
   protected _handleDroppedForeignFolder(
-    folder: Folder.ConfiguredInstance,
+    folder: Folder.Implementation,
     closestFolderId: string,
     sortData: {
       /**
@@ -164,7 +164,7 @@ declare class DirectoryApplication {
        */
       sortBefore: boolean;
     },
-  ): Promise<{ folder: Folder.ConfiguredInstance; sortNeeded: boolean } | null>;
+  ): Promise<{ folder: Folder.Implementation; sortNeeded: boolean } | null>;
 
   /**
    * Handle Entry data being dropped into the directory.
@@ -187,7 +187,7 @@ declare class DirectoryApplication {
    * @param folder - The target Folder
    * @returns Is the Entry a sibling?
    */
-  protected _entryBelongsToFolder(entry: DirectoryMixinEntry, folder: Folder.ConfiguredInstance): boolean;
+  protected _entryBelongsToFolder(entry: DirectoryMixinEntry, folder: Folder.Implementation): boolean;
 
   /**
    * Check if an Entry is already present in the Collection
@@ -259,7 +259,7 @@ declare global {
     /**
      * The folder id or folder object to which this entry belongs
      */
-    folder: Folder.ConfiguredInstance | string;
+    folder: Folder.Implementation | string;
     /**
      * An image path to display for the entry
      */

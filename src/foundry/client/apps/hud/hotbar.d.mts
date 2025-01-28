@@ -29,7 +29,7 @@ declare global {
      * The currently displayed set of macros
      * @defaultValue `[]`
      */
-    macros: Macro.ConfiguredInstance[];
+    macros: Macro.Implementation[];
 
     /**
      * Track collapsed state
@@ -67,7 +67,7 @@ declare global {
      * Get the Array of Macro (or null) values that should be displayed on a numbered page of the bar
      * @param page -
      */
-    protected _getMacrosByPage(page: number): Macro.ConfiguredInstance[];
+    protected _getMacrosByPage(page: number): Macro.Implementation[];
 
     /**
      * Collapse the Hotbar, minimizing its display.
@@ -129,14 +129,14 @@ declare global {
      * Create a Macro which rolls a RollTable when executed
      * @param table - The RollTable document
      */
-    protected _createRollTableRollMacro(table: RollTable): Promise<Macro.ConfiguredInstance>;
+    protected _createRollTableRollMacro(table: RollTable): Promise<Macro.Implementation>;
 
     /**
      * Create a Macro document which can be used to toggle display of a Journal Entry.
      * @param doc - A Document which should be toggled
      * @returns A created Macro document to add to the bar
      */
-    protected _createDocumentSheetToggle(doc: ClientDocument): Promise<Macro.ConfiguredInstance>;
+    protected _createDocumentSheetToggle(doc: ClientDocument): Promise<Macro.Implementation>;
 
     /**
      * Handle click events to toggle display of the macro bar

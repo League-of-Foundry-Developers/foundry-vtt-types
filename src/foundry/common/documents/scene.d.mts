@@ -1,4 +1,4 @@
-import type { AnyObject } from "../../../utils/index.d.mts";
+import type { AnyObject, AnyMutableObject } from "../../../utils/index.d.mts";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { SchemaField } from "../data/fields.d.mts";
@@ -16,13 +16,13 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
    * @param context - Construction context options
    */
   // TODO(LukeAbby): This constructor is a symptom of a circular error.
-  // constructor(data: BaseScene.ConstructorData, context?: Document.ConstructionContext<BaseScene.Parent>);
+  // constructor(data: BaseScene.CreateData, context?: Document.ConstructionContext<BaseScene.Parent>);
 
   static override metadata: BaseScene.Metadata;
 
   static override defineSchema(): BaseScene.Schema;
 
-  static override migrateData(source: AnyObject): AnyObject;
+  static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
   static override shimData(
     data: AnyObject,

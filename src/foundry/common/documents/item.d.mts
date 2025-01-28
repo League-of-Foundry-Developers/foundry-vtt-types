@@ -1,4 +1,4 @@
-import type { AnyObject } from "../../../utils/index.d.mts";
+import type { AnyObject, AnyMutableObject } from "../../../utils/index.d.mts";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { SchemaField } from "../data/fields.d.mts";
@@ -26,7 +26,7 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
    * @param context - Construction context options
    */
   // TODO(LukeAbby): This constructor is causing a circular error.
-  // constructor(data: BaseItem.ConstructorData, context?: Document.ConstructionContext<BaseItem.Parent>);
+  // constructor(data: BaseItem.CreateData, context?: Document.ConstructionContext<BaseItem.Parent>);
 
   static override metadata: BaseItem.Metadata;
 
@@ -53,7 +53,7 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
     options?: Document.TestUserPermissionOptions,
   ): boolean;
 
-  static override migrateData(source: AnyObject): AnyObject;
+  static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
   /*
    * After this point these are not really overridden methods.

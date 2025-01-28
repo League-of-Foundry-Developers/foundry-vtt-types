@@ -613,7 +613,7 @@ declare global {
     /**
      * Return a reference to a Combatant that represents this Token, if one is present in the current encounter.
      */
-    get combatant(): Combatant.ConfiguredInstance | null;
+    get combatant(): Combatant.Implementation | null;
 
     /**
      * An indicator for whether or not this Token is currently involved in the active combat encounter.
@@ -740,7 +740,7 @@ declare global {
      * When the base Actor for a TokenDocument changes, we may need to update its Actor instance
      */
     protected _onUpdateBaseActor(
-      update?: DeepPartial<Actor.ConfiguredInstance["_source"]>,
+      update?: DeepPartial<Actor.Implementation["_source"]>,
       options?: Document.OnUpdateOptions<"Actor">,
     ): void;
 

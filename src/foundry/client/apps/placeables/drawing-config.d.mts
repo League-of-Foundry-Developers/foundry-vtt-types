@@ -15,7 +15,7 @@ declare global {
    */
   class DrawingConfig<Options extends DrawingConfigOptions = DrawingConfigOptions> extends FormApplication<
     Options,
-    DrawingDocument.ConfiguredInstance
+    DrawingDocument.Implementation
   > {
     /**
      * @defaultValue

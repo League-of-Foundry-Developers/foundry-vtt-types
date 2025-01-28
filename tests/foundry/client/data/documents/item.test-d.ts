@@ -40,10 +40,10 @@ await Item.create({});
 const item = new Item({ name: "Mighty Axe of Killing", type: "weapon" });
 await Item.create({ name: "Mighty Axe of Killing", type: "weapon" });
 
-expectTypeOf(item.actor).toEqualTypeOf<Actor | null>();
+expectTypeOf(item.actor).toEqualTypeOf<Actor.Implementation | null>();
 expectTypeOf(item.img).toEqualTypeOf<string | null | undefined>();
 expectTypeOf(item.isOwned).toEqualTypeOf<boolean>();
-expectTypeOf(item.transferredEffects).toEqualTypeOf<ActiveEffect[]>();
+expectTypeOf(item.transferredEffects).toEqualTypeOf<ActiveEffect.Implementation[]>();
 expectTypeOf(item.type).toEqualTypeOf<"weapon" | "armor" | "base" | `${string}.${string}`>();
 expectTypeOf(item.getRollData()).toEqualTypeOf<Record<string, unknown>>();
 
@@ -81,4 +81,4 @@ class BoilerplateItem extends Item {
 }
 
 declare const configuredItem: BoilerplateItem;
-expectTypeOf(configuredItem.actor).toEqualTypeOf<Actor.ConfiguredInstance | null>();
+expectTypeOf(configuredItem.actor).toEqualTypeOf<Actor.Implementation | null>();

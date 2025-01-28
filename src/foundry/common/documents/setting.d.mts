@@ -15,13 +15,13 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
    * @param context - Construction context options
    */
   // TODO(LukeAbby): This constructor is a symptom of a circular error.
-  // constructor(data: BaseSetting.ConstructorData, context?: Document.ConstructionContext<BaseSetting.Parent>);
+  // constructor(data: BaseSetting.CreateData, context?: Document.ConstructionContext<BaseSetting.Parent>);
 
   static override metadata: BaseSetting.Metadata;
 
   static override defineSchema(): BaseSetting.Schema;
 
-  static canUserCreate(user: User.ConfiguredInstance): boolean;
+  static canUserCreate(user: User.Implementation): boolean;
 
   /*
    * After this point these are not really overridden methods.

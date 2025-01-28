@@ -1,4 +1,4 @@
-import type { AnyObject, InexactPartial } from "../../../utils/index.d.mts";
+import type { AnyObject, AnyMutableObject, InexactPartial } from "../../../utils/index.d.mts";
 import type { DataModel } from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
@@ -37,10 +37,10 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    * Is a user able to update an existing Token?
    * @internal
    */
-  static #canUpdate(user: User.ConfiguredInstance, doc: BaseToken, data: BaseToken.UpdateData): boolean;
+  static #canUpdate(user: User.Implementation, doc: BaseToken, data: BaseToken.UpdateData): boolean;
 
   override testUserPermission(
-    user: User.ConfiguredInstance,
+    user: User.Implementation,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
     options?: InexactPartial<{
       /**
@@ -56,7 +56,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
     options?: { dryRun?: boolean; fallback?: boolean; recursive?: boolean } | undefined,
   ): AnyObject;
 
-  static override migrateData(source: AnyObject): AnyObject;
+  static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
   static override shimData(
     data: AnyObject,

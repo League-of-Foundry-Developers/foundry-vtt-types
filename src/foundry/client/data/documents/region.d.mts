@@ -216,7 +216,7 @@ declare global {
       region: RegionDocument;
 
       /** The User that triggered the event */
-      user: User.ConfiguredInstance;
+      user: User.Implementation;
     }
 
     interface SocketRegionEvent {
@@ -252,7 +252,7 @@ declare global {
 
     type EventData =
       | {
-          token: TokenDocument.ConfiguredInstance;
+          token: TokenDocument.Implementation;
           origin?: {
             x: number;
             y: number;
@@ -268,8 +268,8 @@ declare global {
           segments: Region.RegionMovementSegment[];
         }
       | {
-          token: TokenDocument.ConfiguredInstance;
-          combatant: Combatant.ConfiguredInstance;
+          token: TokenDocument.Implementation;
+          combatant: Combatant.Implementation;
         }
       | _EventData;
 
@@ -282,11 +282,6 @@ declare global {
      * @deprecated - {@link RegionDocument.DatabaseOperation}
      */
     interface DatabaseOperations extends Document.Database.Operations<RegionDocument> {}
-
-    /**
-     * @deprecated {@link RegionDocument.Types | `RegionDocument.SubType`}
-     */
-    type TypeNames = RegionDocument.SubType;
 
     /**
      * @deprecated {@link RegionDocument.CreateData | `RegionDocument.CreateData`}

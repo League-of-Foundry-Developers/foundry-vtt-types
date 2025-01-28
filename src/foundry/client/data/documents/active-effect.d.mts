@@ -4,7 +4,7 @@ import type { DataModel } from "../../../common/abstract/data.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataField, DataSchema } from "../../../common/data/fields.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
-import type { ActiveEffectData, EffectDurationData } from "../../../common/documents/_types.d.mts";
+import type { ActiveEffectData } from "../../../common/documents/_types.d.mts";
 import type BaseActiveEffect from "../../../common/documents/active-effect.d.mts";
 
 declare global {
@@ -163,7 +163,7 @@ declare global {
       disabled: fields.BooleanField;
 
       /**
-       * An EffectDurationData object which describes the duration of the ActiveEffect
+       * An ActiveEffect.DurationData object which describes the duration of the ActiveEffect
        * @defaultValue see properties
        */
       duration: fields.SchemaField<{
@@ -434,7 +434,7 @@ declare global {
     static fromStatusEffect(
       statusId: string,
       options?: Document.ConstructionContext<Document.Any | null>,
-    ): Promise<ActiveEffect.ConfiguredInstance>;
+    ): Promise<ActiveEffect.Implementation>;
 
     /**
      * Create an ActiveEffect instance from status effect data.
@@ -448,7 +448,7 @@ declare global {
       statusId: string,
       effectData: ActiveEffectData,
       options?: Document.ConstructionContext<Document.Any | null>,
-    ): Promise<ActiveEffect.ConfiguredInstance>;
+    ): Promise<ActiveEffect.Implementation>;
 
     /**
      * Is there some system logic that makes this active effect ineligible for application?
@@ -488,7 +488,7 @@ declare global {
      */
     protected _requiresDurationUpdate(): boolean;
 
-    protected _prepareDuration(): Omit<ActiveEffect.Duration, keyof EffectDurationData>;
+    protected _prepareDuration(): Omit<ActiveEffect.Duration, keyof ActiveEffect.DurationData>;
 
     /**
      * Format a round+turn combination as a decimal
@@ -536,7 +536,7 @@ declare global {
      * @param change - The change data being applied
      * @returns The resulting applied value
      */
-    apply(actor: Actor.ConfiguredInstance, change: ActiveEffect.EffectChangeData): unknown;
+    apply(actor: Actor.Implementation, change: ActiveEffect.EffectChangeData): unknown;
 
     /**
      * Apply this ActiveEffect to a provided Actor using a heuristic to infer the value types based on the current value
@@ -545,7 +545,7 @@ declare global {
      * @param change  - The change data being applied.
      * @param changes - The aggregate update paths and their updated values.
      */
-    protected _applyLegacy(actor: Actor.ConfiguredInstance, change: EffectDurationData, changes: AnyObject): void;
+    protected _applyLegacy(actor: Actor.Implementation, change: ActiveEffect.DurationData, changes: AnyObject): void;
 
     /**
      * Cast a raw EffectChangeData change string to the desired data type.
@@ -587,7 +587,7 @@ declare global {
      * @returns The resulting applied value
      */
     protected _applyAdd(
-      actor: Actor.ConfiguredInstance,
+      actor: Actor.Implementation,
       change: ActiveEffect.EffectChangeData,
       current: any,
       delta: any,
@@ -605,7 +605,7 @@ declare global {
      * @returns The resulting applied value
      */
     protected _applyMultiply(
-      actor: Actor.ConfiguredInstance,
+      actor: Actor.Implementation,
       change: ActiveEffect.EffectChangeData,
       current: unknown,
       delta: unknown,
@@ -623,7 +623,7 @@ declare global {
      * @returns The resulting applied value
      */
     protected _applyOverride(
-      actor: Actor.ConfiguredInstance,
+      actor: Actor.Implementation,
       change: ActiveEffect.EffectChangeData,
       current: unknown,
       delta: unknown,
@@ -641,7 +641,7 @@ declare global {
      * @returns The resulting applied value
      */
     protected _applyUpgrade(
-      actor: Actor.ConfiguredInstance,
+      actor: Actor.Implementation,
       change: ActiveEffect.EffectChangeData,
       current: unknown,
       delta: unknown,
@@ -658,7 +658,7 @@ declare global {
      * @returns The resulting applied value
      */
     protected _applyCustom(
-      actor: Actor.ConfiguredInstance,
+      actor: Actor.Implementation,
       change: ActiveEffect.EffectChangeData,
       current: unknown,
       delta: unknown,
@@ -708,7 +708,7 @@ declare global {
     ): string;
 
     static override createDialog(
-      data: ActiveEffect.CreateData,
+      data?: ActiveEffect.CreateData,
       context?: Document.CreateDialogContext<ActiveEffect.SubType, ActiveEffect.Parent>,
     ): Promise<ActiveEffect.Implementation | null | undefined>;
 

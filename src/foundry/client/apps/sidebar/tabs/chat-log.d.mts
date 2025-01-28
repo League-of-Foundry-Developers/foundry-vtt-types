@@ -55,7 +55,7 @@ declare global {
      * @defaultValue `null`
      * @internal
      */
-    protected _lastWhisper: ChatMessage.ConfiguredInstance | null;
+    protected _lastWhisper: ChatMessage.Implementation | null;
 
     /**
      * A reference to the chat text entry bound key method
@@ -125,7 +125,7 @@ declare global {
     /**
      * Trigger a notification that alerts the user visually and audibly that a new chat log message has been posted
      */
-    notify(message: ChatMessage.ConfiguredInstance): void;
+    notify(message: ChatMessage.Implementation): void;
 
     /**
      * Parse a chat string to identify the chat command (if any) which was used
@@ -145,7 +145,7 @@ declare global {
      *                          (default: `{}`)
      * @returns A Promise which resolves once the message is posted
      */
-    postOne(message: ChatMessage.ConfiguredInstance, options?: ChatLog.PostOneOptions): Promise<void>;
+    postOne(message: ChatMessage.Implementation, options?: ChatLog.PostOneOptions): Promise<void>;
 
     /**
      * Scroll the chat log to the bottom
@@ -159,7 +159,7 @@ declare global {
      * @param notify  - Trigger a notification which shows the log as having a new unread message
      *                  (default: `false`)
      */
-    updateMessage(message: ChatMessage.ConfiguredInstance, notify?: boolean): Promise<void>;
+    updateMessage(message: ChatMessage.Implementation, notify?: boolean): Promise<void>;
 
     /**
      * Update the displayed timestamps for every displayed message in the chat log.
@@ -182,7 +182,7 @@ declare global {
      * @returns A Promise resolving to the prepared chat data object, or void if we were executing
      *          a macro instead.
      */
-    protected processMessage(message: string): Promise<ChatMessage.ConfiguredInstance | undefined | void>;
+    protected processMessage(message: string): Promise<ChatMessage.Implementation | undefined | void>;
 
     /**
      * Process messages which are posted using a dice-roll command
@@ -195,7 +195,7 @@ declare global {
     protected _processDiceCommand(
       command: string,
       match: RegExpMatchArray[],
-      chatData: foundry.documents.BaseChatMessage.ConstructorData,
+      chatData: foundry.documents.BaseChatMessage.CreateData,
       createOptions: Document.OnCreateOptions<"ChatMessage">,
     ): Promise<void>;
 
@@ -211,7 +211,7 @@ declare global {
     protected _processWhisperCommand(
       command: string,
       match: RegExpMatchArray,
-      chatData: foundry.documents.BaseChatMessage.ConstructorData,
+      chatData: foundry.documents.BaseChatMessage.CreateData,
       createOptions: Document.OnCreateOptions<"ChatMessage">,
     ): void;
 
@@ -226,7 +226,7 @@ declare global {
     protected _processChatCommand(
       command: string,
       match: RegExpMatchArray,
-      chatData: foundry.documents.BaseChatMessage.ConstructorData,
+      chatData: foundry.documents.BaseChatMessage.CreateData,
       createOptions: Document.OnCreateOptions<"ChatMessage">,
     ): void;
 
@@ -278,7 +278,7 @@ declare global {
      * Handle single message deletion workflow
      * @internal
      */
-    protected _onDeleteMessage(event: JQuery.ClickEvent): Promise<ChatMessage.ConfiguredInstance | undefined>;
+    protected _onDeleteMessage(event: JQuery.ClickEvent): Promise<ChatMessage.Implementation | undefined>;
 
     /**
      * Handle clicking of dice tooltip buttons

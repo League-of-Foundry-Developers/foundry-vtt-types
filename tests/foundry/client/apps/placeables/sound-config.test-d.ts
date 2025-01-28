@@ -3,7 +3,7 @@ import { expectTypeOf } from "vitest";
 declare const doc: AmbientSoundDocument;
 
 expectTypeOf(AmbientSoundConfig.defaultOptions).toEqualTypeOf<
-  DocumentSheetOptions<AmbientSoundDocument.ConfiguredInstance>
+  DocumentSheetOptions<AmbientSoundDocument.Implementation>
 >();
 
 const config = new AmbientSoundConfig(doc);

@@ -19,7 +19,7 @@ declare abstract class BaseFolder<out _SubType extends BaseFolder.SubType = Base
    * @param context - Construction context options
    */
   // TODO(LukeAbby): This constructor is a symptom of a circular error.
-  // constructor(data: BaseFolder.ConstructorData, context?: Document.ConstructionContext<BaseFolder.Parent>);
+  // constructor(data: BaseFolder.CreateData, context?: Document.ConstructionContext<BaseFolder.Parent>);
 
   static override metadata: BaseFolder.Metadata;
 

@@ -2,13 +2,13 @@ import { assertType, expectTypeOf } from "vitest";
 
 import Document = foundry.abstract.Document;
 
-type EmbeddedInSceneDocumentSheetOptions = DocumentSheetOptions<Document.AnyChild<Scene.ConfiguredInstance>>;
+type EmbeddedInSceneDocumentSheetOptions = DocumentSheetOptions<Document.AnyChild<Scene.Implementation>>;
 
 class EmbeddedInSceneDocumentSheet<
   Options extends EmbeddedInSceneDocumentSheetOptions = EmbeddedInSceneDocumentSheetOptions,
-> extends DocumentSheet<Options, Document.AnyChild<Scene.ConfiguredInstance>> {}
+> extends DocumentSheet<Options, Document.AnyChild<Scene.Implementation>> {}
 
-class BaseEmbeddedInSceneDocument extends Document<any, any, Scene.ConfiguredInstance | null> {}
+class BaseEmbeddedInSceneDocument extends Document<any, any, Scene.Implementation | null> {}
 
 class EmbeddedInSceneDocument extends CanvasDocumentMixin(BaseEmbeddedInSceneDocument) {
   override get sheet(): EmbeddedInSceneDocumentSheet {

@@ -284,8 +284,8 @@ declare global {
 
     interface MessageData {
       message: ChatMessage.PersistedData;
-      user: Document.Stored<User.ConfiguredInstance>;
-      author: User.ConfiguredInstance | undefined;
+      user: User.Stored;
+      author: User.Implementation | undefined;
       alias: string;
       cssClass: string;
       isWhisper: boolean;
@@ -339,7 +339,7 @@ declare global {
   )<SubType> {
     static override metadata: ChatMessage.Metadata;
 
-    static get implementation(): ChatMessage.ConfiguredClass;
+    static get implementation(): ChatMessage.ImplementationClass;
 
     /**
      * Is the display of dice rolls in this message collapsed (false) or expanded (true)
@@ -392,9 +392,9 @@ declare global {
      * @returns The modified ChatMessage data with rollMode preferences applied
      */
     static applyRollMode(
-      chatData: foundry.documents.BaseChatMessage.ConstructorData,
+      chatData: foundry.documents.BaseChatMessage.CreateData,
       rollMode: keyof typeof CONFIG.Dice.rollModes | "roll",
-    ): foundry.documents.BaseChatMessage.ConstructorData;
+    ): foundry.documents.BaseChatMessage.CreateData;
 
     /**
      * Update the data of a ChatMessage instance to apply a requested rollMode
@@ -451,7 +451,7 @@ declare global {
       scene?: Scene | undefined;
 
       /** The User who is speaking */
-      user: User.ConfiguredInstance;
+      user: User.Implementation;
 
       /** The name of the speaker to display */
       alias?: string | undefined;
@@ -461,7 +461,7 @@ declare global {
      * Obtain an Actor instance which represents the speaker of this message (if any)
      * @param speaker - The speaker data object
      */
-    static getSpeakerActor(speaker: ChatMessage["_source"]["speaker"]): Actor.ConfiguredInstance | null;
+    static getSpeakerActor(speaker: ChatMessage["_source"]["speaker"]): Actor.Implementation | null;
 
     /**
      * Obtain a data object used to evaluate any dice rolls associated with this particular chat message
@@ -474,7 +474,7 @@ declare global {
      * @param name - The target name of the whisper target
      * @returns An array of User instances
      */
-    static getWhisperRecipients(name: string): Document.Stored<User.ConfiguredInstance>[];
+    static getWhisperRecipients(name: string): User.Stored[];
 
     /**
      * Render the HTML for the ChatMessage which should be added to the log

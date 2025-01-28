@@ -85,10 +85,10 @@ declare global {
       }> {}
   }
 
-  class Region extends PlaceableObject<RegionDocument.ConfiguredInstance> {
+  class Region extends PlaceableObject<RegionDocument.Implementation> {
     #region: true;
 
-    constructor(document: RegionDocument.ConfiguredInstance);
+    constructor(document: RegionDocument.Implementation);
 
     static override embeddedName: "Region";
 
@@ -154,9 +154,9 @@ declare global {
     /** Refreshes the border of the Region. */
     protected _refreshBorder(): void;
 
-    protected override _canDrag(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent | null): boolean;
+    protected override _canDrag(user: User.Implementation, event?: PIXI.FederatedEvent | null): boolean;
 
-    protected override _canHUD(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent | null): boolean;
+    protected override _canHUD(user: User.Implementation, event?: PIXI.FederatedEvent | null): boolean;
 
     protected override _onControl(options?: PlaceableObject.ControlOptions | null): void;
 

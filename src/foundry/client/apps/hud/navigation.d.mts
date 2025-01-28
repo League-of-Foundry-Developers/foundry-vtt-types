@@ -31,7 +31,7 @@ declare global {
     /**
      * Return an Array of Scenes which are displayed in the Navigation bar
      */
-    get scenes(): Scene.ConfiguredInstance[];
+    get scenes(): Scene.Implementation[];
 
     override render(force?: boolean, context?: Application.RenderOptions<Options>): this | void;
 
@@ -92,7 +92,7 @@ declare global {
       active: boolean;
       name: string;
       tooltip: string | null;
-      users: { letter: string; color: User.ConfiguredInstance["color"] }[];
+      users: { letter: string; color: User.Implementation["color"] }[];
       visible: boolean;
       css: string;
     }

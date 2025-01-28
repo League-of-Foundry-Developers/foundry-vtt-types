@@ -305,7 +305,7 @@ declare global {
   class TileDocument extends CanvasDocumentMixin(foundry.documents.BaseTile) {
     static override metadata: TileDocument.Metadata;
 
-    static get implementation(): TileDocument.ConfiguredClass;
+    static get implementation(): TileDocument.ImplementationClass;
 
     override prepareDerivedData(): void;
   }

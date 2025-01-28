@@ -51,8 +51,8 @@ declare global {
    * @see {@link AmbientLightDocument}
    * @see {@link LightingLayer}
    */
-  class AmbientLight extends PlaceableObject<AmbientLightDocument.ConfiguredInstance> {
-    constructor(document: AmbientLightDocument.ConfiguredInstance);
+  class AmbientLight extends PlaceableObject<AmbientLightDocument.Implementation> {
+    constructor(document: AmbientLightDocument.Implementation);
 
     /**
      * A reference to the PointSource object which defines this light source area of effect
@@ -156,9 +156,9 @@ declare global {
      * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
      */
 
-    protected override _canHUD(user: User.ConfiguredInstance, event?: any): boolean;
+    protected override _canHUD(user: User.Implementation, event?: any): boolean;
 
-    protected override _canConfigure(user: User.ConfiguredInstance, event?: any): boolean;
+    protected override _canConfigure(user: User.Implementation, event?: any): boolean;
 
     protected override _onClickRight(event: PIXI.FederatedEvent): Promise<this>;
 

@@ -7,12 +7,12 @@ declare global {
    */
   class AmbientLightConfig<
     Options extends
-      DocumentSheetOptions<AmbientLightDocument.ConfiguredInstance> = DocumentSheetOptions<AmbientLightDocument.ConfiguredInstance>,
-  > extends DocumentSheet<Options, AmbientLightDocument.ConfiguredInstance> {
+      DocumentSheetOptions<AmbientLightDocument.Implementation> = DocumentSheetOptions<AmbientLightDocument.Implementation>,
+  > extends DocumentSheet<Options, AmbientLightDocument.Implementation> {
     /**
      * Maintain a copy of the original to show a real-time preview of changes.
      */
-    preview: AmbientLightDocument.ConfiguredInstance;
+    preview: AmbientLightDocument.Implementation;
 
     /**
      * @defaultValue
@@ -28,7 +28,7 @@ declare global {
      * });
      * ```
      */
-    static override get defaultOptions(): DocumentSheetOptions<AmbientLightDocument.ConfiguredInstance>;
+    static override get defaultOptions(): DocumentSheetOptions<AmbientLightDocument.Implementation>;
 
     protected override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 

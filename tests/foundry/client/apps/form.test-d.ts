@@ -12,8 +12,8 @@ expectTypeOf(app.object).toEqualTypeOf<{ foo: string }>();
 
 const doc = new AmbientLightDocument();
 const sheet = new (class extends DocumentSheet<
-  DocumentSheetOptions<AmbientLightDocument.ConfiguredInstance>,
-  AmbientLightDocument.ConfiguredInstance
+  DocumentSheetOptions<AmbientLightDocument.Implementation>,
+  AmbientLightDocument.Implementation
 > {})(doc);
 
 assertType<FormApplication<DocumentSheetOptions, AmbientLightDocument>>(sheet);

@@ -244,7 +244,7 @@ declare global {
     /**
      * A reference to the currently displayed Scene document, or null if the Canvas is currently blank.
      */
-    get scene(): Document.Stored<Scene.ConfiguredInstance> | null;
+    get scene(): Scene.Stored | null;
 
     /**
      * A SceneManager instance which adds behaviors to this Scene, or null if there is no manager.
@@ -395,7 +395,7 @@ declare global {
      * @param scene - A specific Scene document to render on the Canvas
      * @returns A Promise which resolves once the Canvas is fully drawn
      */
-    draw(scene?: Scene.ConfiguredInstance): Promise<this>;
+    draw(scene?: Scene.Implementation): Promise<this>;
 
     /**
      * When re-drawing the canvas, first tear down or discontinue some existing processes
@@ -405,7 +405,7 @@ declare global {
     /**
      * Create a SceneManager instance used for this Scene, if any.
      */
-    static getSceneManager(scene: Scene.ConfiguredInstance): foundry.canvas.SceneManager | null;
+    static getSceneManager(scene: Scene.Implementation): foundry.canvas.SceneManager | null;
 
     /**
      * Get the value of a GL parameter

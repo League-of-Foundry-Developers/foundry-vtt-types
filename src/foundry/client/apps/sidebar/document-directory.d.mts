@@ -36,7 +36,7 @@ declare global {
     /**
      * Reference the set of Folders which exist in this Sidebar
      */
-    folders: (Folder.ConfiguredInstance & { type: FolderType })[] | null;
+    folders: (Folder.Implementation & { type: FolderType })[] | null;
 
     /**
      * A reference to the named Document type that this Sidebar Directory instance displays
@@ -105,10 +105,10 @@ declare global {
     protected override _createDroppedEntry(entry: DirectoryMixinEntry, folderId?: string): Promise<DirectoryMixinEntry>;
 
     protected override _handleDroppedForeignFolder(
-      folder: Folder.ConfiguredInstance,
+      folder: Folder.Implementation,
       closestFolderId: string,
       sortData: { sortKey: string; sortBefore: boolean },
-    ): Promise<{ folder: Folder.ConfiguredInstance; sortNeeded: boolean } | null>;
+    ): Promise<{ folder: Folder.Implementation; sortNeeded: boolean } | null>;
 
     /**
      * Create a dropped Folder and its children in this Collection, if they do not already exist
@@ -117,9 +117,9 @@ declare global {
      * @returns The created Folders
      */
     protected _createDroppedFolderContent(
-      folder: Folder.ConfiguredInstance,
-      targetFolder: Folder.ConfiguredInstance,
-    ): Promise<Array<Folder.ConfiguredInstance>>;
+      folder: Folder.Implementation,
+      targetFolder: Folder.Implementation,
+    ): Promise<Array<Folder.Implementation>>;
 
     /**
      * Organize a dropped Folder and its children into a list of folders to create and documents to create
@@ -127,10 +127,10 @@ declare global {
      * @param targetFolder - The Folder to which the Folder should be added
      */
     protected _organizeDroppedFoldersAndDocuments(
-      folder: Folder.ConfiguredInstance,
-      targetFolder: Folder.ConfiguredInstance,
+      folder: Folder.Implementation,
+      targetFolder: Folder.Implementation,
     ): Promise<{
-      foldersToCreate: Array<Folder.ConfiguredInstance>;
+      foldersToCreate: Array<Folder.Implementation>;
       documentsToCreate: Array<foundry.abstract.Document.Any>;
     }>;
 
@@ -140,7 +140,7 @@ declare global {
      * @param documentsToCreate - The documents to create
      */
     protected _createDroppedFolderDocuments(
-      folder: Folder.ConfiguredInstance,
+      folder: Folder.Implementation,
       documentsToCreate: Array<foundry.abstract.Document.Any>,
     ): Promise<void>;
 

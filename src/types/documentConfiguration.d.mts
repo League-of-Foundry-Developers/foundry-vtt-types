@@ -249,10 +249,10 @@ interface ActorMetadata
       label: string;
       labelPlural: string;
       permissions: {
-        create(user: User.Internal.ConfiguredInstance, doc: Actor.ConfiguredInstance): boolean;
+        create(user: User.Internal.Implementation, doc: Actor.Implementation): boolean;
         update(
-          user: User.Internal.ConfiguredInstance,
-          doc: Actor.ConfiguredInstance,
+          user: User.Internal.Implementation,
+          doc: Actor.Implementation,
           data: BaseActor.UpdateData,
         ): boolean;
       };
@@ -310,13 +310,13 @@ interface CardMetadata
       labelPlural: string;
       permissions: {
         create(
-          user: User.Internal.ConfiguredInstance,
-          doc: Card.ConfiguredInstance,
+          user: User.Internal.Implementation,
+          doc: Card.Implementation,
           data: BaseCard.UpdateData,
         ): boolean;
         update(
-          user: User.Internal.ConfiguredInstance,
-          doc: Card.ConfiguredInstance,
+          user: User.Internal.Implementation,
+          doc: Card.Implementation,
           data: BaseCard.UpdateData,
         ): boolean;
       };
@@ -353,10 +353,10 @@ interface ChatMessageMetadata
       hasTypeData: true;
       isPrimary: true;
       permissions: {
-        create(user: User.Internal.ConfiguredInstance, doc: ChatMessage.ConfiguredInstance): boolean;
+        create(user: User.Internal.Implementation, doc: ChatMessage.Implementation): boolean;
         update(
-          user: User.Internal.ConfiguredInstance,
-          doc: ChatMessage.ConfiguredInstance,
+          user: User.Internal.Implementation,
+          doc: ChatMessage.Implementation,
           data: BaseChatMessage.UpdateData,
         ): boolean;
       };
@@ -378,8 +378,8 @@ interface CombatMetadata
       hasTypeData: true;
       permissions: {
         update(
-          user: User.Internal.ConfiguredInstance,
-          doc: Combat.ConfiguredInstance,
+          user: User.Internal.Implementation,
+          doc: Combat.Implementation,
           data: BaseCombat.UpdateData,
         ): boolean;
       };
@@ -399,10 +399,10 @@ interface CombatantMetadata
       hasTypeData: true;
       schemaVersion: string;
       permissions: {
-        create(user: User.Internal.ConfiguredInstance, doc: Combatant.ConfiguredInstance): boolean;
+        create(user: User.Internal.Implementation, doc: Combatant.Implementation): boolean;
         update(
-          user: User.Internal.ConfiguredInstance,
-          doc: Combatant.ConfiguredInstance,
+          user: User.Internal.Implementation,
+          doc: Combatant.Implementation,
           data: BaseCombatant.UpdateData,
         ): boolean;
       };
@@ -421,13 +421,13 @@ interface DrawingMetadata
       permissions: {
         create: "DRAWING_CREATE";
         update(
-          user: User.Internal.ConfiguredInstance,
-          doc: DrawingDocument.ConfiguredInstance,
+          user: User.Internal.Implementation,
+          doc: DrawingDocument.Implementation,
           data: BaseDrawing.UpdateData,
         ): boolean;
         delete(
-          user: User.Internal.ConfiguredInstance,
-          doc: DrawingDocument.ConfiguredInstance,
+          user: User.Internal.Implementation,
+          doc: DrawingDocument.Implementation,
           data: BaseDrawing.UpdateData,
         ): boolean;
       };
@@ -447,13 +447,13 @@ interface FogExplorationMetadata
       permissions: {
         create: "PLAYER";
         update(
-          user: User.Internal.ConfiguredInstance,
-          doc: FogExploration.ConfiguredInstance,
+          user: User.Internal.Implementation,
+          doc: FogExploration.Implementation,
           data: BaseFogExploration.UpdateData,
         ): boolean;
         delete(
-          user: User.Internal.ConfiguredInstance,
-          doc: FogExploration.ConfiguredInstance,
+          user: User.Internal.Implementation,
+          doc: FogExploration.Implementation,
           data: BaseFogExploration.UpdateData,
         ): boolean;
       };
@@ -537,8 +537,8 @@ interface MacroMetadata
       labelPlural: string;
       coreTypes: CONST.MACRO_TYPES[];
       permissions: {
-        create(user: User.Internal.ConfiguredInstance, doc: Macro.ConfiguredInstance): boolean;
-        update(user: User.Internal.ConfiguredInstance, doc: Macro.ConfiguredInstance): boolean;
+        create(user: User.Internal.Implementation, doc: Macro.Implementation): boolean;
+        update(user: User.Internal.Implementation, doc: Macro.Implementation): boolean;
       };
       schemaVersion: string;
     }>
@@ -554,15 +554,15 @@ interface MeasuredTemplateMetadata
       labelPlural: string;
       isEmbedded: true;
       permissions: {
-        create(user: User.Internal.ConfiguredInstance, doc: MeasuredTemplateDocument.ConfiguredInstance): boolean;
+        create(user: User.Internal.Implementation, doc: MeasuredTemplateDocument.Implementation): boolean;
         update(
-          user: User.Internal.ConfiguredInstance,
-          doc: MeasuredTemplateDocument.ConfiguredInstance,
+          user: User.Internal.Implementation,
+          doc: MeasuredTemplateDocument.Implementation,
           data: BaseMeasuredTemplate.UpdateData,
         ): boolean;
         delete(
-          user: User.Internal.ConfiguredInstance,
-          doc: MeasuredTemplateDocument.ConfiguredInstance,
+          user: User.Internal.Implementation,
+          doc: MeasuredTemplateDocument.Implementation,
           data: BaseMeasuredTemplate.UpdateData,
         ): boolean;
       };
@@ -638,10 +638,10 @@ interface RegionBehaviorMetadata
       hasTypeData: true;
       isEmbedded: true;
       permissions: {
-        create(user: User.Internal.ConfiguredInstance, doc: RegionBehavior.ConfiguredInstance): boolean;
+        create(user: User.Internal.Implementation, doc: RegionBehavior.Implementation): boolean;
         update(
-          user: User.Internal.ConfiguredInstance,
-          doc: RegionBehavior.ConfiguredInstance,
+          user: User.Internal.Implementation,
+          doc: RegionBehavior.Implementation,
           data: BaseRegionBehavior.UpdateData,
         ): boolean;
       };
@@ -716,18 +716,18 @@ interface SettingMetadata
       labelPlural: string;
       permissions: {
         create(
-          user: User.Internal.ConfiguredInstance,
-          doc: Setting.ConfiguredInstance,
+          user: User.Internal.Implementation,
+          doc: Setting.Implementation,
           data: BaseSetting.UpdateData,
         ): boolean;
         update(
-          user: User.Internal.ConfiguredInstance,
-          doc: Setting.ConfiguredInstance,
+          user: User.Internal.Implementation,
+          doc: Setting.Implementation,
           data: BaseSetting.UpdateData,
         ): boolean;
         delete(
-          user: User.Internal.ConfiguredInstance,
-          doc: Setting.ConfiguredInstance,
+          user: User.Internal.Implementation,
+          doc: Setting.Implementation,
           data: BaseSetting.UpdateData,
         ): boolean;
       };
@@ -746,8 +746,8 @@ interface TableResultMetadata
       coreTypes: foundry.CONST.TABLE_RESULT_TYPES[];
       permissions: {
         update(
-          user: User.Internal.ConfiguredInstance,
-          doc: TableResult.ConfiguredInstance,
+          user: User.Internal.Implementation,
+          doc: TableResult.Implementation,
           data: BaseTableResult.UpdateData,
         ): boolean;
       };
@@ -783,8 +783,8 @@ interface TokenMetadata
       permissions: {
         create: "TOKEN_CREATE";
         update(
-          user: User.Internal.ConfiguredInstance,
-          doc: TokenDocument.ConfiguredInstance,
+          user: User.Internal.Implementation,
+          doc: TokenDocument.Implementation,
           data: BaseToken.UpdateData,
         ): boolean;
         delete: "TOKEN_DELETE";
@@ -803,16 +803,16 @@ interface UserMetadata
       labelPlural: string;
       permissions: {
         create(
-          user: User.Internal.ConfiguredInstance,
-          doc: User.Internal.ConfiguredInstance,
+          user: User.Internal.Implementation,
+          doc: User.Internal.Implementation,
           data: BaseUser.UpdateData,
         ): boolean;
         update(
-          user: User.Internal.ConfiguredInstance,
-          doc: User.Internal.ConfiguredInstance,
+          user: User.Internal.Implementation,
+          doc: User.Internal.Implementation,
           changes: BaseUser.UpdateData,
         ): boolean;
-        delete(user: User.Internal.ConfiguredInstance, doc: User.Internal.ConfiguredInstance): boolean;
+        delete(user: User.Internal.Implementation, doc: User.Internal.Implementation): boolean;
       };
       schemaVersion: string;
     }>
@@ -828,8 +828,8 @@ interface WallMetadata
       labelPlural: string;
       permissions: {
         update(
-          user: User.Internal.ConfiguredInstance,
-          doc: WallDocument.ConfiguredInstance,
+          user: User.Internal.Implementation,
+          doc: WallDocument.Implementation,
           data: BaseWall.UpdateData,
         ): boolean;
       };
@@ -879,38 +879,38 @@ type MetadataShape = {
 type TestConfiguredMetadataValid = MustConform<ConfiguredMetadata, MetadataShape>;
 
 export interface CreateData {
-  ActiveEffect: documents.BaseActiveEffect.ConstructorData;
-  ActorDelta: documents.BaseActorDelta.ConstructorData;
-  Actor: documents.BaseActor.ConstructorData;
-  Adventure: documents.BaseAdventure.ConstructorData;
-  Card: documents.BaseCard.ConstructorData;
-  Cards: documents.BaseCards.ConstructorData;
-  ChatMessage: documents.BaseChatMessage.ConstructorData;
-  Combat: documents.BaseCombat.ConstructorData;
-  Combatant: documents.BaseCombatant.ConstructorData;
-  FogExploration: documents.BaseFogExploration.ConstructorData;
-  Folder: documents.BaseFolder.ConstructorData;
-  Item: documents.BaseItem.ConstructorData;
-  JournalEntryPage: documents.BaseJournalEntryPage.ConstructorData;
-  JournalEntry: documents.BaseJournalEntry.ConstructorData;
-  Macro: documents.BaseMacro.ConstructorData;
-  PlaylistSound: documents.BasePlaylistSound.ConstructorData;
-  Playlist: documents.BasePlaylist.ConstructorData;
-  RegionBehavior: documents.BaseRegionBehavior.ConstructorData;
-  RollTable: documents.BaseRollTable.ConstructorData;
-  Scene: documents.BaseScene.ConstructorData;
-  Setting: documents.BaseSetting.ConstructorData;
-  TableResult: documents.BaseTableResult.ConstructorData;
-  User: documents.BaseUser.ConstructorData;
-  AmbientLight: documents.BaseAmbientLight.ConstructorData;
-  AmbientSound: documents.BaseAmbientSound.ConstructorData;
-  Drawing: documents.BaseDrawing.ConstructorData;
-  MeasuredTemplate: documents.BaseMeasuredTemplate.ConstructorData;
-  Note: documents.BaseNote.ConstructorData;
-  Region: documents.BaseRegion.ConstructorData;
-  Tile: documents.BaseTile.ConstructorData;
-  Token: documents.BaseToken.ConstructorData;
-  Wall: documents.BaseWall.ConstructorData;
+  ActiveEffect: documents.BaseActiveEffect.CreateData;
+  ActorDelta: documents.BaseActorDelta.CreateData;
+  Actor: documents.BaseActor.CreateData;
+  Adventure: documents.BaseAdventure.CreateData;
+  Card: documents.BaseCard.CreateData;
+  Cards: documents.BaseCards.CreateData;
+  ChatMessage: documents.BaseChatMessage.CreateData;
+  Combat: documents.BaseCombat.CreateData;
+  Combatant: documents.BaseCombatant.CreateData;
+  FogExploration: documents.BaseFogExploration.CreateData;
+  Folder: documents.BaseFolder.CreateData;
+  Item: documents.BaseItem.CreateData;
+  JournalEntryPage: documents.BaseJournalEntryPage.CreateData;
+  JournalEntry: documents.BaseJournalEntry.CreateData;
+  Macro: documents.BaseMacro.CreateData;
+  PlaylistSound: documents.BasePlaylistSound.CreateData;
+  Playlist: documents.BasePlaylist.CreateData;
+  RegionBehavior: documents.BaseRegionBehavior.CreateData;
+  RollTable: documents.BaseRollTable.CreateData;
+  Scene: documents.BaseScene.CreateData;
+  Setting: documents.BaseSetting.CreateData;
+  TableResult: documents.BaseTableResult.CreateData;
+  User: documents.BaseUser.CreateData;
+  AmbientLight: documents.BaseAmbientLight.CreateData;
+  AmbientSound: documents.BaseAmbientSound.CreateData;
+  Drawing: documents.BaseDrawing.CreateData;
+  MeasuredTemplate: documents.BaseMeasuredTemplate.CreateData;
+  Note: documents.BaseNote.CreateData;
+  Region: documents.BaseRegion.CreateData;
+  Tile: documents.BaseTile.CreateData;
+  Token: documents.BaseToken.CreateData;
+  Wall: documents.BaseWall.CreateData;
 }
 
 // This is a more paranoid version of `MakeConform` that catches `any`, `errorType`, etc. and returns

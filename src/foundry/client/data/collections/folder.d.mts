@@ -7,7 +7,7 @@ declare global {
    *
    * @see {@link Folder} The Folder document
    */
-  class Folders extends WorldCollection<Folder.ConfiguredClass, "Folders"> {
+  class Folders extends WorldCollection<Folder.ImplementationClass, "Folders"> {
     static documentName: "Folder";
 
     /**
@@ -17,10 +17,10 @@ declare global {
 
     _onModifyContents<A extends DatabaseAction>(
       action: A,
-      documents: readonly Folder.ConfiguredInstance[],
+      documents: readonly Folder.Implementation[],
       result: readonly foundry.documents.BaseFolder.UpdateData[] | readonly string[],
       operation: DatabaseOperationMap[A],
-      user: User.ConfiguredInstance,
+      user: User.Implementation,
     ): void;
 
     /**

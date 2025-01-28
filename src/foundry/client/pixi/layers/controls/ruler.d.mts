@@ -11,7 +11,7 @@ declare global {
      * @param options - Additional options
      */
     constructor(
-      user?: User.ConfiguredInstance,
+      user?: User.Implementation,
       options?: NullishProps<{
         /**
          * The color of the ruler (defaults to the color of the User)
@@ -24,7 +24,7 @@ declare global {
      * Record the User which this Ruler references
      * @defaultValue `game.user`
      */
-    user: User.ConfiguredInstance;
+    user: User.Implementation;
 
     /**
      * The ruler name - used to differentiate between players

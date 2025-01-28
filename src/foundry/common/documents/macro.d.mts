@@ -1,4 +1,4 @@
-import type { AnyObject, InexactPartial } from "../../../utils/index.d.mts";
+import type { AnyMutableObject, InexactPartial } from "../../../utils/index.d.mts";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.d.mts";
 import type * as CONST from "../constants.mts";
@@ -21,7 +21,7 @@ declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMa
    * @param context - Construction context options
    */
   // TODO(LukeAbby): This constructor is a symptom of a circular error.
-  // constructor(data: BaseMacro.ConstructorData, context?: Document.ConstructionContext<BaseMacro.Parent>);
+  // constructor(data: BaseMacro.CreateData, context?: Document.ConstructionContext<BaseMacro.Parent>);
 
   static override metadata: BaseMacro.Metadata;
 
@@ -32,12 +32,12 @@ declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMa
    */
   static DEFAULT_ICON: "icons/svg/dice-target.svg";
 
-  static override migrateData(source: AnyObject): AnyObject;
+  static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
-  static override canUserCreate(user: User.ConfiguredInstance): boolean;
+  static override canUserCreate(user: User.Implementation): boolean;
 
   override testUserPermission(
-    user: User.ConfiguredInstance,
+    user: User.Implementation,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
     options?: InexactPartial<{
       /**

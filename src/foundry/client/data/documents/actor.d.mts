@@ -132,13 +132,13 @@ declare global {
        * A Collection of Item embedded Documents
        * @defaultValue `[]`
        */
-      items: fields.EmbeddedCollectionField<typeof documents.BaseItem, Actor.ConfiguredInstance>;
+      items: fields.EmbeddedCollectionField<typeof documents.BaseItem, Actor.Implementation>;
 
       /**
        * A Collection of ActiveEffect embedded Documents
        * @defaultValue `[]`
        */
-      effects: fields.EmbeddedCollectionField<typeof documents.BaseActiveEffect, Actor.ConfiguredInstance>;
+      effects: fields.EmbeddedCollectionField<typeof documents.BaseActiveEffect, Actor.Implementation>;
 
       /**
        * The _id of a Folder which contains this Actor
@@ -235,7 +235,7 @@ declare global {
     type ItemTypes = {
       [K in Game.Model.TypeNames<"Item">]: Array<
         // TODO(LukeAbby): Looks like a `Item.OfType` helper would be useful.
-        Item.ConfiguredInstance & {
+        Item.Implementation & {
           type: K;
         } & (DataModelConfig extends { Item: { readonly [_ in K]?: infer SystemData } }
             ? {
@@ -300,12 +300,12 @@ declare global {
      * Maintain a list of Token Documents that represent this Actor, stored by Scene.
      */
     protected _dependentTokens: foundry.utils.IterableWeakMap<
-      Scene.ConfiguredInstance,
-      TokenDocument.ConfiguredInstance
+      Scene.Implementation,
+      TokenDocument.Implementation
     >;
 
     protected override _initializeSource(
-      data: this | Actor.ConstructorData,
+      data: this | Actor.CreateData,
       options?: Omit<foundry.abstract.DataModel.DataValidationOptions, "parent">,
     ): Actor.Source;
 
@@ -351,17 +351,17 @@ declare global {
     /**
      * Retrieve the list of ActiveEffects that are currently applied to this Actor.
      */
-    get appliedEffects(): ActiveEffect.ConfiguredInstance[];
+    get appliedEffects(): ActiveEffect.Implementation[];
 
     /**
      * An array of ActiveEffect instances which are present on the Actor which have a limited duration.
      */
-    get temporaryEffects(): EmbeddedCollection<ActiveEffect.ConfiguredInstance, Actor.ConfiguredInstance>;
+    get temporaryEffects(): EmbeddedCollection<ActiveEffect.Implementation, Actor.Implementation>;
 
     /**
      * Return a reference to the TokenDocument which owns this Actor as a synthetic override
      */
-    get token(): TokenDocument.ConfiguredInstance | null;
+    get token(): TokenDocument.Implementation | null;
 
     /**
      * Whether the Actor has at least one Combatant in the active Combat that represents it.
@@ -386,7 +386,7 @@ declare global {
     getActiveTokens<ReturnDocument extends boolean = false>(
       linked?: boolean,
       document?: ReturnDocument,
-    ): ReturnDocument extends true ? TokenDocument.ConfiguredInstance[] : Token.ConfiguredInstance[];
+    ): ReturnDocument extends true ? TokenDocument.Implementation[] : Token.Implementation[];
 
     /**
      * Get all ActiveEffects that may apply to this Actor.
@@ -394,7 +394,7 @@ declare global {
      * If CONFIG.ActiveEffect.legacyTransferral is false, this will also return all the transferred ActiveEffects on any
      * of the Actor's owned Items.
      */
-    allApplicableEffects(): Generator<ActiveEffect.ConfiguredInstance>;
+    allApplicableEffects(): Generator<ActiveEffect.Implementation>;
 
     /**
      * Prepare a data object which defines the data schema used by dice roll commands against this Actor
@@ -407,7 +407,7 @@ declare global {
      * @param data - Additional data, such as x, y, rotation, etc. for the created token data (default: `{}`)
      * @returns The created TokenData instance
      */
-    getTokenDocument(data?: foundry.documents.BaseToken.ConstructorData): Promise<TokenDocument.ConfiguredInstance>;
+    getTokenDocument(data?: foundry.documents.BaseToken.ConstructorData): Promise<TokenDocument.Implementation>;
 
     /**
      * Get an Array of Token images which could represent this Actor
@@ -457,7 +457,7 @@ declare global {
         /** Display the toggled effect as an overlay. Default `false`. */
         overlay: boolean;
       }>,
-    ): Promise<ActiveEffect.ConfiguredInstance | boolean | undefined>;
+    ): Promise<ActiveEffect.Implementation | boolean | undefined>;
 
     /**
      * Request wildcard token images from the server and return them.
@@ -488,7 +488,7 @@ declare global {
          */
         linked: boolean;
       }>,
-    ): TokenDocument.ConfiguredInstance[];
+    ): TokenDocument.Implementation[];
 
     /**
      * Register a token as a dependent of this actor.
@@ -538,7 +538,7 @@ declare global {
     static override defaultName(context?: Document.DefaultNameContext<Actor.SubType, Actor.Parent>): string;
 
     static override createDialog(
-      data: Actor.CreateData,
+      data?: Actor.CreateData,
       context?: Document.CreateDialogContext<Actor.SubType, Actor.Parent>,
     ): Promise<Actor.Implementation | null | undefined>;
 

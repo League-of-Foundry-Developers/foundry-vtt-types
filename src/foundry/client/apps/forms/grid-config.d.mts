@@ -7,9 +7,9 @@ declare global {
    */
   class GridConfig<Options extends FormApplicationOptions = FormApplicationOptions> extends FormApplication<
     Options,
-    Scene.ConfiguredInstance
+    Scene.Implementation
   > {
-    constructor(scene: Scene.ConfiguredInstance, sheet: GridConfig["sheet"], options?: Partial<Options>);
+    constructor(scene: Scene.Implementation, sheet: GridConfig["sheet"], options?: Partial<Options>);
 
     /**
      * Track the Scene Configuration sheet reference
@@ -133,7 +133,7 @@ declare global {
     interface GridConfigData {
       gridTypes: Record<foundry.CONST.GRID_TYPES, string>;
       scale: number;
-      scene: Scene.ConfiguredInstance;
+      scene: Scene.Implementation;
     }
   }
 }

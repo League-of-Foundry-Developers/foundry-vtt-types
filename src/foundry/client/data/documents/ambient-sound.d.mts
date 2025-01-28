@@ -26,7 +26,7 @@ declare global {
      * A document's parent is something that can contain it.
      * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
      */
-    type Parent = Scene.ConfiguredInstance | null;
+    type Parent = Scene.Implementation | null;
 
     /**
      * An instance of `AmbientSoundDocument` that comes from the database.
@@ -228,25 +228,23 @@ declare global {
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 
+    /**
+     * @deprecated {@link AmbientSoundDocument.DatabaseOperation}
+     */
     interface DatabaseOperations extends Document.Database.Operations<AmbientSoundDocument> {}
 
     /**
-     * @deprecated {@link ActorDelta.Types | `ActorDelta.SubType`}
+     * @deprecated {@link AmbientSoundDocument.CreateData | `AmbientSoundDocument.CreateData`}
      */
-    type TypeNames = ActorDelta.SubType;
+    interface ConstructorData extends AmbientSoundDocument.CreateData {}
 
     /**
-     * @deprecated {@link ActorDelta.CreateData | `ActorDelta.CreateData`}
-     */
-    interface ConstructorData extends ActorDelta.CreateData {}
-
-    /**
-     * @deprecated {@link ActorDelta.implementation | `ActorDelta.ImplementationClass`}
+     * @deprecated {@link AmbientSoundDocument.implementation | `AmbientSoundDocument.ImplementationClass`}
      */
     type ConfiguredClass = ImplementationClass;
 
     /**
-     * @deprecated {@link ActorDelta.Implementation | `ActorDelta.Implementation`}
+     * @deprecated {@link AmbientSoundDocument.Implementation | `AmbientSoundDocument.Implementation`}
      */
     type ConfiguredInstance = Implementation;
   }
@@ -260,7 +258,7 @@ declare global {
   class AmbientSoundDocument extends CanvasDocumentMixin(foundry.documents.BaseAmbientSound) {
     static override metadata: AmbientSoundDocument.Metadata;
 
-    static get implementation(): AmbientSoundDocument.ConfiguredClass;
+    static get implementation(): AmbientSoundDocument.ImplementationClass;
 
     /*
      * After this point these are not really overridden methods.
@@ -271,7 +269,7 @@ declare global {
     static override defaultName(context?: Document.DefaultNameContext<"base", AmbientSoundDocument.Parent>): string;
 
     static override createDialog(
-      data: AmbientSoundDocument.CreateData,
+      data?: AmbientSoundDocument.CreateData,
       context?: Document.CreateDialogContext<"base", AmbientSoundDocument.Parent>,
     ): Promise<AmbientSoundDocument.Implementation | null | undefined>;
 

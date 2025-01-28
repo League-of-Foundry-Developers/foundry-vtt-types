@@ -8,16 +8,16 @@ import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts
 export default class RegionConfig<
   RenderContext extends AnyObject = EmptyObject,
   Configuration extends
-    DocumentSheetV2.Configuration<RegionDocument.ConfiguredInstance> = DocumentSheetV2.Configuration<RegionDocument.ConfiguredInstance>,
+    DocumentSheetV2.Configuration<RegionDocument.Implementation> = DocumentSheetV2.Configuration<RegionDocument.Implementation>,
   RenderOptions extends DocumentSheetV2.RenderOptions = DocumentSheetV2.RenderOptions,
 > extends HandlebarsApplicationMixin(DocumentSheetV2)<
-  RegionDocument.ConfiguredInstance,
+  RegionDocument.Implementation,
   RenderContext,
   Configuration,
   RenderOptions
 > {
   static override DEFAULT_OPTIONS: object &
-    DocumentSheetV2.PartialConfiguration<DocumentSheetV2.Configuration<RegionDocument.ConfiguredInstance>>;
+    DocumentSheetV2.PartialConfiguration<DocumentSheetV2.Configuration<RegionDocument.Implementation>>;
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   override tabGroups: {

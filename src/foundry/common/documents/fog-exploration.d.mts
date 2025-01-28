@@ -18,7 +18,7 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
    */
   // TODO(LukeAbby): This constructor is a symptom of a circular error.
   // constructor(
-  //   data?: BaseFogExploration.ConstructorData,
+  //   data?: BaseFogExploration.CreateData,
   //   context?: Document.ConstructionContext<BaseFogExploration.Parent>,
   // );
 
@@ -26,7 +26,7 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
 
   static override defineSchema(): BaseFogExploration.Schema;
 
-  static #canModify(user: User.ConfiguredInstance, doc: BaseFogExploration);
+  static #canModify(user: User.Implementation, doc: BaseFogExploration);
 
   /*
    * After this point these are not really overridden methods.

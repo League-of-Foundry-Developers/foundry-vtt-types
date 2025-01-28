@@ -326,7 +326,7 @@ declare global {
   class RollTable extends ClientDocumentMixin(foundry.documents.BaseRollTable) {
     static override metadata: RollTable.Metadata;
 
-    static get implementation(): RollTable.ConfiguredClass;
+    static get implementation(): RollTable.ImplementationClass;
 
     /**
      * Provide a thumbnail image path used to represent this document.
@@ -341,9 +341,9 @@ declare global {
      * @param options - Additional options which modify message creation
      */
     toMessage(
-      results: TableResult.ConfiguredInstance[],
+      results: TableResult.Implementation[],
       options?: InexactPartial<RollTable.ToMessageOptions>,
-    ): Promise<ChatMessage.ConfiguredInstance | undefined>;
+    ): Promise<ChatMessage.Implementation | undefined>;
 
     /**
      * Draw a result from the RollTable based on the table formula or a provided Roll instance
@@ -370,7 +370,7 @@ declare global {
      * @remarks Actually, returns list of TableEntries updated, not the RollTable.
      * As written, it force updates all records, not just the ones already drawn.
      */
-    resetResults(): Promise<TableResult.ConfiguredInstance[]>;
+    resetResults(): Promise<TableResult.Implementation[]>;
 
     /**
      * Evaluate a RollTable by rolling its formula and retrieving a drawn result.
@@ -405,7 +405,7 @@ declare global {
      * @param value - The rolled value
      * @returns An Array of results
      */
-    getResultsForRoll(value: number): TableResult.ConfiguredInstance[];
+    getResultsForRoll(value: number): TableResult.Implementation[];
 
     /**
      * Create embedded roll table markup.
@@ -518,7 +518,7 @@ declare global {
     static fromFolder(
       folder: Folder,
       options?: Document.OnCreateOptions<"Folder">,
-    ): Promise<RollTable.ConfiguredInstance | undefined>;
+    ): Promise<RollTable.Implementation | undefined>;
   }
 
   /**

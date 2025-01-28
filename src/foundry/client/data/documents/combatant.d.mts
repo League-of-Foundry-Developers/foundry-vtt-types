@@ -262,7 +262,7 @@ declare global {
   )<SubType> {
     static override metadata: Combatant.Metadata;
 
-    static get implementation(): Combatant.ConfiguredClass;
+    static get implementation(): Combatant.ImplementationClass;
 
     /**
      * The token video source image (if any)
@@ -275,7 +275,7 @@ declare global {
     /**
      * A convenience alias of Combatant#parent which is more semantically intuitive
      */
-    get combat(): Combat.ConfiguredInstance | null;
+    get combat(): Combat.Implementation | null;
 
     /** This is treated as a non-player combatant if it has no associated actor and no player users who can control it */
     get isNPC(): boolean;
@@ -288,13 +288,13 @@ declare global {
     override get visible(): boolean;
 
     /** A reference to the Actor document which this Combatant represents, if any */
-    get actor(): Actor.ConfiguredInstance | null;
+    get actor(): Actor.Implementation | null;
 
     /** A reference to the Token document which this Combatant represents, if any */
-    get token(): TokenDocument.ConfiguredInstance | null;
+    get token(): TokenDocument.Implementation | null;
 
     /** An array of User documents who have ownership of this Document */
-    get players(): User.ConfiguredInstance[];
+    get players(): User.Implementation[];
 
     /**
      * Has this combatant been marked as defeated?
@@ -302,7 +302,7 @@ declare global {
     get isDefeated(): boolean;
 
     override testUserPermission(
-      user: User.ConfiguredInstance,
+      user: User.Implementation,
       permission: keyof typeof foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS,
       { exact }?: { exact?: boolean },
     ): boolean;

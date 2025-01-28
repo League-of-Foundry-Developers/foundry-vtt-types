@@ -16,7 +16,7 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
    * @param context - Construction context options
    */
   // TODO(LukeAbby): This constructor is a symptom of a circular error.
-  // constructor(data: BaseAdventure.ConstructorData, context?: Document.ConstructionContext<BaseAdventure.Parent>);
+  // constructor(data: BaseAdventure.CreateData, context?: Document.ConstructionContext<BaseAdventure.Parent>);
 
   static override metadata: Adventure.Metadata;
 

@@ -1,4 +1,4 @@
-import type { AnyObject, InexactPartial } from "../../../utils/index.d.mts";
+import type { AnyMutableObject, InexactPartial } from "../../../utils/index.d.mts";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
@@ -19,14 +19,14 @@ declare abstract class BaseTableResult<
    * @param context - Construction context options
    */
   // TODO(LukeAbby): This constructor is a symptom of a circular error.
-  // constructor(data: BaseTableResult.ConstructorData, context?: Document.ConstructionContext<BaseTableResult.Parent>);
+  // constructor(data: BaseTableResult.CreateData, context?: Document.ConstructionContext<BaseTableResult.Parent>);
 
   static override metadata: BaseTableResult.Metadata;
 
   static override defineSchema(): BaseTableResult.Schema;
 
   override testUserPermission(
-    user: User.ConfiguredInstance,
+    user: User.Implementation,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
     options?: InexactPartial<{
       /**
@@ -37,7 +37,7 @@ declare abstract class BaseTableResult<
     }>,
   ): boolean;
 
-  static override migrateData(source: AnyObject): AnyObject;
+  static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
   /*
    * After this point these are not really overridden methods.

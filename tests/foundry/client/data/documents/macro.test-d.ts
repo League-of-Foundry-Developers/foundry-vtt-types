@@ -42,14 +42,14 @@ expectTypeOf(myMacro.folder).toEqualTypeOf<Folder | null>();
 expectTypeOf(myMacro.isOwner).toEqualTypeOf<boolean>();
 
 // static properties and functions of `ClientDocumentMixin`
-expectTypeOf(Macro.createDialog()).toEqualTypeOf<Promise<Macro | null | undefined>>();
+expectTypeOf(Macro.createDialog()).toEqualTypeOf<Promise<Macro.Implementation | null | undefined>>();
 
 // properties of `Document`
 expectTypeOf(myMacro.parent).toEqualTypeOf<null>();
 expectTypeOf(myMacro.pack).toEqualTypeOf<string | null>();
 
 // static properties of `Document`
-expectTypeOf(Macro.create({ name: "Some Macro" })).toEqualTypeOf<Promise<Document.Stored<Macro> | undefined>>();
-expectTypeOf(Macro.createDocuments([])).toEqualTypeOf<Promise<Document.Stored<Macro>[] | undefined>>();
-expectTypeOf(Macro.updateDocuments([])).toEqualTypeOf<Promise<Macro[]>>();
-expectTypeOf(Macro.deleteDocuments([])).toEqualTypeOf<Promise<Macro[]>>();
+expectTypeOf(Macro.create({ name: "Some Macro" })).toEqualTypeOf<Promise<Macro.Stored | undefined>>();
+expectTypeOf(Macro.createDocuments([])).toEqualTypeOf<Promise<Macro.Stored[] | undefined>>();
+expectTypeOf(Macro.updateDocuments([])).toEqualTypeOf<Promise<Macro.Implementation[]>>();
+expectTypeOf(Macro.deleteDocuments([])).toEqualTypeOf<Promise<Macro.Implementation[]>>();

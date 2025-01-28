@@ -421,7 +421,7 @@ declare global {
      * @param user - The user requesting to render the sheet
      * @returns Does the User have permission to view this sheet?
      */
-    protected _canUserView(user: User.ConfiguredInstance): boolean;
+    protected _canUserView(user: User.Implementation): boolean;
 
     /**
      * Create objects for managing the functionality of secret blocks within this Document's content.

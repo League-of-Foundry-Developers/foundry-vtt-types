@@ -490,7 +490,7 @@ declare class Roll<D extends AnyObject = AnyObject> {
    * @returns A promise which resolves to the created ChatMessage entity, if create is true
    *          or the Object of prepared chatData otherwise.
    */
-  toMessage<T extends foundry.documents.BaseChatMessage.ConstructorData = EmptyObject, Create extends boolean = true>(
+  toMessage<T extends foundry.documents.BaseChatMessage.CreateData = EmptyObject, Create extends boolean = true>(
     messageData?: T,
     options?: InexactPartial<{
       /**
@@ -505,7 +505,7 @@ declare class Roll<D extends AnyObject = AnyObject> {
       create: Create;
     }>,
   ): Promise<
-    | (true extends Create ? ChatMessage.ConfiguredInstance | undefined : never)
+    | (true extends Create ? ChatMessage.Implementation | undefined : never)
     | (false extends Create ? Roll.MessageData<T> : never)
   >;
 
@@ -635,7 +635,7 @@ declare namespace Roll {
     total: number | null;
   }
 
-  type MessageData<T extends foundry.documents.BaseChatMessage.ConstructorData> = T & {
+  type MessageData<T extends foundry.documents.BaseChatMessage.CreateData> = T & {
     user: string;
     rolls: Roll[];
     content: number;

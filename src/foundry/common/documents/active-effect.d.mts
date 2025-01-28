@@ -1,4 +1,4 @@
-import type { AnyObject, InexactPartial } from "../../../utils/index.d.mts";
+import type { AnyObject, AnyMutableObject, InexactPartial } from "../../../utils/index.d.mts";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
@@ -18,10 +18,10 @@ declare abstract class BaseActiveEffect<
    * @param context - Construction context options
    */
   // TODO(LukeAbby): This constructor is causing a circular error.
-  // constructor(data?: BaseActiveEffect.ConstructorData, context?: Document.ConstructionContext<BaseActiveEffect.Parent>);
+  // constructor(data?: BaseActiveEffect.CreateData, context?: Document.ConstructionContext<BaseActiveEffect.Parent>);
 
   override canUserModify(
-    user: User.ConfiguredInstance,
+    user: User.Implementation,
     action: "create" | "update" | "delete",
     data?: AnyObject,
   ): boolean;
@@ -31,7 +31,7 @@ declare abstract class BaseActiveEffect<
   static override defineSchema(): BaseActiveEffect.Schema;
 
   override testUserPermission(
-    user: User.ConfiguredInstance,
+    user: User.Implementation,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
     options?: InexactPartial<{
       /**
@@ -47,7 +47,7 @@ declare abstract class BaseActiveEffect<
    * For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
    */
 
-  static override migrateData(source: AnyObject): AnyObject;
+  static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
   /**
    * @deprecated since v11, will be removed in v13

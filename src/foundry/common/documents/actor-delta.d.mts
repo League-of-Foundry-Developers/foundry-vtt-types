@@ -1,4 +1,4 @@
-import type { AnyObject, InexactPartial } from "../../../utils/index.d.mts";
+import type { AnyMutableObject, AnyObject, InexactPartial } from "../../../utils/index.d.mts";
 import type Document from "../abstract/document.mts";
 import type { fields } from "../data/module.d.mts";
 import type { CONST, documents } from "../../client-esm/client.d.mts";
@@ -18,20 +18,20 @@ declare abstract class BaseActorDelta<
   SubType extends BaseActorDelta.SubType = BaseActorDelta.SubType,
 > extends Document<"ActorDelta", BaseActorDelta._Schema, any> {
   // TODO(LukeAbby): This constructor is a symptom of a circular error.
-  // constructor(data?: BaseActorDelta.ConstructorData, context?: Document.ConstructionContext<BaseActorDelta.Parent>);
+  // constructor(data?: BaseActorDelta.CreateData, context?: Document.ConstructionContext<BaseActorDelta.Parent>);
 
   static override metadata: BaseActorDelta.Metadata;
 
   static override defineSchema(): BaseActorDelta.Schema;
 
   override canUserModify(
-    user: User.Internal.ConfiguredInstance,
+    user: User.Internal.Implementation,
     action: "create" | "update" | "delete",
     data?: AnyObject,
   ): boolean;
 
   override testUserPermission(
-    user: User.Internal.ConfiguredInstance,
+    user: User.Internal.Implementation,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
     options?: InexactPartial<{
       /**
@@ -54,7 +54,7 @@ declare abstract class BaseActorDelta<
     context: unknown,
   ): Document.ConfiguredClassForName<"Actor"> | null;
 
-  static migrateData(source: AnyObject): AnyObject;
+  static migrateData(source: AnyMutableObject): AnyMutableObject;
 
   //TODO: Figure out if this override still applies
   toObject(source: true): this["_source"];
@@ -210,7 +210,7 @@ declare namespace BaseActorDelta {
   // The document subclasses override `system` anyways.
   // There's no point in doing expensive computation work comparing the base class system.
   /** @internal */
-  interface _Schema extends ActiveEffect.Schema {
+  interface _Schema extends ActorDelta.Schema {
     system: any;
   }
 
@@ -221,16 +221,16 @@ declare namespace BaseActorDelta {
    */
   type Properties = fields.SchemaField.InitializedData<Schema>;
 
-  /** @deprecated {@link BaseActiveEffect.SubType | `BaseActiveEffect.SubType`} */
+  /** @deprecated {@link BaseActorDelta.SubType | `BaseActorDelta.SubType`} */
   type TypeNames = Game.Model.TypeNames<"Actor">;
 
   /**
-   * @deprecated {@link fields.SchemaField | `SchemaField<BaseActiveEffect.Schema>`}
+   * @deprecated {@link fields.SchemaField | `SchemaField<BaseActorDelta.Schema>`}
    */
   type SchemaField = fields.SchemaField<Schema>;
 
   /**
-   * @deprecated {@link BaseActiveEffect.CreateData | `BaseActiveEffect.CreateData`}
+   * @deprecated {@link BaseActorDelta.CreateData | `BaseActorDelta.CreateData`}
    */
   type ConstructorData = fields.SchemaField.CreateData<Schema>;
 }

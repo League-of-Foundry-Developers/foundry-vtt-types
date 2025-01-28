@@ -9,10 +9,10 @@ import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts
 export default class RegionBehaviorConfig<
   RenderContext extends AnyObject = EmptyObject,
   Configuration extends
-    DocumentSheetV2.Configuration<RegionBehavior.ConfiguredInstance> = DocumentSheetV2.Configuration<RegionBehavior.ConfiguredInstance>,
+    DocumentSheetV2.Configuration<RegionBehavior.Implementation> = DocumentSheetV2.Configuration<RegionBehavior.Implementation>,
   RenderOptions extends DocumentSheetV2.RenderOptions = DocumentSheetV2.RenderOptions,
 > extends HandlebarsApplicationMixin(DocumentSheetV2)<
-  RegionBehavior.ConfiguredInstance,
+  RegionBehavior.Implementation,
   RenderContext,
   Configuration,
   RenderOptions
@@ -20,7 +20,7 @@ export default class RegionBehaviorConfig<
   constructor(options: DeepPartial<Configuration> & { document: Document });
 
   static override DEFAULT_OPTIONS: object &
-    DocumentSheetV2.PartialConfiguration<DocumentSheetV2.Configuration<RegionBehavior.ConfiguredInstance>>;
+    DocumentSheetV2.PartialConfiguration<DocumentSheetV2.Configuration<RegionBehavior.Implementation>>;
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   protected override _prepareContext(

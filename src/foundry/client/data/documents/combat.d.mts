@@ -117,7 +117,7 @@ declare global {
        * A Collection of Combatant embedded Documents
        * @defaultValue `[]`
        */
-      combatants: fields.EmbeddedCollectionField<typeof documents.BaseCombatant, Combat.ConfiguredInstance>;
+      combatants: fields.EmbeddedCollectionField<typeof documents.BaseCombatant, Combat.Implementation>;
 
       /**
        * Is the Combat encounter currently active?
@@ -256,7 +256,7 @@ declare global {
        * Additional options with which to customize created Chat Messages
        * @defaultValue `{}`
        */
-      messageOptions?: foundry.documents.BaseChatMessage.ConstructorData;
+      messageOptions?: foundry.documents.BaseChatMessage.CreateData;
     }
 
     interface HistoryData {
@@ -281,7 +281,7 @@ declare global {
   )<SubType> {
     static override metadata: Combat.Metadata;
 
-    static get implementation(): Combat.ConfiguredClass;
+    static get implementation(): Combat.ImplementationClass;
 
     /**
      * @param data - Initial data provided to construct the Combat document
@@ -293,7 +293,7 @@ declare global {
     // );
 
     /** Track the sorted turn order of this combat encounter */
-    turns: Combatant.ConfiguredInstance[];
+    turns: Combatant.Implementation[];
 
     /** Record the current round, turn, and tokenId to understand changes in the encounter state */
     current: Combat.HistoryData;
@@ -313,7 +313,7 @@ declare global {
     /**
      * Get the Combatant who has the next turn.
      */
-    get nextCombatant(): Combatant.ConfiguredInstance | undefined;
+    get nextCombatant(): Combatant.Implementation | undefined;
 
     /** Return the object of settings which modify the Combat Tracker behavior */
     // Type is copied here to avoid recursion issue
@@ -332,7 +332,7 @@ declare global {
      * Deactivate all other Combat encounters within the viewed Scene and set this one as active
      * @param options - Additional context to customize the update workflow
      */
-    activate(options?: Document.OnUpdateOptions<"Combat">): Promise<Combat.ConfiguredInstance[]>;
+    activate(options?: Document.OnUpdateOptions<"Combat">): Promise<Combat.Implementation[]>;
 
     override prepareDerivedData(): void;
 
@@ -341,13 +341,13 @@ declare global {
      * @param token - A Token ID or a TokenDocument instance
      * @returns An array of Combatants which represent the Token.
      */
-    getCombatantsByToken(token: string | TokenDocument): Combatant.ConfiguredInstance[];
+    getCombatantsByToken(token: string | TokenDocument): Combatant.Implementation[];
 
     /**
      * Get a Combatant that represents the given Actor or Actor ID.
      * @param actorOrId - An Actor ID or an Actor instance.
      */
-    getCombatantsByActor(actorOrId: string | Actor): Combatant.ConfiguredInstance[];
+    getCombatantsByActor(actorOrId: string | Actor): Combatant.Implementation[];
 
     /** Begin the combat encounter, advancing to round 1 and turn 1 */
     startCombat(): Promise<this>;
@@ -432,7 +432,7 @@ declare global {
      * By default sort by initiative, next falling back to name, lastly tie-breaking by combatant id.
      * @internal
      */
-    protected _sortCombatants(a: Combatant.ConfiguredInstance, b: Combatant.ConfiguredInstance): number;
+    protected _sortCombatants(a: Combatant.Implementation, b: Combatant.Implementation): number;
 
     /**
      * Refresh the Token HUD under certain circumstances.

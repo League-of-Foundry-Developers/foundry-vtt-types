@@ -61,7 +61,7 @@ declare global {
     protected _onDropData(
       event: DragEvent,
       data: BaseTile.ConstructorData,
-    ): Promise<TileDocument.ConfiguredInstance | false | void>;
+    ): Promise<TileDocument.Implementation | false | void>;
 
     /**
      * Prepare the data object when a new Tile is dropped onto the canvas

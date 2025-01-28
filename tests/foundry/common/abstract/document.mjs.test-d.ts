@@ -29,10 +29,10 @@ if (item) {
 }
 
 expectTypeOf(foundry.documents.BaseMacro.create({ name: "" })).toEqualTypeOf<
-  Promise<Document.Stored<Macro> | undefined>
+  Promise<Macro.Stored | undefined>
 >();
 expectTypeOf(foundry.documents.BaseMacro.create({ name: "" }, { temporary: false })).toEqualTypeOf<
-  Promise<Document.Stored<Macro> | undefined>
+  Promise<Macro.Stored | undefined>
 >();
 expectTypeOf(foundry.documents.BaseMacro.create({ name: "" }, { temporary: true })).toEqualTypeOf<
   Promise<Macro | undefined>
@@ -42,10 +42,10 @@ expectTypeOf(foundry.documents.BaseMacro.createDocuments([], { temporary: true }
   Promise<Macro[] | undefined>
 >();
 expectTypeOf(foundry.documents.BaseMacro.createDocuments([])).toEqualTypeOf<
-  Promise<Document.Stored<Macro>[] | undefined>
+  Promise<Macro.Stored[] | undefined>
 >();
 expectTypeOf(foundry.documents.BaseMacro.createDocuments([], { temporary: false })).toEqualTypeOf<
-  Promise<Document.Stored<Macro>[] | undefined>
+  Promise<Macro.Stored[] | undefined>
 >();
 
 expectTypeOf(foundry.documents.BaseMacro.updateDocuments([])).toEqualTypeOf<Promise<Macro[]>>();
@@ -64,20 +64,20 @@ expectTypeOf(scene.createEmbeddedDocuments("Note", [], { temporary: true })).toE
   Promise<NoteDocument[] | undefined>
 >();
 expectTypeOf(scene.createEmbeddedDocuments("Note", [], { temporary: false })).toEqualTypeOf<
-  Promise<Document.Stored<NoteDocument>[] | undefined>
+  Promise<NoteDocument.Stored[] | undefined>
 >();
 expectTypeOf(scene.createEmbeddedDocuments("Note", [])).toEqualTypeOf<
-  Promise<Document.Stored<NoteDocument>[] | undefined>
+  Promise<NoteDocument.Stored[] | undefined>
 >();
 
 // verify that document lifecycle methods work with source data is possible
 
 if (item) {
-  expectTypeOf(Item.createDocuments([item.toObject()])).toEqualTypeOf<Promise<Document.Stored<Item>[] | undefined>>();
-  expectTypeOf(Item.create(item.toObject())).toEqualTypeOf<Promise<Document.Stored<Item> | undefined>>();
+  expectTypeOf(Item.createDocuments([item.toObject()])).toEqualTypeOf<Promise<Item.Stored[] | undefined>>();
+  expectTypeOf(Item.create(item.toObject())).toEqualTypeOf<Promise<Item.Stored | undefined>>();
   expectTypeOf(Item.updateDocuments([item.toObject()])).toEqualTypeOf<Promise<Item[]>>();
-  expectTypeOf(item.update(item.toObject())).toEqualTypeOf<Promise<Document.Stored<Item> | undefined>>();
-  expectTypeOf(item.clone(item.toObject())).toEqualTypeOf<Document.Stored<Item>>();
+  expectTypeOf(item.update(item.toObject())).toEqualTypeOf<Promise<Item.Stored | undefined>>();
+  expectTypeOf(item.clone(item.toObject())).toEqualTypeOf<Item.Stored>();
 }
 
 declare global {
