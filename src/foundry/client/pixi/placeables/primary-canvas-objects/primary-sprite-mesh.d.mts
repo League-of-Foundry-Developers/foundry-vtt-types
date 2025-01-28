@@ -155,7 +155,7 @@ declare global {
        * @privateRemarks Foundry types as `*`, but the only things passed in practice are `Tile`s, `Token`s, and the `PrimaryCanvasGroup`
        */
       //TODO: (esheyw) Revisit the "any canvas group" type when groups are done
-      object: PlaceableObject.Any | CanvasGroupMixin.Any;
+      object: PlaceableObject.Any | CanvasGroupMixin.AnyConstructor;
     }>;
 
     /** The constructor options */

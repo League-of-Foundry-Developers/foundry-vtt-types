@@ -14,13 +14,11 @@ declare class PrimaryCanvasObject {
   /**
    * An optional reference to the object that owns this PCO.
    * This property does not affect the behavior of the PCO itself.
-   * @remarks Foundry types as `*`, in practice, it will only ever be a `PlaceableObject` or the `PrimaryCanvasGroup`
    * @defaultValue `null`
    * @privateRemarks Foundry types as `*`, but in practice, it will only ever be a `Drawing` (via `PrimaryGraphics`),
    * or a `Token`, `Tile`, or the `PrimaryCanvasGroup` (via `PrimarySpriteMesh`), or its default value `null`
    */
-  //TODO: (esheyw) Revisit the "any canvas group" type when groups are done
-  object: PlaceableObject.Any | CanvasGroupMixin.Any | null;
+  object: PlaceableObject.Any | CanvasGroupMixin.AnyConstructor | null;
 
   /**
    * The elevation of this object.
