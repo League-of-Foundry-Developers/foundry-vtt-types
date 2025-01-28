@@ -59,7 +59,7 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
    * defined DRY-ly while also being easily overridable.
    */
 
-  static " __fvtt_types_internal_document_name_static": "Note";
+  static "~ fvtt_types_internal_document_name_static": "Note";
 
   static get implementation(): NoteDocument.ImplementationClass;
 

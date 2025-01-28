@@ -34,7 +34,7 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
    * defined DRY-ly while also being easily overridable.
    */
 
-  static " __fvtt_types_internal_document_name_static": "FogExploration";
+  static "~ fvtt_types_internal_document_name_static": "FogExploration";
 
   static get implementation(): FogExploration.ImplementationClass;
 

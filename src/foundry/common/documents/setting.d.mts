@@ -29,7 +29,7 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
    * defined DRY-ly while also being easily overridable.
    */
 
-  static " __fvtt_types_internal_document_name_static": "Setting";
+  static "~ fvtt_types_internal_document_name_static": "Setting";
 
   static get implementation(): Setting.ImplementationClass;
 

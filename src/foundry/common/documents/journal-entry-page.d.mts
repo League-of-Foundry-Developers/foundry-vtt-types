@@ -33,7 +33,7 @@ declare abstract class BaseJournalEntryPage<
    * defined DRY-ly while also being easily overridable.
    */
 
-  static " __fvtt_types_internal_document_name_static": "JournalEntryPage";
+  static "~ fvtt_types_internal_document_name_static": "JournalEntryPage";
 
   static get implementation(): JournalEntryPage.ImplementationClass;
 

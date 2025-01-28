@@ -30,7 +30,7 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
    * defined DRY-ly while also being easily overridable.
    */
 
-  static " __fvtt_types_internal_document_name_static": "JournalEntry";
+  static "~ fvtt_types_internal_document_name_static": "JournalEntry";
 
   static get implementation(): JournalEntry.ImplementationClass;
 

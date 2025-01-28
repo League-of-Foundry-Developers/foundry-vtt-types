@@ -64,7 +64,7 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
    * defined DRY-ly while also being easily overridable.
    */
 
-  static " __fvtt_types_internal_document_name_static": "MeasuredTemplate";
+  static "~ fvtt_types_internal_document_name_static": "MeasuredTemplate";
 
   static get implementation(): MeasuredTemplateDocument.ImplementationClass;
 

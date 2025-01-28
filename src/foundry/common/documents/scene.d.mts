@@ -41,7 +41,7 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
    * defined DRY-ly while also being easily overridable.
    */
 
-  static " __fvtt_types_internal_document_name_static": "Scene";
+  static "~ fvtt_types_internal_document_name_static": "Scene";
 
   static get implementation(): Scene.ImplementationClass;
 

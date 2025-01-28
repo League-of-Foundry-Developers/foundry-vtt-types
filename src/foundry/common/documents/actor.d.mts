@@ -84,7 +84,7 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
    * defined DRY-ly while also being easily overridable.
    */
 
-  static " __fvtt_types_internal_document_name_static": "Actor";
+  static "~ fvtt_types_internal_document_name_static": "Actor";
 
   override parent: Actor.Parent;
 

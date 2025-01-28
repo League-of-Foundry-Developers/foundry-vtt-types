@@ -66,7 +66,7 @@ declare abstract class BaseActorDelta<
    * defined DRY-ly while also being easily overridable.
    */
 
-  static " __fvtt_types_internal_document_name_static": "ActorDelta";
+  static "~ fvtt_types_internal_document_name_static": "ActorDelta";
 
   override system: Document.SystemFor<"ActorDelta", SubType>;
 

@@ -38,7 +38,7 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
    * defined DRY-ly while also being easily overridable.
    */
 
-  static " __fvtt_types_internal_document_name_static": "Adventure";
+  static "~ fvtt_types_internal_document_name_static": "Adventure";
 
   static get implementation(): Adventure.ImplementationClass;
 

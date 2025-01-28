@@ -71,7 +71,7 @@ declare abstract class BaseActiveEffect<
    * defined DRY-ly while also being easily overridable.
    */
 
-  static " __fvtt_types_internal_document_name_static": "ActiveEffect";
+  static "~ fvtt_types_internal_document_name_static": "ActiveEffect";
 
   static get implementation(): ActiveEffect.ImplementationClass;
 

@@ -74,7 +74,7 @@ declare abstract class BaseChatMessage<
    * defined DRY-ly while also being easily overridable.
    */
 
-  static " __fvtt_types_internal_document_name_static": "ChatMessage";
+  static "~ fvtt_types_internal_document_name_static": "ChatMessage";
 
   static get implementation(): ChatMessage.ImplementationClass;
 

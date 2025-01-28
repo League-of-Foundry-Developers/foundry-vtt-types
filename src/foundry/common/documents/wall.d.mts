@@ -30,7 +30,7 @@ declare abstract class BaseWall extends Document<"Wall", BaseWall.Schema, any> {
    * defined DRY-ly while also being easily overridable.
    */
 
-  static " __fvtt_types_internal_document_name_static": "Wall";
+  static "~ fvtt_types_internal_document_name_static": "Wall";
 
   static get implementation(): WallDocument.ImplementationClass;
 

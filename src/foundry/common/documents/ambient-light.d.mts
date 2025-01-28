@@ -30,7 +30,7 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
    * defined DRY-ly while also being easily overrideable.
    */
 
-  static " __fvtt_types_internal_document_name_static": "AmbientLight";
+  static "~ fvtt_types_internal_document_name_static": "AmbientLight";
 
   static get implementation(): AmbientLightDocument.ImplementationClass;
 

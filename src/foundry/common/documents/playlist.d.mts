@@ -41,7 +41,7 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
    * defined DRY-ly while also being easily overridable.
    */
 
-  static " __fvtt_types_internal_document_name_static": "Playlist";
+  static "~ fvtt_types_internal_document_name_static": "Playlist";
 
   static get implementation(): Playlist.ImplementationClass;
 

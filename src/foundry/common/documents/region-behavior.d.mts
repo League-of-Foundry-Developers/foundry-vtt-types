@@ -33,7 +33,7 @@ declare abstract class BaseRegionBehavior<
    * defined DRY-ly while also being easily overridable.
    */
 
-  static " __fvtt_types_internal_document_name_static": "RegionBehavior";
+  static "~ fvtt_types_internal_document_name_static": "RegionBehavior";
 
   static get implementation(): RegionBehavior.ImplementationClass;
 
