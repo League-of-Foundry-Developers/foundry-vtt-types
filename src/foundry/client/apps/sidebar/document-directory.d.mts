@@ -21,7 +21,7 @@ declare global {
     collection: DocumentCollection.Any;
   }
 
-  class DocumentDirectory<
+  abstract class DocumentDirectory<
     FolderType extends foundry.CONST.FOLDER_DOCUMENT_TYPES,
     Options extends DocumentDirectoryOptions = DocumentDirectoryOptions,
   > extends DirectoryApplicationMixin(SidebarTab)<Options> {

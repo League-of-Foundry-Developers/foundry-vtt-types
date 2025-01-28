@@ -3,16 +3,22 @@ import type { MaybeEmpty } from "fvtt-types/utils";
 
 const clientSettings = new ClientSettings([]);
 
-declare global {
-  // eslint-disable-next-line
-  namespace ClientSettings {
-    interface Values {
-      "foo.bar": boolean;
-      "some.numberSetting": number;
-      "some.stringSetting": string;
+expectTypeOf(clientSettings.settings).toEqualTypeOf<Map<keyof SettingConfig & string, ClientSettings.SettingConfig>>();
+expectTypeOf(clientSettings.menus).toEqualTypeOf<Map<string, ClientSettings.SettingSubmenuConfig>>();
+expectTypeOf(clientSettings.storage).toEqualTypeOf<Map<string, Storage | WorldSettings>>();
+expectTypeOf(clientSettings.sheet).toEqualTypeOf<SettingsConfig>();
 
-      "data-model.setting": typeof Actor;
-    }
+declare const subMenu: ClientSettings.RegisterSubmenu;
+expectTypeOf(clientSettings.registerMenu("foo", "bar", subMenu)).toEqualTypeOf<void>();
+
+// specify the settings we will use
+declare global {
+  interface SettingConfig {
+    "foo.bar": boolean;
+    "some.numberSetting": number;
+    "some.stringSetting": string;
+
+    "data-model.setting": typeof Actor;
   }
 }
 
@@ -61,13 +67,7 @@ clientSettings.register("some", "numberSetting", {
 clientSettings.register("some", "numberSetting", {
   scope: "world",
   type: Number,
-  // @ts-expect-error - Can only use filePicker for string settings
-  filePicker: "audio",
-});
-
-clientSettings.register("some", "stringSetting", {
-  scope: "world",
-  type: String,
+  // @ts-expect-error - filePicker isnot a valid config setting
   filePicker: "audio",
 });
 

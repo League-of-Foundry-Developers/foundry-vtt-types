@@ -1,94 +1,161 @@
+// tests for /types/utils/index.d.mts
+
 import { assertType, expectTypeOf } from "vitest";
-import type { DeepPartial, Expanded, MaybePromise, RequiredProps, Titlecase } from "fvtt-types/utils";
-import Document = foundry.abstract.Document;
+import type {
+  GetKey,
+  IntentionalPartial,
+  OverlapsWith,
+  ArrayOverlaps,
+  MakeConform,
+  MustConform,
+  InterfaceToObject,
+  ConformRecord,
+  // ToMethod,
+  // MaybeEmpty,
+  // PropertiesOfType,
+  // Brand,
+  // PrettifyType,
+  // PrettifyTypeDeep,
+  // UnionToIntersection,
+  DeepPartial,
+  AllKeysOf,
+  // InexactPartial,
+  // NullishProps,
+  Expanded,
+  // ValueOf,
+  // ConcreteKeys,
+  // RemoveIndexSignatures,
+  Titlecase,
+  // Merge,
+  // IsObject,
+  // SimpleMerge,
+  RequiredProps,
+  // Mixin,
+  // GetDataReturnType,
+  // HandleEmptyObject,
+  // AnyObject,
+  // AnyMutableObject,
+  // AnyArray,
+  // MutableArray,
+  // AnyFunction,
+  // AnyConstructor,
+  // AnyConcreteConstructor,
+  // MustBePromise,
+  MaybePromise,
+  // NonNullish,
+  // EmptyObject,
+  // ShapeWithIndexSignature,
+  // Defer,
+  // MustBeValidUuid,
+  // Quote,
+} from "fvtt-types/utils";
+
+expectTypeOf<GetKey<{ abc: string }, "foo">>().toEqualTypeOf<never>();
+
+expectTypeOf<GetKey<{ abc: string }, "abc">>().toEqualTypeOf<string>();
+
+expectTypeOf<GetKey<{ abc: number }, "abc">>().toEqualTypeOf<number>();
+
+expectTypeOf<IntentionalPartial<{ abc: number }>>().toEqualTypeOf<Partial<{ abc: number }>>();
+
+expectTypeOf<OverlapsWith<7, number>>().toEqualTypeOf<7>();
+expectTypeOf<OverlapsWith<"abc", number>>().toEqualTypeOf<number>();
+expectTypeOf<OverlapsWith<string | number, string>>().toEqualTypeOf<string | number>();
+
+expectTypeOf<ArrayOverlaps<number[], number>>().toEqualTypeOf<number[]>();
+expectTypeOf<ArrayOverlaps<number[], string>>().toEqualTypeOf<readonly string[]>();
+
+expectTypeOf<MakeConform<string, { abc: number }, { abc: number; def: string }>>().toEqualTypeOf<{
+  abc: number;
+  def: string;
+}>();
+expectTypeOf<MakeConform<string, { abc: number }>>().toEqualTypeOf<{ abc: number }>();
+expectTypeOf<MakeConform<{ abc: number; def: number }, { abc: number }>>().toEqualTypeOf<{
+  abc: number;
+  def: number;
+}>();
+
+// @ts-expect-error - string doesn't conform
+expectTypeOf<MustConform<string, { abc: number }>>().toEqualTypeOf<{ abc: number; def: string }>();
+expectTypeOf<MustConform<{ abc: number; def: number }, { abc: number }>>().toEqualTypeOf<{
+  abc: number;
+  def: number;
+}>();
+
+class TestClass {
+  #abc: number;
+  def: string;
+
+  constructor() {
+    this.#abc = 0;
+    this.def = "";
+  }
+}
+
+expectTypeOf<TestClass>().not.toEqualTypeOf<{ def: string }>();
+expectTypeOf<InterfaceToObject<TestClass>>().toEqualTypeOf<{ def: string }>();
+
+expectTypeOf<ConformRecord<{ abc: { ghi: number } }, { def: string }>>().toEqualTypeOf<{ abc: { def: string } }>();
+expectTypeOf<ConformRecord<{ abc: { def: string; ghi: number } }, { def: string }>>().toEqualTypeOf<{
+  abc: { def: string; ghi: number };
+}>();
+
+// TODO: ToMethod
+// TODO: MaybeEmpty
+
+// TODO: PropertiesOfType
+// TODO: Brand
+// TODO: PrettifyType
+// TODO: PrettifyTypeDeep
+// TODO: UnionToIntersection
 
 // An empty object should always be assignable to `DeepPartial`.
 function _emptyMustBeAssignable<T extends object>(_partial: DeepPartial<T> = {}): void {}
 
-declare const membersBecomeOptional: DeepPartial<{ a: string }>;
-expectTypeOf(membersBecomeOptional).toEqualTypeOf<{ a?: string }>();
+expectTypeOf<DeepPartial<{ a: string }>>().toEqualTypeOf<{ a?: string }>();
+expectTypeOf<DeepPartial<{ a: { b: string } }>>().toEqualTypeOf<{ a?: { b?: string } }>();
 
-declare const nestedMembersBecomeOptional: DeepPartial<{ a: { b: string } }>;
-expectTypeOf(nestedMembersBecomeOptional).toEqualTypeOf<{ a?: { b?: string } }>();
+expectTypeOf<AllKeysOf<{ a: string }>>().toEqualTypeOf<"a">();
+expectTypeOf<AllKeysOf<{ a: string; b: number }>>().toEqualTypeOf<"a" | "b">();
+expectTypeOf<AllKeysOf<{ a: string } | { b: string }>>().toEqualTypeOf<"a" | "b">();
 
-declare const expanded1: Expanded<{ foo: string }>;
-expectTypeOf(expanded1).toEqualTypeOf<{ foo: string }>();
+// TODO: InexactPartial
+// TODO: NullishProps
 
-declare const expanded2: Expanded<{ "foo.bar": string }>;
-expectTypeOf(expanded2).toEqualTypeOf<{ foo: { bar: string } }>();
+expectTypeOf<Expanded<{ foo: string }>>().toEqualTypeOf<{ foo: string }>();
+expectTypeOf<Expanded<{ "foo.bar": string }>>().toEqualTypeOf<{ foo: { bar: string } }>();
+expectTypeOf<Expanded<{ "foo.bar": string[] }>>().toEqualTypeOf<{ foo: { bar: string[] } }>();
+expectTypeOf<Expanded<{ foo: { "bar.baz": string } }>>().toEqualTypeOf<{ foo: { bar: { baz: string } } }>();
+expectTypeOf<Expanded<{ "foo.bar": string; "baz.qux": string }>>().toEqualTypeOf<{
+  foo: { bar: string };
+  baz: { qux: string };
+}>();
+expectTypeOf<Expanded<{ "foo.bar": string; baz: { qux: string } }>>().toEqualTypeOf<{
+  foo: { bar: string };
+  baz: { qux: string };
+}>();
+expectTypeOf<Expanded<{ "foo.bar": string | number }>>().toEqualTypeOf<{ foo: { bar: string | number } }>();
+expectTypeOf<Expanded<{ foo: { bar: string } | { baz: number } }>>().toEqualTypeOf<{
+  foo: { bar: string } | { baz: number };
+}>();
+expectTypeOf<Expanded<{ "foo.bar"?: string }>>().toEqualTypeOf<{ foo?: { bar: string | undefined } }>();
 
-declare const expanded3: Expanded<{ "foo.bar": string[] }>;
-expectTypeOf(expanded3).toEqualTypeOf<{ foo: { bar: string[] } }>();
+// TODO: ValueOf
+// TODO: ConcreteKeys
+// TODO: RemoveIndexSignatures
 
-declare const expanded4: Expanded<{ foo: { "bar.baz": string } }>;
-expectTypeOf(expanded4).toEqualTypeOf<{ foo: { bar: { baz: string } } }>();
+expectTypeOf<Titlecase<"">>().toEqualTypeOf<"">();
+expectTypeOf<Titlecase<" ">>().toEqualTypeOf<" ">();
+expectTypeOf<Titlecase<"42">>().toEqualTypeOf<"42">();
+expectTypeOf<Titlecase<"foobar">>().toEqualTypeOf<"Foobar">();
+expectTypeOf<Titlecase<"FOOBAR">>().toEqualTypeOf<"Foobar">();
+expectTypeOf<Titlecase<"foo bar">>().toEqualTypeOf<"Foo Bar">();
+expectTypeOf<Titlecase<"foo  bar">>().toEqualTypeOf<"Foo  Bar">();
+expectTypeOf<Titlecase<"foo bar baz">>().toEqualTypeOf<"Foo Bar Baz">();
 
-declare const expanded5: Expanded<{ "foo.bar": string; "baz.qux": string }>;
-expectTypeOf(expanded5).toEqualTypeOf<{ foo: { bar: string }; baz: { qux: string } }>();
-
-declare const expanded6: Expanded<{ "foo.bar": string; baz: { qux: string } }>;
-expectTypeOf(expanded6).toEqualTypeOf<{ foo: { bar: string }; baz: { qux: string } }>();
-
-declare const expanded7: Expanded<{ "foo.bar": string | number }>;
-expectTypeOf(expanded7).toEqualTypeOf<{ foo: { bar: string | number } }>();
-
-declare const expanded8: Expanded<{ foo: { bar: string } | { baz: number } }>;
-expectTypeOf(expanded8).toEqualTypeOf<{ foo: { bar: string } | { baz: number } }>();
-
-declare const expanded9: Expanded<{ "foo.bar"?: string }>;
-expectTypeOf(expanded9).toEqualTypeOf<{ foo?: { bar: string | undefined } }>();
-
-declare const titlecaseEmpty: Titlecase<"">;
-expectTypeOf(titlecaseEmpty).toEqualTypeOf<"">();
-declare const titlecaseBlank: Titlecase<" ">;
-expectTypeOf(titlecaseBlank).toEqualTypeOf<" ">();
-declare const titlecaseNumber: Titlecase<"42">;
-expectTypeOf(titlecaseNumber).toEqualTypeOf<"42">();
-declare const titlecaseFromLower: Titlecase<"foobar">;
-expectTypeOf(titlecaseFromLower).toEqualTypeOf<"Foobar">();
-declare const titlecaseFromUpper: Titlecase<"FOOBAR">;
-expectTypeOf(titlecaseFromUpper).toEqualTypeOf<"Foobar">();
-declare const titlecaseWithSpace: Titlecase<"foo bar">;
-expectTypeOf(titlecaseWithSpace).toEqualTypeOf<"Foo Bar">();
-declare const titlecaseWithSpaces: Titlecase<"foo  bar">;
-expectTypeOf(titlecaseWithSpaces).toEqualTypeOf<"Foo  Bar">();
-declare const titlecaseWithThreeWords: Titlecase<"foo bar baz">;
-expectTypeOf(titlecaseWithThreeWords).toEqualTypeOf<"Foo Bar Baz">();
-
-const numberMaybePromise = 0 as MaybePromise<number>;
-expectTypeOf(await numberMaybePromise).toEqualTypeOf<number>();
-
-declare const user: User;
-expectTypeOf(user.id).toEqualTypeOf<string | null>();
-expectTypeOf(user._id).toEqualTypeOf<string | null>();
-expectTypeOf(user._source._id).toEqualTypeOf<string | null>();
-// expectTypeOf(user.toJSON()._id).toEqualTypeOf<string | null>();
-expectTypeOf(user.toObject()._id).toEqualTypeOf<string | null>();
-expectTypeOf(user.toObject(false)._id).toEqualTypeOf<string | null>();
-expectTypeOf(user.clone()).toEqualTypeOf<User>();
-expectTypeOf(user.clone({}, { save: true })).toEqualTypeOf<Promise<User>>();
-
-declare const storedUser: Document.Stored<User>;
-expectTypeOf(storedUser.id).toEqualTypeOf<string>();
-expectTypeOf(storedUser._id).toEqualTypeOf<string>();
-expectTypeOf(storedUser._source._id).toEqualTypeOf<string>();
-// expectTypeOf(storedUser.toJSON()._id).toEqualTypeOf<string>();
-// expectTypeOf(storedUser.toObject()._id).toEqualTypeOf<string>();
-// expectTypeOf(storedUser.toObject()._id).toEqualTypeOf<string>();
-// expectTypeOf(storedUser.toObject(false)._id).toEqualTypeOf<string>();
-// expectTypeOf(storedUser.toObject(false)._id).toEqualTypeOf<string>();
-expectTypeOf(storedUser.clone()).toEqualTypeOf<Document.Stored<User>>();
-
-declare const actor: Document.Stored<Actor>;
-expectTypeOf(actor.id).toEqualTypeOf<string>();
-expectTypeOf(actor._id).toEqualTypeOf<string>();
-expectTypeOf(actor._source._id).toEqualTypeOf<string>();
-// expectTypeOf(actor.toJSON()._id).toEqualTypeOf<string>();
-// expectTypeOf(actor.toObject()._id).toEqualTypeOf<string>();
-// expectTypeOf(actor.toObject()._id).toEqualTypeOf<string>();
-// expectTypeOf(actor.toObject(false)._id).toEqualTypeOf<string>();
-// expectTypeOf(actor.toObject(false)._id).toEqualTypeOf<string>();
-expectTypeOf(actor.clone()).toEqualTypeOf<Document.Stored<Actor>>();
+// TODO: Merge
+// TODO: IsObject
+// TODO: SimpleMerge
 
 // we need to test with `assertType` because the types are not considered equal, even though they are structurally the same
 type A = { foo?: string; bar?: number; baz: boolean };
@@ -97,3 +164,25 @@ declare const someVariable: RequiredProps<A, "foo">;
 declare const someOtherVariable: B;
 assertType<B>(someVariable);
 assertType<RequiredProps<A, "foo">>(someOtherVariable);
+
+// TODO: Mixin
+// TODO: GetDataReturnType
+// TODO: HandleEmptyObject
+// TODO: AnyObject
+// TODO: AnyMutableObject
+// TODO: AnyArray
+// TODO: MutableArray
+// TODO: AnyFunction
+// TODO: AnyConstructor
+// TODO: AnyConcreteConstructor
+// TODO: MustBePromise
+
+const numberMaybePromise = 0 as MaybePromise<number>;
+expectTypeOf(await numberMaybePromise).toEqualTypeOf<number>();
+
+// TODO: NonNullish
+// TODO: EmptyObject
+// TODO: ShapeWithIndexSignature
+// TODO: Defer
+// TODO: MustBeValidUuid
+// TODO: Quote
