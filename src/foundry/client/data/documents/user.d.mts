@@ -165,9 +165,9 @@ declare global {
           validate: (bar: AnyObject) => boolean;
           validationError: "must be a mapping of slots to macro identifiers";
         },
-        Hotbar | null | undefined,
-        Hotbar,
-        Hotbar
+        Record<number, string>,
+        Record<number, string>,
+        Record<number, string>
       >;
 
       /**
