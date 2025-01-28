@@ -10,7 +10,7 @@ declare global {
   }
 
   namespace UnboundContainer {
-    type Any = AnyUnboundContainer;
+    interface Any extends AnyUnboundContainer {}
     type AnyConstructor = typeof AnyUnboundContainer;
   }
 
@@ -25,7 +25,7 @@ declare global {
   }
 
   namespace UnboundTransform {
-    type Any = AnyUnboundTransform;
+    interface Any extends AnyUnboundTransform {}
     type AnyConstructor = typeof AnyUnboundTransform;
   }
 }

@@ -55,7 +55,7 @@ declare global {
   }
 
   namespace PointSourceMesh {
-    type Any = AnyPointSourceMesh;
+    interface Any extends AnyPointSourceMesh {}
     type AnyConstructor = typeof AnyPointSourceMesh;
   }
 }

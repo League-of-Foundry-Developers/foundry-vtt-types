@@ -40,7 +40,7 @@ declare global {
   }
 
   namespace TextureExtractor {
-    type Any = AnyTextureExtractor;
+    interface Any extends AnyTextureExtractor {}
     type AnyConstructor = typeof AnyTextureExtractor;
 
     /** @internal */

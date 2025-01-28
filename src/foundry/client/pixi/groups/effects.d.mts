@@ -215,7 +215,7 @@ declare global {
   }
 
   namespace EffectsCanvasGroup {
-    type Any = AnyEffectsCanvasGroup;
+    interface Any extends AnyEffectsCanvasGroup {}
     type AnyConstructor = typeof AnyEffectsCanvasGroup;
 
     interface DrawOptions extends CanvasGroupMixin.DrawOptions {}

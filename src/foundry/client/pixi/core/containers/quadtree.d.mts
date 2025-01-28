@@ -161,7 +161,7 @@ declare global {
   }
 
   namespace Quadtree {
-    type Any = AnyQuadtree;
+    interface Any extends AnyQuadtree {}
     type AnyConstructor = typeof AnyQuadtree;
 
     type INDICES = Brand<number, "Quadtree.INDICIES">;
@@ -212,7 +212,7 @@ declare global {
   }
 
   namespace CanvasQuadtree {
-    type Any = AnyCanvasQuadtree;
+    interface Any extends AnyCanvasQuadtree {}
     type AnyConstructor = typeof AnyCanvasQuadtree;
   }
 }

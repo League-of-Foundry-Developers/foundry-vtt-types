@@ -70,7 +70,7 @@ declare global {
   }
 
   namespace InterfaceCanvasGroup {
-    type Any = AnyInterfaceCanvasGroup;
+    interface Any extends AnyInterfaceCanvasGroup {}
     type AnyConstructor = typeof AnyInterfaceCanvasGroup;
 
     interface DrawOptions extends CanvasGroupMixin.DrawOptions {}

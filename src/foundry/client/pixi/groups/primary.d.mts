@@ -190,7 +190,7 @@ declare global {
   }
 
   namespace PrimaryCanvasGroup {
-    type Any = AnyPrimaryCanvasGroup;
+    interface Any extends AnyPrimaryCanvasGroup {}
     type AnyConstructor = typeof AnyPrimaryCanvasGroup;
 
     interface DrawOptions extends CanvasGroupMixin.DrawOptions {}

@@ -15,7 +15,7 @@ declare global {
   }
 
   namespace OverlayCanvasGroup {
-    type Any = AnyOverlayCanvasGroup;
+    interface Any extends AnyOverlayCanvasGroup {}
     type AnyConstructor = typeof AnyOverlayCanvasGroup;
 
     interface DrawOptions extends CanvasGroupMixin.DrawOptions {}

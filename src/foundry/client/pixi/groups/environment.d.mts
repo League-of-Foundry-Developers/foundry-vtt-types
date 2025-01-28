@@ -51,7 +51,7 @@ declare global {
   }
 
   namespace EnvironmentCanvasGroup {
-    type Any = AnyEnvironmentCanvasGroup;
+    interface Any extends AnyEnvironmentCanvasGroup {}
     type AnyConstructor = typeof AnyEnvironmentCanvasGroup;
 
     interface DrawOptions extends CanvasGroupMixin.DrawOptions {}

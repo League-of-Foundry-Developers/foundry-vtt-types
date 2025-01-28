@@ -15,7 +15,7 @@ declare global {
   }
 
   namespace RenderedCanvasGroup {
-    type Any = AnyRenderedCanvasGroup;
+    interface Any extends AnyRenderedCanvasGroup {}
     type AnyConstructor = typeof AnyRenderedCanvasGroup;
 
     interface DrawOptions extends CanvasGroupMixin.DrawOptions {}

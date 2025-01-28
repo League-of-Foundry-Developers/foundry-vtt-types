@@ -39,7 +39,7 @@ declare global {
   }
 
   namespace HiddenCanvasGroup {
-    type Any = AnyHiddenCanvasGroup;
+    interface Any extends AnyHiddenCanvasGroup {}
     type AnyConstructor = typeof AnyHiddenCanvasGroup;
 
     interface DrawOptions extends CanvasGroupMixin.DrawOptions {}

@@ -108,7 +108,7 @@ declare global {
   }
 
   namespace CachedContainer {
-    type Any = AnyCachedContainer;
+    interface Any extends AnyCachedContainer {}
     type AnyConstructor = typeof AnyCachedContainer;
 
     interface RenderOptions {

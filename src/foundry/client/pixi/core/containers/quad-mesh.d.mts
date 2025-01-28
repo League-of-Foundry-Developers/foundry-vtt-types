@@ -42,7 +42,7 @@ declare global {
   }
 
   namespace QuadMesh {
-    type Any = AnyQuadMesh;
+    interface Any extends AnyQuadMesh {}
     type AnyConstructor = typeof AnyQuadMesh;
   }
 }

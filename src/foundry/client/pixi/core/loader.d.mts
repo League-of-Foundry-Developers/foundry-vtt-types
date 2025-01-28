@@ -130,7 +130,7 @@ declare global {
   }
 
   namespace TextureLoader {
-    type Any = AnyTextureLoader;
+    interface Any extends AnyTextureLoader {}
     type AnyConstructor = typeof AnyTextureLoader;
 
     interface TextureAlphaData {

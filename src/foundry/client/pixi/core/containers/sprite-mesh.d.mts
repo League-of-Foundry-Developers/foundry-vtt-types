@@ -324,7 +324,7 @@ declare global {
   }
 
   namespace SpriteMesh {
-    type Any = AnySpriteMesh;
+    interface Any extends AnySpriteMesh {}
     type AnyConstructor = typeof AnySpriteMesh;
 
     /** Snapshot of some parameters of this display object to render in batched mode. */

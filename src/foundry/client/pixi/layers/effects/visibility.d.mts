@@ -185,7 +185,7 @@ declare global {
   }
 
   namespace CanvasVisibility {
-    type Any = AnyCanvasVisibility;
+    interface Any extends AnyCanvasVisibility {}
     type AnyConstructor = typeof AnyCanvasVisibility;
 
     type LightingVisibility = ValueOf<typeof VisionMode.LIGHTING_VISIBILITY>;

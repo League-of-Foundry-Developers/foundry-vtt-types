@@ -129,7 +129,7 @@ declare global {
   }
 
   namespace FogManager {
-    type Any = AnyFogManager;
+    interface Any extends AnyFogManager {}
     type AnyConstructor = typeof AnyFogManager;
   }
 }
