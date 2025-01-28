@@ -16,8 +16,7 @@ declare class SMAAFilter extends PIXI.Filter {
    */
   static get PRESETS(): Record<string, SMAAFilter.SMAAFilterConfig>;
 
-  /** @override */
-  apply(
+  override apply(
     filterManager: FilterSystem,
     input: RenderTexture,
     output: RenderTexture,

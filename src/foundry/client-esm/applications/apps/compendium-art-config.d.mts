@@ -28,7 +28,6 @@ declare class CompendiumArtConfig<
   /*  Rendering                                   */
   /* -------------------------------------------- */
 
-  /** @override */
   override _prepareContext(_options: DeepPartial<ApplicationV2.RenderOptions>): Promise<RenderContext>;
 }
 
