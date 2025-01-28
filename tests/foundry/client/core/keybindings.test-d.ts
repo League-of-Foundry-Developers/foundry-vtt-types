@@ -2,16 +2,18 @@ import { expectTypeOf } from "vitest";
 
 const keybindings = new ClientKeybindings();
 
-expectTypeOf(keybindings.actions).toEqualTypeOf<Map<string, KeybindingActionConfig>>();
-expectTypeOf(keybindings.activeKeys).toEqualTypeOf<Map<string, KeybindingAction[]>>();
-expectTypeOf(keybindings.bindings).toEqualTypeOf<Map<string, KeybindingActionBinding[]> | undefined>();
+expectTypeOf(keybindings.actions).toEqualTypeOf<Map<string, ClientKeybindings.KeybindingActionConfig>>();
+expectTypeOf(keybindings.activeKeys).toEqualTypeOf<Map<string, ClientKeybindings.KeybindingAction[]>>();
+expectTypeOf(keybindings.bindings).toEqualTypeOf<
+  Map<string, ClientKeybindings.KeybindingActionBinding[]> | undefined
+>();
 expectTypeOf(keybindings.moveKeys).toEqualTypeOf<Set<string>>();
 expectTypeOf(keybindings.initialize()).toEqualTypeOf<void>();
 
-declare const kbac: KeybindingActionConfig;
+declare const kbac: ClientKeybindings.KeybindingActionConfig;
 
 expectTypeOf(keybindings.register("", "", kbac)).toEqualTypeOf<void>();
-expectTypeOf(keybindings.get("", "")).toEqualTypeOf<KeybindingActionBinding[]>();
+expectTypeOf(keybindings.get("", "")).toEqualTypeOf<ClientKeybindings.KeybindingActionBinding[]>();
 expectTypeOf(keybindings.set("", "")).toEqualTypeOf<Promise<void>>();
 expectTypeOf(keybindings.resetDefaults()).toEqualTypeOf<Promise<void>>();
 

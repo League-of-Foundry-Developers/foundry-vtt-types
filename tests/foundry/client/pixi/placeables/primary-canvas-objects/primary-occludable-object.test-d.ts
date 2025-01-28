@@ -1,10 +1,17 @@
 import { expectTypeOf } from "vitest";
-import type { ValueOf } from "../../../../../../src/utils/index.d.mts";
 
 declare const someToken: Token.ConfiguredInstance;
+declare const someRenderer: PIXI.Renderer;
 
 const POOClass = PrimaryOccludableObjectMixin(PIXI.Container);
 const myPOO = new POOClass();
 
 expectTypeOf(myPOO.testOcclusion(someToken, { corners: true })).toEqualTypeOf<boolean>();
-expectTypeOf(myPOO.occlusionMode).toEqualTypeOf<ValueOf<typeof foundry.CONST.OCCLUSION_MODES>>();
+expectTypeOf(myPOO.occlusionMode).toEqualTypeOf<foundry.CONST.OCCLUSION_MODES>();
+expectTypeOf(myPOO._restrictionState).toEqualTypeOf<number>();
+expectTypeOf(myPOO.debounceSetOcclusion(false)).toEqualTypeOf<boolean>();
+
+//deprecated until v13
+expectTypeOf(myPOO.renderOcclusion(someRenderer)).toEqualTypeOf<void>();
+//deprecated until v14
+expectTypeOf(myPOO.containsPixel(500, 500, 0.5)).toEqualTypeOf<boolean>();

@@ -1,4 +1,4 @@
-import type { Mixin, NullishProps, ValueOf } from "fvtt-types/utils";
+import type { Mixin, NullishProps } from "fvtt-types/utils";
 
 declare class PrimaryOccludableObject {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
@@ -20,7 +20,7 @@ declare class PrimaryOccludableObject {
    * The occlusion mode of this occludable object.
    * @defaultValue `CONST.OCCLUSION_MODES.NONE`
    */
-  occlusionMode: ValueOf<typeof CONST.OCCLUSION_MODES>;
+  occlusionMode: CONST.OCCLUSION_MODES;
 
   /**
    * The unoccluded alpha of this object.
@@ -52,8 +52,9 @@ declare class PrimaryOccludableObject {
    *   vision: 0.0
    * }
    * ```
+   * @privateRemarks Foundry marked `@internal`
    */
-  protected _occlusionState: PrimaryOccludableObjectMixin.OcclusionState;
+  _occlusionState: PrimaryOccludableObjectMixin.OcclusionState;
 
   /**
    * The state of hover-fading.
@@ -68,13 +69,15 @@ declare class PrimaryOccludableObject {
    *   occlusion: 0.0
    * }
    * ```
+   * @privateRemarks Foundry marked `@internal`
    */
-  protected _hoverFadeState: PrimaryOccludableObjectMixin.HoverFadeState;
+  _hoverFadeState: PrimaryOccludableObjectMixin.HoverFadeState;
 
   /**
    * Get the blocking option bitmask value.
+   * @privateRemarks Foundry marked `@internal`
    */
-  protected get _restrictionState(): number;
+  get _restrictionState(): number;
 
   /**
    * Is this object blocking light?
@@ -100,6 +103,7 @@ declare class PrimaryOccludableObject {
    * change PCO appearance.
    * Uses a 50ms debounce threshold.
    * Objects which are in the hovered state remain occluded until their hovered state ends.
+   * @remarks Actually the return value of an arrow function passed to `foundry.utils.debounce` with a timeout of 50ms
    */
   debounceSetOcclusion: (occluded: boolean) => boolean;
 
@@ -114,13 +118,7 @@ declare class PrimaryOccludableObject {
    * @param options - Additional options that affect testing
    * @returns Is the Token occluded by the PCO?
    */
-  testOcclusion(
-    token: Token.ConfiguredInstance,
-    options?: NullishProps<{
-      /** Test corners of the hit-box in addition to the token center? */
-      corners: boolean;
-    }>,
-  ): boolean;
+  testOcclusion(token: Token.ConfiguredInstance, options?: PrimaryOccludableObjectMixin.TestOcclusionOptions): boolean;
 
   /**
    * @deprecated since v12, will be removed in v14
@@ -138,7 +136,7 @@ declare class PrimaryOccludableObject {
    * @deprecated since v12, will be removed in v14
    * @remarks "#containsPixel is deprecated. Use #containsCanvasPoint instead."
    */
-  containsPixel(x: number, y: number, alphaThreshold: number): boolean;
+  containsPixel(x: number, y: number, alphaThreshold?: number): boolean;
 
   /**
    * @deprecated since v11, will be removed in v13
@@ -156,6 +154,18 @@ declare global {
     type AnyMixed = ReturnType<typeof PrimaryOccludableObjectMixin<PIXI.Container.AnyConstructor>>;
 
     type MixinClass = typeof PrimaryOccludableObject;
+
+    /** @internal */
+    type _TestOcclusionOptions = NullishProps<{
+      /**
+       * Test corners of the hit-box in addition to the token center?
+       * @defaultValue `0`
+       */
+      corners: boolean;
+    }>;
+
+    /** Additional options that affect testing */
+    interface TestOcclusionOptions extends _TestOcclusionOptions {}
 
     interface OcclusionState {
       /** The amount of FADE occlusion */

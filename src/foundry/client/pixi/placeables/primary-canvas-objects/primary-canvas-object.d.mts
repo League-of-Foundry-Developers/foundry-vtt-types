@@ -6,8 +6,8 @@ declare class PrimaryCanvasObject {
   constructor(...args: any[]);
 
   /**
-   * @remarks Undocumented property set during construction
    * @defaultValue `true`
+   * @privateRemarks Actually an override of the property on `PIXI.DisplayObject`
    */
   cullable: boolean;
 
@@ -16,8 +16,11 @@ declare class PrimaryCanvasObject {
    * This property does not affect the behavior of the PCO itself.
    * @remarks Foundry types as `*`, in practice, it will only ever be a `PlaceableObject` or the `PrimaryCanvasGroup`
    * @defaultValue `null`
+   * @privateRemarks Foundry types as `*`, but in practice, it will only ever be a `Drawing` (via `PrimaryGraphics`),
+   * or a `Token`, `Tile`, or the `PrimaryCanvasGroup` (via `PrimarySpriteMesh`), or its default value `null`
    */
-  object: PlaceableObject | PrimaryCanvasGroup | null;
+  //TODO: (esheyw) Revisit the "any canvas group" type when groups are done
+  object: PlaceableObject.Any | CanvasGroupMixin.Any | null;
 
   /**
    * The elevation of this object.
@@ -51,6 +54,7 @@ declare class PrimaryCanvasObject {
   /**
    * Event fired when this display object is added to a parent.
    * @param parent - The new parent container.
+   * @throws If `parent` is not `=== canvas.primary`
    */
   protected _onAdded(parent: PIXI.Container): void;
 
@@ -60,9 +64,11 @@ declare class PrimaryCanvasObject {
    */
   protected _onRemoved(parent: PIXI.Container): void;
 
+  /** @see {@link CanvasTransformMixinClass#updateCanvasTransform} */
   updateCanvasTransform(): void;
 
-  _onCanvasBoundsUpdate(): void;
+  /** @see {@link CanvasTransformMixinClass#_onCanvasBoundsUpdate} */
+  protected _onCanvasBoundsUpdate(): void;
 
   /**
    * Does this object render to the depth buffer?
@@ -72,7 +78,7 @@ declare class PrimaryCanvasObject {
   /**
    * Does this object render to the depth buffer?
    */
-  _shouldRenderDepth(): boolean;
+  protected _shouldRenderDepth(): boolean;
 
   /**
    * Render the depth of this object.
@@ -109,6 +115,7 @@ declare class CanvasTransformMixinClass {
 
   /**
    * The update ID of canvas transform matrix.
+   * @privateRemarks Foundry marked `@internal`, technically accessed externally via `this.parent._convasTranformID` in `updateCanvasTransform`
    */
   protected _canvasTransformID: number;
 

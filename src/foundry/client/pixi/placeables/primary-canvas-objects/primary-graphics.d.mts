@@ -9,18 +9,10 @@ declare global {
      * @param options - A config object
      */
     constructor(
-      options?:
-        | PIXI.GraphicsGeometry
-        | NullishProps<{
-            /** A geometry passed to the graphics. */
-            geometry: PIXI.GraphicsGeometry;
-
-            /** The name of the PCO. */
-            name: string;
-
-            /** Any object that owns this PCO. */
-            object: PlaceableObject;
-          }>,
+      /**
+       * @remarks Passing `null`, or an object where the `geometry` property is either missing or nullish, will result in an effective default of `new PIXI.GraphicsGeometry()`
+       */
+      options?: PIXI.GraphicsGeometry | PrimaryGraphics.ConstructorOptions | null,
     );
 
     override _calculateCanvasBounds(): void;
@@ -31,7 +23,35 @@ declare global {
   }
 
   namespace PrimaryGraphics {
+    interface Any extends AnyPrimaryGraphics {}
     type AnyConstructor = typeof AnyPrimaryGraphics;
+
+    /** @internal */
+    type _ConstructorOptions = NullishProps<{
+      /**
+       * A geometry passed to the graphics.
+       * @defaultValue `new PIXI.GraphicsGeometry()`
+       * @remarks Default via calling `super(geometry)` with a falsey value
+       */
+      geometry: PIXI.GraphicsGeometry;
+
+      /**
+       * The name of the PCO.
+       * @defaultValue `null`
+       * @remarks Default via `?? null` in function body
+       * */
+      name: string;
+
+      /**
+       * Any object that owns this PCO.
+       * @defaultValue `null`
+       * @remarks Default via `?? null` in function body
+       * @privateRemarks Foundry types as `*`, but the only place they use this class is for `Drawing`s
+       */
+      object: PlaceableObject.Any;
+    }>;
+
+    interface ConstructorOptions extends _ConstructorOptions {}
   }
 }
 
