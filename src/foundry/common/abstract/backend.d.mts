@@ -186,8 +186,8 @@ declare abstract class DatabaseBackend {
 }
 
 declare namespace DatabaseBackend {
-  type CreateOperation<T extends Document.AnyConstructor> = Document.Database.CreateOperation<DatabaseCreateOperation<FixedInstanceType<T>>> & { data: FixedInstanceType<T>[] };
-  type UpdateOperation<T extends Document.AnyConstructor> = Document.Database.UpdateOperation<DatabaseUpdateOperation<FixedInstanceType<T>>> & { data: FixedInstanceType<T>[] };
+  type CreateOperation<T extends Document.AnyConstructor> = Document.Database.CreateOperation<DatabaseCreateOperation> & { data: Document.ConstructorDataFor<T>[] };
+  type UpdateOperation<T extends Document.AnyConstructor> = Document.Database.UpdateOperation<DatabaseUpdateOperation> & { updates: Document.UpdateDataFor<T>[] };
   type DeleteOperation = Document.Database.DeleteOperation<DatabaseDeleteOperation> & { ids: string[] };
 }
 

@@ -1520,7 +1520,7 @@ declare namespace Document {
     >;
 
     /** Used for {@link Document.updateDocuments} */
-    type UpdateOperation<Op extends DatabaseUpdateOperation> = NullishProps<Omit<Op, "data" | "modifiedTime">>;
+    type UpdateOperation<Op extends DatabaseUpdateOperation> = NullishProps<Omit<Op, "updates" | "modifiedTime">>;
     /** Used for {@link Document._preUpdateOperation} */
     type PreUpdateOperationStatic<Op extends DatabaseUpdateOperation> = InexactPartial<
       Op,
