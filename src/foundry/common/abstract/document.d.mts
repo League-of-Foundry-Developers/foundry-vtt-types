@@ -1184,10 +1184,10 @@ declare namespace Document {
   type ToStored<D extends Document.AnyConstructor> = Stored<FixedInstanceType<D>>;
 
   type ToStoredIf<D extends Document.AnyConstructor, Temporary extends boolean | undefined> = Temporary extends true
-    ? ToConfiguredStored<D>
-    : FixedInstanceType<D>;
+    ? FixedInstanceType<D>
+    : ToConfiguredStored<D>;
 
-  type StoredIf<D extends Document.Any, Temporary extends boolean | undefined> = Temporary extends true ? Stored<D> : D;
+  type StoredIf<D extends Document.Any, Temporary extends boolean | undefined> = Temporary extends true ? D : Stored<D>;
 
   type Temporary<D extends Document.Any> = D extends Stored<infer U> ? U : D;
 
