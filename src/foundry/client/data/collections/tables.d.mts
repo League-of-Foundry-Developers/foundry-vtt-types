@@ -8,7 +8,7 @@ declare global {
    * @see {@link RollTable} The RollTable document
    * @see {@link RollTableDirectory} The RollTableDirectory sidebar directory
    */
-  class RollTables extends WorldCollection<typeof foundry.documents.BaseRollTable, "RollTables"> {
+  class RollTables extends WorldCollection<RollTable.ImplementationClass, "RollTables"> {
     static documentName: "RollTable";
 
     override get directory(): typeof ui.tables;

@@ -1,4 +1,4 @@
-import type { DeepPartial, DropFirst, InexactPartial } from "../../../../utils/index.d.mts";
+import type { DeepPartial, DropFirst, FixedInstanceType, InexactPartial } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
@@ -25,8 +25,8 @@ declare global {
     get directory(): Lowercase<Name> extends keyof typeof ui
       ? (typeof ui)[Lowercase<Name>]
       :
-          | (Document.ToConfiguredClass<T>["metadata"]["name"] extends foundry.CONST.FOLDER_DOCUMENT_TYPES
-              ? DocumentDirectory<Document.ToConfiguredClass<T>["metadata"]["name"]>
+          | (T["metadata"]["name"] extends foundry.CONST.FOLDER_DOCUMENT_TYPES
+              ? DocumentDirectory<T["metadata"]["name"]>
               : never)
           | SidebarTab
           | undefined
@@ -61,12 +61,12 @@ declare global {
      */
     importFromCompendium(
       pack: CompendiumCollection<
-        CompendiumCollection.Metadata & { type: Document.ToConfiguredClass<T>["metadata"]["name"] }
+        CompendiumCollection.Metadata & { type: T["metadata"]["name"] }
       >,
       id: string,
-      updateData?: DeepPartial<Document.ToConfiguredInstance<T>["_source"]>,
+      updateData?: DeepPartial<FixedInstanceType<T>["_source"]>,
       options?: InexactPartial<Document.OnCreateOptions<T["metadata"]["name"]> & WorldCollection.FromCompendiumOptions>,
-    ): Promise<Document.ToConfiguredStored<T>>;
+    ): Promise<Document.ToStored<T>>;
 
     /**
      * Apply data transformations when importing a Document from a Compendium pack
@@ -82,10 +82,10 @@ declare global {
       OwnershipOpt extends boolean = false,
       IdOpt extends boolean = false,
     >(
-      document: Document.ToConfiguredInstance<T> | Document.ConstructorDataFor<T>,
+      document: FixedInstanceType<T> | Document.ConstructorDataFor<T>,
       options?: InexactPartial<WorldCollection.FromCompendiumOptions<FolderOpt, SortOpt, OwnershipOpt, IdOpt>>,
     ): Omit<
-      Document.ToConfiguredInstance<T>["_source"],
+      FixedInstanceType<T>["_source"],
       | ClientDocument.OmitProperty<FolderOpt, "folder">
       | ClientDocument.OmitProperty<SortOpt, "sort" | "navigation" | "navOrder">
       | ClientDocument.OmitProperty<OwnershipOpt, "ownership">

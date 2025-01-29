@@ -8,7 +8,7 @@ declare global {
    * @see {@link Combat} The Combat document
    * @see {@link CombatTracker} The CombatTracker sidebar directory
    */
-  class CombatEncounters extends WorldCollection<typeof foundry.documents.BaseCombat, "CombatEncounters"> {
+  class CombatEncounters extends WorldCollection<Combat.ImplementationClass, "CombatEncounters"> {
     static documentName: "Combat";
 
     /**

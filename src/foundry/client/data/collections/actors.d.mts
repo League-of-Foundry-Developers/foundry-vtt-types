@@ -13,7 +13,7 @@ declare global {
    * let actor = game.actors.get(actorId);
    * ```
    */
-  class Actors extends WorldCollection<typeof foundry.documents.BaseActor, "Actors"> {
+  class Actors extends WorldCollection<Actor.ImplementationClass, "Actors"> {
     /**
      * A mapping of synthetic Token Actors which are currently active within the viewed Scene.
      * Each Actor is referenced by the Token.id.

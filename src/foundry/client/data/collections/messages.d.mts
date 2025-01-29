@@ -8,7 +8,7 @@ declare global {
    * @see {@link ChatMessage} The ChatMessage document
    * @see {@link ChatLog} The ChatLog sidebar directory
    */
-  class Messages extends WorldCollection<typeof foundry.documents.BaseChatMessage, "Messages"> {
+  class Messages extends WorldCollection<ChatMessage.ImplementationClass, "Messages"> {
     static documentName: "ChatMessage";
 
     override get directory(): typeof ui.chat;

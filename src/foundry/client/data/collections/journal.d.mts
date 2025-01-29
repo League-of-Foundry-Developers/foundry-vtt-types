@@ -8,7 +8,7 @@ declare global {
    * @see {@link JournalEntry} The JournalEntry document
    * @see {@link JournalDirectory} The JournalDirectory sidebar directory
    */
-  class Journal extends WorldCollection<typeof foundry.documents.BaseJournalEntry, "Journal"> {
+  class Journal extends WorldCollection<JournalEntry.ImplementationClass, "Journal"> {
     static documentName: "JournalEntry";
 
     /**

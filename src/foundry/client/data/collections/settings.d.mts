@@ -7,7 +7,7 @@ declare global {
    *
    * @see {@link Setting} The Setting document
    */
-  class WorldSettings extends WorldCollection<typeof foundry.documents.BaseSetting, "WorldSettings"> {
+  class WorldSettings extends WorldCollection<Setting.ImplementationClass, "WorldSettings"> {
     static documentName: "Setting";
 
     override get directory(): null;

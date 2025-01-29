@@ -8,7 +8,7 @@ declare global {
    * @see {@link Macro} The Macro document
    * @see {@link MacroDirectory} The MacroDirectory sidebar directory
    */
-  class Macros extends WorldCollection<typeof foundry.documents.BaseMacro, "Macros"> {
+  class Macros extends WorldCollection<Macro.ImplementationClass, "Macros"> {
     static documentName: "Macro";
 
     override get directory(): typeof ui.macros;

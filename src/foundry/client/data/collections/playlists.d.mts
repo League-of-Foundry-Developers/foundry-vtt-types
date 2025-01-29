@@ -8,7 +8,7 @@ declare global {
    * @see {@link Playlist} The Playlist document
    * @see {@link PlaylistDirectory} The PlaylistDirectory sidebar directory
    */
-  class Playlists extends WorldCollection<typeof foundry.documents.BasePlaylist, "Playlists"> {
+  class Playlists extends WorldCollection<Playlist.ImplementationClass, "Playlists"> {
     static documentName: "Playlist";
 
     /**

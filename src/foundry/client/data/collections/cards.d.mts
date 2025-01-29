@@ -6,7 +6,7 @@ declare global {
    * This Collection is accessible within the Game object as game.cards.
    * @see {@link Cards} The Cards document
    */
-  class CardStacks extends WorldCollection<typeof foundry.documents.BaseCards, "Cards"> {
+  class CardStacks extends WorldCollection<Cards.ImplementationClass, "Cards"> {
     static documentName: "Cards";
   }
 

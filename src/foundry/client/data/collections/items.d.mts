@@ -8,7 +8,7 @@ declare global {
    * @see {@link Item} The Item document
    * @see {@link ItemDirectory} The ItemDirectory sidebar directory
    */
-  class Items extends WorldCollection<typeof foundry.documents.BaseItem, "Items"> {
+  class Items extends WorldCollection<Item.ImplementationClass, "Items"> {
     static documentName: "Item";
   }
 

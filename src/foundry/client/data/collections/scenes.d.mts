@@ -8,7 +8,7 @@ declare global {
    * @see {@link Scene} The Scene document
    * @see {@link SceneDirectory} The SceneDirectory sidebar directory
    */
-  class Scenes extends WorldCollection<typeof foundry.documents.BaseScene, "Scenes"> {
+  class Scenes extends WorldCollection<Scene.ImplementationClass, "Scenes"> {
     static documentName: "Scene";
 
     /**
