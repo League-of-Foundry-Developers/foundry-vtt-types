@@ -1,4 +1,4 @@
-import type { DeepPartial, InexactPartial } from "../../../../utils/index.d.mts";
+import type { DeepPartial, InexactPartial, InterfaceToObject } from "../../../../utils/index.d.mts";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema, SchemaField } from "../../../common/data/fields.d.mts";
@@ -419,7 +419,7 @@ declare global {
        * An object of optional key/value flags
        * @defaultValue `{}`
        */
-      flags: fields.ObjectField.FlagsField<"Token">;
+      flags: fields.ObjectField.FlagsField<"Token", InterfaceToObject<CoreFlags>>;
     }
 
     /**
@@ -538,6 +538,13 @@ declare global {
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
       /** Options for {@link TokenDocument#_onDelete | `TokenDocument#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
+    }
+
+    interface CoreFlags {
+      core?: {
+        animationSeed?: number;
+        randomizeVideo?: boolean;
+      };
     }
 
     /**

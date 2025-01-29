@@ -178,6 +178,7 @@ declare namespace BaseTile {
   export import UpdateData = TileDocument.UpdateData;
   export import Schema = TileDocument.Schema;
   export import DatabaseOperation = TileDocument.DatabaseOperation;
+  export import CoreFlags = TileDocument.CoreFlags;
 
   /**
    * @deprecated This type is used by Foundry too vaguely.

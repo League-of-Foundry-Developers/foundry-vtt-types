@@ -2,6 +2,7 @@ import type Document from "../../../common/abstract/document.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
+import type { InterfaceToObject, ValueOf } from "../../../../utils/index.d.mts";
 
 declare global {
   namespace JournalEntry {
@@ -130,7 +131,7 @@ declare global {
        * An object of optional key/value flags
        * @defaultValue `{}`
        */
-      flags: fields.ObjectField.FlagsField<"JournalEntry">;
+      flags: fields.ObjectField.FlagsField<"JournalEntry", InterfaceToObject<CoreFlags>>;
 
       /**
        * An object of creation and access information
@@ -182,6 +183,13 @@ declare global {
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
       /** Options for {@link JournalEntry#_onDelete | `JournalEntry#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
+    }
+
+    interface CoreFlags {
+      core?: {
+        viewMode?: ValueOf<typeof JournalSheet.VIEW_MODES>;
+        searchMode?: CONST.DIRECTORY_SEARCH_MODES;
+      };
     }
 
     /**

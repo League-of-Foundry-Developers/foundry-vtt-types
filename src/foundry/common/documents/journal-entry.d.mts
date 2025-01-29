@@ -167,6 +167,7 @@ declare namespace BaseJournalEntry {
   export import UpdateData = JournalEntry.UpdateData;
   export import Schema = JournalEntry.Schema;
   export import DatabaseOperation = JournalEntry.DatabaseOperation;
+  export import CoreFlags = JournalEntry.CoreFlags;
 
   /**
    * @deprecated This type is used by Foundry too vaguely.

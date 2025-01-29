@@ -1,3 +1,4 @@
+import type { InterfaceToObject } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { fields, TextureData } from "../../../common/data/module.d.mts";
@@ -227,7 +228,7 @@ declare global {
        * An object of optional key/value flags
        * @defaultValue `{}`
        */
-      flags: fields.ObjectField.FlagsField<"Tile">;
+      flags: fields.ObjectField.FlagsField<"Tile", InterfaceToObject<CoreFlags>>;
     }
 
     namespace DatabaseOperation {
@@ -273,6 +274,12 @@ declare global {
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
       /** Options for {@link TileDocument#_onDelete | `TileDocument#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
+    }
+
+    interface CoreFlags {
+      core?: {
+        randomizeVideo?: boolean;
+      };
     }
 
     /**

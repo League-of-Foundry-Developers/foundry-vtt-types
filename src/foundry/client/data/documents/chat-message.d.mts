@@ -265,7 +265,9 @@ declare global {
 
     interface CoreFlags {
       core?: {
+        canPopout?: boolean;
         initiativeRoll?: boolean;
+        nue?: boolean;
         RollTable?: string;
       };
     }

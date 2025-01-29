@@ -232,6 +232,7 @@ declare namespace BaseToken {
   export import UpdateData = TokenDocument.UpdateData;
   export import Schema = TokenDocument.Schema;
   export import DatabaseOperation = TokenDocument.DatabaseOperation;
+  export import CoreFlags = TokenDocument.CoreFlags;
 
   /**
    * @deprecated This type is used by Foundry too vaguely.

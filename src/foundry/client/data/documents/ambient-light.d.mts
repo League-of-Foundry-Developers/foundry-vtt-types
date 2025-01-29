@@ -1,3 +1,4 @@
+import type { InterfaceToObject } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { fields, LightData } from "../../../common/data/module.d.mts";
@@ -142,7 +143,7 @@ declare global {
        * An object of optional key/value flags
        * @defaultValue `{}`
        */
-      flags: fields.ObjectField.FlagsField<"AmbientLight">;
+      flags: fields.ObjectField.FlagsField<"AmbientLight", InterfaceToObject<CoreFlags>>;
     }
 
     namespace DatabaseOperation {
@@ -194,6 +195,13 @@ declare global {
       /** Options for {@link AmbientLightDocument#_onDelete | `AmbientLightDocument#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
+
+    interface CoreFlags {
+      core?: {
+        animationSeed?: number;
+      };
+    }
+
 
     /**
      * @deprecated {@link AmbientLightDocument.DatabaseOperation | `AmbientLightDocument.DatabaseOperation`}
