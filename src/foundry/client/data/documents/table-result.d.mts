@@ -186,32 +186,32 @@ declare global {
         animate?: boolean;
       }
 
-      /** Options for {@link TableResult.createDocuments} */
+      /** Options for {@link TableResult.createDocuments | `TableResult.createDocuments`} */
       type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
         Document.Database.CreateOperation<Create<Temporary>>;
-      /** Options for {@link TableResult._preCreateOperation} */
+      /** Options for {@link TableResult._preCreateOperation | `TableResult._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link TableResult#_preCreate} */
+      /** Options for {@link TableResult#_preCreate | `TableResult#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link TableResult#_onCreate} */
+      /** Options for {@link TableResult#_onCreate | `TableResult#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
-      /** Options for {@link TableResult.updateDocuments} */
+      /** Options for {@link TableResult.updateDocuments | `TableResult.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
-      /** Options for {@link TableResult._preUpdateOperation} */
+      /** Options for {@link TableResult._preUpdateOperation | `TableResult._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link TableResult#_preUpdate} */
+      /** Options for {@link TableResult#_preUpdate | `TableResult#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link TableResult#_onUpdate} */
+      /** Options for {@link TableResult#_onUpdate | `TableResult#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
-      /** Options for {@link TableResult.deleteDocuments} */
+      /** Options for {@link TableResult.deleteDocuments | `TableResult.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
-      /** Options for {@link TableResult._preDeleteOperation} */
+      /** Options for {@link TableResult._preDeleteOperation | `TableResult._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link TableResult#_preDelete} */
+      /** Options for {@link TableResult#_preDelete | `TableResult#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link TableResult#_onDelete} */
+      /** Options for {@link TableResult#_onDelete | `TableResult#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 

@@ -160,32 +160,32 @@ declare global {
         loadFog?: boolean;
       }
 
-      /** Options for {@link FogExploration.createDocuments} */
+      /** Options for {@link FogExploration.createDocuments | `FogExploration.createDocuments`} */
       type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
         Document.Database.CreateOperation<Create<Temporary>>;
-      /** Options for {@link FogExploration._preCreateOperation} */
+      /** Options for {@link FogExploration._preCreateOperation | `FogExploration._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link FogExploration#_preCreate} */
+      /** Options for {@link FogExploration#_preCreate | `FogExploration#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link FogExploration#_onCreate} */
+      /** Options for {@link FogExploration#_onCreate | `FogExploration#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
-      /** Options for {@link FogExploration.updateDocuments} */
+      /** Options for {@link FogExploration.updateDocuments | `FogExploration.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
-      /** Options for {@link FogExploration._preUpdateOperation} */
+      /** Options for {@link FogExploration._preUpdateOperation | `FogExploration._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link FogExploration#_preUpdate} */
+      /** Options for {@link FogExploration#_preUpdate | `FogExploration#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link FogExploration#_onUpdate} */
+      /** Options for {@link FogExploration#_onUpdate | `FogExploration#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
-      /** Options for {@link FogExploration.deleteDocuments} */
+      /** Options for {@link FogExploration.deleteDocuments | `FogExploration.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
-      /** Options for {@link FogExploration._preDeleteOperation} */
+      /** Options for {@link FogExploration._preDeleteOperation | `FogExploration._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link FogExploration#_preDelete} */
+      /** Options for {@link FogExploration#_preDelete | `FogExploration#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link FogExploration#_onDelete} */
+      /** Options for {@link FogExploration#_onDelete | `FogExploration#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 

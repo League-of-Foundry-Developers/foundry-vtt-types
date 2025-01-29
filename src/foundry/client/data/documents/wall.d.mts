@@ -246,32 +246,32 @@ declare global {
       interface Update
         extends foundry.abstract.types.DatabaseUpdateOperation<WallDocument.UpdateData, WallDocument.Parent> {}
 
-      /** Options for {@link WallDocument.createDocuments} */
+      /** Options for {@link WallDocument.createDocuments | `WallDocument.createDocuments`} */
       type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
         Document.Database.CreateOperation<Create<Temporary>>;
-      /** Options for {@link WallDocument._preCreateOperation} */
+      /** Options for {@link WallDocument._preCreateOperation | `WallDocument._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link WallDocument#_preCreate} */
+      /** Options for {@link WallDocument#_preCreate | `WallDocument#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link WallDocument#_onCreate} */
+      /** Options for {@link WallDocument#_onCreate | `WallDocument#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
-      /** Options for {@link WallDocument.updateDocuments} */
+      /** Options for {@link WallDocument.updateDocuments | `WallDocument.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
-      /** Options for {@link WallDocument._preUpdateOperation} */
+      /** Options for {@link WallDocument._preUpdateOperation | `WallDocument._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link WallDocument#_preUpdate} */
+      /** Options for {@link WallDocument#_preUpdate | `WallDocument#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link WallDocument#_onUpdate} */
+      /** Options for {@link WallDocument#_onUpdate | `WallDocument#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
-      /** Options for {@link WallDocument.deleteDocuments} */
+      /** Options for {@link WallDocument.deleteDocuments | `WallDocument.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
-      /** Options for {@link WallDocument._preDeleteOperation} */
+      /** Options for {@link WallDocument._preDeleteOperation | `WallDocument._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link WallDocument#_preDelete} */
+      /** Options for {@link WallDocument#_preDelete | `WallDocument#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link WallDocument#_onDelete} */
+      /** Options for {@link WallDocument#_onDelete | `WallDocument#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
     /**

@@ -203,32 +203,32 @@ declare global {
       /** Options passed along in Update operations for Playlists */
       interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Playlist.UpdateData, Playlist.Parent> {}
 
-      /** Options for {@link Playlist.createDocuments} */
+      /** Options for {@link Playlist.createDocuments | `Playlist.createDocuments`} */
       type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
         Document.Database.CreateOperation<Create<Temporary>>;
-      /** Options for {@link Playlist._preCreateOperation} */
+      /** Options for {@link Playlist._preCreateOperation | `Playlist._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link Playlist#_preCreate} */
+      /** Options for {@link Playlist#_preCreate | `Playlist#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link Playlist#_onCreate} */
+      /** Options for {@link Playlist#_onCreate | `Playlist#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
-      /** Options for {@link Playlist.updateDocuments} */
+      /** Options for {@link Playlist.updateDocuments | `Playlist.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
-      /** Options for {@link Playlist._preUpdateOperation} */
+      /** Options for {@link Playlist._preUpdateOperation | `Playlist._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link Playlist#_preUpdate} */
+      /** Options for {@link Playlist#_preUpdate | `Playlist#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link Playlist#_onUpdate} */
+      /** Options for {@link Playlist#_onUpdate | `Playlist#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
-      /** Options for {@link Playlist.deleteDocuments} */
+      /** Options for {@link Playlist.deleteDocuments | `Playlist.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
-      /** Options for {@link Playlist._preDeleteOperation} */
+      /** Options for {@link Playlist._preDeleteOperation | `Playlist._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link Playlist#_preDelete} */
+      /** Options for {@link Playlist#_preDelete | `Playlist#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link Playlist#_onDelete} */
+      /** Options for {@link Playlist#_onDelete | `Playlist#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 

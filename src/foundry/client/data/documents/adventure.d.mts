@@ -222,32 +222,32 @@ declare global {
       /** Options passed along in Update operations for Adventures */
       interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Adventure.UpdateData, Adventure.Parent> {}
 
-      /** Options for {@link Adventure.createDocuments} */
+      /** Options for {@link Adventure.createDocuments | `Adventure.createDocuments`} */
       type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
         Document.Database.CreateOperation<Create<Temporary>>;
-      /** Options for {@link Adventure._preCreateOperation} */
+      /** Options for {@link Adventure._preCreateOperation | `Adventure._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link Adventure#_preCreate} */
+      /** Options for {@link Adventure#_preCreate | `Adventure#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link Adventure#_onCreate} */
+      /** Options for {@link Adventure#_onCreate | `Adventure#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
-      /** Options for {@link Adventure.updateDocuments} */
+      /** Options for {@link Adventure.updateDocuments | `Adventure.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
-      /** Options for {@link Adventure._preUpdateOperation} */
+      /** Options for {@link Adventure._preUpdateOperation | `Adventure._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link Adventure#_preUpdate} */
+      /** Options for {@link Adventure#_preUpdate | `Adventure#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link Adventure#_onUpdate} */
+      /** Options for {@link Adventure#_onUpdate | `Adventure#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
-      /** Options for {@link Adventure.deleteDocuments} */
+      /** Options for {@link Adventure.deleteDocuments | `Adventure.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
-      /** Options for {@link Adventure._preDeleteOperation} */
+      /** Options for {@link Adventure._preDeleteOperation | `Adventure._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link Adventure#_preDelete} */
+      /** Options for {@link Adventure#_preDelete | `Adventure#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link Adventure#_onDelete} */
+      /** Options for {@link Adventure#_onDelete | `Adventure#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 

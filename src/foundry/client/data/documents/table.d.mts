@@ -184,32 +184,32 @@ declare global {
       /** Options passed along in Update operations for RollTables */
       interface Update extends foundry.abstract.types.DatabaseUpdateOperation<RollTable.UpdateData, RollTable.Parent> {}
 
-      /** Options for {@link RollTable.createDocuments} */
+      /** Options for {@link RollTable.createDocuments | `RollTable.createDocuments`} */
       type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
         Document.Database.CreateOperation<Create<Temporary>>;
-      /** Options for {@link RollTable._preCreateOperation} */
+      /** Options for {@link RollTable._preCreateOperation | `RollTable._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link RollTable#_preCreate} */
+      /** Options for {@link RollTable#_preCreate | `RollTable#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link RollTable#_onCreate} */
+      /** Options for {@link RollTable#_onCreate | `RollTable#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
-      /** Options for {@link RollTable.updateDocuments} */
+      /** Options for {@link RollTable.updateDocuments | `RollTable.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
-      /** Options for {@link RollTable._preUpdateOperation} */
+      /** Options for {@link RollTable._preUpdateOperation | `RollTable._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link RollTable#_preUpdate} */
+      /** Options for {@link RollTable#_preUpdate | `RollTable#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link RollTable#_onUpdate} */
+      /** Options for {@link RollTable#_onUpdate | `RollTable#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
-      /** Options for {@link RollTable.deleteDocuments} */
+      /** Options for {@link RollTable.deleteDocuments | `RollTable.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
-      /** Options for {@link RollTable._preDeleteOperation} */
+      /** Options for {@link RollTable._preDeleteOperation | `RollTable._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link RollTable#_preDelete} */
+      /** Options for {@link RollTable#_preDelete | `RollTable#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link RollTable#_onDelete} */
+      /** Options for {@link RollTable#_onDelete | `RollTable#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 

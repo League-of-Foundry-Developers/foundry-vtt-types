@@ -161,32 +161,32 @@ declare global {
       /** Options passed along in Update operations for Folders */
       interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Folder.UpdateData, Folder.Parent> {}
 
-      /** Options for {@link Folder.createDocuments} */
+      /** Options for {@link Folder.createDocuments | `Folder.createDocuments`} */
       type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
         Document.Database.CreateOperation<Create<Temporary>>;
-      /** Options for {@link Folder._preCreateOperation} */
+      /** Options for {@link Folder._preCreateOperation | `Folder._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link Folder#_preCreate} */
+      /** Options for {@link Folder#_preCreate | `Folder#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link Folder#_onCreate} */
+      /** Options for {@link Folder#_onCreate | `Folder#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
-      /** Options for {@link Folder.updateDocuments} */
+      /** Options for {@link Folder.updateDocuments | `Folder.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
-      /** Options for {@link Folder._preUpdateOperation} */
+      /** Options for {@link Folder._preUpdateOperation | `Folder._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link Folder#_preUpdate} */
+      /** Options for {@link Folder#_preUpdate | `Folder#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link Folder#_onUpdate} */
+      /** Options for {@link Folder#_onUpdate | `Folder#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
-      /** Options for {@link Folder.deleteDocuments} */
+      /** Options for {@link Folder.deleteDocuments | `Folder.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
-      /** Options for {@link Folder._preDeleteOperation} */
+      /** Options for {@link Folder._preDeleteOperation | `Folder._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link Folder#_preDelete} */
+      /** Options for {@link Folder#_preDelete | `Folder#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link Folder#_onDelete} */
+      /** Options for {@link Folder#_onDelete | `Folder#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 

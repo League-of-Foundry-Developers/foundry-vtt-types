@@ -246,32 +246,32 @@ declare global {
       interface Update
         extends foundry.abstract.types.DatabaseUpdateOperation<TileDocument.UpdateData, TileDocument.Parent> {}
 
-      /** Options for {@link TileDocument.createDocuments} */
+      /** Options for {@link TileDocument.createDocuments | `TileDocument.createDocuments`} */
       type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
         Document.Database.CreateOperation<Create<Temporary>>;
-      /** Options for {@link TileDocument._preCreateOperation} */
+      /** Options for {@link TileDocument._preCreateOperation | `TileDocument._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link TileDocument#_preCreate} */
+      /** Options for {@link TileDocument#_preCreate | `TileDocument#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link TileDocument#_onCreate} */
+      /** Options for {@link TileDocument#_onCreate | `TileDocument#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
-      /** Options for {@link TileDocument.updateDocuments} */
+      /** Options for {@link TileDocument.updateDocuments | `TileDocument.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
-      /** Options for {@link TileDocument._preUpdateOperation} */
+      /** Options for {@link TileDocument._preUpdateOperation | `TileDocument._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link TileDocument#_preUpdate} */
+      /** Options for {@link TileDocument#_preUpdate | `TileDocument#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link TileDocument#_onUpdate} */
+      /** Options for {@link TileDocument#_onUpdate | `TileDocument#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
-      /** Options for {@link TileDocument.deleteDocuments} */
+      /** Options for {@link TileDocument.deleteDocuments | `TileDocument.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
-      /** Options for {@link TileDocument._preDeleteOperation} */
+      /** Options for {@link TileDocument._preDeleteOperation | `TileDocument._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link TileDocument#_preDelete} */
+      /** Options for {@link TileDocument#_preDelete | `TileDocument#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link TileDocument#_onDelete} */
+      /** Options for {@link TileDocument#_onDelete | `TileDocument#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 

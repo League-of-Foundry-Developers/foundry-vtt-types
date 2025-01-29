@@ -264,32 +264,32 @@ declare global {
       interface Update
         extends foundry.abstract.types.DatabaseUpdateOperation<DrawingDocument.UpdateData, DrawingDocument.Parent> {}
 
-      /** Options for {@link DrawingDocument.createDocuments} */
+      /** Options for {@link DrawingDocument.createDocuments | `DrawingDocument.createDocuments`} */
       type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
         Document.Database.CreateOperation<Create<Temporary>>;
-      /** Options for {@link DrawingDocument._preCreateOperation} */
+      /** Options for {@link DrawingDocument._preCreateOperation | `DrawingDocument._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link DrawingDocument#_preCreate} */
+      /** Options for {@link DrawingDocument#_preCreate | `DrawingDocument#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link DrawingDocument#_onCreate} */
+      /** Options for {@link DrawingDocument#_onCreate | `DrawingDocument#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
-      /** Options for {@link DrawingDocument.updateDocuments} */
+      /** Options for {@link DrawingDocument.updateDocuments | `DrawingDocument.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
-      /** Options for {@link DrawingDocument._preUpdateOperation} */
+      /** Options for {@link DrawingDocument._preUpdateOperation | `DrawingDocument._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link DrawingDocument#_preUpdate} */
+      /** Options for {@link DrawingDocument#_preUpdate | `DrawingDocument#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link DrawingDocument#_onUpdate} */
+      /** Options for {@link DrawingDocument#_onUpdate | `DrawingDocument#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
-      /** Options for {@link DrawingDocument.deleteDocuments} */
+      /** Options for {@link DrawingDocument.deleteDocuments | `DrawingDocument.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
-      /** Options for {@link DrawingDocument._preDeleteOperation} */
+      /** Options for {@link DrawingDocument._preDeleteOperation | `DrawingDocument._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link DrawingDocument#_preDelete} */
+      /** Options for {@link DrawingDocument#_preDelete | `DrawingDocument#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link DrawingDocument#_onDelete} */
+      /** Options for {@link DrawingDocument#_onDelete | `DrawingDocument#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 

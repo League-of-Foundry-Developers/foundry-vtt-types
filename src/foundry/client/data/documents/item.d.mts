@@ -171,32 +171,32 @@ declare global {
       /** Options passed along in Update operations for Items */
       interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Item.UpdateData, Item.Parent> {}
 
-      /** Options for {@link Item.createDocuments} */
+      /** Options for {@link Item.createDocuments | `Item.createDocuments`} */
       type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
         Document.Database.CreateOperation<Create<Temporary>>;
-      /** Options for {@link Item._preCreateOperation} */
+      /** Options for {@link Item._preCreateOperation | `Item._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link Item#_preCreate} */
+      /** Options for {@link Item#_preCreate | `Item#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link Item#_onCreate} */
+      /** Options for {@link Item#_onCreate | `Item#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
-      /** Options for {@link Item.updateDocuments} */
+      /** Options for {@link Item.updateDocuments | `Item.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
-      /** Options for {@link Item._preUpdateOperation} */
+      /** Options for {@link Item._preUpdateOperation | `Item._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link Item#_preUpdate} */
+      /** Options for {@link Item#_preUpdate | `Item#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link Item#_onUpdate} */
+      /** Options for {@link Item#_onUpdate | `Item#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
-      /** Options for {@link Item.deleteDocuments} */
+      /** Options for {@link Item.deleteDocuments | `Item.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
-      /** Options for {@link Item._preDeleteOperation} */
+      /** Options for {@link Item._preDeleteOperation | `Item._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link Item#_preDelete} */
+      /** Options for {@link Item#_preDelete | `Item#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link Item#_onDelete} */
+      /** Options for {@link Item#_onDelete | `Item#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 

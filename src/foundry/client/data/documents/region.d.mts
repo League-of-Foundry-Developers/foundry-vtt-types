@@ -176,32 +176,32 @@ declare global {
       interface Update
         extends foundry.abstract.types.DatabaseUpdateOperation<RegionDocument.UpdateData, RegionDocument.Parent> {}
 
-      /** Options for {@link Region.createDocuments} */
+      /** Options for {@link Region.createDocuments | `Region.createDocuments`} */
       type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
         Document.Database.CreateOperation<Create<Temporary>>;
-      /** Options for {@link Region._preCreateOperation} */
+      /** Options for {@link Region._preCreateOperation | `Region._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link Region#_preCreate} */
+      /** Options for {@link Region#_preCreate | `Region#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link Region#_onCreate} */
+      /** Options for {@link Region#_onCreate | `Region#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
-      /** Options for {@link Region.updateDocuments} */
+      /** Options for {@link Region.updateDocuments | `Region.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
-      /** Options for {@link Region._preUpdateOperation} */
+      /** Options for {@link Region._preUpdateOperation | `Region._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link Region#_preUpdate} */
+      /** Options for {@link Region#_preUpdate | `Region#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link Region#_onUpdate} */
+      /** Options for {@link Region#_onUpdate | `Region#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
-      /** Options for {@link Region.deleteDocuments} */
+      /** Options for {@link Region.deleteDocuments | `Region.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
-      /** Options for {@link Region._preDeleteOperation} */
+      /** Options for {@link Region._preDeleteOperation | `Region._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link Region#_preDelete} */
+      /** Options for {@link Region#_preDelete | `Region#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link Region#_onDelete} */
+      /** Options for {@link Region#_onDelete | `Region#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 

@@ -430,32 +430,32 @@ declare global {
         animateDarkness?: number;
       }
 
-      /** Options for {@link Scene.createDocuments} */
+      /** Options for {@link Scene.createDocuments | `Scene.createDocuments`} */
       type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
         Document.Database.CreateOperation<Create<Temporary>>;
-      /** Options for {@link Scene._preCreateOperation} */
+      /** Options for {@link Scene._preCreateOperation | `Scene._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link Scene#_preCreate} */
+      /** Options for {@link Scene#_preCreate | `Scene#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link Scene#_onCreate} */
+      /** Options for {@link Scene#_onCreate | `Scene#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
-      /** Options for {@link Scene.updateDocuments} */
+      /** Options for {@link Scene.updateDocuments | `Scene.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
-      /** Options for {@link Scene._preUpdateOperation} */
+      /** Options for {@link Scene._preUpdateOperation | `Scene._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link Scene#_preUpdate} */
+      /** Options for {@link Scene#_preUpdate | `Scene#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link Scene#_onUpdate} */
+      /** Options for {@link Scene#_onUpdate | `Scene#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
-      /** Options for {@link Scene.deleteDocuments} */
+      /** Options for {@link Scene.deleteDocuments | `Scene.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
-      /** Options for {@link Scene._preDeleteOperation} */
+      /** Options for {@link Scene._preDeleteOperation | `Scene._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link Scene#_preDelete} */
+      /** Options for {@link Scene#_preDelete | `Scene#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link Scene#_onDelete} */
+      /** Options for {@link Scene#_onDelete | `Scene#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 

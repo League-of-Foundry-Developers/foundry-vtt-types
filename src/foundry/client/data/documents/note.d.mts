@@ -217,32 +217,32 @@ declare global {
       interface Update
         extends foundry.abstract.types.DatabaseUpdateOperation<NoteDocument.UpdateData, NoteDocument.Parent> {}
 
-      /** Options for {@link NoteDocument.createDocuments} */
+      /** Options for {@link NoteDocument.createDocuments | `NoteDocument.createDocuments`} */
       type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
         Document.Database.CreateOperation<Create<Temporary>>;
-      /** Options for {@link NoteDocument._preCreateOperation} */
+      /** Options for {@link NoteDocument._preCreateOperation | `NoteDocument._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link NoteDocument#_preCreate} */
+      /** Options for {@link NoteDocument#_preCreate | `NoteDocument#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link NoteDocument#_onCreate} */
+      /** Options for {@link NoteDocument#_onCreate | `NoteDocument#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
-      /** Options for {@link NoteDocument.updateDocuments} */
+      /** Options for {@link NoteDocument.updateDocuments | `NoteDocument.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
-      /** Options for {@link NoteDocument._preUpdateOperation} */
+      /** Options for {@link NoteDocument._preUpdateOperation | `NoteDocument._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link NoteDocument#_preUpdate} */
+      /** Options for {@link NoteDocument#_preUpdate | `NoteDocument#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link NoteDocument#_onUpdate} */
+      /** Options for {@link NoteDocument#_onUpdate | `NoteDocument#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
-      /** Options for {@link NoteDocument.deleteDocuments} */
+      /** Options for {@link NoteDocument.deleteDocuments | `NoteDocument.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
-      /** Options for {@link NoteDocument._preDeleteOperation} */
+      /** Options for {@link NoteDocument._preDeleteOperation | `NoteDocument._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link NoteDocument#_preDelete} */
+      /** Options for {@link NoteDocument#_preDelete | `NoteDocument#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link NoteDocument#_onDelete} */
+      /** Options for {@link NoteDocument#_onDelete | `NoteDocument#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 

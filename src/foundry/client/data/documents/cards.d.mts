@@ -212,32 +212,32 @@ declare global {
         animate?: boolean;
       }
 
-      /** Options for {@link Cards.createDocuments} */
+      /** Options for {@link Cards.createDocuments | `Cards.createDocuments`} */
       type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
         Document.Database.CreateOperation<Create<Temporary>>;
-      /** Options for {@link Cards._preCreateOperation} */
+      /** Options for {@link Cards._preCreateOperation | `Cards._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link Cards#_preCreate} */
+      /** Options for {@link Cards#_preCreate | `Cards#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link Cards#_onCreate} */
+      /** Options for {@link Cards#_onCreate | `Cards#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
-      /** Options for {@link Cards.updateDocuments} */
+      /** Options for {@link Cards.updateDocuments | `Cards.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
-      /** Options for {@link Cards._preUpdateOperation} */
+      /** Options for {@link Cards._preUpdateOperation | `Cards._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link Cards#_preUpdate} */
+      /** Options for {@link Cards#_preUpdate | `Cards#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link Cards#_onUpdate} */
+      /** Options for {@link Cards#_onUpdate | `Cards#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
-      /** Options for {@link Cards.deleteDocuments} */
+      /** Options for {@link Cards.deleteDocuments | `Cards.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
-      /** Options for {@link Cards._preDeleteOperation} */
+      /** Options for {@link Cards._preDeleteOperation | `Cards._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link Cards#_preDelete} */
+      /** Options for {@link Cards#_preDelete | `Cards#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link Cards#_onDelete} */
+      /** Options for {@link Cards#_onDelete | `Cards#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 

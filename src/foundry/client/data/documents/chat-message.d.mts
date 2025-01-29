@@ -232,32 +232,32 @@ declare global {
       interface Update
         extends foundry.abstract.types.DatabaseUpdateOperation<ChatMessage.UpdateData, ChatMessage.Parent> {}
 
-      /** Options for {@link ChatMessage.createDocuments} */
+      /** Options for {@link ChatMessage.createDocuments | `ChatMessage.createDocuments`} */
       type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
         Document.Database.CreateOperation<Create<Temporary>>;
-      /** Options for {@link ChatMessage._preCreateOperation} */
+      /** Options for {@link ChatMessage._preCreateOperation | `ChatMessage._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link ChatMessage#_preCreate} */
+      /** Options for {@link ChatMessage#_preCreate | `ChatMessage#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link ChatMessage#_onCreate} */
+      /** Options for {@link ChatMessage#_onCreate | `ChatMessage#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
-      /** Options for {@link ChatMessage.updateDocuments} */
+      /** Options for {@link ChatMessage.updateDocuments | `ChatMessage.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
-      /** Options for {@link ChatMessage._preUpdateOperation} */
+      /** Options for {@link ChatMessage._preUpdateOperation | `ChatMessage._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link ChatMessage#_preUpdate} */
+      /** Options for {@link ChatMessage#_preUpdate | `ChatMessage#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link ChatMessage#_onUpdate} */
+      /** Options for {@link ChatMessage#_onUpdate | `ChatMessage#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
-      /** Options for {@link ChatMessage.deleteDocuments} */
+      /** Options for {@link ChatMessage.deleteDocuments | `ChatMessage.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
-      /** Options for {@link ChatMessage._preDeleteOperation} */
+      /** Options for {@link ChatMessage._preDeleteOperation | `ChatMessage._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link ChatMessage#_preDelete} */
+      /** Options for {@link ChatMessage#_preDelete | `ChatMessage#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link ChatMessage#_onDelete} */
+      /** Options for {@link ChatMessage#_onDelete | `ChatMessage#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 

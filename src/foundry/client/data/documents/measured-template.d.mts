@@ -200,32 +200,32 @@ declare global {
           MeasuredTemplateDocument.Parent
         > {}
 
-      /** Options for {@link MeasuredTemplateDocument.createDocuments} */
+      /** Options for {@link MeasuredTemplateDocument.createDocuments | `MeasuredTemplateDocument.createDocuments`} */
       type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
         Document.Database.CreateOperation<Create<Temporary>>;
-      /** Options for {@link MeasuredTemplateDocument._preCreateOperation} */
+      /** Options for {@link MeasuredTemplateDocument._preCreateOperation | `MeasuredTemplateDocument._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link MeasuredTemplateDocument#_preCreate} */
+      /** Options for {@link MeasuredTemplateDocument#_preCreate | `MeasuredTemplateDocument#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link MeasuredTemplateDocument#_onCreate} */
+      /** Options for {@link MeasuredTemplateDocument#_onCreate | `MeasuredTemplateDocument#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
-      /** Options for {@link MeasuredTemplateDocument.updateDocuments} */
+      /** Options for {@link MeasuredTemplateDocument.updateDocuments | `MeasuredTemplateDocument.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
-      /** Options for {@link MeasuredTemplateDocument._preUpdateOperation} */
+      /** Options for {@link MeasuredTemplateDocument._preUpdateOperation | `MeasuredTemplateDocument._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link MeasuredTemplateDocument#_preUpdate} */
+      /** Options for {@link MeasuredTemplateDocument#_preUpdate | `MeasuredTemplateDocument#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link MeasuredTemplateDocument#_onUpdate} */
+      /** Options for {@link MeasuredTemplateDocument#_onUpdate | `MeasuredTemplateDocument#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
-      /** Options for {@link MeasuredTemplateDocument.deleteDocuments} */
+      /** Options for {@link MeasuredTemplateDocument.deleteDocuments | `MeasuredTemplateDocument.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
-      /** Options for {@link MeasuredTemplateDocument._preDeleteOperation} */
+      /** Options for {@link MeasuredTemplateDocument._preDeleteOperation | `MeasuredTemplateDocument._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link MeasuredTemplateDocument#_preDelete} */
+      /** Options for {@link MeasuredTemplateDocument#_preDelete | `MeasuredTemplateDocument#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link MeasuredTemplateDocument#_onDelete} */
+      /** Options for {@link MeasuredTemplateDocument#_onDelete | `MeasuredTemplateDocument#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 

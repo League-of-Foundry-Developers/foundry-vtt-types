@@ -190,32 +190,32 @@ declare global {
         combatTurn?: number;
       }
 
-      /** Options for {@link Combatant.createDocuments} */
+      /** Options for {@link Combatant.createDocuments | `Combatant.createDocuments`} */
       type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
         Document.Database.CreateOperation<Create<Temporary>>;
-      /** Options for {@link Combatant._preCreateOperation} */
+      /** Options for {@link Combatant._preCreateOperation | `Combatant._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link Combatant#_preCreate} */
+      /** Options for {@link Combatant#_preCreate | `Combatant#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link Combatant#_onCreate} */
+      /** Options for {@link Combatant#_onCreate | `Combatant#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
-      /** Options for {@link Combatant.updateDocuments} */
+      /** Options for {@link Combatant.updateDocuments | `Combatant.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
-      /** Options for {@link Combatant._preUpdateOperation} */
+      /** Options for {@link Combatant._preUpdateOperation | `Combatant._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link Combatant#_preUpdate} */
+      /** Options for {@link Combatant#_preUpdate | `Combatant#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link Combatant#_onUpdate} */
+      /** Options for {@link Combatant#_onUpdate | `Combatant#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
-      /** Options for {@link Combatant.deleteDocuments} */
+      /** Options for {@link Combatant.deleteDocuments | `Combatant.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
-      /** Options for {@link Combatant._preDeleteOperation} */
+      /** Options for {@link Combatant._preDeleteOperation | `Combatant._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link Combatant#_preDelete} */
+      /** Options for {@link Combatant#_preDelete | `Combatant#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link Combatant#_onDelete} */
+      /** Options for {@link Combatant#_onDelete | `Combatant#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 

@@ -511,32 +511,32 @@ declare global {
         forced?: boolean;
       }
 
-      /** Options for {@link TokenDocument.createDocuments} */
+      /** Options for {@link TokenDocument.createDocuments | `TokenDocument.createDocuments`} */
       type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
         Document.Database.CreateOperation<Create<Temporary>>;
-      /** Options for {@link TokenDocument._preCreateOperation} */
+      /** Options for {@link TokenDocument._preCreateOperation | `TokenDocument._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link TokenDocument#_preCreate} */
+      /** Options for {@link TokenDocument#_preCreate | `TokenDocument#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link TokenDocument#_onCreate} */
+      /** Options for {@link TokenDocument#_onCreate | `TokenDocument#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
-      /** Options for {@link TokenDocument.updateDocuments} */
+      /** Options for {@link TokenDocument.updateDocuments | `TokenDocument.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
-      /** Options for {@link TokenDocument._preUpdateOperation} */
+      /** Options for {@link TokenDocument._preUpdateOperation | `TokenDocument._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link TokenDocument#_preUpdate} */
+      /** Options for {@link TokenDocument#_preUpdate | `TokenDocument#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link TokenDocument#_onUpdate} */
+      /** Options for {@link TokenDocument#_onUpdate | `TokenDocument#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
-      /** Options for {@link TokenDocument.deleteDocuments} */
+      /** Options for {@link TokenDocument.deleteDocuments | `TokenDocument.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
-      /** Options for {@link TokenDocument._preDeleteOperation} */
+      /** Options for {@link TokenDocument._preDeleteOperation | `TokenDocument._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link TokenDocument#_preDelete} */
+      /** Options for {@link TokenDocument#_preDelete | `TokenDocument#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link TokenDocument#_onDelete} */
+      /** Options for {@link TokenDocument#_onDelete | `TokenDocument#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 

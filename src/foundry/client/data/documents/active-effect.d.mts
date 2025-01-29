@@ -273,32 +273,32 @@ declare global {
         animate?: boolean;
       }
 
-      /** Options for {@link ActiveEffect.createDocuments} */
+      /** Options for {@link ActiveEffect.createDocuments | `ActiveEffect.createDocuments`} */
       type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
         Document.Database.CreateOperation<Create<Temporary>>;
-      /** Options for {@link ActiveEffect._preCreateOperation} */
+      /** Options for {@link ActiveEffect._preCreateOperation | `ActiveEffect._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link ActiveEffect#_preCreate} */
+      /** Options for {@link ActiveEffect#_preCreate | `ActiveEffect#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link ActiveEffect#_onCreate} */
+      /** Options for {@link ActiveEffect#_onCreate | `ActiveEffect#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
-      /** Options for {@link ActiveEffect.updateDocuments} */
+      /** Options for {@link ActiveEffect.updateDocuments | `ActiveEffect.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
-      /** Options for {@link ActiveEffect._preUpdateOperation} */
+      /** Options for {@link ActiveEffect._preUpdateOperation | `ActiveEffect._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link ActiveEffect#_preUpdate} */
+      /** Options for {@link ActiveEffect#_preUpdate | `ActiveEffect#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link ActiveEffect#_onUpdate} */
+      /** Options for {@link ActiveEffect#_onUpdate | `ActiveEffect#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
-      /** Options for {@link ActiveEffect.deleteDocuments} */
+      /** Options for {@link ActiveEffect.deleteDocuments | `ActiveEffect.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
-      /** Options for {@link ActiveEffect._preDeleteOperation} */
+      /** Options for {@link ActiveEffect._preDeleteOperation | `ActiveEffect._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link ActiveEffect#_preDelete} */
+      /** Options for {@link ActiveEffect#_preDelete | `ActiveEffect#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link ActiveEffect#_onDelete} */
+      /** Options for {@link ActiveEffect#_onDelete | `ActiveEffect#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 

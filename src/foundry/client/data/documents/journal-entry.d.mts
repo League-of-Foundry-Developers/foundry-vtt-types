@@ -155,32 +155,32 @@ declare global {
       interface Update
         extends foundry.abstract.types.DatabaseUpdateOperation<JournalEntry.UpdateData, JournalEntry.Parent> {}
 
-      /** Options for {@link JournalEntry.createDocuments} */
+      /** Options for {@link JournalEntry.createDocuments | `JournalEntry.createDocuments`} */
       type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
         Document.Database.CreateOperation<Create<Temporary>>;
-      /** Options for {@link JournalEntry._preCreateOperation} */
+      /** Options for {@link JournalEntry._preCreateOperation | `JournalEntry._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link JournalEntry#_preCreate} */
+      /** Options for {@link JournalEntry#_preCreate | `JournalEntry#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link JournalEntry#_onCreate} */
+      /** Options for {@link JournalEntry#_onCreate | `JournalEntry#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
-      /** Options for {@link JournalEntry.updateDocuments} */
+      /** Options for {@link JournalEntry.updateDocuments | `JournalEntry.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
-      /** Options for {@link JournalEntry._preUpdateOperation} */
+      /** Options for {@link JournalEntry._preUpdateOperation | `JournalEntry._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link JournalEntry#_preUpdate} */
+      /** Options for {@link JournalEntry#_preUpdate | `JournalEntry#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link JournalEntry#_onUpdate} */
+      /** Options for {@link JournalEntry#_onUpdate | `JournalEntry#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
-      /** Options for {@link JournalEntry.deleteDocuments} */
+      /** Options for {@link JournalEntry.deleteDocuments | `JournalEntry.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
-      /** Options for {@link JournalEntry._preDeleteOperation} */
+      /** Options for {@link JournalEntry._preDeleteOperation | `JournalEntry._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link JournalEntry#_preDelete} */
+      /** Options for {@link JournalEntry#_preDelete | `JournalEntry#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link JournalEntry#_onDelete} */
+      /** Options for {@link JournalEntry#_onDelete | `JournalEntry#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 

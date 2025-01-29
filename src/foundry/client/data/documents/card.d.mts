@@ -254,32 +254,32 @@ declare global {
       /** Options passed along in Update operations for Card Documents */
       interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Card.UpdateData, Card.Parent> {}
 
-      /** Options for {@link Card.createDocuments} */
+      /** Options for {@link Card.createDocuments | `Card.createDocuments`} */
       type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
         Document.Database.CreateOperation<Create<Temporary>>;
-      /** Options for {@link Card._preCreateOperation} */
+      /** Options for {@link Card._preCreateOperation | `Card._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link Card#_preCreate} */
+      /** Options for {@link Card#_preCreate | `Card#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link Card#_onCreate} */
+      /** Options for {@link Card#_onCreate | `Card#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
-      /** Options for {@link Card.updateDocuments} */
+      /** Options for {@link Card.updateDocuments | `Card.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
-      /** Options for {@link Card._preUpdateOperation} */
+      /** Options for {@link Card._preUpdateOperation | `Card._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link Card#_preUpdate} */
+      /** Options for {@link Card#_preUpdate | `Card#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link Card#_onUpdate} */
+      /** Options for {@link Card#_onUpdate | `Card#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
-      /** Options for {@link Card.deleteDocuments} */
+      /** Options for {@link Card.deleteDocuments | `Card.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
-      /** Options for {@link Card._preDeleteOperation} */
+      /** Options for {@link Card._preDeleteOperation | `Card._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link Card#_preDelete} */
+      /** Options for {@link Card#_preDelete | `Card#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link Card#_onDelete} */
+      /** Options for {@link Card#_onDelete | `Card#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 
