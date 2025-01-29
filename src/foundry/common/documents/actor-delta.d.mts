@@ -74,7 +74,7 @@ declare abstract class BaseActorDelta<
 
   static get TYPES(): BaseActorDelta.SubType[];
 
-  static createDocuments<Temporary extends boolean | undefined>(
+  static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<ActorDelta.Implementation | ActorDelta.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<ActorDelta.DatabaseOperation.Create<Temporary>>,
   ): Promise<Array<Document.StoredIf<ActorDelta.Implementation, Temporary>>>;
@@ -89,7 +89,7 @@ declare abstract class BaseActorDelta<
     operation?: Document.Database.DeleteOperation<ActorDelta.DatabaseOperation.Delete>,
   ): Promise<ActorDelta.Implementation[]>;
 
-  static create<Temporary extends boolean | undefined>(
+  static create<Temporary extends boolean | undefined = false>(
     data: ActorDelta.CreateData | ActorDelta.CreateData[],
     operation?: Document.Database.CreateOperation<ActorDelta.DatabaseOperation.Create<Temporary>>,
   ): Promise<ActorDelta.Implementation | undefined>;

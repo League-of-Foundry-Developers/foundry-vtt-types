@@ -123,7 +123,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
 
   override parent: User.Parent;
 
-  static createDocuments<Temporary extends boolean | undefined>(
+  static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<User.Implementation | User.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<User.DatabaseOperation.Create<Temporary>>,
   ): Promise<Array<Document.StoredIf<User.Implementation, Temporary>>>;
@@ -138,7 +138,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
     operation?: Document.Database.DeleteOperation<User.DatabaseOperation.Delete>,
   ): Promise<User.Implementation[]>;
 
-  static create<Temporary extends boolean | undefined>(
+  static create<Temporary extends boolean | undefined = false>(
     data: User.CreateData | User.CreateData[],
     operation?: Document.Database.CreateOperation<User.DatabaseOperation.Create<Temporary>>,
   ): Promise<User.Implementation | undefined>;

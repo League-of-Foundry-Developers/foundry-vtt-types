@@ -36,7 +36,7 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
 
   override parent: BaseAmbientLight.Parent;
 
-  static createDocuments<Temporary extends boolean | undefined>(
+  static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<AmbientLightDocument.Implementation | AmbientLightDocument.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<AmbientLightDocument.DatabaseOperation.Create<Temporary>>,
   ): Promise<Array<Document.StoredIf<AmbientLightDocument.Implementation, Temporary>>>;
@@ -51,7 +51,7 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
     operation?: Document.Database.DeleteOperation<AmbientLightDocument.DatabaseOperation.Delete>,
   ): Promise<AmbientLightDocument.Implementation[]>;
 
-  static create<Temporary extends boolean | undefined>(
+  static create<Temporary extends boolean | undefined = false>(
     data: AmbientLightDocument.CreateData | AmbientLightDocument.CreateData[],
     operation?: Document.Database.CreateOperation<AmbientLightDocument.DatabaseOperation.Create<Temporary>>,
   ): Promise<AmbientLightDocument.Implementation | undefined>;

@@ -53,7 +53,7 @@ declare abstract class BaseTableResult<
 
   static get TYPES(): BaseTableResult.SubType[];
 
-  static createDocuments<Temporary extends boolean | undefined>(
+  static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<TableResult.Implementation | TableResult.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<TableResult.DatabaseOperation.Create<Temporary>>,
   ): Promise<Array<Document.StoredIf<TableResult.Implementation, Temporary>>>;
@@ -68,7 +68,7 @@ declare abstract class BaseTableResult<
     operation?: Document.Database.DeleteOperation<TableResult.DatabaseOperation.Delete>,
   ): Promise<TableResult.Implementation[]>;
 
-  static create<Temporary extends boolean | undefined>(
+  static create<Temporary extends boolean | undefined = false>(
     data: TableResult.CreateData | TableResult.CreateData[],
     operation?: Document.Database.CreateOperation<TableResult.DatabaseOperation.Create<Temporary>>,
   ): Promise<TableResult.Implementation | undefined>;

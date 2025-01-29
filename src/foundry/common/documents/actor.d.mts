@@ -92,7 +92,7 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
 
   static get TYPES(): BaseActor.SubType[];
 
-  static createDocuments<Temporary extends boolean | undefined>(
+  static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<Actor.Implementation | Actor.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Actor.DatabaseOperation.Create<Temporary>>,
   ): Promise<Array<Document.StoredIf<Actor.Implementation, Temporary>>>;
@@ -107,7 +107,7 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
     operation?: Document.Database.DeleteOperation<Actor.DatabaseOperation.Delete>,
   ): Promise<Actor.Implementation[]>;
 
-  static create<Temporary extends boolean | undefined>(
+  static create<Temporary extends boolean | undefined = false>(
     data: Actor.CreateData | Actor.CreateData[],
     operation?: Document.Database.CreateOperation<Actor.DatabaseOperation.Create<Temporary>>,
   ): Promise<Actor.Implementation | undefined>;

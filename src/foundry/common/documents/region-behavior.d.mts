@@ -43,7 +43,7 @@ declare abstract class BaseRegionBehavior<
 
   static get TYPES(): BaseRegionBehavior.SubType[];
 
-  static createDocuments<Temporary extends boolean | undefined>(
+  static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<RegionBehavior.Implementation | RegionBehavior.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<RegionBehavior.DatabaseOperation.Create<Temporary>>,
   ): Promise<Array<Document.StoredIf<RegionBehavior.Implementation, Temporary>>>;
@@ -58,7 +58,7 @@ declare abstract class BaseRegionBehavior<
     operation?: Document.Database.DeleteOperation<RegionBehavior.DatabaseOperation.Delete>,
   ): Promise<RegionBehavior.Implementation[]>;
 
-  static create<Temporary extends boolean | undefined>(
+  static create<Temporary extends boolean | undefined = false>(
     data: RegionBehavior.CreateData | RegionBehavior.CreateData[],
     operation?: Document.Database.CreateOperation<RegionBehavior.DatabaseOperation.Create<Temporary>>,
   ): Promise<RegionBehavior.Implementation | undefined>;

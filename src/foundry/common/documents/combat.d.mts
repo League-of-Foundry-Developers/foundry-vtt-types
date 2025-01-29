@@ -61,7 +61,7 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
 
   static get TYPES(): BaseCombat.SubType[];
 
-  static createDocuments<Temporary extends boolean | undefined>(
+  static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<Combat.Implementation | Combat.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Combat.DatabaseOperation.Create<Temporary>>,
   ): Promise<Array<Document.StoredIf<Combat.Implementation, Temporary>>>;
@@ -76,7 +76,7 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
     operation?: Document.Database.DeleteOperation<Combat.DatabaseOperation.Delete>,
   ): Promise<Combat.Implementation[]>;
 
-  static create<Temporary extends boolean | undefined>(
+  static create<Temporary extends boolean | undefined = false>(
     data: Combat.CreateData | Combat.CreateData[],
     operation?: Document.Database.CreateOperation<Combat.DatabaseOperation.Create<Temporary>>,
   ): Promise<Combat.Implementation | undefined>;

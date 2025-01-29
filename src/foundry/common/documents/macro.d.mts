@@ -62,7 +62,7 @@ declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMa
 
   static get TYPES(): BaseMacro.SubType[];
 
-  static createDocuments<Temporary extends boolean | undefined>(
+  static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<Macro.Implementation | Macro.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Macro.DatabaseOperation.Create<Temporary>>,
   ): Promise<Array<Document.StoredIf<Macro.Implementation, Temporary>>>;
@@ -77,7 +77,7 @@ declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMa
     operation?: Document.Database.DeleteOperation<Macro.DatabaseOperation.Delete>,
   ): Promise<Macro.Implementation[]>;
 
-  static create<Temporary extends boolean | undefined>(
+  static create<Temporary extends boolean | undefined = false>(
     data: Macro.CreateData | Macro.CreateData[],
     operation?: Document.Database.CreateOperation<Macro.DatabaseOperation.Create<Temporary>>,
   ): Promise<Macro.Implementation | undefined>;

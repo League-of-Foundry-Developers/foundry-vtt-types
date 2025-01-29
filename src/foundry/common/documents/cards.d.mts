@@ -50,7 +50,7 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
 
   static get TYPES(): BaseCards.SubType[];
 
-  static createDocuments<Temporary extends boolean | undefined>(
+  static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<Cards.Implementation | Cards.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Cards.DatabaseOperation.Create<Temporary>>,
   ): Promise<Array<Document.StoredIf<Cards.Implementation, Temporary>>>;
@@ -65,7 +65,7 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
     operation?: Document.Database.DeleteOperation<Cards.DatabaseOperation.Delete>,
   ): Promise<Cards.Implementation[]>;
 
-  static create<Temporary extends boolean | undefined>(
+  static create<Temporary extends boolean | undefined = false>(
     data: Cards.CreateData | Cards.CreateData[],
     operation?: Document.Database.CreateOperation<Cards.DatabaseOperation.Create<Temporary>>,
   ): Promise<Cards.Implementation | undefined>;

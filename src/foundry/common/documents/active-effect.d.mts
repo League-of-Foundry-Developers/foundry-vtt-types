@@ -81,7 +81,7 @@ declare abstract class BaseActiveEffect<
 
   static get TYPES(): BaseActiveEffect.SubType[];
 
-  static createDocuments<Temporary extends boolean | undefined>(
+  static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<ActiveEffect.Implementation | ActiveEffect.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<ActiveEffect.DatabaseOperation.Create<Temporary>>,
   ): Promise<Array<Document.StoredIf<ActiveEffect.Implementation, Temporary>>>;
@@ -96,7 +96,7 @@ declare abstract class BaseActiveEffect<
     operation?: Document.Database.DeleteOperation<ActiveEffect.DatabaseOperation.Delete>,
   ): Promise<ActiveEffect.Implementation[]>;
 
-  static create<Temporary extends boolean | undefined>(
+  static create<Temporary extends boolean | undefined = false>(
     data: ActiveEffect.CreateData | ActiveEffect.CreateData[],
     operation?: Document.Database.CreateOperation<ActiveEffect.DatabaseOperation.Create<Temporary>>,
   ): Promise<ActiveEffect.Implementation | undefined>;

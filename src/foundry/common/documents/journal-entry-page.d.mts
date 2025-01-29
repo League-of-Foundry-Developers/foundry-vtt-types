@@ -43,7 +43,7 @@ declare abstract class BaseJournalEntryPage<
 
   static get TYPES(): BaseJournalEntryPage.SubType[];
 
-  static createDocuments<Temporary extends boolean | undefined>(
+  static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<JournalEntryPage.Implementation | JournalEntryPage.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<JournalEntryPage.DatabaseOperation.Create<Temporary>>,
   ): Promise<Array<Document.StoredIf<JournalEntryPage.Implementation, Temporary>>>;
@@ -58,7 +58,7 @@ declare abstract class BaseJournalEntryPage<
     operation?: Document.Database.DeleteOperation<JournalEntryPage.DatabaseOperation.Delete>,
   ): Promise<JournalEntryPage.Implementation[]>;
 
-  static create<Temporary extends boolean | undefined>(
+  static create<Temporary extends boolean | undefined = false>(
     data: JournalEntryPage.CreateData | JournalEntryPage.CreateData[],
     operation?: Document.Database.CreateOperation<JournalEntryPage.DatabaseOperation.Create<Temporary>>,
   ): Promise<JournalEntryPage.Implementation | undefined>;

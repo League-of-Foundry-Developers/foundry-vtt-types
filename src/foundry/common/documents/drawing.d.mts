@@ -73,7 +73,7 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
 
   override parent: DrawingDocument.Parent;
 
-  static createDocuments<Temporary extends boolean | undefined>(
+  static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<DrawingDocument.Implementation | DrawingDocument.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<DrawingDocument.DatabaseOperation.Create<Temporary>>,
   ): Promise<Array<Document.StoredIf<DrawingDocument.Implementation, Temporary>>>;
@@ -88,7 +88,7 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
     operation?: Document.Database.DeleteOperation<DrawingDocument.DatabaseOperation.Delete>,
   ): Promise<DrawingDocument.Implementation[]>;
 
-  static create<Temporary extends boolean | undefined>(
+  static create<Temporary extends boolean | undefined = false>(
     data: DrawingDocument.CreateData | DrawingDocument.CreateData[],
     operation?: Document.Database.CreateOperation<DrawingDocument.DatabaseOperation.Create<Temporary>>,
   ): Promise<DrawingDocument.Implementation | undefined>;

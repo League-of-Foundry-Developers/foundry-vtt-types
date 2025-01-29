@@ -49,7 +49,7 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
 
   override parent: PlaylistSound.Parent;
 
-  static createDocuments<Temporary extends boolean | undefined>(
+  static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<PlaylistSound.Implementation | PlaylistSound.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<PlaylistSound.DatabaseOperation.Create<Temporary>>,
   ): Promise<Array<Document.StoredIf<PlaylistSound.Implementation, Temporary>>>;
@@ -64,7 +64,7 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
     operation?: Document.Database.DeleteOperation<PlaylistSound.DatabaseOperation.Delete>,
   ): Promise<PlaylistSound.Implementation[]>;
 
-  static create<Temporary extends boolean | undefined>(
+  static create<Temporary extends boolean | undefined = false>(
     data: PlaylistSound.CreateData | PlaylistSound.CreateData[],
     operation?: Document.Database.CreateOperation<PlaylistSound.DatabaseOperation.Create<Temporary>>,
   ): Promise<PlaylistSound.Implementation | undefined>;

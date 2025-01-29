@@ -69,7 +69,7 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
 
   static get TYPES(): BaseItem.SubType[];
 
-  static createDocuments<Temporary extends boolean | undefined>(
+  static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<Item.Implementation | Item.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Item.DatabaseOperation.Create<Temporary>>,
   ): Promise<Array<Document.StoredIf<Item.Implementation, Temporary>>>;
@@ -84,7 +84,7 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
     operation?: Document.Database.DeleteOperation<Item.DatabaseOperation.Delete>,
   ): Promise<Item.Implementation[]>;
 
-  static create<Temporary extends boolean | undefined>(
+  static create<Temporary extends boolean | undefined = false>(
     data: Item.CreateData | Item.CreateData[],
     operation?: Document.Database.CreateOperation<Item.DatabaseOperation.Create<Temporary>>,
   ): Promise<Item.Implementation | undefined>;

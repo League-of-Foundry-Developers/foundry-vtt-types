@@ -36,7 +36,7 @@ declare abstract class BaseWall extends Document<"Wall", BaseWall.Schema, any> {
 
   override parent: WallDocument.Parent;
 
-  static createDocuments<Temporary extends boolean | undefined>(
+  static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<WallDocument.Implementation | WallDocument.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<WallDocument.DatabaseOperation.Create<Temporary>>,
   ): Promise<Array<Document.StoredIf<WallDocument.Implementation, Temporary>>>;
@@ -51,7 +51,7 @@ declare abstract class BaseWall extends Document<"Wall", BaseWall.Schema, any> {
     operation?: Document.Database.DeleteOperation<WallDocument.DatabaseOperation.Delete>,
   ): Promise<WallDocument.Implementation[]>;
 
-  static create<Temporary extends boolean | undefined>(
+  static create<Temporary extends boolean | undefined = false>(
     data: WallDocument.CreateData | WallDocument.CreateData[],
     operation?: Document.Database.CreateOperation<WallDocument.DatabaseOperation.Create<Temporary>>,
   ): Promise<WallDocument.Implementation | undefined>;

@@ -47,7 +47,7 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
 
   override parent: Scene.Parent;
 
-  static createDocuments<Temporary extends boolean | undefined>(
+  static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<Scene.Implementation | Scene.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Scene.DatabaseOperation.Create<Temporary>>,
   ): Promise<Array<Document.StoredIf<Scene.Implementation, Temporary>>>;
@@ -62,7 +62,7 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
     operation?: Document.Database.DeleteOperation<Scene.DatabaseOperation.Delete>,
   ): Promise<Scene.Implementation[]>;
 
-  static create<Temporary extends boolean | undefined>(
+  static create<Temporary extends boolean | undefined = false>(
     data: Scene.CreateData | Scene.CreateData[],
     operation?: Document.Database.CreateOperation<Scene.DatabaseOperation.Create<Temporary>>,
   ): Promise<Scene.Implementation | undefined>;

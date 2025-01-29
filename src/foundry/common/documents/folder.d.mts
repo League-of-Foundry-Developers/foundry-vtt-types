@@ -48,7 +48,7 @@ declare abstract class BaseFolder<out _SubType extends BaseFolder.SubType = Base
 
   static get TYPES(): BaseFolder.SubType[];
 
-  static createDocuments<Temporary extends boolean | undefined>(
+  static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<Folder.Implementation | Folder.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Folder.DatabaseOperation.Create<Temporary>>,
   ): Promise<Array<Document.StoredIf<Folder.Implementation, Temporary>>>;
@@ -63,7 +63,7 @@ declare abstract class BaseFolder<out _SubType extends BaseFolder.SubType = Base
     operation?: Document.Database.DeleteOperation<Folder.DatabaseOperation.Delete>,
   ): Promise<Folder.Implementation[]>;
 
-  static create<Temporary extends boolean | undefined>(
+  static create<Temporary extends boolean | undefined = false>(
     data: Folder.CreateData | Folder.CreateData[],
     operation?: Document.Database.CreateOperation<Folder.DatabaseOperation.Create<Temporary>>,
   ): Promise<Folder.Implementation | undefined>;

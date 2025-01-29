@@ -56,7 +56,7 @@ declare abstract class BaseCombatant<
 
   static get TYPES(): BaseCombatant.SubType[];
 
-  static createDocuments<Temporary extends boolean | undefined>(
+  static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<Combatant.Implementation | Combatant.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Combatant.DatabaseOperation.Create<Temporary>>,
   ): Promise<Array<Document.StoredIf<Combatant.Implementation, Temporary>>>;
@@ -71,7 +71,7 @@ declare abstract class BaseCombatant<
     operation?: Document.Database.DeleteOperation<Combatant.DatabaseOperation.Delete>,
   ): Promise<Combatant.Implementation[]>;
 
-  static create<Temporary extends boolean | undefined>(
+  static create<Temporary extends boolean | undefined = false>(
     data: Combatant.CreateData | Combatant.CreateData[],
     operation?: Document.Database.CreateOperation<Combatant.DatabaseOperation.Create<Temporary>>,
   ): Promise<Combatant.Implementation | undefined>;

@@ -84,7 +84,7 @@ declare abstract class BaseChatMessage<
 
   static get TYPES(): BaseChatMessage.SubType[];
 
-  static createDocuments<Temporary extends boolean | undefined>(
+  static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<ChatMessage.Implementation | ChatMessage.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<ChatMessage.DatabaseOperation.Create<Temporary>>,
   ): Promise<Array<Document.StoredIf<ChatMessage.Implementation, Temporary>>>;
@@ -99,7 +99,7 @@ declare abstract class BaseChatMessage<
     operation?: Document.Database.DeleteOperation<ChatMessage.DatabaseOperation.Delete>,
   ): Promise<ChatMessage.Implementation[]>;
 
-  static create<Temporary extends boolean | undefined>(
+  static create<Temporary extends boolean | undefined = false>(
     data: ChatMessage.CreateData | ChatMessage.CreateData[],
     operation?: Document.Database.CreateOperation<ChatMessage.DatabaseOperation.Create<Temporary>>,
   ): Promise<ChatMessage.Implementation | undefined>;

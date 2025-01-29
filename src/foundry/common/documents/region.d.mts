@@ -31,7 +31,7 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
 
   override parent: BaseRegion.Parent;
 
-  static createDocuments<Temporary extends boolean | undefined>(
+  static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<RegionDocument.Implementation | RegionDocument.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<RegionDocument.DatabaseOperation.Create<Temporary>>,
   ): Promise<Array<Document.StoredIf<RegionDocument.Implementation, Temporary>>>;
@@ -46,7 +46,7 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
     operation?: Document.Database.DeleteOperation<RegionDocument.DatabaseOperation.Delete>,
   ): Promise<RegionDocument.Implementation[]>;
 
-  static create<Temporary extends boolean | undefined>(
+  static create<Temporary extends boolean | undefined = false>(
     data: RegionDocument.CreateData | RegionDocument.CreateData[],
     operation?: Document.Database.CreateOperation<RegionDocument.DatabaseOperation.Create<Temporary>>,
   ): Promise<RegionDocument.Implementation | undefined>;

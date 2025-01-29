@@ -85,7 +85,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
 
   override parent: TokenDocument.Parent;
 
-  static createDocuments<Temporary extends boolean | undefined>(
+  static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<TokenDocument.Implementation | TokenDocument.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<TokenDocument.DatabaseOperation.Create<Temporary>>,
   ): Promise<Array<Document.StoredIf<TokenDocument.Implementation, Temporary>>>;
@@ -100,7 +100,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
     operation?: Document.Database.DeleteOperation<TokenDocument.DatabaseOperation.Delete>,
   ): Promise<TokenDocument.Implementation[]>;
 
-  static create<Temporary extends boolean | undefined>(
+  static create<Temporary extends boolean | undefined = false>(
     data: TokenDocument.CreateData | TokenDocument.CreateData[],
     operation?: Document.Database.CreateOperation<TokenDocument.DatabaseOperation.Create<Temporary>>,
   ): Promise<TokenDocument.Implementation | undefined>;

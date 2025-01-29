@@ -35,7 +35,7 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
 
   override parent: Setting.Parent;
 
-  static createDocuments<Temporary extends boolean | undefined>(
+  static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<Setting.Implementation | Setting.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Setting.DatabaseOperation.Create<Temporary>>,
   ): Promise<Array<Document.StoredIf<Setting.Implementation, Temporary>>>;
@@ -50,7 +50,7 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
     operation?: Document.Database.DeleteOperation<Setting.DatabaseOperation.Delete>,
   ): Promise<Setting.Implementation[]>;
 
-  static create<Temporary extends boolean | undefined>(
+  static create<Temporary extends boolean | undefined = false>(
     data: Setting.CreateData | Setting.CreateData[],
     operation?: Document.Database.CreateOperation<Setting.DatabaseOperation.Create<Temporary>>,
   ): Promise<Setting.Implementation | undefined>;
