@@ -1,5 +1,5 @@
 import type { ConfiguredRegionBehavior } from "../../../../configuration/index.d.mts";
-import type { DeepPartial, FixedInstanceType, HandleEmptyObject, InexactPartial } from "../../../../utils/index.d.mts";
+import type { DeepPartial, FixedInstanceType, InexactPartial } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
 import type BaseRegionBehavior from "../../../common/documents/region-behavior.d.mts";
@@ -26,7 +26,7 @@ declare global {
     interface Metadata extends Document.MetadataFor<"RegionBehavior"> {}
 
     type SubType = Game.Model.TypeNames<"RegionBehavior">;
-    type OfType<Type extends SubType> = HandleEmptyObject<ConfiguredRegionBehavior<Type>, RegionBehavior<SubType>>;
+    type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredRegionBehavior<Type>, RegionBehavior<SubType>>;
 
     /**
      * A document's parent is something that can contain it.

@@ -1,5 +1,5 @@
 import type { ConfiguredCombatant } from "../../../../configuration/index.d.mts";
-import type { HandleEmptyObject, ValueOf } from "../../../../utils/index.d.mts";
+import type { ValueOf } from "../../../../utils/index.d.mts";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
@@ -27,7 +27,7 @@ declare global {
     interface Metadata extends Document.MetadataFor<"Combatant"> {}
 
     type SubType = Game.Model.TypeNames<"Combatant">;
-    type OfType<Type extends SubType> = HandleEmptyObject<ConfiguredCombatant<Type>, Combatant<SubType>>;
+    type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredCombatant<Type>, Combatant<SubType>>;
 
     /**
      * A document's parent is something that can contain it.

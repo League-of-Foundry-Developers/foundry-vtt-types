@@ -1,5 +1,5 @@
 import type { ConfiguredActiveEffect } from "../../../../configuration/index.d.mts";
-import type { AnyObject, HandleEmptyObject, InterfaceToObject } from "../../../../utils/index.d.mts";
+import type { AnyObject, InterfaceToObject } from "../../../../utils/index.d.mts";
 import type { DataModel } from "../../../common/abstract/data.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataField, DataSchema } from "../../../common/data/fields.d.mts";
@@ -28,7 +28,7 @@ declare global {
     interface Metadata extends Document.MetadataFor<"ActiveEffect"> {}
 
     type SubType = Game.Model.TypeNames<"ActiveEffect">;
-    type OfType<Type extends SubType> = HandleEmptyObject<ConfiguredActiveEffect<Type>, ActiveEffect<SubType>>;
+    type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredActiveEffect<Type>, ActiveEffect<Type>>;
 
     /**
      * A document's parent is something that can contain it.

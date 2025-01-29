@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
+/* eslint-disable @typescript-eslint/no-empty-object-type, @typescript-eslint/no-unused-vars */
 
 /**
  * Use this interface to configure your custom generic `ActiveEffect` implementation.
@@ -13,11 +13,15 @@
  * }
  *
  * declare module "fvtt-types/configuration" {
- *     interface ConfiguredActiveEffect<SubType extends ActiveEffect.SubType> extends CustomActiveEffect<SubType> {}
+ *   interface ConfiguredActiveEffect<SubType extends ActiveEffect.SubType> {
+ *     document: CustomActiveEffect<SubType>;
+ *   }
  * }
  * ```
  */
-export interface ConfiguredActiveEffect<_SubType extends ActiveEffect.SubType> {}
+export interface ConfiguredActiveEffect<SubType extends ActiveEffect.SubType> {
+  document: unknown;
+}
 
 /**
  * Use this interface to configure your custom generic `ActorDelta` implementation.
@@ -32,11 +36,15 @@ export interface ConfiguredActiveEffect<_SubType extends ActiveEffect.SubType> {
  * }
  *
  * declare module "fvtt-types/configuration" {
- *     interface ConfiguredActorDelta<SubType extends ActorDelta.SubType> extends CustomActorDelta<SubType> {}
+ *   interface ConfiguredActorDelta<SubType extends ActorDelta.SubType> {
+ *     document: CustomActorDelta<SubType>;
+ *   }
  * }
  * ```
  */
-export interface ConfiguredActorDelta<_SubType extends ActorDelta.SubType> {}
+export interface ConfiguredActorDelta<SubType extends ActorDelta.SubType> {
+  document: unknown;
+}
 
 /**
  * Use this interface to configure your custom generic `Actor` implementation.
@@ -51,11 +59,13 @@ export interface ConfiguredActorDelta<_SubType extends ActorDelta.SubType> {}
  * }
  *
  * declare module "fvtt-types/configuration" {
- *     interface ConfiguredActor<SubType extends Actor.SubType> extends CustomActor<SubType> {}
+ *   interface ConfiguredActor<SubType extends Actor.SubType> {
+ *     document: CustomActor<SubType>;
+ *   }
  * }
  * ```
  */
-export interface ConfiguredActor<_SubType extends Actor.SubType> {}
+export interface ConfiguredActor<SubType extends Actor.SubType> {}
 
 /**
  * Use this interface to configure your custom generic `Card` implementation.
@@ -70,11 +80,15 @@ export interface ConfiguredActor<_SubType extends Actor.SubType> {}
  * }
  *
  * declare module "fvtt-types/configuration" {
- *     interface ConfiguredCard<SubType extends Card.SubType> extends CustomCard<SubType> {}
+ *   interface ConfiguredCard<SubType extends Card.SubType> {
+ *     document: CustomCard<SubType>;
+ *   }
  * }
  * ```
  */
-export interface ConfiguredCard<_SubType extends Card.SubType> {}
+export interface ConfiguredCard<SubType extends Card.SubType> {
+  document: unknown;
+}
 
 /**
  * Use this interface to configure your custom generic `Cards` implementation.
@@ -89,11 +103,15 @@ export interface ConfiguredCard<_SubType extends Card.SubType> {}
  * }
  *
  * declare module "fvtt-types/configuration" {
- *     interface ConfiguredCards<SubType extends Cards.SubType> extends CustomCards<SubType> {}
+ *   interface ConfiguredCards<SubType extends Cards.SubType> {
+ *     document: CustomCards<SubType>;
+ *   }
  * }
  * ```
  */
-export interface ConfiguredCards<_SubType extends Cards.SubType> {}
+export interface ConfiguredCards<SubType extends Cards.SubType> {
+  document: unknown;
+}
 
 /**
  * Use this interface to configure your custom generic `ChatMessage` implementation.
@@ -108,11 +126,15 @@ export interface ConfiguredCards<_SubType extends Cards.SubType> {}
  * }
  *
  * declare module "fvtt-types/configuration" {
- *     interface ConfiguredChatMessage<SubType extends ChatMessage.SubType> extends CustomChatMessage<SubType> {}
+ *   interface ConfiguredChatMessage<SubType extends ChatMessage.SubType> {
+ *     document: CustomChatMessage<SubType>;
+ *   }
  * }
  * ```
  */
-export interface ConfiguredChatMessage<_SubType extends ChatMessage.SubType> {}
+export interface ConfiguredChatMessage<SubType extends ChatMessage.SubType> {
+  document: unknown;
+}
 
 /**
  * Use this interface to configure your custom generic `Combat` implementation.
@@ -127,11 +149,15 @@ export interface ConfiguredChatMessage<_SubType extends ChatMessage.SubType> {}
  * }
  *
  * declare module "fvtt-types/configuration" {
- *     interface ConfiguredCombat<SubType extends Combat.SubType> extends CustomCombat<SubType> {}
+ *   interface ConfiguredCombat<SubType extends Combat.SubType> {
+ *     document: CustomCombat<SubType>;
+ *   }
  * }
  * ```
  */
-export interface ConfiguredCombat<_SubType extends Combat.SubType> {}
+export interface ConfiguredCombat<SubType extends Combat.SubType> {
+  document: unknown;
+}
 
 /**
  * Use this interface to configure your custom generic `Combatant` implementation.
@@ -146,11 +172,15 @@ export interface ConfiguredCombat<_SubType extends Combat.SubType> {}
  * }
  *
  * declare module "fvtt-types/configuration" {
- *     interface ConfiguredCombatant<SubType extends Combatant.SubType> extends CustomCombatant<SubType> {}
+ *   interface ConfiguredCombatant<SubType extends Combatant.SubType> {
+ *     document: CustomCombatant<SubType>;
+ *   }
  * }
  * ```
  */
-export interface ConfiguredCombatant<_SubType extends Combatant.SubType> {}
+export interface ConfiguredCombatant<SubType extends Combatant.SubType> {
+  document: unknown;
+}
 
 /**
  * Use this interface to configure your custom generic `Folder` implementation.
@@ -165,11 +195,15 @@ export interface ConfiguredCombatant<_SubType extends Combatant.SubType> {}
  * }
  *
  * declare module "fvtt-types/configuration" {
- *     interface ConfiguredFolder<SubType extends Folder.SubType> extends CustomFolder<SubType> {}
+ *   interface ConfiguredFolder<SubType extends Folder.SubType> {
+ *     document: CustomFolder<SubType>;
+ *   }
  * }
  * ```
  */
-export interface ConfiguredFolder<_SubType extends Folder.SubType> {}
+export interface ConfiguredFolder<SubType extends Folder.SubType> {
+  document: unknown;
+}
 
 /**
  * Use this interface to configure your custom generic `Item` implementation.
@@ -184,11 +218,15 @@ export interface ConfiguredFolder<_SubType extends Folder.SubType> {}
  * }
  *
  * declare module "fvtt-types/configuration" {
- *     interface ConfiguredItem<SubType extends Item.SubType> extends CustomItem<SubType> {}
+ *   interface ConfiguredItem<SubType extends Item.SubType> {
+ *     document: CustomItem<SubType>;
+ *   }
  * }
  * ```
  */
-export interface ConfiguredItem<_SubType extends Item.SubType> {}
+export interface ConfiguredItem<SubType extends Item.SubType> {
+  document: unknown;
+}
 
 /**
  * Use this interface to configure your custom generic `JournalEntryPage` implementation.
@@ -203,11 +241,15 @@ export interface ConfiguredItem<_SubType extends Item.SubType> {}
  * }
  *
  * declare module "fvtt-types/configuration" {
- *     interface ConfiguredJournalEntryPage<SubType extends JournalEntryPage.SubType> extends CustomJournalEntryPage<SubType> {}
+ *   interface ConfiguredJournalEntryPage<SubType extends JournalEntryPage.SubType> {
+ *     document: CustomJournalEntryPage<SubType>;
+ *   }
  * }
  * ```
  */
-export interface ConfiguredJournalEntryPage<_SubType extends JournalEntryPage.SubType> {}
+export interface ConfiguredJournalEntryPage<SubType extends JournalEntryPage.SubType> {
+  document: unknown;
+}
 
 /**
  * Use this interface to configure your custom generic `Macro` implementation.
@@ -222,11 +264,15 @@ export interface ConfiguredJournalEntryPage<_SubType extends JournalEntryPage.Su
  * }
  *
  * declare module "fvtt-types/configuration" {
- *     interface ConfiguredMacro<SubType extends Macro.SubType> extends CustomMacro<SubType> {}
+ *   interface ConfiguredMacro<SubType extends Macro.SubType> {
+ *     document: CustomMacro<SubType>;
+ *   }
  * }
  * ```
  */
-export interface ConfiguredMacro<_SubType extends Macro.SubType> {}
+export interface ConfiguredMacro<SubType extends Macro.SubType> {
+  document: unknown;
+}
 
 /**
  * Use this interface to configure your custom generic `RegionBehavior` implementation.
@@ -241,11 +287,15 @@ export interface ConfiguredMacro<_SubType extends Macro.SubType> {}
  * }
  *
  * declare module "fvtt-types/configuration" {
- *     interface ConfiguredRegionBehavior<SubType extends RegionBehavior.SubType> extends CustomRegionBehavior<SubType> {}
+ *   interface ConfiguredRegionBehavior<SubType extends RegionBehavior.SubType> {
+ *     document: CustomRegionBehavior<SubType>;
+ *   }
  * }
  * ```
  */
-export interface ConfiguredRegionBehavior<_SubType extends RegionBehavior.SubType> {}
+export interface ConfiguredRegionBehavior<SubType extends RegionBehavior.SubType> {
+  document: unknown;
+}
 
 /**
  * Use this interface to configure your custom generic `TableResult` implementation.
@@ -260,8 +310,12 @@ export interface ConfiguredRegionBehavior<_SubType extends RegionBehavior.SubTyp
  * }
  *
  * declare module "fvtt-types/configuration" {
- *     interface ConfiguredTableResult<SubType extends TableResult.SubType> extends CustomTableResult<SubType> {}
+ *   interface ConfiguredTableResult<SubType extends TableResult.SubType> {
+ *     document: CustomTableResult<SubType>;
+ *   }
  * }
  * ```
  */
-export interface ConfiguredTableResult<_SubType extends TableResult.SubType> {}
+export interface ConfiguredTableResult<SubType extends TableResult.SubType> {
+  document: unknown;
+}

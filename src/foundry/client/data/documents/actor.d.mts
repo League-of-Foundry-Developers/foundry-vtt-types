@@ -1,4 +1,4 @@
-import type { DeepPartial, HandleEmptyObject, InexactPartial } from "../../../../utils/index.d.mts";
+import type { DeepPartial, InexactPartial } from "../../../../utils/index.d.mts";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type EmbeddedCollection from "../../../common/abstract/embedded-collection.d.mts";
@@ -28,7 +28,7 @@ declare global {
     interface Metadata extends Document.MetadataFor<"Actor"> {}
 
     type SubType = Game.Model.TypeNames<"Actor">;
-    type OfType<Type extends SubType> = HandleEmptyObject<ConfiguredActor<Type>, Actor<SubType>>;
+    type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredActor<Type>, Actor<Type>>;
 
     /**
      * A document's parent is something that can contain it.

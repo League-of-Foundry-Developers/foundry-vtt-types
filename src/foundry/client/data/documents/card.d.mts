@@ -1,5 +1,5 @@
 import type { ConfiguredCard } from "../../../../configuration/index.d.mts";
-import type { DeepPartial, HandleEmptyObject, InexactPartial } from "../../../../utils/index.d.mts";
+import type { DeepPartial, InexactPartial } from "../../../../utils/index.d.mts";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
@@ -28,7 +28,7 @@ declare global {
     interface Metadata extends Document.MetadataFor<"Card"> {}
 
     type SubType = Game.Model.TypeNames<"Card">;
-    type OfType<Type extends SubType> = HandleEmptyObject<ConfiguredCard<Type>, Card<SubType>>;
+    type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredCard<Type>, Card<Type>>;
 
     /**
      * A document's parent is something that can contain it.

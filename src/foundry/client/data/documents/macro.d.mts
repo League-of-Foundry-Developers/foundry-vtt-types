@@ -1,5 +1,5 @@
 import type { ConfiguredMacro } from "../../../../configuration/index.d.mts";
-import type { HandleEmptyObject, InexactPartial } from "../../../../utils/index.d.mts";
+import type { InexactPartial } from "../../../../utils/index.d.mts";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
@@ -27,7 +27,7 @@ declare global {
     interface Metadata extends Document.MetadataFor<"Macro"> {}
 
     type SubType = Game.Model.TypeNames<"Macro">;
-    type OfType<Type extends SubType> = HandleEmptyObject<ConfiguredMacro<Type>, Macro<SubType>>;
+    type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredMacro<Type>, Macro<SubType>>;
 
     /**
      * A document's parent is something that can contain it.

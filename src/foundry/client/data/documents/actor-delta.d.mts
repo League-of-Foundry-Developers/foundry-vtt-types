@@ -2,7 +2,6 @@ import type { SchemaField, DataSchema } from "../../../common/data/fields.d.mts"
 import type { BaseActor, BaseActorDelta } from "../../../common/documents/_module.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
-import type { HandleEmptyObject } from "../../../../utils/index.d.mts";
 import type { ConfiguredActorDelta } from "../../../../configuration/index.d.mts";
 
 declare global {
@@ -27,7 +26,7 @@ declare global {
 
     // This is NOT a mistake. Due to the implementation of the ActorDelta document, the SubType is the same as the Actor's SubType.
     type SubType = Game.Model.TypeNames<"ActorDelta">;
-    type OfType<Type extends SubType> = HandleEmptyObject<ConfiguredActorDelta<Type>, ActorDelta<SubType>>;
+    type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredActorDelta<Type>, ActorDelta<Type>>;
 
     /**
      * A document's parent is something that can contain it.

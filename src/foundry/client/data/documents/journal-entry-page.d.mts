@@ -1,5 +1,5 @@
 import type { ConfiguredJournalEntryPage } from "../../../../configuration/index.d.mts";
-import type { HandleEmptyObject, InexactPartial } from "../../../../utils/index.d.mts";
+import type { InexactPartial } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
@@ -26,7 +26,7 @@ declare global {
     interface Metadata extends Document.MetadataFor<"JournalEntryPage"> {}
 
     type SubType = Game.Model.TypeNames<"JournalEntryPage">;
-    type OfType<Type extends SubType> = HandleEmptyObject<ConfiguredJournalEntryPage<Type>, JournalEntryPage<SubType>>;
+    type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredJournalEntryPage<Type>, JournalEntryPage<SubType>>;
 
     /**
      * A document's parent is something that can contain it.

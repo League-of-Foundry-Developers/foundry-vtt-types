@@ -1,5 +1,5 @@
 import type { ConfiguredChatMessage } from "../../../../configuration/index.d.mts";
-import type { HandleEmptyObject, InexactPartial, InterfaceToObject } from "../../../../utils/index.d.mts";
+import type { InexactPartial, InterfaceToObject } from "../../../../utils/index.d.mts";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
@@ -27,7 +27,7 @@ declare global {
     interface Metadata extends Document.MetadataFor<"ChatMessage"> {}
 
     type SubType = Game.Model.TypeNames<"ChatMessage">;
-    type OfType<Type extends SubType> = HandleEmptyObject<ConfiguredChatMessage<Type>, ChatMessage<SubType>>;
+    type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredChatMessage<Type>, ChatMessage<SubType>>;
 
     /**
      * A document's parent is something that can contain it.

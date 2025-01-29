@@ -1,5 +1,5 @@
 import type { ConfiguredCombat } from "../../../../configuration/index.d.mts";
-import type { HandleEmptyObject, InexactPartial } from "../../../../utils/index.d.mts";
+import type { InexactPartial } from "../../../../utils/index.d.mts";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
@@ -27,7 +27,7 @@ declare global {
     interface Metadata extends Document.MetadataFor<"Combat"> {}
 
     type SubType = Game.Model.TypeNames<"Combat">;
-    type OfType<Type extends SubType> = HandleEmptyObject<ConfiguredCombat<Type>, Combat<SubType>>;
+    type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredCombat<Type>, Combat<SubType>>;
 
     /**
      * A document's parent is something that can contain it.

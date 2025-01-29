@@ -1,5 +1,5 @@
 import type { ConfiguredFolder } from "../../../../configuration/index.d.mts";
-import type { DeepPartial, HandleEmptyObject, InexactPartial } from "../../../../utils/index.d.mts";
+import type { DeepPartial, InexactPartial } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
@@ -26,7 +26,7 @@ declare global {
     interface Metadata extends Document.MetadataFor<"Folder"> {}
 
     type SubType = Game.Model.TypeNames<"Folder">;
-    type OfType<Type extends SubType> = HandleEmptyObject<ConfiguredFolder<Type>, Folder<SubType>>;
+    type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredFolder<Type>, Folder<SubType>>;
 
     /**
      * A document's parent is something that can contain it.

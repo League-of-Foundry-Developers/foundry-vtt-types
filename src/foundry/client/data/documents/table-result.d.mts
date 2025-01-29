@@ -1,5 +1,4 @@
 import type { ConfiguredTableResult } from "../../../../configuration/index.d.mts";
-import type { HandleEmptyObject } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
@@ -26,7 +25,7 @@ declare global {
     interface Metadata extends Document.MetadataFor<"TableResult"> {}
 
     type SubType = Game.Model.TypeNames<"TableResult">;
-    type OfType<Type extends SubType> = HandleEmptyObject<ConfiguredTableResult<Type>, TableResult<SubType>>;
+    type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredTableResult<Type>, TableResult<SubType>>;
 
     /**
      * A document's parent is something that can contain it.
