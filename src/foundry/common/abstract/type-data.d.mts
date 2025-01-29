@@ -320,7 +320,7 @@ declare abstract class TypeDataModel<
   protected _preUpdate(
     changes: DeepPartial<TypeDataModel.ParentAssignmentType<Schema, Parent>>,
     options: Document.PreUpdateOptions<any>,
-    userId: string,
+    user: User.Implementation,
   ): Promise<boolean | void>;
 
   /**
