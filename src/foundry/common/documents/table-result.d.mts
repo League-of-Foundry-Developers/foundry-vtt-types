@@ -45,7 +45,7 @@ declare abstract class BaseTableResult<
    * defined DRY-ly while also being easily overridable.
    */
 
-  static "~ fvtt_types_internal_document_name_static": "TableResult";
+  static " fvtt_types_internal_document_name_static": "TableResult";
 
   static get implementation(): TableResult.ImplementationClass;
 

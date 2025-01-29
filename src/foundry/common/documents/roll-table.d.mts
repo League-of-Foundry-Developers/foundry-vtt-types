@@ -37,7 +37,7 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
    * defined DRY-ly while also being easily overridable.
    */
 
-  static "~ fvtt_types_internal_document_name_static": "RollTable";
+  static " fvtt_types_internal_document_name_static": "RollTable";
 
   static get implementation(): RollTable.ImplementationClass;
 

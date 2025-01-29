@@ -46,7 +46,7 @@ declare abstract class BaseCombatant<
    * defined DRY-ly while also being easily overridable.
    */
 
-  static "~ fvtt_types_internal_document_name_static": "Combatant";
+  static " fvtt_types_internal_document_name_static": "Combatant";
 
   static get implementation(): Combatant.ImplementationClass;
 

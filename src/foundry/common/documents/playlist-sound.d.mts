@@ -43,7 +43,7 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
    * defined DRY-ly while also being easily overridable.
    */
 
-  static "~ fvtt_types_internal_document_name_static": "PlaylistSound";
+  static " fvtt_types_internal_document_name_static": "PlaylistSound";
 
   static get implementation(): PlaylistSound.ImplementationClass;
 

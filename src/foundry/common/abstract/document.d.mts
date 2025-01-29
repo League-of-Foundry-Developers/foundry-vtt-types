@@ -56,12 +56,6 @@ declare abstract class Document<
   Schema extends DataSchema,
   Parent extends Document.Any | null = null,
 > extends DataModel<Schema, Parent, InterfaceToObject<Document.ConstructionContext<Parent>>> {
-  static "~ fvtt_types_internal_document_name_static": Document.Type;
-
-  "~ fvtt_types_internal_document_name": DocumentName;
-  "~ fvtt_types_internal_document_schema": Schema;
-  "~ fvtt_types_internal_document_parent": Parent;
-
   /**
    * @param data    - Initial data provided to construct the Document
    * @param context - Construction context options
@@ -877,6 +871,12 @@ declare abstract class Document<
     documents: never,
     context: Document.ModificationContext<Document.Any | null>,
   ): Promise<unknown>;
+
+  static " fvtt_types_internal_document_name_static": Document.Type;
+
+  " fvtt_types_internal_document_name": DocumentName;
+  " fvtt_types_internal_document_schema": Schema;
+  " fvtt_types_internal_document_parent": Parent;
 }
 
 // An empty schema is the most accurate because index signatures are stripped.
@@ -1064,7 +1064,7 @@ declare namespace Document {
   // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
   namespace Internal {
     type Constructor = (abstract new (arg0: never, ...args: never[]) => Instance.Any) & {
-      "~ fvtt_types_internal_document_name_static": Document.Type;
+      " fvtt_types_internal_document_name_static": Document.Type;
     };
 
     interface Instance<
@@ -1072,17 +1072,17 @@ declare namespace Document {
       Schema extends DataSchema,
       Parent extends Document.Internal.Instance.Any | null,
     > {
-      "~ fvtt_types_internal_document_name": DocumentName;
-      "~ fvtt_types_internal_document_schema": Schema;
-      "~ fvtt_types_internal_document_parent": Parent;
+      " fvtt_types_internal_document_name": DocumentName;
+      " fvtt_types_internal_document_schema": Schema;
+      " fvtt_types_internal_document_parent": Parent;
     }
 
     type DocumentNameFor<ConcreteInstance extends Instance.Any> =
-      ConcreteInstance["~ fvtt_types_internal_document_name"];
+      ConcreteInstance[" fvtt_types_internal_document_name"];
 
-    type SchemaFor<ConcreteInstance extends Instance.Any> = ConcreteInstance["~ fvtt_types_internal_document_schema"];
+    type SchemaFor<ConcreteInstance extends Instance.Any> = ConcreteInstance[" fvtt_types_internal_document_schema"];
 
-    type ParentFor<ConcreteInstance extends Instance.Any> = ConcreteInstance["~ fvtt_types_internal_document_parent"];
+    type ParentFor<ConcreteInstance extends Instance.Any> = ConcreteInstance[" fvtt_types_internal_document_parent"];
 
     namespace Instance {
       type Any = Instance<any, any, any>;
@@ -1192,7 +1192,7 @@ declare namespace Document {
   type Temporary<D extends Document.Any> = D extends Stored<infer U> ? U : D;
 
   type NameFor<ConcreteDocument extends Document.Internal.Constructor> =
-    ConcreteDocument["~ fvtt_types_internal_document_name_static"];
+    ConcreteDocument[" fvtt_types_internal_document_name_static"];
 
   type ConfiguredInstanceForName<Name extends Type> = MakeConform<ConfiguredDocumentInstance[Name], Document.Any>;
 

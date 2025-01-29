@@ -41,7 +41,7 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
    * defined DRY-ly while also being easily overridable.
    */
 
-  static "~ fvtt_types_internal_document_name_static": "Tile";
+  static " fvtt_types_internal_document_name_static": "Tile";
 
   static get implementation(): TileDocument.ImplementationClass;
 

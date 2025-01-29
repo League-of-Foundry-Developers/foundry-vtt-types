@@ -67,7 +67,7 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
    * defined DRY-ly while also being easily overridable.
    */
 
-  static "~ fvtt_types_internal_document_name_static": "Drawing";
+  static " fvtt_types_internal_document_name_static": "Drawing";
 
   static get implementation(): DrawingDocument.ImplementationClass;
 

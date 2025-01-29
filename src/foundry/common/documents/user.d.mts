@@ -117,7 +117,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
    * defined DRY-ly while also being easily overridable.
    */
 
-  static "~ fvtt_types_internal_document_name_static": "User";
+  static " fvtt_types_internal_document_name_static": "User";
 
   static get implementation(): User.ImplementationClass;
 

@@ -79,7 +79,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    * defined DRY-ly while also being easily overridable.
    */
 
-  static "~ fvtt_types_internal_document_name_static": "Token";
+  static " fvtt_types_internal_document_name_static": "Token";
 
   static get implementation(): TokenDocument.ImplementationClass;
 

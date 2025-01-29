@@ -40,7 +40,7 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
    * defined DRY-ly while also being easily overridable.
    */
 
-  static "~ fvtt_types_internal_document_name_static": "Cards";
+  static " fvtt_types_internal_document_name_static": "Cards";
 
   static get implementation(): Cards.ImplementationClass;
 

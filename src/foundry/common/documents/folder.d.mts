@@ -40,7 +40,7 @@ declare abstract class BaseFolder<out _SubType extends BaseFolder.SubType = Base
    * defined DRY-ly while also being easily overridable.
    */
 
-  static "~ fvtt_types_internal_document_name_static": "Folder";
+  static " fvtt_types_internal_document_name_static": "Folder";
 
   static get implementation(): Folder.ImplementationClass;
 

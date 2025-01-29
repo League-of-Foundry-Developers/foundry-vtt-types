@@ -25,7 +25,7 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
    * defined DRY-ly while also being easily overridable.
    */
 
-  static "~ fvtt_types_internal_document_name_static": "Region";
+  static " fvtt_types_internal_document_name_static": "Region";
 
   static get implementation(): RegionDocument.ImplementationClass;
 
