@@ -289,7 +289,7 @@ declare global {
    * let actor = game.actors.get(actorId);
    * ```
    */
-  class Actor<out SubType extends Item.SubType = Item.SubType> extends ClientDocumentMixin(
+  class Actor<out SubType extends Actor.SubType = Actor.SubType> extends ClientDocumentMixin(
     foundry.documents.BaseActor,
   )<SubType> {
     static override metadata: Actor.Metadata;
