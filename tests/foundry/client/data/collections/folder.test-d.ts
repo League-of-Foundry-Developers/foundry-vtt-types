@@ -1,5 +1,4 @@
 import { expectTypeOf } from "vitest";
-import Document = foundry.abstract.Document;
 
 const folders = new Folders();
 expectTypeOf(folders.get("", { strict: true })).toEqualTypeOf<Folder.Stored>();

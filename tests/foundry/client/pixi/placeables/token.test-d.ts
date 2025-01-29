@@ -1,5 +1,4 @@
 import { expectTypeOf } from "vitest";
-import Document = foundry.abstract.Document;
 
 const token = new Token(new TokenDocument());
 expectTypeOf(token.id).toEqualTypeOf<string>();

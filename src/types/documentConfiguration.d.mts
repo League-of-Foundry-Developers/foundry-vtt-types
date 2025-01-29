@@ -250,11 +250,7 @@ interface ActorMetadata
       labelPlural: string;
       permissions: {
         create(user: User.Internal.Implementation, doc: Actor.Implementation): boolean;
-        update(
-          user: User.Internal.Implementation,
-          doc: Actor.Implementation,
-          data: BaseActor.UpdateData,
-        ): boolean;
+        update(user: User.Internal.Implementation, doc: Actor.Implementation, data: BaseActor.UpdateData): boolean;
       };
       schemaVersion: string;
     }>
@@ -309,16 +305,8 @@ interface CardMetadata
       label: string;
       labelPlural: string;
       permissions: {
-        create(
-          user: User.Internal.Implementation,
-          doc: Card.Implementation,
-          data: BaseCard.UpdateData,
-        ): boolean;
-        update(
-          user: User.Internal.Implementation,
-          doc: Card.Implementation,
-          data: BaseCard.UpdateData,
-        ): boolean;
+        create(user: User.Internal.Implementation, doc: Card.Implementation, data: BaseCard.UpdateData): boolean;
+        update(user: User.Internal.Implementation, doc: Card.Implementation, data: BaseCard.UpdateData): boolean;
       };
       compendiumIndexFields: ["name", "type", "suit", "sort"];
       schemaVersion: string;
@@ -377,11 +365,7 @@ interface CombatMetadata
       };
       hasTypeData: true;
       permissions: {
-        update(
-          user: User.Internal.Implementation,
-          doc: Combat.Implementation,
-          data: BaseCombat.UpdateData,
-        ): boolean;
+        update(user: User.Internal.Implementation, doc: Combat.Implementation, data: BaseCombat.UpdateData): boolean;
       };
       schemaVersion: string;
     }>
@@ -715,21 +699,9 @@ interface SettingMetadata
       label: string;
       labelPlural: string;
       permissions: {
-        create(
-          user: User.Internal.Implementation,
-          doc: Setting.Implementation,
-          data: BaseSetting.UpdateData,
-        ): boolean;
-        update(
-          user: User.Internal.Implementation,
-          doc: Setting.Implementation,
-          data: BaseSetting.UpdateData,
-        ): boolean;
-        delete(
-          user: User.Internal.Implementation,
-          doc: Setting.Implementation,
-          data: BaseSetting.UpdateData,
-        ): boolean;
+        create(user: User.Internal.Implementation, doc: Setting.Implementation, data: BaseSetting.UpdateData): boolean;
+        update(user: User.Internal.Implementation, doc: Setting.Implementation, data: BaseSetting.UpdateData): boolean;
+        delete(user: User.Internal.Implementation, doc: Setting.Implementation, data: BaseSetting.UpdateData): boolean;
       };
       schemaVersion: string;
     }>

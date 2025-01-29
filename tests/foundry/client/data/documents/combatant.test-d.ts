@@ -1,5 +1,4 @@
 import { expectTypeOf } from "vitest";
-import Document = foundry.abstract.Document;
 
 const combatant = new Combatant({}, {});
 
@@ -23,9 +22,7 @@ expectTypeOf(combatant.rollInitiative("")).toEqualTypeOf<Promise<Combatant.Imple
 expectTypeOf(combatant.prepareDerivedData()).toEqualTypeOf<void>();
 
 // static properties
-expectTypeOf(Combatant.create({ name: "Some Combatant" })).toEqualTypeOf<
-  Promise<Combatant.Stored | undefined>
->();
+expectTypeOf(Combatant.create({ name: "Some Combatant" })).toEqualTypeOf<Promise<Combatant.Stored | undefined>>();
 expectTypeOf(Combatant.createDocuments([])).toEqualTypeOf<Promise<Combatant.Stored[] | undefined>>();
 expectTypeOf(Combatant.updateDocuments([])).toEqualTypeOf<Promise<Combatant.Implementation[]>>();
 expectTypeOf(Combatant.deleteDocuments([])).toEqualTypeOf<Promise<Combatant.Implementation[]>>();

@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
 
-class TestBaseNote extends foundry.documents.BaseNote {};
+class TestBaseNote extends foundry.documents.BaseNote {}
 
 expectTypeOf(new TestBaseNote()).toEqualTypeOf<foundry.documents.BaseNote>();
 

@@ -6,8 +6,7 @@ declare global {
    * @typeParam Options - the type of the options object
    */
   class PlaylistConfig<
-    Options extends
-      DocumentSheetOptions<Playlist.Implementation> = DocumentSheetOptions<Playlist.Implementation>,
+    Options extends DocumentSheetOptions<Playlist.Implementation> = DocumentSheetOptions<Playlist.Implementation>,
   > extends DocumentSheet<Options, Playlist.Implementation> {
     /**
      * @defaultValue
@@ -36,8 +35,7 @@ declare global {
     type Any = PlaylistConfig<any>;
 
     interface PlaylistConfigData<
-      Options extends
-        DocumentSheetOptions<Playlist.Implementation> = DocumentSheetOptions<Playlist.Implementation>,
+      Options extends DocumentSheetOptions<Playlist.Implementation> = DocumentSheetOptions<Playlist.Implementation>,
     > extends DocumentSheet.DocumentSheetData<Options, Playlist.Implementation> {
       modes: Record<ValueOf<typeof foundry.CONST.PLAYLIST_MODES>, string>;
       sorting: Record<ValueOf<typeof foundry.CONST.PLAYLIST_SORT_MODES>, string>;

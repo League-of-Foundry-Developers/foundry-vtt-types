@@ -1,5 +1,4 @@
 import { expectTypeOf } from "vitest";
-import Document = foundry.abstract.Document;
 
 const fogExplorations = new FogExplorations([]);
 expectTypeOf(fogExplorations.get("", { strict: true })).toEqualTypeOf<FogExploration.Stored>();

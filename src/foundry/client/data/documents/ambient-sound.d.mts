@@ -229,7 +229,7 @@ declare global {
     }
 
     /**
-     * @deprecated {@link AmbientSoundDocument.DatabaseOperation}
+     * @deprecated {@link AmbientSoundDocument.DatabaseOperation | `AmbientSoundDocument.DatabaseOperation`}
      */
     interface DatabaseOperations extends Document.Database.Operations<AmbientSoundDocument> {}
 

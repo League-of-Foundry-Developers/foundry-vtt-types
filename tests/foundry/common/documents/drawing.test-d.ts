@@ -1,12 +1,7 @@
 import { expectTypeOf } from "vitest";
-import Document = foundry.abstract.Document;
 
-expectTypeOf(foundry.documents.BaseDrawing.create({})).toEqualTypeOf<
-  Promise<DrawingDocument.Stored | undefined>
->();
-expectTypeOf(foundry.documents.BaseDrawing.createDocuments([])).toEqualTypeOf<
-  Promise<DrawingDocument.Stored[]>
->();
+expectTypeOf(foundry.documents.BaseDrawing.create({})).toEqualTypeOf<Promise<DrawingDocument.Stored | undefined>>();
+expectTypeOf(foundry.documents.BaseDrawing.createDocuments([])).toEqualTypeOf<Promise<DrawingDocument.Stored[]>>();
 expectTypeOf(foundry.documents.BaseDrawing.updateDocuments([])).toEqualTypeOf<Promise<DrawingDocument[]>>();
 expectTypeOf(foundry.documents.BaseDrawing.deleteDocuments([])).toEqualTypeOf<Promise<DrawingDocument[]>>();
 
@@ -17,7 +12,7 @@ if (drawing) {
   expectTypeOf(drawing).toEqualTypeOf<Drawing>();
 }
 
-class TestBaseDrawing extends foundry.documents.BaseDrawing {};
+class TestBaseDrawing extends foundry.documents.BaseDrawing {}
 
 expectTypeOf(new TestBaseDrawing()).toEqualTypeOf<foundry.documents.BaseDrawing>();
 expectTypeOf(new TestBaseDrawing({})).toEqualTypeOf<foundry.documents.BaseDrawing>();

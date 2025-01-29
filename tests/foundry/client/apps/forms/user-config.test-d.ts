@@ -9,6 +9,4 @@ expectTypeOf(config.object).toEqualTypeOf<User.Implementation>();
 const withCustomOptions = new UserConfig<DocumentSheetOptions<User.Implementation> & { custom: true }>(
   new User.implementation({ name: "foo" }),
 );
-expectTypeOf(withCustomOptions.options).toEqualTypeOf<
-  DocumentSheetOptions<User.Implementation> & { custom: true }
->();
+expectTypeOf(withCustomOptions.options).toEqualTypeOf<DocumentSheetOptions<User.Implementation> & { custom: true }>();

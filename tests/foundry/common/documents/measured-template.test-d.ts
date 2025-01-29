@@ -7,7 +7,7 @@ expectTypeOf(template.parent).toEqualTypeOf<Scene | null>();
 
 const scene = new Scene({ name: "My scene" });
 
-class TestBaseMeasuredTemplate extends foundry.documents.BaseMeasuredTemplate {};
+class TestBaseMeasuredTemplate extends foundry.documents.BaseMeasuredTemplate {}
 
 new TestBaseMeasuredTemplate();
 
@@ -16,12 +16,8 @@ new TestBaseMeasuredTemplate({ x: 100, y: 100 });
 expectTypeOf(
   new TestBaseMeasuredTemplate({ x: 100, y: 100 }, scene),
 ).toEqualTypeOf<foundry.documents.BaseMeasuredTemplate>();
-expectTypeOf(
-  new TestBaseMeasuredTemplate({}, scene),
-).toEqualTypeOf<foundry.documents.BaseMeasuredTemplate>();
-expectTypeOf(
-  new TestBaseMeasuredTemplate(undefined, scene),
-).toEqualTypeOf<foundry.documents.BaseMeasuredTemplate>();
+expectTypeOf(new TestBaseMeasuredTemplate({}, scene)).toEqualTypeOf<foundry.documents.BaseMeasuredTemplate>();
+expectTypeOf(new TestBaseMeasuredTemplate(undefined, scene)).toEqualTypeOf<foundry.documents.BaseMeasuredTemplate>();
 expectTypeOf(
   new TestBaseMeasuredTemplate(
     {

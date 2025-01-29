@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
 
-class TestBaseAmbientSound extends foundry.documents.BaseAmbientSound {};
+class TestBaseAmbientSound extends foundry.documents.BaseAmbientSound {}
 
 expectTypeOf(new TestBaseAmbientSound()).toEqualTypeOf<foundry.documents.BaseAmbientSound>();
 expectTypeOf(new TestBaseAmbientSound({})).toEqualTypeOf<foundry.documents.BaseAmbientSound>();

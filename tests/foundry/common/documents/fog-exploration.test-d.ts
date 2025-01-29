@@ -1,16 +1,13 @@
 import { expectTypeOf } from "vitest";
-import Document = foundry.abstract.Document;
 
-class TestBaseFogExploration extends foundry.documents.BaseFogExploration {};
+class TestBaseFogExploration extends foundry.documents.BaseFogExploration {}
 
 expectTypeOf(new TestBaseFogExploration()).toEqualTypeOf<foundry.documents.BaseFogExploration>();
 expectTypeOf(new TestBaseFogExploration({})).toEqualTypeOf<foundry.documents.BaseFogExploration>();
 expectTypeOf(foundry.documents.BaseFogExploration.create({})).toEqualTypeOf<
   Promise<FogExploration.Stored | undefined>
 >();
-expectTypeOf(foundry.documents.BaseFogExploration.createDocuments()).toEqualTypeOf<
-  Promise<FogExploration.Stored[]>
->();
+expectTypeOf(foundry.documents.BaseFogExploration.createDocuments()).toEqualTypeOf<Promise<FogExploration.Stored[]>>();
 expectTypeOf(foundry.documents.BaseFogExploration.updateDocuments()).toEqualTypeOf<Promise<FogExploration[]>>();
 expectTypeOf(foundry.documents.BaseFogExploration.deleteDocuments()).toEqualTypeOf<Promise<FogExploration[]>>();
 

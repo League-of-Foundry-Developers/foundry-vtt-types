@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
 
-class TestBaseToken extends foundry.documents.BaseToken {};
+class TestBaseToken extends foundry.documents.BaseToken {}
 
 new TestBaseToken();
 

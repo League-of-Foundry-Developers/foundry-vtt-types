@@ -1,5 +1,4 @@
 import { expectTypeOf } from "vitest";
-import Document = foundry.abstract.Document;
 
 const worldSettings = new WorldSettings([]);
 expectTypeOf(worldSettings.get("", { strict: true })).toEqualTypeOf<Setting.Stored>();

@@ -20,11 +20,7 @@ declare abstract class BaseActiveEffect<
   // TODO(LukeAbby): This constructor is causing a circular error.
   // constructor(data?: BaseActiveEffect.CreateData, context?: Document.ConstructionContext<BaseActiveEffect.Parent>);
 
-  override canUserModify(
-    user: User.Implementation,
-    action: "create" | "update" | "delete",
-    data?: AnyObject,
-  ): boolean;
+  override canUserModify(user: User.Implementation, action: "create" | "update" | "delete", data?: AnyObject): boolean;
 
   static override metadata: BaseActiveEffect.Metadata;
 

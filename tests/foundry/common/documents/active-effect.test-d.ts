@@ -1,12 +1,7 @@
 import { expectTypeOf } from "vitest";
-import Document = foundry.abstract.Document;
 
-expectTypeOf(foundry.documents.BaseActiveEffect.create({})).toEqualTypeOf<
-  Promise<ActiveEffect.Stored | undefined>
->();
-expectTypeOf(foundry.documents.BaseActiveEffect.createDocuments([])).toEqualTypeOf<
-  Promise<ActiveEffect.Stored[]>
->();
+expectTypeOf(foundry.documents.BaseActiveEffect.create({})).toEqualTypeOf<Promise<ActiveEffect.Stored | undefined>>();
+expectTypeOf(foundry.documents.BaseActiveEffect.createDocuments([])).toEqualTypeOf<Promise<ActiveEffect.Stored[]>>();
 expectTypeOf(foundry.documents.BaseActiveEffect.updateDocuments([])).toEqualTypeOf<Promise<ActiveEffect[]>>();
 expectTypeOf(foundry.documents.BaseActiveEffect.deleteDocuments([])).toEqualTypeOf<Promise<ActiveEffect[]>>();
 

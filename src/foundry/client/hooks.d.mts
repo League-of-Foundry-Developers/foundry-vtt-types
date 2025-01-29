@@ -423,11 +423,7 @@ declare global {
        * @remarks An explicit return value of `false` prevents the Document being created.
        * @see {@link ActorSheet#_onDrop}
        */
-      dropActorSheetData: (
-        actor: Actor.Implementation,
-        sheet: ActorSheet,
-        data: ActorSheet.DropData,
-      ) => boolean | void;
+      dropActorSheetData: (actor: Actor.Implementation, sheet: ActorSheet, data: ActorSheet.DropData) => boolean | void;
 
       /** CanvasVisibility */
 
@@ -546,11 +542,7 @@ declare global {
        * @param current - The new turn state
        * @remarks This is called by {@link Hooks.callAll}.
        */
-      combatTurnChange: (
-        combat: Combat.Implementation,
-        prior: Combat.HistoryData,
-        current: Combat.HistoryData,
-      ) => void;
+      combatTurnChange: (combat: Combat.Implementation, prior: Combat.HistoryData, current: Combat.HistoryData) => void;
 
       /**
        * A hook event that fires when a Combat encounter is started.

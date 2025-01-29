@@ -1,5 +1,4 @@
 import { expectTypeOf } from "vitest";
-import Document = foundry.abstract.Document;
 
 const messages = new Messages([]);
 expectTypeOf(messages.get("", { strict: true })).toEqualTypeOf<ChatMessage.Stored>();

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
+
 /**
  * Use this interface to configure your custom generic `ActiveEffect` implementation.
  * See also {@link DocumentClassConfig | `DocumentClassConfig`} to configure your class.

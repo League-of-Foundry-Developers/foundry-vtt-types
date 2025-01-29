@@ -28,9 +28,7 @@ if (item) {
   >();
 }
 
-expectTypeOf(foundry.documents.BaseMacro.create({ name: "" })).toEqualTypeOf<
-  Promise<Macro.Stored | undefined>
->();
+expectTypeOf(foundry.documents.BaseMacro.create({ name: "" })).toEqualTypeOf<Promise<Macro.Stored | undefined>>();
 expectTypeOf(foundry.documents.BaseMacro.create({ name: "" }, { temporary: false })).toEqualTypeOf<
   Promise<Macro.Stored | undefined>
 >();
@@ -41,9 +39,7 @@ expectTypeOf(foundry.documents.BaseMacro.create({ name: "" }, { temporary: true 
 expectTypeOf(foundry.documents.BaseMacro.createDocuments([], { temporary: true })).toEqualTypeOf<
   Promise<Macro[] | undefined>
 >();
-expectTypeOf(foundry.documents.BaseMacro.createDocuments([])).toEqualTypeOf<
-  Promise<Macro.Stored[] | undefined>
->();
+expectTypeOf(foundry.documents.BaseMacro.createDocuments([])).toEqualTypeOf<Promise<Macro.Stored[] | undefined>>();
 expectTypeOf(foundry.documents.BaseMacro.createDocuments([], { temporary: false })).toEqualTypeOf<
   Promise<Macro.Stored[] | undefined>
 >();
@@ -66,9 +62,7 @@ expectTypeOf(scene.createEmbeddedDocuments("Note", [], { temporary: true })).toE
 expectTypeOf(scene.createEmbeddedDocuments("Note", [], { temporary: false })).toEqualTypeOf<
   Promise<NoteDocument.Stored[] | undefined>
 >();
-expectTypeOf(scene.createEmbeddedDocuments("Note", [])).toEqualTypeOf<
-  Promise<NoteDocument.Stored[] | undefined>
->();
+expectTypeOf(scene.createEmbeddedDocuments("Note", [])).toEqualTypeOf<Promise<NoteDocument.Stored[] | undefined>>();
 
 // verify that document lifecycle methods work with source data is possible
 

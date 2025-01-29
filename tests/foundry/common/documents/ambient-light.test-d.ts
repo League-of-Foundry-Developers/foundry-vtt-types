@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
 
-class TestBaseAmbientLight extends foundry.documents.BaseAmbientLight {};
+class TestBaseAmbientLight extends foundry.documents.BaseAmbientLight {}
 
 expectTypeOf(new TestBaseAmbientLight()).toEqualTypeOf<foundry.documents.BaseAmbientLight>();
 expectTypeOf(new TestBaseAmbientLight({})).toEqualTypeOf<foundry.documents.BaseAmbientLight>();

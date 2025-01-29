@@ -1,12 +1,7 @@
 import { expectTypeOf } from "vitest";
-import Document = foundry.abstract.Document;
 
-expectTypeOf(foundry.documents.BaseChatMessage.create({})).toEqualTypeOf<
-  Promise<ChatMessage.Stored | undefined>
->();
-expectTypeOf(foundry.documents.BaseChatMessage.createDocuments([])).toEqualTypeOf<
-  Promise<ChatMessage.Stored[]>
->();
+expectTypeOf(foundry.documents.BaseChatMessage.create({})).toEqualTypeOf<Promise<ChatMessage.Stored | undefined>>();
+expectTypeOf(foundry.documents.BaseChatMessage.createDocuments([])).toEqualTypeOf<Promise<ChatMessage.Stored[]>>();
 expectTypeOf(foundry.documents.BaseChatMessage.updateDocuments([])).toEqualTypeOf<Promise<ChatMessage[]>>();
 expectTypeOf(foundry.documents.BaseChatMessage.deleteDocuments([])).toEqualTypeOf<Promise<ChatMessage[]>>();
 
@@ -15,7 +10,7 @@ if (chat) {
   expectTypeOf(chat).toEqualTypeOf<ChatMessage>();
 }
 
-class TestBaseChatMessage extends foundry.documents.BaseChatMessage {};
+class TestBaseChatMessage extends foundry.documents.BaseChatMessage {}
 
 expectTypeOf(new TestBaseChatMessage()).toEqualTypeOf<foundry.documents.BaseChatMessage>();
 expectTypeOf(new TestBaseChatMessage({})).toEqualTypeOf<foundry.documents.BaseChatMessage>();

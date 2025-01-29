@@ -68,8 +68,7 @@ declare global {
 
     interface Options extends DocumentSheetOptions<JournalEntryPage.Implementation> {}
 
-    interface JournalPageSheetData
-      extends DocumentSheet.DocumentSheetData<Options, JournalEntryPage.Implementation> {
+    interface JournalPageSheetData extends DocumentSheet.DocumentSheetData<Options, JournalEntryPage.Implementation> {
       headingLevels: Record<number, string>;
     }
   }

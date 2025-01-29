@@ -1,6 +1,5 @@
 import { expectTypeOf } from "vitest";
 import EmbeddedCollection = foundry.abstract.EmbeddedCollection;
-import Document = foundry.abstract.Document;
 
 // @ts-expect-error - A BaseScene requires data.
 foundry.documents.BaseScene.create();

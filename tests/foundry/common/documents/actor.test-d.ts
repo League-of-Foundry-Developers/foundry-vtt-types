@@ -20,9 +20,7 @@ new TestBaseActor({});
 
 const baseActor = new TestBaseActor({ name: "foo", type: "character" });
 expectTypeOf(baseActor.name).toEqualTypeOf<string>();
-expectTypeOf(baseActor.effects).toEqualTypeOf<
-  EmbeddedCollection<ActiveEffect.Implementation, Actor.Implementation>
->();
+expectTypeOf(baseActor.effects).toEqualTypeOf<EmbeddedCollection<ActiveEffect.Implementation, Actor.Implementation>>();
 expectTypeOf(baseActor.effects.get("")).toEqualTypeOf<ActiveEffect.Implementation | undefined>();
 expectTypeOf(baseActor.effects.get("")!.name).toEqualTypeOf<string>();
 expectTypeOf(baseActor.items).toEqualTypeOf<EmbeddedCollection<Item.Implementation, Actor.Implementation>>();

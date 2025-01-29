@@ -196,7 +196,7 @@ declare global {
     }
 
     /**
-     * @deprecated {@link AmbientLightDocument.DatabaseOperation}
+     * @deprecated {@link AmbientLightDocument.DatabaseOperation | `AmbientLightDocument.DatabaseOperation`}
      */
     /* eslint-disable @typescript-eslint/no-empty-object-type */
     interface DatabaseOperations

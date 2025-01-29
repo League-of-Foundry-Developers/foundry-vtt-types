@@ -2,7 +2,7 @@ import { expectTypeOf } from "vitest";
 
 const myScene = new Scene({ name: "foobar" });
 
-class TestBaseWall extends foundry.documents.BaseWall {};
+class TestBaseWall extends foundry.documents.BaseWall {}
 
 // @ts-expect-error - A BaseWall requires data.
 new TestBaseWall();

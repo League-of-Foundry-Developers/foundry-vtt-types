@@ -1,5 +1,4 @@
 import { expectTypeOf } from "vitest";
-import Document = foundry.abstract.Document;
 
 const macros = new Macros([]);
 expectTypeOf(macros.get("", { strict: true })).toEqualTypeOf<Macro.Stored>();

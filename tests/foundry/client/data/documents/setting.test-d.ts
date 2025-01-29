@@ -1,5 +1,4 @@
 import { expectTypeOf } from "vitest";
-import Document = foundry.abstract.Document;
 import type { AnyObject } from "fvtt-types/utils";
 
 // @ts-expect-error - requires key
@@ -14,9 +13,7 @@ expectTypeOf(setting.config).toEqualTypeOf<SettingsConfig | undefined>();
 
 expectTypeOf(setting.key).toEqualTypeOf<string>();
 expectTypeOf(setting.value).toEqualTypeOf<AnyObject | null>();
-expectTypeOf(Setting.create({ key: "foo.bar", value: "bar" })).toEqualTypeOf<
-  Promise<Setting.Stored | undefined>
->();
+expectTypeOf(Setting.create({ key: "foo.bar", value: "bar" })).toEqualTypeOf<Promise<Setting.Stored | undefined>>();
 expectTypeOf(Setting.createDocuments([])).toEqualTypeOf<Promise<Setting.Stored[]>>();
 expectTypeOf(Setting.updateDocuments([])).toEqualTypeOf<Promise<Setting.Implementation[]>>();
 expectTypeOf(Setting.deleteDocuments([])).toEqualTypeOf<Promise<Setting.Implementation[]>>();

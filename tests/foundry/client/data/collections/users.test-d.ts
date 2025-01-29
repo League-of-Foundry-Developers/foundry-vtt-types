@@ -1,5 +1,4 @@
 import { expectTypeOf } from "vitest";
-import Document = foundry.abstract.Document;
 
 const users = new Users();
 expectTypeOf(users.get("", { strict: true })).toEqualTypeOf<User.Stored>();

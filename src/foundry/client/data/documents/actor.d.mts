@@ -299,10 +299,7 @@ declare global {
     /**
      * Maintain a list of Token Documents that represent this Actor, stored by Scene.
      */
-    protected _dependentTokens: foundry.utils.IterableWeakMap<
-      Scene.Implementation,
-      TokenDocument.Implementation
-    >;
+    protected _dependentTokens: foundry.utils.IterableWeakMap<Scene.Implementation, TokenDocument.Implementation>;
 
     protected override _initializeSource(
       data: this | Actor.CreateData,

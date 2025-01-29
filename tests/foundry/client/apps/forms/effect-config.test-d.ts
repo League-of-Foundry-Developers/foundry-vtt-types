@@ -7,9 +7,9 @@ const config = new ActiveEffectConfig(new ActiveEffect());
 expectTypeOf(config.object).toEqualTypeOf<ActiveEffect>();
 expectTypeOf(config.options).toEqualTypeOf<DocumentSheetOptions<ActiveEffect.Implementation>>();
 
-const withCustomOptions = new ActiveEffectConfig<
-  DocumentSheetOptions<ActiveEffect.Implementation> & { custom: true }
->(new ActiveEffect());
+const withCustomOptions = new ActiveEffectConfig<DocumentSheetOptions<ActiveEffect.Implementation> & { custom: true }>(
+  new ActiveEffect(),
+);
 expectTypeOf(withCustomOptions.options).toEqualTypeOf<
   DocumentSheetOptions<ActiveEffect.Implementation> & { custom: true }
 >();

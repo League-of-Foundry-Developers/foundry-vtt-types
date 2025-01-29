@@ -11,7 +11,7 @@ new Cards({});
 // @ts-expect-error - "german" is not a valid type
 new Cards({ name: "Just a deck of cards", type: "german" });
 
-const cards = new Cards({ name: "Just a deck of cards", type: "deck"});
+const cards = new Cards({ name: "Just a deck of cards", type: "deck" });
 expectTypeOf(cards).toEqualTypeOf<Cards.Implementation>();
 
 expectTypeOf(cards.thumbnail).toEqualTypeOf<FilePathField.InitializedType<any>>();
@@ -130,7 +130,9 @@ expectTypeOf(cards.drawDialog()).toEqualTypeOf<Promise<Card.Implementation[] | n
 expectTypeOf(cards.passDialog()).toEqualTypeOf<Promise<Cards.Implementation | null>>();
 
 // playDialog
-expectTypeOf(cards.playDialog(new Card({ name: "Some Card" }))).toEqualTypeOf<Promise<Card.Implementation[] | void | null>>();
+expectTypeOf(cards.playDialog(new Card({ name: "Some Card" }))).toEqualTypeOf<
+  Promise<Card.Implementation[] | void | null>
+>();
 
 // resetDialog
 expectTypeOf(cards.resetDialog()).toEqualTypeOf<Promise<Cards.Implementation | false | null>>();

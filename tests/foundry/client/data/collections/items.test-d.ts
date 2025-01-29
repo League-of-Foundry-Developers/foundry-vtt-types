@@ -1,5 +1,4 @@
 import { expectTypeOf } from "vitest";
-import Document = foundry.abstract.Document;
 
 const items = new Items([]);
 expectTypeOf(items.get("", { strict: true })).toEqualTypeOf<Item.Stored>();

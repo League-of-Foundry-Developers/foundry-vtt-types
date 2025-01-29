@@ -1,5 +1,4 @@
 import { expectTypeOf } from "vitest";
-import Document = foundry.abstract.Document;
 
 expectTypeOf(Scenes.documentName).toEqualTypeOf<"Scene">();
 

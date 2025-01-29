@@ -1,6 +1,5 @@
 import { expectTypeOf } from "vitest";
 import type { DeepPartial } from "fvtt-types/utils";
-import Document = foundry.abstract.Document;
 
 const compendiumCollection = await CompendiumCollection.createCompendium({
   type: "JournalEntry" as const,

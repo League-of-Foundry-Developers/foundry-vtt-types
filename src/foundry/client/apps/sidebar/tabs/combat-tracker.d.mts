@@ -1,4 +1,4 @@
-import type Document from "../../../../common/abstract/document.d.mts";
+export {};
 
 declare global {
   /**
@@ -12,7 +12,7 @@ declare global {
      * @defaultValue `null`
      * @internal
      */
-    protected _highlighted: Token.ConfiguredInstance | null;
+    protected _highlighted: Token.Object | null;
 
     /**
      * Record the currently tracked Combat encounter

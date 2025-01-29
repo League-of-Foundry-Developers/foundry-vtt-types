@@ -1,5 +1,4 @@
 import { expectTypeOf } from "vitest";
-import Document = foundry.abstract.Document;
 
 const playlists = new Playlists([]);
 expectTypeOf(playlists.get("", { strict: true })).toEqualTypeOf<Playlist.Stored>();

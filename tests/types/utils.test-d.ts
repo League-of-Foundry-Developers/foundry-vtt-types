@@ -1,6 +1,5 @@
 import { assertType, expectTypeOf } from "vitest";
 import type { DeepPartial, Expanded, MaybePromise, RequiredProps, Titlecase } from "fvtt-types/utils";
-import Document = foundry.abstract.Document;
 
 // An empty object should always be assignable to `DeepPartial`.
 function _emptyMustBeAssignable<T extends object>(_partial: DeepPartial<T> = {}): void {}

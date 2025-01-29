@@ -1,5 +1,4 @@
 import { expectTypeOf } from "vitest";
-import Document = foundry.abstract.Document;
 
 const journal = new Journal([]);
 expectTypeOf(journal.get("", { strict: true })).toEqualTypeOf<JournalEntry.Stored>();

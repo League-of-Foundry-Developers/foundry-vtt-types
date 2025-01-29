@@ -1,4 +1,4 @@
-import type Document from "../../../common/abstract/document.d.mts";
+export {};
 
 declare global {
   /**
