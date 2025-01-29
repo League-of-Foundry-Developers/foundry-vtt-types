@@ -18,6 +18,7 @@ import type {
   NullishProps,
   AllKeysOf,
   IntentionalPartial,
+  DiscriminatedUnion,
 } from "../../../utils/index.d.mts";
 import type { documents } from "../../client-esm/client.d.mts";
 import type * as CONST from "../constants.mts";
@@ -955,12 +956,15 @@ declare namespace Document {
 
   type CoreTypesForName<Name extends Type> = string & GetKey<Document.MetadataFor<Name>, "coreTypes", ["base"]>[number];
 
+  type ConfiguredSubTypesOf<Name extends Type> = Name extends "ActorDelta"
+    ? ConfiguredSubTypesOf<"Actor">
+    : keyof GetKey<DataModelConfig, Name, unknown> | keyof GetKey<SourceConfig, Name, unknown>;
+
   type SubTypesOf<Name extends Type> = Name extends "ActorDelta"
     ? SubTypesOf<"Actor">
     :
         | Document.CoreTypesForName<Name>
-        | keyof GetKey<DataModelConfig, Name, unknown>
-        | keyof GetKey<SourceConfig, Name, unknown>
+        | ConfiguredSubTypesOf<Name>
         | (Document.MetadataFor<Name> extends { readonly hasTypeData: true } ? Document.ModuleSubtype : never);
 
   type ModuleSubtype = `${string}.${string}`;
@@ -982,15 +986,19 @@ declare namespace Document {
     | (Name extends "TableResult" ? TableResult.OfType<SubType & TableResult.SubType> : never);
 
   // Note(LukeAbby): This is written this way to make it more obviously covariant over `SubType`.
-  type SystemFor<Name extends WithSubTypes, SubType extends SubTypesOf<Name>> = Name extends "ActorDelta"
+  type SystemFor<Name extends WithSystem, SubType extends SubTypesOf<Name>> = Name extends "ActorDelta"
     ? IntentionalPartial<SystemFor<"Actor", SubType & ActorDelta.SubType>>
-    : SystemData extends {
-          readonly [K in Name]: infer Data;
-        }
-      ? SubType extends keyof Data
-        ? Data[SubType]
-        : UnknownSystem
-      : UnknownSystem;
+    :
+        | DiscriminatedUnion<
+            SystemData extends {
+              readonly [K in Name]: infer Data;
+            }
+              ? SubType extends keyof Data
+                ? Data[SubType]
+                : never
+              : never
+          >
+        | (SubType extends `${string}.${string}` ? UnknownSystem : never);
 
   interface SystemData extends _SystemData {}
 

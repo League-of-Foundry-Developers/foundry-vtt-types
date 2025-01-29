@@ -26,6 +26,8 @@ declare global {
     interface Metadata extends Document.MetadataFor<"RegionBehavior"> {}
 
     type SubType = Game.Model.TypeNames<"RegionBehavior">;
+    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<"RegionBehavior">;
+    type Known = RegionBehavior.OfType<RegionBehavior.ConfiguredSubTypes>;
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredRegionBehavior<Type>, RegionBehavior<SubType>>;
 
     /**

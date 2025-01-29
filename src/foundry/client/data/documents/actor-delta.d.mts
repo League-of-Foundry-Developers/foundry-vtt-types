@@ -26,6 +26,8 @@ declare global {
 
     // This is NOT a mistake. Due to the implementation of the ActorDelta document, the SubType is the same as the Actor's SubType.
     type SubType = Game.Model.TypeNames<"ActorDelta">;
+    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<"ActorDelta">;
+    type Known = ActorDelta.OfType<ActorDelta.ConfiguredSubTypes>;
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredActorDelta<Type>, ActorDelta<Type>>;
 
     /**

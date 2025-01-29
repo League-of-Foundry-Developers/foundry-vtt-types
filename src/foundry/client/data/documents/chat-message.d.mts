@@ -27,6 +27,8 @@ declare global {
     interface Metadata extends Document.MetadataFor<"ChatMessage"> {}
 
     type SubType = Game.Model.TypeNames<"ChatMessage">;
+    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<"ChatMessage">;
+    type Known = ChatMessage.OfType<ChatMessage.ConfiguredSubTypes>;
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredChatMessage<Type>, ChatMessage<SubType>>;
 
     /**

@@ -1017,3 +1017,111 @@ type _MustBeValidUuid<
  * Drops the first element of an array
  */
 type DropFirst<T extends AnyArray> = T extends [infer _1, ...infer V] ? V : T;
+
+/**
+ * ### Usage
+ *
+ * Note: See "Background" for an explanation of what a "Discriminated Union" is.
+ *
+ * Use `DiscriminatedUnion` when you want to turn a regular union into a discriminated union. The form
+ * this helper type chooses is
+ * `{ prop1: number; readonly prop2?: never } | { readonly prop1?: never; prop2: string }` as this
+ * is the strictest form of a discriminated union. `readonly prop1?: never` is very similar to
+ * `prop1?: undefined` but `never` is used because with
+ * [`exactOptionalPropertyTypes`](https://www.typescriptlang.org/tsconfig/exactOptionalPropertyTypes.html)
+ * there is an actual difference and `readonly` is there because it prevents erroneous mutation.
+ *
+ * Please note that this type is unsound when you don't know for sure the union can't have
+ * excess properties that interfere with other constituents. For a basic example of this unsoundness:
+ * ```ts
+ * function selectRandom<T, U>(array1: T, array2: U): DiscrimatedUnion<T | U> {
+ *   return (Math.random() > 0.5 ? array1 : array2) as DiscrimatedUnion<T | U>;
+ * }
+ *
+ * const obj1 = { prop1: "foo" };
+ * const obj2: { prop2: number } = { prop1: 1, prop2: "bar" };
+ *
+ * const discriminatedUnion = selectRandom(obj1, obj2)
+ *
+ * // If `selectRandom` returned `T | U` then `discriminatedUnion.prop1` would error.
+ * // However because of unsoundly using `DiscrimatedUnion` it doesn't.
+ * const prop1 = discriminatedUnion.prop1;
+ * //    ^ `string | undefined`.
+ *
+ * console.log(prop1 !== undefined ? prop1.length : 0);
+ * //                                ^ Runtime error the 50% of the time that `prop1` is actually `1` at runtime
+ * ```
+ *
+ * ### Background
+ *
+ * A common unintuitive behavior of unions in TypeScript is that if a property only exists on some
+ * members of the union access is not allowed:
+ * ```typescript
+ * const member1 = { prop1: "foo" };
+ * const member2 = { prop2: 1 };
+ * const union = Math.random() > 0.5 ? member1 : member2;
+ * //    ^ { prop1: string; } | { prop2: number; }
+ *
+ * const prop1 = union.prop1;
+ * ```
+ *
+ * This snippet errors with:
+ * ```
+ * Property 'prop1' does not exist on type '{ prop1: number; } | { prop2: number; }'.
+ *   Property 'prop1' does not exist on type '{ prop2: number; }'.`
+ * ```
+ *
+ * This error is not very good at explaining why the result can't simply be `number | undefined` but
+ * it can't simply be relaxed. To understand why you need to know that excess properties can always
+ * be assigned to an object. To demonstrate:
+ * ```ts
+ * function takesObj(obj: { prop1: number }) { ... }
+ *
+ * // You may think excess properties aren't allowed because when you try to write code like this,
+ * // it errors.
+ * takesObj({ prop1: 1, prop2: "foo" });
+ * //                   ^ Object literal may only specify known properties, but 'prop2' does not exist in type '{ prop1: number; }'. Did you mean to write 'prop1'?
+ *
+ * // However this is more of a "lint" than a hard error.
+ * const obj = { prop1: 1, prop2: "foo" };
+ * takesObj(obj); // No error
+ * ```
+ *
+ * This means that the type of `union.prop1` would have to be `unknown` at best because at runtime
+ * there could be any excess properties of any type.
+ *
+ * ### Discriminated Unions
+ *
+ * Discriminated unions are a way to get around this issue. There's several possible ways to express
+ * discriminated unions but the most common version is
+ * `{ prop1: number; prop2?: undefined } | { prop1?: undefined; prop1: number }`. The key idea is to
+ * put a property that
+ *
+ * In fact TypeScript will automatically create a discriminated union in some cases. For example if
+ * you simplify the snippet above:
+ * ```typescript
+ * const discriminatedUnion = Math.random() > 0.5 ? { prop1: 1 } : { prop2: 2 };
+ * //    ^ { prop1: number; prop2?: undefined } | { prop2: number; }
+ *
+ * const prop1 = discriminatedUnion.prop1;
+ * //    ^ number | undefined
+ * ```
+ *
+ * You'll see TypeScript now has enough information to give `discriminatedUnion` a better type than
+ * `union` had which now makes `discriminatedUnion.prop1` work.
+ *
+ * See:
+ *
+ * {@link https://www.typescriptlang.org/docs/handbook/2/narrowing.html#discriminated-unions}
+ *
+ * {@link https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes-func.html#discriminated-unions}
+ */
+export type DiscriminatedUnion<U extends object> = _DiscriminatedUnion<U, AllKeysOf<U>>;
+
+type _DiscriminatedUnion<U extends object, AllKeys extends AllKeysOf<U>> = U extends unknown
+  ? {
+      [K in keyof U]: U[K];
+    } & {
+      readonly [K in Exclude<AllKeys, keyof U>]?: never;
+    }
+  : never;

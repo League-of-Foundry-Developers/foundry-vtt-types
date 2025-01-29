@@ -28,6 +28,8 @@ declare global {
     interface Metadata extends Document.MetadataFor<"ActiveEffect"> {}
 
     type SubType = Game.Model.TypeNames<"ActiveEffect">;
+    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<"ActiveEffect">;
+    type Known = ActiveEffect.OfType<ActiveEffect.ConfiguredSubTypes>;
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredActiveEffect<Type>, ActiveEffect<Type>>;
 
     /**

@@ -27,6 +27,8 @@ declare global {
     interface Metadata extends Document.MetadataFor<"Combat"> {}
 
     type SubType = Game.Model.TypeNames<"Combat">;
+    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<"Combat">;
+    type Known = Combat.OfType<Combat.ConfiguredSubTypes>;
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredCombat<Type>, Combat<SubType>>;
 
     /**

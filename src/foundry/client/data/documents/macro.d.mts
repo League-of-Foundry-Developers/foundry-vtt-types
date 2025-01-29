@@ -27,6 +27,8 @@ declare global {
     interface Metadata extends Document.MetadataFor<"Macro"> {}
 
     type SubType = Game.Model.TypeNames<"Macro">;
+    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<"Macro">;
+    type Known = Macro.OfType<Macro.ConfiguredSubTypes>;
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredMacro<Type>, Macro<SubType>>;
 
     /**

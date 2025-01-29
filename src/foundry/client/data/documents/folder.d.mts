@@ -26,6 +26,8 @@ declare global {
     interface Metadata extends Document.MetadataFor<"Folder"> {}
 
     type SubType = Game.Model.TypeNames<"Folder">;
+    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<"Folder">;
+    type Known = Folder.OfType<Folder.ConfiguredSubTypes>;
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredFolder<Type>, Folder<SubType>>;
 
     /**
