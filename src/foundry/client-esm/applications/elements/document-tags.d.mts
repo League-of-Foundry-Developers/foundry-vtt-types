@@ -7,6 +7,8 @@ import type AbstractFormInputElement from "./form-element.d.mts";
 declare class HTMLDocumentTagsElement extends AbstractFormInputElement<Record<string, string> | string | string[]> {
   constructor();
 
+  static override tagName: "document-tags";
+
   protected _value: Record<string, string>;
 
   set type(value: string);
