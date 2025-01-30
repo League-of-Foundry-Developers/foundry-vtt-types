@@ -38,15 +38,23 @@ declare global {
    * Each Drawing is a placeable object in the DrawingsLayer.
    */
   class Drawing extends PlaceableObject<DrawingDocument.ConfiguredInstance> {
+    constructor(document: DrawingDocument.ConfiguredInstance);
+
     /**
-     * The texture that is used to fill this Drawing, if any.
+     * Each Drawing object belongs to the DrawingsLayer
+     * @remarks it's possible this shouldn't be here and is some data model thing
      */
-    texture: PIXI.Texture | undefined;
+    get layer(): DrawingsLayer;
+
+    /**
+     * Each Drawing object provides an interface for a DrawingDocument
+     */
+    document: DrawingDocument;
 
     /**
      * The border frame and resizing handles for the drawing.
      */
-    frame: PIXI.Container | undefined;
+    frame: PIXI.Container;
 
     /**
      * A text label that may be displayed as part of the interface layer for the Drawing.
@@ -58,54 +66,30 @@ declare global {
      * The primary drawing shape
      * @defaultValue `null`
      */
-    shape: PrimaryGraphics | PIXI.Graphics | undefined;
+    shape: PrimaryGraphics | PIXI.Graphics;
 
     static override embeddedName: "Drawing";
 
     static override RENDER_FLAGS: {
       /** @defaultValue `{ propagate: ["refresh"] }` */
-      redraw: RenderFlag<Partial<Drawing.RenderFlags>>;
+      redraw: RenderFlag<Drawing.RenderFlags>;
 
-      /** @defaultValue `{ propagate: ["refreshState", "refreshTransform", "refreshText", "refreshElevation"], alias: true }` */
+      /** @defaultValue `{ propagate: ["refreshState", "refreshShape"], alias: true }` */
       refresh: RenderFlag<Drawing.RenderFlags>;
 
-      /** @defaultValue `{}` */
-      refreshState: RenderFlag<Partial<Drawing.RenderFlags>>;
-
-      /** @defaultValue `{ propagate: ["refreshPosition", "refreshRotation", "refreshSize"], alias: true }` */
-      refreshTransform: RenderFlag<Drawing.RenderFlags>;
-
-      /** @defaultValue `{}` */
-      refreshPosition: RenderFlag<Drawing.RenderFlags>;
-
       /** @defaultValue `{ propagate: ["refreshFrame"] }` */
-      refreshRotation: RenderFlag<Drawing.RenderFlags>;
-
-      /** @defaultValue `{ propagate: ["refreshPosition", "refreshFrame", "refreshShape", "refreshText"] }` */
-      refreshSize: RenderFlag<Drawing.RenderFlags>;
+      refreshState: RenderFlag<Drawing.RenderFlags>;
 
       /** @defaultValue `{ propagate: ["refreshFrame", "refreshText", "refreshMesh"] }` */
       refreshShape: RenderFlag<Drawing.RenderFlags>;
 
       /** @defaultValue `{}` */
-      refreshText: RenderFlag<Drawing.RenderFlags>;
-
-      /** @defaultValue `{}` */
       refreshFrame: RenderFlag<Drawing.RenderFlags>;
 
       /** @defaultValue `{}` */
-      refreshElevation: RenderFlag<Drawing.RenderFlags>;
+      refreshText: RenderFlag<Drawing.RenderFlags>;
 
-      /**
-       * @defaultValue
-       * ```js
-       * {
-       *   propagate: ["refreshTransform", "refreshShape", "refreshElevation"],
-       *   deprecated: {since: 12, until: 14, alias: true}
-       * }
-       * ```
-       * @deprecated since v12 until v14
-       */
+      /** @defaultValue `{}` */
       refreshMesh: RenderFlag<Drawing.RenderFlags>;
     };
 
@@ -305,46 +289,4 @@ declare global {
      */
     controlIcon: null;
   }
-
-  namespace Drawing {
-    type AnyConstructor = typeof AnyDrawing;
-
-    type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof Drawing>;
-    type ConfiguredInstance = InstanceType<ConfiguredClass>;
-
-    interface RenderFlags extends PlaceableObject.RenderFlags {
-      refreshTransform: boolean;
-      refreshPosition: boolean;
-      refreshRotation: boolean;
-      refreshSize: boolean;
-      refreshShape: boolean;
-      refreshFrame: boolean;
-      refreshText: boolean;
-      refreshElevation: boolean;
-      /**
-       * @deprecated since v12, until v14
-       */
-      refreshMesh: boolean;
-    }
-
-    interface TextEditingOptions {
-      forceTextEditing?: boolean;
-
-      isNew?: boolean;
-    }
-
-    interface AdjustableShape {
-      shape: {
-        width: number;
-        height: number;
-        points: Canvas.Point[];
-      };
-      x: number;
-      y: number;
-    }
-  }
-}
-
-declare abstract class AnyDrawing extends Drawing {
-  constructor(arg0: never, ...args: never[]);
 }
