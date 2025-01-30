@@ -3161,7 +3161,7 @@ interface CanvasGroupConstructor extends PixiContainerConstructor {
 
   /**
    * The name of this canvas group
-   * @remarks Not used in EffectsCanvasGroup in v11
+   * @remarks Can be undefined in some cases (e.g `EffectsCanvasGroup`) to prevent other groups using it as a parent
    */
-  groupName?: string;
+  groupName?: string | undefined;
 }
