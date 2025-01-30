@@ -60,7 +60,7 @@ declare class HTMLStringTagsElement extends AbstractFormInputElement<Set<string>
   /**
    * Create a HTMLStringTagsElement using provided configuration data.
    */
-  static create(config: HTMLStringTagsElement.StringTagsInputConfig): HTMLElement;
+  static create(config: HTMLStringTagsElement.StringTagsInputConfig): HTMLStringTagsElement;
 }
 
 declare namespace HTMLStringTagsElement {
