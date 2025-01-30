@@ -1,4 +1,4 @@
-import type { InexactPartial } from "../../../../../types/utils.d.mts";
+import type { InexactPartial } from "fvtt-types/utils";
 
 declare global {
   /**
