@@ -76,7 +76,7 @@ declare global {
     /**
      * A Quadtree which partitions and organizes primary canvas objects.
      */
-    quadtree: CanvasQuadtree;
+    quadtree: CanvasQuadtree<PrimaryCanvasObjectMixin.Any>;
 
     /**
      * The collection of PrimaryDrawingContainer objects which are rendered in the Scene.

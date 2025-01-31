@@ -1,9 +1,30 @@
 import { expectTypeOf } from "vitest";
 
-const myQuadTree = new CanvasQuadtree();
+expectTypeOf(Quadtree.INDICES).toMatchTypeOf<Record<keyof Quadtree.Indices, Quadtree.INDICES>>();
 
-let myTokenDocument: any;
+type TCI = Token.ConfiguredInstance;
+declare const someToken: TCI;
+declare const someRect: PIXI.Rectangle;
+declare const collisionTest: (o: QuadtreeObject<TCI>, rect: Canvas.Rectangle) => boolean;
 
-const myToken = new Token(myTokenDocument);
+const myQuadtree = new Quadtree<TCI>({ x: undefined, y: null, height: 100, width: 100 });
 
-expectTypeOf(myQuadTree.getObjects(myToken.bounds)).toEqualTypeOf<Set<object>>();
+expectTypeOf(myQuadtree.all).toEqualTypeOf<QuadtreeObject<TCI>[]>();
+expectTypeOf(myQuadtree.objects).toEqualTypeOf<QuadtreeObject<TCI>[]>();
+expectTypeOf(myQuadtree.bounds).toEqualTypeOf<PIXI.Rectangle>();
+expectTypeOf(myQuadtree.root).toEqualTypeOf<Quadtree<TCI>>();
+expectTypeOf(myQuadtree.split()).toEqualTypeOf<Quadtree<TCI>>();
+expectTypeOf(myQuadtree.visualize({ objects: true })).toEqualTypeOf<void>();
+
+expectTypeOf(myQuadtree.insert({ r: someToken.bounds, t: someToken })).toEqualTypeOf<Quadtree<TCI>[]>();
+expectTypeOf(myQuadtree.update({ r: someRect, t: someToken })).toEqualTypeOf<Quadtree<TCI>[]>();
+expectTypeOf(myQuadtree.remove(someToken)).toEqualTypeOf<typeof myQuadtree>();
+
+expectTypeOf(myQuadtree.getObjects(someToken.bounds, { collisionTest })).toEqualTypeOf<Set<TCI>>();
+expectTypeOf(myQuadtree.getLeafNodes(someRect)).toEqualTypeOf<Quadtree<TCI>[]>();
+expectTypeOf(myQuadtree.getChildNodes(someRect)).toEqualTypeOf<Quadtree<TCI>[]>();
+expectTypeOf(myQuadtree.getAdjacentNodes()).toEqualTypeOf<Quadtree<TCI>[]>();
+
+const myCanvasQuadtree = new CanvasQuadtree<TCI>();
+
+expectTypeOf(myCanvasQuadtree.bounds).toEqualTypeOf<PIXI.Rectangle>();

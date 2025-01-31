@@ -173,6 +173,8 @@ declare global {
   ): Mixin<typeof PrimaryCanvasObject, ReturnType<typeof CanvasTransformMixin<BaseClass>>>;
 
   namespace PrimaryCanvasObjectMixin {
+    interface Any extends AnyPrimaryCanvasObject {}
+    type AnyConstructor = typeof AnyPrimaryCanvasObject;
     type AnyMixed = ReturnType<typeof PrimaryCanvasObjectMixin<PIXI.Container.AnyConstructor>>;
 
     type MixinClass = typeof PrimaryCanvasObject;
@@ -189,8 +191,17 @@ declare global {
   ): Mixin<typeof CanvasTransformMixinClass, BaseClass>;
 
   namespace CanvasTransformMixin {
+    interface Any extends AnyCanvasTransformMixinClass {}
+    type AnyConstructor = typeof AnyCanvasTransformMixinClass;
     type AnyMixed = ReturnType<typeof CanvasTransformMixin<PIXI.Container.AnyConstructor>>;
 
     type MixinClass = typeof CanvasTransformMixinClass;
   }
+}
+
+declare abstract class AnyPrimaryCanvasObject extends PrimaryCanvasObject {
+  constructor(arg0: never, ...args: never[]);
+}
+declare abstract class AnyCanvasTransformMixinClass extends CanvasTransformMixinClass {
+  constructor(arg0: never, ...args: never[]);
 }
