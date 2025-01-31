@@ -54,6 +54,7 @@ declare module "pixi.js" {
      * @param scalingFactor -
      * @returns The resulting PIXI.Polygon
      */
+    //TODO: This is a new *static* method on PIXI.Polygon; figure out how to indicate this
     fromClipperPoints(
       points: PIXI.Polygon.ClipperPoint[],
       options?: Pick<PIXI.Polygon.IntersectClipperOptions, "scalingFactor">,
