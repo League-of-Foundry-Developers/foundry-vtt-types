@@ -156,7 +156,12 @@ declare global {
       clipOpts: WeilerAthertonClipper.ClipOpts;
     }
 
-    /** @internal */
+    /**
+     * @internal
+     * @privateRemarks does *not* contain:
+     * - a `scalingFactor` property, despite one being passed in `PIXI.Rectangle#intersectPolygon` in v12
+     * - a `density` property, despite one being passed in `PIXI.Circle#intersectPolygon` in v12
+     */
     type _CombineOptions = NullishProps<{
       /**
        * If the WeilerAtherton constructor could mutate or not the subject polygon points

@@ -1,32 +1,5 @@
-import type { UnionToIntersection, Brand, InexactPartial, NullishProps } from "fvtt-types/utils";
+import type { Brand, InexactPartial } from "fvtt-types/utils";
 import * as _PIXI from "pixi.js";
-/**
- * Typically in a mapped type TypeScript associates your type to the original.
- * This means you keep modifiers (`readonly` and `?`), go to definition takes you
- * to the original type not the mapped type, and comments are inherited.
- *
- * This utility type disables all of that by effectively tricking TypeScript into
- * not associating them anymore. Writing `{ [_ in string as K]: ... }` is the primary
- * trick used in this type.
- *
- * The reason why this type is so verbose though is because it's trying to preserve
- * modifiers which means it has to check for all 4 possibilities:
- * - mutable and optional
- * - mutable and required
- * - readonly and optional
- * - readonly and required
- */
-type RemoveComments<T extends object> = UnionToIntersection<
-  {
-    [K in keyof T]-?: T extends { [_ in string as K]: unknown }
-      ? T extends { [_ in string as K]?: unknown }
-        ? { [_ in string as K]?: T[K] }
-        : { [_ in string as K]: T[K] }
-      : T extends { readonly [_ in string as K]?: unknown }
-        ? { readonly [_ in string as K]?: T[K] }
-        : { readonly [_ in string as K]: T[K] };
-  }[keyof T]
->;
 
 declare global {
   namespace PIXI {
@@ -162,7 +135,6 @@ declare global {
        */
       intersectPolygon(polygon: PIXI.Polygon, options?: PIXI.Rectangle.WACIntersectPolygonOptions): PIXI.Polygon;
       intersectPolygon(polygon: PIXI.Polygon, options?: PIXI.Rectangle.ClipperLibIntersectPolygonOptions): PIXI.Polygon;
-      intersectPolygon(polygon: PIXI.Polygon, options?: PIXI.Rectangle.IntersectPolygonOptions): PIXI.Polygon;
 
       /**
        * Intersect this PIXI.Rectangle with an array of ClipperPoints. Currently, uses the clipper library.
@@ -171,7 +143,7 @@ declare global {
        * @param options       - Options which configure how the intersection is computed
        * @returns The intersected polygon
        * @remarks Foundry has this typed as returning `PIXI.Polygon | null`, but this method will actually
-       *          return an empty array if this rectangle's width or height are 0. I believe this is a bug.
+       * return an empty array if this rectangle's width or height are 0. This is almost certainly a bug.
        */
       intersectClipper(
         clipperPoints: PIXI.Polygon.ClipperPoint[],
@@ -225,7 +197,7 @@ declare global {
         /**
          * If true, a line contained within the rectangle will return true
          * @defaultValue `false`
-         * @remarks Can't be null as it only has a parameter default
+         * @remarks Can't be `null` as it only has a parameter default
          */
         inside: boolean;
       }>;
@@ -233,48 +205,49 @@ declare global {
       /** Options affecting the intersect test. */
       interface LineSegmentIntersectsOptions extends _LineSegmentIntersectsOptions {}
 
-      /**
-       *  @privateRemarks The options for `intersectPolygon` when `weilerAtherton` is true (or not provided)
-       * Property descriptions have been omitted and `RemoveComments` is in use here to avoid redundant
-       * instellisense on overloaded method.
-       */
-      interface WACIntersectPolygonOptions
-        extends RemoveComments<Omit<WeilerAthertonClipper.CombineOptions, keyof WeilerAthertonClipper.ClipOpts>> {
-        weilerAtherton?: true;
-      }
-
-      /**
-       * @privateRemarks The options for `intersectPolygon` when `weilerAtherton` is false.
-       * Property descriptions have been omitted and `RemoveComments` is in use here to avoid redundant
-       * instellisense on overloaded method.
-       */
-      interface ClipperLibIntersectPolygonOptions extends RemoveComments<PIXI.Polygon.IntersectClipperOptions> {
-        weilerAtherton: false;
-      }
-
-      /** @internal */
-      type _IntersectPolygonOptions = NullishProps<{
+      /** @remarks The options for `intersectPolygon` when `weilerAtherton` is true (or not provided) */
+      interface WACIntersectPolygonOptions extends WeilerAthertonClipper._CombineOptions {
         /**
-         * The clipper clip type
-         * @defaultValue `ClipperLib.ClipType.ctIntersection` (equivalent to `WeilerAthertonClipper.CLIP_TYPES.INTERSECTION`)
-         * @remarks If `weilerAtherton` is truthy or not provided, this must be one of the two `WeilerAthertonClipper.CLIP_TYPES`.
-         * However, the first two entries in `ClipperLib.ClipType` map 1:1 with the two `CLIP_TYPES`, so the main restriction is
-         * that a combination of a truthy `weilerAtherton` and a `clipType` that is either `ClipperLib.ClipTypes.ctDifference` or
-         * `.ctXor` is not allowed.
+         * One of CLIP_TYPES
+         * @defaultValue `WeilerAthertonClipper.CLIP_TYPES.INTERSECT`
+         * @remarks Default provided by `??=` in function body
+         *
+         * The default is actually `ClipperLib.ClipType.ctIntersection`, but that and `.ctUnion` are
+         * equivalent to  `WeilerAthertonClipper.CLIP_TYPES.INTERSECT` and `.UNION` respectively at runtime
          */
-        clipType: ClipperLib.ClipType | WeilerAthertonClipper.CLIP_TYPES;
+        clipType?:
+          | WeilerAthertonClipper.CLIP_TYPES
+          | (typeof ClipperLib.ClipType)["ctIntersection" | "ctUnion"]
+          | undefined
+          | null;
 
         /**
          * Use the Weiler-Atherton algorithm. Otherwise, use Clipper.
          * @defaultValue `true`
-         * */
-        weilerAtherton: boolean;
-      }> &
-        Pick<PIXI.Polygon.IntersectClipperOptions, "scalingFactor"> &
-        Pick<WeilerAthertonClipper.CombineOptions, "canMutate">;
+         */
+        weilerAtherton?: true;
+      }
 
-      interface IntersectPolygonOptions extends _IntersectPolygonOptions {}
+      /** @remarks The options for `intersectPolygon` when `weilerAtherton` is false. */
+      interface ClipperLibIntersectPolygonOptions extends PIXI.Polygon.ClipperPointsOptions {
+        /**
+         * One of CLIP_TYPES
+         * @defaultValue `ClipperLib.ClipType.ctIntersection`
+         * @remarks Default provided by `??=` in function body
+         *
+         * `WeilerAthertonClipper.CLIP_TYPES.INTERSECT` and `.UNION` are equivalent to
+         * `ClipperLib.ClipType.ctIntersection` and `.ctUnion` respectively at runtime
+         */
+        clipType?: ClipperLib.ClipType | WeilerAthertonClipper.CLIP_TYPES | null | undefined;
+
+        /**
+         * Use the Weiler-Atherton algorithm. Otherwise, use Clipper.
+         * @defaultValue `true`
+         */
+        weilerAtherton: false;
+      }
     }
+
     class Rectangle extends _PIXI.Rectangle {
       /**
        * Create normalized rectangular bounds given a rectangle shape and an angle of central rotation.
