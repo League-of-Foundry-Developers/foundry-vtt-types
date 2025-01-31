@@ -77,6 +77,7 @@ declare module "pixi.js" {
      *                  A larger epsilon results in fewer points for a given radius. (default: `1`)
      * @returns The number of points for the approximated polygon
      */
+    //TODO: This is a new *static* method on PIXI.Circle; figure out how to indicate this
     approximateVertexDensity(radius: number, epsilon?: number): number;
 
     /**

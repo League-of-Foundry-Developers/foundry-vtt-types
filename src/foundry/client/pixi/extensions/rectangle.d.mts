@@ -1,5 +1,5 @@
 import type { UnionToIntersection, Brand, InexactPartial, NullishProps } from "fvtt-types/utils";
-
+import * as _PIXI from "pixi.js";
 /**
  * Typically in a mapped type TypeScript associates your type to the original.
  * This means you keep modifiers (`readonly` and `?`), go to definition takes you
@@ -27,6 +27,29 @@ type RemoveComments<T extends object> = UnionToIntersection<
         : { readonly [_ in string as K]: T[K] };
   }[keyof T]
 >;
+
+declare class Rectangle extends _PIXI.Rectangle {
+  /**
+   * Create normalized rectangular bounds given a rectangle shape and an angle of central rotation.
+   * @param x       - The top-left x-coordinate of the un-rotated rectangle
+   * @param y       - The top-left y-coordinate of the un-rotated rectangle
+   * @param width   - The width of the un-rotated rectangle
+   * @param height  - The height of the un-rotated rectangle
+   * @param radians - The angle of rotation about the center
+   * @param pivot   - An optional pivot point (if not provided, the pivot is the centroid)
+   * @param _outRect - (Internal)
+   * @returns The constructed rotated rectangle bounds
+   */
+  fromRotation(
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    radians: number,
+    pivot?: PIXI.Point,
+    _outRect?: PIXI.Rectangle,
+  ): PIXI.Rectangle;
+}
 
 declare module "pixi.js" {
   interface Rectangle {
@@ -197,27 +220,6 @@ declare module "pixi.js" {
      * @returns A new rotated rectangle
      */
     rotate(radians: number, pivot?: PIXI.Point): PIXI.Rectangle;
-
-    /**
-     * Create normalized rectangular bounds given a rectangle shape and an angle of central rotation.
-     * @param x       - The top-left x-coordinate of the un-rotated rectangle
-     * @param y       - The top-left y-coordinate of the un-rotated rectangle
-     * @param width   - The width of the un-rotated rectangle
-     * @param height  - The height of the un-rotated rectangle
-     * @param radians - The angle of rotation about the center
-     * @param pivot   - An optional pivot point (if not provided, the pivot is the centroid)
-     * @param _outRect - (Internal)
-     * @returns The constructed rotated rectangle bounds
-     */
-    fromRotation(
-      x: number,
-      y: number,
-      width: number,
-      height: number,
-      radians: number,
-      pivot?: PIXI.Point,
-      _outRect?: PIXI.Rectangle,
-    ): PIXI.Rectangle;
   }
 
   namespace Rectangle {
@@ -296,3 +298,6 @@ declare module "pixi.js" {
     interface IntersectPolygonOptions extends _IntersectPolygonOptions {}
   }
 }
+
+export { Rectangle } from "pixi.js";
+// export { Rectangle };
