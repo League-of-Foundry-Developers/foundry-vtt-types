@@ -1271,6 +1271,13 @@ declare namespace Document {
     K
   >;
 
+  interface CoreFlags {
+    core?: {
+      sheetLock?: boolean;
+      sheetClass?: string;
+    }
+  }
+
   interface ConstructionContext<Parent extends Document.Any | null> {
     /**
      * The parent Document of this one, if this one is embedded

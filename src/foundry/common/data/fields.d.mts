@@ -8,6 +8,7 @@ import type {
   ToMethod,
   FixedInstanceType,
   PrettifyType,
+  InterfaceToObject,
 } from "../../../utils/index.d.mts";
 import type { DataModel } from "../abstract/data.mts";
 import type Document from "../abstract/document.mts";
@@ -1645,9 +1646,9 @@ declare namespace ObjectField {
     Options extends DataField.Options.Any = ObjectField.DefaultOptions,
   > = ObjectField<
     Options,
-    DataField.DerivedAssignmentType<Document.ConfiguredFlagsForName<Name> & ExtensionFlags, MergedOptions<Options>>,
-    DataField.DerivedInitializedType<Document.ConfiguredFlagsForName<Name> & ExtensionFlags, MergedOptions<Options>>,
-    DataField.DerivedInitializedType<Document.ConfiguredFlagsForName<Name> & ExtensionFlags, MergedOptions<Options>>
+    DataField.DerivedAssignmentType<Document.ConfiguredFlagsForName<Name> & ExtensionFlags & InterfaceToObject<Document.CoreFlags>, MergedOptions<Options>>,
+    DataField.DerivedInitializedType<Document.ConfiguredFlagsForName<Name> & ExtensionFlags & InterfaceToObject<Document.CoreFlags>, MergedOptions<Options>>,
+    DataField.DerivedInitializedType<Document.ConfiguredFlagsForName<Name> & ExtensionFlags & InterfaceToObject<Document.CoreFlags>, MergedOptions<Options>>
   >;
 }
 

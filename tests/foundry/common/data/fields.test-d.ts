@@ -31,6 +31,17 @@ await foundry.documents.BaseNote.create({ textAnchor: 2 });
 // @ts-expect-error - t cannot be an arbitrary string.
 await foundry.documents.BaseMeasuredTemplate.create({ t: "foobar" });
 
+// Flags
+declare const myEffect: ActiveEffect;
+// @ts-expect-error Invalid flag in the space
+myEffect.getFlag("core", "foobar")
+// All documents have a sheetClass flag
+expectTypeOf(myEffect.getFlag("core", "sheetClass")).toEqualTypeOf<string | undefined>()
+expectTypeOf(myEffect.flags.core!.sheetClass!).toEqualTypeOf<string>()
+// Document-specific flag
+expectTypeOf(myEffect.getFlag("core", "overlay")).toEqualTypeOf<boolean | undefined>()
+expectTypeOf(myEffect.flags.core!.overlay!).toEqualTypeOf<boolean>()
+
 // TypeDataField
 declare const JEPCoreTypes: JournalEntryPage.SubType;
 declare const JEPSystemTypes: Game.Model.TypeNames<"JournalEntryPage">;
