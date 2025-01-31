@@ -116,7 +116,6 @@ export import DefaultTokenConfig = globalThis.DefaultTokenConfig;
 export import DepthSamplerShader = globalThis.DepthSamplerShader;
 export import DetectionMode = globalThis.DetectionMode;
 export import Dialog = globalThis.Dialog;
-export import DiceConfig = globalThis.DiceConfig;
 export import DirectoryCollection = globalThis.DirectoryCollection;
 export import DocumentCollection = globalThis.DocumentCollection;
 export import DocumentDirectory = globalThis.DocumentDirectory;
