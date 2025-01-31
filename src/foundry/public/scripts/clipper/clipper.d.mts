@@ -164,25 +164,54 @@ declare global {
     }
 
     type ClipType = Brand<number, "ClipperLib.ClipType">;
-    const ClipType: Record<"ctIntersection" | "ctUnion" | "ctDifference" | "ctXor", ClipType>;
+    const ClipType: {
+      ctIntersection: 0 & ClipType;
+      ctUnion: 1 & ClipType;
+      ctDifference: 2 & ClipType;
+      ctXor: 3 & ClipType;
+    };
 
     type PolyType = Brand<number, "ClipperLib.PolyType">;
-    const PolyType: Record<"ptSubject" | "ptClip", PolyType>;
+    const PolyType: {
+      ptSubject: 0 & PolyType;
+      ptClip: 1 & PolyType;
+    };
 
     type PolyFillType = Brand<number, "ClipperLib.PolyFillType">;
-    const PolyFillType: Record<"pftEvenOdd" | "pftNonZero" | "pftPositive" | "pftNegative", PolyFillType>;
+    const PolyFillType: {
+      pftEvenOdd: 0 & PolyFillType;
+      pftNonZero: 1 & PolyFillType;
+      pftPositive: 2 & PolyFillType;
+      pftNegative: 3 & PolyFillType;
+    };
 
     type JoinType = Brand<number, "ClipperLib.JoinType">;
-    const JoinType: Record<"jtSquare" | "jtRound" | "jtMiter", JoinType>;
+    const JoinType: {
+      jtSquare: 0 & JoinType;
+      jtRound: 1 & JoinType;
+      jtMiter: 2 & JoinType;
+    };
 
     type EndType = Brand<number, "ClipperLib.EndType">;
-    const EndType: Record<"etOpenSquare" | "etOpenRound" | "etOpenButt" | "etClosedLine" | "etClosedPolygon", EndType>;
+    const EndType: {
+      etOpenSquare: 0 & EndType;
+      etOpenRound: 1 & EndType;
+      etOpenButt: 2 & EndType;
+      etClosedLine: 3 & EndType;
+      etClosedPolygon: 4 & EndType;
+    };
 
     type EdgeSide = Brand<number, "ClipperLib.EdgeSide">;
-    const EdgeSide: Record<"esLeft" | "esRight", EdgeSide>;
+    const EdgeSide: {
+      esLeft: 0 & EdgeSide;
+      esRight: 1 & EdgeSide;
+    };
 
     type Direction = Brand<number, "Direction">;
-    const Direction: Record<"dRightToLeft" | "dLeftToRight", Direction>;
+    const Direction: {
+      dRightToLeft: 0 & Direction;
+      dLeftToRight: 1 & Direction;
+    };
 
     class TEdge {
       Bot: IntPoint;
@@ -465,7 +494,16 @@ declare global {
     }
 
     class Clipper extends ClipperBase {
-      constructor(InitOptions?: number);
+      constructor(
+        /**
+         * @defaultValue `0`
+         * @remarks Bitmask options:
+         * - `ReverseSolution`:  `0b0000001`
+         * - `StrictlySimple`:   `0b0000010`
+         * - `PreserveColinear`: `0b0000100`
+         */
+        InitOptions?: number | null,
+      );
 
       /** @defaultValue `[]` */
       protected m_PolyOuts: OutRec[];
@@ -748,11 +786,17 @@ declare global {
 
       ClosedPathsFromPolyTree(polytree: PolyTree): Paths;
 
-      static NodeType: Record<"ntAny" | "ntOpen" | "ntClosed", Clipper.NodeType>;
+      static NodeType: Clipper.NodeTypes;
     }
 
     namespace Clipper {
       type NodeType = Brand<number, "ClipperLib.Clipper.NodeType">;
+
+      interface NodeTypes {
+        ntAny: 0 & NodeType;
+        ntOpen: 1 & NodeType;
+        ntClosed: 2 & NodeType;
+      }
     }
 
     class ClipperOffset {
