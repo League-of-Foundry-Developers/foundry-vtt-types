@@ -4,7 +4,7 @@ declare class FullCanvasObject {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
   constructor(...args: any[]);
 
-  /** @remarks Overrides the mixed in class */
+  /** @remarks Overrides the mixed PIXI class's method, @see {@link PIXI.DisplayObject#calculateBounds} */
   calculateBounds(): void;
 }
 
@@ -20,14 +20,17 @@ declare global {
   ): Mixin<typeof FullCanvasObject, BaseClass>;
 
   namespace FullCanvasObject {
+    interface Any extends AnyFullCanvasObject {}
     type AnyConstructor = typeof AnyFullCanvasObject;
+    type AnyMixed = ReturnType<typeof FullCanvasObjectMixin<BaseClass>>;
 
     type BaseClass = PIXI.DisplayObject.AnyConstructor;
+    type MixedClass = typeof FullCanvasObject;
   }
 
   /**
    * @deprecated since v11, will be removed in v13
-   * @remarks You are using the FullCanvasContainer class which has been deprecated in favor of a more flexible FullCanvasObjectMixin which can augment any PIXI.DisplayObject subclass.
+   * @remarks "You are using the FullCanvasContainer class which has been deprecated in favor of a more flexible FullCanvasObjectMixin which can augment any PIXI.DisplayObject subclass."
    */
   class FullCanvasContainer extends FullCanvasObjectMixin(PIXI.Container) {}
 }
