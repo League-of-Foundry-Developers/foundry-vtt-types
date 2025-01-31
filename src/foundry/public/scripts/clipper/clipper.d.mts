@@ -502,7 +502,7 @@ declare global {
          * - `StrictlySimple`:   `0b0000010`
          * - `PreserveColinear`: `0b0000100`
          */
-        InitOptions?: number,
+        InitOptions?: number | null,
       );
 
       /** @defaultValue `[]` */
