@@ -1,7 +1,5 @@
 import type { NullishProps } from "fvtt-types/utils";
 
-export {};
-
 declare global {
   /**
    * A special type of PIXI.Container which draws its contents to a cached RenderTexture.
@@ -12,17 +10,13 @@ declare global {
      * Construct a CachedContainer.
      * @param sprite - A specific sprite to bind to this CachedContainer and its renderTexture.
      */
-    constructor(sprite: PIXI.Sprite | SpriteMesh);
+    constructor(sprite?: PIXI.Sprite | SpriteMesh);
 
     /**
      * The texture configuration to use for this cached container
-     * @remarks Foundry marked as abstract
+     * @remarks Foundry marked as `@abstract`
      */
-    static textureConfiguration: NullishProps<{
-      multisample: PIXI.MSAA_QUALITY;
-      scaleMode: PIXI.SCALE_MODES;
-      format: PIXI.FORMATS;
-    }>;
+    static textureConfiguration: CachedContainer.TextureConfiguration;
 
     /**
      * A map of render textures, linked to their render function and an optional RGBA clear color.
@@ -33,7 +27,7 @@ declare global {
      * An RGBA array used to define the clear color of the RenderTexture
      * @defaultValue `[0, 0, 0, 1]`
      */
-    clearColor: [r: number, g: number, b: number, a: number];
+    clearColor: Color.RGBAColorVector;
 
     /**
      * Should our Container also be displayed on screen, in addition to being drawn to the cached RenderTexture?
@@ -65,10 +59,13 @@ declare global {
      */
     set alphaMode(mode: PIXI.ALPHA_MODES);
 
+    /** @remarks Foundry actually omits the getter entirely, this is for accurate typing only */
+    get alphaMode(): undefined;
+
     /**
      * A bound Sprite which uses this container's render texture
      */
-    get sprite(): PIXI.Sprite | SpriteMesh;
+    get sprite(): PIXI.Sprite | SpriteMesh | undefined;
 
     set sprite(sprite: PIXI.Sprite | SpriteMesh);
 
@@ -76,6 +73,8 @@ declare global {
      * Create a render texture, provide a render method and an optional clear color.
      * @param options - Optional parameters.
      * @returns A reference to the created render texture.
+     * @remarks IntentionalPartial beacuse the interface already accounts for `| null | undefined`, but the
+     * keys aren't optional in the `_renderPaths` map entries, so they're not optional in the interface
      */
     createRenderTexture(options?: CachedContainer.RenderOptions): PIXI.RenderTexture;
 
@@ -85,7 +84,7 @@ declare global {
      * @param destroy - Should the render texture be destroyed?
      *                  (default: `true`)
      */
-    removeRenderTexture(renderTexture: PIXI.RenderTexture, destroy?: boolean): void;
+    removeRenderTexture(renderTexture: PIXI.RenderTexture, destroy?: boolean | null): void;
 
     /**
      * Clear the cached container, removing its current contents.
@@ -95,7 +94,7 @@ declare global {
      */
     clear(destroy?: boolean): CachedContainer | void;
 
-    override destroy(options?: boolean | PIXI.IDestroyOptions): void;
+    override destroy(options?: PIXI.IDestroyOptions | boolean): void;
 
     override render(renderer: PIXI.Renderer): void;
 
@@ -108,11 +107,32 @@ declare global {
   }
 
   namespace CachedContainer {
-    interface RenderOptions {
+    interface Any extends AnyCachedContainer {}
+    type AnyConstructor = typeof AnyCachedContainer;
+
+    /** @internal */
+    type _TextureConfiguration = NullishProps<{
+      multisample: PIXI.MSAA_QUALITY;
+      scaleMode: PIXI.SCALE_MODES;
+      format: PIXI.FORMATS;
+      /** @privateRemarks Only exists on DarknessLevelContainer and is seemingly unused there */
+      mipmap: PIXI.MIPMAP_MODES;
+    }>;
+
+    interface TextureConfiguration extends _TextureConfiguration {}
+
+    /** @internal */
+    type _RenderOptions = NullishProps<{
       /** Render function that will be called to render into the RT. */
-      renderFunction?: (renderer: PIXI.Renderer) => void;
+      renderFunction: (renderer: PIXI.Renderer) => void;
+
       /** An optional clear color to clear the RT before rendering into it. */
-      clearColor?: number[];
-    }
+      clearColor: Color.RGBAColorVector;
+    }>;
+    interface RenderOptions extends _RenderOptions {}
   }
+}
+
+declare abstract class AnyCachedContainer extends CachedContainer {
+  constructor(arg0: never, ...args: never[]);
 }
