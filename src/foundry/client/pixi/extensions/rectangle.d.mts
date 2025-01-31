@@ -38,10 +38,7 @@ declare module "pixi.js" {
      * central  0001    0000      0010
      * bottom   0101    0100      0110
      */
-    CS_ZONES: Record<
-      "INSIDE" | "LEFT" | "RIGHT" | "TOP" | "BOTTOM" | "TOPLEFT" | "TOPRIGHT" | "BOTTOMRIGHT" | "BOTTOMLEFT",
-      PIXI.Rectangle.CS_ZONES
-    >;
+    CS_ZONES: PIXI.Rectangle.CS_Zones;
 
     /**
      * Calculate center of this rectangle.
@@ -109,43 +106,31 @@ declare module "pixi.js" {
      * Convert this PIXI.Rectangle into a PIXI.Polygon
      * @returns The Rectangle expressed as a PIXI.Polygon
      */
-    toPolygon(): PIXI.Rectangle;
+    toPolygon(): PIXI.Polygon;
 
     /**
      * Get the left edge of this rectangle.
      * The returned edge endpoints are oriented clockwise around the rectangle.
      */
-    get leftEdge(): {
-      A: Canvas.Point;
-      B: Canvas.Point;
-    };
+    get leftEdge(): PIXI.Rectangle.Edge;
 
     /**
      * Get the right edge of this rectangle.
      * The returned edge endpoints are oriented clockwise around the rectangle.
      */
-    get rightEdge(): {
-      A: Canvas.Point;
-      B: Canvas.Point;
-    };
+    get rightEdge(): PIXI.Rectangle.Edge;
 
     /**
      * Get the top edge of this rectangle.
      * The returned edge endpoints are oriented clockwise around the rectangle.
      */
-    get topEdge(): {
-      A: Canvas.Point;
-      B: Canvas.Point;
-    };
+    get topEdge(): PIXI.Rectangle.Edge;
 
     /**
      * Get the bottom edge of this rectangle.
      * The returned edge endpoints are oriented clockwise around the rectangle.
      */
-    get bottomEdge(): {
-      A: Canvas.Point;
-      B: Canvas.Point;
-    };
+    get bottomEdge(): PIXI.Rectangle.Edge;
 
     /**
      * Calculate the rectangle Zone for a given point located around or in the rectangle.
@@ -165,14 +150,7 @@ declare module "pixi.js" {
     lineSegmentIntersects(
       a: Canvas.Point,
       b: Canvas.Point,
-      /** @remarks Can't be NullishProps because `inside` only has a default via `{inside=false}` and it can be returned directly */
-      options?: InexactPartial<{
-        /**
-         * If true, a line contained within the rectangle will return true
-         * @defaultValue `false`
-         */
-        inside: boolean;
-      }>,
+      options?: PIXI.Rectangle.LineSegmentIntersectsOptions,
     ): boolean;
 
     /**
@@ -245,6 +223,36 @@ declare module "pixi.js" {
   namespace Rectangle {
     type CS_ZONES = Brand<number, "PIXI.Rectangle.CS_ZONES">;
 
+    interface CS_Zones {
+      INSIDE: 0x0000 & CS_ZONES;
+      LEFT: 0x0001 & CS_ZONES;
+      RIGHT: 0x0010 & CS_ZONES;
+      TOP: 0x1000 & CS_ZONES;
+      BOTTOM: 0x0100 & CS_ZONES;
+      TOPLEFT: 0x1001 & CS_ZONES;
+      TOPRIGHT: 0x1010 & CS_ZONES;
+      BOTTOMRIGHT: 0x0110 & CS_ZONES;
+      BOTTOMLEFT: 0x0101 & CS_ZONES;
+    }
+
+    interface Edge {
+      A: Canvas.Point;
+      B: Canvas.Point;
+    }
+
+    /** @internal */
+    type _LineSegmentIntersectsOptions = InexactPartial<{
+      /**
+       * If true, a line contained within the rectangle will return true
+       * @defaultValue `false`
+       * @remarks Can't be null as it only has a parameter default
+       */
+      inside: boolean;
+    }>;
+
+    /** Options affecting the intersect test. */
+    interface LineSegmentIntersectsOptions extends _LineSegmentIntersectsOptions {}
+
     /**
      *  @privateRemarks The options for `intersectPolygon` when `weilerAtherton` is true (or not provided)
      * Property descriptions have been omitted and `RemoveComments` is in use here to avoid redundant
@@ -264,15 +272,15 @@ declare module "pixi.js" {
       weilerAtherton: false;
     }
 
-    /** @internal Intermediary type to simplify use of optionality- and nullish-permissiveness-modifying helpers */
+    /** @internal */
     type _IntersectPolygonOptions = NullishProps<{
       /**
        * The clipper clip type
+       * @defaultValue `ClipperLib.ClipType.ctIntersection` (equivalent to `WeilerAthertonClipper.CLIP_TYPES.INTERSECTION`)
        * @remarks If `weilerAtherton` is truthy or not provided, this must be one of the two `WeilerAthertonClipper.CLIP_TYPES`.
        * However, the first two entries in `ClipperLib.ClipType` map 1:1 with the two `CLIP_TYPES`, so the main restriction is
        * that a combination of a truthy `weilerAtherton` and a `clipType` that is either `ClipperLib.ClipTypes.ctDifference` or
        * `.ctXor` is not allowed.
-       * @defaultValue `ClipperLib.ClipType.ctIntersection` (equivalent to `WeilerAthertonClipper.CLIP_TYPES.INTERSECTION`)
        */
       clipType: ClipperLib.ClipType | WeilerAthertonClipper.CLIP_TYPES;
 
