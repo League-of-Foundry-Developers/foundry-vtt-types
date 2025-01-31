@@ -15,7 +15,6 @@ declare const somePolygon: PIXI.Polygon;
 // expectTypeOf(PIXI.Rectangle.fromRotation(50, 50, 500, 500, Math.PI / 2, somePoint)).toEqualTypeOf<PIXI.Rectangle>();
 
 expectTypeOf(rect.CS_ZONES).toMatchTypeOf<Record<keyof PIXI.Rectangle.CS_Zones, PIXI.Rectangle.CS_ZONES>>();
-
 expectTypeOf(rect._getEdgeZone(somePoint)).toEqualTypeOf<PIXI.Rectangle.CS_ZONES>();
 expectTypeOf(rect._getZone(somePoint)).toEqualTypeOf<PIXI.Rectangle.CS_ZONES>();
 expectTypeOf(rect.pointIsOn(somePoint)).toEqualTypeOf<boolean>();
@@ -25,6 +24,8 @@ expectTypeOf(rect.intersection(otherRect)).toEqualTypeOf<PIXI.Rectangle>();
 expectTypeOf(rect.toPolygon()).toEqualTypeOf<PIXI.Polygon>();
 expectTypeOf(rect.leftEdge).toEqualTypeOf<PIXI.Rectangle.Edge>();
 expectTypeOf(rect.lineSegmentIntersects(somePoint, { x: 40, y: 20 })).toEqualTypeOf<boolean>();
+expectTypeOf<PIXI.Rectangle.CS_ZONES>().toMatchTypeOf<number>();
+expectTypeOf(PIXI.Rectangle.fromRotation(1, 2, 3, 4, 5)).toEqualTypeOf<PIXI.Rectangle>();
 
 expectTypeOf(
   rect.intersectPolygon(somePolygon, {
