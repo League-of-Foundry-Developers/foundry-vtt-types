@@ -1,12 +1,54 @@
 import { expectTypeOf } from "vitest";
 
-const myPolygon = new PIXI.Polygon([0, 0]);
+expectTypeOf(WeilerAthertonClipper.CLIP_TYPES).toMatchTypeOf<
+  Record<keyof WeilerAthertonClipper.ClipTypes, WeilerAthertonClipper.CLIP_TYPES>
+>();
+expectTypeOf(WeilerAthertonClipper.INTERSECTION_TYPES).toMatchTypeOf<
+  Record<keyof WeilerAthertonClipper.IntersectionTypes, WeilerAthertonClipper.INTERSECTION_TYPES>
+>();
 
-const myCircle = new PIXI.Circle(2, 3, 4);
+declare const someRect: PIXI.Rectangle;
+declare const someCircle: PIXI.Circle;
+declare const somePolygon: PIXI.Polygon;
 
-const myWeiler = new WeilerAthertonClipper(myPolygon, myCircle, WeilerAthertonClipper.CLIP_TYPES.INTERSECT, {
+expectTypeOf(
+  WeilerAthertonClipper.union(somePolygon, someRect, {
+    density: 5,
+    includeEndpoints: false,
+  }),
+).toEqualTypeOf<Array<PIXI.Polygon>>();
+
+expectTypeOf(
+  WeilerAthertonClipper.intersect(somePolygon, someCircle, {
+    density: 2,
+    includeEndpoints: null,
+  }),
+).toEqualTypeOf<Array<PIXI.Polygon>>();
+
+expectTypeOf(
+  WeilerAthertonClipper.combine(somePolygon, someRect, {
+    clipType: WeilerAthertonClipper.CLIP_TYPES.UNION,
+    canMutate: false,
+    density: undefined,
+  }),
+).toEqualTypeOf<Array<PIXI.Polygon>>();
+
+expectTypeOf(
+  WeilerAthertonClipper.testForEnvelopment(somePolygon, someCircle, WeilerAthertonClipper.CLIP_TYPES.INTERSECT, {
+    density: null,
+    includeEndpoints: undefined,
+  }),
+).toEqualTypeOf<Array<PIXI.Polygon>>();
+
+const myWAC = new WeilerAthertonClipper(somePolygon, someCircle, WeilerAthertonClipper.CLIP_TYPES.INTERSECT, {
   density: 3,
   includeEndpoints: true,
 });
 
-expectTypeOf(myWeiler.clipObject).toEqualTypeOf<PIXI.Rectangle | PIXI.Circle>();
+expectTypeOf(myWAC.clipObject).toEqualTypeOf<PIXI.Rectangle | PIXI.Circle>();
+expectTypeOf(myWAC.config.clipType).toMatchTypeOf<WeilerAthertonClipper.CLIP_TYPES>();
+if (myWAC.config.clipOpts.includeEndpoints) {
+  expectTypeOf(myWAC.config.clipOpts.includeEndpoints).toEqualTypeOf<true>();
+} else {
+  expectTypeOf(myWAC.config.clipOpts.includeEndpoints).toEqualTypeOf<false | null | undefined>();
+}

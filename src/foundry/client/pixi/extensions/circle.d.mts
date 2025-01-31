@@ -126,7 +126,6 @@ declare module "pixi.js" {
 
       /**
        * Whether to include points at the circle where the arc starts and ends
-       * @defaultValue `true`
        */
       includeEndpoints: boolean;
     }>;
