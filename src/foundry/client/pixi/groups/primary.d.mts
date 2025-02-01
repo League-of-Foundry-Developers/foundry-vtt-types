@@ -1,4 +1,3 @@
-import type { Renderer } from "pixi.js";
 import type { Brand, HandleEmptyObject } from "fvtt-types/utils";
 
 // Included to match Foundry's documented types
@@ -130,7 +129,7 @@ declare global {
 
     protected override _draw(options: HandleEmptyObject<DrawOptions>): Promise<void>;
 
-    protected override _render(_renderer: Renderer): void;
+    protected override _render(_renderer: PIXI.Renderer): void;
 
     protected override _tearDown(options: HandleEmptyObject<TearDownOptions>): Promise<void>;
 

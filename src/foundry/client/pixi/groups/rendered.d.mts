@@ -9,6 +9,7 @@ declare global {
     TearDownOptions extends RenderedCanvasGroup.TearDownOptions = RenderedCanvasGroup.TearDownOptions,
   > extends CanvasGroupMixin<typeof PIXI.Container, "rendered">(PIXI.Container)<DrawOptions, TearDownOptions> {
     /**
+     * Should this group tear down its non-layer children?
      * @defaultValue `false`
      */
     static override tearDownChildren: boolean;
