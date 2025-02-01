@@ -1,5 +1,5 @@
 import type { Renderer } from "pixi.js";
-import type { HandleEmptyObject } from "../../../../utils/index.d.mts";
+import type { Brand, HandleEmptyObject } from "fvtt-types/utils";
 
 // Included to match Foundry's documented types
 type PrimaryCanvasObject = ReturnType<typeof PrimaryCanvasObjectMixin>;
@@ -22,24 +22,34 @@ declare global {
     /**
      * Sort order to break ties on the group/layer level.
      */
-    static readonly SORT_LAYERS: PrimaryCanvasGroup.SORT_LAYERS;
+    static SORT_LAYERS: PrimaryCanvasGroup.Sort_Layers;
 
-    static override textureConfiguration: {
-      scaleMode: PIXI.SCALE_MODES;
-      format: PIXI.FORMATS;
-      multisample: PIXI.MSAA_QUALITY;
-    };
+    /**
+     * @defaultValue
+     * ```js
+     * {
+     *   scaleMode: PIXI.SCALE_MODES.NEAREST,
+     *   format: PIXI.FORMATS.RGB,
+     *   multisample: PIXI.MSAA_QUALITY.NONE
+     * }
+     * ```
+     */
+    static override textureConfiguration: CachedContainer.TextureConfiguration;
+
+    /**
+     * @defaultValue `"none"`
+     */
+    override eventMode: PIXI.EventMode;
 
     /**
      * @defaultValue `[0, 0, 0, 0]`
-     * @remarks Actually an override of `CachedContainer#clearColor`
      */
-    clearColor: [r: number, g: number, b: number, a: number];
+    override clearColor: Color.RGBAColorVector;
 
     /**
      * The background color in RGB.
      */
-    _backgroundColor: [red: number, green: number, blue: number] | undefined;
+    _backgroundColor: Color.RGBColorVector | undefined;
 
     /**
      * Track the set of HTMLVideoElements which are currently playing as part of this group.
@@ -71,7 +81,7 @@ declare global {
     /**
      * A Quadtree which partitions and organizes primary canvas objects.
      */
-    quadtree: CanvasQuadtree<PrimaryCanvasObjectMixin.Any>;
+    quadtree: CanvasQuadtree<PrimaryCanvasObjectMixin.AnyMixed>;
 
     /**
      * The collection of PrimaryDrawingContainer objects which are rendered in the Scene.
@@ -120,8 +130,7 @@ declare global {
 
     protected override _draw(options: HandleEmptyObject<DrawOptions>): Promise<void>;
 
-    /** @remarks Actually an override `PIXI.Container#_render` */
-    protected _render(_renderer: Renderer): void;
+    protected override _render(_renderer: Renderer): void;
 
     protected override _tearDown(options: HandleEmptyObject<TearDownOptions>): Promise<void>;
 
@@ -172,7 +181,7 @@ declare global {
 
     /**
      * Handle mousemove events on the primary group to update the hovered state of its children.
-     * @remarks Public on purpose, called from `Canvas##onMouseMove`
+     * @remarks Foundry marked `@internal`
      */
     _onMouseMove(): void;
 
@@ -197,12 +206,14 @@ declare global {
 
     interface TearDownOptions extends CanvasGroupMixin.TearDownOptions {}
 
-    interface SORT_LAYERS {
-      readonly SCENE: 0;
-      readonly TILES: 500;
-      readonly DRAWINGS: 600;
-      readonly TOKENS: 700;
-      readonly WEATHER: 1000;
+    type SORT_LAYERS = Brand<number, "PrimaryCanvasGroup.SORT_LAYERS">;
+
+    interface Sort_Layers {
+      readonly SCENE: 0 & SORT_LAYERS;
+      readonly TILES: 500 & SORT_LAYERS;
+      readonly DRAWINGS: 600 & SORT_LAYERS;
+      readonly TOKENS: 700 & SORT_LAYERS;
+      readonly WEATHER: 1000 & SORT_LAYERS;
     }
   }
 }
