@@ -1,7 +1,7 @@
 import { expectTypeOf } from "vitest";
 
-expectTypeOf(RenderedCanvasGroup.groupName).toEqualTypeOf<string>();
+expectTypeOf(RenderedCanvasGroup.groupName).toEqualTypeOf<"rendered">();
 
 const myRenderedGroup = new RenderedCanvasGroup();
 
-expectTypeOf(myRenderedGroup.layers).toEqualTypeOf<Record<string, CanvasLayer>>();
+expectTypeOf(myRenderedGroup.layers).toEqualTypeOf<CanvasGroupMixin.LayersFor<"rendered">>();

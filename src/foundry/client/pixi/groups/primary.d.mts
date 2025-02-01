@@ -1,4 +1,4 @@
-import type { Renderer } from "pixi.js";
+import type { Brand, HandleEmptyObject } from "fvtt-types/utils";
 
 // Included to match Foundry's documented types
 type PrimaryCanvasObject = ReturnType<typeof PrimaryCanvasObjectMixin>;
@@ -9,7 +9,10 @@ declare global {
    * This group is a {@link CachedContainer} which is rendered to the Scene as a {@link SpriteMesh}.
    * This allows the rendered result of the Primary Canvas Group to be affected by a {@link BaseSamplerShader}.
    */
-  class PrimaryCanvasGroup extends CanvasGroupMixin<typeof CachedContainer, "primary">(CachedContainer) {
+  class PrimaryCanvasGroup<
+    DrawOptions extends PrimaryCanvasGroup.DrawOptions = PrimaryCanvasGroup.DrawOptions,
+    TearDownOptions extends PrimaryCanvasGroup.TearDownOptions = PrimaryCanvasGroup.TearDownOptions,
+  > extends CanvasGroupMixin<typeof CachedContainer, "primary">(CachedContainer)<DrawOptions, TearDownOptions> {
     /**
      * @param sprite - (default: `new SpriteMesh(undefined, BaseSamplerShader)`)
      */
@@ -18,19 +21,19 @@ declare global {
     /**
      * Sort order to break ties on the group/layer level.
      */
-    static readonly SORT_LAYERS: {
-      SCENE: number;
-      TILES: number;
-      DRAWINGS: number;
-      TOKENS: number;
-      WEATHER: number;
-    };
+    static SORT_LAYERS: PrimaryCanvasGroup.Sort_Layers;
 
-    static override textureConfiguration: {
-      scaleMode: PIXI.SCALE_MODES;
-      format: PIXI.FORMATS;
-      multisample: PIXI.MSAA_QUALITY;
-    };
+    /**
+     * @defaultValue
+     * ```js
+     * {
+     *   scaleMode: PIXI.SCALE_MODES.NEAREST,
+     *   format: PIXI.FORMATS.RGB,
+     *   multisample: PIXI.MSAA_QUALITY.NONE
+     * }
+     * ```
+     */
+    static override textureConfiguration: CachedContainer.TextureConfiguration;
 
     /**
      * @defaultValue `"none"`
@@ -40,12 +43,12 @@ declare global {
     /**
      * @defaultValue `[0, 0, 0, 0]`
      */
-    override clearColor: [r: number, g: number, b: number, a: number];
+    override clearColor: Color.RGBAColorVector;
 
     /**
      * The background color in RGB.
      */
-    _backgroundColor?: [red: number, green: number, blue: number];
+    _backgroundColor: Color.RGBColorVector | undefined;
 
     /**
      * Track the set of HTMLVideoElements which are currently playing as part of this group.
@@ -54,6 +57,7 @@ declare global {
 
     /**
      * Occludable objects above this elevation are faded on hover.
+     * @defaultValue `0`
      */
     hoverFadeElevation: number;
 
@@ -66,53 +70,52 @@ declare global {
     /**
      * The primary background image configured for the Scene, rendered as a SpriteMesh.
      */
-    background: SpriteMesh;
+    background: SpriteMesh | undefined;
 
     /**
      * The primary foreground image configured for the Scene, rendered as a SpriteMesh.
      */
-    foreground: SpriteMesh;
+    foreground: SpriteMesh | undefined;
 
     /**
      * A Quadtree which partitions and organizes primary canvas objects.
      */
-    quadtree: CanvasQuadtree<PrimaryCanvasObjectMixin.Any>;
+    quadtree: CanvasQuadtree<PrimaryCanvasObjectMixin.AnyMixed>;
 
     /**
      * The collection of PrimaryDrawingContainer objects which are rendered in the Scene.
+     * @privateRemarks Foundry types this as `Collection<PrimaryDrawingContainer>`, which doesn't exist. It's `PrimaryGraphics` in practice.
      */
     drawings: Collection<PrimaryGraphics>;
 
     /**
      * The collection of SpriteMesh objects which are rendered in the Scene.
+     * @privateRemarks Foundry types this as `Collection<TokenMesh>`, which doesn't exist. In practice it's `PrimarySpriteMesh`
      */
     tokens: Collection<PrimarySpriteMesh>;
 
     /**
      * The collection of SpriteMesh objects which are rendered in the Scene.
+     * @privateRemarks Foundry types this as `Collection<PrimarySpriteMesh | TileSprite>`, but `TileSprite` doens't exist. In practice it's all `PrimarySpriteMesh`.
      */
     tiles: Collection<PrimarySpriteMesh>;
 
     /**
      * The ambience filter which is applying post-processing effects.
      */
-    _ambienceFilter: PrimaryCanvasGroupAmbienceFilter;
-
-    /**
-     * Render all tokens in their own render texture.
-     * @param renderer - The renderer to use.
-     */
-    _renderTokens(renderer: PIXI.Renderer): void;
+    _ambienceFilter: PrimaryCanvasGroupAmbienceFilter | undefined;
 
     /**
      * Return the base HTML image or video element which provides the background texture.
+     * @privateRemarks Foundry does not indicate the possibility of a null return
      */
-    get backgroundSource(): HTMLImageElement | HTMLVideoElement;
+    get backgroundSource(): HTMLImageElement | HTMLVideoElement | null;
 
     /**
      * Return the base HTML image or video element which provides the foreground texture.
+     * @privateRemarks Foundry does not indicate the possibility of a null return
      */
-    get foregroundSource(): HTMLImageElement | HTMLVideoElement;
+    get foregroundSource(): HTMLImageElement | HTMLVideoElement | null;
 
     /**
      * Refresh the primary mesh.
@@ -124,61 +127,62 @@ declare global {
      */
     update(): void;
 
-    protected override _draw(options: CanvasGroupMixin.DrawOptions): Promise<void>;
+    protected override _draw(options: HandleEmptyObject<DrawOptions>): Promise<void>;
 
-    protected override _render(_renderer: Renderer): void;
+    protected override _render(_renderer: PIXI.Renderer): void;
 
-    protected override _tearDown(options: CanvasGroupMixin.TearDownOptions): Promise<void>;
+    protected override _tearDown(options: HandleEmptyObject<TearDownOptions>): Promise<void>;
 
     /**
      * Draw the SpriteMesh for a specific Token object.
      * @param token - The Token being added
      * @returns The added PrimarySpriteMesh
      */
-    addToken(token: Token): PrimarySpriteMesh;
+    addToken(token: Token.ConfiguredInstance): PrimarySpriteMesh;
 
     /**
      * Remove a TokenMesh from the group.
      * @param token - The Token being removed
      */
-    removeToken(token: Token): void;
+    removeToken(token: Token.ConfiguredInstance): void;
 
     /**
      * Draw the SpriteMesh for a specific Token object.
      * @param tile - The Tile being added
      * @returns The added PrimarySpriteMesh
      */
-    addTile(tile: Tile): PrimarySpriteMesh;
+    addTile(tile: Tile.ConfiguredInstance): PrimarySpriteMesh;
 
     /**
      * Remove a TokenMesh from the group.
      * @param tile - The Tile being removed
      */
-    removeTile(tile: Tile): void;
+    removeTile(tile: Tile.ConfiguredInstance): void;
 
     /**
      * Add a PrimaryGraphics to the group.
      * @param drawing - The Drawing being added
      * @returns The created PrimaryGraphics instance
      */
-    addDrawing(drawing: Drawing): PrimaryGraphics;
+    addDrawing(drawing: Drawing.ConfiguredInstance): PrimaryGraphics;
 
     /**
      * Remove a PrimaryGraphics from the group.
      * @param drawing - The Drawing being removed
      */
-    removeDrawing(drawing: Drawing): void;
+    removeDrawing(drawing: Drawing.ConfiguredInstance): void;
 
     /**
      * Override the default PIXI.Container behavior for how objects in this container are sorted.
-     * @override
+     * @remarks Actually an override of `PIXI.Container#sortChildren`
      */
     sortChildren(): void;
 
     /**
      * Handle mousemove events on the primary group to update the hovered state of its children.
+     * @remarks Foundry marked `@internal`
      */
-    protected _onMouseMove(): void;
+    _onMouseMove(): void;
 
     /**
      * @deprecated since v12, will be removed in v14
@@ -194,8 +198,22 @@ declare global {
   }
 
   namespace PrimaryCanvasGroup {
-    type Any = AnyPrimaryCanvasGroup;
+    interface Any extends AnyPrimaryCanvasGroup {}
     type AnyConstructor = typeof AnyPrimaryCanvasGroup;
+
+    interface DrawOptions extends CanvasGroupMixin.DrawOptions {}
+
+    interface TearDownOptions extends CanvasGroupMixin.TearDownOptions {}
+
+    type SORT_LAYERS = Brand<number, "PrimaryCanvasGroup.SORT_LAYERS">;
+
+    interface Sort_Layers {
+      readonly SCENE: 0 & SORT_LAYERS;
+      readonly TILES: 500 & SORT_LAYERS;
+      readonly DRAWINGS: 600 & SORT_LAYERS;
+      readonly TOKENS: 700 & SORT_LAYERS;
+      readonly WEATHER: 1000 & SORT_LAYERS;
+    }
   }
 }
 
