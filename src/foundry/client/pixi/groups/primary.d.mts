@@ -175,9 +175,8 @@ declare global {
 
     /**
      * Override the default PIXI.Container behavior for how objects in this container are sorted.
-     * @remarks Actually an override of `PIXI.Container#sortChildren`
      */
-    sortChildren(): void;
+    override sortChildren(): void;
 
     /**
      * Handle mousemove events on the primary group to update the hovered state of its children.

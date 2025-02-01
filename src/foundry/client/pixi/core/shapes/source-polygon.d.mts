@@ -110,19 +110,24 @@ declare global {
      */
     applyConstraint(
       constraint: PIXI.Polygon,
-      /** @privateRemarks pre-InexactPartialed for now */
       intersectionOptions?: PIXI.Polygon.IntersectPolygonOptions,
     ): PointSourcePolygon;
     applyConstraint(
       constraint: PIXI.Circle,
-      intersectionOptions?: NullishProps<PIXI.Circle.IntersectPolygonOptions>,
+      intersectionOptions?: PIXI.Circle.WACIntersectPolygonOptions,
+    ): PointSourcePolygon;
+    applyConstraint(
+      constraint: PIXI.Circle,
+      intersectionOptions?: PIXI.Circle.ClipperLibIntersectPolygonOptions,
     ): PointSourcePolygon;
     applyConstraint(
       constraint: PIXI.Rectangle,
-      /** @privateRemarks pre-InexactPartialed for now */
-      intersectionOptions?: PIXI.Rectangle.IntersectPolygonOptions,
+      intersectionOptions?: PIXI.Rectangle.WACIntersectPolygonOptions,
     ): PointSourcePolygon;
-
+    applyConstraint(
+      constraint: PIXI.Rectangle,
+      intersectionOptions?: PIXI.Rectangle.ClipperLibIntersectPolygonOptions,
+    ): PointSourcePolygon;
     override contains(x: number, y: number): boolean;
 
     /**
