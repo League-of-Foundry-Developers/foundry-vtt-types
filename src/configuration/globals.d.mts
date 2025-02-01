@@ -199,6 +199,7 @@ export import KeyboardManager = globalThis.KeyboardManager;
 export import LightDomeColorationShader = globalThis.LightDomeColorationShader;
 export import LightingLayer = globalThis.LightingLayer;
 export import LimitedAnglePolygon = globalThis.LimitedAnglePolygon;
+export import LoadTexture = globalThis.LoadTexture;
 export import Localization = globalThis.Localization;
 export import Macro = globalThis.Macro;
 export import MacroConfig = globalThis.MacroConfig;
