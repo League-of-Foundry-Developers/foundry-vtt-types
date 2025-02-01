@@ -1,4 +1,4 @@
-import type { HandleEmptyObject, NullishProps } from "fvtt-types/utils";
+import type { FixedInstanceType, HandleEmptyObject, NullishProps } from "fvtt-types/utils";
 import type { SceneEnvironmentData } from "../../../common/documents/_types.d.mts";
 
 declare global {
@@ -12,7 +12,7 @@ declare global {
     /**
      * The global light source attached to the environment
      */
-    readonly globalLightSource: InstanceType<(typeof CONFIG.Canvas)["globalLightSourceClass"]>;
+    readonly globalLightSource: FixedInstanceType<(typeof CONFIG.Canvas)["globalLightSourceClass"]>;
 
     /**
      * @defaultValue `false`

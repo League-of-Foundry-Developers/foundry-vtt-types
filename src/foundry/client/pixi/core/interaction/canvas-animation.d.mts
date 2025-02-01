@@ -89,6 +89,9 @@ declare global {
     interface Any extends AnyCanvasAnimation {}
     type AnyConstructor = typeof AnyCanvasAnimation;
 
+    /** @remarks Helper type as many things `return CanvasAnimation.animate(...)` */
+    type AnimateReturn = ReturnType<typeof CanvasAnimation.animate>;
+
     type EasingFunction = CoreEasingFunctions | ((percent: number) => number);
     type CoreEasingFunctions = PropertiesOfType<typeof CanvasAnimation, (percent: number) => number>;
 

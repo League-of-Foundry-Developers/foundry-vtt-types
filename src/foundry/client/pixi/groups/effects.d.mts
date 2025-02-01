@@ -1,4 +1,4 @@
-import type { HandleEmptyObject, ValueOf } from "fvtt-types/utils";
+import type { HandleEmptyObject, NullishProps } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -129,8 +129,9 @@ declare global {
      * @param point     - The point.
      * @param elevation - The elevation of the point.
      * @returns Is inside darkness?
+     * @remarks Foundry does not use the `elevation` parameter
      */
-    testInsideDarkness(point: Canvas.Point, elevation: number): boolean;
+    testInsideDarkness(point: Canvas.Point, _elevation?: number): boolean;
 
     /**
      * Get the darkness level at the given point.
@@ -147,7 +148,7 @@ declare global {
      * @param enabled - Whether to enable or disable vision masking
      *                  (default: `true`)
      */
-    toggleMaskingFilters(enabled: boolean): void;
+    toggleMaskingFilters(enabled?: boolean): void;
 
     /**
      * Activate post-processing effects for a certain effects channel.
@@ -156,9 +157,9 @@ declare global {
      * @param uniforms            - The uniforms to update.
      */
     activatePostProcessingFilters(
-      filterMode: ValueOf<VisualEffectsMaskingFilter.FILTER_MODES>,
-      postProcessingModes: VisualEffectsMaskingFilter.PostProcessModes,
-      uniforms: AbstractBaseShader.Uniforms,
+      filterMode: VisualEffectsMaskingFilter.FILTER_MODES,
+      postProcessingModes?: VisualEffectsMaskingFilter.PostProcessModes,
+      uniforms?: AbstractBaseShader.Uniforms,
     ): void;
 
     /**
@@ -184,16 +185,8 @@ declare global {
      */
     animateDarkness(
       target?: number,
-      {
-        duration,
-      }?: {
-        /**
-         * The desired animation time in milliseconds. Default is 10 seconds
-         * @defaultValue 10000
-         */
-        duration?: number;
-      },
-    ): ReturnType<typeof CanvasAnimation.animate>;
+      options?: EffectsCanvasGroup.AnimateDarknessOptions,
+    ): CanvasAnimation.AnimateReturn;
 
     /**
      * @deprecated since v12, until v14
@@ -218,12 +211,27 @@ declare global {
     interface Any extends AnyEffectsCanvasGroup {}
     type AnyConstructor = typeof AnyEffectsCanvasGroup;
 
+    /** @internal */
+    type _AnimateDarknessOptions = NullishProps<{
+      /**
+       * The desired animation time in milliseconds. Default is 10 seconds
+       * @defaultValue `10000`
+       * @remarks Only has a parameter default; `null` is effectively `0`, resulting in no animation, just instant darkness
+       */
+      duration: number;
+    }>;
+
+    interface AnimateDarknessOptions extends _AnimateDarknessOptions {}
+
     interface DrawOptions extends CanvasGroupMixin.DrawOptions {}
 
     interface TearDownOptions extends CanvasGroupMixin.TearDownOptions {}
   }
 }
 
-declare abstract class AnyEffectsCanvasGroup extends EffectsCanvasGroup {
+declare abstract class AnyEffectsCanvasGroup extends EffectsCanvasGroup<
+  EffectsCanvasGroup.DrawOptions,
+  EffectsCanvasGroup.TearDownOptions
+> {
   constructor(arg0: never, ...args: never[]);
 }
