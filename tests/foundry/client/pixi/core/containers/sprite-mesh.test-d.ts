@@ -2,6 +2,7 @@ import { expectTypeOf } from "vitest";
 
 const mySpriteMesh = new SpriteMesh();
 declare const someTex: PIXI.Texture;
+declare const someRect: PIXI.Rectangle;
 
 expectTypeOf(
   SpriteMesh.from(
@@ -20,3 +21,6 @@ if (mySpriteMesh.texture) {
   expectTypeOf(mySpriteMesh.texture).toEqualTypeOf<null>();
 }
 expectTypeOf(mySpriteMesh.setShaderClass(OccludableSamplerShader)).toEqualTypeOf<void>();
+expectTypeOf(mySpriteMesh.anchor).toEqualTypeOf<PIXI.ObservablePoint<SpriteMesh>>();
+expectTypeOf(mySpriteMesh.containsPoint({ x: 1, y: 2 })).toEqualTypeOf<boolean>();
+expectTypeOf(mySpriteMesh.getLocalBounds(someRect)).toEqualTypeOf<PIXI.Rectangle>();

@@ -232,8 +232,9 @@ declare global {
      * Setting the anchor to `(1,1)` would mean the sprite's origin point will be the bottom right corner.
      *
      * If you pass only single parameter, it will set both x and y to the same value as shown in the example below.
+     * @privateRemarks Technically should be `ObservablePoint<this>` but this breaks `PrimarySpriteMesh`
      */
-    get anchor(): PIXI.ObservablePoint;
+    get anchor(): PIXI.ObservablePoint<SpriteMesh.Any>;
 
     set anchor(anchor);
 

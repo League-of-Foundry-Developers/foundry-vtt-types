@@ -1,4 +1,4 @@
-import type { NullishProps, IntentionalPartial } from "fvtt-types/utils";
+import type { NullishProps } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -14,13 +14,9 @@ declare global {
 
     /**
      * The texture configuration to use for this cached container
-     * @remarks Foundry marked as abstract
+     * @remarks Foundry marked as `@abstract`
      */
-    static textureConfiguration: NullishProps<{
-      multisample: PIXI.MSAA_QUALITY;
-      scaleMode: PIXI.SCALE_MODES;
-      format: PIXI.FORMATS;
-    }>;
+    static textureConfiguration: CachedContainer.TextureConfiguration;
 
     /**
      * A map of render textures, linked to their render function and an optional RGBA clear color.
@@ -63,6 +59,9 @@ declare global {
      */
     set alphaMode(mode: PIXI.ALPHA_MODES);
 
+    /** @remarks Foundry provides no getter, this is for accurate typing only, as without it Typescript would infer the type as `PIXI.ALPHA_MODES` */
+    get alphaMode(): undefined;
+
     /**
      * A bound Sprite which uses this container's render texture
      */
@@ -74,10 +73,8 @@ declare global {
      * Create a render texture, provide a render method and an optional clear color.
      * @param options - Optional parameters.
      * @returns A reference to the created render texture.
-     * @remarks IntentionalPartial beacuse the interface already accounts for `| null | undefined`, but the
-     *          keys aren't optional in the `_renderPaths` map entries, so they're not in the interface
      */
-    createRenderTexture(options?: IntentionalPartial<CachedContainer.RenderOptions>): PIXI.RenderTexture;
+    createRenderTexture(options?: CachedContainer.RenderOptions): PIXI.RenderTexture;
 
     /**
      * Remove a previously created render texture.
@@ -85,7 +82,7 @@ declare global {
      * @param destroy - Should the render texture be destroyed?
      *                  (default: `true`)
      */
-    removeRenderTexture(renderTexture: PIXI.RenderTexture, destroy?: boolean): void;
+    removeRenderTexture(renderTexture: PIXI.RenderTexture, destroy?: boolean | null): void;
 
     /**
      * Clear the cached container, removing its current contents.
@@ -111,13 +108,26 @@ declare global {
     interface Any extends AnyCachedContainer {}
     type AnyConstructor = typeof AnyCachedContainer;
 
-    interface RenderOptions {
+    /** @internal */
+    type _TextureConfiguration = NullishProps<{
+      multisample: PIXI.MSAA_QUALITY;
+      scaleMode: PIXI.SCALE_MODES;
+      format: PIXI.FORMATS;
+      /** @privateRemarks Only exists on DarknessLevelContainer and is seemingly unused there */
+      mipmap: PIXI.MIPMAP_MODES;
+    }>;
+
+    interface TextureConfiguration extends _TextureConfiguration {}
+
+    /** @internal */
+    type _RenderOptions = NullishProps<{
       /** Render function that will be called to render into the RT. */
-      renderFunction: ((renderer: PIXI.Renderer) => void) | null | undefined;
+      renderFunction: (renderer: PIXI.Renderer) => void;
 
       /** An optional clear color to clear the RT before rendering into it. */
-      clearColor: Color.RGBAColorVector | null | undefined;
-    }
+      clearColor: Color.RGBAColorVector;
+    }>;
+    interface RenderOptions extends _RenderOptions {}
   }
 }
 

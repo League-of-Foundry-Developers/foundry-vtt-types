@@ -4,6 +4,7 @@ declare global {
   /**
    * A basic rectangular mesh with a shader only. Does not natively handle textures (but a bound shader can).
    * Bounds calculations are simplified and the geometry does not need to handle texture coords.
+   * @privateRemarks Ideally the `shaderClass` passed to the constructor and `get shader()` could be synced up, but `setShaderClass` removes that option
    */
   class QuadMesh extends PIXI.Container {
     /**
@@ -29,7 +30,7 @@ declare global {
      */
     setShaderClass(shaderClass: AbstractBaseShader.AnyConstructor): void;
 
-    protected override _render(_renderer: PIXI.Renderer): void;
+    protected override _render(renderer: PIXI.Renderer): void;
 
     protected override _calculateBounds(): void;
 
