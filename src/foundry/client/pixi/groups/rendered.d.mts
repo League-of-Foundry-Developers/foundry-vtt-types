@@ -4,7 +4,10 @@ declare global {
   /**
    * A container group which contains the environment canvas group and the interface canvas group.
    */
-  class RenderedCanvasGroup extends CanvasGroupMixin<typeof PIXI.Container, "rendered">(PIXI.Container) {
+  class RenderedCanvasGroup<
+    DrawOptions extends RenderedCanvasGroup.DrawOptions = RenderedCanvasGroup.DrawOptions,
+    TearDownOptions extends RenderedCanvasGroup.TearDownOptions = RenderedCanvasGroup.TearDownOptions,
+  > extends CanvasGroupMixin<typeof PIXI.Container, "rendered">(PIXI.Container)<DrawOptions, TearDownOptions> {
     /**
      * @defaultValue `false`
      */
@@ -12,8 +15,12 @@ declare global {
   }
 
   namespace RenderedCanvasGroup {
-    type Any = AnyRenderedCanvasGroup;
+    interface Any extends AnyRenderedCanvasGroup {}
     type AnyConstructor = typeof AnyRenderedCanvasGroup;
+
+    interface DrawOptions extends CanvasGroupMixin.DrawOptions {}
+
+    interface TearDownOptions extends CanvasGroupMixin.TearDownOptions {}
   }
 }
 
