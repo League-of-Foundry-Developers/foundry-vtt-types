@@ -284,6 +284,9 @@ jobs:
           name: main-test-results
           path: main-test-results
 
+          # Download no matter the outcome of the job.
+          workflow_conclusion: ""
+
       - name: Download Test Results
         uses: actions/download-artifact@v4
         with:
