@@ -21,7 +21,7 @@ declare global {
     /**
      * Initialize the basis transcoder for PIXI.Assets
      */
-    static initializeBasisTranscoder(): ReturnType<typeof TranscoderWorker.loadTranscoder> | Promise<void>;
+    static initializeBasisTranscoder(): TextureLoader.TranscodeWorkerLoadTranscoderReturn | Promise<void>;
 
     /**
      * Check if a source has a text file extension.
@@ -49,7 +49,7 @@ declare global {
     static loadSceneTextures(
       scene: Scene.ConfiguredInstance,
       options?: TextureLoader.LoadSceneTexturesOptions,
-    ): ReturnType<TextureLoader["load"]>;
+    ): Promise<void>;
 
     /**
      * Load an Array of provided source URL paths
@@ -65,11 +65,11 @@ declare global {
      * @param src - The source texture path to load
      * @returns The loaded texture object
      */
-    loadTexture(src: string): Promise<PIXI.BaseTexture | PIXI.Spritesheet | null>;
+    loadTexture(src: string): TextureLoader.LoadTextureReturn;
 
     /**
      * Use the Fetch API to retrieve a resource and return a Blob instance for it.
-     * @param  src    - The resource URL
+     * @param src     - The resource URL
      * @param options - Options to configure the loading behaviour.
      * @returns A Blob containing the loaded data
      */
@@ -104,13 +104,13 @@ declare global {
      * @deprecated since v11, will be removed in v13
      * @remarks TextureLoader#loadImageTexture is deprecated. Use TextureLoader#loadTexture instead.
      */
-    loadImageTexture(src: string): ReturnType<TextureLoader["loadTexture"]>;
+    loadImageTexture(src: string): TextureLoader.LoadTextureReturn;
 
     /**
      * @deprecated since v11, will be removed in v13
      * @remarks TextureLoader#loadVideoTexture is deprecated. Use TextureLoader#loadTexture instead.
      */
-    loadVideoTexture(src: string): ReturnType<TextureLoader["loadTexture"]>;
+    loadVideoTexture(src: string): TextureLoader.LoadTextureReturn;
 
     /**
      * @deprecated since v12, will be removed in v14
@@ -123,6 +123,10 @@ declare global {
   namespace TextureLoader {
     interface Any extends AnyTextureLoader {}
     type AnyConstructor = typeof AnyTextureLoader;
+
+    type TranscodeWorkerLoadTranscoderReturn = ReturnType<typeof TranscoderWorker.loadTranscoder>;
+
+    type LoadTextureReturn = Promise<PIXI.BaseTexture | PIXI.Spritesheet | null>;
 
     interface TextureAlphaData {
       /** The width of the (downscaled) texture. */
@@ -195,7 +199,7 @@ declare global {
        */
       displayProgress: boolean;
     }> &
-      /** @privateRemarks Can't Pick `expireCache` as it has a different default here */
+      /** @privateRemarks Can't Pick `expireCache`, despite it existing on `LoadSceneTexturesOptions`, as it has a different default here */
       Pick<LoadSceneTexturesOptions, "maxConcurrent">;
 
     /** Options for {@link TextureLoader#load} */
@@ -225,7 +229,7 @@ declare global {
    * @param src - The texture path to load.
    * @returns A texture, a sprite sheet or null if not found in cache.
    */
-  function getTexture(src: string): PIXI.Texture | PIXI.Spritesheet | null;
+  function getTexture(src: string): LoadTexture.Return;
 
   /**
    * Load a single asset and return a Promise which resolves once the asset is ready to use
@@ -233,9 +237,11 @@ declare global {
    * @param options  - Additional options which modify assset loading
    * @returns The loaded Texture or sprite sheet, or null if loading failed with no fallback
    */
-  function loadTexture(src: string, options?: LoadTexture.Options): Promise<PIXI.Texture | PIXI.Spritesheet | null>;
+  function loadTexture(src: string, options?: LoadTexture.Options): Promise<LoadTexture.Return>;
 
   namespace LoadTexture {
+    type Return = PIXI.Texture | PIXI.Spritesheet | null;
+
     /** @internal */
     type _Options = NullishProps<{
       /** A fallback texture URL to use if the requested source is unavailable */
