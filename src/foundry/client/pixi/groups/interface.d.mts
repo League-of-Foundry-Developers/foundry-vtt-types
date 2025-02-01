@@ -55,14 +55,12 @@ declare global {
       /**
        * The original anchor point where the text appears
        * @defaultValue `CONST.TEXT_ANCHOR_POINTS.CENTER`
-       * @remarks Default provided by `??`
        */
       anchor: foundry.CONST.TEXT_ANCHOR_POINTS;
 
       /**
        * The direction in which the text scrolls
        * @defaultValue `CONST.TEXT_ANCHOR_POINTS.TOP`
-       * @remarks Default provided by `??`
        */
       direction: foundry.CONST.TEXT_ANCHOR_POINTS;
 

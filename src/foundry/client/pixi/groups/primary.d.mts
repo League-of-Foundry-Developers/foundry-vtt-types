@@ -96,7 +96,7 @@ declare global {
 
     /**
      * The collection of SpriteMesh objects which are rendered in the Scene.
-     * @privateRemarks Foundry types this as `Collection<PrimarySpriteMesh|TileSprite>`, but `TileSprite` doens't exist. In practice it's all `PrimarySpriteMesh`.
+     * @privateRemarks Foundry types this as `Collection<PrimarySpriteMesh | TileSprite>`, but `TileSprite` doens't exist. In practice it's all `PrimarySpriteMesh`.
      */
     tiles: Collection<PrimarySpriteMesh>;
 

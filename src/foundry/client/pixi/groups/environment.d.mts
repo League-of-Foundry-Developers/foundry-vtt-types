@@ -13,7 +13,7 @@ declare global {
      * The global light source attached to the environment
      * @remarks This is `defineProperty`'d as non-writable and non-configurable at construction
      */
-    readonly globalLightSource: FixedInstanceType<(typeof CONFIG.Canvas)["globalLightSourceClass"]>;
+    readonly globalLightSource: FixedInstanceType<typeof CONFIG.Canvas.globalLightSourceClass>;
 
     /**
      * Should this group tear down its non-layer children?
