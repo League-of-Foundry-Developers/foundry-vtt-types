@@ -107,7 +107,10 @@ declare global {
   const BaseCanvasMixin: typeof CanvasGroupMixin;
 
   namespace CanvasGroupMixin {
-    type AnyConstructor = typeof AnyCanvasGroup;
+    type AnyMixedConstructor = ReturnType<
+      typeof CanvasGroupMixin<CanvasGroupMixin.BaseClass, CanvasGroupMixin.LayerGroup | NoLayerGroup>
+    >;
+    interface AnyMixed extends AnyMixedConstructor {}
 
     type BaseClass = PIXI.Container.AnyConstructor;
 

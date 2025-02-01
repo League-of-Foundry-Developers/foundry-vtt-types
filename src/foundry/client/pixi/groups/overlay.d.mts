@@ -9,6 +9,7 @@ declare global {
     TearDownOptions extends OverlayCanvasGroup.TearDownOptions = OverlayCanvasGroup.TearDownOptions,
   > extends CanvasGroupMixin<typeof UnboundContainer, "overlay">(UnboundContainer)<DrawOptions, TearDownOptions> {
     /**
+     * Should this group tear down its non-layer children?
      * @defaultValue `false`
      */
     static override tearDownChildren: boolean;

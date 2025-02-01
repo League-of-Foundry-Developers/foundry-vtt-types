@@ -243,7 +243,7 @@ declare global {
     interface Any extends AnyCanvasQuadtree {}
     type AnyConstructor = typeof AnyCanvasQuadtree;
 
-    type CanvasQuadtreeObject = PrimaryCanvasObjectMixin.Any | PlaceableObject.Any;
+    type CanvasQuadtreeObject = PrimaryCanvasObjectMixin.AnyMixed | PlaceableObject.Any;
   }
 }
 

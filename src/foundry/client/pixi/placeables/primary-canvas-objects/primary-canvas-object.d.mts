@@ -18,7 +18,8 @@ declare class PrimaryCanvasObject {
    * @privateRemarks Foundry types as `*`, but in practice, it will only ever be a `Drawing` (via `PrimaryGraphics`),
    * or a `Token`, `Tile`, or the `PrimaryCanvasGroup` (via `PrimarySpriteMesh`), or its default value `null`
    */
-  object: PlaceableObject.Any | CanvasGroupMixin.AnyConstructor | null;
+  //TODO: (esheyw) Revisit the "any canvas group" type when groups are done
+  object: PlaceableObject.Any | CanvasGroupMixin.AnyMixed | null;
 
   /**
    * The elevation of this object.
@@ -172,9 +173,6 @@ declare global {
   ): Mixin<typeof PrimaryCanvasObject, ReturnType<typeof CanvasTransformMixin<BaseClass>>>;
 
   namespace PrimaryCanvasObjectMixin {
-    interface Any extends AnyPrimaryCanvasObject {}
-    type AnyConstructor = typeof AnyPrimaryCanvasObject;
-
     type AnyMixedConstructor = ReturnType<typeof PrimaryCanvasObjectMixin<PrimaryCanvasObjectMixin.BaseClass>>;
     interface AnyMixed extends AnyMixedConstructor {}
 
@@ -192,19 +190,9 @@ declare global {
   ): Mixin<typeof CanvasTransformMixinClass, BaseClass>;
 
   namespace CanvasTransformMixin {
-    interface Any extends AnyCanvasTransformMixinClass {}
-    type AnyConstructor = typeof AnyCanvasTransformMixinClass;
-
     type AnyMixedConstructor = ReturnType<typeof CanvasTransformMixin<CanvasTransformMixin.BaseClass>>;
     interface AnyMixed extends AnyMixedConstructor {}
 
     type BaseClass = PIXI.Container.AnyConstructor;
   }
-}
-
-declare abstract class AnyPrimaryCanvasObject extends PrimaryCanvasObject {
-  constructor(arg0: never, ...args: never[]);
-}
-declare abstract class AnyCanvasTransformMixinClass extends CanvasTransformMixinClass {
-  constructor(arg0: never, ...args: never[]);
 }

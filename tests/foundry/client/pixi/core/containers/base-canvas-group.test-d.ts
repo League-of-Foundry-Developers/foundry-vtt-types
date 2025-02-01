@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-namespace */
-import { expectTypeOf } from "vitest";
+import { assertType, expectTypeOf } from "vitest";
 
 class FakePrimaryGroup<
   DrawOptions extends PrimaryCanvasGroup.DrawOptions = PrimaryCanvasGroup.DrawOptions,
@@ -10,6 +10,7 @@ expectTypeOf(FakePrimaryGroup.groupName).toMatchTypeOf<keyof CONFIG.Canvas.Group
 expectTypeOf(FakePrimaryGroup.tearDownChildren).toEqualTypeOf<boolean>();
 
 const MyGroup = new FakePrimaryGroup();
+assertType<PIXI.Container>(MyGroup);
 
 expectTypeOf(MyGroup.layers).toEqualTypeOf<CanvasGroupMixin.LayersFor<"primary">>();
 expectTypeOf(MyGroup.name).toEqualTypeOf<string>();

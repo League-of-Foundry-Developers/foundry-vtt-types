@@ -1,4 +1,4 @@
-import type { HandleEmptyObject, NullishProps } from "fvtt-types/utils";
+import type { FixedInstanceType, HandleEmptyObject, InexactPartial, NullishProps } from "fvtt-types/utils";
 import type { SceneEnvironmentData } from "../../../common/documents/_types.d.mts";
 
 declare global {
@@ -11,23 +11,27 @@ declare global {
   > extends CanvasGroupMixin<typeof PIXI.Container, "environment">(PIXI.Container)<DrawOptions, TearDownOptions> {
     /**
      * The global light source attached to the environment
+     * @remarks This is `defineProperty`'d as non-writable and non-configurable at construction
      */
-    readonly globalLightSource: InstanceType<(typeof CONFIG.Canvas)["globalLightSourceClass"]>;
+    readonly globalLightSource: FixedInstanceType<typeof CONFIG.Canvas.globalLightSourceClass>;
 
     /**
+     * Should this group tear down its non-layer children?
      * @defaultValue `false`
      */
     static override tearDownChildren: boolean;
 
     /**
      * Colors exposed by the manager.
+     * @remarks Properties here are only `undefined` prior to `#initialize`ation
      */
-    colors: Record<string, Color | undefined>;
+    colors: EnvironmentCanvasGroup.Colors;
 
     /**
      * Weights used by the manager to compute colors.
+     * @remarks Properties here are only `undefined` prior to `#initialize`ation
      */
-    weights: Record<string, number | undefined>;
+    weights: EnvironmentCanvasGroup.Weights;
 
     /**
      * Get the darkness level of this scene.
@@ -58,10 +62,27 @@ declare global {
 
     interface TearDownOptions extends CanvasGroupMixin.TearDownOptions {}
 
-    /**
-     * @remarks This is separated like this because `#initalize` won't accept `environment: null` without throwing
-     */
-    type InitializeOptions = NullishProps<{
+    type ColorKeys =
+      | "darkness"
+      | "halfdark"
+      | "background"
+      | "dim"
+      | "bright"
+      | "ambientBrightest"
+      | "ambientDaylight"
+      | "ambientDarkness"
+      | "sceneBackground"
+      | "fogExplored"
+      | "fogUnexplored";
+
+    interface Colors extends Record<EnvironmentCanvasGroup.ColorKeys, Color | undefined> {}
+
+    type WeightKeys = "dark" | "halfdark" | "dim" | "bright";
+
+    interface Weights extends Record<EnvironmentCanvasGroup.WeightKeys, number | undefined> {}
+
+    /** @internal */
+    type _InitializeOptions = NullishProps<{
       /** The background canvas color */
       backgroundColor: Color.Source;
 
@@ -79,13 +100,31 @@ declare global {
 
       /** The color applied to unexplored areas */
       fogUnexploredColor: Color.Source;
-    }> & {
-      /** The scene environment data */
-      environment?: NullishProps<SceneEnvironmentData> | undefined;
-    };
+
+      /**
+       * @deprecated since v12 until v14
+       * @remarks "config.darknessLevel parameter into EnvironmentCanvasGroup#initialize is deprecated.
+       * You should pass the darkness level into config.environment.darknessLevel"
+       * @privateRemarks [sic]
+       */
+      darknessLevel: number;
+    }> &
+      InexactPartial<{
+        /**
+         * The scene environment data
+         * @defaultValue `{}`
+         * @remarks Can't be `null` as it only has a parameter default and has properties accessed
+         */
+        environment: NullishProps<SceneEnvironmentData>;
+      }>;
+
+    interface InitializeOptions extends _InitializeOptions {}
   }
 }
 
-declare abstract class AnyEnvironmentCanvasGroup extends EnvironmentCanvasGroup {
+declare abstract class AnyEnvironmentCanvasGroup extends EnvironmentCanvasGroup<
+  EnvironmentCanvasGroup.DrawOptions,
+  EnvironmentCanvasGroup.TearDownOptions
+> {
   constructor(arg0: never, ...args: never[]);
 }

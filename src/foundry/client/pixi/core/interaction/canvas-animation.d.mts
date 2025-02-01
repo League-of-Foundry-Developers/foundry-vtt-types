@@ -48,7 +48,10 @@ declare global {
      * CanvasAnimation.animate(attributes, {duration:500});
      * ```
      */
-    static animate(attributes: CanvasAnimation.Attribute[], options?: CanvasAnimationOptions): Promise<boolean | void>;
+    static animate(
+      attributes: CanvasAnimation.Attribute[],
+      options?: CanvasAnimationOptions,
+    ): CanvasAnimation.AnimateReturn;
 
     /**
      * Retrieve an animation currently in progress by its name
@@ -88,6 +91,9 @@ declare global {
   namespace CanvasAnimation {
     interface Any extends AnyCanvasAnimation {}
     type AnyConstructor = typeof AnyCanvasAnimation;
+
+    /** @remarks Helper type as many things `return CanvasAnimation.animate(...)` */
+    type AnimateReturn = Promise<boolean | void>;
 
     type EasingFunction = CoreEasingFunctions | ((percent: number) => number);
     type CoreEasingFunctions = PropertiesOfType<typeof CanvasAnimation, (percent: number) => number>;
