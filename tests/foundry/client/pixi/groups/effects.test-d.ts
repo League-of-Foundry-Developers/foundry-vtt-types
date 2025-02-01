@@ -5,6 +5,7 @@ expectTypeOf(EffectsCanvasGroup.groupName).toEqualTypeOf<undefined>();
 declare const somePoint: PIXI.Point;
 const myEffectGroup = new EffectsCanvasGroup();
 
+expectTypeOf(myEffectGroup.layers).toEqualTypeOf<CanvasGroupMixin.LayersFor<"effects">>();
 expectTypeOf(
   myEffectGroup.activatePostProcessingFilters(VisualEffectsMaskingFilter.FILTER_MODES.BACKGROUND, ["CONTRAST"], {
     someUniformKey: [1, 2, 3],
