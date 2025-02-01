@@ -168,16 +168,18 @@ declare global {
    * @returns A DisplayObject subclass mixed with PrimaryCanvasObject features
    * @privateRemarks Despite naming the argument "DisplayObject", it's typed as only taking `PIXI.Container`s, which matches core's usage
    */
-  function PrimaryCanvasObjectMixin<BaseClass extends PIXI.Container.AnyConstructor>(
+  function PrimaryCanvasObjectMixin<BaseClass extends PrimaryCanvasObjectMixin.BaseClass>(
     DisplayObject: BaseClass,
   ): Mixin<typeof PrimaryCanvasObject, ReturnType<typeof CanvasTransformMixin<BaseClass>>>;
 
   namespace PrimaryCanvasObjectMixin {
     interface Any extends AnyPrimaryCanvasObject {}
     type AnyConstructor = typeof AnyPrimaryCanvasObject;
-    type AnyMixed = ReturnType<typeof PrimaryCanvasObjectMixin<PIXI.Container.AnyConstructor>>;
 
-    type MixinClass = typeof PrimaryCanvasObject;
+    type AnyMixedConstructor = ReturnType<typeof PrimaryCanvasObjectMixin<PrimaryCanvasObjectMixin.BaseClass>>;
+    interface AnyMixed extends AnyMixedConstructor {}
+
+    type BaseClass = PIXI.Container.AnyConstructor;
   }
 
   /**
@@ -186,16 +188,18 @@ declare global {
    * @returns A DisplayObject subclass mixed with CanvasTransformMixin features
    * @privateRemarks Despite naming the argument "DisplayObject", it's typed as only taking `PIXI.Container`s, which matches core's usage
    */
-  function CanvasTransformMixin<BaseClass extends PIXI.Container.AnyConstructor>(
+  function CanvasTransformMixin<BaseClass extends CanvasTransformMixin.BaseClass>(
     DisplayObject: BaseClass,
   ): Mixin<typeof CanvasTransformMixinClass, BaseClass>;
 
   namespace CanvasTransformMixin {
     interface Any extends AnyCanvasTransformMixinClass {}
     type AnyConstructor = typeof AnyCanvasTransformMixinClass;
-    type AnyMixed = ReturnType<typeof CanvasTransformMixin<PIXI.Container.AnyConstructor>>;
 
-    type MixinClass = typeof CanvasTransformMixinClass;
+    type AnyMixedConstructor = ReturnType<typeof CanvasTransformMixin<CanvasTransformMixin.BaseClass>>;
+    interface AnyMixed extends AnyMixedConstructor {}
+
+    type BaseClass = PIXI.Container.AnyConstructor;
   }
 }
 

@@ -59,7 +59,7 @@ declare global {
      */
     set alphaMode(mode: PIXI.ALPHA_MODES);
 
-    /** @remarks Foundry actually omits the getter entirely, this is for accurate typing only */
+    /** @remarks Foundry provides no getter, this is for accurate typing only, as without it Typescript would infer the type as `PIXI.ALPHA_MODES` */
     get alphaMode(): undefined;
 
     /**
@@ -73,8 +73,6 @@ declare global {
      * Create a render texture, provide a render method and an optional clear color.
      * @param options - Optional parameters.
      * @returns A reference to the created render texture.
-     * @remarks IntentionalPartial beacuse the interface already accounts for `| null | undefined`, but the
-     * keys aren't optional in the `_renderPaths` map entries, so they're not optional in the interface
      */
     createRenderTexture(options?: CachedContainer.RenderOptions): PIXI.RenderTexture;
 
