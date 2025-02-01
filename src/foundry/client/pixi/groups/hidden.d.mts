@@ -10,7 +10,6 @@ declare global {
   > extends CanvasGroupMixin<typeof PIXI.Container, "hidden">(PIXI.Container)<DrawOptions, TearDownOptions> {
     /**
      * @defaultValue `"none"`
-     * @remarks Actually an override of `PIXI.Container#eventMode`
      */
     override eventMode: PIXI.EventMode;
 

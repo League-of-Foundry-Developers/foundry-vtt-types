@@ -42,7 +42,6 @@ declare global {
 
     /**
      * @defaultValue `[0, 0, 0, 0]`
-     * @remarks Actually an override of `CachedContainer#clearColor`
      */
     override clearColor: Color.RGBAColorVector;
 
