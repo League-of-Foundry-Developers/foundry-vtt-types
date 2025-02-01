@@ -19,7 +19,7 @@ declare class PrimaryCanvasObject {
    * or a `Token`, `Tile`, or the `PrimaryCanvasGroup` (via `PrimarySpriteMesh`), or its default value `null`
    */
   //TODO: (esheyw) Revisit the "any canvas group" type when groups are done
-  object: PlaceableObject.Any | CanvasGroupMixin.Any | null;
+  object: PlaceableObject.Any | CanvasGroupMixin.AnyMixed | null;
 
   /**
    * The elevation of this object.
