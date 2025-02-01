@@ -6,7 +6,7 @@ declare global {
   type EdgeSet = Set<Edge>;
 
   interface PolygonRay extends Ray {
-    result: foundry.canvas.edges.CollisionResult;
+    result?: foundry.canvas.edges.CollisionResult;
   }
 
   /**

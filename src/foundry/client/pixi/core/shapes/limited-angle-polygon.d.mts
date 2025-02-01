@@ -1,3 +1,5 @@
+import type { InexactPartial } from "../../../../../utils/index.d.mts";
+
 export {};
 
 declare global {
@@ -6,12 +8,12 @@ declare global {
    * The shape is defined by a point origin, radius, angle, and rotation.
    * The shape is further customized by a configurable density which informs the approximation.
    * An optional secondary externalRadius can be provided which adds supplementary visibility outside the primary angle.
+   * @param origin - The origin point for this polygon
+   * @param config - Configuration for the polygon.
+   * @remarks Despite `config` being an `={}` parameter, the `radius` key must be passed to avoid `NaN`s
    */
   class LimitedAnglePolygon extends PIXI.Polygon {
-    constructor(
-      origin: Canvas.Point,
-      { radius, angle, rotation, density, externalRadius }: LimitedAnglePolygon.ConstructorOptions,
-    );
+    constructor(origin: Canvas.Point, config: LimitedAnglePolygon.ConstructorOptions);
 
     /**
      * The origin point of the Polygon
@@ -60,6 +62,12 @@ declare global {
     aMax: number;
 
     /**
+     * The bounding box of the circle defined by the externalRadius, if any
+     * @privateRemarks Set in `##generatePoints`, which is called at the end of the constructor
+     */
+    externalBounds: PIXI.Rectangle;
+
+    /**
      * Restrict the edges which should be included in a PointSourcePolygon based on this specialized shape.
      * We use two tests to jointly keep or reject edges.
      * 1. If this shape uses an externalRadius, keep edges which collide with the bounding box of that circle.
@@ -67,9 +75,9 @@ declare global {
      * @param a - The first edge vertex
      * @param b - The second edge vertex
      * @returns Should the edge be included in the PointSourcePolygon computation?
-     * @internal
+     * @remarks Foundry marked `@internal`
      */
-    protected _includeEdge(a: Canvas.Point, b: Canvas.Point): boolean;
+    _includeEdge(a: Canvas.Point, b: Canvas.Point): boolean;
 
     /**
      * Test whether a vertex lies between two boundary rays.
@@ -85,35 +93,49 @@ declare global {
   }
 
   namespace LimitedAnglePolygon {
-    interface ConstructorOptions {
-      /**
-       * The radius of the emitted cone.
-       */
-      radius: number;
+    interface Any extends AnyLimitedAnglePolygon {}
+    type AnyConstructor = typeof AnyLimitedAnglePolygon;
 
+    /** @internal */
+    type _ConstructorOptions = InexactPartial<{
       /**
        * The angle of the Polygon in degrees.
        * @defaultValue `360`
+       * @remarks Can't be `null` as it only has a parameter default
        */
-      angle?: number;
+      angle: number;
 
       /**
        * The direction of rotation at the center of the emitted angle in degrees.
        * @defaultValue `0`
+       * @remarks Can't be `null` as it only has a parameter default
        */
-      rotation?: number;
+      rotation: number;
 
       /**
        * The density of rays which approximate the cone, defined as rays per PI.
        * @defaultValue `PIXI.Circle.approximateVertexDensity(this.radius)`
        */
-      density?: number;
+      density: number | null;
 
       /**
        * An optional "external radius" which is included in the polygon for the supplementary area outside the cone.
        * @defaultValue `0`
+       * @remarks Only used if truthy
        */
-      externalRadius?: number;
+      externalRadius: number | null;
+    }>;
+
+    interface ConstructorOptions extends _ConstructorOptions {
+      /**
+       * The radius of the emitted cone.
+       * @privateRemarks This is given no default, but is directly used in multiplication and division, resulting in `NaN` if allowed to be `undefined`
+       */
+      radius: number;
     }
   }
+}
+
+declare abstract class AnyLimitedAnglePolygon extends LimitedAnglePolygon {
+  constructor(arg0: never, ...args: never[]);
 }
