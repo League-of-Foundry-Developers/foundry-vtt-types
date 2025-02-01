@@ -121,6 +121,9 @@ declare global {
   }
 }
 
-declare abstract class AnyEnvironmentCanvasGroup extends EnvironmentCanvasGroup {
+declare abstract class AnyEnvironmentCanvasGroup extends EnvironmentCanvasGroup<
+  EnvironmentCanvasGroup.DrawOptions,
+  EnvironmentCanvasGroup.TearDownOptions
+> {
   constructor(arg0: never, ...args: never[]);
 }

@@ -25,6 +25,7 @@ declare global {
      * @param displayObject - Display object to add.
      * @param position      - Position of the mask.
      * @throws If `displayObject` doesn't implement a `clear` method, or if `name` is an empty string
+     * @remarks `position` is not used if fasley
      */
     addMask(name: string, displayObject: PIXI.DisplayObject, position?: number | null): void;
 
@@ -48,6 +49,9 @@ declare global {
   }
 }
 
-declare abstract class AnyHiddenCanvasGroup extends HiddenCanvasGroup {
+declare abstract class AnyHiddenCanvasGroup extends HiddenCanvasGroup<
+  HiddenCanvasGroup.DrawOptions,
+  HiddenCanvasGroup.TearDownOptions
+> {
   constructor(arg0: never, ...args: never[]);
 }
