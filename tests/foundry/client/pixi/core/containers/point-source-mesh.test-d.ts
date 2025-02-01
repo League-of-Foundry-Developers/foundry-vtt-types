@@ -1,10 +1,15 @@
 import { expectTypeOf } from "vitest";
 
 const myGeometry = new PIXI.Geometry();
+const myShader = AdaptiveBackgroundShader.create();
+declare const someState: PIXI.State;
+declare const someRenderer: PIXI.Renderer;
+declare const someRect: PIXI.Rectangle;
 
-const myShader = AdaptiveLightingShader.create();
+// Matches a call made in `RenderedPointSource##createMesh`, the only place Foundry calls `new`
+const myPSM = new PointSourceMesh(myGeometry, myShader, someState);
 
-// Matches a call made in RenderedPointSource##createMesh
-const myPointSourceMesh = new PointSourceMesh(myGeometry, myShader);
-
-expectTypeOf(myPointSourceMesh.addChild()).toEqualTypeOf<never>();
+expectTypeOf(myPSM.shader).toEqualTypeOf<typeof myShader>();
+expectTypeOf(myPSM.addChild()).toEqualTypeOf<never>();
+expectTypeOf(myPSM["_render"](someRenderer)).toEqualTypeOf<void>();
+expectTypeOf(myPSM.getLocalBounds(someRect)).toEqualTypeOf<PIXI.Rectangle>();

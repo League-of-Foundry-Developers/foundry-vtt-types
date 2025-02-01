@@ -16,3 +16,4 @@ expectTypeOf(
   }),
 ).toEqualTypeOf<void>();
 expectTypeOf(container.render(new PIXI.Renderer())).toEqualTypeOf<void>();
+expectTypeOf(container.alphaMode).toEqualTypeOf<undefined>();
