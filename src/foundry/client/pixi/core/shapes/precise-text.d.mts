@@ -34,7 +34,7 @@ declare global {
        */
       anchor: foundry.CONST.TEXT_ANCHOR_POINTS;
     }> &
-      /** @remarks Can't be NullishProps because keys are only checked for `!== undefined` in PIXI */
+      // Can't be NullishProps because keys are only checked for `!== undefined` in PIXI
       InexactPartial<PIXI.ITextStyle>;
     interface GetTextStyleOptions extends _GetTextStyleOptions {}
   }

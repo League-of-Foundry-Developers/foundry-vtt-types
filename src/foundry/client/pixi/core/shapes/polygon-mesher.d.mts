@@ -64,6 +64,7 @@ declare global {
       /**
        * The position value in pixels
        * @defaultValue `0`
+       * @remarks Can't be `undefined` because the default is provided by spread operator and the value is used directly in math
        */
       offset: number | null;
 
@@ -76,39 +77,42 @@ declare global {
       /**
        * The x origin
        * @defaultValue `0`
+       * @remarks Can't be `undefined` because the default is provided by spread operator and the value is used directly in math
        */
       x: number | null;
 
       /**
        * The y origin
        * @defaultValue `0`
+       * @remarks Can't be `undefined` because the default is provided by spread operator and the value is used directly in math
        */
       y: number | null;
 
       /**
        * The radius
        * @defaultValue `0`
-       * @remarks Can't be `null` because of an `=== 0` check
+       * @remarks Can't be `null` because of an `=== 0` check, nor `undefined` because the default is provided by spread operator and the value is used directly in math
        */
       radius: number;
 
       /**
        * The depth value on the outer polygon
        * @defaultValue `0`
-       * @remarks Can't be `null` as it can be pushed directly into a `number[]`
+       * @remarks Can't be `null` as it can be pushed directly into a `number[]`, nor `undefined` because the default is provided by spread operator and the value is used directly in math
        */
       depthOuter: number;
 
       /**
        * The depth value on the inner polygon
        * @defaultValue `1`
+       * @remarks Can't be `undefined` because the default is provided by spread operator and the value is used directly in math
        */
       depthInner: number | null;
 
       /**
        * Constant multiplier to avoid floating point imprecision with ClipperLib
        * @defaultValue `10e8`
-       * @remarks Not allowing `null` because a zero value here defeats the purpose
+       * @remarks Not allowing `null` because a zero value here defeats the purpose, and `undefined` because the default is provided by spread operator and the value is used directly in math
        */
       scale: number;
 

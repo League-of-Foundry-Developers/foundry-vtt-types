@@ -6,8 +6,10 @@ declare global {
     /**
      * @remarks Only set in `ClockwiseSweepPolygon#_switchEdge` and only consumed in `#visualize`,
      * despite unrelated method(s) having parameters claiming to want a `PolygonRay`
+     *
+     * Tested for truthiness in `#visualize` before use, so a nullish value is fine but never attains in core
      */
-    result?: foundry.canvas.edges.CollisionResult;
+    result?: foundry.canvas.edges.CollisionResult | undefined | null;
   }
 
   /**
@@ -168,7 +170,8 @@ declare global {
     type AnyConstructor = typeof AnyClockwiseSweepPolygon;
 
     interface StoredConfig extends PointSourcePolygon.StoredConfig {
-      /** The computed bounding box for the polygon */ boundingBox: PIXI.Rectangle;
+      /** The computed bounding box for the polygon */
+      boundingBox: PIXI.Rectangle;
     }
     /**
      * @privateRemarks Foundry types this as `Record<Edge.EdgeTypes, 0 | 1 | 2>`, but some keys are mutually exclusive,

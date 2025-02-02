@@ -162,7 +162,7 @@ declare global {
        * @defaultValue `this.distance`
        * @remarks Default provided by `||`, so `0` is effectively `this.distance`
        */
-      distance?: number,
+      distance?: number | null,
     ): Ray;
 
     /**
