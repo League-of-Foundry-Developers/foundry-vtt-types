@@ -8,7 +8,7 @@ expectTypeOf(MyFragmentChannelShader.create({ channel: "r", foo: 0.5, bar: [1, 0
 >();
 if (MyFragmentChannelShader.adaptiveFragmentShader) {
   expectTypeOf(MyFragmentChannelShader.adaptiveFragmentShader).toEqualTypeOf<
-    (channel: AdaptiveFragmentChannel.Channel) => string
+    (channel: AdaptiveFragmentChannelMixin.Channel) => string
   >();
 } else {
   expectTypeOf(MyFragmentChannelShader.adaptiveFragmentShader).toEqualTypeOf<null>();

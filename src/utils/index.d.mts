@@ -817,7 +817,6 @@ export type MutableArray<T> = Array<T>;
  * Use this instead of:
  * - `Function` - This refers to the fundamental `Function` object in JS. It allows classes.
  * - `(...args: any[]) => any` - If someone explicitly accesses the parameters or uses the return value you get `any` which is not safe.
- * - `(...args: any[]) => any` - If someone explicitly accesses the parameters or uses the return value you get `any` which is not safe.
  * - `(...args: unknown[]) => unknown` - This allows obviously unsound calls like `fn(1, "foo")` because it indicates it can take any arguments.
  */
 // The explicit arg0 does not prevent a function with no arguments from being assigned to `AnyFunction` because any function that takes less arguments can be assigned to one that takes more.
