@@ -20,9 +20,6 @@ declare global {
   ): Mixin<typeof FullCanvasObject, BaseClass>;
 
   namespace FullCanvasObjectMixin {
-    interface Any extends AnyFullCanvasObject {}
-    type AnyConstructor = typeof AnyFullCanvasObject;
-
     type AnyMixedConstructor = ReturnType<typeof FullCanvasObjectMixin<BaseClass>>;
     interface AnyMixed extends AnyMixedConstructor {}
 
@@ -34,8 +31,4 @@ declare global {
    * @remarks "You are using the FullCanvasContainer class which has been deprecated in favor of a more flexible FullCanvasObjectMixin which can augment any PIXI.DisplayObject subclass."
    */
   class FullCanvasContainer extends FullCanvasObjectMixin(PIXI.Container) {}
-}
-
-declare abstract class AnyFullCanvasObject extends FullCanvasObject {
-  constructor(arg0: never, ...args: never[]);
 }

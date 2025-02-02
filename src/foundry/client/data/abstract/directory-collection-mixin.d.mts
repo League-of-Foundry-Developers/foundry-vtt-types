@@ -1,7 +1,7 @@
 import type { Mixin } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 
-type DirectoryCollectionMixin_DocumentCollection_Static = DirectoryCollection<DirectoryCollection.DirectoryTypes> &
+type DirectoryCollectionMixin_DocumentCollection_Static = DirectoryCollection<DirectoryCollectionMixin.DirectoryTypes> &
   DocumentCollection<Document.AnyConstructor, string>;
 
 export interface DirectoryCollectionMixin_DocumentCollection_Interface
@@ -11,7 +11,7 @@ export interface DirectoryCollectionMixin_DocumentCollection_Interface
   ): DirectoryCollection<Document.ToConfiguredInstance<T>> & DocumentCollection<Document.ToConfiguredClass<T>, Name>;
 }
 
-type DirectoryCollectionMixin_Collection_Static = DirectoryCollection<DirectoryCollection.DirectoryTypes> &
+type DirectoryCollectionMixin_Collection_Static = DirectoryCollection<DirectoryCollectionMixin.DirectoryTypes> &
   Collection<CompendiumCollection<CompendiumCollection.Metadata>>;
 
 export interface DirectoryCollectionMixin_Collection_Interface extends DirectoryCollectionMixin_Collection_Static {
@@ -25,7 +25,7 @@ export interface DirectoryCollectionMixin_Collection_Interface extends Directory
  * An extension of the Collection class which adds behaviors specific to tree-based collections of entries and folders.
  */
 // TODO: T should probably extend a subset of documents | CompendiumCollection
-declare class DirectoryCollection<T extends DirectoryCollection.DirectoryTypes> {
+declare class DirectoryCollection<T extends DirectoryCollectionMixin.DirectoryTypes> {
   /** @privateRemarks All mixin classses need a constructor like this */
   constructor(...args: any[]);
 
@@ -37,7 +37,7 @@ declare class DirectoryCollection<T extends DirectoryCollection.DirectoryTypes> 
   /**
    * The built tree structure of the DocumentCollection
    */
-  get tree(): DirectoryCollection.TreeNode<T>;
+  get tree(): DirectoryCollectionMixin.TreeNode<T>;
 
   /**
    * The current search mode for this collection
@@ -89,8 +89,8 @@ declare class DirectoryCollection<T extends DirectoryCollection.DirectoryTypes> 
    * @returns The sort order between entries a and b
    */
   protected static _sortAlphabetical(
-    a: DirectoryCollection.AlphabeticalSortEntry,
-    b: DirectoryCollection.AlphabeticalSortEntry,
+    a: DirectoryCollectionMixin.AlphabeticalSortEntry,
+    b: DirectoryCollectionMixin.AlphabeticalSortEntry,
   ): number;
 
   /**
@@ -100,8 +100,8 @@ declare class DirectoryCollection<T extends DirectoryCollection.DirectoryTypes> 
    * @returns The sort order between Entries a and b
    */
   protected static _sortStandard(
-    a: DirectoryCollection.StandardSortEntry,
-    b: DirectoryCollection.StandardSortEntry,
+    a: DirectoryCollectionMixin.StandardSortEntry,
+    b: DirectoryCollectionMixin.StandardSortEntry,
   ): number;
 }
 
@@ -112,11 +112,17 @@ declare global {
    * @returns A Collection mixed with DirectoryCollection functionality
    */
   function DirectoryCollectionMixin<
-    T extends DirectoryCollection.DirectoryTypes,
-    BaseCollection extends foundry.utils.Collection.AnyConstructor,
+    T extends DirectoryCollectionMixin.DirectoryTypes,
+    BaseCollection extends DirectoryCollectionMixin.BaseClass,
   >(BaseCollection: BaseCollection): Mixin<typeof DirectoryCollection<T>, BaseCollection>;
 
-  namespace DirectoryCollection {
+  namespace DirectoryCollectionMixin {
+    type AnyMixedConstructor = ReturnType<
+      typeof DirectoryCollectionMixin<DirectoryCollectionMixin.DirectoryTypes, DirectoryCollectionMixin.BaseClass>
+    >;
+    interface AnyMixed extends AnyMixedConstructor {}
+
+    type BaseClass = foundry.utils.Collection.AnyConstructor;
     // TODO: Refine type based on CONST.FOLDER_DOCUMENT_TYPES
     type DirectoryTypes = object;
 

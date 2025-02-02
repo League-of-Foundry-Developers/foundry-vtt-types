@@ -93,7 +93,7 @@ declare global {
      * @param node - The tree leaf node being prepared
      * @internal
      */
-    protected _prepareTreeData(node: DirectoryCollection.TreeNode<Playlist.ConfiguredInstance>): void;
+    protected _prepareTreeData(node: DirectoryCollectionMixin.TreeNode<Playlist.ConfiguredInstance>): void;
 
     /**
      * Create an object of rendering data for each Playlist document being displayed

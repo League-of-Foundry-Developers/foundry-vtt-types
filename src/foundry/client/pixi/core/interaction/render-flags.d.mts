@@ -122,7 +122,14 @@ declare global {
    * @param Base - The base class being mixed. Normally a PIXI.DisplayObject
    * @returns The mixed class definition
    */
-  function RenderFlagsMixin<BaseClass extends AnyConstructor>(
+  function RenderFlagsMixin<BaseClass extends RenderFlagsMixin.BaseClass>(
     Base: BaseClass,
   ): Mixin<typeof RenderFlagObject, BaseClass>;
+
+  namespace RenderFlagsMixin {
+    type AnyMixedConstructor = ReturnType<typeof RenderFlagsMixin<BaseClass>>;
+    interface AnyMixed extends AnyMixedConstructor {}
+
+    type BaseClass = AnyConstructor;
+  }
 }

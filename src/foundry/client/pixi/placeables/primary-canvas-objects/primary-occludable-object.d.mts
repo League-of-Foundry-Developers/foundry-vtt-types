@@ -146,14 +146,15 @@ declare class PrimaryOccludableObject {
 }
 
 declare global {
-  function PrimaryOccludableObjectMixin<BaseClass extends PIXI.Container.AnyConstructor>(
+  function PrimaryOccludableObjectMixin<BaseClass extends PrimaryOccludableObjectMixin.BaseClass>(
     DisplayObject: BaseClass,
   ): Mixin<typeof PrimaryOccludableObject, ReturnType<typeof PrimaryCanvasObjectMixin<BaseClass>>>;
 
   namespace PrimaryOccludableObjectMixin {
-    type AnyMixed = ReturnType<typeof PrimaryOccludableObjectMixin<PIXI.Container.AnyConstructor>>;
+    type AnyMixedConstructor = ReturnType<typeof PrimaryOccludableObjectMixin<BaseClass>>;
+    interface AnyMixed extends AnyMixedConstructor {}
 
-    type MixinClass = typeof PrimaryOccludableObject;
+    type BaseClass = PIXI.Container.AnyConstructor;
 
     /** @internal */
     type _TestOcclusionOptions = NullishProps<{
