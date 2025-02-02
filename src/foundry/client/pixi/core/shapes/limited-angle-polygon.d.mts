@@ -1,7 +1,5 @@
 import type { InexactPartial } from "../../../../../utils/index.d.mts";
 
-export {};
-
 declare global {
   /**
    * A special class of Polygon which implements a limited angle of emission for a Point Source.

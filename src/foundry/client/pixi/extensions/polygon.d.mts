@@ -108,6 +108,9 @@ declare global {
     }
 
     namespace Polygon {
+      type OrPointsFlat = number[] | PIXI.Polygon;
+      type OrPoints = OrPointsFlat | PIXI.IPointData[];
+
       /** @privateRemarks Foundry uses this type instead of full `ClipperLib.IntPoint` objects */
       interface ClipperPoint {
         X: number;

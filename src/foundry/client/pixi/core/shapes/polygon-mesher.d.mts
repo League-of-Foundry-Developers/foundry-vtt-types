@@ -10,9 +10,10 @@ declare global {
      * @param poly    - Closed polygon to be processed and converted to a mesh
      *                  (array of points or PIXI Polygon)
      * @param options - Various options : normalizing, offsetting, add depth, ...
-     * @remarks IntentionalPartial because the object is spread into an object with exisitng keys, so explicit `undefined` would break things
+     * @remarks `options` is `IntentionalPartial`'d because the constructor immediately does
+     * `this.options = {...this.constructor._defaultOptions, ...options}`, so explicit `undefined` would break things
      */
-    constructor(poly: number[] | PIXI.Polygon, options?: IntentionalPartial<PolygonMesher.Options>);
+    constructor(poly: PIXI.Polygon.OrPointsFlat, options?: IntentionalPartial<PolygonMesher.Options>);
 
     /** Default options values */
     static _defaultOptions: PolygonMesher.Options;
@@ -36,10 +37,11 @@ declare global {
      * @param dimension - Dimension.
      *                    (default 2)
      * @returns The clipper lib path.
-     * @privateRemarks Foundry types this return as `number[] | undefined`, but as far as I can tell it cannot return either of those,
-     *                 either it will throw or return a (possibly empty) array of `ClipperLib.IntPoint`s
+     * @throws If `dimension < 2`
+     * @privateRemarks Foundry types this return as `number[] | undefined`, but it cannot return either of those;
+     * Either it will throw or return a (possibly empty) `ClipperLib.Path` (an array-like of `ClipperLib.IntPoint`s)
      */
-    static getClipperPathFromPoints(poly: number[] | PIXI.Polygon, dimension?: number): ClipperLib.IntPoint[];
+    static getClipperPathFromPoints(poly: PIXI.Polygon.OrPointsFlat, dimension?: number): ClipperLib.Path;
 
     /**
      * Execute the triangulation to create indices
@@ -50,42 +52,50 @@ declare global {
   }
 
   namespace PolygonMesher {
+    interface Any extends AnyPolygonMesher {}
     type AnyConstructor = typeof AnyPolygonMesher;
 
+    /**
+     *  @remarks These properties all have non-nullish values in `_defaultOptions`, and explicit `undefined` breaks
+     * things that aren't `boolean` due to math and object spread syntax in the constructor. `null` has been allowed
+     * where its casting to `0` or `false` doesn't break things.
+     */
     interface Options {
       /**
        * The position value in pixels
        * @defaultValue `0`
        */
-      offset: number;
+      offset: number | null;
 
       /**
        * Should the vertices be normalized?
        * @defaultValue `false`
        */
-      normalize: boolean;
+      normalize: boolean | undefined | null;
 
       /**
        * The x origin
        * @defaultValue `0`
        */
-      x: number;
+      x: number | null;
 
       /**
        * The y origin
        * @defaultValue `0`
        */
-      y: number;
+      y: number | null;
 
       /**
        * The radius
        * @defaultValue `0`
+       * @remarks Can't be `null` because of an `=== 0` check
        */
       radius: number;
 
       /**
        * The depth value on the outer polygon
        * @defaultValue `0`
+       * @remarks Can't be `null` as it can be pushed directly into a `number[]`
        */
       depthOuter: number;
 
@@ -93,25 +103,28 @@ declare global {
        * The depth value on the inner polygon
        * @defaultValue `1`
        */
-      depthInner: number;
+      depthInner: number | null;
 
       /**
        * Constant multiplier to avoid floating point imprecision with ClipperLib
        * @defaultValue `10e8`
+       * @remarks Not allowing `null` because a zero value here defeats the purpose
        */
       scale: number;
 
       /**
        * Distance of the miter limit, when sharp angles are cut during offsetting.
        * @defaultValue `7`
+       * @remarks Allowed to be `undefined` but not `null` because it is passed to
+       * `new ClipperLib.ClipperOffset()`, which provides its own default if `=== undefined`
        */
-      miterLimit: number;
+      miterLimit: number | undefined;
 
       /**
        * Should the vertex data be interleaved into one VBO?
        * @defaultValue `false`
        */
-      interleaved: boolean;
+      interleaved: boolean | undefined | null;
     }
   }
 }
