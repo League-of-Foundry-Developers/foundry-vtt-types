@@ -11,6 +11,8 @@ import type { parseHTMLString, serializeHTMLString } from "./util.d.mts";
 // A const is being imported here. It can't be `import type`.
 /* eslint-disable import/extensions */
 import { schema as defaultSchema } from "./schema.mjs";
+
+// and these are classes that are available as properties of ProseMirror
 import ProseMirrorPlugin from "./plugin.mjs";
 import ProseMirrorImagePlugin from "./image-plugin.mjs";
 import ProseMirrorDirtyPlugin from "./dirty-plugin.mjs";
