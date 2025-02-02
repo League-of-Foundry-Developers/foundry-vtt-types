@@ -5,7 +5,6 @@ import { Schema, DOMSerializer } from "prosemirror-model";
 import { keymap } from "prosemirror-keymap";
 import "./extensions.d.mts";
 import * as collab from "prosemirror-collab";
-import type { Step } from "prosemirror-transform";
 import type { parseHTMLString, serializeHTMLString } from "./util.d.mts";
 
 // A const is being imported here. It can't be `import type`.
@@ -23,6 +22,7 @@ import DOMParser from "./dom-parser.mjs";
 import ProseMirrorInputRules from "./input-rules.mjs";
 import ProseMirrorKeyMaps from "./keymaps.mjs";
 import ProseMirrorMenu from "./menu.mjs";
+import { Step } from "prosemirror-transform";
 /* eslint-enable */
 
 declare const dom: {

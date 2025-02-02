@@ -32,7 +32,7 @@ expectTypeOf(ProseMirror.state).toEqualTypeOf<typeof state>();
 
 expectTypeOf(ProseMirror.AllSelection).toEqualTypeOf<typeof state.AllSelection>();
 expectTypeOf(ProseMirror.TextSelection).toEqualTypeOf<typeof state.TextSelection>();
-expectTypeOf(ProseMirror.DOMParser).toEqualTypeOf<DOMParser>();
+expectTypeOf(ProseMirror.DOMParser).toEqualTypeOf<typeof DOMParser>();
 expectTypeOf(ProseMirror.DOMSerializer).toEqualTypeOf<typeof DOMSerializer>();
 expectTypeOf(ProseMirror.EditorState).toEqualTypeOf<typeof state.EditorState>();
 expectTypeOf(ProseMirror.EditorView).toEqualTypeOf<typeof EditorView>();
