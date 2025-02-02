@@ -3,7 +3,7 @@ import type BaseGrid from "./base.d.mts";
 import type { InexactPartial } from "fvtt-types/utils";
 
 declare class Gridless extends BaseGrid {
-  override type: CONST.GRID_TYPES;
+  override type: typeof CONST.GRID_TYPES.GRIDLESS;
 
   calculateDimensions(sceneWidth: number, sceneHeight: number, padding: number): Gridless.Dimensions;
 
