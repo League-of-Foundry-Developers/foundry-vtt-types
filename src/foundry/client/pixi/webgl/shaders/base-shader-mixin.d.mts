@@ -105,16 +105,15 @@ declare class BaseShader {
 }
 
 declare global {
-  function BaseShaderMixin<BaseClass extends PIXI.Shader.AnyConstructor | PIXI.Filter.AnyConstructor>(
+  function BaseShaderMixin<BaseClass extends BaseShaderMixin.BaseClass>(
     ShaderClass: BaseClass,
   ): Mixin<typeof BaseShader, BaseClass>;
 
-  namespace BaseShader {
-    type AnyMixed = ReturnType<typeof BaseShaderMixin<PIXI.Shader.AnyConstructor | PIXI.Filter.AnyConstructor>>;
-    type AnyConstructor = typeof AnyBaseShader;
-  }
-}
+  namespace BaseShaderMixin {
+    /** @privateRemarks Can't extend `AnyMixedConstructor` if it's using the `BaseClass` union; `PIXI.Shader` is the parent of `Filter`, so it's used instead */
+    type AnyMixedConstructor = ReturnType<typeof BaseShaderMixin<PIXI.Shader.AnyConstructor>>;
+    interface AnyMixed extends AnyMixedConstructor {}
 
-declare abstract class AnyBaseShader extends BaseShader {
-  constructor(arg0: never, ...args: never[]);
+    type BaseClass = PIXI.Shader.AnyConstructor | PIXI.Filter.AnyConstructor;
+  }
 }
