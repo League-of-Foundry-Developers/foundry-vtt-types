@@ -127,7 +127,7 @@ declare class PointVisionSource<
 
   override _configureLayer(layer: RenderedEffectSource.SourceLayer, layerId: string): void;
 
-  override _getPolygonConfiguration(): PointSourcePolygonConfig;
+  override _getPolygonConfiguration(): PointSourcePolygon.Config;
 
   /**
    * Creates the polygon that represents light perception.

@@ -25,19 +25,19 @@ declare class PolygonVertex {
    * This set is initially empty and populated later after vertices are de-duplicated.
    * @defaultValue `new Set()`
    */
-  edges: EdgeSet;
+  edges: Set<Edge>;
 
   /**
    * The subset of edges which continue clockwise from this vertex.
    * @defaultValue `new Set()`
    */
-  cwEdges: EdgeSet;
+  cwEdges: Set<Edge>;
 
   /**
    * The subset of edges which continue counter-clockwise from this vertex.
    * @defaultValue `new Set()`
    */
-  ccwEdges: EdgeSet;
+  ccwEdges: Set<Edge>;
 
   /**
    * The set of vertices collinear to this vertex
