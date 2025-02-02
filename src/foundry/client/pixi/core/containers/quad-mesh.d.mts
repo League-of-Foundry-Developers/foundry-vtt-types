@@ -4,12 +4,13 @@ declare global {
   /**
    * A basic rectangular mesh with a shader only. Does not natively handle textures (but a bound shader can).
    * Bounds calculations are simplified and the geometry does not need to handle texture coords.
+   * @privateRemarks Ideally the `shaderClass` passed to the constructor and `get shader()` could be synced up, but `setShaderClass` removes that option
    */
   class QuadMesh extends PIXI.Container {
     /**
      * @param shaderClass - The shader class to use.
      */
-    constructor(shaderClass: typeof AbstractBaseShader);
+    constructor(shaderClass: AbstractBaseShader.AnyConstructor);
 
     /**
      * The shader bound to this mesh.
@@ -21,15 +22,15 @@ declare global {
      */
     get blendMode(): PIXI.BLEND_MODES;
 
-    set blendMode(value: PIXI.BLEND_MODES);
+    set blendMode(value);
 
     /**
      * Initialize shader based on the shader class type.
      * @param shaderClass - Shader class used. Must inherit from AbstractBaseShader.
      */
-    setShaderClass(shaderClass: typeof AbstractBaseShader): void;
+    setShaderClass(shaderClass: AbstractBaseShader.AnyConstructor): void;
 
-    protected override _render(_renderer: PIXI.Renderer): void;
+    protected override _render(renderer: PIXI.Renderer): void;
 
     protected override _calculateBounds(): void;
 
@@ -38,6 +39,15 @@ declare global {
      */
     containsPoint(point: PIXI.IPointData): boolean;
 
-    override destroy(options?: boolean | PIXI.IDestroyOptions): void;
+    override destroy(options?: PIXI.IDestroyOptions | boolean): void;
   }
+
+  namespace QuadMesh {
+    interface Any extends AnyQuadMesh {}
+    type AnyConstructor = typeof AnyQuadMesh;
+  }
+}
+
+declare abstract class AnyQuadMesh extends QuadMesh {
+  constructor(arg0: never, ...args: never[]);
 }

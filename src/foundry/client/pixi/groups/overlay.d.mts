@@ -4,16 +4,24 @@ declare global {
   /**
    * A container group which is not bound to the stage world transform.
    */
-  class OverlayCanvasGroup extends CanvasGroupMixin<typeof UnboundContainer, "overlay">(UnboundContainer) {
+  class OverlayCanvasGroup<
+    DrawOptions extends OverlayCanvasGroup.DrawOptions = OverlayCanvasGroup.DrawOptions,
+    TearDownOptions extends OverlayCanvasGroup.TearDownOptions = OverlayCanvasGroup.TearDownOptions,
+  > extends CanvasGroupMixin<typeof UnboundContainer, "overlay">(UnboundContainer)<DrawOptions, TearDownOptions> {
     /**
+     * Should this group tear down its non-layer children?
      * @defaultValue `false`
      */
     static override tearDownChildren: boolean;
   }
 
   namespace OverlayCanvasGroup {
-    type Any = AnyOverlayCanvasGroup;
+    interface Any extends AnyOverlayCanvasGroup {}
     type AnyConstructor = typeof AnyOverlayCanvasGroup;
+
+    interface DrawOptions extends CanvasGroupMixin.DrawOptions {}
+
+    interface TearDownOptions extends CanvasGroupMixin.TearDownOptions {}
   }
 }
 

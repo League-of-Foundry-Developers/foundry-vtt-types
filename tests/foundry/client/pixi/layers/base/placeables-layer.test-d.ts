@@ -29,7 +29,7 @@ expectTypeOf(layer.preview).toEqualTypeOf<PIXI.Container | null>();
 expectTypeOf(layer.history).toEqualTypeOf<
   Array<{ type: "create" | "update" | "delete"; data: Array<AmbientLightDocument["_source"]> }>
 >();
-expectTypeOf(layer.quadtree).toEqualTypeOf<Quadtree<AmbientLight> | null>();
+expectTypeOf(layer.quadtree).toMatchTypeOf<CanvasQuadtree<PlaceableObject.Any> | null>();
 expectTypeOf(layer.documentCollection).toEqualTypeOf<EmbeddedCollection<AmbientLightDocument, Scene> | null>();
 expectTypeOf(layer.gridPrecision).toEqualTypeOf<number>();
 expectTypeOf(layer.hud).toEqualTypeOf<BasePlaceableHUD<AmbientLight> | null>();

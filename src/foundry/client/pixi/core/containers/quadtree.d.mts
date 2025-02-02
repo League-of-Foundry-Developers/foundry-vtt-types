@@ -1,9 +1,13 @@
-export {};
+import type { Brand, InexactPartial, NullishProps } from "../../../../../utils/index.d.mts";
+
+/** @internal */
+interface _QuadtreeObjectBase<T> {
+  r: Canvas.Rectangle;
+  t: T;
+}
 
 declare global {
-  interface QuadtreeObject<T> {
-    r: Canvas.Rectangle;
-    t: T;
+  interface QuadtreeObject<T> extends _QuadtreeObjectBase<T> {
     n: Set<Quadtree<T>>;
   }
 
@@ -14,8 +18,10 @@ declare global {
     /**
      * @param bounds  - The outer bounds of the region
      * @param options - Additional options which configure the Quadtree
+     * @remarks `bounds` is NullishProps because `PIXI.Rectangle`'s constructor casts `null`/`undefined` to `0`.
+     * A `width` or `height` of zero is likely undesirable, however.
      */
-    constructor(bounds: PIXI.Rectangle, options?: Quadtree.Options<T>);
+    constructor(bounds: NullishProps<Canvas.Rectangle>, options?: Quadtree.Options<T>);
 
     /**
      * The bounding rectangle of the region
@@ -60,12 +66,7 @@ declare global {
     /**
      * A constant that enumerates the index order of the quadtree nodes from top-left to bottom-right.
      */
-    static readonly INDICES: {
-      tl: 0;
-      tr: 1;
-      bl: 2;
-      br: 3;
-    };
+    static INDICES: Quadtree.Indices;
 
     /**
      * Return an array of all the objects in the Quadtree (recursive)
@@ -89,7 +90,7 @@ declare global {
      * @param obj - The object being inserted
      * @returns The Quadtree nodes the object was added to.
      */
-    insert(obj: QuadtreeObject<T>): Quadtree<T>[];
+    insert(obj: Quadtree.QuadtreeObject<T>): Quadtree<T>[];
 
     /**
      * Remove an object from the quadtree
@@ -103,7 +104,7 @@ declare global {
      * @param obj - The object being inserted
      * @returns The Quadtree nodes the object was added to
      */
-    update(obj: QuadtreeObject<T>): Quadtree<T>[];
+    update(obj: Quadtree.QuadtreeObject<T>): Quadtree<T>[];
 
     /**
      * Get all the objects which could collide with the provided rectangle
@@ -111,21 +112,7 @@ declare global {
      * @param options - Options affecting the collision test.
      * @returns The objects in the Quadtree which represent potential collisions
      */
-    getObjects(
-      rect: Canvas.Rectangle,
-      options?: {
-        /* Function to further refine objects to return
-         * after a potential collision is found. Parameters are the object and rect, and the
-         * function should return true if the object should be added to the result set.
-         */
-        collisionTest: (o: QuadtreeObject<T>, rect: Canvas.Rectangle) => boolean;
-
-        /** The existing result set, for internal use.
-         *  (default: `new Set<T>()`)
-         */
-        _s?: Set<T>;
-      },
-    ): Set<T>;
+    getObjects(rect: Canvas.Rectangle, options?: Quadtree.GetObjectsOptions<T>): Set<T>;
 
     /**
      * Obtain the leaf nodes to which a target rectangle belongs.
@@ -150,50 +137,120 @@ declare global {
 
     /**
      * Visualize the nodes and objects in the quadtree
-     * @param objects - Visualize the rectangular bounds of objects in the Quadtree. Default is false.
-     *                  (default: `false`)
      */
-    visualize({ objects }?: { objects?: boolean }): void;
-  }
-
-  /**
-   * A subclass of Quadtree specifically intended for classifying the location of objects on the game canvas.
-   */
-  class CanvasQuadtree extends Quadtree<object> {
-    constructor(options?: Quadtree.Options<object>);
-
-    readonly bounds: PIXI.Rectangle;
+    visualize({ objects }?: Quadtree.VisualizeOptions): void;
   }
 
   namespace Quadtree {
-    /**
-     * Additional options which configure the Quadtree
-     */
-    interface Options<T> {
+    interface Any extends AnyQuadtree {}
+    type AnyConstructor = typeof AnyQuadtree;
+
+    /** @internal */
+    type _OptionalSet<T> = NullishProps<{
+      /** @remarks Foundry never passes an object including `n`, which is handled by `obj.n = obj.n || new Set()` in `#insert()` */
+      n?: Set<Quadtree<T>>;
+    }>;
+
+    interface QuadtreeObject<T> extends _QuadtreeObjectBase<T>, _OptionalSet<T> {}
+
+    type INDICES = Brand<number, "Quadtree.INDICIES">;
+
+    interface Indices {
+      tl: 0 & Quadtree.INDICES;
+      tr: 1 & Quadtree.INDICES;
+      bl: 2 & Quadtree.INDICES;
+      br: 3 & Quadtree.INDICES;
+    }
+
+    /** @internal */
+    type _Options<T> = InexactPartial<{
       /**
        * The maximum number of objects per node
        * @defaultValue `20`
+       * @remarks Can't be `null` because it only has a parameter default.
        */
-      maxObjects?: number;
+      maxObjects: number;
 
       /**
        * The maximum number of levels within the root Quadtree
        * @defaultValue `4`
+       * @remarks Can't be `null` because it only has a parameter default.
        */
-      maxDepth?: number;
+      maxDepth: number;
 
       /**
        * The depth level of the sub-tree. For internal use
        * @defaultValue `0`
-       * @internal
+       * @remarks Can't be `null` because of an `=== 0` check in `#visualize()`, and it only has a parameter default
+       * Foundry marked `@internal`
        */
-      _depth?: number;
+      _depth: number;
 
       /**
        * The root of the quadtree. For internal use
-       * @internal
+       * Foundry marked `@internal`
        */
-      _root?: Quadtree<T>;
-    }
+      _root: Quadtree<T> | null;
+    }>;
+
+    /**
+     * Additional options which configure the Quadtree
+     */
+    interface Options<T> extends _Options<T> {}
+
+    /** @internal */
+    type _GetObjectsOptions<T> = NullishProps<{
+      /**
+       * Function to further refine objects to return
+       * after a potential collision is found. Parameters are the object and rect, and the
+       * function should return true if the object should be added to the result set.
+       */
+      collisionTest: (o: globalThis.QuadtreeObject<T>, rect: Canvas.Rectangle) => boolean;
+
+      /**
+       * The existing result set, for internal use.
+       * @defaultValue `new Set<T>()`
+       * @remarks Foundry marked `@internal`
+       */
+      _s: Set<T>;
+    }>;
+
+    interface GetObjectsOptions<T> extends _GetObjectsOptions<T> {}
+
+    /** @internal */
+    type _VisualizeOptions = NullishProps<{
+      /**
+       * Visualize the rectangular bounds of objects in the Quadtree.
+       * @defaultValue `false`
+       */
+      objects: boolean;
+    }>;
+
+    interface VisualizeOptions extends _VisualizeOptions {}
   }
+  /**
+   * A subclass of Quadtree specifically intended for classifying the location of objects on the game canvas.
+   * @remarks Foundry never uses `Quadtree` directly, only this class, and only ever fills it with `PrimaryCanvasObject`s or `PlaceableObject`s
+   */
+  class CanvasQuadtree<T extends CanvasQuadtree.CanvasQuadtreeObject> extends Quadtree<T> {
+    constructor(options?: Quadtree.Options<T>);
+
+    /** @remarks A getter for `canvas.dimensions.rect` */
+    readonly bounds: PIXI.Rectangle;
+  }
+
+  namespace CanvasQuadtree {
+    interface Any extends AnyCanvasQuadtree {}
+    type AnyConstructor = typeof AnyCanvasQuadtree;
+
+    type CanvasQuadtreeObject = PrimaryCanvasObjectMixin.AnyMixed | PlaceableObject.Any;
+  }
+}
+
+declare abstract class AnyQuadtree extends Quadtree<unknown> {
+  constructor(arg0: never, ...args: never[]);
+}
+
+declare abstract class AnyCanvasQuadtree extends CanvasQuadtree<CanvasQuadtree.CanvasQuadtreeObject> {
+  constructor(arg0: never, ...args: never[]);
 }

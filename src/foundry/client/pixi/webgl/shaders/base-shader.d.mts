@@ -91,7 +91,7 @@ declare global {
       | Coordinates
       | Coordinates[]
       | Color.RGBColorVector
-      | Color.RGVAColorVector
+      | Color.RGBAColorVector
       | PIXI.Texture
       | PIXI.Matrix;
 
