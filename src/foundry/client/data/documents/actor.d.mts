@@ -235,16 +235,7 @@ declare global {
     type ConfiguredInstance = Implementation;
 
     type ItemTypes = {
-      [K in Game.Model.TypeNames<"Item">]: Array<
-        // TODO(LukeAbby): Looks like a `Item.OfType` helper would be useful.
-        Item.Implementation & {
-          type: K;
-        } & (DataModelConfig extends { Item: { readonly [_ in K]?: infer SystemData } }
-            ? {
-                system: SystemData;
-              } // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-            : {})
-      >;
+      [SubType in Game.Model.TypeNames<"Item">]: Array<Item.OfType<SubType>>;
     };
 
     interface RollInitiativeOptions {
