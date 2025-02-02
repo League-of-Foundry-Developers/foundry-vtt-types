@@ -1,11 +1,12 @@
+import type { IntentionalPartial } from "fvtt-types/utils";
 import type Edge from "../../../client-esm/canvas/edges/edge.d.mts";
 
 declare global {
-  type VertexMap = Map<number, foundry.canvas.edges.PolygonVertex>;
-
-  type EdgeSet = Set<Edge>;
-
   interface PolygonRay extends Ray {
+    /**
+     * @remarks Only set in `ClockwiseSweepPolygon#_switchEdge` and only consumed in `#visualize`,
+     * despite unrelated method(s) having parameters claiming to want a `PolygonRay`
+     */
     result?: foundry.canvas.edges.CollisionResult;
   }
 
@@ -15,15 +16,21 @@ declare global {
    * This algorithm was created with valuable contributions from https://github.com/caewok
    */
   class ClockwiseSweepPolygon extends PointSourcePolygon {
+    // This does not appear in Foundry code, it's a necessary type override
+    static override create(origin: Canvas.Point, config: PointSourcePolygon.Config): ClockwiseSweepPolygon;
+
+    // This does not appear in foundry code, it's a necessary type override
+    override config: ClockwiseSweepPolygon.StoredConfig;
+
     /**
      * A mapping of vertices which define potential collision points
      */
-    vertices: VertexMap;
+    vertices: Map<number, foundry.canvas.edges.PolygonVertex>;
 
     /**
      * The set of edges which define potential boundaries of the polygon
      */
-    edges: EdgeSet;
+    edges: Set<Edge>;
 
     /**
      * A collection of rays which are fired at vertices
@@ -31,7 +38,7 @@ declare global {
     // @ts-expect-error Getter/setter routine is deprecated functionality as of v11, removed in v13
     rays: PolygonRay[];
 
-    override initialize(origin: Canvas.Point, config: PointSourcePolygonConfig): void;
+    override initialize(origin: Canvas.Point, config?: PointSourcePolygon.Config): void;
 
     clone(): this;
 
@@ -46,7 +53,7 @@ declare global {
     /**
      * Determine the edge types and their manner of inclusion for this polygon instance
      */
-    protected _determineEdgeTypes(): Record<Edge.EdgeTypes, 0 | 1 | 2>;
+    protected _determineEdgeTypes(): ClockwiseSweepPolygon.DetermineEdgesReturn;
 
     /**
      * Test whether a wall should be included in the computed polygon for a given origin and type
@@ -57,7 +64,7 @@ declare global {
      */
     protected _testEdgeInclusion(
       edge: Edge,
-      edgeTypes: Record<Edge.EdgeTypes, 0 | 1 | 2>,
+      edgeTypes: ClockwiseSweepPolygon.DetermineEdgesReturn,
       bounds: PIXI.Rectangle,
     ): boolean;
 
@@ -75,25 +82,25 @@ declare global {
     /**
      * Add additional vertices for intersections between edges.
      */
-    protected _identifyIntersections(wallEdgeMap: Map<string, Edge>): void;
+    protected _identifyIntersections(edgeMap: Map<string, Edge>): void;
 
     /**
      * Execute the sweep over wall vertices
-     * @internal
+     * @privateRemarks Foundry marked `@private`
      */
     protected _executeSweep(): void;
 
     /**
      * Determine the initial set of active edges as those which intersect with the initial ray
      * @returns A set of initially active edges
-     * @internal
+     * @privateRemarks Foundry marked `@private`
      */
-    protected _initializeActiveEdges(): EdgeSet;
+    protected _initializeActiveEdges(): Set<Edge>;
 
     /**
      * Sort vertices clockwise from the initial ray (due west).
      * @returns The array of sorted vertices
-     * @internal
+     * @privateRemarks Foundry marked `@private`
      */
     protected _sortVertices(): foundry.canvas.edges.PolygonVertex[];
 
@@ -105,11 +112,11 @@ declare global {
      * @param vertex      - The target vertex
      * @param activeEdges - The set of active edges
      * @returns Is the target vertex behind some closer edge?
-     * @internal
+     * @privateRemarks Foundry marked `@private`
      */
     protected _isVertexBehindActiveEdges(
       vertex: foundry.canvas.edges.PolygonVertex,
-      activeEdges: EdgeSet,
+      activeEdges: Set<Edge>,
     ): { isBehind: boolean; wasLimited: boolean };
 
     /**
@@ -117,12 +124,13 @@ declare global {
      * @param vertex        - The target vertex
      * @param activeEdges   - The set of active edges
      * @param hasCollinear  - Are there collinear vertices behind the target vertex?
-     * @internal
+     *                        default: `false`
+     * @privateRemarks Foundry marked `@private`
      */
     protected _determineSweepResult(
       vertex: foundry.canvas.edges.PolygonVertex,
-      activeEdges: EdgeSet,
-      hasCollinear: boolean,
+      activeEdges: Set<Edge>,
+      hasCollinear?: boolean,
     ): void;
 
     /**
@@ -134,24 +142,42 @@ declare global {
      *
      * If neither side is blocked and the ray internally collides with a non-limited edge, n skip without adding polygon
      * endpoints. Sight is unaffected before this edge, and the internal collision can be ignored.
-     * @internal
      *
      * @param result      - The pending collision result
      * @param activeEdges - The set of currently active edges
+     * @privateRemarks Foundry marked `@private`
      */
-    _switchEdge(result: foundry.canvas.edges.CollisionResult, activeEdges: EdgeSet): void;
+    protected _switchEdge(result: foundry.canvas.edges.CollisionResult, activeEdges: Set<Edge>): void;
 
     protected override _testCollision<Mode extends PointSourcePolygon.CollisionModes>(
       ray: Ray,
       mode: Mode,
     ): PointSourcePolygon.TestCollision<Mode>;
 
-    override visualize(): PIXI.Graphics | undefined;
+    override visualize(): PIXI.Graphics;
 
     /**
      * Visualize the polygon, displaying its computed area, rays, and collision points
-     * @internal
+     * @privateRemarks Foundry marked `@private`
      */
     protected _visualizeCollision(ray: Ray, collisions: foundry.canvas.edges.PolygonVertex[]): void;
   }
+
+  namespace ClockwiseSweepPolygon {
+    interface Any extends AnyClockwiseSweepPolygon {}
+    type AnyConstructor = typeof AnyClockwiseSweepPolygon;
+
+    interface StoredConfig extends PointSourcePolygon.StoredConfig {
+      /** The computed bounding box for the polygon */ boundingBox: PIXI.Rectangle;
+    }
+    /**
+     * @privateRemarks Foundry types this as `Record<Edge.EdgeTypes, 0 | 1 | 2>`, but some keys are mutually exclusive,
+     * and none are ever set to `0`, they're simply omitted and then tested for truthiness in `#_testEdgeInclusion`
+     */
+    type DetermineEdgesReturn = IntentionalPartial<Record<Edge.EdgeTypes, 1 | 2>>;
+  }
+}
+
+declare abstract class AnyClockwiseSweepPolygon extends ClockwiseSweepPolygon {
+  constructor(arg0: never, ...args: never[]);
 }

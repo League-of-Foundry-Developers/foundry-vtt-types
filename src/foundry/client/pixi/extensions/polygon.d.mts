@@ -70,7 +70,7 @@ declare global {
        * @param options - Options which configure how the intersection is computed
        * @returns The intersected polygon
        */
-      intersectPolygon(other: PIXI.Polygon, options?: PIXI.Polygon.IntersectClipperOptions): PIXI.Polygon;
+      intersectPolygon(other: PIXI.Polygon, options?: PIXI.Polygon.IntersectPolygonOptions): PIXI.Polygon;
 
       /**
        * Intersect this PIXI.Polygon with an array of ClipperPoints.
@@ -136,6 +136,12 @@ declare global {
         }>;
 
       interface IntersectClipperOptions extends _IntersectClipperOptions {}
+
+      /**
+       * @privateRemarks Separate interface despite identical keys for purposes of declaration merging
+       * and just having an expected name for external reference
+       */
+      interface IntersectPolygonOptions extends _IntersectClipperOptions {}
 
       interface ClipperPointsOptions extends Pick<PIXI.Polygon.IntersectClipperOptions, "scalingFactor"> {}
     }

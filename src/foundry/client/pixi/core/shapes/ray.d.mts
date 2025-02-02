@@ -71,14 +71,14 @@ declare global {
     /**
      * The cached angle, computed lazily in Ray#angle
      * @defaultValue `undefined`
-     * @privateRemarks Foundry marked `@private`
+     * @privateRemarks Foundry marked `@private` and doesn't type the `| undefined`
      */
     protected _angle: number | undefined;
 
     /**
      * The cached distance, computed lazily in Ray#distance
      * @defaultValue `undefined`
-     * @privateRemarks Foundry marked `@private`
+     * @privateRemarks Foundry marked `@private` and doesn't type the `| undefined`
      */
     protected _distance: number | undefined;
 
