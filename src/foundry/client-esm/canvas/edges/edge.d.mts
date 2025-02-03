@@ -1,6 +1,6 @@
 import type PolygonVertex from "./vertex.d.mts";
 import type { LineIntersection } from "../../../common/utils/geometry.d.mts";
-import type { IntentionalPartial, NullishProps } from "fvtt-types/utils";
+import type { NullishProps } from "fvtt-types/utils";
 import type { WallThresholdData } from "../../../common/documents/_types.d.mts";
 
 /**
@@ -77,7 +77,7 @@ declare class Edge {
    * Specialized threshold data for this edge.
    * @remarks Foundry only accesses this in nullish-safe ways as of 12.331
    */
-  threshold: IntentionalPartial<WallThresholdData> | undefined | null;
+  threshold: WallThresholdData | undefined | null;
 
   /**
    * The endpoint of the edge which is oriented towards the top-left.
@@ -226,7 +226,7 @@ declare namespace Edge {
      * Configuration of threshold data for this edge
      * @remarks Foundry only accesses this in nullish-safe ways as of 12.331
      */
-    threshold: IntentionalPartial<WallThresholdData>;
+    threshold: WallThresholdData;
   }>;
 
   interface ConstructorOptions extends _ConstructorOptions {}

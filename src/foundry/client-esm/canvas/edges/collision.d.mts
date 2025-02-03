@@ -117,7 +117,6 @@ declare namespace CollisionResult {
   interface ConstructorValues extends _ConstructorValues {
     /**
      * The vertex that was the target of this result
-     * @remarks This property is not consumed by any code in Founcry as of 12.331. With no default, and no usage to infer from
      */
     target: PolygonVertex;
 

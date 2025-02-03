@@ -1,7 +1,6 @@
 import { expectTypeOf } from "vitest";
 import type { WallThresholdData } from "../../../../../src/foundry/common/documents/_types.d.mts";
 import type PolygonVertex from "../../../../../src/foundry/client-esm/canvas/edges/vertex.d.mts";
-import type { IntentionalPartial } from "fvtt-types/utils";
 import type Edge from "../../../../../src/foundry/client-esm/canvas/edges/edge.d.mts";
 
 declare const p: Canvas.Point;
@@ -19,6 +18,8 @@ const edge = new foundry.canvas.edges.Edge(p, p, {
   threshold: {
     attenuation: true,
     sound: 400,
+    light: 200,
+    sight: 2000,
   },
 });
 
@@ -33,7 +34,7 @@ expectTypeOf(edge.light).toEqualTypeOf<foundry.CONST.WALL_SENSE_TYPES>();
 expectTypeOf(edge.move).toEqualTypeOf<foundry.CONST.WALL_SENSE_TYPES>();
 expectTypeOf(edge.sight).toEqualTypeOf<foundry.CONST.WALL_SENSE_TYPES>();
 expectTypeOf(edge.sound).toEqualTypeOf<foundry.CONST.WALL_SENSE_TYPES>();
-expectTypeOf(edge.threshold).toEqualTypeOf<IntentionalPartial<WallThresholdData> | undefined | null>();
+expectTypeOf(edge.threshold).toEqualTypeOf<WallThresholdData | undefined | null>();
 expectTypeOf(edge.nw).toEqualTypeOf<Canvas.Point>();
 expectTypeOf(edge.se).toEqualTypeOf<Canvas.Point>();
 expectTypeOf(edge.bounds).toEqualTypeOf<PIXI.Rectangle>();
