@@ -9,19 +9,18 @@ expectTypeOf(vertex.edges).toEqualTypeOf<Set<foundry.canvas.edges.Edge>>();
 expectTypeOf(vertex.cwEdges).toEqualTypeOf<Set<foundry.canvas.edges.Edge>>();
 expectTypeOf(vertex.ccwEdges).toEqualTypeOf<Set<foundry.canvas.edges.Edge>>();
 expectTypeOf(vertex.collinearVertices).toEqualTypeOf<Set<foundry.canvas.edges.PolygonVertex>>();
-expectTypeOf(vertex.type).toEqualTypeOf<number | null>();
 expectTypeOf(vertex.isEndpoint).toEqualTypeOf<boolean | undefined>();
 expectTypeOf(vertex.isLimitingCCW).toEqualTypeOf<boolean | undefined>();
 expectTypeOf(vertex.isLimitingCW).toEqualTypeOf<boolean | undefined>();
 expectTypeOf(vertex.isBlockingCCW).toEqualTypeOf<boolean | undefined>();
 expectTypeOf(vertex.isBlockingCW).toEqualTypeOf<boolean | undefined>();
 expectTypeOf(vertex.isInternal).toEqualTypeOf<boolean>();
-expectTypeOf(vertex.restriction).toEqualTypeOf<number>();
+expectTypeOf(vertex.restriction).toEqualTypeOf<foundry.CONST.WALL_SENSE_TYPES>();
 expectTypeOf(vertex._visited).toEqualTypeOf<boolean>();
 expectTypeOf(vertex.isLimited).toEqualTypeOf<boolean>();
 
 declare const edge: foundry.canvas.edges.Edge;
-expectTypeOf(vertex.attachEdge(edge, 3, "")).toEqualTypeOf<void>();
+expectTypeOf(vertex.attachEdge(edge, 3, "light")).toEqualTypeOf<void>();
 expectTypeOf(vertex.equals(vertex)).toEqualTypeOf<boolean>();
 
 declare const p: Canvas.Point;

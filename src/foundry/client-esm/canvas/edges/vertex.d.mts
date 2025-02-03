@@ -1,3 +1,4 @@
+import type { NullishProps } from "../../../../utils/index.d.mts";
 import type Edge from "./edge.d.mts";
 
 /**
@@ -6,19 +7,40 @@ import type Edge from "./edge.d.mts";
  * @internal
  */
 declare class PolygonVertex {
-  constructor(x: number, y: number, { distance, index }?: PolygonVertex.Options);
+  constructor(x: number, y: number, options?: PolygonVertex.ConstructorOptions);
 
   x: number;
 
   y: number;
 
+  /** @defaultValue `PolygonVertex.getKey(this.x, this.y)` */
   key: number;
 
-  protected _distance: number | undefined;
+  /**
+   * @defaultValue `undefined`
+   * @remarks Accessed externally in {@link ClockwiseSweepPolygon#_testCollision}
+   */
+  _distance: number | undefined | null;
 
-  protected _d2: undefined;
+  /**
+   * @defaultValue `undefined`
+   * @remarks Set to `undefined` in the constructor, otherwise only set externally in `ClockwiseSweepPolygon` methods
+   */
+  _d2: number | undefined;
 
-  protected _index: number | undefined;
+  /**
+   * @defaultValue `undefined`
+   * @remarks Accessed externally in `ClockwiseSweepPolygon` methods
+   */
+  _index: number | undefined | null;
+
+  /**
+   * Determine the sort key to use for this vertex, arranging points from north-west to south-east.
+   * @param x - The x-coordinate
+   * @param y - The y-coordinate
+   * @returns The key used to identify the vertex
+   */
+  static getKey(x: number, y: number): number;
 
   /**
    * The set of edges which connect to this vertex.
@@ -41,14 +63,9 @@ declare class PolygonVertex {
 
   /**
    * The set of vertices collinear to this vertex
+   * @defaultValue `new Set()`
    */
   collinearVertices: Set<PolygonVertex>;
-
-  /**
-   * The maximum restriction type of this vertex
-   * @defaultValue `null`
-   */
-  type: number | null;
 
   /**
    * Is this vertex an endpoint of one or more edges?
@@ -83,15 +100,16 @@ declare class PolygonVertex {
 
   /**
    * The maximum restriction imposed by this vertex.
-   * @defaultValue `0`
-   * @remarks Possibly tied to `CONST.WALL_SENSE_TYPES`?
+   * @defaultValue `CONST.WALL_SENSE_TYPES.NONE`
+   * @remarks Actually initialized to `0` literal, but is meant as a `WALL_SENSE_TYPES`
    */
-  restriction: number;
+  restriction: foundry.CONST.WALL_SENSE_TYPES;
 
   /**
    * Record whether this PolygonVertex has been visited in the sweep
    * @defaultValue `false`
-   * @internal
+   * @remarks Set externally during `ClockwiseSweeepPolygon` initialization
+   * @privateRemarks Foundry marked `@internal`
    */
   _visited: boolean;
 
@@ -106,7 +124,7 @@ declare class PolygonVertex {
    * @param orientation - The orientation of the edge with respect to the origin
    * @param type        - The restriction type of the polygon being created
    */
-  attachEdge(edge: Edge, orientation: number, type: string): void;
+  attachEdge(edge: Edge, orientation: number, type: foundry.CONST.WALL_RESTRICTION_TYPES): void;
 
   /**
    * Is this vertex terminal (at the maximum radius)
@@ -123,14 +141,24 @@ declare class PolygonVertex {
    * @param options - Additional options that apply to this vertex
    * @returns The constructed vertex
    */
-  static fromPoint(point: Canvas.Point, options?: PolygonVertex.Options): PolygonVertex;
+  static fromPoint(point: Canvas.Point, options?: PolygonVertex.ConstructorOptions): PolygonVertex;
 }
 
 declare namespace PolygonVertex {
-  interface Options {
-    distance: PolygonVertex["_distance"];
-    index: PolygonVertex["_index"];
-  }
+  interface Any extends AnyPolygonVertex {}
+  type AnyConstructor = typeof AnyPolygonVertex;
+
+  /** @internal */
+  type _ConstructorOptions = NullishProps<{
+    distance: number;
+    index: number;
+  }>;
+
+  interface ConstructorOptions extends _ConstructorOptions {}
+}
+
+declare abstract class AnyPolygonVertex {
+  constructor(arg0: never, ...args: never[]);
 }
 
 export default PolygonVertex;

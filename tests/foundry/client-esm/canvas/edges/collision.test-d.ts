@@ -1,13 +1,25 @@
 import { expectTypeOf } from "vitest";
+import type Edge from "../../../../../src/foundry/client-esm/canvas/edges/edge.d.mts";
+import type PolygonVertex from "../../../../../src/foundry/client-esm/canvas/edges/vertex.d.mts";
 
-const myCollisionResult = new foundry.canvas.edges.CollisionResult();
+type NullishBoolean = boolean | undefined | null;
+declare const somePV: PolygonVertex;
+declare const someEdge: Edge;
 
-expectTypeOf(myCollisionResult.target).toEqualTypeOf<foundry.canvas.edges.PolygonVertex | null>();
-expectTypeOf(myCollisionResult.collisions).toEqualTypeOf<foundry.canvas.edges.PolygonVertex[]>();
-expectTypeOf(myCollisionResult.cwEdges).toEqualTypeOf<Set<foundry.canvas.edges.Edge>>();
-expectTypeOf(myCollisionResult.isBehind).toEqualTypeOf<boolean | undefined>();
-expectTypeOf(myCollisionResult.isLimited).toEqualTypeOf<boolean | undefined>();
-expectTypeOf(myCollisionResult.wasLimited).toEqualTypeOf<boolean | undefined>();
+const myCollisionResult = new foundry.canvas.edges.CollisionResult({
+  target: somePV,
+  isBehind: false,
+  wasLimited: true,
+  isLimited: false,
+  cwEdges: new Set([someEdge]),
+});
+
+expectTypeOf(myCollisionResult.target).toEqualTypeOf<PolygonVertex>();
+expectTypeOf(myCollisionResult.collisions).toEqualTypeOf<PolygonVertex[]>();
+expectTypeOf(myCollisionResult.cwEdges).toEqualTypeOf<Set<Edge>>();
+expectTypeOf(myCollisionResult.isBehind).toEqualTypeOf<NullishBoolean>();
+expectTypeOf(myCollisionResult.isLimited).toEqualTypeOf<NullishBoolean>();
+expectTypeOf(myCollisionResult.wasLimited).toEqualTypeOf<NullishBoolean>();
 expectTypeOf(myCollisionResult.limitedCW).toEqualTypeOf<boolean>();
 expectTypeOf(myCollisionResult.limitedCCW).toEqualTypeOf<boolean>();
 expectTypeOf(myCollisionResult.blockedCW).toEqualTypeOf<boolean>();
