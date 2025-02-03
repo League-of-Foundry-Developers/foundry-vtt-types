@@ -7,7 +7,7 @@ import type Edge from "./edge.d.mts";
  * @internal
  */
 declare class PolygonVertex {
-  constructor(x: number, y: number, options?: PolygonVertex.Options);
+  constructor(x: number, y: number, options?: PolygonVertex.ConstructorOptions);
 
   x: number;
 
@@ -141,7 +141,7 @@ declare class PolygonVertex {
    * @param options - Additional options that apply to this vertex
    * @returns The constructed vertex
    */
-  static fromPoint(point: Canvas.Point, options?: PolygonVertex.Options): PolygonVertex;
+  static fromPoint(point: Canvas.Point, options?: PolygonVertex.ConstructorOptions): PolygonVertex;
 }
 
 declare namespace PolygonVertex {
@@ -149,12 +149,12 @@ declare namespace PolygonVertex {
   type AnyConstructor = typeof AnyPolygonVertex;
 
   /** @internal */
-  type _Options = NullishProps<{
+  type _ConstructorOptions = NullishProps<{
     distance: number;
     index: number;
   }>;
 
-  interface Options extends _Options {}
+  interface ConstructorOptions extends _ConstructorOptions {}
 }
 
 declare abstract class AnyPolygonVertex {
