@@ -37,8 +37,7 @@ declare class PointEffectSource {
   /**
    * Configure the parameters of the polygon that is generated for this source.
    */
-  //TODO: Make sure this is accurate as part of work on "pixi leftovers"
-  protected _getPolygonConfiguration(): PointSourcePolygonConfig;
+  protected _getPolygonConfiguration(): PointSourcePolygon.Config;
 
   _createShapes(): void;
 

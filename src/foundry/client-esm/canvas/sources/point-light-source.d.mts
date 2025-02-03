@@ -24,7 +24,7 @@ declare class PointLightSource<
 
   override _configure(changes: IntentionalPartial<SourceData>): void;
 
-  override _getPolygonConfiguration(): PointSourcePolygonConfig;
+  override _getPolygonConfiguration(): PointSourcePolygon.Config;
 
   /**
    * Test whether this LightSource provides visibility to see a certain target object.

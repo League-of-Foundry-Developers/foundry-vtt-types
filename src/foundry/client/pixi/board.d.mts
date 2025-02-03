@@ -781,6 +781,8 @@ declare global {
      */
     type PointArray = [x: number, y: number];
 
+    type PairOfPointsArray = [x0: number, y0: number, x1: number, y1: number];
+
     /**
      * A standard rectangle interface.
      * @remarks Copied from `resources/app/common/types.mjs`

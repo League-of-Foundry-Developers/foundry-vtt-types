@@ -96,6 +96,7 @@ export import ClientPackage = globalThis.ClientPackage;
 export import ClientPackageMixin = globalThis.ClientPackageMixin;
 export import ClientSettings = globalThis.ClientSettings;
 export import ClipperLib = globalThis.ClipperLib;
+export import ClockwiseSweepPolygon = globalThis.ClockwiseSweepPolygon;
 export import ColorAdjustmentsSamplerShader = globalThis.ColorAdjustmentsSamplerShader;
 export import ColorationVisionShader = globalThis.ColorationVisionShader;
 export import Combat = globalThis.Combat;

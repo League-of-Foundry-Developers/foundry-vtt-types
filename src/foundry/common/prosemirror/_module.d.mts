@@ -2,27 +2,28 @@ import { EditorState, AllSelection, TextSelection, Plugin, PluginKey } from "pro
 import { EditorView } from "prosemirror-view";
 import { Schema, DOMSerializer } from "prosemirror-model";
 // eslint-disable-next-line import/no-named-as-default
-import type ProseMirrorInputRules from "./input-rules.d.mts";
 import { keymap } from "prosemirror-keymap";
-// eslint-disable-next-line import/no-named-as-default
-import type ProseMirrorKeyMaps from "./keymaps.d.mts";
-// eslint-disable-next-line import/no-named-as-default
-import type ProseMirrorMenu from "./menu.d.mts";
 import "./extensions.d.mts";
 import * as collab from "prosemirror-collab";
-import type { Step } from "prosemirror-transform";
 import type { parseHTMLString, serializeHTMLString } from "./util.d.mts";
 
 // A const is being imported here. It can't be `import type`.
-// eslint-disable-next-line import/extensions
+/* eslint-disable import/extensions */
 import { schema as defaultSchema } from "./schema.mjs";
-import type ProseMirrorPlugin from "./plugin.d.mts";
-import type ProseMirrorImagePlugin from "./image-plugin.d.mts";
-import type ProseMirrorDirtyPlugin from "./dirty-plugin.d.mts";
-import type ProseMirrorContentLinkPlugin from "./content-link-plugin.d.mts";
-import type ProseMirrorHighlightMatchesPlugin from "./highlight-matches-plugin.d.mts";
-import type ProseMirrorClickHandler from "./click-handler.d.mts";
-import type DOMParser from "./dom-parser.d.mts";
+
+// and these are classes that are available as properties of ProseMirror
+import ProseMirrorPlugin from "./plugin.mjs";
+import ProseMirrorImagePlugin from "./image-plugin.mjs";
+import ProseMirrorDirtyPlugin from "./dirty-plugin.mjs";
+import ProseMirrorContentLinkPlugin from "./content-link-plugin.mjs";
+import ProseMirrorHighlightMatchesPlugin from "./highlight-matches-plugin.mjs";
+import ProseMirrorClickHandler from "./click-handler.mjs";
+import DOMParser from "./dom-parser.mjs";
+import ProseMirrorInputRules from "./input-rules.mjs";
+import ProseMirrorKeyMaps from "./keymaps.mjs";
+import ProseMirrorMenu from "./menu.mjs";
+import { Step } from "prosemirror-transform";
+/* eslint-enable */
 
 declare const dom: {
   parser: DOMParser;

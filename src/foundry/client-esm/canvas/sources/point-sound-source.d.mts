@@ -20,7 +20,7 @@ declare class PointSoundSource<
 
   override get effectsCollection(): Collection<this>;
 
-  override _getPolygonConfiguration(): PointSourcePolygonConfig;
+  override _getPolygonConfiguration(): PointSourcePolygon.Config;
 
   /**
    * Get the effective volume at which an AmbientSound source should be played for a certain listener.
