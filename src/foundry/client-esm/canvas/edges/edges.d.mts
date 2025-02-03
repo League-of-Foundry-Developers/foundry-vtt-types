@@ -28,4 +28,5 @@ declare namespace CanvasEdges {
 declare abstract class AnyCanvasEdges {
   constructor(arg0: never, ...args: never[]);
 }
+
 export default CanvasEdges;
