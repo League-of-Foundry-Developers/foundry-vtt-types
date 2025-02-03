@@ -1,4 +1,6 @@
-import type { InexactPartial } from "fvtt-types/utils";
+import type PolygonVertex from "./vertex.d.mts";
+import type { LineIntersection } from "../../../common/utils/geometry.d.mts";
+import type { NullishProps } from "fvtt-types/utils";
 import type { WallThresholdData } from "../../../common/documents/_types.d.mts";
 
 /**
@@ -12,33 +14,7 @@ declare class Edge {
    * @param b - The second endpoint of the edge
    * @param options - Additional options which describe the edge
    */
-  constructor(
-    a: Canvas.Point,
-    b: Canvas.Point,
-    options?: InexactPartial<{
-      /** A string used to uniquely identify this edge */
-      id?: string;
-      /** A PlaceableObject that is responsible for this edge, if any */
-      object?: PlaceableObject;
-      /** The type of edge */
-      type?: Edge.EdgeTypes;
-      /** How this edge restricts light */
-      light?: foundry.CONST.WALL_SENSE_TYPES;
-      /** How this edge restricts movement */
-      move?: foundry.CONST.WALL_SENSE_TYPES;
-      /** How this edge restricts sight */
-      sight?: foundry.CONST.WALL_SENSE_TYPES;
-      /** How this edge restricts sound */
-      sound?: foundry.CONST.WALL_SENSE_TYPES;
-      /**
-       * A direction of effect for the edge
-       * @defaultValue `0`
-       */
-      direction?: foundry.CONST.WALL_DIRECTIONS;
-      /** Configuration of threshold data for this edge */
-      threshold?: WallThresholdData;
-    }>,
-  );
+  constructor(a: Canvas.Point, b: Canvas.Point, options?: Edge.ConstructorOptions);
 
   /**
    * The first endpoint of the edge.
@@ -52,11 +28,20 @@ declare class Edge {
 
   /**
    * A string used to uniquely identify this edge.
+   * @defaultValue `object?.id ?? undefined`
    */
-  id: string;
+  id: string | undefined;
 
-  object: PlaceableObject;
+  /**
+   * A PlaceableObject that is responsible for this edge, if any
+   * @remarks This property is never read by Foundry, so it being nullish won't break anything as of 12.331
+   */
+  object: PlaceableObject.Any | undefined | null;
 
+  /**
+   * The type of edge
+   * @defaultValue `"wall"`
+   */
   type: Edge.EdgeTypes;
 
   /**
@@ -66,28 +51,33 @@ declare class Edge {
 
   /**
    * How this edge restricts light.
+   * @defaultValue `CONST.WALL_SENSE_TYPES.NONE`
    */
   light: foundry.CONST.WALL_SENSE_TYPES;
 
   /**
    * How this edge restricts movement.
+   * @defaultValue `CONST.WALL_SENSE_TYPES.NONE`
    */
   move: foundry.CONST.WALL_SENSE_TYPES;
 
   /**
    * How this edge restricts sight.
+   * @defaultValue `CONST.WALL_SENSE_TYPES.NONE`
    */
   sight: foundry.CONST.WALL_SENSE_TYPES;
 
   /**
    * How this edge restricts sound.
+   * @defaultValue `CONST.WALL_SENSE_TYPES.NONE`
    */
   sound: foundry.CONST.WALL_SENSE_TYPES;
 
   /**
    * Specialized threshold data for this edge.
+   * @remarks Foundry only accesses this in nullish-safe ways as of 12.331
    */
-  threshold: WallThresholdData;
+  threshold: WallThresholdData | undefined | null;
 
   /**
    * The endpoint of the edge which is oriented towards the top-left.
@@ -107,37 +97,38 @@ declare class Edge {
   /**
    * Record other edges which this one intersects with.
    */
-  intersections: {
-    edge: Edge;
-    intersection: foundry.utils.LineIntersection;
-  }[];
+  intersections: Edge.IntersectionEntry[];
 
   /**
    * A PolygonVertex instance.
    * Used as part of ClockwiseSweepPolygon computation.
+   * @defaultValue `undefined`
+   * @remarks Only set in {@link ClockwiseSweepPolygon#_identifyVertices} (part of CSP initialization)
    */
-  vertexA: foundry.canvas.edges.PolygonVertex;
+  vertexA: PolygonVertex | undefined;
 
   /**
    * A PolygonVertex instance.
    * Used as part of ClockwiseSweepPolygon computation.
+   * @defaultValue `undefined`
+   * @remarks Only set in {@link ClockwiseSweepPolygon#_identifyVertices} (part of CSP initialization)
    */
-  vertexB: foundry.canvas.edges.PolygonVertex;
+  vertexB: PolygonVertex | undefined;
 
   /**
    * Is this edge limited for a particular type?
    */
-  isLimited(type: "direction" | "light" | "move" | "sight" | "sound"): boolean;
+  isLimited(type: foundry.CONST.WALL_RESTRICTION_TYPES): boolean;
 
   /**
    * Create a copy of the Edge which can be safely mutated.
    */
-  clone(): Edge;
+  clone(): this;
 
   /**
    * Get an intersection point between this Edge and another.
    */
-  getIntersection(other: Edge): foundry.utils.LineIntersection | void;
+  getIntersection(other: Edge): LineIntersection | void;
 
   /**
    * Test whether to apply a proximity threshold to this edge.
@@ -149,7 +140,7 @@ declare class Edge {
    * @returns True if the edge has a threshold greater than 0 for the source type,
    *          and the source type is within that distance.
    */
-  applyThreshold(sourceType: string, sourceOrigin: Canvas.Point, externalRadius?: number): boolean;
+  applyThreshold(sourceType: Edge.AttenuationTypes, sourceOrigin: Canvas.Point, externalRadius?: number): boolean;
 
   /**
    * Determine the orientation of this Edge with respect to a reference point.
@@ -178,7 +169,80 @@ declare class Edge {
 }
 
 declare namespace Edge {
+  interface Any extends AnyEdge {}
+  type AnyConstructor = typeof AnyEdge;
+
+  /** @internal */
+  type _ConstructorOptions = NullishProps<{
+    /**
+     * A string used to uniquely identify this edge
+     *
+     */
+    id: string | null;
+
+    /**
+     * A PlaceableObject that is responsible for this edge, if any
+     * @remarks `Edge#object` is never read by Foundry, so this being nullish won't break anything as of 12.331
+     */
+    object: PlaceableObject.Any;
+
+    /**
+     * The type of edge
+     * @defaultValue `"wall"`
+     */
+    type: Edge.EdgeTypes;
+
+    /**
+     * How this edge restricts light
+     * @defaultValue `CONST.WALL_SENSE_TYPES.NONE`
+     */
+    light: foundry.CONST.WALL_SENSE_TYPES;
+
+    /**
+     * How this edge restricts movement
+     * @defaultValue `CONST.WALL_SENSE_TYPES.NONE`
+     */
+    move: foundry.CONST.WALL_SENSE_TYPES;
+
+    /**
+     * How this edge restricts sight
+     * @defaultValue `CONST.WALL_SENSE_TYPES.NONE`
+     */
+    sight: foundry.CONST.WALL_SENSE_TYPES;
+
+    /**
+     * How this edge restricts sound
+     * @defaultValue `CONST.WALL_SENSE_TYPES.NONE`
+     */
+    sound: foundry.CONST.WALL_SENSE_TYPES;
+
+    /**
+     * A direction of effect for the edge
+     * @defaultValue `CONST.WALL_DIRECTIONS.BOTH`
+     */
+    direction: foundry.CONST.WALL_DIRECTIONS;
+
+    /**
+     * Configuration of threshold data for this edge
+     * @remarks Foundry only accesses this in nullish-safe ways as of 12.331
+     */
+    threshold: WallThresholdData;
+  }>;
+
+  interface ConstructorOptions extends _ConstructorOptions {}
+
   type EdgeTypes = "wall" | "darkness" | "innerBounds" | "outerBounds";
+
+  type AttenuationTypes = Exclude<foundry.CONST.WALL_RESTRICTION_TYPES, "move">;
+
+  interface IntersectionEntry {
+    edge: Edge;
+    intersection: LineIntersection;
+  }
+}
+
+declare abstract class AnyEdge extends Edge {
+  constructor(arg0: never, ...args: never[]);
 }
 
 export default Edge;

@@ -37,8 +37,7 @@ declare class PointEffectSource {
   /**
    * Configure the parameters of the polygon that is generated for this source.
    */
-  //TODO: Make sure this is accurate as part of work on "pixi leftovers"
-  protected _getPolygonConfiguration(): PointSourcePolygonConfig;
+  protected _getPolygonConfiguration(): PointSourcePolygon.Config;
 
   _createShapes(): void;
 
@@ -65,12 +64,15 @@ declare class PointEffectSource {
  * TODO - documentation required about what a PointEffectSource is.
  * @privateRemarks the TODO is from foundry, update this class whenever the comments are done
  */
-declare function PointEffectSourceMixin<BaseClass extends BaseEffectSource.AnyConstructor>(
+declare function PointEffectSourceMixin<BaseClass extends PointEffectSourceMixin.BaseClass>(
   Base: BaseClass,
 ): Mixin<typeof PointEffectSource, BaseClass>;
 
 declare namespace PointEffectSourceMixin {
-  type AnyMixed = ReturnType<typeof PointEffectSourceMixin<BaseEffectSource.AnyConstructor>>;
+  type AnyMixedConstructor = ReturnType<typeof PointEffectSourceMixin<BaseClass>>;
+  interface AnyMixed extends AnyMixedConstructor {}
+
+  type BaseClass = BaseEffectSource.AnyConstructor;
 
   type MixedSourceData = SourceData & BaseEffectSource.SourceData;
 

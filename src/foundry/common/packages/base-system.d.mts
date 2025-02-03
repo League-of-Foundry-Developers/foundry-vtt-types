@@ -30,16 +30,31 @@ declare namespace BaseSystem {
      */
     grid: fields.SchemaField<{
       /** A default grid type to use for Scenes in this system */
-      type: fields.NumberField;
+      type: fields.NumberField<{
+        required: true;
+        choices: typeof foundry.CONST.GRID_TYPES;
+        initial: typeof foundry.CONST.GRID_TYPES.SQUARE;
+      }>;
 
       /** A default distance measurement to use for Scenes in this system */
-      distance: fields.NumberField;
+      distance: fields.NumberField<{
+        required: true;
+        nullable: false;
+        positive: true;
+        initial: 1;
+      }>;
 
       /** A default unit of measure to use for distance measurement in this system */
-      units: fields.StringField;
+      units: fields.StringField<{
+        required: true;
+      }>;
 
       /** The default rule used by this system for diagonal measurement on square grids */
-      diagonals: fields.NumberField;
+      diagonals: fields.NumberField<{
+        required: true;
+        choices: typeof foundry.CONST.GRID_DIAGONALS;
+        initial: typeof foundry.CONST.GRID_DIAGONALS.EQUIDISTANT;
+      }>;
     }>;
 
     /**

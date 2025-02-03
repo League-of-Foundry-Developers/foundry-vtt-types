@@ -29,3 +29,9 @@ expectTypeOf(
 ).toEqualTypeOf<boolean>();
 expectTypeOf(clipper.Execute(ClipperLib.ClipType.ctDifference, polyTree)).toEqualTypeOf<boolean>();
 expectTypeOf(clipper.Execute(ClipperLib.ClipType.ctDifference, paths)).toEqualTypeOf<boolean>();
+
+const clipperOffset = new ClipperLib.ClipperOffset(20, 0.25);
+
+expectTypeOf(
+  clipperOffset.AddPath(paths[0], ClipperLib.JoinType.jtMiter, ClipperLib.EndType.etClosedPolygon),
+).toEqualTypeOf<void>();

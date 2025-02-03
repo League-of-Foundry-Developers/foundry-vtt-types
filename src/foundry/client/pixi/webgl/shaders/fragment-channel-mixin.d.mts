@@ -9,7 +9,7 @@ declare class AdaptiveFragmentChannel {
    * A subclass of AdaptiveFragmentChannelMixin must implement the fragmentShader static field.
    * @defaultValue `null`
    */
-  static adaptiveFragmentShader: ((channel: AdaptiveFragmentChannel.Channel) => string) | null;
+  static adaptiveFragmentShader: ((channel: AdaptiveFragmentChannelMixin.Channel) => string) | null;
 
   /**
    * A factory method for creating the filter using its defined default values
@@ -28,7 +28,7 @@ declare class AdaptiveFragmentChannel {
     ...uniforms
   }?: ShapeWithIndexSignature<
     T,
-    AdaptiveFragmentChannel.ConcreteCreateOptions,
+    AdaptiveFragmentChannelMixin.ConcreteCreateOptions,
     string,
     AbstractBaseShader.UniformValue
   >): PIXI.Shader | PIXI.Filter;
@@ -40,23 +40,21 @@ declare global {
    * @param ShaderClass - The parent ShaderClass class being mixed.
    * @returns A Shader/Filter subclass mixed with AdaptiveFragmentChannelMixin.
    */
-  function AdaptiveFragmentChannelMixin<BaseClass extends PIXI.Shader.AnyConstructor | PIXI.Filter.AnyConstructor>(
+  function AdaptiveFragmentChannelMixin<BaseClass extends AdaptiveFragmentChannelMixin.BaseClass>(
     ShaderClass: BaseClass,
   ): Mixin<typeof AdaptiveFragmentChannel, BaseClass>;
 
-  namespace AdaptiveFragmentChannel {
-    // Filter extends Shader, so Shader is the broadest option
-    type AnyMixed = ReturnType<typeof AdaptiveFragmentChannelMixin<PIXI.Shader.AnyConstructor>>;
-    type AnyConstructor = typeof AnyAdaptiveFragmentChannel;
+  namespace AdaptiveFragmentChannelMixin {
+    /** @privateRemarks Can't extend `AnyMixedConstructor` if it's using the `BaseClass` union; `PIXI.Shader` is the parent of `Filter`, so it's used instead */
+    type AnyMixedConstructor = ReturnType<typeof AdaptiveFragmentChannelMixin<PIXI.Shader.AnyConstructor>>;
+    interface AnyMixed extends AnyMixedConstructor {}
+
+    type BaseClass = PIXI.Shader.AnyConstructor | PIXI.Filter.AnyConstructor;
 
     type Channel = "r" | "g" | "b";
 
     interface ConcreteCreateOptions {
-      channel?: AdaptiveFragmentChannel.Channel | undefined;
+      channel?: AdaptiveFragmentChannelMixin.Channel | undefined;
     }
   }
-}
-
-declare abstract class AnyAdaptiveFragmentChannel extends AdaptiveFragmentChannel {
-  constructor(arg0: never, ...args: never[]);
 }

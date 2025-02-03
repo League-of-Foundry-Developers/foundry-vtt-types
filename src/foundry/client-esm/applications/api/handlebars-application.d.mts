@@ -4,11 +4,16 @@ import type ApplicationV2 from "./application.d.mts";
 /**
  * Augment an Application class with [Handlebars](https://handlebarsjs.com) template rendering behavior.
  */
-declare function HandlebarsApplicationMixin<BaseClass extends ApplicationV2.Internal.Constructor>(
+declare function HandlebarsApplicationMixin<BaseClass extends HandlebarsApplicationMixin.BaseClass>(
   BaseApplication: BaseClass,
 ): Mixin<typeof HandlebarsApplicationMixin.HandlebarsApplication, BaseClass>;
 
 declare namespace HandlebarsApplicationMixin {
+  type AnyMixedConstructor = ReturnType<typeof HandlebarsApplicationMixin<BaseClass>>;
+  interface AnyMixed extends AnyMixedConstructor {}
+
+  type BaseClass = ApplicationV2.Internal.Constructor;
+
   interface PartState {
     scrollPositions: Array<[el1: HTMLElement, scrollTop: number, scrollLeft: number]>;
     focus?: string | undefined;

@@ -71,14 +71,14 @@ declare global {
     /**
      * The cached angle, computed lazily in Ray#angle
      * @defaultValue `undefined`
-     * @privateRemarks Foundry marked private
+     * @privateRemarks Foundry marked `@private` and doesn't type the `| undefined`
      */
     protected _angle: number | undefined;
 
     /**
      * The cached distance, computed lazily in Ray#distance
      * @defaultValue `undefined`
-     * @privateRemarks Foundry marked private
+     * @privateRemarks Foundry marked `@private` and doesn't type the `| undefined`
      */
     protected _distance: number | undefined;
 
@@ -87,10 +87,11 @@ declare global {
      * The angle is computed lazily (only if required) and cached.
      */
     get angle(): number;
-    set angle(value: number);
+
+    set angle(value);
 
     /**
-     * A bounding rectangle that encompasses the Ray
+     * A normalized bounding rectangle that encompasses the Ray
      */
     get bounds(): PIXI.Rectangle;
 
@@ -99,7 +100,8 @@ declare global {
      * The distance is computed lazily (only if required) and cached.
      */
     get distance(): number;
-    set distance(value: number);
+
+    set distance(value);
 
     /**
      * A factory method to construct a Ray from an origin point, an angle, and a distance
@@ -125,7 +127,7 @@ declare global {
      * @param t - The distance along the Ray
      * @returns The coordinates of the projected point
      */
-    project(t: number): { x: number; y: number };
+    project(t: number): PIXI.IPointData;
 
     /**
      * Create a Ray by projecting a certain distance towards a known point.
@@ -154,16 +156,24 @@ declare global {
      * @param distance - A distance the new ray should project, otherwise uses the same distance.
      * @returns A new Ray with an offset angle
      */
-    shiftAngle(offset: number, distance?: number): Ray;
+    shiftAngle(
+      offset: number,
+      /**
+       * @defaultValue `this.distance`
+       * @remarks Default provided by `||`, so `0` is effectively `this.distance`
+       */
+      distance?: number | null,
+    ): Ray;
 
     /**
      * Find the point I[x,y] and distance t* on ray R(t) which intersects another ray
      * @see foundry.utils.lineLineIntersection
      */
-    intersectSegment(coords: [x0: number, y0: number, x1: number, y1: number]): LineIntersection | null;
+    intersectSegment(coords: Canvas.PairOfPointsArray): LineIntersection | null;
   }
 
   namespace Ray {
+    interface Any extends AnyRay {}
     type AnyConstructor = typeof AnyRay;
   }
 }

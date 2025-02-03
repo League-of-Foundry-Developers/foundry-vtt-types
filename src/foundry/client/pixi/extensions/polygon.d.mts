@@ -108,6 +108,9 @@ declare global {
     }
 
     namespace Polygon {
+      type OrPointsFlat = number[] | PIXI.Polygon;
+      type OrPoints = OrPointsFlat | PIXI.IPointData[];
+
       /** @privateRemarks Foundry uses this type instead of full `ClipperLib.IntPoint` objects */
       interface ClipperPoint {
         X: number;
@@ -134,8 +137,11 @@ declare global {
 
       interface IntersectClipperOptions extends _IntersectClipperOptions {}
 
-      /** @privateRemarks Additional interface for merging should the props diverge, and to reduce confusion when used outside this file */
-      interface IntersectPolygonOptions extends IntersectClipperOptions {}
+      /**
+       * @privateRemarks Separate interface despite identical keys for purposes of declaration merging
+       * and just having an expected name for external reference
+       */
+      interface IntersectPolygonOptions extends _IntersectClipperOptions {}
 
       interface ClipperPointsOptions extends Pick<PIXI.Polygon.IntersectClipperOptions, "scalingFactor"> {}
     }
