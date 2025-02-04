@@ -42,7 +42,7 @@ declare global {
     /**
      * An instance of `RegionBehavior` that comes from the database.
      */
-    interface Stored extends Document.Stored<RegionBehavior.Implementation> {}
+    interface Stored<out Subtype extends SubType = SubType> extends Document.Stored<OfType<Subtype>> {}
 
     /**
      * The data put in {@link Document._source | `Document._source`}. This data is what was
