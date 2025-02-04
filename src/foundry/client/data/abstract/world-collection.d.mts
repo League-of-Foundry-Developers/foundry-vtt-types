@@ -60,9 +60,7 @@ declare global {
      * DatabaseCreateOperation but the foundry typedef doesn't have them).
      */
     importFromCompendium(
-      pack: CompendiumCollection<
-        CompendiumCollection.Metadata & { type: T["metadata"]["name"] }
-      >,
+      pack: CompendiumCollection<CompendiumCollection.Metadata & { type: T["metadata"]["name"] }>,
       id: string,
       updateData?: DeepPartial<FixedInstanceType<T>["_source"]>,
       options?: InexactPartial<Document.OnCreateOptions<T["metadata"]["name"]> & WorldCollection.FromCompendiumOptions>,

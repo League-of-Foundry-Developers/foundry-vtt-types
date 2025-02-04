@@ -1646,9 +1646,18 @@ declare namespace ObjectField {
     Options extends DataField.Options.Any = ObjectField.DefaultOptions,
   > = ObjectField<
     Options,
-    DataField.DerivedAssignmentType<Document.ConfiguredFlagsForName<Name> & ExtensionFlags & InterfaceToObject<Document.CoreFlags>, MergedOptions<Options>>,
-    DataField.DerivedInitializedType<Document.ConfiguredFlagsForName<Name> & ExtensionFlags & InterfaceToObject<Document.CoreFlags>, MergedOptions<Options>>,
-    DataField.DerivedInitializedType<Document.ConfiguredFlagsForName<Name> & ExtensionFlags & InterfaceToObject<Document.CoreFlags>, MergedOptions<Options>>
+    DataField.DerivedAssignmentType<
+      Document.ConfiguredFlagsForName<Name> & ExtensionFlags & InterfaceToObject<Document.CoreFlags>,
+      MergedOptions<Options>
+    >,
+    DataField.DerivedInitializedType<
+      Document.ConfiguredFlagsForName<Name> & ExtensionFlags & InterfaceToObject<Document.CoreFlags>,
+      MergedOptions<Options>
+    >,
+    DataField.DerivedInitializedType<
+      Document.ConfiguredFlagsForName<Name> & ExtensionFlags & InterfaceToObject<Document.CoreFlags>,
+      MergedOptions<Options>
+    >
   >;
 }
 

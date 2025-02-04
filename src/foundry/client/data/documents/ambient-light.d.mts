@@ -202,7 +202,6 @@ declare global {
       };
     }
 
-
     /**
      * @deprecated {@link AmbientLightDocument.DatabaseOperation | `AmbientLightDocument.DatabaseOperation`}
      */

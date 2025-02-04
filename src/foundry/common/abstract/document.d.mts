@@ -1098,7 +1098,9 @@ declare namespace Document {
       type Complete<T extends Any> = T extends Document.Any ? T : never;
     }
 
-    type OfType<Configured, Document extends Document.Any> = Configured extends { document: infer D } ? D : Document;
+    type OfType<Configured, Document extends Document.Any> = Configured extends { document: infer D extends Document }
+      ? D
+      : Document;
   }
 
   /** Any Document, that is a child of the given parent Document. */
@@ -1275,7 +1277,7 @@ declare namespace Document {
     core?: {
       sheetLock?: boolean;
       sheetClass?: string;
-    }
+    };
   }
 
   interface ConstructionContext<Parent extends Document.Any | null> {

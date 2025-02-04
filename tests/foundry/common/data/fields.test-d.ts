@@ -34,13 +34,13 @@ await foundry.documents.BaseMeasuredTemplate.create({ t: "foobar" });
 // Flags
 declare const myEffect: ActiveEffect;
 // @ts-expect-error Invalid flag in the space
-myEffect.getFlag("core", "foobar")
+myEffect.getFlag("core", "foobar");
 // All documents have a sheetClass flag
-expectTypeOf(myEffect.getFlag("core", "sheetClass")).toEqualTypeOf<string | undefined>()
-expectTypeOf(myEffect.flags.core!.sheetClass!).toEqualTypeOf<string>()
+expectTypeOf(myEffect.getFlag("core", "sheetClass")).toEqualTypeOf<string | undefined>();
+expectTypeOf(myEffect.flags.core!.sheetClass!).toEqualTypeOf<string>();
 // Document-specific flag
-expectTypeOf(myEffect.getFlag("core", "overlay")).toEqualTypeOf<boolean | undefined>()
-expectTypeOf(myEffect.flags.core!.overlay!).toEqualTypeOf<boolean>()
+expectTypeOf(myEffect.getFlag("core", "overlay")).toEqualTypeOf<boolean | undefined>();
+expectTypeOf(myEffect.flags.core!.overlay!).toEqualTypeOf<boolean>();
 
 // TypeDataField
 declare const JEPCoreTypes: JournalEntryPage.SubType;

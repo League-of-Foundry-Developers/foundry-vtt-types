@@ -28,7 +28,10 @@ declare global {
     type SubType = Game.Model.TypeNames<"JournalEntryPage">;
     type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<"JournalEntryPage">;
     type Known = JournalEntryPage.OfType<JournalEntryPage.ConfiguredSubTypes>;
-    type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredJournalEntryPage<Type>, JournalEntryPage<SubType>>;
+    type OfType<Type extends SubType> = Document.Internal.OfType<
+      ConfiguredJournalEntryPage<Type>,
+      JournalEntryPage<SubType>
+    >;
 
     /**
      * A document's parent is something that can contain it.
