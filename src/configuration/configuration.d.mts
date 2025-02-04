@@ -1,11 +1,11 @@
-import type { MaybeEmpty } from "fvtt-types/utils";
+import type { DeepPartial, MaybeEmpty } from "fvtt-types/utils";
 import type { fields } from "../foundry/common/data/module.d.mts";
 import type Document from "../foundry/common/abstract/document.d.mts";
 
 /**
  * Some global variables (such as {@link game}) are only initialized after certain events have happened during the
  * initialization of Foundry VTT. For that reason, the correct types for these variables include the types for the
- * uninitialized state..
+ * uninitialized state.
  *
  * While this is correct from a type checking perspective, it can be inconvenient to have to type guard these global
  * variables everywhere. Some users might prefer the convenience over the 100% correctness in type checking.
