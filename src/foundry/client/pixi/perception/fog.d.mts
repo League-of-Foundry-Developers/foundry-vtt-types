@@ -1,4 +1,4 @@
-import type { DisplayObject } from "pixi.js";
+export {};
 
 declare global {
   /**
@@ -19,13 +19,15 @@ declare global {
 
     /**
      * Texture extractor
+     * @remarks Only `undefined` before first `#initialize()`ation. Set to `null` if `TextureExtractor` creation fails, and will not retry from that state.
      */
-    get extractor(): TextureExtractor;
+    get extractor(): TextureExtractor | undefined | null;
 
     /**
      * Define the number of fog refresh needed before the fog texture is extracted and pushed to the server.
+     * @defaultValue `70`
      */
-    static COMMIT_THRESHOLD: 70;
+    static COMMIT_THRESHOLD: number;
 
     /**
      * The exploration SpriteMesh which holds the fog exploration texture.
@@ -35,22 +37,25 @@ declare global {
     /**
      * The configured options used for the saved fog-of-war texture.
      */
-    get textureConfiguration(): VisibilityTextureConfiguration;
+    get textureConfiguration(): CanvasVisibility["textureConfiguration"];
 
     /**
      * Does the currently viewed Scene support Token field of vision?
      */
+    //TODO: make `Scene.ConfiguredInstance["tokenVision"]` or equivalent when docsv2 is done
     get tokenVision(): boolean;
 
     /**
      * Does the currently viewed Scene support fog of war exploration?
      */
+    //TODO: make `Scene.ConfiguredInstance["fog"]["exploration"]` or equivalent when docsv2 is done
     get fogExploration(): boolean;
 
     /**
      * Create the exploration display object with or without a provided texture.
+     * @privateRemarks Despite Foundry only typing this as `DisplayObject` in 12.331, it always returns a `SpriteMesh`
      */
-    protected _createExplorationObject(tex?: PIXI.Texture | PIXI.RenderTexture): DisplayObject;
+    protected _createExplorationObject(tex?: PIXI.Texture | PIXI.RenderTexture): SpriteMesh;
 
     /**
      * Initialize fog of war - resetting it when switching scenes or re-drawing the canvas
@@ -129,7 +134,7 @@ declare global {
   }
 
   namespace FogManager {
-    type Any = AnyFogManager;
+    interface Any extends AnyFogManager {}
     type AnyConstructor = typeof AnyFogManager;
   }
 }

@@ -1,3 +1,5 @@
+import type { HandleEmptyObject } from "../../../../../utils/index.d.mts";
+
 export {};
 
 declare global {
@@ -48,29 +50,30 @@ declare global {
      * The Promise resolves to the drawn layer once its contents are successfully rendered.
      * @param options - Options which configure how the layer is drawn
      */
-    draw(options?: DrawOptions): Promise<this>;
+    draw(options?: HandleEmptyObject<DrawOptions>): Promise<this>;
 
     /**
      * The inner _draw method which must be defined by each CanvasLayer subclass.
      * @param options - Options which configure how the layer is drawn
      */
-    protected abstract _draw(options?: DrawOptions): Promise<void>;
+    protected abstract _draw(options?: HandleEmptyObject<DrawOptions>): Promise<void>;
 
     /**
      * Deconstruct data used in the current layer in preparation to re-draw the canvas
      * @param options - Options which configure how the layer is deconstructed
      * @remarks ControlsLayer returns void. See https://gitlab.com/foundrynet/foundryvtt/-/issues/6939
      */
-    tearDown(options?: TearDownOptions): Promise<this | void>;
+    tearDown(options?: HandleEmptyObject<TearDownOptions>): Promise<this | void>;
 
     /**
      * The inner _tearDown method which may be customized by each CanvasLayer subclass.
      * @param options - Options which configure how the layer is deconstructed
      */
-    protected _tearDown(options?: TearDownOptions): Promise<void>;
+    protected _tearDown(options?: HandleEmptyObject<TearDownOptions>): Promise<void>;
   }
 
   namespace CanvasLayer {
+    interface Any extends AnyCanvasLayer {}
     type AnyConstructor = typeof AnyCanvasLayer;
 
     interface LayerOptions {
@@ -90,6 +93,6 @@ declare global {
   }
 }
 
-declare abstract class AnyCanvasLayer extends CanvasLayer {
+declare abstract class AnyCanvasLayer extends CanvasLayer<CanvasLayer.DrawOptions, CanvasLayer.TearDownOptions> {
   constructor(arg0: never, ...args: never[]);
 }

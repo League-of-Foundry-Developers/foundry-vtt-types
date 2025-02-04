@@ -1,4 +1,4 @@
-import type { EmptyObject, InexactPartial, ValueOf } from "fvtt-types/utils";
+import type { EmptyObject, HandleEmptyObject, InexactPartial, ValueOf } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -74,7 +74,8 @@ declare global {
     /**
      * Does the currently viewed Scene support Token field of vision?
      */
-    get tokenVision(): Scene.ConfiguredInstance["tokenVision"];
+    //TODO: make `Scene.ConfiguredInstance["tokenVision"]` or equivalent when docsv2 is done
+    get tokenVision(): boolean;
 
     /**
      * The configured options used for the saved fog-of-war texture.
@@ -100,9 +101,9 @@ declare global {
      */
     initializeVisionMode(): void;
 
-    protected override _draw(options?: DrawOptions): Promise<void>;
+    protected override _draw(options?: HandleEmptyObject<DrawOptions>): Promise<void>;
 
-    protected override _tearDown(options?: TearDownOptions): Promise<void>;
+    protected override _tearDown(options?: HandleEmptyObject<TearDownOptions>): Promise<void>;
 
     /**
      * Update the display of the sight layer.
@@ -132,26 +133,7 @@ declare global {
      * @param options - Additional options which modify visibility testing.
      * @returns Whether the point is currently visible.
      */
-    testVisibility(
-      point: Canvas.Point,
-      /**
-       * @remarks Can't be NullishProps because `tolerance` gets passed directly to `_createVisibilityTestConfig`,
-       * where a default is provided only for `undefined` with `{ tolerance=2 }`, which must be numeric
-       * */
-      options?: InexactPartial<{
-        /**
-         * A numeric radial offset which allows for a non-exact match.
-         * For example, if tolerance is 2 then the test will pass if the point
-         * is within 2px of a vision polygon.
-         */
-        tolerance: number;
-
-        /**
-         * An optional reference to the object whose visibility is being tested
-         */
-        object: PlaceableObject | null;
-      }>,
-    ): boolean;
+    testVisibility(point: Canvas.Point, options?: CanvasVisibility.CreateTestConfigOptions): boolean;
 
     /**
      * Create the visibility test config.
@@ -160,22 +142,8 @@ declare global {
      */
     _createVisibilityTestConfig(
       point: Canvas.Point,
-      /** @remarks Can't be NullishProps because a default for `tolerance` is provided only for `undefined` with `{ tolerance=2 }`, which must be numeric */
-      options?: InexactPartial<{
-        /**
-         * A numeric radial offset which allows for a non-exact match.
-         * For example, if tolerance is 2 then the test will pass if the point
-         * is within 2px of a vision polygon
-         * @defaultValue `2`
-         */
-        tolerance: number;
-
-        /**
-         * An optional reference to the object whose visibility is being tested
-         */
-        object: PlaceableObject | null;
-      }>,
-    ): CanvasVisibilityTestConfig;
+      options?: CanvasVisibility.CreateTestConfigOptions,
+    ): CanvasVisibility.TestConfig;
 
     /**
      * @deprecated since v11, will be removed in v13
@@ -193,6 +161,52 @@ declare global {
     interface DrawOptions extends CanvasLayer.DrawOptions {}
 
     interface TearDownOptions extends CanvasLayer.TearDownOptions {}
+
+    type TestObject = PlaceableObject.Any | null;
+
+    /** @internal */
+    type _CreateTestConfigOptions = InexactPartial<{
+      /**
+       * A numeric radial offset which allows for a non-exact match.
+       * For example, if tolerance is 2 then the test will pass if the point
+       * is within 2px of a vision polygon
+       * @defaultValue `2`
+       * @remarks Can't be `null` because it only has a parameter default
+       */
+      tolerance: number;
+
+      /**
+       * An optional reference to the object whose visibility is being tested
+       * @defaultValue `null`
+       */
+      object: TestObject;
+    }>;
+
+    interface CreateTestConfigOptions extends _CreateTestConfigOptions {}
+
+    /** @internal */
+    interface _TestConfigOptional {
+      /**
+       * The target object
+       * @defaultValue `null`
+       * @remarks Only checked in `#_canDetect` for `instanceof Token`
+       */
+      object: TestObject;
+    }
+
+    /** @internal */
+    interface _TestConfigRequired {
+      /** An array of visibility tests */
+      tests: CanvasVisibility.Test[];
+    }
+
+    interface TestConfig extends _TestConfigRequired, _TestConfigOptional {}
+
+    interface Test {
+      point: Canvas.Point;
+      elevation: number;
+      los: Map<foundry.canvas.sources.PointVisionSource.Any, boolean>;
+    }
   }
 
   /**
@@ -209,22 +223,11 @@ declare global {
     alphaMode: PIXI.ALPHA_MODES;
     format: PIXI.FORMATS;
   }
-
-  interface CanvasVisibilityTest {
-    point: PIXI.Point;
-    elevation: number;
-    los: Map<foundry.canvas.sources.PointVisionSource.Any, boolean>;
-  }
-
-  interface CanvasVisibilityTestConfig {
-    /** The target object */
-    object: PlaceableObject | null;
-
-    /** An array of visibility tests */
-    tests: CanvasVisibilityTest[];
-  }
 }
 
-declare abstract class AnyCanvasVisibility extends CanvasVisibility {
+declare abstract class AnyCanvasVisibility extends CanvasVisibility<
+  CanvasVisibility.DrawOptions,
+  CanvasVisibility.TearDownOptions
+> {
   constructor(arg0: never, ...args: never[]);
 }
