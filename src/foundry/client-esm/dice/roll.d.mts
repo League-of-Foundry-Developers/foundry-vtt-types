@@ -1,5 +1,4 @@
-import type { AnyObject, EmptyObject, InexactPartial, FixedInstanceType } from "fvtt-types/utils";
-
+import type { AnyObject, InexactPartial, FixedInstanceType, IntentionalPartial } from "fvtt-types/utils";
 import type { RollParseNode } from "./_types.d.mts";
 import type DiceTerm from "./terms/dice.d.mts";
 import type PoolTerm from "./terms/pool.d.mts";
@@ -490,24 +489,10 @@ declare class Roll<D extends AnyObject = AnyObject> {
    * @returns A promise which resolves to the created ChatMessage entity, if create is true
    *          or the Object of prepared chatData otherwise.
    */
-  toMessage<T extends foundry.documents.BaseChatMessage.ConstructorData = EmptyObject, Create extends boolean = true>(
-    messageData?: T,
-    options?: InexactPartial<{
-      /**
-       * The template roll mode to use for the message from CONFIG.Dice.rollModes
-       * @remarks "roll" equivalent to explicit undefined
-       */
-      rollMode: keyof CONFIG.Dice.RollModes | "roll";
-      /**
-       * Whether to automatically create the chat message, or only return the prepared chatData object.
-       * @defaultValue `true`
-       */
-      create: Create;
-    }>,
-  ): Promise<
-    | (true extends Create ? ChatMessage.ConfiguredInstance | undefined : never)
-    | (false extends Create ? Roll.MessageData<T> : never)
-  >;
+  toMessage<const Create extends boolean | null | undefined>(
+    messageData?: Roll.MessageData,
+    options?: Roll.ToMessageOptions<Create>,
+  ): Promise<Roll.ToMessageReturn<Create>>;
 
   /* -------------------------------------------- */
   /*  Interface Helpers                           */
@@ -635,15 +620,57 @@ declare namespace Roll {
     total: number | null;
   }
 
-  type MessageData<T extends foundry.documents.BaseChatMessage.ConstructorData> = T & {
-    user: string;
-    rolls: Roll[];
-    content: number;
-    sound: typeof CONFIG.sounds.dice;
-  };
+  // TODO(LukeAbby): When shims are added then `"user"` should also be added here #3065. Specifically `user` should be added as partial.
+  // Also use `IntentionalPartial<ChatMessageCreateData, "content" | "sound" | "rolls">` once `documents-v2` is merged.
+  //
+  // This is `IntentionalPartial` because Foundry merges in defaults with `mergeObject`.
+  interface MessageData
+    extends Omit<ChatMessageCreateData, "content" | "sound" | "rolls">,
+      IntentionalPartial<Pick<ChatMessageCreateData, "content" | "sound" | "rolls">> {
+    /**
+     * The HTML content of this chat message
+     * @defaultValue `String(this.total)`
+     */
+    content?: ChatMessageCreateData["content"];
+
+    /**
+     * The URL of an audio file which plays when this message is received
+     * @defaultValue `CONFIG.sounds.dice`
+     */
+    sound?: ChatMessageCreateData["sound"];
+
+    /**
+     * The URL of an audio file which plays when this message is received
+     *
+     * @deprecated - In `Roll.MessageData`, Foundry always overrides `rolls` to `[this]`.
+     * This makes it useless to set. Do not use.
+     */
+    rolls?: ChatMessageCreateData["rolls"];
+  }
 
   type Evaluated<T extends Roll> = T & { _evaluated: true; _total: number; get total(): number };
+
+  interface ToMessageOptions<Create extends boolean | null | undefined> {
+    /**
+     * The template roll mode to use for the message from CONFIG.Dice.rollModes
+     * @remarks "roll" equivalent to explicit undefined
+     */
+    rollMode?: keyof CONFIG.Dice.RollModes | "roll" | null | undefined;
+
+    /**
+     * Whether to automatically create the chat message, or only return the prepared chatData object.
+     * @defaultValue `true`
+     */
+    create?: Create;
+  }
+
+  type ToMessageReturn<Create extends boolean | null | undefined> =
+    | (Create extends true | undefined ? ChatMessage.ConfiguredInstance | undefined : never)
+    | (Create extends false | null ? ChatMessageCreateData : never);
 }
+
+// TODO: Replace when `documents-v2` is merged.
+type ChatMessageCreateData = foundry.data.fields.SchemaField.InnerPersistedType<ChatMessage.Schema>;
 
 declare abstract class AnyRoll extends Roll<any> {
   constructor(arg0: never, ...args: never[]);
