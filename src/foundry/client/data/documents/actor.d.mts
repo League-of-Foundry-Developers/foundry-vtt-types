@@ -34,7 +34,7 @@ declare global {
 
     /**
      * A document's parent is something that can contain it.
-     * For example an `Actor` can be contained by an `Actor` which makes `Actor` one of its possible parents.
+     * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
      */
     type Parent = null;
 

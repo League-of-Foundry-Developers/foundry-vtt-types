@@ -1,4 +1,5 @@
 import type {
+  ConfigurationFailure,
   ConfiguredDocumentClass,
   ConfiguredDocumentInstance,
   ConfiguredMetadata,
@@ -1098,8 +1099,10 @@ declare namespace Document {
       type Complete<T extends Any> = T extends Document.Any ? T : never;
     }
 
-    type OfType<Configured, Document extends Document.Any> = Configured extends { document: infer D extends Document }
-      ? D
+    type OfType<Configured, Document extends Document.Any> = Configured extends { document: infer D }
+      ? D extends Document
+        ? D
+        : ConfigurationFailure[Document["documentName"]]
       : Document;
   }
 
