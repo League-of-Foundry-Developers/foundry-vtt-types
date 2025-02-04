@@ -9,13 +9,14 @@ declare global {
      * The FogExploration document which applies to this canvas view
      * @defaultValue `null`
      */
-    exploration: FogExploration | null;
+    exploration: FogExploration.ConfiguredInstance | null;
 
     /**
      * Track whether we have pending fog updates which have not yet been saved to the database
      * @defaultValue `false`
+     * @remarks Foundry marked `@internal`
      */
-    _updated: boolean;
+    protected _updated: boolean;
 
     /**
      * Texture extractor
@@ -36,6 +37,7 @@ declare global {
 
     /**
      * The configured options used for the saved fog-of-war texture.
+     * @remarks Only `undefined` prior to the first time the canvas visibility layer is `#draw()`n
      */
     get textureConfiguration(): CanvasVisibility["textureConfiguration"];
 
@@ -53,7 +55,7 @@ declare global {
 
     /**
      * Create the exploration display object with or without a provided texture.
-     * @privateRemarks Despite Foundry only typing this as `DisplayObject` in 12.331, it always returns a `SpriteMesh`
+     * @privateRemarks Despite Foundry only typing this as returning `DisplayObject` in 12.331, it always returns a `SpriteMesh`
      */
     protected _createExplorationObject(tex?: PIXI.Texture | PIXI.RenderTexture): SpriteMesh;
 
@@ -100,35 +102,37 @@ declare global {
      * @param base64Image - The extracted base64 image data
      * @returns Exploration data to update
      */
-    protected _prepareFogUpdateData(base64Image: string): foundry.documents.BaseFogExploration.UpdateData;
+    protected _prepareFogUpdateData(base64Image: string): FogExploration.UpdateData;
 
     /**
      * If fog of war data is reset from the server, deactivate the current fog and initialize the exploration.
-     * @internal
+     * @remarks Foundry marked `@internal`, called externally in the `fogReset` socket handler
      */
     _handleReset(): Promise<void>;
 
     /**
      * @deprecated since v11, will be removed in v13
-     * @remarks pending is deprecated and redirected to the exploration container
+     * @remarks "pending is deprecated and redirected to the exploration container"
      */
     get pending(): CanvasVisibility["explored"];
 
     /**
      * @deprecated since v11, will be removed in v13
-     * @remarks revealed is deprecated and redirected to the exploration container
+     * @remarks "revealed is deprecated and redirected to the exploration container"
      */
     get revealed(): CanvasVisibility["explored"];
 
     /**
      * @deprecated since v11, will be removed in v13
-     * @remarks update is obsolete and always returns true. The fog exploration does not record position anymore.
+     * @remarks "update is obsolete and always returns true. The fog exploration does not record position anymore."
      */
-    update(source: any, force: boolean): true;
+    update(source: any, force?: boolean): true;
 
     /**
      * @deprecated since v11, will be removed in v13
-     * @remarks resolution is deprecated and redirected to CanvasVisibility#textureConfiguration
+     * @remarks "resolution is deprecated and redirected to CanvasVisibility#textureConfiguration"
+     *
+     * Probable Bug Note: Returns the entire `textureConfiguration` object, not just its `resolution` property
      */
     get resolution(): CanvasVisibility["textureConfiguration"];
   }

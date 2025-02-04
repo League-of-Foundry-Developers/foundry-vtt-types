@@ -39,7 +39,7 @@ expectTypeOf(myDetectionMode.tokenConfig).toEqualTypeOf<boolean>();
 expectTypeOf(myDetectionMode.walls).toEqualTypeOf<boolean>();
 expectTypeOf(myDetectionMode.angle).toEqualTypeOf<boolean>();
 
-//@ts-expect-error For two reasons: first, this currently wants `| undefined` when it shouldn't (the field is `required: false`, but has an `initial`),
+// @ts-expect-error For two reasons: first, this currently wants `| undefined` when it shouldn't (the field is `required: false`, but has an `initial`),
 // and second, it isn't not accepting the Branded number type
 expectTypeOf(myDetectionMode.type).toEqualTypeOf<DetectionMode.DETECTION_TYPES | null>();
 
