@@ -16,7 +16,7 @@ declare global {
     /**
      * @defaultValue `false`
      */
-    interactiveChildren: boolean;
+    override interactiveChildren: boolean;
 
     /**
      * Customize behaviors of this CanvasLayer by modifying some behaviors at a class level.
@@ -26,19 +26,19 @@ declare global {
     /**
      * Return a reference to the active instance of this canvas layer
      */
-    static get instance(): CanvasLayer | PIXI.Container | undefined;
+    static get instance(): CanvasLayer.Any | PIXI.Container | undefined;
 
     /**
      * The canonical name of the CanvasLayer is the name of the constructor that is the immediate child of the defined baseClass for the layer type.
      * @remarks Foundry defines this as a getter, but since CanvasLayer extends PIXI.Container, it has to be a property.
      */
-    readonly name: string;
+    readonly name: this["options"]["name"];
 
     /**
      * The name used by hooks to construct their hook string.
      * Note: You should override this getter if hookName should not return the class constructor name.
      */
-    get hookName(): string;
+    get hookName(): this["name"];
 
     /**
      * Draw the canvas layer, rendering its internal components and returning a Promise
@@ -77,7 +77,7 @@ declare global {
        */
       name: string;
 
-      baseClass: typeof CanvasLayer;
+      baseClass: CanvasLayer.AnyConstructor;
     }
 
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
