@@ -553,7 +553,12 @@ declare namespace PrototypeToken {
     randomImg: fields.BooleanField;
   }
 
-  type ConstructorData = fields.SchemaField.AssignmentData<Schema>;
+  /**
+   * {@link PrototypeToken.CreateData | PrototypeToken.CreateData}
+   */
+  type ConstructorData = CreateData;
+
+  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 }
 
 /**

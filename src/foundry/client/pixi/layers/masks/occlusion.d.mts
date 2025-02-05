@@ -79,7 +79,7 @@ declare global {
      * @returns The PCO objects which should be currently occluded
      */
     protected _identifyOccludedObjects(
-      tokens: Token.ConfiguredInstance[],
+      tokens: Token.Object[],
     ): Set<FixedInstanceType<ReturnType<typeof PrimaryCanvasObjectMixin>>>;
 
     /**

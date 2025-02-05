@@ -5,7 +5,7 @@ expectTypeOf(
 ).toMatchTypeOf<MouseInteractionManager.INTERACTION_STATES>();
 
 declare const someEvent: PIXI.FederatedEvent;
-declare const someRegion: Region.ConfiguredInstance;
+declare const someRegion: Region.Object;
 
 const permissions = {
   dragLeftStart: (_user: User.ConfiguredInstance, _e: Event | PIXI.FederatedEvent) => true,

@@ -1,4 +1,4 @@
-import type { Mixin } from "fvtt-types/utils";
+import type { FixedInstanceType, Mixin } from "fvtt-types/utils";
 
 /**
  * An extension of the Collection class which adds behaviors specific to tree-based collections of entries and folders.
@@ -98,10 +98,8 @@ declare global {
   ): Mixin<typeof DirectoryCollection, BaseCollection>;
 
   namespace DirectoryCollectionMixin {
-    type AnyMixedConstructor = ReturnType<
-      typeof DirectoryCollectionMixin<DirectoryCollectionMixin.DirectoryTypes, DirectoryCollectionMixin.BaseClass>
-    >;
-    interface AnyMixed extends AnyMixedConstructor {}
+    type AnyMixedConstructor = ReturnType<typeof DirectoryCollectionMixin<foundry.utils.Collection.AnyConstructor>>;
+    type AnyMixed = FixedInstanceType<AnyMixedConstructor>;
 
     type BaseClass = foundry.utils.Collection.AnyConstructor;
 

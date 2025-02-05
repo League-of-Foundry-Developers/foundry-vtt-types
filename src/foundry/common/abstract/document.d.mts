@@ -959,7 +959,7 @@ declare namespace Document {
 
   type ConfiguredSubTypesOf<Name extends Type> = Name extends "ActorDelta"
     ? ConfiguredSubTypesOf<"Actor">
-    : keyof GetKey<DataModelConfig, Name, unknown> | keyof GetKey<SourceConfig, Name, unknown>;
+    : string & (keyof GetKey<DataModelConfig, Name, unknown> | keyof GetKey<SourceConfig, Name, unknown>);
 
   type SubTypesOf<Name extends Type> = Name extends "ActorDelta"
     ? SubTypesOf<"Actor">
@@ -995,7 +995,9 @@ declare namespace Document {
               readonly [K in Name]: infer Data;
             }
               ? SubType extends keyof Data
-                ? Data[SubType]
+                ? Data[SubType] extends object
+                  ? Data[SubType]
+                  : never
                 : never
               : never
           >
@@ -1102,7 +1104,7 @@ declare namespace Document {
     type OfType<Configured, Document extends Document.Any> = Configured extends { document: infer D }
       ? D extends Document
         ? D
-        : ConfigurationFailure[Document["documentName"]]
+        : FixedInstanceType<ConfigurationFailure[Document["documentName"]]>
       : Document;
   }
 

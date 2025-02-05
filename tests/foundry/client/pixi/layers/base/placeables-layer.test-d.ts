@@ -10,12 +10,12 @@ class SomeLightLayer extends PlaceablesLayer<"AmbientLight"> {
     });
   }
 
-  override options: PlaceablesLayer.LayerOptions<"AmbientLight"> = SomeLightLayer.layerOptions;
+  override options: PlaceablesLayer.LayerOptions<AmbientLight.ObjectClass> = SomeLightLayer.layerOptions;
 }
 
 expectTypeOf(SomeLightLayer.instance).toEqualTypeOf<CanvasLayer | Container<DisplayObject> | undefined>();
 // FIXME: I think data model related error?
-// expectTypeOf(SomeLightLayer.layerOptions).toEqualTypeOf<PlaceablesLayer.LayerOptions<"AmbientLight">>();
+// expectTypeOf(SomeLightLayer.layerOptions).toEqualTypeOf<PlaceablesLayer.LayerOptions<AmbientLight.ObjectClass>>();
 expectTypeOf(SomeLightLayer.layerOptions.objectClass).toEqualTypeOf<any>(); // TODO: Can this be typed to Document.AnyConstructor?
 expectTypeOf(PlaceablesLayer.documentName).toEqualTypeOf<
   "AmbientLight" | "AmbientSound" | "Drawing" | "MeasuredTemplate" | "Note" | "Region" | "Tile" | "Token" | "Wall"

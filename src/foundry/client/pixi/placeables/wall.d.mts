@@ -99,7 +99,7 @@ declare global {
      * A reference to an overhead Tile that is a roof, interior to which this wall is contained
      * @defaultValue `undefined`
      */
-    roof: Tile.ConfiguredInstance | undefined;
+    roof: Tile.Object | undefined;
 
     /**
      * A Graphics object used to highlight this wall segment. Only used when the wall is controlled.
@@ -109,7 +109,7 @@ declare global {
     /**
      * A set which tracks other Wall instances that this Wall intersects with (excluding shared endpoints)
      */
-    intersectsWith: Map<Wall.ConfiguredInstance, LineIntersection>;
+    intersectsWith: Map<Wall.Object, LineIntersection>;
 
     /**
      * A convenience reference to the coordinates Array for the Wall endpoints, [x0,y0,x1,y1].

@@ -1,4 +1,4 @@
-import type BaseTile from "../../../../common/documents/tile.d.mts";
+export {};
 
 declare global {
   /**
@@ -37,9 +37,9 @@ declare global {
     /**
      * An array of Tile objects which are rendered within the objects container
      */
-    get tiles(): Tile.ConfiguredInstance[];
+    get tiles(): Tile.Object[];
 
-    override controllableObjects(): Generator<Tile.ConfiguredInstance>;
+    override controllableObjects(): Generator<Tile.Object>;
 
     override getSnappedPoint(point: Canvas.Point): Canvas.Point;
 
@@ -60,7 +60,7 @@ declare global {
      */
     protected _onDropData(
       event: DragEvent,
-      data: BaseTile.ConstructorData,
+      data: TileDocument.CreateData,
     ): Promise<TileDocument.Implementation | false | void>;
 
     /**
@@ -69,14 +69,14 @@ declare global {
      * @param data  - The extracted Tile data
      * @returns The prepared data to create
      */
-    _getDropData(event: DragEvent, data: BaseTile.ConstructorData): Promise<BaseTile.ConstructorData>;
+    _getDropData(event: DragEvent, data: TileDocument.CreateData): Promise<TileDocument.CreateData>;
 
     /**
      * Get an array of overhead Tile objects which are roofs
      * @deprecated since v12 until v14
      * @remarks "TilesLayer#roofs has been deprecated without replacement."
      */
-    get roofs(): Tile.ConfiguredInstance[];
+    get roofs(): Tile.Object[];
 
     /**
      * @deprecated since v11, will be removed in v13
@@ -97,7 +97,7 @@ declare global {
 
     interface TearDownOptions extends PlaceablesLayer.TearDownOptions {}
 
-    interface LayerOptions extends PlaceablesLayer.LayerOptions<"Tile"> {
+    interface LayerOptions extends PlaceablesLayer.LayerOptions<Tile.ObjectClass> {
       name: "tiles";
       zIndex: 300;
       controllableObjects: true;

@@ -7,10 +7,10 @@ declare class RegionMesh extends PIXI.Container {
    * @param region        - The Region to create the RegionMesh from.
    * @param shaderClass   - The shader class to use. @defaultValue `RegionShader`
    */
-  constructor(region: Region.ConfiguredInstance, shaderClass?: AbstractBaseShader);
+  constructor(region: Region.Object, shaderClass?: AbstractBaseShader);
 
   /** The Region of this RegionMesh */
-  get region(): Region.ConfiguredInstance;
+  get region(): Region.Object;
 
   /** The shader bound to this RegionMesh */
   get shader(): AbstractBaseShader;

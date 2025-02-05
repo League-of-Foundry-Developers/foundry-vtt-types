@@ -70,7 +70,7 @@ declare global {
     /**
      * An Array of Wall instances in the current Scene which act as Doors.
      */
-    get doors(): Wall.ConfiguredInstance[];
+    get doors(): Wall.Object[];
 
     override getSnappedPoint(point: Canvas.Point): Canvas.Point;
 
@@ -84,12 +84,12 @@ declare global {
      * @param wall  - The existing Wall object being chained to
      * @returns The [x,y] coordinates of the starting endpoint
      */
-    static getClosestEndpoint(point: Canvas.Point, wall: Wall.ConfiguredInstance): Canvas.PointArray;
+    static getClosestEndpoint(point: Canvas.Point, wall: Wall.Object): Canvas.PointArray;
 
     override releaseAll(options?: PlaceableObject.ReleaseOptions): number;
 
     override _pasteObject(
-      copy: Wall.ConfiguredInstance,
+      copy: Wall.Object,
       offset: Canvas.Point,
       options?: NullishProps<{ hidden: boolean; snap: boolean }>,
     ): Document.ConfiguredSourceForName<"Wall">;
@@ -139,9 +139,9 @@ declare global {
      * @returns The polygons of the interior.
      * @remarks Marked \@license MIT
      */
-    identifyInteriorArea(walls: Wall.ConfiguredInstance[]): PIXI.Polygon[];
+    identifyInteriorArea(walls: Wall.Object[]): PIXI.Polygon[];
 
-    protected override _onDragLeftStart(event: PIXI.FederatedEvent): ReturnType<Wall.ConfiguredInstance["draw"]>;
+    protected override _onDragLeftStart(event: PIXI.FederatedEvent): ReturnType<Wall.Object["draw"]>;
 
     protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
@@ -192,10 +192,10 @@ declare global {
 
     interface DrawOptions extends PlaceablesLayer.DrawOptions {}
 
-    interface LayerOptions extends PlaceablesLayer.LayerOptions<"Wall"> {
+    interface LayerOptions extends PlaceablesLayer.LayerOptions<Wall.ObjectClass> {
       name: "walls";
       controllableObjects: true;
-      objectClass: typeof Wall;
+      objectClass: Wall.ObjectClass;
       quadtree: true;
       sheetClass: FormApplication.AnyConstructor;
       sortActiveTop: boolean;

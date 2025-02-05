@@ -203,7 +203,7 @@ declare global {
 
     interface TearDownOptions extends PlaceablesLayer.TearDownOptions {}
 
-    interface LayerOptions extends PlaceablesLayer.LayerOptions<"AmbientSound"> {
+    interface LayerOptions extends PlaceablesLayer.LayerOptions<AmbientSound.ObjectClass> {
       name: "sounds";
       zIndex: 900;
     }

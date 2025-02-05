@@ -6,7 +6,7 @@ declare global {
    * @typeParam Options - the type of the options object
    */
   class TileHUD<Options extends ApplicationOptions = ApplicationOptions> extends BasePlaceableHUD<
-    Tile.ConfiguredInstance,
+    Tile.Object,
     Options
   > {
     /**

@@ -205,7 +205,7 @@ declare global {
      * Create a preview tile with a background texture instead of an image
      * @param data - Initial data with which to create the preview Tile
      */
-    static createPreview(data: foundry.documents.BaseTile.ConstructorData): Tile.ConfiguredInstance;
+    static createPreview(data: TileDocument.CreateData): TileDocument.Implementation;
 
     protected override _draw(options?: Record<string, unknown>): Promise<void>;
 
@@ -287,7 +287,7 @@ declare global {
      * @deprecated since v11, will be removed in v13
      * @remarks "Tile#testOcclusion has been deprecated in favor of PrimaryCanvasObject#testOcclusion"
      */
-    testOcclusion(token: Token.ConfiguredInstance, options?: Tile.OcclusionOptions): boolean;
+    testOcclusion(token: Token.Object, options?: Tile.OcclusionOptions): boolean;
 
     /**
      * @deprecated since v11, will be removed in v13

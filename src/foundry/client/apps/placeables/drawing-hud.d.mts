@@ -6,7 +6,7 @@ declare global {
    * @typeParam Options - the type of the options object
    */
   class DrawingHUD<Options extends ApplicationOptions = ApplicationOptions> extends BasePlaceableHUD<
-    Drawing.ConfiguredInstance,
+    Drawing.Object,
     Options
   > {
     /**

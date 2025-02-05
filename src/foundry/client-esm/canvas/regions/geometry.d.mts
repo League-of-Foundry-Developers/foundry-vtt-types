@@ -8,10 +8,10 @@ declare class RegionGeometry extends PIXI.Geometry {
    * Create a RegionGeometry
    * @internal
    */
-  constructor(region: Region.ConfiguredInstance);
+  constructor(region: Region.Object);
 
   /** The Region this geometry belongs to */
-  get region(): Region.ConfiguredInstance;
+  get region(): Region.Object;
 
   /**
    * Update the buffers

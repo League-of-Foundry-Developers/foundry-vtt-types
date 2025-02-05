@@ -397,7 +397,7 @@ declare global {
      * @param data - Additional data, such as x, y, rotation, etc. for the created token data (default: `{}`)
      * @returns The created TokenData instance
      */
-    getTokenDocument(data?: Token.CreateData): Promise<TokenDocument.Implementation>;
+    getTokenDocument(data?: TokenDocument.CreateData): Promise<TokenDocument.Implementation>;
 
     /**
      * Get an Array of Token images which could represent this Actor

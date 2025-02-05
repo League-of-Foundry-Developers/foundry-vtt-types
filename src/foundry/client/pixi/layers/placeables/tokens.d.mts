@@ -71,7 +71,7 @@ declare global {
     protected override _deactivate(): void;
 
     override _pasteObject(
-      copy: Token.ConfiguredInstance,
+      copy: Token.Object,
       offset: Canvas.Point,
       options?: NullishProps<{ hidden: boolean; snap: boolean }>,
     ): Document.ConfiguredSourceForName<"Token">;
@@ -79,7 +79,7 @@ declare global {
     protected override _getMovableObjects<const T>(
       ids?: ArrayOverlaps<T, string>,
       includeLocked?: boolean,
-    ): Token.ConfiguredInstance[];
+    ): Token.Object[];
 
     /**
      * Target all Token instances which fall within a coordinate rectangle.
@@ -94,12 +94,12 @@ declare global {
      * @param forwards - Which direction to cycle. A truthy value cycles forward, while a false value cycles backwards.
      * @param reset    - Restart the cycle order back at the beginning?
      */
-    cycleTokens(forwards: boolean, reset: boolean): Token.ConfiguredInstance | null;
+    cycleTokens(forwards: boolean, reset: boolean): Token.Object | null;
 
     /**
      * Get the tab cycle order for tokens by sorting observable tokens based on their distance from top-left.
      */
-    protected _getCycleOrder(): Token.ConfiguredInstance[];
+    protected _getCycleOrder(): Token.Object[];
 
     /**
      * Immediately conclude the animation of any/all tokens
@@ -115,7 +115,7 @@ declare global {
      * Provide an array of Tokens which are eligible subjects for overhead tile occlusion.
      * By default, only tokens which are currently controlled or owned by a player are included as subjects.
      */
-    protected _getOccludableTokens(): Token.ConfiguredInstance[];
+    protected _getOccludableTokens(): Token.Object[];
 
     override storeHistory(
       type: PlaceablesLayer.HistoryEventType,
@@ -133,7 +133,7 @@ declare global {
     //TODO: use configured ruler type once it exists
     protected override _onClickLeft(event: PIXI.FederatedEvent): ReturnType<Ruler["_onClickLeft"]> | void; // ReturnType<CONFIG.Canvas["rulerClass"]["_onClickLeft"]>;
 
-    protected override _onMouseWheel(event: WheelEvent): ReturnType<this["rotateMany"]>;
+    protected override _onMouseWheel(event: WheelEvent): Promise<Token.Object[]>;
 
     /**
      * @deprecated since v12 until v14
@@ -161,7 +161,7 @@ declare global {
          * A specific Token which is the origin of the group toggle request
          * @defaultValue `null`
          */
-        token?: Token.ConfiguredInstance | null;
+        token?: Token.Object | null;
       },
     ): Promise<Combatant.Implementation[]>;
   }
@@ -173,7 +173,7 @@ declare global {
 
     interface TearDownOptions extends PlaceablesLayer.TearDownOptions {}
 
-    interface LayerOptions extends PlaceablesLayer.LayerOptions<"Token"> {
+    interface LayerOptions extends PlaceablesLayer.LayerOptions<Token.ObjectClass> {
       name: "tokens";
       controllableObjects: true;
       rotatableObjects: true;

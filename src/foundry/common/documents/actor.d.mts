@@ -3,12 +3,6 @@ import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { SchemaField } from "../data/fields.d.mts";
 
-interface _Schema extends Actor.Schema {
-  // For performance reasons don't bother calculating the `system` field.
-  // This is overridden anyways.
-  system: any;
-}
-
 /**
  * The Actor Document.
  * Defines the DataSchema and common behaviors for an Actor which are shared between both client and server.
@@ -18,7 +12,7 @@ interface _Schema extends Actor.Schema {
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
 declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubType> extends Document<
   "Actor",
-  _Schema,
+  BaseActor._Schema,
   any
 > {
   /**
@@ -218,6 +212,15 @@ declare namespace BaseActor {
   export import UpdateData = Actor.UpdateData;
   export import Schema = Actor.Schema;
   export import DatabaseOperation = Actor.DatabaseOperation;
+
+  // The document subclasses override `system` anyways.
+  // There's no point in doing expensive computation work comparing the base class system.
+  /** @internal */
+  interface _Schema extends Actor.Schema {
+    // For performance reasons don't bother calculating the `system` field.
+    // This is overridden anyways.
+    system: any;
+  }
 
   /**
    * @deprecated This type is used by Foundry too vaguely.

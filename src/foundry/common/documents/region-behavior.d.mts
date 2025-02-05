@@ -2,15 +2,13 @@ import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { SchemaField } from "../data/fields.d.mts";
 
-type DataSchema = foundry.data.fields.DataSchema;
-
 /**
  * The RegionBehavior Document.
  * Defines the DataSchema and common behaviors for a RegionBehavior which are shared between both client and server.
  */
 declare abstract class BaseRegionBehavior<
   out SubType extends BaseRegionBehavior.SubType = BaseRegionBehavior.SubType,
-> extends Document<"RegionBehavior", BaseRegionBehavior.Schema, any> {
+> extends Document<"RegionBehavior", BaseRegionBehavior._Schema, any> {
   #baseRegionBehavior: true;
 
   /**

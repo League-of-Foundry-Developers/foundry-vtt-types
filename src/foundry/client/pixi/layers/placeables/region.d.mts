@@ -94,7 +94,7 @@ declare global {
 
     interface DrawOptions extends PlaceablesLayer.DrawOptions {}
 
-    interface LayerOptions extends PlaceablesLayer.LayerOptions<"Region"> {}
+    interface LayerOptions extends PlaceablesLayer.LayerOptions<Region.ObjectClass> {}
   }
 }
 

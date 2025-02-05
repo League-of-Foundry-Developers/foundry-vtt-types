@@ -110,7 +110,10 @@ declare global {
 
     // Note(LukeAbby): The override for `_getVisibleTreeContents` become unreasonably long and don't add any changes and so has been omitted.
 
-    static _sortStandard(a: DirectoryCollection.StandardSortEntry, b: DirectoryCollection.StandardSortEntry): number;
+    static _sortStandard(
+      a: DirectoryCollectionMixin.StandardSortEntry,
+      b: DirectoryCollectionMixin.StandardSortEntry,
+    ): number;
 
     /** Access the compendium configuration data for this pack */
     get config(): CompendiumCollection.Configuration | EmptyObject;

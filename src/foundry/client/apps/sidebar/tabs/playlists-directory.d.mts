@@ -33,7 +33,7 @@ declare global {
      * Cache the set of PlaylistSound documents that are displayed as playing when the directory is rendered
      * @defaultValue `[]`
      */
-    protected _playingSounds: PlaylistSoundDocument.Implementation[];
+    protected _playingSounds: PlaylistSound.Implementation[];
 
     /**
      * @internal

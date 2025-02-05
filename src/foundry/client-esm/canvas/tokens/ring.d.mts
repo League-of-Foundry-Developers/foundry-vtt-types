@@ -7,7 +7,7 @@ declare class TokenRing {
   #TokenRing: true;
 
   /** A `TokenRing` is constructed by providing a reference to a `Token` object. */
-  constructor(token: Token.ConfiguredInstance);
+  constructor(token: Token.Object);
 
   /** The effects which could be applied to a token ring (using bitwise operations) */
   static effects: TokenRing.Effects;
@@ -110,7 +110,7 @@ declare class TokenRing {
   colorBand: TokenRing.RingColorBand;
 
   /** Reference to the token that should be animated */
-  get token(): MaybeInitialized<Token.ConfiguredInstance, "init">;
+  get token(): MaybeInitialized<Token.Object, "init">;
 
   /**
    * Configure the sprite mesh.

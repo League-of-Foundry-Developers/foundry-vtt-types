@@ -91,7 +91,7 @@ declare global {
 
     interface DrawOptions extends PlaceablesLayer.DrawOptions {}
 
-    interface LayerOptions extends PlaceablesLayer.LayerOptions<"Note"> {
+    interface LayerOptions extends PlaceablesLayer.LayerOptions<Note.ObjectClass> {
       name: "notes";
       zIndex: 800;
     }
