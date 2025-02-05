@@ -12,11 +12,17 @@ import type { SchemaField } from "../data/fields.d.mts";
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
 declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Schema, any> {
   /**
-   * @param data    - Initial data from which to construct the Playlist
+   * @param data    - Initial data from which to construct the `BasePlaylist`
    * @param context - Construction context options
+   *
+   * @deprecated Constructing `BasePlaylist` directly is not advised. The base document classes exist in
+   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
+   * on the server to manage document validation and storage.
+   *
+   * You should use {@link Playlist.implementation | `new Playlist.implementation(...)`} instead which will give you
+   * a system specific implementation of `Playlist`.
    */
-  // TODO(LukeAbby): This constructor is a symptom of a circular error.
-  // constructor(data: BasePlaylist.CreateData, context?: Document.ConstructionContext<BasePlaylist.Parent>);
+  constructor(...args: Document.ConstructorParameters<BasePlaylist.CreateData, BasePlaylist.Parent>);
 
   static override metadata: BasePlaylist.Metadata;
 

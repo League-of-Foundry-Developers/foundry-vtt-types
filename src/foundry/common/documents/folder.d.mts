@@ -15,11 +15,17 @@ declare abstract class BaseFolder<out _SubType extends BaseFolder.SubType = Base
   any
 > {
   /**
-   * @param data    - Initial data from which to construct the Folder
+   * @param data    - Initial data from which to construct the `BaseFolder`
    * @param context - Construction context options
+   *
+   * @deprecated Constructing `BaseFolder` directly is not advised. The base document classes exist in
+   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
+   * on the server to manage document validation and storage.
+   *
+   * You should use {@link Folder.implementation | `new Folder.implementation(...)`} instead which will give you
+   * a system specific implementation of `Folder`.
    */
-  // TODO(LukeAbby): This constructor is a symptom of a circular error.
-  // constructor(data: BaseFolder.CreateData, context?: Document.ConstructionContext<BaseFolder.Parent>);
+  constructor(...args: Document.ConstructorParameters<BaseFolder.CreateData, BaseFolder.Parent>);
 
   static override metadata: BaseFolder.Metadata;
 

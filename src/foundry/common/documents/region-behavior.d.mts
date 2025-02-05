@@ -12,12 +12,17 @@ declare abstract class BaseRegionBehavior<
   #baseRegionBehavior: true;
 
   /**
-   * Construct a Region document using provided data and context.
-   * @param data        - Initial data from which to construct the Region
-   * @param context     - Construction context options
+   * @param data    - Initial data from which to construct the `BaseRegionBehavior`
+   * @param context - Construction context options
+   *
+   * @deprecated Constructing `BaseRegionBehavior` directly is not advised. The base document classes exist in
+   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
+   * on the server to manage document validation and storage.
+   *
+   * You should use {@link RegionBehavior.implementation | `new RegionBehavior.implementation(...)`} instead which will give you
+   * a system specific implementation of `RegionBehavior`.
    */
-  // TODO(LukeAbby): This constructor is causing a circular error.
-  // constructor(data: Partial<BaseRegionBehavior.CreateData>, context?: Document.ConstructionContext<BaseRegionBehavior.Parent>);
+  constructor(...args: Document.ConstructorParameters<BaseRegionBehavior.CreateData, BaseRegionBehavior.Parent>);
 
   static override metadata: BaseRegionBehavior.Metadata;
 

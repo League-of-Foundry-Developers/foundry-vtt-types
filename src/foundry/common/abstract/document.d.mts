@@ -955,6 +955,16 @@ declare namespace Document {
     | "JournalEntryPage"
     | "RegionBehavior";
 
+  // The `data` parameter has a default of `{}`. This means it's optional in that scenario.
+  // Note(LukeAbby): Update when `ParameterWithDefaults` is added.
+  // `CreateData` also should be updated to allow `undefined` directly.
+  type ConstructorParameters<CreateData extends object | undefined, Parent extends Document.Any | null> = [
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    {},
+  ] extends [CreateData]
+    ? [data?: CreateData, context?: Document.ConstructionContext<Parent>]
+    : [data: CreateData, context?: Document.ConstructionContext<Parent>];
+
   type CoreTypesForName<Name extends Type> = string & GetKey<Document.MetadataFor<Name>, "coreTypes", ["base"]>[number];
 
   type ConfiguredSubTypesOf<Name extends Type> = Name extends "ActorDelta"

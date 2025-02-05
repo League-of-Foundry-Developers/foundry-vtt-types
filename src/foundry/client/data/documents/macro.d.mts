@@ -287,9 +287,21 @@ declare global {
    *
    * @param data - Initial data provided to construct the Macro document
    */
-  abstract class Macro<out SubType extends Macro.SubType = Macro.SubType> extends ClientDocumentMixin(
+  class Macro<out SubType extends Macro.SubType = Macro.SubType> extends ClientDocumentMixin(
     foundry.documents.BaseMacro,
   )<SubType> {
+    /**
+     * @param data    - Initial data from which to construct the `Macro`
+     * @param context - Construction context options
+     *
+     * @deprecated Constructing `Macro` directly is not advised. While `new Macro(...)` would create a
+     * temporary document it would not respect a system's subclass of `Macro`, if any.
+     *
+     * You should use {@link Macro.implementation | `new Macro.implementation(...)`} instead which
+     * will give you a system specific implementation of `Macro`.
+     */
+    constructor(...args: Document.ConstructorParameters<Macro.CreateData, Macro.Parent>);
+
     static override metadata: Macro.Metadata;
 
     static get implementation(): Macro.ImplementationClass;

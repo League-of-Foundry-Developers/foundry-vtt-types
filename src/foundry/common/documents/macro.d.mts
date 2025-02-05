@@ -17,11 +17,17 @@ declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMa
   any
 > {
   /**
-   * @param data    - Initial data from which to construct the Macro
+   * @param data    - Initial data from which to construct the `BaseMacro`
    * @param context - Construction context options
+   *
+   * @deprecated Constructing `BaseMacro` directly is not advised. The base document classes exist in
+   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
+   * on the server to manage document validation and storage.
+   *
+   * You should use {@link Macro.implementation | `new Macro.implementation(...)`} instead which will give you
+   * a system specific implementation of `Macro`.
    */
-  // TODO(LukeAbby): This constructor is a symptom of a circular error.
-  // constructor(data: BaseMacro.CreateData, context?: Document.ConstructionContext<BaseMacro.Parent>);
+  constructor(...args: Document.ConstructorParameters<BaseMacro.CreateData, BaseMacro.Parent>);
 
   static override metadata: BaseMacro.Metadata;
 

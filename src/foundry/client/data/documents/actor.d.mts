@@ -282,9 +282,21 @@ declare global {
    * let actor = game.actors.get(actorId);
    * ```
    */
-  abstract class Actor<out SubType extends Actor.SubType = Actor.SubType> extends ClientDocumentMixin(
+  class Actor<out SubType extends Actor.SubType = Actor.SubType> extends ClientDocumentMixin(
     foundry.documents.BaseActor,
   )<SubType> {
+    /**
+     * @param data    - Initial data from which to construct the `Actor`
+     * @param context - Construction context options
+     *
+     * @deprecated Constructing `Actor` directly is not advised. While `new Actor(...)` would create a
+     * temporary document it would not respect a system's subclass of `Actor`, if any.
+     *
+     * You should use {@link Actor.implementation | `new Actor.implementation(...)`} instead which
+     * will give you a system specific implementation of `Actor`.
+     */
+    constructor(...args: Document.ConstructorParameters<Actor.CreateData, Actor.Parent>);
+
     static override metadata: Actor.Metadata;
 
     protected override _configure(options?: { pack?: string | null }): void;

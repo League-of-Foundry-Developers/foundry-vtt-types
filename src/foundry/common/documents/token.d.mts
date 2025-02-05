@@ -13,8 +13,18 @@ import type { TokenDetectionMode } from "./_types.d.mts";
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
 declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any> {
-  // TODO(LukeAbby): This constructor is causing a circular error.
-  // constructor(data?: BaseToken.CreateData, context?: Document.ConstructionContext<BaseToken.Parent>);
+  /**
+   * @param data    - Initial data from which to construct the `BaseToken`
+   * @param context - Construction context options
+   *
+   * @deprecated Constructing `BaseToken` directly is not advised. The base document classes exist in
+   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
+   * on the server to manage document validation and storage.
+   *
+   * You should use {@link TokenDocument.implementation | `new TokenDocument.implementation(...)`} instead which will give you
+   * a system specific implementation of `TokenDocument`.
+   */
+  constructor(...args: Document.ConstructorParameters<BaseToken.CreateData, BaseToken.Parent>);
 
   static override metadata: BaseToken.Metadata;
 

@@ -291,7 +291,19 @@ declare global {
   /**
    * The client-side Adventure document which extends the common {@link foundry.documents.BaseAdventure} model.
    */
-  abstract class Adventure extends ClientDocumentMixin(foundry.documents.BaseAdventure) {
+  class Adventure extends ClientDocumentMixin(foundry.documents.BaseAdventure) {
+    /**
+     * @param data    - Initial data from which to construct the `Adventure`
+     * @param context - Construction context options
+     *
+     * @deprecated Constructing `Adventure` directly is not advised. While `new Adventure(...)` would create a
+     * temporary document it would not respect a system's subclass of `Adventure`, if any.
+     *
+     * You should use {@link Adventure.implementation | `new Adventure.implementation(...)`} instead which
+     * will give you a system specific implementation of `Adventure`.
+     */
+    constructor(...args: Document.ConstructorParameters<Adventure.CreateData, Adventure.Parent>);
+
     /**
      * Perform a full import workflow of this Adventure.
      * Create new and update existing documents within the World.

@@ -13,14 +13,17 @@ type DataSchema = foundry.data.fields.DataSchema;
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
 declare abstract class BaseFogExploration extends Document<"FogExploration", BaseFogExploration.Schema, any> {
   /**
-   * @param data    - Initial data from which to construct the FogExploration
+   * @param data    - Initial data from which to construct the `BaseFogExploration`
    * @param context - Construction context options
+   *
+   * @deprecated Constructing `BaseFogExploration` directly is not advised. The base document classes exist in
+   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
+   * on the server to manage document validation and storage.
+   *
+   * You should use {@link FogExploration.implementation | `new FogExploration.implementation(...)`} instead which will give you
+   * a system specific implementation of `FogExploration`.
    */
-  // TODO(LukeAbby): This constructor is a symptom of a circular error.
-  // constructor(
-  //   data?: BaseFogExploration.CreateData,
-  //   context?: Document.ConstructionContext<BaseFogExploration.Parent>,
-  // );
+  constructor(...args: Document.ConstructorParameters<BaseFogExploration.CreateData, BaseFogExploration.Parent>);
 
   static override metadata: BaseFogExploration.Metadata;
 

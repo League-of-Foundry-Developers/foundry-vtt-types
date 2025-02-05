@@ -247,9 +247,21 @@ declare global {
    *
    * @see {@link RollTable}         The RollTable document which contains TableResult embedded documents
    */
-  abstract class TableResult<out SubType extends TableResult.SubType = TableResult.SubType> extends ClientDocumentMixin(
+  class TableResult<out SubType extends TableResult.SubType = TableResult.SubType> extends ClientDocumentMixin(
     foundry.documents.BaseTableResult,
   )<SubType> {
+    /**
+     * @param data    - Initial data from which to construct the `TableResult`
+     * @param context - Construction context options
+     *
+     * @deprecated Constructing `TableResult` directly is not advised. While `new TableResult(...)` would create a
+     * temporary document it would not respect a system's subclass of `TableResult`, if any.
+     *
+     * You should use {@link TableResult.implementation | `new TableResult.implementation(...)`} instead which
+     * will give you a system specific implementation of `TableResult`.
+     */
+    constructor(...args: Document.ConstructorParameters<TableResult.CreateData, TableResult.Parent>);
+
     static override metadata: TableResult.Metadata;
 
     static get implementation(): TableResult.ImplementationClass;

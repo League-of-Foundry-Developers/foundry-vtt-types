@@ -12,11 +12,17 @@ import type { SchemaField } from "../data/fields.d.mts";
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
 declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
   /**
-   * @param data    - Initial data from which to construct the Note
+   * @param data    - Initial data from which to construct the `BaseNote`
    * @param context - Construction context options
+   *
+   * @deprecated Constructing `BaseNote` directly is not advised. The base document classes exist in
+   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
+   * on the server to manage document validation and storage.
+   *
+   * You should use {@link NoteDocument.implementation | `new NoteDocument.implementation(...)`} instead which will give you
+   * a system specific implementation of `NoteDocument`.
    */
-  // TODO(LukeAbby): This constructor is a symptom of a circular error.
-  // constructor(data?: BaseNote.ConstructorData, context?: Document.ConstructionContext<BaseNote.Parent>);
+  constructor(...args: Document.ConstructorParameters<BaseNote.CreateData, BaseNote.Parent>);
 
   static override metadata: BaseNote.Metadata;
 

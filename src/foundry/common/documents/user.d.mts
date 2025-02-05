@@ -13,11 +13,17 @@ import type { SchemaField } from "../data/fields.d.mts";
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
 declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
   /**
-   * @param data    - Initial data from which to construct the User
+   * @param data    - Initial data from which to construct the `BaseUser`
    * @param context - Construction context options
+   *
+   * @deprecated Constructing `BaseUser` directly is not advised. The base document classes exist in
+   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
+   * on the server to manage document validation and storage.
+   *
+   * You should use {@link User.implementation | `new User.implementation(...)`} instead which will give you
+   * a system specific implementation of `User`.
    */
-  // TODO(LukeAbby): This constructor is a symptom of a circular error.
-  // constructor(data: BaseUser.CreateData, context?: BaseUser.Parent);
+  constructor(...args: Document.ConstructorParameters<BaseUser.CreateData, BaseUser.Parent>);
 
   static override metadata: User.Metadata;
 

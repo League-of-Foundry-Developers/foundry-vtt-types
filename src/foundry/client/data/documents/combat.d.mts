@@ -278,9 +278,21 @@ declare global {
    * @see {@link Combatant}                     The Combatant embedded document which exists within a Combat document
    * @see {@link CombatConfig}                  The Combat configuration application
    */
-  abstract class Combat<out SubType extends Combat.SubType = Combat.SubType> extends ClientDocumentMixin(
+  class Combat<out SubType extends Combat.SubType = Combat.SubType> extends ClientDocumentMixin(
     foundry.documents.BaseCombat,
   )<SubType> {
+    /**
+     * @param data    - Initial data from which to construct the `Combat`
+     * @param context - Construction context options
+     *
+     * @deprecated Constructing `Combat` directly is not advised. While `new Combat(...)` would create a
+     * temporary document it would not respect a system's subclass of `Combat`, if any.
+     *
+     * You should use {@link Combat.implementation | `new Combat.implementation(...)`} instead which
+     * will give you a system specific implementation of `Combat`.
+     */
+    constructor(...args: Document.ConstructorParameters<Combat.CreateData, Combat.Parent>);
+
     static override metadata: Combat.Metadata;
 
     static get implementation(): Combat.ImplementationClass;

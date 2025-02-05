@@ -301,7 +301,19 @@ declare global {
    * @see {@link Scene}            The Scene document type which contains Wall embedded documents
    * @see {@link WallConfig}       The Wall configuration application
    */
-  abstract class WallDocument extends CanvasDocumentMixin(foundry.documents.BaseWall) {
+  class WallDocument extends CanvasDocumentMixin(foundry.documents.BaseWall) {
+    /**
+     * @param data    - Initial data from which to construct the `WallDocument`
+     * @param context - Construction context options
+     *
+     * @deprecated Constructing `WallDocument` directly is not advised. While `new WallDocument(...)` would create a
+     * temporary document it would not respect a system's subclass of `WallDocument`, if any.
+     *
+     * You should use {@link WallDocument.implementation | `new WallDocument.implementation(...)`} instead which
+     * will give you a system specific implementation of `WallDocument`.
+     */
+    constructor(...args: Document.ConstructorParameters<WallDocument.CreateData, WallDocument.Parent>);
+
     static override metadata: WallDocument.Metadata;
 
     static get implementation(): WallDocument.ImplementationClass;

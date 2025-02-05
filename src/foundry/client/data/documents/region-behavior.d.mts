@@ -214,9 +214,21 @@ declare global {
   /**
    * The client-side RegionBehavior document which extends the common BaseRegionBehavior model.
    */
-  abstract class RegionBehavior<
-    out SubType extends RegionBehavior.SubType = RegionBehavior.SubType,
-  > extends ClientDocumentMixin(foundry.documents.BaseRegionBehavior)<SubType> {
+  class RegionBehavior<out SubType extends RegionBehavior.SubType = RegionBehavior.SubType> extends ClientDocumentMixin(
+    foundry.documents.BaseRegionBehavior,
+  )<SubType> {
+    /**
+     * @param data    - Initial data from which to construct the `RegionBehavior`
+     * @param context - Construction context options
+     *
+     * @deprecated Constructing `RegionBehavior` directly is not advised. While `new RegionBehavior(...)` would create a
+     * temporary document it would not respect a system's subclass of `RegionBehavior`, if any.
+     *
+     * You should use {@link RegionBehavior.implementation | `new RegionBehavior.implementation(...)`} instead which
+     * will give you a system specific implementation of `RegionBehavior`.
+     */
+    constructor(...args: Document.ConstructorParameters<RegionBehavior.CreateData, RegionBehavior.Parent>);
+
     /** A convenience reference to the RegionDocument which contains this RegionBehavior. */
     get region(): RegionDocument.Implementation | null;
 

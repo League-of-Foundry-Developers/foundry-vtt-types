@@ -323,7 +323,19 @@ declare global {
    * @see {@link TableResult}        The embedded TableResult document
    * @see {@link RollTableConfig}    The RollTable configuration application
    */
-  abstract class RollTable extends ClientDocumentMixin(foundry.documents.BaseRollTable) {
+  class RollTable extends ClientDocumentMixin(foundry.documents.BaseRollTable) {
+    /**
+     * @param data    - Initial data from which to construct the `RollTable`
+     * @param context - Construction context options
+     *
+     * @deprecated Constructing `RollTable` directly is not advised. While `new RollTable(...)` would create a
+     * temporary document it would not respect a system's subclass of `RollTable`, if any.
+     *
+     * You should use {@link RollTable.implementation | `new RollTable.implementation(...)`} instead which
+     * will give you a system specific implementation of `RollTable`.
+     */
+    constructor(...args: Document.ConstructorParameters<RollTable.CreateData, RollTable.Parent>);
+
     static override metadata: RollTable.Metadata;
 
     static get implementation(): RollTable.ImplementationClass;

@@ -579,7 +579,19 @@ declare global {
    * @see {@link Scene}               The Scene document type which contains Token embedded documents
    * @see {@link TokenConfig}      The Token configuration application
    */
-  abstract class TokenDocument extends CanvasDocumentMixin(foundry.documents.BaseToken) {
+  class TokenDocument extends CanvasDocumentMixin(foundry.documents.BaseToken) {
+    /**
+     * @param data    - Initial data from which to construct the `TokenDocument`
+     * @param context - Construction context options
+     *
+     * @deprecated Constructing `TokenDocument` directly is not advised. While `new TokenDocument(...)` would create a
+     * temporary document it would not respect a system's subclass of `TokenDocument`, if any.
+     *
+     * You should use {@link TokenDocument.implementation | `new TokenDocument.implementation(...)`} instead which
+     * will give you a system specific implementation of `TokenDocument`.
+     */
+    constructor(...args: Document.ConstructorParameters<TokenDocument.CreateData, TokenDocument.Parent>);
+
     static override metadata: TokenDocument.Metadata;
 
     static get implementation(): TokenDocument.ImplementationClass;

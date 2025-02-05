@@ -232,7 +232,19 @@ declare global {
    * @see {@link Scene}                     The Scene document type which contains AmbientLight documents
    * @see {@link AmbientLightConfig}        The AmbientLight configuration application
    */
-  abstract class AmbientLightDocument extends CanvasDocumentMixin(foundry.documents.BaseAmbientLight) {
+  class AmbientLightDocument extends CanvasDocumentMixin(foundry.documents.BaseAmbientLight) {
+    /**
+     * @param data    - Initial data from which to construct the `AmbientLightDocument`
+     * @param context - Construction context options
+     *
+     * @deprecated Constructing `AmbientLightDocument` directly is not advised. While `new AmbientLightDocument(...)` would create a
+     * temporary document it would not respect a system's subclass of `AmbientLightDocument`, if any.
+     *
+     * You should use {@link AmbientLightDocument.implementation | `new AmbientLightDocument.implementation(...)`} instead which
+     * will give you a system specific implementation of `AmbientLightDocument`.
+     */
+    constructor(...args: Document.ConstructorParameters<AmbientLightDocument.CreateData, AmbientLightDocument.Parent>);
+
     /**
      * @privateRemarks _onUpdate is overridden but with no signature changes.
      * For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.

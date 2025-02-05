@@ -316,9 +316,21 @@ declare global {
    *
    * @see {@link Cards}                    The Cards document type which contains Card embedded documents
    */
-  abstract class Card<out SubType extends Card.SubType = Card.SubType> extends ClientDocumentMixin(
+  class Card<out SubType extends Card.SubType = Card.SubType> extends ClientDocumentMixin(
     foundry.documents.BaseCard,
   )<SubType> {
+    /**
+     * @param data    - Initial data from which to construct the `Card`
+     * @param context - Construction context options
+     *
+     * @deprecated Constructing `Card` directly is not advised. While `new Card(...)` would create a
+     * temporary document it would not respect a system's subclass of `Card`, if any.
+     *
+     * You should use {@link Card.implementation | `new Card.implementation(...)`} instead which
+     * will give you a system specific implementation of `Card`.
+     */
+    constructor(...args: Document.ConstructorParameters<Card.CreateData, Card.Parent>);
+
     static override metadata: Card.Metadata;
 
     static get implementation(): Card.ImplementationClass;

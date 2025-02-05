@@ -16,11 +16,17 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
   any
 > {
   /**
-   * @param data    - Initial data from which to construct the Cards
+   * @param data    - Initial data from which to construct the `BaseCards`
    * @param context - Construction context options
+   *
+   * @deprecated Constructing `BaseCards` directly is not advised. The base document classes exist in
+   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
+   * on the server to manage document validation and storage.
+   *
+   * You should use {@link Cards.implementation | `new Cards.implementation(...)`} instead which will give you
+   * a system specific implementation of `Cards`.
    */
-  // TODO(LukeAbby): This constructor is a symptom of a circular error.
-  // constructor(data: BaseCards.CreateData, context?: Document.ConstructionContext<BaseCards.Parent>);
+  constructor(...args: Document.ConstructorParameters<BaseCards.CreateData, BaseCards.Parent>);
 
   static override metadata: BaseCards.Metadata;
 

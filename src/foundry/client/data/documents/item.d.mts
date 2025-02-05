@@ -237,9 +237,21 @@ declare global {
    * @param data    - Initial data provided to construct the Item document
    * @param context - The document context, see {@link foundry.abstract.Document}
    */
-  abstract class Item<out SubType extends Item.SubType = Item.SubType> extends ClientDocumentMixin(
+  class Item<out SubType extends Item.SubType = Item.SubType> extends ClientDocumentMixin(
     foundry.documents.BaseItem,
   )<SubType> {
+    /**
+     * @param data    - Initial data from which to construct the `Item`
+     * @param context - Construction context options
+     *
+     * @deprecated Constructing `Item` directly is not advised. While `new Item(...)` would create a
+     * temporary document it would not respect a system's subclass of `Item`, if any.
+     *
+     * You should use {@link Item.implementation | `new Item.implementation(...)`} instead which
+     * will give you a system specific implementation of `Item`.
+     */
+    constructor(...args: Document.ConstructorParameters<Item.CreateData, Item.Parent>);
+
     /**
      * A convenience alias of Item#parent which is more semantically intuitive
      */

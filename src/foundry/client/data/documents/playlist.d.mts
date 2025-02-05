@@ -268,7 +268,19 @@ declare global {
    * @see {@link PlaylistConfig}        The Playlist configuration application
    *
    */
-  abstract class Playlist extends ClientDocumentMixin(foundry.documents.BasePlaylist) {
+  class Playlist extends ClientDocumentMixin(foundry.documents.BasePlaylist) {
+    /**
+     * @param data    - Initial data from which to construct the `Playlist`
+     * @param context - Construction context options
+     *
+     * @deprecated Constructing `Playlist` directly is not advised. While `new Playlist(...)` would create a
+     * temporary document it would not respect a system's subclass of `Playlist`, if any.
+     *
+     * You should use {@link Playlist.implementation | `new Playlist.implementation(...)`} instead which
+     * will give you a system specific implementation of `Playlist`.
+     */
+    constructor(...args: Document.ConstructorParameters<Playlist.CreateData, Playlist.Parent>);
+
     static override metadata: Playlist.Metadata;
 
     static get implementation(): Playlist.ImplementationClass;

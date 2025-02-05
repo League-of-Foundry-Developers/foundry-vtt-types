@@ -397,9 +397,21 @@ declare global {
    * @see {@link CardStacks}                        The world-level collection of Cards documents
    * @see {@link CardsConfig}                       The Cards configuration application
    */
-  abstract class Cards<out SubType extends Cards.SubType = Cards.SubType> extends ClientDocumentMixin(
+  class Cards<out SubType extends Cards.SubType = Cards.SubType> extends ClientDocumentMixin(
     foundry.documents.BaseCards,
   )<SubType> {
+    /**
+     * @param data    - Initial data from which to construct the `Cards`
+     * @param context - Construction context options
+     *
+     * @deprecated Constructing `Cards` directly is not advised. While `new Cards(...)` would create a
+     * temporary document it would not respect a system's subclass of `Cards`, if any.
+     *
+     * You should use {@link Cards.implementation | `new Cards.implementation(...)`} instead which
+     * will give you a system specific implementation of `Cards`.
+     */
+    constructor(...args: Document.ConstructorParameters<Cards.CreateData, Cards.Parent>);
+
     static override metadata: Cards.Metadata;
 
     static get implementation(): Cards.ImplementationClass;

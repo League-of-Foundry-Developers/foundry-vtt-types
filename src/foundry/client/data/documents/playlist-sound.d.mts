@@ -239,7 +239,19 @@ declare global {
    * @see {@link Sound}                          The Sound API which manages web audio playback
    *
    */
-  abstract class PlaylistSound extends ClientDocumentMixin(foundry.documents.BasePlaylistSound) {
+  class PlaylistSound extends ClientDocumentMixin(foundry.documents.BasePlaylistSound) {
+    /**
+     * @param data    - Initial data from which to construct the `PlaylistSound`
+     * @param context - Construction context options
+     *
+     * @deprecated Constructing `PlaylistSound` directly is not advised. While `new PlaylistSound(...)` would create a
+     * temporary document it would not respect a system's subclass of `PlaylistSound`, if any.
+     *
+     * You should use {@link PlaylistSound.implementation | `new PlaylistSound.implementation(...)`} instead which
+     * will give you a system specific implementation of `PlaylistSound`.
+     */
+    constructor(...args: Document.ConstructorParameters<PlaylistSound.CreateData, PlaylistSound.Parent>);
+
     static override metadata: PlaylistSound.Metadata;
 
     static get implementation(): PlaylistSound.ImplementationClass;

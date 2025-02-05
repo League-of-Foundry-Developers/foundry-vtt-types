@@ -256,7 +256,21 @@ declare global {
    * @see {@link Scene}                     The Scene document type which contains MeasuredTemplate documents
    * @see {@link MeasuredTemplateConfig}    The MeasuredTemplate configuration application
    */
-  abstract class MeasuredTemplateDocument extends CanvasDocumentMixin(foundry.documents.BaseMeasuredTemplate) {
+  class MeasuredTemplateDocument extends CanvasDocumentMixin(foundry.documents.BaseMeasuredTemplate) {
+    /**
+     * @param data    - Initial data from which to construct the `MeasuredTemplateDocument`
+     * @param context - Construction context options
+     *
+     * @deprecated Constructing `MeasuredTemplateDocument` directly is not advised. While `new MeasuredTemplateDocument(...)` would create a
+     * temporary document it would not respect a system's subclass of `MeasuredTemplateDocument`, if any.
+     *
+     * You should use {@link MeasuredTemplateDocument.implementation | `new MeasuredTemplateDocument.implementation(...)`} instead which
+     * will give you a system specific implementation of `MeasuredTemplateDocument`.
+     */
+    constructor(
+      ...args: Document.ConstructorParameters<MeasuredTemplateDocument.CreateData, MeasuredTemplateDocument.Parent>
+    );
+
     static override metadata: MeasuredTemplateDocument.Metadata;
 
     static get implementation(): MeasuredTemplateDocument.ImplementationClass;

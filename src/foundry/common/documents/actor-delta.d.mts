@@ -16,8 +16,18 @@ import type DataModel from "../abstract/data.d.mts";
 declare abstract class BaseActorDelta<
   out SubType extends BaseActorDelta.SubType = BaseActorDelta.SubType,
 > extends Document<"ActorDelta", BaseActorDelta._Schema, any> {
-  // TODO(LukeAbby): This constructor is a symptom of a circular error.
-  // constructor(data?: BaseActorDelta.CreateData, context?: Document.ConstructionContext<BaseActorDelta.Parent>);
+  /**
+   * @param data    - Initial data from which to construct the `BaseActorDelta`
+   * @param context - Construction context options
+   *
+   * @deprecated Constructing `BaseActorDelta` directly is not advised. The base document classes exist in
+   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
+   * on the server to manage document validation and storage.
+   *
+   * You should use {@link ActorDelta.implementation | `new ActorDelta.implementation(...)`} instead which will give you
+   * a system specific implementation of `ActorDelta`.
+   */
+  constructor(...args: Document.ConstructorParameters<BaseActorDelta.CreateData, BaseActorDelta.Parent>);
 
   static override metadata: BaseActorDelta.Metadata;
 

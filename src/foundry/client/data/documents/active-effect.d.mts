@@ -419,9 +419,21 @@ declare global {
    * @see {@link Actor}                     The Actor document which contains ActiveEffect embedded documents
    * @see {@link Item}                      The Item document which contains ActiveEffect embedded documents
    */
-  abstract class ActiveEffect<
-    out SubType extends ActiveEffect.SubType = ActiveEffect.SubType,
-  > extends ClientDocumentMixin(foundry.documents.BaseActiveEffect)<SubType> {
+  class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffect.SubType> extends ClientDocumentMixin(
+    foundry.documents.BaseActiveEffect,
+  )<SubType> {
+    /**
+     * @param data    - Initial data from which to construct the `ActiveEffect`
+     * @param context - Construction context options
+     *
+     * @deprecated Constructing `ActiveEffect` directly is not advised. While `new ActiveEffect(...)` would create a
+     * temporary document it would not respect a system's subclass of `ActiveEffect`, if any.
+     *
+     * You should use {@link ActiveEffect.implementation | `new ActiveEffect.implementation(...)`} instead which
+     * will give you a system specific implementation of `ActiveEffect`.
+     */
+    constructor(...args: Document.ConstructorParameters<ActiveEffect.CreateData, ActiveEffect.Parent>);
+
     /**
      * Create an ActiveEffect instance from some status effect ID.
      * Delegates to {@link ActiveEffect._fromStatusEffect} to create the ActiveEffect instance

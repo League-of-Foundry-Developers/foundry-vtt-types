@@ -309,7 +309,19 @@ declare global {
    * @see {@link Scene}            The Scene document type which contains Tile embedded documents
    * @see {@link TileConfig}       The Tile configuration application
    */
-  abstract class TileDocument extends CanvasDocumentMixin(foundry.documents.BaseTile) {
+  class TileDocument extends CanvasDocumentMixin(foundry.documents.BaseTile) {
+    /**
+     * @param data    - Initial data from which to construct the `TileDocument`
+     * @param context - Construction context options
+     *
+     * @deprecated Constructing `TileDocument` directly is not advised. While `new TileDocument(...)` would create a
+     * temporary document it would not respect a system's subclass of `TileDocument`, if any.
+     *
+     * You should use {@link TileDocument.implementation | `new TileDocument.implementation(...)`} instead which
+     * will give you a system specific implementation of `TileDocument`.
+     */
+    constructor(...args: Document.ConstructorParameters<TileDocument.CreateData, TileDocument.Parent>);
+
     static override metadata: TileDocument.Metadata;
 
     static get implementation(): TileDocument.ImplementationClass;

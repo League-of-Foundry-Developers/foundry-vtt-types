@@ -14,11 +14,17 @@ declare abstract class BaseActiveEffect<
   out SubType extends BaseActiveEffect.SubType = BaseActiveEffect.SubType,
 > extends Document<"ActiveEffect", BaseActiveEffect._Schema, any> {
   /**
-   * @param data    - Initial data from which to construct the ActiveEffect
+   * @param data    - Initial data from which to construct the `BaseActiveEffect`
    * @param context - Construction context options
+   *
+   * @deprecated Constructing `BaseActiveEffect` directly is not advised. The base document classes exist in
+   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
+   * on the server to manage document validation and storage.
+   *
+   * You should use {@link ActiveEffect.implementation | `new ActiveEffect.implementation(...)`} instead which will give you
+   * a system specific implementation of `ActiveEffect`.
    */
-  // TODO(LukeAbby): This constructor is causing a circular error.
-  // constructor(data?: BaseActiveEffect.CreateData, context?: Document.ConstructionContext<BaseActiveEffect.Parent>);
+  constructor(...args: Document.ConstructorParameters<BaseActiveEffect.CreateData, BaseActiveEffect.Parent>);
 
   override canUserModify(user: User.Implementation, action: "create" | "update" | "delete", data?: AnyObject): boolean;
 

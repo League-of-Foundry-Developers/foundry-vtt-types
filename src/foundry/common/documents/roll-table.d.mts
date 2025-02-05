@@ -14,11 +14,17 @@ type DataSchema = foundry.data.fields.DataSchema;
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
 declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable.Schema, any> {
   /**
-   * @param data    - Initial data from which to construct the Roll Table
+   * @param data    - Initial data from which to construct the `BaseRollTable`
    * @param context - Construction context options
+   *
+   * @deprecated Constructing `BaseRollTable` directly is not advised. The base document classes exist in
+   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
+   * on the server to manage document validation and storage.
+   *
+   * You should use {@link RollTable.implementation | `new RollTable.implementation(...)`} instead which will give you
+   * a system specific implementation of the `RollTable` document.
    */
-  // TODO(LukeAbby): This constructor is a symptom of a circular error.
-  // constructor(data: BaseRollTable.CreateData, context?: Document.ConstructionContext<BaseRollTable.Parent>);
+  constructor(...args: Document.ConstructorParameters<BaseRollTable.CreateData, BaseRollTable.Parent>);
 
   static override metadata: BaseRollTable.Metadata;
 

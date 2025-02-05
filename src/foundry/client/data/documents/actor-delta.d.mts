@@ -202,9 +202,21 @@ declare global {
    * The client-side ActorDelta embedded document which extends the common BaseActorDelta document model.
    * @see {@link TokenDocument}  The TokenDocument document type which contains ActorDelta embedded documents.
    */
-  abstract class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.SubType> extends ClientDocumentMixin(
+  class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.SubType> extends ClientDocumentMixin(
     BaseActorDelta,
   )<SubType> {
+    /**
+     * @param data    - Initial data from which to construct the `ActorDelta`
+     * @param context - Construction context options
+     *
+     * @deprecated Constructing `ActorDelta` directly is not advised. While `new ActorDelta(...)` would create a
+     * temporary document it would not respect a system's subclass of `ActorDelta`, if any.
+     *
+     * You should use {@link ActorDelta.implementation | `new ActorDelta.implementation(...)`} instead which
+     * will give you a system specific implementation of `ActorDelta`.
+     */
+    constructor(...args: Document.ConstructorParameters<ActorDelta.CreateData, ActorDelta.Parent>);
+
     protected override _configure(options?: { pack?: string | null }): void;
 
     protected override _initialize(options?: any): void;

@@ -318,7 +318,19 @@ declare global {
    * @see {@link Users}             The world-level collection of User documents
    * @see {@link UserConfig}     The User configuration application
    */
-  abstract class User extends ClientDocumentMixin(foundry.documents.BaseUser) {
+  class User extends ClientDocumentMixin(foundry.documents.BaseUser) {
+    /**
+     * @param data    - Initial data from which to construct the `User`
+     * @param context - Construction context options
+     *
+     * @deprecated Constructing `User` directly is not advised. While `new User(...)` would create a
+     * temporary document it would not respect a system's subclass of `User`, if any.
+     *
+     * You should use {@link User.implementation | `new User.implementation(...)`} instead which
+     * will give you a system specific implementation of `User`.
+     */
+    constructor(...args: Document.ConstructorParameters<User.CreateData, User.Parent>);
+
     static override metadata: User.Metadata;
 
     static get implementation(): User.ImplementationClass;

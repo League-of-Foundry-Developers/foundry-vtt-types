@@ -15,11 +15,17 @@ declare abstract class BaseTableResult<
   out _SubType extends BaseTableResult.SubType = BaseTableResult.SubType,
 > extends Document<"TableResult", BaseTableResult.Schema, any> {
   /**
-   * @param data    - Initial data from which to construct the Table Result
+   * @param data    - Initial data from which to construct the `BaseTableResult`
    * @param context - Construction context options
+   *
+   * @deprecated Constructing `BaseTableResult` directly is not advised. The base document classes exist in
+   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
+   * on the server to manage document validation and storage.
+   *
+   * You should use {@link TableResult.implementation | `new TableResult.implementation(...)`} instead which will give you
+   * a system specific implementation of `TableResult`.
    */
-  // TODO(LukeAbby): This constructor is a symptom of a circular error.
-  // constructor(data: BaseTableResult.CreateData, context?: Document.ConstructionContext<BaseTableResult.Parent>);
+  constructor(...args: Document.ConstructorParameters<BaseTableResult.CreateData, BaseTableResult.Parent>);
 
   static override metadata: BaseTableResult.Metadata;
 

@@ -8,12 +8,17 @@ import type { SchemaField } from "../data/fields.d.mts";
  */
 declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, any> {
   /**
-   * Construct a Region document using provided data and context.
-   * @param data        - Initial data from which to construct the Region
-   * @param context     - Construction context options
+   * @param data    - Initial data from which to construct the `BaseRegion`
+   * @param context - Construction context options
+   *
+   * @deprecated Constructing `BaseRegion` directly is not advised. The base document classes exist in
+   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
+   * on the server to manage document validation and storage.
+   *
+   * You should use {@link RegionDocument.implementation | `new RegionDocument.implementation(...)`} instead which will give you
+   * a system specific implementation of `RegionDocument`.
    */
-  // TODO(LukeAbby): This constructor is causing a circular error.
-  // constructor(data: Partial<BaseRegion.CreateData>, context?: Document.ConstructionContext<BaseRegion.Parent>);
+  constructor(...args: Document.ConstructorParameters<BaseRegion.CreateData, BaseRegion.Parent>);
 
   static override metadata: BaseRegion.Metadata;
 

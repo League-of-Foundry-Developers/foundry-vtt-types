@@ -213,7 +213,19 @@ declare global {
   /**
    * The client-side FogExploration document which extends the common BaseFogExploration model.
    */
-  abstract class FogExploration extends ClientDocumentMixin(foundry.documents.BaseFogExploration) {
+  class FogExploration extends ClientDocumentMixin(foundry.documents.BaseFogExploration) {
+    /**
+     * @param data    - Initial data from which to construct the `FogExploration`
+     * @param context - Construction context options
+     *
+     * @deprecated Constructing `FogExploration` directly is not advised. While `new FogExploration(...)` would create a
+     * temporary document it would not respect a system's subclass of `FogExploration`, if any.
+     *
+     * You should use {@link FogExploration.implementation | `new FogExploration.implementation(...)`} instead which
+     * will give you a system specific implementation of `FogExploration`.
+     */
+    constructor(...args: Document.ConstructorParameters<FogExploration.CreateData, FogExploration.Parent>);
+
     static override metadata: FogExploration.Metadata;
 
     static get implementation(): FogExploration.ImplementationClass;

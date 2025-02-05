@@ -190,7 +190,19 @@ declare global {
    *
    * @see {@link WorldSettings}       The world-level collection of Setting documents
    */
-  abstract class Setting extends ClientDocumentMixin(foundry.documents.BaseSetting) {
+  class Setting extends ClientDocumentMixin(foundry.documents.BaseSetting) {
+    /**
+     * @param data    - Initial data from which to construct the `Setting`
+     * @param context - Construction context options
+     *
+     * @deprecated Constructing `Setting` directly is not advised. While `new Setting(...)` would create a
+     * temporary document it would not respect a system's subclass of `Setting`, if any.
+     *
+     * You should use {@link Setting.implementation | `new Setting.implementation(...)`} instead which
+     * will give you a system specific implementation of `Setting`.
+     */
+    constructor(...args: Document.ConstructorParameters<Setting.CreateData, Setting.Parent>);
+
     static override metadata: Setting.Metadata;
 
     static get implementation(): Setting.ImplementationClass;

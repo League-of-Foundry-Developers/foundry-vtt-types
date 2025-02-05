@@ -16,11 +16,17 @@ declare abstract class BaseCombatant<
   out SubType extends BaseCombatant.SubType = BaseCombatant.SubType,
 > extends Document<"Combatant", BaseCombatant._Schema, any> {
   /**
-   * @param data    - Initial data from which to construct the Combatant
+   * @param data    - Initial data from which to construct the `BaseCombatant`
    * @param context - Construction context options
+   *
+   * @deprecated Constructing `BaseCombatant` directly is not advised. The base document classes exist in
+   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
+   * on the server to manage document validation and storage.
+   *
+   * You should use {@link Combatant.implementation | `new Combatant.implementation(...)`} instead which will give you
+   * a system specific implementation of `Combatant`.
    */
-  // TODO(LukeAbby): This constructor is a symptom of a circular error.
-  // constructor(data?: BaseCombatant.CreateData, context?: Document.ConstructionContext<BaseCombatant.Parent>);
+  constructor(...args: Document.ConstructorParameters<BaseCombatant.CreateData, BaseCombatant.Parent>);
 
   static override metadata: BaseCombatant.Metadata;
 

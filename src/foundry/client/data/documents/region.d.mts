@@ -302,7 +302,19 @@ declare global {
   /**
    * The client-side Region document which extends the common BaseRegion model.
    */
-  abstract class RegionDocument extends ClientDocumentMixin(foundry.documents.BaseRegion) {
+  class RegionDocument extends ClientDocumentMixin(foundry.documents.BaseRegion) {
+    /**
+     * @param data    - Initial data from which to construct the `RegionDocument`
+     * @param context - Construction context options
+     *
+     * @deprecated Constructing `RegionDocument` directly is not advised. While `new RegionDocument(...)` would create a
+     * temporary document it would not respect a system's subclass of `RegionDocument`, if any.
+     *
+     * You should use {@link RegionDocument.implementation | `new RegionDocument.implementation(...)`} instead which
+     * will give you a system specific implementation of `RegionDocument`.
+     */
+    constructor(...args: Document.ConstructorParameters<RegionDocument.CreateData, RegionDocument.Parent>);
+
     static override metadata: RegionDocument.Metadata;
 
     static get implementation(): RegionDocument.ImplementationClass;

@@ -274,7 +274,19 @@ declare global {
    * @see {@link Scene}               The Scene document type which contains Note embedded documents
    * @see {@link NoteConfig}          The Note configuration application
    */
-  abstract class NoteDocument extends CanvasDocumentMixin(foundry.documents.BaseNote) {
+  class NoteDocument extends CanvasDocumentMixin(foundry.documents.BaseNote) {
+    /**
+     * @param data    - Initial data from which to construct the `NoteDocument`
+     * @param context - Construction context options
+     *
+     * @deprecated Constructing `NoteDocument` directly is not advised. While `new NoteDocument(...)` would create a
+     * temporary document it would not respect a system's subclass of `NoteDocument`, if any.
+     *
+     * You should use {@link NoteDocument.implementation | `new NoteDocument.implementation(...)`} instead which
+     * will give you a system specific implementation of `NoteDocument`.
+     */
+    constructor(...args: Document.ConstructorParameters<NoteDocument.CreateData, NoteDocument.Parent>);
+
     static override metadata: NoteDocument.Metadata;
 
     static get implementation(): NoteDocument.ImplementationClass;
