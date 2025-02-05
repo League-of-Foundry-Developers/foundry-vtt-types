@@ -1,4 +1,4 @@
-import type { Mixin } from "fvtt-types/utils";
+import type { FixedInstanceType, Mixin } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 
 type DirectoryCollectionMixin_DocumentCollection_Static = DirectoryCollection<DirectoryCollectionMixin.DirectoryTypes> &
@@ -120,7 +120,7 @@ declare global {
     type AnyMixedConstructor = ReturnType<
       typeof DirectoryCollectionMixin<DirectoryCollectionMixin.DirectoryTypes, DirectoryCollectionMixin.BaseClass>
     >;
-    interface AnyMixed extends AnyMixedConstructor {}
+    interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
     type BaseClass = foundry.utils.Collection.AnyConstructor;
     // TODO: Refine type based on CONST.FOLDER_DOCUMENT_TYPES

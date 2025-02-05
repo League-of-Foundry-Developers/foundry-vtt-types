@@ -1,4 +1,4 @@
-import type { AnyConstructor, InexactPartial, Mixin } from "fvtt-types/utils";
+import type { AnyConstructor, FixedInstanceType, InexactPartial, Mixin } from "fvtt-types/utils";
 import type { LogCompatibilityWarningOptions } from "../../../../common/utils/logging.d.mts";
 
 declare class RenderFlagObject {
@@ -128,7 +128,7 @@ declare global {
 
   namespace RenderFlagsMixin {
     type AnyMixedConstructor = ReturnType<typeof RenderFlagsMixin<BaseClass>>;
-    interface AnyMixed extends AnyMixedConstructor {}
+    interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
     type BaseClass = AnyConstructor;
   }
