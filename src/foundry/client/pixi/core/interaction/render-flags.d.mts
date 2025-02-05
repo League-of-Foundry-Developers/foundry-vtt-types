@@ -91,7 +91,7 @@ declare global {
          * Valid options are OBJECTS or PERCEPTION.
          * @defaultValue `PIXI.UPDATE_PRIORITY.OBJECTS`
          */
-        priority?: PIXI.UPDATE_PRIORITY;
+        priority?: typeof PIXI.UPDATE_PRIORITY.OBJECTS | typeof PIXI.UPDATE_PRIORITY.PERCEPTION;
       },
     );
 

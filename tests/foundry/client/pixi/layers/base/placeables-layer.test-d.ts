@@ -47,7 +47,7 @@ layer.createObject({});
 // @ts-expect-error - A LightLayer needs an AmbientLightDocument.
 layer.createObject();
 
-expectTypeOf(layer.tearDown()).toEqualTypeOf<Promise<void | SomeLightLayer>>();
+expectTypeOf(layer.tearDown()).toEqualTypeOf<Promise<SomeLightLayer>>();
 expectTypeOf(layer.activate()).toEqualTypeOf<SomeLightLayer>();
 expectTypeOf(layer.deactivate()).toEqualTypeOf<SomeLightLayer>();
 expectTypeOf(layer.get("id")).toEqualTypeOf<AmbientLight | undefined>();
