@@ -17,6 +17,7 @@ declare global {
 
     /**
      * @defaultValue `"passive"`
+     * @remarks Set to `"static"` when this layer is `#activate()`d, returned to `"passive"` when `#deactivate()`d
      */
     override eventMode: PIXI.EventMode;
 
@@ -37,14 +38,7 @@ declare global {
      * @param options - Options which configure layer activation
      * @returns - The layer instance, now activated
      */
-    activate(
-      options?: NullishProps<{
-        /**
-         * A specific tool in the control palette to set as active
-         */
-        tool: string;
-      }>,
-    ): this;
+    activate(options?: InteractionLayer.ActivateOptions): this;
 
     /**
      * The inner _activate method which may be defined by each InteractionLayer subclass.
@@ -71,7 +65,7 @@ declare global {
 
     /**
      * Handle left mouse-click events which originate from the Canvas stage.
-     * @see {@link Canvas._onClickLeft}
+     * @see {@link Canvas#_onClickLeft}
      * @param event - The PIXI InteractionEvent which wraps a PointerEvent
      */
     protected _onClickLeft(event: PIXI.FederatedEvent): void;
@@ -94,9 +88,8 @@ declare global {
      * Start a left-click drag workflow originating from the Canvas stage.
      * @see {@link Canvas.#onDragLeftStart}
      * @param event - The PIXI InteractionEvent which wraps a PointerEvent
-     * @remarks Current implementation always returns undefined
      */
-    protected _onDragLeftStart(event: PIXI.FederatedEvent): unknown;
+    protected _onDragLeftStart(event: PIXI.FederatedEvent): void;
 
     /**
      * Continue a left-click drag workflow originating from the Canvas stage.
@@ -150,7 +143,17 @@ declare global {
       baseClass: typeof InteractionLayer;
     }
 
+    /** @internal */
+    type _ActivateOptions = NullishProps<{
+      /** A specific tool in the control palette to set as active */
+      tool: string;
+    }>;
+
+    interface ActivateOptions extends _ActivateOptions {}
+
     interface DrawOptions extends CanvasLayer.DrawOptions {}
+
+    interface TearDownOptions extends CanvasLayer.TearDownOptions {}
   }
 }
 
