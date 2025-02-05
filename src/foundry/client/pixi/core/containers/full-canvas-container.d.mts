@@ -1,4 +1,4 @@
-import type { Mixin } from "fvtt-types/utils";
+import type { FixedInstanceType, Mixin } from "fvtt-types/utils";
 
 declare class FullCanvasObject {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
@@ -21,7 +21,7 @@ declare global {
 
   namespace FullCanvasObjectMixin {
     type AnyMixedConstructor = ReturnType<typeof FullCanvasObjectMixin<BaseClass>>;
-    interface AnyMixed extends AnyMixedConstructor {}
+    interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
     type BaseClass = PIXI.DisplayObject.AnyConstructor;
   }

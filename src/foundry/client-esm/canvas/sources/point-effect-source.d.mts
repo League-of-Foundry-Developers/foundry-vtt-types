@@ -1,4 +1,4 @@
-import type { Mixin, IntentionalPartial } from "fvtt-types/utils";
+import type { Mixin, IntentionalPartial, FixedInstanceType } from "fvtt-types/utils";
 import type BaseEffectSource from "./base-effect-source.d.mts";
 
 declare class PointEffectSource {
@@ -70,7 +70,7 @@ declare function PointEffectSourceMixin<BaseClass extends PointEffectSourceMixin
 
 declare namespace PointEffectSourceMixin {
   type AnyMixedConstructor = ReturnType<typeof PointEffectSourceMixin<BaseClass>>;
-  interface AnyMixed extends AnyMixedConstructor {}
+  interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
   type BaseClass = BaseEffectSource.AnyConstructor;
 
