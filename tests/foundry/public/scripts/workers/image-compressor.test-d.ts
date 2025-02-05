@@ -1,6 +1,5 @@
 import { expectTypeOf } from "vitest";
 import type { EmptyObject } from "fvtt-types/utils";
-// eslint-disable-next-line import/extensions
 import type * as _ from "fvtt-types/worker";
 
 declare const someBlob: Blob;

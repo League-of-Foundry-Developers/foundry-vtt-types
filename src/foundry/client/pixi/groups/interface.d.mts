@@ -48,7 +48,6 @@ declare global {
       /**
        * The distance in pixels that the scrolling text should travel
        * @defaultValue Double the width or height of the text, depending on direction
-       * @remarks Default provided by `??`
        */
       distance: number;
 

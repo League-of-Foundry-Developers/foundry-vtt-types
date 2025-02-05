@@ -8,3 +8,10 @@ const myBR = new BatchRenderer(someRenderer);
 
 expectTypeOf(myBR.reservedTextureUnits).toEqualTypeOf<BatchRenderer.ReservedTextureUnits>();
 expectTypeOf(myBR.start()).toEqualTypeOf<void>();
+expectTypeOf(
+  myBR.setShaderGenerator({
+    vertex: "path/to/vertex",
+    fragment: "path/to/fragment",
+    uniforms: (maxTex: number) => ({ maxTex }),
+  }),
+).toEqualTypeOf<void>();

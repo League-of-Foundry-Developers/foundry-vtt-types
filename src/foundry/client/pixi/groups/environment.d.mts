@@ -43,6 +43,7 @@ declare global {
     /**
      * Initialize the scene environment options.
      * @remarks `@fires PIXI.FederatedEvent type: "darknessChange" - event: {environmentData: {darknessLevel, priorDarknessLevel}}`
+     * @remarks Can't be NullishProps because a default for `environment` is only provided by `{environment={}}`,
      */
     initialize(config?: EnvironmentCanvasGroup.InitializeOptions): void;
 

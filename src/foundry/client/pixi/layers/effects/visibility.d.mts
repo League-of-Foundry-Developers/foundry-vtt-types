@@ -225,6 +225,9 @@ declare global {
   }
 }
 
-declare abstract class AnyCanvasVisibility extends CanvasVisibility {
+declare abstract class AnyCanvasVisibility extends CanvasVisibility<
+  CanvasVisibility.DrawOptions,
+  CanvasVisibility.TearDownOptions
+> {
   constructor(arg0: never, ...args: never[]);
 }

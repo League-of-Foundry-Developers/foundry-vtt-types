@@ -40,7 +40,7 @@ declare global {
      */
     get reservedTextureUnits(): BatchRenderer.ReservedTextureUnits;
 
-    override setShaderGenerator(options?: InexactPartial<BatchRenderer.ShaderGeneratorOptions>): void;
+    override setShaderGenerator(options?: BatchRenderer.ShaderGeneratorOptions): void;
 
     /**
      * This override allows to allocate a given number of texture units reserved for a custom batched shader.
@@ -97,13 +97,35 @@ declare global {
 
     type BatchDefaultUniformsFunction = ToMethod<(maxTextures: number) => AbstractBaseShader.Uniforms>;
 
+    /** @remarks The `BatchRenderer#reservedTextureUnits` setter throws if passed a value outside of 0-4, and by usage wants an integer */
     type ReservedTextureUnits = 0 | 1 | 2 | 3 | 4;
 
-    interface ShaderGeneratorOptions {
+    /** @internal */
+    type _ShaderGeneratorOptions = InexactPartial<{
+      /**
+       * The vertex shader source
+       * @remarks Can't be null as only a signature default is provided
+       */
       vertex: typeof BatchRenderer.defaultVertexSrc;
+
+      /**
+       * The fragment shader source template
+       * @remarks Can't be null as only a signature default is provided
+       */
       fragment: typeof BatchRenderer.defaultFragmentTemplate;
+
+      /**
+       * Additional Uniforms
+       * @remarks Can't be null as only a signature default is provided
+       */
       uniforms: typeof BatchRenderer.defaultUniforms;
-    }
+    }>;
+
+    /**
+     * Options for {@link BatchRenderer#setShaderGenerator} (and ultimately the
+     * constructor of whatever's set as {@link BatchRenderer.shaderGeneratorClass})
+     */
+    interface ShaderGeneratorOptions extends _ShaderGeneratorOptions {}
   }
 }
 

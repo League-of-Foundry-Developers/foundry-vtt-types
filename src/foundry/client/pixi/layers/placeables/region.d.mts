@@ -90,7 +90,7 @@ declare global {
 
   namespace RegionLayer {
     type AnyConstructor = typeof AnyRegionLayer;
-    type Any = AnyRegionLayer;
+    interface Any extends AnyRegionLayer {}
 
     interface DrawOptions extends PlaceablesLayer.DrawOptions {}
 
