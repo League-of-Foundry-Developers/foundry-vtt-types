@@ -1,4 +1,4 @@
-import type { AnyObject, Mixin, ShapeWithIndexSignature } from "fvtt-types/utils";
+import type { AnyObject, FixedInstanceType, Mixin, ShapeWithIndexSignature } from "fvtt-types/utils";
 
 declare class AdaptiveFragmentChannel {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
@@ -47,7 +47,7 @@ declare global {
   namespace AdaptiveFragmentChannelMixin {
     /** @privateRemarks Can't extend `AnyMixedConstructor` if it's using the `BaseClass` union; `PIXI.Shader` is the parent of `Filter`, so it's used instead */
     type AnyMixedConstructor = ReturnType<typeof AdaptiveFragmentChannelMixin<PIXI.Shader.AnyConstructor>>;
-    interface AnyMixed extends AnyMixedConstructor {}
+    interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
     type BaseClass = PIXI.Shader.AnyConstructor | PIXI.Filter.AnyConstructor;
 

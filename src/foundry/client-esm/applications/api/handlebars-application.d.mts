@@ -1,4 +1,4 @@
-import type { DeepPartial, Mixin } from "fvtt-types/utils";
+import type { DeepPartial, FixedInstanceType, Mixin } from "fvtt-types/utils";
 import type ApplicationV2 from "./application.d.mts";
 
 /**
@@ -10,7 +10,7 @@ declare function HandlebarsApplicationMixin<BaseClass extends HandlebarsApplicat
 
 declare namespace HandlebarsApplicationMixin {
   type AnyMixedConstructor = ReturnType<typeof HandlebarsApplicationMixin<BaseClass>>;
-  interface AnyMixed extends AnyMixedConstructor {}
+  interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
   type BaseClass = ApplicationV2.Internal.Constructor;
 
