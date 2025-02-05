@@ -3,6 +3,7 @@ import type DocumentSheetV2 from "../api/document-sheet.d.mts";
 
 /**
  * A generic application for configuring permissions for various Document types.
+ * @remarks TODO: Stub
  */
 declare class DocumentOwnershipConfig<
   Document extends foundry.abstract.Document.Any = foundry.abstract.Document.Any,

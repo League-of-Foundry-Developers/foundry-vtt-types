@@ -3,6 +3,7 @@ import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts
 
 /**
  * The Application responsible for configuring the CombatTracker and its contents.
+ * @remarks TODO: Stub
  */
 declare class CombatTrackerConfig<
   RenderContext extends CombatTrackerConfig.RenderContext = CombatTrackerConfig.RenderContext,

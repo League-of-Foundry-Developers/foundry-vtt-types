@@ -20,6 +20,7 @@ import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts
  * // Share the image with other connected players
  * ip.shareImage();
  * ```
+ * @remarks TODO: Stub
  */
 declare class ImagePopout<
   RenderContext extends ImagePopout.RenderContext = ImagePopout.RenderContext,

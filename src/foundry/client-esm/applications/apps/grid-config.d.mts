@@ -3,6 +3,7 @@ import type DocumentSheetV2 from "../api/document-sheet.d.mts";
 
 /**
  * A tool for fine-tuning the grid in a Scene
+ * @remarks TODO: Stub
  */
 declare class GridConfig<
   RenderContext extends GridConfig.RenderContext = GridConfig.RenderContext,
