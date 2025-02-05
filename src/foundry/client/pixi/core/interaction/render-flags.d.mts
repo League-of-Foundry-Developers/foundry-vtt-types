@@ -1,4 +1,4 @@
-import type { AnyConstructor, InexactPartial, Mixin } from "fvtt-types/utils";
+import type { AnyConstructor, AnyObject, InexactPartial, Mixin, RemoveIndexSignatures } from "fvtt-types/utils";
 import type { LogCompatibilityWarningOptions } from "../../../../common/utils/logging.d.mts";
 
 declare class RenderFlagObject {
@@ -9,7 +9,7 @@ declare class RenderFlagObject {
    * Configure the render flags used for this class.
    * @defaultValue `{}`
    */
-  static RENDER_FLAGS: Record<string, RenderFlag.Any>;
+  static RENDER_FLAGS: RenderFlagsMixin.RENDER_FLAGS;
 
   /**
    * The ticker priority when RenderFlags of this class are handled.
@@ -35,12 +35,12 @@ declare class RenderFlagObject {
  * @privateRemarks Values are marked as optional here based on use, foundry docs incomplete
  * @internal
  */
-type _RenderFlags<Flags> = InexactPartial<{
+type _RenderFlags<Flags extends AnyObject> = InexactPartial<{
   /** Activating this flag also sets these flags to true */
-  propagate: Array<keyof Flags>;
+  propagate: Array<keyof RemoveIndexSignatures<Flags>>;
 
   /** Activating this flag resets these flags to false */
-  reset: Array<keyof Flags>;
+  reset: Array<keyof RemoveIndexSignatures<Flags>>;
 
   /**
    * Is this flag deprecated? The deprecation options are passed to
@@ -60,10 +60,12 @@ type _RenderFlags<Flags> = InexactPartial<{
 }>;
 
 declare global {
-  // @ts-expect-error - RenderFlag is built around willfully violating subclassing rules.
-  // The primary issue at hand is that each value can refer to the keys, thus making it technically
-  // unsound to apply a subclass to its superclass.
-  interface RenderFlag<out Flags> extends _RenderFlags<Flags> {}
+  /**
+   * @privateRemarks This *should* error but doesn't. RenderFlag is built around willfully violating subclassing rules.
+   * The primary issue at hand is that each value can refer to the keys, thus making it technically
+   * unsound to apply a subclass to its superclass.
+   */
+  interface RenderFlag<out Flags extends AnyObject> extends _RenderFlags<Flags> {}
 
   namespace RenderFlag {
     type Any = RenderFlag<any>;
@@ -112,8 +114,9 @@ declare global {
 
     /**
      * Activate certain flags, also toggling propagation and reset behaviors
+     * @remarks Flags are only set if `true`, nullish values are discarded
      */
-    set(changes: Record<string, boolean>): void;
+    set(changes: Record<string, boolean | undefined | null>): void;
   }
 
   /**
@@ -131,5 +134,11 @@ declare global {
     interface AnyMixed extends AnyMixedConstructor {}
 
     type BaseClass = AnyConstructor;
+
+    type ToFlags<RenderFlags extends RENDER_FLAGS> = {
+      [K in keyof RenderFlags]: boolean;
+    };
+
+    interface RENDER_FLAGS extends Record<string, RenderFlag.Any> {}
   }
 }

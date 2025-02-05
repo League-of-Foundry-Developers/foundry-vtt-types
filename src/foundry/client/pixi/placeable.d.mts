@@ -55,16 +55,7 @@ declare global {
     /**
      * The flags declared here are required for all PlaceableObject subclasses to also support.
      */
-    static override RENDER_FLAGS: {
-      /** @defaultValue `{ propagate: ["refresh"] }` */
-      redraw: RenderFlag<PlaceableObject.RenderFlags>;
-
-      /** @defaultValue `{ propagate: ["refreshState"], alias: true }` */
-      refresh: RenderFlag<PlaceableObject.RenderFlags>;
-
-      /** @defaultValue `{}` */
-      refreshState: RenderFlag<PlaceableObject.RenderFlags>;
-    };
+    static override RENDER_FLAGS: PlaceableObject.RENDER_FLAGS;
 
     /**
      * The object that this object is a preview of if this object is a preview
@@ -577,12 +568,17 @@ declare global {
 
     type AnyConstructor = typeof AnyPlaceableObject;
 
-    interface RenderFlags {
-      redraw: boolean;
+    type RenderFlags = RenderFlagsMixin.ToFlags<RENDER_FLAGS>;
 
-      refresh: boolean;
+    interface RENDER_FLAGS extends RenderFlagsMixin.RENDER_FLAGS {
+      /** @defaultValue `{ propagate: ["refresh"] }` */
+      redraw: RenderFlag<PlaceableObject.RenderFlags>;
 
-      refreshState: boolean;
+      /** @defaultValue `{ propagate: ["refreshState"], alias: true }` */
+      refresh: RenderFlag<PlaceableObject.RenderFlags>;
+
+      /** @defaultValue `{}` */
+      refreshState: RenderFlag<PlaceableObject.RenderFlags>;
     }
 
     interface ControlOptions {
