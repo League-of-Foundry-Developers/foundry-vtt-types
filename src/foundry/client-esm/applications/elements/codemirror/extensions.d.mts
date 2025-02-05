@@ -14,7 +14,7 @@ export const HIGHLIGHT_STYLE: Extension;
 
 /**
  * Configure extensions for managing indentation via keypress.
- * @param spaces The number of spaces added/removed per press of TAB/SHIFT-TAB
+ * @param spaces - The number of spaces added/removed per press of TAB/SHIFT-TAB
  * @remarks TODO: Stub
  */
 export function configureIndentExtensions(spaces: number): Extension[];
