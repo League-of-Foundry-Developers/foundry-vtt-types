@@ -3,7 +3,7 @@ import type HandlebarsApplicationMixin from "./api/handlebars-application.d.mts"
 
 /**
  * Application documentation here.
- *
+ * @remarks TODO: Stub
  * @remarks This is not actually *imported* anywhere it can be used, it appears to be for internal FVTT use only.
  */
 declare class AppV2QuickStartTemplate<

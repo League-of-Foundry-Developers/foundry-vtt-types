@@ -3,6 +3,7 @@ import type HandlebarsApplicationMixin from "../../api/handlebars-application.d.
 
 /**
  * A submenu for managing user overrides of PrototypeTokens
+ * @remarks TODO: Stub
  */
 declare class PrototypeOverridesConfig<
   RenderContext extends PrototypeOverridesConfig.RenderContext = PrototypeOverridesConfig.RenderContext,
