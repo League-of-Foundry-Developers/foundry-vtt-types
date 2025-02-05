@@ -1,5 +1,5 @@
 import type { ConfiguredRegionBehavior } from "../../../../configuration/index.d.mts";
-import type { DeepPartial, FixedInstanceType, InexactPartial } from "../../../../utils/index.d.mts";
+import type { DeepPartial, FixedInstanceType, InexactPartial } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
 import type BaseRegionBehavior from "../../../common/documents/region-behavior.d.mts";

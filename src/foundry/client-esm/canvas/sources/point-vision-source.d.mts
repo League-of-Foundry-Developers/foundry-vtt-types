@@ -1,6 +1,6 @@
 import type RenderedEffectSource from "./rendered-effect-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
-import type { IntentionalPartial } from "../../../../utils/index.d.mts";
+import type { IntentionalPartial } from "fvtt-types/utils";
 
 /**
  * A specialized subclass of RenderedEffectSource which represents a source of point-based vision.
@@ -127,7 +127,7 @@ declare class PointVisionSource<
 
   override _configureLayer(layer: RenderedEffectSource.SourceLayer, layerId: string): void;
 
-  override _getPolygonConfiguration(): PointSourcePolygonConfig;
+  override _getPolygonConfiguration(): PointSourcePolygon.Config;
 
   /**
    * Creates the polygon that represents light perception.

@@ -1,4 +1,4 @@
-import type { EmptyObject, InexactPartial, ValueOf } from "../../../../../utils/index.d.mts";
+import type { EmptyObject, InexactPartial, ValueOf } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -185,6 +185,7 @@ declare global {
   }
 
   namespace CanvasVisibility {
+    interface Any extends AnyCanvasVisibility {}
     type AnyConstructor = typeof AnyCanvasVisibility;
 
     type LightingVisibility = ValueOf<typeof VisionMode.LIGHTING_VISIBILITY>;

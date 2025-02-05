@@ -1,18 +1,11 @@
 import { expectTypeOf } from "vitest";
 
-declare const combat: Combat;
-
+const combatTracker = new CombatTracker();
 expectTypeOf(CombatTracker.defaultOptions).toEqualTypeOf<ApplicationOptions>();
+expectTypeOf(combatTracker.options).toEqualTypeOf<ApplicationOptions>();
+expectTypeOf(combatTracker.getData()).toEqualTypeOf<Promise<object>>();
+expectTypeOf(combatTracker.render(true)).toEqualTypeOf<CombatTracker>();
 
-const tracker = new CombatTracker();
-expectTypeOf(tracker.combats).toEqualTypeOf<Combat.Stored[]>();
-expectTypeOf(tracker.createPopout()).toEqualTypeOf<CombatTracker>();
-
-expectTypeOf(tracker.initialize()).toEqualTypeOf<void>();
-tracker.initialize({ combat: null });
-tracker.initialize({ combat: combat });
-tracker.initialize({ render: true });
-tracker.initialize({ render: false });
-
-expectTypeOf(tracker.scrollToTurn()).toEqualTypeOf<void>();
-expectTypeOf(await tracker.getData()).toEqualTypeOf<object>();
+expectTypeOf(combatTracker.viewed).toEqualTypeOf<Document.Stored<Combat> | null>();
+expectTypeOf(combatTracker.combats).toEqualTypeOf<Document.Stored<Combat>[]>();
+expectTypeOf(combatTracker.createPopout()).toEqualTypeOf<CombatTracker>();

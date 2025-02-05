@@ -40,7 +40,25 @@ module.exports = {
     "@typescript-eslint/prefer-namespace-keyword": "error",
 
     "import/consistent-type-specifier-style": ["warn", "prefer-top-level"],
-    "import/extensions": ["error", "always"],
+    "import/extensions": [
+      "error",
+      "always",
+      // TODO(LukeAbby): `eslint-plugin-import` needs to release a version with `pathGroupOverrides`
+      // Once it does this can be enabled.
+      // {
+      //   checkTypeImports: true,
+      //   pathGroupOverrides: [
+      //     {
+      //       pattern: "fvtt-types/configuration",
+      //       action: "ignore",
+      //     },
+      //     {
+      //       pattern: "fvtt-types/utils",
+      //       action: "ignore",
+      //     },
+      //   ],
+      // },
+    ],
     "import/first": "warn",
     "import/newline-after-import": "warn",
     "import/no-absolute-path": "error",

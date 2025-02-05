@@ -1,14 +1,6 @@
-import type { FixedInstanceType } from "../../../../../../utils/index.d.mts";
-
-declare abstract class AnyVisionMaskFilter extends VisionMaskFilter {
-  constructor(arg0: never, ...args: never[]);
-}
+import type { FixedInstanceType } from "fvtt-types/utils";
 
 declare global {
-  namespace VisionMaskFilter {
-    type AnyConstructor = typeof AnyVisionMaskFilter;
-  }
-
   class VisionMaskFilter extends AbstractBaseMaskFilter {
     static override fragmentShader: string;
 
@@ -32,4 +24,13 @@ declare global {
      */
     override readonly enabled: boolean;
   }
+
+  namespace VisionMaskFilter {
+    interface Any extends AnyVisionMaskFilter {}
+    type AnyConstructor = typeof AnyVisionMaskFilter;
+  }
+}
+
+declare abstract class AnyVisionMaskFilter extends VisionMaskFilter {
+  constructor(arg0: never, ...args: never[]);
 }

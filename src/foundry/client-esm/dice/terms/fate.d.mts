@@ -1,4 +1,4 @@
-import type { InexactPartial } from "../../../../utils/index.d.mts";
+import type { InexactPartial } from "fvtt-types/utils";
 
 import type DiceTerm from "./dice.d.mts";
 import type Die from "./die.d.mts";

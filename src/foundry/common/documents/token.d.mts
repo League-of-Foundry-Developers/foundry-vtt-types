@@ -1,4 +1,4 @@
-import type { AnyObject, AnyMutableObject, InexactPartial } from "../../../utils/index.d.mts";
+import type { AnyObject, AnyMutableObject, InexactPartial } from "fvtt-types/utils";
 import type { DataModel } from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
@@ -14,7 +14,7 @@ import type { TokenDetectionMode } from "./_types.d.mts";
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
 declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any> {
   // TODO(LukeAbby): This constructor is causing a circular error.
-  // constructor(data?: BaseToken.ConstructorData, context?: Document.ConstructionContext<BaseToken.Parent>);
+  // constructor(data?: BaseToken.CreateData, context?: Document.ConstructionContext<BaseToken.Parent>);
 
   static override metadata: BaseToken.Metadata;
 

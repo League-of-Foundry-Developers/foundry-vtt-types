@@ -18,7 +18,7 @@ declare global {
   }
 
   namespace CompendiumPacks {
-    interface AlphabeticalSortEntry extends DirectoryCollection.AlphabeticalSortEntry {
+    interface AlphabeticalSortEntry extends DirectoryCollectionMixin.AlphabeticalSortEntry {
       metadata?: {
         label: string;
       };

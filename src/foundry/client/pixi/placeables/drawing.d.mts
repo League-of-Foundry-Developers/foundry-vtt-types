@@ -1,4 +1,4 @@
-import type { ValueOf, FixedInstanceType } from "../../../../utils/index.d.mts";
+import type { ValueOf, FixedInstanceType } from "fvtt-types/utils";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {

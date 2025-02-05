@@ -1,6 +1,6 @@
 import type * as CONST from "../common/constants.d.mts";
 import type { DataModel, Document } from "../common/abstract/module.d.mts";
-import type { GetKey, AnyObject, HandleEmptyObject, MaybePromise } from "../../utils/index.d.mts";
+import type { GetKey, AnyObject, HandleEmptyObject, MaybePromise } from "fvtt-types/utils";
 import type BaseLightSource from "../client-esm/canvas/sources/base-light-source.d.mts";
 
 declare global {
@@ -3161,7 +3161,7 @@ interface CanvasGroupConstructor extends PixiContainerConstructor {
 
   /**
    * The name of this canvas group
-   * @remarks Not used in EffectsCanvasGroup in v11
+   * @remarks Can be undefined in some cases (e.g `EffectsCanvasGroup`) to prevent other groups using it as a parent
    */
-  groupName?: string;
+  groupName?: string | undefined;
 }

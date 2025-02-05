@@ -1,4 +1,4 @@
-import type { InexactPartial, NullishProps, FixedInstanceType } from "../../../utils/index.d.mts";
+import type { InexactPartial, NullishProps, FixedInstanceType } from "fvtt-types/utils";
 import type { CANVAS_PERFORMANCE_MODES } from "../../common/constants.d.mts";
 
 type InternalCanvas = new (
@@ -779,6 +779,8 @@ declare global {
      * @remarks Copied from `resources/app/common/types.mjs`
      */
     type PointArray = [x: number, y: number];
+
+    type PairOfPointsArray = [x0: number, y0: number, x1: number, y1: number];
 
     /**
      * A standard rectangle interface.

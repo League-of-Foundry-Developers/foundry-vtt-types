@@ -1,6 +1,6 @@
 import type BasePackage from "./base-package.d.mts";
 import type * as fields from "../data/fields.d.mts";
-import type { AnyMutableObject, InexactPartial, Merge } from "../../../utils/index.d.mts";
+import type { AnyMutableObject, InexactPartial, Merge } from "fvtt-types/utils";
 import type { ReleaseData } from "../config.d.mts";
 
 type BaseWorldSchema = Merge<

@@ -1,4 +1,4 @@
-import type { NullishProps, RequiredProps, FixedInstanceType } from "../../../../utils/index.d.mts";
+import type { NullishProps, RequiredProps, FixedInstanceType } from "fvtt-types/utils";
 import type BaseToken from "../../../common/documents/token.d.mts";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 

@@ -1,4 +1,4 @@
-import type { Brand, ValueOf } from "../../utils/index.d.mts";
+import type { Brand, ValueOf } from "fvtt-types/utils";
 
 /**
  * The shortened software name
@@ -904,7 +904,7 @@ export declare const TEXT_ANCHOR_POINTS: Readonly<{
   /**
    * Anchor the tooltip to the center of the element.
    */
-  CENTER: TEXT_ANCHOR_POINTS;
+  CENTER: 0 & TEXT_ANCHOR_POINTS;
 
   /**
    * Anchor the tooltip to the bottom of the element.

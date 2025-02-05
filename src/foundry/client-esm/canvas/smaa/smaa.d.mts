@@ -1,6 +1,6 @@
 import type { CLEAR_MODES, FilterState, FilterSystem, RenderTexture } from "pixi.js";
 
-import type { InexactPartial } from "../../../../utils/index.d.mts";
+import type { InexactPartial } from "fvtt-types/utils";
 
 declare class SMAAFilter extends PIXI.Filter {
   /**
@@ -16,8 +16,7 @@ declare class SMAAFilter extends PIXI.Filter {
    */
   static get PRESETS(): Record<string, SMAAFilter.SMAAFilterConfig>;
 
-  /** @override */
-  apply(
+  override apply(
     filterManager: FilterSystem,
     input: RenderTexture,
     output: RenderTexture,

@@ -1,4 +1,4 @@
-import type { InexactPartial, IntentionalPartial } from "../../../../utils/index.d.mts";
+import type { InexactPartial, IntentionalPartial } from "fvtt-types/utils";
 import type BaseEffectSource from "./base-effect-source.d.mts";
 
 /**

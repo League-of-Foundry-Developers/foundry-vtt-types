@@ -57,7 +57,7 @@ declare global {
     /**
      * A Quadtree which partitions and organizes Walls into quadrants for efficient target identification.
      */
-    quadtree: Quadtree<
+    quadtree: CanvasQuadtree<
       ConcretePlaceableOrPlaceableObject<Document.ConfiguredObjectInstanceForName<DocumentName>>
     > | null;
 

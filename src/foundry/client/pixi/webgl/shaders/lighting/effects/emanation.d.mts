@@ -1,14 +1,6 @@
 export {};
 
-declare abstract class AnyEmanationColorationShader extends EmanationColorationShader {
-  constructor(arg0: never, ...args: never[]);
-}
-
 declare global {
-  namespace EmanationColorationShader {
-    type AnyConstructor = typeof AnyEmanationColorationShader;
-  }
-
   /**
    * Emanation animation coloration shader
    */
@@ -20,4 +12,13 @@ declare global {
 
     static override fragmentShader: string;
   }
+
+  namespace EmanationColorationShader {
+    interface Any extends AnyEmanationColorationShader {}
+    type AnyConstructor = typeof AnyEmanationColorationShader;
+  }
+}
+
+declare abstract class AnyEmanationColorationShader extends EmanationColorationShader {
+  constructor(arg0: never, ...args: never[]);
 }

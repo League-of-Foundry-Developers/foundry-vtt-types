@@ -1,4 +1,4 @@
-import type { AnyObject, InexactPartial, ValueOf } from "../../../utils/index.d.mts";
+import type { AnyObject, InexactPartial, ValueOf } from "fvtt-types/utils";
 import type EventEmitterMixin from "../../common/utils/event-emitter.d.mts";
 
 declare namespace Sound {

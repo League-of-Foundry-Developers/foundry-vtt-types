@@ -1,4 +1,4 @@
-import type { FolderDocumentTypes, InexactPartial, FixedInstanceType } from "../../../../utils/index.d.mts";
+import type { FolderDocumentTypes, InexactPartial, FixedInstanceType } from "fvtt-types/utils";
 import type { fields } from "../../../common/data/module.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";

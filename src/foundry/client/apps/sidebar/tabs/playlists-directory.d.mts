@@ -33,7 +33,7 @@ declare global {
      * Cache the set of PlaylistSound documents that are displayed as playing when the directory is rendered
      * @defaultValue `[]`
      */
-    protected _playingSounds: PlaylistSound.Implementation[];
+    protected _playingSounds: PlaylistSoundDocument.Implementation[];
 
     /**
      * @internal
@@ -93,7 +93,7 @@ declare global {
      * @param node - The tree leaf node being prepared
      * @internal
      */
-    protected _prepareTreeData(node: DirectoryCollection.TreeNode<Playlist.Implementation>): void;
+    protected _prepareTreeData(node: DirectoryCollectionMixin.TreeNode<Playlist.Implementation>): void;
 
     /**
      * Create an object of rendering data for each Playlist document being displayed

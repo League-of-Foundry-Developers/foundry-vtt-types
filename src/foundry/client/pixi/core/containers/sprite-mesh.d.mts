@@ -11,22 +11,15 @@ declare global {
      * @param shaderCls - Shader class used by this sprite mesh.
      *                    (default: `BaseSamplerShader`)
      */
-    constructor(texture?: PIXI.Texture, shaderCls?: typeof BaseSamplerShader);
+    constructor(texture?: PIXI.Texture | null, shaderClass?: BaseSamplerShader.AnyConstructor);
 
+    /** @defaultValue `true` */
     override isSprite: boolean;
 
     /**
      * Snapshot of some parameters of this display object to render in batched mode.
      */
-    protected _batchData: {
-      _tintRGB: number;
-      _texture: PIXI.Texture;
-      indices: number[];
-      uvs: number[];
-      blendMode: PIXI.BLEND_MODES;
-      vertexData: number[];
-      worldAlpha: number;
-    };
+    protected _batchData: SpriteMesh.BatchData;
 
     /**
      * The indices of the geometry.
@@ -48,7 +41,7 @@ declare global {
     /**
      * The texture that the sprite is using.
      */
-    protected _texture: PIXI.Texture;
+    protected _texture: PIXI.Texture | null;
 
     /**
      * The texture ID
@@ -58,14 +51,15 @@ declare global {
 
     /**
      * Cached tint value so we can tell when the tint is changed.
+     * @defaultValue `[1, 1, 1, 1]`
      */
-    protected _cachedTint: [red: number, green: number, blue: number, alpha: number];
+    protected _cachedTint: Color.RGBAColorVector;
 
     /**
      * The texture trimmed ID.
      * @defaultValue `-1`
      */
-    _textureTrimmedID: number;
+    protected _textureTrimmedID: number;
 
     /**
      * This is used to store the uvs data of the sprite, assigned at the same time
@@ -102,6 +96,7 @@ declare global {
 
     /**
      * The transform ID.
+     * @defaultValue `-1`
      */
     private _transformID: number;
 
@@ -165,6 +160,7 @@ declare global {
      */
     get padding(): number;
 
+    /** @throws If `value < 0` */
     set padding(value);
 
     /**
@@ -208,6 +204,7 @@ declare global {
     /**
      * Returns the SpriteMesh associated batch plugin. By default the returned plugin is that of the associated shader.
      * If a plugin is forced, it will returns the forced plugin.
+     * @defaultValue `this._shader.pluginName`
      */
     get pluginName(): string;
 
@@ -220,7 +217,7 @@ declare global {
     /**
      * The texture that the sprite is using
      */
-    get texture(): PIXI.Texture;
+    get texture(): PIXI.Texture | null;
 
     set texture(texture);
 
@@ -235,8 +232,9 @@ declare global {
      * Setting the anchor to `(1,1)` would mean the sprite's origin point will be the bottom right corner.
      *
      * If you pass only single parameter, it will set both x and y to the same value as shown in the example below.
+     * @privateRemarks Technically should be `ObservablePoint<this>` but this breaks `PrimarySpriteMesh`
      */
-    get anchor(): PIXI.ObservablePoint;
+    get anchor(): PIXI.ObservablePoint<SpriteMesh.Any>;
 
     set anchor(anchor);
 
@@ -246,12 +244,13 @@ declare global {
      * A value of 0xFFFFFF will remove any tint effect.
      * @defaultValue `0xFFFFFF`
      */
-    get tint(): PIXI.ColorSource;
+    get tint(): number;
 
     set tint(tint);
 
     /**
      * The HTML source element for this SpriteMesh texture.
+     * @privateRemarks This could possibly be `PIXI.ImageSource | null`, but the below is Foundry's typing, which I think is accurate in practice
      */
     get sourceElement(): HTMLImageElement | HTMLVideoElement | null;
 
@@ -263,12 +262,12 @@ declare global {
     /**
      * When the texture is updated, this event will fire to update the scale and frame.
      */
-    _onTextureUpdate(): void;
+    protected _onTextureUpdate(): void;
 
     /**
      * Called when the anchor position updates.
      */
-    _onAnchorUpdate(): void;
+    protected _onAnchorUpdate(): void;
 
     /**
      * Update uvs and push vertices and uv buffers on GPU if necessary.
@@ -277,9 +276,9 @@ declare global {
 
     /**
      * Initialize shader based on the shader class type.
-     * @param shaderClass - Shader class used. Must inherit from AbstractBaseShader.
+     * @param shaderClass - The shader class
      */
-    setShaderClass(shaderClass: typeof AbstractBaseShader): void;
+    setShaderClass(shaderClass: BaseSamplerShader.AnyConstructor): void;
 
     override updateTransform(): void;
 
@@ -306,9 +305,10 @@ declare global {
 
     override getLocalBounds(rect: PIXI.Rectangle): PIXI.Rectangle;
 
+    /** @privateRemarks Foundry still marks this `@override` from when this class used to extend `PIXI.Mesh` */
     containsPoint(point: PIXI.IPointData): boolean;
 
-    override destroy(options: PIXI.IDestroyOptions | boolean): void;
+    override destroy(options?: PIXI.IDestroyOptions | boolean): void;
 
     /**
      * Create a SpriteMesh from another source.
@@ -318,9 +318,52 @@ declare global {
      * @param shaderClass    - The shader class to use. BaseSamplerShader by default.
      */
     static from(
-      source: string | PIXI.Texture | HTMLCanvasElement | HTMLVideoElement,
+      source: PIXI.Texture | HTMLImageElement | HTMLVideoElement | string,
       textureOptions?: PIXI.IBaseTextureOptions,
-      shaderClass?: typeof AbstractBaseShader,
+      shaderClass?: BaseSamplerShader.AnyConstructor,
     ): SpriteMesh;
   }
+
+  namespace SpriteMesh {
+    interface Any extends AnySpriteMesh {}
+    type AnyConstructor = typeof AnySpriteMesh;
+
+    /** Snapshot of some parameters of this display object to render in batched mode. */
+    interface BatchData {
+      _tintRGB: number | undefined;
+      _texture: PIXI.Texture | undefined | null;
+
+      /**
+       * @defaultValue `this.#geometry.indexBuffer.data`
+       * @remarks Set during construction
+       */
+      indices: number[];
+
+      /**
+       * @defaultValue `this.#geometry.buffers[1].data`
+       * @remarks Set during construction
+       */
+      uvs: number[];
+
+      blendMode: PIXI.BLEND_MODES | undefined;
+
+      /**
+       * @defaultValue `this.#geometry.buffers[0].data`
+       * @remarks Set during construction
+       */
+      vertexData: number[];
+
+      worldAlpha: number | undefined;
+
+      /**
+       * @defaultValue `this`
+       * @remarks Set during construction
+       */
+      object: SpriteMesh;
+    }
+  }
+}
+
+declare abstract class AnySpriteMesh extends SpriteMesh {
+  constructor(arg0: never, ...args: never[]);
 }

@@ -22,7 +22,7 @@ declare global {
     collection: DocumentCollection<T, string>;
   }
 
-  class DocumentDirectory<
+  abstract class DocumentDirectory<
     FolderType extends foundry.CONST.FOLDER_DOCUMENT_TYPES,
     Options extends DocumentDirectoryOptions = DocumentDirectoryOptions,
   > extends DirectoryApplicationMixin(SidebarTab)<Options> {

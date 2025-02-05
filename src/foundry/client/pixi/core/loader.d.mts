@@ -1,10 +1,17 @@
-import type { AnyObject } from "../../../../utils/index.d.mts";
+import type { InexactPartial, NullishProps } from "fvtt-types/utils";
+import type { TranscoderWorker } from "@pixi/basis";
 
 declare global {
   /**
    * A Loader class which helps with loading video and image textures
    */
   class TextureLoader {
+    /**
+     * A global reference to the singleton texture loader
+     * @privateRemarks This is set outside the class via `TextureLoader.loader = new TextureLoader();`
+     */
+    static loader: TextureLoader;
+
     /**
      * The duration in milliseconds for which a texture will remain cached
      * @defaultValue `1000 * 60 * 15`
@@ -14,7 +21,7 @@ declare global {
     /**
      * Initialize the basis transcoder for PIXI.Assets
      */
-    static initializeBasisTranscoder(): Promise<unknown>;
+    static initializeBasisTranscoder(): TextureLoader.TranscodeWorkerLoadTranscoderReturn | Promise<void>;
 
     /**
      * Check if a source has a text file extension.
@@ -31,7 +38,7 @@ declare global {
      *                     (default: `1`)
      * @returns The texture data if the texture is valid, else undefined.
      */
-    static getTextureAlphaData(texture: PIXI.Texture, resolution?: number): TextureLoader.TextureAlphaData | undefined;
+    static getTextureAlphaData(texture: PIXI.Texture, resolution?: number): TextureLoader.TextureAlphaData | void;
 
     /**
      * Load all the textures which are required for a particular Scene
@@ -41,8 +48,8 @@ declare global {
      */
     static loadSceneTextures(
       scene: Scene.Implementation,
-      options?: Partial<TextureLoader.LoadSceneTextureOptions>,
-    ): Promise<void[]>;
+      options?: TextureLoader.LoadSceneTexturesOptions,
+    ): Promise<void>;
 
     /**
      * Load an Array of provided source URL paths
@@ -51,58 +58,29 @@ declare global {
      *                  (default: `{}`)
      * @returns A Promise which resolves once all textures are loaded
      */
-    load(sources: string[], options?: Partial<TextureLoader.LoadOptions>): Promise<PIXI.BaseTexture | void[]>;
+    load(sources: string[], options?: TextureLoader.LoadOptions): Promise<void>;
 
     /**
      * Load a single texture on-demand from a given source URL path
      * @param src - The source texture path to load
      * @returns The loaded texture object
      */
-    loadTexture(src: string): Promise<PIXI.BaseTexture | PIXI.Spritesheet | null>;
-
-    /**
-     * Log texture loading progress in the console and in the Scene loading bar
-     * @internal
-     */
-    protected _onProgress(src: string, progress: TextureLoader.Progress): void;
-
-    /**
-     * Log failed texture loading
-     * @internal
-     */
-    protected _onError(src: string, progress: TextureLoader.Progress, error: Error): void;
+    loadTexture(src: string): TextureLoader.LoadTextureReturn;
 
     /**
      * Use the Fetch API to retrieve a resource and return a Blob instance for it.
+     * @param src     - The resource URL
      * @param options - Options to configure the loading behaviour.
-     *                  (default: `{}`)
-     * @internal
+     * @returns A Blob containing the loaded data
      */
-    protected _fetchResource(
-      src: string,
-      options?: {
-        /**
-         * Append a cache-busting query parameter to the request.
-         * @defaultValue `false`
-         */
-        bustCache?: boolean | undefined;
-      },
-    ): Promise<Blob>;
-
-    /**
-     * Return a URL with a cache-busting query parameter appended.
-     * @param src - The source URL being attempted
-     * @returns The new URL, or false on a failure.
-     * @internal
-     */
-    protected _getCacheBustURL(src: string): string | false;
+    static fetchResource(src: string, options?: TextureLoader.FetchResourceOptions): Promise<Blob>;
 
     /**
      * Add an image or a sprite sheet url to the assets cache.
      * @param src - The source URL
      * @param tex - The readied texture
      */
-    setCache(src: string, tex: PIXI.BaseTexture | PIXI.Spritesheet): void;
+    setCache(src: string, asset: PIXI.BaseTexture | PIXI.Spritesheet): void;
 
     /**
      * Retrieve a texture or a sprite sheet from the assets cache
@@ -113,40 +91,43 @@ declare global {
     /**
      * Expire and unload assets from the cache which have not been used for more than CACHE_TTL milliseconds.
      */
-    expireCache(): void;
+    expireCache(): Promise<void>;
+
     /**
      * Return a URL with a cache-busting query parameter appended.
      * @param src - The source URL being attempted
      * @returns The new URL, or false on a failure.
      */
-    static getCacheBustURL(src: string): string | boolean;
+    static getCacheBustURL(src: string): string | false;
 
     /**
      * @deprecated since v11, will be removed in v13
      * @remarks TextureLoader#loadImageTexture is deprecated. Use TextureLoader#loadTexture instead.
      */
-    loadImageTexture(src: string): Promise<PIXI.BaseTexture>;
+    loadImageTexture(src: string): TextureLoader.LoadTextureReturn;
 
     /**
      * @deprecated since v11, will be removed in v13
      * @remarks TextureLoader#loadVideoTexture is deprecated. Use TextureLoader#loadTexture instead.
      */
-    loadVideoTexture(src: string): Promise<PIXI.BaseTexture>;
+    loadVideoTexture(src: string): TextureLoader.LoadTextureReturn;
 
     /**
      * @deprecated since v12, will be removed in v14
      * @remarks `"TextureLoader.textureBufferDataMap is deprecated without replacement. Use TextureLoader.getTextureAlphaData`
      * `to create a texture data map and cache it automatically, or create your own caching system."`
      */
-    static get textureBufferDataMap(): Map<string, AnyObject>;
-
-    /**
-     * A global reference to the singleton texture loader
-     */
-    static loader: TextureLoader;
+    static get textureBufferDataMap(): Map<unknown, unknown>;
   }
 
   namespace TextureLoader {
+    interface Any extends AnyTextureLoader {}
+    type AnyConstructor = typeof AnyTextureLoader;
+
+    type TranscodeWorkerLoadTranscoderReturn = ReturnType<typeof TranscoderWorker.loadTranscoder>;
+
+    type LoadTextureReturn = Promise<PIXI.BaseTexture | PIXI.Spritesheet | null>;
+
     interface TextureAlphaData {
       /** The width of the (downscaled) texture. */
       width: number;
@@ -170,50 +151,70 @@ declare global {
       data: Uint8Array;
     }
 
-    interface LoadSceneTextureOptions {
+    /** @internal */
+    type _LoadSceneTexturesOptions = InexactPartial<{
       /**
        * Destroy other expired textures
        * @defaultValue `true`
        */
-      expireCache?: boolean;
+      expireCache: boolean | null;
 
       /**
        * Additional sources to load during canvas initialize
        * @defaultValue `[]`
+       * @remarks Can't be `null` because it only has a parameter default.
+       * @privateRemarks Foundry types this as `boolean`, not even as an array, as of 13.335
        */
-      additionalSource?: Array<boolean>;
+      additionalSources: string[];
 
       /**
        * The maximum number of textures that can be loaded concurrently
+       * @remarks Can't be `null` becuase it is eventually passed to the constructor of
+       * {@link foundry.utils.Semaphore}, with only a parameter deafult.
        */
-      maxConcurrent?: number;
-    }
+      maxConcurrent: number;
+    }>;
 
-    interface LoadOptions {
+    /** Options for {@link TextureLoader.loadSceneTextures}*/
+    interface LoadSceneTexturesOptions extends _LoadSceneTexturesOptions {}
+
+    /** @internal */
+    type _LoadOptions = NullishProps<{
       /**
        * The status message to display in the load bar
+       * @remarks Allowed to be null or undefined because ultimately `HTMLElement.textContent = undefined`
+       * or `= null` (via {@link SceneNavigation.displayProgressBar}) does not error and simply blanks textContent.
        */
-      message?: string | undefined;
+      message: string;
 
       /**
        * Expire other cached textures?
-       * @defaultValue `true`
+       * @defaultValue `false`
        */
-      expireCache?: boolean;
+      expireCache: boolean;
 
       /**
-       * The maximum number of textures that can be loaded concurrently
+       * Display loading progress bar?
+       * @defaultValue `true`
        */
-      maxConcurrent?: number;
-    }
+      displayProgress: boolean;
+    }> &
+      /** @privateRemarks Can't Pick `expireCache`, despite it existing on `LoadSceneTexturesOptions`, as it has a different default here */
+      Pick<LoadSceneTexturesOptions, "maxConcurrent">;
 
-    interface Progress {
-      message: string;
-      loaded: number;
-      failed: number;
-      total: number;
-      pct: number;
-    }
+    /** Options for {@link TextureLoader#load} */
+    interface LoadOptions extends _LoadOptions {}
+
+    /** @internal */
+    type _FetchResourceOptions = NullishProps<{
+      /**
+       * Append a cache-busting query parameter to the request.
+       * @defaultValue `false`
+       */
+      bustCache: boolean;
+    }>;
+
+    interface FetchResourceOptions extends _FetchResourceOptions {}
   }
 
   /**
@@ -228,7 +229,7 @@ declare global {
    * @param src - The texture path to load.
    * @returns A texture, a sprite sheet or null if not found in cache.
    */
-  function getTexture(src: string): PIXI.Texture | null;
+  function getTexture(src: string): LoadTexture.Return;
 
   /**
    * Load a single asset and return a Promise which resolves once the asset is ready to use
@@ -236,11 +237,20 @@ declare global {
    * @param options  - Additional options which modify assset loading
    * @returns The loaded Texture or sprite sheet, or null if loading failed with no fallback
    */
-  function loadTexture(
-    src: string,
-    options?: {
+  function loadTexture(src: string, options?: LoadTexture.Options): Promise<LoadTexture.Return>;
+
+  namespace LoadTexture {
+    type Return = PIXI.Texture | PIXI.Spritesheet | null;
+
+    /** @internal */
+    type _Options = NullishProps<{
       /** A fallback texture URL to use if the requested source is unavailable */
-      fallback?: string;
-    },
-  ): Promise<PIXI.Texture | PIXI.Spritesheet | null>;
+      fallback: string;
+    }>;
+    interface Options extends _Options {}
+  }
+}
+
+declare abstract class AnyTextureLoader extends TextureLoader {
+  constructor(arg0: never, ...args: never[]);
 }

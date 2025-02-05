@@ -1,19 +1,31 @@
-import type { ValueOf } from "../../../../utils/index.d.mts";
+import type { HandleEmptyObject, NullishProps } from "fvtt-types/utils";
 
 declare global {
   /**
    * A container group which contains visual effects rendered above the primary group.
+   *
+   * TODO:
+   *  The effects canvas group is now only performing shape initialization, logic that needs to happen at
+   *  the placeable or object level is now their burden.
+   *  - [DONE] Adding or removing a source from the EffectsCanvasGroup collection.
+   *  - [TODO] A change in a darkness source should re-initialize all overlaping light and vision source.
+   *
+   * ### Hook Events
+   * - {@link hookEvents.lightingRefresh}
    */
-  class EffectsCanvasGroup extends CanvasGroupMixin(PIXI.Container) {
-    constructor();
-
+  class EffectsCanvasGroup<
+    DrawOptions extends EffectsCanvasGroup.DrawOptions = EffectsCanvasGroup.DrawOptions,
+    TearDownOptions extends EffectsCanvasGroup.TearDownOptions = EffectsCanvasGroup.TearDownOptions,
+  > extends CanvasGroupMixin(PIXI.Container)<DrawOptions, TearDownOptions> {
     /**
      * Whether to currently animate light sources.
+     * @defaultValue `true`
      */
     animateLightSources: boolean;
 
     /**
      * Whether to currently animate vision sources.
+     * @defaultValue `true`
      */
     animateVisionSources: boolean;
 
@@ -73,7 +85,7 @@ declare global {
      */
     clearEffects(): void;
 
-    protected override _draw(options: CanvasGroupMixin.DrawOptions): Promise<void>;
+    protected override _draw(options: HandleEmptyObject<DrawOptions>): Promise<void>;
 
     /**
      * Initialize positive light sources which exist within the active Scene.
@@ -92,17 +104,17 @@ declare global {
     /**
      * Refresh the state and uniforms of all light sources and darkness sources objects.
      */
-    refreshLightSources(): boolean;
+    refreshLightSources(): void;
 
     /**
      * Refresh the state and uniforms of all VisionSource objects.
      */
-    refreshVisionSources(): boolean;
+    refreshVisionSources(): void;
 
     /**
      * Refresh the active display of lighting.
      */
-    refreshLighting(): boolean;
+    refreshLighting(): void;
 
     /**
      * Test whether the point is inside light.
@@ -117,8 +129,9 @@ declare global {
      * @param point     - The point.
      * @param elevation - The elevation of the point.
      * @returns Is inside darkness?
+     * @remarks Foundry does not use the `elevation` parameter
      */
-    testInsideDarkness(point: Canvas.Point, elevation: number): boolean;
+    testInsideDarkness(point: Canvas.Point, _elevation?: number): boolean;
 
     /**
      * Get the darkness level at the given point.
@@ -128,14 +141,14 @@ declare global {
      */
     getDarknessLevel(point: Canvas.Point, elevation: number): number;
 
-    override _tearDown(options: CanvasGroupMixin.TearDownOptions): Promise<void>;
+    override _tearDown(options: HandleEmptyObject<TearDownOptions>): Promise<void>;
 
     /**
      * Activate vision masking for visual effects
      * @param enabled - Whether to enable or disable vision masking
      *                  (default: `true`)
      */
-    toggleMaskingFilters(enabled: boolean): void;
+    toggleMaskingFilters(enabled?: boolean): void;
 
     /**
      * Activate post-processing effects for a certain effects channel.
@@ -144,9 +157,9 @@ declare global {
      * @param uniforms            - The uniforms to update.
      */
     activatePostProcessingFilters(
-      filterMode: ValueOf<VisualEffectsMaskingFilter.FILTER_MODES>,
-      postProcessingModes: VisualEffectsMaskingFilter.PostProcessModes,
-      uniforms: AbstractBaseShader.Uniforms,
+      filterMode: VisualEffectsMaskingFilter.FILTER_MODES,
+      postProcessingModes?: VisualEffectsMaskingFilter.PostProcessModes,
+      uniforms?: AbstractBaseShader.Uniforms,
     ): void;
 
     /**
@@ -172,24 +185,53 @@ declare global {
      */
     animateDarkness(
       target?: number,
-      {
-        duration,
-      }?: {
-        /**
-         * The desired animation time in milliseconds. Default is 10 seconds
-         * @defaultValue 10000
-         */
-        duration?: number;
-      },
-    ): ReturnType<typeof CanvasAnimation.animate>;
+      options?: EffectsCanvasGroup.AnimateDarknessOptions,
+    ): CanvasAnimation.AnimateReturn;
+
+    /**
+     * @deprecated since v12, until v14
+     * @remarks "EffectsCanvasGroup#visibility has been deprecated and moved to Canvas#visibility."
+     */
+    get visibility(): Canvas["visibility"];
+
+    /**
+     * @deprecated since v12, until v14
+     * @remarks "EffectsCanvasGroup#globalLightSource has been deprecated and moved to EnvironmentCanvasGroup#globalLightSource."
+     */
+    get globalLightSource(): Canvas["environment"]["globalLightSource"];
+
+    /**
+     * @deprecated since v12
+     * @remarks "EffectsCanvasGroup#updateGlobalLightSource has been deprecated and is part of EnvironmentCanvasGroup#initialize workflow."
+     */
+    updateGlobalLightSource(): void;
   }
 
   namespace EffectsCanvasGroup {
-    type Any = AnyEffectsCanvasGroup;
+    interface Any extends AnyEffectsCanvasGroup {}
     type AnyConstructor = typeof AnyEffectsCanvasGroup;
+
+    /** @internal */
+    type _AnimateDarknessOptions = NullishProps<{
+      /**
+       * The desired animation time in milliseconds. Default is 10 seconds
+       * @defaultValue `10000`
+       * @remarks Only has a parameter default; `null` is effectively `0`, resulting in no animation, just instant darkness
+       */
+      duration: number;
+    }>;
+
+    interface AnimateDarknessOptions extends _AnimateDarknessOptions {}
+
+    interface DrawOptions extends CanvasGroupMixin.DrawOptions {}
+
+    interface TearDownOptions extends CanvasGroupMixin.TearDownOptions {}
   }
 }
 
-declare abstract class AnyEffectsCanvasGroup extends EffectsCanvasGroup {
+declare abstract class AnyEffectsCanvasGroup extends EffectsCanvasGroup<
+  EffectsCanvasGroup.DrawOptions,
+  EffectsCanvasGroup.TearDownOptions
+> {
   constructor(arg0: never, ...args: never[]);
 }

@@ -1,4 +1,4 @@
-import type { Mixin } from "../../../../utils/index.d.mts";
+import type { Mixin } from "fvtt-types/utils";
 
 declare class DirectoryApplication {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
@@ -270,7 +270,14 @@ declare global {
     sort?: string;
   }
 
-  function DirectoryApplicationMixin<BaseApplication extends Application.AnyConstructor>(
+  function DirectoryApplicationMixin<BaseApplication extends DirectoryApplicationMixin.BaseClass>(
     Base: BaseApplication,
   ): Mixin<typeof DirectoryApplication, BaseApplication>;
+
+  namespace DirectoryApplicationMixin {
+    type AnyMixedConstructor = ReturnType<typeof DirectoryApplicationMixin<BaseClass>>;
+    interface AnyMixed extends AnyMixedConstructor {}
+
+    type BaseClass = Application.AnyConstructor;
+  }
 }

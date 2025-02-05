@@ -1,5 +1,13 @@
 import { expectTypeOf } from "vitest";
 
+expectTypeOf(Hooks.events).toEqualTypeOf<Hooks.HookedFunction[]>();
+expectTypeOf(Hooks.on("", () => {})).toEqualTypeOf<number>();
+expectTypeOf(Hooks.once("", () => {})).toEqualTypeOf<number>();
+expectTypeOf(Hooks.off("", () => {})).toEqualTypeOf<void>();
+expectTypeOf(Hooks.callAll("")).toEqualTypeOf<true>();
+expectTypeOf(Hooks.call("")).toEqualTypeOf<boolean>();
+expectTypeOf(Hooks.onError("", new Error(""))).toEqualTypeOf<void>();
+
 Hooks.on("canvasInit", (canvas) => {
   expectTypeOf(canvas).toEqualTypeOf<Canvas>();
 });

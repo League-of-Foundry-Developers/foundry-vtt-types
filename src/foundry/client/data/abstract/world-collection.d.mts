@@ -1,4 +1,4 @@
-import type { DeepPartial, DropFirst, FixedInstanceType, InexactPartial } from "../../../../utils/index.d.mts";
+import type { DeepPartial, DropFirst, FixedInstanceType, InexactPartial } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {

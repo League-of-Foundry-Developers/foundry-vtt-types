@@ -1,4 +1,4 @@
-import type { NullishProps, IntentionalPartial } from "../../../../utils/index.d.mts";
+import type { NullishProps, IntentionalPartial } from "fvtt-types/utils";
 
 /**
  * TODO - Re-document after ESM refactor.
@@ -52,8 +52,9 @@ declare abstract class BaseEffectSource<
 
   /**
    * Some other object which is responsible for this source.
+   * @privateRemarks In Foundry practice this appears to only ever be `null`, `Token.ConfiguredInstance`, or `EffectsCanvasGroup` in v12
    */
-  object: PlaceableObject | null;
+  object: PlaceableObject.Any | CanvasGroupMixin.AnyMixed | null;
 
   /**
    * The source id linked to this effect source.

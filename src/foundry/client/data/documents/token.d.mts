@@ -1,4 +1,4 @@
-import type { DeepPartial, InexactPartial, InterfaceToObject } from "../../../../utils/index.d.mts";
+import type { DeepPartial, InexactPartial, InterfaceToObject } from "fvtt-types/utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema, SchemaField } from "../../../common/data/fields.d.mts";

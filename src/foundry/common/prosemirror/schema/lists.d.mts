@@ -1,3 +1,5 @@
+import { Node } from "prosemirror-model";
+
 export declare const ol: {
   content: string;
   managed: Record<string, unknown>;

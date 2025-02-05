@@ -1,45 +1,50 @@
-import type { InexactPartial } from "../../../../utils/index.d.mts";
-
-// TODO: Remove when this is typed as part of #2674
-type SceneEnvironmentData = unknown;
+import type { FixedInstanceType, HandleEmptyObject, InexactPartial, NullishProps } from "fvtt-types/utils";
+import type { SceneEnvironmentData } from "../../../common/documents/_types.d.mts";
 
 declare global {
   /**
    * A container group which contains the primary canvas group and the effects canvas group.
    */
-  class EnvironmentCanvasGroup extends CanvasGroupMixin<typeof PIXI.Container, "environment">(PIXI.Container) {
+  class EnvironmentCanvasGroup<
+    DrawOptions extends EnvironmentCanvasGroup.DrawOptions = EnvironmentCanvasGroup.DrawOptions,
+    TearDownOptions extends EnvironmentCanvasGroup.TearDownOptions = EnvironmentCanvasGroup.TearDownOptions,
+  > extends CanvasGroupMixin<typeof PIXI.Container, "environment">(PIXI.Container)<DrawOptions, TearDownOptions> {
     /**
      * The global light source attached to the environment
+     * @remarks This is `defineProperty`'d as non-writable and non-configurable at construction
      */
-    globalLightSource(): foundry.canvas.sources.GlobalLightSource;
+    readonly globalLightSource: FixedInstanceType<typeof CONFIG.Canvas.globalLightSourceClass>;
 
     /**
+     * Should this group tear down its non-layer children?
      * @defaultValue `false`
      */
     static override tearDownChildren: boolean;
 
     /**
      * Colors exposed by the manager.
+     * @remarks Properties here are only `undefined` prior to `#initialize`ation
      */
-    colors: Record<string, Color | undefined>;
+    colors: EnvironmentCanvasGroup.Colors;
 
     /**
      * Weights used by the manager to compute colors.
+     * @remarks Properties here are only `undefined` prior to `#initialize`ation
      */
-    weights: Record<string, number | undefined>;
+    weights: EnvironmentCanvasGroup.Weights;
 
     /**
      * Get the darkness level of this scene.
      */
     get darknessLevel(): number;
 
-    protected override _draw(options: CanvasGroupMixin.DrawOptions): Promise<void>;
+    protected override _draw(options: HandleEmptyObject<DrawOptions>): Promise<void>;
 
     /**
      * Initialize the scene environment options.
      * @remarks `@fires PIXI.FederatedEvent type: "darknessChange" - event: {environmentData: {darknessLevel, priorDarknessLevel}}`
      */
-    initialize(config: InexactPartial<EnvironmentCanvasGroup.InitializeConfig>): void;
+    initialize(config?: EnvironmentCanvasGroup.InitializeOptions): void;
 
     /**
      * @deprecated since v12, will be removed in v14
@@ -49,10 +54,34 @@ declare global {
   }
 
   namespace EnvironmentCanvasGroup {
-    type Any = AnyEnvironmentCanvasGroup;
+    interface Any extends AnyEnvironmentCanvasGroup {}
     type AnyConstructor = typeof AnyEnvironmentCanvasGroup;
 
-    interface InitializeConfig {
+    interface DrawOptions extends CanvasGroupMixin.DrawOptions {}
+
+    interface TearDownOptions extends CanvasGroupMixin.TearDownOptions {}
+
+    type ColorKeys =
+      | "darkness"
+      | "halfdark"
+      | "background"
+      | "dim"
+      | "bright"
+      | "ambientBrightest"
+      | "ambientDaylight"
+      | "ambientDarkness"
+      | "sceneBackground"
+      | "fogExplored"
+      | "fogUnexplored";
+
+    interface Colors extends Record<EnvironmentCanvasGroup.ColorKeys, Color | undefined> {}
+
+    type WeightKeys = "dark" | "halfdark" | "dim" | "bright";
+
+    interface Weights extends Record<EnvironmentCanvasGroup.WeightKeys, number | undefined> {}
+
+    /** @internal */
+    type _InitializeOptions = NullishProps<{
       /** The background canvas color */
       backgroundColor: Color.Source;
 
@@ -71,12 +100,30 @@ declare global {
       /** The color applied to unexplored areas */
       fogUnexploredColor: Color.Source;
 
-      /** The scene environment data */
-      environment: SceneEnvironmentData;
-    }
+      /**
+       * @deprecated since v12 until v14
+       * @remarks "config.darknessLevel parameter into EnvironmentCanvasGroup#initialize is deprecated.
+       * You should pass the darkness level into config.environment.darknessLevel"
+       * @privateRemarks [sic]
+       */
+      darknessLevel: number;
+    }> &
+      InexactPartial<{
+        /**
+         * The scene environment data
+         * @defaultValue `{}`
+         * @remarks Can't be `null` as it only has a parameter default and has properties accessed
+         */
+        environment: NullishProps<SceneEnvironmentData>;
+      }>;
+
+    interface InitializeOptions extends _InitializeOptions {}
   }
 }
 
-declare abstract class AnyEnvironmentCanvasGroup extends EnvironmentCanvasGroup {
+declare abstract class AnyEnvironmentCanvasGroup extends EnvironmentCanvasGroup<
+  EnvironmentCanvasGroup.DrawOptions,
+  EnvironmentCanvasGroup.TearDownOptions
+> {
   constructor(arg0: never, ...args: never[]);
 }

@@ -1,4 +1,4 @@
-import type { IntentionalPartial } from "../../../../utils/index.d.mts";
+import type { IntentionalPartial } from "fvtt-types/utils";
 import type BaseLightSource from "./base-light-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
 
@@ -24,7 +24,7 @@ declare class PointLightSource<
 
   override _configure(changes: IntentionalPartial<SourceData>): void;
 
-  override _getPolygonConfiguration(): PointSourcePolygonConfig;
+  override _getPolygonConfiguration(): PointSourcePolygon.Config;
 
   /**
    * Test whether this LightSource provides visibility to see a certain target object.

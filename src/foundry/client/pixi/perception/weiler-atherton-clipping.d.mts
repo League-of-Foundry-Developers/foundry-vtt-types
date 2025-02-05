@@ -1,4 +1,4 @@
-import type { Brand, NullishProps } from "../../../../utils/index.d.mts";
+import type { Brand, NullishProps } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -15,6 +15,9 @@ declare global {
    * https://en.wikipedia.org/wiki/Weiler%E2%80%93Atherton_clipping_algorithm
    * https://www.geeksforgeeks.org/weiler-atherton-polygon-clipping-algorithm
    * https://h-educate.in/weiler-atherton-polygon-clipping-algorithm/
+   *
+   * @throws If `!Polygon.isPositive`
+   * @remarks In practice the only thing that uses the constructor is the class's static methods
    */
   class WeilerAthertonClipper {
     /**
@@ -37,14 +40,12 @@ declare global {
      * The supported clip types.
      * Values are equivalent to those in ClipperLib.ClipType.
      */
-    static CLIP_TYPES: Readonly<Record<"INTERSECT" | "UNION", WeilerAthertonClipper.CLIP_TYPES>>;
+    static CLIP_TYPES: WeilerAthertonClipper.ClipTypes;
 
     /**
      * The supported intersection types.
      */
-    static INTERSECTION_TYPES: Readonly<
-      Record<"OUT_IN" | "IN_OUT" | "TANGENT", WeilerAthertonClipper.INTERSECTION_TYPES>
-    >;
+    static INTERSECTION_TYPES: WeilerAthertonClipper.IntersectionTypes;
 
     polygon: PIXI.Polygon;
 
@@ -52,14 +53,8 @@ declare global {
 
     /**
      * Configuration settings
-     * @param clipType  - One of CLIP_TYPES (default: `WeilerAthertonClipper.CLIP_TYPES.INTERSECT`)
-     * @param clipOpts  - Object passed to the clippingObject methods toPolygon and pointsBetween
-     *                    (default: `{}`)
      */
-    config: {
-      clipType: WeilerAthertonClipper.CLIP_TYPES;
-      clipOpts: WeilerAthertonClipper.ClipOpts;
-    };
+    config: WeilerAthertonClipper.Config;
 
     /**
      * Union a polygon and clipObject using the Weiler Atherton algorithm.
@@ -126,13 +121,47 @@ declare global {
   }
 
   namespace WeilerAthertonClipper {
+    interface Any extends AnyWeilerAthertonClipper {}
     type AnyConstructor = typeof AnyWeilerAthertonClipper;
 
     type CLIP_TYPES = Brand<number, "WeilerAthertonClipper.CLIP_TYPES">;
 
+    interface ClipTypes {
+      readonly INTERSECT: 0 & CLIP_TYPES;
+      readonly UNION: 1 & CLIP_TYPES;
+    }
+
     type INTERSECTION_TYPES = Brand<number, "WeilerAthertonClipper.INTERSECTION_TYPES">;
 
-    /** @internal Helper type to simplify use of optionality- and nullish-permissiveness-modifying helpers */
+    interface IntersectionTypes {
+      readonly OUT_IN: -1 & INTERSECTION_TYPES;
+      readonly IN_OUT: 1 & INTERSECTION_TYPES;
+      readonly TANGENT: 0 & INTERSECTION_TYPES;
+    }
+
+    /** Configuration settings */
+    interface Config {
+      /**
+       * One of CLIP_TYPES
+       * @defaultValue `WeilerAthertonClipper.CLIP_TYPES.INTERSECT`
+       * @remarks Set to the value of the equivalent constructor parameter. Default provided by `??=` in the constructor body
+       */
+      clipType: WeilerAthertonClipper.CLIP_TYPES;
+
+      /**
+       * Object passed to the clippingObject methods `toPolygon` and `pointsBetween`
+       * @defaultValue `{}`
+       * @remarks Set to the value of the equivalent constructor parameter. Default provided by `??=` in the constructor body
+       */
+      clipOpts: WeilerAthertonClipper.ClipOpts;
+    }
+
+    /**
+     * @internal
+     * @privateRemarks does *not* contain:
+     * - a `scalingFactor` property, despite one being passed in `PIXI.Rectangle#intersectPolygon` in v12
+     * - a `density` property, despite one being passed in `PIXI.Circle#intersectPolygon` in v12
+     */
     type _CombineOptions = NullishProps<{
       /**
        * If the WeilerAtherton constructor could mutate or not the subject polygon points

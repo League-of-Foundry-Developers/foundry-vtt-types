@@ -1,4 +1,4 @@
-import type { Mixin } from "../../../../utils/index.d.mts";
+import type { Mixin } from "fvtt-types/utils";
 
 /**
  * An extension of the Collection class which adds behaviors specific to tree-based collections of entries and folders.
@@ -19,7 +19,7 @@ declare class DirectoryCollection {
   /**
    * The built tree structure of the DocumentCollection
    */
-  get tree(): DirectoryCollection.TreeNode<this["contents"]>;
+  get tree(): DirectoryCollectionMixin.TreeNode<this["contents"]>;
 
   /**
    * The current search mode for this collection
@@ -71,8 +71,8 @@ declare class DirectoryCollection {
    * @returns The sort order between entries a and b
    */
   protected static _sortAlphabetical(
-    a: DirectoryCollection.AlphabeticalSortEntry,
-    b: DirectoryCollection.AlphabeticalSortEntry,
+    a: DirectoryCollectionMixin.AlphabeticalSortEntry,
+    b: DirectoryCollectionMixin.AlphabeticalSortEntry,
   ): number;
 
   /**
@@ -82,8 +82,8 @@ declare class DirectoryCollection {
    * @returns The sort order between Entries a and b
    */
   protected static _sortStandard(
-    a: DirectoryCollection.StandardSortEntry,
-    b: DirectoryCollection.StandardSortEntry,
+    a: DirectoryCollectionMixin.StandardSortEntry,
+    b: DirectoryCollectionMixin.StandardSortEntry,
   ): number;
 }
 
@@ -97,7 +97,14 @@ declare global {
     BaseCollection: BaseCollection,
   ): Mixin<typeof DirectoryCollection, BaseCollection>;
 
-  namespace DirectoryCollection {
+  namespace DirectoryCollectionMixin {
+    type AnyMixedConstructor = ReturnType<
+      typeof DirectoryCollectionMixin<DirectoryCollectionMixin.DirectoryTypes, DirectoryCollectionMixin.BaseClass>
+    >;
+    interface AnyMixed extends AnyMixedConstructor {}
+
+    type BaseClass = foundry.utils.Collection.AnyConstructor;
+
     interface TreeNode<T> {
       children: TreeNode<T>[];
       depth: number;

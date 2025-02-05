@@ -1,4 +1,4 @@
-import type { IntentionalPartial } from "../../../../utils/index.d.mts";
+import type { IntentionalPartial } from "fvtt-types/utils";
 import type BaseLightSource from "./base-light-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
 import type RenderedEffectSource from "./rendered-effect-source.d.mts";
@@ -62,7 +62,7 @@ declare class PointDarknessSource<
 
   override _configure(changes: IntentionalPartial<SourceData>): void;
 
-  override _getPolygonConfiguration(): PointSourcePolygonConfig;
+  override _getPolygonConfiguration(): PointSourcePolygon.Config;
 
   override _drawMesh(layerId: string): PIXI.Mesh | null;
 

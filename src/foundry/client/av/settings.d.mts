@@ -1,4 +1,4 @@
-import type { GetKey, ValueOf } from "../../../utils/index.d.mts";
+import type { GetKey, ValueOf } from "fvtt-types/utils";
 
 declare global {
   interface AVSettingsData {

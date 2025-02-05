@@ -20,4 +20,13 @@ declare class CanvasEdges extends Map<string, Edge> {
   refresh(): void;
 }
 
+declare namespace CanvasEdges {
+  interface Any extends AnyCanvasEdges {}
+  type AnyConstructor = typeof AnyCanvasEdges;
+}
+
+declare abstract class AnyCanvasEdges {
+  constructor(arg0: never, ...args: never[]);
+}
+
 export default CanvasEdges;

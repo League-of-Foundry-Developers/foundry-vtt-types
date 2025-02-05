@@ -1,14 +1,6 @@
 export {};
 
-declare abstract class AnyAbstractBaseMaskFilter extends AbstractBaseMaskFilter {
-  constructor(arg0: never, ...args: never[]);
-}
-
 declare global {
-  namespace AbstractBaseMaskFilter {
-    type AnyConstructor = typeof AnyAbstractBaseMaskFilter;
-  }
-
   /**
    * This class defines an interface for masked custom filters
    */
@@ -18,12 +10,22 @@ declare global {
      */
     static vertexShader: string;
 
+    /** @remarks Foundry does not use the `currentState` param */
     override apply(
       filterManager: PIXI.FilterSystem,
       input: PIXI.RenderTexture,
       output: PIXI.RenderTexture,
       clear: PIXI.CLEAR_MODES,
-      currentState: PIXI.FilterState,
+      currentState?: PIXI.FilterState,
     ): void;
   }
+
+  namespace AbstractBaseMaskFilter {
+    interface Any extends AnyAbstractBaseMaskFilter {}
+    type AnyConstructor = typeof AnyAbstractBaseMaskFilter;
+  }
+}
+
+declare abstract class AnyAbstractBaseMaskFilter extends AbstractBaseMaskFilter {
+  constructor(arg0: never, ...args: never[]);
 }

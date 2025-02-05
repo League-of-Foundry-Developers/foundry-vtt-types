@@ -1,4 +1,4 @@
-import type { FixedInstanceType } from "../../../../utils/index.d.mts";
+import type { FixedInstanceType } from "fvtt-types/utils";
 import type { LineIntersection } from "../../../common/utils/geometry.d.mts";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 

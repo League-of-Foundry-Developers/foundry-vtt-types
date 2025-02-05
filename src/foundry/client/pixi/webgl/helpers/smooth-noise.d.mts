@@ -1,28 +1,6 @@
-import type { InexactPartial } from "../../../../../utils/index.d.mts";
+import type { InexactPartial } from "fvtt-types/utils";
 
 declare global {
-  namespace SmoothNoise {
-    interface ConstructorOptions {
-      /**
-       * The generated noise will be on the range [0, amplitude].
-       * @defaultValue `1`
-       */
-      amplitude: number;
-
-      /**
-       * An adjustment factor for the input x values which place them on an appropriate range.
-       * @defaultValue `1`
-       */
-      scale: number;
-
-      /**
-       * The number of pre-generated random numbers to generate.
-       * @defaultValue `256`
-       */
-      maxReferences: number;
-    }
-  }
-
   /**
    * A smooth noise generator for one-dimensional values.
    */
@@ -62,4 +40,33 @@ declare global {
      */
     generate(x: number): number;
   }
+
+  namespace SmoothNoise {
+    interface Any extends AnySmoothNoise {}
+    type AnyConstructor = typeof AnySmoothNoise;
+
+    interface ConstructorOptions {
+      /**
+       * The generated noise will be on the range [0, amplitude].
+       * @defaultValue `1`
+       */
+      amplitude: number;
+
+      /**
+       * An adjustment factor for the input x values which place them on an appropriate range.
+       * @defaultValue `1`
+       */
+      scale: number;
+
+      /**
+       * The number of pre-generated random numbers to generate.
+       * @defaultValue `256`
+       */
+      maxReferences: number;
+    }
+  }
+}
+
+declare abstract class AnySmoothNoise extends SmoothNoise {
+  constructor(arg0: never, ...args: never[]);
 }

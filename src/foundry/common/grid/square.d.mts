@@ -1,6 +1,6 @@
 import type BaseGrid from "./base.d.mts";
 
-import type { InexactPartial } from "../../../utils/index.d.mts";
+import type { InexactPartial } from "fvtt-types/utils";
 
 declare class SquareGrid extends BaseGrid {
   /**
@@ -8,7 +8,7 @@ declare class SquareGrid extends BaseGrid {
    */
   constructor(config: SquareGrid.Configuration);
 
-  override type: CONST.GRID_TYPES;
+  override type: typeof CONST.GRID_TYPES.SQUARE;
 
   diagonals: number;
 

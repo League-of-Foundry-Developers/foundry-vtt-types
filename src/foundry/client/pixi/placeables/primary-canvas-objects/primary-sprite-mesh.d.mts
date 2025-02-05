@@ -1,11 +1,4 @@
-import type { InexactPartial } from "../../../../../utils/index.d.mts";
-
-// TODO: Remove when #2570 is completed
-declare const PrimaryBaseSamplerShader: BaseSamplerShader;
-
-declare namespace PrimaryBaseSamplerShader {
-  type AnyConstructor = unknown;
-}
+import type { InexactPartial, NullishProps } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -13,30 +6,31 @@ declare global {
    */
   class PrimarySpriteMesh extends PrimaryOccludableObjectMixin(SpriteMesh) {
     constructor(
-      options?:
-        | InexactPartial<{
-            /** Texture passed to the SpriteMesh. */
-            texture: PIXI.Texture;
-
-            /** The shader class used to render this sprite. */
-            shaderClass: PrimaryBaseSamplerShader.AnyConstructor;
-
-            /** The name of this sprite. */
-            name: string;
-          }>
-        | PIXI.Texture,
-      shaderClass?: PrimaryBaseSamplerShader.AnyConstructor,
+      /**
+       * The constructor options.
+       * @defaultValue `{}`
+       * @remarks Default is applied if `options` is `instanceof PIXI.Texture`, or neither that nor `instanceof Object`
+       */
+      options?: PrimarySpriteMesh.ConstructorOptions | PIXI.Texture | null,
+      /**
+       * The shader class used to render this sprite.
+       * @defaultValue `PrimaryBaseSamplerShader`
+       * @remarks If `options` is an object, `options.shaderClass` takes precedence. If omitted,
+       * or if `options` is a `PIXI.Texture`, default is provided by `??` in function body.
+       */
+      shaderClass?: PrimaryBaseSamplerShader.AnyConstructor | null,
     );
 
     /**
      * The texture alpha data.
      */
-    _textureAlphaData: TextureLoader.TextureAlphaData | null;
+    protected _textureAlphaData: TextureLoader.TextureAlphaData | null;
 
     /**
      * The texture alpha threshold used for point containment tests.
      * If set to a value larger than 0, the texture alpha data is
      * extracted from the texture at 25% resolution.
+     * @defaultValue `0`
      */
     textureAlphaThreshold: number;
 
@@ -67,21 +61,9 @@ declare global {
      * @param baseWidth  - The base width used for computations.
      * @param baseHeight - The base height used for computations.
      * @param options    - The options.
+     * @throws If either `baseWidth` or `baseHeight` are less than 0, or if `options.fit` is not a FitType
      */
-    resize(
-      baseWidth: number,
-      baseHeight: number,
-      options?: InexactPartial<{
-        /** The fit type. */
-        fit: "fill" | "cover" | "contain" | "width" | "height";
-
-        /** The scale on X axis. */
-        scaleX: number;
-
-        /** The scale on Y axis. */
-        scaleY: number;
-      }>,
-    ): void;
+    resize(baseWidth: number, baseHeight: number, options?: PrimarySpriteMesh.ResizeOptions): void;
 
     protected override _updateBatchData(): void;
 
@@ -92,7 +74,22 @@ declare global {
      * @param point                 - The point in canvas space
      * @param textureAlphaThreshold - The minimum texture alpha required for containment
      */
-    containsCanvasPoint(point: PIXI.IPointData, textureAlphaThreshold?: number): boolean;
+    containsCanvasPoint(
+      point: PIXI.IPointData,
+      /** @defaultValue `this.textureAlphaThreshold` */
+      textureAlphaThreshold?: number,
+    ): boolean;
+
+    /**
+     * Is the given point in world space contained in this object?
+     * @param point                 - The point in world space
+     * @param textureAlphaThreshold - The minimum texture alpha required for containment
+     */
+    containsPoint(
+      point: PIXI.IPointData,
+      /** @defaultValue `this.textureAlphaThreshold` */
+      textureAlphaThreshold?: number,
+    ): boolean;
 
     override renderDepthData(renderer: PIXI.Renderer): void;
 
@@ -105,7 +102,93 @@ declare global {
 
     /**
      * @deprecated since v12, will be removed in v14
+     * @remarks "#getPixelAlpha is deprecated without replacement."
      */
     getPixelAlpha(x: number, y: number): number;
+
+    /**
+     * @deprecated since v12, until v14
+     * @remarks "#_getAlphaBounds is deprecated without replacement."
+     */
+    _getAlphaBounds(): PIXI.Rectangle;
+
+    /**
+     * @deprecated since v12, until v14
+     * @remarks "#_getTextureCoordinate is deprecated without replacement."
+     */
+    _getTextureCoordinate(testX: number, testY: number): PIXI.IPointData;
   }
+
+  namespace PrimarySpriteMesh {
+    interface Any extends AnyPrimarySpriteMesh {}
+    type AnyConstructor = typeof AnyPrimarySpriteMesh;
+
+    type FitType = "fill" | "cover" | "contain" | "width" | "height";
+
+    /** @internal */
+    type _ConstructorOptions = NullishProps<{
+      /**
+       * Texture passed to the SpriteMesh.
+       * @defaultValue `null`
+       * @remarks Default ultimately provided by the `SpriteMesh` constructor
+       */
+      texture: PIXI.Texture;
+
+      /**
+       * The shader class used to render this sprite.
+       * @defaultValue `PrimaryBaseSamplerShader`
+       * @remarks Default provided by `??=` in function body
+       */
+      shaderClass: PrimaryBaseSamplerShader.AnyConstructor;
+
+      /**
+       * The name of this sprite.
+       * @defaultValue `null`
+       * @remarks Default provided by `?? null` in function body
+       */
+      name: string;
+
+      /**
+       * Any object that owns this PCO.
+       * @defaultValue `null`
+       * @remarks Default via `?? null` in function body
+       * @privateRemarks Foundry types as `*`, but the only things passed in practice are `Tile`s, `Token`s, and the `PrimaryCanvasGroup`
+       */
+      //TODO: (esheyw) Revisit the "any canvas group" type when groups are done
+      object: PlaceableObject.Any | CanvasGroupMixin.AnyMixed;
+    }>;
+
+    /** The constructor options */
+    interface ConstructorOptions extends _ConstructorOptions {}
+
+    /** @internal */
+    type _ResizeOptions = InexactPartial<{
+      /**
+       * The fit type.
+       * @defaultValue `"fill"`
+       * @remarks Can't be `null` because it only has a parameter default, and is then fed into a switch statement where the default is throw
+       * */
+      fit: FitType;
+
+      /**
+       * The scale on X axis.
+       * @defaultValue `1`
+       * @remarks Can't be `null` because it only has a parameter default and a width scale of 0 is, if not nonsensical, not to be done by accident.
+       */
+      scaleX: number;
+
+      /**
+       * The scale on Y axis.
+       * @defaultValue `1`
+       * @remarks Can't be `null` because it only has a parameter default and a height scale of 0 is, if not nonsensical, not to be done by accident.
+       */
+      scaleY: number;
+    }>;
+
+    interface ResizeOptions extends _ResizeOptions {}
+  }
+}
+
+declare abstract class AnyPrimarySpriteMesh extends PrimarySpriteMesh {
+  constructor(arg0: never, ...args: never[]);
 }

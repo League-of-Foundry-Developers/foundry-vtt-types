@@ -1,27 +1,16 @@
 export {};
 
-declare abstract class AnySunburstColorationShader extends SunburstColorationShader {
-  constructor(arg0: never, ...args: never[]);
-}
-
-declare abstract class AnySunburstIlluminationShader extends SunburstIlluminationShader {
-  constructor(arg0: never, ...args: never[]);
-}
-
 declare global {
-  namespace SunburstColorationShader {
-    type AnyConstructor = typeof AnySunburstColorationShader;
-  }
-
-  namespace SunburstIlluminationShader {
-    type AnyConstructor = typeof AnySunburstIlluminationShader;
-  }
-
   /**
    * Sunburst animation illumination shader
    */
   class SunburstIlluminationShader extends AdaptiveIlluminationShader {
     static override fragmentShader: string;
+  }
+
+  namespace SunburstIlluminationShader {
+    interface Any extends AnySunburstIlluminationShader {}
+    type AnyConstructor = typeof AnySunburstIlluminationShader;
   }
 
   /**
@@ -30,4 +19,17 @@ declare global {
   class SunburstColorationShader extends AdaptiveColorationShader {
     static override fragmentShader: string;
   }
+
+  namespace SunburstColorationShader {
+    interface Any extends AnySunburstColorationShader {}
+    type AnyConstructor = typeof AnySunburstColorationShader;
+  }
+}
+
+declare abstract class AnySunburstColorationShader extends SunburstColorationShader {
+  constructor(arg0: never, ...args: never[]);
+}
+
+declare abstract class AnySunburstIlluminationShader extends SunburstIlluminationShader {
+  constructor(arg0: never, ...args: never[]);
 }

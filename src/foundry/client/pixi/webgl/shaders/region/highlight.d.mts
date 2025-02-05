@@ -1,14 +1,6 @@
 export {};
 
-declare abstract class AnyHighlightRegionShader extends HighlightRegionShader {
-  constructor(arg0: never, ...args: never[]);
-}
-
 declare global {
-  namespace HighlightRegionShader {
-    type AnyConstructor = typeof AnyHighlightRegionShader;
-  }
-
   /**
    * Shader for the Region highlight.
    */
@@ -91,4 +83,13 @@ declare global {
 
     protected override _preRender: AbstractBaseShader.PreRenderFunction;
   }
+
+  namespace HighlightRegionShader {
+    interface Any extends AnyHighlightRegionShader {}
+    type AnyConstructor = typeof AnyHighlightRegionShader;
+  }
+}
+
+declare abstract class AnyHighlightRegionShader extends HighlightRegionShader {
+  constructor(arg0: never, ...args: never[]);
 }

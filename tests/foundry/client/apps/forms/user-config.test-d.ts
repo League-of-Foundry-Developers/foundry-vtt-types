@@ -1,12 +1,22 @@
 import { expectTypeOf } from "vitest";
+import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
 
 // @ts-expect-error - a BaseUser is not a User
 new UserConfig(new foundry.documents.BaseUser());
 
-const config = new UserConfig(new User.implementation({ name: "foo" }));
-expectTypeOf(config.object).toEqualTypeOf<User.Implementation>();
+declare const user: User;
+const userConfig = new UserConfig(user);
 
-const withCustomOptions = new UserConfig<DocumentSheetOptions<User.Implementation> & { custom: true }>(
-  new User.implementation({ name: "foo" }),
-);
-expectTypeOf(withCustomOptions.options).toEqualTypeOf<DocumentSheetOptions<User.Implementation> & { custom: true }>();
+expectTypeOf(userConfig.object).toEqualTypeOf<User>();
+expectTypeOf(userConfig.document).toEqualTypeOf<User>();
+expectTypeOf(UserConfig.defaultOptions).toEqualTypeOf<UserConfig.Options>();
+expectTypeOf(userConfig.options).toEqualTypeOf<UserConfig.Options>();
+expectTypeOf(userConfig.getData()).toEqualTypeOf<MaybePromise<GetDataReturnType<UserConfig.UserConfigData>>>();
+expectTypeOf(userConfig.render(true)).toEqualTypeOf<UserConfig>();
+
+expectTypeOf(userConfig.title).toEqualTypeOf<string>();
+
+const withCustomOptions = new UserConfig<DocumentSheetOptions<User.Implementation> & { custom: true }>(user);
+expectTypeOf(withCustomOptions.options).toEqualTypeOf<
+  DocumentSheetOptions<User.Implementation> & { custom: true }
+>();

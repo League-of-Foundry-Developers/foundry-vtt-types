@@ -1,4 +1,4 @@
-import type { Brand } from "../../utils/index.d.mts";
+import type { Brand } from "fvtt-types/utils";
 import * as _PIXI from "pixi.js";
 
 // Note(LukeAbby): The `smooth.d.mts` and `smooth.d.mts` files exist to make it DRY to selectively tweak PIXI sub-namespaces.
@@ -972,25 +972,29 @@ declare global {
     export import BatchGeometry = _PIXI.BatchGeometry;
 
     namespace BatchGeometry {
+      interface Any extends AnyPIXIBatchGeometry {}
       type AnyConstructor = typeof AnyPIXIBatchGeometry;
     }
 
     export import BatchRenderer = _PIXI.BatchRenderer;
 
     namespace BatchRenderer {
+      interface Any extends AnyPIXIBatchRenderer {}
       type AnyConstructor = typeof AnyPIXIBatchRenderer;
     }
 
     export import Container = _PIXI.Container;
 
     namespace Container {
+      interface Any extends AnyPIXIContainer {}
       type AnyConstructor = typeof AnyPIXIContainer;
     }
 
     export import DisplayObject = _PIXI.DisplayObject;
 
     namespace DisplayObject {
-      type AnyConstructor = typeof AnyDisplayObject;
+      interface Any extends AnyPIXIDisplayObject {}
+      type AnyConstructor = typeof AnyPIXIDisplayObject;
 
       type DestroyOptions = _PIXI.IDestroyOptions | boolean;
     }
@@ -998,12 +1002,14 @@ declare global {
     export import Filter = _PIXI.Filter;
 
     namespace Filter {
+      interface Any extends AnyPIXIFilter {}
       type AnyConstructor = typeof AnyPIXIFilter;
     }
 
     export import Shader = _PIXI.Shader;
 
     namespace Shader {
+      interface Any extends AnyPIXIShader {}
       type AnyConstructor = typeof AnyPIXIShader;
     }
   }
@@ -1085,7 +1091,7 @@ declare abstract class AnyPIXIContainer extends PIXI.Container {
   constructor(arg0: never, ...args: never[]);
 }
 
-declare abstract class AnyDisplayObject extends PIXI.DisplayObject {
+declare abstract class AnyPIXIDisplayObject extends PIXI.DisplayObject {
   constructor(arg0: never, ...args: never[]);
 }
 

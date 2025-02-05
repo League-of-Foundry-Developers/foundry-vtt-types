@@ -1,4 +1,4 @@
-import type { AnyObject, Merge } from "../../../utils/index.d.mts";
+import type { AnyObject, Merge } from "fvtt-types/utils";
 import type Document from "../abstract/document.d.mts";
 import type { DataField, ObjectField } from "../data/fields.d.mts";
 

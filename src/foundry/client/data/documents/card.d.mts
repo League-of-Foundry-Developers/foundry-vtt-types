@@ -1,5 +1,5 @@
 import type { ConfiguredCard } from "../../../../configuration/index.d.mts";
-import type { DeepPartial, InexactPartial } from "../../../../utils/index.d.mts";
+import type { DeepPartial, InexactPartial } from "fvtt-types/utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";

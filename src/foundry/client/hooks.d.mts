@@ -1,5 +1,5 @@
 import type { EditorState, Plugin } from "prosemirror-state";
-import type { DeepPartial, EmptyObject, FixedInstanceType, ValueOf } from "../../utils/index.d.mts";
+import type { DeepPartial, EmptyObject, FixedInstanceType, ValueOf } from "fvtt-types/utils";
 import type Document from "../common/abstract/document.d.mts";
 import type { ProseMirrorDropDown } from "../common/prosemirror/menu.d.mts";
 
@@ -842,14 +842,16 @@ declare global {
      * The dispatched event name replaces "Group" with the named CanvasGroup subclass, i.e. "drawPrimaryCanvasGroup".
      * @param group - The group being drawn
      */
-    type DrawGroup<G extends CanvasGroupMixin.AnyConstructor = CanvasGroupMixin.AnyConstructor> = (group: G) => void;
+    type DrawGroup<G extends CanvasGroupMixin.AnyMixedConstructor = CanvasGroupMixin.AnyMixedConstructor> = (
+      group: G,
+    ) => void;
 
     /**
      * A hook event that fires when a {@link CanvasGroup} is deconstructed.
      * The dispatched event name replaces "Group" with the named CanvasGroup subclass, i.e. "tearDownPrimaryCanvasGroup".
      * @param group - The group being deconstructed
      */
-    type TearDownGroup<G extends CanvasGroupMixin.AnyConstructor = CanvasGroupMixin.AnyConstructor> = (
+    type TearDownGroup<G extends CanvasGroupMixin.AnyMixedConstructor = CanvasGroupMixin.AnyMixedConstructor> = (
       group: G,
     ) => void;
 

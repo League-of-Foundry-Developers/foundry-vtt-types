@@ -1,4 +1,4 @@
-import type { InexactPartial, FixedInstanceType } from "../../../../utils/index.d.mts";
+import type { InexactPartial, FixedInstanceType } from "fvtt-types/utils";
 import type { PoolRollParseNode } from "../_types.d.mts";
 
 import type RollTerm from "./term.d.mts";

@@ -1,14 +1,6 @@
 export {};
 
-declare abstract class AnyLightDomeColorationShader extends LightDomeColorationShader {
-  constructor(arg0: never, ...args: never[]);
-}
-
 declare global {
-  namespace LightDomeColorationShader {
-    type AnyConstructor = typeof AnyLightDomeColorationShader;
-  }
-
   /**
    * Light dome animation coloration shader
    */
@@ -20,4 +12,13 @@ declare global {
 
     static override fragmentShader: string;
   }
+
+  namespace LightDomeColorationShader {
+    interface Any extends AnyLightDomeColorationShader {}
+    type AnyConstructor = typeof AnyLightDomeColorationShader;
+  }
+}
+
+declare abstract class AnyLightDomeColorationShader extends LightDomeColorationShader {
+  constructor(arg0: never, ...args: never[]);
 }

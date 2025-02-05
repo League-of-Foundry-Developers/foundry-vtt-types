@@ -1,4 +1,4 @@
-import type { EmptyObject } from "../../../../../utils/index.d.mts";
+import type { EmptyObject } from "fvtt-types/utils";
 
 declare global {
   /**

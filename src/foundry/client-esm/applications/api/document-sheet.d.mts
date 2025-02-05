@@ -1,4 +1,4 @@
-import type { AnyObject, DeepPartial, EmptyObject } from "../../../../utils/index.d.mts";
+import type { AnyObject, DeepPartial, EmptyObject } from "fvtt-types/utils";
 import type ApplicationV2 from "./application.d.mts";
 
 declare const unsetDocument: unique symbol;

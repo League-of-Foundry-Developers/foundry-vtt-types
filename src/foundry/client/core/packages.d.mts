@@ -1,4 +1,4 @@
-import type { InexactPartial, Mixin } from "../../../utils/index.d.mts";
+import type { InexactPartial, Mixin } from "fvtt-types/utils";
 import type { CONST } from "../../client-esm/client.d.mts";
 import type BasePackage from "../../common/packages/base-package.d.mts";
 
@@ -136,9 +136,16 @@ declare global {
    * @param BasePackage - The parent BasePackage class being mixed
    * @returns A BasePackage subclass mixed with ClientPackage features
    */
-  function ClientPackageMixin<BaseClass extends BasePackage.Internal.Constructor>(
+  function ClientPackageMixin<BaseClass extends ClientPackageMixin.BaseClass>(
     BasePackage: BaseClass,
   ): Mixin<typeof ClientPackage, BaseClass>;
+
+  namespace ClientPackageMixin {
+    type AnyMixedConstructor = ReturnType<typeof ClientPackageMixin<BaseClass>>;
+    interface AnyMixed extends AnyMixedConstructor {}
+
+    type BaseClass = BasePackage.Internal.Constructor;
+  }
 
   class Module extends ClientPackageMixin(foundry.packages.BaseModule) {
     constructor(data: ClientPackage.ModuleConstructorData, options: unknown);

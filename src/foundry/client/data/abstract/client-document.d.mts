@@ -1,4 +1,4 @@
-import type { InexactPartial, Mixin, FixedInstanceType } from "../../../../utils/index.d.mts";
+import type { InexactPartial, Mixin, FixedInstanceType } from "fvtt-types/utils";
 import type {
   DatabaseCreateOperation,
   DatabaseDeleteOperation,

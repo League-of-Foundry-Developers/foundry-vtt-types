@@ -1,4 +1,4 @@
-import type { AnyObject, InexactPartial } from "../../../utils/index.d.mts";
+import type { AnyObject, InexactPartial } from "fvtt-types/utils";
 
 /**
  * The base grid class.

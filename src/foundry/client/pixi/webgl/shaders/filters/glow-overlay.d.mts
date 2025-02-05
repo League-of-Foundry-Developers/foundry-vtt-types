@@ -1,14 +1,6 @@
-import type { FixedInstanceType } from "../../../../../../utils/index.d.mts";
-
-declare abstract class AnyGlowOverlayFilter extends GlowOverlayFilter {
-  constructor(arg0: never, ...args: never[]);
-}
+import type { FixedInstanceType } from "fvtt-types/utils";
 
 declare global {
-  namespace GlowOverlayFilter {
-    type AnyConstructor = typeof AnyGlowOverlayFilter;
-  }
-
   /**
    * A filter which implements an inner or outer glow around the source texture.
    * Inspired from https://github.com/pixijs/filters/tree/main/filters/glow
@@ -72,4 +64,13 @@ declare global {
       clear: PIXI.CLEAR_MODES,
     ): void;
   }
+
+  namespace GlowOverlayFilter {
+    interface Any extends AnyGlowOverlayFilter {}
+    type AnyConstructor = typeof AnyGlowOverlayFilter;
+  }
+}
+
+declare abstract class AnyGlowOverlayFilter extends GlowOverlayFilter {
+  constructor(arg0: never, ...args: never[]);
 }

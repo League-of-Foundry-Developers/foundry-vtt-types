@@ -10,4 +10,6 @@ const config = new MacroConfig(macro);
 expectTypeOf(config.object).toEqualTypeOf<Macro>();
 
 const withCustomOptions = new MacroConfig<DocumentSheetOptions<Macro.Implementation> & { custom: true }>(macro);
-expectTypeOf(withCustomOptions.options).toEqualTypeOf<DocumentSheetOptions<Macro.Implementation> & { custom: true }>();
+expectTypeOf(withCustomOptions.options).toEqualTypeOf<
+  DocumentSheetOptions<Macro.Implementation> & { custom: true }
+>();

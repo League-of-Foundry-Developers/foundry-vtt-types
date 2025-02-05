@@ -1,4 +1,4 @@
-import type { AnyMutableObject, InexactPartial } from "../../../utils/index.d.mts";
+import type { AnyMutableObject, InexactPartial } from "fvtt-types/utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.d.mts";
 import type * as CONST from "../constants.mts";

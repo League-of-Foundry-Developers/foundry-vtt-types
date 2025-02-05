@@ -1,12 +1,19 @@
 import type BaseGrid from "./base.d.mts";
 
-import type { InexactPartial } from "../../../utils/index.d.mts";
+import type { InexactPartial } from "fvtt-types/utils";
 
 declare class HexagonalGrid extends BaseGrid {
   /**
    * The hexagonal grid constructor.
    */
   constructor(config: HexagonalGrid.Configuration);
+
+  // declared here for type-checking, but values are limited to these in constructor
+  override type:
+    | typeof CONST.GRID_TYPES.HEXEVENQ
+    | typeof CONST.GRID_TYPES.HEXODDQ
+    | typeof CONST.GRID_TYPES.HEXEVENR
+    | typeof CONST.GRID_TYPES.HEXODDR;
 
   /** Is this grid column-based (flat-topped) or row-based (pointy-topped)yy? */
   columns: boolean;
@@ -31,7 +38,7 @@ declare class HexagonalGrid extends BaseGrid {
    * @param coords - The coordinates
    * @returns The cube coordinates
    */
-  getCube(coords: HexagonalGrid.Configuration): HexagonalGrid.Cube;
+  getCube(coords: HexagonalGrid.Coordinates): HexagonalGrid.Cube;
 
   /**
    * Returns the cube coordinates of grid spaces adjacent to the one corresponding to the given coordinates.

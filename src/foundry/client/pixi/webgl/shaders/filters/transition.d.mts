@@ -1,49 +1,19 @@
-import type { InexactPartial, ValueOf } from "../../../../../../utils/index.d.mts";
-
-declare abstract class AnyTextureTransitionFilter extends TextureTransitionFilter {
-  constructor(arg0: never, ...args: never[]);
-}
+import type { Brand, InexactPartial } from "fvtt-types/utils";
 
 declare global {
-  namespace TextureTransitionFilter {
-    type AnyConstructor = typeof AnyTextureTransitionFilter;
-
-    /**
-     * @privateRemarks types are literals and not `string` to make the `type` getter and setter typings work
-     */
-    interface TYPES {
-      FADE: "fade";
-      SWIRL: "swirl";
-      WATER_DROP: "waterDrop";
-      MORPH: "morph";
-      CROSSHATCH: "crosshatch";
-      WIND: "wind";
-      WAVES: "waves";
-      WHITE_NOISE: "whiteNoise";
-      HOLOGRAM: "hologram";
-      HOLE: "hole";
-      HOLE_SWIRL: "holeSwirl";
-      GLITCH: "glitch";
-      DOTS: "dots";
-    }
-  }
-
   /**
    * A filter specialized for transition effects between a source object and a target texture.
    */
   class TextureTransitionFilter extends AbstractBaseFilter {
-    /**
-     * Transition types for this shader.
-     */
-    static get TYPES(): TextureTransitionFilter.TYPES;
+    static get TYPES(): TextureTransitionFilter.Types;
 
     /**
      * The transition type (see {@link TextureTransitionFilter.TYPES}).
      * @defaultValue TYPES.FADE
      */
-    get type(): ValueOf<TextureTransitionFilter.TYPES>;
+    get type(): TextureTransitionFilter.TYPES;
 
-    set type(type: ValueOf<TextureTransitionFilter.TYPES>);
+    set type(type);
 
     /**
      * Sampler target for this filter.
@@ -61,30 +31,7 @@ declare global {
     static animate(
       subject: PIXI.Sprite | SpriteMesh,
       texture: PIXI.Texture,
-      options?: InexactPartial<{
-        /**
-         * The transition type
-         * @defaultValue `TYPES.FADE`
-         */
-        type: ValueOf<TextureTransitionFilter.TYPES>;
-
-        /**
-         * The name of the {@link CanvasAnimation}.
-         */
-        name: string | symbol;
-
-        /**
-         * The animation duration
-         * @defaultValue 1000
-         * @remarks this function does not provide a default, but CanvasAnimation.animate does
-         */
-        duration: number;
-
-        /**
-         * The easing function of the animation
-         */
-        easing: CanvasAnimation.EasingFunction;
-      }>,
+      options?: TextureTransitionFilter.AnimateOptions,
     ): Promise<boolean>;
 
     /**
@@ -116,4 +63,64 @@ declare global {
       clearMode?: PIXI.CLEAR_MODES,
     ): void;
   }
+
+  namespace TextureTransitionFilter {
+    interface Any extends AnyTextureTransitionFilter {}
+    type AnyConstructor = typeof AnyTextureTransitionFilter;
+
+    type TYPES = Brand<string, "TextureTransitionFilter.TYPES">;
+
+    /**
+     * Transition types for this shader.
+     */
+    interface Types {
+      readonly FADE: "fade" & TextureTransitionFilter.TYPES;
+      readonly SWIRL: "swirl" & TextureTransitionFilter.TYPES;
+      readonly WATER_DROP: "waterDrop" & TextureTransitionFilter.TYPES;
+      readonly MORPH: "morph" & TextureTransitionFilter.TYPES;
+      readonly CROSSHATCH: "crosshatch" & TextureTransitionFilter.TYPES;
+      readonly WIND: "wind" & TextureTransitionFilter.TYPES;
+      readonly WAVES: "waves" & TextureTransitionFilter.TYPES;
+      readonly WHITE_NOISE: "whiteNoise" & TextureTransitionFilter.TYPES;
+      readonly HOLOGRAM: "hologram" & TextureTransitionFilter.TYPES;
+      readonly HOLE: "hole" & TextureTransitionFilter.TYPES;
+      readonly HOLE_SWIRL: "holeSwirl" & TextureTransitionFilter.TYPES;
+      readonly GLITCH: "glitch" & TextureTransitionFilter.TYPES;
+      readonly DOTS: "dots" & TextureTransitionFilter.TYPES;
+    }
+
+    /** @internal */
+    type _AnimateOptions = InexactPartial<{
+      /**
+       * The transition type
+       * @defaultValue `TYPES.FADE`
+       * @remarks Can't be null because it only has a signature-provided default.
+       */
+      type: TextureTransitionFilter.TYPES;
+
+      /**
+       * The name of the {@link CanvasAnimation}.
+       * @remarks All use of `name` in `CanvasAnimation.animate` is predicated on `if (name)`, so null should be equivalent to leaving it off.
+       */
+      name: PropertyKey | null;
+
+      /**
+       * The animation duration
+       * @defaultValue `1000`
+       * @remarks This function does not provide a default, but CanvasAnimation.animate does. Can't be null beause that default is only signature-provided.
+       */
+      duration: number;
+
+      /**
+       * The easing function of the animation
+       */
+      easing: CanvasAnimation.EasingFunction | null;
+    }>;
+
+    interface AnimateOptions extends _AnimateOptions {}
+  }
+}
+
+declare abstract class AnyTextureTransitionFilter extends TextureTransitionFilter {
+  constructor(arg0: never, ...args: never[]);
 }

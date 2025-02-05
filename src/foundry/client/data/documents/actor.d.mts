@@ -1,4 +1,4 @@
-import type { DeepPartial, InexactPartial } from "../../../../utils/index.d.mts";
+import type { DeepPartial, InexactPartial } from "fvtt-types/utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type EmbeddedCollection from "../../../common/abstract/embedded-collection.d.mts";
@@ -376,7 +376,7 @@ declare global {
     getActiveTokens<ReturnDocument extends boolean = false>(
       linked?: boolean,
       document?: ReturnDocument,
-    ): ReturnDocument extends true ? TokenDocument.Implementation[] : Token.Implementation[];
+    ): ReturnDocument extends true ? TokenDocument.Implementation[] : TokenDocument.Implementation[];
 
     /**
      * Get all ActiveEffects that may apply to this Actor.
@@ -397,7 +397,7 @@ declare global {
      * @param data - Additional data, such as x, y, rotation, etc. for the created token data (default: `{}`)
      * @returns The created TokenData instance
      */
-    getTokenDocument(data?: foundry.documents.BaseToken.ConstructorData): Promise<TokenDocument.Implementation>;
+    getTokenDocument(data?: Token.CreateData): Promise<TokenDocument.Implementation>;
 
     /**
      * Get an Array of Token images which could represent this Actor

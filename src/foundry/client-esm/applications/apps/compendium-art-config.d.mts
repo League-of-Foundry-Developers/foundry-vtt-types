@@ -1,4 +1,4 @@
-import type { ConformRecord, InterfaceToObject, MustConform, DeepPartial } from "../../../../utils/index.d.mts";
+import type { ConformRecord, InterfaceToObject, MustConform, DeepPartial } from "fvtt-types/utils";
 import type { CompendiumArtDescriptor } from "../../helpers/_types.d.mts";
 import type ApplicationV2 from "../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
@@ -28,7 +28,6 @@ declare class CompendiumArtConfig<
   /*  Rendering                                   */
   /* -------------------------------------------- */
 
-  /** @override */
   override _prepareContext(_options: DeepPartial<ApplicationV2.RenderOptions>): Promise<RenderContext>;
 }
 

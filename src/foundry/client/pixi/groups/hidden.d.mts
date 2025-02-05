@@ -1,14 +1,17 @@
-import type { EventMode } from "pixi.js";
+import type { HandleEmptyObject } from "fvtt-types/utils";
 
 declare global {
   /**
    * A specialized canvas group for rendering hidden containers before all others (like masks).
    */
-  class HiddenCanvasGroup extends CanvasGroupMixin<typeof PIXI.Container, "hidden">(PIXI.Container) {
+  class HiddenCanvasGroup<
+    DrawOptions extends HiddenCanvasGroup.DrawOptions = HiddenCanvasGroup.DrawOptions,
+    TearDownOptions extends HiddenCanvasGroup.TearDownOptions = HiddenCanvasGroup.TearDownOptions,
+  > extends CanvasGroupMixin<typeof PIXI.Container, "hidden">(PIXI.Container)<DrawOptions, TearDownOptions> {
     /**
      * @defaultValue `"none"`
      */
-    override eventMode: EventMode;
+    override eventMode: PIXI.EventMode;
 
     /**
      * The container which hold masks.
@@ -20,25 +23,34 @@ declare global {
      * @param name          - Name of the mask.
      * @param displayObject - Display object to add.
      * @param position      - Position of the mask.
+     * @throws If `displayObject` doesn't implement a `clear` method, or if `name` is an empty string
+     * @remarks `position` is not used if fasley
      */
-    addMask(name: string, displayObject: PIXI.DisplayObject, position?: number): void;
+    addMask(name: string, displayObject: PIXI.DisplayObject, position?: number | null): void;
 
     /**
      * Invalidate the masks: flag them for rerendering.
      */
     invalidateMasks(): void;
 
-    protected override _draw(options: CanvasGroupMixin.DrawOptions): Promise<void>;
+    protected override _draw(options: HandleEmptyObject<DrawOptions>): Promise<void>;
 
-    protected override _tearDown(options: CanvasGroupMixin.TearDownOptions): Promise<void>;
+    protected override _tearDown(options: HandleEmptyObject<TearDownOptions>): Promise<void>;
   }
 
   namespace HiddenCanvasGroup {
-    type Any = AnyHiddenCanvasGroup;
+    interface Any extends AnyHiddenCanvasGroup {}
     type AnyConstructor = typeof AnyHiddenCanvasGroup;
+
+    interface DrawOptions extends CanvasGroupMixin.DrawOptions {}
+
+    interface TearDownOptions extends CanvasGroupMixin.TearDownOptions {}
   }
 }
 
-declare abstract class AnyHiddenCanvasGroup extends HiddenCanvasGroup {
+declare abstract class AnyHiddenCanvasGroup extends HiddenCanvasGroup<
+  HiddenCanvasGroup.DrawOptions,
+  HiddenCanvasGroup.TearDownOptions
+> {
   constructor(arg0: never, ...args: never[]);
 }

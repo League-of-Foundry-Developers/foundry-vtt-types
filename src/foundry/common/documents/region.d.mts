@@ -13,7 +13,7 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
    * @param context     - Construction context options
    */
   // TODO(LukeAbby): This constructor is causing a circular error.
-  // constructor(data: Partial<BaseRegion.ConstructorData>, context?: Document.ConstructionContext<BaseRegion.Parent>);
+  // constructor(data: Partial<BaseRegion.CreateData>, context?: Document.ConstructionContext<BaseRegion.Parent>);
 
   static override metadata: BaseRegion.Metadata;
 
