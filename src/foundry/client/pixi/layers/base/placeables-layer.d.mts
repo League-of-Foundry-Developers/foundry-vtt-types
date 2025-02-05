@@ -231,8 +231,9 @@ declare global {
      * @throws An error if explicitly provided id is not valid
      * @remarks Overload is necessary to ensure that one of `angle` or `delta` are numeric in `options`
      */
-    rotateMany(options?: RotationOptionsWithAngle): Promise<Document.ConfiguredObjectInstanceForName<DocumentName>[]>;
-    rotateMany(options?: RotationOptionsWithDelta): Promise<Document.ConfiguredObjectInstanceForName<DocumentName>[]>;
+    rotateMany(
+      options?: PlaceablesLayer.RotationOptions,
+    ): Promise<Document.ConfiguredObjectInstanceForName<DocumentName>[]>;
 
     /**
      * Simultaneously move multiple PlaceableObjects via keyboard movement offsets.
@@ -244,8 +245,7 @@ declare global {
      * @throws An error if explicitly provided id is not valid
      */
     moveMany(
-      /** @remarks can't be NullishProps becuase `dx` and `dy` must be in `[-1, 0, 1]` */
-      options?: InexactPartial<MovementOptions>,
+      options?: PlaceablesLayer.MovementOptions,
     ): Promise<Document.ConfiguredObjectInstanceForName<DocumentName>[]> | undefined;
 
     /**
@@ -552,97 +552,82 @@ declare global {
     namespace LayerOptions {
       type Any = LayerOptions<any>;
     }
+
+    interface RotationOptions {
+      /**
+       * A target angle of rotation (in degrees) where zero faces "south"
+       *
+       * @remarks If both `angle` and `delta` are provided then `angle` is used.
+       */
+      angle?: number | null | undefined;
+
+      /**
+       * An incremental angle of rotation (in degrees)
+       *
+       * @remarks If both `angle` and `delta` are provided then `angle` is used.
+       */
+      delta?: number | null | undefined;
+
+      /**
+       * Snap the resulting angle to a multiple of some increment (in degrees)
+       */
+      snap?: number | null | undefined;
+
+      /**
+       * An Array of object IDs to target for rotation
+       */
+      ids?: string[] | null | undefined;
+
+      /**
+       * Rotate objects whose documents are locked?
+       * @defaultValue `false`
+       */
+      includeLocked?: boolean | null | undefined;
+    }
+
+    interface _MovementOptions {
+      /**
+       * Horizontal movement direction
+       * @defaultValue `0`
+       *
+       * @remarks dx cannot be `null` because it must be in `[-1, 0, 1]`. However it may be
+       * `undefined` because it has a parameter default of `0`.
+       */
+      dx?: -1 | 0 | 1 | undefined;
+
+      /**
+       * Vertical movement direction
+       * @defaultValue `0`
+       *
+       * @remarks dx cannot be `null` because it must be in `[-1, 0, 1]`. However it may be
+       * `undefined` because it has a parameter default of `0`.
+       */
+      dy?: -1 | 0 | 1 | undefined;
+
+      /**
+       * Rotate the placeable to the keyboard direction instead of moving
+       * @defaultValue
+       */
+      rotate?: boolean | null | undefined;
+
+      /**
+       * An Array of object IDs to target for movement. The default is the IDs of controlled objects.
+       * @defaultValue `this.controlled.filter(o => !o.data.locked).map(o => o.id)`
+       */
+      ids?: string[] | null | undefined;
+
+      /**
+       * Move objects whose documents are locked?
+       * @defaultValue `false`
+       */
+      includeLocked?: boolean | null | undefined;
+    }
+
+    /** @remarks can't be NullishProps because `dx` and `dy` must be in `[-1, 0, 1]` */
+    interface MovementOptions extends InexactPartial<_MovementOptions> {}
   }
 }
 
 declare abstract class AnyPlaceablesLayer extends PlaceablesLayer<any> {
   constructor(arg0: never, ...args: never[]);
-}
-
-interface RotationOptionsWithDelta {
-  /**
-   * A target angle of rotation (in degrees) where zero faces "south"
-   */
-  angle?: number | null | undefined;
-
-  /**
-   * An incremental angle of rotation (in degrees)
-   */
-  delta: number;
-
-  /**
-   * Snap the resulting angle to a multiple of some increment (in degrees)
-   */
-  snap?: number | null | undefined;
-
-  /**
-   * An Array of object IDs to target for rotation
-   */
-  ids?: string[] | null | undefined;
-
-  /**
-   * Rotate objects whose documents are locked?
-   * @defaultValue `false`
-   */
-  includeLocked?: boolean | null | undefined;
-}
-
-interface RotationOptionsWithAngle {
-  /**
-   * A target angle of rotation (in degrees) where zero faces "south"
-   */
-  angle: number;
-
-  /**
-   * An incremental angle of rotation (in degrees)
-   */
-  delta?: number | null | undefined;
-
-  /**
-   * Snap the resulting angle to a multiple of some increment (in degrees)
-   */
-  snap?: number | null | undefined;
-
-  /**
-   * An Array of object IDs to target for rotation
-   */
-  ids?: string[] | null | undefined;
-
-  /**
-   * Rotate objects whose documents are locked?
-   * @defaultValue `false`
-   */
-  includeLocked?: boolean | null | undefined;
-}
-
-interface MovementOptions {
-  /**
-   * Horizontal movement direction
-   * @defaultValue `0`
-   */
-  dx: -1 | 0 | 1;
-
-  /**
-   * Vertical movement direction
-   * @defaultValue `0`
-   */
-  dy: -1 | 0 | 1;
-
-  /**
-   * Rotate the placeable to the keyboard direction instead of moving
-   * @defaultValue
-   */
-  rotate: boolean;
-
-  /**
-   * An Array of object IDs to target for movement. The default is the IDs of controlled objects.
-   * @defaultValue `this.controlled.filter(o => !o.data.locked).map(o => o.id)`
-   */
-  ids: string[];
-
-  /**
-   * Move objects whose documents are locked?
-   * @defaultValue `false`
-   */
-  includeLocked: boolean;
 }

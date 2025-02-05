@@ -5,7 +5,7 @@ import type ApplicationV2 from "../api/application.d.mts";
  * @remarks TODO: Stub
  */
 declare class BasePlaceableHUD<
-  ActiveHUDObject extends PlaceableObject = PlaceableObject,
+  ActiveHUDObject extends PlaceableObject.Any = PlaceableObject,
   RenderContext extends object = BasePlaceableHUD.RenderContext,
   Configuration extends ApplicationV2.Configuration = ApplicationV2.Configuration,
   RenderOptions extends ApplicationV2.RenderOptions = ApplicationV2.RenderOptions,
