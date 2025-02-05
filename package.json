@@ -83,6 +83,7 @@
     "@pixi/graphics-smooth": "^1.1.0",
     "@pixi/particle-emitter": "^5.0.8",
     "@types/earcut": "^3.0.0",
+    "earcut": "^3.0.1",
     "@types/jquery": "~3.5.22",
     "@types/showdown": "~2.0.6",
     "@types/simple-peer": "~9.11.1",
