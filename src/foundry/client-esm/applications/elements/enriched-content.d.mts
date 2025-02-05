@@ -21,9 +21,9 @@ export default class HTMLEnrichedContentElement extends HTMLElement {
 
   /**
    * Fire a callback on change to an observed attribute.
-   * @param attrName The name of the attribute
-   * @param oldValue The old value: null indicates the attribute was not present.
-   * @param newValue The new value: null indicates the attribute is removed.
+   * @param attrName - The name of the attribute
+   * @param oldValue - The old value: null indicates the attribute was not present.
+   * @param newValue - The new value: null indicates the attribute is removed.
    */
   attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void;
 }
