@@ -1,13 +1,10 @@
-export {};
+import type { HandleEmptyObject } from "fvtt-types/utils";
 
 declare global {
   /**
    * A CanvasLayer for displaying coloration visual effects
    */
-  class CanvasColorationEffects<
-    DrawOptions extends CanvasColorationEffects.DrawOptions = CanvasColorationEffects.DrawOptions,
-    TearDownOptions extends CanvasColorationEffects.TearDownOptions = CanvasColorationEffects.TearDownOptions,
-  > extends CanvasLayer<DrawOptions, TearDownOptions> {
+  class CanvasColorationEffects extends CanvasLayer {
     /**
      * @defaultValue `true`
      */
@@ -23,9 +20,9 @@ declare global {
      */
     clear(): void;
 
-    protected override _draw(options?: DrawOptions): Promise<void>;
+    protected override _draw(options: HandleEmptyObject<CanvasColorationEffects.DrawOptions>): Promise<void>;
 
-    protected override _tearDown(options?: TearDownOptions): Promise<void>;
+    protected override _tearDown(options: HandleEmptyObject<CanvasColorationEffects.TearDownOptions>): Promise<void>;
   }
 
   namespace CanvasColorationEffects {

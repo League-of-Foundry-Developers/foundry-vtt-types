@@ -1,15 +1,10 @@
-import type { HandleEmptyObject } from "../../../../../utils/index.d.mts";
-
-export {};
+import type { HandleEmptyObject } from "fvtt-types/utils";
 
 declare global {
   /**
    * An abstract pattern for primary layers of the game canvas to implement
    */
-  abstract class CanvasLayer<
-    DrawOptions extends CanvasLayer.DrawOptions = CanvasLayer.DrawOptions,
-    TearDownOptions extends CanvasLayer.TearDownOptions = CanvasLayer.TearDownOptions,
-  > extends PIXI.Container {
+  abstract class CanvasLayer extends PIXI.Container {
     constructor();
 
     /**
@@ -50,26 +45,26 @@ declare global {
      * The Promise resolves to the drawn layer once its contents are successfully rendered.
      * @param options - Options which configure how the layer is drawn
      */
-    draw(options?: HandleEmptyObject<DrawOptions>): Promise<this>;
+    draw(options?: HandleEmptyObject<CanvasLayer.DrawOptions>): Promise<this>;
 
     /**
      * The inner _draw method which must be defined by each CanvasLayer subclass.
      * @param options - Options which configure how the layer is drawn
      */
-    protected abstract _draw(options?: HandleEmptyObject<DrawOptions>): Promise<void>;
+    protected abstract _draw(options: HandleEmptyObject<CanvasLayer.DrawOptions>): Promise<void>;
 
     /**
      * Deconstruct data used in the current layer in preparation to re-draw the canvas
      * @param options - Options which configure how the layer is deconstructed
      * @remarks ControlsLayer returns void. See https://gitlab.com/foundrynet/foundryvtt/-/issues/6939
      */
-    tearDown(options?: HandleEmptyObject<TearDownOptions>): Promise<this | void>;
+    tearDown(options?: HandleEmptyObject<CanvasLayer.TearDownOptions>): Promise<this>;
 
     /**
      * The inner _tearDown method which may be customized by each CanvasLayer subclass.
      * @param options - Options which configure how the layer is deconstructed
      */
-    protected _tearDown(options?: HandleEmptyObject<TearDownOptions>): Promise<void>;
+    protected _tearDown(options: HandleEmptyObject<CanvasLayer.TearDownOptions>): Promise<void>;
   }
 
   namespace CanvasLayer {
@@ -93,6 +88,6 @@ declare global {
   }
 }
 
-declare abstract class AnyCanvasLayer extends CanvasLayer<CanvasLayer.DrawOptions, CanvasLayer.TearDownOptions> {
+declare abstract class AnyCanvasLayer extends CanvasLayer {
   constructor(arg0: never, ...args: never[]);
 }

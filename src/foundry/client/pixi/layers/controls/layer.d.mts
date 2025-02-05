@@ -3,7 +3,8 @@ import type {
   InexactPartial,
   NullishProps,
   RemoveIndexSignatures,
-} from "../../../../../utils/index.d.mts";
+  HandleEmptyObject,
+} from "fvtt-types/utils";
 import type { LineIntersection } from "../../../../common/utils/geometry.d.mts";
 
 declare global {
@@ -15,10 +16,7 @@ declare global {
    * 2) Ruler measurement
    * 3) Map pings
    */
-  class ControlsLayer<
-    DrawOptions extends ControlsLayer.DrawOptions = ControlsLayer.DrawOptions,
-    TearDownOptions extends ControlsLayer.TearDownOptions = ControlsLayer.TearDownOptions,
-  > extends InteractionLayer<DrawOptions, TearDownOptions> {
+  class ControlsLayer extends InteractionLayer {
     constructor();
 
     /**
@@ -105,9 +103,9 @@ declare global {
      */
     getRulerForUser(userId: string): Ruler | null;
 
-    override _draw(options?: DrawOptions): Promise<void>;
+    protected override _draw(options: HandleEmptyObject<ControlsLayer.DrawOptions>): Promise<void>;
 
-    override _tearDown(options?: TearDownOptions): Promise<void>;
+    protected override _tearDown(options: HandleEmptyObject<ControlsLayer.TearDownOptions>): Promise<void>;
 
     /**
      * Draw the cursors container

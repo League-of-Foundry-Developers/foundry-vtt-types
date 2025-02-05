@@ -6,10 +6,7 @@ declare global {
    * This layer uses an event-driven workflow to perform the minimal required calculation in response to changes.
    * @see {@link PointSource}
    */
-  class CanvasVisibility<
-    DrawOptions extends CanvasVisibility.DrawOptions = CanvasVisibility.DrawOptions,
-    TearDownOptions extends CanvasVisibility.TearDownOptions = CanvasVisibility.TearDownOptions,
-  > extends CanvasLayer<DrawOptions, TearDownOptions> {
+  class CanvasVisibility extends CanvasLayer {
     /**
      * The currently revealed vision.
      */
@@ -102,9 +99,9 @@ declare global {
      */
     initializeVisionMode(): void;
 
-    protected override _draw(options?: HandleEmptyObject<DrawOptions>): Promise<void>;
+    protected override _draw(options: HandleEmptyObject<CanvasVisibility.DrawOptions>): Promise<void>;
 
-    protected override _tearDown(options?: HandleEmptyObject<TearDownOptions>): Promise<void>;
+    protected override _tearDown(options: HandleEmptyObject<CanvasVisibility.TearDownOptions>): Promise<void>;
 
     /**
      * Update the display of the sight layer.
@@ -226,9 +223,6 @@ declare global {
   }
 }
 
-declare abstract class AnyCanvasVisibility extends CanvasVisibility<
-  CanvasVisibility.DrawOptions,
-  CanvasVisibility.TearDownOptions
-> {
+declare abstract class AnyCanvasVisibility extends CanvasVisibility {
   constructor(arg0: never, ...args: never[]);
 }

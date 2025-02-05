@@ -1,13 +1,10 @@
-import type { NullishProps } from "fvtt-types/utils";
+import type { HandleEmptyObject, NullishProps } from "fvtt-types/utils";
 
 declare global {
   /**
    * A subclass of CanvasLayer which provides support for user interaction with its contained objects.
    */
-  class InteractionLayer<
-    DrawOptions extends InteractionLayer.DrawOptions = InteractionLayer.DrawOptions,
-    TearDownOptions extends CanvasLayer.TearDownOptions = CanvasLayer.TearDownOptions,
-  > extends CanvasLayer<DrawOptions, TearDownOptions> {
+  class InteractionLayer extends CanvasLayer {
     /**
      * Is this layer currently active
      */
@@ -65,7 +62,7 @@ declare global {
      */
     protected _deactivate(): void;
 
-    protected override _draw(options?: DrawOptions): Promise<void>;
+    protected override _draw(options: HandleEmptyObject<InteractionLayer.DrawOptions>): Promise<void>;
 
     /**
      * Get the zIndex that should be used for ordering this layer vertically relative to others in the same Container.

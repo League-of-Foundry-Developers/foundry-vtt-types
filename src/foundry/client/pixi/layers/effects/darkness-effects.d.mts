@@ -1,13 +1,10 @@
-export {};
+import type { HandleEmptyObject } from "fvtt-types/utils";
 
 declare global {
   /**
    * A layer of background alteration effects which change the appearance of the primary group render texture.
    */
-  class CanvasDarknessEffects<
-    DrawOptions extends CanvasDarknessEffects.DrawOptions = CanvasDarknessEffects.DrawOptions,
-    TearDownOptions extends CanvasLayer.TearDownOptions = CanvasLayer.TearDownOptions,
-  > extends CanvasLayer<DrawOptions, TearDownOptions> {
+  class CanvasDarknessEffects extends CanvasLayer {
     /**
      * @defaultValue `true`
      */
@@ -18,7 +15,7 @@ declare global {
      */
     clear(): void;
 
-    override _draw(options: DrawOptions): Promise<void>;
+    protected override _draw(options: HandleEmptyObject<CanvasDarknessEffects.DrawOptions>): Promise<void>;
   }
 
   namespace CanvasDarknessEffects {

@@ -1,13 +1,10 @@
-export {};
+import type { HandleEmptyObject } from "fvtt-types/utils";
 
 /**
  * The Lighting Layer which ambient light sources as part of the CanvasEffectsGroup.
  */
 declare global {
-  class LightingLayer<
-    DrawOptions extends LightingLayer.DrawOptions = LightingLayer.DrawOptions,
-    TearDownOptions extends LightingLayer.TearDownOptions = LightingLayer.TearDownOptions,
-  > extends PlaceablesLayer<"AmbientLight", DrawOptions, TearDownOptions> {
+  class LightingLayer extends PlaceablesLayer<"AmbientLight"> {
     /**
      * @privateRemarks This is not overridden in foundry but reflects the real behavior.
      */
@@ -34,9 +31,9 @@ declare global {
 
     override get hookName(): string;
 
-    override _draw(options?: DrawOptions): Promise<void>;
+    protected override _draw(options: HandleEmptyObject<LightingLayer.DrawOptions>): Promise<void>;
 
-    override _tearDown(options?: TearDownOptions): Promise<void>;
+    protected override _tearDown(options: HandleEmptyObject<LightingLayer.TearDownOptions>): Promise<void>;
 
     /**
      * Refresh the fields of all the ambient lights on this scene.

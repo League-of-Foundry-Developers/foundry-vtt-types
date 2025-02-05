@@ -1,13 +1,10 @@
-import type { InexactPartial, NullishProps } from "fvtt-types/utils";
+import type { HandleEmptyObject, InexactPartial, NullishProps } from "fvtt-types/utils";
 
 declare global {
   /**
    * A CanvasLayer responsible for drawing a square grid
    */
-  class GridLayer<
-    DrawOptions extends GridLayer.DrawOptions = GridLayer.DrawOptions,
-    TearDownOptions extends CanvasLayer.TearDownOptions = CanvasLayer.TearDownOptions,
-  > extends CanvasLayer<DrawOptions, TearDownOptions> {
+  class GridLayer extends CanvasLayer {
     /**
      * @remarks Due to the grid rework in v12 this points to a BaseGrid subclass rather than a GridLayer instance,
      *          however to avoid inheritance-based issues this is left as the intended GridLayer instance
@@ -47,7 +44,7 @@ declare global {
      * Draw the grid
      * @param options - Override settings used in place of those saved to the Scene data
      */
-    _draw(options?: DrawOptions): Promise<void>;
+    protected override _draw(options: HandleEmptyObject<GridLayer.DrawOptions>): Promise<void>;
 
     /**
      * Creates the grid mesh.

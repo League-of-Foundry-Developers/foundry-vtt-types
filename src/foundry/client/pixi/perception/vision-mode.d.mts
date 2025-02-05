@@ -208,22 +208,22 @@ declare global {
             required: false;
             initial: undefined;
             nullable: false;
-            min: number;
-            max: number;
+            min: -1;
+            max: 1;
           }>;
           saturation: fields.NumberField<{
             required: false;
             initial: undefined;
             nullable: false;
-            min: number;
-            max: number;
+            min: -1;
+            max: 1;
           }>;
           contrast: fields.NumberField<{
             required: false;
             initial: undefined;
             nullable: false;
-            min: number;
-            max: number;
+            min: -1;
+            max: 1;
           }>;
         }>;
         preferred: fields.BooleanField<{ initial: false }>;

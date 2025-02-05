@@ -4,7 +4,8 @@ import type {
   NullishProps,
   ValueOf,
   FixedInstanceType,
-} from "../../../../../utils/index.d.mts";
+  HandleEmptyObject,
+} from "fvtt-types/utils";
 import type Document from "../../../../common/abstract/document.d.mts";
 import type EmbeddedCollection from "../../../../common/abstract/embedded-collection.d.mts";
 
@@ -17,11 +18,7 @@ declare global {
    * @typeParam DocumentName - The key of the configuration which defines the object and document class.
    * @typeParam Options      - The type of the options in this layer.
    */
-  class PlaceablesLayer<
-    DocumentName extends PlaceablesLayer.Type,
-    DrawOptions extends PlaceablesLayer.DrawOptions = PlaceablesLayer.DrawOptions,
-    TearDownOptions extends PlaceablesLayer.TearDownOptions = PlaceablesLayer.TearDownOptions,
-  > extends InteractionLayer<DrawOptions, TearDownOptions> {
+  class PlaceablesLayer<DocumentName extends PlaceablesLayer.Type> extends InteractionLayer {
     constructor();
 
     /**
@@ -173,7 +170,7 @@ declare global {
       | Exclude<this["documentCollection"], null>
       | FixedInstanceType<Document.ConfiguredClassForName<DocumentName>>[];
 
-    protected override _draw(options?: DrawOptions): Promise<void>;
+    protected override _draw(options: HandleEmptyObject<PlaceablesLayer.DrawOptions>): Promise<void>;
 
     /**
      * Draw a single placeable object
@@ -183,7 +180,7 @@ declare global {
       document: Document.ConfiguredInstanceForName<DocumentName>,
     ): Document.ConfiguredObjectInstanceForName<DocumentName>;
 
-    protected override _tearDown(options?: TearDownOptions): Promise<void>;
+    protected override _tearDown(options: HandleEmptyObject<PlaceablesLayer.TearDownOptions>): Promise<void>;
 
     protected override _activate(): void;
 
