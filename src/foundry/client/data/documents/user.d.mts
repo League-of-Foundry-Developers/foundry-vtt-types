@@ -318,7 +318,7 @@ declare global {
    * @see {@link Users}             The world-level collection of User documents
    * @see {@link UserConfig}     The User configuration application
    */
-  class User extends ClientDocumentMixin(foundry.documents.BaseUser) {
+  abstract class User extends ClientDocumentMixin(foundry.documents.BaseUser) {
     static override metadata: User.Metadata;
 
     static get implementation(): User.ImplementationClass;

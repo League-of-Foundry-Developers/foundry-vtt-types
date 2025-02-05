@@ -487,7 +487,7 @@ declare global {
    * @see {@link SceneConfig}       The Scene configuration application
    *
    */
-  class Scene extends ClientDocumentMixin(foundry.documents.BaseScene) {
+  abstract class Scene extends ClientDocumentMixin(foundry.documents.BaseScene) {
     static override metadata: Scene.Metadata;
 
     static get implementation(): Scene.ImplementationClass;

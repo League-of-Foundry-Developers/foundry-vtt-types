@@ -19,9 +19,7 @@
  * }
  * ```
  */
-export interface ConfiguredActiveEffect<SubType extends ActiveEffect.SubType> {
-  document: unknown;
-}
+export interface ConfiguredActiveEffect<SubType extends ActiveEffect.SubType> {}
 
 /**
  * Use this interface to configure your custom generic `ActorDelta` implementation.
@@ -42,9 +40,7 @@ export interface ConfiguredActiveEffect<SubType extends ActiveEffect.SubType> {
  * }
  * ```
  */
-export interface ConfiguredActorDelta<SubType extends ActorDelta.SubType> {
-  document: unknown;
-}
+export interface ConfiguredActorDelta<SubType extends ActorDelta.SubType> {}
 
 /**
  * Use this interface to configure your custom generic `Actor` implementation.
@@ -86,9 +82,7 @@ export interface ConfiguredActor<SubType extends Actor.SubType> {}
  * }
  * ```
  */
-export interface ConfiguredCard<SubType extends Card.SubType> {
-  document: unknown;
-}
+export interface ConfiguredCard<SubType extends Card.SubType> {}
 
 /**
  * Use this interface to configure your custom generic `Cards` implementation.
@@ -109,9 +103,7 @@ export interface ConfiguredCard<SubType extends Card.SubType> {
  * }
  * ```
  */
-export interface ConfiguredCards<SubType extends Cards.SubType> {
-  document: unknown;
-}
+export interface ConfiguredCards<SubType extends Cards.SubType> {}
 
 /**
  * Use this interface to configure your custom generic `ChatMessage` implementation.
@@ -132,9 +124,7 @@ export interface ConfiguredCards<SubType extends Cards.SubType> {
  * }
  * ```
  */
-export interface ConfiguredChatMessage<SubType extends ChatMessage.SubType> {
-  document: unknown;
-}
+export interface ConfiguredChatMessage<SubType extends ChatMessage.SubType> {}
 
 /**
  * Use this interface to configure your custom generic `Combat` implementation.
@@ -155,9 +145,7 @@ export interface ConfiguredChatMessage<SubType extends ChatMessage.SubType> {
  * }
  * ```
  */
-export interface ConfiguredCombat<SubType extends Combat.SubType> {
-  document: unknown;
-}
+export interface ConfiguredCombat<SubType extends Combat.SubType> {}
 
 /**
  * Use this interface to configure your custom generic `Combatant` implementation.
@@ -178,9 +166,7 @@ export interface ConfiguredCombat<SubType extends Combat.SubType> {
  * }
  * ```
  */
-export interface ConfiguredCombatant<SubType extends Combatant.SubType> {
-  document: unknown;
-}
+export interface ConfiguredCombatant<SubType extends Combatant.SubType> {}
 
 /**
  * Use this interface to configure your custom generic `Folder` implementation.
@@ -201,9 +187,7 @@ export interface ConfiguredCombatant<SubType extends Combatant.SubType> {
  * }
  * ```
  */
-export interface ConfiguredFolder<SubType extends Folder.SubType> {
-  document: unknown;
-}
+export interface ConfiguredFolder<SubType extends Folder.SubType> {}
 
 /**
  * Use this interface to configure your custom generic `Item` implementation.
@@ -224,9 +208,7 @@ export interface ConfiguredFolder<SubType extends Folder.SubType> {
  * }
  * ```
  */
-export interface ConfiguredItem<SubType extends Item.SubType> {
-  document: unknown;
-}
+export interface ConfiguredItem<SubType extends Item.SubType> {}
 
 /**
  * Use this interface to configure your custom generic `JournalEntryPage` implementation.
@@ -247,9 +229,7 @@ export interface ConfiguredItem<SubType extends Item.SubType> {
  * }
  * ```
  */
-export interface ConfiguredJournalEntryPage<SubType extends JournalEntryPage.SubType> {
-  document: unknown;
-}
+export interface ConfiguredJournalEntryPage<SubType extends JournalEntryPage.SubType> {}
 
 /**
  * Use this interface to configure your custom generic `Macro` implementation.
@@ -270,9 +250,7 @@ export interface ConfiguredJournalEntryPage<SubType extends JournalEntryPage.Sub
  * }
  * ```
  */
-export interface ConfiguredMacro<SubType extends Macro.SubType> {
-  document: unknown;
-}
+export interface ConfiguredMacro<SubType extends Macro.SubType> {}
 
 /**
  * Use this interface to configure your custom generic `RegionBehavior` implementation.
@@ -293,9 +271,7 @@ export interface ConfiguredMacro<SubType extends Macro.SubType> {
  * }
  * ```
  */
-export interface ConfiguredRegionBehavior<SubType extends RegionBehavior.SubType> {
-  document: unknown;
-}
+export interface ConfiguredRegionBehavior<SubType extends RegionBehavior.SubType> {}
 
 /**
  * Use this interface to configure your custom generic `TableResult` implementation.
@@ -316,6 +292,4 @@ export interface ConfiguredRegionBehavior<SubType extends RegionBehavior.SubType
  * }
  * ```
  */
-export interface ConfiguredTableResult<SubType extends TableResult.SubType> {
-  document: unknown;
-}
+export interface ConfiguredTableResult<SubType extends TableResult.SubType> {}

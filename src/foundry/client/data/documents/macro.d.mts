@@ -287,7 +287,7 @@ declare global {
    *
    * @param data - Initial data provided to construct the Macro document
    */
-  class Macro<out SubType extends Macro.SubType = Macro.SubType> extends ClientDocumentMixin(
+  abstract class Macro<out SubType extends Macro.SubType = Macro.SubType> extends ClientDocumentMixin(
     foundry.documents.BaseMacro,
   )<SubType> {
     static override metadata: Macro.Metadata;

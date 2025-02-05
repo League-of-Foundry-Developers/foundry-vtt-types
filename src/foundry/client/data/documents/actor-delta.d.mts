@@ -202,7 +202,7 @@ declare global {
    * The client-side ActorDelta embedded document which extends the common BaseActorDelta document model.
    * @see {@link TokenDocument}  The TokenDocument document type which contains ActorDelta embedded documents.
    */
-  class ActorDelta<SubType extends ActorDelta.SubType = ActorDelta.SubType> extends ClientDocumentMixin(
+  abstract class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.SubType> extends ClientDocumentMixin(
     BaseActorDelta,
   )<SubType> {
     protected override _configure(options?: { pack?: string | null }): void;

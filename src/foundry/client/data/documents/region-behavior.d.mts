@@ -32,7 +32,6 @@ declare global {
       ConfiguredRegionBehavior<Type>,
       RegionBehavior<SubType>
     >;
-
     /**
      * A document's parent is something that can contain it.
      * For example an `RegionBehavior` can be contained by an `Actor` which makes `Actor` one of its possible parents.
@@ -215,9 +214,9 @@ declare global {
   /**
    * The client-side RegionBehavior document which extends the common BaseRegionBehavior model.
    */
-  class RegionBehavior<out SubType extends RegionBehavior.SubType = RegionBehavior.SubType> extends ClientDocumentMixin(
-    foundry.documents.BaseRegionBehavior,
-  )<SubType> {
+  abstract class RegionBehavior<
+    out SubType extends RegionBehavior.SubType = RegionBehavior.SubType,
+  > extends ClientDocumentMixin(foundry.documents.BaseRegionBehavior)<SubType> {
     /** A convenience reference to the RegionDocument which contains this RegionBehavior. */
     get region(): RegionDocument.Implementation | null;
 

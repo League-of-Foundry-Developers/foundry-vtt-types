@@ -316,7 +316,7 @@ declare global {
    *
    * @see {@link Cards}                    The Cards document type which contains Card embedded documents
    */
-  class Card<out SubType extends Card.SubType = Card.SubType> extends ClientDocumentMixin(
+  abstract class Card<out SubType extends Card.SubType = Card.SubType> extends ClientDocumentMixin(
     foundry.documents.BaseCard,
   )<SubType> {
     static override metadata: Card.Metadata;

@@ -986,9 +986,13 @@ declare namespace Document {
     | (Name extends "RegionBehavior" ? RegionBehavior.OfType<SubType & RegionBehavior.SubType> : never)
     | (Name extends "TableResult" ? TableResult.OfType<SubType & TableResult.SubType> : never);
 
+  type _ActorDeltaSystemData = {
+    [SubType in keyof SystemData["Actor"]]: IntentionalPartial<SystemData["Actor"][SubType]>;
+  };
+
   // Note(LukeAbby): This is written this way to make it more obviously covariant over `SubType`.
   type SystemFor<Name extends WithSystem, SubType extends SubTypesOf<Name>> = Name extends "ActorDelta"
-    ? IntentionalPartial<SystemFor<"Actor", SubType & ActorDelta.SubType>>
+    ? _ActorDeltaSystemData[ActorDelta.SubType]
     :
         | DiscriminatedUnion<
             SystemData extends {

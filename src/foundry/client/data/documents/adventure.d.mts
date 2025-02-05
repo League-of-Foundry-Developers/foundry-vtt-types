@@ -291,7 +291,7 @@ declare global {
   /**
    * The client-side Adventure document which extends the common {@link foundry.documents.BaseAdventure} model.
    */
-  class Adventure extends ClientDocumentMixin(foundry.documents.BaseAdventure) {
+  abstract class Adventure extends ClientDocumentMixin(foundry.documents.BaseAdventure) {
     /**
      * Perform a full import workflow of this Adventure.
      * Create new and update existing documents within the World.

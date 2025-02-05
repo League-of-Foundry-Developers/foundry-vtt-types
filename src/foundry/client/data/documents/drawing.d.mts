@@ -320,7 +320,7 @@ declare global {
    * @see {@link Scene}               The Scene document type which contains Drawing embedded documents
    * @see {@link DrawingConfig}       The Drawing configuration application
    */
-  class DrawingDocument extends CanvasDocumentMixin(foundry.documents.BaseDrawing) {
+  abstract class DrawingDocument extends CanvasDocumentMixin(foundry.documents.BaseDrawing) {
     static override metadata: DrawingDocument.Metadata;
 
     static get implementation(): DrawingDocument.ImplementationClass;

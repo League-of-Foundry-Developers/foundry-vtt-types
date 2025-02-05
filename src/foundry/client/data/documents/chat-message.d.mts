@@ -338,7 +338,7 @@ declare global {
    * @see {@link Messages}                The world-level collection of ChatMessage documents
    *
    */
-  class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.SubType> extends ClientDocumentMixin(
+  abstract class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.SubType> extends ClientDocumentMixin(
     foundry.documents.BaseChatMessage,
   )<SubType> {
     static override metadata: ChatMessage.Metadata;

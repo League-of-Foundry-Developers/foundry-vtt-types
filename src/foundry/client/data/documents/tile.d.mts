@@ -309,7 +309,7 @@ declare global {
    * @see {@link Scene}            The Scene document type which contains Tile embedded documents
    * @see {@link TileConfig}       The Tile configuration application
    */
-  class TileDocument extends CanvasDocumentMixin(foundry.documents.BaseTile) {
+  abstract class TileDocument extends CanvasDocumentMixin(foundry.documents.BaseTile) {
     static override metadata: TileDocument.Metadata;
 
     static get implementation(): TileDocument.ImplementationClass;

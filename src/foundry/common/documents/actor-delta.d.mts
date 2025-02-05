@@ -14,8 +14,7 @@ import type DataModel from "../abstract/data.d.mts";
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
 declare abstract class BaseActorDelta<
-  // TODO(LukeAbby): Look into variance woes. This can't be marked covariant. This is caused by `IntentionalPartial<SystemFor<"Actor", SubType & ActorDelta.SubType>>`.
-  SubType extends BaseActorDelta.SubType = BaseActorDelta.SubType,
+  out SubType extends BaseActorDelta.SubType = BaseActorDelta.SubType,
 > extends Document<"ActorDelta", BaseActorDelta._Schema, any> {
   // TODO(LukeAbby): This constructor is a symptom of a circular error.
   // constructor(data?: BaseActorDelta.CreateData, context?: Document.ConstructionContext<BaseActorDelta.Parent>);

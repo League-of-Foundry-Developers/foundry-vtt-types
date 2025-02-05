@@ -579,7 +579,7 @@ declare global {
    * @see {@link Scene}               The Scene document type which contains Token embedded documents
    * @see {@link TokenConfig}      The Token configuration application
    */
-  class TokenDocument extends CanvasDocumentMixin(foundry.documents.BaseToken) {
+  abstract class TokenDocument extends CanvasDocumentMixin(foundry.documents.BaseToken) {
     static override metadata: TokenDocument.Metadata;
 
     static get implementation(): TokenDocument.ImplementationClass;

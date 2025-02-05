@@ -213,7 +213,7 @@ declare global {
   /**
    * The client-side FogExploration document which extends the common BaseFogExploration model.
    */
-  class FogExploration extends ClientDocumentMixin(foundry.documents.BaseFogExploration) {
+  abstract class FogExploration extends ClientDocumentMixin(foundry.documents.BaseFogExploration) {
     static override metadata: FogExploration.Metadata;
 
     static get implementation(): FogExploration.ImplementationClass;

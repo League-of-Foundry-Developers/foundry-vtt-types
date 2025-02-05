@@ -234,7 +234,7 @@ declare global {
    * @see {@link Folders}            The world-level collection of Folder documents
    * @see {@link FolderConfig}       The Folder configuration application
    */
-  class Folder<out SubType extends Folder.SubType = Folder.SubType> extends ClientDocumentMixin(
+  abstract class Folder<out SubType extends Folder.SubType = Folder.SubType> extends ClientDocumentMixin(
     foundry.documents.BaseFolder,
   )<SubType> {
     static override metadata: Folder.Metadata;

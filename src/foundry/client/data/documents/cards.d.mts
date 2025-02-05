@@ -397,7 +397,7 @@ declare global {
    * @see {@link CardStacks}                        The world-level collection of Cards documents
    * @see {@link CardsConfig}                       The Cards configuration application
    */
-  class Cards<out SubType extends Cards.SubType = Cards.SubType> extends ClientDocumentMixin(
+  abstract class Cards<out SubType extends Cards.SubType = Cards.SubType> extends ClientDocumentMixin(
     foundry.documents.BaseCards,
   )<SubType> {
     static override metadata: Cards.Metadata;

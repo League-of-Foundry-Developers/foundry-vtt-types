@@ -247,7 +247,7 @@ declare global {
    *
    * @see {@link RollTable}         The RollTable document which contains TableResult embedded documents
    */
-  class TableResult<out SubType extends TableResult.SubType = TableResult.SubType> extends ClientDocumentMixin(
+  abstract class TableResult<out SubType extends TableResult.SubType = TableResult.SubType> extends ClientDocumentMixin(
     foundry.documents.BaseTableResult,
   )<SubType> {
     static override metadata: TableResult.Metadata;

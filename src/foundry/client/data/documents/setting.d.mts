@@ -190,7 +190,7 @@ declare global {
    *
    * @see {@link WorldSettings}       The world-level collection of Setting documents
    */
-  class Setting extends ClientDocumentMixin(foundry.documents.BaseSetting) {
+  abstract class Setting extends ClientDocumentMixin(foundry.documents.BaseSetting) {
     static override metadata: Setting.Metadata;
 
     static get implementation(): Setting.ImplementationClass;

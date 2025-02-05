@@ -232,7 +232,7 @@ declare global {
    * @see {@link Scene}                     The Scene document type which contains AmbientLight documents
    * @see {@link AmbientLightConfig}        The AmbientLight configuration application
    */
-  class AmbientLightDocument extends CanvasDocumentMixin(foundry.documents.BaseAmbientLight) {
+  abstract class AmbientLightDocument extends CanvasDocumentMixin(foundry.documents.BaseAmbientLight) {
     /**
      * @privateRemarks _onUpdate is overridden but with no signature changes.
      * For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.

@@ -364,7 +364,7 @@ declare global {
    *
    * @see {@link JournalEntry}  The JournalEntry document type which contains JournalEntryPage embedded documents.
    */
-  class JournalEntryPage<
+  abstract class JournalEntryPage<
     out SubType extends JournalEntryPage.SubType = JournalEntryPage.SubType,
   > extends ClientDocumentMixin(foundry.documents.BaseJournalEntryPage)<SubType> {
     /**

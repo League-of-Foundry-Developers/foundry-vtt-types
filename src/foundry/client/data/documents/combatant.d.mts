@@ -259,7 +259,7 @@ declare global {
    * @see {@link Combat}                    The Combat document which contains Combatant embedded documents
    * @see {@link CombatantConfig}        The Combatant configuration application
    */
-  class Combatant<out SubType extends Combatant.SubType = Combatant.SubType> extends ClientDocumentMixin(
+  abstract class Combatant<out SubType extends Combatant.SubType = Combatant.SubType> extends ClientDocumentMixin(
     foundry.documents.BaseCombatant,
   )<SubType> {
     static override metadata: Combatant.Metadata;

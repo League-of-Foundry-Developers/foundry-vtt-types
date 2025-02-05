@@ -237,7 +237,7 @@ declare global {
    * @param data    - Initial data provided to construct the Item document
    * @param context - The document context, see {@link foundry.abstract.Document}
    */
-  class Item<out SubType extends Item.SubType = Item.SubType> extends ClientDocumentMixin(
+  abstract class Item<out SubType extends Item.SubType = Item.SubType> extends ClientDocumentMixin(
     foundry.documents.BaseItem,
   )<SubType> {
     /**

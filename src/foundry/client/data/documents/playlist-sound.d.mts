@@ -239,7 +239,7 @@ declare global {
    * @see {@link Sound}                          The Sound API which manages web audio playback
    *
    */
-  class PlaylistSound extends ClientDocumentMixin(foundry.documents.BasePlaylistSound) {
+  abstract class PlaylistSound extends ClientDocumentMixin(foundry.documents.BasePlaylistSound) {
     static override metadata: PlaylistSound.Metadata;
 
     static get implementation(): PlaylistSound.ImplementationClass;

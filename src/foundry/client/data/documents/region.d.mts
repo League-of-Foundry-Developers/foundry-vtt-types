@@ -302,7 +302,7 @@ declare global {
   /**
    * The client-side Region document which extends the common BaseRegion model.
    */
-  class RegionDocument extends ClientDocumentMixin(foundry.documents.BaseRegion) {
+  abstract class RegionDocument extends ClientDocumentMixin(foundry.documents.BaseRegion) {
     static override metadata: RegionDocument.Metadata;
 
     static get implementation(): RegionDocument.ImplementationClass;

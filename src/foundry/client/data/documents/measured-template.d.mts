@@ -256,7 +256,7 @@ declare global {
    * @see {@link Scene}                     The Scene document type which contains MeasuredTemplate documents
    * @see {@link MeasuredTemplateConfig}    The MeasuredTemplate configuration application
    */
-  class MeasuredTemplateDocument extends CanvasDocumentMixin(foundry.documents.BaseMeasuredTemplate) {
+  abstract class MeasuredTemplateDocument extends CanvasDocumentMixin(foundry.documents.BaseMeasuredTemplate) {
     static override metadata: MeasuredTemplateDocument.Metadata;
 
     static get implementation(): MeasuredTemplateDocument.ImplementationClass;

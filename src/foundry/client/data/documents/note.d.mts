@@ -274,7 +274,7 @@ declare global {
    * @see {@link Scene}               The Scene document type which contains Note embedded documents
    * @see {@link NoteConfig}          The Note configuration application
    */
-  class NoteDocument extends CanvasDocumentMixin(foundry.documents.BaseNote) {
+  abstract class NoteDocument extends CanvasDocumentMixin(foundry.documents.BaseNote) {
     static override metadata: NoteDocument.Metadata;
 
     static get implementation(): NoteDocument.ImplementationClass;

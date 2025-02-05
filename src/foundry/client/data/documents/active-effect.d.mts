@@ -419,9 +419,9 @@ declare global {
    * @see {@link Actor}                     The Actor document which contains ActiveEffect embedded documents
    * @see {@link Item}                      The Item document which contains ActiveEffect embedded documents
    */
-  class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffect.SubType> extends ClientDocumentMixin(
-    foundry.documents.BaseActiveEffect,
-  )<SubType> {
+  abstract class ActiveEffect<
+    out SubType extends ActiveEffect.SubType = ActiveEffect.SubType,
+  > extends ClientDocumentMixin(foundry.documents.BaseActiveEffect)<SubType> {
     /**
      * Create an ActiveEffect instance from some status effect ID.
      * Delegates to {@link ActiveEffect._fromStatusEffect} to create the ActiveEffect instance

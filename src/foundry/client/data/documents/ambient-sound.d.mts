@@ -255,7 +255,7 @@ declare global {
    * @see {@link Scene}                   The Scene document type which contains AmbientSound documents
    * @see {@link AmbientSoundConfig}      The AmbientSound configuration application
    */
-  class AmbientSoundDocument extends CanvasDocumentMixin(foundry.documents.BaseAmbientSound) {
+  abstract class AmbientSoundDocument extends CanvasDocumentMixin(foundry.documents.BaseAmbientSound) {
     static override metadata: AmbientSoundDocument.Metadata;
 
     static get implementation(): AmbientSoundDocument.ImplementationClass;

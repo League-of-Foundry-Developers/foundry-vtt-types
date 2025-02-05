@@ -219,7 +219,7 @@ declare global {
    * @see {@link Journal}                  The world-level collection of JournalEntry documents
    * @see {@link JournalSheet}          The JournalEntry configuration application
    */
-  class JournalEntry extends ClientDocumentMixin(foundry.documents.BaseJournalEntry) {
+  abstract class JournalEntry extends ClientDocumentMixin(foundry.documents.BaseJournalEntry) {
     static override metadata: JournalEntry.Metadata;
 
     static get implementation(): JournalEntry.ImplementationClass;

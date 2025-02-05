@@ -323,7 +323,7 @@ declare global {
    * @see {@link TableResult}        The embedded TableResult document
    * @see {@link RollTableConfig}    The RollTable configuration application
    */
-  class RollTable extends ClientDocumentMixin(foundry.documents.BaseRollTable) {
+  abstract class RollTable extends ClientDocumentMixin(foundry.documents.BaseRollTable) {
     static override metadata: RollTable.Metadata;
 
     static get implementation(): RollTable.ImplementationClass;

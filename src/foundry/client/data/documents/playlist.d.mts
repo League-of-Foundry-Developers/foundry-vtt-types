@@ -268,7 +268,7 @@ declare global {
    * @see {@link PlaylistConfig}        The Playlist configuration application
    *
    */
-  class Playlist extends ClientDocumentMixin(foundry.documents.BasePlaylist) {
+  abstract class Playlist extends ClientDocumentMixin(foundry.documents.BasePlaylist) {
     static override metadata: Playlist.Metadata;
 
     static get implementation(): Playlist.ImplementationClass;
