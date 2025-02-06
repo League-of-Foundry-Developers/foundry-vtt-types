@@ -2,7 +2,7 @@
 
 import * as fs from "fs/promises";
 
-export default async ({ github, context, core }) => {
+async function postOrUpdateTestsReport({ github, context, core }) {
   const pullRequestNumber = context.payload.pull_request ? context.payload.pull_request.number : null;
 
   if (!pullRequestNumber) {
@@ -15,6 +15,7 @@ export default async ({ github, context, core }) => {
     const contents = await fs.readFile("main-test-results/vitest-report.json", "utf-8");
     mainResults = JSON.parse(contents);
   } catch (e) {
+    // eslint-disable-next-line no-undef
     console.error(e.message, e.stack);
     core.setFailed(`Could not get results to compare to ${e.message}`);
     return;
@@ -162,4 +163,6 @@ export default async ({ github, context, core }) => {
       body: newReport,
     });
   }
-};
+}
+
+export default postOrUpdateTestsReport;

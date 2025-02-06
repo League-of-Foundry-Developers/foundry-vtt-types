@@ -1,4 +1,6 @@
-import { Vitest } from "vitest/node";
+import type { Vitest } from "vitest/node";
+
+// eslint-disable-next-line import/extensions
 import { Reporter } from "vitest/reporters";
 import { relative } from "pathe";
 import * as fs from "fs/promises";

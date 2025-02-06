@@ -679,7 +679,6 @@ export type Merge<T, U> =
  * type RecordFails = Interface extends Record<string, unknown> ? true : false; // false
  * ```
  */
-// eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
 export type IsObject<T> = T extends { readonly [K: string]: any }
   ? T extends AnyArray | AnyFunction
     ? false
@@ -764,7 +763,7 @@ export type HandleEmptyObject<T extends object, D extends object = EmptyObject> 
  * - `Record<string, unknown>` - This is the appropriate type for any mutable object but doesn't allow readonly objects.
  */
 // This type is not meant to be extended and it has to use an indexed type.
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions, @typescript-eslint/consistent-indexed-object-style
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type AnyObject = {
   readonly [K: string]: unknown;
 };
@@ -778,7 +777,7 @@ export type AnyObject = {
  * - `Record<string, any>`/`{}` - These allows anything besides `null` and `undefined`.
  * - `Record<string, unknown>` - These types are equivalent but `AnyMutableObject` is preferred for explicitness.
  */
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions, @typescript-eslint/consistent-indexed-object-style
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type AnyMutableObject = {
   [K: string]: unknown;
 };
@@ -933,7 +932,6 @@ export type NonNullish = {};
  * {@link NonNullish | `NonNullish`} if you want that behavior.
  */
 // It would be unsound to merge into so an interface is not used.
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type EmptyObject = Record<string, never>;
 
 declare const empty: unique symbol;

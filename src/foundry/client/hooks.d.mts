@@ -3,8 +3,6 @@ import type { DeepPartial, EmptyObject, FixedInstanceType, ValueOf } from "fvtt-
 import type Document from "../common/abstract/document.d.mts";
 import type { EffectChangeData } from "../common/documents/_types.d.mts";
 import type { ProseMirrorDropDown } from "../common/prosemirror/menu.d.mts";
-
-// eslint-disable-next-line import/no-named-as-default
 import type ProseMirrorMenu from "../common/prosemirror/menu.d.mts";
 import type PointVisionSource from "../client-esm/canvas/sources/point-vision-source.d.mts";
 import type RenderedEffectSource from "../client-esm/canvas/sources/rendered-effect-source.d.mts";
