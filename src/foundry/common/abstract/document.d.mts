@@ -1634,13 +1634,13 @@ declare namespace Document {
 
   interface DefaultNameContext<SubType extends string, Parent extends Document.Any | null> {
     /** The sub-type of the document */
-    type: SubType;
+    type?: SubType;
 
     /** A parent document within which the created Document should belong */
-    parent: Parent;
+    parent?: Parent;
 
     /** A compendium pack within which the Document should be created */
-    pack: string;
+    pack?: string;
   }
 
   interface FromDropDataOptions {
@@ -1717,8 +1717,8 @@ export interface DatabaseOperationMap {
   Note: NoteDocument.DatabaseOperations;
   Playlist: Playlist.DatabaseOperations;
   PlaylistSound: PlaylistSound.DatabaseOperations;
-  Region: ActiveEffect.DatabaseOperations;
-  RegionBehavior: ActiveEffect.DatabaseOperations;
+  Region: RegionDocument.DatabaseOperations;
+  RegionBehavior: RegionBehavior.DatabaseOperations;
   RollTable: RollTable.DatabaseOperations;
   Scene: Scene.DatabaseOperations;
   Setting: Setting.DatabaseOperations;

@@ -331,10 +331,6 @@ declare global {
      */
     constructor(...args: Document.ConstructorParameters<User.CreateData, User.Parent>);
 
-    static override metadata: User.Metadata;
-
-    static get implementation(): User.ImplementationClass;
-
     /**
      * Track whether the user is currently active in the game
      * @defaultValue `false`
@@ -421,5 +417,28 @@ declare global {
      * @privateRemarks _onUpdate and _onDelete are overridden but with no signature changes.
      * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
      */
+
+    /*
+     * After this point these are not really overridden methods.
+     * They are here because they're static properties but depend on the instance and so can't be
+     * defined DRY-ly while also being easily overridable.
+     */
+
+    static override defaultName(context?: Document.DefaultNameContext<string, User.Parent>): string;
+
+    static override createDialog(
+      data?: User.CreateData,
+      context?: Document.CreateDialogContext<string, User.Parent>,
+    ): Promise<User.Implementation | null | undefined>;
+
+    static override fromDropData(
+      data: Document.DropData<User.Implementation>,
+      options?: Document.FromDropDataOptions,
+    ): Promise<User.Implementation | undefined>;
+
+    static override fromImport(
+      source: User.Source,
+      context?: Document.FromImportContext<User.Parent>,
+    ): Promise<User.Implementation>;
   }
 }

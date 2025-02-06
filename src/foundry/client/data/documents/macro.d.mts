@@ -302,10 +302,6 @@ declare global {
      */
     constructor(...args: Document.ConstructorParameters<Macro.CreateData, Macro.Parent>);
 
-    static override metadata: Macro.Metadata;
-
-    static get implementation(): Macro.ImplementationClass;
-
     /**
      * Is the current User the author of this macro?
      */
@@ -340,5 +336,28 @@ declare global {
     #executeScript();
 
     _onClickDocumentLink(event: MouseEvent): ReturnType<this["execute"]>;
+
+    /*
+     * After this point these are not really overridden methods.
+     * They are here because they're static properties but depend on the instance and so can't be
+     * defined DRY-ly while also being easily overridable.
+     */
+
+    static override defaultName(context?: Document.DefaultNameContext<Macro.SubType, Macro.Parent>): string;
+
+    static override createDialog(
+      data?: Macro.CreateData,
+      context?: Document.CreateDialogContext<Macro.SubType, Macro.Parent>,
+    ): Promise<Macro.Implementation | null | undefined>;
+
+    static override fromDropData(
+      data: Document.DropData<Macro.Implementation>,
+      options?: Document.FromDropDataOptions,
+    ): Promise<Macro.Implementation | undefined>;
+
+    static override fromImport(
+      source: Macro.Source,
+      context?: Document.FromImportContext<Macro.Parent>,
+    ): Promise<Macro.Implementation>;
   }
 }

@@ -315,10 +315,6 @@ declare global {
      */
     constructor(...args: Document.ConstructorParameters<RegionDocument.CreateData, RegionDocument.Parent>);
 
-    static override metadata: RegionDocument.Metadata;
-
-    static get implementation(): RegionDocument.ImplementationClass;
-
     /**
      * Activate the Socket event listeners.
      * @param socket    - The active game socket
@@ -374,5 +370,28 @@ declare global {
      */
 
     #regionDocument: true;
+
+    /*
+     * After this point these are not really overridden methods.
+     * They are here because they're static properties but depend on the instance and so can't be
+     * defined DRY-ly while also being easily overridable.
+     */
+
+    static override defaultName(context?: Document.DefaultNameContext<string, RegionDocument.Parent>): string;
+
+    static override createDialog(
+      data?: RegionDocument.CreateData,
+      context?: Document.CreateDialogContext<string, RegionDocument.Parent>,
+    ): Promise<RegionDocument.Implementation | null | undefined>;
+
+    static override fromDropData(
+      data: Document.DropData<RegionDocument.Implementation>,
+      options?: Document.FromDropDataOptions,
+    ): Promise<RegionDocument.Implementation | undefined>;
+
+    static override fromImport(
+      source: RegionDocument.Source,
+      context?: Document.FromImportContext<RegionDocument.Parent>,
+    ): Promise<RegionDocument.Implementation>;
   }
 }

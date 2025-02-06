@@ -249,10 +249,6 @@ declare global {
      */
     constructor(...args: Document.ConstructorParameters<Folder.CreateData, Folder.Parent>);
 
-    static override metadata: Folder.Metadata;
-
-    static get implementation(): Folder.ImplementationClass;
-
     /**
      * The depth of this folder in its sidebar tree
      *
@@ -311,11 +307,10 @@ declare global {
      * For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
      */
 
-    static createDialog<T extends Document.AnyConstructor>(
-      this: T,
-      data?: DeepPartial<Document.ConstructorDataFor<NoInfer<T>>>,
+    static createDialog(
+      data?: Folder.CreateData,
       context?: InexactPartial<Omit<FolderConfig.Options, "resolve">>,
-    ): Promise<Document.ToConfiguredInstance<T> | null | undefined>;
+    ): Promise<Folder.Implementation | null | undefined>;
 
     /**
      * Export all Documents contained in this Folder to a given Compendium pack.
@@ -355,5 +350,28 @@ declare global {
      * @returns An array of Folder documents which are parent folders of this one
      */
     getParentFolders(): Folder.Implementation[];
+
+    /*
+     * After this point these are not really overridden methods.
+     * They are here because they're static properties but depend on the instance and so can't be
+     * defined DRY-ly while also being easily overridable.
+     */
+
+    static override defaultName(context?: Document.DefaultNameContext<Folder.SubType, Folder.Parent>): string;
+
+    static override createDialog(
+      data?: Folder.CreateData,
+      context?: Document.CreateDialogContext<Folder.SubType, Folder.Parent>,
+    ): Promise<Folder.Implementation | null | undefined>;
+
+    static override fromDropData(
+      data: Document.DropData<Folder.Implementation>,
+      options?: Document.FromDropDataOptions,
+    ): Promise<Folder.Implementation | undefined>;
+
+    static override fromImport(
+      source: Folder.Source,
+      context?: Document.FromImportContext<Folder.Parent>,
+    ): Promise<Folder.Implementation>;
   }
 }

@@ -24,6 +24,8 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
    */
   constructor(...args: Document.ConstructorParameters<BaseAmbientSound.CreateData, BaseAmbientSound.Parent>);
 
+  static override metadata: AmbientSoundDocument.Metadata;
+
   static override defineSchema(): BaseAmbientSound.Schema;
 
   static override migrateData(source: AnyMutableObject): AnyMutableObject;

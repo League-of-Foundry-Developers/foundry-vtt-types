@@ -459,6 +459,95 @@ declare global {
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 
+    interface Dimensions {
+      /** The width of the canvas. */
+      width: number;
+
+      /** The height of the canvas. */
+      height: number;
+
+      /** The grid size. */
+      size: number;
+
+      /** The canvas rectangle. */
+      rect: Canvas.Rectangle;
+
+      /** The X coordinate of the scene rectangle within the larger canvas. */
+      sceneX: number;
+
+      /** The Y coordinate of the scene rectangle within the larger canvas. */
+      sceneY: number;
+
+      /** The width of the scene. */
+      sceneWidth: number;
+
+      /** The height of the scene. */
+      sceneHeight: number;
+
+      /** The scene rectangle. */
+      sceneRect: Canvas.Rectangle;
+
+      /** The number of distance units in a single grid space. */
+      distance: number;
+
+      /** The factor to convert distance units to pixels */
+      distancePixels: number;
+
+      /** The units of distance */
+      units: string;
+
+      /** The aspect ratio of the scene rectangle. */
+      ratio: number;
+
+      /** The length of the longest line that can be drawn on the canvas. */
+      maxR: number;
+
+      /** The number of grid rows on the canvas */
+      rows: number;
+
+      /** The number of grid columns on the canvas */
+      columns: number;
+    }
+
+    interface _ThumbnailCreationData extends ImageHelper.TextureToImageOptions {
+      /**
+       * A background image to use for thumbnail creation, otherwise the current scene
+       * background is used.
+       *
+       * @remarks This cannot be `null` because Foundry writes `const newImage = img !== undefined;`.
+       */
+      img: string;
+
+      /**
+       * The desired thumbnail width. Default is 300px
+       * @defaultValue `300`
+       */
+      width: number | null;
+
+      /**
+       * The desired thumbnail height. Default is 100px;
+       * @defaultValue `100`
+       */
+      height: number | null;
+
+      /**
+       * Which image format should be used? image/png, image/jpeg, or image/webp
+       * @defaultValue `"image/webp"`
+       *
+       * @remarks Foundry writes `image/jpg` but this functions the same as `image/png  `.
+       * The correct MIME type is `image/jpeg`.
+       */
+      format: ImageHelper.Format | null;
+
+      /**
+       * What compression quality should be used for jpeg or webp, between 0 and 1
+       * @defaultValue `0.8`
+       */
+      quality: number | null;
+    }
+
+    interface ThumbnailCreationData extends InexactPartial<_ThumbnailCreationData> {}
+
     /**
      * @deprecated - {@link Scene.DatabaseOperation}
      */
@@ -499,10 +588,6 @@ declare global {
      * will give you a system specific implementation of `Scene`.
      */
     constructor(...args: Document.ConstructorParameters<Scene.CreateData, Scene.Parent>);
-
-    static override metadata: Scene.Metadata;
-
-    static get implementation(): Scene.ImplementationClass;
 
     /**
      * Track the viewed position of each scene (while in memory only, not persisted)
@@ -620,95 +705,32 @@ declare global {
      * @param data - (default: `{}`)
      * @returns The created thumbnail data.
      */
-    createThumbnail(data?: ThumbnailCreationData): ReturnType<typeof ImageHelper.createThumbnail>;
+    createThumbnail(data?: Scene.ThumbnailCreationData): ReturnType<typeof ImageHelper.createThumbnail>;
+
+    /*
+     * After this point these are not really overridden methods.
+     * They are here because they're static properties but depend on the instance and so can't be
+     * defined DRY-ly while also being easily overridable.
+     */
+
+    static override defaultName(context?: Document.DefaultNameContext<string, Scene.Parent>): string;
+
+    static override createDialog(
+      data?: Scene.CreateData,
+      context?: Document.CreateDialogContext<string, Scene.Parent>,
+    ): Promise<Scene.Implementation | null | undefined>;
+
+    static override fromDropData(
+      data: Document.DropData<Scene.Implementation>,
+      options?: Document.FromDropDataOptions,
+    ): Promise<Scene.Implementation | undefined>;
+
+    static override fromImport(
+      source: Scene.Source,
+      context?: Document.FromImportContext<Scene.Parent>,
+    ): Promise<Scene.Implementation>;
   }
 
-  interface SceneDimensions {
-    /** The width of the canvas. */
-    width: number;
-
-    /** The height of the canvas. */
-    height: number;
-
-    /** The grid size. */
-    size: number;
-
-    /** The canvas rectangle. */
-    rect: Canvas.Rectangle;
-
-    /** The X coordinate of the scene rectangle within the larger canvas. */
-    sceneX: number;
-
-    /** The Y coordinate of the scene rectangle within the larger canvas. */
-    sceneY: number;
-
-    /** The width of the scene. */
-    sceneWidth: number;
-
-    /** The height of the scene. */
-    sceneHeight: number;
-
-    /** The scene rectangle. */
-    sceneRect: Canvas.Rectangle;
-
-    /** The number of distance units in a single grid space. */
-    distance: number;
-
-    /** The factor to convert distance units to pixels */
-    distancePixels: number;
-
-    /** The units of distance */
-    units: string;
-
-    /** The aspect ratio of the scene rectangle. */
-    ratio: number;
-
-    /** The length of the longest line that can be drawn on the canvas. */
-    maxR: number;
-
-    /** The number of grid rows on the canvas */
-    rows: number;
-
-    /** The number of grid columns on the canvas */
-    columns: number;
-  }
+  /** @deprecated Use {@link Scene.Dimensions} */
+  interface SceneDimensions extends Scene.Dimensions {}
 }
-
-interface _ThumbnailCreationData extends ImageHelper.TextureToImageOptions {
-  /**
-   * A background image to use for thumbnail creation, otherwise the current scene
-   * background is used.
-   *
-   * @remarks This cannot be `null` because Foundry writes `const newImage = img !== undefined;`.
-   */
-  img: string;
-
-  /**
-   * The desired thumbnail width. Default is 300px
-   * @defaultValue `300`
-   */
-  width: number | null;
-
-  /**
-   * The desired thumbnail height. Default is 100px;
-   * @defaultValue `100`
-   */
-  height: number | null;
-
-  /**
-   * Which image format should be used? image/png, image/jpeg, or image/webp
-   * @defaultValue `"image/webp"`
-   *
-   * @remarks Foundry writes `image/jpg` but this functions the same as `image/png  `.
-   * The correct MIME type is `image/jpeg`.
-   */
-  format: ImageHelper.Format | null;
-
-  /**
-   * What compression quality should be used for jpeg or webp, between 0 and 1
-   * @defaultValue `0.8`
-   */
-  quality: number | null;
-}
-
-interface ThumbnailCreationData extends InexactPartial<_ThumbnailCreationData> {}

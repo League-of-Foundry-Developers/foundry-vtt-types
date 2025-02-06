@@ -203,10 +203,6 @@ declare global {
      */
     constructor(...args: Document.ConstructorParameters<Setting.CreateData, Setting.Parent>);
 
-    static override metadata: Setting.Metadata;
-
-    static get implementation(): Setting.ImplementationClass;
-
     /**
      * @privateRemarks This exists to let ts know that this class has a private property
      */
@@ -231,5 +227,31 @@ declare global {
      */
     // TODO: This could probably be derived
     protected _castType(): any;
+
+    /*
+     * After this point these are not really overridden methods.
+     * They are here because they're static properties but depend on the instance and so can't be
+     * defined DRY-ly while also being easily overridable.
+     */
+
+    static override defaultName(context?: Document.DefaultNameContext<string, Setting.Parent>): string;
+
+    /**
+     * @throws Foundry tries to figure out the folders for the world collection and errors out
+     */
+    static override createDialog(
+      data?: Setting.CreateData,
+      context?: Document.CreateDialogContext<string, Setting.Parent>,
+    ): never;
+
+    static override fromDropData(
+      data: Document.DropData<Setting.Implementation>,
+      options?: Document.FromDropDataOptions,
+    ): Promise<Setting.Implementation | undefined>;
+
+    static override fromImport(
+      source: Setting.Source,
+      context?: Document.FromImportContext<Setting.Parent>,
+    ): Promise<Setting.Implementation>;
   }
 }

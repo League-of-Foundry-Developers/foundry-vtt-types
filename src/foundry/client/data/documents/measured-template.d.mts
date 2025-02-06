@@ -271,10 +271,6 @@ declare global {
       ...args: Document.ConstructorParameters<MeasuredTemplateDocument.CreateData, MeasuredTemplateDocument.Parent>
     );
 
-    static override metadata: MeasuredTemplateDocument.Metadata;
-
-    static get implementation(): MeasuredTemplateDocument.ImplementationClass;
-
     /**
      * Rotation is an alias for direction
      */
@@ -284,5 +280,28 @@ declare global {
      * Is the current User the author of this template?
      */
     get isAuthor(): boolean;
+
+    /*
+     * After this point these are not really overridden methods.
+     * They are here because they're static properties but depend on the instance and so can't be
+     * defined DRY-ly while also being easily overridable.
+     */
+
+    static override defaultName(context?: Document.DefaultNameContext<string, MeasuredTemplateDocument.Parent>): string;
+
+    static override createDialog(
+      data?: MeasuredTemplateDocument.CreateData,
+      context?: Document.CreateDialogContext<string, MeasuredTemplateDocument.Parent>,
+    ): Promise<MeasuredTemplateDocument.Implementation | null | undefined>;
+
+    static override fromDropData(
+      data: Document.DropData<MeasuredTemplateDocument.Implementation>,
+      options?: Document.FromDropDataOptions,
+    ): Promise<MeasuredTemplateDocument.Implementation | undefined>;
+
+    static override fromImport(
+      source: MeasuredTemplateDocument.Source,
+      context?: Document.FromImportContext<MeasuredTemplateDocument.Parent>,
+    ): Promise<MeasuredTemplateDocument.Implementation>;
   }
 }

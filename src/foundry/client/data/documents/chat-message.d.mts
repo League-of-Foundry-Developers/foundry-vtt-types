@@ -353,10 +353,6 @@ declare global {
      */
     constructor(...args: Document.ConstructorParameters<ChatMessage.CreateData, ChatMessage.Parent>);
 
-    static override metadata: ChatMessage.Metadata;
-
-    static get implementation(): ChatMessage.ImplementationClass;
-
     /**
      * Is the display of dice rolls in this message collapsed (false) or expanded (true)
      * @defaultValue `false`
@@ -520,5 +516,28 @@ declare global {
      * Export the content of the chat message into a standardized log format
      */
     export(): string;
+
+    /*
+     * After this point these are not really overridden methods.
+     * They are here because they're static properties but depend on the instance and so can't be
+     * defined DRY-ly while also being easily overridable.
+     */
+
+    static override defaultName(context?: Document.DefaultNameContext<ChatMessage.SubType, ChatMessage.Parent>): string;
+
+    static override createDialog(
+      data?: ChatMessage.CreateData,
+      context?: Document.CreateDialogContext<ChatMessage.SubType, ChatMessage.Parent>,
+    ): Promise<ChatMessage.Implementation | null | undefined>;
+
+    static override fromDropData(
+      data: Document.DropData<ChatMessage.Implementation>,
+      options?: Document.FromDropDataOptions,
+    ): Promise<ChatMessage.Implementation | undefined>;
+
+    static override fromImport(
+      source: ChatMessage.Source,
+      context?: Document.FromImportContext<ChatMessage.Parent>,
+    ): Promise<ChatMessage.Implementation>;
   }
 }

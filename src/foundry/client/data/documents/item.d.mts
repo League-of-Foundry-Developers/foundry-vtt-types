@@ -290,10 +290,6 @@ declare global {
      * defined DRY-ly while also being easily overridable.
      */
 
-    static override metadata: Item.Metadata;
-
-    static get implementation(): Item.ImplementationClass;
-
     static override defaultName(context?: Document.DefaultNameContext<Item.SubType, Item.Parent>): string;
 
     static override createDialog(

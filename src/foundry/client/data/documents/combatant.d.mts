@@ -274,10 +274,6 @@ declare global {
      */
     constructor(...args: Document.ConstructorParameters<Combatant.CreateData, Combatant.Parent>);
 
-    static override metadata: Combatant.Metadata;
-
-    static get implementation(): Combatant.ImplementationClass;
-
     /**
      * The token video source image (if any)
      */
@@ -350,8 +346,31 @@ declare global {
     protected _getInitiativeFormula(): string;
 
     /**
-     * @deprecated since v9
+     * @privateRemarks DatabaseLifecycle Events are overridden but with no signature changes.
+     * These are already covered in BaseCombatant
      */
-    get isVisible(): boolean;
+
+    /*
+     * After this point these are not really overridden methods.
+     * They are here because they're static properties but depend on the instance and so can't be
+     * defined DRY-ly while also being easily overridable.
+     */
+
+    static override defaultName(context?: Document.DefaultNameContext<Combatant.SubType, Combatant.Parent>): string;
+
+    static override createDialog(
+      data?: Combatant.CreateData,
+      context?: Document.CreateDialogContext<Combatant.SubType, Combatant.Parent>,
+    ): Promise<Combatant.Implementation | null | undefined>;
+
+    static override fromDropData(
+      data: Document.DropData<Combatant.Implementation>,
+      options?: Document.FromDropDataOptions,
+    ): Promise<Combatant.Implementation | undefined>;
+
+    static override fromImport(
+      source: Combatant.Source,
+      context?: Document.FromImportContext<Combatant.Parent>,
+    ): Promise<Combatant.Implementation>;
   }
 }

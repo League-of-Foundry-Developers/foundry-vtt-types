@@ -262,10 +262,6 @@ declare global {
      */
     constructor(...args: Document.ConstructorParameters<TableResult.CreateData, TableResult.Parent>);
 
-    static override metadata: TableResult.Metadata;
-
-    static get implementation(): TableResult.ImplementationClass;
-
     /**
      * A path reference to the icon image used to represent this result
      */
@@ -276,5 +272,28 @@ declare global {
      * @returns The text to display
      */
     getChatText(): string;
+
+    /*
+     * After this point these are not really overridden methods.
+     * They are here because they're static properties but depend on the instance and so can't be
+     * defined DRY-ly while also being easily overridable.
+     */
+
+    static override defaultName(context?: Document.DefaultNameContext<TableResult.SubType, TableResult.Parent>): string;
+
+    static override createDialog(
+      data?: TableResult.CreateData,
+      context?: Document.CreateDialogContext<TableResult.SubType, TableResult.Parent>,
+    ): Promise<TableResult.Implementation | null | undefined>;
+
+    static override fromDropData(
+      data: Document.DropData<TableResult.Implementation>,
+      options?: Document.FromDropDataOptions,
+    ): Promise<TableResult.Implementation | undefined>;
+
+    static override fromImport(
+      source: TableResult.Source,
+      context?: Document.FromImportContext<TableResult.Parent>,
+    ): Promise<TableResult.Implementation>;
   }
 }

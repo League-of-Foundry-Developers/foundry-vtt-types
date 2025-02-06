@@ -281,10 +281,6 @@ declare global {
      */
     constructor(...args: Document.ConstructorParameters<Playlist.CreateData, Playlist.Parent>);
 
-    static override metadata: Playlist.Metadata;
-
-    static get implementation(): Playlist.ImplementationClass;
-
     /**
      * Playlists may have a playback order which defines the sequence of Playlist Sounds
      * @defaultValue `undefined`
@@ -449,5 +445,28 @@ declare global {
       | ClientDocument.OmitProperty<OwnershipOpt, "ownership">
       | ClientDocument.OmitProperty<StateOpt, "active" | "fogReset" | "playing"> // does not model the sounds.playing = false
     >;
+
+    /*
+     * After this point these are not really overridden methods.
+     * They are here because they're static properties but depend on the instance and so can't be
+     * defined DRY-ly while also being easily overridable.
+     */
+
+    static override defaultName(context?: Document.DefaultNameContext<string, Playlist.Parent>): string;
+
+    static override createDialog(
+      data?: Playlist.CreateData,
+      context?: Document.CreateDialogContext<string, Playlist.Parent>,
+    ): Promise<Playlist.Implementation | null | undefined>;
+
+    static override fromDropData(
+      data: Document.DropData<Playlist.Implementation>,
+      options?: Document.FromDropDataOptions,
+    ): Promise<Playlist.Implementation | undefined>;
+
+    static override fromImport(
+      source: Playlist.Source,
+      context?: Document.FromImportContext<Playlist.Parent>,
+    ): Promise<Playlist.Implementation>;
   }
 }

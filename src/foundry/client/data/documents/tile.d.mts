@@ -322,10 +322,29 @@ declare global {
      */
     constructor(...args: Document.ConstructorParameters<TileDocument.CreateData, TileDocument.Parent>);
 
-    static override metadata: TileDocument.Metadata;
-
-    static get implementation(): TileDocument.ImplementationClass;
-
     override prepareDerivedData(): void;
+
+    /*
+     * After this point these are not really overridden methods.
+     * They are here because they're static properties but depend on the instance and so can't be
+     * defined DRY-ly while also being easily overridable.
+     */
+
+    static override defaultName(context?: Document.DefaultNameContext<string, TileDocument.Parent>): string;
+
+    static override createDialog(
+      data?: TileDocument.CreateData,
+      context?: Document.CreateDialogContext<string, TileDocument.Parent>,
+    ): Promise<TileDocument.Implementation | null | undefined>;
+
+    static override fromDropData(
+      data: Document.DropData<TileDocument.Implementation>,
+      options?: Document.FromDropDataOptions,
+    ): Promise<TileDocument.Implementation | undefined>;
+
+    static override fromImport(
+      source: TileDocument.Source,
+      context?: Document.FromImportContext<TileDocument.Parent>,
+    ): Promise<TileDocument.Implementation>;
   }
 }

@@ -592,10 +592,6 @@ declare global {
      */
     constructor(...args: Document.ConstructorParameters<TokenDocument.CreateData, TokenDocument.Parent>);
 
-    static override metadata: TokenDocument.Metadata;
-
-    static get implementation(): TokenDocument.ImplementationClass;
-
     /**
      * A singleton collection which holds a reference to the synthetic token actor by its base actor's ID.
      */
@@ -842,6 +838,29 @@ declare global {
       effectData: CONFIG.StatusEffect,
       options?: InexactPartial<ToggleActiveEffectOptions> | undefined,
     ): Promise<boolean>;
+
+    /*
+     * After this point these are not really overridden methods.
+     * They are here because they're static properties but depend on the instance and so can't be
+     * defined DRY-ly while also being easily overridable.
+     */
+
+    static override defaultName(context?: Document.DefaultNameContext<string, TokenDocument.Parent>): string;
+
+    static override createDialog(
+      data?: TokenDocument.CreateData,
+      context?: Document.CreateDialogContext<string, TokenDocument.Parent>,
+    ): Promise<TokenDocument.Implementation | null | undefined>;
+
+    static override fromDropData(
+      data: Document.DropData<TokenDocument.Implementation>,
+      options?: Document.FromDropDataOptions,
+    ): Promise<TokenDocument.Implementation | undefined>;
+
+    static override fromImport(
+      source: TokenDocument.Source,
+      context?: Document.FromImportContext<TokenDocument.Parent>,
+    ): Promise<TokenDocument.Implementation>;
   }
 
   // The getBarAttribute monkeypatch is simply inside the data model definition at `src\foundry\common\data\data.d.mts`

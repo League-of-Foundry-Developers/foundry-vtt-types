@@ -314,8 +314,27 @@ declare global {
      */
     constructor(...args: Document.ConstructorParameters<WallDocument.CreateData, WallDocument.Parent>);
 
-    static override metadata: WallDocument.Metadata;
+    /*
+     * After this point these are not really overridden methods.
+     * They are here because they're static properties but depend on the instance and so can't be
+     * defined DRY-ly while also being easily overridable.
+     */
 
-    static get implementation(): WallDocument.ImplementationClass;
+    static override defaultName(context?: Document.DefaultNameContext<string, WallDocument.Parent>): string;
+
+    static override createDialog(
+      data?: WallDocument.CreateData,
+      context?: Document.CreateDialogContext<string, WallDocument.Parent>,
+    ): Promise<WallDocument.Implementation | null | undefined>;
+
+    static override fromDropData(
+      data: Document.DropData<WallDocument.Implementation>,
+      options?: Document.FromDropDataOptions,
+    ): Promise<WallDocument.Implementation | undefined>;
+
+    static override fromImport(
+      source: WallDocument.Source,
+      context?: Document.FromImportContext<WallDocument.Parent>,
+    ): Promise<WallDocument.Implementation>;
   }
 }

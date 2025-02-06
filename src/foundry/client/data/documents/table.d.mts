@@ -213,6 +213,22 @@ declare global {
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 
+
+  /**
+   * An object containing the executed Roll and the produced results
+   */
+  interface Draw {
+    /**
+     * The Dice roll which generated the draw
+     */
+    roll: Roll;
+
+    /**
+     * An array of drawn TableResult documents
+     */
+    results: Document.ToConfiguredInstance<typeof foundry.documents.BaseTableResult>[];
+  }
+
     /**
      * Optional arguments which customize the draw
      */
@@ -336,10 +352,6 @@ declare global {
      */
     constructor(...args: Document.ConstructorParameters<RollTable.CreateData, RollTable.Parent>);
 
-    static override metadata: RollTable.Metadata;
-
-    static get implementation(): RollTable.ImplementationClass;
-
     /**
      * Provide a thumbnail image path used to represent this document.
      */
@@ -362,7 +374,7 @@ declare global {
      * @param options - Optional arguments which customize the draw behavior
      * @returns A Promise which resolves to an object containing the executed roll and the produced results
      */
-    draw(options?: RollTable.DrawOptions): Promise<RollTableDraw>;
+    draw(options?: RollTable.DrawOptions): Promise<RollTable.Draw>;
 
     /**
      * Draw multiple results from a RollTable, constructing a final synthetic Roll as a dice pool of inner rolls.
@@ -370,7 +382,7 @@ declare global {
      * @param options - Optional arguments which customize the draw
      * @returns The drawn results
      */
-    drawMany(number: number, options?: InexactPartial<RollTable.DrawOptions>): Promise<RollTableDraw>;
+    drawMany(number: number, options?: InexactPartial<RollTable.DrawOptions>): Promise<RollTable.Draw>;
 
     /**
      * Normalize the probabilities of rolling each item in the RollTable based on their assigned weights
@@ -404,7 +416,7 @@ declare global {
      * const customResults = await table.roll({roll});
      * ```
      */
-    roll(options?: RollTable.RollOptions): Promise<RollTableDraw>;
+    roll(options?: RollTable.RollOptions): Promise<RollTable.Draw>;
 
     /**
      * Handle a roll from within embedded content.
@@ -531,20 +543,33 @@ declare global {
       folder: Folder,
       options?: Document.OnCreateOptions<"Folder">,
     ): Promise<RollTable.Implementation | undefined>;
+
+    /*
+     * After this point these are not really overridden methods.
+     * They are here because they're static properties but depend on the instance and so can't be
+     * defined DRY-ly while also being easily overridable.
+     */
+
+    static override defaultName(context?: Document.DefaultNameContext<string, RollTable.Parent>): string;
+
+    static override createDialog(
+      data?: RollTable.CreateData,
+      context?: Document.CreateDialogContext<string, RollTable.Parent>,
+    ): Promise<RollTable.Implementation | null | undefined>;
+
+    static override fromDropData(
+      data: Document.DropData<RollTable.Implementation>,
+      options?: Document.FromDropDataOptions,
+    ): Promise<RollTable.Implementation | undefined>;
+
+    static override fromImport(
+      source: RollTable.Source,
+      context?: Document.FromImportContext<RollTable.Parent>,
+    ): Promise<RollTable.Implementation>;
   }
 
   /**
-   * An object containing the executed Roll and the produced results
+   * @deprecated Use {@link RollTable.Draw}
    */
-  interface RollTableDraw {
-    /**
-     * The Dice roll which generated the draw
-     */
-    roll: Roll;
-
-    /**
-     * An array of drawn TableResult documents
-     */
-    results: Document.ToConfiguredInstance<typeof foundry.documents.BaseTableResult>[];
-  }
+  interface RollTableDraw extends RollTable.Draw {}
 }

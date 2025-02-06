@@ -558,5 +558,30 @@ declare global {
       },
       options?: InexactPartial<TextEditor.EnrichmentOptions>,
     ): Promise<HTMLElement | HTMLCollection | null>;
+
+    /*
+     * After this point these are not really overridden methods.
+     * They are here because they're static properties but depend on the instance and so can't be
+     * defined DRY-ly while also being easily overridable.
+     */
+
+    static override defaultName(
+      context?: Document.DefaultNameContext<JournalEntryPage.SubType, JournalEntryPage.Parent>,
+    ): string;
+
+    static override createDialog(
+      data?: JournalEntryPage.CreateData,
+      context?: Document.CreateDialogContext<JournalEntryPage.SubType, JournalEntryPage.Parent>,
+    ): Promise<JournalEntryPage.Implementation | null | undefined>;
+
+    static override fromDropData(
+      data: Document.DropData<JournalEntryPage.Implementation>,
+      options?: Document.FromDropDataOptions,
+    ): Promise<JournalEntryPage.Implementation | undefined>;
+
+    static override fromImport(
+      source: JournalEntryPage.Source,
+      context?: Document.FromImportContext<JournalEntryPage.Parent>,
+    ): Promise<JournalEntryPage.Implementation>;
   }
 }

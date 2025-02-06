@@ -333,13 +333,34 @@ declare global {
      */
     constructor(...args: Document.ConstructorParameters<DrawingDocument.CreateData, DrawingDocument.Parent>);
 
-    static override metadata: DrawingDocument.Metadata;
-
-    static get implementation(): DrawingDocument.ImplementationClass;
-
     /**
      * Is the current User the author of this drawing?
      */
     get isAuthor(): boolean;
+
+    /*
+     * After this point these are not really overridden methods.
+     * They are here because they're static properties but depend on the instance and so can't be
+     * defined DRY-ly while also being easily overridable.
+     */
+
+    static override defaultName(
+      context?: Document.DefaultNameContext<string, DrawingDocument.Parent>,
+    ): string;
+
+    static override createDialog(
+      data?: DrawingDocument.CreateData,
+      context?: Document.CreateDialogContext<string, DrawingDocument.Parent>,
+    ): Promise<DrawingDocument.Implementation | null | undefined>;
+
+    static override fromDropData(
+      data: Document.DropData<DrawingDocument.Implementation>,
+      options?: Document.FromDropDataOptions,
+    ): Promise<DrawingDocument.Implementation | undefined>;
+
+    static override fromImport(
+      source: DrawingDocument.Source,
+      context?: Document.FromImportContext<DrawingDocument.Parent>,
+    ): Promise<DrawingDocument.Implementation>;
   }
 }

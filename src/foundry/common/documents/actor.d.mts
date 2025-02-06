@@ -86,6 +86,8 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
 
   static " fvtt_types_internal_document_name_static": "Actor";
 
+  static get implementation(): Actor.ImplementationClass;
+
   override parent: Actor.Parent;
 
   override system: Document.SystemFor<"Actor", SubType>;

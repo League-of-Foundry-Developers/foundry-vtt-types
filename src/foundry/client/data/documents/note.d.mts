@@ -287,10 +287,6 @@ declare global {
      */
     constructor(...args: Document.ConstructorParameters<NoteDocument.CreateData, NoteDocument.Parent>);
 
-    static override metadata: NoteDocument.Metadata;
-
-    static get implementation(): NoteDocument.ImplementationClass;
-
     /**
      * The associated JournalEntry which is referenced by this Note
      */
@@ -305,5 +301,28 @@ declare global {
      * The text label used to annotate this Note
      */
     get label(): string;
+
+    /*
+     * After this point these are not really overridden methods.
+     * They are here because they're static properties but depend on the instance and so can't be
+     * defined DRY-ly while also being easily overridable.
+     */
+
+    static override defaultName(context?: Document.DefaultNameContext<string, NoteDocument.Parent>): string;
+
+    static override createDialog(
+      data?: NoteDocument.CreateData,
+      context?: Document.CreateDialogContext<string, NoteDocument.Parent>,
+    ): Promise<NoteDocument.Implementation | null | undefined>;
+
+    static override fromDropData(
+      data: Document.DropData<NoteDocument.Implementation>,
+      options?: Document.FromDropDataOptions,
+    ): Promise<NoteDocument.Implementation | undefined>;
+
+    static override fromImport(
+      source: NoteDocument.Source,
+      context?: Document.FromImportContext<NoteDocument.Parent>,
+    ): Promise<NoteDocument.Implementation>;
   }
 }

@@ -256,17 +256,10 @@ declare global {
      */
     protected _handleRegionEvent(event: RegionDocument.RegionEvent): void;
 
-    static createDialog<T extends Document.AnyConstructor>(
-      this: T,
-      data?: DeepPartial<Document.ConstructorDataFor<NoInfer<T>> & Record<string, unknown>>,
-      context?: Pick<foundry.abstract.types.DatabaseCreateOperation<FixedInstanceType<NoInfer<T>>>, "parent" | "pack"> &
-        InexactPartial<
-          DialogOptions & {
-            /** A restriction the selectable sub-types of the Dialog. */
-            types: string[];
-          }
-        >,
-    ): Promise<Document.ToConfiguredInstance<T> | null | undefined>;
+    static override createDialog(
+      data?: RegionBehavior.CreateData,
+      context?: Document.CreateDialogContext<RegionBehavior.SubType, RegionBehavior.Parent>,
+    ): Promise<RegionBehavior.Implementation | null | undefined>;
 
     /**
      * @privateRemarks _onCreate, _preUpdate, _onUpdate, _onDelete, preCreateOperation, _preUpdateOperation, _onCreateOperation,
@@ -274,5 +267,25 @@ declare global {
      * _onUpdateDescendantDocuments, and _onDeleteDescendantDocuments are all overridden but with no signature changes.
      * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
      */
+
+    /*
+     * After this point these are not really overridden methods.
+     * They are here because they're static properties but depend on the instance and so can't be
+     * defined DRY-ly while also being easily overridable.
+     */
+
+    static override defaultName(
+      context?: Document.DefaultNameContext<RegionBehavior.SubType, RegionBehavior.Parent>,
+    ): string;
+
+    static override fromDropData(
+      data: Document.DropData<RegionBehavior.Implementation>,
+      options?: Document.FromDropDataOptions,
+    ): Promise<RegionBehavior.Implementation | undefined>;
+
+    static override fromImport(
+      source: RegionBehavior.Source,
+      context?: Document.FromImportContext<RegionBehavior.Parent>,
+    ): Promise<RegionBehavior.Implementation>;
   }
 }

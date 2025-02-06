@@ -63,6 +63,8 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
 
   static " fvtt_types_internal_document_name_static": "Item";
 
+  static get implementation(): Item.ImplementationClass;
+
   override parent: Item.Parent;
 
   override system: Document.SystemFor<"Item", SubType>;

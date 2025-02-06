@@ -232,10 +232,6 @@ declare global {
      */
     constructor(...args: Document.ConstructorParameters<JournalEntry.CreateData, JournalEntry.Parent>);
 
-    static override metadata: JournalEntry.Metadata;
-
-    static get implementation(): JournalEntry.ImplementationClass;
-
     /**
      * A boolean indicator for whether or not the JournalEntry is visible to the current user in the directory sidebar
      */
@@ -272,6 +268,29 @@ declare global {
      * @privateRemarks _onUpdate and _onDelete are all overridden but with no signature changes.
      * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
      */
+
+    /*
+     * After this point these are not really overridden methods.
+     * They are here because they're static properties but depend on the instance and so can't be
+     * defined DRY-ly while also being easily overridable.
+     */
+
+    static override defaultName(context?: Document.DefaultNameContext<string, JournalEntry.Parent>): string;
+
+    static override createDialog(
+      data?: JournalEntry.CreateData,
+      context?: Document.CreateDialogContext<string, JournalEntry.Parent>,
+    ): Promise<JournalEntry.Implementation | null | undefined>;
+
+    static override fromDropData(
+      data: Document.DropData<JournalEntry.Implementation>,
+      options?: Document.FromDropDataOptions,
+    ): Promise<JournalEntry.Implementation | undefined>;
+
+    static override fromImport(
+      source: JournalEntry.Source,
+      context?: Document.FromImportContext<JournalEntry.Parent>,
+    ): Promise<JournalEntry.Implementation>;
   }
 }
 

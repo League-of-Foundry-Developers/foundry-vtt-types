@@ -412,10 +412,6 @@ declare global {
      */
     constructor(...args: Document.ConstructorParameters<Cards.CreateData, Cards.Parent>);
 
-    static override metadata: Cards.Metadata;
-
-    static get implementation(): Cards.ImplementationClass;
-
     /**
      * Provide a thumbnail image path used to represent this document.
      */
@@ -593,5 +589,27 @@ declare global {
     resetDialog(): Promise<Cards.Implementation | false | null>;
 
     override deleteDialog(options?: Partial<DialogOptions>): Promise<this | false | null | undefined>;
+    /*
+     * After this point these are not really overridden methods.
+     * They are here because they're static properties but depend on the instance and so can't be
+     * defined DRY-ly while also being easily overridable.
+     */
+
+    static override defaultName(context?: Document.DefaultNameContext<Cards.SubType, Cards.Parent>): string;
+
+    static override createDialog(
+      data?: Cards.CreateData,
+      context?: Document.CreateDialogContext<Cards.SubType, Cards.Parent>,
+    ): Promise<Cards.Implementation | null | undefined>;
+
+    static override fromDropData(
+      data: Document.DropData<Cards.Implementation>,
+      options?: Document.FromDropDataOptions,
+    ): Promise<Cards.Implementation | undefined>;
+
+    static override fromImport(
+      source: Cards.Source,
+      context?: Document.FromImportContext<Cards.Parent>,
+    ): Promise<Cards.Implementation>;
   }
 }

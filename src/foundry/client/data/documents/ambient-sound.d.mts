@@ -268,10 +268,6 @@ declare global {
      */
     constructor(...args: Document.ConstructorParameters<AmbientSoundDocument.CreateData, AmbientSoundDocument.Parent>);
 
-    static override metadata: AmbientSoundDocument.Metadata;
-
-    static get implementation(): AmbientSoundDocument.ImplementationClass;
-
     /*
      * After this point these are not really overridden methods.
      * They are here because they're static properties but depend on the instance and so can't be

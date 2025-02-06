@@ -252,16 +252,6 @@ declare global {
      */
     constructor(...args: Document.ConstructorParameters<PlaylistSound.CreateData, PlaylistSound.Parent>);
 
-    static override metadata: PlaylistSound.Metadata;
-
-    static get implementation(): PlaylistSound.ImplementationClass;
-
-    // Note(LukeAbby): TODO, this constructor just copies from the parent. Should this just be removed?
-    // constructor(
-    //   data: ConstructorParameters<typeof foundry.documents.BasePlaylistSound>[0],
-    //   context?: ConstructorParameters<typeof foundry.documents.BasePlaylistSound>[1],
-    // );
-
     /**
      * The debounce tolerance for processing rapid volume changes into database updates in milliseconds
      * @defaultValue `100`
@@ -347,5 +337,28 @@ declare global {
      *
      */
     get effectiveVolume(): number;
+
+    /*
+     * After this point these are not really overridden methods.
+     * They are here because they're static properties but depend on the instance and so can't be
+     * defined DRY-ly while also being easily overridable.
+     */
+
+    static override defaultName(context?: Document.DefaultNameContext<string, PlaylistSound.Parent>): string;
+
+    static override createDialog(
+      data?: PlaylistSound.CreateData,
+      context?: Document.CreateDialogContext<string, PlaylistSound.Parent>,
+    ): Promise<PlaylistSound.Implementation | null | undefined>;
+
+    static override fromDropData(
+      data: Document.DropData<PlaylistSound.Implementation>,
+      options?: Document.FromDropDataOptions,
+    ): Promise<PlaylistSound.Implementation | undefined>;
+
+    static override fromImport(
+      source: PlaylistSound.Source,
+      context?: Document.FromImportContext<PlaylistSound.Parent>,
+    ): Promise<PlaylistSound.Implementation>;
   }
 }

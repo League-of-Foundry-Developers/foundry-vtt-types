@@ -293,19 +293,6 @@ declare global {
      */
     constructor(...args: Document.ConstructorParameters<Combat.CreateData, Combat.Parent>);
 
-    static override metadata: Combat.Metadata;
-
-    static get implementation(): Combat.ImplementationClass;
-
-    /**
-     * @param data - Initial data provided to construct the Combat document
-     */
-    // Note(LukeAbby): TODO, this constructor just copies from the parent. Should this just be removed?
-    // constructor(
-    //   data?: ConstructorParameters<typeof foundry.documents.BaseCombat>[0],
-    //   context?: ConstructorParameters<typeof foundry.documents.BaseCombat>[1],
-    // );
-
     /** Track the sorted turn order of this combat encounter */
     turns: Combatant.Implementation[];
 
@@ -554,5 +541,28 @@ declare global {
      * @deprecated Since v12. Use {@link Combat#getCombatantsByActor} instead.
      */
     getCombatantByToken(token: Token): Combatant[];
+
+    /*
+     * After this point these are not really overridden methods.
+     * They are here because they're static properties but depend on the instance and so can't be
+     * defined DRY-ly while also being easily overridable.
+     */
+
+    static override defaultName(context?: Document.DefaultNameContext<Combat.SubType, Combat.Parent>): string;
+
+    static override createDialog(
+      data?: Combat.CreateData,
+      context?: Document.CreateDialogContext<Combat.SubType, Combat.Parent>,
+    ): Promise<Combat.Implementation | null | undefined>;
+
+    static override fromDropData(
+      data: Document.DropData<Combat.Implementation>,
+      options?: Document.FromDropDataOptions,
+    ): Promise<Combat.Implementation | undefined>;
+
+    static override fromImport(
+      source: Combat.Source,
+      context?: Document.FromImportContext<Combat.Parent>,
+    ): Promise<Combat.Implementation>;
   }
 }

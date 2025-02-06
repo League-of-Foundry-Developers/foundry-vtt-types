@@ -226,10 +226,6 @@ declare global {
      */
     constructor(...args: Document.ConstructorParameters<FogExploration.CreateData, FogExploration.Parent>);
 
-    static override metadata: FogExploration.Metadata;
-
-    static get implementation(): FogExploration.ImplementationClass;
-
     /**
      * Obtain the fog of war exploration progress for a specific Scene and User.
      * @param query      - Parameters for which FogExploration document is retrieved
@@ -256,6 +252,32 @@ declare global {
      * @privateRemarks _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
      * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
      */
+
+
+    /*
+     * After this point these are not really overridden methods.
+     * They are here because they're static properties but depend on the instance and so can't be
+     * defined DRY-ly while also being easily overridable.
+     */
+
+    static override defaultName(
+      context?: Document.DefaultNameContext<string, FogExploration.Parent>,
+    ): string;
+
+    static override createDialog(
+      data?: FogExploration.CreateData,
+      context?: Document.CreateDialogContext<string, FogExploration.Parent>,
+    ): Promise<FogExploration.Implementation | null | undefined>;
+
+    static override fromDropData(
+      data: Document.DropData<FogExploration.Implementation>,
+      options?: Document.FromDropDataOptions,
+    ): Promise<FogExploration.Implementation | undefined>;
+
+    static override fromImport(
+      source: FogExploration.Source,
+      context?: Document.FromImportContext<FogExploration.Parent>,
+    ): Promise<FogExploration.Implementation>;
   }
 
   namespace FogExploration {

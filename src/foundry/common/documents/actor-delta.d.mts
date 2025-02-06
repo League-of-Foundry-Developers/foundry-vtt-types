@@ -77,6 +77,8 @@ declare abstract class BaseActorDelta<
 
   static " fvtt_types_internal_document_name_static": "ActorDelta";
 
+  static get implementation(): ActorDelta.ImplementationClass;
+
   override system: Document.SystemFor<"ActorDelta", SubType>;
 
   override parent: BaseActorDelta.Parent;

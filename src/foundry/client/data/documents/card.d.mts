@@ -331,10 +331,6 @@ declare global {
      */
     constructor(...args: Document.ConstructorParameters<Card.CreateData, Card.Parent>);
 
-    static override metadata: Card.Metadata;
-
-    static get implementation(): Card.ImplementationClass;
-
     /**
      * The current card face
      */
@@ -429,5 +425,28 @@ declare global {
       messageData?: DeepPartial<foundry.documents.BaseChatMessage.CreateData>,
       options?: InexactPartial<Document.OnCreateOptions<"ChatMessage">>,
     ): Promise<ChatMessage.Implementation | undefined>;
+
+    /*
+     * After this point these are not really overridden methods.
+     * They are here because they're static properties but depend on the instance and so can't be
+     * defined DRY-ly while also being easily overridable.
+     */
+
+    static override defaultName(context?: Document.DefaultNameContext<Card.SubType, Card.Parent>): string;
+
+    static override createDialog(
+      data?: Card.CreateData,
+      context?: Document.CreateDialogContext<Card.SubType, Card.Parent>,
+    ): Promise<Card.Implementation | null | undefined>;
+
+    static override fromDropData(
+      data: Document.DropData<Card.Implementation>,
+      options?: Document.FromDropDataOptions,
+    ): Promise<Card.Implementation | undefined>;
+
+    static override fromImport(
+      source: Card.Source,
+      context?: Document.FromImportContext<Card.Parent>,
+    ): Promise<Card.Implementation>;
   }
 }
