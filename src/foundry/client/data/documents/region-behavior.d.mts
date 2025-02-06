@@ -61,7 +61,7 @@ declare global {
       data?: DeepPartial<Document.ConstructorDataFor<NoInfer<T>> & Record<string, unknown>>,
       context?: Pick<DatabaseCreateOperation<FixedInstanceType<NoInfer<T>>>, "parent" | "pack"> &
         InexactPartial<
-          DialogOptions & {
+          Dialog.Options & {
             /** A restriction the selectable sub-types of the Dialog. */
             types: string[];
           }

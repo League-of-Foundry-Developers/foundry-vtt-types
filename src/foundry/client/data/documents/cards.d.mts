@@ -332,14 +332,14 @@ declare global {
      */
     resetDialog(): Promise<Cards.ConfiguredInstance | false | null>;
 
-    override deleteDialog(options?: Partial<DialogOptions>): Promise<this | false | null | undefined>;
+    override deleteDialog(options?: Partial<Dialog.Options>): Promise<this | false | null | undefined>;
 
     static override createDialog<T extends Document.AnyConstructor>(
       this: T,
       data?: DeepPartial<Document.ConstructorDataFor<NoInfer<T>> & Record<string, unknown>>,
       context?: Pick<Document.Database.OperationOf<Cards["documentName"], "create">, "parent" | "pack"> &
         InexactPartial<
-          DialogOptions & {
+          Dialog.Options & {
             /** A restriction the selectable sub-types of the Dialog. */
             types: string[];
           }
