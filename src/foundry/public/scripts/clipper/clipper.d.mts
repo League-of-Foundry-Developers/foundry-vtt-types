@@ -110,10 +110,8 @@ declare global {
     let PI2: number;
 
     class IntPoint {
-      constructor(x: number, y: number, z: number);
-      constructor(x: number, y: number);
-      constructor(dp: DoublePoint);
-      constructor();
+      constructor(x: number, y: number, z?: number);
+      constructor(dp?: DoublePoint);
 
       X: number;
       Y: number;

@@ -17,7 +17,7 @@ import * as path from "path";
 const rules = [
   includeIgnoreFile(path.resolve(import.meta.dirname, ".gitignore")),
   js.configs.recommended,
-  ...ts.configs.recommended,
+  ...ts.configs.strict,
   ...ts.configs.stylistic,
   importPlugin.flatConfigs?.recommended,
   importPlugin.flatConfigs?.typescript,
@@ -53,7 +53,13 @@ const rules = [
       // This is sometimes done as a performance optimization, to allow declaration merging with a dynamic base, or simply to display a different name in intellisense.
       "@typescript-eslint/no-empty-object-type": ["error", { allowInterfaces: "with-single-extends" }],
       "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-extraneous-class": "off",
+      "@typescript-eslint/no-invalid-void-type": "off",
       "@typescript-eslint/no-namespace": ["error", { allowDeclarations: true }],
+
+      // non-null assertions are useful in tests
+      "@typescript-eslint/no-non-null-assertion": "off",
+
       // TODO(LukeAbby): reenable once all document declaration merges can be removed
       "@typescript-eslint/no-unsafe-declaration-merging": "off",
       "@typescript-eslint/no-unused-expressions": "off", // expectTypeOf seems to trip this rule.
@@ -65,6 +71,7 @@ const rules = [
         },
       ],
       "@typescript-eslint/prefer-namespace-keyword": "error",
+      "@typescript-eslint/unified-signatures": "off",
 
       "import/consistent-type-specifier-style": ["warn", "prefer-top-level"],
       "import/extensions": [

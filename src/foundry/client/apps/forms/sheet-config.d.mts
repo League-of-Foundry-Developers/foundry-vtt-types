@@ -76,13 +76,6 @@ declare global {
     ): void;
 
     /**
-     * Perform the sheet registration.
-     * @param config - Configuration for how the sheet should be un-registered
-     * @internal
-     */
-    static #registerSheet(config: Omit<DocumentSheetConfig.SheetRegistration, "action">): void;
-
-    /**
      * Unregister a sheet class, removing it from the list of available Applications to use for a Document type
      * @param documentClass - The Document class for which to register a new Sheet option
      * @param scope         - Provide a unique namespace scope for this sheet
@@ -97,13 +90,6 @@ declare global {
     ): void;
 
     /**
-     * Perform the sheet de-registration
-     * @param config - Configuration for how the sheet should be un-registered
-     * @internal
-     */
-    static #unregisterSheet(config: Omit<DocumentSheetConfig.SheetUnregistration, "action">): void;
-
-    /**
      * Update the current default Sheets using a new core world setting.
      */
     static updateDefaultSheets(setting?: Record<Document.Type, Record<string, string>>): void;
@@ -113,6 +99,8 @@ declare global {
      * @internal
      */
     protected static _registerDefaultSheets(): void;
+
+    #documentSheetConfig: true;
   }
 
   namespace DocumentSheetConfig {

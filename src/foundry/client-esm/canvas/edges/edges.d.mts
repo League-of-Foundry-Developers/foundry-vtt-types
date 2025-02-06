@@ -25,7 +25,7 @@ declare namespace CanvasEdges {
   type AnyConstructor = typeof AnyCanvasEdges;
 }
 
-declare abstract class AnyCanvasEdges {
+declare abstract class AnyCanvasEdges extends CanvasEdges {
   constructor(arg0: never, ...args: never[]);
 }
 
