@@ -131,7 +131,7 @@ declare global {
     ): Promise<ReturnType<Notifications["warn"]> | false | TokenDocument.ConfiguredInstance>;
 
     //TODO: use configured ruler type once it exists
-    protected override _onClickLeft(event: PIXI.FederatedEvent): ReturnType<Ruler["_onClickLeft"]> | void; // ReturnType<CONFIG.Canvas["rulerClass"]["_onClickLeft"]>;
+    protected override _onClickLeft(event: PIXI.FederatedEvent): void; // ReturnType<CONFIG.Canvas["rulerClass"]["_onClickLeft"]>;
 
     protected override _onMouseWheel(event: WheelEvent): ReturnType<this["rotateMany"]>;
 

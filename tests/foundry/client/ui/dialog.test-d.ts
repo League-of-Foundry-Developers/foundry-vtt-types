@@ -258,7 +258,9 @@ expectTypeOf(
   }),
 ).toEqualTypeOf<Promise<true | false | null>>();
 
-const optionsWithJQueryUnknown = ((): Partial<DialogOptions> => ({}))();
+const optionsWithJQueryUnknown = {
+  jQuery: Math.random() > 0.5,
+};
 
 expectTypeOf(
   Dialog.confirm({

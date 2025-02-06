@@ -21,7 +21,7 @@ expectTypeOf(layer.draw({ type: null, dimensions: null, gridColor: null, gridAlp
   Promise<GridLayer>
 >();
 expectTypeOf(layer.draw({ type: foundry.CONST.GRID_TYPES.GRIDLESS })).toEqualTypeOf<Promise<GridLayer>>();
-expectTypeOf(layer.draw({ dimensions: (canvas as Canvas).dimensions })).toEqualTypeOf<Promise<GridLayer>>();
+expectTypeOf(layer.draw({ dimensions: canvas!.dimensions })).toEqualTypeOf<Promise<GridLayer>>();
 expectTypeOf(layer.draw({ gridColor: "#000000" })).toEqualTypeOf<Promise<GridLayer>>();
 expectTypeOf(layer.draw({ gridColor: 0x000000 })).toEqualTypeOf<Promise<GridLayer>>();
 expectTypeOf(layer.draw({ gridAlpha: 0.2 })).toEqualTypeOf<Promise<GridLayer>>();

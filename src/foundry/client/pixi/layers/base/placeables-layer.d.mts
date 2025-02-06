@@ -452,6 +452,7 @@ declare global {
 
     protected override _onClickRight(event: PIXI.FederatedEvent): void;
 
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     protected override _onMouseWheel(event: WheelEvent): ReturnType<this["rotateMany"]>;
 
     protected override _onDeleteKey(event: KeyboardEvent): Promise<void>;

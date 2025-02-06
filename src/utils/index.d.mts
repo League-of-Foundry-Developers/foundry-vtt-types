@@ -389,7 +389,8 @@ export type PrettifyType<T> = T extends AnyObject
   ? {
       [K in keyof T]: T[K];
     }
-  : T & unknown;
+  : // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+    T & unknown;
 
 /**
  * This behaves the same as {@link PrettifyType | `PrettifyType`} except instead
@@ -399,7 +400,8 @@ export type PrettifyTypeDeep<T> = T extends AnyObject
   ? {
       [K in keyof T]: PrettifyTypeDeep<T[K]>;
     }
-  : T & unknown;
+  : // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+    T & unknown;
 
 /**
  * Convert a union of the form `T1 | T2 | T3 | ...` into an intersection of the form `T1 & T2 & T3 & ...`.
@@ -1023,3 +1025,9 @@ type _MustBeValidUuid<
  * Drops the first element of an array
  */
 type DropFirst<T extends AnyArray> = T extends [infer _1, ...infer V] ? V : T;
+
+/**
+ * This type is used when you want to use `unknown` in a union.
+ */
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export type LazyUnknown = {} | null | undefined;

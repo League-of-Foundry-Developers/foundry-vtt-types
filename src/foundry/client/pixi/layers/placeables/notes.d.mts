@@ -78,6 +78,7 @@ declare global {
       }>,
     ): Promise<void>;
 
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     protected override _onClickLeft(event: PIXI.FederatedEvent): Promise<Note | void>;
 
     /**

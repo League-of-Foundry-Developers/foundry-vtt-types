@@ -148,6 +148,7 @@ declare global {
      */
     disconnectAll(): Promise<Array<void>>;
 
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     override onSettingsChanged(changed: DeepPartial<AVSettings.Settings>): Promise<void>;
 
     override updateLocalStream(): Promise<void>;

@@ -241,15 +241,6 @@ declare global {
     shuffle(options?: InexactPartial<Cards.ShuffleOptions>): Promise<Cards.ConfiguredInstance>;
 
     /**
-     * Reset the Cards stack, retrieving all original cards from other stacks where they may have been drawn if this is a
-     * deck, otherwise returning all the cards in this stack to the decks where they originated.
-     * @param options - Options which modify the reset operation
-     *                  (default: `{}`)
-     * @returns The Cards document after the reset operation has completed
-     */
-    reset(options?: InexactPartial<Cards.ResetOptions>): Promise<Cards.ConfiguredInstance>;
-
-    /**
      * Perform a reset operation for a deck, retrieving all original cards from other stacks where they may have been
      * drawn.
      * @param options - Options which modify the reset operation.

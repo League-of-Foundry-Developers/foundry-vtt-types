@@ -77,7 +77,7 @@ declare global {
     // TODO: Implement GetDataReturnType
     override getData(options?: Partial<Options>): Promise<object>;
 
-    override render(force?: boolean, options?: Application.RenderOptions<Options> | undefined): Promise<unknown>;
+    override render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<unknown>;
 
     /**
      * Get the sidebar directory entry context options

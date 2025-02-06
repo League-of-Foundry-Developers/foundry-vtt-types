@@ -17,11 +17,17 @@ import * as path from "path";
 const rules = [
   includeIgnoreFile(path.resolve(import.meta.dirname, ".gitignore")),
   js.configs.recommended,
-  ...ts.configs.strict,
-  ...ts.configs.stylistic,
+  ...ts.configs.strictTypeChecked,
+  ...ts.configs.stylisticTypeChecked,
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   importPlugin.flatConfigs?.recommended,
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   importPlugin.flatConfigs?.typescript,
   eslintConfigPrettier,
+  {
+    // This is excluded because if it weren't then it would mess with the type checking of the rest of the repo as it loosens the types of many types.
+    ignores: ["index-lenient.d.mts"],
+  },
   {
     languageOptions: {
       parser: tsParser,
@@ -49,6 +55,14 @@ const rules = [
       "@typescript-eslint/array-type": "off",
       "@typescript-eslint/ban-types": "off",
       "@typescript-eslint/consistent-indexed-object-style": "off",
+      "@typescript-eslint/dot-notation": [
+        "error",
+        {
+          // Using index signature syntax to avoid TypeScript errors is useful.
+          allowPrivateClassPropertyAccess: true,
+          allowProtectedClassPropertyAccess: true,
+        },
+      ],
       // `allowInterfaces` allows the pattern of `interface X extends _X {}`.
       // This is sometimes done as a performance optimization, to allow declaration merging with a dynamic base, or simply to display a different name in intellisense.
       "@typescript-eslint/no-empty-object-type": ["error", { allowInterfaces: "with-single-extends" }],
@@ -70,8 +84,19 @@ const rules = [
           varsIgnorePattern: "^_",
         },
       ],
+      "@typescript-eslint/no-unnecessary-type-parameters": "off",
       "@typescript-eslint/prefer-namespace-keyword": "error",
       "@typescript-eslint/unified-signatures": "off",
+
+      // These are annoying in tests and not relevant in the main repo.
+      "@typescript-eslint/no-confusing-void-expression": "off",
+      "@typescript-eslint/unbound-method": "off",
+      "@typescript-eslint/require-await": "off",
+      "@typescript-eslint/no-floating-promises": "off",
+      "@typescript-eslint/no-unnecessary-type-arguments": "off",
+      "@typescript-eslint/related-getter-setter-pairs": "off",
+      "@typescript-eslint/restrict-plus-operands": "off",
+      "@typescript-eslint/restrict-template-expressions": ["error", { allowNumber: true }],
 
       "import/consistent-type-specifier-style": ["warn", "prefer-top-level"],
       "import/extensions": [
@@ -145,6 +170,18 @@ const rules = [
       // There aren't even function bodies in the majority of the codebase.
       // It can make sense to have empty functions in tests.
       "@typescript-eslint/no-empty-function": "off",
+
+      // Testing deprecated things is still useful for quality assurance.
+      "@typescript-eslint/no-deprecated": "off",
+
+      // While test are broken these errors are disabled.
+      "@typescript-eslint/no-unsafe-member-access": "off",
+      "@typescript-eslint/no-unsafe-call": "off",
+      "@typescript-eslint/no-redundant-type-constituents": "off",
+      "@typescript-eslint/no-unnecessary-condition": "off",
+      "@typescript-eslint/no-unsafe-assignment": "off",
+      "@typescript-eslint/no-unsafe-return": "off",
+      "@typescript-eslint/no-unsafe-argument": "off",
     },
   },
 ];

@@ -1,4 +1,4 @@
-import type { InexactPartial } from "fvtt-types/utils";
+import type { InexactPartial, LazyUnknown } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 import type BaseJournalEntryPage from "../../../common/documents/journal-entry-page.d.mts";
 
@@ -224,7 +224,7 @@ declare global {
     protected _embedImagePage(
       config: TextEditor.DocumentHTMLEmbedConfig & {
         /** Alt text for the image, otherwise the caption will be used. **/
-        alt?: string | unknown;
+        alt?: string | LazyUnknown;
       },
       options?: InexactPartial<TextEditor.EnrichmentOptions>,
     ): Promise<HTMLElement | HTMLCollection | null>;

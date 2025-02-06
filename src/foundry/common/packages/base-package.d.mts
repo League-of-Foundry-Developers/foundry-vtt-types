@@ -381,7 +381,7 @@ declare namespace BasePackage {
 
   interface LogOptions extends InexactPartial<LogCompatibilityWarningOptions> {
     /** Is the package installed? */
-    installed?: unknown | undefined;
+    installed?: unknown;
   }
 }
 

@@ -8,18 +8,20 @@ import * as fs from "fs/promises";
 export default class JSONReporter implements Reporter {
   declare ctx: Vitest;
 
-  async onInit(ctx: Vitest) {
+  onInit(ctx: Vitest) {
     this.ctx = ctx;
   }
 
   async onFinished(files = this.ctx.state.getFiles()) {
-    const fileToErrors = {};
+    const fileToErrors: Record<string, string[]> = {};
 
     for (const file of files) {
       const filePath = relative(this.ctx.config.root, file.filepath);
-      fileToErrors[filePath] ??= [];
 
-      const errors =
+      const errors = fileToErrors[filePath] ?? [];
+      fileToErrors[filePath] = errors;
+
+      const errorMessages =
         file.result?.errors?.map((error) => {
           if (error.nameStr != null) {
             return `${error.nameStr}: ${error.message}`;
@@ -28,8 +30,8 @@ export default class JSONReporter implements Reporter {
           return error.message;
         }) ?? [];
 
-      if (errors.length > 0) {
-        fileToErrors[filePath].push(...errors);
+      if (errorMessages.length > 0) {
+        errors.push(...errors);
       }
     }
 

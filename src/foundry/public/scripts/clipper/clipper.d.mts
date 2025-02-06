@@ -389,10 +389,10 @@ declare global {
       protected m_Scanbeam: Scanbeam | null;
 
       /** @defaultValue `null` */
-      protected m_PolyOuts: unknown | null;
+      protected m_PolyOuts: unknown;
 
       /** @defaultValue `null` */
-      protected m_ActiveEdges: unknown | null;
+      protected m_ActiveEdges: unknown;
 
       /**
        * -2^53

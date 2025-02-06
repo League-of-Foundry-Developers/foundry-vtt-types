@@ -141,7 +141,8 @@ declare global {
      */
     identifyInteriorArea(walls: Wall.ConfiguredInstance[]): PIXI.Polygon[];
 
-    protected override _onDragLeftStart(event: PIXI.FederatedEvent): ReturnType<Wall.ConfiguredInstance["draw"]>;
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    protected override _onDragLeftStart(event: PIXI.FederatedEvent): Promise<Wall.ConfiguredInstance>;
 
     protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 

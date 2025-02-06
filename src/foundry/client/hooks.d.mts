@@ -245,7 +245,7 @@ declare global {
        * @remarks This is called by {@link Hooks.call}.
        * @see {@link ActiveEffect#_applyCustom}
        */
-      applyActiveEffect: (actor: Actor.ConfiguredInstance, change: EffectChangeData) => boolean | void;
+      applyActiveEffect: (actor: Actor.ConfiguredInstance, change: ActiveEffect.EffectChangeData) => boolean | void;
 
       /** Compendium */
 
@@ -348,7 +348,7 @@ declare global {
        * @param options - Options for rendering the associated {@link JournalSheet}
        * @remarks This is called by {@link Hooks.call}.
        */
-      activateNote: (note: Note.ConfiguredInstance, options: JournalSheet.RenderOptions) => boolean | false;
+      activateNote: (note: Note.ConfiguredInstance, options: JournalSheet.RenderOptions) => true | false;
 
       /** Cards */
 
@@ -1182,8 +1182,7 @@ declare global {
       | DeactivateLayer
       | GetEntryContext
       | GetPlaylistDirectorySoundContext
-      | GetSidebarDirectoryFolderContext
-      | HoverObject;
+      | GetSidebarDirectoryFolderContext;
 
     interface ErrorCallbackParameters {
       "Canvas#draw": [location: "Canvas#draw", err: Error, data: { layer: CanvasLayer }];

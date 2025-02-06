@@ -546,7 +546,12 @@ declare global {
       zIndex: number;
     }
 
-    type RenderOptions<Options extends ApplicationOptions = ApplicationOptions> = Partial<Options> & {
+    // TODO(LukeAbby): This should accept already partial options but all callers have to be changed.
+    // `_RenderOptions` should probably become the default and applications will extend that plus their optional options.
+    type RenderOptions<Options extends ApplicationOptions = ApplicationOptions> = Partial<Options> & _RenderOptions;
+
+    /** @internal */
+    interface _RenderOptions {
       /**
        * The left positioning attribute
        */
@@ -588,7 +593,7 @@ declare global {
        * The data change which motivated the render request
        */
       renderData?: object | undefined;
-    };
+    }
 
     /**
      * @see {@link Application.RENDER_STATES}

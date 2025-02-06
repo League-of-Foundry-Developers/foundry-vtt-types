@@ -9,5 +9,9 @@
     // Annoyingly there doesn't appear to be a holistic way to deal with an arbitrary number of nested dot directories and/or dot files.
     "**/.*/**/*",
     "**/.*"
+  ],
+  "exclude": [
+    // This is excluded because if it weren't then it would mess with the type checking of the rest of the repo as it loosens the types of many types.
+    "index-lenient.d.mts"
   ]
 }

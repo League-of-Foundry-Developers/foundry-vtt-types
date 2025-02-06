@@ -130,13 +130,11 @@ export class DataModelValidationError extends Error {
 
 declare namespace DataModelValidationFailure {
   interface ConstructorArgs {
-    // The `| undefined` is redundant with `unknown` but it's provided anyways for easy auditing.
-
     /** The value that failed validation for this field. */
-    invalidValue?: unknown | undefined;
+    invalidValue?: unknown;
 
     /**  The value it was replaced by, if any. */
-    fallback?: unknown | undefined;
+    fallback?: unknown;
 
     /**
      * Whether the value was dropped from some parent collection.
@@ -166,8 +164,8 @@ declare namespace DataModelValidationFailure {
   }
 
   interface ToObject {
-    invalidValue?: unknown | undefined;
-    fallback?: unknown | undefined;
+    invalidValue?: unknown;
+    fallback?: unknown;
     dropped?: boolean | undefined;
     message?: string | undefined;
   }

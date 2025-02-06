@@ -130,6 +130,7 @@ declare global {
 
     protected override _canConfigure(user: User.ConfiguredInstance, event?: any): boolean;
 
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     protected override _onClickRight(event: PIXI.FederatedEvent): Promise<this>;
 
     protected override _onDragLeftStart(event: PIXI.FederatedEvent): void;

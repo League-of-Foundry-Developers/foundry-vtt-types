@@ -28,7 +28,7 @@ const metadata: CompendiumCollection.Metadata = {
 };
 
 const constructorMetadata: CompendiumCollection.ConstructorMetadata<typeof metadata> = {
-  ...(metadata as CompendiumCollection.Metadata),
+  ...metadata,
   index: new foundry.utils.Collection(),
   folders: [],
 };

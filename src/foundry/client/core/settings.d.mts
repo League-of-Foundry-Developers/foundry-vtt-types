@@ -23,7 +23,7 @@ declare global {
     /**
      * A object of registered game settings for this scope
      */
-    settings: Map<keyof globalThis.SettingConfig & string, ClientSettings.SettingConfig>;
+    settings: Map<keyof globalThis.SettingConfig & (string & {}), ClientSettings.SettingConfig>;
 
     /**
      * Registered settings menus which trigger secondary applications
