@@ -34,19 +34,17 @@ expectTypeOf(PlaceablesLayer.placeableClass).toEqualTypeOf<PlaceableObject.AnyCo
 
 const layer = new SomeLightLayer();
 
-if (layer.history.length) {
-  const firstHistoryEntry = layer.history[0];
-  if (firstHistoryEntry.type === "create") {
-    expectTypeOf(firstHistoryEntry.data).toEqualTypeOf<Array<{ _id: string }>>();
-  } else if (firstHistoryEntry.type === "update") {
-    expectTypeOf(firstHistoryEntry.data).toEqualTypeOf<
-      Array<Document.UpdateDataFor<Document.ConfiguredClassForName<"AmbientLight">> & { _id: string }>
-    >();
-  } else {
-    expectTypeOf(firstHistoryEntry.data).toEqualTypeOf<
-      Array<Document.ConstructorDataFor<Document.ConfiguredClassForName<"AmbientLight">> & { _id: string }>
-    >();
-  }
+const firstHistoryEntry = layer.history[0]!;
+if (firstHistoryEntry.type === "create") {
+  expectTypeOf(firstHistoryEntry.data).toEqualTypeOf<Array<{ _id: string }>>();
+} else if (firstHistoryEntry.type === "update") {
+  expectTypeOf(firstHistoryEntry.data).toEqualTypeOf<
+    Array<Document.UpdateDataFor<Document.ConfiguredClassForName<"AmbientLight">> & { _id: string }>
+  >();
+} else {
+  expectTypeOf(firstHistoryEntry.data).toEqualTypeOf<
+    Array<Document.ConstructorDataFor<Document.ConfiguredClassForName<"AmbientLight">> & { _id: string }>
+  >();
 }
 
 expectTypeOf(layer.options.objectClass).toEqualTypeOf<typeof AmbientLight>();
