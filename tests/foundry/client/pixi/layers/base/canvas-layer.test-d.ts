@@ -18,8 +18,8 @@ expectTypeOf(MyCanvasLayer.instance).toEqualTypeOf<CanvasLayer.Any | PIXI.Contai
 
 const layer = new MyCanvasLayer();
 
-expectTypeOf(layer.name).toEqualTypeOf<"MyLayer">();
-expectTypeOf(layer.hookName).toEqualTypeOf<"MyLayer">();
+expectTypeOf(layer.name).toEqualTypeOf<string>();
+expectTypeOf(layer.hookName).toEqualTypeOf<string>();
 expectTypeOf(layer.options.baseClass).toMatchTypeOf<CanvasLayer.AnyConstructor>();
 expectTypeOf(layer.options.baseClass).toEqualTypeOf<typeof MyCanvasLayer>();
 expectTypeOf(layer.draw()).toEqualTypeOf<Promise<MyCanvasLayer>>();

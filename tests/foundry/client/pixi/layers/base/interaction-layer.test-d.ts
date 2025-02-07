@@ -7,6 +7,8 @@ interface MyInteractionLayerOptions extends InteractionLayer.LayerOptions {
 }
 
 declare class MyInteractionLayer extends InteractionLayer {
+  override get hookName(): "MyInteractionLayer";
+
   override options: MyInteractionLayerOptions;
 
   static override get layerOptions(): MyInteractionLayerOptions;
@@ -20,7 +22,7 @@ declare const someEvent: PIXI.FederatedEvent;
 declare const someUser: User.ConfiguredInstance;
 const layer = new MyInteractionLayer();
 
-expectTypeOf(layer.name).toEqualTypeOf<"MyInteractionLayer">();
+expectTypeOf(layer.name).toEqualTypeOf<string>();
 expectTypeOf(layer.hookName).toEqualTypeOf<"MyInteractionLayer">();
 expectTypeOf(layer.activate({ tool: "foo" })).toEqualTypeOf<MyInteractionLayer>();
 expectTypeOf(layer["_activate"]()).toBeVoid();
