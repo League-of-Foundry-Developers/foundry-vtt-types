@@ -30,9 +30,7 @@ export default class JSONReporter implements Reporter {
           return error.message;
         }) ?? [];
 
-      if (errorMessages.length > 0) {
-        errors.push(...errors);
-      }
+      errors.push(...errorMessages);
     }
 
     try {

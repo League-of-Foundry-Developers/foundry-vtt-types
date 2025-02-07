@@ -63,6 +63,7 @@ const rules = [
           allowProtectedClassPropertyAccess: true,
         },
       ],
+      "@typescript-eslint/no-dynamic-delete": "off",
       // `allowInterfaces` allows the pattern of `interface X extends _X {}`.
       // This is sometimes done as a performance optimization, to allow declaration merging with a dynamic base, or simply to display a different name in intellisense.
       "@typescript-eslint/no-empty-object-type": ["error", { allowInterfaces: "with-single-extends" }],

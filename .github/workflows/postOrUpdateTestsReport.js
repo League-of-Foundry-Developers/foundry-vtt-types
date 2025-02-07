@@ -1,5 +1,8 @@
 // @ts-check
 
+// console would count as undefined which would be very annoying.
+/* eslint-disable no-undef */
+
 import * as fs from "fs/promises";
 
 /**
@@ -50,16 +53,23 @@ async function postOrUpdateTestsReport({ github, context, core }) {
       return;
     }
 
-    // eslint-disable-next-line no-undef
     console.error(e.message, e.stack);
     core.setFailed(`Could not get results to compare: ${e.message}`);
     return;
   }
 
+  console.log("Main Test Results");
+  console.log("-----------------");
+  console.log(JSON.stringify(mainResults, null, 2));
+
   const contents = await fs.readFile("pr-test-results/vitest-report.json", "utf-8");
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const pullRequestResults = /** @type {TestResults} */ (JSON.parse(contents));
+
+  console.log("PR Test Results");
+  console.log("---------------");
+  console.log(JSON.stringify(pullRequestResults, null, 2));
 
   /**
    * @type {Record<string, { type: "deleted" | "in-both" | "new"; fixedErrors: number; newErrors: number; unfixedErrors: number }>}
