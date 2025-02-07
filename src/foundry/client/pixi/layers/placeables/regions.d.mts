@@ -1,4 +1,5 @@
-import type { EmptyObject, HandleEmptyObject } from "fvtt-types/utils";
+import type { HandleEmptyObject } from "fvtt-types/utils";
+import type Document from "../../../../common/abstract/document.d.mts";
 
 declare global {
   /**
@@ -50,7 +51,10 @@ declare global {
 
     protected override _deactivate(): void;
 
-    override storeHistory(type: PlaceablesLayer.HistoryEventType, data: EmptyObject[]): void;
+    override storeHistory<Operation extends Document.Database.Operation>(
+      type: Operation,
+      data: PlaceablesLayer.HistoryDataFor<Operation, "Region">,
+    ): void;
 
     /** @remarks Core overrides this returning an empty array to prevent copy & paste behavior. */
     override copyObjects(): [];

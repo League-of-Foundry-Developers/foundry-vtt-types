@@ -35,7 +35,7 @@ declare global {
      * ```
      */
     protected last: {
-      point: Canvas.PointArray | null;
+      point: Canvas.PointTuple | null;
     };
 
     /**
@@ -55,14 +55,12 @@ declare global {
      */
     static override get layerOptions(): WallsLayer.LayerOptions;
 
-    /**
-     * @privateRemarks This is not overridden in foundry but reflects the real behavior.
-     */
+    /** @privateRemarks This is not overridden in foundry but reflects the real behavior. */
     override options: WallsLayer.LayerOptions;
 
     static override documentName: "Wall";
 
-    override get hookName(): string;
+    override get hookName(): this["name"];
 
     /**
      * An Array of Wall instances in the current Scene which act as Doors.
@@ -81,7 +79,7 @@ declare global {
      * @param wall  - The existing Wall object being chained to
      * @returns The [x,y] coordinates of the starting endpoint
      */
-    static getClosestEndpoint(point: Canvas.Point, wall: Wall.ConfiguredInstance): Canvas.PointArray;
+    static getClosestEndpoint(point: Canvas.Point, wall: Wall.ConfiguredInstance): Canvas.PointTuple;
 
     override releaseAll(options?: PlaceableObject.ReleaseOptions): number;
 
@@ -113,7 +111,7 @@ declare global {
          */
         snap: boolean;
       }>,
-    ): Canvas.PointArray;
+    ): Canvas.PointTuple;
 
     /**
      * The Scene Controls tools provide several different types of prototypical Walls to choose from

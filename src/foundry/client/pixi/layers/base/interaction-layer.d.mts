@@ -135,6 +135,7 @@ declare global {
   }
 
   namespace InteractionLayer {
+    interface Any extends AnyInteractionLayer {}
     type AnyConstructor = typeof AnyInteractionLayer;
 
     interface LayerOptions extends CanvasLayer.LayerOptions {

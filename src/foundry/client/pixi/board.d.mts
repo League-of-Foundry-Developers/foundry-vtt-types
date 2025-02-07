@@ -779,9 +779,9 @@ declare global {
      * A single point, expressed as an array \[x,y\]
      * @remarks Copied from `resources/app/common/types.mjs`
      */
-    type PointArray = [x: number, y: number];
+    type PointTuple = [x: number, y: number];
 
-    type PairOfPointsArray = [x0: number, y0: number, x1: number, y1: number];
+    type PairOfPointsTuple = [x0: number, y0: number, x1: number, y1: number];
 
     /**
      * A standard rectangle interface.

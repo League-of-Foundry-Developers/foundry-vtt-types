@@ -32,13 +32,13 @@ declare global {
      * The canonical name of the CanvasLayer is the name of the constructor that is the immediate child of the defined baseClass for the layer type.
      * @remarks Foundry defines this as a getter, but since CanvasLayer extends PIXI.Container, it has to be a property.
      */
-    readonly name: this["options"]["name"];
+    readonly name: string;
 
     /**
      * The name used by hooks to construct their hook string.
      * Note: You should override this getter if hookName should not return the class constructor name.
      */
-    get hookName(): this["name"];
+    get hookName(): string;
 
     /**
      * Draw the canvas layer, rendering its internal components and returning a Promise

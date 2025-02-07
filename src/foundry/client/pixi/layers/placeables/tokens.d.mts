@@ -114,9 +114,9 @@ declare global {
      */
     protected _getOccludableTokens(): Token.ConfiguredInstance[];
 
-    override storeHistory(
-      type: PlaceablesLayer.HistoryEventType,
-      data: Document.ConfiguredSourceForName<"Token">[],
+    storeHistory<Operation extends Document.Database.Operation>(
+      type: Operation,
+      data: PlaceablesLayer.HistoryDataFor<Operation, "Token">,
     ): void;
 
     /**
