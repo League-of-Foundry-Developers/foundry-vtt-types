@@ -9,6 +9,9 @@
     ".": {
       "types": "./index.d.mts"
     },
+    "./lenient": {
+      "types": "./index-lenient.d.mts"
+    },
     "./utils": {
       "types": "./src/utils/index.d.mts"
     },
