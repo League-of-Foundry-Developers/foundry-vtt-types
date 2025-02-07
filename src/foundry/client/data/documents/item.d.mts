@@ -293,9 +293,9 @@ declare global {
     static override defaultName(context?: Document.DefaultNameContext<Item.SubType, Item.Parent>): string;
 
     static override createDialog(
-      data?: Item.CreateData,
+      data?: Document.CreateDialogData<Item.CreateData>,
       context?: Document.CreateDialogContext<Item.SubType, Item.Parent>,
-    ): Promise<Item.Implementation | null | undefined>;
+    ): Promise<Item.Stored | null | undefined>;
 
     static override fromDropData(
       data: Document.DropData<Item.Implementation>,

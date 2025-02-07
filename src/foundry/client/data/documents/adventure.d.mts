@@ -330,12 +330,12 @@ declare global {
      * defined DRY-ly while also being easily overridable.
      */
 
-    static override defaultName(context?: Document.DefaultNameContext<"base", Adventure.Parent>): string;
+    static override defaultName(context: Document.DefaultNameContext<"base", Adventure.Parent>): string;
 
     static override createDialog(
-      data?: Adventure.CreateData,
-      context?: Document.CreateDialogContext<"base", Adventure.Parent>,
-    ): Promise<Adventure.Implementation | null | undefined>;
+      data: Document.CreateDialogData<Adventure.CreateData>,
+      context: Document.CreateDialogContext<string, Adventure.Parent>,
+    ): Promise<Adventure.Stored | null | undefined>;
 
     static override fromDropData(
       data: Document.DropData<Adventure.Implementation>,

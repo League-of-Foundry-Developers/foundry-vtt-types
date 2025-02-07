@@ -213,21 +213,20 @@ declare global {
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 
-
-  /**
-   * An object containing the executed Roll and the produced results
-   */
-  interface Draw {
     /**
-     * The Dice roll which generated the draw
+     * An object containing the executed Roll and the produced results
      */
-    roll: Roll;
+    interface Draw {
+      /**
+       * The Dice roll which generated the draw
+       */
+      roll: Roll;
 
-    /**
-     * An array of drawn TableResult documents
-     */
-    results: Document.ToConfiguredInstance<typeof foundry.documents.BaseTableResult>[];
-  }
+      /**
+       * An array of drawn TableResult documents
+       */
+      results: Document.ToConfiguredInstance<typeof foundry.documents.BaseTableResult>[];
+    }
 
     /**
      * Optional arguments which customize the draw
@@ -553,9 +552,9 @@ declare global {
     static override defaultName(context?: Document.DefaultNameContext<string, RollTable.Parent>): string;
 
     static override createDialog(
-      data?: RollTable.CreateData,
+      data?: Document.CreateDialogData<RollTable.CreateData>,
       context?: Document.CreateDialogContext<string, RollTable.Parent>,
-    ): Promise<RollTable.Implementation | null | undefined>;
+    ): Promise<RollTable.Stored | null | undefined>;
 
     static override fromDropData(
       data: Document.DropData<RollTable.Implementation>,

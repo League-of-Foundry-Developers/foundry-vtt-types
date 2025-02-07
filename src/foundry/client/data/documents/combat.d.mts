@@ -551,9 +551,9 @@ declare global {
     static override defaultName(context?: Document.DefaultNameContext<Combat.SubType, Combat.Parent>): string;
 
     static override createDialog(
-      data?: Combat.CreateData,
+      data?: Document.CreateDialogData<Combat.CreateData>,
       context?: Document.CreateDialogContext<Combat.SubType, Combat.Parent>,
-    ): Promise<Combat.Implementation | null | undefined>;
+    ): Promise<Combat.Stored | null | undefined>;
 
     static override fromDropData(
       data: Document.DropData<Combat.Implementation>,

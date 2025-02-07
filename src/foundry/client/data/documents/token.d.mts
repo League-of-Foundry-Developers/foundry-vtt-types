@@ -845,12 +845,14 @@ declare global {
      * defined DRY-ly while also being easily overridable.
      */
 
-    static override defaultName(context?: Document.DefaultNameContext<string, TokenDocument.Parent>): string;
+    static override defaultName(
+      context: Document.DefaultNameContext<"base", Exclude<TokenDocument.Parent, null>>,
+    ): string;
 
     static override createDialog(
-      data?: TokenDocument.CreateData,
-      context?: Document.CreateDialogContext<string, TokenDocument.Parent>,
-    ): Promise<TokenDocument.Implementation | null | undefined>;
+      data: Document.CreateDialogData<TokenDocument.CreateData>,
+      context: Document.CreateDialogContext<string, Exclude<TokenDocument.Parent, null>>,
+    ): Promise<TokenDocument.Stored | null | undefined>;
 
     static override fromDropData(
       data: Document.DropData<TokenDocument.Implementation>,

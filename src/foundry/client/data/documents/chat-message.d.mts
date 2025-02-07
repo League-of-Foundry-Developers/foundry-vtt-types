@@ -526,9 +526,9 @@ declare global {
     static override defaultName(context?: Document.DefaultNameContext<ChatMessage.SubType, ChatMessage.Parent>): string;
 
     static override createDialog(
-      data?: ChatMessage.CreateData,
+      data?: Document.CreateDialogData<ChatMessage.CreateData>,
       context?: Document.CreateDialogContext<ChatMessage.SubType, ChatMessage.Parent>,
-    ): Promise<ChatMessage.Implementation | null | undefined>;
+    ): Promise<ChatMessage.Stored | null | undefined>;
 
     static override fromDropData(
       data: Document.DropData<ChatMessage.Implementation>,

@@ -427,9 +427,9 @@ declare global {
     static override defaultName(context?: Document.DefaultNameContext<string, User.Parent>): string;
 
     static override createDialog(
-      data?: User.CreateData,
+      data?: Document.CreateDialogData<User.CreateData>,
       context?: Document.CreateDialogContext<string, User.Parent>,
-    ): Promise<User.Implementation | null | undefined>;
+    ): Promise<User.Stored | null | undefined>;
 
     static override fromDropData(
       data: Document.DropData<User.Implementation>,

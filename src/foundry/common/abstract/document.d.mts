@@ -1632,16 +1632,23 @@ declare namespace Document {
     value?: unknown;
   }
 
-  interface DefaultNameContext<SubType extends string, Parent extends Document.Any | null> {
-    /** The sub-type of the document */
-    type?: SubType;
+  type ParentContext<Parent extends Document.Any | null> = Parent extends null
+    ? {
+        /** A parent document within which the created Document should belong */
+        parent?: Parent | undefined;
+      }
+    : {
+        /** A parent document within which the created Document should belong */
+        parent: Parent;
+      }
 
-    /** A parent document within which the created Document should belong */
-    parent?: Parent;
+  type DefaultNameContext<SubType extends string, Parent extends Document.Any | null> = {
+    /** The sub-type of the document */
+    type?: SubType | undefined;
 
     /** A compendium pack within which the Document should be created */
-    pack?: string;
-  }
+    pack?: string | undefined;
+  } & ParentContext<Parent>
 
   interface FromDropDataOptions {
     /**
@@ -1651,11 +1658,15 @@ declare namespace Document {
     importWorld?: boolean;
   }
 
-  interface CreateDialogContext<SubType extends string, Parent extends Document.Any | null>
-    extends InexactPartial<DialogOptions> {
-    /** A parent document within which the created Document should belong */
-    parent?: Parent | null | undefined;
+  type CreateDialogData<CreateData extends object> = InexactPartial<
+    CreateData,
+    Extract<AllKeysOf<CreateData>, "name" | "type" | "folder">
+  >;
 
+  type CreateDialogContext<
+    SubType extends string,
+    Parent extends Document.Any | null,
+  > = InexactPartial<DialogOptions> & {
     /**
      * A compendium pack within which the Document should be created
      */
@@ -1663,7 +1674,7 @@ declare namespace Document {
 
     /** A restriction the selectable sub-types of the Dialog. */
     types?: SubType[] | null | undefined;
-  }
+  } & ParentContext<Parent>;
 
   interface FromImportContext<Parent extends Document.Any | null>
     extends ConstructionContext<Parent>,

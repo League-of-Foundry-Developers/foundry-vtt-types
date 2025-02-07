@@ -278,9 +278,9 @@ declare global {
     static override defaultName(context?: Document.DefaultNameContext<string, JournalEntry.Parent>): string;
 
     static override createDialog(
-      data?: JournalEntry.CreateData,
+      data?: Document.CreateDialogData<JournalEntry.CreateData>,
       context?: Document.CreateDialogContext<string, JournalEntry.Parent>,
-    ): Promise<JournalEntry.Implementation | null | undefined>;
+    ): Promise<JournalEntry.Stored | null | undefined>;
 
     static override fromDropData(
       data: Document.DropData<JournalEntry.Implementation>,

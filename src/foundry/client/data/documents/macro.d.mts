@@ -348,7 +348,7 @@ declare global {
     static override createDialog(
       data?: Macro.CreateData,
       context?: Document.CreateDialogContext<Macro.SubType, Macro.Parent>,
-    ): Promise<Macro.Implementation | null | undefined>;
+    ): Promise<Macro.Stored | null | undefined>;
 
     static override fromDropData(
       data: Document.DropData<Macro.Implementation>,

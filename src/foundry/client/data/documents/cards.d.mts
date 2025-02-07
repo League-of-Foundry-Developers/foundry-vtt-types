@@ -595,12 +595,14 @@ declare global {
      * defined DRY-ly while also being easily overridable.
      */
 
-    static override defaultName(context?: Document.DefaultNameContext<Cards.SubType, Cards.Parent>): string;
+    static override defaultName(
+      context?: Document.DefaultNameContext<Cards.SubType, Cards.Parent>,
+    ): string;
 
     static override createDialog(
-      data?: Cards.CreateData,
+      data?: Document.CreateDialogData<Cards.CreateData>,
       context?: Document.CreateDialogContext<Cards.SubType, Cards.Parent>,
-    ): Promise<Cards.Implementation | null | undefined>;
+    ): Promise<Cards.Stored | null | undefined>;
 
     static override fromDropData(
       data: Document.DropData<Cards.Implementation>,

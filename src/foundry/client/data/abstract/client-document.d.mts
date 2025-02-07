@@ -324,7 +324,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * Gets the default new name for a Document
    * @param context - The context for which to create the Document name.
    */
-  static defaultName(context?: Document.DefaultNameContext<never, never>): string;
+  static defaultName(context: Document.DefaultNameContext<never, never>): string;
 
   /**
    * Present a Dialog form to create a new Document of this type.
@@ -336,7 +336,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * @returns A Promise which resolves to the created Document, or null if the dialog was
    *          closed.
    */
-  static createDialog(data: never, context?: never): Promise<Document.Any | null | undefined>;
+  static createDialog(data: never, context: never): Promise<Document.Stored<Document.Any> | null | undefined>;
 
   /**
    * Present a Dialog form to confirm deletion of this Document.

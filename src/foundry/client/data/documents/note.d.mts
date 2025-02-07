@@ -308,12 +308,14 @@ declare global {
      * defined DRY-ly while also being easily overridable.
      */
 
-    static override defaultName(context?: Document.DefaultNameContext<string, NoteDocument.Parent>): string;
+    static override defaultName(
+      context: Document.DefaultNameContext<"base", Exclude<NoteDocument.Parent, null>>,
+    ): string;
 
     static override createDialog(
-      data?: NoteDocument.CreateData,
-      context?: Document.CreateDialogContext<string, NoteDocument.Parent>,
-    ): Promise<NoteDocument.Implementation | null | undefined>;
+      data: Document.CreateDialogData<NoteDocument.CreateData>,
+      context: Document.CreateDialogContext<string, Exclude<NoteDocument.Parent, null>>,
+    ): Promise<NoteDocument.Stored | null | undefined>;
 
     static override fromDropData(
       data: Document.DropData<NoteDocument.Implementation>,

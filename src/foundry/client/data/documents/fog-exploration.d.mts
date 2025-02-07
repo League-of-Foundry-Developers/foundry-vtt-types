@@ -267,7 +267,7 @@ declare global {
     static override createDialog(
       data?: FogExploration.CreateData,
       context?: Document.CreateDialogContext<string, FogExploration.Parent>,
-    ): Promise<FogExploration.Implementation | null | undefined>;
+    ): Promise<FogExploration.Stored | null | undefined>;
 
     static override fromDropData(
       data: Document.DropData<FogExploration.Implementation>,

@@ -320,12 +320,14 @@ declare global {
      * defined DRY-ly while also being easily overridable.
      */
 
-    static override defaultName(context?: Document.DefaultNameContext<string, WallDocument.Parent>): string;
+    static override defaultName(
+      context: Document.DefaultNameContext<"base", Exclude<WallDocument.Parent, null>>,
+    ): string;
 
     static override createDialog(
-      data?: WallDocument.CreateData,
-      context?: Document.CreateDialogContext<string, WallDocument.Parent>,
-    ): Promise<WallDocument.Implementation | null | undefined>;
+      data: Document.CreateDialogData<WallDocument.CreateData>,
+      context: Document.CreateDialogContext<string, Exclude<WallDocument.Parent, null>>,
+    ): Promise<WallDocument.Stored | null | undefined>;
 
     static override fromDropData(
       data: Document.DropData<WallDocument.Implementation>,

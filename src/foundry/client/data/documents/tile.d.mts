@@ -330,12 +330,14 @@ declare global {
      * defined DRY-ly while also being easily overridable.
      */
 
-    static override defaultName(context?: Document.DefaultNameContext<string, TileDocument.Parent>): string;
+    static override defaultName(
+      context: Document.DefaultNameContext<"base", Exclude<TileDocument.Parent, null>>,
+    ): string;
 
     static override createDialog(
-      data?: TileDocument.CreateData,
-      context?: Document.CreateDialogContext<string, TileDocument.Parent>,
-    ): Promise<TileDocument.Implementation | null | undefined>;
+      data: Document.CreateDialogData<TileDocument.CreateData>,
+      context: Document.CreateDialogContext<string, Exclude<TileDocument.Parent, null>>,
+    ): Promise<TileDocument.Stored | null | undefined>;
 
     static override fromDropData(
       data: Document.DropData<TileDocument.Implementation>,

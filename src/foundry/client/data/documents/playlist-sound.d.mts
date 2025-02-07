@@ -344,12 +344,12 @@ declare global {
      * defined DRY-ly while also being easily overridable.
      */
 
-    static override defaultName(context?: Document.DefaultNameContext<string, PlaylistSound.Parent>): string;
+    static override defaultName(context: Document.DefaultNameContext<"base", Exclude<PlaylistSound.Parent, null>>): string;
 
     static override createDialog(
-      data?: PlaylistSound.CreateData,
-      context?: Document.CreateDialogContext<string, PlaylistSound.Parent>,
-    ): Promise<PlaylistSound.Implementation | null | undefined>;
+      data: Document.CreateDialogData<PlaylistSound.CreateData>,
+      context: Document.CreateDialogContext<string, Exclude<PlaylistSound.Parent, null>>,
+    ): Promise<PlaylistSound.Stored | null | undefined>;
 
     static override fromDropData(
       data: Document.DropData<PlaylistSound.Implementation>,

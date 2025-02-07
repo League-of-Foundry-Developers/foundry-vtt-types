@@ -1,5 +1,4 @@
 import type { ConfiguredRegionBehavior } from "../../../../configuration/index.d.mts";
-import type { DeepPartial, FixedInstanceType, InexactPartial } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
 import type BaseRegionBehavior from "../../../common/documents/region-behavior.d.mts";
@@ -257,9 +256,9 @@ declare global {
     protected _handleRegionEvent(event: RegionDocument.RegionEvent): void;
 
     static override createDialog(
-      data?: RegionBehavior.CreateData,
-      context?: Document.CreateDialogContext<RegionBehavior.SubType, RegionBehavior.Parent>,
-    ): Promise<RegionBehavior.Implementation | null | undefined>;
+      data: Document.CreateDialogData<RegionBehavior.CreateData>,
+      context: Document.CreateDialogContext<RegionBehavior.SubType, Exclude<RegionBehavior.Parent, null>>,
+    ): Promise<RegionBehavior.Stored | null | undefined>;
 
     /**
      * @privateRemarks _onCreate, _preUpdate, _onUpdate, _onDelete, preCreateOperation, _preUpdateOperation, _onCreateOperation,
@@ -275,7 +274,7 @@ declare global {
      */
 
     static override defaultName(
-      context?: Document.DefaultNameContext<RegionBehavior.SubType, RegionBehavior.Parent>,
+      context: Document.DefaultNameContext<RegionBehavior.SubType, Exclude<RegionBehavior.Parent, null>>,
     ): string;
 
     static override fromDropData(

@@ -4,12 +4,21 @@ import DataModel = foundry.abstract.DataModel;
 import Document = foundry.abstract.Document;
 
 // @ts-expect-error - ActiveEffect requires name.
-new ActiveEffect();
+new ActiveEffect.implementation();
 
 // @ts-expect-error - ActiveEffect requires name.
-new ActiveEffect({});
+new ActiveEffect.implementation({});
 
-const effect = new ActiveEffect({ name: "My effect" });
+// @ts-expect-error - ActiveEffect.createDialog requires a parent
+await ActiveEffect.createDialog({}, {})
+
+declare const actor: Actor.Implementation;
+
+await ActiveEffect.createDialog({}, {
+  parent: actor
+})
+
+const effect = new ActiveEffect.implementation({ name: "My effect" });
 expectTypeOf(effect).toEqualTypeOf<ActiveEffect.Implementation>();
 
 declare const model: DataModel.Any;
@@ -28,5 +37,4 @@ expectTypeOf(effect.updateDuration()).toEqualTypeOf<ActiveEffect.Duration>();
 expectTypeOf(effect.isTemporary).toEqualTypeOf<boolean>();
 expectTypeOf(effect.sourceName).toEqualTypeOf<string>();
 
-declare const actor: Actor.Implementation;
 expectTypeOf(effect.apply(actor, change)).toEqualTypeOf<unknown>();

@@ -455,9 +455,9 @@ declare global {
     static override defaultName(context?: Document.DefaultNameContext<string, Playlist.Parent>): string;
 
     static override createDialog(
-      data?: Playlist.CreateData,
+      data?: Document.CreateDialogData<Playlist.CreateData>,
       context?: Document.CreateDialogContext<string, Playlist.Parent>,
-    ): Promise<Playlist.Implementation | null | undefined>;
+    ): Promise<Playlist.Stored | null | undefined>;
 
     static override fromDropData(
       data: Document.DropData<Playlist.Implementation>,

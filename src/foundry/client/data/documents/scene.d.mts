@@ -716,9 +716,9 @@ declare global {
     static override defaultName(context?: Document.DefaultNameContext<string, Scene.Parent>): string;
 
     static override createDialog(
-      data?: Scene.CreateData,
+      data?: Document.CreateDialogData<Scene.CreateData>,
       context?: Document.CreateDialogContext<string, Scene.Parent>,
-    ): Promise<Scene.Implementation | null | undefined>;
+    ): Promise<Scene.Stored | null | undefined>;
 
     static override fromDropData(
       data: Document.DropData<Scene.Implementation>,

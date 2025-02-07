@@ -345,13 +345,13 @@ declare global {
      */
 
     static override defaultName(
-      context?: Document.DefaultNameContext<string, DrawingDocument.Parent>,
+      context: Document.DefaultNameContext<"base", Exclude<DrawingDocument.Parent, null>>,
     ): string;
 
     static override createDialog(
-      data?: DrawingDocument.CreateData,
-      context?: Document.CreateDialogContext<string, DrawingDocument.Parent>,
-    ): Promise<DrawingDocument.Implementation | null | undefined>;
+      data: Document.CreateDialogData<DrawingDocument.CreateData>,
+      context: Document.CreateDialogContext<string, Exclude<DrawingDocument.Parent, null>>,
+    ): Promise<DrawingDocument.Stored | null | undefined>;
 
     static override fromDropData(
       data: Document.DropData<DrawingDocument.Implementation>,

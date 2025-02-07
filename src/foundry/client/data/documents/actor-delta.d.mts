@@ -288,12 +288,14 @@ declare global {
      * defined DRY-ly while also being easily overridable.
      */
 
-    static override defaultName(context?: Document.DefaultNameContext<ActorDelta.SubType, ActorDelta.Parent>): string;
+    static override defaultName(
+      context: Document.DefaultNameContext<ActorDelta.SubType, Exclude<ActorDelta.Parent, null>>,
+    ): string;
 
     static override createDialog(
-      data: ActorDelta.CreateData,
-      context?: Document.CreateDialogContext<ActorDelta.SubType, ActorDelta.Parent>,
-    ): Promise<ActorDelta.Implementation | null | undefined>;
+      data: Document.CreateDialogData<ActorDelta.CreateData>,
+      context: Document.CreateDialogContext<ActorDelta.SubType, Exclude<ActorDelta.Parent, null>>,
+    ): Promise<ActorDelta.Stored | null | undefined>;
 
     static override fromDropData(
       data: Document.DropData<ActorDelta.Implementation>,

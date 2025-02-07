@@ -1,5 +1,5 @@
 import type { ConfiguredFolder } from "../../../../configuration/index.d.mts";
-import type { DeepPartial, InexactPartial } from "fvtt-types/utils";
+import type { InexactPartial } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
@@ -308,9 +308,9 @@ declare global {
      */
 
     static createDialog(
-      data?: Folder.CreateData,
+      data?: Document.CreateDialogData<Folder.CreateData>,
       context?: InexactPartial<Omit<FolderConfig.Options, "resolve">>,
-    ): Promise<Folder.Implementation | null | undefined>;
+    ): Promise<Folder.Stored | null | undefined>;
 
     /**
      * Export all Documents contained in this Folder to a given Compendium pack.
@@ -358,11 +358,6 @@ declare global {
      */
 
     static override defaultName(context?: Document.DefaultNameContext<Folder.SubType, Folder.Parent>): string;
-
-    static override createDialog(
-      data?: Folder.CreateData,
-      context?: Document.CreateDialogContext<Folder.SubType, Folder.Parent>,
-    ): Promise<Folder.Implementation | null | undefined>;
 
     static override fromDropData(
       data: Document.DropData<Folder.Implementation>,

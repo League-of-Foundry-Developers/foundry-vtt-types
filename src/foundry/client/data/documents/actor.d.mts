@@ -36,7 +36,7 @@ declare global {
      * A document's parent is something that can contain it.
      * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
      */
-    type Parent = null;
+    type Parent = TokenDocument.Implementation | null;
 
     /**
      * An instance of `Actor` that comes from the database.
@@ -540,9 +540,9 @@ declare global {
     static override defaultName(context?: Document.DefaultNameContext<Actor.SubType, Actor.Parent>): string;
 
     static override createDialog(
-      data?: Actor.CreateData,
+      data?: Document.CreateDialogData<Actor.CreateData>,
       context?: Document.CreateDialogContext<Actor.SubType, Actor.Parent>,
-    ): Promise<Actor.Implementation | null | undefined>;
+    ): Promise<Actor.Stored | null | undefined>;
 
     static override fromDropData(
       data: Document.DropData<Actor.Implementation>,

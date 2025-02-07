@@ -274,12 +274,14 @@ declare global {
      * defined DRY-ly while also being easily overridable.
      */
 
-    static override defaultName(context?: Document.DefaultNameContext<"base", AmbientSoundDocument.Parent>): string;
+    static override defaultName(
+      context: Document.DefaultNameContext<"base", Exclude<AmbientSoundDocument.Parent, null>>,
+    ): string;
 
     static override createDialog(
-      data?: AmbientSoundDocument.CreateData,
-      context?: Document.CreateDialogContext<"base", AmbientSoundDocument.Parent>,
-    ): Promise<AmbientSoundDocument.Implementation | null | undefined>;
+      data: Document.CreateDialogData<AmbientSoundDocument.CreateData>,
+      context: Document.CreateDialogContext<string, Exclude<AmbientSoundDocument.Parent, null>>,
+    ): Promise<AmbientSoundDocument.Stored | null | undefined>;
 
     static override fromDropData(
       data: Document.DropData<AmbientSoundDocument.Implementation>,

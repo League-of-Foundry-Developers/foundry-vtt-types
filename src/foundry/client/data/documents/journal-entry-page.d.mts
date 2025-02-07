@@ -566,13 +566,13 @@ declare global {
      */
 
     static override defaultName(
-      context?: Document.DefaultNameContext<JournalEntryPage.SubType, JournalEntryPage.Parent>,
+      context: Document.DefaultNameContext<JournalEntryPage.SubType, Exclude<JournalEntryPage.Parent, null>>,
     ): string;
 
     static override createDialog(
-      data?: JournalEntryPage.CreateData,
-      context?: Document.CreateDialogContext<JournalEntryPage.SubType, JournalEntryPage.Parent>,
-    ): Promise<JournalEntryPage.Implementation | null | undefined>;
+      data: Document.CreateDialogData<JournalEntryPage.CreateData>,
+      context: Document.CreateDialogContext<JournalEntryPage.SubType, Exclude<JournalEntryPage.Parent, null>>,
+    ): Promise<JournalEntryPage.Stored | null | undefined>;
 
     static override fromDropData(
       data: Document.DropData<JournalEntryPage.Implementation>,
