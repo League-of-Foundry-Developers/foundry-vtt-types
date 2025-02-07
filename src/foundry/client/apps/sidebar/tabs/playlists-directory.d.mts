@@ -245,6 +245,7 @@ declare global {
 
     protected override _onDragStart(event: DragEvent): void;
 
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     protected override _onDrop(event: DragEvent): Promise<Playlist.ConfiguredInstance | boolean>;
   }
 

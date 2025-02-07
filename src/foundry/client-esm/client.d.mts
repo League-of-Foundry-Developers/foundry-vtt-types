@@ -191,7 +191,6 @@ declare global {
   /** @deprecated since v12 will be removed in v14 */
   export import IterableWeakSet = _utils.IterableWeakSet;
 
-  /* eslint-disable no-var */
   /* --- geometry --- */
   /** @deprecated since v12 will be removed in v14 */
   export import orient2dFast = _utils.orient2dFast;
@@ -277,5 +276,4 @@ declare global {
 
   /** @deprecated since v12 will be removed in v14 */
   export import logCompatibilityWarning = _utils.logCompatibilityWarning;
-  /* eslint-enable no-var */
 }

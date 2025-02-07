@@ -187,6 +187,7 @@ declare global {
         x: number;
         y: number;
       },
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
       options?: GridLayer.MeasureDistancesOptions,
     ): number;
   }

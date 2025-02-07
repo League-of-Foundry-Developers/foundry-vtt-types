@@ -17,6 +17,14 @@ expectTypeOf(layer.h).toEqualTypeOf<number>();
 expectTypeOf(layer.isHex).toEqualTypeOf<boolean>();
 expectTypeOf(layer.draw()).toEqualTypeOf<Promise<GridLayer>>();
 expectTypeOf(layer.draw({})).toEqualTypeOf<Promise<GridLayer>>();
+expectTypeOf(layer.draw({ type: null, dimensions: null, gridColor: null, gridAlpha: null })).toEqualTypeOf<
+  Promise<GridLayer>
+>();
+expectTypeOf(layer.draw({ type: foundry.CONST.GRID_TYPES.GRIDLESS })).toEqualTypeOf<Promise<GridLayer>>();
+expectTypeOf(layer.draw({ dimensions: canvas!.dimensions })).toEqualTypeOf<Promise<GridLayer>>();
+expectTypeOf(layer.draw({ gridColor: "#000000" })).toEqualTypeOf<Promise<GridLayer>>();
+expectTypeOf(layer.draw({ gridColor: 0x000000 })).toEqualTypeOf<Promise<GridLayer>>();
+expectTypeOf(layer.draw({ gridAlpha: 0.2 })).toEqualTypeOf<Promise<GridLayer>>();
 expectTypeOf(layer.getSnappedPosition(10, 100)).toEqualTypeOf<{ x: number; y: number }>();
 expectTypeOf(layer.getSnappedPosition(10, 100, 2)).toEqualTypeOf<{ x: number; y: number }>();
 expectTypeOf(layer.getTopLeft(8, 17)).toEqualTypeOf<[number, number]>();

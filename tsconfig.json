@@ -14,7 +14,8 @@
     "strict": true,
     "target": "ES2021",
     "verbatimModuleSyntax": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+    "noUncheckedIndexedAccess": true
   },
   "include": ["index.d.mts"],
 

@@ -1,4 +1,3 @@
-/* eslint-disable import/extensions */
 import { expectTypeOf } from "vitest";
 import type { EditorView } from "prosemirror-view";
 import type * as PMMNamespace from "../../../../src/foundry/common/prosemirror/menu.d.mts";

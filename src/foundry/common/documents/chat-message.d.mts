@@ -31,13 +31,13 @@ declare class BaseChatMessage extends Document<"ChatMessage", BaseChatMessage.Sc
    * Is a user able to create a new chat message?
    * @internal
    */
-  static #canCreate(user: User, doc: BaseChatMessage): boolean;
+  // static #canCreate(user: User, doc: BaseChatMessage): boolean;
 
-  /**
-   * Is a user able to update an existing chat message?
-   * @internal
-   */
-  static #canUpdate(user: User, doc: BaseChatMessage, data: BaseChatMessage.UpdateData): boolean;
+  // /**
+  //  * Is a user able to update an existing chat message?
+  //  * @internal
+  //  */
+  // static #canUpdate(user: User, doc: BaseChatMessage, data: BaseChatMessage.UpdateData): boolean;
 
   /**
    * Validate that Rolls belonging to the ChatMessage document are valid

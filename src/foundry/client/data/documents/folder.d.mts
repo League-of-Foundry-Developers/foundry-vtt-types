@@ -134,7 +134,7 @@ declare global {
      * @remarks - Foundry documents `pack` as just being a `string` but it is unused and Foundry itself
      * calls `exportDialog` with `null`.
      */
-    exportDialog(pack: string | null, options?: DialogOptions): Promise<void>;
+    exportDialog(pack: string | null, options?: Dialog.Options): Promise<void>;
 
     /**
      * Get the Folder documents which are sub-folders of the current folder, either direct children or recursively.

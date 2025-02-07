@@ -1,5 +1,4 @@
 import type { FolderDocumentTypes, InexactPartial, FixedInstanceType } from "fvtt-types/utils";
-// eslint-disable-next-line import/no-named-as-default
 import type DataModel from "../../../common/abstract/data.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";

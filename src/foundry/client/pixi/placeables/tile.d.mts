@@ -208,6 +208,7 @@ declare global {
 
     protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     protected override _onDragLeftDrop(event: PIXI.FederatedEvent): Promise<unknown>;
 
     protected override _onDragLeftCancel(event: PIXI.FederatedEvent): void;

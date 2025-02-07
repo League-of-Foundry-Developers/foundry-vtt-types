@@ -60,6 +60,7 @@ declare global {
 
     override activateListeners(html: JQuery): void;
 
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     protected override _onResetDefaults(event: JQuery.ClickEvent): Promise<void>;
 
     /**

@@ -366,6 +366,7 @@ declare abstract class BaseGrid {
    * @returns An Array of distance measurements for each segment
    * @deprecated Since v12 until v14. Use {@link BaseGrid#measurePath} instead.
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   measureDistances(segments: GridLayer.Segment[], options?: GridLayer.MeasureDistancesOptions): number[];
 
   /* -------------------------------------------- */

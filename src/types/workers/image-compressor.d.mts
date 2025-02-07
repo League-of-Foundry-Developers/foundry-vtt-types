@@ -123,7 +123,7 @@ export declare function controlHashes(buffer: Uint8ClampedArray, hash?: undefine
 export declare function controlHashes(buffer: Uint8ClampedArray, hash: string): { same: boolean; hash: string };
 export declare function controlHashes(
   buffer: Uint8ClampedArray,
-  hash?: string | undefined,
+  hash?: string,
 ): EmptyObject | { same: boolean; hash: string };
 
 /**

@@ -1,4 +1,4 @@
-import type { ValueOf } from "fvtt-types/utils";
+import type { LazyUnknown, ValueOf } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -287,7 +287,7 @@ declare global {
      * @internal
      */
     protected static _onZoom(
-      context: KeyboardManager.KeyboardEventContext | unknown,
+      context: KeyboardManager.KeyboardEventContext | LazyUnknown,
       zoomDirection: ClientKeybindings.ZoomDirection,
     ): boolean;
 

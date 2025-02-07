@@ -9,6 +9,9 @@
     ".": {
       "types": "./index.d.mts"
     },
+    "./lenient": {
+      "types": "./index-lenient.d.mts"
+    },
     "./utils": {
       "types": "./src/utils/index.d.mts"
     },
@@ -102,20 +105,27 @@
     "tinymce": "^6.8.3"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^8.21.0",
-    "@typescript-eslint/parser": "^8.21.0",
-    "eslint": "^8.57.1",
+    "@actions/core": "^1.11.1",
+    "@actions/github": "^6.0.0",
+    "@eslint/compat": "^1.2.6",
+    "@eslint/js": "^9.19.0",
+    "@typescript-eslint/eslint-plugin": "^8.23.0",
+    "@typescript-eslint/parser": "^8.23.0",
+    "eslint": "^9.19.0",
     "eslint-config-prettier": "^10.0.1",
-    "eslint-import-resolver-typescript": "^3.6.1",
+    "eslint-import-resolver-typescript": "^3.7.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-tsdoc": "^0.4.0",
     "fvtt-types": "file:.",
+    "globals": "^15.14.0",
     "husky": "^9.1.4",
     "is-ci": "^4.1.0",
     "lint-staged": "^15.3.0",
+    "pathe": "^2.0.2",
     "prettier": "^3.0.3",
     "typescript": "~5.7",
-    "vitest": "^3.0.3"
+    "typescript-eslint": "^8.23.0",
+    "vitest": "^3.0.5"
   },
   "peerDependencies": {
     "typescript": "^5.4"

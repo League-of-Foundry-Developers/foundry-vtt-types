@@ -279,7 +279,9 @@ export type InvertableObject = {
   readonly [K: PropertyKey]: PropertyKey;
 };
 
-export type InvertObject<in out T extends InvertableObject> = { [Key in keyof T as T[Key]]: Key };
+export type InvertObject<in out T extends InvertableObject> = {
+  [K in keyof T as T[K]]: K;
+};
 
 /**
  * Invert an object by assigning its values as keys and its keys as values.

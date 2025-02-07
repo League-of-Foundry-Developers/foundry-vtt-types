@@ -2,7 +2,7 @@ import type { AnyObject } from "fvtt-types/utils";
 import type { DataModel } from "../../../common/abstract/data.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataField } from "../../../common/data/fields.d.mts";
-import type { ActiveEffectData, EffectChangeData, EffectDurationData } from "../../../common/documents/_types.d.mts";
+import type { ActiveEffectData, EffectDurationData } from "../../../common/documents/_types.d.mts";
 import type BaseActiveEffect from "../../../common/documents/active-effect.d.mts";
 
 declare global {
@@ -170,7 +170,7 @@ declare global {
     get sourceName(): string;
 
     /**
-     * Apply EffectChangeData to a field within a DataModel.
+     * Apply ActiveEffect.EffectChangeData to a field within a DataModel.
      * @param model  - The model instance.
      * @param change - The change to apply.
      * @param field  - The field. If not supplied, it will be retrieved from the supplied model.
@@ -186,7 +186,7 @@ declare global {
      * @param change - The change data being applied
      * @returns The resulting applied value
      */
-    apply(actor: Actor.ConfiguredInstance, change: EffectChangeData): unknown;
+    apply(actor: Actor.ConfiguredInstance, change: ActiveEffect.EffectChangeData): unknown;
 
     /**
      * Apply this ActiveEffect to a provided Actor using a heuristic to infer the value types based on the current value
@@ -198,7 +198,7 @@ declare global {
     protected _applyLegacy(actor: Actor.ConfiguredInstance, change: EffectDurationData, changes: AnyObject): void;
 
     /**
-     * Cast a raw EffectChangeData change string to the desired data type.
+     * Cast a raw ActiveEffect.EffectChangeData change string to the desired data type.
      * @param raw - The raw string value
      * @param type - The target data type that the raw value should be cast to match
      * @returns The parsed delta cast to the target data type
@@ -206,7 +206,7 @@ declare global {
     protected _castDelta(raw: string, type: string): boolean | number | string | object;
 
     /**
-     * Cast a raw EffectChangeData change string to an Array of an inner type.
+     * Cast a raw ActiveEffect.EffectChangeData change string to an Array of an inner type.
      * @param raw  - The raw string value
      * @param type - The target data type of inner array elements
      * @returns The parsed delta cast as a typed array
@@ -238,7 +238,7 @@ declare global {
      */
     protected _applyAdd(
       actor: Actor.ConfiguredInstance,
-      change: EffectChangeData,
+      change: ActiveEffect.EffectChangeData,
       current: any,
       delta: any,
       changes: AnyObject,
@@ -256,7 +256,7 @@ declare global {
      */
     protected _applyMultiply(
       actor: Actor.ConfiguredInstance,
-      change: EffectChangeData,
+      change: ActiveEffect.EffectChangeData,
       current: any,
       delta: any,
       changes: AnyObject,
@@ -274,7 +274,7 @@ declare global {
      */
     protected _applyOverride(
       actor: Actor.ConfiguredInstance,
-      change: EffectChangeData,
+      change: ActiveEffect.EffectChangeData,
       current: any,
       delta: any,
       changes: AnyObject,
@@ -292,7 +292,7 @@ declare global {
      */
     protected _applyUpgrade(
       actor: Actor.ConfiguredInstance,
-      change: EffectChangeData,
+      change: ActiveEffect.EffectChangeData,
       current: any,
       delta: any,
       changes: AnyObject,
@@ -309,7 +309,7 @@ declare global {
      */
     protected _applyCustom(
       actor: Actor.ConfiguredInstance,
-      change: EffectChangeData,
+      change: ActiveEffect.EffectChangeData,
       current: any,
       delta: any,
       changes: AnyObject,

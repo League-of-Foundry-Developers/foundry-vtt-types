@@ -281,7 +281,7 @@ declare namespace ApplicationV2 {
 
     field?: foundry.data.fields.DataField | undefined;
 
-    value?: unknown | undefined;
+    value?: unknown;
   }
 
   /** @remarks Used with `templates/generic/form-footer.hbs` */

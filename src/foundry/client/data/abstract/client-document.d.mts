@@ -345,7 +345,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
     data?: DeepPartial<Document.ConstructorDataFor<NoInfer<T>> & Record<string, unknown>>,
     context?: Pick<DatabaseCreateOperation<FixedInstanceType<NoInfer<T>>>, "parent" | "pack"> &
       InexactPartial<
-        DialogOptions & {
+        Dialog.Options & {
           /** A restriction the selectable sub-types of the Dialog. */
           types: string[];
         }
@@ -358,7 +358,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    *                  (default: `{}`)
    * @returns A Promise which resolves to the deleted Document
    */
-  deleteDialog(options?: Partial<DialogOptions>): Promise<this | false | null | undefined>;
+  deleteDialog(options?: Partial<Dialog.Options>): Promise<this | false | null | undefined>;
 
   /**
    * Export document data to a JSON file which can be saved by the client and later imported into a different session.

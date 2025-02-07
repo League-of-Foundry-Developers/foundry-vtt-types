@@ -1,7 +1,6 @@
 import { EditorState, AllSelection, TextSelection, Plugin, PluginKey } from "prosemirror-state";
 import { EditorView } from "prosemirror-view";
 import { Schema, DOMSerializer } from "prosemirror-model";
-// eslint-disable-next-line import/no-named-as-default
 import { keymap } from "prosemirror-keymap";
 import "./extensions.d.mts";
 import * as collab from "prosemirror-collab";

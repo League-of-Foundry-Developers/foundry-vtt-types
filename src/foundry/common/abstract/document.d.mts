@@ -1317,29 +1317,29 @@ declare namespace Document {
   type ModificationOptions = Omit<Document.ModificationContext<Document.Any | null>, "parent" | "pack">;
 
   type PreCreateOptions<Name extends Type> = Omit<
-    DatabaseOperationsFor<Name, "create">,
+    Document.Database.OperationOf<Name, "create">,
     "data" | "noHook" | "pack" | "parent"
   >;
   type OnCreateOptions<Name extends Type> = Omit<
-    DatabaseOperationsFor<Name, "create">,
+    Document.Database.OperationOf<Name, "create">,
     "pack" | "parentUuid" | "syntheticActorUpdate"
   >;
 
   type PreUpdateOptions<Name extends Type> = Omit<
-    DatabaseOperationsFor<Name, "update">,
+    Document.Database.OperationOf<Name, "update">,
     "updates" | "restoreDelta" | "noHook" | "parent" | "pack"
   >;
   type OnUpdateOptions<Name extends Type> = Omit<
-    DatabaseOperationsFor<Name, "update">,
+    Document.Database.OperationOf<Name, "update">,
     "pack" | "parentUuid" | "syntheticActorUpdate"
   >;
 
   type PreDeleteOptions<Name extends Type> = Omit<
-    DatabaseOperationsFor<Name, "delete">,
+    Document.Database.OperationOf<Name, "delete">,
     "ids" | "deleteAll" | "noHook" | "pack" | "parent"
   >;
   type OnDeleteOptions<Name extends Type> = Omit<
-    DatabaseOperationsFor<Name, "delete">,
+    Document.Database.OperationOf<Name, "delete">,
     "deleteAll" | "pack" | "parentUuid" | "syntheticActorUpdate"
   >;
 
@@ -1443,6 +1443,7 @@ declare namespace Document {
     type OperationOf<
       T extends Document.Type,
       Operation extends Database.Operation,
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
     > = DatabaseOperationMap[T][Operation];
   }
 }

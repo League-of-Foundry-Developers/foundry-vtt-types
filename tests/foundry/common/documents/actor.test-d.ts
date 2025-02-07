@@ -215,7 +215,7 @@ class BoilerplateCharacter extends BoilerplateActorBase<
       // Calculate the modifier using d20 rules.
       abil.mod = Math.floor((abil.value - 10) / 2);
       // Handle ability label localization.
-      abil.label = game.i18n!.localize(CONFIG.BOILERPLATE.abilities[key]) ?? key;
+      abil.label = game.i18n?.localize(CONFIG.BOILERPLATE.abilities[key]!) ?? key;
     }
 
     expectTypeOf(this.extra.deep.check.propA).toEqualTypeOf<string>();
@@ -230,11 +230,10 @@ class BoilerplateCharacter extends BoilerplateActorBase<
 
     // Copy the ability scores to the top level, so that rolls can use
     // formulas like `@str.mod + 4`.
-    if (this.abilities) {
-      for (const [k, v] of Object.entries(this.abilities)) {
-        data[k] = foundry.utils.deepClone(v);
-      }
+    for (const [k, v] of Object.entries(this.abilities)) {
+      data[k] = foundry.utils.deepClone(v);
     }
+
     data.lvl = this.attributes.level.value;
 
     return data;

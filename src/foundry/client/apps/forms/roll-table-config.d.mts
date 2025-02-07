@@ -57,6 +57,7 @@ declare global {
      */
     protected _onDeleteResult(event: JQuery.ClickEvent): Promise<TableResult.ConfiguredInstance>;
 
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     protected override _onDrop(event: DragEvent): Promise<TableResult.ConfiguredInstance[]> | void;
 
     /**

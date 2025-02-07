@@ -297,7 +297,7 @@ declare global {
      */
     toggleActiveEffect(
       effectData: CONFIG.StatusEffect,
-      options?: InexactPartial<ToggleActiveEffectOptions> | undefined,
+      options?: InexactPartial<ToggleActiveEffectOptions>,
     ): Promise<boolean>;
   }
 
