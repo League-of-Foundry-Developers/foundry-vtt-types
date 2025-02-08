@@ -11,11 +11,14 @@ import * as importPlugin from "eslint-plugin-import";
 
 import * as path from "path";
 
+// import.meta.dirname isn't supported on enough Node versions.
+const dirname = path.dirname(new URL(import.meta.url).pathname);
+
 /**
  * @type {import("eslint").Linter.Config[]}
  */
 const rules = [
-  includeIgnoreFile(path.resolve(import.meta.dirname, ".gitignore")),
+  includeIgnoreFile(path.resolve(dirname, ".gitignore")),
   js.configs.recommended,
   ...ts.configs.strictTypeChecked,
   ...ts.configs.stylisticTypeChecked,
