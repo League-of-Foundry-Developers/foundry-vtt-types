@@ -1,4 +1,4 @@
-import type { Mixin } from "fvtt-types/utils";
+import type { FixedInstanceType, Mixin } from "fvtt-types/utils";
 
 declare class BaseShader {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
@@ -112,7 +112,7 @@ declare global {
   namespace BaseShaderMixin {
     /** @privateRemarks Can't extend `AnyMixedConstructor` if it's using the `BaseClass` union; `PIXI.Shader` is the parent of `Filter`, so it's used instead */
     type AnyMixedConstructor = ReturnType<typeof BaseShaderMixin<PIXI.Shader.AnyConstructor>>;
-    interface AnyMixed extends AnyMixedConstructor {}
+    interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
     type BaseClass = PIXI.Shader.AnyConstructor | PIXI.Filter.AnyConstructor;
   }

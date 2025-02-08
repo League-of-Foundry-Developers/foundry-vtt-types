@@ -753,7 +753,7 @@ declare global {
       userId: string;
       world: World["_source"];
     } & {
-      [DocumentType in
+      [DocumentType in  // eslint-disable-next-line @typescript-eslint/no-deprecated
         | foundry.CONST.DOCUMENT_TYPES
         | "Setting" as Document.ConfiguredClassForName<DocumentType>["metadata"]["collection"]]?: FixedInstanceType<
         Document.ConfiguredClassForName<DocumentType>
@@ -780,7 +780,7 @@ declare global {
   let keyboard: MaybeInitialized<KeyboardManager, "ready">;
 }
 
-type ConfiguredCollectionClassForName<Name extends foundry.CONST.DOCUMENT_TYPES> = FixedInstanceType<
+type ConfiguredCollectionClassForName<Name extends foundry.CONST.WORLD_DOCUMENT_TYPES> = FixedInstanceType<
   CONFIG[Name]["collection"]
 >;
 

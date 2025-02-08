@@ -389,7 +389,8 @@ export type PrettifyType<T> = T extends AnyObject
   ? {
       [K in keyof T]: T[K];
     }
-  : T & unknown;
+  : // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+    T & unknown;
 
 /**
  * This behaves the same as {@link PrettifyType | `PrettifyType`} except instead
@@ -399,7 +400,8 @@ export type PrettifyTypeDeep<T> = T extends AnyObject
   ? {
       [K in keyof T]: PrettifyTypeDeep<T[K]>;
     }
-  : T & unknown;
+  : // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+    T & unknown;
 
 /**
  * Convert a union of the form `T1 | T2 | T3 | ...` into an intersection of the form `T1 & T2 & T3 & ...`.
@@ -679,7 +681,6 @@ export type Merge<T, U> =
  * type RecordFails = Interface extends Record<string, unknown> ? true : false; // false
  * ```
  */
-// eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
 export type IsObject<T> = T extends { readonly [K: string]: any }
   ? T extends AnyArray | AnyFunction
     ? false
@@ -764,7 +765,7 @@ export type HandleEmptyObject<T extends object, D extends object = EmptyObject> 
  * - `Record<string, unknown>` - This is the appropriate type for any mutable object but doesn't allow readonly objects.
  */
 // This type is not meant to be extended and it has to use an indexed type.
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions, @typescript-eslint/consistent-indexed-object-style
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type AnyObject = {
   readonly [K: string]: unknown;
 };
@@ -778,7 +779,7 @@ export type AnyObject = {
  * - `Record<string, any>`/`{}` - These allows anything besides `null` and `undefined`.
  * - `Record<string, unknown>` - These types are equivalent but `AnyMutableObject` is preferred for explicitness.
  */
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions, @typescript-eslint/consistent-indexed-object-style
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type AnyMutableObject = {
   [K: string]: unknown;
 };
@@ -933,7 +934,6 @@ export type NonNullish = {};
  * {@link NonNullish | `NonNullish`} if you want that behavior.
  */
 // It would be unsound to merge into so an interface is not used.
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type EmptyObject = Record<string, never>;
 
 declare const empty: unique symbol;
@@ -1025,3 +1025,9 @@ type _MustBeValidUuid<
  * Drops the first element of an array
  */
 type DropFirst<T extends AnyArray> = T extends [infer _1, ...infer V] ? V : T;
+
+/**
+ * This type is used when you want to use `unknown` in a union.
+ */
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export type LazyUnknown = {} | null | undefined;

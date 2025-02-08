@@ -96,9 +96,9 @@ expectTypeOf(basePackage.media.first()!.loop).toEqualTypeOf<boolean>();
 expectTypeOf(basePackage.media.first()!.thumbnail).toEqualTypeOf<OptionalString>();
 expectTypeOf(basePackage.media.first()!.flags).toEqualTypeOf<AnyObject>();
 
-expectTypeOf(basePackage.compatibility!.minimum).toEqualTypeOf<OptionalString>();
-expectTypeOf(basePackage.compatibility!.verified).toEqualTypeOf<OptionalString>();
-expectTypeOf(basePackage.compatibility!.maximum).toEqualTypeOf<OptionalString>();
+expectTypeOf(basePackage.compatibility.minimum).toEqualTypeOf<OptionalString>();
+expectTypeOf(basePackage.compatibility.verified).toEqualTypeOf<OptionalString>();
+expectTypeOf(basePackage.compatibility.maximum).toEqualTypeOf<OptionalString>();
 
 expectTypeOf(basePackage.scripts).toEqualTypeOf<Set<string>>();
 expectTypeOf(basePackage.esmodules).toEqualTypeOf<Set<string>>();
@@ -125,49 +125,47 @@ expectTypeOf(basePackage.packFolders.first()!.color).toEqualTypeOf<Color | undef
 
 expectTypeOf(basePackage.packFolders.first()!.packs).toEqualTypeOf<Set<string>>();
 
-expectTypeOf(basePackage.relationships?.systems.first()!.id).toEqualTypeOf<string>();
-expectTypeOf(basePackage.relationships?.systems.first()!.type).toEqualTypeOf<"system">();
-expectTypeOf(basePackage.relationships?.systems.first()!.manifest).toEqualTypeOf<string | undefined>();
-expectTypeOf(basePackage.relationships?.systems.first()!.compatibility!.minimum).toEqualTypeOf<string | undefined>();
-expectTypeOf(basePackage.relationships?.systems.first()!.compatibility!.verified).toEqualTypeOf<string | undefined>();
-expectTypeOf(basePackage.relationships?.systems.first()!.compatibility!.maximum).toEqualTypeOf<string | undefined>();
-expectTypeOf(basePackage.relationships?.systems.first()!.reason).toEqualTypeOf<string | undefined>();
+expectTypeOf(basePackage.relationships.systems.first()!.id).toEqualTypeOf<string>();
+expectTypeOf(basePackage.relationships.systems.first()!.type).toEqualTypeOf<"system">();
+expectTypeOf(basePackage.relationships.systems.first()!.manifest).toEqualTypeOf<string | undefined>();
+expectTypeOf(basePackage.relationships.systems.first()!.compatibility.minimum).toEqualTypeOf<string | undefined>();
+expectTypeOf(basePackage.relationships.systems.first()!.compatibility.verified).toEqualTypeOf<string | undefined>();
+expectTypeOf(basePackage.relationships.systems.first()!.compatibility.maximum).toEqualTypeOf<string | undefined>();
+expectTypeOf(basePackage.relationships.systems.first()!.reason).toEqualTypeOf<string | undefined>();
 
-expectTypeOf(basePackage.relationships?.requires.first()!.id).toEqualTypeOf<string>();
-expectTypeOf(basePackage.relationships?.requires.first()!.type).toEqualTypeOf<
+expectTypeOf(basePackage.relationships.requires.first()!.id).toEqualTypeOf<string>();
+expectTypeOf(basePackage.relationships.requires.first()!.type).toEqualTypeOf<
   (typeof foundry.CONST.PACKAGE_TYPES)[number]
 >();
-expectTypeOf(basePackage.relationships?.requires.first()!.manifest).toEqualTypeOf<string | undefined>();
-expectTypeOf(basePackage.relationships?.requires.first()!.compatibility!.minimum).toEqualTypeOf<string | undefined>();
-expectTypeOf(basePackage.relationships?.requires.first()!.compatibility!.verified).toEqualTypeOf<string | undefined>();
-expectTypeOf(basePackage.relationships?.requires.first()!.compatibility!.maximum).toEqualTypeOf<string | undefined>();
-expectTypeOf(basePackage.relationships?.requires.first()!.reason).toEqualTypeOf<string | undefined>();
+expectTypeOf(basePackage.relationships.requires.first()!.manifest).toEqualTypeOf<string | undefined>();
+expectTypeOf(basePackage.relationships.requires.first()!.compatibility.minimum).toEqualTypeOf<string | undefined>();
+expectTypeOf(basePackage.relationships.requires.first()!.compatibility.verified).toEqualTypeOf<string | undefined>();
+expectTypeOf(basePackage.relationships.requires.first()!.compatibility.maximum).toEqualTypeOf<string | undefined>();
+expectTypeOf(basePackage.relationships.requires.first()!.reason).toEqualTypeOf<string | undefined>();
 
-expectTypeOf(basePackage.relationships?.recommends.first()!.id).toEqualTypeOf<string>();
-expectTypeOf(basePackage.relationships?.recommends.first()!.type).toEqualTypeOf<
+expectTypeOf(basePackage.relationships.recommends.first()!.id).toEqualTypeOf<string>();
+expectTypeOf(basePackage.relationships.recommends.first()!.type).toEqualTypeOf<
   (typeof foundry.CONST.PACKAGE_TYPES)[number]
 >();
-expectTypeOf(basePackage.relationships?.recommends.first()!.manifest).toEqualTypeOf<string | undefined>();
-expectTypeOf(basePackage.relationships?.recommends.first()!.compatibility!.minimum).toEqualTypeOf<string | undefined>();
-expectTypeOf(basePackage.relationships?.recommends.first()!.compatibility!.verified).toEqualTypeOf<
-  string | undefined
->();
-expectTypeOf(basePackage.relationships?.recommends.first()!.compatibility!.maximum).toEqualTypeOf<string | undefined>();
-expectTypeOf(basePackage.relationships?.recommends.first()!.reason).toEqualTypeOf<string | undefined>();
+expectTypeOf(basePackage.relationships.recommends.first()!.manifest).toEqualTypeOf<string | undefined>();
+expectTypeOf(basePackage.relationships.recommends.first()!.compatibility.minimum).toEqualTypeOf<string | undefined>();
+expectTypeOf(basePackage.relationships.recommends.first()!.compatibility.verified).toEqualTypeOf<string | undefined>();
+expectTypeOf(basePackage.relationships.recommends.first()!.compatibility.maximum).toEqualTypeOf<string | undefined>();
+expectTypeOf(basePackage.relationships.recommends.first()!.reason).toEqualTypeOf<string | undefined>();
 
-expectTypeOf(basePackage.relationships?.conflicts.first()!.id).toEqualTypeOf<string>();
-expectTypeOf(basePackage.relationships?.conflicts.first()!.type).toEqualTypeOf<
+expectTypeOf(basePackage.relationships.conflicts.first()!.id).toEqualTypeOf<string>();
+expectTypeOf(basePackage.relationships.conflicts.first()!.type).toEqualTypeOf<
   (typeof foundry.CONST.PACKAGE_TYPES)[number]
 >();
-expectTypeOf(basePackage.relationships?.conflicts.first()!.manifest).toEqualTypeOf<string | undefined>();
-expectTypeOf(basePackage.relationships?.conflicts.first()!.compatibility!.minimum).toEqualTypeOf<string | undefined>();
-expectTypeOf(basePackage.relationships?.conflicts.first()!.compatibility!.verified).toEqualTypeOf<string | undefined>();
-expectTypeOf(basePackage.relationships?.conflicts.first()!.compatibility!.maximum).toEqualTypeOf<string | undefined>();
-expectTypeOf(basePackage.relationships?.conflicts.first()!.reason).toEqualTypeOf<string | undefined>();
+expectTypeOf(basePackage.relationships.conflicts.first()!.manifest).toEqualTypeOf<string | undefined>();
+expectTypeOf(basePackage.relationships.conflicts.first()!.compatibility.minimum).toEqualTypeOf<string | undefined>();
+expectTypeOf(basePackage.relationships.conflicts.first()!.compatibility.verified).toEqualTypeOf<string | undefined>();
+expectTypeOf(basePackage.relationships.conflicts.first()!.compatibility.maximum).toEqualTypeOf<string | undefined>();
+expectTypeOf(basePackage.relationships.conflicts.first()!.reason).toEqualTypeOf<string | undefined>();
 
-expectTypeOf(basePackage.relationships?.flags).toEqualTypeOf<AnyObject>();
+expectTypeOf(basePackage.relationships.flags).toEqualTypeOf<AnyObject>();
 
-expectTypeOf(basePackage.relationships?.systems.first()!.reason).toEqualTypeOf<string | undefined>();
+expectTypeOf(basePackage.relationships.systems.first()!.reason).toEqualTypeOf<string | undefined>();
 
 expectTypeOf(basePackage.socket).toEqualTypeOf<boolean>();
 expectTypeOf(basePackage.manifest).toEqualTypeOf<OptionalString>();

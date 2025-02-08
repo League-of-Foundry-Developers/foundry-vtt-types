@@ -110,7 +110,7 @@ declare global {
     type AnyMixedConstructor = ReturnType<
       typeof CanvasGroupMixin<CanvasGroupMixin.BaseClass, CanvasGroupMixin.LayerGroup | NoLayerGroup>
     >;
-    interface AnyMixed extends AnyMixedConstructor {}
+    interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
     type BaseClass = PIXI.Container.AnyConstructor;
 

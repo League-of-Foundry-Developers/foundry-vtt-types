@@ -31,7 +31,6 @@ declare global {
     protected override _configure(options?: { pack?: string | null }): void;
 
     protected override _initialize(options?: any): void;
-    protected override _initialize(): void;
 
     /** Pass-through the type from the synthetic Actor, if it exists. */
     _type: string;

@@ -57,8 +57,8 @@ declare class BaseToken extends Document<"Token", BaseToken.Schema, any> {
   ): boolean;
 
   updateSource(
-    changes?: BaseToken.ConstructorData | undefined,
-    options?: { dryRun?: boolean; fallback?: boolean; recursive?: boolean } | undefined,
+    changes?: BaseToken.ConstructorData,
+    options?: { dryRun?: boolean; fallback?: boolean; recursive?: boolean },
   ): AnyObject;
 
   static override migrateData(source: AnyObject): AnyObject;

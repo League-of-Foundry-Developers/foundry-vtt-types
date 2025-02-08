@@ -114,7 +114,7 @@ declare global {
      *
      * @privateRemarks Foundry has this typed as just `object`, but explicitly calls it with null and implicitly with undefined
      */
-    initializeEffects(weatherEffectsConfig?: WeatherEffects.WeatherEffectsConfig | null | undefined): void;
+    initializeEffects(weatherEffectsConfig?: WeatherEffects.WeatherEffectsConfig | null): void;
 
     /**
      * Clear the weather container.

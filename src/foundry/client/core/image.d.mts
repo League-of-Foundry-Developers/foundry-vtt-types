@@ -4,7 +4,6 @@ declare global {
   /**
    * A helper class to provide common functionality for working with Image objects
    */
-  // eslint-disable-next-line @typescript-eslint/no-extraneous-class
   class ImageHelper {
     /**
      * Create thumbnail preview for a provided image path.

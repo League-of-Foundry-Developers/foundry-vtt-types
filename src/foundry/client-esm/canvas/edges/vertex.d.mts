@@ -157,7 +157,7 @@ declare namespace PolygonVertex {
   interface ConstructorOptions extends _ConstructorOptions {}
 }
 
-declare abstract class AnyPolygonVertex {
+declare abstract class AnyPolygonVertex extends PolygonVertex {
   constructor(arg0: never, ...args: never[]);
 }
 

@@ -1,4 +1,6 @@
-import { Vitest } from "vitest/node";
+import type { Vitest } from "vitest/node";
+
+// eslint-disable-next-line import/extensions
 import { Reporter } from "vitest/reporters";
 import { relative } from "pathe";
 import * as fs from "fs/promises";
@@ -6,18 +8,20 @@ import * as fs from "fs/promises";
 export default class JSONReporter implements Reporter {
   declare ctx: Vitest;
 
-  async onInit(ctx: Vitest) {
+  onInit(ctx: Vitest) {
     this.ctx = ctx;
   }
 
   async onFinished(files = this.ctx.state.getFiles()) {
-    const fileToErrors = {};
+    const fileToErrors: Record<string, string[]> = {};
 
     for (const file of files) {
       const filePath = relative(this.ctx.config.root, file.filepath);
-      fileToErrors[filePath] ??= [];
 
-      const errors =
+      const errors = fileToErrors[filePath] ?? [];
+      fileToErrors[filePath] = errors;
+
+      const errorMessages =
         file.result?.errors?.map((error) => {
           if (error.nameStr != null) {
             return `${error.nameStr}: ${error.message}`;
@@ -26,9 +30,7 @@ export default class JSONReporter implements Reporter {
           return error.message;
         }) ?? [];
 
-      if (errors.length > 0) {
-        fileToErrors[filePath].push(...errors);
-      }
+      errors.push(...errorMessages);
     }
 
     try {

@@ -3,8 +3,6 @@ import type { DeepPartial, EmptyObject, FixedInstanceType, ValueOf } from "fvtt-
 import type Document from "../common/abstract/document.d.mts";
 import type { EffectChangeData } from "../common/documents/_types.d.mts";
 import type { ProseMirrorDropDown } from "../common/prosemirror/menu.d.mts";
-
-// eslint-disable-next-line import/no-named-as-default
 import type ProseMirrorMenu from "../common/prosemirror/menu.d.mts";
 import type PointVisionSource from "../client-esm/canvas/sources/point-vision-source.d.mts";
 import type RenderedEffectSource from "../client-esm/canvas/sources/rendered-effect-source.d.mts";
@@ -247,7 +245,7 @@ declare global {
        * @remarks This is called by {@link Hooks.call}.
        * @see {@link ActiveEffect#_applyCustom}
        */
-      applyActiveEffect: (actor: Actor.ConfiguredInstance, change: EffectChangeData) => boolean | void;
+      applyActiveEffect: (actor: Actor.ConfiguredInstance, change: ActiveEffect.EffectChangeData) => boolean | void;
 
       /** Compendium */
 
@@ -350,7 +348,7 @@ declare global {
        * @param options - Options for rendering the associated {@link JournalSheet}
        * @remarks This is called by {@link Hooks.call}.
        */
-      activateNote: (note: Note.ConfiguredInstance, options: JournalSheet.RenderOptions) => boolean | false;
+      activateNote: (note: Note.ConfiguredInstance, options: JournalSheet.RenderOptions) => true | false;
 
       /** Cards */
 
@@ -851,18 +849,14 @@ declare global {
      * The dispatched event name replaces "Group" with the named CanvasGroup subclass, i.e. "drawPrimaryCanvasGroup".
      * @param group - The group being drawn
      */
-    type DrawGroup<G extends CanvasGroupMixin.AnyMixedConstructor = CanvasGroupMixin.AnyMixedConstructor> = (
-      group: G,
-    ) => void;
+    type DrawGroup<G extends CanvasGroupMixin.AnyMixed = CanvasGroupMixin.AnyMixed> = (group: G) => void;
 
     /**
      * A hook event that fires when a {@link CanvasGroup} is deconstructed.
      * The dispatched event name replaces "Group" with the named CanvasGroup subclass, i.e. "tearDownPrimaryCanvasGroup".
      * @param group - The group being deconstructed
      */
-    type TearDownGroup<G extends CanvasGroupMixin.AnyMixedConstructor = CanvasGroupMixin.AnyMixedConstructor> = (
-      group: G,
-    ) => void;
+    type TearDownGroup<G extends CanvasGroupMixin.AnyMixed = CanvasGroupMixin.AnyMixed> = (group: G) => void;
 
     /** CanvasLayer */
 
@@ -1188,8 +1182,7 @@ declare global {
       | DeactivateLayer
       | GetEntryContext
       | GetPlaylistDirectorySoundContext
-      | GetSidebarDirectoryFolderContext
-      | HoverObject;
+      | GetSidebarDirectoryFolderContext;
 
     interface ErrorCallbackParameters {
       "Canvas#draw": [location: "Canvas#draw", err: Error, data: { layer: CanvasLayer }];

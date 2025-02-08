@@ -231,6 +231,7 @@ declare global {
      */
     reset(): void;
 
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     protected override _onBarChange(): Promise<void>;
 
     protected override _onAddDetectionMode(modes: TokenDocument["detectionModes"]): void;

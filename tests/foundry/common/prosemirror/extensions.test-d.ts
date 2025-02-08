@@ -1,4 +1,3 @@
-/* eslint-disable import/extensions */
 import { expectTypeOf } from "vitest";
 import type { NodeType, ResolvedPos } from "prosemirror-model";
 

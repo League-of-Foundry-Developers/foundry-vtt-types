@@ -349,10 +349,7 @@ declare global {
      * @param action - The named action being attempted
      * @returns Does the User have rights to perform the action?
      */
-    can(
-      user: User.ConfiguredInstance,
-      action: "HUD" | "configure" | "control" | "view" | "create" | "drag" | "hover" | "update" | "delete" | string,
-    ): boolean;
+    can(user: User.ConfiguredInstance, action: PlaceableObject.Action): boolean;
 
     /**
      * Can the User access the HUD for this Placeable Object?
@@ -608,6 +605,18 @@ declare global {
        */
       hoverOutOthers: boolean;
     }
+
+    type Action =
+      | "HUD"
+      | "configure"
+      | "control"
+      | "view"
+      | "create"
+      | "drag"
+      | "hover"
+      | "update"
+      | "delete"
+      | (string & {});
   }
 }
 

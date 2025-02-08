@@ -70,7 +70,7 @@ declare const embeddedPersisted: foundry.data.fields.EmbeddedDataField.Persisted
 expectTypeOf(embeddedAssignment?.alpha).toEqualTypeOf<number | undefined | null>();
 expectTypeOf(embeddedInitialized?.alpha).toEqualTypeOf<number | undefined>();
 expectTypeOf(embeddedPersisted?.alpha).toEqualTypeOf<number | undefined>();
-expectTypeOf(embeddedModel["schema"]["fields"]["color"]).toEqualTypeOf<
+expectTypeOf(embeddedModel.schema.fields.color).toEqualTypeOf<
   foundry.data.fields.ColorField<{ label: "LIGHT.Color" }>
 >();
 

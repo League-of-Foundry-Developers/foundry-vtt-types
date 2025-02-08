@@ -1,8 +1,35 @@
 // @ts-check
 
+// console would count as undefined which would be very annoying.
+/* eslint-disable no-undef */
+
 import * as fs from "fs/promises";
 
-export default async ({ github, context, core }) => {
+/**
+ * @typedef {ReturnType<import("@actions/github").getOctokit>} GitHub
+ */
+
+/**
+ * @typedef Context
+ * @property {{ pull_request?: { number: number } }} payload
+ * @property {{ owner: string; repo: string }} repo
+ */
+
+/**
+ * @typedef ReportArguments
+ * @property {GitHub} github
+ * @property {Context} context
+ * @property {import("@actions/core")} core
+ */
+
+/**
+ * @typedef {Record<string, string>} TestResults
+ */
+
+/**
+ * @param {ReportArguments} arguments
+ */
+async function postOrUpdateTestsReport({ github, context, core }) {
   const pullRequestNumber = context.payload.pull_request ? context.payload.pull_request.number : null;
 
   if (!pullRequestNumber) {
@@ -10,27 +37,54 @@ export default async ({ github, context, core }) => {
     return;
   }
 
+  /**
+   * @type {TestResults}
+   */
   let mainResults;
   try {
     const contents = await fs.readFile("main-test-results/vitest-report.json", "utf-8");
-    mainResults = JSON.parse(contents);
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    mainResults = /** @type {TestResults} */ (JSON.parse(contents));
   } catch (e) {
+    if (!(e instanceof Error)) {
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+      core.setFailed(`Could not get results to compare: ${e}`);
+      return;
+    }
+
     console.error(e.message, e.stack);
-    core.setFailed(`Could not get results to compare to ${e.message}`);
+    core.setFailed(`Could not get results to compare: ${e.message}`);
     return;
   }
 
-  const contents = await fs.readFile("pr-test-results/vitest-report.json", "utf-8");
-  const pullRequestResults = JSON.parse(contents);
+  console.log("Main Test Results");
+  console.log("-----------------");
+  console.log(JSON.stringify(mainResults, null, 2));
 
+  const contents = await fs.readFile("pr-test-results/vitest-report.json", "utf-8");
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const pullRequestResults = /** @type {TestResults} */ (JSON.parse(contents));
+
+  console.log("PR Test Results");
+  console.log("---------------");
+  console.log(JSON.stringify(pullRequestResults, null, 2));
+
+  /**
+   * @type {Record<string, { type: "deleted" | "in-both" | "new"; fixedErrors: number; newErrors: number; unfixedErrors: number }>}
+   */
   let fileInformation = {};
   for (const [fileName, mainErrors] of Object.entries(mainResults)) {
     const pullRequestErrors = pullRequestResults[fileName];
     if (pullRequestErrors == null) {
-      fileInformation[fileName] = { type: "deleted", oldCount: 0, newCount: 0 };
+      fileInformation[fileName] = { type: "deleted", fixedErrors: 0, newErrors: 0, unfixedErrors: 0 };
       continue;
     }
 
+    /**
+     * @type {Record<string, { oldCount: number; newCount: number }>}
+     */
     const errorCounts = {};
 
     for (const error of mainErrors) {
@@ -141,7 +195,7 @@ export default async ({ github, context, core }) => {
     issue_number: pullRequestNumber,
   });
 
-  const existingTestReport = comments.data.find((comment) => comment.body.includes("<!-- vitest-status -->"));
+  const existingTestReport = comments.data.find((comment) => comment.body?.includes("<!-- vitest-status -->"));
 
   if (existingTestReport?.body === newReport) {
     return;
@@ -162,4 +216,6 @@ export default async ({ github, context, core }) => {
       body: newReport,
     });
   }
-};
+}
+
+export default postOrUpdateTestsReport;

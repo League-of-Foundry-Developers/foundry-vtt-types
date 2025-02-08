@@ -1127,8 +1127,8 @@ export declare const USER_ROLES: Readonly<{
   ASSISTANT: 3 & USER_ROLES;
 
   /**
-   *  A special User who has administrative control over this specific World.
-   *  Game Masters behave quite differently than Players in that they have the ability to see all Documents and Objects within the world as well as the capability to configure World settings.
+   * A special User who has administrative control over this specific World.
+   * Game Masters behave quite differently than Players in that they have the ability to see all Documents and Objects within the world as well as the capability to configure World settings.
    */
   GAMEMASTER: 4 & USER_ROLES;
 }>;
@@ -1137,7 +1137,35 @@ export type USER_ROLES = Brand<number, "constants.USER_ROLES">;
 /**
  * Invert the User Role mapping to recover role names from a role integer
  */
-export declare const USER_ROLE_NAMES: Readonly<{ [Key in keyof typeof USER_ROLES as (typeof USER_ROLES)[Key]]: Key }>;
+export declare const USER_ROLE_NAMES: Readonly<{
+  /**
+   * The User is blocked from taking actions in Foundry Virtual Tabletop.
+   * You can use this role to temporarily or permanently ban a user from joining the game.
+   */
+  "0": "NONE";
+
+  /**
+   * The User is able to join the game with permissions available to a standard player.
+   * They cannot take some more advanced actions which require Trusted permissions, but they have the basic functionalities needed to operate in the virtual tabletop.
+   */
+  "1": "PLAYER";
+
+  /**
+   * Similar to the Player role, except a Trusted User has the ability to perform some more advanced actions like create drawings, measured templates, or even to (optionally) upload media files to the server.
+   */
+  "2": "TRUSTED";
+
+  /**
+   * A special User who has many of the same in-game controls as a Game Master User, but does not have the ability to perform administrative actions like changing User roles or modifying World-level settings.
+   */
+  "3": "ASSISTANT";
+
+  /**
+   * A special User who has administrative control over this specific World.
+   * Game Masters behave quite differently than Players in that they have the ability to see all Documents and Objects within the world as well as the capability to configure World settings.
+   */
+  "4": "GAMEMASTER";
+}>;
 export type USER_ROLE_NAMES = ValueOf<typeof USER_ROLE_NAMES>;
 
 /**

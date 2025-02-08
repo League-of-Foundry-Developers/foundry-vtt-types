@@ -11,6 +11,7 @@ declare global {
     type ConfiguredClass = Document.ConfiguredClassForName<"RegionBehavior">;
     type ConfiguredInstance = Document.ConfiguredInstanceForName<"RegionBehavior">;
 
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends DocumentDatabaseOperations<RegionBehavior> {}
 
     // Helpful aliases
@@ -60,7 +61,7 @@ declare global {
       data?: DeepPartial<Document.ConstructorDataFor<NoInfer<T>> & Record<string, unknown>>,
       context?: Pick<DatabaseCreateOperation<FixedInstanceType<NoInfer<T>>>, "parent" | "pack"> &
         InexactPartial<
-          DialogOptions & {
+          Dialog.Options & {
             /** A restriction the selectable sub-types of the Dialog. */
             types: string[];
           }

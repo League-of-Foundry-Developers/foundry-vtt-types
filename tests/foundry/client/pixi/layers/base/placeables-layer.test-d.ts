@@ -69,9 +69,9 @@ expectTypeOf(layer.moveMany({ dx: 1, dy: -1, rotate: true, ids: ["abc", "def"] }
 >();
 expectTypeOf(layer.undoHistory()).toEqualTypeOf<Promise<AmbientLightDocument[]>>();
 expectTypeOf(layer.deleteAll()).toEqualTypeOf<Promise<undefined | false | null>>();
-expectTypeOf(layer.storeHistory("create", new AmbientLightDocument()["_source"])).toEqualTypeOf<void>();
-expectTypeOf(layer.storeHistory("update", new AmbientLightDocument()["_source"])).toEqualTypeOf<void>();
-expectTypeOf(layer.storeHistory("delete", new AmbientLightDocument()["_source"])).toEqualTypeOf<void>();
+expectTypeOf(layer.storeHistory("create", new AmbientLightDocument()._source)).toEqualTypeOf<void>();
+expectTypeOf(layer.storeHistory("update", new AmbientLightDocument()._source)).toEqualTypeOf<void>();
+expectTypeOf(layer.storeHistory("delete", new AmbientLightDocument()._source)).toEqualTypeOf<void>();
 
 // @ts-expect-error - "new" is not a valid history type.
 layer.storeHistory("new", new AmbientLightDocument());

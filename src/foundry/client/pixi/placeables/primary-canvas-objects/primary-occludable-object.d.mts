@@ -1,4 +1,4 @@
-import type { Mixin, NullishProps } from "fvtt-types/utils";
+import type { FixedInstanceType, Mixin, NullishProps } from "fvtt-types/utils";
 
 declare class PrimaryOccludableObject {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
@@ -152,7 +152,7 @@ declare global {
 
   namespace PrimaryOccludableObjectMixin {
     type AnyMixedConstructor = ReturnType<typeof PrimaryOccludableObjectMixin<BaseClass>>;
-    interface AnyMixed extends AnyMixedConstructor {}
+    interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
     type BaseClass = PIXI.Container.AnyConstructor;
 

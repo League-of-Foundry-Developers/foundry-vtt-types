@@ -65,6 +65,7 @@ declare global {
 
     protected override _canDragDrop(selector: string): boolean;
 
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     protected override _onDrop(event: DragEvent): Promise<void>;
 
     /**
