@@ -6,8 +6,8 @@
     "outDir": ".typescript-build",
     "composite": true,
     "noEmit": false,
-    "emitDeclarationOnly": true,
-    "typeRoots": ["../node_modules"]
+    "emitDeclarationOnly": true
   },
-  "include": ["**/*.test-d.ts", "**/*.d.ts"]
+  "include": ["**/*"],
+  "references": []
 }

@@ -31,7 +31,7 @@ jobs:
           npm add --legacy-peer-deps --force -D typescript@next
           npx tsc --version
       - run: npm run typecheck
-      - run: npm run lint:ci
+      - run: npm run lint
 
       # Note(LukeAbby): Currently the beta releases doesn't pass the tests.
       # This will be enabled again once tests are passing.

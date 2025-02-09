@@ -3,7 +3,7 @@
 import globals from "globals";
 import { includeIgnoreFile } from "@eslint/compat";
 import js from "@eslint/js";
-import ts from "typescript-eslint";
+import tsESLint from "typescript-eslint";
 import tsParser from "@typescript-eslint/parser";
 import eslintConfigPrettier from "eslint-config-prettier";
 import tsdoc from "eslint-plugin-tsdoc";
@@ -15,35 +15,30 @@ import * as path from "path";
 const dirname = path.dirname(new URL(import.meta.url).pathname);
 
 /**
- * @type {import("eslint").Linter.Config[]}
+ * @type {import("@typescript-eslint/utils").TSESLint.FlatConfig.ConfigArray}
  */
 const rules = [
   includeIgnoreFile(path.resolve(dirname, ".gitignore")),
   js.configs.recommended,
-  ...ts.configs.strictTypeChecked,
-  ...ts.configs.stylisticTypeChecked,
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  importPlugin.flatConfigs?.recommended,
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  importPlugin.flatConfigs?.typescript,
+  ...tsESLint.configs.strictTypeChecked,
+  ...tsESLint.configs.stylisticTypeChecked,
+  importPlugin.flatConfigs.recommended,
+  importPlugin.flatConfigs.typescript,
   eslintConfigPrettier,
   {
     // This is excluded because if it weren't then it would mess with the type checking of the rest of the repo as it loosens the types of many types.
-    ignores: ["index-lenient.d.mts"],
+    ignores: ["src/index-lenient.d.mts"],
   },
   {
     languageOptions: {
       parser: tsParser,
       parserOptions: {
-        project: "./tsconfig.eslint.json",
-        tsconfigRootDir: import.meta.dirname,
+        projectService: true,
+        tsconfigRootDir: dirname,
         sourceType: "module",
       },
       ecmaVersion: 2025,
       sourceType: "module",
-      globals: {
-        ...globals.es2025,
-      },
     },
     plugins: {
       tsdoc,
@@ -156,6 +151,11 @@ const rules = [
 
   {
     files: ["**/*.js"],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
+    },
     rules: {
       // JSDoc and TSDoc are mutually incompatible.
       // In theory we could use the JSDoc plugin for JS files but it has its own problems and there
