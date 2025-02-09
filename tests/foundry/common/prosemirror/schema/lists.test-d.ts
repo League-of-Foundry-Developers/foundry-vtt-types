@@ -1,4 +1,4 @@
-/* eslint-disable import/extensions */
+/* eslint-disable import-x/extensions */
 import type { Node } from "prosemirror-model";
 import { expectTypeOf } from "vitest";
 import { ol, ul, li, liText } from "../../../../../src/foundry/common/prosemirror/schema/lists.mjs";

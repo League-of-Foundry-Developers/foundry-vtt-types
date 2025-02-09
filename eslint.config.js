@@ -7,7 +7,7 @@ import tsESLint from "typescript-eslint";
 import tsParser from "@typescript-eslint/parser";
 import eslintConfigPrettier from "eslint-config-prettier";
 import tsdoc from "eslint-plugin-tsdoc";
-import * as importPlugin from "eslint-plugin-import";
+import importPlugin from "eslint-plugin-import-x";
 
 import * as path from "path";
 
@@ -97,11 +97,11 @@ const rules = [
       "@typescript-eslint/restrict-plus-operands": "off",
       "@typescript-eslint/restrict-template-expressions": ["error", { allowNumber: true }],
 
-      "import/consistent-type-specifier-style": ["warn", "prefer-top-level"],
-      "import/extensions": [
+      "import-x/consistent-type-specifier-style": ["warn", "prefer-top-level"],
+      "import-x/extensions": [
         "error",
         "always",
-        // TODO(LukeAbby): `eslint-plugin-import` needs to release a version with `pathGroupOverrides`
+        // TODO(LukeAbby): `eslint-plugin-import-x` needs to release a version with `pathGroupOverrides`
         // Once it does this can be enabled.
         // {
         //   checkTypeImports: true,
@@ -117,31 +117,31 @@ const rules = [
         //   ],
         // },
       ],
-      "import/first": "warn",
-      "import/newline-after-import": "warn",
-      "import/no-absolute-path": "error",
-      "import/no-amd": "error",
-      "import/no-anonymous-default-export": "warn",
-      "import/no-commonjs": "error",
-      "import/no-empty-named-blocks": "warn",
-      "import/no-extraneous-dependencies": "error",
-      "import/no-import-module-exports": "error",
-      "import/no-named-default": "warn",
+      "import-x/first": "warn",
+      "import-x/newline-after-import": "warn",
+      "import-x/no-absolute-path": "error",
+      "import-x/no-amd": "error",
+      "import-x/no-anonymous-default-export": "warn",
+      "import-x/no-commonjs": "error",
+      "import-x/no-empty-named-blocks": "warn",
+      "import-x/no-extraneous-dependencies": "error",
+      "import-x/no-import-module-exports": "error",
+      "import-x/no-named-default": "warn",
       // Some classes like `DataModel` are both default and named exports.
-      "import/no-named-as-default": "off",
-      "import/no-self-import": "error",
-      "import/no-unused-modules": "warn",
-      "import/no-useless-path-segments": "warn",
-      "import/no-webpack-loader-syntax": "error",
-      "import/no-named-as-default-member": "off",
+      "import-x/no-named-as-default": "off",
+      "import-x/no-self-import": "error",
+      "import-x/no-unused-modules": "warn",
+      "import-x/no-useless-path-segments": "warn",
+      "import-x/no-webpack-loader-syntax": "error",
+      "import-x/no-named-as-default-member": "off",
 
       "tsdoc/syntax": "warn",
     },
     settings: {
-      "import/parsers": {
+      "import-x/parsers": {
         "@typescript-eslint/parser": [".ts", ".cts", ".mts"],
       },
-      "import/resolver": {
+      "import-x/resolver": {
         typescript: {
           alwaysTryTypes: true,
         },

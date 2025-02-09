@@ -1,4 +1,4 @@
-/* eslint-disable import/extensions */
+/* eslint-disable import-x/extensions */
 import { expectTypeOf } from "vitest";
 import StringSerializer, { StringNode } from "../../../../src/foundry/common/prosemirror/string-serializer.mjs";
 import type {
