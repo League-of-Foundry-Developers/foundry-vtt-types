@@ -1,8 +1,5 @@
 // @ts-check
 
-// console would count as undefined which would be very annoying.
-/* eslint-disable no-undef */
-
 import * as fs from "fs/promises";
 
 /**
@@ -147,7 +144,13 @@ async function postOrUpdateTestsReport({ github, context, core }) {
   let hasChanges = false;
   let noChangesInFiles = 0;
   for (const file of files) {
-    const { type, fixedErrors, newErrors, unfixedErrors } = fileInformation[file];
+    const fileInfo = fileInformation[file];
+    if (fileInfo == null) {
+      core.setFailed(`No information for file ${JSON.stringify(file)}! This should not happen.`);
+      return;
+    }
+
+    const { type, fixedErrors, newErrors, unfixedErrors } = fileInfo;
 
     if (type === "deleted") {
       reportTable += `|${file} - ***DELETED***|-|-|-|\n`;

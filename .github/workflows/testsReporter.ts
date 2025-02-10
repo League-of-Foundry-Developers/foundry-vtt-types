@@ -1,7 +1,5 @@
 import type { Vitest } from "vitest/node";
-
-// eslint-disable-next-line import/extensions
-import { Reporter } from "vitest/reporters";
+import type { Reporter } from "vitest/reporters";
 import { relative } from "pathe";
 import * as fs from "fs/promises";
 
@@ -36,7 +34,7 @@ export default class JSONReporter implements Reporter {
     try {
       await fs.mkdir("test-results");
     } catch (e) {
-      if (e.code !== "EEXIST") {
+      if (!(e instanceof Error && "code" in e && e.code !== "EEXIST")) {
         throw e;
       }
     }

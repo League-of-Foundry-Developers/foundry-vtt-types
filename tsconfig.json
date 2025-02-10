@@ -15,9 +15,16 @@
     "target": "ES2021",
     "verbatimModuleSyntax": true,
     "noUncheckedSideEffectImports": true,
-    "noUncheckedIndexedAccess": true
+    "noUncheckedIndexedAccess": true,
+    "incremental": true
   },
-  "include": ["index.d.mts"],
 
-  "references": [{ "path": "./tests" }]
+  // This root project includes nothing on purpose.
+  "include": [],
+
+  "references": [
+    { "path": "./src/tsconfig.json" },
+    { "path": "./tsconfig.miscellaneous.json" },
+    { "path": "./tests/tsconfig.json" }
+  ]
 }

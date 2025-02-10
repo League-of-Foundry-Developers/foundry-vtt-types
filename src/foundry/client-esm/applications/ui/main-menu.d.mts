@@ -16,7 +16,7 @@ declare namespace MainMenu {
     label: string;
     icon: string;
     enabled: boolean | (() => boolean);
-    onClick: (PointerEvent) => void;
+    onClick: (ev: PointerEvent) => void;
   }
 
   interface RenderContext {

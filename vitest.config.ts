@@ -1,6 +1,4 @@
-// @ts-check
-
-// eslint-disable-next-line import/extensions
+// eslint-disable-next-line import-x/extensions
 import { defineConfig } from "vitest/config";
 
 export default defineConfig({

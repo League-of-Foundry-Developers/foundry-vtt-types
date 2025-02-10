@@ -1,4 +1,4 @@
-/* eslint-disable import/extensions */
+/* eslint-disable import-x/extensions */
 import type { DOMOutputSpec, MarkSpec, NodeSpec } from "prosemirror-model";
 import { expectTypeOf } from "vitest";
 import AttributeCapture from "../../../../../src/foundry/common/prosemirror/schema/attribute-capture.mjs";

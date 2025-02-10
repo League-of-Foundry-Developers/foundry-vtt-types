@@ -1,7 +1,7 @@
 // In Foundry itself this file contains re-exports of these other modules.
 // Therefore it has a runtime effect and uses `.mjs` instead of `.d.mts`.
 // While `.mts` could work, to avoid `import/no-unresolved` from erroring `.mjs` is used.
-/* eslint-disable import/extensions */
+/* eslint-disable import-x/extensions */
 
 export * as apps from "./apps/_module.mjs";
 export * as tabs from "./tabs/_module.mjs";

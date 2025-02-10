@@ -705,8 +705,8 @@ declare global {
         messageData: {
           message: Document.ToObjectFalseType<ChatMessage.ConfiguredInstance>;
           user: Game["user"];
-          author: ChatMessage.ConfiguredInstance["user"];
-          alias: ChatMessage.ConfiguredInstance["alias"];
+          author: User.ConfiguredInstance | null;
+          alias: string;
           cssClass: string;
           isWhisper: boolean;
           canDelete: boolean;
@@ -814,7 +814,7 @@ declare global {
       app: A,
       html: JQuery,
       data: ReturnType<A["getData"]> extends Promise<infer T> ? T : ReturnType<A["getData"]>,
-    ) => boolean | void;
+    ) => void;
 
     /**
      * A hook event that fires whenever this Application is first rendered to add buttons to its header.
@@ -837,10 +837,22 @@ declare global {
      * @param html  - The application HTML when it is closed
      * @typeParam A - the type of the Application
      * @remarks The name for this hook is dynamically created by joining "close" with the type name of the Application.
-     * @remarks This is called by {@link Hooks.call}.
+     * @remarks This is called by {@link Hooks.callAll}.
      * @see {@link Application#close}
      */
-    type CloseApplication<A extends Application.Any = Application.Any> = (app: A, html: JQuery) => boolean | void;
+    type CloseApplication<A extends Application.Any = Application.Any> = (app: A, html: JQuery) => void;
+
+    /** ApplicationV2 */
+
+    // Not explicitly typed in Foundry v12 but still fires
+    type RenderApplicationV2<
+      A extends foundry.applications.api.ApplicationV2.Any = foundry.applications.api.ApplicationV2.Any,
+    > = (app: A, element: HTMLElement) => void;
+
+    // Not explicitly typed in Foundry v12 but still fires
+    type CloseApplicationV2<
+      A extends foundry.applications.api.ApplicationV2.Any = foundry.applications.api.ApplicationV2.Any,
+    > = (app: A) => void;
 
     /** EffectsCanvasGroup */
 
